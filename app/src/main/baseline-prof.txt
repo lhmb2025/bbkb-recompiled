@@ -1,0 +1,87 @@
+# Baseline Profile for BlackBerry Keyboard
+# Optimizes cold start by pre-compiling critical startup paths
+#
+# Every rule below must name a class that actually exists in the APK. Verified
+# against the source tree on 2026-09-06 during the package rearchitecture; if you
+# move or rename a class, move its rule here in the same commit.
+
+# Core IME Service - Critical startup path
+HSPLdev/bbkb/ime/core/BlackBerryIME;->onCreate()V
+HSPLdev/bbkb/ime/core/BlackBerryIME;->onCreateInputView()Landroid/view/View;
+HSPLdev/bbkb/ime/core/BlackBerryIME;->onStartInputView(Landroid/view/inputmethod/EditorInfo;Z)V
+Ldev/bbkb/ime/core/BlackBerryIME;
+Ldev/bbkb/ime/core/BlackBerryIME$*;
+
+# Application
+Ldev/bbkb/ime/core/ImeApplication;
+HSPLdev/bbkb/ime/core/ImeApplication;->onCreate()V
+
+# IME view wiring (2026-09 decomposition)
+Ldev/bbkb/ime/core/ime/InputViewCoordinator;
+Ldev/bbkb/ime/core/ime/UIUpdateHandler;
+
+# Keyboard Switcher - View creation
+Ldev/bbkb/ime/keyboard/KeyboardSwitcher;
+HSPLdev/bbkb/ime/keyboard/KeyboardSwitcher;->createInputView(Z)Landroid/view/View;
+HSPLdev/bbkb/ime/keyboard/KeyboardSwitcher;->startInput(Landroid/view/inputmethod/EditorInfo;II)V
+
+# Keyboard Building
+Ldev/bbkb/ime/keyboard/KeyboardBuilder;
+Ldev/bbkb/ime/keyboard/KeyboardBuilder$*;
+HSPLdev/bbkb/ime/keyboard/KeyboardBuilder;->getKeyboard(I)Ldev/bbkb/ime/keyboard/Keyboard;
+HSPLdev/bbkb/ime/keyboard/KeyboardBuilder;->getKeyboardInternal(IZ)Ldev/bbkb/ime/keyboard/Keyboard;
+
+# Views - Critical UI components
+Ldev/bbkb/ime/core/ime/InputView;
+Ldev/bbkb/ime/keyboard/MainKeyboardView;
+Ldev/bbkb/ime/keyboard/KeyboardView;
+Ldev/bbkb/ime/keyboard/auxbar/AuxBarView;
+Ldev/bbkb/ime/keyboard/inputboard/UnifiedInputBoardManager;
+HSPLdev/bbkb/ime/keyboard/MainKeyboardView;-><init>(Landroid/content/Context;Landroid/util/AttributeSet;I)V
+HSPLdev/bbkb/ime/keyboard/KeyboardView;-><init>(Landroid/content/Context;Landroid/util/AttributeSet;I)V
+
+# Settings Manager - Preference loading
+Ldev/bbkb/ime/core/settings/util/SettingsManager;
+Ldev/bbkb/ime/core/settings/util/SettingsValues;
+HSPLdev/bbkb/ime/core/settings/util/SettingsManager;->initializeInternal(Landroid/content/Context;)V
+HSPLdev/bbkb/ime/core/settings/util/SettingsManager;->loadSettings(Landroid/content/Context;Ljava/util/Locale;Ldev/bbkb/ime/core/textinput/connection/EditorCapabilities;)V
+
+# PrefsManager singleton
+Ldev/bbkb/ime/core/settings/PrefsManager;
+HSPLdev/bbkb/ime/core/settings/PrefsManager;->init(Landroid/content/Context;)V
+HSPLdev/bbkb/ime/core/settings/PrefsManager;->getPrefs()Landroid/content/SharedPreferences;
+
+# Device Profile
+Ldev/bbkb/ime/core/device/profile/DeviceProfile;
+Ldev/bbkb/ime/core/device/profile/DeviceProfile$*;
+HSPLdev/bbkb/ime/core/device/profile/DeviceProfile;->initialize(Landroid/content/Context;Landroid/content/res/Configuration;)Ldev/bbkb/ime/core/device/profile/DeviceProfile;
+HSPLdev/bbkb/ime/core/device/profile/DeviceProfile;->create(Landroid/content/Context;Landroid/content/res/Configuration;)Ldev/bbkb/ime/core/device/profile/DeviceProfile;
+
+# Input Logic - Text processing
+Ldev/bbkb/ime/core/textinput/InputLogic;
+Ldev/bbkb/ime/core/textinput/InputMethodHelper;
+
+# Keyboard Color Manager - Theming
+Ldev/bbkb/ime/keyboard/KeyboardColorManager;
+HSPLdev/bbkb/ime/keyboard/KeyboardColorManager;->init(Landroid/content/Context;Ldev/bbkb/ime/keyboard/KeyboardColorManager$Style;Ldev/bbkb/ime/keyboard/KeyboardColorManager$Scheme;Z)V
+
+# NuanceSDK - Suggestion engine
+Lcom/blackberry/nuanceshim/NuanceSDK;
+Ldev/bbkb/ime/core/engine/NuanceSDKManager;
+
+# Subtype Management
+Ldev/bbkb/ime/core/locale/SubtypeManager;
+Ldev/bbkb/ime/core/locale/RichInputMethodManager;
+
+# XML Parsing - Keyboard layouts
+Ldev/bbkb/ime/keyboard/internal/KeyboardXMLParser;
+Ldev/bbkb/ime/keyboard/internal/KeyboardParams;
+Ldev/bbkb/ime/keyboard/Keyboard;
+Ldev/bbkb/ime/keyboard/Key;
+
+# Resource utilities
+Ldev/bbkb/ime/core/device/ResourceConfigManager;
+
+# Compose Settings (for launcher access)
+Ldev/bbkb/ime/core/settings/ComposeSettingsActivity;
+Ldev/bbkb/ime/core/settings/screens/**;

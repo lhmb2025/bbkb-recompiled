@@ -1,0 +1,20 @@
+// Top-level build file for the project
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()  // Required for node-gradle plugin
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:9.1.1'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.10'
+        classpath 'com.github.node-gradle:gradle-node-plugin:7.0.1'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}

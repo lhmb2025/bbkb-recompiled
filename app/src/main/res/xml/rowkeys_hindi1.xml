@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="symbolsShifted">
+            <Key
+                latin:keySpec="औ"
+                latin:moreKeys="ऒं"/>
+            <Key
+                latin:keySpec="ऐ"
+                latin:moreKeys="ऐं"/>
+            <Key
+                latin:keySpec="आ"
+                latin:moreKeys="आं,आँ"/>
+            <Key
+                latin:keySpec="ई"
+                latin:moreKeys="ईं"/>
+            <Key
+                latin:keySpec="ऊ"
+                latin:moreKeys="ऊं,ऊँ"/>
+            <Key latin:keySpec="भ"/>
+            <include latin:keyboardLayout="@xml/keystyle_devanagari_sign_visarga"/>
+            <Key latin:keyStyle="baseKeyDevanagariSignVisarga"/>
+            <Key latin:keySpec="घ"/>
+            <Key
+                latin:keySpec="ध"
+                latin:moreKeys="क्ष,श्र"/>
+            <Key latin:keySpec="झ"/>
+            <Key latin:keySpec="ढ"/>
+        </case>
+        <default>
+            <include latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_au"/>
+            <Key latin:keyStyle="baseKeyDevanagariVowelSignAu"/>
+            <include latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_ai"/>
+            <Key latin:keyStyle="baseKeyDevanagariVowelSignAi"/>
+            <include latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_aa"/>
+            <Key latin:keyStyle="baseKeyDevanagariVowelSignAa"/>
+            <include latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_ii"/>
+            <Key latin:keyStyle="baseKeyDevanagariVowelSignIi"/>
+            <include latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_uu"/>
+            <Key latin:keyStyle="baseKeyDevanagariVowelSignUu"/>
+            <Key
+                latin:keySpec="ब"
+                latin:moreKeys="ब॒,%"/>
+            <Key latin:keySpec="ह"/>
+            <Key
+                latin:keySpec="ग"
+                latin:moreKeys="ज्ञ,ग़,ग॒,%"/>
+            <Key latin:keySpec="द"/>
+            <Key
+                latin:keySpec="ज"
+                latin:moreKeys="ज॒,ज्ञ,ज़,%"/>
+            <Key
+                latin:keySpec="ड"
+                latin:moreKeys="ड॒,ड़"/>
+        </default>
+    </switch>
+</merge>

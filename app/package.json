@@ -1,0 +1,9 @@
+{
+  "name": "blackberry-keyboard-emoji-data",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Emojibase emoji data for BlackBerry Keyboard",
+  "dependencies": {
+    "emojibase-data": "^16.0.3"
+  }
+}

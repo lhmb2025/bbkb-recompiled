@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ================= -->
+    <!-- Key text ratios -->
+    <!-- ================= -->
+    <fraction name="config_arrow_key_letter_size">68%p</fraction>
+    <fraction name="config_key_hint_label_ratio">30%</fraction>
+    <fraction name="config_key_hint_letter_ratio">25%</fraction>
+    <fraction name="config_key_label_ratio">34%</fraction>
+    <fraction name="config_key_large_letter_ratio">90%</fraction>
+    <fraction name="config_key_letter_ratio">55%</fraction>
+    <fraction name="config_key_letter_ratio_5row">55%</fraction>
+    <fraction name="config_key_multiline_hint_label_ratio">20%</fraction>
+    <fraction name="config_key_multiline_hint_label_vertical_adjustment">150%</fraction>
+    <fraction name="config_key_preview_text_ratio">82%</fraction>
+    <fraction name="config_key_shifted_letter_hint_ratio">35%</fraction>
+    <fraction name="config_key_shifted_letter_hint_ratio_5row">41%</fraction>
+
+    <!-- =========================== -->
+    <!-- Key and keyboard geometry -->
+    <!-- =========================== -->
+    <fraction name="config_key_horizontal_gap_holo">0%p</fraction>
+    <fraction name="config_key_vertical_gap_5row">3.2%p</fraction>
+    <fraction name="config_key_vertical_gap_holo">1.6%p</fraction>
+    <fraction name="config_key_width_3_column">33.3333%p</fraction>
+    <fraction name="config_key_width_4_column">25%p</fraction>
+    <fraction name="config_key_width_9_column">11.1111%p</fraction>
+    <fraction name="config_keyboard_bottom_padding_holo">0.7%p</fraction>
+    <fraction name="config_keyboard_left_padding">0%p</fraction>
+    <fraction name="config_keyboard_right_padding">0%p</fraction>
+    <fraction name="config_keyboard_top_padding_holo">1.6%p</fraction>
+    <fraction name="config_max_keyboard_height">46%p</fraction>
+    <fraction name="config_min_keyboard_height">-55.6%p</fraction>
+    <fraction name="config_spacer_width_3_column">0%p</fraction>
+    <fraction name="config_spacer_width_4_column">0%p</fraction>
+    <fraction name="config_spacer_width_9_column">0%p</fraction>
+
+    <!-- ======================= -->
+    <!-- Key preview animation -->
+    <!-- ======================= -->
+    <fraction name="config_key_preview_dismiss_end_scale">94%</fraction>
+    <fraction name="config_key_preview_show_up_start_scale">98%</fraction>
+
+    <!-- ===================== -->
+    <!-- Gesture recognition -->
+    <!-- ===================== -->
+    <fraction name="config_gesture_detect_fast_move_speed_threshold">150%</fraction>
+    <fraction name="config_gesture_dynamic_distance_threshold_from">600%</fraction>
+    <fraction name="config_gesture_dynamic_distance_threshold_to">50%</fraction>
+    <fraction name="config_gesture_recognition_speed_threshold">550%</fraction>
+    <fraction name="config_gesture_sampling_minimum_distance">16.6666%</fraction>
+
+    <!-- ==================== -->
+    <!-- Cursor tap regions -->
+    <!-- ==================== -->
+    <fraction name="config_default_horizontal_cursor_tap_region_height_scale">100%</fraction>
+    <fraction name="config_default_horizontal_cursor_tap_region_width_scale">30%</fraction>
+    <fraction name="config_default_vertical_cursor_tap_region_height_scale">50%</fraction>
+    <fraction name="config_default_vertical_cursor_tap_region_width_scale">40%</fraction>
+
+    <!-- ================ -->
+    <!-- Emoji keyboard -->
+    <!-- ================ -->
+    <fraction name="config_emoji_keyboard_key_letter_size">68%p</fraction>
+    <fraction name="config_emoji_keyboard_key_width">10%p</fraction>
+    <fraction name="config_emoji_keyboard_row_height">25%p</fraction>
+
+    <!-- ================== -->
+    <!-- Delete animation -->
+    <!-- ================== -->
+    <fraction name="config_delete_animation_fade_in_ratio">60%</fraction>
+    <fraction name="config_delete_animation_max_alpha">100%</fraction>
+    <fraction name="config_delete_animation_max_icon_scale">179.9988%</fraction>
+    <fraction name="config_delete_animation_min_alpha">10%</fraction>
+    <fraction name="config_delete_animation_min_icon_scale">80%</fraction>
+
+    <!-- =================== -->
+    <!-- Flick predictions -->
+    <!-- =================== -->
+    <fraction name="config_flick_prediction_horizontal_offset_factor">90%</fraction>
+    <fraction name="config_flick_prediction_minimum_horizontal_word_distance_factor">50%</fraction>
+    <fraction name="config_flick_prediction_minimum_vertical_word_distance_factor">65%</fraction>
+    <fraction name="config_flick_prediction_text_vertical_padding_factor">55%</fraction>
+
+    <!-- ========== -->
+    <!-- Spacebar -->
+    <!-- ========== -->
+    <fraction name="config_autocorrection_on_spacebar_text_ratio">33.735%</fraction>
+    <fraction name="config_minimum_scale_of_spacebar_text">60%</fraction>
+
+    <!-- ==================== -->
+    <!-- Unified input menu -->
+    <!-- ==================== -->
+
+    <!-- ========================== -->
+    <!-- Suggestions and feedback -->
+    <!-- ========================== -->
+    <fraction name="config_default_keypress_sound_volume">8%</fraction>
+    <fraction name="config_more_suggestions_info_ratio">18%</fraction>
+
+</resources>

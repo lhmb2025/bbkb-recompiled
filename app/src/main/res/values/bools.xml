@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ========================================== -->
+    <!-- Feature defaults (user-visible settings) -->
+    <!-- ========================================== -->
+    <bool name="config_default_allow_batched_cursor_move">true</bool>
+    <bool name="config_default_apply_swipe_suppression_timeout_to_swipe_end">true</bool>
+    <bool name="config_default_dynamic_learning_enabled">true</bool>
+    <bool name="config_default_emoji_predictions">false</bool>
+    <bool name="config_default_flick_commit_animation">true</bool>
+    <bool name="config_default_horizontal_cursor_move_can_change_fields">false</bool>
+    <bool name="config_default_key_preview_popup">false</bool>
+    <bool name="config_default_next_word_prediction">true</bool>
+    <bool name="config_default_on_key_predictions">true</bool>
+    <bool name="config_default_show_predictions">true</bool>
+    <bool name="config_default_slideboard">false</bool>
+    <bool name="config_default_sound_enabled">false</bool>
+    <bool name="config_default_uim_enabled">true</bool>
+    <bool name="config_default_vibration_enabled">true</bool>
+
+    <!-- ============================== -->
+    <!-- Build-config gesture toggles -->
+    <!-- ============================== -->
+    <bool name="config_ckb_type_by_swiping_enabled_by_build_config">false</bool>
+    <bool name="config_vkb_swipe_gestures_enabled_by_build_config">false</bool>
+    <bool name="config_vkb_type_by_swiping_enabled_by_build_config">false</bool>
+
+    <!-- ==================== -->
+    <!-- Keyboard behaviour -->
+    <!-- ==================== -->
+    <bool name="config_block_potentially_offensive">true</bool>
+    <bool name="config_enable_show_key_preview_popup_option">true</bool>
+    <bool name="config_key_selection_by_dragging_finger">true</bool>
+    <bool name="config_show_more_keys_keyboard_at_touched_point">false</bool>
+    <bool name="config_use_fullscreen_mode">false</bool>
+
+    <!-- =============================== -->
+    <!-- Current-language capabilities -->
+    <!-- =============================== -->
+    <bool name="current_language_has_spaces">true</bool>
+    <bool name="current_language_supports_double_space_period">true</bool>
+
+    <!-- ======================== -->
+    <!-- Settings and IME state -->
+    <!-- ======================== -->
+    <bool name="im_is_default">false</bool>
+    <bool name="lower_right_corner_is_enter">false</bool>
+    <bool name="settings_light_status_bar">true</bool>
+
+</resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key latin:keySpec="!text/keyspec_right_square_bracket_fullwidth"/>
+    <Key latin:keySpec="!text/keyspec_greater_than_fullwidth"/>
+    <Key latin:keySpec="!text/keyspec_right_curly_bracket_fullwidth"/>
+    <Key latin:keySpec="!text/keyspec_right_double_angle_quote_fullwidth"/>
+    <Key latin:keySpec="＼"/>
+    <Key
+        latin:keySpec="÷"
+        latin:keyTypeface="bold"/>
+    <Key latin:keySpec="｜"/>
+    <Key
+        latin:keySpec="”"
+        latin:keyTypeface="bold"/>
+    <Key latin:keySpec="＆"/>
+</merge>

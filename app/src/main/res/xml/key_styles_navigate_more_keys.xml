@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+        <key-style
+            latin:keyLabelFlags="preserveCase"
+            latin:moreKeys="!icon/next_key|!code/key_action_next"
+            latin:styleName="navigateNextMoreKeysStyle"/>
+        <key-style
+            latin:keyLabelFlags="preserveCase"
+            latin:moreKeys="!icon/previous_key|!code/key_action_previous"
+            latin:styleName="navigatePreviousMoreKeysStyle"/>
+        <key-style
+            latin:keyLabelFlags="preserveCase"
+            latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!icon/previous_key|!code/key_action_previous,!icon/next_key|!code/key_action_next"
+            latin:styleName="navigatePreviousNextMoreKeysStyle"/>
+        <key-style
+            latin:keyLabelFlags="preserveCase"
+            latin:moreKeys="!text/keyspec_emoji_action_key"
+            latin:styleName="navigateEmojiMoreKeysStyle"/>
+        <key-style
+            latin:keyLabelFlags="preserveCase"
+            latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/keyspec_emoji_action_key,!icon/next_key|!code/key_action_next"
+            latin:styleName="navigateEmojiNextMoreKeysStyle"/>
+        <key-style
+            latin:keyLabelFlags="preserveCase"
+            latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/keyspec_emoji_action_key,!icon/previous_key|!code/key_action_previous"
+            latin:styleName="navigateEmojiPreviousMoreKeysStyle"/>
+        <key-style
+            latin:keyLabelFlags="preserveCase"
+            latin:moreKeys="!fixedColumnOrder!3,!needsDividers!,!text/keyspec_emoji_action_key,!icon/previous_key|!code/key_action_previous,!icon/next_key|!code/key_action_next"
+            latin:styleName="navigateEmojiPreviousNextMoreKeysStyle"/>
+</merge>

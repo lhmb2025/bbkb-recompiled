@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key
+        latin:keySpec="ㅂ"
+        latin:moreKeys="ㅃ"/>
+    <Key
+        latin:keySpec="ㅈ"
+        latin:moreKeys="ㅉ"/>
+    <Key
+        latin:keySpec="ㄷ"
+        latin:moreKeys="ㄸ"/>
+    <Key
+        latin:keySpec="ㄱ"
+        latin:moreKeys="ㄲ"/>
+    <Key
+        latin:keySpec="ㅅ"
+        latin:moreKeys="ㅆ"/>
+    <Key latin:keySpec="ㅛ"/>
+    <Key latin:keySpec="ㅕ"/>
+    <Key latin:keySpec="ㅑ"/>
+    <Key
+        latin:keySpec="ㅐ"
+        latin:moreKeys="ㅒ"/>
+    <Key
+        latin:keySpec="ㅔ"
+        latin:moreKeys="ㅖ"/>
+</merge>

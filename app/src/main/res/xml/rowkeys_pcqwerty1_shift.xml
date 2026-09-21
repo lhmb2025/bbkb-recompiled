@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key
+        latin:additionalMoreKeys="!text/morekeys_symbols_tilde"
+        latin:keySpec="~"/>
+    <Key
+        latin:additionalMoreKeys="!text/morekeys_exclamation"
+        latin:keySpec="!"/>
+    <Key latin:keySpec="@"/>
+    <Key latin:keySpec="#"/>
+    <Key
+        latin:additionalMoreKeys="!text/morekeys_currency_dollar"
+        latin:keySpec="$"/>
+    <Key
+        latin:additionalMoreKeys="!text/morekeys_symbols_percent"
+        latin:keySpec="%"/>
+    <Key latin:keySpec="^"/>
+    <Key latin:keySpec="&amp;"/>
+    <Key
+        latin:additionalMoreKeys="!text/morekeys_star"
+        latin:keySpec="*"/>
+    <Key latin:keySpec="("/>
+    <Key latin:keySpec=")"/>
+    <Key latin:keySpec="_"/>
+    <Key
+        latin:additionalMoreKeys="!text/morekeys_plus"
+        latin:keySpec="+"
+        latin:moreKeys="×,÷,√"/>
+</merge>

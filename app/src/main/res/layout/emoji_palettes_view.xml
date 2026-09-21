@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPalettesView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/emoji_palettes_view"
+    android:layout_gravity="bottom"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layoutDirection="locale"
+    style="?attr/emojiPalettesViewStyle">
+
+    <!-- FrameLayout to stack ViewPager and search overlay -->
+    <FrameLayout
+        android:id="@+id/emoji_pager_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <!-- Main emoji category ViewPager (static categories) -->
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/emoji_keyboard_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        
+        <!-- Search/Recents overlay (sits on top, shown when in search mode) -->
+        <dev.bbkb.ime.keyboard.inputboard.emoji.EmojiSearchOverlayView
+            android:id="@+id/emoji_search_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+            
+    </FrameLayout>
+    <dev.bbkb.ime.keyboard.inputboard.emoji.EmojiCategoryPageIndicatorView
+        android:id="@+id/emoji_category_page_id_view"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/config_suggestions_strip_height">
+        <TabHost
+            android:id="@+id/emoji_category_tabhost"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="87.5">
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"/>
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="0dp"
+                android:layout_height="0dp">
+                <View
+                    android:id="@+id/emoji_keyboard_dummy"
+                    android:visibility="gone"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"/>
+            </FrameLayout>
+        </TabHost>
+        <include layout="@layout/suggestion_divider"/>
+        <ImageButton
+            android:id="@+id/emoji_keyboard_delete"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="12.5"
+            android:soundEffectsEnabled="false"
+            android:hapticFeedbackEnabled="false"/>
+    </LinearLayout>
+</dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPalettesView>

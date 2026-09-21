@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key latin:keySpec="й"/>
+    <Key latin:keySpec="ц"/>
+    <Key
+        latin:keySpec="у"
+        latin:moreKeys="!text/morekeys_cyrillic_u"/>
+    <Key
+        latin:keySpec="к"
+        latin:moreKeys="!text/morekeys_cyrillic_ka"/>
+    <Key
+        latin:keySpec="е"
+        latin:moreKeys="!text/morekeys_cyrillic_ie"/>
+    <Key
+        latin:keySpec="н"
+        latin:moreKeys="!text/morekeys_cyrillic_en"/>
+    <Key
+        latin:keySpec="г"
+        latin:moreKeys="!text/morekeys_cyrillic_ghe"/>
+    <Key latin:keySpec="ш"/>
+    <Key latin:keySpec="!text/keyspec_east_slavic_row1_9"/>
+    <Key latin:keySpec="з"/>
+    <Key latin:keySpec="х"/>
+</merge>

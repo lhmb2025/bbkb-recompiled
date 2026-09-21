@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <PhysicalKeyboardExtension>
+        <PhysicalKey
+            latin:keySpec="ь"
+            latin:moreKeys="!text/morekeys_cyrillic_soft_sign"/>
+        <PhysicalKey
+            latin:keySpec="у"
+            latin:moreKeys="!text/morekeys_cyrillic_u"
+            latin:multitapKeys="ю"/>
+        <PhysicalKey
+            latin:keySpec="к"
+            latin:moreKeys="!text/morekeys_cyrillic_ka"/>
+        <switch>
+            <case latin:languageCode="kk">
+                <PhysicalKey
+                    latin:keySpec="е"
+                    latin:moreKeys="!text/morekeys_cyrillic_ie,!text/morekeys_east_slavic_row2_11"
+                    latin:multitapKeys="!text/keyspec_east_slavic_row2_11"/>
+            </case>
+            <default>
+                <PhysicalKey
+                    latin:keySpec="е"
+                    latin:moreKeys="!text/morekeys_cyrillic_ie"
+                    latin:multitapKeys="!text/keyspec_east_slavic_row2_11"/>
+            </default>
+        </switch>
+        <PhysicalKey
+            latin:keySpec="н"
+            latin:moreKeys="!text/morekeys_cyrillic_en"/>
+        <PhysicalKey
+            latin:keySpec="г"
+            latin:moreKeys="!text/morekeys_cyrillic_ghe"/>
+        <switch>
+            <case latin:languageCode="kk|ky|ru|uk">
+                <PhysicalKey
+                    latin:keySpec="ш"
+                    latin:multitapKeys="щ"/>
+            </case>
+        </switch>
+        <switch>
+            <case latin:languageCode="be|uk">
+                <PhysicalKey
+                    latin:keySpec="і"
+                    latin:moreKeys="!text/morekeys_east_slavic_row2_2"/>
+            </case>
+            <default>
+                <PhysicalKey
+                    latin:keySpec="и"
+                    latin:moreKeys="!text/morekeys_east_slavic_row2_2"/>
+            </default>
+        </switch>
+        <PhysicalKey
+            latin:keySpec="а"
+            latin:moreKeys="!text/morekeys_cyrillic_a"/>
+        <PhysicalKey
+            latin:keySpec="о"
+            latin:moreKeys="!text/morekeys_cyrillic_o"/>
+        <PhysicalKey
+            latin:keySpec="ж"
+            latin:multitapKeys="з"/>
+        <PhysicalKey
+            latin:keySpec="ж"
+            latin:moreKeys="!text/morekeys_currency_dollar"/>
+    </PhysicalKeyboardExtension>
+</merge>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Device Configuration: BlackBerry Key2
+    Schema v2.2
+
+    This configuration is for the BlackBerry Key2 (Athena).
+    It will be auto-selected when the device is detected.
+
+    Find device name: adb shell dumpsys input
+-->
+
+<device-input-config version="2.1" name="BlackBerry Key2 (Athena)">
+
+    <device>
+        <match>
+            <!-- Build.DEVICE = "athena" is the authoritative identifier for the BlackBerry Key2.
+                 InputDevice.getName() is not used here as it may vary. -->
+            <build-device exact="athena"/>
+        </match>
+
+        <device-type>CKB</device-type>
+
+        <!-- NO <keypad-layout> HERE, DELIBERATELY (pinned by ShippedDeviceConfigsTest).
+             The schema has an optional <keypad-layout>qwerty|qwertz|azerty</keypad-layout>, and
+             it is the TOP-ranked source in KeypadLayoutDetector — it switches off the keypad's
+             InputDevice name, ro.hwf.keypadlanguage / ro.product.keypadlanguage, the
+             KeyCharacterMap Alt fingerprint and the scancode observation. This one config matches
+             every KEY2 in the world, QWERTY, AZERTY and QWERTZ alike, so declaring a layout here
+             would mis-render the symbol rows on every non-QWERTY unit with nothing able to
+             correct it. The element is for a user-imported config on a unit whose firmware
+             answers nothing. -->
+
+        <!-- RETAIL SWIPE CONFIG (2026-08-14, remediation log §8.7.12/§8.6): the engine uses the
+             ROOT flat KDB (uniform 108px rows, authored 324, RADY=108 — the geometry its swipe
+             decoder is tuned for) and the capacitive Y is PIECEWISE-warped so each measured
+             sensor band (0-90 / 90-270 / 270-450, pen-on-dividers) maps exactly onto one
+             authored row. This reproduces the stock KEY2 stack — the only configuration that
+             ever decoded the boundary-riding corpus words cleanly (S5: hello 10/10). The warp
+             is deliberately LINEAR (one segment, = S5's exact x0.72), NOT band-exact piecewise:
+             the linear compression pulls this user's low-in-row touches toward key centres — an
+             essential bias absorber (§8.7.5) — whereas exact band mapping preserves in-band
+             position and reproduces the boundary-riding failures (piecewise was tried 2026-08-14:
+             done→some, hello→heel, that→hat — §8.7.12 retail verify run 1). The uneven-band
+             variant layouts remain in assets/kdb/athena/ for experiments via
+             debug.et9.kdbvariant; no <kdb-variant> is requested here, deliberately. -->
+        <ckb-y-warp>0:0,450:324</ckb-y-warp>
+
+        <input-mappings>
+            <scancode-mappings>
+
+                <!-- Mic/zero key: sends keyCode=7 and doubles as the '0' digit. Without Alt it
+                     activates voice input; with Alt it types '0'. -->
+                <key rawKeyCode="7" role="BOARD_VOICE"
+                     treatAs="KEYCODE_MIC" altChar="0" board="-27"
+                     notes="Key2 mic key (keyCode=7), alt char is zero digit"/>
+
+                <!-- Multifunction key: keyCode=119 (KEYCODE_FUNCTION), scanCode=110 — a dedicated
+                     convenience key with no printed character. role=MULTIFUNCTION makes it
+                     user-mappable: the "Multifunction key" picker appears in
+                     Settings → Input → Physical keyboard (Ctrl key, emoji board, clipboard,
+                     language switch, …). Matches on BOTH keyCode and scanCode; default-action is
+                     the out-of-box choice until the user picks one. -->
+                <key rawKeyCode="119" rawScanCode="110" role="MULTIFUNCTION"
+                     default-action="voice_input"
+                     notes="Key2 multifunction/convenience key (keyCode=119, scanCode=110)"/>
+
+            </scancode-mappings>
+        </input-mappings>
+
+        <settings-overrides>
+            <!-- Capacitive keyboard gestures - enabled and user-configurable on Key2 -->
+            <setting key="swipe_down_ckb" type="boolean" read-only="false"/>
+            <setting key="type_by_swiping_ckb" type="boolean" read-only="false"/>
+        </settings-overrides>
+
+
+
+    </device>
+
+</device-input-config>

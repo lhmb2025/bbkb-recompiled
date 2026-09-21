@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <files-path
+        name="dynamic"
+        path="dynamic/"/>
+    <files-path
+        name="work"
+        path="work/"/>
+    <files-path
+        name="nuance"
+        path="nuance/"/>
+    <!-- Device configs: imported ones and the ones the profile builder writes. Shared out of
+         here by the builder's "Share" action, so another handset can import the same file. -->
+    <files-path
+        name="device_configs"
+        path="device_configs/"/>
+</paths>

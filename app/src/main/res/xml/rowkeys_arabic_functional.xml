@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key
+        latin:keyStyle="shiftKeyStyle"
+        latin:keyWidth="10%p"/>
+    <Key
+        latin:keyIconsBackgroundType="!icon/diacritic_up_key,!icon/diacritic_up_key,!icon/diacritic_up_key,!icon/diacritic_up_key,!icon/diacritic_down_key,!icon/diacritic_up_key"
+        latin:keyLabelVerticalBaselineRatio="66%"
+        latin:keySpec="ﹰ|!code/key_diacritics_toggle"/>
+</merge>

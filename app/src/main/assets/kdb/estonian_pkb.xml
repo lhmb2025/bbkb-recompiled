@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- estonian_pkb keyboard layout
+PID: ET9PLIDEstonian
+SID: ET9SKIDPhonePad -->
+
+<keyboard
+    primaryId="37"
+    secondaryId="6"
+    defaultLayoutWidth="1080"
+    defaultLayoutHeight="324"
+    addAltChars="true">
+
+    <area>
+        <key keyType="regional" keyLabel="Q" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="0dp" />
+        <key keyType="regional" keyLabel="W" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="108dp" />
+        <key keyType="regional" keyLabel="E" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="216dp" />
+        <key keyType="regional" keyLabel="R" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="324dp" />
+        <key keyType="regional" keyLabel="T" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="432dp" />
+        <key keyType="regional" keyLabel="Y" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="540dp" />
+        <key keyType="regional" keyLabel="U" keyCodes="0x00FC" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="648dp" />
+        <key keyType="regional" keyLabel="I" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="756dp" />
+        <key keyType="regional" keyLabel="O" keyCodes="0x00F6" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="864dp" />
+        <key keyType="regional" keyLabel="P" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="972dp" />
+    </area>
+
+    <area>
+        <key keyType="regional" keyLabel="A" keyCodes="0x00E4" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="0dp" />
+        <key keyType="regional" keyLabel="S" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="108dp" />
+        <key keyType="regional" keyLabel="D" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="216dp" />
+        <key keyType="regional" keyLabel="F" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="324dp" />
+        <key keyType="regional" keyLabel="G" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="432dp" />
+        <key keyType="regional" keyLabel="H" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="540dp" />
+        <key keyType="regional" keyLabel="J" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="648dp" />
+        <key keyType="regional" keyLabel="K" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="756dp" />
+        <key keyType="regional" keyLabel="L" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="864dp" />
+        <key keyType="function" keyCodes="0x21E6" keyName="ET9KEY_BACK" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="972dp" />
+    </area>
+
+    <area>
+        <key keyType="function" keyLabel="ALT" keyName="ET9KEY_ALT" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="0dp" />
+        <key keyType="regional" keyLabel="Z" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="108dp" />
+        <key keyType="regional" keyLabel="X" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="216dp" />
+        <key keyType="regional" keyLabel="C" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="324dp" />
+        <key keyType="regional" keyLabel="V" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="432dp" />
+        <key keyType="regional" keyLabel="B" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="540dp" />
+        <key keyType="regional" keyLabel="N" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="648dp" />
+        <key keyType="regional" keyLabel="M" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="756dp" />
+        <key keyType="nonRegional" keyCodes="0x0024" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="864dp" />
+        <key keyType="function" keyLabel="DONE" keyName="ET9KEY_RETURN" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="972dp" />
+    </area>
+</keyboard>

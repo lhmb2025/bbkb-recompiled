@@ -1,0 +1,89 @@
+loaded 1080x324 keys=30  pid=1 sid=6
+NKL dump: ../../app/src/main/assets/kdb/arabic_pkb.xml
+header
+  +0x00 format      = 0x00000101
+  +0x04 pid/sid     = 1/6
+  +0x0c stamp       = (content hash, geometry only — omitted)
+  +0x12 pid/sid     = 1/6
+  +0x14             = 15
+  +0x18             = 1
+  +0x1a width       = 1080
+  +0x1c height      = 324
+  +0x1e             = 2
+  +0x20 coreFracX   = 0.600
+  +0x24 coreFracY   = 0.600
+  +0x2c agg         = 36
+  +0x30 maxW        = 108
+  +0x34 row1H       = 108
+  +0x38 RADX        = 108
+  +0x3c RADY        = 108
+  +0x40 unit        = 1.000
+  +0x44 boxW        = 144
+  +0x48 boxH        = 144
+  +0x4c overlap     = 144
+  +0x50 diag        = 152.735
+  +0x54 agg         = 322
+  +0x58 agg         = 322
+  +0x60 diag        = 152.735
+  +0x64 keyCount    = 30
+keys
+  key[ 0] idx=0 type=1 flag8=1 c=(53,53) bbox=(0,0,107,107) core=(22,22,85,85) exp=(0,0,129,129) geo=(53,53) bias=(53,53)
+          +0x40 chars=1  +0x48 arena=+0x1058  [0636]
+  key[ 1] idx=1 type=1 flag8=1 c=(161,53) bbox=(108,0,215,107) core=(130,22,193,85) exp=(86,0,237,129) geo=(161,53) bias=(161,53)
+          +0x40 chars=1  +0x48 arena=+0x105a  [062b]
+  key[ 2] idx=2 type=1 flag8=1 c=(269,53) bbox=(216,0,323,107) core=(238,22,301,85) exp=(194,0,345,129) geo=(269,53) bias=(269,53)
+          +0x40 chars=1  +0x48 arena=+0x105c  [0642]
+  key[ 3] idx=3 type=1 flag8=1 c=(377,53) bbox=(324,0,431,107) core=(346,22,409,85) exp=(302,0,453,129) geo=(377,53) bias=(377,53)
+          +0x40 chars=1  +0x48 arena=+0x105e  [0641]
+  key[ 4] idx=4 type=1 flag8=1 c=(485,53) bbox=(432,0,539,107) core=(454,22,517,85) exp=(410,0,561,129) geo=(485,53) bias=(485,53)
+          +0x40 chars=1  +0x48 arena=+0x1060  [063a]
+  key[ 5] idx=5 type=1 flag8=1 c=(593,53) bbox=(540,0,647,107) core=(562,22,625,85) exp=(518,0,669,129) geo=(593,53) bias=(593,53)
+          +0x40 chars=1  +0x48 arena=+0x1062  [0639]
+  key[ 6] idx=6 type=1 flag8=1 c=(701,53) bbox=(648,0,755,107) core=(670,22,733,85) exp=(626,0,777,129) geo=(701,53) bias=(701,53)
+          +0x40 chars=1  +0x48 arena=+0x1064  [0647]
+  key[ 7] idx=7 type=1 flag8=1 c=(809,53) bbox=(756,0,863,107) core=(778,22,841,85) exp=(734,0,885,129) geo=(809,53) bias=(809,53)
+          +0x40 chars=1  +0x48 arena=+0x1066  [062e]
+  key[ 8] idx=8 type=1 flag8=1 c=(917,53) bbox=(864,0,971,107) core=(886,22,949,85) exp=(842,0,993,129) geo=(917,53) bias=(917,53)
+          +0x40 chars=1  +0x48 arena=+0x1068  [062d]
+  key[ 9] idx=9 type=1 flag8=1 c=(1025,53) bbox=(972,0,1079,107) core=(994,22,1057,85) exp=(950,0,65535,107) geo=(1025,53) bias=(1025,53)
+          +0x40 chars=1  +0x48 arena=+0x106a  [062c]
+  key[10] idx=10 type=1 flag8=1 c=(53,161) bbox=(0,108,107,215) core=(22,130,85,193) exp=(0,86,129,215) geo=(53,161) bias=(53,161)
+          +0x40 chars=1  +0x48 arena=+0x106c  [0634]
+  key[11] idx=11 type=1 flag8=1 c=(161,161) bbox=(108,108,215,215) core=(130,130,193,193) exp=(86,86,237,237) geo=(161,161) bias=(161,161)
+          +0x40 chars=1  +0x48 arena=+0x106e  [064a]
+  key[12] idx=12 type=1 flag8=1 c=(269,161) bbox=(216,108,323,215) core=(238,130,301,193) exp=(194,86,345,237) geo=(269,161) bias=(269,161)
+          +0x40 chars=1  +0x48 arena=+0x1070  [0628]
+  key[13] idx=13 type=1 flag8=1 c=(377,161) bbox=(324,108,431,215) core=(346,130,409,193) exp=(302,86,453,237) geo=(377,161) bias=(377,161)
+          +0x40 chars=1  +0x48 arena=+0x1072  [0644]
+  key[14] idx=14 type=1 flag8=1 c=(485,161) bbox=(432,108,539,215) core=(454,130,517,193) exp=(410,86,561,237) geo=(485,161) bias=(485,161)
+          +0x40 chars=1  +0x48 arena=+0x1074  [0627]
+  key[15] idx=15 type=1 flag8=1 c=(593,161) bbox=(540,108,647,215) core=(562,130,625,193) exp=(518,86,669,237) geo=(593,161) bias=(593,161)
+          +0x40 chars=1  +0x48 arena=+0x1076  [062a]
+  key[16] idx=16 type=1 flag8=1 c=(701,161) bbox=(648,108,755,215) core=(670,130,733,193) exp=(626,86,777,237) geo=(701,161) bias=(701,161)
+          +0x40 chars=1  +0x48 arena=+0x1078  [0646]
+  key[17] idx=17 type=1 flag8=1 c=(809,161) bbox=(756,108,863,215) core=(778,130,841,193) exp=(734,86,885,237) geo=(809,161) bias=(809,161)
+          +0x40 chars=1  +0x48 arena=+0x107a  [0645]
+  key[18] idx=18 type=1 flag8=1 c=(917,161) bbox=(864,108,971,215) core=(886,130,949,193) exp=(842,86,971,237) geo=(917,161) bias=(917,161)
+          +0x40 chars=1  +0x48 arena=+0x107c  [0643]
+  key[19] idx=19 type=1 flag8=1 c=(161,269) bbox=(108,216,215,323) core=(130,238,193,301) exp=(108,194,237,65535) geo=(161,269) bias=(161,269)
+          +0x40 chars=1  +0x48 arena=+0x107e  [0630]
+  key[20] idx=20 type=1 flag8=1 c=(269,269) bbox=(216,216,323,323) core=(238,238,301,301) exp=(194,194,345,65535) geo=(269,269) bias=(269,269)
+          +0x40 chars=1  +0x48 arena=+0x1080  [062f]
+  key[21] idx=21 type=1 flag8=1 c=(377,269) bbox=(324,216,431,323) core=(346,238,409,301) exp=(302,194,453,65535) geo=(377,269) bias=(377,269)
+          +0x40 chars=1  +0x48 arena=+0x1082  [0632]
+  key[22] idx=22 type=1 flag8=1 c=(485,269) bbox=(432,216,539,323) core=(454,238,517,301) exp=(410,194,561,65535) geo=(485,269) bias=(485,269)
+          +0x40 chars=1  +0x48 arena=+0x1084  [0631]
+  key[23] idx=23 type=1 flag8=1 c=(593,269) bbox=(540,216,647,323) core=(562,238,625,301) exp=(518,194,669,65535) geo=(593,269) bias=(593,269)
+          +0x40 chars=1  +0x48 arena=+0x1086  [0629]
+  key[24] idx=24 type=1 flag8=1 c=(701,269) bbox=(648,216,755,323) core=(670,238,733,301) exp=(626,194,777,65535) geo=(701,269) bias=(701,269)
+          +0x40 chars=1  +0x48 arena=+0x1088  [0648]
+  key[25] idx=25 type=1 flag8=1 c=(809,269) bbox=(756,216,863,323) core=(778,238,841,301) exp=(734,194,885,65535) geo=(809,269) bias=(809,269)
+          +0x40 chars=1  +0x48 arena=+0x108a  [0638]
+  key[26] idx=26 type=1 flag8=1 c=(917,269) bbox=(864,216,971,323) core=(886,238,949,301) exp=(842,194,971,65535) geo=(917,269) bias=(917,269)
+          +0x40 chars=1  +0x48 arena=+0x108c  [0637]
+  key[27] idx=27 type=5 flag8=1 c=(1025,161) bbox=(972,108,1079,215) core=(972,108,1079,215) exp=(972,108,65535,215) geo=(1025,161) bias=(1025,161)
+          +0x40 chars=1  +0x48 arena=+0x108e  [0008]
+  key[28] idx=28 type=5 flag8=1 c=(53,269) bbox=(0,216,107,323) core=(0,216,107,323) exp=(0,216,107,65535) geo=(53,269) bias=(53,269)
+          +0x40 chars=1  +0x48 arena=+0x1090  [0fe6]
+  key[29] idx=29 type=5 flag8=1 c=(1025,269) bbox=(972,216,1079,323) core=(972,216,1079,323) exp=(972,216,65535,65535) geo=(1025,269) bias=(1025,269)
+          +0x40 chars=1  +0x48 arena=+0x1092  [000d]

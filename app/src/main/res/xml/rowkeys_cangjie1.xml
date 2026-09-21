@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key latin:keySpec="手"/>
+    <Key latin:keySpec="田"/>
+    <Key latin:keySpec="水"/>
+    <Key latin:keySpec="口"/>
+    <Key latin:keySpec="廿"/>
+    <Key latin:keySpec="卜"/>
+    <Key latin:keySpec="山"/>
+    <Key latin:keySpec="戈"/>
+    <Key latin:keySpec="人"/>
+    <Key latin:keySpec="心"/>
+</merge>

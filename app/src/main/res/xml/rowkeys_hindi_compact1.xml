@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <include latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_au"/>
+    <Key
+        latin:keySpec="औ"
+        latin:keyStyle="moreKeysDevanagariVowelSignAu"/>
+    <include latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_ai"/>
+    <Key
+        latin:keySpec="ऐ"
+        latin:keyStyle="moreKeysDevanagariVowelSignAi"/>
+    <include latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_aa"/>
+    <Key
+        latin:keySpec="आ"
+        latin:keyStyle="moreKeysDevanagariVowelSignAa"/>
+    <include latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_ii"/>
+    <Key
+        latin:keySpec="ई"
+        latin:keyStyle="moreKeysDevanagariVowelSignIi"/>
+    <include latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_uu"/>
+    <Key
+        latin:keySpec="ऊ"
+        latin:keyStyle="moreKeysDevanagariVowelSignUu"/>
+    <Key
+        latin:keySpec="ब"
+        latin:moreKeys="भ,%"/>
+    <Key latin:keySpec="ह"/>
+    <Key
+        latin:keySpec="ग"
+        latin:moreKeys="घ,ग़"/>
+    <Key
+        latin:keySpec="द"
+        latin:moreKeys="ध,%"/>
+    <Key
+        latin:keySpec="ज"
+        latin:moreKeys="झ,ञ,ज़,्"/>
+    <Key
+        latin:keySpec="ड"
+        latin:moreKeys="ढ,ड़,ढ़"/>
+</merge>

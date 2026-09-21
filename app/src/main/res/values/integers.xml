@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ============================ -->
+    <!-- Gesture and swipe defaults -->
+    <!-- ============================ -->
+    <integer name="config_default_CKB_swipe_gesture_suppression_timeout">350</integer>
+    <integer name="config_default_VKB_auto_correction_mode">2</integer>
+    <integer name="config_default_VKB_swipe_gesture_suppression_timeout">190</integer>
+    <integer name="config_default_accent_selection_suppression_timeout">210</integer>
+    <integer name="config_default_doubletap_suppression_timeout">300</integer>
+    <integer name="config_default_fast_horizontal_swipe_min_velocity">525</integer>
+    <integer name="config_default_fast_horizontal_swipe_min_x">40</integer>
+    <integer name="config_default_fast_vertical_swipe_min_velocity">425</integer>
+    <integer name="config_default_fast_vertical_swipe_min_y">30</integer>
+    <integer name="config_default_flow_mode_vertical_swipe_min_velocity">600</integer>
+    <integer name="config_default_flow_mode_vertical_swipe_min_y">40</integer>
+    <integer name="config_default_horizontal_swipe_theta">90</integer>
+    <integer name="config_default_in_letter_max_swipe_to_word_distance">70</integer>
+    <integer name="config_default_slow_horizontal_swipe_min_velocity">200</integer>
+    <integer name="config_default_slow_horizontal_swipe_min_x">80</integer>
+    <integer name="config_default_slow_vertical_swipe_min_velocity">200</integer>
+    <integer name="config_default_slow_vertical_swipe_min_y">35</integer>
+    <integer name="config_default_swipe_gesture_timeout">1000</integer>
+    <integer name="config_default_vertical_swipe_theta">90</integer>
+
+    <!-- ========================== -->
+    <!-- Cursor movement defaults -->
+    <!-- ========================== -->
+    <integer name="config_default_horizontal_scroll_distance_for_accents_change">35</integer>
+    <integer name="config_default_horizontal_scroll_distance_for_cursor_move">25</integer>
+    <integer name="config_default_max_accents_move_speed_multiplier">1</integer>
+    <integer name="config_default_max_cursor_move_speed_multiplier">10</integer>
+    <integer name="config_default_single_line_vertical_scroll_distance_for_cursor_move">100</integer>
+    <integer name="config_default_velocity_for_max_cursor_move_speed">10000</integer>
+    <integer name="config_default_vertical_scroll_distance_for_cursor_move">72</integer>
+
+    <!-- ======================== -->
+    <!-- Shake gesture defaults -->
+    <!-- ======================== -->
+    <integer name="config_default_shake_acceleration_threshold">10</integer>
+    <integer name="config_default_shake_reset_time">1000</integer>
+    <integer name="config_default_shake_slop_time">250</integer>
+    <integer name="config_default_shake_trigger_count">3</integer>
+
+    <!-- ========================== -->
+    <!-- Auto-correction defaults -->
+    <!-- ========================== -->
+    <integer name="config_default_PKB_auto_correction_mode">1</integer>
+
+    <!-- =================== -->
+    <!-- Timers and delays -->
+    <!-- =================== -->
+    <integer name="config_ckb_touch_noise_threshold_time">150</integer>
+    <integer name="config_default_longpress_key_timeout">300</integer>
+    <integer name="config_default_slideboard_longpress_key_timeout">400</integer>
+    <integer name="config_delay_in_msec_to_update_old_suggestions">300</integer>
+    <integer name="config_delay_in_msec_to_update_shift_state">100</integer>
+    <integer name="config_delay_in_msec_to_update_suggestions">100</integer>
+    <integer name="config_delay_in_msec_to_update_suggestions_after_gesture_input">200</integer>
+    <integer name="config_delay_in_msec_to_update_suggestions_pkb">10</integer>
+    <integer name="config_double_space_period_timeout">1100</integer>
+    <integer name="config_ignore_alt_code_key_timeout">350</integer>
+    <integer name="config_key_repeat_interval">50</integer>
+    <integer name="config_key_repeat_start_timeout">400</integer>
+    <integer name="config_longpress_shift_key_timeout">1000</integer>
+    <integer name="config_longpress_shift_lock_timeout">1200</integer>
+    <integer name="config_multitap_duration">750</integer>
+    <integer name="config_on_key_down_focus_lock_duration">250</integer>
+    <integer name="config_suppress_key_preview_after_batch_input_duration">1000</integer>
+    <integer name="config_touch_noise_threshold_time">40</integer>
+    <integer name="config_typing_delay_inputboard_bar">300</integer>
+
+    <!-- =============================== -->
+    <!-- Gesture recognition and trail -->
+    <!-- =============================== -->
+    <integer name="config_gesture_dynamic_threshold_decay_duration">450</integer>
+    <integer name="config_gesture_dynamic_time_threshold_from">300</integer>
+    <integer name="config_gesture_dynamic_time_threshold_to">20</integer>
+    <integer name="config_gesture_recognition_minimum_time">100</integer>
+    <integer name="config_gesture_recognition_update_time">100</integer>
+    <integer name="config_gesture_static_time_threshold_after_fast_typing">500</integer>
+    <integer name="config_gesture_trail_body_ratio">100</integer>
+    <integer name="config_gesture_trail_fadeout_duration">400</integer>
+    <integer name="config_gesture_trail_fadeout_start_delay">100</integer>
+    <integer name="config_gesture_trail_max_interpolation_angular_threshold">15</integer>
+    <integer name="config_gesture_trail_max_interpolation_segments">6</integer>
+    <integer name="config_gesture_trail_shadow_ratio">-1</integer>
+    <integer name="config_gesture_trail_update_interval">20</integer>
+
+    <!-- ============= -->
+    <!-- Key preview -->
+    <!-- ============= -->
+    <integer name="config_key_preview_dismiss_duration">76</integer>
+    <integer name="config_key_preview_linger_timeout">100</integer>
+    <integer name="config_key_preview_show_up_duration">24</integer>
+
+    <!-- ========================== -->
+    <!-- Keyboard grid and layout -->
+    <!-- ========================== -->
+    <integer name="config_keyboard_grid_height">16</integer>
+    <integer name="config_keyboard_grid_width">32</integer>
+    <integer name="config_max_more_keys_column">5</integer>
+    <integer name="config_screen_metrics">0</integer>
+
+    <!-- ======= -->
+    <!-- Emoji -->
+    <!-- ======= -->
+    <integer name="config_emoji_keyboard_max_page_key_count">40</integer>
+    <integer name="more_key_flag_value_emoji">0xff</integer>
+
+    <!-- =========================== -->
+    <!-- Clipboard and input board -->
+    <!-- =========================== -->
+    <integer name="config_clipboard_extra_header_height">40</integer>
+    <integer name="config_input_board_bar_slide_in_animation">200</integer>
+    <integer name="config_slideboard_snap_animation">500</integer>
+    <integer name="config_uim_default_focus_move_delay">650</integer>
+
+    <!-- ============================= -->
+    <!-- Spacebar and language toast -->
+    <!-- ============================= -->
+    <integer name="config_language_toast_y_offset">150</integer>
+
+    <!-- ================== -->
+    <!-- Delete animation -->
+    <!-- ================== -->
+    <integer name="config_delete_animation_max_duration_ms">800</integer>
+    <integer name="config_delete_animation_min_duration_ms">400</integer>
+
+    <!-- =========================== -->
+    <!-- Sliding key input preview -->
+    <!-- =========================== -->
+    <integer name="config_sliding_key_input_preview_body_ratio">100</integer>
+    <integer name="config_sliding_key_input_preview_shadow_ratio">-1</integer>
+
+    <!-- ================== -->
+    <!-- Notices and misc -->
+    <!-- ================== -->
+    <integer name="config_notification_duration_in_msec">2000</integer>
+    <integer name="sentence_separator">46</integer>
+    <integer name="text_decorator_add_to_dictionary_indicator_path_size">480</integer>
+    <integer name="text_decorator_hit_area_margin_in_dp">4</integer>
+
+</resources>

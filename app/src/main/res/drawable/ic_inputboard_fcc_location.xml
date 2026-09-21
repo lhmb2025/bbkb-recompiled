@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FCC cursor indicator: teardrop with the tip at the top center of the viewport.
+     The fillColor is a placeholder; CursorTracker tints the ImageView from
+     KeyboardColorManager's accent at inflate time, which overrides it. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="19.9dp"
+    android:height="24dp"
+    android:viewportWidth="59.69557"
+    android:viewportHeight="72">
+    <path
+        android:fillColor="?android:attr/colorAccent"
+        android:pathData="M7.85647,22.388C16.04669,13.52471,23.85757,5.81636,29.96691,0c3.4475,3.19074,13.53618,12.63789,22.0916,22.38017,2.18722,2.49065,4.88938,5.70107,6.34961,10.4824,1.31155,4.29449,1.29357,8.78351,1.28614,9.51377,0,.0001.01478,2.14721-.29983,4.12759-1.4766,9.29488-11.51695,25.49128-29.42753,25.49606-17.28236.00462-27.37551-15.32784-29.44239-25.49606-1.41818-6.97691.48869-13.14523.48872-13.14532,1.62301-5.2501,4.62624-8.57143,6.84323-10.97061Z" />
+</vector>
