@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <key-style
+        latin:keySpec="€"
+        latin:moreKeys="¢,£,$,¥,₱"
+        latin:styleName="currencyKeyStyle"/>
+    <key-style
+        latin:keySpec="€"
+        latin:moreKeys="!text/morekeys_currency_generic"
+        latin:styleName="currencyExtendedKeyStyle"/>
+    <key-style
+        latin:keySpec="£"
+        latin:styleName="moreCurrency1KeyStyle"/>
+    <key-style
+        latin:keySpec="¥"
+        latin:styleName="moreCurrency2KeyStyle"/>
+    <key-style
+        latin:keySpec="$"
+        latin:moreKeys="¢"
+        latin:styleName="moreCurrency3KeyStyle"/>
+    <key-style
+        latin:keySpec="¢"
+        latin:styleName="moreCurrency4KeyStyle"/>
+</merge>

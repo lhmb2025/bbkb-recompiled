@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Row latin:keyWidth="10%p">
+        <include latin:keyboardLayout="@xml/rowkeys_arabic_functional"/>
+        <Key latin:keySpec="_"/>
+        <Key latin:keySpec="-"/>
+        <switch>
+            <case latin:mode="email">
+                <Key latin:keySpec="+"/>
+                <Key latin:keySpec="@"/>
+                <Key latin:keySpec="#"/>
+            </case>
+            <default>
+                <Key latin:keySpec="؛"/>
+                <Key latin:keySpec="/"/>
+                <Key latin:keySpec="؟"/>
+            </default>
+        </switch>
+        <Key latin:keySpec="."/>
+        <Key
+            latin:keyStyle="altKeyStyle"
+            latin:keyWidth="20%p"/>
+    </Row>
+</merge>

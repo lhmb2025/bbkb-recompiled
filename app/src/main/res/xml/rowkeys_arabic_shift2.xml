@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key latin:keySpec="ـ"/>
+    <Key latin:keySpec="ِ"/>
+    <Key latin:keySpec="ُ"/>
+    <Key latin:keySpec="َ"/>
+    <Key latin:keySpec="ّ"/>
+    <Key latin:keySpec="ٓ"/>
+    <Key latin:keySpec="آ"/>
+    <Key latin:keySpec="ء"/>
+    <Key latin:keySpec="أ"/>
+    <Key latin:keySpec="إ"/>
+</merge>

@@ -1,0 +1,1001 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="actionBarStyle" format="reference">
+    </attr>
+    <attr name="additionalMoreKeys" format="string">
+    </attr>
+    <attr name="alertDialogTheme" format="reference">
+    </attr>
+    <attr name="alpha" format="float">
+    </attr>
+    <attr name="altCode" format="string">
+    </attr>
+    <attr name="altCodeKeyWhileTypingFadeinAnimator" format="reference">
+    </attr>
+    <attr name="altCodeKeyWhileTypingFadeoutAnimator" format="reference">
+    </attr>
+    <attr name="autoCorrectionOnSpacebarTextColor" format="color">
+    </attr>
+    <attr name="autoCorrectionOnSpacebarTextRatio" format="fraction">
+    </attr>
+    <attr name="background" format="reference">
+    </attr>
+    <attr name="backgroundDimAlpha" format="integer">
+    </attr>
+    <attr name="backgroundType">
+        <enum name="action" value="5" />
+        <enum name="alwaysHighlight" value="7" />
+        <enum name="empty" value="0" />
+        <enum name="functional" value="2" />
+        <enum name="normal" value="1" />
+        <enum name="slide" value="8" />
+        <enum name="slideFunctional" value="9" />
+        <enum name="spacebar" value="6" />
+        <enum name="stickyOff" value="3" />
+        <enum name="stickyOn" value="4" />
+    </attr>
+    <attr name="categoryIndicatorBackground" format="reference">
+    </attr>
+    <attr name="categoryIndicatorDrawable" format="reference">
+    </attr>
+    <attr name="categoryIndicatorEnabled" format="boolean">
+    </attr>
+    <attr name="characterMapKeys" format="string">
+    </attr>
+    <attr name="checkboxStyle" format="reference">
+    </attr>
+    <attr name="ckbTouchNoiseThresholdTime" format="integer">
+    </attr>
+    <attr name="clobberSettingsKey" format="boolean">
+    </attr>
+    <attr name="codesArray" format="reference">
+    </attr>
+    <attr name="color" format="color">
+    </attr>
+    <attr name="colorAccent" format="color">
+    </attr>
+    <attr name="colorControlActivated" format="color">
+    </attr>
+    <attr name="colorControlHighlight" format="color">
+    </attr>
+    <attr name="colorControlNormal" format="color">
+    </attr>
+    <attr name="colorError" format="reference|color">
+    </attr>
+    <attr name="colorPrimary" format="color">
+    </attr>
+    <attr name="colorPrimaryDark" format="color">
+    </attr>
+    <attr name="colorSwitchThumbNormal" format="color">
+    </attr>
+    <attr name="contentDescription" format="string">
+    </attr>
+    <attr name="countryCode" format="string">
+    </attr>
+    <attr name="divider" format="reference">
+    </attr>
+    <attr name="elementKeyboard" format="reference">
+    </attr>
+    <attr name="elementName">
+        <enum name="alphabet" value="0" />
+        <enum name="alphabetAutomaticShifted" value="2" />
+        <enum name="alphabetAutomaticShiftedPkb" value="102" />
+        <enum name="alphabetManualShifted" value="1" />
+        <enum name="alphabetManualShiftedPkb" value="101" />
+        <enum name="alphabetPkb" value="100" />
+        <enum name="alphabetShiftLockShifted" value="4" />
+        <enum name="alphabetShiftLockShiftedPkb" value="104" />
+        <enum name="alphabetShiftLocked" value="3" />
+        <enum name="alphabetShiftLockedPkb" value="103" />
+        <enum name="arrows" value="39" />
+        <enum name="arrowsPkb" value="139" />
+        <enum name="emojiRecents" value="12" />
+        <enum name="number" value="11" />
+        <enum name="numberPad" value="42" />
+        <enum name="numberPkb" value="111" />
+        <enum name="numberSubPanel" value="41" />
+        <enum name="numberSubPanelPkb" value="141" />
+        <enum name="password" value="36" />
+        <enum name="passwordKeeper" value="40" />
+        <enum name="passwordKeeperPkb" value="140" />
+        <enum name="passwordPkb" value="136" />
+        <enum name="phone" value="9" />
+        <enum name="phonePkb" value="109" />
+        <enum name="phoneSymbols" value="10" />
+        <enum name="phoneSymbolsPkb" value="110" />
+        <enum name="postal" value="37" />
+        <enum name="postalPkb" value="137" />
+        <enum name="symbols" value="5" />
+        <enum name="symbolsCustom" value="8" />
+        <enum name="symbolsPkb" value="105" />
+        <enum name="symbolsPkbCustom" value="108" />
+        <enum name="symbolsShifted" value="6" />
+        <enum name="symbolsShiftedPkb" value="106" />
+        <enum name="symbolsShiftedTwo" value="7" />
+        <enum name="symbolsShiftedTwoPkb" value="107" />
+        <enum name="unifiedInputMenuPkb" value="138" />
+        <enum name="unifiedInputMenuPool" value="43" />
+        <enum name="uri" value="35" />
+        <enum name="uriPkb" value="135" />
+    </attr>
+    <attr name="emojiPageIndicatorHorizontalGapRatio" format="float">
+    </attr>
+    <attr name="emojiPageIndicatorRadiusRatio" format="float">
+    </attr>
+    <attr name="emojiPalettesViewStyle" format="reference">
+    </attr>
+    <attr name="enableProximityCharsCorrection" format="boolean">
+    </attr>
+    <attr name="fontFamily" format="string">
+    </attr>
+    <attr name="functionalTextColor" format="color">
+    </attr>
+    <attr name="gestureDetectFastMoveSpeedThreshold" format="fraction">
+    </attr>
+    <attr name="gestureDynamicDistanceThresholdFrom" format="fraction">
+    </attr>
+    <attr name="gestureDynamicDistanceThresholdTo" format="fraction">
+    </attr>
+    <attr name="gestureDynamicThresholdDecayDuration" format="integer">
+    </attr>
+    <attr name="gestureDynamicTimeThresholdFrom" format="integer">
+    </attr>
+    <attr name="gestureDynamicTimeThresholdTo" format="integer">
+    </attr>
+    <attr name="gestureRecognitionMinimumTime" format="integer">
+    </attr>
+    <attr name="gestureRecognitionSpeedThreshold" format="fraction">
+    </attr>
+    <attr name="gestureRecognitionUpdateTime" format="integer">
+    </attr>
+    <attr name="gestureSamplingMinimumDistance" format="fraction">
+    </attr>
+    <attr name="gestureStaticTimeThresholdAfterFastTyping" format="integer">
+    </attr>
+    <attr name="gestureTrailBodyRatio" format="integer">
+    </attr>
+    <attr name="gestureTrailEndWidth" format="dimension">
+    </attr>
+    <attr name="gestureTrailFadeoutDuration" format="integer">
+    </attr>
+    <attr name="gestureTrailFadeoutStartDelay" format="integer">
+    </attr>
+    <attr name="gestureTrailMaxInterpolationAngularThreshold" format="integer">
+    </attr>
+    <attr name="gestureTrailMaxInterpolationDistanceThreshold" format="dimension">
+    </attr>
+    <attr name="gestureTrailMaxInterpolationSegments" format="integer">
+    </attr>
+    <attr name="gestureTrailMinSamplingDistance" format="dimension">
+    </attr>
+    <attr name="gestureTrailShadowRatio" format="integer">
+    </attr>
+    <attr name="gestureTrailStartWidth" format="dimension">
+    </attr>
+    <attr name="gestureTrailUpdateInterval" format="integer">
+    </attr>
+    <attr name="horizontalGap" format="fraction">
+    </attr>
+    <attr name="icon" format="reference">
+    </attr>
+    <attr name="iconArrowDownKey" format="reference">
+    </attr>
+    <attr name="iconArrowLeftKey" format="reference">
+    </attr>
+    <attr name="iconArrowRightKey" format="reference">
+    </attr>
+    <attr name="iconArrowUpKey" format="reference">
+    </attr>
+    <attr name="iconDedicatedShowIbKey" format="reference">
+    </attr>
+    <attr name="iconDeleteKey" format="reference">
+    </attr>
+    <attr name="iconDeleteRTLKey" format="reference">
+    </attr>
+    <attr name="iconDiacriticKeyDown" format="reference">
+    </attr>
+    <attr name="iconDiacriticKeyUp" format="reference">
+    </attr>
+    <attr name="iconDoneKey" format="reference">
+    </attr>
+    <attr name="iconEmojiActionKey" format="reference">
+    </attr>
+    <attr name="iconEmojiActiveKey" format="reference">
+    </attr>
+    <attr name="iconEmojiActivityTab" format="reference">
+    </attr>
+    <attr name="iconEmojiSmileyTab" format="reference">
+    </attr>
+    <attr name="iconEmojiFlagTab" format="reference">
+    </attr>
+    <attr name="iconEmojiFoodTab" format="reference">
+    </attr>
+    <attr name="iconEmojiKey" format="reference">
+    </attr>
+    <attr name="iconEmojiKeyDisabled" format="reference">
+    </attr>
+    <attr name="iconEmojiNatureTab" format="reference">
+    </attr>
+    <attr name="iconEmojiNormalKey" format="reference">
+    </attr>
+    <attr name="iconEmojiObjectsTab" format="reference">
+    </attr>
+    <attr name="iconEmojiPeopleTab" format="reference">
+    </attr>
+    <attr name="iconEmojiPlacesTab" format="reference">
+    </attr>
+    <attr name="iconEmojiRecentsTab" format="reference">
+    </attr>
+    <attr name="iconEmojiSymbolsTab" format="reference">
+    </attr>
+    <attr name="iconEnterKey" format="reference">
+    </attr>
+    <attr name="iconFccActiveKey" format="reference">
+    </attr>
+    <attr name="iconFccKey" format="reference">
+    </attr>
+    <attr name="iconFccKeyDisabled" format="reference">
+    </attr>
+    <attr name="iconGoKey" format="reference">
+    </attr>
+    <attr name="iconNumberPadActiveKey" format="reference">
+    </attr>
+    <attr name="iconNumberPadKey" format="reference">
+    </attr>
+    <attr name="iconNumberPadKeyDisabled" format="reference">
+    </attr>
+    <attr name="iconHideKeyboardBigKey" format="reference">
+    </attr>
+    <attr name="iconSlideboardSettingsKey" format="reference">
+    </attr>
+    <attr name="iconLanguageQuickSwitchKey" format="reference">
+    </attr>
+    <attr name="iconLanguageSwitchKey" format="reference">
+    </attr>
+    <attr name="iconNextKey" format="reference">
+    </attr>
+    <attr name="iconPasswordKeeperActiveKey" format="reference">
+    </attr>
+    <attr name="iconPasswordKeeperInactiveKey" format="reference">
+    </attr>
+    <attr name="iconPasswordKeeperToggleKey" format="reference">
+    </attr>
+    <attr name="iconPasteActiveKey" format="reference">
+    </attr>
+    <attr name="iconPasteKey" format="reference">
+    </attr>
+    <attr name="iconPasteKeyDisabled" format="reference">
+    </attr>
+    <attr name="iconPkbEnterKey" format="reference">
+    </attr>
+    <attr name="iconPreviousKey" format="reference">
+    </attr>
+    <attr name="iconSearchKey" format="reference">
+    </attr>
+    <attr name="iconSendKey" format="reference">
+    </attr>
+    <attr name="iconSettingsKey" format="reference">
+    </attr>
+    <attr name="iconShiftKey" format="reference">
+    </attr>
+    <attr name="iconShiftKeyShifted" format="reference">
+    </attr>
+    <attr name="iconShiftKeyLocked" format="reference">
+    </attr>
+    <attr name="iconShortcutKey" format="reference">
+    </attr>
+    <attr name="iconShortcutKeyDisabled" format="reference">
+    </attr>
+    <attr name="iconShowInputMenuKey" format="reference">
+    </attr>
+    <attr name="iconShowKeyboardActiveKey" format="reference">
+    </attr>
+    <attr name="iconShowKeyboardKey" format="reference">
+    </attr>
+    <attr name="iconShowKeyboardSettingsKey" format="reference">
+    </attr>
+    <attr name="iconSpaceKey" format="reference">
+    </attr>
+    <attr name="iconSpaceKeyForNumberLayout" format="reference">
+    </attr>
+    <attr name="iconTabKey" format="reference">
+    </attr>
+    <attr name="iconVoiceActiveKey" format="reference">
+    </attr>
+    <attr name="iconVoiceInputKey" format="reference">
+    </attr>
+    <attr name="iconVoiceInputKeyDisabled" format="reference">
+    </attr>
+    <attr name="iconVoiceInputSmallKey" format="reference">
+    </attr>
+    <attr name="iconZwjKey" format="reference">
+    </attr>
+    <attr name="iconZwnjKey" format="reference">
+    </attr>
+    <attr name="ignoreAltCodeKeyTimeout" format="integer">
+    </attr>
+    <attr name="imeAction">
+        <enum name="actionCustomLabel" value="256" />
+        <enum name="actionDone" value="6" />
+        <enum name="actionGo" value="2" />
+        <enum name="actionNext" value="5" />
+        <enum name="actionNone" value="1" />
+        <enum name="actionPrevious" value="7" />
+        <enum name="actionSearch" value="3" />
+        <enum name="actionSend" value="4" />
+        <enum name="actionUnspecified" value="0" />
+    </attr>
+    <attr name="inputBoardBarKeyEnabled" format="boolean">
+    </attr>
+    <attr name="isFormFillAllowed" format="boolean">
+    </attr>
+    <attr name="isIconDefined" format="string">
+    </attr>
+    <attr name="isMultiLine" format="boolean">
+    </attr>
+    <attr name="keyActionFlags" format="integer">
+        <flag name="altCodeWhileTyping" value="4" />
+        <flag name="enableLongPress" value="8" />
+        <flag name="isRepeatable" value="1" />
+        <flag name="noKeyPreview" value="2" />
+    </attr>
+    <attr name="keyFontFamily" format="string">
+    </attr>
+    <attr name="keyHeight" format="fraction">
+    </attr>
+    <attr name="keyHintLabel" format="string">
+    </attr>
+    <attr name="keyHintLabelColor" format="color">
+    </attr>
+    <attr name="keyHintLabelOffCenterRatio" format="fraction">
+    </attr>
+    <attr name="keyHintLabelRatio" format="fraction">
+    </attr>
+    <attr name="keyHintLabelVerticalAdjustment" format="fraction">
+    </attr>
+    <attr name="keyHintLetterColor" format="color">
+    </attr>
+    <attr name="keyHintLetterPadding" format="dimension">
+    </attr>
+    <attr name="keyHintLetterRatio" format="fraction">
+    </attr>
+    <attr name="keyHysteresisDistance" format="dimension">
+    </attr>
+    <attr name="keyHysteresisDistanceForSlidingModifier" format="dimension">
+    </attr>
+    <attr name="keyIconActive" format="string">
+    </attr>
+    <attr name="keyIconColor" format="color">
+    </attr>
+    <attr name="keyIconDisabled" format="string">
+    </attr>
+    <attr name="keyIconsBackgroundType" format="string">
+    </attr>
+    <attr name="keyLabelFlags" format="integer">
+        <flag name="alignHintLabelToBottom" value="2" />
+        <flag name="alignIconToBottom" value="4" />
+        <flag name="alignLabelOffCenter" value="8" />
+        <flag name="autoScale" value="49152" />
+        <flag name="autoXScale" value="16384" />
+        <flag name="disableAdditionalMoreKeys" value="-2147483648" />
+        <flag name="disableKeyHintLabel" value="1073741824" />
+        <flag name="followFunctionalTextColor" value="524288" />
+        <flag name="followKeyHintLabelRatio" value="320" />
+        <flag name="followKeyLabelRatio" value="192" />
+        <flag name="followKeyLargeLetterRatio" value="64" />
+        <flag name="followKeyLetterRatio" value="128" />
+        <flag name="fontDefault" value="48" />
+        <flag name="fontMonoSpace" value="32" />
+        <flag name="fontNormal" value="16" />
+        <flag name="fromCustomActionLabel" value="262144" />
+        <flag name="hasHintLabel" value="2048" />
+        <flag name="hasMultilineHintLabel" value="8192" />
+        <flag name="hasPopupHint" value="512" />
+        <flag name="hasShiftedLetterHint" value="1024" />
+        <flag name="keepBackgroundAspectRatio" value="1048576" />
+        <flag name="preserveCase" value="65536" />
+        <flag name="shiftedLetterActivated" value="131072" />
+    </attr>
+    <attr name="keyLabelOffCenterRatio" format="fraction">
+    </attr>
+    <attr name="keyLabelSize" format="dimension|fraction">
+    </attr>
+    <attr name="keyLabelVerticalBaselineRatio" format="fraction">
+    </attr>
+    <attr name="keyLargeLetterRatio" format="fraction">
+    </attr>
+    <attr name="keyLetterSize" format="dimension|fraction">
+    </attr>
+    <attr name="keyMapScanCode" format="integer">
+    </attr>
+    <attr name="keyMultilineHintLabelPadding" format="dimension">
+    </attr>
+    <attr name="keyMultilineHintLabelRatio" format="fraction">
+    </attr>
+    <attr name="keyMultilineHintLabelVerticalAdjustmentRatio" format="fraction">
+    </attr>
+    <attr name="keyPopupHintLetter" format="string">
+    </attr>
+    <attr name="keyPopupHintLetterPadding" format="dimension">
+    </attr>
+    <attr name="keyPreviewDismissAnimator" format="reference">
+    </attr>
+    <attr name="keyPreviewHeight" format="dimension">
+    </attr>
+    <attr name="keyPreviewLingerTimeout" format="integer">
+    </attr>
+    <attr name="keyPreviewOffset" format="dimension">
+    </attr>
+    <attr name="keyPreviewShowUpAnimator" format="reference">
+    </attr>
+    <attr name="keyPreviewTextColor" format="color">
+    </attr>
+    <attr name="keyPreviewTextRatio" format="fraction">
+    </attr>
+    <attr name="keyRepeatInterval" format="integer">
+    </attr>
+    <attr name="keyRepeatStartTimeout" format="integer">
+    </attr>
+    <attr name="keySelectionByDraggingFinger" format="boolean">
+    </attr>
+    <attr name="keyShiftedLetterHintActivatedColor" format="color">
+    </attr>
+    <attr name="keyShiftedLetterHintInactivatedColor" format="color">
+    </attr>
+    <attr name="keyShiftedLetterHintPadding" format="dimension">
+    </attr>
+    <attr name="keyShiftedLetterHintRatio" format="fraction">
+    </attr>
+    <attr name="keySpec" format="string">
+    </attr>
+    <attr name="keyStyle" format="string">
+    </attr>
+    <attr name="keyTextColor" format="color">
+    </attr>
+    <attr name="keyTextInactivatedColor" format="color">
+    </attr>
+    <attr name="keyTextShadowColor" format="color">
+    </attr>
+    <attr name="keyTextShadowRadius" format="float">
+    </attr>
+    <attr name="keyTypeface">
+        <enum name="bold" value="1" />
+        <enum name="boldItalic" value="3" />
+        <enum name="italic" value="2" />
+        <enum name="normal" value="0" />
+    </attr>
+    <attr name="keyWidth" format="fraction">
+        <enum name="fillRight" value="-1" />
+    </attr>
+    <attr name="keyXPos" format="fraction">
+    </attr>
+    <attr name="keyboardBottomPadding" format="fraction">
+    </attr>
+    <attr name="keyboardLayout" format="reference">
+    </attr>
+    <attr name="keyboardLayoutSet" format="string">
+    </attr>
+    <attr name="keyboardLayoutSetElement" format="string">
+        <enum name="alphabet" value="0" />
+        <enum name="alphabetAutomaticShifted" value="2" />
+        <enum name="alphabetAutomaticShiftedPkb" value="102" />
+        <enum name="alphabetManualShifted" value="1" />
+        <enum name="alphabetManualShiftedPkb" value="101" />
+        <enum name="alphabetPkb" value="100" />
+        <enum name="alphabetShiftLockShifted" value="4" />
+        <enum name="alphabetShiftLockShiftedPkb" value="104" />
+        <enum name="alphabetShiftLocked" value="3" />
+        <enum name="alphabetShiftLockedPkb" value="103" />
+        <enum name="arrows" value="39" />
+        <enum name="arrowsPkb" value="139" />
+        <enum name="emojiRecents" value="12" />
+        <enum name="number" value="11" />
+        <enum name="numberPad" value="42" />
+        <enum name="numberPkb" value="111" />
+        <enum name="numberSubPanel" value="41" />
+        <enum name="numberSubPanelPkb" value="141" />
+        <enum name="password" value="36" />
+        <enum name="passwordKeeper" value="40" />
+        <enum name="passwordKeeperPkb" value="140" />
+        <enum name="passwordPkb" value="136" />
+        <enum name="phone" value="9" />
+        <enum name="phonePkb" value="109" />
+        <enum name="phoneSymbols" value="10" />
+        <enum name="phoneSymbolsPkb" value="110" />
+        <enum name="postal" value="37" />
+        <enum name="postalPkb" value="137" />
+        <enum name="symbols" value="5" />
+        <enum name="symbolsCustom" value="8" />
+        <enum name="symbolsPkb" value="105" />
+        <enum name="symbolsPkbCustom" value="108" />
+        <enum name="symbolsShifted" value="6" />
+        <enum name="symbolsShiftedPkb" value="106" />
+        <enum name="symbolsShiftedTwo" value="7" />
+        <enum name="symbolsShiftedTwoPkb" value="107" />
+        <enum name="unifiedInputMenuPkb" value="138" />
+        <enum name="unifiedInputMenuPool" value="43" />
+        <enum name="uri" value="35" />
+        <enum name="uriPkb" value="135" />
+    </attr>
+    <attr name="keyboardLeftPadding" format="fraction">
+    </attr>
+    <attr name="keyboardRightPadding" format="fraction">
+    </attr>
+    <attr name="keyboardStyle" format="reference">
+    </attr>
+    <attr name="keyboardTopPadding" format="fraction">
+    </attr>
+    <attr name="keyboardViewStyle" format="reference">
+    </attr>
+    <attr name="languageCode" format="string">
+    </attr>
+    <attr name="languageQuickSwitchKeyEnabled" format="boolean">
+    </attr>
+    <attr name="languageSwitchKeyEnabled" format="boolean">
+    </attr>
+    <attr name="layout" format="reference">
+    </attr>
+    <attr name="listPreferredItemHeight" format="dimension">
+    </attr>
+    <attr name="listPreferredItemHeightLarge" format="dimension">
+    </attr>
+    <attr name="listPreferredItemHeightSmall" format="dimension">
+    </attr>
+    <attr name="localeCode" format="string">
+    </attr>
+    <attr name="lockFocusToFirstOnDownKeyDuration" format="integer">
+    </attr>
+    <attr name="longPressShiftLockTimeout" format="integer">
+    </attr>
+    <attr name="mainKeyboardViewStyle" format="reference">
+    </attr>
+    <attr name="maxMoreKeysColumn" format="integer">
+    </attr>
+    <attr name="minimumScaleOfSpacebarText" format="fraction">
+    </attr>
+    <attr name="mode" format="string">
+        <enum name="date" value="6" />
+        <enum name="datetime" value="8" />
+        <enum name="email" value="2" />
+        <enum name="im" value="3" />
+        <enum name="number" value="5" />
+        <enum name="password" value="10" />
+        <enum name="phone" value="4" />
+        <enum name="postal" value="9" />
+        <enum name="text" value="0" />
+        <enum name="time" value="7" />
+        <enum name="url" value="1" />
+    </attr>
+    <attr name="moreKeys" format="string">
+    </attr>
+    <attr name="moreKeysGrid" format="reference">
+    </attr>
+    <attr name="moreKeysKeyboardForActionLayout" format="reference">
+    </attr>
+    <attr name="moreKeysKeyboardLayout" format="reference">
+    </attr>
+    <attr name="moreKeysKeyboardStyle" format="reference">
+    </attr>
+    <attr name="moreKeysKeyboardViewForActionStyle" format="reference">
+    </attr>
+    <attr name="moreKeysKeyboardViewStyle" format="reference">
+    </attr>
+    <attr name="moreKeysTemplate" format="reference">
+    </attr>
+    <attr name="multitapKeys" format="string">
+    </attr>
+    <attr name="navigateNext" format="boolean">
+    </attr>
+    <attr name="navigatePrevious" format="boolean">
+    </attr>
+    <attr name="notificationStyle" format="reference">
+    </attr>
+    <attr name="paddingEnd" format="dimension">
+    </attr>
+    <attr name="paddingStart" format="dimension">
+    </attr>
+    <attr name="parentStyle" format="string">
+    </attr>
+    <attr name="passwordInput" format="boolean">
+    </attr>
+    <attr name="physicalKeypadType" format="string">
+    </attr>
+    <attr name="physicalKeypadVariant" format="string">
+    </attr>
+    <attr name="radioButtonStyle" format="reference">
+    </attr>
+    <attr name="rowHeight" format="dimension|fraction">
+    </attr>
+    <attr name="secondaryFunctionDisplayStyle">
+        <enum name="bottomLeftCorner" value="4" />
+        <enum name="bottomRightCorner" value="3" />
+        <enum name="hidden" value="0" />
+        <enum name="topLeftCorner" value="2" />
+        <enum name="topRightCorner" value="1" />
+    </attr>
+    <attr name="secondaryKeySpec" format="string">
+    </attr>
+    <attr name="showMoreKeysKeyboardAtTouchedPoint" format="boolean">
+    </attr>
+    <attr name="singleLine" format="boolean">
+    </attr>
+    <attr name="slidingKeyInputPreviewBodyRatio" format="integer">
+    </attr>
+    <attr name="slidingKeyInputPreviewShadowRatio" format="integer">
+    </attr>
+    <attr name="slidingKeyInputPreviewWidth" format="dimension">
+    </attr>
+    <attr name="spacebarIconWidthRatio" format="float">
+    </attr>
+    <attr name="spacerWidth" format="fraction">
+    </attr>
+    <attr name="spinnerDropDownItemStyle" format="reference">
+    </attr>
+    <attr name="state_has_morekeys" format="boolean">
+    </attr>
+    <attr name="state_left_edge" format="boolean">
+    </attr>
+    <attr name="state_right_edge" format="boolean">
+    </attr>
+    <attr name="styleName" format="string">
+    </attr>
+    <attr name="suggestionWordStyle" format="reference">
+    </attr>
+    <attr name="supportedScript">
+        <enum name="arabic" value="0" />
+        <enum name="armenian" value="1" />
+        <enum name="bengali" value="2" />
+        <enum name="cyrillic" value="3" />
+        <enum name="devanagari" value="4" />
+        <enum name="georgian" value="5" />
+        <enum name="greek" value="6" />
+        <enum name="han" value="7" />
+        <enum name="hangul" value="8" />
+        <enum name="hebrew" value="9" />
+        <enum name="japanese" value="10" />
+        <enum name="kannada" value="11" />
+        <enum name="khmer" value="12" />
+        <enum name="lao" value="13" />
+        <enum name="latin" value="14" />
+        <enum name="malayalam" value="15" />
+        <enum name="myanmar" value="16" />
+        <enum name="sinhala" value="17" />
+        <enum name="tamil" value="18" />
+        <enum name="telugu" value="19" />
+        <enum name="thai" value="20" />
+    </attr>
+    <attr name="suppressKeyPreviewAfterBatchInputDuration" format="integer">
+    </attr>
+    <attr name="switchStyle" format="reference">
+    </attr>
+    <attr name="textAppearanceListItem" format="reference">
+    </attr>
+    <attr name="textColorAlertDialogListItem" format="reference|color">
+    </attr>
+    <attr name="textsArray" format="reference">
+    </attr>
+    <attr name="theme" format="reference">
+    </attr>
+    <attr name="tint" format="color">
+    </attr>
+    <attr name="titleTextStyle" format="reference">
+    </attr>
+    <attr name="touchNoiseThresholdDistance" format="dimension">
+    </attr>
+    <attr name="touchNoiseThresholdTime" format="integer">
+    </attr>
+    <attr name="touchPositionCorrectionData" format="reference">
+    </attr>
+    <attr name="verticalCorrection" format="dimension">
+    </attr>
+    <attr name="verticalGap" format="fraction">
+    </attr>
+    <attr name="visualInsetsLeft" format="fraction">
+    </attr>
+    <attr name="visualInsetsRight" format="fraction">
+    </attr>
+    <attr name="voiceInputKeyEnabled" format="boolean">
+    </attr>
+    <attr name="windowActionBar" format="boolean">
+    </attr>
+    <attr name="windowNoTitle" format="boolean">
+    </attr>
+    <declare-styleable name="Keyboard">
+        <attr name="iconShiftKey" />
+        <attr name="iconDeleteKey" />
+        <attr name="iconEnterKey" />
+        <attr name="iconSpaceKey" />
+        <attr name="iconTabKey" />
+        <attr name="iconShortcutKey" />
+        <attr name="iconSpaceKeyForNumberLayout" />
+        <attr name="iconShiftKeyShifted" />
+        <attr name="iconShiftKeyLocked" />
+        <attr name="iconShortcutKeyDisabled" />
+        <attr name="iconLanguageSwitchKey" />
+        <attr name="iconZwnjKey" />
+        <attr name="iconZwjKey" />
+        <attr name="iconEmojiActionKey" />
+        <attr name="iconEmojiNormalKey" />
+        <attr name="additionalMoreKeys" />
+        <attr name="altCodeKeyWhileTypingFadeinAnimator" />
+        <attr name="altCodeKeyWhileTypingFadeoutAnimator" />
+        <attr name="elementKeyboard" />
+        <attr name="iconArrowDownKey" />
+        <attr name="iconArrowLeftKey" />
+        <attr name="iconArrowRightKey" />
+        <attr name="iconArrowUpKey" />
+        <attr name="iconDedicatedShowIbKey" />
+        <attr name="iconDeleteRTLKey" />
+        <attr name="iconDiacriticKeyDown" />
+        <attr name="iconDiacriticKeyUp" />
+        <attr name="iconDoneKey" />
+        <attr name="iconEmojiActiveKey" />
+        <attr name="iconEmojiKey" />
+        <attr name="iconEmojiKeyDisabled" />
+        <attr name="iconGoKey" />
+        <attr name="iconHideKeyboardBigKey" />
+        <attr name="iconSlideboardSettingsKey" />
+        <attr name="iconLanguageQuickSwitchKey" />
+        <attr name="iconNextKey" />
+        <attr name="iconPreviousKey" />
+        <attr name="iconPasswordKeeperActiveKey" />
+        <attr name="iconPasswordKeeperInactiveKey" />
+        <attr name="iconPasswordKeeperToggleKey" />
+        <attr name="iconPasteActiveKey" />
+        <attr name="iconSearchKey" />
+        <attr name="iconSendKey" />
+        <attr name="iconSettingsKey" />
+        <attr name="iconVoiceInputKey" />
+        <attr name="iconVoiceActiveKey" />
+        <attr name="iconVoiceInputKeyDisabled" />
+        <attr name="keyHysteresisDistance" />
+        <attr name="keyLabelFlags" />
+        <attr name="keyLabelSize" />
+        <attr name="keyLetterSize" />
+        <attr name="keyPreviewHeight" />
+        <attr name="keyPreviewOffset" />
+        <attr name="keyPreviewTextColor" />
+        <attr name="keyShiftedLetterHintRatio" />
+        <attr name="keyTextColor" />
+        <attr name="keyTextShadowColor" />
+        <attr name="keyTextShadowRadius" />
+        <attr name="keyboardBottomPadding" />
+        <attr name="keyboardLayout" />
+        <attr name="keyboardLeftPadding" />
+        <attr name="keyboardRightPadding" />
+        <attr name="keyboardTopPadding" />
+        <attr name="moreKeys" />
+        <attr name="moreKeysTemplate" />
+        <attr name="voiceInputKeyEnabled" />
+        <attr name="horizontalGap" />
+        <attr name="iconFccActiveKey" />
+        <attr name="iconFccKey" />
+        <attr name="iconFccKeyDisabled" />
+        <attr name="iconNumberPadActiveKey" />
+        <attr name="iconNumberPadKey" />
+        <attr name="iconNumberPadKeyDisabled" />
+        <attr name="iconPasteKey" />
+        <attr name="iconPasteKeyDisabled" />
+        <attr name="iconPkbEnterKey" />
+        <attr name="iconShowInputMenuKey" />
+        <attr name="iconShowKeyboardActiveKey" />
+        <attr name="iconShowKeyboardKey" />
+        <attr name="iconShowKeyboardSettingsKey" />
+        <attr name="iconVoiceInputSmallKey" />
+        <attr name="rowHeight" />
+        <attr name="touchPositionCorrectionData" />
+        <attr name="verticalGap" />
+    </declare-styleable>
+
+    <!-- Keyboard-specific styleables for eliminating C1123a.java -->
+    <declare-styleable name="MainKeyboardView">
+        <attr name="altCodeKeyWhileTypingFadeinAnimator" />
+        <attr name="altCodeKeyWhileTypingFadeoutAnimator" />
+        <attr name="autoCorrectionOnSpacebarTextColor" />
+        <attr name="autoCorrectionOnSpacebarTextRatio" />
+        <attr name="backgroundDimAlpha" />
+        <attr name="ckbTouchNoiseThresholdTime" />
+        <attr name="gestureDetectFastMoveSpeedThreshold" />
+        <attr name="gestureDynamicDistanceThresholdFrom" />
+        <attr name="gestureDynamicDistanceThresholdTo" />
+        <attr name="gestureDynamicThresholdDecayDuration" />
+        <attr name="gestureDynamicTimeThresholdFrom" />
+        <attr name="gestureDynamicTimeThresholdTo" />
+        <attr name="gestureRecognitionMinimumTime" />
+        <attr name="gestureRecognitionSpeedThreshold" />
+        <attr name="gestureRecognitionUpdateTime" />
+        <attr name="gestureSamplingMinimumDistance" />
+        <attr name="gestureStaticTimeThresholdAfterFastTyping" />
+        <attr name="gestureTrailBodyRatio" />
+        <attr name="gestureTrailEndWidth" />
+        <attr name="gestureTrailFadeoutDuration" />
+        <attr name="gestureTrailFadeoutStartDelay" />
+        <attr name="gestureTrailMaxInterpolationAngularThreshold" />
+        <attr name="gestureTrailMaxInterpolationDistanceThreshold" />
+        <attr name="gestureTrailMaxInterpolationSegments" />
+        <attr name="gestureTrailMinSamplingDistance" />
+        <attr name="gestureTrailShadowRatio" />
+        <attr name="gestureTrailStartWidth" />
+        <attr name="gestureTrailUpdateInterval" />
+        <attr name="ignoreAltCodeKeyTimeout" />
+        <attr name="keyHysteresisDistance" />
+        <attr name="keyHysteresisDistanceForSlidingModifier" />
+        <attr name="keyPreviewDismissAnimator" />
+        <attr name="keyPreviewHeight" />
+        <attr name="keyPreviewLingerTimeout" />
+        <attr name="keyPreviewOffset" />
+        <attr name="keyPreviewShowUpAnimator" />
+        <attr name="keyRepeatInterval" />
+        <attr name="keyRepeatStartTimeout" />
+        <attr name="keySelectionByDraggingFinger" />
+        <attr name="lockFocusToFirstOnDownKeyDuration" />
+        <attr name="longPressShiftLockTimeout" />
+        <attr name="minimumScaleOfSpacebarText" />
+        <attr name="moreKeysKeyboardForActionLayout" />
+        <attr name="moreKeysKeyboardLayout" />
+        <attr name="showMoreKeysKeyboardAtTouchedPoint" />
+        <attr name="slidingKeyInputPreviewBodyRatio" />
+        <attr name="slidingKeyInputPreviewShadowRatio" />
+        <attr name="slidingKeyInputPreviewWidth" />
+        <attr name="suppressKeyPreviewAfterBatchInputDuration" />
+        <attr name="touchNoiseThresholdDistance" />
+        <attr name="touchNoiseThresholdTime" />
+    </declare-styleable>
+
+    <declare-styleable name="KeyboardView">
+        <attr name="keyHintLetterPadding" />
+        <attr name="keyMultilineHintLabelPadding" />
+        <attr name="keyPopupHintLetter" />
+        <attr name="keyPopupHintLetterPadding" />
+        <attr name="keyShiftedLetterHintPadding" />
+        <attr name="keyTextShadowRadius" />
+        <attr name="spacebarIconWidthRatio" />
+        <attr name="verticalCorrection" />
+    </declare-styleable>
+
+    <declare-styleable name="EmojiPalettesView">
+        <attr name="categoryIndicatorBackground" />
+        <attr name="categoryIndicatorDrawable" />
+        <attr name="categoryIndicatorEnabled" />
+        <attr name="emojiPageIndicatorHorizontalGapRatio" />
+        <attr name="emojiPageIndicatorRadiusRatio" />
+        <attr name="iconEmojiActivityTab" />
+        <attr name="iconEmojiSmileyTab" />
+        <attr name="iconEmojiFlagTab" />
+        <attr name="iconEmojiFoodTab" />
+        <attr name="iconEmojiNatureTab" />
+        <attr name="iconEmojiObjectsTab" />
+        <attr name="iconEmojiPeopleTab" />
+        <attr name="iconEmojiPlacesTab" />
+        <attr name="iconEmojiRecentsTab" />
+        <attr name="iconEmojiSymbolsTab" />
+    </declare-styleable>
+
+    <declare-styleable name="Keyboard_Key">
+        <attr name="additionalMoreKeys" />
+        <attr name="altCode" />
+        <attr name="backgroundType" />
+        <attr name="functionalTextColor" />
+        <attr name="keyActionFlags" />
+        <attr name="keyFontFamily" />
+        <attr name="keyHeight" />
+        <attr name="keyHintLabel" />
+        <attr name="keyHintLabelColor" />
+        <attr name="keyHintLabelOffCenterRatio" />
+        <attr name="keyHintLabelRatio" />
+        <attr name="keyHintLabelVerticalAdjustment" />
+        <attr name="keyHintLetterColor" />
+        <attr name="keyHintLetterRatio" />
+        <attr name="keyIconActive" />
+        <attr name="keyIconDisabled" />
+        <attr name="keyIconsBackgroundType" />
+        <attr name="keyLabelFlags" />
+        <attr name="keyLabelOffCenterRatio" />
+        <attr name="keyLabelSize" />
+        <attr name="keyLabelVerticalBaselineRatio" />
+        <attr name="keyLargeLetterRatio" />
+        <attr name="keyLetterSize" />
+        <attr name="keyMapScanCode" />
+        <attr name="keyMultilineHintLabelRatio" />
+        <attr name="keyMultilineHintLabelVerticalAdjustmentRatio" />
+        <attr name="keyPreviewTextColor" />
+        <attr name="keyPreviewTextRatio" />
+        <attr name="keyShiftedLetterHintActivatedColor" />
+        <attr name="keyShiftedLetterHintInactivatedColor" />
+        <attr name="keyShiftedLetterHintRatio" />
+        <attr name="keySpec" />
+        <attr name="keyStyle" />
+        <attr name="keyTextColor" />
+        <attr name="keyTextInactivatedColor" />
+        <attr name="keyTextShadowColor" />
+        <attr name="keyTypeface" />
+        <attr name="keyWidth" />
+        <attr name="keyXPos" />
+        <attr name="maxMoreKeysColumn" />
+        <attr name="moreKeys" />
+        <attr name="multitapKeys" />
+        <attr name="secondaryFunctionDisplayStyle" />
+        <attr name="secondaryKeySpec" />
+        <attr name="spacerWidth" />
+        <attr name="visualInsetsLeft" />
+        <attr name="visualInsetsRight" />
+    </declare-styleable>
+
+    <declare-styleable name="Keyboard_GridRows">
+        <attr name="codesArray" />
+        <attr name="moreKeysGrid" />
+        <attr name="textsArray" />
+    </declare-styleable>
+
+    <declare-styleable name="Keyboard_Case">
+        <attr name="clobberSettingsKey" />
+        <attr name="countryCode" />
+        <attr name="imeAction" />
+        <attr name="inputBoardBarKeyEnabled" />
+        <attr name="isFormFillAllowed" />
+        <attr name="isIconDefined" />
+        <attr name="isMultiLine" />
+        <attr name="keyboardLayoutSet" />
+        <attr name="keyboardLayoutSetElement" />
+        <attr name="languageCode" />
+        <attr name="languageQuickSwitchKeyEnabled" />
+        <attr name="languageSwitchKeyEnabled" />
+        <attr name="localeCode" />
+        <attr name="mode" />
+        <attr name="navigateNext" />
+        <attr name="navigatePrevious" />
+        <attr name="passwordInput" />
+        <attr name="physicalKeypadType" />
+        <attr name="physicalKeypadVariant" />
+        <attr name="voiceInputKeyEnabled" />
+    </declare-styleable>
+
+    <declare-styleable name="Keyboard_Include">
+        <attr name="keyboardLayout" />
+    </declare-styleable>
+
+    <declare-styleable name="Keyboard_KeyStyle">
+        <attr name="parentStyle" />
+        <attr name="styleName" />
+    </declare-styleable>
+
+    <declare-styleable name="Keyboard_PhysicalKey">
+        <attr name="characterMapKeys" />
+        <attr name="keySpec" />
+        <attr name="moreKeys" />
+        <attr name="multitapKeys" />
+    </declare-styleable>
+
+    <declare-styleable name="KeyboardTheme">
+        <attr name="emojiPalettesViewStyle" />
+        <attr name="keyboardStyle" />
+        <attr name="keyboardViewStyle" />
+        <attr name="mainKeyboardViewStyle" />
+        <attr name="moreKeysKeyboardStyle" />
+        <attr name="moreKeysKeyboardViewForActionStyle" />
+        <attr name="moreKeysKeyboardViewStyle" />
+        <attr name="notificationStyle" />
+        <attr name="suggestionWordStyle" />
+    </declare-styleable>
+
+    <declare-styleable name="KeyboardLayoutSet_Element">
+        <attr name="elementKeyboard" />
+        <attr name="elementName" />
+        <attr name="enableProximityCharsCorrection" />
+    </declare-styleable>
+
+    <declare-styleable name="KeyboardLayoutSet_Feature">
+        <attr name="supportedScript" />
+    </declare-styleable>
+
+    <declare-styleable name="MoreKeysKeyboardView">
+        <attr name="divider" />
+    </declare-styleable>
+    
+    <!-- ============================================ -->
+    <!-- Control Key Attributes (merged from control_key_attrs.xml) -->
+    <!-- ============================================ -->
+    <!-- Control key attributes -->
+    
+    <!-- Define proper mapping between these attributes and corresponding strings -->
+</resources>

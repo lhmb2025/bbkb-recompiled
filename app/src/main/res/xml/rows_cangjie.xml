@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <include latin:keyboardLayout="@xml/key_styles_common"/>
+    <include latin:keyboardLayout="@xml/row_password_numbers"/>
+    <Row latin:keyWidth="10%p">
+        <include latin:keyboardLayout="@xml/rowkeys_cangjie1"/>
+    </Row>
+    <Row
+        latin:keyWidth="@fraction/config_key_width_9_column"
+        latin:spacerWidth="@fraction/config_spacer_width_9_column">
+        <Spacer latin:backgroundType="normal"/>
+        <include latin:keyboardLayout="@xml/rowkeys_cangjie2"/>
+        <Spacer latin:backgroundType="normal"/>
+    </Row>
+    <Row latin:keyWidth="10%p">
+        <Key
+            latin:keyHintLabel="!text/keylabel_to_cangjie_switch"
+            latin:keyStyle="toQuickCangjieKeyStyle"
+            latin:keyWidth="15%p"/>
+        <include latin:keyboardLayout="@xml/rowkeys_cangjie3"/>
+        <Key
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyWidth="fillRight"/>
+    </Row>
+    <Row latin:keyWidth="10%p">
+        <Key
+            latin:keyStyle="toSymbolKeyStyle"
+            latin:keyWidth="15%p"
+            latin:secondaryKeySpec="ctrl|!code/key_control"/>
+        <include latin:keyboardLayout="@xml/rowkeys_qwerty4_common"/>
+    </Row>
+</merge>

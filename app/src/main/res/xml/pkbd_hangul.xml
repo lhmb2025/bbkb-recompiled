@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <PhysicalKeyboardExtension>
+        <PhysicalKey
+            latin:keySpec="ㅂ"
+            latin:moreKeys="ㅃ"/>
+        <PhysicalKey
+            latin:keySpec="ㅈ"
+            latin:moreKeys="ㅉ"/>
+        <PhysicalKey
+            latin:keySpec="ㄷ"
+            latin:moreKeys="ㄸ"/>
+        <PhysicalKey
+            latin:keySpec="ㄱ"
+            latin:moreKeys="ㄲ"/>
+        <PhysicalKey
+            latin:keySpec="ㅅ"
+            latin:moreKeys="ㅆ"/>
+        <PhysicalKey
+            latin:keySpec="ㅐ"
+            latin:moreKeys="ㅒ"/>
+        <PhysicalKey
+            latin:keySpec="ㅔ"
+            latin:moreKeys="ㅖ"/>
+        <PhysicalKey
+            latin:keySpec="₩"
+            latin:moreKeys="!text/morekeys_currency_dollar"/>
+    </PhysicalKeyboardExtension>
+</merge>

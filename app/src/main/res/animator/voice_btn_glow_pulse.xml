@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:ordering="together">
+    <!-- Pulse stroke width for expanding ring effect -->
+    <objectAnimator
+        android:propertyName="strokeWidth"
+        android:duration="720"
+        android:valueFrom="6"
+        android:valueTo="16"
+        android:repeatCount="infinite"
+        android:repeatMode="reverse"
+        android:valueType="floatType"
+        android:interpolator="@android:interpolator/accelerate_decelerate"/>
+    <!-- Fade stroke alpha animation -->
+    <objectAnimator
+        android:propertyName="strokeAlpha"
+        android:duration="720"
+        android:valueFrom="0.3"
+        android:valueTo="0.7"
+        android:repeatCount="infinite"
+        android:repeatMode="reverse"
+        android:valueType="floatType"
+        android:interpolator="@android:interpolator/accelerate_decelerate"/>
+</set>

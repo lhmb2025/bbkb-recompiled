@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="phoneSymbols">
+            <Key
+                latin:keyLabelFlags="fontDefault"
+                latin:keySpec="+"/>
+            <Key latin:keySpec="๑"/>
+            <Key latin:keySpec="๒"/>
+            <Key latin:keySpec="๓"/>
+            <Key latin:keySpec="๔"/>
+            <Key
+                latin:keyLabelFlags="followKeyLetterRatio"
+                latin:keySpec=" ู|ู"/>
+            <Key latin:keySpec="฿"/>
+            <Key latin:keySpec="๕"/>
+            <Key latin:keySpec="๖"/>
+            <Key latin:keySpec="๗"/>
+            <Key latin:keySpec="๘"/>
+            <Key latin:keySpec="๙"/>
+        </case>
+        <default>
+            <Key latin:keySpec="ๅ"/>
+            <Key
+                latin:keyLabelFlags="fontDefault"
+                latin:keySpec="/"/>
+            <Key
+                latin:keyLabelFlags="fontDefault"
+                latin:keySpec="_"/>
+            <Key latin:keySpec="ภ"/>
+            <Key latin:keySpec="ถ"/>
+            <Key
+                latin:keyLabelFlags="followKeyLetterRatio"
+                latin:keySpec=" ุ|ุ"/>
+            <Key
+                latin:keyLabelFlags="followKeyLetterRatio"
+                latin:keySpec=" ึ|ึ"/>
+            <Key latin:keySpec="ค"/>
+            <Key latin:keySpec="ต"/>
+            <Key latin:keySpec="จ"/>
+            <Key latin:keySpec="ข"/>
+            <Key latin:keySpec="ช"/>
+        </default>
+    </switch>
+</merge>

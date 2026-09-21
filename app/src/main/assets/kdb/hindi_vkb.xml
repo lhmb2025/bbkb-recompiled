@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- hindi_vkb keyboard layout
+PID: ET9PLIDHindi
+SID: ET9SLIDDEFAULT
+no pkb-->
+
+<keyboard
+  primaryId="57"
+  secondaryId="1"
+  defaultLayoutWidth="1080"
+  defaultLayoutHeight="600"
+  addAltChars="true">
+
+  <area>
+    <key keyType="regional" keyCodes="0x0914, 0x0912, 0x0902, 0x094C" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x0910, 0x0910, 0x0902, 0x0948" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="98dp" />
+    <key keyType="regional" keyCodes="0x0906, 0x0902, 0x0901, 0x093E" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="196dp" />
+    <key keyType="regional" keyCodes="0x0908, 0x0902, 0x0940" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="295dp" />
+    <key keyType="regional" keyCodes="0x090A, 0x0902, 0x0901, 0x0942" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="393dp" />
+    <key keyType="regional" keyCodes="0x092C, 0x092D" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="491dp" />
+    <key keyType="regional" keyCodes="0x0939" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="589dp" />
+    <key keyType="regional" keyCodes="0x0917, 0x0918" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="687dp" />
+    <key keyType="regional" keyCodes="0x0926, 0x0927" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="785dp" />
+    <key keyType="regional" keyCodes="0x091C, 0x091D" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="884dp" />
+    <key keyType="regional" keyCodes="0x0921, 0x0922" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="982dp" />
+  </area>
+
+  <area>
+    <key keyType="regional" keyCodes="0x0913, 0x0902, 0x0911, 0x0912" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x090F, 0x0902, 0x0901, 0x090D, 0x090E" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="98dp" />
+    <key keyType="regional" keyCodes="0x0905, 0x0902, 0x0901" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="196dp" />
+    <key keyType="regional" keyCodes="0x0907, 0x0902, 0x0901" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="295dp" />
+    <key keyType="regional" keyCodes="0x0909, 0x0902, 0x0901" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="393dp" />
+    <key keyType="regional" keyCodes="0x092A, 0x092B, 0x093C" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="491dp" />
+    <key keyType="regional" keyCodes="0x0930, 0x0931, 0x094D, 0x090B, 0x0944, 0x0943" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="589dp" />
+    <key keyType="regional" keyCodes="0x0915, 0x0916, 0x093C" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="687dp" />
+    <key keyType="regional" keyCodes="0x0924, 0x0925" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="785dp" />
+    <key keyType="regional" keyCodes="0x091A, 0x091B" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="884dp" />
+    <key keyType="regional" keyCodes="0x091F, 0x0920" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="982dp" />
+  </area>
+
+  <area>
+    <key keyType="regional" keyCodes="0x0911, 0x0945" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x094D, 0x0945" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="98dp" />
+    <key keyType="regional" keyCodes="0x0902, 0x093D, 0x0900" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="196dp" />
+    <key keyType="regional" keyCodes="0x092E, 0x0950" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="295dp" />
+    <key keyType="regional" keyCodes="0x0928, 0x0923, 0x0919, 0x091E" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="393dp" />
+    <key keyType="regional" keyCodes="0x0935" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="491dp" />
+    <key keyType="regional" keyCodes="0x0932, 0x0933, 0x0934, 0x090C, 0x0962, 0x0963" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="589dp" />
+    <key keyType="regional" keyCodes="0x0938, 0x0937, 0x0936, 0x097A" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="687dp" />
+    <key keyType="regional" keyCodes="0x092F, 0x097A" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="785dp" />
+    <key keyType="regional" keyCodes="0x0915" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="884dp" />
+    <key keyType="function" keyCodes="0x21E8" keyName="ET9KEY_BACK" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="982dp" />
+  </area>
+
+  <area>
+    <key keyType="function" keyLabel="?123" keyName="ET9KEY_DIGITLAYOUT" keyWidth="162dp" keyHeight="140dp" keyTop="456dp" keyLeft="0dp" />
+    <key keyType="string" keyLabel="," keyWidth="108dp" keyHeight="140dp" keyTop="456dp" keyLeft="162dp" />
+    <key keyType="function" keyLabel="SPACE" keyName="ET9KEY_SPACE" keyWidth="432dp" keyHeight="140dp" keyTop="456dp" keyLeft="270dp" />
+    <key keyType="string" keyCodes="0x200C" keyWidth="108dp" keyHeight="140dp" keyTop="456dp" keyLeft="702dp" />
+    <key keyType="string" keyLabel="|" keyWidth="108dp" keyHeight="140dp" keyTop="456dp" keyLeft="810dp" />
+    <key keyType="function" keyLabel="DONE" keyName="ET9KEY_RETURN" keyWidth="162dp" keyHeight="140dp" keyTop="456dp" keyLeft="918dp" />
+  </area>
+</keyboard >

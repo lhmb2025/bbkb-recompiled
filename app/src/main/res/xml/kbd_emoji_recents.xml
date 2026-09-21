@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:latin="http://schemas.android.com/apk/res-auto"
+    latin:keyLabelSize="60%p"
+    latin:keyLetterSize="@fraction/config_emoji_keyboard_key_letter_size"
+    latin:keyWidth="@fraction/config_emoji_keyboard_key_width"
+    latin:rowHeight="@fraction/config_emoji_keyboard_row_height">
+    <Row>
+        <Key
+            latin:keySpec="0"
+            latin:backgroundType="empty"
+            latin:secondaryFunctionDisplayStyle="hidden"/>
+        <Key
+            latin:keySpec="1"
+            latin:backgroundType="empty"
+            latin:secondaryFunctionDisplayStyle="hidden"/>
+        <Key
+            latin:keySpec="30"
+            latin:backgroundType="empty"
+            latin:keyLabelFlags="fontNormal"/>
+        <Key
+            latin:keySpec="31"
+            latin:backgroundType="empty"
+            latin:keyLabelFlags="fontNormal"/>
+    </Row>
+</Keyboard>

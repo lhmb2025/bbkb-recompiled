@@ -1,0 +1,42 @@
+// app-build.gradle.snippet — additions for app/build.gradle (Groovy).
+// This project currently ships a prebuilt .so and patches via smali, so there is
+// no externalNativeBuild yet. These blocks add the NDK build for libxt9kdb.so.
+//
+// PREREQS:
+//   1. Rename app/src/main/jniLibs/arm64-v8a/libnative-lib.so -> libxt9core.so
+//      (and update its DT_SONAME; see PLAN.md §7).
+//   2. Update System.loadLibrary("native-lib") -> ("xt9core") in the loader
+//      (NuanceSDK.java / NuanceSDK.smali).  libxt9core.so pulls in libxt9kdb.so.
+//   3. Move xt9kdb-scaffold/cpp -> app/src/main/cpp.
+
+android {
+    // ... existing config ...
+
+    defaultConfig {
+        // The prebuilt blob is arm64-v8a ONLY. Do not add ABIs you lack a blob for.
+        ndk {
+            abiFilters 'arm64-v8a'
+        }
+        externalNativeBuild {
+            cmake {
+                arguments '-DXT9KDB_MODE=DIFF'   // switch to CUTOVER after de-link
+                cppFlags ''
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+            version '3.22.1'
+        }
+    }
+
+    // Keep both .so's; do not let the packager strip/compress the prebuilt blob.
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+            keepDebugSymbols += ['**/libxt9core.so', '**/libxt9kdb.so']
+        }
+    }
+}

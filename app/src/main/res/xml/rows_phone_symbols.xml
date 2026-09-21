@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <include latin:keyboardLayout="@xml/key_styles_common"/>
+    <include latin:keyboardLayout="@xml/key_styles_number"/>
+    <Row>
+        <Spacer latin:backgroundType="normal"/>
+        <Key
+            latin:keySpec="("
+            latin:keyStyle="numKeyStyle"/>
+        <Key
+            latin:keySpec="/"
+            latin:keyStyle="numKeyStyle"/>
+        <Key
+            latin:keySpec=")"
+            latin:keyStyle="numKeyStyle"/>
+        <Key
+            latin:keyLabelFlags="hasPopupHint"
+            latin:keySpec="-"
+            latin:keyStyle="numFunctionalKeyStyle"
+            latin:moreKeys="+"/>
+        <Spacer latin:backgroundType="normal"/>
+    </Row>
+    <Row>
+        <Spacer latin:backgroundType="normal"/>
+        <Key
+            latin:keySpec="N"
+            latin:keyStyle="numKeyBaseStyle"/>
+        <Key latin:keyStyle="numPauseKeyStyle"/>
+        <Key
+            latin:keySpec=","
+            latin:keyStyle="numKeyStyle"/>
+        <Key
+            latin:keySpec="."
+            latin:keyStyle="numFunctionalKeyStyle"/>
+        <Spacer latin:backgroundType="normal"/>
+    </Row>
+    <Row>
+        <Spacer latin:backgroundType="normal"/>
+        <Key latin:keyStyle="numStarKeyStyle"/>
+        <Key latin:keyStyle="numWaitKeyStyle"/>
+        <Key
+            latin:keySpec="#"
+            latin:keyStyle="numKeyStyle"/>
+        <Key latin:keyStyle="deleteKeyStyle"/>
+        <Spacer latin:backgroundType="normal"/>
+    </Row>
+    <Row>
+        <Spacer latin:backgroundType="normal"/>
+        <Key latin:keyStyle="numPhoneToNumericKeyStyle"/>
+        <Key
+            latin:keySpec="+"
+            latin:keyStyle="numKeyStyle"/>
+        <Key latin:keyStyle="numSpaceKeyStyle"/>
+        <Key latin:keyStyle="enterKeyStyle"/>
+        <Spacer latin:backgroundType="normal"/>
+    </Row>
+</merge>

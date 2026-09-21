@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Row latin:keyWidth="10%p">
+        <Key
+            latin:keyStyle="toSymbolKeyStyle"
+            latin:keyWidth="15%p"
+            latin:secondaryKeySpec="ctrl|!code/key_control"/>
+        <include latin:keyboardLayout="@xml/rowkeys_qwerty4_common"/>
+    </Row>
+</merge>

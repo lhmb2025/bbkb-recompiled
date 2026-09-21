@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+    <supports-screens
+        android:normalScreens="true"
+        android:largeScreens="true"/>
+    
+    <!-- Package visibility declarations for API 30+ -->
+    <queries>
+        <!-- Query for system settings -->
+        <intent>
+            <action android:name="android.settings.INPUT_METHOD_SETTINGS"/>
+        </intent>
+        <intent>
+            <action android:name="android.settings.SETTINGS"/>
+        </intent>
+        <!-- Query for contacts provider -->
+        <intent>
+            <action android:name="android.intent.action.PICK"/>
+            <data android:mimeType="vnd.android.cursor.dir/contact"/>
+        </intent>
+        <!--
+            The system user dictionary, content://user_dictionary/words. The original APK
+            targeted API 28 and so was exempt from package-visibility filtering; this port
+            targets 36, where an undeclared provider is simply not there: query() returns
+            null and applyBatch() throws IllegalArgumentException("Unknown authority
+            user_dictionary"). That is what killed the AUD <-> personal dictionary sync on
+            the KEY2 (2026-09-21) - every write was swallowed by AudWrapper's
+            return-false-on-IllegalArgumentException path and every read saw an empty AUD.
+            Declared by authority rather than by package so it holds on ROMs that ship the
+            provider under a different package name.
+        -->
+        <provider android:authorities="user_dictionary"/>
+    </queries>
+    
+    <!-- Dangerous permissions - require runtime requests on API 23+ -->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- GET_ACCOUNTS only works on API < 26, deprecated after Android 8.0 -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" android:maxSdkVersion="25"/>
+    <!-- System permissions -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.READ_USER_DICTIONARY"/>
+    <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY"/>
+
+    <application
+        android:label="@string/english_ime_name"
+        android:icon="@mipmap/ic_launcher_round"
+        android:name="dev.bbkb.ime.core.ImeApplication"
+        android:backupAgent="dev.bbkb.ime.core.BackupAgent"
+        android:allowBackup="true"
+        android:killAfterRestore="true"
+        android:supportsRtl="true"
+        android:fullBackupContent="@xml/backupscheme"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:defaultToDeviceProtectedStorage="true"
+        android:directBootAware="true"
+        android:appCategory="productivity"
+        tools:targetApi="28"
+        android:localeConfig="@xml/locales_config"
+        android:enableOnBackInvokedCallback="true">
+        <!--
+            The original APK declared <uses-library android:name="com.blackberry.only">, a
+            BlackBerry vendor shared library; 2025-06 downgraded it to required="false" so the
+            port would install on non-BlackBerry hardware (it was an
+            INSTALL_FAILED_MISSING_SHARED_LIBRARY otherwise). It is removed now that the app
+            ships under its own id: no class in this app comes from that library, so on a KEY2
+            it only ever added a vendor jar to our classpath, and this app is no longer the
+            BlackBerry keyboard. Note it was never a <permission>: a uses-library declaration
+            cannot conflict between two installed apps, so nothing here blocked side-by-side
+            installation.
+        -->
+        <meta-data
+            android:name="com.google.android.backup.api_key"
+            android:value="AEdPqrEAAAAICZ3rjqOf5i6g5rK4OmzobiG4DttMVbYvlWjK1g"/>
+        
+        <!-- Privacy and data safety declarations -->
+        <meta-data
+            android:name="android.privacy.DATA_SAFETY"
+            android:resource="@xml/data_safety"/>
+        
+        <!-- Declare that this app respects user privacy -->
+        <meta-data
+            android:name="android.privacy.RESPECTS_USER_PRIVACY"
+            android:value="true"/>
+        <service
+            android:label="@string/english_ime_name"
+            android:name="dev.bbkb.ime.core.BlackBerryIME"
+            android:permission="android.permission.BIND_INPUT_METHOD"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.view.InputMethod"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method"/>
+        </service>
+        
+        <!-- KeyInterceptorService: Accessibility service for intercepting special hardware keys -->
+        <!-- This is required for third-party PKB devices (Minimal Phone, Titan Pocket) where -->
+        <!-- the system swallows Emoji/SYM/Voice keys before they reach the IME -->
+        <service
+            android:name="dev.bbkb.ime.core.device.interceptor.KeyInterceptorService"
+            android:label="@string/key_interceptor_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/key_interceptor_service_config"/>
+        </service>
+        
+        <service
+            android:label="@string/spell_checker_service_name"
+            android:name="dev.bbkb.ime.core.spellcheck.AndroidSpellCheckerService"
+            android:permission="android.permission.BIND_TEXT_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.textservice.SpellCheckerService"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.view.textservice.scs"
+                android:resource="@xml/spellchecker"/>
+        </service>
+        <receiver
+            android:name="dev.bbkb.ime.core.SystemBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.USER_INITIALIZE"/>
+                <action android:name="android.intent.action.LOCALE_CHANGED"/>
+                <action android:name="dev.bbkb.ime.languagepack.UPDATE_NOW"/>
+            </intent-filter>
+        </receiver>
+        <!-- Modern Compose-based Settings Activity (Primary) -->
+        <activity
+            android:name="dev.bbkb.ime.core.settings.ComposeSettingsActivity"
+            android:label="@string/english_ime_settings"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        
+        <!-- KeyInterceptor Settings Activity - Redirects from accessibility service settings to Advanced -->
+        <activity
+            android:name="dev.bbkb.ime.core.settings.KeyInterceptorSettingsActivity"
+            android:label="@string/key_interceptor_service_label"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:exported="true"/>
+        
+        <!-- Modern Compose-based Spell Checker Settings Activity (Primary) -->
+        <activity
+            android:name="dev.bbkb.ime.core.settings.SpellCheckerComposeActivity"
+            android:label="@string/android_spell_checker_settings"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.textservice.SpellCheckerService.SETTINGS_ACTION"/>
+            </intent-filter>
+        </activity>
+        <!--
+            The editor's suggestion popup notifies the span's target class with an explicit
+            SUGGESTION_PICKED broadcast sent from the APP's process, which only reaches an
+            exported receiver. No permission can gate it (the sender is any app), so the
+            receiver itself is the guard: SuggestionPickLearner acts only when the picked word is
+            one of the alternatives this IME attached to that very word; anything else is ignored.
+        -->
+        <receiver
+            android:name="dev.bbkb.ime.core.suggestion.SuggestionSpanReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.text.style.SUGGESTION_PICKED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:label="@string/android_spell_checker_settings"
+            android:name="dev.bbkb.ime.core.settings.DeviceResetReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="tcl.intent.action.LAUNCH_DEVICE_RESET"/>
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:name="dev.bbkb.ime.core.permissions.PermissionActivity"
+            android:exported="false"
+            android:taskAffinity=""/>
+        <activity
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:label="@string/rationale_dialog_header"
+            android:name="dev.bbkb.ime.core.permissions.RationaleDialog"
+            android:exported="false"/>
+        <!--
+            SubtypeSwitcherDialog historically declared windowSoftInputMode="stateVisible",
+            which forced the IME visible whenever the dialog appeared. The dialog has no
+            EditText inside it, so the attribute served no purpose other than to keep the
+            IME up after the dialog was dismissed — one cause of "IME stays after home"
+            in the audit (Issue 3). Removed.
+        -->
+        <activity
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:name="dev.bbkb.ime.core.subtypeswitcher.SubtypeSwitcherDialog"
+            android:exported="false"/>
+        <activity
+            android:theme="@style/platformSettingsTheme"
+            android:name="dev.bbkb.ime.core.subtypeswitcher.CombineLanguages"
+            android:exported="false"/>
+        <activity
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:name="dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputDialog"
+            android:exported="false"/>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:authorities="${applicationId}.fileprovider"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
+    </application>
+</manifest>

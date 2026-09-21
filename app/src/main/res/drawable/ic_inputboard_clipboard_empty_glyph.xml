@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The clipboard-with-slash glyph extracted from the full-bleed
+     ic_inputboard_clipboard_empty illustration (1342x755 canvas), scaled and
+     centered into a square 48dp canvas for the Material empty-state chip.
+     Glyph bounds in the source: x [539.4, 800.1], y [247.2, 493.6];
+     scale 40/260.7 = 0.1534, translation recenters with a 4dp margin. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+  <group
+      android:scaleX="0.1534"
+      android:scaleY="0.1534"
+      android:translateX="-78.74"
+      android:translateY="-32.82">
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M659.2,324.2h68.4v-35.4h26.4v130.2l23.7,23.7v-156.4c0,-11.8 -9.6,-21.4 -21.4,-21.4h-53.4c-4.7,-13.4 -17.4,-23 -32.4,-23s-27.7,9.6 -32.4,23h-38.2l59.3,59.3h0ZM670.5,263c7.3,0 13.2,5.9 13.2,13.2s-5.9,13.2 -13.2,13.2 -13.2,-5.9 -13.2,-13.2 5.9,-13.2 13.2,-13.2Z"/>
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M800.1,493.6l-246.4,-246.4 -14.3,14.3 23.9,23.9c0,0.3 0,0.6 0,1v194.6c0,11.8 9.6,21.4 21.4,21.4h171.6c6.6,0 12.5,-3 16.4,-7.6l13.2,13.2 14.3,-14.3h0ZM754,479.1h-168v-171.1l168,168v3.1h0Z"/>
+  </group>
+</vector>

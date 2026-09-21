@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Backup/transfer allowlist for Android 12+ (targetSdk 31 and above). The platform
+    reads this file instead of @xml/backupscheme, which is now only consulted on
+    API 23-30. The two files must be kept in sync: five includes, nothing else
+    (BackupRulesTest checks the file includes of both).
+
+    The personal-dictionary store is filesDir/dev.bbkb.ime.basl.pdu/
+    (PersonalDictionaryUtil.PERSONAL_DICTIONARY_UTIL_DIR + LoadConfig filenames). These
+    includes used to name dev.bbkb.ime.personaldictionary.pdu, which nothing
+    writes, plus a blacklist/blacklist.txt that no code has ever produced.
+
+    The allowlist is the point. Because <include> entries are present, everything not
+    listed is excluded — in particular files/nuance, which holds the dynamic learning
+    model (alphadlm.bin). That model is derived entirely from the user's typed text and
+    must never cross devices: restoring one device's DLM onto another is the
+    swipe-ranking poisoning shape recorded in docs/dlm-poisoning-diagnosis. Without a
+    dataExtractionRules file the platform falls back to its default rules (everything
+    except no_backup/ and cache/), which silently includes it. An explicit <exclude> for
+    a path that is already outside the allowlist is what lint's FullBackupContent check
+    rejects, so do not add one — add an <include> only for what must be restored.
+
+    The sharedpref include names the default preferences file, which the platform calls
+    "<applicationId>_preferences.xml" — so it has to be renamed whenever the applicationId moves
+    (it did, from com.blackberry.keyboard to dev.bbkb.ime). res/xml cannot interpolate
+    ${applicationId}; PackageIdentityTest asserts the literal still matches the id instead.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <include
+            domain="file"
+            path="dev.bbkb.ime.basl.pdu/personal_words"/>
+        <include
+            domain="file"
+            path="dev.bbkb.ime.basl.pdu/substitutions"/>
+        <include
+            domain="file"
+            path="dev.bbkb.ime.basl.pdu/deleted_substitutions"/>
+        <include
+            domain="sharedpref"
+            path="dev.bbkb.ime_preferences.xml"/>
+        <include
+            domain="sharedpref"
+            path="shared_pref.xml"/>
+    </cloud-backup>
+    <device-transfer>
+        <include
+            domain="file"
+            path="dev.bbkb.ime.basl.pdu/personal_words"/>
+        <include
+            domain="file"
+            path="dev.bbkb.ime.basl.pdu/substitutions"/>
+        <include
+            domain="file"
+            path="dev.bbkb.ime.basl.pdu/deleted_substitutions"/>
+        <include
+            domain="sharedpref"
+            path="dev.bbkb.ime_preferences.xml"/>
+        <include
+            domain="sharedpref"
+            path="shared_pref.xml"/>
+    </device-transfer>
+</data-extraction-rules>

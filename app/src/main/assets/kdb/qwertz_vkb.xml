@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- qwertz_vkb keyboard layout
+PID: ET9PLIDGerman
+SID: ET9SLIDDEFAULT -->
+
+<keyboard
+  primaryId="7"
+  secondaryId="1"
+  defaultLayoutWidth="1080"
+  defaultLayoutHeight="600"
+  addAltChars="true">
+
+  <area>
+    <key keyType="regional" keyLabel="Q" keyWidth="108dp" keyHeight="140dp" keyTop="9dp" keyLeft="0dp" />
+    <key keyType="regional" keyLabel="W" keyWidth="108dp" keyHeight="140dp" keyTop="9dp" keyLeft="108dp" />
+    <key keyType="regional" keyLabel="E" keyWidth="108dp" keyHeight="140dp" keyTop="9dp" keyLeft="216dp" />
+    <key keyType="regional" keyLabel="R" keyWidth="108dp" keyHeight="140dp" keyTop="9dp" keyLeft="324dp" />
+    <key keyType="regional" keyLabel="T" keyWidth="108dp" keyHeight="140dp" keyTop="9dp" keyLeft="432dp" />
+    <key keyType="regional" keyLabel="Z" keyWidth="108dp" keyHeight="140dp" keyTop="9dp" keyLeft="540dp" />
+    <key keyType="regional" keyLabel="U" keyWidth="108dp" keyHeight="140dp" keyTop="9dp" keyLeft="648dp" />
+    <key keyType="regional" keyLabel="I" keyWidth="108dp" keyHeight="140dp" keyTop="9dp" keyLeft="756dp" />
+    <key keyType="regional" keyLabel="O" keyWidth="108dp" keyHeight="140dp" keyTop="9dp" keyLeft="864dp" />
+    <key keyType="regional" keyLabel="P" keyWidth="108dp" keyHeight="140dp" keyTop="9dp" keyLeft="972dp" />
+  </area>
+
+  <area>
+    <key keyType="regional" keyLabel="A" keyWidth="120dp" keyHeight="140dp" keyTop="158dp" keyLeft="0dp" />
+    <key keyType="regional" keyLabel="S" keyWidth="120dp" keyHeight="140dp" keyTop="158dp" keyLeft="120dp" />
+    <key keyType="regional" keyLabel="D" keyWidth="120dp" keyHeight="140dp" keyTop="158dp" keyLeft="240dp" />
+    <key keyType="regional" keyLabel="F" keyWidth="120dp" keyHeight="140dp" keyTop="158dp" keyLeft="360dp" />
+    <key keyType="regional" keyLabel="G" keyWidth="120dp" keyHeight="140dp" keyTop="158dp" keyLeft="480dp" />
+    <key keyType="regional" keyLabel="H" keyWidth="120dp" keyHeight="140dp" keyTop="158dp" keyLeft="600dp" />
+    <key keyType="regional" keyLabel="J" keyWidth="120dp" keyHeight="140dp" keyTop="158dp" keyLeft="720dp" />
+    <key keyType="regional" keyLabel="K" keyWidth="120dp" keyHeight="140dp" keyTop="158dp" keyLeft="840dp" />
+    <key keyType="regional" keyLabel="L" keyWidth="120dp" keyHeight="140dp" keyTop="158dp" keyLeft="960dp" />
+  </area>
+
+  <area>
+    <key keyType="function" keyCodes="0x25B2" keyName="ET9KEY_SHIFT" keyWidth="162dp" keyHeight="140dp" keyTop="307dp" keyLeft="0dp" />
+    <key keyType="regional" keyLabel="Y" keyWidth="108dp" keyHeight="140dp" keyTop="307dp" keyLeft="162dp" />
+    <key keyType="regional" keyLabel="X" keyWidth="108dp" keyHeight="140dp" keyTop="307dp" keyLeft="270dp" />
+    <key keyType="regional" keyLabel="C" keyWidth="108dp" keyHeight="140dp" keyTop="307dp" keyLeft="378dp" />
+    <key keyType="regional" keyLabel="V" keyWidth="108dp" keyHeight="140dp" keyTop="307dp" keyLeft="486dp" />
+    <key keyType="regional" keyLabel="B" keyWidth="108dp" keyHeight="140dp" keyTop="307dp" keyLeft="594dp" />
+    <key keyType="regional" keyLabel="N" keyWidth="108dp" keyHeight="140dp" keyTop="307dp" keyLeft="702dp" />
+    <key keyType="regional" keyLabel="M" keyWidth="108dp" keyHeight="140dp" keyTop="307dp" keyLeft="810dp" />
+    <key keyType="function" keyCodes="0x21E6" keyName="ET9KEY_BACK" keyWidth="162dp" keyHeight="140dp" keyTop="307dp" keyLeft="918dp" />
+  </area>
+
+  <area>
+    <key keyType="function" keyLabel="?123" keyName="ET9KEY_DIGITLAYOUT" keyWidth="162dp" keyHeight="140dp" keyTop="456dp" keyLeft="0dp" />
+    <key keyType="string" keyLabel="," keyWidth="108dp" keyHeight="140dp" keyTop="456dp" keyLeft="162dp" />
+    <key keyType="function" keyLabel="SPACE" keyName="ET9KEY_SPACE" keyWidth="540dp" keyHeight="140dp" keyTop="456dp" keyLeft="270dp" />
+    <key keyType="string" keyLabel="." keyWidth="108dp" keyHeight="140dp" keyTop="456dp" keyLeft="810dp" />
+    <key keyType="function" keyLabel="DONE" keyName="ET9KEY_RETURN" keyWidth="162dp" keyHeight="140dp" keyTop="456dp" keyLeft="918dp" />
+  </area>
+</keyboard>

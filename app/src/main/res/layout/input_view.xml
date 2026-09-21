@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dev.bbkb.ime.core.ime.InputView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_gravity="bottom"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="ltr">
+    <!-- Nav-bar insets are applied explicitly via an OnApplyWindowInsetsListener installed in
+         BlackBerryIME.setInputView() (see FABLE_VIEW_REPORT §1); declarative fitsSystemWindows
+         is intentionally not used because its apply timing is non-deterministic under
+         edge-to-edge and left the keyboard rendering under the nav bar on some shows. -->
+    <include
+        android:id="@+id/main_keyboard_frame"
+        layout="@layout/main_keyboard_frame"/>
+</dev.bbkb.ime.core.ime.InputView>

@@ -1,0 +1,53 @@
+{
+  "space": "sensor_1080x450_athena",
+  "fitted_from": {
+    "corpus": "xt9kdb-scaffold/cpp/test/data/w6_s1_corpus.txt",
+    "traces_used": 240
+  },
+  "row_dy_mean": {
+    "0": 13.51,
+    "1": 51.65,
+    "2": 108.41
+  },
+  "trace_dev_dy": {
+    "n": 240,
+    "mean": -0.0,
+    "std": 22.2
+  },
+  "res_dy": {
+    "n": 480,
+    "mean": 0.0,
+    "std": 23.05
+  },
+  "bias_dx": {
+    "n": 480,
+    "mean": 6.13,
+    "std": 50.87
+  },
+  "corner_cut_keyunits": {
+    "n": 705,
+    "mean": 0.3,
+    "std": 0.18
+  },
+  "dt_ms": {
+    "n": 15647,
+    "mean": 20.17,
+    "std": 15.0
+  },
+  "speed_px_ms": {
+    "n": 240,
+    "mean": 1.13,
+    "std": 0.3
+  },
+  "jitter_px": {
+    "n": 15443,
+    "mean": 5.75,
+    "std": 7.68
+  },
+  "dwell_ms": {
+    "n": 0,
+    "mean": 140.0,
+    "std": 45.0,
+    "note": "HEURISTIC until real doubles are fit"
+  }
+}

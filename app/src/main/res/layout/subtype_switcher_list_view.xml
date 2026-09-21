@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:background="@android:color/transparent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="1"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+    android:paddingEnd="12dp">
+    <RadioButton
+        android:theme="@style/platformDialogTheme"
+        android:gravity="center_vertical"
+        android:id="@+id/subtype_switcher_radio"
+        android:focusable="false"
+        android:clickable="false"
+        android:layout_width="35dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:height="20dp"
+        android:width="20dp"
+        android:paddingEnd="12dp"/>
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:textColor="?android:attr/textColorAlertDialogListItem"
+        android:ellipsize="marquee"
+        android:gravity="start|center_vertical"
+        android:id="@+id/subtype_switcher_language_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"/>
+</LinearLayout>

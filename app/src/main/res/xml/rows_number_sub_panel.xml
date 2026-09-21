@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <include latin:keyboardLayout="@xml/key_styles_common"/>
+    <include latin:keyboardLayout="@xml/key_styles_number"/>
+    <include latin:keyboardLayout="@xml/rows_number_normal_sub_panel"/>
+</merge>

@@ -1,0 +1,17 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="400"
+    android:viewportHeight="400">
+  <group android:name="glow_circle">
+    <path
+        android:name="outer_circle"
+        android:strokeColor="@android:color/white"
+        android:strokeAlpha="0.5"
+        android:strokeWidth="8"
+        android:pathData="M200,45.4c-85.4,0 -154.6,69.2 -154.6,154.6s69.2,154.6 154.6,154.6 154.6,-69.2 154.6,-154.6S285.4,45.4 200,45.4Z"/>
+  </group>
+  <path
+      android:fillColor="@android:color/white"
+      android:pathData="M167.8,135.8c0,-9.6 3.2,-17.8 9.6,-24.7s14.2,-10.2 23.2,-10.2 16.8,3.4 23.2,10.2c6.4,6.8 9.6,15 9.6,24.7v55.9c0,9.6 -3.2,17.8 -9.6,24.7 -6.4,6.8 -14.2,10.2 -23.2,10.2s-16.8,-3.4 -23.2,-10.2c-6.4,-6.8 -9.6,-15 -9.6,-24.7v-55.9ZM211.5,264v35.1h-22.5v-35.1c-35.2,-5.2 -62.4,-34.4 -62.6,-69.6h20.1c0.1,27.8 24.2,50.3 53.8,50.3h0.2c29.4,-0.1 53.4,-22.8 53.6,-50.5h20.1c-0.2,35.3 -27.4,64.5 -62.6,69.7h0Z"/>
+</vector>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Row latin:keyWidth="10%p">
+        <Key
+            latin:keyStyle="toAlphaKeyStyle"
+            latin:keyWidth="15%p"/>
+        <switch>
+            <case latin:voiceInputKeyEnabled="false">
+                <Key latin:keySpec="、"/>
+            </case>
+            <default>
+                <Key
+                    latin:keySpec="、"
+                    latin:secondaryFunctionDisplayStyle="topRightCorner"
+                    latin:secondaryKeySpec="!icon/voice_input_small_key|!code/key_voice_dictation"/>
+            </default>
+        </switch>
+        <include latin:keyboardLayout="@xml/key_space_4kw"/>
+        <include latin:keyboardLayout="@xml/key_period"/>
+        <Key
+            latin:keyStyle="enterKeyStyle"
+            latin:keyWidth="15%p"/>
+    </Row>
+</merge>

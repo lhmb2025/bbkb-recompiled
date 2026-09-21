@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/language_switch_notification_strip"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/config_suggestions_strip_horizontal_margin"
+        android:layout_marginEnd="@dimen/config_suggestions_strip_horizontal_margin">
+        <TextView
+            android:gravity="center"
+            android:id="@+id/language_switch_notification_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="?attr/notificationStyle"/>
+    </LinearLayout>
+</merge>

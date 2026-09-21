@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="symbolsShifted">
+            <Key
+                latin:keySpec=":"
+                latin:moreKeys=";"/>
+        </case>
+        <default>
+            <Key
+                latin:keySpec=";"
+                latin:moreKeys=":"/>
+        </default>
+    </switch>
+    <Key latin:keySpec="ς"/>
+    <Key
+        latin:keySpec="ε"
+        latin:moreKeys="έ,%"/>
+    <Key latin:keySpec="ρ"/>
+    <Key latin:keySpec="τ"/>
+    <Key
+        latin:keySpec="υ"
+        latin:moreKeys="ύ,%,ϋ,ΰ"/>
+    <Key latin:keySpec="θ"/>
+    <Key
+        latin:keySpec="ι"
+        latin:moreKeys="ί,%,ϊ,ΐ"/>
+    <Key
+        latin:keySpec="ο"
+        latin:moreKeys="ό,%"/>
+    <Key latin:keySpec="π"/>
+</merge>

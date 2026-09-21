@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Prototype pool for the user-orderable UIM bar (element unifiedInputMenuPool).
+     Never shown directly: UnifiedInputBoardManager parses this once and clones each
+     key onto a slot of kbd_unified_input_menu_pkb.xml via Key(prototype, slot) when
+     applying pref_uim_menu_order. XML parsing is the only path that populates a key's
+     keyIconActive/keyIconDisabled pair, which is why these live here and not in code.
+     Every UIM toggle must have a prototype here; geometry in this file is irrelevant. -->
+<Keyboard xmlns:latin="http://schemas.android.com/apk/res-auto" latin:rowHeight="100%">
+    <include latin:keyboardLayout="@xml/key_styles_common"/>
+    <Row
+        latin:keyActionFlags="noKeyPreview"
+        latin:keyWidth="20%p">
+        <Key
+            latin:keyIconActive="!icon/voice_active_key"
+            latin:keyIconDisabled="!icon/voice_input_key_disabled"
+            latin:keySpec="!icon/voice_input_key|!code/key_voice_dictation"/>
+        <Key
+            latin:keyIconActive="!icon/emoji_active_key"
+            latin:keyIconDisabled="!icon/emoji_key_disabled"
+            latin:keySpec="!icon/emoji_key|!code/key_emoji"/>
+        <Key
+            latin:keyIconActive="!icon/fcc_active_key"
+            latin:keyIconDisabled="!icon/fcc_key_disabled"
+            latin:keySpec="!icon/fcc_key|!code/key_fcc"/>
+        <Key
+            latin:keyIconActive="!icon/paste_active_key"
+            latin:keyIconDisabled="!icon/paste_key_disabled"
+            latin:keySpec="!icon/paste_key|!code/key_paste"/>
+        <Key
+            latin:keyIconActive="!icon/number_pad_active_key"
+            latin:keyIconDisabled="!icon/number_pad_key_disabled"
+            latin:keySpec="!icon/number_pad_key|!code/key_number_pad"/>
+    </Row>
+</Keyboard>

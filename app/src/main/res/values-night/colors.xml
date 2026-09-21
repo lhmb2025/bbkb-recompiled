@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Night mode color overrides - automatically loaded when system is in dark mode -->
+    <!-- These override the light theme colors defined in values/colors.xml -->
+    
+    <!-- Keyboard backgrounds - Now use Material 3 dark theme -->
+    
+    <!-- Text colors -->
+    
+    <!-- Hint/secondary function colors -->
+    
+    <!-- Suggestion strip -->
+    
+    <!-- Highlight and gesture colors -->
+    
+    <!-- Emoji picker colors -->
+    
+    <!-- Language on spacebar -->
+    
+    <!-- Input board colors -->
+    
+    <!-- ============================================ -->
+    <!-- Material 3 Night Mode Overrides -->
+    <!-- ============================================ -->
+    <!-- These override the auto-switching colors to use dark variants when system is in dark mode -->
+    
+    <color name="m3_primary">@color/m3_primary_dark</color>
+    <color name="m3_on_primary">@color/m3_on_primary_dark</color>
+    <color name="m3_primary_container">@color/m3_primary_container_dark</color>
+    <color name="m3_on_primary_container">@color/m3_on_primary_container_dark</color>
+    
+    <color name="m3_secondary">@color/m3_secondary_dark</color>
+    <color name="m3_on_secondary">@color/m3_on_secondary_dark</color>
+    <color name="m3_secondary_container">@color/m3_secondary_container_dark</color>
+    <color name="m3_on_secondary_container">@color/m3_on_secondary_container_dark</color>
+    
+    <color name="m3_surface">@color/m3_surface_dark</color>
+    <color name="m3_on_surface">@color/m3_on_surface_dark</color>
+    <color name="m3_surface_variant">@color/m3_surface_variant_dark</color>
+    <color name="m3_on_surface_variant">@color/m3_on_surface_variant_dark</color>
+    <color name="m3_surface_container">@color/m3_surface_container_dark</color>
+    
+    <color name="m3_background">@color/m3_background_dark</color>
+    <color name="m3_on_background">@color/m3_on_background_dark</color>
+    
+    <color name="m3_tertiary">@color/m3_tertiary_dark</color>
+    <color name="m3_on_tertiary">@color/m3_on_tertiary_dark</color>
+    <color name="m3_tertiary_container">@color/m3_tertiary_container_dark</color>
+    <color name="m3_on_tertiary_container">@color/m3_on_tertiary_container_dark</color>
+</resources>

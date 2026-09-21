@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Data Safety declarations for Google Play Store -->
+<data-safety>
+    <!-- Data collection practices -->
+    <data-collected>
+        <!-- User dictionary and learned words stored locally only -->
+        <data-type category="personal">
+            <purpose>app_functionality</purpose>
+            <shared>false</shared>
+            <collected>true</collected>
+            <ephemeral>false</ephemeral>
+        </data-type>
+        
+        <!-- Contacts access for name prediction (optional) -->
+        <data-type category="contacts">
+            <purpose>app_functionality</purpose>
+            <shared>false</shared>
+            <collected>false</collected>
+            <optional>true</optional>
+        </data-type>
+        
+        <!-- Audio recording for voice input (optional) -->
+        <data-type category="audio">
+            <purpose>app_functionality</purpose>
+            <shared>false</shared>
+            <collected>false</collected>
+            <optional>true</optional>
+        </data-type>
+    </data-collected>
+    
+    <!-- Security practices -->
+    <security-practices>
+        <data-encrypted-in-transit>true</data-encrypted-in-transit>
+        <data-encrypted-at-rest>true</data-encrypted-at-rest>
+        <user-can-request-deletion>true</user-can-request-deletion>
+    </security-practices>
+</data-safety>

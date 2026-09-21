@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="EmojiPalettesView" parent="">
+    </style>
+    <style name="EmojiPalettesView.LXX" parent="@style/MainKeyboardView.LXX">
+        <item name="categoryIndicatorEnabled">false</item>
+        <item name="emojiPageIndicatorHorizontalGapRatio">0.025</item>
+        <item name="emojiPageIndicatorRadiusRatio">0.5</item>
+        <item name="iconEmojiRecentsTab">@drawable/ic_inputboard_emoji_cat_recents</item>
+        <item name="iconEmojiSmileyTab">@drawable/ic_inputboard_emoji_cat_smiley</item>
+        <item name="iconEmojiPeopleTab">@drawable/ic_inputboard_emoji_cat_people</item>
+        <item name="iconEmojiNatureTab">@drawable/ic_inputboard_emoji_cat_nature</item>
+        <item name="iconEmojiFoodTab">@drawable/ic_inputboard_emoji_cat_food</item>
+        <item name="iconEmojiPlacesTab">@drawable/ic_inputboard_emoji_cat_places</item>
+        <item name="iconEmojiActivityTab">@drawable/ic_inputboard_emoji_cat_activity</item>
+        <item name="iconEmojiObjectsTab">@drawable/ic_inputboard_emoji_cat_objects</item>
+        <item name="iconEmojiSymbolsTab">@drawable/ic_inputboard_emoji_cat_symbols</item>
+        <item name="iconEmojiFlagTab">@drawable/ic_inputboard_emoji_cat_flag</item>
+    </style>
+    <style name="Keyboard" parent="">
+        <item name="horizontalGap">@fraction/config_key_horizontal_gap_holo</item>
+        <item name="keyboardBottomPadding">@fraction/config_keyboard_bottom_padding_holo</item>
+        <item name="keyboardLeftPadding">@fraction/config_keyboard_left_padding</item>
+        <item name="keyboardRightPadding">@fraction/config_keyboard_right_padding</item>
+        <item name="keyboardTopPadding">@fraction/config_keyboard_top_padding_holo</item>
+        <item name="maxMoreKeysColumn">@integer/config_max_more_keys_column</item>
+        <item name="moreKeysTemplate">@xml/kbd_more_keys_keyboard_template</item>
+        <item name="rowHeight">25%p</item>
+        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_holo</item>
+        <item name="verticalGap">@fraction/config_key_vertical_gap_holo</item>
+    </style>
+    <style name="Keyboard.LXX" parent="@style/Keyboard">
+    </style>
+    <style name="KeyboardIcons" parent="">
+        <item name="iconArrowDownKey">@drawable/ic_auxbar_arrow_down</item>
+        <item name="iconArrowLeftKey">@drawable/ic_auxbar_arrow_left</item>
+        <item name="iconArrowRightKey">@drawable/ic_auxbar_arrow_right</item>
+        <item name="iconArrowUpKey">@drawable/ic_auxbar_arrow_up</item>
+        <item name="iconDedicatedShowIbKey">@drawable/ic_key_show_inputboard</item>
+        <item name="iconHideKeyboardBigKey">@drawable/ic_key_hide_keyboard</item>
+    </style>
+    <style name="KeyboardIcons.LXX" parent="@style/KeyboardIcons">
+        <item name="iconDeleteKey">@drawable/ic_key_delete</item>
+        <item name="iconDeleteRTLKey">@drawable/ic_key_delete</item>
+        <item name="iconDoneKey">@drawable/ic_key_done</item>
+        <item name="iconEmojiActionKey">@drawable/ic_key_smiley</item>
+        <item name="iconEmojiActiveKey">@drawable/ic_auxbar_emoji_enabled</item>
+        <item name="iconEmojiKey">@drawable/ic_auxbar_emoji_enabled</item>
+        <item name="iconEmojiKeyDisabled">@drawable/ic_auxbar_emoji_disabled</item>
+        <item name="iconEmojiNormalKey">@drawable/ic_key_smiley</item>
+        <item name="iconEnterKey">@drawable/ic_key_return</item>
+        <item name="iconFccActiveKey">@drawable/ic_auxbar_fcc_enabled</item>
+        <item name="iconFccKey">@drawable/ic_auxbar_fcc_enabled</item>
+        <item name="iconFccKeyDisabled">@drawable/ic_auxbar_fcc_disabled</item>
+        <item name="iconGoKey">@drawable/ic_key_go</item>
+        <item name="iconSlideboardSettingsKey">@drawable/ic_auxbar_slideboard_settings</item>
+        <item name="iconLanguageQuickSwitchKey">@drawable/ic_key_language_switch</item>
+        <item name="iconLanguageSwitchKey">@drawable/ic_key_language_switch</item>
+        <item name="iconNextKey">@drawable/ic_key_next</item>
+        <item name="iconNumberPadActiveKey">@drawable/ic_auxbar_numpad</item>
+        <item name="iconNumberPadKey">@drawable/ic_auxbar_numpad</item>
+        <item name="iconNumberPadKeyDisabled">@drawable/ic_auxbar_numpad_disabled</item>
+        <item name="iconPasteActiveKey">@drawable/ic_auxbar_clipboard_enabled</item>
+        <item name="iconPasteKey">@drawable/ic_auxbar_clipboard_enabled</item>
+        <item name="iconPasteKeyDisabled">@drawable/ic_auxbar_clipboard_disabled</item>
+        <item name="iconPkbEnterKey">@drawable/ic_key_return</item>
+        <item name="iconPreviousKey">@drawable/ic_key_previous</item>
+        <item name="iconSearchKey">@drawable/ic_key_search</item>
+        <item name="iconSendKey">@drawable/ic_key_send</item>
+        <item name="iconSettingsKey">@drawable/ic_key_settings</item>
+        <item name="iconShiftKey">@drawable/ic_key_shift_off</item>
+        <item name="iconShiftKeyShifted">@drawable/ic_key_shift_on</item>
+        <item name="iconShiftKeyLocked">@drawable/ic_key_shift_on</item>
+        <item name="iconShortcutKey">@drawable/ic_key_voice</item>
+        <item name="iconShortcutKeyDisabled">@drawable/ic_key_voice_off</item>
+        <item name="iconShowInputMenuKey">@drawable/ic_key_show_input_menu</item>
+        <item name="iconShowKeyboardActiveKey">@drawable/ic_auxbar_keyboard_enabled</item>
+        <item name="iconShowKeyboardKey">@drawable/ic_auxbar_keyboard_enabled</item>
+        <item name="iconShowKeyboardSettingsKey">@drawable/ic_auxbar_keyboard_settings</item>
+        <item name="iconSpaceKey">@drawable/ic_key_space</item>
+        <item name="iconSpaceKeyForNumberLayout">@drawable/ic_key_space</item>
+        <item name="iconTabKey">@drawable/ic_key_tab</item>
+        <item name="iconVoiceActiveKey">@drawable/ic_auxbar_voice_enabled</item>
+        <item name="iconVoiceInputKey">@drawable/ic_auxbar_voice_enabled</item>
+        <item name="iconVoiceInputKeyDisabled">@drawable/ic_auxbar_voice_disabled</item>
+        <item name="iconVoiceInputSmallKey">@drawable/ic_key_voice_small</item>
+        <item name="iconZwjKey">@drawable/ic_key_zwj</item>
+        <item name="iconZwnjKey">@drawable/ic_key_zwnj</item>
+    </style>
+    <style name="KeyboardTheme.LXX" parent="@style/KeyboardIcons.LXX">
+        <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.LXX</item>
+        <item name="keyboardStyle">@style/Keyboard.LXX</item>
+        <item name="keyboardViewStyle">@style/KeyboardView.LXX</item>
+        <item name="mainKeyboardViewStyle">@style/MainKeyboardView.LXX</item>
+        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.LXX</item>
+        <item name="moreKeysKeyboardViewForActionStyle">@style/MoreKeysKeyboardView.LXX.Action</item>
+        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.LXX</item>
+        <item name="suggestionWordStyle">@style/SuggestionWord.LXX</item>
+    </style>
+    <style name="KeyboardView" parent="">
+        <!-- Both are required: cancelAndStartAnimators() bails unless neither is null. -->
+        <item name="altCodeKeyWhileTypingFadeinAnimator">@animator/alt_code_key_while_typing_fadein</item>
+        <item name="altCodeKeyWhileTypingFadeoutAnimator">@animator/alt_code_key_while_typing_fadeout</item>
+        <item name="autoCorrectionOnSpacebarTextRatio">@fraction/config_autocorrection_on_spacebar_text_ratio</item>
+        <item name="backgroundDimAlpha">128</item>
+        <item name="ckbTouchNoiseThresholdTime">@integer/config_ckb_touch_noise_threshold_time</item>
+        <item name="gestureDetectFastMoveSpeedThreshold">@fraction/config_gesture_detect_fast_move_speed_threshold</item>
+        <item name="gestureDynamicDistanceThresholdFrom">@fraction/config_gesture_dynamic_distance_threshold_from</item>
+        <item name="gestureDynamicDistanceThresholdTo">@fraction/config_gesture_dynamic_distance_threshold_to</item>
+        <item name="gestureDynamicThresholdDecayDuration">@integer/config_gesture_dynamic_threshold_decay_duration</item>
+        <item name="gestureDynamicTimeThresholdFrom">@integer/config_gesture_dynamic_time_threshold_from</item>
+        <item name="gestureDynamicTimeThresholdTo">@integer/config_gesture_dynamic_time_threshold_to</item>
+        <item name="gestureRecognitionMinimumTime">@integer/config_gesture_recognition_minimum_time</item>
+        <item name="gestureRecognitionSpeedThreshold">@fraction/config_gesture_recognition_speed_threshold</item>
+        <item name="gestureRecognitionUpdateTime">@integer/config_gesture_recognition_update_time</item>
+        <item name="gestureSamplingMinimumDistance">@fraction/config_gesture_sampling_minimum_distance</item>
+        <item name="gestureStaticTimeThresholdAfterFastTyping">@integer/config_gesture_static_time_threshold_after_fast_typing</item>
+        <item name="gestureTrailBodyRatio">@integer/config_gesture_trail_body_ratio</item>
+        <item name="gestureTrailEndWidth">@dimen/config_gesture_trail_end_width</item>
+        <item name="gestureTrailFadeoutDuration">@integer/config_gesture_trail_fadeout_duration</item>
+        <item name="gestureTrailFadeoutStartDelay">@integer/config_gesture_trail_fadeout_start_delay</item>
+        <item name="gestureTrailMaxInterpolationAngularThreshold">@integer/config_gesture_trail_max_interpolation_angular_threshold</item>
+        <item name="gestureTrailMaxInterpolationDistanceThreshold">@dimen/config_gesture_trail_max_interpolation_distance_threshold</item>
+        <item name="gestureTrailMaxInterpolationSegments">@integer/config_gesture_trail_max_interpolation_segments</item>
+        <item name="gestureTrailMinSamplingDistance">@dimen/config_gesture_trail_min_sampling_distance</item>
+        <item name="gestureTrailShadowRatio">@integer/config_gesture_trail_shadow_ratio</item>
+        <item name="gestureTrailStartWidth">@dimen/config_gesture_trail_start_width</item>
+        <item name="gestureTrailUpdateInterval">@integer/config_gesture_trail_update_interval</item>
+        <item name="ignoreAltCodeKeyTimeout">@integer/config_ignore_alt_code_key_timeout</item>
+        <item name="keyFontFamily">sans-serif</item>
+        <item name="keyHintLetterPadding">@dimen/config_key_hint_letter_padding</item>
+        <item name="keyHysteresisDistance">@dimen/config_key_hysteresis_distance</item>
+        <item name="keyHysteresisDistanceForSlidingModifier">@dimen/config_key_hysteresis_distance_for_sliding_modifier</item>
+        <item name="keyMultilineHintLabelPadding">@dimen/config_key_multiline_hint_label_padding</item>
+        <item name="keyMultilineHintLabelRatio">@fraction/config_key_multiline_hint_label_ratio</item>
+        <item name="keyMultilineHintLabelVerticalAdjustmentRatio">@fraction/config_key_multiline_hint_label_vertical_adjustment</item>
+        <item name="keyPopupHintLetterPadding">@dimen/config_key_popup_hint_letter_padding</item>
+        <item name="keyPreviewLingerTimeout">@integer/config_key_preview_linger_timeout</item>
+        <item name="keyPreviewTextRatio">@fraction/config_key_preview_text_ratio</item>
+        <item name="keyRepeatInterval">@integer/config_key_repeat_interval</item>
+        <item name="keyRepeatStartTimeout">@integer/config_key_repeat_start_timeout</item>
+        <item name="keySelectionByDraggingFinger">@bool/config_key_selection_by_dragging_finger</item>
+        <item name="keyShiftedLetterHintPadding">@dimen/config_key_shifted_letter_hint_padding</item>
+        <item name="keyTextShadowRadius">-1</item>
+        <item name="keyTypeface">normal</item>
+        <item name="lockFocusToFirstOnDownKeyDuration">@integer/config_on_key_down_focus_lock_duration</item>
+        <item name="longPressShiftLockTimeout">@integer/config_longpress_shift_lock_timeout</item>
+        <item name="minimumScaleOfSpacebarText">@fraction/config_minimum_scale_of_spacebar_text</item>
+        <item name="moreKeysKeyboardLayout">@layout/more_keys_keyboard</item>
+        <item name="showMoreKeysKeyboardAtTouchedPoint">@bool/config_show_more_keys_keyboard_at_touched_point</item>
+        <item name="slidingKeyInputPreviewBodyRatio">@integer/config_sliding_key_input_preview_body_ratio</item>
+        <item name="slidingKeyInputPreviewShadowRatio">@integer/config_sliding_key_input_preview_shadow_ratio</item>
+        <item name="slidingKeyInputPreviewWidth">@dimen/config_sliding_key_input_preview_width</item>
+        <item name="suppressKeyPreviewAfterBatchInputDuration">@integer/config_suppress_key_preview_after_batch_input_duration</item>
+        <item name="touchNoiseThresholdDistance">@dimen/config_touch_noise_threshold_distance</item>
+        <item name="touchNoiseThresholdTime">@integer/config_touch_noise_threshold_time</item>
+        <item name="verticalCorrection">@dimen/config_keyboard_vertical_correction</item>
+    </style>
+    <style name="KeyboardView.LXX" parent="@style/KeyboardView">
+        <item name="keyHintLabelOffCenterRatio">300%</item>
+        <item name="keyHintLabelRatio">@fraction/config_key_hint_label_ratio</item>
+        <item name="keyHintLetterRatio">@fraction/config_key_hint_letter_ratio</item>
+        <item name="keyLabelFlags">alignHintLabelToBottom</item>
+        <item name="keyLabelOffCenterRatio">-80%</item>
+        <item name="keyLabelSize">@fraction/config_key_label_ratio</item>
+        <item name="keyLargeLetterRatio">@fraction/config_key_large_letter_ratio</item>
+        <item name="keyLetterSize">@fraction/config_key_letter_ratio</item>
+        <item name="keyPopupHintLetter">@null</item>
+        <item name="keyShiftedLetterHintRatio">@fraction/config_key_shifted_letter_hint_ratio</item>
+        <item name="keyTypeface">normal</item>
+        <item name="spacebarIconWidthRatio">0.9</item>
+    </style>
+    <style name="MainKeyboardView" parent="@style/KeyboardView">
+    </style>
+    <style name="MainKeyboardView.LXX" parent="@style/KeyboardView.LXX">
+        <item name="autoCorrectionOnSpacebarTextColor">@color/autocorrection_on_spacebar_text_color</item>
+        <item name="keyPreviewDismissAnimator">@animator/key_preview_dismiss</item>
+        <item name="keyPreviewHeight">@dimen/config_key_preview_height</item>
+        <item name="keyPreviewOffset">@dimen/config_key_preview_offset</item>
+        <item name="keyPreviewShowUpAnimator">@animator/key_preview_show_up</item>
+        <item name="moreKeysKeyboardForActionLayout">@layout/more_keys_keyboard_for_action</item>
+    </style>
+    <style name="MoreKeysKeyboard.LXX" parent="@style/Keyboard.LXX">
+        <item name="horizontalGap">0%p</item>
+        <item name="keyboardBottomPadding">0%p</item>
+        <item name="keyboardTopPadding">0%p</item>
+        <item name="touchPositionCorrectionData">@null</item>
+    </style>
+    <style name="MoreKeysKeyboardView" parent="">
+    </style>
+    <style name="MoreKeysKeyboardView.LXX" parent="@style/KeyboardView.LXX">
+        <item name="keyTypeface">normal</item>
+        <item name="verticalCorrection">@dimen/config_more_keys_keyboard_vertical_correction_holo</item>
+    </style>
+    <style name="MoreKeysKeyboardView.LXX.Action" parent="@style/MoreKeysKeyboardView.LXX">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="keyLabelFlags">keepBackgroundAspectRatio</item>
+    </style>
+    <!-- Material FCC action chips (colors applied at runtime by FccView).
+         Weighted 0dp widths so the row always fits, on any screen width. -->
+    <style name="FccMaterialChip" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_marginStart">3dp</item>
+        <item name="android:layout_marginEnd">3dp</item>
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:paddingEnd">6dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+    <style name="FccMaterialChipIcon" parent="">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+    </style>
+    <style name="FccMaterialChipLabel" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">6dp</item>
+        <item name="android:textSize">13sp</item>
+        <!-- maxLines, not the deprecated singleLine: singleLine additionally forces the
+             horizontal-scroll transformation, which is never what these labels want. -->
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="SuggestionWord" parent="">
+        <item name="android:textSize">@dimen/config_suggestion_text_size</item>
+        <item name="android:ellipsize">none</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:focusable">false</item>
+        <item name="android:clickable">false</item>
+        <item name="android:minWidth">@dimen/config_suggestion_min_width</item>
+        <!-- maxLines, not the deprecated singleLine (see FccMaterialChipLabel above).
+             ellipsize stays "none" here: the strip sizes itself to the word. -->
+        <item name="android:maxLines">1</item>
+        <item name="android:soundEffectsEnabled">false</item>
+        <item name="android:hapticFeedbackEnabled">false</item>
+        <item name="android:paddingStart">@dimen/config_suggestion_text_horizontal_padding</item>
+        <item name="android:paddingEnd">@dimen/config_suggestion_text_horizontal_padding</item>
+    </style>
+    <style name="SuggestionWord.LXX" parent="@style/SuggestionWord">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+    <style name="platformDialogTheme" parent="@android:style/Theme.DeviceDefault.Light.Dialog">
+    </style>
+    <!-- Updated to use Material 3 Settings Theme -->
+    <style name="platformSettingsTheme" parent="@style/Theme.BlackBerryKeyboard.Settings">
+    </style>
+    
+    <!-- ============================================ -->
+    <!-- Material 3 Preference Theme Overlay -->
+    <!-- ============================================ -->
+    <!-- Styles preferences to follow Material 3 design -->
+    
+    <style name="PreferenceThemeOverlay.BlackBerryKeyboard" parent="PreferenceThemeOverlay">
+        <!-- Text Colors -->
+        <item name="android:textColorPrimary">@color/m3_on_surface</item>
+        <item name="android:textColorSecondary">@color/m3_on_surface_variant</item>
+        
+        <!-- Category Style -->
+        <item name="preferenceCategoryStyle">@style/Preference.Category.BlackBerryKeyboard</item>
+    </style>
+    
+    <!-- Material 3 Category Style -->
+    <style name="Preference.Category.BlackBerryKeyboard" parent="Preference.Category">
+        <item name="android:textColor">@color/m3_primary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+</resources>

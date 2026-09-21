@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dev.bbkb.ime.keyboard.inputboard.fcc.FccView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fcc_view"
+    android:tag="layout/fcc_view_0"
+    android:background="@color/input_board_background_color"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Legacy layout (Classic/Modern): nub joystick + corner action glyphs.
+         FccView hides this group and shows fcc_material_group under Material. -->
+    <RelativeLayout
+        android:id="@+id/fcc_legacy_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/fcc_target"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_inputboard_fcc_axis"
+            android:layout_centerInParent="true"/>
+        <ImageView
+            android:id="@+id/up_fcc_caret"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:src="@drawable/ic_inputboard_fcc_arrow_up"
+            android:layout_above="@+id/fcc_nub"
+            android:layout_centerHorizontal="true"/>
+        <ImageView
+            android:id="@+id/left_fcc_caret"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_inputboard_fcc_arrow_left"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="46dp"
+            android:layout_toStartOf="@+id/fcc_nub"/>
+        <ImageView
+            android:id="@+id/down_fcc_caret"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:src="@drawable/ic_inputboard_fcc_arrow_down"
+            android:layout_below="@+id/fcc_nub"
+            android:layout_centerHorizontal="true"/>
+        <ImageView
+            android:id="@+id/right_fcc_caret"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_inputboard_fcc_arrow_right"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="46dp"
+            android:layout_toEndOf="@+id/fcc_nub"/>
+        <ImageView
+            android:id="@+id/fcc_nub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_inputboard_fcc_control"
+            android:layout_centerInParent="true"/>
+        <ImageView
+            android:id="@+id/copy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:src="@drawable/ic_inputboard_fcc_copy"
+            android:layout_marginStart="18dp"
+            android:layout_alignParentStart="true"/>
+        <ImageView
+            android:id="@+id/cut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:src="@drawable/ic_inputboard_fcc_cut"
+            android:layout_marginEnd="18dp"
+            android:layout_alignParentEnd="true"/>
+        <ImageView
+            android:id="@+id/select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:src="@drawable/ic_inputboard_fcc_selecting_mode"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="18dp"/>
+        <ImageView
+            android:id="@+id/paste"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:src="@drawable/ic_inputboard_fcc_paste"
+            android:layout_marginEnd="18dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+
+    <!-- Material layout: trackpad surface, word-jump keys, labeled action chips.
+         All colors/backgrounds are applied in FccView.setupMaterialGroup(). -->
+    <LinearLayout
+        android:id="@+id/fcc_material_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/fcc_jump_left"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_inputboard_fcc_word_left"
+                android:contentDescription="@string/fcc_jump_word_left"/>
+            <FrameLayout
+                android:id="@+id/fcc_trackpad"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp">
+                <!-- The crosshair sits exactly at the trackpad center; the hint hangs
+                     below it via translationY so it never shifts the crosshair. -->
+                <ImageView
+                    android:id="@+id/fcc_trackpad_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_inputboard_fcc_axis"/>
+                <TextView
+                    android:id="@+id/fcc_trackpad_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:translationY="29dp"
+                    android:textSize="12sp"
+                    android:text="@string/fcc_trackpad_hint"/>
+            </FrameLayout>
+            <ImageView
+                android:id="@+id/fcc_jump_right"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_inputboard_fcc_word_right"
+                android:contentDescription="@string/fcc_jump_word_right"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fcc_chip_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <LinearLayout
+                android:id="@+id/fcc_chip_select"
+                style="@style/FccMaterialChip">
+                <ImageView style="@style/FccMaterialChipIcon"
+                    android:src="@drawable/ic_inputboard_fcc_shift_glyph"/>
+                <TextView style="@style/FccMaterialChipLabel"
+                    android:text="@string/fcc_chip_select"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/fcc_chip_copy"
+                style="@style/FccMaterialChip">
+                <ImageView style="@style/FccMaterialChipIcon"
+                    android:src="@drawable/ic_inputboard_fcc_copy_glyph"/>
+                <TextView style="@style/FccMaterialChipLabel"
+                    android:text="@string/fcc_chip_copy"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/fcc_chip_cut"
+                style="@style/FccMaterialChip">
+                <ImageView style="@style/FccMaterialChipIcon"
+                    android:src="@drawable/ic_inputboard_fcc_cut_glyph"/>
+                <TextView style="@style/FccMaterialChipLabel"
+                    android:text="@string/fcc_chip_cut"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/fcc_chip_paste"
+                style="@style/FccMaterialChip">
+                <ImageView style="@style/FccMaterialChipIcon"
+                    android:src="@drawable/ic_inputboard_fcc_paste_glyph"/>
+                <TextView style="@style/FccMaterialChipLabel"
+                    android:text="@string/fcc_chip_paste"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</dev.bbkb.ime.keyboard.inputboard.fcc.FccView>

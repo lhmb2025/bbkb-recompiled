@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Alt+Key Character Mappings for the Minimal Phone's aw9523b-key device
+
+    Each <mapping> element defines what character should be produced when
+    onSettingsChangeListener key is pressed with the Alt modifier.
+    
+    Attributes:
+    - keycode: Android KeyEvent keycode name (without KEYCODE_ prefix)
+    - char: The character to produce (can be character literal or unicode escape)
+    - description: Human-readable description (optional)
+-->
+<alt-key-mappings>
+    <!-- Row 1: QWERTYUIOP -->
+    <mapping keycode="Q" char="&amp;" description="Alt+Q → &amp;"/>
+    <mapping keycode="W" char="1" description="Alt+W → 1"/>
+    <mapping keycode="E" char="2" description="Alt+E → 2"/>
+    <mapping keycode="R" char="3" description="Alt+R → 3"/>
+    <mapping keycode="T" char="_" description="Alt+T → _"/>
+    <mapping keycode="Y" char="-" description="Alt+Y → -"/>
+    <mapping keycode="U" char="+" description="Alt+U → +"/>
+    <mapping keycode="I" char="!" description="Alt+I → !"/>
+    <mapping keycode="O" char="#" description="Alt+O → #"/>
+    <mapping keycode="P" char="$" description="Alt+P → $"/>
+    
+    <!-- Row 2: ASDFGHJKL -->
+    <mapping keycode="A" char="@" description="Alt+A → @"/>
+    <mapping keycode="S" char="4" description="Alt+S → 4"/>
+    <mapping keycode="D" char="5" description="Alt+D → 5"/>
+    <mapping keycode="F" char="6" description="Alt+F → 6"/>
+    <mapping keycode="G" char="=" description="Alt+G → ="/>
+    <mapping keycode="H" char=":" description="Alt+H → :"/>
+    <mapping keycode="J" char=";" description="Alt+J → ;"/>
+    <mapping keycode="K" char="'" description="Alt+K → '"/>
+    <mapping keycode="L" char="&quot;" description="Alt+L → &quot;"/>
+    
+    <!-- Row 3: ZXCVBNM -->
+    <mapping keycode="Z" char="7" description="Alt+Z → 7"/>
+    <mapping keycode="X" char="8" description="Alt+X → 8"/>
+    <mapping keycode="C" char="9" description="Alt+C → 9"/>
+    <mapping keycode="V" char="*" description="Alt+V → *"/>
+    <mapping keycode="B" char="%" description="Alt+B → %"/>
+    <mapping keycode="N" char="?" description="Alt+N → ?"/>
+    <mapping keycode="M" char="," description="Alt+M → ,"/>
+    
+    <!-- Special function keys - WITH Alt pressed -->
+    <mapping keycode="667" char="." description="Alt+Mic → . (period)"/>
+    <mapping keycode="231" char="." description="Alt+VoiceAssist → . (period) [system-mapped MIC key]"/>
+    <mapping keycode="666" char="0" description="Alt+Emoji → 0 (zero)"/>
+    
+    <!-- Special function keys - WITHOUT Alt pressed (keycode remapping) -->
+    <!-- Valid function names: "voice", "emoji" -->
+    <special-function keycode="667" function="voice" description="Mic key → Voice input"/>
+    <special-function keycode="231" function="voice" description="VoiceAssist key → Voice input [system-mapped MIC key]"/>
+    <special-function keycode="666" function="emoji" description="Emoji key → Emoji toggle"/>
+
+</alt-key-mappings>

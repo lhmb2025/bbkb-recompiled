@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:latin="http://schemas.android.com/apk/res-auto" latin:rowHeight="48dp">
+    <include latin:keyboardLayout="@xml/key_styles_common"/>
+    <include latin:keyboardLayout="@xml/key_styles_pkb"/>
+    <switch>
+        <case
+            latin:keyboardLayoutSet="arabic"
+            latin:physicalKeypadType="3 3row">
+            <include latin:keyboardLayout="@xml/row_supplementalbar_arabic_pkb_3row"/>
+        </case>
+        <case latin:physicalKeypadType="3 3row">
+            <include latin:keyboardLayout="@xml/row_supplementalbar_pkb_3row"/>
+        </case>
+    </switch>
+    <switch>
+        <case latin:keyboardLayoutSet="arabic">
+            <include latin:keyboardLayout="@xml/pkbd_arabic"/>
+        </case>
+        <case latin:keyboardLayoutSet="east_slavic">
+            <include latin:keyboardLayout="@xml/pkbd_slavic"/>
+        </case>
+        <case latin:keyboardLayoutSet="hangul">
+            <include latin:keyboardLayout="@xml/pkbd_hangul"/>
+        </case>
+        <case latin:keyboardLayoutSet="hebrew">
+            <include latin:keyboardLayout="@xml/pkbd_hebrew"/>
+        </case>
+        <case latin:keyboardLayoutSet="translit">
+            <include latin:keyboardLayout="@xml/pkbd_slavic_translit"/>
+        </case>
+        <case latin:keyboardLayoutSet="greek">
+            <include latin:keyboardLayout="@xml/pkbd_greek"/>
+        </case>
+        <default>
+            <include latin:keyboardLayout="@xml/pkbd_latin"/>
+        </default>
+    </switch>
+</Keyboard>

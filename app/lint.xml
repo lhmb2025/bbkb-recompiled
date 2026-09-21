@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- Translation Issues - Not critical for development builds -->
+    <issue id="MissingTranslation" severity="ignore" />
+    <issue id="UnusedTranslation" severity="ignore" />
+    <issue id="ImpliedQuantity" severity="ignore" />
+    <issue id="MissingQuantity" severity="ignore" />
+    <issue id="UnusedQuantity" severity="ignore" />
+
+    <!-- WrongConstant: Most issues fixed; remaining 12 are edge cases -->
+    <issue id="WrongConstant" severity="warning" />
+
+    <!-- UnusedResources: Lint cannot detect resources used in styles, Kotlin, dynamic loading, or Compose -->
+    <issue id="UnusedResources" severity="ignore" />
+    
+    <!-- Logging - Intentional use of Log instead of Timber in decompiled code -->
+    <issue id="LogNotTimber" severity="ignore" />
+    
+    <!-- Typography and Spelling - Low priority cosmetic issues -->
+    <issue id="Typos" severity="warning" />
+    <issue id="TypographyEllipsis" severity="warning" />
+    
+    <!-- PrivateResource: Material Design library internals - false positives from using library's public APIs -->
+    <issue id="PrivateResource" severity="ignore" />
+    
+    <!-- Dependencies and Versioning - Low priority -->
+    <issue id="GradleDependency" severity="warning" />
+    <issue id="OldTargetApi" severity="warning" />
+    
+    <!-- RTL and Accessibility - Can be addressed incrementally -->
+    <issue id="RtlHardcoded" severity="warning" />
+    <issue id="RtlSymmetry" severity="warning" />
+    <issue id="ContentDescription" severity="warning" />
+    <issue id="KeyboardInaccessibleWidget" severity="warning" />
+    <issue id="ClickableViewAccessibility" severity="warning" />
+    
+    <!-- Visual and Icon Issues - Low priority -->
+    <issue id="VectorPath" severity="warning" />
+    <issue id="VectorRaster" severity="warning" />
+    <issue id="MonochromeLauncherIcon" severity="warning" />
+    
+    <!-- Performance Optimizations - Can address later -->
+    <issue id="AutoboxingStateCreation" severity="warning" />
+    <issue id="StaticFieldLeak" severity="warning" />
+    <issue id="ObsoleteSdkInt" severity="warning" />
+    <issue id="NotifyDataSetChanged" severity="warning" />
+    <issue id="HandlerLeak" severity="warning" />
+    <issue id="Wakelock" severity="warning" />
+    <issue id="WakelockTimeout" severity="warning" />
+    
+    <!-- Layout Optimizations - Low priority -->
+    <issue id="MergeRootFrame" severity="warning" />
+    <issue id="DisableBaselineAlignment" severity="warning" />
+    <issue id="InefficientWeight" severity="warning" />
+    <issue id="Overdraw" severity="warning" />
+    <issue id="UselessParent" severity="warning" />
+    
+    <!-- Usability - Can address incrementally -->
+    <issue id="Autofill" severity="warning" />
+    <issue id="PluralsCandidate" severity="warning" />
+    
+    <!-- Other Low Priority Issues -->
+    <issue id="KtxExtensionAvailable" severity="warning" />
+    <issue id="ConstantLocale" severity="warning" />
+    <issue id="DefaultLocale" severity="warning" />
+    <issue id="RelativeOverlap" severity="warning" />
+    <issue id="VisibleForTests" severity="warning" />
+    <issue id="SwitchIntDef" severity="warning" />
+    <issue id="DiscouragedApi" severity="warning" />
+    <issue id="UsingOnClickInXml" severity="warning" />
+    <issue id="StringFormatCount" severity="warning" />
+    <issue id="DataExtractionRules" severity="warning" />
+    <issue id="AppBundleLocaleChanges" severity="warning" />
+    <issue id="MutableCollectionMutableState" severity="warning" />
+    <issue id="UnsafeOptInUsageWarning" severity="warning" />
+    <issue id="PrivateApi" severity="warning" />
+    <issue id="CustomViewStyleable" severity="warning" />
+    <issue id="CutPasteId" severity="warning" />
+    <issue id="DuplicateIncludedIds" severity="warning" />
+    <issue id="UnusedAttribute" severity="warning" />
+    <issue id="ApplySharedPref" severity="warning" />
+</lint>

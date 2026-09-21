@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 
+        Material 3 Theme Infrastructure for BBKB
+        
+        This provides the base Material 3 theming with automatic light/dark mode support.
+        On Android 12+, colors will adapt to the user's wallpaper (Material You).
+    -->
+    
+    <!-- ============================================ -->
+    <!-- IME Service Base Theme -->
+    <!-- ============================================ -->
+    <!-- Critical: This theme is used as the base context for the IME service.
+         It MUST properly define textColorPrimary to ensure correct theme propagation. -->
+    <style name="Theme.BlackberryKeyboard.IME" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Material 3 Color System -->
+        <item name="colorPrimary">@color/m3_primary</item>
+        <item name="colorOnPrimary">@color/m3_on_primary</item>
+        <item name="colorPrimaryContainer">@color/m3_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/m3_on_primary_container</item>
+        
+        <item name="colorSecondary">@color/m3_secondary</item>
+        <item name="colorOnSecondary">@color/m3_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/m3_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/m3_on_secondary_container</item>
+        
+        <item name="colorSurface">@color/m3_surface</item>
+        <item name="colorOnSurface">@color/m3_on_surface</item>
+        <item name="colorSurfaceVariant">@color/m3_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/m3_on_surface_variant</item>
+        
+        <item name="colorTertiary">@color/m3_tertiary</item>
+        <item name="colorOnTertiary">@color/m3_on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/m3_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/m3_on_tertiary_container</item>
+        
+        <item name="android:colorBackground">@color/m3_background</item>
+        <item name="colorOnBackground">@color/m3_on_background</item>
+        
+        <!-- Critical: Override Android framework text colors to use M3 tokens -->
+        <!-- This fixes the issue where textColorPrimary was always white -->
+        <item name="android:textColorPrimary">@color/m3_on_surface</item>
+        <item name="android:textColorSecondary">@color/m3_on_surface_variant</item>
+        <item name="android:textColorTertiary">@color/m3_on_surface_variant</item>
+        
+        <!-- AppCompat bridges for compatibility -->
+        <item name="colorPrimaryDark">@color/m3_primary</item>
+        <item name="colorAccent">@color/m3_secondary</item>
+        <item name="colorControlNormal">@color/m3_on_surface_variant</item>
+        <item name="colorControlActivated">@color/m3_primary</item>
+        <item name="colorControlHighlight">@color/m3_primary_container</item>
+        
+        <!-- Window configuration -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    
+    <!-- ============================================ -->
+    <!-- Material 3 Settings Theme -->
+    <!-- ============================================ -->
+    <!-- Theme for settings activity with Material 3 design -->
+    <!-- Uses Material 3 with proper attribute bridging for AndroidX Preference compatibility -->
+    
+    <style name="Theme.BlackBerryKeyboard.Settings" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Material 3 Color System -->
+        <item name="colorPrimary">@color/m3_primary</item>
+        <item name="colorOnPrimary">@color/m3_on_primary</item>
+        <item name="colorPrimaryContainer">@color/m3_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/m3_on_primary_container</item>
+        
+        <item name="colorSecondary">@color/m3_secondary</item>
+        <item name="colorOnSecondary">@color/m3_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/m3_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/m3_on_secondary_container</item>
+        
+        <item name="colorSurface">@color/m3_surface</item>
+        <item name="colorOnSurface">@color/m3_on_surface</item>
+        <item name="colorSurfaceVariant">@color/m3_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/m3_on_surface_variant</item>
+        
+        <item name="android:colorBackground">@color/m3_background</item>
+        <item name="colorOnBackground">@color/m3_on_background</item>
+        
+        <item name="colorError">@color/m3_error_light</item>
+        <item name="colorOnError">@color/m3_on_error_light</item>
+        
+        <!-- AppCompat Attribute Bridges (for AndroidX Preference compatibility) -->
+        <item name="colorPrimaryDark">@color/m3_primary</item>
+        <item name="colorAccent">@color/m3_secondary</item>
+        <item name="colorControlActivated">@color/m3_primary</item>
+        <item name="colorControlHighlight">@color/m3_primary</item>
+        <item name="colorControlNormal">@color/m3_on_surface_variant</item>
+        <item name="colorSwitchThumbNormal">@color/m3_surface_variant</item>
+        
+        <!-- Text Appearances (bridge to Material 3) -->
+        <item name="android:textAppearanceListItem">@style/TextAppearance.Material3.BodyLarge</item>
+        <item name="android:textAppearanceListItemSecondary">@style/TextAppearance.Material3.BodyMedium</item>
+        <item name="android:textAppearanceListItemSmall">@style/TextAppearance.Material3.BodySmall</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.Material3.BodyLarge</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.Material3.BodyMedium</item>
+        
+        <!-- Action Bar Configuration -->
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+        <item name="actionBarStyle">@style/Widget.BlackBerryKeyboard.ActionBar</item>
+        
+        <!-- Status Bar. Both values follow the day/night config so the icon contrast
+             tracks the background; a -night variant of this style would shadow the
+             whole theme rather than merge with it. -->
+        <item name="android:statusBarColor">@color/m3_surface_container</item>
+        <item name="android:windowLightStatusBar">@bool/settings_light_status_bar</item>
+        
+        <!-- Preference Theme Overlay -->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.BlackBerryKeyboard</item>
+        
+        <!-- Material 3 Components -->
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
+        
+        <!-- Widget Styles (ensure Material 3 widgets) -->
+        <item name="checkboxStyle">@style/Widget.Material3.CompoundButton.CheckBox</item>
+        <item name="switchStyle">@style/Widget.Material3.CompoundButton.Switch</item>
+        <item name="radioButtonStyle">@style/Widget.Material3.CompoundButton.RadioButton</item>
+    </style>
+    
+    <!-- Action Bar Style for Settings -->
+    <style name="Widget.BlackBerryKeyboard.ActionBar" parent="Widget.AppCompat.ActionBar.Solid">
+        <item name="background">@color/m3_surface_container_light</item>
+        <item name="elevation">0dp</item>
+        <item name="titleTextStyle">@style/TextAppearance.BlackBerryKeyboard.ActionBar.Title</item>
+    </style>
+    
+    <!-- Action Bar Title Style -->
+    <style name="TextAppearance.BlackBerryKeyboard.ActionBar.Title" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/m3_on_surface</item>
+    </style>
+</resources>

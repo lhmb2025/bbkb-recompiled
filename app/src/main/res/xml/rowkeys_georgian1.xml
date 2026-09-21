@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="number">
+            <Key latin:keySpec="Q"/>
+            <Key latin:keySpec="ჭ"/>
+            <Key latin:keySpec="E"/>
+            <Key latin:keySpec="ღ"/>
+            <Key latin:keySpec="თ"/>
+            <Key latin:keySpec="Y"/>
+            <Key latin:keySpec="U"/>
+            <Key latin:keySpec="I"/>
+            <Key latin:keySpec="O"/>
+            <Key latin:keySpec="P"/>
+        </case>
+        <default>
+            <Key latin:keySpec="ქ"/>
+            <Key latin:keySpec="წ"/>
+            <Key
+                latin:keySpec="ე"
+                latin:moreKeys="ჱ"/>
+            <Key latin:keySpec="რ"/>
+            <Key latin:keySpec="ტ"/>
+            <Key
+                latin:keySpec="ყ"
+                latin:moreKeys="ჸ"/>
+            <Key latin:keySpec="უ"/>
+            <Key
+                latin:keySpec="ი"
+                latin:moreKeys="ჲ"/>
+            <Key latin:keySpec="ო"/>
+            <Key latin:keySpec="პ"/>
+        </default>
+    </switch>
+</merge>

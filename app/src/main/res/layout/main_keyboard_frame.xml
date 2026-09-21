@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_gravity="bottom"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layoutDirection="ltr">
+    <FrameLayout
+        android:layout_gravity="bottom"
+        android:id="@+id/keyboard_frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <dev.bbkb.ime.keyboard.MainKeyboardView
+            android:id="@+id/keyboard_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:layout_gravity="top"
+            android:id="@+id/subpanel_divider_vertical"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"/>
+        <dev.bbkb.ime.keyboard.auxbar.suggestions.CJKSuggestionGridView
+            android:id="@+id/cjk_suggestions_grid_view"
+            android:clickable="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardView
+            android:id="@+id/inputboard_clipboard_view"
+            android:background="@color/input_board_background_color"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <!-- Performance: ViewStub for lazy inflation of infrequently used views -->
+        <ViewStub
+            android:id="@+id/fcc_view_stub"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/fcc_view"/>
+        <ViewStub
+            android:id="@+id/voice_input_view_stub"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/voice_input_view"/>
+        <ViewStub
+            android:id="@+id/number_pad_view_stub"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/number_pad_view"/>
+        <ViewStub
+            android:id="@+id/emoji_palettes_view_stub"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/emoji_palettes_view"/>
+    </FrameLayout>
+
+    <!-- Unified AuxBarView - single container for all aux bars (suggestions, UIM, arrows, accents, diacritics) -->
+    <dev.bbkb.ime.keyboard.auxbar.AuxBarView
+        android:id="@+id/aux_bar_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/config_suggestions_strip_height"
+        android:layout_above="@+id/keyboard_frame" />
+
+    <!-- Swipe to delete animation (overlay) -->
+    <dev.bbkb.ime.core.ime.SwipeToDeleteAnimatorView
+        android:id="@+id/delete_animation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_key_delete"
+        android:layout_alignParentBottom="true"/>
+
+    <!-- Flick suggestion view (overlay) -->
+    <dev.bbkb.ime.keyboard.auxbar.suggestions.FlickSuggestionView
+        android:id="@+id/flick_suggestion_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</RelativeLayout>

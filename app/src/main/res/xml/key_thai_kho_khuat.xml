@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetShiftLocked">
+            <Key latin:keySpec="ฅ"/>
+        </case>
+        <default>
+            <Key latin:keySpec="ฃ"/>
+        </default>
+    </switch>
+</merge>

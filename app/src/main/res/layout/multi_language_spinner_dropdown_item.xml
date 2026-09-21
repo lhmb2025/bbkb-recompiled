@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:textColor="#d9101010"
+    android:ellipsize="marquee"
+    android:id="@android:id/text1"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:singleLine="true"
+    style="?android:attr/spinnerDropDownItemStyle"/>

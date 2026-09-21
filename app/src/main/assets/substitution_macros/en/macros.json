@@ -1,0 +1,17 @@
+[
+    ". alot a lot",
+    ". cmd command",
+    ". itsa it's a",
+    "C ld %D",
+    "C lt %T",
+    "C idt %d",
+    "C itm %t",
+    ". mn minute",
+    ". mns minutes",
+    "C mynumber %p",
+    "C myver %V",
+    ". sec second",
+    ". secs seconds",
+    ". yr year",
+    "c i I"
+]

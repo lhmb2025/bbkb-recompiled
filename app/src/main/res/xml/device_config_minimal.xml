@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Device Configuration: Minimal Phone (MP01)
+    Schema v2.1
+    
+    This configuration is for the Minimal Phone with aw9523b-key keyboard.
+    It will be auto-selected when the device is detected.
+    
+    Find device name: adb shell dumpsys input
+-->
+
+<device-input-config version="2.1" name="Minimal Phone (MP01)">
+    
+    <device>
+        <match>
+            <device-name exact="aw9523b-key"/>
+        </match>
+
+        <device-type>PKB</device-type>
+        
+        <input-mappings>
+            <alt-mappings>
+                <source>device_alt_mappings_aw9523b</source>
+                <enabled>true</enabled>
+            </alt-mappings>
+            
+            <keypad-type>4row</keypad-type>
+            
+            <layout-overrides>
+                <override from="rows_symbols_pkb" to="rows_symbols_pkb_aw9523b"/>
+                <override from="rows_symbols_shift_pkb" to="rows_symbols_shift_pkb_aw9523b"/>
+            </layout-overrides>
+            
+            <!-- Unified key mapping: scancode/keycode → role routing (schema v2.1) -->
+            <scancode-mappings>
+
+                <!-- SYM key: raw BB scancode -->
+                <key rawScanCode="249" role="BOARD_SYM"
+                     treatAs="KEYCODE_SYM" notes="BB SYM raw scancode"/>
+                <!-- SYM key: .kl-mapped fallback -->
+                <key rawScanCode="63" rawKeyCode="63" role="BOARD_SYM"
+                     treatAs="KEYCODE_SYM" notes="SYM via .kl mapping"/>
+                
+                <!-- EMOJI key: raw BB scancode -->
+                <key rawScanCode="250" role="BOARD_EMOJI"
+                     treatAs="KEYCODE_EMOJI" altChar="0" board="-11"
+                     notes="BB Emoji raw scancode"/>
+                <!-- EMOJI key: .kl-mapped fallback -->
+                <key rawScanCode="666" rawKeyCode="666" role="BOARD_EMOJI"
+                     treatAs="KEYCODE_EMOJI" altChar="0" board="-11"
+                     notes="Emoji via .kl mapping"/>
+                
+                <!-- MIC/PERIOD key: raw BB scancode -->
+                <key rawScanCode="251" role="BOARD_VOICE"
+                     treatAs="KEYCODE_MIC" altChar="." board="-27"
+                     notes="BB MIC raw scancode"/>
+                <!-- MIC/PERIOD key: .kl-mapped fallback (period key on Minimal Phone) -->
+                <key rawScanCode="667" rawKeyCode="667" role="BOARD_VOICE"
+                     treatAs="KEYCODE_MIC" altChar="." board="-27"
+                     notes="MIC via .kl mapping (period key on Minimal Phone)"/>
+
+            </scancode-mappings>
+        </input-mappings>
+        
+        <settings-overrides>
+            <!-- Force enable meta state override (required for sticky modifiers) -->
+            <setting key="pref_override_device_meta_state" type="boolean" forced-value="true" read-only="true"/>
+            
+            <!-- Disable gesture settings (non-capacitive keyboard) -->
+            <setting key="swipe_down_ckb" type="boolean" forced-value="false" read-only="true"/>
+            <setting key="type_by_swiping_ckb" type="boolean" forced-value="false" read-only="true"/>
+        </settings-overrides>
+    </device>
+
+</device-input-config>

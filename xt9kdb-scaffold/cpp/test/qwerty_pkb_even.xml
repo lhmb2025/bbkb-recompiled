@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- GENERIC even-row test layout (1080x384, 128px rows) for the owned unit tests / roundtrip.
+     Decoupled from the live athena KDB (which uses the firmware's uneven sensor bands). This exists
+     only to exercise the parser/geometry LOGIC against the kQwertyPkbEn fixture; it is NOT a device KDB. -->
+
+<keyboard primaryId="9" secondaryId="6" defaultLayoutWidth="1080" defaultLayoutHeight="384" addAltChars="true">
+  <area>
+    <key keyType="regional" keyLabel="Q" keyWidth="108dp" keyHeight="128dp" keyTop="0dp" keyLeft="0dp" />
+    <key keyType="regional" keyLabel="W" keyWidth="108dp" keyHeight="128dp" keyTop="0dp" keyLeft="108dp" />
+    <key keyType="regional" keyLabel="E" keyWidth="108dp" keyHeight="128dp" keyTop="0dp" keyLeft="216dp" />
+    <key keyType="regional" keyLabel="R" keyWidth="108dp" keyHeight="128dp" keyTop="0dp" keyLeft="324dp" />
+    <key keyType="regional" keyLabel="T" keyWidth="108dp" keyHeight="128dp" keyTop="0dp" keyLeft="432dp" />
+    <key keyType="regional" keyLabel="Y" keyWidth="108dp" keyHeight="128dp" keyTop="0dp" keyLeft="540dp" />
+    <key keyType="regional" keyLabel="U" keyWidth="108dp" keyHeight="128dp" keyTop="0dp" keyLeft="648dp" />
+    <key keyType="regional" keyLabel="I" keyWidth="108dp" keyHeight="128dp" keyTop="0dp" keyLeft="756dp" />
+    <key keyType="regional" keyLabel="O" keyWidth="108dp" keyHeight="128dp" keyTop="0dp" keyLeft="864dp" />
+    <key keyType="regional" keyLabel="P" keyWidth="108dp" keyHeight="128dp" keyTop="0dp" keyLeft="972dp" />
+  </area>
+  <area>
+    <key keyType="regional" keyLabel="A" keyWidth="108dp" keyHeight="128dp" keyTop="128dp" keyLeft="0dp" />
+    <key keyType="regional" keyLabel="S" keyWidth="108dp" keyHeight="128dp" keyTop="128dp" keyLeft="108dp" />
+    <key keyType="regional" keyLabel="D" keyWidth="108dp" keyHeight="128dp" keyTop="128dp" keyLeft="216dp" />
+    <key keyType="regional" keyLabel="F" keyWidth="108dp" keyHeight="128dp" keyTop="128dp" keyLeft="324dp" />
+    <key keyType="regional" keyLabel="G" keyWidth="108dp" keyHeight="128dp" keyTop="128dp" keyLeft="432dp" />
+    <key keyType="regional" keyLabel="H" keyWidth="108dp" keyHeight="128dp" keyTop="128dp" keyLeft="540dp" />
+    <key keyType="regional" keyLabel="J" keyWidth="108dp" keyHeight="128dp" keyTop="128dp" keyLeft="648dp" />
+    <key keyType="regional" keyLabel="K" keyWidth="108dp" keyHeight="128dp" keyTop="128dp" keyLeft="756dp" />
+    <key keyType="regional" keyLabel="L" keyWidth="108dp" keyHeight="128dp" keyTop="128dp" keyLeft="864dp" />
+    <key keyType="function" keyCodes="0x21E6" keyName="ET9KEY_BACK" keyWidth="108dp" keyHeight="128dp" keyTop="128dp" keyLeft="972dp" />
+  </area>
+  <area>
+    <key keyType="function" keyLabel="ALT" keyName="ET9KEY_ALT" keyWidth="108dp" keyHeight="128dp" keyTop="256dp" keyLeft="0dp" />
+    <key keyType="regional" keyLabel="Z" keyWidth="108dp" keyHeight="128dp" keyTop="256dp" keyLeft="108dp" />
+    <key keyType="regional" keyLabel="X" keyWidth="108dp" keyHeight="128dp" keyTop="256dp" keyLeft="216dp" />
+    <key keyType="regional" keyLabel="C" keyWidth="108dp" keyHeight="128dp" keyTop="256dp" keyLeft="324dp" />
+    <key keyType="regional" keyLabel="V" keyWidth="108dp" keyHeight="128dp" keyTop="256dp" keyLeft="432dp" />
+    <key keyType="regional" keyLabel="B" keyWidth="108dp" keyHeight="128dp" keyTop="256dp" keyLeft="540dp" />
+    <key keyType="regional" keyLabel="N" keyWidth="108dp" keyHeight="128dp" keyTop="256dp" keyLeft="648dp" />
+    <key keyType="regional" keyLabel="M" keyWidth="108dp" keyHeight="128dp" keyTop="256dp" keyLeft="756dp" />
+    <key keyType="nonRegional" keyCodes="0x0024" keyWidth="108dp" keyHeight="128dp" keyTop="256dp" keyLeft="864dp" />
+    <key keyType="function" keyLabel="DONE" keyName="ET9KEY_RETURN" keyWidth="108dp" keyHeight="128dp" keyTop="256dp" keyLeft="972dp" />
+  </area>
+</keyboard>

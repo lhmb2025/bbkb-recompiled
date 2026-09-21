@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:languageQuickSwitchKeyEnabled="true">
+            <switch>
+                <case latin:voiceInputKeyEnabled="true">
+                    <Key
+                        latin:keyActionFlags="noKeyPreview"
+                        latin:keySpec="!icon/language_quick_switch_key|!code/key_language_quick_switch"
+                        latin:secondaryFunctionDisplayStyle="topRightCorner"
+                        latin:secondaryKeySpec="!icon/voice_input_small_key|!code/key_voice_dictation"/>
+                </case>
+                <default>
+                    <Key
+                        latin:keyActionFlags="noKeyPreview"
+                        latin:keySpec="!icon/language_quick_switch_key|!code/key_language_quick_switch"/>
+                </default>
+            </switch>
+        </case>
+        <case latin:keyboardLayoutSet="dvorak">
+            <Key
+                latin:backgroundType="normal"
+                latin:keySpec="q"
+                latin:moreKeys="!text/morekeys_q,%"/>
+        </case>
+        <case
+            latin:keyboardLayoutSetElement="symbols0|symbols1"
+            latin:languageCode="ar|fa|hi|hy"
+            latin:mode="url">
+            <Key
+                latin:keySpec="!text/keyspec_comma"
+                latin:keyStyle="inputBoardToggleKeyStyle"
+                latin:secondaryFunctionDisplayStyle="topRightCorner"
+                latin:secondaryKeySpec="!icon/show_input_menu_key|!code/key_show_input_menu"/>
+        </case>
+        <case
+            latin:languageCode="ar|fa|hi|hy"
+            latin:mode="url">
+            <Key
+                latin:keySpec="/"
+                latin:keyStyle="inputBoardToggleKeyStyle"
+                latin:secondaryFunctionDisplayStyle="topRightCorner"
+                latin:secondaryKeySpec="!icon/show_input_menu_key|!code/key_show_input_menu"/>
+        </case>
+        <case
+            latin:keyboardLayoutSetElement="symbols0|symbols1"
+            latin:mode="url">
+            <Key latin:keySpec="!text/keyspec_comma"/>
+        </case>
+        <case latin:mode="url">
+            <Key latin:keySpec="/"/>
+        </case>
+        <case
+            latin:keyboardLayoutSetElement="symbols0|symbols1"
+            latin:languageCode="ar|fa|hi|hy"
+            latin:mode="email">
+            <Key
+                latin:keySpec="!text/keyspec_comma"
+                latin:keyStyle="inputBoardToggleKeyStyle"
+                latin:secondaryFunctionDisplayStyle="topRightCorner"
+                latin:secondaryKeySpec="!icon/show_input_menu_key|!code/key_show_input_menu"/>
+        </case>
+        <case
+            latin:languageCode="ar|fa|hi|hy"
+            latin:mode="email">
+            <Key
+                latin:keySpec="@"
+                latin:keyStyle="inputBoardToggleKeyStyle"
+                latin:secondaryFunctionDisplayStyle="topRightCorner"
+                latin:secondaryKeySpec="!icon/show_input_menu_key|!code/key_show_input_menu"/>
+        </case>
+        <case
+            latin:keyboardLayoutSetElement="symbols0|symbols1"
+            latin:mode="email">
+            <Key latin:keySpec="!text/keyspec_comma"/>
+        </case>
+        <case latin:mode="email">
+            <Key latin:keySpec="@"/>
+        </case>
+        <case latin:languageCode="ar|fa|hi">
+            <Key
+                latin:keySpec="!text/keyspec_comma"
+                latin:keyStyle="inputBoardToggleKeyStyle"
+                latin:secondaryFunctionDisplayStyle="topRightCorner"
+                latin:secondaryKeySpec="!icon/show_input_menu_key|!code/key_show_input_menu"/>
+        </case>
+        <case latin:languageCode="hy">
+            <Key
+                latin:keySpec="!text/keyspec_comma"
+                latin:keyStyle="inputBoardToggleKeyStyle"
+                latin:secondaryFunctionDisplayStyle="bottomRightCorner"
+                latin:secondaryKeySpec="!icon/show_input_menu_key|!code/key_show_input_menu"/>
+        </case>
+        <case latin:voiceInputKeyEnabled="false">
+            <Key latin:keySpec="!text/keyspec_comma"/>
+        </case>
+        <default>
+            <Key
+                latin:keySpec="!text/keyspec_comma"
+                latin:secondaryFunctionDisplayStyle="topRightCorner"
+                latin:secondaryKeySpec="!icon/voice_input_small_key|!code/key_voice_dictation"/>
+        </default>
+    </switch>
+</merge>
