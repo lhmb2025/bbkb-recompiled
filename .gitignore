@@ -50,3 +50,6 @@ tools/__pycache__/
 .idea/
 .kotlin/
 **/__pycache__/
+
+# Language-pack publishing source (411 MB of LDBs; published to GitHub Releases by dist/publish_packs.py)
+/ldb/
