@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">తెలియదు</string>
     <string name="settings_about_summary">వెర్షన్ సమాచారం మరియు కృతజ్ఞతలు</string>
     <string name="settings_about_title">గురించి</string>
+    <string name="settings_backed_up">సెట్టింగ్‌లు బ్యాకప్ చేయబడ్డాయి</string>
+    <string name="settings_backup_failed">బ్యాకప్‌ను రాయడం సాధ్యపడలేదు</string>
+    <string name="settings_backup_summary">అన్ని సెట్టింగ్‌లను ఫైల్‌లో సేవ్ చేయండి</string>
+    <string name="settings_backup_title">సెట్టింగ్‌లను బ్యాకప్ చేయండి</string>
+    <string name="settings_category_manage_data">డేటా నిర్వహణ</string>
     <string name="settings_clear_settings_dialog_message">ఇది అన్ని కీబోర్డ్ సెట్టింగ్‌లను డిఫాల్ట్‌లకు రీసెట్ చేస్తుంది. మీరు ఖచ్చితంగా ఉన్నారా?</string>
     <string name="settings_clear_settings_dialog_title">సెట్టింగ్‌ల డేటాను తొలగించు</string>
     <string name="settings_clear_settings_summary">అన్ని కీబోర్డ్ సెట్టింగ్‌లను డిఫాల్ట్‌లకు రీసెట్ చేయి</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">త్వరిత పదబంధం 4</string>
     <string name="settings_quick_phrase_5">త్వరిత పదబంధం 5</string>
     <string name="settings_quick_phrases_screen_title">త్వరిత పదబంధాలు</string>
+    <string name="settings_restore_dialog_confirm">పునరుద్ధరించు</string>
+    <string name="settings_restore_dialog_message">ప్రస్తుత సెట్టింగ్‌లను బ్యాకప్‌తో భర్తీ చేయాలా?</string>
+    <string name="settings_restore_not_a_backup">ఆ ఫైల్ BBKB సెట్టింగ్‌ల బ్యాకప్ కాదు</string>
+    <string name="settings_restore_read_failed">బ్యాకప్‌ను చదవడం సాధ్యపడలేదు</string>
+    <string name="settings_restore_summary">బ్యాకప్ ఫైల్ నుండి సెట్టింగ్‌లను లోడ్ చేయండి</string>
+    <string name="settings_restore_title">సెట్టింగ్‌లను పునరుద్ధరించు</string>
+    <string name="settings_restored_count">%1$d సెట్టింగ్‌లు పునరుద్ధరించబడ్డాయి</string>
     <string name="settings_screen_type_by_swiping">స్వైప్ చేస్తూ టైప్ చేయి</string>
     <string name="settings_screen_type_by_swiping_summary">కీబోర్డ్‌పై నుండి వేలిని ఎత్తకుండా త్వరగా టైప్ చేయండి</string>
     <string name="settings_screen_type_by_swiping_unavailable">మీ భాషలో స్వైప్ చేస్తూ టైప్ చేసే సౌలభ్యం అందుబాటులో లేదు.</string>

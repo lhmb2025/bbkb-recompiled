@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Անհայտ</string>
     <string name="settings_about_summary">Տարբերակի մասին տեղեկություններ և հեղինակներ</string>
     <string name="settings_about_title">Մասին</string>
+    <string name="settings_backed_up">Կարգավորումների պահուստը ստեղծվեց</string>
+    <string name="settings_backup_failed">Չհաջողվեց գրել պահուստը</string>
+    <string name="settings_backup_summary">Պահել բոլոր կարգավորումները ֆայլում</string>
+    <string name="settings_backup_title">Պահուստավորել կարգավորումները</string>
+    <string name="settings_category_manage_data">Տվյալների կառավարում</string>
     <string name="settings_clear_settings_dialog_message">Սա կվերականգնի ստեղնաշարի բոլոր կարգավորումները նախնական վիճակին։ Համոզվա՞ծ եք։</string>
     <string name="settings_clear_settings_dialog_title">Կարգավորումների տվյալների մաքրում</string>
     <string name="settings_clear_settings_summary">Վերականգնել ստեղնաշարի բոլոր կարգավորումները նախնական վիճակին</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Արագ արտահայտություն 4</string>
     <string name="settings_quick_phrase_5">Արագ արտահայտություն 5</string>
     <string name="settings_quick_phrases_screen_title">Արագ արտահայտություններ</string>
+    <string name="settings_restore_dialog_confirm">Վերականգնել</string>
+    <string name="settings_restore_dialog_message">Փոխարինե՞լ ընթացիկ կարգավորումները պահուստով</string>
+    <string name="settings_restore_not_a_backup">Այդ ֆայլը BBKB կարգավորումների պահուստ չէ</string>
+    <string name="settings_restore_read_failed">Չհաջողվեց կարդալ պահուստը</string>
+    <string name="settings_restore_summary">Բեռնել կարգավորումները պահուստային ֆայլից</string>
+    <string name="settings_restore_title">Վերականգնել կարգավորումները</string>
+    <string name="settings_restored_count">Վերականգնվեց %1$d կարգավորում</string>
     <string name="settings_screen_type_by_swiping">Մուտքագրում սահեցումով</string>
     <string name="settings_screen_type_by_swiping_summary">Մուտքագրեք արագ՝ առանց մատը ստեղնաշարից բարձրացնելու</string>
     <string name="settings_screen_type_by_swiping_unavailable">Սահեցումով մուտքագրումը հասանելի չէ ձեր լեզվով։</string>

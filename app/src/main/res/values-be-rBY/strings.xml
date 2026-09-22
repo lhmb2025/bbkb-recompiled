@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Невядома</string>
     <string name="settings_about_summary">Звесткі пра версію і падзякі</string>
     <string name="settings_about_title">Пра праграму</string>
+    <string name="settings_backed_up">Рэзервовая копія налад створана</string>
+    <string name="settings_backup_failed">Не ўдалося запісаць рэзервовую копію</string>
+    <string name="settings_backup_summary">Захаваць усе налады ў файл</string>
+    <string name="settings_backup_title">Рэзервовае капіраванне налад</string>
+    <string name="settings_category_manage_data">Кіраванне данымі</string>
     <string name="settings_clear_settings_dialog_message">Усе налады клавіятуры будуць скінуты да стандартных. Вы ўпэўнены?</string>
     <string name="settings_clear_settings_dialog_title">Ачыстка даных налад</string>
     <string name="settings_clear_settings_summary">Скінуць усе налады клавіятуры да стандартных</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Хуткая фраза 4</string>
     <string name="settings_quick_phrase_5">Хуткая фраза 5</string>
     <string name="settings_quick_phrases_screen_title">Хуткія фразы</string>
+    <string name="settings_restore_dialog_confirm">Аднавіць</string>
+    <string name="settings_restore_dialog_message">Замяніць бягучыя налады рэзервовай копіяй?</string>
+    <string name="settings_restore_not_a_backup">Гэты файл не з’яўляецца рэзервовай копіяй налад BBKB</string>
+    <string name="settings_restore_read_failed">Не ўдалося прачытаць рэзервовую копію</string>
+    <string name="settings_restore_summary">Загрузіць налады з файла рэзервовай копіі</string>
+    <string name="settings_restore_title">Аднавіць налады</string>
+    <string name="settings_restored_count">Адноўлена налад: %1$d</string>
     <string name="settings_screen_type_by_swiping">Набор тэксту жэстамі</string>
     <string name="settings_screen_type_by_swiping_summary">Набірайце хутка, не адрываючы палец ад клавіятуры</string>
     <string name="settings_screen_type_by_swiping_unavailable">Набор тэксту жэстамі недаступны для вашай мовы.</string>

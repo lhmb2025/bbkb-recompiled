@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Anhysbys</string>
     <string name="settings_about_summary">Gwybodaeth am y fersiwn a chydnabyddiaethau</string>
     <string name="settings_about_title">Ynghylch</string>
+    <string name="settings_backed_up">Cadwyd copi wrth gefn o’r gosodiadau</string>
+    <string name="settings_backup_failed">Methu ysgrifennu’r copi wrth gefn</string>
+    <string name="settings_backup_summary">Cadw pob gosodiad i ffeil</string>
+    <string name="settings_backup_title">Cadw copi wrth gefn o’r gosodiadau</string>
+    <string name="settings_category_manage_data">Rheoli data</string>
     <string name="settings_clear_settings_dialog_message">Bydd hyn yn ailosod holl osodiadau\'r bysellfwrdd i\'r rhagosodiadau. Ydych chi\'n siŵr?</string>
     <string name="settings_clear_settings_dialog_title">Clirio Data\'r Gosodiadau</string>
     <string name="settings_clear_settings_summary">Ailosod holl osodiadau\'r bysellfwrdd i\'r rhagosodiadau</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Ymadrodd cyflym 4</string>
     <string name="settings_quick_phrase_5">Ymadrodd cyflym 5</string>
     <string name="settings_quick_phrases_screen_title">Ymadroddion cyflym</string>
+    <string name="settings_restore_dialog_confirm">Adfer</string>
+    <string name="settings_restore_dialog_message">Disodli’r gosodiadau presennol â’r copi wrth gefn?</string>
+    <string name="settings_restore_not_a_backup">Nid yw’r ffeil honno’n gopi wrth gefn o osodiadau BBKB</string>
+    <string name="settings_restore_read_failed">Methu darllen y copi wrth gefn</string>
+    <string name="settings_restore_summary">Llwytho gosodiadau o ffeil copi wrth gefn</string>
+    <string name="settings_restore_title">Adfer gosodiadau</string>
+    <string name="settings_restored_count">Adferwyd %1$d gosodiad</string>
     <string name="settings_screen_type_by_swiping">Teipio drwy sweipio</string>
     <string name="settings_screen_type_by_swiping_summary">Teipiwch yn gyflym heb godi\'ch bys oddi ar y bysellfwrdd</string>
     <string name="settings_screen_type_by_swiping_unavailable">Nid yw teipio drwy sweipio ar gael yn eich iaith chi.</string>

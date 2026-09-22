@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">ບໍ່ຮູ້</string>
     <string name="settings_about_summary">ຂໍ້ມູນເວີຊັນ ແລະ ຜູ້ມີສ່ວນຮ່ວມ</string>
     <string name="settings_about_title">ກ່ຽວກັບ</string>
+    <string name="settings_backed_up">ສຳຮອງການຕັ້ງຄ່າແລ້ວ</string>
+    <string name="settings_backup_failed">ບໍ່ສາມາດຂຽນໄຟລ໌ສຳຮອງໄດ້</string>
+    <string name="settings_backup_summary">ບັນທຶກການຕັ້ງຄ່າທັງໝົດລົງໄຟລ໌</string>
+    <string name="settings_backup_title">ສຳຮອງການຕັ້ງຄ່າ</string>
+    <string name="settings_category_manage_data">ຈັດການຂໍ້ມູນ</string>
     <string name="settings_clear_settings_dialog_message">ນີ້ຈະຕັ້ງການຕັ້ງຄ່າແປ້ນພິມທັງໝົດຄືນເປັນຄ່າເລີ່ມຕົ້ນ. ທ່ານແນ່ໃຈບໍ?</string>
     <string name="settings_clear_settings_dialog_title">ລຶບຂໍ້ມູນການຕັ້ງຄ່າ</string>
     <string name="settings_clear_settings_summary">ຕັ້ງການຕັ້ງຄ່າແປ້ນພິມທັງໝົດຄືນເປັນຄ່າເລີ່ມຕົ້ນ</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">ວະລີດ່ວນ 4</string>
     <string name="settings_quick_phrase_5">ວະລີດ່ວນ 5</string>
     <string name="settings_quick_phrases_screen_title">ວະລີດ່ວນ</string>
+    <string name="settings_restore_dialog_confirm">ກູ້ຄືນ</string>
+    <string name="settings_restore_dialog_message">ປ່ຽນການຕັ້ງຄ່າປັດຈຸບັນດ້ວຍໄຟລ໌ສຳຮອງບໍ?</string>
+    <string name="settings_restore_not_a_backup">ໄຟລ໌ນີ້ບໍ່ແມ່ນໄຟລ໌ສຳຮອງການຕັ້ງຄ່າ BBKB</string>
+    <string name="settings_restore_read_failed">ບໍ່ສາມາດອ່ານໄຟລ໌ສຳຮອງໄດ້</string>
+    <string name="settings_restore_summary">ໂຫຼດການຕັ້ງຄ່າຈາກໄຟລ໌ສຳຮອງ</string>
+    <string name="settings_restore_title">ກູ້ຄືນການຕັ້ງຄ່າ</string>
+    <string name="settings_restored_count">ກູ້ຄືນການຕັ້ງຄ່າແລ້ວ %1$d ລາຍການ</string>
     <string name="settings_screen_type_by_swiping">ພິມດ້ວຍການປັດ</string>
     <string name="settings_screen_type_by_swiping_summary">ພິມໄດ້ໄວໂດຍບໍ່ຕ້ອງຍົກນິ້ວອອກຈາກແປ້ນພິມ</string>
     <string name="settings_screen_type_by_swiping_unavailable">ການພິມດ້ວຍການປັດບໍ່ມີໃຫ້ໃຊ້ໃນພາສາຂອງທ່ານ.</string>

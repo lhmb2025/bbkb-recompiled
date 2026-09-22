@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Tuntematon</string>
     <string name="settings_about_summary">Versiotiedot ja tekijät</string>
     <string name="settings_about_title">Tietoja</string>
+    <string name="settings_backed_up">Asetukset varmuuskopioitiin</string>
+    <string name="settings_backup_failed">Varmuuskopiota ei voitu kirjoittaa</string>
+    <string name="settings_backup_summary">Tallenna kaikki asetukset tiedostoon</string>
+    <string name="settings_backup_title">Varmuuskopioi asetukset</string>
+    <string name="settings_category_manage_data">Tietojen hallinta</string>
     <string name="settings_clear_settings_dialog_message">Tämä palauttaa kaikki näppäimistön asetukset oletusarvoihin. Haluatko varmasti jatkaa?</string>
     <string name="settings_clear_settings_dialog_title">Tyhjennä asetustiedot</string>
     <string name="settings_clear_settings_summary">Palauta kaikki näppäimistön asetukset oletusarvoihin</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Pikalause 4</string>
     <string name="settings_quick_phrase_5">Pikalause 5</string>
     <string name="settings_quick_phrases_screen_title">Pikalauseet</string>
+    <string name="settings_restore_dialog_confirm">Palauta</string>
+    <string name="settings_restore_dialog_message">Korvataanko nykyiset asetukset varmuuskopiolla?</string>
+    <string name="settings_restore_not_a_backup">Tiedosto ei ole BBKB-asetusten varmuuskopio</string>
+    <string name="settings_restore_read_failed">Varmuuskopiota ei voitu lukea</string>
+    <string name="settings_restore_summary">Lataa asetukset varmuuskopiosta</string>
+    <string name="settings_restore_title">Palauta asetukset</string>
+    <string name="settings_restored_count">Palautettiin %1$d asetusta</string>
     <string name="settings_screen_type_by_swiping">Kirjoita pyyhkäisemällä</string>
     <string name="settings_screen_type_by_swiping_summary">Kirjoita nopeasti nostamatta sormea näppäimistöltä</string>
     <string name="settings_screen_type_by_swiping_unavailable">Kirjoittaminen pyyhkäisemällä ei ole käytettävissä kielelläsi.</string>

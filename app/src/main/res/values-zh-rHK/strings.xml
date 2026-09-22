@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">不明</string>
     <string name="settings_about_summary">版本資料和鳴謝</string>
     <string name="settings_about_title">關於</string>
+    <string name="settings_backed_up">設定已備份</string>
+    <string name="settings_backup_failed">無法寫入備份</string>
+    <string name="settings_backup_summary">將所有設定儲存至檔案</string>
+    <string name="settings_backup_title">備份設定</string>
+    <string name="settings_category_manage_data">管理資料</string>
     <string name="settings_clear_settings_dialog_message">這會將所有鍵盤設定重設為預設值。確定要繼續嗎？</string>
     <string name="settings_clear_settings_dialog_title">清除設定資料</string>
     <string name="settings_clear_settings_summary">將所有鍵盤設定重設為預設值</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">快速短語 4</string>
     <string name="settings_quick_phrase_5">快速短語 5</string>
     <string name="settings_quick_phrases_screen_title">快速短語</string>
+    <string name="settings_restore_dialog_confirm">還原</string>
+    <string name="settings_restore_dialog_message">要用備份取代目前的設定嗎？</string>
+    <string name="settings_restore_not_a_backup">該檔案不是 BBKB 設定備份</string>
+    <string name="settings_restore_read_failed">無法讀取備份</string>
+    <string name="settings_restore_summary">從備份檔案載入設定</string>
+    <string name="settings_restore_title">還原設定</string>
+    <string name="settings_restored_count">已還原 %1$d 項設定</string>
     <string name="settings_screen_type_by_swiping">滑動輸入</string>
     <string name="settings_screen_type_by_swiping_summary">手指不用離開鍵盤，即可快速輸入</string>
     <string name="settings_screen_type_by_swiping_unavailable">你的語言不支援滑動輸入。</string>

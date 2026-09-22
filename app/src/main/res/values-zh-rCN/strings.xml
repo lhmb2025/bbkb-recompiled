@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">未知</string>
     <string name="settings_about_summary">版本信息和致谢</string>
     <string name="settings_about_title">关于</string>
+    <string name="settings_backed_up">设置已备份</string>
+    <string name="settings_backup_failed">无法写入备份</string>
+    <string name="settings_backup_summary">将所有设置保存到文件</string>
+    <string name="settings_backup_title">备份设置</string>
+    <string name="settings_category_manage_data">管理数据</string>
     <string name="settings_clear_settings_dialog_message">这会将所有键盘设置重置为默认值。确定要继续吗？</string>
     <string name="settings_clear_settings_dialog_title">清除设置数据</string>
     <string name="settings_clear_settings_summary">将所有键盘设置重置为默认值</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">快捷短语 4</string>
     <string name="settings_quick_phrase_5">快捷短语 5</string>
     <string name="settings_quick_phrases_screen_title">快捷短语</string>
+    <string name="settings_restore_dialog_confirm">恢复</string>
+    <string name="settings_restore_dialog_message">用备份替换当前设置？</string>
+    <string name="settings_restore_not_a_backup">该文件不是 BBKB 设置备份</string>
+    <string name="settings_restore_read_failed">无法读取备份</string>
+    <string name="settings_restore_summary">从备份文件加载设置</string>
+    <string name="settings_restore_title">恢复设置</string>
+    <string name="settings_restored_count">已恢复 %1$d 项设置</string>
     <string name="settings_screen_type_by_swiping">滑动键入</string>
     <string name="settings_screen_type_by_swiping_summary">手指不用离开键盘就能快速键入</string>
     <string name="settings_screen_type_by_swiping_unavailable">您的语言不支持滑动打字。</string>

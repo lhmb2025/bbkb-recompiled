@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Невідомо</string>
     <string name="settings_about_summary">Відомості про версію та подяки</string>
     <string name="settings_about_title">Про програму</string>
+    <string name="settings_backed_up">Резервну копію налаштувань створено</string>
+    <string name="settings_backup_failed">Не вдалося записати резервну копію</string>
+    <string name="settings_backup_summary">Зберегти всі налаштування у файл</string>
+    <string name="settings_backup_title">Резервна копія налаштувань</string>
+    <string name="settings_category_manage_data">Керування даними</string>
     <string name="settings_clear_settings_dialog_message">Усі налаштування клавіатури буде скинуто до значень за умовчанням. Продовжити?</string>
     <string name="settings_clear_settings_dialog_title">Очищення даних налаштувань</string>
     <string name="settings_clear_settings_summary">Скинути всі налаштування клавіатури до значень за умовчанням</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Швидка фраза 4</string>
     <string name="settings_quick_phrase_5">Швидка фраза 5</string>
     <string name="settings_quick_phrases_screen_title">Швидкі фрази</string>
+    <string name="settings_restore_dialog_confirm">Відновити</string>
+    <string name="settings_restore_dialog_message">Замінити поточні налаштування резервною копією?</string>
+    <string name="settings_restore_not_a_backup">Цей файл не є резервною копією налаштувань BBKB</string>
+    <string name="settings_restore_read_failed">Не вдалося прочитати резервну копію</string>
+    <string name="settings_restore_summary">Завантажити налаштування з резервної копії</string>
+    <string name="settings_restore_title">Відновити налаштування</string>
+    <string name="settings_restored_count">Відновлено налаштувань: %1$d</string>
     <string name="settings_screen_type_by_swiping">Введення тексту жестами</string>
     <string name="settings_screen_type_by_swiping_summary">Набирайте текст швидко, не відриваючи пальця від клавіатури</string>
     <string name="settings_screen_type_by_swiping_unavailable">Введення тексту жестами недоступне для вашої мови.</string>

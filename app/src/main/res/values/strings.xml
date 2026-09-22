@@ -647,6 +647,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Unknown</string>
     <string name="settings_about_summary">Version information and credits</string>
     <string name="settings_about_title">About</string>
+    <string name="settings_backed_up">Settings backed up</string>
+    <string name="settings_backup_failed">Could not write the backup</string>
+    <string name="settings_backup_summary">Save all settings to a file</string>
+    <string name="settings_backup_title">Back up settings</string>
+    <string name="settings_category_manage_data">Manage data</string>
     <string name="settings_clear_settings_dialog_message">This will reset all keyboard settings to defaults. Are you sure?</string>
     <string name="settings_clear_settings_dialog_title">Clear Settings Data</string>
     <string name="settings_clear_settings_summary">Reset all keyboard settings to defaults</string>
@@ -676,6 +681,13 @@
     <string name="settings_quick_phrase_4">Quick phrase 4</string>
     <string name="settings_quick_phrase_5">Quick phrase 5</string>
     <string name="settings_quick_phrases_screen_title">Quick phrases</string>
+    <string name="settings_restore_dialog_confirm">Restore</string>
+    <string name="settings_restore_dialog_message">Replace current settings with the backup?</string>
+    <string name="settings_restore_not_a_backup">That file is not a BBKB settings backup</string>
+    <string name="settings_restore_read_failed">Could not read the backup</string>
+    <string name="settings_restore_summary">Load settings from a backup file</string>
+    <string name="settings_restore_title">Restore settings</string>
+    <string name="settings_restored_count">Restored %1$d settings</string>
     <string name="settings_screen_type_by_swiping">Type by swiping</string>
     <string name="settings_screen_type_by_swiping_summary">Type quickly without lifting your finger off the keyboard</string>
     <string name="settings_screen_type_by_swiping_unavailable">Type by swiping is not available in your language.</string>

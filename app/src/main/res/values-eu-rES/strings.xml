@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Ezezaguna</string>
     <string name="settings_about_summary">Bertsioaren informazioa eta kredituak</string>
     <string name="settings_about_title">Honi buruz</string>
+    <string name="settings_backed_up">Ezarpenen babeskopia egin da</string>
+    <string name="settings_backup_failed">Ezin izan da babeskopia idatzi</string>
+    <string name="settings_backup_summary">Gorde ezarpen guztiak fitxategi batean</string>
+    <string name="settings_backup_title">Egin ezarpenen babeskopia</string>
+    <string name="settings_category_manage_data">Datuen kudeaketa</string>
     <string name="settings_clear_settings_dialog_message">Teklatuaren ezarpen guztiak lehenetsietara berrezarriko dira. Ziur zaude?</string>
     <string name="settings_clear_settings_dialog_title">Garbitu ezarpenen datuak</string>
     <string name="settings_clear_settings_summary">Berrezarri teklatuaren ezarpen guztiak lehenetsietara</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">4. esaldi azkarra</string>
     <string name="settings_quick_phrase_5">5. esaldi azkarra</string>
     <string name="settings_quick_phrases_screen_title">Esaldi azkarrak</string>
+    <string name="settings_restore_dialog_confirm">Leheneratu</string>
+    <string name="settings_restore_dialog_message">Uneko ezarpenak babeskopiarekin ordeztu nahi dituzu?</string>
+    <string name="settings_restore_not_a_backup">Fitxategi hori ez da BBKB ezarpenen babeskopia</string>
+    <string name="settings_restore_read_failed">Ezin izan da babeskopia irakurri</string>
+    <string name="settings_restore_summary">Kargatu ezarpenak babeskopia-fitxategi batetik</string>
+    <string name="settings_restore_title">Leheneratu ezarpenak</string>
+    <string name="settings_restored_count">%1$d ezarpen leheneratu dira</string>
     <string name="settings_screen_type_by_swiping">Idatzi hatza lerratuz</string>
     <string name="settings_screen_type_by_swiping_summary">Idatzi azkar hatza teklatutik altxatu gabe</string>
     <string name="settings_screen_type_by_swiping_unavailable">Hatza lerratuz idaztea ez dago erabilgarri zure hizkuntzan.</string>

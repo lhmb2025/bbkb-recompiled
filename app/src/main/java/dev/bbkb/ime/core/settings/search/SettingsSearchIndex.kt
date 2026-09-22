@@ -3,6 +3,7 @@ package dev.bbkb.ime.core.settings.search
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.SettingsRoute
+import dev.bbkb.ime.core.settings.backup.SettingsBackup
 
 /**
  * The device facts the index needs in order to decide whether a setting's row exists at all.
@@ -225,6 +226,13 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.device_profile_builder_entry_title, "device profile builder capture keys scancode keycode export import share unknown phone config", SettingsRoute.DeviceConfiguration.route, ADVANCED, requires = DeviceRequirement.PHYSICAL_KEYBOARD),
         SearchableSetting(R.string.settings_debug_title, "debug developer", SettingsRoute.Advanced.route, ADVANCED),
         SearchableSetting(R.string.settings_clear_settings_title, "reset clear settings data", SettingsRoute.Advanced.route, ADVANCED),
+        // ── Advanced: Manage data (settings backup/restore) ─────────────────────
+        // Anchored, unlike the four rows above: these two are actions rather than screens, so
+        // landing on the Advanced screen with the right row highlighted is the whole navigation.
+        // The ids are the ones SettingsBackup declares — the rows hold no preference key to name
+        // them by.
+        SearchableSetting(R.string.settings_backup_title, "backup back up export save settings file json copy transfer", SettingsRoute.Advanced.route, ADVANCED, SettingsBackup.ANCHOR_BACK_UP),
+        SearchableSetting(R.string.settings_restore_title, "restore import load settings file json backup transfer migrate", SettingsRoute.Advanced.route, ADVANCED, SettingsBackup.ANCHOR_RESTORE),
         // ── Advanced: OTA app updates (About -> Updates) ────────────────────────
         SearchableSetting(R.string.settings_updates_title, "update ota new version apk download install upgrade", SettingsRoute.Updates.route, ADVANCED),
         SearchableSetting(R.string.settings_update_background_check_title, "update daily background check notify notification", SettingsRoute.Updates.route, ADVANCED, "pref_update_background_check"),

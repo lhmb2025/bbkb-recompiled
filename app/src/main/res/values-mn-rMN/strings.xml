@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Тодорхойгүй</string>
     <string name="settings_about_summary">Хувилбарын мэдээлэл ба талархал</string>
     <string name="settings_about_title">Тухай</string>
+    <string name="settings_backed_up">Тохиргооны нөөц хуулбар үүслээ</string>
+    <string name="settings_backup_failed">Нөөц хуулбарыг бичиж чадсангүй</string>
+    <string name="settings_backup_summary">Бүх тохиргоог файлд хадгална</string>
+    <string name="settings_backup_title">Тохиргоог нөөцлөх</string>
+    <string name="settings_category_manage_data">Өгөгдөл удирдах</string>
     <string name="settings_clear_settings_dialog_message">Энэ нь гарын бүх тохиргоог анхдагч утгад нь буцаана. Итгэлтэй байна уу?</string>
     <string name="settings_clear_settings_dialog_title">Тохиргооны өгөгдлийг цэвэрлэх</string>
     <string name="settings_clear_settings_summary">Гарын бүх тохиргоог анхдагч утгад буцаах</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Түргэн хэллэг 4</string>
     <string name="settings_quick_phrase_5">Түргэн хэллэг 5</string>
     <string name="settings_quick_phrases_screen_title">Түргэн хэллэг</string>
+    <string name="settings_restore_dialog_confirm">Сэргээх</string>
+    <string name="settings_restore_dialog_message">Одоогийн тохиргоог нөөц хуулбараар солих уу?</string>
+    <string name="settings_restore_not_a_backup">Энэ файл BBKB тохиргооны нөөц хуулбар биш байна</string>
+    <string name="settings_restore_read_failed">Нөөц хуулбарыг уншиж чадсангүй</string>
+    <string name="settings_restore_summary">Нөөц файлаас тохиргоог ачаална</string>
+    <string name="settings_restore_title">Тохиргоог сэргээх</string>
+    <string name="settings_restored_count">%1$d тохиргоог сэргээлээ</string>
     <string name="settings_screen_type_by_swiping">Шударч бичих</string>
     <string name="settings_screen_type_by_swiping_summary">Хуруугаа гараас салгалгүй хурдан бичих</string>
     <string name="settings_screen_type_by_swiping_unavailable">Шударч бичих боломж таны хэлэнд байхгүй.</string>

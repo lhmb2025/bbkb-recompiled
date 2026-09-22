@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Tidak diketahui</string>
     <string name="settings_about_summary">Maklumat versi dan penghargaan</string>
     <string name="settings_about_title">Perihal</string>
+    <string name="settings_backed_up">Tetapan telah disandarkan</string>
+    <string name="settings_backup_failed">Tidak dapat menulis sandaran</string>
+    <string name="settings_backup_summary">Simpan semua tetapan ke dalam fail</string>
+    <string name="settings_backup_title">Sandarkan tetapan</string>
+    <string name="settings_category_manage_data">Urus data</string>
     <string name="settings_clear_settings_dialog_message">Ini akan menetapkan semula semua tetapan papan kekunci kepada lalai. Adakah anda pasti?</string>
     <string name="settings_clear_settings_dialog_title">Kosongkan Data Tetapan</string>
     <string name="settings_clear_settings_summary">Tetapkan semula semua tetapan papan kekunci kepada lalai</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Frasa pantas 4</string>
     <string name="settings_quick_phrase_5">Frasa pantas 5</string>
     <string name="settings_quick_phrases_screen_title">Frasa pantas</string>
+    <string name="settings_restore_dialog_confirm">Pulihkan</string>
+    <string name="settings_restore_dialog_message">Gantikan tetapan semasa dengan sandaran?</string>
+    <string name="settings_restore_not_a_backup">Fail itu bukan sandaran tetapan BBKB</string>
+    <string name="settings_restore_read_failed">Tidak dapat membaca sandaran</string>
+    <string name="settings_restore_summary">Muatkan tetapan daripada fail sandaran</string>
+    <string name="settings_restore_title">Pulihkan tetapan</string>
+    <string name="settings_restored_count">%1$d tetapan dipulihkan</string>
     <string name="settings_screen_type_by_swiping">Menaip dengan meleret</string>
     <string name="settings_screen_type_by_swiping_summary">Menaip dengan pantas tanpa mengangkat jari anda daripada papan kekunci</string>
     <string name="settings_screen_type_by_swiping_unavailable">Menaip dengan meleret tidak tersedia dalam bahasa anda.</string>

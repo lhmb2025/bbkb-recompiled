@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">অজানা</string>
     <string name="settings_about_summary">সংস্করণের তথ্য ও কৃতজ্ঞতা স্বীকার</string>
     <string name="settings_about_title">সম্পর্কে</string>
+    <string name="settings_backed_up">সেটিংস ব্যাকআপ করা হয়েছে</string>
+    <string name="settings_backup_failed">ব্যাকআপ লেখা যায়নি</string>
+    <string name="settings_backup_summary">সব সেটিংস একটি ফাইলে সংরক্ষণ করুন</string>
+    <string name="settings_backup_title">সেটিংস ব্যাকআপ করুন</string>
+    <string name="settings_category_manage_data">ডেটা পরিচালনা</string>
     <string name="settings_clear_settings_dialog_message">এতে কীবোর্ডের সব সেটিংস ডিফল্টে ফিরে যাবে। আপনি কি নিশ্চিত?</string>
     <string name="settings_clear_settings_dialog_title">সেটিংসের ডেটা মুছুন</string>
     <string name="settings_clear_settings_summary">কীবোর্ডের সব সেটিংস ডিফল্টে ফিরিয়ে আনুন</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">দ্রুত বাক্যাংশ ৪</string>
     <string name="settings_quick_phrase_5">দ্রুত বাক্যাংশ ৫</string>
     <string name="settings_quick_phrases_screen_title">দ্রুত বাক্যাংশ</string>
+    <string name="settings_restore_dialog_confirm">পুনরুদ্ধার</string>
+    <string name="settings_restore_dialog_message">বর্তমান সেটিংস ব্যাকআপ দিয়ে প্রতিস্থাপন করবেন?</string>
+    <string name="settings_restore_not_a_backup">এই ফাইলটি BBKB সেটিংসের ব্যাকআপ নয়</string>
+    <string name="settings_restore_read_failed">ব্যাকআপ পড়া যায়নি</string>
+    <string name="settings_restore_summary">ব্যাকআপ ফাইল থেকে সেটিংস লোড করুন</string>
+    <string name="settings_restore_title">সেটিংস পুনরুদ্ধার করুন</string>
+    <string name="settings_restored_count">%1$dটি সেটিংস পুনরুদ্ধার করা হয়েছে</string>
     <string name="settings_screen_type_by_swiping">সোয়াইপ করে লিখুন</string>
     <string name="settings_screen_type_by_swiping_summary">কীবোর্ড থেকে আঙুল না তুলেই দ্রুত লিখুন</string>
     <string name="settings_screen_type_by_swiping_unavailable">আপনার ভাষায় সোয়াইপ করে লেখা উপলব্ধ নয়।</string>

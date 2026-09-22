@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Neznano</string>
     <string name="settings_about_summary">Podatki o različici in zasluge</string>
     <string name="settings_about_title">O aplikaciji</string>
+    <string name="settings_backed_up">Nastavitve so varnostno kopirane</string>
+    <string name="settings_backup_failed">Varnostne kopije ni bilo mogoče zapisati</string>
+    <string name="settings_backup_summary">Shranite vse nastavitve v datoteko</string>
+    <string name="settings_backup_title">Varnostno kopiraj nastavitve</string>
+    <string name="settings_category_manage_data">Upravljanje podatkov</string>
     <string name="settings_clear_settings_dialog_message">S tem boste vse nastavitve tipkovnice ponastavili na privzete. Ali ste prepričani?</string>
     <string name="settings_clear_settings_dialog_title">Brisanje podatkov nastavitev</string>
     <string name="settings_clear_settings_summary">Ponastavi vse nastavitve tipkovnice na privzete</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Hitra fraza 4</string>
     <string name="settings_quick_phrase_5">Hitra fraza 5</string>
     <string name="settings_quick_phrases_screen_title">Hitre fraze</string>
+    <string name="settings_restore_dialog_confirm">Obnovi</string>
+    <string name="settings_restore_dialog_message">Želite zamenjati trenutne nastavitve z varnostno kopijo?</string>
+    <string name="settings_restore_not_a_backup">Ta datoteka ni varnostna kopija nastavitev BBKB</string>
+    <string name="settings_restore_read_failed">Varnostne kopije ni bilo mogoče prebrati</string>
+    <string name="settings_restore_summary">Naložite nastavitve iz varnostne kopije</string>
+    <string name="settings_restore_title">Obnovi nastavitve</string>
+    <string name="settings_restored_count">Obnovljenih nastavitev: %1$d</string>
     <string name="settings_screen_type_by_swiping">Tipkanje s podrsanjem</string>
     <string name="settings_screen_type_by_swiping_summary">Tipkajte hitro, ne da bi dvignili prst s tipkovnice</string>
     <string name="settings_screen_type_by_swiping_unavailable">Tipkanje s podrsanjem v vašem jeziku ni na voljo.</string>

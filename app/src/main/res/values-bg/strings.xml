@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Неизвестно</string>
     <string name="settings_about_summary">Информация за версията и благодарности</string>
     <string name="settings_about_title">Относно</string>
+    <string name="settings_backed_up">Настройките са архивирани</string>
+    <string name="settings_backup_failed">Архивът не може да бъде записан</string>
+    <string name="settings_backup_summary">Запазване на всички настройки във файл</string>
+    <string name="settings_backup_title">Архивиране на настройките</string>
+    <string name="settings_category_manage_data">Управление на данните</string>
     <string name="settings_clear_settings_dialog_message">Това ще върне всички настройки на клавиатурата към стойностите по подразбиране. Сигурни ли сте?</string>
     <string name="settings_clear_settings_dialog_title">Изчистване на данните от настройките</string>
     <string name="settings_clear_settings_summary">Връщане на всички настройки на клавиатурата към стойностите по подразбиране</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Бърза фраза 4</string>
     <string name="settings_quick_phrase_5">Бърза фраза 5</string>
     <string name="settings_quick_phrases_screen_title">Бързи фрази</string>
+    <string name="settings_restore_dialog_confirm">Възстановяване</string>
+    <string name="settings_restore_dialog_message">Да се заменят ли текущите настройки с архива?</string>
+    <string name="settings_restore_not_a_backup">Този файл не е архив с настройки на BBKB</string>
+    <string name="settings_restore_read_failed">Архивът не може да бъде прочетен</string>
+    <string name="settings_restore_summary">Зареждане на настройки от архивен файл</string>
+    <string name="settings_restore_title">Възстановяване на настройките</string>
+    <string name="settings_restored_count">Възстановени са %1$d настройки</string>
     <string name="settings_screen_type_by_swiping">Писане с плъзгане</string>
     <string name="settings_screen_type_by_swiping_summary">Пишете бързо, без да вдигате пръста си от клавиатурата</string>
     <string name="settings_screen_type_by_swiping_unavailable">Писането с плъзгане не е налично за вашия език.</string>

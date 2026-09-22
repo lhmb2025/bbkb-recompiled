@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Непознато</string>
     <string name="settings_about_summary">Информации за верзијата и заслуги</string>
     <string name="settings_about_title">За апликацијата</string>
+    <string name="settings_backed_up">Направена е резервна копија од поставките</string>
+    <string name="settings_backup_failed">Резервната копија не можеше да се запише</string>
+    <string name="settings_backup_summary">Зачувај ги сите поставки во датотека</string>
+    <string name="settings_backup_title">Резервна копија од поставките</string>
+    <string name="settings_category_manage_data">Управување со податоци</string>
     <string name="settings_clear_settings_dialog_message">Ова ќе ги врати сите поставки на тастатурата на стандардните вредности. Дали сте сигурни?</string>
     <string name="settings_clear_settings_dialog_title">Бришење на податоците од поставките</string>
     <string name="settings_clear_settings_summary">Враќање на сите поставки на тастатурата на стандардните вредности</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Брза фраза 4</string>
     <string name="settings_quick_phrase_5">Брза фраза 5</string>
     <string name="settings_quick_phrases_screen_title">Брзи фрази</string>
+    <string name="settings_restore_dialog_confirm">Врати</string>
+    <string name="settings_restore_dialog_message">Да се заменат тековните поставки со резервната копија?</string>
+    <string name="settings_restore_not_a_backup">Таа датотека не е резервна копија од поставките на BBKB</string>
+    <string name="settings_restore_read_failed">Резервната копија не можеше да се прочита</string>
+    <string name="settings_restore_summary">Вчитај поставки од резервна копија</string>
+    <string name="settings_restore_title">Врати поставки</string>
+    <string name="settings_restored_count">Вратени се %1$d поставки</string>
     <string name="settings_screen_type_by_swiping">Пишување со повлекување</string>
     <string name="settings_screen_type_by_swiping_summary">Пишувајте брзо без да го кревате прстот од тастатурата</string>
     <string name="settings_screen_type_by_swiping_unavailable">Пишувањето со повлекување не е достапно на вашиот јазик.</string>

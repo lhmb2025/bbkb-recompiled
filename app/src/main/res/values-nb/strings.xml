@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Ukjent</string>
     <string name="settings_about_summary">Versjonsinformasjon og medvirkende</string>
     <string name="settings_about_title">Om</string>
+    <string name="settings_backed_up">Innstillingene er sikkerhetskopiert</string>
+    <string name="settings_backup_failed">Kunne ikke skrive sikkerhetskopien</string>
+    <string name="settings_backup_summary">Lagre alle innstillinger i en fil</string>
+    <string name="settings_backup_title">Sikkerhetskopier innstillinger</string>
+    <string name="settings_category_manage_data">Administrer data</string>
     <string name="settings_clear_settings_dialog_message">Dette tilbakestiller alle tastaturinnstillingene til standard. Er du sikker?</string>
     <string name="settings_clear_settings_dialog_title">Slett innstillingsdata</string>
     <string name="settings_clear_settings_summary">Tilbakestill alle tastaturinnstillinger til standard</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Hurtigfrase 4</string>
     <string name="settings_quick_phrase_5">Hurtigfrase 5</string>
     <string name="settings_quick_phrases_screen_title">Hurtigfraser</string>
+    <string name="settings_restore_dialog_confirm">Gjenopprett</string>
+    <string name="settings_restore_dialog_message">Vil du erstatte gjeldende innstillinger med sikkerhetskopien?</string>
+    <string name="settings_restore_not_a_backup">Den filen er ikke en sikkerhetskopi av BBKB-innstillinger</string>
+    <string name="settings_restore_read_failed">Kunne ikke lese sikkerhetskopien</string>
+    <string name="settings_restore_summary">Last inn innstillinger fra en sikkerhetskopi</string>
+    <string name="settings_restore_title">Gjenopprett innstillinger</string>
+    <string name="settings_restored_count">Gjenopprettet %1$d innstillinger</string>
     <string name="settings_screen_type_by_swiping">Skriv ved å sveipe</string>
     <string name="settings_screen_type_by_swiping_summary">Skriv raskt uten å løfte fingeren fra tastaturet</string>
     <string name="settings_screen_type_by_swiping_unavailable">Skriv ved å sveipe er ikke tilgjengelig for språket ditt.</string>

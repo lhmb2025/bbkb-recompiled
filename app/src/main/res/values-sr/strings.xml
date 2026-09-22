@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Nepoznato</string>
     <string name="settings_about_summary">Informacije o verziji i zasluge</string>
     <string name="settings_about_title">O aplikaciji</string>
+    <string name="settings_backed_up">Направљена је резервна копија подешавања</string>
+    <string name="settings_backup_failed">Резервна копија није могла да се упише</string>
+    <string name="settings_backup_summary">Сачувај сва подешавања у датотеку</string>
+    <string name="settings_backup_title">Направи резервну копију подешавања</string>
+    <string name="settings_category_manage_data">Управљање подацима</string>
     <string name="settings_clear_settings_dialog_message">Ovim će se sve postavke tastature vratiti na podrazumevane. Jeste li sigurni?</string>
     <string name="settings_clear_settings_dialog_title">Brisanje podataka o postavkama</string>
     <string name="settings_clear_settings_summary">Vrati sve postavke tastature na podrazumevane</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Brza fraza 4</string>
     <string name="settings_quick_phrase_5">Brza fraza 5</string>
     <string name="settings_quick_phrases_screen_title">Brze fraze</string>
+    <string name="settings_restore_dialog_confirm">Врати</string>
+    <string name="settings_restore_dialog_message">Заменити тренутна подешавања резервном копијом?</string>
+    <string name="settings_restore_not_a_backup">Та датотека није резервна копија подешавања BBKB-а</string>
+    <string name="settings_restore_read_failed">Резервна копија није могла да се прочита</string>
+    <string name="settings_restore_summary">Учитај подешавања из резервне копије</string>
+    <string name="settings_restore_title">Врати подешавања</string>
+    <string name="settings_restored_count">Враћено подешавања: %1$d</string>
     <string name="settings_screen_type_by_swiping">Kucanje prevlačenjem</string>
     <string name="settings_screen_type_by_swiping_summary">Kucajte brzo bez podizanja prsta sa tastature</string>
     <string name="settings_screen_type_by_swiping_unavailable">Kucanje prevlačenjem nije dostupno na vašem jeziku.</string>

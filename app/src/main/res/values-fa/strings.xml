@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">نامشخص</string>
     <string name="settings_about_summary">اطلاعات نسخه و دست‌اندرکاران</string>
     <string name="settings_about_title">درباره</string>
+    <string name="settings_backed_up">از تنظیمات نسخه پشتیبان گرفته شد</string>
+    <string name="settings_backup_failed">نوشتن نسخه پشتیبان ممکن نشد</string>
+    <string name="settings_backup_summary">ذخیره همه تنظیمات در یک فایل</string>
+    <string name="settings_backup_title">پشتیبان‌گیری از تنظیمات</string>
+    <string name="settings_category_manage_data">مدیریت داده‌ها</string>
     <string name="settings_clear_settings_dialog_message">این کار همه تنظیمات صفحه کلید را به حالت پیش‌فرض بازمی‌گرداند. مطمئن هستید؟</string>
     <string name="settings_clear_settings_dialog_title">پاک کردن داده‌های تنظیمات</string>
     <string name="settings_clear_settings_summary">بازنشانی همه تنظیمات صفحه کلید به حالت پیش‌فرض</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">عبارت سریع 4</string>
     <string name="settings_quick_phrase_5">عبارت سریع 5</string>
     <string name="settings_quick_phrases_screen_title">عبارت‌های سریع</string>
+    <string name="settings_restore_dialog_confirm">بازیابی</string>
+    <string name="settings_restore_dialog_message">تنظیمات فعلی با نسخه پشتیبان جایگزین شود؟</string>
+    <string name="settings_restore_not_a_backup">این فایل نسخه پشتیبان تنظیمات BBKB نیست</string>
+    <string name="settings_restore_read_failed">خواندن نسخه پشتیبان ممکن نشد</string>
+    <string name="settings_restore_summary">بارگذاری تنظیمات از فایل پشتیبان</string>
+    <string name="settings_restore_title">بازیابی تنظیمات</string>
+    <string name="settings_restored_count">%1$d تنظیم بازیابی شد</string>
     <string name="settings_screen_type_by_swiping">تایپ با کشیدن انگشت</string>
     <string name="settings_screen_type_by_swiping_summary">بدون برداشتن انگشت از صفحه کلید، سریع تایپ کنید</string>
     <string name="settings_screen_type_by_swiping_unavailable">تایپ با کشیدن انگشت در زبان شما در دسترس نیست.</string>

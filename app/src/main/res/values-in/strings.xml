@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Tidak diketahui</string>
     <string name="settings_about_summary">Informasi versi dan kredit</string>
     <string name="settings_about_title">Tentang</string>
+    <string name="settings_backed_up">Setelan dicadangkan</string>
+    <string name="settings_backup_failed">Tidak dapat menulis cadangan</string>
+    <string name="settings_backup_summary">Simpan semua setelan ke file</string>
+    <string name="settings_backup_title">Cadangkan setelan</string>
+    <string name="settings_category_manage_data">Kelola data</string>
     <string name="settings_clear_settings_dialog_message">Tindakan ini akan menyetel ulang semua setelan keyboard ke default. Anda yakin?</string>
     <string name="settings_clear_settings_dialog_title">Hapus Data Setelan</string>
     <string name="settings_clear_settings_summary">Setel ulang semua setelan keyboard ke default</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Frasa cepat 4</string>
     <string name="settings_quick_phrase_5">Frasa cepat 5</string>
     <string name="settings_quick_phrases_screen_title">Frasa cepat</string>
+    <string name="settings_restore_dialog_confirm">Pulihkan</string>
+    <string name="settings_restore_dialog_message">Ganti setelan saat ini dengan cadangan?</string>
+    <string name="settings_restore_not_a_backup">File itu bukan cadangan setelan BBKB</string>
+    <string name="settings_restore_read_failed">Tidak dapat membaca cadangan</string>
+    <string name="settings_restore_summary">Muat setelan dari file cadangan</string>
+    <string name="settings_restore_title">Pulihkan setelan</string>
+    <string name="settings_restored_count">%1$d setelan dipulihkan</string>
     <string name="settings_screen_type_by_swiping">Mengetik dengan menggesek</string>
     <string name="settings_screen_type_by_swiping_summary">Ketik dengan cepat tanpa mengangkat jari dari keyboard</string>
     <string name="settings_screen_type_by_swiping_unavailable">Mengetik dengan menggeser jari tidak tersedia untuk bahasa Anda.</string>

@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Sconosciuto</string>
     <string name="settings_about_summary">Informazioni sulla versione e crediti</string>
     <string name="settings_about_title">Informazioni</string>
+    <string name="settings_backed_up">Backup delle impostazioni eseguito</string>
+    <string name="settings_backup_failed">Impossibile scrivere il backup</string>
+    <string name="settings_backup_summary">Salva tutte le impostazioni in un file</string>
+    <string name="settings_backup_title">Esegui il backup delle impostazioni</string>
+    <string name="settings_category_manage_data">Gestione dei dati</string>
     <string name="settings_clear_settings_dialog_message">Tutte le impostazioni della tastiera verranno ripristinate ai valori predefiniti. Vuoi continuare?</string>
     <string name="settings_clear_settings_dialog_title">Cancella i dati delle impostazioni</string>
     <string name="settings_clear_settings_summary">Ripristina tutte le impostazioni della tastiera ai valori predefiniti</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Frase rapida 4</string>
     <string name="settings_quick_phrase_5">Frase rapida 5</string>
     <string name="settings_quick_phrases_screen_title">Frasi rapide</string>
+    <string name="settings_restore_dialog_confirm">Ripristina</string>
+    <string name="settings_restore_dialog_message">Sostituire le impostazioni attuali con il backup?</string>
+    <string name="settings_restore_not_a_backup">Questo file non è un backup delle impostazioni BBKB</string>
+    <string name="settings_restore_read_failed">Impossibile leggere il backup</string>
+    <string name="settings_restore_summary">Carica le impostazioni da un file di backup</string>
+    <string name="settings_restore_title">Ripristina le impostazioni</string>
+    <string name="settings_restored_count">%1$d impostazioni ripristinate</string>
     <string name="settings_screen_type_by_swiping">Digita scorrendo</string>
     <string name="settings_screen_type_by_swiping_summary">Digita rapidamente senza sollevare il dito dalla tastiera</string>
     <string name="settings_screen_type_by_swiping_unavailable">La digitazione mediante scorrimento non è disponibile nella tua lingua.</string>

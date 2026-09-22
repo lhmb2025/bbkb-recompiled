@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Óþekkt</string>
     <string name="settings_about_summary">Upplýsingar um útgáfu og þakkir</string>
     <string name="settings_about_title">Um</string>
+    <string name="settings_backed_up">Öryggisafrit var tekið af stillingunum</string>
+    <string name="settings_backup_failed">Ekki tókst að skrifa öryggisafritið</string>
+    <string name="settings_backup_summary">Vista allar stillingar í skrá</string>
+    <string name="settings_backup_title">Taka öryggisafrit af stillingum</string>
+    <string name="settings_category_manage_data">Sýsla með gögn</string>
     <string name="settings_clear_settings_dialog_message">Þetta endurstillir allar stillingar lyklaborðsins á sjálfgefin gildi. Ertu viss?</string>
     <string name="settings_clear_settings_dialog_title">Hreinsa stillingagögn</string>
     <string name="settings_clear_settings_summary">Endurstilla allar stillingar lyklaborðsins á sjálfgefin gildi</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Skyndisetning 4</string>
     <string name="settings_quick_phrase_5">Skyndisetning 5</string>
     <string name="settings_quick_phrases_screen_title">Skyndisetningar</string>
+    <string name="settings_restore_dialog_confirm">Endurheimta</string>
+    <string name="settings_restore_dialog_message">Skipta núverandi stillingum út fyrir öryggisafritið?</string>
+    <string name="settings_restore_not_a_backup">Þessi skrá er ekki öryggisafrit af BBKB-stillingum</string>
+    <string name="settings_restore_read_failed">Ekki tókst að lesa öryggisafritið</string>
+    <string name="settings_restore_summary">Hlaða stillingum úr öryggisafriti</string>
+    <string name="settings_restore_title">Endurheimta stillingar</string>
+    <string name="settings_restored_count">%1$d stillingar endurheimtar</string>
     <string name="settings_screen_type_by_swiping">Skrifa með stroki</string>
     <string name="settings_screen_type_by_swiping_summary">Skrifaðu hratt án þess að lyfta fingri af lyklaborðinu</string>
     <string name="settings_screen_type_by_swiping_unavailable">Að skrifa með stroki er ekki í boði á tungumálinu þínu.</string>

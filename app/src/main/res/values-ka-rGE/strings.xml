@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">უცნობი</string>
     <string name="settings_about_summary">ვერსიის ინფორმაცია და მადლობები</string>
     <string name="settings_about_title">შესახებ</string>
+    <string name="settings_backed_up">პარამეტრების სარეზერვო ასლი შეიქმნა</string>
+    <string name="settings_backup_failed">სარეზერვო ასლის ჩაწერა ვერ მოხერხდა</string>
+    <string name="settings_backup_summary">ყველა პარამეტრის ფაილში შენახვა</string>
+    <string name="settings_backup_title">პარამეტრების სარეზერვო ასლის შექმნა</string>
+    <string name="settings_category_manage_data">მონაცემების მართვა</string>
     <string name="settings_clear_settings_dialog_message">ეს კლავიატურის ყველა პარამეტრს ნაგულისხმევზე დააბრუნებს. დარწმუნებული ხართ?</string>
     <string name="settings_clear_settings_dialog_title">პარამეტრების მონაცემების გასუფთავება</string>
     <string name="settings_clear_settings_summary">კლავიატურის ყველა პარამეტრის ნაგულისხმევზე დაბრუნება</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">სწრაფი ფრაზა 4</string>
     <string name="settings_quick_phrase_5">სწრაფი ფრაზა 5</string>
     <string name="settings_quick_phrases_screen_title">სწრაფი ფრაზები</string>
+    <string name="settings_restore_dialog_confirm">აღდგენა</string>
+    <string name="settings_restore_dialog_message">ჩანაცვლდეს მიმდინარე პარამეტრები სარეზერვო ასლით?</string>
+    <string name="settings_restore_not_a_backup">ეს ფაილი BBKB-ის პარამეტრების სარეზერვო ასლი არ არის</string>
+    <string name="settings_restore_read_failed">სარეზერვო ასლის წაკითხვა ვერ მოხერხდა</string>
+    <string name="settings_restore_summary">პარამეტრების ჩატვირთვა სარეზერვო ასლიდან</string>
+    <string name="settings_restore_title">პარამეტრების აღდგენა</string>
+    <string name="settings_restored_count">აღდგენილია %1$d პარამეტრი</string>
     <string name="settings_screen_type_by_swiping">აკრეფა გადასრიალებით</string>
     <string name="settings_screen_type_by_swiping_summary">აკრიფეთ სწრაფად, კლავიატურიდან თითის აუღებლად</string>
     <string name="settings_screen_type_by_swiping_unavailable">აკრეფა გადასრიალებით თქვენს ენაზე მიუწვდომელია.</string>

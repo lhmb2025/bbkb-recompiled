@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Không rõ</string>
     <string name="settings_about_summary">Thông tin phiên bản và ghi công</string>
     <string name="settings_about_title">Giới thiệu</string>
+    <string name="settings_backed_up">Đã sao lưu cài đặt</string>
+    <string name="settings_backup_failed">Không ghi được bản sao lưu</string>
+    <string name="settings_backup_summary">Lưu tất cả cài đặt vào một tệp</string>
+    <string name="settings_backup_title">Sao lưu cài đặt</string>
+    <string name="settings_category_manage_data">Quản lý dữ liệu</string>
     <string name="settings_clear_settings_dialog_message">Thao tác này sẽ đặt lại mọi cài đặt bàn phím về mặc định. Bạn có chắc không?</string>
     <string name="settings_clear_settings_dialog_title">Xóa dữ liệu cài đặt</string>
     <string name="settings_clear_settings_summary">Đặt lại mọi cài đặt bàn phím về mặc định</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Cụm từ nhanh 4</string>
     <string name="settings_quick_phrase_5">Cụm từ nhanh 5</string>
     <string name="settings_quick_phrases_screen_title">Cụm từ nhanh</string>
+    <string name="settings_restore_dialog_confirm">Khôi phục</string>
+    <string name="settings_restore_dialog_message">Thay thế cài đặt hiện tại bằng bản sao lưu?</string>
+    <string name="settings_restore_not_a_backup">Tệp đó không phải là bản sao lưu cài đặt BBKB</string>
+    <string name="settings_restore_read_failed">Không đọc được bản sao lưu</string>
+    <string name="settings_restore_summary">Tải cài đặt từ tệp sao lưu</string>
+    <string name="settings_restore_title">Khôi phục cài đặt</string>
+    <string name="settings_restored_count">Đã khôi phục %1$d cài đặt</string>
     <string name="settings_screen_type_by_swiping">Nhập bằng cách vuốt</string>
     <string name="settings_screen_type_by_swiping_summary">Nhập nhanh mà không cần nhấc ngón tay ra khỏi bàn phím</string>
     <string name="settings_screen_type_by_swiping_unavailable">Chức năng nhập bằng cách vuốt không khả dụng ở ngôn ngữ của bạn.</string>

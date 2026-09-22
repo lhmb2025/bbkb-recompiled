@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Hindi alam</string>
     <string name="settings_about_summary">Impormasyon ng bersyon at mga kredito</string>
     <string name="settings_about_title">Tungkol dito</string>
+    <string name="settings_backed_up">Na-back up ang mga setting</string>
+    <string name="settings_backup_failed">Hindi maisulat ang backup</string>
+    <string name="settings_backup_summary">I-save ang lahat ng setting sa isang file</string>
+    <string name="settings_backup_title">I-back up ang mga setting</string>
+    <string name="settings_category_manage_data">Pamahalaan ang data</string>
     <string name="settings_clear_settings_dialog_message">Ire-reset nito sa mga default ang lahat ng setting ng keyboard. Sigurado ka ba?</string>
     <string name="settings_clear_settings_dialog_title">I-clear ang Data ng Mga Setting</string>
     <string name="settings_clear_settings_summary">I-reset sa mga default ang lahat ng setting ng keyboard</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Mabilisang parirala 4</string>
     <string name="settings_quick_phrase_5">Mabilisang parirala 5</string>
     <string name="settings_quick_phrases_screen_title">Mga mabilisang parirala</string>
+    <string name="settings_restore_dialog_confirm">I-restore</string>
+    <string name="settings_restore_dialog_message">Palitan ang kasalukuyang mga setting ng backup?</string>
+    <string name="settings_restore_not_a_backup">Hindi backup ng mga setting ng BBKB ang file na iyon</string>
+    <string name="settings_restore_read_failed">Hindi mabasa ang backup</string>
+    <string name="settings_restore_summary">Mag-load ng mga setting mula sa backup file</string>
+    <string name="settings_restore_title">I-restore ang mga setting</string>
+    <string name="settings_restored_count">Na-restore ang %1$d na setting</string>
     <string name="settings_screen_type_by_swiping">Mag-type sa pamamagitan ng swipe</string>
     <string name="settings_screen_type_by_swiping_summary">Mag-type nang mabilis nang hindi inaalis ang daliri sa keyboard</string>
     <string name="settings_screen_type_by_swiping_unavailable">Hindi available sa iyong wika ang pag-type sa pamamagitan ng swipe.</string>

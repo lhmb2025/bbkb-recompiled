@@ -398,6 +398,7 @@ fun SimplePreference(
     summary: String? = null,
     icon: ImageVector? = null,
     iconSpaceReserved: Boolean = false,
+    modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null
 ) {
     PreferenceItem(
@@ -405,6 +406,7 @@ fun SimplePreference(
         summary = summary,
         icon = icon,
         iconSpaceReserved = iconSpaceReserved,
+        modifier = modifier,
         onClick = onClick
     )
 }

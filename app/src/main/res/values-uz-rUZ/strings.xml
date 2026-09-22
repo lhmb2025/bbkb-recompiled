@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Noma’lum</string>
     <string name="settings_about_summary">Versiya ma’lumotlari va mualliflar</string>
     <string name="settings_about_title">Ilova haqida</string>
+    <string name="settings_backed_up">Sozlamalar zaxiralandi</string>
+    <string name="settings_backup_failed">Zaxira nusxasini yozib bo‘lmadi</string>
+    <string name="settings_backup_summary">Barcha sozlamalarni faylga saqlash</string>
+    <string name="settings_backup_title">Sozlamalarni zaxiralash</string>
+    <string name="settings_category_manage_data">Ma’lumotlarni boshqarish</string>
     <string name="settings_clear_settings_dialog_message">Bu barcha klaviatura sozlamalarini standart holatga qaytaradi. Ishonchingiz komilmi?</string>
     <string name="settings_clear_settings_dialog_title">Sozlamalar ma’lumotlarini tozalash</string>
     <string name="settings_clear_settings_summary">Barcha klaviatura sozlamalarini standart holatga qaytarish</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">4-tezkor ibora</string>
     <string name="settings_quick_phrase_5">5-tezkor ibora</string>
     <string name="settings_quick_phrases_screen_title">Tezkor iboralar</string>
+    <string name="settings_restore_dialog_confirm">Tiklash</string>
+    <string name="settings_restore_dialog_message">Joriy sozlamalar zaxira nusxasi bilan almashtirilsinmi?</string>
+    <string name="settings_restore_not_a_backup">Bu fayl BBKB sozlamalarining zaxira nusxasi emas</string>
+    <string name="settings_restore_read_failed">Zaxira nusxasini o‘qib bo‘lmadi</string>
+    <string name="settings_restore_summary">Sozlamalarni zaxira faylidan yuklash</string>
+    <string name="settings_restore_title">Sozlamalarni tiklash</string>
+    <string name="settings_restored_count">%1$d ta sozlama tiklandi</string>
     <string name="settings_screen_type_by_swiping">Surib yozish</string>
     <string name="settings_screen_type_by_swiping_summary">Barmog‘ingizni klaviaturadan uzmasdan tez yozing</string>
     <string name="settings_screen_type_by_swiping_unavailable">Surib yozish sizning tilingizda mavjud emas.</string>

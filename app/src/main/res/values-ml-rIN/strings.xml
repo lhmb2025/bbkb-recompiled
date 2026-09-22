@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">അജ്ഞാതം</string>
     <string name="settings_about_summary">പതിപ്പ് വിവരങ്ങളും കടപ്പാടുകളും</string>
     <string name="settings_about_title">സംബന്ധിച്ച്</string>
+    <string name="settings_backed_up">ക്രമീകരണങ്ങൾ ബാക്കപ്പ് ചെയ്തു</string>
+    <string name="settings_backup_failed">ബാക്കപ്പ് എഴുതാനായില്ല</string>
+    <string name="settings_backup_summary">എല്ലാ ക്രമീകരണങ്ങളും ഒരു ഫയലിൽ സംരക്ഷിക്കുക</string>
+    <string name="settings_backup_title">ക്രമീകരണങ്ങൾ ബാക്കപ്പ് ചെയ്യുക</string>
+    <string name="settings_category_manage_data">ഡാറ്റ കൈകാര്യം ചെയ്യുക</string>
     <string name="settings_clear_settings_dialog_message">ഇത് എല്ലാ കീബോർഡ് ക്രമീകരണങ്ങളും സ്ഥിരമൂല്യങ്ങളിലേക്ക് പുനഃസജ്ജമാക്കും. ഉറപ്പാണോ?</string>
     <string name="settings_clear_settings_dialog_title">ക്രമീകരണ ഡാറ്റ മായ്‌ക്കുക</string>
     <string name="settings_clear_settings_summary">എല്ലാ കീബോർഡ് ക്രമീകരണങ്ങളും സ്ഥിരമൂല്യങ്ങളിലേക്ക് പുനഃസജ്ജമാക്കുക</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">ദ്രുത വാക്യം 4</string>
     <string name="settings_quick_phrase_5">ദ്രുത വാക്യം 5</string>
     <string name="settings_quick_phrases_screen_title">ദ്രുത വാക്യങ്ങൾ</string>
+    <string name="settings_restore_dialog_confirm">പുനഃസ്ഥാപിക്കുക</string>
+    <string name="settings_restore_dialog_message">നിലവിലെ ക്രമീകരണങ്ങൾ ബാക്കപ്പ് ഉപയോഗിച്ച് മാറ്റണോ?</string>
+    <string name="settings_restore_not_a_backup">ആ ഫയൽ ഒരു BBKB ക്രമീകരണ ബാക്കപ്പ് അല്ല</string>
+    <string name="settings_restore_read_failed">ബാക്കപ്പ് വായിക്കാനായില്ല</string>
+    <string name="settings_restore_summary">ബാക്കപ്പ് ഫയലിൽ നിന്ന് ക്രമീകരണങ്ങൾ ലോഡ് ചെയ്യുക</string>
+    <string name="settings_restore_title">ക്രമീകരണങ്ങൾ പുനഃസ്ഥാപിക്കുക</string>
+    <string name="settings_restored_count">%1$d ക്രമീകരണങ്ങൾ പുനഃസ്ഥാപിച്ചു</string>
     <string name="settings_screen_type_by_swiping">സ്വൈപ്പ് ചെയ്ത് ടൈപ്പ് ചെയ്യുക</string>
     <string name="settings_screen_type_by_swiping_summary">കീബോർഡിൽ നിന്ന് വിരൽ എടുക്കാതെ വേഗത്തിൽ ടൈപ്പ് ചെയ്യുക</string>
     <string name="settings_screen_type_by_swiping_unavailable">നിങ്ങളുടെ ഭാഷയിൽ സ്വൈപ്പ് ചെയ്ത് ടൈപ്പ് ചെയ്യൽ ലഭ്യമല്ല.</string>

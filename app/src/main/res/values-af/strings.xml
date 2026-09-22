@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Onbekend</string>
     <string name="settings_about_summary">Weergawe-inligting en erkennings</string>
     <string name="settings_about_title">Oor</string>
+    <string name="settings_backed_up">Instellings is gerugsteun</string>
+    <string name="settings_backup_failed">Kon nie die rugsteun skryf nie</string>
+    <string name="settings_backup_summary">Stoor alle instellings na ’n lêer</string>
+    <string name="settings_backup_title">Rugsteun instellings</string>
+    <string name="settings_category_manage_data">Bestuur data</string>
     <string name="settings_clear_settings_dialog_message">Dit sal alle toetsbordinstellings na die verstekwaardes terugstel. Is jy seker?</string>
     <string name="settings_clear_settings_dialog_title">Vee instellingsdata uit</string>
     <string name="settings_clear_settings_summary">Stel alle toetsbordinstellings na die verstekwaardes terug</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Kitsfrase 4</string>
     <string name="settings_quick_phrase_5">Kitsfrase 5</string>
     <string name="settings_quick_phrases_screen_title">Kitsfrases</string>
+    <string name="settings_restore_dialog_confirm">Herstel</string>
+    <string name="settings_restore_dialog_message">Vervang huidige instellings met die rugsteun?</string>
+    <string name="settings_restore_not_a_backup">Daardie lêer is nie ’n BBKB-instellingsrugsteun nie</string>
+    <string name="settings_restore_read_failed">Kon nie die rugsteun lees nie</string>
+    <string name="settings_restore_summary">Laai instellings uit ’n rugsteunlêer</string>
+    <string name="settings_restore_title">Herstel instellings</string>
+    <string name="settings_restored_count">%1$d instellings herstel</string>
     <string name="settings_screen_type_by_swiping">Tik deur te vee</string>
     <string name="settings_screen_type_by_swiping_summary">Tik vinnig sonder om jou vinger van die toetsbord te lig</string>
     <string name="settings_screen_type_by_swiping_unavailable">Tik-deur-te-vee is nie in jou taal beskikbaar nie.</string>

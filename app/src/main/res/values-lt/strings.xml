@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Nežinoma</string>
     <string name="settings_about_summary">Versijos informacija ir padėkos</string>
     <string name="settings_about_title">Apie</string>
+    <string name="settings_backed_up">Nustatymų atsarginė kopija sukurta</string>
+    <string name="settings_backup_failed">Nepavyko įrašyti atsarginės kopijos</string>
+    <string name="settings_backup_summary">Išsaugoti visus nustatymus faile</string>
+    <string name="settings_backup_title">Kurti nustatymų atsarginę kopiją</string>
+    <string name="settings_category_manage_data">Duomenų tvarkymas</string>
     <string name="settings_clear_settings_dialog_message">Visi klaviatūros nustatymai bus atkurti į numatytuosius. Ar tikrai norite tęsti?</string>
     <string name="settings_clear_settings_dialog_title">Išvalyti nustatymų duomenis</string>
     <string name="settings_clear_settings_summary">Atkurti visus numatytuosius klaviatūros nustatymus</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Greitoji frazė 4</string>
     <string name="settings_quick_phrase_5">Greitoji frazė 5</string>
     <string name="settings_quick_phrases_screen_title">Greitosios frazės</string>
+    <string name="settings_restore_dialog_confirm">Atkurti</string>
+    <string name="settings_restore_dialog_message">Pakeisti dabartinius nustatymus atsargine kopija?</string>
+    <string name="settings_restore_not_a_backup">Šis failas nėra BBKB nustatymų atsarginė kopija</string>
+    <string name="settings_restore_read_failed">Nepavyko perskaityti atsarginės kopijos</string>
+    <string name="settings_restore_summary">Įkelti nustatymus iš atsarginės kopijos</string>
+    <string name="settings_restore_title">Atkurti nustatymus</string>
+    <string name="settings_restored_count">Atkurta nustatymų: %1$d</string>
     <string name="settings_screen_type_by_swiping">Rašymas braukiant</string>
     <string name="settings_screen_type_by_swiping_summary">Rašykite greitai nekeldami piršto nuo klaviatūros</string>
     <string name="settings_screen_type_by_swiping_unavailable">Rašymas braukiant jūsų kalba negalimas.</string>

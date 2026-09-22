@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">अज्ञात</string>
     <string name="settings_about_summary">संस्करण जानकारी और क्रेडिट</string>
     <string name="settings_about_title">ऐप के बारे में</string>
+    <string name="settings_backed_up">सेटिंग का बैकअप ले लिया गया</string>
+    <string name="settings_backup_failed">बैकअप नहीं लिखा जा सका</string>
+    <string name="settings_backup_summary">सभी सेटिंग को फ़ाइल में सहेजें</string>
+    <string name="settings_backup_title">सेटिंग का बैकअप लें</string>
+    <string name="settings_category_manage_data">डेटा प्रबंधित करें</string>
     <string name="settings_clear_settings_dialog_message">इससे सभी कीबोर्ड सेटिंग्स डिफ़ॉल्ट पर रीसेट हो जाएंगी. क्या आप निश्चित हैं?</string>
     <string name="settings_clear_settings_dialog_title">सेटिंग्स डेटा साफ़ करें</string>
     <string name="settings_clear_settings_summary">सभी कीबोर्ड सेटिंग्स डिफ़ॉल्ट पर रीसेट करें</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">त्वरित वाक्यांश 4</string>
     <string name="settings_quick_phrase_5">त्वरित वाक्यांश 5</string>
     <string name="settings_quick_phrases_screen_title">त्वरित वाक्यांश</string>
+    <string name="settings_restore_dialog_confirm">पुनर्स्थापित करें</string>
+    <string name="settings_restore_dialog_message">मौजूदा सेटिंग को बैकअप से बदलें?</string>
+    <string name="settings_restore_not_a_backup">यह फ़ाइल BBKB सेटिंग का बैकअप नहीं है</string>
+    <string name="settings_restore_read_failed">बैकअप नहीं पढ़ा जा सका</string>
+    <string name="settings_restore_summary">बैकअप फ़ाइल से सेटिंग लोड करें</string>
+    <string name="settings_restore_title">सेटिंग पुनर्स्थापित करें</string>
+    <string name="settings_restored_count">%1$d सेटिंग पुनर्स्थापित की गईं</string>
     <string name="settings_screen_type_by_swiping">स्वाइप करके टाइप करें</string>
     <string name="settings_screen_type_by_swiping_summary">कीबोर्ड से अपनी उंगली उठाए बिना तेज़ी से टाइप करें</string>
     <string name="settings_screen_type_by_swiping_unavailable">स्वाइप करके टाइप करना आपकी भाषा में उपलब्ध नहीं है।</string>

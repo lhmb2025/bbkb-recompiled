@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Ismeretlen</string>
     <string name="settings_about_summary">Verzióinformációk és közreműködők</string>
     <string name="settings_about_title">Névjegy</string>
+    <string name="settings_backed_up">A beállítások mentése megtörtént</string>
+    <string name="settings_backup_failed">A biztonsági mentés írása nem sikerült</string>
+    <string name="settings_backup_summary">Minden beállítás mentése fájlba</string>
+    <string name="settings_backup_title">Beállítások mentése</string>
+    <string name="settings_category_manage_data">Adatok kezelése</string>
     <string name="settings_clear_settings_dialog_message">Ezzel minden billentyűzetbeállítás visszaáll az alapértékekre. Biztosan folytatja?</string>
     <string name="settings_clear_settings_dialog_title">Beállítási adatok törlése</string>
     <string name="settings_clear_settings_summary">Minden billentyűzetbeállítás visszaállítása az alapértékekre</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">4. gyors kifejezés</string>
     <string name="settings_quick_phrase_5">5. gyors kifejezés</string>
     <string name="settings_quick_phrases_screen_title">Gyors kifejezések</string>
+    <string name="settings_restore_dialog_confirm">Visszaállítás</string>
+    <string name="settings_restore_dialog_message">Lecseréli a jelenlegi beállításokat a mentésre?</string>
+    <string name="settings_restore_not_a_backup">Ez a fájl nem BBKB-beállításmentés</string>
+    <string name="settings_restore_read_failed">A biztonsági mentés olvasása nem sikerült</string>
+    <string name="settings_restore_summary">Beállítások betöltése mentésfájlból</string>
+    <string name="settings_restore_title">Beállítások visszaállítása</string>
+    <string name="settings_restored_count">%1$d beállítás visszaállítva</string>
     <string name="settings_screen_type_by_swiping">Gépelés az ujj csúsztatásával</string>
     <string name="settings_screen_type_by_swiping_summary">Gépeljen gyorsan ujja felemelése nélkül</string>
     <string name="settings_screen_type_by_swiping_unavailable">A csúsztatással történő gépelés nem érhető el az Ön nyelvén.</string>

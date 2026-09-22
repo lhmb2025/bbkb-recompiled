@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Unbekannt</string>
     <string name="settings_about_summary">Versionsinformationen und Mitwirkende</string>
     <string name="settings_about_title">Info</string>
+    <string name="settings_backed_up">Einstellungen gesichert</string>
+    <string name="settings_backup_failed">Sicherung konnte nicht geschrieben werden</string>
+    <string name="settings_backup_summary">Alle Einstellungen in einer Datei speichern</string>
+    <string name="settings_backup_title">Einstellungen sichern</string>
+    <string name="settings_category_manage_data">Daten verwalten</string>
     <string name="settings_clear_settings_dialog_message">Dadurch werden alle Tastatureinstellungen auf die Standardwerte zurückgesetzt. Sind Sie sicher?</string>
     <string name="settings_clear_settings_dialog_title">Einstellungsdaten löschen</string>
     <string name="settings_clear_settings_summary">Alle Tastatureinstellungen auf die Standardwerte zurücksetzen</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Schnellphrase 4</string>
     <string name="settings_quick_phrase_5">Schnellphrase 5</string>
     <string name="settings_quick_phrases_screen_title">Schnellphrasen</string>
+    <string name="settings_restore_dialog_confirm">Wiederherstellen</string>
+    <string name="settings_restore_dialog_message">Aktuelle Einstellungen durch die Sicherung ersetzen?</string>
+    <string name="settings_restore_not_a_backup">Diese Datei ist keine Sicherung von BBKB-Einstellungen</string>
+    <string name="settings_restore_read_failed">Sicherung konnte nicht gelesen werden</string>
+    <string name="settings_restore_summary">Einstellungen aus einer Sicherungsdatei laden</string>
+    <string name="settings_restore_title">Einstellungen wiederherstellen</string>
+    <string name="settings_restored_count">%1$d Einstellungen wiederhergestellt</string>
     <string name="settings_screen_type_by_swiping">Per Streichgeste tippen</string>
     <string name="settings_screen_type_by_swiping_summary">Tippen, ohne den Finger von der Tastatur abzuheben</string>
     <string name="settings_screen_type_by_swiping_unavailable">\"Per Streichgeste tippen\" ist für Ihre Sprache nicht verfügbar.</string>

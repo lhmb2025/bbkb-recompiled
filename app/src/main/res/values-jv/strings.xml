@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Ora dingerteni</string>
     <string name="settings_about_summary">Katrangan versi lan panuwun</string>
     <string name="settings_about_title">Bab aplikasi</string>
+    <string name="settings_backed_up">Setelan wis dicadhangake</string>
+    <string name="settings_backup_failed">Ora bisa nulis cadhangan</string>
+    <string name="settings_backup_summary">Simpen kabeh setelan menyang berkas</string>
+    <string name="settings_backup_title">Cadhangake setelan</string>
+    <string name="settings_category_manage_data">Ngelola data</string>
     <string name="settings_clear_settings_dialog_message">Iki bakal mbalekake kabeh setelan papan tombol menyang setelan gawan. Apa kowe wis yakin?</string>
     <string name="settings_clear_settings_dialog_title">Ngresiki Data Setelan</string>
     <string name="settings_clear_settings_summary">Balekake kabeh setelan papan tombol menyang setelan gawan</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Frasa cepet 4</string>
     <string name="settings_quick_phrase_5">Frasa cepet 5</string>
     <string name="settings_quick_phrases_screen_title">Frasa cepet</string>
+    <string name="settings_restore_dialog_confirm">Pulihake</string>
+    <string name="settings_restore_dialog_message">Ganti setelan saiki nganggo cadhangan?</string>
+    <string name="settings_restore_not_a_backup">Berkas kuwi dudu cadhangan setelan BBKB</string>
+    <string name="settings_restore_read_failed">Ora bisa maca cadhangan</string>
+    <string name="settings_restore_summary">Muat setelan saka berkas cadhangan</string>
+    <string name="settings_restore_title">Pulihake setelan</string>
+    <string name="settings_restored_count">%1$d setelan dipulihake</string>
     <string name="settings_screen_type_by_swiping">Ngetik kanthi geser</string>
     <string name="settings_screen_type_by_swiping_summary">Ngetika kanthi cepet tanpa ngangkat driji saka papan tombol</string>
     <string name="settings_screen_type_by_swiping_unavailable">Ngetik kanthi geser ora kasedhiya ing basamu.</string>

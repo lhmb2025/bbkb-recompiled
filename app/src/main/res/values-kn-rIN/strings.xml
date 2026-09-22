@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">ಅಜ್ಞಾತ</string>
     <string name="settings_about_summary">ಆವೃತ್ತಿ ಮಾಹಿತಿ ಮತ್ತು ಕೃತಜ್ಞತೆಗಳು</string>
     <string name="settings_about_title">ಕುರಿತು</string>
+    <string name="settings_backed_up">ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಬ್ಯಾಕಪ್ ಮಾಡಲಾಗಿದೆ</string>
+    <string name="settings_backup_failed">ಬ್ಯಾಕಪ್ ಬರೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ</string>
+    <string name="settings_backup_summary">ಎಲ್ಲಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಫೈಲ್‌ಗೆ ಉಳಿಸಿ</string>
+    <string name="settings_backup_title">ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಬ್ಯಾಕಪ್ ಮಾಡಿ</string>
+    <string name="settings_category_manage_data">ಡೇಟಾ ನಿರ್ವಹಣೆ</string>
     <string name="settings_clear_settings_dialog_message">ಇದು ಎಲ್ಲ ಕೀಬೋರ್ಡ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಪೂರ್ವನಿಯೋಜಿತಕ್ಕೆ ಮರುಹೊಂದಿಸುತ್ತದೆ. ನಿಮಗೆ ಖಚಿತವೇ?</string>
     <string name="settings_clear_settings_dialog_title">ಸೆಟ್ಟಿಂಗ್‌ಗಳ ಡೇಟಾ ತೆರವುಗೊಳಿಸಿ</string>
     <string name="settings_clear_settings_summary">ಎಲ್ಲ ಕೀಬೋರ್ಡ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಪೂರ್ವನಿಯೋಜಿತಕ್ಕೆ ಮರುಹೊಂದಿಸಿ</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">ತ್ವರಿತ ನುಡಿಗಟ್ಟು 4</string>
     <string name="settings_quick_phrase_5">ತ್ವರಿತ ನುಡಿಗಟ್ಟು 5</string>
     <string name="settings_quick_phrases_screen_title">ತ್ವರಿತ ನುಡಿಗಟ್ಟುಗಳು</string>
+    <string name="settings_restore_dialog_confirm">ಮರುಸ್ಥಾಪಿಸಿ</string>
+    <string name="settings_restore_dialog_message">ಪ್ರಸ್ತುತ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಬ್ಯಾಕಪ್‌ನೊಂದಿಗೆ ಬದಲಾಯಿಸಬೇಕೇ?</string>
+    <string name="settings_restore_not_a_backup">ಆ ಫೈಲ್ BBKB ಸೆಟ್ಟಿಂಗ್‌ಗಳ ಬ್ಯಾಕಪ್ ಅಲ್ಲ</string>
+    <string name="settings_restore_read_failed">ಬ್ಯಾಕಪ್ ಓದಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ</string>
+    <string name="settings_restore_summary">ಬ್ಯಾಕಪ್ ಫೈಲ್‌ನಿಂದ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಿ</string>
+    <string name="settings_restore_title">ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಮರುಸ್ಥಾಪಿಸಿ</string>
+    <string name="settings_restored_count">%1$d ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ</string>
     <string name="settings_screen_type_by_swiping">ಸ್ವೈಪ್ ಮಾಡಿ ಟೈಪ್ ಮಾಡಿ</string>
     <string name="settings_screen_type_by_swiping_summary">ಕೀಬೋರ್ಡ್‌ನಿಂದ ಬೆರಳು ಎತ್ತದೆ ವೇಗವಾಗಿ ಟೈಪ್ ಮಾಡಿ</string>
     <string name="settings_screen_type_by_swiping_unavailable">ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಸ್ವೈಪ್ ಮಾಡಿ ಟೈಪ್ ಮಾಡುವುದು ಲಭ್ಯವಿಲ್ಲ.</string>

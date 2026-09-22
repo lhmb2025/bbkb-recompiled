@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Белгисиз</string>
     <string name="settings_about_summary">Версия жөнүндө маалымат жана авторлор</string>
     <string name="settings_about_title">Колдонмо жөнүндө</string>
+    <string name="settings_backed_up">Жөндөөлөрдүн камдык көчүрмөсү түзүлдү</string>
+    <string name="settings_backup_failed">Камдык көчүрмөнү жазуу мүмкүн болгон жок</string>
+    <string name="settings_backup_summary">Бардык жөндөөлөрдү файлга сактоо</string>
+    <string name="settings_backup_title">Жөндөөлөрдүн камдык көчүрмөсүн түзүү</string>
+    <string name="settings_category_manage_data">Маалыматтарды башкаруу</string>
     <string name="settings_clear_settings_dialog_message">Бул баскычтоптун бардык жөндөөлөрүн демейки абалга кайтарат. Чын элеби?</string>
     <string name="settings_clear_settings_dialog_title">Жөндөөлөрдүн маалыматын тазалоо</string>
     <string name="settings_clear_settings_summary">Баскычтоптун бардык жөндөөлөрүн демейки абалга кайтаруу</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">4-ыкчам сөз айкашы</string>
     <string name="settings_quick_phrase_5">5-ыкчам сөз айкашы</string>
     <string name="settings_quick_phrases_screen_title">Ыкчам сөз айкаштары</string>
+    <string name="settings_restore_dialog_confirm">Калыбына келтирүү</string>
+    <string name="settings_restore_dialog_message">Учурдагы жөндөөлөр камдык көчүрмө менен алмаштырылсынбы?</string>
+    <string name="settings_restore_not_a_backup">Бул файл BBKB жөндөөлөрүнүн камдык көчүрмөсү эмес</string>
+    <string name="settings_restore_read_failed">Камдык көчүрмөнү окуу мүмкүн болгон жок</string>
+    <string name="settings_restore_summary">Жөндөөлөрдү камдык көчүрмө файлынан жүктөө</string>
+    <string name="settings_restore_title">Жөндөөлөрдү калыбына келтирүү</string>
+    <string name="settings_restored_count">%1$d жөндөө калыбына келтирилди</string>
     <string name="settings_screen_type_by_swiping">Сүрүп терүү</string>
     <string name="settings_screen_type_by_swiping_summary">Манжаңызды баскычтоптон албай туруп тез териңиз</string>
     <string name="settings_screen_type_by_swiping_unavailable">Сүрүп терүү сиздин тилиңизде жеткиликсиз.</string>

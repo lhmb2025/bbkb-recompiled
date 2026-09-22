@@ -95,8 +95,14 @@
 -keep class * implements com.google.gson.JsonSerializer
 -keep class * implements com.google.gson.JsonDeserializer
 
--keepclassmembers class dev.bbkb.ime.keyboard.inputboard.emoji.EmojiData { <fields>; }
--keepclassmembers class dev.bbkb.ime.personaldictionary.model.** { <fields>; }
+# These classes are only ever instantiated by Gson (reflectively), so nothing in the code
+# constructs them. A members-only rule is not enough: R8 sees a class that is never
+# instantiated, drops its fields and the class, and the emoji board came up empty in the
+# first release builds (5.0.0-beta.18..20) while debug builds were fine. Keep the classes
+# themselves, nested skin/variant classes included.
+-keep class dev.bbkb.ime.keyboard.inputboard.emoji.EmojiData { *; }
+-keep class dev.bbkb.ime.keyboard.inputboard.emoji.EmojiData$* { *; }
+-keep class dev.bbkb.ime.personaldictionary.model.** { *; }
 
 # Enum values are serialised by name.
 -keepclassmembers enum * { *; }

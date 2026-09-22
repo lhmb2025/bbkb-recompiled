@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Desconhecido</string>
     <string name="settings_about_summary">Informações da versão e créditos</string>
     <string name="settings_about_title">Acerca</string>
+    <string name="settings_backed_up">Cópia de segurança das definições concluída</string>
+    <string name="settings_backup_failed">Não foi possível escrever a cópia de segurança</string>
+    <string name="settings_backup_summary">Guardar todas as definições num ficheiro</string>
+    <string name="settings_backup_title">Fazer cópia de segurança das definições</string>
+    <string name="settings_category_manage_data">Gerir dados</string>
     <string name="settings_clear_settings_dialog_message">Isto irá repor todas as definições do teclado para as predefinições. Tem a certeza?</string>
     <string name="settings_clear_settings_dialog_title">Limpar os dados das definições</string>
     <string name="settings_clear_settings_summary">Repor todas as definições do teclado para as predefinições</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Frase rápida 4</string>
     <string name="settings_quick_phrase_5">Frase rápida 5</string>
     <string name="settings_quick_phrases_screen_title">Frases rápidas</string>
+    <string name="settings_restore_dialog_confirm">Restaurar</string>
+    <string name="settings_restore_dialog_message">Substituir as definições atuais pela cópia de segurança?</string>
+    <string name="settings_restore_not_a_backup">Esse ficheiro não é uma cópia de segurança de definições do BBKB</string>
+    <string name="settings_restore_read_failed">Não foi possível ler a cópia de segurança</string>
+    <string name="settings_restore_summary">Carregar definições a partir de uma cópia de segurança</string>
+    <string name="settings_restore_title">Restaurar definições</string>
+    <string name="settings_restored_count">%1$d definições restauradas</string>
     <string name="settings_screen_type_by_swiping">Digite ao deslizar</string>
     <string name="settings_screen_type_by_swiping_summary">Digite rapidamente sem levantar o dedo do teclado</string>
     <string name="settings_screen_type_by_swiping_unavailable">A funcionalidade Escrever por deslize não está disponível no seu idioma.</string>

@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Anaithnid</string>
     <string name="settings_about_summary">Eolas faoin leagan agus admhálacha</string>
     <string name="settings_about_title">Maidir leis</string>
+    <string name="settings_backed_up">Rinneadh cúltaca de na socruithe</string>
+    <string name="settings_backup_failed">Níorbh fhéidir an cúltaca a scríobh</string>
+    <string name="settings_backup_summary">Sábháil na socruithe go léir i gcomhad</string>
+    <string name="settings_backup_title">Déan cúltaca de na socruithe</string>
+    <string name="settings_category_manage_data">Bainistigh sonraí</string>
     <string name="settings_clear_settings_dialog_message">Athshocróidh sé seo socruithe uile an mhéarchláir go dtí na réamhshocruithe. An bhfuil tú cinnte?</string>
     <string name="settings_clear_settings_dialog_title">Sonraí na Socruithe a Ghlanadh</string>
     <string name="settings_clear_settings_summary">Athshocraigh socruithe uile an mhéarchláir go dtí na réamhshocruithe</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Frása tapa 4</string>
     <string name="settings_quick_phrase_5">Frása tapa 5</string>
     <string name="settings_quick_phrases_screen_title">Frásaí tapa</string>
+    <string name="settings_restore_dialog_confirm">Athchóirigh</string>
+    <string name="settings_restore_dialog_message">Na socruithe reatha a athsholáthar leis an gcúltaca?</string>
+    <string name="settings_restore_not_a_backup">Ní cúltaca de shocruithe BBKB é an comhad sin</string>
+    <string name="settings_restore_read_failed">Níorbh fhéidir an cúltaca a léamh</string>
+    <string name="settings_restore_summary">Luchtaigh socruithe ó chomhad cúltaca</string>
+    <string name="settings_restore_title">Athchóirigh na socruithe</string>
+    <string name="settings_restored_count">Athchóiríodh %1$d socrú</string>
     <string name="settings_screen_type_by_swiping">Clóscríobh le svaidhpeáil</string>
     <string name="settings_screen_type_by_swiping_summary">Clóscríobh go tapa gan do mhéar a ardú den mhéarchlár</string>
     <string name="settings_screen_type_by_swiping_unavailable">Níl clóscríobh le svaidhpeáil ar fáil i do theanga.</string>

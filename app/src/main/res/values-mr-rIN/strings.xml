@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">अज्ञात</string>
     <string name="settings_about_summary">आवृत्ती माहिती आणि श्रेय</string>
     <string name="settings_about_title">अ‍ॅपविषयी</string>
+    <string name="settings_backed_up">सेटिंग्जचा बॅकअप घेतला</string>
+    <string name="settings_backup_failed">बॅकअप लिहिता आला नाही</string>
+    <string name="settings_backup_summary">सर्व सेटिंग्ज फाइलमध्ये सेव्ह करा</string>
+    <string name="settings_backup_title">सेटिंग्जचा बॅकअप घ्या</string>
+    <string name="settings_category_manage_data">डेटा व्यवस्थापित करा</string>
     <string name="settings_clear_settings_dialog_message">यामुळे सर्व कीबोर्ड सेटिंग्ज डीफॉल्टवर रीसेट होतील. तुमची खात्री आहे का?</string>
     <string name="settings_clear_settings_dialog_title">सेटिंग्ज डेटा साफ करा</string>
     <string name="settings_clear_settings_summary">सर्व कीबोर्ड सेटिंग्ज डीफॉल्टवर रीसेट करा</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">झटपट वाक्यांश 4</string>
     <string name="settings_quick_phrase_5">झटपट वाक्यांश 5</string>
     <string name="settings_quick_phrases_screen_title">झटपट वाक्यांश</string>
+    <string name="settings_restore_dialog_confirm">पुनर्संचयित करा</string>
+    <string name="settings_restore_dialog_message">सध्याच्या सेटिंग्ज बॅकअपने बदलायच्या?</string>
+    <string name="settings_restore_not_a_backup">ती फाइल BBKB सेटिंग्जचा बॅकअप नाही</string>
+    <string name="settings_restore_read_failed">बॅकअप वाचता आला नाही</string>
+    <string name="settings_restore_summary">बॅकअप फाइलमधून सेटिंग्ज लोड करा</string>
+    <string name="settings_restore_title">सेटिंग्ज पुनर्संचयित करा</string>
+    <string name="settings_restored_count">%1$d सेटिंग्ज पुनर्संचयित केल्या</string>
     <string name="settings_screen_type_by_swiping">स्वाइप करून टाइप करा</string>
     <string name="settings_screen_type_by_swiping_summary">कीबोर्डवरून बोट न उचलता पटकन टाइप करा</string>
     <string name="settings_screen_type_by_swiping_unavailable">स्वाइप करून टाइप करणे तुमच्या भाषेत उपलब्ध नाही.</string>

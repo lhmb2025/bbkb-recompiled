@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Naməlum</string>
     <string name="settings_about_summary">Versiya məlumatı və müəlliflər</string>
     <string name="settings_about_title">Haqqında</string>
+    <string name="settings_backed_up">Ayarların ehtiyat nüsxəsi yaradıldı</string>
+    <string name="settings_backup_failed">Ehtiyat nüsxəni yazmaq mümkün olmadı</string>
+    <string name="settings_backup_summary">Bütün ayarları fayla yadda saxlayın</string>
+    <string name="settings_backup_title">Ayarların ehtiyat nüsxəsini yaradın</string>
+    <string name="settings_category_manage_data">Məlumatların idarəsi</string>
     <string name="settings_clear_settings_dialog_message">Bu, bütün klaviatura parametrlərini varsayılan vəziyyətə qaytaracaq. Əminsiniz?</string>
     <string name="settings_clear_settings_dialog_title">Parametr məlumatlarının təmizlənməsi</string>
     <string name="settings_clear_settings_summary">Bütün klaviatura parametrlərini varsayılan vəziyyətə qaytarın</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Sürətli ifadə 4</string>
     <string name="settings_quick_phrase_5">Sürətli ifadə 5</string>
     <string name="settings_quick_phrases_screen_title">Sürətli ifadələr</string>
+    <string name="settings_restore_dialog_confirm">Bərpa et</string>
+    <string name="settings_restore_dialog_message">Cari ayarlar ehtiyat nüsxə ilə əvəz olunsun?</string>
+    <string name="settings_restore_not_a_backup">Bu fayl BBKB ayarlarının ehtiyat nüsxəsi deyil</string>
+    <string name="settings_restore_read_failed">Ehtiyat nüsxəni oxumaq mümkün olmadı</string>
+    <string name="settings_restore_summary">Ayarları ehtiyat nüsxə faylından yükləyin</string>
+    <string name="settings_restore_title">Ayarları bərpa et</string>
+    <string name="settings_restored_count">%1$d ayar bərpa edildi</string>
     <string name="settings_screen_type_by_swiping">Sürüşdürərək yazma</string>
     <string name="settings_screen_type_by_swiping_summary">Barmağınızı klaviaturadan qaldırmadan sürətlə yazın</string>
     <string name="settings_screen_type_by_swiping_unavailable">Sürüşdürərək yazma sizin dilinizdə mövcud deyil.</string>

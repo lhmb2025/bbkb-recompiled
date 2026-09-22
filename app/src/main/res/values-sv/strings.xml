@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Okänt</string>
     <string name="settings_about_summary">Versionsinformation och medverkande</string>
     <string name="settings_about_title">Om</string>
+    <string name="settings_backed_up">Inställningarna har säkerhetskopierats</string>
+    <string name="settings_backup_failed">Det gick inte att skriva säkerhetskopian</string>
+    <string name="settings_backup_summary">Spara alla inställningar i en fil</string>
+    <string name="settings_backup_title">Säkerhetskopiera inställningar</string>
+    <string name="settings_category_manage_data">Hantera data</string>
     <string name="settings_clear_settings_dialog_message">Alla tangentbordsinställningar återställs till standardvärdena. Vill du fortsätta?</string>
     <string name="settings_clear_settings_dialog_title">Rensa inställningsdata</string>
     <string name="settings_clear_settings_summary">Återställ alla tangentbordsinställningar till standardvärdena</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Snabbfras 4</string>
     <string name="settings_quick_phrase_5">Snabbfras 5</string>
     <string name="settings_quick_phrases_screen_title">Snabbfraser</string>
+    <string name="settings_restore_dialog_confirm">Återställ</string>
+    <string name="settings_restore_dialog_message">Vill du ersätta de aktuella inställningarna med säkerhetskopian?</string>
+    <string name="settings_restore_not_a_backup">Filen är inte en säkerhetskopia av BBKB-inställningar</string>
+    <string name="settings_restore_read_failed">Det gick inte att läsa säkerhetskopian</string>
+    <string name="settings_restore_summary">Läs in inställningar från en säkerhetskopia</string>
+    <string name="settings_restore_title">Återställ inställningar</string>
+    <string name="settings_restored_count">%1$d inställningar återställdes</string>
     <string name="settings_screen_type_by_swiping">Dra för att skriva</string>
     <string name="settings_screen_type_by_swiping_summary">Skriv snabbt utan att lyfta fingret från tangentbordet</string>
     <string name="settings_screen_type_by_swiping_unavailable">På svenska kan du inte skriva genom att svepa.</string>

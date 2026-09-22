@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Onbekend</string>
     <string name="settings_about_summary">Versie-informatie en credits</string>
     <string name="settings_about_title">Over</string>
+    <string name="settings_backed_up">Back-up van instellingen gemaakt</string>
+    <string name="settings_backup_failed">Kan de back-up niet schrijven</string>
+    <string name="settings_backup_summary">Alle instellingen opslaan in een bestand</string>
+    <string name="settings_backup_title">Back-up van instellingen maken</string>
+    <string name="settings_category_manage_data">Gegevens beheren</string>
     <string name="settings_clear_settings_dialog_message">Hiermee worden alle toetsenbordinstellingen teruggezet op de standaardwaarden. Weet u het zeker?</string>
     <string name="settings_clear_settings_dialog_title">Instellingsgegevens wissen</string>
     <string name="settings_clear_settings_summary">Alle toetsenbordinstellingen terugzetten op de standaardwaarden</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Snelle zin 4</string>
     <string name="settings_quick_phrase_5">Snelle zin 5</string>
     <string name="settings_quick_phrases_screen_title">Snelle zinnen</string>
+    <string name="settings_restore_dialog_confirm">Herstellen</string>
+    <string name="settings_restore_dialog_message">Huidige instellingen vervangen door de back-up?</string>
+    <string name="settings_restore_not_a_backup">Dat bestand is geen back-up van BBKB-instellingen</string>
+    <string name="settings_restore_read_failed">Kan de back-up niet lezen</string>
+    <string name="settings_restore_summary">Instellingen laden uit een back-upbestand</string>
+    <string name="settings_restore_title">Instellingen herstellen</string>
+    <string name="settings_restored_count">%1$d instellingen hersteld</string>
     <string name="settings_screen_type_by_swiping">Typen door te vegen</string>
     <string name="settings_screen_type_by_swiping_summary">Snel typen zonder uw vinger van het toetsenbord te halen</string>
     <string name="settings_screen_type_by_swiping_unavailable">Typen door te vegen is niet beschikbaar in uw taal.</string>

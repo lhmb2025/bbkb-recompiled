@@ -229,6 +229,8 @@ class Simple(
     @StringRes val summary: Int? = null,
     val icon: RowIcon? = null,
     val iconSpaceReserved: Boolean = false,
+    /** Carries [settingsSearchAnchor] for the action rows search can land on. */
+    val modifier: Modifier = Modifier,
     override val visible: (SettingsEnv) -> Boolean = { true },
     val onClick: ((Context) -> Unit)? = null,
 ) : SettingsRow

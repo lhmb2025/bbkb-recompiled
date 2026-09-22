@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Неизвестно</string>
     <string name="settings_about_summary">Сведения о версии и благодарности</string>
     <string name="settings_about_title">О приложении</string>
+    <string name="settings_backed_up">Резервная копия настроек создана</string>
+    <string name="settings_backup_failed">Не удалось записать резервную копию</string>
+    <string name="settings_backup_summary">Сохранить все настройки в файл</string>
+    <string name="settings_backup_title">Резервная копия настроек</string>
+    <string name="settings_category_manage_data">Управление данными</string>
     <string name="settings_clear_settings_dialog_message">Все настройки клавиатуры будут сброшены до значений по умолчанию. Продолжить?</string>
     <string name="settings_clear_settings_dialog_title">Очистка данных настроек</string>
     <string name="settings_clear_settings_summary">Сбросить все настройки клавиатуры до значений по умолчанию</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Быстрая фраза 4</string>
     <string name="settings_quick_phrase_5">Быстрая фраза 5</string>
     <string name="settings_quick_phrases_screen_title">Быстрые фразы</string>
+    <string name="settings_restore_dialog_confirm">Восстановить</string>
+    <string name="settings_restore_dialog_message">Заменить текущие настройки резервной копией?</string>
+    <string name="settings_restore_not_a_backup">Этот файл не является резервной копией настроек BBKB</string>
+    <string name="settings_restore_read_failed">Не удалось прочитать резервную копию</string>
+    <string name="settings_restore_summary">Загрузить настройки из резервной копии</string>
+    <string name="settings_restore_title">Восстановить настройки</string>
+    <string name="settings_restored_count">Восстановлено настроек: %1$d</string>
     <string name="settings_screen_type_by_swiping">Ввод текста с помощью жестов</string>
     <string name="settings_screen_type_by_swiping_summary">Набирайте текст быстрее, не отрывая пальцев от клавиатуры</string>
     <string name="settings_screen_type_by_swiping_unavailable">Ввод с помощью жестов недоступен для выбранного языка.</string>

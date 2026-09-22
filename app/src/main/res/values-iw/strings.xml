@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">לא ידוע</string>
     <string name="settings_about_summary">פרטי גרסה וקרדיטים</string>
     <string name="settings_about_title">אודות</string>
+    <string name="settings_backed_up">הגיבוי של ההגדרות הושלם</string>
+    <string name="settings_backup_failed">לא ניתן לכתוב את הגיבוי</string>
+    <string name="settings_backup_summary">שמירת כל ההגדרות לקובץ</string>
+    <string name="settings_backup_title">גיבוי ההגדרות</string>
+    <string name="settings_category_manage_data">ניהול נתונים</string>
     <string name="settings_clear_settings_dialog_message">פעולה זו תאפס את כל הגדרות המקלדת לברירת המחדל. האם להמשיך?</string>
     <string name="settings_clear_settings_dialog_title">ניקוי נתוני ההגדרות</string>
     <string name="settings_clear_settings_summary">אפס את כל הגדרות המקלדת לברירת המחדל</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">ביטוי מהיר 4</string>
     <string name="settings_quick_phrase_5">ביטוי מהיר 5</string>
     <string name="settings_quick_phrases_screen_title">ביטויים מהירים</string>
+    <string name="settings_restore_dialog_confirm">שחזור</string>
+    <string name="settings_restore_dialog_message">להחליף את ההגדרות הנוכחיות בגיבוי?</string>
+    <string name="settings_restore_not_a_backup">הקובץ הזה אינו גיבוי הגדרות של BBKB</string>
+    <string name="settings_restore_read_failed">לא ניתן לקרוא את הגיבוי</string>
+    <string name="settings_restore_summary">טעינת הגדרות מקובץ גיבוי</string>
+    <string name="settings_restore_title">שחזור ההגדרות</string>
+    <string name="settings_restored_count">%1$d הגדרות שוחזרו</string>
     <string name="settings_screen_type_by_swiping">הקלד על-ידי החלקה</string>
     <string name="settings_screen_type_by_swiping_summary">הקלד במהירות מבלי להרים את האצבע מהמקלדת</string>
     <string name="settings_screen_type_by_swiping_unavailable">הקלדה באמצעות החלקה אינה זמינה בשפתך.</string>

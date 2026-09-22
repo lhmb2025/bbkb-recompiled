@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Desconhecido</string>
     <string name="settings_about_summary">Informações da versão e créditos</string>
     <string name="settings_about_title">Sobre</string>
+    <string name="settings_backed_up">Backup das configurações concluído</string>
+    <string name="settings_backup_failed">Não foi possível gravar o backup</string>
+    <string name="settings_backup_summary">Salvar todas as configurações em um arquivo</string>
+    <string name="settings_backup_title">Fazer backup das configurações</string>
+    <string name="settings_category_manage_data">Gerenciar dados</string>
     <string name="settings_clear_settings_dialog_message">Isso redefinirá todas as configurações do teclado para os padrões. Tem certeza?</string>
     <string name="settings_clear_settings_dialog_title">Limpar os dados de configuração</string>
     <string name="settings_clear_settings_summary">Redefinir todas as configurações do teclado para os padrões</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Frase rápida 4</string>
     <string name="settings_quick_phrase_5">Frase rápida 5</string>
     <string name="settings_quick_phrases_screen_title">Frases rápidas</string>
+    <string name="settings_restore_dialog_confirm">Restaurar</string>
+    <string name="settings_restore_dialog_message">Substituir as configurações atuais pelo backup?</string>
+    <string name="settings_restore_not_a_backup">Esse arquivo não é um backup de configurações do BBKB</string>
+    <string name="settings_restore_read_failed">Não foi possível ler o backup</string>
+    <string name="settings_restore_summary">Carregar configurações de um arquivo de backup</string>
+    <string name="settings_restore_title">Restaurar configurações</string>
+    <string name="settings_restored_count">%1$d configurações restauradas</string>
     <string name="settings_screen_type_by_swiping">Digitar deslizando o dedo</string>
     <string name="settings_screen_type_by_swiping_summary">Digite rapidamente sem levantar o dedo do teclado</string>
     <string name="settings_screen_type_by_swiping_unavailable">A digitação com deslize não está disponível no seu idioma.</string>

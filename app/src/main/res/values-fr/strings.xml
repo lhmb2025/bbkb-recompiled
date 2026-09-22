@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Inconnu</string>
     <string name="settings_about_summary">Informations sur la version et crédits</string>
     <string name="settings_about_title">À propos</string>
+    <string name="settings_backed_up">Paramètres sauvegardés</string>
+    <string name="settings_backup_failed">Impossible d’écrire la sauvegarde</string>
+    <string name="settings_backup_summary">Enregistrer tous les paramètres dans un fichier</string>
+    <string name="settings_backup_title">Sauvegarder les paramètres</string>
+    <string name="settings_category_manage_data">Gestion des données</string>
     <string name="settings_clear_settings_dialog_message">Tous les paramètres du clavier seront réinitialisés aux valeurs par défaut. Voulez-vous continuer ?</string>
     <string name="settings_clear_settings_dialog_title">Effacer les données de paramètres</string>
     <string name="settings_clear_settings_summary">Réinitialiser tous les paramètres du clavier aux valeurs par défaut</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Phrase rapide 4</string>
     <string name="settings_quick_phrase_5">Phrase rapide 5</string>
     <string name="settings_quick_phrases_screen_title">Phrases rapides</string>
+    <string name="settings_restore_dialog_confirm">Restaurer</string>
+    <string name="settings_restore_dialog_message">Remplacer les paramètres actuels par la sauvegarde ?</string>
+    <string name="settings_restore_not_a_backup">Ce fichier n’est pas une sauvegarde de paramètres BBKB</string>
+    <string name="settings_restore_read_failed">Impossible de lire la sauvegarde</string>
+    <string name="settings_restore_summary">Charger les paramètres depuis une sauvegarde</string>
+    <string name="settings_restore_title">Restaurer les paramètres</string>
+    <string name="settings_restored_count">%1$d paramètres restaurés</string>
     <string name="settings_screen_type_by_swiping">Saisie par glissement</string>
     <string name="settings_screen_type_by_swiping_summary">Saisissez rapidement sans lever votre doigt du clavier</string>
     <string name="settings_screen_type_by_swiping_unavailable">La saisie par glissement n\'est pas disponible dans votre langue.</string>

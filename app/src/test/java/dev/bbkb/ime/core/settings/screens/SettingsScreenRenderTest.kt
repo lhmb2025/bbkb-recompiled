@@ -554,11 +554,15 @@ class SettingsScreenRenderTest(private val screenName: String) {
             title = "Advanced",
             resources = setOf(
                 "settings_about_summary", "settings_about_title", "settings_advanced_title",
+                "settings_backup_summary", "settings_backup_title",
                 "settings_clear_settings_summary", "settings_clear_settings_title", "settings_debug_summary",
                 "settings_debug_title", "settings_device_compatibility_summary",
-                "settings_device_compatibility_title"
+                "settings_device_compatibility_title", "settings_restore_summary",
+                "settings_restore_title"
             ),
-            literals = emptySet(),
+            literals = setOf(
+                "MANAGE DATA",
+            ),
         ),
         Case(
             name = "AnimationParametersScreen",

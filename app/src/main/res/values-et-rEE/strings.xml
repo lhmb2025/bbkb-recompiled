@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Teadmata</string>
     <string name="settings_about_summary">Versiooniteave ja tänuavaldused</string>
     <string name="settings_about_title">Teave</string>
+    <string name="settings_backed_up">Seadetest tehti varukoopia</string>
+    <string name="settings_backup_failed">Varukoopiat ei õnnestunud kirjutada</string>
+    <string name="settings_backup_summary">Salvesta kõik seaded faili</string>
+    <string name="settings_backup_title">Varunda seaded</string>
+    <string name="settings_category_manage_data">Andmete haldus</string>
     <string name="settings_clear_settings_dialog_message">See lähtestab kõik klaviatuuri seaded vaikeväärtustele. Kas olete kindel?</string>
     <string name="settings_clear_settings_dialog_title">Seadete andmete kustutamine</string>
     <string name="settings_clear_settings_summary">Lähtesta kõik klaviatuuri seaded vaikeväärtustele</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Kiirfraas 4</string>
     <string name="settings_quick_phrase_5">Kiirfraas 5</string>
     <string name="settings_quick_phrases_screen_title">Kiirfraasid</string>
+    <string name="settings_restore_dialog_confirm">Taasta</string>
+    <string name="settings_restore_dialog_message">Kas asendada praegused seaded varukoopiaga?</string>
+    <string name="settings_restore_not_a_backup">See fail ei ole BBKB seadete varukoopia</string>
+    <string name="settings_restore_read_failed">Varukoopiat ei õnnestunud lugeda</string>
+    <string name="settings_restore_summary">Laadi seaded varukoopiafailist</string>
+    <string name="settings_restore_title">Taasta seaded</string>
+    <string name="settings_restored_count">Taastati %1$d seadet</string>
     <string name="settings_screen_type_by_swiping">Kirjutamine libistades</string>
     <string name="settings_screen_type_by_swiping_summary">Kirjutage kiiresti, tõstmata sõrme klaviatuurilt</string>
     <string name="settings_screen_type_by_swiping_unavailable">Libistades kirjutamine pole teie keeles saadaval.</string>

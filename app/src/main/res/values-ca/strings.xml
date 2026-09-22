@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Desconegut</string>
     <string name="settings_about_summary">Informació de la versió i crèdits</string>
     <string name="settings_about_title">Quant a</string>
+    <string name="settings_backed_up">S’ha fet una còpia de seguretat de la configuració</string>
+    <string name="settings_backup_failed">No s’ha pogut escriure la còpia de seguretat</string>
+    <string name="settings_backup_summary">Desa tota la configuració en un fitxer</string>
+    <string name="settings_backup_title">Fes una còpia de seguretat de la configuració</string>
+    <string name="settings_category_manage_data">Gestió de dades</string>
     <string name="settings_clear_settings_dialog_message">Això restablirà tota la configuració del teclat als valors per defecte. Segur que voleu continuar?</string>
     <string name="settings_clear_settings_dialog_title">Esborra les dades de configuració</string>
     <string name="settings_clear_settings_summary">Restableix tota la configuració del teclat als valors per defecte</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Frase ràpida 4</string>
     <string name="settings_quick_phrase_5">Frase ràpida 5</string>
     <string name="settings_quick_phrases_screen_title">Frases ràpides</string>
+    <string name="settings_restore_dialog_confirm">Restaura</string>
+    <string name="settings_restore_dialog_message">Vols substituir la configuració actual per la còpia de seguretat?</string>
+    <string name="settings_restore_not_a_backup">Aquest fitxer no és una còpia de seguretat de la configuració de BBKB</string>
+    <string name="settings_restore_read_failed">No s’ha pogut llegir la còpia de seguretat</string>
+    <string name="settings_restore_summary">Carrega la configuració des d’una còpia de seguretat</string>
+    <string name="settings_restore_title">Restaura la configuració</string>
+    <string name="settings_restored_count">S’han restaurat %1$d opcions</string>
     <string name="settings_screen_type_by_swiping">Escriptura lliscant</string>
     <string name="settings_screen_type_by_swiping_summary">Escriviu de pressa sense aixecar el dit del teclat</string>
     <string name="settings_screen_type_by_swiping_unavailable">L\'escriptura lliscant no està disponible en la vostra llengua.</string>

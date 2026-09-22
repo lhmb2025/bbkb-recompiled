@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Descoñecido</string>
     <string name="settings_about_summary">Información da versión e créditos</string>
     <string name="settings_about_title">Sobre a aplicación</string>
+    <string name="settings_backed_up">Fíxose unha copia de seguranza da configuración</string>
+    <string name="settings_backup_failed">Non se puido escribir a copia de seguranza</string>
+    <string name="settings_backup_summary">Garda toda a configuración nun ficheiro</string>
+    <string name="settings_backup_title">Facer unha copia de seguranza da configuración</string>
+    <string name="settings_category_manage_data">Xestionar datos</string>
     <string name="settings_clear_settings_dialog_message">Isto restablecerá toda a configuración do teclado aos valores predeterminados. Seguro que queres continuar?</string>
     <string name="settings_clear_settings_dialog_title">Borrar os datos de configuración</string>
     <string name="settings_clear_settings_summary">Restablecer toda a configuración do teclado aos valores predeterminados</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Frase rápida 4</string>
     <string name="settings_quick_phrase_5">Frase rápida 5</string>
     <string name="settings_quick_phrases_screen_title">Frases rápidas</string>
+    <string name="settings_restore_dialog_confirm">Restaurar</string>
+    <string name="settings_restore_dialog_message">Queres substituír a configuración actual pola copia de seguranza?</string>
+    <string name="settings_restore_not_a_backup">Ese ficheiro non é unha copia de seguranza da configuración de BBKB</string>
+    <string name="settings_restore_read_failed">Non se puido ler a copia de seguranza</string>
+    <string name="settings_restore_summary">Carga a configuración desde unha copia de seguranza</string>
+    <string name="settings_restore_title">Restaurar a configuración</string>
+    <string name="settings_restored_count">Restauráronse %1$d axustes</string>
     <string name="settings_screen_type_by_swiping">Escribir deslizando</string>
     <string name="settings_screen_type_by_swiping_summary">Escribe rápido sen levantar o dedo do teclado</string>
     <string name="settings_screen_type_by_swiping_unavailable">Escribir deslizando non está dispoñible no teu idioma.</string>

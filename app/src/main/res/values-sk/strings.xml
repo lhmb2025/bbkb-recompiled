@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Neznáme</string>
     <string name="settings_about_summary">Informácie o verzii a poďakovanie</string>
     <string name="settings_about_title">Informácie</string>
+    <string name="settings_backed_up">Nastavenia boli zálohované</string>
+    <string name="settings_backup_failed">Zálohu sa nepodarilo zapísať</string>
+    <string name="settings_backup_summary">Uložiť všetky nastavenia do súboru</string>
+    <string name="settings_backup_title">Zálohovať nastavenia</string>
+    <string name="settings_category_manage_data">Správa údajov</string>
     <string name="settings_clear_settings_dialog_message">Týmto sa všetky nastavenia klávesnice obnovia na predvolené. Naozaj chcete pokračovať?</string>
     <string name="settings_clear_settings_dialog_title">Vymazať údaje nastavení</string>
     <string name="settings_clear_settings_summary">Obnoviť všetky nastavenia klávesnice na predvolené</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Rýchla fráza 4</string>
     <string name="settings_quick_phrase_5">Rýchla fráza 5</string>
     <string name="settings_quick_phrases_screen_title">Rýchle frázy</string>
+    <string name="settings_restore_dialog_confirm">Obnoviť</string>
+    <string name="settings_restore_dialog_message">Nahradiť aktuálne nastavenia zálohou?</string>
+    <string name="settings_restore_not_a_backup">Tento súbor nie je zálohou nastavení BBKB</string>
+    <string name="settings_restore_read_failed">Zálohu sa nepodarilo prečítať</string>
+    <string name="settings_restore_summary">Načítať nastavenia zo záložného súboru</string>
+    <string name="settings_restore_title">Obnoviť nastavenia</string>
+    <string name="settings_restored_count">Obnovených nastavení: %1$d</string>
     <string name="settings_screen_type_by_swiping">Písanie potiahnutím</string>
     <string name="settings_screen_type_by_swiping_summary">Píšte rýchlo bez zdvihnutia prsta z klávesnice</string>
     <string name="settings_screen_type_by_swiping_unavailable">Písanie potiahnutím nie je vo vašom jazyku k dispozícii.</string>

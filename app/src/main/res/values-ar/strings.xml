@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">غير معروف</string>
     <string name="settings_about_summary">معلومات الإصدار وشكر وتقدير</string>
     <string name="settings_about_title">حول</string>
+    <string name="settings_backed_up">تم نسخ الإعدادات احتياطيًا</string>
+    <string name="settings_backup_failed">تعذّرت كتابة النسخة الاحتياطية</string>
+    <string name="settings_backup_summary">حفظ جميع الإعدادات في ملف</string>
+    <string name="settings_backup_title">نسخ الإعدادات احتياطيًا</string>
+    <string name="settings_category_manage_data">إدارة البيانات</string>
     <string name="settings_clear_settings_dialog_message">سيؤدي هذا إلى إعادة تعيين كل إعدادات لوحة المفاتيح إلى الإعدادات الافتراضية. هل أنت متأكد؟</string>
     <string name="settings_clear_settings_dialog_title">مسح بيانات الإعدادات</string>
     <string name="settings_clear_settings_summary">إعادة تعيين كل إعدادات لوحة المفاتيح إلى الإعدادات الافتراضية</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">العبارة السريعة 4</string>
     <string name="settings_quick_phrase_5">العبارة السريعة 5</string>
     <string name="settings_quick_phrases_screen_title">العبارات السريعة</string>
+    <string name="settings_restore_dialog_confirm">استعادة</string>
+    <string name="settings_restore_dialog_message">هل تريد استبدال الإعدادات الحالية بالنسخة الاحتياطية؟</string>
+    <string name="settings_restore_not_a_backup">هذا الملف ليس نسخة احتياطية لإعدادات BBKB</string>
+    <string name="settings_restore_read_failed">تعذّرت قراءة النسخة الاحتياطية</string>
+    <string name="settings_restore_summary">تحميل الإعدادات من ملف نسخة احتياطية</string>
+    <string name="settings_restore_title">استعادة الإعدادات</string>
+    <string name="settings_restored_count">تمت استعادة %1$d إعداد</string>
     <string name="settings_screen_type_by_swiping">الكتابة بالتمرير</string>
     <string name="settings_screen_type_by_swiping_summary">اكتب بسرعة من دون رفع إصبعك عن لوحة المفاتيح</string>
     <string name="settings_screen_type_by_swiping_unavailable">الكتابة عن طريق التمرير غير متوفر بلغتك.</string>

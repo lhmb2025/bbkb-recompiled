@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Άγνωστο</string>
     <string name="settings_about_summary">Πληροφορίες έκδοσης και συντελεστές</string>
     <string name="settings_about_title">Σχετικά</string>
+    <string name="settings_backed_up">Δημιουργήθηκε αντίγραφο ασφαλείας των ρυθμίσεων</string>
+    <string name="settings_backup_failed">Δεν ήταν δυνατή η εγγραφή του αντιγράφου ασφαλείας</string>
+    <string name="settings_backup_summary">Αποθήκευση όλων των ρυθμίσεων σε αρχείο</string>
+    <string name="settings_backup_title">Αντίγραφο ασφαλείας ρυθμίσεων</string>
+    <string name="settings_category_manage_data">Διαχείριση δεδομένων</string>
     <string name="settings_clear_settings_dialog_message">Θα γίνει επαναφορά όλων των ρυθμίσεων του πληκτρολογίου στις προεπιλογές. Είστε βέβαιοι;</string>
     <string name="settings_clear_settings_dialog_title">Διαγραφή δεδομένων ρυθμίσεων</string>
     <string name="settings_clear_settings_summary">Επαναφορά όλων των ρυθμίσεων του πληκτρολογίου στις προεπιλογές</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Γρήγορη φράση 4</string>
     <string name="settings_quick_phrase_5">Γρήγορη φράση 5</string>
     <string name="settings_quick_phrases_screen_title">Γρήγορες φράσεις</string>
+    <string name="settings_restore_dialog_confirm">Επαναφορά</string>
+    <string name="settings_restore_dialog_message">Αντικατάσταση των τρεχουσών ρυθμίσεων με το αντίγραφο ασφαλείας;</string>
+    <string name="settings_restore_not_a_backup">Αυτό το αρχείο δεν είναι αντίγραφο ασφαλείας ρυθμίσεων BBKB</string>
+    <string name="settings_restore_read_failed">Δεν ήταν δυνατή η ανάγνωση του αντιγράφου ασφαλείας</string>
+    <string name="settings_restore_summary">Φόρτωση ρυθμίσεων από αρχείο αντιγράφου ασφαλείας</string>
+    <string name="settings_restore_title">Επαναφορά ρυθμίσεων</string>
+    <string name="settings_restored_count">Έγινε επαναφορά %1$d ρυθμίσεων</string>
     <string name="settings_screen_type_by_swiping">Πληκτρολόγηση με σύρσιμο</string>
     <string name="settings_screen_type_by_swiping_summary">Πληκτρολογήστε γρήγορα με το δάχτυλο στο πληκτρολόγιο</string>
     <string name="settings_screen_type_by_swiping_unavailable">Η πληκτρολόγηση με σάρωση δεν είναι διαθέσιμη στη γλώσσα σας.</string>

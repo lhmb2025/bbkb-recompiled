@@ -119,6 +119,7 @@ private fun RenderRow(
             summary = row.summary?.let { context.getString(it) },
             icon = row.icon,
             iconSpaceReserved = row.iconSpaceReserved,
+            modifier = row.modifier,
             onClick = row.onClick?.let { { it(context) } },
         )
 
@@ -252,6 +253,7 @@ private fun PreferenceItemRow(
     summary: String?,
     icon: RowIcon?,
     iconSpaceReserved: Boolean,
+    modifier: Modifier,
     onClick: (() -> Unit)?,
 ) {
     SimplePreference(
@@ -259,6 +261,7 @@ private fun PreferenceItemRow(
         summary = summary,
         icon = (icon as? RowIcon.Vector)?.image,
         iconSpaceReserved = iconSpaceReserved,
+        modifier = modifier,
         onClick = onClick,
     )
 }

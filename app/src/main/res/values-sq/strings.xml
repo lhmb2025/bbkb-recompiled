@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">E panjohur</string>
     <string name="settings_about_summary">Të dhënat e versionit dhe falënderimet</string>
     <string name="settings_about_title">Rreth</string>
+    <string name="settings_backed_up">U krijua kopja rezervë e cilësimeve</string>
+    <string name="settings_backup_failed">Kopja rezervë nuk u shkrua dot</string>
+    <string name="settings_backup_summary">Ruaj të gjitha cilësimet në një skedar</string>
+    <string name="settings_backup_title">Krijo kopje rezervë të cilësimeve</string>
+    <string name="settings_category_manage_data">Menaxhimi i të dhënave</string>
     <string name="settings_clear_settings_dialog_message">Kjo do t\'i rivendosë te parazgjedhjet të gjitha cilësimet e tastierës. Je i sigurt?</string>
     <string name="settings_clear_settings_dialog_title">Pastro të dhënat e cilësimeve</string>
     <string name="settings_clear_settings_summary">Rivendos te parazgjedhjet të gjitha cilësimet e tastierës</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Fraza e shpejtë 4</string>
     <string name="settings_quick_phrase_5">Fraza e shpejtë 5</string>
     <string name="settings_quick_phrases_screen_title">Frazat e shpejta</string>
+    <string name="settings_restore_dialog_confirm">Rikthe</string>
+    <string name="settings_restore_dialog_message">Të zëvendësohen cilësimet aktuale me kopjen rezervë?</string>
+    <string name="settings_restore_not_a_backup">Ai skedar nuk është kopje rezervë e cilësimeve BBKB</string>
+    <string name="settings_restore_read_failed">Kopja rezervë nuk u lexua dot</string>
+    <string name="settings_restore_summary">Ngarko cilësimet nga një skedar rezervë</string>
+    <string name="settings_restore_title">Rikthe cilësimet</string>
+    <string name="settings_restored_count">U rikthyen %1$d cilësime</string>
     <string name="settings_screen_type_by_swiping">Shkrim me rrëshqitje</string>
     <string name="settings_screen_type_by_swiping_summary">Shkruaj shpejt pa e ngritur gishtin nga tastiera</string>
     <string name="settings_screen_type_by_swiping_unavailable">Shkrimi me rrëshqitje nuk ofrohet në gjuhën tënde.</string>

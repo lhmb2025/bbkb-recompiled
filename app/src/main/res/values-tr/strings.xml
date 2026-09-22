@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Bilinmiyor</string>
     <string name="settings_about_summary">Sürüm bilgileri ve katkıda bulunanlar</string>
     <string name="settings_about_title">Hakkında</string>
+    <string name="settings_backed_up">Ayarlar yedeklendi</string>
+    <string name="settings_backup_failed">Yedek yazılamadı</string>
+    <string name="settings_backup_summary">Tüm ayarları bir dosyaya kaydedin</string>
+    <string name="settings_backup_title">Ayarları yedekle</string>
+    <string name="settings_category_manage_data">Veri yönetimi</string>
     <string name="settings_clear_settings_dialog_message">Bu işlem tüm klavye ayarlarını varsayılanlara sıfırlar. Emin misiniz?</string>
     <string name="settings_clear_settings_dialog_title">Ayar Verilerini Temizle</string>
     <string name="settings_clear_settings_summary">Tüm klavye ayarlarını varsayılanlara sıfırla</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Hızlı ifade 4</string>
     <string name="settings_quick_phrase_5">Hızlı ifade 5</string>
     <string name="settings_quick_phrases_screen_title">Hızlı ifadeler</string>
+    <string name="settings_restore_dialog_confirm">Geri yükle</string>
+    <string name="settings_restore_dialog_message">Geçerli ayarlar yedekle değiştirilsin mi?</string>
+    <string name="settings_restore_not_a_backup">Bu dosya bir BBKB ayar yedeği değil</string>
+    <string name="settings_restore_read_failed">Yedek okunamadı</string>
+    <string name="settings_restore_summary">Ayarları bir yedek dosyasından yükleyin</string>
+    <string name="settings_restore_title">Ayarları geri yükle</string>
+    <string name="settings_restored_count">%1$d ayar geri yüklendi</string>
     <string name="settings_screen_type_by_swiping">Kaydırarak yazma</string>
     <string name="settings_screen_type_by_swiping_summary">Parmağınızı klavyeden kaldırmadan hızlıca yazın</string>
     <string name="settings_screen_type_by_swiping_unavailable">Kaydırarak yazdırma özelliği dilinizde kullanılamıyor.</string>

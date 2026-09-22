@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">不明</string>
     <string name="settings_about_summary">バージョン情報とクレジット</string>
     <string name="settings_about_title">情報</string>
+    <string name="settings_backed_up">設定をバックアップしました</string>
+    <string name="settings_backup_failed">バックアップを書き込めませんでした</string>
+    <string name="settings_backup_summary">すべての設定をファイルに保存します</string>
+    <string name="settings_backup_title">設定をバックアップ</string>
+    <string name="settings_category_manage_data">データの管理</string>
     <string name="settings_clear_settings_dialog_message">キーボードのすべての設定がデフォルトにリセットされます。よろしいですか?</string>
     <string name="settings_clear_settings_dialog_title">設定データの消去</string>
     <string name="settings_clear_settings_summary">キーボードのすべての設定をデフォルトにリセットします</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">クイックフレーズ4</string>
     <string name="settings_quick_phrase_5">クイックフレーズ5</string>
     <string name="settings_quick_phrases_screen_title">クイックフレーズ</string>
+    <string name="settings_restore_dialog_confirm">復元</string>
+    <string name="settings_restore_dialog_message">現在の設定をバックアップで置き換えますか？</string>
+    <string name="settings_restore_not_a_backup">このファイルは BBKB の設定バックアップではありません</string>
+    <string name="settings_restore_read_failed">バックアップを読み取れませんでした</string>
+    <string name="settings_restore_summary">バックアップファイルから設定を読み込みます</string>
+    <string name="settings_restore_title">設定を復元</string>
+    <string name="settings_restored_count">%1$d 件の設定を復元しました</string>
     <string name="settings_screen_type_by_swiping">スワイプして入力</string>
     <string name="settings_screen_type_by_swiping_summary">キーボードから指を離さずにすばやく入力できます</string>
     <string name="settings_screen_type_by_swiping_unavailable">この言語では、スワイプによる入力はサポートされていません。</string>

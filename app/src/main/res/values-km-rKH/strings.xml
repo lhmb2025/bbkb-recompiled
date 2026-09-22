@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">មិនស្គាល់</string>
     <string name="settings_about_summary">ព័ត៌មានកំណែ និងអ្នកចូលរួម</string>
     <string name="settings_about_title">អំពី</string>
+    <string name="settings_backed_up">បានបម្រុងទុកការកំណត់</string>
+    <string name="settings_backup_failed">មិនអាចសរសេរការបម្រុងទុកបានទេ</string>
+    <string name="settings_backup_summary">រក្សាទុកការកំណត់ទាំងអស់ទៅក្នុងឯកសារ</string>
+    <string name="settings_backup_title">បម្រុងទុកការកំណត់</string>
+    <string name="settings_category_manage_data">គ្រប់គ្រងទិន្នន័យ</string>
     <string name="settings_clear_settings_dialog_message">ការនេះនឹងកំណត់ការកំណត់ក្ដារចុចទាំងអស់ឡើងវិញទៅតម្លៃលំនាំដើម។ តើអ្នកប្រាកដទេ?</string>
     <string name="settings_clear_settings_dialog_title">សម្អាតទិន្នន័យការកំណត់</string>
     <string name="settings_clear_settings_summary">កំណត់ការកំណត់ក្ដារចុចទាំងអស់ឡើងវិញទៅតម្លៃលំនាំដើម</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">ឃ្លារហ័ស 4</string>
     <string name="settings_quick_phrase_5">ឃ្លារហ័ស 5</string>
     <string name="settings_quick_phrases_screen_title">ឃ្លារហ័ស</string>
+    <string name="settings_restore_dialog_confirm">ស្ដារ</string>
+    <string name="settings_restore_dialog_message">ជំនួសការកំណត់បច្ចុប្បន្នដោយការបម្រុងទុកឬ?</string>
+    <string name="settings_restore_not_a_backup">ឯកសារនេះមិនមែនជាការបម្រុងទុកការកំណត់ BBKB ទេ</string>
+    <string name="settings_restore_read_failed">មិនអាចអានការបម្រុងទុកបានទេ</string>
+    <string name="settings_restore_summary">ផ្ទុកការកំណត់ពីឯកសារបម្រុងទុក</string>
+    <string name="settings_restore_title">ស្ដារការកំណត់</string>
+    <string name="settings_restored_count">បានស្ដារការកំណត់ %1$d</string>
     <string name="settings_screen_type_by_swiping">វាយបញ្ចូលដោយការអូស</string>
     <string name="settings_screen_type_by_swiping_summary">វាយបញ្ចូលបានរហ័សដោយមិនចាំបាច់លើកម្រាមដៃចេញពីក្ដារចុច</string>
     <string name="settings_screen_type_by_swiping_unavailable">ការវាយបញ្ចូលដោយការអូសមិនមាននៅក្នុងភាសារបស់អ្នកទេ។</string>

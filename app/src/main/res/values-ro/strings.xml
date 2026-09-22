@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Necunoscut</string>
     <string name="settings_about_summary">Informații despre versiune și credite</string>
     <string name="settings_about_title">Despre</string>
+    <string name="settings_backed_up">S-a creat o copie de rezervă a setărilor</string>
+    <string name="settings_backup_failed">Copia de rezervă nu a putut fi scrisă</string>
+    <string name="settings_backup_summary">Salvează toate setările într-un fișier</string>
+    <string name="settings_backup_title">Creează o copie de rezervă a setărilor</string>
+    <string name="settings_category_manage_data">Gestionarea datelor</string>
     <string name="settings_clear_settings_dialog_message">Toate setările tastaturii vor fi resetate la valorile implicite. Continuați?</string>
     <string name="settings_clear_settings_dialog_title">Ștergeți datele setărilor</string>
     <string name="settings_clear_settings_summary">Resetați toate setările tastaturii la valorile implicite</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Expresie rapidă 4</string>
     <string name="settings_quick_phrase_5">Expresie rapidă 5</string>
     <string name="settings_quick_phrases_screen_title">Expresii rapide</string>
+    <string name="settings_restore_dialog_confirm">Restaurează</string>
+    <string name="settings_restore_dialog_message">Înlocuiești setările actuale cu copia de rezervă?</string>
+    <string name="settings_restore_not_a_backup">Acel fișier nu este o copie de rezervă a setărilor BBKB</string>
+    <string name="settings_restore_read_failed">Copia de rezervă nu a putut fi citită</string>
+    <string name="settings_restore_summary">Încarcă setările dintr-o copie de rezervă</string>
+    <string name="settings_restore_title">Restaurează setările</string>
+    <string name="settings_restored_count">S-au restaurat %1$d setări</string>
     <string name="settings_screen_type_by_swiping">Tastaţi trăgând cu degetul</string>
     <string name="settings_screen_type_by_swiping_summary">Tastaţi rapid, fără a ridica degetul de pe tastatură</string>
     <string name="settings_screen_type_by_swiping_unavailable">Tastarea prin glisare nu este disponibilă în limba dvs.</string>

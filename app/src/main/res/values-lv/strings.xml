@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Nezināms</string>
     <string name="settings_about_summary">Versijas informācija un pateicības</string>
     <string name="settings_about_title">Par</string>
+    <string name="settings_backed_up">Izveidota iestatījumu dublējumkopija</string>
+    <string name="settings_backup_failed">Neizdevās ierakstīt dublējumkopiju</string>
+    <string name="settings_backup_summary">Saglabāt visus iestatījumus failā</string>
+    <string name="settings_backup_title">Dublēt iestatījumus</string>
+    <string name="settings_category_manage_data">Datu pārvaldība</string>
     <string name="settings_clear_settings_dialog_message">Tādējādi visi tastatūras iestatījumi tiks atiestatīti uz noklusējumiem. Vai tiešām to vēlaties?</string>
     <string name="settings_clear_settings_dialog_title">Notīrīt iestatījumu datus</string>
     <string name="settings_clear_settings_summary">Atiestatīt visus tastatūras iestatījumus uz noklusējumiem</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Ātrā frāze 4</string>
     <string name="settings_quick_phrase_5">Ātrā frāze 5</string>
     <string name="settings_quick_phrases_screen_title">Ātrās frāzes</string>
+    <string name="settings_restore_dialog_confirm">Atjaunot</string>
+    <string name="settings_restore_dialog_message">Vai aizstāt pašreizējos iestatījumus ar dublējumkopiju?</string>
+    <string name="settings_restore_not_a_backup">Šis fails nav BBKB iestatījumu dublējumkopija</string>
+    <string name="settings_restore_read_failed">Neizdevās nolasīt dublējumkopiju</string>
+    <string name="settings_restore_summary">Ielādēt iestatījumus no dublējumkopijas</string>
+    <string name="settings_restore_title">Atjaunot iestatījumus</string>
+    <string name="settings_restored_count">Atjaunoti %1$d iestatījumi</string>
     <string name="settings_screen_type_by_swiping">Rakstīšana velkot</string>
     <string name="settings_screen_type_by_swiping_summary">Rakstiet ātri, nepaceļot pirkstu no tastatūras</string>
     <string name="settings_screen_type_by_swiping_unavailable">Rakstīšana velkot jūsu valodā nav pieejama.</string>

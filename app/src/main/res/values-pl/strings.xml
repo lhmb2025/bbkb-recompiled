@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Nieznane</string>
     <string name="settings_about_summary">Informacje o wersji i twórcy</string>
     <string name="settings_about_title">Informacje</string>
+    <string name="settings_backed_up">Utworzono kopię zapasową ustawień</string>
+    <string name="settings_backup_failed">Nie udało się zapisać kopii zapasowej</string>
+    <string name="settings_backup_summary">Zapisz wszystkie ustawienia do pliku</string>
+    <string name="settings_backup_title">Utwórz kopię zapasową ustawień</string>
+    <string name="settings_category_manage_data">Zarządzanie danymi</string>
     <string name="settings_clear_settings_dialog_message">Spowoduje to przywrócenie domyślnych ustawień klawiatury. Czy na pewno?</string>
     <string name="settings_clear_settings_dialog_title">Wyczyść dane ustawień</string>
     <string name="settings_clear_settings_summary">Przywróć wszystkie ustawienia klawiatury do domyślnych</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Szybka fraza 4</string>
     <string name="settings_quick_phrase_5">Szybka fraza 5</string>
     <string name="settings_quick_phrases_screen_title">Szybkie frazy</string>
+    <string name="settings_restore_dialog_confirm">Przywróć</string>
+    <string name="settings_restore_dialog_message">Zastąpić bieżące ustawienia kopią zapasową?</string>
+    <string name="settings_restore_not_a_backup">Ten plik nie jest kopią zapasową ustawień BBKB</string>
+    <string name="settings_restore_read_failed">Nie udało się odczytać kopii zapasowej</string>
+    <string name="settings_restore_summary">Wczytaj ustawienia z kopii zapasowej</string>
+    <string name="settings_restore_title">Przywróć ustawienia</string>
+    <string name="settings_restored_count">Przywrócono ustawienia: %1$d</string>
     <string name="settings_screen_type_by_swiping">Wpisuj, przesuwając palcem</string>
     <string name="settings_screen_type_by_swiping_summary">Pisz szybko, nie podnosząc palca z klawiatury</string>
     <string name="settings_screen_type_by_swiping_unavailable">Wpisywanie za pomocą przesuwania nie jest obsługiwane w tym języku.</string>

@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Teu kanyahoan</string>
     <string name="settings_about_summary">Katerangan vérsi jeung panganuhun</string>
     <string name="settings_about_title">Ngeunaan</string>
+    <string name="settings_backed_up">Setelan geus dicadangkeun</string>
+    <string name="settings_backup_failed">Teu bisa nulis cadangan</string>
+    <string name="settings_backup_summary">Simpen sakabéh setelan kana berkas</string>
+    <string name="settings_backup_title">Cadangkeun setelan</string>
+    <string name="settings_category_manage_data">Ngokolakeun data</string>
     <string name="settings_clear_settings_dialog_message">Ieu bakal mulangkeun sakabéh setélan papan tombol ka setélan baku. Yakin?</string>
     <string name="settings_clear_settings_dialog_title">Mupus Data Setélan</string>
     <string name="settings_clear_settings_summary">Mulangkeun sakabéh setélan papan tombol ka setélan baku</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Frasa gancang 4</string>
     <string name="settings_quick_phrase_5">Frasa gancang 5</string>
     <string name="settings_quick_phrases_screen_title">Frasa gancang</string>
+    <string name="settings_restore_dialog_confirm">Pulihkeun</string>
+    <string name="settings_restore_dialog_message">Ganti setelan ayeuna ku cadangan?</string>
+    <string name="settings_restore_not_a_backup">Berkas éta lain cadangan setelan BBKB</string>
+    <string name="settings_restore_read_failed">Teu bisa maca cadangan</string>
+    <string name="settings_restore_summary">Muat setelan tina berkas cadangan</string>
+    <string name="settings_restore_title">Pulihkeun setelan</string>
+    <string name="settings_restored_count">%1$d setelan dipulihkeun</string>
     <string name="settings_screen_type_by_swiping">Ngetik ku usapan</string>
     <string name="settings_screen_type_by_swiping_summary">Ngetik gancang tanpa ngangkat ramo tina papan tombol</string>
     <string name="settings_screen_type_by_swiping_unavailable">Ngetik ku usapan teu sadia dina basa anjeun.</string>

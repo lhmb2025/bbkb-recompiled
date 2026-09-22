@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Nepoznato</string>
     <string name="settings_about_summary">Informacije o verziji i zasluge</string>
     <string name="settings_about_title">O aplikaciji</string>
+    <string name="settings_backed_up">Postavke su sigurnosno kopirane</string>
+    <string name="settings_backup_failed">Sigurnosnu kopiju nije moguće zapisati</string>
+    <string name="settings_backup_summary">Spremi sve postavke u datoteku</string>
+    <string name="settings_backup_title">Sigurnosno kopiranje postavki</string>
+    <string name="settings_category_manage_data">Upravljanje podacima</string>
     <string name="settings_clear_settings_dialog_message">Time će se sve postavke tipkovnice vratiti na zadane. Jeste li sigurni?</string>
     <string name="settings_clear_settings_dialog_title">Brisanje podataka o postavkama</string>
     <string name="settings_clear_settings_summary">Vrati sve postavke tipkovnice na zadane</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Brza fraza 4</string>
     <string name="settings_quick_phrase_5">Brza fraza 5</string>
     <string name="settings_quick_phrases_screen_title">Brze fraze</string>
+    <string name="settings_restore_dialog_confirm">Vrati</string>
+    <string name="settings_restore_dialog_message">Zamijeniti trenutne postavke sigurnosnom kopijom?</string>
+    <string name="settings_restore_not_a_backup">Ta datoteka nije sigurnosna kopija postavki BBKB-a</string>
+    <string name="settings_restore_read_failed">Sigurnosnu kopiju nije moguće pročitati</string>
+    <string name="settings_restore_summary">Učitaj postavke iz sigurnosne kopije</string>
+    <string name="settings_restore_title">Vrati postavke</string>
+    <string name="settings_restored_count">Vraćeno postavki: %1$d</string>
     <string name="settings_screen_type_by_swiping">Unesite tekst povlačenjem</string>
     <string name="settings_screen_type_by_swiping_summary">Tekst unesite brzo bez podizanja prsta s tipkovnice</string>
     <string name="settings_screen_type_by_swiping_unavailable">Unos teksta povlačenjem nije dostupan u vašem jeziku.</string>

@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">தெரியவில்லை</string>
     <string name="settings_about_summary">பதிப்புத் தகவல் மற்றும் நன்றியுரை</string>
     <string name="settings_about_title">பற்றி</string>
+    <string name="settings_backed_up">அமைப்புகள் காப்புப் பிரதி எடுக்கப்பட்டன</string>
+    <string name="settings_backup_failed">காப்புப் பிரதியை எழுத முடியவில்லை</string>
+    <string name="settings_backup_summary">அனைத்து அமைப்புகளையும் ஒரு கோப்பில் சேமிக்கவும்</string>
+    <string name="settings_backup_title">அமைப்புகளை காப்புப் பிரதி எடுக்கவும்</string>
+    <string name="settings_category_manage_data">தரவை நிர்வகித்தல்</string>
     <string name="settings_clear_settings_dialog_message">இது அனைத்து விசைப்பலகை அமைப்புகளையும் இயல்புநிலைக்கு மீட்டமைக்கும். உறுதியாக உள்ளீர்களா?</string>
     <string name="settings_clear_settings_dialog_title">அமைப்புகள் தரவை அழி</string>
     <string name="settings_clear_settings_summary">அனைத்து விசைப்பலகை அமைப்புகளையும் இயல்புநிலைக்கு மீட்டமை</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">விரைவு சொற்றொடர் 4</string>
     <string name="settings_quick_phrase_5">விரைவு சொற்றொடர் 5</string>
     <string name="settings_quick_phrases_screen_title">விரைவு சொற்றொடர்கள்</string>
+    <string name="settings_restore_dialog_confirm">மீட்டமை</string>
+    <string name="settings_restore_dialog_message">தற்போதைய அமைப்புகளை காப்புப் பிரதியால் மாற்றவா?</string>
+    <string name="settings_restore_not_a_backup">அந்தக் கோப்பு BBKB அமைப்புகளின் காப்புப் பிரதி அல்ல</string>
+    <string name="settings_restore_read_failed">காப்புப் பிரதியைப் படிக்க முடியவில்லை</string>
+    <string name="settings_restore_summary">காப்புப் பிரதிக் கோப்பிலிருந்து அமைப்புகளை ஏற்றவும்</string>
+    <string name="settings_restore_title">அமைப்புகளை மீட்டமை</string>
+    <string name="settings_restored_count">%1$d அமைப்புகள் மீட்டமைக்கப்பட்டன</string>
     <string name="settings_screen_type_by_swiping">ஸ்வைப் செய்து தட்டச்சு செய்</string>
     <string name="settings_screen_type_by_swiping_summary">விசைப்பலகையிலிருந்து விரலை எடுக்காமல் விரைவாகத் தட்டச்சு செய்யவும்</string>
     <string name="settings_screen_type_by_swiping_unavailable">உங்கள் மொழியில் ஸ்வைப் செய்து தட்டச்சு செய்யும் வசதி கிடைக்கவில்லை.</string>

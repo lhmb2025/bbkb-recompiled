@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Neznámé</string>
     <string name="settings_about_summary">Informace o verzi a autoři</string>
     <string name="settings_about_title">O aplikaci</string>
+    <string name="settings_backed_up">Nastavení bylo zálohováno</string>
+    <string name="settings_backup_failed">Zálohu se nepodařilo zapsat</string>
+    <string name="settings_backup_summary">Uložit všechna nastavení do souboru</string>
+    <string name="settings_backup_title">Zálohovat nastavení</string>
+    <string name="settings_category_manage_data">Správa dat</string>
     <string name="settings_clear_settings_dialog_message">Tím se obnoví výchozí hodnoty všech nastavení klávesnice. Opravdu chcete pokračovat?</string>
     <string name="settings_clear_settings_dialog_title">Vymazat data nastavení</string>
     <string name="settings_clear_settings_summary">Obnovit výchozí hodnoty všech nastavení klávesnice</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Rychlá fráze 4</string>
     <string name="settings_quick_phrase_5">Rychlá fráze 5</string>
     <string name="settings_quick_phrases_screen_title">Rychlé fráze</string>
+    <string name="settings_restore_dialog_confirm">Obnovit</string>
+    <string name="settings_restore_dialog_message">Nahradit současná nastavení zálohou?</string>
+    <string name="settings_restore_not_a_backup">Tento soubor není zálohou nastavení BBKB</string>
+    <string name="settings_restore_read_failed">Zálohu se nepodařilo přečíst</string>
+    <string name="settings_restore_summary">Načíst nastavení ze záložního souboru</string>
+    <string name="settings_restore_title">Obnovit nastavení</string>
+    <string name="settings_restored_count">Obnovených nastavení: %1$d</string>
     <string name="settings_screen_type_by_swiping">Psaní pomocí přejetí prstem</string>
     <string name="settings_screen_type_by_swiping_summary">Pište rychle, aniž byste museli zvednout prst z klávesnice</string>
     <string name="settings_screen_type_by_swiping_unavailable">Psaní přejetím prstem není ve vašem jazyce k dispozici.</string>

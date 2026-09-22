@@ -539,6 +539,11 @@
     <string name="prefs_vkb_visibility_status_unknown">Ukendt</string>
     <string name="settings_about_summary">Versionsoplysninger og medvirkende</string>
     <string name="settings_about_title">Om</string>
+    <string name="settings_backed_up">Indstillingerne er sikkerhedskopieret</string>
+    <string name="settings_backup_failed">Sikkerhedskopien kunne ikke skrives</string>
+    <string name="settings_backup_summary">Gem alle indstillinger i en fil</string>
+    <string name="settings_backup_title">Sikkerhedskopier indstillinger</string>
+    <string name="settings_category_manage_data">Administrer data</string>
     <string name="settings_clear_settings_dialog_message">Alle tastaturindstillinger nulstilles til standardværdierne. Vil du fortsætte?</string>
     <string name="settings_clear_settings_dialog_title">Ryd indstillingsdata</string>
     <string name="settings_clear_settings_summary">Nulstil alle tastaturindstillinger til standardværdierne</string>
@@ -568,6 +573,13 @@
     <string name="settings_quick_phrase_4">Hurtig sætning 4</string>
     <string name="settings_quick_phrase_5">Hurtig sætning 5</string>
     <string name="settings_quick_phrases_screen_title">Hurtige sætninger</string>
+    <string name="settings_restore_dialog_confirm">Gendan</string>
+    <string name="settings_restore_dialog_message">Vil du erstatte de aktuelle indstillinger med sikkerhedskopien?</string>
+    <string name="settings_restore_not_a_backup">Den fil er ikke en BBKB-sikkerhedskopi af indstillinger</string>
+    <string name="settings_restore_read_failed">Sikkerhedskopien kunne ikke læses</string>
+    <string name="settings_restore_summary">Indlæs indstillinger fra en sikkerhedskopi</string>
+    <string name="settings_restore_title">Gendan indstillinger</string>
+    <string name="settings_restored_count">%1$d indstillinger blev gendannet</string>
     <string name="settings_screen_type_by_swiping">Skriv med strygebevægelser</string>
     <string name="settings_screen_type_by_swiping_summary">Skriv hurtigt uden at løfte din finger fra tastaturet</string>
     <string name="settings_screen_type_by_swiping_unavailable">Indtastning vha. strygning er ikke mulig for dit sprog.</string>
