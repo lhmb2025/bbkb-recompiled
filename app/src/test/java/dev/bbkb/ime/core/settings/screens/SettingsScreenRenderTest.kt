@@ -97,8 +97,13 @@ class SettingsScreenRenderTest(private val screenName: String) {
         val lateLiterals: Set<String> = emptySet(),
     )
 
-    /** Version/build text moves on every release; it is the one thing not pinned. */
-    private val volatileText = Regex("""^Version .*\(Build \d+\)$""")
+    /**
+     * Version/build text moves on every release; it is the one thing not pinned. The optional
+     * " · <build type>" tail is the Updates screen's version row, which names the build type
+     * after the version for the same reason the channel row exists: a debug build and a release
+     * build are different things to be looking at an update list from.
+     */
+    private val volatileText = Regex("""^Version .*\(Build \d+\)( · \w+)?$""")
 
     @Before
     fun setUp() {
@@ -165,7 +170,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "AutoCorrectionScreen" -> ({ AutoCorrectionScreen({}) })
         "CkbGesturesScreen" -> ({ CkbGesturesScreen({}) })
         "CorrectionLearningScreen" -> ({ CorrectionLearningScreen({}, {}, {}, {}) })
-        "CreditsScreen" -> ({ CreditsScreen({}) })
+        "CreditsScreen" -> ({ CreditsScreen({}, {}) })
         "CustomMacrosScreen" -> ({ CustomMacrosScreen({}) })
         "CustomSymbolPageScreen_PKB" -> ({ CustomSymbolPageScreen(isPkb = true, onBack = {}) })
         "CustomSymbolPageScreen_VKB" -> ({ CustomSymbolPageScreen(isPkb = false, onBack = {}) })
@@ -194,6 +199,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "SymbolCustomizationScreen" -> ({ SymbolCustomizationScreen({}, {}, {}) })
         "TextShortcutsScreen" -> ({ TextShortcutsScreen({}, {}) })
         "CustomizationScreen" -> ({ CustomizationScreen({}, {}, {}, {}, {}) })
+        "UpdatesScreen" -> ({ UpdatesScreen({}) })
         "UserDictionaryScreen" -> ({ UserDictionaryScreen({}) })
         "VoiceInputSettingsScreen" -> ({ VoiceInputSettingsScreen({}, {}) })
         "VoiceLanguageSelectionScreen" -> ({ VoiceLanguageSelectionScreen({}) })
@@ -447,7 +453,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             "PhysicalKeyboardScreen", "PredictionsSuggestionsScreen", "QuickPhrasesScreen",
             "ShakeGesturesScreen", "SlideboardLayoutScreen", "SpellCheckerSettingsScreen",
             "SymbolCustomizationScreen", "TextShortcutsScreen", "TouchScreenKeyboardScreen",
-            "UserDictionaryScreen", "VoiceInputSettingsScreen", "VoiceLanguageSelectionScreen",
+            "UpdatesScreen", "UserDictionaryScreen", "VoiceInputSettingsScreen",
+            "VoiceLanguageSelectionScreen",
             "WordListEditorScreen",
         )
     }
@@ -605,7 +612,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.About.route,
             title = "About",
             resources = setOf(
-                "english_ime_name", "settings_about_title"
+                "english_ime_name", "settings_about_title",
+                // The Updates row: About is where a user looks for "what version am I on".
+                "settings_updates_summary", "settings_updates_title"
             ),
             literals = setOf(
                 "CREDITS",
@@ -1193,6 +1202,25 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_vkb_type_by_swiping_summary", "vkb_control_key_summary", "vkb_control_key_title"
             ),
             literals = emptySet(),
+        ),
+        Case(
+            name = "UpdatesScreen",
+            route = SettingsRoute.Updates.route,
+            title = "Updates",
+            resources = setOf(
+                // "Never" - the last-checked row on a fresh install. Several resources share that
+                // value and the index records the lexicographically first, which is this one.
+                "prefs_vkb_visibility_status_never",
+                "settings_update_background_check_summary", "settings_update_background_check_title",
+                // The tests run against the debug BuildConfig, so the channel row honestly reads
+                // "no update channel for debug builds" and there is no card to draw.
+                "settings_update_channel_none", "settings_update_channel_title",
+                "settings_update_check_now", "settings_update_installed_version_title",
+                "settings_update_last_checked_title", "settings_updates_title"
+            ),
+            literals = setOf(
+                "UPDATES"
+            ),
         ),
         Case(
             name = "UserDictionaryScreen",
