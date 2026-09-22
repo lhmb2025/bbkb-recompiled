@@ -1,0 +1,750 @@
+{
+  "schema": 1,
+  "generated": "2026-09-22T01:32:46Z",
+  "app": {},
+  "packs": {
+    "version": "1902.01",
+    "baseUrl": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/packs-1902.01/",
+    "items": [
+      {
+        "locale": "af",
+        "name": "Afrikaans",
+        "file": "Blackberry_1305_r1-2_AFlsUN_xt9_ALM3.ldb",
+        "sha256": "366ce4310a0e2f723ef1761a3dbb59029f004e5f683f2599b65280630a631425",
+        "size": 4439252
+      },
+      {
+        "locale": "am",
+        "name": "Amharic",
+        "file": "Blackberry_1305_r1-1_AMlsUN_xt9.ldb",
+        "sha256": "76a6f43ef13a9fc6d8dd01d8c3c00542b1087b0c01e34feb7464fe53eaffdcad",
+        "size": 273935
+      },
+      {
+        "locale": "ar",
+        "name": "Arabic",
+        "file": "Blackberry_1305_r1-12_ARlsUN_xt9_ALM3.ldb",
+        "sha256": "63769b69bc1b0d50524bdcf779da990da70f3daa3aa1e3e5ceed9b2a8cd30741",
+        "size": 5983206
+      },
+      {
+        "locale": "as",
+        "name": "Assamese",
+        "file": "Blackberry_1305_r1-6_ASlsUN_xt9_ALM3.ldb",
+        "sha256": "74e1c7d64686c3d7b12fa21051d97e62a4faf6520431ef811b16baae914685b5",
+        "size": 1470591
+      },
+      {
+        "locale": "az",
+        "name": "Azerbaijani",
+        "file": "Blackberry_1305_r1-2_AZlsUN_xt9_ALM3.ldb",
+        "sha256": "21d075373c45d34fcc639af76efe41ef064f34dadfe0b26991e67aa405bdee65",
+        "size": 4984501
+      },
+      {
+        "locale": "be",
+        "name": "Belarusian",
+        "file": "Blackberry_1305_r1-2_BElsUN_xt9_ALM3.ldb",
+        "sha256": "f6e814bff56ce4212f53ca1660f79bd90c355430473d729d6a69561d01da4b3a",
+        "size": 4609430
+      },
+      {
+        "locale": "bg",
+        "name": "Bulgarian",
+        "file": "Blackberry_1305_r1-4_BGlsUN_xt9_ALM3.ldb",
+        "sha256": "756c92ba7b0f69a9d14b9a376923b4be9aa3c385c36d732cdef55b01113d17d6",
+        "size": 5079780
+      },
+      {
+        "locale": "bn",
+        "name": "Bengali",
+        "file": "Blackberry_1305_r1-7_BNlsUN_xt9_ALM3.ldb",
+        "sha256": "bf93b4fafb686d2b22c417cb2174df8516da110147bab2039ee2abb6bb5b6002",
+        "size": 4931014
+      },
+      {
+        "locale": "bo",
+        "name": "Tibetan",
+        "file": "Blackberry_1305_r1-2_BOlsUN_xt9_2.ldb",
+        "sha256": "5abd413ad9da77b7c0c67a286ba59d9d0bce5ea281e3d77c9e264aca31405a88",
+        "size": 55785
+      },
+      {
+        "locale": "bs",
+        "name": "Bosnian",
+        "file": "Blackberry_1305_r1-6_BSlsUN_xt9_ALM3.ldb",
+        "sha256": "fffb8e43c2ee0ea60e510747d63859c7d7f9d82718c045744fe58e7a20b5a69d",
+        "size": 4855869
+      },
+      {
+        "locale": "ca",
+        "name": "Catalan",
+        "file": "Blackberry_1305_r1-7_CAlsUN_xt9_ALM3.ldb",
+        "sha256": "32c83fdf0b987b8030466edee2689e0508aa972e77e02a5c8474226e6e572769",
+        "size": 4505744
+      },
+      {
+        "locale": "cs",
+        "name": "Czech",
+        "file": "Blackberry_1305_r1-5_CSlsUN_xt9_ALM3.ldb",
+        "sha256": "1222806a3784927ee617040d49df76bce44c6ea94ca394f6f04a28f823020449",
+        "size": 4856757
+      },
+      {
+        "locale": "cy",
+        "name": "Welsh",
+        "file": "Blackberry_1305_r1-1_CYlsUN_xt9_2.ldb",
+        "sha256": "9f3a727ca63c02000eb3dfd1ccab5d2e2acd4c35257f7d2f7a5715b60e70ff1c",
+        "size": 188213
+      },
+      {
+        "locale": "da",
+        "name": "Danish",
+        "file": "Blackberry_1305_r1-6_DAusUN_xt9_ALM3.ldb",
+        "sha256": "881c95033c3b38fd5aabecb9c389e5bce0b764a7176a9cafe0f2512b2c48b1f7",
+        "size": 4871055
+      },
+      {
+        "locale": "de",
+        "name": "German",
+        "file": "Blackberry_1305_r1-20_DEusUN_xt9_ALM3.ldb",
+        "sha256": "e4610b83df8badf3af92ddbf19f2d6d7f55e93a13647523d75acb25e230abb64",
+        "size": 6327318
+      },
+      {
+        "locale": "de_CH",
+        "name": "German (Switzerland)",
+        "file": "Blackberry_1305_r1-20_DEusUNCH_xt9_ALM3.ldb",
+        "sha256": "f24cd44314c00376f02994859337c9e437cc23d3e2c8e09df440c7f87f3338af",
+        "size": 3843297,
+        "group": "de"
+      },
+      {
+        "locale": "el",
+        "name": "Greek",
+        "file": "Blackberry_1305_r1-5_ELusUN_xt9_ALM3.ldb",
+        "sha256": "5702673aca04005ab546a474b7e3284f523326f7bcc830c11559446c877e98fc",
+        "size": 5054079
+      },
+      {
+        "locale": "en",
+        "name": "English",
+        "file": "Blackberry_1305_r1-76_ENubUN_xt9_ALM3.ldb",
+        "sha256": "26ae89440ccb3a1bc42331ed450e0c5f9784745555e808cad03cca39def4c8ee",
+        "size": 5531804
+      },
+      {
+        "locale": "en_AU",
+        "name": "English (Australia)",
+        "file": "Blackberry_1305_r1-9_ENubUNAU_xt9_ALM3.ldb",
+        "sha256": "1f776027f9f2f3daf6b614757cb310e8051b75c84892364daade56b3193a309f",
+        "size": 5492811
+      },
+      {
+        "locale": "en_UK",
+        "name": "English (United Kingdom)",
+        "file": "Blackberry_1305_r1-17_ENubUNUK_xt9_ALM3.ldb",
+        "sha256": "6b856deecc2ecd9b74ce4bfac9efcc2ad7c1c00b081496766d2251b4f9bd186b",
+        "size": 5501174
+      },
+      {
+        "locale": "en_US",
+        "name": "English (United States)",
+        "file": "Blackberry_1305_r1-5_ENubUNUS_xt9_ALM3.ldb",
+        "sha256": "1b51156eabc8485c60e4148e0afa48688194c8d0d33d0ad4e314b8b729b9eeda",
+        "size": 5513122
+      },
+      {
+        "locale": "es",
+        "name": "Spanish",
+        "file": "Blackberry_1305_r1-28_ESusUN_xt9_ALM3.ldb",
+        "sha256": "ff67f6af45f7046550ea210fc242f0167f18feb1942fec58707e6f462927f792",
+        "size": 5760895
+      },
+      {
+        "locale": "es_ES",
+        "name": "Spanish (Spain)",
+        "file": "Blackberry_1305_r1-12_ESusUNES_xt9_ALM3.ldb",
+        "sha256": "4ee3ccb68d3cb347a293a840c288665c2784935485e639b27cad0412661e432c",
+        "size": 5837262
+      },
+      {
+        "locale": "et",
+        "name": "Estonian",
+        "file": "Blackberry_1305_r1-4_ETlsUN_xt9_ALM3.ldb",
+        "sha256": "7025a2b367452da4f20ff0af299f4917fab258f7574e707c42c56fe0e51c38c3",
+        "size": 3814506
+      },
+      {
+        "locale": "eu",
+        "name": "Basque",
+        "file": "Blackberry_1305_r1-3_EUlsUN_xt9_ALM3.ldb",
+        "sha256": "87b9569b80f51653d1e1280f631213afe7e0772e1b7a34427e1e22dc0c143b59",
+        "size": 4739288
+      },
+      {
+        "locale": "fa",
+        "name": "Farsi",
+        "file": "Blackberry_1305_r1-6_FAlsUN_xt9_ALM3.ldb",
+        "sha256": "1ef5175065c21ac6ae3ecb891cba15fe71b70611f6ca5676fcdfaa28d076053f",
+        "size": 4869122
+      },
+      {
+        "locale": "fi",
+        "name": "Finnish",
+        "file": "Blackberry_1305_r1-4_FIusUN_xt9_HC_ALM3.ldb",
+        "sha256": "f6e99343d96130863f83f4c51962fcfdb6a412815ace78bf8b534b0a182cc7e6",
+        "size": 4797011
+      },
+      {
+        "locale": "fil",
+        "name": "Tagalog",
+        "file": "Blackberry_1305_r1-7_TLlsUN_xt9_ALM3.ldb",
+        "sha256": "826a2bea99661e3ba3c413ad5b56e597ee4f893553091bc267d08ca494c712eb",
+        "size": 3576860
+      },
+      {
+        "locale": "fr",
+        "name": "French",
+        "file": "Blackberry_1305_r1-21_FRusUN_xt9_ALM3.ldb",
+        "sha256": "67673a9246ca0db92336570481b5a9aec50a80d96f51eb4ea636aca1e1266a30",
+        "size": 4981595
+      },
+      {
+        "locale": "fr_CA",
+        "name": "French (Canada)",
+        "file": "Blackberry_1305_r1-6_FRusUNCA_xt9_ALM3.ldb",
+        "sha256": "9d342390608b9edee9ab412a4a6822bf29029cd7088ee5ec075b4de155c7539d",
+        "size": 4950147
+      },
+      {
+        "locale": "fr_CH",
+        "name": "French (Switzerland)",
+        "file": "Blackberry_1305_r1-21_FRusUNCH_xt9_ALM3.ldb",
+        "sha256": "10c2a5607eb5034779731f33f0d7bce458160cac212a66a8955663c97d171a68",
+        "size": 3652885,
+        "group": "fr"
+      },
+      {
+        "locale": "ga",
+        "name": "Irish",
+        "file": "Blackberry_1305_r1-2_GAlsUN_xt9_ALM3.ldb",
+        "sha256": "afdb6c454e2100168d8aeccff600ce99764e9e288d44c6d947d7a5b14befb3bd",
+        "size": 2477818
+      },
+      {
+        "locale": "gl",
+        "name": "Galician",
+        "file": "Blackberry_1305_r1-4_GLlsUN_xt9_ALM3.ldb",
+        "sha256": "65bf44abaa20da5b4ecdda6cf560195bec8ec5934326e0909e10cc2311e08ed0",
+        "size": 3520382
+      },
+      {
+        "locale": "gu",
+        "name": "Gujarati",
+        "file": "Blackberry_1305_r1-6_GUlsUN_xt9_ALM3.ldb",
+        "sha256": "7ab4f169145640698ee435840061cce82ad6a1658629c85369f138d80682fbf0",
+        "size": 5193254
+      },
+      {
+        "locale": "ha",
+        "name": "Hausa",
+        "file": "Blackberry_1305_r1-1_HAlsUN_xt9_2.ldb",
+        "sha256": "2e6fd9506426ce88a704c69154e7fd9d0fc83f2be0efa37ad3aee57776d362f0",
+        "size": 158171
+      },
+      {
+        "locale": "hi",
+        "name": "Hindi",
+        "file": "Blackberry_1305_r1-17_HIlsUN_xt9_ALM3.ldb",
+        "sha256": "887fed1858f02741eb37304e032392b245806bdd3b36b46264249925e85030c0",
+        "size": 5333887
+      },
+      {
+        "locale": "hr",
+        "name": "Croatian",
+        "file": "Blackberry_1305_r1-4_HRlsUN_xt9_ALM3.ldb",
+        "sha256": "d5e9b66b43ddfaede84daedf0e4e77d4a2e3fc4f67da65fe8c5bafb1abb488b8",
+        "size": 4909429
+      },
+      {
+        "locale": "hu",
+        "name": "Hungarian",
+        "file": "Blackberry_1305_r1-4_HUlsUN_xt9_HC_ALM3.ldb",
+        "sha256": "78f5972c61aeee631e74962559edd83e8b068bb925109303429a764257406cb4",
+        "size": 5546835
+      },
+      {
+        "locale": "hy",
+        "name": "Interlingua",
+        "file": "Blackberry_1305_r1-2_HYlsUN_xt9_ALM3.ldb",
+        "sha256": "69ea77593f0d137efd699ca78a49f71696786deec6780695028e88cc6c8198d1",
+        "size": 4675293
+      },
+      {
+        "locale": "ig",
+        "name": "Igbo",
+        "file": "Blackberry_1305_r1-5_IGlsUN_xt9.ldb",
+        "sha256": "c11368493aec48e0d86384741db71d996b32bf387f44c88b956b36f47b704256",
+        "size": 20593
+      },
+      {
+        "locale": "in",
+        "name": "Indonesian",
+        "file": "Blackberry_1305_r1-6_IDlbUN_xt9_ALM3.ldb",
+        "sha256": "e2682e5ede14b90cee70fd4c89f84b094a40d2036d0dc2e7dadcf1ecba412cd5",
+        "size": 4399451
+      },
+      {
+        "locale": "is",
+        "name": "Icelandic",
+        "file": "Blackberry_1305_r1-4_ISlsUN_xt9_ALM3.ldb",
+        "sha256": "957f650f7deee0f6660e4daade7862d3189ce8813438a97a3993288caf4622b5",
+        "size": 2344851
+      },
+      {
+        "locale": "it",
+        "name": "Italian",
+        "file": "Blackberry_1305_r1-18_ITusUN_xt9_ALM3.ldb",
+        "sha256": "2867c7cc3b544b6271cc2a5f96d18555f40640ef2c588d85b5ac2763ad9fd85f",
+        "size": 5150037
+      },
+      {
+        "locale": "it_CH",
+        "name": "Italian (Switzerland)",
+        "file": "Blackberry_1305_r1-18_ITusUNCH_xt9_ALM3.ldb",
+        "sha256": "22b372efeccf646cd50960a7655f1bbd38354462377aaaa7cb96f63b5683f29e",
+        "size": 3812580,
+        "group": "it"
+      },
+      {
+        "locale": "iw",
+        "name": "Hebrew",
+        "file": "Blackberry_1305_r1-6_HElsUN_xt9_ALM3.ldb",
+        "sha256": "a1b5ee4bf59900713af4ab521d87a3c21506d826cfbd1f57068aa754a4b1fc2b",
+        "size": 4092635
+      },
+      {
+        "locale": "ja",
+        "name": "Japanese Hiragana",
+        "file": "Blackberry_JAlsUNkana_conv_xt9_ALM3.ldb",
+        "sha256": "6882863de936ad93be7dc326ec614d83ba44e2dfc17ee84a4c56fae5a9cdde4a",
+        "size": 8754205
+      },
+      {
+        "locale": "jv",
+        "name": "Javanese",
+        "file": "Blackberry_1305_r1-2_JWlsUN_xt9_ALM3.ldb",
+        "sha256": "539ecac4faa4c1e50d0bd9cd8e6ce3fc307342691744e444a17de064b18193ee",
+        "size": 3622579
+      },
+      {
+        "locale": "ka",
+        "name": "Georgian",
+        "file": "Blackberry_1305_r1-3_KAlsUN_xt9_ALM3.ldb",
+        "sha256": "dc8f79b68485fa9b3cda823da8e6aea1ec9cb632fb21d21e76c67971eed841e7",
+        "size": 4441821
+      },
+      {
+        "locale": "kk",
+        "name": "Kazakh",
+        "file": "Blackberry_1305_r1-2_KKlsUN_xt9_ALM3.ldb",
+        "sha256": "a13987c93e723b55687f0f220f196e9beee6d8876310680129d66e0ff618523e",
+        "size": 4033004
+      },
+      {
+        "locale": "km",
+        "name": "Khmer",
+        "file": "Blackberry_1305_r1-9_KMlsUN_xt9_ALM3.ldb",
+        "sha256": "75ae7a36d480ad76ae9461ff8a8abc7aab77de72b2c706666e05c7708a7414c9",
+        "size": 5367014
+      },
+      {
+        "locale": "kn",
+        "name": "Kannada",
+        "file": "Blackberry_1305_r1-2_KNlsUN_xt9_ALM3.ldb",
+        "sha256": "e5692656fef905cacf86e89090a40f7070a0889a1c5bc13bb7825de0a160a6e1",
+        "size": 3112794
+      },
+      {
+        "locale": "ko",
+        "name": "Korean",
+        "file": "Blackberry_1305_r1-31_KOusUN_xt9_ALM3.ldb",
+        "sha256": "f0320cb50890999a1e8b9e65b4a6d38c374d57bcfe7f49ef0f331030b6c6f62c",
+        "size": 6782516
+      },
+      {
+        "locale": "ks",
+        "name": "Kashmiri",
+        "file": "Blackberry_1305_r1-2_KSlsUNdevanagari_xt9_ALM3.ldb",
+        "sha256": "94490df4fae6ed1aa84b32c37b434866f316956545b561d1b6c2dff6a25db5e9",
+        "size": 362758
+      },
+      {
+        "locale": "ku",
+        "name": "Kurdish",
+        "file": "Blackberry_1305_r1-1_KUusUN_xt9_2.ldb",
+        "sha256": "d33d7ed3706ddc8a6ed1ccc275e635ada02314c6829aef33b3d90e4389af6399",
+        "size": 431454
+      },
+      {
+        "locale": "ky",
+        "name": "Kirghiz",
+        "file": "Blackberry_1305_r1-2_KYlsUN_xt9_ALM3.ldb",
+        "sha256": "202db71f3dc9fad708e00abe56954bcbdc299f539a8a65ba1674cce76daa307d",
+        "size": 2903485
+      },
+      {
+        "locale": "ln",
+        "name": "Lingala",
+        "file": "Blackberry_1305_r1-1_LNlsUN_xt9_2.ldb",
+        "sha256": "b7ac204532a6f8d59dc4cc5f67966dee8b7476f93a5915bb3d6dd561aa16d884",
+        "size": 482903
+      },
+      {
+        "locale": "lo",
+        "name": "Lao",
+        "file": "Blackberry_1305_r1-3_LOlsUN_xt9_ALM3.ldb",
+        "sha256": "e7606073eb1e629bf85e348de7c65ac85de5a58ecf406660a6b92e7be3ac5450",
+        "size": 2294498
+      },
+      {
+        "locale": "lt",
+        "name": "Lithuanian",
+        "file": "Blackberry_1305_r1-5_LTlsUN_xt9_ALM3.ldb",
+        "sha256": "9734a068fce40c52d62d7915f224ea17bba6132547724ba31ad00a030dedba73",
+        "size": 3285453
+      },
+      {
+        "locale": "lv",
+        "name": "Latvian",
+        "file": "Blackberry_1305_r1-4_LVlsUN_xt9_ALM3.ldb",
+        "sha256": "e4e9b518e88d4a5734abaf8b0f829b41b09d626a4844bb31b51487a686cfbd4d",
+        "size": 4610835
+      },
+      {
+        "locale": "mg",
+        "name": "Malagasy",
+        "file": "Blackberry_1305_r1-1_MGlsUN_xt9_2.ldb",
+        "sha256": "c15116f0435ee837698009bf4cfc741f637bdd858885af6d61d03d6033e9870d",
+        "size": 344311
+      },
+      {
+        "locale": "mk",
+        "name": "Macedonian",
+        "file": "Blackberry_1305_r1-2_MKlsUN_xt9_ALM3.ldb",
+        "sha256": "50481ca2bf5a5781add251e58687e963ffcd5521853f148e939909da3d76c488",
+        "size": 4575857
+      },
+      {
+        "locale": "ml",
+        "name": "Malayalam",
+        "file": "Blackberry_1305_r1-6_MLlsUN_xt9_ALM3.ldb",
+        "sha256": "2a95e7c3c5d68a05ed9c742facb6acb6f9058a7804992291e261dbe6f9870420",
+        "size": 4170010
+      },
+      {
+        "locale": "mn",
+        "name": "Mongolian",
+        "file": "Blackberry_1305_r1-2_MNlsUN_xt9_ALM3.ldb",
+        "sha256": "3fd2a03a27fbaaaed276fa18359287b9f16a3e6814f98b2e082d44e6cf21a943",
+        "size": 4626736
+      },
+      {
+        "locale": "mr",
+        "name": "Marathi",
+        "file": "Blackberry_1305_r1-7_MRlsUN_xt9_ALM3.ldb",
+        "sha256": "98011f50614fda428707ad585bb835d9ac803f5ecdc4ec1f9a1738a99bb0bc27",
+        "size": 4943961
+      },
+      {
+        "locale": "ms",
+        "name": "Malay",
+        "file": "Blackberry_1305_r1-4_MSlbUN_xt9_ALM3.ldb",
+        "sha256": "b408448364177246b0b76faba15b1089710b168ae82263396057d43d9a6b6539",
+        "size": 2296544
+      },
+      {
+        "locale": "my",
+        "name": "Burmese",
+        "file": "Blackberry_1305_r1-2_MYlsUN_xt9_ALM3.ldb",
+        "sha256": "66d69f53b0ec92f4654b770ab25252744c3db383f70e845d6e74659049f36b9e",
+        "size": 2566736
+      },
+      {
+        "locale": "nb",
+        "name": "Norwegian",
+        "file": "Blackberry_1305_r1-6_NOusUN_xt9_ALM3.ldb",
+        "sha256": "fe0605e11ac5aae370111410b8644a76bc52876ee44294587552be2d05b76eab",
+        "size": 5007691
+      },
+      {
+        "locale": "ne",
+        "name": "Nepali",
+        "file": "Blackberry_1305_r1-4_NElsUN_xt9_ALM3.ldb",
+        "sha256": "67e9af1defd4e013e7d69c1c0048a2c6f95b54c075e9f3fc9a65515051ee20ae",
+        "size": 5787636
+      },
+      {
+        "locale": "nl",
+        "name": "Dutch",
+        "file": "Blackberry_1305_r1-6_NLusUN_xt9_ALM3.ldb",
+        "sha256": "f04f995e999ea658e09c52f8e2d17b3acfeb82b47ac13e3c1784fffb45c651a6",
+        "size": 5283938
+      },
+      {
+        "locale": "nl_BE",
+        "name": "Dutch (Belgium)",
+        "file": "Blackberry_1305_r1-6_NLusUNBE_xt9_ALM3.ldb",
+        "sha256": "fa5864a0678ee1f8ec0144a81a273101019e64e9318b0e32d8301895b0f2ee5b",
+        "size": 3847135,
+        "group": "nl"
+      },
+      {
+        "locale": "or",
+        "name": "Oriya",
+        "file": "Blackberry_1305_r1-5_ORlsUN_xt9_ALM3.ldb",
+        "sha256": "d0ee2e224928e285dec6e8a1975087521e5a051729d3f330566a9ba58d3fb770",
+        "size": 412908
+      },
+      {
+        "locale": "pa",
+        "name": "Punjabi",
+        "file": "Blackberry_1305_r1-5_PAlsUN_xt9_ALM3.ldb",
+        "sha256": "cbb3fca25710105d4afe1b7ac113af0403d8ed22aab54bb201e644a4d8fd447d",
+        "size": 4149599
+      },
+      {
+        "locale": "pl",
+        "name": "Polish",
+        "file": "Blackberry_1305_r1-6_PLusUN_xt9_ALM3.ldb",
+        "sha256": "37f29167d0e14028cc03c9184a3a3f750f6b080fdbc558ffee15bbeecb9ad82b",
+        "size": 4941429
+      },
+      {
+        "locale": "ps",
+        "name": "Pashto",
+        "file": "Blackberry_1305_r1-1_PSlsUN_xt9_2.ldb",
+        "sha256": "39ccd4960be5d8fe68a0b6d2e4d5fdffde90a23e61716e23c72e05871acfc72d",
+        "size": 283010
+      },
+      {
+        "locale": "pt",
+        "name": "Portuguese",
+        "file": "Blackberry_1305_r1-11_PTusUN_xt9_ALM3.ldb",
+        "sha256": "b515af0e445a00ed36518460a4e5c26cfdfcd54515dbe1a6aec4b309d8b024c4",
+        "size": 5914744
+      },
+      {
+        "locale": "pt_BR",
+        "name": "Portuguese",
+        "file": "Blackberry_1305_r1-2_PTusUNBR_xt9_ALM3.ldb",
+        "sha256": "c2662b4d711b2d8fa6da48038b4c26734678aafd17a42305c6695f53bf54a8ff",
+        "size": 5947214
+      },
+      {
+        "locale": "pt_PT",
+        "name": "Portuguese",
+        "file": "Blackberry_1305_r1-2_PTusUNPT_xt9_ALM3.ldb",
+        "sha256": "0c6fd521eb64f5619c205000cbc168490e383c1a1f9580d3ca35d9dcef2dd99f",
+        "size": 5962331
+      },
+      {
+        "locale": "ro",
+        "name": "Romanian",
+        "file": "Blackberry_1305_r1-5_ROlsUN_xt9_ALM3.ldb",
+        "sha256": "b3581c24329485c271fe20f5c925eb2471787d808a83db3fd6a965f91869dcbf",
+        "size": 4720282
+      },
+      {
+        "locale": "ru",
+        "name": "Russian",
+        "file": "Blackberry_1305_r1-10_RUusUN_xt9_ALM3.ldb",
+        "sha256": "79bcf216e0aa06315c368e1b10ee614239d2bd8e09e665f8d3f9632d925f4cab",
+        "size": 5702373
+      },
+      {
+        "locale": "sa",
+        "name": "Sanskrit",
+        "file": "Blackberry_1305_r1-2_SAlsUN_xt9_ALM3.ldb",
+        "sha256": "81ab207f5bd6febcc914e370907a7c870f024477226e7f1c1382664d099903ee",
+        "size": 742134
+      },
+      {
+        "locale": "si",
+        "name": "Sinhala",
+        "file": "Blackberry_1305_r1-2_SIlsUNAlternate_xt9_ALM3.ldb",
+        "sha256": "e79506e201a0482689b82d947b628702b7cedeee601590e8ee225e2ab14cbbf8",
+        "size": 4972072
+      },
+      {
+        "locale": "sk",
+        "name": "Slovak",
+        "file": "Blackberry_1305_r1-5_SKlsUN_xt9_ALM3.ldb",
+        "sha256": "ede6205611317a058b8349d70576700edc8d3e1e0f75afbb4df8f085a4c0e194",
+        "size": 4914248
+      },
+      {
+        "locale": "sl",
+        "name": "Slovenian",
+        "file": "Blackberry_1305_r1-5_SLlsUN_xt9_ALM3.ldb",
+        "sha256": "de8fc9327edf3822c3461e811e94a38af0e6edfd87aa4d1a52f0f5446712283e",
+        "size": 4751811
+      },
+      {
+        "locale": "sq",
+        "name": "Albanian",
+        "file": "Blackberry_1305_r1-4_SQlsUN_xt9_ALM3.ldb",
+        "sha256": "6afa39620a761b5d14128d7a258d5efabb1a098be9a3ec7cfc5068cf99e5924b",
+        "size": 4583008
+      },
+      {
+        "locale": "sr",
+        "name": "Serbian",
+        "file": "Blackberry_1305_r1-4_SRlsUN_xt9_ALM3.ldb",
+        "sha256": "db623e884ae2960a12bae2fd6a9627e6fd81291f65d4ea99df0446e2d66b3ddf",
+        "size": 4803818
+      },
+      {
+        "locale": "st",
+        "name": "Sesotho",
+        "file": "Blackberry_1305_r1-1_STlbUN_xt9_2.ldb",
+        "sha256": "5e3d5a9024b08de533b8f163406e5943e0ed1459e457484d7bbf0f7f1ded0e40",
+        "size": 116952
+      },
+      {
+        "locale": "su",
+        "name": "Sundanese",
+        "file": "Blackberry_1305_r1-2_SUlsUN_xt9_ALM3.ldb",
+        "sha256": "f0723169f61c0474534f0b9388eabff59bfd63d113e3e9451e59460c91ec0fe0",
+        "size": 4091779
+      },
+      {
+        "locale": "sv",
+        "name": "Swedish",
+        "file": "Blackberry_1305_r1-6_SVusUN_xt9_ALM3.ldb",
+        "sha256": "69e52270f5f86ba193f2777660003a183fd5dbe999dd5061f0266d5a5a4f583d",
+        "size": 5014418
+      },
+      {
+        "locale": "sw",
+        "name": "Swahili",
+        "file": "Blackberry_1305_r1-2_SWlbUN_xt9_ALM3.ldb",
+        "sha256": "c16bbe0a11c810cd7c1d1f7f1ad6cae99cfe4ac99179504db35235437b9fb6ce",
+        "size": 3594452
+      },
+      {
+        "locale": "ta",
+        "name": "Tamil",
+        "file": "Blackberry_1305_r1-8_TAlsUN_xt9_ALM3.ldb",
+        "sha256": "f6f1757c7193b3f7e020745b8cf1a881595431a5ac80f8197c0c5a710126c4af",
+        "size": 5154420
+      },
+      {
+        "locale": "te",
+        "name": "Telugu",
+        "file": "Blackberry_1305_r1-6_TElsUN_xt9_ALM3.ldb",
+        "sha256": "d30bdddf72a4283d9e063a015254bd081c91fc7e52a7ee9ae16d0bff9c00a0e5",
+        "size": 4814012
+      },
+      {
+        "locale": "tg",
+        "name": "Tajik",
+        "file": "Blackberry_1305_r1-2_TGlsUN_xt9_ALM3.ldb",
+        "sha256": "30ebb6bac05886566d8ef6fb29204a214123aa6a10892e6a42c1626fee44bd3f",
+        "size": 2857304
+      },
+      {
+        "locale": "th",
+        "name": "Thai",
+        "file": "Blackberry_1305_r1-4_THlsUN_xt9_ALM3.ldb",
+        "sha256": "45b9a3441eb48dc9d2a37ced48e1afa3e7dcb8f5916b789eabe2c5624c66f8da",
+        "size": 4576745
+      },
+      {
+        "locale": "tk",
+        "name": "Turkmen",
+        "file": "Blackberry_1305_r1-2_TKlsUN_xt9_ALM3.ldb",
+        "sha256": "16991423ea448f807ab3194ec4c62d288206b413cee2c57b5bf2d3c8fdabef89",
+        "size": 1982712
+      },
+      {
+        "locale": "tr",
+        "name": "Turkish",
+        "file": "Blackberry_1305_r1-3_TRlsUN_xt9_HC_ALM3.ldb",
+        "sha256": "62beab0c5b33b5055c23a3740aec050c6e23e49a2359b23ced0caecdd6cdffef",
+        "size": 3921574
+      },
+      {
+        "locale": "tt",
+        "name": "Tatar",
+        "file": "Blackberry_1305_r1-1_TTlsUNcyrillic_xt9_ALM3.ldb",
+        "sha256": "f192911408bdf32580f9fd8008cbd2a603be45e7ec4773532240e3fee58ab1fc",
+        "size": 5087866
+      },
+      {
+        "locale": "ug",
+        "name": "Uyghur",
+        "file": "Blackberry_1305_r1-1_UGlsUN_xt9_ALM3.ldb",
+        "sha256": "f122c99a8cbcb8df6682763b378c78de741911ad48710c3b2e8eb436f215ee79",
+        "size": 3155417
+      },
+      {
+        "locale": "uk",
+        "name": "Ukranian",
+        "file": "Blackberry_1305_r1-6_UKlsUN_xt9_ALM3.ldb",
+        "sha256": "f7f16930665497b3e99d368a4f94720ce92b2933bba6fd59e0ce627084011057",
+        "size": 5019516
+      },
+      {
+        "locale": "ur",
+        "name": "Urdu",
+        "file": "Blackberry_1305_r1-6_URlsUN_xt9_ALM3.ldb",
+        "sha256": "3a261da0a0a73fa045bb1dbed1d95bfc8a4d5d17ed4b3017ef62831dd4552b6d",
+        "size": 2939339
+      },
+      {
+        "locale": "uz",
+        "name": "Uzbek",
+        "file": "Blackberry_1305_r1-1_UZlsUN_xt9_2.ldb",
+        "sha256": "88177dd2e3513f4b551a44c1cdd1f24a39544b9d33b94565816bad088c4ef089",
+        "size": 335587
+      },
+      {
+        "locale": "vi",
+        "name": "Vietnamese",
+        "file": "Blackberry_1305_r1-8_VIlsUN_xt9_ALM3.ldb",
+        "sha256": "93e6587c044c21faef17a8bf21043d87270647c8c1482c6c373e51d1cf90199e",
+        "size": 4569608
+      },
+      {
+        "locale": "xh",
+        "name": "Xhosa",
+        "file": "Blackberry_1305_r1-2_XHlbUN_xt9_ALM3.ldb",
+        "sha256": "0d3a0cde2c6d2e6df4c3f92606eeec489e4c8c582f8cffdad52bee57d4ec6f1f",
+        "size": 752468
+      },
+      {
+        "locale": "yo",
+        "name": "Yoruba",
+        "file": "Blackberry_1305_r1-1_YOlsUN_xt9_2.ldb",
+        "sha256": "962ca8ba42464dc837a2a3f4643a7994770c7250e23f3a3c95c141723fb214c1",
+        "size": 78161
+      },
+      {
+        "locale": "zh",
+        "name": "Chinese Simplified",
+        "file": "Blackberry_1305_r1-17-10-3_ZHsbUNps_GB2312_xt9_big_ALM.ldb",
+        "sha256": "0b3954dde2dabb77d144201264ebaa92f130a960463d0c8a272a3416f5a3e698",
+        "size": 6309471
+      },
+      {
+        "locale": "zu",
+        "name": "Zulu",
+        "file": "Blackberry_1305_r1-2_ZUlbUN_xt9_ALM3.ldb",
+        "sha256": "1c35871ed95836e288901a074eceb4deeb5009c71366b2f4eb0e94459f3a3505",
+        "size": 694498
+      }
+    ]
+  }
+}
