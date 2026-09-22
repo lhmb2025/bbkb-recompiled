@@ -692,7 +692,6 @@
     <string name="device_config_import_unreadable">קובץ זה אינו תצורת מכשיר</string>
     <string name="device_config_import_failed">לא ניתן לייבא קובץ זה</string>
 
-<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">עדכונים</string>
     <string name="settings_updates_summary">בדיקת גרסה חדשה של BBKB</string>
@@ -726,7 +725,6 @@
     <string name="settings_update_notification_text">גרסה %1$s מוכנה להורדה</string>
     <string name="settings_update_unknown_sources_message">על Android להרשות ל-BBKB להתקין אפליקציות. אפשר התקנה ממקור זה ולאחר מכן לחץ שוב על התקנה.</string>
     <string name="settings_update_open_settings">פתח הגדרות</string>
-=======
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">מותקן</string>
     <string name="language_packs_available_header">זמין להורדה</string>
@@ -741,5 +739,4 @@
     <string name="language_packs_error_network">זה לא עבד. נסה שוב.</string>
     <string name="language_packs_error_verification">הקובץ לא התאים לקטלוג, ולכן לא הותקן דבר</string>
     <string name="language_packs_error_app_too_old">האפליקציה הזו ישנה מדי לקריאת הקטלוג</string>
->>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

@@ -692,7 +692,6 @@
     <string name="device_config_import_unreadable">ಆ ಫೈಲ್ ಸಾಧನ ಕಾನ್ಫಿಗರೇಶನ್ ಅಲ್ಲ</string>
     <string name="device_config_import_failed">ಆ ಫೈಲ್ ಆಮದು ಮಾಡಲಾಗಲಿಲ್ಲ</string>
 
-<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">ನವೀಕರಣಗಳು</string>
     <string name="settings_updates_summary">BBKB ಯ ಹೊಸ ಆವೃತ್ತಿಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
@@ -726,7 +725,6 @@
     <string name="settings_update_notification_text">ಆವೃತ್ತಿ %1$s ಡೌನ್‌ಲೋಡ್‌ಗೆ ಸಿದ್ಧವಾಗಿದೆ</string>
     <string name="settings_update_unknown_sources_message">ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಸ್ಥಾಪಿಸಲು Android BBKB ಗೆ ಅನುಮತಿ ನೀಡಬೇಕು. ಈ ಮೂಲದಿಂದ ಸ್ಥಾಪನೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ, ನಂತರ ಮತ್ತೆ ಸ್ಥಾಪಿಸಿ ಒತ್ತಿರಿ.</string>
     <string name="settings_update_open_settings">ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ</string>
-=======
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">ಸ್ಥಾಪಿಸಲಾಗಿದೆ</string>
     <string name="language_packs_available_header">ಡೌನ್‌ಲೋಡ್‌ಗೆ ಲಭ್ಯ</string>
@@ -741,5 +739,4 @@
     <string name="language_packs_error_network">ಅದು ಕೆಲಸ ಮಾಡಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="language_packs_error_verification">ಫೈಲ್ ಕ್ಯಾಟಲಾಗ್‌ಗೆ ಹೊಂದಿಕೆಯಾಗಲಿಲ್ಲ, ಆದ್ದರಿಂದ ಏನೂ ಸ್ಥಾಪನೆಯಾಗಿಲ್ಲ</string>
     <string name="language_packs_error_app_too_old">ಕ್ಯಾಟಲಾಗ್ ಓದಲು ಈ ಆ್ಯಪ್ ತುಂಬಾ ಹಳೆಯದು</string>
->>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

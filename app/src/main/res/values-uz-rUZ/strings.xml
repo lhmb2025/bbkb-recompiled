@@ -692,7 +692,6 @@
     <string name="device_config_import_unreadable">Bu fayl qurilma konfiguratsiyasi emas</string>
     <string name="device_config_import_failed">Bu faylni import qilib bo‘lmadi</string>
 
-<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Yangilanishlar</string>
     <string name="settings_updates_summary">BBKB ning yangi versiyasini tekshirish</string>
@@ -726,7 +725,6 @@
     <string name="settings_update_notification_text">Versiya %1$s yuklab olishga tayyor</string>
     <string name="settings_update_unknown_sources_message">Android BBKB ga ilovalar oʻrnatishga ruxsat berishi kerak. Bu manbadan oʻrnatishni yoqing, soʻng Oʻrnatish tugmasini qayta bosing.</string>
     <string name="settings_update_open_settings">Sozlamalarni ochish</string>
-=======
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">O‘rnatilgan</string>
     <string name="language_packs_available_header">Yuklab olish mumkin</string>
@@ -741,5 +739,4 @@
     <string name="language_packs_error_network">Bo‘lmadi. Qayta urinib ko‘ring.</string>
     <string name="language_packs_error_verification">Fayl katalogga mos kelmadi, shuning uchun hech narsa o‘rnatilmadi</string>
     <string name="language_packs_error_app_too_old">Bu ilova katalogni o‘qish uchun juda eski</string>
->>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

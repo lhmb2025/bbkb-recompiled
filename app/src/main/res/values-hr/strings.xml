@@ -692,7 +692,6 @@
     <string name="device_config_import_unreadable">Ta datoteka nije konfiguracija uređaja</string>
     <string name="device_config_import_failed">Tu datoteku nije bilo moguće uvesti</string>
 
-<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Ažuriranja</string>
     <string name="settings_updates_summary">Provjeri ima li nova verzija BBKB-a</string>
@@ -726,7 +725,6 @@
     <string name="settings_update_notification_text">Verzija %1$s spremna je za preuzimanje</string>
     <string name="settings_update_unknown_sources_message">Android mora dopustiti BBKB-u instaliranje aplikacija. Omogućite instalaciju iz ovog izvora, a zatim ponovno pritisnite Instaliraj.</string>
     <string name="settings_update_open_settings">Otvori postavke</string>
-=======
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Instalirano</string>
     <string name="language_packs_available_header">Dostupno za preuzimanje</string>
@@ -741,5 +739,4 @@
     <string name="language_packs_error_network">Nije uspjelo. Pokušaj ponovno.</string>
     <string name="language_packs_error_verification">Datoteka ne odgovara katalogu pa nije instalirano ništa</string>
     <string name="language_packs_error_app_too_old">Ova je aplikacija previše stara da pročita katalog</string>
->>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>
