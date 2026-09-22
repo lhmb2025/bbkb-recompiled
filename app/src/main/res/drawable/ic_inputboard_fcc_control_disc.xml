@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Material split of ic_inputboard_fcc_control: the disc alone, white so a plain
+     SRC_IN tint colors it. Layered under ic_inputboard_fcc_control_rings at runtime
+     (FccView) so the rings can carry a contrasting tint instead of flattening. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="62dp"
+    android:height="62dp"
+    android:viewportWidth="186"
+    android:viewportHeight="186">
+  <path
+      android:pathData="M93,93m-89.56,0a89.56,89.56 0,1 1,179.13 0a89.56,89.56 0,1 1,-179.13 0"
+      android:fillColor="@android:color/white"/>
+</vector>

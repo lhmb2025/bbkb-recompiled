@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Night mode overrides - automatically loaded when system is in dark mode -->
+
+    <!-- Dark status bar background, so the icons drawn on it must be light. -->
+    <bool name="settings_light_status_bar">false</bool>
+</resources>

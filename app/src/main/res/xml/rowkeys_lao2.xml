@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="phoneSymbols">
+            <Key
+                latin:keyLabelFlags="followKeyLetterRatio"
+                latin:keySpec="ົ້"/>
+            <Key latin:keySpec="໐"/>
+            <Key
+                latin:keyLabelFlags="followKeyLetterRatio"
+                latin:keySpec="ຳ້"/>
+            <Key
+                latin:keyLabelFlags="fontDefault"
+                latin:keySpec="_"/>
+            <Key
+                latin:keyLabelFlags="fontDefault"
+                latin:keySpec="+"/>
+            <Key
+                latin:keyLabelFlags="followKeyLetterRatio"
+                latin:keySpec="ິ້"/>
+            <Key
+                latin:keyLabelFlags="followKeyLetterRatio"
+                latin:keySpec="ີ້"/>
+            <Key latin:keySpec="ຣ"/>
+            <Key latin:keySpec="ໜ"/>
+            <Key latin:keySpec="ຽ"/>
+            <Key
+                latin:keyLabelFlags="followKeyLetterRatio"
+                latin:keySpec="ຫຼ"/>
+            <Key
+                latin:keyLabelFlags="fontDefault"
+                latin:keySpec="”"/>
+        </case>
+        <default>
+            <Key latin:keySpec="ົ"/>
+            <Key
+                latin:additionalMoreKeys="0"
+                latin:keyHintLabel="0"
+                latin:keySpec="ໄ"
+                latin:moreKeys="໐"/>
+            <Key latin:keySpec="ຳ"/>
+            <Key latin:keySpec="ພ"/>
+            <Key latin:keySpec="ະ"/>
+            <Key latin:keySpec="ິ"/>
+            <Key latin:keySpec="ີ"/>
+            <Key latin:keySpec="ຮ"/>
+            <Key latin:keySpec="ນ"/>
+            <Key latin:keySpec="ຍ"/>
+            <Key latin:keySpec="ບ"/>
+            <Key latin:keySpec="ລ"/>
+        </default>
+    </switch>
+</merge>

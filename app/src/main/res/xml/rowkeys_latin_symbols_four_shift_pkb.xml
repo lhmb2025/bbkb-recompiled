@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Row>
+        <Key
+            latin:keyStyle="toAlphaKeyStyle"
+            latin:keyWidth="20%p"
+            latin:secondaryKeySpec="ctrl|!code/key_control"/>
+        <Key
+            latin:additionalMoreKeys="!text/additional_morekeys_symbols_0"
+            latin:keyMapScanCode="11"
+            latin:keySpec="!text/keyspec_symbols_0"
+            latin:moreKeys="!text/morekeys_symbols_0"/>
+        <include latin:keyboardLayout="@xml/key_space_3kw"/>
+        <Key latin:keySpec="!icon/dedicated_show_ib_key|!code/key_show_input_menu"/>
+        <Key
+            latin:keySpec="!icon/hide_keyboard_big_key|!code/key_hide_symbol_page"
+            latin:keyWidth="20%p"/>
+    </Row>
+</merge>

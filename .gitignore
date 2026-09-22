@@ -1,0 +1,55 @@
+# Android/Gradle
+.gradle/
+**/build/
+local.properties
+captures/
+.externalNativeBuild/
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+
+# Artifacts / binaries
+*.apk
+*.aab
+*.aar
+*.jar
+*.keystore
+*.hprof
+
+# Cutover: pristine blob backup made by tools/cutover_deploy.sh (regenerated on demand)
+*.orig.so
+
+# Node.js / NPM (for emojibase-data)
+**/node_modules/
+**/package-lock.json
+
+# Smali/decompiled code
+/app/src/main/smali
+/app/src/main/smali/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Native build intermediates
+.cxx/
+**/.cxx/
+
+# RE / instrumentation scratch output
+/sensor_viz_out/
+/taps.txt
+
+# Python bytecode cache
+tools/__pycache__/
+
+# Emojibase assets are generated into build/generated/emojibaseAssets by copyEmojibaseData
+/app/src/main/assets/emojibase/
+
+# IDE and compiler scratch (2026-09-21 cleanup)
+.idea/
+.kotlin/
+**/__pycache__/
+
+# Language-pack publishing source (411 MB of LDBs; published to GitHub Releases by dist/publish_packs.py)
+/ldb/

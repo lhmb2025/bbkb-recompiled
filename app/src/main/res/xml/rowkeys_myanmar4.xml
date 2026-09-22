@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="symbols">
+            <Key latin:keySpec="ဥ"/>
+            <Key latin:keySpec="ဦ"/>
+            <Key latin:keySpec="ဌ"/>
+            <Key latin:keySpec="ဋ"/>
+            <Key latin:keySpec="ဍ"/>
+            <Key latin:keySpec="ဠ"/>
+            <Key
+                latin:keyLabelFlags="followKeyLetterRatio"
+                latin:keySpec="ဋ္ဌ"/>
+            <Key
+                latin:keyLabelFlags="followKeyLetterRatio"
+                latin:keySpec="ဏ္ဍ"
+                latin:moreKeys="ဏ္ဌ"/>
+        </case>
+        <default>
+            <Key latin:keySpec="ဖ"/>
+            <Key
+                latin:keySpec="ထ"
+                latin:moreKeys="္ထ"/>
+            <Key
+                latin:keySpec="ခ"
+                latin:moreKeys="္ခ"/>
+            <Key
+                latin:keySpec="လ"
+                latin:moreKeys="္လ"/>
+            <Key
+                latin:keySpec="ဘ"
+                latin:moreKeys="္ဘ"/>
+            <Key
+                latin:keySpec="ည"
+                latin:moreKeys="ဉ"/>
+            <Key latin:keySpec="ရ"/>
+            <Key latin:keySpec="ဝ"/>
+        </default>
+    </switch>
+</merge>

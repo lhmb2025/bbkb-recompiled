@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key latin:keySpec="ض"/>
+    <Key latin:keySpec="ص"/>
+    <Key latin:keySpec="ث"/>
+    <Key
+        latin:keySpec="ق"
+        latin:moreKeys="ڨ"/>
+    <Key
+        latin:keySpec="ف"
+        latin:moreKeys="ڤ,ڢ,ڥ"/>
+    <Key latin:keySpec="غ"/>
+    <Key latin:keySpec="ع"/>
+    <Key
+        latin:keySpec="ه"
+        latin:moreKeys="ﻫ|ه‍"/>
+    <Key latin:keySpec="خ"/>
+    <Key latin:keySpec="ح"/>
+    <Key
+        latin:keySpec="ج"
+        latin:moreKeys="چ"/>
+</merge>

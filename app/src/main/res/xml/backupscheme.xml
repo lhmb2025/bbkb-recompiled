@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The personal-dictionary store is filesDir/dev.bbkb.ime.basl.pdu/ (see
+    PersonalDictionaryUtil.PERSONAL_DICTIONARY_UTIL_DIR and LoadConfig). These paths used to name
+    dev.bbkb.ime.personaldictionary.pdu, a directory nothing writes, so text shortcuts
+    and the personal dictionary were silently left out of backup. Keep in sync with
+    data_extraction_rules.xml; BackupRulesTest checks both.
+
+    The sharedpref include names the default preferences file, which the platform calls
+    "<applicationId>_preferences.xml" - so it has to be renamed whenever the applicationId moves
+    (it did, from com.blackberry.keyboard to dev.bbkb.ime). res/xml cannot interpolate
+    ${applicationId}; PackageIdentityTest asserts the literal still matches the id instead.
+-->
+<full-backup-content>
+    <include
+        domain="file"
+        path="dev.bbkb.ime.basl.pdu/personal_words"/>
+    <include
+        domain="file"
+        path="dev.bbkb.ime.basl.pdu/substitutions"/>
+    <include
+        domain="file"
+        path="dev.bbkb.ime.basl.pdu/deleted_substitutions"/>
+    <include
+        domain="sharedpref"
+        path="dev.bbkb.ime_preferences.xml"/>
+    <include
+        domain="sharedpref"
+        path="shared_pref.xml"/>
+</full-backup-content>

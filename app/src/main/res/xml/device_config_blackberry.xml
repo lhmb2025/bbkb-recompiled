@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Device Configuration: BlackBerry PKB Devices
+    Schema v2.1
+
+    Matches every BlackBerry-branded device (KEYone, KEY2, ...) and is auto-selected when
+    Build.BRAND == "blackberry" and no more specific config matches first. Note that on a KEY2 a
+    more specific one always does: preloaded configs are offered in display-name order and the
+    first match wins, so "BlackBerry Key2 (Athena)" is selected before this file is ever reached.
+
+    This config carries no input mappings. It used to hold <layout-alt-overrides> pointing at
+    device_alt_mappings_{azerty,qwertz}_overrides.xml; those were retired on 2026-09-16 because
+    BlackBerry firmware already ships one KeyCharacterMap per keypad layout
+    (/vendor/usr/keychars/stmpe{,_azerty,_qwertz}.kcm on the KEY2, selected by a matching .idc),
+    so the app's own tables could only displace a correct character with a hand-maintained one —
+    and the AZERTY table did exactly that, breaking Alt+P, Alt+V and Alt+Y. Alt characters for
+    these devices come from the system KCM, via AuxCharacterResolver's tier 3. See CHANGELOG.md.
+-->
+
+<device-input-config version="2.1" name="BlackBerry PKB Devices">
+
+    <device>
+        <match>
+            <brand exact="blackberry"/>
+        </match>
+    </device>
+
+</device-input-config>

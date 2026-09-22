@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPageKeyboardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/emoji_keyboard_page"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layoutDirection="ltr"/>

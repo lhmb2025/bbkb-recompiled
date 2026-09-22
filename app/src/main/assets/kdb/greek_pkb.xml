@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- greek_pkb keyboard layout
+PID: ET9PLIDGreek
+SID: ET9SKIDPhonePad -->
+
+<keyboard
+    primaryId="8"
+    secondaryId="6"
+    defaultLayoutWidth="1080"
+    defaultLayoutHeight="324"
+    addAltChars="true">
+
+    <area>
+        <key keyType="nonRegional" keyCodes="0x037E, 0x003A, 0x003B" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="0dp" />
+        <key keyType="regional" keyCodes="0x03C2" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="108dp" />
+        <key keyType="regional" keyCodes="0x03B5, 0x03AD" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="216dp" />
+        <key keyType="regional" keyCodes="0x03C1" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="324dp" />
+        <key keyType="regional" keyCodes="0x03C4" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="432dp" />
+        <key keyType="regional" keyCodes="0x03C5, 0x03CD, 0x03CB, 0x03B0" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="540dp" />
+        <key keyType="regional" keyCodes="0x03B8" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="648dp" />
+        <key keyType="regional" keyCodes="0x03B9, 0x03AF, 0x03CA, 0x0390" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="756dp" />
+        <key keyType="regional" keyCodes="0x03BF, 0x03CC" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="864dp" />
+        <key keyType="regional" keyCodes="0x03C0" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="972dp" />
+    </area>
+
+    <area>
+        <key keyType="regional" keyCodes="0x03B1, 0x03AC" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="0dp" />
+        <key keyType="regional" keyCodes="0x03C3" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="108dp" />
+        <key keyType="regional" keyCodes="0x03B4" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="216dp" />
+        <key keyType="regional" keyCodes="0x03C6" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="324dp" />
+        <key keyType="regional" keyCodes="0x03B3" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="432dp" />
+        <key keyType="regional" keyCodes="0x03B7, 0x03AE" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="540dp" />
+        <key keyType="regional" keyCodes="0x03BE" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="648dp" />
+        <key keyType="regional" keyCodes="0x03BA" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="756dp" />
+        <key keyType="regional" keyCodes="0x03BB" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="864dp" />
+        <key keyType="function" keyCodes="0x21E6" keyName="ET9KEY_BACK" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="972dp" />
+    </area>
+
+    <area>
+        <key keyType="function" keyLabel="ALT" keyName="ET9KEY_ALT" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="0dp" />
+        <key keyType="regional" keyCodes="0x03B6" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="108dp" />
+        <key keyType="regional" keyCodes="0x03C7" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="216dp" />
+        <key keyType="regional" keyCodes="0x03C8" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="324dp" />
+        <key keyType="regional" keyCodes="0x03C9, 0x03CE" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="432dp" />
+        <key keyType="regional" keyCodes="0x03B2" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="540dp" />
+        <key keyType="regional" keyCodes="0x03BD" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="648dp" />
+        <key keyType="regional" keyCodes="0x03BC" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="756dp" />
+        <key keyType="nonRegional" keyCodes="0x0024" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="864dp" />
+        <key keyType="function" keyLabel="DONE" keyName="ET9KEY_RETURN" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="972dp" />
+    </area>
+</keyboard >

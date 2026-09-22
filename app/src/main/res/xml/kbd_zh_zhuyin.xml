@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:latin="http://schemas.android.com/apk/res-auto"
+    latin:keyLetterSize="@fraction/config_key_letter_ratio_5row"
+    latin:keyShiftedLetterHintRatio="@fraction/config_key_shifted_letter_hint_ratio_5row"
+    latin:rowHeight="20%p"
+    latin:touchPositionCorrectionData="@array/touch_position_correction_data_default"
+    latin:verticalGap="@fraction/config_key_vertical_gap_5row">
+    <include latin:keyboardLayout="@xml/rows_zhuyin"/>
+</Keyboard>

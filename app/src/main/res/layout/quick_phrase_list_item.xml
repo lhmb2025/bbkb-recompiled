@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/quick_phrase_text_container"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/quick_phrase_list_item_height_normal_item">
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:textSize="16sp"
+        android:textColor="@color/quick_phrase_text_colour"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:id="@+id/quick_phrase_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/quick_phrase_list_item_vertical_margin"
+        android:layout_marginBottom="@dimen/quick_phrase_list_item_vertical_margin"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:layout_centerVertical="true"
+        android:fontFamily="Roboto medium"
+        android:layout_marginStart="@dimen/quick_phrase_list_item_horizontal_margin"
+        android:layout_marginEnd="@dimen/quick_phrase_list_item_horizontal_margin"/>
+</RelativeLayout>

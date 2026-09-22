@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:languageCode="ar|fa">
+            <Key
+                latin:keyHintLabel="!text/keyhintlabel_period"
+                latin:keyLabelFlags="hasShiftedLetterHint|followKeyHintLabelRatio"
+                latin:keySpec="!text/keyspec_period"
+                latin:moreKeys="!text/morekeys_period"/>
+        </case>
+        <case latin:languageCode="hy">
+            <Key
+                latin:keyHintLabel="!text/keyhintlabel_period"
+                latin:keyLabelFlags="hasShiftedLetterHint|followKeyHintLabelRatio"
+                latin:keySpec="!text/keyspec_period"
+                latin:moreKeys="!text/morekeys_punctuation"/>
+        </case>
+        <case
+            latin:keyboardLayoutSet="hindi_compact"
+            latin:languageCode="hi">
+            <switch>
+                <case latin:mode="url|email">
+                    <Key
+                        latin:keyHintLabel="।"
+                        latin:keySpec="."
+                        latin:moreKeys="।,॥,॰"/>
+                </case>
+                <default>
+                    <Key
+                        latin:keyHintLabel="."
+                        latin:keySpec="।"
+                        latin:moreKeys=".,॥,॰"/>
+                </default>
+            </switch>
+        </case>
+        <case
+            latin:keyboardLayoutSet="marathi"
+            latin:languageCode="mr">
+            <switch>
+                <default>
+                    <Key
+                        latin:keyHintLabel="."
+                        latin:keySpec="।"
+                        latin:moreKeys=".,॥,॰"/>
+                </default>
+            </switch>
+        </case>
+        <case
+            latin:keyboardLayoutSet="malayalam"
+            latin:languageCode="ml">
+            <switch>
+                <default>
+                    <Key
+                        latin:keyHintLabel="."
+                        latin:keySpec="।"
+                        latin:moreKeys=".,॥"/>
+                </default>
+            </switch>
+        </case>
+        <case
+            latin:keyboardLayoutSet="nepali_traditional"
+            latin:languageCode="ne">
+            <include latin:keyboardLayout="@xml/keystyle_devanagari_sign_virama"/>
+            <Key
+                latin:keyHintLabel="!text/keyhintlabel_period"
+                latin:keyStyle="baseKeyDevanagariSignVirama"
+                latin:moreKeys="!text/morekeys_period"/>
+        </case>
+        <case latin:keyboardLayoutSet="dvorak">
+            <Key
+                latin:keySpec="z"
+                latin:moreKeys="!text/morekeys_z"/>
+        </case>
+        <default>
+            <Key
+                latin:keySpec="!text/keyspec_period"
+                latin:moreKeys="!text/morekeys_period"/>
+        </default>
+    </switch>
+</merge>

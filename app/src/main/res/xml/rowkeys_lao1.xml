@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
+            <Key latin:keySpec="໑"/>
+            <Key latin:keySpec="໒"/>
+            <Key latin:keySpec="໓"/>
+            <Key latin:keySpec="໔"/>
+            <Key latin:keySpec="໌"/>
+            <Key latin:keySpec="ຼ"/>
+            <Key latin:keySpec="໕"/>
+            <Key latin:keySpec="໖"/>
+            <Key latin:keySpec="໗"/>
+            <Key latin:keySpec="໘"/>
+            <Key latin:keySpec="໙"/>
+            <Key
+                latin:keyLabelFlags="followKeyLetterRatio"
+                latin:keySpec="ໍ່"/>
+        </case>
+        <default>
+            <Key
+                latin:additionalMoreKeys="1"
+                latin:keyHintLabel="1"
+                latin:keySpec="ຢ"
+                latin:moreKeys="໑"/>
+            <Key
+                latin:additionalMoreKeys="2"
+                latin:keyHintLabel="2"
+                latin:keySpec="ຟ"
+                latin:moreKeys="໒"/>
+            <Key
+                latin:additionalMoreKeys="3"
+                latin:keyHintLabel="3"
+                latin:keySpec="ໂ"
+                latin:moreKeys="໓"/>
+            <Key
+                latin:additionalMoreKeys="4"
+                latin:keyHintLabel="4"
+                latin:keySpec="ຖ"
+                latin:moreKeys="໔"/>
+            <Key latin:keySpec="ຸ"/>
+            <Key latin:keySpec="ູ"/>
+            <Key
+                latin:additionalMoreKeys="5"
+                latin:keyHintLabel="5"
+                latin:keySpec="ຄ"
+                latin:moreKeys="໕"/>
+            <Key
+                latin:additionalMoreKeys="6"
+                latin:keyHintLabel="6"
+                latin:keySpec="ຕ"
+                latin:moreKeys="໖"/>
+            <Key
+                latin:additionalMoreKeys="7"
+                latin:keyHintLabel="7"
+                latin:keySpec="ຈ"
+                latin:moreKeys="໗"/>
+            <Key
+                latin:additionalMoreKeys="8"
+                latin:keyHintLabel="8"
+                latin:keySpec="ຂ"
+                latin:moreKeys="໘"/>
+            <Key
+                latin:additionalMoreKeys="9"
+                latin:keyHintLabel="9"
+                latin:keySpec="ຊ"
+                latin:moreKeys="໙"/>
+            <Key latin:keySpec="ໍ"/>
+        </default>
+    </switch>
+</merge>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/inputboard_number_pad_view"
+    android:background="@color/input_board_background_color"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>

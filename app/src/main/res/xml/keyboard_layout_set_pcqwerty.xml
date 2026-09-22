@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KeyboardLayoutSet xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Element
+        latin:elementKeyboard="@xml/kbd_pcqwerty"
+        latin:elementName="alphabet"
+        latin:enableProximityCharsCorrection="true"/>
+    <Element
+        latin:elementKeyboard="@xml/kbd_phone"
+        latin:elementName="phone"/>
+    <Element
+        latin:elementKeyboard="@xml/kbd_phone_symbols"
+        latin:elementName="phoneSymbols"/>
+    <Element
+        latin:elementKeyboard="@xml/kbd_number"
+        latin:elementName="number"/>
+</KeyboardLayoutSet>

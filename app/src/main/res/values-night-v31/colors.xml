@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ============================================ -->
+    <!-- Dynamic Colors from System (Material You) - Dark Mode -->
+    <!-- Android 12+ (API 31+) in Dark Mode -->
+    <!-- ============================================ -->
+    <!-- These colors automatically adapt to the user's wallpaper in dark mode -->
+    
+    <!-- Primary colors - Main brand color (dark) -->
+
+    <!-- The accent: the Material style's enter-key pill, the gesture trail, the sliding-key
+         preview. Every other slot the dark palette reads is aliased to a system_* colour below,
+         so leaving this one as the static teal put a teal pill on a wallpaper-tinted board
+         (beta report, 2026-09-15). It is aliased here, alongside the surfaces it sits on, rather
+         than only in KeyboardColorManager.dynamicPalette(), because these aliases apply whether
+         or not "use system colours" is on; see the note in that function. -->
+    <color name="highlight_dark">@android:color/system_accent1_200</color>
+    
+    <!-- Secondary colors - Accent color (dark) -->
+    <color name="m3_secondary_container_dark">@android:color/system_accent2_700</color>
+    
+    <!-- Tertiary colors - Complement (dark) -->
+    
+    <!-- Surface colors - Backgrounds (dark) -->
+    <color name="m3_surface_dark">@android:color/system_neutral1_900</color>
+    <color name="m3_on_surface_dark">@android:color/system_neutral1_100</color>
+    <color name="m3_on_surface_variant_dark">@android:color/system_neutral2_300</color>
+    <color name="m3_surface_container_dark">@android:color/system_neutral1_800</color>
+    <color name="m3_surface_container_highest_dark">@android:color/system_neutral1_600</color>
+    
+    <!-- Background colors (dark) -->
+    <color name="m3_primary_dark">@android:color/system_accent1_200</color>
+    <color name="m3_on_primary_dark">@android:color/system_accent1_800</color>
+    <color name="m3_primary_container_dark">@android:color/system_accent1_700</color>
+    <color name="m3_on_primary_container_dark">@android:color/system_accent1_100</color>
+    <color name="m3_secondary_dark">@android:color/system_accent2_200</color>
+    <color name="m3_on_secondary_dark">@android:color/system_accent2_800</color>
+    <color name="m3_on_secondary_container_dark">@android:color/system_accent2_100</color>
+    <color name="m3_tertiary_dark">@android:color/system_accent3_200</color>
+    <color name="m3_on_tertiary_dark">@android:color/system_accent3_800</color>
+    <color name="m3_tertiary_container_dark">@android:color/system_accent3_700</color>
+    <color name="m3_on_tertiary_container_dark">@android:color/system_accent3_100</color>
+    <color name="m3_surface_variant_dark">@android:color/system_neutral2_800</color>
+    <color name="m3_background_dark">@android:color/system_neutral1_900</color>
+    <color name="m3_on_background_dark">@android:color/system_neutral1_100</color>
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:languageCode="fa|kn|ne|te|hi|mr|ml">
+            <Key
+                latin:keyFontFamily="Roboto regular"
+                latin:keyMapScanCode="57"
+                latin:keyStyle="langCodeSpaceKeyStyle"
+                latin:keyTextColor="@color/language_indicator_text_color"
+                latin:keyWidth="30%p"/>
+            <Key latin:keyStyle="zwnjKeyStyle"/>
+        </case>
+        <default>
+            <Key
+                latin:keyFontFamily="Roboto regular"
+                latin:keyMapScanCode="57"
+                latin:keyStyle="langCodeSpaceKeyStyle"
+                latin:keyTextColor="@color/language_indicator_text_color"
+                latin:keyWidth="40%p"/>
+        </default>
+    </switch>
+</merge>

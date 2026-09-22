@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- cangjie_pkb keyboard layout
+PID: ET9PLIDChineseTraditional
+SID: ET9SKIDPhonePad -->
+
+<keyboard
+    primaryId="14"
+    secondaryId="6"
+    defaultLayoutWidth="1080"
+    defaultLayoutHeight="324"
+    addAltChars="true">
+
+    <area>
+        <key keyType="regional" keyCodes="0x624B" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="0dp" />
+        <key keyType="regional" keyCodes="0x7530" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="108dp" />
+        <key keyType="regional" keyCodes="0x6C34" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="216dp" />
+        <key keyType="regional" keyCodes="0x53E3" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="324dp" />
+        <key keyType="regional" keyCodes="0x5EFF" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="432dp" />
+        <key keyType="regional" keyCodes="0x535C" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="540dp" />
+        <key keyType="regional" keyCodes="0x5C71" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="648dp" />
+        <key keyType="regional" keyCodes="0x6208" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="756dp" />
+        <key keyType="regional" keyCodes="0x4EBA" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="864dp" />
+        <key keyType="regional" keyCodes="0x5FC3" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="972dp" />
+    </area>
+
+    <area>
+        <key keyType="regional" keyCodes="0x65E5" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="0dp" />
+        <key keyType="regional" keyCodes="0x5C38" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="108dp" />
+        <key keyType="regional" keyCodes="0x6728" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="216dp" />
+        <key keyType="regional" keyCodes="0x706B" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="324dp" />
+        <key keyType="regional" keyCodes="0x571F" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="432dp" />
+        <key keyType="regional" keyCodes="0x7AF9" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="540dp" />
+        <key keyType="regional" keyCodes="0x5341" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="648dp" />
+        <key keyType="regional" keyCodes="0x5927" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="756dp" />
+        <key keyType="regional" keyCodes="0x4E2D" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="864dp" />
+        <key keyType="function" keyCodes="0x21E6" keyName="ET9KEY_BACK" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="972dp" />
+    </area>
+
+    <area>
+        <key keyType="function" keyLabel="ALT" keyName="ET9KEY_ALT" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="0dp" />
+        <key keyType="regional" keyCodes="0x91CD" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="108dp" />
+        <key keyType="regional" keyCodes="0x96E3" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="216dp" />
+        <key keyType="regional" keyCodes="0x91D1" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="324dp" />
+        <key keyType="regional" keyCodes="0x5973" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="432dp" />
+        <key keyType="regional" keyCodes="0x6708" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="540dp" />
+        <key keyType="regional" keyCodes="0x5F13" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="648dp" />
+        <key keyType="regional" keyCodes="0x4E00" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="756dp" />
+        <key keyType="nonRegional" keyCodes="0x0024" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="864dp" />
+        <key keyType="function" keyLabel="DONE" keyName="ET9KEY_RETURN" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="972dp" />
+    </area>
+</keyboard >

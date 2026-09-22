@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/voice_input_view"
+    android:background="@color/input_board_background_color"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageButton
+        android:id="@+id/voice_input_btn"
+        android:background="@null"
+        android:clickable="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_inputboard_voice_listen"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+    <ImageButton
+        android:id="@+id/voice_input_delete_btn"
+        android:background="@null"
+        android:clickable="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_inputboard_voice_backspace"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="36dp"
+        android:layout_toEndOf="@+id/voice_input_btn"/>
+    <ImageButton
+        android:id="@+id/voice_input_settings_btn"
+        android:background="@null"
+        android:clickable="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_inputboard_voice_settings"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="36dp"
+        android:layout_toStartOf="@+id/voice_input_btn"/>
+
+    <!-- Material-only additions (shown by VoiceInputView when the Material theme
+         is active): status line, live waveform, recognition-language chip. -->
+    <TextView
+        android:id="@+id/voice_status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/voice_input_btn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="14dp"
+        android:textSize="14sp"
+        android:visibility="gone"/>
+    <dev.bbkb.ime.keyboard.inputboard.voice.VoiceWaveformView
+        android:id="@+id/voice_waveform"
+        android:layout_width="200dp"
+        android:layout_height="26dp"
+        android:layout_below="@+id/voice_input_btn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"/>
+    <!-- Corner badge: anchored top-end so it never competes with the mic stack
+         for vertical space on compact keyboard heights. -->
+    <TextView
+        android:id="@+id/voice_language_chip"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="12dp"
+        android:gravity="center"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:textSize="12sp"
+        android:visibility="gone"/>
+</dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputView>

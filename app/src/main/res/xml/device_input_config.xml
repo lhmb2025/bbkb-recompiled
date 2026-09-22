@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Default Device Input Configuration (Schema v2.0)
+    
+    This is the default/empty configuration used when no device-specific
+    configuration is selected. It contains no device mappings.
+    
+    For device-specific configurations, see device_config_*.xml files
+    which appear as "Preloaded" options in Settings > Advanced > Device Configuration.
+    
+    Schema Reference: See DEVICE_CONFIG_SCHEMA_V2.md
+-->
+
+<device-input-config version="2.0" name="Default (Auto-detection)">
+    <!-- No device-specific configurations - uses system auto-detection -->
+</device-input-config>

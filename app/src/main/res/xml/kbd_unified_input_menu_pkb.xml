@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The UIM bar. The five keys here are the DEFAULT arrangement; when the user reorders
+     the menu (pref_uim_menu_order), UnifiedInputBoardManager rebuilds the four toggle
+     slots from the prototypes in kbd_unified_input_menu_pool.xml. The center key (slot 3)
+     is fixed. A former <switch latin:isFormFillAllowed="true"> wrapper was removed: the
+     parser never checks that attribute (see KeyboardXMLParser.matchCaseConditions), so
+     the case always matched and the duplicated <default> row was unreachable. -->
+<Keyboard xmlns:latin="http://schemas.android.com/apk/res-auto" latin:rowHeight="100%">
+    <include latin:keyboardLayout="@xml/key_styles_common"/>
+    <Row
+        latin:keyActionFlags="noKeyPreview"
+        latin:keyWidth="20%p">
+        <Key
+            latin:keyIconActive="!icon/voice_active_key"
+            latin:keyIconDisabled="!icon/voice_input_key_disabled"
+            latin:keySpec="!icon/voice_input_key|!code/key_voice_dictation"/>
+        <Key
+            latin:keyIconActive="!icon/emoji_active_key"
+            latin:keyIconDisabled="!icon/emoji_key_disabled"
+            latin:keySpec="!icon/emoji_key|!code/key_emoji"/>
+        <Key
+            latin:keyIconActive="!icon/show_keyboard_active_key"
+            latin:keyIconDisabled="!icon/show_keyboard_key"
+            latin:keySpec="!icon/show_keyboard_key|!code/key_switch_alpha_symbol"
+            latin:secondaryFunctionDisplayStyle="topRightCorner"
+            latin:secondaryKeySpec="!icon/show_keyboard_settings_key|!code/key_show_keyboard_settings"/>
+        <Key
+            latin:keyIconActive="!icon/fcc_active_key"
+            latin:keyIconDisabled="!icon/fcc_key_disabled"
+            latin:keySpec="!icon/fcc_key|!code/key_fcc"/>
+        <Key
+            latin:keyIconActive="!icon/paste_active_key"
+            latin:keyIconDisabled="!icon/paste_key_disabled"
+            latin:keySpec="!icon/paste_key|!code/key_paste"/>
+    </Row>
+</Keyboard>

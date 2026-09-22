@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Configuration for the KeyInterceptorService accessibility service.
+    This service intercepts hardware key events before the system transforms them.
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/key_interceptor_service_description"
+    android:accessibilityFlags="flagRequestFilterKeyEvents"
+    android:canRequestFilterKeyEvents="true"
+    android:settingsActivity="dev.bbkb.ime.core.settings.KeyInterceptorSettingsActivity" />

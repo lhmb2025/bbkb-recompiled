@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key
+        latin:keySpec="!text/keyspec_left_double_angle_quote"
+        latin:moreKeys="!text/morekeys_double_quote"/>
+    <Key
+        latin:keySpec="!text/keyspec_right_double_angle_quote"
+        latin:moreKeys="!text/morekeys_single_quote"/>
+    <Key
+        latin:keySpec="™"
+        latin:moreKeys="©,®"/>
+    <Key latin:keySpec="¿"/>
+    <Key latin:keySpec="¡"/>
+    <Key latin:keySpec="¦"/>
+    <Key latin:keyStyle="currencyExtendedKeyStyle"/>
+</merge>

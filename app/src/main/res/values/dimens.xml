@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- =================== -->
+    <!-- Keyboard geometry -->
+    <!-- =================== -->
+    <dimen name="config_default_keyboard_height">202.1dp</dimen>
+    <dimen name="config_default_mercury_keyboard_height">192dp</dimen>
+    <dimen name="config_key_hysteresis_distance">8dp</dimen>
+    <dimen name="config_key_hysteresis_distance_for_sliding_modifier">8dp</dimen>
+    <dimen name="config_keyboard_vertical_correction">0dp</dimen>
+    <dimen name="config_mercury_max_screen_height">540dp</dimen>
+    <dimen name="config_touch_noise_threshold_distance">12.6dp</dimen>
+
+    <!-- =============== -->
+    <!-- Key rendering -->
+    <!-- =============== -->
+    <dimen name="config_key_hint_letter_padding">3dp</dimen>
+    <dimen name="config_key_multiline_hint_label_padding">8dp</dimen>
+    <dimen name="config_key_popup_hint_letter_padding">2dp</dimen>
+    <dimen name="config_key_preview_height">122dp</dimen>
+    <dimen name="config_key_preview_offset">50dp</dimen>
+    <dimen name="config_key_shifted_letter_hint_padding">3dp</dimen>
+
+    <!-- ================================== -->
+    <!-- Key preview and more-keys popups -->
+    <!-- ================================== -->
+    <dimen name="config_more_keys_keyboard_key_height">52.8dp</dimen>
+    <dimen name="config_more_keys_keyboard_key_horizontal_padding">8dp</dimen>
+    <dimen name="config_more_keys_keyboard_slide_allowance">63.36dp</dimen>
+    <dimen name="config_more_keys_keyboard_vertical_correction_holo">-26.4dp</dimen>
+
+    <!-- ================== -->
+    <!-- Suggestion strip -->
+    <!-- ================== -->
+    <dimen name="config_more_suggestions_key_horizontal_padding">12dp</dimen>
+    <dimen name="config_more_suggestions_modal_tolerance">32dp</dimen>
+    <dimen name="config_more_suggestions_row_height">40dp</dimen>
+    <dimen name="config_suggestion_animate_distance">-80dp</dimen>
+    <dimen name="config_suggestion_half_hamburger_icon_width">39dp</dimen>
+    <dimen name="config_suggestion_min_width">44dp</dimen>
+    <!-- Material theme only: M3 minimum touch-target width for strip buttons and
+         suggestion items, applied programmatically (heights are governed by the strip
+         height, which deliberately stays at its pre-M3 value). -->
+    <dimen name="config_suggestion_min_width_material">48dp</dimen>
+    <dimen name="config_suggestion_text_horizontal_padding">6dp</dimen>
+    <dimen name="config_suggestion_text_size">18dp</dimen>
+    <dimen name="config_suggestions_strip_height">40dp</dimen>
+    <dimen name="config_suggestions_strip_horizontal_margin">12dp</dimen>
+
+    <!-- =============== -->
+    <!-- Gesture trail -->
+    <!-- =============== -->
+    <dimen name="config_gesture_trail_end_width">2.5dp</dimen>
+    <dimen name="config_gesture_trail_max_interpolation_distance_threshold">16dp</dimen>
+    <dimen name="config_gesture_trail_min_sampling_distance">9.6dp</dimen>
+    <dimen name="config_gesture_trail_start_width">10dp</dimen>
+
+    <!-- =================== -->
+    <!-- Flick predictions -->
+    <!-- =================== -->
+    <dimen name="config_flick_prediction_letter_size">16.875dp</dimen>
+    <dimen name="config_flick_prediction_minimum_horizontal_word_distance">20.8dp</dimen>
+    <dimen name="config_flick_prediction_minimum_vertical_word_distance">27.5dp</dimen>
+    <dimen name="config_flick_prediction_shadow_radius">3dp</dimen>
+
+    <!-- =========== -->
+    <!-- CJK input -->
+    <!-- =========== -->
+    <dimen name="config_cjk_font_size">20sp</dimen>
+    <dimen name="config_cjk_grid_vertical_margin">15dp</dimen>
+    <dimen name="config_cjk_strip_horizontal_margin">20dp</dimen>
+    <dimen name="config_cjk_strip_horizontal_margin_half">11.5dp</dimen>
+    <dimen name="config_cjk_suggestions_grid_min_height">171.9385dp</dimen>
+
+    <!-- =========== -->
+    <!-- Clipboard -->
+    <!-- =========== -->
+    <dimen name="config_clipboard_empty_margin_horizontal">14dp</dimen>
+    <dimen name="config_clipboard_empty_margin_vertical">7dp</dimen>
+    <dimen name="config_clipboard_view_clip_data_image_height">56dp</dimen>
+    <dimen name="config_clipboard_view_clip_data_image_width">56dp</dimen>
+    <dimen name="config_empty_indicator_margin_vertical">184dp</dimen>
+    <dimen name="config_empty_user_hint_margin_vertical">31dp</dimen>
+
+    <!-- ======================== -->
+    <!-- Emoji and symbol pages -->
+    <!-- ======================== -->
+    <dimen name="config_emoji_category_page_id_height">8dp</dimen>
+    <dimen name="config_pkb_symbol_page_height">151.6dp</dimen>
+    <dimen name="config_symbol_page_height">202.1dp</dimen>
+
+    <!-- ============================== -->
+    <!-- Spacebar and sliding preview -->
+    <!-- ============================== -->
+    <dimen name="config_language_on_spacebar_horizontal_margin">1dp</dimen>
+    <dimen name="config_sliding_key_input_preview_width">8dp</dimen>
+
+    <!-- =============== -->
+    <!-- Quick phrases -->
+    <!-- =============== -->
+    <dimen name="quick_phrase_list_item_height_first_item">47dp</dimen>
+    <dimen name="quick_phrase_list_item_height_normal_item">38dp</dimen>
+    <dimen name="quick_phrase_list_item_horizontal_margin">10dp</dimen>
+    <dimen name="quick_phrase_list_item_top_padding_first_item">10dp</dimen>
+    <dimen name="quick_phrase_list_item_top_padding_normal_item">0dp</dimen>
+    <dimen name="quick_phrase_list_item_vertical_margin">5dp</dimen>
+    <dimen name="quick_phrases_recycler_view_scrollbar_size">2dp</dimen>
+
+    <!-- ========================= -->
+    <!-- Settings screens layout -->
+    <!-- ========================= -->
+    <dimen name="settings_linear_layout_horizontal_margin">8dp</dimen>
+    <dimen name="settings_linear_layout_padding">0dp</dimen>
+    <dimen name="settings_scrollview_horizontal_margin">0dp</dimen>
+    <dimen name="settings_scrollview_padding">0dp</dimen>
+    <dimen name="settings_text_horizontal_margin">4dp</dimen>
+    <dimen name="settings_text_horizontal_padding">4dp</dimen>
+
+</resources>

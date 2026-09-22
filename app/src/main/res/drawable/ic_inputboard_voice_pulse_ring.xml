@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ring-only variant of ic_inputboard_voice_listen_base for the Material theme:
+     the pulsing glow without the base's mic glyph, so the accent disc's knocked-out
+     mic keeps showing the board surface while listening. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="400"
+    android:viewportHeight="400">
+  <group android:name="glow_circle">
+    <path
+        android:name="outer_circle"
+        android:strokeColor="@android:color/white"
+        android:strokeAlpha="0.5"
+        android:strokeWidth="8"
+        android:pathData="M200,45.4c-85.4,0 -154.6,69.2 -154.6,154.6s69.2,154.6 154.6,154.6 154.6,-69.2 154.6,-154.6S285.4,45.4 200,45.4Z"/>
+  </group>
+</vector>

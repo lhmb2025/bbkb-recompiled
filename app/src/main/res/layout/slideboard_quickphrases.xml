@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dev.bbkb.ime.keyboard.slideboard.QuickPhrasesView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/slide_board_background_color"
+    android:clickable="false"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>

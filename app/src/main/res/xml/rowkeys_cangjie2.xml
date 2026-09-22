@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key latin:keySpec="日"/>
+    <Key latin:keySpec="尸"/>
+    <Key latin:keySpec="木"/>
+    <Key latin:keySpec="火"/>
+    <Key latin:keySpec="土"/>
+    <Key latin:keySpec="竹"/>
+    <Key latin:keySpec="十"/>
+    <Key latin:keySpec="大"/>
+    <Key latin:keySpec="中"/>
+</merge>

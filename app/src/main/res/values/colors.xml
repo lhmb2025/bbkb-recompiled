@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="autocorrection_on_spacebar_text_color">#ff9edb9e</color>
+    <color name="flick_suggestion_shadow_color">#ff000000</color>
+    <color name="highlight_dark">#80cbc4</color>
+    <color name="highlight_light">#4db6ac</color>
+    <color name="input_board_background_color">#262626</color>
+    
+    <!-- Clipboard swipe action colors - Material Design -->
+    <color name="swipe_background_delete">#E53935</color>  <!-- Material Red 600 -->
+    <color name="swipe_background_share">#1E88E5</color>   <!-- Material Blue 600 -->
+    
+    <!-- Keyboard colors - Simplified names, mapped to Material 3 tokens -->
+    <color name="language_indicator_text_color">@color/m3_on_surface_variant_dark</color>
+    
+    <!-- Semantic color tokens - default to light theme, overridden by values-night -->
+    <!-- These now map to Material 3 design tokens -->
+
+    <color name="multitap_highlight_color">#4c00b800</color>
+    <color name="page_switcher_active_color">#ff0092cc</color>
+    <color name="page_switcher_inactive_color">#ff474747</color>
+    <color name="quick_phrase_text_colour">#e2eaf7</color>
+    <color name="slide_board_background_color">#4a8af1</color>
+    <color name="suggested_word_dark">#b3ffffff</color>
+    <color name="text_decorator_add_to_dictionary_indicator_background_color">#4eb848</color>
+    <color name="text_decorator_add_to_dictionary_indicator_foreground_color">#ffffff</color>
+    <!-- Tint for the word the add-to-dictionary chip points at. Applied as a
+         BackgroundColorSpan on text the HOST APP draws in its own colour, so it must not
+         assume dark text: the old opaque #d1e7b7 left white text unreadable in any
+         dark-themed app (KEY2, 2026-09-15). 40% of the brand green composites over the
+         app background instead - darker on dark, lighter on light - so either text
+         colour stays legible. -->
+    <color name="text_decorator_add_to_dictionary_indicator_text_highlight_color">#664eb848</color>
+    
+    <!-- ============================================ -->
+    <!-- Material 3 Color System - Base Light Theme -->
+    <!-- ============================================ -->
+    <!-- These colors provide Material 3 styling for Android 5.0-11 -->
+    <!-- On Android 12+, these can be overridden with dynamic colors in values-v31/ -->
+    
+    <!-- Primary colors - Main brand color -->
+    
+    <!-- Secondary colors - Accent color -->
+    <color name="m3_secondary_container_light">#DBE2F9</color>
+    
+    <!-- Surface colors - Backgrounds -->
+    <color name="m3_surface_light">#F9F9FF</color>
+    <color name="m3_on_surface_light">#1A1B20</color>
+    <color name="m3_on_surface_variant_light">#44474F</color>
+    <color name="m3_surface_container_light">#EDEEF4</color>
+    <color name="m3_surface_container_highest_light">#E2E2E9</color>
+    
+    <!-- Background colors -->
+    
+    <!-- Error colors -->
+    <color name="m3_error_light">#BA1A1A</color>
+    <color name="m3_on_error_light">#FFFFFF</color>
+
+    <!-- Tertiary colors (complement) -->
+    
+    <!-- ============================================ -->
+    <!-- Material 3 Color System - Base Dark Theme -->
+    <!-- ============================================ -->
+    
+    <!-- Primary colors - Main brand color -->
+    
+    <!-- Secondary colors - Accent color -->
+    <color name="m3_secondary_container_dark">#3F4759</color>
+    
+    <!-- Surface colors - Backgrounds -->
+    <color name="m3_surface_dark">#1A1B20</color>
+    <color name="m3_on_surface_dark">#E2E2E9</color>
+    <color name="m3_on_surface_variant_dark">#C4C6D0</color>
+    <color name="m3_surface_container_dark">#1E1F25</color>
+    <color name="m3_surface_container_highest_dark">#33343A</color>
+    
+    <!-- Background colors -->
+
+    <!-- Error colors -->
+
+    <!-- Tertiary colors (complement) -->
+    
+    <!-- ============================================ -->
+    <!-- Material 3 Auto-Switching Colors -->
+    <!-- ============================================ -->
+    <!-- These automatically switch between light/dark based on system theme -->
+    <!-- They reference the specific light/dark variants above -->
+    
+    <color name="m3_primary">@color/m3_primary_light</color>
+    <color name="m3_on_primary">@color/m3_on_primary_light</color>
+    <color name="m3_primary_container">@color/m3_primary_container_light</color>
+    <color name="m3_on_primary_container">@color/m3_on_primary_container_light</color>
+    
+    <color name="m3_secondary">@color/m3_secondary_light</color>
+    <color name="m3_on_secondary">@color/m3_on_secondary_light</color>
+    <color name="m3_secondary_container">@color/m3_secondary_container_light</color>
+    <color name="m3_on_secondary_container">@color/m3_on_secondary_container_light</color>
+    
+    <color name="m3_surface">@color/m3_surface_light</color>
+    <color name="m3_on_surface">@color/m3_on_surface_light</color>
+    <color name="m3_surface_variant">@color/m3_surface_variant_light</color>
+    <color name="m3_on_surface_variant">@color/m3_on_surface_variant_light</color>
+    <color name="m3_surface_container">@color/m3_surface_container_light</color>
+    
+    <color name="m3_background">@color/m3_background_light</color>
+    <color name="m3_on_background">@color/m3_on_background_light</color>
+    
+    <color name="m3_tertiary">@color/m3_tertiary_light</color>
+    <color name="m3_on_tertiary">@color/m3_on_tertiary_light</color>
+    <color name="m3_tertiary_container">@color/m3_tertiary_container_light</color>
+    <color name="m3_on_tertiary_container">@color/m3_on_tertiary_container_light</color>
+
+    <!-- =============================== -->
+    <!-- Classic Blackberry Theme Colors -->
+    <!-- =============================== -->
+
+    <color name="bb_color_icon">#ffffff</color> <!--#808080-->
+    <color name="bb_color_icon_alt">#ffffff</color>
+    <color name="bb_color_hint">#d1cec5</color>
+    <color name="bb_color_background">#3b3b3b</color>
+    <color name="bb_color_key">#262626</color>
+    <color name="bb_color_key_pressed">#4090c7</color>
+    <color name="bb_color_key_alt">#191919</color>
+    <color name="bb_color_text">#ffffff</color>
+
+    <!-- BB10 theme: the BlackBerry 10 virtual keyboard. Near-black board, dark
+         sculpted key caps (the cap gradient/border/highlight are derived from the
+         key colors at draw time), BB10 electric-blue accent. -->
+    <color name="bb10_color_icon">#f2f2f2</color>
+    <color name="bb10_color_icon_alt">#b8b8b8</color>
+    <color name="bb10_color_hint">#c2c2c2</color>
+    <color name="bb10_color_background">#141414</color>
+    <color name="bb10_color_key">#1a1a1a</color>
+    <color name="bb10_color_key_alt">#121212</color>
+    <!-- Base tone of the metal fret finish, decoupled from the key face so the
+         frets stay bright as the caps darken. -->
+    <color name="bb10_color_fret">#333333</color>
+    <color name="bb10_color_key_pressed">#0092c0</color>
+    <color name="bb10_color_text">#ffffff</color>
+    <color name="bb10_color_accent">#00a8df</color>
+    
+    <!-- ============================================ -->
+    <!-- Drawable Colors (merged from drawables.xml) -->
+    <!-- ============================================ -->
+    <color name="m3_primary_light">#0052CC</color>
+    <color name="m3_on_primary_light">#FFFFFF</color>
+    <color name="m3_primary_container_light">#D8E2FF</color>
+    <color name="m3_on_primary_container_light">#001A41</color>
+    <color name="m3_secondary_light">#575E71</color>
+    <color name="m3_on_secondary_light">#FFFFFF</color>
+    <color name="m3_on_secondary_container_light">#141B2C</color>
+    <color name="m3_surface_variant_light">#E1E2EC</color>
+    <color name="m3_background_light">#F9F9FF</color>
+    <color name="m3_on_background_light">#1A1B20</color>
+    <color name="m3_tertiary_light">#7D5260</color>
+    <color name="m3_on_tertiary_light">#FFFFFF</color>
+    <color name="m3_tertiary_container_light">#FFD8E4</color>
+    <color name="m3_on_tertiary_container_light">#31111D</color>
+    <color name="m3_primary_dark">#ADC6FF</color>
+    <color name="m3_on_primary_dark">#002E69</color>
+    <color name="m3_primary_container_dark">#004494</color>
+    <color name="m3_on_primary_container_dark">#D8E2FF</color>
+    <color name="m3_secondary_dark">#BFC6DC</color>
+    <color name="m3_on_secondary_dark">#293041</color>
+    <color name="m3_on_secondary_container_dark">#DBE2F9</color>
+    <color name="m3_surface_variant_dark">#44474F</color>
+    <color name="m3_background_dark">#1A1B20</color>
+    <color name="m3_on_background_dark">#E2E2E9</color>
+    <color name="m3_tertiary_dark">#EFB8C8</color>
+    <color name="m3_on_tertiary_dark">#492532</color>
+    <color name="m3_tertiary_container_dark">#633B48</color>
+    <color name="m3_on_tertiary_container_dark">#FFD8E4</color>
+</resources>

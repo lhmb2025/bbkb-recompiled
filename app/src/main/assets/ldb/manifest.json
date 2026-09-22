@@ -1,0 +1,844 @@
+{
+    "languages": [
+        {
+            "default": true,
+            "language": "zh",
+            "name": "Chinese Simplified",
+            "path": "ldb/Blackberry_1305_r1-17-10-3_ZHsbUNps_GB2312_xt9_big_ALM.ldb",
+            "preinstalled": true,
+            "version": "1902.01"
+        },
+        {
+            "country": "UK",
+            "language": "en",
+            "name": "English (United Kingdom)",
+            "path": "ldb/Blackberry_1305_r1-17_ENubUNUK_xt9_ALM3.ldb",
+            "preinstalled": true,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "it",
+            "name": "Italian",
+            "path": "ldb/Blackberry_1305_r1-18_ITusUN_xt9_ALM3.ldb",
+            "preinstalled": true,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "de",
+            "name": "German",
+            "path": "ldb/Blackberry_1305_r1-20_DEusUN_xt9_ALM3.ldb",
+            "preinstalled": true,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "fr",
+            "name": "French",
+            "path": "ldb/Blackberry_1305_r1-21_FRusUN_xt9_ALM3.ldb",
+            "preinstalled": true,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "es",
+            "name": "Spanish",
+            "path": "ldb/Blackberry_1305_r1-28_ESusUN_xt9_ALM3.ldb",
+            "preinstalled": true,
+            "version": "1902.01"
+        },
+        {
+            "country": "US",
+            "language": "en",
+            "name": "English (United States)",
+            "path": "ldb/Blackberry_1305_r1-5_ENubUNUS_xt9_ALM3.ldb",
+            "preinstalled": true,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "en",
+            "name": "English",
+            "path": "ldb/Blackberry_1305_r1-76_ENubUN_xt9_ALM3.ldb",
+            "preinstalled": true,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "af",
+            "name": "Afrikaans",
+            "path": "af/Blackberry_1305_r1-2_AFlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "am",
+            "name": "Amharic",
+            "path": "am/Blackberry_1305_r1-1_AMlsUN_xt9.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "be",
+            "name": "Belarusian",
+            "path": "be/Blackberry_1305_r1-2_BElsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "bg",
+            "name": "Bulgarian",
+            "path": "bg/Blackberry_1305_r1-4_BGlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "cs",
+            "name": "Czech",
+            "path": "cs/Blackberry_1305_r1-5_CSlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "cy",
+            "name": "Welsh",
+            "path": "cy/Blackberry_1305_r1-1_CYlsUN_xt9_2.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "da",
+            "name": "Danish",
+            "path": "da/Blackberry_1305_r1-6_DAusUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "el",
+            "name": "Greek",
+            "path": "el/Blackberry_1305_r1-5_ELusUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "et",
+            "name": "Estonian",
+            "path": "et/Blackberry_1305_r1-4_ETlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "eu",
+            "name": "Basque",
+            "path": "eu/Blackberry_1305_r1-3_EUlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "gl",
+            "name": "Galician",
+            "path": "gl/Blackberry_1305_r1-4_GLlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ha",
+            "name": "Hausa",
+            "path": "ha/Blackberry_1305_r1-1_HAlsUN_xt9_2.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "hr",
+            "name": "Croatian",
+            "path": "hr/Blackberry_1305_r1-4_HRlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "is",
+            "name": "Icelandic",
+            "path": "is/Blackberry_1305_r1-4_ISlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "jv",
+            "name": "Javanese",
+            "path": "jv/Blackberry_1305_r1-2_JWlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "kk",
+            "name": "Kazakh",
+            "path": "kk/Blackberry_1305_r1-2_KKlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ku",
+            "name": "Kurdish",
+            "path": "ku/Blackberry_1305_r1-1_KUusUN_xt9_2.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ln",
+            "name": "Lingala",
+            "path": "ln/Blackberry_1305_r1-1_LNlsUN_xt9_2.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "lv",
+            "name": "Latvian",
+            "path": "lv/Blackberry_1305_r1-4_LVlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "mg",
+            "name": "Malagasy",
+            "path": "mg/Blackberry_1305_r1-1_MGlsUN_xt9_2.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "mk",
+            "name": "Macedonian",
+            "path": "mk/Blackberry_1305_r1-2_MKlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ms",
+            "name": "Malay",
+            "path": "ms/Blackberry_1305_r1-4_MSlbUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "nl",
+            "name": "Dutch",
+            "path": "nl/Blackberry_1305_r1-6_NLusUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "nb",
+            "name": "Norwegian",
+            "path": "nb/Blackberry_1305_r1-6_NOusUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "pl",
+            "name": "Polish",
+            "path": "pl/Blackberry_1305_r1-6_PLusUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ps",
+            "name": "Pashto",
+            "path": "ps/Blackberry_1305_r1-1_PSlsUN_xt9_2.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "sk",
+            "name": "Slovak",
+            "path": "sk/Blackberry_1305_r1-5_SKlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "sq",
+            "name": "Albanian",
+            "path": "sq/Blackberry_1305_r1-4_SQlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "sr",
+            "name": "Serbian",
+            "path": "sr/Blackberry_1305_r1-4_SRlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "st",
+            "name": "Sesotho",
+            "path": "st/Blackberry_1305_r1-1_STlbUN_xt9_2.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "su",
+            "name": "Sundanese",
+            "path": "su/Blackberry_1305_r1-2_SUlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "sv",
+            "name": "Swedish",
+            "path": "sv/Blackberry_1305_r1-6_SVusUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "tt",
+            "name": "Tatar",
+            "path": "tt/Blackberry_1305_r1-1_TTlsUNcyrillic_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ug",
+            "name": "Uyghur",
+            "path": "ug/Blackberry_1305_r1-1_UGlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "uz",
+            "name": "Uzbek",
+            "path": "uz/Blackberry_1305_r1-1_UZlsUN_xt9_2.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "yo",
+            "name": "Yoruba",
+            "path": "yo/Blackberry_1305_r1-1_YOlsUN_xt9_2.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "country": "ES",
+            "language": "es",
+            "name": "Spanish (Spain)",
+            "path": "es_ES/Blackberry_1305_r1-12_ESusUNES_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "country": "419",
+            "language": "es",
+            "name": "Spanish (Latin America)",
+            "path": "es_419/Blackberry_1305_r1-11_ESusUNlatam_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ru",
+            "name": "Russian",
+            "path": "ldb/Blackberry_1305_r1-10_RUusUN_xt9_ALM3.ldb",
+            "preinstalled": true,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "pt",
+            "name": "Portuguese",
+            "path": "pt/Blackberry_1305_r1-11_PTusUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ar",
+            "name": "Arabic",
+            "path": "ar/Blackberry_1305_r1-12_ARlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "hi",
+            "name": "Hindi",
+            "path": "hi/Blackberry_1305_r1-17_HIlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ko",
+            "name": "Korean",
+            "path": "ko/Blackberry_1305_r1-31_KOusUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "country": "TW",
+            "language": "zh",
+            "name": "Chinese Taiwan",
+            "path": "zh_TW/Blackberry_1305_r1-15-2-6_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_bigTW_ALM.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "country": "HK",
+            "language": "zh",
+            "name": "Chinese Hongkong",
+            "path": "zh_HK/Blackberry_1305_r1-22-2-5_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_big_ALM.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "az",
+            "name": "Azerbaijani",
+            "path": "az/Blackberry_1305_r1-2_AZlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "bo",
+            "name": "Tibetan",
+            "path": "bo/Blackberry_1305_r1-2_BOlsUN_xt9_2.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "bs",
+            "name": "Bosnian",
+            "path": "bs/Blackberry_1305_r1-6_BSlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ca",
+            "name": "Catalan",
+            "path": "ca/Blackberry_1305_r1-7_CAlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "fi",
+            "name": "Finnish",
+            "path": "fi/Blackberry_1305_r1-4_FIusUN_xt9_HC_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ga",
+            "name": "Irish",
+            "path": "ga/Blackberry_1305_r1-2_GAlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "iw",
+            "name": "Hebrew",
+            "path": "iw/Blackberry_1305_r1-6_HElsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "hy",
+            "name": "Interlingua",
+            "path": "hy/Blackberry_1305_r1-2_HYlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "in",
+            "name": "Indonesian",
+            "path": "in/Blackberry_1305_r1-6_IDlbUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "kn",
+            "name": "Kannada",
+            "path": "kn/Blackberry_1305_r1-2_KNlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ks",
+            "name": "Kashmiri",
+            "path": "ks/Blackberry_1305_r1-2_KSlsUNdevanagari_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ky",
+            "name": "Kirghiz",
+            "path": "ky/Blackberry_1305_r1-2_KYlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "lt",
+            "name": "Lithuanian",
+            "path": "lt/Blackberry_1305_r1-5_LTlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ml",
+            "name": "Malayalam",
+            "path": "ml/Blackberry_1305_r1-6_MLlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "mn",
+            "name": "Mongolian",
+            "path": "mn/Blackberry_1305_r1-2_MNlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "my",
+            "name": "Burmese",
+            "path": "my/Blackberry_1305_r1-2_MYlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "country": "BR",
+            "language": "pt",
+            "name": "Portuguese",
+            "path": "pt_BR/Blackberry_1305_r1-2_PTusUNBR_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "country": "PT",
+            "language": "pt",
+            "name": "Portuguese",
+            "path": "pt_PT/Blackberry_1305_r1-2_PTusUNPT_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ro",
+            "name": "Romanian",
+            "path": "ro/Blackberry_1305_r1-5_ROlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "sa",
+            "name": "Sanskrit",
+            "path": "sa/Blackberry_1305_r1-2_SAlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "si",
+            "name": "Sinhala",
+            "path": "si/Blackberry_1305_r1-2_SIlsUNAlternate_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "sl",
+            "name": "Slovenian",
+            "path": "sl/Blackberry_1305_r1-5_SLlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "sw",
+            "name": "Swahili",
+            "path": "sw/Blackberry_1305_r1-2_SWlbUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "tg",
+            "name": "Tajik",
+            "path": "tg/Blackberry_1305_r1-2_TGlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "th",
+            "name": "Thai",
+            "path": "th/Blackberry_1305_r1-4_THlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "tk",
+            "name": "Turkmen",
+            "path": "tk/Blackberry_1305_r1-2_TKlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "fil",
+            "name": "Tagalog",
+            "path": "tl/Blackberry_1305_r1-7_TLlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "xh",
+            "name": "Xhosa",
+            "path": "xh/Blackberry_1305_r1-2_XHlbUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "zu",
+            "name": "Zulu",
+            "path": "zu/Blackberry_1305_r1-2_ZUlbUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "country": "ZH",
+            "language": "en",
+            "name": "English (China)",
+            "path": "en_ZH/Blackberry_1305_r1-3_ENubUNZH_xt9_2.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "fa",
+            "name": "Farsi",
+            "path": "fa/Blackberry_1305_r1-6_FAlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "gu",
+            "name": "Gujarati",
+            "path": "gu/Blackberry_1305_r1-6_GUlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ka",
+            "name": "Georgian",
+            "path": "ka/Blackberry_1305_r1-3_KAlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "lo",
+            "name": "Lao",
+            "path": "lo/Blackberry_1305_r1-3_LOlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "tr",
+            "name": "Turkish",
+            "path": "tr/Blackberry_1305_r1-3_TRlsUN_xt9_HC_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "uk",
+            "name": "Ukranian",
+            "path": "ldb/Blackberry_1305_r1-6_UKlsUN_xt9_ALM3.ldb",
+            "preinstalled": true,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ur",
+            "name": "Urdu",
+            "path": "ur/Blackberry_1305_r1-6_URlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "vi",
+            "name": "Vietnamese",
+            "path": "vi/Blackberry_1305_r1-8_VIlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "hu",
+            "name": "Hungarian",
+            "path": "hu/Blackberry_1305_r1-4_HUlsUN_xt9_HC_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "mr",
+            "name": "Marathi",
+            "path": "mr/Blackberry_1305_r1-7_MRlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ne",
+            "name": "Nepali",
+            "path": "ne/Blackberry_1305_r1-4_NElsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "te",
+            "name": "Telugu",
+            "path": "te/Blackberry_1305_r1-6_TElsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "as",
+            "name": "Assamese",
+            "path": "as/Blackberry_1305_r1-6_ASlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "country": "CA",
+            "language": "fr",
+            "name": "French (Canada)",
+            "path": "fr_CA/Blackberry_1305_r1-6_FRusUNCA_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ig",
+            "name": "Igbo",
+            "path": "ig/Blackberry_1305_r1-5_IGlsUN_xt9.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "or",
+            "name": "Oriya",
+            "path": "or/Blackberry_1305_r1-5_ORlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "pa",
+            "name": "Punjabi",
+            "path": "pa/Blackberry_1305_r1-5_PAlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ta",
+            "name": "Tamil",
+            "path": "ta/Blackberry_1305_r1-8_TAlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "bn",
+            "name": "Bengali",
+            "path": "bn/Blackberry_1305_r1-7_BNlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "country": "AU",
+            "language": "en",
+            "name": "English (Australia)",
+            "path": "en_AU/Blackberry_1305_r1-9_ENubUNAU_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "km",
+            "name": "Khmer",
+            "path": "km/Blackberry_1305_r1-9_KMlsUN_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        },
+        {
+            "default": true,
+            "language": "ja",
+            "name": "Japanese Hiragana",
+            "path": "ja/Blackberry_JAlsUNkana_conv_xt9_ALM3.zip",
+            "preinstalled": false,
+            "version": "1902.01"
+        }
+    ]
+}

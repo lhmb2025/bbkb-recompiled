@@ -1,0 +1,53 @@
+{
+  "space": "sensor_1080x450_athena",
+  "fitted_from": {
+    "corpus": "xt9kdb-scaffold/cpp/test/data/corpus_v2.txt",
+    "traces_used": 69
+  },
+  "row_dy_mean": {
+    "0": 22.08,
+    "1": 30.12,
+    "2": 14.22
+  },
+  "trace_dev_dy": {
+    "n": 69,
+    "mean": -0.0,
+    "std": 21.41
+  },
+  "res_dy": {
+    "n": 138,
+    "mean": 0.0,
+    "std": 19.28
+  },
+  "bias_dx": {
+    "n": 138,
+    "mean": 3.81,
+    "std": 36.12
+  },
+  "corner_cut_keyunits": {
+    "n": 157,
+    "mean": 0.27,
+    "std": 0.15
+  },
+  "dt_ms": {
+    "n": 4909,
+    "mean": 20.8,
+    "std": 16.29
+  },
+  "speed_px_ms": {
+    "n": 69,
+    "mean": 0.89,
+    "std": 0.38
+  },
+  "jitter_px": {
+    "n": 4859,
+    "mean": 4.76,
+    "std": 7.53
+  },
+  "dwell_ms": {
+    "n": 27,
+    "mean": 270.0,
+    "std": 110.0,
+    "note": "FITTED: real doubles hold 531ms median near-key vs singles 260ms"
+  }
+}

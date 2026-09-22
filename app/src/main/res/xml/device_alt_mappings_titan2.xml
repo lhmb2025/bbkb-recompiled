@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Alt+Key Character Mappings for the Unihertz Titan 2 Smartphone
+
+    Each <mapping> element defines what character should be produced when
+    onSettingsChangeListener key is pressed with the Alt modifier.
+    
+    Attributes:
+    - keycode: Android KeyEvent keycode name (without KEYCODE_ prefix)
+    - char: The character to produce (can be character literal or unicode escape)
+    - description: Human-readable description (optional)
+-->
+<alt-key-mappings>
+    <!-- Row 1: QWERTYUIOP -->
+    <mapping keycode="Q" char="0"/>
+    <mapping keycode="W" char="1"/>
+    <mapping keycode="E" char="2"/>
+    <mapping keycode="R" char="3"/>
+    <mapping keycode="T" char="("/>
+    <mapping keycode="Y" char=")"/>
+    <mapping keycode="U" char="-"/>
+    <mapping keycode="I" char="_"/>
+    <mapping keycode="O" char="/"/>
+    <mapping keycode="P" char=":"/>
+    
+    <!-- Row 2: ASDFGHJKL -->
+    <mapping keycode="A" char="@"/>
+    <mapping keycode="S" char="4"/>
+    <mapping keycode="D" char="5"/>
+    <mapping keycode="F" char="6"/>
+    <mapping keycode="G" char="*"/>
+    <mapping keycode="H" char="#"/>
+    <mapping keycode="J" char="+"/>
+    <mapping keycode="K" char="&quot;"/>
+    <mapping keycode="L" char="'"/>
+    
+    <!-- Row 3: ZXCV BNM -->
+    <mapping keycode="Z" char="!"/>
+    <mapping keycode="X" char="7"/>
+    <mapping keycode="C" char="8"/>
+    <mapping keycode="V" char="9"/>
+    <!-- Space Bar -->
+    <mapping keycode="B" char="."/>
+    <mapping keycode="N" char=","/>
+    <mapping keycode="M" char="?"/>
+
+</alt-key-mappings>

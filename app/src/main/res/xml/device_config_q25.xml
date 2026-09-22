@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Device Configuration: Minimal Phone (MP01)
+    Schema v2.1
+    
+    This configuration is for the Minimal Phone with aw9523b-key keyboard.
+    It will be auto-selected when the device is detected.
+    
+    Find device name: adb shell dumpsys input
+-->
+
+<device-input-config version="2.1" name="Zinwa Q25">
+    
+    <device>
+        <match>
+            <device-name exact="q25"/>
+        </match>
+
+        <device-type>PKB</device-type>
+        
+        <input-mappings>
+            
+            <keypad-type>4row</keypad-type>
+            
+            <!-- Unified key mapping: scancode/keycode → role routing (schema v2.1) -->
+            <scancode-mappings>
+
+                <!-- SYM key: raw BB scancode -->
+                <key rawKeyCode="58" role="BOARD_SYM"
+                     treatAs="KEYCODE_SYM" notes="BB SYM raw scancode"/>
+
+                <!-- MIC/PERIOD key: raw BB scancode -->
+                <key rawKeyCode="7" role="BOARD_VOICE"
+                     treatAs="KEYCODE_MIC" altChar="." board="-27"
+                     notes="BB MIC raw scancode"/>
+
+            </scancode-mappings>
+        </input-mappings>
+        
+        <settings-overrides>
+            <!-- Disable gesture settings (non-capacitive keyboard) -->
+            <setting key="swipe_down_ckb" type="boolean" forced-value="false" read-only="true"/>
+            <setting key="type_by_swiping_ckb" type="boolean" forced-value="false" read-only="true"/>
+        </settings-overrides>
+    </device>
+
+</device-input-config>

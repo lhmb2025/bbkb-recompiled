@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    W2 EMULATOR REPLAY CONFIG — DEBUG BUILDS ONLY (lives in the debug source set; release
+    builds never ship it).
+
+    Makes an emulator pose as a BlackBerry KEY2 (athena) for the gesture-replay harness
+    (master plan W2, owner-approved 2026-08-15): device-type CKB forces the touch-keypad
+    profile (hasTouchKeypad=true; keypad device id falls back to the primary keyboard, which
+    the replay doorway stamps onto its synthesized MotionEvents), and the ckb-y-warp is the
+    KEY2 retail warp so replayed sensor-space traces are processed device-identically.
+
+    Select on the emulator via the device-config pref:
+        active_device_config_id = preloaded:device_config_w2emu
+-->
+
+<device-input-config version="2.1" name="W2 Emulator Replay (virtual KEY2)">
+
+    <device>
+        <match>
+            <!-- Matches the AVD (sdk_gphone64_arm64 → Build.DEVICE = emu64a). -->
+            <build-device exact="emu64a"/>
+        </match>
+
+        <device-type>CKB</device-type>
+
+        <!-- Identical to device_config_athena.xml: linear sensor→engine warp (= S5's x0.72).
+             Replayed corpus traces are recorded in sensor space (y 0..450), so the same warp
+             must run here for the engine to see device-identical coordinates. -->
+        <ckb-y-warp>0:0,450:324</ckb-y-warp>
+
+        <!-- NOTE (2026-08-15): do NOT force <keypad-type> here. The engine's KDB request
+             inverts the flag (isPkb = !isTouchKb), so the device's own sync passes
+             isTouchKb=false and loads qwerty_pkb (324-space) — forcing the touch board made
+             the emulator load qwerty_vkb instead. The emulator's default sync is already
+             device-identical. The real geometry clobber was the spellchecker session's
+             loadKeyboardLayout overwriting the owned module's process-global model with the
+             VKB KDB — the W2 harness disables the spellchecker on the emulator instead. -->
+
+        <settings-overrides>
+            <setting key="swipe_down_ckb" type="boolean" read-only="false"/>
+            <setting key="type_by_swiping_ckb" type="boolean" read-only="false"/>
+        </settings-overrides>
+
+    </device>
+
+</device-input-config>

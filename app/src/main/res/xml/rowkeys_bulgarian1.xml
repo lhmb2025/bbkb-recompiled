@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key latin:keySpec="я"/>
+    <Key latin:keySpec="в"/>
+    <Key latin:keySpec="е"/>
+    <Key latin:keySpec="р"/>
+    <Key latin:keySpec="т"/>
+    <Key latin:keySpec="ъ"/>
+    <Key latin:keySpec="у"/>
+    <Key
+        latin:keySpec="и"
+        latin:moreKeys="ѝ"/>
+    <Key latin:keySpec="о"/>
+    <Key latin:keySpec="п"/>
+    <Key latin:keySpec="ч"/>
+</merge>

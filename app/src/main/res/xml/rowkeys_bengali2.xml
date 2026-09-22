@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key
+        latin:keySpec="ও"
+        latin:moreKeys="ো"/>
+    <Key
+        latin:keySpec="এ"
+        latin:moreKeys="ে"/>
+    <Key
+        latin:keySpec="অ"
+        latin:moreKeys="্"/>
+    <Key
+        latin:keySpec="ই"
+        latin:moreKeys="ি"/>
+    <Key
+        latin:keySpec="উ"
+        latin:moreKeys="ু"/>
+    <Key
+        latin:keySpec="প"
+        latin:moreKeys="ফ"/>
+    <Key
+        latin:keySpec="র"
+        latin:moreKeys="ৃ,ঋ,ত্র"/>
+    <Key
+        latin:keySpec="ক"
+        latin:moreKeys="খ"/>
+    <Key
+        latin:keySpec="ত"
+        latin:moreKeys="ৎ,থ,ত্ত"/>
+    <Key
+        latin:keySpec="চ"
+        latin:moreKeys="ছ"/>
+    <Key
+        latin:keySpec="ট"
+        latin:moreKeys="ঠ"/>
+</merge>
