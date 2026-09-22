@@ -42,6 +42,16 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY"/>
     <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY"/>
+    <!--
+        Distribution (dev.bbkb.ime.core.distribution): fetching the update manifest over HTTPS
+        and downloading APKs / language packs from GitHub Releases, plus the connectivity check
+        that lets ManifestSource answer out of its cache instead of burning a connect timeout.
+        Both are normal permissions - no runtime request. The IME itself does no other
+        networking. Installing a downloaded APK additionally needs REQUEST_INSTALL_PACKAGES;
+        that is deliberately NOT declared here, and belongs with the update UI that uses it.
+    -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:label="@string/english_ime_name"
