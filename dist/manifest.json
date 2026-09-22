@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "generated": "2026-09-22T03:24:01Z",
+  "generated": "2026-09-22T06:48:35Z",
   "app": {
     "release": {
-      "versionCode": 1430,
-      "versionName": "5.0.0-beta.18",
-      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.18/bbkb-5.0.0-beta.18-release.apk",
-      "sha256": "d94942bd8939be74af05124e742cfd34dc79a40059aabade5195ac8e8e406177",
-      "size": 56706985,
+      "versionCode": 1431,
+      "versionName": "5.0.0-beta.19",
+      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.19/bbkb-5.0.0-beta.19-release.apk",
+      "sha256": "9b619a1cd19d35e1365c9f3daa58304f899e9f008fb1b026408d912a0d255e38",
+      "size": 56706991,
       "minSdk": 23,
-      "notes": "First release on the update channel: OTA updates, downloadable language packs, the dev.bbkb.ime identity and the fixes of 2026-09-21."
+      "notes": "Fixes the keyboard not opening on the first release build and language pack removal."
     }
   },
   "packs": {
