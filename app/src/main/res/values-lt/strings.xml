@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Tas failas nėra įrenginio konfigūracija</string>
     <string name="device_config_import_failed">Nepavyko importuoti to failo</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Naujinimai</string>
     <string name="settings_updates_summary">Tikrinti, ar yra nauja BBKB versija</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Versija %1$s paruošta atsisiųsti</string>
     <string name="settings_update_unknown_sources_message">Android turi leisti BBKB įdiegti programas. Įjunkite įdiegimą iš šio šaltinio ir vėl paspauskite Įdiegti.</string>
     <string name="settings_update_open_settings">Atidaryti nustatymus</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Įdiegta</string>
+    <string name="language_packs_available_header">Galima atsisiųsti</string>
+    <string name="language_packs_download">Atsisiųsti</string>
+    <string name="language_packs_retry">Bandyti dar kartą</string>
+    <string name="language_packs_refresh">Tikrinti žodynus</string>
+    <string name="language_packs_catalog_offline">Katalogas iš %1$s (neprisijungus)</string>
+    <string name="language_packs_variant_summary">Įkeliama vietoje %1$s</string>
+    <string name="language_packs_offer_message">Atsisiųsti %1$s žodyną (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Ne dabar</string>
+    <string name="language_packs_error_offline">Nėra ryšio</string>
+    <string name="language_packs_error_network">Nepavyko. Bandykite dar kartą.</string>
+    <string name="language_packs_error_verification">Failas neatitiko katalogo, todėl nieko neįdiegta</string>
+    <string name="language_packs_error_app_too_old">Ši programa per sena, kad perskaitytų katalogą</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

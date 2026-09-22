@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Этот файл не является конфигурацией устройства</string>
     <string name="device_config_import_failed">Не удалось импортировать этот файл</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Обновления</string>
     <string name="settings_updates_summary">Проверить новую версию BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Версия %1$s готова к загрузке</string>
     <string name="settings_update_unknown_sources_message">Android должен разрешить BBKB устанавливать приложения. Разрешите установку из этого источника и снова нажмите «Установить».</string>
     <string name="settings_update_open_settings">Открыть настройки</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Установлено</string>
+    <string name="language_packs_available_header">Доступно для загрузки</string>
+    <string name="language_packs_download">Загрузить</string>
+    <string name="language_packs_retry">Повторить</string>
+    <string name="language_packs_refresh">Проверить словари</string>
+    <string name="language_packs_catalog_offline">Каталог от %1$s (офлайн)</string>
+    <string name="language_packs_variant_summary">Загружается вместо %1$s</string>
+    <string name="language_packs_offer_message">Загрузить словарь %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Не сейчас</string>
+    <string name="language_packs_error_offline">Нет подключения</string>
+    <string name="language_packs_error_network">Не получилось. Повторите попытку.</string>
+    <string name="language_packs_error_verification">Файл не соответствует каталогу, поэтому ничего не установлено</string>
+    <string name="language_packs_error_app_too_old">Это приложение слишком старое, чтобы прочитать каталог</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

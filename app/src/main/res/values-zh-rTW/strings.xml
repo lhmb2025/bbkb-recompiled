@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">該檔案不是裝置組態</string>
     <string name="device_config_import_failed">無法匯入該檔案</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">更新</string>
     <string name="settings_updates_summary">檢查 BBKB 的新版本</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">版本 %1$s 已可下載</string>
     <string name="settings_update_unknown_sources_message">Android 必須允許 BBKB 安裝應用程式。請開啟來自此來源的安裝，然後再次點按安裝。</string>
     <string name="settings_update_open_settings">開啟設定</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">已安裝</string>
+    <string name="language_packs_available_header">可下載</string>
+    <string name="language_packs_download">下載</string>
+    <string name="language_packs_retry">重試</string>
+    <string name="language_packs_refresh">檢查詞典</string>
+    <string name="language_packs_catalog_offline">%1$s的目錄（離線）</string>
+    <string name="language_packs_variant_summary">將代替%1$s載入</string>
+    <string name="language_packs_offer_message">下載%1$s詞典（%2$s）？</string>
+    <string name="language_packs_offer_not_now">稍後再說</string>
+    <string name="language_packs_error_offline">沒有連線</string>
+    <string name="language_packs_error_network">操作失敗，請重試。</string>
+    <string name="language_packs_error_verification">檔案與目錄不符，因此未安裝任何內容</string>
+    <string name="language_packs_error_app_too_old">此應用程式版本過舊，無法讀取目錄</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

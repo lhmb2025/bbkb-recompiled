@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Daardie lêer is nie \'n toestelkonfigurasie nie</string>
     <string name="device_config_import_failed">Kon nie daardie lêer invoer nie</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Opdaterings</string>
     <string name="settings_updates_summary">Kyk vir \'n nuwe weergawe van BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Weergawe %1$s is gereed om af te laai</string>
     <string name="settings_update_unknown_sources_message">Android moet BBKB toelaat om programme te installeer. Skakel installasie vanaf hierdie bron aan en druk dan weer Installeer.</string>
     <string name="settings_update_open_settings">Open instellings</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Geïnstalleer</string>
+    <string name="language_packs_available_header">Beskikbaar om af te laai</string>
+    <string name="language_packs_download">Laai af</string>
+    <string name="language_packs_retry">Probeer weer</string>
+    <string name="language_packs_refresh">Kyk vir woordeboeke</string>
+    <string name="language_packs_catalog_offline">Katalogus van %1$s (aflyn)</string>
+    <string name="language_packs_variant_summary">Laai in plek van %1$s</string>
+    <string name="language_packs_offer_message">Laai die %1$s-woordeboek af (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Nie nou nie</string>
+    <string name="language_packs_error_offline">Geen verbinding</string>
+    <string name="language_packs_error_network">Dit het nie gewerk nie. Probeer weer.</string>
+    <string name="language_packs_error_verification">Die lêer stem nie met die katalogus ooreen nie, dus is niks geïnstalleer nie</string>
+    <string name="language_packs_error_app_too_old">Hierdie program is te oud om die katalogus te lees</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

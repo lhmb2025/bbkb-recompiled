@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">ఆ ఫైల్ పరికర కాన్ఫిగరేషన్ కాదు</string>
     <string name="device_config_import_failed">ఆ ఫైల్‌ను దిగుమతి చేయలేకపోయాం</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">నవీకరణలు</string>
     <string name="settings_updates_summary">BBKB కొత్త వెర్షన్ కోసం తనిఖీ చేయండి</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">వెర్షన్ %1$s డౌన్‌లోడ్‌కు సిద్ధంగా ఉంది</string>
     <string name="settings_update_unknown_sources_message">యాప్‌లను ఇన్‌స్టాల్ చేయడానికి Android BBKBకి అనుమతి ఇవ్వాలి. ఈ మూలం నుండి ఇన్‌స్టాల్‌ను ప్రారంభించి, మళ్లీ ఇన్‌స్టాల్ నొక్కండి.</string>
     <string name="settings_update_open_settings">సెట్టింగ్‌లను తెరవండి</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">ఇన్‌స్టాల్ చేయబడింది</string>
+    <string name="language_packs_available_header">డౌన్‌లోడ్‌కు అందుబాటులో</string>
+    <string name="language_packs_download">డౌన్‌లోడ్</string>
+    <string name="language_packs_retry">మళ్లీ ప్రయత్నించండి</string>
+    <string name="language_packs_refresh">నిఘంటువులను తనిఖీ చేయండి</string>
+    <string name="language_packs_catalog_offline">%1$s కేటలాగ్ (ఆఫ్‌లైన్)</string>
+    <string name="language_packs_variant_summary">%1$s స్థానంలో లోడ్ అవుతుంది</string>
+    <string name="language_packs_offer_message">%1$s నిఘంటువును డౌన్‌లోడ్ చేయాలా (%2$s)?</string>
+    <string name="language_packs_offer_not_now">ఇప్పుడు కాదు</string>
+    <string name="language_packs_error_offline">కనెక్షన్ లేదు</string>
+    <string name="language_packs_error_network">అది పని చేయలేదు. మళ్లీ ప్రయత్నించండి.</string>
+    <string name="language_packs_error_verification">ఫైల్ కేటలాగ్‌తో సరిపోలలేదు, కాబట్టి ఏదీ ఇన్‌స్టాల్ కాలేదు</string>
+    <string name="language_packs_error_app_too_old">కేటలాగ్ చదవడానికి ఈ యాప్ చాలా పాతది</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

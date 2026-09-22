@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">ໄຟລ໌ນັ້ນບໍ່ແມ່ນການກຳນົດຄ່າອຸປະກອນ</string>
     <string name="device_config_import_failed">ນຳເຂົ້າໄຟລ໌ນັ້ນບໍ່ໄດ້</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">ການອັບເດດ</string>
     <string name="settings_updates_summary">ກວດຫາເວີຊັນໃໝ່ຂອງ BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">ເວີຊັນ %1$s ພ້ອມດາວໂຫຼດແລ້ວ</string>
     <string name="settings_update_unknown_sources_message">Android ຕ້ອງອະນຸຍາດໃຫ້ BBKB ຕິດຕັ້ງແອັບ. ເປີດການຕິດຕັ້ງຈາກແຫຼ່ງນີ້ ແລ້ວກົດຕິດຕັ້ງອີກຄັ້ງ.</string>
     <string name="settings_update_open_settings">ເປີດການຕັ້ງຄ່າ</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">ຕິດຕັ້ງແລ້ວ</string>
+    <string name="language_packs_available_header">ສາມາດດາວໂຫຼດໄດ້</string>
+    <string name="language_packs_download">ດາວໂຫຼດ</string>
+    <string name="language_packs_retry">ລອງອີກຄັ້ງ</string>
+    <string name="language_packs_refresh">ກວດຫາວັດຈະນານຸກົມ</string>
+    <string name="language_packs_catalog_offline">ລາຍການຈາກ %1$s (ອອບລາຍ)</string>
+    <string name="language_packs_variant_summary">ໂຫຼດແທນ %1$s</string>
+    <string name="language_packs_offer_message">ດາວໂຫຼດວັດຈະນານຸກົມ %1$s (%2$s) ບໍ?</string>
+    <string name="language_packs_offer_not_now">ຍັງບໍ່ແມ່ນຕອນນີ້</string>
+    <string name="language_packs_error_offline">ບໍ່ມີການເຊື່ອມຕໍ່</string>
+    <string name="language_packs_error_network">ບໍ່ສຳເລັດ. ລອງອີກຄັ້ງ.</string>
+    <string name="language_packs_error_verification">ໄຟລ໌ບໍ່ຕົງກັບລາຍການ ຈຶ່ງບໍ່ໄດ້ຕິດຕັ້ງຫຍັງ</string>
+    <string name="language_packs_error_app_too_old">ແອັບນີ້ເກົ່າເກີນໄປທີ່ຈະອ່ານລາຍການ</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

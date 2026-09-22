@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">ეს ფაილი მოწყობილობის კონფიგურაცია არ არის</string>
     <string name="device_config_import_failed">ამ ფაილის იმპორტი ვერ მოხერხდა</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">განახლებები</string>
     <string name="settings_updates_summary">BBKB-ის ახალი ვერსიის შემოწმება</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">ვერსია %1$s მზადაა ჩამოსატვირთად</string>
     <string name="settings_update_unknown_sources_message">Android-მა უნდა მისცეს BBKB-ს აპების დაყენების ნებართვა. დართეთ ნება ამ წყაროდან დაყენებას და ხელახლა დააჭირეთ დაყენებას.</string>
     <string name="settings_update_open_settings">პარამეტრების გახსნა</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">დაინსტალირებული</string>
+    <string name="language_packs_available_header">ჩამოტვირთვად ხელმისაწვდომი</string>
+    <string name="language_packs_download">ჩამოტვირთვა</string>
+    <string name="language_packs_retry">სცადეთ ხელახლა</string>
+    <string name="language_packs_refresh">ლექსიკონების შემოწმება</string>
+    <string name="language_packs_catalog_offline">კატალოგი %1$s-დან (ოფლაინ)</string>
+    <string name="language_packs_variant_summary">იტვირთება %1$s-ის ნაცვლად</string>
+    <string name="language_packs_offer_message">ჩამოიტვირთოს %1$s ლექსიკონი (%2$s)?</string>
+    <string name="language_packs_offer_not_now">ახლა არა</string>
+    <string name="language_packs_error_offline">კავშირი არ არის</string>
+    <string name="language_packs_error_network">არ გამოვიდა. სცადეთ ხელახლა.</string>
+    <string name="language_packs_error_verification">ფაილი კატალოგს არ ემთხვევა, ამიტომ არაფერი დაინსტალირდა</string>
+    <string name="language_packs_error_app_too_old">ეს აპი ძალიან ძველია კატალოგის წასაკითხად</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

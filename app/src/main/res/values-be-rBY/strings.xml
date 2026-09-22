@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Гэты файл не з\'яўляецца канфігурацыяй прылады</string>
     <string name="device_config_import_failed">Не ўдалося імпартаваць гэты файл</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Абнаўленні</string>
     <string name="settings_updates_summary">Праверыць новую версію BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Версія %1$s гатова да спампоўкі</string>
     <string name="settings_update_unknown_sources_message">Android павінен дазволіць BBKB устанаўліваць праграмы. Дазвольце ўстаноўку з гэтай крыніцы і яшчэ раз натысніце Устанавіць.</string>
     <string name="settings_update_open_settings">Адкрыць налады</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Устаноўлена</string>
+    <string name="language_packs_available_header">Даступна для спампоўкі</string>
+    <string name="language_packs_download">Спампаваць</string>
+    <string name="language_packs_retry">Паўтарыць</string>
+    <string name="language_packs_refresh">Праверыць слоўнікі</string>
+    <string name="language_packs_catalog_offline">Каталог ад %1$s (аўтаномна)</string>
+    <string name="language_packs_variant_summary">Загружаецца замест %1$s</string>
+    <string name="language_packs_offer_message">Спампаваць слоўнік %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Не зараз</string>
+    <string name="language_packs_error_offline">Няма злучэння</string>
+    <string name="language_packs_error_network">Не атрымалася. Паўтарыце.</string>
+    <string name="language_packs_error_verification">Файл не адпавядае каталогу, таму нічога не ўстаноўлена</string>
+    <string name="language_packs_error_app_too_old">Гэта праграма застарэлая, каб прачытаць каталог</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

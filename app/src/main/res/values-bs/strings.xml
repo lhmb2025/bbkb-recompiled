@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Ta datoteka nije konfiguracija uređaja</string>
     <string name="device_config_import_failed">Nije moguće uvesti tu datoteku</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Ažuriranja</string>
     <string name="settings_updates_summary">Provjeri ima li nove verzije BBKB-a</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Verzija %1$s je spremna za preuzimanje</string>
     <string name="settings_update_unknown_sources_message">Android mora dozvoliti BBKB-u instaliranje aplikacija. Omogućite instalaciju iz ovog izvora, zatim ponovo pritisnite Instaliraj.</string>
     <string name="settings_update_open_settings">Otvori postavke</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Instalirano</string>
+    <string name="language_packs_available_header">Dostupno za preuzimanje</string>
+    <string name="language_packs_download">Preuzmi</string>
+    <string name="language_packs_retry">Pokušaj ponovo</string>
+    <string name="language_packs_refresh">Provjeri rječnike</string>
+    <string name="language_packs_catalog_offline">Katalog od %1$s (offline)</string>
+    <string name="language_packs_variant_summary">Učitava se umjesto %1$s</string>
+    <string name="language_packs_offer_message">Preuzeti rječnik za %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Ne sada</string>
+    <string name="language_packs_error_offline">Nema veze</string>
+    <string name="language_packs_error_network">Nije uspjelo. Pokušaj ponovo.</string>
+    <string name="language_packs_error_verification">Datoteka ne odgovara katalogu, pa nije instalirano ništa</string>
+    <string name="language_packs_error_app_too_old">Ova aplikacija je prestara da pročita katalog</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

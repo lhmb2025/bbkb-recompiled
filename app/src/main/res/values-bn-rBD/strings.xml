@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">ওই ফাইলটি ডিভাইস কনফিগারেশন নয়</string>
     <string name="device_config_import_failed">ওই ফাইলটি ইমপোর্ট করা যায়নি</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">আপডেট</string>
     <string name="settings_updates_summary">BBKB-এর নতুন সংস্করণ খুঁজুন</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">সংস্করণ %1$s ডাউনলোডের জন্য প্রস্তুত</string>
     <string name="settings_update_unknown_sources_message">অ্যাপ ইনস্টল করতে BBKB-কে Android-এর অনুমতি দিতে হবে। এই সূত্র থেকে ইনস্টল চালু করুন, তারপর আবার ইনস্টল চাপুন।</string>
     <string name="settings_update_open_settings">সেটিংস খুলুন</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">ইনস্টল করা আছে</string>
+    <string name="language_packs_available_header">ডাউনলোডের জন্য উপলব্ধ</string>
+    <string name="language_packs_download">ডাউনলোড</string>
+    <string name="language_packs_retry">আবার চেষ্টা করুন</string>
+    <string name="language_packs_refresh">অভিধান খুঁজুন</string>
+    <string name="language_packs_catalog_offline">%1$s-এর ক্যাটালগ (অফলাইন)</string>
+    <string name="language_packs_variant_summary">%1$s-এর জায়গায় লোড হয়</string>
+    <string name="language_packs_offer_message">%1$s অভিধান ডাউনলোড করবেন (%2$s)?</string>
+    <string name="language_packs_offer_not_now">এখন নয়</string>
+    <string name="language_packs_error_offline">সংযোগ নেই</string>
+    <string name="language_packs_error_network">কাজ হয়নি। আবার চেষ্টা করুন।</string>
+    <string name="language_packs_error_verification">ফাইলটি ক্যাটালগের সঙ্গে মেলেনি, তাই কিছুই ইনস্টল হয়নি</string>
+    <string name="language_packs_error_app_too_old">ক্যাটালগ পড়ার জন্য এই অ্যাপটি খুব পুরনো</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

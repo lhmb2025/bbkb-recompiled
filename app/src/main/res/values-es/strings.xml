@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Ese archivo no es una configuración de dispositivo</string>
     <string name="device_config_import_failed">No se ha podido importar ese archivo</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Actualizaciones</string>
     <string name="settings_updates_summary">Buscar una nueva versión de BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">La versión %1$s está lista para descargar</string>
     <string name="settings_update_unknown_sources_message">Android debe permitir que BBKB instale aplicaciones. Activa la instalación desde esta fuente y vuelve a pulsar Instalar.</string>
     <string name="settings_update_open_settings">Abrir ajustes</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Instalados</string>
+    <string name="language_packs_available_header">Disponibles para descargar</string>
+    <string name="language_packs_download">Descargar</string>
+    <string name="language_packs_retry">Reintentar</string>
+    <string name="language_packs_refresh">Buscar diccionarios</string>
+    <string name="language_packs_catalog_offline">Catálogo del %1$s (sin conexión)</string>
+    <string name="language_packs_variant_summary">Se carga en lugar de %1$s</string>
+    <string name="language_packs_offer_message">¿Descargar el diccionario de %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Ahora no</string>
+    <string name="language_packs_error_offline">Sin conexión</string>
+    <string name="language_packs_error_network">No funcionó. Inténtalo de nuevo.</string>
+    <string name="language_packs_error_verification">El archivo no coincide con el catálogo, así que no se instaló nada</string>
+    <string name="language_packs_error_app_too_old">Esta aplicación es demasiado antigua para leer el catálogo</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

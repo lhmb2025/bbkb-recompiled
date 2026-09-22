@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Цей файл не є конфігурацією пристрою</string>
     <string name="device_config_import_failed">Не вдалося імпортувати цей файл</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Оновлення</string>
     <string name="settings_updates_summary">Перевірити нову версію BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Версія %1$s готова до завантаження</string>
     <string name="settings_update_unknown_sources_message">Android має дозволити BBKB встановлювати програми. Дозвольте встановлення з цього джерела й натисніть «Встановити» ще раз.</string>
     <string name="settings_update_open_settings">Відкрити налаштування</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Установлено</string>
+    <string name="language_packs_available_header">Доступно для завантаження</string>
+    <string name="language_packs_download">Завантажити</string>
+    <string name="language_packs_retry">Спробувати ще раз</string>
+    <string name="language_packs_refresh">Перевірити словники</string>
+    <string name="language_packs_catalog_offline">Каталог від %1$s (офлайн)</string>
+    <string name="language_packs_variant_summary">Завантажується замість %1$s</string>
+    <string name="language_packs_offer_message">Завантажити словник %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Не зараз</string>
+    <string name="language_packs_error_offline">Немає з’єднання</string>
+    <string name="language_packs_error_network">Не вдалося. Спробуйте ще раз.</string>
+    <string name="language_packs_error_verification">Файл не відповідає каталогу, тому нічого не встановлено</string>
+    <string name="language_packs_error_app_too_old">Ця програма застаріла, щоб прочитати каталог</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

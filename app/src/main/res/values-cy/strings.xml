@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Nid ffurfweddiad dyfais yw\'r ffeil honno</string>
     <string name="device_config_import_failed">Methu mewnforio\'r ffeil honno</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Diweddariadau</string>
     <string name="settings_updates_summary">Gwirio am fersiwn newydd o BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Mae fersiwn %1$s yn barod i\'w lawrlwytho</string>
     <string name="settings_update_unknown_sources_message">Rhaid i Android ganiatáu i BBKB osod apiau. Galluogwch osod o\'r ffynhonnell hon, wedyn pwyswch Gosod eto.</string>
     <string name="settings_update_open_settings">Agor gosodiadau</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Wedi\'u gosod</string>
+    <string name="language_packs_available_header">Ar gael i\'w lawrlwytho</string>
+    <string name="language_packs_download">Lawrlwytho</string>
+    <string name="language_packs_retry">Ceisiwch eto</string>
+    <string name="language_packs_refresh">Chwilio am eiriaduron</string>
+    <string name="language_packs_catalog_offline">Catalog o %1$s (all-lein)</string>
+    <string name="language_packs_variant_summary">Yn llwytho yn lle %1$s</string>
+    <string name="language_packs_offer_message">Lawrlwytho geiriadur %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Nid nawr</string>
+    <string name="language_packs_error_offline">Dim cysylltiad</string>
+    <string name="language_packs_error_network">Ni weithiodd hynny. Ceisiwch eto.</string>
+    <string name="language_packs_error_verification">Nid oedd y ffeil yn cyfateb i\'r catalog, felly ni osodwyd dim</string>
+    <string name="language_packs_error_app_too_old">Mae\'r ap hwn yn rhy hen i ddarllen y catalog</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

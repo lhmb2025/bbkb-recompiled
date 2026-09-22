@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">このファイルは端末構成ではありません</string>
     <string name="device_config_import_failed">このファイルをインポートできませんでした</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">アップデート</string>
     <string name="settings_updates_summary">BBKB の新しいバージョンを確認</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">バージョン %1$s をダウンロードできます</string>
     <string name="settings_update_unknown_sources_message">アプリをインストールするには Android の許可が必要です。このソースからのインストールを許可してから、もう一度インストールを押してください。</string>
     <string name="settings_update_open_settings">設定を開く</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">インストール済み</string>
+    <string name="language_packs_available_header">ダウンロード可能</string>
+    <string name="language_packs_download">ダウンロード</string>
+    <string name="language_packs_retry">再試行</string>
+    <string name="language_packs_refresh">辞書を確認</string>
+    <string name="language_packs_catalog_offline">%1$sのカタログ（オフライン）</string>
+    <string name="language_packs_variant_summary">%1$sの代わりに読み込まれます</string>
+    <string name="language_packs_offer_message">%1$sの辞書をダウンロードしますか（%2$s）?</string>
+    <string name="language_packs_offer_not_now">後で</string>
+    <string name="language_packs_error_offline">接続がありません</string>
+    <string name="language_packs_error_network">うまくいきませんでした。再試行してください。</string>
+    <string name="language_packs_error_verification">ファイルがカタログと一致しなかったため、何もインストールされませんでした</string>
+    <string name="language_packs_error_app_too_old">このアプリは古すぎてカタログを読み取れません</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

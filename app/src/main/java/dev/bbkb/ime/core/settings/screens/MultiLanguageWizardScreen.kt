@@ -37,6 +37,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
@@ -49,16 +50,23 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.bbkb.ime.R
+import dev.bbkb.ime.core.languagepack.PackDownloadManager
+import dev.bbkb.ime.core.languagepack.PackOfferSource
+import dev.bbkb.ime.core.languagepack.PackState
+import dev.bbkb.ime.core.languagepack.PackText
 import dev.bbkb.ime.core.locale.RichInputMethodManager
 import dev.bbkb.ime.core.locale.multilanguage.LocaleItem
 import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageConfig
@@ -67,6 +75,7 @@ import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageUtils
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 /**
@@ -118,6 +127,39 @@ fun MultiLanguageWizardScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showDiscardDialog by remember { mutableStateOf(false) }
     var showLanguagePickerDialog by remember { mutableStateOf(false) }
+
+    // ── The dictionary behind a language the user just enabled ────────────────────────────────
+    // Saving here is THE Settings-side moment a keyboard language becomes selectable: it writes
+    // the configuration and then calls setAdditionalInputMethodSubtypes (see updateSubtypes).
+    // A language with no dictionary installed types without prediction or correction and gives no
+    // hint why, so this is where the download is offered. Settings-side only, by owner decision -
+    // the IME's own locale monitor stays informational.
+    val scope = rememberCoroutineScope()
+    val downloads = remember { PackDownloadManager.getInstance(context) }
+    val downloadStates by downloads.states.collectAsStateWithLifecycle()
+    var packOffer by remember { mutableStateOf<PackOfferSource.Target?>(null) }
+    var declinedPacks by remember { mutableStateOf(emptySet<String>()) }
+
+    /**
+     * Save, then either leave or ask about a missing dictionary. The catalogue is consulted only
+     * at this point, never on entry: the prompt is a consequence of enabling something, and no
+     * settings screen should need the network to draw its first frame.
+     */
+    val saveThenOfferPack: () -> Unit = {
+        saveConfiguration(
+            primaryLanguage = primaryLanguage,
+            supportingLanguages = supportingLanguages,
+            keyboardManager = keyboardManager,
+            context = context,
+            onSuccess = {
+                scope.launch {
+                    val enabled = (listOf(primaryLanguage) + supportingLanguages).map { it.first }
+                    val target = PackOfferSource.firstMissing(context, enabled, declinedPacks)
+                    if (target == null) onSaveSuccess() else packOffer = target
+                }
+            },
+        )
+    }
     
     // Track if user made changes
     val hasChanges = remember(supportingLanguages) {
@@ -159,15 +201,7 @@ fun MultiLanguageWizardScreen(
                     } else {
                         // Save button in add mode
                         IconButton(
-                            onClick = {
-                                saveConfiguration(
-                                    primaryLanguage = primaryLanguage,
-                                    supportingLanguages = supportingLanguages,
-                                    keyboardManager = keyboardManager,
-                                    context = context,
-                                    onSuccess = onSaveSuccess
-                                )
-                            },
+                            onClick = saveThenOfferPack,
                             enabled = supportingLanguages.isNotEmpty()
                         ) {
                             Icon(
@@ -371,13 +405,7 @@ fun MultiLanguageWizardScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        saveConfiguration(
-                            primaryLanguage = primaryLanguage,
-                            supportingLanguages = supportingLanguages,
-                            keyboardManager = keyboardManager,
-                            context = context,
-                            onSuccess = onSaveSuccess
-                        )
+                        saveThenOfferPack()
                         showDiscardDialog = false
                     }
                 ) {
@@ -399,6 +427,82 @@ fun MultiLanguageWizardScreen(
                     }
                 }
             }
+        )
+    }
+
+    // The missing-dictionary offer. It appears after the configuration is already saved, so
+    // "Not now" is a complete answer: the keyboard exists either way and the Language packs
+    // screen lists everything this prompt did not install.
+    packOffer?.let { target ->
+        val state = downloadStates[target.entry.locale]
+
+        // An install is its own answer - the dictionary is there, the keyboard is configured,
+        // and there is nothing left to confirm. Closing here also means no new "Done" string.
+        LaunchedEffect(state) {
+            if (state is PackState.Installed) {
+                packOffer = null
+                onSaveSuccess()
+            }
+        }
+
+        AlertDialog(
+            // Not dismissible by a tap outside: the two buttons are the answer, and a stray tap
+            // must not look like "no".
+            onDismissRequest = {},
+            title = { Text(target.entry.name) },
+            text = {
+                when (state) {
+                    is PackState.Downloading -> LinearProgressIndicator(
+                        progress = { state.progress },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+
+                    is PackState.Failed -> Text(PackText.errorMessage(context, state.error))
+
+                    else -> Text(
+                        stringResource(
+                            R.string.language_packs_offer_message,
+                            target.entry.name,
+                            PackText.size(context, target.entry.size),
+                        )
+                    )
+                }
+            },
+            confirmButton = {
+                when (state) {
+                    // Nothing to confirm while it is running; the progress bar is the state and
+                    // "Not now" still leaves (the download is process-wide and keeps going).
+                    is PackState.Downloading -> Unit
+
+                    is PackState.Failed -> TextButton(
+                        onClick = {
+                            downloads.clearFailure(target.entry.locale)
+                            downloads.download(target.packs, target.entry)
+                        }
+                    ) {
+                        Text(stringResource(R.string.language_packs_retry))
+                    }
+
+                    else -> TextButton(
+                        onClick = { downloads.download(target.packs, target.entry) }
+                    ) {
+                        Text(stringResource(R.string.language_packs_download))
+                    }
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        // Remembered for this visit only, so the prompt does not reappear for the
+                        // same language on the next save; it is not a permanent opt-out.
+                        declinedPacks = declinedPacks + target.entry.locale
+                        packOffer = null
+                        onSaveSuccess()
+                    }
+                ) {
+                    Text(stringResource(R.string.language_packs_offer_not_now))
+                }
+            },
         )
     }
 }

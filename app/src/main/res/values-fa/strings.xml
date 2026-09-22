@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">آن فایل یک پیکربندی دستگاه نیست</string>
     <string name="device_config_import_failed">آن فایل وارد نشد</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">به‌روزرسانی‌ها</string>
     <string name="settings_updates_summary">بررسی نسخه جدید BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">نسخه %1$s آماده دانلود است</string>
     <string name="settings_update_unknown_sources_message">اندروید باید به BBKB اجازه نصب برنامه بدهد. نصب از این منبع را فعال کنید و سپس دوباره نصب را بزنید.</string>
     <string name="settings_update_open_settings">باز کردن تنظیمات</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">نصب‌شده</string>
+    <string name="language_packs_available_header">قابل بارگیری</string>
+    <string name="language_packs_download">بارگیری</string>
+    <string name="language_packs_retry">تلاش مجدد</string>
+    <string name="language_packs_refresh">بررسی واژه‌نامه‌ها</string>
+    <string name="language_packs_catalog_offline">فهرست از %1$s (آفلاین)</string>
+    <string name="language_packs_variant_summary">به‌جای %1$s بارگذاری می‌شود</string>
+    <string name="language_packs_offer_message">واژه‌نامهٔ %1$s بارگیری شود (%2$s)؟</string>
+    <string name="language_packs_offer_not_now">الان نه</string>
+    <string name="language_packs_error_offline">اتصال وجود ندارد</string>
+    <string name="language_packs_error_network">انجام نشد. دوباره تلاش کنید.</string>
+    <string name="language_packs_error_verification">فایل با فهرست مطابقت نداشت، بنابراین چیزی نصب نشد</string>
+    <string name="language_packs_error_app_too_old">این برنامه برای خواندن فهرست بسیار قدیمی است</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

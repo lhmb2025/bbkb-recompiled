@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">해당 파일은 기기 구성이 아닙니다</string>
     <string name="device_config_import_failed">해당 파일을 가져올 수 없습니다</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">업데이트</string>
     <string name="settings_updates_summary">BBKB의 새 버전 확인</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">버전 %1$s을 다운로드할 수 있습니다</string>
     <string name="settings_update_unknown_sources_message">앱을 설치하려면 Android의 허용이 필요합니다. 이 소스에서의 설치를 허용한 뒤 설치를 다시 누르세요.</string>
     <string name="settings_update_open_settings">설정 열기</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">설치됨</string>
+    <string name="language_packs_available_header">다운로드 가능</string>
+    <string name="language_packs_download">다운로드</string>
+    <string name="language_packs_retry">다시 시도</string>
+    <string name="language_packs_refresh">사전 확인</string>
+    <string name="language_packs_catalog_offline">%1$s 카탈로그(오프라인)</string>
+    <string name="language_packs_variant_summary">%1$s 대신 로드됨</string>
+    <string name="language_packs_offer_message">%1$s 사전을 다운로드할까요(%2$s)?</string>
+    <string name="language_packs_offer_not_now">나중에</string>
+    <string name="language_packs_error_offline">연결 없음</string>
+    <string name="language_packs_error_network">실패했습니다. 다시 시도하세요.</string>
+    <string name="language_packs_error_verification">파일이 카탈로그와 일치하지 않아 아무것도 설치되지 않았습니다</string>
+    <string name="language_packs_error_app_too_old">이 앱은 너무 오래되어 카탈로그를 읽을 수 없습니다</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

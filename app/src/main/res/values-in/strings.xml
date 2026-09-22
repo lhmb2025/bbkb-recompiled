@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">File itu bukan konfigurasi perangkat</string>
     <string name="device_config_import_failed">Tidak dapat mengimpor file itu</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Pembaruan</string>
     <string name="settings_updates_summary">Periksa versi baru BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Versi %1$s siap diunduh</string>
     <string name="settings_update_unknown_sources_message">Android harus mengizinkan BBKB memasang aplikasi. Aktifkan pemasangan dari sumber ini, lalu tekan Pasang lagi.</string>
     <string name="settings_update_open_settings">Buka setelan</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Terpasang</string>
+    <string name="language_packs_available_header">Tersedia untuk diunduh</string>
+    <string name="language_packs_download">Unduh</string>
+    <string name="language_packs_retry">Coba lagi</string>
+    <string name="language_packs_refresh">Periksa kamus</string>
+    <string name="language_packs_catalog_offline">Katalog dari %1$s (offline)</string>
+    <string name="language_packs_variant_summary">Dimuat sebagai ganti %1$s</string>
+    <string name="language_packs_offer_message">Unduh kamus %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Nanti saja</string>
+    <string name="language_packs_error_offline">Tidak ada koneksi</string>
+    <string name="language_packs_error_network">Tidak berhasil. Coba lagi.</string>
+    <string name="language_packs_error_verification">Berkas tidak cocok dengan katalog, jadi tidak ada yang dipasang</string>
+    <string name="language_packs_error_app_too_old">Aplikasi ini terlalu lama untuk membaca katalog</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

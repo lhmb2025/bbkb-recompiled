@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Den filen er ikke en enhetskonfigurasjon</string>
     <string name="device_config_import_failed">Kunne ikke importere den filen</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Oppdateringer</string>
     <string name="settings_updates_summary">Se etter en ny versjon av BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Versjon %1$s er klar for nedlasting</string>
     <string name="settings_update_unknown_sources_message">Android må tillate at BBKB installerer apper. Tillat installering fra denne kilden, og trykk på Installer igjen.</string>
     <string name="settings_update_open_settings">Åpne innstillinger</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Installert</string>
+    <string name="language_packs_available_header">Tilgjengelig for nedlasting</string>
+    <string name="language_packs_download">Last ned</string>
+    <string name="language_packs_retry">Prøv igjen</string>
+    <string name="language_packs_refresh">Se etter ordbøker</string>
+    <string name="language_packs_catalog_offline">Katalog fra %1$s (frakoblet)</string>
+    <string name="language_packs_variant_summary">Lastes i stedet for %1$s</string>
+    <string name="language_packs_offer_message">Laste ned ordboken for %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Ikke nå</string>
+    <string name="language_packs_error_offline">Ingen tilkobling</string>
+    <string name="language_packs_error_network">Det fungerte ikke. Prøv igjen.</string>
+    <string name="language_packs_error_verification">Filen stemte ikke med katalogen, så ingenting ble installert</string>
+    <string name="language_packs_error_app_too_old">Denne appen er for gammel til å lese katalogen</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">ឯកសារនោះមិនមែនជាការកំណត់រចនាសម្ព័ន្ធឧបករណ៍ទេ</string>
     <string name="device_config_import_failed">មិនអាចនាំចូលឯកសារនោះបានទេ</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">ការធ្វើបច្ចុប្បន្នភាព</string>
     <string name="settings_updates_summary">ពិនិត្យរកកំណែថ្មីរបស់ BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">កំណែ %1$s រួចរាល់សម្រាប់ទាញយក</string>
     <string name="settings_update_unknown_sources_message">Android ត្រូវអនុញ្ញាតឱ្យ BBKB ដំឡើងកម្មវិធី។ បើកការដំឡើងពីប្រភពនេះ បន្ទាប់មកចុចដំឡើងម្ដងទៀត។</string>
     <string name="settings_update_open_settings">បើកការកំណត់</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">បានដំឡើង</string>
+    <string name="language_packs_available_header">អាចទាញយកបាន</string>
+    <string name="language_packs_download">ទាញយក</string>
+    <string name="language_packs_retry">ព្យាយាមម្ដងទៀត</string>
+    <string name="language_packs_refresh">ពិនិត្យរកវចនានុក្រម</string>
+    <string name="language_packs_catalog_offline">កាតាឡុកពី %1$s (គ្មានអ៊ីនធឺណិត)</string>
+    <string name="language_packs_variant_summary">ដំណើរការជំនួស %1$s</string>
+    <string name="language_packs_offer_message">ទាញយកវចនានុក្រម %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">មិនមែនឥឡូវទេ</string>
+    <string name="language_packs_error_offline">គ្មានការតភ្ជាប់</string>
+    <string name="language_packs_error_network">មិនបានសម្រេច។ ព្យាយាមម្ដងទៀត។</string>
+    <string name="language_packs_error_verification">ឯកសារមិនត្រូវនឹងកាតាឡុក ដូច្នេះមិនបានដំឡើងអ្វីទេ</string>
+    <string name="language_packs_error_app_too_old">កម្មវិធីនេះចាស់ពេក មិនអាចអានកាតាឡុកបានទេ</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

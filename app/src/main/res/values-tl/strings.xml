@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Hindi configuration ng device ang file na iyon</string>
     <string name="device_config_import_failed">Hindi ma-import ang file na iyon</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Mga update</string>
     <string name="settings_updates_summary">Maghanap ng bagong bersyon ng BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Handa nang i-download ang bersyon %1$s</string>
     <string name="settings_update_unknown_sources_message">Kailangang payagan ng Android ang BBKB na mag-install ng mga app. I-enable ang pag-install mula sa pinagmulang ito, pagkatapos pindutin muli ang I-install.</string>
     <string name="settings_update_open_settings">Buksan ang mga setting</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Naka-install</string>
+    <string name="language_packs_available_header">Available na i-download</string>
+    <string name="language_packs_download">I-download</string>
+    <string name="language_packs_retry">Subukang muli</string>
+    <string name="language_packs_refresh">Maghanap ng diksyunaryo</string>
+    <string name="language_packs_catalog_offline">Katalogo mula %1$s (offline)</string>
+    <string name="language_packs_variant_summary">Nag-lo-load kapalit ng %1$s</string>
+    <string name="language_packs_offer_message">I-download ang diksyunaryo ng %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Hindi ngayon</string>
+    <string name="language_packs_error_offline">Walang koneksyon</string>
+    <string name="language_packs_error_network">Hindi gumana. Subukang muli.</string>
+    <string name="language_packs_error_verification">Hindi tumugma ang file sa katalogo, kaya walang na-install</string>
+    <string name="language_packs_error_app_too_old">Masyadong luma ang app na ito para mabasa ang katalogo</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

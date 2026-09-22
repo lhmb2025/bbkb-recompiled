@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Ta datoteka nije konfiguracija uređaja</string>
     <string name="device_config_import_failed">Ta datoteka nije mogla da se uveze</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Ажурирања</string>
     <string name="settings_updates_summary">Проверите да ли постоји нова верзија BBKB-а</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Верзија %1$s је спремна за преузимање</string>
     <string name="settings_update_unknown_sources_message">Android мора да дозволи BBKB-у да инсталира апликације. Омогућите инсталацију из овог извора, па поново притисните Инсталирај.</string>
     <string name="settings_update_open_settings">Отвори подешавања</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Инсталирано</string>
+    <string name="language_packs_available_header">Доступно за преузимање</string>
+    <string name="language_packs_download">Преузми</string>
+    <string name="language_packs_retry">Пробај поново</string>
+    <string name="language_packs_refresh">Провери речнике</string>
+    <string name="language_packs_catalog_offline">Каталог од %1$s (офлајн)</string>
+    <string name="language_packs_variant_summary">Учитава се уместо %1$s</string>
+    <string name="language_packs_offer_message">Да преузмем речник %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Не сада</string>
+    <string name="language_packs_error_offline">Нема везе</string>
+    <string name="language_packs_error_network">Није успело. Пробај поново.</string>
+    <string name="language_packs_error_verification">Датотека се не поклапа са каталогом, па ништа није инсталирано</string>
+    <string name="language_packs_error_app_too_old">Ова апликација је превише стара да прочита каталог</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

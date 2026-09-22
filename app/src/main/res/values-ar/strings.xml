@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">هذا الملف ليس تكوين جهاز</string>
     <string name="device_config_import_failed">تعذّر استيراد ذلك الملف</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">التحديثات</string>
     <string name="settings_updates_summary">البحث عن إصدار جديد من BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">الإصدار %1$s جاهز للتنزيل</string>
     <string name="settings_update_unknown_sources_message">يجب أن يسمح نظام Android لتطبيق BBKB بتثبيت التطبيقات. مكّن التثبيت من هذا المصدر ثم اضغط على تثبيت مرة أخرى.</string>
     <string name="settings_update_open_settings">فتح الإعدادات</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">مثبَّت</string>
+    <string name="language_packs_available_header">متاح للتنزيل</string>
+    <string name="language_packs_download">تنزيل</string>
+    <string name="language_packs_retry">أعد المحاولة</string>
+    <string name="language_packs_refresh">التحقق من القواميس</string>
+    <string name="language_packs_catalog_offline">الفهرس من %1$s (غير متصل)</string>
+    <string name="language_packs_variant_summary">يُحمَّل بدلاً من %1$s</string>
+    <string name="language_packs_offer_message">تنزيل قاموس %1$s (%2$s)؟</string>
+    <string name="language_packs_offer_not_now">ليس الآن</string>
+    <string name="language_packs_error_offline">لا يوجد اتصال</string>
+    <string name="language_packs_error_network">لم ينجح ذلك. أعد المحاولة.</string>
+    <string name="language_packs_error_verification">الملف لا يطابق الفهرس، لذلك لم يُثبَّت أي شيء</string>
+    <string name="language_packs_error_app_too_old">هذا التطبيق قديم جدًا لقراءة الفهرس</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

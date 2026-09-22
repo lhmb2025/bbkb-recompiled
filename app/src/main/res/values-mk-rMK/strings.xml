@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Таа датотека не е конфигурација на уред</string>
     <string name="device_config_import_failed">Таа датотека не можеше да се увезе</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Ажурирања</string>
     <string name="settings_updates_summary">Провери дали има нова верзија на BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Верзијата %1$s е готова за преземање</string>
     <string name="settings_update_unknown_sources_message">Android мора да дозволи BBKB да инсталира апликации. Овозможете инсталирање од овој извор, па повторно притиснете Инсталирај.</string>
     <string name="settings_update_open_settings">Отвори поставки</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Инсталирано</string>
+    <string name="language_packs_available_header">Достапно за преземање</string>
+    <string name="language_packs_download">Преземи</string>
+    <string name="language_packs_retry">Обиди се повторно</string>
+    <string name="language_packs_refresh">Провери речници</string>
+    <string name="language_packs_catalog_offline">Каталог од %1$s (офлајн)</string>
+    <string name="language_packs_variant_summary">Се вчитува наместо %1$s</string>
+    <string name="language_packs_offer_message">Да се преземе речникот за %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Не сега</string>
+    <string name="language_packs_error_offline">Нема врска</string>
+    <string name="language_packs_error_network">Не успеа. Обиди се повторно.</string>
+    <string name="language_packs_error_verification">Датотеката не се совпадна со каталогот, па не е инсталирано ништо</string>
+    <string name="language_packs_error_app_too_old">Апликацијата е премногу стара за да го прочита каталогот</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Այդ ֆայլը սարքի կազմաձև չէ</string>
     <string name="device_config_import_failed">Չհաջողվեց ներմուծել այդ ֆայլը</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Թարմացումներ</string>
     <string name="settings_updates_summary">Ստուգել BBKB-ի նոր տարբերակը</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Տարբերակ %1$s-ը պատրաստ է ներբեռնման</string>
     <string name="settings_update_unknown_sources_message">Android-ը պետք է թույլ տա BBKB-ին տեղադրել հավելվածներ։ Միացրեք տեղադրումն այս աղբյուրից, ապա նորից սեղմեք Տեղադրել։</string>
     <string name="settings_update_open_settings">Բացել կարգավորումները</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Տեղադրված</string>
+    <string name="language_packs_available_header">Հասանելի է ներբեռնման</string>
+    <string name="language_packs_download">Ներբեռնել</string>
+    <string name="language_packs_retry">Կրկին փորձել</string>
+    <string name="language_packs_refresh">Ստուգել բառարանները</string>
+    <string name="language_packs_catalog_offline">%1$s-ի կատալոգ (անցանց)</string>
+    <string name="language_packs_variant_summary">Բեռնվում է %1$s-ի փոխարեն</string>
+    <string name="language_packs_offer_message">Ներբեռնե՞լ %1$s բառարանը (%2$s)</string>
+    <string name="language_packs_offer_not_now">Ոչ հիմա</string>
+    <string name="language_packs_error_offline">Կապ չկա</string>
+    <string name="language_packs_error_network">Չստացվեց։ Կրկին փորձեք։</string>
+    <string name="language_packs_error_verification">Ֆայլը չհամապատասխանեց կատալոգին, ոչինչ չտեղադրվեց</string>
+    <string name="language_packs_error_app_too_old">Այս հավելվածը շատ հին է կատալոգը կարդալու համար</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Ten plik nie jest konfiguracją urządzenia</string>
     <string name="device_config_import_failed">Nie udało się zaimportować tego pliku</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Aktualizacje</string>
     <string name="settings_updates_summary">Sprawdź, czy jest nowa wersja BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Wersja %1$s jest gotowa do pobrania</string>
     <string name="settings_update_unknown_sources_message">Android musi zezwolić BBKB na instalowanie aplikacji. Włącz instalowanie z tego źródła, a potem ponownie naciśnij Zainstaluj.</string>
     <string name="settings_update_open_settings">Otwórz ustawienia</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Zainstalowane</string>
+    <string name="language_packs_available_header">Dostępne do pobrania</string>
+    <string name="language_packs_download">Pobierz</string>
+    <string name="language_packs_retry">Spróbuj ponownie</string>
+    <string name="language_packs_refresh">Sprawdź słowniki</string>
+    <string name="language_packs_catalog_offline">Katalog z %1$s (offline)</string>
+    <string name="language_packs_variant_summary">Wczytywany zamiast %1$s</string>
+    <string name="language_packs_offer_message">Pobrać słownik %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Nie teraz</string>
+    <string name="language_packs_error_offline">Brak połączenia</string>
+    <string name="language_packs_error_network">Nie udało się. Spróbuj ponownie.</string>
+    <string name="language_packs_error_verification">Plik nie zgadzał się z katalogiem, więc nic nie zainstalowano</string>
+    <string name="language_packs_error_app_too_old">Ta aplikacja jest za stara, aby odczytać katalog</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>
