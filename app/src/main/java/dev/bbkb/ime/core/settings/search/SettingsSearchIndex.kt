@@ -226,6 +226,9 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.device_profile_builder_entry_title, "device profile builder capture keys scancode keycode export import share unknown phone config", SettingsRoute.DeviceConfiguration.route, ADVANCED, requires = DeviceRequirement.PHYSICAL_KEYBOARD),
         SearchableSetting(R.string.settings_debug_title, "debug developer", SettingsRoute.Advanced.route, ADVANCED),
         SearchableSetting(R.string.settings_clear_settings_title, "reset clear settings data", SettingsRoute.Advanced.route, ADVANCED),
+        // ── Advanced: OTA app updates (About -> Updates) ────────────────────────
+        SearchableSetting(R.string.settings_updates_title, "update ota new version apk download install upgrade", SettingsRoute.Updates.route, ADVANCED),
+        SearchableSetting(R.string.settings_update_background_check_title, "update daily background check notify notification", SettingsRoute.Updates.route, ADVANCED, "pref_update_background_check"),
     )
 
     /**

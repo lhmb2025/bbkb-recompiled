@@ -35,6 +35,7 @@ import dev.bbkb.ime.core.settings.ui.PreferenceItem
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreditsScreen(
+    onNavigateToUpdates: () -> Unit = {},
     onNavigateBack: () -> Unit
 ) {
     val context = LocalContext.current
@@ -88,6 +89,15 @@ fun CreditsScreen(
                 onClick = null
             )
             
+            // Updates. About is where a user looks for "what version am I on", so it is
+            // also where they look for "is there a newer one".
+            PreferenceItem(
+                title = context.getString(R.string.settings_updates_title),
+                summary = context.getString(R.string.settings_updates_summary),
+                enabled = true,
+                onClick = onNavigateToUpdates
+            )
+
             // No rule under the version row: the CREDITS subhead below already separates the two,
             // and its 24dp top padding is the gap. A divider plus a subhead says the same thing
             // twice, at two different insets.
