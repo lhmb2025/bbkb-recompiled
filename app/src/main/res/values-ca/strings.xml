@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Només conserva</string>
     <string name="device_config_import_unreadable">Aquest fitxer no és una configuració de dispositiu</string>
     <string name="device_config_import_failed">No s\'ha pogut importar aquest fitxer</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Actualitzacions</string>
+    <string name="settings_updates_summary">Comprova si hi ha una versió nova de BBKB</string>
+    <string name="settings_update_installed_version_title">Versió instal·lada</string>
+    <string name="settings_update_channel_title">Canal d\'actualitzacions</string>
+    <string name="settings_update_channel_release">Versió final</string>
+    <string name="settings_update_channel_none">No hi ha canal d\'actualitzacions per a compilacions de depuració</string>
+    <string name="settings_update_last_checked_title">Última comprovació</string>
+    <string name="settings_update_never">Mai</string>
+    <string name="settings_update_check_now">Comprova ara</string>
+    <string name="settings_update_checking">S\'està comprovant…</string>
+    <string name="settings_update_up_to_date">BBKB està actualitzat</string>
+    <string name="settings_update_available_title">Actualització disponible</string>
+    <string name="settings_update_available_banner">Actualització disponible: %1$s</string>
+    <string name="settings_update_version_label">Versió %1$s</string>
+    <string name="settings_update_size_label">Mida de la baixada: %1$s</string>
+    <string name="settings_update_notes_title">Notes de la versió</string>
+    <string name="settings_update_download">Baixa</string>
+    <string name="settings_update_downloading">S\'està baixant… %1$d%%</string>
+    <string name="settings_update_downloaded">Baixat i verificat</string>
+    <string name="settings_update_install">Instal·la</string>
+    <string name="settings_update_retry">Torna-ho a provar</string>
+    <string name="settings_update_error_offline">Sense connexió a Internet</string>
+    <string name="settings_update_error_integrity">La baixada no coincideix amb la seva suma de verificació i s\'ha descartat</string>
+    <string name="settings_update_error_http">El servidor ha retornat un error (%1$d)</string>
+    <string name="settings_update_error_generic">La comprovació d\'actualitzacions ha fallat</string>
+    <string name="settings_update_error_too_old">Aquesta versió és massa antiga per llegir la llista d\'actualitzacions. Actualitza-la manualment.</string>
+    <string name="settings_update_from_cache">Mostrat a partir de l\'última comprovació guardada</string>
+    <string name="settings_update_background_check_title">Comprovació diària en segon pla</string>
+    <string name="settings_update_background_check_summary">Comprova un cop al dia i t\'avisa. Baixar i instal·lar sempre són manuals.</string>
+    <string name="settings_update_notification_text">La versió %1$s està a punt per baixar</string>
+    <string name="settings_update_unknown_sources_message">Android ha de permetre que BBKB instal·li aplicacions. Activa la instal·lació des d\'aquesta font i torna a prémer Instal·la.</string>
+    <string name="settings_update_open_settings">Obre la configuració</string>
 </resources>

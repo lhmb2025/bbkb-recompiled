@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Alleen bewaren</string>
     <string name="device_config_import_unreadable">Dat bestand is geen toestelconfiguratie</string>
     <string name="device_config_import_failed">Kan dat bestand niet importeren</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Updates</string>
+    <string name="settings_updates_summary">Controleren op een nieuwe versie van BBKB</string>
+    <string name="settings_update_installed_version_title">Geïnstalleerde versie</string>
+    <string name="settings_update_channel_title">Updatekanaal</string>
+    <string name="settings_update_channel_release">Release</string>
+    <string name="settings_update_channel_none">Geen updatekanaal voor debug-builds</string>
+    <string name="settings_update_last_checked_title">Laatst gecontroleerd</string>
+    <string name="settings_update_never">Nooit</string>
+    <string name="settings_update_check_now">Nu controleren</string>
+    <string name="settings_update_checking">Controleren…</string>
+    <string name="settings_update_up_to_date">BBKB is up-to-date</string>
+    <string name="settings_update_available_title">Update beschikbaar</string>
+    <string name="settings_update_available_banner">Update beschikbaar: %1$s</string>
+    <string name="settings_update_version_label">Versie %1$s</string>
+    <string name="settings_update_size_label">Downloadgrootte: %1$s</string>
+    <string name="settings_update_notes_title">Release-opmerkingen</string>
+    <string name="settings_update_download">Downloaden</string>
+    <string name="settings_update_downloading">Downloaden… %1$d%%</string>
+    <string name="settings_update_downloaded">Gedownload en gecontroleerd</string>
+    <string name="settings_update_install">Installeren</string>
+    <string name="settings_update_retry">Opnieuw proberen</string>
+    <string name="settings_update_error_offline">Geen internetverbinding</string>
+    <string name="settings_update_error_integrity">De download kwam niet overeen met zijn checksum en is verwijderd</string>
+    <string name="settings_update_error_http">De server gaf een fout terug (%1$d)</string>
+    <string name="settings_update_error_generic">De updatecontrole is mislukt</string>
+    <string name="settings_update_error_too_old">Deze versie is te oud om de updatelijst te lezen. Werk de app handmatig bij.</string>
+    <string name="settings_update_from_cache">Weergegeven op basis van de laatst opgeslagen controle</string>
+    <string name="settings_update_background_check_title">Dagelijkse controle op de achtergrond</string>
+    <string name="settings_update_background_check_summary">Controleert één keer per dag en waarschuwt je. Downloaden en installeren blijven altijd handmatig.</string>
+    <string name="settings_update_notification_text">Versie %1$s kan worden gedownload</string>
+    <string name="settings_update_unknown_sources_message">Android moet BBKB toestaan apps te installeren. Sta installatie vanuit deze bron toe en druk daarna opnieuw op Installeren.</string>
+    <string name="settings_update_open_settings">Instellingen openen</string>
 </resources>

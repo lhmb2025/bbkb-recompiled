@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">ເກັບໄວ້ເທົ່ານັ້ນ</string>
     <string name="device_config_import_unreadable">ໄຟລ໌ນັ້ນບໍ່ແມ່ນການກຳນົດຄ່າອຸປະກອນ</string>
     <string name="device_config_import_failed">ນຳເຂົ້າໄຟລ໌ນັ້ນບໍ່ໄດ້</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">ການອັບເດດ</string>
+    <string name="settings_updates_summary">ກວດຫາເວີຊັນໃໝ່ຂອງ BBKB</string>
+    <string name="settings_update_installed_version_title">ເວີຊັນທີ່ຕິດຕັ້ງ</string>
+    <string name="settings_update_channel_title">ຊ່ອງທາງອັບເດດ</string>
+    <string name="settings_update_channel_release">ການປ່ອຍໃຊ້</string>
+    <string name="settings_update_channel_none">ບໍ່ມີຊ່ອງທາງອັບເດດສຳລັບເວີຊັນດີບັກ</string>
+    <string name="settings_update_last_checked_title">ກວດຄັ້ງລ່າສຸດ</string>
+    <string name="settings_update_never">ບໍ່ເຄີຍ</string>
+    <string name="settings_update_check_now">ກວດດຽວນີ້</string>
+    <string name="settings_update_checking">ກຳລັງກວດ…</string>
+    <string name="settings_update_up_to_date">BBKB ເປັນເວີຊັນລ່າສຸດແລ້ວ</string>
+    <string name="settings_update_available_title">ມີການອັບເດດ</string>
+    <string name="settings_update_available_banner">ມີການອັບເດດ: %1$s</string>
+    <string name="settings_update_version_label">ເວີຊັນ %1$s</string>
+    <string name="settings_update_size_label">ຂະໜາດການດາວໂຫຼດ: %1$s</string>
+    <string name="settings_update_notes_title">ບັນທຶກການປ່ອຍໃຊ້</string>
+    <string name="settings_update_download">ດາວໂຫຼດ</string>
+    <string name="settings_update_downloading">ກຳລັງດາວໂຫຼດ… %1$d%%</string>
+    <string name="settings_update_downloaded">ດາວໂຫຼດ ແລະ ກວດສອບແລ້ວ</string>
+    <string name="settings_update_install">ຕິດຕັ້ງ</string>
+    <string name="settings_update_retry">ລອງໃໝ່</string>
+    <string name="settings_update_error_offline">ບໍ່ມີການເຊື່ອມຕໍ່ອິນເຕີເນັດ</string>
+    <string name="settings_update_error_integrity">ໄຟລ໌ທີ່ດາວໂຫຼດບໍ່ຕົງກັບຄ່າກວດສອບຂອງມັນ ຈຶ່ງຖືກລຶບອອກ</string>
+    <string name="settings_update_error_http">ເຊີບເວີສົ່ງຂໍ້ຜິດພາດກັບມາ (%1$d)</string>
+    <string name="settings_update_error_generic">ການກວດຫາການອັບເດດລົ້ມເຫຼວ</string>
+    <string name="settings_update_error_too_old">ເວີຊັນນີ້ເກົ່າເກີນໄປທີ່ຈະອ່ານລາຍການອັບເດດ. ກະລຸນາອັບເດດດ້ວຍຕົນເອງ.</string>
+    <string name="settings_update_from_cache">ສະແດງຈາກການກວດທີ່ບັນທຶກໄວ້ຄັ້ງລ່າສຸດ</string>
+    <string name="settings_update_background_check_title">ການກວດປະຈຳວັນໃນເບື້ອງຫຼັງ</string>
+    <string name="settings_update_background_check_summary">ກວດວັນລະຄັ້ງ ແລະ ແຈ້ງໃຫ້ທ່ານຮູ້. ການດາວໂຫຼດ ແລະ ການຕິດຕັ້ງຍັງເປັນການເຮັດດ້ວຍຕົນເອງສະເໝີ.</string>
+    <string name="settings_update_notification_text">ເວີຊັນ %1$s ພ້ອມດາວໂຫຼດແລ້ວ</string>
+    <string name="settings_update_unknown_sources_message">Android ຕ້ອງອະນຸຍາດໃຫ້ BBKB ຕິດຕັ້ງແອັບ. ເປີດການຕິດຕັ້ງຈາກແຫຼ່ງນີ້ ແລ້ວກົດຕິດຕັ້ງອີກຄັ້ງ.</string>
+    <string name="settings_update_open_settings">ເປີດການຕັ້ງຄ່າ</string>
 </resources>

@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Csak megtartás</string>
     <string name="device_config_import_unreadable">Az a fájl nem eszközkonfiguráció</string>
     <string name="device_config_import_failed">Nem sikerült importálni azt a fájlt</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Frissítések</string>
+    <string name="settings_updates_summary">BBKB új verziójának keresése</string>
+    <string name="settings_update_installed_version_title">Telepített verzió</string>
+    <string name="settings_update_channel_title">Frissítési csatorna</string>
+    <string name="settings_update_channel_release">Kiadás</string>
+    <string name="settings_update_channel_none">A hibakeresési buildekhez nincs frissítési csatorna</string>
+    <string name="settings_update_last_checked_title">Utolsó ellenőrzés</string>
+    <string name="settings_update_never">Soha</string>
+    <string name="settings_update_check_now">Ellenőrzés most</string>
+    <string name="settings_update_checking">Ellenőrzés…</string>
+    <string name="settings_update_up_to_date">A BBKB naprakész</string>
+    <string name="settings_update_available_title">Frissítés érhető el</string>
+    <string name="settings_update_available_banner">Frissítés érhető el: %1$s</string>
+    <string name="settings_update_version_label">%1$s verzió</string>
+    <string name="settings_update_size_label">Letöltés mérete: %1$s</string>
+    <string name="settings_update_notes_title">Kiadási megjegyzések</string>
+    <string name="settings_update_download">Letöltés</string>
+    <string name="settings_update_downloading">Letöltés… %1$d%%</string>
+    <string name="settings_update_downloaded">Letöltve és ellenőrizve</string>
+    <string name="settings_update_install">Telepítés</string>
+    <string name="settings_update_retry">Újra</string>
+    <string name="settings_update_error_offline">Nincs internetkapcsolat</string>
+    <string name="settings_update_error_integrity">A letöltés nem egyezett az ellenőrzőösszegével, ezért el lett vetve</string>
+    <string name="settings_update_error_http">A kiszolgáló hibát adott vissza (%1$d)</string>
+    <string name="settings_update_error_generic">A frissítés ellenőrzése nem sikerült</string>
+    <string name="settings_update_error_too_old">Ez a verzió túl régi a frissítési lista beolvasásához. Frissítsen kézzel.</string>
+    <string name="settings_update_from_cache">Az utolsó mentett ellenőrzés alapján</string>
+    <string name="settings_update_background_check_title">Napi ellenőrzés a háttérben</string>
+    <string name="settings_update_background_check_summary">Naponta egyszer ellenőriz és értesíti Önt. A letöltés és a telepítés mindig kézi marad.</string>
+    <string name="settings_update_notification_text">A %1$s verzió letölthető</string>
+    <string name="settings_update_unknown_sources_message">Az Androidnak engedélyeznie kell, hogy a BBKB alkalmazásokat telepítsen. Engedélyezze a telepítést erről a forrásról, majd nyomja meg újra a Telepítés gombot.</string>
+    <string name="settings_update_open_settings">Beállítások megnyitása</string>
 </resources>

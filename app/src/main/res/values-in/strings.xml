@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Simpan saja</string>
     <string name="device_config_import_unreadable">File itu bukan konfigurasi perangkat</string>
     <string name="device_config_import_failed">Tidak dapat mengimpor file itu</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Pembaruan</string>
+    <string name="settings_updates_summary">Periksa versi baru BBKB</string>
+    <string name="settings_update_installed_version_title">Versi terpasang</string>
+    <string name="settings_update_channel_title">Saluran pembaruan</string>
+    <string name="settings_update_channel_release">Rilis</string>
+    <string name="settings_update_channel_none">Tidak ada saluran pembaruan untuk build debug</string>
+    <string name="settings_update_last_checked_title">Terakhir diperiksa</string>
+    <string name="settings_update_never">Belum pernah</string>
+    <string name="settings_update_check_now">Periksa sekarang</string>
+    <string name="settings_update_checking">Memeriksa…</string>
+    <string name="settings_update_up_to_date">BBKB sudah yang terbaru</string>
+    <string name="settings_update_available_title">Pembaruan tersedia</string>
+    <string name="settings_update_available_banner">Pembaruan tersedia: %1$s</string>
+    <string name="settings_update_version_label">Versi %1$s</string>
+    <string name="settings_update_size_label">Ukuran unduhan: %1$s</string>
+    <string name="settings_update_notes_title">Catatan rilis</string>
+    <string name="settings_update_download">Unduh</string>
+    <string name="settings_update_downloading">Mengunduh… %1$d%%</string>
+    <string name="settings_update_downloaded">Diunduh dan diverifikasi</string>
+    <string name="settings_update_install">Pasang</string>
+    <string name="settings_update_retry">Coba lagi</string>
+    <string name="settings_update_error_offline">Tidak ada koneksi internet</string>
+    <string name="settings_update_error_integrity">Unduhan tidak cocok dengan checksum-nya dan dibuang</string>
+    <string name="settings_update_error_http">Server mengembalikan kesalahan (%1$d)</string>
+    <string name="settings_update_error_generic">Pemeriksaan pembaruan gagal</string>
+    <string name="settings_update_error_too_old">Versi ini terlalu lama untuk membaca daftar pembaruan. Silakan perbarui secara manual.</string>
+    <string name="settings_update_from_cache">Ditampilkan dari pemeriksaan terakhir yang disimpan</string>
+    <string name="settings_update_background_check_title">Pemeriksaan harian di latar belakang</string>
+    <string name="settings_update_background_check_summary">Memeriksa sekali sehari dan memberi tahu Anda. Mengunduh dan memasang selalu manual.</string>
+    <string name="settings_update_notification_text">Versi %1$s siap diunduh</string>
+    <string name="settings_update_unknown_sources_message">Android harus mengizinkan BBKB memasang aplikasi. Aktifkan pemasangan dari sumber ini, lalu tekan Pasang lagi.</string>
+    <string name="settings_update_open_settings">Buka setelan</string>
 </resources>

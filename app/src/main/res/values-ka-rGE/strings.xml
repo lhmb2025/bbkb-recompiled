@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">მხოლოდ შენახვა</string>
     <string name="device_config_import_unreadable">ეს ფაილი მოწყობილობის კონფიგურაცია არ არის</string>
     <string name="device_config_import_failed">ამ ფაილის იმპორტი ვერ მოხერხდა</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">განახლებები</string>
+    <string name="settings_updates_summary">BBKB-ის ახალი ვერსიის შემოწმება</string>
+    <string name="settings_update_installed_version_title">დაყენებული ვერსია</string>
+    <string name="settings_update_channel_title">განახლების არხი</string>
+    <string name="settings_update_channel_release">გამოშვება</string>
+    <string name="settings_update_channel_none">გამართვის ბილდებისთვის განახლების არხი არ არსებობს</string>
+    <string name="settings_update_last_checked_title">ბოლო შემოწმება</string>
+    <string name="settings_update_never">არასდროს</string>
+    <string name="settings_update_check_now">შემოწმება ახლა</string>
+    <string name="settings_update_checking">მიმდინარეობს შემოწმება…</string>
+    <string name="settings_update_up_to_date">BBKB განახლებულია</string>
+    <string name="settings_update_available_title">ხელმისაწვდომია განახლება</string>
+    <string name="settings_update_available_banner">ხელმისაწვდომია განახლება: %1$s</string>
+    <string name="settings_update_version_label">ვერსია %1$s</string>
+    <string name="settings_update_size_label">ჩამოტვირთვის ზომა: %1$s</string>
+    <string name="settings_update_notes_title">გამოშვების შენიშვნები</string>
+    <string name="settings_update_download">ჩამოტვირთვა</string>
+    <string name="settings_update_downloading">ჩამოიტვირთება… %1$d%%</string>
+    <string name="settings_update_downloaded">ჩამოტვირთული და შემოწმებული</string>
+    <string name="settings_update_install">დაყენება</string>
+    <string name="settings_update_retry">ხელახლა ცდა</string>
+    <string name="settings_update_error_offline">ინტერნეტთან კავშირი არ არის</string>
+    <string name="settings_update_error_integrity">ჩამოტვირთული ფაილი არ დაემთხვა საკონტროლო ჯამს და წაიშალა</string>
+    <string name="settings_update_error_http">სერვერმა დააბრუნა შეცდომა (%1$d)</string>
+    <string name="settings_update_error_generic">განახლების შემოწმება ჩაიშალა</string>
+    <string name="settings_update_error_too_old">ეს ვერსია ძალიან ძველია განახლებების სიის წასაკითხად. გთხოვთ, განაახლოთ ხელით.</string>
+    <string name="settings_update_from_cache">ნაჩვენებია ბოლო შენახული შემოწმებიდან</string>
+    <string name="settings_update_background_check_title">ყოველდღიური შემოწმება ფონურ რეჟიმში</string>
+    <string name="settings_update_background_check_summary">ამოწმებს დღეში ერთხელ და შეგატყობინებთ. ჩამოტვირთვა და დაყენება ყოველთვის ხელით ხდება.</string>
+    <string name="settings_update_notification_text">ვერსია %1$s მზადაა ჩამოსატვირთად</string>
+    <string name="settings_update_unknown_sources_message">Android-მა უნდა მისცეს BBKB-ს აპების დაყენების ნებართვა. დართეთ ნება ამ წყაროდან დაყენებას და ხელახლა დააჭირეთ დაყენებას.</string>
+    <string name="settings_update_open_settings">პარამეტრების გახსნა</string>
 </resources>

@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Vain säilytä</string>
     <string name="device_config_import_unreadable">Kyseinen tiedosto ei ole laitemääritys</string>
     <string name="device_config_import_failed">Kyseisen tiedoston tuonti epäonnistui</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Päivitykset</string>
+    <string name="settings_updates_summary">Tarkista, onko BBKB:stä uusi versio</string>
+    <string name="settings_update_installed_version_title">Asennettu versio</string>
+    <string name="settings_update_channel_title">Päivityskanava</string>
+    <string name="settings_update_channel_release">Julkaisu</string>
+    <string name="settings_update_channel_none">Debug-koonneille ei ole päivityskanavaa</string>
+    <string name="settings_update_last_checked_title">Tarkistettu viimeksi</string>
+    <string name="settings_update_never">Ei koskaan</string>
+    <string name="settings_update_check_now">Tarkista nyt</string>
+    <string name="settings_update_checking">Tarkistetaan…</string>
+    <string name="settings_update_up_to_date">BBKB on ajan tasalla</string>
+    <string name="settings_update_available_title">Päivitys saatavilla</string>
+    <string name="settings_update_available_banner">Päivitys saatavilla: %1$s</string>
+    <string name="settings_update_version_label">Versio %1$s</string>
+    <string name="settings_update_size_label">Latauksen koko: %1$s</string>
+    <string name="settings_update_notes_title">Julkaisutiedot</string>
+    <string name="settings_update_download">Lataa</string>
+    <string name="settings_update_downloading">Ladataan… %1$d%%</string>
+    <string name="settings_update_downloaded">Ladattu ja tarkistettu</string>
+    <string name="settings_update_install">Asenna</string>
+    <string name="settings_update_retry">Yritä uudelleen</string>
+    <string name="settings_update_error_offline">Ei internetyhteyttä</string>
+    <string name="settings_update_error_integrity">Lataus ei vastannut tarkistussummaansa ja hylättiin</string>
+    <string name="settings_update_error_http">Palvelin palautti virheen (%1$d)</string>
+    <string name="settings_update_error_generic">Päivitysten tarkistus epäonnistui</string>
+    <string name="settings_update_error_too_old">Tämä versio on liian vanha lukemaan päivityslistaa. Päivitä käsin.</string>
+    <string name="settings_update_from_cache">Näytetään viimeksi tallennetusta tarkistuksesta</string>
+    <string name="settings_update_background_check_title">Päivittäinen tarkistus taustalla</string>
+    <string name="settings_update_background_check_summary">Tarkistaa kerran päivässä ja ilmoittaa sinulle. Lataus ja asennus ovat aina käsin tehtäviä.</string>
+    <string name="settings_update_notification_text">Versio %1$s on valmis ladattavaksi</string>
+    <string name="settings_update_unknown_sources_message">Androidin on annettava BBKB:lle lupa asentaa sovelluksia. Salli asennus tästä lähteestä ja paina Asenna uudelleen.</string>
+    <string name="settings_update_open_settings">Avaa asetukset</string>
 </resources>

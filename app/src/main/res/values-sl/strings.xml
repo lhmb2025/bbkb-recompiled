@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Samo obdrži</string>
     <string name="device_config_import_unreadable">Ta datoteka ni konfiguracija naprave</string>
     <string name="device_config_import_failed">Te datoteke ni bilo mogoče uvoziti</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Posodobitve</string>
+    <string name="settings_updates_summary">Preveri, ali je na voljo nova različica BBKB</string>
+    <string name="settings_update_installed_version_title">Nameščena različica</string>
+    <string name="settings_update_channel_title">Kanal posodobitev</string>
+    <string name="settings_update_channel_release">Izdaja</string>
+    <string name="settings_update_channel_none">Za razhroščevalne različice ni kanala posodobitev</string>
+    <string name="settings_update_last_checked_title">Zadnje preverjanje</string>
+    <string name="settings_update_never">Nikoli</string>
+    <string name="settings_update_check_now">Preveri zdaj</string>
+    <string name="settings_update_checking">Preverjanje…</string>
+    <string name="settings_update_up_to_date">BBKB je posodobljen</string>
+    <string name="settings_update_available_title">Na voljo je posodobitev</string>
+    <string name="settings_update_available_banner">Na voljo je posodobitev: %1$s</string>
+    <string name="settings_update_version_label">Različica %1$s</string>
+    <string name="settings_update_size_label">Velikost prenosa: %1$s</string>
+    <string name="settings_update_notes_title">Opombe k izdaji</string>
+    <string name="settings_update_download">Prenesi</string>
+    <string name="settings_update_downloading">Prenašanje… %1$d%%</string>
+    <string name="settings_update_downloaded">Preneseno in preverjeno</string>
+    <string name="settings_update_install">Namesti</string>
+    <string name="settings_update_retry">Poskusi znova</string>
+    <string name="settings_update_error_offline">Ni internetne povezave</string>
+    <string name="settings_update_error_integrity">Prenesena datoteka se ni ujemala s svojo nadzorno vsoto in je bila zavržena</string>
+    <string name="settings_update_error_http">Strežnik je vrnil napako (%1$d)</string>
+    <string name="settings_update_error_generic">Preverjanje posodobitev ni uspelo</string>
+    <string name="settings_update_error_too_old">Ta različica je preveč zastarela, da bi prebrala seznam posodobitev. Posodobite ročno.</string>
+    <string name="settings_update_from_cache">Prikazano iz zadnjega shranjenega preverjanja</string>
+    <string name="settings_update_background_check_title">Dnevno preverjanje v ozadju</string>
+    <string name="settings_update_background_check_summary">Preveri enkrat na dan in vas obvesti. Prenos in namestitev vedno ostaneta ročna.</string>
+    <string name="settings_update_notification_text">Različica %1$s je pripravljena za prenos</string>
+    <string name="settings_update_unknown_sources_message">Android mora aplikaciji BBKB dovoliti namestitev aplikacij. Omogočite namestitev iz tega vira in znova pritisnite Namesti.</string>
+    <string name="settings_update_open_settings">Odpri nastavitve</string>
 </resources>

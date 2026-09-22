@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Зөвхөн хадгалах</string>
     <string name="device_config_import_unreadable">Тэр файл нь төхөөрөмжийн тохиргоо биш байна</string>
     <string name="device_config_import_failed">Тэр файлыг импортлож чадсангүй</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Шинэчлэлүүд</string>
+    <string name="settings_updates_summary">BBKB-ийн шинэ хувилбарыг шалгах</string>
+    <string name="settings_update_installed_version_title">Суулгасан хувилбар</string>
+    <string name="settings_update_channel_title">Шинэчлэлийн суваг</string>
+    <string name="settings_update_channel_release">Гаргалт</string>
+    <string name="settings_update_channel_none">Дебаг бүтээцэд шинэчлэлийн суваг байхгүй</string>
+    <string name="settings_update_last_checked_title">Сүүлд шалгасан</string>
+    <string name="settings_update_never">Хэзээ ч</string>
+    <string name="settings_update_check_now">Одоо шалгах</string>
+    <string name="settings_update_checking">Шалгаж байна…</string>
+    <string name="settings_update_up_to_date">BBKB шинэ байна</string>
+    <string name="settings_update_available_title">Шинэчлэл байна</string>
+    <string name="settings_update_available_banner">Шинэчлэл байна: %1$s</string>
+    <string name="settings_update_version_label">Хувилбар %1$s</string>
+    <string name="settings_update_size_label">Татах хэмжээ: %1$s</string>
+    <string name="settings_update_notes_title">Гаргалтын тэмдэглэл</string>
+    <string name="settings_update_download">Татах</string>
+    <string name="settings_update_downloading">Татаж байна… %1$d%%</string>
+    <string name="settings_update_downloaded">Татаж шалгав</string>
+    <string name="settings_update_install">Суулгах</string>
+    <string name="settings_update_retry">Дахин оролдох</string>
+    <string name="settings_update_error_offline">Интернэт холболт байхгүй</string>
+    <string name="settings_update_error_integrity">Татсан файл шалгах нийлбэртэй тохирсонгүй тул хаягдлаа</string>
+    <string name="settings_update_error_http">Сервер алдаа буцаалаа (%1$d)</string>
+    <string name="settings_update_error_generic">Шинэчлэл шалгах явц бүтсэнгүй</string>
+    <string name="settings_update_error_too_old">Энэ хувилбар шинэчлэлийн жагсаалтыг уншихад хэт хуучин. Гараар шинэчилнэ үү.</string>
+    <string name="settings_update_from_cache">Сүүлд хадгалсан шалгалтаас харуулж байна</string>
+    <string name="settings_update_background_check_title">Өдөр тутмын дэвсгэр шалгалт</string>
+    <string name="settings_update_background_check_summary">Өдөрт нэг удаа шалгаж танд мэдэгдэнэ. Татах, суулгах нь үргэлж гараар хийгддэг.</string>
+    <string name="settings_update_notification_text">Хувилбар %1$s татахад бэлэн</string>
+    <string name="settings_update_unknown_sources_message">Аппликейшн суулгахад Android нь BBKB-д зөвшөөрөл өгөх шаардлагатай. Энэ эх сурвалжаас суулгахыг зөвшөөрөөд Суулгах товчийг дахин дарна уу.</string>
+    <string name="settings_update_open_settings">Тохиргоог нээх</string>
 </resources>

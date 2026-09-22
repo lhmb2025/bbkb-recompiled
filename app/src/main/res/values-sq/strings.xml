@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Vetëm mbaje</string>
     <string name="device_config_import_unreadable">Ai skedar nuk është konfigurim pajisjeje</string>
     <string name="device_config_import_failed">Ai skedar nuk u importua dot</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Përditësimet</string>
+    <string name="settings_updates_summary">Kontrollo për një version të ri të BBKB</string>
+    <string name="settings_update_installed_version_title">Versioni i instaluar</string>
+    <string name="settings_update_channel_title">Kanali i përditësimeve</string>
+    <string name="settings_update_channel_release">Lëshimi</string>
+    <string name="settings_update_channel_none">Nuk ka kanal përditësimesh për ndërtimet e diagnostikimit</string>
+    <string name="settings_update_last_checked_title">Kontrolluar së fundi</string>
+    <string name="settings_update_never">Kurrë</string>
+    <string name="settings_update_check_now">Kontrollo tani</string>
+    <string name="settings_update_checking">Po kontrollohet…</string>
+    <string name="settings_update_up_to_date">BBKB është i përditësuar</string>
+    <string name="settings_update_available_title">Përditësim i disponueshëm</string>
+    <string name="settings_update_available_banner">Përditësim i disponueshëm: %1$s</string>
+    <string name="settings_update_version_label">Versioni %1$s</string>
+    <string name="settings_update_size_label">Madhësia e shkarkimit: %1$s</string>
+    <string name="settings_update_notes_title">Shënimet e lëshimit</string>
+    <string name="settings_update_download">Shkarko</string>
+    <string name="settings_update_downloading">Po shkarkohet… %1$d%%</string>
+    <string name="settings_update_downloaded">Shkarkuar dhe verifikuar</string>
+    <string name="settings_update_install">Instalo</string>
+    <string name="settings_update_retry">Provo përsëri</string>
+    <string name="settings_update_error_offline">Nuk ka lidhje internet</string>
+    <string name="settings_update_error_integrity">Shkarkimi nuk përputhej me kontrollsumën e vet dhe u hoq</string>
+    <string name="settings_update_error_http">Serveri kthehu një gabim (%1$d)</string>
+    <string name="settings_update_error_generic">Kontrolli i përditësimeve dështoi</string>
+    <string name="settings_update_error_too_old">Ky version është shumë i vjetër për të lexuar listën e përditësimeve. Përditësoni me dorë.</string>
+    <string name="settings_update_from_cache">Shfaqur nga kontrolli i fundit i ruajtur</string>
+    <string name="settings_update_background_check_title">Kontroll ditor në sfond</string>
+    <string name="settings_update_background_check_summary">Kontrollon një herë në ditë dhe ju njofton. Shkarkimi dhe instalimi mbeten gjithmonë me dorë.</string>
+    <string name="settings_update_notification_text">Versioni %1$s është gati për shkarkim</string>
+    <string name="settings_update_unknown_sources_message">Android duhet të lejojë BBKB të instalojë aplikacione. Aktivizoni instalimin nga ky burim, pastaj shtypni përsëri Instalo.</string>
+    <string name="settings_update_open_settings">Hap cilësimet</string>
 </resources>

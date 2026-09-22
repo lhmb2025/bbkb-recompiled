@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Сактап гана коюу</string>
     <string name="device_config_import_unreadable">Бул файл түзмөктүн конфигурациясы эмес</string>
     <string name="device_config_import_failed">Бул файлды импорттоо мүмкүн болгон жок</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Жаңыртуулар</string>
+    <string name="settings_updates_summary">BBKB\'нин жаңы версиясын издөө</string>
+    <string name="settings_update_installed_version_title">Орнотулган версия</string>
+    <string name="settings_update_channel_title">Жаңыртуу каналы</string>
+    <string name="settings_update_channel_release">Чыгарылыш</string>
+    <string name="settings_update_channel_none">Мүчүлүштүктөрдү оңдоо курулуштары үчүн жаңыртуу каналы жок</string>
+    <string name="settings_update_last_checked_title">Акыркы текшерүү</string>
+    <string name="settings_update_never">Эч качан</string>
+    <string name="settings_update_check_now">Азыр текшерүү</string>
+    <string name="settings_update_checking">Текшерилип жатат…</string>
+    <string name="settings_update_up_to_date">BBKB жаңы</string>
+    <string name="settings_update_available_title">Жаңыртуу бар</string>
+    <string name="settings_update_available_banner">Жаңыртуу бар: %1$s</string>
+    <string name="settings_update_version_label">Версия %1$s</string>
+    <string name="settings_update_size_label">Жүктөө өлчөмү: %1$s</string>
+    <string name="settings_update_notes_title">Чыгарылыш жазуулары</string>
+    <string name="settings_update_download">Жүктөө</string>
+    <string name="settings_update_downloading">Жүктөлүп жатат… %1$d%%</string>
+    <string name="settings_update_downloaded">Жүктөлдү жана текшерилди</string>
+    <string name="settings_update_install">Орнотуу</string>
+    <string name="settings_update_retry">Кайра аракет кылуу</string>
+    <string name="settings_update_error_offline">Интернет байланышы жок</string>
+    <string name="settings_update_error_integrity">Жүктөлгөн файл текшерүү суммасына туура келбеди жана өчүрүлдү</string>
+    <string name="settings_update_error_http">Сервер ката кайтарды (%1$d)</string>
+    <string name="settings_update_error_generic">Жаңыртууну текшерүү ишке ашкан жок</string>
+    <string name="settings_update_error_too_old">Бул версия жаңыртуулар тизмесин окуу үчүн өтө эски. Колмо-кол жаңыртыңыз.</string>
+    <string name="settings_update_from_cache">Акыркы сакталган текшерүүдөн көрсөтүлдү</string>
+    <string name="settings_update_background_check_title">Күн сайын фондо текшерүү</string>
+    <string name="settings_update_background_check_summary">Күнүнө бир жолу текшерип, сизге билдирет. Жүктөө жана орнотуу дайыма колмо-кол.</string>
+    <string name="settings_update_notification_text">Версия %1$s жүктөөгө даяр</string>
+    <string name="settings_update_unknown_sources_message">Android BBKB\'ге колдонмолорду орнотууга уруксат бериши керек. Бул булактан орнотууну иштетип, андан кийин Орнотуу баскычын кайра басыңыз.</string>
+    <string name="settings_update_open_settings">Жөндөөлөрдү ачуу</string>
 </resources>

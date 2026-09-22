@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Faqat saqlash</string>
     <string name="device_config_import_unreadable">Bu fayl qurilma konfiguratsiyasi emas</string>
     <string name="device_config_import_failed">Bu faylni import qilib bo‘lmadi</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Yangilanishlar</string>
+    <string name="settings_updates_summary">BBKB ning yangi versiyasini tekshirish</string>
+    <string name="settings_update_installed_version_title">Oʻrnatilgan versiya</string>
+    <string name="settings_update_channel_title">Yangilanish kanali</string>
+    <string name="settings_update_channel_release">Chiqarilish</string>
+    <string name="settings_update_channel_none">Nosozliklarni tuzatish qurilmalari uchun yangilanish kanali yoʻq</string>
+    <string name="settings_update_last_checked_title">Oxirgi tekshiruv</string>
+    <string name="settings_update_never">Hech qachon</string>
+    <string name="settings_update_check_now">Hozir tekshirish</string>
+    <string name="settings_update_checking">Tekshirilmoqda…</string>
+    <string name="settings_update_up_to_date">BBKB eng yangi</string>
+    <string name="settings_update_available_title">Yangilanish mavjud</string>
+    <string name="settings_update_available_banner">Yangilanish mavjud: %1$s</string>
+    <string name="settings_update_version_label">Versiya %1$s</string>
+    <string name="settings_update_size_label">Yuklab olish hajmi: %1$s</string>
+    <string name="settings_update_notes_title">Chiqarilish izohlari</string>
+    <string name="settings_update_download">Yuklab olish</string>
+    <string name="settings_update_downloading">Yuklab olinmoqda… %1$d%%</string>
+    <string name="settings_update_downloaded">Yuklab olindi va tekshirildi</string>
+    <string name="settings_update_install">Oʻrnatish</string>
+    <string name="settings_update_retry">Qayta urinish</string>
+    <string name="settings_update_error_offline">Internet aloqasi yoʻq</string>
+    <string name="settings_update_error_integrity">Yuklab olingan fayl oʻzining nazorat summasiga mos kelmadi va oʻchirildi</string>
+    <string name="settings_update_error_http">Server xato qaytardi (%1$d)</string>
+    <string name="settings_update_error_generic">Yangilanishni tekshirish amalga oshmadi</string>
+    <string name="settings_update_error_too_old">Bu versiya yangilanishlar roʻyxatini oʻqish uchun juda eski. Iltimos, qoʻlda yangilang.</string>
+    <string name="settings_update_from_cache">Oxirgi saqlangan tekshiruvdan koʻrsatilgan</string>
+    <string name="settings_update_background_check_title">Kunlik fon tekshiruvi</string>
+    <string name="settings_update_background_check_summary">Kuniga bir marta tekshiradi va sizga xabar beradi. Yuklab olish va oʻrnatish doim qoʻlda bajariladi.</string>
+    <string name="settings_update_notification_text">Versiya %1$s yuklab olishga tayyor</string>
+    <string name="settings_update_unknown_sources_message">Android BBKB ga ilovalar oʻrnatishga ruxsat berishi kerak. Bu manbadan oʻrnatishni yoqing, soʻng Oʻrnatish tugmasini qayta bosing.</string>
+    <string name="settings_update_open_settings">Sozlamalarni ochish</string>
 </resources>

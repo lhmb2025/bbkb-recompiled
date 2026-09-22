@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Apenas manter</string>
     <string name="device_config_import_unreadable">Esse ficheiro não é uma configuração de dispositivo</string>
     <string name="device_config_import_failed">Não foi possível importar esse ficheiro</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Atualizações</string>
+    <string name="settings_updates_summary">Procurar uma nova versão do BBKB</string>
+    <string name="settings_update_installed_version_title">Versão instalada</string>
+    <string name="settings_update_channel_title">Canal de atualizações</string>
+    <string name="settings_update_channel_release">Versão final</string>
+    <string name="settings_update_channel_none">Não existe canal de atualizações para compilações de depuração</string>
+    <string name="settings_update_last_checked_title">Última verificação</string>
+    <string name="settings_update_never">Nunca</string>
+    <string name="settings_update_check_now">Verificar agora</string>
+    <string name="settings_update_checking">A verificar…</string>
+    <string name="settings_update_up_to_date">O BBKB está atualizado</string>
+    <string name="settings_update_available_title">Atualização disponível</string>
+    <string name="settings_update_available_banner">Atualização disponível: %1$s</string>
+    <string name="settings_update_version_label">Versão %1$s</string>
+    <string name="settings_update_size_label">Tamanho da transferência: %1$s</string>
+    <string name="settings_update_notes_title">Notas da versão</string>
+    <string name="settings_update_download">Transferir</string>
+    <string name="settings_update_downloading">A transferir… %1$d%%</string>
+    <string name="settings_update_downloaded">Transferido e verificado</string>
+    <string name="settings_update_install">Instalar</string>
+    <string name="settings_update_retry">Tentar novamente</string>
+    <string name="settings_update_error_offline">Sem ligação à Internet</string>
+    <string name="settings_update_error_integrity">A transferência não correspondeu à sua soma de verificação e foi descartada</string>
+    <string name="settings_update_error_http">O servidor devolveu um erro (%1$d)</string>
+    <string name="settings_update_error_generic">A verificação de atualizações falhou</string>
+    <string name="settings_update_error_too_old">Esta versão é demasiado antiga para ler a lista de atualizações. Atualize manualmente.</string>
+    <string name="settings_update_from_cache">Mostrado a partir da última verificação guardada</string>
+    <string name="settings_update_background_check_title">Verificação diária em segundo plano</string>
+    <string name="settings_update_background_check_summary">Verifica uma vez por dia e avisa-o. Transferir e instalar são sempre manuais.</string>
+    <string name="settings_update_notification_text">A versão %1$s está pronta a transferir</string>
+    <string name="settings_update_unknown_sources_message">O Android tem de permitir que o BBKB instale aplicações. Ative a instalação a partir desta origem e prima Instalar novamente.</string>
+    <string name="settings_update_open_settings">Abrir definições</string>
 </resources>

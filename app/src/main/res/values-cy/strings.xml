@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Cadw\'n unig</string>
     <string name="device_config_import_unreadable">Nid ffurfweddiad dyfais yw\'r ffeil honno</string>
     <string name="device_config_import_failed">Methu mewnforio\'r ffeil honno</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Diweddariadau</string>
+    <string name="settings_updates_summary">Gwirio am fersiwn newydd o BBKB</string>
+    <string name="settings_update_installed_version_title">Fersiwn wedi\'i gosod</string>
+    <string name="settings_update_channel_title">Sianel diweddaru</string>
+    <string name="settings_update_channel_release">Rhyddhad</string>
+    <string name="settings_update_channel_none">Dim sianel diweddaru ar gyfer adeiladau dadfygio</string>
+    <string name="settings_update_last_checked_title">Gwiriwyd ddiwethaf</string>
+    <string name="settings_update_never">Byth</string>
+    <string name="settings_update_check_now">Gwirio nawr</string>
+    <string name="settings_update_checking">Yn gwirio…</string>
+    <string name="settings_update_up_to_date">Mae BBKB yn gyfredol</string>
+    <string name="settings_update_available_title">Diweddariad ar gael</string>
+    <string name="settings_update_available_banner">Diweddariad ar gael: %1$s</string>
+    <string name="settings_update_version_label">Fersiwn %1$s</string>
+    <string name="settings_update_size_label">Maint y lawrlwythiad: %1$s</string>
+    <string name="settings_update_notes_title">Nodiadau rhyddhau</string>
+    <string name="settings_update_download">Lawrlwytho</string>
+    <string name="settings_update_downloading">Yn lawrlwytho… %1$d%%</string>
+    <string name="settings_update_downloaded">Wedi\'i lawrlwytho a\'i wirio</string>
+    <string name="settings_update_install">Gosod</string>
+    <string name="settings_update_retry">Ceisio eto</string>
+    <string name="settings_update_error_offline">Dim cysylltiad rhyngrwyd</string>
+    <string name="settings_update_error_integrity">Nid oedd y lawrlwythiad yn cyfateb i\'w swm gwirio, felly cafodd ei daflu</string>
+    <string name="settings_update_error_http">Dychwelodd y gweinydd wall (%1$d)</string>
+    <string name="settings_update_error_generic">Methodd y gwiriad diweddaru</string>
+    <string name="settings_update_error_too_old">Mae\'r fersiwn hon yn rhy hen i ddarllen y rhestr ddiweddaru. Diweddarwch â llaw.</string>
+    <string name="settings_update_from_cache">Wedi\'i ddangos o\'r gwiriad diwethaf a gadwyd</string>
+    <string name="settings_update_background_check_title">Gwiriad dyddiol yn y cefndir</string>
+    <string name="settings_update_background_check_summary">Gwirio unwaith y dydd a rhoi gwybod i chi. Mae lawrlwytho a gosod bob amser â llaw.</string>
+    <string name="settings_update_notification_text">Mae fersiwn %1$s yn barod i\'w lawrlwytho</string>
+    <string name="settings_update_unknown_sources_message">Rhaid i Android ganiatáu i BBKB osod apiau. Galluogwch osod o\'r ffynhonnell hon, wedyn pwyswch Gosod eto.</string>
+    <string name="settings_update_open_settings">Agor gosodiadau</string>
 </resources>

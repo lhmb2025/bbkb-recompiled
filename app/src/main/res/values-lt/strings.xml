@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Tik palikti</string>
     <string name="device_config_import_unreadable">Tas failas nėra įrenginio konfigūracija</string>
     <string name="device_config_import_failed">Nepavyko importuoti to failo</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Naujinimai</string>
+    <string name="settings_updates_summary">Tikrinti, ar yra nauja BBKB versija</string>
+    <string name="settings_update_installed_version_title">Įdiegta versija</string>
+    <string name="settings_update_channel_title">Naujinimų kanalas</string>
+    <string name="settings_update_channel_release">Išleidimas</string>
+    <string name="settings_update_channel_none">Derinimo kompiliacijoms naujinimų kanalo nėra</string>
+    <string name="settings_update_last_checked_title">Paskutinis tikrinimas</string>
+    <string name="settings_update_never">Niekada</string>
+    <string name="settings_update_check_now">Tikrinti dabar</string>
+    <string name="settings_update_checking">Tikrinama…</string>
+    <string name="settings_update_up_to_date">BBKB yra naujausias</string>
+    <string name="settings_update_available_title">Yra naujinimas</string>
+    <string name="settings_update_available_banner">Yra naujinimas: %1$s</string>
+    <string name="settings_update_version_label">Versija %1$s</string>
+    <string name="settings_update_size_label">Atsisiuntimo dydis: %1$s</string>
+    <string name="settings_update_notes_title">Leidimo pastabos</string>
+    <string name="settings_update_download">Atsisiųsti</string>
+    <string name="settings_update_downloading">Atsisiunčiama… %1$d%%</string>
+    <string name="settings_update_downloaded">Atsisiųsta ir patikrinta</string>
+    <string name="settings_update_install">Įdiegti</string>
+    <string name="settings_update_retry">Bandyti dar kartą</string>
+    <string name="settings_update_error_offline">Nėra interneto ryšio</string>
+    <string name="settings_update_error_integrity">Atsisiųstas failas neatitiko savo kontrolinės sumos ir buvo pašalintas</string>
+    <string name="settings_update_error_http">Serveris grąžino klaidą (%1$d)</string>
+    <string name="settings_update_error_generic">Naujinimų tikrinimas nepavyko</string>
+    <string name="settings_update_error_too_old">Ši versija per sena, kad perskaitytų naujinimų sąrašą. Atnaujinkite rankiniu būdu.</string>
+    <string name="settings_update_from_cache">Parodyta iš paskutinio išsaugoto tikrinimo</string>
+    <string name="settings_update_background_check_title">Kasdienis tikrinimas fone</string>
+    <string name="settings_update_background_check_summary">Tikrina kartą per dieną ir praneša jums. Atsisiuntimas ir įdiegimas visada atliekami rankiniu būdu.</string>
+    <string name="settings_update_notification_text">Versija %1$s paruošta atsisiųsti</string>
+    <string name="settings_update_unknown_sources_message">Android turi leisti BBKB įdiegti programas. Įjunkite įdiegimą iš šio šaltinio ir vėl paspauskite Įdiegti.</string>
+    <string name="settings_update_open_settings">Atidaryti nustatymus</string>
 </resources>

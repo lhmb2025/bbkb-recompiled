@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Толькі пакінуць</string>
     <string name="device_config_import_unreadable">Гэты файл не з\'яўляецца канфігурацыяй прылады</string>
     <string name="device_config_import_failed">Не ўдалося імпартаваць гэты файл</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Абнаўленні</string>
+    <string name="settings_updates_summary">Праверыць новую версію BBKB</string>
+    <string name="settings_update_installed_version_title">Устаноўленая версія</string>
+    <string name="settings_update_channel_title">Канал абнаўленняў</string>
+    <string name="settings_update_channel_release">Выпуск</string>
+    <string name="settings_update_channel_none">Для адладачных зборак канала абнаўленняў няма</string>
+    <string name="settings_update_last_checked_title">Апошняя праверка</string>
+    <string name="settings_update_never">Ніколі</string>
+    <string name="settings_update_check_now">Праверыць зараз</string>
+    <string name="settings_update_checking">Праверка…</string>
+    <string name="settings_update_up_to_date">BBKB актуальны</string>
+    <string name="settings_update_available_title">Даступна абнаўленне</string>
+    <string name="settings_update_available_banner">Даступна абнаўленне: %1$s</string>
+    <string name="settings_update_version_label">Версія %1$s</string>
+    <string name="settings_update_size_label">Памер спампоўкі: %1$s</string>
+    <string name="settings_update_notes_title">Заўвагі да выпуску</string>
+    <string name="settings_update_download">Спампаваць</string>
+    <string name="settings_update_downloading">Спампоўка… %1$d%%</string>
+    <string name="settings_update_downloaded">Спампавана і праверана</string>
+    <string name="settings_update_install">Устанавіць</string>
+    <string name="settings_update_retry">Паўтарыць</string>
+    <string name="settings_update_error_offline">Няма падключэння да інтэрнэту</string>
+    <string name="settings_update_error_integrity">Спампаваны файл не супаў з кантрольнай сумай і быў выдалены</string>
+    <string name="settings_update_error_http">Сервер вярнуў памылку (%1$d)</string>
+    <string name="settings_update_error_generic">Не ўдалося праверыць абнаўленні</string>
+    <string name="settings_update_error_too_old">Гэта версія занадта старая, каб прачытаць спіс абнаўленняў. Абнавіце ўручную.</string>
+    <string name="settings_update_from_cache">Паказана з апошняй зберажонай праверкі</string>
+    <string name="settings_update_background_check_title">Штодзённая праверка ў фоне</string>
+    <string name="settings_update_background_check_summary">Праверка раз у дзень з апавяшчэннем. Спампоўка і ўстаноўка заўсёды застаюцца ўручную.</string>
+    <string name="settings_update_notification_text">Версія %1$s гатова да спампоўкі</string>
+    <string name="settings_update_unknown_sources_message">Android павінен дазволіць BBKB устанаўліваць праграмы. Дазвольце ўстаноўку з гэтай крыніцы і яшчэ раз натысніце Устанавіць.</string>
+    <string name="settings_update_open_settings">Адкрыць налады</string>
 </resources>

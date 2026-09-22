@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Hou net</string>
     <string name="device_config_import_unreadable">Daardie lêer is nie \'n toestelkonfigurasie nie</string>
     <string name="device_config_import_failed">Kon nie daardie lêer invoer nie</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Opdaterings</string>
+    <string name="settings_updates_summary">Kyk vir \'n nuwe weergawe van BBKB</string>
+    <string name="settings_update_installed_version_title">Geïnstalleerde weergawe</string>
+    <string name="settings_update_channel_title">Opdateringskanaal</string>
+    <string name="settings_update_channel_release">Vrystelling</string>
+    <string name="settings_update_channel_none">Geen opdateringskanaal vir ontfoutbouwerke</string>
+    <string name="settings_update_last_checked_title">Laas nagegaan</string>
+    <string name="settings_update_never">Nooit</string>
+    <string name="settings_update_check_now">Kyk nou</string>
+    <string name="settings_update_checking">Kyk tans…</string>
+    <string name="settings_update_up_to_date">BBKB is op datum</string>
+    <string name="settings_update_available_title">Opdatering beskikbaar</string>
+    <string name="settings_update_available_banner">Opdatering beskikbaar: %1$s</string>
+    <string name="settings_update_version_label">Weergawe %1$s</string>
+    <string name="settings_update_size_label">Aflaaigrootte: %1$s</string>
+    <string name="settings_update_notes_title">Vrystellingsnotas</string>
+    <string name="settings_update_download">Laai af</string>
+    <string name="settings_update_downloading">Laai tans af… %1$d%%</string>
+    <string name="settings_update_downloaded">Afgelaai en nagegaan</string>
+    <string name="settings_update_install">Installeer</string>
+    <string name="settings_update_retry">Probeer weer</string>
+    <string name="settings_update_error_offline">Geen internetverbinding</string>
+    <string name="settings_update_error_integrity">Die aflaai stem nie met sy kontrolesom ooreen nie en is weggegooi</string>
+    <string name="settings_update_error_http">Die bediener het \'n fout teruggestuur (%1$d)</string>
+    <string name="settings_update_error_generic">Die opdateringskontrole het misluk</string>
+    <string name="settings_update_error_too_old">Hierdie weergawe is te oud om die opdateringslys te lees. Werk asseblief self op.</string>
+    <string name="settings_update_from_cache">Van die laas gestoorde kontrole gewys</string>
+    <string name="settings_update_background_check_title">Daaglikse agtergrondkontrole</string>
+    <string name="settings_update_background_check_summary">Kyk een keer per dag en stel jou in kennis. Aflaai en installeer bly altyd handmatig.</string>
+    <string name="settings_update_notification_text">Weergawe %1$s is gereed om af te laai</string>
+    <string name="settings_update_unknown_sources_message">Android moet BBKB toelaat om programme te installeer. Skakel installasie vanaf hierdie bron aan en druk dan weer Installeer.</string>
+    <string name="settings_update_open_settings">Open instellings</string>
 </resources>

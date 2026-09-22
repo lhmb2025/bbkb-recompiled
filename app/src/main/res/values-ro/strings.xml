@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Doar păstrați</string>
     <string name="device_config_import_unreadable">Fișierul acela nu este o configurație de dispozitiv</string>
     <string name="device_config_import_failed">Fișierul acela nu a putut fi importat</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Actualizări</string>
+    <string name="settings_updates_summary">Caută o versiune nouă de BBKB</string>
+    <string name="settings_update_installed_version_title">Versiunea instalată</string>
+    <string name="settings_update_channel_title">Canal de actualizări</string>
+    <string name="settings_update_channel_release">Versiune finală</string>
+    <string name="settings_update_channel_none">Nu există canal de actualizări pentru versiunile de depanare</string>
+    <string name="settings_update_last_checked_title">Ultima verificare</string>
+    <string name="settings_update_never">Niciodată</string>
+    <string name="settings_update_check_now">Verifică acum</string>
+    <string name="settings_update_checking">Se verifică…</string>
+    <string name="settings_update_up_to_date">BBKB este actualizat</string>
+    <string name="settings_update_available_title">Actualizare disponibilă</string>
+    <string name="settings_update_available_banner">Actualizare disponibilă: %1$s</string>
+    <string name="settings_update_version_label">Versiunea %1$s</string>
+    <string name="settings_update_size_label">Dimensiunea descărcării: %1$s</string>
+    <string name="settings_update_notes_title">Note de lansare</string>
+    <string name="settings_update_download">Descarcă</string>
+    <string name="settings_update_downloading">Se descarcă… %1$d%%</string>
+    <string name="settings_update_downloaded">Descărcat și verificat</string>
+    <string name="settings_update_install">Instalează</string>
+    <string name="settings_update_retry">Încearcă din nou</string>
+    <string name="settings_update_error_offline">Nu există conexiune la internet</string>
+    <string name="settings_update_error_integrity">Descărcarea nu a corespuns sumei sale de control și a fost eliminată</string>
+    <string name="settings_update_error_http">Serverul a returnat o eroare (%1$d)</string>
+    <string name="settings_update_error_generic">Verificarea actualizărilor a eșuat</string>
+    <string name="settings_update_error_too_old">Această versiune este prea veche pentru a citi lista de actualizări. Actualizează manual.</string>
+    <string name="settings_update_from_cache">Afișat din ultima verificare salvată</string>
+    <string name="settings_update_background_check_title">Verificare zilnică în fundal</string>
+    <string name="settings_update_background_check_summary">Verifică o dată pe zi și te anunță. Descărcarea și instalarea rămân întotdeauna manuale.</string>
+    <string name="settings_update_notification_text">Versiunea %1$s este pregătită pentru descărcare</string>
+    <string name="settings_update_unknown_sources_message">Android trebuie să permită BBKB să instaleze aplicații. Activează instalarea din această sursă, apoi apasă din nou Instalează.</string>
+    <string name="settings_update_open_settings">Deschide setările</string>
 </resources>

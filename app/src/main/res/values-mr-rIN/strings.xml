@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">फक्त ठेवा</string>
     <string name="device_config_import_unreadable">ती फाइल डिव्हाइस कॉन्फिगरेशन नाही</string>
     <string name="device_config_import_failed">ती फाइल इंपोर्ट करता आली नाही</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">अद्यतने</string>
+    <string name="settings_updates_summary">BBKB ची नवीन आवृत्ती तपासा</string>
+    <string name="settings_update_installed_version_title">स्थापित आवृत्ती</string>
+    <string name="settings_update_channel_title">अद्यतन चॅनेल</string>
+    <string name="settings_update_channel_release">रिलीज</string>
+    <string name="settings_update_channel_none">डीबग बिल्डसाठी अद्यतन चॅनेल नाही</string>
+    <string name="settings_update_last_checked_title">शेवटची तपासणी</string>
+    <string name="settings_update_never">कधीही नाही</string>
+    <string name="settings_update_check_now">आता तपासा</string>
+    <string name="settings_update_checking">तपासत आहे…</string>
+    <string name="settings_update_up_to_date">BBKB अद्ययावत आहे</string>
+    <string name="settings_update_available_title">अद्यतन उपलब्ध</string>
+    <string name="settings_update_available_banner">अद्यतन उपलब्ध: %1$s</string>
+    <string name="settings_update_version_label">आवृत्ती %1$s</string>
+    <string name="settings_update_size_label">डाउनलोड आकार: %1$s</string>
+    <string name="settings_update_notes_title">रिलीज नोंदी</string>
+    <string name="settings_update_download">डाउनलोड</string>
+    <string name="settings_update_downloading">डाउनलोड होत आहे… %1$d%%</string>
+    <string name="settings_update_downloaded">डाउनलोड आणि पडताळणी पूर्ण</string>
+    <string name="settings_update_install">स्थापित करा</string>
+    <string name="settings_update_retry">पुन्हा प्रयत्न करा</string>
+    <string name="settings_update_error_offline">इंटरनेट कनेक्शन नाही</string>
+    <string name="settings_update_error_integrity">डाउनलोड त्याच्या चेकसमशी जुळले नाही म्हणून काढून टाकले</string>
+    <string name="settings_update_error_http">सर्व्हरने त्रुटी परत केली (%1$d)</string>
+    <string name="settings_update_error_generic">अद्यतन तपासणी अयशस्वी झाली</string>
+    <string name="settings_update_error_too_old">ही आवृत्ती अद्यतन यादी वाचण्यासाठी फार जुनी आहे. कृपया स्वतः अद्यतनित करा.</string>
+    <string name="settings_update_from_cache">शेवटच्या जतन केलेल्या तपासणीवरून दाखवले</string>
+    <string name="settings_update_background_check_title">दैनंदिन पार्श्वभूमी तपासणी</string>
+    <string name="settings_update_background_check_summary">दिवसातून एकदा तपासते आणि तुम्हाला कळवते. डाउनलोड आणि स्थापना नेहमी तुमच्या हातात राहतात.</string>
+    <string name="settings_update_notification_text">आवृत्ती %1$s डाउनलोडसाठी तयार आहे</string>
+    <string name="settings_update_unknown_sources_message">अ‍ॅप्स स्थापित करण्यासाठी Android ने BBKB ला परवानगी द्यावी लागेल. या स्रोतावरून स्थापना सुरू करा आणि पुन्हा स्थापित करा दाबा.</string>
+    <string name="settings_update_open_settings">सेटिंग्ज उघडा</string>
 </resources>

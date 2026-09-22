@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Conserva soltanto</string>
     <string name="device_config_import_unreadable">Quel file non è una configurazione di dispositivo</string>
     <string name="device_config_import_failed">Impossibile importare quel file</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Aggiornamenti</string>
+    <string name="settings_updates_summary">Cerca una nuova versione di BBKB</string>
+    <string name="settings_update_installed_version_title">Versione installata</string>
+    <string name="settings_update_channel_title">Canale di aggiornamento</string>
+    <string name="settings_update_channel_release">Versione finale</string>
+    <string name="settings_update_channel_none">Nessun canale di aggiornamento per le build di debug</string>
+    <string name="settings_update_last_checked_title">Ultimo controllo</string>
+    <string name="settings_update_never">Mai</string>
+    <string name="settings_update_check_now">Controlla ora</string>
+    <string name="settings_update_checking">Controllo…</string>
+    <string name="settings_update_up_to_date">BBKB è aggiornato</string>
+    <string name="settings_update_available_title">Aggiornamento disponibile</string>
+    <string name="settings_update_available_banner">Aggiornamento disponibile: %1$s</string>
+    <string name="settings_update_version_label">Versione %1$s</string>
+    <string name="settings_update_size_label">Dimensione del download: %1$s</string>
+    <string name="settings_update_notes_title">Note di rilascio</string>
+    <string name="settings_update_download">Scarica</string>
+    <string name="settings_update_downloading">Download… %1$d%%</string>
+    <string name="settings_update_downloaded">Scaricato e verificato</string>
+    <string name="settings_update_install">Installa</string>
+    <string name="settings_update_retry">Riprova</string>
+    <string name="settings_update_error_offline">Nessuna connessione a Internet</string>
+    <string name="settings_update_error_integrity">Il download non corrispondeva al suo checksum ed è stato eliminato</string>
+    <string name="settings_update_error_http">Il server ha restituito un errore (%1$d)</string>
+    <string name="settings_update_error_generic">Il controllo degli aggiornamenti non è riuscito</string>
+    <string name="settings_update_error_too_old">Questa versione è troppo vecchia per leggere l\'elenco degli aggiornamenti. Aggiorna manualmente.</string>
+    <string name="settings_update_from_cache">Mostrato dall\'ultimo controllo salvato</string>
+    <string name="settings_update_background_check_title">Controllo giornaliero in background</string>
+    <string name="settings_update_background_check_summary">Controlla una volta al giorno e ti avvisa. Download e installazione restano sempre manuali.</string>
+    <string name="settings_update_notification_text">La versione %1$s è pronta per il download</string>
+    <string name="settings_update_unknown_sources_message">Android deve autorizzare BBKB a installare app. Consenti l\'installazione da questa origine, poi premi di nuovo Installa.</string>
+    <string name="settings_update_open_settings">Apri impostazioni</string>
 </resources>

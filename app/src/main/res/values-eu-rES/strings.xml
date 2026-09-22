@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Gorde besterik ez</string>
     <string name="device_config_import_unreadable">Fitxategi hori ez da gailuaren konfigurazio bat</string>
     <string name="device_config_import_failed">Ezin izan da fitxategi hori inportatu</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Eguneraketak</string>
+    <string name="settings_updates_summary">Bilatu BBKBren bertsio berria</string>
+    <string name="settings_update_installed_version_title">Instalatutako bertsioa</string>
+    <string name="settings_update_channel_title">Eguneraketa-kanala</string>
+    <string name="settings_update_channel_release">Argitalpena</string>
+    <string name="settings_update_channel_none">Arazketa-bertsioentzat ez dago eguneraketa-kanalik</string>
+    <string name="settings_update_last_checked_title">Azken egiaztapena</string>
+    <string name="settings_update_never">Inoiz ez</string>
+    <string name="settings_update_check_now">Egiaztatu orain</string>
+    <string name="settings_update_checking">Egiaztatzen…</string>
+    <string name="settings_update_up_to_date">BBKB eguneratuta dago</string>
+    <string name="settings_update_available_title">Eguneraketa eskuragarri</string>
+    <string name="settings_update_available_banner">Eguneraketa eskuragarri: %1$s</string>
+    <string name="settings_update_version_label">%1$s bertsioa</string>
+    <string name="settings_update_size_label">Deskargaren tamaina: %1$s</string>
+    <string name="settings_update_notes_title">Argitalpen-oharrak</string>
+    <string name="settings_update_download">Deskargatu</string>
+    <string name="settings_update_downloading">Deskargatzen… %1$d%%</string>
+    <string name="settings_update_downloaded">Deskargatuta eta egiaztatuta</string>
+    <string name="settings_update_install">Instalatu</string>
+    <string name="settings_update_retry">Saiatu berriro</string>
+    <string name="settings_update_error_offline">Ez dago Interneteko konexiorik</string>
+    <string name="settings_update_error_integrity">Deskargak ez zuen bere kontrol-baturarekin bat egin eta baztertu da</string>
+    <string name="settings_update_error_http">Zerbitzariak errore bat itzuli du (%1$d)</string>
+    <string name="settings_update_error_generic">Eguneraketen egiaztapenak huts egin du</string>
+    <string name="settings_update_error_too_old">Bertsio hau zaharregia da eguneraketa-zerrenda irakurtzeko. Eguneratu eskuz.</string>
+    <string name="settings_update_from_cache">Gordetako azken egiaztapenetik erakutsita</string>
+    <string name="settings_update_background_check_title">Eguneroko egiaztapena atzeko planoan</string>
+    <string name="settings_update_background_check_summary">Egunean behin egiaztatzen du eta jakinarazten dizu. Deskargatzea eta instalatzea beti eskuz egiten dira.</string>
+    <string name="settings_update_notification_text">%1$s bertsioa deskargatzeko prest dago</string>
+    <string name="settings_update_unknown_sources_message">Androidek BBKBri aplikazioak instalatzen uzteko baimena eman behar dio. Gaitu iturburu honetatik instalatzea eta sakatu Instalatu berriro.</string>
+    <string name="settings_update_open_settings">Ireki ezarpenak</string>
 </resources>

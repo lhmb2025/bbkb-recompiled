@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">الاحتفاظ فقط</string>
     <string name="device_config_import_unreadable">هذا الملف ليس تكوين جهاز</string>
     <string name="device_config_import_failed">تعذّر استيراد ذلك الملف</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">التحديثات</string>
+    <string name="settings_updates_summary">البحث عن إصدار جديد من BBKB</string>
+    <string name="settings_update_installed_version_title">الإصدار المثبت</string>
+    <string name="settings_update_channel_title">قناة التحديث</string>
+    <string name="settings_update_channel_release">الإصدار النهائي</string>
+    <string name="settings_update_channel_none">لا توجد قناة تحديث لإصدارات التصحيح</string>
+    <string name="settings_update_last_checked_title">آخر فحص</string>
+    <string name="settings_update_never">أبدًا</string>
+    <string name="settings_update_check_now">تحقق الآن</string>
+    <string name="settings_update_checking">جارٍ التحقق…</string>
+    <string name="settings_update_up_to_date">BBKB محدَّث</string>
+    <string name="settings_update_available_title">يتوفر تحديث</string>
+    <string name="settings_update_available_banner">يتوفر تحديث: %1$s</string>
+    <string name="settings_update_version_label">الإصدار %1$s</string>
+    <string name="settings_update_size_label">حجم التنزيل: %1$s</string>
+    <string name="settings_update_notes_title">ملاحظات الإصدار</string>
+    <string name="settings_update_download">تنزيل</string>
+    <string name="settings_update_downloading">جارٍ التنزيل… %1$d%%</string>
+    <string name="settings_update_downloaded">تم التنزيل والتحقق</string>
+    <string name="settings_update_install">تثبيت</string>
+    <string name="settings_update_retry">إعادة المحاولة</string>
+    <string name="settings_update_error_offline">لا يوجد اتصال بالإنترنت</string>
+    <string name="settings_update_error_integrity">لم يتطابق الملف الذي تم تنزيله مع بصمته فتم حذفه</string>
+    <string name="settings_update_error_http">أعاد الخادم خطأ (%1$d)</string>
+    <string name="settings_update_error_generic">فشل فحص التحديثات</string>
+    <string name="settings_update_error_too_old">هذا الإصدار أقدم من أن يقرأ قائمة التحديثات. يرجى التحديث يدويًا.</string>
+    <string name="settings_update_from_cache">معروض من آخر فحص محفوظ</string>
+    <string name="settings_update_background_check_title">فحص يومي في الخلفية</string>
+    <string name="settings_update_background_check_summary">يتحقق مرة واحدة يوميًا ويُعلمك. يبقى التنزيل والتثبيت يدويين دائمًا.</string>
+    <string name="settings_update_notification_text">الإصدار %1$s جاهز للتنزيل</string>
+    <string name="settings_update_unknown_sources_message">يجب أن يسمح نظام Android لتطبيق BBKB بتثبيت التطبيقات. مكّن التثبيت من هذا المصدر ثم اضغط على تثبيت مرة أخرى.</string>
+    <string name="settings_update_open_settings">فتح الإعدادات</string>
 </resources>

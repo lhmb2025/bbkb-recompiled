@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Samo zadrži</string>
     <string name="device_config_import_unreadable">Ta datoteka nije konfiguracija uređaja</string>
     <string name="device_config_import_failed">Nije moguće uvesti tu datoteku</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Ažuriranja</string>
+    <string name="settings_updates_summary">Provjeri ima li nove verzije BBKB-a</string>
+    <string name="settings_update_installed_version_title">Instalirana verzija</string>
+    <string name="settings_update_channel_title">Kanal ažuriranja</string>
+    <string name="settings_update_channel_release">Izdanje</string>
+    <string name="settings_update_channel_none">Nema kanala ažuriranja za debug verzije</string>
+    <string name="settings_update_last_checked_title">Zadnja provjera</string>
+    <string name="settings_update_never">Nikada</string>
+    <string name="settings_update_check_now">Provjeri sada</string>
+    <string name="settings_update_checking">Provjera…</string>
+    <string name="settings_update_up_to_date">BBKB je ažuran</string>
+    <string name="settings_update_available_title">Dostupno je ažuriranje</string>
+    <string name="settings_update_available_banner">Dostupno je ažuriranje: %1$s</string>
+    <string name="settings_update_version_label">Verzija %1$s</string>
+    <string name="settings_update_size_label">Veličina preuzimanja: %1$s</string>
+    <string name="settings_update_notes_title">Bilješke o izdanju</string>
+    <string name="settings_update_download">Preuzmi</string>
+    <string name="settings_update_downloading">Preuzimanje… %1$d%%</string>
+    <string name="settings_update_downloaded">Preuzeto i provjereno</string>
+    <string name="settings_update_install">Instaliraj</string>
+    <string name="settings_update_retry">Pokušaj ponovo</string>
+    <string name="settings_update_error_offline">Nema internetske veze</string>
+    <string name="settings_update_error_integrity">Preuzeta datoteka ne odgovara svojoj kontrolnoj sumi i odbačena je</string>
+    <string name="settings_update_error_http">Server je vratio grešku (%1$d)</string>
+    <string name="settings_update_error_generic">Provjera ažuriranja nije uspjela</string>
+    <string name="settings_update_error_too_old">Ova verzija je previše stara da pročita listu ažuriranja. Ažurirajte ručno.</string>
+    <string name="settings_update_from_cache">Prikazano iz zadnje sačuvane provjere</string>
+    <string name="settings_update_background_check_title">Dnevna provjera u pozadini</string>
+    <string name="settings_update_background_check_summary">Provjerava jednom dnevno i obavijesti vas. Preuzimanje i instalacija uvijek ostaju ručni.</string>
+    <string name="settings_update_notification_text">Verzija %1$s je spremna za preuzimanje</string>
+    <string name="settings_update_unknown_sources_message">Android mora dozvoliti BBKB-u instaliranje aplikacija. Omogućite instalaciju iz ovog izvora, zatim ponovo pritisnite Instaliraj.</string>
+    <string name="settings_update_open_settings">Otvori postavke</string>
 </resources>

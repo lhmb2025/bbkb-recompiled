@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">ఉంచు మాత్రమే</string>
     <string name="device_config_import_unreadable">ఆ ఫైల్ పరికర కాన్ఫిగరేషన్ కాదు</string>
     <string name="device_config_import_failed">ఆ ఫైల్‌ను దిగుమతి చేయలేకపోయాం</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">నవీకరణలు</string>
+    <string name="settings_updates_summary">BBKB కొత్త వెర్షన్ కోసం తనిఖీ చేయండి</string>
+    <string name="settings_update_installed_version_title">ఇన్‌స్టాల్ చేసిన వెర్షన్</string>
+    <string name="settings_update_channel_title">నవీకరణ ఛానెల్</string>
+    <string name="settings_update_channel_release">రిలీజ్</string>
+    <string name="settings_update_channel_none">డీబగ్ బిల్డ్‌లకు నవీకరణ ఛానెల్ లేదు</string>
+    <string name="settings_update_last_checked_title">చివరిగా తనిఖీ చేసినది</string>
+    <string name="settings_update_never">ఎప్పుడూ లేదు</string>
+    <string name="settings_update_check_now">ఇప్పుడే తనిఖీ చేయండి</string>
+    <string name="settings_update_checking">తనిఖీ చేస్తోంది…</string>
+    <string name="settings_update_up_to_date">BBKB తాజాగా ఉంది</string>
+    <string name="settings_update_available_title">నవీకరణ అందుబాటులో ఉంది</string>
+    <string name="settings_update_available_banner">నవీకరణ అందుబాటులో ఉంది: %1$s</string>
+    <string name="settings_update_version_label">వెర్షన్ %1$s</string>
+    <string name="settings_update_size_label">డౌన్‌లోడ్ పరిమాణం: %1$s</string>
+    <string name="settings_update_notes_title">రిలీజ్ నోట్స్</string>
+    <string name="settings_update_download">డౌన్‌లోడ్</string>
+    <string name="settings_update_downloading">డౌన్‌లోడ్ అవుతోంది… %1$d%%</string>
+    <string name="settings_update_downloaded">డౌన్‌లోడ్ చేసి ధ్రువీకరించబడింది</string>
+    <string name="settings_update_install">ఇన్‌స్టాల్</string>
+    <string name="settings_update_retry">మళ్లీ ప్రయత్నించండి</string>
+    <string name="settings_update_error_offline">ఇంటర్నెట్ కనెక్షన్ లేదు</string>
+    <string name="settings_update_error_integrity">డౌన్‌లోడ్ దాని చెక్‌సమ్‌తో సరిపోలలేదు, కాబట్టి తొలగించబడింది</string>
+    <string name="settings_update_error_http">సర్వర్ ఒక లోపాన్ని తిప్పి పంపింది (%1$d)</string>
+    <string name="settings_update_error_generic">నవీకరణ తనిఖీ విఫలమైంది</string>
+    <string name="settings_update_error_too_old">ఈ వెర్షన్ నవీకరణ జాబితాను చదవడానికి చాలా పాతది. దయచేసి మీరే నవీకరించండి.</string>
+    <string name="settings_update_from_cache">చివరిగా సేవ్ చేసిన తనిఖీ నుండి చూపబడింది</string>
+    <string name="settings_update_background_check_title">రోజువారీ నేపథ్య తనిఖీ</string>
+    <string name="settings_update_background_check_summary">రోజుకు ఒకసారి తనిఖీ చేసి మీకు తెలియజేస్తుంది. డౌన్‌లోడ్ మరియు ఇన్‌స్టాల్ ఎప్పుడూ మీ చేతిలోనే.</string>
+    <string name="settings_update_notification_text">వెర్షన్ %1$s డౌన్‌లోడ్‌కు సిద్ధంగా ఉంది</string>
+    <string name="settings_update_unknown_sources_message">యాప్‌లను ఇన్‌స్టాల్ చేయడానికి Android BBKBకి అనుమతి ఇవ్వాలి. ఈ మూలం నుండి ఇన్‌స్టాల్‌ను ప్రారంభించి, మళ్లీ ఇన్‌స్టాల్ నొక్కండి.</string>
+    <string name="settings_update_open_settings">సెట్టింగ్‌లను తెరవండి</string>
 </resources>

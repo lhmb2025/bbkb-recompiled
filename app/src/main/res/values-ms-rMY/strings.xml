@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Simpan sahaja</string>
     <string name="device_config_import_unreadable">Fail itu bukan konfigurasi peranti</string>
     <string name="device_config_import_failed">Tidak dapat mengimport fail itu</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Kemas kini</string>
+    <string name="settings_updates_summary">Periksa versi baharu BBKB</string>
+    <string name="settings_update_installed_version_title">Versi yang dipasang</string>
+    <string name="settings_update_channel_title">Saluran kemas kini</string>
+    <string name="settings_update_channel_release">Keluaran</string>
+    <string name="settings_update_channel_none">Tiada saluran kemas kini untuk binaan debug</string>
+    <string name="settings_update_last_checked_title">Diperiksa kali terakhir</string>
+    <string name="settings_update_never">Tidak pernah</string>
+    <string name="settings_update_check_now">Periksa sekarang</string>
+    <string name="settings_update_checking">Memeriksa…</string>
+    <string name="settings_update_up_to_date">BBKB adalah terkini</string>
+    <string name="settings_update_available_title">Kemas kini tersedia</string>
+    <string name="settings_update_available_banner">Kemas kini tersedia: %1$s</string>
+    <string name="settings_update_version_label">Versi %1$s</string>
+    <string name="settings_update_size_label">Saiz muat turun: %1$s</string>
+    <string name="settings_update_notes_title">Nota keluaran</string>
+    <string name="settings_update_download">Muat turun</string>
+    <string name="settings_update_downloading">Memuat turun… %1$d%%</string>
+    <string name="settings_update_downloaded">Dimuat turun dan disahkan</string>
+    <string name="settings_update_install">Pasang</string>
+    <string name="settings_update_retry">Cuba lagi</string>
+    <string name="settings_update_error_offline">Tiada sambungan internet</string>
+    <string name="settings_update_error_integrity">Muat turun tidak sepadan dengan checksum-nya dan telah dibuang</string>
+    <string name="settings_update_error_http">Pelayan memulangkan ralat (%1$d)</string>
+    <string name="settings_update_error_generic">Pemeriksaan kemas kini gagal</string>
+    <string name="settings_update_error_too_old">Versi ini terlalu lama untuk membaca senarai kemas kini. Sila kemas kini secara manual.</string>
+    <string name="settings_update_from_cache">Ditunjukkan daripada pemeriksaan terakhir yang disimpan</string>
+    <string name="settings_update_background_check_title">Pemeriksaan harian di latar belakang</string>
+    <string name="settings_update_background_check_summary">Memeriksa sekali sehari dan memberitahu anda. Muat turun dan pemasangan sentiasa manual.</string>
+    <string name="settings_update_notification_text">Versi %1$s sedia untuk dimuat turun</string>
+    <string name="settings_update_unknown_sources_message">Android perlu membenarkan BBKB memasang apl. Aktifkan pemasangan daripada sumber ini, kemudian tekan Pasang semula.</string>
+    <string name="settings_update_open_settings">Buka tetapan</string>
 </resources>

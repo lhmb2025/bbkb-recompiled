@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Yalnız saxla</string>
     <string name="device_config_import_unreadable">Bu fayl cihaz konfiqurasiyası deyil</string>
     <string name="device_config_import_failed">Bu faylı idxal etmək alınmadı</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Yeniləmələr</string>
+    <string name="settings_updates_summary">BBKB-nin yeni versiyasını yoxlayın</string>
+    <string name="settings_update_installed_version_title">Quraşdırılmış versiya</string>
+    <string name="settings_update_channel_title">Yeniləmə kanalı</string>
+    <string name="settings_update_channel_release">Buraxılış</string>
+    <string name="settings_update_channel_none">Sazlama buraxılışları üçün yeniləmə kanalı yoxdur</string>
+    <string name="settings_update_last_checked_title">Son yoxlanma</string>
+    <string name="settings_update_never">Heç vaxt</string>
+    <string name="settings_update_check_now">İndi yoxla</string>
+    <string name="settings_update_checking">Yoxlanılır…</string>
+    <string name="settings_update_up_to_date">BBKB güncəldir</string>
+    <string name="settings_update_available_title">Yeniləmə mövcuddur</string>
+    <string name="settings_update_available_banner">Yeniləmə mövcuddur: %1$s</string>
+    <string name="settings_update_version_label">Versiya %1$s</string>
+    <string name="settings_update_size_label">Endirmə həcmi: %1$s</string>
+    <string name="settings_update_notes_title">Buraxılış qeydləri</string>
+    <string name="settings_update_download">Endir</string>
+    <string name="settings_update_downloading">Endirilir… %1$d%%</string>
+    <string name="settings_update_downloaded">Endirildi və yoxlanıldı</string>
+    <string name="settings_update_install">Quraşdır</string>
+    <string name="settings_update_retry">Yenidən cəhd et</string>
+    <string name="settings_update_error_offline">İnternet bağlantısı yoxdur</string>
+    <string name="settings_update_error_integrity">Endirilən fayl yoxlama cəmi ilə uyğun gəlmədi və silindi</string>
+    <string name="settings_update_error_http">Server xəta qaytardı (%1$d)</string>
+    <string name="settings_update_error_generic">Yeniləmə yoxlanışı alınmadı</string>
+    <string name="settings_update_error_too_old">Bu versiya yeniləmə siyahısını oxumaq üçün çox köhnədir. Zəhmət olmasa əl ilə yeniləyin.</string>
+    <string name="settings_update_from_cache">Son saxlanmış yoxlamadan göstərilir</string>
+    <string name="settings_update_background_check_title">Günlük fon yoxlaması</string>
+    <string name="settings_update_background_check_summary">Gündə bir dəfə yoxlayır və sizə bildirir. Endirmə və quraşdırma həmişə əl ilə qalır.</string>
+    <string name="settings_update_notification_text">Versiya %1$s endirilməyə hazırdır</string>
+    <string name="settings_update_unknown_sources_message">Android BBKB-yə tətbiq quraşdırmağa icazə verməlidir. Bu mənbədən quraşdırmanı aktiv edin, sonra yenidən Quraşdır düyməsini basın.</string>
+    <string name="settings_update_open_settings">Ayarları aç</string>
 </resources>

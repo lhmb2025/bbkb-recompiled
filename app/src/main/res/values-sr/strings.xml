@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Samo zadrži</string>
     <string name="device_config_import_unreadable">Ta datoteka nije konfiguracija uređaja</string>
     <string name="device_config_import_failed">Ta datoteka nije mogla da se uveze</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Ажурирања</string>
+    <string name="settings_updates_summary">Проверите да ли постоји нова верзија BBKB-а</string>
+    <string name="settings_update_installed_version_title">Инсталирана верзија</string>
+    <string name="settings_update_channel_title">Канал ажурирања</string>
+    <string name="settings_update_channel_release">Издање</string>
+    <string name="settings_update_channel_none">Нема канала ажурирања за дибаг верзије</string>
+    <string name="settings_update_last_checked_title">Последња провера</string>
+    <string name="settings_update_never">Никада</string>
+    <string name="settings_update_check_now">Провери сада</string>
+    <string name="settings_update_checking">Проверавање…</string>
+    <string name="settings_update_up_to_date">BBKB је ажуран</string>
+    <string name="settings_update_available_title">Доступно је ажурирање</string>
+    <string name="settings_update_available_banner">Доступно је ажурирање: %1$s</string>
+    <string name="settings_update_version_label">Верзија %1$s</string>
+    <string name="settings_update_size_label">Величина преузимања: %1$s</string>
+    <string name="settings_update_notes_title">Напомене о издању</string>
+    <string name="settings_update_download">Преузми</string>
+    <string name="settings_update_downloading">Преузимање… %1$d%%</string>
+    <string name="settings_update_downloaded">Преузето и проверено</string>
+    <string name="settings_update_install">Инсталирај</string>
+    <string name="settings_update_retry">Пробај поново</string>
+    <string name="settings_update_error_offline">Нема интернет везе</string>
+    <string name="settings_update_error_integrity">Преузета датотека се није поклопила са својом контролном сумом и одбачена је</string>
+    <string name="settings_update_error_http">Сервер је вратио грешку (%1$d)</string>
+    <string name="settings_update_error_generic">Провера ажурирања није успела</string>
+    <string name="settings_update_error_too_old">Ова верзија је превише стара да прочита листу ажурирања. Ажурирајте ручно.</string>
+    <string name="settings_update_from_cache">Приказано из последње сачуване провере</string>
+    <string name="settings_update_background_check_title">Дневна провера у позадини</string>
+    <string name="settings_update_background_check_summary">Проверава једном дневно и обавештава вас. Преузимање и инсталација увек остају ручни.</string>
+    <string name="settings_update_notification_text">Верзија %1$s је спремна за преузимање</string>
+    <string name="settings_update_unknown_sources_message">Android мора да дозволи BBKB-у да инсталира апликације. Омогућите инсталацију из овог извора, па поново притисните Инсталирај.</string>
+    <string name="settings_update_open_settings">Отвори подешавања</string>
 </resources>

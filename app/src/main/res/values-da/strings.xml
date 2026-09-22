@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Behold kun</string>
     <string name="device_config_import_unreadable">Den fil er ikke en enhedskonfiguration</string>
     <string name="device_config_import_failed">Den fil kunne ikke importeres</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Opdateringer</string>
+    <string name="settings_updates_summary">Se, om der findes en ny version af BBKB</string>
+    <string name="settings_update_installed_version_title">Installeret version</string>
+    <string name="settings_update_channel_title">Opdateringskanal</string>
+    <string name="settings_update_channel_release">Udgivelse</string>
+    <string name="settings_update_channel_none">Ingen opdateringskanal til debug-builds</string>
+    <string name="settings_update_last_checked_title">Sidst kontrolleret</string>
+    <string name="settings_update_never">Aldrig</string>
+    <string name="settings_update_check_now">Kontrollér nu</string>
+    <string name="settings_update_checking">Kontrollerer…</string>
+    <string name="settings_update_up_to_date">BBKB er opdateret</string>
+    <string name="settings_update_available_title">Opdatering tilgængelig</string>
+    <string name="settings_update_available_banner">Opdatering tilgængelig: %1$s</string>
+    <string name="settings_update_version_label">Version %1$s</string>
+    <string name="settings_update_size_label">Downloadstørrelse: %1$s</string>
+    <string name="settings_update_notes_title">Udgivelsesnoter</string>
+    <string name="settings_update_download">Download</string>
+    <string name="settings_update_downloading">Downloader… %1$d%%</string>
+    <string name="settings_update_downloaded">Downloadet og kontrolleret</string>
+    <string name="settings_update_install">Installer</string>
+    <string name="settings_update_retry">Prøv igen</string>
+    <string name="settings_update_error_offline">Ingen internetforbindelse</string>
+    <string name="settings_update_error_integrity">Downloaden matchede ikke sin kontrolsum og blev kasseret</string>
+    <string name="settings_update_error_http">Serveren returnerede en fejl (%1$d)</string>
+    <string name="settings_update_error_generic">Opdateringskontrollen mislykkedes</string>
+    <string name="settings_update_error_too_old">Denne version er for gammel til at læse opdateringslisten. Opdater manuelt.</string>
+    <string name="settings_update_from_cache">Vist ud fra den sidst gemte kontrol</string>
+    <string name="settings_update_background_check_title">Daglig kontrol i baggrunden</string>
+    <string name="settings_update_background_check_summary">Kontrollerer én gang om dagen og giver dig besked. Download og installation er altid manuelt.</string>
+    <string name="settings_update_notification_text">Version %1$s er klar til download</string>
+    <string name="settings_update_unknown_sources_message">Android skal give BBKB tillladelse til at installere apps. Tillad installation fra denne kilde, og tryk på Installer igen.</string>
+    <string name="settings_update_open_settings">Åbn indstillinger</string>
 </resources>

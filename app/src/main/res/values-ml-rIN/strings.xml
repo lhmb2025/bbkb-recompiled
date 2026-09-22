@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">സൂക്ഷിക്കുക മാത്രം</string>
     <string name="device_config_import_unreadable">ആ ഫയൽ ഒരു ഉപകരണ കോൺഫിഗറേഷൻ അല്ല</string>
     <string name="device_config_import_failed">ആ ഫയൽ ഇറക്കുമതി ചെയ്യാനായില്ല</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">അപ്‌ഡേറ്റുകൾ</string>
+    <string name="settings_updates_summary">BBKB-യുടെ പുതിയ പതിപ്പ് പരിശോധിക്കുക</string>
+    <string name="settings_update_installed_version_title">ഇൻസ്റ്റാൾ ചെയ്ത പതിപ്പ്</string>
+    <string name="settings_update_channel_title">അപ്‌ഡേറ്റ് ചാനൽ</string>
+    <string name="settings_update_channel_release">റിലീസ്</string>
+    <string name="settings_update_channel_none">ഡീബഗ് ബിൽഡുകൾക്ക് അപ്‌ഡേറ്റ് ചാനൽ ഇല്ല</string>
+    <string name="settings_update_last_checked_title">അവസാനം പരിശോധിച്ചത്</string>
+    <string name="settings_update_never">ഒരിക്കലുമില്ല</string>
+    <string name="settings_update_check_now">ഇപ്പോൾ പരിശോധിക്കുക</string>
+    <string name="settings_update_checking">പരിശോധിക്കുന്നു…</string>
+    <string name="settings_update_up_to_date">BBKB പുതുക്കിയതാണ്</string>
+    <string name="settings_update_available_title">അപ്‌ഡേറ്റ് ലഭ്യമാണ്</string>
+    <string name="settings_update_available_banner">അപ്‌ഡേറ്റ് ലഭ്യമാണ്: %1$s</string>
+    <string name="settings_update_version_label">പതിപ്പ് %1$s</string>
+    <string name="settings_update_size_label">ഡൗൺലോഡ് വലുപ്പം: %1$s</string>
+    <string name="settings_update_notes_title">റിലീസ് കുറിപ്പുകൾ</string>
+    <string name="settings_update_download">ഡൗൺലോഡ്</string>
+    <string name="settings_update_downloading">ഡൗൺലോഡ് ചെയ്യുന്നു… %1$d%%</string>
+    <string name="settings_update_downloaded">ഡൗൺലോഡ് ചെയ്ത് പരിശോധിച്ചു</string>
+    <string name="settings_update_install">ഇൻസ്റ്റാൾ</string>
+    <string name="settings_update_retry">വീണ്ടും ശ്രമിക്കുക</string>
+    <string name="settings_update_error_offline">ഇന്റർനെറ്റ് കണക്ഷനില്ല</string>
+    <string name="settings_update_error_integrity">ഡൗൺലോഡ് അതിന്റെ ചെക്ക്സമ്മുമായി പൊരുത്തപ്പെട്ടില്ല, അതിനാൽ നീക്കം ചെയ്തു</string>
+    <string name="settings_update_error_http">സെർവർ ഒരു പിശക് നൽകി (%1$d)</string>
+    <string name="settings_update_error_generic">അപ്‌ഡേറ്റ് പരിശോധന പരാജയപ്പെട്ടു</string>
+    <string name="settings_update_error_too_old">ഈ പതിപ്പ് അപ്‌ഡേറ്റ് പട്ടിക വായിക്കാൻ കഴിയാത്തവിധം പഴയതാണ്. സ്വയം അപ്‌ഡേറ്റ് ചെയ്യുക.</string>
+    <string name="settings_update_from_cache">അവസാനം സംരക്ഷിച്ച പരിശോധനയിൽ നിന്ന് കാണിക്കുന്നു</string>
+    <string name="settings_update_background_check_title">പ്രതിദിന പിൻഭാഗ പരിശോധന</string>
+    <string name="settings_update_background_check_summary">ദിവസത്തിൽ ഒരിക്കൽ പരിശോധിച്ച് നിങ്ങളെ അറിയിക്കുന്നു. ഡൗൺലോഡും ഇൻസ്റ്റാളും എപ്പോഴും നിങ്ങളുടെ കൈയിലാണ്.</string>
+    <string name="settings_update_notification_text">പതിപ്പ് %1$s ഡൗൺലോഡ് ചെയ്യാൻ തയ്യാറാണ്</string>
+    <string name="settings_update_unknown_sources_message">ആപ്പുകൾ ഇൻസ്റ്റാൾ ചെയ്യാൻ Android BBKB-ക്ക് അനുമതി നൽകണം. ഈ ഉറവിടത്തിൽ നിന്ന് ഇൻസ്റ്റാൾ പ്രവർത്തനക്ഷമമാക്കി വീണ്ടും ഇൻസ്റ്റാൾ അമർത്തുക.</string>
+    <string name="settings_update_open_settings">സെറ്റിംഗ്സ് തുറക്കുക</string>
 </resources>

@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">வைத்திரு மட்டும்</string>
     <string name="device_config_import_unreadable">அந்தக் கோப்பு சாதன உள்ளமைவு அல்ல</string>
     <string name="device_config_import_failed">அந்தக் கோப்பை இறக்குமதி செய்ய முடியவில்லை</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">புதுப்பிப்புகள்</string>
+    <string name="settings_updates_summary">BBKB இன் புதிய பதிப்பைச் சரிபார்க்கவும்</string>
+    <string name="settings_update_installed_version_title">நிறுவப்பட்ட பதிப்பு</string>
+    <string name="settings_update_channel_title">புதுப்பிப்புச் சேனல்</string>
+    <string name="settings_update_channel_release">வெளியீடு</string>
+    <string name="settings_update_channel_none">பிழைத்திருத்தப் பதிப்புகளுக்குப் புதுப்பிப்புச் சேனல் இல்லை</string>
+    <string name="settings_update_last_checked_title">கடைசியாகச் சரிபார்த்தது</string>
+    <string name="settings_update_never">ஒருபோதும் இல்லை</string>
+    <string name="settings_update_check_now">இப்போது சரிபார்</string>
+    <string name="settings_update_checking">சரிபார்க்கிறது…</string>
+    <string name="settings_update_up_to_date">BBKB சமீபத்தியது</string>
+    <string name="settings_update_available_title">புதுப்பிப்பு உள்ளது</string>
+    <string name="settings_update_available_banner">புதுப்பிப்பு உள்ளது: %1$s</string>
+    <string name="settings_update_version_label">பதிப்பு %1$s</string>
+    <string name="settings_update_size_label">பதிவிறக்க அளவு: %1$s</string>
+    <string name="settings_update_notes_title">வெளியீட்டுக் குறிப்புகள்</string>
+    <string name="settings_update_download">பதிவிறக்கு</string>
+    <string name="settings_update_downloading">பதிவிறக்குகிறது… %1$d%%</string>
+    <string name="settings_update_downloaded">பதிவிறக்கப்பட்டு சரிபார்க்கப்பட்டது</string>
+    <string name="settings_update_install">நிறுவு</string>
+    <string name="settings_update_retry">மீண்டும் முயற்சி</string>
+    <string name="settings_update_error_offline">இணைய இணைப்பு இல்லை</string>
+    <string name="settings_update_error_integrity">பதிவிறக்கம் அதன் காசோலைத் தொகையுடன் பொருந்தவில்லை, எனவே நீக்கப்பட்டது</string>
+    <string name="settings_update_error_http">சேவையகம் ஒரு பிழையைத் திருப்பியது (%1$d)</string>
+    <string name="settings_update_error_generic">புதுப்பிப்புச் சரிபார்ப்பு தோல்வியடைந்தது</string>
+    <string name="settings_update_error_too_old">இந்தப் பதிப்பு புதுப்பிப்புப் பட்டியலைப் படிக்க மிகவும் பழையது. கைமுறையாகப் புதுப்பிக்கவும்.</string>
+    <string name="settings_update_from_cache">கடைசியாகச் சேமித்த சரிபார்ப்பில் இருந்து காட்டப்படுகிறது</string>
+    <string name="settings_update_background_check_title">தினசரி பின்னணிச் சரிபார்ப்பு</string>
+    <string name="settings_update_background_check_summary">நாளுக்கு ஒருமுறை சரிபார்த்து உங்களுக்குத் தெரிவிக்கும். பதிவிறக்கமும் நிறுவலும் எப்போதும் உங்கள் கையில்.</string>
+    <string name="settings_update_notification_text">பதிப்பு %1$s பதிவிறக்கத் தயாராக உள்ளது</string>
+    <string name="settings_update_unknown_sources_message">ஆப்ஸ் நிறுவ Android, BBKB க்கு அனுமதி அளிக்க வேண்டும். இந்த மூலத்திலிருந்து நிறுவலை இயக்கி, மீண்டும் நிறுவு என்பதை அழுத்தவும்.</string>
+    <string name="settings_update_open_settings">அமைப்புகளைத் திற</string>
 </resources>

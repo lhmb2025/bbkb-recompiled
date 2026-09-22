@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Coinnigh amháin</string>
     <string name="device_config_import_unreadable">Ní cumraíocht gléis é an comhad sin</string>
     <string name="device_config_import_failed">Níorbh fhéidir an comhad sin a iompórtáil</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Nuashonruithe</string>
+    <string name="settings_updates_summary">Seiceáil an bhfuil leagan nua de BBKB ann</string>
+    <string name="settings_update_installed_version_title">Leagan suiteáilte</string>
+    <string name="settings_update_channel_title">Cainéal nuashonraithe</string>
+    <string name="settings_update_channel_release">Eisiúint</string>
+    <string name="settings_update_channel_none">Níl cainéal nuashonraithe ann do thógálacha dífhabhtaithe</string>
+    <string name="settings_update_last_checked_title">Seiceáilte go deireanach</string>
+    <string name="settings_update_never">Riamh</string>
+    <string name="settings_update_check_now">Seiceáil anois</string>
+    <string name="settings_update_checking">Ag seiceáil…</string>
+    <string name="settings_update_up_to_date">Tá BBKB cothrom le dáta</string>
+    <string name="settings_update_available_title">Nuashonrú ar fáil</string>
+    <string name="settings_update_available_banner">Nuashonrú ar fáil: %1$s</string>
+    <string name="settings_update_version_label">Leagan %1$s</string>
+    <string name="settings_update_size_label">Méid an íoslódála: %1$s</string>
+    <string name="settings_update_notes_title">Nótaí eisiúna</string>
+    <string name="settings_update_download">Íoslódáil</string>
+    <string name="settings_update_downloading">Ag íoslódáil… %1$d%%</string>
+    <string name="settings_update_downloaded">Íoslódáilte agus fíoraithe</string>
+    <string name="settings_update_install">Suiteáil</string>
+    <string name="settings_update_retry">Bain triail eile as</string>
+    <string name="settings_update_error_offline">Níl aon cheangal Idirlín</string>
+    <string name="settings_update_error_integrity">Níor mheaitseáil an íoslódáil a suim sheiceála agus caitheadh amach é</string>
+    <string name="settings_update_error_http">Sheol an freastalaí earráid ar ais (%1$d)</string>
+    <string name="settings_update_error_generic">Theip ar an seiceáil nuashonraithe</string>
+    <string name="settings_update_error_too_old">Tá an leagan seo ró-sean chun an liosta nuashonruithe a léamh. Nuashonraigh de láimh.</string>
+    <string name="settings_update_from_cache">Á thaispeáint ón seiceáil shábháilte dheireanach</string>
+    <string name="settings_update_background_check_title">Seiceáil laethúil sa chúlra</string>
+    <string name="settings_update_background_check_summary">Seiceálann uair sa lá agus cuireann in iúl duit. Fanann an íoslódáil agus an tsuiteáil de láimh i gcónaí.</string>
+    <string name="settings_update_notification_text">Tá leagan %1$s réidh le híoslódáil</string>
+    <string name="settings_update_unknown_sources_message">Caithfidh Android cead a thabhairt do BBKB aipeanna a shuiteáil. Cumasaigh suiteáil ón bhfoinse seo, ansin brúigh Suiteáil arís.</string>
+    <string name="settings_update_open_settings">Oscail socruithe</string>
 </resources>
