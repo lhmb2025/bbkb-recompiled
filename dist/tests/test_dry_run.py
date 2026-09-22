@@ -21,11 +21,13 @@ from dist.tests import support
 PACKS = os.path.join(support.REPO_ROOT, "dist", "publish_packs.py")
 APP = os.path.join(support.REPO_ROOT, "dist", "publish_app.py")
 
-# A slice of the real catalogue: a plain language, a country-qualified pack, a
-# Swiss variant from `new/`, a refused three-letter code, and the two files that
-# collapse onto a base language another file already owns.
+# A slice of the real catalogue, one file per outcome: plain languages, a
+# country-qualified pack, a Swiss variant from `new/`, a refused three-letter
+# code, the two table-locale overrides, and (fabricated, since the real
+# catalogue no longer has one) a second Afrikaans pack to exercise a duplicate.
 SOURCE_FILES = [
     "Blackberry_1305_r1-2_AFlsUN_xt9_ALM3.ldb",
+    "Blackberry_1305_r9-9_AFlsUN_xt9_ALM3.ldb",
     "Blackberry_1305_r1-76_ENubUN_xt9_ALM3.ldb",
     "Blackberry_1305_r1-17_ENubUNUK_xt9_ALM3.ldb",
     "Blackberry_1305_r1-3_ENubUNZH_xt9_2.ldb",
@@ -90,6 +92,7 @@ class PublishPacksDryRunTest(unittest.TestCase):
         out = result.stdout
 
         self.assertIn("PUBLISH", out)
+        self.assertIn("PUBLISH/override", out)
         self.assertIn("SKIP/refused", out)
         self.assertIn("SKIP/duplicate", out)
         self.assertIn("DRY RUN: nothing was created or uploaded", out)
@@ -98,10 +101,11 @@ class PublishPacksDryRunTest(unittest.TestCase):
         self.assertIn("would run: gh release upload packs-1902.01", out)
         self.assertIn("--clobber", out)
         self.assertNotIn("running:", out)
-        self.assertIn("scanned   8 files", out)
-        self.assertIn("published 5", out)
-        self.assertIn("1 refused, 0 unsupported, 2 duplicate", out)
+        self.assertIn("scanned   9 files", out)
+        self.assertIn("published 7", out)
+        self.assertIn("1 refused, 0 unsupported, 1 duplicate", out)
         self.assertIn("de_CH->de", out)
+        self.assertIn("es_419 (parses as es)", out)
 
     def test_dry_run_is_the_default_without_any_flag(self):
         result = self.publish()
@@ -126,14 +130,20 @@ class PublishPacksDryRunTest(unittest.TestCase):
         self.assertEqual("1902.01", packs["version"])
         self.assertEqual("https://github.com/lhmb2025/bbkb-recompiled/releases/download/"
                          "packs-1902.01/", packs["baseUrl"])
-        self.assertEqual(5, len(packs["items"]))
+        self.assertEqual(7, len(packs["items"]))
 
         by_locale = dict((item["locale"], item) for item in packs["items"])
-        self.assertEqual({"af", "en", "en_UK", "es", "de_CH"}, set(by_locale))
+        self.assertEqual({"af", "en", "en_UK", "en_ZH", "es", "es_419", "de_CH"}, set(by_locale))
         self.assertEqual("Afrikaans", by_locale["af"]["name"])
         self.assertEqual("de", by_locale["de_CH"]["group"])
         self.assertEqual("German (Switzerland)", by_locale["de_CH"]["name"])
         self.assertNotIn("group", by_locale["af"])
+        # The overrides are ordinary items: an engine-table locale and name.
+        self.assertEqual("Spanish (Latin America)", by_locale["es_419"]["name"])
+        self.assertEqual("Blackberry_1305_r1-11_ESusUNlatam_xt9_ALM3.ldb",
+                         by_locale["es_419"]["file"])
+        self.assertEqual("English (China)", by_locale["en_ZH"]["name"])
+        self.assertNotIn("group", by_locale["es_419"])
         for item in packs["items"]:
             self.assertEqual(64, len(item["sha256"]))
             self.assertEqual(item["sha256"], item["sha256"].lower())

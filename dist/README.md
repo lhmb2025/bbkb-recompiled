@@ -73,13 +73,35 @@ Field notes:
   files, none of whose languages exist in the engine table either, so no device on
   this build could load them.
 * **SKIP/unsupported** — the locale parses but is absent from the engine table.
+* **PUBLISH/override** — a table-locale override (below).
 * **SKIP/duplicate** — another file already claims the locale. Nothing is
-  silently overwritten; the loser's row names the winner. Currently four:
-  `*_ENubUNZH_*` (English for the Chinese market, collapses onto `en`),
-  `*_ESusUNlatam_*` (collapses onto `es`) and the two Big5 Chinese packs (both
-  collapse onto `zh`, whose slot the GB2312 pack holds).
+  silently overwritten; the loser's row names the winner. The current catalogue
+  has none.
 
-Current catalogue: **116 scanned, 105 published, 7 refused, 4 duplicate.**
+Current catalogue: **116 scanned, 109 published (4 of them overrides), 7 refused,
+0 duplicate.** The 109 cover every one of the engine table's 105 locales plus the
+four region variants it has no entry for.
+
+### Table-locale overrides
+
+Four packs have a region the *filename* cannot express, so the app's parser reads
+them as a bare language: `*_ESusUNlatam_*` → `es`, `*_ENubUNZH_*` → `en`, and both
+Big5 Chinese packs → `zh`. The engine table names all four (`es_419`, `en_ZH`,
+`zh_TW`, `zh_HK`) but carries the region in the *asset path*, which a downloaded
+file does not have.
+
+`catalogue.TABLE_LOCALE_OVERRIDES` maps those four filenames to the table's
+locale, so they publish as ordinary items (with the table's `name`) instead of
+colliding with their base language. This is sound because the **download** path
+installs a pack under the manifest's `locale` — into `nuance/<locale>/` — and
+never re-parses the filename. The map is keyed by exact filename, every entry is
+verified against the engine table at classification time (an entry the table
+lacks is ignored, and the file falls back to its parsed locale), and it must
+never be used to invent a locale the table does not have.
+
+One consequence worth knowing: those four locales are reachable by download only.
+Side-loading the same file by hand still lands on the base language, because that
+path *does* re-parse the filename.
 
 ## The two commands
 

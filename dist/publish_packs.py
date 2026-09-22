@@ -61,16 +61,26 @@ def parse_args(argv):
     return parser.parse_args(argv)
 
 
+def label_of(decision):
+    if decision.published and decision.overridden:
+        return "PUBLISH/override"
+    return STATUS_LABEL[decision.status]
+
+
 def print_table(decisions, echo=print):
     width = max(len(d.file_name) for d in decisions) if decisions else 10
     echo("")
     echo("%-*s  %-16s  %-8s  %s" % (width, "FILE", "DECISION", "LOCALE", "NAME / REASON"))
     echo("-" * (width + 60))
     for decision in decisions:
+        if not decision.published:
+            detail = decision.reason
+        elif decision.overridden:
+            detail = "%s  <- %s" % (decision.name, decision.reason)
+        else:
+            detail = decision.name
         echo("%-*s  %-16s  %-8s  %s"
-             % (width, decision.file_name, STATUS_LABEL[decision.status],
-                decision.locale or "-",
-                decision.name if decision.published else decision.reason))
+             % (width, decision.file_name, label_of(decision), decision.locale or "-", detail))
     echo("")
 
 
@@ -87,6 +97,10 @@ def print_summary(decisions, echo=print):
     if variants:
         echo("variants  %s (published under their base language's group)"
              % ", ".join("%s->%s" % (d.locale, d.group) for d in variants))
+    overrides = [d for d in published if d.overridden]
+    if overrides:
+        echo("overrides %s (locale from the engine table; the filename cannot express it)"
+             % ", ".join("%s (parses as %s)" % (d.locale, d.parsed_locale) for d in overrides))
 
 
 def verify_uploads(gh, tag, published, echo=print):

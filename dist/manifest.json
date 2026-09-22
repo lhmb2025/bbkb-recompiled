@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated": "2026-09-22T01:32:46Z",
+  "generated": "2026-09-22T02:01:16Z",
   "app": {},
   "packs": {
     "version": "1902.01",
@@ -155,11 +155,25 @@
         "size": 5513122
       },
       {
+        "locale": "en_ZH",
+        "name": "English (China)",
+        "file": "Blackberry_1305_r1-3_ENubUNZH_xt9_2.ldb",
+        "sha256": "2d8778beb8938f104ae8a4205bf133318c98cab74310e6a85857dec9beb4d77d",
+        "size": 183223
+      },
+      {
         "locale": "es",
         "name": "Spanish",
         "file": "Blackberry_1305_r1-28_ESusUN_xt9_ALM3.ldb",
         "sha256": "ff67f6af45f7046550ea210fc242f0167f18feb1942fec58707e6f462927f792",
         "size": 5760895
+      },
+      {
+        "locale": "es_419",
+        "name": "Spanish (Latin America)",
+        "file": "Blackberry_1305_r1-11_ESusUNlatam_xt9_ALM3.ldb",
+        "sha256": "5c5ca201e87dee81fa8013bc3c23da3ad18545873d52271b6402a84ffd3defd9",
+        "size": 5836463
       },
       {
         "locale": "es_ES",
@@ -737,6 +751,20 @@
         "file": "Blackberry_1305_r1-17-10-3_ZHsbUNps_GB2312_xt9_big_ALM.ldb",
         "sha256": "0b3954dde2dabb77d144201264ebaa92f130a960463d0c8a272a3416f5a3e698",
         "size": 6309471
+      },
+      {
+        "locale": "zh_HK",
+        "name": "Chinese Hongkong",
+        "file": "Blackberry_1305_r1-22-2-5_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_big_ALM.ldb",
+        "sha256": "a82fa0bfd37fbaab1fe4f14f3e90bea464ca43ad8d322ddaf2a0b8cf477bd580",
+        "size": 6826277
+      },
+      {
+        "locale": "zh_TW",
+        "name": "Chinese Taiwan",
+        "file": "Blackberry_1305_r1-15-2-6_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_bigTW_ALM.ldb",
+        "sha256": "10f954d45f170ed95f4100b20cd38c641c92df9d399c5199c49a4a5799ee4fc5",
+        "size": 7147344
       },
       {
         "locale": "zu",
