@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "generated": "2026-09-22T08:48:57Z",
+  "generated": "2026-09-22T13:46:40Z",
   "app": {
     "release": {
-      "versionCode": 1432,
-      "versionName": "5.0.0-beta.20",
-      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.20/bbkb-5.0.0-beta.20-release.apk",
-      "sha256": "d5250db46ab15f3f8f8ad81cfb5d28bf5d049a6a691fdf6c15a7c4121d14063c",
-      "size": 56668336,
+      "versionCode": 1433,
+      "versionName": "5.0.0-beta.21",
+      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.21/bbkb-5.0.0-beta.21-release.apk",
+      "sha256": "2536d919f84d4224e3251192d07a5de00c668512953b27b10f655b53801f6470",
+      "size": 56748514,
       "minSdk": 23,
-      "notes": "Settings cleanup, symbol board closes after a symbol unless SYM is held, modifier status icon fix, larger more-suggestions indicator."
+      "notes": "Settings backup and restore under Advanced > Manage data; fixes the blank emoji board."
     }
   },
   "packs": {
