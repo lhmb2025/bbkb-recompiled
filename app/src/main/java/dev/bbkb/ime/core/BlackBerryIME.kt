@@ -1099,6 +1099,11 @@ class BlackBerryIME : InputMethodService(),
         // inherit a stale `wasBackPressed = true` from a previous session, which
         // would suppress the auto-show-on-key-press path until a full editor reset.
         wasBackPressed = false
+        // Put the PKB modifier status icon back. The status-bar slot is the system's, and it is
+        // cleared whenever the IME unbinds; a post we made while the window was down may also
+        // have been dropped before the privileged operations were attached. The updater only
+        // posts on a CHANGE, so without this re-assert an icon the system dropped never returns.
+        physicalKeyboardStateTracker.refreshModifierStatus()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerBackInvokedCallback()
         }
@@ -1240,6 +1245,10 @@ class BlackBerryIME : InputMethodService(),
         // toggled via setprop without killing the IME process.
         if (BuildConfig.DEBUG) InputPathDebug.refresh()
         uiUpdateHandler.handleStartInputView(editorInfo, z)
+        // Same reason as in onWindowShown(): re-assert the modifier status icon now that this
+        // input session really is up, since the system clears the IME's status-bar slot between
+        // sessions and the updater posts only on a change.
+        physicalKeyboardStateTracker.refreshModifierStatus()
     }
 
     override fun onFinishInputView(z: Boolean) {

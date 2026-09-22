@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Simbolu tastatūra</string>
     <string name="settings_pkb_multifunction_action_voice">Balss ievade</string>
     <string name="settings_pkb_multifunction_key_title">Daudzfunkciju taustiņš</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Simbolu tastatūra paliek atvērta, lai varētu ievadīt vairākus simbolus</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Pēc viena simbola ievadīšanas atgriežas pie alfabēta</string>
-    <string name="settings_pkb_symbol_auto_close_title">Aizvērt simbolu tastatūru pēc simbola</string>
     <string name="settings_appearance_auto">Automātiska (sistēmas motīvs)</string>
     <string name="settings_appearance_classic">Klasiska</string>
     <string name="settings_appearance_dark">Tumša</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Netiek rādīts uz tastatūras</string>
     <string name="settings_customize_menu_instructions">Pieskarieties saīsnei un turiet to, pēc tam velciet, lai mainītu secību. Pirmās četras tiek rādītas tastatūras ievades izvēlnē.</string>
     <string name="settings_customize_menu_summary">Izvēlēties un pārkārtot ievades izvēlnes saīsnes</string>
-    <string name="settings_customize_menu_title">Pielāgot izvēlni</string>
+    <string name="settings_customize_menu_title">Pielāgot vienoto ievades izvēlni</string>
     <string name="settings_default_currency_summary">Atlasīts: %s</string>
     <string name="settings_default_currency_title">Noklusējuma valūtas simbols</string>
     <string name="settings_key_press_feedback_title">Taustiņa nospiešanas atgriezeniskā saite</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Atjauninājumu pārbaude neizdevās</string>
     <string name="settings_update_error_too_old">Šī versija ir pārāk veca, lai izlasītu atjauninājumu sarakstu. Lūdzu, atjauniniet manuāli.</string>
     <string name="settings_update_from_cache">Parādīts no pēdējās saglabātās pārbaudes</string>
-    <string name="settings_update_background_check_title">Ikdienas pārbaude fonā</string>
-    <string name="settings_update_background_check_summary">Pārbauda reizi dienā un paziņo jums. Lejupielāde un instalēšana vienmēr paliek manuālas.</string>
+    <string name="settings_update_background_check_title">Automātiski pārbaudīt atjauninājumus</string>
+    <string name="settings_update_background_check_summary">Saņemsiet paziņojumu, kad lejupielādei būs pieejama jauna versija.</string>
     <string name="settings_update_notification_text">Versija %1$s ir gatava lejupielādei</string>
     <string name="settings_update_unknown_sources_message">Android ir jāatļauj BBKB instalēt lietotnes. Iespējojiet instalēšanu no šā avota un pēc tam vēlreiz nospiediet Instalēt.</string>
     <string name="settings_update_open_settings">Atvērt iestatījumus</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Lejupielādēt</string>
     <string name="language_packs_retry">Mēģināt vēlreiz</string>
     <string name="language_packs_refresh">Meklēt vārdnīcas</string>
-    <string name="language_packs_catalog_offline">Katalogs no %1$s (bezsaistē)</string>
+    <string name="language_packs_load_ldb">Ielādēt LDB failu</string>
     <string name="language_packs_variant_summary">Tiek ielādēts %1$s vietā</string>
     <string name="language_packs_offer_message">Lejupielādēt %1$s vārdnīcu (%2$s)?</string>
     <string name="language_packs_offer_not_now">Ne tagad</string>

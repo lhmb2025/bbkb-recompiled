@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Bàn phím biểu tượng</string>
     <string name="settings_pkb_multifunction_action_voice">Nhập bằng giọng nói</string>
     <string name="settings_pkb_multifunction_key_title">Phím đa chức năng</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Bàn phím biểu tượng luôn mở để bạn nhập nhiều biểu tượng</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Quay lại bảng chữ cái sau khi nhập một biểu tượng</string>
-    <string name="settings_pkb_symbol_auto_close_title">Đóng bàn phím biểu tượng sau khi nhập biểu tượng</string>
     <string name="settings_appearance_auto">Tự động (giao diện hệ thống)</string>
     <string name="settings_appearance_classic">Cổ điển</string>
     <string name="settings_appearance_dark">Tối</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Không hiển thị trên bàn phím</string>
     <string name="settings_customize_menu_instructions">Chạm và giữ một lối tắt, rồi kéo để sắp xếp lại. Bốn lối tắt đầu tiên sẽ xuất hiện trên trình đơn nhập liệu của bàn phím.</string>
     <string name="settings_customize_menu_summary">Chọn và sắp xếp lại các lối tắt trên trình đơn nhập liệu</string>
-    <string name="settings_customize_menu_title">Tùy chỉnh trình đơn</string>
+    <string name="settings_customize_menu_title">Tùy chỉnh trình đơn nhập liệu hợp nhất</string>
     <string name="settings_default_currency_summary">Đã chọn: %s</string>
     <string name="settings_default_currency_title">Ký hiệu tiền tệ mặc định</string>
     <string name="settings_key_press_feedback_title">Phản hồi khi nhấn phím</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Kiểm tra cập nhật thất bại</string>
     <string name="settings_update_error_too_old">Phiên bản này quá cũ để đọc danh sách cập nhật. Vui lòng cập nhật thủ công.</string>
     <string name="settings_update_from_cache">Hiển thị từ lần kiểm tra đã lưu gần nhất</string>
-    <string name="settings_update_background_check_title">Kiểm tra hằng ngày ở chế độ nền</string>
-    <string name="settings_update_background_check_summary">Kiểm tra một lần mỗi ngày và thông báo cho bạn. Việc tải xuống và cài đặt luôn do bạn thực hiện.</string>
+    <string name="settings_update_background_check_title">Tự động kiểm tra bản cập nhật</string>
+    <string name="settings_update_background_check_summary">Nhận thông báo khi có phiên bản mới để tải xuống.</string>
     <string name="settings_update_notification_text">Phiên bản %1$s đã sẵn sàng để tải xuống</string>
     <string name="settings_update_unknown_sources_message">Android phải cho phép BBKB cài đặt ứng dụng. Hãy bật cài đặt từ nguồn này, rồi nhấn Cài đặt lần nữa.</string>
     <string name="settings_update_open_settings">Mở cài đặt</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Tải xuống</string>
     <string name="language_packs_retry">Thử lại</string>
     <string name="language_packs_refresh">Kiểm tra từ điển</string>
-    <string name="language_packs_catalog_offline">Danh mục từ %1$s (ngoại tuyến)</string>
+    <string name="language_packs_load_ldb">Tải tệp LDB</string>
     <string name="language_packs_variant_summary">Tải thay cho %1$s</string>
     <string name="language_packs_offer_message">Tải từ điển %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Để sau</string>

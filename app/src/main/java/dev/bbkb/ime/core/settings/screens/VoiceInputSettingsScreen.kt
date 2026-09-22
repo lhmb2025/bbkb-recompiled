@@ -98,9 +98,9 @@ fun VoiceInputSettingsScreen(
     }
     var blockOffensive by remember {
         // Frozen key, and the engine reads it with
-        // resources.getBoolean(R.bool.config_block_potentially_offensive) — which is true — via
-        // SettingsManager.isBlockOffensiveEnabled, so a hard-coded false here would show the
-        // toggle off while the recogniser was masking.
+        // resources.getBoolean(R.bool.config_block_potentially_offensive) — now false — via
+        // SettingsManager.isBlockOffensiveEnabled. Read the resource rather than hard-coding a
+        // default here, so the row and the recogniser can never disagree about it.
         mutableStateOf(prefs.getBoolean("pref_key_block_potentially_offensive",
             context.resources.getBoolean(R.bool.config_block_potentially_offensive)))
     }

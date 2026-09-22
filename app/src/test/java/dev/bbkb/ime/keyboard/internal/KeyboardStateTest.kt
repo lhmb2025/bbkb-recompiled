@@ -1513,7 +1513,6 @@ class KeyboardStateTest {
     @Test
     fun hardwareSymKey_armsThePkbSymbolEntryMethod() {
         fake.pkbDevice = true
-        fake.pkbSymbolAutoCloseEnabled = true
         startInput()
         tapSymbolKey() // in symbols, but by the on-screen SYM key: entry method 0
         fake.clear()
@@ -1561,9 +1560,8 @@ class KeyboardStateTest {
     }
 
     @Test
-    fun hardwareCharacterKey_closesAPkbSymbolKeyboardWhenAutoCloseIsOn() {
+    fun hardwareCharacterKey_closesAPkbSymbolKeyboardWhenSymIsNotHeld() {
         fake.pkbDevice = true
-        fake.pkbSymbolAutoCloseEnabled = true
         startInput()
         state.onSymbolShiftToggle(0, NO_RECAPITALIZE, true, true) // entry method 2
         fake.clear()
@@ -1575,9 +1573,9 @@ class KeyboardStateTest {
     }
 
     @Test
-    fun hardwareCharacterKey_keepsThePkbSymbolKeyboardWhenAutoCloseIsOff() {
+    fun hardwareCharacterKey_keepsThePkbSymbolKeyboardWhileSymIsHeld() {
         fake.pkbDevice = true
-        fake.pkbSymbolAutoCloseEnabled = false
+        fake.symKeyHeld = true
         startInput()
         state.onSymbolShiftToggle(0, NO_RECAPITALIZE, true, true)
         fake.clear()
@@ -1591,7 +1589,6 @@ class KeyboardStateTest {
     @Test
     fun hardwareModifierKeys_areIgnoredEntirely() {
         fake.pkbDevice = true
-        fake.pkbSymbolAutoCloseEnabled = true
         startInput()
         state.onSymbolShiftToggle(0, NO_RECAPITALIZE, true, true)
         fake.clear()
@@ -1601,7 +1598,7 @@ class KeyboardStateTest {
         }
 
         // CHARACTERISED: KEYCODE_SPACE (62) shares the "ignore" arm with the two shift keys, so a
-        // hardware space does not close an auto-close PKB symbol keyboard, while ENTER (66) does.
+        // hardware space does not close a PKB symbol keyboard, while ENTER (66) does.
         fake.assertNoCalls()
         assertTrue(state.isInSymbolMode)
     }
@@ -1609,7 +1606,6 @@ class KeyboardStateTest {
     @Test
     fun onSoftwareSymbolCommitted_closesThePkbSymbolKeyboardAfterTheCommit() {
         fake.pkbDevice = true
-        fake.pkbSymbolAutoCloseEnabled = true
         startInput()
         state.onSymbolShiftToggle(0, NO_RECAPITALIZE, true, true)
         fake.clear()
@@ -1639,7 +1635,6 @@ class KeyboardStateTest {
     @Test
     fun nonLetterKeyInAPkbSymEntry_leavesSymbolModeOnKeyDown() {
         fake.pkbDevice = true
-        fake.pkbSymbolAutoCloseEnabled = true
         startInput()
         state.onSymbolShiftToggle(0, NO_RECAPITALIZE, true, true)
         fake.clear()

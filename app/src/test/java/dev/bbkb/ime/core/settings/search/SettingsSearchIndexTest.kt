@@ -77,6 +77,22 @@ class SettingsSearchIndexTest {
         assertTrue("Duplicate (route, anchor) entries in index: $dupes", dupes.isEmpty())
     }
 
+    /**
+     * A route is one screen, and search groups its results under the hub the screen hangs off, so
+     * every entry pointing at the same screen must name the same category. Two entries that
+     * disagree put one screen's rows under two headings, which is what happens when a leaf screen
+     * is re-parented — "Slideboard settings" moving from Personalization to On-Screen Keyboard —
+     * and only some of its entries are moved with it.
+     */
+    @Test
+    fun everyRouteHasOneCategory() {
+        val split = SettingsSearchIndex.entries
+            .groupBy { it.route }
+            .filterValues { it.map { entry -> entry.categoryTitleRes }.distinct().size > 1 }
+            .keys
+        assertTrue("Routes indexed under more than one category: $split", split.isEmpty())
+    }
+
     @Test
     fun everyEntryHasKeywordsAndRoute() {
         val bad = SettingsSearchIndex.entries.filter { it.keywords.isBlank() || it.route.isBlank() }

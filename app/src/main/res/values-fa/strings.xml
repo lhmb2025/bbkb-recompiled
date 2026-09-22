@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">صفحه کلید نمادها</string>
     <string name="settings_pkb_multifunction_action_voice">ورودی صوتی</string>
     <string name="settings_pkb_multifunction_key_title">کلید چندکاره</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">صفحه کلید نمادها برای وارد کردن چند نماد باز می‌ماند</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">پس از وارد کردن یک نماد به حروف الفبا برمی‌گردد</string>
-    <string name="settings_pkb_symbol_auto_close_title">بستن صفحه کلید نمادها پس از نماد</string>
     <string name="settings_appearance_auto">خودکار (طرح زمینه سیستم)</string>
     <string name="settings_appearance_classic">کلاسیک</string>
     <string name="settings_appearance_dark">تیره</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">روی صفحه کلید نمایش داده نمی‌شود</string>
     <string name="settings_customize_menu_instructions">یک میانبر را لمس کنید و نگه دارید، سپس برای تغییر ترتیب بکشید. چهار میانبر نخست در منوی ورودی صفحه کلید نمایش داده می‌شوند.</string>
     <string name="settings_customize_menu_summary">انتخاب و تغییر ترتیب میانبرهای منوی ورودی</string>
-    <string name="settings_customize_menu_title">سفارشی‌سازی منو</string>
+    <string name="settings_customize_menu_title">سفارشی‌سازی منوی ورودی یکپارچه</string>
     <string name="settings_default_currency_summary">انتخاب‌شده: %s</string>
     <string name="settings_default_currency_title">نماد پیش‌فرض واحد پول</string>
     <string name="settings_key_press_feedback_title">بازخورد فشردن کلید</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">بررسی به‌روزرسانی ناموفق بود</string>
     <string name="settings_update_error_too_old">این نسخه برای خواندن فهرست به‌روزرسانی‌ها بسیار قدیمی است. لطفاً دستی به‌روزرسانی کنید.</string>
     <string name="settings_update_from_cache">از آخرین بررسی ذخیره‌شده نشان داده شده است</string>
-    <string name="settings_update_background_check_title">بررسی روزانه در پس‌زمینه</string>
-    <string name="settings_update_background_check_summary">روزی یک بار بررسی می‌کند و به شما اطلاع می‌دهد. دانلود و نصب همیشه دستی باقی می‌مانند.</string>
+    <string name="settings_update_background_check_title">بررسی خودکار به‌روزرسانی‌ها</string>
+    <string name="settings_update_background_check_summary">وقتی نسخه‌ای جدید برای دانلود در دسترس باشد، اعلان دریافت می‌کنید.</string>
     <string name="settings_update_notification_text">نسخه %1$s آماده دانلود است</string>
     <string name="settings_update_unknown_sources_message">اندروید باید به BBKB اجازه نصب برنامه بدهد. نصب از این منبع را فعال کنید و سپس دوباره نصب را بزنید.</string>
     <string name="settings_update_open_settings">باز کردن تنظیمات</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">بارگیری</string>
     <string name="language_packs_retry">تلاش مجدد</string>
     <string name="language_packs_refresh">بررسی واژه‌نامه‌ها</string>
-    <string name="language_packs_catalog_offline">فهرست از %1$s (آفلاین)</string>
+    <string name="language_packs_load_ldb">بارگذاری فایل LDB</string>
     <string name="language_packs_variant_summary">به‌جای %1$s بارگذاری می‌شود</string>
     <string name="language_packs_offer_message">واژه‌نامهٔ %1$s بارگیری شود (%2$s)؟</string>
     <string name="language_packs_offer_not_now">الان نه</string>

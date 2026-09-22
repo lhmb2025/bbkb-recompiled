@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">चिन्ह कीबोर्ड</string>
     <string name="settings_pkb_multifunction_action_voice">व्हॉइस इनपुट</string>
     <string name="settings_pkb_multifunction_key_title">बहुकार्यी की</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">अनेक चिन्हे टाकण्यासाठी चिन्ह कीबोर्ड उघडा राहतो</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">एक चिन्ह टाकल्यानंतर वर्णमालेवर परत येतो</string>
-    <string name="settings_pkb_symbol_auto_close_title">चिन्हानंतर चिन्ह कीबोर्ड बंद करा</string>
     <string name="settings_appearance_auto">स्वयंचलित (सिस्टम थीम)</string>
     <string name="settings_appearance_classic">क्लासिक</string>
     <string name="settings_appearance_dark">गडद</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">कीबोर्डवर दाखवले नाही</string>
     <string name="settings_customize_menu_instructions">शॉर्टकटला स्पर्श करून धरून ठेवा, नंतर क्रम बदलण्यासाठी ड्रॅग करा. पहिले चार कीबोर्डच्या इनपुट मेनूवर दिसतात.</string>
     <string name="settings_customize_menu_summary">इनपुट मेनूचे शॉर्टकट निवडा आणि त्यांचा क्रम बदला</string>
-    <string name="settings_customize_menu_title">मेनू सानुकूल करा</string>
+    <string name="settings_customize_menu_title">एकत्रित इनपुट मेनू सानुकूल करा</string>
     <string name="settings_default_currency_summary">निवडलेले: %s</string>
     <string name="settings_default_currency_title">डीफॉल्ट चलन चिन्ह</string>
     <string name="settings_key_press_feedback_title">की दाबल्याचा फीडबॅक</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">अद्यतन तपासणी अयशस्वी झाली</string>
     <string name="settings_update_error_too_old">ही आवृत्ती अद्यतन यादी वाचण्यासाठी फार जुनी आहे. कृपया स्वतः अद्यतनित करा.</string>
     <string name="settings_update_from_cache">शेवटच्या जतन केलेल्या तपासणीवरून दाखवले</string>
-    <string name="settings_update_background_check_title">दैनंदिन पार्श्वभूमी तपासणी</string>
-    <string name="settings_update_background_check_summary">दिवसातून एकदा तपासते आणि तुम्हाला कळवते. डाउनलोड आणि स्थापना नेहमी तुमच्या हातात राहतात.</string>
+    <string name="settings_update_background_check_title">अपडेट आपोआप तपासा</string>
+    <string name="settings_update_background_check_summary">डाउनलोडसाठी नवीन आवृत्ती उपलब्ध झाल्यावर सूचना मिळवा.</string>
     <string name="settings_update_notification_text">आवृत्ती %1$s डाउनलोडसाठी तयार आहे</string>
     <string name="settings_update_unknown_sources_message">अ‍ॅप्स स्थापित करण्यासाठी Android ने BBKB ला परवानगी द्यावी लागेल. या स्रोतावरून स्थापना सुरू करा आणि पुन्हा स्थापित करा दाबा.</string>
     <string name="settings_update_open_settings">सेटिंग्ज उघडा</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">डाउनलोड</string>
     <string name="language_packs_retry">पुन्हा प्रयत्न करा</string>
     <string name="language_packs_refresh">शब्दकोश तपासा</string>
-    <string name="language_packs_catalog_offline">%1$s चा कॅटलॉग (ऑफलाइन)</string>
+    <string name="language_packs_load_ldb">LDB फाइल लोड करा</string>
     <string name="language_packs_variant_summary">%1$s च्या जागी लोड होते</string>
     <string name="language_packs_offer_message">%1$s शब्दकोश डाउनलोड करायचा (%2$s)?</string>
     <string name="language_packs_offer_not_now">आता नको</string>

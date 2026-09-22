@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Клавиатура със символи</string>
     <string name="settings_pkb_multifunction_action_voice">Гласово въвеждане</string>
     <string name="settings_pkb_multifunction_key_title">Многофункционален клавиш</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Клавиатурата със символи остава отворена за въвеждане на няколко символа</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Връща се към буквите след въвеждане на един символ</string>
-    <string name="settings_pkb_symbol_auto_close_title">Затваряне на клавиатурата със символи след символ</string>
     <string name="settings_appearance_auto">Автоматично (системна тема)</string>
     <string name="settings_appearance_classic">Класическа</string>
     <string name="settings_appearance_dark">Тъмна</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Не се показва на клавиатурата</string>
     <string name="settings_customize_menu_instructions">Докоснете и задръжте пряк път, след което го плъзнете, за да промените реда. Първите четири се показват в менюто за въвеждане на клавиатурата.</string>
     <string name="settings_customize_menu_summary">Изберете и подредете преките пътища в менюто за въвеждане</string>
-    <string name="settings_customize_menu_title">Персонализиране на менюто</string>
+    <string name="settings_customize_menu_title">Персонализиране на унифицираното меню за въвеждане</string>
     <string name="settings_default_currency_summary">Избрано: %s</string>
     <string name="settings_default_currency_title">Символ на валутата по подразбиране</string>
     <string name="settings_key_press_feedback_title">Обратна връзка при натискане на клавиш</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Проверката за актуализации не успя</string>
     <string name="settings_update_error_too_old">Тази версия е твърде стара, за да прочете списъка с актуализации. Обновете ръчно.</string>
     <string name="settings_update_from_cache">Показано от последната запазена проверка</string>
-    <string name="settings_update_background_check_title">Ежедневна проверка във фонов режим</string>
-    <string name="settings_update_background_check_summary">Проверява веднъж дневно и ви известява. Изтеглянето и инсталирането винаги остават ръчни.</string>
+    <string name="settings_update_background_check_title">Автоматична проверка за актуализации</string>
+    <string name="settings_update_background_check_summary">Получавайте известие, когато е налична нова версия за изтегляне.</string>
     <string name="settings_update_notification_text">Версия %1$s е готова за изтегляне</string>
     <string name="settings_update_unknown_sources_message">Android трябва да разреши на BBKB да инсталира приложения. Разрешете инсталиране от този източник и натиснете Инсталиране отново.</string>
     <string name="settings_update_open_settings">Отвори настройките</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Изтегляне</string>
     <string name="language_packs_retry">Опитайте отново</string>
     <string name="language_packs_refresh">Проверка за речници</string>
-    <string name="language_packs_catalog_offline">Каталог от %1$s (офлайн)</string>
+    <string name="language_packs_load_ldb">Зареждане на LDB файл</string>
     <string name="language_packs_variant_summary">Зарежда се вместо %1$s</string>
     <string name="language_packs_offer_message">Да се изтегли ли речникът за %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Не сега</string>

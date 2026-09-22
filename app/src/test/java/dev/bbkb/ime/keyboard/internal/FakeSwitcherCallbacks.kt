@@ -169,8 +169,11 @@ class FakeSwitcherCallbacks : KeyboardState.SwitcherCallbacks {
     var pkbSymbolCustomizationEnabled: Boolean = false
     var pkbCustomPageFirst: Boolean = false
 
-    /** Whether a PKB SYM-key entry auto-closes back to the alphabet after one character. */
-    var pkbSymbolAutoCloseEnabled: Boolean = false
+    /**
+     * Whether the hardware SYM key is being physically held. A PKB SYM-key entry closes back to
+     * the alphabet after one character unless it is — holding SYM keeps the board open.
+     */
+    var symKeyHeld: Boolean = false
 
     /** Feeds `getSymbolShiftStateFromOrder()`; see the order table in `KeyboardStateTest`. */
     var symbolPageOrderSetting: Int = 0
@@ -243,7 +246,7 @@ class FakeSwitcherCallbacks : KeyboardState.SwitcherCallbacks {
 
     override fun isPkbCustomPageFirst(): Boolean = pkbCustomPageFirst
 
-    override fun isPkbSymbolAutoCloseEnabled(): Boolean = pkbSymbolAutoCloseEnabled
+    override fun isSymKeyHeld(): Boolean = symKeyHeld
 
     override fun getSymbolPageOrder(): Int = symbolPageOrderSetting
 

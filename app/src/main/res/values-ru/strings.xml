@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Клавиатура символов</string>
     <string name="settings_pkb_multifunction_action_voice">Голосовой ввод</string>
     <string name="settings_pkb_multifunction_key_title">Многофункциональная клавиша</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Клавиатура символов остается открытой для ввода нескольких символов</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Возврат к буквам после ввода одного символа</string>
-    <string name="settings_pkb_symbol_auto_close_title">Закрывать клавиатуру символов после символа</string>
     <string name="settings_appearance_auto">Авто (системная тема)</string>
     <string name="settings_appearance_classic">Классическая</string>
     <string name="settings_appearance_dark">Темная</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Не показывается на клавиатуре</string>
     <string name="settings_customize_menu_instructions">Нажмите и удерживайте ярлык, затем перетащите его, чтобы изменить порядок. Первые четыре отображаются в меню ввода клавиатуры.</string>
     <string name="settings_customize_menu_summary">Выберите ярлыки меню ввода и их порядок</string>
-    <string name="settings_customize_menu_title">Настроить меню</string>
+    <string name="settings_customize_menu_title">Настроить единое меню ввода</string>
     <string name="settings_default_currency_summary">Выбрано: %s</string>
     <string name="settings_default_currency_title">Символ валюты по умолчанию</string>
     <string name="settings_key_press_feedback_title">Отклик на нажатие клавиш</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Не удалось проверить обновления</string>
     <string name="settings_update_error_too_old">Эта версия слишком старая, чтобы прочитать список обновлений. Обновите вручную.</string>
     <string name="settings_update_from_cache">Показано по последней сохранённой проверке</string>
-    <string name="settings_update_background_check_title">Ежедневная проверка в фоне</string>
-    <string name="settings_update_background_check_summary">Проверяет раз в сутки и уведомляет вас. Загрузка и установка всегда выполняются вручную.</string>
+    <string name="settings_update_background_check_title">Автоматически проверять обновления</string>
+    <string name="settings_update_background_check_summary">Вы получите уведомление, когда новая версия станет доступна для загрузки.</string>
     <string name="settings_update_notification_text">Версия %1$s готова к загрузке</string>
     <string name="settings_update_unknown_sources_message">Android должен разрешить BBKB устанавливать приложения. Разрешите установку из этого источника и снова нажмите «Установить».</string>
     <string name="settings_update_open_settings">Открыть настройки</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Загрузить</string>
     <string name="language_packs_retry">Повторить</string>
     <string name="language_packs_refresh">Проверить словари</string>
-    <string name="language_packs_catalog_offline">Каталог от %1$s (офлайн)</string>
+    <string name="language_packs_load_ldb">Загрузить файл LDB</string>
     <string name="language_packs_variant_summary">Загружается вместо %1$s</string>
     <string name="language_packs_offer_message">Загрузить словарь %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Не сейчас</string>

@@ -202,7 +202,6 @@ fun SettingsNavHost(
         // 3. Appearance and layout hub
         composable(SettingsRoute.AppearanceLayout.route) {
             AppearanceLayoutScreen(
-                onNavigateToSlideboard = go(SettingsRoute.SlideboardSettings),
                 onNavigateToSymbolCustomization = go(SettingsRoute.SymbolCustomization),
                 onNavigateBack = back
             )
@@ -213,7 +212,8 @@ fun SettingsNavHost(
             TouchScreenKeyboardScreen(
                 onNavigateBack = back,
                 onNavigateToKeyPressFeedback = go(SettingsRoute.TouchFeedback),
-                onNavigateToCustomizeMenu = go(SettingsRoute.CustomizeMenu)
+                onNavigateToCustomizeMenu = go(SettingsRoute.CustomizeMenu),
+                onNavigateToSlideboard = go(SettingsRoute.SlideboardSettings)
             )
         }
 

@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Тастатура со симболи</string>
     <string name="settings_pkb_multifunction_action_voice">Гласовно внесување</string>
     <string name="settings_pkb_multifunction_key_title">Мултифункциско копче</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Тастатурата со симболи останува отворена за внесување повеќе симболи</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Се враќа на буквите по внесување на еден симбол</string>
-    <string name="settings_pkb_symbol_auto_close_title">Затворање на тастатурата со симболи по симбол</string>
     <string name="settings_appearance_auto">Автоматски (системска тема)</string>
     <string name="settings_appearance_classic">Класична</string>
     <string name="settings_appearance_dark">Темна</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Не се прикажува на тастатурата</string>
     <string name="settings_customize_menu_instructions">Допрете и задржете кратенка, па влечете за да го промените редоследот. Првите четири се прикажуваат во менито за внесување на тастатурата.</string>
     <string name="settings_customize_menu_summary">Изберете и подредете ги кратенките во менито за внесување</string>
-    <string name="settings_customize_menu_title">Приспособување на менито</string>
+    <string name="settings_customize_menu_title">Приспособување на обединетото мени за внесување</string>
     <string name="settings_default_currency_summary">Избрано: %s</string>
     <string name="settings_default_currency_title">Стандарден симбол за валута</string>
     <string name="settings_key_press_feedback_title">Повратна информација при притискање копче</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Проверката за ажурирања не успеа</string>
     <string name="settings_update_error_too_old">Оваа верзија е премногу стара за да ја прочита листата на ажурирања. Ажурирајте рачно.</string>
     <string name="settings_update_from_cache">Прикажано од последната зачувана проверка</string>
-    <string name="settings_update_background_check_title">Дневна проверка во заднина</string>
-    <string name="settings_update_background_check_summary">Проверува еднаш дневно и ве известува. Преземањето и инсталирањето секогаш остануваат рачни.</string>
+    <string name="settings_update_background_check_title">Автоматска проверка за ажурирања</string>
+    <string name="settings_update_background_check_summary">Добивајте известување кога ќе биде достапна нова верзија за преземање.</string>
     <string name="settings_update_notification_text">Верзијата %1$s е готова за преземање</string>
     <string name="settings_update_unknown_sources_message">Android мора да дозволи BBKB да инсталира апликации. Овозможете инсталирање од овој извор, па повторно притиснете Инсталирај.</string>
     <string name="settings_update_open_settings">Отвори поставки</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Преземи</string>
     <string name="language_packs_retry">Обиди се повторно</string>
     <string name="language_packs_refresh">Провери речници</string>
-    <string name="language_packs_catalog_offline">Каталог од %1$s (офлајн)</string>
+    <string name="language_packs_load_ldb">Вчитај LDB-датотека</string>
     <string name="language_packs_variant_summary">Се вчитува наместо %1$s</string>
     <string name="language_packs_offer_message">Да се преземе речникот за %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Не сега</string>

@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Клавіятура сімвалаў</string>
     <string name="settings_pkb_multifunction_action_voice">Галасавы ўвод</string>
     <string name="settings_pkb_multifunction_key_title">Шматфункцыянальная клавіша</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Клавіятура сімвалаў застаецца адкрытай для ўводу некалькіх сімвалаў</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Вяртаецца да літар пасля ўводу аднаго сімвала</string>
-    <string name="settings_pkb_symbol_auto_close_title">Закрываць клавіятуру сімвалаў пасля сімвала</string>
     <string name="settings_appearance_auto">Аўта (сістэмная тэма)</string>
     <string name="settings_appearance_classic">Класічная</string>
     <string name="settings_appearance_dark">Цёмная</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Не паказваецца на клавіятуры</string>
     <string name="settings_customize_menu_instructions">Націсніце і ўтрымлівайце ярлык, потым перацягніце яго, каб змяніць парадак. Першыя чатыры з\'яўляюцца ў меню ўводу клавіятуры.</string>
     <string name="settings_customize_menu_summary">Выберыце ярлыкі меню ўводу і іх парадак</string>
-    <string name="settings_customize_menu_title">Наладзіць меню</string>
+    <string name="settings_customize_menu_title">Наладзіць адзінае меню ўводу</string>
     <string name="settings_default_currency_summary">Выбрана: %s</string>
     <string name="settings_default_currency_title">Стандартны сімвал валюты</string>
     <string name="settings_key_press_feedback_title">Водгук на націсканне клавіш</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Не ўдалося праверыць абнаўленні</string>
     <string name="settings_update_error_too_old">Гэта версія занадта старая, каб прачытаць спіс абнаўленняў. Абнавіце ўручную.</string>
     <string name="settings_update_from_cache">Паказана з апошняй зберажонай праверкі</string>
-    <string name="settings_update_background_check_title">Штодзённая праверка ў фоне</string>
-    <string name="settings_update_background_check_summary">Праверка раз у дзень з апавяшчэннем. Спампоўка і ўстаноўка заўсёды застаюцца ўручную.</string>
+    <string name="settings_update_background_check_title">Аўтаматычна правяраць абнаўленні</string>
+    <string name="settings_update_background_check_summary">Атрымлівайце апавяшчэнне, калі новая версія будзе даступная для спампоўкі.</string>
     <string name="settings_update_notification_text">Версія %1$s гатова да спампоўкі</string>
     <string name="settings_update_unknown_sources_message">Android павінен дазволіць BBKB устанаўліваць праграмы. Дазвольце ўстаноўку з гэтай крыніцы і яшчэ раз натысніце Устанавіць.</string>
     <string name="settings_update_open_settings">Адкрыць налады</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Спампаваць</string>
     <string name="language_packs_retry">Паўтарыць</string>
     <string name="language_packs_refresh">Праверыць слоўнікі</string>
-    <string name="language_packs_catalog_offline">Каталог ад %1$s (аўтаномна)</string>
+    <string name="language_packs_load_ldb">Загрузіць файл LDB</string>
     <string name="language_packs_variant_summary">Загружаецца замест %1$s</string>
     <string name="language_packs_offer_message">Спампаваць слоўнік %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Не зараз</string>

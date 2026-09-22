@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">符号键盘</string>
     <string name="settings_pkb_multifunction_action_voice">语音输入</string>
     <string name="settings_pkb_multifunction_key_title">多功能键</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">符号键盘保持打开，以便输入多个符号</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">输入一个符号后返回字母键盘</string>
-    <string name="settings_pkb_symbol_auto_close_title">输入符号后关闭符号键盘</string>
     <string name="settings_appearance_auto">自动（系统主题）</string>
     <string name="settings_appearance_classic">经典</string>
     <string name="settings_appearance_dark">深色</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">不在键盘上显示</string>
     <string name="settings_customize_menu_instructions">触摸并按住某个快捷方式，然后拖动以重新排序。前四个会显示在键盘的输入菜单中。</string>
     <string name="settings_customize_menu_summary">选择输入菜单快捷方式并重新排序</string>
-    <string name="settings_customize_menu_title">自定义菜单</string>
+    <string name="settings_customize_menu_title">自定义统一输入菜单</string>
     <string name="settings_default_currency_summary">已选择：%s</string>
     <string name="settings_default_currency_title">默认货币符号</string>
     <string name="settings_key_press_feedback_title">按键反馈</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">检查更新失败</string>
     <string name="settings_update_error_too_old">此版本过旧，无法读取更新列表。请手动更新。</string>
     <string name="settings_update_from_cache">显示的是上次保存的检查结果</string>
-    <string name="settings_update_background_check_title">每日后台检查</string>
-    <string name="settings_update_background_check_summary">每天检查一次并通知你。下载和安装始终由你手动完成。</string>
+    <string name="settings_update_background_check_title">自动检查更新</string>
+    <string name="settings_update_background_check_summary">有新版本可供下载时通知你。</string>
     <string name="settings_update_notification_text">版本 %1$s 已可下载</string>
     <string name="settings_update_unknown_sources_message">Android 必须允许 BBKB 安装应用。请开启来自此来源的安装，然后再次点按安装。</string>
     <string name="settings_update_open_settings">打开设置</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">下载</string>
     <string name="language_packs_retry">重试</string>
     <string name="language_packs_refresh">检查词典</string>
-    <string name="language_packs_catalog_offline">%1$s的目录（离线）</string>
+    <string name="language_packs_load_ldb">加载 LDB 文件</string>
     <string name="language_packs_variant_summary">将代替%1$s加载</string>
     <string name="language_packs_offer_message">下载%1$s词典（%2$s）？</string>
     <string name="language_packs_offer_not_now">以后再说</string>

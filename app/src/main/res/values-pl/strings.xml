@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Klawiatura symboli</string>
     <string name="settings_pkb_multifunction_action_voice">Wprowadzanie głosowe</string>
     <string name="settings_pkb_multifunction_key_title">Klawisz wielofunkcyjny</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Klawiatura symboli pozostaje otwarta, aby wpisać kilka symboli</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Po wpisaniu jednego symbolu wraca do liter</string>
-    <string name="settings_pkb_symbol_auto_close_title">Zamykaj klawiaturę symboli po symbolu</string>
     <string name="settings_appearance_auto">Automatyczny (motyw systemu)</string>
     <string name="settings_appearance_classic">Klasyczny</string>
     <string name="settings_appearance_dark">Ciemny</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Niewyświetlane na klawiaturze</string>
     <string name="settings_customize_menu_instructions">Dotknij skrótu i przytrzymaj, a następnie przeciągnij, aby zmienić kolejność. Pierwsze cztery pojawią się w menu wprowadzania klawiatury.</string>
     <string name="settings_customize_menu_summary">Wybierz skróty menu wprowadzania i ustal ich kolejność</string>
-    <string name="settings_customize_menu_title">Dostosuj menu</string>
+    <string name="settings_customize_menu_title">Dostosuj ujednolicone menu wprowadzania</string>
     <string name="settings_default_currency_summary">Wybrano: %s</string>
     <string name="settings_default_currency_title">Domyślny symbol waluty</string>
     <string name="settings_key_press_feedback_title">Reakcja na naciśnięcie klawisza</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Sprawdzanie aktualizacji nie udało się</string>
     <string name="settings_update_error_too_old">Ta wersja jest za stara, aby przeczytać listę aktualizacji. Zaktualizuj ręcznie.</string>
     <string name="settings_update_from_cache">Pokazane na podstawie ostatniego zapisanego sprawdzenia</string>
-    <string name="settings_update_background_check_title">Codzienne sprawdzanie w tle</string>
-    <string name="settings_update_background_check_summary">Sprawdza raz na dobę i powiadamia. Pobieranie i instalacja zawsze pozostają ręczne.</string>
+    <string name="settings_update_background_check_title">Automatycznie sprawdzaj aktualizacje</string>
+    <string name="settings_update_background_check_summary">Otrzymasz powiadomienie, gdy nowa wersja będzie dostępna do pobrania.</string>
     <string name="settings_update_notification_text">Wersja %1$s jest gotowa do pobrania</string>
     <string name="settings_update_unknown_sources_message">Android musi zezwolić BBKB na instalowanie aplikacji. Włącz instalowanie z tego źródła, a potem ponownie naciśnij Zainstaluj.</string>
     <string name="settings_update_open_settings">Otwórz ustawienia</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Pobierz</string>
     <string name="language_packs_retry">Spróbuj ponownie</string>
     <string name="language_packs_refresh">Sprawdź słowniki</string>
-    <string name="language_packs_catalog_offline">Katalog z %1$s (offline)</string>
+    <string name="language_packs_load_ldb">Wczytaj plik LDB</string>
     <string name="language_packs_variant_summary">Wczytywany zamiast %1$s</string>
     <string name="language_packs_offer_message">Pobrać słownik %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Nie teraz</string>

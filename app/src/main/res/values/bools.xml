@@ -29,7 +29,10 @@
     <!-- ==================== -->
     <!-- Keyboard behaviour -->
     <!-- ==================== -->
-    <bool name="config_block_potentially_offensive">true</bool>
+    <!-- Off by default: dictation returns what was actually said unless the user asks for it to
+         be masked. Read by SettingsManager.isBlockOffensiveEnabled and by the voice settings row
+         (pref_key_block_potentially_offensive), so this one value is the default everywhere. -->
+    <bool name="config_block_potentially_offensive">false</bool>
     <bool name="config_enable_show_key_preview_popup_option">true</bool>
     <bool name="config_key_selection_by_dragging_finger">true</bool>
     <bool name="config_show_more_keys_keyboard_at_touched_point">false</bool>

@@ -65,6 +65,7 @@ import dev.bbkb.ime.core.languagepack.InstalledPacks
 import dev.bbkb.ime.core.languagepack.PackCatalog
 import dev.bbkb.ime.core.languagepack.PackDownloadManager
 import dev.bbkb.ime.core.languagepack.PackInstallService
+import dev.bbkb.ime.core.languagepack.PackListing
 import dev.bbkb.ime.core.languagepack.UninstallOutcome
 import dev.bbkb.ime.core.languagepack.PackState
 import dev.bbkb.ime.core.languagepack.PackText
@@ -92,7 +93,7 @@ import androidx.compose.runtime.Immutable
  * Two sections. **Installed** is the older half of the screen — the packs in the APK, the ones
  * the user side-loaded with the "+" button, and the regional variant radio lists. **Available to
  * download** is the published catalogue ([PackCatalog]) minus what is installed, one row per
- * language with a size and a Download button.
+ * downloadable pack with a size and a Download button.
  *
  * Three things about it are deliberate:
  *
@@ -102,9 +103,9 @@ import androidx.compose.runtime.Immutable
  *  - **Downloads are not owned by this screen.** [PackDownloadManager] is process-wide; rotating
  *    the phone or leaving the screen mid-download changes nothing, and coming back re-attaches to
  *    the progress that has been running all along.
- *  - **An offline catalogue is still a catalogue.** [ManifestSource] serves its on-disk copy when
- *    there is no network, and the screen says so ("Catalogue from … (offline)") rather than
- *    showing an empty list or an error.
+ *  - **Both lists are flat and alphabetical.** [PackListing] decides the order for both halves,
+ *    and a regional dictionary that loads in place of another language is an ordinary row that
+ *    says so in its summary rather than an indented child of the language it replaces.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -144,6 +145,11 @@ fun LanguagePacksScreen(
 
     val catalog = remember(manifest, installedPacks, downloadStates) {
         manifest?.let { PackCatalog.from(it, installedPacks, downloadStates) }
+    }
+    // One flat alphabetical list, variants included: the section is a list of things to download,
+    // not a map of the catalogue's group structure.
+    val availablePacks = remember(catalog) {
+        catalog?.let { PackListing.available(it.rows) }.orEmpty()
     }
 
     LaunchedEffect(refreshCount) {
@@ -235,7 +241,7 @@ fun LanguagePacksScreen(
             ExtendedFloatingActionButton(
                 onClick = { filePickerLauncher.launch("*/*") }, // any file; validated as LDB after
                 icon = { Icon(Icons.Default.Add, contentDescription = null) },
-                text = { Text("Add dictionary") }
+                text = { Text(stringResource(R.string.language_packs_load_ldb)) }
             )
         }
     ) { paddingValues ->
@@ -301,16 +307,17 @@ fun LanguagePacksScreen(
                     )
                 }
             }
-            catalog?.let { loaded ->
-                if (loaded.fromCache) {
-                    item(key = "available-provenance") {
-                        PackMessageRow(message = PackText.catalogueAsOf(context, loaded.fetchedAt))
-                    }
-                }
+            if (catalog != null) {
                 val packs = manifest?.packs
-                items(loaded.availableRows, key = { "available-" + it.locale }) { row ->
-                    AvailablePackRow(
-                        row = row,
+                items(availablePacks, key = { "available-" + it.locale }) { available ->
+                    PackActionRow(
+                        item = available.item,
+                        // Named, not implied: installing one of these REPLACES the dictionary the
+                        // language loads today, which is not what "German (Switzerland)" on its
+                        // own suggests — and the row no longer sits under the language it names.
+                        summary = available.replaces?.let {
+                            context.getString(R.string.language_packs_variant_summary, it)
+                        },
                         onDownload = { item ->
                             packs?.let { downloads.download(it, item.entry) }
                         },
@@ -555,8 +562,8 @@ private fun PackLoadingRow() {
 }
 
 /**
- * A sentence about the section rather than about a pack: "Catalogue from … (offline)", or why the
- * catalogue is not there, with the one action that might change that.
+ * A sentence about the section rather than about a pack: why the catalogue is not there, with the
+ * one action that might change that.
  */
 @Composable
 private fun PackMessageRow(
@@ -584,65 +591,19 @@ private fun PackMessageRow(
 }
 
 /**
- * One language in the **Available to download** section: the language's own dictionary, and under
- * it the regional dictionaries that would load in its place.
- *
- * The base row is a header rather than a button when the base pack is already installed — that
- * happens for German, French, Italian and Dutch, which ship with the app and whose Swiss and
- * Belgian variants are the only downloadable thing about them. Without the header those variants
- * would appear as four unexplained rows named after countries.
- */
-@Composable
-private fun AvailablePackRow(
-    row: PackCatalog.Row,
-    onDownload: (PackCatalog.Item) -> Unit,
-    onCancel: (String) -> Unit,
-    onRetry: (PackCatalog.Item) -> Unit,
-) {
-    val context = LocalContext.current
-    val spacing = LocalSpacing.current
-
-    if (row.base.state !is PackState.Installed) {
-        PackActionRow(
-            item = row.base,
-            summary = null,
-            onDownload = onDownload,
-            onCancel = onCancel,
-            onRetry = onRetry,
-        )
-    } else if (row.availableVariants.isNotEmpty()) {
-        PreferenceItem(
-            title = row.displayName,
-            summary = null,
-            leading = { LanguageCodeBadge(row.locale) },
-            trailing = { PreinstalledTag() },
-        )
-    }
-
-    row.availableVariants.forEach { variant ->
-        PackActionRow(
-            item = variant,
-            // Named, not implied: installing one of these REPLACES the dictionary the language
-            // loads today, which is not what "German (Switzerland)" on its own suggests.
-            summary = context.getString(R.string.language_packs_variant_summary, row.displayName),
-            indent = spacing.iconSize + spacing.iconTextGap,
-            onDownload = onDownload,
-            onCancel = onCancel,
-            onRetry = onRetry,
-        )
-    }
-}
-
-/**
  * One downloadable pack: its name, its size or its progress, and the single action its state
  * allows. Available offers Download, downloading offers Cancel, a failure offers Try again —
  * never two at once, which is what keeps a 48dp row readable on a 1440x1440 KEY2 screen.
+ *
+ * Every row is drawn the same way, at the same x positions, whether it is a language's own
+ * dictionary or one of the four regional ones that load in place of another language: those used
+ * to be indented under their base language, which said nothing an ordinary reader could act on
+ * that [summary] does not say in words.
  */
 @Composable
 private fun PackActionRow(
     item: PackCatalog.Item,
     summary: String?,
-    indent: androidx.compose.ui.unit.Dp = 0.dp,
     onDownload: (PackCatalog.Item) -> Unit,
     onCancel: (String) -> Unit,
     onRetry: (PackCatalog.Item) -> Unit,
@@ -660,7 +621,6 @@ private fun PackActionRow(
         title = item.displayName,
         summary = summaryLine,
         leading = { LanguageCodeBadge(item.locale) },
-        modifier = Modifier.padding(start = indent),
         trailing = {
             when (state) {
                 is PackState.Downloading -> Row(verticalAlignment = Alignment.CenterVertically) {
@@ -782,15 +742,17 @@ private suspend fun loadLanguagePacks(
                 }
             }
             
-            // Sort by display name
-            packs.sortBy { it.displayName }
             
         } catch (e: Exception) {
             // Handle errors gracefully
         }
         
+        // Alphabetical by the name on the row, in the user's own alphabet - the same ordering
+        // the downloadable half uses, decided in the same place.
+        val sorted = PackListing.byDisplayName(packs) { it.displayName }
+
         withContext(Dispatchers.Main) {
-            onResult(packs)
+            onResult(sorted)
         }
     }
 }

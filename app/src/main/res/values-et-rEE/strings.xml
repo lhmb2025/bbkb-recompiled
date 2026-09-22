@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Sümboliklaviatuur</string>
     <string name="settings_pkb_multifunction_action_voice">Häälsisestus</string>
     <string name="settings_pkb_multifunction_key_title">Multifunktsionaalne klahv</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Sümboliklaviatuur jääb avatuks mitme sümboli sisestamiseks</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Naaseb pärast ühe sümboli sisestamist tähestikku</string>
-    <string name="settings_pkb_symbol_auto_close_title">Sulge sümboliklaviatuur pärast sümbolit</string>
     <string name="settings_appearance_auto">Automaatne (süsteemi teema)</string>
     <string name="settings_appearance_classic">Klassikaline</string>
     <string name="settings_appearance_dark">Tume</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Klaviatuuril ei kuvata</string>
     <string name="settings_customize_menu_instructions">Puudutage otseteed ja hoidke seda all, seejärel lohistage järjekorra muutmiseks. Esimesed neli kuvatakse klaviatuuri sisestusmenüüs.</string>
     <string name="settings_customize_menu_summary">Valige sisestusmenüü otseteed ja muutke nende järjekorda</string>
-    <string name="settings_customize_menu_title">Kohanda menüüd</string>
+    <string name="settings_customize_menu_title">Kohanda ühtset sisestusmenüüd</string>
     <string name="settings_default_currency_summary">Valitud: %s</string>
     <string name="settings_default_currency_title">Vaikimisi valuutasümbol</string>
     <string name="settings_key_press_feedback_title">Klahvivajutuse tagasiside</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Värskenduste kontroll ebaõnnestus</string>
     <string name="settings_update_error_too_old">See versioon on värskenduste loendi lugemiseks liiga vana. Palun värskenda käsitsi.</string>
     <string name="settings_update_from_cache">Kuvatud viimasest salvestatud kontrollist</string>
-    <string name="settings_update_background_check_title">Igapäevane kontroll taustal</string>
-    <string name="settings_update_background_check_summary">Kontrollib kord päevas ja teavitab sind. Allalaadimine ja paigaldamine jäävad alati käsitsi.</string>
+    <string name="settings_update_background_check_title">Kontrolli värskendusi automaatselt</string>
+    <string name="settings_update_background_check_summary">Saad teate, kui allalaadimiseks on saadaval uus versioon.</string>
     <string name="settings_update_notification_text">Versioon %1$s on allalaadimiseks valmis</string>
     <string name="settings_update_unknown_sources_message">Android peab lubama BBKB-l rakendusi paigaldada. Luba paigaldamine sellest allikast ja vajuta uuesti Paigalda.</string>
     <string name="settings_update_open_settings">Ava seaded</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Laadi alla</string>
     <string name="language_packs_retry">Proovi uuesti</string>
     <string name="language_packs_refresh">Otsi sõnastikke</string>
-    <string name="language_packs_catalog_offline">Kataloog seisuga %1$s (võrguühenduseta)</string>
+    <string name="language_packs_load_ldb">Laadi LDB-fail</string>
     <string name="language_packs_variant_summary">Laaditakse %1$s asemel</string>
     <string name="language_packs_offer_message">Kas laadida alla %1$s sõnastik (%2$s)?</string>
     <string name="language_packs_offer_not_now">Mitte praegu</string>

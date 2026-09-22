@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Teclado de símbolos</string>
     <string name="settings_pkb_multifunction_action_voice">Entrada de voz</string>
     <string name="settings_pkb_multifunction_key_title">Tecla multifuncional</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">O teclado de símbolos permanece aberto para inserir vários símbolos</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Volta ao alfabeto depois de inserir um símbolo</string>
-    <string name="settings_pkb_symbol_auto_close_title">Fechar o teclado de símbolos após um símbolo</string>
     <string name="settings_appearance_auto">Automático (tema do sistema)</string>
     <string name="settings_appearance_classic">Clássico</string>
     <string name="settings_appearance_dark">Escuro</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Não exibidos no teclado</string>
     <string name="settings_customize_menu_instructions">Toque e segure um atalho e arraste para reordenar. Os quatro primeiros aparecem no menu de entrada do teclado.</string>
     <string name="settings_customize_menu_summary">Escolher e reordenar os atalhos do menu de entrada</string>
-    <string name="settings_customize_menu_title">Personalizar o menu</string>
+    <string name="settings_customize_menu_title">Personalizar o menu de entrada unificado</string>
     <string name="settings_default_currency_summary">Selecionado: %s</string>
     <string name="settings_default_currency_title">Símbolo de moeda padrão</string>
     <string name="settings_key_press_feedback_title">Resposta ao pressionar teclas</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">A verificação de atualizações falhou</string>
     <string name="settings_update_error_too_old">Esta versão é demasiado antiga para ler a lista de atualizações. Atualize manualmente.</string>
     <string name="settings_update_from_cache">Mostrado a partir da última verificação guardada</string>
-    <string name="settings_update_background_check_title">Verificação diária em segundo plano</string>
-    <string name="settings_update_background_check_summary">Verifica uma vez por dia e avisa-o. Transferir e instalar são sempre manuais.</string>
+    <string name="settings_update_background_check_title">Verificar atualizações automaticamente</string>
+    <string name="settings_update_background_check_summary">Receba uma notificação quando uma nova versão estiver disponível para download.</string>
     <string name="settings_update_notification_text">A versão %1$s está pronta a transferir</string>
     <string name="settings_update_unknown_sources_message">O Android tem de permitir que o BBKB instale aplicações. Ative a instalação a partir desta origem e prima Instalar novamente.</string>
     <string name="settings_update_open_settings">Abrir definições</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Baixar</string>
     <string name="language_packs_retry">Tentar novamente</string>
     <string name="language_packs_refresh">Procurar dicionários</string>
-    <string name="language_packs_catalog_offline">Catálogo de %1$s (offline)</string>
+    <string name="language_packs_load_ldb">Carregar arquivo LDB</string>
     <string name="language_packs_variant_summary">Carrega no lugar de %1$s</string>
     <string name="language_packs_offer_message">Baixar o dicionário %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Agora não</string>

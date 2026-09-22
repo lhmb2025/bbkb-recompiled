@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Simvol klaviaturası</string>
     <string name="settings_pkb_multifunction_action_voice">Səsli daxiletmə</string>
     <string name="settings_pkb_multifunction_key_title">Çoxfunksiyalı klaviş</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Bir neçə simvol daxil etmək üçün simvol klaviaturası açıq qalır</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Bir simvol daxil edildikdən sonra əlifbaya qayıdır</string>
-    <string name="settings_pkb_symbol_auto_close_title">Simvoldan sonra simvol klaviaturasını bağlayın</string>
     <string name="settings_appearance_auto">Avtomatik (sistem mövzusu)</string>
     <string name="settings_appearance_classic">Klassik</string>
     <string name="settings_appearance_dark">Tünd</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Klaviaturada göstərilmir</string>
     <string name="settings_customize_menu_instructions">Qısayola toxunub saxlayın, sonra sırasını dəyişmək üçün dartın. İlk dördü klaviaturanın daxiletmə menyusunda görünür.</string>
     <string name="settings_customize_menu_summary">Daxiletmə menyusu qısayollarını seçin və sıralayın</string>
-    <string name="settings_customize_menu_title">Menyunu fərdiləşdirin</string>
+    <string name="settings_customize_menu_title">Vahid daxiletmə menyusunu fərdiləşdirin</string>
     <string name="settings_default_currency_summary">Seçilib: %s</string>
     <string name="settings_default_currency_title">Varsayılan valyuta simvolu</string>
     <string name="settings_key_press_feedback_title">Klaviş basma cavabı</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Yeniləmə yoxlanışı alınmadı</string>
     <string name="settings_update_error_too_old">Bu versiya yeniləmə siyahısını oxumaq üçün çox köhnədir. Zəhmət olmasa əl ilə yeniləyin.</string>
     <string name="settings_update_from_cache">Son saxlanmış yoxlamadan göstərilir</string>
-    <string name="settings_update_background_check_title">Günlük fon yoxlaması</string>
-    <string name="settings_update_background_check_summary">Gündə bir dəfə yoxlayır və sizə bildirir. Endirmə və quraşdırma həmişə əl ilə qalır.</string>
+    <string name="settings_update_background_check_title">Yeniləmələri avtomatik yoxlayın</string>
+    <string name="settings_update_background_check_summary">Endirmək üçün yeni versiya əlçatan olduqda bildiriş alın.</string>
     <string name="settings_update_notification_text">Versiya %1$s endirilməyə hazırdır</string>
     <string name="settings_update_unknown_sources_message">Android BBKB-yə tətbiq quraşdırmağa icazə verməlidir. Bu mənbədən quraşdırmanı aktiv edin, sonra yenidən Quraşdır düyməsini basın.</string>
     <string name="settings_update_open_settings">Ayarları aç</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Yüklə</string>
     <string name="language_packs_retry">Yenidən cəhd edin</string>
     <string name="language_packs_refresh">Lüğətləri yoxla</string>
-    <string name="language_packs_catalog_offline">%1$s tarixli kataloq (oflayn)</string>
+    <string name="language_packs_load_ldb">LDB faylını yüklə</string>
     <string name="language_packs_variant_summary">%1$s yerinə yüklənir</string>
     <string name="language_packs_offer_message">%1$s lüğəti yüklənsin (%2$s)?</string>
     <string name="language_packs_offer_not_now">İndi yox</string>

@@ -204,7 +204,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "AdvancedGestureParametersScreen" -> ({ AdvancedGestureParametersScreen({}) })
         "AdvancedSettingsScreen" -> ({ AdvancedSettingsScreen({}, {}, {}, {}) })
         "AnimationParametersScreen" -> ({ AnimationParametersScreen({}) })
-        "AppearanceLayoutScreen" -> ({ AppearanceLayoutScreen({}, {}, {}) })
+        "AppearanceLayoutScreen" -> ({ AppearanceLayoutScreen({}, {}) })
         "AutoCorrectionScreen" -> ({ AutoCorrectionScreen({}) })
         "CkbGesturesScreen" -> ({ CkbGesturesScreen({}) })
         "CorrectionLearningScreen" -> ({ CorrectionLearningScreen({}, {}, {}, {}) })
@@ -227,7 +227,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "MainSettingsScreen" -> ({ MainSettingsScreen({}, {}) })
         "MultiLanguageKeyboardsScreen" -> ({ MultiLanguageKeyboardsScreen({}, {}, {}) })
         "MultiLanguageWizardScreen_ADD" -> ({ MultiLanguageWizardScreen(WizardMode.ADD, null, {}, {}) })
-        "TouchScreenKeyboardScreen" -> ({ TouchScreenKeyboardScreen({}, {}, {}) })
+        "TouchScreenKeyboardScreen" -> ({ TouchScreenKeyboardScreen({}, {}, {}, {}) })
         "PhysicalKeyboardScreen" -> ({ PhysicalKeyboardScreen({}, {}) })
         "PredictionsSuggestionsScreen" -> ({ PredictionsSuggestionsScreen({}) })
         "QuickPhrasesScreen" -> ({ QuickPhrasesScreen({}) })
@@ -587,7 +587,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_appearance_auto", "settings_appearance_layout_title", "settings_appearance_modern",
                 "settings_color_scheme_title", "settings_keyboard_height_regular",
                 "settings_keyboard_height_title", "settings_keyboard_theme_title",
-                "settings_slideboard_hub_summary", "settings_slideboard_settings_title",
+                // The two `settings_slideboard_*` names are gone: the Slideboard settings row
+                // moved to the On-Screen Keyboard screen, under Behavior.
                 "settings_symbol_customization_summary", "settings_symbol_customization_title",
                 "settings_use_system_colors_summary", "settings_use_system_colors_title"
             ),
@@ -795,7 +796,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         Case(
             name = "CustomizeMenuScreen",
             route = SettingsRoute.CustomizeMenu.route,
-            title = "Customize menu",
+            title = "Customize unified input menu",
             resources = setOf(
                 "settings_customize_menu_hidden_header", "settings_customize_menu_instructions",
                 "settings_customize_menu_title", "settings_pkb_multifunction_action_clipboard",
@@ -1003,17 +1004,20 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.LanguagePacks.route,
             title = "Language packs",
             resources = setOf(
+                // The extended FAB's label, which renders before the IO load finishes. It was the
+                // hardcoded "Add dictionary" until it became "Load LDB file" and a translated
+                // resource with it.
+                "language_packs_load_ldb",
                 "settings_language_packs_title"
             ),
-            // The extended FAB renders before the IO load finishes, so its label is an immediate
-            // literal. The info banner and the per-row "Version: … • Preinstalled" line are gone
+            // The info banner and the per-row "Version: … • Preinstalled" line are gone
             // (Material 3 redesign, 2026-09-16): rows are titles only.
             //
             // The two section headers are literals because PreferenceCategory upper-cases its
             // title, so the rendered text is not the resource's own value. They render
             // unconditionally - the list is always there, with a spinner in whichever half is
             // still loading - which is what keeps them out of `lateLiterals`.
-            literals = setOf("Add dictionary", "INSTALLED", "AVAILABLE TO DOWNLOAD"),
+            literals = setOf("INSTALLED", "AVAILABLE TO DOWNLOAD"),
             // Everything else arrives with the IO load: one row per shipped pack, each with its
             // two-letter code badge (too short to resolve to a resource name) and the
             // "Preinstalled" tag. Recorded as late so the race decides nothing.
@@ -1027,7 +1031,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             // again button; the rest are listed because they are the other answers the same row
             // can give, and none of them is worth pinning a race on.
             lateResources = setOf(
-                "language_packs_catalog_offline", "language_packs_download",
+                "language_packs_download",
                 "language_packs_error_app_too_old", "language_packs_error_network",
                 "language_packs_error_offline", "language_packs_error_verification",
                 "language_packs_retry", "language_packs_variant_summary",
@@ -1112,8 +1116,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_pkb_alt_sym_shortcut_disabled_summary", "settings_pkb_alt_sym_shortcut_title",
                 "settings_pkb_ctrl_key_behavior_title", "settings_pkb_dictation_key_summary_on",
                 "settings_pkb_dictation_key_title", "settings_pkb_hold_action_off_summary",
-                "settings_pkb_hold_action_title", "settings_pkb_symbol_auto_close_summary_off",
-                "settings_pkb_symbol_auto_close_title"
+                "settings_pkb_hold_action_title"
             ),
             literals = emptySet(),
             // The multifunction-key row sits inside `if (multifunctionKeyMapping != null)`
@@ -1249,6 +1252,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             resources = setOf(
                 "settings_category_behavior", "settings_category_gestures", "settings_customize_menu_summary",
                 "settings_customize_menu_title", "settings_keyboard_title", "settings_screen_type_by_swiping",
+                // Moved here from Personalization, into the Behavior list.
+                "settings_slideboard_hub_summary", "settings_slideboard_settings_title",
                 "settings_touch_feedback_summary", "settings_touch_feedback_title",
                 "settings_uim_enable_summary_on", "settings_uim_enable_title",
                 "settings_vkb_swipe_down_dismiss_summary", "settings_vkb_swipe_down_dismiss_title",

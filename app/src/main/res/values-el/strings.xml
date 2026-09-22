@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Πληκτρολόγιο συμβόλων</string>
     <string name="settings_pkb_multifunction_action_voice">Φωνητική εισαγωγή</string>
     <string name="settings_pkb_multifunction_key_title">Πλήκτρο πολλαπλών λειτουργιών</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Το πληκτρολόγιο συμβόλων παραμένει ανοιχτό για εισαγωγή πολλών συμβόλων</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Επιστροφή στο αλφάβητο μετά την εισαγωγή ενός συμβόλου</string>
-    <string name="settings_pkb_symbol_auto_close_title">Κλείσιμο πληκτρολογίου συμβόλων μετά το σύμβολο</string>
     <string name="settings_appearance_auto">Αυτόματο (θέμα συστήματος)</string>
     <string name="settings_appearance_classic">Κλασικό</string>
     <string name="settings_appearance_dark">Σκούρο</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Δεν εμφανίζονται στο πληκτρολόγιο</string>
     <string name="settings_customize_menu_instructions">Αγγίξτε παρατεταμένα μια συντόμευση και σύρετε για αναδιάταξη. Οι πρώτες τέσσερις εμφανίζονται στο μενού εισόδου του πληκτρολογίου.</string>
     <string name="settings_customize_menu_summary">Επιλογή και αναδιάταξη των συντομεύσεων του μενού εισόδου</string>
-    <string name="settings_customize_menu_title">Προσαρμογή μενού</string>
+    <string name="settings_customize_menu_title">Προσαρμογή ενοποιημένου μενού εισόδου</string>
     <string name="settings_default_currency_summary">Επιλεγμένο: %s</string>
     <string name="settings_default_currency_title">Προεπιλεγμένο σύμβολο νομίσματος</string>
     <string name="settings_key_press_feedback_title">Ανάδραση πατήματος πλήκτρων</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Ο έλεγχος ενημερώσεων απέτυχε</string>
     <string name="settings_update_error_too_old">Αυτή η έκδοση είναι πολύ παλιά για να διαβάσει τη λίστα ενημερώσεων. Ενημερώστε χειροκίνητα.</string>
     <string name="settings_update_from_cache">Εμφανίζεται από τον τελευταίο αποθηκευμένο έλεγχο</string>
-    <string name="settings_update_background_check_title">Καθημερινός έλεγχος στο παρασκήνιο</string>
-    <string name="settings_update_background_check_summary">Ελέγχει μία φορά την ημέρα και σας ειδοποιεί. Η λήψη και η εγκατάσταση παραμένουν πάντα χειροκίνητες.</string>
+    <string name="settings_update_background_check_title">Αυτόματος έλεγχος για ενημερώσεις</string>
+    <string name="settings_update_background_check_summary">Λάβετε ειδοποίηση όταν είναι διαθέσιμη νέα έκδοση για λήψη.</string>
     <string name="settings_update_notification_text">Η έκδοση %1$s είναι έτοιμη για λήψη</string>
     <string name="settings_update_unknown_sources_message">Το Android πρέπει να επιτρέψει στο BBKB να εγκαθιστά εφαρμογές. Ενεργοποιήστε την εγκατάσταση από αυτήν την πηγή και πατήστε ξανά Εγκατάσταση.</string>
     <string name="settings_update_open_settings">Άνοιγμα ρυθμίσεων</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Λήψη</string>
     <string name="language_packs_retry">Δοκιμάστε ξανά</string>
     <string name="language_packs_refresh">Έλεγχος για λεξικά</string>
-    <string name="language_packs_catalog_offline">Κατάλογος από %1$s (εκτός σύνδεσης)</string>
+    <string name="language_packs_load_ldb">Φόρτωση αρχείου LDB</string>
     <string name="language_packs_variant_summary">Φορτώνεται στη θέση του %1$s</string>
     <string name="language_packs_offer_message">Λήψη του λεξικού %1$s (%2$s);</string>
     <string name="language_packs_offer_not_now">Όχι τώρα</string>

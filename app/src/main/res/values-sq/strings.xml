@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Tastiera e simboleve</string>
     <string name="settings_pkb_multifunction_action_voice">Shkrimi me zë</string>
     <string name="settings_pkb_multifunction_key_title">Tasti shumëfunksionësh</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Tastiera e simboleve rri hapur që të shkruash disa simbole</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Kthehet te alfabeti pasi shkruhet një simbol</string>
-    <string name="settings_pkb_symbol_auto_close_title">Mbylle tastierën e simboleve pas një simboli</string>
     <string name="settings_appearance_auto">Automatike (tema e sistemit)</string>
     <string name="settings_appearance_classic">Klasike</string>
     <string name="settings_appearance_dark">E errët</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Nuk shfaqet në tastierë</string>
     <string name="settings_customize_menu_instructions">Prek dhe mbaj shtypur një shkurtore, pastaj zvarrite për ta risistemuar. Katër të parat shfaqen te menyja e shkrimit e tastierës.</string>
     <string name="settings_customize_menu_summary">Zgjidh dhe risistemo shkurtoret e menysë së shkrimit</string>
-    <string name="settings_customize_menu_title">Përshtat menynë</string>
+    <string name="settings_customize_menu_title">Përshtat menynë e njësuar të shkrimit</string>
     <string name="settings_default_currency_summary">E zgjedhur: %s</string>
     <string name="settings_default_currency_title">Simboli i parazgjedhur i monedhës</string>
     <string name="settings_key_press_feedback_title">Përgjigjja ndaj shtypjes së tastave</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Kontrolli i përditësimeve dështoi</string>
     <string name="settings_update_error_too_old">Ky version është shumë i vjetër për të lexuar listën e përditësimeve. Përditësoni me dorë.</string>
     <string name="settings_update_from_cache">Shfaqur nga kontrolli i fundit i ruajtur</string>
-    <string name="settings_update_background_check_title">Kontroll ditor në sfond</string>
-    <string name="settings_update_background_check_summary">Kontrollon një herë në ditë dhe ju njofton. Shkarkimi dhe instalimi mbeten gjithmonë me dorë.</string>
+    <string name="settings_update_background_check_title">Kontrollo automatikisht për përditësime</string>
+    <string name="settings_update_background_check_summary">Merrni një njoftim kur një version i ri është i disponueshëm për shkarkim.</string>
     <string name="settings_update_notification_text">Versioni %1$s është gati për shkarkim</string>
     <string name="settings_update_unknown_sources_message">Android duhet të lejojë BBKB të instalojë aplikacione. Aktivizoni instalimin nga ky burim, pastaj shtypni përsëri Instalo.</string>
     <string name="settings_update_open_settings">Hap cilësimet</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Shkarko</string>
     <string name="language_packs_retry">Provo përsëri</string>
     <string name="language_packs_refresh">Kontrollo fjalorët</string>
-    <string name="language_packs_catalog_offline">Katalogu i %1$s (jashtë linje)</string>
+    <string name="language_packs_load_ldb">Ngarko skedarin LDB</string>
     <string name="language_packs_variant_summary">Ngarkohet në vend të %1$s</string>
     <string name="language_packs_offer_message">Të shkarkohet fjalori %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Jo tani</string>

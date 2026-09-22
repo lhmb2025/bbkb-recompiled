@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Bysellfwrdd symbolau</string>
     <string name="settings_pkb_multifunction_action_voice">Mewnbwn llais</string>
     <string name="settings_pkb_multifunction_key_title">Bysell amlswyddogaeth</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Mae\'r bysellfwrdd symbolau\'n aros ar agor i deipio sawl symbol</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Yn dychwelyd at y llythrennau ar ôl teipio un symbol</string>
-    <string name="settings_pkb_symbol_auto_close_title">Cau\'r bysellfwrdd symbolau ar ôl symbol</string>
     <string name="settings_appearance_auto">Awtomatig (thema\'r system)</string>
     <string name="settings_appearance_classic">Clasurol</string>
     <string name="settings_appearance_dark">Tywyll</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Heb ei ddangos ar y bysellfwrdd</string>
     <string name="settings_customize_menu_instructions">Cyffyrddwch â llwybr byr a dal, yna llusgwch i aildrefnu. Mae\'r pedwar cyntaf yn ymddangos ar ddewislen fewnbwn y bysellfwrdd.</string>
     <string name="settings_customize_menu_summary">Dewis ac aildrefnu llwybrau byr y ddewislen fewnbwn</string>
-    <string name="settings_customize_menu_title">Addasu\'r ddewislen</string>
+    <string name="settings_customize_menu_title">Addasu\'r ddewislen fewnbwn unedig</string>
     <string name="settings_default_currency_summary">Dewiswyd: %s</string>
     <string name="settings_default_currency_title">Symbol arian rhagosodedig</string>
     <string name="settings_key_press_feedback_title">Adborth gwasgu bysell</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Methodd y gwiriad diweddaru</string>
     <string name="settings_update_error_too_old">Mae\'r fersiwn hon yn rhy hen i ddarllen y rhestr ddiweddaru. Diweddarwch â llaw.</string>
     <string name="settings_update_from_cache">Wedi\'i ddangos o\'r gwiriad diwethaf a gadwyd</string>
-    <string name="settings_update_background_check_title">Gwiriad dyddiol yn y cefndir</string>
-    <string name="settings_update_background_check_summary">Gwirio unwaith y dydd a rhoi gwybod i chi. Mae lawrlwytho a gosod bob amser â llaw.</string>
+    <string name="settings_update_background_check_title">Gwirio am ddiweddariadau yn awtomatig</string>
+    <string name="settings_update_background_check_summary">Cewch hysbysiad pan fydd fersiwn newydd ar gael i\'w lawrlwytho.</string>
     <string name="settings_update_notification_text">Mae fersiwn %1$s yn barod i\'w lawrlwytho</string>
     <string name="settings_update_unknown_sources_message">Rhaid i Android ganiatáu i BBKB osod apiau. Galluogwch osod o\'r ffynhonnell hon, wedyn pwyswch Gosod eto.</string>
     <string name="settings_update_open_settings">Agor gosodiadau</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Lawrlwytho</string>
     <string name="language_packs_retry">Ceisiwch eto</string>
     <string name="language_packs_refresh">Chwilio am eiriaduron</string>
-    <string name="language_packs_catalog_offline">Catalog o %1$s (all-lein)</string>
+    <string name="language_packs_load_ldb">Llwytho ffeil LDB</string>
     <string name="language_packs_variant_summary">Yn llwytho yn lle %1$s</string>
     <string name="language_packs_offer_message">Lawrlwytho geiriadur %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Nid nawr</string>

@@ -32,9 +32,13 @@ import java.util.Locale
 /**
  * A hinted physical key released on the PKB symbol board ends a one-shot symbol entry (tap Sym,
  * type one symbol, back to letters) through [KeyEventProcessor.onKeyUpInternal] ->
- * `KeyboardSwitcher.onSymbolKeyLongPress`. That is the behaviour `pkb_symbol_auto_close` names,
- * and this was the one path that never consulted it: with the setting off the board must stay
- * open (KEY2, 2026-09-20).
+ * `KeyboardSwitcher.onSymbolKeyLongPress`.
+ *
+ * <p>That is now the only behaviour — the "Close symbol keyboard after symbol" setting is gone
+ * (owner decision, 2026-09-22). Holding Sym is what keeps the board open instead, so the hold is
+ * the one thing this path has to suppress it. `KeyEvent.isSymPressed()` is not that test: it
+ * reads META_SYM_ON, which the KEY2's Sym key does not set, so the held state comes from
+ * `PhysicalKeyboardStateTracker.isSymKeyHeld()`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -85,6 +89,7 @@ class SymbolOneShotReleaseTest {
         `when`(ime.getInputLogic().isKeyTracked(anyArg())).thenReturn(true)
         `when`(ime.getKeyboardSwitcher().getKeyByPhysicalScanCode(anyInt(), anyBoolean())).thenReturn(null)
         `when`(ime.getPhysicalKeyboardStateTracker().getSymbolPageOrder()).thenReturn(0)
+        `when`(ime.getPhysicalKeyboardStateTracker().isSymKeyHeld()).thenReturn(false)
         `when`(ime.superOnKeyUp(anyInt(), anyArg())).thenReturn(false)
 
         DeviceProfile.installForTest(pkbShape())
@@ -105,24 +110,22 @@ class SymbolOneShotReleaseTest {
     }
 
     @Test
-    fun `with auto-close on, releasing a hinted key ends the one-shot entry`() {
+    fun `with Sym not held, releasing a hinted key ends the one-shot entry`() {
         hintedKeyPresent()
-        `when`(ime.getKeyboardSwitcher().isPkbSymbolAutoCloseEnabled()).thenReturn(true)
         processor.onKeyUpInternal(KeyEvent.KEYCODE_R, keyUp(KeyEvent.KEYCODE_R))
         verify(ime.getKeyboardSwitcher()).onSymbolKeyLongPress(anyInt(), anyInt())
     }
 
     @Test
-    fun `with auto-close off, releasing a hinted key leaves the board open`() {
+    fun `while Sym is held, releasing a hinted key leaves the board open`() {
         hintedKeyPresent()
-        `when`(ime.getKeyboardSwitcher().isPkbSymbolAutoCloseEnabled()).thenReturn(false)
+        `when`(ime.getPhysicalKeyboardStateTracker().isSymKeyHeld()).thenReturn(true)
         processor.onKeyUpInternal(KeyEvent.KEYCODE_R, keyUp(KeyEvent.KEYCODE_R))
         verify(ime.getKeyboardSwitcher(), never()).onSymbolKeyLongPress(anyInt(), anyInt())
     }
 
     @Test
-    fun `a key with no hint on the board never ends the entry, whatever the setting`() {
-        `when`(ime.getKeyboardSwitcher().isPkbSymbolAutoCloseEnabled()).thenReturn(true)
+    fun `a key with no hint on the board never ends the entry`() {
         processor.onKeyUpInternal(KeyEvent.KEYCODE_R, keyUp(KeyEvent.KEYCODE_R))
         verify(ime.getKeyboardSwitcher(), never()).onSymbolKeyLongPress(anyInt(), anyInt())
     }

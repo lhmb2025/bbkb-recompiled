@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">מקלדת סמלים</string>
     <string name="settings_pkb_multifunction_action_voice">קלט קולי</string>
     <string name="settings_pkb_multifunction_key_title">מקש רב-תכליתי</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">מקלדת הסמלים נשארת פתוחה להזנת סמלים רבים</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">חוזרת לאלף-בית לאחר הזנת סמל אחד</string>
-    <string name="settings_pkb_symbol_auto_close_title">סגור את מקלדת הסמלים לאחר סמל</string>
     <string name="settings_appearance_auto">אוטומטי (ערכת הנושא של המערכת)</string>
     <string name="settings_appearance_classic">קלאסי</string>
     <string name="settings_appearance_dark">כהה</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">לא מוצג במקלדת</string>
     <string name="settings_customize_menu_instructions">הקש והחזק קיצור דרך, ולאחר מכן גרור כדי לשנות את הסדר. ארבעת הראשונים מופיעים בתפריט הקלט של המקלדת.</string>
     <string name="settings_customize_menu_summary">בחר וסדר מחדש את קיצורי הדרך בתפריט הקלט</string>
-    <string name="settings_customize_menu_title">התאם אישית את התפריט</string>
+    <string name="settings_customize_menu_title">התאמה אישית של תפריט הקלט המאוחד</string>
     <string name="settings_default_currency_summary">נבחר: %s</string>
     <string name="settings_default_currency_title">סמל המטבע כברירת מחדל</string>
     <string name="settings_key_press_feedback_title">משוב בלחיצת מקש</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">בדיקת העדכונים נכשלה</string>
     <string name="settings_update_error_too_old">גרסה זו ישנה מדי כדי לקרוא את רשימת העדכונים. עדכן ידנית.</string>
     <string name="settings_update_from_cache">מוצג מהבדיקה השמורה האחרונה</string>
-    <string name="settings_update_background_check_title">בדיקה יומית ברקע</string>
-    <string name="settings_update_background_check_summary">בודק פעם ביום ומודיע לך. ההורדה וההתקנה תמיד נשארות ידניות.</string>
+    <string name="settings_update_background_check_title">בדיקה אוטומטית של עדכונים</string>
+    <string name="settings_update_background_check_summary">קבל התראה כשגרסה חדשה זמינה להורדה.</string>
     <string name="settings_update_notification_text">גרסה %1$s מוכנה להורדה</string>
     <string name="settings_update_unknown_sources_message">על Android להרשות ל-BBKB להתקין אפליקציות. אפשר התקנה ממקור זה ולאחר מכן לחץ שוב על התקנה.</string>
     <string name="settings_update_open_settings">פתח הגדרות</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">הורדה</string>
     <string name="language_packs_retry">נסה שוב</string>
     <string name="language_packs_refresh">בדיקת מילונים</string>
-    <string name="language_packs_catalog_offline">קטלוג מ-%1$s (לא מקוון)</string>
+    <string name="language_packs_load_ldb">טעינת קובץ LDB</string>
     <string name="language_packs_variant_summary">נטען במקום %1$s</string>
     <string name="language_packs_offer_message">להוריד את המילון %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">לא כרגע</string>

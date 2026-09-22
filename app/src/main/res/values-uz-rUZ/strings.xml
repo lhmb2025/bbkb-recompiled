@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Belgilar klaviaturasi</string>
     <string name="settings_pkb_multifunction_action_voice">Ovozli kiritish</string>
     <string name="settings_pkb_multifunction_key_title">Ko‘p vazifali tugma</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Belgilar klaviaturasi bir nechta belgi kiritish uchun ochiq qoladi</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Bitta belgi kiritilgach, harflarga qaytadi</string>
-    <string name="settings_pkb_symbol_auto_close_title">Belgidan keyin belgilar klaviaturasini yopish</string>
     <string name="settings_appearance_auto">Avtomatik (tizim mavzusi)</string>
     <string name="settings_appearance_classic">Klassik</string>
     <string name="settings_appearance_dark">Quyuq</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Klaviaturada ko‘rsatilmaydi</string>
     <string name="settings_customize_menu_instructions">Yorliqni bosib turing, so‘ng tartibni o‘zgartirish uchun torting. Dastlabki to‘rttasi klaviaturaning kiritish menyusida ko‘rinadi.</string>
     <string name="settings_customize_menu_summary">Kiritish menyusi yorliqlarini tanlash va tartiblash</string>
-    <string name="settings_customize_menu_title">Menyuni moslash</string>
+    <string name="settings_customize_menu_title">Yagona kiritish menyusini moslash</string>
     <string name="settings_default_currency_summary">Tanlangan: %s</string>
     <string name="settings_default_currency_title">Standart valyuta belgisi</string>
     <string name="settings_key_press_feedback_title">Tugma bosish javobi</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Yangilanishni tekshirish amalga oshmadi</string>
     <string name="settings_update_error_too_old">Bu versiya yangilanishlar roʻyxatini oʻqish uchun juda eski. Iltimos, qoʻlda yangilang.</string>
     <string name="settings_update_from_cache">Oxirgi saqlangan tekshiruvdan koʻrsatilgan</string>
-    <string name="settings_update_background_check_title">Kunlik fon tekshiruvi</string>
-    <string name="settings_update_background_check_summary">Kuniga bir marta tekshiradi va sizga xabar beradi. Yuklab olish va oʻrnatish doim qoʻlda bajariladi.</string>
+    <string name="settings_update_background_check_title">Yangilanishlarni avtomatik tekshirish</string>
+    <string name="settings_update_background_check_summary">Yangi versiya yuklab olish uchun mavjud boʻlganda bildirishnoma olasiz.</string>
     <string name="settings_update_notification_text">Versiya %1$s yuklab olishga tayyor</string>
     <string name="settings_update_unknown_sources_message">Android BBKB ga ilovalar oʻrnatishga ruxsat berishi kerak. Bu manbadan oʻrnatishni yoqing, soʻng Oʻrnatish tugmasini qayta bosing.</string>
     <string name="settings_update_open_settings">Sozlamalarni ochish</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Yuklab olish</string>
     <string name="language_packs_retry">Qayta urinish</string>
     <string name="language_packs_refresh">Lug‘atlarni tekshirish</string>
-    <string name="language_packs_catalog_offline">%1$s katalogi (oflayn)</string>
+    <string name="language_packs_load_ldb">LDB faylini yuklash</string>
     <string name="language_packs_variant_summary">%1$s o‘rniga yuklanadi</string>
     <string name="language_packs_offer_message">%1$s lug‘ati yuklab olinsinmi (%2$s)?</string>
     <string name="language_packs_offer_not_now">Hozir emas</string>

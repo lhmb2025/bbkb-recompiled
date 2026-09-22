@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">குறியீட்டு விசைப்பலகை</string>
     <string name="settings_pkb_multifunction_action_voice">குரல் உள்ளீடு</string>
     <string name="settings_pkb_multifunction_key_title">பல்செயல் விசை</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">பல குறியீடுகளை உள்ளிட குறியீட்டு விசைப்பலகை திறந்தே இருக்கும்</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">ஒரு குறியீட்டை உள்ளிட்ட பிறகு அகரவரிசைக்குத் திரும்பும்</string>
-    <string name="settings_pkb_symbol_auto_close_title">குறியீட்டுக்குப் பிறகு குறியீட்டு விசைப்பலகையை மூடு</string>
     <string name="settings_appearance_auto">தானியங்கு (கணினி தீம்)</string>
     <string name="settings_appearance_classic">கிளாசிக்</string>
     <string name="settings_appearance_dark">இருண்ட</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">விசைப்பலகையில் காட்டப்படவில்லை</string>
     <string name="settings_customize_menu_instructions">ஒரு குறுக்குவழியைத் தொட்டுப் பிடித்து, பிறகு இழுத்து வரிசைமாற்றவும். முதல் நான்கு விசைப்பலகையின் உள்ளீட்டு மெனுவில் தோன்றும்.</string>
     <string name="settings_customize_menu_summary">உள்ளீட்டு மெனு குறுக்குவழிகளைத் தேர்ந்தெடுத்து வரிசைமாற்று</string>
-    <string name="settings_customize_menu_title">மெனுவைத் தனிப்பயனாக்கு</string>
+    <string name="settings_customize_menu_title">ஒருங்கிணைந்த உள்ளீட்டு மெனுவைத் தனிப்பயனாக்கு</string>
     <string name="settings_default_currency_summary">தேர்ந்தெடுக்கப்பட்டது: %s</string>
     <string name="settings_default_currency_title">இயல்புநிலை நாணயக் குறியீடு</string>
     <string name="settings_key_press_feedback_title">விசை அழுத்தப் பின்னூட்டம்</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">புதுப்பிப்புச் சரிபார்ப்பு தோல்வியடைந்தது</string>
     <string name="settings_update_error_too_old">இந்தப் பதிப்பு புதுப்பிப்புப் பட்டியலைப் படிக்க மிகவும் பழையது. கைமுறையாகப் புதுப்பிக்கவும்.</string>
     <string name="settings_update_from_cache">கடைசியாகச் சேமித்த சரிபார்ப்பில் இருந்து காட்டப்படுகிறது</string>
-    <string name="settings_update_background_check_title">தினசரி பின்னணிச் சரிபார்ப்பு</string>
-    <string name="settings_update_background_check_summary">நாளுக்கு ஒருமுறை சரிபார்த்து உங்களுக்குத் தெரிவிக்கும். பதிவிறக்கமும் நிறுவலும் எப்போதும் உங்கள் கையில்.</string>
+    <string name="settings_update_background_check_title">புதுப்பிப்புகளைத் தானாகவே சரிபார்</string>
+    <string name="settings_update_background_check_summary">புதிய பதிப்பு பதிவிறக்கத்திற்குக் கிடைக்கும்போது அறிவிப்பு பெறுங்கள்.</string>
     <string name="settings_update_notification_text">பதிப்பு %1$s பதிவிறக்கத் தயாராக உள்ளது</string>
     <string name="settings_update_unknown_sources_message">ஆப்ஸ் நிறுவ Android, BBKB க்கு அனுமதி அளிக்க வேண்டும். இந்த மூலத்திலிருந்து நிறுவலை இயக்கி, மீண்டும் நிறுவு என்பதை அழுத்தவும்.</string>
     <string name="settings_update_open_settings">அமைப்புகளைத் திற</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">பதிவிறக்கு</string>
     <string name="language_packs_retry">மீண்டும் முயலுங்கள்</string>
     <string name="language_packs_refresh">அகராதிகளைச் சரிபார்க்கவும்</string>
-    <string name="language_packs_catalog_offline">%1$s இன் பட்டியல் (ஆஃப்லைன்)</string>
+    <string name="language_packs_load_ldb">LDB கோப்பை ஏற்றவும்</string>
     <string name="language_packs_variant_summary">%1$s க்குப் பதிலாக ஏற்றப்படும்</string>
     <string name="language_packs_offer_message">%1$s அகராதியைப் பதிவிறக்கவா (%2$s)?</string>
     <string name="language_packs_offer_not_now">இப்போது இல்லை</string>

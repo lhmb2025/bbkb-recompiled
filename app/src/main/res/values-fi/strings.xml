@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Symbolinäppäimistö</string>
     <string name="settings_pkb_multifunction_action_voice">Äänisyöttö</string>
     <string name="settings_pkb_multifunction_key_title">Monitoiminäppäin</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Symbolinäppäimistö pysyy auki, jotta voit kirjoittaa useita symboleja</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Palaa kirjaimiin yhden symbolin jälkeen</string>
-    <string name="settings_pkb_symbol_auto_close_title">Sulje symbolinäppäimistö symbolin jälkeen</string>
     <string name="settings_appearance_auto">Automaattinen (järjestelmän teema)</string>
     <string name="settings_appearance_classic">Klassinen</string>
     <string name="settings_appearance_dark">Tumma</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Ei näytetä näppäimistöllä</string>
     <string name="settings_customize_menu_instructions">Kosketa pikavalintaa pitkään ja järjestä se uudelleen vetämällä. Neljä ensimmäistä näkyvät näppäimistön syöttövalikossa.</string>
     <string name="settings_customize_menu_summary">Valitse syöttövalikon pikavalinnat ja järjestä ne</string>
-    <string name="settings_customize_menu_title">Mukauta valikkoa</string>
+    <string name="settings_customize_menu_title">Mukauta yhtenäistä syöttövalikkoa</string>
     <string name="settings_default_currency_summary">Valittu: %s</string>
     <string name="settings_default_currency_title">Oletusvaluuttasymboli</string>
     <string name="settings_key_press_feedback_title">Näppäinpainalluksen palaute</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Päivitysten tarkistus epäonnistui</string>
     <string name="settings_update_error_too_old">Tämä versio on liian vanha lukemaan päivityslistaa. Päivitä käsin.</string>
     <string name="settings_update_from_cache">Näytetään viimeksi tallennetusta tarkistuksesta</string>
-    <string name="settings_update_background_check_title">Päivittäinen tarkistus taustalla</string>
-    <string name="settings_update_background_check_summary">Tarkistaa kerran päivässä ja ilmoittaa sinulle. Lataus ja asennus ovat aina käsin tehtäviä.</string>
+    <string name="settings_update_background_check_title">Tarkista päivitykset automaattisesti</string>
+    <string name="settings_update_background_check_summary">Saat ilmoituksen, kun uusi versio on ladattavissa.</string>
     <string name="settings_update_notification_text">Versio %1$s on valmis ladattavaksi</string>
     <string name="settings_update_unknown_sources_message">Androidin on annettava BBKB:lle lupa asentaa sovelluksia. Salli asennus tästä lähteestä ja paina Asenna uudelleen.</string>
     <string name="settings_update_open_settings">Avaa asetukset</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Lataa</string>
     <string name="language_packs_retry">Yritä uudelleen</string>
     <string name="language_packs_refresh">Etsi sanakirjoja</string>
-    <string name="language_packs_catalog_offline">Luettelo %1$s (offline)</string>
+    <string name="language_packs_load_ldb">Lataa LDB-tiedosto</string>
     <string name="language_packs_variant_summary">Ladataan kohteen %1$s tilalle</string>
     <string name="language_packs_offer_message">Ladataanko sanakirja %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Ei nyt</string>

@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Papan kekunci simbol</string>
     <string name="settings_pkb_multifunction_action_voice">Input suara</string>
     <string name="settings_pkb_multifunction_key_title">Kekunci pelbagai fungsi</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Papan kekunci simbol kekal terbuka untuk memasukkan berbilang simbol</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Kembali ke abjad selepas memasukkan satu simbol</string>
-    <string name="settings_pkb_symbol_auto_close_title">Tutup papan kekunci simbol selepas simbol</string>
     <string name="settings_appearance_auto">Auto (tema sistem)</string>
     <string name="settings_appearance_classic">Klasik</string>
     <string name="settings_appearance_dark">Gelap</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Tidak ditunjukkan pada papan kekunci</string>
     <string name="settings_customize_menu_instructions">Sentuh dan tahan pintasan, kemudian seret untuk menyusun semula. Empat yang pertama muncul pada menu input papan kekunci.</string>
     <string name="settings_customize_menu_summary">Pilih dan susun semula pintasan menu input</string>
-    <string name="settings_customize_menu_title">Sesuaikan menu</string>
+    <string name="settings_customize_menu_title">Sesuaikan menu input bersatu</string>
     <string name="settings_default_currency_summary">Dipilih: %s</string>
     <string name="settings_default_currency_title">Simbol mata wang lalai</string>
     <string name="settings_key_press_feedback_title">Maklum balas tekanan kekunci</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Pemeriksaan kemas kini gagal</string>
     <string name="settings_update_error_too_old">Versi ini terlalu lama untuk membaca senarai kemas kini. Sila kemas kini secara manual.</string>
     <string name="settings_update_from_cache">Ditunjukkan daripada pemeriksaan terakhir yang disimpan</string>
-    <string name="settings_update_background_check_title">Pemeriksaan harian di latar belakang</string>
-    <string name="settings_update_background_check_summary">Memeriksa sekali sehari dan memberitahu anda. Muat turun dan pemasangan sentiasa manual.</string>
+    <string name="settings_update_background_check_title">Semak kemas kini secara automatik</string>
+    <string name="settings_update_background_check_summary">Terima pemberitahuan apabila versi baharu tersedia untuk dimuat turun.</string>
     <string name="settings_update_notification_text">Versi %1$s sedia untuk dimuat turun</string>
     <string name="settings_update_unknown_sources_message">Android perlu membenarkan BBKB memasang apl. Aktifkan pemasangan daripada sumber ini, kemudian tekan Pasang semula.</string>
     <string name="settings_update_open_settings">Buka tetapan</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Muat turun</string>
     <string name="language_packs_retry">Cuba lagi</string>
     <string name="language_packs_refresh">Periksa kamus</string>
-    <string name="language_packs_catalog_offline">Katalog dari %1$s (luar talian)</string>
+    <string name="language_packs_load_ldb">Muat fail LDB</string>
     <string name="language_packs_variant_summary">Dimuatkan sebagai ganti %1$s</string>
     <string name="language_packs_offer_message">Muat turun kamus %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Bukan sekarang</string>

@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Teclat de símbols</string>
     <string name="settings_pkb_multifunction_action_voice">Entrada de veu</string>
     <string name="settings_pkb_multifunction_key_title">Tecla multifunció</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">El teclat de símbols es manté obert per escriure diversos símbols</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Torna a l\'alfabet després d\'escriure un símbol</string>
-    <string name="settings_pkb_symbol_auto_close_title">Tanca el teclat de símbols després d\'un símbol</string>
     <string name="settings_appearance_auto">Automàtic (tema del sistema)</string>
     <string name="settings_appearance_classic">Clàssic</string>
     <string name="settings_appearance_dark">Fosc</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">No es mostra al teclat</string>
     <string name="settings_customize_menu_instructions">Toqueu una drecera i mantingueu-la premuda, i després arrossegueu-la per reordenar-la. Les quatre primeres apareixen al menú d\'entrada del teclat.</string>
     <string name="settings_customize_menu_summary">Trieu i reordeneu les dreceres del menú d\'entrada</string>
-    <string name="settings_customize_menu_title">Personalitza el menú</string>
+    <string name="settings_customize_menu_title">Personalitza el menú d\'entrada unificat</string>
     <string name="settings_default_currency_summary">Seleccionat: %s</string>
     <string name="settings_default_currency_title">Símbol de moneda per defecte</string>
     <string name="settings_key_press_feedback_title">Resposta en prémer tecles</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">La comprovació d\'actualitzacions ha fallat</string>
     <string name="settings_update_error_too_old">Aquesta versió és massa antiga per llegir la llista d\'actualitzacions. Actualitza-la manualment.</string>
     <string name="settings_update_from_cache">Mostrat a partir de l\'última comprovació guardada</string>
-    <string name="settings_update_background_check_title">Comprovació diària en segon pla</string>
-    <string name="settings_update_background_check_summary">Comprova un cop al dia i t\'avisa. Baixar i instal·lar sempre són manuals.</string>
+    <string name="settings_update_background_check_title">Comprova les actualitzacions automàticament</string>
+    <string name="settings_update_background_check_summary">Rep una notificació quan hi hagi una versió nova disponible per baixar.</string>
     <string name="settings_update_notification_text">La versió %1$s està a punt per baixar</string>
     <string name="settings_update_unknown_sources_message">Android ha de permetre que BBKB instal·li aplicacions. Activa la instal·lació des d\'aquesta font i torna a prémer Instal·la.</string>
     <string name="settings_update_open_settings">Obre la configuració</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Baixa</string>
     <string name="language_packs_retry">Torna-ho a provar</string>
     <string name="language_packs_refresh">Cerca diccionaris</string>
-    <string name="language_packs_catalog_offline">Catàleg del %1$s (fora de línia)</string>
+    <string name="language_packs_load_ldb">Carrega un fitxer LDB</string>
     <string name="language_packs_variant_summary">Es carrega en lloc de %1$s</string>
     <string name="language_packs_offer_message">Vols baixar el diccionari de %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Ara no</string>

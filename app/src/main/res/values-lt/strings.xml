@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Simbolių klaviatūra</string>
     <string name="settings_pkb_multifunction_action_voice">Balso įvestis</string>
     <string name="settings_pkb_multifunction_key_title">Daugiafunkcis klavišas</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Simbolių klaviatūra lieka atidaryta, kad būtų galima įvesti kelis simbolius</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Įvedus vieną simbolį grįžtama prie abėcėlės</string>
-    <string name="settings_pkb_symbol_auto_close_title">Uždaryti simbolių klaviatūrą po simbolio</string>
     <string name="settings_appearance_auto">Automatinė (sistemos tema)</string>
     <string name="settings_appearance_classic">Klasikinė</string>
     <string name="settings_appearance_dark">Tamsi</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Nerodoma klaviatūroje</string>
     <string name="settings_customize_menu_instructions">Palieskite ir palaikykite sparčiąją nuorodą, tada vilkite, kad pertvarkytumėte. Pirmosios keturios rodomos klaviatūros įvesties meniu.</string>
     <string name="settings_customize_menu_summary">Pasirinkti ir pertvarkyti įvesties meniu sparčiąsias nuorodas</string>
-    <string name="settings_customize_menu_title">Tinkinti meniu</string>
+    <string name="settings_customize_menu_title">Tinkinti vieningą įvesties meniu</string>
     <string name="settings_default_currency_summary">Pasirinkta: %s</string>
     <string name="settings_default_currency_title">Numatytasis valiutos simbolis</string>
     <string name="settings_key_press_feedback_title">Klavišo paspaudimo atsakas</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Naujinimų tikrinimas nepavyko</string>
     <string name="settings_update_error_too_old">Ši versija per sena, kad perskaitytų naujinimų sąrašą. Atnaujinkite rankiniu būdu.</string>
     <string name="settings_update_from_cache">Parodyta iš paskutinio išsaugoto tikrinimo</string>
-    <string name="settings_update_background_check_title">Kasdienis tikrinimas fone</string>
-    <string name="settings_update_background_check_summary">Tikrina kartą per dieną ir praneša jums. Atsisiuntimas ir įdiegimas visada atliekami rankiniu būdu.</string>
+    <string name="settings_update_background_check_title">Automatiškai tikrinti naujinius</string>
+    <string name="settings_update_background_check_summary">Gausite pranešimą, kai bus galima atsisiųsti naują versiją.</string>
     <string name="settings_update_notification_text">Versija %1$s paruošta atsisiųsti</string>
     <string name="settings_update_unknown_sources_message">Android turi leisti BBKB įdiegti programas. Įjunkite įdiegimą iš šio šaltinio ir vėl paspauskite Įdiegti.</string>
     <string name="settings_update_open_settings">Atidaryti nustatymus</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Atsisiųsti</string>
     <string name="language_packs_retry">Bandyti dar kartą</string>
     <string name="language_packs_refresh">Tikrinti žodynus</string>
-    <string name="language_packs_catalog_offline">Katalogas iš %1$s (neprisijungus)</string>
+    <string name="language_packs_load_ldb">Įkelti LDB failą</string>
     <string name="language_packs_variant_summary">Įkeliama vietoje %1$s</string>
     <string name="language_packs_offer_message">Atsisiųsti %1$s žodyną (%2$s)?</string>
     <string name="language_packs_offer_not_now">Ne dabar</string>

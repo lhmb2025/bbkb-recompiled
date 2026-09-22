@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Papan tombol simbol</string>
     <string name="settings_pkb_multifunction_action_voice">Asupan sora</string>
     <string name="settings_pkb_multifunction_key_title">Tombol multifungsi</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Papan tombol simbol tetep muka pikeun ngetik sababaraha simbol</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Balik deui ka aksara sanggeus ngetik hiji simbol</string>
-    <string name="settings_pkb_symbol_auto_close_title">Tutup papan tombol simbol sanggeus hiji simbol</string>
     <string name="settings_appearance_auto">Otomatis (téma sistem)</string>
     <string name="settings_appearance_classic">Klasik</string>
     <string name="settings_appearance_dark">Poék</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Teu ditémbongkeun dina papan tombol</string>
     <string name="settings_customize_menu_instructions">Toél terus tahan hiji pintonan singget, tuluy séréd pikeun ngatur urutanana. Opat nu panghareupna némbongan dina ménu asupan papan tombol.</string>
     <string name="settings_customize_menu_summary">Pilih jeung atur urutan pintonan singget dina ménu asupan</string>
-    <string name="settings_customize_menu_title">Atur ménu</string>
+    <string name="settings_customize_menu_title">Atur ménu asupan ngahiji</string>
     <string name="settings_default_currency_summary">Dipilih: %s</string>
     <string name="settings_default_currency_title">Simbol duit baku</string>
     <string name="settings_key_press_feedback_title">Réspon pencétan tombol</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Pamariksaan apdet gagal</string>
     <string name="settings_update_error_too_old">Versi ieu kolot teuing pikeun maca daptar apdet. Mangga apdet sorangan.</string>
     <string name="settings_update_from_cache">Ditembongkeun tina pamariksaan pamungkas nu disimpen</string>
-    <string name="settings_update_background_check_title">Pamariksaan sapopoé di latar tukang</string>
-    <string name="settings_update_background_check_summary">Mariksa sakali sapoé sareng ngabéjaan anjeun. Ngundeur sareng masang tetep manual.</string>
+    <string name="settings_update_background_check_title">Pariksa pembaruan sacara otomatis</string>
+    <string name="settings_update_background_check_summary">Nampi béwara nalika vérsi anyar sayaga diundeur.</string>
     <string name="settings_update_notification_text">Versi %1$s siap diundeur</string>
     <string name="settings_update_unknown_sources_message">Android kedah ngawenangkeun BBKB masang aplikasi. Hurungkeun pamasangan tina sumber ieu, teras pencét Pasang deui.</string>
     <string name="settings_update_open_settings">Buka setélan</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Undeur</string>
     <string name="language_packs_retry">Cobi deui</string>
     <string name="language_packs_refresh">Pariksa kamus</string>
-    <string name="language_packs_catalog_offline">Katalog ti %1$s (ofline)</string>
+    <string name="language_packs_load_ldb">Muat berkas LDB</string>
     <string name="language_packs_variant_summary">Dimuat ngaganti %1$s</string>
     <string name="language_packs_offer_message">Undeur kamus %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Entong ayeuna</string>

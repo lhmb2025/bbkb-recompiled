@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Tipkovnica s simboli</string>
     <string name="settings_pkb_multifunction_action_voice">Glasovni vnos</string>
     <string name="settings_pkb_multifunction_key_title">Večnamenska tipka</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Tipkovnica s simboli ostane odprta za vnos več simbolov</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Po vnosu enega simbola se vrne na črke</string>
-    <string name="settings_pkb_symbol_auto_close_title">Zapri tipkovnico s simboli po simbolu</string>
     <string name="settings_appearance_auto">Samodejno (sistemska tema)</string>
     <string name="settings_appearance_classic">Klasična</string>
     <string name="settings_appearance_dark">Temna</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Ni prikazano na tipkovnici</string>
     <string name="settings_customize_menu_instructions">Pridržite bližnjico in jo povlecite, da spremenite vrstni red. Prve štiri se prikažejo v meniju za vnos na tipkovnici.</string>
     <string name="settings_customize_menu_summary">Izberite in razvrstite bližnjice v meniju za vnos</string>
-    <string name="settings_customize_menu_title">Prilagodi meni</string>
+    <string name="settings_customize_menu_title">Prilagodi enotni meni za vnos</string>
     <string name="settings_default_currency_summary">Izbrano: %s</string>
     <string name="settings_default_currency_title">Privzeti simbol valute</string>
     <string name="settings_key_press_feedback_title">Odziv na pritisk tipke</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Preverjanje posodobitev ni uspelo</string>
     <string name="settings_update_error_too_old">Ta različica je preveč zastarela, da bi prebrala seznam posodobitev. Posodobite ročno.</string>
     <string name="settings_update_from_cache">Prikazano iz zadnjega shranjenega preverjanja</string>
-    <string name="settings_update_background_check_title">Dnevno preverjanje v ozadju</string>
-    <string name="settings_update_background_check_summary">Preveri enkrat na dan in vas obvesti. Prenos in namestitev vedno ostaneta ročna.</string>
+    <string name="settings_update_background_check_title">Samodejno preverjaj posodobitve</string>
+    <string name="settings_update_background_check_summary">Prejeli boste obvestilo, ko bo na voljo nova različica za prenos.</string>
     <string name="settings_update_notification_text">Različica %1$s je pripravljena za prenos</string>
     <string name="settings_update_unknown_sources_message">Android mora aplikaciji BBKB dovoliti namestitev aplikacij. Omogočite namestitev iz tega vira in znova pritisnite Namesti.</string>
     <string name="settings_update_open_settings">Odpri nastavitve</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Prenesi</string>
     <string name="language_packs_retry">Poskusi znova</string>
     <string name="language_packs_refresh">Preveri slovarje</string>
-    <string name="language_packs_catalog_offline">Katalog z dne %1$s (brez povezave)</string>
+    <string name="language_packs_load_ldb">Naloži datoteko LDB</string>
     <string name="language_packs_variant_summary">Naloži se namesto %1$s</string>
     <string name="language_packs_offer_message">Ali želite prenesti slovar %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Ne zdaj</string>

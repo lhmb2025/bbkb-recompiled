@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Klávesnice se symboly</string>
     <string name="settings_pkb_multifunction_action_voice">Hlasové zadávání</string>
     <string name="settings_pkb_multifunction_key_title">Multifunkční klávesa</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Klávesnice se symboly zůstane otevřená pro zadání více symbolů</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Po zadání jednoho symbolu se vrátí k písmenům</string>
-    <string name="settings_pkb_symbol_auto_close_title">Zavřít klávesnici se symboly po symbolu</string>
     <string name="settings_appearance_auto">Automaticky (motiv systému)</string>
     <string name="settings_appearance_classic">Klasický</string>
     <string name="settings_appearance_dark">Tmavý</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Nezobrazeno na klávesnici</string>
     <string name="settings_customize_menu_instructions">Klepněte na zkratku a podržte ji, pak ji přetažením přesuňte. První čtyři se zobrazí v nabídce zadávání na klávesnici.</string>
     <string name="settings_customize_menu_summary">Vyberte zkratky nabídky zadávání a určete jejich pořadí</string>
-    <string name="settings_customize_menu_title">Přizpůsobit nabídku</string>
+    <string name="settings_customize_menu_title">Přizpůsobit sjednocenou nabídku zadávání</string>
     <string name="settings_default_currency_summary">Vybráno: %s</string>
     <string name="settings_default_currency_title">Výchozí symbol měny</string>
     <string name="settings_key_press_feedback_title">Odezva na stisk klávesy</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Kontrola aktualizací selhala</string>
     <string name="settings_update_error_too_old">Tato verze je příliš stará, aby přečetla seznam aktualizací. Aktualizujte ručně.</string>
     <string name="settings_update_from_cache">Zobrazeno z poslední uložené kontroly</string>
-    <string name="settings_update_background_check_title">Denní kontrola na pozadí</string>
-    <string name="settings_update_background_check_summary">Zkontroluje jednou denně a upozorní vás. Stahování i instalace zůstávají vždy ruční.</string>
+    <string name="settings_update_background_check_title">Automaticky kontrolovat aktualizace</string>
+    <string name="settings_update_background_check_summary">Dostanete upozornění, jakmile bude ke stažení nová verze.</string>
     <string name="settings_update_notification_text">Verze %1$s je připravena ke stažení</string>
     <string name="settings_update_unknown_sources_message">Android musí aplikaci BBKB povolit instalaci aplikací. Povolte instalaci z tohoto zdroje a stiskněte Instalovat znovu.</string>
     <string name="settings_update_open_settings">Otevřít nastavení</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Stáhnout</string>
     <string name="language_packs_retry">Zkusit znovu</string>
     <string name="language_packs_refresh">Zkontrolovat slovníky</string>
-    <string name="language_packs_catalog_offline">Katalog z %1$s (offline)</string>
+    <string name="language_packs_load_ldb">Načíst soubor LDB</string>
     <string name="language_packs_variant_summary">Načte se místo %1$s</string>
     <string name="language_packs_offer_message">Stáhnout slovník %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Teď ne</string>

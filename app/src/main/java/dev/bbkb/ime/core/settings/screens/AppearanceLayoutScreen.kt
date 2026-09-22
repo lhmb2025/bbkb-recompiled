@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrightnessMedium
-import androidx.compose.material.icons.filled.Dialpad
 import androidx.compose.material.icons.filled.EmojiSymbols
 import androidx.compose.material.icons.filled.Height
 import androidx.compose.material.icons.filled.Palette
@@ -31,11 +30,10 @@ private const val THEME_STYLE = "pref_keyboard_theme_style"
 /**
  * Personalization hub screen (primary settings category)
  * Direct controls: Keyboard theme, Keyboard height.
- * Links to: Slideboard settings, Symbol customization.
+ * Links to: Symbol customization. (Slideboard settings now live under On-Screen Keyboard.)
  */
 @Composable
 fun AppearanceLayoutScreen(
-    onNavigateToSlideboard: () -> Unit,
     onNavigateToSymbolCustomization: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
@@ -81,13 +79,6 @@ fun AppearanceLayoutScreen(
             fallbackIndex = 1,
             icon = Icons.Default.Height.asRowIcon(),
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_height_mode"),
-        ),
-        // Slideboard (enable, swap sides, number pad, quick phrases)
-        Nav(
-            title = R.string.settings_slideboard_settings_title,
-            summary = R.string.settings_slideboard_hub_summary,
-            icon = Icons.Default.Dialpad.asRowIcon(),
-            onClick = { onNavigateToSlideboard() },
         ),
         // Custom symbol page + default currency (VKB + PKB)
         Nav(

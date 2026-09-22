@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Simbooltoetsbord</string>
     <string name="settings_pkb_multifunction_action_voice">Steminvoer</string>
     <string name="settings_pkb_multifunction_key_title">Multifunksietoets</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Die simbooltoetsbord bly oop om verskeie simbole in te voer</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Keer na die alfabet terug nadat een simbool ingevoer is</string>
-    <string name="settings_pkb_symbol_auto_close_title">Maak die simbooltoetsbord toe ná ’n simbool</string>
     <string name="settings_appearance_auto">Outomaties (stelseltema)</string>
     <string name="settings_appearance_classic">Klassiek</string>
     <string name="settings_appearance_dark">Donker</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Nie op die toetsbord gewys nie</string>
     <string name="settings_customize_menu_instructions">Raak en hou ’n kortpad en sleep dit dan om die volgorde te verander. Die eerste vier verskyn op die toetsbord se invoerkieslys.</string>
     <string name="settings_customize_menu_summary">Kies en herrangskik die kortpaaie in die invoerkieslys</string>
-    <string name="settings_customize_menu_title">Pasmaak kieslys</string>
+    <string name="settings_customize_menu_title">Pas verenigde invoerkieslys aan</string>
     <string name="settings_default_currency_summary">Gekies: %s</string>
     <string name="settings_default_currency_title">Verstek geldeenheidsimbool</string>
     <string name="settings_key_press_feedback_title">Terugvoer by toetsdruk</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Die opdateringskontrole het misluk</string>
     <string name="settings_update_error_too_old">Hierdie weergawe is te oud om die opdateringslys te lees. Werk asseblief self op.</string>
     <string name="settings_update_from_cache">Van die laas gestoorde kontrole gewys</string>
-    <string name="settings_update_background_check_title">Daaglikse agtergrondkontrole</string>
-    <string name="settings_update_background_check_summary">Kyk een keer per dag en stel jou in kennis. Aflaai en installeer bly altyd handmatig.</string>
+    <string name="settings_update_background_check_title">Kontroleer outomaties vir opdaterings</string>
+    <string name="settings_update_background_check_summary">Kry \'n kennisgewing wanneer \'n nuwe weergawe beskikbaar is om af te laai.</string>
     <string name="settings_update_notification_text">Weergawe %1$s is gereed om af te laai</string>
     <string name="settings_update_unknown_sources_message">Android moet BBKB toelaat om programme te installeer. Skakel installasie vanaf hierdie bron aan en druk dan weer Installeer.</string>
     <string name="settings_update_open_settings">Open instellings</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Laai af</string>
     <string name="language_packs_retry">Probeer weer</string>
     <string name="language_packs_refresh">Kyk vir woordeboeke</string>
-    <string name="language_packs_catalog_offline">Katalogus van %1$s (aflyn)</string>
+    <string name="language_packs_load_ldb">Laai LDB-lêer</string>
     <string name="language_packs_variant_summary">Laai in plek van %1$s</string>
     <string name="language_packs_offer_message">Laai die %1$s-woordeboek af (%2$s)?</string>
     <string name="language_packs_offer_not_now">Nie nou nie</string>

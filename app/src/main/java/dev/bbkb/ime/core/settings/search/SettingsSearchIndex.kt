@@ -119,7 +119,6 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_pkb_multifunction_key_title, "multifunction convenience mic key custom action ctrl emoji clipboard cursor arrow bar", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_multifunction_key_action", DeviceRequirement.MULTIFUNCTION_KEY),
         SearchableSetting(R.string.settings_pkb_hold_action_title, "hold long press key", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_pkb_hold_auto_commit"),
         SearchableSetting(R.string.settings_pkb_alt_sym_shortcut_title, "alt sym shortcut", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_alt_sym_shortcut_action"),
-        SearchableSetting(R.string.settings_pkb_symbol_auto_close_title, "symbol keyboard auto close return alphabet", SettingsRoute.PhysicalKeyboard.route, TYPING, "pkb_symbol_auto_close"),
         SearchableSetting(R.string.pref_show_pkb_modifier_status_icon, "modifier status icon shift alt", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_show_pkb_modifier_status_icon"),
         SearchableSetting(R.string.pref_shift_double_tap_lock, "shift double tap caps lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_shift_double_tap_lock"),
         SearchableSetting(R.string.pref_alt_double_tap_lock, "alt double tap lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_alt_double_tap_lock"),
@@ -155,10 +154,10 @@ object SettingsSearchIndex {
         // Emoji dynamic search moved to Assistance → Suggestions
         SearchableSetting(R.string.pref_emoji_dynamic_search_title, "emoji search", SettingsRoute.Suggestion.route, SUGGESTION, "pref_emoji_dynamic_search"),
 
-        // ── Appearance & layout: Slideboard ─────────────────────────────────────
-        SearchableSetting(R.string.settings_vkb_slideboard_enable_title, "slideboard number pad", SettingsRoute.SlideboardSettings.route, APPEARANCE, "slideboard_active"),
-        SearchableSetting(R.string.settings_vkb_slideboard_swap_title, "slideboard swap sides", SettingsRoute.SlideboardSettings.route, APPEARANCE, "slideboard_numeric_location"),
-        SearchableSetting(R.string.settings_vkb_quick_phrases_title, "quick phrases canned", SettingsRoute.SlideboardSettings.route, APPEARANCE),
+        // ── Typing & input: Slideboard (entry row lives on On-Screen Keyboard) ──
+        SearchableSetting(R.string.settings_vkb_slideboard_enable_title, "slideboard number pad", SettingsRoute.SlideboardSettings.route, TYPING, "slideboard_active"),
+        SearchableSetting(R.string.settings_vkb_slideboard_swap_title, "slideboard swap sides", SettingsRoute.SlideboardSettings.route, TYPING, "slideboard_numeric_location"),
+        SearchableSetting(R.string.settings_vkb_quick_phrases_title, "quick phrases canned", SettingsRoute.SlideboardSettings.route, TYPING),
 
         // ── Appearance & layout: Custom symbol page ─────────────────────────────
         SearchableSetting(R.string.settings_symbol_customization_title, "symbol page custom layout", SettingsRoute.SymbolCustomization.route, APPEARANCE, "symbol_customization"),

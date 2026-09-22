@@ -296,9 +296,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Symbol keyboard</string>
     <string name="settings_pkb_multifunction_action_voice">Voice input</string>
     <string name="settings_pkb_multifunction_key_title">Multifunction key</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Symbol keyboard stays open for entering multiple symbols</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Returns to the alphabet after entering one symbol</string>
-    <string name="settings_pkb_symbol_auto_close_title">Close symbol keyboard after symbol</string>
 
     <!-- ============================================== -->
     <!-- Settings — on-screen keyboard and appearance -->
@@ -659,7 +656,7 @@
     <string name="settings_customize_menu_hidden_header">Not shown on keyboard</string>
     <string name="settings_customize_menu_instructions">Touch and hold a shortcut, then drag to reorder. The first four appear on the keyboard\u2019s input menu.</string>
     <string name="settings_customize_menu_summary">Choose and reorder the input menu shortcuts</string>
-    <string name="settings_customize_menu_title">Customize menu</string>
+    <string name="settings_customize_menu_title">Customize unified input menu</string>
     <string name="settings_default_currency_summary">Selected: %s</string>
     <string name="settings_default_currency_title">Default currency symbol</string>
     <string name="settings_key_press_feedback_title">Key press feedback</string>
@@ -845,8 +842,8 @@
     <string name="settings_update_error_generic">The update check failed</string>
     <string name="settings_update_error_too_old">This version is too old to read the update list. Please update by hand.</string>
     <string name="settings_update_from_cache">Shown from the last saved check</string>
-    <string name="settings_update_background_check_title">Daily background check</string>
-    <string name="settings_update_background_check_summary">Check once a day and notify you. Downloading and installing always stay manual.</string>
+    <string name="settings_update_background_check_title">Automatically check for updates</string>
+    <string name="settings_update_background_check_summary">Receive a notification when a new version is available to download.</string>
     <string name="settings_update_notification_text">Version %1$s is ready to download</string>
     <string name="settings_update_unknown_sources_message">Android must allow BBKB to install apps. Turn on \"Allow from this source\", then press Install again.</string>
     <string name="settings_update_open_settings">Open settings</string>
@@ -856,7 +853,7 @@
     <string name="language_packs_download">Download</string>
     <string name="language_packs_retry">Try again</string>
     <string name="language_packs_refresh">Check for dictionaries</string>
-    <string name="language_packs_catalog_offline">Catalogue from %1$s (offline)</string>
+    <string name="language_packs_load_ldb">Load LDB file</string>
     <string name="language_packs_variant_summary">Loads in place of %1$s</string>
     <string name="language_packs_offer_message">Download the %1$s dictionary (%2$s)?</string>
     <string name="language_packs_offer_not_now">Not now</string>

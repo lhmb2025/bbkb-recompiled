@@ -97,6 +97,18 @@ class VoiceDictationOffensiveWordsTest {
         )
     }
 
+    /**
+     * A fresh install masks nothing. Nothing is written for the frozen key, so the default in
+     * `R.bool.config_block_potentially_offensive` decides, and it is off — asserted through
+     * `SettingsManager`, the single reader the settings row and the recogniser share, so a screen
+     * that re-declared its own default could not quietly disagree with it.
+     */
+    @Test
+    fun `blocking is off on a fresh install`() {
+        assertEquals(false, prefs().contains("pref_key_block_potentially_offensive"))
+        assertEquals(false, SettingsManager.isBlockOffensiveEnabled(prefs(), context.resources))
+    }
+
     /** The extra must be present either way — an absent extra means the recogniser default wins. */
     @Test
     fun `the extra is always set`() {

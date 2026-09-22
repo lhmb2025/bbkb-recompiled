@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Symbolentoetsenbord</string>
     <string name="settings_pkb_multifunction_action_voice">Spraakinvoer</string>
     <string name="settings_pkb_multifunction_key_title">Multifunctionele toets</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Het symbolentoetsenbord blijft open om meerdere symbolen in te voeren</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Keert terug naar het alfabet na één symbool</string>
-    <string name="settings_pkb_symbol_auto_close_title">Symbolentoetsenbord sluiten na symbool</string>
     <string name="settings_appearance_auto">Automatisch (systeemthema)</string>
     <string name="settings_appearance_classic">Klassiek</string>
     <string name="settings_appearance_dark">Donker</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Niet op het toetsenbord getoond</string>
     <string name="settings_customize_menu_instructions">Houd een snelkoppeling ingedrukt en sleep om de volgorde te wijzigen. De eerste vier verschijnen in het invoermenu van het toetsenbord.</string>
     <string name="settings_customize_menu_summary">Kies de snelkoppelingen in het invoermenu en wijzig hun volgorde</string>
-    <string name="settings_customize_menu_title">Menu aanpassen</string>
+    <string name="settings_customize_menu_title">Gecombineerd invoermenu aanpassen</string>
     <string name="settings_default_currency_summary">Geselecteerd: %s</string>
     <string name="settings_default_currency_title">Standaard valutasymbool</string>
     <string name="settings_key_press_feedback_title">Feedback bij toetsaanslag</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">De updatecontrole is mislukt</string>
     <string name="settings_update_error_too_old">Deze versie is te oud om de updatelijst te lezen. Werk de app handmatig bij.</string>
     <string name="settings_update_from_cache">Weergegeven op basis van de laatst opgeslagen controle</string>
-    <string name="settings_update_background_check_title">Dagelijkse controle op de achtergrond</string>
-    <string name="settings_update_background_check_summary">Controleert één keer per dag en waarschuwt je. Downloaden en installeren blijven altijd handmatig.</string>
+    <string name="settings_update_background_check_title">Automatisch op updates controleren</string>
+    <string name="settings_update_background_check_summary">Je krijgt een melding zodra er een nieuwe versie klaarstaat om te downloaden.</string>
     <string name="settings_update_notification_text">Versie %1$s kan worden gedownload</string>
     <string name="settings_update_unknown_sources_message">Android moet BBKB toestaan apps te installeren. Sta installatie vanuit deze bron toe en druk daarna opnieuw op Installeren.</string>
     <string name="settings_update_open_settings">Instellingen openen</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Downloaden</string>
     <string name="language_packs_retry">Opnieuw proberen</string>
     <string name="language_packs_refresh">Zoeken naar woordenboeken</string>
-    <string name="language_packs_catalog_offline">Catalogus van %1$s (offline)</string>
+    <string name="language_packs_load_ldb">LDB-bestand laden</string>
     <string name="language_packs_variant_summary">Wordt geladen in plaats van %1$s</string>
     <string name="language_packs_offer_message">Het woordenboek %1$s downloaden (%2$s)?</string>
     <string name="language_packs_offer_not_now">Niet nu</string>

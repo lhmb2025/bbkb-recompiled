@@ -4,13 +4,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import android.content.Context;
 import android.view.InputDevice;
 import android.view.KeyEvent;
+
+import androidx.test.core.app.ApplicationProvider;
 
 import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver;
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier;
 import dev.bbkb.ime.core.device.profile.DeviceCapabilities;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
+import dev.bbkb.ime.core.settings.util.SettingsManager;
+import dev.bbkb.ime.core.textinput.connection.EditorCapabilities;
 
 import org.junit.After;
 import org.junit.Before;
@@ -18,6 +23,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+
+import java.util.Locale;
 
 /**
  * The held-key accounting behind {@link PhysicalKeyboardStateTracker#getNumberOfKeysDown()}.
@@ -215,5 +222,65 @@ public class PhysicalKeyboardStateTrackerHeldKeysTest {
         up(KeyEvent.KEYCODE_A);
 
         assertEquals(0, tracker.getNumberOfKeysDown());
+    }
+
+    // ── the held Sym key ─────────────────────────────────────────────────────
+
+    /**
+     * The PKB symbol board closes itself after the symbol typed on it; holding Sym is what keeps
+     * it open instead (owner decision, 2026-09-22, replacing the "Close symbol keyboard after
+     * symbol" setting). {@code KeyboardState} asks this question through
+     * {@code SwitcherCallbacks.isSymKeyHeld()}.
+     */
+    @Test
+    public void theSymKeyIsHeldBetweenItsPressAndItsRelease() {
+        assertFalse("nothing is held to begin with", tracker.isSymKeyHeld());
+
+        down(KeyEvent.KEYCODE_SYM);
+        assertTrue(tracker.isSymKeyHeld());
+
+        up(KeyEvent.KEYCODE_SYM);
+        assertFalse(tracker.isSymKeyHeld());
+    }
+
+    @Test
+    public void anOrdinaryHeldKeyIsNotTheSymKey() {
+        down(KeyEvent.KEYCODE_A);
+
+        assertFalse(tracker.isSymKeyHeld());
+    }
+
+    /**
+     * The MP01's ROM attaches {@code KEYCODE_ALT_RIGHT} to its Sym scancode, so the key-event
+     * path names the key code it resolved rather than this class assuming {@code KEYCODE_SYM}.
+     */
+    @Test
+    public void aDeviceWhoseSymKeyReportsAnotherKeyCodeIsHeldByThatKeyCode() {
+        // KEYCODE_ALT_RIGHT is a modifier key code, so this is the one test here that takes the
+        // tracker's modifier arm — which reads the long-press timeout out of the settings.
+        Context context = ApplicationProvider.getApplicationContext();
+        SettingsManager.initialize(context);
+        SettingsManager.getInstance().loadSettings(context, Locale.US,
+                new EditorCapabilities(null, false, context.getPackageName(), Locale.US, false));
+
+        tracker.setSymKeyCode(KeyEvent.KEYCODE_ALT_RIGHT);
+
+        down(KeyEvent.KEYCODE_ALT_RIGHT);
+        assertTrue(tracker.isSymKeyHeld());
+
+        up(KeyEvent.KEYCODE_ALT_RIGHT);
+        assertFalse(tracker.isSymKeyHeld());
+    }
+
+    /** A leaked Sym press is discharged like any other, by the next release of that key. */
+    @Test
+    public void aSwallowedSymKeyUpDoesNotLeaveSymHeldForever() {
+        down(KeyEvent.KEYCODE_SYM);
+        // ...the release is consumed by a branch that returns before telling the tracker.
+
+        down(KeyEvent.KEYCODE_SYM);
+        up(KeyEvent.KEYCODE_SYM);
+
+        assertFalse(tracker.isSymKeyHeld());
     }
 }

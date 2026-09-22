@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">لوحة مفاتيح الرموز</string>
     <string name="settings_pkb_multifunction_action_voice">الإدخال الصوتي</string>
     <string name="settings_pkb_multifunction_key_title">المفتاح متعدد الوظائف</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">تبقى لوحة مفاتيح الرموز مفتوحة لإدخال عدة رموز</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">العودة إلى الأحرف بعد إدخال رمز واحد</string>
-    <string name="settings_pkb_symbol_auto_close_title">إغلاق لوحة مفاتيح الرموز بعد إدخال رمز</string>
     <string name="settings_appearance_auto">تلقائي (مظهر النظام)</string>
     <string name="settings_appearance_classic">كلاسيكي</string>
     <string name="settings_appearance_dark">داكن</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">لا تظهر على لوحة المفاتيح</string>
     <string name="settings_customize_menu_instructions">المس اختصارًا مع الاستمرار، ثم اسحبه لإعادة الترتيب. تظهر الاختصارات الأربعة الأولى في قائمة الإدخال في لوحة المفاتيح.</string>
     <string name="settings_customize_menu_summary">اختيار اختصارات قائمة الإدخال وإعادة ترتيبها</string>
-    <string name="settings_customize_menu_title">تخصيص القائمة</string>
+    <string name="settings_customize_menu_title">تخصيص قائمة الإدخال الموحدة</string>
     <string name="settings_default_currency_summary">المحدد: %s</string>
     <string name="settings_default_currency_title">رمز العملة الافتراضي</string>
     <string name="settings_key_press_feedback_title">ملاحظات الضغط على المفاتيح</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">فشل فحص التحديثات</string>
     <string name="settings_update_error_too_old">هذا الإصدار أقدم من أن يقرأ قائمة التحديثات. يرجى التحديث يدويًا.</string>
     <string name="settings_update_from_cache">معروض من آخر فحص محفوظ</string>
-    <string name="settings_update_background_check_title">فحص يومي في الخلفية</string>
-    <string name="settings_update_background_check_summary">يتحقق مرة واحدة يوميًا ويُعلمك. يبقى التنزيل والتثبيت يدويين دائمًا.</string>
+    <string name="settings_update_background_check_title">التحقق تلقائيًا من التحديثات</string>
+    <string name="settings_update_background_check_summary">تلقَّ إشعارًا عند توفر إصدار جديد للتنزيل.</string>
     <string name="settings_update_notification_text">الإصدار %1$s جاهز للتنزيل</string>
     <string name="settings_update_unknown_sources_message">يجب أن يسمح نظام Android لتطبيق BBKB بتثبيت التطبيقات. مكّن التثبيت من هذا المصدر ثم اضغط على تثبيت مرة أخرى.</string>
     <string name="settings_update_open_settings">فتح الإعدادات</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">تنزيل</string>
     <string name="language_packs_retry">أعد المحاولة</string>
     <string name="language_packs_refresh">التحقق من القواميس</string>
-    <string name="language_packs_catalog_offline">الفهرس من %1$s (غير متصل)</string>
+    <string name="language_packs_load_ldb">تحميل ملف LDB</string>
     <string name="language_packs_variant_summary">يُحمَّل بدلاً من %1$s</string>
     <string name="language_packs_offer_message">تنزيل قاموس %1$s (%2$s)؟</string>
     <string name="language_packs_offer_not_now">ليس الآن</string>

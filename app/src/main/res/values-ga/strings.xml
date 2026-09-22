@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Méarchlár siombailí</string>
     <string name="settings_pkb_multifunction_action_voice">Ionchur gutha</string>
     <string name="settings_pkb_multifunction_key_title">Eochair ilfheidhme</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Fanann an méarchlár siombailí oscailte chun roinnt siombailí a chur isteach</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Filleann sé ar an aibítir tar éis siombail amháin a chur isteach</string>
-    <string name="settings_pkb_symbol_auto_close_title">Dún an méarchlár siombailí tar éis siombaile</string>
     <string name="settings_appearance_auto">Uathoibríoch (téama an chórais)</string>
     <string name="settings_appearance_classic">Clasaiceach</string>
     <string name="settings_appearance_dark">Dorcha</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Gan a thaispeáint ar an méarchlár</string>
     <string name="settings_customize_menu_instructions">Coinnigh do mhéar ar aicearra, ansin tarraing é chun an t-ord a athrú. Taispeántar an chéad cheithre cinn ar roghchlár ionchuir an mhéarchláir.</string>
     <string name="settings_customize_menu_summary">Roghnaigh agus athordaigh aicearraí an roghchláir ionchuir</string>
-    <string name="settings_customize_menu_title">Saincheap an roghchlár</string>
+    <string name="settings_customize_menu_title">Saincheap an roghchlár ionchuir aontaithe</string>
     <string name="settings_default_currency_summary">Roghnaithe: %s</string>
     <string name="settings_default_currency_title">Siombail airgeadra réamhshocraithe</string>
     <string name="settings_key_press_feedback_title">Aiseolas bhrú na n-eochracha</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Theip ar an seiceáil nuashonraithe</string>
     <string name="settings_update_error_too_old">Tá an leagan seo ró-sean chun an liosta nuashonruithe a léamh. Nuashonraigh de láimh.</string>
     <string name="settings_update_from_cache">Á thaispeáint ón seiceáil shábháilte dheireanach</string>
-    <string name="settings_update_background_check_title">Seiceáil laethúil sa chúlra</string>
-    <string name="settings_update_background_check_summary">Seiceálann uair sa lá agus cuireann in iúl duit. Fanann an íoslódáil agus an tsuiteáil de láimh i gcónaí.</string>
+    <string name="settings_update_background_check_title">Seiceáil le haghaidh nuashonruithe go huathoibríoch</string>
+    <string name="settings_update_background_check_summary">Gheobhaidh tú fógra nuair a bheidh leagan nua ar fáil le híoslódáil.</string>
     <string name="settings_update_notification_text">Tá leagan %1$s réidh le híoslódáil</string>
     <string name="settings_update_unknown_sources_message">Caithfidh Android cead a thabhairt do BBKB aipeanna a shuiteáil. Cumasaigh suiteáil ón bhfoinse seo, ansin brúigh Suiteáil arís.</string>
     <string name="settings_update_open_settings">Oscail socruithe</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Íoslódáil</string>
     <string name="language_packs_retry">Bain triail eile as</string>
     <string name="language_packs_refresh">Seiceáil le haghaidh foclóirí</string>
-    <string name="language_packs_catalog_offline">Catalóg ó %1$s (as líne)</string>
+    <string name="language_packs_load_ldb">Luchtaigh comhad LDB</string>
     <string name="language_packs_variant_summary">Lódáiltear in ionad %1$s</string>
     <string name="language_packs_offer_message">Íoslódáil foclóir %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Níl anois</string>

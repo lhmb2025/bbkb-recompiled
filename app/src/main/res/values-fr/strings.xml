@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Clavier de symboles</string>
     <string name="settings_pkb_multifunction_action_voice">Saisie vocale</string>
     <string name="settings_pkb_multifunction_key_title">Touche multifonction</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Le clavier de symboles reste ouvert pour saisir plusieurs symboles</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Revient à l\'alphabet après la saisie d\'un symbole</string>
-    <string name="settings_pkb_symbol_auto_close_title">Fermer le clavier de symboles après un symbole</string>
     <string name="settings_appearance_auto">Auto (thème du système)</string>
     <string name="settings_appearance_classic">Classique</string>
     <string name="settings_appearance_dark">Sombre</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Non affiché sur le clavier</string>
     <string name="settings_customize_menu_instructions">Appuyez de manière prolongée sur un raccourci, puis faites-le glisser pour le réorganiser. Les quatre premiers apparaissent dans le menu de saisie du clavier.</string>
     <string name="settings_customize_menu_summary">Choisir et réorganiser les raccourcis du menu de saisie</string>
-    <string name="settings_customize_menu_title">Personnaliser le menu</string>
+    <string name="settings_customize_menu_title">Personnaliser le menu de saisie unifié</string>
     <string name="settings_default_currency_summary">Sélectionné : %s</string>
     <string name="settings_default_currency_title">Symbole monétaire par défaut</string>
     <string name="settings_key_press_feedback_title">Retour lors de l\'appui sur les touches</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">La vérification des mises à jour a échoué</string>
     <string name="settings_update_error_too_old">Cette version est trop ancienne pour lire la liste des mises à jour. Mettez à jour manuellement.</string>
     <string name="settings_update_from_cache">Affiché d\'après la dernière vérification enregistrée</string>
-    <string name="settings_update_background_check_title">Vérification quotidienne en arrière-plan</string>
-    <string name="settings_update_background_check_summary">Vérifie une fois par jour et vous avertit. Le téléchargement et l\'installation restent toujours manuels.</string>
+    <string name="settings_update_background_check_title">Rechercher automatiquement les mises à jour</string>
+    <string name="settings_update_background_check_summary">Recevez une notification lorsqu\'une nouvelle version est disponible au téléchargement.</string>
     <string name="settings_update_notification_text">La version %1$s est prête à être téléchargée</string>
     <string name="settings_update_unknown_sources_message">Android doit autoriser BBKB à installer des applications. Activez l\'installation depuis cette source, puis appuyez de nouveau sur Installer.</string>
     <string name="settings_update_open_settings">Ouvrir les paramètres</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Télécharger</string>
     <string name="language_packs_retry">Réessayer</string>
     <string name="language_packs_refresh">Rechercher des dictionnaires</string>
-    <string name="language_packs_catalog_offline">Catalogue du %1$s (hors connexion)</string>
+    <string name="language_packs_load_ldb">Charger un fichier LDB</string>
     <string name="language_packs_variant_summary">Se charge à la place de %1$s</string>
     <string name="language_packs_offer_message">Télécharger le dictionnaire %1$s (%2$s) ?</string>
     <string name="language_packs_offer_not_now">Pas maintenant</string>

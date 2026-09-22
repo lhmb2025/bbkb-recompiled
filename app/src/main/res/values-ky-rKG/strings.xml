@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Символ баскычтобу</string>
     <string name="settings_pkb_multifunction_action_voice">Үн менен киргизүү</string>
     <string name="settings_pkb_multifunction_key_title">Көп функциялуу баскыч</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Символ баскычтобу бир нече символ киргизүү үчүн ачык калат</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Бир символ киргизилгенден кийин тамгаларга кайтат</string>
-    <string name="settings_pkb_symbol_auto_close_title">Символдон кийин символ баскычтобун жабуу</string>
     <string name="settings_appearance_auto">Автоматтык (системанын темасы)</string>
     <string name="settings_appearance_classic">Классикалык</string>
     <string name="settings_appearance_dark">Караңгы</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Баскычтопто көрсөтүлбөйт</string>
     <string name="settings_customize_menu_instructions">Кыска жолду басып туруп, тартибин өзгөртүү үчүн сүйрөңүз. Алгачкы төртөө баскычтоптун киргизүү менюсунда көрүнөт.</string>
     <string name="settings_customize_menu_summary">Киргизүү менюсунун кыска жолдорун тандоо жана иреттөө</string>
-    <string name="settings_customize_menu_title">Менюну ыңгайлаштыруу</string>
+    <string name="settings_customize_menu_title">Бирдиктүү киргизүү менюсун ыңгайлаштыруу</string>
     <string name="settings_default_currency_summary">Тандалган: %s</string>
     <string name="settings_default_currency_title">Демейки валюта белгиси</string>
     <string name="settings_key_press_feedback_title">Баскыч басууга жооп</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Жаңыртууну текшерүү ишке ашкан жок</string>
     <string name="settings_update_error_too_old">Бул версия жаңыртуулар тизмесин окуу үчүн өтө эски. Колмо-кол жаңыртыңыз.</string>
     <string name="settings_update_from_cache">Акыркы сакталган текшерүүдөн көрсөтүлдү</string>
-    <string name="settings_update_background_check_title">Күн сайын фондо текшерүү</string>
-    <string name="settings_update_background_check_summary">Күнүнө бир жолу текшерип, сизге билдирет. Жүктөө жана орнотуу дайыма колмо-кол.</string>
+    <string name="settings_update_background_check_title">Жаңыртууларды автоматтык түрдө текшерүү</string>
+    <string name="settings_update_background_check_summary">Жаңы версия жүктөөгө жеткиликтүү болгондо билдирме аласыз.</string>
     <string name="settings_update_notification_text">Версия %1$s жүктөөгө даяр</string>
     <string name="settings_update_unknown_sources_message">Android BBKB\'ге колдонмолорду орнотууга уруксат бериши керек. Бул булактан орнотууну иштетип, андан кийин Орнотуу баскычын кайра басыңыз.</string>
     <string name="settings_update_open_settings">Жөндөөлөрдү ачуу</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Жүктөө</string>
     <string name="language_packs_retry">Кайра аракет кылуу</string>
     <string name="language_packs_refresh">Сөздүктөрдү текшерүү</string>
-    <string name="language_packs_catalog_offline">%1$s каталогу (оффлайн)</string>
+    <string name="language_packs_load_ldb">LDB файлын жүктөө</string>
     <string name="language_packs_variant_summary">%1$s ордуна жүктөлөт</string>
     <string name="language_packs_offer_message">%1$s сөздүгү жүктөлсүнбү (%2$s)?</string>
     <string name="language_packs_offer_not_now">Азыр эмес</string>

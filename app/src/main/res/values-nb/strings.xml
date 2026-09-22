@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Symboltastatur</string>
     <string name="settings_pkb_multifunction_action_voice">Taleinndata</string>
     <string name="settings_pkb_multifunction_key_title">Flerfunksjonstast</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Symboltastaturet forblir åpent, så du kan skrive flere symboler</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Går tilbake til bokstavene etter ett symbol</string>
-    <string name="settings_pkb_symbol_auto_close_title">Lukk symboltastaturet etter ett symbol</string>
     <string name="settings_appearance_auto">Automatisk (systemtema)</string>
     <string name="settings_appearance_classic">Klassisk</string>
     <string name="settings_appearance_dark">Mørkt</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Vises ikke på tastaturet</string>
     <string name="settings_customize_menu_instructions">Trykk på og hold en snarvei, og dra for å endre rekkefølgen. De fire første vises i tastaturets inndatameny.</string>
     <string name="settings_customize_menu_summary">Velg og endre rekkefølgen på snarveiene i inndatamenyen</string>
-    <string name="settings_customize_menu_title">Tilpass menyen</string>
+    <string name="settings_customize_menu_title">Tilpass den samlede inndatamenyen</string>
     <string name="settings_default_currency_summary">Valgt: %s</string>
     <string name="settings_default_currency_title">Standard valutasymbol</string>
     <string name="settings_key_press_feedback_title">Tilbakemelding ved tastetrykk</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Oppdateringssjekken mislyktes</string>
     <string name="settings_update_error_too_old">Denne versjonen er for gammel til å lese oppdateringslisten. Oppdater manuelt.</string>
     <string name="settings_update_from_cache">Vist fra den sist lagrede sjekken</string>
-    <string name="settings_update_background_check_title">Daglig sjekk i bakgrunnen</string>
-    <string name="settings_update_background_check_summary">Sjekker én gang om dagen og varsler deg. Nedlasting og installering er alltid manuelt.</string>
+    <string name="settings_update_background_check_title">Se etter oppdateringer automatisk</string>
+    <string name="settings_update_background_check_summary">Du får et varsel når en ny versjon er klar til nedlasting.</string>
     <string name="settings_update_notification_text">Versjon %1$s er klar for nedlasting</string>
     <string name="settings_update_unknown_sources_message">Android må tillate at BBKB installerer apper. Tillat installering fra denne kilden, og trykk på Installer igjen.</string>
     <string name="settings_update_open_settings">Åpne innstillinger</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Last ned</string>
     <string name="language_packs_retry">Prøv igjen</string>
     <string name="language_packs_refresh">Se etter ordbøker</string>
-    <string name="language_packs_catalog_offline">Katalog fra %1$s (frakoblet)</string>
+    <string name="language_packs_load_ldb">Last inn LDB-fil</string>
     <string name="language_packs_variant_summary">Lastes i stedet for %1$s</string>
     <string name="language_packs_offer_message">Laste ned ordboken for %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Ikke nå</string>

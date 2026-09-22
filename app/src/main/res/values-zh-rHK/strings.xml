@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">符號鍵盤</string>
     <string name="settings_pkb_multifunction_action_voice">語音輸入</string>
     <string name="settings_pkb_multifunction_key_title">多功能鍵</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">符號鍵盤會保持開啟，方便輸入多個符號</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">輸入一個符號後返回字母鍵盤</string>
-    <string name="settings_pkb_symbol_auto_close_title">輸入符號後關閉符號鍵盤</string>
     <string name="settings_appearance_auto">自動 (系統主題)</string>
     <string name="settings_appearance_classic">經典</string>
     <string name="settings_appearance_dark">深色</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">不會在鍵盤上顯示</string>
     <string name="settings_customize_menu_instructions">輕觸並按住捷徑，然後拖曳即可重新排序。首四個會顯示在鍵盤的輸入選單上。</string>
     <string name="settings_customize_menu_summary">選擇輸入選單捷徑並重新排序</string>
-    <string name="settings_customize_menu_title">自訂選單</string>
+    <string name="settings_customize_menu_title">自訂統一輸入選單</string>
     <string name="settings_default_currency_summary">已選擇：%s</string>
     <string name="settings_default_currency_title">預設貨幣符號</string>
     <string name="settings_key_press_feedback_title">按鍵回饋</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">檢查更新失敗</string>
     <string name="settings_update_error_too_old">此版本太舊，無法讀取更新清單。請手動更新。</string>
     <string name="settings_update_from_cache">顯示的是上次儲存的檢查結果</string>
-    <string name="settings_update_background_check_title">每日背景檢查</string>
-    <string name="settings_update_background_check_summary">每天檢查一次並通知你。下載與安裝一律由你手動完成。</string>
+    <string name="settings_update_background_check_title">自動檢查更新</string>
+    <string name="settings_update_background_check_summary">有新版本可供下載時通知你。</string>
     <string name="settings_update_notification_text">版本 %1$s 已可下載</string>
     <string name="settings_update_unknown_sources_message">Android 必須允許 BBKB 安裝應用程式。請開啟來自此來源的安裝，然後再次點按安裝。</string>
     <string name="settings_update_open_settings">開啟設定</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">下載</string>
     <string name="language_packs_retry">重試</string>
     <string name="language_packs_refresh">檢查詞典</string>
-    <string name="language_packs_catalog_offline">%1$s的目錄（離線）</string>
+    <string name="language_packs_load_ldb">載入 LDB 檔案</string>
     <string name="language_packs_variant_summary">將代替%1$s載入</string>
     <string name="language_packs_offer_message">下載%1$s詞典（%2$s）？</string>
     <string name="language_packs_offer_not_now">稍後再說</string>

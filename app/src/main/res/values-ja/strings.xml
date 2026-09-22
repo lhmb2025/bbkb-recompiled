@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">記号キーボード</string>
     <string name="settings_pkb_multifunction_action_voice">音声入力</string>
     <string name="settings_pkb_multifunction_key_title">多機能キー</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">記号キーボードを開いたままにして複数の記号を入力します</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">記号を1つ入力するとアルファベットに戻ります</string>
-    <string name="settings_pkb_symbol_auto_close_title">記号入力後に記号キーボードを閉じる</string>
     <string name="settings_appearance_auto">自動(システムのテーマ)</string>
     <string name="settings_appearance_classic">クラシック</string>
     <string name="settings_appearance_dark">ダーク</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">キーボードに表示しない</string>
     <string name="settings_customize_menu_instructions">ショートカットを長押ししてドラッグすると並べ替えられます。最初の4つがキーボードの入力メニューに表示されます。</string>
     <string name="settings_customize_menu_summary">入力メニューのショートカットを選んで並べ替えます</string>
-    <string name="settings_customize_menu_title">メニューをカスタマイズ</string>
+    <string name="settings_customize_menu_title">統合入力メニューをカスタマイズ</string>
     <string name="settings_default_currency_summary">選択中: %s</string>
     <string name="settings_default_currency_title">デフォルトの通貨記号</string>
     <string name="settings_key_press_feedback_title">キー入力のフィードバック</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">アップデートの確認に失敗しました</string>
     <string name="settings_update_error_too_old">このバージョンは古すぎてアップデート一覧を読めません。手動で更新してください。</string>
     <string name="settings_update_from_cache">最後に保存した確認結果を表示しています</string>
-    <string name="settings_update_background_check_title">1 日 1 回のバックグラウンド確認</string>
-    <string name="settings_update_background_check_summary">1 日 1 回確認して通知します。ダウンロードとインストールは常に手動です。</string>
+    <string name="settings_update_background_check_title">更新を自動的に確認</string>
+    <string name="settings_update_background_check_summary">新しいバージョンをダウンロードできるようになると通知します。</string>
     <string name="settings_update_notification_text">バージョン %1$s をダウンロードできます</string>
     <string name="settings_update_unknown_sources_message">アプリをインストールするには Android の許可が必要です。このソースからのインストールを許可してから、もう一度インストールを押してください。</string>
     <string name="settings_update_open_settings">設定を開く</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">ダウンロード</string>
     <string name="language_packs_retry">再試行</string>
     <string name="language_packs_refresh">辞書を確認</string>
-    <string name="language_packs_catalog_offline">%1$sのカタログ（オフライン）</string>
+    <string name="language_packs_load_ldb">LDBファイルを読み込む</string>
     <string name="language_packs_variant_summary">%1$sの代わりに読み込まれます</string>
     <string name="language_packs_offer_message">%1$sの辞書をダウンロードしますか（%2$s）?</string>
     <string name="language_packs_offer_not_now">後で</string>

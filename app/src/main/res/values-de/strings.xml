@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Symboltastatur</string>
     <string name="settings_pkb_multifunction_action_voice">Spracheingabe</string>
     <string name="settings_pkb_multifunction_key_title">Multifunktionstaste</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Symboltastatur bleibt geöffnet, um mehrere Symbole einzugeben</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Kehrt nach der Eingabe eines Symbols zum Alphabet zurück</string>
-    <string name="settings_pkb_symbol_auto_close_title">Symboltastatur nach Symbol schließen</string>
     <string name="settings_appearance_auto">Automatisch (Systemdesign)</string>
     <string name="settings_appearance_classic">Klassisch</string>
     <string name="settings_appearance_dark">Dunkel</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Nicht auf der Tastatur angezeigt</string>
     <string name="settings_customize_menu_instructions">Berühren und halten Sie eine Verknüpfung und ziehen Sie sie, um die Reihenfolge zu ändern. Die ersten vier erscheinen im Eingabemenü der Tastatur.</string>
     <string name="settings_customize_menu_summary">Verknüpfungen im Eingabemenü auswählen und neu anordnen</string>
-    <string name="settings_customize_menu_title">Menü anpassen</string>
+    <string name="settings_customize_menu_title">Einheitliches Eingabemenü anpassen</string>
     <string name="settings_default_currency_summary">Ausgewählt: %s</string>
     <string name="settings_default_currency_title">Standard-Währungssymbol</string>
     <string name="settings_key_press_feedback_title">Feedback bei Tastendruck</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Die Update-Prüfung ist fehlgeschlagen</string>
     <string name="settings_update_error_too_old">Diese Version ist zu alt, um die Update-Liste zu lesen. Bitte manuell aktualisieren.</string>
     <string name="settings_update_from_cache">Aus der letzten gespeicherten Prüfung</string>
-    <string name="settings_update_background_check_title">Tägliche Prüfung im Hintergrund</string>
-    <string name="settings_update_background_check_summary">Prüft einmal täglich und benachrichtigt Sie. Herunterladen und Installieren bleiben immer manuell.</string>
+    <string name="settings_update_background_check_title">Automatisch nach Updates suchen</string>
+    <string name="settings_update_background_check_summary">Sie erhalten eine Benachrichtigung, sobald eine neue Version zum Herunterladen bereitsteht.</string>
     <string name="settings_update_notification_text">Version %1$s kann heruntergeladen werden</string>
     <string name="settings_update_unknown_sources_message">Android muss BBKB erlauben, Apps zu installieren. Erlauben Sie die Installation aus dieser Quelle und tippen Sie erneut auf Installieren.</string>
     <string name="settings_update_open_settings">Einstellungen öffnen</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Herunterladen</string>
     <string name="language_packs_retry">Erneut versuchen</string>
     <string name="language_packs_refresh">Nach Wörterbüchern suchen</string>
-    <string name="language_packs_catalog_offline">Katalog vom %1$s (offline)</string>
+    <string name="language_packs_load_ldb">LDB-Datei laden</string>
     <string name="language_packs_variant_summary">Wird anstelle von %1$s geladen</string>
     <string name="language_packs_offer_message">Wörterbuch für %1$s herunterladen (%2$s)?</string>
     <string name="language_packs_offer_not_now">Nicht jetzt</string>

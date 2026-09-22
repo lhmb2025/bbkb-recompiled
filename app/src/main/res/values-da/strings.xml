@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Symboltastatur</string>
     <string name="settings_pkb_multifunction_action_voice">Stemmeinput</string>
     <string name="settings_pkb_multifunction_key_title">Multifunktionstast</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Symboltastaturet forbliver åbent, så du kan indtaste flere symboler</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Vender tilbage til bogstaverne efter ét symbol</string>
-    <string name="settings_pkb_symbol_auto_close_title">Luk symboltastaturet efter symbol</string>
     <string name="settings_appearance_auto">Automatisk (systemtema)</string>
     <string name="settings_appearance_classic">Klassisk</string>
     <string name="settings_appearance_dark">Mørkt</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Vises ikke på tastaturet</string>
     <string name="settings_customize_menu_instructions">Tryk og hold på en genvej, og træk for at ændre rækkefølgen. De fire første vises i tastaturets inputmenu.</string>
     <string name="settings_customize_menu_summary">Vælg og omarranger genvejene i inputmenuen</string>
-    <string name="settings_customize_menu_title">Tilpas menuen</string>
+    <string name="settings_customize_menu_title">Tilpas den samlede inputmenu</string>
     <string name="settings_default_currency_summary">Valgt: %s</string>
     <string name="settings_default_currency_title">Standardvalutasymbol</string>
     <string name="settings_key_press_feedback_title">Feedback ved tastetryk</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Opdateringskontrollen mislykkedes</string>
     <string name="settings_update_error_too_old">Denne version er for gammel til at læse opdateringslisten. Opdater manuelt.</string>
     <string name="settings_update_from_cache">Vist ud fra den sidst gemte kontrol</string>
-    <string name="settings_update_background_check_title">Daglig kontrol i baggrunden</string>
-    <string name="settings_update_background_check_summary">Kontrollerer én gang om dagen og giver dig besked. Download og installation er altid manuelt.</string>
+    <string name="settings_update_background_check_title">Søg automatisk efter opdateringer</string>
+    <string name="settings_update_background_check_summary">Få en notifikation, når en ny version er klar til download.</string>
     <string name="settings_update_notification_text">Version %1$s er klar til download</string>
     <string name="settings_update_unknown_sources_message">Android skal give BBKB tillladelse til at installere apps. Tillad installation fra denne kilde, og tryk på Installer igen.</string>
     <string name="settings_update_open_settings">Åbn indstillinger</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Download</string>
     <string name="language_packs_retry">Prøv igen</string>
     <string name="language_packs_refresh">Søg efter ordbøger</string>
-    <string name="language_packs_catalog_offline">Katalog fra %1$s (offline)</string>
+    <string name="language_packs_load_ldb">Indlæs LDB-fil</string>
     <string name="language_packs_variant_summary">Indlæses i stedet for %1$s</string>
     <string name="language_packs_offer_message">Download ordbogen til %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Ikke nu</string>

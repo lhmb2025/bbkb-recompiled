@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">ചിഹ്ന കീബോർഡ്</string>
     <string name="settings_pkb_multifunction_action_voice">വോയ്‌സ് ഇൻപുട്ട്</string>
     <string name="settings_pkb_multifunction_key_title">ബഹുമുഖ കീ</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">ഒന്നിലധികം ചിഹ്നങ്ങൾ നൽകാൻ ചിഹ്ന കീബോർഡ് തുറന്നിരിക്കും</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">ഒരു ചിഹ്നം നൽകിയ ശേഷം അക്ഷരമാലയിലേക്ക് മടങ്ങും</string>
-    <string name="settings_pkb_symbol_auto_close_title">ചിഹ്നത്തിനു ശേഷം ചിഹ്ന കീബോർഡ് അടയ്‌ക്കുക</string>
     <string name="settings_appearance_auto">സ്വയം (സിസ്റ്റം തീം)</string>
     <string name="settings_appearance_classic">ക്ലാസിക്</string>
     <string name="settings_appearance_dark">ഡാർക്ക്</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">കീബോർഡിൽ കാണിക്കുന്നില്ല</string>
     <string name="settings_customize_menu_instructions">ഒരു കുറുക്കുവഴി സ്പർശിച്ചു പിടിച്ച ശേഷം വലിച്ചിട്ട് ക്രമം മാറ്റുക. ആദ്യത്തെ നാലെണ്ണം കീബോർഡിന്റെ ഇൻപുട്ട് മെനുവിൽ കാണാം.</string>
     <string name="settings_customize_menu_summary">ഇൻപുട്ട് മെനു കുറുക്കുവഴികൾ തിരഞ്ഞെടുക്കുകയും ക്രമം മാറ്റുകയും ചെയ്യുക</string>
-    <string name="settings_customize_menu_title">മെനു ഇഷ്ടാനുസൃതമാക്കുക</string>
+    <string name="settings_customize_menu_title">ഏകീകൃത ഇൻപുട്ട് മെനു ഇഷ്ടാനുസൃതമാക്കുക</string>
     <string name="settings_default_currency_summary">തിരഞ്ഞെടുത്തത്: %s</string>
     <string name="settings_default_currency_title">സ്ഥിരം കറൻസി ചിഹ്നം</string>
     <string name="settings_key_press_feedback_title">കീ അമർത്തലിന്റെ പ്രതികരണം</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">അപ്‌ഡേറ്റ് പരിശോധന പരാജയപ്പെട്ടു</string>
     <string name="settings_update_error_too_old">ഈ പതിപ്പ് അപ്‌ഡേറ്റ് പട്ടിക വായിക്കാൻ കഴിയാത്തവിധം പഴയതാണ്. സ്വയം അപ്‌ഡേറ്റ് ചെയ്യുക.</string>
     <string name="settings_update_from_cache">അവസാനം സംരക്ഷിച്ച പരിശോധനയിൽ നിന്ന് കാണിക്കുന്നു</string>
-    <string name="settings_update_background_check_title">പ്രതിദിന പിൻഭാഗ പരിശോധന</string>
-    <string name="settings_update_background_check_summary">ദിവസത്തിൽ ഒരിക്കൽ പരിശോധിച്ച് നിങ്ങളെ അറിയിക്കുന്നു. ഡൗൺലോഡും ഇൻസ്റ്റാളും എപ്പോഴും നിങ്ങളുടെ കൈയിലാണ്.</string>
+    <string name="settings_update_background_check_title">അപ്‌ഡേറ്റുകൾ സ്വയമേവ പരിശോധിക്കുക</string>
+    <string name="settings_update_background_check_summary">പുതിയ പതിപ്പ് ഡൗൺലോഡിന് ലഭ്യമാകുമ്പോൾ അറിയിപ്പ് ലഭിക്കും.</string>
     <string name="settings_update_notification_text">പതിപ്പ് %1$s ഡൗൺലോഡ് ചെയ്യാൻ തയ്യാറാണ്</string>
     <string name="settings_update_unknown_sources_message">ആപ്പുകൾ ഇൻസ്റ്റാൾ ചെയ്യാൻ Android BBKB-ക്ക് അനുമതി നൽകണം. ഈ ഉറവിടത്തിൽ നിന്ന് ഇൻസ്റ്റാൾ പ്രവർത്തനക്ഷമമാക്കി വീണ്ടും ഇൻസ്റ്റാൾ അമർത്തുക.</string>
     <string name="settings_update_open_settings">സെറ്റിംഗ്സ് തുറക്കുക</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">ഡൗൺലോഡ്</string>
     <string name="language_packs_retry">വീണ്ടും ശ്രമിക്കുക</string>
     <string name="language_packs_refresh">നിഘണ്ടുക്കൾ പരിശോധിക്കുക</string>
-    <string name="language_packs_catalog_offline">%1$s-ലെ കാറ്റലോഗ് (ഓഫ്‌ലൈൻ)</string>
+    <string name="language_packs_load_ldb">LDB ഫയൽ ലോഡ് ചെയ്യുക</string>
     <string name="language_packs_variant_summary">%1$s-ന് പകരം ലോഡ് ചെയ്യുന്നു</string>
     <string name="language_packs_offer_message">%1$s നിഘണ്ടു ഡൗൺലോഡ് ചെയ്യണോ (%2$s)?</string>
     <string name="language_packs_offer_not_now">ഇപ്പോൾ വേണ്ട</string>

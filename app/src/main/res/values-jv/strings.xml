@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Papan tombol simbol</string>
     <string name="settings_pkb_multifunction_action_voice">Input swara</string>
     <string name="settings_pkb_multifunction_key_title">Tombol multifungsi</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Papan tombol simbol tetep mbukak kanggo ngetik simbol luwih saka siji</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Bali menyang aksara sawise ngetik siji simbol</string>
-    <string name="settings_pkb_symbol_auto_close_title">Tutup papan tombol simbol sawise siji simbol</string>
     <string name="settings_appearance_auto">Otomatis (tema sistem)</string>
     <string name="settings_appearance_classic">Klasik</string>
     <string name="settings_appearance_dark">Peteng</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Ora ditampilake ing papan tombol</string>
     <string name="settings_customize_menu_instructions">Tutul lan tahan cekakan, banjur seret kanggo ngatur urutane. Papat sing dhisik katon ing menu input papan tombol.</string>
     <string name="settings_customize_menu_summary">Pilih lan atur urutan cekakan ing menu input</string>
-    <string name="settings_customize_menu_title">Atur menu</string>
+    <string name="settings_customize_menu_title">Atur menu input manunggal</string>
     <string name="settings_default_currency_summary">Dipilih: %s</string>
     <string name="settings_default_currency_title">Simbol dhuwit gawan</string>
     <string name="settings_key_press_feedback_title">Respons pencetan tombol</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Priksa nganyarake gagal</string>
     <string name="settings_update_error_too_old">Versi iki kuna banget kanggo maca dhaptar nganyarake. Mangga nganyarake dhewe.</string>
     <string name="settings_update_from_cache">Ditampilake saka priksa pungkasan kang kasimpen</string>
-    <string name="settings_update_background_check_title">Priksa saben dina ing latar mburi</string>
-    <string name="settings_update_background_check_summary">Mriksa sapisan saben dina lan ngabari sampeyan. Ngundhuh lan masang tetep manual.</string>
+    <string name="settings_update_background_check_title">Priksa nganyari kanthi otomatis</string>
+    <string name="settings_update_background_check_summary">Nampa kabar nalika versi anyar kasedhiya kanggo diundhuh.</string>
     <string name="settings_update_notification_text">Versi %1$s siap diundhuh</string>
     <string name="settings_update_unknown_sources_message">Android kudu ngidini BBKB masang aplikasi. Uripake pasang saka sumber iki, banjur pencet Pasang maneh.</string>
     <string name="settings_update_open_settings">Bukak setelan</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Undhuh</string>
     <string name="language_packs_retry">Coba maneh</string>
     <string name="language_packs_refresh">Priksa kamus</string>
-    <string name="language_packs_catalog_offline">Katalog saka %1$s (offline)</string>
+    <string name="language_packs_load_ldb">Muat file LDB</string>
     <string name="language_packs_variant_summary">Dimuat ngganti %1$s</string>
     <string name="language_packs_offer_message">Undhuh kamus %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Mboten saiki</string>

@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Тэмдэгтийн гар</string>
     <string name="settings_pkb_multifunction_action_voice">Дуут оролт</string>
     <string name="settings_pkb_multifunction_key_title">Олон үйлдэлт товч</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Олон тэмдэгт оруулахад тэмдэгтийн гар нээлттэй хэвээр үлдэнэ</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Нэг тэмдэгт оруулсны дараа цагаан толгой руу буцна</string>
-    <string name="settings_pkb_symbol_auto_close_title">Тэмдэгт оруулсны дараа тэмдэгтийн гарыг хаах</string>
     <string name="settings_appearance_auto">Автомат (системийн загвар)</string>
     <string name="settings_appearance_classic">Сонгодог</string>
     <string name="settings_appearance_dark">Бараан</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Гар дээр харагдахгүй</string>
     <string name="settings_customize_menu_instructions">Товчлол дээр дараад барьж, чирч дарааллыг нь өөрчилнө. Эхний дөрөв нь гарын оролтын цэсэнд харагдана.</string>
     <string name="settings_customize_menu_summary">Оролтын цэсний товчлолыг сонгож, дараалуулах</string>
-    <string name="settings_customize_menu_title">Цэсийг тохируулах</string>
+    <string name="settings_customize_menu_title">Нэгдсэн оролтын цэсийг тохируулах</string>
     <string name="settings_default_currency_summary">Сонгосон: %s</string>
     <string name="settings_default_currency_title">Анхдагч валютын тэмдэг</string>
     <string name="settings_key_press_feedback_title">Товч дарах хариу үйлдэл</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Шинэчлэл шалгах явц бүтсэнгүй</string>
     <string name="settings_update_error_too_old">Энэ хувилбар шинэчлэлийн жагсаалтыг уншихад хэт хуучин. Гараар шинэчилнэ үү.</string>
     <string name="settings_update_from_cache">Сүүлд хадгалсан шалгалтаас харуулж байна</string>
-    <string name="settings_update_background_check_title">Өдөр тутмын дэвсгэр шалгалт</string>
-    <string name="settings_update_background_check_summary">Өдөрт нэг удаа шалгаж танд мэдэгдэнэ. Татах, суулгах нь үргэлж гараар хийгддэг.</string>
+    <string name="settings_update_background_check_title">Шинэчлэлтийг автоматаар шалгах</string>
+    <string name="settings_update_background_check_summary">Шинэ хувилбар татахад бэлэн болоход мэдэгдэл авна.</string>
     <string name="settings_update_notification_text">Хувилбар %1$s татахад бэлэн</string>
     <string name="settings_update_unknown_sources_message">Аппликейшн суулгахад Android нь BBKB-д зөвшөөрөл өгөх шаардлагатай. Энэ эх сурвалжаас суулгахыг зөвшөөрөөд Суулгах товчийг дахин дарна уу.</string>
     <string name="settings_update_open_settings">Тохиргоог нээх</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Татах</string>
     <string name="language_packs_retry">Дахин оролдох</string>
     <string name="language_packs_refresh">Толь бичиг шалгах</string>
-    <string name="language_packs_catalog_offline">%1$s-ны каталог (офлайн)</string>
+    <string name="language_packs_load_ldb">LDB файл ачаалах</string>
     <string name="language_packs_variant_summary">%1$s-ын оронд ачаалагдана</string>
     <string name="language_packs_offer_message">%1$s толь бичгийг татах уу (%2$s)?</string>
     <string name="language_packs_offer_not_now">Одоо биш</string>

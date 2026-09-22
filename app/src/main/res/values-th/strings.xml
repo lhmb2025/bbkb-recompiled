@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">แป้นพิมพ์สัญลักษณ์</string>
     <string name="settings_pkb_multifunction_action_voice">การป้อนด้วยเสียง</string>
     <string name="settings_pkb_multifunction_key_title">ปุ่มอเนกประสงค์</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">แป้นพิมพ์สัญลักษณ์เปิดค้างไว้เพื่อป้อนหลายสัญลักษณ์</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">กลับไปที่ตัวอักษรหลังจากป้อนสัญลักษณ์หนึ่งตัว</string>
-    <string name="settings_pkb_symbol_auto_close_title">ปิดแป้นพิมพ์สัญลักษณ์หลังพิมพ์สัญลักษณ์</string>
     <string name="settings_appearance_auto">อัตโนมัติ (ธีมของระบบ)</string>
     <string name="settings_appearance_classic">คลาสสิก</string>
     <string name="settings_appearance_dark">มืด</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">ไม่แสดงบนแป้นพิมพ์</string>
     <string name="settings_customize_menu_instructions">แตะทางลัดค้างไว้ แล้วลากเพื่อจัดลำดับใหม่ สี่รายการแรกจะปรากฏในเมนูการป้อนข้อมูลของแป้นพิมพ์</string>
     <string name="settings_customize_menu_summary">เลือกและจัดลำดับทางลัดในเมนูการป้อนข้อมูล</string>
-    <string name="settings_customize_menu_title">ปรับแต่งเมนู</string>
+    <string name="settings_customize_menu_title">ปรับแต่งเมนูการป้อนข้อมูลรวม</string>
     <string name="settings_default_currency_summary">ที่เลือก: %s</string>
     <string name="settings_default_currency_title">สัญลักษณ์สกุลเงินเริ่มต้น</string>
     <string name="settings_key_press_feedback_title">การตอบสนองการกดปุ่ม</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">การตรวจหาอัปเดตล้มเหลว</string>
     <string name="settings_update_error_too_old">เวอร์ชันนี้เก่าเกินกว่าจะอ่านรายการอัปเดตได้ กรุณาอัปเดตด้วยตนเอง</string>
     <string name="settings_update_from_cache">แสดงจากการตรวจที่บันทึกไว้ครั้งล่าสุด</string>
-    <string name="settings_update_background_check_title">การตรวจรายวันในเบื้องหลัง</string>
-    <string name="settings_update_background_check_summary">ตรวจวันละครั้งและแจ้งให้คุณทราบ การดาวน์โหลดและติดตั้งยังต้องทำด้วยตนเองเสมอ</string>
+    <string name="settings_update_background_check_title">ตรวจหาการอัปเดตอัตโนมัติ</string>
+    <string name="settings_update_background_check_summary">รับการแจ้งเตือนเมื่อมีเวอร์ชันใหม่ให้ดาวน์โหลด</string>
     <string name="settings_update_notification_text">เวอร์ชัน %1$s พร้อมให้ดาวน์โหลด</string>
     <string name="settings_update_unknown_sources_message">Android ต้องอนุญาตให้ BBKB ติดตั้งแอป เปิดการติดตั้งจากแหล่งนี้ แล้วกดติดตั้งอีกครั้ง</string>
     <string name="settings_update_open_settings">เปิดการตั้งค่า</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">ดาวน์โหลด</string>
     <string name="language_packs_retry">ลองอีกครั้ง</string>
     <string name="language_packs_refresh">ตรวจหาพจนานุกรม</string>
-    <string name="language_packs_catalog_offline">แคตตาล็อกจาก %1$s (ออฟไลน์)</string>
+    <string name="language_packs_load_ldb">โหลดไฟล์ LDB</string>
     <string name="language_packs_variant_summary">โหลดแทน %1$s</string>
     <string name="language_packs_offer_message">ดาวน์โหลดพจนานุกรม %1$s (%2$s) ไหม</string>
     <string name="language_packs_offer_not_now">ไว้ก่อน</string>

@@ -1,7 +1,6 @@
 package dev.bbkb.ime.core.languagepack
 
 import android.content.Context
-import android.text.format.DateUtils
 import android.text.format.Formatter
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.distribution.HttpStatusException
@@ -11,7 +10,7 @@ import dev.bbkb.ime.core.distribution.OfflineException
 import dev.bbkb.ime.core.distribution.UnsupportedSchemaException
 
 /**
- * The words the pack UI puts on screen for a failure, a size and a catalogue date.
+ * The words the pack UI puts on screen for a failure and for a size.
  *
  * Kept out of the composable so the mapping from the foundation's sealed exception types to
  * user-facing copy exists once. The point of those types is that nothing has to parse a message
@@ -38,21 +37,4 @@ object PackText {
 
     /** `4.4 MB`, in the user's own locale and units. */
     fun size(context: Context, bytes: Long): String = Formatter.formatShortFileSize(context, bytes)
-
-    /**
-     * "Catalogue from 3 Mar (offline)" — shown only when the catalogue came off disk, so the user
-     * can tell a stale list from a fresh one instead of wondering why a language is missing.
-     */
-    fun catalogueAsOf(context: Context, fetchedAt: Long): String {
-        val when_ = if (fetchedAt > 0L) {
-            DateUtils.getRelativeTimeSpanString(
-                fetchedAt,
-                System.currentTimeMillis(),
-                DateUtils.MINUTE_IN_MILLIS,
-            ).toString()
-        } else {
-            ""
-        }
-        return context.getString(R.string.language_packs_catalog_offline, when_)
-    }
 }

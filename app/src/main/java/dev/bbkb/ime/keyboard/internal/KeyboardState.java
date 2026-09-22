@@ -107,7 +107,14 @@ public final class KeyboardState {
 
         boolean isPkbCustomPageFirst();
 
-        boolean isPkbSymbolAutoCloseEnabled();
+        /**
+         * Whether the hardware Sym key is physically held down right now.
+         *
+         * <p>A PKB symbol board closes itself after the symbol typed on it. Holding Sym is the
+         * way to keep it open for several symbols: while Sym is down the board stays up and
+         * symbols keep going in, and releasing Sym ends the entry.
+         */
+        boolean isSymKeyHeld();
 
         int getSymbolPageOrder();
 
@@ -665,7 +672,7 @@ public final class KeyboardState {
      */
     public void onSoftwareSymbolCommitted(int i, int i2) {
         if (this.currentMode == KeyboardModeState.SYMBOL && this.symbolEntryMethod == 2
-                && this.switcherCallbacks.isPkbDevice() && this.switcherCallbacks.isPkbSymbolAutoCloseEnabled()) {
+                && this.switcherCallbacks.isPkbDevice() && !this.switcherCallbacks.isSymKeyHeld()) {
             this.symbolEntryMethod = 0;
             switchToAlphabetFromSymbol(i, i2);
             this.switcherCallbacks.onReturnToAlphabetFromSymbol();
@@ -684,9 +691,11 @@ public final class KeyboardState {
             case 65:
             case 66:
             default:
-                // FIX: Reset symbol mode after hardware key character input on PKB
+                // Reset symbol mode after hardware key character input on PKB — unless Sym is
+                // being held, which is the user asking for the board to stay open (the release
+                // of Sym then ends the entry through case 63 below).
                 if (this.currentMode == KeyboardModeState.SYMBOL && this.symbolEntryMethod == 2
-                        && this.switcherCallbacks.isPkbDevice() && this.switcherCallbacks.isPkbSymbolAutoCloseEnabled()) {
+                        && this.switcherCallbacks.isPkbDevice() && !this.switcherCallbacks.isSymKeyHeld()) {
                     this.symbolEntryMethod = 0;
                     switchToAlphabetFromSymbol(i2, i3);
                     this.switcherCallbacks.onReturnToAlphabetFromSymbol();

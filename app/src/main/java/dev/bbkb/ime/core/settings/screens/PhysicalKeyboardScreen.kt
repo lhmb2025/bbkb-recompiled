@@ -85,6 +85,13 @@ fun PhysicalKeyboardScreen(
             visible = { multifunctionKeyMapping != null },
         ),
         Choice(
+            store = stringPref("pref_alt_sym_shortcut_action", "disabled"),
+            title = R.string.settings_pkb_alt_sym_shortcut_title,
+            options = ::altSymActions,
+            summary = ::altSymSummary,
+            modifier = Modifier.settingsSearchAnchor("pref_alt_sym_shortcut_action"),
+        ),
+        Choice(
             store = stringPref("pref_pkb_hold_auto_commit", "off"),
             title = R.string.settings_pkb_hold_action_title,
             options = ::holdActions,
@@ -92,22 +99,6 @@ fun PhysicalKeyboardScreen(
             // spelled out rather than derived from the options.
             summary = ::holdActionSummary,
             modifier = Modifier.settingsSearchAnchor("pref_pkb_hold_auto_commit"),
-        ),
-        Choice(
-            store = stringPref("pref_alt_sym_shortcut_action", "disabled"),
-            title = R.string.settings_pkb_alt_sym_shortcut_title,
-            options = ::altSymActions,
-            summary = ::altSymSummary,
-            modifier = Modifier.settingsSearchAnchor("pref_alt_sym_shortcut_action"),
-        ),
-        Toggle(
-            store = boolPref("pkb_symbol_auto_close", false),
-            title = R.string.settings_pkb_symbol_auto_close_title,
-            summary = RowSummary.OnOff(
-                R.string.settings_pkb_symbol_auto_close_summary_on,
-                R.string.settings_pkb_symbol_auto_close_summary_off,
-            ),
-            modifier = Modifier.settingsSearchAnchor("pkb_symbol_auto_close"),
         ),
 
         // ── CAPACITIVE KEYBOARD GESTURES (CKB devices only) ──────────────────────

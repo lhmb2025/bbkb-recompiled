@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">చిహ్నాల కీబోర్డ్</string>
     <string name="settings_pkb_multifunction_action_voice">వాయిస్ ఇన్‌పుట్</string>
     <string name="settings_pkb_multifunction_key_title">బహుళ ప్రయోజన కీ</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">అనేక చిహ్నాలను నమోదు చేయడానికి చిహ్నాల కీబోర్డ్ తెరిచే ఉంటుంది</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">ఒక చిహ్నాన్ని నమోదు చేసిన తర్వాత ఆల్ఫాబెట్‌కు తిరిగి వెళ్తుంది</string>
-    <string name="settings_pkb_symbol_auto_close_title">చిహ్నం తర్వాత చిహ్నాల కీబోర్డ్‌ను మూసివేయి</string>
     <string name="settings_appearance_auto">ఆటో (సిస్టమ్ థీమ్)</string>
     <string name="settings_appearance_classic">క్లాసిక్</string>
     <string name="settings_appearance_dark">డార్క్</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">కీబోర్డ్‌పై చూపబడలేదు</string>
     <string name="settings_customize_menu_instructions">ఒక షార్ట్‌కట్‌ను తాకి పట్టుకుని, ఆపై లాగి క్రమాన్ని మార్చండి. మొదటి నాలుగు కీబోర్డ్ ఇన్‌పుట్ మెనూలో కనిపిస్తాయి.</string>
     <string name="settings_customize_menu_summary">ఇన్‌పుట్ మెనూ షార్ట్‌కట్‌లను ఎంచుకుని క్రమాన్ని మార్చు</string>
-    <string name="settings_customize_menu_title">మెనూను అనుకూలీకరించు</string>
+    <string name="settings_customize_menu_title">ఏకీకృత ఇన్‌పుట్ మెనూను అనుకూలీకరించు</string>
     <string name="settings_default_currency_summary">ఎంచుకున్నది: %s</string>
     <string name="settings_default_currency_title">డిఫాల్ట్ కరెన్సీ చిహ్నం</string>
     <string name="settings_key_press_feedback_title">కీ నొక్కిన ఫీడ్‌బ్యాక్</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">నవీకరణ తనిఖీ విఫలమైంది</string>
     <string name="settings_update_error_too_old">ఈ వెర్షన్ నవీకరణ జాబితాను చదవడానికి చాలా పాతది. దయచేసి మీరే నవీకరించండి.</string>
     <string name="settings_update_from_cache">చివరిగా సేవ్ చేసిన తనిఖీ నుండి చూపబడింది</string>
-    <string name="settings_update_background_check_title">రోజువారీ నేపథ్య తనిఖీ</string>
-    <string name="settings_update_background_check_summary">రోజుకు ఒకసారి తనిఖీ చేసి మీకు తెలియజేస్తుంది. డౌన్‌లోడ్ మరియు ఇన్‌స్టాల్ ఎప్పుడూ మీ చేతిలోనే.</string>
+    <string name="settings_update_background_check_title">అప్‌డేట్‌లను స్వయంచాలకంగా తనిఖీ చేయి</string>
+    <string name="settings_update_background_check_summary">కొత్త వెర్షన్ డౌన్‌లోడ్‌కు అందుబాటులోకి వచ్చినప్పుడు నోటిఫికేషన్ అందుకోండి.</string>
     <string name="settings_update_notification_text">వెర్షన్ %1$s డౌన్‌లోడ్‌కు సిద్ధంగా ఉంది</string>
     <string name="settings_update_unknown_sources_message">యాప్‌లను ఇన్‌స్టాల్ చేయడానికి Android BBKBకి అనుమతి ఇవ్వాలి. ఈ మూలం నుండి ఇన్‌స్టాల్‌ను ప్రారంభించి, మళ్లీ ఇన్‌స్టాల్ నొక్కండి.</string>
     <string name="settings_update_open_settings">సెట్టింగ్‌లను తెరవండి</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">డౌన్‌లోడ్</string>
     <string name="language_packs_retry">మళ్లీ ప్రయత్నించండి</string>
     <string name="language_packs_refresh">నిఘంటువులను తనిఖీ చేయండి</string>
-    <string name="language_packs_catalog_offline">%1$s కేటలాగ్ (ఆఫ్‌లైన్)</string>
+    <string name="language_packs_load_ldb">LDB ఫైల్‌ను లోడ్ చేయండి</string>
     <string name="language_packs_variant_summary">%1$s స్థానంలో లోడ్ అవుతుంది</string>
     <string name="language_packs_offer_message">%1$s నిఘంటువును డౌన్‌లోడ్ చేయాలా (%2$s)?</string>
     <string name="language_packs_offer_not_now">ఇప్పుడు కాదు</string>

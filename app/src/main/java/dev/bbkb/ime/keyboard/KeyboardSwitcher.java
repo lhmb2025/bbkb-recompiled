@@ -846,11 +846,11 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     @Override
-    public boolean isPkbSymbolAutoCloseEnabled() {
-        // Default OFF (2026-09-20, owner decision): a symbol board opened with the hardware Sym
-        // key stays open until the user closes it with Sym or the menu's middle button. The
-        // setting remains for anyone who wants the one-shot behaviour back.
-        return this.sharedPreferences.getBoolean("pkb_symbol_auto_close", false);
+    public boolean isSymKeyHeld() {
+        // Owner decision, 2026-09-22: closing the symbol board after one symbol is the only
+        // behaviour (the "Close symbol keyboard after symbol" setting is gone). Holding Sym is
+        // how the board is kept open instead, so this is the one thing symbol mode asks about.
+        return this.blackberryIme.getPhysicalKeyboardStateTracker().isSymKeyHeld();
     }
 
     @Override

@@ -82,6 +82,11 @@ public class KeyEventProcessor {
         if (keyCode != KeyEvent.KEYCODE_SYM) {
             return;
         }
+        if (tracker != null) {
+            // Same note as in onKeyDownInternal: name the Sym key to the tracker so its
+            // isSymKeyHeld() ("hold Sym to keep the symbol board open") can answer.
+            tracker.setSymKeyCode(keyCode);
+        }
         AltSymShortcutHandler altSym = ime.getHardwareKeys().getAltSymShortcutHandler();
         if (action == KeyEvent.ACTION_UP) {
             // The press already dispatched the configured action; its release is not a second
@@ -270,6 +275,11 @@ public class KeyEventProcessor {
         // internal Alt span for key code 63 on every profile without usesMetaSymHandling().
         if (isPhysical && keyEventRemapped.getRepeatCount() == 0
                 && isSymBoardKey(keyCode, downMapping)) {
+            // Which key code the Sym key answers to on this device, for the tracker's
+            // isSymKeyHeld() — the "hold Sym to keep the symbol board open" gate below and in
+            // KeyboardState. Recorded before the chord check, because a press the chord consumes
+            // is still a press of the Sym key.
+            ime.getPhysicalKeyboardStateTracker().setSymKeyCode(keyCode);
             AltSymShortcutHandler altSym = ime.getHardwareKeys().getAltSymShortcutHandler();
             // Modifier-KEY state only (see PhysicalKeyboardStateTracker.getModifierKeyMetaState):
             // the masked internal state carries the symbol board's own Alt page as META_ALT_ON.
@@ -670,12 +680,13 @@ public class KeyEventProcessor {
                 ime.getInputLogic().onHardwareKeyUp(keyEventRemapped);
                 ime.setLastKeyEventTime(keyEventRemapped.getEventTime());
                 // A hinted key released while Sym is not held ends a one-shot symbol entry
-                // (tap Sym, type one symbol, back to letters). That is the auto-close
-                // behaviour the pkb_symbol_auto_close setting names, and this was the one
-                // path that never consulted it: with the setting off the board stays open,
-                // as it already did for the on-screen and hardware-repeat paths.
+                // (tap Sym, type one symbol, back to letters) — the default and only
+                // behaviour since the "Close symbol keyboard after symbol" setting was
+                // removed. Holding Sym is what keeps the board up instead, so the hold is
+                // the one thing that suppresses it. isSymPressed() alone is not that test:
+                // it reads META_SYM_ON, which the KEY2's Sym key does not set.
                 if (!isBoardKey && keyCode != 666 && keyCode != 667 && isPhysical && ime.getKeyboardSwitcher().getKeyByPhysicalScanCode(keyEventRemapped.getScanCode(), false) != null && !keyEventRemapped.isSymPressed()
-                        && ime.getKeyboardSwitcher().isPkbSymbolAutoCloseEnabled()) {
+                        && !ime.getPhysicalKeyboardStateTracker().isSymKeyHeld()) {
                     ime.getKeyboardSwitcher().onSymbolKeyLongPress(ime.getCurrentInputType(), ime.getCurrentImeOptions());
                 }
             }

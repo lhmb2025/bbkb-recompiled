@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Symbol keyboard</string>
     <string name="settings_pkb_multifunction_action_voice">Voice input</string>
     <string name="settings_pkb_multifunction_key_title">Multifunction key</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Nananatiling bukas ang symbol keyboard para makapaglagay ng maraming simbolo</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Bumabalik sa alpabeto pagkatapos maglagay ng isang simbolo</string>
-    <string name="settings_pkb_symbol_auto_close_title">Isara ang symbol keyboard pagkatapos ng simbolo</string>
     <string name="settings_appearance_auto">Auto (theme ng system)</string>
     <string name="settings_appearance_classic">Classic</string>
     <string name="settings_appearance_dark">Madilim</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Hindi ipinapakita sa keyboard</string>
     <string name="settings_customize_menu_instructions">Pindutin nang matagal ang shortcut, pagkatapos ay i-drag para baguhin ang pagkakasunod-sunod. Lumalabas sa input menu ng keyboard ang unang apat.</string>
     <string name="settings_customize_menu_summary">Piliin at ayusin ang pagkakasunod-sunod ng mga shortcut sa input menu</string>
-    <string name="settings_customize_menu_title">I-customize ang menu</string>
+    <string name="settings_customize_menu_title">I-customize ang unified input menu</string>
     <string name="settings_default_currency_summary">Napili: %s</string>
     <string name="settings_default_currency_title">Default na simbolo ng pera</string>
     <string name="settings_key_press_feedback_title">Feedback sa pagpindot ng key</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Nabigo ang paghahanap ng update</string>
     <string name="settings_update_error_too_old">Masyadong luma ang bersyong ito para mabasa ang listahan ng mga update. Mag-update nang manu-mano.</string>
     <string name="settings_update_from_cache">Ipinapakita mula sa huling nakasaveng pagsusuri</string>
-    <string name="settings_update_background_check_title">Araw-araw na pagsusuri sa background</string>
-    <string name="settings_update_background_check_summary">Sumusuri isang beses sa isang araw at nagpapaalam sa iyo. Manu-mano pa rin ang pag-download at pag-install.</string>
+    <string name="settings_update_background_check_title">Awtomatikong maghanap ng mga update</string>
+    <string name="settings_update_background_check_summary">Makakatanggap ka ng notification kapag may bagong bersyong puwedeng i-download.</string>
     <string name="settings_update_notification_text">Handa nang i-download ang bersyon %1$s</string>
     <string name="settings_update_unknown_sources_message">Kailangang payagan ng Android ang BBKB na mag-install ng mga app. I-enable ang pag-install mula sa pinagmulang ito, pagkatapos pindutin muli ang I-install.</string>
     <string name="settings_update_open_settings">Buksan ang mga setting</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">I-download</string>
     <string name="language_packs_retry">Subukang muli</string>
     <string name="language_packs_refresh">Maghanap ng diksyunaryo</string>
-    <string name="language_packs_catalog_offline">Katalogo mula %1$s (offline)</string>
+    <string name="language_packs_load_ldb">I-load ang LDB file</string>
     <string name="language_packs_variant_summary">Nag-lo-load kapalit ng %1$s</string>
     <string name="language_packs_offer_message">I-download ang diksyunaryo ng %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Hindi ngayon</string>

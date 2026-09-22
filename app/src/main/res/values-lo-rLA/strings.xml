@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">ແປ້ນພິມສັນຍາລັກ</string>
     <string name="settings_pkb_multifunction_action_voice">ການປ້ອນດ້ວຍສຽງ</string>
     <string name="settings_pkb_multifunction_key_title">ປຸ່ມຫຼາຍໜ້າທີ່</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">ແປ້ນພິມສັນຍາລັກເປີດຄ້າງໄວ້ເພື່ອປ້ອນຫຼາຍສັນຍາລັກ</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">ກັບໄປຫາໂຕອັກສອນຫຼັງຈາກປ້ອນສັນຍາລັກໜຶ່ງໂຕ</string>
-    <string name="settings_pkb_symbol_auto_close_title">ປິດແປ້ນພິມສັນຍາລັກຫຼັງຈາກພິມສັນຍາລັກ</string>
     <string name="settings_appearance_auto">ອັດຕະໂນມັດ (ຊຸດຮູບແບບຂອງລະບົບ)</string>
     <string name="settings_appearance_classic">ຄລາສສິກ</string>
     <string name="settings_appearance_dark">ມືດ</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">ບໍ່ສະແດງເທິງແປ້ນພິມ</string>
     <string name="settings_customize_menu_instructions">ແຕະທາງລັດຄ້າງໄວ້ ແລ້ວລາກເພື່ອຈັດລຳດັບໃໝ່. ສີ່ອັນທຳອິດຈະປາກົດໃນເມນູການປ້ອນຂອງແປ້ນພິມ.</string>
     <string name="settings_customize_menu_summary">ເລືອກ ແລະ ຈັດລຳດັບທາງລັດໃນເມນູການປ້ອນ</string>
-    <string name="settings_customize_menu_title">ປັບແຕ່ງເມນູ</string>
+    <string name="settings_customize_menu_title">ປັບແຕ່ງເມນູການປ້ອນແບບລວມ</string>
     <string name="settings_default_currency_summary">ເລືອກແລ້ວ: %s</string>
     <string name="settings_default_currency_title">ສັນຍາລັກສະກຸນເງິນເລີ່ມຕົ້ນ</string>
     <string name="settings_key_press_feedback_title">ການຕອບສະໜອງເມື່ອກົດປຸ່ມ</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">ການກວດຫາການອັບເດດລົ້ມເຫຼວ</string>
     <string name="settings_update_error_too_old">ເວີຊັນນີ້ເກົ່າເກີນໄປທີ່ຈະອ່ານລາຍການອັບເດດ. ກະລຸນາອັບເດດດ້ວຍຕົນເອງ.</string>
     <string name="settings_update_from_cache">ສະແດງຈາກການກວດທີ່ບັນທຶກໄວ້ຄັ້ງລ່າສຸດ</string>
-    <string name="settings_update_background_check_title">ການກວດປະຈຳວັນໃນເບື້ອງຫຼັງ</string>
-    <string name="settings_update_background_check_summary">ກວດວັນລະຄັ້ງ ແລະ ແຈ້ງໃຫ້ທ່ານຮູ້. ການດາວໂຫຼດ ແລະ ການຕິດຕັ້ງຍັງເປັນການເຮັດດ້ວຍຕົນເອງສະເໝີ.</string>
+    <string name="settings_update_background_check_title">ກວດຫາການອັບເດດອັດຕະໂນມັດ</string>
+    <string name="settings_update_background_check_summary">ຮັບການແຈ້ງເຕືອນເມື່ອມີເວີຊັນໃໝ່ໃຫ້ດາວໂຫຼດ.</string>
     <string name="settings_update_notification_text">ເວີຊັນ %1$s ພ້ອມດາວໂຫຼດແລ້ວ</string>
     <string name="settings_update_unknown_sources_message">Android ຕ້ອງອະນຸຍາດໃຫ້ BBKB ຕິດຕັ້ງແອັບ. ເປີດການຕິດຕັ້ງຈາກແຫຼ່ງນີ້ ແລ້ວກົດຕິດຕັ້ງອີກຄັ້ງ.</string>
     <string name="settings_update_open_settings">ເປີດການຕັ້ງຄ່າ</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">ດາວໂຫຼດ</string>
     <string name="language_packs_retry">ລອງອີກຄັ້ງ</string>
     <string name="language_packs_refresh">ກວດຫາວັດຈະນານຸກົມ</string>
-    <string name="language_packs_catalog_offline">ລາຍການຈາກ %1$s (ອອບລາຍ)</string>
+    <string name="language_packs_load_ldb">ໂຫລ່ດໄຟລ໌ LDB</string>
     <string name="language_packs_variant_summary">ໂຫຼດແທນ %1$s</string>
     <string name="language_packs_offer_message">ດາວໂຫຼດວັດຈະນານຸກົມ %1$s (%2$s) ບໍ?</string>
     <string name="language_packs_offer_not_now">ຍັງບໍ່ແມ່ນຕອນນີ້</string>

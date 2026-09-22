@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">প্রতীক কীবোর্ড</string>
     <string name="settings_pkb_multifunction_action_voice">ভয়েস ইনপুট</string>
     <string name="settings_pkb_multifunction_key_title">মাল্টিফাংশন কী</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">একাধিক প্রতীক লেখার জন্য প্রতীক কীবোর্ড খোলা থাকে</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">একটি প্রতীক লেখার পর বর্ণমালায় ফিরে যায়</string>
-    <string name="settings_pkb_symbol_auto_close_title">প্রতীকের পর প্রতীক কীবোর্ড বন্ধ করুন</string>
     <string name="settings_appearance_auto">স্বয়ংক্রিয় (সিস্টেম থিম)</string>
     <string name="settings_appearance_classic">ক্লাসিক</string>
     <string name="settings_appearance_dark">গাঢ়</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">কীবোর্ডে দেখানো হয় না</string>
     <string name="settings_customize_menu_instructions">একটি শর্টকাট চেপে ধরে রেখে টেনে ক্রম বদলান। প্রথম চারটি কীবোর্ডের ইনপুট মেনুতে দেখা যাবে।</string>
     <string name="settings_customize_menu_summary">ইনপুট মেনুর শর্টকাট বেছে নিন ও ক্রম বদলান</string>
-    <string name="settings_customize_menu_title">মেনু কাস্টমাইজ করুন</string>
+    <string name="settings_customize_menu_title">একীভূত ইনপুট মেনু কাস্টমাইজ করুন</string>
     <string name="settings_default_currency_summary">নির্বাচিত: %s</string>
     <string name="settings_default_currency_title">ডিফল্ট মুদ্রা প্রতীক</string>
     <string name="settings_key_press_feedback_title">কী চাপার প্রতিক্রিয়া</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">আপডেট পরীক্ষা ব্যর্থ হয়েছে</string>
     <string name="settings_update_error_too_old">এই সংস্করণটি আপডেট তালিকা পড়ার জন্য অত্যন্ত পুরনো। অনুগ্রহ করে নিজে আপডেট করুন।</string>
     <string name="settings_update_from_cache">সর্বশেষ সংরক্ষিত পরীক্ষা থেকে দেখানো হয়েছে</string>
-    <string name="settings_update_background_check_title">প্রতিদিনের পটভূমি পরীক্ষা</string>
-    <string name="settings_update_background_check_summary">দিনে একবার পরীক্ষা করে জানায়। ডাউনলোড ও ইনস্টল সবসময় আপনার হাতেই থাকে।</string>
+    <string name="settings_update_background_check_title">স্বয়ংক্রিয়ভাবে আপডেট পরীক্ষা করুন</string>
+    <string name="settings_update_background_check_summary">নতুন সংস্করণ ডাউনলোডের জন্য উপলব্ধ হলে বিজ্ঞপ্তি পান।</string>
     <string name="settings_update_notification_text">সংস্করণ %1$s ডাউনলোডের জন্য প্রস্তুত</string>
     <string name="settings_update_unknown_sources_message">অ্যাপ ইনস্টল করতে BBKB-কে Android-এর অনুমতি দিতে হবে। এই সূত্র থেকে ইনস্টল চালু করুন, তারপর আবার ইনস্টল চাপুন।</string>
     <string name="settings_update_open_settings">সেটিংস খুলুন</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">ডাউনলোড</string>
     <string name="language_packs_retry">আবার চেষ্টা করুন</string>
     <string name="language_packs_refresh">অভিধান খুঁজুন</string>
-    <string name="language_packs_catalog_offline">%1$s-এর ক্যাটালগ (অফলাইন)</string>
+    <string name="language_packs_load_ldb">LDB ফাইল লোড করুন</string>
     <string name="language_packs_variant_summary">%1$s-এর জায়গায় লোড হয়</string>
     <string name="language_packs_offer_message">%1$s অভিধান ডাউনলোড করবেন (%2$s)?</string>
     <string name="language_packs_offer_not_now">এখন নয়</string>

@@ -16,15 +16,17 @@ import dev.bbkb.ime.R
 
 /**
  * On-Screen Keyboard Settings Screen
- * Categories: Gestures, Behavior (Ctrl key + key-press feedback).
+ * Categories: Gestures, Behavior (Ctrl key, unified input menu, slideboard, key-press feedback).
  *
- * Slideboard and custom symbol page now live under Appearance & layout.
+ * The custom symbol page still lives under Appearance & layout; Slideboard settings moved here,
+ * because everything it configures is on-screen-keyboard behaviour.
  */
 @Composable
 fun TouchScreenKeyboardScreen(
     onNavigateBack: () -> Unit,
     onNavigateToKeyPressFeedback: () -> Unit = {},
-    onNavigateToCustomizeMenu: () -> Unit = {}
+    onNavigateToCustomizeMenu: () -> Unit = {},
+    onNavigateToSlideboard: () -> Unit = {}
 ) {
     // Chinese locale disables swipe typing (NuanceSDK limitation)
     val isChineseLocale = remember { LocaleUtils.isCurrentSubtypeChinese() }
@@ -68,11 +70,21 @@ fun TouchScreenKeyboardScreen(
             ),
             modifier = Modifier.settingsSearchAnchor("pref_uim_enabled"),
         ),
-        // Reorder the unified input menu shortcuts (voice, emoji, cursor, clipboard, number pad)
+        // Reorder the unified input menu shortcuts (voice, emoji, cursor, clipboard, number pad).
+        // There is nothing to customize while the menu itself is off, so the row greys out with
+        // the toggle above it rather than opening a screen that configures a hidden menu.
         Nav(
             title = R.string.settings_customize_menu_title,
             summary = R.string.settings_customize_menu_summary,
+            enabled = { it.bool("pref_uim_enabled") },
             onClick = { onNavigateToCustomizeMenu() },
+        ),
+        // Slideboard (enable, swap sides, number pad, quick phrases). No icon: the rows around it
+        // carry none.
+        Nav(
+            title = R.string.settings_slideboard_settings_title,
+            summary = R.string.settings_slideboard_hub_summary,
+            onClick = { onNavigateToSlideboard() },
         ),
         // Touch feedback (links to KeyPressFeedbackScreen) — VKB only
         Nav(

@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Szimbólum-billentyűzet</string>
     <string name="settings_pkb_multifunction_action_voice">Hangbevitel</string>
     <string name="settings_pkb_multifunction_key_title">Többfunkciós billentyű</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">A szimbólum-billentyűzet nyitva marad több szimbólum beviteléhez</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Egy szimbólum bevitele után visszatér a betűkhöz</string>
-    <string name="settings_pkb_symbol_auto_close_title">Szimbólum-billentyűzet bezárása szimbólum után</string>
     <string name="settings_appearance_auto">Automatikus (rendszertéma)</string>
     <string name="settings_appearance_classic">Klasszikus</string>
     <string name="settings_appearance_dark">Sötét</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Nem jelenik meg a billentyűzeten</string>
     <string name="settings_customize_menu_instructions">Érintse meg és tartsa nyomva a parancsikont, majd húzással rendezze át. Az első négy jelenik meg a billentyűzet beviteli menüjében.</string>
     <string name="settings_customize_menu_summary">A beviteli menü parancsikonjainak kiválasztása és átrendezése</string>
-    <string name="settings_customize_menu_title">Menü testreszabása</string>
+    <string name="settings_customize_menu_title">Egységes beviteli menü testreszabása</string>
     <string name="settings_default_currency_summary">Kiválasztva: %s</string>
     <string name="settings_default_currency_title">Alapértelmezett pénznemszimbólum</string>
     <string name="settings_key_press_feedback_title">Billentyűlenyomás visszajelzése</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">A frissítés ellenőrzése nem sikerült</string>
     <string name="settings_update_error_too_old">Ez a verzió túl régi a frissítési lista beolvasásához. Frissítsen kézzel.</string>
     <string name="settings_update_from_cache">Az utolsó mentett ellenőrzés alapján</string>
-    <string name="settings_update_background_check_title">Napi ellenőrzés a háttérben</string>
-    <string name="settings_update_background_check_summary">Naponta egyszer ellenőriz és értesíti Önt. A letöltés és a telepítés mindig kézi marad.</string>
+    <string name="settings_update_background_check_title">Frissítések automatikus keresése</string>
+    <string name="settings_update_background_check_summary">Értesítést kap, amint új verzió érhető el letöltésre.</string>
     <string name="settings_update_notification_text">A %1$s verzió letölthető</string>
     <string name="settings_update_unknown_sources_message">Az Androidnak engedélyeznie kell, hogy a BBKB alkalmazásokat telepítsen. Engedélyezze a telepítést erről a forrásról, majd nyomja meg újra a Telepítés gombot.</string>
     <string name="settings_update_open_settings">Beállítások megnyitása</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Letöltés</string>
     <string name="language_packs_retry">Újra</string>
     <string name="language_packs_refresh">Szótárak keresése</string>
-    <string name="language_packs_catalog_offline">Katalógus: %1$s (offline)</string>
+    <string name="language_packs_load_ldb">LDB-fájl betöltése</string>
     <string name="language_packs_variant_summary">A(z) %1$s helyett töltődik be</string>
     <string name="language_packs_offer_message">Letölti a(z) %1$s szótárat (%2$s)?</string>
     <string name="language_packs_offer_not_now">Most nem</string>

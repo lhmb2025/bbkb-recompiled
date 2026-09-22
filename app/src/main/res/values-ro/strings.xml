@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Tastatură de simboluri</string>
     <string name="settings_pkb_multifunction_action_voice">Introducere vocală</string>
     <string name="settings_pkb_multifunction_key_title">Tastă multifuncțională</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Tastatura de simboluri rămâne deschisă pentru a introduce mai multe simboluri</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Revine la alfabet după introducerea unui simbol</string>
-    <string name="settings_pkb_symbol_auto_close_title">Închideți tastatura de simboluri după un simbol</string>
     <string name="settings_appearance_auto">Automat (tema sistemului)</string>
     <string name="settings_appearance_classic">Clasică</string>
     <string name="settings_appearance_dark">Întunecată</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Neafișate pe tastatură</string>
     <string name="settings_customize_menu_instructions">Atingeți și țineți apăsată o comandă rapidă, apoi trageți-o pentru a o reordona. Primele patru apar în meniul de introducere al tastaturii.</string>
     <string name="settings_customize_menu_summary">Alegeți și reordonați comenzile rapide din meniul de introducere</string>
-    <string name="settings_customize_menu_title">Personalizați meniul</string>
+    <string name="settings_customize_menu_title">Personalizați meniul de introducere unificat</string>
     <string name="settings_default_currency_summary">Selectat: %s</string>
     <string name="settings_default_currency_title">Simbol monetar implicit</string>
     <string name="settings_key_press_feedback_title">Feedback la apăsarea tastelor</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Verificarea actualizărilor a eșuat</string>
     <string name="settings_update_error_too_old">Această versiune este prea veche pentru a citi lista de actualizări. Actualizează manual.</string>
     <string name="settings_update_from_cache">Afișat din ultima verificare salvată</string>
-    <string name="settings_update_background_check_title">Verificare zilnică în fundal</string>
-    <string name="settings_update_background_check_summary">Verifică o dată pe zi și te anunță. Descărcarea și instalarea rămân întotdeauna manuale.</string>
+    <string name="settings_update_background_check_title">Verificați automat actualizările</string>
+    <string name="settings_update_background_check_summary">Primiți o notificare când o versiune nouă este disponibilă pentru descărcare.</string>
     <string name="settings_update_notification_text">Versiunea %1$s este pregătită pentru descărcare</string>
     <string name="settings_update_unknown_sources_message">Android trebuie să permită BBKB să instaleze aplicații. Activează instalarea din această sursă, apoi apasă din nou Instalează.</string>
     <string name="settings_update_open_settings">Deschide setările</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Descarcă</string>
     <string name="language_packs_retry">Încearcă din nou</string>
     <string name="language_packs_refresh">Caută dicționare</string>
-    <string name="language_packs_catalog_offline">Catalog din %1$s (offline)</string>
+    <string name="language_packs_load_ldb">Încarcă fișier LDB</string>
     <string name="language_packs_variant_summary">Se încarcă în locul %1$s</string>
     <string name="language_packs_offer_message">Descarci dicționarul %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Nu acum</string>

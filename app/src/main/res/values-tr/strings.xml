@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Sembol klavyesi</string>
     <string name="settings_pkb_multifunction_action_voice">Sesli giriş</string>
     <string name="settings_pkb_multifunction_key_title">Çok işlevli tuş</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Birden fazla sembol girebilmek için sembol klavyesi açık kalır</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Bir sembol girildikten sonra alfabeye döner</string>
-    <string name="settings_pkb_symbol_auto_close_title">Sembolden sonra sembol klavyesini kapat</string>
     <string name="settings_appearance_auto">Otomatik (sistem teması)</string>
     <string name="settings_appearance_classic">Klasik</string>
     <string name="settings_appearance_dark">Koyu</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Klavyede gösterilmeyenler</string>
     <string name="settings_customize_menu_instructions">Bir kısayola dokunup basılı tutun, sonra sürükleyerek sırasını değiştirin. İlk dördü klavyenin giriş menüsünde görünür.</string>
     <string name="settings_customize_menu_summary">Giriş menüsü kısayollarını seç ve sırala</string>
-    <string name="settings_customize_menu_title">Menüyü özelleştir</string>
+    <string name="settings_customize_menu_title">Birleşik giriş menüsünü özelleştir</string>
     <string name="settings_default_currency_summary">Seçili: %s</string>
     <string name="settings_default_currency_title">Varsayılan para birimi sembolü</string>
     <string name="settings_key_press_feedback_title">Tuşa basma geri bildirimi</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Güncelleme denetimi başarısız oldu</string>
     <string name="settings_update_error_too_old">Bu sürüm güncelleme listesini okumak için çok eski. Lütfen elle güncelleyin.</string>
     <string name="settings_update_from_cache">Son kaydedilen denetimden gösteriliyor</string>
-    <string name="settings_update_background_check_title">Günlük arka plan denetimi</string>
-    <string name="settings_update_background_check_summary">Günde bir kez denetler ve size bildirir. İndirme ve kurulum her zaman elle yapılır.</string>
+    <string name="settings_update_background_check_title">Güncellemeleri otomatik olarak denetle</string>
+    <string name="settings_update_background_check_summary">Yeni bir sürüm indirilmeye hazır olduğunda bildirim alırsınız.</string>
     <string name="settings_update_notification_text">Sürüm %1$s indirmeye hazır</string>
     <string name="settings_update_unknown_sources_message">Android\'in BBKB\'ye uygulama kurma izni vermesi gerekir. Bu kaynaktan kurulumu etkinleştirin, sonra Kur düğmesine yeniden basın.</string>
     <string name="settings_update_open_settings">Ayarları aç</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">İndir</string>
     <string name="language_packs_retry">Yeniden dene</string>
     <string name="language_packs_refresh">Sözlükleri denetle</string>
-    <string name="language_packs_catalog_offline">%1$s tarihli katalog (çevrimdışı)</string>
+    <string name="language_packs_load_ldb">LDB dosyası yükle</string>
     <string name="language_packs_variant_summary">%1$s yerine yüklenir</string>
     <string name="language_packs_offer_message">%1$s sözlüğü indirilsin mi (%2$s)?</string>
     <string name="language_packs_offer_not_now">Şimdi değil</string>

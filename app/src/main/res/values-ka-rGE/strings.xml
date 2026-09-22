@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">სიმბოლოების კლავიატურა</string>
     <string name="settings_pkb_multifunction_action_voice">ხმოვანი შეყვანა</string>
     <string name="settings_pkb_multifunction_key_title">მრავალფუნქციური კლავიში</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">სიმბოლოების კლავიატურა ღია რჩება რამდენიმე სიმბოლოს შესაყვანად</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">ერთი სიმბოლოს შეყვანის შემდეგ ბრუნდება ანბანზე</string>
-    <string name="settings_pkb_symbol_auto_close_title">სიმბოლოს შემდეგ სიმბოლოების კლავიატურის დახურვა</string>
     <string name="settings_appearance_auto">ავტომატური (სისტემის თემა)</string>
     <string name="settings_appearance_classic">კლასიკური</string>
     <string name="settings_appearance_dark">მუქი</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">კლავიატურაზე არ ჩანს</string>
     <string name="settings_customize_menu_instructions">შეეხეთ და დაიკავეთ მალსახმობი, შემდეგ გადაათრიეთ თანმიმდევრობის შესაცვლელად. პირველი ოთხი კლავიატურის შეყვანის მენიუში გამოჩნდება.</string>
     <string name="settings_customize_menu_summary">აირჩიეთ შეყვანის მენიუს მალსახმობები და მათი თანმიმდევრობა</string>
-    <string name="settings_customize_menu_title">მენიუს მორგება</string>
+    <string name="settings_customize_menu_title">ერთიანი შეყვანის მენიუს მორგება</string>
     <string name="settings_default_currency_summary">არჩეულია: %s</string>
     <string name="settings_default_currency_title">ნაგულისხმევი ვალუტის სიმბოლო</string>
     <string name="settings_key_press_feedback_title">კლავიშზე დაჭერის უკუკავშირი</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">განახლების შემოწმება ჩაიშალა</string>
     <string name="settings_update_error_too_old">ეს ვერსია ძალიან ძველია განახლებების სიის წასაკითხად. გთხოვთ, განაახლოთ ხელით.</string>
     <string name="settings_update_from_cache">ნაჩვენებია ბოლო შენახული შემოწმებიდან</string>
-    <string name="settings_update_background_check_title">ყოველდღიური შემოწმება ფონურ რეჟიმში</string>
-    <string name="settings_update_background_check_summary">ამოწმებს დღეში ერთხელ და შეგატყობინებთ. ჩამოტვირთვა და დაყენება ყოველთვის ხელით ხდება.</string>
+    <string name="settings_update_background_check_title">განახლებების ავტომატური შემოწმება</string>
+    <string name="settings_update_background_check_summary">მიიღებთ შეტყობინებას, როცა ახალი ვერსია ჩამოსატვირთად ხელმისაწვდომი იქნება.</string>
     <string name="settings_update_notification_text">ვერსია %1$s მზადაა ჩამოსატვირთად</string>
     <string name="settings_update_unknown_sources_message">Android-მა უნდა მისცეს BBKB-ს აპების დაყენების ნებართვა. დართეთ ნება ამ წყაროდან დაყენებას და ხელახლა დააჭირეთ დაყენებას.</string>
     <string name="settings_update_open_settings">პარამეტრების გახსნა</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">ჩამოტვირთვა</string>
     <string name="language_packs_retry">სცადეთ ხელახლა</string>
     <string name="language_packs_refresh">ლექსიკონების შემოწმება</string>
-    <string name="language_packs_catalog_offline">კატალოგი %1$s-დან (ოფლაინ)</string>
+    <string name="language_packs_load_ldb">LDB ფაილის ჩატვირთვა</string>
     <string name="language_packs_variant_summary">იტვირთება %1$s-ის ნაცვლად</string>
     <string name="language_packs_offer_message">ჩამოიტვირთოს %1$s ლექსიკონი (%2$s)?</string>
     <string name="language_packs_offer_not_now">ახლა არა</string>

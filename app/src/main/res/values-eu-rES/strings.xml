@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Ikur-teklatua</string>
     <string name="settings_pkb_multifunction_action_voice">Ahots bidezko idazketa</string>
     <string name="settings_pkb_multifunction_key_title">Funtzio anitzeko tekla</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Ikur-teklatua irekita geratzen da hainbat ikur idazteko</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Alfabetora itzultzen da ikur bat idatzi ondoren</string>
-    <string name="settings_pkb_symbol_auto_close_title">Itxi ikur-teklatua ikur baten ondoren</string>
     <string name="settings_appearance_auto">Automatikoa (sistemaren gaia)</string>
     <string name="settings_appearance_classic">Klasikoa</string>
     <string name="settings_appearance_dark">Iluna</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Ez da teklatuan erakusten</string>
     <string name="settings_customize_menu_instructions">Ukitu eta eutsi lasterbide bati, eta arrastatu ordena aldatzeko. Lehen lauak teklatuaren idazketa-menuan agertzen dira.</string>
     <string name="settings_customize_menu_summary">Hautatu eta berrantolatu idazketa-menuko lasterbideak</string>
-    <string name="settings_customize_menu_title">Pertsonalizatu menua</string>
+    <string name="settings_customize_menu_title">Pertsonalizatu idazketa-menu bateratua</string>
     <string name="settings_default_currency_summary">Hautatuta: %s</string>
     <string name="settings_default_currency_title">Moneta-ikur lehenetsia</string>
     <string name="settings_key_press_feedback_title">Tekla sakatzearen erantzuna</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Eguneraketen egiaztapenak huts egin du</string>
     <string name="settings_update_error_too_old">Bertsio hau zaharregia da eguneraketa-zerrenda irakurtzeko. Eguneratu eskuz.</string>
     <string name="settings_update_from_cache">Gordetako azken egiaztapenetik erakutsita</string>
-    <string name="settings_update_background_check_title">Eguneroko egiaztapena atzeko planoan</string>
-    <string name="settings_update_background_check_summary">Egunean behin egiaztatzen du eta jakinarazten dizu. Deskargatzea eta instalatzea beti eskuz egiten dira.</string>
+    <string name="settings_update_background_check_title">Bilatu eguneratzeak automatikoki</string>
+    <string name="settings_update_background_check_summary">Jakinarazpen bat jasoko duzu bertsio berri bat deskargatzeko erabilgarri dagoenean.</string>
     <string name="settings_update_notification_text">%1$s bertsioa deskargatzeko prest dago</string>
     <string name="settings_update_unknown_sources_message">Androidek BBKBri aplikazioak instalatzen uzteko baimena eman behar dio. Gaitu iturburu honetatik instalatzea eta sakatu Instalatu berriro.</string>
     <string name="settings_update_open_settings">Ireki ezarpenak</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Deskargatu</string>
     <string name="language_packs_retry">Saiatu berriro</string>
     <string name="language_packs_refresh">Bilatu hiztegiak</string>
-    <string name="language_packs_catalog_offline">%1$s-ko katalogoa (lineaz kanpo)</string>
+    <string name="language_packs_load_ldb">Kargatu LDB fitxategia</string>
     <string name="language_packs_variant_summary">%1$s-en ordez kargatzen da</string>
     <string name="language_packs_offer_message">%1$s hiztegia deskargatu (%2$s)?</string>
     <string name="language_packs_offer_not_now">Orain ez</string>

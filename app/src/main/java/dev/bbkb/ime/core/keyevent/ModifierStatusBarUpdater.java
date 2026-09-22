@@ -61,27 +61,50 @@ public class ModifierStatusBarUpdater {
         this.mBlackberryIme = blackBerryIME;
     }
 
+    /**
+     * Re-assert the icon for {@code metaState} whether or not it differs from the last one we
+     * posted. Used from the IME lifecycle (see {@code BlackBerryIME.onWindowShown} /
+     * {@code onStartInputView}): the status-bar slot belongs to the system, not to us, and the
+     * system drops or clears it behind our back — {@code InputMethodService.showStatusIcon}
+     * silently returns whenever {@code InputMethodPrivilegedOperations} is not attached yet, and
+     * {@code InputMethodManagerService} clears the IME slot on every unbind. {@link
+     * #mLastMetaState} is only a record of what we last *sent*, so after any of those the cache
+     * says "already showing" for an icon that is not there.
+     */
+    public void refreshModifierStatus(int metaState) {
+        updateModifierStatus(metaState, true);
+    }
+
     public void updateModifierStatus(int metaState, boolean forceUpdate) {
         // Check if status bar icon display is enabled
         SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
         if (settings != null && !settings.showPkbModifierStatusIcon) {
             // Setting is disabled, hide icon if it's currently showing
-            if (this.mLastMetaState != 0) {
+            if (this.mLastMetaState != 0 || forceUpdate) {
                 setStatusBarIconVisibility(false, 0);
                 this.mLastMetaState = 0;
             }
             return;
         }
-        
-        if ((forceUpdate || DeviceProfile.isPhysicalKeyboardAvailable(this.mBlackberryIme)) && this.mLastMetaState != metaState) {
-            int iconResId = getStatusIconDrawable(metaState);
-            if (iconResId != 0) {
-                setStatusBarIconVisibility(true, iconResId);
-            } else {
-                setStatusBarIconVisibility(false, 0);
-            }
-            this.mLastMetaState = metaState;
+
+        // The cheap test first: this runs on every physical modifier event, and the
+        // device check below reaches through to Resources.getConfiguration().
+        if (!forceUpdate && this.mLastMetaState == metaState) {
+            return;
         }
+        // forceUpdate means "post it anyway": it skips both this device check (the caller
+        // already knows it is winding the state down) and the unchanged-state short circuit,
+        // so the IME has a way to put the icon back after the system has dropped it.
+        if (!forceUpdate && !DeviceProfile.isPhysicalKeyboardAvailable(this.mBlackberryIme)) {
+            return;
+        }
+        int iconResId = getStatusIconDrawable(metaState);
+        if (iconResId != 0) {
+            setStatusBarIconVisibility(true, iconResId);
+        } else {
+            setStatusBarIconVisibility(false, 0);
+        }
+        this.mLastMetaState = metaState;
     }
 
     /**

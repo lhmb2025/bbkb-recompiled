@@ -52,6 +52,17 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
      */
     private final SparseBooleanArray mKeysHeld = new SparseBooleanArray(4);
 
+    /**
+     * The key code the Sym key arrives as on this device, for {@link #isSymKeyHeld()}.
+     *
+     * <p>{@code KEYCODE_SYM} on BlackBerry hardware, but the MP01's ROM attaches
+     * {@code KEYCODE_ALT_RIGHT} to its Sym scancode, so the key-event path tells us which one it
+     * resolved ({@code KeyEventProcessor.setSymKeyCode}) rather than this class guessing. The
+     * default is the BlackBerry answer, which is also the right answer for any device whose
+     * key-event path never gets as far as saying otherwise.
+     */
+    private int mSymKeyCode = KeyEvent.KEYCODE_SYM;
+
     private boolean mAltUsedWithKey = false;
 
     public PhysicalKeyboardStateTracker(ModifierStatusBarUpdater c0714p) {
@@ -170,7 +181,16 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
             this.mAltUsedWithKey = i != 0;
         }
         commitModifierState(true);
-        
+        // A sticky Shift/Alt that this key has just spent is no longer on, and the status-bar
+        // icon has to follow it down here: the modifier key's own key-up already ran (that is
+        // what made it sticky), so no later event reports this transition. Without it the icon
+        // sat on the last modifier the user tapped, and — because the updater only posts on a
+        // CHANGE — the next press of that same modifier then posted nothing at all.
+        ModifierStatusBarUpdater statusBarUpdater = this.mStatusBarUpdater;
+        if (statusBarUpdater != null) {
+            statusBarUpdater.updateModifierStatus(computeInternalMetaState(), false);
+        }
+
         // ===== ALT CHORD DEBUG: consumeModifiersAfterKey after =====
         if (BuildConfig.DEBUG) {
         int _internalMetaAfter = getInternalMetaState();
@@ -245,6 +265,22 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         ModifierStatusBarUpdater c0714p = this.mStatusBarUpdater;
         if (c0714p != null) {
             c0714p.updateModifierStatus(0, true);
+        }
+    }
+
+    /**
+     * Re-post the modifier status icon for the state we are in right now, changed or not.
+     *
+     * <p>The IME calls this when its window comes up and when an input view starts. The status-bar
+     * slot is owned by the system and is cleared on every IME unbind, and a post made before the
+     * IME's privileged operations are attached is dropped on the floor — in both cases the
+     * updater's "last posted" cache goes on claiming the icon is up, and since it only posts on a
+     * change, nothing ever puts it back.
+     */
+    public void refreshModifierStatus() {
+        ModifierStatusBarUpdater statusBarUpdater = this.mStatusBarUpdater;
+        if (statusBarUpdater != null) {
+            statusBarUpdater.refreshModifierStatus(computeInternalMetaState());
         }
     }
 
@@ -496,6 +532,28 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
     /** Whether {@code keyCode} is currently counted as a physically held key. */
     public boolean isKeyHeld(int keyCode) {
         return this.mKeysHeld.get(keyCode, false);
+    }
+
+    /**
+     * Tell the tracker which key code the Sym key arrives as on this device. Called from the
+     * key-event path, which is the only place that can resolve it (a scancode mapping with the
+     * {@code BOARD_SYM} role outranks whatever key code the ROM attached).
+     */
+    public void setSymKeyCode(int keyCode) {
+        this.mSymKeyCode = keyCode;
+    }
+
+    /**
+     * Whether the Sym key is physically held down right now.
+     *
+     * <p>This is what keeps the PKB symbol board open for more than one symbol: a symbol board
+     * closes itself after the symbol that was typed on it, unless the user is holding Sym, in
+     * which case the board stays up and symbols keep going in until Sym is released. Answered
+     * from the held-key set, so it inherits that set's self-healing: a Sym press whose release
+     * was swallowed is discharged by the next press-and-release of the same key.
+     */
+    public boolean isSymKeyHeld() {
+        return this.mKeysHeld.get(this.mSymKeyCode, false);
     }
 
     /**

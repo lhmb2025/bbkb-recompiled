@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Клавіатура символів</string>
     <string name="settings_pkb_multifunction_action_voice">Голосове введення</string>
     <string name="settings_pkb_multifunction_key_title">Багатофункціональна клавіша</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Клавіатура символів залишається відкритою для введення кількох символів</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Повернення до літер після введення одного символу</string>
-    <string name="settings_pkb_symbol_auto_close_title">Закривати клавіатуру символів після символу</string>
     <string name="settings_appearance_auto">Авто (тема системи)</string>
     <string name="settings_appearance_classic">Класична</string>
     <string name="settings_appearance_dark">Темна</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Не показується на клавіатурі</string>
     <string name="settings_customize_menu_instructions">Торкніться ярлика й утримуйте його, а потім перетягніть, щоб змінити порядок. Перші чотири відображаються в меню введення клавіатури.</string>
     <string name="settings_customize_menu_summary">Виберіть ярлики меню введення та їхній порядок</string>
-    <string name="settings_customize_menu_title">Налаштувати меню</string>
+    <string name="settings_customize_menu_title">Налаштувати єдине меню введення</string>
     <string name="settings_default_currency_summary">Вибрано: %s</string>
     <string name="settings_default_currency_title">Символ валюти за умовчанням</string>
     <string name="settings_key_press_feedback_title">Відгук на натискання клавіш</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Не вдалося перевірити оновлення</string>
     <string name="settings_update_error_too_old">Ця версія застаріла й не може прочитати список оновлень. Оновіть вручну.</string>
     <string name="settings_update_from_cache">Показано з останньої збереженої перевірки</string>
-    <string name="settings_update_background_check_title">Щоденна перевірка у фоні</string>
-    <string name="settings_update_background_check_summary">Перевіряє раз на добу й повідомляє вас. Завантаження та встановлення завжди залишаються вручну.</string>
+    <string name="settings_update_background_check_title">Автоматично перевіряти оновлення</string>
+    <string name="settings_update_background_check_summary">Ви отримаєте сповіщення, коли нова версія стане доступною для завантаження.</string>
     <string name="settings_update_notification_text">Версія %1$s готова до завантаження</string>
     <string name="settings_update_unknown_sources_message">Android має дозволити BBKB встановлювати програми. Дозвольте встановлення з цього джерела й натисніть «Встановити» ще раз.</string>
     <string name="settings_update_open_settings">Відкрити налаштування</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Завантажити</string>
     <string name="language_packs_retry">Спробувати ще раз</string>
     <string name="language_packs_refresh">Перевірити словники</string>
-    <string name="language_packs_catalog_offline">Каталог від %1$s (офлайн)</string>
+    <string name="language_packs_load_ldb">Завантажити файл LDB</string>
     <string name="language_packs_variant_summary">Завантажується замість %1$s</string>
     <string name="language_packs_offer_message">Завантажити словник %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Не зараз</string>

@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">ក្ដារចុចនិមិត្តសញ្ញា</string>
     <string name="settings_pkb_multifunction_action_voice">ការបញ្ចូលដោយសំឡេង</string>
     <string name="settings_pkb_multifunction_key_title">គ្រាប់ចុចពហុមុខងារ</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">ក្ដារចុចនិមិត្តសញ្ញានៅបើកចំហ ដើម្បីបញ្ចូលនិមិត្តសញ្ញាច្រើន</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">ត្រឡប់ទៅអក្សរក្រមវិញ បន្ទាប់ពីបញ្ចូលនិមិត្តសញ្ញាមួយ</string>
-    <string name="settings_pkb_symbol_auto_close_title">បិទក្ដារចុចនិមិត្តសញ្ញាបន្ទាប់ពីនិមិត្តសញ្ញា</string>
     <string name="settings_appearance_auto">ស្វ័យប្រវត្តិ (ស្បែកប្រព័ន្ធ)</string>
     <string name="settings_appearance_classic">បុរាណ</string>
     <string name="settings_appearance_dark">ងងឹត</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">មិនបង្ហាញនៅលើក្ដារចុច</string>
     <string name="settings_customize_menu_instructions">ប៉ះផ្លូវកាត់ឱ្យជាប់ រួចអូសដើម្បីរៀបលំដាប់ឡើងវិញ។ បួនដំបូងនឹងបង្ហាញនៅលើម៉ឺនុយបញ្ចូលរបស់ក្ដារចុច។</string>
     <string name="settings_customize_menu_summary">ជ្រើសរើស និងរៀបលំដាប់ផ្លូវកាត់ម៉ឺនុយបញ្ចូល</string>
-    <string name="settings_customize_menu_title">កំណត់ម៉ឺនុយតាមបំណង</string>
+    <string name="settings_customize_menu_title">កំណត់ម៉ឺនុយបញ្ចូលរួមតាមបំណង</string>
     <string name="settings_default_currency_summary">បានជ្រើសរើស៖ %s</string>
     <string name="settings_default_currency_title">និមិត្តសញ្ញារូបិយវត្ថុលំនាំដើម</string>
     <string name="settings_key_press_feedback_title">មតិតបពេលចុចគ្រាប់ចុច</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">ការពិនិត្យបច្ចុប្បន្នភាពបានបរាជ័យ</string>
     <string name="settings_update_error_too_old">កំណែនេះចាស់ពេកមិនអាចអានបញ្ជីបច្ចុប្បន្នភាពបានទេ។ សូមធ្វើបច្ចុប្បន្នភាពដោយដៃ។</string>
     <string name="settings_update_from_cache">បង្ហាញពីការពិនិត្យដែលបានរក្សាទុកចុងក្រោយ</string>
-    <string name="settings_update_background_check_title">ការពិនិត្យប្រចាំថ្ងៃនៅផ្ទៃខាងក្រោយ</string>
-    <string name="settings_update_background_check_summary">ពិនិត្យម្ដងក្នុងមួយថ្ងៃ ហើយជូនដំណឹងអ្នក។ ការទាញយកនិងការដំឡើងតែងតែធ្វើដោយដៃ។</string>
+    <string name="settings_update_background_check_title">ពិនិត្យរកបច្ចុប្បន្នភាពដោយស្វ័យប្រវត្តិ</string>
+    <string name="settings_update_background_check_summary">ទទួលការជូនដំណឹងនៅពេលកំណែថ្មីអាចទាញយកបាន។</string>
     <string name="settings_update_notification_text">កំណែ %1$s រួចរាល់សម្រាប់ទាញយក</string>
     <string name="settings_update_unknown_sources_message">Android ត្រូវអនុញ្ញាតឱ្យ BBKB ដំឡើងកម្មវិធី។ បើកការដំឡើងពីប្រភពនេះ បន្ទាប់មកចុចដំឡើងម្ដងទៀត។</string>
     <string name="settings_update_open_settings">បើកការកំណត់</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">ទាញយក</string>
     <string name="language_packs_retry">ព្យាយាមម្ដងទៀត</string>
     <string name="language_packs_refresh">ពិនិត្យរកវចនានុក្រម</string>
-    <string name="language_packs_catalog_offline">កាតាឡុកពី %1$s (គ្មានអ៊ីនធឺណិត)</string>
+    <string name="language_packs_load_ldb">ផ្ទុកឯកសារ LDB</string>
     <string name="language_packs_variant_summary">ដំណើរការជំនួស %1$s</string>
     <string name="language_packs_offer_message">ទាញយកវចនានុក្រម %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">មិនមែនឥឡូវទេ</string>

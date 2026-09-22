@@ -251,9 +251,6 @@
     <string name="settings_pkb_multifunction_action_symbol">Symboltangentbord</string>
     <string name="settings_pkb_multifunction_action_voice">Röstinmatning</string>
     <string name="settings_pkb_multifunction_key_title">Multifunktionstangent</string>
-    <string name="settings_pkb_symbol_auto_close_summary_off">Symboltangentbordet hålls öppet så att du kan skriva flera symboler</string>
-    <string name="settings_pkb_symbol_auto_close_summary_on">Återgår till bokstäverna efter en symbol</string>
-    <string name="settings_pkb_symbol_auto_close_title">Stäng symboltangentbordet efter symbol</string>
     <string name="settings_appearance_auto">Auto (systemtema)</string>
     <string name="settings_appearance_classic">Klassiskt</string>
     <string name="settings_appearance_dark">Mörkt</string>
@@ -551,7 +548,7 @@
     <string name="settings_customize_menu_hidden_header">Visas inte på tangentbordet</string>
     <string name="settings_customize_menu_instructions">Tryck och håll på en genväg och dra för att ändra ordning. De fyra första visas i tangentbordets inmatningsmeny.</string>
     <string name="settings_customize_menu_summary">Välj och ordna genvägarna i inmatningsmenyn</string>
-    <string name="settings_customize_menu_title">Anpassa menyn</string>
+    <string name="settings_customize_menu_title">Anpassa den enhetliga inmatningsmenyn</string>
     <string name="settings_default_currency_summary">Valt: %s</string>
     <string name="settings_default_currency_title">Standardvalutasymbol</string>
     <string name="settings_key_press_feedback_title">Feedback vid tangenttryck</string>
@@ -720,8 +717,8 @@
     <string name="settings_update_error_generic">Uppdateringskontrollen misslyckades</string>
     <string name="settings_update_error_too_old">Den här versionen är för gammal för att läsa uppdateringslistan. Uppdatera manuellt.</string>
     <string name="settings_update_from_cache">Visas från den senast sparade kontrollen</string>
-    <string name="settings_update_background_check_title">Daglig kontroll i bakgrunden</string>
-    <string name="settings_update_background_check_summary">Kontrollerar en gång om dagen och meddelar dig. Nedladdning och installation är alltid manuella.</string>
+    <string name="settings_update_background_check_title">Sök efter uppdateringar automatiskt</string>
+    <string name="settings_update_background_check_summary">Du får en avisering när en ny version finns att ladda ned.</string>
     <string name="settings_update_notification_text">Version %1$s är klar att laddas ner</string>
     <string name="settings_update_unknown_sources_message">Android måste tillåta att BBKB installerar appar. Tillåt installation från den här källan och tryck sedan på Installera igen.</string>
     <string name="settings_update_open_settings">Öppna inställningar</string>
@@ -731,7 +728,7 @@
     <string name="language_packs_download">Hämta</string>
     <string name="language_packs_retry">Försök igen</string>
     <string name="language_packs_refresh">Sök efter ordlistor</string>
-    <string name="language_packs_catalog_offline">Katalog från %1$s (offline)</string>
+    <string name="language_packs_load_ldb">Läs in LDB-fil</string>
     <string name="language_packs_variant_summary">Läses in i stället för %1$s</string>
     <string name="language_packs_offer_message">Vill du hämta ordlistan för %1$s (%2$s)?</string>
     <string name="language_packs_offer_not_now">Inte nu</string>
