@@ -13,9 +13,13 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.core.device.profile.DeviceProfile
+import dev.bbkb.ime.core.distribution.DistributionConfig
+import dev.bbkb.ime.core.distribution.LocalHttpServer
+import dev.bbkb.ime.core.distribution.ManifestSource
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils
 import dev.bbkb.ime.core.locale.RichInputMethodManager
 import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageRepository
+import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.SettingsRoute
 import dev.bbkb.ime.core.settings.search.LocalSettingsHighlight
 import dev.bbkb.ime.core.settings.search.SearchDeviceCapabilities
@@ -92,9 +96,21 @@ class SettingsScreenRenderTest(private val screenName: String) {
          * Hardcoded text a screen renders only after a load on `Dispatchers.IO` finishes.
          * `waitForIdle()` cannot see that work, so whether these are on screen at snapshot time is
          * a race (machine load decides it). They may be present; nothing outside `literals` and
-         * `lateLiterals` may be. No resource-backed text is late today, so `resources` stays exact.
+         * `lateLiterals` may be.
          */
         val lateLiterals: Set<String> = emptySet(),
+        /**
+         * The same tolerance for resource-backed text: `R.string` names a screen renders only
+         * once an IO load has finished, and therefore may or may not be on screen when the
+         * snapshot is taken.
+         *
+         * Added for `LanguagePacksScreen`, whose downloadable-catalogue section reports whatever
+         * the fetch came back with. Under Robolectric that is always a failure (there is no
+         * network and no cached manifest), but *which* failure and whether it has landed yet are
+         * not things this test should pin. Everything a screen renders unconditionally still
+         * belongs in `resources`, which stays exact.
+         */
+        val lateResources: Set<String> = emptySet(),
     )
 
     /**
@@ -111,6 +127,28 @@ class SettingsScreenRenderTest(private val screenName: String) {
         ResourceLocaleUtils.reinit(context)
         DeviceProfile.initialize(context)
         registerThisImeWithTheFramework(context)
+        keepTheCatalogueFetchOffTheRealNetwork(context)
+    }
+
+    /**
+     * `LanguagePacksScreen` asks for the published pack catalogue when it opens, and a unit test
+     * must never reach the internet to answer that.
+     *
+     * Robolectric reports no active network, so `ManifestSource` already fails with
+     * `OfflineException` without opening a socket — but that is a default of the shadow, not a
+     * promise. The debug-only manifest-URL override (inert on release builds) pins it to a port
+     * with nothing listening, so the fetch fails locally whatever the shadow decides. Either way
+     * the screen renders its "no catalogue" state, which is what
+     * [Case.lateResources] tolerates.
+     */
+    private fun keepTheCatalogueFetchOffTheRealNetwork(context: Context) {
+        PrefsManager.getPrefs(context).edit()
+            .putString(
+                DistributionConfig.PREF_MANIFEST_URL,
+                "http://127.0.0.1:${LocalHttpServer.closedPort()}/manifest.json",
+            )
+            .apply()
+        ManifestSource(context).clearCache()
     }
 
     /**
@@ -249,11 +287,12 @@ class SettingsScreenRenderTest(private val screenName: String) {
         val actualResources = rendered.mapNotNull { index[it] }.toSet()
         val actualLiterals = rendered.filter { index[it] == null }.toSet()
 
+        val settledResources = actualResources - case.lateResources
         assertEquals(
             "${case.name}: the set of string resources it renders changed\n" +
-                "  gained: ${(actualResources - case.resources).sorted()}\n" +
-                "  lost:   ${(case.resources - actualResources).sorted()}",
-            case.resources, actualResources
+                "  gained: ${(settledResources - case.resources).sorted()}\n" +
+                "  lost:   ${(case.resources - settledResources).sorted()}",
+            case.resources, settledResources
         )
         val settledLiterals = actualLiterals - case.lateLiterals
         assertEquals(
@@ -969,7 +1008,12 @@ class SettingsScreenRenderTest(private val screenName: String) {
             // The extended FAB renders before the IO load finishes, so its label is an immediate
             // literal. The info banner and the per-row "Version: … • Preinstalled" line are gone
             // (Material 3 redesign, 2026-09-16): rows are titles only.
-            literals = setOf("Add dictionary"),
+            //
+            // The two section headers are literals because PreferenceCategory upper-cases its
+            // title, so the rendered text is not the resource's own value. They render
+            // unconditionally - the list is always there, with a spinner in whichever half is
+            // still loading - which is what keeps them out of `lateLiterals`.
+            literals = setOf("Add dictionary", "INSTALLED", "AVAILABLE TO DOWNLOAD"),
             // Everything else arrives with the IO load: one row per shipped pack, each with its
             // two-letter code badge (too short to resolve to a resource name) and the
             // "Preinstalled" tag. Recorded as late so the race decides nothing.
@@ -977,6 +1021,16 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "Chinese", "English", "French", "German", "Italian", "Russian", "Spanish", "Ukrainian",
                 "ZH", "EN", "FR", "DE", "IT", "RU", "ES", "UK",
                 "Preinstalled",
+            ),
+            // Whatever the catalogue fetch came back with. Under Robolectric there is no network
+            // and no cached manifest, so it is always one of the failure messages plus its Try
+            // again button; the rest are listed because they are the other answers the same row
+            // can give, and none of them is worth pinning a race on.
+            lateResources = setOf(
+                "language_packs_catalog_offline", "language_packs_download",
+                "language_packs_error_app_too_old", "language_packs_error_network",
+                "language_packs_error_offline", "language_packs_error_verification",
+                "language_packs_retry", "language_packs_variant_summary",
             ),
         ),
         Case(

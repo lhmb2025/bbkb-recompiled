@@ -182,6 +182,9 @@ fun LanguagePacksScreen(
                                 languagePacks = packs
                             }
                             variantGroups = LanguageVariantStore.read(context)
+                            // And the catalogue's view of the disk, or the pack the user just
+                            // side-loaded would still be sitting in "Available to download".
+                            installedPacks = readInstalledPacks(context, manifest)
                         }
                     }
                 }
@@ -341,6 +344,7 @@ fun LanguagePacksScreen(
                                 .post(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED, null)
                             variantGroups = LanguageVariantStore.read(context)
                             loadLanguagePacks(context) { packs -> languagePacks = packs }
+                            installedPacks = readInstalledPacks(context, manifest)
                             Toast.makeText(
                                 context,
                                 if (ok) "Removed ${member.name}" else "Could not remove ${member.name}",
@@ -374,11 +378,13 @@ fun LanguagePacksScreen(
                             deleteLanguagePack(context, pack) { success, message ->
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                                 if (success) {
-                                    // Refresh the list
+                                    // Refresh the list - and the catalogue's view of the disk, so
+                                    // a deleted pack goes back to being downloadable.
                                     scope.launch {
                                         loadLanguagePacks(context) { packs ->
                                             languagePacks = packs
                                         }
+                                        installedPacks = readInstalledPacks(context, manifest)
                                     }
                                 }
                             }
