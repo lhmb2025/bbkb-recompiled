@@ -692,7 +692,6 @@
     <string name="device_config_import_unreadable">Tệp đó không phải là cấu hình thiết bị</string>
     <string name="device_config_import_failed">Không nhập được tệp đó</string>
 
-<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Bản cập nhật</string>
     <string name="settings_updates_summary">Kiểm tra phiên bản mới của BBKB</string>
@@ -726,7 +725,6 @@
     <string name="settings_update_notification_text">Phiên bản %1$s đã sẵn sàng để tải xuống</string>
     <string name="settings_update_unknown_sources_message">Android phải cho phép BBKB cài đặt ứng dụng. Hãy bật cài đặt từ nguồn này, rồi nhấn Cài đặt lần nữa.</string>
     <string name="settings_update_open_settings">Mở cài đặt</string>
-=======
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Đã cài đặt</string>
     <string name="language_packs_available_header">Có thể tải xuống</string>
@@ -741,5 +739,4 @@
     <string name="language_packs_error_network">Không thành công. Hãy thử lại.</string>
     <string name="language_packs_error_verification">Tệp không khớp với danh mục nên không có gì được cài đặt</string>
     <string name="language_packs_error_app_too_old">Ứng dụng này quá cũ để đọc danh mục</string>
->>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

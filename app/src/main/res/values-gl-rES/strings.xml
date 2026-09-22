@@ -692,7 +692,6 @@
     <string name="device_config_import_unreadable">Ese ficheiro non é unha configuración de dispositivo</string>
     <string name="device_config_import_failed">Non se puido importar ese ficheiro</string>
 
-<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Actualizacións</string>
     <string name="settings_updates_summary">Buscar unha nova versión de BBKB</string>
@@ -726,7 +725,6 @@
     <string name="settings_update_notification_text">A versión %1$s está lista para descargar</string>
     <string name="settings_update_unknown_sources_message">Android debe permitir que BBKB instale aplicacións. Activa a instalación desde esta fonte e volve premer Instalar.</string>
     <string name="settings_update_open_settings">Abrir axustes</string>
-=======
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Instalados</string>
     <string name="language_packs_available_header">Dispoñibles para descargar</string>
@@ -741,5 +739,4 @@
     <string name="language_packs_error_network">Non funcionou. Téntao de novo.</string>
     <string name="language_packs_error_verification">O ficheiro non coincidiu co catálogo, así que non se instalou nada</string>
     <string name="language_packs_error_app_too_old">Esta aplicación é demasiado antiga para ler o catálogo</string>
->>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

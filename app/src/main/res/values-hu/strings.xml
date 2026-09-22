@@ -692,7 +692,6 @@
     <string name="device_config_import_unreadable">Az a fájl nem eszközkonfiguráció</string>
     <string name="device_config_import_failed">Nem sikerült importálni azt a fájlt</string>
 
-<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Frissítések</string>
     <string name="settings_updates_summary">BBKB új verziójának keresése</string>
@@ -726,7 +725,6 @@
     <string name="settings_update_notification_text">A %1$s verzió letölthető</string>
     <string name="settings_update_unknown_sources_message">Az Androidnak engedélyeznie kell, hogy a BBKB alkalmazásokat telepítsen. Engedélyezze a telepítést erről a forrásról, majd nyomja meg újra a Telepítés gombot.</string>
     <string name="settings_update_open_settings">Beállítások megnyitása</string>
-=======
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Telepítve</string>
     <string name="language_packs_available_header">Letölthető</string>
@@ -741,5 +739,4 @@
     <string name="language_packs_error_network">Nem sikerült. Próbálja újra.</string>
     <string name="language_packs_error_verification">A fájl nem egyezett a katalógussal, ezért semmi sem lett telepítve</string>
     <string name="language_packs_error_app_too_old">Ez az alkalmazás túl régi a katalógus olvasásához</string>
->>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>
