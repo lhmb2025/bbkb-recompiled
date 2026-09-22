@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Μόνο διατήρηση</string>
     <string name="device_config_import_unreadable">Αυτό το αρχείο δεν είναι διαμόρφωση συσκευής</string>
     <string name="device_config_import_failed">Δεν ήταν δυνατή η εισαγωγή αυτού του αρχείου</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Ενημερώσεις</string>
+    <string name="settings_updates_summary">Έλεγχος για νέα έκδοση του BBKB</string>
+    <string name="settings_update_installed_version_title">Εγκατεστημένη έκδοση</string>
+    <string name="settings_update_channel_title">Κανάλι ενημερώσεων</string>
+    <string name="settings_update_channel_release">Τελική έκδοση</string>
+    <string name="settings_update_channel_none">Δεν υπάρχει κανάλι ενημερώσεων για εκδόσεις εντοπισμού σφαλμάτων</string>
+    <string name="settings_update_last_checked_title">Τελευταίος έλεγχος</string>
+    <string name="settings_update_never">Ποτέ</string>
+    <string name="settings_update_check_now">Έλεγχος τώρα</string>
+    <string name="settings_update_checking">Γίνεται έλεγχος…</string>
+    <string name="settings_update_up_to_date">Το BBKB είναι ενημερωμένο</string>
+    <string name="settings_update_available_title">Διαθέσιμη ενημέρωση</string>
+    <string name="settings_update_available_banner">Διαθέσιμη ενημέρωση: %1$s</string>
+    <string name="settings_update_version_label">Έκδοση %1$s</string>
+    <string name="settings_update_size_label">Μέγεθος λήψης: %1$s</string>
+    <string name="settings_update_notes_title">Σημειώσεις έκδοσης</string>
+    <string name="settings_update_download">Λήψη</string>
+    <string name="settings_update_downloading">Γίνεται λήψη… %1$d%%</string>
+    <string name="settings_update_downloaded">Έγινε λήψη και επαλήθευση</string>
+    <string name="settings_update_install">Εγκατάσταση</string>
+    <string name="settings_update_retry">Δοκιμή ξανά</string>
+    <string name="settings_update_error_offline">Δεν υπάρχει σύνδεση στο διαδίκτυο</string>
+    <string name="settings_update_error_integrity">Το ληφθέν αρχείο δεν ταίριαξε με το άθροισμα ελέγχου του και απορρίφθηκε</string>
+    <string name="settings_update_error_http">Ο διακομιστής επέστρεψε σφάλμα (%1$d)</string>
+    <string name="settings_update_error_generic">Ο έλεγχος ενημερώσεων απέτυχε</string>
+    <string name="settings_update_error_too_old">Αυτή η έκδοση είναι πολύ παλιά για να διαβάσει τη λίστα ενημερώσεων. Ενημερώστε χειροκίνητα.</string>
+    <string name="settings_update_from_cache">Εμφανίζεται από τον τελευταίο αποθηκευμένο έλεγχο</string>
+    <string name="settings_update_background_check_title">Καθημερινός έλεγχος στο παρασκήνιο</string>
+    <string name="settings_update_background_check_summary">Ελέγχει μία φορά την ημέρα και σας ειδοποιεί. Η λήψη και η εγκατάσταση παραμένουν πάντα χειροκίνητες.</string>
+    <string name="settings_update_notification_text">Η έκδοση %1$s είναι έτοιμη για λήψη</string>
+    <string name="settings_update_unknown_sources_message">Το Android πρέπει να επιτρέψει στο BBKB να εγκαθιστά εφαρμογές. Ενεργοποιήστε την εγκατάσταση από αυτήν την πηγή και πατήστε ξανά Εγκατάσταση.</string>
+    <string name="settings_update_open_settings">Άνοιγμα ρυθμίσεων</string>
 </resources>

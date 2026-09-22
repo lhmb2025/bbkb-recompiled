@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Лише залишити</string>
     <string name="device_config_import_unreadable">Цей файл не є конфігурацією пристрою</string>
     <string name="device_config_import_failed">Не вдалося імпортувати цей файл</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Оновлення</string>
+    <string name="settings_updates_summary">Перевірити нову версію BBKB</string>
+    <string name="settings_update_installed_version_title">Встановлена версія</string>
+    <string name="settings_update_channel_title">Канал оновлень</string>
+    <string name="settings_update_channel_release">Випуск</string>
+    <string name="settings_update_channel_none">Для зневаджувальних збірок каналу оновлень немає</string>
+    <string name="settings_update_last_checked_title">Остання перевірка</string>
+    <string name="settings_update_never">Ніколи</string>
+    <string name="settings_update_check_now">Перевірити зараз</string>
+    <string name="settings_update_checking">Перевірка…</string>
+    <string name="settings_update_up_to_date">BBKB актуальний</string>
+    <string name="settings_update_available_title">Доступне оновлення</string>
+    <string name="settings_update_available_banner">Доступне оновлення: %1$s</string>
+    <string name="settings_update_version_label">Версія %1$s</string>
+    <string name="settings_update_size_label">Розмір завантаження: %1$s</string>
+    <string name="settings_update_notes_title">Примітки до випуску</string>
+    <string name="settings_update_download">Завантажити</string>
+    <string name="settings_update_downloading">Завантаження… %1$d%%</string>
+    <string name="settings_update_downloaded">Завантажено й перевірено</string>
+    <string name="settings_update_install">Встановити</string>
+    <string name="settings_update_retry">Повторити</string>
+    <string name="settings_update_error_offline">Немає підключення до інтернету</string>
+    <string name="settings_update_error_integrity">Завантажений файл не збігся з контрольною сумою й був видалений</string>
+    <string name="settings_update_error_http">Сервер повернув помилку (%1$d)</string>
+    <string name="settings_update_error_generic">Не вдалося перевірити оновлення</string>
+    <string name="settings_update_error_too_old">Ця версія застаріла й не може прочитати список оновлень. Оновіть вручну.</string>
+    <string name="settings_update_from_cache">Показано з останньої збереженої перевірки</string>
+    <string name="settings_update_background_check_title">Щоденна перевірка у фоні</string>
+    <string name="settings_update_background_check_summary">Перевіряє раз на добу й повідомляє вас. Завантаження та встановлення завжди залишаються вручну.</string>
+    <string name="settings_update_notification_text">Версія %1$s готова до завантаження</string>
+    <string name="settings_update_unknown_sources_message">Android має дозволити BBKB встановлювати програми. Дозвольте встановлення з цього джерела й натисніть «Встановити» ще раз.</string>
+    <string name="settings_update_open_settings">Відкрити налаштування</string>
 </resources>

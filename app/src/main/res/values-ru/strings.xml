@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Только оставить</string>
     <string name="device_config_import_unreadable">Этот файл не является конфигурацией устройства</string>
     <string name="device_config_import_failed">Не удалось импортировать этот файл</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Обновления</string>
+    <string name="settings_updates_summary">Проверить новую версию BBKB</string>
+    <string name="settings_update_installed_version_title">Установленная версия</string>
+    <string name="settings_update_channel_title">Канал обновлений</string>
+    <string name="settings_update_channel_release">Релиз</string>
+    <string name="settings_update_channel_none">Для отладочных сборок канала обновлений нет</string>
+    <string name="settings_update_last_checked_title">Последняя проверка</string>
+    <string name="settings_update_never">Никогда</string>
+    <string name="settings_update_check_now">Проверить сейчас</string>
+    <string name="settings_update_checking">Проверка…</string>
+    <string name="settings_update_up_to_date">BBKB обновлён</string>
+    <string name="settings_update_available_title">Доступно обновление</string>
+    <string name="settings_update_available_banner">Доступно обновление: %1$s</string>
+    <string name="settings_update_version_label">Версия %1$s</string>
+    <string name="settings_update_size_label">Размер загрузки: %1$s</string>
+    <string name="settings_update_notes_title">Примечания к выпуску</string>
+    <string name="settings_update_download">Скачать</string>
+    <string name="settings_update_downloading">Загрузка… %1$d%%</string>
+    <string name="settings_update_downloaded">Загружено и проверено</string>
+    <string name="settings_update_install">Установить</string>
+    <string name="settings_update_retry">Повторить</string>
+    <string name="settings_update_error_offline">Нет подключения к интернету</string>
+    <string name="settings_update_error_integrity">Загруженный файл не совпал с контрольной суммой и был удалён</string>
+    <string name="settings_update_error_http">Сервер вернул ошибку (%1$d)</string>
+    <string name="settings_update_error_generic">Не удалось проверить обновления</string>
+    <string name="settings_update_error_too_old">Эта версия слишком старая, чтобы прочитать список обновлений. Обновите вручную.</string>
+    <string name="settings_update_from_cache">Показано по последней сохранённой проверке</string>
+    <string name="settings_update_background_check_title">Ежедневная проверка в фоне</string>
+    <string name="settings_update_background_check_summary">Проверяет раз в сутки и уведомляет вас. Загрузка и установка всегда выполняются вручную.</string>
+    <string name="settings_update_notification_text">Версия %1$s готова к загрузке</string>
+    <string name="settings_update_unknown_sources_message">Android должен разрешить BBKB устанавливать приложения. Разрешите установку из этого источника и снова нажмите «Установить».</string>
+    <string name="settings_update_open_settings">Открыть настройки</string>
 </resources>

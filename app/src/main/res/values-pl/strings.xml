@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Tylko zachowaj</string>
     <string name="device_config_import_unreadable">Ten plik nie jest konfiguracją urządzenia</string>
     <string name="device_config_import_failed">Nie udało się zaimportować tego pliku</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Aktualizacje</string>
+    <string name="settings_updates_summary">Sprawdź, czy jest nowa wersja BBKB</string>
+    <string name="settings_update_installed_version_title">Zainstalowana wersja</string>
+    <string name="settings_update_channel_title">Kanał aktualizacji</string>
+    <string name="settings_update_channel_release">Wydanie</string>
+    <string name="settings_update_channel_none">Brak kanału aktualizacji dla kompilacji debugowania</string>
+    <string name="settings_update_last_checked_title">Ostatnio sprawdzono</string>
+    <string name="settings_update_never">Nigdy</string>
+    <string name="settings_update_check_now">Sprawdź teraz</string>
+    <string name="settings_update_checking">Sprawdzanie…</string>
+    <string name="settings_update_up_to_date">BBKB jest aktualny</string>
+    <string name="settings_update_available_title">Dostępna aktualizacja</string>
+    <string name="settings_update_available_banner">Dostępna aktualizacja: %1$s</string>
+    <string name="settings_update_version_label">Wersja %1$s</string>
+    <string name="settings_update_size_label">Rozmiar pobierania: %1$s</string>
+    <string name="settings_update_notes_title">Informacje o wydaniu</string>
+    <string name="settings_update_download">Pobierz</string>
+    <string name="settings_update_downloading">Pobieranie… %1$d%%</string>
+    <string name="settings_update_downloaded">Pobrano i sprawdzono</string>
+    <string name="settings_update_install">Zainstaluj</string>
+    <string name="settings_update_retry">Ponów</string>
+    <string name="settings_update_error_offline">Brak połączenia z internetem</string>
+    <string name="settings_update_error_integrity">Pobrany plik nie zgadzał się ze swoją sumą kontrolną i został odrzucony</string>
+    <string name="settings_update_error_http">Serwer zwrócił błąd (%1$d)</string>
+    <string name="settings_update_error_generic">Sprawdzanie aktualizacji nie udało się</string>
+    <string name="settings_update_error_too_old">Ta wersja jest za stara, aby przeczytać listę aktualizacji. Zaktualizuj ręcznie.</string>
+    <string name="settings_update_from_cache">Pokazane na podstawie ostatniego zapisanego sprawdzenia</string>
+    <string name="settings_update_background_check_title">Codzienne sprawdzanie w tle</string>
+    <string name="settings_update_background_check_summary">Sprawdza raz na dobę i powiadamia. Pobieranie i instalacja zawsze pozostają ręczne.</string>
+    <string name="settings_update_notification_text">Wersja %1$s jest gotowa do pobrania</string>
+    <string name="settings_update_unknown_sources_message">Android musi zezwolić BBKB na instalowanie aplikacji. Włącz instalowanie z tego źródła, a potem ponownie naciśnij Zainstaluj.</string>
+    <string name="settings_update_open_settings">Otwórz ustawienia</string>
 </resources>

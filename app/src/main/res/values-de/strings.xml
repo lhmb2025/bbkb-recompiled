@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Nur behalten</string>
     <string name="device_config_import_unreadable">Diese Datei ist keine Gerätekonfiguration</string>
     <string name="device_config_import_failed">Diese Datei konnte nicht importiert werden</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Updates</string>
+    <string name="settings_updates_summary">Nach einer neuen BBKB-Version suchen</string>
+    <string name="settings_update_installed_version_title">Installierte Version</string>
+    <string name="settings_update_channel_title">Update-Kanal</string>
+    <string name="settings_update_channel_release">Release</string>
+    <string name="settings_update_channel_none">Kein Update-Kanal für Debug-Builds</string>
+    <string name="settings_update_last_checked_title">Zuletzt geprüft</string>
+    <string name="settings_update_never">Nie</string>
+    <string name="settings_update_check_now">Jetzt prüfen</string>
+    <string name="settings_update_checking">Prüfung läuft…</string>
+    <string name="settings_update_up_to_date">BBKB ist aktuell</string>
+    <string name="settings_update_available_title">Update verfügbar</string>
+    <string name="settings_update_available_banner">Update verfügbar: %1$s</string>
+    <string name="settings_update_version_label">Version %1$s</string>
+    <string name="settings_update_size_label">Downloadgröße: %1$s</string>
+    <string name="settings_update_notes_title">Versionshinweise</string>
+    <string name="settings_update_download">Herunterladen</string>
+    <string name="settings_update_downloading">Wird heruntergeladen… %1$d%%</string>
+    <string name="settings_update_downloaded">Heruntergeladen und geprüft</string>
+    <string name="settings_update_install">Installieren</string>
+    <string name="settings_update_retry">Erneut versuchen</string>
+    <string name="settings_update_error_offline">Keine Internetverbindung</string>
+    <string name="settings_update_error_integrity">Der Download stimmte nicht mit seiner Prüfsumme überein und wurde verworfen</string>
+    <string name="settings_update_error_http">Der Server hat einen Fehler zurückgegeben (%1$d)</string>
+    <string name="settings_update_error_generic">Die Update-Prüfung ist fehlgeschlagen</string>
+    <string name="settings_update_error_too_old">Diese Version ist zu alt, um die Update-Liste zu lesen. Bitte manuell aktualisieren.</string>
+    <string name="settings_update_from_cache">Aus der letzten gespeicherten Prüfung</string>
+    <string name="settings_update_background_check_title">Tägliche Prüfung im Hintergrund</string>
+    <string name="settings_update_background_check_summary">Prüft einmal täglich und benachrichtigt Sie. Herunterladen und Installieren bleiben immer manuell.</string>
+    <string name="settings_update_notification_text">Version %1$s kann heruntergeladen werden</string>
+    <string name="settings_update_unknown_sources_message">Android muss BBKB erlauben, Apps zu installieren. Erlauben Sie die Installation aus dieser Quelle und tippen Sie erneut auf Installieren.</string>
+    <string name="settings_update_open_settings">Einstellungen öffnen</string>
 </resources>

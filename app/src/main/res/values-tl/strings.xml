@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Itago lang</string>
     <string name="device_config_import_unreadable">Hindi configuration ng device ang file na iyon</string>
     <string name="device_config_import_failed">Hindi ma-import ang file na iyon</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Mga update</string>
+    <string name="settings_updates_summary">Maghanap ng bagong bersyon ng BBKB</string>
+    <string name="settings_update_installed_version_title">Naka-install na bersyon</string>
+    <string name="settings_update_channel_title">Channel ng update</string>
+    <string name="settings_update_channel_release">Release</string>
+    <string name="settings_update_channel_none">Walang channel ng update para sa mga debug build</string>
+    <string name="settings_update_last_checked_title">Huling tiningnan</string>
+    <string name="settings_update_never">Hindi pa</string>
+    <string name="settings_update_check_now">Tingnan ngayon</string>
+    <string name="settings_update_checking">Tinitingnan…</string>
+    <string name="settings_update_up_to_date">Napapanahon na ang BBKB</string>
+    <string name="settings_update_available_title">May update</string>
+    <string name="settings_update_available_banner">May update: %1$s</string>
+    <string name="settings_update_version_label">Bersyon %1$s</string>
+    <string name="settings_update_size_label">Laki ng download: %1$s</string>
+    <string name="settings_update_notes_title">Mga tala ng release</string>
+    <string name="settings_update_download">I-download</string>
+    <string name="settings_update_downloading">Nagda-download… %1$d%%</string>
+    <string name="settings_update_downloaded">Nai-download at naberipika</string>
+    <string name="settings_update_install">I-install</string>
+    <string name="settings_update_retry">Subukan muli</string>
+    <string name="settings_update_error_offline">Walang koneksyon sa internet</string>
+    <string name="settings_update_error_integrity">Hindi tumugma ang download sa checksum nito at itinapon</string>
+    <string name="settings_update_error_http">Nagbalik ng error ang server (%1$d)</string>
+    <string name="settings_update_error_generic">Nabigo ang paghahanap ng update</string>
+    <string name="settings_update_error_too_old">Masyadong luma ang bersyong ito para mabasa ang listahan ng mga update. Mag-update nang manu-mano.</string>
+    <string name="settings_update_from_cache">Ipinapakita mula sa huling nakasaveng pagsusuri</string>
+    <string name="settings_update_background_check_title">Araw-araw na pagsusuri sa background</string>
+    <string name="settings_update_background_check_summary">Sumusuri isang beses sa isang araw at nagpapaalam sa iyo. Manu-mano pa rin ang pag-download at pag-install.</string>
+    <string name="settings_update_notification_text">Handa nang i-download ang bersyon %1$s</string>
+    <string name="settings_update_unknown_sources_message">Kailangang payagan ng Android ang BBKB na mag-install ng mga app. I-enable ang pag-install mula sa pinagmulang ito, pagkatapos pindutin muli ang I-install.</string>
+    <string name="settings_update_open_settings">Buksan ang mga setting</string>
 </resources>

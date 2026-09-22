@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">僅保留</string>
     <string name="device_config_import_unreadable">該檔案不是裝置設定</string>
     <string name="device_config_import_failed">無法匯入該檔案</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">更新</string>
+    <string name="settings_updates_summary">檢查 BBKB 的新版本</string>
+    <string name="settings_update_installed_version_title">已安裝版本</string>
+    <string name="settings_update_channel_title">更新管道</string>
+    <string name="settings_update_channel_release">正式版</string>
+    <string name="settings_update_channel_none">除錯版本沒有更新管道</string>
+    <string name="settings_update_last_checked_title">上次檢查</string>
+    <string name="settings_update_never">從未</string>
+    <string name="settings_update_check_now">立即檢查</string>
+    <string name="settings_update_checking">正在檢查…</string>
+    <string name="settings_update_up_to_date">BBKB 已是最新版本</string>
+    <string name="settings_update_available_title">有可用更新</string>
+    <string name="settings_update_available_banner">有可用更新：%1$s</string>
+    <string name="settings_update_version_label">版本 %1$s</string>
+    <string name="settings_update_size_label">下載大小：%1$s</string>
+    <string name="settings_update_notes_title">版本說明</string>
+    <string name="settings_update_download">下載</string>
+    <string name="settings_update_downloading">正在下載… %1$d%%</string>
+    <string name="settings_update_downloaded">已下載並驗證</string>
+    <string name="settings_update_install">安裝</string>
+    <string name="settings_update_retry">重試</string>
+    <string name="settings_update_error_offline">沒有網際網路連線</string>
+    <string name="settings_update_error_integrity">下載的檔案與其總和檢查碼不符，已捨棄</string>
+    <string name="settings_update_error_http">伺服器傳回錯誤 (%1$d)</string>
+    <string name="settings_update_error_generic">檢查更新失敗</string>
+    <string name="settings_update_error_too_old">此版本太舊，無法讀取更新清單。請手動更新。</string>
+    <string name="settings_update_from_cache">顯示的是上次儲存的檢查結果</string>
+    <string name="settings_update_background_check_title">每日背景檢查</string>
+    <string name="settings_update_background_check_summary">每天檢查一次並通知你。下載與安裝一律由你手動完成。</string>
+    <string name="settings_update_notification_text">版本 %1$s 已可下載</string>
+    <string name="settings_update_unknown_sources_message">Android 必須允許 BBKB 安裝應用程式。請開啟來自此來源的安裝，然後再次點按安裝。</string>
+    <string name="settings_update_open_settings">開啟設定</string>
 </resources>

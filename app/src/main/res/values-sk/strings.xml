@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Iba ponechať</string>
     <string name="device_config_import_unreadable">Tento súbor nie je konfigurácia zariadenia</string>
     <string name="device_config_import_failed">Tento súbor sa nepodarilo importovať</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Aktualizácie</string>
+    <string name="settings_updates_summary">Skontrolovať novú verziu BBKB</string>
+    <string name="settings_update_installed_version_title">Nainštalovaná verzia</string>
+    <string name="settings_update_channel_title">Kanál aktualizácií</string>
+    <string name="settings_update_channel_release">Vydanie</string>
+    <string name="settings_update_channel_none">Pre ladiace zostavy nie je kanál aktualizácií</string>
+    <string name="settings_update_last_checked_title">Posledná kontrola</string>
+    <string name="settings_update_never">Nikdy</string>
+    <string name="settings_update_check_now">Skontrolovať teraz</string>
+    <string name="settings_update_checking">Kontroluje sa…</string>
+    <string name="settings_update_up_to_date">BBKB je aktuálny</string>
+    <string name="settings_update_available_title">Je dostupná aktualizácia</string>
+    <string name="settings_update_available_banner">Je dostupná aktualizácia: %1$s</string>
+    <string name="settings_update_version_label">Verzia %1$s</string>
+    <string name="settings_update_size_label">Veľkosť sťahovania: %1$s</string>
+    <string name="settings_update_notes_title">Poznámky k vydaniu</string>
+    <string name="settings_update_download">Stiahnuť</string>
+    <string name="settings_update_downloading">Sťahuje sa… %1$d%%</string>
+    <string name="settings_update_downloaded">Stiahnuté a overené</string>
+    <string name="settings_update_install">Inštalovať</string>
+    <string name="settings_update_retry">Skúsiť znova</string>
+    <string name="settings_update_error_offline">Nie je pripojenie k internetu</string>
+    <string name="settings_update_error_integrity">Stiahnutý súbor sa nezhodoval so svojím kontrolným súčtom a bol zahodený</string>
+    <string name="settings_update_error_http">Server vrátil chybu (%1$d)</string>
+    <string name="settings_update_error_generic">Kontrola aktualizácií zlyhala</string>
+    <string name="settings_update_error_too_old">Táto verzia je príliš stará na prečítanie zoznamu aktualizácií. Aktualizujte ručne.</string>
+    <string name="settings_update_from_cache">Zobrazené z poslednej uloženej kontroly</string>
+    <string name="settings_update_background_check_title">Denná kontrola na pozadí</string>
+    <string name="settings_update_background_check_summary">Skontroluje raz denne a upozorní vás. Sťahovanie aj inštalácia zostávajú vždy ručné.</string>
+    <string name="settings_update_notification_text">Verzia %1$s je pripravená na stiahnutie</string>
+    <string name="settings_update_unknown_sources_message">Android musí aplikácii BBKB povoliť inštaláciu aplikácií. Povoľte inštaláciu z tohto zdroja a znova stlačte Inštalovať.</string>
+    <string name="settings_update_open_settings">Otvoriť nastavenia</string>
 </resources>

@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Tikai paturēt</string>
     <string name="device_config_import_unreadable">Šis fails nav ierīces konfigurācija</string>
     <string name="device_config_import_failed">Neizdevās importēt šo failu</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Atjauninājumi</string>
+    <string name="settings_updates_summary">Pārbaudīt, vai ir jauna BBKB versija</string>
+    <string name="settings_update_installed_version_title">Instalētā versija</string>
+    <string name="settings_update_channel_title">Atjauninājumu kanāls</string>
+    <string name="settings_update_channel_release">Izlaidums</string>
+    <string name="settings_update_channel_none">Atkļūdošanas būvējumiem atjauninājumu kanāla nav</string>
+    <string name="settings_update_last_checked_title">Pēdējā pārbaude</string>
+    <string name="settings_update_never">Nekad</string>
+    <string name="settings_update_check_now">Pārbaudīt tagad</string>
+    <string name="settings_update_checking">Notiek pārbaude…</string>
+    <string name="settings_update_up_to_date">BBKB ir aktuāls</string>
+    <string name="settings_update_available_title">Pieejams atjauninājums</string>
+    <string name="settings_update_available_banner">Pieejams atjauninājums: %1$s</string>
+    <string name="settings_update_version_label">Versija %1$s</string>
+    <string name="settings_update_size_label">Lejupielādes lielums: %1$s</string>
+    <string name="settings_update_notes_title">Izlaiduma piezīmes</string>
+    <string name="settings_update_download">Lejupielādēt</string>
+    <string name="settings_update_downloading">Notiek lejupielāde… %1$d%%</string>
+    <string name="settings_update_downloaded">Lejupielādēts un pārbaudīts</string>
+    <string name="settings_update_install">Instalēt</string>
+    <string name="settings_update_retry">Mēģināt vēlreiz</string>
+    <string name="settings_update_error_offline">Nav interneta savienojuma</string>
+    <string name="settings_update_error_integrity">Lejupielādētais fails neatbilda savai kontrolsummai un tika izmests</string>
+    <string name="settings_update_error_http">Serveris atgrieza kļūdu (%1$d)</string>
+    <string name="settings_update_error_generic">Atjauninājumu pārbaude neizdevās</string>
+    <string name="settings_update_error_too_old">Šī versija ir pārāk veca, lai izlasītu atjauninājumu sarakstu. Lūdzu, atjauniniet manuāli.</string>
+    <string name="settings_update_from_cache">Parādīts no pēdējās saglabātās pārbaudes</string>
+    <string name="settings_update_background_check_title">Ikdienas pārbaude fonā</string>
+    <string name="settings_update_background_check_summary">Pārbauda reizi dienā un paziņo jums. Lejupielāde un instalēšana vienmēr paliek manuālas.</string>
+    <string name="settings_update_notification_text">Versija %1$s ir gatava lejupielādei</string>
+    <string name="settings_update_unknown_sources_message">Android ir jāatļauj BBKB instalēt lietotnes. Iespējojiet instalēšanu no šā avota un pēc tam vēlreiz nospiediet Instalēt.</string>
+    <string name="settings_update_open_settings">Atvērt iestatījumus</string>
 </resources>

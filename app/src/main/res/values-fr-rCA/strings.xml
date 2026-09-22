@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Conserver uniquement</string>
     <string name="device_config_import_unreadable">Ce fichier n\'est pas une configuration d\'appareil</string>
     <string name="device_config_import_failed">Impossible d\'importer ce fichier</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Mises à jour</string>
+    <string name="settings_updates_summary">Rechercher une nouvelle version de BBKB</string>
+    <string name="settings_update_installed_version_title">Version installée</string>
+    <string name="settings_update_channel_title">Canal de mise à jour</string>
+    <string name="settings_update_channel_release">Version finale</string>
+    <string name="settings_update_channel_none">Aucun canal de mise à jour pour les versions de débogage</string>
+    <string name="settings_update_last_checked_title">Dernière vérification</string>
+    <string name="settings_update_never">Jamais</string>
+    <string name="settings_update_check_now">Vérifier maintenant</string>
+    <string name="settings_update_checking">Vérification…</string>
+    <string name="settings_update_up_to_date">BBKB est à jour</string>
+    <string name="settings_update_available_title">Mise à jour disponible</string>
+    <string name="settings_update_available_banner">Mise à jour disponible : %1$s</string>
+    <string name="settings_update_version_label">Version %1$s</string>
+    <string name="settings_update_size_label">Taille du téléchargement : %1$s</string>
+    <string name="settings_update_notes_title">Notes de version</string>
+    <string name="settings_update_download">Télécharger</string>
+    <string name="settings_update_downloading">Téléchargement… %1$d%%</string>
+    <string name="settings_update_downloaded">Téléchargé et vérifié</string>
+    <string name="settings_update_install">Installer</string>
+    <string name="settings_update_retry">Réessayer</string>
+    <string name="settings_update_error_offline">Pas de connexion Internet</string>
+    <string name="settings_update_error_integrity">Le téléchargement ne correspondait pas à sa somme de contrôle et a été supprimé</string>
+    <string name="settings_update_error_http">Le serveur a renvoyé une erreur (%1$d)</string>
+    <string name="settings_update_error_generic">La vérification des mises à jour a échoué</string>
+    <string name="settings_update_error_too_old">Cette version est trop ancienne pour lire la liste des mises à jour. Mettez à jour manuellement.</string>
+    <string name="settings_update_from_cache">Affiché d\'après la dernière vérification enregistrée</string>
+    <string name="settings_update_background_check_title">Vérification quotidienne en arrière-plan</string>
+    <string name="settings_update_background_check_summary">Vérifie une fois par jour et vous avertit. Le téléchargement et l\'installation restent toujours manuels.</string>
+    <string name="settings_update_notification_text">La version %1$s est prête à être téléchargée</string>
+    <string name="settings_update_unknown_sources_message">Android doit autoriser BBKB à installer des applications. Activez l\'installation depuis cette source, puis appuyez de nouveau sur Installer.</string>
+    <string name="settings_update_open_settings">Ouvrir les paramètres</string>
 </resources>

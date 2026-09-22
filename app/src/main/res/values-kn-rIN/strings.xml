@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">ಕೇವಲ ಇರಿಸಿ</string>
     <string name="device_config_import_unreadable">ಆ ಫೈಲ್ ಸಾಧನ ಕಾನ್ಫಿಗರೇಶನ್ ಅಲ್ಲ</string>
     <string name="device_config_import_failed">ಆ ಫೈಲ್ ಆಮದು ಮಾಡಲಾಗಲಿಲ್ಲ</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">ನವೀಕರಣಗಳು</string>
+    <string name="settings_updates_summary">BBKB ಯ ಹೊಸ ಆವೃತ್ತಿಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
+    <string name="settings_update_installed_version_title">ಸ್ಥಾಪಿತ ಆವೃತ್ತಿ</string>
+    <string name="settings_update_channel_title">ನವೀಕರಣ ಚಾನಲ್</string>
+    <string name="settings_update_channel_release">ಬಿಡುಗಡೆ</string>
+    <string name="settings_update_channel_none">ಡೀಬಗ್ ಬಿಲ್ಡ್‌ಗಳಿಗೆ ನವೀಕರಣ ಚಾನಲ್ ಇಲ್ಲ</string>
+    <string name="settings_update_last_checked_title">ಕೊನೆಯ ಪರಿಶೀಲನೆ</string>
+    <string name="settings_update_never">ಎಂದಿಗೂ ಇಲ್ಲ</string>
+    <string name="settings_update_check_now">ಈಗ ಪರಿಶೀಲಿಸಿ</string>
+    <string name="settings_update_checking">ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ…</string>
+    <string name="settings_update_up_to_date">BBKB ನವೀಕೃತವಾಗಿದೆ</string>
+    <string name="settings_update_available_title">ನವೀಕರಣ ಲಭ್ಯವಿದೆ</string>
+    <string name="settings_update_available_banner">ನವೀಕರಣ ಲಭ್ಯವಿದೆ: %1$s</string>
+    <string name="settings_update_version_label">ಆವೃತ್ತಿ %1$s</string>
+    <string name="settings_update_size_label">ಡೌನ್‌ಲೋಡ್ ಗಾತ್ರ: %1$s</string>
+    <string name="settings_update_notes_title">ಬಿಡುಗಡೆ ಟಿಪ್ಪಣಿಗಳು</string>
+    <string name="settings_update_download">ಡೌನ್‌ಲೋಡ್</string>
+    <string name="settings_update_downloading">ಡೌನ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ… %1$d%%</string>
+    <string name="settings_update_downloaded">ಡೌನ್‌ಲೋಡ್ ಮತ್ತು ಪರಿಶೀಲನೆ ಪೂರ್ಣ</string>
+    <string name="settings_update_install">ಸ್ಥಾಪಿಸಿ</string>
+    <string name="settings_update_retry">ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ</string>
+    <string name="settings_update_error_offline">ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವಿಲ್ಲ</string>
+    <string name="settings_update_error_integrity">ಡೌನ್‌ಲೋಡ್ ತನ್ನ ಚೆಕ್‌ಸಮ್‌ಗೆ ಹೊಂದಿಕೆಯಾಗಲಿಲ್ಲ, ಆದ್ದರಿಂದ ತೆಗೆದುಹಾಕಲಾಗಿದೆ</string>
+    <string name="settings_update_error_http">ಸರ್ವರ್ ದೋಷವನ್ನು ಹಿಂತಿರುಗಿಸಿದೆ (%1$d)</string>
+    <string name="settings_update_error_generic">ನವೀಕರಣ ಪರಿಶೀಲನೆ ವಿಫಲವಾಗಿದೆ</string>
+    <string name="settings_update_error_too_old">ಈ ಆವೃತ್ತಿ ನವೀಕರಣ ಪಟ್ಟಿಯನ್ನು ಓದಲು ತುಂಬಾ ಹಳೆಯದು. ದಯವಿಟ್ಟು ಕೈಯಿಂದ ನವೀಕರಿಸಿ.</string>
+    <string name="settings_update_from_cache">ಕೊನೆಯ ಉಳಿಸಿದ ಪರಿಶೀಲನೆಯಿಂದ ತೋರಿಸಲಾಗಿದೆ</string>
+    <string name="settings_update_background_check_title">ದೈನಂದಿನ ಹಿನ್ನೆಲೆ ಪರಿಶೀಲನೆ</string>
+    <string name="settings_update_background_check_summary">ದಿನಕ್ಕೊಮ್ಮೆ ಪರಿಶೀಲಿಸಿ ನಿಮಗೆ ತಿಳಿಸುತ್ತದೆ. ಡೌನ್‌ಲೋಡ್ ಮತ್ತು ಸ್ಥಾಪನೆ ಸದಾ ಕೈಯಿಂದಲೇ.</string>
+    <string name="settings_update_notification_text">ಆವೃತ್ತಿ %1$s ಡೌನ್‌ಲೋಡ್‌ಗೆ ಸಿದ್ಧವಾಗಿದೆ</string>
+    <string name="settings_update_unknown_sources_message">ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಸ್ಥಾಪಿಸಲು Android BBKB ಗೆ ಅನುಮತಿ ನೀಡಬೇಕು. ಈ ಮೂಲದಿಂದ ಸ್ಥಾಪನೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ, ನಂತರ ಮತ್ತೆ ಸ್ಥಾಪಿಸಿ ಒತ್ತಿರಿ.</string>
+    <string name="settings_update_open_settings">ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ</string>
 </resources>

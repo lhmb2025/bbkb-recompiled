@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">שמור בלבד</string>
     <string name="device_config_import_unreadable">קובץ זה אינו תצורת מכשיר</string>
     <string name="device_config_import_failed">לא ניתן לייבא קובץ זה</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">עדכונים</string>
+    <string name="settings_updates_summary">בדיקת גרסה חדשה של BBKB</string>
+    <string name="settings_update_installed_version_title">הגרסה המותקנת</string>
+    <string name="settings_update_channel_title">ערוץ עדכונים</string>
+    <string name="settings_update_channel_release">גרסת שחרור</string>
+    <string name="settings_update_channel_none">אין ערוץ עדכונים לגרסאות ניפוי באגים</string>
+    <string name="settings_update_last_checked_title">נבדק לאחרונה</string>
+    <string name="settings_update_never">מעולם לא</string>
+    <string name="settings_update_check_now">בדוק כעת</string>
+    <string name="settings_update_checking">בודק…</string>
+    <string name="settings_update_up_to_date">BBKB מעודכן</string>
+    <string name="settings_update_available_title">עדכון זמין</string>
+    <string name="settings_update_available_banner">עדכון זמין: %1$s</string>
+    <string name="settings_update_version_label">גרסה %1$s</string>
+    <string name="settings_update_size_label">גודל ההורדה: %1$s</string>
+    <string name="settings_update_notes_title">הערות שחרור</string>
+    <string name="settings_update_download">הורדה</string>
+    <string name="settings_update_downloading">מוריד… %1$d%%</string>
+    <string name="settings_update_downloaded">הורד ואומת</string>
+    <string name="settings_update_install">התקנה</string>
+    <string name="settings_update_retry">נסה שוב</string>
+    <string name="settings_update_error_offline">אין חיבור לאינטרנט</string>
+    <string name="settings_update_error_integrity">הקובץ שהורד לא התאים לסיכום הביקורת שלו ונמחק</string>
+    <string name="settings_update_error_http">השרת החזיר שגיאה (%1$d)</string>
+    <string name="settings_update_error_generic">בדיקת העדכונים נכשלה</string>
+    <string name="settings_update_error_too_old">גרסה זו ישנה מדי כדי לקרוא את רשימת העדכונים. עדכן ידנית.</string>
+    <string name="settings_update_from_cache">מוצג מהבדיקה השמורה האחרונה</string>
+    <string name="settings_update_background_check_title">בדיקה יומית ברקע</string>
+    <string name="settings_update_background_check_summary">בודק פעם ביום ומודיע לך. ההורדה וההתקנה תמיד נשארות ידניות.</string>
+    <string name="settings_update_notification_text">גרסה %1$s מוכנה להורדה</string>
+    <string name="settings_update_unknown_sources_message">על Android להרשות ל-BBKB להתקין אפליקציות. אפשר התקנה ממקור זה ולאחר מכן לחץ שוב על התקנה.</string>
+    <string name="settings_update_open_settings">פתח הגדרות</string>
 </resources>

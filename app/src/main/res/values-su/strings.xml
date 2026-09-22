@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Ngan simpen</string>
     <string name="device_config_import_unreadable">Berkas éta lain konfigurasi parangkat</string>
     <string name="device_config_import_failed">Teu bisa ngimpor berkas éta</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Apdet</string>
+    <string name="settings_updates_summary">Pariksa versi anyar BBKB</string>
+    <string name="settings_update_installed_version_title">Versi nu dipasang</string>
+    <string name="settings_update_channel_title">Saluran apdet</string>
+    <string name="settings_update_channel_release">Rilis</string>
+    <string name="settings_update_channel_none">Henteu aya saluran apdet pikeun build debug</string>
+    <string name="settings_update_last_checked_title">Pamungkas dipariksa</string>
+    <string name="settings_update_never">Tacan kantos</string>
+    <string name="settings_update_check_now">Pariksa ayeuna</string>
+    <string name="settings_update_checking">Keur mariksa…</string>
+    <string name="settings_update_up_to_date">BBKB parantos pang anyarna</string>
+    <string name="settings_update_available_title">Aya apdet</string>
+    <string name="settings_update_available_banner">Aya apdet: %1$s</string>
+    <string name="settings_update_version_label">Versi %1$s</string>
+    <string name="settings_update_size_label">Ukuran undeuran: %1$s</string>
+    <string name="settings_update_notes_title">Catetan rilis</string>
+    <string name="settings_update_download">Undeur</string>
+    <string name="settings_update_downloading">Keur ngundeur… %1$d%%</string>
+    <string name="settings_update_downloaded">Diundeur sareng diverifikasi</string>
+    <string name="settings_update_install">Pasang</string>
+    <string name="settings_update_retry">Cobi deui</string>
+    <string name="settings_update_error_offline">Henteu aya sambungan internet</string>
+    <string name="settings_update_error_integrity">Undeuran henteu cocog sareng checksum-na sarta dipiceun</string>
+    <string name="settings_update_error_http">Server ngabalikeun kasalahan (%1$d)</string>
+    <string name="settings_update_error_generic">Pamariksaan apdet gagal</string>
+    <string name="settings_update_error_too_old">Versi ieu kolot teuing pikeun maca daptar apdet. Mangga apdet sorangan.</string>
+    <string name="settings_update_from_cache">Ditembongkeun tina pamariksaan pamungkas nu disimpen</string>
+    <string name="settings_update_background_check_title">Pamariksaan sapopoé di latar tukang</string>
+    <string name="settings_update_background_check_summary">Mariksa sakali sapoé sareng ngabéjaan anjeun. Ngundeur sareng masang tetep manual.</string>
+    <string name="settings_update_notification_text">Versi %1$s siap diundeur</string>
+    <string name="settings_update_unknown_sources_message">Android kedah ngawenangkeun BBKB masang aplikasi. Hurungkeun pamasangan tina sumber ieu, teras pencét Pasang deui.</string>
+    <string name="settings_update_open_settings">Buka setélan</string>
 </resources>

@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">រក្សាទុកតែប៉ុណ្ណោះ</string>
     <string name="device_config_import_unreadable">ឯកសារនោះមិនមែនជាការកំណត់រចនាសម្ព័ន្ធឧបករណ៍ទេ</string>
     <string name="device_config_import_failed">មិនអាចនាំចូលឯកសារនោះបានទេ</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">ការធ្វើបច្ចុប្បន្នភាព</string>
+    <string name="settings_updates_summary">ពិនិត្យរកកំណែថ្មីរបស់ BBKB</string>
+    <string name="settings_update_installed_version_title">កំណែដែលបានដំឡើង</string>
+    <string name="settings_update_channel_title">ឆានែលបច្ចុប្បន្នភាព</string>
+    <string name="settings_update_channel_release">ការចេញផ្សាយ</string>
+    <string name="settings_update_channel_none">មិនមានឆានែលបច្ចុប្បន្នភាពសម្រាប់កំណែបំបាត់កំហុសទេ</string>
+    <string name="settings_update_last_checked_title">បានពិនិត្យចុងក្រោយ</string>
+    <string name="settings_update_never">មិនដែល</string>
+    <string name="settings_update_check_now">ពិនិត្យឥឡូវនេះ</string>
+    <string name="settings_update_checking">កំពុងពិនិត្យ…</string>
+    <string name="settings_update_up_to_date">BBKB ទាន់សម័យ</string>
+    <string name="settings_update_available_title">មានបច្ចុប្បន្នភាព</string>
+    <string name="settings_update_available_banner">មានបច្ចុប្បន្នភាព៖ %1$s</string>
+    <string name="settings_update_version_label">កំណែ %1$s</string>
+    <string name="settings_update_size_label">ទំហំទាញយក៖ %1$s</string>
+    <string name="settings_update_notes_title">កំណត់ចំណាំការចេញផ្សាយ</string>
+    <string name="settings_update_download">ទាញយក</string>
+    <string name="settings_update_downloading">កំពុងទាញយក… %1$d%%</string>
+    <string name="settings_update_downloaded">បានទាញយកនិងផ្ទៀងផ្ទាត់</string>
+    <string name="settings_update_install">ដំឡើង</string>
+    <string name="settings_update_retry">ព្យាយាមម្ដងទៀត</string>
+    <string name="settings_update_error_offline">គ្មានការតភ្ជាប់អ៊ីនធឺណិត</string>
+    <string name="settings_update_error_integrity">ឯកសារដែលទាញយកមិនត្រូវនឹងផលបូកត្រួតពិនិត្យរបស់វា ហើយត្រូវបានលុបចោល</string>
+    <string name="settings_update_error_http">ម៉ាស៊ីនបម្រើបានត្រឡប់កំហុស (%1$d)</string>
+    <string name="settings_update_error_generic">ការពិនិត្យបច្ចុប្បន្នភាពបានបរាជ័យ</string>
+    <string name="settings_update_error_too_old">កំណែនេះចាស់ពេកមិនអាចអានបញ្ជីបច្ចុប្បន្នភាពបានទេ។ សូមធ្វើបច្ចុប្បន្នភាពដោយដៃ។</string>
+    <string name="settings_update_from_cache">បង្ហាញពីការពិនិត្យដែលបានរក្សាទុកចុងក្រោយ</string>
+    <string name="settings_update_background_check_title">ការពិនិត្យប្រចាំថ្ងៃនៅផ្ទៃខាងក្រោយ</string>
+    <string name="settings_update_background_check_summary">ពិនិត្យម្ដងក្នុងមួយថ្ងៃ ហើយជូនដំណឹងអ្នក។ ការទាញយកនិងការដំឡើងតែងតែធ្វើដោយដៃ។</string>
+    <string name="settings_update_notification_text">កំណែ %1$s រួចរាល់សម្រាប់ទាញយក</string>
+    <string name="settings_update_unknown_sources_message">Android ត្រូវអនុញ្ញាតឱ្យ BBKB ដំឡើងកម្មវិធី។ បើកការដំឡើងពីប្រភពនេះ បន្ទាប់មកចុចដំឡើងម្ដងទៀត។</string>
+    <string name="settings_update_open_settings">បើកការកំណត់</string>
 </resources>

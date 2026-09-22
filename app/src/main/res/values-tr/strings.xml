@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Yalnızca sakla</string>
     <string name="device_config_import_unreadable">Bu dosya bir cihaz yapılandırması değil</string>
     <string name="device_config_import_failed">Bu dosya içe aktarılamadı</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Güncellemeler</string>
+    <string name="settings_updates_summary">BBKB\'nin yeni bir sürümünü denetle</string>
+    <string name="settings_update_installed_version_title">Kurulu sürüm</string>
+    <string name="settings_update_channel_title">Güncelleme kanalı</string>
+    <string name="settings_update_channel_release">Yayın</string>
+    <string name="settings_update_channel_none">Hata ayıklama derlemeleri için güncelleme kanalı yok</string>
+    <string name="settings_update_last_checked_title">Son denetim</string>
+    <string name="settings_update_never">Hiç</string>
+    <string name="settings_update_check_now">Şimdi denetle</string>
+    <string name="settings_update_checking">Denetleniyor…</string>
+    <string name="settings_update_up_to_date">BBKB güncel</string>
+    <string name="settings_update_available_title">Güncelleme var</string>
+    <string name="settings_update_available_banner">Güncelleme var: %1$s</string>
+    <string name="settings_update_version_label">Sürüm %1$s</string>
+    <string name="settings_update_size_label">İndirme boyutu: %1$s</string>
+    <string name="settings_update_notes_title">Sürüm notları</string>
+    <string name="settings_update_download">İndir</string>
+    <string name="settings_update_downloading">İndiriliyor… %1$d%%</string>
+    <string name="settings_update_downloaded">İndirildi ve doğrulandı</string>
+    <string name="settings_update_install">Kur</string>
+    <string name="settings_update_retry">Yeniden dene</string>
+    <string name="settings_update_error_offline">İnternet bağlantısı yok</string>
+    <string name="settings_update_error_integrity">İndirilen dosya sağlama toplamıyla eşleşmedi ve silindi</string>
+    <string name="settings_update_error_http">Sunucu bir hata döndürdü (%1$d)</string>
+    <string name="settings_update_error_generic">Güncelleme denetimi başarısız oldu</string>
+    <string name="settings_update_error_too_old">Bu sürüm güncelleme listesini okumak için çok eski. Lütfen elle güncelleyin.</string>
+    <string name="settings_update_from_cache">Son kaydedilen denetimden gösteriliyor</string>
+    <string name="settings_update_background_check_title">Günlük arka plan denetimi</string>
+    <string name="settings_update_background_check_summary">Günde bir kez denetler ve size bildirir. İndirme ve kurulum her zaman elle yapılır.</string>
+    <string name="settings_update_notification_text">Sürüm %1$s indirmeye hazır</string>
+    <string name="settings_update_unknown_sources_message">Android\'in BBKB\'ye uygulama kurma izni vermesi gerekir. Bu kaynaktan kurulumu etkinleştirin, sonra Kur düğmesine yeniden basın.</string>
+    <string name="settings_update_open_settings">Ayarları aç</string>
 </resources>

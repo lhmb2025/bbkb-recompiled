@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Bare behold</string>
     <string name="device_config_import_unreadable">Den filen er ikke en enhetskonfigurasjon</string>
     <string name="device_config_import_failed">Kunne ikke importere den filen</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Oppdateringer</string>
+    <string name="settings_updates_summary">Se etter en ny versjon av BBKB</string>
+    <string name="settings_update_installed_version_title">Installert versjon</string>
+    <string name="settings_update_channel_title">Oppdateringskanal</string>
+    <string name="settings_update_channel_release">Utgivelse</string>
+    <string name="settings_update_channel_none">Ingen oppdateringskanal for debug-versjoner</string>
+    <string name="settings_update_last_checked_title">Sist sjekket</string>
+    <string name="settings_update_never">Aldri</string>
+    <string name="settings_update_check_now">Sjekk nå</string>
+    <string name="settings_update_checking">Sjekker…</string>
+    <string name="settings_update_up_to_date">BBKB er oppdatert</string>
+    <string name="settings_update_available_title">Oppdatering tilgjengelig</string>
+    <string name="settings_update_available_banner">Oppdatering tilgjengelig: %1$s</string>
+    <string name="settings_update_version_label">Versjon %1$s</string>
+    <string name="settings_update_size_label">Nedlastingsstørrelse: %1$s</string>
+    <string name="settings_update_notes_title">Utgivelsesnotater</string>
+    <string name="settings_update_download">Last ned</string>
+    <string name="settings_update_downloading">Laster ned… %1$d%%</string>
+    <string name="settings_update_downloaded">Lastet ned og verifisert</string>
+    <string name="settings_update_install">Installer</string>
+    <string name="settings_update_retry">Prøv igjen</string>
+    <string name="settings_update_error_offline">Ingen internettforbindelse</string>
+    <string name="settings_update_error_integrity">Nedlastingen samsvarte ikke med sjekksummen sin og ble forkastet</string>
+    <string name="settings_update_error_http">Serveren returnerte en feil (%1$d)</string>
+    <string name="settings_update_error_generic">Oppdateringssjekken mislyktes</string>
+    <string name="settings_update_error_too_old">Denne versjonen er for gammel til å lese oppdateringslisten. Oppdater manuelt.</string>
+    <string name="settings_update_from_cache">Vist fra den sist lagrede sjekken</string>
+    <string name="settings_update_background_check_title">Daglig sjekk i bakgrunnen</string>
+    <string name="settings_update_background_check_summary">Sjekker én gang om dagen og varsler deg. Nedlasting og installering er alltid manuelt.</string>
+    <string name="settings_update_notification_text">Versjon %1$s er klar for nedlasting</string>
+    <string name="settings_update_unknown_sources_message">Android må tillate at BBKB installerer apper. Tillat installering fra denne kilden, og trykk på Installer igjen.</string>
+    <string name="settings_update_open_settings">Åpne innstillinger</string>
 </resources>

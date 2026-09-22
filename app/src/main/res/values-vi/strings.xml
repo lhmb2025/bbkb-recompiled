@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Chỉ giữ lại</string>
     <string name="device_config_import_unreadable">Tệp đó không phải là cấu hình thiết bị</string>
     <string name="device_config_import_failed">Không nhập được tệp đó</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Bản cập nhật</string>
+    <string name="settings_updates_summary">Kiểm tra phiên bản mới của BBKB</string>
+    <string name="settings_update_installed_version_title">Phiên bản đã cài</string>
+    <string name="settings_update_channel_title">Kênh cập nhật</string>
+    <string name="settings_update_channel_release">Bản phát hành</string>
+    <string name="settings_update_channel_none">Không có kênh cập nhật cho bản gỡ lỗi</string>
+    <string name="settings_update_last_checked_title">Kiểm tra lần cuối</string>
+    <string name="settings_update_never">Chưa bao giờ</string>
+    <string name="settings_update_check_now">Kiểm tra ngay</string>
+    <string name="settings_update_checking">Đang kiểm tra…</string>
+    <string name="settings_update_up_to_date">BBKB đã là bản mới nhất</string>
+    <string name="settings_update_available_title">Có bản cập nhật</string>
+    <string name="settings_update_available_banner">Có bản cập nhật: %1$s</string>
+    <string name="settings_update_version_label">Phiên bản %1$s</string>
+    <string name="settings_update_size_label">Kích thước tải xuống: %1$s</string>
+    <string name="settings_update_notes_title">Ghi chú phát hành</string>
+    <string name="settings_update_download">Tải xuống</string>
+    <string name="settings_update_downloading">Đang tải xuống… %1$d%%</string>
+    <string name="settings_update_downloaded">Đã tải xuống và xác minh</string>
+    <string name="settings_update_install">Cài đặt</string>
+    <string name="settings_update_retry">Thử lại</string>
+    <string name="settings_update_error_offline">Không có kết nối internet</string>
+    <string name="settings_update_error_integrity">Tệp tải xuống không khớp với giá trị kiểm tra của nó nên đã bị loại bỏ</string>
+    <string name="settings_update_error_http">Máy chủ trả về lỗi (%1$d)</string>
+    <string name="settings_update_error_generic">Kiểm tra cập nhật thất bại</string>
+    <string name="settings_update_error_too_old">Phiên bản này quá cũ để đọc danh sách cập nhật. Vui lòng cập nhật thủ công.</string>
+    <string name="settings_update_from_cache">Hiển thị từ lần kiểm tra đã lưu gần nhất</string>
+    <string name="settings_update_background_check_title">Kiểm tra hằng ngày ở chế độ nền</string>
+    <string name="settings_update_background_check_summary">Kiểm tra một lần mỗi ngày và thông báo cho bạn. Việc tải xuống và cài đặt luôn do bạn thực hiện.</string>
+    <string name="settings_update_notification_text">Phiên bản %1$s đã sẵn sàng để tải xuống</string>
+    <string name="settings_update_unknown_sources_message">Android phải cho phép BBKB cài đặt ứng dụng. Hãy bật cài đặt từ nguồn này, rồi nhấn Cài đặt lần nữa.</string>
+    <string name="settings_update_open_settings">Mở cài đặt</string>
 </resources>

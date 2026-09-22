@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">فقط نگه داشتن</string>
     <string name="device_config_import_unreadable">آن فایل یک پیکربندی دستگاه نیست</string>
     <string name="device_config_import_failed">آن فایل وارد نشد</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">به‌روزرسانی‌ها</string>
+    <string name="settings_updates_summary">بررسی نسخه جدید BBKB</string>
+    <string name="settings_update_installed_version_title">نسخه نصب‌شده</string>
+    <string name="settings_update_channel_title">کانال به‌روزرسانی</string>
+    <string name="settings_update_channel_release">نسخه نهایی</string>
+    <string name="settings_update_channel_none">برای نسخه‌های اشکال‌زدایی کانال به‌روزرسانی وجود ندارد</string>
+    <string name="settings_update_last_checked_title">آخرین بررسی</string>
+    <string name="settings_update_never">هرگز</string>
+    <string name="settings_update_check_now">اکنون بررسی کن</string>
+    <string name="settings_update_checking">در حال بررسی…</string>
+    <string name="settings_update_up_to_date">BBKB به‌روز است</string>
+    <string name="settings_update_available_title">به‌روزرسانی موجود است</string>
+    <string name="settings_update_available_banner">به‌روزرسانی موجود است: %1$s</string>
+    <string name="settings_update_version_label">نسخه %1$s</string>
+    <string name="settings_update_size_label">حجم دانلود: %1$s</string>
+    <string name="settings_update_notes_title">یادداشت‌های انتشار</string>
+    <string name="settings_update_download">دانلود</string>
+    <string name="settings_update_downloading">در حال دانلود… %1$d%%</string>
+    <string name="settings_update_downloaded">دانلود و بررسی شد</string>
+    <string name="settings_update_install">نصب</string>
+    <string name="settings_update_retry">تلاش دوباره</string>
+    <string name="settings_update_error_offline">اتصال اینترنت وجود ندارد</string>
+    <string name="settings_update_error_integrity">فایل دانلودشده با جمع کنترلی خود مطابقت نداشت و حذف شد</string>
+    <string name="settings_update_error_http">سرور خطایی بازگرداند (%1$d)</string>
+    <string name="settings_update_error_generic">بررسی به‌روزرسانی ناموفق بود</string>
+    <string name="settings_update_error_too_old">این نسخه برای خواندن فهرست به‌روزرسانی‌ها بسیار قدیمی است. لطفاً دستی به‌روزرسانی کنید.</string>
+    <string name="settings_update_from_cache">از آخرین بررسی ذخیره‌شده نشان داده شده است</string>
+    <string name="settings_update_background_check_title">بررسی روزانه در پس‌زمینه</string>
+    <string name="settings_update_background_check_summary">روزی یک بار بررسی می‌کند و به شما اطلاع می‌دهد. دانلود و نصب همیشه دستی باقی می‌مانند.</string>
+    <string name="settings_update_notification_text">نسخه %1$s آماده دانلود است</string>
+    <string name="settings_update_unknown_sources_message">اندروید باید به BBKB اجازه نصب برنامه بدهد. نصب از این منبع را فعال کنید و سپس دوباره نصب را بزنید.</string>
+    <string name="settings_update_open_settings">باز کردن تنظیمات</string>
 </resources>

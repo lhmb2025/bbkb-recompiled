@@ -318,7 +318,10 @@ fun UpdatesScreen(
                 summary = context.getString(R.string.settings_update_background_check_summary),
                 icon = Icons.Default.Notifications,
                 checked = backgroundCheck,
-                modifier = Modifier.settingsSearchAnchor(UpdateJobService.PREF_BACKGROUND_CHECK),
+                // Spelled out rather than referring to UpdateJobService.PREF_BACKGROUND_CHECK:
+                // SettingsSearchIndexTest greps the screens for the string literal each
+                // settingsSearchAnchor call is given, and cannot resolve a constant.
+                modifier = Modifier.settingsSearchAnchor("pref_update_background_check"),
                 onCheckedChange = { enabled ->
                     backgroundCheck = enabled
                     PrefsManager.getPrefs(context).edit()

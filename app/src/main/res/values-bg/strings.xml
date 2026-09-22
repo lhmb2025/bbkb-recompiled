@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Само запазване</string>
     <string name="device_config_import_unreadable">Този файл не е конфигурация на устройство</string>
     <string name="device_config_import_failed">Този файл не можа да бъде импортиран</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Актуализации</string>
+    <string name="settings_updates_summary">Проверка за нова версия на BBKB</string>
+    <string name="settings_update_installed_version_title">Инсталирана версия</string>
+    <string name="settings_update_channel_title">Канал за актуализации</string>
+    <string name="settings_update_channel_release">Издание</string>
+    <string name="settings_update_channel_none">Няма канал за актуализации при отладъчни компилации</string>
+    <string name="settings_update_last_checked_title">Последна проверка</string>
+    <string name="settings_update_never">Никога</string>
+    <string name="settings_update_check_now">Провери сега</string>
+    <string name="settings_update_checking">Проверява се…</string>
+    <string name="settings_update_up_to_date">BBKB е актуален</string>
+    <string name="settings_update_available_title">Налична актуализация</string>
+    <string name="settings_update_available_banner">Налична актуализация: %1$s</string>
+    <string name="settings_update_version_label">Версия %1$s</string>
+    <string name="settings_update_size_label">Размер за изтегляне: %1$s</string>
+    <string name="settings_update_notes_title">Бележки към изданието</string>
+    <string name="settings_update_download">Изтегляне</string>
+    <string name="settings_update_downloading">Изтегля се… %1$d%%</string>
+    <string name="settings_update_downloaded">Изтеглено и проверено</string>
+    <string name="settings_update_install">Инсталиране</string>
+    <string name="settings_update_retry">Опитай отново</string>
+    <string name="settings_update_error_offline">Няма интернет връзка</string>
+    <string name="settings_update_error_integrity">Изтегленият файл не съответства на контролната си сума и беше изтрит</string>
+    <string name="settings_update_error_http">Сървърът върна грешка (%1$d)</string>
+    <string name="settings_update_error_generic">Проверката за актуализации не успя</string>
+    <string name="settings_update_error_too_old">Тази версия е твърде стара, за да прочете списъка с актуализации. Обновете ръчно.</string>
+    <string name="settings_update_from_cache">Показано от последната запазена проверка</string>
+    <string name="settings_update_background_check_title">Ежедневна проверка във фонов режим</string>
+    <string name="settings_update_background_check_summary">Проверява веднъж дневно и ви известява. Изтеглянето и инсталирането винаги остават ръчни.</string>
+    <string name="settings_update_notification_text">Версия %1$s е готова за изтегляне</string>
+    <string name="settings_update_unknown_sources_message">Android трябва да разреши на BBKB да инсталира приложения. Разрешете инсталиране от този източник и натиснете Инсталиране отново.</string>
+    <string name="settings_update_open_settings">Отвори настройките</string>
 </resources>

@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Միայն պահել</string>
     <string name="device_config_import_unreadable">Այդ ֆայլը սարքի կազմաձև չէ</string>
     <string name="device_config_import_failed">Չհաջողվեց ներմուծել այդ ֆայլը</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Թարմացումներ</string>
+    <string name="settings_updates_summary">Ստուգել BBKB-ի նոր տարբերակը</string>
+    <string name="settings_update_installed_version_title">Տեղադրված տարբերակ</string>
+    <string name="settings_update_channel_title">Թարմացման ալիք</string>
+    <string name="settings_update_channel_release">Թողարկում</string>
+    <string name="settings_update_channel_none">Վրիպազերծման կառուցումների համար թարմացման ալիք չկա</string>
+    <string name="settings_update_last_checked_title">Վերջին ստուգումը</string>
+    <string name="settings_update_never">Երբեք</string>
+    <string name="settings_update_check_now">Ստուգել հիմա</string>
+    <string name="settings_update_checking">Ստուգվում է…</string>
+    <string name="settings_update_up_to_date">BBKB-ն արդիական է</string>
+    <string name="settings_update_available_title">Հասանելի է թարմացում</string>
+    <string name="settings_update_available_banner">Հասանելի է թարմացում՝ %1$s</string>
+    <string name="settings_update_version_label">Տարբերակ %1$s</string>
+    <string name="settings_update_size_label">Ներբեռնման չափը՝ %1$s</string>
+    <string name="settings_update_notes_title">Թողարկման նշումներ</string>
+    <string name="settings_update_download">Ներբեռնել</string>
+    <string name="settings_update_downloading">Ներբեռնվում է… %1$d%%</string>
+    <string name="settings_update_downloaded">Ներբեռնված և ստուգված</string>
+    <string name="settings_update_install">Տեղադրել</string>
+    <string name="settings_update_retry">Կրկին փորձել</string>
+    <string name="settings_update_error_offline">Համացանցի կապ չկա</string>
+    <string name="settings_update_error_integrity">Ներբեռնված ֆայլը չհամապատասխանեց իր ստուգիչ գումարին և հեռացվեց</string>
+    <string name="settings_update_error_http">Սերվերը վերադարձրեց սխալ (%1$d)</string>
+    <string name="settings_update_error_generic">Թարմացման ստուգումը ձախողվեց</string>
+    <string name="settings_update_error_too_old">Այս տարբերակը շատ հին է թարմացումների ցանկը կարդալու համար։ Թարմացրեք ձեռքով։</string>
+    <string name="settings_update_from_cache">Ցուցադրված է վերջին պահված ստուգումից</string>
+    <string name="settings_update_background_check_title">Օրական ստուգում ֆոնային ռեժիմում</string>
+    <string name="settings_update_background_check_summary">Ստուգում է օրը մեկ անգամ և ծանուցում ձեզ։ Ներբեռնումը և տեղադրումը միշտ մնում են ձեռքով։</string>
+    <string name="settings_update_notification_text">Տարբերակ %1$s-ը պատրաստ է ներբեռնման</string>
+    <string name="settings_update_unknown_sources_message">Android-ը պետք է թույլ տա BBKB-ին տեղադրել հավելվածներ։ Միացրեք տեղադրումն այս աղբյուրից, ապա նորից սեղմեք Տեղադրել։</string>
+    <string name="settings_update_open_settings">Բացել կարգավորումները</string>
 </resources>

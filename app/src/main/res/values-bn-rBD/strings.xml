@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">শুধু রাখুন</string>
     <string name="device_config_import_unreadable">ওই ফাইলটি ডিভাইস কনফিগারেশন নয়</string>
     <string name="device_config_import_failed">ওই ফাইলটি ইমপোর্ট করা যায়নি</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">আপডেট</string>
+    <string name="settings_updates_summary">BBKB-এর নতুন সংস্করণ খুঁজুন</string>
+    <string name="settings_update_installed_version_title">ইনস্টল করা সংস্করণ</string>
+    <string name="settings_update_channel_title">আপডেট চ্যানেল</string>
+    <string name="settings_update_channel_release">রিলিজ</string>
+    <string name="settings_update_channel_none">ডিবাগ বিল্ডের জন্য কোনো আপডেট চ্যানেল নেই</string>
+    <string name="settings_update_last_checked_title">সর্বশেষ পরীক্ষা</string>
+    <string name="settings_update_never">কখনও নয়</string>
+    <string name="settings_update_check_now">এখনই পরীক্ষা করুন</string>
+    <string name="settings_update_checking">পরীক্ষা করা হচ্ছে…</string>
+    <string name="settings_update_up_to_date">BBKB হালনাগাদ আছে</string>
+    <string name="settings_update_available_title">আপডেট উপলব্ধ</string>
+    <string name="settings_update_available_banner">আপডেট উপলব্ধ: %1$s</string>
+    <string name="settings_update_version_label">সংস্করণ %1$s</string>
+    <string name="settings_update_size_label">ডাউনলোডের আকার: %1$s</string>
+    <string name="settings_update_notes_title">রিলিজ নোট</string>
+    <string name="settings_update_download">ডাউনলোড</string>
+    <string name="settings_update_downloading">ডাউনলোড হচ্ছে… %1$d%%</string>
+    <string name="settings_update_downloaded">ডাউনলোড ও যাচাই সম্পন্ন</string>
+    <string name="settings_update_install">ইনস্টল</string>
+    <string name="settings_update_retry">আবার চেষ্টা করুন</string>
+    <string name="settings_update_error_offline">ইন্টারনেট সংযোগ নেই</string>
+    <string name="settings_update_error_integrity">ডাউনলোডটি তার চেকসামের সঙ্গে মেলেনি, তাই মুছে ফেলা হয়েছে</string>
+    <string name="settings_update_error_http">সার্ভার একটি ত্রুটি ফেরত দিয়েছে (%1$d)</string>
+    <string name="settings_update_error_generic">আপডেট পরীক্ষা ব্যর্থ হয়েছে</string>
+    <string name="settings_update_error_too_old">এই সংস্করণটি আপডেট তালিকা পড়ার জন্য অত্যন্ত পুরনো। অনুগ্রহ করে নিজে আপডেট করুন।</string>
+    <string name="settings_update_from_cache">সর্বশেষ সংরক্ষিত পরীক্ষা থেকে দেখানো হয়েছে</string>
+    <string name="settings_update_background_check_title">প্রতিদিনের পটভূমি পরীক্ষা</string>
+    <string name="settings_update_background_check_summary">দিনে একবার পরীক্ষা করে জানায়। ডাউনলোড ও ইনস্টল সবসময় আপনার হাতেই থাকে।</string>
+    <string name="settings_update_notification_text">সংস্করণ %1$s ডাউনলোডের জন্য প্রস্তুত</string>
+    <string name="settings_update_unknown_sources_message">অ্যাপ ইনস্টল করতে BBKB-কে Android-এর অনুমতি দিতে হবে। এই সূত্র থেকে ইনস্টল চালু করুন, তারপর আবার ইনস্টল চাপুন।</string>
+    <string name="settings_update_open_settings">সেটিংস খুলুন</string>
 </resources>

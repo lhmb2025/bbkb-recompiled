@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">เก็บไว้เท่านั้น</string>
     <string name="device_config_import_unreadable">ไฟล์นั้นไม่ใช่การกำหนดค่าอุปกรณ์</string>
     <string name="device_config_import_failed">นำเข้าไฟล์นั้นไม่ได้</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">การอัปเดต</string>
+    <string name="settings_updates_summary">ตรวจหาเวอร์ชันใหม่ของ BBKB</string>
+    <string name="settings_update_installed_version_title">เวอร์ชันที่ติดตั้ง</string>
+    <string name="settings_update_channel_title">ช่องทางอัปเดต</string>
+    <string name="settings_update_channel_release">รุ่นเผยแพร่</string>
+    <string name="settings_update_channel_none">ไม่มีช่องทางอัปเดตสำหรับรุ่นดีบัก</string>
+    <string name="settings_update_last_checked_title">ตรวจครั้งล่าสุด</string>
+    <string name="settings_update_never">ไม่เคย</string>
+    <string name="settings_update_check_now">ตรวจเดี๋ยวนี้</string>
+    <string name="settings_update_checking">กำลังตรวจ…</string>
+    <string name="settings_update_up_to_date">BBKB เป็นเวอร์ชันล่าสุดแล้ว</string>
+    <string name="settings_update_available_title">มีอัปเดต</string>
+    <string name="settings_update_available_banner">มีอัปเดต: %1$s</string>
+    <string name="settings_update_version_label">เวอร์ชัน %1$s</string>
+    <string name="settings_update_size_label">ขนาดที่ดาวน์โหลด: %1$s</string>
+    <string name="settings_update_notes_title">บันทึกการเผยแพร่</string>
+    <string name="settings_update_download">ดาวน์โหลด</string>
+    <string name="settings_update_downloading">กำลังดาวน์โหลด… %1$d%%</string>
+    <string name="settings_update_downloaded">ดาวน์โหลดและตรวจสอบแล้ว</string>
+    <string name="settings_update_install">ติดตั้ง</string>
+    <string name="settings_update_retry">ลองอีกครั้ง</string>
+    <string name="settings_update_error_offline">ไม่มีการเชื่อมต่ออินเทอร์เน็ต</string>
+    <string name="settings_update_error_integrity">ไฟล์ที่ดาวน์โหลดไม่ตรงกับเช็กซัมของมันจึงถูกลบ</string>
+    <string name="settings_update_error_http">เซิร์ฟเวอร์ส่งข้อผิดพลาดกลับมา (%1$d)</string>
+    <string name="settings_update_error_generic">การตรวจหาอัปเดตล้มเหลว</string>
+    <string name="settings_update_error_too_old">เวอร์ชันนี้เก่าเกินกว่าจะอ่านรายการอัปเดตได้ กรุณาอัปเดตด้วยตนเอง</string>
+    <string name="settings_update_from_cache">แสดงจากการตรวจที่บันทึกไว้ครั้งล่าสุด</string>
+    <string name="settings_update_background_check_title">การตรวจรายวันในเบื้องหลัง</string>
+    <string name="settings_update_background_check_summary">ตรวจวันละครั้งและแจ้งให้คุณทราบ การดาวน์โหลดและติดตั้งยังต้องทำด้วยตนเองเสมอ</string>
+    <string name="settings_update_notification_text">เวอร์ชัน %1$s พร้อมให้ดาวน์โหลด</string>
+    <string name="settings_update_unknown_sources_message">Android ต้องอนุญาตให้ BBKB ติดตั้งแอป เปิดการติดตั้งจากแหล่งนี้ แล้วกดติดตั้งอีกครั้ง</string>
+    <string name="settings_update_open_settings">เปิดการตั้งค่า</string>
 </resources>

@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Ainult säilita</string>
     <string name="device_config_import_unreadable">See fail ei ole seadme konfiguratsioon</string>
     <string name="device_config_import_failed">Selle faili importimine ebaõnnestus</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Värskendused</string>
+    <string name="settings_updates_summary">Otsi BBKB uut versiooni</string>
+    <string name="settings_update_installed_version_title">Paigaldatud versioon</string>
+    <string name="settings_update_channel_title">Värskenduskanal</string>
+    <string name="settings_update_channel_release">Väljalase</string>
+    <string name="settings_update_channel_none">Silumisversioonidel pole värskenduskanalit</string>
+    <string name="settings_update_last_checked_title">Viimati kontrollitud</string>
+    <string name="settings_update_never">Mitte kunagi</string>
+    <string name="settings_update_check_now">Kontrolli kohe</string>
+    <string name="settings_update_checking">Kontrollimine…</string>
+    <string name="settings_update_up_to_date">BBKB on ajakohane</string>
+    <string name="settings_update_available_title">Saadaval on värskendus</string>
+    <string name="settings_update_available_banner">Saadaval on värskendus: %1$s</string>
+    <string name="settings_update_version_label">Versioon %1$s</string>
+    <string name="settings_update_size_label">Allalaadimise suurus: %1$s</string>
+    <string name="settings_update_notes_title">Väljalaskemärkmed</string>
+    <string name="settings_update_download">Laadi alla</string>
+    <string name="settings_update_downloading">Allalaadimine… %1$d%%</string>
+    <string name="settings_update_downloaded">Alla laaditud ja kontrollitud</string>
+    <string name="settings_update_install">Paigalda</string>
+    <string name="settings_update_retry">Proovi uuesti</string>
+    <string name="settings_update_error_offline">Internetiühendus puudub</string>
+    <string name="settings_update_error_integrity">Allalaaditud fail ei vastanud oma kontrollsummale ja kustutati</string>
+    <string name="settings_update_error_http">Server tagastas vea (%1$d)</string>
+    <string name="settings_update_error_generic">Värskenduste kontroll ebaõnnestus</string>
+    <string name="settings_update_error_too_old">See versioon on värskenduste loendi lugemiseks liiga vana. Palun värskenda käsitsi.</string>
+    <string name="settings_update_from_cache">Kuvatud viimasest salvestatud kontrollist</string>
+    <string name="settings_update_background_check_title">Igapäevane kontroll taustal</string>
+    <string name="settings_update_background_check_summary">Kontrollib kord päevas ja teavitab sind. Allalaadimine ja paigaldamine jäävad alati käsitsi.</string>
+    <string name="settings_update_notification_text">Versioon %1$s on allalaadimiseks valmis</string>
+    <string name="settings_update_unknown_sources_message">Android peab lubama BBKB-l rakendusi paigaldada. Luba paigaldamine sellest allikast ja vajuta uuesti Paigalda.</string>
+    <string name="settings_update_open_settings">Ava seaded</string>
 </resources>

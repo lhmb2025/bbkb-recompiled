@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Mung simpen</string>
     <string name="device_config_import_unreadable">Berkas kuwi dudu konfigurasi piranti</string>
     <string name="device_config_import_failed">Ora bisa ngimpor berkas kuwi</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Nganyarake</string>
+    <string name="settings_updates_summary">Priksa versi anyar BBKB</string>
+    <string name="settings_update_installed_version_title">Versi kang kapasang</string>
+    <string name="settings_update_channel_title">Saluran nganyarake</string>
+    <string name="settings_update_channel_release">Rilis</string>
+    <string name="settings_update_channel_none">Ora ana saluran nganyarake kanggo build debug</string>
+    <string name="settings_update_last_checked_title">Kapriksa pungkasan</string>
+    <string name="settings_update_never">Ora tau</string>
+    <string name="settings_update_check_now">Priksa saiki</string>
+    <string name="settings_update_checking">Mriksa…</string>
+    <string name="settings_update_up_to_date">BBKB wis paling anyar</string>
+    <string name="settings_update_available_title">Ana nganyarake</string>
+    <string name="settings_update_available_banner">Ana nganyarake: %1$s</string>
+    <string name="settings_update_version_label">Versi %1$s</string>
+    <string name="settings_update_size_label">Ukuran undhuhan: %1$s</string>
+    <string name="settings_update_notes_title">Cathetan rilis</string>
+    <string name="settings_update_download">Undhuh</string>
+    <string name="settings_update_downloading">Ngundhuh… %1$d%%</string>
+    <string name="settings_update_downloaded">Wis diundhuh lan diverifikasi</string>
+    <string name="settings_update_install">Pasang</string>
+    <string name="settings_update_retry">Coba maneh</string>
+    <string name="settings_update_error_offline">Ora ana sambungan internet</string>
+    <string name="settings_update_error_integrity">Undhuhan ora cocog karo checksum-e lan wis dibuwang</string>
+    <string name="settings_update_error_http">Server mbalekake kesalahan (%1$d)</string>
+    <string name="settings_update_error_generic">Priksa nganyarake gagal</string>
+    <string name="settings_update_error_too_old">Versi iki kuna banget kanggo maca dhaptar nganyarake. Mangga nganyarake dhewe.</string>
+    <string name="settings_update_from_cache">Ditampilake saka priksa pungkasan kang kasimpen</string>
+    <string name="settings_update_background_check_title">Priksa saben dina ing latar mburi</string>
+    <string name="settings_update_background_check_summary">Mriksa sapisan saben dina lan ngabari sampeyan. Ngundhuh lan masang tetep manual.</string>
+    <string name="settings_update_notification_text">Versi %1$s siap diundhuh</string>
+    <string name="settings_update_unknown_sources_message">Android kudu ngidini BBKB masang aplikasi. Uripake pasang saka sumber iki, banjur pencet Pasang maneh.</string>
+    <string name="settings_update_open_settings">Bukak setelan</string>
 </resources>

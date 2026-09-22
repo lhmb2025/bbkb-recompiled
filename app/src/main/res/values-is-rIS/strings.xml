@@ -691,4 +691,38 @@
     <string name="device_config_import_keep">Aðeins geyma</string>
     <string name="device_config_import_unreadable">Sú skrá er ekki tækjastilling</string>
     <string name="device_config_import_failed">Ekki tókst að flytja inn þá skrá</string>
+
+    <!-- OTA app updates -->
+    <string name="settings_updates_title">Uppfærslur</string>
+    <string name="settings_updates_summary">Athuga hvort ný útgáfa af BBKB sé til</string>
+    <string name="settings_update_installed_version_title">Uppsett útgáfa</string>
+    <string name="settings_update_channel_title">Uppfærslurás</string>
+    <string name="settings_update_channel_release">Útgáfa</string>
+    <string name="settings_update_channel_none">Engin uppfærslurás fyrir villuleitarsmíðar</string>
+    <string name="settings_update_last_checked_title">Síðast athugað</string>
+    <string name="settings_update_never">Aldrei</string>
+    <string name="settings_update_check_now">Athuga núna</string>
+    <string name="settings_update_checking">Athuga…</string>
+    <string name="settings_update_up_to_date">BBKB er uppfært</string>
+    <string name="settings_update_available_title">Uppfærsla í boði</string>
+    <string name="settings_update_available_banner">Uppfærsla í boði: %1$s</string>
+    <string name="settings_update_version_label">Útgáfa %1$s</string>
+    <string name="settings_update_size_label">Stærð niðurhals: %1$s</string>
+    <string name="settings_update_notes_title">Útgáfuupplýsingar</string>
+    <string name="settings_update_download">Hala niður</string>
+    <string name="settings_update_downloading">Hleð niður… %1$d%%</string>
+    <string name="settings_update_downloaded">Halað niður og staðfest</string>
+    <string name="settings_update_install">Setja upp</string>
+    <string name="settings_update_retry">Reyna aftur</string>
+    <string name="settings_update_error_offline">Engin nettenging</string>
+    <string name="settings_update_error_integrity">Niðurhalið passaði ekki við gátsummu sína og var eytt</string>
+    <string name="settings_update_error_http">Þjónninn skilaði villu (%1$d)</string>
+    <string name="settings_update_error_generic">Uppfærsluathugun mistókst</string>
+    <string name="settings_update_error_too_old">Þessi útgáfa er of gömul til að lesa uppfærslulistann. Uppfærðu handvirkt.</string>
+    <string name="settings_update_from_cache">Sýnt út frá síðustu vistuðu athugun</string>
+    <string name="settings_update_background_check_title">Dagleg athugun í bakgrunni</string>
+    <string name="settings_update_background_check_summary">Athugar einu sinni á dag og segir þér frá. Niðurhal og uppsetning eru alltaf handvirk.</string>
+    <string name="settings_update_notification_text">Útgáfa %1$s er tilbúin til niðurhals</string>
+    <string name="settings_update_unknown_sources_message">Android verður að leyfa BBKB að setja upp forrit. Leyfðu uppsetningu frá þessari heimild og ýttu svo aftur á Setja upp.</string>
+    <string name="settings_update_open_settings">Opna stillingar</string>
 </resources>
