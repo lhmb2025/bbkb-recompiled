@@ -52,6 +52,9 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
                 c0910yM5863a.setAdditionalInputMethodSubtypes(c0910yM5863a.getAdditionalSubtypes(context));
             }
             LanguagePackManager.getInstance(context).forceBootComplete();
+            // The update the user just installed may be the one this job found; re-sync so the
+            // daily check exists on an install that has never been rebooted.
+            UpdateJobService.sync(context);
         } else if ("android.intent.action.BOOT_COMPLETED".equals(action)) {
             Logger.info(TAG, "Boot has been completed");
             LanguagePackManager.getInstance(context).onBootCompleted(context);

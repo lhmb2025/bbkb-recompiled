@@ -120,6 +120,10 @@ fun UpdatesScreen(
     // named must not produce a second one.
     LaunchedEffect(Unit) {
         UpdateNotifier.cancel(context)
+        // A fresh install has neither rebooted nor been through a package replace, so this is
+        // where the default-on daily check first gets scheduled. Idempotent, and it schedules
+        // nothing on a build with no update channel.
+        UpdateJobService.sync(context)
         (status as? UpdateStatus.Available)?.let { checker.markSeen(it.build.versionCode) }
         // If an APK for the update on record is already downloaded and verified, offer Install
         // rather than Download — the file is kept until a newer one replaces it.
@@ -231,14 +235,12 @@ fun UpdatesScreen(
                         download = DownloadState.Running(0)
                         scope.launch {
                             val result = installer.download(current.build) { bytes, total ->
-                                val pct = if (total > 0L) {
-                                    ((bytes * 100L) / total).toInt().coerceIn(0, 100)
-                                } else {
-                                    0
-                                }
-                                // onProgress arrives on the IO dispatcher; this assignment is the
-                                // marshal back, via the Compose snapshot on the launching scope.
-                                scope.launch { download = DownloadState.Running(pct) }
+                                // onProgress arrives on the IO dispatcher, often - a Compose
+                                // snapshot write is safe from any thread, so this needs no
+                                // marshalling, and only a whole percent is worth a recomposition.
+                                val pct = percentOf(bytes, total)
+                                val shown = (download as? DownloadState.Running)?.percent
+                                if (shown != pct) download = DownloadState.Running(pct)
                             }
                             download = result.fold(
                                 onSuccess = { DownloadState.Done(it) },
@@ -360,6 +362,10 @@ fun UpdatesScreen(
         )
     }
 }
+
+/** Whole percent of [bytes] out of [total]; 0 when the total is unknown. */
+private fun percentOf(bytes: Long, total: Long): Int =
+    if (total > 0L) ((bytes * 100L) / total).toInt().coerceIn(0, 100) else 0
 
 /** Where a download has got to. Deliberately not persisted: a download is one sitting's work. */
 private sealed class DownloadState {
