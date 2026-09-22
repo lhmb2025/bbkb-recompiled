@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">ആ ഫയൽ ഒരു ഉപകരണ കോൺഫിഗറേഷൻ അല്ല</string>
     <string name="device_config_import_failed">ആ ഫയൽ ഇറക്കുമതി ചെയ്യാനായില്ല</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">അപ്‌ഡേറ്റുകൾ</string>
     <string name="settings_updates_summary">BBKB-യുടെ പുതിയ പതിപ്പ് പരിശോധിക്കുക</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">പതിപ്പ് %1$s ഡൗൺലോഡ് ചെയ്യാൻ തയ്യാറാണ്</string>
     <string name="settings_update_unknown_sources_message">ആപ്പുകൾ ഇൻസ്റ്റാൾ ചെയ്യാൻ Android BBKB-ക്ക് അനുമതി നൽകണം. ഈ ഉറവിടത്തിൽ നിന്ന് ഇൻസ്റ്റാൾ പ്രവർത്തനക്ഷമമാക്കി വീണ്ടും ഇൻസ്റ്റാൾ അമർത്തുക.</string>
     <string name="settings_update_open_settings">സെറ്റിംഗ്സ് തുറക്കുക</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">ഇൻസ്റ്റാൾ ചെയ്തു</string>
+    <string name="language_packs_available_header">ഡൗൺലോഡിന് ലഭ്യം</string>
+    <string name="language_packs_download">ഡൗൺലോഡ്</string>
+    <string name="language_packs_retry">വീണ്ടും ശ്രമിക്കുക</string>
+    <string name="language_packs_refresh">നിഘണ്ടുക്കൾ പരിശോധിക്കുക</string>
+    <string name="language_packs_catalog_offline">%1$s-ലെ കാറ്റലോഗ് (ഓഫ്‌ലൈൻ)</string>
+    <string name="language_packs_variant_summary">%1$s-ന് പകരം ലോഡ് ചെയ്യുന്നു</string>
+    <string name="language_packs_offer_message">%1$s നിഘണ്ടു ഡൗൺലോഡ് ചെയ്യണോ (%2$s)?</string>
+    <string name="language_packs_offer_not_now">ഇപ്പോൾ വേണ്ട</string>
+    <string name="language_packs_error_offline">കണക്ഷനില്ല</string>
+    <string name="language_packs_error_network">അത് നടന്നില്ല. വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="language_packs_error_verification">ഫയൽ കാറ്റലോഗുമായി പൊരുത്തപ്പെട്ടില്ല, അതിനാൽ ഒന്നും ഇൻസ്റ്റാൾ ചെയ്തില്ല</string>
+    <string name="language_packs_error_app_too_old">കാറ്റലോഗ് വായിക്കാൻ ഈ ആപ്പ് വളരെ പഴയതാണ്</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

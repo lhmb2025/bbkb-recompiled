@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Sú skrá er ekki tækjastilling</string>
     <string name="device_config_import_failed">Ekki tókst að flytja inn þá skrá</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Uppfærslur</string>
     <string name="settings_updates_summary">Athuga hvort ný útgáfa af BBKB sé til</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Útgáfa %1$s er tilbúin til niðurhals</string>
     <string name="settings_update_unknown_sources_message">Android verður að leyfa BBKB að setja upp forrit. Leyfðu uppsetningu frá þessari heimild og ýttu svo aftur á Setja upp.</string>
     <string name="settings_update_open_settings">Opna stillingar</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Uppsett</string>
+    <string name="language_packs_available_header">Í boði til niðurhals</string>
+    <string name="language_packs_download">Hlaða niður</string>
+    <string name="language_packs_retry">Reyna aftur</string>
+    <string name="language_packs_refresh">Leita að orðabókum</string>
+    <string name="language_packs_catalog_offline">Skrá frá %1$s (án nettengingar)</string>
+    <string name="language_packs_variant_summary">Hleðst í stað %1$s</string>
+    <string name="language_packs_offer_message">Hlaða niður %1$s orðabók (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Ekki núna</string>
+    <string name="language_packs_error_offline">Engin tenging</string>
+    <string name="language_packs_error_network">Það gekk ekki. Reyndu aftur.</string>
+    <string name="language_packs_error_verification">Skráin passaði ekki við skrárlistann, svo ekkert var sett upp</string>
+    <string name="language_packs_error_app_too_old">Þetta forrit er of gamalt til að lesa skrárlistann</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

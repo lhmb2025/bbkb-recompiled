@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Тэр файл нь төхөөрөмжийн тохиргоо биш байна</string>
     <string name="device_config_import_failed">Тэр файлыг импортлож чадсангүй</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Шинэчлэлүүд</string>
     <string name="settings_updates_summary">BBKB-ийн шинэ хувилбарыг шалгах</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Хувилбар %1$s татахад бэлэн</string>
     <string name="settings_update_unknown_sources_message">Аппликейшн суулгахад Android нь BBKB-д зөвшөөрөл өгөх шаардлагатай. Энэ эх сурвалжаас суулгахыг зөвшөөрөөд Суулгах товчийг дахин дарна уу.</string>
     <string name="settings_update_open_settings">Тохиргоог нээх</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Суулгасан</string>
+    <string name="language_packs_available_header">Татах боломжтой</string>
+    <string name="language_packs_download">Татах</string>
+    <string name="language_packs_retry">Дахин оролдох</string>
+    <string name="language_packs_refresh">Толь бичиг шалгах</string>
+    <string name="language_packs_catalog_offline">%1$s-ны каталог (офлайн)</string>
+    <string name="language_packs_variant_summary">%1$s-ын оронд ачаалагдана</string>
+    <string name="language_packs_offer_message">%1$s толь бичгийг татах уу (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Одоо биш</string>
+    <string name="language_packs_error_offline">Холболт байхгүй</string>
+    <string name="language_packs_error_network">Болсонгүй. Дахин оролдоно уу.</string>
+    <string name="language_packs_error_verification">Файл каталогтой таарсангүй тул юу ч суугаагүй</string>
+    <string name="language_packs_error_app_too_old">Энэ апп каталогийг уншихад хэт хуучин</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

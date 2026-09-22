@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Бул файл түзмөктүн конфигурациясы эмес</string>
     <string name="device_config_import_failed">Бул файлды импорттоо мүмкүн болгон жок</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Жаңыртуулар</string>
     <string name="settings_updates_summary">BBKB\'нин жаңы версиясын издөө</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Версия %1$s жүктөөгө даяр</string>
     <string name="settings_update_unknown_sources_message">Android BBKB\'ге колдонмолорду орнотууга уруксат бериши керек. Бул булактан орнотууну иштетип, андан кийин Орнотуу баскычын кайра басыңыз.</string>
     <string name="settings_update_open_settings">Жөндөөлөрдү ачуу</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Орнотулган</string>
+    <string name="language_packs_available_header">Жүктөөгө жеткиликтүү</string>
+    <string name="language_packs_download">Жүктөө</string>
+    <string name="language_packs_retry">Кайра аракет кылуу</string>
+    <string name="language_packs_refresh">Сөздүктөрдү текшерүү</string>
+    <string name="language_packs_catalog_offline">%1$s каталогу (оффлайн)</string>
+    <string name="language_packs_variant_summary">%1$s ордуна жүктөлөт</string>
+    <string name="language_packs_offer_message">%1$s сөздүгү жүктөлсүнбү (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Азыр эмес</string>
+    <string name="language_packs_error_offline">Байланыш жок</string>
+    <string name="language_packs_error_network">Болбоду. Кайра аракет кылыңыз.</string>
+    <string name="language_packs_error_verification">Файл каталогго туура келбеди, эч нерсе орнотулган жок</string>
+    <string name="language_packs_error_app_too_old">Бул колдонмо каталогду окуу үчүн эскирген</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

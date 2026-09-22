@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Tento soubor není konfigurací zařízení</string>
     <string name="device_config_import_failed">Tento soubor se nepodařilo importovat</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Aktualizace</string>
     <string name="settings_updates_summary">Zkontrolovat novou verzi BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Verze %1$s je připravena ke stažení</string>
     <string name="settings_update_unknown_sources_message">Android musí aplikaci BBKB povolit instalaci aplikací. Povolte instalaci z tohoto zdroje a stiskněte Instalovat znovu.</string>
     <string name="settings_update_open_settings">Otevřít nastavení</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Nainstalováno</string>
+    <string name="language_packs_available_header">Ke stažení</string>
+    <string name="language_packs_download">Stáhnout</string>
+    <string name="language_packs_retry">Zkusit znovu</string>
+    <string name="language_packs_refresh">Zkontrolovat slovníky</string>
+    <string name="language_packs_catalog_offline">Katalog z %1$s (offline)</string>
+    <string name="language_packs_variant_summary">Načte se místo %1$s</string>
+    <string name="language_packs_offer_message">Stáhnout slovník %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Teď ne</string>
+    <string name="language_packs_error_offline">Bez připojení</string>
+    <string name="language_packs_error_network">Nepovedlo se. Zkuste to znovu.</string>
+    <string name="language_packs_error_verification">Soubor neodpovídá katalogu, nic se nenainstalovalo</string>
+    <string name="language_packs_error_app_too_old">Tato aplikace je pro čtení katalogu příliš stará</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

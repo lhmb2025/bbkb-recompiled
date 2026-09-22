@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Fitxategi hori ez da gailuaren konfigurazio bat</string>
     <string name="device_config_import_failed">Ezin izan da fitxategi hori inportatu</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Eguneraketak</string>
     <string name="settings_updates_summary">Bilatu BBKBren bertsio berria</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">%1$s bertsioa deskargatzeko prest dago</string>
     <string name="settings_update_unknown_sources_message">Androidek BBKBri aplikazioak instalatzen uzteko baimena eman behar dio. Gaitu iturburu honetatik instalatzea eta sakatu Instalatu berriro.</string>
     <string name="settings_update_open_settings">Ireki ezarpenak</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Instalatuta</string>
+    <string name="language_packs_available_header">Deskargatzeko eskuragarri</string>
+    <string name="language_packs_download">Deskargatu</string>
+    <string name="language_packs_retry">Saiatu berriro</string>
+    <string name="language_packs_refresh">Bilatu hiztegiak</string>
+    <string name="language_packs_catalog_offline">%1$s-ko katalogoa (lineaz kanpo)</string>
+    <string name="language_packs_variant_summary">%1$s-en ordez kargatzen da</string>
+    <string name="language_packs_offer_message">%1$s hiztegia deskargatu (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Orain ez</string>
+    <string name="language_packs_error_offline">Konexiorik ez</string>
+    <string name="language_packs_error_network">Ez du funtzionatu. Saiatu berriro.</string>
+    <string name="language_packs_error_verification">Fitxategia ez zegokion katalogoari, beraz ez da ezer instalatu</string>
+    <string name="language_packs_error_app_too_old">Aplikazio hau zaharregia da katalogoa irakurtzeko</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

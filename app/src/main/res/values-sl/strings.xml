@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Ta datoteka ni konfiguracija naprave</string>
     <string name="device_config_import_failed">Te datoteke ni bilo mogoče uvoziti</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Posodobitve</string>
     <string name="settings_updates_summary">Preveri, ali je na voljo nova različica BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Različica %1$s je pripravljena za prenos</string>
     <string name="settings_update_unknown_sources_message">Android mora aplikaciji BBKB dovoliti namestitev aplikacij. Omogočite namestitev iz tega vira in znova pritisnite Namesti.</string>
     <string name="settings_update_open_settings">Odpri nastavitve</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Nameščeno</string>
+    <string name="language_packs_available_header">Na voljo za prenos</string>
+    <string name="language_packs_download">Prenesi</string>
+    <string name="language_packs_retry">Poskusi znova</string>
+    <string name="language_packs_refresh">Preveri slovarje</string>
+    <string name="language_packs_catalog_offline">Katalog z dne %1$s (brez povezave)</string>
+    <string name="language_packs_variant_summary">Naloži se namesto %1$s</string>
+    <string name="language_packs_offer_message">Ali želite prenesti slovar %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Ne zdaj</string>
+    <string name="language_packs_error_offline">Ni povezave</string>
+    <string name="language_packs_error_network">Ni uspelo. Poskusite znova.</string>
+    <string name="language_packs_error_verification">Datoteka se ni ujemala s katalogom, zato ni bilo nič nameščeno</string>
+    <string name="language_packs_error_app_too_old">Ta aplikacija je prestara za branje kataloga</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

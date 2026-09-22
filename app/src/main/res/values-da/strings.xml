@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Den fil er ikke en enhedskonfiguration</string>
     <string name="device_config_import_failed">Den fil kunne ikke importeres</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Opdateringer</string>
     <string name="settings_updates_summary">Se, om der findes en ny version af BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Version %1$s er klar til download</string>
     <string name="settings_update_unknown_sources_message">Android skal give BBKB tillladelse til at installere apps. Tillad installation fra denne kilde, og tryk på Installer igen.</string>
     <string name="settings_update_open_settings">Åbn indstillinger</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Installeret</string>
+    <string name="language_packs_available_header">Kan downloades</string>
+    <string name="language_packs_download">Download</string>
+    <string name="language_packs_retry">Prøv igen</string>
+    <string name="language_packs_refresh">Søg efter ordbøger</string>
+    <string name="language_packs_catalog_offline">Katalog fra %1$s (offline)</string>
+    <string name="language_packs_variant_summary">Indlæses i stedet for %1$s</string>
+    <string name="language_packs_offer_message">Download ordbogen til %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Ikke nu</string>
+    <string name="language_packs_error_offline">Ingen forbindelse</string>
+    <string name="language_packs_error_network">Det virkede ikke. Prøv igen.</string>
+    <string name="language_packs_error_verification">Filen matchede ikke kataloget, så der blev ikke installeret noget</string>
+    <string name="language_packs_error_app_too_old">Denne app er for gammel til at læse kataloget</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

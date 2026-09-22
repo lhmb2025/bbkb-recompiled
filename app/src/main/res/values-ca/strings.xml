@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Aquest fitxer no és una configuració de dispositiu</string>
     <string name="device_config_import_failed">No s\'ha pogut importar aquest fitxer</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Actualitzacions</string>
     <string name="settings_updates_summary">Comprova si hi ha una versió nova de BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">La versió %1$s està a punt per baixar</string>
     <string name="settings_update_unknown_sources_message">Android ha de permetre que BBKB instal·li aplicacions. Activa la instal·lació des d\'aquesta font i torna a prémer Instal·la.</string>
     <string name="settings_update_open_settings">Obre la configuració</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Instal·lats</string>
+    <string name="language_packs_available_header">Disponibles per baixar</string>
+    <string name="language_packs_download">Baixa</string>
+    <string name="language_packs_retry">Torna-ho a provar</string>
+    <string name="language_packs_refresh">Cerca diccionaris</string>
+    <string name="language_packs_catalog_offline">Catàleg del %1$s (fora de línia)</string>
+    <string name="language_packs_variant_summary">Es carrega en lloc de %1$s</string>
+    <string name="language_packs_offer_message">Vols baixar el diccionari de %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Ara no</string>
+    <string name="language_packs_error_offline">Sense connexió</string>
+    <string name="language_packs_error_network">No ha funcionat. Torna-ho a provar.</string>
+    <string name="language_packs_error_verification">El fitxer no coincideix amb el catàleg, així que no s\'ha instal·lat res</string>
+    <string name="language_packs_error_app_too_old">Aquesta aplicació és massa antiga per llegir el catàleg</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

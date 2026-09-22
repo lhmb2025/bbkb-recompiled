@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">அந்தக் கோப்பு சாதன உள்ளமைவு அல்ல</string>
     <string name="device_config_import_failed">அந்தக் கோப்பை இறக்குமதி செய்ய முடியவில்லை</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">புதுப்பிப்புகள்</string>
     <string name="settings_updates_summary">BBKB இன் புதிய பதிப்பைச் சரிபார்க்கவும்</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">பதிப்பு %1$s பதிவிறக்கத் தயாராக உள்ளது</string>
     <string name="settings_update_unknown_sources_message">ஆப்ஸ் நிறுவ Android, BBKB க்கு அனுமதி அளிக்க வேண்டும். இந்த மூலத்திலிருந்து நிறுவலை இயக்கி, மீண்டும் நிறுவு என்பதை அழுத்தவும்.</string>
     <string name="settings_update_open_settings">அமைப்புகளைத் திற</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">நிறுவப்பட்டது</string>
+    <string name="language_packs_available_header">பதிவிறக்கத்திற்கு உள்ளது</string>
+    <string name="language_packs_download">பதிவிறக்கு</string>
+    <string name="language_packs_retry">மீண்டும் முயலுங்கள்</string>
+    <string name="language_packs_refresh">அகராதிகளைச் சரிபார்க்கவும்</string>
+    <string name="language_packs_catalog_offline">%1$s இன் பட்டியல் (ஆஃப்லைன்)</string>
+    <string name="language_packs_variant_summary">%1$s க்குப் பதிலாக ஏற்றப்படும்</string>
+    <string name="language_packs_offer_message">%1$s அகராதியைப் பதிவிறக்கவா (%2$s)?</string>
+    <string name="language_packs_offer_not_now">இப்போது இல்லை</string>
+    <string name="language_packs_error_offline">இணைப்பு இல்லை</string>
+    <string name="language_packs_error_network">அது வேலை செய்யவில்லை. மீண்டும் முயலுங்கள்.</string>
+    <string name="language_packs_error_verification">கோப்பு பட்டியலுடன் பொருந்தவில்லை, எனவே எதுவும் நிறுவப்படவில்லை</string>
+    <string name="language_packs_error_app_too_old">பட்டியலைப் படிக்க இந்த ஆப்ஸ் மிகவும் பழையது</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Fișierul acela nu este o configurație de dispozitiv</string>
     <string name="device_config_import_failed">Fișierul acela nu a putut fi importat</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Actualizări</string>
     <string name="settings_updates_summary">Caută o versiune nouă de BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Versiunea %1$s este pregătită pentru descărcare</string>
     <string name="settings_update_unknown_sources_message">Android trebuie să permită BBKB să instaleze aplicații. Activează instalarea din această sursă, apoi apasă din nou Instalează.</string>
     <string name="settings_update_open_settings">Deschide setările</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Instalate</string>
+    <string name="language_packs_available_header">Disponibile pentru descărcare</string>
+    <string name="language_packs_download">Descarcă</string>
+    <string name="language_packs_retry">Încearcă din nou</string>
+    <string name="language_packs_refresh">Caută dicționare</string>
+    <string name="language_packs_catalog_offline">Catalog din %1$s (offline)</string>
+    <string name="language_packs_variant_summary">Se încarcă în locul %1$s</string>
+    <string name="language_packs_offer_message">Descarci dicționarul %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Nu acum</string>
+    <string name="language_packs_error_offline">Fără conexiune</string>
+    <string name="language_packs_error_network">Nu a funcționat. Încearcă din nou.</string>
+    <string name="language_packs_error_verification">Fișierul nu a corespuns catalogului, așa că nu s-a instalat nimic</string>
+    <string name="language_packs_error_app_too_old">Această aplicație este prea veche pentru a citi catalogul</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

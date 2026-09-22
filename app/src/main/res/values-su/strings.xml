@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Berkas éta lain konfigurasi parangkat</string>
     <string name="device_config_import_failed">Teu bisa ngimpor berkas éta</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Apdet</string>
     <string name="settings_updates_summary">Pariksa versi anyar BBKB</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Versi %1$s siap diundeur</string>
     <string name="settings_update_unknown_sources_message">Android kedah ngawenangkeun BBKB masang aplikasi. Hurungkeun pamasangan tina sumber ieu, teras pencét Pasang deui.</string>
     <string name="settings_update_open_settings">Buka setélan</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Diinstal</string>
+    <string name="language_packs_available_header">Aya pikeun diundeur</string>
+    <string name="language_packs_download">Undeur</string>
+    <string name="language_packs_retry">Cobi deui</string>
+    <string name="language_packs_refresh">Pariksa kamus</string>
+    <string name="language_packs_catalog_offline">Katalog ti %1$s (ofline)</string>
+    <string name="language_packs_variant_summary">Dimuat ngaganti %1$s</string>
+    <string name="language_packs_offer_message">Undeur kamus %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Entong ayeuna</string>
+    <string name="language_packs_error_offline">Teu aya sambungan</string>
+    <string name="language_packs_error_network">Teu hasil. Cobi deui.</string>
+    <string name="language_packs_error_verification">Koropak teu cocog jeung katalog, jadi teu aya nu diinstal</string>
+    <string name="language_packs_error_app_too_old">Aplikasi ieu kolot teuing pikeun maca katalog</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>

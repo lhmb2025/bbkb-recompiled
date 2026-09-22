@@ -692,6 +692,7 @@
     <string name="device_config_import_unreadable">Ní cumraíocht gléis é an comhad sin</string>
     <string name="device_config_import_failed">Níorbh fhéidir an comhad sin a iompórtáil</string>
 
+<<<<<<< HEAD
     <!-- OTA app updates -->
     <string name="settings_updates_title">Nuashonruithe</string>
     <string name="settings_updates_summary">Seiceáil an bhfuil leagan nua de BBKB ann</string>
@@ -725,4 +726,20 @@
     <string name="settings_update_notification_text">Tá leagan %1$s réidh le híoslódáil</string>
     <string name="settings_update_unknown_sources_message">Caithfidh Android cead a thabhairt do BBKB aipeanna a shuiteáil. Cumasaigh suiteáil ón bhfoinse seo, ansin brúigh Suiteáil arís.</string>
     <string name="settings_update_open_settings">Oscail socruithe</string>
+=======
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Suiteáilte</string>
+    <string name="language_packs_available_header">Ar fáil le híoslódáil</string>
+    <string name="language_packs_download">Íoslódáil</string>
+    <string name="language_packs_retry">Bain triail eile as</string>
+    <string name="language_packs_refresh">Seiceáil le haghaidh foclóirí</string>
+    <string name="language_packs_catalog_offline">Catalóg ó %1$s (as líne)</string>
+    <string name="language_packs_variant_summary">Lódáiltear in ionad %1$s</string>
+    <string name="language_packs_offer_message">Íoslódáil foclóir %1$s (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Níl anois</string>
+    <string name="language_packs_error_offline">Gan ceangal</string>
+    <string name="language_packs_error_network">Níor éirigh leis. Bain triail eile as.</string>
+    <string name="language_packs_error_verification">Níor mheaitseáil an comhad an chatalóg, mar sin níor suiteáladh aon rud</string>
+    <string name="language_packs_error_app_too_old">Tá an aip seo róshean chun an chatalóg a léamh</string>
+>>>>>>> 862a9ba5 (WIP: strings for the downloadable-pack UI, in all 66 subtype languages)
 </resources>
