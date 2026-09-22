@@ -850,5 +850,19 @@
     <string name="settings_update_notification_text">Version %1$s is ready to download</string>
     <string name="settings_update_unknown_sources_message">Android must allow BBKB to install apps. Turn on \"Allow from this source\", then press Install again.</string>
     <string name="settings_update_open_settings">Open settings</string>
+    <!-- Downloadable language packs (core/languagepack) -->
+    <string name="language_packs_installed_header">Installed</string>
+    <string name="language_packs_available_header">Available to download</string>
+    <string name="language_packs_download">Download</string>
+    <string name="language_packs_retry">Try again</string>
+    <string name="language_packs_refresh">Check for dictionaries</string>
+    <string name="language_packs_catalog_offline">Catalogue from %1$s (offline)</string>
+    <string name="language_packs_variant_summary">Loads in place of %1$s</string>
+    <string name="language_packs_offer_message">Download the %1$s dictionary (%2$s)?</string>
+    <string name="language_packs_offer_not_now">Not now</string>
+    <string name="language_packs_error_offline">No connection</string>
+    <string name="language_packs_error_network">That did not work. Try again.</string>
+    <string name="language_packs_error_verification">The file did not match the catalogue, so nothing was installed</string>
+    <string name="language_packs_error_app_too_old">This app is too old to read the catalogue</string>
 
 </resources>
