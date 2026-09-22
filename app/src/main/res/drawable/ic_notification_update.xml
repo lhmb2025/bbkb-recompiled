@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Status-bar icon for the "update available" notification: a tray with a download arrow.
+
+    Single-colour white on transparent, which is what the platform wants for a small icon from
+    API 21 on - it is tinted by the system and any other colour is silently flattened.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="@android:color/white"
+      android:pathData="M11,2h2v8h3.5L12,15.5L7.5,10H11V2z"/>
+  <path
+      android:fillColor="@android:color/white"
+      android:pathData="M4,17h2v3h12v-3h2v4a1,1 0 0,1 -1,1H5a1,1 0 0,1 -1,-1V17z"/>
+</vector>

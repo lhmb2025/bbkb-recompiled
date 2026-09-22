@@ -51,6 +51,7 @@ import dev.bbkb.ime.core.settings.screens.CustomizeSlideBoardScreen
 import dev.bbkb.ime.core.settings.screens.CustomMacrosScreen
 import dev.bbkb.ime.core.settings.screens.TouchScreenKeyboardScreen
 import dev.bbkb.ime.core.settings.screens.TextShortcutsScreen
+import dev.bbkb.ime.core.settings.screens.UpdatesScreen
 import dev.bbkb.ime.core.settings.screens.UserDictionaryScreen
 import dev.bbkb.ime.core.settings.screens.VoiceInputSettingsScreen
 import dev.bbkb.ime.core.settings.screens.VoiceLanguageSelectionScreen
@@ -470,6 +471,15 @@ fun SettingsNavHost(
         // About (renamed from Credits per docs/archived/2026-01_compose-settings-and-dictionaries/2026-01_settings-compose_history.md)
         composable(SettingsRoute.About.route) {
             CreditsScreen(
+                onNavigateToUpdates = go(SettingsRoute.Updates),
+                onNavigateBack = back
+            )
+        }
+
+        // OTA app updates. Reached from About, from the main-menu banner, and from the daily
+        // check's notification (which carries "screen" = "updates").
+        composable(SettingsRoute.Updates.route) {
+            UpdatesScreen(
                 onNavigateBack = back
             )
         }

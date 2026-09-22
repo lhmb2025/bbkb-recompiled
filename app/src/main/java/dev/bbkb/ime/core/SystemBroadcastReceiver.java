@@ -10,6 +10,7 @@ import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.core.shared.UncachedInputMethodManagerUtils;
 import dev.bbkb.ime.keyboard.KeyboardBuilder;
 import dev.bbkb.ime.core.locale.RichInputMethodManager;
+import dev.bbkb.ime.core.update.UpdateJobService;
 
 
 /**
@@ -54,6 +55,11 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
         } else if ("android.intent.action.BOOT_COMPLETED".equals(action)) {
             Logger.info(TAG, "Boot has been completed");
             LanguagePackManager.getInstance(context).onBootCompleted(context);
+            // The daily update check is a persisted job, so the framework restores it by itself;
+            // syncing here covers the install that has never been rebooted since the preference
+            // was turned on, and the reverse - a job left behind by a preference since turned
+            // off. Idempotent, and it schedules nothing on a build with no update channel.
+            UpdateJobService.sync(context);
         } else if ("android.intent.action.LOCALE_CHANGED".equals(action)) {
             Logger.info(TAG, "System locale changed");
             KeyboardBuilder.clearKeyboardCache();

@@ -1,6 +1,13 @@
 package dev.bbkb.ime.core.settings.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.CloudDownload
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -40,6 +47,7 @@ import dev.bbkb.ime.core.settings.search.SearchDeviceCapabilities
 import dev.bbkb.ime.core.settings.search.SettingsSearchIndex
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.ui.PreferenceScreen
+import dev.bbkb.ime.core.update.UpdateChecker
 
 /**
  * Main Settings Screen - Root navigation menu for all settings
@@ -55,6 +63,9 @@ fun MainSettingsScreen(
     val highlight = LocalSettingsHighlight.current
 
     var query by remember { mutableStateOf("") }
+
+    // The last recorded "update available", if there is one. Preferences only.
+    val updateAvailable = remember { UpdateChecker(context).lastKnownAvailable() }
 
     // Results are drawn from the device-filtered view of the index, never the raw list: a setting
     // whose row sits behind a DeviceProfile gate the device does not satisfy is not rendered by
@@ -140,6 +151,16 @@ fun MainSettingsScreen(
             } else {
                 // ── Category list ───────────────────────────────────────────────
 
+                // An update the last check found, read straight out of preferences — no network
+                // call and no spinner on the settings root. Absent on a build with no update
+                // channel and on a fresh install, which is why nothing is shown in those states.
+                updateAvailable?.let { available ->
+                    UpdateAvailableBanner(
+                        version = available.build.versionName,
+                        onClick = { onNavigateToScreen(SettingsRoute.Updates.route) }
+                    )
+                }
+
                 // 1. Languages
                 PreferenceScreen(
                     title = context.getString(R.string.settings_languages_title),
@@ -180,6 +201,48 @@ fun MainSettingsScreen(
                     onClick = { onNavigateToScreen(SettingsRoute.Advanced.route) }
                 )
             }
+        }
+    }
+}
+
+/**
+ * Compact "an update is waiting" banner at the top of the settings root.
+ *
+ * One row, one tap, no actions of its own: everything about the update — what it is, how big
+ * it is, and the two deliberate presses that download and install it — lives on the Updates
+ * screen.
+ */
+@Composable
+private fun UpdateAvailableBanner(
+    version: String,
+    onClick: () -> Unit
+) {
+    val context = LocalContext.current
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.secondaryContainer
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.CloudDownload,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .size(24.dp),
+                tint = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+            Text(
+                text = context.getString(R.string.settings_update_available_banner, version),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
         }
     }
 }

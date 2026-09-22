@@ -14,4 +14,11 @@
     <files-path
         name="device_configs"
         path="device_configs/"/>
+    <!-- cacheDir/downloads/ — DistributionConfig.downloadDir. A downloaded APK has to be handed
+         to the platform installer as a content:// URI (file:// is refused since API 24), so
+         ApkInstaller needs this provider to be able to serve out of that directory. Extending the
+         existing provider rather than declaring a second one: one authority, one paths file. -->
+    <cache-path
+        name="downloads"
+        path="downloads/"/>
 </paths>

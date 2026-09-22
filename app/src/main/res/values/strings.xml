@@ -816,4 +816,39 @@
     <string name="device_config_import_unreadable">That file is not a device configuration</string>
     <string name="device_config_import_failed">Could not import that file</string>
 
+
+    <!-- OTA app updates (Settings > About > Updates). -->
+    <string name="settings_updates_title">Updates</string>
+    <string name="settings_updates_summary">Check for a new version of BBKB</string>
+    <string name="settings_update_installed_version_title">Installed version</string>
+    <string name="settings_update_channel_title">Update channel</string>
+    <string name="settings_update_channel_release">Release</string>
+    <string name="settings_update_channel_none">No update channel for debug builds</string>
+    <string name="settings_update_last_checked_title">Last checked</string>
+    <string name="settings_update_never">Never</string>
+    <string name="settings_update_check_now">Check now</string>
+    <string name="settings_update_checking">Checking…</string>
+    <string name="settings_update_up_to_date">BBKB is up to date</string>
+    <string name="settings_update_available_title">Update available</string>
+    <string name="settings_update_available_banner">Update available: %1$s</string>
+    <string name="settings_update_version_label">Version %1$s</string>
+    <string name="settings_update_size_label">Download size: %1$s</string>
+    <string name="settings_update_notes_title">Release notes</string>
+    <string name="settings_update_download">Download</string>
+    <string name="settings_update_downloading">Downloading… %1$d%%</string>
+    <string name="settings_update_downloaded">Downloaded and verified</string>
+    <string name="settings_update_install">Install</string>
+    <string name="settings_update_retry">Retry</string>
+    <string name="settings_update_error_offline">No internet connection</string>
+    <string name="settings_update_error_integrity">The download did not match its checksum and was discarded</string>
+    <string name="settings_update_error_http">The server returned an error (%1$d)</string>
+    <string name="settings_update_error_generic">The update check failed</string>
+    <string name="settings_update_error_too_old">This version is too old to read the update list. Please update by hand.</string>
+    <string name="settings_update_from_cache">Shown from the last saved check</string>
+    <string name="settings_update_background_check_title">Daily background check</string>
+    <string name="settings_update_background_check_summary">Check once a day and notify you. Downloading and installing always stay manual.</string>
+    <string name="settings_update_notification_text">Version %1$s is ready to download</string>
+    <string name="settings_update_unknown_sources_message">Android must allow BBKB to install apps. Turn on \"Allow from this source\", then press Install again.</string>
+    <string name="settings_update_open_settings">Open settings</string>
+
 </resources>

@@ -48,10 +48,25 @@
         that lets ManifestSource answer out of its cache instead of burning a connect timeout.
         Both are normal permissions - no runtime request. The IME itself does no other
         networking. Installing a downloaded APK additionally needs REQUEST_INSTALL_PACKAGES;
-        that is deliberately NOT declared here, and belongs with the update UI that uses it.
+        that is declared just below, with the update feature that uses it.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!--
+        OTA app updates (dev.bbkb.ime.core.update).
+
+        REQUEST_INSTALL_PACKAGES lets ApkInstaller *offer* a downloaded APK to the platform
+        installer; the user still confirms it in the system dialog, and on API 26+ must also have
+        allowed this app as an install source (ApkInstaller.canRequestInstalls sends them to
+        Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES when they have not). Nothing is ever installed
+        without those taps - the daily check is notify-only.
+
+        POST_NOTIFICATIONS is the API 33+ runtime grant for that one low-importance notification.
+        It is requested from the Updates settings screen when the user turns the daily check on;
+        without it UpdateNotifier posts nothing and the screen's own banner carries the news.
+    -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:label="@string/english_ime_name"
@@ -134,6 +149,16 @@
                 android:name="android.view.textservice.scs"
                 android:resource="@xml/spellchecker"/>
         </service>
+        <!--
+            The daily update check (notify only). BIND_JOB_SERVICE is the platform's own
+            permission for a JobService and is what makes JobScheduler willing to bind it; the
+            job itself is persisted across reboot, which is why RECEIVE_BOOT_COMPLETED above is
+            load-bearing for it as well as for SystemBroadcastReceiver.
+        -->
+        <service
+            android:name="dev.bbkb.ime.core.update.UpdateJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false"/>
         <receiver
             android:name="dev.bbkb.ime.core.SystemBroadcastReceiver"
             android:exported="true">
