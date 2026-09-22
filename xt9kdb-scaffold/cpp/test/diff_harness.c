@@ -32,7 +32,7 @@
 #ifdef XT9DIFF_ONDEVICE
 #include <dlfcn.h>
 /* REAL ABI (reversed 2026-07-05): (ctx, out[stride 0x30], capacity, *count). */
-typedef ET9STATUS (*fn_getkeys)(ET9KDBInfoPtr, void*, ET9U16, ET9U16*);
+typedef ET9STATUS (*fn_getkeys)(ET9KDBInfoPtr, void*, ET9U16, ET9U32*);   /* count is 32-bit: blob @0xbb3dc `str w0` */
 static fn_getkeys blob_GetKeyPositions;
 int diff_init(void) {
     void* blob = dlopen("libnative-lib.so", RTLD_NOW | RTLD_GLOBAL);
@@ -42,7 +42,7 @@ int diff_init(void) {
 }
 /* Compare the 0x30 output records from blob vs owned on the SAME live context. */
 int diff_geometry_live(ET9KDBInfoPtr ctx_blob, ET9KDBInfoPtr ctx_owned) {
-    unsigned char a[64 * 48], b[64 * 48]; ET9U16 na = 0, nb = 0;
+    unsigned char a[64 * 48], b[64 * 48]; ET9U32 na = 0, nb = 0;
     blob_GetKeyPositions(ctx_blob, a, 64, &na);
     xt9kdb_GetKeyPositions(ctx_owned, b, 64, &nb);
     if (na != nb) { fprintf(stderr, "GEOM count %u vs %u\n", na, nb); return 1; }

@@ -52,6 +52,76 @@ class PackInstallServiceTest {
         subtypes: PackInstallService.SubtypeRegistrar = PackFixtures.FakeSubtypes(builtIn = setOf("cy", "es", "zh", "en", "de")),
     ) = PackInstallService(context, subtypes) { action -> posted += action }
 
+    // ── Removing a pack ───────────────────────────────────────────────────────────────────────
+
+    private suspend fun installWelsh(subtypes: PackFixtures.FakeSubtypes) =
+        service(subtypes).installFromFile(source, "cy", "Welsh", "1902.01", null).getOrThrow()
+
+    @Test
+    fun uninstallRemovesTheFilesTheRegistryEntryAndTheRuntimeSubtype() = runBlocking<Unit> {
+        val subtypes = PackFixtures.FakeSubtypes(offerable = setOf("cy"))
+        installWelsh(subtypes)
+        posted.clear()
+
+        val outcome = service(subtypes).uninstall("cy").getOrThrow()
+
+        assertEquals(UninstallOutcome.REMOVED, outcome)
+        assertFalse("pack directory still there", PackFixtures.packDir(context, "cy").exists())
+        val registry = PackFixtures.customRegistry(context).readText()
+        assertFalse("registry still lists cy: $registry", registry.contains("\"language\":\"cy\""))
+        assertEquals(listOf("cy"), subtypes.withdrawn)
+        assertEquals(listOf(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED), posted)
+        assertFalse(InstalledPacks.read(context, listOf("cy")).isInstalled("cy"))
+    }
+
+    @Test
+    fun uninstallOfAPackWhoseFilesAreAlreadyGoneStillCleansUpAndIsNotAnError() = runBlocking<Unit> {
+        // The screen's rows are a snapshot: by the time the user confirms, the directory can be
+        // gone already. That used to surface as "Language pack directory not found" over a pack
+        // that was in fact removed.
+        val subtypes = PackFixtures.FakeSubtypes(offerable = setOf("cy"))
+        installWelsh(subtypes)
+        PackFixtures.packDir(context, "cy").deleteRecursively()
+        posted.clear()
+
+        val outcome = service(subtypes).uninstall("cy").getOrThrow()
+
+        assertEquals(UninstallOutcome.ALREADY_GONE, outcome)
+        val registry = PackFixtures.customRegistry(context).readText()
+        assertFalse("registry still lists cy: $registry", registry.contains("\"language\":\"cy\""))
+        assertEquals(listOf("cy"), subtypes.withdrawn)
+        assertEquals(listOf(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED), posted)
+    }
+
+    @Test
+    fun uninstallingTwiceSucceedsBothTimes() = runBlocking<Unit> {
+        val subtypes = PackFixtures.FakeSubtypes(builtIn = setOf("cy"))
+        installWelsh(subtypes)
+
+        assertEquals(UninstallOutcome.REMOVED, service(subtypes).uninstall("cy").getOrThrow())
+        assertEquals(UninstallOutcome.ALREADY_GONE, service(subtypes).uninstall("cy").getOrThrow())
+        assertFalse(PackFixtures.packDir(context, "cy").exists())
+    }
+
+    @Test
+    fun uninstallLeavesOtherPacksAlone() = runBlocking<Unit> {
+        val subtypes = PackFixtures.FakeSubtypes(builtIn = setOf("cy", "es"))
+        installWelsh(subtypes)
+        service(subtypes).installFromFile(source, "es", "Spanish", "1902.01", null).getOrThrow()
+
+        service(subtypes).uninstall("cy").getOrThrow()
+
+        assertTrue(PackFixtures.packDir(context, "es").isDirectory)
+        assertTrue(PackFixtures.customRegistry(context).readText().contains("\"language\":\"es\""))
+    }
+
+    @Test
+    fun uninstallRefusesAnUnusableLocale() = runBlocking<Unit> {
+        val result = service().uninstall("../nuance")
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is PackInstallException)
+    }
+
     // ── An ordinary pack ──────────────────────────────────────────────────────────────────────
 
     @Test

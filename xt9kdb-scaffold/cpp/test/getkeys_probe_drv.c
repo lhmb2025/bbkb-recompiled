@@ -73,7 +73,7 @@ static volatile unsigned g_sink;
 
 static void getkeys_probe(void) {
     static unsigned char buf[SHIM_CAPACITY * SHIM_STRIDE];
-    ET9U16 count = 0;
+    ET9U32 count = 0;
     /* 0x21008: bl ET9KDB_GetKeyPositions(x0=ctx, x1=sp+0x18, w2=0x50, x3=sp+0x14) */
     ET9STATUS st = xt9kdb_GetKeyPositions((ET9KDBInfoPtr)g_ctx, buf, SHIM_CAPACITY, &count);
     if (st != ET9STATUS_NONE) return;            /* 0x2100c: cbz w0 — non-zero returns NULL */

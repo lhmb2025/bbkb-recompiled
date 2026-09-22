@@ -65,10 +65,9 @@ import dev.bbkb.ime.core.languagepack.InstalledPacks
 import dev.bbkb.ime.core.languagepack.PackCatalog
 import dev.bbkb.ime.core.languagepack.PackDownloadManager
 import dev.bbkb.ime.core.languagepack.PackInstallService
+import dev.bbkb.ime.core.languagepack.UninstallOutcome
 import dev.bbkb.ime.core.languagepack.PackState
 import dev.bbkb.ime.core.languagepack.PackText
-import dev.bbkb.ime.core.locale.RichInputMethodManager
-import dev.bbkb.ime.core.subtypeswitcher.SideloadedSubtypes
 import dev.bbkb.ime.core.shared.InAppEventBus
 import com.blackberry.nuanceshim.languagepack.CustomPackRegistryStore
 import com.blackberry.nuanceshim.languagepack.LanguageVariantStore
@@ -273,6 +272,9 @@ fun LanguagePacksScreen(
                                 .post(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED, null)
                             variantGroups = LanguageVariantStore.read(context)
                             installedPacks = readInstalledPacks(context, manifest)
+                            // The swap moved files in and out of the base language's slot, so
+                            // the rows' paths and "preinstalled" flags are stale until re-read.
+                            loadLanguagePacks(context) { packs -> languagePacks = packs }
                         }
                     },
                     onDeleteVariant = { member ->
@@ -373,18 +375,21 @@ fun LanguagePacksScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
+                        // The row goes at once, not when the I/O is done: a row that lingers
+                        // invites a second delete of a pack that is already gone.
+                        languagePacks = languagePacks.filterNot {
+                            it.languageCode == pack.languageCode && it.countryCode == pack.countryCode
+                        }
                         scope.launch {
-                            deleteLanguagePack(context, pack) { success, message ->
+                            deleteLanguagePack(context, pack) { _, message ->
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                                if (success) {
-                                    // Refresh the list - and the catalogue's view of the disk, so
-                                    // a deleted pack goes back to being downloadable.
-                                    scope.launch {
-                                        loadLanguagePacks(context) { packs ->
-                                            languagePacks = packs
-                                        }
-                                        installedPacks = readInstalledPacks(context, manifest)
+                                // Re-read both halves either way: on success so the pack goes
+                                // back to being downloadable, on failure so the row comes back.
+                                scope.launch {
+                                    loadLanguagePacks(context) { packs ->
+                                        languagePacks = packs
                                     }
+                                    installedPacks = readInstalledPacks(context, manifest)
                                 }
                             }
                         }
@@ -919,52 +924,39 @@ private suspend fun installLanguagePack(
 }
 
 /**
- * Delete a custom language pack
+ * Delete a downloaded or side-loaded language pack.
+ *
+ * The work is [PackInstallService.uninstall], which is idempotent: a pack whose files are already
+ * gone still gets its registry entry and runtime subtype cleaned up and is reported as removed,
+ * because from the user's side it is. Variants never reach here; their rows delete through
+ * [LanguageVariantStore].
  */
 private suspend fun deleteLanguagePack(
     context: Context,
     pack: InstalledLanguagePack,
     onResult: (Boolean, String) -> Unit
 ) {
-    withContext(Dispatchers.IO) {
-        try {
-            if (pack.isPreinstalled) {
-                throw Exception("Cannot delete preinstalled language packs")
-            }
-            
-            val packDir = File(pack.filePath)
-            if (packDir.exists() && packDir.isDirectory) {
-                packDir.deleteRecursively()
-
-                // Drop the registry entry too. Leaving it behind would leave the locale looking
-                // "supported" with no files under it, so getStatus would report a pack that is
-                // not there.
-                CustomPackRegistryStore.remove(context, pack.languageCode, pack.countryCode)
-
-                // Withdraw the runtime subtype too, if this pack is what created one. Leaving it
-                // would offer a language with no dictionary behind it.
-                SideloadedSubtypes.remove(context, pack.languageCode)
-                val rimm = RichInputMethodManager.getInstance()
-                rimm.setAdditionalInputMethodSubtypes(rimm.getAdditionalSubtypes(context))
-
-                val locale = Locale(pack.languageCode, pack.countryCode)
-                val languagePackManager = LanguagePackManager.getInstance(context)
-                languagePackManager.reloadRegistry()
-                languagePackManager.getStatus(locale)
-                // Note: Deregistration will be handled by the language pack manager automatically
-                
-                withContext(Dispatchers.Main) {
-                    onResult(true, "Language pack deleted: ${pack.displayName}")
-                }
-            } else {
-                throw Exception("Language pack directory not found")
-            }
-            
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                onResult(false, "Failed to delete language pack: ${e.message}")
-            }
-        }
+    if (pack.isPreinstalled) {
+        onResult(false, "Cannot delete preinstalled language packs")
+        return
+    }
+    val locale = if (pack.countryCode.isEmpty()) pack.languageCode else "${pack.languageCode}_${pack.countryCode}"
+    val outcome = PackInstallService(context).uninstall(locale)
+    withContext(Dispatchers.Main) {
+        outcome.fold(
+            onSuccess = { result ->
+                onResult(
+                    true,
+                    when (result) {
+                        UninstallOutcome.REMOVED -> "Language pack deleted: ${pack.displayName}"
+                        UninstallOutcome.ALREADY_GONE -> "${pack.displayName} was already removed"
+                    },
+                )
+            },
+            onFailure = { failure ->
+                onResult(false, "Failed to delete language pack: ${failure.message}")
+            },
+        )
     }
 }
 

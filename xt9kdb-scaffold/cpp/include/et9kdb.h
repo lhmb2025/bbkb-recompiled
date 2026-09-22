@@ -57,7 +57,12 @@ XT9KDB_API void      XT9KDB(TimeOut)(ET9KDBInfoPtr);                   /* @0xbac
 /* ---- geometry ------------------------------------------------------------ */
 /* @0xbb314 — REAL ABI (reversed 2026-07-05): (ctx, outArray[stride 0x30], capacity, *outCount).
  * capacity < keyCount -> status 0x1a; else fills `cap>=keyCount` records and writes *outCount=keyCount. */
-XT9KDB_API ET9STATUS XT9KDB(GetKeyPositions)(ET9KDBInfoPtr, void* out, ET9U16 capacity, ET9U16* count);
+/* @0xbb314 — `count` is a 32-BIT out-parameter. The blob stores it with `str w0, [x23]` (@0xbb3dc)
+ * and its JNI getKeys reads the slot back with `ldr w8, [sp, #0x14]` (@0x2103c) into a loop bound,
+ * without ever zeroing the slot. A 16-bit store leaves the upper half as stack residue: the debug
+ * build happened to leave 0 there, the release build did not, and getKeys walked ~460 records off
+ * the top of the main-thread stack (SIGSEGV on every keyboard show, 5.0.0-beta.18). */
+XT9KDB_API ET9STATUS XT9KDB(GetKeyPositions)(ET9KDBInfoPtr, void* out, ET9U16 capacity, ET9U32* count);
 XT9KDB_API ET9STATUS XT9KDB(GetKeyboardSize)(ET9KDBInfoPtr, ET9U16* w, ET9U16* h);     /* @0xbb434 */
 XT9KDB_API ET9STATUS XT9KDB(SetKeyboardSize)(ET9KDBInfoPtr, ET9U16 w, ET9U16 h);       /* @0xbb668 */
 XT9KDB_API ET9STATUS XT9KDB(GetKeyboardDefaultSize)(ET9KDBInfoPtr, ET9U16* w, ET9U16* h); /* @0xbb78c */

@@ -101,6 +101,51 @@ class PackInstallService @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Remove the pack installed under [locale]: its `nuance/` directory, its registry entry and
+     * the runtime subtype it may have brought with it.
+     *
+     * Idempotent on purpose. The Language packs screen builds its rows from a snapshot of the
+     * disk, so by the time the user confirms a delete the files can already be gone (a second
+     * tap on a row that had not refreshed yet, a variant swap that emptied the slot). That is not
+     * a failure: whatever is still there is cleaned up and [UninstallOutcome.ALREADY_GONE] says
+     * so, instead of the old "directory not found" error over a pack that was in fact removed.
+     *
+     * Variants are not handled here; they are members of a [LanguageVariantStore] group and are
+     * removed through it.
+     */
+    suspend fun uninstall(locale: String): Result<UninstallOutcome> = withContext(Dispatchers.IO) {
+        try {
+            Result.success(uninstallNow(locale))
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (failure: PackInstallException) {
+            Result.failure(failure)
+        } catch (failure: RuntimeException) {
+            Result.failure(PackInstallException("Could not remove $locale", failure))
+        }
+    }
+
+    private fun uninstallNow(locale: String): UninstallOutcome {
+        if (!CustomPackRegistryStore.isValidLocaleIdentifier(locale)) {
+            throw PackInstallException("Not a usable locale identifier: '$locale'")
+        }
+        val directory = packDirectory(locale)
+        val hadFiles = directory.exists()
+        if (hadFiles && !directory.deleteRecursively()) {
+            throw PackInstallException("Could not delete the files for $locale")
+        }
+        val language = locale.substringBefore('_')
+        val country = locale.substringAfter('_', "").ifEmpty { null }
+        // Both of these are no-ops when there is nothing to remove.
+        CustomPackRegistryStore.remove(context, language, country)
+        subtypes.withdrawSubtypeFor(context, language)
+        LanguagePackManager.getInstance(context).reloadRegistry()
+        events(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED)
+        Logger.info(TAG, "Removed $locale (files were ${if (hadFiles) "present" else "already gone"})")
+        return if (hadFiles) UninstallOutcome.REMOVED else UninstallOutcome.ALREADY_GONE
+    }
+
     private fun install(
         file: File,
         locale: String,
@@ -232,6 +277,9 @@ class PackInstallService @JvmOverloads constructor(
 
         /** Add a runtime subtype for this language. `false` when there is no usable layout. */
         fun offerSubtypeFor(context: Context, language: String): Boolean
+
+        /** Take back a runtime subtype added by [offerSubtypeFor]. A no-op when none was. */
+        fun withdrawSubtypeFor(context: Context, language: String)
     }
 
     /** The production [SubtypeRegistrar]: the framework, plus [SideloadedSubtypes]. */
@@ -266,6 +314,16 @@ class PackInstallService @JvmOverloads constructor(
                 true
             }
         }
+
+        override fun withdrawSubtypeFor(context: Context, language: String) {
+            SideloadedSubtypes.remove(context, language)
+            try {
+                val rimm = RichInputMethodManager.getInstance()
+                rimm.setAdditionalInputMethodSubtypes(rimm.getAdditionalSubtypes(context))
+            } catch (unavailable: RuntimeException) {
+                Logger.warn(TAG, "Withdrew a runtime subtype but could not re-register: $unavailable")
+            }
+        }
     }
 
     companion object {
@@ -284,6 +342,15 @@ class PackInstallService @JvmOverloads constructor(
          */
         const val FALLBACK_VERSION: Double = 1.0
     }
+}
+
+/** What [PackInstallService.uninstall] found to remove. Both are success. */
+enum class UninstallOutcome {
+    /** The pack's files were on disk and are now gone. */
+    REMOVED,
+
+    /** The files were already gone; only bookkeeping was left to clean up. */
+    ALREADY_GONE,
 }
 
 /**

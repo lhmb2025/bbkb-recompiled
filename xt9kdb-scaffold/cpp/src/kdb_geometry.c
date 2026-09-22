@@ -256,7 +256,7 @@ static int xt9_proj(int v, int off, int scale, int dim) {
  * — authored coords projected to view via the active offset/scale. We also fill type@+0x00 and index@+0x08
  * (the blob does; the JNI ignores them) and zero the rest. offset/scale come from our owned setters
  * (SetKeyboardOffset/SetKeyboardSize), matching what the IME pushed for this layout. */
-ET9STATUS XT9KDB(GetKeyPositions)(ET9KDBInfoPtr ctx, void* out, ET9U16 capacity, ET9U16* count) {
+ET9STATUS XT9KDB(GetKeyPositions)(ET9KDBInfoPtr ctx, void* out, ET9U16 capacity, ET9U32* count) {
     /* L4 (2026-09-20): take the MODEL from the caller's context too, not just the projection.
      * Taking the model from the legacy global while projecting with the context's offset/scale
      * meant a getKeys on the spellchecker's handle could return the IME's geometry projected
@@ -268,6 +268,11 @@ ET9STATUS XT9KDB(GetKeyPositions)(ET9KDBInfoPtr ctx, void* out, ET9U16 capacity,
     if (!m || !m->keys) return ET9STATUS_KDB_NOT_LOADED;
     ET9U16 n = m->keyCount;
     if (n == 0) return ET9STATUS_KDB_NOT_LOADED;
+    /* The blob zeroes the count (a full 32-bit word, `str w0, [x23]` @0xbb3dc) as soon as the
+     * context checks pass and before the capacity test; keep that order so a too-small buffer
+     * never leaves a stale count behind either. The width matters: the JNI getKeys reads this slot
+     * with a 32-bit `ldr` into its loop bound (see et9kdb.h). */
+    if (count) *count = 0;
     if (out && capacity < n) return (ET9STATUS)0x1a;   /* buffer too small (blob returns 0x1a) */
     if (count) *count = n;
     if (!out) return ET9STATUS_NONE;

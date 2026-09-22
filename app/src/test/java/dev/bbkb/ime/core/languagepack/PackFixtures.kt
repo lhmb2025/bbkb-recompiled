@@ -93,12 +93,17 @@ object PackFixtures {
         private val offerable: Set<String> = emptySet(),
     ) : PackInstallService.SubtypeRegistrar {
         val offered = mutableListOf<String>()
+        val withdrawn = mutableListOf<String>()
 
         override fun hasBuiltInSubtypeFor(language: String): Boolean = language in builtIn
 
         override fun offerSubtypeFor(context: Context, language: String): Boolean {
             offered += language
             return language in offerable
+        }
+
+        override fun withdrawSubtypeFor(context: Context, language: String) {
+            withdrawn += language
         }
     }
 }

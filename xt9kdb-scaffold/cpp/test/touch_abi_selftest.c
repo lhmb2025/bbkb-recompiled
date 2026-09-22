@@ -343,7 +343,7 @@ static void test_ctx_scale(void) {
      * VIEW size, so an unprojected rect made the cached grid wrong). */
     {
         unsigned char* out = calloc(0x30, (size_t)m->keyCount + 8);
-        ET9U16 count = 0;
+        ET9U32 count = 0;
         CHECK(xt9kdb_GetKeyPositions(g_ctx, out, m->keyCount, &count) == ET9STATUS_NONE,
               "stretched getKeys failed");
         CHECK(*(const ET9U16*)(out + 0x2c) == 214,
@@ -404,7 +404,7 @@ static void test_get_key_positions(void) {
     const ET9KdbLoaded* m = g_kdb_model;
     const ET9U16 n = m->keyCount;
     unsigned char* out = calloc(0x30, (size_t)n + 8);
-    ET9U16 count = 0;
+    ET9U32 count = 0;
 
     /* count-only probe: out == NULL returns the key count without touching a buffer. */
     CHECK(xt9kdb_GetKeyPositions(g_ctx, 0, 0, &count) == ET9STATUS_NONE, "count probe failed");
@@ -419,6 +419,20 @@ static void test_get_key_positions(void) {
     count = 0;
     CHECK(xt9kdb_GetKeyPositions(g_ctx, out, n, &count) == ET9STATUS_NONE, "full read failed");
     CHECK(count == n, "full read wrote count=%u", count);
+
+    /* The count is a 32-BIT out-parameter. The blob's JNI getKeys (@0x2103c) reads the slot back
+     * with a 32-bit `ldr` into its loop bound and never zeroes it first, so a 16-bit store leaves
+     * whatever was on the stack in the upper half. Poison the slot the way a dirty stack would:
+     * the whole word must come back as n (5.0.0-beta.18 release crash, SIGSEGV in getKeys). */
+    {
+        ET9U32 slot = 0xDEAD0000u;
+        CHECK(xt9kdb_GetKeyPositions(g_ctx, out, n, &slot) == ET9STATUS_NONE, "poisoned-slot read failed");
+        CHECK(slot == n, "count must be written as a full 32-bit word: got 0x%08x, expected %u",
+              (unsigned)slot, (unsigned)n);
+        slot = 0xDEAD0000u;
+        CHECK(xt9kdb_GetKeyPositions(g_ctx, out, (ET9U16)(n - 1), &slot) == (ET9STATUS)0x1a && slot == 0,
+              "a too-small buffer must leave count=0 like the blob, got 0x%08x", (unsigned)slot);
+    }
     {
         int diffs = 0;
         for (ET9U16 i = 0; i < n; i++) {
@@ -502,14 +516,14 @@ static void test_get_key_positions_per_ctx(void) {
 
     /* The count-only probe is the cheapest witness: ctx2 has 2 keys, the global has 30. */
     {
-        ET9U16 count = 0;
+        ET9U32 count = 0;
         CHECK(xt9kdb_GetKeyPositions(ctx2, 0, 0, &count) == ET9STATUS_NONE, "ctx2 count probe failed");
         CHECK(count == 2, "getKeys on ctx2 returned %u keys — the other context's model", count);
     }
     /* ...and the records are ctx2's geometry: 'q' spans the left half of a 1080 grid. */
     {
         unsigned char* out = calloc(0x30, 8);
-        ET9U16 count = 0;
+        ET9U32 count = 0;
         CHECK(xt9kdb_GetKeyPositions(ctx2, out, 8, &count) == ET9STATUS_NONE, "ctx2 read failed");
         CHECK(count == 2 && *(const ET9U16*)(out + 0x0a) == (ET9U16)'q' &&
               *(const ET9U16*)(out + 0x2c) == 539,
@@ -526,7 +540,7 @@ static void test_get_key_positions_per_ctx(void) {
     /* A context with no model of its own still falls back to the global (the bring-up fixture
      * and every offline driver depend on it). */
     {
-        ET9U16 count = 0;
+        ET9U32 count = 0;
         CHECK(xt9kdb_GetKeyPositions(g_ctx, 0, 0, &count) == ET9STATUS_NONE, "fallback probe failed");
         CHECK(count == globalKeys, "a model-less context did not fall back (%u)", count);
     }
@@ -745,7 +759,7 @@ static void test_key_table_ceiling(void) {
     if (!ctx2 || !xml) { CHECK(0, "OOM"); free(ctx2); free(xml); return; }
     *(void**)(ctx2 + ET9_OFF_ARENA) = ctx2 + CTX_SZ;
     *(ET9U16*)(ctx2 + ET9_OFF_MAGIC) = ET9KDB_MAGIC;
-    ET9U16 count = 0;
+    ET9U32 count = 0;
 
     int len = build_grid_xml(xml, 32768, 81);
     ET9STATUS st = xt9kdb_Load_XmlKDB(ctx2, (const ET9U8*)xml, (ET9U32)len);
