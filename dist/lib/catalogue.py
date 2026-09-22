@@ -23,10 +23,11 @@ The duplicate tie-break is deliberate, not alphabetical:
      plain `zh` would be decided by sort order between the GB2312 pack (which
      the table registers as `zh`) and the Big5 one (which it registers as
      `zh_TW` but whose filename carries no region).
-  b. otherwise a file with NO leftover marker after `UN` wins. `_ENubUNZH_`
-     (English for the Chinese market) and `_ESusUNlatam_` both collapse onto a
-     base language whose own pack exists, so they lose to it.
+  b. otherwise a file with NO leftover marker after `UN` wins.
   c. otherwise the filename, so the outcome is stable across runs.
+
+See `TABLE_LOCALE_OVERRIDES` for the four files whose region the filename cannot
+express at all.
 """
 
 import os
@@ -41,6 +42,34 @@ DUPLICATE = "duplicate"
 #: Statuses that keep the file out of the release.
 SKIPPED = (REFUSED, UNSUPPORTED, DUPLICATE)
 
+#: Exact filename -> the engine-table locale the manifest should name it under.
+#:
+#: These four packs have a region the FILENAME cannot express: the app's parser
+#: reads `_ESusUNlatam_` as plain `es` (lower-case market marker), `_ENubUNZH_`
+#: as plain `en` (`ZH` is a market, not a region the app allowlists), and both
+#: Big5 Chinese packs as plain `zh`. The engine's own locale table names all
+#: four -- `es_419`, `en_ZH`, `zh_TW`, `zh_HK` -- but it carries the region in
+#: the ASSET PATH (`es_419/...`), which a side-loaded file does not have.
+#:
+#: Overriding them here is sound because the DOWNLOAD path is not the side-load
+#: path: the client installs a downloaded pack under the manifest's `locale`
+#: (into `nuance/<locale>/`) and never re-parses the filename, so the manifest
+#: is free to name the engine-table locale. That is the only reason this map is
+#: allowed to disagree with `ldb_names`; it must never be used to invent a
+#: locale the engine table does not have, and every entry is verified against
+#: the table at classification time (one that is not in the table falls back to
+#: the parsed locale, and so to the ordinary duplicate/unsupported handling).
+#:
+#: Consequence worth knowing: these four locales are reachable by DOWNLOAD only.
+#: A user who side-loads the same file by hand still gets the base language,
+#: because that path does re-parse the filename.
+TABLE_LOCALE_OVERRIDES = {
+    "Blackberry_1305_r1-11_ESusUNlatam_xt9_ALM3.ldb": "es_419",
+    "Blackberry_1305_r1-3_ENubUNZH_xt9_2.ldb": "en_ZH",
+    "Blackberry_1305_r1-15-2-6_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_bigTW_ALM.ldb": "zh_TW",
+    "Blackberry_1305_r1-22-2-5_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_big_ALM.ldb": "zh_HK",
+}
+
 
 class Decision(object):
     def __init__(self, file_name, path, source):
@@ -52,6 +81,8 @@ class Decision(object):
         self.locale = None
         self.marker = None            # leftover token after UN, if any
         self.engine_locale = None     # what the engine table calls this FILE
+        self.parsed_locale = None     # what the app's filename parser produces
+        self.overridden = False       # locale came from TABLE_LOCALE_OVERRIDES
         self.status = None
         self.reason = ""
         self.name = None
@@ -126,6 +157,21 @@ def classify(file_name, path, source, engine_table):
     decision.language = language
     decision.country = ldb_names.extract_country(file_name, language)
     decision.locale = "%s_%s" % (language, decision.country) if decision.country else language
+    decision.parsed_locale = decision.locale
+
+    # A file whose region the filename cannot express, named after the engine
+    # table instead. Only ever applied when the table really has that locale --
+    # otherwise the parsed locale stands and the file takes its chances with the
+    # ordinary duplicate/unsupported handling.
+    override = TABLE_LOCALE_OVERRIDES.get(file_name)
+    if override and override in engine_table:
+        decision.locale = override
+        decision.overridden = True
+        decision.status = PUBLISHED
+        decision.name = engine_table.name_of(override)
+        decision.reason = ("locale from the engine table, not the filename: the app's parser "
+                           "reads this name as '%s'" % decision.parsed_locale)
+        return decision
 
     if decision.locale in engine_table:
         decision.status = PUBLISHED

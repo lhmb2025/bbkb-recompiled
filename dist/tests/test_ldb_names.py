@@ -67,8 +67,11 @@ class AppTestParityTest(unittest.TestCase):
         self.assertEqual("REJECTED", parse("Blackberry_1305_r1-2_SDlsUNdevanagari_xt9.ldb"))
 
     def test_latam_spanish_and_chinese_market_english_collide_with_their_base(self):
-        # The app's characterised behaviour. The publisher does NOT paper over
-        # it by inventing a locale -- it skips the file and says why.
+        # The app's characterised behaviour, and it stays characterised here:
+        # the PARSER still reads these as plain es/en. The publisher does not
+        # change that -- it names them after the engine table instead, which is
+        # sound only because the download path installs by the manifest's
+        # locale and never re-parses the filename (catalogue.TABLE_LOCALE_OVERRIDES).
         self.assertEqual("es", parse("Blackberry_1305_r1-11_ESusUNlatam_xt9_ALM3.ldb"))
         self.assertEqual("en", parse("Blackberry_1305_r1-3_ENubUNZH_xt9_2.ldb"))
 

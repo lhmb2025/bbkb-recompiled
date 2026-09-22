@@ -22,11 +22,17 @@ class CatalogueDecisionTest(unittest.TestCase):
 
     def test_the_tally(self):
         tally = catalogue.counts(self.decisions)
-        self.assertEqual(105, tally[catalogue.PUBLISHED])
+        self.assertEqual(109, tally[catalogue.PUBLISHED])
         self.assertEqual(7, tally[catalogue.REFUSED])
-        self.assertEqual(4, tally[catalogue.DUPLICATE])
+        self.assertEqual(0, tally[catalogue.DUPLICATE])
         self.assertEqual(0, tally[catalogue.UNSUPPORTED])
         self.assertEqual(116, len(self.decisions))
+
+    def test_every_engine_table_locale_now_has_a_pack(self):
+        # 105 table locales + the 4 region variants the table has no entry for.
+        published = set(d.locale for d in self.decisions if d.published)
+        self.assertEqual(set(), set(self.table.names) - published)
+        self.assertEqual(109, len(published))
 
     def test_no_two_published_files_claim_the_same_locale(self):
         locales = [d.locale for d in self.decisions if d.published]
@@ -67,31 +73,73 @@ class CatalogueDecisionTest(unittest.TestCase):
         three_letter = [d for d in refused if "three-letter" in d.reason]
         self.assertEqual(5, len(three_letter))
 
-    def test_chinese_market_english_is_skipped_and_names_the_winner(self):
-        decision = self.by_name["Blackberry_1305_r1-3_ENubUNZH_xt9_2.ldb"]
-        self.assertEqual(catalogue.DUPLICATE, decision.status)
-        self.assertEqual("en", decision.locale)
-        self.assertIn("Blackberry_1305_r1-76_ENubUN_xt9_ALM3.ldb", decision.reason)
-        self.assertIn("'ZH'", decision.reason)
-        self.assertIn("en_ZH", decision.reason)
-        self.assertIsNone(decision.name)
+    def test_nothing_in_the_catalogue_is_a_duplicate_any_more(self):
+        self.assertEqual([], [d.file_name for d in self.decisions
+                              if d.status == catalogue.DUPLICATE])
 
-    def test_latam_spanish_is_skipped_rather_than_overwriting_plain_spanish(self):
-        decision = self.by_name["Blackberry_1305_r1-11_ESusUNlatam_xt9_ALM3.ldb"]
-        self.assertEqual(catalogue.DUPLICATE, decision.status)
-        self.assertIn("Blackberry_1305_r1-28_ESusUN_xt9_ALM3.ldb", decision.reason)
-        self.assertIn("es_419", decision.reason)
+    # -- the table-locale overrides ----------------------------------------
 
-    def test_the_zh_winner_is_the_file_the_engine_table_calls_zh(self):
-        # Not the alphabetically-first one: the Big5 packs sort earlier but the
-        # table registers them as zh_TW / zh_HK.
-        winner = self.by_name["Blackberry_1305_r1-17-10-3_ZHsbUNps_GB2312_xt9_big_ALM.ldb"]
-        self.assertTrue(winner.published)
-        self.assertEqual("zh", winner.locale)
-        for loser in ("Blackberry_1305_r1-15-2-6_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_bigTW_ALM.ldb",
-                      "Blackberry_1305_r1-22-2-5_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_big_ALM.ldb"):
-            self.assertEqual(catalogue.DUPLICATE, self.by_name[loser].status)
-            self.assertIn(winner.file_name, self.by_name[loser].reason)
+    def test_the_four_override_files_are_published_under_the_tables_locale(self):
+        expected = {
+            "Blackberry_1305_r1-11_ESusUNlatam_xt9_ALM3.ldb":
+                ("es_419", "Spanish (Latin America)", "es"),
+            "Blackberry_1305_r1-3_ENubUNZH_xt9_2.ldb":
+                ("en_ZH", "English (China)", "en"),
+            "Blackberry_1305_r1-15-2-6_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_bigTW_ALM.ldb":
+                ("zh_TW", "Chinese Taiwan", "zh"),
+            "Blackberry_1305_r1-22-2-5_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_big_ALM.ldb":
+                ("zh_HK", "Chinese Hongkong", "zh"),
+        }
+        self.assertEqual(set(expected), set(catalogue.TABLE_LOCALE_OVERRIDES))
+        for file_name, (locale, name, parsed) in expected.items():
+            decision = self.by_name[file_name]
+            self.assertEqual(catalogue.PUBLISHED, decision.status, file_name)
+            self.assertEqual(locale, decision.locale, file_name)
+            self.assertEqual(name, decision.name, file_name)
+            self.assertEqual(parsed, decision.parsed_locale, file_name)
+            self.assertTrue(decision.overridden, file_name)
+            # An override is a locale the table HAS; it never invents one.
+            self.assertIn(locale, self.table, file_name)
+            self.assertIsNone(decision.group, file_name)
+            self.assertIn("not the filename", decision.reason)
+
+    def test_the_base_language_packs_keep_their_own_locales(self):
+        # The point of the overrides: the four no longer collide with these.
+        for file_name, locale in (
+                ("Blackberry_1305_r1-76_ENubUN_xt9_ALM3.ldb", "en"),
+                ("Blackberry_1305_r1-28_ESusUN_xt9_ALM3.ldb", "es"),
+                ("Blackberry_1305_r1-17-10-3_ZHsbUNps_GB2312_xt9_big_ALM.ldb", "zh")):
+            decision = self.by_name[file_name]
+            self.assertTrue(decision.published, file_name)
+            self.assertEqual(locale, decision.locale, file_name)
+            self.assertFalse(decision.overridden, file_name)
+
+    def test_an_override_the_engine_table_lacks_is_ignored(self):
+        # The guard that keeps the map honest: with es_419 gone from the table,
+        # the latam pack falls back to its parsed locale and loses to plain
+        # Spanish again, rather than being published under a locale that
+        # cannot load.
+        trimmed = EngineTable([e for e in self.table.entries
+                               if not (e["language"] == "es" and e.get("country") == "419")])
+        decisions = catalogue.classify_names(
+            ["Blackberry_1305_r1-11_ESusUNlatam_xt9_ALM3.ldb",
+             "Blackberry_1305_r1-28_ESusUN_xt9_ALM3.ldb"], trimmed)
+        latam = [d for d in decisions if "latam" in d.file_name][0]
+        self.assertFalse(latam.overridden)
+        self.assertEqual("es", latam.locale)
+        self.assertEqual(catalogue.DUPLICATE, latam.status)
+
+    def test_two_files_claiming_one_locale_are_still_settled_by_rank(self):
+        # No such pair remains in the real catalogue, but `resolve` must keep
+        # working: a second Afrikaans pack loses to the one the table names.
+        names = ["Blackberry_1305_r1-2_AFlsUN_xt9_ALM3.ldb",
+                 "Blackberry_1305_r9-9_AFlsUN_xt9_ALM3.ldb"]
+        decisions = dict((d.file_name, d) for d in catalogue.classify_names(names, self.table))
+        self.assertEqual(catalogue.PUBLISHED,
+                         decisions["Blackberry_1305_r1-2_AFlsUN_xt9_ALM3.ldb"].status)
+        loser = decisions["Blackberry_1305_r9-9_AFlsUN_xt9_ALM3.ldb"]
+        self.assertEqual(catalogue.DUPLICATE, loser.status)
+        self.assertIn("Blackberry_1305_r1-2_AFlsUN_xt9_ALM3.ldb", loser.reason)
 
     def test_a_locale_absent_from_the_engine_table_is_unsupported(self):
         # Exercised with a trimmed table rather than a fabricated filename: the

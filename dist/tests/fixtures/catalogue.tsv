@@ -6,13 +6,17 @@
 # Columns, tab-separated:  filename  locale-the-app-parses  publishing-decision
 # The locale column is what LanguagePacksScreen.kt's parser produces; REJECTED means it
 # refuses the name outright. Decisions: published | refused | unsupported | duplicate.
+#
+# For the four files in catalogue.TABLE_LOCALE_OVERRIDES the PUBLISHED locale is not the
+# parsed one in column 2 -- it is the engine table's (es_419, en_ZH, zh_TW, zh_HK), which
+# the filename cannot express. dist/tests/test_catalogue.py asserts those four by name.
 
 Blackberry_1305_r1-10_RUusUN_xt9_ALM3.ldb	ru	published
-Blackberry_1305_r1-11_ESusUNlatam_xt9_ALM3.ldb	es	duplicate
+Blackberry_1305_r1-11_ESusUNlatam_xt9_ALM3.ldb	es	published
 Blackberry_1305_r1-11_PTusUN_xt9_ALM3.ldb	pt	published
 Blackberry_1305_r1-12_ARlsUN_xt9_ALM3.ldb	ar	published
 Blackberry_1305_r1-12_ESusUNES_xt9_ALM3.ldb	es_ES	published
-Blackberry_1305_r1-15-2-6_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_bigTW_ALM.ldb	zh	duplicate
+Blackberry_1305_r1-15-2-6_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_bigTW_ALM.ldb	zh	published
 Blackberry_1305_r1-17-10-3_ZHsbUNps_GB2312_xt9_big_ALM.ldb	zh	published
 Blackberry_1305_r1-17_ENubUNUK_xt9_ALM3.ldb	en_UK	published
 Blackberry_1305_r1-17_HIlsUN_xt9_ALM3.ldb	hi	published
@@ -34,7 +38,7 @@ Blackberry_1305_r1-20_DEusUNCH_xt9_ALM3.ldb	de_CH	published
 Blackberry_1305_r1-20_DEusUN_xt9_ALM3.ldb	de	published
 Blackberry_1305_r1-21_FRusUNCH_xt9_ALM3.ldb	fr_CH	published
 Blackberry_1305_r1-21_FRusUN_xt9_ALM3.ldb	fr	published
-Blackberry_1305_r1-22-2-5_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_big_ALM.ldb	zh	duplicate
+Blackberry_1305_r1-22-2-5_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_big_ALM.ldb	zh	published
 Blackberry_1305_r1-28_ESusUN_xt9_ALM3.ldb	es	published
 Blackberry_1305_r1-2_AFlsUN_xt9_ALM3.ldb	af	published
 Blackberry_1305_r1-2_AZlsUN_xt9_ALM3.ldb	az	published
@@ -68,7 +72,7 @@ Blackberry_1305_r1-2_TKlsUN_xt9_ALM3.ldb	tk	published
 Blackberry_1305_r1-2_XHlbUN_xt9_ALM3.ldb	xh	published
 Blackberry_1305_r1-2_ZUlbUN_xt9_ALM3.ldb	zu	published
 Blackberry_1305_r1-31_KOusUN_xt9_ALM3.ldb	ko	published
-Blackberry_1305_r1-3_ENubUNZH_xt9_2.ldb	en	duplicate
+Blackberry_1305_r1-3_ENubUNZH_xt9_2.ldb	en	published
 Blackberry_1305_r1-3_EUlsUN_xt9_ALM3.ldb	eu	published
 Blackberry_1305_r1-3_KAlsUN_xt9_ALM3.ldb	ka	published
 Blackberry_1305_r1-3_LOlsUN_xt9_ALM3.ldb	lo	published
