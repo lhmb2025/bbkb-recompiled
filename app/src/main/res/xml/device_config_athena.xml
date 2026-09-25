@@ -61,7 +61,7 @@
                      language switch, …). Matches on BOTH keyCode and scanCode; default-action is
                      the out-of-box choice until the user picks one. -->
                 <key rawKeyCode="119" rawScanCode="110" role="MULTIFUNCTION"
-                     default-action="voice_input"
+                     default-action="emoji_board"
                      notes="Key2 multifunction/convenience key (keyCode=119, scanCode=110)"/>
 
             </scancode-mappings>

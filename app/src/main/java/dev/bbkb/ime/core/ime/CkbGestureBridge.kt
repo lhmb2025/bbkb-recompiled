@@ -312,7 +312,10 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
             GestureAction.ENTER_CURSOR_MODE -> ime.toggleCursorMode()
             GestureAction.NEXT_LANGUAGE -> ime.updateSuggestionsFromSubtype(InputSource.SOFTWARE)
             GestureAction.CYCLE_SYMBOLS -> {
-                ime.getPhysicalKeyboardStateTracker().resetAltStateAndNotify()
+                // Paging away from the Alt page: the Alt span and the per-key Alt state go, Shift
+                // and the held-key set stay. That scope is what ALT_PAGE_LEFT names.
+                ime.getPhysicalKeyboardStateTracker()
+                    .resetModifiers(dev.bbkb.ime.core.keyevent.ModifierResetReason.ALT_PAGE_LEFT)
                 ime.getKeyboardSwitcher().onSymbolShiftToggle(ime.getCurrentInputType(), ime.getCurrentImeOptions(), true, true)
             }
             GestureAction.DISMISS_KEYBOARD -> ime.dismissKeyboard()

@@ -16,6 +16,7 @@ class ControlModeControllerTest {
     private class FakeHost : ControlModeController.Host {
         override var isVkbControlModeEnabled = true
         override var controlModeSetting = 0
+        override var isAltActiveForCharacter = false
         val sent = mutableListOf<String>()
         var showCount = 0
         var hideCount = 0

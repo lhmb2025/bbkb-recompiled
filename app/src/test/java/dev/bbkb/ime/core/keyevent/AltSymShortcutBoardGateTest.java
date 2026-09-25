@@ -91,7 +91,7 @@ public class AltSymShortcutBoardGateTest {
 
     @Test
     public void theEmojiActionOpensTheBoardWhenTheImeWindowIsStillComingUp() {
-        storeAction(AltSymShortcutHandler.ACTION_EMOJI_PICKER);
+        storeAction(AltSymShortcutHandler.ACTION_EMOJI_BOARD);
 
         boolean handled = bridge.getAltSymShortcutHandler()
                 .detectAndExecute(KeyEvent.META_ALT_ON);
@@ -116,7 +116,7 @@ public class AltSymShortcutBoardGateTest {
      */
     @Test
     public void theEmojiActionStaysQuietWhenNoWindowCanBeShown() {
-        storeAction(AltSymShortcutHandler.ACTION_EMOJI_PICKER);
+        storeAction(AltSymShortcutHandler.ACTION_EMOJI_BOARD);
         when(ime.requestShowOnKeyPress()).thenReturn(false);
 
         bridge.getAltSymShortcutHandler().detectAndExecute(KeyEvent.META_ALT_ON);
@@ -127,7 +127,7 @@ public class AltSymShortcutBoardGateTest {
     /** Alt-locked (the app's own 0x200 span bit) counts as Alt, the same as a held Alt. */
     @Test
     public void altLockCountsAsTheChord() {
-        storeAction(AltSymShortcutHandler.ACTION_EMOJI_PICKER);
+        storeAction(AltSymShortcutHandler.ACTION_EMOJI_BOARD);
 
         bridge.getAltSymShortcutHandler().detectAndExecute(/* META_ALT_LOCKED */ 0x200);
 
@@ -137,7 +137,7 @@ public class AltSymShortcutBoardGateTest {
     /** No Alt: the handler declines and the caller falls back to the plain Sym behaviour. */
     @Test
     public void noAltIsNotTheChord() {
-        storeAction(AltSymShortcutHandler.ACTION_EMOJI_PICKER);
+        storeAction(AltSymShortcutHandler.ACTION_EMOJI_BOARD);
 
         org.junit.Assert.assertFalse(
                 bridge.getAltSymShortcutHandler().detectAndExecute(/* metaState */ 0));

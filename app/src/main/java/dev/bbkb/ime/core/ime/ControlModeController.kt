@@ -23,6 +23,13 @@ class ControlModeController(private val host: Host) {
         val isVkbControlModeEnabled: Boolean
         /** The control_mode setting: 0 = right Shift acts as Ctrl, 1 = left Shift acts as Ctrl, 2 = off. */
         val controlModeSetting: Int
+        /**
+         * Whether Alt counts as active for character interpretation right now —
+         * `ModifierState.isAltActiveForCharacter`. Read only by [remapMultifunctionCtrlKey], and only
+         * after that method's three early returns, so building a snapshot to answer it costs nothing
+         * on the ordinary key path.
+         */
+        val isAltActiveForCharacter: Boolean
         fun sendKeyDownWithMeta(keyCode: Int, metaState: Int)
         fun sendKeyUpWithMeta(keyCode: Int, metaState: Int)
         /** Show the control-mode notice and hide the strip (no-op if already showing). */
@@ -69,10 +76,37 @@ class ControlModeController(private val host: Host) {
     private var ctrlKeyDown = false
     private var ctrlUsedWithKey = false
 
+    /**
+     * True while the device's MULTIFUNCTION key is held down remapped as Ctrl, so its key-up is
+     * remapped consistently even if the Alt state changed mid-hold.
+     *
+     * <p>Phase 1f moved this here from `BlackBerryIME`, which was the last piece of Ctrl state
+     * outside this class. It was never anything but Ctrl state — the flag that says "this key is
+     * currently a Ctrl key" — and keeping it next to the machine that answers [isCtrlActive] is what
+     * makes this class the single Ctrl owner that `ModifierState.isCtrlActive()` reads from.
+     */
+    private var multifunctionCtrlDown = false
+
     /** True while a soft Shift chord (not the sticky Sym mode) should route keys through here. */
     val isVkbShiftChordActive: Boolean get() = shiftPressed && !inSymMode
 
     val isInCtrlMode: Boolean get() = inCtrlMode
+
+    /**
+     * **The one Ctrl question.** True while a physical Ctrl key is held or the sticky Ctrl mode is
+     * latched — this class owns both, and since Phase 1f nothing else in the app keeps Ctrl state of
+     * its own: the span tracker's "CTRL_SPAN" is really the Sym key (key code 63, `META_SYM_ON`), and
+     * [multifunctionCtrlDown] — the last copy outside this class — now lives here too.
+     * `dev.bbkb.ime.core.keyevent.ModifierState` reads Ctrl from here through
+     * `PhysicalKeyboardStateTracker.setCtrlStateSource`.
+     *
+     * Deliberately not widened to include [multifunctionCtrlDown]: a multifunction key held as Ctrl
+     * arrives at [handleHardKeyDown] as a real `KEYCODE_CTRL_LEFT` (that is what the remap is for)
+     * and sets [ctrlKeyDown] on the way through, so it is already counted. Adding the flag as a
+     * second term would double-count it and, worse, keep Ctrl "active" for a multifunction press the
+     * key-event path went on to swallow.
+     */
+    val isCtrlActive: Boolean get() = ctrlKeyDown || inCtrlMode
 
     /** Drop all mode state without touching the UI (configuration change). */
     fun resetAll() {
@@ -80,6 +114,7 @@ class ControlModeController(private val host: Host) {
         shiftPressed = false
         inSymMode = false
         inCtrlMode = false
+        multifunctionCtrlDown = false
     }
 
     /** Leave both sticky modes and hide the notice. */
@@ -255,6 +290,37 @@ class ControlModeController(private val host: Host) {
     }
 
     // ------------------------------------------------------------------ control_mode remap
+
+    /**
+     * When the device's MULTIFUNCTION key is configured to act as Ctrl, rewrite its events to
+     * `KEYCODE_CTRL_LEFT` so the physical-Ctrl machinery (chording, Ctrl+C/V/X shortcuts) treats it
+     * as a real Ctrl key — the same trick [remapModifierKeyEvent] uses for Shift. Skipped while Alt
+     * is active at press time so Alt+key can still type the mapping's alt character (e.g. '0' on the
+     * Key2 mic key).
+     *
+     * Phase 1f moved this out of `BlackBerryIME` together with its [multifunctionCtrlDown] latch: it
+     * is a Ctrl decision over Ctrl state, and this class is the Ctrl owner. The Alt question comes
+     * from [Host.isAltActiveForCharacter] — asked only here, and only after the three early returns
+     * below, so the ordinary key path pays nothing for it.
+     *
+     * The Alt check is `ModifierState.isAltActiveForCharacter` rather than the bit test it replaced,
+     * which counts a LOCKED Alt that the old spelling missed; `ModifierReadSiteEquivalenceTest`
+     * records that narrow change and why it is the answer the comment above always described.
+     */
+    fun remapMultifunctionCtrlKey(event: KeyEvent): KeyEvent {
+        val mapping = dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+            .getInstance().resolve(event.scanCode, event.keyCode) ?: return event
+        if (mapping.role != dev.bbkb.ime.core.device.config.model.KeyRole.MULTIFUNCTION) return event
+        if (dev.bbkb.ime.core.keyevent.MultifunctionKeyHandler.getConfiguredAction(mapping)
+            != dev.bbkb.ime.core.keyevent.MultifunctionKeyHandler.ACTION_CTRL) return event
+        if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0) {
+            multifunctionCtrlDown = !host.isAltActiveForCharacter
+        }
+        if (!multifunctionCtrlDown) return event
+        if (event.action == KeyEvent.ACTION_UP) multifunctionCtrlDown = false
+        return withKeyAndMeta(event, KeyEvent.KEYCODE_CTRL_LEFT,
+            event.metaState or META_CTRL_LEFT)
+    }
 
     /** The Ctrl key code the control_mode setting maps a Shift key onto, or 2 when the remap is off. */
     private fun controlModifierKey(): Int = when (host.controlModeSetting) {

@@ -2,6 +2,7 @@ package dev.bbkb.ime.core.settings.screens
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.SyncAlt
 import androidx.compose.runtime.Composable
 import dev.bbkb.ime.core.settings.ui.Nav
@@ -22,9 +23,17 @@ fun LanguagesInputScreen(
     onNavigateToLanguageSwitching: () -> Unit,
     onNavigateToMultiLanguageKeyboards: () -> Unit,
     onNavigateToLanguagePacks: () -> Unit,
+    onNavigateToLanguagesHub: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
     SettingsScreenHost(R.string.settings_languages_title, onNavigateBack, listOf(
+        // Preview of the consolidated screen, alongside the three it is meant to replace.
+        Nav(
+            title = R.string.settings_languages_title,
+            summary = R.string.languages_hub_summary,
+            icon = Icons.Default.Language.asRowIcon(),
+            onClick = { onNavigateToLanguagesHub() },
+        ),
         Nav(
             title = R.string.settings_multi_language_keyboards_title,
             summary = R.string.settings_multi_language_keyboards_summary,

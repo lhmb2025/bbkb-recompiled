@@ -77,6 +77,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object VoiceInput : SettingsRoute("voice_input", "Voice Input Settings")
     object VoiceLanguageSelection : SettingsRoute("voice_language_selection", "Voice Input Language")
     object LanguagePacks : SettingsRoute("language_packs", "Language Packs")
+    object LanguagesHub : SettingsRoute("languages_hub", "Language")
     object Debug : SettingsRoute("debug", "Debug Settings")
     object AdvancedGestureParameters : SettingsRoute("advanced_gesture_parameters", "Advanced Gesture Parameters")
     object GestureLab : SettingsRoute("gesture_lab", "Gesture Lab")
@@ -175,6 +176,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 VoiceInput.route -> VoiceInput
                 VoiceLanguageSelection.route -> VoiceLanguageSelection
                 LanguagePacks.route -> LanguagePacks
+                LanguagesHub.route -> LanguagesHub
                 Debug.route -> Debug
                 AdvancedGestureParameters.route -> AdvancedGestureParameters
                 GestureLab.route -> GestureLab

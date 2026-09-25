@@ -45,7 +45,7 @@ public class ScancodeMapping {
     public int boardId = 0;
 
     /**
-     * Default action for {@link KeyRole#MULTIFUNCTION} keys (e.g., "voice_input"), used until
+     * Default action for {@link KeyRole#MULTIFUNCTION} keys (e.g., "emoji_board"), used until
      * the user picks one in Settings. Action ids are defined in MultifunctionKeyHandler.
      */
     public String defaultAction;

@@ -19,19 +19,32 @@ import androidx.compose.ui.draw.drawWithContent
 import kotlinx.coroutines.delay
 
 /**
- * Holds the anchor of the setting that should be scrolled-to and highlighted after a
- * search result is tapped. Provided to the whole settings NavHost via [LocalSettingsHighlight].
+ * Holds the anchors of the settings that should be scrolled-to and highlighted after a search
+ * result (or a "go set this up" link) is tapped. Provided to the whole settings NavHost via
+ * [LocalSettingsHighlight].
+ *
+ * Several rows can be pending at once — the Language switching screen's shortcut link lights up
+ * both rows that can switch language (multifunction key and Alt+Sym). Each row clears only its
+ * own anchor once it has pulsed.
  */
 class SettingsHighlightController {
-    var pendingAnchor by mutableStateOf<String?>(null)
+    var pendingAnchors by mutableStateOf<Set<String>>(emptySet())
         private set
 
-    fun request(anchor: String) {
-        pendingAnchor = anchor
+    /** The first pending anchor, or null when nothing is pending. */
+    val pendingAnchor: String? get() = pendingAnchors.firstOrNull()
+
+    fun request(vararg anchors: String) {
+        pendingAnchors = anchors.toSet()
+    }
+
+    /** One row has been shown and pulsed. */
+    fun consume(anchor: String) {
+        pendingAnchors = pendingAnchors - anchor
     }
 
     fun consume() {
-        pendingAnchor = null
+        pendingAnchors = emptySet()
     }
 }
 
@@ -47,7 +60,7 @@ val LocalSettingsHighlight = compositionLocalOf { SettingsHighlightController() 
 @OptIn(ExperimentalFoundationApi::class)
 fun Modifier.settingsSearchAnchor(anchor: String): Modifier = composed {
     val controller = LocalSettingsHighlight.current
-    val isActive = controller.pendingAnchor == anchor
+    val isActive = anchor in controller.pendingAnchors
     val requester = remember { BringIntoViewRequester() }
     val highlightColor = MaterialTheme.colorScheme.primary
     val pulse = remember { Animatable(0f) }
@@ -59,7 +72,7 @@ fun Modifier.settingsSearchAnchor(anchor: String): Modifier = composed {
             requester.bringIntoView()
             pulse.snapTo(1f)
             pulse.animateTo(0f, animationSpec = tween(durationMillis = 1400))
-            controller.consume()
+            controller.consume(anchor)
         }
     }
 

@@ -84,7 +84,11 @@ public final class MultiLanguageUtils {
         String string = sharedPreferences.getString("multi_lang_input_subtypes", "");
         if (!TextUtils.isEmpty(string)) {
             for (String str : string.split(";")) {
-                arrayList.add(parseConfig(str));
+                // Unparseable entries are dropped: toSubtypes() dereferences every element.
+                MultiLanguageConfig config = parseConfig(str);
+                if (config != null) {
+                    arrayList.add(config);
+                }
             }
         }
         return arrayList;
@@ -140,6 +144,12 @@ public final class MultiLanguageUtils {
         String[] strArrSplit = str.split(":");
         if (strArrSplit.length > 1) {
             String str2 = strArrSplit[1];
+            // "null": saved by the Compose wizard when its primary language defaulted to a system
+            // language with no Latin layout (e.g. Korean). Such a keyboard types in the device's
+            // fallback layout, not in the language it names, so it is dropped rather than kept.
+            if (TextUtils.isEmpty(str2) || str2.equals("null")) {
+                return null;
+            }
             String[] strArrSplit2 = strArrSplit[0].split("/");
             int length = strArrSplit2.length;
             if (length > 1) {

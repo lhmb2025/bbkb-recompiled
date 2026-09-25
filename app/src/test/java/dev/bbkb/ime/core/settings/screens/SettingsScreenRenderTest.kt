@@ -223,7 +223,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "KeyboardHelperScreen" -> ({ KeyboardHelperScreen({}) })
         "LanguagePacksScreen" -> ({ LanguagePacksScreen({}) })
         "LanguageSwitchingScreen" -> ({ LanguageSwitchingScreen({}) })
-        "LanguagesInputScreen" -> ({ LanguagesInputScreen({}, {}, {}, {}) })
+        "LanguagesInputScreen" -> ({ LanguagesInputScreen({}, {}, {}, {}, {}) })
         "MainSettingsScreen" -> ({ MainSettingsScreen({}, {}) })
         "MultiLanguageKeyboardsScreen" -> ({ MultiLanguageKeyboardsScreen({}, {}, {}) })
         "MultiLanguageWizardScreen_ADD" -> ({ MultiLanguageWizardScreen(WizardMode.ADD, null, {}, {}) })
@@ -792,7 +792,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             title = "Input",
             resources = setOf(
                 "prefs_category_shake_gestures", "settings_keyboard_summary", "settings_keyboard_title",
-                "settings_pkb_multifunction_action_voice", "settings_preferences_title", "settings_shake_summary",
+                "settings_preferences_title", "settings_shake_summary", "settings_uim_toggle_voice",
                 "settings_voice_input_summary"
             ),
             literals = emptySet(),
@@ -804,8 +804,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             resources = setOf(
                 "settings_customize_menu_hidden_header", "settings_customize_menu_instructions",
                 "settings_customize_menu_title", "settings_pkb_multifunction_action_clipboard",
-                "settings_pkb_multifunction_action_emoji", "settings_pkb_multifunction_action_voice",
-                "settings_uim_toggle_fcc", "settings_uim_toggle_numpad"
+                "settings_pkb_multifunction_action_emoji", "settings_pkb_multifunction_action_fcc",
+                "settings_pkb_multifunction_action_number_pad", "settings_uim_toggle_voice"
             ),
             literals = setOf(
                 "1",
@@ -854,6 +854,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.Debug.route,
             title = "Debug Settings",
             resources = setOf(
+                // Its hardcoded "PHYSICAL KEYBOARD" header text now matches this resource's value.
+                "settings_category_physical_keyboard",
                 "prefs_acceleration_threshold_summary", "prefs_acceleration_threshold_title",
                 "prefs_advanced_gesture_thresholds_summary", "prefs_advanced_gesture_thresholds_title",
                 "prefs_advanced_settings_title", "prefs_autofill_debug_logging_summary",
@@ -889,7 +891,6 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "Gesture Lab (prototype)",
                 "Visualize swipes and see the new gesture classifier's verdict; tune thresholds live",
                 "VISUAL FEEDBACK",
-                "PHYSICAL KEYBOARD",
                 "When to show VKB on physical keyboard devices: Always",
                 "CURSOR CONTROL",
                 "SLIDEBOARD",
@@ -1046,6 +1047,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.LanguageSwitching.route,
             title = "Language switching",
             resources = setOf(
+                "settings_category_on_screen_keyboard",
                 "settings_lang_include_other_summary", "settings_lang_include_other_title",
                 "settings_lang_quick_switch_summary", "settings_lang_quick_switch_title",
                 "settings_lang_spacebar_switch_summary", "settings_lang_spacebar_switch_title",
@@ -1059,6 +1061,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.Languages.route,
             title = "Language",
             resources = setOf(
+                // The consolidated screen's preview entry (languages_hub_*), alongside the old three.
+                "languages_hub_summary",
                 "multi_language_input_settings_screen_title",
                 "multi_language_input_support_language_spinner_dialog_title", "settings_language_packs_summary",
                 "settings_language_packs_title", "settings_language_switching_summary",
@@ -1113,11 +1117,11 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.PhysicalKeyboard.route,
             title = "Physical keyboard",
             resources = setOf(
-                "control_key_setting_right_shift", "pref_alt_double_tap_lock", "pref_alt_double_tap_lock_summary",
+                "ckb_action_none", "pref_alt_double_tap_lock", "pref_alt_double_tap_lock_summary",
                 "pref_shift_double_tap_lock", "pref_shift_double_tap_lock_summary",
                 "pref_show_pkb_modifier_status_icon", "pref_show_pkb_modifier_status_icon_summary",
                 "settings_category_behavior", "settings_category_modifiers", "settings_physical_keyboard_title",
-                "settings_pkb_alt_sym_shortcut_disabled_summary", "settings_pkb_alt_sym_shortcut_title",
+                "settings_pkb_alt_sym_shortcut_disabled", "settings_pkb_alt_sym_shortcut_title",
                 "settings_pkb_ctrl_key_behavior_title", "settings_pkb_dictation_key_summary_on",
                 "settings_pkb_dictation_key_title", "settings_pkb_hold_action_off_summary",
                 "settings_pkb_hold_action_title"
@@ -1308,7 +1312,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             resources = setOf(
                 // The two `settings_pred_block_offensive_*` names are the "Block offensive words"
                 // row, moved here from Suggestions: it only ever masked dictation results.
-                "settings_pkb_multifunction_action_voice", "settings_pred_block_offensive_summary",
+                "settings_pred_block_offensive_summary", "settings_uim_toggle_voice",
                 "settings_pred_block_offensive_title", "settings_voice_auto_start_summary_on",
                 "settings_voice_auto_start_title", "settings_voice_builtin_summary",
                 "settings_voice_builtin_title", "settings_voice_prefer_offline_summary",

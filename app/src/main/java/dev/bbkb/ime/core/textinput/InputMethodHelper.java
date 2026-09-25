@@ -22,18 +22,11 @@ public final class InputMethodHelper {
     private static final InputMethodHelper sInstance = new InputMethodHelper();
 
 
-    public boolean emojiKeyPressed = false;
-    
-    /** Flag set when mic key is pressed (keycode 667), cleared after processing */
-    public boolean micKeyPressed = false;
-
-    /**
-     * Flag set when a MULTIFUNCTION key with a non-voice/non-emoji/non-ctrl action is
-     * pressed; KeyEventProcessor dispatches the configured action on key-up and clears it.
-     * (Voice/emoji actions reuse micKeyPressed/emojiKeyPressed; the ctrl action is
-     * handled by event remapping and never arms a flag.)
-     */
-    public boolean multifunctionKeyPressed = false;
+    // Phase 1g: emojiKeyPressed / micKeyPressed / multifunctionKeyPressed used to live here —
+    // three mutable public booleans, armed by KeyEventConverter on a key-down and consumed by
+    // KeyEventProcessor on the key-up, in a class that has nothing else to do with key events and
+    // could not clear them on any lifecycle event. That down-up pairing is owned by
+    // dev.bbkb.ime.core.keyevent.BoardKeyPressTracker now; see PendingKeyAction.
 
     private Context context;
 

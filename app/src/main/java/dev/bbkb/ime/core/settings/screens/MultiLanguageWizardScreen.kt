@@ -71,6 +71,7 @@ import dev.bbkb.ime.core.locale.RichInputMethodManager
 import dev.bbkb.ime.core.locale.multilanguage.LocaleItem
 import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageConfig
 import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageRepository
+import dev.bbkb.ime.core.shared.Logger
 import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageUtils
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
@@ -107,7 +108,9 @@ fun MultiLanguageWizardScreen(
     // State for selected languages
     var primaryLanguage by remember {
         mutableStateOf(
-            existingKeyboard?.getPrimaryLocale() ?: LocaleItem(Locale.getDefault().toString())
+            existingKeyboard?.getPrimaryLocale()
+                ?: keyboardManager.getDefaultPrimaryLocale(Locale.getDefault().toString())
+                ?: LocaleItem(Locale.getDefault().toString())
         )
     }
     
@@ -673,7 +676,13 @@ private fun saveConfiguration(
     
     val supportingList = ArrayList(supportingLanguages.toList())
     
-    val keyboardId = keyboardManager.getLayoutSetFor(primaryLanguage)
+    // Null when the primary is not a language that can lead a multi-language keyboard; saving
+    // that would store a keyboard with no layout, which types in the device's fallback layout.
+    // The primary now always defaults to a listed language, so this is a backstop, not a path.
+    val keyboardId = keyboardManager.getLayoutSetFor(primaryLanguage) ?: run {
+        Logger.warn("MultiLanguageWizard", "No layout for primary ${primaryLanguage.first}; not saved")
+        return
+    }
     val newKeyboard = MultiLanguageConfig(primaryLanguage, supportingList, keyboardId)
     
     val success = keyboardManager.addConfig(newKeyboard)

@@ -10,12 +10,18 @@ import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.keyevent.AltSymShortcutHandler
 import dev.bbkb.ime.core.keyevent.AuxCharacterResolver
 import dev.bbkb.ime.core.keyevent.InputSource
+import dev.bbkb.ime.core.device.state.PhysicalKeyboardStateTracker
+import dev.bbkb.ime.core.keyevent.ModifierState
+import dev.bbkb.ime.core.keyevent.ResolvedKey
 import dev.bbkb.ime.core.textinput.InputMethodHelper
 import dev.bbkb.ime.core.shared.Logger
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.core.BlackBerryIME
 import dev.bbkb.ime.core.keyevent.KeyEventProcessor
+import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardController
+import dev.bbkb.ime.keyboard.inputboard.fcc.FccController
+import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadController
 
 /**
  * The physical-keyboard side channels that are not ordinary key events: the accessibility
@@ -30,10 +36,13 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
 
     private companion object {
         const val TAG = "HardwareKeyBridge"
-        /** META_ALT_ON | META_ALT_LEFT_ON | META_ALT_RIGHT_ON | ALT_LOCKED (0x200), so Alt-lock is detected. */
-        const val ALT_ANY_MASK = KeyEvent.META_ALT_ON or KeyEvent.META_ALT_LEFT_ON or KeyEvent.META_ALT_RIGHT_ON or 0x200
-        const val EMOJI_BOARD = -11
-        const val VOICE_BOARD = -27
+        /**
+         * META_ALT_ON | META_ALT_LEFT_ON | META_ALT_RIGHT_ON | ALT_LOCKED (0x200), so Alt-lock is
+         * detected. Kept as an alias of the one definition in [ModifierState]; tests name it.
+         */
+        const val ALT_ANY_MASK = ModifierState.ALT_ANY_MASK
+        const val EMOJI_BOARD = ResolvedKey.DEFAULT_EMOJI_BOARD_ID
+        const val VOICE_BOARD = ResolvedKey.DEFAULT_VOICE_BOARD_ID
     }
 
     val altSymShortcutHandler = AltSymShortcutHandler()
@@ -52,14 +61,19 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
      * owner's "Sym works, Alt+Sym does nothing" report. Ask for the window and then act.
      */
     fun install() {
+        // One Ctrl tracker: ControlModeController owns it, and the modifier query API asks it
+        // rather than keeping a copy. The span tracker's own "CTRL_SPAN" is the Sym key (key
+        // code 63 sets META_SYM_ON), so it never was Ctrl state.
+        // Nullable on purpose: install() runs early in IME construction, and tests build a bridge
+        // over an IME that has no tracker at all.
+        val tracker: PhysicalKeyboardStateTracker? = ime.getPhysicalKeyboardStateTracker()
+        tracker?.setCtrlStateSource { ime.getControlMode().isCtrlActive }
+
         altSymShortcutHandler.setCallback(object : AltSymShortcutHandler.ActionCallback {
             override fun openSymbolKeyboard() {
                 if (canShowBoard()) {
                     ime.getKeyboardSwitcher().onSymbolShiftToggle(ime.getCurrentInputType(), ime.getCurrentImeOptions(), false, true)
                 }
-            }
-            override fun toggleCtrlMode() {
-                ime.getControlMode().toggleCtrlMode()
             }
             override fun switchLanguage() {
                 ime.switchToNextSubtype(InputSource.HARDWARE)
@@ -74,8 +88,18 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                     }
                 }
             }
-            override fun hideKeyboard() {
-                ime.dismissKeyboard()
+            override fun toggleClipboard() {
+                if (canShowBoard()) {
+                    toggleBoard(ClipboardController.KEY_CODE) {
+                        ime.clipboardController?.let { if (it.isShowing) it.hide() else it.show() }
+                    }
+                }
+            }
+            override fun toggleFcc() {
+                if (canShowBoard()) toggleBoard(FccController.KEY_CODE) {}
+            }
+            override fun toggleNumberPad() {
+                if (canShowBoard()) toggleBoard(NumberPadController.KEY_CODE) {}
             }
         })
     }
@@ -86,6 +110,15 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
      * question on a physical keyboard.
      */
     private fun canShowBoard(): Boolean = ime.isInputViewShown() || ime.requestShowOnKeyPress()
+
+    /**
+     * Toggle a UIM board through the coordinator, or run [fallback] when the UIM is off. FCC and
+     * the number pad are UIM-only boards, so their fallback does nothing.
+     */
+    private inline fun toggleBoard(boardKeyCode: Int, fallback: () -> Unit) {
+        val uibm = ime.getKeyboardSwitcher().getUnifiedInputBoardManager()
+        if (uibm != null && ime.isUimEnabled()) uibm.requestBoard(boardKeyCode) else fallback()
+    }
 
     /**
      * Register the KeyInterceptor callbacks for third-party PKB devices (Minimal Phone, Titan Pocket).
@@ -269,10 +302,13 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                 if (!ime.requestShowOnKeyPress()) return false
             }
 
-            // Merge the system meta state with the internal span-based state.
+            // One query, both questions: the special-key branches below ask the CHARACTER
+            // question ("should this key type its Alt character"), which the interpreted state
+            // answers, while the SYM branch asks the CHORD question, which only the modifier
+            // keys' own state may answer. ModifierState names the two apart.
             val tracker = ime.getPhysicalKeyboardStateTracker()
-            val effectiveMetaState = metaState or tracker.getInternalMetaState()
-            val altPressed = (effectiveMetaState and ALT_ANY_MASK) != 0
+            val modifiers = tracker.getModifierState(metaState)
+            val altPressed = modifiers.isAltActiveForCharacter()
             val keyboardSwitcher = ime.getKeyboardSwitcher()
             val inputLogic = ime.getInputLogic()
 
@@ -288,7 +324,7 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                             keyboardSwitcher.onEmojiKeyPressed()
                         }
                     } else {
-                        val emojiAltChar = resolveAltChar(mapping, 666, "0")
+                        val emojiAltChar = resolveAltChar(mapping, ResolvedKey.PSEUDO_KEYCODE_EMOJI, "0")
                         inputLogic.commitTypedWord(ime.getSettingsManager().getSettingsValues(), "", InputSource.HARDWARE)
                         inputLogic.mRichInputConnection.commitText(emojiAltChar, 1)
                     }
@@ -298,7 +334,7 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                     // Chord detection reads the modifier KEYS' state, not the masked internal
                     // state: on the symbol board's Alt page the mask adds Alt, and that is the
                     // board paging, not the user chording (KEY2, 2026-09-21).
-                    if (!altSymShortcutHandler.detectAndExecute(metaState or tracker.getModifierKeyMetaState())) {
+                    if (!altSymShortcutHandler.detectAndExecute(modifiers.getChordMetaState())) {
                         keyboardSwitcher.onSymbolShiftToggle(ime.getCurrentInputType(), ime.getCurrentImeOptions(), false, true)
                     }
                     handled = true
@@ -319,7 +355,7 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                             launchVoiceAssistant()
                         }
                     } else {
-                        val micAltChar = resolveAltChar(mapping, 667, ".")
+                        val micAltChar = resolveAltChar(mapping, ResolvedKey.PSEUDO_KEYCODE_VOICE, ".")
                         inputLogic.commitTypedWord(ime.getSettingsManager().getSettingsValues(), "", InputSource.HARDWARE)
                         inputLogic.mRichInputConnection.commitText(micAltChar, 1)
                     }
@@ -340,7 +376,7 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
             val resolver = auxCharacterResolver()
             val result = resolver.resolve(fallbackKeyCode)
             if (result.hasCharacter()) return result.character.toString()
-            if (fallbackKeyCode == 667) {
+            if (fallbackKeyCode == ResolvedKey.PSEUDO_KEYCODE_VOICE) {
                 val result2 = resolver.resolve(231)
                 if (result2.hasCharacter()) return result2.character.toString()
             }
@@ -362,7 +398,7 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
 
             // ALT CHORD FIX: when a non-Alt key is pressed while Alt is HELD (chorded), cancel the
             // long-press timer and consume the modifier.
-            if (event.action == KeyEvent.ACTION_DOWN && tracker.isAltPressed()) {
+            if (event.action == KeyEvent.ACTION_DOWN && tracker.getModifierState().isAltHeldBySpan()) {
                 tracker.cancelLongPressTimer()
                 tracker.consumeModifiersAfterKey(keyCode, true)
             }

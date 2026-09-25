@@ -387,7 +387,7 @@ public class DeviceInputMappingParser {
      *   role         — string (KeyRole name), required
      *   altChar      — single character, optional
      *   board        — int (board ID), optional
-     *   default-action — string (MULTIFUNCTION action id, e.g. "voice_input"), optional
+     *   default-action — string (MULTIFUNCTION action id, e.g. "emoji_board"), optional
      *   notes        — string, optional
      */
     private static ScancodeMapping parseSingleScancodeMapping(XmlPullParser parser) {

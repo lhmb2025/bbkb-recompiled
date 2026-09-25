@@ -8,20 +8,18 @@ import android.view.inputmethod.EditorInfo;
 import androidx.annotation.VisibleForTesting;
 
 import dev.bbkb.ime.core.device.config.builder.HardwareKeyCaptureBus;
-import dev.bbkb.ime.core.device.config.model.KeyRole;
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping;
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver;
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier;
 import dev.bbkb.ime.core.device.state.PhysicalKeyboardStateTracker;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
-import dev.bbkb.ime.core.textinput.InputMethodHelper;
 import dev.bbkb.ime.core.textinput.connection.EditorCapabilities;
 import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
 import dev.bbkb.ime.keyboard.inputboard.UnifiedInputBoardManager;
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPalettesView;
+import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadController;
 import dev.bbkb.ime.BuildConfig;
 import dev.bbkb.ime.core.locale.SubtypeManager;
 import dev.bbkb.ime.core.BlackBerryIME;
@@ -52,7 +50,23 @@ public class KeyEventProcessor {
      * Called by the accessibility service when pre-processing keys without an active text field.
      */
     public void processKeyEventForState(KeyEvent event) {
-        int keyCode = event.getKeyCode();
+        // Phase 1g: WHICH KEY IS THIS, answered by the same ResolvedKey the ordinary key path
+        // asks. No remap happens on this path — the accessibility service hands the raw event
+        // straight over — so this is the event every branch below acts on.
+        //
+        // It used to be a raw `keyCode == KEYCODE_SYM` with no mapping resolution at all, and
+        // that was the one place in the key path where identity was decided by the key code
+        // alone. On an MP01 the Sym key arrives as KEYCODE_ALT_RIGHT on scancode 249
+        // (device_config_minimal.xml gives that scancode the BOARD_SYM role), and
+        // HardwareKeyBridge's all-keys callback routes every KEYCODE_ALT_RIGHT into this method
+        // AND consumes it — so with the interceptor on, the MP01's Sym key arrived here, was not
+        // recognised as Sym, and did nothing at all. Owner decision, 2026-09-22: both paths use
+        // the same identity. That is a deliberate MP01-only behaviour change; on a KEY2 the
+        // shipped device_config_athena.xml names no Sym key, so the mapping-aware test falls back
+        // to KEYCODE_SYM and answers exactly what the old comparison answered
+        // (SymPrePassIdentityTest pins both halves).
+        final ResolvedKey key = ResolvedKey.of(event);
+        int keyCode = key.keyCode();
         int action = event.getAction();
 
         PhysicalKeyboardStateTracker tracker = ime.getPhysicalKeyboardStateTracker();
@@ -65,11 +79,12 @@ public class KeyEventProcessor {
         //  2. `tracker.handleKeyDown()` resets the internal Alt span for key code 63
         //     (KEYCODE_SYM) on every profile whose usesMetaSymHandling() is false, so even a
         //     sticky or locked Alt was already gone by the time the old code read it.
-        // getModifierKeyMetaState(), not getInternalMetaState(): the latter is passed through the
-        // current keyboard's meta mask, and the symbol board's Alt page is a mask that adds Alt —
-        // reading it here made the second/third Sym press look like Alt+Sym (KEY2, 2026-09-21).
-        int effectiveMeta = AltSymShortcutHandler.effectiveMetaState(
-                event, tracker != null ? tracker.getModifierKeyMetaState() : 0);
+        // ModifierState.getChordMetaState(), not the interpreted state: the latter is passed
+        // through the current keyboard's meta mask, and the symbol board's Alt page is a mask
+        // that adds Alt — reading it here made the second/third Sym press look like Alt+Sym
+        // (KEY2, 2026-09-21).
+        int effectiveMeta = (tracker != null ? tracker.getModifierState(event) : ModifierState.ofEvent(event))
+                .getChordMetaState();
 
         if (tracker != null) {
             if (action == KeyEvent.ACTION_DOWN) {
@@ -79,12 +94,14 @@ public class KeyEventProcessor {
             }
         }
 
-        if (keyCode != KeyEvent.KEYCODE_SYM) {
+        if (!key.isSymKey()) {
             return;
         }
         if (tracker != null) {
             // Same note as in onKeyDownInternal: name the Sym key to the tracker so its
-            // isSymKeyHeld() ("hold Sym to keep the symbol board open") can answer.
+            // isSymKeyHeld() ("hold Sym to keep the symbol board open") can answer. On a device
+            // whose Sym key is not KEYCODE_SYM this is the key code the ROM attached — which is
+            // the point, and is what the ordinary key path has always recorded.
             tracker.setSymKeyCode(keyCode);
         }
         AltSymShortcutHandler altSym = ime.getHardwareKeys().getAltSymShortcutHandler();
@@ -183,9 +200,16 @@ public class KeyEventProcessor {
 
         // Audit CT-12: the physical-keyboard classification is invariant for one event, and this
         // method used to evaluate it up to eight times (a singleton lookup plus a classification
-        // each) on the KEY2's most latency-sensitive path. Hoisted; recomputed once after
-        // remapKeyEvent, which can hand back a different KeyEvent.
-        boolean isPhysical = KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(keyEvent);
+        // each) on the KEY2's most latency-sensitive path.
+        //
+        // Phase 1e: this is the RAW event's classification, and it stays a plain local because
+        // the four gates below it all run before remapKeyEvent — the keypad-layout detector and
+        // the profile-builder capture bus both need the raw scancode/keycode, and the
+        // "not a physical keyboard" bail-out has to happen before we remap anything. The identity
+        // the rest of the method acts on is the ResolvedKey built from the REMAPPED event; this
+        // local is deliberately never reassigned to it, which is what the old code did.
+        final boolean rawIsPhysical =
+                KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(keyEvent);
 
         // §5.4: this used to initialize DeviceSettingsManager, the second facade over the same
         // resolved DeviceInputMapping. DeviceProfile is that facade now, and appContext() != null
@@ -193,7 +217,7 @@ public class KeyEventProcessor {
         // In the IME this is already true (BlackBerryIME.onCreate initializes the profile before
         // any key can arrive); it stays as the safety net it always was, and resolving against
         // this event's own device id rather than scanning is what the targeted form is for.
-        if (isPhysical && DeviceProfile.appContext() == null) {
+        if (rawIsPhysical && DeviceProfile.appContext() == null) {
             DeviceProfile.initializeForDevice(ime.getApplicationContext(), keyEvent.getDeviceId());
             Logger.info(TAG, "DeviceProfile initialized for device ID: " + keyEvent.getDeviceId());
         }
@@ -205,7 +229,7 @@ public class KeyEventProcessor {
         // call is two integer compares; it returns true only on the rare keystroke that changes
         // the answer, and then the profile is rebuilt so the symbol rows and layout-set names
         // follow.
-        if (isPhysical && dev.bbkb.ime.core.device.detection.KeypadLayoutDetector
+        if (rawIsPhysical && dev.bbkb.ime.core.device.detection.KeypadLayoutDetector
                 .observeKeyEvent(keyEvent.getScanCode(), keyEvent.getKeyCode())) {
             DeviceProfile.reinitializeForKeypadLayoutChange(
                     ime.getApplicationContext(), keyEvent.getDeviceId());
@@ -217,12 +241,12 @@ public class KeyEventProcessor {
         // not knowable from the role the current config assigns it. Consumed rather than
         // observed, so a Sym press during capture cannot open a board over the settings screen.
         // One volatile read when no capture is running, which is always, except on this screen.
-        if (isPhysical && HardwareKeyCaptureBus.offer(keyEvent.getScanCode(), keyEvent.getKeyCode(),
+        if (rawIsPhysical && HardwareKeyCaptureBus.offer(keyEvent.getScanCode(), keyEvent.getKeyCode(),
                 keyEvent.getDeviceId(), keyEvent.getRepeatCount(), true, keyEvent.getEventTime())) {
             return true;
         }
 
-        if (!isPhysical) {
+        if (!rawIsPhysical) {
             // Audit CT-11: an empty `if (!ime.getFccController().isViewActive()) {}` stood here.
             // Its body had been deleted and the predicate left behind — an unguarded call that
             // would NPE once fccController is nulled in releaseResources, for zero benefit.
@@ -244,21 +268,18 @@ public class KeyEventProcessor {
             return true;
         }
         KeyEvent keyEventRemapped = ime.remapKeyEvent(i, keyEvent);
-        int keyCode = keyEventRemapped.getKeyCode();
-        // Audit CT-12: the remap can produce a new KeyEvent, so reclassify once here.
-        isPhysical = KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(keyEventRemapped);
 
-        // Board/multifunction keys are exempt from several "an ordinary text key went down"
-        // behaviours below. Hoisted out of the dismissal block it used to live in, because the
-        // Alt symbol-long-press fallthroughs at the bottom of this method need it too: the MP01's
-        // SYM key arrives as KEYCODE_ALT_RIGHT (scancode 249), and isAltKey() would otherwise
-        // fire onSymbolKeyLongPress() on top of the board toggle the key already performed.
-        ScancodeMapping downMapping = ScancodeMappingResolver.getInstance().resolve(
-                keyEventRemapped.getScanCode(), keyCode);
-        final boolean isBoardKeyDown = keyCode == 666 || keyCode == 667
-                || (downMapping != null && downMapping.role != null
-                        && (downMapping.role.isConsumedAtAccessibilityLevel()
-                                || downMapping.role == KeyRole.MULTIFUNCTION));
+        // Phase 1e: WHICH KEY IS THIS, answered once, here, for the remapped event — the one
+        // every branch below acts on. It carries the key code, the scancode, the physical-keyboard
+        // classification (the remap can hand back a different KeyEvent, so this is its own
+        // classification, not the raw one above), the device config's role, and the 666/667
+        // pseudo-keycode translation. Board/multifunction keys are exempt from several "an
+        // ordinary text key went down" behaviours below, including the Alt symbol-long-press
+        // fallthroughs at the bottom of this method: the MP01's SYM key arrives as
+        // KEYCODE_ALT_RIGHT (scancode 249), and isAltKey() would otherwise fire
+        // onSymbolKeyLongPress() on top of the board toggle the key already performed.
+        final ResolvedKey key = ResolvedKey.of(keyEventRemapped);
+        final int keyCode = key.keyCode();
 
         // === Alt+Sym, on the ordinary hardware key path ===
         //
@@ -273,18 +294,17 @@ public class KeyEventProcessor {
         //
         // Placement matters: this must run before handleKeyDown() below, which resets the
         // internal Alt span for key code 63 on every profile without usesMetaSymHandling().
-        if (isPhysical && keyEventRemapped.getRepeatCount() == 0
-                && isSymBoardKey(keyCode, downMapping)) {
+        if (key.isPhysical() && keyEventRemapped.getRepeatCount() == 0 && key.isSymKey()) {
             // Which key code the Sym key answers to on this device, for the tracker's
             // isSymKeyHeld() — the "hold Sym to keep the symbol board open" gate below and in
             // KeyboardState. Recorded before the chord check, because a press the chord consumes
             // is still a press of the Sym key.
             ime.getPhysicalKeyboardStateTracker().setSymKeyCode(keyCode);
             AltSymShortcutHandler altSym = ime.getHardwareKeys().getAltSymShortcutHandler();
-            // Modifier-KEY state only (see PhysicalKeyboardStateTracker.getModifierKeyMetaState):
-            // the masked internal state carries the symbol board's own Alt page as META_ALT_ON.
-            int effectiveMeta = AltSymShortcutHandler.effectiveMetaState(keyEventRemapped,
-                    ime.getPhysicalKeyboardStateTracker().getModifierKeyMetaState());
+            // Modifier-KEY state only (see ModifierState.getChordMetaState): the interpreted
+            // state carries the symbol board's own Alt page as META_ALT_ON.
+            int effectiveMeta = ime.getPhysicalKeyboardStateTracker()
+                    .getModifierState(keyEventRemapped).getChordMetaState();
             if (altSym.detectAndExecute(effectiveMeta)) {
                 altSym.markSymPressConsumed();
                 ime.getPhysicalKeyboardStateTracker().consumeModifiersAfterKey(0, true);
@@ -311,7 +331,7 @@ public class KeyEventProcessor {
             ime.setNeedsKeyboardReload(false);
             ime.getKeyboardSwitcher().startInput(ime.getCurrentInputEditorInfo(), ime.getCurrentInputType(), ime.getCurrentImeOptions());
         }
-        if (LocaleUtils.isChineseCangjie(SubtypeManager.getInstance().getCurrentSubtypeLocale()) && ime.isInputViewShown() && !ime.getFccController().isViewActive() && PhysicalKeyboardStateTracker.isShiftKey(keyCode)) {
+        if (LocaleUtils.isChineseCangjie(SubtypeManager.getInstance().getCurrentSubtypeLocale()) && ime.isInputViewShown() && !ime.getFccController().isViewActive() && key.isShiftKey()) {
             ime.toggleCangjieMode();
             ime.getKeyboardSwitcher().requestShiftOff();
             return true;
@@ -325,7 +345,7 @@ public class KeyEventProcessor {
             return true;
         }
         boolean zIsInputViewShown = ime.isInputViewShown();
-        if (!zIsInputViewShown && isPhysical) {
+        if (!zIsInputViewShown && key.isPhysical()) {
             zIsInputViewShown = requestShowOnKeyPress();
         }
         if (ime.isInputActive() && zIsInputViewShown && ime.getControlMode().handleHardKeyDown(keyCode, keyEventRemapped)) {
@@ -336,24 +356,24 @@ public class KeyEventProcessor {
             // never read anywhere in the file — two getSymbolPageOrder() calls per physical
             // key-down for nothing — and it is the fossil of a predicate that once gated the
             // block below. If that gate is wanted back it belongs here as ime.isInSymbolMode().
-            boolean z4 = PhysicalKeyboardStateTracker.isShiftKey(keyCode);
+            boolean z4 = key.isShiftKey();
             // FIX Bug #1: Don't hide UIM boards (clipboard, emoji, voice) on Enter key press.
             // Only non-Enter, non-Shift keys should trigger board dismissal.
-            boolean isEnterKey = keyCode == KeyEvent.KEYCODE_ENTER;
+            boolean isEnterKey = key.isEnterKey();
             if (!z4 && !isEnterKey) {
                 // Audit CT-10: this tested `i == -5`, the project's SOFT-key code for delete,
                 // against the raw framework key code that onKeyDown delivers — a constant false.
                 // So applyCursorModeState always got `false` here and the shift-state repost
                 // below was unreachable: "backspace while cursor mode is on re-derives shift
                 // state" never happened on a physical keyboard.
-                boolean isBackspace = keyCode == KeyEvent.KEYCODE_DEL;
+                boolean isBackspace = key.isBackspaceKey();
                 // Board/multifunction keys are exempt from the text-key dismissals:
                 // their key-UP toggles the board (or cursor mode) through its own
                 // action, and disabling on key-DOWN would clear the state that
                 // key-up decision reads — the historical toggle-reopen fight.
                 // Text keys still dismiss boards AND disable cursor mode.
-                // (isBoardKeyDown is computed once near the top of this method.)
-                if (!isBoardKeyDown) {
+                // (ResolvedKey is computed once near the top of this method.)
+                if (!key.isBoardKey()) {
                     ime.applyCursorModeState(false, isBackspace, false);
                     ime.dismissBoardsForTextKey();
                 }
@@ -367,7 +387,8 @@ public class KeyEventProcessor {
                 ime.getFccController().onKeyEventWhileShowing();
             }
 
-            if (keyCode == KeyEvent.KEYCODE_ENTER && keyEventRemapped.isShiftPressed()) {
+            if (key.isEnterKey()
+                    && ModifierState.ofEvent(keyEventRemapped).isShiftHeld()) {
                 // Parity with the original (WhatsApp enter fix, 2026-08-27): retire the composing
                 // word, then PASS THE KEY THROUGH to the app instead of committing "\n" ourselves.
                 // Self-committing a newline here made WhatsApp (whose enter-is-send watches the
@@ -409,12 +430,12 @@ public class KeyEventProcessor {
                     ime.getInputLogic().mComposingTracker.clearAll();
                     ime.getUiUpdateHandler().cancelPendingSuggestionUpdates();
                 }
-                ime.getPhysicalKeyboardStateTracker().consumeModifiersAfterKey(keyCode, isPhysical);
-                if (isPhysical) {
+                ime.getPhysicalKeyboardStateTracker().consumeModifiersAfterKey(keyCode, key.isPhysical());
+                if (key.isPhysical()) {
                     c0920gM4442a.setUiUpdateMode(1);
                 }
                 ime.applyPostEventUpdates(c0920gM4442a, true);
-                if (isPhysical) {
+                if (key.isPhysical()) {
                     while (c0914aMo5937a != null) {
                         if (c0914aMo5937a.mCodePoint == -23) {
                             if (ime.hasCjkSuggestionGrid()) {
@@ -425,24 +446,30 @@ public class KeyEventProcessor {
                         c0914aMo5937a = c0914aMo5937a.mNextEvent;
                     }
                 }
-                if (PhysicalKeyboardStateTracker.isAltKey(keyCode) && !isBoardKeyDown) {
+                if (key.isAltKey() && !key.isBoardKey()) {
                     ime.getKeyboardSwitcher().onSymbolKeyLongPress(ime.getCurrentInputType(), ime.getCurrentImeOptions());
                 }
                 z2 = true;
             } else if (c0914aMo5937a.isModifierKey()) {
-                ime.getPhysicalKeyboardStateTracker().consumeModifiersAfterKey(keyCode, isPhysical);
+                ime.getPhysicalKeyboardStateTracker().consumeModifiersAfterKey(keyCode, key.isPhysical());
                 z2 = true;
                 zM5997a = false;
             } else if (c0914aMo5937a.isGestureEnd()) {
                 // Mic/emoji key consumed by IME — do not fall through to superOnKeyDown,
                 // which would type the key's base character (e.g. '0' for the Athena mic key).
-                ime.getPhysicalKeyboardStateTracker().consumeModifiersAfterKey(keyCode, isPhysical);
+                ime.getPhysicalKeyboardStateTracker().consumeModifiersAfterKey(keyCode, key.isPhysical());
                 z2 = true;
                 zM5997a = false;
             } else {
-                ime.getPhysicalKeyboardStateTracker().consumeModifiersAfterKey(keyCode, isPhysical);
-                if (PhysicalKeyboardStateTracker.isAltKey(keyCode) && !isBoardKeyDown
-                        && !keyEventRemapped.isSymPressed()) {
+                ime.getPhysicalKeyboardStateTracker().consumeModifiersAfterKey(keyCode, key.isPhysical());
+                // "Is Sym held?" is the TRACKER's answer, not the event's. The KEY2's Sym key
+                // sets no META_SYM_ON, so ModifierState.ofEvent(...) — which is all this site
+                // used to read — said "not held" on the one device the branch exists for, while
+                // the matching key-UP test a few hundred lines down said "held". Owner decision,
+                // 2026-09-22: both read the tracker (SymHeldReadsTrackerTest).
+                if (key.isAltKey() && !key.isBoardKey()
+                        && !ime.getPhysicalKeyboardStateTracker()
+                                .getModifierState(keyEventRemapped).isSymHeld()) {
                     ime.getKeyboardSwitcher().onSymbolKeyLongPress(ime.getCurrentInputType(), ime.getCurrentImeOptions());
                 }
                 zM5997a = false;
@@ -455,7 +482,7 @@ public class KeyEventProcessor {
             if (!zM5997a) {
                 return true;
             }
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            if (key.isEnterKey()) {
                 // Parity with the original (WhatsApp enter fix, 2026-08-27). The original never
                 // performs the editor action itself on a hardware Enter: handleEnterKey's
                 // "pendingEditorAction" means "retire the word, then return super.onKeyDown(66)"
@@ -494,20 +521,22 @@ public class KeyEventProcessor {
         // composing/auto-correct-indicator update in onSuggestionsReceived until the next
         // backspace. Heal here too, for the same reason and by the same means.
         ime.refreshInputActive();
+        // Audit CT-12 / Phase 1e: the RAW event's classification, once. It has to be the raw one:
+        // both users below run before remapKeyEvent. (It used to be evaluated twice here — once
+        // inside the capture hook and once for the delegate gate — and once more further down,
+        // which the ResolvedKey below replaces.)
+        final boolean rawIsPhysical =
+                KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(keyEvent);
         // The key-UP half of the profile-builder capture hook in onKeyDownInternal: a step ends on
         // the release of the key it recorded, and a release the capture swallowed the press of
         // must not reach the system alone (for a modifier that is how its meta state sticks on).
-        // isCapturing() is tested first so the hoisted classification below stays the only one on
-        // the ordinary path.
-        if (HardwareKeyCaptureBus.isCapturing()
-                && KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(keyEvent)
+        if (HardwareKeyCaptureBus.isCapturing() && rawIsPhysical
                 && HardwareKeyCaptureBus.offer(keyEvent.getScanCode(), keyEvent.getKeyCode(),
                         keyEvent.getDeviceId(), keyEvent.getRepeatCount(), false,
                         keyEvent.getEventTime())) {
             return true;
         }
-        // Audit CT-12: hoist the classification (it was evaluated six times in this method).
-        if (!KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(keyEvent)) {
+        if (!rawIsPhysical) {
             // Non-physical events (deviceId==0): delegate to framework.
             // For KEYCODE_BACK, super.onKeyUp() calls handleBack(true) → requestHideSelf(0).
             return ime.superOnKeyUp(i, keyEvent);
@@ -523,22 +552,25 @@ public class KeyEventProcessor {
         }
         if (ime.isAltEnterPressed()) {
             ime.setAltEnterPressed(false);
-            if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER && keyEvent.isAltPressed()) {
+            if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                    && ModifierState.ofEvent(keyEvent).isAltHeld()) {
                 return true;
             }
         }
         KeyEvent keyEventRemapped = ime.remapKeyEvent(i, keyEvent);
-        int keyCode = keyEventRemapped.getKeyCode();
-        // The remap can hand back a different KeyEvent, so classify the remapped one once.
-        final boolean isPhysical = KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(keyEventRemapped);
+
+        // Phase 1e: WHICH KEY IS THIS, answered once for the remapped event. This method used to
+        // resolve the same scancode mapping twice — once for the Alt+Sym key-up gate below and
+        // again for the emoji/voice/multifunction block — and classify the device a third time.
+        final ResolvedKey key = ResolvedKey.of(keyEventRemapped);
+        final int keyCode = key.keyCode();
 
         // The key-UP half of the Alt+Sym chord: the press already dispatched the configured
         // action, so this release must reach neither the symbol-board machinery nor (through
         // superOnKeyUp) the app, which would otherwise see a Sym release with no matching press.
         // Gated on the key itself, not just on the outstanding flag: the user routinely lets Alt
         // go before Sym, and swallowing the Alt release would strand the tracker's Alt state.
-        if (isPhysical && isSymBoardKey(keyCode, ScancodeMappingResolver.getInstance()
-                        .resolve(keyEventRemapped.getScanCode(), keyCode))
+        if (key.isPhysical() && key.isSymKey()
                 && ime.getHardwareKeys().getAltSymShortcutHandler().consumeSymKeyUp()) {
             releaseConsumedBoardKey(keyEventRemapped);
             return true;
@@ -555,45 +587,39 @@ public class KeyEventProcessor {
         if (ime.getControlMode().handleHardKeyUp(keyCode, keyEventRemapped)) {
             return true;
         }
-        if (LocaleUtils.isChineseCangjie(SubtypeManager.getInstance().getCurrentSubtypeLocale()) && ime.isInputViewShown() && PhysicalKeyboardStateTracker.isShiftKey(keyCode)) {
+        if (LocaleUtils.isChineseCangjie(SubtypeManager.getInstance().getCurrentSubtypeLocale()) && ime.isInputViewShown() && key.isShiftKey()) {
             return true;
         }
-        // === UNIFIED: Resolve key role for emoji/voice key-up handling ===
-        ScancodeMapping keyUpMapping = ScancodeMappingResolver.getInstance().resolve(
-                keyEventRemapped.getScanCode(), keyCode);
-        // A MULTIFUNCTION key set to the emoji action routes through the BOARD_EMOJI key-up
-        // path (its down-event armed emojiKeyPressed), so it must satisfy isEmojiRole too.
-        String multifunctionAction = (keyUpMapping != null && keyUpMapping.role == KeyRole.MULTIFUNCTION)
-                ? MultifunctionKeyHandler.getConfiguredAction(keyUpMapping) : null;
-        boolean isEmojiRole = (keyUpMapping != null && keyUpMapping.role == KeyRole.BOARD_EMOJI)
-                || MultifunctionKeyHandler.ACTION_EMOJI_BOARD.equals(multifunctionAction)
-                || keyCode == 666; // legacy fallback
-        boolean isVoiceRole = (keyUpMapping != null && keyUpMapping.role == KeyRole.BOARD_VOICE);
-        // MULTIFUNCTION keys are consumed by the IME like board keys (their base character
-        // must never leak through the symbol-long-press / extra-key fallthroughs below).
-        boolean isBoardKey = (keyUpMapping != null && keyUpMapping.role != null
-                && (keyUpMapping.role.isConsumedAtAccessibilityLevel() || keyUpMapping.role == KeyRole.MULTIFUNCTION));
-        int emojiBoardId = (keyUpMapping != null && keyUpMapping.boardId != 0) ? keyUpMapping.boardId : -11;
-        int voiceBoardId = (keyUpMapping != null && keyUpMapping.boardId != 0) ? keyUpMapping.boardId : -27;
-        
-        if (isEmojiRole && isPhysical) {
+        // === UNIFIED: emoji/voice key-up handling, off the one resolved identity ===
+        // ResolvedKey.isEmojiKey() is the BOARD_EMOJI role, a MULTIFUNCTION key whose configured
+        // action is the emoji board (its down-event armed the same PendingKeyAction.EMOJI_BOARD, so
+        // it takes the same key-up path), or the legacy 666 pseudo-keycode. isBoardKey() additionally
+        // covers MULTIFUNCTION and 667: those keys are consumed by the IME, and their base
+        // character must never leak through the symbol-long-press / extra-key fallthroughs below.
+        //
+        // Phase 1g: the three branches below used to read (and clear) the three mutable
+        // InputMethodHelper flags. BoardKeyPressTracker owns that pairing now — armed by
+        // KeyEventConverter on the way down, spent here on the way up, discarded with the rest of
+        // the per-key state on a full modifier reset.
+        final BoardKeyPressTracker pairing = BoardKeyPressTracker.getInstance();
+
+        if (key.isEmojiKey() && key.isPhysical()) {
             releaseConsumedBoardKey(keyEventRemapped);
-            InputMethodHelper inputMethodHelper = InputMethodHelper.getInstance();
-            if (inputMethodHelper.emojiKeyPressed) {
-                inputMethodHelper.emojiKeyPressed = false;
+            if (pairing.consume(PendingKeyAction.EMOJI_BOARD)) {
                 UnifiedInputBoardManager unifiedManager = ime.getKeyboardSwitcher().getUnifiedInputBoardManager();
                 if (unifiedManager != null && ime.isUimEnabled()) {
-                    unifiedManager.requestBoard(emojiBoardId);
+                    unifiedManager.requestBoard(key.boardId(ResolvedKey.DEFAULT_EMOJI_BOARD_ID));
                 } else {
                     ime.getKeyboardSwitcher().onEmojiKeyPressed();
                 }
             }
             return true;
         }
-        InputMethodHelper voiceHelper = InputMethodHelper.getInstance();
-        if (voiceHelper.micKeyPressed && isPhysical) {
+        // isPhysical() first, then consume(): the pending action must not be spent by an event
+        // this branch will not act on. (The old form read the flag first and the classification
+        // second, which came to the same thing because the clear was inside the branch.)
+        if (key.isPhysical() && pairing.consume(PendingKeyAction.VOICE_INPUT)) {
             releaseConsumedBoardKey(keyEventRemapped);
-            voiceHelper.micKeyPressed = false;
             if (!ime.isInputActive() || !ime.isInputViewShown()) {
                 ime.getHardwareKeys().launchVoiceAssistant();
             } else {
@@ -601,7 +627,7 @@ public class KeyEventProcessor {
                 if (unifiedManager != null && ime.isUimEnabled()) {
                     // TOGGLES: the coordinator owns "which board is open", so a second press
                     // closes the voice board (same as the clipboard/FCC multifunction actions).
-                    unifiedManager.requestBoard(voiceBoardId);
+                    unifiedManager.requestBoard(key.boardId(ResolvedKey.DEFAULT_VOICE_BOARD_ID));
                 } else {
                     // UIM disabled (or its manager not built yet). This used to call
                     // switchToVoiceIme(), which hands off to ANOTHER IME and so could never close
@@ -613,17 +639,21 @@ public class KeyEventProcessor {
             }
             return true;
         }
-        // Multifunction key released: dispatch the user-configured action (voice/emoji
-        // actions were routed through the mic/emoji flags above; ctrl was remapped).
-        // Board actions (clipboard, fcc) route through the board coordinator, which
+        // Multifunction key released: dispatch the user-configured action (the emoji
+        // action armed EMOJI_BOARD above; ctrl was remapped).
+        // Board actions (clipboard, fcc, number pad) route through the board coordinator, which
         // TOGGLES the board — a second press closes it if it's open.
-        InputMethodHelper multifunctionHelper = InputMethodHelper.getInstance();
-        if (multifunctionHelper.multifunctionKeyPressed && isPhysical) {
+        if (key.isPhysical() && pairing.consume(PendingKeyAction.MULTIFUNCTION)) {
             // Release BEFORE dispatching: FccController.showFcc() refuses to open while
             // the tracker still counts this key as held (keysDown == 0 guard).
             releaseConsumedBoardKey(keyEventRemapped);
-            multifunctionHelper.multifunctionKeyPressed = false;
             if (ime.isInputActive() && ime.isInputViewShown()) {
+                // The action comes from the key being RELEASED, not from the key that armed the
+                // pending action — pairing.armedBy(MULTIFUNCTION) knows which that was. They are
+                // the same key in every real sequence, and where they are not this resolves null
+                // and the switch throws; preserved rather than fixed, and pinned by
+                // BoardKeyPairingCharacterisationTest, because changing it is a behaviour change.
+                final String multifunctionAction = key.getMultifunctionAction();
                 switch (multifunctionAction) {
                     case MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH:
                         ime.updateSuggestionsFromSubtype(InputSource.HARDWARE);
@@ -644,14 +674,12 @@ public class KeyEventProcessor {
                         // a UIM-only board), so pass a no-op.
                         toggleBoardOrFallback(-42, () -> {});
                         break;
-                    case MultifunctionKeyHandler.ACTION_CURSOR_MODE:
-                        ime.toggleCursorMode();
+                    case MultifunctionKeyHandler.ACTION_NUMBER_PAD:
+                        // UIM-only board, like FCC.
+                        toggleBoardOrFallback(NumberPadController.KEY_CODE, () -> {});
                         break;
                     case MultifunctionKeyHandler.ACTION_SYMBOL_KEYBOARD:
                         ime.getKeyboardSwitcher().onSymbolShiftToggle(ime.getCurrentInputType(), ime.getCurrentImeOptions(), false, true);
-                        break;
-                    case MultifunctionKeyHandler.ACTION_HIDE_KEYBOARD:
-                        ime.dismissKeyboard();
                         break;
                     default:
                         if (BuildConfig.DEBUG) Log.w(TAG, "Unknown multifunction key action: " + multifunctionAction);
@@ -669,7 +697,7 @@ public class KeyEventProcessor {
         if (ime.getInputLogic().isKeyTracked(keyEventRemapped)) {
             ime.getKeyboardSwitcher().onHardwareKeyEvent(keyEventRemapped, ime.getCurrentInputType(), ime.getCurrentImeOptions());
             ime.getPhysicalKeyboardStateTracker().handleKeyUp(keyCode, keyEventRemapped);
-            if (PhysicalKeyboardStateTracker.isShiftKey(keyCode)) {
+            if (key.isShiftKey()) {
                 ime.getInputLogic().sendKeyUp(keyCode);
             }
             if ((keyEventRemapped.getFlags() & KeyEvent.FLAG_CANCELED) != 0) {
@@ -683,10 +711,14 @@ public class KeyEventProcessor {
                 // (tap Sym, type one symbol, back to letters) — the default and only
                 // behaviour since the "Close symbol keyboard after symbol" setting was
                 // removed. Holding Sym is what keeps the board up instead, so the hold is
-                // the one thing that suppresses it. isSymPressed() alone is not that test:
-                // it reads META_SYM_ON, which the KEY2's Sym key does not set.
-                if (!isBoardKey && keyCode != 666 && keyCode != 667 && isPhysical && ime.getKeyboardSwitcher().getKeyByPhysicalScanCode(keyEventRemapped.getScanCode(), false) != null && !keyEventRemapped.isSymPressed()
-                        && !ime.getPhysicalKeyboardStateTracker().isSymKeyHeld()) {
+                // the one thing that suppresses it. The event's own META_SYM_ON alone is not
+                // that test — the KEY2's Sym key does not set it — so ModifierState.isSymHeld()
+                // is the OR of that bit and the tracker's held-key set, which is exactly the
+                // pair of conditions this branch used to spell out separately.
+                if (!key.isBoardKey() && key.isPhysical()
+                        && ime.getKeyboardSwitcher().getKeyByPhysicalScanCode(key.scanCode(), false) != null
+                        && !ime.getPhysicalKeyboardStateTracker()
+                                .getModifierState(keyEventRemapped).isSymHeld()) {
                     ime.getKeyboardSwitcher().onSymbolKeyLongPress(ime.getCurrentInputType(), ime.getCurrentImeOptions());
                 }
             }
@@ -710,7 +742,7 @@ public class KeyEventProcessor {
             }
             return true;
         }
-        if (keyCode != KeyEvent.KEYCODE_FUNCTION && !isBoardKey && keyCode != 666 && keyCode != 667 && ime.isInputActive() && ime.isInputViewShown()) {
+        if (!key.isFunctionKey() && !key.isBoardKey() && ime.isInputActive() && ime.isInputViewShown()) {
             if (BuildConfig.DEBUG) Log.w(TAG, "Extra key event for keycode: " + keyCode + ", consuming.");
             return true;
         }
@@ -748,22 +780,14 @@ public class KeyEventProcessor {
      * path actually tracked.
      */
     /**
-     * Whether this key is the Sym key, by either of the two names it answers to: a real
-     * {@link KeyEvent#KEYCODE_SYM} (BlackBerry hardware) or a device config that gives its
-     * scancode the {@link KeyRole#BOARD_SYM} role (the MP01, whose ROM attaches
-     * {@code KEYCODE_ALT_RIGHT} to scancode 249). The scancode is what identifies the key; the
-     * keycode is just what the .kl file says.
+     * Whether this key is the Sym key. The rule lives in {@link ResolvedKey#isSymBoardKey}, which
+     * is the one place key identity is decided; this stays as the name the existing suites call.
      *
      * @param mapping the mapping already resolved for this event, or null if none matched
      */
     @VisibleForTesting
     static boolean isSymBoardKey(int keyCode, ScancodeMapping mapping) {
-        if (mapping != null && mapping.role != null) {
-            // The config is authoritative: a key it gives another role to is not the Sym key,
-            // whatever keycode the ROM attached to it.
-            return mapping.role == KeyRole.BOARD_SYM;
-        }
-        return keyCode == KeyEvent.KEYCODE_SYM;
+        return ResolvedKey.isSymBoardKey(keyCode, mapping);
     }
 
     private void releaseConsumedBoardKey(KeyEvent event) {
@@ -789,7 +813,9 @@ public class KeyEventProcessor {
     }
 
     private boolean handleAltEnterLanguageSwitch(int keyCode, KeyEvent keyEvent) {
-        if (ime.isInputViewShown() && keyEvent.isAltPressed() && keyCode == KeyEvent.KEYCODE_ENTER && ime.getRichInputMethodManager().hasMultipleEnabledSubtypesInThisIme(false)) {
+        if (ime.isInputViewShown() && ModifierState.ofEvent(keyEvent).isAltHeld()
+                && keyCode == KeyEvent.KEYCODE_ENTER
+                && ime.getRichInputMethodManager().hasMultipleEnabledSubtypesInThisIme(false)) {
             ime.setAltEnterPressed(true);
             ime.getInputLogic().commitOrResetComposing(ime.getSettingsManager().getSettingsValues(), InputSource.INTERNAL);
             ime.updateSuggestionsFromSubtype(InputSource.HARDWARE);

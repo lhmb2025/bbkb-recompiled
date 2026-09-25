@@ -46,7 +46,7 @@ public enum CaptureStep {
     }
 
     /** The action a captured MULTIFUNCTION key starts life with, until the user repoints it. */
-    public static final String MULTIFUNCTION_DEFAULT_ACTION = "voice_input";
+    public static final String MULTIFUNCTION_DEFAULT_ACTION = "emoji_board";
 
     private final KeyRole role;
     @Nullable private final String defaultTreatAs;

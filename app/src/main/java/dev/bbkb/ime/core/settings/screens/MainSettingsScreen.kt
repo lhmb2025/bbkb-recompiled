@@ -161,12 +161,13 @@ fun MainSettingsScreen(
                     )
                 }
 
-                // 1. Languages
+                // 1. Languages: straight to the consolidated screen. The old Languages
+                // menu stays registered for deep links and search results that route to it.
                 PreferenceScreen(
                     title = context.getString(R.string.settings_languages_title),
                     summary = context.getString(R.string.settings_languages_summary),
                     icon = Icons.Default.Language,
-                    onClick = { onNavigateToScreen(SettingsRoute.Languages.route) }
+                    onClick = { onNavigateToScreen(SettingsRoute.LanguagesHub.route) }
                 )
 
                 // 2. Typing and input

@@ -27,6 +27,7 @@ import dev.bbkb.ime.core.engine.NuanceSDKManager;
 import dev.bbkb.ime.core.locale.SubtypeManager;
 import dev.bbkb.ime.core.keyevent.KeyCharacterInterpreter;
 import dev.bbkb.ime.core.keyevent.KeyCharacterResult;
+import dev.bbkb.ime.core.keyevent.ModifierResetReason;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
 import dev.bbkb.ime.keyboard.internal.KeyHintPosition;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
@@ -42,12 +43,16 @@ import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPalettesView;
 import dev.bbkb.ime.keyboard.inputboard.fcc.FccView;
 import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadView;
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputView;
+import dev.bbkb.ime.keyboard.inputboard.UnifiedBoardCoordinator;
 import dev.bbkb.ime.keyboard.inputboard.UnifiedInputBoardManager;
 import dev.bbkb.ime.keyboard.internal.KeyRepeatHandler;
 import dev.bbkb.ime.keyboard.internal.KeyboardIconSet;
 import dev.bbkb.ime.keyboard.internal.KeyboardTextsSet;
 import dev.bbkb.ime.keyboard.internal.MoreKeySpec;
 import dev.bbkb.ime.keyboard.internal.KeyboardState;
+import dev.bbkb.ime.keyboard.state.CrossAxisRules;
+import dev.bbkb.ime.keyboard.state.KeyboardStateCoordinator;
+import dev.bbkb.ime.keyboard.state.KeyboardTransition;
 import dev.bbkb.ime.keyboard.slideboard.NumericSubpanelKeyboardView;
 import dev.bbkb.ime.keyboard.slideboard.QuickPhrasesView;
 import dev.bbkb.ime.keyboard.slideboard.SlideboardComponent;
@@ -106,6 +111,202 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     private SlideboardManager slideboardManager;
 
     private BlackBerryIME blackberryIme;
+
+    /**
+     * The one funnel every cross-axis change goes through. Built lazily so it also exists on
+     * instances whose constructor never ran (the JVM tests build the switcher that way).
+     *
+     * @see #transitions()
+     */
+    private KeyboardStateCoordinator stateTransitions;
+
+    /**
+     * The single entry point for "switch layout / open board / close board / enter or exit cursor
+     * mode / show or hide bar". What each of those does to the other three axes is stated once, in
+     * {@link CrossAxisRules}; nothing here decides it.
+     */
+    public KeyboardStateCoordinator transitions() {
+        if (this.stateTransitions == null) {
+            this.stateTransitions = new KeyboardStateCoordinator(new SwitcherAxes());
+        }
+        return this.stateTransitions;
+    }
+
+    /**
+     * The production {@link KeyboardStateCoordinator.Axes}: every method is one of the mechanism
+     * calls the scattered sweeps used to make, under a name that says which axis it belongs to.
+     * No decisions live here — they are all in the table.
+     */
+    private final class SwitcherAxes implements KeyboardStateCoordinator.Axes {
+
+        // ── layout ────────────────────────────────────────────────────────
+
+        @Override
+        public void leaveEmojiMode() {
+            leaveEmojiModeInternal();
+        }
+
+        @Override
+        public void clearPkbSymbolMode() {
+            KeyboardSwitcher.this.clearPkbSymbolMode();
+        }
+
+        // ── board ─────────────────────────────────────────────────────────
+
+        @Override
+        public boolean isBoardUp(int keyCode) {
+            UnifiedInputBoardManager uim = KeyboardSwitcher.this.unifiedInputBoardManager;
+            return uim != null && uim.isBoardViewShowing(keyCode);
+        }
+
+        /**
+         * SITE 1 of the Phase 1f split, on the funnel's side of it: "a board is open" here has
+         * always meant a PANEL board, which is what {@code isAnyBoardShowing()} still answers (it
+         * delegates to {@code isPanelBoardShowing()}). The old name is kept at this one boundary
+         * because {@code KeyboardSwitcherLayoutTransitionTest} characterises the sweep against a
+         * mock UIM by stubbing it.
+         */
+        @Override
+        public boolean anyBoardIsOpen() {
+            UnifiedInputBoardManager uim = KeyboardSwitcher.this.unifiedInputBoardManager;
+            return uim != null && uim.isShowing() && uim.isAnyBoardShowing();
+        }
+
+        @Override
+        public void sweepBoardsClosed() {
+            UnifiedInputBoardManager uim = KeyboardSwitcher.this.unifiedInputBoardManager;
+            if (uim != null) {
+                uim.hideKeyboardOnKeyboardStateChange();
+            }
+        }
+
+        @Override
+        public void sweepAllBoardsClosed() {
+            BlackBerryIME ime = KeyboardSwitcher.this.blackberryIme;
+            if (ime != null) {
+                ime.sweepAllBoardsClosed();
+            }
+        }
+
+        @Override
+        public void openBoard(int keyCode) {
+            UnifiedInputBoardManager uim = KeyboardSwitcher.this.unifiedInputBoardManager;
+            if (uim != null) {
+                uim.openBoard(keyCode);
+            }
+        }
+
+        @Override
+        public void closeBoard(int keyCode) {
+            UnifiedInputBoardManager uim = KeyboardSwitcher.this.unifiedInputBoardManager;
+            if (uim != null) {
+                uim.closeBoard(keyCode);
+            }
+        }
+
+        @Override
+        public void reportBoardOpened(int keyCode) {
+            UnifiedInputBoardManager uim = KeyboardSwitcher.this.unifiedInputBoardManager;
+            if (uim != null) {
+                uim.setActiveComponentByKeyCode(keyCode);
+            }
+        }
+
+        @Override
+        public void reportBoardClosed(int keyCode) {
+            UnifiedInputBoardManager uim = KeyboardSwitcher.this.unifiedInputBoardManager;
+            if (uim != null) {
+                uim.reportBoardClosed(keyCode);
+            }
+        }
+
+        // ── bar ───────────────────────────────────────────────────────────
+
+        @Override
+        public boolean isUimEnabled() {
+            BlackBerryIME ime = KeyboardSwitcher.this.blackberryIme;
+            return ime != null && ime.isUimEnabled();
+        }
+
+        @Override
+        public boolean isBarShowing() {
+            UnifiedInputBoardManager uim = KeyboardSwitcher.this.unifiedInputBoardManager;
+            return uim != null && uim.isShowing();
+        }
+
+        @Override
+        public void showUimBar() {
+            UnifiedInputBoardManager uim = KeyboardSwitcher.this.unifiedInputBoardManager;
+            if (uim != null) {
+                uim.show(false);
+                uim.showEmojiBoard();
+            }
+        }
+
+        @Override
+        public void hideUimBar() {
+            UnifiedInputBoardManager uim = KeyboardSwitcher.this.unifiedInputBoardManager;
+            if (uim != null) {
+                uim.hide();
+            }
+        }
+
+        @Override
+        public void restoreStripOrUimBar() {
+            BlackBerryIME ime = KeyboardSwitcher.this.blackberryIme;
+            if (ime != null) {
+                ime.restoreStripOrUimBar();
+            }
+        }
+
+        // ── cursor ────────────────────────────────────────────────────────
+
+        @Override
+        public boolean canRaiseArrowBar() {
+            BlackBerryIME ime = KeyboardSwitcher.this.blackberryIme;
+            return ime != null && ime.canRaiseArrowBar();
+        }
+
+        @Override
+        public void prepareForArrowBar() {
+            BlackBerryIME ime = KeyboardSwitcher.this.blackberryIme;
+            if (ime != null) {
+                ime.prepareForArrowBar();
+            }
+        }
+
+        @Override
+        public void raiseArrowBar() {
+            BlackBerryIME ime = KeyboardSwitcher.this.blackberryIme;
+            if (ime != null) {
+                ime.raiseArrowBar();
+            }
+        }
+
+        @Override
+        public void lowerArrowBarRestoringStrip(boolean requestShiftUpdate) {
+            BlackBerryIME ime = KeyboardSwitcher.this.blackberryIme;
+            if (ime != null) {
+                ime.lowerArrowBarRestoringStrip(requestShiftUpdate);
+            }
+        }
+
+        @Override
+        public void cursorModeOn(boolean forced) {
+            BlackBerryIME ime = KeyboardSwitcher.this.blackberryIme;
+            if (ime != null) {
+                ime.cursorModeOn(forced);
+            }
+        }
+
+        @Override
+        public void cursorModeOff() {
+            BlackBerryIME ime = KeyboardSwitcher.this.blackberryIme;
+            if (ime != null) {
+                ime.cursorModeOff();
+            }
+        }
+    }
 
     private SwitcherCallbacks switcherCallbacks;
 
@@ -372,7 +573,13 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     private void setKeyboard(Keyboard c0965e) {
         SettingsValues c0804dM5050c = SettingsManager.getInstance().getSettingsValues();
-        hideEmojiKeyboard();
+        // A new layout going into the main keyboard view means the emoji board is not up any more.
+        // Phase 1a wrote that as a LAYOUT_LOADED row, because emoji was a layout mode AND a board
+        // and the two identities disagreed. Phase 1d gave it one identity, so this is what it
+        // always was: an ordinary board switch. The report stays scoped to -11 — an unscoped
+        // "nothing is open" was what made the coordinator forget the open voice board on the KEY2
+        // every time a dictated word committed text.
+        transitions().apply(KeyboardTransition.boardLowered(CrossAxisRules.EMOJI_KEY_CODE));
         MainKeyboardView mainKeyboardView = this.mainKeyboardView;
         if (mainKeyboardView != null) {
             mainKeyboardView.setKeyboard(c0965e);
@@ -606,9 +813,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     private void setAlphabetKeyboard(int i) {
-        if (this.unifiedInputBoardManager != null) {
-            this.unifiedInputBoardManager.hideKeyboardOnKeyboardStateChange();
-        }
+        transitions().apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.ALPHABET));
         boolean zM4042U = this.blackberryIme.refreshOnScreenKeyboardShowing();
         if (!zM4042U && this.slideboardManager != null) {
             this.slideboardManager.show();
@@ -619,9 +824,10 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     @Override
     public void setVkbSymbolsKeyboard(int i, boolean z, boolean z2, int i2) {
         Keyboard c0965eM6734a;
-        if (this.unifiedInputBoardManager != null) {
-            this.unifiedInputBoardManager.hideKeyboardOnKeyboardStateChange();
-        }
+        // SYMBOL, not PKB_SYMBOL: the on-screen symbol keyboard carries its own row of keys and
+        // leaves the bar where it was — including when a PKB loads it, which
+        // KeyboardState.switchToSymbolFromAlphabet always does.
+        transitions().apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.SYMBOL));
         if (z2) {
             this.keyboardBuilder.setCustomSymbolPage(i2);
             c0965eM6734a = this.keyboardBuilder.getKeyboardForShift(8, z && !this.blackberryIme.refreshOnScreenKeyboardShowing());
@@ -642,14 +848,10 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     public void setPkbSymbolsKeyboard(int i, boolean z, boolean z2, int i2) {
         Keyboard c0965eM6735b;
         Key keyM6604b;
-        // Show unified input bar when symbol keyboard is opened (PKB devices)
-        if (this.blackberryIme.isUimEnabled()) {
-            if (!this.unifiedInputBoardManager.isShowing()) {
-                this.unifiedInputBoardManager.show(false);
-                this.unifiedInputBoardManager.showEmojiBoard();
-            }
-        }
-        this.unifiedInputBoardManager.hideKeyboardOnKeyboardStateChange();
+        // PKB_SYMBOL is the one layout whose row raises the UIM bar, and the table puts that
+        // before the board sweep — the order this method has always used, and the one the sweep's
+        // own "is the bar up" gate depends on.
+        transitions().apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.PKB_SYMBOL));
         if (this.slideboardManager != null) {
             this.slideboardManager.showNumericPanel();
         }
@@ -733,7 +935,25 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         }
     }
 
+    /**
+     * The emoji board comes down: {@code BOARD_LOWERED(-11)}, an ordinary board switch. The layout
+     * half and the scoped board report are the two columns of that row, applied in the order stated
+     * in {@link CrossAxisRules}.
+     *
+     * <p>Kept as a named method because it is a {@link KeyboardState.SwitcherCallbacks} entry
+     * point (the emoji state machine closes the board through it) and has out-of-package callers.
+     */
+    @Override
     public void hideEmojiKeyboard() {
+        transitions().apply(KeyboardTransition.boardLowered(CrossAxisRules.EMOJI_KEY_CODE));
+    }
+
+    /**
+     * The layout half of the emoji close: restore the main keyboard view, take the palettes down
+     * and leave EMOJI mode without UI callbacks. Owner ruling R1 — this returns to the ALPHABET,
+     * never to a PKB symbol page.
+     */
+    void leaveEmojiModeInternal() {
         // Always restore mainKeyboardView to VISIBLE. showEmojiKeyboardInternal() sets it
         // GONE unconditionally, so we must restore it here to keep keyboard_frame sized
         // correctly (prevents IME window collapse and touch passthrough on the suggestion
@@ -743,57 +963,65 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         this.mainKeyboardView.setVisibility(View.VISIBLE);
         // Null until the board has been opened once: nothing to hide or detach then.
         EmojiPalettesView emojiPalettesView = this.emojiPalettesView;
-        boolean emojiWasShowing = this.keyboardState.isInEmojiMode()
-                || (emojiPalettesView != null && emojiPalettesView.getVisibility() == View.VISIBLE);
         if (emojiPalettesView != null) {
             emojiPalettesView.setVisibility(View.GONE);
             emojiPalettesView.detachPagerAdapter();
         }
 
         this.keyboardState.resetEmojiMode(); // Reset emoji mode state so next emoji tap will show emoji (not toggle off)
-        // Report the close for the EMOJI board only. This method runs from setKeyboard(), i.e. on
-        // every keyboard rebuild, and it used to call setActiveComponent(null) — "no board is open
-        // at all" — which made the coordinator (the only copy of that state) forget whatever board
-        // WAS open. Voice was the visible casualty on the Key2: a dictated word commits text, the
-        // commit runs the shift chain into setKeyboard(), and the coordinator forgot the voice
-        // board while its panel — untouched here — stayed on screen, so the next mic press found
-        // "nothing open" and took the OPEN path instead of closing. See
-        // UnifiedInputBoardManager#reportBoardClosed.
-        this.unifiedInputBoardManager.reportBoardClosed(
-                dev.bbkb.ime.keyboard.inputboard.emoji.EmojiBoardController.KEY_CODE);
 
-        // When an emoji board closes on a PKB, clear symbol mode so the PKB returns to regular
-        // entry instead of continuing to type symbols (matches the other UIM panels). Only when
-        // one was actually up: setKeyboard() runs through here on EVERY keyboard load, and
-        // unconditionally resetting symbol mode meant that turning a symbol page with Sym
-        // reset the page it had just loaded - the entry method went to 0, the hinted physical
-        // keys stopped mapping, and a held Sym typed the firmware KCM's sym layer (page 1's
-        // characters) on page 2 (KEY2, 2026-09-20).
-        if (emojiWasShowing) {
-            clearPkbSymbolMode();
-        }
+        // R1: the conditional clearPkbSymbolMode() that used to follow the board report is GONE.
+        // It ran after the reset above had already turned EMOJI into ALPHABET, so its own
+        // isInSymbolMode() guard was false and it never fired; the owner's ruling is that leaving
+        // the emoji board returns to the alphabet, which is exactly what the reset does. The scoped
+        // board report is the funnel's board column and runs right after this returns.
     }
 
+    /**
+     * The emoji key, from every path that has one: the hardware bridge, the key processor and the
+     * board controller. {@code onEmojiInput()} is a TOGGLE, so the board-open prologue below only
+     * runs when this press is going to open the board.
+     */
     public void onEmojiKeyPressed() {
-        // Public method for external callers to use the emoji state machine
+        beginEmojiBoardTransition();
         this.keyboardState.onEmojiInput();
     }
 
+    /**
+     * The {@code OPEN_BOARD} prologue for the emoji board — owner ruling R2.
+     *
+     * <p>Every other board clears a PKB symbol mode before it takes the screen
+     * ({@code UnifiedInputBoardManager.beginBoardTransition}). Emoji did not, so on a PKB, opening
+     * emoji from symbol mode left {@code symbolEntryMethod} at 2 or 3 with the mode already moved
+     * on — and the next Sym press then showed the board with
+     * {@code wasSymbolEnteredFromAlphabet()} false, so every hinted physical key typed its letter
+     * instead of its symbol. Recorded as a contradiction in PHASE1A-SUMMARY.md; this is the fix.
+     *
+     * <p>It has to run <em>before</em> the state machine moves the mode to EMOJI, because
+     * {@code clearPkbSymbolMode()} asks {@code isInSymbolMode()} — which is why the emoji board's
+     * open is the {@code BOARD_OPENING} / {@code BOARD_RAISED} pair rather than one
+     * {@code OPEN_BOARD}: its mechanism spans the mode change.
+     */
+    private void beginEmojiBoardTransition() {
+        if (this.keyboardState != null && !this.keyboardState.isInEmojiMode()) {
+            transitions().apply(KeyboardTransition.boardOpening(CrossAxisRules.EMOJI_KEY_CODE));
+        }
+    }
+
+    /**
+     * The emoji board has been raised by the state machine: {@code BOARD_RAISED(-11)}, which is the
+     * {@code OPEN_BOARD} row's epilogue — raise the UIM bar if it is down, then report the open
+     * through the UIM's single bookkeeping funnel. The prologue (the PKB symbol clear) ran in
+     * {@link #beginEmojiBoardTransition()}, before the mode moved.
+     *
+     * <p>The bar raise and the report were written out by hand here before Phase 1d, which is why
+     * this path could clear no symbol mode and the emoji board had two identities.
+     */
     @Override
     public void showEmojiKeyboard() {
-        if (this.blackberryIme.isUimEnabled()) {
-            if (!this.unifiedInputBoardManager.isShowing()) {
-                this.unifiedInputBoardManager.show(false);
-                this.unifiedInputBoardManager.showEmojiBoard();
-            }
-        }
+        transitions().apply(KeyboardTransition.boardRaised(CrossAxisRules.EMOJI_KEY_CODE));
         showEmojiKeyboardInternal();
         this.unifiedInputBoardManager.refresh();
-        
-        // Report the open through the UIM's single bookkeeping funnel. The -11 component is
-        // EmojiBoardController now, so this reports by keycode rather than handing over the view.
-        this.unifiedInputBoardManager.setActiveComponentByKeyCode(
-                dev.bbkb.ime.keyboard.inputboard.emoji.EmojiBoardController.KEY_CODE);
     }
 
     private void showEmojiKeyboardInternal() {
@@ -846,10 +1074,18 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     @Override
-    public boolean isSymKeyHeld() {
+    public boolean isSymHeld() {
         // Owner decision, 2026-09-22: closing the symbol board after one symbol is the only
         // behaviour (the "Close symbol keyboard after symbol" setting is gone). Holding Sym is
         // how the board is kept open instead, so this is the one thing symbol mode asks about.
+        //
+        // Phase 1f: named after ModifierState.isSymHeld(), which is the same answer — but asked
+        // through the tracker's cheap boolean rather than through a snapshot. This runs on the
+        // per-keystroke path (twice: once from onHardwareKeyEvent and once from
+        // onSoftwareSymbolCommitted), and getModifierState() builds a value object and recomputes
+        // four span states and the interpreted meta to do it. The 1b agent raised that cost for
+        // getSymbolPageOrder() and it applies here for the same reason; isSymKeyHeld() is one
+        // SparseBooleanArray lookup, so the cheap query is the right one at this site.
         return this.blackberryIme.getPhysicalKeyboardStateTracker().isSymKeyHeld();
     }
 
@@ -870,7 +1106,11 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     @Override
     public void togglePkbSymbolShift() {
-        this.blackberryIme.getPhysicalKeyboardStateTracker().resetAllMetaState();
+        // The caller turns the PKB symbol page over and immediately reloads the symbol keyboard,
+        // which replaces the meta mask the old page installed. Same ALL-scope clear as before,
+        // under the reason that says why.
+        this.blackberryIme.getPhysicalKeyboardStateTracker()
+                .resetModifiers(ModifierResetReason.KEYBOARD_RELOADED);
     }
 
     @Override
@@ -944,6 +1184,11 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     public void onInputCodeChanged(int i, int i2, int i3) {
+        // -11 reaches KeyboardState.onInputCodeChanged as a code and lands on the same emoji
+        // toggle onEmojiKeyPressed() drives, so it needs the same OPEN_BOARD prologue (R2).
+        if (i == CrossAxisRules.EMOJI_KEY_CODE) {
+            beginEmojiBoardTransition();
+        }
         this.keyboardState.onInputCodeChanged(i, i2, i3);
     }
 
@@ -1157,6 +1402,47 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
+     * <b>WHICH BOARD IS UP.</b> One question, one answer, across every keyboard — the point of
+     * Phase 1d.
+     *
+     * <p>Before it, "which keyboard is loaded" ({@code KeyboardState.currentMode} plus the symbol
+     * page and the entry method) and "which board is open"
+     * ({@code UnifiedBoardCoordinator.activeBoard}) were two states with two owners and no query
+     * that could answer both. Emoji sat on both at once, which is what made its open path
+     * unmigratable in Phase 1a.
+     *
+     * <p>A panel board wins when one is open, because it is drawn over the main keyboard view.
+     * Otherwise the main keyboard view is showing one of the typing boards, and which one is the
+     * layout mode read through {@link CrossAxisRules}' board vocabulary. Never
+     * {@link KeyboardTransition#NO_BOARD}: some board is always up, and with nothing else it is the
+     * alphabet.
+     */
+    public int activeBoard() {
+        UnifiedInputBoardManager uim = this.unifiedInputBoardManager;
+        if (uim != null) {
+            int panelBoard = uim.getBoardCoordinator().activeBoard();
+            if (panelBoard != UnifiedBoardCoordinator.NO_BOARD) {
+                return panelBoard;
+            }
+        }
+        KeyboardState state = this.keyboardState;
+        if (state == null) {
+            return CrossAxisRules.ALPHABET_BOARD_KEY_CODE;
+        }
+        switch (state.currentMode()) {
+            case SYMBOL:
+                return CrossAxisRules.SYMBOL_BOARD_KEY_CODE;
+            case EMOJI:
+                return CrossAxisRules.EMOJI_KEY_CODE;
+            case MENU:
+                return CrossAxisRules.MENU_BOARD_KEY_CODE;
+            case ALPHABET:
+            default:
+                return CrossAxisRules.ALPHABET_BOARD_KEY_CODE;
+        }
+    }
+
+    /**
      * If the PKB is currently in symbol mode, reset state and reload the alphabet keyboard.
      * Called when any UIM panel opens so the underlying mainKeyboardView has the alphabet
      * layout loaded before the panel is dismissed.
@@ -1198,7 +1484,9 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     public boolean onSymbolShiftToggle(int i, int i2, boolean z, boolean z2) {
-        this.unifiedInputBoardManager.hideKeyboardOnKeyboardStateChange();
+        // The page turn does not know yet whether it lands on another symbol page or back on the
+        // alphabet, so the layout is UNCHANGED — only the board column applies.
+        transitions().apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.UNCHANGED));
         Keyboard c0965eM6834l = getCurrentKeyboard();
         if (c0965eM6834l == null) {
             return false;
@@ -1380,9 +1668,14 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return this.blackberryIme;
     }
 
+    /**
+     * Whether a UIM <b>panel</b> board is drawn over the main keyboard view. Gates cursor mode and
+     * the suggestion strip, both of which care about the panel and not about which keyboard is
+     * loaded behind it — so this is the panel query, not {@link #activeBoard()}.
+     */
     public boolean isUnifiedInputBoardShowing() {
         UnifiedInputBoardManager c1011i = this.unifiedInputBoardManager;
-        return c1011i != null && c1011i.isAnyBoardShowing();
+        return c1011i != null && c1011i.isPanelBoardShowing();
     }
 
     public void onUnifiedInputBoardAction(int i) {

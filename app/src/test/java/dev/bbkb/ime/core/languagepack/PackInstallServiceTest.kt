@@ -208,6 +208,43 @@ class PackInstallServiceTest {
         assertTrue(PackFixtures.packDir(context, "am").isDirectory)
         assertFalse(installed.offeredSubtype)
         assertFalse("no layout for Ethiopic, so nothing can select it", installed.selectable)
+        assertFalse(installed.enabled)
+        assertTrue("nothing to turn on without a layout", subtypes.enabled.isEmpty())
+    }
+
+    @Test
+    fun turnsTheLanguageOnAfterInstallingIt() = runBlocking<Unit> {
+        val subtypes = PackFixtures.FakeSubtypes(builtIn = setOf("ko"))
+        val installed = service(subtypes)
+            .installFromFile(source, "ko", "Korean", "1.0", null).getOrThrow()
+
+        assertEquals(listOf("ko"), subtypes.enabled)
+        assertTrue(installed.enabled)
+    }
+
+    @Test
+    fun aDictionaryForAnExtraLanguageDoesNotTurnOnAKeyboard() = runBlocking<Unit> {
+        // Fetched because another keyboard predicts in Dutch: Dutch must not appear as a
+        // keyboard of its own.
+        val subtypes = PackFixtures.FakeSubtypes(builtIn = setOf("nl"))
+        val installed = service(subtypes)
+            .installFromFile(source, "nl", "Dutch", "1.0", null, turnOn = false).getOrThrow()
+
+        assertTrue(subtypes.enabled.isEmpty())
+        assertFalse(installed.enabled)
+        assertTrue(installed.selectable)
+    }
+
+    @Test
+    fun reportsALanguageItCouldNotTurnOn() = runBlocking<Unit> {
+        // Before Android 14 a keyboard cannot turn its own languages on; the screen then has to
+        // send the user to the system list, and it can only know to from this flag.
+        val subtypes = PackFixtures.FakeSubtypes(builtIn = setOf("ar"), canEnable = false)
+        val installed = service(subtypes)
+            .installFromFile(source, "ar", "Arabic", "1.0", null).getOrThrow()
+
+        assertTrue(installed.selectable)
+        assertFalse(installed.enabled)
     }
 
     // ── A regional variant ────────────────────────────────────────────────────────────────────

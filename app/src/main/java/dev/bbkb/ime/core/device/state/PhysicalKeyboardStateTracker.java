@@ -9,6 +9,10 @@ import android.view.View;
 
 import dev.bbkb.ime.core.BlackBerryIME;
 import dev.bbkb.ime.core.SymbolPageProvider;
+import dev.bbkb.ime.core.keyevent.BoardKeyPressTracker;
+import dev.bbkb.ime.core.keyevent.ModifierResetReason;
+import dev.bbkb.ime.core.keyevent.ModifierState;
+import dev.bbkb.ime.core.keyevent.ModifierStateListener;
 import dev.bbkb.ime.core.keyevent.ModifierStatusBarUpdater;
 import dev.bbkb.ime.core.keyevent.KeyCharacterInterpreter;
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier;
@@ -21,7 +25,25 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
     private static String hex(int v) { return "0x" + Integer.toHexString(v); }
     // ==========================================
 
-    private ModifierStatusBarUpdater mStatusBarUpdater;
+    /**
+     * The one place the modifier state is published. {@link ModifierStatusBarUpdater} is the
+     * listener in the IME; a test can substitute its own. See {@link #publishModifierState}.
+     */
+    private ModifierStateListener mModifierStateListener;
+
+    /**
+     * Where "is Ctrl active" is answered from — {@code ControlModeController}, the single owner of
+     * Ctrl state. This tracker deliberately keeps no copy: its own "CTRL_SPAN" is the Sym key
+     * (key code 63 sets {@code META_SYM_ON}), and the only other Ctrl bookkeeping in the app is
+     * {@code BlackBerryIME.multifunctionCtrlDown}, which exists solely to rewrite a multifunction
+     * key into a real {@code KEYCODE_CTRL_LEFT} before the controller sees it.
+     */
+    private CtrlStateSource mCtrlStateSource;
+
+    /** Supplies {@link ModifierState#isCtrlActive()} from the one Ctrl owner. */
+    public interface CtrlStateSource {
+        boolean isCtrlActive();
+    }
 
     private Editable mMetaKeyText = new SpannableStringBuilder("");
 
@@ -65,12 +87,80 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
 
     private boolean mAltUsedWithKey = false;
 
-    public PhysicalKeyboardStateTracker(ModifierStatusBarUpdater c0714p) {
-        this.mStatusBarUpdater = c0714p;
+    public PhysicalKeyboardStateTracker(ModifierStatusBarUpdater statusBarUpdater) {
+        // The updater is held only as the modifier-state listener: it is one consumer of the
+        // single feed, not a second owner of the state.
+        this.mModifierStateListener = statusBarUpdater;
+    }
+
+    /** Replace the single modifier-state listener (the status bar in the IME). */
+    public void setModifierStateListener(ModifierStateListener listener) {
+        this.mModifierStateListener = listener;
+    }
+
+    /** Name the one owner of Ctrl state, so {@link ModifierState#isCtrlActive()} can answer. */
+    public void setCtrlStateSource(CtrlStateSource source) {
+        this.mCtrlStateSource = source;
     }
 
     public void onModifierListenerReset() {
-        resetAllMetaState();
+        resetModifiers(ModifierResetReason.UNSPECIFIED);
+    }
+
+    // ============================================================ the one query API
+
+    /**
+     * The active modifiers right now, with no key event in the picture.
+     *
+     * <p>Every "is Shift/Alt/Ctrl/Sym on, and in what way" question in the physical-keyboard path
+     * is meant to be asked here. The three meta states it carries are not interchangeable; see
+     * {@link ModifierState} for which is which and why confusing them broke the Alt+Sym chord.
+     */
+    public ModifierState getModifierState() {
+        return buildModifierState(0);
+    }
+
+    /** The active modifiers, merged with what {@code event} says the system thinks. */
+    public ModifierState getModifierState(KeyEvent event) {
+        return buildModifierState(event == null ? 0 : event.getMetaState());
+    }
+
+    /** The active modifiers, merged with a raw system meta state (the accessibility path). */
+    public ModifierState getModifierState(int eventMetaState) {
+        return buildModifierState(eventMetaState);
+    }
+
+    private ModifierState buildModifierState(int eventMetaState) {
+        int spanMeta = getMetaState((CharSequence) this.mMetaKeyText);
+        return ModifierState.builder()
+                .eventMeta(eventMetaState)
+                .modifierKeyMeta(spanMeta)
+                .interpretedMeta(computeInternalMetaState())
+                .altGr(isAltGrPressed())
+                .shiftKeyDown(isShiftKeyDown())
+                .shiftKeyConsumed(isShiftKeyConsumed())
+                .altKeyDown(isAltKeyDown())
+                .altSpanHeld(isAltSpanPressed(this.mMetaKeyText))
+                .altUsedWithKey(this.mAltUsedWithKey)
+                .symKeyHeld(isSymKeyHeld())
+                .ctrlActive(this.mCtrlStateSource != null && this.mCtrlStateSource.isCtrlActive())
+                .shiftSurvivesMask(
+                        (this.mKeyInterpreter.apply(KeyEvent.META_SHIFT_ON) & KeyEvent.META_SHIFT_ON) != 0)
+                .keysHeld(getNumberOfKeysDown())
+                .build();
+    }
+
+    /**
+     * The single status-bar / modifier-state feed. Every transition in this class ends here, and
+     * nothing else posts: one source of truth, one notification path.
+     *
+     * @param force re-assert even when nothing changed (see {@link ModifierStateListener})
+     */
+    private void publishModifierState(boolean force) {
+        ModifierStateListener listener = this.mModifierStateListener;
+        if (listener != null) {
+            listener.onModifierStateChanged(getModifierState(), force);
+        }
     }
 
     public void handleKeyDown(int i, KeyEvent keyEvent) {
@@ -97,10 +187,7 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
             } else {
                 super.onKeyDown((View) null, this.mMetaKeyText, i, keyEvent);
                 markModifierPressed(i);
-                ModifierStatusBarUpdater c0714p = this.mStatusBarUpdater;
-                if (c0714p != null) {
-                    c0714p.updateModifierStatus(computeInternalMetaState(), false);
-                }
+                publishModifierState(false);
             }
             
             // ===== ALT CHORD DEBUG: handleKeyDown after =====
@@ -136,10 +223,7 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
             if (isModifierKeyEvent(i, keyEvent)) {
                 super.onKeyUp(null, this.mMetaKeyText, i, keyEvent, trackPrev);
                 markModifierReleased(i);
-                ModifierStatusBarUpdater c0714p = this.mStatusBarUpdater;
-                if (c0714p != null) {
-                    c0714p.updateModifierStatus(computeInternalMetaState(), false);
-                }
+                publishModifierState(false);
             }
             
             // ===== ALT CHORD DEBUG: handleKeyUp after =====
@@ -186,10 +270,7 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         // what made it sticky), so no later event reports this transition. Without it the icon
         // sat on the last modifier the user tapped, and — because the updater only posts on a
         // CHANGE — the next press of that same modifier then posted nothing at all.
-        ModifierStatusBarUpdater statusBarUpdater = this.mStatusBarUpdater;
-        if (statusBarUpdater != null) {
-            statusBarUpdater.updateModifierStatus(computeInternalMetaState(), false);
-        }
+        publishModifierState(false);
 
         // ===== ALT CHORD DEBUG: consumeModifiersAfterKey after =====
         if (BuildConfig.DEBUG) {
@@ -256,16 +337,50 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         return this.mKeyInterpreter.apply(iA);
     }
 
-    public void resetAllMetaState() {
-        resetMetaState((Spannable) this.mMetaKeyText);
-        this.mKeysHeld.clear();
-        this.mKeyInterpreter = KeyCharacterInterpreter.MetaMask.IDENTITY;
-        this.mAltUsedWithKey = false;
-        resetKeyState();
-        ModifierStatusBarUpdater c0714p = this.mStatusBarUpdater;
-        if (c0714p != null) {
-            c0714p.updateModifierStatus(0, true);
+    /**
+     * The one reset entry. What each reason clears is stated on {@link ModifierResetReason}; this
+     * method is the only place that clears modifier state, and every path out of it republishes
+     * through {@link #publishModifierState}.
+     */
+    public void resetModifiers(ModifierResetReason reason) {
+        // Phase 1g: the emoji / mic / multifunction down-up pairing is per-key press state, and it
+        // belongs to the same "this key is down" picture as mKeysHeld — so it goes when that goes.
+        // The owner decides which reasons clear it (a full reset does, leaving the Alt page does
+        // not); this call is unconditional and the policy lives in BoardKeyPressTracker.
+        BoardKeyPressTracker.getInstance().onModifiersReset(reason);
+        switch (reason.scope()) {
+            case ALT_ONLY:
+                resetAltState(this.mMetaKeyText);
+                resetAltKeyState();
+                break;
+            case MANUAL_SHIFT_ONLY:
+                if (!isManualShiftAndShiftPressing()) {
+                    return;
+                }
+                resetShiftState(this.mMetaKeyText);
+                break;
+            case ALL:
+            default:
+                resetMetaState((Spannable) this.mMetaKeyText);
+                this.mKeysHeld.clear();
+                this.mKeyInterpreter = KeyCharacterInterpreter.MetaMask.IDENTITY;
+                this.mAltUsedWithKey = false;
+                resetKeyState();
+                // Force: the resulting state is "nothing set", and the system may have dropped
+                // the last post, so the slot has to be cleared whether or not we think it moved.
+                publishModifierState(true);
+                return;
         }
+        publishModifierState(false);
+    }
+
+    /**
+     * Clear everything. Kept for the call sites outside this phase's ownership
+     * (the IME lifecycle, the screen-off receiver, the keyboard switcher); prefer
+     * {@link #resetModifiers(ModifierResetReason)} with the reason that applies.
+     */
+    public void resetAllMetaState() {
+        resetModifiers(ModifierResetReason.UNSPECIFIED);
     }
 
     /**
@@ -278,19 +393,12 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
      * change, nothing ever puts it back.
      */
     public void refreshModifierStatus() {
-        ModifierStatusBarUpdater statusBarUpdater = this.mStatusBarUpdater;
-        if (statusBarUpdater != null) {
-            statusBarUpdater.refreshModifierStatus(computeInternalMetaState());
-        }
+        publishModifierState(true);
     }
 
+    /** Leave the Alt page. See {@link ModifierResetReason#ALT_PAGE_LEFT}. */
     public void resetAltStateAndNotify() {
-        resetAltState(this.mMetaKeyText);
-        resetAltKeyState();
-        ModifierStatusBarUpdater c0714p = this.mStatusBarUpdater;
-        if (c0714p != null) {
-            c0714p.updateModifierStatus(computeInternalMetaState(), false);
-        }
+        resetModifiers(ModifierResetReason.ALT_PAGE_LEFT);
     }
 
     public void updateFilterAndAltGr(int i, KeyCharacterInterpreter.MetaMask aVar) {
@@ -298,10 +406,7 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         if (isShiftReleased()) {
             setAltGrPressed((!hasInternalMetaFlag(KeyEvent.META_SHIFT_ON) || isAltGrPressed()) && i != 0);
         }
-        ModifierStatusBarUpdater c0714p = this.mStatusBarUpdater;
-        if (c0714p != null) {
-            c0714p.updateModifierStatus(computeInternalMetaState(), false);
-        }
+        publishModifierState(false);
     }
 
     public static boolean isModifierKey(int i) {
@@ -353,14 +458,9 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         super.cancelDoubleTapTimer();
     }
 
+    /** A commit spent a manual Shift. See {@link ModifierResetReason#MANUAL_SHIFT_SPENT}. */
     public void clearManualShift() {
-        if (isManualShiftAndShiftPressing()) {
-            resetShiftState(this.mMetaKeyText);
-            ModifierStatusBarUpdater c0714p = this.mStatusBarUpdater;
-            if (c0714p != null) {
-                c0714p.updateModifierStatus(computeInternalMetaState(), false);
-            }
-        }
+        resetModifiers(ModifierResetReason.MANUAL_SHIFT_SPENT);
     }
 
     private void markModifierPressed(int i) {
@@ -461,17 +561,26 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         return state;
     }
 
-    public boolean isShiftKeyDown() {
+    // The three per-key Shift predicates below are the storage the snapshot is built from. They
+    // are package-private on purpose (Phase 1h): readers outside this class ask
+    // getModifierState().isShiftHeld() / isShiftReleased() / isShiftConsumed(), which answer the
+    // same in every state of the Shift lifecycle (ShiftLifecycleTest pins that), so there is one
+    // way to ask. They stay visible to this package's tests, which compare the two.
+
+    /** A Shift key is DOWN (−1). Not true for a key that is down but CONSUMED. */
+    boolean isShiftKeyDown() {
         int[] iArr = this.mShiftState;
         return iArr[0] == -1 || iArr[1] == -1;
     }
 
-    public boolean isShiftReleased() {
+    /** Both Shift keys are RELEASED (−2): none is DOWN and none is CONSUMED. */
+    boolean isShiftReleased() {
         int[] iArr = this.mShiftState;
         return iArr[0] == -2 && iArr[1] == -2;
     }
 
-    public boolean isShiftKeyConsumed() {
+    /** A Shift key is still physically down but CONSUMED (−3). */
+    boolean isShiftKeyConsumed() {
         int[] iArr = this.mShiftState;
         return iArr[0] == -3 || iArr[1] == -3;
     }
@@ -504,6 +613,11 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
     }
 
 
+    /**
+     * The interpreted meta state — see {@link ModifierState#getInterpretedMetaState()}, which is
+     * where new readers should ask. Still public for the IME-level call sites outside this
+     * phase's ownership.
+     */
     public int getInternalMetaState() {
         return computeInternalMetaState();
     }
@@ -564,4 +678,10 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
     public boolean isAltPressed() {
         return isAltSpanPressed(this.mMetaKeyText);
     }
+
+    /**
+     * @deprecated in intent only — see {@link ModifierState#isAltHeldBySpan()}, which is the same
+     *     answer asked through the one query API. Not annotated {@code @Deprecated} because the
+     *     remaining callers live in files this phase does not own.
+     */
 }

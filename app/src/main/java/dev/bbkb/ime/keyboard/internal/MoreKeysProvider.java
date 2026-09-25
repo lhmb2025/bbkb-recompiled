@@ -2,7 +2,7 @@ package dev.bbkb.ime.keyboard.internal;
 
 import android.text.TextUtils;
 
-import dev.bbkb.ime.core.device.state.MetaState;
+import dev.bbkb.ime.core.keyevent.ModifierState;
 import dev.bbkb.ime.keyboard.Keyboard;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
 
@@ -27,8 +27,16 @@ public final class MoreKeysProvider {
         /** The base character that was typed (e.g., "n", "e", "-"). */
         public final String baseCharacter;
 
-        /** Current modifier state. */
-        public final MetaState metaState;
+        /**
+         * Current modifier state, from the one query API.
+         *
+         * <p>Phase 1f: this was a {@code core.device.state.MetaState}, which had become a naming
+         * layer over {@link ModifierState} with two call sites — this one and the
+         * {@code AuxBarManager} that fills it in. Both are the accent bar's raw-event reader, which
+         * Phase 1b named as the API's first consumer and could not migrate because it did not own
+         * these files. Taking the {@link ModifierState} directly removes the layer.
+         */
+        public final ModifierState modifiers;
 
         /** Whether the key is being held (repeatCount >= 1). */
         public final boolean isHolding;
@@ -36,10 +44,10 @@ public final class MoreKeysProvider {
         /** Whether we're in symbol mode. */
         public final boolean inSymbolMode;
 
-        public MoreKeysContext(String baseCharacter, MetaState metaState,
+        public MoreKeysContext(String baseCharacter, ModifierState modifiers,
                 boolean isHolding, boolean inSymbolMode) {
             this.baseCharacter = baseCharacter;
-            this.metaState = metaState != null ? metaState : MetaState.fromRaw(0);
+            this.modifiers = modifiers != null ? modifiers : ModifierState.none();
             this.isHolding = isHolding;
             this.inSymbolMode = inSymbolMode;
         }
@@ -48,7 +56,7 @@ public final class MoreKeysProvider {
         public String toString() {
             return "MoreKeysContext{base='" + baseCharacter + '\''
                     + ", holding=" + isHolding
-                    + ", meta=" + metaState
+                    + ", meta=" + modifiers
                     + ", symbolMode=" + inSymbolMode + '}';
         }
     }
@@ -79,7 +87,9 @@ public final class MoreKeysProvider {
             addAll(out, keyboardSwitcher.getMoreKeysForKey(context.baseCharacter));
         }
         // Alt styles: no symbol-mode guard, matching the previous StyleMoreKeysProvider.
-        if (hasBase && context.metaState.isAltActive()) {
+        // isAltHeld() is what MetaState.isAltActive() delegated to for an event-only state (its two
+        // other witnesses, the span and the per-key state, are only filled in by the tracker).
+        if (hasBase && context.modifiers.isAltHeld()) {
             addAll(out, keyboardSwitcher.getMoreKeysForKeyByStyle(context.baseCharacter));
         }
         // Symbol multitap alternates: no base-empty guard; getMultiTapAlternates tolerates null.

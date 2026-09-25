@@ -8,6 +8,7 @@ import dev.bbkb.ime.core.textinput.connection.RichInputConnection
 import dev.bbkb.ime.keyboard.auxbar.ArrowBarController
 import dev.bbkb.ime.keyboard.auxbar.AuxBarManager
 import dev.bbkb.ime.keyboard.auxbar.AuxBarView
+import dev.bbkb.ime.keyboard.KeyboardSwitcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -77,6 +78,16 @@ class CursorModeExitSuggestionsTest {
         ReflectionHelpers.setField(inputLogic, "mRichInputConnection", richInputConnection)
 
         disableCursorModeRunnable = Runnable { ime.enableCursorMode(false) }
+
+        // The cursor-mode exit is a KeyboardStateCoordinator transition now, and the funnel lives
+        // on the switcher. The switcher is real (CALLS_REAL_METHODS) so the production Axes runs;
+        // it only needs to know which IME to call back into.
+        val keyboardSwitcher =
+            Mockito.mock(KeyboardSwitcher::class.java, Mockito.CALLS_REAL_METHODS)
+        ReflectionHelpers.setField(
+            KeyboardSwitcher::class.java, keyboardSwitcher, "blackberryIme", ime,
+        )
+        ReflectionHelpers.setField(ime, "keyboardSwitcher", keyboardSwitcher)
 
         ReflectionHelpers.setField(ime, "uiUpdateHandler", uiUpdateHandler)
         ReflectionHelpers.setField(ime, "uiCoordinator", uiCoordinator)

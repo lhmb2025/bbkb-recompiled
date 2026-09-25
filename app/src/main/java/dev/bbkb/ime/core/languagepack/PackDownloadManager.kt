@@ -80,9 +80,10 @@ class PackDownloadManager internal constructor(
      *
      * Returns immediately; watch [states] for progress. [packs] supplies the base URL the entry
      * hangs off — pass the same [Packs] the entry came out of, never one from a different
-     * manifest, or the URL will be built against the wrong release.
+     * manifest, or the URL will be built against the wrong release. [turnOn] is passed to the
+     * installer: false for a dictionary wanted only as another keyboard's extra language.
      */
-    fun download(packs: Packs, entry: PackEntry) {
+    fun download(packs: Packs, entry: PackEntry, turnOn: Boolean = true) {
         synchronized(jobs) {
             if (jobs.containsKey(entry.locale)) return
             // Queued from this moment: the user pressed the button, and a row that snapped back
@@ -90,7 +91,7 @@ class PackDownloadManager internal constructor(
             put(entry.locale, PackState.Downloading(0L, entry.size))
             jobs[entry.locale] = scope.launch {
                 try {
-                    queue.withLock { run(packs, entry) }
+                    queue.withLock { run(packs, entry, turnOn) }
                 } finally {
                     synchronized(jobs) { jobs.remove(entry.locale) }
                 }
@@ -116,7 +117,7 @@ class PackDownloadManager internal constructor(
     /** Whether anything is queued or downloading. */
     fun isBusy(): Boolean = synchronized(jobs) { jobs.isNotEmpty() }
 
-    private suspend fun run(packs: Packs, entry: PackEntry) {
+    private suspend fun run(packs: Packs, entry: PackEntry, turnOn: Boolean) {
         val destination = downloader.destinationFor(entry.file)
         val job = currentCoroutineContext()[Job]
         try {
@@ -144,6 +145,7 @@ class PackDownloadManager internal constructor(
                 displayName = entry.name,
                 version = packs.version,
                 group = entry.group,
+                turnOn = turnOn,
             ).getOrElse { failure ->
                 fail(entry.locale, failure)
                 return

@@ -76,16 +76,18 @@ public class AltSymShortcutChordTest {
     /** Records which configured action the chord dispatched, if any. */
     private static final class RecordingActions implements AltSymShortcutHandler.ActionCallback {
         int symbolKeyboard;
-        int ctrlMode;
+        int clipboard;
+        int fcc;
+        int numberPad;
         int languageSwitch;
         int emojiPicker;
-        int hideKeyboard;
 
         @Override public void openSymbolKeyboard() { symbolKeyboard++; }
-        @Override public void toggleCtrlMode() { ctrlMode++; }
         @Override public void switchLanguage() { languageSwitch++; }
         @Override public void toggleEmojiPicker() { emojiPicker++; }
-        @Override public void hideKeyboard() { hideKeyboard++; }
+        @Override public void toggleClipboard() { clipboard++; }
+        @Override public void toggleFcc() { fcc++; }
+        @Override public void toggleNumberPad() { numberPad++; }
     }
 
     @Before
@@ -107,12 +109,12 @@ public class AltSymShortcutChordTest {
         KeyEventDeviceClassifier.getInstance().clearCache();
 
         PrefsManager.INSTANCE.getPrefs(context).edit().clear()
-                .putString(AltSymShortcutHandler.PREF_KEY, AltSymShortcutHandler.ACTION_EMOJI_PICKER)
+                .putString(AltSymShortcutHandler.PREF_KEY, AltSymShortcutHandler.ACTION_EMOJI_BOARD)
                 .commit();
         SettingsManager.initialize(context);
         SettingsManager.getInstance().loadSettings(context, Locale.US,
                 new EditorCapabilities(null, false, context.getPackageName(), Locale.US, false));
-        assertEquals(AltSymShortcutHandler.ACTION_EMOJI_PICKER,
+        assertEquals(AltSymShortcutHandler.ACTION_EMOJI_BOARD,
                 SettingsManager.getInstance().getSettingsValues().altSymShortcutAction);
 
         keyboardSwitcher = mock(KeyboardSwitcher.class);

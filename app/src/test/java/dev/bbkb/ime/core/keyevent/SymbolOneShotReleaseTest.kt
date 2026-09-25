@@ -89,7 +89,11 @@ class SymbolOneShotReleaseTest {
         `when`(ime.getInputLogic().isKeyTracked(anyArg())).thenReturn(true)
         `when`(ime.getKeyboardSwitcher().getKeyByPhysicalScanCode(anyInt(), anyBoolean())).thenReturn(null)
         `when`(ime.getPhysicalKeyboardStateTracker().getSymbolPageOrder()).thenReturn(0)
-        `when`(ime.getPhysicalKeyboardStateTracker().isSymKeyHeld()).thenReturn(false)
+        // Phase 1b: the branch asks the one modifier query API rather than the tracker's
+        // isSymKeyHeld() plus the event's META_SYM_ON. ModifierState.isSymHeld() is the OR of
+        // exactly those two, so the intent of these cases is unchanged.
+        `when`(ime.getPhysicalKeyboardStateTracker().getModifierState(anyArg<KeyEvent>()))
+            .thenReturn(ModifierState.builder().symKeyHeld(false).build())
         `when`(ime.superOnKeyUp(anyInt(), anyArg())).thenReturn(false)
 
         DeviceProfile.installForTest(pkbShape())
@@ -119,7 +123,8 @@ class SymbolOneShotReleaseTest {
     @Test
     fun `while Sym is held, releasing a hinted key leaves the board open`() {
         hintedKeyPresent()
-        `when`(ime.getPhysicalKeyboardStateTracker().isSymKeyHeld()).thenReturn(true)
+        `when`(ime.getPhysicalKeyboardStateTracker().getModifierState(anyArg<KeyEvent>()))
+            .thenReturn(ModifierState.builder().symKeyHeld(true).build())
         processor.onKeyUpInternal(KeyEvent.KEYCODE_R, keyUp(KeyEvent.KEYCODE_R))
         verify(ime.getKeyboardSwitcher(), never()).onSymbolKeyLongPress(anyInt(), anyInt())
     }

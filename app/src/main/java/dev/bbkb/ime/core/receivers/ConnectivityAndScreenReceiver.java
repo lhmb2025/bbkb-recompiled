@@ -8,6 +8,7 @@ import dev.bbkb.ime.core.BlackBerryIME;
 import dev.bbkb.ime.core.locale.SubtypeManager;
 import dev.bbkb.ime.core.AudioAndHapticFeedbackManager;
 import dev.bbkb.ime.core.device.state.PhysicalKeyboardStateTracker;
+import dev.bbkb.ime.core.keyevent.ModifierResetReason;
 
 /**
  * BroadcastReceiver for handling connectivity changes, ringer mode changes, and screen off events.
@@ -37,7 +38,7 @@ public class ConnectivityAndScreenReceiver extends BroadcastReceiver {
             AudioAndHapticFeedbackManager.getInstance().onRingerModeChanged();
         } else if ("android.intent.action.SCREEN_OFF".equals(action)) {
             ime.enableCursorMode(false);
-            physicalKeyboardStateTracker.resetAllMetaState();
+            physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.SCREEN_OFF);
         }
     }
 }

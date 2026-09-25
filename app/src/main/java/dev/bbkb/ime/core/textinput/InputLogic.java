@@ -363,7 +363,11 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
             appendAutoSpace(c0804d, InputSource.INTERNAL);
         }
         if (!separatorAlreadyCommitted) {
-            this.mRichInputConnection.commitText(strM4443a, 1);
+            // Through the commit pipeline rather than straight at the connection, so this is one
+            // more CommitRequest (Reason.VOICE / Protocol.RAW) instead of the last remaining
+            // direct editor write on a commit path. The write itself is identical: one
+            // commitText with newCursorPosition 1.
+            this.mCommitController.commitVoiceText(c0804d, strM4443a, InputSource.INTERNAL);
         }
         this.mRichInputConnection.endBatchEdit();
         this.mCommitType = 0;
@@ -1138,41 +1142,7 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
             appendAutoSpace(c0804d, c0920g.getInputSource());
         }
         if (this.mComposingTracker.isCursorMoved() && zM4354g) {
-            // Cursor is inside the composing word (state ≈ CURSOR_INSIDE, except this also
-            // fires in the corner case where the tracker is simultaneously in prediction
-            // mode with non-empty buffer). Insert the new code point AT the cursor
-            // (preserving trailing characters), update the editor composing region with the
-            // full new text, and place the editor cursor at the matching position inside
-            // the composing region. Previously this branch called truncateToComposingCursor
-            // and let the normal append path run, which silently dropped every character
-            // after the cursor — see docs/archived/2026-05_composing-and-ckb-gestures/2026-05_composing-spec-and-tests_reference.md #6.
-            //
-            // Compute the editor's composing-region start BEFORE mutating the tracker:
-            // editor cursor = composingStart + chars-before-cursor-within-composing.
-            String oldComposing = this.mComposingTracker.getComposingText();
-            int oldCursorCharOffset = Character.offsetByCodePoints(oldComposing, 0,
-                    this.mComposingTracker.getComposingCursorPos());
-            int composingStart = this.mRichInputConnection.getCursorEnd() - oldCursorCharOffset;
-
-            this.mComposingTracker.insertCodePointAtCursor(event.mCodePoint);
-            String fullText = this.mComposingTracker.getComposingText();
-            CharSequence display = getComposingTextWithIndicator(fullText);
-            setComposingTextInternal(display, 1);
-
-            int newCursorCharOffset = Character.offsetByCodePoints(fullText, 0,
-                    this.mComposingTracker.getComposingCursorPos());
-            int desiredCursor = composingStart + newCursorCharOffset;
-            // Not plain setSelection: that would leave the RIC text model holding the
-            // composing prefix in BOTH mTextBeforeCursor and mComposingText, corrupting
-            // every reader (caps mode, punctuation, backspace decisions) until the next
-            // resetConnection. See docs/archived/2026-06_fable-audits-and-gesture-rebuild/2026-06_composition-pipeline_audit.md F5.
-            this.mRichInputConnection.setSelectionWithinComposing(desiredCursor, composingStart);
-            if (BuildConfig.DEBUG) {
-            android.util.Log.d("TEXT_EDIT_DEBUG", "handleCharacterInput: insertedAtCursor codePoint=" + event.mCodePoint
-                    + " composingNow='" + fullText + "' composingStart=" + composingStart
-                    + " newCursorCharOffset=" + newCursorCharOffset + " setSelection=" + desiredCursor);
-            }
-            c0920g.setShouldUpdateSuggestions();
+            insertCodePointInsideComposingWord(event.mCodePoint, c0920g);
             return;
         }
         boolean z2 = this.mComposingTracker.hasInputMethodConverter() && ((editorInfoM4500g = getCurrentEditorInfo()) == null || !(InputTypeUtils.isDateTimeInputType(editorInfoM4500g.inputType) || InputTypeUtils.isNumberInputType(editorInfoM4500g.inputType) || InputTypeUtils.isPhoneInputType(editorInfoM4500g.inputType)));
@@ -1208,96 +1178,248 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         }
     }
 
+    /**
+     * A separator keystroke, as an ordered pipeline of stages rather than one interleaved branch
+     * forest (Phase 1c step 4). A separator does up to four separable things:
+     *
+     * <ol>
+     *   <li>{@link #resolveSpacelessSpaceSuppression} — decide, BEFORE anything mutates, whether
+     *       this is a space in a language written without spaces, which is swallowed;</li>
+     *   <li>{@link #retireComposingWordForSeparator} — commit the composing word (auto-corrected
+     *       or verbatim) with this separator as its trailing payload, or abandon it if the caret
+     *       had moved inside it;</li>
+     *   <li>{@link #appendAutoSpaceBeforeSeparatorIfOwed} — insert the space the PREVIOUS commit
+     *       deferred, when this separator is the kind usually preceded by one;</li>
+     *   <li>{@link #applySeparatorDisposition} — decide what happens to the separator itself
+     *       (double-space-to-period, punctuation swap, plain space, or anything else) and set
+     *       {@link #mCommitType}, the state the NEXT keystroke reads.</li>
+     * </ol>
+     *
+     * <p><b>The stage order is load-bearing, in two places that are easy to miss.</b>
+     * {@code shouldStripSpace} is not a predicate: it can call {@code deleteTrailingSpace()}, so
+     * it must be evaluated exactly where it was, before the quote-after-digit read. And the
+     * auto-space and disposition stages both read the editor AFTER the word commit, so neither
+     * can be hoisted into a spec computed up front — which is why the stages take their inputs as
+     * parameters instead of sharing one immutable spec object.
+     *
+     * <p>Characterised by {@code SeparatorInputCharacterisationTest} (18 scenarios over the
+     * disposition matrix, the auto-space gate, and {@code mCommitType}).
+     */
     private void handleSeparatorInput(InputEvent event, InputEventContext c0920g, UIUpdateHandler handlerC0650c) {
-        boolean z;
-        int i = event.mCodePoint;
-        SettingsValues c0804d = c0920g.settingsValues;
-        boolean zM5182e = false;
-        boolean z2 = 32 == i && !c0804d.spacingAndPunctuation.currentLanguageHasSpaces && this.mComposingTracker.isComposing();
+        final int codePoint = event.mCodePoint;
+        final SettingsValues c0804d = c0920g.settingsValues;
+
+        // Stage 1 — must be read before the commit below changes what is composing.
+        final boolean suppressSpace = resolveSpacelessSpaceSuppression(c0804d, codePoint);
+
         if (this.mComposingTracker.isCursorMoved()) {
             resetComposingAndSelect(this.mRichInputConnection.getCursorStart(), this.mRichInputConnection.getCursorEnd(), true);
         }
         if (BuildConfig.DEBUG) {
-        android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "handleSeparatorInput: codePoint=" + i + " src=" + c0920g.getInputSource()
+        android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "handleSeparatorInput: codePoint=" + codePoint + " src=" + c0920g.getInputSource()
             + " composing=" + this.mComposingTracker.isComposing()
             + " composingText='" + this.mComposingTracker.getComposingText() + "'"
             + " acEnabledPerUser=" + c0804d.isAutoCorrectionEnabledPerUserSettings
             + " acMode=" + c0804d.autoCorrectionMode);
         }
-        if (this.mComposingTracker.isComposing()) {
-            flushPendingSuggestions(c0804d, handlerC0650c);
-            String strM5463a = z2 ? "" : new String(Character.toChars(i));
-            if (isCjkLocale() || LocaleUtils.isCurrentSubtypeJapanese()) {
-                handleCjkAutoCorrect(c0804d, c0920g, handlerC0650c, strM5463a);
-            } else {
-                int iM4368u = this.mComposingTracker.getAutoCorrectionScore();
-                String acWord = this.mComposingTracker.getAutoCorrection();
-                if (BuildConfig.DEBUG) {
-                android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "handleSeparatorInput: acWord='" + acWord + "' acScore=" + iM4368u
-                    + " willTryAC=" + CommitController.shouldCommitAutoCorrectCandidate(acWord, iM4368u, c0804d.isAutoCorrectionEnabledPerUserSettings, c0804d.editorCapabilities.shouldShowSuggestions)
-                    + " src=" + c0920g.getInputSource());
-                }
-                // FIX-MACRO / D-3: kind 7 (a substitution/macro) commits regardless of the
-                // auto-correct setting, but NOT in a field that declared it wants no suggestions
-                // - see CommitController.shouldCommitAutoCorrectCandidate for the original's
-                // expression (c/a.java:461) and for why we diverge on that last term.
-                if (CommitController.shouldCommitAutoCorrectCandidate(acWord, iM4368u, c0804d.isAutoCorrectionEnabledPerUserSettings, c0804d.editorCapabilities.shouldShowSuggestions)) {
-                    autoCorrectAndCommit(c0804d, strM5463a, handlerC0650c, c0920g.getInputSource());
-                    c0920g.setAutoCorrectApplied();
-                } else {
-                    if (BuildConfig.DEBUG) {
-                    android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "handleSeparatorInput: AC REJECTED reason=" +
-                        (acWord == null ? "acWord_null"
-                            : iM4368u == CommitController.KIND_SUBSTITUTION ? "macro_in_no_suggestions_field"
-                            : iM4368u == 0 ? "kind_zero" : "ac_disabled"));
-                    }
-                    commitTypedWord(c0804d, strM5463a, c0920g.getInputSource());
-                }
-            }
-            z = true;
-        } else {
+
+        // Stage 2 — retire the composing word. True when a word was committed, which is what
+        // tells the later stages the separator has already been written for them.
+        final boolean wordCommitted = retireComposingWordForSeparator(
+                event, c0920g, handlerC0650c, codePoint, suppressSpace);
+
+        // NOT a pure read: shouldStripSpace can delete a trailing space. It stays here, ahead of
+        // the quote-after-digit read, because that read sees the text it leaves behind.
+        final boolean stripSpace = shouldStripSpace(event, c0920g);
+        final boolean quoteAfterDigit = 34 == codePoint && this.mRichInputConnection.endsWithQuoteAfterDigit();
+
+        // Stage 3.
+        appendAutoSpaceBeforeSeparatorIfOwed(c0920g, c0804d, codePoint, quoteAfterDigit);
+
+        // Stage 4.
+        applySeparatorDisposition(event, c0920g, c0804d, codePoint,
+                wordCommitted, suppressSpace, quoteAfterDigit, stripSpace);
+
+        c0920g.setUiUpdateMode(1);
+    }
+
+    /**
+     * The in-word insertion stage of {@link #handleCharacterInput}: the caret sits inside the
+     * composing word, so the new code point goes in AT the caret rather than being appended.
+     *
+     * <p>(The state is ≈ CURSOR_INSIDE, except this also fires in the corner case where the
+     * tracker is simultaneously in prediction mode with a non-empty buffer.)
+     *
+     * <p>Three things happen, and the order matters: the editor's composing-region START is
+     * derived BEFORE the tracker is mutated (it is the current caret minus the chars before the
+     * caret within the word), then the whole new word replaces the region, then the caret is put
+     * back at the matching offset inside it.
+     *
+     * <p>Two regressions live in this stage's history, and both are invisible in a single
+     * keystroke's final text — see {@code CharacterInputCharacterisationTest}:
+     * <ul>
+     *   <li>it used to call {@code truncateToComposingCursor} and let the normal append path run,
+     *       which silently dropped every character after the caret (docs/archived/
+     *       2026-05_composing-and-ckb-gestures/2026-05_composing-spec-and-tests_reference.md #6);</li>
+     *   <li>it used a plain {@code setSelection}, which leaves the RIC text model holding the
+     *       composing prefix in BOTH {@code mTextBeforeCursor} and {@code mComposingText},
+     *       corrupting every reader (caps mode, punctuation, backspace decisions) until the next
+     *       {@code resetConnection}. {@link RichInputConnection#setSelectionWithinComposing} is
+     *       the fix (docs/archived/2026-06_fable-audits-and-gesture-rebuild/
+     *       2026-06_composition-pipeline_audit.md F5).</li>
+     * </ul>
+     */
+    private void insertCodePointInsideComposingWord(int codePoint, InputEventContext c0920g) {
+        String oldComposing = this.mComposingTracker.getComposingText();
+        int oldCursorCharOffset = Character.offsetByCodePoints(oldComposing, 0,
+                this.mComposingTracker.getComposingCursorPos());
+        int composingStart = this.mRichInputConnection.getCursorEnd() - oldCursorCharOffset;
+
+        this.mComposingTracker.insertCodePointAtCursor(codePoint);
+        String fullText = this.mComposingTracker.getComposingText();
+        CharSequence display = getComposingTextWithIndicator(fullText);
+        setComposingTextInternal(display, 1);
+
+        int newCursorCharOffset = Character.offsetByCodePoints(fullText, 0,
+                this.mComposingTracker.getComposingCursorPos());
+        int desiredCursor = composingStart + newCursorCharOffset;
+        this.mRichInputConnection.setSelectionWithinComposing(desiredCursor, composingStart);
+        if (BuildConfig.DEBUG) {
+        android.util.Log.d("TEXT_EDIT_DEBUG", "handleCharacterInput: insertedAtCursor codePoint=" + codePoint
+                + " composingNow='" + fullText + "' composingStart=" + composingStart
+                + " newCursorCharOffset=" + newCursorCharOffset + " setSelection=" + desiredCursor);
+        }
+        c0920g.setShouldUpdateSuggestions();
+    }
+
+    /**
+     * {@code true} when this separator is a space in a language written without them, AND a word
+     * is composing — in which case the space terminates the word but is not itself inserted.
+     */
+    private boolean resolveSpacelessSpaceSuppression(SettingsValues c0804d, int codePoint) {
+        return 32 == codePoint
+                && !c0804d.spacingAndPunctuation.currentLanguageHasSpaces
+                && this.mComposingTracker.isComposing();
+    }
+
+    /**
+     * Stage 2: commit the composing word, with the separator as its trailing payload, or flush
+     * pending touch-event text when nothing was composing.
+     *
+     * @return {@code true} if a word was committed — which also means the separator payload was
+     *         handed to the commit pipeline and must not be written again.
+     */
+    private boolean retireComposingWordForSeparator(InputEvent event, InputEventContext c0920g,
+            UIUpdateHandler handlerC0650c, int codePoint, boolean suppressSpace) {
+        if (!this.mComposingTracker.isComposing()) {
             commitTouchEventText();
-            z = false;
+            return false;
         }
-        boolean zM4416c = shouldStripSpace(event, c0920g);
-        boolean z3 = 34 == i && this.mRichInputConnection.endsWithQuoteAfterDigit();
-        if (4 == c0920g.commitType) {
-            if (34 == i) {
-                zM5182e = !z3;
-            } else if (!c0804d.spacingAndPunctuation.clustersWithSymbols(i) || !c0804d.spacingAndPunctuation.clustersWithSymbols(this.mRichInputConnection.getCodePointBeforeCursor())) {
-                zM5182e = c0804d.isUsuallyPrecededBySpace(i);
+        final SettingsValues c0804d = c0920g.settingsValues;
+        flushPendingSuggestions(c0804d, handlerC0650c);
+        String separatorPayload = suppressSpace ? "" : new String(Character.toChars(codePoint));
+        if (isCjkLocale() || LocaleUtils.isCurrentSubtypeJapanese()) {
+            handleCjkAutoCorrect(c0804d, c0920g, handlerC0650c, separatorPayload);
+            return true;
+        }
+        int iM4368u = this.mComposingTracker.getAutoCorrectionScore();
+        String acWord = this.mComposingTracker.getAutoCorrection();
+        if (BuildConfig.DEBUG) {
+        android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "handleSeparatorInput: acWord='" + acWord + "' acScore=" + iM4368u
+            + " willTryAC=" + CommitController.shouldCommitAutoCorrectCandidate(acWord, iM4368u, c0804d.isAutoCorrectionEnabledPerUserSettings, c0804d.editorCapabilities.shouldShowSuggestions)
+            + " src=" + c0920g.getInputSource());
+        }
+        // FIX-MACRO / D-3: kind 7 (a substitution/macro) commits regardless of the
+        // auto-correct setting, but NOT in a field that declared it wants no suggestions
+        // - see CommitController.shouldCommitAutoCorrectCandidate for the original's
+        // expression (c/a.java:461) and for why we diverge on that last term.
+        if (CommitController.shouldCommitAutoCorrectCandidate(acWord, iM4368u, c0804d.isAutoCorrectionEnabledPerUserSettings, c0804d.editorCapabilities.shouldShowSuggestions)) {
+            autoCorrectAndCommit(c0804d, separatorPayload, handlerC0650c, c0920g.getInputSource());
+            c0920g.setAutoCorrectApplied();
+        } else {
+            if (BuildConfig.DEBUG) {
+            android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "handleSeparatorInput: AC REJECTED reason=" +
+                (acWord == null ? "acWord_null"
+                    : iM4368u == CommitController.KIND_SUBSTITUTION ? "macro_in_no_suggestions_field"
+                    : iM4368u == 0 ? "kind_zero" : "ac_disabled"));
             }
+            commitTypedWord(c0804d, separatorPayload, c0920g.getInputSource());
         }
-        if (zM5182e) {
+        return true;
+    }
+
+    /**
+     * Stage 3: insert the space the previous commit deferred ({@code mCommitType == 4}), when this
+     * separator is one that is usually preceded by a space.
+     *
+     * <p>A quote is special-cased: {@code 6"} is an inch mark, not the close of a quotation, so
+     * the space is suppressed for it. Symbols that cluster with the symbol already before the
+     * cursor ({@code ?!}) get no space between them either.
+     */
+    private void appendAutoSpaceBeforeSeparatorIfOwed(InputEventContext c0920g,
+            SettingsValues c0804d, int codePoint, boolean quoteAfterDigit) {
+        if (4 != c0920g.commitType) {
+            return;
+        }
+        boolean owed = false;
+        if (34 == codePoint) {
+            owed = !quoteAfterDigit;
+        } else if (!c0804d.spacingAndPunctuation.clustersWithSymbols(codePoint)
+                || !c0804d.spacingAndPunctuation.clustersWithSymbols(this.mRichInputConnection.getCodePointBeforeCursor())) {
+            owed = c0804d.isUsuallyPrecededBySpace(codePoint);
+        }
+        if (owed) {
             appendAutoSpace(c0804d, c0920g.getInputSource());
         }
-        if (!z && handleDoubleSpacePeriod(event, c0920g)) {
+    }
+
+    /**
+     * Stage 4: exactly one disposition applies to the separator itself. In priority order:
+     * double-space-to-period (the only one that deletes), punctuation swap, plain space, then
+     * everything else. Each sets the {@link #mCommitType} the next keystroke will read.
+     *
+     * <p>The two short-circuits are deliberate and preserved from the original single expression:
+     * {@code handleDoubleSpacePeriod} is only invoked when no word was committed, and
+     * {@code trySwapPunctuation} only when the strip-space read said so — both of those mutate
+     * the editor, so calling them to ask is not free.
+     */
+    private void applySeparatorDisposition(InputEvent event, InputEventContext c0920g,
+            SettingsValues c0804d, int codePoint, boolean wordCommitted, boolean suppressSpace,
+            boolean quoteAfterDigit, boolean stripSpace) {
+        if (!wordCommitted && handleDoubleSpacePeriod(event, c0920g)) {
             this.mCommitType = 1;
             c0920g.setShouldUpdateSuggestions();
-        } else if (zM4416c && trySwapPunctuation(event, c0920g)) {
+            return;
+        }
+        if (stripSpace && trySwapPunctuation(event, c0920g)) {
             this.mCommitType = 2;
             this.mSuggestionStripListener.setNeutralSuggestionStrip();
-        } else if (32 == i) {
-            if (!this.mCurrentSuggestions.isAutoCorrection()) {
-                this.mCommitType = 3;
-            }
+            return;
+        }
+        if (32 == codePoint) {
+            // A space always claims commit type 3. This used to sit behind
+            // `!mCurrentSuggestions.isAutoCorrection()`, which is hard-coded false for every
+            // SuggestedWords, so the guard never held anything back; the dead branch was removed
+            // on the owner's decision (2026-09-22) rather than made live, which would have changed
+            // the next keystroke's auto-space.
+            this.mCommitType = 3;
             recordSpaceTimestamp(c0920g);
-            if (z || this.mCurrentSuggestions.isEmpty() || c0920g.isKeyHandled()) {
+            if (wordCommitted || this.mCurrentSuggestions.isEmpty() || c0920g.isKeyHandled()) {
                 c0920g.setShouldUpdateSuggestions();
             }
-            if (!z2 && !z) {
-                commitCharacter(c0804d, i, c0920g.getInputSource());
+            if (!suppressSpace && !wordCommitted) {
+                commitCharacter(c0804d, codePoint, c0920g.getInputSource());
             }
-        } else {
-            if ((4 == c0920g.commitType && c0804d.isUsuallyFollowedBySpace(i)) || (34 == i && z3)) {
-                this.mCommitType = 4;
-            }
-            if (!z) {
-                commitCharacter(c0804d, i, c0920g.getInputSource());
-            }
-            this.mSuggestionStripListener.setNeutralSuggestionStrip();
+            return;
         }
-        c0920g.setUiUpdateMode(1);
+        if ((4 == c0920g.commitType && c0804d.isUsuallyFollowedBySpace(codePoint))
+                || (34 == codePoint && quoteAfterDigit)) {
+            this.mCommitType = 4;
+        }
+        if (!wordCommitted) {
+            commitCharacter(c0804d, codePoint, c0920g.getInputSource());
+        }
+        this.mSuggestionStripListener.setNeutralSuggestionStrip();
     }
 
     private boolean performEditorAction() {
@@ -1366,8 +1488,15 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         boolean z5 = imeAction == 0;  // IME_ACTION_UNSPECIFIED
         boolean isHardwareInput = c0920g.getInputSource() == InputSource.HARDWARE;
         
-        // Check if Shift is pressed - Shift+Enter always inserts newline
-        boolean isShiftPressed = c0920g.isShiftPressed() || this.mIme.getPhysicalKeyboardStateTracker().isManualShiftAndShiftPressing();
+        // Check if Shift is pressed - Shift+Enter always inserts newline.
+        //
+        // A manual shift is pending only once every Shift key is RELEASED. A Shift still held after
+        // chording it with Alt is CONSUMED and does not count, so Enter in a single-line field
+        // still performs the editor action there (ShiftLifecycleTest, ShiftConsumedSiteTest). The
+        // snapshot is built only on Enter, and only when the context has not already recorded a
+        // manual shift (processInputEvent copies it from the symbol-page provider).
+        boolean isShiftPressed = c0920g.isShiftPressed()
+                || this.mIme.getPhysicalKeyboardStateTracker().getModifierState().isManualShiftPending();
         
         // Check the multiline flag directly instead of !isSingleLineField() (TI-32: that method was
         // called editorSupportsSuggestions() and was believed to check NO_SUGGESTIONS/AUTO_COMPLETE;

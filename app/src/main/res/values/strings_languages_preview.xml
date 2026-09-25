@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The consolidated Language screen (and the bottom sheet for one keyboard). Translated like
+    every other screen: a new string here needs its 73 locale entries.
+-->
+<resources>
+    <string name="languages_hub_summary">Keyboards, extra languages and dictionaries in one place</string>
+    <string name="languages_hub_old_android">On this Android version, keyboards are turned on and off in Android\'s settings. Adding or removing one here opens that screen.</string>
+    <string name="languages_hub_follow_system_title">Match phone languages</string>
+    <string name="languages_hub_follow_system_on">Keyboards follow your phone\'s languages. Adding or removing one turns this off.</string>
+    <string name="languages_hub_follow_system_off">You choose the keyboards below</string>
+    <string name="languages_hub_keyboards_header">Your keyboards</string>
+    <string name="languages_hub_keyboards_hint">Tap a keyboard to add additional prediction languages or remove it</string>
+    <string name="languages_hub_add">Add a language</string>
+    <string name="languages_hub_more_header">More options</string>
+    <string name="languages_hub_also_predicts">Also predicts: %1$s</string>
+    <string name="languages_hub_dictionary_missing">Dictionary not downloaded</string>
+    <string name="languages_hub_dictionary_downloading">Downloading dictionary… %1$d%%</string>
+    <string name="languages_hub_dictionary_failed">Dictionary download failed</string>
+    <string name="languages_hub_last_keyboard">You need at least one keyboard</string>
+    <string name="languages_hub_sheet_done">Done</string>
+    <string name="languages_hub_sheet_extras_header">Also predict in</string>
+    <string name="languages_hub_sheet_clear_search">Clear search</string>
+    <string name="languages_hub_sheet_remove">Remove keyboard</string>
+    <string name="languages_hub_sheet_remove_title">Remove %1$s?</string>
+    <string name="languages_hub_sheet_remove_message">You can add it again from this screen.</string>
+    <string name="languages_hub_sheet_remove_confirm">Remove</string>
+    <string name="languages_hub_options_extras_latin_only">Only languages written in the Latin alphabet can be combined</string>
+    <string name="languages_hub_search">Search languages</string>
+    <string name="languages_hub_downloads">Downloads %1$s</string>
+    <string name="languages_hub_added">%1$s added</string>
+    <string name="languages_hub_downloading_then_on">Downloading %1$s. It turns on when the download finishes.</string>
+    <string name="languages_hub_turn_on_in_settings">Turn on %1$s in the list, then come back.</string>
+    <string name="languages_hub_turn_off_in_settings">Turn off %1$s in the list, then come back.</string>
+    <string name="languages_hub_failed">That did not work. Try again.</string>
+</resources>

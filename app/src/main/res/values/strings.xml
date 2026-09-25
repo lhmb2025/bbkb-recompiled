@@ -78,6 +78,8 @@
     <string name="settings_category_behavior">BEHAVIOR</string>
     <string name="settings_category_behavior_vkb">BEHAVIOR</string>
     <string name="settings_category_ckb_gestures">CAPACITIVE KEYBOARD GESTURES</string>
+    <string name="settings_category_on_screen_keyboard">ON-SCREEN KEYBOARD</string>
+    <string name="settings_category_physical_keyboard">PHYSICAL KEYBOARD</string>
     <string name="settings_category_credits">Credits</string>
     <string name="settings_category_gestures">GESTURES</string>
     <string name="settings_category_key_popup">Key popup</string>
@@ -247,7 +249,7 @@
     <string name="settings_language_packs_title">Language packs</string>
     <string name="settings_language_switching_summary">Configure language switching behavior</string>
     <string name="settings_language_switching_title">Language switching</string>
-    <string name="settings_languages_summary">Keyboard languages, switching, and packs</string>
+    <string name="settings_languages_summary">Keyboard languages, language switching, and language packs</string>
     <string name="settings_languages_title">Language</string>
     <string name="settings_multi_language_keyboards_summary">Configure multi-language keyboard layouts</string>
     <string name="settings_multi_language_keyboards_title">Multi-language keyboards</string>
@@ -260,18 +262,7 @@
     <string name="control_key_setting_right_shift">Right shift key</string>
     <string name="settings_physical_keyboard_summary">Settings for physical keyboard input</string>
     <string name="settings_physical_keyboard_title">Physical keyboard</string>
-    <string name="settings_pkb_alt_sym_shortcut_ctrl_mode">Toggle Ctrl mode</string>
-    <string name="settings_pkb_alt_sym_shortcut_ctrl_mode_summary">Alt + Sym toggles Ctrl shortcut mode</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Disabled</string>
-    <string name="settings_pkb_alt_sym_shortcut_disabled_summary">Alt + Sym has no special action</string>
-    <string name="settings_pkb_alt_sym_shortcut_emoji_picker">Toggle emoji picker</string>
-    <string name="settings_pkb_alt_sym_shortcut_emoji_picker_summary">Alt + Sym opens or closes the emoji picker</string>
-    <string name="settings_pkb_alt_sym_shortcut_hide_keyboard">Hide keyboard</string>
-    <string name="settings_pkb_alt_sym_shortcut_hide_keyboard_summary">Alt + Sym dismisses the keyboard</string>
-    <string name="settings_pkb_alt_sym_shortcut_language_switch">Switch language</string>
-    <string name="settings_pkb_alt_sym_shortcut_language_switch_summary">Alt + Sym cycles to the next language</string>
-    <string name="settings_pkb_alt_sym_shortcut_symbol_keyboard">Open symbol keyboard</string>
-    <string name="settings_pkb_alt_sym_shortcut_symbol_keyboard_summary">Alt + Sym opens the symbol keyboard</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym shortcut</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl key behavior</string>
     <string name="settings_pkb_dictation_key_summary_off">Microphone key defaults to alt character</string>
@@ -288,13 +279,11 @@
     <string name="settings_pkb_keyboard_helper_title">BBKB Helper</string>
     <string name="settings_pkb_multifunction_action_clipboard">Clipboard</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl key</string>
-    <string name="settings_pkb_multifunction_action_cursor_mode">Cursor control (arrow bar)</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji board</string>
-    <string name="settings_pkb_multifunction_action_fcc">Cursor control (board)</string>
-    <string name="settings_pkb_multifunction_action_hide">Hide keyboard</string>
+    <string name="settings_pkb_multifunction_action_fcc">Cursor control</string>
     <string name="settings_pkb_multifunction_action_language_switch">Switch language</string>
+    <string name="settings_pkb_multifunction_action_number_pad">Number pad</string>
     <string name="settings_pkb_multifunction_action_symbol">Symbol keyboard</string>
-    <string name="settings_pkb_multifunction_action_voice">Voice input</string>
     <string name="settings_pkb_multifunction_key_title">Multifunction key</string>
 
     <!-- ============================================== -->
@@ -672,6 +661,10 @@
     <string name="settings_lang_spacebar_switch_summary">Swipe spacebar to switch language</string>
     <string name="settings_lang_spacebar_switch_title">Spacebar language switching</string>
     <string name="settings_lang_switch_key_summary">Display language switch key on keyboard</string>
+    <string name="settings_lang_assign_pkb_shortcut_title">Assign language switching shortcut</string>
+    <string name="settings_lang_assign_pkb_shortcut_summary">Set a physical key to switch language</string>
+    <string name="settings_lang_assign_ckb_gesture_title">Assign capacitive keyboard gesture</string>
+    <string name="settings_lang_assign_ckb_gesture_summary">Set a gesture on the keyboard to switch language</string>
     <string name="settings_lang_switch_key_title">Show language switch key</string>
     <string name="settings_preferences_summary">On-screen and physical keyboards, voice, and gestures</string>
     <string name="settings_preferences_title">Input</string>
@@ -869,6 +862,11 @@
     <string name="language_packs_variant_summary">Loads in place of %1$s</string>
     <string name="language_packs_offer_message">Download the %1$s dictionary (%2$s)?</string>
     <string name="language_packs_offer_not_now">Not now</string>
+    <string name="language_packs_not_on_summary">Not on in the keyboard yet. Tap to turn it on.</string>
+    <string name="language_packs_turned_on">%1$s is on. Switch to it from the language switcher.</string>
+    <string name="language_packs_turn_on_in_settings">Turn on %1$s in the list, then come back.</string>
+    <string name="language_packs_installed_and_on">Installed %1$s. It is on: switch to it from the language switcher.</string>
+    <string name="language_packs_installed_turn_on">Installed %1$s. Tap its row to turn it on in the keyboard.</string>
     <string name="language_packs_error_offline">No connection</string>
     <string name="language_packs_error_network">That did not work. Try again.</string>
     <string name="language_packs_error_verification">The file did not match the catalogue, so nothing was installed</string>

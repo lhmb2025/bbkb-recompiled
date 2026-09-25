@@ -91,6 +91,8 @@ import dev.bbkb.ime.keyboard.KeyboardActionListenerInterface
 import dev.bbkb.ime.keyboard.KeyboardColorManager
 import dev.bbkb.ime.keyboard.internal.KeyboardId
 import dev.bbkb.ime.keyboard.KeyboardSwitcher
+import dev.bbkb.ime.keyboard.state.CrossAxisRules
+import dev.bbkb.ime.keyboard.state.KeyboardTransition
 import dev.bbkb.ime.keyboard.MainKeyboardView
 import dev.bbkb.ime.keyboard.auxbar.ArrowBarController
 import dev.bbkb.ime.keyboard.auxbar.autofill.InlineAutofillManager
@@ -98,6 +100,7 @@ import dev.bbkb.ime.keyboard.inputboard.emoji.EmojibaseDataProvider
 import dev.bbkb.ime.keyboard.auxbar.suggestions.CJKSuggestionGridView
 import dev.bbkb.ime.keyboard.auxbar.suggestions.SuggestionStripListener
 import dev.bbkb.ime.keyboard.inputboard.UnifiedInputBoardHandler
+import dev.bbkb.ime.keyboard.inputboard.UnifiedBoardCoordinator
 import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardController
 import dev.bbkb.ime.keyboard.inputboard.fcc.FccController
 import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadController
@@ -128,6 +131,7 @@ import dev.bbkb.ime.core.ime.InputViewCoordinator
 import dev.bbkb.ime.core.ime.SwipeToDeleteAnimatorView
 import dev.bbkb.ime.core.ime.VkbGestureListener
 import dev.bbkb.ime.core.keyevent.KeyEventProcessor
+import dev.bbkb.ime.core.keyevent.ModifierResetReason
 import dev.bbkb.ime.core.keyevent.MultitapEventHandler
 import dev.bbkb.ime.core.keyevent.SoftwareMultitapHandler
 import dev.bbkb.ime.core.keyevent.ModifierStatusBarUpdater
@@ -222,10 +226,6 @@ class BlackBerryIME : InputMethodService(),
     var lastCursorAnchorInfo: CursorAnchorInfo? = null
 
     var isCursorModeEnabled: Boolean = false
-
-    /** True while the multifunction key is held down remapped as Ctrl, so its key-up is
-     *  remapped consistently even if the Alt state changed mid-hold. */
-    private var multifunctionCtrlDown = false
 
     private var lastBatchUpdateRequestTime = 0L
 
@@ -323,12 +323,14 @@ class BlackBerryIME : InputMethodService(),
     private val controlMode = ControlModeController(object : ControlModeController.Host {
         override val isVkbControlModeEnabled: Boolean get() = settingsManager.getSettingsValues().isVkbControlModeEnabled
         override val controlModeSetting: Int get() = settingsManager.getSettingsValues().controlMode
+        override val isAltActiveForCharacter: Boolean
+            get() = physicalKeyboardStateTracker.getModifierState().isAltActiveForCharacter
         override fun sendKeyDownWithMeta(keyCode: Int, metaState: Int) = inputLogic.sendKeyDownWithMeta(keyCode, metaState)
         override fun sendKeyUpWithMeta(keyCode: Int, metaState: Int) = inputLogic.sendKeyUpWithMeta(keyCode, metaState)
         override fun showControlModeUi() {
             // The notice bar itself is gone (its view forced itself GONE), but these four
             // actions ran on every sticky-control-mode entry and are the visible behaviour.
-            hideUnifiedInputBoard()
+            sweepBoardsWhenUimBarIsOff()
             enableCursorMode(false)
             uiCoordinator.hideSuggestionViews()
             hideInputBoard()
@@ -831,7 +833,9 @@ class BlackBerryIME : InputMethodService(),
             keyboardSwitcher.getSlideboardManager()?.hide()
             uiUpdateHandler.prepareForOrientationChange()
             inputLogic.commitComposingOrReset(settingsManager.getSettingsValues())
-            physicalKeyboardStateTracker.resetAllMetaState()
+            // The orientation change rebuilds the keyboard, and with it the meta mask the old one
+            // installed — which is the ALL-scope reason this reset has always been.
+            physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.KEYBOARD_RELOADED)
             updatePhysicalKeyboardFilter()
         }
 
@@ -1210,9 +1214,9 @@ class BlackBerryIME : InputMethodService(),
             enableCursorMode(false)
         }
         currentPackageName = str
-        physicalKeyboardStateTracker.resetAllMetaState()
+        physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.EDITOR_SWITCHED)
 
-        hideUnifiedInputBoard()
+        sweepBoardsWhenUimBarIsOff()
         if (str != null && (str == "com.blackberry.help" || str == "com.blackberry.retaildemo")) {
             z2 = true
         }
@@ -1260,7 +1264,7 @@ class BlackBerryIME : InputMethodService(),
     override fun onFinishInput() {
         Logger.info(LOG_TAG, "onFinishInput()")
         uiUpdateHandler.handleFinishInput()
-        physicalKeyboardStateTracker.resetAllMetaState()
+        physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.FINISH_INPUT)
         isInputActive = false
 
         if (InlineAutofillManager.isSupported()) {
@@ -1324,7 +1328,10 @@ class BlackBerryIME : InputMethodService(),
         keyboardSwitcher.getMainKeyboardView()?.closing()
         uiCoordinator.hideAllInputUi()
         enableCursorMode(false)
-        physicalKeyboardStateTracker.resetAllMetaState()
+        // Reached from onWindowHidden, dismissKeyboard, onFinishInputView and onFinishInput — four
+        // ways for the window to go away, all of them ALL-scope. WINDOW_HIDDEN names the one this
+        // method is about; the other three name themselves at their own reset sites.
+        physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.WINDOW_HIDDEN)
         shakeGestureHandler!!.stop()
     }
 
@@ -1354,7 +1361,7 @@ class BlackBerryIME : InputMethodService(),
         if (zM4467a) {
             resetKeyboardState()
         }
-        if (physicalKeyboardStateTracker.isShiftKeyDown()) {
+        if (physicalKeyboardStateTracker.getModifierState().isShiftHeld()) {
             physicalKeyboardStateTracker.consumeModifiersAfterKey(0, true)
         }
         if (keyboardSwitcher.isShiftKeyPressed() || keyboardSwitcher.isShiftKeyMomentary()) {
@@ -1549,9 +1556,9 @@ class BlackBerryIME : InputMethodService(),
     fun loadKeyboard() {
         uiUpdateHandler.postLoadAdditionalLocales()
         loadSettings()
-        hideUnifiedInputBoard()
+        sweepBoardsWhenUimBarIsOff()
         if (keyboardSwitcher.getMainKeyboardView() != null) {
-            physicalKeyboardStateTracker.resetAllMetaState()
+            physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.KEYBOARD_RELOADED)
             keyboardSwitcher.startInput(getCurrentInputEditorInfo(), getCurrentInputType(), getCurrentImeOptions())
         }
     }
@@ -1759,31 +1766,10 @@ class BlackBerryIME : InputMethodService(),
     }
 
     fun remapKeyEvent(i: Int, ev: KeyEvent): KeyEvent {
-        val mfRemapped = remapMultifunctionCtrlKey(ev)
+        // Both remaps belong to ControlModeController: it owns Ctrl, including the multifunction
+        // key's "held as Ctrl" latch, which used to be a field here (Phase 1f).
+        val mfRemapped = controlMode.remapMultifunctionCtrlKey(ev)
         return controlMode.remapModifierKeyEvent(mfRemapped.keyCode, mfRemapped)
-    }
-
-    /**
-     * When the device's MULTIFUNCTION key is configured to act as Ctrl, rewrite its events
-     * to KEYCODE_CTRL_LEFT so the physical-Ctrl machinery (chording, Ctrl+C/V/X shortcuts)
-     * treats it as a real Ctrl key — the same trick the control_mode setting uses to remap
-     * Shift to Ctrl. Skipped while Alt is active at press time so Alt+key can still type
-     * the mapping's alt character (e.g. '0' on the Key2 mic key).
-     */
-    private fun remapMultifunctionCtrlKey(ev: KeyEvent): KeyEvent {
-        val mapping = dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
-            .getInstance().resolve(ev.scanCode, ev.keyCode) ?: return ev
-        if (mapping.role != dev.bbkb.ime.core.device.config.model.KeyRole.MULTIFUNCTION) return ev
-        if (dev.bbkb.ime.core.keyevent.MultifunctionKeyHandler.getConfiguredAction(mapping)
-            != dev.bbkb.ime.core.keyevent.MultifunctionKeyHandler.ACTION_CTRL) return ev
-        if (ev.action == KeyEvent.ACTION_DOWN && ev.repeatCount == 0) {
-            val altActive = ev.isAltPressed ||
-                (physicalKeyboardStateTracker.getInternalMetaState() and KeyEvent.META_ALT_MASK) != 0
-            multifunctionCtrlDown = !altActive
-        }
-        if (!multifunctionCtrlDown) return ev
-        if (ev.action == KeyEvent.ACTION_UP) multifunctionCtrlDown = false
-        return ControlModeController.withKeyAndMeta(ev, KeyEvent.KEYCODE_CTRL_LEFT, ev.metaState or ControlModeController.META_CTRL_LEFT)
     }
 
     fun getOrCreateKeyEventConverter(i: Int): KeyEventConverter {
@@ -1826,44 +1812,62 @@ class BlackBerryIME : InputMethodService(),
         val sv = SettingsManager.getInstance().getSettingsValues()
         val coordinator = uim?.getBoardCoordinator()
 
-        val isDynamicSearchActive = sv != null
-            && sv.isEmojiDynamicSearchEnabled
-            && keyboardSwitcher.isEmojiKeyboardShowing()
+        // R3(c): a text key typed while emoji dynamic search is running is SEARCH input, not
+        // typing, so it closes no board at all. A row of the table now, not a flag buried here.
+        val closesNoBoard = CrossAxisRules.textKeyClosesNoBoard(
+            sv != null
+                && sv.isEmojiDynamicSearchEnabled
+                && keyboardSwitcher.isEmojiKeyboardShowing()
+        )
+        val cursorBoard = CrossAxisRules.CURSOR_BOARD_KEY_CODE
 
         fccController?.let { fcc ->
             // FCC keeps its legacy dismissal with the mid-toggle exemption; reconcile
             // the coordinator only when FCC actually hid.
             fcc.hideUnlessToggling()
-            if (coordinator != null && coordinator.activeBoard() == -42 && !fcc.isViewActive()) {
+            if (coordinator != null && coordinator.activeBoard() == cursorBoard && !fcc.isViewActive()) {
                 coordinator.notifyBoardClosed()
             }
         }
 
         if (uim != null && sv != null && sv.isUimEnabled) {
-            if (!isDynamicSearchActive) {
+            if (!closesNoBoard) {
                 // Primary: close the active board via the coordinator (per-board close
-                // semantics + state cleared). FCC was handled above with its exemption.
-                if (coordinator != null && coordinator.activeBoard() != -42) {
+                // semantics + state cleared) — unless the table says this board survives a text
+                // key. FCC was handled above with its own mid-toggle exemption; R3(b) added the
+                // number pad, because typing a letter must not close a board typed FROM.
+                val openBoard = coordinator?.activeBoard() ?: UnifiedBoardCoordinator.NO_BOARD
+                if (coordinator != null && !CrossAxisRules.boardSurvivesTextKey(openBoard)) {
                     coordinator.onTextKeyPressed()
                 }
                 // Defense-in-depth sweep for components showing outside coordinator
-                // tracking (e.g. auto-shown autofill). Spares FCC like before.
-                uim.hideOtherComponents(-42)
+                // tracking (e.g. auto-shown autofill). Spares the same set.
+                uim.hideComponentsExcept(CrossAxisRules.boardsExemptFromTextKey())
             }
             uim.refresh()
         }
         if (sv == null || !keyboardSwitcher.isEmojiKeyboardShowing() || sv.isUimEnabled) return
-        if (!isDynamicSearchActive) keyboardSwitcher.getUnifiedInputBoardManager()!!.closeActiveComponent()
+        if (!closesNoBoard) keyboardSwitcher.getUnifiedInputBoardManager()!!.closeActiveComponent()
     }
 
-    fun isShiftChording(): Boolean = keyboardSwitcher.isShiftKeyReleasing() && physicalKeyboardStateTracker.isShiftReleased()
+    /**
+     * The on-screen Shift key is releasing and every physical Shift key is RELEASED. A physical
+     * Shift that is still down after being chorded with Alt is CONSUMED, not released, so it does
+     * not count (`ModifierState.isShiftReleased()`, pinned by `ShiftLifecycleTest`). The snapshot
+     * is only built when the first half is true.
+     */
+    fun isShiftChording(): Boolean =
+        keyboardSwitcher.isShiftKeyReleasing() && physicalKeyboardStateTracker.getModifierState().isShiftReleased()
 
     fun isMetaKeyActive(): Boolean {
-        val c0919fM4047Z = physicalKeyboardStateTracker
-        // Audit CT-22: 256 == MetaKeyKeyListener.META_CAP_LOCKED.
-        return (!c0919fM4047Z.isShiftReleased() &&
-            c0919fM4047Z.hasMetaFlag(android.text.method.MetaKeyKeyListener.META_CAP_LOCKED)) &&
-            !c0919fM4047Z.isAltUsedWithKey()
+        // One snapshot per call, as since Phase 1f; all three terms read it. hasMetaFlag(256 ==
+        // MetaKeyKeyListener.META_CAP_LOCKED) is the span encoding's shift-lock bit run through
+        // the keyboard's meta mask, which is exactly isShiftLockedForLayout() (audit CT-22). The
+        // first term counts a down-but-consumed Shift as not released, as the tracker always did.
+        val modifiers = physicalKeyboardStateTracker.getModifierState()
+        return !modifiers.isShiftReleased() &&
+            modifiers.isShiftLockedForLayout() &&
+            !modifiers.isAltUsedWithKey()
     }
 
     fun getSymbolPageProvider(): SymbolPageProvider {
@@ -2265,7 +2269,9 @@ class BlackBerryIME : InputMethodService(),
                     controlMode.clearControlState()
                     cjkSuggestionGridView?.setVisible(false)
                     str = "dev.bbkb.ime.SWIPE_SYMBOLS_VKB"
-                    if (zM5299a) physicalKeyboardStateTracker.resetAltStateAndNotify()
+                    if (zM5299a) {
+                        physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.ALT_PAGE_LEFT)
+                    }
                     zM5299a = keyboardSwitcher.onSymbolShiftToggle(getCurrentInputType(), getCurrentImeOptions(), true, zM5299a)
                 }
             }
@@ -2397,9 +2403,11 @@ class BlackBerryIME : InputMethodService(),
             if (z) {
                 if (isCursorModeEnabled) return
                 Logger.debug("IMEGesture", "Cursor mode enabled")
-                fccController?.onFccEnabled(z3)
-                isCursorModeEnabled = true
-                if (!z3) showArrowBar()
+                // The cursor axis moving, and what that does to the board and bar axes, is one row
+                // of CrossAxisRules now: mode on, then the arrow bar replaces the open boards and
+                // the suggestion views. A forced entry (z3) is FCC reconciling a state it has
+                // already arranged on screen, so the table leaves the other axes alone there.
+                keyboardSwitcher.transitions().apply(KeyboardTransition.enterCursorMode(z3))
                 val currentInputConnection = getCurrentInputConnection()
                 if (currentInputConnection != null && lastCursorAnchorInfo != null && !isMetaKeyActive() && (!z3 || !inputLogic.mRichInputConnection.hasSelection())) {
                     if (lastCursorAnchorInfo!!.selectionEnd != lastCursorAnchorInfo!!.selectionStart || inputLogic.mRichInputConnection.hasSelection()) {
@@ -2417,8 +2425,10 @@ class BlackBerryIME : InputMethodService(),
             }
             if (isCursorModeEnabled) {
                 Logger.debug("IMEGesture", "Cursor mode disabled")
-                isCursorModeEnabled = false
-                hideArrowBar(z2)
+                // Mode off, then the arrow bar comes down and the strip comes back — the
+                // EXIT_CURSOR_MODE row. The cursor window and the auto-disable timer below are
+                // cursor-axis internals, not cross-axis rules, so they stay here.
+                keyboardSwitcher.transitions().apply(KeyboardTransition.exitCursorMode(z2))
                 cursorTracker.hide()
                 uiUpdateHandler.removeCallbacks(disableCursorModeRunnable)
                 requestSuggestionsForCursorPosition()
@@ -2426,12 +2436,64 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
+    // ── the cursor axis' mechanism, as KeyboardStateCoordinator.Axes reaches it ──────────────
+
+    /** Cursor (FCC) mode on: tell FCC, then set the flag. Order matters — FCC reads the flag. */
+    fun cursorModeOn(forced: Boolean) {
+        fccController?.onFccEnabled(forced)
+        isCursorModeEnabled = true
+    }
+
+    /** Cursor (FCC) mode off: the flag only. */
+    fun cursorModeOff() {
+        isCursorModeEnabled = false
+    }
+
+    /**
+     * Whether the arrow bar can go up at all. The guard spans the whole `ENTER_CURSOR_MODE`
+     * bar+board effect — with the bar already showing, none of the three steps runs — so the funnel
+     * asks it once rather than each step carrying it.
+     */
+    fun canRaiseArrowBar(): Boolean {
+        val arrowBar = arrowBarController
+        Logger.debug("ARROW_BAR_DIAG", "canRaiseArrowBar: arrowBarController=" +
+            (if (arrowBar == null) "NULL" else "non-null") + " isShowing=" + arrowBar?.isShowing())
+        return arrowBar != null && !arrowBar.isShowing()
+    }
+
+    /**
+     * The step before the arrow bar goes up: retire the composing word and take the suggestion
+     * views down. The composing-word cancel is the text pipeline, which the cross-axis table
+     * deliberately does not carry; it travels here because production runs the two back to back.
+     */
+    fun prepareForArrowBar() {
+        inputLogic.cancelComposingAndTouchEvent()
+        uiCoordinator.hideSuggestionViews()
+    }
+
+    /** `ENTER_CURSOR_MODE`'s board column, `CLOSE_ALL`: every board goes, exemptions included. */
+    fun sweepAllBoardsClosed() = hideInputBoard()
+
+    /** The last step of `ENTER_CURSOR_MODE`'s bar column. */
+    fun raiseArrowBar() {
+        Logger.debug("ARROW_BAR_DIAG", "raiseArrowBar: calling arrowBarController.show()")
+        arrowBarController?.show()
+    }
+
+    /** The bar column of `EXIT_CURSOR_MODE`. */
+    fun lowerArrowBarRestoringStrip(requestShiftUpdate: Boolean) = hideArrowBar(requestShiftUpdate)
+
+    /** The `RESTORE_STRIP_OR_UIM` bar effect: whichever of the two this editor gets. */
+    fun restoreStripOrUimBar() {
+        uiCoordinator.showSuggestionStripOrUim()
+    }
+
     /**
      * Re-evaluate the suggestion strip for wherever the cursor ended up, on **every** cursor-mode
      * exit — the second double tap, the 4 s auto-disable, a key press, [onViewClicked].
      *
      * Entering cursor mode cancels the composing word and hides the aux bar
-     * ([showArrowBar]), and `RecorrectionController.performRecorrection` returns immediately
+     * ([prepareForArrowBar]), and `RecorrectionController.performRecorrection` returns immediately
      * while [isCursorModeEnabled] is set, so none of the `onUpdateSelection` callbacks the arrow
      * keys generate ever reach it. The only re-evaluation on the way out was
      * [restoreSuggestionStrip]'s `postUpdateShiftState(false, false)`, and that `false` is
@@ -2462,18 +2524,6 @@ class BlackBerryIME : InputMethodService(),
         uiUpdateHandler.postDelayed(disableCursorModeRunnable, 4000L)
     }
 
-    private fun showArrowBar() {
-        val arrowBar = arrowBarController
-        Logger.debug("ARROW_BAR_DIAG", "showArrowBar: arrowBarController=${if (arrowBar == null) "NULL" else "non-null"} isShowing=${arrowBar?.isShowing()}")
-        if (arrowBar == null || arrowBar.isShowing()) return
-        hideUnifiedInputBoard()
-        inputLogic.cancelComposingAndTouchEvent()
-        uiCoordinator.hideSuggestionViews()
-        hideInputBoard()
-        Logger.debug("ARROW_BAR_DIAG", "showArrowBar: calling arrowBarController.show()")
-        arrowBar.show()
-    }
-
     private fun hideArrowBar(z: Boolean) {
         val arrowBar = arrowBarController
         if (arrowBar == null || !arrowBar.isShowing()) return
@@ -2484,7 +2534,10 @@ class BlackBerryIME : InputMethodService(),
     }
 
     fun restoreSuggestionStrip(z: Boolean, z2: Boolean) {
-        uiCoordinator.showSuggestionStripOrUim()
+        // The bar axis' one entry point with a decision in it (UIM bar or suggestion strip?), so
+        // the one that earns a row: RESTORE_BAR / RESTORE_STRIP_OR_UIM. The shift re-derivation
+        // below is the text pipeline and stays here.
+        keyboardSwitcher.transitions().apply(KeyboardTransition.restoreBar())
         if (!z2 || inputLogic.mRichInputConnection.hasSelection()) return
         uiUpdateHandler.postUpdateShiftState(false, false)
     }
@@ -2625,10 +2678,21 @@ class BlackBerryIME : InputMethodService(),
         uiCoordinator.hideUnifiedInputBoard()
     }
 
-    fun hideUnifiedInputBoard() {
-        val c1011iM6838p = keyboardSwitcher.getUnifiedInputBoardManager()
-        if (c1011iM6838p == null || isUimEnabled()) return
-        c1011iM6838p.hideKeyboardOnKeyboardStateChange()
+    /**
+     * Sweep the open boards away **when the UIM bar is switched off** — owner ruling R4's naming
+     * fix. This was called `hideUnifiedInputBoard()`, and its body has always been
+     * `if (uim == null || isUimEnabled()) return`: it does nothing whenever the UIM *is* enabled,
+     * which is the opposite of what the name said. It is not "hide the board", it is "with no bar
+     * to sit in, an open board has to go".
+     *
+     * <p>`showArrowBar()` called this and then `hideInputBoard()`, which closes everything
+     * unconditionally — two closes where the first could only ever add a `refresh()` pass. R4
+     * deleted that call; the three remaining callers (control-mode entry, `onStartInput`,
+     * `loadKeyboard`) are the ones that actually mean this.
+     */
+    fun sweepBoardsWhenUimBarIsOff() {
+        if (keyboardSwitcher.getUnifiedInputBoardManager() == null || isUimEnabled()) return
+        keyboardSwitcher.transitions().apply(KeyboardTransition.sweepBoards())
     }
 
     fun refreshUnifiedInputBoard() {

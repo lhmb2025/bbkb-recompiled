@@ -455,6 +455,35 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertActiveBoard(UnifiedBoardCoordinator.NO_BOARD)
     }
 
+    // ── the exemption's predicate, now read by the cross-axis table ────────────
+
+    /**
+     * Phase 1a: the exempt list moved to `CrossAxisRules`, which probes it through this predicate
+     * instead of the manager keeping a second copy of the list. Every board answers for its own
+     * view, exempt or not, and an unregistered keycode answers false.
+     */
+    @Test
+    fun isBoardViewShowingAnswersForEachBoardsOwnView() {
+        assertNo("nothing is up yet", uim.isBoardViewShowing(CLIPBOARD))
+
+        uim.requestBoard(CLIPBOARD)
+
+        assertYes("the clipboard is up", uim.isBoardViewShowing(CLIPBOARD))
+        assertNo("the number pad is not", uim.isBoardViewShowing(NUMBER_PAD))
+        assertNo("an unregistered keycode is never up", uim.isBoardViewShowing(-9999))
+        assertNo("NO_BOARD is never up", uim.isBoardViewShowing(UnifiedBoardCoordinator.NO_BOARD))
+    }
+
+    /** The predicate follows the view, not the coordinator — that is what the exemption needs. */
+    @Test
+    fun isBoardViewShowingFollowsTheViewNotTheCoordinator() {
+        uim.requestBoard(CLIPBOARD)
+        clipboard.clobberViewClosed()
+
+        assertNo("the view is down, so the board is not up", uim.isBoardViewShowing(CLIPBOARD))
+        assertActiveBoard(CLIPBOARD)
+    }
+
     @Test
     fun hideAllComponentsHidesEverythingAndClearsTheCoordinator() {
         uim.requestBoard(CLIPBOARD)

@@ -261,7 +261,9 @@ class PipelineHarness {
         editorText = editor.getText(),
         editorComposing = editor.getComposingText(),
         editorHasRegion = editor.hasComposingRegion(),
+        editorSelStart = editor.getSelStart(),
         ricCursorStart = inputLogic.mRichInputConnection.cursorStart,
+        ricRegionSynced = inputLogic.mRichInputConnection.isComposingRegionSynced,
         trackerComposing = inputLogic.mComposingTracker.composingText,
         trackerIsComposing = inputLogic.mComposingTracker.isComposing,
     )

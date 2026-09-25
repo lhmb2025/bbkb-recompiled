@@ -246,7 +246,7 @@ class FakeSwitcherCallbacks : KeyboardState.SwitcherCallbacks {
 
     override fun isPkbCustomPageFirst(): Boolean = pkbCustomPageFirst
 
-    override fun isSymKeyHeld(): Boolean = symKeyHeld
+    override fun isSymHeld(): Boolean = symKeyHeld
 
     override fun getSymbolPageOrder(): Int = symbolPageOrderSetting
 

@@ -12,6 +12,7 @@ import dev.bbkb.ime.core.device.config.builder.HardwareKeyCaptureBus;
 import dev.bbkb.ime.core.device.config.model.KeyRole;
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping;
 import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver;
+import dev.bbkb.ime.core.keyevent.ResolvedKey;
 import dev.bbkb.ime.BuildConfig;
 
 /**
@@ -41,10 +42,17 @@ public class KeyInterceptorService extends AccessibilityService {
     private static final int SCANCODE_EMOJI = 250;    // 0xFA
     private static final int SCANCODE_MIC = 251;      // 0xFB
     
-    /** Fallback scancodes (from .kl file if it were working) */
+    /**
+     * Fallback scancodes (from the .kl file if it were working).
+     *
+     * <p>The emoji and mic values are the two pseudo-keycodes {@link ResolvedKey} names, which is
+     * the one place they are defined: the Minimal Phone's ROM hands 666 / 667 through as both the
+     * scancode and the key code, so the same pair of numbers identifies those keys everywhere in
+     * the key path. Phase 1g folded the duplicate literals that used to stand here onto it.
+     */
     private static final int SCANCODE_SYM_KL = 63;
-    private static final int SCANCODE_EMOJI_KL = 666;
-    private static final int SCANCODE_MIC_KL = 667;
+    private static final int SCANCODE_EMOJI_KL = ResolvedKey.PSEUDO_KEYCODE_EMOJI;
+    private static final int SCANCODE_MIC_KL = ResolvedKey.PSEUDO_KEYCODE_VOICE;
 
     /** Track if service is currently enabled and connected */
     private static volatile boolean sIsServiceConnected = false;

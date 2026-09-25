@@ -13,6 +13,7 @@ import dev.bbkb.ime.core.locale.ResourceLocaleUtils;
 import dev.bbkb.ime.core.shared.Logger;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -89,6 +90,38 @@ public class MultiLanguageRepository {
 
     public ArrayList<LocaleItem> getAvailableLocales() {
         return new ArrayList<>(this.localeToLayoutSet.keySet());
+    }
+
+    /**
+     * The primary language a new multi-language keyboard starts on: the system language when it
+     * is one of {@link #getAvailableLocales()}, else another keyboard for the same language, else
+     * the first in the list. Null only when nothing is available.
+     *
+     * <p>The Compose wizard used to start on {@code Locale.getDefault()} unconditionally, so with
+     * a Korean system language it showed "Korean" as primary although only Latin-script languages
+     * can be one, and saved a keyboard with no layout that typed English. The original app's
+     * spinner only pre-selected the system language when the list held it.
+     */
+    public LocaleItem getDefaultPrimaryLocale(String systemLocale) {
+        return pickDefaultPrimaryLocale(getAvailableLocales(), systemLocale);
+    }
+
+    static LocaleItem pickDefaultPrimaryLocale(List<LocaleItem> available, String systemLocale) {
+        if (available.isEmpty()) {
+            return null;
+        }
+        final String language = systemLocale.split("_")[0];
+        LocaleItem sameLanguage = null;
+        for (LocaleItem item : available) {
+            final String locale = (String) item.first;
+            if (locale.equals(systemLocale)) {
+                return item;
+            }
+            if (sameLanguage == null && locale.split("_")[0].equals(language)) {
+                sameLanguage = item;
+            }
+        }
+        return sameLanguage != null ? sameLanguage : available.get(0);
     }
 
     /**

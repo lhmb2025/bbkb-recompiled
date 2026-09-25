@@ -53,6 +53,27 @@ object PackOfferSource {
     }
 
     /**
+     * Every catalogue pack that [locales] need and this phone lacks, one per pack, in order.
+     * Blocking (registry lookups) — call from a worker. For the Languages screen, which fetches
+     * dictionaries as part of adding a language instead of asking first.
+     *
+     * Keyboard locales may carry a layout suffix (`zh_HK_cangjie`); only language and region
+     * decide the pack.
+     */
+    fun missingPacks(context: Context, locales: List<String>, packs: Packs): List<PackEntry> {
+        val manager = LanguagePackManager.getInstance(context)
+        val supported = { locale: String -> manager.isSupportedLocale(locale) }
+        val installed = { locale: String -> manager.isInstalledLocale(locale) }
+        return locales
+            .map { it.split('_').take(2).joinToString("_") }
+            .mapNotNull { PackOffer.decide(it, packs, supported, installed) }
+            .distinctBy { it.locale }
+    }
+
+    /** The catalogue's packs (cache first, then network), or null when neither is available. */
+    suspend fun loadPacks(context: Context): Packs? = withContext(Dispatchers.IO) { packs(context) }
+
+    /**
      * The catalogue, from the cache when it is fresh enough and from the network otherwise. A
      * failure is `null`: there is no offer to make if we do not know what is published, and the
      * user did not ask for a catalogue, so there is nothing to report either.

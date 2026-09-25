@@ -33,7 +33,7 @@ import java.util.Locale;
 
 import dev.bbkb.ime.core.keyevent.KeyHoldHandler;
 import dev.bbkb.ime.keyboard.internal.MoreKeysProvider;
-import dev.bbkb.ime.core.device.state.MetaState;
+import dev.bbkb.ime.core.keyevent.ModifierState;
 import dev.bbkb.ime.BuildConfig;
 
 /**
@@ -730,8 +730,12 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         String holdAction = this.holdActionMode;
         boolean holdFeatureEnabled = !HOLD_ACTION_OFF.equals(holdAction);
         boolean isEligibleKey = isLetterKey(keyCode);
-        boolean shiftActive = event.isShiftPressed();
-        boolean altActive = event.isAltPressed();
+        // The one query API rather than two raw KeyEvent predicates. ModifierState.ofEvent carries
+        // only what the event says, which is exactly what these two read — the hold action is
+        // decided from the event that is repeating, not from the tracker's sticky/locked state.
+        ModifierState eventModifiers = ModifierState.ofEvent(event);
+        boolean shiftActive = eventModifiers.isShiftHeld();
+        boolean altActive = eventModifiers.isAltHeld();
         
         // Skip auto-commit when shift (already uppercase) or alt (already symbol) is active
         boolean skipAutoCommit = !holdFeatureEnabled || !isEligibleKey
@@ -925,7 +929,7 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
             String baseChar = getBaseCharacterForEvent(event);
             if (baseChar != null && !baseChar.isEmpty()) {
                 MoreKeysProvider.MoreKeysContext context = new MoreKeysProvider.MoreKeysContext(
-                        baseChar, MetaState.fromKeyEvent(event), true, inSymbolMode);
+                        baseChar, ModifierState.ofEvent(event), true, inSymbolMode);
                 
                 moreKeys = moreKeysProvider.getMoreKeys(context);
             }
@@ -997,7 +1001,7 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         }
         
         MoreKeysProvider.MoreKeysContext context = new MoreKeysProvider.MoreKeysContext(
-                baseChar, MetaState.fromKeyEvent(event), true,
+                baseChar, ModifierState.ofEvent(event), true,
                 eventListener != null && eventListener.isInSymbolMode());
         
         // Get more keys from unified provider

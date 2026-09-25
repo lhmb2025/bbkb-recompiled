@@ -10,6 +10,8 @@ import android.util.Log;
 
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.locale.RichInputMethodManager;
+import dev.bbkb.ime.core.keyevent.AltSymShortcutHandler;
+import dev.bbkb.ime.core.keyevent.MultifunctionKeyHandler;
 import dev.bbkb.ime.core.textinput.connection.EditorCapabilities;
 import dev.bbkb.ime.core.AudioAndHapticFeedbackManager;
 import dev.bbkb.ime.core.shared.RunInLocale;
@@ -199,6 +201,18 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
                     .putBoolean("pref_voice_input_key", voiceModeMain.equals(prefs.getString("voice_mode", voiceModeMain)))
                     .remove("voice_mode")
                     .apply();
+        }
+        // Retired multifunction-key / Alt+Sym action ids (voice_input, cursor_mode, emoji_picker,
+        // ctrl_mode) are rewritten to their replacements so the settings rows show a real option.
+        final String multifunctionAction = prefs.getString(MultifunctionKeyHandler.PREF_KEY, null);
+        final String upgradedMultifunction = MultifunctionKeyHandler.upgradeLegacyAction(multifunctionAction);
+        if (multifunctionAction != null && !multifunctionAction.equals(upgradedMultifunction)) {
+            prefs.edit().putString(MultifunctionKeyHandler.PREF_KEY, upgradedMultifunction).apply();
+        }
+        final String altSymAction = prefs.getString(AltSymShortcutHandler.PREF_KEY, null);
+        final String upgradedAltSym = AltSymShortcutHandler.upgradeLegacyAction(altSymAction);
+        if (altSymAction != null && !altSymAction.equals(upgradedAltSym)) {
+            prefs.edit().putString(AltSymShortcutHandler.PREF_KEY, upgradedAltSym).apply();
         }
         if (prefs.contains("pref_suppress_language_switch_key")) {
             prefs.edit()
@@ -403,7 +417,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     public static int getControlMode(SharedPreferences sharedPreferences, Resources resources) {
-        return Integer.parseInt(sharedPreferences.getString("control_mode", "0"));
+        return Integer.parseInt(sharedPreferences.getString("control_mode", "2"));
     }
 
     public static boolean isVkbControlModeEnabled(SharedPreferences sharedPreferences, Resources resources) {

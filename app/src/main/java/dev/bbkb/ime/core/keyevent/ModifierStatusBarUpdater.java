@@ -10,7 +10,7 @@ import dev.bbkb.ime.core.device.profile.DeviceProfile;
 import dev.bbkb.ime.core.BlackBerryIME;
 
 
-public class ModifierStatusBarUpdater {
+public class ModifierStatusBarUpdater implements ModifierStateListener {
 
     private static final String TAG = "ModifierStatusBarUpdater";
 
@@ -73,6 +73,19 @@ public class ModifierStatusBarUpdater {
      */
     public void refreshModifierStatus(int metaState) {
         updateModifierStatus(metaState, true);
+    }
+
+    /**
+     * The single feed: {@code PhysicalKeyboardStateTracker} publishes every modifier transition
+     * here and nowhere else. The icon is chosen from
+     * {@link ModifierState#getInterpretedMetaState()} — the state a character key is interpreted
+     * against, which is what the icon has always shown and what the eight drawables encode
+     * (including the span tracker's own alt-lock 0x200 and caps-lock 0x100 bits, which are not
+     * {@link KeyEvent} values).
+     */
+    @Override
+    public void onModifierStateChanged(ModifierState state, boolean force) {
+        updateModifierStatus(state == null ? 0 : state.getInterpretedMetaState(), force);
     }
 
     public void updateModifierStatus(int metaState, boolean forceUpdate) {

@@ -57,11 +57,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.distribution.DistributionManifest
 import dev.bbkb.ime.core.distribution.ManifestSource
 import dev.bbkb.ime.core.languagepack.InstalledPacks
+import dev.bbkb.ime.core.locale.SubtypeEnabler
 import dev.bbkb.ime.core.languagepack.PackCatalog
 import dev.bbkb.ime.core.languagepack.PackDownloadManager
 import dev.bbkb.ime.core.languagepack.PackInstallService
@@ -196,6 +199,12 @@ fun LanguagePacksScreen(
         }
     }
     
+    // Back from the system language list (or anywhere else a language may have been turned on or
+    // off): the "not on yet" rows are only as fresh as the last read.
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        scope.launch { loadLanguagePacks(context) { packs -> languagePacks = packs } }
+    }
+
     // Load language packs on first composition
     LaunchedEffect(Unit) {
         scope.launch {
@@ -285,6 +294,30 @@ fun LanguagePacksScreen(
                     },
                     onDeleteVariant = { member ->
                         showVariantDeleteDialog = pack.languageCode to member
+                    },
+                    onTurnOn = {
+                        scope.launch {
+                            val on = withContext(Dispatchers.IO) {
+                                SubtypeEnabler.enable(context, pack.localeId)
+                            }
+                            if (on) {
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.language_packs_turned_on, pack.displayName),
+                                    Toast.LENGTH_LONG,
+                                ).show()
+                                loadLanguagePacks(context) { packs -> languagePacks = packs }
+                            } else {
+                                // Before Android 14 only the user can turn it on; the list is
+                                // re-read when they come back (ON_RESUME below).
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.language_packs_turn_on_in_settings, pack.displayName),
+                                    Toast.LENGTH_LONG,
+                                ).show()
+                                SubtypeEnabler.openLanguageSettings(context)
+                            }
+                        }
                     },
                     onDelete = if (pack.isDeletable) {
                         { showDeleteDialog = pack }
@@ -430,6 +463,7 @@ private fun LanguagePackItem(
     variantGroup: LanguageVariantStore.Group? = null,
     onSelectVariant: (String) -> Unit = {},
     onDeleteVariant: (LanguageVariantStore.Member) -> Unit = {},
+    onTurnOn: () -> Unit = {},
     onDelete: (() -> Unit)? = null
 ) {
     val spacing = LocalSpacing.current
@@ -438,6 +472,10 @@ private fun LanguagePackItem(
     if (!grouped) {
         PreferenceItem(
             title = pack.displayName,
+            // An installed language the user cannot switch to reads as broken ("it says it is
+            // available but I can't type in it"), so the row says so and tapping it fixes it.
+            summary = if (pack.needsTurningOn) stringResource(R.string.language_packs_not_on_summary) else null,
+            onClick = if (pack.needsTurningOn) onTurnOn else null,
             leading = { LanguageCodeBadge(pack.languageCode) },
             // The trailing slot holds either the Preinstalled tag or the delete button - the same
             // one-slot, two-meanings rule the dictionary rows use, at the same right edge.
@@ -686,7 +724,15 @@ data class InstalledLanguagePack(
     val version: String,
     val filePath: String,
     val isPreinstalled: Boolean,
-    val isDeletable: Boolean = !isPreinstalled
+    val isDeletable: Boolean = !isPreinstalled,
+    /** The directory / registry identifier (`ko`, `pt_BR`): what [SubtypeEnabler] matches on. */
+    val localeId: String = "",
+    /**
+     * Installed, has a keyboard layout, but is not on in the keyboard's language list, so the
+     * user cannot switch to it yet. Only ever true for packs the user added: the shipped ones
+     * are languages the user may simply not want.
+     */
+    val needsTurningOn: Boolean = false,
 )
 
 /**
@@ -723,7 +769,10 @@ private suspend fun loadLanguagePacks(
                         if (isInstalled || isSupported) {
                             // Determine if it's preinstalled by checking if LDB exists in assets
                             val isPreinstalled = isPreinstalledPack(context, localeString)
-                            
+                            val needsTurningOn = !isPreinstalled &&
+                                SubtypeEnabler.hasKeyboardFor(context, localeString) &&
+                                !SubtypeEnabler.isEnabled(context, localeString)
+
                             packs.add(
                                 InstalledLanguagePack(
                                     languageCode = locale.language,
@@ -731,7 +780,9 @@ private suspend fun loadLanguagePacks(
                                     displayName = locale.displayName,
                                     version = if (isInstalled) getLanguagePackVersion(context, localeString) else "Not installed",
                                     filePath = getLanguagePackPath(context, localeString),
-                                    isPreinstalled = isPreinstalled
+                                    isPreinstalled = isPreinstalled,
+                                    localeId = localeString,
+                                    needsTurningOn = needsTurningOn,
                                 )
                             )
                         }
@@ -861,10 +912,10 @@ private suspend fun installLanguagePack(
                 installed.isVariant ->
                     "Installed as a variant of ${locale(group!!, null).displayLanguage}, and made " +
                         "active. Switch between them on that language's row."
-                installed.offeredSubtype ->
-                    "Installed ${locale.displayName}. Enable it in Settings › Languages to use it."
+                installed.selectable && installed.enabled ->
+                    context.getString(R.string.language_packs_installed_and_on, locale.displayName)
                 installed.selectable ->
-                    "Language pack installed successfully: ${locale.displayName}"
+                    context.getString(R.string.language_packs_installed_turn_on, locale.displayName)
                 else ->
                     "Installed ${locale.displayName}, but this keyboard has no layout for its " +
                         "script yet, so it cannot be selected."

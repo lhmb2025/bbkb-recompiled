@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import dev.bbkb.ime.core.device.profile.DeviceProfile
+import dev.bbkb.ime.core.keyevent.AltSymShortcutHandler
 import dev.bbkb.ime.core.keyevent.MultifunctionKeyHandler
 import dev.bbkb.ime.core.locale.LocaleUtils
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
@@ -46,7 +47,7 @@ fun PhysicalKeyboardScreen(
     val multifunctionKeyMapping = remember {
         DeviceProfile.current()?.getDeviceMapping()?.getMultifunctionKeyMapping()
     }
-    val multifunctionDefault = multifunctionKeyMapping?.defaultAction
+    val multifunctionDefault = MultifunctionKeyHandler.upgradeLegacyAction(multifunctionKeyMapping?.defaultAction)
         ?.takeIf { it.isNotEmpty() } ?: MultifunctionKeyHandler.DEFAULT_ACTION
 
     // Three keys are declared in strings.xml rather than inline; they are resolved through the
@@ -57,13 +58,6 @@ fun PhysicalKeyboardScreen(
 
     SettingsScreenHost(R.string.settings_physical_keyboard_title, onNavigateBack, listOf(
         Category(R.string.settings_category_behavior),
-        Choice(
-            store = stringPref("control_mode", "0"),
-            title = R.string.settings_pkb_ctrl_key_behavior_title,
-            options = ::controlModes,
-            fallbackIndex = 2,
-            modifier = Modifier.settingsSearchAnchor("control_mode"),
-        ),
         Toggle(
             store = boolPref("pref_voice_input_key", true),
             title = R.string.settings_pkb_dictation_key_title,
@@ -77,8 +71,8 @@ fun PhysicalKeyboardScreen(
             store = multifunctionStore(multifunctionDefault),
             title = R.string.settings_pkb_multifunction_key_title,
             options = ::multifunctionActions,
-            // The old summary fell back to the "voice" label, which is also the first option.
-            fallbackIndex = 0,
+            // Emoji board: the fallback default action.
+            fallbackIndex = 1,
             // Anchor kept as a string literal (== MultifunctionKeyHandler.PREF_KEY) because the
             // search-index sync test source-scans for literals.
             modifier = Modifier.settingsSearchAnchor("pref_multifunction_key_action"),
@@ -88,7 +82,6 @@ fun PhysicalKeyboardScreen(
             store = stringPref("pref_alt_sym_shortcut_action", "disabled"),
             title = R.string.settings_pkb_alt_sym_shortcut_title,
             options = ::altSymActions,
-            summary = ::altSymSummary,
             modifier = Modifier.settingsSearchAnchor("pref_alt_sym_shortcut_action"),
         ),
         Choice(
@@ -99,6 +92,13 @@ fun PhysicalKeyboardScreen(
             // spelled out rather than derived from the options.
             summary = ::holdActionSummary,
             modifier = Modifier.settingsSearchAnchor("pref_pkb_hold_auto_commit"),
+        ),
+        Choice(
+            store = stringPref("control_mode", "2"),
+            title = R.string.settings_pkb_ctrl_key_behavior_title,
+            options = ::controlModes,
+            fallbackIndex = 2,
+            modifier = Modifier.settingsSearchAnchor("control_mode"),
         ),
 
         // ── CAPACITIVE KEYBOARD GESTURES (CKB devices only) ──────────────────────
@@ -150,7 +150,8 @@ fun PhysicalKeyboardScreen(
 private fun multifunctionStore(default: String) = PrefStore(
     MultifunctionKeyHandler.PREF_KEY,
     { prefs, _ ->
-        prefs.getString(MultifunctionKeyHandler.PREF_KEY, "")?.takeIf { it.isNotEmpty() } ?: default
+        MultifunctionKeyHandler.upgradeLegacyAction(prefs.getString(MultifunctionKeyHandler.PREF_KEY, ""))
+            ?.takeIf { it.isNotEmpty() } ?: default
     },
     { editor, value -> editor.putString(MultifunctionKeyHandler.PREF_KEY, value) },
 )
@@ -162,15 +163,20 @@ private fun controlModes(context: Context) = listOf(
 )
 
 private fun multifunctionActions(context: Context) = listOf(
-    MultifunctionKeyHandler.ACTION_VOICE_INPUT to R.string.settings_pkb_multifunction_action_voice,
-    MultifunctionKeyHandler.ACTION_CTRL to R.string.settings_pkb_multifunction_action_ctrl,
+    ChoiceOption(MultifunctionKeyHandler.ACTION_CTRL, context.getString(R.string.settings_pkb_multifunction_action_ctrl)),
+) + sharedShortcutActions(context)
+
+/**
+ * The actions the multifunction key and the Alt+Sym shortcut both offer — everything but Ctrl.
+ * The two settings share action ids and labels.
+ */
+private fun sharedShortcutActions(context: Context) = listOf(
     MultifunctionKeyHandler.ACTION_EMOJI_BOARD to R.string.settings_pkb_multifunction_action_emoji,
     MultifunctionKeyHandler.ACTION_CLIPBOARD_BOARD to R.string.settings_pkb_multifunction_action_clipboard,
     MultifunctionKeyHandler.ACTION_FCC to R.string.settings_pkb_multifunction_action_fcc,
-    MultifunctionKeyHandler.ACTION_CURSOR_MODE to R.string.settings_pkb_multifunction_action_cursor_mode,
+    MultifunctionKeyHandler.ACTION_NUMBER_PAD to R.string.settings_pkb_multifunction_action_number_pad,
     MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH to R.string.settings_pkb_multifunction_action_language_switch,
     MultifunctionKeyHandler.ACTION_SYMBOL_KEYBOARD to R.string.settings_pkb_multifunction_action_symbol,
-    MultifunctionKeyHandler.ACTION_HIDE_KEYBOARD to R.string.settings_pkb_multifunction_action_hide,
 ).map { (value, label) -> ChoiceOption(value, context.getString(label)) }
 
 private fun holdActions(context: Context) = listOf(
@@ -188,21 +194,5 @@ private fun holdActionSummary(context: Context, value: String): String = context
 )
 
 private fun altSymActions(context: Context) = listOf(
-    ChoiceOption("disabled", context.getString(R.string.settings_pkb_alt_sym_shortcut_disabled)),
-    ChoiceOption("symbol_keyboard", context.getString(R.string.settings_pkb_alt_sym_shortcut_symbol_keyboard)),
-    ChoiceOption("ctrl_mode", context.getString(R.string.settings_pkb_alt_sym_shortcut_ctrl_mode)),
-    ChoiceOption("language_switch", context.getString(R.string.settings_pkb_alt_sym_shortcut_language_switch)),
-    ChoiceOption("emoji_picker", context.getString(R.string.settings_pkb_alt_sym_shortcut_emoji_picker)),
-    ChoiceOption("hide_keyboard", context.getString(R.string.settings_pkb_alt_sym_shortcut_hide_keyboard)),
-)
-
-private fun altSymSummary(context: Context, value: String): String = context.getString(
-    when (value) {
-        "symbol_keyboard" -> R.string.settings_pkb_alt_sym_shortcut_symbol_keyboard_summary
-        "ctrl_mode" -> R.string.settings_pkb_alt_sym_shortcut_ctrl_mode_summary
-        "language_switch" -> R.string.settings_pkb_alt_sym_shortcut_language_switch_summary
-        "emoji_picker" -> R.string.settings_pkb_alt_sym_shortcut_emoji_picker_summary
-        "hide_keyboard" -> R.string.settings_pkb_alt_sym_shortcut_hide_keyboard_summary
-        else -> R.string.settings_pkb_alt_sym_shortcut_disabled_summary
-    }
-)
+    ChoiceOption(AltSymShortcutHandler.ACTION_DISABLED, context.getString(R.string.settings_pkb_alt_sym_shortcut_disabled)),
+) + sharedShortcutActions(context)

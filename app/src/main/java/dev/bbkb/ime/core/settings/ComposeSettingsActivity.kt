@@ -32,6 +32,7 @@ import dev.bbkb.ime.core.settings.screens.DictionariesLearningScreen
 import dev.bbkb.ime.core.settings.screens.KeyPressFeedbackScreen
 import dev.bbkb.ime.core.settings.screens.LanguagePacksScreen
 import dev.bbkb.ime.core.settings.screens.LanguageSwitchingScreen
+import dev.bbkb.ime.core.settings.screens.LanguagesHubScreen
 import dev.bbkb.ime.core.settings.screens.LanguagesInputScreen
 import dev.bbkb.ime.core.settings.screens.MainSettingsScreen
 import dev.bbkb.ime.core.settings.screens.MultiLanguageKeyboardsScreen
@@ -174,6 +175,15 @@ fun SettingsNavHost(
                 onNavigateToLanguageSwitching = go(SettingsRoute.LanguageSwitching),
                 onNavigateToMultiLanguageKeyboards = go(SettingsRoute.MultiLanguageKeyboards),
                 onNavigateToLanguagePacks = go(SettingsRoute.LanguagePacks),
+                onNavigateToLanguagesHub = go(SettingsRoute.LanguagesHub),
+                onNavigateBack = back
+            )
+        }
+
+        composable(SettingsRoute.LanguagesHub.route) {
+            LanguagesHubScreen(
+                onNavigateToLanguageSwitching = go(SettingsRoute.LanguageSwitching),
+                onNavigateToDictionaryFiles = go(SettingsRoute.LanguagePacks),
                 onNavigateBack = back
             )
         }
@@ -350,6 +360,8 @@ fun SettingsNavHost(
         
         composable(SettingsRoute.LanguageSwitching.route) {
             LanguageSwitchingScreen(
+                onNavigateToPhysicalKeyboard = go(SettingsRoute.PhysicalKeyboard),
+                onNavigateToCkbGestures = go(SettingsRoute.CkbGestures),
                 onNavigateBack = back
             )
         }

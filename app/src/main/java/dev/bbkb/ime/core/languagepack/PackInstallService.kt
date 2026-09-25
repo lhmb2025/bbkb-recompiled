@@ -5,6 +5,7 @@ import com.blackberry.nuanceshim.languagepack.CustomPackRegistryStore
 import com.blackberry.nuanceshim.languagepack.LanguagePackManager
 import com.blackberry.nuanceshim.languagepack.LanguageVariantStore
 import dev.bbkb.ime.core.locale.RichInputMethodManager
+import dev.bbkb.ime.core.locale.SubtypeEnabler
 import dev.bbkb.ime.core.shared.InAppEventBus
 import dev.bbkb.ime.core.shared.Logger
 import dev.bbkb.ime.core.subtypeswitcher.SideloadedSubtypes
@@ -81,6 +82,8 @@ class PackInstallService @JvmOverloads constructor(
      *   number, so anything unusable falls back to [FALLBACK_VERSION].
      * @param group non-null only for a regional variant that loads *in place of* a base
      *   language; the value is that base language's locale (`PackEntry.group`).
+     * @param turnOn whether to turn the language on as a keyboard of its own afterwards. False
+     *   for a dictionary fetched only as an extra prediction language of another keyboard.
      * @return the installed pack, or a [PackInstallException] describing what stopped it.
      */
     suspend fun installFromFile(
@@ -89,9 +92,10 @@ class PackInstallService @JvmOverloads constructor(
         displayName: String,
         version: String,
         group: String?,
+        turnOn: Boolean = true,
     ): Result<InstalledPack> = withContext(Dispatchers.IO) {
         try {
-            Result.success(install(file, locale, displayName, version, group))
+            Result.success(install(file, locale, displayName, version, group, turnOn))
         } catch (cancelled: CancellationException) {
             throw cancelled
         } catch (failure: PackInstallException) {
@@ -152,6 +156,7 @@ class PackInstallService @JvmOverloads constructor(
         displayName: String,
         version: String,
         group: String?,
+        turnOn: Boolean,
     ): InstalledPack {
         if (!file.isFile) throw PackInstallException("No such file: $file")
         if (file.length() < MIN_LDB_BYTES) {
@@ -167,9 +172,9 @@ class PackInstallService @JvmOverloads constructor(
         val versionValue = version.trim().toDoubleOrNull()?.takeIf { it > 0.0 } ?: FALLBACK_VERSION
 
         return if (group != null) {
-            installVariant(file, locale, name, group)
+            installVariant(file, locale, name, group, turnOn)
         } else {
-            installBase(file, locale, name, versionValue)
+            installBase(file, locale, name, versionValue, turnOn)
         }
     }
 
@@ -183,13 +188,15 @@ class PackInstallService @JvmOverloads constructor(
         locale: String,
         displayName: String,
         group: String,
+        turnOn: Boolean,
     ): InstalledPack {
         if (!LanguageVariantStore.installVariant(context, group, locale, displayName, file)) {
             throw PackInstallException("Could not install $locale as a variant of $group")
         }
         LanguagePackManager.getInstance(context).reloadRegistry()
+        val enabled = turnOn && subtypes.enableSubtypeFor(context, group)
         events(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED)
-        Logger.info(TAG, "Installed $locale as an active variant of $group")
+        Logger.info(TAG, "Installed $locale as an active variant of $group (enabled=$enabled)")
         return InstalledPack(
             locale = locale,
             displayName = displayName,
@@ -199,6 +206,7 @@ class PackInstallService @JvmOverloads constructor(
             // The base language is what gets selected, and it is a shipped language in all four
             // cases, so it always has a subtype.
             selectable = true,
+            enabled = enabled,
         )
     }
 
@@ -207,6 +215,7 @@ class PackInstallService @JvmOverloads constructor(
         locale: String,
         displayName: String,
         version: Double,
+        turnOn: Boolean,
     ): InstalledPack {
         val language = locale.substringBefore('_')
         val country = locale.substringAfter('_', "").ifEmpty { null }
@@ -248,9 +257,12 @@ class PackInstallService @JvmOverloads constructor(
         // even that is impossible (five languages have no layout in the tree).
         val builtIn = subtypes.hasBuiltInSubtypeFor(language)
         val offered = if (builtIn) false else subtypes.offerSubtypeFor(context, language)
+        // Installed is not typeable: the language also has to be on in the keyboard's language
+        // list. Turn it on where Android allows (API 34+); the screen covers the rest.
+        val enabled = turnOn && (builtIn || offered) && subtypes.enableSubtypeFor(context, locale)
 
         events(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED)
-        Logger.info(TAG, "Installed $locale (subtype: builtIn=$builtIn offered=$offered)")
+        Logger.info(TAG, "Installed $locale (subtype: builtIn=$builtIn offered=$offered enabled=$enabled)")
         return InstalledPack(
             locale = locale,
             displayName = displayName,
@@ -258,6 +270,7 @@ class PackInstallService @JvmOverloads constructor(
             directory = directory,
             offeredSubtype = offered,
             selectable = builtIn || offered,
+            enabled = enabled,
         )
     }
 
@@ -280,6 +293,12 @@ class PackInstallService @JvmOverloads constructor(
 
         /** Take back a runtime subtype added by [offerSubtypeFor]. A no-op when none was. */
         fun withdrawSubtypeFor(context: Context, language: String)
+
+        /**
+         * Turn [locale]'s language on in the keyboard's language list. Whether it is on
+         * afterwards: false where Android does not let a keyboard do this (before API 34).
+         */
+        fun enableSubtypeFor(context: Context, locale: String): Boolean
     }
 
     /** The production [SubtypeRegistrar]: the framework, plus [SideloadedSubtypes]. */
@@ -324,6 +343,9 @@ class PackInstallService @JvmOverloads constructor(
                 Logger.warn(TAG, "Withdrew a runtime subtype but could not re-register: $unavailable")
             }
         }
+
+        override fun enableSubtypeFor(context: Context, locale: String): Boolean =
+            SubtypeEnabler.enable(context, locale)
     }
 
     companion object {
@@ -365,6 +387,8 @@ enum class UninstallOutcome {
  *   what makes "enable it in Settings > Languages" worth saying.
  * @property selectable whether the language can be selected at all — `false` for the handful of
  *   languages with no keyboard layout in the tree, where the pack installs and sits unused.
+ * @property enabled whether the language is on in the keyboard's language list after the install,
+ *   i.e. the user can switch to it now. `false` before Android 14 unless it already was.
  */
 data class InstalledPack(
     val locale: String,
@@ -373,6 +397,7 @@ data class InstalledPack(
     val directory: File,
     val offeredSubtype: Boolean,
     val selectable: Boolean,
+    val enabled: Boolean,
 ) {
     val isVariant: Boolean get() = group != null
 }

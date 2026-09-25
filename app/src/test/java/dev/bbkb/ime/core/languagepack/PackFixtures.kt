@@ -91,9 +91,16 @@ object PackFixtures {
     class FakeSubtypes(
         private val builtIn: Set<String> = emptySet(),
         private val offerable: Set<String> = emptySet(),
+        private val canEnable: Boolean = true,
     ) : PackInstallService.SubtypeRegistrar {
         val offered = mutableListOf<String>()
         val withdrawn = mutableListOf<String>()
+        val enabled = mutableListOf<String>()
+
+        override fun enableSubtypeFor(context: Context, locale: String): Boolean {
+            enabled += locale
+            return canEnable
+        }
 
         override fun hasBuiltInSubtypeFor(language: String): Boolean = language in builtIn
 

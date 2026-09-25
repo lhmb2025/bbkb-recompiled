@@ -108,13 +108,18 @@ public final class KeyboardState {
         boolean isPkbCustomPageFirst();
 
         /**
-         * Whether the hardware Sym key is physically held down right now.
+         * Whether the hardware Sym key is physically held down right now — the question
+         * {@code ModifierState.isSymHeld()} asks, under its name.
          *
          * <p>A PKB symbol board closes itself after the symbol typed on it. Holding Sym is the
          * way to keep it open for several symbols: while Sym is down the board stays up and
          * symbols keep going in, and releasing Sym ends the entry.
+         *
+         * <p>Both callers are on the per-keystroke path, so the implementation answers from the
+         * modifier tracker's cheap boolean rather than from a {@code ModifierState} snapshot — see
+         * {@code KeyboardSwitcher.isSymHeld()}.
          */
-        boolean isSymKeyHeld();
+        boolean isSymHeld();
 
         int getSymbolPageOrder();
 
@@ -672,7 +677,7 @@ public final class KeyboardState {
      */
     public void onSoftwareSymbolCommitted(int i, int i2) {
         if (this.currentMode == KeyboardModeState.SYMBOL && this.symbolEntryMethod == 2
-                && this.switcherCallbacks.isPkbDevice() && !this.switcherCallbacks.isSymKeyHeld()) {
+                && this.switcherCallbacks.isPkbDevice() && !this.switcherCallbacks.isSymHeld()) {
             this.symbolEntryMethod = 0;
             switchToAlphabetFromSymbol(i, i2);
             this.switcherCallbacks.onReturnToAlphabetFromSymbol();
@@ -695,7 +700,7 @@ public final class KeyboardState {
                 // being held, which is the user asking for the board to stay open (the release
                 // of Sym then ends the entry through case 63 below).
                 if (this.currentMode == KeyboardModeState.SYMBOL && this.symbolEntryMethod == 2
-                        && this.switcherCallbacks.isPkbDevice() && !this.switcherCallbacks.isSymKeyHeld()) {
+                        && this.switcherCallbacks.isPkbDevice() && !this.switcherCallbacks.isSymHeld()) {
                     this.symbolEntryMethod = 0;
                     switchToAlphabetFromSymbol(i2, i3);
                     this.switcherCallbacks.onReturnToAlphabetFromSymbol();
@@ -1123,6 +1128,15 @@ public final class KeyboardState {
 
     public boolean isInSymbolMode() {
         return this.currentMode == KeyboardModeState.SYMBOL;
+    }
+
+    /**
+     * Which keyboard the main view is showing. Since Phase 1d this is read as "which typing board
+     * is up" — {@code KeyboardSwitcher.activeBoard()} maps it onto the board keycodes, so the
+     * alphabet, the symbol board and emoji answer the same question the panel boards do.
+     */
+    public KeyboardModeState currentMode() {
+        return this.currentMode;
     }
 
     public boolean isVkbCustomSymbolPage(int i) {

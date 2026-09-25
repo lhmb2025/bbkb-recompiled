@@ -23,7 +23,7 @@ import java.util.Locale;
 /**
  * Controller for the cursor-mode arrow bar — the transient cursor-key strip shown
  * in the aux/suggestion row (AuxBarState.ARROW_BAR), toggled by the double-tap /
- * cursor gesture or the multifunction key's "cursor_mode" action, and
+ * cursor gesture, and
  * auto-dismissed after a timeout (BlackBerryIME.scheduleCursorModeDisable).
  *
  * Naming: "cursor mode" (isCursorModeEnabled / toggleCursorMode) is the

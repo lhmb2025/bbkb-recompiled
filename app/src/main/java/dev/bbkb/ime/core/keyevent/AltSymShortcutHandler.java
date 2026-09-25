@@ -45,11 +45,20 @@ public class AltSymShortcutHandler {
 
     public static final String PREF_KEY = "pref_alt_sym_shortcut_action";
     public static final String ACTION_DISABLED = "disabled";
-    public static final String ACTION_SYMBOL_KEYBOARD = "symbol_keyboard";
-    public static final String ACTION_CTRL_MODE = "ctrl_mode";
-    public static final String ACTION_LANGUAGE_SWITCH = "language_switch";
-    public static final String ACTION_EMOJI_PICKER = "emoji_picker";
-    public static final String ACTION_HIDE_KEYBOARD = "hide_keyboard";
+    // The rest share their ids with the multifunction key's actions (all of them but Ctrl).
+    public static final String ACTION_EMOJI_BOARD = MultifunctionKeyHandler.ACTION_EMOJI_BOARD;
+    public static final String ACTION_CLIPBOARD_BOARD = MultifunctionKeyHandler.ACTION_CLIPBOARD_BOARD;
+    public static final String ACTION_FCC = MultifunctionKeyHandler.ACTION_FCC;
+    public static final String ACTION_NUMBER_PAD = MultifunctionKeyHandler.ACTION_NUMBER_PAD;
+    public static final String ACTION_LANGUAGE_SWITCH = MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH;
+    public static final String ACTION_SYMBOL_KEYBOARD = MultifunctionKeyHandler.ACTION_SYMBOL_KEYBOARD;
+
+    /**
+     * Retired ids: "emoji_picker" was renamed to {@link #ACTION_EMOJI_BOARD}; "ctrl_mode" and
+     * "hide_keyboard" were dropped.
+     */
+    public static final String LEGACY_ACTION_EMOJI_PICKER = "emoji_picker";
+    public static final String LEGACY_ACTION_CTRL_MODE = "ctrl_mode";
 
     /** Mask covering all possible Alt meta flags including ALT_LOCKED (0x200). */
     private static final int ALT_ANY_MASK =
@@ -62,10 +71,11 @@ public class AltSymShortcutHandler {
      */
     public interface ActionCallback {
         void openSymbolKeyboard();
-        void toggleCtrlMode();
         void switchLanguage();
         void toggleEmojiPicker();
-        void hideKeyboard();
+        void toggleClipboard();
+        void toggleFcc();
+        void toggleNumberPad();
     }
 
     private ActionCallback callback;
@@ -98,6 +108,8 @@ public class AltSymShortcutHandler {
      * {@code usesMetaSymHandling()} is false, so an Alt read afterwards is always gone.
      */
     public static int effectiveMetaState(KeyEvent event, int internalMetaState) {
+        // Phase 1b: this is {@link ModifierState#getChordMetaState()}. The key-event call sites
+        // ask the query API directly; this overload stays for detectAndExecute(KeyEvent, int).
         // Callers pass PhysicalKeyboardStateTracker.getModifierKeyMetaState(): the span state the
         // user's modifier keys set. NOT getInternalMetaState() — that is run through the current
         // keyboard's meta mask, and the PKB symbol board's Alt page is a mask that adds Alt.
@@ -165,17 +177,20 @@ public class AltSymShortcutHandler {
             case ACTION_SYMBOL_KEYBOARD:
                 callback.openSymbolKeyboard();
                 break;
-            case ACTION_CTRL_MODE:
-                callback.toggleCtrlMode();
-                break;
             case ACTION_LANGUAGE_SWITCH:
                 callback.switchLanguage();
                 break;
-            case ACTION_EMOJI_PICKER:
+            case ACTION_EMOJI_BOARD:
                 callback.toggleEmojiPicker();
                 break;
-            case ACTION_HIDE_KEYBOARD:
-                callback.hideKeyboard();
+            case ACTION_CLIPBOARD_BOARD:
+                callback.toggleClipboard();
+                break;
+            case ACTION_FCC:
+                callback.toggleFcc();
+                break;
+            case ACTION_NUMBER_PAD:
+                callback.toggleNumberPad();
                 break;
             default:
                 Logger.warn(TAG, "Unknown Alt+Sym action: " + action);
@@ -191,8 +206,16 @@ public class AltSymShortcutHandler {
     private String getConfiguredAction() {
         SettingsValues sv = SettingsManager.getInstance().getSettingsValues();
         if (sv != null && sv.altSymShortcutAction != null) {
-            return sv.altSymShortcutAction;
+            return upgradeLegacyAction(sv.altSymShortcutAction);
         }
         return ACTION_DISABLED;
+    }
+
+    /** Map a retired action id onto its replacement; anything else is returned as-is. */
+    public static String upgradeLegacyAction(String action) {
+        if (LEGACY_ACTION_EMOJI_PICKER.equals(action)) return ACTION_EMOJI_BOARD;
+        if (LEGACY_ACTION_CTRL_MODE.equals(action)
+                || MultifunctionKeyHandler.LEGACY_ACTION_HIDE_KEYBOARD.equals(action)) return ACTION_DISABLED;
+        return action;
     }
 }
