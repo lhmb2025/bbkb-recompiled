@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Əlifba (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Əlifba (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Dili dəyişin</string>
+    <string name="subtype_switcher_other_keyboards">Digər klaviaturalar</string>
+    <string name="subtype_switcher_no_other_keyboards">Heç bir digər klaviatura aktiv deyil</string>
     <string name="subtype_with_layout_en_GB">İngilis (Britaniya) (%s)</string>
     <string name="subtype_with_layout_en_US">İngilis (Amerika) (%s)</string>
     <string name="subtype_with_layout_es_US">İspan (Amerika) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB köməkçisi</string>
     <string name="add">Əlavə et</string>
+    <string name="add_word_dialog_title">Lüğətə əlavə et</string>
     <string name="cancel">Ləğv et</string>
     <string name="discard">İMTİNA ET</string>
     <string name="discard_event_changes">Dəyişikliklərdən imtina edilsin?</string>

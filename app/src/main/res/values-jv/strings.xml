@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Abjad (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Abjad (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Ganti basa</string>
+    <string name="subtype_switcher_other_keyboards">Papan tombol liya</string>
+    <string name="subtype_switcher_no_other_keyboards">Papan tombol liya ora diaktifake</string>
     <string name="subtype_with_layout_en_GB">Inggris (Karajan Manunggal) (%s)</string>
     <string name="subtype_with_layout_en_US">Inggris (AS) (%s)</string>
     <string name="subtype_with_layout_es_US">Spanyol (AS) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">Pambiyantu BBKB</string>
     <string name="add">Tambah</string>
+    <string name="add_word_dialog_title">Tambah menyang kamus</string>
     <string name="cancel">Batal</string>
     <string name="discard">BUANG</string>
     <string name="discard_event_changes">Buang owah-owahanmu?</string>

@@ -161,7 +161,7 @@ public class SubtypeWizard extends Fragment {
     }
 
     public AlertDialog createDiscardChangesDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new android.view.ContextThemeWrapper(getActivity(), R.style.platformDialogTheme));
+        AlertDialog.Builder builder = dev.bbkb.ime.core.settings.ui.BbkbDialogs.builder(getActivity());
         builder.setMessage(R.string.discard_event_changes).setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override // android.content.DialogInterface.OnClickListener
             public void onClick(DialogInterface dialogInterface, int i) {

@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Yr wyddor (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Yr wyddor (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Newid iaith</string>
+    <string name="subtype_switcher_other_keyboards">Bysellfyrddau eraill</string>
+    <string name="subtype_switcher_no_other_keyboards">Nid oes bysellfyrddau eraill wedi\'u galluogi</string>
     <string name="subtype_with_layout_en_GB">Saesneg (DU) (%s)</string>
     <string name="subtype_with_layout_en_US">Saesneg (UDA) (%s)</string>
     <string name="subtype_with_layout_es_US">Sbaeneg (UDA) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">Cynorthwyydd BBKB</string>
     <string name="add">Ychwanegu</string>
+    <string name="add_word_dialog_title">Ychwanegu at y geiriadur</string>
     <string name="cancel">Canslo</string>
     <string name="discard">TAFLU</string>
     <string name="discard_event_changes">Taflu\'ch newidiadau?</string>

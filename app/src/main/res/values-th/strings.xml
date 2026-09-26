@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">ตัวอักษร (QWERTY)</string>
     <string name="subtype_no_language_qwertz">ตัวอักษร (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">เปลี่ยนภาษา</string>
+    <string name="subtype_switcher_other_keyboards">แป้นพิมพ์อื่น</string>
+    <string name="subtype_switcher_no_other_keyboards">ไม่มีแป้นพิมพ์อื่นที่เปิดใช้งาน</string>
     <string name="subtype_with_layout_en_GB">อังกฤษ (สหราชอาณาจักร) (%s)</string>
     <string name="subtype_with_layout_en_US">อังกฤษ (สหรัฐอเมริกา) (%s)</string>
     <string name="subtype_with_layout_es_US">สเปน (สหรัฐอเมริกา) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">ตัวช่วย BBKB</string>
     <string name="add">เพิ่ม</string>
+    <string name="add_word_dialog_title">เพิ่มลงในพจนานุกรม</string>
     <string name="cancel">ยกเลิก</string>
     <string name="discard">ละทิ้ง</string>
     <string name="discard_event_changes">ยกเลิกการเปลี่ยนแปลงหรือไม่</string>

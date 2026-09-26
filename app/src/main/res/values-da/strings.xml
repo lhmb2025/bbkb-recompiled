@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Alfabet (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Alfabet (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Skift sprog</string>
+    <string name="subtype_switcher_other_keyboards">Andre tastaturer</string>
+    <string name="subtype_switcher_no_other_keyboards">Ingen andre tastaturer er aktiveret</string>
     <string name="subtype_with_layout_en_GB">Engelsk (UK) (%s)</string>
     <string name="subtype_with_layout_en_US">Engelsk (USA) (%s)</string>
     <string name="subtype_with_layout_es_US">Spansk (USA) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB-hjælper</string>
     <string name="add">Tilføj</string>
+    <string name="add_word_dialog_title">Føj til ordbog</string>
     <string name="cancel">Annuller</string>
     <string name="discard">KASSÉR</string>
     <string name="discard_event_changes">Skal ændringerne slettes?</string>

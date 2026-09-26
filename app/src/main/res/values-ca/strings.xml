@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Alfabet (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Alfabet (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Canvia la llengua</string>
+    <string name="subtype_switcher_other_keyboards">Altres teclats</string>
+    <string name="subtype_switcher_no_other_keyboards">No hi ha cap altre teclat activat</string>
     <string name="subtype_with_layout_en_GB">Anglès (Regne Unit) (%s)</string>
     <string name="subtype_with_layout_en_US">Anglès (EUA) (%s)</string>
     <string name="subtype_with_layout_es_US">Espanyol (EUA) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">Assistent de BBKB</string>
     <string name="add">Afegeix</string>
+    <string name="add_word_dialog_title">Afegeix al diccionari</string>
     <string name="cancel">Cancel·la</string>
     <string name="discard">DESCARTA</string>
     <string name="discard_event_changes">Voleu descartar els canvis?</string>

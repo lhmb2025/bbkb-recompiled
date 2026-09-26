@@ -23,6 +23,8 @@ import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadController;
 import dev.bbkb.ime.BuildConfig;
 import dev.bbkb.ime.core.locale.SubtypeManager;
 import dev.bbkb.ime.core.BlackBerryIME;
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
+import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
 
 /**
@@ -220,6 +222,15 @@ public class KeyEventProcessor {
         if (rawIsPhysical && DeviceProfile.appContext() == null) {
             DeviceProfile.initializeForDevice(ime.getApplicationContext(), keyEvent.getDeviceId());
             Logger.info(TAG, "DeviceProfile initialized for device ID: " + keyEvent.getDeviceId());
+        }
+
+        // The scancode-role resolver is emptied whenever DeviceInputResolver.resetConfig() runs,
+        // and Android reports the physical keyboard as "changed" on every IME subtype switch (it
+        // re-assigns the keyboard layout). The resolver re-fills itself there now, but a key that
+        // arrives with it still empty would lose its role - the KEY2 mic key went dead after a
+        // language switch (owner report 2026-09-26). One volatile read when all is well.
+        if (rawIsPhysical && !ScancodeMappingResolver.getInstance().isInitialized()) {
+            DeviceInputResolver.resolveInputMapping(ime.getApplicationContext(), keyEvent.getDeviceId());
         }
 
         // Last-resort physical keypad layout detection (KeypadLayoutDetector source 5): what the

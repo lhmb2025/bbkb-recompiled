@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Lotin (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Lotin (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Tilni o‘zgartirish</string>
+    <string name="subtype_switcher_other_keyboards">Boshqa klaviaturalar</string>
+    <string name="subtype_switcher_no_other_keyboards">Boshqa klaviaturalar yoqilmagan</string>
     <string name="subtype_with_layout_en_GB">Ingliz (Buyuk Britaniya) (%s)</string>
     <string name="subtype_with_layout_en_US">Ingliz (AQSH) (%s)</string>
     <string name="subtype_with_layout_es_US">Ispan (AQSH) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB yordamchisi</string>
     <string name="add">Qo‘shish</string>
+    <string name="add_word_dialog_title">Lug‘atga qo‘shish</string>
     <string name="cancel">Bekor qilish</string>
     <string name="discard">BEKOR QILISH</string>
     <string name="discard_event_changes">O‘zgarishlar bekor qilinsinmi?</string>

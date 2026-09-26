@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Alfabet (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Alfabet (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Taal wijzigen</string>
+    <string name="subtype_switcher_other_keyboards">Andere toetsenborden</string>
+    <string name="subtype_switcher_no_other_keyboards">Er zijn geen andere toetsenborden ingeschakeld</string>
     <string name="subtype_with_layout_en_GB">Engels (VK) (%s)</string>
     <string name="subtype_with_layout_en_US">Engels (VS) (%s)</string>
     <string name="subtype_with_layout_es_US">Spaans (VS) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB-hulp</string>
     <string name="add">Toevoegen</string>
+    <string name="add_word_dialog_title">Toevoegen aan woordenboek</string>
     <string name="cancel">Annuleren</string>
     <string name="discard">NEGEREN</string>
     <string name="discard_event_changes">Uw wijzigingen negeren?</string>

@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Stafróf (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Stafróf (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Skipta um tungumál</string>
+    <string name="subtype_switcher_other_keyboards">Önnur lyklaborð</string>
+    <string name="subtype_switcher_no_other_keyboards">Ekki er kveikt á neinu öðru lyklaborði</string>
     <string name="subtype_with_layout_en_GB">Enskt (Bretland) (%s)</string>
     <string name="subtype_with_layout_en_US">Enskt (Bandaríkin) (%s)</string>
     <string name="subtype_with_layout_es_US">Spænskt (Bandaríkin) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB hjálp</string>
     <string name="add">Bæta við</string>
+    <string name="add_word_dialog_title">Bæta við orðabók</string>
     <string name="cancel">Hætta við</string>
     <string name="discard">HENDA</string>
     <string name="discard_event_changes">Viltu henda breytingunum?</string>

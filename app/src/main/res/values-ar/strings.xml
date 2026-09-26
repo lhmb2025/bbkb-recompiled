@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">الأبجدية (QWERTY)</string>
     <string name="subtype_no_language_qwertz">الأبجدية (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">تغيير اللغة</string>
+    <string name="subtype_switcher_other_keyboards">لوحات مفاتيح أخرى</string>
+    <string name="subtype_switcher_no_other_keyboards">لا توجد لوحات مفاتيح أخرى ممكّنة</string>
     <string name="subtype_with_layout_en_GB">الإنجليزية (المملكة المتحدة) (%s)</string>
     <string name="subtype_with_layout_en_US">الإنجليزية (الولايات المتحدة) (%s)</string>
     <string name="subtype_with_layout_es_US">الإسبانية (الولايات المتحدة) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">مساعد BBKB</string>
     <string name="add">إضافة</string>
+    <string name="add_word_dialog_title">إضافة إلى القاموس</string>
     <string name="cancel">إلغاء</string>
     <string name="discard">تجاهل</string>
     <string name="discard_event_changes">هل تريد تجاهل التغييرات؟</string>

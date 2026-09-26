@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Tähestik (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Tähestik (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Muuda keelt</string>
+    <string name="subtype_switcher_other_keyboards">Muud klaviatuurid</string>
+    <string name="subtype_switcher_no_other_keyboards">Muid klaviatuure ei ole sisse lülitatud</string>
     <string name="subtype_with_layout_en_GB">Inglise (Ühendk.) (%s)</string>
     <string name="subtype_with_layout_en_US">Inglise (USA) (%s)</string>
     <string name="subtype_with_layout_es_US">Hispaania (USA) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB abiline</string>
     <string name="add">Lisa</string>
+    <string name="add_word_dialog_title">Lisa sõnastikku</string>
     <string name="cancel">Tühista</string>
     <string name="discard">LOOBU</string>
     <string name="discard_event_changes">Kas loobuda muudatustest?</string>

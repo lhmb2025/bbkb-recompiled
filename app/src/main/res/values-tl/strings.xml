@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Alpabeto (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Alpabeto (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Palitan ang wika</string>
+    <string name="subtype_switcher_other_keyboards">Ibang keyboard</string>
+    <string name="subtype_switcher_no_other_keyboards">Walang ibang keyboard na naka-enable</string>
     <string name="subtype_with_layout_en_GB">Ingles (UK) (%s)</string>
     <string name="subtype_with_layout_en_US">Ingles (US) (%s)</string>
     <string name="subtype_with_layout_es_US">Spanish (US) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB Helper</string>
     <string name="add">Idagdag</string>
+    <string name="add_word_dialog_title">Idagdag sa diksyunaryo</string>
     <string name="cancel">Kanselahin</string>
     <string name="discard">I-DISCARD</string>
     <string name="discard_event_changes">I-discard ang iyong mga pagbabago?</string>

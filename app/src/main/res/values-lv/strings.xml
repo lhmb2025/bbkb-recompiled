@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Alfabēts (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Alfabēts (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Mainīt valodu</string>
+    <string name="subtype_switcher_other_keyboards">Citas tastatūras</string>
+    <string name="subtype_switcher_no_other_keyboards">Nav citu iespējotu tastatūru</string>
     <string name="subtype_with_layout_en_GB">Angļu (Lielbritānija) (%s)</string>
     <string name="subtype_with_layout_en_US">Angļu (ASV) (%s)</string>
     <string name="subtype_with_layout_es_US">Spāņu (ASV) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB palīgs</string>
     <string name="add">Pievienot</string>
+    <string name="add_word_dialog_title">Pievienot vārdnīcai</string>
     <string name="cancel">Atcelt</string>
     <string name="discard">ATMEST</string>
     <string name="discard_event_changes">Vai atmest izmaiņas?</string>

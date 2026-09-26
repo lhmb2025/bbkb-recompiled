@@ -150,6 +150,14 @@ public class RichInputMethodManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && ims.switchToNextInputMethod(z)) {
             return true;
         }
+        if (z) {
+            // "Only this IME" means exactly that. The framework declines when there is no other
+            // subtype to rotate to (one enabled keyboard, or the current one not in the enabled
+            // list), and the fallback below used to hand the whole IME over to the next one on
+            // the phone - AOSP LatinIME on the KEY2, whose suggestion strip then "disappeared"
+            // after a multifunction-key language switch (owner report 2026-09-26). Stay here.
+            return switchToNextSubtypeWithinThisIme(ims);
+        }
         final IBinder token = windowToken(ims);
         if (token == null) {
             return false;
@@ -158,6 +166,40 @@ public class RichInputMethodManager {
             return switchToNextInputMethod(token, z);
         }
         return switchToNextInputSubtypeInThisIme(token, z) || switchToNextInputMethodAndSubtype(token);
+    }
+
+    /**
+     * Rotate to the next enabled subtype of this IME, or to its first one when the current
+     * subtype is not in the enabled list; with a single enabled subtype there is nowhere to go
+     * and nothing happens. Reads the enabled list fresh (the user may just have changed it) and
+     * never switches to another IME.
+     */
+    private boolean switchToNextSubtypeWithinThisIme(InputMethodService ims) {
+        final List<InputMethodSubtype> enabled = getEnabledSubtypesOfThisIme();
+        final InputMethodSubtype next = nextSubtypeWithinIme(this.imm.getCurrentInputMethodSubtype(), enabled);
+        if (next == null) {
+            return false;
+        }
+        setInputMethodAndSubtype(ims, next);
+        return true;
+    }
+
+    /**
+     * The subtype a "switch language" press should land on, given the current one and this
+     * IME's enabled list. Null when there is nothing to switch to. Pure, for the unit test.
+     */
+    static InputMethodSubtype nextSubtypeWithinIme(InputMethodSubtype current, List<InputMethodSubtype> enabled) {
+        if (enabled == null || enabled.isEmpty()) {
+            return null;
+        }
+        final int index = current == null ? -1 : getSubtypeIndexInList(current, enabled);
+        if (index == -1) {
+            return enabled.get(0);
+        }
+        if (enabled.size() == 1) {
+            return null;
+        }
+        return enabled.get((index + 1) % enabled.size());
     }
 
     /**
@@ -178,6 +220,21 @@ public class RichInputMethodManager {
         final IBinder token = windowToken(ims);
         if (token != null) {
             setInputMethodAndSubtype(token, inputMethodSubtype);
+        }
+    }
+
+    /**
+     * Hand the keyboard over to another input method - the "Other keyboards" rows of the language
+     * menu. Token-free on API 28+; the IBinder form below that.
+     */
+    public void switchToInputMethod(InputMethodService ims, String imeId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            ims.switchInputMethod(imeId);
+            return;
+        }
+        final IBinder token = windowToken(ims);
+        if (token != null) {
+            this.imm.setInputMethod(token, imeId);
         }
     }
 

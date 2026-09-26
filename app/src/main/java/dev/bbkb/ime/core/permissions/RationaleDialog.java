@@ -82,7 +82,7 @@ public class RationaleDialog extends Activity {
     }
 
     private void showRationaleDialog(String str) {
-        final AlertDialog alertDialogCreate = new AlertDialog.Builder(this, R.style.platformDialogTheme).setTitle(R.string.rationale_dialog_header).setMessage(str).setPositiveButton(R.string.ask_for_permission, new DialogInterface.OnClickListener() {
+        final AlertDialog alertDialogCreate = dev.bbkb.ime.core.settings.ui.BbkbDialogs.builder(this).setTitle(R.string.rationale_dialog_header).setMessage(str).setPositiveButton(R.string.ask_for_permission, new DialogInterface.OnClickListener() {
             @Override // android.content.DialogInterface.OnClickListener
             public void onClick(DialogInterface dialogInterface, int i) {
                 RationaleDialog.this.finishWithResult(Result.ASK);

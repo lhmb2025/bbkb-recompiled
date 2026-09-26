@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">ವರ್ಣಮಾಲೆ (QWERTY)</string>
     <string name="subtype_no_language_qwertz">ವರ್ಣಮಾಲೆ (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">ಭಾಷೆ ಬದಲಾಯಿಸಿ</string>
+    <string name="subtype_switcher_other_keyboards">ಇತರ ಕೀಬೋರ್ಡ್‌ಗಳು</string>
+    <string name="subtype_switcher_no_other_keyboards">ಬೇರೆ ಯಾವುದೇ ಕೀಬೋರ್ಡ್ ಸಕ್ರಿಯವಾಗಿಲ್ಲ</string>
     <string name="subtype_with_layout_en_GB">ಇಂಗ್ಲಿಷ್ (UK) (%s)</string>
     <string name="subtype_with_layout_en_US">ಇಂಗ್ಲಿಷ್ (US) (%s)</string>
     <string name="subtype_with_layout_es_US">ಸ್ಪ್ಯಾನಿಷ್ (US) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB ಸಹಾಯಕ</string>
     <string name="add">ಸೇರಿಸು</string>
+    <string name="add_word_dialog_title">ನಿಘಂಟಿಗೆ ಸೇರಿಸು</string>
     <string name="cancel">ರದ್ದುಮಾಡು</string>
     <string name="discard">ತ್ಯಜಿಸಿ</string>
     <string name="discard_event_changes">ನಿಮ್ಮ ಬದಲಾವಣೆಗಳನ್ನು ತ್ಯಜಿಸಬೇಕೇ?</string>

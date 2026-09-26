@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Αλφάβητο (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Αλφάβητο (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Αλλαγή γλώσσας</string>
+    <string name="subtype_switcher_other_keyboards">Άλλα πληκτρολόγια</string>
+    <string name="subtype_switcher_no_other_keyboards">Δεν υπάρχουν άλλα ενεργοποιημένα πληκτρολόγια</string>
     <string name="subtype_with_layout_en_GB">Αγγλικά (Η.Β.) (%s)</string>
     <string name="subtype_with_layout_en_US">Αγγλικά (ΗΠΑ) (%s)</string>
     <string name="subtype_with_layout_es_US">Ισπανικά (ΗΠΑ) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">Βοηθός BBKB</string>
     <string name="add">Προσθήκη</string>
+    <string name="add_word_dialog_title">Προσθήκη στο λεξικό</string>
     <string name="cancel">Ακύρωση</string>
     <string name="discard">ΑΠΟΡΡΙΨΗ</string>
     <string name="discard_event_changes">Θέλετε να απορρίψετε τις αλλαγές;</string>

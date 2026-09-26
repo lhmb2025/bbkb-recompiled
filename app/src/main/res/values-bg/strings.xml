@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Латиница (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Латиница (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Смяна на езика</string>
+    <string name="subtype_switcher_other_keyboards">Други клавиатури</string>
+    <string name="subtype_switcher_no_other_keyboards">Няма включени други клавиатури</string>
     <string name="subtype_with_layout_en_GB">английски (Великобр.) (%s)</string>
     <string name="subtype_with_layout_en_US">английски (САЩ) (%s)</string>
     <string name="subtype_with_layout_es_US">испански (САЩ) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">Помощник за BBKB</string>
     <string name="add">Добавяне</string>
+    <string name="add_word_dialog_title">Добавяне в речника</string>
     <string name="cancel">Отказ</string>
     <string name="discard">ОТХВЪРЛЯНЕ</string>
     <string name="discard_event_changes">Да се отхвърлят ли промените?</string>

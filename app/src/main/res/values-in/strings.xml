@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Abjad (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Abjad (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Ganti bahasa</string>
+    <string name="subtype_switcher_other_keyboards">Keyboard lain</string>
+    <string name="subtype_switcher_no_other_keyboards">Tidak ada keyboard lain yang aktif</string>
     <string name="subtype_with_layout_en_GB">(%s) Inggris (Inggris)</string>
     <string name="subtype_with_layout_en_US">(%s) Inggris (AS)</string>
     <string name="subtype_with_layout_es_US">(%s) Spanyol (AS)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">Pembantu BBKB</string>
     <string name="add">Tambahkan</string>
+    <string name="add_word_dialog_title">Tambahkan ke kamus</string>
     <string name="cancel">Batal</string>
     <string name="discard">BUANG</string>
     <string name="discard_event_changes">Buang perubahan yang dibuat?</string>

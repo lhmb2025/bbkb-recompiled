@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Abėcėlė (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Abėcėlė (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Keisti kalbą</string>
+    <string name="subtype_switcher_other_keyboards">Kitos klaviatūros</string>
+    <string name="subtype_switcher_no_other_keyboards">Kitų įjungtų klaviatūrų nėra</string>
     <string name="subtype_with_layout_en_GB">Anglų (JK) (%s)</string>
     <string name="subtype_with_layout_en_US">Anglų (JAV) (%s)</string>
     <string name="subtype_with_layout_es_US">Ispanų (JAV) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">„BBKB“ pagalbinė programa</string>
     <string name="add">Pridėti</string>
+    <string name="add_word_dialog_title">Pridėti į žodyną</string>
     <string name="cancel">Atšaukti</string>
     <string name="discard">ATSISAKYTI</string>
     <string name="discard_event_changes">Atsisakyti pakeitimų?</string>

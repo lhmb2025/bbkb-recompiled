@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">字母 (ABC)</string>
     <string name="subtype_no_language_qwertz">字母 (ABC)</string>
     <string name="subtype_switcher_dialog_header">更改语言</string>
+    <string name="subtype_switcher_other_keyboards">其他键盘</string>
+    <string name="subtype_switcher_no_other_keyboards">未启用其他键盘</string>
     <string name="subtype_with_layout_en_GB">英式英语（%s）</string>
     <string name="subtype_with_layout_en_US">美式英语（%s）</string>
     <string name="subtype_with_layout_es_US">美式西班牙语（%s）</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB 助手</string>
     <string name="add">添加</string>
+    <string name="add_word_dialog_title">添加到字典</string>
     <string name="cancel">取消</string>
     <string name="discard">放弃</string>
     <string name="discard_event_changes">放弃所做更改？</string>

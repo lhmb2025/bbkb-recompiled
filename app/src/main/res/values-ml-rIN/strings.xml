@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">അക്ഷരമാല (QWERTY)</string>
     <string name="subtype_no_language_qwertz">അക്ഷരമാല (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">ഭാഷ മാറ്റുക</string>
+    <string name="subtype_switcher_other_keyboards">മറ്റ് കീബോർഡുകൾ</string>
+    <string name="subtype_switcher_no_other_keyboards">മറ്റ് കീബോർഡുകളൊന്നും പ്രവർത്തനക്ഷമമല്ല</string>
     <string name="subtype_with_layout_en_GB">ഇംഗ്ലീഷ് (യുകെ) (%s)</string>
     <string name="subtype_with_layout_en_US">ഇംഗ്ലീഷ് (യുഎസ്) (%s)</string>
     <string name="subtype_with_layout_es_US">സ്‌പാനിഷ് (യുഎസ്) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB സഹായി</string>
     <string name="add">ചേര്‍ക്കുക</string>
+    <string name="add_word_dialog_title">നിഘണ്ടുവിലേക്ക് ചേര്‍ക്കുക</string>
     <string name="cancel">റദ്ദാക്കുക</string>
     <string name="discard">ഉപേക്ഷിക്കുക</string>
     <string name="discard_event_changes">നിങ്ങളുടെ മാറ്റങ്ങൾ ഉപേക്ഷിക്കണോ?</string>

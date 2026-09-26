@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Ábécé (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Ábécé (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Nyelv módosítása</string>
+    <string name="subtype_switcher_other_keyboards">Egyéb billentyűzetek</string>
+    <string name="subtype_switcher_no_other_keyboards">Nincs másik engedélyezett billentyűzet</string>
     <string name="subtype_with_layout_en_GB">angol (brit) (%s)</string>
     <string name="subtype_with_layout_en_US">angol (USA) (%s)</string>
     <string name="subtype_with_layout_es_US">spanyol (USA) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB-segéd</string>
     <string name="add">Hozzáadás</string>
+    <string name="add_word_dialog_title">Hozzáadás a szótárhoz</string>
     <string name="cancel">Mégse</string>
     <string name="discard">ELVETÉS</string>
     <string name="discard_event_changes">Elveti a módosításokat?</string>

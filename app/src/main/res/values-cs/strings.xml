@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Latinka (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Latinka (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Změna jazyka</string>
+    <string name="subtype_switcher_other_keyboards">Jiné klávesnice</string>
+    <string name="subtype_switcher_no_other_keyboards">Nejsou zapnuté žádné jiné klávesnice</string>
     <string name="subtype_with_layout_en_GB">Angličtina (UK) (%s)</string>
     <string name="subtype_with_layout_en_US">Angličtina (USA) (%s)</string>
     <string name="subtype_with_layout_es_US">Španělština (USA) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">Pomocník BBKB</string>
     <string name="add">Přidat</string>
+    <string name="add_word_dialog_title">Přidat do slovníku</string>
     <string name="cancel">Zrušit</string>
     <string name="discard">ZAHODIT</string>
     <string name="discard_event_changes">Zahodit změny?</string>

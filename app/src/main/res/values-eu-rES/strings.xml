@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Alfabetoa (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Alfabetoa (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Aldatu hizkuntza</string>
+    <string name="subtype_switcher_other_keyboards">Beste teklatu batzuk</string>
+    <string name="subtype_switcher_no_other_keyboards">Ez dago beste teklaturik gaituta</string>
     <string name="subtype_with_layout_en_GB">Ingelesa (Erresuma Batua) (%s)</string>
     <string name="subtype_with_layout_en_US">Ingelesa (AEB) (%s)</string>
     <string name="subtype_with_layout_es_US">Gaztelania (AEB) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB laguntzailea</string>
     <string name="add">Gehitu</string>
+    <string name="add_word_dialog_title">Gehitu hiztegian</string>
     <string name="cancel">Utzi</string>
     <string name="discard">BAZTERTU</string>
     <string name="discard_event_changes">Aldaketak baztertu nahi dituzu?</string>

@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">ანბანი (QWERTY)</string>
     <string name="subtype_no_language_qwertz">ანბანი (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">ენის შეცვლა</string>
+    <string name="subtype_switcher_other_keyboards">სხვა კლავიატურები</string>
+    <string name="subtype_switcher_no_other_keyboards">სხვა კლავიატურა ჩართული არ არის</string>
     <string name="subtype_with_layout_en_GB">ინგლისური (გაერთ.სამ.) (%s)</string>
     <string name="subtype_with_layout_en_US">ინგლისური (აშშ) (%s)</string>
     <string name="subtype_with_layout_es_US">ესპანური (აშშ) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB-ის დამხმარე</string>
     <string name="add">დამატება</string>
+    <string name="add_word_dialog_title">ლექსიკონში დამატება</string>
     <string name="cancel">გაუქმება</string>
     <string name="discard">არ შეინახოს</string>
     <string name="discard_event_changes">ცვლილებები არ შეინახოს?</string>

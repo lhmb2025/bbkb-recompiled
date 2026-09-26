@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Латиниця (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Латиниця (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Змінити мову</string>
+    <string name="subtype_switcher_other_keyboards">Інші клавіатури</string>
+    <string name="subtype_switcher_no_other_keyboards">Інші клавіатури не увімкнено</string>
     <string name="subtype_with_layout_en_GB">Англійська (Британія) (%s)</string>
     <string name="subtype_with_layout_en_US">Англійська (США) (%s)</string>
     <string name="subtype_with_layout_es_US">Іспанська (США) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">Помічник BBKB</string>
     <string name="add">Додати</string>
+    <string name="add_word_dialog_title">Додати до словника</string>
     <string name="cancel">Скасувати</string>
     <string name="discard">СКАСУВАТИ</string>
     <string name="discard_event_changes">Скасувати зміни?</string>

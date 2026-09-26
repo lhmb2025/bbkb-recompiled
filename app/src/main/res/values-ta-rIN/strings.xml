@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">அகரவரிசை (க்வெர்டி)</string>
     <string name="subtype_no_language_qwertz">அகரவரிசை (க்வெர்ட்ச்)</string>
     <string name="subtype_switcher_dialog_header">மொழியை மாற்று</string>
+    <string name="subtype_switcher_other_keyboards">பிற விசைப்பலகைகள்</string>
+    <string name="subtype_switcher_no_other_keyboards">வேறு விசைப்பலகைகள் இயக்கப்படவில்லை</string>
     <string name="subtype_with_layout_en_GB">ஆங்கிலம் (யூகே) (%s)</string>
     <string name="subtype_with_layout_en_US">ஆங்கிலம் (யூஎஸ்) (%s)</string>
     <string name="subtype_with_layout_es_US">ஸ்பானிஷ் (யூஎஸ்) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB உதவியாளர்</string>
     <string name="add">சேர்</string>
+    <string name="add_word_dialog_title">அகராதியில் சேர்</string>
     <string name="cancel">ரத்துசெய்</string>
     <string name="discard">நிராகரி</string>
     <string name="discard_event_changes">உங்கள் மாற்றங்களை நிராகரிக்கவா?</string>

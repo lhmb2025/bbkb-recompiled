@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Abeceda (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Abeceda (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Promijeni jezik</string>
+    <string name="subtype_switcher_other_keyboards">Druge tastature</string>
+    <string name="subtype_switcher_no_other_keyboards">Nijedna druga tastatura nije omogućena</string>
     <string name="subtype_with_layout_en_GB">Engleski (UK) (%s)</string>
     <string name="subtype_with_layout_en_US">Engleski (SAD) (%s)</string>
     <string name="subtype_with_layout_es_US">Španski (SAD) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB pomoćnik</string>
     <string name="add">Dodaj</string>
+    <string name="add_word_dialog_title">Dodaj u rječnik</string>
     <string name="cancel">Otkaži</string>
     <string name="discard">ODBACI</string>
     <string name="discard_event_changes">Odbaciti vaše izmjene?</string>

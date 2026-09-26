@@ -40,8 +40,26 @@ public class SubtypeSwitcherAdapter extends ArrayAdapter<SubtypeItem> {
         if (i < 0 || i >= this.items.size()) {
             return view;
         }
-        ((TextView) view.findViewById(R.id.subtype_switcher_language_name)).setText(this.items.get(i).displayName);
-        ((RadioButton) view.findViewById(R.id.subtype_switcher_radio)).setChecked(i == this.selectedPosition);
+        final SubtypeItem item = this.items.get(i);
+        final TextView name = view.findViewById(R.id.subtype_switcher_language_name);
+        final RadioButton radio = view.findViewById(R.id.subtype_switcher_radio);
+        name.setText(item.displayName);
+        // A header is a list subheader: small, dimmed, no radio. Another keyboard's row has no
+        // radio either - it is never "the selected language", it is a way out of this IME.
+        name.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, item.isHeader ? 13 : (item.isNote ? 14 : 16));
+        name.setAlpha(item.isHeader || item.isNote ? 0.6f : 1f);
+        radio.setVisibility(item.subtypeIndex >= 0 ? View.VISIBLE : View.INVISIBLE);
+        radio.setChecked(i == this.selectedPosition);
         return view;
+    }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled(int i) {
+        return i >= 0 && i < this.items.size() && !this.items.get(i).isHeader && !this.items.get(i).isNote;
     }
 }

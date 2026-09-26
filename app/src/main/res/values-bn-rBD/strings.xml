@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">বর্ণমালা (QWERTY)</string>
     <string name="subtype_no_language_qwertz">বর্ণমালা (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">ভাষা পরিবর্তন করুন</string>
+    <string name="subtype_switcher_other_keyboards">অন্যান্য কীবোর্ড</string>
+    <string name="subtype_switcher_no_other_keyboards">অন্য কোনো কীবোর্ড সক্রিয় নেই</string>
     <string name="subtype_with_layout_en_GB">ইংরেজি (UK) (%s)</string>
     <string name="subtype_with_layout_en_US">ইংরেজি (US) (%s)</string>
     <string name="subtype_with_layout_es_US">স্প্যানিশ (US) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB সহায়ক</string>
     <string name="add">জুড়ুন</string>
+    <string name="add_word_dialog_title">অভিধানে জুড়ুন</string>
     <string name="cancel">বাতিল করুন</string>
     <string name="discard">বাদ দিন</string>
     <string name="discard_event_changes">আপনার পরিবর্তনগুলি বাদ দেবেন?</string>

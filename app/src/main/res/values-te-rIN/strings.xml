@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">ఆల్ఫాబెట్ (QWERTY)</string>
     <string name="subtype_no_language_qwertz">ఆల్ఫాబెట్ (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">భాషను మార్చు</string>
+    <string name="subtype_switcher_other_keyboards">ఇతర కీబోర్డ్‌లు</string>
+    <string name="subtype_switcher_no_other_keyboards">ఇతర కీబోర్డ్‌లు ప్రారంభించబడలేదు</string>
     <string name="subtype_with_layout_en_GB">ఆంగ్లం (యుకె) (%s)</string>
     <string name="subtype_with_layout_en_US">ఆంగ్లం (యుఎస్) (%s)</string>
     <string name="subtype_with_layout_es_US">స్పానిష్ (యుఎస్) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB హెల్పర్</string>
     <string name="add">జోడించండి</string>
+    <string name="add_word_dialog_title">నిఘంటువుకు జోడించండి</string>
     <string name="cancel">రద్దు చేయి</string>
     <string name="discard">విస్మరించు</string>
     <string name="discard_event_changes">మీ మార్పులను విస్మరించాలా?</string>

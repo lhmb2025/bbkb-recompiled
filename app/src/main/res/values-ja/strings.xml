@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">アルファベット(QWERTY)</string>
     <string name="subtype_no_language_qwertz">アルファベット(QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">言語を変更</string>
+    <string name="subtype_switcher_other_keyboards">他のキーボード</string>
+    <string name="subtype_switcher_no_other_keyboards">他のキーボードは有効になっていません</string>
     <string name="subtype_with_layout_en_GB">英語(英国) (%s)</string>
     <string name="subtype_with_layout_en_US">英語(米国) (%s)</string>
     <string name="subtype_with_layout_es_US">スペイン語(米国) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKBヘルパー</string>
     <string name="add">追加</string>
+    <string name="add_word_dialog_title">辞書に追加</string>
     <string name="cancel">キャンセル</string>
     <string name="discard">破棄</string>
     <string name="discard_event_changes">変更を破棄しますか？</string>

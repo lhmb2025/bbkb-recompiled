@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Алфавит (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Алфавит (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Тилди алмаштыруу</string>
+    <string name="subtype_switcher_other_keyboards">Башка баскычтоптор</string>
+    <string name="subtype_switcher_no_other_keyboards">Башка иштетилген баскычтоп жок</string>
     <string name="subtype_with_layout_en_GB">Англисче (UK) (%s)</string>
     <string name="subtype_with_layout_en_US">Англисче (US) (%s)</string>
     <string name="subtype_with_layout_es_US">Испанча (US) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB жардамчысы</string>
     <string name="add">Кошуу</string>
+    <string name="add_word_dialog_title">Сөздүккө кошуу</string>
     <string name="cancel">Жокко чыгаруу</string>
     <string name="discard">ЖОККО ЧЫГАРУУ</string>
     <string name="discard_event_changes">Өзгөртүүлөр жокко чыгарылсынбы?</string>

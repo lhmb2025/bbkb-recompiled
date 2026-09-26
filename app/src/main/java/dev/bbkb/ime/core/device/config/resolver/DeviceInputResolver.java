@@ -51,6 +51,9 @@ public class DeviceInputResolver {
 
     private static boolean sDeviceListenerRegistered = false;
 
+    /** Application context, kept so a device change can re-resolve without a caller in hand. */
+    private static Context sAppContext;
+
     /**
      * Get the input mapping configuration for a device.
      *
@@ -154,10 +157,16 @@ public class DeviceInputResolver {
         final InputManager inputManager =
                 (InputManager) context.getApplicationContext().getSystemService(Context.INPUT_SERVICE);
         if (inputManager == null) return;
+        sAppContext = context.getApplicationContext();
+        // A device change invalidates what was resolved, but must not leave the scancode-role
+        // resolver empty: Android reports the built-in keyboard as "changed" on every IME subtype
+        // switch (the keyboard layout is re-assigned), and with the resolver empty every
+        // config-mapped key - the KEY2 mic key set to switch language, for one - went dead until
+        // the process restarted (owner report 2026-09-26). Re-resolve right away.
         inputManager.registerInputDeviceListener(new InputManager.InputDeviceListener() {
-            @Override public void onInputDeviceAdded(int deviceId)   { resetConfig(); }
-            @Override public void onInputDeviceRemoved(int deviceId) { resetConfig(); }
-            @Override public void onInputDeviceChanged(int deviceId) { resetConfig(); }
+            @Override public void onInputDeviceAdded(int deviceId)   { resetAndResolve(); }
+            @Override public void onInputDeviceRemoved(int deviceId) { resetAndResolve(); }
+            @Override public void onInputDeviceChanged(int deviceId) { resetAndResolve(); }
         }, new Handler(Looper.getMainLooper()));
         sDeviceListenerRegistered = true;
     }
@@ -189,6 +198,13 @@ public class DeviceInputResolver {
     /**
      * Reset cached configuration (for testing).
      */
+    private static synchronized void resetAndResolve() {
+        resetConfig();
+        if (sAppContext != null) {
+            resolveInputMapping(sAppContext, ALL_DEVICES);
+        }
+    }
+
     public static synchronized void resetConfig() {
         sConfig = null;
         sMappingByDeviceId.clear();

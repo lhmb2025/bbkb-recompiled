@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">ໂຕອັກສອນ (QWERTY)</string>
     <string name="subtype_no_language_qwertz">ໂຕອັກສອນ (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">ປ່ຽນພາສາ</string>
+    <string name="subtype_switcher_other_keyboards">ແປ້ນພິມອື່ນໆ</string>
+    <string name="subtype_switcher_no_other_keyboards">ບໍ່ມີແປ້ນພິມອື່ນທີ່ເປີດໄວ້</string>
     <string name="subtype_with_layout_en_GB">ອັງກິດ (ສະຫະລາດຊະອານາຈັກ) (%s)</string>
     <string name="subtype_with_layout_en_US">ອັງກິດ (ສະຫະລັດຯ) (%s)</string>
     <string name="subtype_with_layout_es_US">ສະແປນນິດ (ສະຫະລັດຯ) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">ຕົວຊ່ວຍ BBKB</string>
     <string name="add">ເພີ່ມ</string>
+    <string name="add_word_dialog_title">ເພີ່ມໃສ່ວັດຈະນານຸກົມ</string>
     <string name="cancel">ຍົກເລີກ</string>
     <string name="discard">ຖິ້ມ</string>
     <string name="discard_event_changes">ຖິ້ມການປ່ຽນແປງຂອງທ່ານບໍ?</string>

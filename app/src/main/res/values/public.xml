@@ -1730,7 +1730,6 @@
     <public type="style" name="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense" id="0x7f13024f" />
     <public type="style" name="Widget.MaterialComponents.Toolbar" id="0x7f130250" />
     <public type="style" name="Widget.Support.CoordinatorLayout" id="0x7f130251" />
-    <public type="style" name="platformDialogTheme" id="0x7f130253" />
     <public type="style" name="platformSettingsTheme" id="0x7f130254" />
     <public type="xml" name="backupscheme" id="0x7f150001" />
     <public type="xml" name="file_paths" id="0x7f150004" />

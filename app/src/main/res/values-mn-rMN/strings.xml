@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Цагаан толгой (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Цагаан толгой (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Хэл солих</string>
+    <string name="subtype_switcher_other_keyboards">Бусад гар</string>
+    <string name="subtype_switcher_no_other_keyboards">Идэвхжүүлсэн бусад гар байхгүй</string>
     <string name="subtype_with_layout_en_GB">Англи (ИБ) ( %s )</string>
     <string name="subtype_with_layout_en_US">Англи (АНУ) ( %s )</string>
     <string name="subtype_with_layout_es_US">Испани (АНУ-ын) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB туслах</string>
     <string name="add">Нэмэх</string>
+    <string name="add_word_dialog_title">Толь бичигт нэмэх</string>
     <string name="cancel">Цуцлах</string>
     <string name="discard">ХАЯХ</string>
     <string name="discard_event_changes">Өөрчлөлтөө хаях уу?</string>

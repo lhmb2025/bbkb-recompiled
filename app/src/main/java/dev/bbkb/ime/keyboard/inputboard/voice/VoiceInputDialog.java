@@ -59,7 +59,7 @@ public class VoiceInputDialog extends Activity {
     }
 
     private void showDialog(String str) {
-        final AlertDialog alertDialogCreate = new AlertDialog.Builder(this, 5).setTitle(R.string.voice_input_manage_language_title).setMessage(str).setPositiveButton(R.string.go_to_settings, new DialogInterface.OnClickListener() {
+        final AlertDialog alertDialogCreate = dev.bbkb.ime.core.settings.ui.BbkbDialogs.builder(this).setTitle(R.string.voice_input_manage_language_title).setMessage(str).setPositiveButton(R.string.go_to_settings, new DialogInterface.OnClickListener() {
             @Override // android.content.DialogInterface.OnClickListener
             public void onClick(DialogInterface dialogInterface, int i) {
                 VoiceInputDialog.this.finishWithResult(Result.OK);

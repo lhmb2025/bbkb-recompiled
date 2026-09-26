@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Алфабет (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Алфабет (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Промени језик</string>
+    <string name="subtype_switcher_other_keyboards">Друге тастатуре</string>
+    <string name="subtype_switcher_no_other_keyboards">Друге тастатуре нису омогућене</string>
     <string name="subtype_with_layout_en_GB">Енглески (UK) (%s)</string>
     <string name="subtype_with_layout_en_US">Енглески (US) (%s)</string>
     <string name="subtype_with_layout_es_US">Шпански (US) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB помоћник</string>
     <string name="add">Додај</string>
+    <string name="add_word_dialog_title">Додај у речник</string>
     <string name="cancel">Откажи</string>
     <string name="discard">ОДБАЦИ</string>
     <string name="discard_event_changes">Одбацити промене?</string>

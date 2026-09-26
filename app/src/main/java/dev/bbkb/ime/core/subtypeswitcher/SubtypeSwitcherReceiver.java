@@ -23,6 +23,11 @@ public class SubtypeSwitcherReceiver implements InAppEventBus.EventListener {
     public static final String ACTION_SUBTYPE_SWITCH_RESULT = "com.blackberry.quick.subtype.switch.result.receiver";
     public static final String EXTRA_RESULT = "subtype.switcher.dialog.result";
 
+    /** {@link #EXTRA_RESULT} value meaning "switch to the input method in {@link #EXTRA_IME_ID}". */
+    public static final int RESULT_OTHER_IME = -3;
+
+    public static final String EXTRA_IME_ID = "subtype.switcher.dialog.ime";
+
     private InputMethodService ime = null;
 
     private final UIUpdateHandler uiUpdateHandler;
@@ -53,7 +58,12 @@ public class SubtypeSwitcherReceiver implements InAppEventBus.EventListener {
     public void onEvent(String action, Bundle extras) {
         if (ACTION_SUBTYPE_SWITCH_RESULT.equals(action) && extras != null) {
             int intExtra = extras.getInt(EXTRA_RESULT, 0);
-            if (this.ime == null || intExtra < 0) {
+            if (this.ime != null && intExtra == RESULT_OTHER_IME) {
+                final String imeId = extras.getString(EXTRA_IME_ID);
+                if (imeId != null) {
+                    RichInputMethodManager.getInstance().switchToInputMethod(this.ime, imeId);
+                }
+            } else if (this.ime == null || intExtra < 0) {
                 if (intExtra == -2) {
                     this.uiUpdateHandler.postCancelQuickSwitch();
                 }

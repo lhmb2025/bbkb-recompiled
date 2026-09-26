@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Alfabet (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Alfabet (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Ändra språk</string>
+    <string name="subtype_switcher_other_keyboards">Andra tangentbord</string>
+    <string name="subtype_switcher_no_other_keyboards">Inga andra tangentbord är aktiverade</string>
     <string name="subtype_with_layout_en_GB">Engelska (Storbr.) %s</string>
     <string name="subtype_with_layout_en_US">Engelska (USA) (%s)</string>
     <string name="subtype_with_layout_es_US">Spanska (USA) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB-hjälp</string>
     <string name="add">Lägg till</string>
+    <string name="add_word_dialog_title">Lägg till i ordlista</string>
     <string name="cancel">Avbryt</string>
     <string name="discard">IGNORERA</string>
     <string name="discard_event_changes">Vill du ta bort ändringarna?</string>

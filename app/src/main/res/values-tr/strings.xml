@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Alfabe (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Alfabe (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Dili değiştir</string>
+    <string name="subtype_switcher_other_keyboards">Diğer klavyeler</string>
+    <string name="subtype_switcher_no_other_keyboards">Etkinleştirilmiş başka klavye yok</string>
     <string name="subtype_with_layout_en_GB">İngilizce (BK) (%s)</string>
     <string name="subtype_with_layout_en_US">İngilizce (ABD) (%s)</string>
     <string name="subtype_with_layout_es_US">İspanyolca (ABD) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB yardımcısı</string>
     <string name="add">Ekle</string>
+    <string name="add_word_dialog_title">Sözlüğe ekle</string>
     <string name="cancel">İptal</string>
     <string name="discard">SİL</string>
     <string name="discard_event_changes">Değişiklikleriniz silinsin mi?</string>

@@ -32,6 +32,8 @@
     <string name="subtype_no_language_qwerty">Alphabet (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Alphabet (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Change language</string>
+    <string name="subtype_switcher_other_keyboards">Other keyboards</string>
+    <string name="subtype_switcher_no_other_keyboards">No other input methods are enabled</string>
     <string name="subtype_with_layout_en_GB">English (UK) (%s)</string>
     <string name="subtype_with_layout_en_US">English (US) (%s)</string>
     <string name="subtype_with_layout_es_US">Spanish (US) (%s)</string>
@@ -722,6 +724,7 @@
     <!-- Common UI actions and labels -->
     <!-- ============================== -->
     <string name="add">Add</string>
+    <string name="add_word_dialog_title">Add to dictionary</string>
     <string name="cancel">Cancel</string>
     <string name="discard">DISCARD</string>
     <string name="discard_event_changes">Discard your changes?</string>

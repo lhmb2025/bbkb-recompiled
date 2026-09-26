@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">តាម​លំដាប់​អក្សរក្រម (QWERTY)</string>
     <string name="subtype_no_language_qwertz">តាម​លំដាប់​អក្សរក្រម (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">ប្ដូរភាសា</string>
+    <string name="subtype_switcher_other_keyboards">ក្ដារចុចផ្សេងទៀត</string>
+    <string name="subtype_switcher_no_other_keyboards">គ្មានក្ដារចុចផ្សេងទៀតដែលបានបើកទេ</string>
     <string name="subtype_with_layout_en_GB">អង់គ្លេស (ចក្រភព​អង់គ្លេស) (%s)</string>
     <string name="subtype_with_layout_en_US">អង់គ្លេស (អាមេរិក) (%s)</string>
     <string name="subtype_with_layout_es_US">អេស្ប៉ាញ (អាមេរិក) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">ជំនួយការ BBKB</string>
     <string name="add">បន្ថែម</string>
+    <string name="add_word_dialog_title">បន្ថែមទៅវចនានុក្រម</string>
     <string name="cancel">បោះ​បង់​</string>
     <string name="discard">បោះបង់</string>
     <string name="discard_event_changes">បោះបង់ការផ្លាស់ប្ដូររបស់អ្នក?</string>

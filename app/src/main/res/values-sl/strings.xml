@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Latinica (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Latinica (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Zamenjaj jezik</string>
+    <string name="subtype_switcher_other_keyboards">Druge tipkovnice</string>
+    <string name="subtype_switcher_no_other_keyboards">Druge tipkovnice niso omogočene</string>
     <string name="subtype_with_layout_en_GB">angleščina (VB) (%s)</string>
     <string name="subtype_with_layout_en_US">angleščina (ZDA) (%s)</string>
     <string name="subtype_with_layout_es_US">španščina (ZDA) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">Pomočnik za BBKB</string>
     <string name="add">Dodaj</string>
+    <string name="add_word_dialog_title">Dodaj v slovar</string>
     <string name="cancel">Prekliči</string>
     <string name="discard">ZAVRZI</string>
     <string name="discard_event_changes">Želite zavreči spremembe?</string>

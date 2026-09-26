@@ -246,7 +246,29 @@
     <style name="SuggestionWord.LXX" parent="@style/SuggestionWord">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
-    <style name="platformDialogTheme" parent="@android:style/Theme.DeviceDefault.Light.Dialog">
+    <!--
+        The Change-language menu (SubtypeSwitcherDialog) in BBKB's own colours: the Material 3
+        palette the settings screens use, light and dark, chosen at runtime from
+        pref_keyboard_theme_mode like BlackBerryTheme does. Framework AlertDialog, so the colours
+        go in through the platform attributes the dialog and its list rows read.
+    -->
+    <style name="BbkbDialogTheme.Light" parent="@android:style/Theme.DeviceDefault.Light.Dialog.Alert">
+        <item name="android:colorAccent">@color/m3_primary_light</item>
+        <item name="android:colorPrimary">@color/m3_primary_light</item>
+        <item name="android:colorBackground">@color/m3_surface_container_light</item>
+        <item name="android:textColorPrimary">@color/m3_on_surface_light</item>
+        <item name="android:textColorSecondary">@color/m3_on_surface_variant_light</item>
+        <item name="android:textColorAlertDialogListItem">@color/m3_on_surface_light</item>
+        <item name="android:colorControlNormal">@color/m3_on_surface_variant_light</item>
+    </style>
+    <style name="BbkbDialogTheme.Dark" parent="@android:style/Theme.DeviceDefault.Dialog.Alert">
+        <item name="android:colorAccent">@color/m3_primary_dark</item>
+        <item name="android:colorPrimary">@color/m3_primary_dark</item>
+        <item name="android:colorBackground">@color/m3_surface_container_highest_dark</item>
+        <item name="android:textColorPrimary">@color/m3_on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/m3_on_surface_variant_dark</item>
+        <item name="android:textColorAlertDialogListItem">@color/m3_on_surface_dark</item>
+        <item name="android:colorControlNormal">@color/m3_on_surface_variant_dark</item>
     </style>
     <!-- Updated to use Material 3 Settings Theme -->
     <style name="platformSettingsTheme" parent="@style/Theme.BlackBerryKeyboard.Settings">

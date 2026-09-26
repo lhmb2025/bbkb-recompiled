@@ -220,7 +220,7 @@ public final class MultiLanguageUtils {
     public static AlertDialog createEnableSubtypeDialog(final Activity activity) {
         int i = isUsingSystemLanguages((Context) activity) ? R.string.multi_language_input_enable_subtype_toggle_use_system_language_dialog_message : R.string.multi_language_input_enable_subtype_dialog_message;
         final Intent intentM5786a = IntentUtils.getInputLanguageSelectionIntent(RichInputMethodManager.getInstance().getInputMethodIdOfThisIme(), LANGUAGE_SETTINGS_INTENT_FLAGS);
-        AlertDialog.Builder builder = new AlertDialog.Builder(new android.view.ContextThemeWrapper(activity, R.style.platformDialogTheme));
+        AlertDialog.Builder builder = dev.bbkb.ime.core.settings.ui.BbkbDialogs.builder(activity);
         builder.setTitle(R.string.multi_language_input_enable_subtype_dialog_title).setMessage(i).setNegativeButton(R.string.multi_language_input_enable_subtype_dialog_negative_button, (DialogInterface.OnClickListener) null).setPositiveButton(R.string.multi_language_input_enable_subtype_dialog_positive_button, new DialogInterface.OnClickListener() {
             @Override // android.content.DialogInterface.OnClickListener
             public void onClick(DialogInterface dialogInterface, int i2) {

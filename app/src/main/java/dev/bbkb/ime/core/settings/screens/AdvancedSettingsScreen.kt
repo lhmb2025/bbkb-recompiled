@@ -108,7 +108,7 @@ fun AdvancedSettingsScreen(
 }
 
 private fun showClearSettingsDataDialog(context: Context) {
-    AlertDialog.Builder(context)
+    dev.bbkb.ime.core.settings.ui.BbkbDialogs.builder(context)
         .setTitle(context.getString(R.string.settings_clear_settings_dialog_title))
         .setMessage(context.getString(R.string.settings_clear_settings_dialog_message))
         .setPositiveButton(android.R.string.ok) { _, _ -> DebugSettingsUtils.clearAllSettings(context) }
@@ -163,7 +163,7 @@ private fun confirmAndRestore(context: Context, uri: Uri) {
         return
     }
 
-    AlertDialog.Builder(context)
+    dev.bbkb.ime.core.settings.ui.BbkbDialogs.builder(context)
         .setTitle(context.getString(R.string.settings_restore_title))
         .setMessage(context.getString(R.string.settings_restore_dialog_message))
         .setPositiveButton(R.string.settings_restore_dialog_confirm) { _, _ ->

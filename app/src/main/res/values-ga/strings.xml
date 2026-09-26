@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Aibítir (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Aibítir (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Athraigh an teanga</string>
+    <string name="subtype_switcher_other_keyboards">Méarchláir eile</string>
+    <string name="subtype_switcher_no_other_keyboards">Níl aon mhéarchlár eile cumasaithe</string>
     <string name="subtype_with_layout_en_GB">Béarla (RA) (%s)</string>
     <string name="subtype_with_layout_en_US">Béarla (SAM) (%s)</string>
     <string name="subtype_with_layout_es_US">Spáinnis (SAM) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">Cúntóir BBKB</string>
     <string name="add">Cuir leis</string>
+    <string name="add_word_dialog_title">Cuir leis an bhfoclóir</string>
     <string name="cancel">Cealaigh</string>
     <string name="discard">CAITH UAIT</string>
     <string name="discard_event_changes">Caith uait do chuid athruithe?</string>

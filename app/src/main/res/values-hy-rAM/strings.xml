@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Այբուբեն (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Այբուբեն (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Փոխել լեզուն</string>
+    <string name="subtype_switcher_other_keyboards">Այլ ստեղնաշարեր</string>
+    <string name="subtype_switcher_no_other_keyboards">Այլ ստեղնաշարեր միացված չեն</string>
     <string name="subtype_with_layout_en_GB">Անգլերեն (ՄԹ) (%s)</string>
     <string name="subtype_with_layout_en_US">Անգլերեն (ԱՄՆ) (%s)</string>
     <string name="subtype_with_layout_es_US">Իսպաներեն (ԱՄՆ) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB-ի օգնական</string>
     <string name="add">Ավելացնել</string>
+    <string name="add_word_dialog_title">Ավելացնել բառարանում</string>
     <string name="cancel">Չեղարկել</string>
     <string name="discard">ՉՊԱՀԵԼ</string>
     <string name="discard_event_changes">Չպահե՞լ փոփոխությունները</string>

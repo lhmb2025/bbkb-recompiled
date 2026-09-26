@@ -1,7 +1,6 @@
 package dev.bbkb.ime.core
 
 import android.app.AlertDialog
-import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.DialogInterface
@@ -2631,23 +2630,16 @@ class BlackBerryIME : InputMethodService(),
      * The plus on the add-to-dictionary highlight: one tap adds the word to the personal
      * dictionary, which also teaches the engine's DLM and syncs the system user dictionary
      * ([DictionaryManager.addWordSubstitution] -> `PersonalDictionaryUtil.add`), then asks the
-     * editor to re-run its spell check so the red underline the word may carry goes away. The
-     * system's add-word dialog, which this used to launch, is now only the fallback for a
-     * dictionary that is not loaded yet.
+     * editor to re-run its spell check so the red underline the word may carry goes away. When the
+     * add is refused (dictionary not loaded, word already there) BBKB's own add-word dialog takes
+     * over; it used to be the system's, in the system's colours.
      */
     fun addWordToUserDictionary(str: String) {
         val added = OneTapAddWord.add(DictionaryManager.getInstance(), str, dictionaryLoader.getLocale())
         if (added) {
             inputLogic.mRichInputConnection.requestSpellCheck()
         } else {
-            val intentM5787a = IntentUtils.getAddWordToDictionaryIntent(str, dictionaryLoader.getLocale())
-            if (intentM5787a != null) {
-                try {
-                    startActivity(intentM5787a)
-                } catch (e: ActivityNotFoundException) {
-                    Logger.errorWithException(LOG_TAG, e, "addWordToUserDictionary() failed to start dialog activity: ")
-                }
-            }
+            dev.bbkb.ime.personaldictionary.AddWordDialog.start(this, str, dictionaryLoader.getLocale())
         }
         inputLogic.dismissMoreKeys()
     }
@@ -2756,7 +2748,7 @@ class BlackBerryIME : InputMethodService(),
                 1 -> openSettings()
             }
         }
-        val builder = AlertDialog.Builder(android.view.ContextThemeWrapper(this, R.style.platformDialogTheme))
+        val builder = dev.bbkb.ime.core.settings.ui.BbkbDialogs.builder(this)
         builder.setItems(charSequenceArr, onClickListener).setTitle(string)
         val alertDialogCreate = builder.create()
         alertDialogCreate.setCancelable(true)

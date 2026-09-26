@@ -13,6 +13,10 @@
         <intent>
             <action android:name="android.settings.SETTINGS"/>
         </intent>
+        <!-- Other input methods, for the "Other keyboards" rows of the Change-language menu -->
+        <intent>
+            <action android:name="android.view.InputMethod"/>
+        </intent>
         <!-- Query for contacts provider -->
         <intent>
             <action android:name="android.intent.action.PICK"/>
@@ -253,6 +257,11 @@
         <activity
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:name="dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputDialog"
+            android:exported="false"/>
+        <activity
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:name="dev.bbkb.ime.personaldictionary.AddWordDialog"
+            android:windowSoftInputMode="stateVisible|adjustResize"
             android:exported="false"/>
         <provider
             android:name="androidx.core.content.FileProvider"

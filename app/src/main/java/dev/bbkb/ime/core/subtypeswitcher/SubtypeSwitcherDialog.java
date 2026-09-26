@@ -4,11 +4,16 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.view.LayoutInflater;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodInfo;
+import dev.bbkb.ime.core.settings.PrefsManager;
+import android.view.inputmethod.InputMethodManager;
+import android.content.pm.PackageManager;
 import android.view.inputmethod.InputMethodSubtype;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -113,7 +118,18 @@ public class SubtypeSwitcherDialog extends Activity implements DialogInterface.O
 
     @Override // android.content.DialogInterface.OnClickListener
     public void onClick(DialogInterface dialogInterface, int i) {
-        postResultAndFinish(this.subtypeItems.get(i).subtypeIndex);
+        final SubtypeItem item = this.subtypeItems.get(i);
+        if (item.imeId != null) {
+            // Another input method: the IME process does the switch, since only it holds the
+            // token Android wants for that.
+            Bundle extras = new Bundle();
+            extras.putInt(SubtypeSwitcherReceiver.EXTRA_RESULT, SubtypeSwitcherReceiver.RESULT_OTHER_IME);
+            extras.putString(SubtypeSwitcherReceiver.EXTRA_IME_ID, item.imeId);
+            InAppEventBus.getInstance().post(SubtypeSwitcherReceiver.ACTION_SUBTYPE_SWITCH_RESULT, extras);
+            dismissAndFinish();
+            return;
+        }
+        postResultAndFinish(item.subtypeIndex);
     }
 
     private void postResultAndFinish(int i) {
@@ -136,8 +152,9 @@ public class SubtypeSwitcherDialog extends Activity implements DialogInterface.O
     private void showSwitcherDialog() {
         SubtypeSwitcherAdapter c0729bM4855e = createAdapter();
         int i = c0729bM4855e.selectedPosition;
-        this.dialogBuilder = new AlertDialog.Builder(this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-        View viewInflate = getLayoutInflater().inflate(R.layout.subtype_switcher_title, (ViewGroup) null);
+        final Context themed = themedContext();
+        this.dialogBuilder = new AlertDialog.Builder(themed);
+        View viewInflate = LayoutInflater.from(themed).inflate(R.layout.subtype_switcher_title, (ViewGroup) null);
         final ImageButton imageButton = (ImageButton) viewInflate.findViewById(R.id.subtype_switcher_settings_btn);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override // android.view.View.OnClickListener
@@ -152,20 +169,22 @@ public class SubtypeSwitcherDialog extends Activity implements DialogInterface.O
         this.dialogBuilder.setCancelable(false);
         this.dialogBuilder.setSingleChoiceItems(c0729bM4855e, i, this);
         this.dialogBuilder.setOnDismissListener(this);
-        if (this.canCombineLanguages) {
-            this.dialogBuilder.setPositiveButton(R.string.combine_subtypes, new DialogInterface.OnClickListener() {
-                @Override // android.content.DialogInterface.OnClickListener
-                public void onClick(DialogInterface dialogInterface, int i2) {
-                    SubtypeSwitcherDialog.this.launchCombineLanguages();
-                }
-            });
-        }
+        // Adding prediction languages to a keyboard now lives on the Language screen (the old
+        // combine wizard is gone from the menus), so the button opens that screen, for any keyboard.
+        this.dialogBuilder.setPositiveButton(R.string.combine_subtypes, new DialogInterface.OnClickListener() {
+            @Override // android.content.DialogInterface.OnClickListener
+            public void onClick(DialogInterface dialogInterface, int i2) {
+                SubtypeSwitcherDialog.this.openLanguageScreen();
+            }
+        });
         this.dialog = this.dialogBuilder.create();
         this.dialog.setCanceledOnTouchOutside(true);
         this.dialog.getListView().setScrollbarFadingEnabled(false);
         this.dialog.show();
-        if (this.subtypeItems.size() > 3) {
-            int iM4853c = (measureListItemHeight() * 2) + measureDecorHeight();
+        // Cap the list at five rows (it used to be two once there were more than three items,
+        // which hid the "Other keyboards" section below the fold on the KEY2's short screen).
+        if (this.subtypeItems.size() > 5) {
+            int iM4853c = (measureListItemHeight() * 5) + measureDecorHeight();
             WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
             layoutParams.copyFrom(this.dialog.getWindow().getAttributes());
             layoutParams.height = iM4853c;
@@ -190,6 +209,18 @@ public class SubtypeSwitcherDialog extends Activity implements DialogInterface.O
         this.enabledSubtypes = RichInputMethodManager.getInstance().getEnabledSubtypesOfThisIme();
         this.subtypeItems = buildSubtypeItems();
         this.multiLanguageConfig = buildMultiLanguageConfig(this.subtypeItems);
+        // "Include other keyboards": the other enabled input methods, after this IME's languages.
+        if (PrefsManager.INSTANCE.getPrefs(this).getBoolean("pref_include_other_imes_in_language_switch_list", false)) {
+            final InputMethodManager imm = this.richImm.getInputMethodManager();
+            final List<SubtypeItem> others = otherImeItems(
+                    imm.getEnabledInputMethodList(), this.richImm.getInputMethodIdOfThisIme(), getPackageManager());
+            this.subtypeItems.add(new SubtypeItem(getString(R.string.subtype_switcher_other_keyboards), null));
+            if (others.isEmpty()) {
+                this.subtypeItems.add(SubtypeItem.note(getString(R.string.subtype_switcher_no_other_keyboards)));
+            } else {
+                this.subtypeItems.addAll(others);
+            }
+        }
         InputMethodSubtype inputMethodSubtypeM4261j = this.subtypeManager.getCurrentSubtype();
         int i = 0;
         if (inputMethodSubtypeM4261j != null) {
@@ -203,7 +234,7 @@ public class SubtypeSwitcherDialog extends Activity implements DialogInterface.O
             }
             i = i2;
         }
-        return new SubtypeSwitcherAdapter(this, R.layout.subtype_switcher_list_view, this.subtypeItems, i);
+        return new SubtypeSwitcherAdapter(themedContext(), R.layout.subtype_switcher_list_view, this.subtypeItems, i);
     }
 
     private List<SubtypeItem> buildSubtypeItems() {
@@ -244,7 +275,29 @@ public class SubtypeSwitcherDialog extends Activity implements DialogInterface.O
         return false;
     }
 
-        void launchCombineLanguages() {
+    /**
+     * The dialog's colours follow BBKB's theme mode (pref_keyboard_theme_mode: auto / light / dark),
+     * the same rule BlackBerryTheme applies to the settings screens.
+     */
+    private Context themedContext() {
+        if (this.themedContext == null) {
+            this.themedContext = dev.bbkb.ime.core.settings.ui.BbkbDialogs.themedContext(this);
+        }
+        return this.themedContext;
+    }
+
+    private Context themedContext;
+
+    /** "Combine compatible languages": the Language screen, where a keyboard's extras are set. */
+    void openLanguageScreen() {
+        Intent intent = new Intent(this, dev.bbkb.ime.core.settings.ComposeSettingsActivity.class);
+        intent.putExtra("screen", "languages_hub");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        postResultAndFinish(-1);
+    }
+
+    void launchCombineLanguages() {
         this.launchingSubActivity = true;
         Intent intent = new Intent();
         intent.setClass(this, CombineLanguages.class);
@@ -262,6 +315,9 @@ public class SubtypeSwitcherDialog extends Activity implements DialogInterface.O
         }
         ArrayList arrayList = new ArrayList();
         for (int i = 1; i < list.size(); i++) {
+            if (list.get(i).subtypeIndex < 0) {
+                continue; // another keyboard's row, or the header above those
+            }
             InputMethodSubtype inputMethodSubtype = this.enabledSubtypes.get(list.get(i).subtypeIndex);
             if (isCombinableSubtype(inputMethodSubtype)) {
                 arrayList.add(new LocaleItem(inputMethodSubtype.getLocale()));
@@ -275,6 +331,39 @@ public class SubtypeSwitcherDialog extends Activity implements DialogInterface.O
         }
         this.canCombineLanguages = true;
         return new MultiLanguageConfig(new LocaleItem(inputMethodSubtypeM5888c.getLocale()), arrayList, ResourceLocaleUtils.getKeyboardLayoutSetName(inputMethodSubtypeM5888c));
+    }
+
+    /**
+     * One row per other enabled input method: everything in {@code enabled} except this IME and
+     * the auxiliary ones (voice typing, autofill proxies), which Android's own picker hides too.
+     * Labels come from the other apps. Static, for the unit test.
+     */
+    static List<SubtypeItem> otherImeItems(List<InputMethodInfo> enabled, String thisImeId, PackageManager pm) {
+        final List<SubtypeItem> rows = new ArrayList<>();
+        if (enabled == null) {
+            return rows;
+        }
+        for (InputMethodInfo imi : enabled) {
+            if (imi == null || imi.getId().equals(thisImeId) || isAuxiliaryIme(imi)) {
+                continue;
+            }
+            rows.add(new SubtypeItem(imi.loadLabel(pm), imi.getId()));
+        }
+        return rows;
+    }
+
+    /** The framework's own definition ({@code InputMethodInfo#isAuxiliaryIme} is hidden API). */
+    private static boolean isAuxiliaryIme(InputMethodInfo imi) {
+        final int count = imi.getSubtypeCount();
+        if (count == 0) {
+            return false;
+        }
+        for (int i = 0; i < count; i++) {
+            if (!imi.getSubtypeAt(i).isAuxiliary()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isCombinableSubtype(InputMethodSubtype inputMethodSubtype) {

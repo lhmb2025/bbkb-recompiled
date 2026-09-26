@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Alphabet latin (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Alphabet latin (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Modifier la langue</string>
+    <string name="subtype_switcher_other_keyboards">Autres claviers</string>
+    <string name="subtype_switcher_no_other_keyboards">Aucun autre clavier n\'est activé</string>
     <string name="subtype_with_layout_en_GB">Anglais (Royaume-Uni) (%s)</string>
     <string name="subtype_with_layout_en_US">Anglais (États-Unis) (%s)</string>
     <string name="subtype_with_layout_es_US">Espagnol (États-Unis) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">Assistant BBKB</string>
     <string name="add">Ajouter</string>
+    <string name="add_word_dialog_title">Ajouter au dictionnaire</string>
     <string name="cancel">Annuler</string>
     <string name="discard">ABANDONNER</string>
     <string name="discard_event_changes">Abandonner les modifications ?</string>

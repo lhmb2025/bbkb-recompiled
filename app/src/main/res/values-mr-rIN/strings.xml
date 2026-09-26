@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">वर्णमाला (QWERTY)</string>
     <string name="subtype_no_language_qwertz">वर्णमाला (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">भाषा बदला</string>
+    <string name="subtype_switcher_other_keyboards">इतर कीबोर्ड</string>
+    <string name="subtype_switcher_no_other_keyboards">इतर कोणताही कीबोर्ड सक्षम नाही</string>
     <string name="subtype_with_layout_en_GB">इंग्रजी (यूके) (%s)</string>
     <string name="subtype_with_layout_en_US">इंग्रजी (यूएस) (%s)</string>
     <string name="subtype_with_layout_es_US">स्पॅनिश (यूएस) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB हेल्पर</string>
     <string name="add">जोडा</string>
+    <string name="add_word_dialog_title">शब्दकोशात जोडा</string>
     <string name="cancel">रद्द करा</string>
     <string name="discard">टाकून द्या</string>
     <string name="discard_event_changes">तुमचे बदल टाकून द्यायचे?</string>

@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Alfabeti (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Alfabeti (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Ndrysho gjuhën</string>
+    <string name="subtype_switcher_other_keyboards">Tastiera të tjera</string>
+    <string name="subtype_switcher_no_other_keyboards">Nuk ka tastiera të tjera aktive</string>
     <string name="subtype_with_layout_en_GB">Anglisht (Mbretëria e Bashkuar) (%s)</string>
     <string name="subtype_with_layout_en_US">Anglisht (SHBA) (%s)</string>
     <string name="subtype_with_layout_es_US">Spanjisht (SHBA) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">Ndihmësi i BBKB</string>
     <string name="add">Shto</string>
+    <string name="add_word_dialog_title">Shto në fjalor</string>
     <string name="cancel">Anulo</string>
     <string name="discard">HIQ DORË</string>
     <string name="discard_event_changes">Të hiqen ndryshimet e tua?</string>

@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">‏אלף-בית (QWERTY)</string>
     <string name="subtype_no_language_qwertz">‏אלף-בית (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">שנה שפה</string>
+    <string name="subtype_switcher_other_keyboards">מקלדות אחרות</string>
+    <string name="subtype_switcher_no_other_keyboards">אין מקלדות אחרות מופעלות</string>
     <string name="subtype_with_layout_en_GB">אנגלית (בריטניה)‏ (%s)</string>
     <string name="subtype_with_layout_en_US">אנגלית (ארה\"ב) ‏(%s)</string>
     <string name="subtype_with_layout_es_US">ספרדית (ארה\"ב) ‏(%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">העוזר של BBKB</string>
     <string name="add">הוספה</string>
+    <string name="add_word_dialog_title">הוספה למילון</string>
     <string name="cancel">ביטול</string>
     <string name="discard">בטל</string>
     <string name="discard_event_changes">בטל שינויים?</string>

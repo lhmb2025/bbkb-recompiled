@@ -52,7 +52,9 @@ fun LanguageSwitchingScreen(
             store = boolPref("pref_include_other_imes_in_language_switch_list", false),
             title = R.string.settings_lang_include_other_title,
             summary = RowSummary.Res(R.string.settings_lang_include_other_summary),
-            enabled = { it.bool(SHOW_SWITCH_KEY) },
+            // The setting adds the other input methods to the language menu, which the spacebar
+            // gesture (and the Alt+Sym / multifunction "switch language" actions) open.
+            enabled = { it.bool("pref_spacebar_language_switching") },
             modifier = Modifier.settingsSearchAnchor("pref_include_other_imes_in_language_switch_list"),
         ),
         Toggle(

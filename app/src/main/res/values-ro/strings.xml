@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Alfabet (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Alfabet (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Schimbaţi limba</string>
+    <string name="subtype_switcher_other_keyboards">Alte tastaturi</string>
+    <string name="subtype_switcher_no_other_keyboards">Nu sunt activate alte tastaturi</string>
     <string name="subtype_with_layout_en_GB">Engl. (Regatul Unit) (%s)</string>
     <string name="subtype_with_layout_en_US">Engl. (S.U.A.) (%s)</string>
     <string name="subtype_with_layout_es_US">Spaniolă (S.U.A.) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">Asistent BBKB</string>
     <string name="add">Adăugaţi</string>
+    <string name="add_word_dialog_title">Adăugați în dicționar</string>
     <string name="cancel">Anulaţi</string>
     <string name="discard">RENUNȚARE</string>
     <string name="discard_event_changes">Renunțați la modificări?</string>

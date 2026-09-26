@@ -25,6 +25,8 @@
     <string name="subtype_no_language_qwerty">Aakkoset (QWERTY)</string>
     <string name="subtype_no_language_qwertz">Aakkoset (QWERTZ)</string>
     <string name="subtype_switcher_dialog_header">Vaihda kieli</string>
+    <string name="subtype_switcher_other_keyboards">Muut näppäimistöt</string>
+    <string name="subtype_switcher_no_other_keyboards">Muita näppäimistöjä ei ole käytössä</string>
     <string name="subtype_with_layout_en_GB">englanti (UK) (%s)</string>
     <string name="subtype_with_layout_en_US">englanti (US) (%s)</string>
     <string name="subtype_with_layout_es_US">espanja (US) (%s)</string>
@@ -606,6 +608,7 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB-apuri</string>
     <string name="add">Lisää</string>
+    <string name="add_word_dialog_title">Lisää sanakirjaan</string>
     <string name="cancel">Peruuta</string>
     <string name="discard">HYLKÄÄ</string>
     <string name="discard_event_changes">Hylätäänkö muutokset?</string>

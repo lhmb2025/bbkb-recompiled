@@ -10,13 +10,45 @@ public class SubtypeItem implements Comparable<SubtypeItem> {
 
     public final int subtypeIndex;
 
+    /** Non-null for a row that switches to another input method altogether (its IME id). */
+    public final String imeId;
+
+    /** A non-selectable section header ("Other keyboards"). */
+    public final boolean isHeader;
+
+    /** A non-selectable line of plain text under a header ("No other input methods are enabled"). */
+    public final boolean isNote;
+
     private final boolean matchesSystemLocale;
 
     private final boolean matchesSystemLanguage;
 
+    /** A row for another enabled input method, or (with {@code imeId == null}) a section header. */
+    public SubtypeItem(CharSequence displayName, String imeId) {
+        this(displayName, imeId, false);
+    }
+
+    /** The plain-text note shown under "Other keyboards" when there is nothing to list. */
+    public static SubtypeItem note(CharSequence text) {
+        return new SubtypeItem(text, null, true);
+    }
+
+    private SubtypeItem(CharSequence displayName, String imeId, boolean note) {
+        this.displayName = displayName;
+        this.subtypeIndex = -1;
+        this.imeId = imeId;
+        this.isNote = note;
+        this.isHeader = imeId == null && !note;
+        this.matchesSystemLocale = false;
+        this.matchesSystemLanguage = false;
+    }
+
     public SubtypeItem(CharSequence charSequence, int i, String str, String str2) {
         this.displayName = charSequence;
         this.subtypeIndex = i;
+        this.imeId = null;
+        this.isHeader = false;
+        this.isNote = false;
         if (TextUtils.isEmpty(str) || str2 == null) {
             this.matchesSystemLocale = false;
             this.matchesSystemLanguage = false;
