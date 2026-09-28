@@ -23,6 +23,26 @@ import kotlin.math.hypot
 import dev.bbkb.ime.core.BlackBerryIME
 import dev.bbkb.ime.R
 
+/** Slots on the suggestion strip; the strip shows suggestion i in slot i, left to right. */
+internal const val STRIP_SLOT_COUNT = 3
+
+/**
+ * The suggestion a flick-up commits: [normalizedX] is the flick's start across the keypad
+ * (0..1, already mirrored for RTL) and [suggestionCount] how many words the strip holds.
+ *
+ * A slot maps straight onto the list index, exactly as the on-screen strip's own swipe-up
+ * does. A flick over an empty slot commits the last visible word rather than dead-ending, and a
+ * lone word is index 0 whichever slot the flick crosses. (It used to be read as the centre
+ * slot, index 1, which a one-word list does not have: IndexOutOfBoundsException on every
+ * flick-up while a single suggestion was showing.) Returns -1 when there is nothing to commit.
+ */
+internal fun flickCommitIndex(normalizedX: Float, suggestionCount: Int): Int {
+    if (suggestionCount <= 0) return -1
+    val visibleCount = minOf(suggestionCount, STRIP_SLOT_COUNT)
+    val slot = (STRIP_SLOT_COUNT * normalizedX.coerceIn(0f, 1f)).toInt()
+    return slot.coerceIn(0, visibleCount - 1)
+}
+
 /**
  * The capacitive-keypad (CKB) gesture arbiter's connection to the IME: feeds each contact to the
  * [GestureTraceRecorder], classifies it, resolves the user's slot assignments through
@@ -37,7 +57,6 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
 
     private companion object {
         const val TAG = "CKB_NEW_ENGINE"
-        const val STRIP_SLOT_COUNT = 3
         /** Movement beyond this many device px makes a cursor-mode contact a drag, not a tap. */
         const val CURSOR_TAP_SLOP_PX = 30.0
     }
@@ -341,10 +360,8 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
         }
         var normalizedX = normalizedXraw.coerceIn(0f, 1f)
         if (ime.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL) normalizedX = 1f - normalizedX
-        val visibleCount = minOf(suggestions.size(), STRIP_SLOT_COUNT)
-        var slot = (STRIP_SLOT_COUNT * normalizedX).toInt()
-        slot = if (visibleCount == 1) STRIP_SLOT_COUNT / 2 else slot.coerceIn(0, visibleCount - 1)
-        val wordInfo = suggestions.getWordInfo(slot)
+        val slot = flickCommitIndex(normalizedX, suggestions.size())
+        val wordInfo = if (slot < 0) null else suggestions.getWordInfo(slot)
         if (wordInfo == null) {
             if (InputPathDebug.perGesture()) Logger.info(TAG, "commit_suggestion NO-OP: null wordInfo slot=$slot size=${suggestions.size()}")
             return false
