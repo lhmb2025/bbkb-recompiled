@@ -307,7 +307,13 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
         when (action) {
             GestureAction.NONE -> {}
             GestureAction.COMMIT_SUGGESTION -> commitSuggestionAt(trace.start.x)
-            GestureAction.DELETE_WORD -> deletePreviousWord()
+            // The IME's own swipe-delete: it deletes a live composing word FROM the composing
+            // tracker (finishing the region first), reverts a fresh auto-correction, unlearns
+            // the word, and refreshes the strip. A plain deleteSurroundingText(wordLength) is
+            // wrong here: the editor leaves the composing region alone and deletes AROUND it,
+            // so a word re-opened by backspacing into it stayed put while the word before it
+            // vanished.
+            GestureAction.DELETE_WORD -> ime.onSwipeDelete()
             // Toggle the arrow-bar cursor mode — the same control the original double-tap used.
             GestureAction.ENTER_CURSOR_MODE -> ime.toggleCursorMode()
             GestureAction.NEXT_LANGUAGE -> ime.updateSuggestionsFromSubtype(InputSource.SOFTWARE)
@@ -349,17 +355,5 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
             ime.auxBarManager?.getAuxBarView()?.getSuggestionView()?.flashCommittedSlot(slot)
         }
         return true
-    }
-
-    /** Delete the whitespace + word immediately before the cursor. */
-    private fun deletePreviousWord() {
-        val ric = ime.getInputLogic().mRichInputConnection
-        val before = ric.getTextBeforeCursor(48, 0) ?: return
-        if (before.isEmpty()) return
-        var i = before.length
-        while (i > 0 && before[i - 1].isWhitespace()) i--
-        while (i > 0 && !before[i - 1].isWhitespace()) i--
-        val toDelete = before.length - i
-        if (toDelete > 0) ric.deleteSurroundingText(toDelete, 0)
     }
 }
