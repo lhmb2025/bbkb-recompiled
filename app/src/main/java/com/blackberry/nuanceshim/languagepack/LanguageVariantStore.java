@@ -31,11 +31,13 @@ import java.util.Objects;
  * French / Italian / Dutch pack occupies.
  *
  * <p><b>How the swap works.</b> The engine is handed
- * {@code noBackupFilesDir} once at construction and then finds dictionaries by convention: for
- * locale {@code de} it reads whatever {@code *.ldb} sits in {@code no_backup/nuance/de/}. There is
- * no register/unregister call to make - {@code NuanceSDK.registerLdb} has no callers anywhere in
- * this app. So activating a variant means <b>putting its file in that directory</b> and asking the
- * engine to set the language again.
+ * {@code noBackupFilesDir} once at construction and enumerates its {@code nuance/} directories
+ * then: for locale {@code de} it reads whatever {@code *.ldb} sits in {@code no_backup/nuance/de/}.
+ * A directory that appears while the engine runs must be handed to it with
+ * {@code NuanceSDK.registerLdb} ({@code PackInstallService} does that for base packs). A variant
+ * reuses the base language's directory, which the engine already knows, so activating one means
+ * <b>putting its file in that directory</b> and asking the engine to set the language again
+ * (whether a running engine re-reads a swapped file has not been verified on a device).
  *
  * <p>Inactive members are parked in {@code no_backup/lang_variants/&lt;locale&gt;/&lt;tag&gt;.ldb},
  * a SIBLING of {@code nuance/} rather than a child. That matters:

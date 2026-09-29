@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Kveiktu á %1$s í listanum og komdu svo aftur.</string>
     <string name="languages_hub_turn_off_in_settings">Slökktu á %1$s í listanum og komdu svo aftur.</string>
     <string name="languages_hub_failed">Þetta tókst ekki. Reyndu aftur.</string>
+    <string name="dictionary_missing_no_suggestions">Engin orðabók fyrir %1$s enn. Sæktu hana: BBKB stillingar › Tungumál.</string>
+    <string name="dictionary_required_to_type">%1$s þarf orðabók til að skrifa. Sæktu hana: BBKB stillingar › Tungumál.</string>
+    <string name="voice_status_language_unsupported">Raddinnsláttur er ekki í boði fyrir %1$s. Breyttu tungumáli raddinnsláttar í BBKB stillingum.</string>
 </resources>

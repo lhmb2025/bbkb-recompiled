@@ -186,14 +186,19 @@ public class VoiceInputView extends RelativeLayout {
         this.mLanguageChip.setVisibility(View.VISIBLE);
     }
 
+    /** Names the language a dictation would actually be sent with, whichever setting supplies it. */
     private String formatRecognitionLocale() {
         try {
-            String locale = dev.bbkb.ime.core.locale.SubtypeManager.getInstance()
-                    .getCurrentSubtype().getLocale();
+            dev.bbkb.ime.core.settings.util.SettingsValues settings =
+                    dev.bbkb.ime.core.settings.util.SettingsManager.getInstance().getSettingsValues();
+            android.view.inputmethod.InputMethodSubtype subtype =
+                    dev.bbkb.ime.core.locale.SubtypeManager.getInstance().getCurrentSubtype();
+            String locale = VoiceLanguageTags.effectiveTag(settings.voiceInputUseInputLanguage,
+                    subtype != null ? subtype.getLocale() : null, settings.voiceInputLanguageList);
             if (locale == null || locale.isEmpty()) {
                 return "";
             }
-            String[] parts = locale.replace('_', '-').split("-");
+            String[] parts = locale.split("-");
             if (parts.length >= 2) {
                 return parts[0].toUpperCase(java.util.Locale.ROOT) + " · "
                         + parts[1].toUpperCase(java.util.Locale.ROOT);
@@ -201,6 +206,16 @@ public class VoiceInputView extends RelativeLayout {
             return parts[0].toUpperCase(java.util.Locale.ROOT);
         } catch (Exception e) {
             return "";
+        }
+    }
+
+    /** The recogniser refused the language: say which, where the "Listening" line normally goes. */
+    public void showLanguageError(String languageName) {
+        if (this.mStatusText != null) {
+            this.mStatusText.setText(getContext().getString(R.string.voice_status_language_unsupported, languageName));
+        }
+        if (this.mWaveform != null) {
+            this.mWaveform.setActive(false);
         }
     }
 

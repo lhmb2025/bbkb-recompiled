@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">सूची में %1$s को चालू करें, फिर वापस आएं.</string>
     <string name="languages_hub_turn_off_in_settings">सूची में %1$s को बंद करें, फिर वापस आएं.</string>
     <string name="languages_hub_failed">यह काम नहीं हुआ. दोबारा कोशिश करें.</string>
+    <string name="dictionary_missing_no_suggestions">अभी %1$s शब्दकोश नहीं है। इसे BBKB सेटिंग्स › भाषा में डाउनलोड करें।</string>
+    <string name="dictionary_required_to_type">टाइप करने के लिए %1$s शब्दकोश चाहिए। इसे BBKB सेटिंग्स › भाषा में डाउनलोड करें।</string>
+    <string name="voice_status_language_unsupported">%1$s के लिए ध्वनि इनपुट उपलब्ध नहीं है। BBKB सेटिंग्स में ध्वनि इनपुट भाषा बदलें।</string>
 </resources>

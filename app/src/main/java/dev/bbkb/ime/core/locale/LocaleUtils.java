@@ -123,9 +123,25 @@ public final class LocaleUtils {
         if (isChineseCangjie(locale)) {
             return SettingsManager.getInstance().getSettingsValues().cangjieMode == 0 ? NuanceSDK.CANGJIE_VARIANT : NuanceSDK.QUICK_CANGJIE_VARIANT;
         }
-        // FIX: was locale.getVariant() which is empty for most locales (e.g. "en_US" variant is "").
-        // NuanceSDK needs a valid locale string for dictionary loading and gesture recognition.
+        // The keyboard-layout sync (KeyboardSwitcher) needs the full locale string: the original
+        // getVariant() is empty for every non-Chinese locale. The engine's setInputMethod call is
+        // the one place that wants the variant, and it goes through toNuanceInputMethodName.
         return locale.toString();
+    }
+
+    /**
+     * The input-method name the engine's {@code setInputMethod} expects for a Chinese subtype: the
+     * locale VARIANT ("pinyin", "stroke", "zhuyin"), or the Cangjie mode the user chose. The
+     * original app passed {@code locale.getVariant()}; when {@link #toNuanceLocaleString} was
+     * changed to return the full locale string for the layout sync, this call went with it and the
+     * engine silently stayed in its default Pinyin mode, so stroke and Zhuyin keyboards produced no
+     * candidates on either Chinese pack (KEY2, 2026-09-28).
+     */
+    public static String toNuanceInputMethodName(Locale locale) {
+        if (isChineseCangjie(locale)) {
+            return SettingsManager.getInstance().getSettingsValues().cangjieMode == 0 ? NuanceSDK.CANGJIE_VARIANT : NuanceSDK.QUICK_CANGJIE_VARIANT;
+        }
+        return locale.getVariant();
     }
 
     /**

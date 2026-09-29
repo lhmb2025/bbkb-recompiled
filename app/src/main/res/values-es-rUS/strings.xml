@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Activa %1$s en la lista y luego regresa.</string>
     <string name="languages_hub_turn_off_in_settings">Desactiva %1$s en la lista y luego regresa.</string>
     <string name="languages_hub_failed">Eso no funcionó. Vuelve a intentarlo.</string>
+    <string name="dictionary_missing_no_suggestions">Aún no hay diccionario de %1$s. Descárgalo en Configuración de BBKB › Idioma.</string>
+    <string name="dictionary_required_to_type">Para escribir en %1$s, descarga su diccionario en Configuración de BBKB › Idioma.</string>
+    <string name="voice_status_language_unsupported">La entrada de voz no está disponible para %1$s. Cambia el idioma de la entrada de voz en Configuración de BBKB.</string>
 </resources>

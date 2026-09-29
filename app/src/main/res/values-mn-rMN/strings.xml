@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Жагсаалт дахь %1$s-ыг асааж, дараа нь буцаж ирнэ үү.</string>
     <string name="languages_hub_turn_off_in_settings">Жагсаалт дахь %1$s-ыг унтраагаад буцаж ирнэ үү.</string>
     <string name="languages_hub_failed">Болсонгүй. Дахин оролдоно уу.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s толь бичиг одоогоор алга. BBKB Тохиргоо › Хэл хэсгээс татаж авна уу.</string>
+    <string name="dictionary_required_to_type">Бичихэд %1$s толь бичиг хэрэгтэй. BBKB Тохиргоо › Хэл хэсгээс татаж авна уу.</string>
+    <string name="voice_status_language_unsupported">%1$s хэлэнд дуут оролт боломжгүй. Дуут оролтын хэлийг BBKB Тохиргоо хэсгээс өөрчилнө үү.</string>
 </resources>

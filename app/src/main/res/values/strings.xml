@@ -64,6 +64,8 @@
     <string name="key_interceptor_service_label">BBKB Helper</string>
     <string name="notification_strip_downloading_suggestions">Downloading suggestions for %1$s</string>
     <string name="notification_strip_no_dictionaries_available">No suggestions available for %1$s</string>
+    <string name="dictionary_missing_no_suggestions">No %1$s dictionary yet. Download it in BBKB Settings › Language.</string>
+    <string name="dictionary_required_to_type">%1$s needs its dictionary to type. Download it in BBKB Settings › Language.</string>
     <string name="notification_strip_no_network">Can\'t download suggestions for %1$s</string>
     <string name="spell_checker_service_name">BBKB Spell Checker</string>
 
@@ -307,6 +309,7 @@
     <string name="fcc_jump_word_right">Next word</string>
     <string name="voice_status_idle">Tap the mic to speak</string>
     <string name="voice_status_listening">Listening&#8230;</string>
+    <string name="voice_status_language_unsupported">Voice input isn\'t available for %1$s. Change the voice language in BBKB Settings.</string>
     <string name="settings_appearance_modern">Modern</string>
     <string name="settings_color_scheme_title">Color scheme</string>
     <string name="settings_use_system_colors_title">Use system colors</string>

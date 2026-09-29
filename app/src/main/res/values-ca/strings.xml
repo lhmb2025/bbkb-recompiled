@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Activeu %1$s a la llista i torneu enrere.</string>
     <string name="languages_hub_turn_off_in_settings">Desactiveu %1$s a la llista i torneu enrere.</string>
     <string name="languages_hub_failed">Això no ha funcionat. Torneu-ho a provar.</string>
+    <string name="dictionary_missing_no_suggestions">Encara no hi ha diccionari de %1$s. Baixa\'l a Configuració de BBKB › Llengua.</string>
+    <string name="dictionary_required_to_type">Per escriure en %1$s, baixa el diccionari a Configuració de BBKB › Llengua.</string>
+    <string name="voice_status_language_unsupported">L\'entrada de veu no està disponible per a %1$s. Canvia la llengua de l\'entrada de veu a Configuració de BBKB.</string>
 </resources>

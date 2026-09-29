@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">यादीत %1$s सुरू करा, नंतर परत या.</string>
     <string name="languages_hub_turn_off_in_settings">यादीत %1$s बंद करा, नंतर परत या.</string>
     <string name="languages_hub_failed">ते जमले नाही. पुन्हा प्रयत्न करा.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s शब्दकोश अद्याप नाही. BBKB सेटिंग्ज › भाषा मध्ये तो डाउनलोड करा.</string>
+    <string name="dictionary_required_to_type">%1$s मध्ये टाइप करण्यासाठी शब्दकोश हवा. BBKB सेटिंग्ज › भाषा मध्ये तो डाउनलोड करा.</string>
+    <string name="voice_status_language_unsupported">%1$s साठी व्हॉइस इनपुट उपलब्ध नाही. BBKB सेटिंग्जमध्ये व्हॉइस इनपुट भाषा बदला.</string>
 </resources>

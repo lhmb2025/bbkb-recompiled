@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyChar;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -250,4 +251,58 @@ public class ComposingTextTrackerTest {
     // static singleton (NuanceSDKManager.getInstance().setShiftState(0)) instead of the injected
     // NuanceSDK, so it NPEs under test without static mocking. That global-state coupling is a
     // candidate for the W7 dependency-injection cleanup; until then it isn't unit-testable here.
+
+    // ── Converter-aware rebuild (mid-buffer edits) ────────────────────────────────────────────
+    //
+    // The Hangul and Telex converters feed the engine jamo, or base letters plus explicit
+    // accents, never the composed characters. A mid-word edit clears and re-feeds the engine
+    // from the composing text, and used to feed "한" as one symbol; the engine then could not
+    // attach the next jamo (KEY2, 2026-09-28).
+
+    @Test
+    public void rebuildWithTheHangulConverterFeedsJamoNotSyllables() {
+        seed("한");
+        mTracker.setConverterByName("HangulConverter");
+        when(mNuance.decodeHangul("한", false)).thenReturn("\u1112\u1161\u11ab");
+        when(mNuance.compatibilityJamoToJamoTransform('\u3134')).thenReturn('\u11ab');
+        clearInvocations(mNuance);
+
+        mTracker.insertCodePointAtCursor('\u3134');   // ㄴ, a compatibility jamo
+
+        verify(mNuance).clear();
+        verify(mNuance).decodeHangul("한", false);
+        verify(mNuance).processKeyBySymbol('\u1112');
+        verify(mNuance).processKeyBySymbol('\u1161');
+        verify(mNuance, never()).processKeyBySymbol('한');
+        verify(mNuance, never()).processKeyBySymbol('\u3134');
+    }
+
+    @Test
+    public void rebuildWithTheTelexConverterAddsComposedLettersExplicitly() {
+        seed("vi");
+        mTracker.setConverterByName("VietnameseTelexConverter");
+        clearInvocations(mNuance);
+
+        mTracker.insertCodePointAtCursor('\u1ec7');   // ệ, a Telex-composable letter
+
+        verify(mNuance).clear();
+        verify(mNuance).processKeyBySymbol('v');
+        verify(mNuance).processKeyBySymbol('i');
+        verify(mNuance).addExplicitSymb('\u1ec7');
+        verify(mNuance, never()).processKeyBySymbol('\u1ec7');
+    }
+
+    @Test
+    public void rebuildWithoutAConverterReplaysPlainSymbols() {
+        seed("ab");
+        clearInvocations(mNuance);
+
+        mTracker.insertCodePointAtCursor('c');
+
+        verify(mNuance).clear();
+        verify(mNuance).processKeyBySymbol('a');
+        verify(mNuance).processKeyBySymbol('b');
+        verify(mNuance).processKeyBySymbol('c');
+        verify(mNuance, never()).addExplicitSymb(anyChar());
+    }
 }

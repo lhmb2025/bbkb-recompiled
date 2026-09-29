@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Ενεργοποιήστε το %1$s στη λίστα και μετά επιστρέψτε.</string>
     <string name="languages_hub_turn_off_in_settings">Απενεργοποιήστε το %1$s στη λίστα και μετά επιστρέψτε.</string>
     <string name="languages_hub_failed">Αυτό δεν λειτούργησε. Δοκιμάστε ξανά.</string>
+    <string name="dictionary_missing_no_suggestions">Δεν υπάρχει ακόμη λεξικό για τα %1$s. Κατεβάστε το από τις Ρυθμίσεις BBKB › Γλώσσα.</string>
+    <string name="dictionary_required_to_type">Για να γράψετε στα %1$s, κατεβάστε το λεξικό από τις Ρυθμίσεις BBKB › Γλώσσα.</string>
+    <string name="voice_status_language_unsupported">Η φωνητική εισαγωγή δεν είναι διαθέσιμη για τα %1$s. Αλλάξτε τη γλώσσα φωνητικής εισαγωγής στις Ρυθμίσεις BBKB.</string>
 </resources>

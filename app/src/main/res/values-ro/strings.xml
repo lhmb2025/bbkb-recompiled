@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Activați %1$s din listă, apoi reveniți.</string>
     <string name="languages_hub_turn_off_in_settings">Dezactivați %1$s din listă, apoi reveniți.</string>
     <string name="languages_hub_failed">Nu a funcționat. Încearcă din nou.</string>
+    <string name="dictionary_missing_no_suggestions">Încă nu există dicționar pentru %1$s. Descărcați-l din Setări pentru BBKB › Limbă.</string>
+    <string name="dictionary_required_to_type">%1$s necesită dicționar pentru scriere. Descărcați-l din Setări pentru BBKB › Limbă.</string>
+    <string name="voice_status_language_unsupported">Introducerea vocală nu este disponibilă pentru %1$s. Schimbați limba introducerii vocale în Setări pentru BBKB.</string>
 </resources>

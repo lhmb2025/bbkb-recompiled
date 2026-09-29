@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">请在列表中启用%1$s，然后返回。</string>
     <string name="languages_hub_turn_off_in_settings">请在列表中停用%1$s，然后返回。</string>
     <string name="languages_hub_failed">操作失败，请重试。</string>
+    <string name="dictionary_missing_no_suggestions">尚无%1$s词典。请前往“BBKB 设置 › 语言”下载。</string>
+    <string name="dictionary_required_to_type">%1$s需要词典才能输入。请前往“BBKB 设置 › 语言”下载。</string>
+    <string name="voice_status_language_unsupported">语音输入不支持%1$s。请在“BBKB 设置”中更改语音输入语言。</string>
 </resources>

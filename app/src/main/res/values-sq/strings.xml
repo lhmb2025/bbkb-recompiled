@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Aktivizo %1$s në listë, pastaj kthehu.</string>
     <string name="languages_hub_turn_off_in_settings">Çaktivizo %1$s në listë, pastaj kthehu.</string>
     <string name="languages_hub_failed">Nuk funksionoi. Provo përsëri.</string>
+    <string name="dictionary_missing_no_suggestions">Ende nuk ka fjalor për %1$s. Shkarkoje te Cilësimet e BBKB › Gjuha.</string>
+    <string name="dictionary_required_to_type">Për të shkruar në %1$s duhet fjalori. Shkarkoje te Cilësimet e BBKB › Gjuha.</string>
+    <string name="voice_status_language_unsupported">Shkrimi me zë nuk ofrohet për %1$s. Ndrysho gjuhën e shkrimit me zë te Cilësimet e BBKB.</string>
 </resources>

@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Skakel %1$s in die lys aan, en kom dan terug.</string>
     <string name="languages_hub_turn_off_in_settings">Skakel %1$s in die lys af, en kom dan terug.</string>
     <string name="languages_hub_failed">Dit het nie gewerk nie. Probeer weer.</string>
+    <string name="dictionary_missing_no_suggestions">Nog geen %1$s-woordeboek nie. Laai dit af in BBKB-instellings › Taal.</string>
+    <string name="dictionary_required_to_type">Om in %1$s te tik, laai die woordeboek af in BBKB-instellings › Taal.</string>
+    <string name="voice_status_language_unsupported">Steminvoer is nie beskikbaar vir %1$s nie. Verander die taal vir steminvoer in BBKB-instellings.</string>
 </resources>

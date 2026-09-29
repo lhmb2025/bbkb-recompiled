@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Ro‘yxatda %1$s ni yoqing, so‘ng qaytib keling.</string>
     <string name="languages_hub_turn_off_in_settings">Ro‘yxatda %1$s ni o‘chiring, so‘ng qaytib keling.</string>
     <string name="languages_hub_failed">Bo‘lmadi. Qayta urinib ko‘ring.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s lug‘ati hali yo‘q. BBKB sozlamalari › Til bo‘limidan yuklab oling.</string>
+    <string name="dictionary_required_to_type">%1$s bilan yozish uchun lug‘at kerak. BBKB sozlamalari › Til bo‘limidan yuklab oling.</string>
+    <string name="voice_status_language_unsupported">%1$s uchun ovozli kiritish mavjud emas. Ovozli kiritish tilini BBKB sozlamalarida o‘zgartiring.</string>
 </resources>

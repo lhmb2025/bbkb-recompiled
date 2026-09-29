@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Cas %1$s air sa liosta, agus tar ar ais ansin.</string>
     <string name="languages_hub_turn_off_in_settings">Cas %1$s as sa liosta, agus tar ar ais ansin.</string>
     <string name="languages_hub_failed">Níor oibrigh sé sin. Bain triail eile as.</string>
+    <string name="dictionary_missing_no_suggestions">Níl foclóir %1$s ann fós. Íoslódáil é i Socruithe BBKB › Teanga.</string>
+    <string name="dictionary_required_to_type">Teastaíonn foclóir %1$s chun clóscríobh. Íoslódáil é i Socruithe BBKB › Teanga.</string>
+    <string name="voice_status_language_unsupported">Níl ionchur gutha ar fáil do %1$s. Athraigh teanga an ionchuir gutha i Socruithe BBKB.</string>
 </resources>

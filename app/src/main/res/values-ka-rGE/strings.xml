@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">ჩართეთ %1$s სიაში და დაბრუნდით.</string>
     <string name="languages_hub_turn_off_in_settings">გამორთეთ %1$s სიაში და დაბრუნდით.</string>
     <string name="languages_hub_failed">ვერ შესრულდა. სცადეთ ისევ.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s ლექსიკონი ჯერ არ არის. ჩამოტვირთეთ აქ: BBKB-ის პარამეტრები › ენა.</string>
+    <string name="dictionary_required_to_type">ასაკრეფად საჭიროა %1$s ლექსიკონი. ჩამოტვირთეთ აქ: BBKB-ის პარამეტრები › ენა.</string>
+    <string name="voice_status_language_unsupported">ხმოვანი შეყვანა %1$s ენისთვის მიუწვდომელია. შეცვალეთ ხმოვანი შეყვანის ენა BBKB-ის პარამეტრებში.</string>
 </resources>

@@ -2,6 +2,7 @@ package dev.bbkb.ime.keyboard.inputboard.voice;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognitionListener;
@@ -52,6 +53,9 @@ public class VoiceRecognitionManager {
     /** Application context, kept only to name ourselves as the recogniser's calling package. */
     private final Context mContext;
 
+    /** The tag the last dictation request carried; what the error and the chip should name. */
+    private String mLastLanguageTag = SettingsManager.DEFAULT_VOICE_INPUT_LANGUAGE;
+
     
     public enum Mode {
         DICTATION,
@@ -67,6 +71,9 @@ public class VoiceRecognitionManager {
         void onPermissionNeeded();
 
         void onLanguageUnavailable();
+
+        /** The recogniser refused the language itself (error 12 or 13); {@code languageTag} is what was sent. */
+        void onLanguageNotSupported(String languageTag);
     }
 
     public VoiceRecognitionManager(Context context, VoiceInputController c1122b) {
@@ -92,13 +99,25 @@ public class VoiceRecognitionManager {
         Logger.debug(TAG, "Dictation button pressed");
         SettingsValues c0804dM5050c = SettingsManager.getInstance().getSettingsValues();
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        if (c0804dM5050c.voiceInputUseInputLanguage) {
-            String locale = SubtypeManager.getInstance().getCurrentSubtype().getLocale();
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, locale);
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, locale);
-        } else {
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, c0804dM5050c.voiceInputLanguageList);
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, c0804dM5050c.voiceInputLanguageList);
+        // One normaliser for both sources. Google's service treats the raw subtype locale
+        // ("en_US", "de_CH", "zh_CN_pinyin") as invalid and silently dictates in the phone's
+        // default language instead (KEY2, 2026-09-28); it wants a hyphenated BCP-47 tag.
+        final SubtypeManager subtypes = SubtypeManager.getInstance();
+        final String keyboardLocale = subtypes.getCurrentSubtype() != null ? subtypes.getCurrentSubtype().getLocale() : null;
+        final String tag = VoiceLanguageTags.effectiveTag(c0804dM5050c.voiceInputUseInputLanguage, keyboardLocale, c0804dM5050c.voiceInputLanguageList);
+        this.mLastLanguageTag = tag;
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, tag);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, tag);
+        if (c0804dM5050c.voiceInputUseInputLanguage && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            // A multi-language keyboard's extra prediction languages: let the recogniser detect
+            // and switch between them rather than hear everything as the primary language.
+            final ArrayList<String> allowed = VoiceLanguageTags.allowedTags(tag, subtypes.getCurrentSubtypeAdditionalLocales());
+            if (allowed.size() > 1) {
+                intent.putExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_DETECTION, true);
+                intent.putStringArrayListExtra(RecognizerIntent.EXTRA_LANGUAGE_DETECTION_ALLOWED_LANGUAGES, allowed);
+                intent.putExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_SWITCH, true);
+                intent.putStringArrayListExtra(RecognizerIntent.EXTRA_LANGUAGE_SWITCH_ALLOWED_LANGUAGES, allowed);
+            }
         }
         // The SDK_INT >= 23 gate here was dead: minSdk is 23.
         intent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, c0804dM5050c.voiceInputPreferOffline);
@@ -162,6 +181,11 @@ public class VoiceRecognitionManager {
 
     public Mode getMode() {
         return this.mMode;
+    }
+
+    /** The tag the last dictation request was sent with. */
+    public String getLastLanguageTag() {
+        return this.mLastLanguageTag;
     }
 
     public void notifyState(int i) {
@@ -230,6 +254,13 @@ public class VoiceRecognitionManager {
                         VoiceRecognitionManager.this.mCallback.onPermissionNeeded();
                         break;
                     }
+                    break;
+                case SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED:
+                case SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE:
+                    // The two codes that actually mean "not this language". Google's service never
+                    // sends them (it falls back silently), but other recognisers do; before this they
+                    // just stopped the mic with no message.
+                    VoiceRecognitionManager.this.mCallback.onLanguageNotSupported(VoiceRecognitionManager.this.mLastLanguageTag);
                     break;
             }
         }

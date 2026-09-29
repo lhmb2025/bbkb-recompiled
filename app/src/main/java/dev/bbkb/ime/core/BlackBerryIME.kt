@@ -1605,19 +1605,22 @@ class BlackBerryIME : InputMethodService(),
      * Re-read the dictionary after the Language packs screen swapped the file behind the active
      * locale.
      *
-     * <p>The engine finds a dictionary by reading whatever `*.ldb` sits in
-     * `no_backup/nuance/<locale>/`, and caches it once loaded, so putting a different file there
-     * changes nothing until something asks for the language again. Settings runs in this same
-     * process but is a different component, so the bus is how it reaches a LIVE service; when the
-     * IME is not running there is no subscriber and the new file is simply picked up on the next
-     * start, which is equally correct.
+     * <p>The engine enumerates `no_backup/nuance/` when it starts; a pack that appears later is
+     * handed to it by `PackInstallService` (`registerLdb`), and nothing changes for the keyboard
+     * until something asks for the language again. Settings runs in this same process but is a
+     * different component, so the bus is how it reaches a LIVE service; when the IME is not running
+     * there is no subscriber and the new file is simply picked up on the next start, which is
+     * equally correct.
      */
     private val languagePackChangedListener = InAppEventBus.EventListener { _, _ ->
         if (BuildConfig.DEBUG) Log.i(LOG_TAG, "Language pack changed; reloading the dictionary")
-        reloadDictionaryForSubtype()
+        // Forced: the locale has not changed, so an ordinary init keeps the dictionary it has and
+        // never asks the engine for the language again (KEY2, 2026-09-28).
+        reloadDictionaryForSubtype(forceReload = true)
     }
 
-    fun reloadDictionaryForSubtype() {
+    @JvmOverloads
+    fun reloadDictionaryForSubtype(forceReload: Boolean = false) {
         var setM4260i: Set<Locale>?
         var localeM4259h = subtypeManager.getCurrentSubtypeLocale()
         if (TextUtils.isEmpty(localeM4259h.toString())) {
@@ -1630,7 +1633,7 @@ class BlackBerryIME : InputMethodService(),
             setM4260i = subtypeManager.getCurrentSubtypeAdditionalLocales()
         }
         languagePackLocaleMonitor!!.onLocaleChanged(localeM4259h, setM4260i)
-        initDictionaryForLocale(localeM4259h)
+        initDictionaryForLocale(localeM4259h, forceReload)
         multitapEventHandler.refreshAltMultitapSupport()
         DictionaryManager.getInstance().initialiseOrSwitchLanguages(applicationContext, java.util.Collections.singletonList(localeM4259h))
     }
@@ -1639,9 +1642,9 @@ class BlackBerryIME : InputMethodService(),
         dictionaryLoader.updateAdditionalLocales(subtypeManager.getCurrentSubtypeAdditionalLocales(), true, this)
     }
 
-    private fun initDictionaryForLocale(locale: Locale) {
+    private fun initDictionaryForLocale(locale: Locale, forceReload: Boolean = false) {
         val settingsValues = settingsManager.getSettingsValues()
-        dictionaryLoader.initDictionary(this, locale, settingsValues.useContactsDicts, false, this)
+        dictionaryLoader.initDictionary(this, locale, settingsValues.useContactsDicts, forceReload, this)
         applyAutoCorrectionSettings(settingsValues)
     }
 

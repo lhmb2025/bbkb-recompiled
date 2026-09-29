@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">הפעל את %1$s ברשימה, ואז חזור לכאן.</string>
     <string name="languages_hub_turn_off_in_settings">כבה את %1$s ברשימה, ואז חזור לכאן.</string>
     <string name="languages_hub_failed">זה לא הצליח. נסה שוב.</string>
+    <string name="dictionary_missing_no_suggestions">עדיין אין מילון ל%1$s. הורד אותו בהגדרות BBKB › שפה.</string>
+    <string name="dictionary_required_to_type">כדי להקליד ב%1$s צריך מילון. הורד אותו בהגדרות BBKB › שפה.</string>
+    <string name="voice_status_language_unsupported">הקלט הקולי לא זמין ב%1$s. שנה את שפת הקלט הקולי בהגדרות BBKB.</string>
 </resources>

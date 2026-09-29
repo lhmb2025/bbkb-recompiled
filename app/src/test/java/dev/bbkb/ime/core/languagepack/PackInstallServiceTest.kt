@@ -339,4 +339,47 @@ class PackInstallServiceTest {
         assertEquals("byte count", expected.size, actual.size)
         assertTrue("installed bytes differ from the source", expected.contentEquals(actual))
     }
+
+    // ── Telling the running engine ────────────────────────────────────────────────────────────
+    //
+    // The engine enumerates nuance/ once at start; a pack added later is invisible to it until
+    // registerLdb hands it the directory (KEY2, 2026-09-28). The fake stands in for both engines.
+
+    class FakeEngine(private val accepts: Boolean = true) : PackInstallService.EngineRegistry {
+        val registered = mutableListOf<File>()
+        val deregistered = mutableListOf<Pair<String, String?>>()
+        override fun register(directory: File): Boolean { registered += directory; return accepts }
+        override fun deregister(language: String, country: String?) { deregistered += language to country }
+    }
+
+    private fun serviceWith(engine: FakeEngine) =
+        PackInstallService(context, PackFixtures.FakeSubtypes(builtIn = setOf("cy", "zh")), engine) { action -> posted += action }
+
+    @Test
+    fun installingABasePackHandsItsDirectoryToTheRunningEngine() = runBlocking<Unit> {
+        val engine = FakeEngine()
+        serviceWith(engine).installFromFile(source, "cy", "Welsh", "1902.01", null).getOrThrow()
+        assertEquals(listOf(PackFixtures.packDir(context, "cy")), engine.registered)
+        assertTrue(engine.deregistered.isEmpty())
+    }
+
+    @Test
+    fun anEngineThatRefusesTheDirectoryDoesNotFailTheInstall() = runBlocking<Unit> {
+        val engine = FakeEngine(accepts = false)
+        val installed = serviceWith(engine).installFromFile(source, "cy", "Welsh", "1902.01", null).getOrThrow()
+        assertEquals("cy", installed.locale)
+        assertTrue(PackFixtures.packDir(context, "cy").isDirectory)
+    }
+
+    @Test
+    fun removingAPackWithdrawsItsLanguageAndCountryFromTheEngine() = runBlocking<Unit> {
+        val engine = FakeEngine()
+        val service = serviceWith(engine)
+        service.installFromFile(source, "zh_TW", "Chinese (Taiwan)", "1902.01", null).getOrThrow()
+        service.uninstall("zh_TW").getOrThrow()
+        assertEquals(listOf("zh" to "TW"), engine.deregistered)
+        service.installFromFile(source, "cy", "Welsh", "1902.01", null).getOrThrow()
+        service.uninstall("cy").getOrThrow()
+        assertEquals(listOf("zh" to "TW", "cy" to null), engine.deregistered)
+    }
 }

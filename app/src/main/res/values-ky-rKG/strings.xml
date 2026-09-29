@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Тизмеден %1$s күйгүзүп, кайра келиңиз.</string>
     <string name="languages_hub_turn_off_in_settings">Тизмеден %1$s өчүрүп, кайра келиңиз.</string>
     <string name="languages_hub_failed">Аткарылган жок. Кайра аракет кылыңыз.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s сөздүгү азырынча жок. BBKB жөндөөлөрү › Тил бөлүмүнөн жүктөп алыңыз.</string>
+    <string name="dictionary_required_to_type">Терүү үчүн %1$s сөздүгү керек. BBKB жөндөөлөрү › Тил бөлүмүнөн жүктөп алыңыз.</string>
+    <string name="voice_status_language_unsupported">%1$s тилинде үн менен киргизүү жеткиликсиз. Үн менен киргизүү тилин BBKB жөндөөлөрүнөн өзгөртүңүз.</string>
 </resources>

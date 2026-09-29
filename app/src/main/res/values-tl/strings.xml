@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">I-on ang %1$s sa listahan, pagkatapos ay bumalik dito.</string>
     <string name="languages_hub_turn_off_in_settings">I-off ang %1$s sa listahan, pagkatapos ay bumalik dito.</string>
     <string name="languages_hub_failed">Hindi gumana. Subukang muli.</string>
+    <string name="dictionary_missing_no_suggestions">Wala pang diksyunaryo ng %1$s. I-download ito sa Mga Setting ng BBKB › Wika.</string>
+    <string name="dictionary_required_to_type">Kailangan ang diksyunaryo ng %1$s para mag-type. I-download ito sa Mga Setting ng BBKB › Wika.</string>
+    <string name="voice_status_language_unsupported">Hindi available ang voice input para sa %1$s. Palitan ang wika ng voice input sa Mga Setting ng BBKB.</string>
 </resources>

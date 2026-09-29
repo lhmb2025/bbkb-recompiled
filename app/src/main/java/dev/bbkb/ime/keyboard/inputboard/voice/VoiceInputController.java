@@ -278,7 +278,18 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
                     Intent intent2 = new Intent(Intent.ACTION_MAIN);
                     intent2.setComponent(VoiceInputController.LANG_PACK_INSTALL_COMPONENT);
                     intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    VoiceInputController.this.mContext.startActivity(intent2);
+                    // The Google installer component is old and may be absent or invisible to
+                    // this app; launching it blind threw, or opened nothing. Fall back to the
+                    // in-board message that names the language instead.
+                    if (intent2.resolveActivity(VoiceInputController.this.mContext.getPackageManager()) == null) {
+                        VoiceInputController.this.onLanguageNotSupported(VoiceInputController.this.mRecognitionManager.getLastLanguageTag());
+                        return;
+                    }
+                    try {
+                        VoiceInputController.this.mContext.startActivity(intent2);
+                    } catch (android.content.ActivityNotFoundException e) {
+                        VoiceInputController.this.onLanguageNotSupported(VoiceInputController.this.mRecognitionManager.getLastLanguageTag());
+                    }
                 } finally {
                     // Always unsubscribe: this listener is held by the process-wide
                     // InAppEventBus singleton and retains the controller (and through
@@ -295,6 +306,13 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
         intent.putExtra("explanation_text", str);
         intent.putExtra("result_receiver", ACTION_VOICE_DIALOG_RESULT);
         this.mContext.startActivity(intent);
+    }
+
+    @Override
+    public void onLanguageNotSupported(String languageTag) {
+        if (hasView()) {
+            this.mVoiceInputView.showLanguageError(VoiceLanguageTags.displayName(languageTag));
+        }
     }
 
     /**

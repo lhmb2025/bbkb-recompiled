@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Kapcsolja be ezt a listában: %1$s, majd térjen vissza.</string>
     <string name="languages_hub_turn_off_in_settings">Kapcsolja ki ezt a listában: %1$s, majd térjen vissza.</string>
     <string name="languages_hub_failed">Ez nem sikerült. Próbálja újra.</string>
+    <string name="dictionary_missing_no_suggestions">Még nincs %1$s szótár. Töltse le itt: BBKB beállításai › Nyelv.</string>
+    <string name="dictionary_required_to_type">Gépeléshez %1$s szótár kell. Töltse le itt: BBKB beállításai › Nyelv.</string>
+    <string name="voice_status_language_unsupported">A hangbevitel %1$s nyelven nem érhető el. Módosítsa a hangbevitel nyelvét a BBKB beállításaiban.</string>
 </resources>

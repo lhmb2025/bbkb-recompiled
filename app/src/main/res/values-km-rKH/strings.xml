@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">បើក %1$s នៅក្នុងបញ្ជី រួចត្រឡប់មកវិញ។</string>
     <string name="languages_hub_turn_off_in_settings">បិទ %1$s នៅក្នុងបញ្ជី រួចត្រឡប់មកវិញ។</string>
     <string name="languages_hub_failed">វាមិនដំណើរការទេ។ សូមព្យាយាមម្ដងទៀត។</string>
+    <string name="dictionary_missing_no_suggestions">មិនទាន់មានវចនានុក្រម %1$s នៅឡើយទេ។ ទាញយកវានៅក្នុង ការ​កំណត់ BBKB › ភាសា។</string>
+    <string name="dictionary_required_to_type">%1$s ត្រូវការវចនានុក្រមដើម្បីវាយ។ ទាញយកវានៅក្នុង ការ​កំណត់ BBKB › ភាសា។</string>
+    <string name="voice_status_language_unsupported">ការបញ្ចូលដោយសំឡេងមិនអាចប្រើបានសម្រាប់ %1$s ទេ។ ប្ដូរភាសាសម្រាប់ការបញ្ចូលដោយសំឡេងនៅក្នុង ការ​កំណត់ BBKB។</string>
 </resources>

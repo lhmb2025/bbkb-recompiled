@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">เปิดใช้งาน %1$s ในรายการ แล้วกลับมาที่นี่</string>
     <string name="languages_hub_turn_off_in_settings">ปิดใช้งาน %1$s ในรายการ แล้วกลับมาที่นี่</string>
     <string name="languages_hub_failed">ไม่สำเร็จ ลองอีกครั้ง</string>
+    <string name="dictionary_missing_no_suggestions">ยังไม่มีพจนานุกรม %1$s ดาวน์โหลดได้ที่ การตั้งค่า BBKB › ภาษา</string>
+    <string name="dictionary_required_to_type">ต้องมีพจนานุกรม %1$s ก่อนจึงจะพิมพ์ได้ ดาวน์โหลดได้ที่ การตั้งค่า BBKB › ภาษา</string>
+    <string name="voice_status_language_unsupported">การป้อนด้วยเสียงไม่รองรับ %1$s เปลี่ยนภาษาสำหรับการป้อนด้วยเสียงได้ใน การตั้งค่า BBKB</string>
 </resources>

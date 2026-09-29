@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">%1$s-i siyahıda aktivləşdirin, sonra geri qayıdın.</string>
     <string name="languages_hub_turn_off_in_settings">%1$s-i siyahıda deaktiv edin, sonra geri qayıdın.</string>
     <string name="languages_hub_failed">Bu alınmadı. Yenidən cəhd edin.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s lüğəti hələ yoxdur. BBKB Parametrləri › Dil bölməsindən yükləyin.</string>
+    <string name="dictionary_required_to_type">Yazmaq üçün %1$s lüğəti lazımdır. BBKB Parametrləri › Dil bölməsindən yükləyin.</string>
+    <string name="voice_status_language_unsupported">%1$s üçün səsli daxiletmə mövcud deyil. Səsli daxiletmə dilini BBKB Parametrlərində dəyişin.</string>
 </resources>

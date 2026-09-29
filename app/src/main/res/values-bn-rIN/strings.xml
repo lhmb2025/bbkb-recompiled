@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">তালিকায় %1$s চালু করুন, তারপর ফিরে আসুন।</string>
     <string name="languages_hub_turn_off_in_settings">তালিকায় %1$s বন্ধ করুন, তারপর ফিরে আসুন।</string>
     <string name="languages_hub_failed">এটি কাজ করেনি। আবার চেষ্টা করুন।</string>
+    <string name="dictionary_missing_no_suggestions">এখনও %1$s অভিধান নেই। BBKB সেটিংস › ভাষা থেকে ডাউনলোড করুন।</string>
+    <string name="dictionary_required_to_type">টাইপ করতে %1$s অভিধান প্রয়োজন। BBKB সেটিংস › ভাষা থেকে ডাউনলোড করুন।</string>
+    <string name="voice_status_language_unsupported">%1$s-এর জন্য ভয়েস ইনপুট উপলব্ধ নয়। BBKB সেটিংস থেকে ভয়েস ইনপুটের ভাষা পরিবর্তন করুন।</string>
 </resources>

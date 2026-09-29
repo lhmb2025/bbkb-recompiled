@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Bật %1$s trong danh sách, sau đó quay lại.</string>
     <string name="languages_hub_turn_off_in_settings">Tắt %1$s trong danh sách, sau đó quay lại.</string>
     <string name="languages_hub_failed">Không thành công. Hãy thử lại.</string>
+    <string name="dictionary_missing_no_suggestions">Chưa có từ điển %1$s. Hãy tải xuống trong Cài đặt BBKB › Ngôn ngữ.</string>
+    <string name="dictionary_required_to_type">Cần có từ điển %1$s để gõ. Hãy tải xuống trong Cài đặt BBKB › Ngôn ngữ.</string>
+    <string name="voice_status_language_unsupported">Không hỗ trợ nhập bằng giọng nói cho %1$s. Hãy đổi ngôn ngữ nhập bằng giọng nói trong Cài đặt BBKB.</string>
 </resources>

@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Aktivieren Sie %1$s in der Liste und kommen Sie dann zurück.</string>
     <string name="languages_hub_turn_off_in_settings">Deaktivieren Sie %1$s in der Liste und kommen Sie dann zurück.</string>
     <string name="languages_hub_failed">Das hat nicht funktioniert. Versuchen Sie es erneut.</string>
+    <string name="dictionary_missing_no_suggestions">Noch kein Wörterbuch für %1$s. Download unter BBKB-Einstellungen › Sprache.</string>
+    <string name="dictionary_required_to_type">%1$s braucht zum Tippen ein Wörterbuch. Download unter BBKB-Einstellungen › Sprache.</string>
+    <string name="voice_status_language_unsupported">Spracheingabe ist für %1$s nicht verfügbar. Ändern Sie die Sprache der Spracheingabe in den BBKB-Einstellungen.</string>
 </resources>

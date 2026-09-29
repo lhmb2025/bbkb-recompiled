@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Aktivera %1$s i listan och kom sedan tillbaka.</string>
     <string name="languages_hub_turn_off_in_settings">Inaktivera %1$s i listan och kom sedan tillbaka.</string>
     <string name="languages_hub_failed">Det fungerade inte. Försök igen.</string>
+    <string name="dictionary_missing_no_suggestions">Ingen ordlista för %1$s än. Hämta den under Inställningar för BBKB › Språk.</string>
+    <string name="dictionary_required_to_type">%1$s behöver sin ordlista för att skriva. Hämta den under Inställningar för BBKB › Språk.</string>
+    <string name="voice_status_language_unsupported">Röstinmatning är inte tillgänglig för %1$s. Byt språk för röstinmatning under Inställningar för BBKB.</string>
 </resources>

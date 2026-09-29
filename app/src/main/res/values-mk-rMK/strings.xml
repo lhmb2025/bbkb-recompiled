@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Вклучете го %1$s на списокот, па вратете се.</string>
     <string name="languages_hub_turn_off_in_settings">Исклучете го %1$s на списокот, па вратете се.</string>
     <string name="languages_hub_failed">Не успеа. Обиди се повторно.</string>
+    <string name="dictionary_missing_no_suggestions">Уште нема речник за %1$s. Преземете го во Поставки на BBKB › Јазик.</string>
+    <string name="dictionary_required_to_type">За пишување на %1$s потребен е речник. Преземете го во Поставки на BBKB › Јазик.</string>
+    <string name="voice_status_language_unsupported">Гласовното внесување не е достапно за %1$s. Сменете го јазикот за гласовно внесување во Поставки на BBKB.</string>
 </resources>

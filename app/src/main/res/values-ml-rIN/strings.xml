@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">ലിസ്റ്റിൽ %1$s ഓണാക്കി തിരികെ വരിക.</string>
     <string name="languages_hub_turn_off_in_settings">ലിസ്റ്റിൽ %1$s ഓഫാക്കി തിരികെ വരിക.</string>
     <string name="languages_hub_failed">അത് നടന്നില്ല. വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s നിഘണ്ടു ഇതുവരെ ഇല്ല. BBKB ക്രമീകരണങ്ങൾ › ഭാഷ എന്നതിൽ ഇത് ഡൗൺലോഡ് ചെയ്യുക.</string>
+    <string name="dictionary_required_to_type">ടൈപ്പ് ചെയ്യാൻ %1$s നിഘണ്ടു വേണം. BBKB ക്രമീകരണങ്ങൾ › ഭാഷ എന്നതിൽ ഇത് ഡൗൺലോഡ് ചെയ്യുക.</string>
+    <string name="voice_status_language_unsupported">%1$s ഭാഷയ്ക്ക് വോയ്‌സ് ഇൻപുട്ട് ലഭ്യമല്ല. BBKB ക്രമീകരണങ്ങളിൽ വോയ്‌സ് ഇൻപുട്ട് ഭാഷ മാറ്റുക.</string>
 </resources>

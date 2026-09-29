@@ -228,6 +228,14 @@ object NuanceSDKManager {
             primaryInstance = null
         }
     }
+
+    /** The primary engine if one has been created; never creates one. */
+    @JvmStatic
+    fun peekInstance(): NuanceSDK? = primaryInstance
+
+    /** The secondary (spell-checker) engine if one has been created; never creates one. */
+    @JvmStatic
+    fun peekSecondary(): NuanceSDK? = secondaryInstance
     
     /**
      * Get the secondary NuanceSDK instance.

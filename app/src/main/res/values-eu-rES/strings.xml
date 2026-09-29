@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Aktibatu %1$s zerrendan, eta itzuli ondoren.</string>
     <string name="languages_hub_turn_off_in_settings">Desaktibatu %1$s zerrendan, eta itzuli ondoren.</string>
     <string name="languages_hub_failed">Ez du funtzionatu. Saiatu berriro.</string>
+    <string name="dictionary_missing_no_suggestions">Oraindik ez dago %1$s hiztegirik. Deskargatu hemen: BBKB ezarpenak › Hizkuntza.</string>
+    <string name="dictionary_required_to_type">%1$s hizkuntzan idazteko, deskargatu hiztegia hemen: BBKB ezarpenak › Hizkuntza.</string>
+    <string name="voice_status_language_unsupported">Ahots bidezko idazketa ez dago erabilgarri %1$s hizkuntzarako. Aldatu ahotsaren hizkuntza BBKB ezarpenak atalean.</string>
 </resources>

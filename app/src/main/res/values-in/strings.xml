@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Aktifkan %1$s di daftar, lalu kembali ke sini.</string>
     <string name="languages_hub_turn_off_in_settings">Nonaktifkan %1$s di daftar, lalu kembali ke sini.</string>
     <string name="languages_hub_failed">Gagal. Coba lagi.</string>
+    <string name="dictionary_missing_no_suggestions">Belum ada kamus %1$s. Unduh di Setelan BBKB › Bahasa.</string>
+    <string name="dictionary_required_to_type">Kamus %1$s diperlukan untuk mengetik. Unduh di Setelan BBKB › Bahasa.</string>
+    <string name="voice_status_language_unsupported">Input suara tidak tersedia untuk %1$s. Ubah bahasa input suara di Setelan BBKB.</string>
 </resources>

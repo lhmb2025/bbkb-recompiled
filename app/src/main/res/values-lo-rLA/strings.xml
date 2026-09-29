@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">ເປີດ %1$s ໃນລາຍການ, ແລ້ວກັບມາ.</string>
     <string name="languages_hub_turn_off_in_settings">ປິດ %1$s ໃນລາຍການ, ແລ້ວກັບມາ.</string>
     <string name="languages_hub_failed">ອັນນັ້ນບໍ່ສຳເລັດ. ລອງໃໝ່ອີກຄັ້ງ.</string>
+    <string name="dictionary_missing_no_suggestions">ຍັງບໍ່ມີວັດຈະນານຸກົມ %1$s. ດາວໂຫຼດໄດ້ທີ່ ຕັ້ງຄ່າ BBKB › ພາສາ.</string>
+    <string name="dictionary_required_to_type">%1$s ຕ້ອງມີວັດຈະນານຸກົມຈຶ່ງຈະພິມໄດ້. ດາວໂຫຼດໄດ້ທີ່ ຕັ້ງຄ່າ BBKB › ພາສາ.</string>
+    <string name="voice_status_language_unsupported">ການປ້ອນດ້ວຍສຽງບໍ່ຮອງຮັບ %1$s. ປ່ຽນພາສາຂອງການປ້ອນດ້ວຍສຽງໄດ້ທີ່ ຕັ້ງຄ່າ BBKB.</string>
 </resources>

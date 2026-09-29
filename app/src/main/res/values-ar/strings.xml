@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">فعّل %1$s في القائمة، ثم عد إلى هنا.</string>
     <string name="languages_hub_turn_off_in_settings">عطّل %1$s في القائمة، ثم عد إلى هنا.</string>
     <string name="languages_hub_failed">لم ينجح ذلك. حاول مرة أخرى.</string>
+    <string name="dictionary_missing_no_suggestions">لا يوجد قاموس %1$s بعد. نزّله من إعدادات BBKB › اللغة.</string>
+    <string name="dictionary_required_to_type">يلزم قاموس %1$s للكتابة. نزّله من إعدادات BBKB › اللغة.</string>
+    <string name="voice_status_language_unsupported">الإدخال الصوتي غير متاح للغة %1$s. غيّر لغة الإدخال الصوتي من إعدادات BBKB.</string>
 </resources>

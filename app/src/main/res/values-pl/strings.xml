@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Włącz %1$s na liście, a potem wróć.</string>
     <string name="languages_hub_turn_off_in_settings">Wyłącz %1$s na liście, a potem wróć.</string>
     <string name="languages_hub_failed">Nie udało się. Spróbuj ponownie.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s: jeszcze brak słownika. Otwórz Ustawienia BBKB › Język i pobierz go.</string>
+    <string name="dictionary_required_to_type">%1$s: do pisania potrzebny jest słownik. Otwórz Ustawienia BBKB › Język i pobierz go.</string>
+    <string name="voice_status_language_unsupported">%1$s: wprowadzanie głosowe jest niedostępne. Zmień język wprowadzania głosowego w Ustawieniach BBKB.</string>
 </resources>

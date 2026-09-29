@@ -328,6 +328,15 @@ public final class ComposingTextTracker {
      */
     private void rebuildNuanceFromComposing() {
         this.mNuanceSDK.clear();
+        InputMethodCallback converter = this.mInputMethodConverter;
+        InputMethodCallback.ConverterType type = converter != null ? converter.getConverterType() : InputMethodCallback.ConverterType.NOT_DEFINED;
+        if (type == InputMethodCallback.ConverterType.HANGUL || type == InputMethodCallback.ConverterType.VIETNAMESE_TELEX) {
+            // Same routing as processNuanceAndConverter: these converters feed the engine jamo,
+            // or base letters plus explicit accents, never the composed characters. Feeding "한"
+            // as one symbol leaves the engine unable to attach the next jamo to it.
+            converter.processSymbols(this.mComposingText, this.mNuanceSDK);
+            return;
+        }
         int len = this.mComposingText.length();
         int i = 0;
         while (i < len) {

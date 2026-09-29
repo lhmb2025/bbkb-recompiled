@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">జాబితాలో %1$s ఆన్ చేసి, తర్వాత తిరిగి రండి.</string>
     <string name="languages_hub_turn_off_in_settings">జాబితాలో %1$s ఆఫ్ చేసి, తర్వాత తిరిగి రండి.</string>
     <string name="languages_hub_failed">అది పని చేయలేదు. మళ్లీ ప్రయత్నించండి.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s నిఘంటువు ఇంకా లేదు. BBKB సెట్టింగ్‌లు › భాష నుండి దాన్ని డౌన్‌లోడ్ చేయండి.</string>
+    <string name="dictionary_required_to_type">టైప్ చేయడానికి %1$s నిఘంటువు అవసరం. BBKB సెట్టింగ్‌లు › భాష నుండి దాన్ని డౌన్‌లోడ్ చేయండి.</string>
+    <string name="voice_status_language_unsupported">%1$s కు వాయిస్ ఇన్‌పుట్ అందుబాటులో లేదు. BBKB సెట్టింగ్‌లలో వాయిస్ ఇన్‌పుట్ భాషను మార్చండి.</string>
 </resources>

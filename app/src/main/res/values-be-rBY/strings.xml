@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Уключыце %1$s у спісе, затым вярніцеся.</string>
     <string name="languages_hub_turn_off_in_settings">Выключыце %1$s у спісе, затым вярніцеся.</string>
     <string name="languages_hub_failed">Не атрымалася. Паспрабуйце яшчэ раз.</string>
+    <string name="dictionary_missing_no_suggestions">Слоўніка для мовы %1$s пакуль няма. Спампуйце яго: Налады BBKB › Мова.</string>
+    <string name="dictionary_required_to_type">Каб друкаваць, для мовы %1$s патрэбны слоўнік. Спампуйце яго: Налады BBKB › Мова.</string>
+    <string name="voice_status_language_unsupported">Галасавы ўвод недаступны для мовы %1$s. Змяніце мову галасавога ўводу ў Наладах BBKB.</string>
 </resources>

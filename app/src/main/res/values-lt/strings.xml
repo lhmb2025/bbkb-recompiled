@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Įjunkite %1$s sąraše, tada grįžkite.</string>
     <string name="languages_hub_turn_off_in_settings">Išjunkite %1$s sąraše, tada grįžkite.</string>
     <string name="languages_hub_failed">Nepavyko. Bandykite dar kartą.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s žodyno dar nėra. Atsisiųskite jį skiltyje „BBKB“ nustatymai › Kalba.</string>
+    <string name="dictionary_required_to_type">%1$s rašymui reikia žodyno. Atsisiųskite jį skiltyje „BBKB“ nustatymai › Kalba.</string>
+    <string name="voice_status_language_unsupported">Balso įvestis %1$s kalba nepasiekiama. Pakeiskite balso įvesties kalbą „BBKB“ nustatymuose.</string>
 </resources>

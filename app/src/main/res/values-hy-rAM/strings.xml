@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Միացրեք %1$s-ը ցանկում, ապա վերադարձեք:</string>
     <string name="languages_hub_turn_off_in_settings">Անջատեք %1$s-ը ցանկում, ապա վերադարձեք:</string>
     <string name="languages_hub_failed">Չստացվեց: Փորձեք կրկին:</string>
+    <string name="dictionary_missing_no_suggestions">%1$s բառարանը դեռ չկա։ Ներբեռնեք «BBKB-ի կարգավորումներ › Լեզու» բաժնում։</string>
+    <string name="dictionary_required_to_type">%1$s-ով գրելու համար բառարան է պետք։ Ներբեռնեք «BBKB-ի կարգավորումներ › Լեզու» բաժնում։</string>
+    <string name="voice_status_language_unsupported">Ձայնային ներածումը հասանելի չէ %1$s լեզվի համար։ Փոխեք ձայնային ներածման լեզուն BBKB-ի կարգավորումներում։</string>
 </resources>

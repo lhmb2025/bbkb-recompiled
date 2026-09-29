@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Aktipkeun %1$s dina daptar, tuluy balik deui.</string>
     <string name="languages_hub_turn_off_in_settings">Pareuman %1$s dina daptar, tuluy balik deui.</string>
     <string name="languages_hub_failed">Teu hasil. Cobi deui.</string>
+    <string name="dictionary_missing_no_suggestions">Can aya kamus %1$s. Undeur di Setélan BBKB › Basa.</string>
+    <string name="dictionary_required_to_type">%1$s butuh kamus pikeun ngetik. Undeur di Setélan BBKB › Basa.</string>
+    <string name="voice_status_language_unsupported">Asupan sora teu sadia pikeun %1$s. Ganti basa asupan sora di Setélan BBKB.</string>
 </resources>

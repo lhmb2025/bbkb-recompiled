@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">%1$s را در فهرست روشن کنید، سپس برگردید.</string>
     <string name="languages_hub_turn_off_in_settings">%1$s را در فهرست خاموش کنید، سپس برگردید.</string>
     <string name="languages_hub_failed">انجام نشد. دوباره امتحان کنید.</string>
+    <string name="dictionary_missing_no_suggestions">هنوز واژه‌نامهٔ %1$s وجود ندارد. آن را از تنظیمات BBKB › زبان بارگیری کنید.</string>
+    <string name="dictionary_required_to_type">برای تایپ به %1$s، واژه‌نامهٔ آن لازم است. آن را از تنظیمات BBKB › زبان بارگیری کنید.</string>
+    <string name="voice_status_language_unsupported">ورودی صوتی برای %1$s در دسترس نیست. زبان ورودی صوتی را در تنظیمات BBKB تغییر دهید.</string>
 </resources>

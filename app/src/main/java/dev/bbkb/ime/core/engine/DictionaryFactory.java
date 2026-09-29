@@ -33,7 +33,7 @@ public final class DictionaryFactory {
                 // arrives here as a null engine, not as the exception below. A bridge over null NPEs as
                 // soon as a supported language pack is found; use the fallback instead.
                 if (engine != null) {
-                    dictionary = new NuanceSDKDictionaryBridge(engine, context, locale);
+                    dictionary = new NuanceSDKDictionaryBridge(engine, context, locale, !z);
                     if (BuildConfig.DEBUG) Log.i(TAG, "NuanceSDK dictionary created successfully: " + dictionary);
                 } else if (BuildConfig.DEBUG) {
                     Log.e(TAG, "NuanceSDK engine unavailable; using FallbackDictionary");

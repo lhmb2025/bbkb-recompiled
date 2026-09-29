@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Укључите %1$s на листи, па се вратите.</string>
     <string name="languages_hub_turn_off_in_settings">Искључите %1$s на листи, па се вратите.</string>
     <string name="languages_hub_failed">Није успело. Покушајте поново.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s: још нема речника. Преузмите га у одељку Поставке за BBKB › Језик.</string>
+    <string name="dictionary_required_to_type">%1$s: за куцање је потребан речник. Преузмите га у одељку Поставке за BBKB › Језик.</string>
+    <string name="voice_status_language_unsupported">%1$s: гласовни унос није доступан. Промените језик гласовног уноса у Поставкама за BBKB.</string>
 </resources>

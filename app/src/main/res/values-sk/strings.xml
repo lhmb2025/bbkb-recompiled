@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Zapnite %1$s v zozname a potom sa vráťte.</string>
     <string name="languages_hub_turn_off_in_settings">Vypnite %1$s v zozname a potom sa vráťte.</string>
     <string name="languages_hub_failed">Nepodarilo sa. Skúste to znova.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s: slovník zatiaľ chýba. Stiahnite si ho v sekcii Nastavenia BBKB › Jazyk.</string>
+    <string name="dictionary_required_to_type">%1$s: na písanie je potrebný slovník. Stiahnite si ho v sekcii Nastavenia BBKB › Jazyk.</string>
+    <string name="voice_status_language_unsupported">%1$s: hlasový vstup nie je k dispozícii. Zmeňte jazyk hlasového vstupu v Nastaveniach BBKB.</string>
 </resources>

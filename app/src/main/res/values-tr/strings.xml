@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Listede %1$s öğesini açın, sonra geri dönün.</string>
     <string name="languages_hub_turn_off_in_settings">Listede %1$s öğesini kapatın, sonra geri dönün.</string>
     <string name="languages_hub_failed">İşe yaramadı. Yeniden deneyin.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s sözlüğü henüz yok. BBKB Ayarları › Dil bölümünden indirin.</string>
+    <string name="dictionary_required_to_type">%1$s ile yazmak için sözlük gerekli. BBKB Ayarları › Dil bölümünden indirin.</string>
+    <string name="voice_status_language_unsupported">Sesli giriş %1$s için kullanılamıyor. Sesli giriş dilini BBKB Ayarları\'ndan değiştirin.</string>
 </resources>

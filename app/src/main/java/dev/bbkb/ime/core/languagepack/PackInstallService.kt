@@ -4,6 +4,7 @@ import android.content.Context
 import com.blackberry.nuanceshim.languagepack.CustomPackRegistryStore
 import com.blackberry.nuanceshim.languagepack.LanguagePackManager
 import com.blackberry.nuanceshim.languagepack.LanguageVariantStore
+import dev.bbkb.ime.core.engine.NuanceSDKManager
 import dev.bbkb.ime.core.locale.RichInputMethodManager
 import dev.bbkb.ime.core.locale.SubtypeEnabler
 import dev.bbkb.ime.core.shared.InAppEventBus
@@ -41,6 +42,14 @@ import java.io.IOException
  * without it the locale is not supported, `getStatus` will not resolve it, and the pack is a
  * directory nothing ever reads.
  *
+ * ### The running engine has to be told
+ *
+ * The engine enumerates `no_backup/nuance/` once, when it starts. A pack that appears later is
+ * invisible to it — even a language it has never been asked for is refused — until the process
+ * restarts (KEY2, 2026-09-28). The original app handed a fresh directory to both engines with
+ * `NuanceSDK.registerLdb`, and this app had dropped that call; [EngineRegistry] restores it, for
+ * whichever engines exist at the time. A pack removed while running is withdrawn the same way.
+ *
  * For a pack with a [group] — the four regional variants ({@code de_CH}, {@code fr_CH},
  * {@code it_CH}, {@code nl_BE}) the engine has no locale table entry for — the file is parked and
  * activated by [LanguageVariantStore] instead, in the slot the base language occupies. That is
@@ -64,6 +73,7 @@ import java.io.IOException
 class PackInstallService @JvmOverloads constructor(
     private val context: Context,
     private val subtypes: SubtypeRegistrar = FrameworkSubtypeRegistrar,
+    private val engine: EngineRegistry = NuanceEngineRegistry,
     private val events: (String) -> Unit = { action ->
         InAppEventBus.getInstance().post(action, null)
     },
@@ -144,6 +154,7 @@ class PackInstallService @JvmOverloads constructor(
         // Both of these are no-ops when there is nothing to remove.
         CustomPackRegistryStore.remove(context, language, country)
         subtypes.withdrawSubtypeFor(context, language)
+        engine.deregister(language, country)
         LanguagePackManager.getInstance(context).reloadRegistry()
         events(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED)
         Logger.info(TAG, "Removed $locale (files were ${if (hadFiles) "present" else "already gone"})")
@@ -251,6 +262,11 @@ class PackInstallService @JvmOverloads constructor(
         }
 
         LanguagePackManager.getInstance(context).reloadRegistry()
+        if (!engine.register(directory)) {
+            // Not fatal: the files are in place and the next engine start finds them; only the
+            // running process stays unaware until then.
+            Logger.warn(TAG, "The running engine did not accept $locale; it loads on the next restart")
+        }
 
         // If method.xml declares no subtype for this language the pack would install, load, and
         // have no way to be selected. Offer one at runtime instead - and report honestly when
@@ -299,6 +315,34 @@ class PackInstallService @JvmOverloads constructor(
          * afterwards: false where Android does not let a keyboard do this (before API 34).
          */
         fun enableSubtypeFor(context: Context, locale: String): Boolean
+    }
+
+    /** How a running engine learns about a pack that appeared or vanished mid-process. */
+    interface EngineRegistry {
+        /** Hand the pack directory to every live engine. True when none of them refused it. */
+        fun register(directory: File): Boolean
+        /** Withdraw a language from every live engine. A no-op when none is running. */
+        fun deregister(language: String, country: String?)
+    }
+
+    /**
+     * The production [EngineRegistry]: the primary (keyboard) and secondary (spell-checker) engines,
+     * whichever of them exist. It never creates an engine just to register a pack: one that has not
+     * started yet enumerates the directory itself.
+     */
+    object NuanceEngineRegistry : EngineRegistry {
+        override fun register(directory: File): Boolean {
+            val path = directory.absolutePath
+            var accepted = true
+            NuanceSDKManager.peekInstance()?.let { accepted = it.registerLdb(path) && accepted }
+            NuanceSDKManager.peekSecondary()?.let { accepted = it.registerLdb(path) && accepted }
+            return accepted
+        }
+
+        override fun deregister(language: String, country: String?) {
+            NuanceSDKManager.peekInstance()?.deregisterLdb(language, country)
+            NuanceSDKManager.peekSecondary()?.deregisterLdb(language, country)
+        }
     }
 
     /** The production [SubtypeRegistrar]: the framework, plus [SideloadedSubtypes]. */

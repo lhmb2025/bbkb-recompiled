@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Schakel %1$s in de lijst in en kom dan terug.</string>
     <string name="languages_hub_turn_off_in_settings">Schakel %1$s in de lijst uit en kom dan terug.</string>
     <string name="languages_hub_failed">Dat werkte niet. Probeer het opnieuw.</string>
+    <string name="dictionary_missing_no_suggestions">Nog geen woordenboek voor %1$s. Download het via Instellingen voor BBKB › Taal.</string>
+    <string name="dictionary_required_to_type">%1$s heeft een woordenboek nodig om te typen. Download het via Instellingen voor BBKB › Taal.</string>
+    <string name="voice_status_language_unsupported">Spraakinvoer is niet beschikbaar voor %1$s. Wijzig de spraaktaal in Instellingen voor BBKB.</string>
 </resources>

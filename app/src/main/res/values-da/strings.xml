@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Slå %1$s til på listen, og kom så tilbage.</string>
     <string name="languages_hub_turn_off_in_settings">Slå %1$s fra på listen, og kom så tilbage.</string>
     <string name="languages_hub_failed">Det virkede ikke. Prøv igen.</string>
+    <string name="dictionary_missing_no_suggestions">Ingen ordbog til %1$s endnu. Download den under Indstillinger for BBKB › Sprog.</string>
+    <string name="dictionary_required_to_type">For at skrive på %1$s skal du downloade ordbogen under Indstillinger for BBKB › Sprog.</string>
+    <string name="voice_status_language_unsupported">Stemmeinput er ikke tilgængeligt for %1$s. Skift sprog for stemmeinput under Indstillinger for BBKB.</string>
 </resources>

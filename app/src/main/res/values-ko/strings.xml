@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">목록에서 %1$s을(를) 켠 후 돌아오세요.</string>
     <string name="languages_hub_turn_off_in_settings">목록에서 %1$s을(를) 끈 후 돌아오세요.</string>
     <string name="languages_hub_failed">작업에 실패했습니다. 다시 시도하세요.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s 사전이 아직 없습니다. BBKB 설정 › 언어에서 다운로드하세요.</string>
+    <string name="dictionary_required_to_type">%1$s 입력에는 사전이 필요합니다. BBKB 설정 › 언어에서 다운로드하세요.</string>
+    <string name="voice_status_language_unsupported">%1$s 음성 입력은 지원되지 않습니다. BBKB 설정에서 음성 입력 언어를 변경하세요.</string>
 </resources>

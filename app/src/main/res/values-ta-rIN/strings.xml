@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">பட்டியலில் %1$s ஐ இயக்கி, பிறகு திரும்பி வாருங்கள்.</string>
     <string name="languages_hub_turn_off_in_settings">பட்டியலில் %1$s ஐ முடக்கி, பிறகு திரும்பி வாருங்கள்.</string>
     <string name="languages_hub_failed">அது வேலை செய்யவில்லை. மீண்டும் முயலுங்கள்.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s அகராதி இன்னும் இல்லை. BBKB Settings › மொழி என்பதில் அதைப் பதிவிறக்கவும்.</string>
+    <string name="dictionary_required_to_type">தட்டச்சு செய்ய %1$s அகராதி தேவை. BBKB Settings › மொழி என்பதில் அதைப் பதிவிறக்கவும்.</string>
+    <string name="voice_status_language_unsupported">%1$s மொழிக்குக் குரல் உள்ளீடு கிடைக்காது. BBKB Settings என்பதில் குரல் உள்ளீட்டு மொழியை மாற்றவும்.</string>
 </resources>

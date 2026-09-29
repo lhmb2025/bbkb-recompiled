@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Lülitage %1$s loendis sisse ja tulge seejärel tagasi.</string>
     <string name="languages_hub_turn_off_in_settings">Lülitage %1$s loendis välja ja tulge seejärel tagasi.</string>
     <string name="languages_hub_failed">See ei õnnestunud. Proovige uuesti.</string>
+    <string name="dictionary_missing_no_suggestions">Keele %1$s sõnastikku veel pole. Laadige see alla jaotises BBKB seaded › Keel.</string>
+    <string name="dictionary_required_to_type">Keeles %1$s kirjutamiseks laadige sõnastik alla jaotises BBKB seaded › Keel.</string>
+    <string name="voice_status_language_unsupported">Häälsisestus pole keele %1$s jaoks saadaval. Muutke häälsisestuse keelt BBKB seadetes.</string>
 </resources>

@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Ieslēdziet %1$s sarakstā un atgriezieties.</string>
     <string name="languages_hub_turn_off_in_settings">Izslēdziet %1$s sarakstā un atgriezieties.</string>
     <string name="languages_hub_failed">Neizdevās. Mēģiniet vēlreiz.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s vārdnīcas vēl nav. Lejupielādējiet to sadaļā BBKB iestatījumi › Valoda.</string>
+    <string name="dictionary_required_to_type">Bez %1$s vārdnīcas nevar rakstīt. Lejupielādējiet to sadaļā BBKB iestatījumi › Valoda.</string>
+    <string name="voice_status_language_unsupported">Balss ievade %1$s valodā nav pieejama. Mainiet balss ievades valodu BBKB iestatījumos.</string>
 </resources>

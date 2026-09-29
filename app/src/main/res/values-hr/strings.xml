@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Uključite %1$s na popisu, a zatim se vratite.</string>
     <string name="languages_hub_turn_off_in_settings">Isključite %1$s na popisu, a zatim se vratite.</string>
     <string name="languages_hub_failed">To nije uspjelo. Pokušajte ponovno.</string>
+    <string name="dictionary_missing_no_suggestions">Još nema rječnika za %1$s. Preuzmi ga pod Postavke za BBKB › Jezik.</string>
+    <string name="dictionary_required_to_type">%1$s traži rječnik za tipkanje. Preuzmi ga pod Postavke za BBKB › Jezik.</string>
+    <string name="voice_status_language_unsupported">Unos glasom nije dostupan za %1$s. Promijeni jezik unosa glasom u Postavkama za BBKB.</string>
 </resources>

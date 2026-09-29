@@ -43,13 +43,25 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
 
     private boolean initialized;
 
+    private final boolean notifyMissingPacks;
+
     public NuanceSDKDictionaryBridge(NuanceSDK nuanceSDK, Context context, Locale locale) {
+        this(nuanceSDK, context, locale, true);
+    }
+
+    /**
+     * @param notifyMissingPacks whether a supported-but-not-downloaded language is reported to the
+     *     user. True for the keyboard's own dictionary; false for the spell checker's copy, which
+     *     loads in the background on behalf of other apps.
+     */
+    public NuanceSDKDictionaryBridge(NuanceSDK nuanceSDK, Context context, Locale locale, boolean notifyMissingPacks) {
         super("main");
         this.initialized = true;
         this.nuanceSdk = nuanceSDK;
         this.locales = new LinkedHashSet();
         this.locales.add(locale);
         this.context = context;
+        this.notifyMissingPacks = notifyMissingPacks;
         loadLanguagePacks();
     }
 
@@ -106,14 +118,29 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
     }
 
     private boolean loadLanguagePacks() {
-        if (!LanguagePackManager.getInstance(this.context).setLanguages(this.nuanceSdk, (Locale[]) this.locales.toArray(new Locale[0]))) {
+        final LanguagePackManager packs = LanguagePackManager.getInstance(this.context);
+        final Locale[] wanted = this.locales.toArray(new Locale[0]);
+        // The engine is asked even when a pack is missing: it then switches to an empty language
+        // (typed word plus learned words, no stale suggestions from the previous one), which is
+        // the right degraded state. What was missing is telling the user.
+        final boolean set = packs.setLanguages(this.nuanceSdk, wanted);
+        if (this.notifyMissingPacks) {
+            for (Locale locale : wanted) {
+                // Supported but not downloaded. An unsupported locale ("No language", or one the
+                // engine has no table entry for) is a different, deliberately silent case.
+                if (packs.isSupported(locale) && !packs.isInstalled(locale)) {
+                    DictionaryAvailabilityNotice.packMissing(this.context, locale);
+                }
+            }
+        }
+        if (!set) {
             return false;
         }
         Locale localeM4259h = SubtypeManager.getInstance().getCurrentSubtypeLocale();
         if (!LocaleUtils.isChinese(localeM4259h)) {
             return true;
         }
-        this.nuanceSdk.setInputMethod(LocaleUtils.toNuanceLocaleString(localeM4259h));
+        this.nuanceSdk.setInputMethod(LocaleUtils.toNuanceInputMethodName(localeM4259h));
         return true;
     }
 
@@ -169,9 +196,11 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
             if (!gesturePending) {
                 setNativeContext(prevWordsInfo, strM4360m);
                 if (!TextUtils.isEmpty(strM4360m)) {
-                    this.nuanceSdk.clear();
-                    for (int ci = 0; ci < strM4360m.length(); ci++) {
-                        this.nuanceSdk.processKeyBySymbol(strM4360m.charAt(ci));
+                    if (!engineOwnsComposingState(c0670ag, this.nuanceSdk)) {
+                        this.nuanceSdk.clear();
+                        for (int ci = 0; ci < strM4360m.length(); ci++) {
+                            this.nuanceSdk.processKeyBySymbol(strM4360m.charAt(ci));
+                        }
                     }
                 } else {
                     // FIX: For next-word prediction requests (empty composing), defensively clear
@@ -492,9 +521,11 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         String composingNow = c0670ag.getComposingText();
 
         if (!TextUtils.isEmpty(composingNow)) {
-            this.nuanceSdk.clear();
-            for (int ci = 0; ci < composingNow.length(); ci++) {
-                this.nuanceSdk.processKeyBySymbol(composingNow.charAt(ci));
+            if (!engineOwnsComposingState(c0670ag, this.nuanceSdk)) {
+                this.nuanceSdk.clear();
+                for (int ci = 0; ci < composingNow.length(); ci++) {
+                    this.nuanceSdk.processKeyBySymbol(composingNow.charAt(ci));
+                }
             }
         } else if (!TextUtils.isEmpty(strM4360m)) {
             // The word was committed or cleared while we read: leave no residue behind, or the
@@ -504,6 +535,22 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         }
 
         return arrayList;
+    }
+
+    /**
+     * True when the engine's input buffer must be left exactly as the typing path built it.
+     *
+     * <p>The Hangul, Telex and Romaji converters, and the stroke and Cangjie key maps, feed the
+     * engine something other than the composing text's characters: jamo instead of syllables,
+     * base letters plus explicit accents, stroke numbers instead of glyphs, romaji instead of
+     * kana. Replaying the composing text here as plain symbols destroyed that state between two
+     * keystrokes: on the KEY2 (2026-09-28) Korean final consonants never attached (하ㄴ구ㄱ for
+     * 한국) and no Korean dictionary word was ever offered, and Telex "vieejt" produced "viẹt".
+     * For these modes the typing path keeps the buffer coherent and the request reads it as is.
+     * Package-private for {@code NuanceSDKDictionaryBridgeRefeedTest}.
+     */
+    static boolean engineOwnsComposingState(ComposingTextTracker tracker, NuanceSDK sdk) {
+        return tracker.hasInputMethodConverter() || sdk.isChineseStrokeMode() || sdk.isChineseCangjieMode();
     }
 
     private void setNativeContext(PrevWordsInfo prevWordsInfo, String str) {

@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Ota %1$s käyttöön luettelossa ja palaa sitten takaisin.</string>
     <string name="languages_hub_turn_off_in_settings">Poista %1$s käytöstä luettelossa ja palaa sitten takaisin.</string>
     <string name="languages_hub_failed">Se ei onnistunut. Yritä uudelleen.</string>
+    <string name="dictionary_missing_no_suggestions">Kielen %1$s sanakirjaa ei ole vielä. Lataa se kohdasta BBKB:n asetukset › Kieli.</string>
+    <string name="dictionary_required_to_type">Kielellä %1$s kirjoittaminen vaatii sanakirjan. Lataa se kohdasta BBKB:n asetukset › Kieli.</string>
+    <string name="voice_status_language_unsupported">Äänisyöttö ei ole käytettävissä kielelle %1$s. Vaihda äänisyötön kieli BBKB:n asetuksista.</string>
 </resources>

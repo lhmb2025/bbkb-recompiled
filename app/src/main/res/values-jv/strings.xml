@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Aktifake %1$s ing dhaptar, banjur bali maneh.</string>
     <string name="languages_hub_turn_off_in_settings">Pateni %1$s ing dhaptar, banjur bali maneh.</string>
     <string name="languages_hub_failed">Kuwi ora bisa. Coba maneh.</string>
+    <string name="dictionary_missing_no_suggestions">Durung ana kamus %1$s. Undhuh ing Setelan BBKB › Basa.</string>
+    <string name="dictionary_required_to_type">Kamus %1$s dibutuhake kanggo ngetik. Undhuh ing Setelan BBKB › Basa.</string>
+    <string name="voice_status_language_unsupported">Input swara ora kasedhiya kanggo %1$s. Ganti basa input swara ing Setelan BBKB.</string>
 </resources>

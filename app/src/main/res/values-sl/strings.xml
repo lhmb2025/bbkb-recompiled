@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Vklopite %1$s na seznamu in se nato vrnite.</string>
     <string name="languages_hub_turn_off_in_settings">Izklopite %1$s na seznamu in se nato vrnite.</string>
     <string name="languages_hub_failed">Ni uspelo. Poskusite znova.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s: slovarja še ni. Prenesite ga v razdelku Nastavitve BBKB › Jezik.</string>
+    <string name="dictionary_required_to_type">%1$s: za tipkanje potrebujete slovar. Prenesite ga v razdelku Nastavitve BBKB › Jezik.</string>
+    <string name="voice_status_language_unsupported">%1$s: glasovni vnos ni na voljo. Jezik glasovnega vnosa spremenite v Nastavitvah BBKB.</string>
 </resources>

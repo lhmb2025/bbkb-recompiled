@@ -778,4 +778,7 @@
     <string name="languages_hub_turn_on_in_settings">Включите %1$s в списке, затем вернитесь.</string>
     <string name="languages_hub_turn_off_in_settings">Отключите %1$s в списке, затем вернитесь.</string>
     <string name="languages_hub_failed">Не получилось. Повторите попытку.</string>
+    <string name="dictionary_missing_no_suggestions">%1$s: словаря пока нет. Загрузите его в разделе Настройки BBKB › Язык.</string>
+    <string name="dictionary_required_to_type">%1$s: для ввода нужен словарь. Загрузите его в разделе Настройки BBKB › Язык.</string>
+    <string name="voice_status_language_unsupported">%1$s: голосовой ввод недоступен. Измените язык голосового ввода в Настройках BBKB.</string>
 </resources>
