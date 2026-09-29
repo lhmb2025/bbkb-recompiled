@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">%1$s ஐ நீக்கவா?</string>
     <string name="languages_hub_sheet_remove_message">இந்தத் திரையிலிருந்து அதை மீண்டும் சேர்க்கலாம்.</string>
     <string name="languages_hub_sheet_remove_confirm">நீக்கு</string>
-    <string name="languages_hub_options_extras_latin_only">லத்தீன் எழுத்துகளில் எழுதப்பட்ட மொழிகளை மட்டுமே இணைக்க முடியும்</string>
+    <string name="languages_hub_options_extras_latin_only">இந்த எழுத்துமுறையில் எழுதப்படும் வேறு விசைப்பலகை மொழி எதுவும் இல்லை</string>
     <string name="languages_hub_search">மொழிகளைத் தேடு</string>
     <string name="languages_hub_downloads">பதிவிறக்கம்: %1$s</string>
     <string name="languages_hub_added">%1$s சேர்க்கப்பட்டது</string>

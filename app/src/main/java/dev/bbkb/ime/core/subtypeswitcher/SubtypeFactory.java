@@ -123,10 +123,19 @@ public final class SubtypeFactory {
     }
 
     public static InputMethodSubtype createLanguageSubtype(String str, ArrayList<String> arrayList, String str2) {
+        return createLanguageSubtype(str, arrayList, str2, true);
+    }
+
+    /**
+     * @param asciiCapable whether the combined keyboard types on Latin keys. Latin keyboards keep
+     *     {@code true}, byte-for-byte as before (their ids are frozen); a combined keyboard on a
+     *     Cyrillic, Devanagari or Arabic layout passes {@code false}.
+     */
+    public static InputMethodSubtype createLanguageSubtype(String str, ArrayList<String> arrayList, String str2, boolean asciiCapable) {
         if (TextUtils.isEmpty(str) || arrayList.isEmpty()) {
             return null;
         }
-        StringBuilder sb = new StringBuilder(buildExtraValue(str, str2, true, true));
+        StringBuilder sb = new StringBuilder(buildExtraValue(str, str2, asciiCapable, true));
         if (str.equals("nl") || str.equals("fr_CA") || str.equals("bs") || str.equals("sr")) {
             sb.append(",");
             sb.append("collisionHack");

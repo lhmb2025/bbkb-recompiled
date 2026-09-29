@@ -77,7 +77,7 @@ object KeyboardLanguages {
                 subtype = subtype,
                 name = name,
                 config = config,
-                canHaveExtras = repository.getLayoutSetFor(LocaleItem(subtype.locale)) != null,
+                canHaveExtras = repository.getAvailableLocalesFor(subtype.locale).isNotEmpty(),
             )
         }
         return Snapshot(followsSystem = explicit.isEmpty(), keyboards = keyboards)
@@ -214,11 +214,10 @@ object KeyboardLanguages {
         return if (SubtypeEnabler.setEnabledList(context, list)) ExtrasResult.DONE else ExtrasResult.FAILED
     }
 
-    /** Latin-script languages that can be extras for [keyboard] (not its own layout language). */
+    /** Languages written in [keyboard]'s script that can be its extras (not its own layout language). */
     fun extraChoices(context: Context, keyboard: Keyboard): List<LocaleItem> {
-        val primary = keyboard.config?.getPrimaryLocale()?.first ?: keyboard.locale
-        return MultiLanguageRepository.getInstance(context).getAvailableLocales()
-            .filter { it.first != primary }
+        val primary = (keyboard.config?.getPrimaryLocale()?.first ?: keyboard.locale) as String
+        return MultiLanguageRepository.getInstance(context).getAvailableLocalesFor(primary)
     }
 
     /**

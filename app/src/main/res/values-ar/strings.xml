@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">إزالة %1$s؟</string>
     <string name="languages_hub_sheet_remove_message">يمكنك إضافتها مرة أخرى من هذه الشاشة.</string>
     <string name="languages_hub_sheet_remove_confirm">إزالة</string>
-    <string name="languages_hub_options_extras_latin_only">يمكن دمج اللغات المكتوبة بالأبجدية اللاتينية فقط</string>
+    <string name="languages_hub_options_extras_latin_only">لا توجد لغة لوحة مفاتيح أخرى تُكتب بهذه الأبجدية</string>
     <string name="languages_hub_search">ابحث عن اللغات</string>
     <string name="languages_hub_downloads">التنزيل %1$s</string>
     <string name="languages_hub_added">تمت إضافة %1$s</string>

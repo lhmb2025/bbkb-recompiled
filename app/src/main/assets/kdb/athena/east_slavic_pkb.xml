@@ -10,6 +10,8 @@ UNEVEN ROW BANDS: the capacitive sensor (1080x525) allocates uneven per-row band
 Columns unchanged from the root layout; sensor->authored is 1:1 (offset 0, no scale). authored 1080x450.
 Only defaultLayoutHeight / keyTop / keyHeight differ from the root file. -->
 
+<!-- KEY2 Russian keycaps carry doubled legends (ЁЙ, ЩЗ, ХЭ, ДЖ, ЬЪ, БЮ): both letters
+     are listed on those keys so the engine can resolve either (photo, 2026-09-28). -->
 <keyboard
   primaryId="25"
   secondaryId="6"
@@ -17,7 +19,7 @@ Only defaultLayoutHeight / keyTop / keyHeight differ from the root file. -->
   defaultLayoutHeight="450">
 
   <area>
-    <key keyType="regional" keyCodes="0x0439" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x0439, 0x0451" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="0dp" />
     <key keyType="regional" keyCodes="0x0446" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="108dp" />
     <key keyType="regional" keyCodes="0x0443" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="216dp" />
     <key keyType="regional" keyCodes="0x043A" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="324dp" />
@@ -25,8 +27,8 @@ Only defaultLayoutHeight / keyTop / keyHeight differ from the root file. -->
     <key keyType="regional" keyCodes="0x043D" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="540dp" />
     <key keyType="regional" keyCodes="0x0433" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="648dp" />
     <key keyType="regional" keyCodes="0x0448" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="756dp" />
-    <key keyType="regional" keyCodes="0x0449" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="864dp" />
-    <key keyType="regional" keyCodes="0x044D" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="972dp" />
+    <key keyType="regional" keyCodes="0x0449, 0x0437" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="864dp" />
+    <key keyType="regional" keyCodes="0x0445, 0x044D" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="972dp" />
   </area>
 
   <area>
@@ -38,7 +40,7 @@ Only defaultLayoutHeight / keyTop / keyHeight differ from the root file. -->
     <key keyType="regional" keyCodes="0x0440" keyWidth="108dp" keyHeight="180dp" keyTop="90dp" keyLeft="540dp" />
     <key keyType="regional" keyCodes="0x043E" keyWidth="108dp" keyHeight="180dp" keyTop="90dp" keyLeft="648dp" />
     <key keyType="regional" keyCodes="0x043B" keyWidth="108dp" keyHeight="180dp" keyTop="90dp" keyLeft="756dp" />
-    <key keyType="regional" keyCodes="0x0434" keyWidth="108dp" keyHeight="180dp" keyTop="90dp" keyLeft="864dp" />
+    <key keyType="regional" keyCodes="0x0434, 0x0436" keyWidth="108dp" keyHeight="180dp" keyTop="90dp" keyLeft="864dp" />
     <key keyType="function" keyCodes="0x21E6" keyName="ET9KEY_BACK" keyWidth="108dp" keyHeight="180dp" keyTop="90dp" keyLeft="972dp" />
   </area>
 
@@ -50,8 +52,8 @@ Only defaultLayoutHeight / keyTop / keyHeight differ from the root file. -->
     <key keyType="regional" keyCodes="0x043C" keyWidth="108dp" keyHeight="180dp" keyTop="270dp" keyLeft="432dp" />
     <key keyType="regional" keyCodes="0x0438" keyWidth="108dp" keyHeight="180dp" keyTop="270dp" keyLeft="540dp" />
     <key keyType="regional" keyCodes="0x0442" keyWidth="108dp" keyHeight="180dp" keyTop="270dp" keyLeft="648dp" />
-    <key keyType="regional" keyCodes="0x044C" keyWidth="108dp" keyHeight="180dp" keyTop="270dp" keyLeft="756dp" />
-    <key keyType="regional" keyCodes="0x0431" keyWidth="108dp" keyHeight="180dp" keyTop="270dp" keyLeft="864dp" />
+    <key keyType="regional" keyCodes="0x044C, 0x044A" keyWidth="108dp" keyHeight="180dp" keyTop="270dp" keyLeft="756dp" />
+    <key keyType="regional" keyCodes="0x0431, 0x044E" keyWidth="108dp" keyHeight="180dp" keyTop="270dp" keyLeft="864dp" />
     <key keyType="function" keyLabel="DONE" keyName="ET9KEY_RETURN" keyWidth="108dp" keyHeight="180dp" keyTop="270dp" keyLeft="972dp" />
   </area>
 </keyboard >

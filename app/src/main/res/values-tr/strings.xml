@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">%1$s kaldırılsın mı?</string>
     <string name="languages_hub_sheet_remove_message">Bu ekrandan tekrar ekleyebilirsiniz.</string>
     <string name="languages_hub_sheet_remove_confirm">Kaldır</string>
-    <string name="languages_hub_options_extras_latin_only">Yalnızca Latin alfabesiyle yazılan diller birleştirilebilir</string>
+    <string name="languages_hub_options_extras_latin_only">Bu alfabeyle yazılan başka bir klavye dili yok</string>
     <string name="languages_hub_search">Dillerde ara</string>
     <string name="languages_hub_downloads">%1$s indirir</string>
     <string name="languages_hub_added">%1$s eklendi</string>

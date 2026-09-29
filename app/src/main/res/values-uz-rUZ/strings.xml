@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">%1$s olib tashlansinmi?</string>
     <string name="languages_hub_sheet_remove_message">Uni shu ekrandan qayta qo‘shishingiz mumkin.</string>
     <string name="languages_hub_sheet_remove_confirm">Olib tashlash</string>
-    <string name="languages_hub_options_extras_latin_only">Faqat lotin alifbosida yozilgan tillarni birlashtirish mumkin</string>
+    <string name="languages_hub_options_extras_latin_only">Bu alifboda yoziladigan boshqa klaviatura tili yo‘q</string>
     <string name="languages_hub_search">Tillarni qidirish</string>
     <string name="languages_hub_downloads">%1$s yuklanadi</string>
     <string name="languages_hub_added">%1$s qo‘shildi</string>

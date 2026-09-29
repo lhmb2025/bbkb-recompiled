@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Fjarlægja %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Þú getur bætt því við aftur af þessum skjá.</string>
     <string name="languages_hub_sheet_remove_confirm">Fjarlægja</string>
-    <string name="languages_hub_options_extras_latin_only">Aðeins er hægt að sameina tungumál sem eru skrifuð með latnesku stafrófi</string>
+    <string name="languages_hub_options_extras_latin_only">Ekkert annað lyklaborðstungumál er skrifað með þessu stafrófi</string>
     <string name="languages_hub_search">Leita að tungumálum</string>
     <string name="languages_hub_downloads">Sækir %1$s</string>
     <string name="languages_hub_added">%1$s bætt við</string>

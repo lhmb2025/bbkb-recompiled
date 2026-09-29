@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">要移除%1$s嗎？</string>
     <string name="languages_hub_sheet_remove_message">您可以在此畫面中重新新增。</string>
     <string name="languages_hub_sheet_remove_confirm">移除</string>
-    <string name="languages_hub_options_extras_latin_only">僅能合併使用拉丁字母的語言</string>
+    <string name="languages_hub_options_extras_latin_only">沒有其他鍵盤語言使用這種文字</string>
     <string name="languages_hub_search">搜尋語言</string>
     <string name="languages_hub_downloads">下載大小：%1$s</string>
     <string name="languages_hub_added">已新增%1$s</string>

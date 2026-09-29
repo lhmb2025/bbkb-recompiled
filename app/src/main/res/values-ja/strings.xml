@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">%1$sを削除しますか?</string>
     <string name="languages_hub_sheet_remove_message">この画面からいつでも再度追加できます。</string>
     <string name="languages_hub_sheet_remove_confirm">削除</string>
-    <string name="languages_hub_options_extras_latin_only">ラテン文字の言語同士のみ組み合わせられます</string>
+    <string name="languages_hub_options_extras_latin_only">この文字を使うキーボード言語はほかにありません</string>
     <string name="languages_hub_search">言語を検索</string>
     <string name="languages_hub_downloads">ダウンロード容量 %1$s</string>
     <string name="languages_hub_added">%1$sを追加しました</string>

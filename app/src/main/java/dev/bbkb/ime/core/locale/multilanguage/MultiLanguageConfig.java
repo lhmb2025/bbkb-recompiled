@@ -59,7 +59,8 @@ public class MultiLanguageConfig implements Comparable<MultiLanguageConfig> {
         while (it.hasNext()) {
             arrayList.add(it.next().first);
         }
-        return SubtypeFactory.createLanguageSubtype((String) this.primaryLocale.first, arrayList, this.keyboardLayoutSet);
+        return SubtypeFactory.createLanguageSubtype((String) this.primaryLocale.first, arrayList, this.keyboardLayoutSet,
+                MultiLanguageRepository.isLatinScript((String) this.primaryLocale.first));
     }
 
     public String toString() {

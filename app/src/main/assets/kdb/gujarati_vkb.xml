@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- gujarati_vkb keyboard layout (generated 2026-09-28 from res/xml/rows_gujarati.xml)
+PID: 87
+SID: ET9SLIDDEFAULT
+no pkb of its own: the physical keyboard uses the QWERTY default geometry -->
+
+<keyboard
+  primaryId="87"
+  secondaryId="1"
+  defaultLayoutWidth="1080"
+  defaultLayoutHeight="600"
+  addAltChars="true">
+
+  <area>
+    <key keyType="regional" keyCodes="0x0A94, 0x0ACC" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x0A90, 0x0AC8" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="98dp" />
+    <key keyType="regional" keyCodes="0x0A86, 0x0ABE" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="196dp" />
+    <key keyType="regional" keyCodes="0x0A88, 0x0AC0" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="295dp" />
+    <key keyType="regional" keyCodes="0x0A8A, 0x0AC2" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="393dp" />
+    <key keyType="regional" keyCodes="0x0AAC, 0x0AAD" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="491dp" />
+    <key keyType="regional" keyCodes="0x0AB9" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="589dp" />
+    <key keyType="regional" keyCodes="0x0A97, 0x0A98" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="687dp" />
+    <key keyType="regional" keyCodes="0x0AA6, 0x0AA7" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="785dp" />
+    <key keyType="regional" keyCodes="0x0A9C, 0x0A9D" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="884dp" />
+    <key keyType="regional" keyCodes="0x0AA1" keyWidth="98dp" keyHeight="140dp" keyTop="9dp" keyLeft="982dp" />
+  </area>
+
+  <area>
+    <key keyType="regional" keyCodes="0x0A93, 0x0ACB, 0x0A91" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x0A8F, 0x0AC7, 0x0A8D" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="98dp" />
+    <key keyType="regional" keyCodes="0x0A85, 0x0ACD, 0x0ABD, 0x0AD0" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="196dp" />
+    <key keyType="regional" keyCodes="0x0A87, 0x0ABF" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="295dp" />
+    <key keyType="regional" keyCodes="0x0A89, 0x0AC1" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="393dp" />
+    <key keyType="regional" keyCodes="0x0AAA, 0x0AAB" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="491dp" />
+    <key keyType="regional" keyCodes="0x0AB0, 0x0AC3, 0x0A8B" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="589dp" />
+    <key keyType="regional" keyCodes="0x0A95, 0x0A96" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="687dp" />
+    <key keyType="regional" keyCodes="0x0AA4, 0x0AA5" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="785dp" />
+    <key keyType="regional" keyCodes="0x0A9A, 0x0A9B" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="884dp" />
+    <key keyType="regional" keyCodes="0x0A9F, 0x0AA0" keyWidth="98dp" keyHeight="140dp" keyTop="158dp" keyLeft="982dp" />
+  </area>
+
+  <area>
+    <key keyType="regional" keyCodes="0x0A81, 0x0A83, 0x0A82" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x0AA2" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="98dp" />
+    <key keyType="regional" keyCodes="0x0AAE" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="196dp" />
+    <key keyType="regional" keyCodes="0x0AA8, 0x0AA3" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="295dp" />
+    <key keyType="regional" keyCodes="0x0A9E, 0x0A99" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="393dp" />
+    <key keyType="regional" keyCodes="0x0AB2, 0x0AB3" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="491dp" />
+    <key keyType="regional" keyCodes="0x0AB7" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="589dp" />
+    <key keyType="regional" keyCodes="0x0AB8, 0x0AB6" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="687dp" />
+    <key keyType="regional" keyCodes="0x0AAF" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="785dp" />
+    <key keyType="nonRegional" keyCodes="0x0964, 0x0965" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="884dp" />
+    <key keyType="function" keyCodes="0x21E6" keyName="ET9KEY_BACK" keyWidth="98dp" keyHeight="140dp" keyTop="307dp" keyLeft="982dp" />
+  </area>
+
+  <area>
+    <key keyType="function" keyLabel="?123" keyName="ET9KEY_DIGITLAYOUT" keyWidth="162dp" keyHeight="140dp" keyTop="456dp" keyLeft="0dp" />
+    <key keyType="nonRegional" keyLabel="," keyCodes="0x002C" keyWidth="108dp" keyHeight="140dp" keyTop="456dp" keyLeft="162dp" />
+    <key keyType="function" keyLabel="SPACE" keyName="ET9KEY_SPACE" keyWidth="540dp" keyHeight="140dp" keyTop="456dp" keyLeft="270dp" />
+    <key keyType="nonRegional" keyLabel="." keyCodes="0x002E" keyWidth="108dp" keyHeight="140dp" keyTop="456dp" keyLeft="810dp" />
+    <key keyType="function" keyLabel="DONE" keyName="ET9KEY_RETURN" keyWidth="162dp" keyHeight="140dp" keyTop="456dp" keyLeft="918dp" />
+  </area>
+</keyboard>

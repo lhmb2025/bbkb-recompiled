@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Verwyder %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Jy kan dit weer van hierdie skerm af byvoeg.</string>
     <string name="languages_hub_sheet_remove_confirm">Verwyder</string>
-    <string name="languages_hub_options_extras_latin_only">Slegs tale wat in die Latynse alfabet geskryf word, kan gekombineer word</string>
+    <string name="languages_hub_options_extras_latin_only">Geen ander toetsbordtaal word in hierdie skrif geskryf nie</string>
     <string name="languages_hub_search">Soek tale</string>
     <string name="languages_hub_downloads">Laai %1$s af</string>
     <string name="languages_hub_added">%1$s bygevoeg</string>

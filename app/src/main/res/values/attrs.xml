@@ -663,6 +663,11 @@
         <enum name="tamil" value="18" />
         <enum name="telugu" value="19" />
         <enum name="thai" value="20" />
+        <enum name="gujarati" value="22" />
+        <enum name="gurmukhi" value="23" />
+        <enum name="oriya" value="24" />
+        <enum name="ethiopic" value="25" />
+        <enum name="tibetan" value="26" />
     </attr>
     <attr name="suppressKeyPreviewAfterBatchInputDuration" format="integer">
     </attr>

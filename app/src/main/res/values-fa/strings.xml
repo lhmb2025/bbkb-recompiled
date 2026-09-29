@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">%1$s حذف شود؟</string>
     <string name="languages_hub_sheet_remove_message">می‌توانید آن را دوباره از این صفحه اضافه کنید.</string>
     <string name="languages_hub_sheet_remove_confirm">حذف</string>
-    <string name="languages_hub_options_extras_latin_only">فقط زبان‌های نوشته‌شده با الفبای لاتین را می‌توان ترکیب کرد</string>
+    <string name="languages_hub_options_extras_latin_only">هیچ زبان صفحه‌کلید دیگری با این الفبا نوشته نمی‌شود</string>
     <string name="languages_hub_search">جستجوی زبان‌ها</string>
     <string name="languages_hub_downloads">دانلود %1$s</string>
     <string name="languages_hub_added">%1$s اضافه شد</string>

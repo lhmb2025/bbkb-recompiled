@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
+            <Key latin:keySpec="፩"/>
+            <Key latin:keySpec="፪"/>
+            <Key latin:keySpec="፫"/>
+            <Key latin:keySpec="፬"/>
+            <Key latin:keySpec="፭"/>
+            <Key latin:keySpec="፮"/>
+            <Key latin:keySpec="፯"/>
+            <Key latin:keySpec="፰"/>
+            <Key latin:keySpec="፱"/>
+            <Key latin:keySpec="፲"/>
+        </case>
+        <default>
+            <Key
+                latin:keySpec="ሀ"
+                latin:moreKeys="ሁ,ሂ,ሃ,ሄ,ህ,ሆ,ሇ"/>
+            <Key
+                latin:keySpec="ለ"
+                latin:moreKeys="ሉ,ሊ,ላ,ሌ,ል,ሎ,ሏ"/>
+            <Key
+                latin:keySpec="ሐ"
+                latin:moreKeys="ሑ,ሒ,ሓ,ሔ,ሕ,ሖ,ሗ"/>
+            <Key
+                latin:keySpec="መ"
+                latin:moreKeys="ሙ,ሚ,ማ,ሜ,ም,ሞ,ሟ"/>
+            <Key
+                latin:keySpec="ሠ"
+                latin:moreKeys="ሡ,ሢ,ሣ,ሤ,ሥ,ሦ,ሧ"/>
+            <Key
+                latin:keySpec="ረ"
+                latin:moreKeys="ሩ,ሪ,ራ,ሬ,ር,ሮ,ሯ"/>
+            <Key
+                latin:keySpec="ሰ"
+                latin:moreKeys="ሱ,ሲ,ሳ,ሴ,ስ,ሶ,ሷ"/>
+            <Key
+                latin:keySpec="ሸ"
+                latin:moreKeys="ሹ,ሺ,ሻ,ሼ,ሽ,ሾ,ሿ"/>
+            <Key
+                latin:keySpec="ቀ"
+                latin:moreKeys="ቁ,ቂ,ቃ,ቄ,ቅ,ቆ,ቇ,ቈ,ቊ,ቋ,ቌ,ቍ"/>
+            <Key
+                latin:keySpec="በ"
+                latin:moreKeys="ቡ,ቢ,ባ,ቤ,ብ,ቦ,ቧ"/>
+        </default>
+    </switch>
+</merge>

@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Հեռացնե՞լ %1$s-ը</string>
     <string name="languages_hub_sheet_remove_message">Կարող եք նորից ավելացնել այն այս էկրանից:</string>
     <string name="languages_hub_sheet_remove_confirm">Հեռացնել</string>
-    <string name="languages_hub_options_extras_latin_only">Կարելի է միավորել միայն լատինատառ լեզուները</string>
+    <string name="languages_hub_options_extras_latin_only">Ստեղնաշարի այլ լեզու այս այբուբենով չի գրվում</string>
     <string name="languages_hub_search">Որոնել լեզուներ</string>
     <string name="languages_hub_downloads">Ներբեռնում է %1$s</string>
     <string name="languages_hub_added">%1$s-ն ավելացվեց</string>

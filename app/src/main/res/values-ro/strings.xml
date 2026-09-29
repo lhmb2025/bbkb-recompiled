@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Eliminați %1$s?</string>
     <string name="languages_hub_sheet_remove_message">O puteți adăuga din nou din acest ecran.</string>
     <string name="languages_hub_sheet_remove_confirm">Elimină</string>
-    <string name="languages_hub_options_extras_latin_only">Se pot combina doar limbi scrise cu alfabetul latin</string>
+    <string name="languages_hub_options_extras_latin_only">Nicio altă limbă a tastaturii nu se scrie cu acest alfabet</string>
     <string name="languages_hub_search">Caută limbi</string>
     <string name="languages_hub_downloads">Descarcă %1$s</string>
     <string name="languages_hub_added">%1$s a fost adăugată</string>

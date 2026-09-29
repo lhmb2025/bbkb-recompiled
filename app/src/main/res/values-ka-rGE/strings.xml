@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">წავშალოთ %1$s?</string>
     <string name="languages_hub_sheet_remove_message">შეგიძლიათ ისევ დაამატოთ ამ ეკრანიდან.</string>
     <string name="languages_hub_sheet_remove_confirm">წაშლა</string>
-    <string name="languages_hub_options_extras_latin_only">მხოლოდ ლათინური ანბანით დაწერილი ენების გაერთიანებაა შესაძლებელი</string>
+    <string name="languages_hub_options_extras_latin_only">ამ დამწერლობით კლავიატურის სხვა ენა არ იწერება</string>
     <string name="languages_hub_search">ენების ძიება</string>
     <string name="languages_hub_downloads">ჩამოტვირთვა %1$s</string>
     <string name="languages_hub_added">%1$s დაემატა</string>

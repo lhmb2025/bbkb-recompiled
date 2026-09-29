@@ -126,6 +126,12 @@ public class NuanceSDK {
         return sSelectionListGeneration;
     }
     private Locale mPrevPrimaryLocale = null;
+
+    // The engine's Amharic dictionary stores each syllable as its first-order letter plus a vowel
+    // marker, while the keyboard types and shows precomposed syllables. While the primary language
+    // is written in Ethiopic every word crossing this boundary is translated; see EthiopicSyllables.
+    // Read and written under sMutex only.
+    private boolean mEthiopicTranslation = false;
     private boolean mIsExplicitLearning = false;
     public boolean mIsPkb = true;
 
@@ -444,6 +450,10 @@ public class NuanceSDK {
         WordInfo selectionListWord;
         synchronized (sMutex) {
             selectionListWord = getSelectionListWord(this.mNativeHandle, i);
+            if (this.mEthiopicTranslation && selectionListWord != null) {
+                selectionListWord.word = EthiopicSyllables.compose(selectionListWord.word);
+                selectionListWord.spell = EthiopicSyllables.compose(selectionListWord.spell);
+            }
         }
         return selectionListWord;
     }
@@ -452,6 +462,9 @@ public class NuanceSDK {
         String inlineWord;
         synchronized (sMutex) {
             inlineWord = getInlineWord(this.mNativeHandle);
+            if (this.mEthiopicTranslation) {
+                inlineWord = EthiopicSyllables.compose(inlineWord);
+            }
         }
         return inlineWord;
     }
@@ -466,7 +479,15 @@ public class NuanceSDK {
                     " handle=" + this.mNativeHandle +
                     " thread=" + Thread.currentThread().getName());
             }
-            zProcessKeyBySymbol = processKeyBySymbol(this.mNativeHandle, c);
+            final String symbols = this.mEthiopicTranslation ? EthiopicSyllables.decompose(String.valueOf(c)) : null;
+            if (symbols != null && symbols.length() > 1) {
+                zProcessKeyBySymbol = true;
+                for (int i = 0; i < symbols.length(); i++) {
+                    zProcessKeyBySymbol &= processKeyBySymbol(this.mNativeHandle, symbols.charAt(i));
+                }
+            } else {
+                zProcessKeyBySymbol = processKeyBySymbol(this.mNativeHandle, c);
+            }
         }
         return zProcessKeyBySymbol;
     }
@@ -541,6 +562,7 @@ public class NuanceSDK {
                 if (localeArr.length > 0) {
                     this.mPrevPrimaryLocale = getPrimaryLanguage();
                     if (setLanguage(this.mNativeHandle, localeToString(localeArr))) {
+                        this.mEthiopicTranslation = EthiopicSyllables.appliesTo(localeArr[0]);
                         // Dictionary probe (debug): after the language activates, ask the engine
                         // directly whether common words are in the active LDB. Settles "is 'hello'
                         // missing from the dictionary" without relying on a focused text field.
@@ -604,6 +626,30 @@ public class NuanceSDK {
         return localeArr;
     }
 
+    /** The form the engine's dictionary expects; identity unless an Ethiopic language is primary. */
+    private String toEngineForm(String word) {
+        return this.mEthiopicTranslation ? EthiopicSyllables.decompose(word) : word;
+    }
+
+    /** A cursor position inside {@code word}, moved to the same place in its engine form. */
+    private int toEnginePosition(String word, int position) {
+        if (!this.mEthiopicTranslation || word == null || position <= 0 || position > word.length()) {
+            return position;
+        }
+        return EthiopicSyllables.decompose(word.substring(0, position)).length();
+    }
+
+    private String[] toEngineForm(String[] words) {
+        if (!this.mEthiopicTranslation || words == null) {
+            return words;
+        }
+        final String[] out = new String[words.length];
+        for (int i = 0; i < words.length; i++) {
+            out[i] = EthiopicSyllables.decompose(words[i]);
+        }
+        return out;
+    }
+
     public Locale getPrimaryLanguage() {
         Locale[] language = getLanguage();
         if (language.length > 0) {
@@ -635,7 +681,7 @@ public class NuanceSDK {
     public boolean isSpellingCorrect(String str) {
         boolean zIsSpellingCorrect;
         synchronized (sMutex) {
-            zIsSpellingCorrect = isSpellingCorrect(this.mNativeHandle, str);
+            zIsSpellingCorrect = isSpellingCorrect(this.mNativeHandle, toEngineForm(str));
         }
         return zIsSpellingCorrect;
     }
@@ -643,7 +689,7 @@ public class NuanceSDK {
     public boolean selectionListSelectWord(int i, boolean z, String str) {
         boolean zSelectionListSelectWord;
         synchronized (sMutex) {
-            zSelectionListSelectWord = selectionListSelectWord(this.mNativeHandle, i, z, str);
+            zSelectionListSelectWord = selectionListSelectWord(this.mNativeHandle, i, z, toEngineForm(str));
         }
         return zSelectionListSelectWord;
     }
@@ -687,7 +733,7 @@ public class NuanceSDK {
     public boolean scanBuffer(String str) {
         boolean zScanBuffer;
         synchronized (sMutex) {
-            zScanBuffer = scanBuffer(this.mNativeHandle, str);
+            zScanBuffer = scanBuffer(this.mNativeHandle, toEngineForm(str));
         }
         return zScanBuffer;
     }
@@ -700,6 +746,7 @@ public class NuanceSDK {
             if (!mIsLanguageInit) {
                 return false;
             }
+            str = toEngineForm(str);
             // DLM doesn't support phrases with spaces - split and add each word
             if (str.contains(" ")) {
                 boolean anyAdded = false;
@@ -719,7 +766,7 @@ public class NuanceSDK {
 
     public boolean wordChanged(String str, int i, String str2, String str3) {
         synchronized (sMutex) {
-            return wordChanged(this.mNativeHandle, str, i, str2, str3);
+            return wordChanged(this.mNativeHandle, toEngineForm(str), toEnginePosition(str, i), toEngineForm(str2), toEngineForm(str3));
         }
     }
 
@@ -729,7 +776,7 @@ public class NuanceSDK {
                 if (BuildConfig.DEBUG) Log.d(TAG, "DLM not ready, skipping addContactsWords (" + strArr.length + " words)");
                 return;
             }
-            addCategoryWords(this.mNativeHandle, CATEGORY_CONTACTS, strArr);
+            addCategoryWords(this.mNativeHandle, CATEGORY_CONTACTS, toEngineForm(strArr));
         }
     }
 
@@ -974,7 +1021,7 @@ public class NuanceSDK {
     public boolean setContextBuffer(String str) {
         boolean contextBuffer;
         synchronized (sMutex) {
-            contextBuffer = setContextBuffer(this.mNativeHandle, str);
+            contextBuffer = setContextBuffer(this.mNativeHandle, toEngineForm(str));
         }
         return contextBuffer;
     }

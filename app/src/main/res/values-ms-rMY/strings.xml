@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Alih keluar %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Anda boleh menambahnya semula daripada skrin ini.</string>
     <string name="languages_hub_sheet_remove_confirm">Alih keluar</string>
-    <string name="languages_hub_options_extras_latin_only">Hanya bahasa yang ditulis dalam abjad Latin boleh digabungkan</string>
+    <string name="languages_hub_options_extras_latin_only">Tiada bahasa papan kekunci lain yang ditulis dalam abjad ini</string>
     <string name="languages_hub_search">Cari bahasa</string>
     <string name="languages_hub_downloads">Memuat turun %1$s</string>
     <string name="languages_hub_added">%1$s ditambah</string>

@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">%1$s সরাবেন?</string>
     <string name="languages_hub_sheet_remove_message">আপনি এই স্ক্রিন থেকে এটি আবার যোগ করতে পারবেন।</string>
     <string name="languages_hub_sheet_remove_confirm">সরান</string>
-    <string name="languages_hub_options_extras_latin_only">শুধুমাত্র ল্যাটিন বর্ণমালায় লেখা ভাষাগুলি একত্রিত করা যায়</string>
+    <string name="languages_hub_options_extras_latin_only">এই লিপিতে লেখা আর কোনো কীবোর্ড ভাষা নেই</string>
     <string name="languages_hub_search">ভাষা সন্ধান করুন</string>
     <string name="languages_hub_downloads">ডাউনলোড হবে: %1$s</string>
     <string name="languages_hub_added">%1$s যোগ করা হয়েছে</string>

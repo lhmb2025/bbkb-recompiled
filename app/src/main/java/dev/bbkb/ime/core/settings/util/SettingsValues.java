@@ -492,8 +492,23 @@ public final class SettingsValues {
         return this.spacingAndPunctuation.isWordConnector(i);
     }
 
+    /**
+     * Whether a typed code point is word content rather than a separator: letters, digits, word
+     * connectors and combining marks. Both mark classes count. Spacing marks (Mc) always did;
+     * non-spacing marks (Mn) are the vowel signs and subjoined letters of Tibetan, the Arabic and
+     * Hebrew vowel points, the Thai vowels written above and below, and the Indic vowel signs
+     * such as Gujarati ુ. Until 2026-09-28 those ended the word: on the KEY2 the Tibetan keyboard
+     * committed "བྱ" the moment ྱ was typed and started a new word at the next consonant, so no
+     * Tibetan word with a vowel could ever be predicted.
+     */
     public boolean isWordCodePoint(int i) {
-        return Character.isLetterOrDigit(i) || isWordConnector(i) || 8 == Character.getType(i);
+        return Character.isLetterOrDigit(i) || isWordConnector(i) || isCombiningMark(i);
+    }
+
+    /** Package-private for {@code WordCodePointTest}. */
+    static boolean isCombiningMark(int i) {
+        final int type = Character.getType(i);
+        return Character.COMBINING_SPACING_MARK == type || Character.NON_SPACING_MARK == type;
     }
 
     /** True for symbols that are usually PRECEDED by a space ({@code symbolsPrecededBySpace}). */

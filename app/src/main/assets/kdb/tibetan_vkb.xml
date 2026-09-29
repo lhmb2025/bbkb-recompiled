@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- tibetan_vkb keyboard layout (generated 2026-09-28 from res/xml/rows_tibetan.xml)
+PID: 76
+SID: ET9SLIDDEFAULT
+no pkb of its own: the physical keyboard uses the QWERTY default geometry -->
+
+<keyboard
+  primaryId="76"
+  secondaryId="1"
+  defaultLayoutWidth="1080"
+  defaultLayoutHeight="600"
+  addAltChars="true">
+
+  <area>
+    <key keyType="regional" keyCodes="0x0F40, 0x0F90" keyWidth="108dp" keyHeight="102dp" keyTop="9dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x0F41, 0x0F91" keyWidth="108dp" keyHeight="102dp" keyTop="9dp" keyLeft="108dp" />
+    <key keyType="regional" keyCodes="0x0F42, 0x0F92" keyWidth="108dp" keyHeight="102dp" keyTop="9dp" keyLeft="216dp" />
+    <key keyType="regional" keyCodes="0x0F44, 0x0F94" keyWidth="108dp" keyHeight="102dp" keyTop="9dp" keyLeft="324dp" />
+    <key keyType="regional" keyCodes="0x0F45, 0x0F95" keyWidth="108dp" keyHeight="102dp" keyTop="9dp" keyLeft="432dp" />
+    <key keyType="regional" keyCodes="0x0F46, 0x0F96" keyWidth="108dp" keyHeight="102dp" keyTop="9dp" keyLeft="540dp" />
+    <key keyType="regional" keyCodes="0x0F47, 0x0F97" keyWidth="108dp" keyHeight="102dp" keyTop="9dp" keyLeft="648dp" />
+    <key keyType="regional" keyCodes="0x0F49, 0x0F99" keyWidth="108dp" keyHeight="102dp" keyTop="9dp" keyLeft="756dp" />
+    <key keyType="regional" keyCodes="0x0F4F, 0x0F9F, 0x0F4A" keyWidth="108dp" keyHeight="102dp" keyTop="9dp" keyLeft="864dp" />
+    <key keyType="regional" keyCodes="0x0F50, 0x0FA0, 0x0F4B" keyWidth="108dp" keyHeight="102dp" keyTop="9dp" keyLeft="972dp" />
+  </area>
+
+  <area>
+    <key keyType="regional" keyCodes="0x0F51, 0x0FA1, 0x0F4C" keyWidth="108dp" keyHeight="102dp" keyTop="130dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x0F53, 0x0FA3, 0x0F4E" keyWidth="108dp" keyHeight="102dp" keyTop="130dp" keyLeft="108dp" />
+    <key keyType="regional" keyCodes="0x0F54, 0x0FA4" keyWidth="108dp" keyHeight="102dp" keyTop="130dp" keyLeft="216dp" />
+    <key keyType="regional" keyCodes="0x0F55, 0x0FA5" keyWidth="108dp" keyHeight="102dp" keyTop="130dp" keyLeft="324dp" />
+    <key keyType="regional" keyCodes="0x0F56, 0x0FA6" keyWidth="108dp" keyHeight="102dp" keyTop="130dp" keyLeft="432dp" />
+    <key keyType="regional" keyCodes="0x0F58, 0x0FA8" keyWidth="108dp" keyHeight="102dp" keyTop="130dp" keyLeft="540dp" />
+    <key keyType="regional" keyCodes="0x0F59, 0x0FA9" keyWidth="108dp" keyHeight="102dp" keyTop="130dp" keyLeft="648dp" />
+    <key keyType="regional" keyCodes="0x0F5A, 0x0FAA" keyWidth="108dp" keyHeight="102dp" keyTop="130dp" keyLeft="756dp" />
+    <key keyType="regional" keyCodes="0x0F5B, 0x0FAB" keyWidth="108dp" keyHeight="102dp" keyTop="130dp" keyLeft="864dp" />
+    <key keyType="regional" keyCodes="0x0F5D, 0x0FAD" keyWidth="108dp" keyHeight="102dp" keyTop="130dp" keyLeft="972dp" />
+  </area>
+
+  <area>
+    <key keyType="regional" keyCodes="0x0F5E, 0x0FAE" keyWidth="108dp" keyHeight="102dp" keyTop="251dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x0F5F, 0x0FAF" keyWidth="108dp" keyHeight="102dp" keyTop="251dp" keyLeft="108dp" />
+    <key keyType="regional" keyCodes="0x0F60, 0x0FB0" keyWidth="108dp" keyHeight="102dp" keyTop="251dp" keyLeft="216dp" />
+    <key keyType="regional" keyCodes="0x0F61, 0x0FB1" keyWidth="108dp" keyHeight="102dp" keyTop="251dp" keyLeft="324dp" />
+    <key keyType="regional" keyCodes="0x0F62, 0x0FB2" keyWidth="108dp" keyHeight="102dp" keyTop="251dp" keyLeft="432dp" />
+    <key keyType="regional" keyCodes="0x0F63, 0x0FB3" keyWidth="108dp" keyHeight="102dp" keyTop="251dp" keyLeft="540dp" />
+    <key keyType="regional" keyCodes="0x0F64, 0x0FB4, 0x0F65" keyWidth="108dp" keyHeight="102dp" keyTop="251dp" keyLeft="648dp" />
+    <key keyType="regional" keyCodes="0x0F66, 0x0FB6" keyWidth="108dp" keyHeight="102dp" keyTop="251dp" keyLeft="756dp" />
+    <key keyType="regional" keyCodes="0x0F67, 0x0FB7" keyWidth="108dp" keyHeight="102dp" keyTop="251dp" keyLeft="864dp" />
+    <key keyType="regional" keyCodes="0x0F68, 0x0FB8" keyWidth="108dp" keyHeight="102dp" keyTop="251dp" keyLeft="972dp" />
+  </area>
+
+  <area>
+    <key keyType="function" keyCodes="0x25B2" keyName="ET9KEY_SHIFT" keyWidth="108dp" keyHeight="102dp" keyTop="372dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x0F72, 0x0F80" keyWidth="108dp" keyHeight="102dp" keyTop="372dp" keyLeft="108dp" />
+    <key keyType="regional" keyCodes="0x0F74" keyWidth="108dp" keyHeight="102dp" keyTop="372dp" keyLeft="216dp" />
+    <key keyType="regional" keyCodes="0x0F7A, 0x0F7B" keyWidth="108dp" keyHeight="102dp" keyTop="372dp" keyLeft="324dp" />
+    <key keyType="regional" keyCodes="0x0F7C, 0x0F7D" keyWidth="108dp" keyHeight="102dp" keyTop="372dp" keyLeft="432dp" />
+    <key keyType="regional" keyCodes="0x0FB1, 0x0FAD" keyWidth="108dp" keyHeight="102dp" keyTop="372dp" keyLeft="540dp" />
+    <key keyType="regional" keyCodes="0x0FB2, 0x0FB3, 0x0FB7" keyWidth="108dp" keyHeight="102dp" keyTop="372dp" keyLeft="648dp" />
+    <key keyType="nonRegional" keyCodes="0x0F0B, 0x0F7E, 0x0F7F, 0x0F0C" keyWidth="108dp" keyHeight="102dp" keyTop="372dp" keyLeft="756dp" />
+    <key keyType="nonRegional" keyCodes="0x0F0D, 0x0F0E, 0x0F04, 0x0F05" keyWidth="108dp" keyHeight="102dp" keyTop="372dp" keyLeft="864dp" />
+    <key keyType="function" keyCodes="0x21E6" keyName="ET9KEY_BACK" keyWidth="108dp" keyHeight="102dp" keyTop="372dp" keyLeft="972dp" />
+  </area>
+
+  <area>
+    <key keyType="function" keyLabel="?123" keyName="ET9KEY_DIGITLAYOUT" keyWidth="162dp" keyHeight="102dp" keyTop="493dp" keyLeft="0dp" />
+    <key keyType="nonRegional" keyLabel="," keyCodes="0x002C" keyWidth="108dp" keyHeight="102dp" keyTop="493dp" keyLeft="162dp" />
+    <key keyType="function" keyLabel="SPACE" keyName="ET9KEY_SPACE" keyWidth="540dp" keyHeight="102dp" keyTop="493dp" keyLeft="270dp" />
+    <key keyType="nonRegional" keyLabel="." keyCodes="0x002E" keyWidth="108dp" keyHeight="102dp" keyTop="493dp" keyLeft="810dp" />
+    <key keyType="function" keyLabel="DONE" keyName="ET9KEY_RETURN" keyWidth="162dp" keyHeight="102dp" keyTop="493dp" keyLeft="918dp" />
+  </area>
+</keyboard>

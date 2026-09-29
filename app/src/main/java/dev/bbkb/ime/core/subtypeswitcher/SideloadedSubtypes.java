@@ -33,7 +33,6 @@ import java.util.Map;
  * snapshot of those arrays into every affected user's preferences and silently stop future changes
  * to the shipped defaults from reaching them.
  *
- * <p><b>Five languages are deliberately excluded</b> - see {@link #LAYOUT_FOR_LANGUAGE}.
  */
 public final class SideloadedSubtypes {
 
@@ -49,13 +48,11 @@ public final class SideloadedSubtypes {
      * and writes the language's own script. The 11 Latin-script entries take plain {@code qwerty};
      * the rest reuse the script layout their writing system needs.
      *
-     * <p><b>Amharic, Tibetan, Gujarati, Odia and Punjabi are absent on purpose.</b> There is no
-     * layout in the tree for Ethiopic, Tibetan, Gujarati, Odia or Gurmukhi, and there is no honest
-     * substitute: the obvious-looking {@code translit} is not a transliteration keyboard at all but
-     * a Cyrillic one ({@code keyboard_layout_set_translit.xml} → {@code kbd_east_slavic}), and
-     * handing these languages {@code qwerty} would offer a keyboard that cannot type a single
-     * character of the dictionary behind it. They need a layout authored before they can have a
-     * subtype; until then their packs install and sit unused rather than pretending to work.
+     * <p>Amharic, Tibetan, Gujarati, Odia and Punjabi were absent until 2026-09-28, when their
+     * scripts got layouts of their own (Ethiopic, Tibetan, Gujarati, Odia, Gurmukhi). A language
+     * whose script has no layout must stay out of this table: {@code translit} is not a
+     * transliteration keyboard but a Cyrillic one, and {@code qwerty} would offer a keyboard that
+     * cannot type one character of the dictionary behind it.
      */
     private static final Map<String, String> LAYOUT_FOR_LANGUAGE;
 
@@ -77,6 +74,13 @@ public final class SideloadedSubtypes {
         m.put("ps", "farsi");               // Pashto - Perso-Arabic, closer to farsi than arabic
         m.put("ur", "farsi");               // Urdu - Perso-Arabic
         m.put("ug", "arabic");              // Uyghur - Perso-Arabic
+        // The five scripts authored on 2026-09-28: Indic ones transposed from the Bengali InScript
+        // layout, Ethiopic and Tibetan as four-row layouts with a shift layer.
+        m.put("gu", "gujarati");            // Gujarati
+        m.put("pa", "gurmukhi");            // Punjabi - Gurmukhi
+        m.put("or", "oriya");               // Odia
+        m.put("am", "ethiopic");            // Amharic - Ethiopic
+        m.put("bo", "tibetan");             // Tibetan
         LAYOUT_FOR_LANGUAGE = Collections.unmodifiableMap(m);
     }
 

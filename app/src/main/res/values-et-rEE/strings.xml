@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Kas eemaldada %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Saate selle sellelt ekraanilt uuesti lisada.</string>
     <string name="languages_hub_sheet_remove_confirm">Eemalda</string>
-    <string name="languages_hub_options_extras_latin_only">Kombineerida saab ainult ladina tähestikus kirjutatud keeli</string>
+    <string name="languages_hub_options_extras_latin_only">Ükski teine klaviatuurikeel ei kasuta seda tähestikku</string>
     <string name="languages_hub_search">Otsi keeli</string>
     <string name="languages_hub_downloads">Laeb alla %1$s</string>
     <string name="languages_hub_added">%1$s lisatud</string>

@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Pašalinti %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Galite ją vėl pridėti šiame ekrane.</string>
     <string name="languages_hub_sheet_remove_confirm">Pašalinti</string>
-    <string name="languages_hub_options_extras_latin_only">Galima derinti tik lotynų abėcėlės kalbas</string>
+    <string name="languages_hub_options_extras_latin_only">Jokia kita klaviatūros kalba nerašoma šia abėcėle</string>
     <string name="languages_hub_search">Ieškoti kalbų</string>
     <string name="languages_hub_downloads">Atsisiunčia %1$s</string>
     <string name="languages_hub_added">%1$s pridėta</string>

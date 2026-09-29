@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Të hiqet %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Mund ta shtosh përsëri nga ky ekran.</string>
     <string name="languages_hub_sheet_remove_confirm">Hiq</string>
-    <string name="languages_hub_options_extras_latin_only">Vetëm gjuhët e shkruara me alfabetin latin mund të kombinohen</string>
+    <string name="languages_hub_options_extras_latin_only">Asnjë gjuhë tjetër e tastierës nuk shkruhet me këtë alfabet</string>
     <string name="languages_hub_search">Kërko gjuhë</string>
     <string name="languages_hub_downloads">Shkarkon %1$s</string>
     <string name="languages_hub_added">U shtua: %1$s</string>

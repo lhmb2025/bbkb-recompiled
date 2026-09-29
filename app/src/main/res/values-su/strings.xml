@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Piceun %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Anjeun tiasa nambahkeunana deui ti layar ieu.</string>
     <string name="languages_hub_sheet_remove_confirm">Piceun</string>
-    <string name="languages_hub_options_extras_latin_only">Ngan basa nu ditulis dina abjad Latin nu tiasa digabungkeun</string>
+    <string name="languages_hub_options_extras_latin_only">Teu aya basa papan tombol séjén anu ditulis ku aksara ieu</string>
     <string name="languages_hub_search">Sungsi basa</string>
     <string name="languages_hub_downloads">Ngundeur %1$s</string>
     <string name="languages_hub_added">Parantos ditambah: %1$s</string>

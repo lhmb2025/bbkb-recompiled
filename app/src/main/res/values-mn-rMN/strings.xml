@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">%1$s-ыг хасах уу?</string>
     <string name="languages_hub_sheet_remove_message">Та үүнийг энэ дэлгэцээс дахин нэмж болно.</string>
     <string name="languages_hub_sheet_remove_confirm">Хасах</string>
-    <string name="languages_hub_options_extras_latin_only">Зөвхөн латин цагаан толгойгоор бичигдсэн хэлүүдийг хослуулж болно</string>
+    <string name="languages_hub_options_extras_latin_only">Энэ цагаан толгойгоор бичигддэг өөр гарын хэл байхгүй</string>
     <string name="languages_hub_search">Хэл хайх</string>
     <string name="languages_hub_downloads">%1$s татна</string>
     <string name="languages_hub_added">%1$s нэмэгдлээ</string>

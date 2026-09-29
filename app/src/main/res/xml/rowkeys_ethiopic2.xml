@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
+            <Key latin:keySpec="፳"/>
+            <Key latin:keySpec="፴"/>
+            <Key latin:keySpec="፵"/>
+            <Key latin:keySpec="፶"/>
+            <Key latin:keySpec="፷"/>
+            <Key latin:keySpec="፸"/>
+            <Key latin:keySpec="፹"/>
+            <Key latin:keySpec="፺"/>
+            <Key latin:keySpec="፻"/>
+            <Key latin:keySpec="፼"/>
+        </case>
+        <default>
+            <Key
+                latin:keySpec="ተ"
+                latin:moreKeys="ቱ,ቲ,ታ,ቴ,ት,ቶ,ቷ"/>
+            <Key
+                latin:keySpec="ቸ"
+                latin:moreKeys="ቹ,ቺ,ቻ,ቼ,ች,ቾ,ቿ"/>
+            <Key
+                latin:keySpec="ኀ"
+                latin:moreKeys="ኁ,ኂ,ኃ,ኄ,ኅ,ኆ,ኇ,ኈ,ኊ,ኋ,ኌ,ኍ"/>
+            <Key
+                latin:keySpec="ነ"
+                latin:moreKeys="ኑ,ኒ,ና,ኔ,ን,ኖ,ኗ"/>
+            <Key
+                latin:keySpec="ኘ"
+                latin:moreKeys="ኙ,ኚ,ኛ,ኜ,ኝ,ኞ,ኟ"/>
+            <Key
+                latin:keySpec="አ"
+                latin:moreKeys="ኡ,ኢ,ኣ,ኤ,እ,ኦ,ኧ"/>
+            <Key
+                latin:keySpec="ከ"
+                latin:moreKeys="ኩ,ኪ,ካ,ኬ,ክ,ኮ,ኯ,ኰ,ኲ,ኳ,ኴ,ኵ"/>
+            <Key
+                latin:keySpec="ወ"
+                latin:moreKeys="ዉ,ዊ,ዋ,ዌ,ው,ዎ,ዏ"/>
+            <Key
+                latin:keySpec="ዐ"
+                latin:moreKeys="ዑ,ዒ,ዓ,ዔ,ዕ,ዖ"/>
+            <Key
+                latin:keySpec="ዘ"
+                latin:moreKeys="ዙ,ዚ,ዛ,ዜ,ዝ,ዞ,ዟ"/>
+        </default>
+    </switch>
+</merge>

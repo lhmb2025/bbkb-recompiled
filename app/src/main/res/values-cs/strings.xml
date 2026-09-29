@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Odebrat %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Znovu ji můžete přidat na této obrazovce.</string>
     <string name="languages_hub_sheet_remove_confirm">Odebrat</string>
-    <string name="languages_hub_options_extras_latin_only">Kombinovat lze pouze jazyky psané latinkou</string>
+    <string name="languages_hub_options_extras_latin_only">Žádný jiný jazyk klávesnice nepoužívá toto písmo</string>
     <string name="languages_hub_search">Hledat jazyky</string>
     <string name="languages_hub_downloads">Stáhne se %1$s</string>
     <string name="languages_hub_added">Přidán jazyk %1$s</string>

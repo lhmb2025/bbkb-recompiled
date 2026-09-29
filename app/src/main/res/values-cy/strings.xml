@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Dileu %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Gallwch ei ychwanegu eto o\'r sgrin hon.</string>
     <string name="languages_hub_sheet_remove_confirm">Dileu</string>
-    <string name="languages_hub_options_extras_latin_only">Dim ond ieithoedd sy\'n cael eu hysgrifennu yn yr wyddor Ladin y gellir eu cyfuno</string>
+    <string name="languages_hub_options_extras_latin_only">Does dim iaith bysellfwrdd arall yn cael ei hysgrifennu yn yr wyddor hon</string>
     <string name="languages_hub_search">Chwilio ieithoedd</string>
     <string name="languages_hub_downloads">Yn llwytho %1$s i lawr</string>
     <string name="languages_hub_added">Ychwanegwyd %1$s</string>

@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Удалить %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Вы можете добавить её снова на этом экране.</string>
     <string name="languages_hub_sheet_remove_confirm">Удалить</string>
-    <string name="languages_hub_options_extras_latin_only">Объединять можно только языки на основе латинского алфавита</string>
+    <string name="languages_hub_options_extras_latin_only">Ни один другой язык клавиатуры не использует этот алфавит</string>
     <string name="languages_hub_search">Поиск языков</string>
     <string name="languages_hub_downloads">Загружает %1$s</string>
     <string name="languages_hub_added">%1$s добавлен</string>

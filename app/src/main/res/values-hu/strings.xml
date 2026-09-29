@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Eltávolítja ezt: %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Ezen a képernyőn bármikor újra hozzáadhatja.</string>
     <string name="languages_hub_sheet_remove_confirm">Eltávolítás</string>
-    <string name="languages_hub_options_extras_latin_only">Csak a latin ábécével írt nyelvek kombinálhatók</string>
+    <string name="languages_hub_options_extras_latin_only">Nincs más billentyűzetnyelv, amely ezt az írást használja</string>
     <string name="languages_hub_search">Nyelvek keresése</string>
     <string name="languages_hub_downloads">Letöltés mérete: %1$s</string>
     <string name="languages_hub_added">%1$s hozzáadva</string>

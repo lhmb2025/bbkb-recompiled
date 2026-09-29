@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">លុប %1$s?</string>
     <string name="languages_hub_sheet_remove_message">អ្នកអាចបន្ថែមវាម្ដងទៀតពីអេក្រង់នេះ។</string>
     <string name="languages_hub_sheet_remove_confirm">លុប</string>
-    <string name="languages_hub_options_extras_latin_only">មានតែភាសាដែលសរសេរជាអក្សរឡាតាំងប៉ុណ្ណោះដែលអាចផ្សំគ្នាបាន</string>
+    <string name="languages_hub_options_extras_latin_only">គ្មានភាសាក្ដារចុចផ្សេងទៀតដែលសរសេរជាអក្សរនេះទេ</string>
     <string name="languages_hub_search">ស្វែងរកភាសា</string>
     <string name="languages_hub_downloads">ទាញយក %1$s</string>
     <string name="languages_hub_added">%1$s ត្រូវបានបន្ថែម</string>

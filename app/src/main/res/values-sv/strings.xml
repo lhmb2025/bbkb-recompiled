@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Ta bort %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Du kan lägga till det igen från den här skärmen.</string>
     <string name="languages_hub_sheet_remove_confirm">Ta bort</string>
-    <string name="languages_hub_options_extras_latin_only">Endast språk skrivna med det latinska alfabetet kan kombineras</string>
+    <string name="languages_hub_options_extras_latin_only">Inget annat tangentbordsspråk skrivs med det här alfabetet</string>
     <string name="languages_hub_search">Sök språk</string>
     <string name="languages_hub_downloads">Hämtar %1$s</string>
     <string name="languages_hub_added">%1$s har lagts till</string>

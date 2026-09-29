@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">%1$s жок кылынсынбы?</string>
     <string name="languages_hub_sheet_remove_message">Аны бул экрандан кайра кошсоңуз болот.</string>
     <string name="languages_hub_sheet_remove_confirm">Жок кылуу</string>
-    <string name="languages_hub_options_extras_latin_only">Латын арибинде жазылган тилдерди гана айкалыштырууга болот</string>
+    <string name="languages_hub_options_extras_latin_only">Бул арипте жазылган башка баскычтоп тили жок</string>
     <string name="languages_hub_search">Тилдерди издөө</string>
     <string name="languages_hub_downloads">Жүктөлүүчү көлөм %1$s</string>
     <string name="languages_hub_added">%1$s кошулду</string>

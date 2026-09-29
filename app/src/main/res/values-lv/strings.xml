@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Noņemt %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Varat to pievienot vēlreiz šajā ekrānā.</string>
     <string name="languages_hub_sheet_remove_confirm">Noņemt</string>
-    <string name="languages_hub_options_extras_latin_only">Var apvienot tikai valodas, kas rakstītas latīņu alfabētā</string>
+    <string name="languages_hub_options_extras_latin_only">Neviena cita tastatūras valoda netiek rakstīta šajā alfabētā</string>
     <string name="languages_hub_search">Meklēt valodas</string>
     <string name="languages_hub_downloads">Lejupielādē %1$s</string>
     <string name="languages_hub_added">%1$s pievienota</string>

@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Премахване на %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Можете да я добавите отново от този екран.</string>
     <string name="languages_hub_sheet_remove_confirm">Премахване</string>
-    <string name="languages_hub_options_extras_latin_only">Само езици, изписвани с латиница, могат да се комбинират</string>
+    <string name="languages_hub_options_extras_latin_only">Няма друг език на клавиатурата, който се пише с тази азбука</string>
     <string name="languages_hub_search">Търсене на езици</string>
     <string name="languages_hub_downloads">Изтегляне: %1$s</string>
     <string name="languages_hub_added">%1$s е добавен</string>

@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Busak %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Kowe bisa nambahake maneh saka layar iki.</string>
     <string name="languages_hub_sheet_remove_confirm">Busak</string>
-    <string name="languages_hub_options_extras_latin_only">Mung basa sing ditulis nganggo aksara Latin sing bisa digabung</string>
+    <string name="languages_hub_options_extras_latin_only">Ora ana basa keyboard liya sing ditulis nganggo aksara iki</string>
     <string name="languages_hub_search">Golek basa</string>
     <string name="languages_hub_downloads">Ngundhuh %1$s</string>
     <string name="languages_hub_added">%1$s wis ditambahake</string>

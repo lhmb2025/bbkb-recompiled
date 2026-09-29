@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Alisin ang %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Maaari mo itong idagdag ulit mula sa screen na ito.</string>
     <string name="languages_hub_sheet_remove_confirm">Alisin</string>
-    <string name="languages_hub_options_extras_latin_only">Mga wikang nakasulat sa Latin alphabet lang ang maaaring pagsamahin</string>
+    <string name="languages_hub_options_extras_latin_only">Walang ibang wika ng keyboard na isinusulat sa alpabetong ito</string>
     <string name="languages_hub_search">Maghanap ng wika</string>
     <string name="languages_hub_downloads">Da-download: %1$s</string>
     <string name="languages_hub_added">Naidagdag ang %1$s</string>

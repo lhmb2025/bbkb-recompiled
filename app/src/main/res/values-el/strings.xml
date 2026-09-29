@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Αφαίρεση %1$s;</string>
     <string name="languages_hub_sheet_remove_message">Μπορείτε να το προσθέσετε ξανά από αυτήν την οθόνη.</string>
     <string name="languages_hub_sheet_remove_confirm">Αφαίρεση</string>
-    <string name="languages_hub_options_extras_latin_only">Μπορούν να συνδυαστούν μόνο γλώσσες που γράφονται με το λατινικό αλφάβητο</string>
+    <string name="languages_hub_options_extras_latin_only">Καμία άλλη γλώσσα πληκτρολογίου δεν γράφεται με αυτό το αλφάβητο</string>
     <string name="languages_hub_search">Αναζήτηση γλωσσών</string>
     <string name="languages_hub_downloads">Λήψη %1$s</string>
     <string name="languages_hub_added">Προστέθηκε: %1$s</string>

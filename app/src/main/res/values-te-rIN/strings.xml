@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">%1$s ను తొలగించాలా?</string>
     <string name="languages_hub_sheet_remove_message">మీరు దీన్ని ఈ స్క్రీన్ నుండి మళ్లీ చేర్చవచ్చు.</string>
     <string name="languages_hub_sheet_remove_confirm">తొలగించు</string>
-    <string name="languages_hub_options_extras_latin_only">లాటిన్ అక్షరమాలలో రాయబడిన భాషలను మాత్రమే కలపవచ్చు</string>
+    <string name="languages_hub_options_extras_latin_only">ఈ లిపిలో రాసే వేరే కీబోర్డ్ భాష ఏదీ లేదు</string>
     <string name="languages_hub_search">భాషలను శోధించండి</string>
     <string name="languages_hub_downloads">డౌన్‌లోడ్: %1$s</string>
     <string name="languages_hub_added">%1$s చేర్చబడింది</string>

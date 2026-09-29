@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Poistetaanko %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Voit lisätä sen uudelleen tältä näytöltä.</string>
     <string name="languages_hub_sheet_remove_confirm">Poista</string>
-    <string name="languages_hub_options_extras_latin_only">Vain latinalaisin kirjaimin kirjoitettuja kieliä voi yhdistää</string>
+    <string name="languages_hub_options_extras_latin_only">Mitään muuta näppäimistön kieltä ei kirjoiteta näillä kirjaimilla</string>
     <string name="languages_hub_search">Hae kieliä</string>
     <string name="languages_hub_downloads">Lataa %1$s</string>
     <string name="languages_hub_added">%1$s lisätty</string>

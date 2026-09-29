@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">%1$s silinsin?</string>
     <string name="languages_hub_sheet_remove_message">Onu bu ekrandan yenidən əlavə edə bilərsiniz.</string>
     <string name="languages_hub_sheet_remove_confirm">Silin</string>
-    <string name="languages_hub_options_extras_latin_only">Yalnız Latın əlifbası ilə yazılan dillər birləşdirilə bilər</string>
+    <string name="languages_hub_options_extras_latin_only">Bu əlifba ilə yazılan başqa klaviatura dili yoxdur</string>
     <string name="languages_hub_search">Dilləri axtarın</string>
     <string name="languages_hub_downloads">Endirmə: %1$s</string>
     <string name="languages_hub_added">%1$s əlavə edildi</string>

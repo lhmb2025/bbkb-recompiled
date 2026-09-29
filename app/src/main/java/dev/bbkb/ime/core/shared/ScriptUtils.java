@@ -93,6 +93,13 @@ public final class ScriptUtils {
         map.put("uz", 14);
         map.put("vi", 21);
         map.put(NuanceSDK.CHINESE_LOCALE, 7);
+        // The five scripts that got on-screen layouts on 2026-09-28 (ids continue attrs.xml's
+        // supportedScript enum after 21 = Vietnamese).
+        map.put("gu", 22);   // Gujarati
+        map.put("pa", 23);   // Punjabi, Gurmukhi
+        map.put("or", 24);   // Odia
+        map.put("am", 25);   // Amharic, Ethiopic
+        map.put("bo", 26);   // Tibetan
         SCRIPT_MAP = Collections.unmodifiableMap(map);
     }
 
@@ -150,6 +157,16 @@ public final class ScriptUtils {
                 return i >= 3584 && i <= 3711;
             case 21:
                 return (i <= 687 && Character.isLetter(i)) || i == 769 || i == 768 || i == 777 || i == 771 || i == 803;
+            case 22:
+                return i >= 2688 && i <= 2815;                                   // Gujarati
+            case 23:
+                return i >= 2560 && i <= 2687;                                   // Gurmukhi
+            case 24:
+                return i >= 2816 && i <= 2943;                                   // Oriya
+            case 25:
+                return (i >= 4608 && i <= 5023) || (i >= 11648 && i <= 11743);  // Ethiopic + supplement + extended
+            case 26:
+                return i >= 3840 && i <= 4095;                                   // Tibetan
             default:
                 throw new RuntimeException("Impossible value of script: " + i2);
         }

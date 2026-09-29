@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">%1$s നീക്കം ചെയ്യണോ?</string>
     <string name="languages_hub_sheet_remove_message">ഈ സ്ക്രീനിൽ നിന്ന് നിങ്ങൾക്ക് ഇത് വീണ്ടും ചേർക്കാം.</string>
     <string name="languages_hub_sheet_remove_confirm">നീക്കം ചെയ്യുക</string>
-    <string name="languages_hub_options_extras_latin_only">ലാറ്റിൻ അക്ഷരമാലയിൽ എഴുതിയ ഭാഷകൾ മാത്രമേ സംയോജിപ്പിക്കാൻ കഴിയൂ</string>
+    <string name="languages_hub_options_extras_latin_only">ഈ ലിപിയിൽ എഴുതുന്ന മറ്റൊരു കീബോർഡ് ഭാഷയും ഇല്ല</string>
     <string name="languages_hub_search">ഭാഷകൾ തിരയുക</string>
     <string name="languages_hub_downloads">ഡൗൺലോഡ് %1$s</string>
     <string name="languages_hub_added">%1$s ചേർത്തു</string>

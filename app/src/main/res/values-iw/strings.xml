@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">להסיר את %1$s?</string>
     <string name="languages_hub_sheet_remove_message">אפשר להוסיף אותה שוב ממסך זה.</string>
     <string name="languages_hub_sheet_remove_confirm">הסרה</string>
-    <string name="languages_hub_options_extras_latin_only">אפשר לשלב רק שפות הכתובות באלף-בית לטיני</string>
+    <string name="languages_hub_options_extras_latin_only">אין שפת מקלדת אחרת שנכתבת באלף-בית הזה</string>
     <string name="languages_hub_search">חיפוש שפות</string>
     <string name="languages_hub_downloads">הורדה של %1$s</string>
     <string name="languages_hub_added">%1$s נוספה</string>

@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Hapus %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Anda dapat menambahkannya lagi dari layar ini.</string>
     <string name="languages_hub_sheet_remove_confirm">Hapus</string>
-    <string name="languages_hub_options_extras_latin_only">Hanya bahasa yang ditulis dengan alfabet Latin yang dapat digabungkan</string>
+    <string name="languages_hub_options_extras_latin_only">Tidak ada bahasa keyboard lain yang ditulis dengan aksara ini</string>
     <string name="languages_hub_search">Telusuri bahasa</string>
     <string name="languages_hub_downloads">Mengunduh %1$s</string>
     <string name="languages_hub_added">%1$s ditambahkan</string>

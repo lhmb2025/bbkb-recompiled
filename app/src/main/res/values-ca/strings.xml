@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Voleu suprimir %1$s?</string>
     <string name="languages_hub_sheet_remove_message">El podreu tornar a afegir des d\'aquesta pantalla.</string>
     <string name="languages_hub_sheet_remove_confirm">Suprimeix</string>
-    <string name="languages_hub_options_extras_latin_only">Només es poden combinar llengües que s\'escriuen amb l\'alfabet llatí</string>
+    <string name="languages_hub_options_extras_latin_only">Cap altra llengua del teclat s\'escriu amb aquest alfabet</string>
     <string name="languages_hub_search">Cerca llengües</string>
     <string name="languages_hub_downloads">Baixa %1$s</string>
     <string name="languages_hub_added">S\'ha afegit %1$s</string>

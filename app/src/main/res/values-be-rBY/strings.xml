@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Выдаліць %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Вы можаце дадаць яе зноў з гэтага экрана.</string>
     <string name="languages_hub_sheet_remove_confirm">Выдаліць</string>
-    <string name="languages_hub_options_extras_latin_only">Можна аб\'яднаць толькі мовы, напісаныя лацінскім алфавітам</string>
+    <string name="languages_hub_options_extras_latin_only">Ніводная іншая мова клавіятуры не пішацца гэтым алфавітам</string>
     <string name="languages_hub_search">Пошук моў</string>
     <string name="languages_hub_downloads">Спампоўванне: %1$s</string>
     <string name="languages_hub_added">%1$s дададзена</string>

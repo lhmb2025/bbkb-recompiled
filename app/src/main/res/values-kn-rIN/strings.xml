@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">%1$s ಅನ್ನು ತೆಗೆದುಹಾಕುವುದೇ?</string>
     <string name="languages_hub_sheet_remove_message">ಈ ಪರದೆಯಿಂದ ನೀವು ಅದನ್ನು ಮತ್ತೆ ಸೇರಿಸಬಹುದು.</string>
     <string name="languages_hub_sheet_remove_confirm">ತೆಗೆದುಹಾಕಿ</string>
-    <string name="languages_hub_options_extras_latin_only">ಲ್ಯಾಟಿನ್ ಲಿಪಿಯಲ್ಲಿ ಬರೆಯಲಾದ ಭಾಷೆಗಳನ್ನು ಮಾತ್ರ ಸಂಯೋಜಿಸಬಹುದು</string>
+    <string name="languages_hub_options_extras_latin_only">ಈ ಲಿಪಿಯಲ್ಲಿ ಬರೆಯುವ ಬೇರೆ ಯಾವುದೇ ಕೀಬೋರ್ಡ್ ಭಾಷೆ ಇಲ್ಲ</string>
     <string name="languages_hub_search">ಭಾಷೆಗಳನ್ನು ಹುಡುಕಿ</string>
     <string name="languages_hub_downloads">ಡೌನ್‌ಲೋಡ್‌ಗಳು %1$s</string>
     <string name="languages_hub_added">%1$s ಸೇರಿಸಲಾಗಿದೆ</string>

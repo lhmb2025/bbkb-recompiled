@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Eliminar %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Podes engadilo de novo desde esta pantalla.</string>
     <string name="languages_hub_sheet_remove_confirm">Eliminar</string>
-    <string name="languages_hub_options_extras_latin_only">Só se poden combinar idiomas escritos co alfabeto latino</string>
+    <string name="languages_hub_options_extras_latin_only">Ningún outro idioma do teclado se escribe con este alfabeto</string>
     <string name="languages_hub_search">Buscar idiomas</string>
     <string name="languages_hub_downloads">Descarga %1$s</string>
     <string name="languages_hub_added">Engadiuse %1$s</string>

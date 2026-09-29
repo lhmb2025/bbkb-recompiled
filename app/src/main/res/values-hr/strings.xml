@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Ukloniti %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Možete je ponovno dodati s ovog zaslona.</string>
     <string name="languages_hub_sheet_remove_confirm">Ukloni</string>
-    <string name="languages_hub_options_extras_latin_only">Mogu se kombinirati samo jezici koji se pišu latinicom</string>
+    <string name="languages_hub_options_extras_latin_only">Nijedan drugi jezik tipkovnice ne piše se ovim pismom</string>
     <string name="languages_hub_search">Pretraži jezike</string>
     <string name="languages_hub_downloads">Preuzima %1$s</string>
     <string name="languages_hub_added">%1$s dodano</string>

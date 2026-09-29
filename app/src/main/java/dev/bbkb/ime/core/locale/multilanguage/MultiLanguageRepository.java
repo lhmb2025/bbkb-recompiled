@@ -11,6 +11,8 @@ import dev.bbkb.ime.core.locale.RichInputMethodManager;
 import dev.bbkb.ime.core.subtypeswitcher.SubtypeFactory;
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils;
 import dev.bbkb.ime.core.shared.Logger;
+import dev.bbkb.ime.core.shared.ScriptUtils;
+import dev.bbkb.ime.core.locale.LocaleUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,9 @@ public class MultiLanguageRepository {
     private final Context context;
 
     private final TreeMap<LocaleItem, String> localeToLayoutSet = new TreeMap<>(LocaleItem.DISPLAY_NAME_COMPARATOR);
+
+    /** The Latin-script subset, which the old wizard and dialog still list as primaries. */
+    private final TreeSet<LocaleItem> asciiLocales = new TreeSet<>(LocaleItem.DISPLAY_NAME_COMPARATOR);
 
     private final TreeSet<MultiLanguageConfig> configs = new TreeSet<>();
 
@@ -75,11 +80,17 @@ public class MultiLanguageRepository {
         int subtypeCount = inputMethodInfo.getSubtypeCount();
         for (int i = 0; i < subtypeCount; i++) {
             InputMethodSubtype subtypeAt = inputMethodInfo.getSubtypeAt(i);
+            String locale = subtypeAt.getLocale();
+            if (locale.equals("zz") || SubtypeFactory.isAdditionalSubtype(subtypeAt)) {
+                continue;
+            }
+            // Every declared keyboard is known here. Which of them can share a keyboard is decided
+            // per primary language by script (see canCombine): until 2026-09-28 only ASCII-capable
+            // subtypes were listed, so Russian could not add Ukrainian nor Hindi Marathi, though
+            // they share a layout.
+            this.localeToLayoutSet.put(new LocaleItem(locale), ResourceLocaleUtils.getKeyboardLayoutSetName(subtypeAt));
             if (InputMethodSubtypeCompat.isAsciiCapable(subtypeAt)) {
-                String locale = subtypeAt.getLocale();
-                if (!locale.equals("zz") && !SubtypeFactory.isAdditionalSubtype(subtypeAt)) {
-                    this.localeToLayoutSet.put(new LocaleItem(locale), ResourceLocaleUtils.getKeyboardLayoutSetName(subtypeAt));
-                }
+                this.asciiLocales.add(new LocaleItem(locale));
             }
         }
     }
@@ -88,8 +99,55 @@ public class MultiLanguageRepository {
         return this.localeToLayoutSet.get(c0711f);
     }
 
+    /** The Latin-script keyboards, as the old wizard lists them. Extras for a given keyboard come from {@link #getAvailableLocalesFor}. */
     public ArrayList<LocaleItem> getAvailableLocales() {
-        return new ArrayList<>(this.localeToLayoutSet.keySet());
+        return new ArrayList<>(this.asciiLocales);
+    }
+
+    /** Every declared keyboard language that can be an extra prediction language of {@code primaryLocale}: same script, not itself. */
+    public ArrayList<LocaleItem> getAvailableLocalesFor(String primaryLocale) {
+        ArrayList<LocaleItem> out = new ArrayList<>();
+        for (LocaleItem item : this.localeToLayoutSet.keySet()) {
+            if (!item.first.equals(primaryLocale) && canCombine(primaryLocale, item.first)) {
+                out.add(item);
+            }
+        }
+        return out;
+    }
+
+    /**
+     * Whether two keyboard languages can share one keyboard: the same script, so one layout types
+     * both. Latin covers Vietnamese (script 21, Latin with tone marks). Chinese, Japanese and
+     * Korean are excluded on both sides: their candidates come from a converter or the CJK strip,
+     * one language at a time.
+     */
+    public static boolean canCombine(String primaryLocale, String extraLocale) {
+        int a = scriptOf(primaryLocale);
+        int b = scriptOf(extraLocale);
+        if (a == ScriptUtils.SCRIPT_UNKNOWN || b == ScriptUtils.SCRIPT_UNKNOWN) {
+            return false;
+        }
+        if (isCjk(a) || isCjk(b)) {
+            return false;
+        }
+        return a == b;
+    }
+
+    /** True for a language typed on Latin keys, which decides a combined keyboard's AsciiCapable flag. */
+    public static boolean isLatinScript(String locale) {
+        return scriptOf(locale) == 14;
+    }
+
+    private static boolean isCjk(int script) {
+        return script == 7 || script == 8 || script == 10;
+    }
+
+    private static int scriptOf(String locale) {
+        if (locale == null || locale.isEmpty()) {
+            return ScriptUtils.SCRIPT_UNKNOWN;
+        }
+        int script = ScriptUtils.getScript(LocaleUtils.constructLocaleFromString(locale).getLanguage());
+        return script == 21 ? 14 : script;
     }
 
     /**

@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">ລຶບ %1$s ບໍ?</string>
     <string name="languages_hub_sheet_remove_message">ທ່ານສາມາດເພີ່ມມັນອີກຄັ້ງໄດ້ຈາກໜ້າຈໍນີ້.</string>
     <string name="languages_hub_sheet_remove_confirm">ລຶບ</string>
-    <string name="languages_hub_options_extras_latin_only">ສາມາດລວມໄດ້ສະເພາະພາສາທີ່ຂຽນດ້ວຍໂຕອັກສອນລາຕິນເທົ່ານັ້ນ</string>
+    <string name="languages_hub_options_extras_latin_only">ບໍ່ມີພາສາແປ້ນພິມອື່ນທີ່ຂຽນດ້ວຍຕົວອັກສອນນີ້</string>
     <string name="languages_hub_search">ຄົ້ນຫາພາສາ</string>
     <string name="languages_hub_downloads">ດາວໂຫຼດ %1$s</string>
     <string name="languages_hub_added">ເພີ່ມ %1$s ແລ້ວ</string>

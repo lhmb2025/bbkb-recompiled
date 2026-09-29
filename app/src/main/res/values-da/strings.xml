@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Fjern %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Du kan tilføje det igen fra denne skærm.</string>
     <string name="languages_hub_sheet_remove_confirm">Fjern</string>
-    <string name="languages_hub_options_extras_latin_only">Kun sprog, der skrives med det latinske alfabet, kan kombineres</string>
+    <string name="languages_hub_options_extras_latin_only">Intet andet tastatursprog skrives med dette alfabet</string>
     <string name="languages_hub_search">Søg efter sprog</string>
     <string name="languages_hub_downloads">Downloader %1$s</string>
     <string name="languages_hub_added">%1$s tilføjet</string>

@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">Gỡ %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Bạn có thể thêm lại từ màn hình này.</string>
     <string name="languages_hub_sheet_remove_confirm">Gỡ</string>
-    <string name="languages_hub_options_extras_latin_only">Chỉ những ngôn ngữ viết bằng bảng chữ cái Latinh mới có thể kết hợp</string>
+    <string name="languages_hub_options_extras_latin_only">Không có ngôn ngữ bàn phím nào khác được viết bằng bảng chữ cái này</string>
     <string name="languages_hub_search">Tìm ngôn ngữ</string>
     <string name="languages_hub_downloads">Tải xuống %1$s</string>
     <string name="languages_hub_added">Đã thêm %1$s</string>

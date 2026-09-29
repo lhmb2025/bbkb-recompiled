@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">%1$s kendu nahi duzu?</string>
     <string name="languages_hub_sheet_remove_message">Berriro gehi dezakezu pantaila honetatik.</string>
     <string name="languages_hub_sheet_remove_confirm">Kendu</string>
-    <string name="languages_hub_options_extras_latin_only">Alfabeto latinoz idatzitako hizkuntzak bakarrik konbina daitezke</string>
+    <string name="languages_hub_options_extras_latin_only">Ez dago alfabeto hau erabiltzen duen beste teklatu-hizkuntzarik</string>
     <string name="languages_hub_search">Bilatu hizkuntzak</string>
     <string name="languages_hub_downloads">%1$s deskargatuko ditu</string>
     <string name="languages_hub_added">%1$s gehitu da</string>

@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">%1$s काढायचा?</string>
     <string name="languages_hub_sheet_remove_message">तुम्ही तो या स्क्रीनवरून पुन्हा जोडू शकता.</string>
     <string name="languages_hub_sheet_remove_confirm">काढा</string>
-    <string name="languages_hub_options_extras_latin_only">फक्त लॅटिन लिपीत लिहिलेल्या भाषा एकत्र करता येतात</string>
+    <string name="languages_hub_options_extras_latin_only">या लिपीत लिहिली जाणारी दुसरी कोणतीही कीबोर्ड भाषा नाही</string>
     <string name="languages_hub_search">भाषा शोधा</string>
     <string name="languages_hub_downloads">डाउनलोड होते %1$s</string>
     <string name="languages_hub_added">%1$s जोडले</string>

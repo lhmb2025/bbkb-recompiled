@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">An scriosfar %1$s?</string>
     <string name="languages_hub_sheet_remove_message">Is féidir leat é a chur leis arís ón scáileán seo.</string>
     <string name="languages_hub_sheet_remove_confirm">Scrios</string>
-    <string name="languages_hub_options_extras_latin_only">Ní féidir ach teangacha atá scríofa san aibítir Laidineach a chomhcheangal</string>
+    <string name="languages_hub_options_extras_latin_only">Níl aon teanga méarchláir eile scríofa san aibítir seo</string>
     <string name="languages_hub_search">Cuardaigh teangacha</string>
     <string name="languages_hub_downloads">Íoslódálann %1$s</string>
     <string name="languages_hub_added">Cuireadh %1$s leis</string>

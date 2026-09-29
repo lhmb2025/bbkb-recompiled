@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key
+        latin:keySpec="ଔ"
+        latin:moreKeys="ୌ"/>
+    <Key
+        latin:keySpec="ଐ"
+        latin:moreKeys="ୈ"/>
+    <Key
+        latin:keySpec="ଆ"
+        latin:moreKeys="ା"/>
+    <Key
+        latin:keySpec="ଈ"
+        latin:moreKeys="ୀ"/>
+    <Key
+        latin:keySpec="ଊ"
+        latin:moreKeys="ୂ"/>
+    <Key
+        latin:keySpec="ବ"
+        latin:moreKeys="ଭ,ୱ,ଵ,%"/>
+    <Key latin:keySpec="ହ"/>
+    <Key
+        latin:keySpec="ଗ"
+        latin:moreKeys="ଘ,%"/>
+    <Key
+        latin:keySpec="ଦ"
+        latin:moreKeys="ଧ,%"/>
+    <Key
+        latin:keySpec="ଜ"
+        latin:moreKeys="ଝ,ଜ୍ଞ,%"/>
+    <Key
+        latin:keySpec="ଡ"
+        latin:moreKeys="ଡ଼"/>
+</merge>

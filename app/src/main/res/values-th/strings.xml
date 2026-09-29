@@ -770,7 +770,7 @@
     <string name="languages_hub_sheet_remove_title">นำ %1$s ออกไหม</string>
     <string name="languages_hub_sheet_remove_message">คุณสามารถเพิ่มกลับได้จากหน้าจอนี้</string>
     <string name="languages_hub_sheet_remove_confirm">นำออก</string>
-    <string name="languages_hub_options_extras_latin_only">รวมกันได้เฉพาะภาษาที่เขียนด้วยอักษรละตินเท่านั้น</string>
+    <string name="languages_hub_options_extras_latin_only">ไม่มีภาษาแป้นพิมพ์อื่นที่เขียนด้วยอักษรนี้</string>
     <string name="languages_hub_search">ค้นหาภาษา</string>
     <string name="languages_hub_downloads">ดาวน์โหลด %1$s</string>
     <string name="languages_hub_added">เพิ่ม %1$s แล้ว</string>

@@ -25,7 +25,7 @@
     <string name="languages_hub_sheet_remove_title">Remove %1$s?</string>
     <string name="languages_hub_sheet_remove_message">You can add it again from this screen.</string>
     <string name="languages_hub_sheet_remove_confirm">Remove</string>
-    <string name="languages_hub_options_extras_latin_only">Only languages written in the Latin alphabet can be combined</string>
+    <string name="languages_hub_options_extras_latin_only">No other keyboard language is written in this alphabet</string>
     <string name="languages_hub_search">Search languages</string>
     <string name="languages_hub_downloads">Downloads %1$s</string>
     <string name="languages_hub_added">%1$s added</string>

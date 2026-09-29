@@ -69,7 +69,7 @@ class SideloadedSubtypesTest {
         // Guards a typo turning into a subtype that resolves to no keyboard at all. Checked against
         // the real resource, not a hardcoded list of layout names.
         val res = context.resources
-        for (lang in listOf("ha", "as", "kk", "tt", "ks", "sa", "ne", "my", "si", "ps", "ur", "ug", "tg")) {
+        for (lang in listOf("ha", "as", "kk", "tt", "ks", "sa", "ne", "my", "si", "ps", "ur", "ug", "tg", "am", "bo", "gu", "or", "pa")) {
             val layout = SideloadedSubtypes.layoutFor(lang)
             assertNotNull("no layout for $lang", layout)
             val id = res.getIdentifier("keyboard_layout_set_$layout", "xml", context.packageName)
@@ -78,17 +78,15 @@ class SideloadedSubtypesTest {
     }
 
     @Test
-    fun theFiveLanguagesWithNoLayoutAreRefusedRatherThanGivenAWrongOne() {
-        // Ethiopic, Tibetan, Gujarati, Odia and Gurmukhi have no layout in the tree. `translit`
-        // LOOKS like the answer and is not — keyboard_layout_set_translit.xml is kbd_east_slavic,
-        // a Cyrillic keyboard. Offering these qwerty would advertise a language whose dictionary
-        // the keyboard cannot type one character of.
-        for (l in listOf("am", "bo", "gu", "or", "pa")) {
-            assertNull("must offer no layout for $l", SideloadedSubtypes.layoutFor(l))
-            assertFalse(SideloadedSubtypes.canOfferSubtypeFor(l))
-            assertFalse("must not record an entry for $l", SideloadedSubtypes.add(context, l))
+    fun theFiveFormerlyExcludedLanguagesGetTheirOwnScriptLayouts() {
+        // Until 2026-09-28 these were refused because the tree had no layout for their scripts.
+        val expected = mapOf("am" to "ethiopic", "bo" to "tibetan", "gu" to "gujarati", "or" to "oriya", "pa" to "gurmukhi")
+        val res = context.resources
+        for ((l, layout) in expected) {
+            assertEquals("layout for $l", layout, SideloadedSubtypes.layoutFor(l))
+            assertTrue(SideloadedSubtypes.canOfferSubtypeFor(l))
+            assertTrue("layout $layout does not ship", res.getIdentifier("keyboard_layout_set_$layout", "xml", context.packageName) != 0)
         }
-        assertEquals("", SideloadedSubtypes.readRaw(prefs))
     }
 
     @Test
