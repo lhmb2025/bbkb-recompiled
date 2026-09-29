@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "generated": "2026-09-22T13:46:40Z",
+  "generated": "2026-09-29T05:33:17Z",
   "app": {
     "release": {
-      "versionCode": 1433,
-      "versionName": "5.0.0-beta.21",
-      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.21/bbkb-5.0.0-beta.21-release.apk",
-      "sha256": "2536d919f84d4224e3251192d07a5de00c668512953b27b10f655b53801f6470",
-      "size": 56748514,
+      "versionCode": 1435,
+      "versionName": "5.0.0-beta.22",
+      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.22/bbkb-5.0.0-beta.22-release.apk",
+      "sha256": "d342f83ef8d3eb3f30194b0df6cde5552220a69f1cc9eaaa565be4c10fdf026d",
+      "size": 56882289,
       "minSdk": 23,
-      "notes": "Settings backup and restore under Advanced > Manage data; fixes the blank emoji board."
+      "notes": "New Language settings page, five new languages, physical keyboard layouts for every language, and fixes for dictation, Chinese, Korean, Vietnamese and language packs."
     }
   },
   "packs": {
