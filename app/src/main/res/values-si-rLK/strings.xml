@@ -19,11 +19,9 @@
     <string name="label_send_key">යවන්න</string>
     <string name="label_wait_key">රැඳීම</string>
     <string name="language_selection_title">භාෂා</string>
-    <string name="no_dictionaries_available">ශබ්ද කෝෂ ලබාගත නොහැක</string>
     <string name="popup_on_keypress">යතුරු එබීම මත උත්පතනය</string>
     <string name="prefs_keypress_sound_volume_settings">යතුරු එබීම් හඬ තීව්‍රතාවය</string>
     <string name="prefs_keypress_vibration_duration_settings">යතුරු එබිම් කම්පන කාලපරිච්ඡේදය</string>
-    <string name="save">සුරකින්න</string>
     <string name="sound_on_keypress">යතුරු එබිම මත හඬ</string>
     <string name="spell_checker_service_name">BBKB අක්ෂර වින්‍යාස පරීක්ෂක</string>
     <string name="subtype_emoji">ඉමොජි</string>
@@ -44,8 +42,6 @@
     <string name="subtype_with_layout_en_US">ඉංග්‍රීසි (එ.ජ) (%s)</string>
     <string name="subtype_with_layout_es_US">ස්පාඤ්ඤ (එ.ජ) (%s)</string>
     <string name="user_dict_settings_add_dialog_confirm">හරි</string>
-    <string name="user_dict_settings_add_menu_title">එක් කරන්න</string>
     <string name="user_dict_settings_all_languages">සියලු භාෂාවන් සඳහා</string>
-    <string name="user_dict_settings_delete">මකන්න</string>
     <string name="vibrate_on_keypress">යතුර එබීමට කම්පනය කිරීම සක්‍රියයි</string>
 </resources>

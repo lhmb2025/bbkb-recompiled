@@ -4,9 +4,6 @@ package dev.bbkb.ime.core.settings
  * Navigation routes for all settings screens
  * Defines the navigation graph structure for Compose settings
  */
-/** Name of the wizard's config path argument. */
-const val ARG_WIZARD_CONFIG = "config"
-
 /**
  * A settings destination: one navigation route string and its title.
  *
@@ -34,7 +31,10 @@ const val ARG_WIZARD_CONFIG = "config"
  * that replaced it: `"personalization"` → [AppearanceLayout] (the Personalization hub),
  * `"learned_words"` → [PersonalLearnedWords], `"feedback_haptics"` → [TouchFeedback],
  * `"personal_dictionary"` → [UserDictionary], `"word_substitutions"` → [TextShortcuts],
- * `"unified_dictionary"` → [Learning] (the dictionaries hub).
+ * `"unified_dictionary"` → [Learning] (the dictionaries hub). Since 2026-09-29 the same goes for
+ * the old Languages menu and the multi-language keyboards list and wizard, whose pages were
+ * removed once the Language page replaced them: `"languages"`, `"languages_input"`,
+ * `"multi_language_keyboards"` and `"multi_language_wizard_add"` → [LanguagesHub].
  *
  * Two genuine one-page-two-routes cases remain and are deliberate, not aliases of this kind:
  * [TouchFeedback] and [KeyPressFeedback] both render `KeyPressFeedbackScreen` (the second is a
@@ -46,7 +46,6 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object Main : SettingsRoute("main", "Settings")
 
     // Primary settings screens (v5 - per docs/archived/2026-01_compose-settings-and-dictionaries/2026-01_settings-compose_history.md)
-    object Languages : SettingsRoute("languages", "Languages")
     object Preferences : SettingsRoute("preferences", "Preferences")
     object AppearanceLayout : SettingsRoute("appearance_layout", "Appearance and layout")
     // SuggestionCorrection defined below is the primary for "Suggestion and correction"
@@ -69,9 +68,6 @@ sealed class SettingsRoute(val route: String, val title: String) {
 
     // Other sub-screens
     object LanguageSwitching : SettingsRoute("language_switching", "Language Switching")
-    object MultiLanguageKeyboards : SettingsRoute("multi_language_keyboards", "Multi-language Keyboards")
-    object MultiLanguageWizardAdd : SettingsRoute("multi_language_wizard_add", "Add Keyboard")
-    object MultiLanguageWizardEdit : SettingsRoute("multi_language_wizard_edit/{$ARG_WIZARD_CONFIG}", "Edit Keyboard")
     object QuickPhrases : SettingsRoute("quick_phrases", "Quick Phrases")
     object Shake : SettingsRoute("shake", "Shake Gestures")
     object VoiceInput : SettingsRoute("voice_input", "Voice Input Settings")
@@ -110,40 +106,6 @@ sealed class SettingsRoute(val route: String, val title: String) {
         fun unifiedDictionaryEntries(locale: String) = "unified_dictionary_entries/$locale"
 
         /**
-         * Route to the wizard in EDIT mode, carrying the config itself rather than parking it in
-         * a static. Base64url keeps the serialized form (which contains '/' and ':') inside one
-         * path segment with no percent-encoding round trip.
-         */
-        fun multiLanguageWizardEdit(serializedConfig: String): String =
-            "multi_language_wizard_edit/" + android.util.Base64.encodeToString(
-                serializedConfig.toByteArray(Charsets.UTF_8),
-                android.util.Base64.URL_SAFE or android.util.Base64.NO_WRAP or android.util.Base64.NO_PADDING
-            )
-
-        /** Inverse of [multiLanguageWizardEdit]; returns null if the argument is unusable. */
-        fun decodeWizardConfigArg(encoded: String?): String? = try {
-            if (encoded.isNullOrEmpty()) null
-            else String(
-                android.util.Base64.decode(
-                    encoded,
-                    android.util.Base64.URL_SAFE or android.util.Base64.NO_WRAP or android.util.Base64.NO_PADDING
-                ),
-                Charsets.UTF_8
-            )
-        } catch (e: IllegalArgumentException) {
-            null
-        }
-        /**
-         * Get all primary settings routes for main menu
-         */
-        fun getAllPrimaryRoutes(): List<SettingsRoute> = listOf(
-            Languages,
-            Preferences,
-            SuggestionCorrection,  // "Suggestion and correction"
-            Advanced
-        )
-        
-        /**
          * Resolve a route string to its destination, or null if it is not a route.
          *
          * This is what validates the `"screen"` intent extra before it reaches navigation-compose
@@ -155,7 +117,10 @@ sealed class SettingsRoute(val route: String, val title: String) {
         fun fromRoute(route: String?): SettingsRoute? {
             return when (route) {
                 Main.route -> Main
-                Languages.route, "languages_input" -> Languages
+                // The old Languages menu, the multi-language keyboards list and its wizard were
+                // folded into the Language page on 2026-09-29; their strings land there.
+                "languages", "languages_input", "multi_language_keyboards",
+                "multi_language_wizard_add" -> LanguagesHub
                 SuggestionCorrection.route, "prediction_correction", "correction_learning" -> SuggestionCorrection
                 Preferences.route, "customization" -> Preferences
                 // Legacy strings whose own page was folded into another; see the KDoc above.
@@ -169,8 +134,6 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 Correction.route -> Correction
                 DeviceCompatibility.route -> DeviceCompatibility
                 LanguageSwitching.route -> LanguageSwitching
-                MultiLanguageKeyboards.route -> MultiLanguageKeyboards
-                MultiLanguageWizardAdd.route -> MultiLanguageWizardAdd
                 QuickPhrases.route -> QuickPhrases
                 Shake.route -> Shake
                 VoiceInput.route -> VoiceInput

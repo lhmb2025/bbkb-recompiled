@@ -19,11 +19,9 @@
     <string name="label_send_key">ပို့ရန်</string>
     <string name="label_wait_key">စောင့်ဆိုင်းရန်</string>
     <string name="language_selection_title">ဘာသာစကားများ</string>
-    <string name="no_dictionaries_available">အဘိဓါန်မရှိ</string>
     <string name="popup_on_keypress">ကီးနှိပ်လိုက်သည်နှင့် ပေါ်လာရန်</string>
     <string name="prefs_keypress_sound_volume_settings">ခလုတ်နှိပ်သည့် အသံအတိုးကျယ်</string>
     <string name="prefs_keypress_vibration_duration_settings">ခလုတ်နှိပ်တုန်ခါမှု ကြာမြင့်ချိန်</string>
-    <string name="save">သိမ်းပါ</string>
     <string name="sound_on_keypress">ခလုတ်နှိပ်လျှင် အသံမြည်</string>
     <string name="spell_checker_service_name">BBKB စာလုံးပေါင်း စစ်</string>
     <string name="subtype_emoji">အီမိုဂျီ</string>
@@ -44,8 +42,6 @@
     <string name="subtype_with_layout_en_US">အင်္ဂလိပ် (ယူအက်စ်) (%s)</string>
     <string name="subtype_with_layout_es_US">စပိန် (ယူအက်စ်) (%s)</string>
     <string name="user_dict_settings_add_dialog_confirm">အိုကေ</string>
-    <string name="user_dict_settings_add_menu_title">ထည့်ရန်</string>
     <string name="user_dict_settings_all_languages">ဘာသာစကားအားလုံးအတွက်</string>
-    <string name="user_dict_settings_delete">ဖျက်သိမ်းရန်</string>
     <string name="vibrate_on_keypress">ခလုတ်နှိပ်သည်နှင့် တုံခါစေပါ</string>
 </resources>

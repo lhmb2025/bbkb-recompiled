@@ -93,7 +93,7 @@ object SettingsSearchIndex {
 
     val entries: List<SearchableSetting> = listOf(
         // ── Languages ────────────────────────────────────────────────────────────
-        SearchableSetting(R.string.settings_multi_language_keyboards_title, "language layout add keyboard", SettingsRoute.MultiLanguageKeyboards.route, LANGUAGES),
+        SearchableSetting(R.string.settings_languages_title, "language keyboard add remove layout predict multi-language", SettingsRoute.LanguagesHub.route, LANGUAGES),
         SearchableSetting(R.string.settings_language_packs_title, "download language pack", SettingsRoute.LanguagePacks.route, LANGUAGES),
         SearchableSetting(R.string.settings_lang_switch_key_title, "globe switch language", SettingsRoute.LanguageSwitching.route, LANGUAGES, "pref_show_language_switch_key"),
         SearchableSetting(R.string.settings_lang_include_other_title, "other input methods ime", SettingsRoute.LanguageSwitching.route, LANGUAGES, "pref_include_other_imes_in_language_switch_list"),

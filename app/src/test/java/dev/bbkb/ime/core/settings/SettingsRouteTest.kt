@@ -116,6 +116,12 @@ class SettingsRouteTest {
         assertEquals(SettingsRoute.UserDictionary, SettingsRoute.fromRoute("personal_dictionary"))
         assertEquals(SettingsRoute.TextShortcuts, SettingsRoute.fromRoute("word_substitutions"))
         assertEquals(SettingsRoute.Learning, SettingsRoute.fromRoute("unified_dictionary"))
+        // The Language page replaced the old Languages menu and the multi-language keyboards
+        // list and wizard (2026-09-29).
+        assertEquals(SettingsRoute.LanguagesHub, SettingsRoute.fromRoute("languages"))
+        assertEquals(SettingsRoute.LanguagesHub, SettingsRoute.fromRoute("languages_input"))
+        assertEquals(SettingsRoute.LanguagesHub, SettingsRoute.fromRoute("multi_language_keyboards"))
+        assertEquals(SettingsRoute.LanguagesHub, SettingsRoute.fromRoute("multi_language_wizard_add"))
     }
 
     @Test
@@ -138,6 +144,8 @@ class SettingsRouteTest {
             // the page that replaced each one.
             "Personalization", "LearnedWords", "FeedbackHaptics", "PersonalDictionary",
             "WordSubstitutions", "UnifiedDictionary",
+            // Pages removed when the Language page replaced them (2026-09-29).
+            "Languages", "MultiLanguageKeyboards", "MultiLanguageWizardAdd", "MultiLanguageWizardEdit",
         )
         val mainJava = sequenceOf("src/main/java", "app/src/main/java", "../app/src/main/java")
             .map { File(it).canonicalFile }

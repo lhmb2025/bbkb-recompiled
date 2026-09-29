@@ -19,11 +19,9 @@
     <string name="label_send_key">BLIA4[SÉndตั้ฏ]</string>
     <string name="label_wait_key">BLIA7[WÀÎtตั้ฏ]</string>
     <string name="language_selection_title">BLID71[LÀngÙÀgÉsตั้ฏิพื้น]</string>
-    <string name="no_dictionaries_available">BLID148[NÔ dÎÇtÎÔnÀrÎÉs ÀvÀÎŁÀbŁÉตั้ฏิพื้นฐ]</string>
     <string name="popup_on_keypress">BLID5[KÉÝ pÔp-Ùpตั้ฏิพื้นฐ]</string>
     <string name="prefs_keypress_sound_volume_settings">BLID114[SÔÙnd vÔŁÙmÉตั้ฏิพื้นฐ食べ]</string>
     <string name="prefs_keypress_vibration_duration_settings">BLID113[VÎbrÀtÎÔn dÙrÀtÎÔnตั้ฏิพื]</string>
-    <string name="save">BLID106[SÀvÉตั้ฏ]</string>
     <string name="sound_on_keypress">BLID4[SÔÙndตั้ฏิ]</string>
     <string name="spell_checker_service_name">BLIB1[BŁÀÇkBÉrrÝ SpÉŁŁ ChÉÇkÉrตั้ฏิพื้นฐ]</string>
     <string name="subtype_emoji">BLID96[EmÔjÎตั้ฏิ]</string>
@@ -45,8 +43,6 @@
     <string name="subtype_with_layout_en_US">BLID82[EngŁÎsh (US) (%1$s)ตั้ฏิพื้]</string>
     <string name="subtype_with_layout_es_US">BLID83[SpÀnÎsh (US) (%1$s)ตั้ฏิพื้]</string>
     <string name="user_dict_settings_add_dialog_confirm">OK</string>
-    <string name="user_dict_settings_add_menu_title">BLID168[Addตั้]</string>
     <string name="user_dict_settings_all_languages">BLID177[FÔr ÀŁŁ ŁÀngÙÀgÉsตั้ฏิพื]</string>
-    <string name="user_dict_settings_delete">BLID179[DÉŁÉtÉตั้ฏิพ]</string>
     <string name="vibrate_on_keypress">BLID3[VÎbrÀtÉตั้ฏิพื]</string>
 </resources>

@@ -110,11 +110,5 @@
     <!-- ========================= -->
     <!-- Settings screens layout -->
     <!-- ========================= -->
-    <dimen name="settings_linear_layout_horizontal_margin">8dp</dimen>
-    <dimen name="settings_linear_layout_padding">0dp</dimen>
-    <dimen name="settings_scrollview_horizontal_margin">0dp</dimen>
-    <dimen name="settings_scrollview_padding">0dp</dimen>
-    <dimen name="settings_text_horizontal_margin">4dp</dimen>
-    <dimen name="settings_text_horizontal_padding">4dp</dimen>
 
 </resources>

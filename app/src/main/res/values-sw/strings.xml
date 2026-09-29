@@ -19,11 +19,9 @@
     <string name="label_send_key">Tuma</string>
     <string name="label_wait_key">Subiri</string>
     <string name="language_selection_title">Lugha</string>
-    <string name="no_dictionaries_available">Hakuna kamusi inayopatikana</string>
     <string name="popup_on_keypress">Ibuka kitufe kinapobonyezwa</string>
     <string name="prefs_keypress_sound_volume_settings">Bonyeza kitufe cha kiwango cha sauti</string>
     <string name="prefs_keypress_vibration_duration_settings">Bonyeza kitufe cha muda wa kutetema</string>
-    <string name="save">Hifadhi</string>
     <string name="sound_on_keypress">Toa sauti unapobofya kitufe</string>
     <string name="spell_checker_service_name">Kikagua-tahajia cha BBKB</string>
     <string name="subtype_emoji">Emoji</string>
@@ -44,8 +42,6 @@
     <string name="subtype_with_layout_en_US">Kiingereza (US) (%s)</string>
     <string name="subtype_with_layout_es_US">Kihispania (US) (%s)</string>
     <string name="user_dict_settings_add_dialog_confirm">Sawa</string>
-    <string name="user_dict_settings_add_menu_title">Ongeza</string>
     <string name="user_dict_settings_all_languages">Ya lugha zote</string>
-    <string name="user_dict_settings_delete">Futa</string>
     <string name="vibrate_on_keypress">Tetema unabofya kitufe</string>
 </resources>

@@ -186,7 +186,7 @@ public class MultiLanguageRepository {
      * Re-reads the persisted list. {@code configs} used to be filled only by this instance's own
      * mutations, so on a fresh process the first addConfig/removeConfig saved a list holding just
      * that one entry, wiping every stored config (the original APK had the same gap). Reloading on
-     * every read and mutation also picks up CombineLanguages, which appends to the pref directly.
+     * every read and mutation also picks up any code that appends to the pref directly.
      * The stored format is read as-is by MultiLanguageUtils.loadConfigs; unparseable entries
      * (null) are skipped because TreeSet cannot hold them.
      */

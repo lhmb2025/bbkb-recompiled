@@ -221,42 +221,19 @@
     <string name="settings_dictionary_learning_title">Learning</string>
     <string name="settings_user_dictionary_screen_title">User dictionary</string>
     <string name="user_dict_settings_add_dialog_confirm">OK</string>
-    <string name="user_dict_settings_add_menu_title">Add</string>
     <string name="user_dict_settings_all_languages">For all languages</string>
-    <string name="user_dict_settings_delete">Delete</string>
 
     <!-- ================================ -->
     <!-- Settings — languages and input -->
     <!-- ================================ -->
     <string name="combine_subtypes">Combine compatible languages</string>
-    <string name="multi_language_input_activate_subtype_dialog_message">To be able to use this keyboard, you must make it the active one</string>
     <!-- Label of the extended FAB that starts the multi-language keyboard wizard. -->
-    <string name="multi_language_input_add_keyboard">Add keyboard</string>
-    <string name="multi_language_input_already_exist_toast">Multi-language Subtype already exist, please choose another combination</string>
-    <string name="multi_language_input_empty_screen">To set up a multi-language keyboard, you will identify a primary language that will control the keyboard layout and a set of complimentary languages to use for prediction and correction. \n\nCreate a multi-language keyboard by tapping the Add keyboard button</string>
-    <string name="multi_language_input_enable_subtype_dialog_message">To be able to use this keyboard, you must enable it on the language screen.</string>
-    <string name="multi_language_input_enable_subtype_dialog_negative_button">LATER</string>
-    <string name="multi_language_input_enable_subtype_dialog_positive_button">ENABLE NOW</string>
-    <string name="multi_language_input_enable_subtype_dialog_title">Enabling Keyboards</string>
-    <string name="multi_language_input_enable_subtype_toggle_use_system_language_dialog_message">To be able to use this keyboard, you must enable it on the language screen. You may need to turn off the toggle to use system language on the next page.</string>
-    <string name="multi_language_input_invalid_selection_toast">Please select at least one supporting language</string>
-    <string name="multi_language_input_primary_language_title">Primary Language</string>
-    <string name="multi_language_input_settings_screen_title">Multi-language keyboards</string>
-    <string name="multi_language_input_setup_explanation">To create a multi-language keyboard, select your primary language and compatible supporting languages, then enable the keyboard</string>
-    <string name="multi_language_input_setup_primary_language_explanation">Your primary language controls the letters and accents on the keys, as well as prediction and correction</string>
-    <string name="multi_language_input_setup_supportive_language_explanation">Your supporting languages will provide additional prediction and correction, but must be compatible with your primary language</string>
-    <string name="multi_language_input_subtype_select_language">Please Select</string>
-    <string name="multi_language_input_subtype_wizard_title">Add multi-language keyboard</string>
-    <string name="multi_language_input_support_language_spinner_dialog_title">Language</string>
-    <string name="multi_language_input_supportive_language_title">Supporting Languages</string>
     <string name="settings_language_packs_summary">Install and manage language packs</string>
     <string name="settings_language_packs_title">Language packs</string>
     <string name="settings_language_switching_summary">Configure language switching behavior</string>
     <string name="settings_language_switching_title">Language switching</string>
     <string name="settings_languages_summary">Keyboard languages, language switching, and language packs</string>
     <string name="settings_languages_title">Language</string>
-    <string name="settings_multi_language_keyboards_summary">Configure multi-language keyboard layouts</string>
-    <string name="settings_multi_language_keyboards_title">Multi-language keyboards</string>
 
     <!-- ============================== -->
     <!-- Settings — physical keyboard -->
@@ -729,14 +706,10 @@
     <string name="add">Add</string>
     <string name="add_word_dialog_title">Add to dictionary</string>
     <string name="cancel">Cancel</string>
-    <string name="discard">DISCARD</string>
-    <string name="discard_event_changes">Discard your changes?</string>
     <string name="go_to_settings">Settings</string>
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Languages</string>
-    <string name="no_dictionaries_available">No dictionaries available</string>
     <string name="rationale_dialog_header">BBKB needs permission</string>
-    <string name="save">Save</string>
     <string name="send_to">Share text to…</string>
     <string name="sticky_control_mode_notification_message">Ctrl is on. Tap here to turn off.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>
@@ -866,8 +839,6 @@
     <string name="language_packs_refresh">Check for dictionaries</string>
     <string name="language_packs_load_ldb">Load LDB file</string>
     <string name="language_packs_variant_summary">Loads in place of %1$s</string>
-    <string name="language_packs_offer_message">Download the %1$s dictionary (%2$s)?</string>
-    <string name="language_packs_offer_not_now">Not now</string>
     <string name="language_packs_not_on_summary">Not on in the keyboard yet. Tap to turn it on.</string>
     <string name="language_packs_turned_on">%1$s is on. Switch to it from the language switcher.</string>
     <string name="language_packs_turn_on_in_settings">Turn on %1$s in the list, then come back.</string>

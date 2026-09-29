@@ -23,13 +23,8 @@ import dev.bbkb.ime.core.shared.InAppEventBus;
 import dev.bbkb.ime.compat.InputMethodSubtypeCompat;
 import dev.bbkb.ime.core.locale.RichInputMethodManager;
 import dev.bbkb.ime.core.locale.SubtypeManager;
-import dev.bbkb.ime.core.locale.multilanguage.LocaleItem;
-import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageConfig;
-import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageUtils;
-import dev.bbkb.ime.core.subtypeswitcher.SubtypeFactory;
 import dev.bbkb.ime.core.settings.IntentUtils;
 import dev.bbkb.ime.core.shared.Logger;
-import dev.bbkb.ime.core.locale.ResourceLocaleUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -62,10 +57,6 @@ public class SubtypeSwitcherDialog extends Activity implements DialogInterface.O
 
     private boolean launchingSubActivity = false;
 
-    private boolean canCombineLanguages = false;
-
-    private MultiLanguageConfig multiLanguageConfig = null;
-
     @Override // android.app.Activity
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -81,16 +72,8 @@ public class SubtypeSwitcherDialog extends Activity implements DialogInterface.O
     public void onActivityResult(int i, int i2, Intent intent) {
         super.onActivityResult(i, i2, intent);
         this.launchingSubActivity = false;
-        if (i == 10 && i2 == -1) {
-            this.multiLanguageConfig = MultiLanguageUtils.parseConfig(intent.getStringExtra("fragment_res"));
-            List<InputMethodSubtype> listM4860a = RichInputMethodManager.getInstance().getEnabledSubtypesOfThisIme();
-            InputMethodSubtype inputMethodSubtypeM4756d = this.multiLanguageConfig.toSubtype();
-            postResultAndFinish(listM4860a.indexOf(inputMethodSubtypeM4756d));
-            return;
-        }
         AlertDialog alertDialog = this.dialog;
         if (alertDialog != null && alertDialog.isShowing()) {
-            this.canCombineLanguages = false;
             AlertDialog alertDialog2 = this.dialog;
             this.dismissingDialog = alertDialog2;
             alertDialog2.dismiss();
@@ -208,7 +191,6 @@ public class SubtypeSwitcherDialog extends Activity implements DialogInterface.O
     private SubtypeSwitcherAdapter createAdapter() {
         this.enabledSubtypes = RichInputMethodManager.getInstance().getEnabledSubtypesOfThisIme();
         this.subtypeItems = buildSubtypeItems();
-        this.multiLanguageConfig = buildMultiLanguageConfig(this.subtypeItems);
         // "Include other keyboards": the other enabled input methods, after this IME's languages.
         if (PrefsManager.INSTANCE.getPrefs(this).getBoolean("pref_include_other_imes_in_language_switch_list", false)) {
             final InputMethodManager imm = this.richImm.getInputMethodManager();
@@ -297,42 +279,6 @@ public class SubtypeSwitcherDialog extends Activity implements DialogInterface.O
         postResultAndFinish(-1);
     }
 
-    void launchCombineLanguages() {
-        this.launchingSubActivity = true;
-        Intent intent = new Intent();
-        intent.setClass(this, CombineLanguages.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("mode", 1);
-        bundle.putString("locales", MultiLanguageUtils.serializeConfig(this.multiLanguageConfig));
-        intent.putExtra("fragment_args", bundle);
-        startActivityForResult(intent, 10);
-    }
-
-    MultiLanguageConfig buildMultiLanguageConfig(List<SubtypeItem> list) {
-        InputMethodSubtype inputMethodSubtypeM5888c = this.richImm.getCurrentInputMethodSubtype((InputMethodSubtype) null);
-        if (!isCombinableSubtype(inputMethodSubtypeM5888c)) {
-            return null;
-        }
-        ArrayList arrayList = new ArrayList();
-        for (int i = 1; i < list.size(); i++) {
-            if (list.get(i).subtypeIndex < 0) {
-                continue; // another keyboard's row, or the header above those
-            }
-            InputMethodSubtype inputMethodSubtype = this.enabledSubtypes.get(list.get(i).subtypeIndex);
-            if (isCombinableSubtype(inputMethodSubtype)) {
-                arrayList.add(new LocaleItem(inputMethodSubtype.getLocale()));
-                if (arrayList.size() >= 2) {
-                    break;
-                }
-            }
-        }
-        if (arrayList.isEmpty()) {
-            return null;
-        }
-        this.canCombineLanguages = true;
-        return new MultiLanguageConfig(new LocaleItem(inputMethodSubtypeM5888c.getLocale()), arrayList, ResourceLocaleUtils.getKeyboardLayoutSetName(inputMethodSubtypeM5888c));
-    }
-
     /**
      * One row per other enabled input method: everything in {@code enabled} except this IME and
      * the auxiliary ones (voice typing, autofill proxies), which Android's own picker hides too.
@@ -364,10 +310,6 @@ public class SubtypeSwitcherDialog extends Activity implements DialogInterface.O
             }
         }
         return true;
-    }
-
-    private boolean isCombinableSubtype(InputMethodSubtype inputMethodSubtype) {
-        return (!InputMethodSubtypeCompat.isAsciiCapable(inputMethodSubtype) || SubtypeFactory.isAdditionalSubtype(inputMethodSubtype) || inputMethodSubtype.getLocale().equals("zz")) ? false : true;
     }
 
 }

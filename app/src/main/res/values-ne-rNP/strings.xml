@@ -19,11 +19,9 @@
     <string name="label_send_key">पठाउनुहोस्</string>
     <string name="label_wait_key">पर्खनुहोस्</string>
     <string name="language_selection_title">भाषाहरू</string>
-    <string name="no_dictionaries_available">शब्दकोशहरू उपलब्ध छैनन्</string>
     <string name="popup_on_keypress">कुञ्जी दबाउँदा पपअप</string>
     <string name="prefs_keypress_sound_volume_settings">कुञ्जी थिचाइ आवाज भोल्युम</string>
     <string name="prefs_keypress_vibration_duration_settings">कुञ्जी थिचाइ भाइब्रेसन अवधि</string>
-    <string name="save">बचत गर्नुहोस्</string>
     <string name="sound_on_keypress">कुञ्जी थिच्दा आवाज</string>
     <string name="spell_checker_service_name">BBKB हिज्जे जाँचकी</string>
     <string name="subtype_emoji">इमोजी</string>
@@ -44,8 +42,6 @@
     <string name="subtype_with_layout_en_US">अंग्रेजी (अमेरिका) (%s)</string>
     <string name="subtype_with_layout_es_US">स्पेनेली (अमेरिका) (%s)</string>
     <string name="user_dict_settings_add_dialog_confirm">ठीक छ</string>
-    <string name="user_dict_settings_add_menu_title">थप्नुहोस्</string>
     <string name="user_dict_settings_all_languages">सबै भाषाहरूका लागि</string>
-    <string name="user_dict_settings_delete">मेट्नुहोस्</string>
     <string name="vibrate_on_keypress">कुञ्जी थिच्दा भाइब्रेट</string>
 </resources>

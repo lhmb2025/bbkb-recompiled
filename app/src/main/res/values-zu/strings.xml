@@ -19,11 +19,9 @@
     <string name="label_send_key">Thumela</string>
     <string name="label_wait_key">Linda</string>
     <string name="language_selection_title">Izilimi</string>
-    <string name="no_dictionaries_available">Azikho izachazimazwi ezitholakalayo</string>
     <string name="popup_on_keypress">Ugaxekile ngokucindezela ukhiye</string>
     <string name="prefs_keypress_sound_volume_settings">Ivolumu yomsindo wokucindezela ukhiye</string>
     <string name="prefs_keypress_vibration_duration_settings">Ubude besikhathi sokudlidliza ukucindezela ukhiye</string>
-    <string name="save">Londoloza</string>
     <string name="sound_on_keypress">Umsindo wokucindezela ukhiye</string>
     <string name="spell_checker_service_name">Isihloli sokupela se-BBKB</string>
     <string name="subtype_emoji">I-Emoji</string>
@@ -44,8 +42,6 @@
     <string name="subtype_with_layout_en_US">I-English (US) ( %s )</string>
     <string name="subtype_with_layout_es_US">Isi-Spanish (US) ( %s )</string>
     <string name="user_dict_settings_add_dialog_confirm">KULUNGILE</string>
-    <string name="user_dict_settings_add_menu_title">Engeza</string>
     <string name="user_dict_settings_all_languages">Okwazo zonke izilimi</string>
-    <string name="user_dict_settings_delete">Susa</string>
     <string name="vibrate_on_keypress">Dlidlizelisa ngokucindezela inkinobho</string>
 </resources>

@@ -814,12 +814,6 @@
     <public type="dimen" name="quick_phrase_list_item_top_padding_normal_item" id="0x7f070149" />
     <public type="dimen" name="quick_phrase_list_item_vertical_margin" id="0x7f07014a" />
     <public type="dimen" name="quick_phrases_recycler_view_scrollbar_size" id="0x7f07014d" />
-    <public type="dimen" name="settings_linear_layout_horizontal_margin" id="0x7f070151" />
-    <public type="dimen" name="settings_linear_layout_padding" id="0x7f070152" />
-    <public type="dimen" name="settings_scrollview_horizontal_margin" id="0x7f07015b" />
-    <public type="dimen" name="settings_scrollview_padding" id="0x7f07015c" />
-    <public type="dimen" name="settings_text_horizontal_margin" id="0x7f07015e" />
-    <public type="dimen" name="settings_text_horizontal_padding" id="0x7f07015f" />
     <public type="dimen" name="tooltip_corner_radius" id="0x7f070162" />
     <public type="dimen" name="tooltip_horizontal_padding" id="0x7f070163" />
     <public type="dimen" name="tooltip_margin" id="0x7f070164" />
@@ -868,11 +862,9 @@
     <public type="drawable" name="ic_suggestions_more_arrow" id="0x7f080061" />
     <public type="drawable" name="ic_inputboard_fcc_axis" id="0x7f0800c9" />
     <public type="drawable" name="ic_inputboard_fcc_control" id="0x7f0800cb" />
-    <public type="drawable" name="ic_settings_delete" id="0x7f0800d0" />
     <public type="drawable" name="ic_ime_switcher" id="0x7f08013e" />
     <public type="drawable" name="ic_inputboard_clipboard_empty" id="0x7f08013f" />
     <public type="drawable" name="ic_auxbar_hamburger" id="0x7f080142" />
-    <public type="drawable" name="ic_settings_item_delete" id="0x7f080155" />
     <public type="drawable" name="ic_settings_keyboard_physical" id="0x7f080158" />
     <public type="drawable" name="ic_settings_keyboard_virtual" id="0x7f080159" />
     <public type="drawable" name="ic_key_voice_small" id="0x7f08015a" />
@@ -1144,11 +1136,6 @@
     <public type="id" name="more_suggestions_view" id="0x7f0a0118" />
     <public type="id" name="mtrl_child_content_container" id="0x7f0a0119" />
     <public type="id" name="mtrl_internal_children_alpha_tag" id="0x7f0a011a" />
-    <public type="id" name="multi_lang_primary_locale_explanation" id="0x7f0a011b" />
-    <public type="id" name="multi_lang_setup_support_lang_title" id="0x7f0a011c" />
-    <public type="id" name="multi_lang_support_locale_explanation" id="0x7f0a0120" />
-    <public type="id" name="multi_language_setup_explanation" id="0x7f0a0121" />
-    <public type="id" name="multilang_setup_top" id="0x7f0a0122" />
     <public type="id" name="multiply" id="0x7f0a0123" />
     <public type="id" name="myanmar" id="0x7f0a0124" />
     <public type="id" name="navigation_header_container" id="0x7f0a0125" />
@@ -1182,7 +1169,6 @@
     <public type="id" name="postal" id="0x7f0a014c" />
     <public type="id" name="postalPkb" id="0x7f0a014d" />
     <public type="id" name="preserveCase" id="0x7f0a014f" />
-    <public type="id" name="primary_locale_spinner" id="0x7f0a0150" />
     <public type="id" name="progress_circular" id="0x7f0a0151" />
     <public type="id" name="progress_horizontal" id="0x7f0a0152" />
     <public type="id" name="quick_phrase_list" id="0x7f0a0153" />
@@ -1244,7 +1230,6 @@
     <public type="id" name="subtype_switcher_radio" id="0x7f0a01a1" />
     <public type="id" name="subtype_switcher_settings_btn" id="0x7f0a01a2" />
     <public type="id" name="suggested_word" id="0x7f0a01a3" />
-    <public type="id" name="supporting_locales_spinner" id="0x7f0a01a8" />
     <public type="id" name="symbols" id="0x7f0a01ac" />
     <public type="id" name="symbolsCustom" id="0x7f0a01ad" />
     <public type="id" name="symbolsPkb" id="0x7f0a01ae" />
@@ -1459,9 +1444,6 @@
     <public type="layout" name="more_keys_keyboard" id="0x7f0d004a" />
     <public type="layout" name="more_keys_keyboard_for_action" id="0x7f0d004b" />
     <public type="layout" name="more_suggestions" id="0x7f0d004c" />
-    <public type="layout" name="multi_language_setup_wizard" id="0x7f0d0050" />
-    <public type="layout" name="multi_language_spinner_dropdown_item" id="0x7f0d0051" />
-    <public type="layout" name="multi_language_spinner_item" id="0x7f0d0052" />
     <public type="layout" name="quick_phrase_list_item" id="0x7f0d005d" />
     <public type="layout" name="quickphrases" id="0x7f0d005e" />
     <public type="layout" name="select_dialog_item_material" id="0x7f0d0061" />
@@ -1543,8 +1525,6 @@
     <public type="string" name="customized_symbols_page_reset_to_page_2" id="0x7f120093" />
     <public type="string" name="customized_symbols_page_reset_umlaut_layout" id="0x7f120094" />
     <public type="string" name="deny" id="0x7f120097" />
-    <public type="string" name="discard" id="0x7f1200a6" />
-    <public type="string" name="discard_event_changes" id="0x7f1200a7" />
     <public type="string" name="english_ime_input_options" id="0x7f1200be" />
     <public type="string" name="english_ime_name" id="0x7f1200bf" />
     <public type="string" name="english_ime_settings" id="0x7f1200c0" />
@@ -1563,25 +1543,6 @@
     <public type="string" name="label_wait_key" id="0x7f120100" />
     <public type="string" name="language_selection_title" id="0x7f12010a" />
     <public type="string" name="mtrl_chip_close_icon_content_description" id="0x7f120111" />
-    <public type="string" name="multi_language_input_activate_subtype_dialog_message" id="0x7f120112" />
-    <public type="string" name="multi_language_input_already_exist_toast" id="0x7f120115" />
-    <public type="string" name="multi_language_input_empty_screen" id="0x7f120116" />
-    <public type="string" name="multi_language_input_enable_subtype_dialog_message" id="0x7f120117" />
-    <public type="string" name="multi_language_input_enable_subtype_dialog_negative_button" id="0x7f120118" />
-    <public type="string" name="multi_language_input_enable_subtype_dialog_positive_button" id="0x7f120119" />
-    <public type="string" name="multi_language_input_enable_subtype_dialog_title" id="0x7f12011a" />
-    <public type="string" name="multi_language_input_enable_subtype_toggle_use_system_language_dialog_message" id="0x7f12011b" />
-    <public type="string" name="multi_language_input_invalid_selection_toast" id="0x7f12011d" />
-    <public type="string" name="multi_language_input_primary_language_title" id="0x7f12011e" />
-    <public type="string" name="multi_language_input_settings_screen_title" id="0x7f120120" />
-    <public type="string" name="multi_language_input_setup_explanation" id="0x7f120121" />
-    <public type="string" name="multi_language_input_setup_primary_language_explanation" id="0x7f120122" />
-    <public type="string" name="multi_language_input_setup_supportive_language_explanation" id="0x7f120123" />
-    <public type="string" name="multi_language_input_subtype_select_language" id="0x7f120124" />
-    <public type="string" name="multi_language_input_subtype_wizard_title" id="0x7f120125" />
-    <public type="string" name="multi_language_input_support_language_spinner_dialog_title" id="0x7f120126" />
-    <public type="string" name="multi_language_input_supportive_language_title" id="0x7f120127" />
-    <public type="string" name="no_dictionaries_available" id="0x7f12012a" />
     <public type="string" name="notification_strip_downloading_suggestions" id="0x7f12012d" />
     <public type="string" name="notification_strip_no_dictionaries_available" id="0x7f12012e" />
     <public type="string" name="notification_strip_no_network" id="0x7f12012f" />
@@ -1594,7 +1555,6 @@
     <public type="string" name="prefs_keypress_sound_volume_settings" id="0x7f12018f" />
     <public type="string" name="prefs_keypress_vibration_duration_settings" id="0x7f120190" />
     <public type="string" name="rationale_dialog_header" id="0x7f1201c4" />
-    <public type="string" name="save" id="0x7f1201c5" />
     <public type="string" name="send_to" id="0x7f1201c8" />
     <public type="string" name="settings_screen_type_by_swiping" id="0x7f1201d2" />
     <public type="string" name="settings_screen_type_by_swiping_summary" id="0x7f1201d3" />
@@ -1652,9 +1612,7 @@
     <public type="string" name="symbols_word_connectors" id="0x7f12066c" />
     <public type="string" name="symbols_word_separators" id="0x7f12066d" />
     <public type="string" name="user_dict_settings_add_dialog_confirm" id="0x7f120691" />
-    <public type="string" name="user_dict_settings_add_menu_title" id="0x7f120694" />
     <public type="string" name="user_dict_settings_all_languages" id="0x7f12069a" />
-    <public type="string" name="user_dict_settings_delete" id="0x7f12069b" />
     <public type="string" name="vibrate_on_keypress" id="0x7f1206b4" />
     <public type="string" name="vkb_control_key_summary" id="0x7f1206bf" />
     <public type="string" name="vkb_control_key_title" id="0x7f1206c0" />

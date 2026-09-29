@@ -4,7 +4,6 @@
     every other screen: a new string here needs its 73 locale entries.
 -->
 <resources>
-    <string name="languages_hub_summary">Keyboards, extra languages and dictionaries in one place</string>
     <string name="languages_hub_old_android">On this Android version, keyboards are turned on and off in Android\'s settings. Adding or removing one here opens that screen.</string>
     <string name="languages_hub_follow_system_title">Match phone languages</string>
     <string name="languages_hub_follow_system_on">Keyboards follow your phone\'s languages. Adding or removing one turns this off.</string>

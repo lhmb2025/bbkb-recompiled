@@ -10,10 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.NavType
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageUtils
 import dev.bbkb.ime.core.settings.screens.AdvancedGestureParametersScreen
 import dev.bbkb.ime.core.settings.screens.AdvancedSettingsScreen
 import dev.bbkb.ime.core.settings.screens.AnimationParametersScreen
@@ -33,10 +30,7 @@ import dev.bbkb.ime.core.settings.screens.KeyPressFeedbackScreen
 import dev.bbkb.ime.core.settings.screens.LanguagePacksScreen
 import dev.bbkb.ime.core.settings.screens.LanguageSwitchingScreen
 import dev.bbkb.ime.core.settings.screens.LanguagesHubScreen
-import dev.bbkb.ime.core.settings.screens.LanguagesInputScreen
 import dev.bbkb.ime.core.settings.screens.MainSettingsScreen
-import dev.bbkb.ime.core.settings.screens.MultiLanguageKeyboardsScreen
-import dev.bbkb.ime.core.settings.screens.MultiLanguageWizardScreen
 import dev.bbkb.ime.core.settings.screens.KeyboardHelperScreen
 import dev.bbkb.ime.core.settings.screens.DeviceConfigurationScreen
 import dev.bbkb.ime.core.settings.screens.DeviceProfileBuilderScreen
@@ -56,7 +50,6 @@ import dev.bbkb.ime.core.settings.screens.UpdatesScreen
 import dev.bbkb.ime.core.settings.screens.UserDictionaryScreen
 import dev.bbkb.ime.core.settings.screens.VoiceInputSettingsScreen
 import dev.bbkb.ime.core.settings.screens.VoiceLanguageSelectionScreen
-import dev.bbkb.ime.core.settings.screens.WizardMode
 import dev.bbkb.ime.core.settings.screens.WordListEditorScreen
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.shared.StartupTiming
@@ -169,17 +162,7 @@ fun SettingsNavHost(
         
         // V5 Reorganized Primary Screens (per docs/archived/2026-01_compose-settings-and-dictionaries/2026-01_settings-compose_history.md)
         
-        // 1. Languages
-        composable(SettingsRoute.Languages.route) {
-            LanguagesInputScreen(
-                onNavigateToLanguageSwitching = go(SettingsRoute.LanguageSwitching),
-                onNavigateToMultiLanguageKeyboards = go(SettingsRoute.MultiLanguageKeyboards),
-                onNavigateToLanguagePacks = go(SettingsRoute.LanguagePacks),
-                onNavigateToLanguagesHub = go(SettingsRoute.LanguagesHub),
-                onNavigateBack = back
-            )
-        }
-
+        // 1. Language
         composable(SettingsRoute.LanguagesHub.route) {
             LanguagesHubScreen(
                 onNavigateToLanguageSwitching = go(SettingsRoute.LanguageSwitching),
@@ -362,47 +345,6 @@ fun SettingsNavHost(
             LanguageSwitchingScreen(
                 onNavigateToPhysicalKeyboard = go(SettingsRoute.PhysicalKeyboard),
                 onNavigateToCkbGestures = go(SettingsRoute.CkbGestures),
-                onNavigateBack = back
-            )
-        }
-        
-        composable(SettingsRoute.MultiLanguageKeyboards.route) {
-            MultiLanguageKeyboardsScreen(
-                onNavigateToAddKeyboard = go(SettingsRoute.MultiLanguageWizardAdd),
-                onNavigateToEditKeyboard = { keyboard ->
-                    navController.navigate(
-                        SettingsRoute.multiLanguageWizardEdit(MultiLanguageUtils.serializeConfig(keyboard))
-                    )
-                },
-                onNavigateBack = back
-            )
-        }
-        
-        composable(SettingsRoute.MultiLanguageWizardAdd.route) {
-            MultiLanguageWizardScreen(
-                mode = WizardMode.ADD,
-                existingKeyboard = null,
-                onSaveSuccess = {
-                    navController.popBackStack()
-                },
-                onNavigateBack = back
-            )
-        }
-        
-        composable(
-            SettingsRoute.MultiLanguageWizardEdit.route,
-            arguments = listOf(navArgument(ARG_WIZARD_CONFIG) { type = NavType.StringType })
-        ) { backStackEntry ->
-            // Reconstructed from the nav argument, so it survives process death and restore.
-            val keyboard = SettingsRoute
-                .decodeWizardConfigArg(backStackEntry.arguments?.getString(ARG_WIZARD_CONFIG))
-                ?.let { MultiLanguageUtils.parseConfig(it) }
-            MultiLanguageWizardScreen(
-                mode = WizardMode.EDIT,
-                existingKeyboard = keyboard,
-                onSaveSuccess = {
-                    navController.popBackStack()
-                },
                 onNavigateBack = back
             )
         }

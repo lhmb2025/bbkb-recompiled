@@ -19,11 +19,9 @@
     <string name="label_send_key">Жіберу</string>
     <string name="label_wait_key">Күту</string>
     <string name="language_selection_title">Тілдер</string>
-    <string name="no_dictionaries_available">Сөздіктер қолжетімсіз</string>
     <string name="popup_on_keypress">Пернені басқан кездегі ашылмалы мәзір</string>
     <string name="prefs_keypress_sound_volume_settings">Пернені басқан кездегі дыбыс деңгейі</string>
     <string name="prefs_keypress_vibration_duration_settings">Пернені басқан кездегі діріл ұзақтығы</string>
-    <string name="save">Сақтау</string>
     <string name="sound_on_keypress">Пернені басу кезіндегі дыбыс</string>
     <string name="spell_checker_service_name">BBKB емлені тексеру құралы</string>
     <string name="subtype_emoji">Эмодзи</string>
@@ -44,8 +42,6 @@
     <string name="subtype_with_layout_en_US">Ағылшын (АҚШ) (%s)</string>
     <string name="subtype_with_layout_es_US">Испан (АҚШ) (%s)</string>
     <string name="user_dict_settings_add_dialog_confirm">Жарайды</string>
-    <string name="user_dict_settings_add_menu_title">Қосу</string>
     <string name="user_dict_settings_all_languages">Барлық тілдер үшін</string>
-    <string name="user_dict_settings_delete">Жою</string>
     <string name="vibrate_on_keypress">Пернені басқан кездегі діріл</string>
 </resources>

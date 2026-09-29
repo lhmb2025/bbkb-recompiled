@@ -19,11 +19,9 @@
     <string name="label_send_key">بھیجیں</string>
     <string name="label_wait_key">انتظار</string>
     <string name="language_selection_title">زبانیں</string>
-    <string name="no_dictionaries_available">کوئی لغت دستیاب نہیں</string>
     <string name="popup_on_keypress">کلید دبانے پر پاپ اپ</string>
     <string name="prefs_keypress_sound_volume_settings">کلید دبانے پر آواز کا والیوم</string>
     <string name="prefs_keypress_vibration_duration_settings">کلید دبانے پر وائبریشن کا دورانیہ</string>
-    <string name="save">محفوظ کریں</string>
     <string name="sound_on_keypress">کلید دبانے پر آواز</string>
     <string name="spell_checker_service_name">‏BBKB ہجے چیک کنندہ</string>
     <string name="subtype_emoji">Emoji</string>
@@ -44,8 +42,6 @@
     <string name="subtype_with_layout_en_US">انگریزی (امریکہ) (%s)</string>
     <string name="subtype_with_layout_es_US">ہسپانوی (امریکہ) (%s)</string>
     <string name="user_dict_settings_add_dialog_confirm">ٹھیک ہے</string>
-    <string name="user_dict_settings_add_menu_title">شامل کریں</string>
     <string name="user_dict_settings_all_languages">سبھی زبانوں کیلئے</string>
-    <string name="user_dict_settings_delete">حذف کریں</string>
     <string name="vibrate_on_keypress">کلید دبانے پر وائبریٹ کریں</string>
 </resources>

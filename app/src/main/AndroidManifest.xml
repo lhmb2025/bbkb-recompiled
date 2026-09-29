@@ -251,10 +251,6 @@
             android:name="dev.bbkb.ime.core.subtypeswitcher.SubtypeSwitcherDialog"
             android:exported="false"/>
         <activity
-            android:theme="@style/platformSettingsTheme"
-            android:name="dev.bbkb.ime.core.subtypeswitcher.CombineLanguages"
-            android:exported="false"/>
-        <activity
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:name="dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputDialog"
             android:exported="false"/>

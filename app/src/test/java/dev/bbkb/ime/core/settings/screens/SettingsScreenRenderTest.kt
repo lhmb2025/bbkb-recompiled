@@ -67,8 +67,8 @@ import org.robolectric.annotation.Config
  *
  * The screens are rendered in the state a fresh install produces: no preferences written, an empty
  * user dictionary, no custom macros, no multi-language configurations. Two screens take a variant
- * argument and so appear twice (`CustomSymbolPageScreen` for PKB and VKB), which is why 39 files
- * give 40 cases.
+ * argument and so appear twice (`CustomSymbolPageScreen` for PKB and VKB), which is why 36 files
+ * give 37 cases.
  */
 @RunWith(ParameterizedRobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -153,8 +153,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
 
     /**
      * Puts the framework in the state a user who has actually enabled this keyboard is in: our IME
-     * registered, with the real 89 subtypes built from the manifest service. `MultiLanguageWizard`
-     * reads that list to populate its language pickers, so without it the wizard renders its
+     * registered, with the real 89 subtypes built from the manifest service. `LanguagesHubScreen`
+     * reads that list to populate its language pickers, so without it the page renders its
      * empty state and the recorded rows below would describe a state no ordinary user is in.
      *
      * This used to be a **workaround**, not a fixture: `MultiLanguageRepository` dereferenced the
@@ -223,10 +223,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "KeyboardHelperScreen" -> ({ KeyboardHelperScreen({}) })
         "LanguagePacksScreen" -> ({ LanguagePacksScreen({}) })
         "LanguageSwitchingScreen" -> ({ LanguageSwitchingScreen({}) })
-        "LanguagesInputScreen" -> ({ LanguagesInputScreen({}, {}, {}, {}, {}) })
         "MainSettingsScreen" -> ({ MainSettingsScreen({}, {}) })
-        "MultiLanguageKeyboardsScreen" -> ({ MultiLanguageKeyboardsScreen({}, {}, {}) })
-        "MultiLanguageWizardScreen_ADD" -> ({ MultiLanguageWizardScreen(WizardMode.ADD, null, {}, {}) })
         "TouchScreenKeyboardScreen" -> ({ TouchScreenKeyboardScreen({}, {}, {}, {}) })
         "PhysicalKeyboardScreen" -> ({ PhysicalKeyboardScreen({}, {}) })
         "PredictionsSuggestionsScreen" -> ({ PredictionsSuggestionsScreen({}) })
@@ -487,8 +484,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             "CustomizeMenuScreen", "CustomizeSlideBoardScreen", "DebugSettingsScreen",
             "DeviceCompatibilityScreen", "DeviceConfigurationScreen", "DictionariesLearningScreen",
             "GestureLabScreen", "KeyPressFeedbackScreen", "KeyboardHelperScreen",
-            "LanguagePacksScreen", "LanguageSwitchingScreen", "LanguagesInputScreen",
-            "MainSettingsScreen", "MultiLanguageKeyboardsScreen", "MultiLanguageWizardScreen_ADD",
+            "LanguagePacksScreen", "LanguageSwitchingScreen",
+            "MainSettingsScreen",
             "PhysicalKeyboardScreen", "PredictionsSuggestionsScreen", "QuickPhrasesScreen",
             "ShakeGesturesScreen", "SlideboardLayoutScreen", "SpellCheckerSettingsScreen",
             "SymbolCustomizationScreen", "TextShortcutsScreen", "TouchScreenKeyboardScreen",
@@ -1057,60 +1054,21 @@ class SettingsScreenRenderTest(private val screenName: String) {
             literals = emptySet(),
         ),
         Case(
-            name = "LanguagesInputScreen",
-            route = SettingsRoute.Languages.route,
-            title = "Language",
-            resources = setOf(
-                // The consolidated screen's preview entry (languages_hub_*), alongside the old three.
-                "languages_hub_summary",
-                "multi_language_input_settings_screen_title",
-                "multi_language_input_support_language_spinner_dialog_title", "settings_language_packs_summary",
-                "settings_language_packs_title", "settings_language_switching_summary",
-                "settings_language_switching_title", "settings_multi_language_keyboards_summary"
-            ),
-            literals = emptySet(),
-        ),
-        Case(
             name = "MainSettingsScreen",
             route = SettingsRoute.Main.route,
             // Stale golden: 43f690e7 titled the screen "BBKB Settings".
             title = "BBKB Settings",
             resources = setOf(
-                "english_ime_settings", "multi_language_input_support_language_spinner_dialog_title",
+                // The "Language" row resolved to a removed wizard string of the same text until
+                // 2026-09-29; it now resolves to its own title.
+                "english_ime_settings",
                 "settings_advanced_summary", "settings_advanced_title", "settings_appearance_layout_summary",
-                "settings_appearance_layout_title", "settings_languages_summary", "settings_preferences_summary",
+                "settings_appearance_layout_title", "settings_languages_summary", "settings_languages_title",
+                "settings_preferences_summary",
                 "settings_preferences_title", "settings_search_hint", "settings_suggestion_correction_summary",
                 "settings_suggestion_correction_title"
             ),
             literals = emptySet(),
-        ),
-        Case(
-            name = "MultiLanguageKeyboardsScreen",
-            route = SettingsRoute.MultiLanguageKeyboards.route,
-            title = "Multi-language keyboards",
-            resources = setOf(
-                // multi_language_input_add_keyboard is new: the + in the app bar became an
-                // extended FAB, which renders its label.
-                "multi_language_input_add_keyboard",
-                "multi_language_input_empty_screen", "multi_language_input_settings_screen_title"
-            ),
-            literals = emptySet(),
-        ),
-        Case(
-            name = "MultiLanguageWizardScreen_ADD",
-            route = SettingsRoute.MultiLanguageWizardAdd.route,
-            title = "Add multi-language keyboard",
-            resources = setOf(
-                "multi_language_input_invalid_selection_toast", "multi_language_input_primary_language_title",
-                "multi_language_input_setup_explanation",
-                "multi_language_input_setup_primary_language_explanation",
-                "multi_language_input_setup_supportive_language_explanation",
-                "multi_language_input_subtype_select_language", "multi_language_input_subtype_wizard_title"
-            ),
-            literals = setOf(
-                "PRIMARY LANGUAGE",
-                "SUPPORTING LANGUAGES",
-            ),
         ),
         Case(
             name = "PhysicalKeyboardScreen",

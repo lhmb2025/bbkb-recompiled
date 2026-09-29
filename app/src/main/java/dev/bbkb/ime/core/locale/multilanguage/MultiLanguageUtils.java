@@ -1,10 +1,6 @@
 package dev.bbkb.ime.core.locale.multilanguage;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
@@ -18,7 +14,6 @@ import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.locale.RichInputMethodManager;
 import dev.bbkb.ime.core.subtypeswitcher.SubtypeFactory;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
-import dev.bbkb.ime.core.settings.IntentUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,16 +63,6 @@ public final class MultiLanguageUtils {
         return arrayList2;
     }
 
-    /**
-     * Flags for the "input language settings" activity. Spelled out: the two other call sites
-     * used to pass View.MeasureSpec.EXACTLY (0x40000000 = FLAG_RECEIVER_REGISTERED_ONLY, a
-     * broadcast-only flag) here, and IntentUtils uses setFlags(), which replaces rather than
-     * adds - so those launches went out with no FLAG_ACTIVITY_NEW_TASK at all.
-     */
-    private static final int LANGUAGE_SETTINGS_INTENT_FLAGS =
-            Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED;
 
     public static ArrayList<MultiLanguageConfig> loadConfigs(SharedPreferences sharedPreferences) {
         ArrayList<MultiLanguageConfig> arrayList = new ArrayList<>();
@@ -212,21 +197,5 @@ public final class MultiLanguageUtils {
             }
         }
         return z;
-    }
-
-    // Note: Uses deprecated startActivityForResult on the passed Activity.
-    // Caller's Activity should handle deprecation appropriately.
-    @SuppressWarnings("deprecation")
-    public static AlertDialog createEnableSubtypeDialog(final Activity activity) {
-        int i = isUsingSystemLanguages((Context) activity) ? R.string.multi_language_input_enable_subtype_toggle_use_system_language_dialog_message : R.string.multi_language_input_enable_subtype_dialog_message;
-        final Intent intentM5786a = IntentUtils.getInputLanguageSelectionIntent(RichInputMethodManager.getInstance().getInputMethodIdOfThisIme(), LANGUAGE_SETTINGS_INTENT_FLAGS);
-        AlertDialog.Builder builder = dev.bbkb.ime.core.settings.ui.BbkbDialogs.builder(activity);
-        builder.setTitle(R.string.multi_language_input_enable_subtype_dialog_title).setMessage(i).setNegativeButton(R.string.multi_language_input_enable_subtype_dialog_negative_button, (DialogInterface.OnClickListener) null).setPositiveButton(R.string.multi_language_input_enable_subtype_dialog_positive_button, new DialogInterface.OnClickListener() {
-            @Override // android.content.DialogInterface.OnClickListener
-            public void onClick(DialogInterface dialogInterface, int i2) {
-                activity.startActivityForResult(intentM5786a, 0);
-            }
-        });
-        return builder.create();
     }
 }
