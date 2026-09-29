@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Setări verificare ortografică</string>
     <string name="settings_spell_checker_summary">Configurați comportamentul verificării ortografice la nivel de sistem</string>
     <string name="settings_spell_checker_title">Verificare ortografică</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Setări pentru BBKB</string>
     <string name="settings_uim_enable_summary_off">Meniul de introducere unificat este ascuns</string>
     <string name="settings_uim_enable_summary_on">Meniul de introducere unificat este vizibil</string>
     <string name="settings_uim_enable_title">Activați meniul de introducere unificat</string>

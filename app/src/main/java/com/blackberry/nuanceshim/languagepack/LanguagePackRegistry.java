@@ -4,6 +4,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,16 +19,31 @@ import dev.bbkb.ime.BuildConfig;
 
 public class LanguagePackRegistry {
 
-    private static final Map<String, String> LOCALE_FALLBACKS = new ArrayMap<String, String>(8);
+    // A plain HashMap, not ArrayMap: this table is read by PackOffer, which is tested on the JVM
+    // where android.util.ArrayMap is a stub that stores nothing.
+    private static final Map<String, String> LOCALE_FALLBACKS = new HashMap<String, String>(8);
 
     public Map<String, List<LanguagePackInfo>> packsByLanguage;
 
     static {
         LOCALE_FALLBACKS.put("es-MX", "es-419");
+        // The keyboard says GB; the bundled pack is catalogued as UK. Without this bridge the
+        // English (UK) keyboard loaded the generic English dictionary instead.
+        LOCALE_FALLBACKS.put("en-GB", "en-UK");
         LOCALE_FALLBACKS.put("en-NZ", "en-AU");
         LOCALE_FALLBACKS.put("en-SG", "en-UK");
         LOCALE_FALLBACKS.put("en-IE", "en-UK");
         LOCALE_FALLBACKS.put("en-ZA", "en-UK");
+    }
+
+    /**
+     * The tag this registry substitutes for {@code languageTag} before falling back to the
+     * bare language ({@code "en-NZ"} to {@code "en-AU"}), or null when it substitutes nothing.
+     * Hyphenated, as the table is keyed. Lets the download offer name the pack the engine
+     * will actually load.
+     */
+    public static String fallbackFor(String languageTag) {
+        return LOCALE_FALLBACKS.get(languageTag);
     }
 
     public synchronized LanguagePackInfo findLanguagePack(String str, String str2) {

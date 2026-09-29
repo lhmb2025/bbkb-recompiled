@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Cài đặt trình kiểm tra chính tả</string>
     <string name="settings_spell_checker_summary">Thiết lập cách kiểm tra chính tả trên toàn hệ thống</string>
     <string name="settings_spell_checker_title">Kiểm tra chính tả</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Cài đặt BBKB</string>
     <string name="settings_uim_enable_summary_off">Trình đơn nhập liệu hợp nhất đang ẩn</string>
     <string name="settings_uim_enable_summary_on">Trình đơn nhập liệu hợp nhất đang hiển thị</string>
     <string name="settings_uim_enable_title">Bật trình đơn nhập liệu hợp nhất</string>

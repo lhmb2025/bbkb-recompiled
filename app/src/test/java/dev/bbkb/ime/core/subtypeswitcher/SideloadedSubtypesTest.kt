@@ -2,6 +2,7 @@ package dev.bbkb.ime.core.subtypeswitcher
 
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils
 import dev.bbkb.ime.core.settings.PrefsManager
+import dev.bbkb.ime.R
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -153,5 +154,17 @@ class SideloadedSubtypesTest {
         prefs.edit().putString("sideloaded_subtypes", "").commit()
         assertEquals(0, SideloadedSubtypes.read(prefs).size)
         assertEquals(0, SubtypeFactory.createSubtypesFromPref(SideloadedSubtypes.readRaw(prefs)).size)
+    }
+
+    // ── the non-Latin layouts survive the factory's filter ────────────────────────────────────
+
+    @Test
+    fun aRuntimeSubtypeOnANonLatinLayoutIsKeptAndOneOnAnUnknownLayoutIsDropped() {
+        val kept = SubtypeFactory.createSubtypesFromPref("as:bengali;ne:nepali_traditional;ur:farsi;xx:nonsense_layout")
+        assertEquals(listOf("as", "ne", "ur"), kept.map { it.locale })
+        for (s in kept) assertEquals(R.string.subtype_generic, s.nameResId)
+        assertTrue(SideloadedSubtypes.isSideloadLayout("bengali"))
+        assertFalse(SideloadedSubtypes.isSideloadLayout("nonsense_layout"))
+        assertFalse(SideloadedSubtypes.isSideloadLayout(null))
     }
 }

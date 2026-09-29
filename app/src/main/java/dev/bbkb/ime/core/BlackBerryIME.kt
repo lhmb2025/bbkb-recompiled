@@ -1590,9 +1590,10 @@ class BlackBerryIME : InputMethodService(),
     fun updateLanguagePacksForSubtype(inputMethodSubtype: InputMethodSubtype) {
         val arrayList = ArrayList<Locale>()
         arrayList.add(ResourceLocaleUtils.getSubtypeLocale(inputMethodSubtype))
-        if (inputMethodSubtype.containsExtraValueKey("AdditionalLocales")) {
-            arrayList.add(Locale(inputMethodSubtype.getExtraValueOf("AdditionalLocales")))
-        }
+        // The extra value is a slash-joined list ("de/es", "fr_CA"). One Locale built from the
+        // whole string made the engine refuse the entire set as soon as a keyboard had two extras
+        // or a regional one; parse it the way the subtype manager does.
+        ResourceLocaleUtils.getAdditionalLocales(inputMethodSubtype)?.let { arrayList.addAll(it) }
         val sdk = NuanceSDKManager.getInstance()
         if (sdk != null) {
             LanguagePackManager.getInstance(applicationContext).setLanguages(sdk, arrayList.toTypedArray())

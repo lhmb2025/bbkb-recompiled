@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Einstellungen für die Rechtschreibprüfung</string>
     <string name="settings_spell_checker_summary">Systemweites Verhalten der Rechtschreibprüfung konfigurieren</string>
     <string name="settings_spell_checker_title">Rechtschreibprüfung</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB-Einstellungen</string>
     <string name="settings_uim_enable_summary_off">Einheitliches Eingabemenü ist ausgeblendet</string>
     <string name="settings_uim_enable_summary_on">Einheitliches Eingabemenü ist eingeblendet</string>
     <string name="settings_uim_enable_title">Einheitliches Eingabemenü aktivieren</string>

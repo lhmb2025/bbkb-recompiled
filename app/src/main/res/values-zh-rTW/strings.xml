@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">拼字檢查器設定</string>
     <string name="settings_spell_checker_summary">設定系統層級的拼字檢查行為</string>
     <string name="settings_spell_checker_title">拼字檢查</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB 設定</string>
     <string name="settings_uim_enable_summary_off">統一輸入選單已隱藏</string>
     <string name="settings_uim_enable_summary_on">統一輸入選單已顯示</string>
     <string name="settings_uim_enable_title">啟用統一輸入選單</string>

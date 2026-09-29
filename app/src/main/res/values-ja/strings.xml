@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">スペルチェッカーの設定</string>
     <string name="settings_spell_checker_summary">システム全体のスペルチェックの動作を設定します</string>
     <string name="settings_spell_checker_title">スペルチェック</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKBの設定</string>
     <string name="settings_uim_enable_summary_off">統合入力メニューは非表示です</string>
     <string name="settings_uim_enable_summary_on">統合入力メニューは表示されています</string>
     <string name="settings_uim_enable_title">統合入力メニューを有効にする</string>

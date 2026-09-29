@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Налаштування перевірки орфографії</string>
     <string name="settings_spell_checker_summary">Налаштування перевірки орфографії в усій системі</string>
     <string name="settings_spell_checker_title">Перевірка орфографії</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Налаштування BBKB</string>
     <string name="settings_uim_enable_summary_off">Єдине меню введення сховано</string>
     <string name="settings_uim_enable_summary_on">Єдине меню введення відображається</string>
     <string name="settings_uim_enable_title">Увімкнути єдине меню введення</string>

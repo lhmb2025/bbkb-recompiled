@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">მართლწერის შემმოწმებლის პარამეტრები</string>
     <string name="settings_spell_checker_summary">სისტემის მასშტაბით მართლწერის შემოწმების კონფიგურაცია</string>
     <string name="settings_spell_checker_title">მართლწერის შემოწმება</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB-ის პარამეტრები</string>
     <string name="settings_uim_enable_summary_off">ერთიანი შეყვანის მენიუ დამალულია</string>
     <string name="settings_uim_enable_summary_on">ერთიანი შეყვანის მენიუ ხილულია</string>
     <string name="settings_uim_enable_title">ერთიანი შეყვანის მენიუს ჩართვა</string>

@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Ρυθμίσεις ορθογραφικού ελέγχου</string>
     <string name="settings_spell_checker_summary">Διαμόρφωση της συμπεριφοράς του ορθογραφικού ελέγχου σε όλο το σύστημα</string>
     <string name="settings_spell_checker_title">Ορθογραφικός έλεγχος</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Ρυθμίσεις BBKB</string>
     <string name="settings_uim_enable_summary_off">Το ενοποιημένο μενού εισόδου είναι κρυφό</string>
     <string name="settings_uim_enable_summary_on">Το ενοποιημένο μενού εισόδου είναι ορατό</string>
     <string name="settings_uim_enable_title">Ενεργοποίηση ενοποιημένου μενού εισόδου</string>

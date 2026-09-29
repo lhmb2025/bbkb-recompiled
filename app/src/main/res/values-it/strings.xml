@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Impostazioni controllo ortografico</string>
     <string name="settings_spell_checker_summary">Configura il comportamento del controllo ortografico di sistema</string>
     <string name="settings_spell_checker_title">Controllo ortografico</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Impostazioni BBKB</string>
     <string name="settings_uim_enable_summary_off">Il menu di inserimento unificato è nascosto</string>
     <string name="settings_uim_enable_summary_on">Il menu di inserimento unificato è visibile</string>
     <string name="settings_uim_enable_title">Attiva il menu di inserimento unificato</string>

@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Inställningar för stavningskontroll</string>
     <string name="settings_spell_checker_summary">Ställ in stavningskontrollen för hela systemet</string>
     <string name="settings_spell_checker_title">Stavningskontroll</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Inställningar för BBKB</string>
     <string name="settings_uim_enable_summary_off">Den enhetliga inmatningsmenyn är dold</string>
     <string name="settings_uim_enable_summary_on">Den enhetliga inmatningsmenyn visas</string>
     <string name="settings_uim_enable_title">Aktivera enhetlig inmatningsmeny</string>

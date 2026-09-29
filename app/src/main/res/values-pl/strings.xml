@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Ustawienia sprawdzania pisowni</string>
     <string name="settings_spell_checker_summary">Skonfiguruj sprawdzanie pisowni w całym systemie</string>
     <string name="settings_spell_checker_title">Sprawdzanie pisowni</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Ustawienia BBKB</string>
     <string name="settings_uim_enable_summary_off">Ujednolicone menu wprowadzania jest ukryte</string>
     <string name="settings_uim_enable_summary_on">Ujednolicone menu wprowadzania jest widoczne</string>
     <string name="settings_uim_enable_title">Włącz ujednolicone menu wprowadzania</string>

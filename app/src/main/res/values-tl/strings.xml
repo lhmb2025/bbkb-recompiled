@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Mga setting ng spell checker</string>
     <string name="settings_spell_checker_summary">I-configure ang gawi ng spell checking sa buong system</string>
     <string name="settings_spell_checker_title">Spell checking</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Mga Setting ng BBKB</string>
     <string name="settings_uim_enable_summary_off">Nakatago ang unified input menu</string>
     <string name="settings_uim_enable_summary_on">Nakikita ang unified input menu</string>
     <string name="settings_uim_enable_title">I-enable ang unified input menu</string>

@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Поставки за проверка на правопис</string>
     <string name="settings_spell_checker_summary">Конфигурирање на проверката на правопис низ целиот систем</string>
     <string name="settings_spell_checker_title">Проверка на правопис</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Поставки на BBKB</string>
     <string name="settings_uim_enable_summary_off">Обединетото мени за внесување е скриено</string>
     <string name="settings_uim_enable_summary_on">Обединетото мени за внесување е видливо</string>
     <string name="settings_uim_enable_title">Овозможување обединето мени за внесување</string>

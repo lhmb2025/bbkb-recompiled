@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">拼写检查器设置</string>
     <string name="settings_spell_checker_summary">配置系统级拼写检查行为</string>
     <string name="settings_spell_checker_title">拼写检查</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB 设置</string>
     <string name="settings_uim_enable_summary_off">统一输入菜单已隐藏</string>
     <string name="settings_uim_enable_summary_on">统一输入菜单已显示</string>
     <string name="settings_uim_enable_title">启用统一输入菜单</string>

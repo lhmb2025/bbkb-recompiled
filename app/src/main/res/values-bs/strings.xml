@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Postavke provjere pravopisa</string>
     <string name="settings_spell_checker_summary">Podesite provjeru pravopisa na nivou cijelog sistema</string>
     <string name="settings_spell_checker_title">Provjera pravopisa</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Postavke za BBKB</string>
     <string name="settings_uim_enable_summary_off">Objedinjeni meni za unos je sakriven</string>
     <string name="settings_uim_enable_summary_on">Objedinjeni meni za unos je vidljiv</string>
     <string name="settings_uim_enable_title">Omogući objedinjeni meni za unos</string>

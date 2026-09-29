@@ -323,7 +323,11 @@ public final class SettingsValues {
         this.isSoundEnabled = SettingsManager.isSoundEnabled(sharedPreferences, resources);
         this.isKeyPreviewPopupEnabled = SettingsManager.readKeyPreviewPopupEnabled(sharedPreferences, resources);
         this.isSlidingKeyInputPreviewEnabled = sharedPreferences.getBoolean("pref_sliding_key_input_preview", true);
-        this.showsVoiceInputKey = loadVoiceInputKeySetting(sharedPreferences, resources) && this.editorCapabilities.isMicrophoneAllowed && SubtypeManager.getInstance().isShortcutImeEnabled();
+        // The mic key drives this app's own recogniser session, so a speech recogniser is what it
+        // needs; a system voice IME is the older alternative route. Gating on the IME alone hid
+        // the key on phones that have a recogniser but no Google voice typing.
+        this.showsVoiceInputKey = loadVoiceInputKeySetting(sharedPreferences, resources) && this.editorCapabilities.isMicrophoneAllowed
+                && (android.speech.SpeechRecognizer.isRecognitionAvailable(context) || SubtypeManager.getInstance().isShortcutImeEnabled());
         this.includesOtherImesInLanguageSwitch = sharedPreferences.getBoolean("pref_include_other_imes_in_language_switch_list", false);
         this.showsLanguageSwitchKey = SettingsManager.isLanguageSwitchKeyVisible(sharedPreferences);
         this.useContactsDicts = sharedPreferences.getBoolean("pref_key_use_contacts_dict", true);

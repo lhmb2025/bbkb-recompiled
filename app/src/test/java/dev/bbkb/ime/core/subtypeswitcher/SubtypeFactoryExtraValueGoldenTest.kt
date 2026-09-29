@@ -457,16 +457,14 @@ class SubtypeFactoryExtraValueGoldenTest {
         // downgrades the subtype instead of being reported.
         P("en_US:qwerty:Nonsense", 1, "KeyboardLayoutSet=qwerty,UntranslatableReplacementStringInSubtypeName=QWERTY,EmojiCapable,isAdditionalSubtype", -1341559595, R.string.subtype_with_layout_en_US),
         P("de:qwertz", 1, "KeyboardLayoutSet=qwertz,EmojiCapable,isAdditionalSubtype", -1069895133, R.string.subtype_generic_qwertz),
-        // CHARACTERISED BUG: createSubtypesFromPref DROPS any spec whose layout has no
-        // subtype_generic_<layout> string, because getSubtypeNameResId falls back to
-        // R.string.subtype_generic and the loop filters that value out. So a user can never
-        // persist a custom input style for Russian/east_slavic or Arabic/arabic, even though
-        // createSubtype builds those subtypes happily (see CREATE_SUBTYPE_GOLDEN above).
-        // Note this bug survived the getIdentifier fix above unchanged: the fallback is reached
-        // because sLayoutToNameId has no entry for these layouts at all, not because the lookup
-        // failed — east_slavic and arabic are not in R.array.predefined_layouts.
-        P("ru:east_slavic", 0, null, null, null),
-        P("ar:arabic", 0, null, null, null),
+        // Layouts with no subtype_generic_<layout> string (east_slavic and arabic are not in
+        // R.array.predefined_layouts) name plain subtype_generic, "%s". That used to be the drop
+        // signal, so the twelve side-loaded non-Latin languages never became keyboards. Since
+        // 2026-09-28 a layout SideloadedSubtypes places a language on is kept with that name; a
+        // spec on an unknown layout is still dropped (see below).
+        P("ru:east_slavic", 1, "KeyboardLayoutSet=east_slavic,EmojiCapable,isAdditionalSubtype", 2083644684, R.string.subtype_generic),
+        P("ar:arabic", 1, "KeyboardLayoutSet=arabic,EmojiCapable,isAdditionalSubtype", -1154930848, R.string.subtype_generic),
+        P("xx:nonsense_layout", 0, null, null, null),
     )
 
     @Test

@@ -43,7 +43,7 @@
     <string name="android_spell_checker_settings">BBKB Spell Checker Settings</string>
     <string name="english_ime_input_options">உள்ளீட்டு விருப்பங்கள்</string>
     <string name="english_ime_name">BBKB</string>
-    <string name="english_ime_settings">BBKB Settings</string>
+    <string name="english_ime_settings">BBKB அமைப்புகள்</string>
     <string name="key_interceptor_service_description">Minimal Phone இல் சிறப்புச் செயல்பாட்டு விசைகளை (Emoji, SYM, Voice) இயக்குகிறது. இந்தச் சேவை குறிப்பிட்ட வன்பொருள் விசைகளை மட்டுமே இடைமறிக்கிறது; எந்தத் தரவையும் சேகரிக்கவோ அனுப்பவோ இல்லை.</string>
     <string name="key_interceptor_service_label">BBKB Helper</string>
     <string name="notification_strip_downloading_suggestions">%1$s க்கான பரிந்துரைகள் பதிவிறக்கப்படுகின்றன</string>
@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">எழுத்துப்பிழை சரிபார்ப்பு அமைப்புகள்</string>
     <string name="settings_spell_checker_summary">கணினி முழுவதற்குமான எழுத்துப்பிழை சரிபார்ப்புச் செயல்பாட்டை அமை</string>
     <string name="settings_spell_checker_title">எழுத்துப்பிழை சரிபார்ப்பு</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB அமைப்புகள்</string>
     <string name="settings_uim_enable_summary_off">ஒருங்கிணைந்த உள்ளீட்டு மெனு மறைக்கப்பட்டுள்ளது</string>
     <string name="settings_uim_enable_summary_on">ஒருங்கிணைந்த உள்ளீட்டு மெனு தெரிகிறது</string>
     <string name="settings_uim_enable_title">ஒருங்கிணைந்த உள்ளீட்டு மெனுவை இயக்கு</string>

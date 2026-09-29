@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Helyesírás-ellenőrző beállításai</string>
     <string name="settings_spell_checker_summary">A rendszerszintű helyesírás-ellenőrzés működésének beállítása</string>
     <string name="settings_spell_checker_title">Helyesírás-ellenőrzés</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB beállításai</string>
     <string name="settings_uim_enable_summary_off">Az egységes beviteli menü rejtve van</string>
     <string name="settings_uim_enable_summary_on">Az egységes beviteli menü látható</string>
     <string name="settings_uim_enable_title">Egységes beviteli menü engedélyezése</string>

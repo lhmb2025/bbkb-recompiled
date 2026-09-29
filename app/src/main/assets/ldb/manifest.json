@@ -483,7 +483,7 @@
         {
             "default": true,
             "language": "hy",
-            "name": "Interlingua",
+            "name": "Armenian",
             "path": "hy/Blackberry_1305_r1-2_HYlsUN_xt9_ALM3.zip",
             "preinstalled": false,
             "version": "1902.01"
@@ -707,7 +707,7 @@
         {
             "default": true,
             "language": "uk",
-            "name": "Ukranian",
+            "name": "Ukrainian",
             "path": "ldb/Blackberry_1305_r1-6_UKlsUN_xt9_ALM3.ldb",
             "preinstalled": true,
             "version": "1902.01"

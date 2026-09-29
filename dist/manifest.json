@@ -300,7 +300,7 @@
       },
       {
         "locale": "hy",
-        "name": "Interlingua",
+        "name": "Armenian",
         "file": "Blackberry_1305_r1-2_HYlsUN_xt9_ALM3.ldb",
         "sha256": "69ea77593f0d137efd699ca78a49f71696786deec6780695028e88cc6c8198d1",
         "size": 4675293
@@ -715,7 +715,7 @@
       },
       {
         "locale": "uk",
-        "name": "Ukranian",
+        "name": "Ukrainian",
         "file": "Blackberry_1305_r1-6_UKlsUN_xt9_ALM3.ldb",
         "sha256": "f7f16930665497b3e99d368a4f94720ce92b2933bba6fd59e0ce627084011057",
         "size": 5019516

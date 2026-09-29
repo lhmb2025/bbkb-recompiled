@@ -48,6 +48,8 @@ import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.util.SettingsManager
+import android.view.inputmethod.InputMethodManager
+import dev.bbkb.ime.keyboard.inputboard.voice.VoiceLanguageTags
 import java.util.Locale
 import java.util.concurrent.Executors
 
@@ -301,7 +303,7 @@ private fun fetchLanguagesModernForSelection(
     context: android.content.Context,
     onResult: (supported: List<String>, offline: List<String>) -> Unit
 ) {
-    val fallbackLanguages = getDefaultLanguageList()
+    val fallbackLanguages = fallbackLanguages(context)
 
     var speechRecognizer: android.speech.SpeechRecognizer? = null
     try {
@@ -319,6 +321,7 @@ private fun fetchLanguagesModernForSelection(
 
                 android.os.Handler(android.os.Looper.getMainLooper()).post {
                     if (allLanguages.isNotEmpty()) {
+                        rememberLanguages(context, allLanguages)
                         onResult(allLanguages, installedLanguages)
                     } else {
                         onResult(fallbackLanguages, emptyList())
@@ -354,7 +357,7 @@ private fun fetchLanguagesLegacyForSelection(
     context: android.content.Context,
     onResult: (languages: List<String>) -> Unit
 ) {
-    val fallbackLanguages = getDefaultLanguageList()
+    val fallbackLanguages = fallbackLanguages(context)
 
     try {
         val detailsIntent = Intent(RecognizerIntent.ACTION_GET_LANGUAGE_DETAILS)
@@ -368,6 +371,7 @@ private fun fetchLanguagesLegacyForSelection(
 
                     if (!languages.isNullOrEmpty()) {
                         if (BuildConfig.DEBUG) Log.d(TAG, "Legacy API: Found ${languages.size} languages")
+                        rememberLanguages(context, languages.toList())
                         onResult(languages.toList())
                     } else {
                         if (BuildConfig.DEBUG) Log.d(TAG, "Legacy API: No languages found, using fallback")
@@ -384,6 +388,49 @@ private fun fetchLanguagesLegacyForSelection(
         if (BuildConfig.DEBUG) Log.e(TAG, "Error fetching languages via broadcast", e)
         onResult(fallbackLanguages)
     }
+}
+
+private const val VOICE_LANGUAGE_CACHE_PREF = "voice_input_language_cache"
+
+/**
+ * What the picker shows when discovery fails: the last real answer this device gave, or, before
+ * there ever was one, every language this keyboard declares a subtype for plus the regional
+ * list below. The old static list alone omitted Hebrew, Greek, Ukrainian, Swedish, Czech,
+ * Hungarian, Romanian, Finnish, Danish, Norwegian, Bulgarian and Persian, all of which have
+ * keyboards here.
+ */
+internal fun fallbackLanguages(context: android.content.Context): List<String> =
+    composeFallback(cachedLanguages(context), keyboardLanguageTags(context))
+
+/** Pure part of [fallbackLanguages], for tests: a remembered discovery wins outright. */
+internal fun composeFallback(cached: List<String>, keyboard: List<String>): List<String> =
+    if (cached.isNotEmpty()) cached else (keyboard + getDefaultLanguageList()).distinct().sorted()
+
+private fun cachedLanguages(context: android.content.Context): List<String> = try {
+    PrefsManager.getPrefs(context).getString(VOICE_LANGUAGE_CACHE_PREF, null)
+        ?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList()
+} catch (e: Exception) {
+    emptyList()
+}
+
+/** Remember a successful discovery so a later failure still shows this device's real list. */
+private fun rememberLanguages(context: android.content.Context, languages: List<String>) {
+    if (languages.isEmpty()) return
+    try {
+        PrefsManager.getPrefs(context).edit().putString(VOICE_LANGUAGE_CACHE_PREF, languages.joinToString(",")).apply()
+    } catch (e: Exception) {
+        if (BuildConfig.DEBUG) Log.w(TAG, "Could not remember the voice language list", e)
+    }
+}
+
+/** The recogniser tags of every keyboard this app declares, in method.xml order, without duplicates. */
+internal fun keyboardLanguageTags(context: android.content.Context): List<String> = try {
+    val imm = context.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+    val self = imm?.inputMethodList?.firstOrNull { it.packageName == context.packageName }
+    if (self == null) emptyList()
+    else (0 until self.subtypeCount).mapNotNull { VoiceLanguageTags.normalise(self.getSubtypeAt(it).locale) }.distinct()
+} catch (e: Exception) {
+    emptyList()
 }
 
 private fun getDefaultLanguageList(): List<String> = listOf(

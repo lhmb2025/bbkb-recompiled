@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Õigekirjakontrolli seaded</string>
     <string name="settings_spell_checker_summary">Seadista kogu süsteemi õigekirjakontrolli käitumist</string>
     <string name="settings_spell_checker_title">Õigekirjakontroll</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB seaded</string>
     <string name="settings_uim_enable_summary_off">Ühtne sisestusmenüü on peidetud</string>
     <string name="settings_uim_enable_summary_on">Ühtne sisestusmenüü on nähtav</string>
     <string name="settings_uim_enable_title">Luba ühtne sisestusmenüü</string>

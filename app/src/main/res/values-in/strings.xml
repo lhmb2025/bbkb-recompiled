@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Setelan pemeriksa ejaan</string>
     <string name="settings_spell_checker_summary">Konfigurasikan perilaku pemeriksaan ejaan seluruh sistem</string>
     <string name="settings_spell_checker_title">Pemeriksaan ejaan</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Setelan BBKB</string>
     <string name="settings_uim_enable_summary_off">Menu masukan terpadu disembunyikan</string>
     <string name="settings_uim_enable_summary_on">Menu masukan terpadu ditampilkan</string>
     <string name="settings_uim_enable_title">Aktifkan menu masukan terpadu</string>

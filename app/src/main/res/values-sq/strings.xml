@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Cilësimet e kontrollit drejtshkrimor</string>
     <string name="settings_spell_checker_summary">Konfiguro kontrollin drejtshkrimor në të gjithë sistemin</string>
     <string name="settings_spell_checker_title">Kontrolli drejtshkrimor</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Cilësimet e BBKB</string>
     <string name="settings_uim_enable_summary_off">Menyja e njësuar e shkrimit është e fshehur</string>
     <string name="settings_uim_enable_summary_on">Menyja e njësuar e shkrimit është e dukshme</string>
     <string name="settings_uim_enable_title">Aktivizo menynë e njësuar të shkrimit</string>

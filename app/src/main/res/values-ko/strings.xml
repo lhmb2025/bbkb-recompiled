@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">맞춤법 검사기 설정</string>
     <string name="settings_spell_checker_summary">시스템 전체의 맞춤법 검사 동작을 구성합니다</string>
     <string name="settings_spell_checker_title">맞춤법 검사</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB 설정</string>
     <string name="settings_uim_enable_summary_off">통합 입력 메뉴가 숨겨져 있습니다</string>
     <string name="settings_uim_enable_summary_on">통합 입력 메뉴가 표시됩니다</string>
     <string name="settings_uim_enable_title">통합 입력 메뉴 사용</string>

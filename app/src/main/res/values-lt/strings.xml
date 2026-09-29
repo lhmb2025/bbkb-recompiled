@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Rašybos tikrinimo nustatymai</string>
     <string name="settings_spell_checker_summary">Konfigūruoti visos sistemos rašybos tikrinimo veikimą</string>
     <string name="settings_spell_checker_title">Rašybos tikrinimas</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">„BBKB“ nustatymai</string>
     <string name="settings_uim_enable_summary_off">Vieningas įvesties meniu paslėptas</string>
     <string name="settings_uim_enable_summary_on">Vieningas įvesties meniu matomas</string>
     <string name="settings_uim_enable_title">Įjungti vieningą įvesties meniu</string>

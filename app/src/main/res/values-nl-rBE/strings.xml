@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Instellingen voor spellingcontrole</string>
     <string name="settings_spell_checker_summary">Het systeembrede gedrag van de spellingcontrole configureren</string>
     <string name="settings_spell_checker_title">Spellingcontrole</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Instellingen voor BBKB</string>
     <string name="settings_uim_enable_summary_off">Het gecombineerde invoermenu is verborgen</string>
     <string name="settings_uim_enable_summary_on">Het gecombineerde invoermenu is zichtbaar</string>
     <string name="settings_uim_enable_title">Gecombineerd invoermenu inschakelen</string>

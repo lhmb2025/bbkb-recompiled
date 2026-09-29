@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Орфографияны текшергич жөндөөлөрү</string>
     <string name="settings_spell_checker_summary">Система боюнча орфографияны текшерүүнүн иштөө тартибин жөндөө</string>
     <string name="settings_spell_checker_title">Орфографияны текшерүү</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB жөндөөлөрү</string>
     <string name="settings_uim_enable_summary_off">Бирдиктүү киргизүү менюсу жашырылган</string>
     <string name="settings_uim_enable_summary_on">Бирдиктүү киргизүү менюсу көрүнөт</string>
     <string name="settings_uim_enable_title">Бирдиктүү киргизүү менюсун иштетүү</string>

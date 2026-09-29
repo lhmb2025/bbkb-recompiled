@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Innstillinger for stavekontroll</string>
     <string name="settings_spell_checker_summary">Konfigurer stavekontroll for hele systemet</string>
     <string name="settings_spell_checker_title">Stavekontroll</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Innstillinger for BBKB</string>
     <string name="settings_uim_enable_summary_off">Den samlede inndatamenyen er skjult</string>
     <string name="settings_uim_enable_summary_on">Den samlede inndatamenyen er synlig</string>
     <string name="settings_uim_enable_title">Aktiver samlet inndatameny</string>

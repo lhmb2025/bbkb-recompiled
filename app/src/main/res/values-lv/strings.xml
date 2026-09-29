@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Pareizrakstības pārbaudītāja iestatījumi</string>
     <string name="settings_spell_checker_summary">Konfigurēt visas sistēmas pareizrakstības pārbaudes darbību</string>
     <string name="settings_spell_checker_title">Pareizrakstības pārbaude</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB iestatījumi</string>
     <string name="settings_uim_enable_summary_off">Vienotā ievades izvēlne ir paslēpta</string>
     <string name="settings_uim_enable_summary_on">Vienotā ievades izvēlne ir redzama</string>
     <string name="settings_uim_enable_title">Iespējot vienoto ievades izvēlni</string>

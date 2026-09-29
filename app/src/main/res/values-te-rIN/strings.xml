@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">అక్షరక్రమ తనిఖీ సెట్టింగ్‌లు</string>
     <string name="settings_spell_checker_summary">సిస్టమ్ అంతటా అక్షరక్రమ తనిఖీ ప్రవర్తనను కాన్ఫిగర్ చేయి</string>
     <string name="settings_spell_checker_title">అక్షరక్రమ తనిఖీ</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB సెట్టింగ్‌లు</string>
     <string name="settings_uim_enable_summary_off">ఏకీకృత ఇన్‌పుట్ మెనూ దాచబడింది</string>
     <string name="settings_uim_enable_summary_on">ఏకీకృత ఇన్‌పుట్ మెనూ కనిపిస్తోంది</string>
     <string name="settings_uim_enable_title">ఏకీకృత ఇన్‌పుట్ మెనూను ప్రారంభించు</string>

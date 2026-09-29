@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Zuzentzaile ortografikoaren ezarpenak</string>
     <string name="settings_spell_checker_summary">Konfiguratu sistema osoko zuzenketa ortografikoaren portaera</string>
     <string name="settings_spell_checker_title">Zuzenketa ortografikoa</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB ezarpenak</string>
     <string name="settings_uim_enable_summary_off">Idazketa-menu bateratua ezkutatuta dago</string>
     <string name="settings_uim_enable_summary_on">Idazketa-menu bateratua ikusgai dago</string>
     <string name="settings_uim_enable_title">Gaitu idazketa-menu bateratua</string>

@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Настройки на правописната проверка</string>
     <string name="settings_spell_checker_summary">Конфигуриране на правописната проверка в цялата система</string>
     <string name="settings_spell_checker_title">Правописна проверка</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Настройки на BBKB</string>
     <string name="settings_uim_enable_summary_off">Унифицираното меню за въвеждане е скрито</string>
     <string name="settings_uim_enable_summary_on">Унифицираното меню за въвеждане е видимо</string>
     <string name="settings_uim_enable_title">Включване на унифицираното меню за въвеждане</string>

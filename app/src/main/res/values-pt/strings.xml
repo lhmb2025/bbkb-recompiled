@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Configurações do corretor ortográfico</string>
     <string name="settings_spell_checker_summary">Configurar a verificação ortográfica em todo o sistema</string>
     <string name="settings_spell_checker_title">Verificação ortográfica</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Configurações de BBKB</string>
     <string name="settings_uim_enable_summary_off">O menu de entrada unificado está oculto</string>
     <string name="settings_uim_enable_summary_on">O menu de entrada unificado está visível</string>
     <string name="settings_uim_enable_title">Ativar o menu de entrada unificado</string>

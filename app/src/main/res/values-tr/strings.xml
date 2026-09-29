@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Yazım denetleyicisi ayarları</string>
     <string name="settings_spell_checker_summary">Sistem genelindeki yazım denetimi davranışını yapılandır</string>
     <string name="settings_spell_checker_title">Yazım denetimi</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB Ayarları</string>
     <string name="settings_uim_enable_summary_off">Birleşik giriş menüsü gizli</string>
     <string name="settings_uim_enable_summary_on">Birleşik giriş menüsü görünür</string>
     <string name="settings_uim_enable_title">Birleşik giriş menüsünü etkinleştir</string>

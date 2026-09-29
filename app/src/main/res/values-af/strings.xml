@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Speltoetserinstellings</string>
     <string name="settings_spell_checker_summary">Stel stelselwye speltoetsgedrag op</string>
     <string name="settings_spell_checker_title">Speltoetsing</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB-instellings</string>
     <string name="settings_uim_enable_summary_off">Verenigde invoerkieslys is versteek</string>
     <string name="settings_uim_enable_summary_on">Verenigde invoerkieslys is sigbaar</string>
     <string name="settings_uim_enable_title">Ontsper verenigde invoerkieslys</string>

@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">বানান পরীক্ষকের সেটিংস</string>
     <string name="settings_spell_checker_summary">সিস্টেম জুড়ে বানান পরীক্ষার আচরণ কনফিগার করুন</string>
     <string name="settings_spell_checker_title">বানান পরীক্ষা</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB সেটিংস</string>
     <string name="settings_uim_enable_summary_off">একীভূত ইনপুট মেনু লুকানো আছে</string>
     <string name="settings_uim_enable_summary_on">একীভূত ইনপুট মেনু দেখা যাচ্ছে</string>
     <string name="settings_uim_enable_title">একীভূত ইনপুট মেনু সক্রিয় করুন</string>

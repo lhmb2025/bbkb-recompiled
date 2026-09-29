@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Налады праверкі правапісу</string>
     <string name="settings_spell_checker_summary">Наладзьце праверку правапісу ва ўсёй сістэме</string>
     <string name="settings_spell_checker_title">Праверка правапісу</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Налады BBKB</string>
     <string name="settings_uim_enable_summary_off">Адзінае меню ўводу схавана</string>
     <string name="settings_uim_enable_summary_on">Адзінае меню ўводу бачнае</string>
     <string name="settings_uim_enable_title">Уключыць адзінае меню ўводу</string>

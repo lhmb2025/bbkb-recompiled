@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">إعدادات المدقق الإملائي</string>
     <string name="settings_spell_checker_summary">تكوين سلوك التدقيق الإملائي على مستوى النظام</string>
     <string name="settings_spell_checker_title">التدقيق الإملائي</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">إعدادات BBKB</string>
     <string name="settings_uim_enable_summary_off">قائمة الإدخال الموحدة مخفية</string>
     <string name="settings_uim_enable_summary_on">قائمة الإدخال الموحدة ظاهرة</string>
     <string name="settings_uim_enable_title">تمكين قائمة الإدخال الموحدة</string>

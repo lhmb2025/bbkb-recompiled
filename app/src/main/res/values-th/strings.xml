@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">การตั้งค่าเครื่องมือตรวจการสะกด</string>
     <string name="settings_spell_checker_summary">ตั้งค่าการทำงานของการตรวจการสะกดทั้งระบบ</string>
     <string name="settings_spell_checker_title">การตรวจการสะกด</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">การตั้งค่า BBKB</string>
     <string name="settings_uim_enable_summary_off">เมนูการป้อนข้อมูลรวมถูกซ่อนอยู่</string>
     <string name="settings_uim_enable_summary_on">เมนูการป้อนข้อมูลรวมแสดงอยู่</string>
     <string name="settings_uim_enable_title">เปิดใช้งานเมนูการป้อนข้อมูลรวม</string>

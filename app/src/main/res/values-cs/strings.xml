@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Nastavení kontroly pravopisu</string>
     <string name="settings_spell_checker_summary">Nastavit kontrolu pravopisu v celém systému</string>
     <string name="settings_spell_checker_title">Kontrola pravopisu</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Nastavení BBKB</string>
     <string name="settings_uim_enable_summary_off">Sjednocená nabídka zadávání je skrytá</string>
     <string name="settings_uim_enable_summary_on">Sjednocená nabídka zadávání je zobrazená</string>
     <string name="settings_uim_enable_title">Zapnout sjednocenou nabídku zadávání</string>

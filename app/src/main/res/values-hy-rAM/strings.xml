@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Տառասխալների ուղղիչի կարգավորումներ</string>
     <string name="settings_spell_checker_summary">Կարգավորել համակարգային տառասխալների ստուգման վարքագիծը</string>
     <string name="settings_spell_checker_title">Տառասխալների ստուգում</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB-ի կարգավորումներ</string>
     <string name="settings_uim_enable_summary_off">Միասնական ներածման ընտրացանկը թաքցված է</string>
     <string name="settings_uim_enable_summary_on">Միասնական ներածման ընտրացանկը տեսանելի է</string>
     <string name="settings_uim_enable_title">Միացնել միասնական ներածման ընտրացանկը</string>

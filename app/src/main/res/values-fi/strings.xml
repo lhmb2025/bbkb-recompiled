@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Oikoluvun asetukset</string>
     <string name="settings_spell_checker_summary">Määritä koko järjestelmän oikoluvun toiminta</string>
     <string name="settings_spell_checker_title">Oikoluku</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB:n asetukset</string>
     <string name="settings_uim_enable_summary_off">Yhtenäinen syöttövalikko on piilotettu</string>
     <string name="settings_uim_enable_summary_on">Yhtenäinen syöttövalikko on näkyvissä</string>
     <string name="settings_uim_enable_title">Ota yhtenäinen syöttövalikko käyttöön</string>

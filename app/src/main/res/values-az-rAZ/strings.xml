@@ -43,7 +43,7 @@
     <string name="android_spell_checker_settings">BBKB Orfoqrafik Yoxlanış Parametrləri (AOYP)</string>
     <string name="english_ime_input_options">Daxiletmə seçimləri</string>
     <string name="english_ime_name">BBKB</string>
-    <string name="english_ime_settings">BBKB Parametrləri (AOYP)</string>
+    <string name="english_ime_settings">BBKB Parametrləri</string>
     <string name="key_interceptor_service_description">Minimal Phone cihazında xüsusi funksiya klavişlərini (Emoji, SYM, Səs) aktivləşdirir. Bu xidmət yalnız müəyyən aparat klavişlərini tutur və heç bir məlumat toplamır və ya ötürmür.</string>
     <string name="key_interceptor_service_label">BBKB Köməkçisi</string>
     <string name="notification_strip_downloading_suggestions">%1$s üçün təkliflər yüklənir</string>
@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Orfoqrafik yoxlanış parametrləri</string>
     <string name="settings_spell_checker_summary">Sistem üzrə orfoqrafik yoxlanış davranışını tənzimləyin</string>
     <string name="settings_spell_checker_title">Orfoqrafik yoxlanış</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB Parametrləri</string>
     <string name="settings_uim_enable_summary_off">Vahid daxiletmə menyusu gizlidir</string>
     <string name="settings_uim_enable_summary_on">Vahid daxiletmə menyusu görünür</string>
     <string name="settings_uim_enable_title">Vahid daxiletmə menyusunu aktivləşdirin</string>

@@ -88,8 +88,10 @@ object SettingsBackup {
      *  - `pref_distribution_` — the manifest-URL and channel overrides. These point the updater at
      *    a specific server (often a laptop on the local network during development); carrying them
      *    to another device silently redirects its update checks.
+     *  - `voice_input_language_cache` — the recogniser languages this device reported last time;
+     *    another device has its own recogniser.
      */
-    val DENIED_PREFIXES: List<String> = listOf("pref_update_", "pref_distribution_")
+    val DENIED_PREFIXES: List<String> = listOf("pref_update_", "pref_distribution_", "voice_input_language_cache")
 
     /**
      * The one `pref_update_` key that *is* a user setting rather than check state: the

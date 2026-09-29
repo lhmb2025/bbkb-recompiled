@@ -126,4 +126,30 @@ class PackOfferTest {
         assertEquals("cy", PackOffer.candidateFor("cy", packs)?.locale)
         assertNull(PackOffer.candidateFor("tlh", packs))
     }
+
+    // ── Regions the engine's registry substitutes ─────────────────────────────────────────────
+    //
+    // The registry maps en_NZ to en_AU, es_MX to es_419 and en_GB (with en_SG/IE/ZA) to the
+    // bundled en_UK. Deciding from the bare language offered New Zealand and Mexico nothing,
+    // because bare en and es are bundled.
+
+    @Test
+    fun aSubstitutedRegionIsOfferedThePackTheEngineWillLoad() {
+        assertEquals("en_AU", PackOffer.candidateFor("en_NZ", packs)?.locale)
+        assertEquals("es_419", PackOffer.candidateFor("es_MX", packs)?.locale)
+        assertEquals("en_UK", PackOffer.candidateFor("en_GB", packs)?.locale)
+        assertEquals("en_UK", PackOffer.candidateFor("en_ZA", packs)?.locale)
+    }
+
+    @Test
+    fun newZealandIsOfferedAustralianEnglishEvenThoughBareEnglishIsBundled() {
+        assertEquals("en_AU", decide("en_NZ", installed = setOf("en", "en_US", "en_UK"))?.locale)
+        assertEquals("es_419", decide("es_MX", installed = setOf("es", "es_US"))?.locale)
+    }
+
+    @Test
+    fun britishEnglishIsQuietOnceTheBundledUkPackCountsAsInstalled() {
+        assertNull(decide("en_GB", installed = setOf("en_GB", "en_UK")))
+        assertNull(decide("en_GB", installed = setOf("en_UK")))
+    }
 }

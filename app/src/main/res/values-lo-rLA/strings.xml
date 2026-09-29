@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">ການຕັ້ງຄ່າໂຕກວດການສະກົດຄຳ</string>
     <string name="settings_spell_checker_summary">ຕັ້ງຄ່າພຶດຕິກຳການກວດການສະກົດຄຳທົ່ວທັງລະບົບ</string>
     <string name="settings_spell_checker_title">ການກວດການສະກົດຄຳ</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">ຕັ້ງຄ່າ BBKB</string>
     <string name="settings_uim_enable_summary_off">ເມນູການປ້ອນແບບລວມຖືກເຊື່ອງໄວ້</string>
     <string name="settings_uim_enable_summary_on">ເມນູການປ້ອນແບບລວມສະແດງຢູ່</string>
     <string name="settings_uim_enable_title">ເປີດໃຊ້ເມນູການປ້ອນແບບລວມ</string>

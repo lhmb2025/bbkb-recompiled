@@ -93,6 +93,11 @@ public final class SideloadedSubtypes {
         return LAYOUT_FOR_LANGUAGE.get(language);
     }
 
+    /** Whether {@code layout} is one a side-loaded language is placed on (so it is a real layout). */
+    public static boolean isSideloadLayout(String layout) {
+        return layout != null && LAYOUT_FOR_LANGUAGE.containsValue(layout);
+    }
+
     /** The stored {@code language:layout} pairs, in insertion order, never {@code null}. */
     public static List<String> read(SharedPreferences prefs) {
         final String raw = prefs.getString(PREF_KEY, "");

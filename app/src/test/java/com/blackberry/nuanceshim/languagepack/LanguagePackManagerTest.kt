@@ -88,8 +88,8 @@ class LanguagePackManagerTest {
         assertTrue(manager.isSupported(Locale.US))
         assertTrue(manager.isInstalled(Locale.US))
         assertEquals("en_US", manager.getStatus(Locale.US)!!.localeIdentifier)
-        // en-GB is not in the manifest (it says UK) and has no fallback: the language default wins.
-        assertEquals("en", manager.getStatus(Locale.UK)!!.localeIdentifier)
+        // en-GB is not in the manifest (it says UK); the registry bridges it to the bundled UK pack.
+        assertEquals("en_UK", manager.getStatus(Locale.UK)!!.localeIdentifier)
         assertTrue(manager.isSupported(Locale("af")))
         assertFalse(manager.isSupported(Locale("zz")))
     }

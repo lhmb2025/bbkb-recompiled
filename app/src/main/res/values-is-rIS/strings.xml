@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Stillingar ritvilluleitar</string>
     <string name="settings_spell_checker_summary">Stilla hegðun ritvilluleitar í öllu kerfinu</string>
     <string name="settings_spell_checker_title">Ritvilluleit</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB stillingar</string>
     <string name="settings_uim_enable_summary_off">Sameinuð innsláttarvalmynd er falin</string>
     <string name="settings_uim_enable_summary_on">Sameinuð innsláttarvalmynd er sýnileg</string>
     <string name="settings_uim_enable_title">Virkja sameinaða innsláttarvalmynd</string>

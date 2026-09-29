@@ -54,7 +54,12 @@ public final class SubtypeFactory {
                 if (BuildConfig.DEBUG) Log.w(TAG, "Unknown additional subtype specified: " + str2 + " in " + str);
             } else {
                 InputMethodSubtype inputMethodSubtype = createSubtype(strArrSplit2[0], strArrSplit2[1], strArrSplit2.length == 3 ? "AsciiCapable".equals(strArrSplit2[2]) : false, true);
-                if (inputMethodSubtype.getNameResId() != R.string.subtype_generic) {
+                // A name of plain subtype_generic ("%s") means the layout has no
+                // subtype_generic_<layout> string. For a corrupt spec that is the signal to drop
+                // it; for the non-Latin layouts a side-loaded pack can bring (bengali, hindi,
+                // farsi, arabic, ...) it is simply how they are named, and dropping them meant
+                // twelve downloadable languages never became a keyboard.
+                if (inputMethodSubtype.getNameResId() != R.string.subtype_generic || SideloadedSubtypes.isSideloadLayout(strArrSplit2[1])) {
                     arrayList.add(inputMethodSubtype);
                 }
             }

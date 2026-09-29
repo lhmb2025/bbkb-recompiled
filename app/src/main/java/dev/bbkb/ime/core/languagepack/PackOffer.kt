@@ -1,5 +1,7 @@
 package dev.bbkb.ime.core.languagepack
 
+import com.blackberry.nuanceshim.languagepack.LanguagePackRegistry
+
 import dev.bbkb.ime.core.distribution.PackEntry
 import dev.bbkb.ime.core.distribution.Packs
 
@@ -22,7 +24,11 @@ import dev.bbkb.ime.core.distribution.Packs
  *     Swiss German keyboard needs the **German** dictionary, not the Swiss one. The Swiss one is
  *     an extra the user can choose later on the Language packs screen; offering it here would
  *     silently replace their German dictionary as a side effect of adding a keyboard.
- *  3. **No exact entry** — fall back to the bare language (`fr_CA` → `fr`), which is what the
+ *  3. **No exact entry, but a region the engine's registry substitutes** (`en_NZ` → `en_AU`,
+ *     `es_MX` → `es_419`, `en_GB` → `en_UK`) — that pack, because it is the one the engine will
+ *     load. Deciding from the bare language here offered nothing for New Zealand and Mexico,
+ *     whose bare `en` and `es` are bundled.
+ *  4. **No exact entry** — fall back to the bare language (`fr_CA` → `fr`), which is what the
  *     engine's own registry does for a country it does not know.
  *
  * ### What is deliberately *not* here
@@ -75,6 +81,12 @@ object PackOffer {
     fun candidateFor(locale: String, packs: Packs): PackEntry? {
         val exact = packs.forLocale(locale)
         if (exact != null && !exact.isVariant) return exact
+        if (exact == null) {
+            val substitute = LanguagePackRegistry.fallbackFor(locale.replace('_', '-'))?.replace('-', '_')
+            if (substitute != null) {
+                packs.forLocale(substitute)?.takeUnless { it.isVariant }?.let { return it }
+            }
+        }
         val base = exact?.group ?: locale.substringBefore('_')
         if (base == locale && exact == null) return null
         return packs.forLocale(base)?.takeUnless { it.isVariant }

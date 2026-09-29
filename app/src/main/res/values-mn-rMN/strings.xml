@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Алдаа шалгагчийн тохиргоо</string>
     <string name="settings_spell_checker_summary">Систем даяарх алдаа шалгах ажиллагааг тохируулах</string>
     <string name="settings_spell_checker_title">Алдаа шалгах</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">BBKB Тохиргоо</string>
     <string name="settings_uim_enable_summary_off">Нэгдсэн оролтын цэс нуугдсан</string>
     <string name="settings_uim_enable_summary_on">Нэгдсэн оролтын цэс харагдаж байна</string>
     <string name="settings_uim_enable_title">Нэгдсэн оролтын цэсийг идэвхжүүлэх</string>

@@ -97,7 +97,7 @@ class LanguagePackRegistryLazyLoadTest {
         // makes of the eagerly-loaded manager.
         assertNotNull(manager.getStatus(Locale.US))
         assertEquals("en_US", manager.getStatus(Locale.US)!!.localeIdentifier)
-        assertEquals("en", manager.getStatus(Locale.UK)!!.localeIdentifier)
+        assertEquals("en_UK", manager.getStatus(Locale.UK)!!.localeIdentifier)
     }
 
     @Test

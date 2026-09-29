@@ -590,7 +590,7 @@
     <string name="settings_spell_checker_screen_title">Setelan pamriksa ejaan</string>
     <string name="settings_spell_checker_summary">Atur paripolah pamriksan ejaan ing kabeh sistem</string>
     <string name="settings_spell_checker_title">Mriksa ejaan</string>
-    <string name="settings_title">BBKB Settings</string>
+    <string name="settings_title">Setelan BBKB</string>
     <string name="settings_uim_enable_summary_off">Menu input manunggal didhelikake</string>
     <string name="settings_uim_enable_summary_on">Menu input manunggal katon</string>
     <string name="settings_uim_enable_title">Aktifake menu input manunggal</string>
