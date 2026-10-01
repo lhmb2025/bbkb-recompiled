@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Оң Shift баскычы</string>
     <string name="settings_physical_keyboard_summary">Физикалык баскычтоптон киргизүү жөндөөлөрү</string>
     <string name="settings_physical_keyboard_title">Физикалык баскычтоп</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Баскычтар системанын демейки алфавитин терет</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Баскычтар активдүү тилдин алфавитин терет</string>
+    <string name="settings_pkb_active_language_alphabet_title">Физикалык баскычтоп үчүн активдүү тилдин алфавитин колдонуу</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Өчүрүлгөн</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym кыска жолу</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl баскычынын иштөөсү</string>

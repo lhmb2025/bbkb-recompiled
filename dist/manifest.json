@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "generated": "2026-09-29T05:33:17Z",
+  "generated": "2026-10-01T06:26:40Z",
   "app": {
     "release": {
-      "versionCode": 1435,
-      "versionName": "5.0.0-beta.22",
-      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.22/bbkb-5.0.0-beta.22-release.apk",
-      "sha256": "d342f83ef8d3eb3f30194b0df6cde5552220a69f1cc9eaaa565be4c10fdf026d",
-      "size": 56882289,
+      "versionCode": 1436,
+      "versionName": "5.0.0-beta.23",
+      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.23/bbkb-5.0.0-beta.23-release.apk",
+      "sha256": "30d6af86eee9f811e7db60dc7e3c37c57975397fe1f61a24fb8c417f3f9d356c",
+      "size": 56907412,
       "minSdk": 23,
-      "notes": "New Language settings page, five new languages, physical keyboard layouts for every language, and fixes for dictation, Chinese, Korean, Vietnamese and language packs."
+      "notes": "Fixes Indonesian and Hebrew on Android 15. Physical keys now type Arabic, Cyrillic, Hebrew, Greek and Korean when that keyboard is active, with a switch on the Language screen."
     }
   },
   "packs": {

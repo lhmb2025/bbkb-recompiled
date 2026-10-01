@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Høyre Skift-tast</string>
     <string name="settings_physical_keyboard_summary">Innstillinger for inndata fra fysisk tastatur</string>
     <string name="settings_physical_keyboard_title">Fysisk tastatur</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Tastene skriver systemets standardalfabet</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Tastene skriver det aktive språkets alfabet</string>
+    <string name="settings_pkb_active_language_alphabet_title">Bruk det aktive språkets alfabet på det fysiske tastaturet</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Deaktivert</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym-snarvei</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Atferd for Ctrl-tasten</string>

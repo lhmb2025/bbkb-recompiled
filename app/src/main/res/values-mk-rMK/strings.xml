@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Десно копче Shift</string>
     <string name="settings_physical_keyboard_summary">Поставки за внесување од физичка тастатура</string>
     <string name="settings_physical_keyboard_title">Физичка тастатура</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Копчињата ја внесуваат стандардната азбука на системот</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Копчињата ја внесуваат азбуката на активниот јазик</string>
+    <string name="settings_pkb_active_language_alphabet_title">Користи ја азбуката на активниот јазик за физичката тастатура</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Оневозможено</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Кратенка Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Однесување на копчето Ctrl</string>

@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Kanang shift key</string>
     <string name="settings_physical_keyboard_summary">Mga setting para sa input sa pisikal na keyboard</string>
     <string name="settings_physical_keyboard_title">Pisikal na keyboard</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Ang mga key ay nagta-type ng default na alpabeto ng system</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Ang mga key ay nagta-type ng alpabeto ng aktibong wika</string>
+    <string name="settings_pkb_active_language_alphabet_title">Gamitin ang alpabeto ng aktibong wika para sa pisikal na keyboard</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Naka-disable</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Shortcut na Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Gawi ng Ctrl key</string>

@@ -146,7 +146,7 @@ public class MultiLanguageRepository {
         if (locale == null || locale.isEmpty()) {
             return ScriptUtils.SCRIPT_UNKNOWN;
         }
-        int script = ScriptUtils.getScript(LocaleUtils.constructLocaleFromString(locale).getLanguage());
+        int script = ScriptUtils.getScriptFromLocale(LocaleUtils.constructLocaleFromString(locale));
         return script == 21 ? 14 : script;
     }
 

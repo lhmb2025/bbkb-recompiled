@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Eskuineko maiuskula-tekla</string>
     <string name="settings_physical_keyboard_summary">Teklatu fisikoaren idazketaren ezarpenak</string>
     <string name="settings_physical_keyboard_title">Teklatu fisikoa</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Teklek sistemaren alfabeto lehenetsia idazten dute</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Teklek hizkuntza aktiboaren alfabetoa idazten dute</string>
+    <string name="settings_pkb_active_language_alphabet_title">Erabili hizkuntza aktiboaren alfabetoa teklatu fisikoan</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Desgaituta</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym lasterbidea</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl teklaren portaera</string>

@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Tombol shift kanan</string>
     <string name="settings_physical_keyboard_summary">Setelan untuk masukan keyboard fisik</string>
     <string name="settings_physical_keyboard_title">Keyboard fisik</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Tombol mengetik alfabet default sistem</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Tombol mengetik alfabet bahasa aktif</string>
+    <string name="settings_pkb_active_language_alphabet_title">Gunakan alfabet bahasa aktif untuk keyboard fisik</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Nonaktif</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Pintasan Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Perilaku tombol Ctrl</string>

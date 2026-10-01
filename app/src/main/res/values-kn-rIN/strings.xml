@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">ಬಲ ಶಿಫ್ಟ್ ಕೀ</string>
     <string name="settings_physical_keyboard_summary">ಭೌತಿಕ ಕೀಬೋರ್ಡ್ ಇನ್‌ಪುಟ್‌ನ ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
     <string name="settings_physical_keyboard_title">ಭೌತಿಕ ಕೀಬೋರ್ಡ್</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">ಕೀಗಳು ಸಿಸ್ಟಂನ ಡೀಫಾಲ್ಟ್ ವರ್ಣಮಾಲೆಯನ್ನು ಟೈಪ್ ಮಾಡುತ್ತವೆ</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">ಕೀಗಳು ಸಕ್ರಿಯ ಭಾಷೆಯ ವರ್ಣಮಾಲೆಯನ್ನು ಟೈಪ್ ಮಾಡುತ್ತವೆ</string>
+    <string name="settings_pkb_active_language_alphabet_title">ಭೌತಿಕ ಕೀಬೋರ್ಡ್‌ಗೆ ಸಕ್ರಿಯ ಭಾಷೆಯ ವರ್ಣಮಾಲೆಯನ್ನು ಬಳಸಿ</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym ಶಾರ್ಟ್‌ಕಟ್</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl ಕೀ ವರ್ತನೆ</string>

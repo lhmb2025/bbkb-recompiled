@@ -1,5 +1,7 @@
 package dev.bbkb.ime.keyboard.internal;
 
+import dev.bbkb.ime.core.locale.LocaleUtils;
+
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -237,11 +239,12 @@ public final class KeyboardTextSet {
     }
 
     public static String[] getTextsTable(Locale locale) {
-        String string = locale.toString();
+        // The table is keyed `iw`, so ask for the app's spelling, not the Locale's.
+        String string = LocaleUtils.localeString(locale);
         if (sLocaleToTextsTableMap.containsKey(string)) {
             return sLocaleToTextsTableMap.get(string);
         }
-        String language = locale.getLanguage();
+        String language = LocaleUtils.languageCode(locale);
         if (sLocaleToTextsTableMap.containsKey(language)) {
             return sLocaleToTextsTableMap.get(language);
         }

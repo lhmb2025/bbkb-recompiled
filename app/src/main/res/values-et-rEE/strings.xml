@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Parem Shift-klahv</string>
     <string name="settings_physical_keyboard_summary">Füüsilise klaviatuuriga sisestamise seaded</string>
     <string name="settings_physical_keyboard_title">Füüsiline klaviatuur</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Klahvid sisestavad süsteemi vaiketähestikku</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Klahvid sisestavad aktiivse keele tähestikku</string>
+    <string name="settings_pkb_active_language_alphabet_title">Kasuta füüsilisel klaviatuuril aktiivse keele tähestikku</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Keelatud</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym otsetee</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl-klahvi käitumine</string>

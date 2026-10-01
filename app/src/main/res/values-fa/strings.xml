@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">کلید shift راست</string>
     <string name="settings_physical_keyboard_summary">تنظیمات ورودی با صفحه کلید فیزیکی</string>
     <string name="settings_physical_keyboard_title">صفحه کلید فیزیکی</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">کلیدها الفبای پیش‌فرض سیستم را تایپ می‌کنند</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">کلیدها الفبای زبان فعال را تایپ می‌کنند</string>
+    <string name="settings_pkb_active_language_alphabet_title">استفاده از الفبای زبان فعال برای صفحه‌کلید فیزیکی</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">غیرفعال</string>
     <string name="settings_pkb_alt_sym_shortcut_title">میانبر Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">رفتار کلید Ctrl</string>

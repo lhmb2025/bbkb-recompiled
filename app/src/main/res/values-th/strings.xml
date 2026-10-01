@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">ปุ่ม Shift ขวา</string>
     <string name="settings_physical_keyboard_summary">การตั้งค่าสำหรับการป้อนข้อมูลด้วยแป้นพิมพ์จริง</string>
     <string name="settings_physical_keyboard_title">แป้นพิมพ์จริง</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">ปุ่มพิมพ์ตัวอักษรค่าเริ่มต้นของระบบ</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">ปุ่มพิมพ์ตัวอักษรของภาษาที่ใช้งานอยู่</string>
+    <string name="settings_pkb_active_language_alphabet_title">ใช้ตัวอักษรของภาษาที่ใช้งานอยู่สำหรับแป้นพิมพ์จริง</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">ปิดใช้งาน</string>
     <string name="settings_pkb_alt_sym_shortcut_title">ทางลัด Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">การทำงานของปุ่ม Ctrl</string>

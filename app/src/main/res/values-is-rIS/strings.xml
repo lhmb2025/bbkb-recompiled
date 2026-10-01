@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Hægri Shift-lykill</string>
     <string name="settings_physical_keyboard_summary">Stillingar fyrir innslátt á vélbúnaðarlyklaborði</string>
     <string name="settings_physical_keyboard_title">Vélbúnaðarlyklaborð</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Lyklar slá inn sjálfgefið stafróf kerfisins</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Lyklar slá inn stafróf virka tungumálsins</string>
+    <string name="settings_pkb_active_language_alphabet_title">Nota stafróf virka tungumálsins fyrir vélbúnaðarlyklaborðið</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Óvirkt</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym flýtileið</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Hegðun Ctrl-lykils</string>

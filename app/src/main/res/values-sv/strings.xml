@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Höger skift-tangent</string>
     <string name="settings_physical_keyboard_summary">Inställningar för inmatning med fysiskt tangentbord</string>
     <string name="settings_physical_keyboard_title">Fysiskt tangentbord</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Tangenterna skriver systemets standardalfabet</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Tangenterna skriver det aktiva språkets alfabet</string>
+    <string name="settings_pkb_active_language_alphabet_title">Använd det aktiva språkets alfabet för det fysiska tangentbordet</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Inaktiverad</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym-genväg</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Beteende för Ctrl-tangenten</string>

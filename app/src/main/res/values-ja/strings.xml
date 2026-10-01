@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">右Shiftキー</string>
     <string name="settings_physical_keyboard_summary">物理キーボード入力の設定</string>
     <string name="settings_physical_keyboard_title">物理キーボード</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">キーはシステム標準の文字を入力します</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">キーは現在の言語の文字を入力します</string>
+    <string name="settings_pkb_active_language_alphabet_title">物理キーボードで現在の言語の文字を使用</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">無効</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Symショートカット</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrlキーの動作</string>

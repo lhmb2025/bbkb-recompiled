@@ -17,6 +17,53 @@ public final class LocaleUtils {
 
     private static final HashMap<String, Locale> sLocaleCache = new HashMap<>();
 
+    /**
+     * The app's spelling of {@code locale}'s language code.
+     *
+     * <p>Everything this app keys by language uses the codes Java returned for twenty years:
+     * {@code res/xml/method.xml}, both language-pack catalogs, the installed-pack directories, the
+     * script and right-to-left tables, the keyboard XML {@code languageCode} cases, and the engine's
+     * own language table, which knows {@code in} and {@code iw} and nothing else. Since Java 17, and
+     * on Android 15+ for apps targeting API 35 (this app does), {@link Locale} no longer converts
+     * to those codes: {@code new Locale("in").getLanguage()} is {@code "id"}, Hebrew is {@code "he"}
+     * and Yiddish {@code "yi"}. So on Android 15 an Indonesian or Hebrew keyboard missed every
+     * table: no dictionary offer, no engine language, no right-to-left. Use this wherever a
+     * language code taken from a Locale is compared with, or handed to, the app's own tables or the
+     * engine. It is the identity for every other language, and on every Android version that still
+     * returns the old codes; the JVM tests run on a modern JDK, so they see the Android 15 form.
+     */
+    public static String languageCode(Locale locale) {
+        final String language = locale.getLanguage();
+        switch (language) {
+            case "id":
+                return "in";
+            case "he":
+                return "iw";
+            case "yi":
+                return "ji";
+            default:
+                return language;
+        }
+    }
+
+    /**
+     * {@link Locale#toString()} with the language in the app's spelling ({@link #languageCode}):
+     * {@code in_ID}, {@code zh_TW_stroke}, {@code iw}. The form the keyboard text tables and the
+     * engine's layout sync are keyed by.
+     */
+    public static String localeString(Locale locale) {
+        final String country = locale.getCountry();
+        final String variant = locale.getVariant();
+        final StringBuilder sb = new StringBuilder(languageCode(locale));
+        if (!country.isEmpty() || !variant.isEmpty()) {
+            sb.append('_').append(country);
+        }
+        if (!variant.isEmpty()) {
+            sb.append('_').append(variant);
+        }
+        return sb.toString();
+    }
+
     public static Locale constructLocaleFromString(String str) {
         if (str == null) {
             return null;
@@ -126,7 +173,8 @@ public final class LocaleUtils {
         // The keyboard-layout sync (KeyboardSwitcher) needs the full locale string: the original
         // getVariant() is empty for every non-Chinese locale. The engine's setInputMethod call is
         // the one place that wants the variant, and it goes through toNuanceInputMethodName.
-        return locale.toString();
+        // The engine spells Indonesian and Hebrew the old way, so not Locale.toString() directly.
+        return localeString(locale);
     }
 
     /**

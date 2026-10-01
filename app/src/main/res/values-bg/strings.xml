@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Десен клавиш Shift</string>
     <string name="settings_physical_keyboard_summary">Настройки за въвеждане от физическа клавиатура</string>
     <string name="settings_physical_keyboard_title">Физическа клавиатура</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Клавишите въвеждат стандартната азбука на системата</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Клавишите въвеждат азбуката на активния език</string>
+    <string name="settings_pkb_active_language_alphabet_title">Използване на азбуката на активния език за физическата клавиатура</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Изключено</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Пряк път Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Поведение на клавиша Ctrl</string>

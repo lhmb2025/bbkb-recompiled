@@ -303,6 +303,15 @@ public class Keyboard {
         return null;
     }
 
+    /** The physical-key table's {@code characterMapKeys} for {@code str}: its Shift legend. */
+    public String[] getCharacterMapKeys(String str) {
+        PhysicalKeySpecTable c1026ai = this.mPhysicalKeyboardRow;
+        if (c1026ai != null) {
+            return c1026ai.getCharacterMapKeys(str);
+        }
+        return null;
+    }
+
     public String[] getKeyLabelSetForCode(int i) {
         Key keyM6604b = getKeyByCode(i);
         if (keyM6604b == null || !keyM6604b.isActive()) {

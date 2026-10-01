@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.core.shared.InputPathDebug;
 
 /**
@@ -607,7 +608,8 @@ public class NuanceSDK {
         String[] strArr = new String[localeArr.length * 2];
         for (int i = 0; i < localeArr.length; i++) {
             int i2 = i * 2;
-            strArr[i2] = localeArr[i].getLanguage();
+            // The blob's language table holds `in` and `iw`, never `id` or `he`.
+            strArr[i2] = LocaleUtils.languageCode(localeArr[i]);
             strArr[i2 + 1] = localeArr[i].getCountry();
         }
         return strArr;

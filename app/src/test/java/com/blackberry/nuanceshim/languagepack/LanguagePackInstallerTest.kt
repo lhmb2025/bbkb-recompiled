@@ -119,6 +119,35 @@ class LanguagePackInstallerTest {
         assertFalse(File("/tmp/lp-absolute.txt").exists())
     }
 
+    /**
+     * The catalogs spell Indonesian `in` and Hebrew `iw`. A `Locale` built from either spelling
+     * reports `id` / `he` on Java 17 and on Android 15 (apps targeting API 35), and the lookup used
+     * to take that spelling straight to the registry: no pack, no download offer, no engine
+     * language. Two beta reports on Android 15 phones.
+     */
+    @Test
+    fun retiredLanguageCodesStillFindTheirPack() {
+        val context = RuntimeEnvironment.getApplication()
+        val registry = LanguagePackRegistry()
+        for (language in listOf("in", "iw")) {
+            registry.addLanguagePack(LanguagePackInfo().apply {
+                this.language = language
+                country = null
+                name = language
+                path = "ldb/$language"
+                version = 1.0
+                setPreinstalledFlag(false)
+            })
+        }
+
+        for (spelling in listOf("in", "id", "iw", "he")) {
+            val byLocale = LanguagePackInstaller(context, java.util.Locale(spelling), registry)
+            assertTrue("no pack found for Locale(\"$spelling\")", byLocale.isSupported())
+        }
+        assertEquals("in", LanguagePackInstaller(context, java.util.Locale("id"), registry).getLocaleIdentifier())
+        assertEquals("iw", LanguagePackInstaller(context, java.util.Locale("he"), registry).getLocaleIdentifier())
+    }
+
     @Test
     fun truncatedArchiveIsReportedAsFailure() {
         val complete = zipOf("xx_YY.ldb" to ByteArray(8192) { (it % 251).toByte() })

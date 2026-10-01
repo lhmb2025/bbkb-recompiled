@@ -161,4 +161,17 @@ public class PhysicalKeySpecTable {
     public HashMap<String, String[]> getMultiTapHash() {
         return this.multitapKeysByLabel;
     }
+
+    /**
+     * The {@code characterMapKeys} recorded for {@code str}: the letter the firmware's character
+     * map produced with Shift on this key (ص→ض, פ→ף). Falls back to the multitap keys, as the
+     * table is built. The physical-key alphabet map reads it for caseless scripts.
+     */
+    public String[] getCharacterMapKeys(String str) {
+        HashMap<String, String[]> map = this.characterMapKeysByLabel;
+        if (map != null) {
+            return map.get(str);
+        }
+        return null;
+    }
 }

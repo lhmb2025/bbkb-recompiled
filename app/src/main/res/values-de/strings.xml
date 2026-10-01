@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Rechte Umschalttaste</string>
     <string name="settings_physical_keyboard_summary">Einstellungen für die Eingabe über die physische Tastatur</string>
     <string name="settings_physical_keyboard_title">Physische Tastatur</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Tasten schreiben das Standardalphabet des Systems</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Tasten schreiben das Alphabet der aktiven Sprache</string>
+    <string name="settings_pkb_active_language_alphabet_title">Alphabet der aktiven Sprache für die physische Tastatur verwenden</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Deaktiviert</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym-Kürzel</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Verhalten der Strg-Taste</string>

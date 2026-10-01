@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Prawy klawisz Shift</string>
     <string name="settings_physical_keyboard_summary">Ustawienia wprowadzania na klawiaturze fizycznej</string>
     <string name="settings_physical_keyboard_title">Klawiatura fizyczna</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Klawisze wpisują domyślny alfabet systemu</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Klawisze wpisują alfabet aktywnego języka</string>
+    <string name="settings_pkb_active_language_alphabet_title">Używaj alfabetu aktywnego języka na klawiaturze fizycznej</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Wyłączony</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Skrót Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Działanie klawisza Ctrl</string>

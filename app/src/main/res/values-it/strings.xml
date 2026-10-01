@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Tasto Maiusc destro</string>
     <string name="settings_physical_keyboard_summary">Impostazioni per l\'inserimento da tastiera fisica</string>
     <string name="settings_physical_keyboard_title">Tastiera fisica</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">I tasti digitano l\'alfabeto predefinito del sistema</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">I tasti digitano l\'alfabeto della lingua attiva</string>
+    <string name="settings_pkb_active_language_alphabet_title">Usa l\'alfabeto della lingua attiva per la tastiera fisica</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Disattivata</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Scorciatoia Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Comportamento del tasto Ctrl</string>

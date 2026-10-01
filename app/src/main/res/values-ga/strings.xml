@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Eochair Shift ar dheis</string>
     <string name="settings_physical_keyboard_summary">Socruithe d\'ionchur ón méarchlár fisiciúil</string>
     <string name="settings_physical_keyboard_title">Méarchlár fisiciúil</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Clóscríobhann na heochracha aibítir réamhshocraithe an chórais</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Clóscríobhann na heochracha aibítir na teanga gníomhaí</string>
+    <string name="settings_pkb_active_language_alphabet_title">Úsáid aibítir na teanga gníomhaí don mhéarchlár fisiciúil</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Díchumasaithe</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Aicearra Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Iompar na heochrach Ctrl</string>

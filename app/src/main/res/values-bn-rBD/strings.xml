@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">ডান দিকের শিফট কী</string>
     <string name="settings_physical_keyboard_summary">ফিজিক্যাল কীবোর্ড ইনপুটের সেটিংস</string>
     <string name="settings_physical_keyboard_title">ফিজিক্যাল কীবোর্ড</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">কীগুলি সিস্টেমের ডিফল্ট বর্ণমালায় লেখে</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">কীগুলি সক্রিয় ভাষার বর্ণমালায় লেখে</string>
+    <string name="settings_pkb_active_language_alphabet_title">ফিজিক্যাল কীবোর্ডে সক্রিয় ভাষার বর্ণমালা ব্যবহার করুন</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">নিষ্ক্রিয়</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym শর্টকাট</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl কী-এর আচরণ</string>

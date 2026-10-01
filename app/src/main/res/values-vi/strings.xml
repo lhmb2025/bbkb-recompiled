@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Phím shift phải</string>
     <string name="settings_physical_keyboard_summary">Cài đặt cho việc nhập bằng bàn phím vật lý</string>
     <string name="settings_physical_keyboard_title">Bàn phím vật lý</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Các phím gõ bảng chữ cái mặc định của hệ thống</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Các phím gõ bảng chữ cái của ngôn ngữ đang dùng</string>
+    <string name="settings_pkb_active_language_alphabet_title">Dùng bảng chữ cái của ngôn ngữ đang dùng cho bàn phím vật lý</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Đã tắt</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Phím tắt Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Hành vi phím Ctrl</string>

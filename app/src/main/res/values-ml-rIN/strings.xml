@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">വലത് ഷിഫ്റ്റ് കീ</string>
     <string name="settings_physical_keyboard_summary">ഫിസിക്കൽ കീബോർഡ് ടൈപ്പുചെയ്യലിനുള്ള ക്രമീകരണങ്ങൾ</string>
     <string name="settings_physical_keyboard_title">ഫിസിക്കൽ കീബോർഡ്</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">കീകൾ സിസ്റ്റത്തിന്റെ ഡിഫോൾട്ട് അക്ഷരമാല ടൈപ്പ് ചെയ്യുന്നു</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">കീകൾ സജീവ ഭാഷയുടെ അക്ഷരമാല ടൈപ്പ് ചെയ്യുന്നു</string>
+    <string name="settings_pkb_active_language_alphabet_title">ഫിസിക്കൽ കീബോർഡിന് സജീവ ഭാഷയുടെ അക്ഷരമാല ഉപയോഗിക്കുക</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">പ്രവർത്തനരഹിതം</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym കുറുക്കുവഴി</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl കീ പ്രവർത്തനരീതി</string>

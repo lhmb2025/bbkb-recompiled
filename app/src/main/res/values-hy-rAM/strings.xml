@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Աջ Shift ստեղն</string>
     <string name="settings_physical_keyboard_summary">Ֆիզիկական ստեղնաշարով ներածման կարգավորումներ</string>
     <string name="settings_physical_keyboard_title">Ֆիզիկական ստեղնաշար</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Ստեղները մուտքագրում են համակարգի լռելյայն այբուբենը</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Ստեղները մուտքագրում են ակտիվ լեզվի այբուբենը</string>
+    <string name="settings_pkb_active_language_alphabet_title">Օգտագործել ակտիվ լեզվի այբուբենը ֆիզիկական ստեղնաշարի համար</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Անջատված</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym դյուրանցում</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl ստեղնի վարքագիծ</string>

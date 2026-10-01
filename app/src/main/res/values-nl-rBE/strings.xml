@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Shift-toets rechts</string>
     <string name="settings_physical_keyboard_summary">Instellingen voor invoer met het fysieke toetsenbord</string>
     <string name="settings_physical_keyboard_title">Fysiek toetsenbord</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Toetsen typen het standaardalfabet van het systeem</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Toetsen typen het alfabet van de actieve taal</string>
+    <string name="settings_pkb_active_language_alphabet_title">Alfabet van de actieve taal gebruiken voor het fysieke toetsenbord</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Uitgeschakeld</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym-snelkoppeling</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Gedrag van de Ctrl-toets</string>

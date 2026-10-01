@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Dešinysis klavišas „Shift“</string>
     <string name="settings_physical_keyboard_summary">Fizinės klaviatūros įvesties nustatymai</string>
     <string name="settings_physical_keyboard_title">Fizinė klaviatūra</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Klavišai rašo numatytąja sistemos abėcėle</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Klavišai rašo aktyvios kalbos abėcėle</string>
+    <string name="settings_pkb_active_language_alphabet_title">Fizinei klaviatūrai naudoti aktyvios kalbos abėcėlę</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Išjungta</string>
     <string name="settings_pkb_alt_sym_shortcut_title">„Alt“ + „Sym“ spartusis klavišas</string>
     <string name="settings_pkb_ctrl_key_behavior_title">„Ctrl“ klavišo veikimas</string>

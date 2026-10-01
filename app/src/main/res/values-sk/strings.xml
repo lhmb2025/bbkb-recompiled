@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Pravý kláves Shift</string>
     <string name="settings_physical_keyboard_summary">Nastavenia zadávania na fyzickej klávesnici</string>
     <string name="settings_physical_keyboard_title">Fyzická klávesnica</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Klávesy píšu predvolenou abecedou systému</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Klávesy píšu abecedou aktívneho jazyka</string>
+    <string name="settings_pkb_active_language_alphabet_title">Používať abecedu aktívneho jazyka pre fyzickú klávesnicu</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Vypnuté</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Skratka Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Správanie klávesu Ctrl</string>

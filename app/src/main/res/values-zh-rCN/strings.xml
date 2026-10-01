@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">右 shift 键</string>
     <string name="settings_physical_keyboard_summary">实体键盘输入的设置</string>
     <string name="settings_physical_keyboard_title">实体键盘</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">按键输入系统默认字母</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">按键输入当前语言的字母</string>
+    <string name="settings_pkb_active_language_alphabet_title">实体键盘使用当前语言的字母</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">已禁用</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym 快捷键</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl 键行为</string>

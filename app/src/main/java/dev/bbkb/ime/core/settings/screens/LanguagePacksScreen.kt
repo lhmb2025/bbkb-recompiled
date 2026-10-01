@@ -1029,8 +1029,8 @@ private fun hasUnsupportedThreeLetterCode(fileName: String): Boolean =
  */
 private val LANGUAGE_CODE_ALIASES = mapOf(
     "jw" to "jv",    // Javanese: `jw` retired 1989
-    "he" to "iw",    // Hebrew: Java's Locale normalises he -> iw, and the engine table follows it
-    "id" to "in",    // Indonesian: likewise id -> in
+    "he" to "iw",    // Hebrew: the engine table, the catalogs and method.xml all say iw
+    "id" to "in",    // Indonesian: likewise in (LocaleUtils.languageCode is the Locale-side bridge)
     "tl" to "fil",   // Tagalog -> Filipino, which is what the engine and method.xml carry
     "no" to "nb",    // Norwegian -> Bokmal
 )

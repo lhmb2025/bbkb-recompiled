@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Kekunci shift kanan</string>
     <string name="settings_physical_keyboard_summary">Tetapan untuk input papan kekunci fizikal</string>
     <string name="settings_physical_keyboard_title">Papan kekunci fizikal</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Kekunci menaip abjad lalai sistem</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Kekunci menaip abjad bahasa aktif</string>
+    <string name="settings_pkb_active_language_alphabet_title">Gunakan abjad bahasa aktif untuk papan kekunci fizikal</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Dilumpuhkan</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Pintasan Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Tingkah laku kekunci Ctrl</string>

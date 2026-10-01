@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">مفتاح shift الأيمن</string>
     <string name="settings_physical_keyboard_summary">إعدادات الإدخال بلوحة المفاتيح الفعلية</string>
     <string name="settings_physical_keyboard_title">لوحة المفاتيح الفعلية</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">تكتب المفاتيح الأبجدية الافتراضية للنظام</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">تكتب المفاتيح أبجدية اللغة النشطة</string>
+    <string name="settings_pkb_active_language_alphabet_title">استخدام أبجدية اللغة النشطة للوحة المفاتيح الفعلية</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">معطّل</string>
     <string name="settings_pkb_alt_sym_shortcut_title">اختصار Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">سلوك مفتاح Ctrl</string>

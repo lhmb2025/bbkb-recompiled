@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Jobb oldali Shift billentyű</string>
     <string name="settings_physical_keyboard_summary">A fizikai billentyűzetes bevitel beállításai</string>
     <string name="settings_physical_keyboard_title">Fizikai billentyűzet</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">A billentyűk a rendszer alapértelmezett ábécéjét írják</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">A billentyűk az aktív nyelv ábécéjét írják</string>
+    <string name="settings_pkb_active_language_alphabet_title">Az aktív nyelv ábécéjének használata a fizikai billentyűzeten</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Letiltva</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym gyorsbillentyű</string>
     <string name="settings_pkb_ctrl_key_behavior_title">A Ctrl billentyű működése</string>

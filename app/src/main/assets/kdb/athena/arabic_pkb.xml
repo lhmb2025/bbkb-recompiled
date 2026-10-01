@@ -3,6 +3,9 @@
 <!-- arabic_pkb keyboard layout
 PID: ET9PLIDArabic
 SID: ET9SKIDPhonePad -->
+<!-- Doubled keycaps (Q: ص ض, A: س ش) list the UNSHIFTED letter first: the physical-key
+     alphabet map (HardwareScriptLayout) reads the first code as the key's letter and the
+     rest as its Shift / double-tap legends, matching pkbd_arabic.xml (keySpec ص, characterMapKeys ض). -->
 <!-- ATHENA variant (BlackBerry KEY2) — GENERATED from the root layout of the same name.
 UNEVEN ROW BANDS: the capacitive sensor (1080x525) allocates uneven per-row bands, not even rows:
   row1 sensor 0..90 (90px) | row2 90..270 (180px) | row3 270..450 (180px)
@@ -18,7 +21,7 @@ Only defaultLayoutHeight / keyTop / keyHeight differ from the root file. -->
   addAltChars="true">
 
   <area>
-    <key keyType="regional" keyCodes="0x0636, 0x0635" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x0635, 0x0636" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="0dp" />
     <key keyType="regional" keyCodes="0x062B" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="108dp" />
     <key keyType="regional" keyCodes="0x0642" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="216dp" />
     <key keyType="regional" keyCodes="0x0641" keyWidth="108dp" keyHeight="90dp" keyTop="0dp" keyLeft="324dp" />
@@ -31,7 +34,7 @@ Only defaultLayoutHeight / keyTop / keyHeight differ from the root file. -->
   </area>
 
   <area>
-    <key keyType="regional" keyCodes="0x0634, 0x0633" keyWidth="108dp" keyHeight="180dp" keyTop="90dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x0633, 0x0634" keyWidth="108dp" keyHeight="180dp" keyTop="90dp" keyLeft="0dp" />
     <key keyType="regional" keyCodes="0x064A" keyWidth="108dp" keyHeight="180dp" keyTop="90dp" keyLeft="108dp" />
     <key keyType="regional" keyCodes="0x0628" keyWidth="108dp" keyHeight="180dp" keyTop="90dp" keyLeft="216dp" />
     <key keyType="regional" keyCodes="0x0644" keyWidth="108dp" keyHeight="180dp" keyTop="90dp" keyLeft="324dp" />

@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Tecla Mayúsculas derecha</string>
     <string name="settings_physical_keyboard_summary">Configuración de escritura con el teclado físico</string>
     <string name="settings_physical_keyboard_title">Teclado físico</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Las teclas escriben el alfabeto predeterminado del sistema</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Las teclas escriben el alfabeto del idioma activo</string>
+    <string name="settings_pkb_active_language_alphabet_title">Usar el alfabeto del idioma activo para el teclado físico</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Desactivado</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Atajo Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Comportamiento de la tecla Ctrl</string>

@@ -48,6 +48,7 @@ import dev.bbkb.ime.personaldictionary.OneTapAddWord
 import dev.bbkb.ime.core.gesture.MultiPointerGestureDetector
 import dev.bbkb.ime.core.gesture.ShakeGestureHandler
 import dev.bbkb.ime.core.keyevent.CompositeKeyCharacterInterpreter
+import dev.bbkb.ime.core.keyevent.HardwareScriptLayouts
 import dev.bbkb.ime.core.keyevent.InputEvent
 import dev.bbkb.ime.core.keyevent.InputEventContext
 import dev.bbkb.ime.core.keyevent.KeyEventConverter
@@ -418,6 +419,7 @@ class BlackBerryIME : InputMethodService(),
         var t = StartupTiming.begin()
         SettingsManager.initialize(applicationContext)
         StartupTiming.end("ime.onCreate.settingsManagerInitialize", t)
+        HardwareScriptLayouts.init(applicationContext)
         settingsManager.addOnSettingsChangeListener(this)
         t = StartupTiming.begin()
         KeyboardSwitcher.initialize(this, uiCoordinator)

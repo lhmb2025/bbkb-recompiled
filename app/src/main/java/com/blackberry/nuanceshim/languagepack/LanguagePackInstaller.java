@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.core.shared.Logger;
 import com.blackberry.nuanceshim.NuanceSDK;
 import dev.bbkb.ime.BuildConfig;
@@ -98,7 +99,9 @@ public class LanguagePackInstaller {
     }
 
     public LanguagePackInstaller(Context context, Locale locale, LanguagePackRegistry registry) {
-        this(context, locale.getLanguage(), locale.getCountry(), registry);
+        // The registry is keyed the way the catalogs spell languages (`in`, `iw`); on Android 15
+        // the Locale says `id` / `he`, and a plain getLanguage() found no pack for either.
+        this(context, LocaleUtils.languageCode(locale), locale.getCountry(), registry);
     }
 
     public LanguagePackInstaller(Context context, String str, String str2, LanguagePackRegistry registry) {

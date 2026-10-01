@@ -142,7 +142,12 @@ public final class MultitapEventHandler extends WeakOwnerHandler<BlackBerryIME> 
             // ALT_DOT FIX: getUnicodeChar() can return COMBINING_ACCENT (0x80000000) ORed
             // with an accent code point (e.g. 0x800000B4 = dead acute accent). Strip the
             // flag to get the real character; return null if nothing usable remains.
-            int rawUnicode = keyEvent.getUnicodeChar(i);
+            // The active keyboard's alphabet comes first: on an Arabic or Russian keyboard the
+            // multitap base is the script letter, and its sequence comes from the same layout.
+            int rawUnicode = HardwareScriptLayouts.letterFor(keyEvent, i);
+            if (rawUnicode == 0) {
+                rawUnicode = keyEvent.getUnicodeChar(i);
+            }
             if ((rawUnicode & android.view.KeyCharacterMap.COMBINING_ACCENT) != 0) {
                 rawUnicode = rawUnicode & android.view.KeyCharacterMap.COMBINING_ACCENT_MASK;
             }

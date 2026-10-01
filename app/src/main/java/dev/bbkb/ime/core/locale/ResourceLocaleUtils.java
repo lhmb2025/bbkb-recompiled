@@ -261,7 +261,7 @@ public final class ResourceLocaleUtils {
     }
 
     public static boolean isRtlLanguage(Locale locale) {
-        return Arrays.binarySearch(sSortedRtlLanguages, locale.getLanguage()) >= 0;
+        return Arrays.binarySearch(sSortedRtlLanguages, LocaleUtils.languageCode(locale)) >= 0;
     }
 
     public static boolean isRtlLanguage(InputMethodSubtype inputMethodSubtype) {

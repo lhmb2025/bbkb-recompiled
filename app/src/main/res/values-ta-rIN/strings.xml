@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">வலது Shift விசை</string>
     <string name="settings_physical_keyboard_summary">இயற்பியல் விசைப்பலகை உள்ளீட்டுக்கான அமைப்புகள்</string>
     <string name="settings_physical_keyboard_title">இயற்பியல் விசைப்பலகை</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">விசைகள் கணினியின் இயல்புநிலை எழுத்துக்களைத் தட்டச்சு செய்யும்</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">விசைகள் செயலில் உள்ள மொழியின் எழுத்துக்களைத் தட்டச்சு செய்யும்</string>
+    <string name="settings_pkb_active_language_alphabet_title">இயல் விசைப்பலகைக்கு செயலில் உள்ள மொழியின் எழுத்துக்களைப் பயன்படுத்து</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">முடக்கப்பட்டது</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym குறுக்குவழி</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl விசையின் செயல்பாடு</string>

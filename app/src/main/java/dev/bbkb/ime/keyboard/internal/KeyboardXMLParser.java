@@ -13,6 +13,7 @@ import android.util.Xml;
 
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
+import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils;
 import dev.bbkb.ime.core.device.ResourceConfigManager;
 import dev.bbkb.ime.core.locale.SubtypeDisplayNameHelper;
@@ -547,8 +548,8 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
                     && matchBoolean(typedArrayObtainAttributes, R.styleable.Keyboard_Case_isMultiLine, c0977g.isMultiLine())
                     && matchInteger(typedArrayObtainAttributes, R.styleable.Keyboard_Case_imeAction, c0977g.imeAction())
                     && matchIcon(typedArrayObtainAttributes, R.styleable.Keyboard_Case_isIconDefined, this.mParams.mIconsSet)
-                    && matchString(typedArrayObtainAttributes, R.styleable.Keyboard_Case_localeCode, c0977g.mLocale.toString())
-                    && matchString(typedArrayObtainAttributes, R.styleable.Keyboard_Case_languageCode, c0977g.mLocale.getLanguage())
+                    && matchString(typedArrayObtainAttributes, R.styleable.Keyboard_Case_localeCode, LocaleUtils.localeString(c0977g.mLocale))
+                    && matchString(typedArrayObtainAttributes, R.styleable.Keyboard_Case_languageCode, LocaleUtils.languageCode(c0977g.mLocale))
                     && matchString(typedArrayObtainAttributes, R.styleable.Keyboard_Case_countryCode, c0977g.mLocale.getCountry())
                     && matchString(typedArrayObtainAttributes, R.styleable.Keyboard_Case_physicalKeypadVariant, DeviceProfile.current().getKeypadLayout())
                     && matchString(typedArrayObtainAttributes, R.styleable.Keyboard_Case_physicalKeypadType, DeviceProfile.current().getEffectiveKeypadType());

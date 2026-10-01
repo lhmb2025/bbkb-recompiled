@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Regter Shift-toets</string>
     <string name="settings_physical_keyboard_summary">Instellings vir invoer met die fisiese toetsbord</string>
     <string name="settings_physical_keyboard_title">Fisiese toetsbord</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Sleutels tik die stelsel se verstekalfabet</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Sleutels tik die aktiewe taal se alfabet</string>
+    <string name="settings_pkb_active_language_alphabet_title">Gebruik die aktiewe taal se alfabet vir die fisiese sleutelbord</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Gesper</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym-kortpad</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Gedrag van die Ctrl-toets</string>

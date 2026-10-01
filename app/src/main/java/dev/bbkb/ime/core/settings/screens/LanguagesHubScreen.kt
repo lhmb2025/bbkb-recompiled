@@ -32,9 +32,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.SyncAlt
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -57,8 +55,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -72,8 +72,12 @@ import dev.bbkb.ime.core.languagepack.PackDownloadManager
 import dev.bbkb.ime.core.languagepack.PackOfferSource
 import dev.bbkb.ime.core.languagepack.PackState
 import dev.bbkb.ime.core.languagepack.PackText
+import dev.bbkb.ime.core.device.profile.DeviceProfile
+import dev.bbkb.ime.core.keyevent.HardwareScriptLayouts
 import dev.bbkb.ime.core.locale.KeyboardLanguages
 import dev.bbkb.ime.core.locale.SubtypeEnabler
+import dev.bbkb.ime.core.settings.PrefsManager
+import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
@@ -106,6 +110,9 @@ fun LanguagesHubScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val direct = remember { SubtypeEnabler.canEnableDirectly() }
+    val hasPhysicalKeyboard = remember { DeviceProfile.current()?.hasPhysicalKeyboard() ?: false }
+    val prefs = remember { PrefsManager.getPrefs(context) }
+    var keysFollowAlphabet by remember { mutableStateOf(prefs.getBoolean(HardwareScriptLayouts.PREF_KEY, true)) }
 
     var snapshot by remember { mutableStateOf<KeyboardLanguages.Snapshot?>(null) }
     var packs by remember { mutableStateOf<Packs?>(null) }
@@ -236,15 +243,36 @@ fun LanguagesHubScreen(
                 PreferenceScreen(
                     title = stringResource(R.string.settings_language_switching_title),
                     summary = stringResource(R.string.settings_language_switching_summary),
-                    icon = Icons.Default.SyncAlt,
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_language_switching),
                     onClick = onNavigateToLanguageSwitching,
                 )
+            }
+            // Only where it means something: a phone with physical keys, and at least one
+            // enabled keyboard whose alphabet those keys can type (Arabic, Cyrillic, Hebrew,
+            // Greek, Korean). Everyone else never sees the row.
+            if (hasPhysicalKeyboard && current?.keyboards.orEmpty().any { HardwareScriptLayouts.supportsLocale(it.locales.first()) }) {
+                item(key = "pkb-alphabet") {
+                    SwitchPreference(
+                        title = stringResource(R.string.settings_pkb_active_language_alphabet_title),
+                        summary = stringResource(
+                            if (keysFollowAlphabet) R.string.settings_pkb_active_language_alphabet_summary_on
+                            else R.string.settings_pkb_active_language_alphabet_summary_off
+                        ),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_keyboard_alphabet),
+                        checked = keysFollowAlphabet,
+                        modifier = Modifier.settingsSearchAnchor("pref_pkb_active_language_alphabet"),
+                        onCheckedChange = { on ->
+                            keysFollowAlphabet = on
+                            prefs.edit().putBoolean(HardwareScriptLayouts.PREF_KEY, on).apply()
+                        },
+                    )
+                }
             }
             item(key = "files") {
                 PreferenceScreen(
                     title = stringResource(R.string.settings_language_packs_title),
                     summary = stringResource(R.string.settings_language_packs_summary),
-                    icon = Icons.Default.Archive,
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_language_packs),
                     onClick = onNavigateToDictionaryFiles,
                 )
             }

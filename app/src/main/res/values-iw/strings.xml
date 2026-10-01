@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">מקש Shift ימני</string>
     <string name="settings_physical_keyboard_summary">הגדרות לקלט מהמקלדת הפיזית</string>
     <string name="settings_physical_keyboard_title">מקלדת פיזית</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">המקשים מקלידים את אלפבית ברירת המחדל של המערכת</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">המקשים מקלידים את האלפבית של השפה הפעילה</string>
+    <string name="settings_pkb_active_language_alphabet_title">שימוש באלפבית של השפה הפעילה עבור המקלדת הפיזית</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">מושבת</string>
     <string name="settings_pkb_alt_sym_shortcut_title">קיצור Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">התנהגות מקש Ctrl</string>

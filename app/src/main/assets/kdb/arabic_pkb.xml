@@ -3,6 +3,9 @@
 <!-- arabic_pkb keyboard layout
 PID: ET9PLIDArabic
 SID: ET9SKIDPhonePad -->
+<!-- Doubled keycaps (Q: ص ض, A: س ش) list the UNSHIFTED letter first: the physical-key
+     alphabet map (HardwareScriptLayout) reads the first code as the key's letter and the
+     rest as its Shift / double-tap legends, matching pkbd_arabic.xml (keySpec ص, characterMapKeys ض). -->
 
 <keyboard
   primaryId="1"
@@ -12,7 +15,7 @@ SID: ET9SKIDPhonePad -->
   addAltChars="true">
 
   <area>
-    <key keyType="regional" keyCodes="0x0636, 0x0635" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x0635, 0x0636" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="0dp" />
     <key keyType="regional" keyCodes="0x062B" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="108dp" />
     <key keyType="regional" keyCodes="0x0642" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="216dp" />
     <key keyType="regional" keyCodes="0x0641" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="324dp" />
@@ -25,7 +28,7 @@ SID: ET9SKIDPhonePad -->
   </area>
 
   <area>
-    <key keyType="regional" keyCodes="0x0634, 0x0633" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="0dp" />
+    <key keyType="regional" keyCodes="0x0633, 0x0634" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="0dp" />
     <key keyType="regional" keyCodes="0x064A" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="108dp" />
     <key keyType="regional" keyCodes="0x0628" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="216dp" />
     <key keyType="regional" keyCodes="0x0644" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="324dp" />

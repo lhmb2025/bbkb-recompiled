@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Desna tipka Shift</string>
     <string name="settings_physical_keyboard_summary">Postavke za unos fizičkom tastaturom</string>
     <string name="settings_physical_keyboard_title">Fizička tastatura</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Tipke unose zadani alfabet sistema</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Tipke unose alfabet aktivnog jezika</string>
+    <string name="settings_pkb_active_language_alphabet_title">Koristi alfabet aktivnog jezika za fizičku tastaturu</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Onemogućeno</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Prečica Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ponašanje tipke Ctrl</string>

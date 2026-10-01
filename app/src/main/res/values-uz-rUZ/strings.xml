@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">O‘ng Shift tugmasi</string>
     <string name="settings_physical_keyboard_summary">Jismoniy klaviaturadan kiritish sozlamalari</string>
     <string name="settings_physical_keyboard_title">Jismoniy klaviatura</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Tugmalar tizimning standart alifbosini kiritadi</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Tugmalar faol til alifbosini kiritadi</string>
+    <string name="settings_pkb_active_language_alphabet_title">Jismoniy klaviatura uchun faol til alifbosidan foydalanish</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">O‘chirilgan</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym yorlig‘i</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl tugmasining ishlashi</string>

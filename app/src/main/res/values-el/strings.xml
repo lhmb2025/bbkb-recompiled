@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Δεξί πλήκτρο shift</string>
     <string name="settings_physical_keyboard_summary">Ρυθμίσεις για την εισαγωγή από φυσικό πληκτρολόγιο</string>
     <string name="settings_physical_keyboard_title">Φυσικό πληκτρολόγιο</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Τα πλήκτρα γράφουν το προεπιλεγμένο αλφάβητο του συστήματος</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Τα πλήκτρα γράφουν το αλφάβητο της ενεργής γλώσσας</string>
+    <string name="settings_pkb_active_language_alphabet_title">Χρήση του αλφαβήτου της ενεργής γλώσσας για το φυσικό πληκτρολόγιο</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Απενεργοποιημένη</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Συντόμευση Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Συμπεριφορά πλήκτρου Ctrl</string>

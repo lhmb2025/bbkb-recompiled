@@ -243,6 +243,9 @@
     <string name="control_key_setting_right_shift">Right shift key</string>
     <string name="settings_physical_keyboard_summary">Settings for physical keyboard input</string>
     <string name="settings_physical_keyboard_title">Physical keyboard</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Keys type the system default alphabet</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Keys type the active language\'s alphabet</string>
+    <string name="settings_pkb_active_language_alphabet_title">Use active language\'s alphabet for physical keyboard</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Disabled</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym shortcut</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl key behavior</string>

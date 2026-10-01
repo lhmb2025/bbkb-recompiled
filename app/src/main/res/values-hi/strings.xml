@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">दाईं shift कुंजी</string>
     <string name="settings_physical_keyboard_summary">भौतिक कीबोर्ड इनपुट की सेटिंग्स</string>
     <string name="settings_physical_keyboard_title">भौतिक कीबोर्ड</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">कुंजियाँ सिस्टम की डिफ़ॉल्ट वर्णमाला में टाइप करती हैं</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">कुंजियाँ सक्रिय भाषा की वर्णमाला में टाइप करती हैं</string>
+    <string name="settings_pkb_active_language_alphabet_title">फ़िज़िकल कीबोर्ड के लिए सक्रिय भाषा की वर्णमाला का उपयोग करें</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">अक्षम</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym शॉर्टकट</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl कुंजी का व्यवहार</string>

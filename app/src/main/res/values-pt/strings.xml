@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Tecla Shift direita</string>
     <string name="settings_physical_keyboard_summary">Configurações de entrada do teclado físico</string>
     <string name="settings_physical_keyboard_title">Teclado físico</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">As teclas escrevem o alfabeto padrão do sistema</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">As teclas escrevem o alfabeto do idioma ativo</string>
+    <string name="settings_pkb_active_language_alphabet_title">Usar o alfabeto do idioma ativo no teclado físico</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Desativado</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Atalho Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Comportamento da tecla Ctrl</string>

@@ -95,6 +95,9 @@ object SettingsSearchIndex {
         // ── Languages ────────────────────────────────────────────────────────────
         SearchableSetting(R.string.settings_languages_title, "language keyboard add remove layout predict multi-language", SettingsRoute.LanguagesHub.route, LANGUAGES),
         SearchableSetting(R.string.settings_language_packs_title, "download language pack", SettingsRoute.LanguagePacks.route, LANGUAGES),
+        // On the Language screen, and only once an Arabic, Cyrillic, Hebrew, Greek or Korean
+        // keyboard is enabled; the device gate is the half of that rule the index can express.
+        SearchableSetting(R.string.settings_pkb_active_language_alphabet_title, "alphabet script arabic cyrillic russian hebrew greek korean hangul latin physical keyboard keys", SettingsRoute.LanguagesHub.route, LANGUAGES, "pref_pkb_active_language_alphabet", DeviceRequirement.PHYSICAL_KEYBOARD),
         SearchableSetting(R.string.settings_lang_switch_key_title, "globe switch language", SettingsRoute.LanguageSwitching.route, LANGUAGES, "pref_show_language_switch_key"),
         SearchableSetting(R.string.settings_lang_include_other_title, "other input methods ime", SettingsRoute.LanguageSwitching.route, LANGUAGES, "pref_include_other_imes_in_language_switch_list"),
         SearchableSetting(R.string.settings_lang_quick_switch_title, "quick switch language key", SettingsRoute.LanguageSwitching.route, LANGUAGES, "pref_language_quick_switch_key"),

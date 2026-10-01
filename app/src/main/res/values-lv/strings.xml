@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Labais Shift taustiņš</string>
     <string name="settings_physical_keyboard_summary">Fiziskās tastatūras ievades iestatījumi</string>
     <string name="settings_physical_keyboard_title">Fiziskā tastatūra</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Taustiņi raksta sistēmas noklusējuma alfabētā</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Taustiņi raksta aktīvās valodas alfabētā</string>
+    <string name="settings_pkb_active_language_alphabet_title">Fiziskajai tastatūrai izmantot aktīvās valodas alfabētu</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Atspējots</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym īsinājumtaustiņš</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl taustiņa darbība</string>

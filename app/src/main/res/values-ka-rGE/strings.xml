@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">მარჯვენა Shift კლავიში</string>
     <string name="settings_physical_keyboard_summary">ფიზიკური კლავიატურით შეყვანის პარამეტრები</string>
     <string name="settings_physical_keyboard_title">ფიზიკური კლავიატურა</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">კლავიშები კრეფს სისტემის ნაგულისხმევ ანბანს</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">კლავიშები კრეფს აქტიური ენის ანბანს</string>
+    <string name="settings_pkb_active_language_alphabet_title">ფიზიკური კლავიატურისთვის აქტიური ენის ანბანის გამოყენება</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">გამორთული</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym მალსახმობი</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl კლავიშის ქცევა</string>

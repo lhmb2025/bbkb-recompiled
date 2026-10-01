@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Tasti i djathtë Shift</string>
     <string name="settings_physical_keyboard_summary">Cilësimet për shkrimin me tastierë fizike</string>
     <string name="settings_physical_keyboard_title">Tastiera fizike</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Tastet shkruajnë alfabetin e parazgjedhur të sistemit</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Tastet shkruajnë alfabetin e gjuhës aktive</string>
+    <string name="settings_pkb_active_language_alphabet_title">Përdor alfabetin e gjuhës aktive për tastierën fizike</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">E çaktivizuar</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Shkurtorja Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Sjellja e tastit Ctrl</string>

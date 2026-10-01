@@ -23,6 +23,11 @@ public final class CurrencyKeyHandler implements KeyCharacterInterpreter {
         if (keyEvent.getKeyCode() != KeyEvent.KEYCODE_4) {
             return null;
         }
+        // On Arabic and Cyrillic keycaps the currency key carries a letter (ط, ю), and the active
+        // keyboard's alphabet claims it before the currency symbol does.
+        if (HardwareScriptLayouts.letterFor(keyEvent, i) != 0) {
+            return null;
+        }
         boolean isCurrencyKey = Character.getType(keyEvent.getUnicodeChar()) == Character.CURRENCY_SYMBOL
                 || (KeyEvent.normalizeMetaState(i) & KeyEvent.META_SYM_ON) != 0;
         if (!isCurrencyKey) {

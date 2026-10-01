@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">ປຸ່ມ Shift ຂວາ</string>
     <string name="settings_physical_keyboard_summary">ການຕັ້ງຄ່າສຳລັບການປ້ອນດ້ວຍແປ້ນພິມແທ້</string>
     <string name="settings_physical_keyboard_title">ແປ້ນພິມແທ້</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">ປຸ່ມພິມຕົວອັກສອນຄ່າເລີ່ມຕົ້ນຂອງລະບົບ</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">ປຸ່ມພິມຕົວອັກສອນຂອງພາສາທີ່ໃຊ້ຢູ່</string>
+    <string name="settings_pkb_active_language_alphabet_title">ໃຊ້ຕົວອັກສອນຂອງພາສາທີ່ໃຊ້ຢູ່ສຳລັບແປ້ນພິມຈິງ</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">ປິດໃຊ້ງານ</string>
     <string name="settings_pkb_alt_sym_shortcut_title">ທາງລັດ Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">ພຶດຕິກຳຂອງປຸ່ມ Ctrl</string>

@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Oikea vaihtonäppäin</string>
     <string name="settings_physical_keyboard_summary">Fyysisen näppäimistön syötön asetukset</string>
     <string name="settings_physical_keyboard_title">Fyysinen näppäimistö</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Näppäimet kirjoittavat järjestelmän oletusaakkosia</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Näppäimet kirjoittavat aktiivisen kielen aakkosia</string>
+    <string name="settings_pkb_active_language_alphabet_title">Käytä aktiivisen kielen aakkosia fyysisessä näppäimistössä</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Ei käytössä</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym -pikanäppäin</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl-näppäimen toiminta</string>

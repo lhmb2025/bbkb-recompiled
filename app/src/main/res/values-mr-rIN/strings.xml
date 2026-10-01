@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">उजवी shift की</string>
     <string name="settings_physical_keyboard_summary">फिजिकल कीबोर्ड इनपुटसाठी सेटिंग्ज</string>
     <string name="settings_physical_keyboard_title">फिजिकल कीबोर्ड</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">कळा सिस्टमच्या डीफॉल्ट वर्णमालेत टाइप करतात</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">कळा सक्रिय भाषेच्या वर्णमालेत टाइप करतात</string>
+    <string name="settings_pkb_active_language_alphabet_title">फिजिकल कीबोर्डसाठी सक्रिय भाषेची वर्णमाला वापरा</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">अक्षम</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym शॉर्टकट</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl कीचे वर्तन</string>

@@ -1,6 +1,7 @@
 package dev.bbkb.ime.core.shared;
 
 import com.blackberry.nuanceshim.NuanceSDK;
+import dev.bbkb.ime.core.locale.LocaleUtils;
 
 import java.util.Collections;
 import java.util.Locale;
@@ -178,7 +179,7 @@ public final class ScriptUtils {
      *         here and take the IME down; {@code isLetterPartOfScript} already handles the sentinel.
      */
     public static int getScriptFromLocale(Locale locale) {
-        return getScript(locale.getLanguage());
+        return getScript(LocaleUtils.languageCode(locale));
     }
 
     public static boolean isUnsupportedScript(String str) {

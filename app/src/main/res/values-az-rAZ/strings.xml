@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Sağ Shift klavişi</string>
     <string name="settings_physical_keyboard_summary">Fiziki klaviatura ilə daxiletmə parametrləri</string>
     <string name="settings_physical_keyboard_title">Fiziki klaviatura</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Düymələr sistemin standart əlifbasını yazır</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Düymələr aktiv dilin əlifbasını yazır</string>
+    <string name="settings_pkb_active_language_alphabet_title">Fiziki klaviatura üçün aktiv dilin əlifbasını istifadə et</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Deaktiv</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym qısayolu</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl klavişinin davranışı</string>

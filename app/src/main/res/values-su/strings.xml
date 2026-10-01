@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Tombol Shift katuhu</string>
     <string name="settings_physical_keyboard_summary">Setélan pikeun asupan papan tombol fisik</string>
     <string name="settings_physical_keyboard_title">Papan tombol fisik</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Tombol ngetik aksara standar sistem</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Tombol ngetik aksara basa nu aktip</string>
+    <string name="settings_pkb_active_language_alphabet_title">Paké aksara basa nu aktip pikeun kibor fisik</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Dipareuman</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Pintonan singget Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Parilaku tombol Ctrl</string>

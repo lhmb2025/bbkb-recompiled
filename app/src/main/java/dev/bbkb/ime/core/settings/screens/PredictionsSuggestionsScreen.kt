@@ -14,10 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Contacts
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -315,7 +312,6 @@ fun PredictionsSuggestionsScreen(
                     } else {
                         context.getString(R.string.settings_pred_email_summary_disabled)
                     },
-                    icon = Icons.Default.Email,
                     checked = suggestEmails && hasAccountsPermission,
                     enabled = hasAccountsPermission,
                     onCheckedChange = { newValue ->
@@ -359,7 +355,6 @@ fun PredictionsSuggestionsScreen(
                     context.getString(R.string.pref_emoji_dynamic_search_summary_on)
                 else
                     context.getString(R.string.pref_emoji_dynamic_search_summary_off),
-                icon = Icons.Default.EmojiEmotions,
                 checked = emojiDynamicSearch,
                 modifier = Modifier.settingsSearchAnchor("pref_emoji_dynamic_search"),
                 onCheckedChange = { newValue ->
@@ -376,7 +371,6 @@ fun PredictionsSuggestionsScreen(
                         context.getString(R.string.pref_emoji_search_replace_text_summary_on)
                     else
                         context.getString(R.string.pref_emoji_search_replace_text_summary_off),
-                    icon = Icons.Default.AutoAwesome,
                     checked = emojiSearchReplaceText,
                     onCheckedChange = { newValue ->
                         emojiSearchReplaceText = newValue

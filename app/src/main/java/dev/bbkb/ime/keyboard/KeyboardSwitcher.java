@@ -33,6 +33,7 @@ import dev.bbkb.ime.keyboard.internal.KeyHintPosition;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
 import dev.bbkb.ime.core.textinput.InputMethodHelper;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
+import dev.bbkb.ime.core.keyevent.HardwareScriptLayouts;
 import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.core.shared.SystemProps;
@@ -1040,7 +1041,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
             if (BuildConfig.DEBUG) Log.e(TAG, "Emoji keyboard view is unavailable");
             return;
         }
-        emojiPalettesView.updateDeleteButton(this.keyboardLayoutSet.getText("keylabel_to_alpha"), this.keyboardLayoutSet.getText("keylabel_to_symbol"), this.mainKeyboardView.getKeyVisualAttribute(), c0965eM6733a.mIconsSet, c0965eM6733a.mId.mLocale.getLanguage());
+        emojiPalettesView.updateDeleteButton(this.keyboardLayoutSet.getText("keylabel_to_alpha"), this.keyboardLayoutSet.getText("keylabel_to_symbol"), this.mainKeyboardView.getKeyVisualAttribute(), c0965eM6733a.mIconsSet, LocaleUtils.languageCode(c0965eM6733a.mId.mLocale));
         emojiPalettesView.setVisibility(View.VISIBLE);
         emojiPalettesView.setTabChanged(false);
         emojiPalettesView.setSwitchingToEmoji(true);
@@ -1525,14 +1526,50 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     @Override // dev.bbkb.ime.core.KeyboardLayoutCallback
     public String[] getMoreKeysForKeyByStyle(String str) {
+        // While the physical keys follow a script layout, its doubled keycaps (й/ё, щ/з) are the
+        // double-tap sequence; the pkbd_* multitap tables describe other keycap sets.
+        if (HardwareScriptLayouts.isActive()) {
+            return HardwareScriptLayouts.alternatesFor(str);
+        }
+        Keyboard pkb = physicalKeyboardForTables();
+        return pkb == null ? null : pkb.getMultiTapSequence(str);
+    }
+
+    /**
+     * The keyboard whose physical-key tables (`pkbd_*.xml`) apply: the physical-keyboard build of
+     * the current element when the current keyboard is an on-screen one, else the keyboard itself.
+     */
+    @Nullable
+    private Keyboard physicalKeyboardForTables() {
         Keyboard c0965eM6834l = getCurrentKeyboard();
         if (c0965eM6834l == null) {
             return null;
         }
         if (c0965eM6834l.mId.mElementId < 100 && hasShiftedSymbolKeyboard()) {
-            return this.keyboardBuilder.getKeyboardInternal(c0965eM6834l.mId.mElementId, true).getMultiTapSequence(str);
+            return this.keyboardBuilder.getKeyboardInternal(c0965eM6834l.mId.mElementId, true);
         }
-        return c0965eM6834l.getMultiTapSequence(str);
+        return c0965eM6834l;
+    }
+
+    /**
+     * What Shift types on a physical key whose script has no upper case: the {@code
+     * characterMapKeys} legend of the key's {@code pkbd_*.xml} entry (ص→ض, Hebrew finals, Korean
+     * doubled consonants), or null when the table has none for {@code label}.
+     */
+    @Nullable
+    public String getPhysicalShiftLetter(String label) {
+        Keyboard pkb = physicalKeyboardForTables();
+        String[] keys = pkb == null ? null : pkb.getCharacterMapKeys(label);
+        return keys == null || keys.length == 0 ? null : keys[0];
+    }
+
+    /**
+     * True while a symbol page is the current keyboard, so the physical letter keys mean symbols.
+     * Not {@code wasSymbolEnteredFromAlphabet()}: that records how the last symbol page was
+     * entered and stays set on the alphabet keyboard afterwards.
+     */
+    public boolean isPhysicalSymbolMappingActive() {
+        return this.keyboardState.isInSymbolMode();
     }
 
     public String[] getMoreKeysForCode(int i) {

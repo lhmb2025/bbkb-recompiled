@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Баруун Shift товч</string>
     <string name="settings_physical_keyboard_summary">Биет гараар оруулах тохиргоо</string>
     <string name="settings_physical_keyboard_title">Биет гар</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Товчлуурууд системийн үндсэн цагаан толгойгоор бичнэ</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Товчлуурууд идэвхтэй хэлний цагаан толгойгоор бичнэ</string>
+    <string name="settings_pkb_active_language_alphabet_title">Биет гар дээр идэвхтэй хэлний цагаан толгойг ашиглах</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Идэвхгүй</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym товчлол</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl товчны ажиллагаа</string>

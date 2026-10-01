@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Tecla Maj dreta</string>
     <string name="settings_physical_keyboard_summary">Configuració de l\'entrada amb teclat físic</string>
     <string name="settings_physical_keyboard_title">Teclat físic</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Les tecles escriuen l\'alfabet predeterminat del sistema</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Les tecles escriuen l\'alfabet de l\'idioma actiu</string>
+    <string name="settings_pkb_active_language_alphabet_title">Utilitza l\'alfabet de l\'idioma actiu per al teclat físic</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Desactivada</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Drecera Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Comportament de la tecla Ctrl</string>

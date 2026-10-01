@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Правая клавіша Shift</string>
     <string name="settings_physical_keyboard_summary">Налады ўводу з фізічнай клавіятуры</string>
     <string name="settings_physical_keyboard_title">Фізічная клавіятура</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Клавішы ўводзяць стандартны алфавіт сістэмы</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Клавішы ўводзяць алфавіт актыўнай мовы</string>
+    <string name="settings_pkb_active_language_alphabet_title">Выкарыстоўваць алфавіт актыўнай мовы для фізічнай клавіятуры</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Адключана</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Спалучэнне Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Паводзіны клавішы Ctrl</string>

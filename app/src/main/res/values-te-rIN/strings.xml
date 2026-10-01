@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">కుడి Shift కీ</string>
     <string name="settings_physical_keyboard_summary">ఫిజికల్ కీబోర్డ్ ఇన్‌పుట్ కోసం సెట్టింగ్‌లు</string>
     <string name="settings_physical_keyboard_title">ఫిజికల్ కీబోర్డ్</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">కీలు సిస్టమ్ డిఫాల్ట్ అక్షరమాలను టైప్ చేస్తాయి</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">కీలు యాక్టివ్ భాష అక్షరమాలను టైప్ చేస్తాయి</string>
+    <string name="settings_pkb_active_language_alphabet_title">భౌతిక కీబోర్డ్‌కు యాక్టివ్ భాష అక్షరమాలను ఉపయోగించండి</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">నిలిపివేయబడింది</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym షార్ట్‌కట్</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl కీ ప్రవర్తన</string>

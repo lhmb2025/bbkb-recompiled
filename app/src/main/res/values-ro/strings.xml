@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Tasta shift dreapta</string>
     <string name="settings_physical_keyboard_summary">Setări pentru introducerea de la tastatura fizică</string>
     <string name="settings_physical_keyboard_title">Tastatură fizică</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Tastele scriu alfabetul implicit al sistemului</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Tastele scriu alfabetul limbii active</string>
+    <string name="settings_pkb_active_language_alphabet_title">Folosește alfabetul limbii active pentru tastatura fizică</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Dezactivată</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Comandă rapidă Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Comportamentul tastei Ctrl</string>

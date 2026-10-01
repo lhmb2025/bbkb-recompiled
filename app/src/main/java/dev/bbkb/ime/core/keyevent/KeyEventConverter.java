@@ -212,7 +212,12 @@ public class KeyEventConverter {
                     z = false;
                 }
             } else {
-                int unicodeChar2 = keyEvent.getUnicodeChar(i);
+                // A physical letter key follows the active keyboard's alphabet (Arabic, Cyrillic,
+                // Hebrew, Greek, Hangul) before the system key map, which spells it in Latin.
+                int unicodeChar2 = HardwareScriptLayouts.letterFor(keyEvent, i);
+                if (unicodeChar2 == 0) {
+                    unicodeChar2 = keyEvent.getUnicodeChar(i);
+                }
                 if (keyEvent.getKeyCode() == 54 && unicodeChar2 == 37325 && NuanceSDKManager.getInstance().isChineseCangjieMode()) {
                     charSequence = null;
                     isModifierKey = false;

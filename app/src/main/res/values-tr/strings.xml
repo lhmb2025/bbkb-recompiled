@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Sağ shift tuşu</string>
     <string name="settings_physical_keyboard_summary">Fiziksel klavye girişi ayarları</string>
     <string name="settings_physical_keyboard_title">Fiziksel klavye</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Tuşlar sistemin varsayılan alfabesini yazar</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Tuşlar etkin dilin alfabesini yazar</string>
+    <string name="settings_pkb_active_language_alphabet_title">Fiziksel klavye için etkin dilin alfabesini kullan</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Devre dışı</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym kısayolu</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl tuşu davranışı</string>

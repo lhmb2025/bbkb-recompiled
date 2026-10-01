@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Bysell Shift dde</string>
     <string name="settings_physical_keyboard_summary">Gosodiadau ar gyfer mewnbwn bysellfwrdd ffisegol</string>
     <string name="settings_physical_keyboard_title">Bysellfwrdd ffisegol</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Mae\'r bysellau\'n teipio gwyddor ddiofyn y system</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Mae\'r bysellau\'n teipio gwyddor yr iaith weithredol</string>
+    <string name="settings_pkb_active_language_alphabet_title">Defnyddio gwyddor yr iaith weithredol ar gyfer y bysellfwrdd ffisegol</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Analluogwyd</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Llwybr byr Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ymddygiad y fysell Ctrl</string>

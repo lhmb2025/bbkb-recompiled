@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">오른쪽 Shift 키</string>
     <string name="settings_physical_keyboard_summary">물리 키보드 입력 설정</string>
     <string name="settings_physical_keyboard_title">물리 키보드</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">키를 누르면 시스템 기본 문자가 입력됩니다</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">키를 누르면 현재 언어의 문자가 입력됩니다</string>
+    <string name="settings_pkb_active_language_alphabet_title">물리 키보드에 현재 언어의 문자 사용</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">사용 안 함</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym 바로가기</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Ctrl 키 동작</string>

@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">គ្រាប់ចុច Shift ស្ដាំ</string>
     <string name="settings_physical_keyboard_summary">ការកំណត់សម្រាប់ការបញ្ចូលតាមក្ដារចុចរូបវន្ត</string>
     <string name="settings_physical_keyboard_title">ក្ដារចុចរូបវន្ត</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">គ្រាប់ចុចវាយអក្ខរក្រមលំនាំដើមរបស់ប្រព័ន្ធ</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">គ្រាប់ចុចវាយអក្ខរក្រមរបស់ភាសាសកម្ម</string>
+    <string name="settings_pkb_active_language_alphabet_title">ប្រើអក្ខរក្រមរបស់ភាសាសកម្មសម្រាប់ក្ដារចុចរូបវន្ត</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">បានបិទ</string>
     <string name="settings_pkb_alt_sym_shortcut_title">ផ្លូវកាត់ Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">ឥរិយាបថគ្រាប់ចុច Ctrl</string>

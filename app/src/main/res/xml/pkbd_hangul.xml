@@ -1,25 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <!-- characterMapKeys: what Shift types on the physical key (the 2-set layout's doubled
+         consonants and iotated vowels), read by the physical-key alphabet map. -->
     <PhysicalKeyboardExtension>
         <PhysicalKey
+            latin:characterMapKeys="ㅃ"
             latin:keySpec="ㅂ"
             latin:moreKeys="ㅃ"/>
         <PhysicalKey
+            latin:characterMapKeys="ㅉ"
             latin:keySpec="ㅈ"
             latin:moreKeys="ㅉ"/>
         <PhysicalKey
+            latin:characterMapKeys="ㄸ"
             latin:keySpec="ㄷ"
             latin:moreKeys="ㄸ"/>
         <PhysicalKey
+            latin:characterMapKeys="ㄲ"
             latin:keySpec="ㄱ"
             latin:moreKeys="ㄲ"/>
         <PhysicalKey
+            latin:characterMapKeys="ㅆ"
             latin:keySpec="ㅅ"
             latin:moreKeys="ㅆ"/>
         <PhysicalKey
+            latin:characterMapKeys="ㅒ"
             latin:keySpec="ㅐ"
             latin:moreKeys="ㅒ"/>
         <PhysicalKey
+            latin:characterMapKeys="ㅖ"
             latin:keySpec="ㅔ"
             latin:moreKeys="ㅖ"/>
         <PhysicalKey

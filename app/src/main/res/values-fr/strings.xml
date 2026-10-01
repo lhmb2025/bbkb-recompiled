@@ -196,6 +196,9 @@
     <string name="control_key_setting_right_shift">Touche Maj droite</string>
     <string name="settings_physical_keyboard_summary">Paramètres de saisie sur clavier physique</string>
     <string name="settings_physical_keyboard_title">Clavier physique</string>
+    <string name="settings_pkb_active_language_alphabet_summary_off">Les touches saisissent l\'alphabet par défaut du système</string>
+    <string name="settings_pkb_active_language_alphabet_summary_on">Les touches saisissent l\'alphabet de la langue active</string>
+    <string name="settings_pkb_active_language_alphabet_title">Utiliser l\'alphabet de la langue active pour le clavier physique</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Désactivé</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Raccourci Alt + Sym</string>
     <string name="settings_pkb_ctrl_key_behavior_title">Comportement de la touche Ctrl</string>
