@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "generated": "2026-10-01T06:26:40Z",
+  "generated": "2026-10-02T03:54:16Z",
   "app": {
     "release": {
-      "versionCode": 1436,
-      "versionName": "5.0.0-beta.23",
-      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.23/bbkb-5.0.0-beta.23-release.apk",
-      "sha256": "30d6af86eee9f811e7db60dc7e3c37c57975397fe1f61a24fb8c417f3f9d356c",
-      "size": 56907412,
+      "versionCode": 1437,
+      "versionName": "5.0.0-beta.24",
+      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.24/bbkb-5.0.0-beta.24-release.apk",
+      "sha256": "dbfd1014fa1bea4fd6932bf9219186121c13643d034734db5d5a8dabd387f907",
+      "size": 56907424,
       "minSdk": 23,
-      "notes": "Fixes Indonesian and Hebrew on Android 15. Physical keys now type Arabic, Cyrillic, Hebrew, Greek and Korean when that keyboard is active, with a switch on the Language screen."
+      "notes": "Fixes holding a key on Arabic and other non-Latin physical keyboards, language switching after a keyboard is removed, and the toolbar flashing on the Sym board. KEY2s that report bbf100 are now recognised."
     }
   },
   "packs": {
