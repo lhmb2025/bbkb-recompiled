@@ -13,9 +13,12 @@
 
     <device>
         <match>
-            <!-- Build.DEVICE = "athena" is the authoritative identifier for the BlackBerry Key2.
+            <!-- Build.DEVICE identifies the BlackBerry Key2, and it has two spellings: "athena"
+                 (the LineageOS codename) and "bbf100" (the model number, which stock firmware
+                 and some custom LineageOS builds report in ro.product.device). Either one
+                 selects this config. A regex rule is case-sensitive, hence the (?i).
                  InputDevice.getName() is not used here as it may vary. -->
-            <build-device exact="athena"/>
+            <build-device regex="(?i)athena|bbf100"/>
         </match>
 
         <device-type>CKB</device-type>

@@ -537,13 +537,19 @@ public class NuanceSDK {
                 // original's map held ONLY mercury. It does not: it has all three entries, athena
                 // included, at {1080, 525} (orig/.../nuanceshim/NuanceSDK.java:51-57). The lookup
                 // misses because the original KEYS that entry by the string "bbf100" — its
-                // DEVICE_ATHENA constant (orig ibid.:26) is the KEY2's model number, not its
-                // Build.DEVICE — while Build.DEVICE on the KEY2 is "athena". That is not an
-                // assumption: it is what selects our own athena KDB variant, via
-                // res/xml/device_config_athena.xml's <build-device exact="athena"/>, and the
-                // athena PKB layout loading on device is confirmed by the NKL dump quoted on
-                // syncKeyboardLayout below. So the original's athena entry is dead code in the
-                // original, and {1080, 525} never reached its engine.
+                // DEVICE_ATHENA constant (orig ibid.:26) is the KEY2's model number — while
+                // Build.DEVICE on the LineageOS KEY2 this was measured on is "athena". That is
+                // not an assumption: it is what selected our own athena config there, via
+                // res/xml/device_config_athena.xml's <build-device> rule, and the athena PKB
+                // layout loading on device is confirmed by the NKL dump quoted on
+                // syncKeyboardLayout below. So on that device the original's athena entry is
+                // dead code, and {1080, 525} never reached its engine.
+                //
+                // 2026-10-01: that holds only where Build.DEVICE is "athena". A KEY2 whose
+                // ro.product.device is "bbf100" (a custom LineageOS build reports it; stock
+                // firmware presumably does too, given the original's key) would HIT in the
+                // original and pass {1080, 525}. Not re-measured; this branch does not depend
+                // on it, because it never consults the map.
                 //
                 // The conclusion is unchanged, and so is this branch: our custom athena KDB is
                 // authored 1080x450 and is verified (taps) to map 1:1 to the touch surface
