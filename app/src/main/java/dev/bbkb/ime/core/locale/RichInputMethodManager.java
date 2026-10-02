@@ -147,6 +147,16 @@ public class RichInputMethodManager {
      * or when the framework declines.
      */
     public boolean switchToNextInputMethod(InputMethodService ims, boolean z) {
+        if (z && mustRotateWithinIme(this.imm.getCurrentInputMethodSubtype(), getEnabledSubtypesOfThisIme())) {
+            // The keyboard is on a language that is no longer enabled (the Language screen
+            // removed it while it was active). Android 15 does not decline that rotation: its
+            // switching controller logs "not in the list, falling back to most recent item" and
+            // jumps to whatever was used last, which can be another input method even with
+            // onlyCurrentIme. On the KEY2 that handed the keyboard to AOSP LatinIME when the
+            // owner switched from a removed Indonesian keyboard to Arabic (2026-10-01), and it
+            // read as a crash. Never ask the framework from that state.
+            return switchToNextSubtypeWithinThisIme(ims);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && ims.switchToNextInputMethod(z)) {
             return true;
         }
@@ -181,6 +191,38 @@ public class RichInputMethodManager {
             return false;
         }
         setInputMethodAndSubtype(ims, next);
+        return true;
+    }
+
+    /**
+     * Whether a "switch language" press must be answered by this class and not the framework:
+     * the current subtype is unknown or is not one of this IME's enabled ones. Pure, for the
+     * unit test.
+     */
+    static boolean mustRotateWithinIme(InputMethodSubtype current, List<InputMethodSubtype> enabled) {
+        if (enabled == null || enabled.isEmpty()) {
+            return false;
+        }
+        return current == null || getSubtypeIndexInList(current, enabled) == -1;
+    }
+
+    /**
+     * Leave a language that is no longer enabled: when the current subtype is not in this IME's
+     * enabled list, switch to the first one that is. Called as a field takes focus, so removing
+     * the active keyboard on the Language screen does not leave the user typing in it.
+     *
+     * @return true when it switched
+     */
+    public boolean moveToEnabledSubtypeIfCurrentIsNot(InputMethodService ims) {
+        final InputMethodSubtype current = this.imm.getCurrentInputMethodSubtype();
+        if (current == null) {
+            return false;
+        }
+        final List<InputMethodSubtype> enabled = getEnabledSubtypesOfThisIme();
+        if (!mustRotateWithinIme(current, enabled)) {
+            return false;
+        }
+        setInputMethodAndSubtype(ims, enabled.get(0));
         return true;
     }
 

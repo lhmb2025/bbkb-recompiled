@@ -2,7 +2,9 @@ package dev.bbkb.ime.core.locale
 
 import android.view.inputmethod.InputMethodSubtype
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -49,6 +51,22 @@ class NextSubtypeWithinImeTest {
         assertEquals(english, RichInputMethodManager.nextSubtypeWithinIme(korean, listOf(english, french)))
         assertEquals(english, RichInputMethodManager.nextSubtypeWithinIme(null, listOf(english, french)))
         assertEquals(english, RichInputMethodManager.nextSubtypeWithinIme(korean, listOf(english)))
+    }
+
+    /**
+     * Android 15 does not decline a rotation from a subtype it no longer lists: it falls back to
+     * the most recently used item, which can be another input method. Switching from a removed
+     * Indonesian keyboard handed the KEY2 to AOSP LatinIME (owner report 2026-10-01), so from
+     * that state the framework is never asked.
+     */
+    @Test
+    fun aRemovedOrUnknownCurrentSubtypeIsRotatedHereAndNotByTheFramework() {
+        assertTrue(RichInputMethodManager.mustRotateWithinIme(korean, listOf(english, french)))
+        assertTrue(RichInputMethodManager.mustRotateWithinIme(null, listOf(english, french)))
+        assertFalse(RichInputMethodManager.mustRotateWithinIme(english, listOf(english, french)))
+        // Nothing enabled (not registered yet): leave it to the normal path, which does nothing.
+        assertFalse(RichInputMethodManager.mustRotateWithinIme(english, emptyList()))
+        assertFalse(RichInputMethodManager.mustRotateWithinIme(english, null))
     }
 
     @Test

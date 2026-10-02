@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputBinding;
 
+import dev.bbkb.ime.core.locale.RichInputMethodManager;
 import dev.bbkb.ime.core.BlackBerryIME;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
 import dev.bbkb.ime.personaldictionary.DictionaryManager;
@@ -82,6 +83,11 @@ public class InputSessionCoordinator {
             return;
         }
         mainKeyboardView.setGestureDetector(ime.getOrCreateGestureDetector());
+        // A keyboard removed on the Language screen while it was the active one stays the
+        // framework's current subtype; move to an enabled one before anything reads it.
+        if (RichInputMethodManager.isInitialized()) {
+            RichInputMethodManager.getInstance().moveToEnabledSubtypeIfCurrentIsNot(ime);
+        }
         if (Build.VERSION.SDK_INT >= 24) {
             if (ime.getSubtypeManager().shouldRemoveActiveKeyboardLocale(ime, Resources.getSystem().getConfiguration().getLocales())) {
                 ime.updateSuggestionsFromSubtype(InputSource.INTERNAL);
