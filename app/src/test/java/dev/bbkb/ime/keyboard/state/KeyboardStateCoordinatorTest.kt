@@ -107,40 +107,12 @@ class KeyboardStateCoordinatorTest {
         assertCalls("sweepBoardsClosed")
     }
 
-    /** The bar goes up BEFORE the sweep — the order `setPkbSymbolsKeyboard` has always used. */
-    @Test
-    fun thePkbSymbolLayoutRaisesTheBarBeforeSweepingTheBoards() {
-        axes.boardOpen = true
-
-        coordinator.apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.PKB_SYMBOL))
-
-        assertCalls("showUimBar", "sweepBoardsClosed")
-    }
-
-    @Test
-    fun thePkbSymbolLayoutLeavesAnAlreadyRaisedBarAlone() {
-        axes.barShowing = true
-
-        coordinator.apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.PKB_SYMBOL))
-
-        assertCalls()
-    }
-
-    @Test
-    fun thePkbSymbolLayoutDoesNotRaiseTheBarWithTheUimDisabled() {
-        axes.uimEnabled = false
-
-        coordinator.apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.PKB_SYMBOL))
-
-        assertCalls()
-    }
-
     /**
-     * The on-screen symbol keyboard carries its own row of keys, so its load leaves the bar alone —
-     * including on a PKB, where `switchToSymbolFromAlphabet` loads it.
+     * A symbol load leaves the bar alone — the on-screen keyboard and the PKB one the Sym key opens
+     * alike. The PKB load used to raise the UIM bar ahead of the sweep; the original app never did.
      */
     @Test
-    fun theOnScreenSymbolLayoutNeverRaisesTheBar() {
+    fun aSymbolLayoutNeverRaisesTheBar() {
         axes.boardOpen = true
 
         coordinator.apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.SYMBOL))

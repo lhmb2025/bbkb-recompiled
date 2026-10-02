@@ -558,10 +558,11 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
      * stop deciding from. When the two disagreed the press did the opposite of what it asked for:
      * the coordinator said "closed", so {@code requestBoard} took the OPEN path, and the
      * {@code isShowing()} re-check here saw the view up and CLOSED the board. The user's press to
-     * open closed it; only the second press opened it. (Production reaches that desync easily:
+     * open closed it; only the second press opened it. (Production reached that desync easily:
      * {@link #showEmojiBoard()} shows a board straight through the component and reports nothing,
-     * and {@code KeyboardSwitcher.setPkbSymbolsKeyboard} calls it without the follow-up
-     * {@code setActiveComponentByKeyCode} that {@code showEmojiKeyboard} does.)
+     * and the PKB symbol load called it — until 2026-10-01, when that load stopped raising the
+     * bar — without the follow-up {@code setActiveComponentByKeyCode} that
+     * {@code showEmojiKeyboard} does.)
      *
      * <p>Where the view and the coordinator disagree, <b>the coordinator wins and the view is
      * repaired to match</b> rather than the disagreement merely being ignored — ignoring it would

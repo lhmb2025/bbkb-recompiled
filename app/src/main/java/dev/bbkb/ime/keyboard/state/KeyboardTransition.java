@@ -84,11 +84,9 @@ public final class KeyboardTransition {
      * The layout axis' values — {@code KeyboardState.KeyboardModeState} seen from outside, split
      * where the cross-axis rules differ.
      *
-     * <p>{@link #SYMBOL} and {@link #PKB_SYMBOL} are one mode on the layout axis but two rows of
-     * the table: only the PKB symbol load raises the UIM bar. They are separate values rather than
-     * an {@code isPkbDevice()} test, because a PKB can load the on-screen symbol keyboard too
-     * ({@code KeyboardState.switchToSymbolFromAlphabet} always calls the VKB loader) and that load
-     * must not raise the bar.
+     * <p>{@link #SYMBOL} is both symbol keyboards, the on-screen one and the PKB one the Sym key
+     * opens. They were two values while the PKB load raised the UIM bar; it no longer does (see
+     * {@link CrossAxisRules}), so nothing tells them apart on any axis.
      *
      * <p>{@link #EMOJI} and {@link #MENU} are values no {@link Kind#SWITCH_LAYOUT} carries today:
      * the emoji board opens as a BOARD and the menu opens through {@code showKeyboardMenu}. They
@@ -96,15 +94,12 @@ public final class KeyboardTransition {
      *
      * <p>Since Phase 1d every one of these values also names a BOARD —
      * {@link CrossAxisRules#boardKeyCodeFor(Layout)} — because "which keyboard is loaded" and
-     * "which board is up" are the same question. The values survive as a separate enum only
-     * because two of them (SYMBOL / PKB_SYMBOL) are one board with two bar rules.
+     * "which board is up" are the same question.
      */
     public enum Layout {
         ALPHABET,
-        /** The on-screen symbol keyboard. */
+        /** A symbol keyboard: the on-screen one, or the PKB one the Sym key opens. */
         SYMBOL,
-        /** The PKB symbol keyboard — the one layout that raises the UIM bar. */
-        PKB_SYMBOL,
         EMOJI,
         MENU,
         /**

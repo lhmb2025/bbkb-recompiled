@@ -40,7 +40,7 @@ import java.util.Map;
  *   <tr><td>symbol (on-screen)</td><td>−22</td><td>yes</td><td>no — the rebuild replaces it</td>
  *       <td>page-dependent, owned by the symbol board</td><td>no</td></tr>
  *   <tr><td>symbol (PKB)</td><td>−22</td><td>yes</td><td>no</td>
- *       <td>page-dependent, owned by the symbol board</td><td><b>yes</b></td></tr>
+ *       <td>page-dependent, owned by the symbol board</td><td>no</td></tr>
  *   <tr><td>emoji</td><td>−11</td><td>no</td><td>no</td>
  *       <td>no, unless dynamic search is running</td><td>yes</td></tr>
  *   <tr><td>cursor / FCC</td><td>−42</td><td>yes</td><td><b>yes</b></td><td><b>yes</b></td>
@@ -66,7 +66,6 @@ import java.util.Map;
  * -------------------------+-----------------------+-------------------------+---------------------+-----------
  * SWITCH_LAYOUT(ALPHABET)  | caller loads it       | SWEEP_UNLESS_EXEMPT     | UNCHANGED           | UNCHANGED
  * SWITCH_LAYOUT(SYMBOL)    | caller loads it       | SWEEP_UNLESS_EXEMPT     | UNCHANGED           | UNCHANGED
- * SWITCH_LAYOUT(PKB_SYMBOL)| caller loads it       | SWEEP_UNLESS_EXEMPT     | SHOW_UIM_IF_HIDDEN  | UNCHANGED
  * SWITCH_LAYOUT(UNCHANGED) | caller loads it       | SWEEP_UNLESS_EXEMPT     | UNCHANGED           | UNCHANGED
  *   = the Sym page turn    |                       |                         |                     |
  * SWEEP_BOARDS             | UNCHANGED             | SWEEP_UNLESS_EXEMPT     | UNCHANGED           | UNCHANGED
@@ -82,9 +81,13 @@ import java.util.Map;
  * RESTORE_BAR              | UNCHANGED             | UNCHANGED               | RESTORE_STRIP_OR_UIM| UNCHANGED
  * </pre>
  *
- * <p>Only the PKB symbol load raises the bar. {@code SYMBOL} and {@code PKB_SYMBOL} are the same
- * face of board −22 on two different devices but different rows here, because a PKB can load the
- * on-screen symbol keyboard too and that load must leave the bar where it was.
+ * <p>No layout load touches the bar. The PKB symbol load used to raise the UIM bar
+ * ({@code SHOW_UIM_IF_HIDDEN}, a row of its own), which the original app never did: there the Sym
+ * board comes up under whichever bar is showing, in ordinary typing the suggestion strip. The
+ * raise could not hold the bar either — the next suggestion update handed the slot back to the
+ * strip — so every later page turn raised it again for a single frame (KEY2 report, beta.23: the
+ * toolbar flashing on each tap of the on-screen page key). Owner decision, 2026-10-01: match the
+ * original.
  *
  * <p>* {@code RESTORE_STRIP} only for {@link #CURSOR_BOARD_KEY_CODE} (−42), only when that board
  * was actually open, and only when the on-screen keyboard is visible — it undoes what OPENING the
@@ -256,7 +259,7 @@ public final class CrossAxisRules {
         ROWS.put(KeyboardTransition.Kind.SWITCH_LAYOUT, new Rule(
                 LayoutEffect.UNCHANGED,
                 BoardEffect.CLOSE_ALL_UNLESS_EXEMPT,
-                BarEffect.UNCHANGED,          // per-layout; see barFor(transition)
+                BarEffect.UNCHANGED,
                 CursorEffect.UNCHANGED));
         ROWS.put(KeyboardTransition.Kind.SWEEP_BOARDS, new Rule(
                 LayoutEffect.UNCHANGED,
@@ -343,10 +346,6 @@ public final class CrossAxisRules {
      */
     public static BarEffect barFor(KeyboardTransition transition) {
         switch (transition.kind()) {
-            case SWITCH_LAYOUT:
-                return transition.layout() == KeyboardTransition.Layout.PKB_SYMBOL
-                        ? BarEffect.SHOW_UIM_IF_HIDDEN
-                        : BarEffect.UNCHANGED;
             case CLOSE_BOARD:
                 return transition.boardKeyCode() == CURSOR_BOARD_KEY_CODE
                         ? BarEffect.RESTORE_STRIP
@@ -449,7 +448,6 @@ public final class CrossAxisRules {
             case ALPHABET:
                 return ALPHABET_BOARD_KEY_CODE;
             case SYMBOL:
-            case PKB_SYMBOL:
                 return SYMBOL_BOARD_KEY_CODE;
             case EMOJI:
                 return EMOJI_KEY_CODE;

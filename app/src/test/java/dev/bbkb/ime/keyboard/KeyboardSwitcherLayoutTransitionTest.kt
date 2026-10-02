@@ -126,29 +126,27 @@ class KeyboardSwitcherLayoutTransitionTest {
     }
 
     /**
-     * The PKB symbol load raises the bar FIRST and only then tells the board axis — the order the
-     * on-device behaviour depends on, since the sweep's own gate asks whether the bar is up.
+     * The PKB symbol load — the Sym key, and every page turn after it — leaves the bar as it finds
+     * it, as the original app does. It used to raise the UIM bar when the bar was down, which in
+     * ordinary typing means "when the suggestion strip is showing"; the next suggestion update
+     * took the slot back, so the bar flashed on each page turn (KEY2 report, beta.23).
      */
     @Test
-    fun thePkbSymbolLoadRaisesTheBarBeforeTheLayoutChange() {
+    fun thePkbSymbolLoadDoesNotRaiseTheBar() {
         Mockito.`when`(ime.isUimEnabled()).thenReturn(true)
-        // The bar starts down and is up once show(false) has run — the sweep's own gate reads it
-        // AFTER the raise, exactly as it does on the device.
-        Mockito.`when`(uim.isShowing()).thenReturn(false, true)
+        Mockito.`when`(uim.isShowing()).thenReturn(false)
         Mockito.`when`(builder.getKeyboardInternal(Mockito.anyInt(), Mockito.anyBoolean()))
             .thenReturn(emptyKeyboard())
 
         switcher.setPkbSymbolsKeyboard(0, true, true, 0)
 
-        val inOrder = Mockito.inOrder(uim)
-        inOrder.verify(uim).show(false)
-        inOrder.verify(uim).showEmojiBoard()
-        inOrder.verify(uim).hideKeyboardOnKeyboardStateChange()
+        verify(uim, Mockito.never()).show(Mockito.anyBoolean())
+        verify(uim, Mockito.never()).showEmojiBoard()
     }
 
-    /** With the bar already up, the PKB symbol load does not raise it again. */
+    /** With the bar up and a board open behind it, the PKB symbol load still sweeps the board. */
     @Test
-    fun thePkbSymbolLoadLeavesAnAlreadyRaisedBarAlone() {
+    fun thePkbSymbolLoadSweepsTheBoardsBehindARaisedBar() {
         Mockito.`when`(ime.isUimEnabled()).thenReturn(true)
         Mockito.`when`(builder.getKeyboardInternal(Mockito.anyInt(), Mockito.anyBoolean()))
             .thenReturn(emptyKeyboard())
@@ -182,7 +180,7 @@ class KeyboardSwitcherLayoutTransitionTest {
         verify(uim, Mockito.never()).hideKeyboardOnKeyboardStateChange()
     }
 
-    /** With the UIM disabled the bar is never raised, but the board axis is still told. */
+    /** With the UIM disabled the board axis is still told. */
     @Test
     fun thePkbSymbolLoadWithTheUimDisabledStillRaisesTheLayoutChange() {
         Mockito.`when`(ime.isUimEnabled()).thenReturn(false)

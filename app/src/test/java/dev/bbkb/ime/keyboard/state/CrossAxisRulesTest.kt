@@ -42,26 +42,15 @@ class CrossAxisRulesTest {
     }
 
     /**
-     * Was: the `if (isUimEnabled()) { if (!uim.isShowing()) { uim.show(false); uim.showEmojiBoard() } }`
-     * prologue of `KeyboardSwitcher.setPkbSymbolsKeyboard`. The symbol layout is the ONE layout
-     * that raises the bar.
+     * No layout load touches the bar — the symbol keyboards included. `setPkbSymbolsKeyboard` used
+     * to carry an `if (isUimEnabled()) { if (!uim.isShowing()) { uim.show(false); uim.showEmojiBoard() } }`
+     * prologue the original app never had; the next suggestion update took the bar straight back,
+     * so each page turn flashed it (KEY2 report, beta.23). Owner decision, 2026-10-01: match the
+     * original.
      */
     @Test
-    fun onlyTheSymbolLayoutRaisesTheBar() {
-        assertEquals(
-            BarEffect.SHOW_UIM_IF_HIDDEN,
-            CrossAxisRules.barFor(
-                KeyboardTransition.switchLayout(KeyboardTransition.Layout.PKB_SYMBOL),
-            ),
-        )
-        for (layout in listOf(
-            KeyboardTransition.Layout.ALPHABET,
-            // The on-screen symbol keyboard carries its own keys — even on a PKB, which loads it
-            // through switchToSymbolFromAlphabet — so it leaves the bar where it was.
-            KeyboardTransition.Layout.SYMBOL,
-            KeyboardTransition.Layout.MENU,
-            KeyboardTransition.Layout.UNCHANGED,
-        )) {
+    fun noLayoutLoadTouchesTheBar() {
+        for (layout in KeyboardTransition.Layout.values()) {
             assertEquals(
                 "layout $layout must not touch the bar",
                 BarEffect.UNCHANGED,
@@ -326,7 +315,6 @@ class CrossAxisRulesTest {
     fun everyLayoutValueNamesABoard() {
         assertEquals(-3, CrossAxisRules.boardKeyCodeFor(KeyboardTransition.Layout.ALPHABET))
         assertEquals(-22, CrossAxisRules.boardKeyCodeFor(KeyboardTransition.Layout.SYMBOL))
-        assertEquals(-22, CrossAxisRules.boardKeyCodeFor(KeyboardTransition.Layout.PKB_SYMBOL))
         assertEquals(-11, CrossAxisRules.boardKeyCodeFor(KeyboardTransition.Layout.EMOJI))
         assertEquals(-23, CrossAxisRules.boardKeyCodeFor(KeyboardTransition.Layout.MENU))
     }
@@ -337,27 +325,6 @@ class CrossAxisRulesTest {
         assertEquals(
             KeyboardTransition.NO_BOARD,
             CrossAxisRules.boardKeyCodeFor(KeyboardTransition.Layout.UNCHANGED),
-        )
-    }
-
-    /**
-     * The on-screen and PKB symbol keyboards are ONE board with two bar rules, which is why the
-     * layout enum still has two values for them.
-     */
-    @Test
-    fun theTwoSymbolLayoutsAreOneBoardWithTwoBarRules() {
-        assertEquals(
-            CrossAxisRules.boardKeyCodeFor(KeyboardTransition.Layout.SYMBOL),
-            CrossAxisRules.boardKeyCodeFor(KeyboardTransition.Layout.PKB_SYMBOL),
-        )
-        assertEquals(
-            BarEffect.UNCHANGED,
-            CrossAxisRules.barFor(KeyboardTransition.switchLayout(KeyboardTransition.Layout.SYMBOL)),
-        )
-        assertEquals(
-            BarEffect.SHOW_UIM_IF_HIDDEN,
-            CrossAxisRules.barFor(
-                KeyboardTransition.switchLayout(KeyboardTransition.Layout.PKB_SYMBOL)),
         )
     }
 

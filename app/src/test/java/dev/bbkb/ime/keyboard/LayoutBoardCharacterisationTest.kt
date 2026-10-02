@@ -300,18 +300,18 @@ class LayoutBoardCharacterisationTest {
     }
 
     /**
-     * The PKB symbol load is the one layout that raises the bar, and it also raises the
-     * slideboard's numeric panel. Both are per-layout, neither happens on any other load.
+     * The PKB symbol load raises the slideboard's numeric panel and nothing else: the bar stays
+     * as it was, as in the original app. (It used to raise the UIM bar too.)
      */
     @Test
-    fun thePkbSymbolLoadRaisesTheBarAndTheNumericPanel() {
+    fun thePkbSymbolLoadRaisesTheNumericPanelAndLeavesTheBarAlone() {
         Mockito.`when`(ime.isUimEnabled()).thenReturn(true)
         Mockito.`when`(uim.isShowing()).thenReturn(false)
 
         switcher.setPkbSymbolsKeyboard(0, true, false, 0)
 
-        verify(uim).show(false)
-        verify(uim).showEmojiBoard()
+        verify(uim, never()).show(Mockito.anyBoolean())
+        verify(uim, never()).showEmojiBoard()
         verify(slideboard).showNumericPanel()
     }
 

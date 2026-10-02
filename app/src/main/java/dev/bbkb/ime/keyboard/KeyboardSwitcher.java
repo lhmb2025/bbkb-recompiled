@@ -825,9 +825,6 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     @Override
     public void setVkbSymbolsKeyboard(int i, boolean z, boolean z2, int i2) {
         Keyboard c0965eM6734a;
-        // SYMBOL, not PKB_SYMBOL: the on-screen symbol keyboard carries its own row of keys and
-        // leaves the bar where it was — including when a PKB loads it, which
-        // KeyboardState.switchToSymbolFromAlphabet always does.
         transitions().apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.SYMBOL));
         if (z2) {
             this.keyboardBuilder.setCustomSymbolPage(i2);
@@ -849,10 +846,10 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     public void setPkbSymbolsKeyboard(int i, boolean z, boolean z2, int i2) {
         Keyboard c0965eM6735b;
         Key keyM6604b;
-        // PKB_SYMBOL is the one layout whose row raises the UIM bar, and the table puts that
-        // before the board sweep — the order this method has always used, and the one the sweep's
-        // own "is the bar up" gate depends on.
-        transitions().apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.PKB_SYMBOL));
+        // The bar is left as it is, as in the original app: the Sym board comes up under the
+        // suggestion strip (or under the UIM bar, where that is this editor's bar). This used to
+        // raise the UIM bar, which the next suggestion update took straight back down.
+        transitions().apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.SYMBOL));
         if (this.slideboardManager != null) {
             this.slideboardManager.showNumericPanel();
         }
