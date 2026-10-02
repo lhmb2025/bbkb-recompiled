@@ -129,6 +129,22 @@ object HardwareScriptLayouts {
         return letter
     }
 
+    /**
+     * What holding a key down types under the current layout when "hold for capital" is on: the
+     * letter Shift gives on that key (Й, or ض on the ص key). 0 when no script layout applies to
+     * the event, or Shift gives nothing different (most Arabic keys carry one letter).
+     *
+     * The hold handlers used to read the system key map here, so holding ص replaced it with a
+     * Latin "Q" (beta report, 2026-10).
+     */
+    @JvmStatic
+    fun heldLetterFor(event: KeyEvent): Int {
+        val base = letterFor(event, 0)
+        if (base == 0) return 0
+        val shifted = letterFor(event, KeyEvent.META_SHIFT_ON)
+        return if (shifted != 0 && shifted != base) shifted else 0
+    }
+
     private fun skipped(reason: String): Int {
         if (InputPathDebug.on()) Logger.info(TAG, "system key map: $reason")
         return 0

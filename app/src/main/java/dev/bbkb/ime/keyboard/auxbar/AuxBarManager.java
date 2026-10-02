@@ -14,6 +14,7 @@ import dev.bbkb.ime.core.suggestion.SuggestedWords;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
+import dev.bbkb.ime.core.keyevent.HardwareScriptLayouts;
 import dev.bbkb.ime.core.keyevent.InputSource;
 import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.keyboard.Keyboard;
@@ -111,6 +112,8 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
     private HoldState holdState = HoldState.IDLE;
     private int holdRepeatCount = 0;
     private String holdBaseChar = null;       // The base character that was committed on keyDown
+    private String holdShiftChar = null;      // Its Shift letter on a script layout, or null
+    private boolean holdOnScriptLayout = false; // The held key types the active keyboard's alphabet
     private boolean autoCommitPerformed = false; // Guard: only auto-commit once per hold session
     private boolean holdSuppressingRepeats = false; // True when suppressing repeats for no-accent keys
     private boolean holdHasAccents = false;   // True if accent bar was shown for this hold session
@@ -712,7 +715,12 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
             
             // Capture the base character for potential auto-commit
             holdBaseChar = getBaseCharacterForEvent(event);
-            
+            // On a keyboard with its own alphabet the held key's "capital" is its Shift letter
+            // (Й, or ض on the ص key), not the upper case of the Latin letter the system reports.
+            holdOnScriptLayout = HardwareScriptLayouts.letterFor(event, 0) != 0;
+            int heldLetter = holdOnScriptLayout ? HardwareScriptLayouts.heldLetterFor(event) : 0;
+            holdShiftChar = heldLetter != 0 ? new String(Character.toChars(heldLetter)) : null;
+
             return false; // Don't consume first press — base char committed by normal IME flow
         }
         
@@ -729,7 +737,8 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         
         String holdAction = this.holdActionMode;
         boolean holdFeatureEnabled = !HOLD_ACTION_OFF.equals(holdAction);
-        boolean isEligibleKey = isLetterKey(keyCode);
+        // The key past M carries a letter on Arabic and Cyrillic keycaps, so it counts there.
+        boolean isEligibleKey = isLetterKey(keyCode) || holdOnScriptLayout;
         // The one query API rather than two raw KeyEvent predicates. ModifierState.ofEvent carries
         // only what the event says, which is exactly what these two read — the hold action is
         // decided from the event that is repeating, not from the tracker's sticky/locked state.
@@ -827,6 +836,8 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         holdState = HoldState.IDLE;
         holdRepeatCount = 0;
         holdBaseChar = null;
+        holdShiftChar = null;
+        holdOnScriptLayout = false;
         autoCommitPerformed = false;
         holdSuppressingRepeats = false;
         holdHasAccents = false;
@@ -879,6 +890,10 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
     @Nullable
     private String resolveAutoCommitChar(int keyCode, String holdAction) {
         if (HOLD_ACTION_UPPERCASE.equals(holdAction)) {
+            if (holdOnScriptLayout) {
+                // Null on a key with a single letter: there is nothing to switch to.
+                return holdShiftChar;
+            }
             if (holdBaseChar != null && !holdBaseChar.isEmpty()) {
                 Locale locale = currentLocale != null ? currentLocale : Locale.getDefault();
                 return holdBaseChar.toUpperCase(locale);
@@ -1048,6 +1063,13 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
             }
         }
         
+        // The active keyboard's alphabet first: the long-press tables for Arabic, Cyrillic, Hebrew,
+        // Greek and Korean are keyed by that letter, and the system key map says "q".
+        int scriptLetter = HardwareScriptLayouts.letterFor(event, metaState);
+        if (scriptLetter != 0) {
+            return new String(Character.toChars(scriptLetter));
+        }
+
         // Normal case - use full meta state
         int unicodeChar = event.getUnicodeChar(metaState);
         if (unicodeChar > 0 && Character.isValidCodePoint(unicodeChar)) {
