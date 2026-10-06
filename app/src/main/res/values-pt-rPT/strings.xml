@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Teclado numérico</string>
     <string name="settings_pkb_multifunction_action_symbol">Teclado de símbolos</string>
     <string name="settings_pkb_multifunction_key_title">Tecla multifunções</string>
+    <string name="settings_pkb_suggestion_bar_summary">Desative para ocultar a barra acima das teclas (sugestões e menu de entrada) enquanto escreve no teclado físico</string>
+    <string name="settings_pkb_suggestion_bar_title">Mostrar a barra de sugestões</string>
     <string name="settings_appearance_auto">Automático (tema do sistema)</string>
     <string name="settings_appearance_classic">Clássico</string>
     <string name="settings_appearance_dark">Escuro</string>

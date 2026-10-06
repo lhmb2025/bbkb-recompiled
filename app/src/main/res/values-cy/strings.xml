@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Pad rhifau</string>
     <string name="settings_pkb_multifunction_action_symbol">Bysellfwrdd symbolau</string>
     <string name="settings_pkb_multifunction_key_title">Bysell amlswyddogaeth</string>
+    <string name="settings_pkb_suggestion_bar_summary">Diffoddwch i guddio\'r bar uwchben y bysellau (awgrymiadau a\'r ddewislen fewnbwn) wrth deipio ar y bysellfwrdd ffisegol</string>
+    <string name="settings_pkb_suggestion_bar_title">Dangos y bar awgrymiadau</string>
     <string name="settings_appearance_auto">Awtomatig (thema\'r system)</string>
     <string name="settings_appearance_classic">Clasurol</string>
     <string name="settings_appearance_dark">Tywyll</string>

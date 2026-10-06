@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">បន្ទះលេខ</string>
     <string name="settings_pkb_multifunction_action_symbol">ក្ដារចុចនិមិត្តសញ្ញា</string>
     <string name="settings_pkb_multifunction_key_title">គ្រាប់ចុចពហុមុខងារ</string>
+    <string name="settings_pkb_suggestion_bar_summary">បិទ ដើម្បីលាក់របារនៅពីលើគ្រាប់ចុច (ពាក្យណែនាំ និងម៉ឺនុយបញ្ចូល) ពេលវាយលើក្ដារចុចរូបវន្ត</string>
+    <string name="settings_pkb_suggestion_bar_title">បង្ហាញរបារពាក្យណែនាំ</string>
     <string name="settings_appearance_auto">ស្វ័យប្រវត្តិ (ស្បែកប្រព័ន្ធ)</string>
     <string name="settings_appearance_classic">បុរាណ</string>
     <string name="settings_appearance_dark">ងងឹត</string>

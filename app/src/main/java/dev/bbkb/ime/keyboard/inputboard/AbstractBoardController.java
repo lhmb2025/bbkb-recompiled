@@ -94,6 +94,20 @@ public abstract class AbstractBoardController<L> implements UnifiedInputBoardCom
         onHide();
     }
 
+    /**
+     * Close the board if it is up, otherwise open it if {@link #isEnabled()}: the hardware board
+     * shortcuts' route while the unified input menu is off (or hidden with the suggestion bar),
+     * where there is no menu bar and no {@link UnifiedBoardCoordinator} toggle. A disabled board
+     * stays closed, as the menu's own pass would close it.
+     */
+    public void toggle() {
+        if (isShowing()) {
+            hide();
+        } else if (isEnabled()) {
+            show();
+        }
+    }
+
     @Override
     public void onRefresh() {
         final View view = peekBoardView();

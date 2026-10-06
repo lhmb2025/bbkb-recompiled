@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">لوحة الأرقام</string>
     <string name="settings_pkb_multifunction_action_symbol">لوحة مفاتيح الرموز</string>
     <string name="settings_pkb_multifunction_key_title">المفتاح متعدد الوظائف</string>
+    <string name="settings_pkb_suggestion_bar_summary">أوقف التشغيل لإخفاء الشريط الموجود فوق المفاتيح (الاقتراحات وقائمة الإدخال) أثناء الكتابة على لوحة المفاتيح الفعلية</string>
+    <string name="settings_pkb_suggestion_bar_title">إظهار شريط الاقتراحات</string>
     <string name="settings_appearance_auto">تلقائي (مظهر النظام)</string>
     <string name="settings_appearance_classic">كلاسيكي</string>
     <string name="settings_appearance_dark">داكن</string>

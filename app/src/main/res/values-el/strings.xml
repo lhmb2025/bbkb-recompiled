@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Αριθμητικό πληκτρολόγιο</string>
     <string name="settings_pkb_multifunction_action_symbol">Πληκτρολόγιο συμβόλων</string>
     <string name="settings_pkb_multifunction_key_title">Πλήκτρο πολλαπλών λειτουργιών</string>
+    <string name="settings_pkb_suggestion_bar_summary">Απενεργοποιήστε για να κρύψετε τη γραμμή πάνω από τα πλήκτρα (προτάσεις και μενού εισόδου) όταν πληκτρολογείτε στο φυσικό πληκτρολόγιο</string>
+    <string name="settings_pkb_suggestion_bar_title">Εμφάνιση της γραμμής προτάσεων</string>
     <string name="settings_appearance_auto">Αυτόματο (θέμα συστήματος)</string>
     <string name="settings_appearance_classic">Κλασικό</string>
     <string name="settings_appearance_dark">Σκούρο</string>

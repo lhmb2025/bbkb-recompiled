@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Numerička tastatura</string>
     <string name="settings_pkb_multifunction_action_symbol">Tastatura sa simbolima</string>
     <string name="settings_pkb_multifunction_key_title">Višenamjenska tipka</string>
+    <string name="settings_pkb_suggestion_bar_summary">Isključite da sakrijete traku iznad tipki (prijedlozi i meni za unos) dok kucate na fizičkoj tastaturi</string>
+    <string name="settings_pkb_suggestion_bar_title">Prikaži traku prijedloga</string>
     <string name="settings_appearance_auto">Automatski (tema sistema)</string>
     <string name="settings_appearance_classic">Klasična</string>
     <string name="settings_appearance_dark">Tamna</string>

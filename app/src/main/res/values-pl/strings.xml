@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Klawiatura numeryczna</string>
     <string name="settings_pkb_multifunction_action_symbol">Klawiatura symboli</string>
     <string name="settings_pkb_multifunction_key_title">Klawisz wielofunkcyjny</string>
+    <string name="settings_pkb_suggestion_bar_summary">Wyłącz, aby ukryć pasek nad klawiszami (sugestie i menu wprowadzania) podczas pisania na klawiaturze fizycznej</string>
+    <string name="settings_pkb_suggestion_bar_title">Pokazuj pasek sugestii</string>
     <string name="settings_appearance_auto">Automatyczny (motyw systemu)</string>
     <string name="settings_appearance_classic">Klasyczny</string>
     <string name="settings_appearance_dark">Ciemny</string>

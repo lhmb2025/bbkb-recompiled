@@ -168,7 +168,7 @@ class SettingsSearchIndexTest {
         val onTouch = anchorsOn(touchDevice)
 
         // Physical-keyboard-only rows: offered on the KEY2, hidden on a touch-only phone.
-        for (anchor in listOf("auto_correction_mode_PKB", "pkb_custom_page_first")) {
+        for (anchor in listOf("auto_correction_mode_PKB", "pkb_custom_page_first", "pref_pkb_show_suggestion_bar")) {
             assertTrue("$anchor should be searchable on a physical-keyboard device", anchor in onPkb)
             assertFalse("$anchor is not rendered on a touch-only device, so search must not offer it", anchor in onTouch)
         }

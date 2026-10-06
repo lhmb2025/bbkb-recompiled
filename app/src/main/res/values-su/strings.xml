@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Papan angka</string>
     <string name="settings_pkb_multifunction_action_symbol">Papan tombol simbol</string>
     <string name="settings_pkb_multifunction_key_title">Tombol multifungsi</string>
+    <string name="settings_pkb_suggestion_bar_summary">Pareuman pikeun nyumputkeun bar di luhur tombol (saran jeung ménu asupan) nalika ngetik dina papan tombol fisik</string>
+    <string name="settings_pkb_suggestion_bar_title">Témbongkeun bar saran</string>
     <string name="settings_appearance_auto">Otomatis (téma sistem)</string>
     <string name="settings_appearance_classic">Klasik</string>
     <string name="settings_appearance_dark">Poék</string>

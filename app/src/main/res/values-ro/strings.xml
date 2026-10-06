@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Tastatură numerică</string>
     <string name="settings_pkb_multifunction_action_symbol">Tastatură de simboluri</string>
     <string name="settings_pkb_multifunction_key_title">Tastă multifuncțională</string>
+    <string name="settings_pkb_suggestion_bar_summary">Dezactivați pentru a ascunde bara de deasupra tastelor (sugestii și meniul de introducere) în timp ce tastați pe tastatura fizică</string>
+    <string name="settings_pkb_suggestion_bar_title">Afișează bara de sugestii</string>
     <string name="settings_appearance_auto">Automat (tema sistemului)</string>
     <string name="settings_appearance_classic">Clasică</string>
     <string name="settings_appearance_dark">Întunecată</string>

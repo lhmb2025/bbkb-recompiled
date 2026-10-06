@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Ciparu panelis</string>
     <string name="settings_pkb_multifunction_action_symbol">Simbolu tastatūra</string>
     <string name="settings_pkb_multifunction_key_title">Daudzfunkciju taustiņš</string>
+    <string name="settings_pkb_suggestion_bar_summary">Izslēdziet, lai, rakstot ar fizisko tastatūru, paslēptu joslu virs taustiņiem (ieteikumi un ievades izvēlne)</string>
+    <string name="settings_pkb_suggestion_bar_title">Rādīt ieteikumu joslu</string>
     <string name="settings_appearance_auto">Automātiska (sistēmas motīvs)</string>
     <string name="settings_appearance_classic">Klasiska</string>
     <string name="settings_appearance_dark">Tumša</string>

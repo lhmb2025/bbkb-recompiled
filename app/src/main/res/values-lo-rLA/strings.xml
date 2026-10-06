@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">ແປ້ນຕົວເລກ</string>
     <string name="settings_pkb_multifunction_action_symbol">ແປ້ນພິມສັນຍາລັກ</string>
     <string name="settings_pkb_multifunction_key_title">ປຸ່ມຫຼາຍໜ້າທີ່</string>
+    <string name="settings_pkb_suggestion_bar_summary">ປິດເພື່ອເຊື່ອງແຖບທີ່ຢູ່ເທິງປຸ່ມ (ຄຳແນະນຳ ແລະ ເມນູການປ້ອນ) ໃນຂະນະທີ່ພິມດ້ວຍແປ້ນພິມແທ້</string>
+    <string name="settings_pkb_suggestion_bar_title">ສະແດງແຖບຄຳແນະນຳ</string>
     <string name="settings_appearance_auto">ອັດຕະໂນມັດ (ຊຸດຮູບແບບຂອງລະບົບ)</string>
     <string name="settings_appearance_classic">ຄລາສສິກ</string>
     <string name="settings_appearance_dark">ມືດ</string>

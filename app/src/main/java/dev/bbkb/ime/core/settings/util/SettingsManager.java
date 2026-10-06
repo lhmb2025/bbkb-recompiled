@@ -617,7 +617,20 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
 
     public static boolean isUimEnabled(Context context) {
         SharedPreferences prefs = PrefsManager.INSTANCE.getPrefs(context);
-        return prefs.getBoolean("pref_uim_enabled", true);
+        // The menu sits in the bar "Show the suggestion bar" hides, so it goes with the bar.
+        return prefs.getBoolean("pref_uim_enabled", true)
+                && !SettingsValues.isPkbSuggestionBarHidden(isPkbSuggestionBarEnabled(prefs));
+    }
+
+    /** Physical keyboard settings: "Show the suggestion bar". */
+    public static final String PREF_PKB_SHOW_SUGGESTION_BAR = "pref_pkb_show_suggestion_bar";
+
+    /**
+     * "Show the suggestion bar" as stored. Whether the bar is actually hidden also depends on the
+     * device: see {@link SettingsValues#isPkbSuggestionBarHidden()}.
+     */
+    public static boolean isPkbSuggestionBarEnabled(SharedPreferences sharedPreferences) {
+        return sharedPreferences.getBoolean(PREF_PKB_SHOW_SUGGESTION_BAR, true);
     }
 
     public static boolean isLanguageQuickSwitchEnabled() {

@@ -13,6 +13,9 @@ import dev.bbkb.ime.core.locale.SubtypeManager
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.util.SettingsManager
 import dev.bbkb.ime.core.textinput.connection.EditorCapabilities
+import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardController
+import dev.bbkb.ime.keyboard.inputboard.fcc.FccController
+import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadController
 import androidx.test.core.app.ApplicationProvider
 import android.content.Context
 import org.junit.After
@@ -187,6 +190,65 @@ class BoardKeyPairingCharacterisationTest {
 
         verify(boardManager(), never()).requestBoard(anyInt())
         verify(ime, never()).updateSuggestionsFromSubtype(InputSource.HARDWARE)
+    }
+
+    // ===================================================== board actions with the input menu off
+
+    /**
+     * With the unified input menu off — or hidden with "Show the suggestion bar" — the board
+     * actions open their board on its own, without the menu bar: the clipboard always did, and
+     * cursor control and the number pad now take the same route (they used to do nothing). The
+     * board's toggle closes it on the next press.
+     */
+    @Test
+    fun `with the input menu off the multifunction board actions toggle their board directly`() {
+        `when`(ime.isUimEnabled()).thenReturn(false)
+        val clipboard = mock(ClipboardController::class.java)
+        val fcc = mock(FccController::class.java)
+        val numberPad = mock(NumberPadController::class.java)
+        `when`(ime.clipboardController).thenReturn(clipboard)
+        `when`(ime.fccController).thenReturn(fcc)
+        `when`(ime.numberPadController).thenReturn(numberPad)
+
+        pressMultifunction(MultifunctionKeyHandler.ACTION_CLIPBOARD_BOARD)
+        verify(clipboard).show()
+
+        pressMultifunction(MultifunctionKeyHandler.ACTION_FCC)
+        pressMultifunction(MultifunctionKeyHandler.ACTION_FCC)
+        verify(fcc, times(2)).toggle()
+
+        pressMultifunction(MultifunctionKeyHandler.ACTION_NUMBER_PAD)
+        verify(numberPad).toggle()
+
+        verify(boardManager(), never()).requestBoard(anyInt())
+    }
+
+    @Test
+    fun `with the input menu on the multifunction board actions go through the coordinator`() {
+        val fcc = mock(FccController::class.java)
+        val numberPad = mock(NumberPadController::class.java)
+        `when`(ime.fccController).thenReturn(fcc)
+        `when`(ime.numberPadController).thenReturn(numberPad)
+
+        pressMultifunction(MultifunctionKeyHandler.ACTION_FCC)
+        pressMultifunction(MultifunctionKeyHandler.ACTION_NUMBER_PAD)
+
+        verify(boardManager()).requestBoard(FccController.KEY_CODE)
+        verify(boardManager()).requestBoard(NumberPadController.KEY_CODE)
+        verify(fcc, never()).toggle()
+        verify(numberPad, never()).toggle()
+    }
+
+    @Test
+    fun `with the input menu off a board action with no board built yet does nothing`() {
+        `when`(ime.isUimEnabled()).thenReturn(false)
+        `when`(ime.fccController).thenReturn(null)
+        `when`(ime.numberPadController).thenReturn(null)
+
+        pressMultifunction(MultifunctionKeyHandler.ACTION_FCC)
+        pressMultifunction(MultifunctionKeyHandler.ACTION_NUMBER_PAD)
+
+        verify(boardManager(), never()).requestBoard(anyInt())
     }
 
     // ===================================================== a down with no up
@@ -524,6 +586,13 @@ class BoardKeyPairingCharacterisationTest {
      */
     private fun arm(action: PendingKeyAction, keyCode: Int, scanCode: Int) {
         BoardKeyPressTracker.getInstance().arm(keyDown(keyCode, scanCode), action)
+    }
+
+    /** A full press of the multifunction key with [action] as its configured action. */
+    private fun pressMultifunction(action: String) {
+        mapKey(KeyRole.MULTIFUNCTION, defaultAction = action)
+        arm(PendingKeyAction.MULTIFUNCTION, MIC_KEY, MIC_SCANCODE)
+        processor.onKeyUpInternal(MIC_KEY, keyUp(MIC_KEY, MIC_SCANCODE))
     }
 
     private fun clearPairing() {

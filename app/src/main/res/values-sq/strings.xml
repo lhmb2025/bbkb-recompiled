@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Tastiera numerike</string>
     <string name="settings_pkb_multifunction_action_symbol">Tastiera e simboleve</string>
     <string name="settings_pkb_multifunction_key_title">Tasti shumëfunksionësh</string>
+    <string name="settings_pkb_suggestion_bar_summary">Çaktivizoje për të fshehur shiritin mbi tastet (sugjerimet dhe menynë e shkrimit) ndërsa shkruan në tastierën fizike</string>
+    <string name="settings_pkb_suggestion_bar_title">Shfaq shiritin e sugjerimeve</string>
     <string name="settings_appearance_auto">Automatike (tema e sistemit)</string>
     <string name="settings_appearance_classic">Klasike</string>
     <string name="settings_appearance_dark">E errët</string>

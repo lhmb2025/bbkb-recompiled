@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Нумеричка тастатура</string>
     <string name="settings_pkb_multifunction_action_symbol">Тастатура со симболи</string>
     <string name="settings_pkb_multifunction_key_title">Мултифункциско копче</string>
+    <string name="settings_pkb_suggestion_bar_summary">Исклучете за да ја скриете лентата над копчињата (предлози и мени за внесување) додека пишувате на физичката тастатура</string>
+    <string name="settings_pkb_suggestion_bar_title">Прикажи ја лентата со предлози</string>
     <string name="settings_appearance_auto">Автоматски (системска тема)</string>
     <string name="settings_appearance_classic">Класична</string>
     <string name="settings_appearance_dark">Темна</string>

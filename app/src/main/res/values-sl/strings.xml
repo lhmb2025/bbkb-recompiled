@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Številska tipkovnica</string>
     <string name="settings_pkb_multifunction_action_symbol">Tipkovnica s simboli</string>
     <string name="settings_pkb_multifunction_key_title">Večnamenska tipka</string>
+    <string name="settings_pkb_suggestion_bar_summary">Izklopite, da skrijete vrstico nad tipkami (predlogi in meni za vnos) med tipkanjem na fizični tipkovnici</string>
+    <string name="settings_pkb_suggestion_bar_title">Prikaži vrstico s predlogi</string>
     <string name="settings_appearance_auto">Samodejno (sistemska tema)</string>
     <string name="settings_appearance_classic">Klasična</string>
     <string name="settings_appearance_dark">Temna</string>

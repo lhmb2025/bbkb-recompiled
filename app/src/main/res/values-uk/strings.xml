@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Цифрова панель</string>
     <string name="settings_pkb_multifunction_action_symbol">Клавіатура символів</string>
     <string name="settings_pkb_multifunction_key_title">Багатофункціональна клавіша</string>
+    <string name="settings_pkb_suggestion_bar_summary">Вимкніть, щоб приховувати панель над клавішами (підказки й меню введення) під час набору на фізичній клавіатурі</string>
+    <string name="settings_pkb_suggestion_bar_title">Показувати панель підказок</string>
     <string name="settings_appearance_auto">Авто (тема системи)</string>
     <string name="settings_appearance_classic">Класична</string>
     <string name="settings_appearance_dark">Темна</string>

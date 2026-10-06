@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Сандык панель</string>
     <string name="settings_pkb_multifunction_action_symbol">Символ баскычтобу</string>
     <string name="settings_pkb_multifunction_key_title">Көп функциялуу баскыч</string>
+    <string name="settings_pkb_suggestion_bar_summary">Физикалык баскычтопто терип жатканда баскычтардын үстүндөгү тилкени (сунуштар жана киргизүү менюсу) жашыруу үчүн өчүрүңүз</string>
+    <string name="settings_pkb_suggestion_bar_title">Сунуштар тилкесин көрсөтүү</string>
     <string name="settings_appearance_auto">Автоматтык (системанын темасы)</string>
     <string name="settings_appearance_classic">Классикалык</string>
     <string name="settings_appearance_dark">Караңгы</string>

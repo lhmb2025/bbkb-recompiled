@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">แป้นตัวเลข</string>
     <string name="settings_pkb_multifunction_action_symbol">แป้นพิมพ์สัญลักษณ์</string>
     <string name="settings_pkb_multifunction_key_title">ปุ่มอเนกประสงค์</string>
+    <string name="settings_pkb_suggestion_bar_summary">ปิดเพื่อซ่อนแถบเหนือแป้น (คำแนะนำและเมนูการป้อนข้อมูล) ขณะพิมพ์ด้วยแป้นพิมพ์จริง</string>
+    <string name="settings_pkb_suggestion_bar_title">แสดงแถบคำแนะนำ</string>
     <string name="settings_appearance_auto">อัตโนมัติ (ธีมของระบบ)</string>
     <string name="settings_appearance_classic">คลาสสิก</string>
     <string name="settings_appearance_dark">มืด</string>

@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">숫자 패드</string>
     <string name="settings_pkb_multifunction_action_symbol">기호 키보드</string>
     <string name="settings_pkb_multifunction_key_title">다기능 키</string>
+    <string name="settings_pkb_suggestion_bar_summary">사용 중지하면 물리 키보드로 입력하는 동안 키 위의 바(추천 및 입력 메뉴)가 숨겨집니다</string>
+    <string name="settings_pkb_suggestion_bar_title">추천 바 표시</string>
     <string name="settings_appearance_auto">자동(시스템 테마)</string>
     <string name="settings_appearance_classic">클래식</string>
     <string name="settings_appearance_dark">어두움</string>

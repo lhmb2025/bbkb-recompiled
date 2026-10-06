@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Talnaborð</string>
     <string name="settings_pkb_multifunction_action_symbol">Táknlyklaborð</string>
     <string name="settings_pkb_multifunction_key_title">Fjölnotalykill</string>
+    <string name="settings_pkb_suggestion_bar_summary">Slökktu á þessu til að fela stikuna fyrir ofan lyklana (tillögur og innsláttarvalmynd) þegar skrifað er á vélbúnaðarlyklaborðið</string>
+    <string name="settings_pkb_suggestion_bar_title">Sýna tillögustikuna</string>
     <string name="settings_appearance_auto">Sjálfvirkt (þema kerfis)</string>
     <string name="settings_appearance_classic">Klassískt</string>
     <string name="settings_appearance_dark">Dökkt</string>

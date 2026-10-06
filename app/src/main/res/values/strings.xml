@@ -269,6 +269,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Number pad</string>
     <string name="settings_pkb_multifunction_action_symbol">Symbol keyboard</string>
     <string name="settings_pkb_multifunction_key_title">Multifunction key</string>
+    <string name="settings_pkb_suggestion_bar_summary">Turn off to hide the bar above the keys (suggestions and the input menu) while typing on the physical keyboard</string>
+    <string name="settings_pkb_suggestion_bar_title">Show the suggestion bar</string>
 
     <!-- ============================================== -->
     <!-- Settings — on-screen keyboard and appearance -->

@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Rəqəm paneli</string>
     <string name="settings_pkb_multifunction_action_symbol">Simvol klaviaturası</string>
     <string name="settings_pkb_multifunction_key_title">Çoxfunksiyalı klaviş</string>
+    <string name="settings_pkb_suggestion_bar_summary">Fiziki klaviaturada yazarkən düymələrin üstündəki zolağı (təkliflər və daxiletmə menyusu) gizlətmək üçün söndürün</string>
+    <string name="settings_pkb_suggestion_bar_title">Təklif zolağını göstər</string>
     <string name="settings_appearance_auto">Avtomatik (sistem mövzusu)</string>
     <string name="settings_appearance_classic">Klassik</string>
     <string name="settings_appearance_dark">Tünd</string>

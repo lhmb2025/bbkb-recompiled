@@ -125,9 +125,20 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
      * Only shows if:
      * - Predictions are enabled in settings
      * - The current field supports suggestions (not password, URI, email, etc.)
+     * - "Show the suggestion bar" is not hiding the strip (a Chinese or Japanese one still shows)
      */
     private void preShowSuggestionStripForPkb() {
         SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
+        if (settings.isPkbSuggestionBarHidden()) {
+            // AuxBarView starts VISIBLE and empty until its first hide(), and nothing else takes
+            // it down when no strip or menu is coming.
+            if (auxBarManager != null) {
+                auxBarManager.hideSuggestionBar();
+            }
+            if (!isChineseOrJapaneseSubtype()) {
+                return;
+            }
+        }
         if (settings.isPredictionsEnabled && settings.editorCapabilities.shouldShowSuggestions) {
             if (auxBarManager != null) {
                 auxBarManager.showSuggestionStrip(SuggestedWords.EMPTY);
@@ -327,12 +338,12 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     }
 
     public boolean isUimEnabled() {
-        return this.settingsManager.getSettingsValues().isUimEnabled;
+        return this.settingsManager.getSettingsValues().isUimEnabled();
     }
 
     public boolean shouldShowUim() {
         SettingsValues c0804dM5050c = SettingsManager.getInstance().getSettingsValues();
-        return c0804dM5050c.isUimEnabled && !shouldShowSuggestionStrip(c0804dM5050c, this.imeService.isOnScreenKeyboardVisible(), this.subtypeManager.getCurrentSubtype());
+        return c0804dM5050c.isUimEnabled() && !shouldShowSuggestionStrip(c0804dM5050c, this.imeService.isOnScreenKeyboardVisible(), this.subtypeManager.getCurrentSubtype());
     }
 
     private boolean shouldShowPredictionsInStrip(SettingsValues c0804d) {
@@ -377,6 +388,11 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
      */
     public boolean shouldShowSuggestionStrip(SettingsValues c0804d, boolean z, InputMethodSubtype inputMethodSubtype) {
         if (c0804d.editorCapabilities.isPassword) {
+            return false;
+        }
+        // "Show the suggestion bar" is off. A Chinese or Japanese keyboard picks its words from
+        // the candidate strip, so that strip stays.
+        if (c0804d.isPkbSuggestionBarHidden() && !isChineseOrJapaneseSubtype()) {
             return false;
         }
         if (!shouldShowPredictionsInStrip(c0804d) && !c0804d.shouldShowMoreKeys()) {
@@ -460,6 +476,10 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
             return;
         }
         showCjkSuggestionStripIfNeeded();
+    }
+
+    private static boolean isChineseOrJapaneseSubtype() {
+        return LocaleUtils.isCurrentSubtypeChinese() || LocaleUtils.isCurrentSubtypeJapanese();
     }
 
     private boolean hasFlickSuggestionView() {

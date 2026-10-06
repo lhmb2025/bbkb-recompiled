@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Számbillentyűzet</string>
     <string name="settings_pkb_multifunction_action_symbol">Szimbólum-billentyűzet</string>
     <string name="settings_pkb_multifunction_key_title">Többfunkciós billentyű</string>
+    <string name="settings_pkb_suggestion_bar_summary">Kapcsolja ki, ha el szeretné rejteni a billentyűk feletti sávot (javaslatok és beviteli menü) a fizikai billentyűzeten való gépeléskor</string>
+    <string name="settings_pkb_suggestion_bar_title">Javaslatsáv megjelenítése</string>
     <string name="settings_appearance_auto">Automatikus (rendszertéma)</string>
     <string name="settings_appearance_classic">Klasszikus</string>
     <string name="settings_appearance_dark">Sötét</string>

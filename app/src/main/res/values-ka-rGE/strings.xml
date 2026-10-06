@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">ციფრული პანელი</string>
     <string name="settings_pkb_multifunction_action_symbol">სიმბოლოების კლავიატურა</string>
     <string name="settings_pkb_multifunction_key_title">მრავალფუნქციური კლავიში</string>
+    <string name="settings_pkb_suggestion_bar_summary">გამორთეთ, რომ ფიზიკურ კლავიატურაზე აკრეფისას დამალოთ ღილაკების ზემოთ არსებული ზოლი (შემოთავაზებები და შეყვანის მენიუ)</string>
+    <string name="settings_pkb_suggestion_bar_title">შემოთავაზებების ზოლის ჩვენება</string>
     <string name="settings_appearance_auto">ავტომატური (სისტემის თემა)</string>
     <string name="settings_appearance_classic">კლასიკური</string>
     <string name="settings_appearance_dark">მუქი</string>

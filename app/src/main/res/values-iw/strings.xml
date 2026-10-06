@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">לוח ספרות</string>
     <string name="settings_pkb_multifunction_action_symbol">מקלדת סמלים</string>
     <string name="settings_pkb_multifunction_key_title">מקש רב-תכליתי</string>
+    <string name="settings_pkb_suggestion_bar_summary">כבה כדי להסתיר את השורה שמעל המקשים (הצעות ותפריט הקלט) בזמן הקלדה במקלדת הפיזית</string>
+    <string name="settings_pkb_suggestion_bar_title">הצג את שורת ההצעות</string>
     <string name="settings_appearance_auto">אוטומטי (ערכת הנושא של המערכת)</string>
     <string name="settings_appearance_classic">קלאסי</string>
     <string name="settings_appearance_dark">כהה</string>

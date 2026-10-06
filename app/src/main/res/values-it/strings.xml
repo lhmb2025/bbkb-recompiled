@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Tastierino numerico</string>
     <string name="settings_pkb_multifunction_action_symbol">Tastiera dei simboli</string>
     <string name="settings_pkb_multifunction_key_title">Tasto multifunzione</string>
+    <string name="settings_pkb_suggestion_bar_summary">Disattiva per nascondere la barra sopra i tasti (suggerimenti e menu di inserimento) mentre digiti sulla tastiera fisica</string>
+    <string name="settings_pkb_suggestion_bar_title">Mostra la barra dei suggerimenti</string>
     <string name="settings_appearance_auto">Automatico (tema di sistema)</string>
     <string name="settings_appearance_classic">Classico</string>
     <string name="settings_appearance_dark">Scuro</string>

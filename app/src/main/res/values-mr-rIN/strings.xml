@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">नंबर पॅड</string>
     <string name="settings_pkb_multifunction_action_symbol">चिन्ह कीबोर्ड</string>
     <string name="settings_pkb_multifunction_key_title">बहुकार्यी की</string>
+    <string name="settings_pkb_suggestion_bar_summary">फिजिकल कीबोर्डवर टाइप करताना कीजच्या वरची पट्टी (सूचना आणि इनपुट मेनू) लपवण्यासाठी बंद करा</string>
+    <string name="settings_pkb_suggestion_bar_title">सूचना पट्टी दाखवा</string>
     <string name="settings_appearance_auto">स्वयंचलित (सिस्टम थीम)</string>
     <string name="settings_appearance_classic">क्लासिक</string>
     <string name="settings_appearance_dark">गडद</string>

@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Bảng số</string>
     <string name="settings_pkb_multifunction_action_symbol">Bàn phím biểu tượng</string>
     <string name="settings_pkb_multifunction_key_title">Phím đa chức năng</string>
+    <string name="settings_pkb_suggestion_bar_summary">Tắt để ẩn thanh phía trên các phím (gợi ý và trình đơn nhập liệu) khi gõ trên bàn phím vật lý</string>
+    <string name="settings_pkb_suggestion_bar_title">Hiển thị thanh gợi ý</string>
     <string name="settings_appearance_auto">Tự động (giao diện hệ thống)</string>
     <string name="settings_appearance_classic">Cổ điển</string>
     <string name="settings_appearance_dark">Tối</string>

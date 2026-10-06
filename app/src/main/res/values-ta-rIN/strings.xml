@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">எண் பேடு</string>
     <string name="settings_pkb_multifunction_action_symbol">குறியீட்டு விசைப்பலகை</string>
     <string name="settings_pkb_multifunction_key_title">பல்செயல் விசை</string>
+    <string name="settings_pkb_suggestion_bar_summary">இயற்பியல் விசைப்பலகையில் தட்டச்சு செய்யும்போது விசைகளுக்கு மேலே உள்ள பட்டியை (பரிந்துரைகள் மற்றும் உள்ளீட்டு மெனு) மறைக்க முடக்கவும்</string>
+    <string name="settings_pkb_suggestion_bar_title">பரிந்துரைப் பட்டியைக் காட்டு</string>
     <string name="settings_appearance_auto">தானியங்கு (கணினி தீம்)</string>
     <string name="settings_appearance_classic">கிளாசிக்</string>
     <string name="settings_appearance_dark">இருண்ட</string>

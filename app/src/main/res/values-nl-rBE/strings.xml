@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Numeriek toetsenblok</string>
     <string name="settings_pkb_multifunction_action_symbol">Symbolentoetsenbord</string>
     <string name="settings_pkb_multifunction_key_title">Multifunctionele toets</string>
+    <string name="settings_pkb_suggestion_bar_summary">Zet uit om de balk boven de toetsen (suggesties en het invoermenu) te verbergen tijdens het typen op het fysieke toetsenbord</string>
+    <string name="settings_pkb_suggestion_bar_title">Suggestiebalk tonen</string>
     <string name="settings_appearance_auto">Automatisch (systeemthema)</string>
     <string name="settings_appearance_classic">Klassiek</string>
     <string name="settings_appearance_dark">Donker</string>

@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">ಸಂಖ್ಯಾ ಪ್ಯಾಡ್</string>
     <string name="settings_pkb_multifunction_action_symbol">ಚಿಹ್ನೆ ಕೀಬೋರ್ಡ್</string>
     <string name="settings_pkb_multifunction_key_title">ಬಹುಕಾರ್ಯ ಕೀ</string>
+    <string name="settings_pkb_suggestion_bar_summary">ಭೌತಿಕ ಕೀಬೋರ್ಡ್‌ನಲ್ಲಿ ಟೈಪ್ ಮಾಡುವಾಗ ಕೀಗಳ ಮೇಲಿನ ಪಟ್ಟಿಯನ್ನು (ಸಲಹೆಗಳು ಮತ್ತು ಇನ್‌ಪುಟ್ ಮೆನು) ಮರೆಮಾಡಲು ಆಫ್ ಮಾಡಿ</string>
+    <string name="settings_pkb_suggestion_bar_title">ಸಲಹೆ ಪಟ್ಟಿಯನ್ನು ತೋರಿಸು</string>
     <string name="settings_appearance_auto">ಸ್ವಯಂ (ಸಿಸ್ಟಂ ಥೀಮ್)</string>
     <string name="settings_appearance_classic">ಕ್ಲಾಸಿಕ್</string>
     <string name="settings_appearance_dark">ಡಾರ್ಕ್</string>

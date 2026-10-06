@@ -127,7 +127,15 @@ public final class SettingsValues {
 
     public final float inLetterMaxSwipeToWordDistance;
 
-    public final boolean isUimEnabled;
+    /** "Enable unified input menu" as stored; {@link #isUimEnabled()} is the effective value. */
+    private final boolean uimEnabledSetting;
+
+    /**
+     * "Show the suggestion bar" (Physical keyboard settings) is off. Stored inverted so that a
+     * zero-filled instance means the shipped default, bar shown. See
+     * {@link #isPkbSuggestionBarHidden()}.
+     */
+    private final boolean pkbSuggestionBarOff;
 
     public final boolean flickCommitAnimationEnabled;
 
@@ -413,7 +421,8 @@ public final class SettingsValues {
         this.maxAccentsChangeSpeedMultiplier = SettingsManager.getMaxScrollAccentSpeedMultiplier(sharedPreferences, resources);
         this.inLetterMaxSwipeToWordDistance = Math.round(SettingsManager.getInLetterMaxSwipeToWordDistance(sharedPreferences, resources) * fM5549d);
         this.showOnKeyPressMode = SettingsManager.getStringAsInt(sharedPreferences, resources, "pref_show_on_keypress_mode", R.string.config_default_show_on_keypress_mode);
-        this.isUimEnabled = sharedPreferences.getBoolean("pref_uim_enabled", resources.getBoolean(R.bool.config_default_uim_enabled));
+        this.uimEnabledSetting = sharedPreferences.getBoolean("pref_uim_enabled", resources.getBoolean(R.bool.config_default_uim_enabled));
+        this.pkbSuggestionBarOff = !SettingsManager.isPkbSuggestionBarEnabled(sharedPreferences);
         this.flickCommitAnimationEnabled = sharedPreferences.getBoolean("pref_flick_commit_animation", resources.getBoolean(R.bool.config_default_flick_commit_animation));
         this.uimFocusMoveDelay = SettingsManager.getIntPrefWithResourceDefault(sharedPreferences, resources, "pref_uim_focus_move_delay", R.integer.config_uim_default_focus_move_delay);
         this.cangjieMode = SettingsManager.getCangjieMode(sharedPreferences, resources);
@@ -454,6 +463,35 @@ public final class SettingsValues {
         this.quickPhrase5 = SettingsManager.getStringPref(sharedPreferences, resources, "quick_phrase_5", R.string.pref_quick_phrase_5_default);
         this.slideboardStillBoardsEnabled = sharedPreferences.getBoolean("pref_slideboard_still_boards", true);
         this.customSlideboardSymbols = SettingsManager.getStringListPref(sharedPreferences, "custom_slideboard_symbols");
+    }
+
+    /**
+     * The unified input menu is on: its setting, unless the bar it sits in is hidden by
+     * {@link #isPkbSuggestionBarHidden()}. Read live because that depends on whether the
+     * on-screen keyboard is up, which changes without a settings reload.
+     */
+    public boolean isUimEnabled() {
+        return this.uimEnabledSetting && !isPkbSuggestionBarHidden();
+    }
+
+    /**
+     * "Show the suggestion bar" is off and a physical keyboard is in use with no on-screen
+     * keyboard up, so the bar above the keys shows neither the suggestion strip nor the input
+     * menu. A Chinese or Japanese keyboard's candidate strip, autofill chips, the arrow bar and
+     * the accent bar still show. Landscape, a forced on-screen keyboard and touch-only devices
+     * all count as the on-screen keyboard being up, so the setting does not apply there. An
+     * input board opened over the physical keys does not: the bar stays hidden above it, and the
+     * board keys keep their menu-off route (a second press closes the board).
+     */
+    public boolean isPkbSuggestionBarHidden() {
+        return isPkbSuggestionBarHidden(!this.pkbSuggestionBarOff);
+    }
+
+    /** {@link #isPkbSuggestionBarHidden()} for a stored "Show the suggestion bar" value. */
+    public static boolean isPkbSuggestionBarHidden(boolean showSuggestionBar) {
+        return !showSuggestionBar
+                && DeviceProfile.current().hasPhysicalKeyboard()
+                && !DeviceProfile.isOnScreenTypingKeyboardVisible();
     }
 
     public boolean shouldShowMoreKeys() {

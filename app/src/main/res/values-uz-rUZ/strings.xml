@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Raqam paneli</string>
     <string name="settings_pkb_multifunction_action_symbol">Belgilar klaviaturasi</string>
     <string name="settings_pkb_multifunction_key_title">Ko‘p vazifali tugma</string>
+    <string name="settings_pkb_suggestion_bar_summary">Jismoniy klaviaturada yozayotganda tugmalar ustidagi panelni (takliflar va kiritish menyusi) yashirish uchun o‘chiring</string>
+    <string name="settings_pkb_suggestion_bar_title">Takliflar panelini ko‘rsatish</string>
     <string name="settings_appearance_auto">Avtomatik (tizim mavzusi)</string>
     <string name="settings_appearance_classic">Klassik</string>
     <string name="settings_appearance_dark">Quyuq</string>

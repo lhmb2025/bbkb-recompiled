@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Numeronäppäimistö</string>
     <string name="settings_pkb_multifunction_action_symbol">Symbolinäppäimistö</string>
     <string name="settings_pkb_multifunction_key_title">Monitoiminäppäin</string>
+    <string name="settings_pkb_suggestion_bar_summary">Poista käytöstä, niin näppäinten yläpuolella oleva palkki (ehdotukset ja syöttövalikko) piilotetaan, kun kirjoitat fyysisellä näppäimistöllä</string>
+    <string name="settings_pkb_suggestion_bar_title">Näytä ehdotuspalkki</string>
     <string name="settings_appearance_auto">Automaattinen (järjestelmän teema)</string>
     <string name="settings_appearance_classic">Klassinen</string>
     <string name="settings_appearance_dark">Tumma</string>

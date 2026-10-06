@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Тооны самбар</string>
     <string name="settings_pkb_multifunction_action_symbol">Тэмдэгтийн гар</string>
     <string name="settings_pkb_multifunction_key_title">Олон үйлдэлт товч</string>
+    <string name="settings_pkb_suggestion_bar_summary">Биет гараар бичих үед товчлууруудын дээрх мөрийг (санал болон оролтын цэс) нуухын тулд унтраана уу</string>
+    <string name="settings_pkb_suggestion_bar_title">Саналын мөрийг харуулах</string>
     <string name="settings_appearance_auto">Автомат (системийн загвар)</string>
     <string name="settings_appearance_classic">Сонгодог</string>
     <string name="settings_appearance_dark">Бараан</string>

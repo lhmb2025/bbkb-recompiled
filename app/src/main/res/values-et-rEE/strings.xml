@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Numbriklahvistik</string>
     <string name="settings_pkb_multifunction_action_symbol">Sümboliklaviatuur</string>
     <string name="settings_pkb_multifunction_key_title">Multifunktsionaalne klahv</string>
+    <string name="settings_pkb_suggestion_bar_summary">Lülitage välja, et peita füüsilisel klaviatuuril tippimise ajal klahvide kohal olev riba (soovitused ja sisestusmenüü)</string>
+    <string name="settings_pkb_suggestion_bar_title">Kuva soovituste riba</string>
     <string name="settings_appearance_auto">Automaatne (süsteemi teema)</string>
     <string name="settings_appearance_classic">Klassikaline</string>
     <string name="settings_appearance_dark">Tume</string>

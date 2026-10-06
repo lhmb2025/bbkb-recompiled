@@ -19,6 +19,7 @@ import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
 import dev.bbkb.ime.keyboard.inputboard.UnifiedInputBoardManager;
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPalettesView;
+import dev.bbkb.ime.keyboard.inputboard.fcc.FccController;
 import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadController;
 import dev.bbkb.ime.BuildConfig;
 import dev.bbkb.ime.core.locale.SubtypeManager;
@@ -685,13 +686,20 @@ public class KeyEventProcessor {
                         });
                         break;
                     case MultifunctionKeyHandler.ACTION_FCC:
-                        // FCC lives in the UIM; -42 toggles it. No non-UIM fallback (FCC is
-                        // a UIM-only board), so pass a no-op.
-                        toggleBoardOrFallback(-42, () -> {});
+                        // -42 toggles FCC in the UIM. With the menu off (or hidden with the
+                        // suggestion bar) the board opens on its own, as the clipboard does.
+                        toggleBoardOrFallback(FccController.KEY_CODE, () -> {
+                            if (ime.getFccController() != null) {
+                                ime.getFccController().toggle();
+                            }
+                        });
                         break;
                     case MultifunctionKeyHandler.ACTION_NUMBER_PAD:
-                        // UIM-only board, like FCC.
-                        toggleBoardOrFallback(NumberPadController.KEY_CODE, () -> {});
+                        toggleBoardOrFallback(NumberPadController.KEY_CODE, () -> {
+                            if (ime.getNumberPadController() != null) {
+                                ime.getNumberPadController().toggle();
+                            }
+                        });
                         break;
                     case MultifunctionKeyHandler.ACTION_SYMBOL_KEYBOARD:
                         ime.getKeyboardSwitcher().onSymbolShiftToggle(ime.getCurrentInputType(), ime.getCurrentImeOptions(), false, true);

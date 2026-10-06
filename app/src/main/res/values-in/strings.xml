@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Tombol angka</string>
     <string name="settings_pkb_multifunction_action_symbol">Keyboard simbol</string>
     <string name="settings_pkb_multifunction_key_title">Tombol multifungsi</string>
+    <string name="settings_pkb_suggestion_bar_summary">Nonaktifkan untuk menyembunyikan bilah di atas tombol (saran dan menu masukan) saat mengetik dengan keyboard fisik</string>
+    <string name="settings_pkb_suggestion_bar_title">Tampilkan bilah saran</string>
     <string name="settings_appearance_auto">Otomatis (tema sistem)</string>
     <string name="settings_appearance_classic">Klasik</string>
     <string name="settings_appearance_dark">Gelap</string>

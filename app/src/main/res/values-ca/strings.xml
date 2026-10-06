@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Teclat numèric</string>
     <string name="settings_pkb_multifunction_action_symbol">Teclat de símbols</string>
     <string name="settings_pkb_multifunction_key_title">Tecla multifunció</string>
+    <string name="settings_pkb_suggestion_bar_summary">Desactiveu-ho per amagar la barra de sobre les tecles (suggeriments i menú d\'entrada) mentre escriviu amb el teclat físic</string>
+    <string name="settings_pkb_suggestion_bar_title">Mostra la barra de suggeriments</string>
     <string name="settings_appearance_auto">Automàtic (tema del sistema)</string>
     <string name="settings_appearance_classic">Clàssic</string>
     <string name="settings_appearance_dark">Fosc</string>

@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Numara tuşları</string>
     <string name="settings_pkb_multifunction_action_symbol">Sembol klavyesi</string>
     <string name="settings_pkb_multifunction_key_title">Çok işlevli tuş</string>
+    <string name="settings_pkb_suggestion_bar_summary">Fiziksel klavyede yazarken tuşların üstündeki çubuğu (öneriler ve giriş menüsü) gizlemek için kapatın</string>
+    <string name="settings_pkb_suggestion_bar_title">Öneri çubuğunu göster</string>
     <string name="settings_appearance_auto">Otomatik (sistem teması)</string>
     <string name="settings_appearance_classic">Klasik</string>
     <string name="settings_appearance_dark">Koyu</string>

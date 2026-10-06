@@ -26,6 +26,8 @@ class AbstractBoardControllerTest {
     /** Minimal board: a settable "is my view up" answer and a record of the template calls. */
     private class FakeBoard(
         keyCode: Int = KEY_CODE,
+        /** null = the base class's answer. */
+        private val enabled: Boolean? = null,
     ) : AbstractBoardController<FakeBoard.Listener>(keyCode, null, Listener()) {
 
         class Listener
@@ -42,6 +44,7 @@ class AbstractBoardControllerTest {
             return viewIsUp
         }
 
+        override fun isEnabled(): Boolean = enabled ?: super.isEnabled()
         override fun peekBoardView(): View? = view
         override fun onShow() { showCalls++; viewIsUp = true }
         override fun onHide() { hideCalls++; viewIsUp = false }
@@ -105,6 +108,53 @@ class AbstractBoardControllerTest {
         board.show()
 
         assertEquals(2, board.showCalls)
+    }
+
+    // ── toggle: the board shortcuts' route with the input menu off ───────────
+
+    @Test
+    fun toggleOpensAClosedBoardAndClosesItOnTheNextPress() {
+        val board = FakeBoard()
+
+        board.toggle()
+        assertTrue(board.isShowing)
+
+        board.toggle()
+        assertFalse(board.isShowing)
+        assertEquals(1, board.showCalls)
+        assertEquals(1, board.hideCalls)
+    }
+
+    @Test
+    fun toggleLeavesADisabledBoardClosed() {
+        val board = FakeBoard(enabled = false)
+
+        board.toggle()
+
+        assertEquals(0, board.showCalls)
+        assertFalse(board.isShowing)
+    }
+
+    @Test
+    fun toggleStillClosesABoardThatHasBecomeDisabled() {
+        val board = FakeBoard(enabled = false).apply { viewIsUp = true }
+
+        board.toggle()
+
+        assertEquals(1, board.hideCalls)
+        assertFalse(board.isShowing)
+    }
+
+    @Test
+    fun toggleAsksTheViewEachTimeSoABoardHiddenBehindItsBackReopens() {
+        val board = FakeBoard()
+        board.toggle()
+        board.viewIsUp = false // a side effect hid the view behind the controller's back
+
+        board.toggle()
+
+        assertEquals("the second press must open again, not close a board already gone", 2, board.showCalls)
+        assertTrue(board.isShowing)
     }
 
     // ── no state of its own ──────────────────────────────────────────────────

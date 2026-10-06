@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Цифров блок</string>
     <string name="settings_pkb_multifunction_action_symbol">Клавиатура със символи</string>
     <string name="settings_pkb_multifunction_key_title">Многофункционален клавиш</string>
+    <string name="settings_pkb_suggestion_bar_summary">Изключете, за да скриете лентата над клавишите (предложения и менюто за въвеждане), докато пишете на физическата клавиатура</string>
+    <string name="settings_pkb_suggestion_bar_title">Показване на лентата с предложения</string>
     <string name="settings_appearance_auto">Автоматично (системна тема)</string>
     <string name="settings_appearance_classic">Класическа</string>
     <string name="settings_appearance_dark">Тъмна</string>

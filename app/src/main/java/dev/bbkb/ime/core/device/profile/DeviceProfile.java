@@ -661,8 +661,25 @@ public final class DeviceProfile {
         DeviceRuntimeState.getInstance().setOnScreenKeyboardShowing(showing);
     }
 
+    /**
+     * As {@link #setOnScreenKeyboardShowing(boolean)}, publishing separately whether an on-screen
+     * keyboard is part of it or only an input board open over the physical keys
+     * ({@link #isOnScreenTypingKeyboardVisible()}).
+     */
+    public static void setOnScreenKeyboardShowing(boolean showing, boolean typingKeyboardShowing) {
+        DeviceRuntimeState.getInstance().setOnScreenKeyboardShowing(showing, typingKeyboardShowing);
+    }
+
     public static boolean isOnScreenKeyboardVisible() {
         return DeviceRuntimeState.getInstance().isOnScreenKeyboardShowing() || current().isVkbDevice();
+    }
+
+    /**
+     * {@link #isOnScreenKeyboardVisible()} without the input boards: an input board (clipboard,
+     * cursor control, number pad, voice) open over the physical keys counts there, and not here.
+     */
+    public static boolean isOnScreenTypingKeyboardVisible() {
+        return DeviceRuntimeState.getInstance().isOnScreenTypingKeyboardShowing() || current().isVkbDevice();
     }
 
     public static void setForceVkbMode(boolean force) {

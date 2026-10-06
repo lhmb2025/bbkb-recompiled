@@ -958,8 +958,11 @@ class BlackBerryIME : InputMethodService(),
      * (the side effect is the point; callers that ignore the return value want the publish).
      */
     fun refreshOnScreenKeyboardShowing(): Boolean {
-        val z = super.onEvaluateInputViewShown() || DeviceProfile.isVkbForcedForPackage(currentPackageName) || DeviceProfile.isForceVkbMode() || isUimVisible() || isLandscapeOrientation()
-        DeviceProfile.setOnScreenKeyboardShowing(z)
+        // An input board open over the physical keys counts as the on-screen keyboard here, but is
+        // published apart from a real one: "Show the suggestion bar" must stay off over a board.
+        val typingKeyboard = super.onEvaluateInputViewShown() || DeviceProfile.isVkbForcedForPackage(currentPackageName) || DeviceProfile.isForceVkbMode() || isLandscapeOrientation()
+        val z = typingKeyboard || isUimVisible()
+        DeviceProfile.setOnScreenKeyboardShowing(z, typingKeyboard)
         return z
     }
 

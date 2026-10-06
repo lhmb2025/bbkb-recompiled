@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Brojčana tipkovnica</string>
     <string name="settings_pkb_multifunction_action_symbol">Tipkovnica sa simbolima</string>
     <string name="settings_pkb_multifunction_key_title">Višefunkcijska tipka</string>
+    <string name="settings_pkb_suggestion_bar_summary">Isključite kako biste sakrili traku iznad tipki (prijedlozi i izbornik za unos) dok tipkate na fizičkoj tipkovnici</string>
+    <string name="settings_pkb_suggestion_bar_title">Prikaži traku prijedloga</string>
     <string name="settings_appearance_auto">Automatski (tema sustava)</string>
     <string name="settings_appearance_classic">Klasična</string>
     <string name="settings_appearance_dark">Tamna</string>

@@ -96,10 +96,10 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                 }
             }
             override fun toggleFcc() {
-                if (canShowBoard()) toggleBoard(FccController.KEY_CODE) {}
+                if (canShowBoard()) toggleBoard(FccController.KEY_CODE) { ime.fccController?.toggle() }
             }
             override fun toggleNumberPad() {
-                if (canShowBoard()) toggleBoard(NumberPadController.KEY_CODE) {}
+                if (canShowBoard()) toggleBoard(NumberPadController.KEY_CODE) { ime.numberPadController?.toggle() }
             }
         })
     }
@@ -112,8 +112,8 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
     private fun canShowBoard(): Boolean = ime.isInputViewShown() || ime.requestShowOnKeyPress()
 
     /**
-     * Toggle a UIM board through the coordinator, or run [fallback] when the UIM is off. FCC and
-     * the number pad are UIM-only boards, so their fallback does nothing.
+     * Toggle a UIM board through the coordinator, or run [fallback] when the UIM is off (or hidden
+     * with the suggestion bar): the board's own toggle, without the menu bar.
      */
     private inline fun toggleBoard(boardKeyCode: Int, fallback: () -> Unit) {
         val uibm = ime.getKeyboardSwitcher().getUnifiedInputBoardManager()

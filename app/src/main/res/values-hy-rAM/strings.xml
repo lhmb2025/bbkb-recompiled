@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Թվային վահանակ</string>
     <string name="settings_pkb_multifunction_action_symbol">Նշանների ստեղնաշար</string>
     <string name="settings_pkb_multifunction_key_title">Բազմաֆունկցիոնալ ստեղն</string>
+    <string name="settings_pkb_suggestion_bar_summary">Անջատեք՝ ֆիզիկական ստեղնաշարով մուտքագրելիս ստեղների վերևի գոտին (առաջարկներն ու ներածման ընտրացանկը) թաքցնելու համար</string>
+    <string name="settings_pkb_suggestion_bar_title">Ցույց տալ առաջարկների գոտին</string>
     <string name="settings_appearance_auto">Ավտոմատ (համակարգի թեմա)</string>
     <string name="settings_appearance_classic">Դասական</string>
     <string name="settings_appearance_dark">Մուգ</string>

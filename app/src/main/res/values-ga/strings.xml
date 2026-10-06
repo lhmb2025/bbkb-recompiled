@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Eochaircheap uimhreacha</string>
     <string name="settings_pkb_multifunction_action_symbol">Méarchlár siombailí</string>
     <string name="settings_pkb_multifunction_key_title">Eochair ilfheidhme</string>
+    <string name="settings_pkb_suggestion_bar_summary">Múch é chun an barra os cionn na n-eochracha (moltaí agus an roghchlár ionchuir) a cheilt agus tú ag clóscríobh ar an méarchlár fisiciúil</string>
+    <string name="settings_pkb_suggestion_bar_title">Taispeáin an barra moltaí</string>
     <string name="settings_appearance_auto">Uathoibríoch (téama an chórais)</string>
     <string name="settings_appearance_classic">Clasaiceach</string>
     <string name="settings_appearance_dark">Dorcha</string>

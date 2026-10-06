@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Number pad</string>
     <string name="settings_pkb_multifunction_action_symbol">Symbol keyboard</string>
     <string name="settings_pkb_multifunction_key_title">Multifunction key</string>
+    <string name="settings_pkb_suggestion_bar_summary">I-off para itago ang bar sa itaas ng mga key (mga suhestiyon at ang input menu) habang nagta-type sa pisikal na keyboard</string>
+    <string name="settings_pkb_suggestion_bar_title">Ipakita ang suggestion bar</string>
     <string name="settings_appearance_auto">Auto (theme ng system)</string>
     <string name="settings_appearance_classic">Classic</string>
     <string name="settings_appearance_dark">Madilim</string>

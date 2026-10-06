@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Skaičių klaviatūra</string>
     <string name="settings_pkb_multifunction_action_symbol">Simbolių klaviatūra</string>
     <string name="settings_pkb_multifunction_key_title">Daugiafunkcis klavišas</string>
+    <string name="settings_pkb_suggestion_bar_summary">Išjunkite, kad rašant fizine klaviatūra būtų paslėpta juosta virš klavišų (pasiūlymai ir įvesties meniu)</string>
+    <string name="settings_pkb_suggestion_bar_title">Rodyti pasiūlymų juostą</string>
     <string name="settings_appearance_auto">Automatinė (sistemos tema)</string>
     <string name="settings_appearance_classic">Klasikinė</string>
     <string name="settings_appearance_dark">Tamsi</string>

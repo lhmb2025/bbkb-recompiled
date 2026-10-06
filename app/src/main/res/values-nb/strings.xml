@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Nummertastatur</string>
     <string name="settings_pkb_multifunction_action_symbol">Symboltastatur</string>
     <string name="settings_pkb_multifunction_key_title">Flerfunksjonstast</string>
+    <string name="settings_pkb_suggestion_bar_summary">Slå av for å skjule raden over tastene (forslag og inndatamenyen) mens du skriver på det fysiske tastaturet</string>
+    <string name="settings_pkb_suggestion_bar_title">Vis forslagsraden</string>
     <string name="settings_appearance_auto">Automatisk (systemtema)</string>
     <string name="settings_appearance_classic">Klassisk</string>
     <string name="settings_appearance_dark">Mørkt</string>

@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Siffersats</string>
     <string name="settings_pkb_multifunction_action_symbol">Symboltangentbord</string>
     <string name="settings_pkb_multifunction_key_title">Multifunktionstangent</string>
+    <string name="settings_pkb_suggestion_bar_summary">Stäng av för att dölja raden ovanför tangenterna (förslag och inmatningsmenyn) när du skriver på det fysiska tangentbordet</string>
+    <string name="settings_pkb_suggestion_bar_title">Visa förslagsraden</string>
     <string name="settings_appearance_auto">Auto (systemtema)</string>
     <string name="settings_appearance_classic">Klassiskt</string>
     <string name="settings_appearance_dark">Mörkt</string>

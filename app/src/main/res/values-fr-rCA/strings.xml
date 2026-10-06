@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Pavé numérique</string>
     <string name="settings_pkb_multifunction_action_symbol">Clavier de symboles</string>
     <string name="settings_pkb_multifunction_key_title">Touche multifonction</string>
+    <string name="settings_pkb_suggestion_bar_summary">Désactivez pour masquer la barre au-dessus des touches (suggestions et menu de saisie) lorsque vous tapez sur le clavier physique</string>
+    <string name="settings_pkb_suggestion_bar_title">Afficher la barre de suggestions</string>
     <string name="settings_appearance_auto">Auto (thème du système)</string>
     <string name="settings_appearance_classic">Classique</string>
     <string name="settings_appearance_dark">Sombre</string>

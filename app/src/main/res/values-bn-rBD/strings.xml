@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">নম্বর প্যাড</string>
     <string name="settings_pkb_multifunction_action_symbol">প্রতীক কীবোর্ড</string>
     <string name="settings_pkb_multifunction_key_title">মাল্টিফাংশন কী</string>
+    <string name="settings_pkb_suggestion_bar_summary">ফিজিক্যাল কীবোর্ডে টাইপ করার সময় কীগুলোর উপরের বার (পরামর্শ ও ইনপুট মেনু) লুকাতে বন্ধ করুন</string>
+    <string name="settings_pkb_suggestion_bar_title">পরামর্শ বার দেখান</string>
     <string name="settings_appearance_auto">স্বয়ংক্রিয় (সিস্টেম থিম)</string>
     <string name="settings_appearance_classic">ক্লাসিক</string>
     <string name="settings_appearance_dark">গাঢ়</string>

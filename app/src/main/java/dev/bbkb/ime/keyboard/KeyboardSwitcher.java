@@ -518,7 +518,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     private boolean shouldShowSecondaryIcon(int i) {
         if (i == -23) {
-            return SettingsManager.getInstance().getSettingsValues().isUimEnabled;
+            return SettingsManager.getInstance().getSettingsValues().isUimEnabled();
         }
         if (i != -10) {
             return false;

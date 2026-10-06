@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">صفحه اعداد</string>
     <string name="settings_pkb_multifunction_action_symbol">صفحه کلید نمادها</string>
     <string name="settings_pkb_multifunction_key_title">کلید چندکاره</string>
+    <string name="settings_pkb_suggestion_bar_summary">برای پنهان کردن نوار بالای کلیدها (پیشنهادها و منوی ورودی) هنگام تایپ با صفحه کلید فیزیکی، خاموش کنید</string>
+    <string name="settings_pkb_suggestion_bar_title">نمایش نوار پیشنهادها</string>
     <string name="settings_appearance_auto">خودکار (طرح زمینه سیستم)</string>
     <string name="settings_appearance_classic">کلاسیک</string>
     <string name="settings_appearance_dark">تیره</string>

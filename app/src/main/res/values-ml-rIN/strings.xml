@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">നമ്പർ പാഡ്</string>
     <string name="settings_pkb_multifunction_action_symbol">ചിഹ്ന കീബോർഡ്</string>
     <string name="settings_pkb_multifunction_key_title">ബഹുമുഖ കീ</string>
+    <string name="settings_pkb_suggestion_bar_summary">ഫിസിക്കൽ കീബോർഡിൽ ടൈപ്പ് ചെയ്യുമ്പോൾ കീകൾക്ക് മുകളിലുള്ള ബാർ (നിർദ്ദേശങ്ങളും ഇൻപുട്ട് മെനുവും) മറയ്ക്കാൻ ഓഫാക്കുക</string>
+    <string name="settings_pkb_suggestion_bar_title">നിർദ്ദേശ ബാർ കാണിക്കുക</string>
     <string name="settings_appearance_auto">സ്വയം (സിസ്റ്റം തീം)</string>
     <string name="settings_appearance_classic">ക്ലാസിക്</string>
     <string name="settings_appearance_dark">ഡാർക്ക്</string>

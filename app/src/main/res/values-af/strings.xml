@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Syferblok</string>
     <string name="settings_pkb_multifunction_action_symbol">Simbooltoetsbord</string>
     <string name="settings_pkb_multifunction_key_title">Multifunksietoets</string>
+    <string name="settings_pkb_suggestion_bar_summary">Skakel af om die strook bo die sleutels (voorstelle en die invoerkieslys) te versteek terwyl jy op die fisiese toetsbord tik</string>
+    <string name="settings_pkb_suggestion_bar_title">Wys die voorstelstrook</string>
     <string name="settings_appearance_auto">Outomaties (stelseltema)</string>
     <string name="settings_appearance_classic">Klassiek</string>
     <string name="settings_appearance_dark">Donker</string>

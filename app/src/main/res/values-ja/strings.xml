@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">テンキー</string>
     <string name="settings_pkb_multifunction_action_symbol">記号キーボード</string>
     <string name="settings_pkb_multifunction_key_title">多機能キー</string>
+    <string name="settings_pkb_suggestion_bar_summary">オフにすると、物理キーボードで入力中はキーの上のバー（候補と入力メニュー）が非表示になります</string>
+    <string name="settings_pkb_suggestion_bar_title">候補バーを表示</string>
     <string name="settings_appearance_auto">自動(システムのテーマ)</string>
     <string name="settings_appearance_classic">クラシック</string>
     <string name="settings_appearance_dark">ダーク</string>

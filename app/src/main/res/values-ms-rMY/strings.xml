@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Pad nombor</string>
     <string name="settings_pkb_multifunction_action_symbol">Papan kekunci simbol</string>
     <string name="settings_pkb_multifunction_key_title">Kekunci pelbagai fungsi</string>
+    <string name="settings_pkb_suggestion_bar_summary">Matikan untuk menyembunyikan bar di atas kekunci (cadangan dan menu input) semasa menaip pada papan kekunci fizikal</string>
+    <string name="settings_pkb_suggestion_bar_title">Tunjukkan bar cadangan</string>
     <string name="settings_appearance_auto">Auto (tema sistem)</string>
     <string name="settings_appearance_classic">Klasik</string>
     <string name="settings_appearance_dark">Gelap</string>

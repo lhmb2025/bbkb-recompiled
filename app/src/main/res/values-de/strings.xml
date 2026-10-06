@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Ziffernblock</string>
     <string name="settings_pkb_multifunction_action_symbol">Symboltastatur</string>
     <string name="settings_pkb_multifunction_key_title">Multifunktionstaste</string>
+    <string name="settings_pkb_suggestion_bar_summary">Deaktivieren, um die Leiste über den Tasten (Vorschläge und Eingabemenü) beim Tippen auf der physischen Tastatur auszublenden</string>
+    <string name="settings_pkb_suggestion_bar_title">Vorschlagsleiste anzeigen</string>
     <string name="settings_appearance_auto">Automatisch (Systemdesign)</string>
     <string name="settings_appearance_classic">Klassisch</string>
     <string name="settings_appearance_dark">Dunkel</string>

@@ -9,6 +9,7 @@ import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.keyevent.AltSymShortcutHandler
 import dev.bbkb.ime.core.keyevent.MultifunctionKeyHandler
 import dev.bbkb.ime.core.locale.LocaleUtils
+import dev.bbkb.ime.core.settings.util.SettingsManager
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.Category
 import dev.bbkb.ime.core.settings.ui.Choice
@@ -40,6 +41,7 @@ fun PhysicalKeyboardScreen(
 ) {
     val context = LocalContext.current
     val hasTouchKeypad = remember { DeviceProfile.current()?.hasTouchKeypad() ?: false }
+    val hasPhysicalKeyboard = remember { DeviceProfile.current()?.hasPhysicalKeyboard() ?: false }
     val isChineseLocale = remember { LocaleUtils.isCurrentSubtypeChinese() }
 
     // Multifunction key action — only for devices whose config declares a MULTIFUNCTION key
@@ -99,6 +101,15 @@ fun PhysicalKeyboardScreen(
             options = ::controlModes,
             fallbackIndex = 2,
             modifier = Modifier.settingsSearchAnchor("control_mode"),
+        ),
+        // Off: no suggestion strip and no input menu above the physical keys (see
+        // SettingsValues.isPkbSuggestionBarHidden). Only a physical keyboard has that bar.
+        Toggle(
+            store = boolPref(SettingsManager.PREF_PKB_SHOW_SUGGESTION_BAR, true),
+            title = R.string.settings_pkb_suggestion_bar_title,
+            summary = RowSummary.Res(R.string.settings_pkb_suggestion_bar_summary),
+            modifier = Modifier.settingsSearchAnchor("pref_pkb_show_suggestion_bar"),
+            visible = { hasPhysicalKeyboard },
         ),
 
         // ── CAPACITIVE KEYBOARD GESTURES (CKB devices only) ──────────────────────

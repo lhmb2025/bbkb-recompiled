@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Číselník</string>
     <string name="settings_pkb_multifunction_action_symbol">Klávesnice se symboly</string>
     <string name="settings_pkb_multifunction_key_title">Multifunkční klávesa</string>
+    <string name="settings_pkb_suggestion_bar_summary">Vypněte, chcete-li při psaní na fyzické klávesnici skrýt lištu nad klávesami (návrhy a nabídku zadávání)</string>
+    <string name="settings_pkb_suggestion_bar_title">Zobrazovat lištu návrhů</string>
     <string name="settings_appearance_auto">Automaticky (motiv systému)</string>
     <string name="settings_appearance_classic">Klasický</string>
     <string name="settings_appearance_dark">Tmavý</string>

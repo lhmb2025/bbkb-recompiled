@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">నంబర్ ప్యాడ్</string>
     <string name="settings_pkb_multifunction_action_symbol">చిహ్నాల కీబోర్డ్</string>
     <string name="settings_pkb_multifunction_key_title">బహుళ ప్రయోజన కీ</string>
+    <string name="settings_pkb_suggestion_bar_summary">ఫిజికల్ కీబోర్డ్‌లో టైప్ చేస్తున్నప్పుడు కీల పైన ఉన్న బార్‌ను (సూచనలు మరియు ఇన్‌పుట్ మెనూ) దాచడానికి ఆఫ్ చేయండి</string>
+    <string name="settings_pkb_suggestion_bar_title">సూచనల బార్‌ను చూపు</string>
     <string name="settings_appearance_auto">ఆటో (సిస్టమ్ థీమ్)</string>
     <string name="settings_appearance_classic">క్లాసిక్</string>
     <string name="settings_appearance_dark">డార్క్</string>

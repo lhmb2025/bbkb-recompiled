@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Лічбавая панэль</string>
     <string name="settings_pkb_multifunction_action_symbol">Клавіятура сімвалаў</string>
     <string name="settings_pkb_multifunction_key_title">Шматфункцыянальная клавіша</string>
+    <string name="settings_pkb_suggestion_bar_summary">Выключыце, каб схаваць панэль над клавішамі (прапановы і меню ўводу) падчас набору на фізічнай клавіятуры</string>
+    <string name="settings_pkb_suggestion_bar_title">Паказваць панэль прапаноў</string>
     <string name="settings_appearance_auto">Аўта (сістэмная тэма)</string>
     <string name="settings_appearance_classic">Класічная</string>
     <string name="settings_appearance_dark">Цёмная</string>

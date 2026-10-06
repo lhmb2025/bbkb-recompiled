@@ -2,7 +2,9 @@ package dev.bbkb.ime.core.keyevent;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -19,6 +21,9 @@ import dev.bbkb.ime.core.settings.PrefsManager;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
 import dev.bbkb.ime.core.textinput.connection.EditorCapabilities;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
+import dev.bbkb.ime.keyboard.inputboard.UnifiedInputBoardManager;
+import dev.bbkb.ime.keyboard.inputboard.fcc.FccController;
+import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadController;
 
 import org.junit.After;
 import org.junit.Before;
@@ -122,6 +127,55 @@ public class AltSymShortcutBoardGateTest {
         bridge.getAltSymShortcutHandler().detectAndExecute(KeyEvent.META_ALT_ON);
 
         verify(keyboardSwitcher, never()).onEmojiKeyPressed();
+    }
+
+    /**
+     * Cursor control and the number pad, with the input menu off (or hidden with "Show the
+     * suggestion bar"): they used to do nothing there, as UIM-only boards. They now open on their
+     * own, like the clipboard and emoji boards, and the second chord closes them through the
+     * board's own toggle.
+     */
+    @Test
+    public void cursorControlAndTheNumberPadOpenWithoutTheInputMenu() {
+        FccController fcc = mock(FccController.class);
+        NumberPadController numberPad = mock(NumberPadController.class);
+        UnifiedInputBoardManager uim = mock(UnifiedInputBoardManager.class);
+        when(ime.getFccController()).thenReturn(fcc);
+        when(ime.getNumberPadController()).thenReturn(numberPad);
+        when(keyboardSwitcher.getUnifiedInputBoardManager()).thenReturn(uim);
+
+        storeAction(AltSymShortcutHandler.ACTION_FCC);
+        bridge.getAltSymShortcutHandler().detectAndExecute(KeyEvent.META_ALT_ON);
+        bridge.getAltSymShortcutHandler().detectAndExecute(KeyEvent.META_ALT_ON);
+        verify(fcc, times(2)).toggle();
+
+        storeAction(AltSymShortcutHandler.ACTION_NUMBER_PAD);
+        bridge.getAltSymShortcutHandler().detectAndExecute(KeyEvent.META_ALT_ON);
+        verify(numberPad).toggle();
+
+        verify(uim, never()).requestBoard(anyInt());
+    }
+
+    /** With the menu on, the same chords still go through the board coordinator. */
+    @Test
+    public void cursorControlAndTheNumberPadUseTheCoordinatorWithTheInputMenuOn() {
+        FccController fcc = mock(FccController.class);
+        NumberPadController numberPad = mock(NumberPadController.class);
+        UnifiedInputBoardManager uim = mock(UnifiedInputBoardManager.class);
+        when(ime.getFccController()).thenReturn(fcc);
+        when(ime.getNumberPadController()).thenReturn(numberPad);
+        when(keyboardSwitcher.getUnifiedInputBoardManager()).thenReturn(uim);
+        when(ime.isUimEnabled()).thenReturn(true);
+
+        storeAction(AltSymShortcutHandler.ACTION_FCC);
+        bridge.getAltSymShortcutHandler().detectAndExecute(KeyEvent.META_ALT_ON);
+        storeAction(AltSymShortcutHandler.ACTION_NUMBER_PAD);
+        bridge.getAltSymShortcutHandler().detectAndExecute(KeyEvent.META_ALT_ON);
+
+        verify(uim).requestBoard(FccController.KEY_CODE);
+        verify(uim).requestBoard(NumberPadController.KEY_CODE);
+        verify(fcc, never()).toggle();
+        verify(numberPad, never()).toggle();
     }
 
     /** Alt-locked (the app's own 0x200 span bit) counts as Alt, the same as a held Alt. */

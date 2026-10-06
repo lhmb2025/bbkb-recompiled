@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">数字键盘</string>
     <string name="settings_pkb_multifunction_action_symbol">符号键盘</string>
     <string name="settings_pkb_multifunction_key_title">多功能键</string>
+    <string name="settings_pkb_suggestion_bar_summary">关闭后，使用实体键盘输入时将隐藏按键上方的栏（建议和输入菜单）</string>
+    <string name="settings_pkb_suggestion_bar_title">显示建议栏</string>
     <string name="settings_appearance_auto">自动（系统主题）</string>
     <string name="settings_appearance_classic">经典</string>
     <string name="settings_appearance_dark">深色</string>

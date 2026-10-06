@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">數字鍵盤</string>
     <string name="settings_pkb_multifunction_action_symbol">符號鍵盤</string>
     <string name="settings_pkb_multifunction_key_title">多功能鍵</string>
+    <string name="settings_pkb_suggestion_bar_summary">關閉後，使用實體鍵盤輸入時會隱藏按鍵上方的列（建議及輸入選單）</string>
+    <string name="settings_pkb_suggestion_bar_title">顯示建議列</string>
     <string name="settings_appearance_auto">自動 (系統主題)</string>
     <string name="settings_appearance_classic">經典</string>
     <string name="settings_appearance_dark">深色</string>

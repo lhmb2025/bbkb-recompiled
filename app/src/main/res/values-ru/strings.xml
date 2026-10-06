@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Цифровая панель</string>
     <string name="settings_pkb_multifunction_action_symbol">Клавиатура символов</string>
     <string name="settings_pkb_multifunction_key_title">Многофункциональная клавиша</string>
+    <string name="settings_pkb_suggestion_bar_summary">Отключите, чтобы скрывать панель над клавишами (подсказки и меню ввода) при наборе на физической клавиатуре</string>
+    <string name="settings_pkb_suggestion_bar_title">Показывать панель подсказок</string>
     <string name="settings_appearance_auto">Авто (системная тема)</string>
     <string name="settings_appearance_classic">Классическая</string>
     <string name="settings_appearance_dark">Темная</string>

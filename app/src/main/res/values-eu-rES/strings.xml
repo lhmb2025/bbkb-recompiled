@@ -222,6 +222,8 @@
     <string name="settings_pkb_multifunction_action_number_pad">Zenbaki-teklatua</string>
     <string name="settings_pkb_multifunction_action_symbol">Ikur-teklatua</string>
     <string name="settings_pkb_multifunction_key_title">Funtzio anitzeko tekla</string>
+    <string name="settings_pkb_suggestion_bar_summary">Desaktibatu teklatu fisikoan idaztean teklen gaineko barra (iradokizunak eta idazketa-menua) ezkutatzeko</string>
+    <string name="settings_pkb_suggestion_bar_title">Erakutsi iradokizun-barra</string>
     <string name="settings_appearance_auto">Automatikoa (sistemaren gaia)</string>
     <string name="settings_appearance_classic">Klasikoa</string>
     <string name="settings_appearance_dark">Iluna</string>

@@ -29,9 +29,22 @@ public final class DeviceRuntimeState {
 
     private DeviceRuntimeState() {}
 
+    /**
+     * {@link #onScreenKeyboardShowing} without the input boards: true for an on-screen keyboard
+     * (landscape, a forced one, no usable hardware keyboard), false when the only thing up over
+     * the physical keys is a board such as the clipboard or cursor control.
+     */
+    private volatile boolean onScreenTypingKeyboardShowing = false;
+
     public boolean isOnScreenKeyboardShowing() { return onScreenKeyboardShowing; }
     public void setOnScreenKeyboardShowing(boolean showing) {
+        setOnScreenKeyboardShowing(showing, showing);
+    }
+
+    public boolean isOnScreenTypingKeyboardShowing() { return onScreenTypingKeyboardShowing; }
+    public void setOnScreenKeyboardShowing(boolean showing, boolean typingKeyboardShowing) {
         this.onScreenKeyboardShowing = showing;
+        this.onScreenTypingKeyboardShowing = typingKeyboardShowing;
     }
 
     public boolean isForceVkbMode() { return forceVkbMode; }

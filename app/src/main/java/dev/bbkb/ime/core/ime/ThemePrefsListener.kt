@@ -3,6 +3,8 @@ import android.content.SharedPreferences
 import android.util.Log
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.device.ResourceConfigManager
+import dev.bbkb.ime.core.settings.util.SettingsManager
+import dev.bbkb.ime.core.settings.util.SettingsValues
 import dev.bbkb.ime.keyboard.KeyboardBuilder
 import dev.bbkb.ime.keyboard.KeyboardColorManager
 import dev.bbkb.ime.keyboard.inputboard.UimMenuOrder
@@ -11,7 +13,8 @@ import dev.bbkb.ime.core.BlackBerryIME
 
 /**
  * Reacts to the preference changes that must rebuild or re-theme the live keyboard:
- * UIM on/off, UIM menu order, keyboard height mode, and the three theme keys.
+ * UIM on/off, the physical keyboard's suggestion bar on/off, UIM menu order, keyboard height
+ * mode, and the three theme keys.
  * Registered by [BlackBerryIME] on the default shared preferences for the service's lifetime.
  */
 class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnSharedPreferenceChangeListener {
@@ -29,6 +32,21 @@ class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnS
                 if (ime.isInputViewShown()) {
                     uimManager.show(false)
                 }
+            }
+        }
+
+        if (SettingsManager.PREF_PKB_SHOW_SUGGESTION_BAR == key) {
+            // Read from the preferences, not SettingsValues: SettingsManager's own listener may
+            // not have reloaded it yet.
+            val shown = SettingsManager.isPkbSuggestionBarEnabled(sharedPreferences)
+            val uimManager = keyboardSwitcher.getUnifiedInputBoardManager()
+            if (SettingsValues.isPkbSuggestionBarHidden(shown)) {
+                uimManager?.hide()
+                ime.auxBarManager?.hideSuggestionBar()
+            } else if (shown && uimManager != null && ime.isInputViewShown()) {
+                // As for the menu above: back now if it is enabled; the strip returns with the
+                // next suggestions.
+                uimManager.show(false)
             }
         }
 
