@@ -79,8 +79,13 @@ class LocaleWordSubstitutionMap(filename: String) : DictionaryWordObservable() {
         return list
     }
 
+    /**
+     * Every substitution saved for [locales], in [locales] order: the caller keeps the first of
+     * two with the same key, so with a multi-language keyboard the earlier language wins, as it
+     * does for the default substitutions. A HashSet used to make that pick arbitrary.
+     */
     fun getWordSubstitutionsSet(locales: List<Locale>): Set<WordSubstitution> {
-        val set = HashSet<WordSubstitution>()
+        val set = LinkedHashSet<WordSubstitution>()
         for (locale in locales) {
             val map = localeWsMap[locale.toString()]
             if (map != null) {

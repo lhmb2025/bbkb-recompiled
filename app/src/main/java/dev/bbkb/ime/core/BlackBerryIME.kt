@@ -1590,15 +1590,16 @@ class BlackBerryIME : InputMethodService(),
     }
 
     fun updateLanguagePacksForSubtype(inputMethodSubtype: InputMethodSubtype) {
-        val arrayList = ArrayList<Locale>()
-        arrayList.add(ResourceLocaleUtils.getSubtypeLocale(inputMethodSubtype))
         // The extra value is a slash-joined list ("de/es", "fr_CA"). One Locale built from the
         // whole string made the engine refuse the entire set as soon as a keyboard had two extras
         // or a regional one; parse it the way the subtype manager does.
-        ResourceLocaleUtils.getAdditionalLocales(inputMethodSubtype)?.let { arrayList.addAll(it) }
+        val locales = ResourceLocaleUtils.getKeyboardLocales(
+            ResourceLocaleUtils.getSubtypeLocale(inputMethodSubtype),
+            ResourceLocaleUtils.getAdditionalLocales(inputMethodSubtype),
+        )
         val sdk = NuanceSDKManager.getInstance()
         if (sdk != null) {
-            LanguagePackManager.getInstance(applicationContext).setLanguages(sdk, arrayList.toTypedArray())
+            LanguagePackManager.getInstance(applicationContext).setLanguages(sdk, locales.toTypedArray())
         } else {
             Logger.warn(LOG_TAG, "NuanceSDK unavailable; skipping language update in updateLanguagePacksForSubtype")
         }
@@ -1638,7 +1639,10 @@ class BlackBerryIME : InputMethodService(),
         languagePackLocaleMonitor!!.onLocaleChanged(localeM4259h, setM4260i)
         initDictionaryForLocale(localeM4259h, forceReload)
         multitapEventHandler.refreshAltMultitapSupport()
-        DictionaryManager.getInstance().initialiseOrSwitchLanguages(applicationContext, java.util.Collections.singletonList(localeM4259h))
+        // Every language the keyboard types in, not just the layout language: shortcuts and
+        // personal words saved for an extra language are as much the user's as the primary's.
+        DictionaryManager.getInstance().initialiseOrSwitchLanguages(applicationContext,
+            ResourceLocaleUtils.getKeyboardLocales(localeM4259h, setM4260i))
     }
 
     fun reloadAdditionalLocales() {
@@ -1655,11 +1659,13 @@ class BlackBerryIME : InputMethodService(),
         val settingsValues = settingsManager.getSettingsValues()
         val localeM4644a = dictionaryLoader.getLocale()
         if (localeM4644a != null) {
-            languagePackLocaleMonitor!!.onLocaleChanged(localeM4644a, subtypeManager.getCurrentSubtypeAdditionalLocales())
+            val additional = subtypeManager.getCurrentSubtypeAdditionalLocales()
+            languagePackLocaleMonitor!!.onLocaleChanged(localeM4644a, additional)
             dictionaryLoader.initDictionary(this, localeM4644a, settingsValues.useContactsDicts, true, this)
             applyAutoCorrectionSettings(settingsValues)
             multitapEventHandler.refreshAltMultitapSupport()
-            DictionaryManager.getInstance().initialiseOrSwitchLanguages(applicationContext, java.util.Collections.singletonList(localeM4644a))
+            DictionaryManager.getInstance().initialiseOrSwitchLanguages(applicationContext,
+                ResourceLocaleUtils.getKeyboardLocales(localeM4644a, additional))
         }
     }
 

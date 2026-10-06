@@ -12,6 +12,7 @@ import android.view.textservice.SuggestionsInfo;
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker;
 import dev.bbkb.ime.core.engine.DictionaryLoader;
 import dev.bbkb.ime.core.suggestion.PrevWordsInfo;
+import dev.bbkb.ime.core.locale.ResourceLocaleUtils;
 import dev.bbkb.ime.core.locale.SubtypeManager;
 import dev.bbkb.ime.core.contacts.ContactsLearningManager;
 import dev.bbkb.ime.core.settings.util.SuggestionStripSettings;
@@ -24,6 +25,8 @@ import dev.bbkb.ime.keyboard.ProximityGrid;
 import dev.bbkb.ime.keyboard.KeyboardBuilder;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -267,19 +270,45 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
 
     public boolean initDictionaryForLocale(Locale locale) {
         boolean isAutoSubtype = isAutoSubtypeSelected();
-        Set<Locale> activeLocales = SubtypeManager.getInstance().getCurrentSubtypeAdditionalLocales();
+        SubtypeManager subtypes = SubtypeManager.getInstance();
+        Set<Locale> extraLocales = extraLocalesForSession(locale,
+                subtypes.getCurrentSubtypeLocale(), subtypes.getCurrentSubtypeAdditionalLocales());
         this.mDictSemaphore.acquireUninterruptibly();
         try {
             if (this.mDictionaryLoader == null || !locale.equals(this.mDictionaryLoader.getLocale())) {
                 initDictionaryInternal(locale);
             }
             if (this.mDictionaryLoader.isDictionaryReady()) {
-                return (!locale.equals(SubtypeManager.getInstance().getCurrentSubtypeLocale()) || activeLocales == null) ? true : this.mDictionaryLoader.updateAdditionalLocales(activeLocales, false, null);
+                return extraLocales == null || this.mDictionaryLoader.updateAdditionalLocales(extraLocales, false, null);
             }
             return false;
         } finally {
             this.mDictSemaphore.release();
         }
+    }
+
+    /**
+     * The other languages a spell-check session in {@code sessionLocale} also accepts words from:
+     * when the session's language is one of the current keyboard's ({@code keyboardPrimary} or
+     * one of its {@code keyboardAdditional} extras), the rest of that keyboard's languages, layout
+     * language first, then the extras in their order. The session's own language is left out: it
+     * is the dictionary's own language and stays first. Null when the session's language is not
+     * on the current keyboard, or the keyboard has only the one language.
+     *
+     * <p>This used to apply only when the session's language was the keyboard's layout language,
+     * so text in an extra language was checked against that language alone.
+     */
+    static Set<Locale> extraLocalesForSession(Locale sessionLocale, Locale keyboardPrimary, Set<Locale> keyboardAdditional) {
+        if (sessionLocale == null || keyboardAdditional == null) {
+            return null;
+        }
+        List<Locale> keyboardLocales = ResourceLocaleUtils.getKeyboardLocales(keyboardPrimary, keyboardAdditional);
+        if (!keyboardLocales.contains(sessionLocale)) {
+            return null;
+        }
+        Set<Locale> others = new LinkedHashSet<>(keyboardLocales);
+        others.remove(sessionLocale);
+        return others.isEmpty() ? null : others;
     }
 
     @Override // android.app.Service

@@ -83,6 +83,7 @@ class DictionaryLoaderTest {
 
     private val en = Locale.ENGLISH
     private val fr = Locale.FRENCH
+    private val es = Locale("es")
 
     @Before
     fun setUp() {
@@ -634,5 +635,40 @@ class DictionaryLoaderTest {
 
         verify(d).addLocales(setOf(fr))
         verify(callback).onLocalesUpdated()
+    }
+
+    // ---- multi-language order ---------------------------------------------------------------
+
+    @Test
+    fun updateAdditionalLocales_handsTheEngineTheExtrasInTheSubtypesOrder() {
+        // ResourceLocaleUtils.getAdditionalLocales keeps the extra value's order now; the loader
+        // must pass the set through as it is, not re-sort it.
+        val d = dict()
+        loaded(en, d)
+        var handed: List<Locale>? = null
+        `when`(d.addLocales(any())).thenAnswer { handed = (it.getArgument<Set<Locale>>(0)).toList(); true }
+
+        assertTrue(loader.updateAdditionalLocales(linkedSetOf(es, Locale.GERMAN, fr), false, callback))
+
+        assertEquals(listOf(es, Locale.GERMAN, fr), handed)
+    }
+
+    @Test
+    fun additionalLocales_areComparedAsASet_soTheSameLanguagesInAnotherOrderDoNotReload() {
+        // The recorded set and the active one used to be TreeSets on both sides; now the active
+        // one keeps the extra value's order. Equality must stay order-blind, or a set recorded in
+        // one order would reload on every init.
+        val d = dict()
+        loaded(en, d)
+        `when`(d.addLocales(any())).thenReturn(true)
+        loader.updateAdditionalLocales(linkedSetOf(fr, Locale.GERMAN), false, null)
+
+        `when`(subtypes.currentSubtypeAdditionalLocales).thenReturn(linkedSetOf(Locale.GERMAN, fr))
+        assertFalse(loader.initDictionary(ctx, en, false, false, callback))
+        `when`(subtypes.currentSubtypeAdditionalLocales)
+            .thenReturn(java.util.TreeSet<Locale>(compareBy { it.toString() }).apply { add(fr); add(Locale.GERMAN) })
+        assertFalse(loader.initDictionary(ctx, en, false, false, callback))
+        assertTrue(executor.tasks.isEmpty())
+        assertSame(d, loader.mainDictionary)
     }
 }

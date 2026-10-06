@@ -425,7 +425,10 @@ class PersonalDictionaryUtil private constructor(
                     val mutableLocales = ArrayList(locales)
                     DataUtil.moveObjectToFrontOfList(Locale.getDefault(), mutableLocales)
                     previousLocales = immutableLastActiveLocales
-                    if (previousLocales == locales) {
+                    // Compared after the reorder, as stored: with a multi-language keyboard whose
+                    // extra is the phone's language, the raw list never equalled the stored one, so
+                    // every switch reloaded and re-synced the defaults with AUD.
+                    if (previousLocales == mutableLocales) {
                         LogUtil.d(TAG, "Switching to same locales - ignoring")
                         sameLocales = true
                     } else {
