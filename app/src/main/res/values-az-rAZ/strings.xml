@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Səsli daxiletmə</string>
     <string name="settings_voice_prefer_offline_summary">Mümkün olduqda cihazdaxili tanımadan istifadə edin</string>
     <string name="settings_voice_prefer_offline_title">Oflayn tanımaya üstünlük verin</string>
+    <string name="settings_voice_show_partial_results_summary">Hələ danışarkən eşidiləni göstərin, sonra onu yekun nəticə ilə əvəz edin</string>
+    <string name="settings_voice_show_partial_results_title">Danışarkən sözləri göstərin</string>
     <string name="settings_voice_use_keyboard_lang_summary">Səsli daxiletmə üçün cari klaviatura dilindən istifadə edin</string>
     <string name="settings_voice_use_keyboard_lang_title">Klaviatura dilindən istifadə edin</string>
     <string name="voice_input_lang_pack_available_offline_mode">Oflayn istifadə üçün %1$s dil modelini yükləyin və ya Wi-Fi-a qoşulun.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">%1$s lüğəti hələ yoxdur. BBKB Parametrləri › Dil bölməsindən yükləyin.</string>
     <string name="dictionary_required_to_type">Yazmaq üçün %1$s lüğəti lazımdır. BBKB Parametrləri › Dil bölməsindən yükləyin.</string>
     <string name="voice_status_language_unsupported">%1$s üçün səsli daxiletmə mövcud deyil. Səsli daxiletmə dilini BBKB Parametrlərində dəyişin.</string>
+    <string name="voice_status_no_recognition_service">Səs tanıma xidməti seçilməyib</string>
+    <string name="voice_status_network_error">Şəbəkə problemi. Bağlantınızı yoxlayın.</string>
+    <string name="voice_status_audio_error">Səsi yazmaq mümkün olmadı.</string>
+    <string name="voice_status_no_match">Başa düşülmədi. Yenidən cəhd etmək üçün mikrofona toxunun.</string>
+    <string name="voice_status_no_speech">Nitq eşidilmədi. Yenidən cəhd etmək üçün mikrofona toxunun.</string>
+    <string name="voice_status_busy">Nitqin tanınması məşğuldur. Bir azdan yenidən cəhd edin.</string>
+    <string name="voice_status_too_many_requests">Həddindən çox sorğu. Sonra yenidən cəhd edin.</string>
+    <string name="voice_status_service_disconnected">Nitq xidməti ilə əlaqə kəsildi. Yenidən cəhd etmək üçün mikrofona toxunun.</string>
 </resources>

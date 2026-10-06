@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Φωνητική εισαγωγή</string>
     <string name="settings_voice_prefer_offline_summary">Χρήση αναγνώρισης στη συσκευή όταν είναι διαθέσιμη</string>
     <string name="settings_voice_prefer_offline_title">Προτίμηση αναγνώρισης εκτός σύνδεσης</string>
+    <string name="settings_voice_show_partial_results_summary">Εμφάνιση όσων ακούγονται ενώ μιλάτε ακόμη και στη συνέχεια αντικατάστασή τους με το τελικό αποτέλεσμα</string>
+    <string name="settings_voice_show_partial_results_title">Εμφάνιση λέξεων καθώς μιλάτε</string>
     <string name="settings_voice_use_keyboard_lang_summary">Χρήση της τρέχουσας γλώσσας πληκτρολογίου για φωνητική εισαγωγή</string>
     <string name="settings_voice_use_keyboard_lang_title">Χρήση γλώσσας πληκτρολογίου</string>
     <string name="voice_input_lang_pack_available_offline_mode">Εκτελέστε λήψη του γλωσσικού μοντέλου για τα %1$s για χρήση εκτός σύνδεσης ή συνδεθείτε σε δίκτυο Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Δεν υπάρχει ακόμη λεξικό για τα %1$s. Κατεβάστε το από τις Ρυθμίσεις BBKB › Γλώσσα.</string>
     <string name="dictionary_required_to_type">Για να γράψετε στα %1$s, κατεβάστε το λεξικό από τις Ρυθμίσεις BBKB › Γλώσσα.</string>
     <string name="voice_status_language_unsupported">Η φωνητική εισαγωγή δεν είναι διαθέσιμη για τα %1$s. Αλλάξτε τη γλώσσα φωνητικής εισαγωγής στις Ρυθμίσεις BBKB.</string>
+    <string name="voice_status_no_recognition_service">Δεν έχει επιλεγεί υπηρεσία αναγνώρισης φωνής</string>
+    <string name="voice_status_network_error">Πρόβλημα δικτύου. Ελέγξτε τη σύνδεσή σας.</string>
+    <string name="voice_status_audio_error">Δεν ήταν δυνατή η εγγραφή ήχου.</string>
+    <string name="voice_status_no_match">Δεν έγινε κατανοητό. Πατήστε το μικρόφωνο για να δοκιμάσετε ξανά.</string>
+    <string name="voice_status_no_speech">Δεν ακούστηκε ομιλία. Πατήστε το μικρόφωνο για να δοκιμάσετε ξανά.</string>
+    <string name="voice_status_busy">Η αναγνώριση ομιλίας είναι απασχολημένη. Δοκιμάστε ξανά σε λίγο.</string>
+    <string name="voice_status_too_many_requests">Πάρα πολλά αιτήματα. Δοκιμάστε ξανά αργότερα.</string>
+    <string name="voice_status_service_disconnected">Η υπηρεσία ομιλίας αποσυνδέθηκε. Πατήστε το μικρόφωνο για να δοκιμάσετε ξανά.</string>
 </resources>

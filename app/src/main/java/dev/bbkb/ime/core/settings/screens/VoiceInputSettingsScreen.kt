@@ -36,43 +36,6 @@ import dev.bbkb.ime.core.settings.ui.SwitchPreference
 /**
  * Voice Input Settings Screen
  * Configure voice input recognition settings
- * 
- * IMPLEMENTATION NOTE FOR VOICE RECOGNITION CODE:
- * When starting speech recognition, apply the "prefer offline" setting as follows:
- * 
- * ```java
- * Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
- * recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
- * 
- * // Force specific language if not using keyboard language
- * if (!useInputLanguage) {
- *     recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, voiceLanguage); // e.g., "es-MX"
- *     recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, voiceLanguage);
- * }
- * 
- * // Apply offline preference
- * if (isOfflinePreferred) {
- *     recognizerIntent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
- * }
- * 
- * // Initialize SpeechRecognizer based on API level and offline preference
- * SpeechRecognizer speechRecognizer;
- * if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isOfflinePreferred) {
- *     // API 31+ (Android 12): Explicitly request on-device recognizer
- *     if (SpeechRecognizer.isOnDeviceRecognitionAvailable(context)) {
- *         speechRecognizer = SpeechRecognizer.createOnDeviceSpeechRecognizer(context);
- *     } else {
- *         // Fallback: On-device not available, use default cloud/hybrid
- *         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
- *     }
- * } else {
- *     // Legacy devices or Online mode
- *     speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
- * }
- * 
- * speechRecognizer.setRecognitionListener(yourListener);
- * speechRecognizer.startListening(recognizerIntent);
- * ```
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -92,6 +55,9 @@ fun VoiceInputSettingsScreen(
     }
     var preferOffline by remember {
         mutableStateOf(prefs.getBoolean("voice_input_prefer_offline", true))
+    }
+    var showPartialResults by remember {
+        mutableStateOf(prefs.getBoolean("voice_input_show_partial_results", true))
     }
     var autoStartListening by remember {
         mutableStateOf(prefs.getBoolean("voice_input_auto_start", true))
@@ -195,6 +161,19 @@ fun VoiceInputSettingsScreen(
                 onCheckedChange = { newValue ->
                     preferOffline = newValue
                     prefs.edit().putBoolean("voice_input_prefer_offline", newValue).apply()
+                }
+            )
+
+            // Show words as you speak: partial results as composing text in the editor
+            SwitchPreference(
+                title = context.getString(R.string.settings_voice_show_partial_results_title),
+                summary = context.getString(R.string.settings_voice_show_partial_results_summary),
+                checked = showPartialResults,
+                enabled = builtInVoiceEnabled,
+                modifier = Modifier.settingsSearchAnchor("voice_input_show_partial_results"),
+                onCheckedChange = { newValue ->
+                    showPartialResults = newValue
+                    prefs.edit().putBoolean("voice_input_show_partial_results", newValue).apply()
                 }
             )
 

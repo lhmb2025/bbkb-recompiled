@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">语音输入</string>
     <string name="settings_voice_prefer_offline_summary">尽可能使用设备端识别</string>
     <string name="settings_voice_prefer_offline_title">优先使用离线识别</string>
+    <string name="settings_voice_show_partial_results_summary">在您说话时即显示识别到的内容，随后替换为最终结果</string>
+    <string name="settings_voice_show_partial_results_title">说话时显示文字</string>
     <string name="settings_voice_use_keyboard_lang_summary">语音输入使用当前键盘语言</string>
     <string name="settings_voice_use_keyboard_lang_title">使用键盘语言</string>
     <string name="voice_input_lang_pack_available_offline_mode">请下载 %1$s 的语言模型进行离线使用或连接到 Wi-Fi。</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">尚无%1$s词典。请前往“BBKB 设置 › 语言”下载。</string>
     <string name="dictionary_required_to_type">%1$s需要词典才能输入。请前往“BBKB 设置 › 语言”下载。</string>
     <string name="voice_status_language_unsupported">语音输入不支持%1$s。请在“BBKB 设置”中更改语音输入语言。</string>
+    <string name="voice_status_no_recognition_service">未选择语音识别服务</string>
+    <string name="voice_status_network_error">网络有问题。请检查网络连接。</string>
+    <string name="voice_status_audio_error">无法录制音频。</string>
+    <string name="voice_status_no_match">没听清。点按麦克风即可重试。</string>
+    <string name="voice_status_no_speech">未检测到语音。点按麦克风即可重试。</string>
+    <string name="voice_status_busy">语音识别服务正忙。请稍等片刻后重试。</string>
+    <string name="voice_status_too_many_requests">请求过多。请稍后再试。</string>
+    <string name="voice_status_service_disconnected">语音服务已断开连接。点按麦克风即可重试。</string>
 </resources>

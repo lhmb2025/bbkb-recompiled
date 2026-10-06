@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Голосовой ввод</string>
     <string name="settings_voice_prefer_offline_summary">Использовать распознавание на устройстве, если доступно</string>
     <string name="settings_voice_prefer_offline_title">Предпочитать автономное распознавание</string>
+    <string name="settings_voice_show_partial_results_summary">Показывать услышанное, пока вы ещё говорите, а затем заменять его окончательным результатом</string>
+    <string name="settings_voice_show_partial_results_title">Показывать слова во время речи</string>
     <string name="settings_voice_use_keyboard_lang_summary">Использовать текущий язык клавиатуры для голосового ввода</string>
     <string name="settings_voice_use_keyboard_lang_title">Использовать язык клавиатуры</string>
     <string name="voice_input_lang_pack_available_offline_mode">Загрузите модель языка для %1$s, которую можно использовать в автономном режиме, или подключитесь к сети Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">%1$s: словаря пока нет. Загрузите его в разделе Настройки BBKB › Язык.</string>
     <string name="dictionary_required_to_type">%1$s: для ввода нужен словарь. Загрузите его в разделе Настройки BBKB › Язык.</string>
     <string name="voice_status_language_unsupported">%1$s: голосовой ввод недоступен. Измените язык голосового ввода в Настройках BBKB.</string>
+    <string name="voice_status_no_recognition_service">Не выбрана служба распознавания голоса</string>
+    <string name="voice_status_network_error">Проблема с сетью. Проверьте подключение.</string>
+    <string name="voice_status_audio_error">Не удалось записать звук.</string>
+    <string name="voice_status_no_match">Не удалось разобрать. Нажмите микрофон, чтобы попробовать снова.</string>
+    <string name="voice_status_no_speech">Речь не обнаружена. Нажмите микрофон, чтобы попробовать снова.</string>
+    <string name="voice_status_busy">Служба распознавания речи занята. Повторите попытку чуть позже.</string>
+    <string name="voice_status_too_many_requests">Слишком много запросов. Повторите попытку позже.</string>
+    <string name="voice_status_service_disconnected">Служба распознавания речи отключилась. Нажмите микрофон, чтобы попробовать снова.</string>
 </resources>

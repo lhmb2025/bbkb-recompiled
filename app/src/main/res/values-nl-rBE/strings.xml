@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Spraakinvoer</string>
     <string name="settings_voice_prefer_offline_summary">Herkenning op het toestel gebruiken indien beschikbaar</string>
     <string name="settings_voice_prefer_offline_title">Voorkeur voor offline herkenning</string>
+    <string name="settings_voice_show_partial_results_summary">Tonen wat er wordt gehoord terwijl je nog spreekt en dit daarna vervangen door het eindresultaat</string>
+    <string name="settings_voice_show_partial_results_title">Woorden tonen tijdens het spreken</string>
     <string name="settings_voice_use_keyboard_lang_summary">De huidige toetsenbordtaal gebruiken voor spraakinvoer</string>
     <string name="settings_voice_use_keyboard_lang_title">Toetsenbordtaal gebruiken</string>
     <string name="voice_input_lang_pack_available_offline_mode">Download het taalmodel voor %1$s voor offline gebruik of maak verbinding met Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Nog geen woordenboek voor %1$s. Download het via Instellingen voor BBKB › Taal.</string>
     <string name="dictionary_required_to_type">%1$s heeft een woordenboek nodig om te typen. Download het via Instellingen voor BBKB › Taal.</string>
     <string name="voice_status_language_unsupported">Spraakinvoer is niet beschikbaar voor %1$s. Wijzig de spraaktaal in Instellingen voor BBKB.</string>
+    <string name="voice_status_no_recognition_service">Geen spraakherkenningsservice geselecteerd</string>
+    <string name="voice_status_network_error">Netwerkprobleem. Controleer uw verbinding.</string>
+    <string name="voice_status_audio_error">Kan geen audio opnemen.</string>
+    <string name="voice_status_no_match">Niet verstaan. Tik op de microfoon om het opnieuw te proberen.</string>
+    <string name="voice_status_no_speech">Geen spraak gehoord. Tik op de microfoon om het opnieuw te proberen.</string>
+    <string name="voice_status_busy">Spraakherkenning is bezet. Probeer het zo opnieuw.</string>
+    <string name="voice_status_too_many_requests">Te veel verzoeken. Probeer het later opnieuw.</string>
+    <string name="voice_status_service_disconnected">De verbinding met de spraakservice is verbroken. Tik op de microfoon om het opnieuw te proberen.</string>
 </resources>

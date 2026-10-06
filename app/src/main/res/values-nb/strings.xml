@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Taleinndata</string>
     <string name="settings_voice_prefer_offline_summary">Bruk gjenkjenning på enheten når det er mulig</string>
     <string name="settings_voice_prefer_offline_title">Foretrekk frakoblet gjenkjenning</string>
+    <string name="settings_voice_show_partial_results_summary">Vis det som høres mens du fortsatt snakker, og erstatt det deretter med det endelige resultatet</string>
+    <string name="settings_voice_show_partial_results_title">Vis ord mens du snakker</string>
     <string name="settings_voice_use_keyboard_lang_summary">Bruk gjeldende tastaturspråk for taleinndata</string>
     <string name="settings_voice_use_keyboard_lang_title">Bruk tastaturspråket</string>
     <string name="voice_input_lang_pack_available_offline_mode">Last ned ordboken for %1$s for frakoblet bruk eller koble til Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Ingen ordbok for %1$s ennå. Last den ned i Innstillinger for BBKB › Språk.</string>
     <string name="dictionary_required_to_type">Skriving på %1$s krever ordboken. Last den ned i Innstillinger for BBKB › Språk.</string>
     <string name="voice_status_language_unsupported">Taleinndata er ikke tilgjengelig for %1$s. Endre språket for taleinndata i Innstillinger for BBKB.</string>
+    <string name="voice_status_no_recognition_service">Ingen talegjenkjenningstjeneste er valgt</string>
+    <string name="voice_status_network_error">Nettverksproblem. Sjekk tilkoblingen.</string>
+    <string name="voice_status_audio_error">Kunne ikke ta opp lyd.</string>
+    <string name="voice_status_no_match">Det ble ikke forstått. Trykk på mikrofonen for å prøve igjen.</string>
+    <string name="voice_status_no_speech">Ingen tale ble hørt. Trykk på mikrofonen for å prøve igjen.</string>
+    <string name="voice_status_busy">Talegjenkjenning er opptatt. Prøv igjen om et øyeblikk.</string>
+    <string name="voice_status_too_many_requests">For mange forespørsler. Prøv igjen senere.</string>
+    <string name="voice_status_service_disconnected">Taletjenesten ble koblet fra. Trykk på mikrofonen for å prøve igjen.</string>
 </resources>

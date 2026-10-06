@@ -652,6 +652,15 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     /**
+     * Voice input settings: "Show words as you speak". On, dictation's partial results appear in
+     * the editor as composing text until the final result replaces them; off, nothing appears until
+     * the final result is committed.
+     */
+    public static boolean isVoiceInputShowPartialResults(SharedPreferences sharedPreferences) {
+        return sharedPreferences.getBoolean("voice_input_show_partial_results", true);
+    }
+
+    /**
      * A BCP-47 language tag, the form {@code RecognizerIntent.EXTRA_LANGUAGE} documents and the form
      * the voice language picker stores (the recognizer's own supported-language codes). Both voice
      * settings screens read this constant.

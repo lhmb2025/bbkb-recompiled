@@ -17,6 +17,14 @@
         <intent>
             <action android:name="android.view.InputMethod"/>
         </intent>
+        <!--
+            Speech recognition services, for voice input. Targeting API 30+, an undeclared service
+            is invisible: SpeechRecognizer.isRecognitionAvailable() answers false whatever is
+            installed, and the language screen's recogniser queries find nothing.
+        -->
+        <intent>
+            <action android:name="android.speech.RecognitionService"/>
+        </intent>
         <!-- Query for contacts provider -->
         <intent>
             <action android:name="android.intent.action.PICK"/>

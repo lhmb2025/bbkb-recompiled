@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">ხმოვანი შეყვანა</string>
     <string name="settings_voice_prefer_offline_summary">მოწყობილობაზე ამოცნობის გამოყენება, როცა ხელმისაწვდომია</string>
     <string name="settings_voice_prefer_offline_title">ოფლაინ ამოცნობის უპირატესობა</string>
+    <string name="settings_voice_show_partial_results_summary">გაგონილის ჩვენება ჯერ კიდევ საუბრისას, შემდეგ კი მისი ჩანაცვლება საბოლოო შედეგით</string>
+    <string name="settings_voice_show_partial_results_title">სიტყვების ჩვენება საუბრისას</string>
     <string name="settings_voice_use_keyboard_lang_summary">კლავიატურის მიმდინარე ენის გამოყენება ხმოვანი შეყვანისთვის</string>
     <string name="settings_voice_use_keyboard_lang_title">კლავიატურის ენის გამოყენება</string>
     <string name="voice_input_lang_pack_available_offline_mode">ჩამოტვირთეთ %1$s-ის ენის მოდელი ოფლაინ გამოსაყენებლად ან დაუკავშირდით Wi-Fi-ს.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">%1$s ლექსიკონი ჯერ არ არის. ჩამოტვირთეთ აქ: BBKB-ის პარამეტრები › ენა.</string>
     <string name="dictionary_required_to_type">ასაკრეფად საჭიროა %1$s ლექსიკონი. ჩამოტვირთეთ აქ: BBKB-ის პარამეტრები › ენა.</string>
     <string name="voice_status_language_unsupported">ხმოვანი შეყვანა %1$s ენისთვის მიუწვდომელია. შეცვალეთ ხმოვანი შეყვანის ენა BBKB-ის პარამეტრებში.</string>
+    <string name="voice_status_no_recognition_service">ხმის ამოცნობის სერვისი არჩეული არ არის</string>
+    <string name="voice_status_network_error">ქსელის პრობლემა. შეამოწმეთ კავშირი.</string>
+    <string name="voice_status_audio_error">აუდიოს ჩაწერა ვერ მოხერხდა.</string>
+    <string name="voice_status_no_match">ვერ გავიგე. ხელახლა საცდელად შეეხეთ მიკროფონს.</string>
+    <string name="voice_status_no_speech">მეტყველება არ ისმის. ხელახლა საცდელად შეეხეთ მიკროფონს.</string>
+    <string name="voice_status_busy">მეტყველების ამოცნობა დაკავებულია. სცადეთ ხელახლა ცოტა ხანში.</string>
+    <string name="voice_status_too_many_requests">ძალიან ბევრი მოთხოვნა. სცადეთ ხელახლა მოგვიანებით.</string>
+    <string name="voice_status_service_disconnected">მეტყველების სერვისი გაითიშა. ხელახლა საცდელად შეეხეთ მიკროფონს.</string>
 </resources>

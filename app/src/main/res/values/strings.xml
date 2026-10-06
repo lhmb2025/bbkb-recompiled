@@ -290,6 +290,14 @@
     <string name="voice_status_idle">Tap the mic to speak</string>
     <string name="voice_status_listening">Listening&#8230;</string>
     <string name="voice_status_language_unsupported">Voice input isn\'t available for %1$s. Change the voice language in BBKB Settings.</string>
+    <string name="voice_status_no_recognition_service">No selected voice recognition service</string>
+    <string name="voice_status_network_error">Network problem. Check your connection.</string>
+    <string name="voice_status_audio_error">Couldn\'t record audio.</string>
+    <string name="voice_status_no_match">Didn\'t catch that. Tap the mic to try again.</string>
+    <string name="voice_status_no_speech">No speech heard. Tap the mic to try again.</string>
+    <string name="voice_status_busy">Speech recognition is busy. Try again in a moment.</string>
+    <string name="voice_status_too_many_requests">Too many requests. Try again later.</string>
+    <string name="voice_status_service_disconnected">The speech service disconnected. Tap the mic to try again.</string>
     <string name="settings_appearance_modern">Modern</string>
     <string name="settings_color_scheme_title">Color scheme</string>
     <string name="settings_use_system_colors_title">Use system colors</string>
@@ -407,6 +415,8 @@
     <string name="settings_voice_input_title">Voice input</string>
     <string name="settings_voice_prefer_offline_summary">Use on-device recognition when available</string>
     <string name="settings_voice_prefer_offline_title">Prefer offline recognition</string>
+    <string name="settings_voice_show_partial_results_summary">Show what is heard while you are still speaking, then replace it with the final result</string>
+    <string name="settings_voice_show_partial_results_title">Show words as you speak</string>
     <string name="settings_voice_use_keyboard_lang_summary">Use current keyboard language for voice input</string>
     <string name="settings_voice_use_keyboard_lang_title">Use keyboard language</string>
     <string name="voice_input_lang_pack_available_offline_mode">Please download the language model for %1$s for offline use or connect to Wi-Fi.</string>

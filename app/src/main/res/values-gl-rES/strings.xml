@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Entrada de voz</string>
     <string name="settings_voice_prefer_offline_summary">Usar o recoñecemento no dispositivo cando estea dispoñible</string>
     <string name="settings_voice_prefer_offline_title">Preferir o recoñecemento sen conexión</string>
+    <string name="settings_voice_show_partial_results_summary">Mostra o que se escoita mentres segues falando e despois substitúeo polo resultado final</string>
+    <string name="settings_voice_show_partial_results_title">Mostrar as palabras mentres falas</string>
     <string name="settings_voice_use_keyboard_lang_summary">Usar o idioma actual do teclado para a entrada de voz</string>
     <string name="settings_voice_use_keyboard_lang_title">Usar o idioma do teclado</string>
     <string name="voice_input_lang_pack_available_offline_mode">Descarga o modelo de idioma de %1$s para usalo sen conexión ou conéctate a unha rede Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Aínda non hai dicionario de %1$s. Descárgao en Configuración de BBKB › Idioma.</string>
     <string name="dictionary_required_to_type">Para escribir en %1$s, descarga o seu dicionario en Configuración de BBKB › Idioma.</string>
     <string name="voice_status_language_unsupported">A entrada de voz non está dispoñible para %1$s. Cambia o idioma da entrada de voz en Configuración de BBKB.</string>
+    <string name="voice_status_no_recognition_service">Non se seleccionou ningún servizo de recoñecemento de voz</string>
+    <string name="voice_status_network_error">Problema de rede. Comproba a túa conexión.</string>
+    <string name="voice_status_audio_error">Non se puido gravar o audio.</string>
+    <string name="voice_status_no_match">Non se entendeu. Toca o micrófono para tentalo de novo.</string>
+    <string name="voice_status_no_speech">Non se detectou ningunha voz. Toca o micrófono para tentalo de novo.</string>
+    <string name="voice_status_busy">O recoñecemento de voz está ocupado. Téntao de novo nun momento.</string>
+    <string name="voice_status_too_many_requests">Demasiadas solicitudes. Téntao de novo máis tarde.</string>
+    <string name="voice_status_service_disconnected">O servizo de voz desconectouse. Toca o micrófono para tentalo de novo.</string>
 </resources>

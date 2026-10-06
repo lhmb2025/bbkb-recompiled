@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">ورودی صوتی</string>
     <string name="settings_voice_prefer_offline_summary">استفاده از تشخیص روی دستگاه در صورت وجود</string>
     <string name="settings_voice_prefer_offline_title">ترجیح تشخیص آفلاین</string>
+    <string name="settings_voice_show_partial_results_summary">نمایش آنچه شنیده می‌شود در حین صحبت و سپس جایگزینی آن با نتیجه نهایی</string>
+    <string name="settings_voice_show_partial_results_title">نمایش کلمات هنگام صحبت</string>
     <string name="settings_voice_use_keyboard_lang_summary">استفاده از زبان کنونی صفحه کلید برای ورودی صوتی</string>
     <string name="settings_voice_use_keyboard_lang_title">استفاده از زبان صفحه کلید</string>
     <string name="voice_input_lang_pack_available_offline_mode">لطفاً مدل زبانی %1$s را برای استفاده آفلاین دانلود کنید یا به Wi-Fi متصل شوید.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">هنوز واژه‌نامهٔ %1$s وجود ندارد. آن را از تنظیمات BBKB › زبان بارگیری کنید.</string>
     <string name="dictionary_required_to_type">برای تایپ به %1$s، واژه‌نامهٔ آن لازم است. آن را از تنظیمات BBKB › زبان بارگیری کنید.</string>
     <string name="voice_status_language_unsupported">ورودی صوتی برای %1$s در دسترس نیست. زبان ورودی صوتی را در تنظیمات BBKB تغییر دهید.</string>
+    <string name="voice_status_no_recognition_service">هیچ سرویس تشخیص صدا انتخاب نشده است</string>
+    <string name="voice_status_network_error">مشکل شبکه. اتصال خود را بررسی کنید.</string>
+    <string name="voice_status_audio_error">ضبط صدا ممکن نشد.</string>
+    <string name="voice_status_no_match">متوجه نشدم. برای تلاش مجدد روی میکروفون ضربه بزنید.</string>
+    <string name="voice_status_no_speech">صدایی شنیده نشد. برای تلاش مجدد روی میکروفون ضربه بزنید.</string>
+    <string name="voice_status_busy">تشخیص گفتار مشغول است. لحظاتی دیگر دوباره تلاش کنید.</string>
+    <string name="voice_status_too_many_requests">تعداد درخواست‌ها بیش از حد است. بعداً دوباره تلاش کنید.</string>
+    <string name="voice_status_service_disconnected">اتصال سرویس گفتار قطع شد. برای تلاش مجدد روی میکروفون ضربه بزنید.</string>
 </resources>

@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">음성 입력</string>
     <string name="settings_voice_prefer_offline_summary">가능한 경우 기기 내 인식을 사용합니다</string>
     <string name="settings_voice_prefer_offline_title">오프라인 인식 우선</string>
+    <string name="settings_voice_show_partial_results_summary">말하는 도중에 인식된 내용을 표시한 후 최종 결과로 바꿉니다</string>
+    <string name="settings_voice_show_partial_results_title">말하는 동안 단어 표시</string>
     <string name="settings_voice_use_keyboard_lang_summary">현재 키보드 언어를 음성 입력에 사용합니다</string>
     <string name="settings_voice_use_keyboard_lang_title">키보드 언어 사용</string>
     <string name="voice_input_lang_pack_available_offline_mode">%1$s 언어 모델을 다운로드하여 오프라인으로 사용하거나 Wi-Fi에 연결하십시오.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">%1$s 사전이 아직 없습니다. BBKB 설정 › 언어에서 다운로드하세요.</string>
     <string name="dictionary_required_to_type">%1$s 입력에는 사전이 필요합니다. BBKB 설정 › 언어에서 다운로드하세요.</string>
     <string name="voice_status_language_unsupported">%1$s 음성 입력은 지원되지 않습니다. BBKB 설정에서 음성 입력 언어를 변경하세요.</string>
+    <string name="voice_status_no_recognition_service">선택된 음성 인식 서비스가 없습니다</string>
+    <string name="voice_status_network_error">네트워크 문제가 있습니다. 연결을 확인하세요.</string>
+    <string name="voice_status_audio_error">오디오를 녹음할 수 없습니다.</string>
+    <string name="voice_status_no_match">알아듣지 못했습니다. 다시 시도하려면 마이크를 탭하세요.</string>
+    <string name="voice_status_no_speech">음성이 들리지 않았습니다. 다시 시도하려면 마이크를 탭하세요.</string>
+    <string name="voice_status_busy">음성 인식이 사용 중입니다. 잠시 후 다시 시도하세요.</string>
+    <string name="voice_status_too_many_requests">요청이 너무 많습니다. 나중에 다시 시도하세요.</string>
+    <string name="voice_status_service_disconnected">음성 서비스 연결이 끊어졌습니다. 다시 시도하려면 마이크를 탭하세요.</string>
 </resources>

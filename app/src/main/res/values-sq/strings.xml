@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Shkrimi me zë</string>
     <string name="settings_voice_prefer_offline_summary">Përdor njohjen në pajisje kur është e disponueshme</string>
     <string name="settings_voice_prefer_offline_title">Parapëlqe njohjen jashtë linje</string>
+    <string name="settings_voice_show_partial_results_summary">Shfaq atë që dëgjohet ndërsa ende flet, pastaj zëvendësoje me rezultatin përfundimtar</string>
+    <string name="settings_voice_show_partial_results_title">Shfaq fjalët ndërsa flet</string>
     <string name="settings_voice_use_keyboard_lang_summary">Përdor gjuhën aktuale të tastierës për shkrimin me zë</string>
     <string name="settings_voice_use_keyboard_lang_title">Përdor gjuhën e tastierës</string>
     <string name="voice_input_lang_pack_available_offline_mode">Shkarko modelin gjuhësor për %1$s që ta përdorësh jashtë linje ose lidhu me Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Ende nuk ka fjalor për %1$s. Shkarkoje te Cilësimet e BBKB › Gjuha.</string>
     <string name="dictionary_required_to_type">Për të shkruar në %1$s duhet fjalori. Shkarkoje te Cilësimet e BBKB › Gjuha.</string>
     <string name="voice_status_language_unsupported">Shkrimi me zë nuk ofrohet për %1$s. Ndrysho gjuhën e shkrimit me zë te Cilësimet e BBKB.</string>
+    <string name="voice_status_no_recognition_service">Nuk është zgjedhur asnjë shërbim për njohjen e zërit</string>
+    <string name="voice_status_network_error">Problem me rrjetin. Kontrollo lidhjen.</string>
+    <string name="voice_status_audio_error">Audioja nuk mund të regjistrohej.</string>
+    <string name="voice_status_no_match">Nuk u kuptua. Prek mikrofonin për të provuar përsëri.</string>
+    <string name="voice_status_no_speech">Nuk u dëgjua asnjë e folur. Prek mikrofonin për të provuar përsëri.</string>
+    <string name="voice_status_busy">Njohja e të folurit është e zënë. Provo përsëri pas pak.</string>
+    <string name="voice_status_too_many_requests">Shumë kërkesa. Provo përsëri më vonë.</string>
+    <string name="voice_status_service_disconnected">Shërbimi i të folurit u shkëput. Prek mikrofonin për të provuar përsëri.</string>
 </resources>

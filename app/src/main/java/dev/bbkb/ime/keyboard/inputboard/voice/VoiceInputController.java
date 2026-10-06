@@ -57,7 +57,8 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
             isInVoiceMode = false;
             cancelVoiceInput();
         } else {
-            // Not in voice mode, open it
+            // Not in voice mode, open it. show() refuses when there is no recognition service and
+            // puts the mode back (onNoRecognitionService), so a refused open latches nothing.
             if (BuildConfig.DEBUG) android.util.Log.d("VoiceInput", "toggleVoiceInput: opening voice");
             isInVoiceMode = true;
             show();
@@ -201,7 +202,30 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
         if (stopIfListening(this.mRecognitionManager.getMode())) {
             return;
         }
+        if (!VoiceRecognitionAvailability.hasRecognitionService(this.mContext)) {
+            // The service went away while the board was up: say so instead of starting a
+            // session the platform can only fail.
+            noticeNoRecognitionService();
+            return;
+        }
         this.mRecognitionManager.startDictation();
+    }
+
+    /**
+     * The gate every way of opening voice input asks first. With built-in voice input on and no
+     * recognition service to bind, it shows the "No selected voice recognition service" notice and
+     * answers false, and the caller opens nothing. With built-in voice input off, opening hands off
+     * to the system voice keyboard, which needs no recogniser of ours, so it answers true.
+     */
+    public boolean ensureRecognitionService() {
+        if (!SettingsManager.getInstance().getSettingsValues().isVoiceInputEnabled) {
+            return true;
+        }
+        if (VoiceRecognitionAvailability.hasRecognitionService(this.mContext)) {
+            return true;
+        }
+        noticeNoRecognitionService();
+        return false;
     }
 
     private boolean stopIfListening(VoiceRecognitionManager.Mode aVar) {
@@ -316,6 +340,77 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
     }
 
     /**
+     * No recognition service (KEY2, 2026-10-06: the mic key opened a board the UIM bar then hid,
+     * voice mode stayed latched on, and the user was told nothing). If the board is up it stays up,
+     * idle, and says so; otherwise nothing opens, voice mode goes back off so the next press is a
+     * fresh open rather than a "close" of nothing, and the notice appears on screen instead.
+     *
+     * @return whether the board is up (and so still open)
+     */
+    private boolean noticeNoRecognitionService() {
+        if (BuildConfig.DEBUG) android.util.Log.d("VoiceInput", "no recognition service");
+        if (isViewShowing()) {
+            showNotice(R.string.voice_status_no_recognition_service);
+            return true;
+        }
+        this.isInVoiceMode = false;
+        showToast(R.string.voice_status_no_recognition_service);
+        return false;
+    }
+
+    /**
+     * A started session found no service. Unlike the gate, this arrives after the open was
+     * reported, so a board that is no longer up is reported closed too, or the coordinator would
+     * spend the next press "closing" it.
+     */
+    @Override
+    public void onNoRecognitionService() {
+        if (noticeNoRecognitionService() || this.ime == null) {
+            return;
+        }
+        dev.bbkb.ime.keyboard.inputboard.UnifiedInputBoardManager unifiedManager =
+                this.ime.getKeyboardSwitcher().getUnifiedInputBoardManager();
+        if (unifiedManager != null) {
+            unifiedManager.reportBoardClosed(KEY_CODE);
+        }
+    }
+
+    @Override
+    public void onRecognitionError(int messageRes) {
+        // Only while the board is up: a session whose board has gone has no one to tell.
+        if (isViewShowing()) {
+            showNotice(messageRes);
+        }
+    }
+
+    /** Partial transcription, shown in the editor as composing text until the final result replaces it. */
+    @Override
+    public void onPartialResult(String text) {
+        if (this.ime != null) {
+            this.ime.uiUpdateHandler.postSetComposingText(text);
+        }
+    }
+
+    @Override
+    public void onDictationAbandoned() {
+        if (this.ime != null) {
+            this.ime.uiUpdateHandler.finishVoiceComposingText();
+        }
+    }
+
+    /** The board's status line when it has one (Material); a toast under the styles that do not. */
+    private void showNotice(int messageRes) {
+        if (hasView() && this.mVoiceInputView.showStatusMessage(messageRes)) {
+            return;
+        }
+        showToast(messageRes);
+    }
+
+    private void showToast(int messageRes) {
+        android.widget.Toast.makeText(this.mContext, messageRes, android.widget.Toast.LENGTH_SHORT).show();
+    }
+
+    /**
      * Overrides the {@link AbstractBoardController} guard rather than implementing {@link #onHide()}:
      * this must run even when the view is not showing. A recognizer session can outlive its view
      * (§5.6 item 5), and UIM-11 was exactly the case where a lifecycle-path hide skipped the cancel
@@ -355,6 +450,11 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
         boolean voiceEnabled = SettingsManager.getInstance().getSettingsValues().isVoiceInputEnabled;
         if (BuildConfig.DEBUG) android.util.Log.d("VoiceInput", "isVoiceInputEnabled=" + voiceEnabled);
         if (voiceEnabled) {
+            // Every opener comes through here: the mic key's toggle, the on-screen -27/-7 key and
+            // the UIM bar. No service means no board, and the notice instead.
+            if (!isViewShowing() && !ensureRecognitionService()) {
+                return;
+            }
             if (BuildConfig.DEBUG) android.util.Log.d("VoiceInput", "Calling showVoiceView() to show voice input");
             showVoiceView();
         } else {

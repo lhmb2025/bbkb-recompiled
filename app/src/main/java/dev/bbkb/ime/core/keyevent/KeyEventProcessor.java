@@ -633,6 +633,10 @@ public class KeyEventProcessor {
             releaseConsumedBoardKey(keyEventRemapped);
             if (!ime.isInputActive() || !ime.isInputViewShown()) {
                 ime.getHardwareKeys().launchVoiceAssistant();
+            } else if (ime.getHardwareKeys().voiceKeyRefused()) {
+                // No recognition service (KEY2, 2026-10-06). The notice is already up; the press
+                // opens nothing — not the board, and not the UIM bar the coordinator's open path
+                // would raise first — and, like every other end of this branch, types nothing.
             } else {
                 UnifiedInputBoardManager unifiedManager = ime.getKeyboardSwitcher().getUnifiedInputBoardManager();
                 if (unifiedManager != null && ime.isUimEnabled()) {

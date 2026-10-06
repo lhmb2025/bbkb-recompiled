@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Mewnbwn llais</string>
     <string name="settings_voice_prefer_offline_summary">Defnyddio adnabod ar y ddyfais pan fo ar gael</string>
     <string name="settings_voice_prefer_offline_title">Ffafrio adnabod all-lein</string>
+    <string name="settings_voice_show_partial_results_summary">Dangos yr hyn a glywir tra byddwch yn dal i siarad, yna rhoi\'r canlyniad terfynol yn ei le</string>
+    <string name="settings_voice_show_partial_results_title">Dangos geiriau wrth i chi siarad</string>
     <string name="settings_voice_use_keyboard_lang_summary">Defnyddio iaith bresennol y bysellfwrdd ar gyfer mewnbwn llais</string>
     <string name="settings_voice_use_keyboard_lang_title">Defnyddio iaith y bysellfwrdd</string>
     <string name="voice_input_lang_pack_available_offline_mode">Llwythwch y model iaith ar gyfer %1$s i lawr i\'w ddefnyddio all-lein, neu cysylltwch â Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Dim geiriadur %1$s eto. I\'w lawrlwytho: Gosodiadau BBKB › Iaith.</string>
     <string name="dictionary_required_to_type">Mae angen geiriadur %1$s i deipio. I\'w lawrlwytho: Gosodiadau BBKB › Iaith.</string>
     <string name="voice_status_language_unsupported">Nid yw mewnbwn llais ar gael ar gyfer %1$s. Newidiwch iaith y mewnbwn llais yng Ngosodiadau BBKB.</string>
+    <string name="voice_status_no_recognition_service">Dim gwasanaeth adnabod llais wedi\'i ddewis</string>
+    <string name="voice_status_network_error">Problem rhwydwaith. Gwiriwch eich cysylltiad.</string>
+    <string name="voice_status_audio_error">Methu recordio sain.</string>
+    <string name="voice_status_no_match">Heb ddeall hynny. Tapiwch y meic i geisio eto.</string>
+    <string name="voice_status_no_speech">Ni chlywyd unrhyw leferydd. Tapiwch y meic i geisio eto.</string>
+    <string name="voice_status_busy">Mae adnabod lleferydd yn brysur. Ceisiwch eto mewn munud.</string>
+    <string name="voice_status_too_many_requests">Gormod o geisiadau. Ceisiwch eto yn nes ymlaen.</string>
+    <string name="voice_status_service_disconnected">Mae\'r gwasanaeth lleferydd wedi datgysylltu. Tapiwch y meic i geisio eto.</string>
 </resources>

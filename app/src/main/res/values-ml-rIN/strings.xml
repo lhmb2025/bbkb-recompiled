@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">വോയ്‌സ് ഇൻപുട്ട്</string>
     <string name="settings_voice_prefer_offline_summary">ലഭ്യമാകുമ്പോൾ ഉപകരണത്തിലെ തിരിച്ചറിയൽ ഉപയോഗിക്കുക</string>
     <string name="settings_voice_prefer_offline_title">ഓഫ്‌ലൈൻ തിരിച്ചറിയലിന് മുൻഗണന</string>
+    <string name="settings_voice_show_partial_results_summary">നിങ്ങൾ സംസാരിച്ചുകൊണ്ടിരിക്കുമ്പോൾ തന്നെ കേട്ടത് കാണിക്കുക, തുടർന്ന് അന്തിമ ഫലം ഉപയോഗിച്ച് അത് മാറ്റിസ്ഥാപിക്കുക</string>
+    <string name="settings_voice_show_partial_results_title">സംസാരിക്കുമ്പോൾ വാക്കുകൾ കാണിക്കുക</string>
     <string name="settings_voice_use_keyboard_lang_summary">വോയ്‌സ് ഇൻപുട്ടിന് നിലവിലെ കീബോർഡ് ഭാഷ ഉപയോഗിക്കുക</string>
     <string name="settings_voice_use_keyboard_lang_title">കീബോർഡ് ഭാഷ ഉപയോഗിക്കുക</string>
     <string name="voice_input_lang_pack_available_offline_mode">ഓഫ്‌ലൈൻ ഉപയോഗത്തിനായി %1$s-നുള്ള ഭാഷാ മോഡൽ ഡൗൺലോഡ് ചെയ്യുകയോ Wi-Fi-യിലേക്ക് കണക്റ്റ് ചെയ്യുകയോ ചെയ്യുക.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">%1$s നിഘണ്ടു ഇതുവരെ ഇല്ല. BBKB ക്രമീകരണങ്ങൾ › ഭാഷ എന്നതിൽ ഇത് ഡൗൺലോഡ് ചെയ്യുക.</string>
     <string name="dictionary_required_to_type">ടൈപ്പ് ചെയ്യാൻ %1$s നിഘണ്ടു വേണം. BBKB ക്രമീകരണങ്ങൾ › ഭാഷ എന്നതിൽ ഇത് ഡൗൺലോഡ് ചെയ്യുക.</string>
     <string name="voice_status_language_unsupported">%1$s ഭാഷയ്ക്ക് വോയ്‌സ് ഇൻപുട്ട് ലഭ്യമല്ല. BBKB ക്രമീകരണങ്ങളിൽ വോയ്‌സ് ഇൻപുട്ട് ഭാഷ മാറ്റുക.</string>
+    <string name="voice_status_no_recognition_service">വോയ്‌സ് തിരിച്ചറിയൽ സേവനമൊന്നും തിരഞ്ഞെടുത്തിട്ടില്ല</string>
+    <string name="voice_status_network_error">നെറ്റ്‌വർക്ക് പ്രശ്‌നം. നിങ്ങളുടെ കണക്ഷൻ പരിശോധിക്കുക.</string>
+    <string name="voice_status_audio_error">ഓഡിയോ റെക്കോർഡ് ചെയ്യാനായില്ല.</string>
+    <string name="voice_status_no_match">മനസ്സിലായില്ല. വീണ്ടും ശ്രമിക്കാൻ മൈക്ക് ടാപ്പ് ചെയ്യുക.</string>
+    <string name="voice_status_no_speech">സംസാരമൊന്നും കേട്ടില്ല. വീണ്ടും ശ്രമിക്കാൻ മൈക്ക് ടാപ്പ് ചെയ്യുക.</string>
+    <string name="voice_status_busy">സംഭാഷണം തിരിച്ചറിയൽ തിരക്കിലാണ്. അൽപ്പസമയത്തിന് ശേഷം വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="voice_status_too_many_requests">വളരെയധികം അഭ്യർത്ഥനകൾ. പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="voice_status_service_disconnected">സംഭാഷണ സേവനം വിച്ഛേദിക്കപ്പെട്ടു. വീണ്ടും ശ്രമിക്കാൻ മൈക്ക് ടാപ്പ് ചെയ്യുക.</string>
 </resources>

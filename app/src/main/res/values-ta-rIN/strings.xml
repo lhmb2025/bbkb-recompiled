@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">குரல் உள்ளீடு</string>
     <string name="settings_voice_prefer_offline_summary">கிடைக்கும்போது சாதனத்திலேயே அங்கீகாரத்தைப் பயன்படுத்து</string>
     <string name="settings_voice_prefer_offline_title">ஆஃப்லைன் அங்கீகாரத்தை விரும்பு</string>
+    <string name="settings_voice_show_partial_results_summary">நீங்கள் பேசிக்கொண்டிருக்கும்போதே கேட்டதைக் காட்டி, பின்னர் அதை இறுதி முடிவால் மாற்று</string>
+    <string name="settings_voice_show_partial_results_title">பேசும்போதே சொற்களைக் காட்டு</string>
     <string name="settings_voice_use_keyboard_lang_summary">குரல் உள்ளீட்டிற்கு தற்போதைய விசைப்பலகை மொழியைப் பயன்படுத்து</string>
     <string name="settings_voice_use_keyboard_lang_title">விசைப்பலகை மொழியைப் பயன்படுத்து</string>
     <string name="voice_input_lang_pack_available_offline_mode">ஆஃப்லைன் பயன்பாட்டிற்கு %1$s க்கான மொழி மாதிரியைப் பதிவிறக்கவும் அல்லது Wi-Fi உடன் இணைக்கவும்.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">%1$s அகராதி இன்னும் இல்லை. BBKB Settings › மொழி என்பதில் அதைப் பதிவிறக்கவும்.</string>
     <string name="dictionary_required_to_type">தட்டச்சு செய்ய %1$s அகராதி தேவை. BBKB Settings › மொழி என்பதில் அதைப் பதிவிறக்கவும்.</string>
     <string name="voice_status_language_unsupported">%1$s மொழிக்குக் குரல் உள்ளீடு கிடைக்காது. BBKB Settings என்பதில் குரல் உள்ளீட்டு மொழியை மாற்றவும்.</string>
+    <string name="voice_status_no_recognition_service">குரல் அறிதல் சேவை எதுவும் தேர்ந்தெடுக்கப்படவில்லை</string>
+    <string name="voice_status_network_error">நெட்வொர்க் சிக்கல். உங்கள் இணைப்பைச் சரிபார்க்கவும்.</string>
+    <string name="voice_status_audio_error">ஆடியோவைப் பதிவுசெய்ய முடியவில்லை.</string>
+    <string name="voice_status_no_match">புரியவில்லை. மீண்டும் முயல மைக்கைத் தட்டவும்.</string>
+    <string name="voice_status_no_speech">பேச்சு எதுவும் கேட்கவில்லை. மீண்டும் முயல மைக்கைத் தட்டவும்.</string>
+    <string name="voice_status_busy">பேச்சு அறிதல் பிஸியாக உள்ளது. சிறிது நேரத்தில் மீண்டும் முயலவும்.</string>
+    <string name="voice_status_too_many_requests">அதிகமான கோரிக்கைகள். பிறகு மீண்டும் முயலவும்.</string>
+    <string name="voice_status_service_disconnected">பேச்சுச் சேவையின் இணைப்பு துண்டிக்கப்பட்டது. மீண்டும் முயல மைக்கைத் தட்டவும்.</string>
 </resources>

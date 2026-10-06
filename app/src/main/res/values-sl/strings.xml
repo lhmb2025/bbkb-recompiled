@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Glasovni vnos</string>
     <string name="settings_voice_prefer_offline_summary">Če je na voljo, uporabi prepoznavanje v napravi</string>
     <string name="settings_voice_prefer_offline_title">Prednostno prepoznavanje brez povezave</string>
+    <string name="settings_voice_show_partial_results_summary">Prikaži zaznano besedilo že med govorjenjem in ga nato zamenjaj s končnim rezultatom</string>
+    <string name="settings_voice_show_partial_results_title">Prikaži besede med govorjenjem</string>
     <string name="settings_voice_use_keyboard_lang_summary">Za glasovni vnos uporabi trenutni jezik tipkovnice</string>
     <string name="settings_voice_use_keyboard_lang_title">Uporabi jezik tipkovnice</string>
     <string name="voice_input_lang_pack_available_offline_mode">Prenesite jezikovni model za %1$s za uporabo brez povezave ali se povežite z omrežjem Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">%1$s: slovarja še ni. Prenesite ga v razdelku Nastavitve BBKB › Jezik.</string>
     <string name="dictionary_required_to_type">%1$s: za tipkanje potrebujete slovar. Prenesite ga v razdelku Nastavitve BBKB › Jezik.</string>
     <string name="voice_status_language_unsupported">%1$s: glasovni vnos ni na voljo. Jezik glasovnega vnosa spremenite v Nastavitvah BBKB.</string>
+    <string name="voice_status_no_recognition_service">Ni izbrane storitve za prepoznavanje glasu</string>
+    <string name="voice_status_network_error">Težava z omrežjem. Preverite povezavo.</string>
+    <string name="voice_status_audio_error">Zvoka ni bilo mogoče posneti.</string>
+    <string name="voice_status_no_match">Govor ni bil prepoznan. Dotaknite se mikrofona in poskusite znova.</string>
+    <string name="voice_status_no_speech">Govora ni bilo zaznati. Dotaknite se mikrofona in poskusite znova.</string>
+    <string name="voice_status_busy">Prepoznavanje govora je zasedeno. Poskusite znova čez trenutek.</string>
+    <string name="voice_status_too_many_requests">Preveč zahtev. Poskusite znova pozneje.</string>
+    <string name="voice_status_service_disconnected">Povezava s storitvijo za govor je bila prekinjena. Dotaknite se mikrofona in poskusite znova.</string>
 </resources>

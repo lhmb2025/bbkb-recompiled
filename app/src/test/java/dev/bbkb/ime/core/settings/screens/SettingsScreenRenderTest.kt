@@ -1275,7 +1275,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_voice_auto_start_title", "settings_voice_builtin_summary",
                 "settings_voice_builtin_title", "settings_voice_prefer_offline_summary",
                 "settings_voice_prefer_offline_title", "settings_voice_use_keyboard_lang_summary",
-                "settings_voice_use_keyboard_lang_title"
+                "settings_voice_use_keyboard_lang_title", "settings_voice_show_partial_results_summary",
+                "settings_voice_show_partial_results_title"
             ),
             literals = emptySet(),
         ),

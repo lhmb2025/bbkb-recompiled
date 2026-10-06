@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">ಧ್ವನಿ ಇನ್‌ಪುಟ್</string>
     <string name="settings_voice_prefer_offline_summary">ಲಭ್ಯವಿದ್ದಾಗ ಸಾಧನದಲ್ಲಿನ ಗುರುತಿಸುವಿಕೆಯನ್ನು ಬಳಸಿ</string>
     <string name="settings_voice_prefer_offline_title">ಆಫ್‌ಲೈನ್ ಗುರುತಿಸುವಿಕೆಗೆ ಆದ್ಯತೆ</string>
+    <string name="settings_voice_show_partial_results_summary">ನೀವು ಇನ್ನೂ ಮಾತನಾಡುತ್ತಿರುವಾಗಲೇ ಕೇಳಿದ್ದನ್ನು ತೋರಿಸಿ, ನಂತರ ಅದನ್ನು ಅಂತಿಮ ಫಲಿತಾಂಶದಿಂದ ಬದಲಾಯಿಸಿ</string>
+    <string name="settings_voice_show_partial_results_title">ಮಾತನಾಡುವಾಗ ಪದಗಳನ್ನು ತೋರಿಸಿ</string>
     <string name="settings_voice_use_keyboard_lang_summary">ಧ್ವನಿ ಇನ್‌ಪುಟ್‌ಗೆ ಪ್ರಸ್ತುತ ಕೀಬೋರ್ಡ್ ಭಾಷೆಯನ್ನು ಬಳಸಿ</string>
     <string name="settings_voice_use_keyboard_lang_title">ಕೀಬೋರ್ಡ್ ಭಾಷೆಯನ್ನು ಬಳಸಿ</string>
     <string name="voice_input_lang_pack_available_offline_mode">ಆಫ್‌ಲೈನ್ ಬಳಕೆಗಾಗಿ %1$s ಭಾಷಾ ಮಾದರಿಯನ್ನು ದಯವಿಟ್ಟು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ ಅಥವಾ Wi-Fi ಗೆ ಸಂಪರ್ಕಿಸಿ.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">%1$s ನಿಘಂಟು ಇನ್ನೂ ಇಲ್ಲ. ಇಲ್ಲಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ: BBKB ಸೆಟ್ಟಿಂಗ್‌ಗಳು › ಭಾಷೆ.</string>
     <string name="dictionary_required_to_type">ಟೈಪ್ ಮಾಡಲು %1$s ನಿಘಂಟು ಬೇಕು. ಇಲ್ಲಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ: BBKB ಸೆಟ್ಟಿಂಗ್‌ಗಳು › ಭಾಷೆ.</string>
     <string name="voice_status_language_unsupported">%1$s ಗಾಗಿ ಧ್ವನಿ ಇನ್‌ಪುಟ್ ಲಭ್ಯವಿಲ್ಲ. BBKB ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಧ್ವನಿ ಇನ್‌ಪುಟ್ ಭಾಷೆಯನ್ನು ಬದಲಿಸಿ.</string>
+    <string name="voice_status_no_recognition_service">ಯಾವುದೇ ಧ್ವನಿ ಗುರುತಿಸುವಿಕೆ ಸೇವೆಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿಲ್ಲ</string>
+    <string name="voice_status_network_error">ನೆಟ್‌ವರ್ಕ್ ಸಮಸ್ಯೆ. ನಿಮ್ಮ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ.</string>
+    <string name="voice_status_audio_error">ಆಡಿಯೋ ರೆಕಾರ್ಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</string>
+    <string name="voice_status_no_match">ಅರ್ಥವಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಲು ಮೈಕ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
+    <string name="voice_status_no_speech">ಯಾವುದೇ ಮಾತು ಕೇಳಿಸಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಲು ಮೈಕ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
+    <string name="voice_status_busy">ಮಾತು ಗುರುತಿಸುವಿಕೆ ಕಾರ್ಯನಿರತವಾಗಿದೆ. ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="voice_status_too_many_requests">ಹಲವಾರು ವಿನಂತಿಗಳು. ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="voice_status_service_disconnected">ಮಾತು ಸೇವೆಯ ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಲು ಮೈಕ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
 </resources>

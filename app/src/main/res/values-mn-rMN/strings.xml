@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Дуут оролт</string>
     <string name="settings_voice_prefer_offline_summary">Боломжтой үед төхөөрөмж дээрх таних системийг ашиглах</string>
     <string name="settings_voice_prefer_offline_title">Офлайн таних системийг илүүд үзэх</string>
+    <string name="settings_voice_show_partial_results_summary">Таныг ярьж байх үед сонсогдсоныг харуулж, дараа нь эцсийн үр дүнгээр солих</string>
+    <string name="settings_voice_show_partial_results_title">Ярьж байхад үгсийг харуулах</string>
     <string name="settings_voice_use_keyboard_lang_summary">Дуут оролтод гарын одоогийн хэлийг ашиглах</string>
     <string name="settings_voice_use_keyboard_lang_title">Гарын хэлийг ашиглах</string>
     <string name="voice_input_lang_pack_available_offline_mode">Офлайн ашиглахын тулд %1$s хэлний загварыг татаж авах эсвэл Wi-Fi-д холбогдоно уу.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">%1$s толь бичиг одоогоор алга. BBKB Тохиргоо › Хэл хэсгээс татаж авна уу.</string>
     <string name="dictionary_required_to_type">Бичихэд %1$s толь бичиг хэрэгтэй. BBKB Тохиргоо › Хэл хэсгээс татаж авна уу.</string>
     <string name="voice_status_language_unsupported">%1$s хэлэнд дуут оролт боломжгүй. Дуут оролтын хэлийг BBKB Тохиргоо хэсгээс өөрчилнө үү.</string>
+    <string name="voice_status_no_recognition_service">Дуу хоолой таних үйлчилгээ сонгоогүй байна</string>
+    <string name="voice_status_network_error">Сүлжээний асуудал. Холболтоо шалгана уу.</string>
+    <string name="voice_status_audio_error">Аудио бичиж чадсангүй.</string>
+    <string name="voice_status_no_match">Ойлгосонгүй. Дахин оролдохын тулд микрофоныг товшино уу.</string>
+    <string name="voice_status_no_speech">Яриа сонсогдсонгүй. Дахин оролдохын тулд микрофоныг товшино уу.</string>
+    <string name="voice_status_busy">Яриа таних үйлчилгээ завгүй байна. Түр хүлээгээд дахин оролдоно уу.</string>
+    <string name="voice_status_too_many_requests">Хэт олон хүсэлт. Дараа дахин оролдоно уу.</string>
+    <string name="voice_status_service_disconnected">Ярианы үйлчилгээ салгагдлаа. Дахин оролдохын тулд микрофоныг товшино уу.</string>
 </resources>

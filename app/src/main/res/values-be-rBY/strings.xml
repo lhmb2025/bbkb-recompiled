@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Галасавы ўвод</string>
     <string name="settings_voice_prefer_offline_summary">Выкарыстоўваць распазнаванне на прыладзе, калі яно даступна</string>
     <string name="settings_voice_prefer_offline_title">Аддаваць перавагу афлайн-распазнаванню</string>
+    <string name="settings_voice_show_partial_results_summary">Паказваць пачутае, пакуль вы яшчэ гаворыце, а потым замяняць яго канчатковым вынікам</string>
+    <string name="settings_voice_show_partial_results_title">Паказваць словы падчас маўлення</string>
     <string name="settings_voice_use_keyboard_lang_summary">Выкарыстоўваць бягучую мову клавіятуры для галасавога ўводу</string>
     <string name="settings_voice_use_keyboard_lang_title">Выкарыстоўваць мову клавіятуры</string>
     <string name="voice_input_lang_pack_available_offline_mode">Спампуйце моўную мадэль для %1$s, каб карыстацца ёй афлайн, або падключыцеся да Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Слоўніка для мовы %1$s пакуль няма. Спампуйце яго: Налады BBKB › Мова.</string>
     <string name="dictionary_required_to_type">Каб друкаваць, для мовы %1$s патрэбны слоўнік. Спампуйце яго: Налады BBKB › Мова.</string>
     <string name="voice_status_language_unsupported">Галасавы ўвод недаступны для мовы %1$s. Змяніце мову галасавога ўводу ў Наладах BBKB.</string>
+    <string name="voice_status_no_recognition_service">Не выбрана служба распазнавання голасу</string>
+    <string name="voice_status_network_error">Праблема з сеткай. Праверце падключэнне.</string>
+    <string name="voice_status_audio_error">Не ўдалося запісаць аўдыя.</string>
+    <string name="voice_status_no_match">Не ўдалося разабраць. Націсніце мікрафон, каб паспрабаваць зноў.</string>
+    <string name="voice_status_no_speech">Маўленне не выяўлена. Націсніце мікрафон, каб паспрабаваць зноў.</string>
+    <string name="voice_status_busy">Распазнаванне маўлення занята. Паспрабуйце зноў праз хвілінку.</string>
+    <string name="voice_status_too_many_requests">Занадта шмат запытаў. Паспрабуйце пазней.</string>
+    <string name="voice_status_service_disconnected">Служба маўлення адключылася. Націсніце мікрафон, каб паспрабаваць зноў.</string>
 </resources>

@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Hangbevitel</string>
     <string name="settings_voice_prefer_offline_summary">Eszközön futó felismerés használata, ha elérhető</string>
     <string name="settings_voice_prefer_offline_title">Offline felismerés előnyben részesítése</string>
+    <string name="settings_voice_show_partial_results_summary">A hallott szöveg megjelenítése már beszéd közben, majd lecserélése a végleges eredményre</string>
+    <string name="settings_voice_show_partial_results_title">Szavak megjelenítése beszéd közben</string>
     <string name="settings_voice_use_keyboard_lang_summary">Az aktuális billentyűzetnyelv használata a hangbevitelhez</string>
     <string name="settings_voice_use_keyboard_lang_title">Billentyűzetnyelv használata</string>
     <string name="voice_input_lang_pack_available_offline_mode">A(z) %1$s alkalmazás offline használatához töltse le a nyelvi modellt, vagy kapcsolódjon wifihez.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Még nincs %1$s szótár. Töltse le itt: BBKB beállításai › Nyelv.</string>
     <string name="dictionary_required_to_type">Gépeléshez %1$s szótár kell. Töltse le itt: BBKB beállításai › Nyelv.</string>
     <string name="voice_status_language_unsupported">A hangbevitel %1$s nyelven nem érhető el. Módosítsa a hangbevitel nyelvét a BBKB beállításaiban.</string>
+    <string name="voice_status_no_recognition_service">Nincs kiválasztott hangfelismerő szolgáltatás</string>
+    <string name="voice_status_network_error">Hálózati probléma. Ellenőrizze a kapcsolatot.</string>
+    <string name="voice_status_audio_error">Nem sikerült hangot rögzíteni.</string>
+    <string name="voice_status_no_match">Nem sikerült megérteni. Az újrapróbálkozáshoz koppintson a mikrofonra.</string>
+    <string name="voice_status_no_speech">Nem hallatszott beszéd. Az újrapróbálkozáshoz koppintson a mikrofonra.</string>
+    <string name="voice_status_busy">A beszédfelismerés foglalt. Próbálja újra egy pillanat múlva.</string>
+    <string name="voice_status_too_many_requests">Túl sok kérés. Próbálja újra később.</string>
+    <string name="voice_status_service_disconnected">Megszakadt a kapcsolat a beszédszolgáltatással. Az újrapróbálkozáshoz koppintson a mikrofonra.</string>
 </resources>

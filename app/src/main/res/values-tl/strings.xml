@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Voice input</string>
     <string name="settings_voice_prefer_offline_summary">Gamitin ang on-device na recognition kapag available</string>
     <string name="settings_voice_prefer_offline_title">Mas gusto ang offline na recognition</string>
+    <string name="settings_voice_show_partial_results_summary">Ipakita ang naririnig habang nagsasalita ka pa, at pagkatapos ay palitan ito ng huling resulta</string>
+    <string name="settings_voice_show_partial_results_title">Ipakita ang mga salita habang nagsasalita ka</string>
     <string name="settings_voice_use_keyboard_lang_summary">Gamitin ang kasalukuyang wika ng keyboard para sa voice input</string>
     <string name="settings_voice_use_keyboard_lang_title">Gamitin ang wika ng keyboard</string>
     <string name="voice_input_lang_pack_available_offline_mode">Pakidownload ang language model para sa %1$s para magamit offline o kumonekta sa Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Wala pang diksyunaryo ng %1$s. I-download ito sa Mga Setting ng BBKB › Wika.</string>
     <string name="dictionary_required_to_type">Kailangan ang diksyunaryo ng %1$s para mag-type. I-download ito sa Mga Setting ng BBKB › Wika.</string>
     <string name="voice_status_language_unsupported">Hindi available ang voice input para sa %1$s. Palitan ang wika ng voice input sa Mga Setting ng BBKB.</string>
+    <string name="voice_status_no_recognition_service">Walang napiling serbisyo ng voice recognition</string>
+    <string name="voice_status_network_error">Problema sa network. Tingnan ang iyong koneksyon.</string>
+    <string name="voice_status_audio_error">Hindi makapag-record ng audio.</string>
+    <string name="voice_status_no_match">Hindi naintindihan. I-tap ang mic para subukang muli.</string>
+    <string name="voice_status_no_speech">Walang narinig na pagsasalita. I-tap ang mic para subukang muli.</string>
+    <string name="voice_status_busy">Abala ang speech recognition. Subukang muli maya-maya.</string>
+    <string name="voice_status_too_many_requests">Masyadong maraming request. Subukang muli mamaya.</string>
+    <string name="voice_status_service_disconnected">Nadiskonekta ang speech service. I-tap ang mic para subukang muli.</string>
 </resources>

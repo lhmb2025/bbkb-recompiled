@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Ahots bidezko idazketa</string>
     <string name="settings_voice_prefer_offline_summary">Erabili gailuko ezagutza erabilgarri dagoenean</string>
     <string name="settings_voice_prefer_offline_title">Hobetsi lineaz kanpoko ezagutza</string>
+    <string name="settings_voice_show_partial_results_summary">Erakutsi entzundakoa oraindik hitz egiten ari zaren bitartean, eta ordeztu gero azken emaitzarekin</string>
+    <string name="settings_voice_show_partial_results_title">Erakutsi hitzak hitz egin ahala</string>
     <string name="settings_voice_use_keyboard_lang_summary">Erabili teklatuaren uneko hizkuntza ahots bidezko idazketarako</string>
     <string name="settings_voice_use_keyboard_lang_title">Erabili teklatuaren hizkuntza</string>
     <string name="voice_input_lang_pack_available_offline_mode">Deskargatu %1$s hizkuntzaren eredua lineaz kanpo erabiltzeko, edo konektatu Wi-Fi sarera.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Oraindik ez dago %1$s hiztegirik. Deskargatu hemen: BBKB ezarpenak › Hizkuntza.</string>
     <string name="dictionary_required_to_type">%1$s hizkuntzan idazteko, deskargatu hiztegia hemen: BBKB ezarpenak › Hizkuntza.</string>
     <string name="voice_status_language_unsupported">Ahots bidezko idazketa ez dago erabilgarri %1$s hizkuntzarako. Aldatu ahotsaren hizkuntza BBKB ezarpenak atalean.</string>
+    <string name="voice_status_no_recognition_service">Ez da hautatu ahotsa ezagutzeko zerbitzurik</string>
+    <string name="voice_status_network_error">Sareko arazoa. Egiaztatu konexioa.</string>
+    <string name="voice_status_audio_error">Ezin izan da audioa grabatu.</string>
+    <string name="voice_status_no_match">Ez da ulertu. Sakatu mikrofonoa berriro saiatzeko.</string>
+    <string name="voice_status_no_speech">Ez da ahotsik entzun. Sakatu mikrofonoa berriro saiatzeko.</string>
+    <string name="voice_status_busy">Hizketa-ezagutza lanpetuta dago. Saiatu berriro une batean.</string>
+    <string name="voice_status_too_many_requests">Eskaera gehiegi. Saiatu berriro geroago.</string>
+    <string name="voice_status_service_disconnected">Hizketa-zerbitzua deskonektatu egin da. Sakatu mikrofonoa berriro saiatzeko.</string>
 </resources>

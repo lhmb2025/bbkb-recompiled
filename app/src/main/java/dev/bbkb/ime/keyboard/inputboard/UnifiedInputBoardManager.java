@@ -626,7 +626,10 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                     if (!voiceController.isInVoiceMode()) {
                         voiceController.toggleVoiceInput();
                     }
-                    setActiveComponent(voiceComponent);
+                    // Report the result, as the branch below does: with no recognition service
+                    // the open is refused and voice mode stays off, and reporting voice open
+                    // anyway made the next press a "close" of nothing.
+                    setActiveComponent(voiceController.isInVoiceMode() ? voiceComponent : null);
                 }
             } else {
                 // Every other board, emoji included: EmojiBoardController answers isShowing()

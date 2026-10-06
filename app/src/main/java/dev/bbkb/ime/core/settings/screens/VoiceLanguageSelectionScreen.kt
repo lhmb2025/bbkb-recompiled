@@ -315,9 +315,14 @@ private fun fetchLanguagesModernForSelection(
             override fun onSupportResult(support: RecognitionSupport) {
                 val installedLanguages = support.installedOnDeviceLanguages
                 val supportedLanguages = support.supportedOnDeviceLanguages
-                val allLanguages = (installedLanguages + supportedLanguages).distinct()
+                // The languages the service recognises over the network. Leaving them out listed
+                // only what could run on the device, so a recogniser with few or no on-device
+                // models showed a short list (or the built-in fallback) for languages it does
+                // support. Anything not installed lands under "Requires Network".
+                val onlineLanguages = support.onlineLanguages
+                val allLanguages = (installedLanguages + supportedLanguages + onlineLanguages).distinct()
 
-                if (BuildConfig.DEBUG) Log.d(TAG, "Modern API: Found ${installedLanguages.size} offline, ${supportedLanguages.size} supported")
+                if (BuildConfig.DEBUG) Log.d(TAG, "Modern API: Found ${installedLanguages.size} offline, ${supportedLanguages.size} supported, ${onlineLanguages.size} online")
 
                 android.os.Handler(android.os.Looper.getMainLooper()).post {
                     if (allLanguages.isNotEmpty()) {

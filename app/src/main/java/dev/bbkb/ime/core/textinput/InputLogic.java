@@ -79,6 +79,13 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
     boolean mLastCommitFromVoice;
 
+    /**
+     * The editor's composing region holds a dictation partial result, not a typed word. The
+     * composing tracker knows nothing of it: the final result's {@link #commitVoiceInput} replaces
+     * it, and {@link #finishVoiceComposingText} settles it when no final result comes.
+     */
+    private boolean mVoiceComposing;
+
     boolean mIsAutoCorrectActive;
 
     private PunctuationController mPunctuationController;
@@ -348,6 +355,8 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
      */
     public InputEventContext commitVoiceInput(SettingsValues c0804d, InputEvent event, int i, boolean z, UIUpdateHandler handlerC0650c) {
         this.mHasModifiedEvent = false;
+        // The commit below replaces the composing region, a dictation partial included.
+        this.mVoiceComposing = false;
         String string = event.getOutputText().toString();
         InputEventContext c0920g = new InputEventContext(c0804d, event, SystemClock.uptimeMillis(), this.mCommitType, getShiftState(c0804d, i));
         this.mRichInputConnection.beginBatchEdit();
@@ -382,6 +391,50 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         c0920g.markKeyHandled();
         c0920g.setUiUpdateMode(1);
         return c0920g;
+    }
+
+    /**
+     * Show a dictation partial result as composing text; the final result's commit replaces it.
+     *
+     * <p>A word the user was typing owns the composing region, so it is committed first, exactly
+     * as {@link #commitVoiceInput} commits it when a final result arrives with no partial before
+     * it — otherwise the partial would overwrite it and the composing tracker would go on
+     * believing it was still there. A voice partial never makes the tracker compose, so "the
+     * tracker is composing" always means a typed word holds the region.
+     */
+    public void setVoiceComposingText(String text) {
+        this.mRichInputConnection.beginBatchEdit();
+        if (this.mComposingTracker.isComposing()) {
+            autoCorrectAndCommit(this.mIme.getSettingsValues(), "", this.mIme.uiUpdateHandler, InputSource.INTERNAL);
+            if (this.mComposingTracker.isComposing()) {
+                // Nothing was committable: retire the word as it stands.
+                this.mRichInputConnection.finishComposingText();
+                clearComposingText(true);
+            }
+            this.mVoiceComposing = false;
+        }
+        if (this.mVoiceComposing || !TextUtils.isEmpty(text)) {
+            this.mVoiceComposing = true;
+            this.mRichInputConnection.setComposingText(text, 1);
+        }
+        this.mRichInputConnection.endBatchEdit();
+    }
+
+    /**
+     * The dictation session ended without a final result (cancelled, an error, nothing heard):
+     * leave the partial text the user watched appear in the editor, as ordinary text. If a typed
+     * word has taken the composing region over since, it is not the partial and is left alone.
+     */
+    public void finishVoiceComposingText() {
+        if (!this.mVoiceComposing) {
+            return;
+        }
+        this.mVoiceComposing = false;
+        if (!this.mComposingTracker.isComposing()) {
+            this.mRichInputConnection.beginBatchEdit();
+            this.mRichInputConnection.finishComposingText();
+            this.mRichInputConnection.endBatchEdit();
+        }
     }
 
     private boolean isUnknownWord(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {

@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Sesli giriş</string>
     <string name="settings_voice_prefer_offline_summary">Mümkün olduğunda cihaz üzerinde tanımayı kullan</string>
     <string name="settings_voice_prefer_offline_title">Çevrimdışı tanımayı tercih et</string>
+    <string name="settings_voice_show_partial_results_summary">Siz konuşurken duyulanı göster, ardından bunu nihai sonuçla değiştir</string>
+    <string name="settings_voice_show_partial_results_title">Konuşurken kelimeleri göster</string>
     <string name="settings_voice_use_keyboard_lang_summary">Sesli giriş için geçerli klavye dilini kullan</string>
     <string name="settings_voice_use_keyboard_lang_title">Klavye dilini kullan</string>
     <string name="voice_input_lang_pack_available_offline_mode">Çevrimdışı kullanım için lütfen %1$s dil modelini indirin veya Wi-Fi\'a bağlanın.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">%1$s sözlüğü henüz yok. BBKB Ayarları › Dil bölümünden indirin.</string>
     <string name="dictionary_required_to_type">%1$s ile yazmak için sözlük gerekli. BBKB Ayarları › Dil bölümünden indirin.</string>
     <string name="voice_status_language_unsupported">Sesli giriş %1$s için kullanılamıyor. Sesli giriş dilini BBKB Ayarları\'ndan değiştirin.</string>
+    <string name="voice_status_no_recognition_service">Seçili ses tanıma hizmeti yok</string>
+    <string name="voice_status_network_error">Ağ sorunu. Bağlantınızı kontrol edin.</string>
+    <string name="voice_status_audio_error">Ses kaydedilemedi.</string>
+    <string name="voice_status_no_match">Anlaşılamadı. Tekrar denemek için mikrofona dokunun.</string>
+    <string name="voice_status_no_speech">Konuşma algılanmadı. Tekrar denemek için mikrofona dokunun.</string>
+    <string name="voice_status_busy">Konuşma tanıma meşgul. Biraz sonra tekrar deneyin.</string>
+    <string name="voice_status_too_many_requests">Çok fazla istek. Daha sonra tekrar deneyin.</string>
+    <string name="voice_status_service_disconnected">Konuşma hizmetinin bağlantısı kesildi. Tekrar denemek için mikrofona dokunun.</string>
 </resources>

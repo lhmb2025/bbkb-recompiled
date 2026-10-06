@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Гласовни унос</string>
     <string name="settings_voice_prefer_offline_summary">Користи препознавање на уређају када је доступно</string>
     <string name="settings_voice_prefer_offline_title">Предност препознавању ван мреже</string>
+    <string name="settings_voice_show_partial_results_summary">Приказуј оно што се чује док још говорите, а затим то замени коначним резултатом</string>
+    <string name="settings_voice_show_partial_results_title">Приказуј речи док говорите</string>
     <string name="settings_voice_use_keyboard_lang_summary">Zа гласовни унос користи тренутни језик тастатуре</string>
     <string name="settings_voice_use_keyboard_lang_title">Користи језик тастатуре</string>
     <string name="voice_input_lang_pack_available_offline_mode">Преузмите језички модел за %1$s за коришћење ван мреже или се повежите на Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">%1$s: још нема речника. Преузмите га у одељку Поставке за BBKB › Језик.</string>
     <string name="dictionary_required_to_type">%1$s: за куцање је потребан речник. Преузмите га у одељку Поставке за BBKB › Језик.</string>
     <string name="voice_status_language_unsupported">%1$s: гласовни унос није доступан. Промените језик гласовног уноса у Поставкама за BBKB.</string>
+    <string name="voice_status_no_recognition_service">Није изабрана услуга за препознавање гласа</string>
+    <string name="voice_status_network_error">Проблем са мрежом. Проверите везу.</string>
+    <string name="voice_status_audio_error">Снимање звука није успело.</string>
+    <string name="voice_status_no_match">Није препознато. Додирните микрофон да бисте покушали поново.</string>
+    <string name="voice_status_no_speech">Говор није откривен. Додирните микрофон да бисте покушали поново.</string>
+    <string name="voice_status_busy">Препознавање говора је заузето. Покушајте поново за тренутак.</string>
+    <string name="voice_status_too_many_requests">Превише захтева. Покушајте поново касније.</string>
+    <string name="voice_status_service_disconnected">Веза са услугом за говор је прекинута. Додирните микрофон да бисте покушали поново.</string>
 </resources>

@@ -132,6 +132,7 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_voice_auto_start_title, "voice auto start listening", SettingsRoute.VoiceInput.route, TYPING, "voice_input_auto_start"),
         SearchableSetting(R.string.settings_voice_use_keyboard_lang_title, "voice language keyboard", SettingsRoute.VoiceInput.route, TYPING, "voice_input_use_input_language"),
         SearchableSetting(R.string.settings_voice_prefer_offline_title, "voice offline on device", SettingsRoute.VoiceInput.route, TYPING, "voice_input_prefer_offline"),
+        SearchableSetting(R.string.settings_voice_show_partial_results_title, "voice dictation partial live words speak", SettingsRoute.VoiceInput.route, TYPING, "voice_input_show_partial_results"),
         // "Block offensive words" lives on the voice screen: masking the recogniser's results
         // (EXTRA_MASK_OFFENSIVE_WORDS) is all it does. Frozen anchor, moved route and category —
         // a result for "profanity" must now land under Typing & input, on Voice input.

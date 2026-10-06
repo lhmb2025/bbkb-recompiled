@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">語音輸入</string>
     <string name="settings_voice_prefer_offline_summary">在可用時採用裝置端辨識</string>
     <string name="settings_voice_prefer_offline_title">優先使用離線辨識</string>
+    <string name="settings_voice_show_partial_results_summary">在你說話時即顯示辨識到的內容，然後以最終結果取代</string>
+    <string name="settings_voice_show_partial_results_title">說話時顯示文字</string>
     <string name="settings_voice_use_keyboard_lang_summary">語音輸入使用目前的鍵盤語言</string>
     <string name="settings_voice_use_keyboard_lang_title">使用鍵盤語言</string>
     <string name="voice_input_lang_pack_available_offline_mode">請下載 %1$s 的語言模型以供離線使用，或連接 Wi-Fi。</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">暫時未有%1$s詞典。請前往「BBKB 設定 › 語言」下載。</string>
     <string name="dictionary_required_to_type">%1$s需要詞典才可輸入。請前往「BBKB 設定 › 語言」下載。</string>
     <string name="voice_status_language_unsupported">語音輸入不支援%1$s。請在「BBKB 設定」中更改語音輸入語言。</string>
+    <string name="voice_status_no_recognition_service">未選擇語音識別服務</string>
+    <string name="voice_status_network_error">網絡有問題。請檢查網絡連線。</string>
+    <string name="voice_status_audio_error">無法錄製音訊。</string>
+    <string name="voice_status_no_match">聽不清楚。輕觸麥克風即可重試。</string>
+    <string name="voice_status_no_speech">未偵測到語音。輕觸麥克風即可重試。</string>
+    <string name="voice_status_busy">語音識別服務正忙。請稍候片刻再試。</string>
+    <string name="voice_status_too_many_requests">要求過多。請稍後再試。</string>
+    <string name="voice_status_service_disconnected">語音服務已中斷連線。輕觸麥克風即可重試。</string>
 </resources>

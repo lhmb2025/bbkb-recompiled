@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Hlasové zadávání</string>
     <string name="settings_voice_prefer_offline_summary">Používat rozpoznávání v zařízení, je-li k dispozici</string>
     <string name="settings_voice_prefer_offline_title">Upřednostnit rozpoznávání offline</string>
+    <string name="settings_voice_show_partial_results_summary">Zobrazovat zachycený text ještě během mluvení a poté jej nahradit konečným výsledkem</string>
+    <string name="settings_voice_show_partial_results_title">Zobrazovat slova během mluvení</string>
     <string name="settings_voice_use_keyboard_lang_summary">Používat pro hlasové zadávání aktuální jazyk klávesnice</string>
     <string name="settings_voice_use_keyboard_lang_title">Používat jazyk klávesnice</string>
     <string name="voice_input_lang_pack_available_offline_mode">Stáhněte si model jazyka %1$s pro použití v režimu offline nebo se připojte k síti Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Slovník pro jazyk %1$s zatím chybí. Stáhněte ho v Nastavení BBKB › Jazyk.</string>
     <string name="dictionary_required_to_type">Pro psaní v jazyce %1$s stáhněte slovník v Nastavení BBKB › Jazyk.</string>
     <string name="voice_status_language_unsupported">Hlasové zadávání není pro jazyk %1$s k dispozici. Změňte jazyk hlasového zadávání v Nastavení BBKB.</string>
+    <string name="voice_status_no_recognition_service">Není vybrána žádná služba rozpoznávání hlasu</string>
+    <string name="voice_status_network_error">Problém se sítí. Zkontrolujte připojení.</string>
+    <string name="voice_status_audio_error">Zvuk se nepodařilo nahrát.</string>
+    <string name="voice_status_no_match">Řeč nebyla rozpoznána. Klepnutím na mikrofon to zkuste znovu.</string>
+    <string name="voice_status_no_speech">Nebyla zachycena žádná řeč. Klepnutím na mikrofon to zkuste znovu.</string>
+    <string name="voice_status_busy">Rozpoznávání řeči je zaneprázdněné. Zkuste to znovu za chvíli.</string>
+    <string name="voice_status_too_many_requests">Příliš mnoho požadavků. Zkuste to znovu později.</string>
+    <string name="voice_status_service_disconnected">Služba rozpoznávání řeči se odpojila. Klepnutím na mikrofon to zkuste znovu.</string>
 </resources>

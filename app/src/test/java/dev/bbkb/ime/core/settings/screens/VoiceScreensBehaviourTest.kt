@@ -220,6 +220,30 @@ class VoiceScreensBehaviourTest {
         assertEquals("both languages are offline-ready", 2, described("Offline ready").size)
     }
 
+    /**
+     * The languages the service recognises over the network are listed too. They used to be left
+     * out, so a recogniser with few on-device models offered only those. Not installed, so they
+     * sit under "Requires Network" with the other cloud languages.
+     */
+    @Test
+    @Config(sdk = [34])
+    fun theModernPathListsOnlineLanguagesUnderRequiresNetwork() {
+        setContent { VoiceLanguageSelectionScreen({}) }
+        answerRecognitionSupport(
+            installed = listOf("de-DE"),
+            supported = listOf("en-US"),
+            online = listOf("en-US", "pt-BR"),
+        )
+
+        val order = renderedInReadingOrder()
+        assertEquals(
+            "online languages join the network section, without duplicates",
+            listOf("OFFLINE READY", "de-DE", "REQUIRES NETWORK", "en-US", "pt-BR"),
+            order.filter { it in setOf("OFFLINE READY", "REQUIRES NETWORK", "de-DE", "en-US", "pt-BR") },
+        )
+        assertEquals("only the installed language is marked offline", 1, described("Offline ready").size)
+    }
+
     /** An empty support result is treated as a failed discovery and falls back to the built-in list. */
     @Test
     @Config(sdk = [34])
@@ -238,14 +262,18 @@ class VoiceScreensBehaviourTest {
      * until the list appears.
      */
     @Config(sdk = [34])
-    private fun answerRecognitionSupport(installed: List<String>, supported: List<String>) {
+    private fun answerRecognitionSupport(
+        installed: List<String>,
+        supported: List<String>,
+        online: List<String> = emptyList(),
+    ) {
         val recognizer = ShadowSpeechRecognizer.getLatestSpeechRecognizer()
         assertTrue("the screen never created a SpeechRecognizer", recognizer != null)
         val support = RecognitionSupport.Builder()
             .setInstalledOnDeviceLanguages(installed)
             .setSupportedOnDeviceLanguages(supported)
             .setPendingOnDeviceLanguages(emptyList())
-            .setOnlineLanguages(emptyList())
+            .setOnlineLanguages(online)
             .build()
         shadowOf(recognizer as SpeechRecognizer).triggerSupportResult(support)
         composeRule.waitUntil(timeoutMillis = 5_000) {
@@ -262,18 +290,19 @@ class VoiceScreensBehaviourTest {
     fun eachSwitchWritesItsOwnPreference() {
         setContent { VoiceInputSettingsScreen({}, {}) }
 
-        // All four default to on, so one tap each turns them off.
+        // All five default to on, so one tap each turns them off.
         val rows = mapOf(
             "Enable built-in voice input" to "voice_input_enabled",
             "Auto-start listening" to "voice_input_auto_start",
             "Use keyboard language" to "voice_input_use_input_language",
             "Prefer offline recognition" to "voice_input_prefer_offline",
+            "Show words as you speak" to "voice_input_show_partial_results",
         )
         for ((title, key) in rows) {
             assertTrue("$title is not on screen", title in rendered())
         }
         // Turn the dependent rows off first: switching the master off disables them.
-        for (title in listOf("Prefer offline recognition", "Use keyboard language", "Auto-start listening")) {
+        for (title in listOf("Show words as you speak", "Prefer offline recognition", "Use keyboard language", "Auto-start listening")) {
             composeRule.onNodeWithText(title).performClick()
             composeRule.waitForIdle()
         }
@@ -295,13 +324,15 @@ class VoiceScreensBehaviourTest {
         assertFalse("Auto-start listening should be inert", isOperable("Auto-start listening"))
         assertFalse("Use keyboard language should be inert", isOperable("Use keyboard language"))
         assertFalse("Prefer offline recognition should be inert", isOperable("Prefer offline recognition"))
+        assertFalse("Show words as you speak should be inert", isOperable("Show words as you speak"))
 
-        // And with the master back on, all three come back.
+        // And with the master back on, all four come back.
         composeRule.onNodeWithText("Enable built-in voice input").performClick()
         composeRule.waitForIdle()
         assertTrue(isOperable("Auto-start listening"))
         assertTrue(isOperable("Use keyboard language"))
         assertTrue(isOperable("Prefer offline recognition"))
+        assertTrue(isOperable("Show words as you speak"))
     }
 
     /**

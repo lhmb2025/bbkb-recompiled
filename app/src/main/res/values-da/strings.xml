@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Stemmeinput</string>
     <string name="settings_voice_prefer_offline_summary">Brug genkendelse på enheden, når det er muligt</string>
     <string name="settings_voice_prefer_offline_title">Foretræk offlinegenkendelse</string>
+    <string name="settings_voice_show_partial_results_summary">Vis, hvad der høres, mens du stadig taler, og erstat det derefter med det endelige resultat</string>
+    <string name="settings_voice_show_partial_results_title">Vis ord, mens du taler</string>
     <string name="settings_voice_use_keyboard_lang_summary">Brug tastaturets aktuelle sprog til stemmeinput</string>
     <string name="settings_voice_use_keyboard_lang_title">Brug tastaturets sprog</string>
     <string name="voice_input_lang_pack_available_offline_mode">Du skal downloade sprogmodellen til %1$s for at kunne bruge den offline eller oprette forbindelse til Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Ingen ordbog til %1$s endnu. Download den under Indstillinger for BBKB › Sprog.</string>
     <string name="dictionary_required_to_type">For at skrive på %1$s skal du downloade ordbogen under Indstillinger for BBKB › Sprog.</string>
     <string name="voice_status_language_unsupported">Stemmeinput er ikke tilgængeligt for %1$s. Skift sprog for stemmeinput under Indstillinger for BBKB.</string>
+    <string name="voice_status_no_recognition_service">Der er ikke valgt nogen stemmegenkendelsestjeneste</string>
+    <string name="voice_status_network_error">Netværksproblem. Tjek din forbindelse.</string>
+    <string name="voice_status_audio_error">Lyden kunne ikke optages.</string>
+    <string name="voice_status_no_match">Det blev ikke forstået. Tryk på mikrofonen for at prøve igen.</string>
+    <string name="voice_status_no_speech">Der blev ikke hørt nogen tale. Tryk på mikrofonen for at prøve igen.</string>
+    <string name="voice_status_busy">Talegenkendelse er optaget. Prøv igen om et øjeblik.</string>
+    <string name="voice_status_too_many_requests">For mange anmodninger. Prøv igen senere.</string>
+    <string name="voice_status_service_disconnected">Forbindelsen til taletjenesten blev afbrudt. Tryk på mikrofonen for at prøve igen.</string>
 </resources>

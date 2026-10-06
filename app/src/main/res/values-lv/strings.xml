@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Balss ievade</string>
     <string name="settings_voice_prefer_offline_summary">Izmantot atpazīšanu ierīcē, kad tā ir pieejama</string>
     <string name="settings_voice_prefer_offline_title">Dot priekšroku bezsaistes atpazīšanai</string>
+    <string name="settings_voice_show_partial_results_summary">Rādīt sadzirdēto, kamēr vēl runājat, un pēc tam aizstāt to ar galīgo rezultātu</string>
+    <string name="settings_voice_show_partial_results_title">Rādīt vārdus runāšanas laikā</string>
     <string name="settings_voice_use_keyboard_lang_summary">Balss ievadei izmantot pašreizējo tastatūras valodu</string>
     <string name="settings_voice_use_keyboard_lang_title">Izmantot tastatūras valodu</string>
     <string name="voice_input_lang_pack_available_offline_mode">Lūdzu, lejupielādējiet %1$s valodas modeli lietošanai bezsaistē vai izveidojiet savienojumu ar Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">%1$s vārdnīcas vēl nav. Lejupielādējiet to sadaļā BBKB iestatījumi › Valoda.</string>
     <string name="dictionary_required_to_type">Bez %1$s vārdnīcas nevar rakstīt. Lejupielādējiet to sadaļā BBKB iestatījumi › Valoda.</string>
     <string name="voice_status_language_unsupported">Balss ievade %1$s valodā nav pieejama. Mainiet balss ievades valodu BBKB iestatījumos.</string>
+    <string name="voice_status_no_recognition_service">Nav atlasīts neviens balss atpazīšanas pakalpojums</string>
+    <string name="voice_status_network_error">Tīkla problēma. Pārbaudiet savienojumu.</string>
+    <string name="voice_status_audio_error">Neizdevās ierakstīt audio.</string>
+    <string name="voice_status_no_match">Neizdevās saprast. Pieskarieties mikrofonam, lai mēģinātu vēlreiz.</string>
+    <string name="voice_status_no_speech">Runa netika sadzirdēta. Pieskarieties mikrofonam, lai mēģinātu vēlreiz.</string>
+    <string name="voice_status_busy">Runas atpazīšana ir aizņemta. Mēģiniet vēlreiz pēc brīža.</string>
+    <string name="voice_status_too_many_requests">Pārāk daudz pieprasījumu. Mēģiniet vēlreiz vēlāk.</string>
+    <string name="voice_status_service_disconnected">Runas pakalpojums tika atvienots. Pieskarieties mikrofonam, lai mēģinātu vēlreiz.</string>
 </resources>

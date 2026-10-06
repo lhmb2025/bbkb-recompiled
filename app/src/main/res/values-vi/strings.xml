@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Nhập bằng giọng nói</string>
     <string name="settings_voice_prefer_offline_summary">Dùng tính năng nhận dạng trên thiết bị khi có thể</string>
     <string name="settings_voice_prefer_offline_title">Ưu tiên nhận dạng ngoại tuyến</string>
+    <string name="settings_voice_show_partial_results_summary">Hiển thị nội dung nghe được ngay khi bạn còn đang nói, sau đó thay bằng kết quả cuối cùng</string>
+    <string name="settings_voice_show_partial_results_title">Hiển thị từ khi bạn nói</string>
     <string name="settings_voice_use_keyboard_lang_summary">Dùng ngôn ngữ bàn phím hiện tại để nhập bằng giọng nói</string>
     <string name="settings_voice_use_keyboard_lang_title">Dùng ngôn ngữ bàn phím</string>
     <string name="voice_input_lang_pack_available_offline_mode">Hãy tải về mô hình ngôn ngữ cho %1$s để sử dụng ngoại tuyến hoặc kết nối với Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Chưa có từ điển %1$s. Hãy tải xuống trong Cài đặt BBKB › Ngôn ngữ.</string>
     <string name="dictionary_required_to_type">Cần có từ điển %1$s để gõ. Hãy tải xuống trong Cài đặt BBKB › Ngôn ngữ.</string>
     <string name="voice_status_language_unsupported">Không hỗ trợ nhập bằng giọng nói cho %1$s. Hãy đổi ngôn ngữ nhập bằng giọng nói trong Cài đặt BBKB.</string>
+    <string name="voice_status_no_recognition_service">Chưa chọn dịch vụ nhận dạng giọng nói</string>
+    <string name="voice_status_network_error">Sự cố mạng. Hãy kiểm tra kết nối của bạn.</string>
+    <string name="voice_status_audio_error">Không thể ghi âm.</string>
+    <string name="voice_status_no_match">Không nghe rõ. Chạm vào micrô để thử lại.</string>
+    <string name="voice_status_no_speech">Không nghe thấy giọng nói. Chạm vào micrô để thử lại.</string>
+    <string name="voice_status_busy">Dịch vụ nhận dạng giọng nói đang bận. Hãy thử lại sau giây lát.</string>
+    <string name="voice_status_too_many_requests">Quá nhiều yêu cầu. Hãy thử lại sau.</string>
+    <string name="voice_status_service_disconnected">Dịch vụ giọng nói đã ngắt kết nối. Chạm vào micrô để thử lại.</string>
 </resources>

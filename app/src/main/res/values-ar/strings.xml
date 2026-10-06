@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">الإدخال الصوتي</string>
     <string name="settings_voice_prefer_offline_summary">استخدام التعرف على الجهاز عند توفره</string>
     <string name="settings_voice_prefer_offline_title">تفضيل التعرف دون اتصال</string>
+    <string name="settings_voice_show_partial_results_summary">إظهار ما يُسمع بينما لا تزال تتحدث، ثم استبداله بالنتيجة النهائية</string>
+    <string name="settings_voice_show_partial_results_title">إظهار الكلمات أثناء التحدث</string>
     <string name="settings_voice_use_keyboard_lang_summary">استخدام لغة لوحة المفاتيح الحالية للإدخال الصوتي</string>
     <string name="settings_voice_use_keyboard_lang_title">استخدام لغة لوحة المفاتيح</string>
     <string name="voice_input_lang_pack_available_offline_mode">يُرجى تنزيل نموذج لغة لـ %1$s للاستخدام في حالة عدم الاتصال بالإنترنت أو اتصل بشبكة Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">لا يوجد قاموس %1$s بعد. نزّله من إعدادات BBKB › اللغة.</string>
     <string name="dictionary_required_to_type">يلزم قاموس %1$s للكتابة. نزّله من إعدادات BBKB › اللغة.</string>
     <string name="voice_status_language_unsupported">الإدخال الصوتي غير متاح للغة %1$s. غيّر لغة الإدخال الصوتي من إعدادات BBKB.</string>
+    <string name="voice_status_no_recognition_service">لم يتم تحديد خدمة للتعرّف على الصوت</string>
+    <string name="voice_status_network_error">مشكلة في الشبكة. تحقق من الاتصال.</string>
+    <string name="voice_status_audio_error">تعذّر تسجيل الصوت.</string>
+    <string name="voice_status_no_match">لم يتم فهم ذلك. اضغط على الميكروفون لإعادة المحاولة.</string>
+    <string name="voice_status_no_speech">لم يتم سماع أي كلام. اضغط على الميكروفون لإعادة المحاولة.</string>
+    <string name="voice_status_busy">خدمة التعرّف على الكلام مشغولة. أعد المحاولة بعد قليل.</string>
+    <string name="voice_status_too_many_requests">طلبات كثيرة جدًا. أعد المحاولة لاحقًا.</string>
+    <string name="voice_status_service_disconnected">انقطع الاتصال بخدمة الكلام. اضغط على الميكروفون لإعادة المحاولة.</string>
 </resources>

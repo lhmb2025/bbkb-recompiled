@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Introducere vocală</string>
     <string name="settings_voice_prefer_offline_summary">Folosește recunoașterea pe dispozitiv când este disponibilă</string>
     <string name="settings_voice_prefer_offline_title">Preferați recunoașterea offline</string>
+    <string name="settings_voice_show_partial_results_summary">Afișează ce se aude cât timp încă vorbiți, apoi îl înlocuiește cu rezultatul final</string>
+    <string name="settings_voice_show_partial_results_title">Afișați cuvintele în timp ce vorbiți</string>
     <string name="settings_voice_use_keyboard_lang_summary">Folosește limba curentă a tastaturii pentru introducerea vocală</string>
     <string name="settings_voice_use_keyboard_lang_title">Folosiți limba tastaturii</string>
     <string name="voice_input_lang_pack_available_offline_mode">Vă rugăm să descărcaţi modelul de limbă pentru %1$s pentru utilizare offline sau să vă conectaţi la Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Încă nu există dicționar pentru %1$s. Descărcați-l din Setări pentru BBKB › Limbă.</string>
     <string name="dictionary_required_to_type">%1$s necesită dicționar pentru scriere. Descărcați-l din Setări pentru BBKB › Limbă.</string>
     <string name="voice_status_language_unsupported">Introducerea vocală nu este disponibilă pentru %1$s. Schimbați limba introducerii vocale în Setări pentru BBKB.</string>
+    <string name="voice_status_no_recognition_service">Nu este selectat niciun serviciu de recunoaștere vocală</string>
+    <string name="voice_status_network_error">Problemă de rețea. Verificați conexiunea.</string>
+    <string name="voice_status_audio_error">Nu s-a putut înregistra sunetul.</string>
+    <string name="voice_status_no_match">Nu am înțeles. Atingeți microfonul pentru a încerca din nou.</string>
+    <string name="voice_status_no_speech">Nu s-a detectat vorbire. Atingeți microfonul pentru a încerca din nou.</string>
+    <string name="voice_status_busy">Recunoașterea vocală este ocupată. Încercați din nou peste câteva momente.</string>
+    <string name="voice_status_too_many_requests">Prea multe solicitări. Încercați din nou mai târziu.</string>
+    <string name="voice_status_service_disconnected">Serviciul vocal s-a deconectat. Atingeți microfonul pentru a încerca din nou.</string>
 </resources>

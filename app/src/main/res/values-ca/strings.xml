@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Entrada de veu</string>
     <string name="settings_voice_prefer_offline_summary">Utilitza el reconeixement al dispositiu quan estigui disponible</string>
     <string name="settings_voice_prefer_offline_title">Prefereix el reconeixement fora de línia</string>
+    <string name="settings_voice_show_partial_results_summary">Mostra el que se sent mentre encara parleu i després ho substitueix pel resultat final</string>
+    <string name="settings_voice_show_partial_results_title">Mostra les paraules mentre parleu</string>
     <string name="settings_voice_use_keyboard_lang_summary">Utilitza la llengua actual del teclat per a l\'entrada de veu</string>
     <string name="settings_voice_use_keyboard_lang_title">Utilitza la llengua del teclat</string>
     <string name="voice_input_lang_pack_available_offline_mode">Baixeu el model de llengua de %1$s per utilitzar-lo fora de línia o connecteu-vos a una xarxa Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Encara no hi ha diccionari de %1$s. Baixa\'l a Configuració de BBKB › Llengua.</string>
     <string name="dictionary_required_to_type">Per escriure en %1$s, baixa el diccionari a Configuració de BBKB › Llengua.</string>
     <string name="voice_status_language_unsupported">L\'entrada de veu no està disponible per a %1$s. Canvia la llengua de l\'entrada de veu a Configuració de BBKB.</string>
+    <string name="voice_status_no_recognition_service">No s\'ha seleccionat cap servei de reconeixement de veu</string>
+    <string name="voice_status_network_error">Problema de xarxa. Comproveu la connexió.</string>
+    <string name="voice_status_audio_error">No s\'ha pogut enregistrar l\'àudio.</string>
+    <string name="voice_status_no_match">No s\'ha entès. Toqueu el micròfon per tornar-ho a provar.</string>
+    <string name="voice_status_no_speech">No s\'ha detectat cap veu. Toqueu el micròfon per tornar-ho a provar.</string>
+    <string name="voice_status_busy">El reconeixement de veu està ocupat. Torneu-ho a provar d\'aquí a un moment.</string>
+    <string name="voice_status_too_many_requests">Massa sol·licituds. Torneu-ho a provar més tard.</string>
+    <string name="voice_status_service_disconnected">El servei de veu s\'ha desconnectat. Toqueu el micròfon per tornar-ho a provar.</string>
 </resources>

@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Input swara</string>
     <string name="settings_voice_prefer_offline_summary">Nganggo pangenalan ing piranti yen kasedhiya</string>
     <string name="settings_voice_prefer_offline_title">Luwih seneng pangenalan offline</string>
+    <string name="settings_voice_show_partial_results_summary">Tampilake apa sing keprungu nalika sampeyan isih ngomong, banjur ganti nganggo asil pungkasan</string>
+    <string name="settings_voice_show_partial_results_title">Tampilake tembung nalika sampeyan ngomong</string>
     <string name="settings_voice_use_keyboard_lang_summary">Nganggo basa papan tombol saiki kanggo input swara</string>
     <string name="settings_voice_use_keyboard_lang_title">Nganggo basa papan tombol</string>
     <string name="voice_input_lang_pack_available_offline_mode">Undhuh model basa kanggo %1$s supaya bisa dienggo offline utawa sambungna menyang Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Durung ana kamus %1$s. Undhuh ing Setelan BBKB › Basa.</string>
     <string name="dictionary_required_to_type">Kamus %1$s dibutuhake kanggo ngetik. Undhuh ing Setelan BBKB › Basa.</string>
     <string name="voice_status_language_unsupported">Input swara ora kasedhiya kanggo %1$s. Ganti basa input swara ing Setelan BBKB.</string>
+    <string name="voice_status_no_recognition_service">Ora ana layanan pangenalan swara sing dipilih</string>
+    <string name="voice_status_network_error">Masalah jaringan. Priksa sambungan sampeyan.</string>
+    <string name="voice_status_audio_error">Ora bisa ngrekam audio.</string>
+    <string name="voice_status_no_match">Ora krungu cetha. Tutul mikrofon kanggo nyoba maneh.</string>
+    <string name="voice_status_no_speech">Ora ana swara sing krungu. Tutul mikrofon kanggo nyoba maneh.</string>
+    <string name="voice_status_busy">Pangenalan swara lagi sibuk. Coba maneh sedhela engkas.</string>
+    <string name="voice_status_too_many_requests">Kakehan panjaluk. Coba maneh mengko.</string>
+    <string name="voice_status_service_disconnected">Layanan swara pedhot. Tutul mikrofon kanggo nyoba maneh.</string>
 </resources>

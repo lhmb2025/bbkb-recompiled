@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">ভয়েস ইনপুট</string>
     <string name="settings_voice_prefer_offline_summary">সম্ভব হলে ডিভাইসেই শনাক্তকরণ ব্যবহার করুন</string>
     <string name="settings_voice_prefer_offline_title">অফলাইন শনাক্তকরণে অগ্রাধিকার</string>
+    <string name="settings_voice_show_partial_results_summary">আপনি কথা বলতে থাকার সময়েই যা শোনা যাচ্ছে তা দেখান, তারপর চূড়ান্ত ফলাফল দিয়ে সেটি বদলে দিন</string>
+    <string name="settings_voice_show_partial_results_title">কথা বলার সময় শব্দ দেখান</string>
     <string name="settings_voice_use_keyboard_lang_summary">ভয়েস ইনপুটে বর্তমান কীবোর্ডের ভাষা ব্যবহার করুন</string>
     <string name="settings_voice_use_keyboard_lang_title">কীবোর্ডের ভাষা ব্যবহার করুন</string>
     <string name="voice_input_lang_pack_available_offline_mode">অফলাইনে ব্যবহারের জন্য %1$s এর ভাষা মডেল ডাউনলোড করুন অথবা Wi-Fi এ সংযুক্ত হন।</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">এখনও %1$s অভিধান নেই। BBKB সেটিংস › ভাষা থেকে ডাউনলোড করুন।</string>
     <string name="dictionary_required_to_type">টাইপ করতে %1$s অভিধান প্রয়োজন। BBKB সেটিংস › ভাষা থেকে ডাউনলোড করুন।</string>
     <string name="voice_status_language_unsupported">%1$s-এর জন্য ভয়েস ইনপুট উপলব্ধ নয়। BBKB সেটিংস থেকে ভয়েস ইনপুটের ভাষা পরিবর্তন করুন।</string>
+    <string name="voice_status_no_recognition_service">কোনো ভয়েস শনাক্তকরণ পরিষেবা বেছে নেওয়া হয়নি</string>
+    <string name="voice_status_network_error">নেটওয়ার্কে সমস্যা। আপনার সংযোগ পরীক্ষা করুন।</string>
+    <string name="voice_status_audio_error">অডিও রেকর্ড করা যায়নি।</string>
+    <string name="voice_status_no_match">বোঝা যায়নি। আবার চেষ্টা করতে মাইকে আলতো চাপুন।</string>
+    <string name="voice_status_no_speech">কোনো কথা শোনা যায়নি। আবার চেষ্টা করতে মাইকে আলতো চাপুন।</string>
+    <string name="voice_status_busy">স্পিচ শনাক্তকরণ এখন ব্যস্ত। কিছুক্ষণ পরে আবার চেষ্টা করুন।</string>
+    <string name="voice_status_too_many_requests">অনেক বেশি অনুরোধ। পরে আবার চেষ্টা করুন।</string>
+    <string name="voice_status_service_disconnected">স্পিচ পরিষেবার সংযোগ বিচ্ছিন্ন হয়েছে। আবার চেষ্টা করতে মাইকে আলতো চাপুন।</string>
 </resources>

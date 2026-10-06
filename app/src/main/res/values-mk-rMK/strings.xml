@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Гласовно внесување</string>
     <string name="settings_voice_prefer_offline_summary">Користење препознавање на уредот кога е достапно</string>
     <string name="settings_voice_prefer_offline_title">Претпочитање офлајн препознавање</string>
+    <string name="settings_voice_show_partial_results_summary">Прикажување на она што се слуша додека сѐ уште зборувате, а потоа негова замена со конечниот резултат</string>
+    <string name="settings_voice_show_partial_results_title">Прикажување зборови додека зборувате</string>
     <string name="settings_voice_use_keyboard_lang_summary">Користење на тековниот јазик на тастатурата за гласовно внесување</string>
     <string name="settings_voice_use_keyboard_lang_title">Користење на јазикот на тастатурата</string>
     <string name="voice_input_lang_pack_available_offline_mode">Преземете го јазичниот модел за %1$s за офлајн користење или поврзете се на Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Уште нема речник за %1$s. Преземете го во Поставки на BBKB › Јазик.</string>
     <string name="dictionary_required_to_type">За пишување на %1$s потребен е речник. Преземете го во Поставки на BBKB › Јазик.</string>
     <string name="voice_status_language_unsupported">Гласовното внесување не е достапно за %1$s. Сменете го јазикот за гласовно внесување во Поставки на BBKB.</string>
+    <string name="voice_status_no_recognition_service">Не е избрана услуга за препознавање глас</string>
+    <string name="voice_status_network_error">Проблем со мрежата. Проверете ја врската.</string>
+    <string name="voice_status_audio_error">Не може да се сними звук.</string>
+    <string name="voice_status_no_match">Не беше разбрано. Допрете го микрофонот за да се обидете повторно.</string>
+    <string name="voice_status_no_speech">Не беше слушнат говор. Допрете го микрофонот за да се обидете повторно.</string>
+    <string name="voice_status_busy">Препознавањето говор е зафатено. Обидете се повторно за момент.</string>
+    <string name="voice_status_too_many_requests">Премногу барања. Обидете се повторно подоцна.</string>
+    <string name="voice_status_service_disconnected">Услугата за говор се исклучи. Допрете го микрофонот за да се обидете повторно.</string>
 </resources>

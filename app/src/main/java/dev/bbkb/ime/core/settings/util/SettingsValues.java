@@ -234,6 +234,9 @@ public final class SettingsValues {
 
     public final boolean voiceInputPreferOffline;
 
+    /** Dictation partial results are shown in the editor as composing text; read per partial. */
+    public final boolean voiceInputShowPartialResults;
+
     public final String voiceInputLanguageList;
 
     public final boolean isEmojiDynamicSearchEnabled;
@@ -433,6 +436,7 @@ public final class SettingsValues {
         this.pkbUsesActiveLanguageAlphabet = sharedPreferences.getBoolean(dev.bbkb.ime.core.keyevent.HardwareScriptLayouts.PREF_KEY, true);
         this.voiceInputUseInputLanguage = SettingsManager.isVoiceInputUseInputLanguage(sharedPreferences);
         this.voiceInputPreferOffline = SettingsManager.isVoiceInputPreferOffline(sharedPreferences);
+        this.voiceInputShowPartialResults = SettingsManager.isVoiceInputShowPartialResults(sharedPreferences);
         this.voiceInputLanguageList = SettingsManager.getVoiceInputLanguageList(sharedPreferences);
         this.isEmojiDynamicSearchEnabled = SettingsManager.isEmojiDynamicSearchEnabled(sharedPreferences);
         this.altSymShortcutAction = sharedPreferences.getString("pref_alt_sym_shortcut_action", "disabled");

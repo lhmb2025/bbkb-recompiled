@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">ध्वनि इनपुट</string>
     <string name="settings_voice_prefer_offline_summary">उपलब्ध होने पर डिवाइस पर ही पहचान का उपयोग करें</string>
     <string name="settings_voice_prefer_offline_title">ऑफ़लाइन पहचान को प्राथमिकता दें</string>
+    <string name="settings_voice_show_partial_results_summary">आपके बोलते समय ही जो सुनाई दे रहा है उसे दिखाएं, फिर उसे अंतिम परिणाम से बदलें</string>
+    <string name="settings_voice_show_partial_results_title">बोलते समय शब्द दिखाएं</string>
     <string name="settings_voice_use_keyboard_lang_summary">ध्वनि इनपुट के लिए मौजूदा कीबोर्ड भाषा का उपयोग करें</string>
     <string name="settings_voice_use_keyboard_lang_title">कीबोर्ड भाषा का उपयोग करें</string>
     <string name="voice_input_lang_pack_available_offline_mode">कृपया ऑफलाइन उपयोग के लिए %1$s संबंधी भाषा मॉडल डाउनलोड करें या Wi-Fi से कनेक्ट करें.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">अभी %1$s शब्दकोश नहीं है। इसे BBKB सेटिंग्स › भाषा में डाउनलोड करें।</string>
     <string name="dictionary_required_to_type">टाइप करने के लिए %1$s शब्दकोश चाहिए। इसे BBKB सेटिंग्स › भाषा में डाउनलोड करें।</string>
     <string name="voice_status_language_unsupported">%1$s के लिए ध्वनि इनपुट उपलब्ध नहीं है। BBKB सेटिंग्स में ध्वनि इनपुट भाषा बदलें।</string>
+    <string name="voice_status_no_recognition_service">कोई ध्वनि पहचान सेवा नहीं चुनी गई है</string>
+    <string name="voice_status_network_error">नेटवर्क समस्या। अपना कनेक्शन जांचें।</string>
+    <string name="voice_status_audio_error">ऑडियो रिकॉर्ड नहीं हो सका।</string>
+    <string name="voice_status_no_match">समझ नहीं आया। फिर से कोशिश करने के लिए माइक टैप करें।</string>
+    <string name="voice_status_no_speech">कोई आवाज़ सुनाई नहीं दी। फिर से कोशिश करने के लिए माइक टैप करें।</string>
+    <string name="voice_status_busy">वाक् पहचान व्यस्त है। थोड़ी देर में फिर कोशिश करें।</string>
+    <string name="voice_status_too_many_requests">बहुत अधिक अनुरोध। बाद में फिर कोशिश करें।</string>
+    <string name="voice_status_service_disconnected">वाक् सेवा डिस्कनेक्ट हो गई। फिर से कोशिश करने के लिए माइक टैप करें।</string>
 </resources>

@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Raddinnsláttur</string>
     <string name="settings_voice_prefer_offline_summary">Nota greiningu í tækinu þegar hún er tiltæk</string>
     <string name="settings_voice_prefer_offline_title">Frekar greining án nettengingar</string>
+    <string name="settings_voice_show_partial_results_summary">Sýna það sem heyrist á meðan þú ert enn að tala og skipta því síðan út fyrir lokaniðurstöðuna</string>
+    <string name="settings_voice_show_partial_results_title">Sýna orð á meðan þú talar</string>
     <string name="settings_voice_use_keyboard_lang_summary">Nota núverandi tungumál lyklaborðs fyrir raddinnslátt</string>
     <string name="settings_voice_use_keyboard_lang_title">Nota tungumál lyklaborðs</string>
     <string name="voice_input_lang_pack_available_offline_mode">Sæktu tungumálalíkanið fyrir %1$s til notkunar án nettengingar eða tengstu við Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Engin orðabók fyrir %1$s enn. Sæktu hana: BBKB stillingar › Tungumál.</string>
     <string name="dictionary_required_to_type">%1$s þarf orðabók til að skrifa. Sæktu hana: BBKB stillingar › Tungumál.</string>
     <string name="voice_status_language_unsupported">Raddinnsláttur er ekki í boði fyrir %1$s. Breyttu tungumáli raddinnsláttar í BBKB stillingum.</string>
+    <string name="voice_status_no_recognition_service">Engin raddgreiningarþjónusta valin</string>
+    <string name="voice_status_network_error">Netvandamál. Athugaðu tenginguna.</string>
+    <string name="voice_status_audio_error">Ekki tókst að taka upp hljóð.</string>
+    <string name="voice_status_no_match">Það skildist ekki. Ýttu á hljóðnemann til að reyna aftur.</string>
+    <string name="voice_status_no_speech">Ekkert tal heyrðist. Ýttu á hljóðnemann til að reyna aftur.</string>
+    <string name="voice_status_busy">Talgreining er upptekin. Reyndu aftur eftir smástund.</string>
+    <string name="voice_status_too_many_requests">Of margar beiðnir. Reyndu aftur síðar.</string>
+    <string name="voice_status_service_disconnected">Tengingin við talþjónustuna rofnaði. Ýttu á hljóðnemann til að reyna aftur.</string>
 </resources>

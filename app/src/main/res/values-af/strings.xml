@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Steminvoer</string>
     <string name="settings_voice_prefer_offline_summary">Gebruik herkenning op die toestel wanneer dit beskikbaar is</string>
     <string name="settings_voice_prefer_offline_title">Verkies vanlyn herkenning</string>
+    <string name="settings_voice_show_partial_results_summary">Wys wat gehoor word terwyl jy nog praat, en vervang dit dan met die finale resultaat</string>
+    <string name="settings_voice_show_partial_results_title">Wys woorde terwyl jy praat</string>
     <string name="settings_voice_use_keyboard_lang_summary">Gebruik die huidige toetsbordtaal vir steminvoer</string>
     <string name="settings_voice_use_keyboard_lang_title">Gebruik toetsbordtaal</string>
     <string name="voice_input_lang_pack_available_offline_mode">Laai asseblief die taalmodel vir %1$s af vir vanlyn gebruik of koppel aan Wi-Fi.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">Nog geen %1$s-woordeboek nie. Laai dit af in BBKB-instellings › Taal.</string>
     <string name="dictionary_required_to_type">Om in %1$s te tik, laai die woordeboek af in BBKB-instellings › Taal.</string>
     <string name="voice_status_language_unsupported">Steminvoer is nie beskikbaar vir %1$s nie. Verander die taal vir steminvoer in BBKB-instellings.</string>
+    <string name="voice_status_no_recognition_service">Geen stemherkenningsdiens gekies nie</string>
+    <string name="voice_status_network_error">Netwerkprobleem. Gaan jou verbinding na.</string>
+    <string name="voice_status_audio_error">Kon nie oudio opneem nie.</string>
+    <string name="voice_status_no_match">Kon dit nie verstaan nie. Tik die mikrofoon om weer te probeer.</string>
+    <string name="voice_status_no_speech">Geen spraak gehoor nie. Tik die mikrofoon om weer te probeer.</string>
+    <string name="voice_status_busy">Spraakherkenning is besig. Probeer oor \'n oomblik weer.</string>
+    <string name="voice_status_too_many_requests">Te veel versoeke. Probeer later weer.</string>
+    <string name="voice_status_service_disconnected">Die spraakdiens is ontkoppel. Tik die mikrofoon om weer te probeer.</string>
 </resources>

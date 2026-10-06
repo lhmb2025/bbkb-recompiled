@@ -233,6 +233,9 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
             InputMethodHelper.getInstance().switchToVoiceIme(ime)
             return
         }
+        // Asked before the toggle, not left to VoiceInputController.show(): the open branch below
+        // raises the UIM bar, which a refused open must not do either.
+        if (voiceKeyRefused()) return
         val wasInVoiceMode = voice.isInVoiceMode()
         voice.toggleVoiceInput()
         if (ime.isUimEnabled()) {
@@ -242,11 +245,24 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                 // coordinator's state for whatever OTHER board it is holding (see
                 // UnifiedInputBoardManager.reportBoardClosed).
                 unifiedManager.reportBoardClosed(voice.keyCode)
-            } else {
+            } else if (voice.isInVoiceMode()) {
                 unifiedManager.setActiveComponent(voice)
                 if (!unifiedManager.isShowing()) unifiedManager.show(false)
             }
         }
+    }
+
+    /**
+     * Whether a voice-key press must stop here. True when built-in voice input has no recognition
+     * service to use: [VoiceInputController.ensureRecognitionService] has then shown the "No
+     * selected voice recognition service" notice, and the press must open nothing — no board, no
+     * UIM bar, no voice mode left switched on. A press that would close voice input (it is open, or
+     * its view is up) is never refused.
+     */
+    fun voiceKeyRefused(): Boolean {
+        val voice = ime.voiceInputController ?: return false
+        if (voice.isInVoiceMode() || voice.isShowing) return false
+        return !voice.ensureRecognitionService()
     }
 
     /**
@@ -346,7 +362,9 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                         val voiceBoardId = if (mapping != null && mapping.boardId != 0) mapping.boardId else VOICE_BOARD
                         if (ime.isInputActive && ime.isInputViewShown()) {
                             val uibm = keyboardSwitcher.getUnifiedInputBoardManager()
-                            if (uibm != null && ime.isUimEnabled()) {
+                            if (voiceKeyRefused()) {
+                                // No recognition service: the notice is up; open nothing.
+                            } else if (uibm != null && ime.isUimEnabled()) {
                                 uibm.requestBoard(voiceBoardId)
                             } else {
                                 triggerVoiceInput()

@@ -720,13 +720,18 @@ class UnifiedInputBoardManagerBoardStateTest {
         var toggleCalls = 0
         var hideRequests = 0
         var cancelCalls = 0
+        /** The open is refused, as with no recognition service: the toggle leaves voice mode off. */
+        var refuseOpen = false
         val controller: VoiceInputController = Mockito.mock(VoiceInputController::class.java).also { v ->
             Mockito.`when`(v.keyCode).thenReturn(VOICE)
             Mockito.`when`(v.isInVoiceMode).thenAnswer { inVoiceMode }
             Mockito.`when`(v.isShowing).thenAnswer { viewIsUp }
             Mockito.`when`(v.isEnabled).thenReturn(true)
-            Mockito.doAnswer { toggleCalls++; inVoiceMode = !inVoiceMode; viewIsUp = inVoiceMode; null }
-                .`when`(v).toggleVoiceInput()
+            Mockito.doAnswer {
+                toggleCalls++
+                if (!(refuseOpen && !inVoiceMode)) { inVoiceMode = !inVoiceMode; viewIsUp = inVoiceMode }
+                null
+            }.`when`(v).toggleVoiceInput()
             Mockito.doAnswer { hideRequests++; inVoiceMode = false; viewIsUp = false; null }
                 .`when`(v).hide()
             Mockito.doAnswer { cancelCalls++; inVoiceMode = false; viewIsUp = false; null }
@@ -782,6 +787,27 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertEq("closed through the voice close path", 1, voice.cancelCalls)
         assertNo("voice mode is off", voice.inVoiceMode)
         assertNo("the voice panel is down", voice.viewIsUp)
+        assertActiveBoard(UnifiedBoardCoordinator.NO_BOARD)
+    }
+
+    /**
+     * No recognition service (KEY2, 2026-10-06): the toggle refuses to open. The open used to be
+     * reported regardless, so the coordinator held voice "open" and spent the next press closing a
+     * board that was never there.
+     */
+    @Test
+    fun micKey_refusedVoiceOpen_isReportedClosedSoTheNextPressTriesToOpenAgain() {
+        val voice = registerVoice()
+        installBar(VOICE, EMOJI, FCC, CLIPBOARD)
+        voice.refuseOpen = true
+
+        uim.requestBoard(VOICE)
+        assertActiveBoard(UnifiedBoardCoordinator.NO_BOARD)
+
+        uim.requestBoard(VOICE)
+
+        assertEq("both presses tried to open", 2, voice.toggleCalls)
+        assertEq("neither was spent closing a board that never opened", 0, voice.cancelCalls)
         assertActiveBoard(UnifiedBoardCoordinator.NO_BOARD)
     }
 

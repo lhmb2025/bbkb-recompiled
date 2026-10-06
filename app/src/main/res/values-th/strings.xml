@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">การป้อนด้วยเสียง</string>
     <string name="settings_voice_prefer_offline_summary">ใช้การรู้จำบนอุปกรณ์เมื่อพร้อมใช้งาน</string>
     <string name="settings_voice_prefer_offline_title">ใช้การรู้จำแบบออฟไลน์ก่อน</string>
+    <string name="settings_voice_show_partial_results_summary">แสดงสิ่งที่ได้ยินขณะที่คุณยังพูดอยู่ แล้วแทนที่ด้วยผลลัพธ์สุดท้าย</string>
+    <string name="settings_voice_show_partial_results_title">แสดงคำขณะที่คุณพูด</string>
     <string name="settings_voice_use_keyboard_lang_summary">ใช้ภาษาแป้นพิมพ์ปัจจุบันสำหรับการป้อนด้วยเสียง</string>
     <string name="settings_voice_use_keyboard_lang_title">ใช้ภาษาแป้นพิมพ์</string>
     <string name="voice_input_lang_pack_available_offline_mode">โปรดดาวน์โหลดต้นแบบภาษาสำหรับ %1$s เพื่อการใช้งานออฟไลน์หรือเชื่อมต่อกับ Wi-Fi</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">ยังไม่มีพจนานุกรม %1$s ดาวน์โหลดได้ที่ การตั้งค่า BBKB › ภาษา</string>
     <string name="dictionary_required_to_type">ต้องมีพจนานุกรม %1$s ก่อนจึงจะพิมพ์ได้ ดาวน์โหลดได้ที่ การตั้งค่า BBKB › ภาษา</string>
     <string name="voice_status_language_unsupported">การป้อนด้วยเสียงไม่รองรับ %1$s เปลี่ยนภาษาสำหรับการป้อนด้วยเสียงได้ใน การตั้งค่า BBKB</string>
+    <string name="voice_status_no_recognition_service">ไม่ได้เลือกบริการจดจำเสียง</string>
+    <string name="voice_status_network_error">เครือข่ายมีปัญหา ตรวจสอบการเชื่อมต่อของคุณ</string>
+    <string name="voice_status_audio_error">ไม่สามารถบันทึกเสียงได้</string>
+    <string name="voice_status_no_match">ฟังไม่ออก แตะไมโครโฟนเพื่อลองอีกครั้ง</string>
+    <string name="voice_status_no_speech">ไม่ได้ยินเสียงพูด แตะไมโครโฟนเพื่อลองอีกครั้ง</string>
+    <string name="voice_status_busy">ระบบจดจำเสียงพูดไม่ว่าง ลองอีกครั้งในอีกสักครู่</string>
+    <string name="voice_status_too_many_requests">มีคำขอมากเกินไป ลองอีกครั้งในภายหลัง</string>
+    <string name="voice_status_service_disconnected">บริการเสียงพูดตัดการเชื่อมต่อแล้ว แตะไมโครโฟนเพื่อลองอีกครั้ง</string>
 </resources>

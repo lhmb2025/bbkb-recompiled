@@ -41,6 +41,7 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         private const val MSG_UPDATE_GESTURE_SUGGESTIONS = 14
         private const val MSG_UPDATE_JAPANESE_SUGGESTIONS = 15
         private const val MSG_COMMIT_TEXT = 17
+        private const val MSG_SET_COMPOSING_TEXT = 18
         private const val MSG_DEFERRED_CLEANUP_SAFETY = 99
 
         /**
@@ -228,6 +229,10 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
                     // `when`.
                     return
                 }
+                MSG_SET_COMPOSING_TEXT -> {
+                    blackBerryIMEV.getInputLogic().setVoiceComposingText(message.obj as String)
+                    return
+                }
                 MSG_DEFERRED_CLEANUP_SAFETY -> {
                     executeDeferredCleanupSafety()
                     return
@@ -241,6 +246,27 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
 
     fun postCommitText(str: String) {
         sendMessage(obtainMessage(MSG_COMMIT_TEXT, str))
+    }
+
+    /**
+     * A dictation partial result, shown as composing text. Queued behind [postCommitText] like
+     * everything else here, so the final result's commit lands after, and replaces, the last
+     * partial. Only the newest partial is worth showing, so an older one still queued is dropped.
+     */
+    fun postSetComposingText(str: String) {
+        removeMessages(MSG_SET_COMPOSING_TEXT)
+        sendMessage(obtainMessage(MSG_SET_COMPOSING_TEXT, str))
+    }
+
+    /**
+     * The dictation session ended with no final result: drop any partial still queued and leave the
+     * one showing as ordinary text. Runs now rather than queued: a hardware key that closes the
+     * voice board is processed in the same turn, and it must not find a dictation partial still
+     * holding the composing region it is about to compose into.
+     */
+    fun finishVoiceComposingText() {
+        removeMessages(MSG_SET_COMPOSING_TEXT)
+        getOwner()?.getInputLogic()?.finishVoiceComposingText()
     }
 
     /**

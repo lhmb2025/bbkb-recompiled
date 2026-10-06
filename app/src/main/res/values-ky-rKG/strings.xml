@@ -334,6 +334,8 @@
     <string name="settings_voice_input_title">Үн менен киргизүү</string>
     <string name="settings_voice_prefer_offline_summary">Мүмкүн болсо, түзмөктөгү таанууну колдонуу</string>
     <string name="settings_voice_prefer_offline_title">Оффлайн таанууну артык көрүү</string>
+    <string name="settings_voice_show_partial_results_summary">Сүйлөп жатканда угулганды көрсөтүп, кийин аны акыркы натыйжа менен алмаштыруу</string>
+    <string name="settings_voice_show_partial_results_title">Сүйлөп жатканда сөздөрдү көрсөтүү</string>
     <string name="settings_voice_use_keyboard_lang_summary">Үн менен киргизүү үчүн учурдагы баскычтоптун тилин колдонуу</string>
     <string name="settings_voice_use_keyboard_lang_title">Баскычтоптун тилин колдонуу</string>
     <string name="voice_input_lang_pack_available_offline_mode">Оффлайн колдонуу үчүн %1$s тил моделин жүктөп алыңыз же Wi-Fi тармагына туташыңыз.</string>
@@ -754,4 +756,12 @@
     <string name="dictionary_missing_no_suggestions">%1$s сөздүгү азырынча жок. BBKB жөндөөлөрү › Тил бөлүмүнөн жүктөп алыңыз.</string>
     <string name="dictionary_required_to_type">Терүү үчүн %1$s сөздүгү керек. BBKB жөндөөлөрү › Тил бөлүмүнөн жүктөп алыңыз.</string>
     <string name="voice_status_language_unsupported">%1$s тилинде үн менен киргизүү жеткиликсиз. Үн менен киргизүү тилин BBKB жөндөөлөрүнөн өзгөртүңүз.</string>
+    <string name="voice_status_no_recognition_service">Үн таануу кызматы тандалган жок</string>
+    <string name="voice_status_network_error">Тармак көйгөйү. Байланышыңызды текшериңиз.</string>
+    <string name="voice_status_audio_error">Аудио жазылган жок.</string>
+    <string name="voice_status_no_match">Түшүнүлгөн жок. Кайра аракет кылуу үчүн микрофонду басыңыз.</string>
+    <string name="voice_status_no_speech">Сөз угулган жок. Кайра аракет кылуу үчүн микрофонду басыңыз.</string>
+    <string name="voice_status_busy">Кепти таануу бош эмес. Бир аздан кийин кайра аракет кылыңыз.</string>
+    <string name="voice_status_too_many_requests">Өтө көп сурам. Кийинчерээк кайра аракет кылыңыз.</string>
+    <string name="voice_status_service_disconnected">Кеп кызматы ажыратылды. Кайра аракет кылуу үчүн микрофонду басыңыз.</string>
 </resources>
