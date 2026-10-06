@@ -31,6 +31,9 @@ public class CursorController {
         boolean isRightToLeft();
     }
 
+    /** How much text one grapheme step scans, before or after the cursor. */
+    private static final int GRAPHEME_SCAN_LENGTH = 48;
+
     private final RichInputConnection mRichInputConnection;
     private final CancelComposingCallback mCancelComposing;
     private final LayoutDirectionCallback mLayoutDirection;
@@ -75,6 +78,36 @@ public class CursorController {
         sendKeyEventWithMeta(this.mRichInputConnection, keyCode, metaState);
     }
 
+    /**
+     * Returns how many chars the cursor crosses stepping over {@code steps} graphemes after
+     * ({@code forward}) or before it, stopping at the end of the text.
+     *
+     * <p>Each step runs the same {@link GraphemeUtils} scan as a single-step move, on the same
+     * {@link #GRAPHEME_SCAN_LENGTH} chars it would see from that position, so a move of N lands
+     * where N single moves would. A step never spans more than that window, hence the fetch size.
+     */
+    private int graphemeRunLength(boolean forward, int steps) {
+        CharSequence text = forward
+                ? this.mRichInputConnection.getTextAfterCursor(steps * GRAPHEME_SCAN_LENGTH, 0)
+                : this.mRichInputConnection.getTextBeforeCursor(steps * GRAPHEME_SCAN_LENGTH, 0);
+        if (text == null) {
+            return 0;
+        }
+        int length = text.length();
+        int offset = 0;
+        for (int step = 0; step < steps && offset < length; step++) {
+            if (forward) {
+                CharSequence window = text.subSequence(offset, Math.min(length, offset + GRAPHEME_SCAN_LENGTH));
+                offset += GraphemeUtils.getGraphemeLengthAfterCursor(window, Character.codePointAt(window, 0));
+            } else {
+                int end = length - offset;
+                CharSequence window = text.subSequence(Math.max(0, end - GRAPHEME_SCAN_LENGTH), end);
+                offset += GraphemeUtils.getGraphemeLengthBeforeCursor(window, Character.codePointBefore(window, window.length()));
+            }
+        }
+        return Math.min(offset, length);
+    }
+
     private void moveCursor(boolean z, int i, boolean z2) {
         int iMax;
         int iM5853q = this.mRichInputConnection.getCursorStart();
@@ -82,19 +115,29 @@ public class CursorController {
         if (z) {
             int iMax2 = Math.max(0, Math.min(i, iM5853q - iM5854r));
             int iMax3 = Math.max(0, i - iMax2);
-            if (iMax3 > 0) {
-                CharSequence charSequenceM5830b = this.mRichInputConnection.getTextAfterCursor(iMax3, 0);
-                iMax3 = charSequenceM5830b == null ? 0 : charSequenceM5830b.length();
-            }
-            int iM5663b = GraphemeUtils.getGraphemeLengthAfterCursor(this.mRichInputConnection.getTextAfterCursor(48, 0), this.mRichInputConnection.getCodePointAfterCursor());
-            if (iM5663b != 1) {
-                iMax3 = iM5663b;
+            if (iMax3 > 1) {
+                // A multi-step move (the keypad cursor drag) crosses iMax3 graphemes, not iMax3
+                // chars: the length of the first grapheme used to replace the whole count.
+                iMax3 = graphemeRunLength(true, iMax3);
+            } else {
+                if (iMax3 > 0) {
+                    CharSequence charSequenceM5830b = this.mRichInputConnection.getTextAfterCursor(iMax3, 0);
+                    iMax3 = charSequenceM5830b == null ? 0 : charSequenceM5830b.length();
+                }
+                int iM5663b = GraphemeUtils.getGraphemeLengthAfterCursor(this.mRichInputConnection.getTextAfterCursor(GRAPHEME_SCAN_LENGTH, 0), this.mRichInputConnection.getCodePointAfterCursor());
+                if (iM5663b != 1) {
+                    iMax3 = iM5663b;
+                }
             }
             iMax = iMax2 + iM5854r + iMax3;
         } else {
-            int iM5660a = GraphemeUtils.getGraphemeLengthBeforeCursor(this.mRichInputConnection.getTextBeforeCursor(48, 0), this.mRichInputConnection.getCodePointBeforeCursor());
-            if (iM5660a != 1) {
-                i = iM5660a;
+            if (i > 1) {
+                i = graphemeRunLength(false, i);
+            } else {
+                int iM5660a = GraphemeUtils.getGraphemeLengthBeforeCursor(this.mRichInputConnection.getTextBeforeCursor(GRAPHEME_SCAN_LENGTH, 0), this.mRichInputConnection.getCodePointBeforeCursor());
+                if (iM5660a != 1) {
+                    i = iM5660a;
+                }
             }
             iMax = Math.max(0, iM5854r - i);
         }

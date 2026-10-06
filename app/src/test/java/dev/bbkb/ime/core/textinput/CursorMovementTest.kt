@@ -249,6 +249,61 @@ class CursorMovementTest {
         assertEquals(listOf("setSelection(1,1)"), log())
     }
 
+    @Test
+    fun moveCursorRight_singleStepOverAnEmoji_crossesTheWholeCodePoint() {
+        val grin = "😀"
+        val settings = h.settingsWith("allowBatchedCursorMove" to true)
+        arm("a$grin", 1)
+        h.inputLogic.moveCursorRight(settings, 1, false)
+        assertEquals(listOf("setSelection(3,3)"), log())
+    }
+
+    // ── CursorController: multi-step moves count graphemes, not chars ───────────
+
+    @Test
+    fun moveCursorRight_multiStep_countsAnEmojiAsOneStep() {
+        // The keypad cursor drag passes counts > 1. Three steps over "a😀b" are a, 😀, b: the
+        // emoji's two chars are one step. This used to land at 3, one short of the end.
+        val settings = h.settingsWith("allowBatchedCursorMove" to true)
+        arm("a😀b", 0)
+        h.inputLogic.moveCursorRight(settings, 3, false)
+        assertEquals(listOf("setSelection(4,4)"), log())
+    }
+
+    @Test
+    fun moveCursorLeft_multiStep_countsEachCombiningSequenceAsOneStep() {
+        // "e" + COMBINING ACUTE twice: two steps left cross both sequences. The first sequence's
+        // length used to replace the count, so the cursor stopped after one.
+        val settings = h.settingsWith("allowBatchedCursorMove" to true)
+        arm("xe\u0301e\u0301", 5)
+        h.inputLogic.moveCursorLeft(settings, 2, false)
+        assertEquals(listOf("setSelection(1,1)"), log())
+    }
+
+    @Test
+    fun moveCursorLeft_multiStep_crossesSeveralEmoji() {
+        val settings = h.settingsWith("allowBatchedCursorMove" to true)
+        arm("a😀😀", 5)
+        h.inputLogic.moveCursorLeft(settings, 2, false)
+        assertEquals(listOf("setSelection(1,1)"), log())
+    }
+
+    @Test
+    fun moveCursorRight_multiStepPastTheEnd_clampsAtTheEnd() {
+        val settings = h.settingsWith("allowBatchedCursorMove" to true)
+        arm("a😀", 0)
+        h.inputLogic.moveCursorRight(settings, 5, false)
+        assertEquals(listOf("setSelection(3,3)"), log())
+    }
+
+    @Test
+    fun moveCursorLeft_multiStepPastTheStart_clampsAtZero() {
+        val settings = h.settingsWith("allowBatchedCursorMove" to true)
+        arm("😀a", 3)
+        h.inputLogic.moveCursorLeft(settings, 5, false)
+        assertEquals(listOf("setSelection(0,0)"), log())
+    }
+
     // ── onUpdateSelection: the no-op case ───────────────────────────────────────
 
     @Test
