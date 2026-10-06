@@ -1,8 +1,10 @@
 package dev.bbkb.ime.keyboard.inputboard.clipboard
 
 import android.content.ClipData
+import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
+import android.os.PersistableBundle
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -361,6 +363,71 @@ class ClipboardHistoryManagerTest {
 
         assertEquals(listOf("kept"), texts())
         assertEquals("the system clipboard is untouched", "kept", primaryText())
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 7b. Incognito fields and sensitive clips
+    // ═══════════════════════════════════════════════════════════════════════
+
+    @Test
+    fun nothingIsCapturedWhileTheFocusedFieldIsIncognito() {
+        copy("before")
+        history.setNoPersonalizedLearning(true)
+
+        copy("private")
+
+        assertEquals("the incognito copy never entered the history", listOf("before"), texts())
+        assertEquals("and nothing was announced for it", 1, historyChanges)
+    }
+
+    @Test
+    fun captureResumesOnceTheFieldIsNoLongerIncognito() {
+        history.setNoPersonalizedLearning(true)
+        copy("private")
+        history.setNoPersonalizedLearning(false)
+
+        copy("public")
+
+        assertEquals(listOf("public"), texts())
+    }
+
+    @Test
+    fun aClipMarkedSensitiveIsNeverStored() {
+        copy("ordinary")
+        val sensitive = ClipData.newPlainText("", "123456").apply {
+            description.extras = PersistableBundle().apply {
+                putBoolean(ClipDescription.EXTRA_IS_SENSITIVE, true)
+            }
+        }
+
+        system.setPrimaryClip(sensitive)
+
+        assertEquals(listOf("ordinary"), texts())
+        assertEquals(1, historyChanges)
+    }
+
+    @Test
+    fun aClipWithTheSensitiveExtraFalseIsStored() {
+        val notSensitive = ClipData.newPlainText("", "hello").apply {
+            description.extras = PersistableBundle().apply {
+                putBoolean(ClipDescription.EXTRA_IS_SENSITIVE, false)
+            }
+        }
+
+        system.setPrimaryClip(notSensitive)
+
+        assertEquals(listOf("hello"), texts())
+    }
+
+    @Test
+    @Config(sdk = [32])
+    fun beforeApi33TheSensitiveExtraIsNotConsulted() {
+        // EXTRA_IS_SENSITIVE is an API 33 contract; an older platform cannot have set it.
+        val clip = ClipData.newPlainText("", "x").apply {
+            description.extras = PersistableBundle().apply { putBoolean("android.content.extra.IS_SENSITIVE", true) }
+        }
+
+        assertFalse(ClipboardHistoryManager.isSensitiveClip(clip))
     }
 
     // ═══════════════════════════════════════════════════════════════════════

@@ -286,6 +286,10 @@ class RecorrectionController {
     }
 
     private boolean shouldShowAddToDictionary(CommitEventRecord c0713o, SettingsValues c0804d) {
+        // An incognito field offers no add-to-dictionary: the word would outlive the session.
+        if (mInputLogic.mIme.getDynamicLearningManager().isNoPersonalizedLearning()) {
+            return false;
+        }
         if (mInputLogic.mRichInputConnection.isMonitoringCursorUpdates() && c0804d.showUiToAcceptTypedWord && !TextUtils.isEmpty(c0713o.typedWord) && !TextUtils.equals(c0713o.typedWord, c0713o.committedWord)) {
             return !mInputLogic.mDictionaryLoader.isWordValid(c0713o.typedWord, true);
         }

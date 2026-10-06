@@ -185,9 +185,12 @@ class CommitController {
                     + " composing='" + mInputLogic.mComposingTracker.getComposingText() + "'");
         }
         boolean isBatchInput = request.commitType == CommitEventRecord.CommitType.BATCH_INPUT_WORD;
+        // Learning off for this field (preference, field type, or incognito): the commit still
+        // carries its alternatives, but neither the casing re-learn nor a later popup pick learns.
+        boolean learningAllowed = mInputLogic.mIme.getDynamicLearningManager().isLearningAllowed();
         CharSequence payload = request.withSuggestionSpan
                 ? SuggestionSpanBuilder.getTextWithSuggestionSpan(
-                        mInputLogic.mIme, word, currentSuggestions, isBatchInput)
+                        mInputLogic.mIme, word, currentSuggestions, isBatchInput, learningAllowed)
                 : word;
         PrevWordsInfo prevWordsInfo = mInputLogic.mRichInputConnection.getPrevWordsInfo(
                 settings.spacingAndPunctuation, mInputLogic.mComposingTracker.isComposing() ? 2 : 1);
@@ -216,8 +219,8 @@ class CommitController {
                 request.commitType, payload, separator, prevWordsInfo);
         SuggestedWords.SuggestedWordInfo matched =
                 SuggestedWords.findByNuanceWord(currentSuggestions, word);
-        if (matched != null && !TextUtils.isEmpty(word) && word.equalsIgnoreCase(matched.word)
-                && !word.equals(matched.word)) {
+        if (learningAllowed && matched != null && !TextUtils.isEmpty(word)
+                && word.equalsIgnoreCase(matched.word) && !word.equals(matched.word)) {
             // Typed casing differs from the Nuance entry (e.g. auto-capitalized sentence
             // start): record the user's casing in the dynamic language model.
             NuanceSDKManager.getInstance().addWord(word);

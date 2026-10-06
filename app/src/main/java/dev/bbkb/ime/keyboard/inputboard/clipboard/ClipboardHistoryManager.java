@@ -4,6 +4,8 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Build;
+import android.os.PersistableBundle;
 import android.util.Log;
 
 import dev.bbkb.ime.R;
@@ -31,6 +33,13 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
      * or not it fired.
      */
     private boolean mInternalUpdate = false;
+
+    /**
+     * The focused field set {@code IME_FLAG_NO_PERSONALIZED_LEARNING}. The manager is global and
+     * hears every copy in every app, so the session pushes this in rather than the manager
+     * reading a field it has no view of; while set, nothing new enters the history.
+     */
+    private boolean mNoPersonalizedLearning = false;
 
     private static final int MAX_HISTORY_SIZE = 7;
 
@@ -99,10 +108,28 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
 
     private void handleClip(ClipData clipData) {
         // Announce only a change that happened: a refused clip (no text) leaves the list as it was.
-        if (!this.mInternalUpdate && addToHistory(clipData)) {
+        if (!this.mInternalUpdate && !this.mNoPersonalizedLearning && !isSensitiveClip(clipData)
+                && addToHistory(clipData)) {
             notifyHistoryChanged();
         }
         this.mInternalUpdate = false;
+    }
+
+    public void setNoPersonalizedLearning(boolean z) {
+        this.mNoPersonalizedLearning = z;
+    }
+
+    /**
+     * A clip its source marked {@link ClipDescription#EXTRA_IS_SENSITIVE} (a password manager, an
+     * OTP): never stored. The extra is API 33; older sources cannot set it.
+     */
+    static boolean isSensitiveClip(ClipData clipData) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || clipData == null) {
+            return false;
+        }
+        ClipDescription description = clipData.getDescription();
+        PersistableBundle extras = description != null ? description.getExtras() : null;
+        return extras != null && extras.getBoolean(ClipDescription.EXTRA_IS_SENSITIVE, false);
     }
 
     public void addHistoryChangedListener(OnHistoryChangedListener cVar) {

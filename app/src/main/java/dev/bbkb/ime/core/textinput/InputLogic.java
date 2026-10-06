@@ -24,6 +24,9 @@ import dev.bbkb.ime.core.textinput.composing.CommitEventRecord;
 import dev.bbkb.ime.core.suggestion.SuggestionEngine;
 import dev.bbkb.ime.core.textinput.composing.TouchHighlightTracker;
 import dev.bbkb.ime.core.textinput.connection.TextContextTracker;
+import dev.bbkb.ime.core.textinput.connection.EditorCapabilities;
+import dev.bbkb.ime.core.engine.learning.DynamicLearningManager;
+import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardController;
 import dev.bbkb.ime.personaldictionary.tokenizer.BlackBerryTokenizer;
 import dev.bbkb.ime.core.shared.ProfileDetector;
 import android.view.inputmethod.CursorAnchorInfo;
@@ -167,6 +170,9 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     boolean mLastDynamicLearningEnabled = false;
 
     int mLastInputType = -2;
+
+    /** Part of the {@link #updateDynamicLearningState()} cache key with {@link #mLastInputType}: incognito is an imeOptions bit. */
+    int mLastImeOptions = 0;
 
 
     /**
@@ -1836,26 +1842,56 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     /**
      * Checks whether dynamic learning should be enabled or disabled for the current editor
      * and input type, and updates the text context tracker and learning engine accordingly.
-     * Short-circuits if neither the learning preference nor the input type has changed.
+     * Short-circuits if neither the learning preference nor the editor's input type and
+     * imeOptions have changed.
+     *
+     * <p>Runs from onStartInputView before {@code loadSettings} rebuilds
+     * {@link EditorCapabilities}, so it reads the live {@link EditorInfo}, never the settings copy.
      */
     public void updateDynamicLearningState() {
         SettingsValues settingsValues = SettingsManager.getInstance().getSettingsValues();
         boolean z = settingsValues.isDynamicLearningEnabled;
         EditorInfo editorInfoM4500g = getCurrentEditorInfo();
-        if (this.mLastDynamicLearningEnabled == z && (editorInfoM4500g == null || editorInfoM4500g.inputType == this.mLastInputType)) {
+        if (this.mLastDynamicLearningEnabled == z && (editorInfoM4500g == null
+                || (editorInfoM4500g.inputType == this.mLastInputType && editorInfoM4500g.imeOptions == this.mLastImeOptions))) {
             return;
+        }
+        DynamicLearningManager learning = this.mIme.getDynamicLearningManager();
+        boolean noPersonalizedLearning = EditorCapabilities.hasNoPersonalizedLearningFlag(editorInfoM4500g);
+        learning.setLearningPreferenceEnabled(z);
+        learning.setNoPersonalizedLearning(noPersonalizedLearning);
+        ClipboardController clipboard = this.mIme.getClipboardController();
+        if (clipboard != null) {
+            clipboard.setNoPersonalizedLearning(noPersonalizedLearning);
         }
         if (!z) {
             this.mTextContextTracker.setEnabled(false);
-            this.mIme.getDynamicLearningManager().setDynamicLearningEnabled(false);
+            learning.setDynamicLearningEnabled(false);
         } else {
             this.mTextContextTracker.updateLocale(SubtypeManager.getInstance().getCurrentSubtypeLocale(), settingsValues.spacingAndPunctuation);
-            boolean zM4428f = editorInfoM4500g != null ? isLearningEnabledForInputType(editorInfoM4500g.inputType) : false;
+            boolean zM4428f = editorInfoM4500g != null ? isLearningAllowed(editorInfoM4500g) : false;
             this.mTextContextTracker.setEnabled(zM4428f);
-            this.mIme.getDynamicLearningManager().setDynamicLearningEnabled(zM4428f);
+            learning.setDynamicLearningEnabled(zM4428f);
         }
         this.mLastDynamicLearningEnabled = z;
-        this.mLastInputType = editorInfoM4500g != null ? editorInfoM4500g.inputType : this.mLastInputType;
+        if (editorInfoM4500g != null) {
+            this.mLastInputType = editorInfoM4500g.inputType;
+            this.mLastImeOptions = editorInfoM4500g.imeOptions;
+        }
+    }
+
+    /**
+     * Whether the editor permits learning from what is typed into it: its input type allows it
+     * ({@link #isLearningEnabledForInputType}) and it did not set
+     * {@link EditorInfo#IME_FLAG_NO_PERSONALIZED_LEARNING} (incognito). Suggestions are not
+     * affected; the user's preference is applied on top by {@link #updateDynamicLearningState()}.
+     *
+     * @param editorInfo the focused editor
+     * @return {@code true} if learning is permitted for this field
+     */
+    public static boolean isLearningAllowed(EditorInfo editorInfo) {
+        return isLearningEnabledForInputType(editorInfo.inputType)
+                && !EditorCapabilities.hasNoPersonalizedLearningFlag(editorInfo);
     }
 
     /**

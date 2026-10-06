@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.compat.InputMethodSubtypeCompat;
 import dev.bbkb.ime.core.BlackBerryIME;
+import dev.bbkb.ime.core.engine.learning.DynamicLearningManager;
 import dev.bbkb.ime.core.SymbolPageProvider;
 import dev.bbkb.ime.core.locale.RichInputMethodManager;
 import dev.bbkb.ime.core.ime.InputView;
@@ -424,6 +425,16 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         InputLogic logic = this.blackberryIme.getInputLogic();
         if (logic == null) return;
         logic.commitTouchEventText();
+    }
+
+    /**
+     * Whether the focused field asked for no personalized learning (incognito).
+     * Called by the emoji board, which then keeps no recents.
+     */
+    public boolean isNoPersonalizedLearning() {
+        if (this.blackberryIme == null) return false;
+        DynamicLearningManager learning = this.blackberryIme.getDynamicLearningManager();
+        return learning != null && learning.isNoPersonalizedLearning();
     }
 
     private KeyboardSwitcher() {

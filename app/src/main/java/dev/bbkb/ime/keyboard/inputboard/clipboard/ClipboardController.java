@@ -51,6 +51,13 @@ public class ClipboardController extends AbstractBoardController<ClipboardContro
         hideClipboard();
     }
 
+    /** The focused field is incognito: stop capturing clips into the history until it is not. */
+    public void setNoPersonalizedLearning(boolean z) {
+        if (hasHistoryManager()) {
+            this.mHistoryManager.setNoPersonalizedLearning(z);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         if (hasView()) {
