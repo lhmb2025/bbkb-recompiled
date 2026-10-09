@@ -125,7 +125,7 @@ private fun RenderRow(
 
         is Nav -> NavRow(
             title = context.getString(row.title),
-            summary = row.summary?.let { context.getString(it) },
+            summary = row.summaryText?.invoke(context) ?: row.summary?.let { context.getString(it) },
             icon = row.icon,
             iconSpaceReserved = row.iconSpaceReserved,
             enabled = row.enabled(env),

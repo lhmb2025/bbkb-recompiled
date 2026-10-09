@@ -9,7 +9,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * [TouchKeypadGeometry]'s precedence — the pad's InputDevice, then the profile's
+ * [TouchKeypadGeometry]'s precedence — a synthesised source's measured ranges, the pad's InputDevice, then the profile's
  * `<touch-keypad>` ranges, then (Y only, forced CKB) the `<ckb-y-warp>` band, then the KEY2's pad
  * — and the KEY2 identity it must keep: 1080, 525, 144, 610, exactly, wherever the frame is the
  * KEY2's. Pure JVM.
@@ -33,7 +33,7 @@ class TouchKeypadGeometryTest {
 
     @Test
     fun key2Pad_fromItsInputDevice_isExactlyTheOldConstants() {
-        val g = TouchKeypadGeometry.resolve(key2Pad, null, "0:0,450:324", true)
+        val g = TouchKeypadGeometry.resolve(null, key2Pad, null, "0:0,450:324", true)
         assertKey2Frame(g)
         assertEquals(Source.INPUT_DEVICE, g.xSource())
         assertEquals(Source.INPUT_DEVICE, g.ySource())
@@ -43,7 +43,7 @@ class TouchKeypadGeometryTest {
 
     @Test
     fun noPadNoProfile_isTheKey2Frame_andReportsNoYMax() {
-        val g = TouchKeypadGeometry.resolve(null, null, null, false)
+        val g = TouchKeypadGeometry.resolve(null, null, null, null, false)
         assertKey2Frame(g)
         assertEquals(Source.KEY2_DEFAULT, g.xSource())
         assertEquals(Source.KEY2_DEFAULT, g.ySource())
@@ -64,7 +64,7 @@ class TouchKeypadGeometryTest {
      */
     @Test
     fun forcedCkbRig_warpFeedsYMaxOnly_frameStaysKey2() {
-        val g = TouchKeypadGeometry.resolve(null, null, "0:0,450:324", true)
+        val g = TouchKeypadGeometry.resolve(null, null, null, "0:0,450:324", true)
         assertEquals(Source.LEGACY_Y_WARP, g.ySource())
         assertEquals(450f, g.sensorYMax(), 0f)
         assertEquals(450f, g.height(), 0f)
@@ -73,16 +73,43 @@ class TouchKeypadGeometryTest {
 
     @Test
     fun warpIsIgnoredWithoutForcedCkb_andWhenUnreadable() {
-        assertEquals(0f, TouchKeypadGeometry.resolve(null, null, "0:0,450:324", false).sensorYMax(), 0f)
-        assertEquals(0f, TouchKeypadGeometry.resolve(null, null, "garbage", true).sensorYMax(), 0f)
-        assertEquals(0f, TouchKeypadGeometry.resolve(null, null, null, true).sensorYMax(), 0f)
+        assertEquals(0f, TouchKeypadGeometry.resolve(null, null, null, "0:0,450:324", false).sensorYMax(), 0f)
+        assertEquals(0f, TouchKeypadGeometry.resolve(null, null, null, "garbage", true).sensorYMax(), 0f)
+        assertEquals(0f, TouchKeypadGeometry.resolve(null, null, null, null, true).sensorYMax(), 0f)
     }
 
     // ── precedence ───────────────────────────────────────────────────────────
 
     @Test
+    fun measuredRangesBeatTheInputDeviceAndTheProfile() {
+        // A synthesised stream (the Shizuku reader) measured its pad: that is the frame its
+        // coordinates are in, whatever the OS enumerates or the profile guesses.
+        val measured = TouchKeypadInfo.measured(0x5B4B0001, 1200f, 640f)
+        val g = TouchKeypadGeometry.resolve(measured, TouchKeypadInfo.forTest(9, 0.3f, 1440f, 720f),
+            declared(1080, 600), "0:0,450:324", true)
+        assertEquals(Source.MEASURED, g.xSource())
+        assertEquals(Source.MEASURED, g.ySource())
+        assertEquals(1200, g.frameWidth())
+        assertEquals(640, g.frameHeight())
+        assertEquals(640f, g.sensorYMax(), 0f)
+        assertTrue(g.isMeasured())
+        assertEquals("the enumerated pad still reports its resolution", 0.3f, g.resolution(), 0f)
+    }
+
+    @Test
+    fun measuredRangesAbsent_orEmpty_fallThrough() {
+        val empty = TouchKeypadInfo.measured(0x5B4B0001, 0f, 0f)
+        assertEquals(Source.PROFILE,
+            TouchKeypadGeometry.resolve(empty, null, declared(1440, 720), null, false).xSource())
+        val xOnly = TouchKeypadGeometry.resolve(TouchKeypadInfo.measured(1, 1440f, 0f), null,
+            declared(1080, 600), null, false)
+        assertEquals(Source.MEASURED, xOnly.xSource())
+        assertEquals(Source.PROFILE, xOnly.ySource())
+    }
+
+    @Test
     fun inputDeviceBeatsProfile() {
-        val g = TouchKeypadGeometry.resolve(TouchKeypadInfo.forTest(9, 0f, 1400f, 700f),
+        val g = TouchKeypadGeometry.resolve(null, TouchKeypadInfo.forTest(9, 0f, 1400f, 700f),
             declared(1440, 720), null, false)
         assertEquals(1400, g.frameWidth())
         assertEquals(700, g.frameHeight())
@@ -94,7 +121,7 @@ class TouchKeypadGeometryTest {
         // The Titan 2's touchPad found by name, reporting no motion ranges (or no device at all,
         // for a synthesised source): the profile's 1440 x 720.
         for (device in listOf(TouchKeypadInfo.forTest(9, 0f, 0f, 0f), null)) {
-            val g = TouchKeypadGeometry.resolve(device, declared(1440, 720), null, false)
+            val g = TouchKeypadGeometry.resolve(null, device, declared(1440, 720), null, false)
             assertEquals(Source.PROFILE, g.xSource())
             assertEquals(Source.PROFILE, g.ySource())
             assertEquals(1440, g.frameWidth())
@@ -107,14 +134,14 @@ class TouchKeypadGeometryTest {
 
     @Test
     fun profileBeatsTheWarp() {
-        val g = TouchKeypadGeometry.resolve(null, declared(1440, 720), "0:0,450:324", true)
+        val g = TouchKeypadGeometry.resolve(null, null, declared(1440, 720), "0:0,450:324", true)
         assertEquals(Source.PROFILE, g.ySource())
         assertEquals(720, g.frameHeight())
     }
 
     @Test
     fun axesResolveIndependently() {
-        val g = TouchKeypadGeometry.resolve(null, declared(1440, 0), null, false)
+        val g = TouchKeypadGeometry.resolve(null, null, declared(1440, 0), null, false)
         assertEquals(Source.PROFILE, g.xSource())
         assertEquals(Source.KEY2_DEFAULT, g.ySource())
         assertEquals(1440, g.frameWidth())
@@ -123,10 +150,10 @@ class TouchKeypadGeometryTest {
 
     @Test
     fun strokeGeometryScalesWithAnotherPad() {
-        val titan2 = TouchKeypadGeometry.resolve(null, declared(1440, 720), null, false)
+        val titan2 = TouchKeypadGeometry.resolve(null, null, declared(1440, 720), null, false)
         assertEquals(192, titan2.strokeKeyWidth())          // 144 * 1440 / 1080
         assertEquals(837, titan2.strokeBoardHeight())       // 610 * 720 / 525, rounded
-        val pocket = TouchKeypadGeometry.resolve(null, declared(720, 360), null, false)
+        val pocket = TouchKeypadGeometry.resolve(null, null, declared(720, 360), null, false)
         assertEquals(96, pocket.strokeKeyWidth())
         assertEquals(418, pocket.strokeBoardHeight())
     }

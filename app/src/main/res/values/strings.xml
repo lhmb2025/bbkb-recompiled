@@ -500,6 +500,48 @@
     <string name="settings_device_config_category_standard">Standard</string>
     <string name="settings_device_configuration_summary">Select or import device input configurations</string>
     <string name="settings_device_configuration_title">Device configuration</string>
+    <!-- Touch surface helper (Unihertz Titans). "Shizuku", "Scroll assistant" and "Cursor
+         assistant" are product and OEM page names: left as they are. -->
+    <string name="touch_surface_builtin_category">Built-in</string>
+    <string name="touch_surface_builtin_intro">The phone delivers the keyboard\'s touch surface to BBKB while its Scroll assistant is on.</string>
+    <string name="touch_surface_cursor_assistant_summary">Cursor assistant claims double-tap on the keys, so BBKB never receives it</string>
+    <string name="touch_surface_cursor_assistant_title">Turn off Cursor assistant</string>
+    <string name="touch_surface_grant_access">Grant access</string>
+    <string name="touch_surface_grant_access_denied">Access was refused, so Shizuku will not ask again. Open Shizuku and allow BBKB there.</string>
+    <string name="touch_surface_grant_access_summary">Let BBKB read the touch surface through Shizuku</string>
+    <string name="touch_surface_helper_title">Touch surface helper</string>
+    <string name="touch_surface_install_shizuku">Install Shizuku</string>
+    <string name="touch_surface_install_shizuku_summary">Download it from the Shizuku releases page on GitHub</string>
+    <string name="touch_surface_link_summary">%1$s\nSet up in Device compatibility</string>
+    <string name="touch_surface_link_title">Touch surface</string>
+    <string name="touch_surface_open_scroll_assistant">Open Scroll assistant</string>
+    <string name="touch_surface_open_shizuku">Open Shizuku</string>
+    <string name="touch_surface_open_shizuku_summary">Start Shizuku, or manage which apps can use it</string>
+    <string name="touch_surface_shizuku_category" translatable="false">Shizuku</string>
+    <string name="touch_surface_shizuku_guide_category">Set up Shizuku</string>
+    <string name="touch_surface_shizuku_guide_steps">1. Turn on Developer options, then Wireless debugging.\n2. Start Shizuku from its app, or with root.\n3. Come back here and tap Grant access.</string>
+    <string name="touch_surface_shizuku_intro">Shizuku is a free app that lets BBKB read the touch surface directly. BBKB takes it over only while the keyboard is open; the rest of the time it works as the phone normally does.</string>
+    <string name="touch_surface_shizuku_mediatek">Use Shizuku 13.5.4 on this phone: version 13.6.0 does not work fully on MediaTek phones.</string>
+    <string name="touch_surface_shizuku_reboot">Shizuku stops every time the phone restarts. Start it again after each restart; the status above says when it is not running.</string>
+    <string name="touch_surface_shizuku_state_denied">Running, but BBKB was refused access</string>
+    <string name="touch_surface_shizuku_state_granted">Running, and BBKB has access</string>
+    <string name="touch_surface_shizuku_state_not_granted">Running, but BBKB does not have access yet</string>
+    <string name="touch_surface_shizuku_state_not_installed">Not installed</string>
+    <string name="touch_surface_shizuku_state_not_running">Installed, but not running</string>
+    <string name="touch_surface_shizuku_state_outdated">Running, but too old for BBKB</string>
+    <string name="touch_surface_shizuku_status_title">Shizuku status</string>
+    <string name="touch_surface_status_android_unsupported">Not available on this version of Android</string>
+    <string name="touch_surface_status_native_off">Needs setup: turn on Scroll assistant</string>
+    <string name="touch_surface_status_native_working">Working, using the phone\'s Scroll assistant</string>
+    <string name="touch_surface_status_pad_not_found">Not working: the touch surface was not found</string>
+    <string name="touch_surface_status_reader_failed">Not working: the touch surface could not be read</string>
+    <string name="touch_surface_status_shizuku_not_granted">Needs setup: grant BBKB access in Shizuku</string>
+    <string name="touch_surface_status_shizuku_not_installed">Needs setup: install Shizuku</string>
+    <string name="touch_surface_status_shizuku_not_running">Needs setup: Shizuku is not running</string>
+    <string name="touch_surface_status_shizuku_outdated">Needs setup: update Shizuku</string>
+    <string name="touch_surface_status_shizuku_ready">Ready, using Shizuku</string>
+    <string name="touch_surface_status_shizuku_working">Working, using Shizuku</string>
+    <string name="touch_surface_status_unavailable">Not available on this phone</string>
 
     <!-- ======================================== -->
     <!-- Settings — predictions and flow typing -->

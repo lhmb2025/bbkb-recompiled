@@ -43,7 +43,10 @@ import dev.bbkb.ime.core.contacts.ContactsLearningManager
 import dev.bbkb.ime.core.device.config.model.DeviceQuirk
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.device.state.PhysicalKeyboardStateTracker
+import dev.bbkb.ime.core.device.config.model.TouchKeypadConfig
+import dev.bbkb.ime.core.device.touch.KeypadTouchSources
 import dev.bbkb.ime.core.device.touch.NativeTouchSource
+import dev.bbkb.ime.core.device.touch.ShizukuTouchSource
 import dev.bbkb.ime.core.device.touch.TouchSourceSelector
 import dev.bbkb.ime.core.engine.DictionaryLoader
 import dev.bbkb.ime.personaldictionary.DictionaryManager
@@ -364,6 +367,21 @@ class BlackBerryIME : InputMethodService(),
         override fun selection(): TouchSourceSelector.Selection =
             DeviceProfile.current().touchSourceSelection
     })
+
+    /**
+     * The touch keypad read through Shizuku (Titan 2 on Android 15, a Titan whose pad the OS does
+     * not enumerate). Inert unless the profile's `<touch-keypad>` selects it: the engine is never
+     * started anywhere else. Started on the first window show, kept for the IME's life, grabbing
+     * the pad only while the window is shown.
+     */
+    private val shizukuTouch = ShizukuTouchSource(object : ShizukuTouchSource.Host {
+        override fun context(): Context = this@BlackBerryIME
+        override fun onGenericMotionEvent(event: MotionEvent): Boolean =
+            this@BlackBerryIME.onGenericMotionEvent(event)
+        override fun selection(): TouchSourceSelector.Selection =
+            DeviceProfile.current().touchSourceSelection
+        override fun touchKeypad(): TouchKeypadConfig? = DeviceProfile.current().touchKeypadConfig
+    }, KeypadTouchSources.shizukuEngine())
 
     /**
      * Audit CT-27: the bounded worker pool for cold-start warmups. These used to be four raw
@@ -774,6 +792,7 @@ class BlackBerryIME : InputMethodService(),
         startupExecutor.shutdown()
         ckbGestures.release()
         nativeTouch.stop()
+        shizukuTouch.stop()
         if (nonCriticalReceiversRegistered) {
             nonCriticalReceiversRegistered = false
             try { unregisterReceiver(connectivityAndScreenReceiver) } catch (ignored: IllegalArgumentException) {}
@@ -1135,11 +1154,13 @@ class BlackBerryIME : InputMethodService(),
             registerBackInvokedCallback()
         }
         nativeTouch.attach()
+        shizukuTouch.onWindowShown()
     }
 
     override fun onWindowHidden() {
         super.onWindowHidden()
         nativeTouch.detach()
+        shizukuTouch.onWindowHidden()
         resetUiState()
         fccController?.dismiss()
         clipboardController?.dismiss()

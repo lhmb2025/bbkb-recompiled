@@ -150,7 +150,7 @@ class DeviceProfileTouchKeypadTest {
         DeviceProfileTestSupport.installMapping(parsed(R.xml.device_config_titan2)) // native-min-sdk 36
         val p = DeviceProfile.current()
         assertTrue(p.declaresTouchKeypad())
-        assertFalse("below the native SDK and no reader yet: nothing can deliver", p.hasTouchKeypad())
+        assertFalse("below the native SDK and the reader not streaming: nothing can deliver", p.hasTouchKeypad())
         assertEquals(TouchSourceSelector.Choice.SHIZUKU, p.touchSourceSelection.choice)
         assertEquals(TouchKeypadConfig.SourcePreference.AUTO, p.touchSourceSelection.preference)
         assertEquals("the profile's range stands in for the pad", 720f, p.touchKeypadYMax, 0f)

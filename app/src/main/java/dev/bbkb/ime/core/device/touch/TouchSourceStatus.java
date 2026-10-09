@@ -34,8 +34,24 @@ public final class TouchSourceStatus {
         PROFILE_PINS_SHIZUKU,
         /** The profile forbids the privileged reader ({@code source="native"}). */
         PROFILE_PINS_NATIVE,
-        /** The privileged (Shizuku) reader is not part of this build yet. */
-        SHIZUKU_NOT_YET_AVAILABLE,
+        /** Shizuku cannot run on this Android version (it needs Android 7). */
+        SHIZUKU_UNSUPPORTED,
+        /** The Shizuku that is running predates v11, which the reader needs. */
+        SHIZUKU_OUTDATED,
+        /** The Shizuku app is not installed. */
+        SHIZUKU_NOT_INSTALLED,
+        /** Shizuku is installed but not running (it stops at every reboot). */
+        SHIZUKU_NOT_RUNNING,
+        /** Shizuku runs, but BBKB has not been given access yet. */
+        SHIZUKU_NOT_GRANTED,
+        /** The user refused BBKB in Shizuku for good; only the Shizuku app can allow it now. */
+        SHIZUKU_DENIED,
+        /** The profile names no input device for the pad, so the reader has nothing to open. */
+        PAD_NOT_NAMED,
+        /** Shizuku runs, but no input device has the pad's name (yet); the reader keeps looking. */
+        PAD_NOT_FOUND,
+        /** Shizuku runs, but the reader could not start or could not read the pad; it retries. */
+        READER_FAILED,
         /** The source was stopped (the IME is going away). */
         STOPPED
     }

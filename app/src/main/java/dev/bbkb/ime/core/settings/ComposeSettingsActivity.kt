@@ -32,6 +32,7 @@ import dev.bbkb.ime.core.settings.screens.LanguageSwitchingScreen
 import dev.bbkb.ime.core.settings.screens.LanguagesHubScreen
 import dev.bbkb.ime.core.settings.screens.MainSettingsScreen
 import dev.bbkb.ime.core.settings.screens.KeyboardHelperScreen
+import dev.bbkb.ime.core.settings.screens.TouchSurfaceHelperScreen
 import dev.bbkb.ime.core.settings.screens.DeviceConfigurationScreen
 import dev.bbkb.ime.core.settings.screens.DeviceProfileBuilderScreen
 import dev.bbkb.ime.core.settings.screens.PhysicalKeyboardScreen
@@ -247,6 +248,7 @@ fun SettingsNavHost(
             PhysicalKeyboardScreen(
                 onNavigateToCkbGestures = go(SettingsRoute.CkbGestures),
                 onNavigateToCustomLayouts = go(SettingsRoute.CustomPhysicalLayouts),
+                onNavigateToTouchSurfaceHelper = go(SettingsRoute.TouchSurfaceHelper),
                 onNavigateBack = back
             )
         }
@@ -278,12 +280,20 @@ fun SettingsNavHost(
             DeviceCompatibilityScreen(
                 onNavigateToDeviceConfiguration = go(SettingsRoute.DeviceConfiguration),
                 onNavigateToKeyboardHelper = go(SettingsRoute.KeyboardHelper),
+                onNavigateToTouchSurfaceHelper = go(SettingsRoute.TouchSurfaceHelper),
                 onNavigateBack = back
             )
         }
 
         composable(SettingsRoute.KeyboardHelper.route) {
             KeyboardHelperScreen(
+                onNavigateBack = back
+            )
+        }
+
+        // Touch surface helper — the Titans' keyboard touch surface (Scroll assistant or Shizuku)
+        composable(SettingsRoute.TouchSurfaceHelper.route) {
+            TouchSurfaceHelperScreen(
                 onNavigateBack = back
             )
         }

@@ -9,9 +9,9 @@ import androidx.annotation.NonNull;
  * {@link SyntheticTouchSources}), {@code SOURCE_TOUCHPAD}, sensor coordinates in the
  * {@link TouchKeypadGeometry} frame — so nothing downstream knows which source fed it.
  *
- * <p>Implementations: {@link NativeTouchSource} (the OS delivers the pad to a focused IME window).
- * The privileged reader for firmware that does not is a separate component;
- * {@link TouchSourceSelector} decides which one should run.
+ * <p>Implementations: {@link NativeTouchSource} (the OS delivers the pad to a focused IME window)
+ * and {@link ShizukuTouchSource} (BBKB reads the pad's evdev node through Shizuku, for firmware
+ * that does not); {@link TouchSourceSelector} decides which one should run.
  */
 public interface KeypadTouchSource {
 

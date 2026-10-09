@@ -215,6 +215,8 @@ class Category(
 class Nav(
     @StringRes val title: Int,
     @StringRes val summary: Int? = null,
+    /** A summary built at render time (a live status); wins over [summary] when given. */
+    val summaryText: ((Context) -> String)? = null,
     val icon: RowIcon? = null,
     val iconSpaceReserved: Boolean = false,
     val enabled: (SettingsEnv) -> Boolean = { true },

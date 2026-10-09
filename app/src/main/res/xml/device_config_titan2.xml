@@ -30,7 +30,7 @@
         <!-- The pad over the keys. On Android 16 the OS hands its events to a FOCUSED IME window
              once the OEM Scroll assistant is on (Settings > Gestures > Keyboard gestures); the
              native source covers that. On Android 15 the pad never reaches an app, which is the
-             privileged reader's case (source="auto" picks it there once it exists).
+             Shizuku reader's case (source="auto" picks it there; Touch surface helper sets it up).
              "sub_touch" is the REAR screen, never the pad. No <kdb-variant> yet: swipe typing on
              this pad stays off until a captured kdb/titan2 variant exists. -->
         <touch-keypad range-x="1440" range-y="720" contacts="single" native-min-sdk="36" source="auto">

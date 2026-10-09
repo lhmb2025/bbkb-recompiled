@@ -97,6 +97,16 @@ public class DeviceMatchCriteria {
             return matches(value, false);
         }
 
+        /** The rule's text as the config wrote it: the exact value, or the regex source. */
+        public String pattern() {
+            return pattern;
+        }
+
+        /** True for a {@code regex=} rule, which must match the whole value. */
+        public boolean isRegex() {
+            return regex != null;
+        }
+
         @Override
         public String toString() {
             return (regex == null ? "EXACT" : "REGEX") + ":'" + pattern + "'";

@@ -94,6 +94,15 @@ public final class TouchKeypadInfo {
         );
     }
 
+    /**
+     * A pad known only from the axis extents a privileged reader measured on its evdev node
+     * (EVIOCGABS), stamped with the synthetic device id that reader puts on its events. There is
+     * no InputDevice, so no resolution: 0, as for a device that reports none.
+     */
+    public static TouchKeypadInfo measured(int deviceId, float xRangeMax, float yRangeMax) {
+        return new TouchKeypadInfo(deviceId, 0f, xRangeMax, yRangeMax);
+    }
+
     /** A pad with the given facts, for tests that cannot build an InputDevice. */
     @VisibleForTesting
     public static TouchKeypadInfo forTest(int deviceId, float resolution, float xRangeMax, float yRangeMax) {

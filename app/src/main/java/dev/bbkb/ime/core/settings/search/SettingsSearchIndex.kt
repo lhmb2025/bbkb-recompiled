@@ -1,10 +1,12 @@
 package dev.bbkb.ime.core.settings.search
 
 import dev.bbkb.ime.core.device.profile.DeviceProfile
+import dev.bbkb.ime.core.device.touch.TouchSourceSelector
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.SettingsRoute
 import dev.bbkb.ime.core.settings.backup.LayoutsBundle
 import dev.bbkb.ime.core.settings.backup.SettingsBackup
+import dev.bbkb.ime.core.settings.screens.TouchSurfaceAnchors
 import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardPrefs
 
 /**
@@ -18,6 +20,10 @@ import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardPrefs
 data class SearchDeviceCapabilities(
     val hasPhysicalKeyboard: Boolean,
     val hasMultifunctionKey: Boolean,
+    /** The profile describes a touch surface over the keys (`DeviceProfile.declaresTouchKeypad`). */
+    val declaresTouchKeypad: Boolean = false,
+    /** The touch-source selector gives that surface to the Shizuku reader. */
+    val touchKeypadUsesShizuku: Boolean = false,
 ) {
     companion object {
         fun current(): SearchDeviceCapabilities {
@@ -26,6 +32,9 @@ data class SearchDeviceCapabilities(
                 hasPhysicalKeyboard = profile?.hasPhysicalKeyboard() ?: false,
                 hasMultifunctionKey =
                     profile?.getDeviceMapping()?.getMultifunctionKeyMapping() != null,
+                declaresTouchKeypad = profile?.declaresTouchKeypad() ?: false,
+                touchKeypadUsesShizuku =
+                    profile?.touchSourceSelection?.choice == TouchSourceSelector.Choice.SHIZUKU,
             )
         }
     }
@@ -55,13 +64,21 @@ enum class DeviceRequirement {
     TOUCH_ONLY,
 
     /** Row sits behind a device mapping that declares a MULTIFUNCTION key (the KEY2 mic key). */
-    MULTIFUNCTION_KEY;
+    MULTIFUNCTION_KEY,
+
+    /** Row sits behind a profile that declares a touch surface over the keys (the Titans). */
+    TOUCH_KEYPAD_DECLARED,
+
+    /** Row sits in the Touch surface helper's Shizuku section: the selector picks the reader. */
+    TOUCH_KEYPAD_SHIZUKU;
 
     fun isMetBy(capabilities: SearchDeviceCapabilities): Boolean = when (this) {
         ANY -> true
         PHYSICAL_KEYBOARD -> capabilities.hasPhysicalKeyboard
         TOUCH_ONLY -> !capabilities.hasPhysicalKeyboard
         MULTIFUNCTION_KEY -> capabilities.hasMultifunctionKey
+        TOUCH_KEYPAD_DECLARED -> capabilities.declaresTouchKeypad
+        TOUCH_KEYPAD_SHIZUKU -> capabilities.declaresTouchKeypad && capabilities.touchKeypadUsesShizuku
     }
 }
 
@@ -242,6 +259,11 @@ object SettingsSearchIndex {
         // task, and its entry row (with the detected facts behind it) is what search should land
         // on. No anchor — the row holds no preference.
         SearchableSetting(R.string.device_profile_builder_entry_title, "device profile builder capture keys scancode keycode export import share unknown phone config", SettingsRoute.DeviceConfiguration.route, ADVANCED, requires = DeviceRequirement.PHYSICAL_KEYBOARD),
+        // ── Advanced: Touch surface helper (Unihertz Titans) ────────────────────
+        // The row on Device compatibility, and the Shizuku section of the screen it opens; both
+        // are actions, anchored by the ids TouchSurfaceAnchors declares.
+        SearchableSetting(R.string.touch_surface_helper_title, "touch surface touchpad keyboard gestures swipe scroll assistant cursor shizuku titan unihertz", SettingsRoute.DeviceCompatibility.route, ADVANCED, TouchSurfaceAnchors.HELPER, DeviceRequirement.TOUCH_KEYPAD_DECLARED),
+        SearchableSetting(R.string.touch_surface_shizuku_category, "shizuku touch surface touchpad wireless debugging adb root grant access permission", SettingsRoute.TouchSurfaceHelper.route, ADVANCED, TouchSurfaceAnchors.SHIZUKU, DeviceRequirement.TOUCH_KEYPAD_SHIZUKU),
         SearchableSetting(R.string.settings_debug_title, "debug developer", SettingsRoute.Advanced.route, ADVANCED),
         SearchableSetting(R.string.settings_clear_settings_title, "reset clear settings data", SettingsRoute.Advanced.route, ADVANCED),
         // ── Advanced: Manage data (settings backup/restore) ─────────────────────

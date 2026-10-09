@@ -93,6 +93,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object About : SettingsRoute("about", "About")
     object Updates : SettingsRoute("updates", "Updates")
     object KeyboardHelper : SettingsRoute("keyboard_helper", "BBKB Helper")
+    object TouchSurfaceHelper : SettingsRoute("touch_surface_helper", "Touch surface helper")
     object DeviceConfiguration : SettingsRoute("device_configuration", "Device Configuration")
     object DeviceProfileBuilder : SettingsRoute("device_profile_builder", "Build a device profile")
     object CustomPhysicalLayouts : SettingsRoute("custom_physical_layouts", "Custom physical layouts")
@@ -162,6 +163,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 About.route -> About
                 Updates.route -> Updates
                 KeyboardHelper.route -> KeyboardHelper
+                TouchSurfaceHelper.route -> TouchSurfaceHelper
                 DeviceConfiguration.route -> DeviceConfiguration
                 DeviceProfileBuilder.route -> DeviceProfileBuilder
                 CustomPhysicalLayouts.route -> CustomPhysicalLayouts

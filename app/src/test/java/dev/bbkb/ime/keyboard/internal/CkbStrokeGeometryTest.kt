@@ -31,19 +31,19 @@ class CkbStrokeGeometryTest {
 
     @Test
     fun theKey2Frame_keeps144And610() {
-        val key2 = TouchKeypadGeometry.resolve(
+        val key2 = TouchKeypadGeometry.resolve(null,
             dev.bbkb.ime.core.device.detection.TouchKeypadInfo.forTest(5, 0f, 1080f, 525f),
             null, "0:0,450:324", true)
         GestureEventProcessor.setKeypadGeometry(key2)
         assertEquals(144, GestureEventProcessor.strokeKeyWidth())
         assertEquals(610, GestureEventProcessor.strokeBoardHeight())
-        GestureEventProcessor.setKeypadGeometry(TouchKeypadGeometry.resolve(null, null, "0:0,450:324", true))
+        GestureEventProcessor.setKeypadGeometry(TouchKeypadGeometry.resolve(null, null, null, "0:0,450:324", true))
         assertEquals("the forced-CKB rig keeps the KEY2 frame too", 610, GestureEventProcessor.strokeBoardHeight())
     }
 
     @Test
     fun anotherPad_scalesThem() {
-        val titan2 = TouchKeypadGeometry.resolve(null,
+        val titan2 = TouchKeypadGeometry.resolve(null, null,
             TouchKeypadConfig().apply { rangeX = 1440; rangeY = 720 }, null, false)
         GestureEventProcessor.setKeypadGeometry(titan2)
         assertEquals(192, GestureEventProcessor.strokeKeyWidth())

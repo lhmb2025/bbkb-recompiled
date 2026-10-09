@@ -84,8 +84,12 @@ public final class DeviceProfile {
     private final DeviceRuntimeState runtimeState;
     private DeviceInputMapping deviceMapping;
 
-    /** {@link #getTouchKeypadGeometry()}'s answer, dropped whenever its inputs change. */
-    private volatile TouchKeypadGeometry touchKeypadGeometry;
+    /**
+     * {@link #getTouchKeypadGeometry()}'s answer with the measured pad it was resolved against;
+     * dropped whenever the profile's own inputs change, and stale as soon as
+     * {@link SyntheticTouchSources#measuredPad()} is a different object.
+     */
+    private volatile GeometryCache touchKeypadGeometry;
 
     /** {@link #getTouchSourceSelection()}'s answer, dropped with the geometry. */
     private volatile TouchSourceSelector.Selection touchSourceSelection;
@@ -98,7 +102,7 @@ public final class DeviceProfile {
     private final SparseBooleanArray namedPadDevices = new SparseBooleanArray(2);
 
     /** Registered once, the first time a profile is initialised with a Context. */
-    private static boolean sScannerListenerRegistered;
+    private static boolean sTouchKeypadListenersRegistered;
 
     // Display configuration (mutable — updated on config change)
     private int displayOrientation = Configuration.ORIENTATION_PORTRAIT;
@@ -326,7 +330,7 @@ public final class DeviceProfile {
             // A pad that appears or vanishes later (the Titan 2's, when the OEM Scroll assistant
             // is toggled) is picked up without a restart. Touch keypad only: no key config reset.
             KeyboardDeviceScanner.getInstance().registerDeviceListener(context);
-            registerScannerListener();
+            registerTouchKeypadListeners();
         }
 
         Logger.info("CKB_DEBUG", "DeviceProfile.initialize:"
@@ -344,10 +348,26 @@ public final class DeviceProfile {
         StartupTiming.end("deviceProfile.initializeForDevice", initToken);
     }
 
-    private static synchronized void registerScannerListener() {
-        if (sScannerListenerRegistered) return;
-        sScannerListenerRegistered = true;
+    private static synchronized void registerTouchKeypadListeners() {
+        if (sTouchKeypadListenersRegistered) return;
+        sTouchKeypadListenersRegistered = true;
         KeyboardDeviceScanner.getInstance().addTouchKeypadListener(DeviceProfile::onScannedTouchKeypadChanged);
+        SyntheticTouchSources.addListener(DeviceProfile::onSyntheticTouchSourcesChanged);
+    }
+
+    /**
+     * A synthetic source started or stopped (the Shizuku reader), so the frame may now come from
+     * the ranges it measured, or no longer does. The geometry cache notices that by itself; the
+     * stroke analyser holds its own copy of the frame, so it is pushed again here.
+     */
+    private static void onSyntheticTouchSourcesChanged() {
+        final DeviceProfile profile = current;
+        if (profile == null) return;
+        dev.bbkb.ime.keyboard.internal.GestureEventProcessor.setKeypadGeometry(
+                profile.getTouchKeypadGeometry());
+        Logger.info("CKB_DEBUG", "DeviceProfile: synthetic touch sources changed"
+                + ", hasTouchKeypad=" + profile.hasTouchKeypad()
+                + ", geometry=" + profile.getTouchKeypadGeometry());
     }
 
     /**
@@ -510,18 +530,31 @@ public final class DeviceProfile {
 
     /**
      * The touch keypad's coordinate frame (see {@link TouchKeypadGeometry} for the precedence:
-     * the pad's InputDevice, the profile's {@code <touch-keypad>} ranges, the forced-CKB warp,
-     * the KEY2's pad).
+     * a running synthetic source's measured ranges, the pad's InputDevice, the profile's
+     * {@code <touch-keypad>} ranges, the forced-CKB warp, the KEY2's pad).
      */
     public TouchKeypadGeometry getTouchKeypadGeometry() {
-        TouchKeypadGeometry g = touchKeypadGeometry;
-        if (g == null) {
-            g = TouchKeypadGeometry.resolve(capabilities.getTouchKeypad(), getTouchKeypadConfig(),
+        final TouchKeypadInfo measured = SyntheticTouchSources.measuredPad();
+        GeometryCache cache = touchKeypadGeometry;
+        if (cache == null || cache.measured != measured) {
+            cache = new GeometryCache(measured, TouchKeypadGeometry.resolve(measured,
+                    capabilities.getTouchKeypad(), getTouchKeypadConfig(),
                     deviceMapping != null ? deviceMapping.ckbYWarp : null,
-                    deviceMapping != null && deviceMapping.forceTouchKeypad);
-            touchKeypadGeometry = g;
+                    deviceMapping != null && deviceMapping.forceTouchKeypad));
+            touchKeypadGeometry = cache;
         }
-        return g;
+        return cache.geometry;
+    }
+
+    /** One resolved frame and the measured pad behind it, swapped as a unit. */
+    private static final class GeometryCache {
+        @Nullable final TouchKeypadInfo measured;
+        final TouchKeypadGeometry geometry;
+
+        GeometryCache(@Nullable TouchKeypadInfo measured, TouchKeypadGeometry geometry) {
+            this.measured = measured;
+            this.geometry = geometry;
+        }
     }
 
     /**

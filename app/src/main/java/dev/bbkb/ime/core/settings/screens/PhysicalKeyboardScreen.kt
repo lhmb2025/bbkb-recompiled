@@ -39,9 +39,13 @@ fun PhysicalKeyboardScreen(
     onNavigateBack: () -> Unit,
     onNavigateToCkbGestures: () -> Unit = {},
     onNavigateToCustomLayouts: () -> Unit = {},
+    onNavigateToTouchSurfaceHelper: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val hasTouchKeypad = remember { DeviceProfile.current()?.hasTouchKeypad() ?: false }
+    // A profile can describe a touch surface whose events cannot reach BBKB yet (Shizuku not set
+    // up, Scroll assistant off): the category still shows, with the one row that leads to setup.
+    val touchSurface = rememberTouchSurfaceState()
     val hasPhysicalKeyboard = remember { DeviceProfile.current()?.hasPhysicalKeyboard() ?: false }
     val isChineseLocale = remember { LocaleUtils.isCurrentSubtypeChinese() }
 
@@ -121,7 +125,17 @@ fun PhysicalKeyboardScreen(
         ),
 
         // ── CAPACITIVE KEYBOARD GESTURES (CKB devices only) ──────────────────────
-        Category(R.string.settings_category_ckb_gestures, visible = { hasTouchKeypad }),
+        Category(R.string.settings_category_ckb_gestures, visible = { hasTouchKeypad || touchSurface.declared }),
+        // Setup lives on Advanced > Device compatibility > Touch surface helper; this is the way
+        // there from where the gestures are, with the same live status line.
+        Nav(
+            title = R.string.touch_surface_link_title,
+            summaryText = { ctx ->
+                ctx.getString(R.string.touch_surface_link_summary, ctx.getString(touchSurface.statusLine))
+            },
+            visible = { touchSurface.declared },
+            onClick = { onNavigateToTouchSurfaceHelper() },
+        ),
         ManagedToggle(
             store = boolPref("type_by_swiping_ckb", false),
             title = R.string.settings_screen_type_by_swiping,

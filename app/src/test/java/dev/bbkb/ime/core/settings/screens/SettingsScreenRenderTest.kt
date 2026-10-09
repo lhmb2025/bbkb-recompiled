@@ -235,6 +235,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "SpellCheckerSettingsScreen" -> ({ SpellCheckerSettingsScreen({}) })
         "SymbolCustomizationScreen" -> ({ SymbolCustomizationScreen({}, {}, {}) })
         "TextShortcutsScreen" -> ({ TextShortcutsScreen({}, {}) })
+        "TouchSurfaceHelperScreen" -> ({ TouchSurfaceHelperScreen({}) })
         "CustomizationScreen" -> ({ CustomizationScreen({}, {}, {}, {}, {}) })
         "UpdatesScreen" -> ({ UpdatesScreen({}) })
         "UserDictionaryScreen" -> ({ UserDictionaryScreen({}) })
@@ -491,6 +492,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             "PhysicalKeyboardScreen", "PredictionsSuggestionsScreen", "QuickPhrasesScreen",
             "ShakeGesturesScreen", "SlideboardLayoutScreen", "SpellCheckerSettingsScreen",
             "SymbolCustomizationScreen", "TextShortcutsScreen", "TouchScreenKeyboardScreen",
+            "TouchSurfaceHelperScreen",
             "UpdatesScreen", "UserDictionaryScreen", "VoiceInputSettingsScreen",
             "VoiceLanguageSelectionScreen",
             "WordListEditorScreen",
@@ -1274,6 +1276,16 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_vkb_swipe_gestures_summary", "settings_vkb_swipe_gestures_title",
                 "settings_vkb_type_by_swiping_summary", "vkb_control_key_summary", "vkb_control_key_title"
             ),
+            literals = emptySet(),
+        ),
+        Case(
+            name = "TouchSurfaceHelperScreen",
+            route = SettingsRoute.TouchSurfaceHelper.route,
+            title = "Touch surface helper",
+            // The touch-only test device declares no touch surface: the header says so, and
+            // neither the Built-in nor the Shizuku section is drawn. Its states on a Titan are
+            // pinned by TouchSurfaceHelperScreenTest.
+            resources = setOf("touch_surface_helper_title", "touch_surface_status_unavailable"),
             literals = emptySet(),
         ),
         Case(

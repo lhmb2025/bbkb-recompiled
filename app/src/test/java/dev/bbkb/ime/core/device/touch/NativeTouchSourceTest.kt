@@ -9,7 +9,12 @@ import android.view.View
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.test.core.app.ApplicationProvider
+import dev.bbkb.ime.core.device.config.model.DeviceInputMapping
 import dev.bbkb.ime.core.device.config.model.TouchKeypadConfig
+import dev.bbkb.ime.core.device.detection.TouchKeypadInfo
+import dev.bbkb.ime.core.device.profile.DeviceCapabilities
+import dev.bbkb.ime.core.device.profile.DeviceProfile
+import dev.bbkb.ime.core.device.profile.DeviceProfileTestSupport
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -47,9 +52,11 @@ class NativeTouchSourceTest {
     @After
     fun tearDown() {
         KeypadTouchSources.publishNativeStatus(null)
+        DeviceProfile.initialize(null)
     }
 
-    private fun native() = TouchSourceSelector.select(titan2Pad, 36, false)
+    /** Titan 2 on Android 16 with Scroll assistant on: the OS has enumerated the pad. */
+    private fun native() = TouchSourceSelector.select(titan2Pad, 36, true)
     private fun none() = TouchSourceSelector.select(null, 36, true)
 
     private fun padEvent(action: Int, time: Long, deviceId: Int = 7): MotionEvent =
@@ -122,6 +129,12 @@ class NativeTouchSourceTest {
         assertTrue(decor.isFocusableInTouchMode)
         assertTrue(decor.isFocused)
         assertEquals(TouchSourceStatus.State.ACTIVE, source.status().state)
+        // The read API agrees once the active profile makes the same selection.
+        DeviceProfile.installForTest(DeviceCapabilities.forShape(DeviceCapabilities.DetectedDeviceType.PKB,
+            true, false, false, "qwerty", "4row").withTouchKeypad(TouchKeypadInfo.forTest(9, 0f, 1440f, 720f)))
+        DeviceProfileTestSupport.installMapping(DeviceInputMapping().apply {
+            touchKeypad = TouchKeypadConfig().apply { nativeMinSdk = 34 }
+        })
         assertEquals(TouchSourceStatus.State.ACTIVE, KeypadTouchSources.nativeStatus().state)
 
         val ev = padEvent(MotionEvent.ACTION_DOWN, 1000L)
@@ -139,6 +152,20 @@ class NativeTouchSourceTest {
         assertEquals(TouchSourceStatus.State.IDLE, source.status().state)
         assertEquals(listOf(TouchSourceStatus.State.ACTIVE, TouchSourceStatus.State.IDLE),
             statuses.map { it.state })
+    }
+
+    @Test
+    fun attachedWhileThePadIsNotEnumerated_listensButIsNotActive() {
+        // Titan 2 on Android 16 with Scroll assistant off: the listener goes on (a pad that
+        // appears mid-session is heard), but nothing can arrive yet, so it does not say ACTIVE.
+        val decor = decorView()
+        val source = NativeTouchSource(FakeHost(decor, TouchSourceSelector.select(titan2Pad, 36, false)))
+        source.attach()
+        assertTrue(source.isAttached)
+        assertEquals(TouchSourceStatus.of(TouchSourceStatus.State.UNAVAILABLE,
+            TouchSourceStatus.Reason.PAD_NOT_ENUMERATED), source.status())
+        source.detach()
+        assertEquals(TouchSourceStatus.Reason.PAD_NOT_ENUMERATED, source.status().reason)
     }
 
     @Test

@@ -201,6 +201,31 @@ class SettingsSearchIndexTest {
     }
 
     /**
+     * The Touch surface helper exists only where the profile declares a touch surface over the
+     * keys (the Unihertz Titans), and its Shizuku section only where the selector gives that
+     * surface to the Shizuku reader — not on a Titan 2 on Android 16, whose built-in route works.
+     */
+    @Test
+    fun touchSurfaceEntriesFollowTheProfilesPadAndRoute() {
+        val titanOnShizuku = pkbDevice.copy(declaresTouchKeypad = true, touchKeypadUsesShizuku = true)
+        val titanBuiltIn = pkbDevice.copy(declaresTouchKeypad = true, touchKeypadUsesShizuku = false)
+
+        assertTrue("touch_surface_helper" in anchorsOn(titanOnShizuku))
+        assertTrue("touch_surface_shizuku" in anchorsOn(titanOnShizuku))
+        assertTrue("touch_surface_helper" in anchorsOn(titanBuiltIn))
+        assertFalse(
+            "the Shizuku section is not drawn on the built-in route, so search must not offer it",
+            "touch_surface_shizuku" in anchorsOn(titanBuiltIn)
+        )
+        for (device in listOf(pkbDevice, touchDevice)) {
+            assertFalse("touch_surface_helper" in anchorsOn(device))
+            assertFalse("touch_surface_shizuku" in anchorsOn(device))
+        }
+        // Reading the selector alone is not enough: no declared pad, no Shizuku section.
+        assertFalse("touch_surface_shizuku" in anchorsOn(pkbDevice.copy(touchKeypadUsesShizuku = true)))
+    }
+
+    /**
      * "Show or hide the input menu" is an action of the multifunction key and of the Alt+Sym
      * shortcut, and the way back to the menu once "Show the suggestion bar" has hidden it: a
      * search for the menu finds both settings that can be set to it, as well as that toggle.

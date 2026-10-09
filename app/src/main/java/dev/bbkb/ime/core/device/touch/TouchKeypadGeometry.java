@@ -15,6 +15,11 @@ import dev.bbkb.ime.core.device.profile.DeviceProfile;
  *
  * <p>Each axis is resolved on its own, first source that knows wins:
  * <ol>
+ *   <li>{@link Source#MEASURED} — the ranges a running synthetic source measured on the pad's
+ *       evdev node ({@link SyntheticTouchSources#measuredPad()}: the Shizuku reader's EVIOCGABS).
+ *       The same fact an InputDevice motion range gives, and the frame of the coordinates that
+ *       source delivers, so a synthesised stream never falls back to the profile's or the KEY2's
+ *       numbers while real ones are known;</li>
  *   <li>{@link Source#INPUT_DEVICE} — the pad InputDevice's motion ranges (a real KEY2 reports
  *       0..1080 by 0..525, so it lands here and every derived value is exactly what it was);</li>
  *   <li>{@link Source#PROFILE} — the device config's {@code <touch-keypad range-x range-y>}, for a
@@ -34,7 +39,7 @@ import dev.bbkb.ime.core.device.profile.DeviceProfile;
 public final class TouchKeypadGeometry {
 
     /** Where one axis of the frame came from. */
-    public enum Source { INPUT_DEVICE, PROFILE, LEGACY_Y_WARP, KEY2_DEFAULT }
+    public enum Source { MEASURED, INPUT_DEVICE, PROFILE, LEGACY_Y_WARP, KEY2_DEFAULT }
 
     /** The KEY2's pad width in sensor units (athena {@code touch_keypad} ABS_MT_POSITION_X). */
     public static final int KEY2_WIDTH = 1080;
@@ -67,19 +72,24 @@ public final class TouchKeypadGeometry {
     /**
      * Resolve the frame from what is known about the pad.
      *
+     * @param measured the ranges a running synthetic source measured, or null
      * @param device the scanned pad, or null when the OS enumerates none
      * @param declared the config's {@code <touch-keypad>}, or null
      * @param ckbYWarp the config's {@code <ckb-y-warp>}, or null
      * @param forcedCkb whether the config forces device-type CKB (the only case the warp counts)
      */
     @NonNull
-    public static TouchKeypadGeometry resolve(@Nullable TouchKeypadInfo device,
+    public static TouchKeypadGeometry resolve(@Nullable TouchKeypadInfo measured,
+                                              @Nullable TouchKeypadInfo device,
                                               @Nullable TouchKeypadConfig declared,
                                               @Nullable String ckbYWarp,
                                               boolean forcedCkb) {
         float w;
         Source xs;
-        if (device != null && device.getXRangeMax() > 0f) {
+        if (measured != null && measured.getXRangeMax() > 0f) {
+            w = measured.getXRangeMax();
+            xs = Source.MEASURED;
+        } else if (device != null && device.getXRangeMax() > 0f) {
             w = device.getXRangeMax();
             xs = Source.INPUT_DEVICE;
         } else if (declared != null && declared.rangeX > 0) {
@@ -93,7 +103,10 @@ public final class TouchKeypadGeometry {
         float h;
         Source ys;
         final float warpY = forcedCkb ? lastWarpBreakpoint(ckbYWarp) : 0f;
-        if (device != null && device.getYRangeMax() > 0f) {
+        if (measured != null && measured.getYRangeMax() > 0f) {
+            h = measured.getYRangeMax();
+            ys = Source.MEASURED;
+        } else if (device != null && device.getYRangeMax() > 0f) {
             h = device.getYRangeMax();
             ys = Source.INPUT_DEVICE;
         } else if (declared != null && declared.rangeY > 0) {
@@ -153,7 +166,7 @@ public final class TouchKeypadGeometry {
     }
 
     private static boolean isMeasured(Source s) {
-        return s == Source.INPUT_DEVICE || s == Source.PROFILE;
+        return s == Source.MEASURED || s == Source.INPUT_DEVICE || s == Source.PROFILE;
     }
 
     /**

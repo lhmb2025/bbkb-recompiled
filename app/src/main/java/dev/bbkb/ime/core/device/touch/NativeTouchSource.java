@@ -97,7 +97,7 @@ public final class NativeTouchSource implements KeypadTouchSource {
         }
         final View decor = host.decorView();
         if (decor == null) {
-            publish(TouchSourceStatus.of(TouchSourceStatus.State.IDLE, TouchSourceStatus.Reason.OK));
+            publish(selection.nativeStatus());
             return;
         }
         if (attachedView != decor) {
@@ -110,7 +110,11 @@ public final class NativeTouchSource implements KeypadTouchSource {
         decor.setFocusableInTouchMode(true);
         decor.setOnGenericMotionListener(listener);
         decor.requestFocus();
-        publish(TouchSourceStatus.of(TouchSourceStatus.State.ACTIVE, TouchSourceStatus.Reason.OK));
+        // Attached either way, so a pad that is enumerated mid-session is heard at once; but it
+        // is only ACTIVE once the OS has the pad (on the Titan 2, once Scroll assistant is on).
+        publish(selection.padEnumerated
+                ? TouchSourceStatus.of(TouchSourceStatus.State.ACTIVE, TouchSourceStatus.Reason.OK)
+                : selection.nativeStatus());
     }
 
     /** Window hidden: remove the listener and give the decor view back as it was. */
@@ -118,7 +122,7 @@ public final class NativeTouchSource implements KeypadTouchSource {
         final boolean wasAttached = attachedView != null;
         detachView();
         if (wasAttached && started) {
-            publish(TouchSourceStatus.of(TouchSourceStatus.State.IDLE, TouchSourceStatus.Reason.OK));
+            publish(host.selection().nativeStatus());
         }
     }
 
