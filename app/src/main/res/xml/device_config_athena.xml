@@ -52,7 +52,8 @@
             <scancode-mappings>
 
                 <!-- Mic/zero key: sends keyCode=7 and doubles as the '0' digit. Without Alt it
-                     activates voice input; with Alt it types '0'. -->
+                     activates voice input; with Alt, or in a numeric field (number, phone,
+                     date/time), it types '0'. -->
                 <key rawKeyCode="7" role="BOARD_VOICE"
                      treatAs="KEYCODE_MIC" altChar="0" board="-27"
                      notes="Key2 mic key (keyCode=7), alt char is zero digit"/>

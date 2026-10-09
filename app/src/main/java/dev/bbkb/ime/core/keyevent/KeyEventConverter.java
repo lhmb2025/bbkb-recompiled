@@ -77,6 +77,36 @@ public class KeyEventConverter {
         return i2 == 2 || (i2 == 4 && (i & 4080) != 0);
     }
 
+    /**
+     * In a numeric field (number, phone, date/time) the mic key is the digit it doubles as, and
+     * it never starts voice input: the event that types {@code altChar}, or null when the field is
+     * not numeric or the key has no alt character, in which case the caller decides as before.
+     *
+     * <p>The original reached the same result by accident. Its number layouts add
+     * {@code META_ALT_ON} to every key's meta state so the letter keys type their digits, and the
+     * mic key read that as "Alt is held" and fell through to its alt character. Ours reads the
+     * same bit, but the "dictation key off" swap turns "Alt is held" into "start voice input", so
+     * with that setting the KEY2's 0 key in a card-number field opened the voice board (beta
+     * report, 2026-10). The mask is also not always there (it belongs to the keyboard state, which
+     * a board or a Sym press can reset), so the field type is the thing to ask, not the mask.
+     */
+    private InputEvent numericFieldDigit(int inputType, char altChar, int keyCode, boolean isRepeat,
+            long eventTime) {
+        if (altChar == 0 || !isNumericFieldClass(inputType)) {
+            return null;
+        }
+        return InputEvent.createHardwareKeyPressEx((int) altChar, keyCode, null, isRepeat, eventTime, false);
+    }
+
+    /** The mapping's alt character, or the resolver's for this event, or 0 when neither has one. */
+    private char altCharFor(ScancodeMapping mapping, KeyEvent keyEvent) {
+        if (mapping != null && mapping.hasAltChar()) {
+            return mapping.altChar;
+        }
+        AuxCharacterResolver.Result r = auxCharacterResolver.resolve(keyEvent);
+        return r.hasCharacter() ? r.character : 0;
+    }
+
     public KeyEventConverter(int i, KeyCharacterInterpreter interfaceC0922i, Context context, AuxCharacterResolver resolver) {
         this.mDeviceId = i;
         this.mKeyCharacterInterpreter = interfaceC0922i;
@@ -269,7 +299,14 @@ public class KeyEventConverter {
                     ? MultifunctionKeyHandler.getConfiguredAction(resolvedMapping) : null;
 
             if (resolvedMapping.role == KeyRole.BOARD_VOICE) {
-                // Voice/MIC key — resolved from XML config
+                // Voice/MIC key — resolved from XML config. In a numeric field it is its digit
+                // (held: repeats it), whatever the dictation setting and the Alt state say.
+                InputEvent digit = numericFieldDigit(i2, altCharFor(resolvedMapping, keyEvent),
+                        keyCode2, z2, keyEvent.getEventTime());
+                if (digit != null) {
+                    this.mVoiceKeyPending = false;
+                    return digit;
+                }
                 if (keyEvent.getRepeatCount() == 0) {
                     boolean dictEnabled = isDictationKeyEnabled();
                     boolean shouldVoice = dictEnabled ? !unifiedAltPressed : unifiedAltPressed;
@@ -279,11 +316,7 @@ public class KeyEventConverter {
                         return InputEvent.createGestureEndCopy(InputEvent.createEmptyEvent());
                     } else {
                         // Output alt character from mapping or fallback
-                        char altCh = resolvedMapping.hasAltChar() ? resolvedMapping.altChar : 0;
-                        if (altCh == 0) {
-                            AuxCharacterResolver.Result r = auxCharacterResolver.resolve(keyEvent);
-                            if (r.hasCharacter()) altCh = r.character;
-                        }
+                        char altCh = altCharFor(resolvedMapping, keyEvent);
                         if (altCh != 0) {
                             return InputEvent.createHardwareKeyPressEx((int) altCh, keyCode2, null, z2, keyEvent.getEventTime(), false);
                         }
@@ -349,7 +382,18 @@ public class KeyEventConverter {
         // Handle keycode 7 (voice key) for BlackBerry OEM devices
         // Arms PendingKeyAction.VOICE_INPUT, same as the mic pseudo-keycode 667
         // Alt character for keycode 7 on BlackBerry is "0"
-        if (7 == keyCode2) {
+        //
+        // Only a BlackBerry keypad puts its mic key on KEYCODE_0. On any other hardware keyboard
+        // (a Bluetooth or USB keyboard, a keyboard case) key code 7 is the 0 key and must type
+        // its zero; this branch used to be device-blind and swallowed it everywhere.
+        if (7 == keyCode2 && DeviceProfile.current().isBlackBerryDevice()) {
+            AuxCharacterResolver.Result legacyAlt = auxCharacterResolver.resolve(keyEvent);
+            char legacyAltChar = legacyAlt.hasCharacter() ? legacyAlt.character : '0';
+            InputEvent digit = numericFieldDigit(i2, legacyAltChar, keyCode2, z2, keyEvent.getEventTime());
+            if (digit != null) {
+                this.mVoiceKeyPending = false;
+                return digit;
+            }
             boolean altPressed = (KeyEvent.normalizeMetaState(i) & 2) != 0;
             boolean dictationEnabled = isDictationKeyEnabled();
             
@@ -490,6 +534,15 @@ public class KeyEventConverter {
                 boolean altPressed = (KeyEvent.normalizeMetaState(i) & 2) != 0;
                     
                     if (7 == virtualKeyCode) {
+                        // In a numeric field the key is its digit, never voice input.
+                        AuxCharacterResolver.Result mapped = auxCharacterResolver.resolve(keyCode2);
+                        InputEvent digit = numericFieldDigit(i2,
+                                mapped.hasCharacter() ? mapped.character : 0,
+                                keyCode2, z2, keyEvent.getEventTime());
+                        if (digit != null) {
+                            this.mVoiceKeyPending = false;
+                            return digit;
+                        }
                         // Voice input key - apply dictation key swap logic
                         boolean dictationEnabled = isDictationKeyEnabled();
                         // When enabled: regular=voice, alt=character

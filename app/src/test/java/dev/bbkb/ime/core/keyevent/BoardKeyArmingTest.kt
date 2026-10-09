@@ -305,6 +305,106 @@ class BoardKeyArmingTest {
         assertArmedOnly(PendingKeyAction.VOICE_INPUT)
     }
 
+    // ===================================================== numeric fields: the mic key is its digit
+
+    /**
+     * The field classes whose keyboards exist to type digits. The KEY2's number layouts add
+     * `META_ALT_ON` to every key so the letter keys type their digits; the mic key must type its
+     * zero with that mask and without it (the mask lives in the keyboard state, which a board or
+     * a Sym press can reset).
+     */
+    private val numericFields = listOf(
+        InputType.TYPE_CLASS_NUMBER,
+        InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD,
+        InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL,
+        InputType.TYPE_CLASS_PHONE,
+        InputType.TYPE_CLASS_DATETIME,
+    )
+
+    @Test
+    fun `in a numeric field the KEY2 mic key types a zero and arms nothing`() {
+        installKey2(multifunctionAction = MultifunctionKeyHandler.ACTION_EMOJI_BOARD)
+
+        for (inputType in numericFields) {
+            for (meta in intArrayOf(KeyEvent.META_ALT_ON, 0)) {
+                pairing.clearPendingActions()
+                val result = convert(down(MIC_KEYCODE_7, 8), meta, inputType)
+                assertNothingArmed()
+                assertEquals("inputType=$inputType meta=$meta", '0'.code, result.mCodePoint)
+            }
+        }
+    }
+
+    /**
+     * The beta report ("entering my card number in Samsung Pay, it couldn't recognise the 0
+     * button"): with the dictation key off, the number layout's Alt mask read as "Alt is held", and
+     * the swap turned that into voice input.
+     */
+    @Test
+    fun `with the dictation key off, the KEY2 mic key still types a zero in a numeric field`() {
+        installKey2(multifunctionAction = MultifunctionKeyHandler.ACTION_EMOJI_BOARD)
+        PrefsManager.getPrefs(context).edit().putBoolean("pref_voice_input_key", false).commit()
+
+        for (inputType in numericFields) {
+            pairing.clearPendingActions()
+            val result = convert(down(MIC_KEYCODE_7, 8), KeyEvent.META_ALT_ON, inputType)
+            assertNothingArmed()
+            assertEquals("inputType=$inputType", '0'.code, result.mCodePoint)
+        }
+    }
+
+    @Test
+    fun `a held KEY2 mic key repeats its zero in a numeric field`() {
+        installKey2(multifunctionAction = MultifunctionKeyHandler.ACTION_EMOJI_BOARD)
+        convert(down(MIC_KEYCODE_7, 8), KeyEvent.META_ALT_ON, InputType.TYPE_CLASS_NUMBER)
+
+        val held = convert(
+            down(MIC_KEYCODE_7, 8, repeat = 1), KeyEvent.META_ALT_ON, InputType.TYPE_CLASS_NUMBER
+        )
+
+        assertNothingArmed()
+        assertEquals('0'.code, held.mCodePoint)
+        assertTrue("a repeat must say so", held.isKeyRepeat())
+    }
+
+    /** A text field is unchanged: the bare mic key is still voice input there. */
+    @Test
+    fun `in a text field the KEY2 mic key still arms voice input`() {
+        installKey2(multifunctionAction = MultifunctionKeyHandler.ACTION_EMOJI_BOARD)
+
+        val result = convert(down(MIC_KEYCODE_7, 8), 0, InputType.TYPE_CLASS_TEXT)
+
+        assertArmedOnly(PendingKeyAction.VOICE_INPUT)
+        assertConsumedWithoutTyping(result)
+    }
+
+    @Test
+    fun `the legacy mic key code 7 types a zero in a numeric field`() {
+        installBareP()
+
+        val result = convert(down(MIC_KEYCODE_7, 8), 0, InputType.TYPE_CLASS_NUMBER)
+
+        assertNothingArmed()
+        assertEquals('0'.code, result.mCodePoint)
+    }
+
+    /**
+     * Key code 7 is `KEYCODE_0`. Only a BlackBerry keypad puts its mic key there; on any other
+     * hardware keyboard (Bluetooth, USB, a keyboard case) it is the 0 key, in every field.
+     */
+    @Test
+    fun `on a keyboard that is not a BlackBerry's, key code 7 is the zero key`() {
+        installBareNonBlackBerry()
+
+        for (inputType in listOf(InputType.TYPE_CLASS_TEXT, InputType.TYPE_CLASS_NUMBER)) {
+            pairing.clearPendingActions()
+            val result = convert(down(KeyEvent.KEYCODE_0, /* scanCode */ 11), 0, inputType)
+            assertNothingArmed()
+            assertFalse("inputType=$inputType: the key must not be consumed", result.isGestureEnd())
+            assertEquals("inputType=$inputType", '0'.code, result.mCodePoint)
+        }
+    }
+
     /** An ordinary letter arms nothing at all. */
     @Test
     fun `an ordinary letter arms nothing`() {
@@ -346,8 +446,11 @@ class BoardKeyArmingTest {
         assertFalse("and it must carry no character", result.hasData())
     }
 
-    private fun convert(event: KeyEvent, computedMeta: Int = 0): InputEvent =
-        converter.convertKeyEvent(event, computedMeta, InputType.TYPE_CLASS_TEXT)
+    private fun convert(
+        event: KeyEvent,
+        computedMeta: Int = 0,
+        inputType: Int = InputType.TYPE_CLASS_TEXT,
+    ): InputEvent = converter.convertKeyEvent(event, computedMeta, inputType)
 
     private fun down(keyCode: Int, scanCode: Int, repeat: Int = 0, metaState: Int = 0): KeyEvent =
         KeyEvent(
@@ -415,6 +518,20 @@ class BoardKeyArmingTest {
                 DeviceCapabilities.DetectedDeviceType.PKB,
                 /* hasPhysicalKeyboard */ true, /* hasTouchKeypad */ false,
                 /* isBlackBerryDevice */ true, "qwerty", "4row"
+            )
+        )
+        ScancodeMappingResolver.getInstance().reset()
+        KeyEventDeviceClassifier.getInstance().clearCache()
+        buildConverter()
+    }
+
+    /** A hardware keyboard on a device that is not a BlackBerry, with no device config. */
+    private fun installBareNonBlackBerry() {
+        DeviceProfile.installForTest(
+            DeviceCapabilities.forShape(
+                DeviceCapabilities.DetectedDeviceType.PKB,
+                /* hasPhysicalKeyboard */ true, /* hasTouchKeypad */ false,
+                /* isBlackBerryDevice */ false, "qwerty", "4row"
             )
         )
         ScancodeMappingResolver.getInstance().reset()
