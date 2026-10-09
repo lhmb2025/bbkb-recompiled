@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Häälsisestus</string>
     <string name="settings_voice_prefer_offline_summary">Kasuta võimalusel seadmesisest tuvastust</string>
     <string name="settings_voice_prefer_offline_title">Eelista võrguühenduseta tuvastust</string>
+    <string name="settings_voice_recognizer_none_installed">Ühtegi kõnetuvastusrakendust pole installitud. Saate installida näiteks rakenduse Sayboard, WhisperIME või Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Seadmesisene tuvastaja</string>
+    <string name="settings_voice_recognizer_system_default">Süsteemi vaikeseade</string>
+    <string name="settings_voice_recognizer_system_default_named">Süsteemi vaikeseade (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Kõnetuvastaja</string>
     <string name="settings_voice_show_partial_results_summary">Kuva kuuldut juba rääkimise ajal ja asenda see seejärel lõpptulemusega</string>
     <string name="settings_voice_show_partial_results_title">Kuva sõnu rääkimise ajal</string>
     <string name="settings_voice_use_keyboard_lang_summary">Kasuta häälsisestuseks klaviatuuri praegust keelt</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Kõnet ei tuvastatud. Uuesti proovimiseks puudutage mikrofoni.</string>
     <string name="voice_status_busy">Kõnetuvastus on hõivatud. Proovige hetke pärast uuesti.</string>
     <string name="voice_status_too_many_requests">Liiga palju päringuid. Proovige hiljem uuesti.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s vajab mikrofoni luba</string>
     <string name="voice_status_service_disconnected">Kõneteenuse ühendus katkes. Uuesti proovimiseks puudutage mikrofoni.</string>
 </resources>

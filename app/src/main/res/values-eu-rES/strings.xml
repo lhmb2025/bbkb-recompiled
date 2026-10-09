@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Ahots bidezko idazketa</string>
     <string name="settings_voice_prefer_offline_summary">Erabili gailuko ezagutza erabilgarri dagoenean</string>
     <string name="settings_voice_prefer_offline_title">Hobetsi lineaz kanpoko ezagutza</string>
+    <string name="settings_voice_recognizer_none_installed">Ez dago hizketa ezagutzeko aplikaziorik instalatuta. Sayboard, WhisperIME edo Transcribro bezalako bat instala dezakezu.</string>
+    <string name="settings_voice_recognizer_on_device">Gailuko ezagutzailea</string>
+    <string name="settings_voice_recognizer_system_default">Sistemaren lehenetsia</string>
+    <string name="settings_voice_recognizer_system_default_named">Sistemaren lehenetsia (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Hizketa-ezagutzailea</string>
     <string name="settings_voice_show_partial_results_summary">Erakutsi entzundakoa oraindik hitz egiten ari zaren bitartean, eta ordeztu gero azken emaitzarekin</string>
     <string name="settings_voice_show_partial_results_title">Erakutsi hitzak hitz egin ahala</string>
     <string name="settings_voice_use_keyboard_lang_summary">Erabili teklatuaren uneko hizkuntza ahots bidezko idazketarako</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Ez da ahotsik entzun. Sakatu mikrofonoa berriro saiatzeko.</string>
     <string name="voice_status_busy">Hizketa-ezagutza lanpetuta dago. Saiatu berriro une batean.</string>
     <string name="voice_status_too_many_requests">Eskaera gehiegi. Saiatu berriro geroago.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s aplikazioak mikrofonoa erabiltzeko baimena behar du</string>
     <string name="voice_status_service_disconnected">Hizketa-zerbitzua deskonektatu egin da. Sakatu mikrofonoa berriro saiatzeko.</string>
 </resources>

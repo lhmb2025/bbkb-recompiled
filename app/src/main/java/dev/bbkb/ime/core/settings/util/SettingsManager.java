@@ -692,6 +692,18 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return sharedPreferences.getBoolean("voice_input_auto_start", true);
     }
 
+    /**
+     * Voice input settings: "Speech recognizer". Empty for the phone's default recognition service,
+     * {@code "ondevice"} for the platform's on-device recogniser, otherwise the flattened component
+     * of the chosen app's service. {@code VoiceRecognizerChoice} resolves it against what is
+     * installed. Read straight from the preferences rather than from {@link SettingsValues}: the
+     * voice settings screens and the voice-input gate need it outside the keyboard too.
+     */
+    public static String getVoiceInputRecognizer(SharedPreferences sharedPreferences) {
+        final String recognizer = sharedPreferences.getString("voice_input_recognizer", "");
+        return recognizer == null ? "" : recognizer;
+    }
+
     // REMOVED: Tutorial-related methods - Tutorial system eliminated
     // - getOnBoardNotification()
     // - setOnBoardNotification()

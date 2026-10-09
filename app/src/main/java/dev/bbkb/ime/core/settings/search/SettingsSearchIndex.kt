@@ -130,6 +130,7 @@ object SettingsSearchIndex {
 
         // ── Typing & input: Voice input ─────────────────────────────────────────
         SearchableSetting(R.string.settings_voice_builtin_title, "voice dictation speech", SettingsRoute.VoiceInput.route, TYPING, "voice_input_enabled"),
+        SearchableSetting(R.string.settings_voice_recognizer_title, "voice dictation speech recognizer recognition service provider engine app", SettingsRoute.VoiceInput.route, TYPING, "voice_input_recognizer"),
         SearchableSetting(R.string.settings_voice_auto_start_title, "voice auto start listening", SettingsRoute.VoiceInput.route, TYPING, "voice_input_auto_start"),
         SearchableSetting(R.string.settings_voice_use_keyboard_lang_title, "voice language keyboard", SettingsRoute.VoiceInput.route, TYPING, "voice_input_use_input_language"),
         SearchableSetting(R.string.settings_voice_prefer_offline_title, "voice offline on device", SettingsRoute.VoiceInput.route, TYPING, "voice_input_prefer_offline"),

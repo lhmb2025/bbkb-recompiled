@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">音声入力</string>
     <string name="settings_voice_prefer_offline_summary">利用できる場合は端末内の認識を使用します</string>
     <string name="settings_voice_prefer_offline_title">オフライン認識を優先</string>
+    <string name="settings_voice_recognizer_none_installed">音声認識アプリがインストールされていません。Sayboard、WhisperIME、Transcribro などをインストールできます。</string>
+    <string name="settings_voice_recognizer_on_device">端末内の認識エンジン</string>
+    <string name="settings_voice_recognizer_system_default">システムのデフォルト</string>
+    <string name="settings_voice_recognizer_system_default_named">システムのデフォルト（%1$s）</string>
+    <string name="settings_voice_recognizer_title">音声認識エンジン</string>
     <string name="settings_voice_show_partial_results_summary">話している途中から聞き取った内容を表示し、最終結果で置き換えます</string>
     <string name="settings_voice_show_partial_results_title">話しながら文字を表示</string>
     <string name="settings_voice_use_keyboard_lang_summary">現在のキーボードの言語を音声入力に使用します</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">音声が検出されませんでした。もう一度試すにはマイクをタップしてください。</string>
     <string name="voice_status_busy">音声認識がビジー状態です。しばらくしてからもう一度お試しください。</string>
     <string name="voice_status_too_many_requests">リクエストが多すぎます。後でもう一度お試しください。</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s にマイクの権限が必要です</string>
     <string name="voice_status_service_disconnected">音声サービスとの接続が切断されました。もう一度試すにはマイクをタップしてください。</string>
 </resources>

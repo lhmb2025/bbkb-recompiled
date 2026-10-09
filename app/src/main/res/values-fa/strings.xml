@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">ورودی صوتی</string>
     <string name="settings_voice_prefer_offline_summary">استفاده از تشخیص روی دستگاه در صورت وجود</string>
     <string name="settings_voice_prefer_offline_title">ترجیح تشخیص آفلاین</string>
+    <string name="settings_voice_recognizer_none_installed">هیچ برنامه تشخیص گفتار نصب نشده است. می‌توانید برنامه‌ای مانند Sayboard، WhisperIME یا Transcribro نصب کنید.</string>
+    <string name="settings_voice_recognizer_on_device">تشخیص‌دهنده روی دستگاه</string>
+    <string name="settings_voice_recognizer_system_default">پیش‌فرض سیستم</string>
+    <string name="settings_voice_recognizer_system_default_named">پیش‌فرض سیستم (%1$s)</string>
+    <string name="settings_voice_recognizer_title">تشخیص‌دهنده گفتار</string>
     <string name="settings_voice_show_partial_results_summary">نمایش آنچه شنیده می‌شود در حین صحبت و سپس جایگزینی آن با نتیجه نهایی</string>
     <string name="settings_voice_show_partial_results_title">نمایش کلمات هنگام صحبت</string>
     <string name="settings_voice_use_keyboard_lang_summary">استفاده از زبان کنونی صفحه کلید برای ورودی صوتی</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">صدایی شنیده نشد. برای تلاش مجدد روی میکروفون ضربه بزنید.</string>
     <string name="voice_status_busy">تشخیص گفتار مشغول است. لحظاتی دیگر دوباره تلاش کنید.</string>
     <string name="voice_status_too_many_requests">تعداد درخواست‌ها بیش از حد است. بعداً دوباره تلاش کنید.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s به اجازه دسترسی به میکروفون نیاز دارد</string>
     <string name="voice_status_service_disconnected">اتصال سرویس گفتار قطع شد. برای تلاش مجدد روی میکروفون ضربه بزنید.</string>
 </resources>

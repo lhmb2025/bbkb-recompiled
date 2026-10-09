@@ -3,6 +3,7 @@ package dev.bbkb.ime.core.settings.backup
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.test.core.app.ApplicationProvider
+import dev.bbkb.ime.keyboard.inputboard.voice.VoiceRecognizerChoice
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -220,6 +221,25 @@ class SettingsBackupTest {
         assertFalse(settings.has("pref_update_last_check_ms"))
         assertFalse(SettingsBackup.isDenied("pref_update_background_check"))
         assertTrue(SettingsBackup.isDenied("ckb_key_grid_cache_v2"))
+    }
+
+    /**
+     * Each speech recognizer remembers its own voice languages, under the cache prefix. Those lists
+     * describe this phone's recognisers, so none of them travel; the choice of recognizer does.
+     */
+    @Test
+    fun everySpeechRecognizersLanguageCacheStaysOnThisDevice() {
+        val claude = "com.anthropic.claude/com.anthropic.claude.voice.RecognitionService"
+        source.edit()
+            .putString("voice_input_recognizer", claude)
+            .putString(VoiceRecognizerChoice.languageCacheKey(""), "en-US")
+            .putString(VoiceRecognizerChoice.languageCacheKey(VoiceRecognizerChoice.ON_DEVICE), "en-US")
+            .putString(VoiceRecognizerChoice.languageCacheKey(claude), "en-US,de-DE")
+            .commit()
+
+        val settings = JSONObject(exportSource()).getJSONObject("settings")
+
+        assertEquals(setOf("voice_input_recognizer"), settings.keys().asSequence().toSet())
     }
 
     @Test

@@ -1,7 +1,15 @@
 package dev.bbkb.ime.core.settings.screens
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
+import android.content.pm.ResolveInfo
+import android.content.pm.ServiceInfo
 import android.os.Build
+import android.provider.Settings
+import android.speech.RecognitionService
 import android.speech.RecognitionSupport
 import android.speech.SpeechRecognizer
 import androidx.compose.runtime.Composable
@@ -10,9 +18,11 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -69,6 +79,7 @@ class VoiceScreensBehaviourTest {
     @After
     fun clearPreferencesAgain() {
         prefs.edit().clear().commit()
+        Settings.Secure.putString(context.contentResolver, "voice_recognition_service", null)
         ShadowSpeechRecognizer.reset()
     }
 
@@ -325,10 +336,12 @@ class VoiceScreensBehaviourTest {
         assertFalse("Use keyboard language should be inert", isOperable("Use keyboard language"))
         assertFalse("Prefer offline recognition should be inert", isOperable("Prefer offline recognition"))
         assertFalse("Show words as you speak should be inert", isOperable("Show words as you speak"))
+        assertFalse("Speech recognizer should be inert", isOperable("Speech recognizer"))
 
-        // And with the master back on, all four come back.
+        // And with the master back on, they all come back.
         composeRule.onNodeWithText("Enable built-in voice input").performClick()
         composeRule.waitForIdle()
+        assertTrue(isOperable("Speech recognizer"))
         assertTrue(isOperable("Auto-start listening"))
         assertTrue(isOperable("Use keyboard language"))
         assertTrue(isOperable("Prefer offline recognition"))
@@ -381,6 +394,162 @@ class VoiceScreensBehaviourTest {
 
         assertFalse("Voice input language" in rendered())
     }
+
+    // ========================================================================
+    // Speech recognizer
+    // ========================================================================
+
+    private val googleApp = ComponentName(
+        "com.google.android.googlequicksearchbox",
+        "com.google.android.voicesearch.serviceapi.GoogleRecognitionService",
+    )
+    private val claude = ComponentName("com.anthropic.claude", "com.anthropic.claude.voice.RecognitionService")
+
+    /** A recognition app the package query can see, labelled as its launcher would show it. */
+    private fun installRecognizer(component: ComponentName, label: String) {
+        val app = ApplicationInfo().apply {
+            packageName = component.packageName
+            nonLocalizedLabel = label
+        }
+        shadowOf(context.packageManager).installPackage(PackageInfo().apply {
+            packageName = component.packageName
+            applicationInfo = app
+        })
+        shadowOf(context.packageManager).addResolveInfoForIntent(
+            Intent(RecognitionService.SERVICE_INTERFACE),
+            ResolveInfo().apply {
+                serviceInfo = ServiceInfo().apply {
+                    packageName = component.packageName
+                    name = component.className
+                    applicationInfo = app
+                }
+            })
+    }
+
+    private fun selectSystemService(component: ComponentName?) {
+        Settings.Secure.putString(context.contentResolver, "voice_recognition_service", component?.flattenToString())
+    }
+
+    /**
+     * The KEY2's shape: the Google app as the phone's default and Claude installed besides. The row
+     * says which app the default is, the dialog lists the default, then each app by its label, and
+     * picking one stores its component.
+     */
+    @Test
+    @Config(sdk = [34])
+    fun theSpeechRecognizerRowListsTheInstalledAppsAndStoresTheChoice() {
+        ShadowSpeechRecognizer.setIsOnDeviceRecognitionAvailable(false)
+        installRecognizer(googleApp, "Google")
+        installRecognizer(claude, "Claude")
+        selectSystemService(googleApp)
+        setContent { VoiceInputSettingsScreen({}, {}) }
+
+        assertTrue("the default is named after the app it is", "System default (Google)" in rendered())
+
+        composeRule.onNodeWithText("Speech recognizer").performClick()
+        composeRule.waitForIdle()
+        assertEquals(
+            "the system default leads, then each installed app by label",
+            listOf("Speech recognizer", "System default (Google)", "Claude", "Google", "Cancel"),
+            dialogTextInOrder(),
+        )
+
+        composeRule.onNodeWithText("Claude").performClick()
+        composeRule.waitForIdle()
+
+        assertEquals(claude.flattenToString(), prefs.getString("voice_input_recognizer", null))
+        assertTrue("the row now shows the choice", "Claude" in rendered())
+        assertFalse("System default (Google)" in rendered())
+    }
+
+    @Test
+    @Config(sdk = [34])
+    fun theOnDeviceRecognizerIsOfferedWhereThePhoneHasOne() {
+        ShadowSpeechRecognizer.setIsOnDeviceRecognitionAvailable(true)
+        installRecognizer(claude, "Claude")
+        setContent { VoiceInputSettingsScreen({}, {}) }
+
+        composeRule.onNodeWithText("Speech recognizer").performClick()
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText("On-device recognizer").performClick()
+        composeRule.waitForIdle()
+
+        assertEquals("ondevice", prefs.getString("voice_input_recognizer", null))
+    }
+
+    /** No recognition app at all: the summary says so and names apps to install, as plain text. */
+    @Test
+    @Config(sdk = [34])
+    fun withNoRecognitionAppTheRowSaysSoAndSuggestsSome() {
+        setContent { VoiceInputSettingsScreen({}, {}) }
+
+        val summary = rendered().single { it.startsWith("No speech recognition app is installed") }
+        for (app in listOf("Sayboard", "WhisperIME", "Transcribro")) {
+            assertTrue("$app missing from: $summary", app in summary)
+        }
+    }
+
+    /** What dictation will actually use: an app uninstalled since it was chosen reads as the default. */
+    @Test
+    @Config(sdk = [34])
+    fun aChosenAppThatIsGoneReadsAsTheSystemDefault() {
+        installRecognizer(claude, "Claude")
+        prefs.edit().putString("voice_input_recognizer", "com.gone/com.gone.Recognizer").commit()
+        setContent { VoiceInputSettingsScreen({}, {}) }
+
+        assertTrue("System default" in rendered())
+    }
+
+    /**
+     * The language picker asks the chosen recogniser, and remembers its answer under that
+     * recogniser's own key, leaving the system default's list alone.
+     */
+    @Test
+    @Config(sdk = [34])
+    fun theLanguagePickerAsksTheChosenRecognizerAndKeepsItsListSeparate() {
+        installRecognizer(claude, "Claude")
+        prefs.edit()
+            .putString("voice_input_recognizer", claude.flattenToString())
+            .putString("voice_input_language_cache", "xx-XX")
+            .commit()
+        setContent { VoiceLanguageSelectionScreen({}) }
+
+        val recognizer = ShadowSpeechRecognizer.getLatestSpeechRecognizer()!!
+        assertEquals("built for the chosen app, not the system default", claude, boundComponent(recognizer))
+        answerRecognitionSupport(installed = listOf("de-DE"), supported = listOf("en-US"))
+
+        assertEquals("de-DE,en-US", prefs.getString("voice_input_language_cache_" + claude.flattenToString(), null))
+        assertEquals("the default's list is untouched", "xx-XX", prefs.getString("voice_input_language_cache", null))
+    }
+
+    /** When the chosen recogniser cannot be asked, the default's remembered list must not stand in. */
+    @Test
+    @Config(sdk = [34])
+    fun aFailedDiscoveryNeverShowsAnotherRecognizersRememberedList() {
+        installRecognizer(claude, "Claude")
+        prefs.edit()
+            .putString("voice_input_recognizer", claude.flattenToString())
+            .putString("voice_input_language_cache", "xx-XX")
+            .commit()
+        setContent { VoiceLanguageSelectionScreen({}) }
+
+        shadowOf(ShadowSpeechRecognizer.getLatestSpeechRecognizer()!!).triggerSupportError(SpeechRecognizer.ERROR_SERVER)
+        composeRule.waitUntil(timeoutMillis = 5_000) { "Loading available languages..." !in rendered() }
+
+        assertFalse("xx-XX" in rendered())
+        scrollTo("en-US")
+    }
+
+    /** The open dialog's text, top to bottom. */
+    private fun dialogTextInOrder(): List<String> = composeRule
+        .onAllNodes(hasAnyAncestor(isDialog()) and SemanticsMatcher.keyIsDefined(SemanticsProperties.Text), useUnmergedTree = true)
+        .fetchSemanticsNodes()
+        .sortedWith(compareBy({ Math.round(it.boundsInRoot.top) }, { it.boundsInRoot.left }))
+        .map { node -> node.config[SemanticsProperties.Text].joinToString("") { it.text } }
+
+    private fun boundComponent(recognizer: SpeechRecognizer): ComponentName? =
+        SpeechRecognizer::class.java.getDeclaredField("mServiceComponent")
+            .apply { isAccessible = true }.get(recognizer) as ComponentName?
 
     /** Guards the `Build.VERSION` fork the two discovery paths hang off. */
     @Test

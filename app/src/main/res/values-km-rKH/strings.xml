@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">ការបញ្ចូលដោយសំឡេង</string>
     <string name="settings_voice_prefer_offline_summary">ប្រើការស្គាល់សំឡេងនៅលើឧបករណ៍នៅពេលមាន</string>
     <string name="settings_voice_prefer_offline_title">ពេញចិត្តការស្គាល់សំឡេងក្រៅបណ្ដាញ</string>
+    <string name="settings_voice_recognizer_none_installed">មិនមានកម្មវិធីស្គាល់ការនិយាយដែលបានដំឡើងទេ។ អ្នកអាចដំឡើងកម្មវិធីដូចជា Sayboard, WhisperIME ឬ Transcribro។</string>
+    <string name="settings_voice_recognizer_on_device">កម្មវិធីស្គាល់នៅលើឧបករណ៍</string>
+    <string name="settings_voice_recognizer_system_default">លំនាំដើមប្រព័ន្ធ</string>
+    <string name="settings_voice_recognizer_system_default_named">លំនាំដើមប្រព័ន្ធ (%1$s)</string>
+    <string name="settings_voice_recognizer_title">កម្មវិធីស្គាល់ការនិយាយ</string>
     <string name="settings_voice_show_partial_results_summary">បង្ហាញអ្វីដែលបានឮ ខណៈពេលអ្នកកំពុងនិយាយ រួចជំនួសវាដោយលទ្ធផលចុងក្រោយ</string>
     <string name="settings_voice_show_partial_results_title">បង្ហាញពាក្យនៅពេលអ្នកនិយាយ</string>
     <string name="settings_voice_use_keyboard_lang_summary">ប្រើភាសាក្ដារចុចបច្ចុប្បន្នសម្រាប់ការបញ្ចូលដោយសំឡេង</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">មិនឮការនិយាយទេ។ ប៉ះមីក្រូហ្វូនដើម្បីព្យាយាមម្ដងទៀត។</string>
     <string name="voice_status_busy">ការសម្គាល់ការនិយាយកំពុងរវល់។ សូមព្យាយាមម្ដងទៀតបន្តិចទៀត។</string>
     <string name="voice_status_too_many_requests">សំណើច្រើនពេក។ សូមព្យាយាមម្ដងទៀតនៅពេលក្រោយ។</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s ត្រូវការការអនុញ្ញាតមីក្រូហ្វូន</string>
     <string name="voice_status_service_disconnected">សេវានិយាយបានផ្ដាច់។ ប៉ះមីក្រូហ្វូនដើម្បីព្យាយាមម្ដងទៀត។</string>
 </resources>

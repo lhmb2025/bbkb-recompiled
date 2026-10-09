@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">குரல் உள்ளீடு</string>
     <string name="settings_voice_prefer_offline_summary">கிடைக்கும்போது சாதனத்திலேயே அங்கீகாரத்தைப் பயன்படுத்து</string>
     <string name="settings_voice_prefer_offline_title">ஆஃப்லைன் அங்கீகாரத்தை விரும்பு</string>
+    <string name="settings_voice_recognizer_none_installed">பேச்சு அறிதல் ஆப்ஸ் எதுவும் நிறுவப்படவில்லை. Sayboard, WhisperIME அல்லது Transcribro போன்ற ஒன்றை நிறுவலாம்.</string>
+    <string name="settings_voice_recognizer_on_device">சாதனத்திலுள்ள அறிதல் கருவி</string>
+    <string name="settings_voice_recognizer_system_default">சிஸ்டம் இயல்புநிலை</string>
+    <string name="settings_voice_recognizer_system_default_named">சிஸ்டம் இயல்புநிலை (%1$s)</string>
+    <string name="settings_voice_recognizer_title">பேச்சு அறிதல் கருவி</string>
     <string name="settings_voice_show_partial_results_summary">நீங்கள் பேசிக்கொண்டிருக்கும்போதே கேட்டதைக் காட்டி, பின்னர் அதை இறுதி முடிவால் மாற்று</string>
     <string name="settings_voice_show_partial_results_title">பேசும்போதே சொற்களைக் காட்டு</string>
     <string name="settings_voice_use_keyboard_lang_summary">குரல் உள்ளீட்டிற்கு தற்போதைய விசைப்பலகை மொழியைப் பயன்படுத்து</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">பேச்சு எதுவும் கேட்கவில்லை. மீண்டும் முயல மைக்கைத் தட்டவும்.</string>
     <string name="voice_status_busy">பேச்சு அறிதல் பிஸியாக உள்ளது. சிறிது நேரத்தில் மீண்டும் முயலவும்.</string>
     <string name="voice_status_too_many_requests">அதிகமான கோரிக்கைகள். பிறகு மீண்டும் முயலவும்.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s ஆப்ஸுக்கு மைக்ரோஃபோன் அனுமதி தேவை</string>
     <string name="voice_status_service_disconnected">பேச்சுச் சேவையின் இணைப்பு துண்டிக்கப்பட்டது. மீண்டும் முயல மைக்கைத் தட்டவும்.</string>
 </resources>

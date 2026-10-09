@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Hangbevitel</string>
     <string name="settings_voice_prefer_offline_summary">Eszközön futó felismerés használata, ha elérhető</string>
     <string name="settings_voice_prefer_offline_title">Offline felismerés előnyben részesítése</string>
+    <string name="settings_voice_recognizer_none_installed">Nincs telepítve beszédfelismerő alkalmazás. Telepíthet például a Sayboard, a WhisperIME vagy a Transcribro alkalmazást.</string>
+    <string name="settings_voice_recognizer_on_device">Eszközön futó felismerő</string>
+    <string name="settings_voice_recognizer_system_default">Rendszer alapértelmezése</string>
+    <string name="settings_voice_recognizer_system_default_named">Rendszer alapértelmezése (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Beszédfelismerő</string>
     <string name="settings_voice_show_partial_results_summary">A hallott szöveg megjelenítése már beszéd közben, majd lecserélése a végleges eredményre</string>
     <string name="settings_voice_show_partial_results_title">Szavak megjelenítése beszéd közben</string>
     <string name="settings_voice_use_keyboard_lang_summary">Az aktuális billentyűzetnyelv használata a hangbevitelhez</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Nem hallatszott beszéd. Az újrapróbálkozáshoz koppintson a mikrofonra.</string>
     <string name="voice_status_busy">A beszédfelismerés foglalt. Próbálja újra egy pillanat múlva.</string>
     <string name="voice_status_too_many_requests">Túl sok kérés. Próbálja újra később.</string>
+    <string name="voice_status_recognizer_needs_permission">A(z) %1$s alkalmazásnak mikrofonengedélyre van szüksége</string>
     <string name="voice_status_service_disconnected">Megszakadt a kapcsolat a beszédszolgáltatással. Az újrapróbálkozáshoz koppintson a mikrofonra.</string>
 </resources>

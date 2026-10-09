@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Introducere vocală</string>
     <string name="settings_voice_prefer_offline_summary">Folosește recunoașterea pe dispozitiv când este disponibilă</string>
     <string name="settings_voice_prefer_offline_title">Preferați recunoașterea offline</string>
+    <string name="settings_voice_recognizer_none_installed">Nu este instalată nicio aplicație de recunoaștere vocală. Poți instala una, cum ar fi Sayboard, WhisperIME sau Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Recunoaștere pe dispozitiv</string>
+    <string name="settings_voice_recognizer_system_default">Prestabilit de sistem</string>
+    <string name="settings_voice_recognizer_system_default_named">Prestabilit de sistem (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Recunoaștere vocală</string>
     <string name="settings_voice_show_partial_results_summary">Afișează ce se aude cât timp încă vorbiți, apoi îl înlocuiește cu rezultatul final</string>
     <string name="settings_voice_show_partial_results_title">Afișați cuvintele în timp ce vorbiți</string>
     <string name="settings_voice_use_keyboard_lang_summary">Folosește limba curentă a tastaturii pentru introducerea vocală</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Nu s-a detectat vorbire. Atingeți microfonul pentru a încerca din nou.</string>
     <string name="voice_status_busy">Recunoașterea vocală este ocupată. Încercați din nou peste câteva momente.</string>
     <string name="voice_status_too_many_requests">Prea multe solicitări. Încercați din nou mai târziu.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s are nevoie de permisiunea pentru microfon</string>
     <string name="voice_status_service_disconnected">Serviciul vocal s-a deconectat. Atingeți microfonul pentru a încerca din nou.</string>
 </resources>

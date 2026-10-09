@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Entrada de veu</string>
     <string name="settings_voice_prefer_offline_summary">Utilitza el reconeixement al dispositiu quan estigui disponible</string>
     <string name="settings_voice_prefer_offline_title">Prefereix el reconeixement fora de línia</string>
+    <string name="settings_voice_recognizer_none_installed">No hi ha cap aplicació de reconeixement de veu instal·lada. Pots instal·lar-ne una com Sayboard, WhisperIME o Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Reconeixedor al dispositiu</string>
+    <string name="settings_voice_recognizer_system_default">Predeterminat del sistema</string>
+    <string name="settings_voice_recognizer_system_default_named">Predeterminat del sistema (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Reconeixedor de veu</string>
     <string name="settings_voice_show_partial_results_summary">Mostra el que se sent mentre encara parleu i després ho substitueix pel resultat final</string>
     <string name="settings_voice_show_partial_results_title">Mostra les paraules mentre parleu</string>
     <string name="settings_voice_use_keyboard_lang_summary">Utilitza la llengua actual del teclat per a l\'entrada de veu</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">No s\'ha detectat cap veu. Toqueu el micròfon per tornar-ho a provar.</string>
     <string name="voice_status_busy">El reconeixement de veu està ocupat. Torneu-ho a provar d\'aquí a un moment.</string>
     <string name="voice_status_too_many_requests">Massa sol·licituds. Torneu-ho a provar més tard.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s necessita permís per utilitzar el micròfon</string>
     <string name="voice_status_service_disconnected">El servei de veu s\'ha desconnectat. Toqueu el micròfon per tornar-ho a provar.</string>
 </resources>

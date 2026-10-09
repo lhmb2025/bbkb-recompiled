@@ -22,6 +22,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
@@ -159,6 +160,62 @@ class VoiceInputGateTest {
         installRecognitionService(selected = true)
 
         assertTrue(controller.ensureRecognitionService())
+        assertNull(ShadowToast.getTextOfLatestToast())
+    }
+
+    /**
+     * The "Speech recognizer" setting binds the chosen app directly, so the phone's own (empty)
+     * choice does not matter: this is the KEY2 shape with a way out.
+     */
+    @Test
+    fun `a chosen installed app passes the gate with no system service selected`() {
+        installRecognitionService(selected = false)
+        prefs().edit().putString("voice_input_recognizer", "com.example.speech/com.example.speech.Recognizer").commit()
+
+        assertTrue(controller.ensureRecognitionService())
+        assertNull(ShadowToast.getTextOfLatestToast())
+    }
+
+    /** Uninstalled since it was chosen: back to the system default, and its notice if there is none. */
+    @Test
+    fun `a chosen app that is gone falls back to the system default's notice`() {
+        prefs().edit().putString("voice_input_recognizer", "com.gone/com.gone.Recognizer").commit()
+
+        assertFalse(controller.ensureRecognitionService())
+        assertEquals("No selected voice recognition service", ShadowToast.getTextOfLatestToast())
+    }
+
+    /** A board showing its status line: the notice goes there, naming the app to fix. */
+    @Test
+    fun `the permission notice names the chosen app on the status line`() {
+        val view = mock(VoiceInputView::class.java)
+        `when`(view.isShowing).thenReturn(true)
+        `when`(view.showStatusMessage(any(CharSequence::class.java))).thenReturn(true)
+        controller.setVoiceInputView(view)
+
+        controller.onRecognizerNeedsPermission("Sayboard")
+
+        verify(view).showStatusMessage("Sayboard needs microphone permission")
+        assertNull(ShadowToast.getTextOfLatestToast())
+    }
+
+    /** Classic/Modern boards have no status line, so the same words go in a toast. */
+    @Test
+    fun `the permission notice is a toast where the board has no status line`() {
+        val view = mock(VoiceInputView::class.java)
+        `when`(view.isShowing).thenReturn(true)
+        `when`(view.showStatusMessage(any(CharSequence::class.java))).thenReturn(false)
+        controller.setVoiceInputView(view)
+
+        controller.onRecognizerNeedsPermission("Sayboard")
+
+        assertEquals("Sayboard needs microphone permission", ShadowToast.getTextOfLatestToast())
+    }
+
+    @Test
+    fun `no permission notice once the board has gone`() {
+        controller.onRecognizerNeedsPermission("Sayboard")
+
         assertNull(ShadowToast.getTextOfLatestToast())
     }
 

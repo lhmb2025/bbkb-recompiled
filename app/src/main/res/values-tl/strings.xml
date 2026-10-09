@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Voice input</string>
     <string name="settings_voice_prefer_offline_summary">Gamitin ang on-device na recognition kapag available</string>
     <string name="settings_voice_prefer_offline_title">Mas gusto ang offline na recognition</string>
+    <string name="settings_voice_recognizer_none_installed">Walang naka-install na app para sa speech recognition. Puwede kang mag-install ng isa, gaya ng Sayboard, WhisperIME o Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">On-device na recognizer</string>
+    <string name="settings_voice_recognizer_system_default">Default ng system</string>
+    <string name="settings_voice_recognizer_system_default_named">Default ng system (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Speech recognizer</string>
     <string name="settings_voice_show_partial_results_summary">Ipakita ang naririnig habang nagsasalita ka pa, at pagkatapos ay palitan ito ng huling resulta</string>
     <string name="settings_voice_show_partial_results_title">Ipakita ang mga salita habang nagsasalita ka</string>
     <string name="settings_voice_use_keyboard_lang_summary">Gamitin ang kasalukuyang wika ng keyboard para sa voice input</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Walang narinig na pagsasalita. I-tap ang mic para subukang muli.</string>
     <string name="voice_status_busy">Abala ang speech recognition. Subukang muli maya-maya.</string>
     <string name="voice_status_too_many_requests">Masyadong maraming request. Subukang muli mamaya.</string>
+    <string name="voice_status_recognizer_needs_permission">Kailangan ng %1$s ng pahintulot sa mikropono</string>
     <string name="voice_status_service_disconnected">Nadiskonekta ang speech service. I-tap ang mic para subukang muli.</string>
 </resources>

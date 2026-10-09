@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">ध्वनि इनपुट</string>
     <string name="settings_voice_prefer_offline_summary">उपलब्ध होने पर डिवाइस पर ही पहचान का उपयोग करें</string>
     <string name="settings_voice_prefer_offline_title">ऑफ़लाइन पहचान को प्राथमिकता दें</string>
+    <string name="settings_voice_recognizer_none_installed">कोई स्पीच पहचान ऐप इंस्टॉल नहीं है। आप Sayboard, WhisperIME या Transcribro जैसा कोई ऐप इंस्टॉल कर सकते हैं।</string>
+    <string name="settings_voice_recognizer_on_device">डिवाइस पर पहचानकर्ता</string>
+    <string name="settings_voice_recognizer_system_default">सिस्टम डिफ़ॉल्ट</string>
+    <string name="settings_voice_recognizer_system_default_named">सिस्टम डिफ़ॉल्ट (%1$s)</string>
+    <string name="settings_voice_recognizer_title">स्पीच पहचानकर्ता</string>
     <string name="settings_voice_show_partial_results_summary">आपके बोलते समय ही जो सुनाई दे रहा है उसे दिखाएं, फिर उसे अंतिम परिणाम से बदलें</string>
     <string name="settings_voice_show_partial_results_title">बोलते समय शब्द दिखाएं</string>
     <string name="settings_voice_use_keyboard_lang_summary">ध्वनि इनपुट के लिए मौजूदा कीबोर्ड भाषा का उपयोग करें</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">कोई आवाज़ सुनाई नहीं दी। फिर से कोशिश करने के लिए माइक टैप करें।</string>
     <string name="voice_status_busy">वाक् पहचान व्यस्त है। थोड़ी देर में फिर कोशिश करें।</string>
     <string name="voice_status_too_many_requests">बहुत अधिक अनुरोध। बाद में फिर कोशिश करें।</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s को माइक्रोफ़ोन की अनुमति चाहिए</string>
     <string name="voice_status_service_disconnected">वाक् सेवा डिस्कनेक्ट हो गई। फिर से कोशिश करने के लिए माइक टैप करें।</string>
 </resources>

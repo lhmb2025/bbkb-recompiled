@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Үн менен киргизүү</string>
     <string name="settings_voice_prefer_offline_summary">Мүмкүн болсо, түзмөктөгү таанууну колдонуу</string>
     <string name="settings_voice_prefer_offline_title">Оффлайн таанууну артык көрүү</string>
+    <string name="settings_voice_recognizer_none_installed">Кеп таануу колдонмосу орнотулган эмес. Sayboard, WhisperIME же Transcribro сыяктуу колдонмону орното аласыз.</string>
+    <string name="settings_voice_recognizer_on_device">Түзмөктөгү таануучу</string>
+    <string name="settings_voice_recognizer_system_default">Тутумдун демейкиси</string>
+    <string name="settings_voice_recognizer_system_default_named">Тутумдун демейкиси (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Кеп таануучу</string>
     <string name="settings_voice_show_partial_results_summary">Сүйлөп жатканда угулганды көрсөтүп, кийин аны акыркы натыйжа менен алмаштыруу</string>
     <string name="settings_voice_show_partial_results_title">Сүйлөп жатканда сөздөрдү көрсөтүү</string>
     <string name="settings_voice_use_keyboard_lang_summary">Үн менен киргизүү үчүн учурдагы баскычтоптун тилин колдонуу</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Сөз угулган жок. Кайра аракет кылуу үчүн микрофонду басыңыз.</string>
     <string name="voice_status_busy">Кепти таануу бош эмес. Бир аздан кийин кайра аракет кылыңыз.</string>
     <string name="voice_status_too_many_requests">Өтө көп сурам. Кийинчерээк кайра аракет кылыңыз.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s колдонмосуна микрофонго уруксат керек</string>
     <string name="voice_status_service_disconnected">Кеп кызматы ажыратылды. Кайра аракет кылуу үчүн микрофонду басыңыз.</string>
 </resources>

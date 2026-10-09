@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Дуут оролт</string>
     <string name="settings_voice_prefer_offline_summary">Боломжтой үед төхөөрөмж дээрх таних системийг ашиглах</string>
     <string name="settings_voice_prefer_offline_title">Офлайн таних системийг илүүд үзэх</string>
+    <string name="settings_voice_recognizer_none_installed">Яриа таних апп суулгаагүй байна. Sayboard, WhisperIME эсвэл Transcribro зэрэг аппыг суулгаж болно.</string>
+    <string name="settings_voice_recognizer_on_device">Төхөөрөмж дээрх танигч</string>
+    <string name="settings_voice_recognizer_system_default">Системийн өгөгдмөл</string>
+    <string name="settings_voice_recognizer_system_default_named">Системийн өгөгдмөл (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Яриа танигч</string>
     <string name="settings_voice_show_partial_results_summary">Таныг ярьж байх үед сонсогдсоныг харуулж, дараа нь эцсийн үр дүнгээр солих</string>
     <string name="settings_voice_show_partial_results_title">Ярьж байхад үгсийг харуулах</string>
     <string name="settings_voice_use_keyboard_lang_summary">Дуут оролтод гарын одоогийн хэлийг ашиглах</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Яриа сонсогдсонгүй. Дахин оролдохын тулд микрофоныг товшино уу.</string>
     <string name="voice_status_busy">Яриа таних үйлчилгээ завгүй байна. Түр хүлээгээд дахин оролдоно уу.</string>
     <string name="voice_status_too_many_requests">Хэт олон хүсэлт. Дараа дахин оролдоно уу.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s-д микрофоны зөвшөөрөл хэрэгтэй</string>
     <string name="voice_status_service_disconnected">Ярианы үйлчилгээ салгагдлаа. Дахин оролдохын тулд микрофоныг товшино уу.</string>
 </resources>

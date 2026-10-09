@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Ovozli kiritish</string>
     <string name="settings_voice_prefer_offline_summary">Imkoni bo‘lsa, qurilmadagi aniqlashdan foydalanish</string>
     <string name="settings_voice_prefer_offline_title">Oflayn aniqlashni afzal ko‘rish</string>
+    <string name="settings_voice_recognizer_none_installed">Nutqni aniqlash ilovasi o‘rnatilmagan. Sayboard, WhisperIME yoki Transcribro kabi ilovani o‘rnatishingiz mumkin.</string>
+    <string name="settings_voice_recognizer_on_device">Qurilmadagi aniqlagich</string>
+    <string name="settings_voice_recognizer_system_default">Tizim standarti</string>
+    <string name="settings_voice_recognizer_system_default_named">Tizim standarti (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Nutqni aniqlagich</string>
     <string name="settings_voice_show_partial_results_summary">Hali gapirayotganingizda eshitilganini ko‘rsatish, so‘ng uni yakuniy natija bilan almashtirish</string>
     <string name="settings_voice_show_partial_results_title">Gapirayotganda so‘zlarni ko‘rsatish</string>
     <string name="settings_voice_use_keyboard_lang_summary">Ovozli kiritish uchun joriy klaviatura tilidan foydalanish</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Nutq eshitilmadi. Qayta urinish uchun mikrofonni bosing.</string>
     <string name="voice_status_busy">Nutqni aniqlash band. Birozdan keyin qayta urinib ko‘ring.</string>
     <string name="voice_status_too_many_requests">So‘rovlar juda ko‘p. Keyinroq qayta urinib ko‘ring.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s uchun mikrofon ruxsati kerak</string>
     <string name="voice_status_service_disconnected">Nutq xizmati bilan aloqa uzildi. Qayta urinish uchun mikrofonni bosing.</string>
 </resources>

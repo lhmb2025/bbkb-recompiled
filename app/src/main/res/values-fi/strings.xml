@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Äänisyöttö</string>
     <string name="settings_voice_prefer_offline_summary">Käytä laitteessa tapahtuvaa tunnistusta, kun se on käytettävissä</string>
     <string name="settings_voice_prefer_offline_title">Suosi offline-tunnistusta</string>
+    <string name="settings_voice_recognizer_none_installed">Puheentunnistussovellusta ei ole asennettu. Voit asentaa esimerkiksi sovelluksen Sayboard, WhisperIME tai Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Laitteen sisäinen tunnistin</string>
+    <string name="settings_voice_recognizer_system_default">Järjestelmän oletus</string>
+    <string name="settings_voice_recognizer_system_default_named">Järjestelmän oletus (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Puheentunnistin</string>
     <string name="settings_voice_show_partial_results_summary">Näytä kuultu teksti jo puhuessasi ja korvaa se sitten lopullisella tuloksella</string>
     <string name="settings_voice_show_partial_results_title">Näytä sanat puhuessasi</string>
     <string name="settings_voice_use_keyboard_lang_summary">Käytä äänisyötössä näppäimistön nykyistä kieltä</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Puhetta ei kuulunut. Yritä uudelleen napauttamalla mikrofonia.</string>
     <string name="voice_status_busy">Puheentunnistus on varattu. Yritä hetken kuluttua uudelleen.</string>
     <string name="voice_status_too_many_requests">Liian monta pyyntöä. Yritä myöhemmin uudelleen.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s tarvitsee mikrofonin käyttöoikeuden</string>
     <string name="voice_status_service_disconnected">Yhteys puhepalveluun katkesi. Yritä uudelleen napauttamalla mikrofonia.</string>
 </resources>

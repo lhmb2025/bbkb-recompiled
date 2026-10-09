@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Balss ievade</string>
     <string name="settings_voice_prefer_offline_summary">Izmantot atpazīšanu ierīcē, kad tā ir pieejama</string>
     <string name="settings_voice_prefer_offline_title">Dot priekšroku bezsaistes atpazīšanai</string>
+    <string name="settings_voice_recognizer_none_installed">Nav instalēta neviena runas atpazīšanas lietotne. Varat instalēt, piemēram, Sayboard, WhisperIME vai Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Atpazinējs ierīcē</string>
+    <string name="settings_voice_recognizer_system_default">Sistēmas noklusējums</string>
+    <string name="settings_voice_recognizer_system_default_named">Sistēmas noklusējums (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Runas atpazinējs</string>
     <string name="settings_voice_show_partial_results_summary">Rādīt sadzirdēto, kamēr vēl runājat, un pēc tam aizstāt to ar galīgo rezultātu</string>
     <string name="settings_voice_show_partial_results_title">Rādīt vārdus runāšanas laikā</string>
     <string name="settings_voice_use_keyboard_lang_summary">Balss ievadei izmantot pašreizējo tastatūras valodu</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Runa netika sadzirdēta. Pieskarieties mikrofonam, lai mēģinātu vēlreiz.</string>
     <string name="voice_status_busy">Runas atpazīšana ir aizņemta. Mēģiniet vēlreiz pēc brīža.</string>
     <string name="voice_status_too_many_requests">Pārāk daudz pieprasījumu. Mēģiniet vēlreiz vēlāk.</string>
+    <string name="voice_status_recognizer_needs_permission">Lietotnei %1$s nepieciešama piekļuve mikrofonam</string>
     <string name="voice_status_service_disconnected">Runas pakalpojums tika atvienots. Pieskarieties mikrofonam, lai mēģinātu vēlreiz.</string>
 </resources>

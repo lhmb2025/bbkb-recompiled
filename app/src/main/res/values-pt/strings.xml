@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Entrada de voz</string>
     <string name="settings_voice_prefer_offline_summary">Usar o reconhecimento no dispositivo quando disponível</string>
     <string name="settings_voice_prefer_offline_title">Preferir reconhecimento offline</string>
+    <string name="settings_voice_recognizer_none_installed">Nenhum app de reconhecimento de fala está instalado. Você pode instalar um, como Sayboard, WhisperIME ou Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Reconhecedor no dispositivo</string>
+    <string name="settings_voice_recognizer_system_default">Padrão do sistema</string>
+    <string name="settings_voice_recognizer_system_default_named">Padrão do sistema (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Reconhecedor de fala</string>
     <string name="settings_voice_show_partial_results_summary">Mostra o que é ouvido enquanto você ainda fala e depois substitui pelo resultado final</string>
     <string name="settings_voice_show_partial_results_title">Mostrar palavras enquanto você fala</string>
     <string name="settings_voice_use_keyboard_lang_summary">Usar o idioma atual do teclado na entrada de voz</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Nenhuma fala detectada. Toque no microfone para tentar novamente.</string>
     <string name="voice_status_busy">O reconhecimento de fala está ocupado. Tente novamente em instantes.</string>
     <string name="voice_status_too_many_requests">Muitas solicitações. Tente novamente mais tarde.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s precisa de permissão para usar o microfone</string>
     <string name="voice_status_service_disconnected">O serviço de fala foi desconectado. Toque no microfone para tentar novamente.</string>
 </resources>

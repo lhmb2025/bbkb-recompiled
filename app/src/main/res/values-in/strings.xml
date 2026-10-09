@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Input suara</string>
     <string name="settings_voice_prefer_offline_summary">Gunakan pengenalan di perangkat jika tersedia</string>
     <string name="settings_voice_prefer_offline_title">Utamakan pengenalan offline</string>
+    <string name="settings_voice_recognizer_none_installed">Tidak ada aplikasi pengenalan ucapan yang terinstal. Anda dapat menginstal salah satunya, seperti Sayboard, WhisperIME, atau Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Pengenal di perangkat</string>
+    <string name="settings_voice_recognizer_system_default">Default sistem</string>
+    <string name="settings_voice_recognizer_system_default_named">Default sistem (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Pengenal ucapan</string>
     <string name="settings_voice_show_partial_results_summary">Tampilkan apa yang terdengar selagi Anda masih berbicara, lalu ganti dengan hasil akhir</string>
     <string name="settings_voice_show_partial_results_title">Tampilkan kata saat Anda berbicara</string>
     <string name="settings_voice_use_keyboard_lang_summary">Gunakan bahasa keyboard saat ini untuk input suara</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Tidak ada suara yang terdengar. Ketuk mik untuk mencoba lagi.</string>
     <string name="voice_status_busy">Pengenalan ucapan sedang sibuk. Coba lagi sebentar lagi.</string>
     <string name="voice_status_too_many_requests">Terlalu banyak permintaan. Coba lagi nanti.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s memerlukan izin mikrofon</string>
     <string name="voice_status_service_disconnected">Layanan ucapan terputus. Ketuk mik untuk mencoba lagi.</string>
 </resources>

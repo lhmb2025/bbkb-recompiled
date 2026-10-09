@@ -227,10 +227,15 @@ public class VoiceInputView extends RelativeLayout {
      *         some other way
      */
     public boolean showStatusMessage(int messageRes) {
+        return showStatusMessage(getContext().getText(messageRes));
+    }
+
+    /** {@link #showStatusMessage(int)} for a message with the app's name (or anything else) in it. */
+    public boolean showStatusMessage(CharSequence message) {
         if (this.mStatusText == null) {
             return false;
         }
-        this.mStatusText.setText(messageRes);
+        this.mStatusText.setText(message);
         if (this.mWaveform != null) {
             this.mWaveform.setActive(false);
         }

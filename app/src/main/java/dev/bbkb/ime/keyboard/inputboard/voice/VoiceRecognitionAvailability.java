@@ -100,6 +100,11 @@ public final class VoiceRecognitionAvailability {
         if (context == null) {
             return false;
         }
+        // A chosen app (or the on-device recogniser) is bound directly, whatever the phone's own
+        // setting says; it only resolves to one while it is still installed or available.
+        if (InstalledVoiceRecognizers.resolve(context).kind != VoiceRecognizerChoice.Kind.SYSTEM_DEFAULT) {
+            return true;
+        }
         final boolean available = SpeechRecognizer.isRecognitionAvailable(context);
         boolean readable = true;
         String selected = null;

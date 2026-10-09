@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Гласовно внесување</string>
     <string name="settings_voice_prefer_offline_summary">Користење препознавање на уредот кога е достапно</string>
     <string name="settings_voice_prefer_offline_title">Претпочитање офлајн препознавање</string>
+    <string name="settings_voice_recognizer_none_installed">Не е инсталирана апликација за препознавање говор. Може да инсталирате, на пример, Sayboard, WhisperIME или Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Препознавач на уредот</string>
+    <string name="settings_voice_recognizer_system_default">Системски стандард</string>
+    <string name="settings_voice_recognizer_system_default_named">Системски стандард (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Препознавач на говор</string>
     <string name="settings_voice_show_partial_results_summary">Прикажување на она што се слуша додека сѐ уште зборувате, а потоа негова замена со конечниот резултат</string>
     <string name="settings_voice_show_partial_results_title">Прикажување зборови додека зборувате</string>
     <string name="settings_voice_use_keyboard_lang_summary">Користење на тековниот јазик на тастатурата за гласовно внесување</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Не беше слушнат говор. Допрете го микрофонот за да се обидете повторно.</string>
     <string name="voice_status_busy">Препознавањето говор е зафатено. Обидете се повторно за момент.</string>
     <string name="voice_status_too_many_requests">Премногу барања. Обидете се повторно подоцна.</string>
+    <string name="voice_status_recognizer_needs_permission">На %1$s му треба дозвола за микрофонот</string>
     <string name="voice_status_service_disconnected">Услугата за говор се исклучи. Допрете го микрофонот за да се обидете повторно.</string>
 </resources>

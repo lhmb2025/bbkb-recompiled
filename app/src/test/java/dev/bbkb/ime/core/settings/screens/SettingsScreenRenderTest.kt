@@ -974,11 +974,14 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "popup_on_keypress_summary", "prefs_keypress_sound_volume_settings",
                 "prefs_keypress_vibration_duration_settings", "settings_category_sound",
                 "settings_category_vibrate", "settings_key_press_feedback_title", "sound_on_keypress_summary",
-                "vibrate_on_keypress_summary"
+                "vibrate_on_keypress_summary",
+                // Still the screen's hardcoded "System default" summary: the voice screen's Speech
+                // recognizer row added a resource with that value, and the recorder names any
+                // rendered string after the resource that holds it.
+                "settings_voice_recognizer_system_default"
             ),
             literals = setOf(
                 "VIBRATE",
-                "System default",
                 "SOUND",
                 "KEY POPUP",
             ),
@@ -1276,7 +1279,10 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_voice_builtin_title", "settings_voice_prefer_offline_summary",
                 "settings_voice_prefer_offline_title", "settings_voice_use_keyboard_lang_summary",
                 "settings_voice_use_keyboard_lang_title", "settings_voice_show_partial_results_summary",
-                "settings_voice_show_partial_results_title"
+                "settings_voice_show_partial_results_title",
+                // The "Speech recognizer" row. Robolectric has no recognition app installed, so its
+                // summary is the one that says so and suggests apps to install.
+                "settings_voice_recognizer_title", "settings_voice_recognizer_none_installed"
             ),
             literals = emptySet(),
         ),

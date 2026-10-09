@@ -1,5 +1,7 @@
 package dev.bbkb.ime.core.settings.screens
 
+import android.content.Context
+import android.os.Build
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,9 +31,13 @@ import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.util.SettingsManager
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
+import dev.bbkb.ime.core.settings.ui.ChoiceOption
+import dev.bbkb.ime.core.settings.ui.ListPreference
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceScreen
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
+import dev.bbkb.ime.keyboard.inputboard.voice.InstalledVoiceRecognizers
+import dev.bbkb.ime.keyboard.inputboard.voice.VoiceRecognizerChoice
 
 /**
  * Voice Input Settings Screen
@@ -69,6 +75,12 @@ fun VoiceInputSettingsScreen(
         // default here, so the row and the recogniser can never disagree about it.
         mutableStateOf(prefs.getBoolean("pref_key_block_potentially_offensive",
             context.resources.getBoolean(R.bool.config_block_potentially_offensive)))
+    }
+    // The recognition services installed when the screen opened, and the platform's on-device one.
+    val recognizers = remember { InstalledVoiceRecognizers.query(context) }
+    val onDeviceAvailable = remember { InstalledVoiceRecognizers.isOnDeviceAvailable(context) }
+    var recognizer by remember {
+        mutableStateOf(SettingsManager.getVoiceInputRecognizer(prefs))
     }
     // Read once: this screen only displays it; the picker is what changes it.
     val voiceLanguage = remember {
@@ -109,6 +121,31 @@ fun VoiceInputSettingsScreen(
                 onCheckedChange = { newValue ->
                     builtInVoiceEnabled = newValue
                     prefs.edit().putBoolean("voice_input_enabled", newValue).apply()
+                }
+            )
+
+            // Speech recognizer: which recognition service dictation binds. The row shows what the
+            // setting resolves to now, so a chosen app that has since been uninstalled reads as the
+            // system default, which is what dictation falls back to.
+            val recognizerOptions = voiceRecognizerOptions(context, recognizers, onDeviceAvailable)
+            val resolvedRecognizer = VoiceRecognizerChoice
+                .select(recognizer, Build.VERSION.SDK_INT, onDeviceAvailable, recognizers)
+                .id()
+            ListPreference(
+                title = context.getString(R.string.settings_voice_recognizer_title),
+                summary = if (recognizers.isEmpty() && resolvedRecognizer == VoiceRecognizerChoice.SYSTEM_DEFAULT)
+                    context.getString(R.string.settings_voice_recognizer_none_installed)
+                else
+                    recognizerOptions.firstOrNull { it.value == resolvedRecognizer }?.label
+                        ?: recognizerOptions.first().label,
+                entries = recognizerOptions.map { it.label },
+                entryValues = recognizerOptions.map { it.value },
+                value = resolvedRecognizer,
+                enabled = builtInVoiceEnabled,
+                modifier = Modifier.settingsSearchAnchor("voice_input_recognizer"),
+                onValueChange = { newValue ->
+                    recognizer = newValue
+                    prefs.edit().putString("voice_input_recognizer", newValue).apply()
                 }
             )
 
@@ -194,6 +231,34 @@ fun VoiceInputSettingsScreen(
             )
 
             Spacer(modifier = Modifier.height(spacing.extraLarge))
+        }
+    }
+}
+
+/**
+ * The "Speech recognizer" choices: the system default (named after the app it is, when that app is
+ * installed), each installed recognition app by its label, and the on-device recogniser where the
+ * phone has one.
+ */
+internal fun voiceRecognizerOptions(
+    context: Context,
+    recognizers: List<VoiceRecognizerChoice.Provider>,
+    onDeviceAvailable: Boolean,
+): List<ChoiceOption> {
+    val systemDefault = VoiceRecognizerChoice.systemDefault(recognizers)
+    return buildList {
+        add(
+            ChoiceOption(
+                VoiceRecognizerChoice.SYSTEM_DEFAULT,
+                if (systemDefault != null)
+                    context.getString(R.string.settings_voice_recognizer_system_default_named, systemDefault.label)
+                else
+                    context.getString(R.string.settings_voice_recognizer_system_default),
+            )
+        )
+        recognizers.forEach { add(ChoiceOption(it.component, it.label)) }
+        if (onDeviceAvailable) {
+            add(ChoiceOption(VoiceRecognizerChoice.ON_DEVICE, context.getString(R.string.settings_voice_recognizer_on_device)))
         }
     }
 }

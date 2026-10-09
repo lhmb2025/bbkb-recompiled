@@ -299,6 +299,7 @@
     <string name="voice_status_no_speech">No speech heard. Tap the mic to try again.</string>
     <string name="voice_status_busy">Speech recognition is busy. Try again in a moment.</string>
     <string name="voice_status_too_many_requests">Too many requests. Try again later.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s needs microphone permission</string>
     <string name="voice_status_service_disconnected">The speech service disconnected. Tap the mic to try again.</string>
     <string name="settings_appearance_modern">Modern</string>
     <string name="settings_color_scheme_title">Color scheme</string>
@@ -417,6 +418,11 @@
     <string name="settings_voice_input_title">Voice input</string>
     <string name="settings_voice_prefer_offline_summary">Use on-device recognition when available</string>
     <string name="settings_voice_prefer_offline_title">Prefer offline recognition</string>
+    <string name="settings_voice_recognizer_none_installed">No speech recognition app is installed. You can install one such as Sayboard, WhisperIME or Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">On-device recognizer</string>
+    <string name="settings_voice_recognizer_system_default">System default</string>
+    <string name="settings_voice_recognizer_system_default_named">System default (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Speech recognizer</string>
     <string name="settings_voice_show_partial_results_summary">Show what is heard while you are still speaking, then replace it with the final result</string>
     <string name="settings_voice_show_partial_results_title">Show words as you speak</string>
     <string name="settings_voice_use_keyboard_lang_summary">Use current keyboard language for voice input</string>

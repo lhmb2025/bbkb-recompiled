@@ -5,7 +5,6 @@ import android.os.Build
 import android.speech.RecognitionSupport
 import android.speech.RecognitionSupportCallback
 import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
@@ -49,7 +48,9 @@ import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.util.SettingsManager
 import android.view.inputmethod.InputMethodManager
+import dev.bbkb.ime.keyboard.inputboard.voice.InstalledVoiceRecognizers
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceLanguageTags
+import dev.bbkb.ime.keyboard.inputboard.voice.VoiceRecognizerChoice
 import java.util.Locale
 import java.util.concurrent.Executors
 
@@ -97,17 +98,19 @@ fun VoiceLanguageSelectionScreen(
     var availableLanguages by remember { mutableStateOf<List<String>>(emptyList()) }
     var offlineLanguages by remember { mutableStateOf<List<String>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
+    // Ask the recogniser dictation will use (the "Speech recognizer" setting), not always the default.
+    val recognizer = remember { InstalledVoiceRecognizers.resolve(context) }
 
     // Detect available voice recognition languages using appropriate API
     LaunchedEffect(Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            fetchLanguagesModernForSelection(context) { supported, offline ->
+            fetchLanguagesModernForSelection(context, recognizer) { supported, offline ->
                 availableLanguages = supported.sorted()
                 offlineLanguages = offline.sorted()
                 isLoading = false
             }
         } else {
-            fetchLanguagesLegacyForSelection(context) { languages ->
+            fetchLanguagesLegacyForSelection(context, recognizer) { languages ->
                 availableLanguages = languages.sorted()
                 offlineLanguages = emptyList()
                 isLoading = false
@@ -296,18 +299,20 @@ private val recognitionSupportExecutor: java.util.concurrent.ExecutorService by 
 }
 
 /**
- * Fetch supported languages using modern API 33+ checkRecognitionSupport
+ * Fetch supported languages using modern API 33+ checkRecognitionSupport, asked of the recogniser
+ * the "Speech recognizer" setting chooses rather than always the system default.
  */
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private fun fetchLanguagesModernForSelection(
     context: android.content.Context,
+    selection: VoiceRecognizerChoice.Selection,
     onResult: (supported: List<String>, offline: List<String>) -> Unit
 ) {
-    val fallbackLanguages = fallbackLanguages(context)
+    val fallbackLanguages = fallbackLanguages(context, selection)
 
     var speechRecognizer: android.speech.SpeechRecognizer? = null
     try {
-        val recognizer = SpeechRecognizer.createSpeechRecognizer(context)
+        val recognizer = InstalledVoiceRecognizers.create(context, selection)
         speechRecognizer = recognizer
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
 
@@ -326,7 +331,7 @@ private fun fetchLanguagesModernForSelection(
 
                 android.os.Handler(android.os.Looper.getMainLooper()).post {
                     if (allLanguages.isNotEmpty()) {
-                        rememberLanguages(context, allLanguages)
+                        rememberLanguages(context, selection, allLanguages)
                         onResult(allLanguages, installedLanguages)
                     } else {
                         onResult(fallbackLanguages, emptyList())
@@ -338,7 +343,7 @@ private fun fetchLanguagesModernForSelection(
             override fun onError(error: Int) {
                 if (BuildConfig.DEBUG) Log.e(TAG, "checkRecognitionSupport error: $error")
                 android.os.Handler(android.os.Looper.getMainLooper()).post {
-                    fetchLanguagesLegacyForSelection(context) { languages ->
+                    fetchLanguagesLegacyForSelection(context, selection) { languages ->
                         onResult(languages, emptyList())
                     }
                     recognizer.destroy()
@@ -349,23 +354,28 @@ private fun fetchLanguagesModernForSelection(
         if (BuildConfig.DEBUG) Log.e(TAG, "Error initializing modern language fetch", e)
         // Neither callback will fire, so release the binding here rather than leaking it.
         speechRecognizer?.destroy()
-        fetchLanguagesLegacyForSelection(context) { languages ->
+        fetchLanguagesLegacyForSelection(context, selection) { languages ->
             onResult(languages, emptyList())
         }
     }
 }
 
 /**
- * Fetch supported languages using legacy broadcast method (pre-API 33)
+ * Fetch supported languages using legacy broadcast method (pre-API 33). With an app chosen as the
+ * speech recognizer the broadcast goes to that app alone, so another recogniser cannot answer it.
  */
 private fun fetchLanguagesLegacyForSelection(
     context: android.content.Context,
+    selection: VoiceRecognizerChoice.Selection,
     onResult: (languages: List<String>) -> Unit
 ) {
-    val fallbackLanguages = fallbackLanguages(context)
+    val fallbackLanguages = fallbackLanguages(context, selection)
 
     try {
         val detailsIntent = Intent(RecognizerIntent.ACTION_GET_LANGUAGE_DETAILS)
+        if (selection.kind == VoiceRecognizerChoice.Kind.COMPONENT) {
+            detailsIntent.setPackage(selection.packageName)
+        }
         context.sendOrderedBroadcast(
             detailsIntent,
             null,
@@ -376,7 +386,7 @@ private fun fetchLanguagesLegacyForSelection(
 
                     if (!languages.isNullOrEmpty()) {
                         if (BuildConfig.DEBUG) Log.d(TAG, "Legacy API: Found ${languages.size} languages")
-                        rememberLanguages(context, languages.toList())
+                        rememberLanguages(context, selection, languages.toList())
                         onResult(languages.toList())
                     } else {
                         if (BuildConfig.DEBUG) Log.d(TAG, "Legacy API: No languages found, using fallback")
@@ -395,34 +405,47 @@ private fun fetchLanguagesLegacyForSelection(
     }
 }
 
-private const val VOICE_LANGUAGE_CACHE_PREF = "voice_input_language_cache"
-
 /**
- * What the picker shows when discovery fails: the last real answer this device gave, or, before
+ * What the picker shows when discovery fails: the last real answer this recogniser gave, or, before
  * there ever was one, every language this keyboard declares a subtype for plus the regional
  * list below. The old static list alone omitted Hebrew, Greek, Ukrainian, Swedish, Czech,
  * Hungarian, Romanian, Finnish, Danish, Norwegian, Bulgarian and Persian, all of which have
  * keyboards here.
  */
-internal fun fallbackLanguages(context: android.content.Context): List<String> =
-    composeFallback(cachedLanguages(context), keyboardLanguageTags(context))
+internal fun fallbackLanguages(
+    context: android.content.Context,
+    selection: VoiceRecognizerChoice.Selection,
+): List<String> = composeFallback(cachedLanguages(context, selection), keyboardLanguageTags(context))
 
 /** Pure part of [fallbackLanguages], for tests: a remembered discovery wins outright. */
 internal fun composeFallback(cached: List<String>, keyboard: List<String>): List<String> =
     if (cached.isNotEmpty()) cached else (keyboard + getDefaultLanguageList()).distinct().sorted()
 
-private fun cachedLanguages(context: android.content.Context): List<String> = try {
-    PrefsManager.getPrefs(context).getString(VOICE_LANGUAGE_CACHE_PREF, null)
+/**
+ * Each recogniser remembers its own list ([VoiceRecognizerChoice.languageCacheKey]), so after a
+ * switch the picker never offers the previous recogniser's languages.
+ */
+private fun cachedLanguages(
+    context: android.content.Context,
+    selection: VoiceRecognizerChoice.Selection,
+): List<String> = try {
+    PrefsManager.getPrefs(context).getString(VoiceRecognizerChoice.languageCacheKey(selection.id()), null)
         ?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList()
 } catch (e: Exception) {
     emptyList()
 }
 
-/** Remember a successful discovery so a later failure still shows this device's real list. */
-private fun rememberLanguages(context: android.content.Context, languages: List<String>) {
+/** Remember a successful discovery so a later failure still shows this recogniser's real list. */
+private fun rememberLanguages(
+    context: android.content.Context,
+    selection: VoiceRecognizerChoice.Selection,
+    languages: List<String>,
+) {
     if (languages.isEmpty()) return
     try {
-        PrefsManager.getPrefs(context).edit().putString(VOICE_LANGUAGE_CACHE_PREF, languages.joinToString(",")).apply()
+        PrefsManager.getPrefs(context).edit()
+            .putString(VoiceRecognizerChoice.languageCacheKey(selection.id()), languages.joinToString(","))
+            .apply()
     } catch (e: Exception) {
         if (BuildConfig.DEBUG) Log.w(TAG, "Could not remember the voice language list", e)
     }

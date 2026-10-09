@@ -269,6 +269,17 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
         }).requestPermission("android.permission.RECORD_AUDIO", this.mContext.getString(R.string.voice_input_permission_rationale));
     }
 
+    /**
+     * The app chosen as the speech recognizer has no microphone permission. Requesting ours (which
+     * this keyboard already holds) cannot help, so the board says which app to fix.
+     */
+    @Override
+    public void onRecognizerNeedsPermission(String appLabel) {
+        if (isViewShowing()) {
+            showNotice(this.mContext.getString(R.string.voice_status_recognizer_needs_permission, appLabel));
+        }
+    }
+
     /** Drops the language-pack dialog listener from the process-wide event bus. */
     private void unsubscribeDialogListener() {
         if (this.mEventListener != null) {
@@ -404,6 +415,14 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
             return;
         }
         showToast(messageRes);
+    }
+
+    /** {@link #showNotice(int)} for a message already formatted. */
+    private void showNotice(CharSequence message) {
+        if (hasView() && this.mVoiceInputView.showStatusMessage(message)) {
+            return;
+        }
+        android.widget.Toast.makeText(this.mContext, message, android.widget.Toast.LENGTH_SHORT).show();
     }
 
     private void showToast(int messageRes) {

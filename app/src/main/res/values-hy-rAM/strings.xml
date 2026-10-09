@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Ձայնային ներածում</string>
     <string name="settings_voice_prefer_offline_summary">Օգտագործել սարքի վրա ճանաչումը, երբ հասանելի է</string>
     <string name="settings_voice_prefer_offline_title">Նախընտրել անցանց ճանաչումը</string>
+    <string name="settings_voice_recognizer_none_installed">Խոսքի ճանաչման ոչ մի հավելված տեղադրված չէ։ Կարող եք տեղադրել, օրինակ, Sayboard, WhisperIME կամ Transcribro։</string>
+    <string name="settings_voice_recognizer_on_device">Սարքի վրա ճանաչում</string>
+    <string name="settings_voice_recognizer_system_default">Համակարգի կանխադրված</string>
+    <string name="settings_voice_recognizer_system_default_named">Համակարգի կանխադրված (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Խոսքի ճանաչում</string>
     <string name="settings_voice_show_partial_results_summary">Ցույց տալ լսվածը, քանի դեռ խոսում եք, ապա փոխարինել այն վերջնական արդյունքով</string>
     <string name="settings_voice_show_partial_results_title">Ցույց տալ բառերը խոսելիս</string>
     <string name="settings_voice_use_keyboard_lang_summary">Օգտագործել ստեղնաշարի ընթացիկ լեզուն ձայնային ներածման համար</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Խոսք չի լսվել։ Հպեք խոսափողին՝ կրկին փորձելու համար։</string>
     <string name="voice_status_busy">Խոսքի ճանաչումը զբաղված է։ Կրկին փորձեք մի փոքր անց։</string>
     <string name="voice_status_too_many_requests">Չափազանց շատ հարցումներ։ Կրկին փորձեք ավելի ուշ։</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s-ին անհրաժեշտ է խոսափողի թույլտվություն</string>
     <string name="voice_status_service_disconnected">Խոսքի ծառայությունն անջատվեց։ Հպեք խոսափողին՝ կրկին փորձելու համար։</string>
 </resources>

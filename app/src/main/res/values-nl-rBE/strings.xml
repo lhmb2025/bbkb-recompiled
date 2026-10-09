@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Spraakinvoer</string>
     <string name="settings_voice_prefer_offline_summary">Herkenning op het toestel gebruiken indien beschikbaar</string>
     <string name="settings_voice_prefer_offline_title">Voorkeur voor offline herkenning</string>
+    <string name="settings_voice_recognizer_none_installed">Er is geen app voor spraakherkenning geïnstalleerd. Je kunt er een installeren, zoals Sayboard, WhisperIME of Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Herkenner op het toestel</string>
+    <string name="settings_voice_recognizer_system_default">Systeemstandaard</string>
+    <string name="settings_voice_recognizer_system_default_named">Systeemstandaard (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Spraakherkenner</string>
     <string name="settings_voice_show_partial_results_summary">Tonen wat er wordt gehoord terwijl je nog spreekt en dit daarna vervangen door het eindresultaat</string>
     <string name="settings_voice_show_partial_results_title">Woorden tonen tijdens het spreken</string>
     <string name="settings_voice_use_keyboard_lang_summary">De huidige toetsenbordtaal gebruiken voor spraakinvoer</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Geen spraak gehoord. Tik op de microfoon om het opnieuw te proberen.</string>
     <string name="voice_status_busy">Spraakherkenning is bezet. Probeer het zo opnieuw.</string>
     <string name="voice_status_too_many_requests">Te veel verzoeken. Probeer het later opnieuw.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s heeft toestemming voor de microfoon nodig</string>
     <string name="voice_status_service_disconnected">De verbinding met de spraakservice is verbroken. Tik op de microfoon om het opnieuw te proberen.</string>
 </resources>

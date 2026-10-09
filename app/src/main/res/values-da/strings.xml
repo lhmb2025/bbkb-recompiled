@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Stemmeinput</string>
     <string name="settings_voice_prefer_offline_summary">Brug genkendelse på enheden, når det er muligt</string>
     <string name="settings_voice_prefer_offline_title">Foretræk offlinegenkendelse</string>
+    <string name="settings_voice_recognizer_none_installed">Der er ikke installeret nogen app til talegenkendelse. Du kan installere en, f.eks. Sayboard, WhisperIME eller Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Genkendelse på enheden</string>
+    <string name="settings_voice_recognizer_system_default">Systemstandard</string>
+    <string name="settings_voice_recognizer_system_default_named">Systemstandard (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Talegenkendelse</string>
     <string name="settings_voice_show_partial_results_summary">Vis, hvad der høres, mens du stadig taler, og erstat det derefter med det endelige resultat</string>
     <string name="settings_voice_show_partial_results_title">Vis ord, mens du taler</string>
     <string name="settings_voice_use_keyboard_lang_summary">Brug tastaturets aktuelle sprog til stemmeinput</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Der blev ikke hørt nogen tale. Tryk på mikrofonen for at prøve igen.</string>
     <string name="voice_status_busy">Talegenkendelse er optaget. Prøv igen om et øjeblik.</string>
     <string name="voice_status_too_many_requests">For mange anmodninger. Prøv igen senere.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s skal have tilladelse til mikrofonen</string>
     <string name="voice_status_service_disconnected">Forbindelsen til taletjenesten blev afbrudt. Tryk på mikrofonen for at prøve igen.</string>
 </resources>

@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Nhập bằng giọng nói</string>
     <string name="settings_voice_prefer_offline_summary">Dùng tính năng nhận dạng trên thiết bị khi có thể</string>
     <string name="settings_voice_prefer_offline_title">Ưu tiên nhận dạng ngoại tuyến</string>
+    <string name="settings_voice_recognizer_none_installed">Chưa cài đặt ứng dụng nhận dạng giọng nói nào. Bạn có thể cài một ứng dụng như Sayboard, WhisperIME hoặc Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Trình nhận dạng trên thiết bị</string>
+    <string name="settings_voice_recognizer_system_default">Mặc định của hệ thống</string>
+    <string name="settings_voice_recognizer_system_default_named">Mặc định của hệ thống (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Trình nhận dạng giọng nói</string>
     <string name="settings_voice_show_partial_results_summary">Hiển thị nội dung nghe được ngay khi bạn còn đang nói, sau đó thay bằng kết quả cuối cùng</string>
     <string name="settings_voice_show_partial_results_title">Hiển thị từ khi bạn nói</string>
     <string name="settings_voice_use_keyboard_lang_summary">Dùng ngôn ngữ bàn phím hiện tại để nhập bằng giọng nói</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Không nghe thấy giọng nói. Chạm vào micrô để thử lại.</string>
     <string name="voice_status_busy">Dịch vụ nhận dạng giọng nói đang bận. Hãy thử lại sau giây lát.</string>
     <string name="voice_status_too_many_requests">Quá nhiều yêu cầu. Hãy thử lại sau.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s cần quyền truy cập micrô</string>
     <string name="voice_status_service_disconnected">Dịch vụ giọng nói đã ngắt kết nối. Chạm vào micrô để thử lại.</string>
 </resources>

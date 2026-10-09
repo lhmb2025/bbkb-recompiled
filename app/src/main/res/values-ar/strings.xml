@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">الإدخال الصوتي</string>
     <string name="settings_voice_prefer_offline_summary">استخدام التعرف على الجهاز عند توفره</string>
     <string name="settings_voice_prefer_offline_title">تفضيل التعرف دون اتصال</string>
+    <string name="settings_voice_recognizer_none_installed">لم يتم تثبيت أي تطبيق للتعرّف على الكلام. يمكنك تثبيت تطبيق مثل Sayboard أو WhisperIME أو Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">أداة التعرّف على الجهاز</string>
+    <string name="settings_voice_recognizer_system_default">الإعداد التلقائي للنظام</string>
+    <string name="settings_voice_recognizer_system_default_named">الإعداد التلقائي للنظام (%1$s)</string>
+    <string name="settings_voice_recognizer_title">أداة التعرّف على الكلام</string>
     <string name="settings_voice_show_partial_results_summary">إظهار ما يُسمع بينما لا تزال تتحدث، ثم استبداله بالنتيجة النهائية</string>
     <string name="settings_voice_show_partial_results_title">إظهار الكلمات أثناء التحدث</string>
     <string name="settings_voice_use_keyboard_lang_summary">استخدام لغة لوحة المفاتيح الحالية للإدخال الصوتي</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">لم يتم سماع أي كلام. اضغط على الميكروفون لإعادة المحاولة.</string>
     <string name="voice_status_busy">خدمة التعرّف على الكلام مشغولة. أعد المحاولة بعد قليل.</string>
     <string name="voice_status_too_many_requests">طلبات كثيرة جدًا. أعد المحاولة لاحقًا.</string>
+    <string name="voice_status_recognizer_needs_permission">يحتاج %1$s إلى إذن الوصول إلى الميكروفون</string>
     <string name="voice_status_service_disconnected">انقطع الاتصال بخدمة الكلام. اضغط على الميكروفون لإعادة المحاولة.</string>
 </resources>

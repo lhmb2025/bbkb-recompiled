@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Ionchur gutha</string>
     <string name="settings_voice_prefer_offline_summary">Úsáid aithint ar an ngléas nuair atá sí ar fáil</string>
     <string name="settings_voice_prefer_offline_title">Tabhair tosaíocht don aithint as líne</string>
+    <string name="settings_voice_recognizer_none_installed">Níl aon aip aitheantais cainte suiteáilte. Is féidir leat ceann a shuiteáil, mar shampla Sayboard, WhisperIME nó Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Aitheantóir ar an ngléas</string>
+    <string name="settings_voice_recognizer_system_default">Réamhshocrú an chórais</string>
+    <string name="settings_voice_recognizer_system_default_named">Réamhshocrú an chórais (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Aitheantóir cainte</string>
     <string name="settings_voice_show_partial_results_summary">Taispeáin a gcloistear agus tú fós ag labhairt, agus cuir an toradh deiridh ina áit ansin</string>
     <string name="settings_voice_show_partial_results_title">Taispeáin focail agus tú ag labhairt</string>
     <string name="settings_voice_use_keyboard_lang_summary">Úsáid teanga reatha an mhéarchláir don ionchur gutha</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Níor chualathas aon chaint. Tapáil an micreafón chun triail eile a bhaint as.</string>
     <string name="voice_status_busy">Tá aithint cainte gnóthach. Bain triail eile as i gceann nóiméid.</string>
     <string name="voice_status_too_many_requests">An iomarca iarratas. Bain triail eile as ar ball.</string>
+    <string name="voice_status_recognizer_needs_permission">Tá cead micreafóin ag teastáil ó %1$s</string>
     <string name="voice_status_service_disconnected">Dícheanglaíodh an tseirbhís cainte. Tapáil an micreafón chun triail eile a bhaint as.</string>
 </resources>

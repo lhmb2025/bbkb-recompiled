@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Φωνητική εισαγωγή</string>
     <string name="settings_voice_prefer_offline_summary">Χρήση αναγνώρισης στη συσκευή όταν είναι διαθέσιμη</string>
     <string name="settings_voice_prefer_offline_title">Προτίμηση αναγνώρισης εκτός σύνδεσης</string>
+    <string name="settings_voice_recognizer_none_installed">Δεν έχει εγκατασταθεί εφαρμογή αναγνώρισης ομιλίας. Μπορείτε να εγκαταστήσετε μία, όπως Sayboard, WhisperIME ή Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Αναγνώριση στη συσκευή</string>
+    <string name="settings_voice_recognizer_system_default">Προεπιλογή συστήματος</string>
+    <string name="settings_voice_recognizer_system_default_named">Προεπιλογή συστήματος (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Αναγνώριση ομιλίας</string>
     <string name="settings_voice_show_partial_results_summary">Εμφάνιση όσων ακούγονται ενώ μιλάτε ακόμη και στη συνέχεια αντικατάστασή τους με το τελικό αποτέλεσμα</string>
     <string name="settings_voice_show_partial_results_title">Εμφάνιση λέξεων καθώς μιλάτε</string>
     <string name="settings_voice_use_keyboard_lang_summary">Χρήση της τρέχουσας γλώσσας πληκτρολογίου για φωνητική εισαγωγή</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Δεν ακούστηκε ομιλία. Πατήστε το μικρόφωνο για να δοκιμάσετε ξανά.</string>
     <string name="voice_status_busy">Η αναγνώριση ομιλίας είναι απασχολημένη. Δοκιμάστε ξανά σε λίγο.</string>
     <string name="voice_status_too_many_requests">Πάρα πολλά αιτήματα. Δοκιμάστε ξανά αργότερα.</string>
+    <string name="voice_status_recognizer_needs_permission">Η εφαρμογή %1$s χρειάζεται άδεια για το μικρόφωνο</string>
     <string name="voice_status_service_disconnected">Η υπηρεσία ομιλίας αποσυνδέθηκε. Πατήστε το μικρόφωνο για να δοκιμάσετε ξανά.</string>
 </resources>

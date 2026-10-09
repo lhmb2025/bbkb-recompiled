@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Spracheingabe</string>
     <string name="settings_voice_prefer_offline_summary">Erkennung auf dem Gerät verwenden, wenn verfügbar</string>
     <string name="settings_voice_prefer_offline_title">Offline-Erkennung bevorzugen</string>
+    <string name="settings_voice_recognizer_none_installed">Es ist keine Spracherkennungs-App installiert. Sie können z. B. Sayboard, WhisperIME oder Transcribro installieren.</string>
+    <string name="settings_voice_recognizer_on_device">Erkennung auf dem Gerät</string>
+    <string name="settings_voice_recognizer_system_default">Systemstandard</string>
+    <string name="settings_voice_recognizer_system_default_named">Systemstandard (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Spracherkennung</string>
     <string name="settings_voice_show_partial_results_summary">Erkannten Text schon während des Sprechens anzeigen und anschließend durch das Endergebnis ersetzen</string>
     <string name="settings_voice_show_partial_results_title">Wörter beim Sprechen anzeigen</string>
     <string name="settings_voice_use_keyboard_lang_summary">Aktuelle Tastatursprache für die Spracheingabe verwenden</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Keine Sprache erkannt. Tippen Sie auf das Mikrofon, um es erneut zu versuchen.</string>
     <string name="voice_status_busy">Die Spracherkennung ist ausgelastet. Versuchen Sie es gleich noch einmal.</string>
     <string name="voice_status_too_many_requests">Zu viele Anfragen. Versuchen Sie es später erneut.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s benötigt die Mikrofonberechtigung</string>
     <string name="voice_status_service_disconnected">Die Verbindung zum Sprachdienst wurde getrennt. Tippen Sie auf das Mikrofon, um es erneut zu versuchen.</string>
 </resources>

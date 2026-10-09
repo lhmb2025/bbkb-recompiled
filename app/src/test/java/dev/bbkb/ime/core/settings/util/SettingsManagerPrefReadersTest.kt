@@ -78,4 +78,20 @@ class SettingsManagerPrefReadersTest {
         prefs.edit().putString("voice_input_language_list", "pt_BR").commit()
         assertEquals("pt-BR", SettingsManager.getVoiceInputLanguageList(prefs))
     }
+
+    // ── voice_input_recognizer ───────────────────────────────────────────────────────────────
+
+    /** Unset is the system default, so nobody's dictation changes until they pick a recognizer. */
+    @Test
+    fun theSpeechRecognizerDefaultsToTheSystemDefault() {
+        assertEquals("", SettingsManager.getVoiceInputRecognizer(prefs))
+    }
+
+    @Test
+    fun aChosenSpeechRecognizerReadsBackAsStored() {
+        prefs.edit().putString("voice_input_recognizer", "ondevice").commit()
+        assertEquals("ondevice", SettingsManager.getVoiceInputRecognizer(prefs))
+        prefs.edit().putString("voice_input_recognizer", "com.example/com.example.Recognizer").commit()
+        assertEquals("com.example/com.example.Recognizer", SettingsManager.getVoiceInputRecognizer(prefs))
+    }
 }

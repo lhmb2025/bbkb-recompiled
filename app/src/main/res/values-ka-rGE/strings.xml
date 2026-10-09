@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">ხმოვანი შეყვანა</string>
     <string name="settings_voice_prefer_offline_summary">მოწყობილობაზე ამოცნობის გამოყენება, როცა ხელმისაწვდომია</string>
     <string name="settings_voice_prefer_offline_title">ოფლაინ ამოცნობის უპირატესობა</string>
+    <string name="settings_voice_recognizer_none_installed">მეტყველების ამოცნობის აპი დაინსტალირებული არ არის. შეგიძლიათ დააინსტალიროთ, მაგალითად, Sayboard, WhisperIME ან Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">მოწყობილობაზე ამომცნობი</string>
+    <string name="settings_voice_recognizer_system_default">სისტემის ნაგულისხმევი</string>
+    <string name="settings_voice_recognizer_system_default_named">სისტემის ნაგულისხმევი (%1$s)</string>
+    <string name="settings_voice_recognizer_title">მეტყველების ამომცნობი</string>
     <string name="settings_voice_show_partial_results_summary">გაგონილის ჩვენება ჯერ კიდევ საუბრისას, შემდეგ კი მისი ჩანაცვლება საბოლოო შედეგით</string>
     <string name="settings_voice_show_partial_results_title">სიტყვების ჩვენება საუბრისას</string>
     <string name="settings_voice_use_keyboard_lang_summary">კლავიატურის მიმდინარე ენის გამოყენება ხმოვანი შეყვანისთვის</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">მეტყველება არ ისმის. ხელახლა საცდელად შეეხეთ მიკროფონს.</string>
     <string name="voice_status_busy">მეტყველების ამოცნობა დაკავებულია. სცადეთ ხელახლა ცოტა ხანში.</string>
     <string name="voice_status_too_many_requests">ძალიან ბევრი მოთხოვნა. სცადეთ ხელახლა მოგვიანებით.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s-ს მიკროფონის ნებართვა სჭირდება</string>
     <string name="voice_status_service_disconnected">მეტყველების სერვისი გაითიშა. ხელახლა საცდელად შეეხეთ მიკროფონს.</string>
 </resources>

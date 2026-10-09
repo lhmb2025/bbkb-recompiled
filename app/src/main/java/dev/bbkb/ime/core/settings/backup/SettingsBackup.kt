@@ -89,7 +89,9 @@ object SettingsBackup {
      *    a specific server (often a laptop on the local network during development); carrying them
      *    to another device silently redirects its update checks.
      *  - `voice_input_language_cache` — the recogniser languages this device reported last time;
-     *    another device has its own recogniser.
+     *    another device has its own recogniser. Each speech recognizer the user picks keeps its own
+     *    list under this prefix (`voice_input_language_cache_<recognizer>`), and the prefix covers
+     *    them all.
      */
     val DENIED_PREFIXES: List<String> = listOf("pref_update_", "pref_distribution_", "voice_input_language_cache")
 

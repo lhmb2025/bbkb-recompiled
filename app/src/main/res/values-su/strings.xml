@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Asupan sora</string>
     <string name="settings_voice_prefer_offline_summary">Paké pangenal dina parangkat lamun sadia</string>
     <string name="settings_voice_prefer_offline_title">Leuwih resep pangenal luar jaringan</string>
+    <string name="settings_voice_recognizer_none_installed">Teu aya aplikasi pangenal ucapan anu dipasang. Anjeun tiasa masang hiji sapertos Sayboard, WhisperIME atanapi Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Pangenal dina parangkat</string>
+    <string name="settings_voice_recognizer_system_default">Standar sistem</string>
+    <string name="settings_voice_recognizer_system_default_named">Standar sistem (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Pangenal ucapan</string>
     <string name="settings_voice_show_partial_results_summary">Témbongkeun naon anu kadéngé nalika anjeun masih nyarita, terus ganti ku hasil ahir</string>
     <string name="settings_voice_show_partial_results_title">Témbongkeun kecap nalika anjeun nyarita</string>
     <string name="settings_voice_use_keyboard_lang_summary">Paké basa papan tombol ayeuna pikeun asupan sora</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Teu aya omongan anu kadéngé. Toél mikropon pikeun nyobian deui.</string>
     <string name="voice_status_busy">Pangenalan ucapan keur sibuk. Cobi deui sakedap deui.</string>
     <string name="voice_status_too_many_requests">Seueur teuing pamundut. Cobi deui engké.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s butuh idin mikropon</string>
     <string name="voice_status_service_disconnected">Layanan ucapan pegat. Toél mikropon pikeun nyobian deui.</string>
 </resources>

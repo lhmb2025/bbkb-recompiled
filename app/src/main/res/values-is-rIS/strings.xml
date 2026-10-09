@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Raddinnsláttur</string>
     <string name="settings_voice_prefer_offline_summary">Nota greiningu í tækinu þegar hún er tiltæk</string>
     <string name="settings_voice_prefer_offline_title">Frekar greining án nettengingar</string>
+    <string name="settings_voice_recognizer_none_installed">Ekkert talgreiningarforrit er uppsett. Þú getur sett upp forrit á borð við Sayboard, WhisperIME eða Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Greinir í tækinu</string>
+    <string name="settings_voice_recognizer_system_default">Sjálfgefið í kerfi</string>
+    <string name="settings_voice_recognizer_system_default_named">Sjálfgefið í kerfi (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Talgreinir</string>
     <string name="settings_voice_show_partial_results_summary">Sýna það sem heyrist á meðan þú ert enn að tala og skipta því síðan út fyrir lokaniðurstöðuna</string>
     <string name="settings_voice_show_partial_results_title">Sýna orð á meðan þú talar</string>
     <string name="settings_voice_use_keyboard_lang_summary">Nota núverandi tungumál lyklaborðs fyrir raddinnslátt</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Ekkert tal heyrðist. Ýttu á hljóðnemann til að reyna aftur.</string>
     <string name="voice_status_busy">Talgreining er upptekin. Reyndu aftur eftir smástund.</string>
     <string name="voice_status_too_many_requests">Of margar beiðnir. Reyndu aftur síðar.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s þarf heimild fyrir hljóðnema</string>
     <string name="voice_status_service_disconnected">Tengingin við talþjónustuna rofnaði. Ýttu á hljóðnemann til að reyna aftur.</string>
 </resources>

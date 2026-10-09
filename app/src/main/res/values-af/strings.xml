@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Steminvoer</string>
     <string name="settings_voice_prefer_offline_summary">Gebruik herkenning op die toestel wanneer dit beskikbaar is</string>
     <string name="settings_voice_prefer_offline_title">Verkies vanlyn herkenning</string>
+    <string name="settings_voice_recognizer_none_installed">Geen spraakherkenningsprogram is geïnstalleer nie. Jy kan een installeer, soos Sayboard, WhisperIME of Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Herkenner op die toestel</string>
+    <string name="settings_voice_recognizer_system_default">Stelselverstek</string>
+    <string name="settings_voice_recognizer_system_default_named">Stelselverstek (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Spraakherkenner</string>
     <string name="settings_voice_show_partial_results_summary">Wys wat gehoor word terwyl jy nog praat, en vervang dit dan met die finale resultaat</string>
     <string name="settings_voice_show_partial_results_title">Wys woorde terwyl jy praat</string>
     <string name="settings_voice_use_keyboard_lang_summary">Gebruik die huidige toetsbordtaal vir steminvoer</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Geen spraak gehoor nie. Tik die mikrofoon om weer te probeer.</string>
     <string name="voice_status_busy">Spraakherkenning is besig. Probeer oor \'n oomblik weer.</string>
     <string name="voice_status_too_many_requests">Te veel versoeke. Probeer later weer.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s het mikrofoontoestemming nodig</string>
     <string name="voice_status_service_disconnected">Die spraakdiens is ontkoppel. Tik die mikrofoon om weer te probeer.</string>
 </resources>

@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Sesli giriş</string>
     <string name="settings_voice_prefer_offline_summary">Mümkün olduğunda cihaz üzerinde tanımayı kullan</string>
     <string name="settings_voice_prefer_offline_title">Çevrimdışı tanımayı tercih et</string>
+    <string name="settings_voice_recognizer_none_installed">Yüklü konuşma tanıma uygulaması yok. Sayboard, WhisperIME veya Transcribro gibi bir uygulama yükleyebilirsiniz.</string>
+    <string name="settings_voice_recognizer_on_device">Cihaz üzerinde tanıyıcı</string>
+    <string name="settings_voice_recognizer_system_default">Sistem varsayılanı</string>
+    <string name="settings_voice_recognizer_system_default_named">Sistem varsayılanı (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Konuşma tanıyıcı</string>
     <string name="settings_voice_show_partial_results_summary">Siz konuşurken duyulanı göster, ardından bunu nihai sonuçla değiştir</string>
     <string name="settings_voice_show_partial_results_title">Konuşurken kelimeleri göster</string>
     <string name="settings_voice_use_keyboard_lang_summary">Sesli giriş için geçerli klavye dilini kullan</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Konuşma algılanmadı. Tekrar denemek için mikrofona dokunun.</string>
     <string name="voice_status_busy">Konuşma tanıma meşgul. Biraz sonra tekrar deneyin.</string>
     <string name="voice_status_too_many_requests">Çok fazla istek. Daha sonra tekrar deneyin.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s mikrofon iznine ihtiyaç duyuyor</string>
     <string name="voice_status_service_disconnected">Konuşma hizmetinin bağlantısı kesildi. Tekrar denemek için mikrofona dokunun.</string>
 </resources>

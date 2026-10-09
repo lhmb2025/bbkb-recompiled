@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Голосове введення</string>
     <string name="settings_voice_prefer_offline_summary">Використовувати розпізнавання на пристрої, якщо доступне</string>
     <string name="settings_voice_prefer_offline_title">Надавати перевагу автономному розпізнаванню</string>
+    <string name="settings_voice_recognizer_none_installed">Не встановлено жодного застосунку для розпізнавання мовлення. Можна встановити, наприклад, Sayboard, WhisperIME або Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Розпізнавання на пристрої</string>
+    <string name="settings_voice_recognizer_system_default">Системне за замовчуванням</string>
+    <string name="settings_voice_recognizer_system_default_named">Системне за замовчуванням (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Розпізнавання мовлення</string>
     <string name="settings_voice_show_partial_results_summary">Показувати почуте, поки ви ще говорите, а потім замінювати його остаточним результатом</string>
     <string name="settings_voice_show_partial_results_title">Показувати слова під час мовлення</string>
     <string name="settings_voice_use_keyboard_lang_summary">Використовувати поточну мову клавіатури для голосового введення</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Мовлення не виявлено. Торкніться мікрофона, щоб спробувати ще раз.</string>
     <string name="voice_status_busy">Служба розпізнавання мовлення зайнята. Спробуйте ще раз за мить.</string>
     <string name="voice_status_too_many_requests">Забагато запитів. Спробуйте ще раз пізніше.</string>
+    <string name="voice_status_recognizer_needs_permission">Застосунку %1$s потрібен дозвіл на мікрофон</string>
     <string name="voice_status_service_disconnected">Службу мовлення від\'єднано. Торкніться мікрофона, щоб спробувати ще раз.</string>
 </resources>

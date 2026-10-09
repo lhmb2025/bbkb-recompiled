@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">ການປ້ອນດ້ວຍສຽງ</string>
     <string name="settings_voice_prefer_offline_summary">ໃຊ້ການຮັບຮູ້ສຽງໃນອຸປະກອນເມື່ອໃຊ້ໄດ້</string>
     <string name="settings_voice_prefer_offline_title">ເລືອກໃຊ້ການຮັບຮູ້ສຽງແບບອອບລາຍກ່ອນ</string>
+    <string name="settings_voice_recognizer_none_installed">ບໍ່ມີແອັບຮັບຮູ້ສຽງເວົ້າຖືກຕິດຕັ້ງ. ທ່ານສາມາດຕິດຕັ້ງແອັບເຊັ່ນ Sayboard, WhisperIME ຫຼື Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">ຕົວຮັບຮູ້ໃນອຸປະກອນ</string>
+    <string name="settings_voice_recognizer_system_default">ຄ່າເລີ່ມຕົ້ນຂອງລະບົບ</string>
+    <string name="settings_voice_recognizer_system_default_named">ຄ່າເລີ່ມຕົ້ນຂອງລະບົບ (%1$s)</string>
+    <string name="settings_voice_recognizer_title">ຕົວຮັບຮູ້ສຽງເວົ້າ</string>
     <string name="settings_voice_show_partial_results_summary">ສະແດງສິ່ງທີ່ໄດ້ຍິນໃນຂະນະທີ່ທ່ານຍັງເວົ້າຢູ່ ແລ້ວແທນທີ່ດ້ວຍຜົນລັບສຸດທ້າຍ</string>
     <string name="settings_voice_show_partial_results_title">ສະແດງຄຳສັບໃນຂະນະທີ່ທ່ານເວົ້າ</string>
     <string name="settings_voice_use_keyboard_lang_summary">ໃຊ້ພາສາແປ້ນພິມປັດຈຸບັນສຳລັບການປ້ອນດ້ວຍສຽງ</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">ບໍ່ໄດ້ຍິນສຽງເວົ້າ. ແຕະໄມໂຄຣໂຟນເພື່ອລອງອີກຄັ້ງ.</string>
     <string name="voice_status_busy">ການຈຳແນກສຽງເວົ້າບໍ່ຫວ່າງ. ລອງອີກຄັ້ງໃນອີກບໍ່ດົນ.</string>
     <string name="voice_status_too_many_requests">ມີຄຳຂໍຫຼາຍເກີນໄປ. ລອງອີກຄັ້ງພາຍຫຼັງ.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s ຕ້ອງການສິດເຂົ້າເຖິງໄມໂຄຣໂຟນ</string>
     <string name="voice_status_service_disconnected">ບໍລິການສຽງເວົ້າຕັດການເຊື່ອມຕໍ່ແລ້ວ. ແຕະໄມໂຄຣໂຟນເພື່ອລອງອີກຄັ້ງ.</string>
 </resources>

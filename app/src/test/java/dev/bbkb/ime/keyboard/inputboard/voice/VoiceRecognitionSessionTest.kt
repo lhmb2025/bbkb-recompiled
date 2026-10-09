@@ -1,8 +1,17 @@
 package dev.bbkb.ime.keyboard.inputboard.voice
 
+import android.Manifest
+import android.app.Application
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
+import android.content.pm.ResolveInfo
+import android.content.pm.ServiceInfo
 import android.os.Bundle
 import android.os.Looper
+import android.speech.RecognitionService
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import androidx.test.core.app.ApplicationProvider
@@ -13,7 +22,9 @@ import dev.bbkb.ime.core.settings.util.SettingsManager
 import dev.bbkb.ime.core.textinput.connection.EditorCapabilities
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -281,5 +292,184 @@ class VoiceRecognitionSessionTest {
         start()
         recognizer().triggerOnPartialResults(results("three"))
         verify(callback).onPartialResult("three")
+    }
+
+    // ── the "Speech recognizer" setting ──────────────────────────────────────
+
+    private val sayboard = ComponentName("com.elishaazaria.sayboard", "com.elishaazaria.sayboard.recognition.RecognitionService")
+
+    /** A recognition app the package query can see, labelled as its launcher would show it. */
+    private fun installRecognizer(component: ComponentName, label: String) {
+        val app = ApplicationInfo().apply {
+            packageName = component.packageName
+            nonLocalizedLabel = label
+        }
+        shadowOf(context.packageManager).installPackage(PackageInfo().apply {
+            packageName = component.packageName
+            applicationInfo = app
+        })
+        shadowOf(context.packageManager).addResolveInfoForIntent(
+            Intent(RecognitionService.SERVICE_INTERFACE),
+            ResolveInfo().apply {
+                serviceInfo = ServiceInfo().apply {
+                    packageName = component.packageName
+                    name = component.className
+                    applicationInfo = app
+                }
+            })
+    }
+
+    private fun chooseRecognizer(value: String) {
+        prefs().edit().putString("voice_input_recognizer", value).commit()
+    }
+
+    /** The component a recogniser was built for: null for the system default. */
+    private fun boundComponent(recognizer: SpeechRecognizer): ComponentName? =
+        SpeechRecognizer::class.java.getDeclaredField("mServiceComponent")
+            .apply { isAccessible = true }.get(recognizer) as ComponentName?
+
+    private fun isOnDevice(recognizer: SpeechRecognizer): Boolean =
+        SpeechRecognizer::class.java.getDeclaredField("mOnDevice")
+            .apply { isAccessible = true }.getBoolean(recognizer)
+
+    private fun latest(): SpeechRecognizer = ShadowSpeechRecognizer.getLatestSpeechRecognizer()!!
+
+    private fun grantMicrophone(granted: Boolean) {
+        val app = shadowOf(context as Application)
+        if (granted) app.grantPermissions(Manifest.permission.RECORD_AUDIO)
+        else app.denyPermissions(Manifest.permission.RECORD_AUDIO)
+    }
+
+    @Test
+    fun `with the setting empty the system default recogniser is used`() {
+        start()
+
+        assertNull(boundComponent(latest()))
+        assertFalse(isOnDevice(latest()))
+    }
+
+    @Test
+    fun `a chosen installed app is bound by its component`() {
+        installRecognizer(sayboard, "Sayboard")
+        chooseRecognizer(sayboard.flattenToString())
+
+        start()
+
+        assertEquals(sayboard, boundComponent(latest()))
+        assertEquals("the request is the same whichever service answers it",
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM,
+            recognizer().lastRecognizerIntent.getStringExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL))
+    }
+
+    /** No keyboard restart: the next tap after a change in settings uses the new recogniser. */
+    @Test
+    fun `changing the setting rebuilds the recogniser before the next dictation`() {
+        installRecognizer(sayboard, "Sayboard")
+        start()
+        val first = latest()
+        recognizer().triggerOnResults(results("one"))
+
+        chooseRecognizer(sayboard.flattenToString())
+        start()
+
+        val second = latest()
+        assertTrue("a new recogniser is built", second !== first)
+        assertTrue("the old one is destroyed, not leaked", shadowOf(first).isDestroyed)
+        assertEquals(sayboard, boundComponent(second))
+
+        recognizer().triggerOnResults(results("two"))
+        verify(callback).onDictationResult("two")
+
+        chooseRecognizer("")
+        start()
+        assertTrue(shadowOf(second).isDestroyed)
+        assertNull("back to the system default", boundComponent(latest()))
+    }
+
+    @Test
+    fun `an unchanged setting keeps the same recogniser`() {
+        start()
+        val first = latest()
+        recognizer().triggerOnResults(results("one"))
+
+        start()
+
+        assertTrue(latest() === first)
+        assertFalse(shadowOf(first).isDestroyed)
+    }
+
+    /** Uninstalled since it was chosen: the default it falls back to says "no service" if it is gone too. */
+    @Test
+    fun `a chosen app that is no longer installed falls back to the system default`() {
+        chooseRecognizer(sayboard.flattenToString())
+
+        start()
+
+        assertNull(boundComponent(latest()))
+        assertFalse(isOnDevice(latest()))
+    }
+
+    @Test
+    fun `the on-device recogniser is used where the phone has one`() {
+        ShadowSpeechRecognizer.setIsOnDeviceRecognitionAvailable(true)
+        chooseRecognizer("ondevice")
+
+        start()
+
+        assertTrue(isOnDevice(latest()))
+    }
+
+    @Test
+    fun `without an on-device recogniser that choice falls back to the system default`() {
+        ShadowSpeechRecognizer.setIsOnDeviceRecognitionAvailable(false)
+        chooseRecognizer("ondevice")
+
+        start()
+
+        assertFalse(isOnDevice(latest()))
+        assertNull(boundComponent(latest()))
+    }
+
+    // ── a refused microphone ─────────────────────────────────────────────────
+
+    @Test
+    fun `a permission error from a chosen app names that app`() {
+        installRecognizer(sayboard, "Sayboard")
+        chooseRecognizer(sayboard.flattenToString())
+        grantMicrophone(true)
+        `when`(callback.isViewShowing).thenReturn(true)
+        start()
+
+        recognizer().triggerOnError(SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS)
+
+        verify(callback).onRecognizerNeedsPermission("Sayboard")
+        verify(callback, never()).onPermissionNeeded()
+    }
+
+    @Test
+    fun `with the system default a permission error still asks for ours`() {
+        grantMicrophone(true)
+        `when`(callback.isViewShowing).thenReturn(true)
+        start()
+
+        recognizer().triggerOnError(SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS)
+
+        verify(callback).onPermissionNeeded()
+        verify(callback, never()).onRecognizerNeedsPermission(anyString())
+    }
+
+    /** The service checks its caller as well as itself: our own permission comes first. */
+    @Test
+    fun `a chosen app is not blamed while the keyboard lacks the permission itself`() {
+        installRecognizer(sayboard, "Sayboard")
+        chooseRecognizer(sayboard.flattenToString())
+        grantMicrophone(false)
+        `when`(callback.isViewShowing).thenReturn(true)
+        start()
+
+        recognizer().triggerOnError(SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS)
+
+        verify(callback).onPermissionNeeded()
+        verify(callback, never()).onRecognizerNeedsPermission(anyString())
     }
 }

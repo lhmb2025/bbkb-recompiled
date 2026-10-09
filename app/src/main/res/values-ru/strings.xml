@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Голосовой ввод</string>
     <string name="settings_voice_prefer_offline_summary">Использовать распознавание на устройстве, если доступно</string>
     <string name="settings_voice_prefer_offline_title">Предпочитать автономное распознавание</string>
+    <string name="settings_voice_recognizer_none_installed">Не установлено ни одного приложения для распознавания речи. Можно установить, например, Sayboard, WhisperIME или Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Распознавание на устройстве</string>
+    <string name="settings_voice_recognizer_system_default">Системное по умолчанию</string>
+    <string name="settings_voice_recognizer_system_default_named">Системное по умолчанию (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Распознавание речи</string>
     <string name="settings_voice_show_partial_results_summary">Показывать услышанное, пока вы ещё говорите, а затем заменять его окончательным результатом</string>
     <string name="settings_voice_show_partial_results_title">Показывать слова во время речи</string>
     <string name="settings_voice_use_keyboard_lang_summary">Использовать текущий язык клавиатуры для голосового ввода</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Речь не обнаружена. Нажмите микрофон, чтобы попробовать снова.</string>
     <string name="voice_status_busy">Служба распознавания речи занята. Повторите попытку чуть позже.</string>
     <string name="voice_status_too_many_requests">Слишком много запросов. Повторите попытку позже.</string>
+    <string name="voice_status_recognizer_needs_permission">Приложению %1$s нужно разрешение на доступ к микрофону</string>
     <string name="voice_status_service_disconnected">Служба распознавания речи отключилась. Нажмите микрофон, чтобы попробовать снова.</string>
 </resources>

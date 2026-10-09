@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Balso įvestis</string>
     <string name="settings_voice_prefer_offline_summary">Naudoti atpažinimą įrenginyje, kai jis galimas</string>
     <string name="settings_voice_prefer_offline_title">Teikti pirmenybę atpažinimui neprisijungus</string>
+    <string name="settings_voice_recognizer_none_installed">Neįdiegta jokia kalbos atpažinimo programa. Galite įdiegti, pavyzdžiui, Sayboard, WhisperIME arba Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Atpažinimas įrenginyje</string>
+    <string name="settings_voice_recognizer_system_default">Sistemos numatytasis</string>
+    <string name="settings_voice_recognizer_system_default_named">Sistemos numatytasis (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Kalbos atpažinimas</string>
     <string name="settings_voice_show_partial_results_summary">Rodyti, kas girdima, dar jums kalbant, o tada pakeisti galutiniu rezultatu</string>
     <string name="settings_voice_show_partial_results_title">Rodyti žodžius kalbant</string>
     <string name="settings_voice_use_keyboard_lang_summary">Balso įvesčiai naudoti dabartinę klaviatūros kalbą</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Kalbos negirdėti. Bakstelėkite mikrofoną ir bandykite dar kartą.</string>
     <string name="voice_status_busy">Kalbos atpažinimas užimtas. Po akimirkos bandykite dar kartą.</string>
     <string name="voice_status_too_many_requests">Per daug užklausų. Bandykite dar kartą vėliau.</string>
+    <string name="voice_status_recognizer_needs_permission">Programai %1$s reikia leidimo naudoti mikrofoną</string>
     <string name="voice_status_service_disconnected">Kalbos paslauga atsijungė. Bakstelėkite mikrofoną ir bandykite dar kartą.</string>
 </resources>

@@ -1,7 +1,9 @@
 package dev.bbkb.ime.keyboard.inputboard.voice;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,6 +36,9 @@ public class VoiceRecognitionManager {
     public static final int STATE_STOPPED = 3;
 
     private SpeechRecognizer mSpeechRecognizer;
+
+    /** What the "Speech recognizer" setting resolved to when {@link #mSpeechRecognizer} was built. */
+    private VoiceRecognizerChoice.Selection mSelection;
 
     private Callback mCallback;
 
@@ -76,6 +81,9 @@ public class VoiceRecognitionManager {
 
         void onPermissionNeeded();
 
+        /** The chosen recognition app was refused the microphone; {@code appLabel} names it. */
+        void onRecognizerNeedsPermission(String appLabel);
+
         void onLanguageUnavailable();
 
         /** The recogniser refused the language itself (error 12 or 13); {@code languageTag} is what was sent. */
@@ -96,7 +104,8 @@ public class VoiceRecognitionManager {
 
     public VoiceRecognitionManager(Context context, VoiceInputController c1122b) {
         this.mContext = context.getApplicationContext();
-        this.mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
+        this.mSelection = InstalledVoiceRecognizers.resolve(this.mContext);
+        this.mSpeechRecognizer = InstalledVoiceRecognizers.create(this.mContext, this.mSelection);
         this.mSpeechRecognizer.setRecognitionListener(new RecognitionListenerImpl());
         this.mCallback = c1122b;
         this.mController = c1122b;
@@ -115,6 +124,7 @@ public class VoiceRecognitionManager {
 
     public void startDictation() {
         Logger.debug(TAG, "Dictation button pressed");
+        refreshRecognizer();
         SettingsValues c0804dM5050c = SettingsManager.getInstance().getSettingsValues();
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         // Dictation, not a search query: the recogniser tunes for running prose.
@@ -186,6 +196,35 @@ public class VoiceRecognitionManager {
         }
         this.mMode = Mode.NONE;
         this.mReadyForSpeech = false;
+    }
+
+    /**
+     * Rebuilds the recogniser when the "Speech recognizer" setting no longer resolves to the one it
+     * was built for: the setting changed, or the chosen app went away (back to the system default).
+     * Runs before each dictation, when no session of ours is live, so a change lands on the next
+     * tap without restarting the keyboard. A destroyed manager stays destroyed.
+     */
+    private void refreshRecognizer() {
+        if (this.mSpeechRecognizer == null) {
+            return;
+        }
+        final VoiceRecognizerChoice.Selection selection = InstalledVoiceRecognizers.resolve(this.mContext);
+        if (selection.equals(this.mSelection)) {
+            return;
+        }
+        Logger.debug(TAG, "Speech recognizer changed: " + this.mSelection + " -> " + selection);
+        // destroy() drops the old listener, so nothing the old recogniser still had queued (the
+        // answer to an earlier stop included) can reach this session.
+        this.mSpeechRecognizer.destroy();
+        this.mCancelRequested = false;
+        this.mSelection = selection;
+        this.mSpeechRecognizer = InstalledVoiceRecognizers.create(this.mContext, selection);
+        this.mSpeechRecognizer.setRecognitionListener(new RecognitionListenerImpl());
+    }
+
+    /** Whether this keyboard itself holds the microphone permission. */
+    private boolean hasOwnMicrophonePermission() {
+        return this.mContext.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void startRecognition(Mode aVar, Intent intent) {
@@ -312,8 +351,16 @@ public class VoiceRecognitionManager {
                     break;
                 case 9:
                     if (VoiceRecognitionManager.this.mController.isViewShowing()) {
-                        VoiceRecognitionManager.this.mCallback.onPermissionNeeded();
-                        break;
+                        // A chosen app with no microphone of its own: asking for ours again cannot
+                        // fix that, so say which app needs it.
+                        final String app = VoiceRecognizerChoice.appNeedingPermission(
+                                VoiceRecognitionManager.this.mSelection,
+                                VoiceRecognitionManager.this.hasOwnMicrophonePermission());
+                        if (app != null) {
+                            VoiceRecognitionManager.this.mCallback.onRecognizerNeedsPermission(app);
+                        } else {
+                            VoiceRecognitionManager.this.mCallback.onPermissionNeeded();
+                        }
                     }
                     break;
                 case SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED:

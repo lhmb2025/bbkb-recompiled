@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Hlasový vstup</string>
     <string name="settings_voice_prefer_offline_summary">Ak je dostupné, použiť rozpoznávanie v zariadení</string>
     <string name="settings_voice_prefer_offline_title">Uprednostniť rozpoznávanie offline</string>
+    <string name="settings_voice_recognizer_none_installed">Nie je nainštalovaná žiadna aplikácia na rozpoznávanie reči. Môžete si nainštalovať napríklad Sayboard, WhisperIME alebo Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Rozpoznávanie v zariadení</string>
+    <string name="settings_voice_recognizer_system_default">Predvolené systémom</string>
+    <string name="settings_voice_recognizer_system_default_named">Predvolené systémom (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Rozpoznávanie reči</string>
     <string name="settings_voice_show_partial_results_summary">Zobrazovať zachytený text ešte počas hovorenia a potom ho nahradiť konečným výsledkom</string>
     <string name="settings_voice_show_partial_results_title">Zobrazovať slová počas hovorenia</string>
     <string name="settings_voice_use_keyboard_lang_summary">Použiť pre hlasový vstup aktuálny jazyk klávesnice</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Nezachytila sa žiadna reč. Ťuknutím na mikrofón to skúste znova.</string>
     <string name="voice_status_busy">Rozpoznávanie reči je zaneprázdnené. Skúste to znova o chvíľu.</string>
     <string name="voice_status_too_many_requests">Príliš veľa žiadostí. Skúste to znova neskôr.</string>
+    <string name="voice_status_recognizer_needs_permission">Aplikácia %1$s potrebuje povolenie na mikrofón</string>
     <string name="voice_status_service_disconnected">Služba rozpoznávania reči sa odpojila. Ťuknutím na mikrofón to skúste znova.</string>
 </resources>

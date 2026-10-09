@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">వాయిస్ ఇన్‌పుట్</string>
     <string name="settings_voice_prefer_offline_summary">అందుబాటులో ఉన్నప్పుడు పరికరంలోని గుర్తింపును ఉపయోగించు</string>
     <string name="settings_voice_prefer_offline_title">ఆఫ్‌లైన్ గుర్తింపునకు ప్రాధాన్యం</string>
+    <string name="settings_voice_recognizer_none_installed">స్పీచ్ గుర్తింపు యాప్ ఏదీ ఇన్‌స్టాల్ చేయబడలేదు. Sayboard, WhisperIME లేదా Transcribro వంటి ఒక యాప్‌ను ఇన్‌స్టాల్ చేయవచ్చు.</string>
+    <string name="settings_voice_recognizer_on_device">పరికరంలోని గుర్తింపు సాధనం</string>
+    <string name="settings_voice_recognizer_system_default">సిస్టమ్ డిఫాల్ట్</string>
+    <string name="settings_voice_recognizer_system_default_named">సిస్టమ్ డిఫాల్ట్ (%1$s)</string>
+    <string name="settings_voice_recognizer_title">స్పీచ్ గుర్తింపు సాధనం</string>
     <string name="settings_voice_show_partial_results_summary">మీరు ఇంకా మాట్లాడుతున్నప్పుడే వినిపించినదాన్ని చూపి, ఆపై దాన్ని తుది ఫలితంతో భర్తీ చేయి</string>
     <string name="settings_voice_show_partial_results_title">మాట్లాడుతున్నప్పుడు పదాలను చూపు</string>
     <string name="settings_voice_use_keyboard_lang_summary">వాయిస్ ఇన్‌పుట్ కోసం ప్రస్తుత కీబోర్డ్ భాషను ఉపయోగించు</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">మాటలు ఏవీ వినిపించలేదు. మళ్లీ ప్రయత్నించడానికి మైక్‌ను నొక్కండి.</string>
     <string name="voice_status_busy">స్పీచ్ గుర్తింపు బిజీగా ఉంది. కొద్దిసేపటిలో మళ్లీ ప్రయత్నించండి.</string>
     <string name="voice_status_too_many_requests">చాలా ఎక్కువ అభ్యర్థనలు. తర్వాత మళ్లీ ప్రయత్నించండి.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$sకి మైక్రోఫోన్ అనుమతి అవసరం</string>
     <string name="voice_status_service_disconnected">స్పీచ్ సేవ డిస్‌కనెక్ట్ అయింది. మళ్లీ ప్రయత్నించడానికి మైక్‌ను నొక్కండి.</string>
 </resources>

@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">קלט קולי</string>
     <string name="settings_voice_prefer_offline_summary">השתמש בזיהוי במכשיר כשהוא זמין</string>
     <string name="settings_voice_prefer_offline_title">העדף זיהוי לא מקוון</string>
+    <string name="settings_voice_recognizer_none_installed">לא מותקנת אפליקציה לזיהוי דיבור. אפשר להתקין אפליקציה כמו Sayboard, WhisperIME או Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">זיהוי במכשיר</string>
+    <string name="settings_voice_recognizer_system_default">ברירת המחדל של המערכת</string>
+    <string name="settings_voice_recognizer_system_default_named">ברירת המחדל של המערכת (%1$s)</string>
+    <string name="settings_voice_recognizer_title">זיהוי דיבור</string>
     <string name="settings_voice_show_partial_results_summary">הצג את מה שנשמע בזמן שאתה עדיין מדבר, ולאחר מכן החלף אותו בתוצאה הסופית</string>
     <string name="settings_voice_show_partial_results_title">הצג מילים בזמן הדיבור</string>
     <string name="settings_voice_use_keyboard_lang_summary">השתמש בשפת המקלדת הנוכחית עבור הקלט הקולי</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">לא נשמע דיבור. הקש על המיקרופון כדי לנסות שוב.</string>
     <string name="voice_status_busy">זיהוי הדיבור עסוק. נסה שוב בעוד רגע.</string>
     <string name="voice_status_too_many_requests">יותר מדי בקשות. נסה שוב מאוחר יותר.</string>
+    <string name="voice_status_recognizer_needs_permission">ל-%1$s נדרשת הרשאה למיקרופון</string>
     <string name="voice_status_service_disconnected">החיבור לשירות הדיבור נותק. הקש על המיקרופון כדי לנסות שוב.</string>
 </resources>

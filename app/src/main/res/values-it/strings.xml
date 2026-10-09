@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Input vocale</string>
     <string name="settings_voice_prefer_offline_summary">Usa il riconoscimento sul dispositivo quando è disponibile</string>
     <string name="settings_voice_prefer_offline_title">Preferisci il riconoscimento offline</string>
+    <string name="settings_voice_recognizer_none_installed">Nessuna app di riconoscimento vocale installata. Puoi installarne una, come Sayboard, WhisperIME o Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Riconoscimento sul dispositivo</string>
+    <string name="settings_voice_recognizer_system_default">Predefinito di sistema</string>
+    <string name="settings_voice_recognizer_system_default_named">Predefinito di sistema (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Riconoscimento vocale</string>
     <string name="settings_voice_show_partial_results_summary">Mostra ciò che viene sentito mentre stai ancora parlando, poi lo sostituisce con il risultato finale</string>
     <string name="settings_voice_show_partial_results_title">Mostra le parole mentre parli</string>
     <string name="settings_voice_use_keyboard_lang_summary">Usa la lingua attuale della tastiera per l\'input vocale</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Nessuna voce rilevata. Tocca il microfono per riprovare.</string>
     <string name="voice_status_busy">Il riconoscimento vocale è occupato. Riprova tra un momento.</string>
     <string name="voice_status_too_many_requests">Troppe richieste. Riprova più tardi.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s richiede l\'autorizzazione per il microfono</string>
     <string name="voice_status_service_disconnected">Il servizio vocale si è disconnesso. Tocca il microfono per riprovare.</string>
 </resources>

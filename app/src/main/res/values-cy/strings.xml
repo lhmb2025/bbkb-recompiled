@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Mewnbwn llais</string>
     <string name="settings_voice_prefer_offline_summary">Defnyddio adnabod ar y ddyfais pan fo ar gael</string>
     <string name="settings_voice_prefer_offline_title">Ffafrio adnabod all-lein</string>
+    <string name="settings_voice_recognizer_none_installed">Does dim ap adnabod lleferydd wedi\'i osod. Gallwch osod un fel Sayboard, WhisperIME neu Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Adnabyddwr ar y ddyfais</string>
+    <string name="settings_voice_recognizer_system_default">Rhagosodiad y system</string>
+    <string name="settings_voice_recognizer_system_default_named">Rhagosodiad y system (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Adnabyddwr lleferydd</string>
     <string name="settings_voice_show_partial_results_summary">Dangos yr hyn a glywir tra byddwch yn dal i siarad, yna rhoi\'r canlyniad terfynol yn ei le</string>
     <string name="settings_voice_show_partial_results_title">Dangos geiriau wrth i chi siarad</string>
     <string name="settings_voice_use_keyboard_lang_summary">Defnyddio iaith bresennol y bysellfwrdd ar gyfer mewnbwn llais</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Ni chlywyd unrhyw leferydd. Tapiwch y meic i geisio eto.</string>
     <string name="voice_status_busy">Mae adnabod lleferydd yn brysur. Ceisiwch eto mewn munud.</string>
     <string name="voice_status_too_many_requests">Gormod o geisiadau. Ceisiwch eto yn nes ymlaen.</string>
+    <string name="voice_status_recognizer_needs_permission">Mae ar %1$s angen caniatâd i ddefnyddio\'r meicroffon</string>
     <string name="voice_status_service_disconnected">Mae\'r gwasanaeth lleferydd wedi datgysylltu. Tapiwch y meic i geisio eto.</string>
 </resources>

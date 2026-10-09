@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Unos glasom</string>
     <string name="settings_voice_prefer_offline_summary">Upotrijebi prepoznavanje na uređaju kad je dostupno</string>
     <string name="settings_voice_prefer_offline_title">Prednost prepoznavanju izvan mreže</string>
+    <string name="settings_voice_recognizer_none_installed">Nije instalirana nijedna aplikacija za prepoznavanje govora. Možete instalirati, primjerice, Sayboard, WhisperIME ili Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Prepoznavanje na uređaju</string>
+    <string name="settings_voice_recognizer_system_default">Zadano u sustavu</string>
+    <string name="settings_voice_recognizer_system_default_named">Zadano u sustavu (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Prepoznavanje govora</string>
     <string name="settings_voice_show_partial_results_summary">Prikaži ono što se čuje dok još govorite, a zatim to zamijeni konačnim rezultatom</string>
     <string name="settings_voice_show_partial_results_title">Prikaži riječi dok govorite</string>
     <string name="settings_voice_use_keyboard_lang_summary">Za unos glasom upotrijebi trenutačni jezik tipkovnice</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Govor nije otkriven. Dodirnite mikrofon da biste pokušali ponovno.</string>
     <string name="voice_status_busy">Prepoznavanje govora je zauzeto. Pokušajte ponovno za trenutak.</string>
     <string name="voice_status_too_many_requests">Previše zahtjeva. Pokušajte ponovno kasnije.</string>
+    <string name="voice_status_recognizer_needs_permission">Aplikacija %1$s treba dopuštenje za mikrofon</string>
     <string name="voice_status_service_disconnected">Veza s uslugom govora je prekinuta. Dodirnite mikrofon da biste pokušali ponovno.</string>
 </resources>

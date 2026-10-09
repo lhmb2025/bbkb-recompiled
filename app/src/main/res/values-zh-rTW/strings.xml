@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">語音輸入</string>
     <string name="settings_voice_prefer_offline_summary">盡可能使用裝置端辨識</string>
     <string name="settings_voice_prefer_offline_title">優先使用離線辨識</string>
+    <string name="settings_voice_recognizer_none_installed">尚未安裝任何語音辨識應用程式。你可以安裝 Sayboard、WhisperIME 或 Transcribro 等應用程式。</string>
+    <string name="settings_voice_recognizer_on_device">裝置端辨識器</string>
+    <string name="settings_voice_recognizer_system_default">系統預設</string>
+    <string name="settings_voice_recognizer_system_default_named">系統預設（%1$s）</string>
+    <string name="settings_voice_recognizer_title">語音辨識器</string>
     <string name="settings_voice_show_partial_results_summary">在您說話時即顯示辨識到的內容，接著以最終結果取代</string>
     <string name="settings_voice_show_partial_results_title">說話時顯示文字</string>
     <string name="settings_voice_use_keyboard_lang_summary">語音輸入使用目前的鍵盤語言</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">未偵測到語音。點選麥克風即可重試。</string>
     <string name="voice_status_busy">語音辨識服務忙碌中。請稍候片刻再試。</string>
     <string name="voice_status_too_many_requests">要求次數過多。請稍後再試。</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s 需要麥克風權限</string>
     <string name="voice_status_service_disconnected">語音服務已中斷連線。點選麥克風即可重試。</string>
 </resources>

@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">การป้อนด้วยเสียง</string>
     <string name="settings_voice_prefer_offline_summary">ใช้การรู้จำบนอุปกรณ์เมื่อพร้อมใช้งาน</string>
     <string name="settings_voice_prefer_offline_title">ใช้การรู้จำแบบออฟไลน์ก่อน</string>
+    <string name="settings_voice_recognizer_none_installed">ไม่ได้ติดตั้งแอปจดจำเสียงพูด คุณติดตั้งแอปอย่าง Sayboard, WhisperIME หรือ Transcribro ได้</string>
+    <string name="settings_voice_recognizer_on_device">ตัวจดจำบนอุปกรณ์</string>
+    <string name="settings_voice_recognizer_system_default">ค่าเริ่มต้นของระบบ</string>
+    <string name="settings_voice_recognizer_system_default_named">ค่าเริ่มต้นของระบบ (%1$s)</string>
+    <string name="settings_voice_recognizer_title">ตัวจดจำเสียงพูด</string>
     <string name="settings_voice_show_partial_results_summary">แสดงสิ่งที่ได้ยินขณะที่คุณยังพูดอยู่ แล้วแทนที่ด้วยผลลัพธ์สุดท้าย</string>
     <string name="settings_voice_show_partial_results_title">แสดงคำขณะที่คุณพูด</string>
     <string name="settings_voice_use_keyboard_lang_summary">ใช้ภาษาแป้นพิมพ์ปัจจุบันสำหรับการป้อนด้วยเสียง</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">ไม่ได้ยินเสียงพูด แตะไมโครโฟนเพื่อลองอีกครั้ง</string>
     <string name="voice_status_busy">ระบบจดจำเสียงพูดไม่ว่าง ลองอีกครั้งในอีกสักครู่</string>
     <string name="voice_status_too_many_requests">มีคำขอมากเกินไป ลองอีกครั้งในภายหลัง</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s ต้องได้รับสิทธิ์เข้าถึงไมโครโฟน</string>
     <string name="voice_status_service_disconnected">บริการเสียงพูดตัดการเชื่อมต่อแล้ว แตะไมโครโฟนเพื่อลองอีกครั้ง</string>
 </resources>

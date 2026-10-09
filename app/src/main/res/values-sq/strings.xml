@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Shkrimi me zë</string>
     <string name="settings_voice_prefer_offline_summary">Përdor njohjen në pajisje kur është e disponueshme</string>
     <string name="settings_voice_prefer_offline_title">Parapëlqe njohjen jashtë linje</string>
+    <string name="settings_voice_recognizer_none_installed">Nuk është instaluar asnjë aplikacion për njohjen e të folurit. Mund të instalosh një si Sayboard, WhisperIME ose Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Njohës në pajisje</string>
+    <string name="settings_voice_recognizer_system_default">Parazgjedhja e sistemit</string>
+    <string name="settings_voice_recognizer_system_default_named">Parazgjedhja e sistemit (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Njohësi i të folurit</string>
     <string name="settings_voice_show_partial_results_summary">Shfaq atë që dëgjohet ndërsa ende flet, pastaj zëvendësoje me rezultatin përfundimtar</string>
     <string name="settings_voice_show_partial_results_title">Shfaq fjalët ndërsa flet</string>
     <string name="settings_voice_use_keyboard_lang_summary">Përdor gjuhën aktuale të tastierës për shkrimin me zë</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Nuk u dëgjua asnjë e folur. Prek mikrofonin për të provuar përsëri.</string>
     <string name="voice_status_busy">Njohja e të folurit është e zënë. Provo përsëri pas pak.</string>
     <string name="voice_status_too_many_requests">Shumë kërkesa. Provo përsëri më vonë.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s ka nevojë për leje për mikrofonin</string>
     <string name="voice_status_service_disconnected">Shërbimi i të folurit u shkëput. Prek mikrofonin për të provuar përsëri.</string>
 </resources>

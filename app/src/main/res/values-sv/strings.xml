@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Röstinmatning</string>
     <string name="settings_voice_prefer_offline_summary">Använd igenkänning på enheten när det går</string>
     <string name="settings_voice_prefer_offline_title">Föredra igenkänning offline</string>
+    <string name="settings_voice_recognizer_none_installed">Ingen app för taligenkänning är installerad. Du kan installera en, till exempel Sayboard, WhisperIME eller Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Igenkänning på enheten</string>
+    <string name="settings_voice_recognizer_system_default">Systemstandard</string>
+    <string name="settings_voice_recognizer_system_default_named">Systemstandard (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Taligenkänning</string>
     <string name="settings_voice_show_partial_results_summary">Visa det som hörs medan du fortfarande talar och ersätt det sedan med slutresultatet</string>
     <string name="settings_voice_show_partial_results_title">Visa ord medan du talar</string>
     <string name="settings_voice_use_keyboard_lang_summary">Använd tangentbordets aktuella språk för röstinmatning</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Inget tal hördes. Tryck på mikrofonen för att försöka igen.</string>
     <string name="voice_status_busy">Taligenkänningen är upptagen. Försök igen om en stund.</string>
     <string name="voice_status_too_many_requests">För många förfrågningar. Försök igen senare.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s behöver behörighet till mikrofonen</string>
     <string name="voice_status_service_disconnected">Taltjänsten kopplades från. Tryck på mikrofonen för att försöka igen.</string>
 </resources>

@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">Input suara</string>
     <string name="settings_voice_prefer_offline_summary">Gunakan pengecaman pada peranti apabila tersedia</string>
     <string name="settings_voice_prefer_offline_title">Utamakan pengecaman luar talian</string>
+    <string name="settings_voice_recognizer_none_installed">Tiada apl pengecaman pertuturan dipasang. Anda boleh memasang satu seperti Sayboard, WhisperIME atau Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">Pengecam pada peranti</string>
+    <string name="settings_voice_recognizer_system_default">Lalai sistem</string>
+    <string name="settings_voice_recognizer_system_default_named">Lalai sistem (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Pengecam pertuturan</string>
     <string name="settings_voice_show_partial_results_summary">Tunjukkan apa yang didengar semasa anda masih bercakap, kemudian gantikannya dengan hasil akhir</string>
     <string name="settings_voice_show_partial_results_title">Tunjukkan perkataan semasa anda bercakap</string>
     <string name="settings_voice_use_keyboard_lang_summary">Gunakan bahasa papan kekunci semasa untuk input suara</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">Tiada pertuturan didengar. Ketik mikrofon untuk mencuba lagi.</string>
     <string name="voice_status_busy">Pengecaman pertuturan sedang sibuk. Cuba lagi sebentar nanti.</string>
     <string name="voice_status_too_many_requests">Terlalu banyak permintaan. Cuba lagi nanti.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s memerlukan kebenaran mikrofon</string>
     <string name="voice_status_service_disconnected">Perkhidmatan pertuturan terputus. Ketik mikrofon untuk mencuba lagi.</string>
 </resources>

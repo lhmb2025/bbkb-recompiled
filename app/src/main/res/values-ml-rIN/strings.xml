@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">വോയ്‌സ് ഇൻപുട്ട്</string>
     <string name="settings_voice_prefer_offline_summary">ലഭ്യമാകുമ്പോൾ ഉപകരണത്തിലെ തിരിച്ചറിയൽ ഉപയോഗിക്കുക</string>
     <string name="settings_voice_prefer_offline_title">ഓഫ്‌ലൈൻ തിരിച്ചറിയലിന് മുൻഗണന</string>
+    <string name="settings_voice_recognizer_none_installed">സംഭാഷണം തിരിച്ചറിയുന്ന ആപ്പൊന്നും ഇൻസ്റ്റാൾ ചെയ്തിട്ടില്ല. Sayboard, WhisperIME, Transcribro പോലുള്ള ഒന്ന് ഇൻസ്റ്റാൾ ചെയ്യാം.</string>
+    <string name="settings_voice_recognizer_on_device">ഉപകരണത്തിലെ തിരിച്ചറിയൽ</string>
+    <string name="settings_voice_recognizer_system_default">സിസ്റ്റം ഡിഫോൾട്ട്</string>
+    <string name="settings_voice_recognizer_system_default_named">സിസ്റ്റം ഡിഫോൾട്ട് (%1$s)</string>
+    <string name="settings_voice_recognizer_title">സംഭാഷണ തിരിച്ചറിയൽ</string>
     <string name="settings_voice_show_partial_results_summary">നിങ്ങൾ സംസാരിച്ചുകൊണ്ടിരിക്കുമ്പോൾ തന്നെ കേട്ടത് കാണിക്കുക, തുടർന്ന് അന്തിമ ഫലം ഉപയോഗിച്ച് അത് മാറ്റിസ്ഥാപിക്കുക</string>
     <string name="settings_voice_show_partial_results_title">സംസാരിക്കുമ്പോൾ വാക്കുകൾ കാണിക്കുക</string>
     <string name="settings_voice_use_keyboard_lang_summary">വോയ്‌സ് ഇൻപുട്ടിന് നിലവിലെ കീബോർഡ് ഭാഷ ഉപയോഗിക്കുക</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">സംസാരമൊന്നും കേട്ടില്ല. വീണ്ടും ശ്രമിക്കാൻ മൈക്ക് ടാപ്പ് ചെയ്യുക.</string>
     <string name="voice_status_busy">സംഭാഷണം തിരിച്ചറിയൽ തിരക്കിലാണ്. അൽപ്പസമയത്തിന് ശേഷം വീണ്ടും ശ്രമിക്കുക.</string>
     <string name="voice_status_too_many_requests">വളരെയധികം അഭ്യർത്ഥനകൾ. പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s-ന് മൈക്രോഫോൺ അനുമതി ആവശ്യമാണ്</string>
     <string name="voice_status_service_disconnected">സംഭാഷണ സേവനം വിച്ഛേദിക്കപ്പെട്ടു. വീണ്ടും ശ്രമിക്കാൻ മൈക്ക് ടാപ്പ് ചെയ്യുക.</string>
 </resources>

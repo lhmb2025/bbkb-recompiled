@@ -336,6 +336,11 @@
     <string name="settings_voice_input_title">व्हॉइस इनपुट</string>
     <string name="settings_voice_prefer_offline_summary">उपलब्ध असल्यास डिव्हाइसवरील ओळख वापरा</string>
     <string name="settings_voice_prefer_offline_title">ऑफलाइन ओळखीला प्राधान्य द्या</string>
+    <string name="settings_voice_recognizer_none_installed">कोणतेही स्पीच ओळख ॲप इंस्टॉल केलेले नाही. तुम्ही Sayboard, WhisperIME किंवा Transcribro सारखे ॲप इंस्टॉल करू शकता.</string>
+    <string name="settings_voice_recognizer_on_device">डिव्हाइसवरील ओळखकर्ता</string>
+    <string name="settings_voice_recognizer_system_default">सिस्टम डीफॉल्ट</string>
+    <string name="settings_voice_recognizer_system_default_named">सिस्टम डीफॉल्ट (%1$s)</string>
+    <string name="settings_voice_recognizer_title">स्पीच ओळखकर्ता</string>
     <string name="settings_voice_show_partial_results_summary">तुम्ही बोलत असतानाच जे ऐकू येत आहे ते दाखवा, नंतर ते अंतिम निकालाने बदला</string>
     <string name="settings_voice_show_partial_results_title">बोलताना शब्द दाखवा</string>
     <string name="settings_voice_use_keyboard_lang_summary">व्हॉइस इनपुटसाठी सध्याची कीबोर्ड भाषा वापरा</string>
@@ -765,5 +770,6 @@
     <string name="voice_status_no_speech">कोणतेही बोलणे ऐकू आले नाही. पुन्हा प्रयत्न करण्यासाठी माइकवर टॅप करा.</string>
     <string name="voice_status_busy">स्पीच ओळख व्यस्त आहे. थोड्या वेळाने पुन्हा प्रयत्न करा.</string>
     <string name="voice_status_too_many_requests">खूप जास्त विनंत्या. नंतर पुन्हा प्रयत्न करा.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s ला मायक्रोफोन परवानगी आवश्यक आहे</string>
     <string name="voice_status_service_disconnected">स्पीच सेवा डिस्कनेक्ट झाली. पुन्हा प्रयत्न करण्यासाठी माइकवर टॅप करा.</string>
 </resources>
