@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Atsarginė kopija ir atkūrimas</string>
     <string name="settings_backup_restore_summary">Įrašyti nustatymus, išdėstymus ir žodžius į failą arba įtraukti juos į telefono atsarginę kopiją</string>
     <string name="settings_reset_title">Nustatyti iš naujo</string>
-    <string name="settings_reset_summary">Atkurti numatytuosius nustatymus, išdėstymus ar žodžių sąrašus</string>
+    <string name="settings_reset_summary">Ištrinti nustatymus, išdėstymus ar žodžių sąrašus</string>
     <string name="backup_category_back_up">Atsarginės kopijos kūrimas</string>
     <string name="backup_category_restore">Atkūrimas</string>
     <string name="backup_category_phone">Automatinės atsarginės kopijos</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Įrašyta: %1$s</string>
     <string name="backup_restore_dialog_device">Įrenginys: %1$s</string>
     <string name="backup_restore_not_in_file">Šiame faile nėra</string>
-    <string name="backup_restore_dialog_note">Nustatymai ir žodžiai pridedami prie esančių šiame telefone; išdėstymai ir makrokomandos pakeičiami.</string>
+    <string name="backup_restore_dialog_note">Nustatymai, išdėstymai ir makrokomandos pakeičiami; žodžiai pridedami prie esančių šiame telefone.</string>
     <string name="backup_restore_dialog_confirm">Atkurti</string>
     <string name="backup_restored">Atsarginė kopija atkurta</string>
     <string name="backup_restored_words_pending">Išmokti žodžiai bus pridėti, kai pradėsite naudoti klaviatūrą</string>

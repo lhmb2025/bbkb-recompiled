@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Cadangan jeung pamulihan</string>
     <string name="settings_backup_restore_summary">Simpen setélan, tata perenah jeung kecap kana berkas, atawa lebetkeun kana cadangan telepon anjeun</string>
     <string name="settings_reset_title">Reset</string>
-    <string name="settings_reset_summary">Balikkeun setélan, tata perenah atawa daptar kecap ka bakuna</string>
+    <string name="settings_reset_summary">Hapus setélan, tata perenah atawa daptar kecap</string>
     <string name="backup_category_back_up">Cadangkeun</string>
     <string name="backup_category_restore">Pulihkeun</string>
     <string name="backup_category_phone">Cadangan otomatis</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Disimpen %1$s</string>
     <string name="backup_restore_dialog_device">Ti %1$s</string>
     <string name="backup_restore_not_in_file">Teu aya dina berkas ieu</string>
-    <string name="backup_restore_dialog_note">Setélan jeung kecap ditambahkeun kana nu geus aya dina telepon ieu; tata perenah jeung makro diganti.</string>
+    <string name="backup_restore_dialog_note">Setélan, tata perenah jeung makro diganti; kecap ditambahkeun kana nu geus aya dina telepon ieu.</string>
     <string name="backup_restore_dialog_confirm">Pulihkeun</string>
     <string name="backup_restored">Cadangan geus dipulihkeun</string>
     <string name="backup_restored_words_pending">Kecap nu diajar bakal ditambahkeun sanggeus papan tombol dipaké</string>

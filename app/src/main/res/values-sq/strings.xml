@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Rezervimi dhe restaurimi</string>
     <string name="settings_backup_restore_summary">Ruaj cilësimet, paraqitjet dhe fjalët në një skedar ose përfshiji në rezervimin e telefonit</string>
     <string name="settings_reset_title">Rivendosja</string>
-    <string name="settings_reset_summary">Rivendos cilësimet, paraqitjet ose listat e fjalëve te vlerat e parazgjedhura</string>
+    <string name="settings_reset_summary">Fshi cilësimet, paraqitjet ose listat e fjalëve</string>
     <string name="backup_category_back_up">Rezervo</string>
     <string name="backup_category_restore">Restauro</string>
     <string name="backup_category_phone">Rezervimet automatike</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Ruajtur më %1$s</string>
     <string name="backup_restore_dialog_device">Nga %1$s</string>
     <string name="backup_restore_not_in_file">Nuk gjendet në këtë skedar</string>
-    <string name="backup_restore_dialog_note">Cilësimet dhe fjalët u shtohen atyre që janë në këtë telefon; paraqitjet dhe makrot zëvendësohen.</string>
+    <string name="backup_restore_dialog_note">Cilësimet, paraqitjet dhe makrot zëvendësohen; fjalët u shtohen atyre që janë në këtë telefon.</string>
     <string name="backup_restore_dialog_confirm">Restauro</string>
     <string name="backup_restored">Rezervimi u restaurua</string>
     <string name="backup_restored_words_pending">Fjalët e mësuara do të shtohen sapo të fillosh të përdorësh tastierën</string>

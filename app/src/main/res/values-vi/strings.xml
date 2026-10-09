@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Sao lưu và khôi phục</string>
     <string name="settings_backup_restore_summary">Lưu cài đặt, bố cục và từ vào tệp hoặc đưa chúng vào bản sao lưu của điện thoại</string>
     <string name="settings_reset_title">Đặt lại</string>
-    <string name="settings_reset_summary">Đặt lại cài đặt, bố cục hoặc danh sách từ về mặc định</string>
+    <string name="settings_reset_summary">Xóa cài đặt, bố cục hoặc danh sách từ</string>
     <string name="backup_category_back_up">Sao lưu</string>
     <string name="backup_category_restore">Khôi phục</string>
     <string name="backup_category_phone">Sao lưu tự động</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Đã lưu %1$s</string>
     <string name="backup_restore_dialog_device">Từ thiết bị %1$s</string>
     <string name="backup_restore_not_in_file">Không có trong tệp này</string>
-    <string name="backup_restore_dialog_note">Cài đặt và từ được thêm vào dữ liệu hiện có trên điện thoại này; bố cục và macro sẽ bị thay thế.</string>
+    <string name="backup_restore_dialog_note">Cài đặt, bố cục và macro sẽ bị thay thế; từ được thêm vào dữ liệu hiện có trên điện thoại này.</string>
     <string name="backup_restore_dialog_confirm">Khôi phục</string>
     <string name="backup_restored">Đã khôi phục bản sao lưu</string>
     <string name="backup_restored_words_pending">Từ đã học sẽ được thêm sau khi bạn bắt đầu dùng bàn phím</string>

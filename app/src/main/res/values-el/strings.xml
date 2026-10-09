@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Αντίγραφο ασφαλείας και επαναφορά</string>
     <string name="settings_backup_restore_summary">Αποθήκευση ρυθμίσεων, διατάξεων και λέξεων σε αρχείο ή συμπερίληψή τους στο αντίγραφο ασφαλείας του τηλεφώνου σας</string>
     <string name="settings_reset_title">Επαναφορά προεπιλογών</string>
-    <string name="settings_reset_summary">Επαναφορά ρυθμίσεων, διατάξεων ή λιστών λέξεων στις προεπιλογές</string>
+    <string name="settings_reset_summary">Διαγραφή ρυθμίσεων, διατάξεων ή λιστών λέξεων</string>
     <string name="backup_category_back_up">Δημιουργία αντιγράφου ασφαλείας</string>
     <string name="backup_category_restore">Επαναφορά</string>
     <string name="backup_category_phone">Αυτόματα αντίγραφα ασφαλείας</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Αποθηκεύτηκε: %1$s</string>
     <string name="backup_restore_dialog_device">Από %1$s</string>
     <string name="backup_restore_not_in_file">Δεν περιλαμβάνεται σε αυτό το αρχείο</string>
-    <string name="backup_restore_dialog_note">Οι ρυθμίσεις και οι λέξεις προστίθενται σε όσα υπάρχουν ήδη σε αυτό το τηλέφωνο· οι διατάξεις και οι μακροεντολές αντικαθίστανται.</string>
+    <string name="backup_restore_dialog_note">Οι ρυθμίσεις, οι διατάξεις και οι μακροεντολές αντικαθίστανται· οι λέξεις προστίθενται σε όσες υπάρχουν ήδη σε αυτό το τηλέφωνο.</string>
     <string name="backup_restore_dialog_confirm">Επαναφορά</string>
     <string name="backup_restored">Έγινε επαναφορά του αντιγράφου ασφαλείας</string>
     <string name="backup_restored_words_pending">Οι εκμαθημένες λέξεις θα προστεθούν μόλις χρησιμοποιηθεί το πληκτρολόγιο</string>

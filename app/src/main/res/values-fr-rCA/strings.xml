@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Sauvegarde et restauration</string>
     <string name="settings_backup_restore_summary">Enregistrer les paramètres, les dispositions et les mots dans un fichier, ou les inclure dans la sauvegarde de votre téléphone</string>
     <string name="settings_reset_title">Réinitialiser</string>
-    <string name="settings_reset_summary">Rétablir les valeurs par défaut des paramètres, des dispositions ou des listes de mots</string>
+    <string name="settings_reset_summary">Effacer les paramètres, les dispositions ou les listes de mots</string>
     <string name="backup_category_back_up">Sauvegarder</string>
     <string name="backup_category_restore">Restaurer</string>
     <string name="backup_category_phone">Sauvegardes automatiques</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Enregistrée le %1$s</string>
     <string name="backup_restore_dialog_device">Provenant de %1$s</string>
     <string name="backup_restore_not_in_file">Absent de ce fichier</string>
-    <string name="backup_restore_dialog_note">Les paramètres et les mots s\'ajoutent à ceux de ce téléphone; les dispositions et les macros sont remplacées.</string>
+    <string name="backup_restore_dialog_note">Les paramètres, les dispositions et les macros sont remplacés; les mots s\'ajoutent à ceux de ce téléphone.</string>
     <string name="backup_restore_dialog_confirm">Restaurer</string>
     <string name="backup_restored">Sauvegarde restaurée</string>
     <string name="backup_restored_words_pending">Les mots appris seront ajoutés dès que le clavier sera utilisé</string>

@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">बॅकअप आणि रिस्टोअर</string>
     <string name="settings_backup_restore_summary">सेटिंग्ज, लेआउट आणि शब्द फाइलमध्ये जतन करा किंवा त्यांना तुमच्या फोनच्या बॅकअपमध्ये समाविष्ट करा</string>
     <string name="settings_reset_title">रीसेट करा</string>
-    <string name="settings_reset_summary">सेटिंग्ज, लेआउट किंवा शब्द सूची त्यांच्या डीफॉल्टवर परत आणा</string>
+    <string name="settings_reset_summary">सेटिंग्ज, लेआउट किंवा शब्द सूची पुसून टाका</string>
     <string name="backup_category_back_up">बॅकअप घ्या</string>
     <string name="backup_category_restore">रिस्टोअर करा</string>
     <string name="backup_category_phone">स्वयंचलित बॅकअप</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">जतन केले: %1$s</string>
     <string name="backup_restore_dialog_device">%1$s वरून</string>
     <string name="backup_restore_not_in_file">या फाइलमध्ये नाही</string>
-    <string name="backup_restore_dialog_note">सेटिंग्ज आणि शब्द या फोनवर आधीपासून असलेल्यांमध्ये जोडले जातात; लेआउट आणि मॅक्रो बदलले जातात.</string>
+    <string name="backup_restore_dialog_note">सेटिंग्ज, लेआउट आणि मॅक्रो बदलले जातात; शब्द या फोनवर आधीपासून असलेल्यांमध्ये जोडले जातात.</string>
     <string name="backup_restore_dialog_confirm">रिस्टोअर करा</string>
     <string name="backup_restored">बॅकअप रिस्टोअर केला</string>
     <string name="backup_restored_words_pending">कीबोर्ड वापरात आल्यावर शिकलेले शब्द जोडले जातील</string>

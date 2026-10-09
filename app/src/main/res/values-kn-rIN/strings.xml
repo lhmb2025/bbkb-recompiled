@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">ಬ್ಯಾಕಪ್ ಮತ್ತು ಮರುಸ್ಥಾಪನೆ</string>
     <string name="settings_backup_restore_summary">ಸೆಟ್ಟಿಂಗ್‌ಗಳು, ವಿನ್ಯಾಸಗಳು ಮತ್ತು ಪದಗಳನ್ನು ಫೈಲ್‌ಗೆ ಉಳಿಸಿ ಅಥವಾ ಅವುಗಳನ್ನು ನಿಮ್ಮ ಫೋನ್‌ನ ಬ್ಯಾಕಪ್‌ನಲ್ಲಿ ಸೇರಿಸಿ</string>
     <string name="settings_reset_title">ಮರುಹೊಂದಿಸಿ</string>
-    <string name="settings_reset_summary">ಸೆಟ್ಟಿಂಗ್‌ಗಳು, ವಿನ್ಯಾಸಗಳು ಅಥವಾ ಪದ ಪಟ್ಟಿಗಳನ್ನು ಪೂರ್ವನಿಯೋಜಿತಕ್ಕೆ ಹಿಂತಿರುಗಿಸಿ</string>
+    <string name="settings_reset_summary">ಸೆಟ್ಟಿಂಗ್‌ಗಳು, ವಿನ್ಯಾಸಗಳು ಅಥವಾ ಪದ ಪಟ್ಟಿಗಳನ್ನು ಅಳಿಸಿ</string>
     <string name="backup_category_back_up">ಬ್ಯಾಕಪ್ ಮಾಡಿ</string>
     <string name="backup_category_restore">ಮರುಸ್ಥಾಪಿಸಿ</string>
     <string name="backup_category_phone">ಸ್ವಯಂಚಾಲಿತ ಬ್ಯಾಕಪ್‌ಗಳು</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">ಉಳಿಸಿದ್ದು: %1$s</string>
     <string name="backup_restore_dialog_device">ಸಾಧನ: %1$s</string>
     <string name="backup_restore_not_in_file">ಈ ಫೈಲ್‌ನಲ್ಲಿ ಇಲ್ಲ</string>
-    <string name="backup_restore_dialog_note">ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಪದಗಳನ್ನು ಈ ಫೋನ್‌ನಲ್ಲಿ ಈಗಾಗಲೇ ಇರುವುದಕ್ಕೆ ಸೇರಿಸಲಾಗುತ್ತದೆ; ವಿನ್ಯಾಸಗಳು ಮತ್ತು ಮ್ಯಾಕ್ರೋಗಳನ್ನು ಬದಲಾಯಿಸಲಾಗುತ್ತದೆ.</string>
+    <string name="backup_restore_dialog_note">ಸೆಟ್ಟಿಂಗ್‌ಗಳು, ವಿನ್ಯಾಸಗಳು ಮತ್ತು ಮ್ಯಾಕ್ರೋಗಳನ್ನು ಬದಲಾಯಿಸಲಾಗುತ್ತದೆ; ಪದಗಳನ್ನು ಈ ಫೋನ್‌ನಲ್ಲಿ ಈಗಾಗಲೇ ಇರುವುದಕ್ಕೆ ಸೇರಿಸಲಾಗುತ್ತದೆ.</string>
     <string name="backup_restore_dialog_confirm">ಮರುಸ್ಥಾಪಿಸಿ</string>
     <string name="backup_restored">ಬ್ಯಾಕಪ್ ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ</string>
     <string name="backup_restored_words_pending">ಕೀಬೋರ್ಡ್ ಬಳಕೆಗೆ ಬಂದ ನಂತರ ಕಲಿತ ಪದಗಳನ್ನು ಸೇರಿಸಲಾಗುತ್ತದೆ</string>

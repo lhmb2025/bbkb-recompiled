@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">备份和恢复</string>
     <string name="settings_backup_restore_summary">将设置、布局和字词保存到文件，或纳入手机备份</string>
     <string name="settings_reset_title">重置</string>
-    <string name="settings_reset_summary">将设置、布局或字词列表重置为默认值</string>
+    <string name="settings_reset_summary">清除设置、布局或字词列表</string>
     <string name="backup_category_back_up">备份</string>
     <string name="backup_category_restore">恢复</string>
     <string name="backup_category_phone">自动备份</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">保存于 %1$s</string>
     <string name="backup_restore_dialog_device">来自 %1$s</string>
     <string name="backup_restore_not_in_file">此文件中没有</string>
-    <string name="backup_restore_dialog_note">设置和字词将添加到此手机上的现有内容中；布局和宏将被替换。</string>
+    <string name="backup_restore_dialog_note">设置、布局和宏将被替换；字词将添加到此手机上的现有内容中。</string>
     <string name="backup_restore_dialog_confirm">恢复</string>
     <string name="backup_restored">备份已恢复</string>
     <string name="backup_restored_words_pending">开始使用键盘后，将添加已学字词</string>

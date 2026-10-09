@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">បម្រុងទុក និងស្ដារ</string>
     <string name="settings_backup_restore_summary">រក្សាទុកការកំណត់ ប្លង់ និងពាក្យទៅក្នុងឯកសារ ឬដាក់បញ្ចូលពួកវាក្នុងការបម្រុងទុករបស់ទូរសព្ទអ្នក</string>
     <string name="settings_reset_title">កំណត់ឡើងវិញ</string>
-    <string name="settings_reset_summary">ដាក់ការកំណត់ ប្លង់ ឬបញ្ជីពាក្យត្រឡប់ទៅលំនាំដើមវិញ</string>
+    <string name="settings_reset_summary">លុបការកំណត់ ប្លង់ ឬបញ្ជីពាក្យ</string>
     <string name="backup_category_back_up">បម្រុងទុក</string>
     <string name="backup_category_restore">ស្ដារ</string>
     <string name="backup_category_phone">ការបម្រុងទុកស្វ័យប្រវត្តិ</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">បានរក្សាទុក %1$s</string>
     <string name="backup_restore_dialog_device">ពី %1$s</string>
     <string name="backup_restore_not_in_file">មិនមានក្នុងឯកសារនេះទេ</string>
-    <string name="backup_restore_dialog_note">ការកំណត់ និងពាក្យនឹងត្រូវបានបន្ថែមទៅលើអ្វីដែលមាននៅលើទូរសព្ទនេះ ចំណែកប្លង់ និងម៉ាក្រូនឹងត្រូវបានជំនួស។</string>
+    <string name="backup_restore_dialog_note">ការកំណត់ ប្លង់ និងម៉ាក្រូនឹងត្រូវបានជំនួស ចំណែកពាក្យនឹងត្រូវបានបន្ថែមទៅលើអ្វីដែលមាននៅលើទូរសព្ទនេះ។</string>
     <string name="backup_restore_dialog_confirm">ស្ដារ</string>
     <string name="backup_restored">បានស្ដារការបម្រុងទុក</string>
     <string name="backup_restored_words_pending">ពាក្យដែលបានរៀននឹងត្រូវបានបន្ថែម នៅពេលចាប់ផ្ដើមប្រើក្ដារចុច</string>

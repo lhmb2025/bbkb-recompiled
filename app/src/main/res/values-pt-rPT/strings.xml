@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Cópia de segurança e restauro</string>
     <string name="settings_backup_restore_summary">Guardar definições, esquemas e palavras num ficheiro ou incluí-los na cópia de segurança do telefone</string>
     <string name="settings_reset_title">Repor</string>
-    <string name="settings_reset_summary">Repor as predefinições das definições, esquemas ou listas de palavras</string>
+    <string name="settings_reset_summary">Apagar definições, esquemas ou listas de palavras</string>
     <string name="backup_category_back_up">Fazer cópia de segurança</string>
     <string name="backup_category_restore">Restaurar</string>
     <string name="backup_category_phone">Cópias de segurança automáticas</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Guardada em %1$s</string>
     <string name="backup_restore_dialog_device">De %1$s</string>
     <string name="backup_restore_not_in_file">Não está neste ficheiro</string>
-    <string name="backup_restore_dialog_note">As definições e palavras são adicionadas ao que já existe neste telefone; os esquemas e macros são substituídos.</string>
+    <string name="backup_restore_dialog_note">As definições, os esquemas e as macros são substituídos; as palavras são adicionadas ao que já existe neste telefone.</string>
     <string name="backup_restore_dialog_confirm">Restaurar</string>
     <string name="backup_restored">Cópia de segurança restaurada</string>
     <string name="backup_restored_words_pending">As palavras aprendidas serão adicionadas assim que o teclado estiver em utilização</string>

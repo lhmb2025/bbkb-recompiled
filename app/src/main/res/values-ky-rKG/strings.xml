@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Камдык көчүрмө жана калыбына келтирүү</string>
     <string name="settings_backup_restore_summary">Жөндөөлөрдү, жайгашууларды жана сөздөрдү файлга сактоо же телефонуңуздун камдык көчүрмөсүнө кошуу</string>
     <string name="settings_reset_title">Баштапкы абалга келтирүү</string>
-    <string name="settings_reset_summary">Жөндөөлөрдү, жайгашууларды же сөз тизмелерин демейки абалына кайтаруу</string>
+    <string name="settings_reset_summary">Жөндөөлөрдү, жайгашууларды же сөз тизмелерин өчүрүү</string>
     <string name="backup_category_back_up">Камдык көчүрмө түзүү</string>
     <string name="backup_category_restore">Калыбына келтирүү</string>
     <string name="backup_category_phone">Автоматтык камдык көчүрмөлөр</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Сакталган: %1$s</string>
     <string name="backup_restore_dialog_device">Түзмөк: %1$s</string>
     <string name="backup_restore_not_in_file">Бул файлда жок</string>
-    <string name="backup_restore_dialog_note">Жөндөөлөр жана сөздөр бул телефондогуларга кошулат; жайгашуулар жана макростор алмаштырылат.</string>
+    <string name="backup_restore_dialog_note">Жөндөөлөр, жайгашуулар жана макростор алмаштырылат; сөздөр бул телефондогуларга кошулат.</string>
     <string name="backup_restore_dialog_confirm">Калыбына келтирүү</string>
     <string name="backup_restored">Камдык көчүрмө калыбына келтирилди</string>
     <string name="backup_restored_words_pending">Үйрөнүлгөн сөздөр баскычтоп колдонула баштаганда кошулат</string>

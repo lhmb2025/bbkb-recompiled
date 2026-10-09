@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">גיבוי ושחזור</string>
     <string name="settings_backup_restore_summary">שמירת ההגדרות, הפריסות והמילים בקובץ, או הכללתם בגיבוי של הטלפון</string>
     <string name="settings_reset_title">איפוס</string>
-    <string name="settings_reset_summary">החזרת ההגדרות, הפריסות או רשימות המילים לברירות המחדל</string>
+    <string name="settings_reset_summary">מחיקת ההגדרות, הפריסות או רשימות המילים</string>
     <string name="backup_category_back_up">גיבוי</string>
     <string name="backup_category_restore">שחזור</string>
     <string name="backup_category_phone">גיבויים אוטומטיים</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">נשמר: %1$s</string>
     <string name="backup_restore_dialog_device">מהמכשיר %1$s</string>
     <string name="backup_restore_not_in_file">לא קיים בקובץ זה</string>
-    <string name="backup_restore_dialog_note">ההגדרות והמילים מתווספות לאלה שכבר נמצאים בטלפון זה; הפריסות ופקודות המאקרו מוחלפות.</string>
+    <string name="backup_restore_dialog_note">ההגדרות, הפריסות ופקודות המאקרו מוחלפות; המילים מתווספות לאלה שכבר נמצאות בטלפון זה.</string>
     <string name="backup_restore_dialog_confirm">שחזור</string>
     <string name="backup_restored">הגיבוי שוחזר</string>
     <string name="backup_restored_words_pending">המילים שנלמדו יתווספו כשהמקלדת תהיה בשימוש</string>

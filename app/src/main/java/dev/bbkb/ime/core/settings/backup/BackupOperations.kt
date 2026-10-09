@@ -41,9 +41,10 @@ import java.util.Locale
  * system-dictionary sync would undo); and the learned words last, through the engine's own
  * learn call, only when the engine is up.
  *
- * Settings merge rather than replace ([SettingsBackup.apply]); dictionary entries and learned
- * words are added, never removed; macros and layouts replace, because each is a set addressed by
- * position or tag.
+ * Settings, macros and layouts replace: the phone ends up with exactly what the backup holds
+ * (a setting the backup does not name goes back to its default; [SettingsBackup.apply] with
+ * `replace`). Dictionary entries and learned words are added, never removed: a word is never
+ * worth losing to a restore.
  */
 object BackupOperations {
 
@@ -245,7 +246,12 @@ object BackupOperations {
                 }
             }
             if (wanted.settings) {
-                bundle.settings?.let { report.settings = SettingsBackup.apply(PrefsManager.getPrefs(app), it) }
+                bundle.settings?.let {
+                    // Replace: the phone ends up with exactly the backup's settings. The layout
+                    // keys are kept because they are the Layouts part's, restored or not above.
+                    report.settings = SettingsBackup.apply(PrefsManager.getPrefs(app), it,
+                        replace = true, keepKeys = LayoutsBundle.PREF_KEYS)
+                }
                 bundle.macros?.let {
                     CustomMacroRepository(app).replaceAll(it)
                     report.macros = it.size

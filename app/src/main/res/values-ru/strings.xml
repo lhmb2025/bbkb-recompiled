@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Резервное копирование и восстановление</string>
     <string name="settings_backup_restore_summary">Сохранение настроек, раскладок и слов в файл или их включение в резервную копию телефона</string>
     <string name="settings_reset_title">Сброс</string>
-    <string name="settings_reset_summary">Сброс настроек, раскладок или списков слов до значений по умолчанию</string>
+    <string name="settings_reset_summary">Стереть настройки, раскладки или списки слов</string>
     <string name="backup_category_back_up">Резервное копирование</string>
     <string name="backup_category_restore">Восстановление</string>
     <string name="backup_category_phone">Автоматическое резервное копирование</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Сохранено: %1$s</string>
     <string name="backup_restore_dialog_device">С устройства %1$s</string>
     <string name="backup_restore_not_in_file">Нет в этом файле</string>
-    <string name="backup_restore_dialog_note">Настройки и слова добавляются к тем, что уже есть на этом телефоне; раскладки и макросы заменяются.</string>
+    <string name="backup_restore_dialog_note">Настройки, раскладки и макросы заменяются; слова добавляются к тем, что уже есть на этом телефоне.</string>
     <string name="backup_restore_dialog_confirm">Восстановить</string>
     <string name="backup_restored">Резервная копия восстановлена</string>
     <string name="backup_restored_words_pending">Выученные слова будут добавлены, когда вы начнёте пользоваться клавиатурой</string>

@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">బ్యాకప్ మరియు పునరుద్ధరణ</string>
     <string name="settings_backup_restore_summary">సెట్టింగ్‌లు, లేఅవుట్‌లు, పదాలను ఫైల్‌లో సేవ్ చేయండి లేదా మీ ఫోన్ బ్యాకప్‌లో చేర్చండి</string>
     <string name="settings_reset_title">రీసెట్</string>
-    <string name="settings_reset_summary">సెట్టింగ్‌లు, లేఅవుట్‌లు లేదా పద జాబితాలను వాటి డిఫాల్ట్‌లకు రీసెట్ చేయండి</string>
+    <string name="settings_reset_summary">సెట్టింగ్‌లు, లేఅవుట్‌లు లేదా పద జాబితాలను తొలగించండి</string>
     <string name="backup_category_back_up">బ్యాకప్ చేయి</string>
     <string name="backup_category_restore">పునరుద్ధరించు</string>
     <string name="backup_category_phone">ఆటోమేటిక్ బ్యాకప్‌లు</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">సేవ్ చేసినది: %1$s</string>
     <string name="backup_restore_dialog_device">%1$s నుండి</string>
     <string name="backup_restore_not_in_file">ఈ ఫైల్‌లో లేదు</string>
-    <string name="backup_restore_dialog_note">సెట్టింగ్‌లు, పదాలు ఈ ఫోన్‌లో ఉన్నవాటికి జోడించబడతాయి; లేఅవుట్‌లు, మ్యాక్రోలు భర్తీ చేయబడతాయి.</string>
+    <string name="backup_restore_dialog_note">సెట్టింగ్‌లు, లేఅవుట్‌లు, మ్యాక్రోలు భర్తీ చేయబడతాయి; పదాలు ఈ ఫోన్‌లో ఉన్నవాటికి జోడించబడతాయి.</string>
     <string name="backup_restore_dialog_confirm">పునరుద్ధరించు</string>
     <string name="backup_restored">బ్యాకప్ పునరుద్ధరించబడింది</string>
     <string name="backup_restored_words_pending">కీబోర్డ్ ఉపయోగంలోకి వచ్చిన తర్వాత నేర్చుకున్న పదాలు జోడించబడతాయి</string>

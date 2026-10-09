@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Varnostno kopiranje in obnovitev</string>
     <string name="settings_backup_restore_summary">Shranite nastavitve, razporeditve in besede v datoteko ali jih vključite v varnostno kopijo telefona</string>
     <string name="settings_reset_title">Ponastavitev</string>
-    <string name="settings_reset_summary">Ponastavite nastavitve, razporeditve ali sezname besed na privzete vrednosti</string>
+    <string name="settings_reset_summary">Izbrišite nastavitve, razporeditve ali sezname besed</string>
     <string name="backup_category_back_up">Varnostno kopiranje</string>
     <string name="backup_category_restore">Obnovitev</string>
     <string name="backup_category_phone">Samodejne varnostne kopije</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Shranjeno: %1$s</string>
     <string name="backup_restore_dialog_device">Iz naprave %1$s</string>
     <string name="backup_restore_not_in_file">Ni v tej datoteki</string>
-    <string name="backup_restore_dialog_note">Nastavitve in besede se dodajo k obstoječim v tem telefonu; razporeditve in makri se zamenjajo.</string>
+    <string name="backup_restore_dialog_note">Nastavitve, razporeditve in makri se zamenjajo; besede se dodajo k obstoječim v tem telefonu.</string>
     <string name="backup_restore_dialog_confirm">Obnovi</string>
     <string name="backup_restored">Varnostna kopija je obnovljena</string>
     <string name="backup_restored_words_pending">Naučene besede bodo dodane, ko boste začeli uporabljati tipkovnico</string>

@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">காப்புப் பிரதியும் மீட்டெடுப்பும்</string>
     <string name="settings_backup_restore_summary">அமைப்புகள், தளவமைப்புகள், சொற்களை ஒரு கோப்பில் சேமிக்கவும் அல்லது உங்கள் ஃபோனின் காப்புப் பிரதியில் சேர்க்கவும்</string>
     <string name="settings_reset_title">மீட்டமை</string>
-    <string name="settings_reset_summary">அமைப்புகள், தளவமைப்புகள் அல்லது சொல் பட்டியல்களை இயல்புநிலைக்கு மீட்டமைக்கவும்</string>
+    <string name="settings_reset_summary">அமைப்புகள், தளவமைப்புகள் அல்லது சொல் பட்டியல்களை அழிக்கவும்</string>
     <string name="backup_category_back_up">காப்புப் பிரதி எடு</string>
     <string name="backup_category_restore">மீட்டெடு</string>
     <string name="backup_category_phone">தானியங்கு காப்புப் பிரதிகள்</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">சேமித்தது: %1$s</string>
     <string name="backup_restore_dialog_device">%1$s இலிருந்து</string>
     <string name="backup_restore_not_in_file">இந்தக் கோப்பில் இல்லை</string>
-    <string name="backup_restore_dialog_note">அமைப்புகளும் சொற்களும் இந்த ஃபோனில் உள்ளவற்றுடன் சேர்க்கப்படும்; தளவமைப்புகளும் மேக்ரோக்களும் மாற்றியமைக்கப்படும்.</string>
+    <string name="backup_restore_dialog_note">அமைப்புகளும் தளவமைப்புகளும் மேக்ரோக்களும் மாற்றியமைக்கப்படும்; சொற்கள் இந்த ஃபோனில் உள்ளவற்றுடன் சேர்க்கப்படும்.</string>
     <string name="backup_restore_dialog_confirm">மீட்டெடு</string>
     <string name="backup_restored">காப்புப் பிரதி மீட்டெடுக்கப்பட்டது</string>
     <string name="backup_restored_words_pending">விசைப்பலகையைப் பயன்படுத்தத் தொடங்கியதும் கற்ற சொற்கள் சேர்க்கப்படும்</string>

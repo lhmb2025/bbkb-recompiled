@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">ສຳຮອງ ແລະ ກູ້ຄືນ</string>
     <string name="settings_backup_restore_summary">ບັນທຶກການຕັ້ງຄ່າ, ຮູບແບບ ແລະ ຄຳສັບລົງໃນໄຟລ໌ ຫຼື ລວມໄວ້ໃນການສຳຮອງຂໍ້ມູນຂອງໂທລະສັບ</string>
     <string name="settings_reset_title">ຕັ້ງຄ່າໃໝ່</string>
-    <string name="settings_reset_summary">ຕັ້ງການຕັ້ງຄ່າ, ຮູບແບບ ຫຼື ລາຍການຄຳສັບຄືນເປັນຄ່າເລີ່ມຕົ້ນ</string>
+    <string name="settings_reset_summary">ລຶບການຕັ້ງຄ່າ, ຮູບແບບ ຫຼື ລາຍການຄຳສັບ</string>
     <string name="backup_category_back_up">ສຳຮອງ</string>
     <string name="backup_category_restore">ກູ້ຄືນ</string>
     <string name="backup_category_phone">ການສຳຮອງອັດຕະໂນມັດ</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">ບັນທຶກເມື່ອ %1$s</string>
     <string name="backup_restore_dialog_device">ຈາກ %1$s</string>
     <string name="backup_restore_not_in_file">ບໍ່ມີໃນໄຟລ໌ນີ້</string>
-    <string name="backup_restore_dialog_note">ການຕັ້ງຄ່າ ແລະ ຄຳສັບຈະຖືກເພີ່ມເຂົ້າໃນສິ່ງທີ່ມີຢູ່ໃນໂທລະສັບນີ້; ຮູບແບບ ແລະ ມາໂຄຣຈະຖືກແທນທີ່.</string>
+    <string name="backup_restore_dialog_note">ການຕັ້ງຄ່າ, ຮູບແບບ ແລະ ມາໂຄຣຈະຖືກແທນທີ່; ຄຳສັບຈະຖືກເພີ່ມເຂົ້າໃນສິ່ງທີ່ມີຢູ່ໃນໂທລະສັບນີ້.</string>
     <string name="backup_restore_dialog_confirm">ກູ້ຄືນ</string>
     <string name="backup_restored">ກູ້ຄືນການສຳຮອງແລ້ວ</string>
     <string name="backup_restored_words_pending">ຄຳສັບທີ່ຮຽນຮູ້ແລ້ວຈະຖືກເພີ່ມເມື່ອເລີ່ມໃຊ້ແປ້ນພິມ</string>

@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Varmuuskopiointi ja palautus</string>
     <string name="settings_backup_restore_summary">Tallenna asetukset, asettelut ja sanat tiedostoon tai sisällytä ne puhelimen varmuuskopioon</string>
     <string name="settings_reset_title">Nollaa</string>
-    <string name="settings_reset_summary">Palauta asetukset, asettelut tai sanaluettelot oletusarvoihin</string>
+    <string name="settings_reset_summary">Poista asetukset, asettelut tai sanaluettelot</string>
     <string name="backup_category_back_up">Varmuuskopioi</string>
     <string name="backup_category_restore">Palauta</string>
     <string name="backup_category_phone">Automaattiset varmuuskopiot</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Tallennettu: %1$s</string>
     <string name="backup_restore_dialog_device">Laite: %1$s</string>
     <string name="backup_restore_not_in_file">Ei tässä tiedostossa</string>
-    <string name="backup_restore_dialog_note">Asetukset ja sanat lisätään tämän puhelimen nykyisiin; asettelut ja makrot korvataan.</string>
+    <string name="backup_restore_dialog_note">Asetukset, asettelut ja makrot korvataan; sanat lisätään tämän puhelimen nykyisiin.</string>
     <string name="backup_restore_dialog_confirm">Palauta</string>
     <string name="backup_restored">Varmuuskopio palautettu</string>
     <string name="backup_restored_words_pending">Opitut sanat lisätään, kun näppäimistöä käytetään</string>

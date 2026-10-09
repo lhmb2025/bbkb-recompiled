@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Back-up en herstel</string>
     <string name="settings_backup_restore_summary">Instellingen, lay-outs en woorden opslaan in een bestand of opnemen in de back-up van uw telefoon</string>
     <string name="settings_reset_title">Resetten</string>
-    <string name="settings_reset_summary">Instellingen, lay-outs of woordenlijsten terugzetten naar de standaardwaarden</string>
+    <string name="settings_reset_summary">Instellingen, lay-outs of woordenlijsten wissen</string>
     <string name="backup_category_back_up">Back-up maken</string>
     <string name="backup_category_restore">Herstellen</string>
     <string name="backup_category_phone">Automatische back-ups</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Opgeslagen op %1$s</string>
     <string name="backup_restore_dialog_device">Van %1$s</string>
     <string name="backup_restore_not_in_file">Niet in dit bestand</string>
-    <string name="backup_restore_dialog_note">Instellingen en woorden worden toegevoegd aan wat al op deze telefoon staat; lay-outs en macro\'s worden vervangen.</string>
+    <string name="backup_restore_dialog_note">Instellingen, lay-outs en macro\'s worden vervangen; woorden worden toegevoegd aan wat al op deze telefoon staat.</string>
     <string name="backup_restore_dialog_confirm">Herstellen</string>
     <string name="backup_restored">Back-up hersteld</string>
     <string name="backup_restored_words_pending">Geleerde woorden worden toegevoegd zodra het toetsenbord in gebruik is</string>

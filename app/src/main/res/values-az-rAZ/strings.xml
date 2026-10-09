@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Ehtiyat nüsxə və bərpa</string>
     <string name="settings_backup_restore_summary">Ayarları, düzümləri və sözləri fayla saxlayın və ya onları telefonunuzun ehtiyat nüsxəsinə daxil edin</string>
     <string name="settings_reset_title">Sıfırlama</string>
-    <string name="settings_reset_summary">Ayarları, düzümləri və ya söz siyahılarını varsayılan vəziyyətə qaytarın</string>
+    <string name="settings_reset_summary">Ayarları, düzümləri və ya söz siyahılarını silin</string>
     <string name="backup_category_back_up">Ehtiyat nüsxə</string>
     <string name="backup_category_restore">Bərpa</string>
     <string name="backup_category_phone">Avtomatik ehtiyat nüsxələr</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Saxlanılıb: %1$s</string>
     <string name="backup_restore_dialog_device">Cihaz: %1$s</string>
     <string name="backup_restore_not_in_file">Bu faylda yoxdur</string>
-    <string name="backup_restore_dialog_note">Ayarlar və sözlər bu telefonda olanlara əlavə olunur; düzümlər və makrolar isə əvəz olunur.</string>
+    <string name="backup_restore_dialog_note">Ayarlar, düzümlər və makrolar əvəz olunur; sözlər isə bu telefonda olanlara əlavə olunur.</string>
     <string name="backup_restore_dialog_confirm">Bərpa et</string>
     <string name="backup_restored">Ehtiyat nüsxə bərpa edildi</string>
     <string name="backup_restored_words_pending">Öyrənilmiş sözlər klaviaturadan istifadə başlayanda əlavə ediləcək</string>

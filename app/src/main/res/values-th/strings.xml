@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">สำรองและกู้คืนข้อมูล</string>
     <string name="settings_backup_restore_summary">บันทึกการตั้งค่า เลย์เอาท์ และคำลงในไฟล์ หรือรวมไว้ในการสำรองข้อมูลของโทรศัพท์</string>
     <string name="settings_reset_title">รีเซ็ต</string>
-    <string name="settings_reset_summary">คืนค่าการตั้งค่า เลย์เอาท์ หรือรายการคำเป็นค่าเริ่มต้น</string>
+    <string name="settings_reset_summary">ลบการตั้งค่า เลย์เอาท์ หรือรายการคำ</string>
     <string name="backup_category_back_up">สำรองข้อมูล</string>
     <string name="backup_category_restore">กู้คืน</string>
     <string name="backup_category_phone">การสำรองข้อมูลอัตโนมัติ</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">บันทึกเมื่อ %1$s</string>
     <string name="backup_restore_dialog_device">จาก %1$s</string>
     <string name="backup_restore_not_in_file">ไม่มีในไฟล์นี้</string>
-    <string name="backup_restore_dialog_note">การตั้งค่าและคำจะเพิ่มเข้าไปในสิ่งที่มีอยู่ในโทรศัพท์เครื่องนี้ ส่วนเลย์เอาท์และมาโครจะถูกแทนที่</string>
+    <string name="backup_restore_dialog_note">การตั้งค่า เลย์เอาท์ และมาโครจะถูกแทนที่ ส่วนคำจะเพิ่มเข้าไปในสิ่งที่มีอยู่ในโทรศัพท์เครื่องนี้</string>
     <string name="backup_restore_dialog_confirm">กู้คืน</string>
     <string name="backup_restored">กู้คืนข้อมูลสำรองแล้ว</string>
     <string name="backup_restored_words_pending">คำที่เรียนรู้จะถูกเพิ่มเมื่อเริ่มใช้แป้นพิมพ์</string>

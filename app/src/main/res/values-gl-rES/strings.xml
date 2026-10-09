@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Copia de seguranza e restauración</string>
     <string name="settings_backup_restore_summary">Garda a configuración, os deseños e as palabras nun ficheiro ou inclúeos na copia de seguranza do teu teléfono</string>
     <string name="settings_reset_title">Restablecer</string>
-    <string name="settings_reset_summary">Restablece os valores predeterminados da configuración, os deseños ou as listas de palabras</string>
+    <string name="settings_reset_summary">Borra a configuración, os deseños ou as listas de palabras</string>
     <string name="backup_category_back_up">Facer copia de seguranza</string>
     <string name="backup_category_restore">Restaurar</string>
     <string name="backup_category_phone">Copias de seguranza automáticas</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Gardada: %1$s</string>
     <string name="backup_restore_dialog_device">Dispositivo: %1$s</string>
     <string name="backup_restore_not_in_file">Non está neste ficheiro</string>
-    <string name="backup_restore_dialog_note">A configuración e as palabras engádense ao que hai neste teléfono; os deseños e as macros substitúense.</string>
+    <string name="backup_restore_dialog_note">A configuración, os deseños e as macros substitúense; as palabras engádense ao que hai neste teléfono.</string>
     <string name="backup_restore_dialog_confirm">Restaurar</string>
     <string name="backup_restored">Restaurouse a copia de seguranza</string>
     <string name="backup_restored_words_pending">As palabras aprendidas engadiranse cando se use o teclado</string>

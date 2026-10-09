@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">النسخ الاحتياطي والاستعادة</string>
     <string name="settings_backup_restore_summary">حفظ الإعدادات والتخطيطات والكلمات في ملف، أو تضمينها في النسخة الاحتياطية لهاتفك</string>
     <string name="settings_reset_title">إعادة التعيين</string>
-    <string name="settings_reset_summary">إعادة الإعدادات أو التخطيطات أو قوائم الكلمات إلى القيم الافتراضية</string>
+    <string name="settings_reset_summary">مسح الإعدادات أو التخطيطات أو قوائم الكلمات</string>
     <string name="backup_category_back_up">نسخ احتياطي</string>
     <string name="backup_category_restore">استعادة</string>
     <string name="backup_category_phone">النسخ الاحتياطي التلقائي</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">تاريخ الحفظ: %1$s</string>
     <string name="backup_restore_dialog_device">من %1$s</string>
     <string name="backup_restore_not_in_file">غير موجود في هذا الملف</string>
-    <string name="backup_restore_dialog_note">تُضاف الإعدادات والكلمات إلى ما هو موجود على هذا الهاتف، أما التخطيطات ووحدات الماكرو فتُستبدَل.</string>
+    <string name="backup_restore_dialog_note">تُستبدَل الإعدادات والتخطيطات ووحدات الماكرو، أما الكلمات فتُضاف إلى ما هو موجود على هذا الهاتف.</string>
     <string name="backup_restore_dialog_confirm">استعادة</string>
     <string name="backup_restored">تمت استعادة النسخة الاحتياطية</string>
     <string name="backup_restored_words_pending">ستُضاف الكلمات المتعلَّمة بمجرد استخدام لوحة المفاتيح</string>

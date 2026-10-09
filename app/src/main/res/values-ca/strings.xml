@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Còpia de seguretat i restauració</string>
     <string name="settings_backup_restore_summary">Desa la configuració, les disposicions i les paraules en un fitxer, o inclou-les a la còpia de seguretat del telèfon</string>
     <string name="settings_reset_title">Restabliment</string>
-    <string name="settings_reset_summary">Restableix la configuració, les disposicions o les llistes de paraules als valors per defecte</string>
+    <string name="settings_reset_summary">Esborra la configuració, les disposicions o les llistes de paraules</string>
     <string name="backup_category_back_up">Còpia de seguretat</string>
     <string name="backup_category_restore">Restauració</string>
     <string name="backup_category_phone">Còpies de seguretat automàtiques</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Desada: %1$s</string>
     <string name="backup_restore_dialog_device">Dispositiu: %1$s</string>
     <string name="backup_restore_not_in_file">No és en aquest fitxer</string>
-    <string name="backup_restore_dialog_note">La configuració i les paraules s\'afegeixen a les que ja hi ha en aquest telèfon; les disposicions i les macros se substitueixen.</string>
+    <string name="backup_restore_dialog_note">La configuració, les disposicions i les macros se substitueixen; les paraules s\'afegeixen a les que ja hi ha en aquest telèfon.</string>
     <string name="backup_restore_dialog_confirm">Restaura</string>
     <string name="backup_restored">S\'ha restaurat la còpia de seguretat</string>
     <string name="backup_restored_words_pending">Les paraules apreses s\'afegiran quan es comenci a utilitzar el teclat</string>

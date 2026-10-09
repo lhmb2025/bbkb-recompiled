@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">ব্যাকআপ ও পুনরুদ্ধার</string>
     <string name="settings_backup_restore_summary">সেটিংস, লেআউট ও শব্দ একটি ফাইলে সংরক্ষণ করুন, অথবা আপনার ফোনের ব্যাকআপে অন্তর্ভুক্ত করুন</string>
     <string name="settings_reset_title">রিসেট</string>
-    <string name="settings_reset_summary">সেটিংস, লেআউট বা শব্দ তালিকা ডিফল্টে ফিরিয়ে আনুন</string>
+    <string name="settings_reset_summary">সেটিংস, লেআউট বা শব্দ তালিকা মুছে ফেলুন</string>
     <string name="backup_category_back_up">ব্যাকআপ</string>
     <string name="backup_category_restore">পুনরুদ্ধার</string>
     <string name="backup_category_phone">স্বয়ংক্রিয় ব্যাকআপ</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">সংরক্ষিত: %1$s</string>
     <string name="backup_restore_dialog_device">উৎস: %1$s</string>
     <string name="backup_restore_not_in_file">এই ফাইলে নেই</string>
-    <string name="backup_restore_dialog_note">সেটিংস ও শব্দ এই ফোনে যা আছে তার সঙ্গে যোগ করা হয়; লেআউট ও ম্যাক্রো প্রতিস্থাপিত হয়।</string>
+    <string name="backup_restore_dialog_note">সেটিংস, লেআউট ও ম্যাক্রো প্রতিস্থাপিত হয়; শব্দ এই ফোনে যা আছে তার সঙ্গে যোগ করা হয়।</string>
     <string name="backup_restore_dialog_confirm">পুনরুদ্ধার</string>
     <string name="backup_restored">ব্যাকআপ পুনরুদ্ধার করা হয়েছে</string>
     <string name="backup_restored_words_pending">কীবোর্ড ব্যবহার শুরু হলে শেখা শব্দ যোগ করা হবে</string>

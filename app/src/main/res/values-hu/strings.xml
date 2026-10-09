@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Biztonsági mentés és visszaállítás</string>
     <string name="settings_backup_restore_summary">Beállítások, elrendezések és szavak mentése fájlba vagy a telefon biztonsági mentésébe</string>
     <string name="settings_reset_title">Alaphelyzetbe állítás</string>
-    <string name="settings_reset_summary">Beállítások, elrendezések vagy szólisták visszaállítása az alapértékekre</string>
+    <string name="settings_reset_summary">Beállítások, elrendezések vagy szólisták törlése</string>
     <string name="backup_category_back_up">Biztonsági mentés</string>
     <string name="backup_category_restore">Visszaállítás</string>
     <string name="backup_category_phone">Automatikus biztonsági mentések</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Mentve: %1$s</string>
     <string name="backup_restore_dialog_device">Eszköz: %1$s</string>
     <string name="backup_restore_not_in_file">Nincs ebben a fájlban</string>
-    <string name="backup_restore_dialog_note">A beállítások és a szavak hozzáadódnak a telefonon lévőkhöz; az elrendezések és a makrók lecserélődnek.</string>
+    <string name="backup_restore_dialog_note">A beállítások, az elrendezések és a makrók lecserélődnek; a szavak hozzáadódnak a telefonon lévőkhöz.</string>
     <string name="backup_restore_dialog_confirm">Visszaállítás</string>
     <string name="backup_restored">Biztonsági mentés visszaállítva</string>
     <string name="backup_restored_words_pending">A megtanult szavak akkor adódnak hozzá, amikor a billentyűzet használatba kerül</string>

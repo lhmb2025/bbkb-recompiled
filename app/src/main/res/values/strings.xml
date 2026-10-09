@@ -726,7 +726,7 @@
     <string name="settings_backup_restore_title">Backup and restore</string>
     <string name="settings_backup_restore_summary">Save settings, layouts and words to a file, or include them in your phone\'s backup</string>
     <string name="settings_reset_title">Reset</string>
-    <string name="settings_reset_summary">Restore settings, layouts, or word lists back to defaults</string>
+    <string name="settings_reset_summary">Erase settings, layouts, or word lists</string>
     <string name="backup_category_back_up">Back up</string>
     <string name="backup_category_restore">Restore</string>
     <string name="backup_category_phone">Automatic backups</string>
@@ -749,7 +749,7 @@
     <string name="backup_restore_dialog_saved">Saved %1$s</string>
     <string name="backup_restore_dialog_device">From %1$s</string>
     <string name="backup_restore_not_in_file">Not in this file</string>
-    <string name="backup_restore_dialog_note">Settings and words are added to what is on this phone; layouts and macros are replaced.</string>
+    <string name="backup_restore_dialog_note">Settings, layouts and macros are replaced; words are added to what is on this phone.</string>
     <string name="backup_restore_dialog_confirm">Restore</string>
     <string name="backup_restored">Backup restored</string>
     <string name="backup_restored_words_pending">Learned words will be added once the keyboard is in use</string>

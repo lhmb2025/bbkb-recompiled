@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Pencadangan dan pemulihan</string>
     <string name="settings_backup_restore_summary">Simpan setelan, tata letak, dan kata ke file, atau sertakan dalam cadangan ponsel Anda</string>
     <string name="settings_reset_title">Setel ulang</string>
-    <string name="settings_reset_summary">Kembalikan setelan, tata letak, atau daftar kata ke default</string>
+    <string name="settings_reset_summary">Hapus setelan, tata letak, atau daftar kata</string>
     <string name="backup_category_back_up">Cadangkan</string>
     <string name="backup_category_restore">Pulihkan</string>
     <string name="backup_category_phone">Cadangan otomatis</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Disimpan %1$s</string>
     <string name="backup_restore_dialog_device">Dari %1$s</string>
     <string name="backup_restore_not_in_file">Tidak ada di file ini</string>
-    <string name="backup_restore_dialog_note">Setelan dan kata ditambahkan ke yang sudah ada di ponsel ini; tata letak dan makro diganti.</string>
+    <string name="backup_restore_dialog_note">Setelan, tata letak, dan makro diganti; kata ditambahkan ke yang sudah ada di ponsel ini.</string>
     <string name="backup_restore_dialog_confirm">Pulihkan</string>
     <string name="backup_restored">Cadangan dipulihkan</string>
     <string name="backup_restored_words_pending">Kata yang dipelajari akan ditambahkan setelah keyboard digunakan</string>

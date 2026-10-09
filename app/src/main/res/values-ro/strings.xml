@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Backup și restabilire</string>
     <string name="settings_backup_restore_summary">Salvați setările, aspectele și cuvintele într-un fișier sau includeți-le în backupul telefonului</string>
     <string name="settings_reset_title">Resetare</string>
-    <string name="settings_reset_summary">Readuceți setările, aspectele sau listele de cuvinte la valorile implicite</string>
+    <string name="settings_reset_summary">Ștergeți setările, aspectele sau listele de cuvinte</string>
     <string name="backup_category_back_up">Faceți backup</string>
     <string name="backup_category_restore">Restabilire</string>
     <string name="backup_category_phone">Backupuri automate</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Salvat pe %1$s</string>
     <string name="backup_restore_dialog_device">De pe %1$s</string>
     <string name="backup_restore_not_in_file">Nu se află în acest fișier</string>
-    <string name="backup_restore_dialog_note">Setările și cuvintele se adaugă la cele existente pe acest telefon; aspectele și macrocomenzile sunt înlocuite.</string>
+    <string name="backup_restore_dialog_note">Setările, aspectele și macrocomenzile sunt înlocuite; cuvintele se adaugă la cele existente pe acest telefon.</string>
     <string name="backup_restore_dialog_confirm">Restabiliți</string>
     <string name="backup_restored">Backup restabilit</string>
     <string name="backup_restored_words_pending">Cuvintele învățate vor fi adăugate după ce începeți să folosiți tastatura</string>

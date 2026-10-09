@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">बैकअप और पुनर्स्थापना</string>
     <string name="settings_backup_restore_summary">सेटिंग्स, लेआउट और शब्दों को फ़ाइल में सहेजें, या उन्हें अपने फ़ोन के बैकअप में शामिल करें</string>
     <string name="settings_reset_title">रीसेट</string>
-    <string name="settings_reset_summary">सेटिंग्स, लेआउट या शब्द सूचियों को डिफ़ॉल्ट पर वापस लाएं</string>
+    <string name="settings_reset_summary">सेटिंग्स, लेआउट या शब्द सूचियां मिटाएं</string>
     <string name="backup_category_back_up">बैकअप लें</string>
     <string name="backup_category_restore">पुनर्स्थापना</string>
     <string name="backup_category_phone">स्वचालित बैकअप</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">सहेजा गया: %1$s</string>
     <string name="backup_restore_dialog_device">डिवाइस: %1$s</string>
     <string name="backup_restore_not_in_file">इस फ़ाइल में नहीं है</string>
-    <string name="backup_restore_dialog_note">सेटिंग्स और शब्द इस फ़ोन पर पहले से मौजूद चीज़ों में जोड़े जाते हैं; लेआउट और मैक्रो बदल दिए जाते हैं.</string>
+    <string name="backup_restore_dialog_note">सेटिंग्स, लेआउट और मैक्रो बदल दिए जाते हैं; शब्द इस फ़ोन पर पहले से मौजूद चीज़ों में जोड़े जाते हैं.</string>
     <string name="backup_restore_dialog_confirm">पुनर्स्थापित करें</string>
     <string name="backup_restored">बैकअप पुनर्स्थापित किया गया</string>
     <string name="backup_restored_words_pending">कीबोर्ड का उपयोग शुरू होते ही सीखे गए शब्द जोड़ दिए जाएंगे</string>

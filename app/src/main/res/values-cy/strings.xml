@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Copi wrth gefn ac adfer</string>
     <string name="settings_backup_restore_summary">Cadw gosodiadau, cynlluniau a geiriau mewn ffeil, neu eu cynnwys yng nghopi wrth gefn eich ffôn</string>
     <string name="settings_reset_title">Ailosod</string>
-    <string name="settings_reset_summary">Ailosod gosodiadau, cynlluniau neu restrau geiriau i\'r rhagosodiadau</string>
+    <string name="settings_reset_summary">Dileu gosodiadau, cynlluniau neu restrau geiriau</string>
     <string name="backup_category_back_up">Gwneud copi wrth gefn</string>
     <string name="backup_category_restore">Adfer</string>
     <string name="backup_category_phone">Copïau wrth gefn awtomatig</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Cadwyd %1$s</string>
     <string name="backup_restore_dialog_device">O %1$s</string>
     <string name="backup_restore_not_in_file">Ddim yn y ffeil hon</string>
-    <string name="backup_restore_dialog_note">Mae gosodiadau a geiriau\'n cael eu hychwanegu at yr hyn sydd ar y ffôn hwn; mae cynlluniau a macros yn cael eu disodli.</string>
+    <string name="backup_restore_dialog_note">Mae gosodiadau, cynlluniau a macros yn cael eu disodli; mae geiriau\'n cael eu hychwanegu at yr hyn sydd ar y ffôn hwn.</string>
     <string name="backup_restore_dialog_confirm">Adfer</string>
     <string name="backup_restored">Adferwyd y copi wrth gefn</string>
     <string name="backup_restored_words_pending">Bydd geiriau a ddysgwyd yn cael eu hychwanegu unwaith y bydd y bysellfwrdd yn cael ei ddefnyddio</string>

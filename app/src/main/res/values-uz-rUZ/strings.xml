@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Zaxiralash va tiklash</string>
     <string name="settings_backup_restore_summary">Sozlamalar, joylashuvlar va so‘zlarni faylga saqlang yoki telefoningiz zaxirasiga qo‘shing</string>
     <string name="settings_reset_title">Asliga qaytarish</string>
-    <string name="settings_reset_summary">Sozlamalar, joylashuvlar yoki so‘z ro‘yxatlarini standart holatiga qaytarish</string>
+    <string name="settings_reset_summary">Sozlamalar, joylashuvlar yoki so‘z ro‘yxatlarini o‘chirish</string>
     <string name="backup_category_back_up">Zaxiralash</string>
     <string name="backup_category_restore">Tiklash</string>
     <string name="backup_category_phone">Avtomatik zaxiralash</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Saqlangan: %1$s</string>
     <string name="backup_restore_dialog_device">Qurilma: %1$s</string>
     <string name="backup_restore_not_in_file">Bu faylda yo‘q</string>
-    <string name="backup_restore_dialog_note">Sozlamalar va so‘zlar bu telefondagilarga qo‘shiladi; joylashuvlar va makroslar almashtiriladi.</string>
+    <string name="backup_restore_dialog_note">Sozlamalar, joylashuvlar va makroslar almashtiriladi; so‘zlar bu telefondagilarga qo‘shiladi.</string>
     <string name="backup_restore_dialog_confirm">Tiklash</string>
     <string name="backup_restored">Zaxira tiklandi</string>
     <string name="backup_restored_words_pending">O‘rganilgan so‘zlar klaviatura ishlatila boshlaganda qo‘shiladi</string>

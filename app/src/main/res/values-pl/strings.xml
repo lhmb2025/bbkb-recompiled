@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Kopia zapasowa i przywracanie</string>
     <string name="settings_backup_restore_summary">Zapisz ustawienia, układy i słowa w pliku lub dołącz je do kopii zapasowej telefonu</string>
     <string name="settings_reset_title">Resetowanie</string>
-    <string name="settings_reset_summary">Zresetuj ustawienia, układy lub listy słów do wartości domyślnych</string>
+    <string name="settings_reset_summary">Wymaż ustawienia, układy lub listy słów</string>
     <string name="backup_category_back_up">Tworzenie kopii zapasowej</string>
     <string name="backup_category_restore">Przywracanie</string>
     <string name="backup_category_phone">Automatyczne kopie zapasowe</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Zapisano %1$s</string>
     <string name="backup_restore_dialog_device">Z urządzenia %1$s</string>
     <string name="backup_restore_not_in_file">Brak w tym pliku</string>
-    <string name="backup_restore_dialog_note">Ustawienia i słowa zostaną dodane do tych, które są już na tym telefonie; układy i makra zostaną zastąpione.</string>
+    <string name="backup_restore_dialog_note">Ustawienia, układy i makra zostaną zastąpione; słowa zostaną dodane do tych, które są już na tym telefonie.</string>
     <string name="backup_restore_dialog_confirm">Przywróć</string>
     <string name="backup_restored">Przywrócono kopię zapasową</string>
     <string name="backup_restored_words_pending">Zapamiętane słowa zostaną dodane, gdy zaczniesz używać klawiatury</string>

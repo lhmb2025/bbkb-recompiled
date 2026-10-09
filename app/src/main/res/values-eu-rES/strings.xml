@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Babeskopia eta leheneratzea</string>
     <string name="settings_backup_restore_summary">Gorde ezarpenak, diseinuak eta hitzak fitxategi batean, edo sartu telefonoaren babeskopian</string>
     <string name="settings_reset_title">Berrezarri</string>
-    <string name="settings_reset_summary">Berrezarri ezarpenak, diseinuak edo hitz-zerrendak balio lehenetsietara</string>
+    <string name="settings_reset_summary">Ezabatu ezarpenak, diseinuak edo hitz-zerrendak</string>
     <string name="backup_category_back_up">Egin babeskopia</string>
     <string name="backup_category_restore">Leheneratu</string>
     <string name="backup_category_phone">Babeskopia automatikoak</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Gordeta: %1$s</string>
     <string name="backup_restore_dialog_device">Gailua: %1$s</string>
     <string name="backup_restore_not_in_file">Ez dago fitxategi honetan</string>
-    <string name="backup_restore_dialog_note">Ezarpenak eta hitzak telefono honetan daudenei gehitzen zaizkie; diseinuak eta makroak ordeztu egiten dira.</string>
+    <string name="backup_restore_dialog_note">Ezarpenak, diseinuak eta makroak ordeztu egiten dira; hitzak telefono honetan daudenei gehitzen zaizkie.</string>
     <string name="backup_restore_dialog_confirm">Leheneratu</string>
     <string name="backup_restored">Leheneratu da babeskopia</string>
     <string name="backup_restored_words_pending">Ikasitako hitzak teklatua erabiltzen denean gehituko dira</string>

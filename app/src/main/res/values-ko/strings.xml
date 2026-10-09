@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">백업 및 복원</string>
     <string name="settings_backup_restore_summary">설정, 레이아웃, 단어를 파일로 저장하거나 기기 백업에 포함합니다</string>
     <string name="settings_reset_title">재설정</string>
-    <string name="settings_reset_summary">설정, 레이아웃 또는 단어 목록을 기본값으로 되돌립니다</string>
+    <string name="settings_reset_summary">설정, 레이아웃 또는 단어 목록을 삭제합니다</string>
     <string name="backup_category_back_up">백업</string>
     <string name="backup_category_restore">복원</string>
     <string name="backup_category_phone">자동 백업</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">저장 일시: %1$s</string>
     <string name="backup_restore_dialog_device">기기: %1$s</string>
     <string name="backup_restore_not_in_file">이 파일에 없음</string>
-    <string name="backup_restore_dialog_note">설정과 단어는 이 기기에 있는 항목에 추가되고, 레이아웃과 매크로는 대체됩니다.</string>
+    <string name="backup_restore_dialog_note">설정, 레이아웃, 매크로는 대체되고, 단어는 이 기기에 있는 항목에 추가됩니다.</string>
     <string name="backup_restore_dialog_confirm">복원</string>
     <string name="backup_restored">백업을 복원했습니다</string>
     <string name="backup_restored_words_pending">학습한 단어는 키보드를 사용하기 시작하면 추가됩니다</string>

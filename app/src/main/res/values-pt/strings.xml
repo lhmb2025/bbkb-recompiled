@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Backup e restauração</string>
     <string name="settings_backup_restore_summary">Salvar configurações, leiautes e palavras em um arquivo ou incluí-los no backup do telefone</string>
     <string name="settings_reset_title">Redefinir</string>
-    <string name="settings_reset_summary">Redefinir configurações, leiautes ou listas de palavras para os valores padrão</string>
+    <string name="settings_reset_summary">Apagar configurações, leiautes ou listas de palavras</string>
     <string name="backup_category_back_up">Fazer backup</string>
     <string name="backup_category_restore">Restaurar</string>
     <string name="backup_category_phone">Backups automáticos</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Salvo em %1$s</string>
     <string name="backup_restore_dialog_device">De %1$s</string>
     <string name="backup_restore_not_in_file">Não está neste arquivo</string>
-    <string name="backup_restore_dialog_note">As configurações e palavras são adicionadas ao que já está neste telefone; os leiautes e macros são substituídos.</string>
+    <string name="backup_restore_dialog_note">As configurações, os leiautes e as macros são substituídos; as palavras são adicionadas ao que já está neste telefone.</string>
     <string name="backup_restore_dialog_confirm">Restaurar</string>
     <string name="backup_restored">Backup restaurado</string>
     <string name="backup_restored_words_pending">As palavras aprendidas serão adicionadas quando o teclado estiver em uso</string>

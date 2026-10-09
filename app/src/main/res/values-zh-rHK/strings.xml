@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">備份與還原</string>
     <string name="settings_backup_restore_summary">將設定、配置和字詞儲存至檔案，或加入手機備份</string>
     <string name="settings_reset_title">重設</string>
-    <string name="settings_reset_summary">將設定、配置或字詞清單重設為預設值</string>
+    <string name="settings_reset_summary">清除設定、配置或字詞清單</string>
     <string name="backup_category_back_up">備份</string>
     <string name="backup_category_restore">還原</string>
     <string name="backup_category_phone">自動備份</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">儲存於 %1$s</string>
     <string name="backup_restore_dialog_device">來自 %1$s</string>
     <string name="backup_restore_not_in_file">不在此檔案中</string>
-    <string name="backup_restore_dialog_note">設定和字詞會加入此手機現有的內容；配置和巨集會被取代。</string>
+    <string name="backup_restore_dialog_note">設定、配置和巨集會被取代；字詞會加入此手機現有的內容。</string>
     <string name="backup_restore_dialog_confirm">還原</string>
     <string name="backup_restored">已還原備份</string>
     <string name="backup_restored_words_pending">開始使用鍵盤後，系統便會加入已學習的字詞</string>

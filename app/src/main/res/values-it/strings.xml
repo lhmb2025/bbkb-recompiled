@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Backup e ripristino</string>
     <string name="settings_backup_restore_summary">Salva impostazioni, layout e parole in un file o includili nel backup del telefono</string>
     <string name="settings_reset_title">Reimposta</string>
-    <string name="settings_reset_summary">Riporta impostazioni, layout o elenchi di parole ai valori predefiniti</string>
+    <string name="settings_reset_summary">Cancella impostazioni, layout o elenchi di parole</string>
     <string name="backup_category_back_up">Backup</string>
     <string name="backup_category_restore">Ripristino</string>
     <string name="backup_category_phone">Backup automatici</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Salvato il %1$s</string>
     <string name="backup_restore_dialog_device">Da %1$s</string>
     <string name="backup_restore_not_in_file">Non presente in questo file</string>
-    <string name="backup_restore_dialog_note">Impostazioni e parole vengono aggiunte a quelle già presenti su questo telefono; layout e macro vengono sostituiti.</string>
+    <string name="backup_restore_dialog_note">Impostazioni, layout e macro vengono sostituiti; le parole vengono aggiunte a quelle già presenti su questo telefono.</string>
     <string name="backup_restore_dialog_confirm">Ripristina</string>
     <string name="backup_restored">Backup ripristinato</string>
     <string name="backup_restored_words_pending">Le parole apprese verranno aggiunte quando la tastiera sarà in uso</string>

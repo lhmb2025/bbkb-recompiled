@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Zálohování a obnovení</string>
     <string name="settings_backup_restore_summary">Uložit nastavení, rozložení a slova do souboru nebo je zahrnout do zálohy telefonu</string>
     <string name="settings_reset_title">Resetovat</string>
-    <string name="settings_reset_summary">Vrátit nastavení, rozložení nebo seznamy slov na výchozí hodnoty</string>
+    <string name="settings_reset_summary">Vymazat nastavení, rozložení nebo seznamy slov</string>
     <string name="backup_category_back_up">Zálohování</string>
     <string name="backup_category_restore">Obnovení</string>
     <string name="backup_category_phone">Automatické zálohy</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Uloženo: %1$s</string>
     <string name="backup_restore_dialog_device">Zařízení: %1$s</string>
     <string name="backup_restore_not_in_file">V tomto souboru není</string>
-    <string name="backup_restore_dialog_note">Nastavení a slova se přidají k tomu, co už je v tomto telefonu; rozložení a makra se nahradí.</string>
+    <string name="backup_restore_dialog_note">Nastavení, rozložení a makra se nahradí; slova se přidají k tomu, co už je v tomto telefonu.</string>
     <string name="backup_restore_dialog_confirm">Obnovit</string>
     <string name="backup_restored">Záloha byla obnovena</string>
     <string name="backup_restored_words_pending">Naučená slova budou přidána, jakmile se klávesnice začne používat</string>

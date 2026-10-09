@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">پشتیبان‌گیری و بازیابی</string>
     <string name="settings_backup_restore_summary">ذخیره تنظیمات، چیدمان‌ها و کلمه‌ها در یک فایل یا گنجاندن آن‌ها در نسخه پشتیبان تلفن</string>
     <string name="settings_reset_title">بازنشانی</string>
-    <string name="settings_reset_summary">بازگرداندن تنظیمات، چیدمان‌ها یا فهرست‌های کلمات به حالت پیش‌فرض</string>
+    <string name="settings_reset_summary">پاک کردن تنظیمات، چیدمان‌ها یا فهرست‌های کلمات</string>
     <string name="backup_category_back_up">پشتیبان‌گیری</string>
     <string name="backup_category_restore">بازیابی</string>
     <string name="backup_category_phone">پشتیبان‌گیری خودکار</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">ذخیره‌شده در %1$s</string>
     <string name="backup_restore_dialog_device">از %1$s</string>
     <string name="backup_restore_not_in_file">در این فایل نیست</string>
-    <string name="backup_restore_dialog_note">تنظیمات و کلمه‌ها به موارد موجود در این تلفن اضافه می‌شوند؛ چیدمان‌ها و ماکروها جایگزین می‌شوند.</string>
+    <string name="backup_restore_dialog_note">تنظیمات، چیدمان‌ها و ماکروها جایگزین می‌شوند؛ کلمه‌ها به موارد موجود در این تلفن اضافه می‌شوند.</string>
     <string name="backup_restore_dialog_confirm">بازیابی</string>
     <string name="backup_restored">نسخه پشتیبان بازیابی شد</string>
     <string name="backup_restored_words_pending">کلمه‌های یادگرفته‌شده به محض استفاده از صفحه کلید اضافه می‌شوند</string>

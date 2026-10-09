@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Backup at pag-restore</string>
     <string name="settings_backup_restore_summary">I-save ang mga setting, layout at salita sa isang file, o isama ang mga ito sa backup ng iyong telepono</string>
     <string name="settings_reset_title">I-reset</string>
-    <string name="settings_reset_summary">Ibalik sa default ang mga setting, layout o listahan ng salita</string>
+    <string name="settings_reset_summary">Burahin ang mga setting, layout o listahan ng salita</string>
     <string name="backup_category_back_up">I-back up</string>
     <string name="backup_category_restore">I-restore</string>
     <string name="backup_category_phone">Mga awtomatikong backup</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Na-save noong %1$s</string>
     <string name="backup_restore_dialog_device">Mula sa %1$s</string>
     <string name="backup_restore_not_in_file">Wala sa file na ito</string>
-    <string name="backup_restore_dialog_note">Idinaragdag ang mga setting at salita sa kung ano ang nasa teleponong ito; pinapalitan ang mga layout at macro.</string>
+    <string name="backup_restore_dialog_note">Pinapalitan ang mga setting, layout at macro; idinaragdag ang mga salita sa kung ano ang nasa teleponong ito.</string>
     <string name="backup_restore_dialog_confirm">I-restore</string>
     <string name="backup_restored">Na-restore ang backup</string>
     <string name="backup_restored_words_pending">Idaragdag ang mga natutunang salita kapag ginagamit na ang keyboard</string>

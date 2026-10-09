@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Varundus ja taastamine</string>
     <string name="settings_backup_restore_summary">Salvesta seaded, paigutused ja sõnad faili või lisa need telefoni varukoopiasse</string>
     <string name="settings_reset_title">Lähtesta</string>
-    <string name="settings_reset_summary">Lähtesta seaded, paigutused või sõnaloendid vaikeväärtustele</string>
+    <string name="settings_reset_summary">Kustuta seaded, paigutused või sõnaloendid</string>
     <string name="backup_category_back_up">Varunda</string>
     <string name="backup_category_restore">Taasta</string>
     <string name="backup_category_phone">Automaatsed varukoopiad</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Salvestatud: %1$s</string>
     <string name="backup_restore_dialog_device">Seade: %1$s</string>
     <string name="backup_restore_not_in_file">Pole selles failis</string>
-    <string name="backup_restore_dialog_note">Seaded ja sõnad lisatakse selles telefonis olemasolevatele; paigutused ja makrod asendatakse.</string>
+    <string name="backup_restore_dialog_note">Seaded, paigutused ja makrod asendatakse; sõnad lisatakse selles telefonis olemasolevatele.</string>
     <string name="backup_restore_dialog_confirm">Taasta</string>
     <string name="backup_restored">Varukoopia taastati</string>
     <string name="backup_restored_words_pending">Õpitud sõnad lisatakse, kui klaviatuur on kasutusel</string>

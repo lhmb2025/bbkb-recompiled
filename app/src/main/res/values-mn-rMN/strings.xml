@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Нөөцлөх ба сэргээх</string>
     <string name="settings_backup_restore_summary">Тохиргоо, байрлал, үгсийг файлд хадгалах эсвэл утасныхаа нөөц хуулбарт оруулах</string>
     <string name="settings_reset_title">Дахин тохируулах</string>
-    <string name="settings_reset_summary">Тохиргоо, байрлал эсвэл үгийн жагсаалтыг анхдагч утгад нь буцаах</string>
+    <string name="settings_reset_summary">Тохиргоо, байрлал эсвэл үгийн жагсаалтыг устгах</string>
     <string name="backup_category_back_up">Нөөцлөх</string>
     <string name="backup_category_restore">Сэргээх</string>
     <string name="backup_category_phone">Автомат нөөцлөлт</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Хадгалсан: %1$s</string>
     <string name="backup_restore_dialog_device">Төхөөрөмж: %1$s</string>
     <string name="backup_restore_not_in_file">Энэ файлд байхгүй</string>
-    <string name="backup_restore_dialog_note">Тохиргоо болон үгс энэ утсанд байгаа өгөгдөл дээр нэмэгдэнэ; байрлал болон макро солигдоно.</string>
+    <string name="backup_restore_dialog_note">Тохиргоо, байрлал болон макро солигдоно; үгс энэ утсанд байгаа өгөгдөл дээр нэмэгдэнэ.</string>
     <string name="backup_restore_dialog_confirm">Сэргээх</string>
     <string name="backup_restored">Нөөц хуулбарыг сэргээлээ</string>
     <string name="backup_restored_words_pending">Гарыг ашиглаж эхлэхэд сурсан үгс нэмэгдэнэ</string>

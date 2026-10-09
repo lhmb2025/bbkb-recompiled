@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Cadhangan lan pemulihan</string>
     <string name="settings_backup_restore_summary">Simpen setelan, tata letak, lan tembung menyang berkas, utawa lebokake ing cadhangan telponmu</string>
     <string name="settings_reset_title">Reset</string>
-    <string name="settings_reset_summary">Balekake setelan, tata letak, utawa dhaptar tembung menyang setelan gawan</string>
+    <string name="settings_reset_summary">Busak setelan, tata letak, utawa dhaptar tembung</string>
     <string name="backup_category_back_up">Cadhangake</string>
     <string name="backup_category_restore">Pulihake</string>
     <string name="backup_category_phone">Cadhangan otomatis</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Disimpen %1$s</string>
     <string name="backup_restore_dialog_device">Saka %1$s</string>
     <string name="backup_restore_not_in_file">Ora ana ing berkas iki</string>
-    <string name="backup_restore_dialog_note">Setelan lan tembung ditambahake menyang sing wis ana ing telpon iki; tata letak lan makro diganti.</string>
+    <string name="backup_restore_dialog_note">Setelan, tata letak lan makro diganti; tembung ditambahake menyang sing wis ana ing telpon iki.</string>
     <string name="backup_restore_dialog_confirm">Pulihake</string>
     <string name="backup_restored">Cadhangan wis dipulihake</string>
     <string name="backup_restored_words_pending">Tembung sing disinaoni bakal ditambahake yen papan tombol wis dienggo</string>

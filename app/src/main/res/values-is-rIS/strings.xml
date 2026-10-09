@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Öryggisafrit og endurheimt</string>
     <string name="settings_backup_restore_summary">Vista stillingar, uppsetningar og orð í skrá eða hafa þau með í öryggisafriti símans</string>
     <string name="settings_reset_title">Endurstilla</string>
-    <string name="settings_reset_summary">Færa stillingar, uppsetningar eða orðalista aftur í sjálfgefin gildi</string>
+    <string name="settings_reset_summary">Eyða stillingum, uppsetningum eða orðalistum</string>
     <string name="backup_category_back_up">Taka öryggisafrit</string>
     <string name="backup_category_restore">Endurheimta</string>
     <string name="backup_category_phone">Sjálfvirk öryggisafrit</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Vistað: %1$s</string>
     <string name="backup_restore_dialog_device">Tæki: %1$s</string>
     <string name="backup_restore_not_in_file">Ekki í þessari skrá</string>
-    <string name="backup_restore_dialog_note">Stillingum og orðum er bætt við það sem er í þessum síma; uppsetningum og fjölvum er skipt út.</string>
+    <string name="backup_restore_dialog_note">Stillingum, uppsetningum og fjölvum er skipt út; orðum er bætt við það sem er í þessum síma.</string>
     <string name="backup_restore_dialog_confirm">Endurheimta</string>
     <string name="backup_restored">Öryggisafrit endurheimt</string>
     <string name="backup_restored_words_pending">Lærðum orðum verður bætt við þegar lyklaborðið er tekið í notkun</string>

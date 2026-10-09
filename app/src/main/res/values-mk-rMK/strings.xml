@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Резервна копија и враќање</string>
     <string name="settings_backup_restore_summary">Зачувајте ги поставките, распоредите и зборовите во датотека или вклучете ги во резервната копија на телефонот</string>
     <string name="settings_reset_title">Ресетирање</string>
-    <string name="settings_reset_summary">Вратете ги поставките, распоредите или листите со зборови на стандардните вредности</string>
+    <string name="settings_reset_summary">Избришете ги поставките, распоредите или листите со зборови</string>
     <string name="backup_category_back_up">Правење резервна копија</string>
     <string name="backup_category_restore">Враќање</string>
     <string name="backup_category_phone">Автоматски резервни копии</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Зачувано: %1$s</string>
     <string name="backup_restore_dialog_device">Од %1$s</string>
     <string name="backup_restore_not_in_file">Не е во оваа датотека</string>
-    <string name="backup_restore_dialog_note">Поставките и зборовите се додаваат на она што веќе е на овој телефон; распоредите и макроата се заменуваат.</string>
+    <string name="backup_restore_dialog_note">Поставките, распоредите и макроата се заменуваат; зборовите се додаваат на она што веќе е на овој телефон.</string>
     <string name="backup_restore_dialog_confirm">Врати</string>
     <string name="backup_restored">Резервната копија е вратена</string>
     <string name="backup_restored_words_pending">Научените зборови ќе се додадат откако ќе почнете да ја користите тастатурата</string>

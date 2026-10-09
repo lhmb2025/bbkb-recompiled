@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Sikkerhedskopiering og gendannelse</string>
     <string name="settings_backup_restore_summary">Gem indstillinger, layouts og ord i en fil, eller medtag dem i telefonens sikkerhedskopi</string>
     <string name="settings_reset_title">Nulstil</string>
-    <string name="settings_reset_summary">Nulstil indstillinger, layouts eller ordlister til standardværdierne</string>
+    <string name="settings_reset_summary">Slet indstillinger, layouts eller ordlister</string>
     <string name="backup_category_back_up">Sikkerhedskopiering</string>
     <string name="backup_category_restore">Gendannelse</string>
     <string name="backup_category_phone">Automatiske sikkerhedskopier</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Gemt %1$s</string>
     <string name="backup_restore_dialog_device">Fra %1$s</string>
     <string name="backup_restore_not_in_file">Ikke i denne fil</string>
-    <string name="backup_restore_dialog_note">Indstillinger og ord føjes til det, der allerede er på denne telefon; layouts og makroer erstattes.</string>
+    <string name="backup_restore_dialog_note">Indstillinger, layouts og makroer erstattes; ord føjes til det, der allerede er på denne telefon.</string>
     <string name="backup_restore_dialog_confirm">Gendan</string>
     <string name="backup_restored">Sikkerhedskopien er gendannet</string>
     <string name="backup_restored_words_pending">Lærte ord tilføjes, når tastaturet tages i brug</string>

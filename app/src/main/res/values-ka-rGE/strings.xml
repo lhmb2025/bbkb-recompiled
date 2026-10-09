@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">სარეზერვო ასლი და აღდგენა</string>
     <string name="settings_backup_restore_summary">პარამეტრების, განლაგებებისა და სიტყვების ფაილში შენახვა ან მათი ჩართვა ტელეფონის სარეზერვო ასლში</string>
     <string name="settings_reset_title">გადაყენება</string>
-    <string name="settings_reset_summary">პარამეტრების, განლაგებების ან სიტყვების სიების ნაგულისხმევზე დაბრუნება</string>
+    <string name="settings_reset_summary">პარამეტრების, განლაგებების ან სიტყვების სიების წაშლა</string>
     <string name="backup_category_back_up">სარეზერვო ასლის შექმნა</string>
     <string name="backup_category_restore">აღდგენა</string>
     <string name="backup_category_phone">ავტომატური სარეზერვო ასლები</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">შენახულია: %1$s</string>
     <string name="backup_restore_dialog_device">მოწყობილობა: %1$s</string>
     <string name="backup_restore_not_in_file">ამ ფაილში არ არის</string>
-    <string name="backup_restore_dialog_note">პარამეტრები და სიტყვები დაემატება ამ ტელეფონზე არსებულს; განლაგებები და მაკროსები ჩანაცვლდება.</string>
+    <string name="backup_restore_dialog_note">პარამეტრები, განლაგებები და მაკროსები ჩანაცვლდება; სიტყვები დაემატება ამ ტელეფონზე არსებულს.</string>
     <string name="backup_restore_dialog_confirm">აღდგენა</string>
     <string name="backup_restored">სარეზერვო ასლი აღდგენილია</string>
     <string name="backup_restored_words_pending">ნასწავლი სიტყვები დაემატება, როგორც კი კლავიატურის გამოყენებას დაიწყებთ</string>

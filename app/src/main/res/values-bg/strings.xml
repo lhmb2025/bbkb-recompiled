@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Архивиране и възстановяване</string>
     <string name="settings_backup_restore_summary">Запазване на настройките, подредбите и думите във файл или включването им в архива на телефона ви</string>
     <string name="settings_reset_title">Нулиране</string>
-    <string name="settings_reset_summary">Връщане на настройките, подредбите или списъците с думи към стойностите по подразбиране</string>
+    <string name="settings_reset_summary">Изтриване на настройките, подредбите или списъците с думи</string>
     <string name="backup_category_back_up">Архивиране</string>
     <string name="backup_category_restore">Възстановяване</string>
     <string name="backup_category_phone">Автоматично архивиране</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Запазен: %1$s</string>
     <string name="backup_restore_dialog_device">От %1$s</string>
     <string name="backup_restore_not_in_file">Не е във файла</string>
-    <string name="backup_restore_dialog_note">Настройките и думите се добавят към наличните на този телефон; подредбите и макросите се заменят.</string>
+    <string name="backup_restore_dialog_note">Настройките, подредбите и макросите се заменят; думите се добавят към наличните на този телефон.</string>
     <string name="backup_restore_dialog_confirm">Възстановяване</string>
     <string name="backup_restored">Архивът е възстановен</string>
     <string name="backup_restored_words_pending">Запаметените думи ще бъдат добавени, след като клавиатурата започне да се използва</string>

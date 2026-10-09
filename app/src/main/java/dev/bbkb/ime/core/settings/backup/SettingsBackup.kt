@@ -40,21 +40,22 @@ import java.util.TimeZone
  * wrote every value back as a string would not fail here — it would fail the next time the
  * keyboard read `auto_cap`.
  *
- * ## Restore semantics: merge, not replace
+ * ## Restore semantics
  *
- * [apply] writes the keys the backup contains and **leaves every other key alone**. It does not
- * clear keys that are absent from the backup. Two reasons:
+ * [apply] has two modes. By default it **merges**: it writes the keys the backup contains and
+ * leaves every other key alone. With `replace = true` — what a backup bundle restore uses — it
+ * also **removes every setting the backup does not name**, so the phone ends up with exactly the
+ * backup's settings: a setting the user never changed on the backed-up phone was at its default
+ * there, and it is put back to its default here.
  *
- *  1. The preference file is not only settings. Other subsystems keep bookkeeping in the same
- *     default `SharedPreferences` — migration flags (`PrefsManager.migrateThemePrefs`), the
- *     active device-config id, update-check state. Clearing them because an older backup did not
- *     mention them would re-run migrations and reset device state the user never asked to touch.
- *  2. A backup taken by an older build cannot mention keys that build did not have. Under
- *     replace semantics, restoring it would silently reset every setting added since.
+ * Replace never touches the per-device keys a backup does not carry ([isDenied]): the active
+ * device profile, update-check state and the like are this phone's, not the backup's. The caller
+ * can name further keys to keep (`keepKeys`): a bundle restore keeps the layout keys, which its
+ * Layouts part owns. A backup taken by an older build cannot name settings added since; under
+ * replace those go to their defaults, which is what that older build's user had.
  *
- * The practical difference is small: a key absent from a backup was at its default on the device
- * the backup came from, so merging usually lands on the same effective value anyway. Where it
- * differs, merging is the direction that cannot destroy anything.
+ * Merge remains for the old single-document restore path, where the backup might be years old
+ * and the user asked to add its settings rather than to reset the rest.
  */
 object SettingsBackup {
 
@@ -275,11 +276,26 @@ object SettingsBackup {
      *
      * One editor, so the running IME's `OnSharedPreferenceChangeListener`s (notably
      * `ThemePrefsListener`) see the whole restore as a single burst of per-key callbacks and
-     * rebuild the keyboard once per concern rather than once per key. See the class KDoc for why
-     * absent keys are left alone.
+     * rebuild the keyboard once per concern rather than once per key. See the class KDoc for the
+     * two modes.
      */
-    fun apply(prefs: SharedPreferences, backup: Backup): Int {
+    fun apply(
+        prefs: SharedPreferences,
+        backup: Backup,
+        replace: Boolean = false,
+        keepKeys: Set<String> = emptySet(),
+    ): Int {
         val editor = prefs.edit()
+        if (replace) {
+            // Replace: every setting the backup does not name goes back to its default. What
+            // stays is what a backup never carries — the per-device keys ([isDenied]) — and
+            // whatever the caller asks to keep (a bundle restore keeps the layout keys, which are
+            // the Layouts part's business).
+            prefs.all.keys.forEach { key ->
+                if (key in backup.values || isDenied(key) || key in keepKeys) return@forEach
+                editor.remove(key)
+            }
+        }
         var written = 0
         backup.values.forEach { (key, value) ->
             when (value) {

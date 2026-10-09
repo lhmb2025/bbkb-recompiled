@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Rugsteun en herstel</string>
     <string name="settings_backup_restore_summary">Stoor instellings, uitlegte en woorde in \'n lêer, of sluit hulle by jou foon se rugsteun in</string>
     <string name="settings_reset_title">Stel terug</string>
-    <string name="settings_reset_summary">Stel instellings, uitlegte of woordelyste terug na verstekwaardes</string>
+    <string name="settings_reset_summary">Vee instellings, uitlegte of woordelyste uit</string>
     <string name="backup_category_back_up">Rugsteun</string>
     <string name="backup_category_restore">Herstel</string>
     <string name="backup_category_phone">Outomatiese rugsteun</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Gestoor op %1$s</string>
     <string name="backup_restore_dialog_device">Van %1$s</string>
     <string name="backup_restore_not_in_file">Nie in hierdie lêer nie</string>
-    <string name="backup_restore_dialog_note">Instellings en woorde word bygevoeg by wat reeds op hierdie foon is; uitlegte en makro\'s word vervang.</string>
+    <string name="backup_restore_dialog_note">Instellings, uitlegte en makro\'s word vervang; woorde word bygevoeg by wat reeds op hierdie foon is.</string>
     <string name="backup_restore_dialog_confirm">Herstel</string>
     <string name="backup_restored">Rugsteun herstel</string>
     <string name="backup_restored_words_pending">Geleerde woorde sal bygevoeg word sodra die toetsbord gebruik word</string>

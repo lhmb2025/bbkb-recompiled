@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Sandaran dan pemulihan</string>
     <string name="settings_backup_restore_summary">Simpan tetapan, susun atur dan perkataan ke fail, atau sertakannya dalam sandaran telefon anda</string>
     <string name="settings_reset_title">Tetapkan semula</string>
-    <string name="settings_reset_summary">Kembalikan tetapan, susun atur atau senarai perkataan kepada lalai</string>
+    <string name="settings_reset_summary">Padamkan tetapan, susun atur atau senarai perkataan</string>
     <string name="backup_category_back_up">Sandarkan</string>
     <string name="backup_category_restore">Pulihkan</string>
     <string name="backup_category_phone">Sandaran automatik</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Disimpan %1$s</string>
     <string name="backup_restore_dialog_device">Daripada %1$s</string>
     <string name="backup_restore_not_in_file">Tiada dalam fail ini</string>
-    <string name="backup_restore_dialog_note">Tetapan dan perkataan ditambah pada yang sedia ada di telefon ini; susun atur dan makro diganti.</string>
+    <string name="backup_restore_dialog_note">Tetapan, susun atur dan makro diganti; perkataan ditambah pada yang sedia ada di telefon ini.</string>
     <string name="backup_restore_dialog_confirm">Pulihkan</string>
     <string name="backup_restored">Sandaran dipulihkan</string>
     <string name="backup_restored_words_pending">Perkataan yang dipelajari akan ditambah apabila papan kekunci digunakan</string>

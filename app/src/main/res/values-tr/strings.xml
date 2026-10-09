@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Yedekleme ve geri yükleme</string>
     <string name="settings_backup_restore_summary">Ayarları, düzenleri ve kelimeleri bir dosyaya kaydedin veya telefonunuzun yedeğine ekleyin</string>
     <string name="settings_reset_title">Sıfırla</string>
-    <string name="settings_reset_summary">Ayarları, düzenleri veya kelime listelerini varsayılan değerlerine döndürün</string>
+    <string name="settings_reset_summary">Ayarları, düzenleri veya kelime listelerini silin</string>
     <string name="backup_category_back_up">Yedekle</string>
     <string name="backup_category_restore">Geri yükle</string>
     <string name="backup_category_phone">Otomatik yedeklemeler</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Kaydedildi: %1$s</string>
     <string name="backup_restore_dialog_device">Kaynak: %1$s</string>
     <string name="backup_restore_not_in_file">Bu dosyada yok</string>
-    <string name="backup_restore_dialog_note">Ayarlar ve kelimeler bu telefondakilere eklenir; düzenler ve makrolar değiştirilir.</string>
+    <string name="backup_restore_dialog_note">Ayarlar, düzenler ve makrolar değiştirilir; kelimeler bu telefondakilere eklenir.</string>
     <string name="backup_restore_dialog_confirm">Geri yükle</string>
     <string name="backup_restored">Yedek geri yüklendi</string>
     <string name="backup_restored_words_pending">Öğrenilen kelimeler, klavye kullanılmaya başlandığında eklenecek</string>

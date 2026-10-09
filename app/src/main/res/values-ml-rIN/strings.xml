@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">ബാക്കപ്പും പുനഃസ്ഥാപിക്കലും</string>
     <string name="settings_backup_restore_summary">ക്രമീകരണങ്ങൾ, ലേഔട്ടുകൾ, വാക്കുകൾ എന്നിവ ഒരു ഫയലിലേക്ക് സംരക്ഷിക്കുക, അല്ലെങ്കിൽ അവ നിങ്ങളുടെ ഫോണിന്റെ ബാക്കപ്പിൽ ഉൾപ്പെടുത്തുക</string>
     <string name="settings_reset_title">പുനഃസജ്ജമാക്കുക</string>
-    <string name="settings_reset_summary">ക്രമീകരണങ്ങൾ, ലേഔട്ടുകൾ അല്ലെങ്കിൽ പദ ലിസ്റ്റുകൾ സ്ഥിരമൂല്യങ്ങളിലേക്ക് മടക്കുക</string>
+    <string name="settings_reset_summary">ക്രമീകരണങ്ങൾ, ലേഔട്ടുകൾ അല്ലെങ്കിൽ പദ ലിസ്റ്റുകൾ മായ്‌ക്കുക</string>
     <string name="backup_category_back_up">ബാക്കപ്പ് ചെയ്യുക</string>
     <string name="backup_category_restore">പുനഃസ്ഥാപിക്കുക</string>
     <string name="backup_category_phone">സ്വയമേവയുള്ള ബാക്കപ്പുകൾ</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">സംരക്ഷിച്ചത്: %1$s</string>
     <string name="backup_restore_dialog_device">ഉപകരണം: %1$s</string>
     <string name="backup_restore_not_in_file">ഈ ഫയലിൽ ഇല്ല</string>
-    <string name="backup_restore_dialog_note">ക്രമീകരണങ്ങളും വാക്കുകളും ഈ ഫോണിൽ ഉള്ളവയിലേക്ക് ചേർക്കും; ലേഔട്ടുകളും മാക്രോകളും മാറ്റിസ്ഥാപിക്കും.</string>
+    <string name="backup_restore_dialog_note">ക്രമീകരണങ്ങളും ലേഔട്ടുകളും മാക്രോകളും മാറ്റിസ്ഥാപിക്കും; വാക്കുകൾ ഈ ഫോണിൽ ഉള്ളവയിലേക്ക് ചേർക്കും.</string>
     <string name="backup_restore_dialog_confirm">പുനഃസ്ഥാപിക്കുക</string>
     <string name="backup_restored">ബാക്കപ്പ് പുനഃസ്ഥാപിച്ചു</string>
     <string name="backup_restored_words_pending">കീബോർഡ് ഉപയോഗിച്ചു തുടങ്ങുമ്പോൾ പഠിച്ച വാക്കുകൾ ചേർക്കും</string>

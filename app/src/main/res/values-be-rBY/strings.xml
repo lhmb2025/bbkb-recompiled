@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Рэзервовае капіраванне і аднаўленне</string>
     <string name="settings_backup_restore_summary">Захаваць налады, раскладкі і словы ў файл або ўключыць іх у рэзервовую копію тэлефона</string>
     <string name="settings_reset_title">Скід</string>
-    <string name="settings_reset_summary">Вярнуць налады, раскладкі або спісы слоў да стандартных</string>
+    <string name="settings_reset_summary">Сцерці налады, раскладкі або спісы слоў</string>
     <string name="backup_category_back_up">Рэзервовае капіраванне</string>
     <string name="backup_category_restore">Аднаўленне</string>
     <string name="backup_category_phone">Аўтаматычнае рэзервовае капіраванне</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Захавана: %1$s</string>
     <string name="backup_restore_dialog_device">Прылада: %1$s</string>
     <string name="backup_restore_not_in_file">Няма ў гэтым файле</string>
-    <string name="backup_restore_dialog_note">Налады і словы дадаюцца да таго, што ўжо ёсць на гэтым тэлефоне; раскладкі і макрасы замяняюцца.</string>
+    <string name="backup_restore_dialog_note">Налады, раскладкі і макрасы замяняюцца; словы дадаюцца да таго, што ўжо ёсць на гэтым тэлефоне.</string>
     <string name="backup_restore_dialog_confirm">Аднавіць</string>
     <string name="backup_restored">Рэзервовая копія адноўлена</string>
     <string name="backup_restored_words_pending">Вывучаныя словы будуць дададзены, калі клавіятура пачне выкарыстоўвацца</string>

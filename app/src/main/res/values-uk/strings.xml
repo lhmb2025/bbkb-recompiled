@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Резервне копіювання та відновлення</string>
     <string name="settings_backup_restore_summary">Збережіть налаштування, розкладки й слова у файл або додайте їх до резервної копії телефона</string>
     <string name="settings_reset_title">Скидання</string>
-    <string name="settings_reset_summary">Скинути налаштування, розкладки або списки слів до стандартних значень</string>
+    <string name="settings_reset_summary">Стерти налаштування, розкладки або списки слів</string>
     <string name="backup_category_back_up">Резервне копіювання</string>
     <string name="backup_category_restore">Відновлення</string>
     <string name="backup_category_phone">Автоматичне резервне копіювання</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Збережено %1$s</string>
     <string name="backup_restore_dialog_device">З пристрою %1$s</string>
     <string name="backup_restore_not_in_file">Немає в цьому файлі</string>
-    <string name="backup_restore_dialog_note">Налаштування й слова додаються до наявних на цьому телефоні; розкладки та макроси замінюються.</string>
+    <string name="backup_restore_dialog_note">Налаштування, розкладки та макроси замінюються; слова додаються до наявних на цьому телефоні.</string>
     <string name="backup_restore_dialog_confirm">Відновити</string>
     <string name="backup_restored">Резервну копію відновлено</string>
     <string name="backup_restored_words_pending">Вивчені слова буде додано, щойно клавіатура почне використовуватися</string>

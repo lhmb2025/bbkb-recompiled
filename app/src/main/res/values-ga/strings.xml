@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Cúltaca agus athchóiriú</string>
     <string name="settings_backup_restore_summary">Sábháil socruithe, leaganacha amach agus focail i gcomhad, nó cuir iad i gcúltaca d\'fhóin</string>
     <string name="settings_reset_title">Athshocraigh</string>
-    <string name="settings_reset_summary">Cuir socruithe, leaganacha amach nó liostaí focal ar ais go dtí na réamhshocruithe</string>
+    <string name="settings_reset_summary">Scrios socruithe, leaganacha amach nó liostaí focal</string>
     <string name="backup_category_back_up">Déan cúltaca</string>
     <string name="backup_category_restore">Athchóirigh</string>
     <string name="backup_category_phone">Cúltacaí uathoibríocha</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Sábháilte: %1$s</string>
     <string name="backup_restore_dialog_device">Ó %1$s</string>
     <string name="backup_restore_not_in_file">Níl sé sa chomhad seo</string>
-    <string name="backup_restore_dialog_note">Cuirtear socruithe agus focail leis an méid atá ar an bhfón seo; athsholáthraítear leaganacha amach agus macraí.</string>
+    <string name="backup_restore_dialog_note">Athsholáthraítear socruithe, leaganacha amach agus macraí; cuirtear focail leis an méid atá ar an bhfón seo.</string>
     <string name="backup_restore_dialog_confirm">Athchóirigh</string>
     <string name="backup_restored">Athchóiríodh an cúltaca</string>
     <string name="backup_restored_words_pending">Cuirfear focail fhoghlamtha leis nuair a bheidh an méarchlár in úsáid</string>

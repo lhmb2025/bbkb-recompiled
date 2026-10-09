@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">バックアップと復元</string>
     <string name="settings_backup_restore_summary">設定、レイアウト、単語をファイルに保存するか、端末のバックアップに含めます</string>
     <string name="settings_reset_title">リセット</string>
-    <string name="settings_reset_summary">設定、レイアウト、単語リストをデフォルトに戻します</string>
+    <string name="settings_reset_summary">設定、レイアウト、単語リストを消去します</string>
     <string name="backup_category_back_up">バックアップ</string>
     <string name="backup_category_restore">復元</string>
     <string name="backup_category_phone">自動バックアップ</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">保存日時: %1$s</string>
     <string name="backup_restore_dialog_device">端末: %1$s</string>
     <string name="backup_restore_not_in_file">このファイルには含まれていません</string>
-    <string name="backup_restore_dialog_note">設定と単語はこの端末の既存のデータに追加され、レイアウトとマクロは置き換えられます。</string>
+    <string name="backup_restore_dialog_note">設定、レイアウト、マクロは置き換えられ、単語はこの端末の既存のデータに追加されます。</string>
     <string name="backup_restore_dialog_confirm">復元</string>
     <string name="backup_restored">バックアップを復元しました</string>
     <string name="backup_restored_words_pending">学習した単語は、キーボードの使用を開始すると追加されます</string>

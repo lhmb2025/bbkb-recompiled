@@ -840,7 +840,7 @@
     <string name="settings_backup_restore_title">Dublēšana un atjaunošana</string>
     <string name="settings_backup_restore_summary">Saglabāt iestatījumus, izkārtojumus un vārdus failā vai iekļaut tos tālruņa dublējumkopijā</string>
     <string name="settings_reset_title">Atiestatīt</string>
-    <string name="settings_reset_summary">Atjaunot iestatījumu, izkārtojumu vai vārdu sarakstu noklusējumus</string>
+    <string name="settings_reset_summary">Dzēst iestatījumus, izkārtojumus vai vārdu sarakstus</string>
     <string name="backup_category_back_up">Dublēšana</string>
     <string name="backup_category_restore">Atjaunošana</string>
     <string name="backup_category_phone">Automātiskās dublējumkopijas</string>
@@ -863,7 +863,7 @@
     <string name="backup_restore_dialog_saved">Saglabāts: %1$s</string>
     <string name="backup_restore_dialog_device">Ierīce: %1$s</string>
     <string name="backup_restore_not_in_file">Nav šajā failā</string>
-    <string name="backup_restore_dialog_note">Iestatījumi un vārdi tiek pievienoti šajā tālrunī esošajiem; izkārtojumi un makrokomandas tiek aizstāti.</string>
+    <string name="backup_restore_dialog_note">Iestatījumi, izkārtojumi un makrokomandas tiek aizstāti; vārdi tiek pievienoti šajā tālrunī esošajiem.</string>
     <string name="backup_restore_dialog_confirm">Atjaunot</string>
     <string name="backup_restored">Dublējumkopija atjaunota</string>
     <string name="backup_restored_words_pending">Iemācītie vārdi tiks pievienoti, tiklīdz tastatūra tiks izmantota</string>
