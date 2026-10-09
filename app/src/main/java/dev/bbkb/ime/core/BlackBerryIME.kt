@@ -1318,6 +1318,9 @@ class BlackBerryIME : InputMethodService(),
         uiUpdateHandler.handleFinishInput()
         physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.FINISH_INPUT)
         isInputActive = false
+        // The phone-backup bundle is rewritten about once a day, here because the engine is up
+        // and its learned words can be read; the call returns at once the rest of the time.
+        dev.bbkb.ime.core.settings.backup.AutoBackup.refreshIfStale(this)
 
         if (InlineAutofillManager.isSupported()) {
             InlineAutofillManager.getInstance(this).onInputFinished()
@@ -1723,6 +1726,9 @@ class BlackBerryIME : InputMethodService(),
     override fun onDictionaryInitialized(z: Boolean) {
         keyboardSwitcher.getMainKeyboardView()?.setMainDictionaryAvailability(z)
         if (z) uiUpdateHandler.postDictionaryLoaded()
+        // Words from a bundle Android restored wait for this moment: the dictionary and the
+        // engine's model are what they are written into.
+        if (z) dev.bbkb.ime.core.settings.backup.AutoBackup.applyPendingWordsIfReady(this)
         val hadTimeout = uiUpdateHandler.hasDictionaryLoadTimeout()
         if (hadTimeout) uiUpdateHandler.removeDictionaryLoadTimeout()
         if (z || hadTimeout) uiUpdateHandler.postUpdateShiftState(true, false)

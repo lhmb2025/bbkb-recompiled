@@ -96,6 +96,14 @@ class CustomMacroRepository(context: Context) {
         return getAllMacros().none { it.tag == tag && it.tag != currentTag }
     }
     
+    /**
+     * Replaces the whole macro set — a backup restore, or a reset with an empty list. Goes through
+     * [saveMacros] so the process-wide memo is published like any other write.
+     */
+    fun replaceAll(macros: List<CustomMacro>) {
+        saveMacros(macros)
+    }
+
     private fun saveMacros(macros: List<CustomMacro>) {
         val jsonArray = JSONArray()
         macros.forEach { macro ->

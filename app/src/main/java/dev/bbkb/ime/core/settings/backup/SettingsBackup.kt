@@ -66,16 +66,6 @@ object SettingsBackup {
 
     const val MIME_TYPE: String = "application/json"
 
-    /**
-     * Search-anchor ids for the two rows this feature adds to the Advanced screen. Declared here
-     * because the rows hold no preference key of their own, so there is no other place that names
-     * them; `SettingsSearchIndex` indexes them by these constants and the screen repeats the
-     * literals inside its `settingsSearchAnchor(...)` calls, which is the form the index's sync
-     * test scans for.
-     */
-    const val ANCHOR_BACK_UP: String = "settings_backup"
-    const val ANCHOR_RESTORE: String = "settings_restore"
-
     // ── the denylist ─────────────────────────────────────────────────────────
 
     /**
@@ -145,18 +135,21 @@ object SettingsBackup {
      *
      * @param appVersion  `BuildConfig.VERSION_NAME` of the writing build — recorded for the reader,
      *                    never checked on import. A backup is not tied to a version.
+     * @param excludeKeys further keys to leave out: a backup bundle passes the layout keys
+     *                    ([LayoutsBundle.PREF_KEYS]), which travel in its layouts part instead.
      */
     fun serialize(
         prefs: SharedPreferences,
         appVersion: String,
         versionCode: Int,
         nowMillis: Long = System.currentTimeMillis(),
+        excludeKeys: Set<String> = emptySet(),
     ): String {
         val settings = JSONObject()
         // Sorted so two backups of the same preferences are the same bytes, which makes them
         // diffable and makes the round-trip test's failures readable.
         prefs.all.entries.sortedBy { it.key }.forEach { (key, value) ->
-            if (isDenied(key)) return@forEach
+            if (isDenied(key) || key in excludeKeys) return@forEach
             typedValue(value)?.let { settings.put(key, it) }
         }
 

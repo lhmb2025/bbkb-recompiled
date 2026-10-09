@@ -70,10 +70,6 @@ object LayoutsBundle {
     const val VERSION: Int = 1
     const val MIME_TYPE: String = "application/json"
 
-    /** Search anchors for the two Manage data rows; see [SettingsBackup.ANCHOR_BACK_UP]. */
-    const val ANCHOR_EXPORT: String = "layouts_export"
-    const val ANCHOR_IMPORT: String = "layouts_import"
-
     /** Largest file [parse] reads. A full bundle with a few letter maps is tens of kilobytes. */
     const val MAX_BYTES: Int = 1024 * 1024
 
@@ -97,6 +93,36 @@ object LayoutsBundle {
 
     /** `SettingsManager.getCurrencySymbol` / `SymbolCustomizationScreen`'s key. */
     private const val CURRENCY_KEY = "pref_currency_key"
+
+    /**
+     * The preference keys the editor sections live under: the two symbol pages and the palette
+     * (`CustomSymbolRepository`), the slideboard numpad (`KeyEditorSpec`), the quick phrases and
+     * the currency key. A backup bundle keeps these out of its settings part so that Settings and
+     * Layouts are two separate things to restore or reset; [resetEditors] clears exactly these.
+     * The physical letter maps are files, not preferences, and the active map's id is already on
+     * [SettingsBackup.DENIED_KEYS].
+     */
+    val PREF_KEYS: Set<String> by lazy {
+        setOf(
+            "pref_vkb_symbol_page_layout",
+            "pref_pkb_symbol_page_layout",
+            "pref_additional_symbol_list",
+            "custom_slideboard_symbols",
+            CURRENCY_KEY,
+        ) + QUICK_PHRASE_KEYS
+    }
+
+    /**
+     * Puts every editor section back to its default by removing [PREF_KEYS], then clears the
+     * keyboard cache the way an edit does (see `CustomSymbolRepository.saveLayout`). Main thread,
+     * as [applyEditors]. Letter maps are not touched here: the caller deletes those files.
+     */
+    fun resetEditors(context: Context) {
+        val editor = PrefsManager.getPrefs(context).edit()
+        PREF_KEYS.forEach { editor.remove(it) }
+        editor.apply()
+        dev.bbkb.ime.keyboard.KeyboardBuilder.onKeyboardThemeChanged()
+    }
 
     /** `CustomSymbolRepository.DELIMITER`: the separator of the stores the slots live in. */
     private const val STORAGE_DELIMITER = '͸'

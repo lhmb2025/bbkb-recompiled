@@ -36,6 +36,7 @@ import dev.bbkb.ime.core.settings.screens.TouchSurfaceHelperScreen
 import dev.bbkb.ime.core.settings.screens.DeviceConfigurationScreen
 import dev.bbkb.ime.core.settings.screens.DeviceProfileBuilderScreen
 import dev.bbkb.ime.core.settings.screens.PhysicalKeyboardScreen
+import dev.bbkb.ime.core.settings.screens.BackupRestoreScreen
 import dev.bbkb.ime.core.settings.screens.CustomPhysicalLayoutsScreen
 import dev.bbkb.ime.core.settings.screens.PredictionsSuggestionsScreen
 import dev.bbkb.ime.core.settings.screens.QuickPhrasesScreen
@@ -159,7 +160,15 @@ fun SettingsNavHost(
                 onNavigateBack = back,
                 onNavigateToDeviceCompatibility = go(SettingsRoute.DeviceCompatibility),
                 onNavigateToAbout = go(SettingsRoute.About),
-                onNavigateToDebug = go(SettingsRoute.Debug)
+                onNavigateToDebug = go(SettingsRoute.Debug),
+                onNavigateToBackupRestore = go(SettingsRoute.BackupRestore)
+            )
+        }
+
+        // Backup and restore — the three kinds of data to and from a file, and the phone backup
+        composable(SettingsRoute.BackupRestore.route) {
+            BackupRestoreScreen(
+                onNavigateBack = back
             )
         }
         

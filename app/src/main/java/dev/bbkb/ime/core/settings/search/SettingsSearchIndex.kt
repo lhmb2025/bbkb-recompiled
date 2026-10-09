@@ -4,8 +4,8 @@ import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.device.touch.TouchSourceSelector
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.SettingsRoute
-import dev.bbkb.ime.core.settings.backup.LayoutsBundle
-import dev.bbkb.ime.core.settings.backup.SettingsBackup
+import dev.bbkb.ime.core.settings.screens.BackupAnchors
+import dev.bbkb.ime.core.settings.screens.ManageDataAnchors
 import dev.bbkb.ime.core.settings.screens.TouchSurfaceAnchors
 import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardPrefs
 
@@ -271,17 +271,16 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.touch_surface_helper_title, "touch surface touchpad keyboard gestures swipe scroll assistant cursor shizuku titan unihertz", SettingsRoute.DeviceCompatibility.route, ADVANCED, TouchSurfaceAnchors.HELPER),
         SearchableSetting(R.string.touch_surface_shizuku_category, "shizuku touch surface touchpad wireless debugging adb root grant access permission", SettingsRoute.TouchSurfaceHelper.route, ADVANCED, TouchSurfaceAnchors.SHIZUKU, DeviceRequirement.TOUCH_KEYPAD_SHIZUKU),
         SearchableSetting(R.string.settings_debug_title, "debug developer", SettingsRoute.Advanced.route, ADVANCED),
-        SearchableSetting(R.string.settings_clear_settings_title, "reset clear settings data", SettingsRoute.Advanced.route, ADVANCED),
-        // ── Advanced: Manage data (settings backup/restore) ─────────────────────
-        // Anchored, unlike the four rows above: these two are actions rather than screens, so
-        // landing on the Advanced screen with the right row highlighted is the whole navigation.
-        // The ids are the ones SettingsBackup declares — the rows hold no preference key to name
-        // them by.
-        SearchableSetting(R.string.settings_backup_title, "backup back up export save settings file json copy transfer", SettingsRoute.Advanced.route, ADVANCED, SettingsBackup.ANCHOR_BACK_UP),
-        SearchableSetting(R.string.settings_restore_title, "restore import load settings file json backup transfer migrate", SettingsRoute.Advanced.route, ADVANCED, SettingsBackup.ANCHOR_RESTORE),
-        // Same shape as the two above, ids from LayoutsBundle.
-        SearchableSetting(R.string.settings_layouts_export_title, "export layouts symbol page palette slideboard quick phrases currency custom physical layout file json share", SettingsRoute.Advanced.route, ADVANCED, LayoutsBundle.ANCHOR_EXPORT),
-        SearchableSetting(R.string.settings_layouts_import_title, "import layouts symbol page palette slideboard quick phrases currency custom physical layout letter map file json", SettingsRoute.Advanced.route, ADVANCED, LayoutsBundle.ANCHOR_IMPORT),
+        // ── Advanced: Manage data ───────────────────────────────────────────────
+        // The Backup and restore row (a screen) and Reset (an action) on Advanced, then the
+        // action rows on the Backup and restore screen itself: saving a file, restoring one, and
+        // the phone-backup switch. All anchored: none holds a preference key to name it by, so
+        // the ids are the ones ManageDataAnchors and BackupAnchors declare.
+        SearchableSetting(R.string.settings_backup_restore_title, "backup back up restore export import save load settings layouts words file zip copy transfer migrate google account", SettingsRoute.Advanced.route, ADVANCED, ManageDataAnchors.BACKUP_RESTORE),
+        SearchableSetting(R.string.settings_reset_title, "reset clear settings layouts words dictionary learned defaults erase wipe data", SettingsRoute.Advanced.route, ADVANCED, ManageDataAnchors.RESET),
+        SearchableSetting(R.string.backup_save_title, "backup back up export save settings layouts symbol page slideboard quick phrases custom physical layout dictionary shortcuts learned words file zip", SettingsRoute.BackupRestore.route, ADVANCED, BackupAnchors.SAVE),
+        SearchableSetting(R.string.backup_restore_file_title, "restore import load settings layouts letter map dictionary words file zip json backup transfer migrate", SettingsRoute.BackupRestore.route, ADVANCED, BackupAnchors.RESTORE),
+        SearchableSetting(R.string.backup_phone_include_title, "phone backup google account cloud automatic android back up sync", SettingsRoute.BackupRestore.route, ADVANCED, BackupAnchors.PHONE),
         // ── Advanced: OTA app updates (About -> Updates) ────────────────────────
         SearchableSetting(R.string.settings_updates_title, "update ota new version apk download install upgrade", SettingsRoute.Updates.route, ADVANCED),
         SearchableSetting(R.string.settings_update_background_check_title, "update daily background check notify notification", SettingsRoute.Updates.route, ADVANCED, "pref_update_background_check"),

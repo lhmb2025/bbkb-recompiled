@@ -206,6 +206,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "AnimationParametersScreen" -> ({ AnimationParametersScreen({}) })
         "AppearanceLayoutScreen" -> ({ AppearanceLayoutScreen({}, {}) })
         "AutoCorrectionScreen" -> ({ AutoCorrectionScreen({}) })
+        "BackupRestoreScreen" -> ({ BackupRestoreScreen({}) })
         "CkbGesturesScreen" -> ({ CkbGesturesScreen({}) })
         "ClipboardScreen" -> ({ ClipboardScreen({}) })
         "CorrectionLearningScreen" -> ({ CorrectionLearningScreen({}, {}, {}, {}) })
@@ -481,7 +482,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
          */
         private val SCREEN_NAMES = listOf(
             "AdvancedGestureParametersScreen", "AdvancedSettingsScreen", "AnimationParametersScreen",
-            "AppearanceLayoutScreen", "AutoCorrectionScreen", "CkbGesturesScreen", "ClipboardScreen",
+            "AppearanceLayoutScreen", "AutoCorrectionScreen", "BackupRestoreScreen", "CkbGesturesScreen", "ClipboardScreen",
             "CorrectionLearningScreen", "CreditsScreen", "CustomMacrosScreen",
             "CustomPhysicalLayoutsScreen", "CustomSymbolPageScreen_PKB", "CustomSymbolPageScreen_VKB", "CustomizationScreen",
             "CustomizeMenuScreen", "CustomizeSlideBoardScreen", "DebugSettingsScreen",
@@ -555,16 +556,34 @@ class SettingsScreenRenderTest(private val screenName: String) {
             title = "Advanced",
             resources = setOf(
                 "settings_about_summary", "settings_about_title", "settings_advanced_title",
-                "settings_backup_summary", "settings_backup_title",
-                "settings_clear_settings_summary", "settings_clear_settings_title", "settings_debug_summary",
-                "settings_debug_title", "settings_device_compatibility_summary",
-                "settings_device_compatibility_title", "settings_layouts_export_summary",
-                "settings_layouts_export_title", "settings_layouts_import_summary",
-                "settings_layouts_import_title", "settings_restore_summary",
-                "settings_restore_title"
+                "settings_backup_restore_summary", "settings_backup_restore_title",
+                "settings_debug_summary", "settings_debug_title", "settings_device_compatibility_summary",
+                "settings_device_compatibility_title",
+                // "Reset" — the first resource name carrying that value; the row's own is
+                // settings_reset_title.
+                "reset_dialog_confirm", "settings_reset_summary",
             ),
             literals = setOf(
                 "MANAGE DATA",
+            ),
+        ),
+        Case(
+            name = "BackupRestoreScreen",
+            route = SettingsRoute.BackupRestore.route,
+            title = "Backup and restore",
+            resources = setOf(
+                "settings_backup_restore_title",
+                "backup_part_settings", "backup_part_settings_summary",
+                "backup_part_layouts", "backup_part_layouts_summary",
+                "backup_part_words", "backup_part_words_summary",
+                "backup_save_title", "backup_save_summary",
+                "backup_restore_file_title", "backup_restore_file_summary",
+                "backup_phone_include_title", "backup_phone_include_summary",
+                "backup_phone_last_title", "backup_phone_last_never",
+                "backup_phone_settings_title", "backup_phone_settings_summary",
+            ),
+            literals = setOf(
+                "BACK UP", "RESTORE", "AUTOMATIC BACKUPS",
             ),
         ),
         Case(
