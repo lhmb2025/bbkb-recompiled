@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Alt+Key Character Mappings for the Unihertz Titan 2 Elite
+
+    The Elite's Alt layer differs from the Titan 2's (device_alt_mappings_titan2.xml): several
+    symbols trade places. From a published device study, NOT yet verified on a unit; check every
+    row against the printed keycaps on a real Elite before relying on it.
+
+    Attributes:
+    - keycode: Android KeyEvent keycode name (without KEYCODE_ prefix)
+    - char: The character to produce
+-->
+<alt-key-mappings>
+    <!-- Row 1: QWERTYUIOP -->
+    <mapping keycode="Q" char="0"/>
+    <mapping keycode="W" char="1"/>
+    <mapping keycode="E" char="2"/>
+    <mapping keycode="R" char="3"/>
+    <mapping keycode="T" char="("/>
+    <mapping keycode="Y" char=")"/>
+    <mapping keycode="U" char="_"/>
+    <mapping keycode="I" char="-"/>
+    <mapping keycode="O" char="+"/>
+    <mapping keycode="P" char="@"/>
+
+    <!-- Row 2: ASDFGHJKL -->
+    <mapping keycode="A" char="*"/>
+    <mapping keycode="S" char="4"/>
+    <mapping keycode="D" char="5"/>
+    <mapping keycode="F" char="6"/>
+    <mapping keycode="G" char="/"/>
+    <mapping keycode="H" char=":"/>
+    <mapping keycode="J" char="#"/>
+    <mapping keycode="K" char="'"/>
+    <mapping keycode="L" char="&quot;"/>
+
+    <!-- Row 3: ZXCV (space) BNM -->
+    <mapping keycode="Z" char="7"/>
+    <mapping keycode="X" char="8"/>
+    <mapping keycode="C" char="9"/>
+    <mapping keycode="V" char="?"/>
+    <mapping keycode="B" char="!"/>
+    <mapping keycode="N" char=","/>
+    <mapping keycode="M" char="."/>
+
+    <!-- Alt+Space: the ROM emits a private-use code point here (U+EE01 on the Titan 2 ROM line);
+         a plain space instead. -->
+    <mapping keycode="SPACE" char=" "/>
+
+</alt-key-mappings>

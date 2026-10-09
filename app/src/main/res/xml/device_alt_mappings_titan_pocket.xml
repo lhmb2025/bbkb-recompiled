@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Alt+Key Character Mappings for the Unihertz Titan Pocket and Titan Slim
+
+    The two phones share one key table (aw9523-key, same .kl / .kcm), so both profiles name this
+    file. The Alt layer is a phone pad: 0 on Q, then 1-2-3 / 4-5-6 / 7-8-9 down the W-E-R,
+    S-D-F and X-C-V columns. Only the digits are known; the remaining Alt characters come from
+    the firmware key map (AuxCharacterResolver tier 3) until a unit confirms them. Not yet
+    verified on a unit.
+
+    Attributes:
+    - keycode: Android KeyEvent keycode name (without KEYCODE_ prefix)
+    - char: The character to produce
+-->
+<alt-key-mappings>
+    <mapping keycode="Q" char="0"/>
+
+    <mapping keycode="W" char="1"/>
+    <mapping keycode="E" char="2"/>
+    <mapping keycode="R" char="3"/>
+
+    <mapping keycode="S" char="4"/>
+    <mapping keycode="D" char="5"/>
+    <mapping keycode="F" char="6"/>
+
+    <mapping keycode="X" char="7"/>
+    <mapping keycode="C" char="8"/>
+    <mapping keycode="V" char="9"/>
+
+    <!-- Alt+Space: the ROM emits the private-use U+EF01; a plain space instead. -->
+    <mapping keycode="SPACE" char=" "/>
+
+</alt-key-mappings>

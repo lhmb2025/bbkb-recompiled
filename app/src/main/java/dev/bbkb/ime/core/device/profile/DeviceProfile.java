@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.util.SparseBooleanArray;
 import android.view.KeyCharacterMap;
 import android.view.MotionEvent;
 
@@ -13,10 +14,16 @@ import androidx.annotation.VisibleForTesting;
 import dev.bbkb.ime.core.device.config.parser.AltMappingsParser;
 import dev.bbkb.ime.core.device.config.model.AltMappingsTable;
 import dev.bbkb.ime.core.device.config.model.DeviceInputMapping;
+import dev.bbkb.ime.core.device.config.model.DeviceQuirk;
+import dev.bbkb.ime.core.device.config.model.TouchKeypadConfig;
 import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
 import dev.bbkb.ime.core.device.config.model.DeviceSettingOverride;
 import dev.bbkb.ime.core.device.detection.KeyboardDeviceInfo;
 import dev.bbkb.ime.core.device.detection.KeyboardDeviceScanner;
+import dev.bbkb.ime.core.device.detection.TouchKeypadInfo;
+import dev.bbkb.ime.core.device.touch.SyntheticTouchSources;
+import dev.bbkb.ime.core.device.touch.TouchKeypadGeometry;
+import dev.bbkb.ime.core.device.touch.TouchSourceSelector;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
 import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.core.shared.InputPathDebug;
@@ -68,9 +75,30 @@ public final class DeviceProfile {
 
     private static final String TAG = "DeviceProfile";
 
-    private final DeviceCapabilities capabilities;
+    /**
+     * Not final: a live re-scan of the touch keypad (the pad appearing or vanishing after start-up,
+     * see {@link #onScannedTouchKeypadChanged}) swaps in a copy with the new pad. Everything else
+     * in it stays as detected.
+     */
+    private volatile DeviceCapabilities capabilities;
     private final DeviceRuntimeState runtimeState;
     private DeviceInputMapping deviceMapping;
+
+    /** {@link #getTouchKeypadGeometry()}'s answer, dropped whenever its inputs change. */
+    private volatile TouchKeypadGeometry touchKeypadGeometry;
+
+    /** {@link #getTouchSourceSelection()}'s answer, dropped with the geometry. */
+    private volatile TouchSourceSelector.Selection touchSourceSelection;
+
+    /**
+     * Per input-device id: is it the pad the config names? {@link #isFromTouchKeypad} asks this
+     * for events from any device other than the scanned pad, so the answer is cached; it is
+     * cleared when the device set changes (ids can be reused).
+     */
+    private final SparseBooleanArray namedPadDevices = new SparseBooleanArray(2);
+
+    /** Registered once, the first time a profile is initialised with a Context. */
+    private static boolean sScannerListenerRegistered;
 
     // Display configuration (mutable — updated on config change)
     private int displayOrientation = Configuration.ORIENTATION_PORTRAIT;
@@ -292,6 +320,13 @@ public final class DeviceProfile {
             // gesture feed rides the same lifecycle as the variant (startup + config switches).
             dev.bbkb.ime.keyboard.internal.GestureEventProcessor.setEngineYWarp(
                     profile.deviceMapping != null ? profile.deviceMapping.ckbYWarp : null);
+            // ...and so does the stroke analyser's frame (144 / 610 on the KEY2's pad).
+            dev.bbkb.ime.keyboard.internal.GestureEventProcessor.setKeypadGeometry(
+                    profile.getTouchKeypadGeometry());
+            // A pad that appears or vanishes later (the Titan 2's, when the OEM Scroll assistant
+            // is toggled) is picked up without a restart. Touch keypad only: no key config reset.
+            KeyboardDeviceScanner.getInstance().registerDeviceListener(context);
+            registerScannerListener();
         }
 
         Logger.info("CKB_DEBUG", "DeviceProfile.initialize:"
@@ -301,10 +336,44 @@ public final class DeviceProfile {
                 + ", forceTouchKeypad=" + (profile.deviceMapping != null && profile.deviceMapping.forceTouchKeypad)
                 + ", hasTouchKeypad=" + profile.hasTouchKeypad()
                 + ", touchKeypadDeviceId=" + profile.getTouchKeypadDeviceId()
+                + ", touchKeypadGeometry=" + profile.getTouchKeypadGeometry()
+                + ", touchSource=" + profile.getTouchSourceSelection()
                 + ", primaryKeyboard=" + caps.getPrimaryKeyboard());
 
         current = profile;
         StartupTiming.end("deviceProfile.initializeForDevice", initToken);
+    }
+
+    private static synchronized void registerScannerListener() {
+        if (sScannerListenerRegistered) return;
+        sScannerListenerRegistered = true;
+        KeyboardDeviceScanner.getInstance().addTouchKeypadListener(DeviceProfile::onScannedTouchKeypadChanged);
+    }
+
+    /**
+     * The scanner's live re-scan found a different touch keypad: fold it into the current
+     * profile. Only the touch keypad changes — the device mapping, the scancode roles and the
+     * rest of the capabilities stay exactly as they were.
+     */
+    @VisibleForTesting
+    static void onScannedTouchKeypadChanged(@Nullable TouchKeypadInfo touchKeypad) {
+        final DeviceProfile profile = current;
+        if (profile == null) return;
+        profile.capabilities = profile.capabilities.withTouchKeypad(touchKeypad);
+        profile.invalidateTouchKeypadCaches();
+        dev.bbkb.ime.keyboard.internal.GestureEventProcessor.setKeypadGeometry(
+                profile.getTouchKeypadGeometry());
+        Logger.info("CKB_DEBUG", "DeviceProfile: touch keypad now " + touchKeypad
+                + ", hasTouchKeypad=" + profile.hasTouchKeypad()
+                + ", geometry=" + profile.getTouchKeypadGeometry());
+    }
+
+    private void invalidateTouchKeypadCaches() {
+        touchKeypadGeometry = null;
+        touchSourceSelection = null;
+        synchronized (namedPadDevices) {
+            namedPadDevices.clear();
+        }
     }
 
     /**
@@ -397,9 +466,78 @@ public final class DeviceProfile {
         return capabilities.hasPhysicalKeyboard();
     }
 
+    /**
+     * Whether touch-keypad events can actually reach the IME: the config forces CKB, the scan
+     * found a pad, the native source applies (the OS delivers a declared pad on this Android
+     * version), or a synthetic source has registered its device id. Contrast
+     * {@link #declaresTouchKeypad()}, which only says the profile describes one.
+     */
     public boolean hasTouchKeypad() {
         if (deviceMapping != null && deviceMapping.forceTouchKeypad) return true;
-        return capabilities.hasTouchKeypad();
+        if (capabilities.hasTouchKeypad()) return true;
+        if (declaresTouchKeypad()
+                && getTouchSourceSelection().choice == TouchSourceSelector.Choice.NATIVE) {
+            return true;
+        }
+        return !SyntheticTouchSources.isEmpty();
+    }
+
+    /**
+     * Whether the matched profile describes a touch surface over its keys ({@code <touch-keypad>}),
+     * whether or not its events can reach the IME right now. Settings that only make sense on such
+     * a device key on this; behaviour keys on {@link #hasTouchKeypad()}.
+     */
+    public boolean declaresTouchKeypad() {
+        return deviceMapping != null && deviceMapping.touchKeypad != null;
+    }
+
+    /** The profile's {@code <touch-keypad>} block, or null. */
+    @Nullable
+    public TouchKeypadConfig getTouchKeypadConfig() {
+        return deviceMapping != null ? deviceMapping.touchKeypad : null;
+    }
+
+    /** Which keypad touch source should run here, and why; see {@link TouchSourceSelector}. */
+    public TouchSourceSelector.Selection getTouchSourceSelection() {
+        TouchSourceSelector.Selection s = touchSourceSelection;
+        if (s == null) {
+            s = TouchSourceSelector.select(getTouchKeypadConfig(), Build.VERSION.SDK_INT,
+                    capabilities.hasTouchKeypad());
+            touchSourceSelection = s;
+        }
+        return s;
+    }
+
+    /**
+     * The touch keypad's coordinate frame (see {@link TouchKeypadGeometry} for the precedence:
+     * the pad's InputDevice, the profile's {@code <touch-keypad>} ranges, the forced-CKB warp,
+     * the KEY2's pad).
+     */
+    public TouchKeypadGeometry getTouchKeypadGeometry() {
+        TouchKeypadGeometry g = touchKeypadGeometry;
+        if (g == null) {
+            g = TouchKeypadGeometry.resolve(capabilities.getTouchKeypad(), getTouchKeypadConfig(),
+                    deviceMapping != null ? deviceMapping.ckbYWarp : null,
+                    deviceMapping != null && deviceMapping.forceTouchKeypad);
+            touchKeypadGeometry = g;
+        }
+        return g;
+    }
+
+    /**
+     * Whether type-by-swiping on the touch keypad has engine geometry to decode against. The
+     * root KDB is authored for the KEY2's pad; a profile that declares a {@code <touch-keypad>}
+     * describes a different pad, so it needs its own {@code <kdb-variant>} first. Profiles that
+     * declare no pad (the KEY2, the emulator rig, every unknown device) are unaffected.
+     */
+    public boolean isTouchKeypadSwipeTypingSupported() {
+        return deviceMapping == null || deviceMapping.touchKeypad == null
+                || deviceMapping.kdbVariant != null;
+    }
+
+    /** Whether the matched profile declares {@code <quirk name="..."/>} for {@code quirk}. */
+    public boolean hasQuirk(DeviceQuirk quirk) {
+        return deviceMapping != null && deviceMapping.hasQuirk(quirk);
     }
 
     public int getTouchKeypadDeviceId() {
@@ -417,26 +555,24 @@ public final class DeviceProfile {
         return capabilities.getTouchKeypadDeviceId();
     }
 
+    /**
+     * The pad's reported resolution (0 when no InputDevice reports one), through
+     * {@link #getTouchKeypadGeometry()}. {@code SettingsValues} scales its touch thresholds by it.
+     */
     public float getTouchKeypadResolution() {
-        return capabilities.getTouchKeypadResolution();
+        return getTouchKeypadGeometry().resolution();
     }
 
+    /**
+     * The pad's sensor Y extent, or 0 when nothing but the KEY2 default stands behind it. Through
+     * {@link #getTouchKeypadGeometry()}: the scanned pad's range, else the profile's
+     * {@code <touch-keypad range-y>}, else — forced-CKB profile with no hardware pad, the W2
+     * emulator posing as a KEY2 — the last sensor breakpoint of the config's own
+     * {@code <ckb-y-warp>} ("0:0,450:324" -> 450). Real CKB hardware never reaches that
+     * fallback — its scanner supplies the value.
+     */
     public float getTouchKeypadYMax() {
-        float hw = capabilities.getTouchKeypadYMax();
-        // Forced-CKB profile with no hardware pad (the W2 emulator posing as a KEY2): the
-        // sensor y-range is the last sensor breakpoint of the config's own <ckb-y-warp>
-        // ("0:0,450:324" -> 450). Real CKB hardware never reaches this fallback — its
-        // scanner supplies the value.
-        if (hw <= 0 && deviceMapping != null && deviceMapping.forceTouchKeypad
-                && deviceMapping.ckbYWarp != null) {
-            try {
-                String[] pts = deviceMapping.ckbYWarp.trim().split(",");
-                String last = pts[pts.length - 1];
-                float v = Float.parseFloat(last.split(":")[0].trim());
-                if (v > 0) return v;
-            } catch (Throwable ignored) { }
-        }
-        return hw;
+        return getTouchKeypadGeometry().sensorYMax();
     }
 
     /**
@@ -514,6 +650,12 @@ public final class DeviceProfile {
 
     // ==================== Touch Keypad ====================
 
+    /**
+     * Whether a MotionEvent comes from the touch keypad: its device id is the scanned pad's (as it
+     * always was), or it comes from an InputDevice whose name the profile's {@code <touch-keypad>}
+     * names (the pad may not be the device the scan settled on, or may have appeared later), or it
+     * carries a device id a synthetic source registered in {@link SyntheticTouchSources}.
+     */
     public boolean isFromTouchKeypad(MotionEvent motionEvent) {
         if (!hasTouchKeypad() || motionEvent == null) {
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "isFromTouchKeypad=false: hasTouchKeypad=" + hasTouchKeypad() + " event=" + motionEvent);
@@ -521,7 +663,9 @@ public final class DeviceProfile {
         }
         int tkpId = getTouchKeypadDeviceId();
         int evtId = motionEvent.getDeviceId();
-        boolean result = evtId == tkpId;
+        boolean result = evtId == tkpId
+                || isDeclaredTouchKeypadDevice(evtId)
+                || SyntheticTouchSources.contains(evtId);
         if (!result && motionEvent.getActionMasked() == android.view.MotionEvent.ACTION_DOWN) {
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "isFromTouchKeypad=false: event.deviceId=" + evtId
                     + " != touchKeypadDeviceId=" + tkpId
@@ -534,6 +678,25 @@ public final class DeviceProfile {
                     + " pointerCount=" + motionEvent.getPointerCount());
         }
         return result;
+    }
+
+    /**
+     * Whether input device {@code deviceId} is the pad the profile names. False at once when the
+     * profile names none (every config but the Titans'), so the KEY2 path pays one field read.
+     */
+    private boolean isDeclaredTouchKeypadDevice(int deviceId) {
+        final TouchKeypadConfig pad = getTouchKeypadConfig();
+        if (pad == null || pad.inputDeviceName == null) return false;
+        synchronized (namedPadDevices) {
+            final int i = namedPadDevices.indexOfKey(deviceId);
+            if (i >= 0) return namedPadDevices.valueAt(i);
+        }
+        final android.view.InputDevice device = KeyboardDeviceScanner.inputDevice(deviceId);
+        final boolean named = device != null && pad.matchesInputDeviceName(device.getName());
+        synchronized (namedPadDevices) {
+            namedPadDevices.put(deviceId, named);
+        }
+        return named;
     }
 
     // ==================== Device Mapping / Override Methods ====================
@@ -635,6 +798,17 @@ public final class DeviceProfile {
         return defaultValue;
     }
 
+    /**
+     * The device's default for a string setting ({@code <setting default-value="...">}), or
+     * {@code appDefault} when the profile gives none. Not a forced value: the user's own choice,
+     * once stored, still wins wherever the setting is read.
+     */
+    public String getDefaultStringValue(String settingKey, String appDefault) {
+        DeviceSettingOverride override = getSettingOverride(settingKey);
+        String deviceDefault = override != null ? override.getDefaultStringValue() : null;
+        return deviceDefault != null ? deviceDefault : appDefault;
+    }
+
     public String getForcedStringValue(String settingKey, String defaultValue) {
         DeviceSettingOverride override = getSettingOverride(settingKey);
         if (override != null && (override.type == DeviceSettingOverride.SettingType.STRING ||
@@ -653,6 +827,7 @@ public final class DeviceProfile {
 
     void setDeviceMapping(DeviceInputMapping mapping) {
         this.deviceMapping = mapping;
+        invalidateTouchKeypadCaches();
     }
 
     // ==================== Runtime State ====================

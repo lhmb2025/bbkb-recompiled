@@ -967,8 +967,15 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "BlackBerry Key2 (Athena)",
                 "BlackBerry PKB Devices",
                 "Minimal Phone (MP01)",
+                // The five Unihertz Titan profiles are preloaded configs like the rest; listed by
+                // display name, they push "Zinwa Q25" below this case's viewport (a lazy list
+                // composes only what is on screen), so it is no longer among the rendered rows.
+                "Unihertz Titan",
+                "Unihertz Titan 2",
+                "Unihertz Titan 2 Elite",
+                "Unihertz Titan Pocket",
+                "Unihertz Titan Slim",
                 "W2 Emulator Replay (virtual KEY2)",
-                "Zinwa Q25",
             ),
         ),
         Case(

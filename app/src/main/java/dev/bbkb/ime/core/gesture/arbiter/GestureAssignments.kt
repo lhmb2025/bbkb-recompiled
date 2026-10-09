@@ -31,9 +31,38 @@ data class GestureAssignments(
         const val KEY_DOUBLE_TAP = "ckb_gesture_double_tap"
         const val KEY_HOLD = "ckb_gesture_hold"
 
-        /** Load assignments from prefs, falling back to each slot's default when unset. */
-        fun fromPrefs(prefs: SharedPreferences): GestureAssignments {
+        /**
+         * The app-wide defaults, with every slot for which [deviceDefault] names an action (a
+         * device profile's `<setting key="ckb_gesture_..." default-value="..."/>`) replaced by it.
+         * A default, not a lock: the user's stored choice still wins in [fromPrefs].
+         */
+        fun defaults(deviceDefault: (key: String) -> String?): GestureAssignments {
             val d = GestureAssignments()
+            fun slot(key: String, appDefault: GestureAction): GestureAction =
+                deviceDefault(key)?.let { GestureAction.fromKey(it) } ?: appDefault
+            return GestureAssignments(
+                flickLeft = slot(KEY_FLICK_LEFT, d.flickLeft),
+                flickRight = slot(KEY_FLICK_RIGHT, d.flickRight),
+                swipeLeft = slot(KEY_SWIPE_LEFT, d.swipeLeft),
+                swipeRight = slot(KEY_SWIPE_RIGHT, d.swipeRight),
+                swipeDown = slot(KEY_SWIPE_DOWN, d.swipeDown),
+                doubleTap = slot(KEY_DOUBLE_TAP, d.doubleTap),
+                hold = slot(KEY_HOLD, d.hold),
+            )
+        }
+
+        /**
+         * [defaults] for the active device profile: on the Titans double-tap defaults to none,
+         * because the OEM Cursor assistant owns double-tap there; everywhere else these are the
+         * app-wide defaults.
+         */
+        fun deviceDefaults(): GestureAssignments = defaults { key ->
+            dev.bbkb.ime.core.device.profile.DeviceProfile.current().getDefaultStringValue(key, null)
+        }
+
+        /** Load assignments from prefs, falling back to [defaults]' slot when one is unset. */
+        fun fromPrefs(prefs: SharedPreferences, defaults: GestureAssignments = GestureAssignments()): GestureAssignments {
+            val d = defaults
             return GestureAssignments(
                 flickLeft = read(prefs, KEY_FLICK_LEFT, d.flickLeft),
                 flickRight = read(prefs, KEY_FLICK_RIGHT, d.flickRight),

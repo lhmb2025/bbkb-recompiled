@@ -18,6 +18,9 @@
 
         <device-type>PKB</device-type>
         
+        <!-- Sold in one layout. Declared so user letter maps bind to it without live detection. -->
+        <keypad-layout>qwerty</keypad-layout>
+
         <input-mappings>
             <alt-mappings>
                 <source>device_alt_mappings_aw9523b</source>

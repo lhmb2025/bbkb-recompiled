@@ -48,6 +48,9 @@ class CkbKeyGridTest {
 
     @Test
     fun aspectMatchesAthenaKeypadDimensions() {
-        assertEquals(1080f / 525f, CkbKeyGrid.ASPECT, 1e-6f)
+        // CkbKeyGrid.aspect reads the active pad's frame; with no pad and no profile (and on the
+        // KEY2, whose pad reports exactly these ranges) that frame is the KEY2's.
+        assertEquals(1080f / 525f,
+            dev.bbkb.ime.core.device.touch.TouchKeypadGeometry.KEY2_DEFAULT.frameAspect(), 1e-6f)
     }
 }

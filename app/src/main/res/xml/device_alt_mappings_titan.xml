@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Alt+Key Character Mappings for the Unihertz Titan (2019)
+
+    From the stock aw9523-key key character map. The layer is laid out differently from the
+    Titan 2's: the digits sit on the right-hand keys. Not yet verified on a unit.
+
+    The Titan has no Sym key, and its profile does not invent one. Its ROM uses Alt+Space
+    (private-use U+EF01) to open its own symbol panel. A table here can only give Alt+Space a
+    character, so it gets a plain space like the other Titans; the symbol board stays reachable
+    from BBKB's on-screen controls. Making Alt+Space open the Sym board instead would be a key-role
+    change, not a character, and is left for a decision on a device.
+
+    Attributes:
+    - keycode: Android KeyEvent keycode name (without KEYCODE_ prefix)
+    - char: The character to produce
+-->
+<alt-key-mappings>
+    <!-- Row 1: QWERTYUIOP -->
+    <mapping keycode="Q" char=":"/>
+    <mapping keycode="W" char="/"/>
+    <mapping keycode="E" char="_"/>
+    <mapping keycode="R" char="-"/>
+    <mapping keycode="T" char="("/>
+    <mapping keycode="Y" char=")"/>
+    <mapping keycode="U" char="1"/>
+    <mapping keycode="I" char="2"/>
+    <mapping keycode="O" char="3"/>
+    <mapping keycode="P" char="0"/>
+
+    <!-- Row 2: ASDFGHJKL -->
+    <mapping keycode="A" char="@"/>
+    <mapping keycode="S" char="'"/>
+    <mapping keycode="D" char="&quot;"/>
+    <mapping keycode="F" char="+"/>
+    <mapping keycode="G" char="*"/>
+    <mapping keycode="H" char="#"/>
+    <mapping keycode="J" char="4"/>
+    <mapping keycode="K" char="5"/>
+    <mapping keycode="L" char="6"/>
+
+    <!-- Row 3: ZXCV (space) BNM -->
+    <mapping keycode="Z" char="!"/>
+    <mapping keycode="X" char="?"/>
+    <mapping keycode="C" char=","/>
+    <mapping keycode="V" char="."/>
+    <mapping keycode="B" char="7"/>
+    <mapping keycode="N" char="8"/>
+    <mapping keycode="M" char="9"/>
+
+    <!-- Alt+Space: the ROM emits the private-use U+EF01 (its symbol-panel trigger); a plain
+         space instead. -->
+    <mapping keycode="SPACE" char=" "/>
+
+</alt-key-mappings>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Device Configuration: Unihertz Titan (2019)
+    Schema v2.4
+
+    Helio P60 (mt6771), Android 9 with an official update to Android 10. Keyboard "aw9523-key";
+    the red side key is on a separate "mtk-kpd" device (scancodes 249 and 250). A separate touch
+    device over the keys, "mtk-pad", which the stock idc declares a touchpad.
+
+    Facts come from the stock key layout, key character map and idc files, NOT from a unit in
+    hand. Verify on a Titan.
+-->
+
+<device-input-config version="2.1" name="Unihertz Titan">
+
+    <device>
+        <match>
+            <!-- manufacturer A-gold (the ODM; the brand may read Unihertz), model Titan. The
+                 Pocket and Slim are "Titan Pocket" / "Titan Slim" and have their own configs. -->
+            <manufacturer exact="A-gold"/>
+            <model exact="Titan"/>
+        </match>
+
+        <device-type>PKB</device-type>
+
+        <keypad-layout>qwerty</keypad-layout>
+
+        <!-- UNVERIFIED: about 1440 by 720, from code constants. No native-min-sdk: the OS hands
+             the pad over whenever it enumerates it (expected as SOURCE_TOUCHPAD on Android 9
+             and 10, unconfirmed for a third-party IME). No <kdb-variant>: swipe typing stays
+             off until a captured variant exists. -->
+        <touch-keypad range-x="1440" range-y="720" contacts="single" source="auto">
+            <input-device exact="mtk-pad"/>
+        </touch-keypad>
+
+        <input-mappings>
+            <alt-mappings>
+                <source>device_alt_mappings_titan</source>
+                <enabled>true</enabled>
+            </alt-mappings>
+
+            <scancode-mappings>
+
+                <!-- NO Sym key on this keyboard, and none is invented here: the ROM reaches its
+                     symbol panel with Alt+Space (see device_alt_mappings_titan.xml). -->
+
+                <!-- Alt is RIGHTALT (scancode 100), which arrives as ALT_RIGHT; the keyboard also
+                     has LEFTCTRL and LEFTMETA, which need nothing from a config. -->
+                <key rawScanCode="100" role="MODIFIER"
+                     treatAs="KEYCODE_ALT_RIGHT" notes="Titan Alt key (RIGHTALT)"/>
+
+                <!-- The red side key, on mtk-kpd. FUNCTION with no board, so the key
+                     interceptor's legacy table never reads 249 / 250 as the Minimal Phone's Sym
+                     and Emoji keys. -->
+                <key rawScanCode="249" role="FUNCTION" notes="Titan red key (mtk-kpd)"/>
+                <key rawScanCode="250" role="FUNCTION" notes="Titan red key (mtk-kpd)"/>
+
+            </scancode-mappings>
+        </input-mappings>
+    </device>
+
+</device-input-config>

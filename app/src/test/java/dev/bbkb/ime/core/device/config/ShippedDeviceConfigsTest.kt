@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser
 import dev.bbkb.ime.R
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -54,7 +56,7 @@ class ShippedDeviceConfigsTest {
     }
 
     /**
-     * **No shipped config may declare `<keypad-layout>`.**
+     * **Only a single-layout model's config may declare `<keypad-layout>`.**
      *
      * That element is an override, and one config covers every unit that matches it — athena's
      * covers every BlackBerry KEY2 in the world, QWERTY, AZERTY and QWERTZ alike. Hard-coding a
@@ -65,25 +67,55 @@ class ShippedDeviceConfigsTest {
      * once — reinstating the very bug the detector was written to fix, and this time with no
      * source able to correct it.
      *
-     * `<keypad-layout>` exists for a *user-imported* config, on a unit whose firmware answers
-     * nothing. If a shipped device genuinely needs one — a model with no variants, whose keypad
-     * is verifiably identical on every unit — verify that on hardware and then exempt it here by
-     * name.
+     * The exemptions are [SINGLE_LAYOUT_CONFIGS]: models sold in one layout only (the Minimal
+     * Phone, the Zinwa Q25, the Unihertz Titans), where every unit's keypad is the same. User
+     * letter maps bind to the effective keypad layout, and on those devices that is declared
+     * rather than left to live detection. Each declares exactly `qwerty`. Adding a config here
+     * means checking that the model really has no other layout.
      */
     @Test
-    fun noShippedConfigHardCodesAKeypadLayout() {
+    fun onlySingleLayoutModelsHardCodeAKeypadLayout() {
         for ((name, resId) in shippedConfigResources()) {
             val config = DeviceInputMappingParser.parseConfigFromXmlResource(context, resId)
                 ?: continue
             for (mapping in config.mappings) {
-                assertNull(
-                    "$name declares <keypad-layout>${mapping.keypadLayout}</keypad-layout>" +
-                        " — firmware detection must stay live for every unit matching a shipped" +
-                        " config; see this test's javadoc before adding one",
-                    mapping.keypadLayout
-                )
+                if (name in SINGLE_LAYOUT_CONFIGS) {
+                    assertEquals(
+                        "$name is a single-layout model and must declare <keypad-layout>qwerty",
+                        "qwerty", mapping.keypadLayout
+                    )
+                } else {
+                    assertNull(
+                        "$name declares <keypad-layout>${mapping.keypadLayout}</keypad-layout>" +
+                            " — firmware detection must stay live for every unit matching a" +
+                            " shipped config; see this test's javadoc before adding one",
+                        mapping.keypadLayout
+                    )
+                }
             }
         }
+    }
+
+    @Test
+    fun theSingleLayoutListNamesShippedConfigs() {
+        val names = shippedConfigResources().map { it.first }.toSet()
+        for (name in SINGLE_LAYOUT_CONFIGS) {
+            assertTrue("$name is exempted but not shipped", name in names)
+        }
+        assertFalse("athena matches every KEY2 layout and must stay live",
+            "device_config_athena" in SINGLE_LAYOUT_CONFIGS)
+    }
+
+    private companion object {
+        val SINGLE_LAYOUT_CONFIGS = setOf(
+            "device_config_minimal",
+            "device_config_q25",
+            "device_config_titan",
+            "device_config_titan2",
+            "device_config_titan2_elite",
+            "device_config_titan_pocket",
+            "device_config_titan_slim",
+        )
     }
 
     @Test

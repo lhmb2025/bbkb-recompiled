@@ -95,7 +95,9 @@ fun CkbGesturesScreen(onNavigateBack: () -> Unit) {
         ) {
             PreferenceInfo(stringResource(R.string.ckb_gestures_reserved_note))
 
-            val defaults = GestureAssignments()
+            // The device's defaults (a profile may give a slot its own, e.g. double-tap: none on
+            // the Titans), so an unset slot shows what the arbiter will actually do.
+            val defaults = remember { GestureAssignments.deviceDefaults() }
             GestureSlot(R.string.ckb_gesture_slot_flick_left, GestureAssignments.KEY_FLICK_LEFT, defaults.flickLeft, prefs,
                 Modifier.settingsSearchAnchor("ckb_gesture_flick_left"))
             GestureSlot(R.string.ckb_gesture_slot_flick_right, GestureAssignments.KEY_FLICK_RIGHT, defaults.flickRight, prefs,

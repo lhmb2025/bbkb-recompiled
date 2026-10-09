@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Device Configuration: Unihertz Titan 2 (2025)
+    Schema v2.4
+
+    Four-row, 35-key keyboard (input device "TitanKey", AW9523) with a capacitive touch layer over
+    the keys (a separate input device, "touchPad": 0..1440 by 0..720, single contact). Android 15
+    at launch, Android 16 from firmware V01.00.14.
+
+    Facts come from published device studies, not yet from a unit in hand; see the plan doc. The
+    Titan 2 Elite shares every Build id except the board and has its own profile
+    (device_config_titan2_elite.xml).
+-->
+
+<device-input-config version="2.1" name="Unihertz Titan 2">
+
+    <device>
+        <match>
+            <!-- brand Unihertz, device Titan_2, product Titan_2_EEA. The Elite reports the same
+                 device; the board tells them apart (G71BoardV1 here, G72BoardV1 on the Elite). -->
+            <build-device exact="Titan_2"/>
+            <board exact="G71BoardV1"/>
+        </match>
+
+        <device-type>PKB</device-type>
+
+        <!-- Sold in one layout. Declared so user letter maps bind to it without live detection. -->
+        <keypad-layout>qwerty</keypad-layout>
+
+        <!-- The pad over the keys. On Android 16 the OS hands its events to a FOCUSED IME window
+             once the OEM Scroll assistant is on (Settings > Gestures > Keyboard gestures); the
+             native source covers that. On Android 15 the pad never reaches an app, which is the
+             privileged reader's case (source="auto" picks it there once it exists).
+             "sub_touch" is the REAR screen, never the pad. No <kdb-variant> yet: swipe typing on
+             this pad stays off until a captured kdb/titan2 variant exists. -->
+        <touch-keypad range-x="1440" range-y="720" contacts="single" native-min-sdk="36" source="auto">
+            <input-device exact="touchPad"/>
+        </touch-keypad>
+
+        <input-mappings>
+            <alt-mappings>
+                <source>device_alt_mappings_titan2</source>
+                <enabled>true</enabled>
+            </alt-mappings>
+
+            <scancode-mappings>
+
+                <!-- Sym (scancode 253) arrives as KEYCODE_SYM. -->
+                <key rawScanCode="253" role="BOARD_SYM"
+                     treatAs="KEYCODE_SYM" notes="Titan 2 Sym key"/>
+
+                <!-- Fn (scancode 251): a Ctrl-like modifier. The ROM sends it as CTRL_LEFT once
+                     remapped in its programmable-keys settings; BBKB treats it as Ctrl either way.
+                     Declaring 251 also stops the key interceptor's legacy table reading it as the
+                     Minimal Phone's Mic key. -->
+                <key rawScanCode="251" role="MODIFIER"
+                     treatAs="KEYCODE_CTRL_LEFT" notes="Titan 2 Fn key, Ctrl-like"/>
+
+                <!-- Func1 (249, mtk-pmic-keys) and Func2 (250, gpio_key-func): OEM programmable
+                     keys, intercepted by vendor policy before apps. Plain FUNCTION keys with no
+                     board, so the legacy interceptor table never reads them as the Minimal Phone's
+                     Sym and Emoji keys. -->
+                <key rawScanCode="249" role="FUNCTION" notes="Titan 2 Func1 (programmable)"/>
+                <key rawScanCode="250" role="FUNCTION" notes="Titan 2 Func2 (programmable)"/>
+
+                <!-- Alt (scancode 100) arrives as ALT_RIGHT, which the modifier tracker already
+                     treats as Alt; declared so the key's role is on record. -->
+                <key rawScanCode="100" role="MODIFIER"
+                     treatAs="KEYCODE_ALT_RIGHT" notes="Titan 2 Alt key (ALT_RIGHT)"/>
+
+                <!-- The ROM turns a leftward swipe across the keys into a key: keycode 322 on
+                     Android 15 firmware, 404 on Android 16 (synthesised by the vendor input
+                     reader, only with "swipe to turn on keyboard light" on). Handed to the gesture
+                     arbiter as a swipe left (the user's swipe-left slot), consumed, never typed. -->
+                <key rawKeyCode="322" role="GESTURE_SWIPE_LEFT"
+                     notes="Titan 2 firmware swipe-left key (Android 15)"/>
+                <key rawKeyCode="404" role="GESTURE_SWIPE_LEFT"
+                     notes="Titan 2 firmware swipe-left key (Android 16)"/>
+
+            </scancode-mappings>
+        </input-mappings>
+
+        <settings-overrides>
+            <!-- The OEM Cursor assistant owns double-tap on this pad, so the double-tap slot
+                 defaults to no action. A default, not a lock: the user can still assign it. -->
+            <setting key="ckb_gesture_double_tap" type="string" default-value="none"/>
+        </settings-overrides>
+    </device>
+
+</device-input-config>

@@ -44,4 +44,8 @@
     <mapping keycode="N" char=","/>
     <mapping keycode="M" char="?"/>
 
+    <!-- Alt+Space: the ROM's key map emits the private-use U+EE01 here (its own symbol-panel
+         trigger), which would land in the editor as a tofu box. A plain space instead. -->
+    <mapping keycode="SPACE" char=" "/>
+
 </alt-key-mappings>
