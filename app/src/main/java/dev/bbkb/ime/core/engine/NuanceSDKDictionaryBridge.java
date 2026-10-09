@@ -70,18 +70,19 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
     // deposit is engine-global, and the bridge can be re-instantiated across language reloads.
     private static volatile int sConsumedRankSeq = 0;
 
-    // Owned gesture ranking is live when debug.et9.owndecode=1 (the owned decoder fed the engine,
+    // Owned gesture ranking is live unless debug.et9.owndecode=0 (the owned decoder fed the engine,
     // so the selection list is a candidate pool to be re-ranked against the path — §8.7.6). Cached
-    // per instance; the prop is set-then-force-stop like the native levers.
+    // per instance; the prop is set-then-force-stop like the native levers. In every build type:
+    // this used to return false outside debug builds, which left release builds committing the
+    // blob's inline word (hello->help) until 2026-10-09.
     private int mOwnedDecodeCached = -1;
     private boolean isOwnedDecodeLive() {
-        if (!BuildConfig.DEBUG) return false;
         if (mOwnedDecodeCached < 0) {
-            // Must match the C default (kdb_trace.c OWNED_DEFAULT): in DEBUG builds the owned
-            // decoder is on when the prop is UNSET (survives reboot, setprops don't). If the Java
-            // gate defaulted OFF on an empty prop while C decoded owned, the ranked word would
-            // never be taken and the raw skeleton would commit (togeteer/togetheer junk — 2026-08-19).
-            mOwnedDecodeCached = 1;   // empty/unset -> ON (debug default)
+            // Must match the C default (kdb_trace.c OWNED_DEFAULT): the owned decoder is on when
+            // the prop is UNSET (survives reboot, setprops don't). If the Java gate defaulted OFF
+            // on an empty prop while C decoded owned, the ranked word would never be taken and the
+            // raw skeleton would commit (togeteer/togetheer junk — 2026-08-19).
+            mOwnedDecodeCached = 1;   // empty/unset -> ON
             String v = SystemProps.get("debug.et9.owndecode");
             if (v != null && !v.isEmpty()) mOwnedDecodeCached = (v.charAt(0) == '1') ? 1 : 0;
         }

@@ -666,19 +666,15 @@ static int xt9_find_blob_pst_cb(struct dl_phdr_info* info, size_t size, void* ou
     return 0;
 }
 
-/* debug.et9.owndecode: 0/unset = blob decodes (default); 2 = SHADOW (owned decoder runs in both
- * parity and per-row modes and LOGS next to the blob's result — compute only, the blob's WSI
- * stands); 1 = owned decode live (NOT yet wired — falls back to shadow with a warning).
- * Cached at first use: set the prop, then force-stop. */
-/* Default decode path when no prop is set. DEBUG builds (the owner's daily driver) default to the
- * OWNED decoder+ranker so it survives reboots (setprops don't persist); RELEASE stays on the blob
- * until the §1 promotion bar is met (sitting-2 hold-out still pending as of 2026-08-19). A prop
- * (debug.et9.owndecode / .ownrankc) still overrides either way. */
-#ifdef NDEBUG
-#define OWNED_DEFAULT 0
-#else
+/* debug.et9.owndecode: 1/unset = owned decode live (default); 0 = the blob decodes; 2 = SHADOW
+ * (owned decoder runs in both parity and per-row modes and LOGS next to the blob's result —
+ * compute only, the blob's WSI stands). Cached at first use: set the prop, then force-stop. */
+/* Default decode path when no prop is set: the OWNED decoder+ranker, in every build type. It was
+ * debug-only (NDEBUG kept release on the blob) until 2026-10-09, when the promotion bar was called
+ * met: every release build had been shipping the blob's swipe quality (hello->help) unnoticed,
+ * because the daily driver is a debug build. A prop (debug.et9.owndecode / .ownrankc) still
+ * overrides either way; NuanceSDKDictionaryBridge.isOwnedDecodeLive mirrors this default. */
 #define OWNED_DEFAULT 1
-#endif
 
 static int owndecode_mode(void) {
     static int cached = -1;
@@ -1068,7 +1064,7 @@ static ET9STATUS owned_pst_v2(void* ctx) {
     /* W1 (§8.7.14): rank AT DEPOSIT, in C, synchronously — the sets are guaranteed present (just
      * fed on this thread), so the §8.7.13 contamination (worker builds after an interleaved clear)
      * is structurally impossible. debug.et9.ownrankc overrides; default follows OWNED_DEFAULT
-     * (ON in debug daily-driver builds, OFF in release until the §1 promotion bar is met).
+     * (ON in every build type since 2026-10-09).
      * Every deref guarded so a wrong offset logs and bails rather than crashing. */
     static int rankc = -1;
     if (rankc < 0) rankc = own_v2_prop("debug.et9.ownrankc", OWNED_DEFAULT);
