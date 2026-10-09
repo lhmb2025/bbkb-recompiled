@@ -38,10 +38,14 @@ data class TouchSurfaceState(
     val shizuku: TouchSourceStatus,
 ) {
 
-    /** The one-line status the helper's header and both link rows show. */
+    /**
+     * The one-line status the helper's header and both link rows show. A phone whose profile
+     * declares no touch surface reads "not required": there is nothing for the helper to do there,
+     * which is different from a declared pad stuck in a state no other line names ("unavailable").
+     */
     @get:StringRes
     val statusLine: Int
-        get() = when (choice) {
+        get() = if (!declared) R.string.settings_status_not_required else when (choice) {
             Choice.NATIVE -> when {
                 active.reason == Reason.PAD_NOT_ENUMERATED -> R.string.touch_surface_status_native_off
                 active.state == State.ACTIVE || active.state == State.IDLE ->

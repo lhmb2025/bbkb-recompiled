@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">టచ్ స్క్రీన్ కీబోర్డ్ సవరణ</string>
     <string name="settings_correction_summary">స్వీయ సవరణ, పెద్ద అక్షరం, డబుల్ స్పేస్</string>
     <string name="settings_correction_title">సవరణ</string>
+    <string name="settings_status_not_required">ఈ ఫోన్‌కు అవసరం లేదు</string>
     <string name="settings_suggestion_correction_summary">సూచనలు, స్వీయ సవరణ మరియు నిఘంటువులు</string>
     <string name="settings_suggestion_correction_title">సహాయం</string>
     <string name="settings_suggestion_summary">టైప్ చేస్తున్నప్పుడు పద సూచనలను చూపు</string>

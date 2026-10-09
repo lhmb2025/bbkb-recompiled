@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Выпраўленне на сэнсарнай клавіятуры</string>
     <string name="settings_correction_summary">Аўтавыпраўленне, вялікія літары, двайны прабел</string>
     <string name="settings_correction_title">Выпраўленне</string>
+    <string name="settings_status_not_required">Не патрабуецца для гэтага тэлефона</string>
     <string name="settings_suggestion_correction_summary">Прапановы, аўтавыпраўленне і слоўнікі</string>
     <string name="settings_suggestion_correction_title">Дапамога</string>
     <string name="settings_suggestion_summary">Паказваць прапановы слоў падчас набору</string>

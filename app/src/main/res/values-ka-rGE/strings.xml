@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">სენსორული კლავიატურის შესწორება</string>
     <string name="settings_correction_summary">ავტომატური შესწორება, დიდი ასოები, ორმაგი ჰარე</string>
     <string name="settings_correction_title">შესწორება</string>
+    <string name="settings_status_not_required">ამ ტელეფონისთვის საჭირო არ არის</string>
     <string name="settings_suggestion_correction_summary">შემოთავაზებები, ავტომატური შესწორება და ლექსიკონები</string>
     <string name="settings_suggestion_correction_title">დახმარება</string>
     <string name="settings_suggestion_summary">აკრეფისას სიტყვების შემოთავაზებების ჩვენება</string>

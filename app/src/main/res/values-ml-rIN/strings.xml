@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">ടച്ച് സ്ക്രീൻ കീബോർഡ് തിരുത്തൽ</string>
     <string name="settings_correction_summary">സ്വയം തിരുത്തൽ, വലിയക്ഷരമാക്കൽ, ഡബിൾ-സ്‌പേസ്</string>
     <string name="settings_correction_title">തിരുത്തൽ</string>
+    <string name="settings_status_not_required">ഈ ഫോണിന് ആവശ്യമില്ല</string>
     <string name="settings_suggestion_correction_summary">നിർദ്ദേശങ്ങൾ, സ്വയം തിരുത്തൽ, നിഘണ്ടുക്കൾ</string>
     <string name="settings_suggestion_correction_title">സഹായം</string>
     <string name="settings_suggestion_summary">ടൈപ്പ് ചെയ്യുമ്പോൾ വാക്ക് നിർദ്ദേശങ്ങൾ കാണിക്കുക</string>

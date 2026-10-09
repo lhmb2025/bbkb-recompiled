@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">觸控螢幕鍵盤校正</string>
     <string name="settings_correction_summary">自動校正、大寫、連按兩下空白鍵</string>
     <string name="settings_correction_title">校正</string>
+    <string name="settings_status_not_required">此手機不需要</string>
     <string name="settings_suggestion_correction_summary">建議字詞、自動校正和字典</string>
     <string name="settings_suggestion_correction_title">輸入協助</string>
     <string name="settings_suggestion_summary">輸入時顯示建議字詞</string>

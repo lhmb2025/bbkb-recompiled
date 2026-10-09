@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Puuteklaviatuuri parandamine</string>
     <string name="settings_correction_summary">Automaatne parandamine, suurtähed, topelttühik</string>
     <string name="settings_correction_title">Parandamine</string>
+    <string name="settings_status_not_required">Selles telefonis pole vajalik</string>
     <string name="settings_suggestion_correction_summary">Soovitused, automaatne parandamine ja sõnastikud</string>
     <string name="settings_suggestion_correction_title">Abi</string>
     <string name="settings_suggestion_summary">Näita kirjutamise ajal sõnasoovitusi</string>

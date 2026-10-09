@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Հպէկրանի ստեղնաշարի ուղղում</string>
     <string name="settings_correction_summary">Ինքնաուղղում, մեծատառեր, կրկնակի բացատ</string>
     <string name="settings_correction_title">Ուղղում</string>
+    <string name="settings_status_not_required">Այս հեռախոսի համար անհրաժեշտ չէ</string>
     <string name="settings_suggestion_correction_summary">Առաջարկներ, ինքնաուղղում և բառարաններ</string>
     <string name="settings_suggestion_correction_title">Օգնություն</string>
     <string name="settings_suggestion_summary">Ցույց տալ բառերի առաջարկները մուտքագրելիս</string>

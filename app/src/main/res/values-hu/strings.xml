@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Javítás az érintőképernyős billentyűzeten</string>
     <string name="settings_correction_summary">Automatikus javítás, nagybetűsítés, dupla szóköz</string>
     <string name="settings_correction_title">Javítás</string>
+    <string name="settings_status_not_required">Ezen a telefonon nincs rá szükség</string>
     <string name="settings_suggestion_correction_summary">Javaslatok, automatikus javítás és szótárak</string>
     <string name="settings_suggestion_correction_title">Írássegítés</string>
     <string name="settings_suggestion_summary">Szójavaslatok megjelenítése gépelés közben</string>

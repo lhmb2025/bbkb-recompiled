@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">תיקון במקלדת של מסך המגע</string>
     <string name="settings_correction_summary">תיקון אוטומטי, אותיות רישיות ורווח כפול</string>
     <string name="settings_correction_title">תיקון</string>
+    <string name="settings_status_not_required">לא נדרש בטלפון זה</string>
     <string name="settings_suggestion_correction_summary">הצעות, תיקון אוטומטי ומילונים</string>
     <string name="settings_suggestion_correction_title">סיוע</string>
     <string name="settings_suggestion_summary">הצג הצעות למילים בזמן ההקלדה</string>

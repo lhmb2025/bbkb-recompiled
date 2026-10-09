@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">터치 스크린 키보드 수정</string>
     <string name="settings_correction_summary">자동 수정, 대문자, 스페이스 두 번</string>
     <string name="settings_correction_title">수정</string>
+    <string name="settings_status_not_required">이 기기에서는 필요하지 않습니다</string>
     <string name="settings_suggestion_correction_summary">추천 항목, 자동 수정, 사전</string>
     <string name="settings_suggestion_correction_title">입력 도우미</string>
     <string name="settings_suggestion_summary">입력하는 동안 단어 추천 항목을 표시합니다</string>

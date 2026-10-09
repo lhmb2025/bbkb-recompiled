@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Исправление на сенсорной клавиатуре</string>
     <string name="settings_correction_summary">Автоисправление, заглавные буквы, двойной пробел</string>
     <string name="settings_correction_title">Исправление</string>
+    <string name="settings_status_not_required">Не требуется на этом телефоне</string>
     <string name="settings_suggestion_correction_summary">Подсказки, автоисправление и словари</string>
     <string name="settings_suggestion_correction_title">Помощь при вводе</string>
     <string name="settings_suggestion_summary">Показывать подсказки слов при вводе</string>

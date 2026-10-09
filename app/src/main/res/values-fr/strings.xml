@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Correction du clavier tactile</string>
     <string name="settings_correction_summary">Correction automatique, majuscules, double espace</string>
     <string name="settings_correction_title">Correction</string>
+    <string name="settings_status_not_required">Non requis sur ce téléphone</string>
     <string name="settings_suggestion_correction_summary">Suggestions, correction automatique et dictionnaires</string>
     <string name="settings_suggestion_correction_title">Assistance</string>
     <string name="settings_suggestion_summary">Afficher les suggestions de mots pendant la saisie</string>

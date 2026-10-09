@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">تصحیح صفحه کلید لمسی</string>
     <string name="settings_correction_summary">تصحیح خودکار، بزرگ‌نویسی، دو فاصله</string>
     <string name="settings_correction_title">تصحیح</string>
+    <string name="settings_status_not_required">برای این تلفن لازم نیست</string>
     <string name="settings_suggestion_correction_summary">پیشنهادها، تصحیح خودکار و فرهنگ لغت‌ها</string>
     <string name="settings_suggestion_correction_title">دستیاری</string>
     <string name="settings_suggestion_summary">نمایش پیشنهاد کلمه هنگام تایپ</string>

@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Jutiklinės klaviatūros taisymas</string>
     <string name="settings_correction_summary">Automatinis taisymas, didžiosios raidės, dvigubas tarpas</string>
     <string name="settings_correction_title">Taisymas</string>
+    <string name="settings_status_not_required">Šiam telefonui nereikia</string>
     <string name="settings_suggestion_correction_summary">Pasiūlymai, automatinis taisymas ir žodynai</string>
     <string name="settings_suggestion_correction_title">Pagalba</string>
     <string name="settings_suggestion_summary">Rodyti žodžių pasiūlymus rašant</string>

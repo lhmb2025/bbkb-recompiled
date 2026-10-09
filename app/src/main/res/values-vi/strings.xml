@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Sửa lỗi bàn phím màn hình cảm ứng</string>
     <string name="settings_correction_summary">Tự động sửa lỗi, viết hoa, nhấn đúp phím cách</string>
     <string name="settings_correction_title">Sửa lỗi</string>
+    <string name="settings_status_not_required">Không cần thiết trên điện thoại này</string>
     <string name="settings_suggestion_correction_summary">Gợi ý, tự động sửa lỗi và từ điển</string>
     <string name="settings_suggestion_correction_title">Hỗ trợ nhập</string>
     <string name="settings_suggestion_summary">Hiển thị gợi ý từ khi bạn nhập</string>

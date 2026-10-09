@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Leiðrétting á snertiskjályklaborði</string>
     <string name="settings_correction_summary">Sjálfvirk leiðrétting, hástafir, tvöfalt bil</string>
     <string name="settings_correction_title">Leiðrétting</string>
+    <string name="settings_status_not_required">Ekki þörf á í þessum síma</string>
     <string name="settings_suggestion_correction_summary">Tillögur, sjálfvirk leiðrétting og orðabækur</string>
     <string name="settings_suggestion_correction_title">Aðstoð</string>
     <string name="settings_suggestion_summary">Sýna orðatillögur meðan þú skrifar</string>

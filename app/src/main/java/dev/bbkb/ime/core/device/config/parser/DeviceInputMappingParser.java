@@ -268,6 +268,21 @@ public class DeviceInputMappingParser {
                     }
                     break;
                 }
+                case "accessibility-helper": {
+                    // Schema v2.5: whether this phone needs the BBKB helper at all. "off" removes
+                    // it from the system's Accessibility list on this phone (see
+                    // KeyInterceptorComponent); "available", or no element, offers it as usual.
+                    final String value = trimmedText(p);
+                    if ("off".equalsIgnoreCase(value)) {
+                        mapping.accessibilityHelperOff = true;
+                    } else if ("available".equalsIgnoreCase(value)) {
+                        mapping.accessibilityHelperOff = false;
+                    } else {
+                        Logger.error(TAG, "Ignoring <accessibility-helper>" + value
+                                + "</accessibility-helper>: expected off or available");
+                    }
+                    break;
+                }
                 case "keypad-layout": {
                     // Schema v2.3: the one override for the detected physical keypad layout.
                     // Validated here so a typo is rejected at parse time rather than becoming a

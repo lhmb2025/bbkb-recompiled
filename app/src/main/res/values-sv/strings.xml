@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Korrigering på pekskärmstangentbord</string>
     <string name="settings_correction_summary">Autokorrigering, versaler, dubbelt mellanslag</string>
     <string name="settings_correction_title">Korrigering</string>
+    <string name="settings_status_not_required">Behövs inte på den här telefonen</string>
     <string name="settings_suggestion_correction_summary">Förslag, autokorrigering och ordlistor</string>
     <string name="settings_suggestion_correction_title">Skrivhjälp</string>
     <string name="settings_suggestion_summary">Visa ordförslag medan du skriver</string>

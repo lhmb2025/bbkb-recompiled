@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">தொடுதிரை விசைப்பலகை திருத்தம்</string>
     <string name="settings_correction_summary">தானியங்கு திருத்தம், பெரிய எழுத்து, இரட்டை இடைவெளி</string>
     <string name="settings_correction_title">திருத்தம்</string>
+    <string name="settings_status_not_required">இந்த ஃபோனுக்குத் தேவையில்லை</string>
     <string name="settings_suggestion_correction_summary">பரிந்துரைகள், தானியங்கு திருத்தம் மற்றும் அகராதிகள்</string>
     <string name="settings_suggestion_correction_title">உதவி</string>
     <string name="settings_suggestion_summary">தட்டச்சு செய்யும்போது சொல் பரிந்துரைகளைக் காட்டு</string>

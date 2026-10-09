@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">ການແກ້ໄຂສຳລັບແປ້ນພິມໜ້າຈໍສຳຜັດ</string>
     <string name="settings_correction_summary">ການແກ້ໄຂອັດຕະໂນມັດ, ໂຕພິມໃຫຍ່, ຍະຫວ່າງສອງເທື່ອ</string>
     <string name="settings_correction_title">ການແກ້ໄຂ</string>
+    <string name="settings_status_not_required">ບໍ່ຈຳເປັນສຳລັບໂທລະສັບນີ້</string>
     <string name="settings_suggestion_correction_summary">ຄຳແນະນຳ, ການແກ້ໄຂອັດຕະໂນມັດ ແລະ ວັດຈະນານຸກົມ</string>
     <string name="settings_suggestion_correction_title">ການຊ່ວຍເຫຼືອ</string>
     <string name="settings_suggestion_summary">ສະແດງຄຳແນະນຳໃນຂະນະທີ່ພິມ</string>

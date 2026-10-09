@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Correcció al teclat tàctil</string>
     <string name="settings_correction_summary">Correcció automàtica, majúscules, doble espai</string>
     <string name="settings_correction_title">Correcció</string>
+    <string name="settings_status_not_required">No cal en aquest telèfon</string>
     <string name="settings_suggestion_correction_summary">Suggeriments, correcció automàtica i diccionaris</string>
     <string name="settings_suggestion_correction_title">Assistència</string>
     <string name="settings_suggestion_summary">Mostra suggeriments de paraules mentre escriviu</string>

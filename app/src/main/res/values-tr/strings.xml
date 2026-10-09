@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Dokunmatik ekran klavyesi düzeltmesi</string>
     <string name="settings_correction_summary">Otomatik düzeltme, büyük harf, çift boşluk</string>
     <string name="settings_correction_title">Düzeltme</string>
+    <string name="settings_status_not_required">Bu telefon için gerekli değil</string>
     <string name="settings_suggestion_correction_summary">Öneriler, otomatik düzeltme ve sözlükler</string>
     <string name="settings_suggestion_correction_title">Yazma yardımı</string>
     <string name="settings_suggestion_summary">Yazarken kelime önerilerini göster</string>

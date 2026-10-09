@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Korrigering på skjermtastatur</string>
     <string name="settings_correction_summary">Autokorrektur, stor forbokstav, dobbelt mellomrom</string>
     <string name="settings_correction_title">Korrigering</string>
+    <string name="settings_status_not_required">Ikke nødvendig på denne telefonen</string>
     <string name="settings_suggestion_correction_summary">Forslag, autokorrektur og ordlister</string>
     <string name="settings_suggestion_correction_title">Skrivehjelp</string>
     <string name="settings_suggestion_summary">Vis ordforslag mens du skriver</string>

@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Корекция за екранната клавиатура</string>
     <string name="settings_correction_summary">Автокорекция, главни букви, двоен интервал</string>
     <string name="settings_correction_title">Корекция</string>
+    <string name="settings_status_not_required">Не е необходимо за този телефон</string>
     <string name="settings_suggestion_correction_summary">Предложения, автокорекция и речници</string>
     <string name="settings_suggestion_correction_title">Помощ при писане</string>
     <string name="settings_suggestion_summary">Показване на предложения за думи при писане</string>

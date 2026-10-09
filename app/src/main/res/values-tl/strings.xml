@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Pagwawasto sa touchscreen keyboard</string>
     <string name="settings_correction_summary">Auto-correction, paglalaki ng titik, dobleng space</string>
     <string name="settings_correction_title">Pagwawasto</string>
+    <string name="settings_status_not_required">Hindi kailangan sa teleponong ito</string>
     <string name="settings_suggestion_correction_summary">Mga suhestyon, auto-correction at mga diksyunaryo</string>
     <string name="settings_suggestion_correction_title">Tulong</string>
     <string name="settings_suggestion_summary">Ipakita ang mga suhestyon ng salita habang nagta-type</string>
@@ -227,7 +228,7 @@
     <string name="settings_pkb_hold_action_uppercase">Gawing malaking titik</string>
     <string name="settings_pkb_hold_action_uppercase_summary">Magpatuloy sa pagpindot pagkatapos ng mga accent para mag-type ng malaking titik</string>
     <string name="settings_pkb_keyboard_helper_summary">Serbisyo sa accessibility para sa mga third-party na keyboard</string>
-    <string name="settings_pkb_keyboard_helper_title">BBKB Helper</string>
+    <string name="settings_pkb_keyboard_helper_title">BBKB helper</string>
     <string name="settings_pkb_letter_maps_any_language">Lahat ng keyboard</string>
     <string name="settings_pkb_letter_maps_delete">Tanggalin ang %1$s</string>
     <string name="settings_pkb_letter_maps_delete_message">Tanggalin ang “%1$s”? Hindi na ito maa-undo.</string>

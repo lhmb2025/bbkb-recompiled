@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Сенсордук баскычтопто оңдоо</string>
     <string name="settings_correction_summary">Автоматтык оңдоо, баш тамга, эки боштук</string>
     <string name="settings_correction_title">Оңдоо</string>
+    <string name="settings_status_not_required">Бул телефон үчүн талап кылынбайт</string>
     <string name="settings_suggestion_correction_summary">Сунуштар, автоматтык оңдоо жана сөздүктөр</string>
     <string name="settings_suggestion_correction_title">Жардам</string>
     <string name="settings_suggestion_summary">Терип жатканда сөз сунуштарын көрсөтүү</string>

@@ -200,6 +200,7 @@
     <string name="settings_autocorrect_vkb_title">Touch screen keyboard correction</string>
     <string name="settings_correction_summary">Auto-correction, capitalization, double-space</string>
     <string name="settings_correction_title">Correction</string>
+    <string name="settings_status_not_required">Not required for this phone</string>
     <string name="settings_suggestion_correction_summary">Suggestions, auto-correction, and dictionaries</string>
     <string name="settings_suggestion_correction_title">Assistance</string>
     <string name="settings_suggestion_summary">Show word suggestions while typing</string>
@@ -274,7 +275,7 @@
     <string name="settings_pkb_hold_action_uppercase">Capitalize</string>
     <string name="settings_pkb_hold_action_uppercase_summary">Continue holding past accents to type uppercase</string>
     <string name="settings_pkb_keyboard_helper_summary">Accessibility service for third-party keyboards</string>
-    <string name="settings_pkb_keyboard_helper_title">BBKB Helper</string>
+    <string name="settings_pkb_keyboard_helper_title">BBKB helper</string>
     <string name="settings_pkb_letter_maps_any_language">All keyboards</string>
     <string name="settings_pkb_letter_maps_delete">Delete %1$s</string>
     <string name="settings_pkb_letter_maps_delete_message">Delete “%1$s”? This cannot be undone.</string>

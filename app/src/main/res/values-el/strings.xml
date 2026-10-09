@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Διόρθωση στο πληκτρολόγιο οθόνης αφής</string>
     <string name="settings_correction_summary">Αυτόματη διόρθωση, κεφαλαία, διπλό διάστημα</string>
     <string name="settings_correction_title">Διόρθωση</string>
+    <string name="settings_status_not_required">Δεν απαιτείται για αυτό το τηλέφωνο</string>
     <string name="settings_suggestion_correction_summary">Προτάσεις, αυτόματη διόρθωση και λεξικά</string>
     <string name="settings_suggestion_correction_title">Βοήθεια πληκτρολόγησης</string>
     <string name="settings_suggestion_summary">Εμφάνιση προτάσεων λέξεων κατά την πληκτρολόγηση</string>

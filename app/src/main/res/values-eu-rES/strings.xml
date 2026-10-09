@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Ukipen-teklatuaren zuzenketa</string>
     <string name="settings_correction_summary">Zuzenketa automatikoa, maiuskulak, zuriune bikoitza</string>
     <string name="settings_correction_title">Zuzenketa</string>
+    <string name="settings_status_not_required">Ez da beharrezkoa telefono honetan</string>
     <string name="settings_suggestion_correction_summary">Iradokizunak, zuzenketa automatikoa eta hiztegiak</string>
     <string name="settings_suggestion_correction_title">Laguntza</string>
     <string name="settings_suggestion_summary">Erakutsi hitz-iradokizunak idatzi ahala</string>

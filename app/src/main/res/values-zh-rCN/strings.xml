@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">触摸屏键盘更正</string>
     <string name="settings_correction_summary">自动更正、大写、双击空格</string>
     <string name="settings_correction_title">更正</string>
+    <string name="settings_status_not_required">此手机无需此功能</string>
     <string name="settings_suggestion_correction_summary">建议、自动更正和字典</string>
     <string name="settings_suggestion_correction_title">输入辅助</string>
     <string name="settings_suggestion_summary">键入时显示字词建议</string>

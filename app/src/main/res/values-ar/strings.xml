@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">تصحيح لوحة مفاتيح شاشة اللمس</string>
     <string name="settings_correction_summary">التصحيح التلقائي والأحرف الكبيرة والمسافة المزدوجة</string>
     <string name="settings_correction_title">التصحيح</string>
+    <string name="settings_status_not_required">غير مطلوب لهذا الهاتف</string>
     <string name="settings_suggestion_correction_summary">الاقتراحات والتصحيح التلقائي والقواميس</string>
     <string name="settings_suggestion_correction_title">المساعدة</string>
     <string name="settings_suggestion_summary">عرض اقتراحات الكلمات أثناء الكتابة</string>

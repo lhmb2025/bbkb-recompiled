@@ -267,10 +267,11 @@ class TouchSurfaceHelperScreenTest {
     }
 
     @Test
-    fun deviceCompatibility_hidesTheHelperRow_withoutADeclaredPad() {
+    fun deviceCompatibility_greysOutTheHelperRow_withoutADeclaredPad() {
         install(null) // a KEY2-like shape: no <touch-keypad>
         render { DeviceCompatibilityScreen({}, {}, {}) }
-        absent(R.string.touch_surface_helper_title)
+        disabledRow(R.string.touch_surface_helper_title)
+        shown(R.string.settings_status_not_required)
         shown(R.string.settings_pkb_keyboard_helper_summary)
         assertEquals(0, engine.refreshes)
         assertEquals(0, engine.listeners.size)

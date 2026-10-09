@@ -327,6 +327,10 @@ public final class DeviceProfile {
             // ...and so does the stroke analyser's frame (144 / 610 on the KEY2's pad).
             dev.bbkb.ime.keyboard.internal.GestureEventProcessor.setKeypadGeometry(
                     profile.getTouchKeypadGeometry());
+            // The BBKB helper: switched off, and so absent from the system's Accessibility list,
+            // on phones whose profile says they never need it; the manifest default elsewhere.
+            dev.bbkb.ime.core.device.interceptor.KeyInterceptorComponent.apply(context,
+                    profile.deviceMapping);
             // A pad that appears or vanishes later (the Titan 2's, when the OEM Scroll assistant
             // is toggled) is picked up without a restart. Touch keypad only: no key config reset.
             KeyboardDeviceScanner.getInstance().registerDeviceListener(context);

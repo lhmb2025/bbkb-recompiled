@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Cywiro ar y bysellfwrdd cyffwrdd</string>
     <string name="settings_correction_summary">Cywiro awtomatig, priflythrennu, bwlch dwbl</string>
     <string name="settings_correction_title">Cywiro</string>
+    <string name="settings_status_not_required">Ddim ei angen ar y ffôn hwn</string>
     <string name="settings_suggestion_correction_summary">Awgrymiadau, cywiro awtomatig a geiriaduron</string>
     <string name="settings_suggestion_correction_title">Cymorth</string>
     <string name="settings_suggestion_summary">Dangos awgrymiadau geiriau wrth i chi deipio</string>

@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">ការកែសម្រាប់ក្ដារចុចអេក្រង់ប៉ះ</string>
     <string name="settings_correction_summary">ការកែស្វ័យប្រវត្តិ អក្សរធំ ដកឃ្លាពីរដង</string>
     <string name="settings_correction_title">ការកែ</string>
+    <string name="settings_status_not_required">មិនចាំបាច់សម្រាប់ទូរសព្ទនេះទេ</string>
     <string name="settings_suggestion_correction_summary">ពាក្យណែនាំ ការកែស្វ័យប្រវត្តិ និងវចនានុក្រម</string>
     <string name="settings_suggestion_correction_title">ជំនួយ</string>
     <string name="settings_suggestion_summary">បង្ហាញពាក្យណែនាំពេលវាយបញ្ចូល</string>

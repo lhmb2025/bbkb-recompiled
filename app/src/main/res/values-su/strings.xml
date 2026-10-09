@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Koréksi dina papan tombol layar toél</string>
     <string name="settings_correction_summary">Koréksi otomatis, aksara gedé, spasi ganda</string>
     <string name="settings_correction_title">Koréksi</string>
+    <string name="settings_status_not_required">Teu diperlukeun dina telepon ieu</string>
     <string name="settings_suggestion_correction_summary">Saran, koréksi otomatis, jeung kamus</string>
     <string name="settings_suggestion_correction_title">Pangbantu</string>
     <string name="settings_suggestion_summary">Témbongkeun saran kecap sabot ngetik</string>

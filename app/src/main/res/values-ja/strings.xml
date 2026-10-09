@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">タッチスクリーンキーボードの修正</string>
     <string name="settings_correction_summary">自動修正、大文字化、スペース2回</string>
     <string name="settings_correction_title">修正</string>
+    <string name="settings_status_not_required">この端末では不要です</string>
     <string name="settings_suggestion_correction_summary">入力候補、自動修正、辞書</string>
     <string name="settings_suggestion_correction_title">入力支援</string>
     <string name="settings_suggestion_summary">入力中に単語の候補を表示します</string>

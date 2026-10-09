@@ -118,6 +118,19 @@ class ShippedDeviceConfigsTest {
         )
     }
 
+    /**
+     * **Only the BlackBerry configs switch the BBKB helper off.** Their firmware delivers every key
+     * the keyboard handles; every other phone keeps the helper offered (the Minimal Phone needs it).
+     */
+    @Test
+    fun onlyTheBlackBerryConfigsSwitchTheHelperOff() {
+        val off = shippedConfigResources().filter { (_, resId) ->
+            DeviceInputMappingParser.parseConfigFromXmlResource(context, resId).mappings
+                .any { it.accessibilityHelperOff }
+        }.map { it.first }.toSet()
+        assertEquals(setOf("device_config_athena", "device_config_blackberry"), off)
+    }
+
     @Test
     fun noShippedConfigDeclaresLayoutAltOverrides() {
         for ((name, resId) in shippedConfigResources()) {

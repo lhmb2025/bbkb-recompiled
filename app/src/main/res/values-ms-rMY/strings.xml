@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Pembetulan papan kekunci skrin sentuh</string>
     <string name="settings_correction_summary">Pembetulan automatik, huruf besar, ruang dua kali</string>
     <string name="settings_correction_title">Pembetulan</string>
+    <string name="settings_status_not_required">Tidak diperlukan untuk telefon ini</string>
     <string name="settings_suggestion_correction_summary">Cadangan, pembetulan automatik dan kamus</string>
     <string name="settings_suggestion_correction_title">Bantuan</string>
     <string name="settings_suggestion_summary">Tunjukkan cadangan perkataan semasa menaip</string>

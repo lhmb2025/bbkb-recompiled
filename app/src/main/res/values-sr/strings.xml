@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Исправљање на тастатури на додир</string>
     <string name="settings_correction_summary">Аутоматско исправљање, велика слова, двоструки размак</string>
     <string name="settings_correction_title">Исправљање</string>
+    <string name="settings_status_not_required">Није потребно на овом телефону</string>
     <string name="settings_suggestion_correction_summary">Предлози, аутоматско исправљање и речници</string>
     <string name="settings_suggestion_correction_title">Помоћ при куцању</string>
     <string name="settings_suggestion_summary">Прикажи предлоге речи док куцате</string>

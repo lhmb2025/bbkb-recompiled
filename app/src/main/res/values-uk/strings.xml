@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Виправлення на сенсорній клавіатурі</string>
     <string name="settings_correction_summary">Автовиправлення, великі літери, подвійний пробіл</string>
     <string name="settings_correction_title">Виправлення</string>
+    <string name="settings_status_not_required">Не потрібно на цьому телефоні</string>
     <string name="settings_suggestion_correction_summary">Підказки, автовиправлення та словники</string>
     <string name="settings_suggestion_correction_title">Допомога під час введення</string>
     <string name="settings_suggestion_summary">Показувати підказки слів під час введення</string>

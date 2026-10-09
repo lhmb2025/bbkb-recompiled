@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">การแก้ไขบนแป้นพิมพ์หน้าจอสัมผัส</string>
     <string name="settings_correction_summary">การแก้ไขอัตโนมัติ ตัวพิมพ์ใหญ่ เว้นวรรคสองครั้ง</string>
     <string name="settings_correction_title">การแก้ไข</string>
+    <string name="settings_status_not_required">ไม่จำเป็นสำหรับโทรศัพท์เครื่องนี้</string>
     <string name="settings_suggestion_correction_summary">คำแนะนำ การแก้ไขอัตโนมัติ และพจนานุกรม</string>
     <string name="settings_suggestion_correction_title">ตัวช่วย</string>
     <string name="settings_suggestion_summary">แสดงคำแนะนำขณะพิมพ์</string>

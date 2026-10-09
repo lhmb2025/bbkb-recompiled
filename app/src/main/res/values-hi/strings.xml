@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">टच स्क्रीन कीबोर्ड सुधार</string>
     <string name="settings_correction_summary">स्वतः सुधार, बड़े अक्षर, डबल-स्पेस</string>
     <string name="settings_correction_title">सुधार</string>
+    <string name="settings_status_not_required">इस फ़ोन के लिए ज़रूरी नहीं है</string>
     <string name="settings_suggestion_correction_summary">सुझाव, स्वतः सुधार और डिक्शनरी</string>
     <string name="settings_suggestion_correction_title">सहायता</string>
     <string name="settings_suggestion_summary">टाइप करते समय शब्द सुझाव दिखाएं</string>

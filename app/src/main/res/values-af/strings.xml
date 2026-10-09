@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Regstelling op die tasskerm-toetsbord</string>
     <string name="settings_correction_summary">Outoregstelling, hoofletters, dubbelspasie</string>
     <string name="settings_correction_title">Regstelling</string>
+    <string name="settings_status_not_required">Nie nodig vir hierdie foon nie</string>
     <string name="settings_suggestion_correction_summary">Voorstelle, outoregstelling en woordeboeke</string>
     <string name="settings_suggestion_correction_title">Hulp</string>
     <string name="settings_suggestion_summary">Wys woordvoorstelle terwyl jy tik</string>

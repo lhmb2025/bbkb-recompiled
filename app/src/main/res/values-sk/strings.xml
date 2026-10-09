@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Oprava na dotykovej klávesnici</string>
     <string name="settings_correction_summary">Automatická oprava, veľké písmená, dvojitá medzera</string>
     <string name="settings_correction_title">Oprava</string>
+    <string name="settings_status_not_required">Pre tento telefón nie je potrebné</string>
     <string name="settings_suggestion_correction_summary">Návrhy, automatická oprava a slovníky</string>
     <string name="settings_suggestion_correction_title">Pomoc pri písaní</string>
     <string name="settings_suggestion_summary">Zobrazovať návrhy slov počas písania</string>

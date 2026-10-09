@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Correzione tastiera touch</string>
     <string name="settings_correction_summary">Correzione automatica, maiuscole, doppio spazio</string>
     <string name="settings_correction_title">Correzione</string>
+    <string name="settings_status_not_required">Non necessario su questo telefono</string>
     <string name="settings_suggestion_correction_summary">Suggerimenti, correzione automatica e dizionari</string>
     <string name="settings_suggestion_correction_title">Assistenza</string>
     <string name="settings_suggestion_summary">Mostra i suggerimenti di parole durante la digitazione</string>

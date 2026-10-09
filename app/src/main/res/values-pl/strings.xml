@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Korekta na klawiaturze dotykowej</string>
     <string name="settings_correction_summary">Autokorekta, wielkie litery, podwójna spacja</string>
     <string name="settings_correction_title">Korekta</string>
+    <string name="settings_status_not_required">Niepotrzebne na tym telefonie</string>
     <string name="settings_suggestion_correction_summary">Sugestie, autokorekta i słowniki</string>
     <string name="settings_suggestion_correction_title">Pomoc w pisaniu</string>
     <string name="settings_suggestion_summary">Pokazuj sugestie słów podczas pisania</string>

@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Ispravljanje na tastaturi na ekranu</string>
     <string name="settings_correction_summary">Automatsko ispravljanje, velika slova, dvostruki razmak</string>
     <string name="settings_correction_title">Ispravljanje</string>
+    <string name="settings_status_not_required">Nije potrebno za ovaj telefon</string>
     <string name="settings_suggestion_correction_summary">Prijedlozi, automatsko ispravljanje i rječnici</string>
     <string name="settings_suggestion_correction_title">Pomoć pri pisanju</string>
     <string name="settings_suggestion_summary">Prikazuj prijedloge riječi dok pišete</string>

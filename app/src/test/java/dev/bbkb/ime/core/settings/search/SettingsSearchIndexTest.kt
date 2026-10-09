@@ -190,10 +190,15 @@ class SettingsSearchIndexTest {
         )
 
         // Everything else is device-independent and must not have been swept up by the gating.
+        // The BBKB helper's entries count here: both shapes are phones whose profile keeps the
+        // helper offered (keyboardHelperEntriesFollowTheProfilesHelperSwitch covers the switch).
         assertEquals(
             "gating changed the entries that are NOT device-specific",
             SettingsSearchIndex.entries
-                .filter { it.requires == DeviceRequirement.ANY }
+                .filter {
+                    it.requires == DeviceRequirement.ANY ||
+                        it.requires == DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE
+                }
                 .mapNotNull { it.anchor }
                 .toSet(),
             onPkb intersect onTouch
@@ -201,10 +206,20 @@ class SettingsSearchIndexTest {
     }
 
     /**
-     * The Touch surface helper exists only where the profile declares a touch surface over the
-     * keys (the Unihertz Titans), and its Shizuku section only where the selector gives that
-     * surface to the Shizuku reader — not on a Titan 2 on Android 16, whose built-in route works.
+     * The Touch surface helper row is drawn on every phone (greyed out without a declared pad), so
+     * its entry is offered everywhere; its Shizuku section only where the profile declares a pad
+     * and the selector gives it to the Shizuku reader — not on a Titan 2 on Android 16, whose
+     * built-in route works.
      */
+    /** The BBKB helper's settings are not offered where its row is greyed out (BlackBerry phones). */
+    @Test
+    fun keyboardHelperEntriesFollowTheProfilesHelperSwitch() {
+        val helperAnchors = setOf("pref_key_interceptor_enabled", "pref_preprocess_all_key_events", "pref_use_unified_key_mapping")
+        assertTrue(helperAnchors.all { it in anchorsOn(pkbDevice) })
+        val blackBerry = pkbDevice.copy(accessibilityHelperAvailable = false)
+        assertTrue(helperAnchors.none { it in anchorsOn(blackBerry) })
+    }
+
     @Test
     fun touchSurfaceEntriesFollowTheProfilesPadAndRoute() {
         val titanOnShizuku = pkbDevice.copy(declaresTouchKeypad = true, touchKeypadUsesShizuku = true)
@@ -218,7 +233,7 @@ class SettingsSearchIndexTest {
             "touch_surface_shizuku" in anchorsOn(titanBuiltIn)
         )
         for (device in listOf(pkbDevice, touchDevice)) {
-            assertFalse("touch_surface_helper" in anchorsOn(device))
+            assertTrue("the row is drawn, greyed out, on every phone", "touch_surface_helper" in anchorsOn(device))
             assertFalse("touch_surface_shizuku" in anchorsOn(device))
         }
         // Reading the selector alone is not enough: no declared pad, no Shizuku section.

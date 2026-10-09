@@ -82,6 +82,16 @@ public class DeviceInputMapping {
         return quirk != null && quirks.contains(quirk);
     }
 
+    /**
+     * This phone never needs the BBKB helper (the accessibility key interceptor), from
+     * {@code <accessibility-helper>off</accessibility-helper>}: its firmware delivers every key the
+     * keyboard handles, as BlackBerry hardware does. The helper's service component is then
+     * switched off at runtime ({@code KeyInterceptorComponent}), which also takes it out of the
+     * system's Accessibility list, and its settings row is greyed out. False (the default and
+     * {@code available}): the helper is offered as usual.
+     */
+    public boolean accessibilityHelperOff = false;
+
     public DeviceInputMapping() {
         // Default constructor
     }

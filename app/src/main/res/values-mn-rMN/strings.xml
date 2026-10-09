@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Мэдрэгч дэлгэцийн гарын засвар</string>
     <string name="settings_correction_summary">Автомат засвар, том үсэг, давхар зай</string>
     <string name="settings_correction_title">Засвар</string>
+    <string name="settings_status_not_required">Энэ утсанд шаардлагагүй</string>
     <string name="settings_suggestion_correction_summary">Санал болгох үг, автомат засвар, толь бичиг</string>
     <string name="settings_suggestion_correction_title">Туслалцаа</string>
     <string name="settings_suggestion_summary">Бичих үед үгийн санал харуулах</string>

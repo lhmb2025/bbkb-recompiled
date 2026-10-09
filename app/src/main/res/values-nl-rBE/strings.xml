@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Correctie touchscreentoetsenbord</string>
     <string name="settings_correction_summary">Autocorrectie, hoofdletters, dubbele spatie</string>
     <string name="settings_correction_title">Correctie</string>
+    <string name="settings_status_not_required">Niet nodig op dit toestel</string>
     <string name="settings_suggestion_correction_summary">Suggesties, autocorrectie en woordenboeken</string>
     <string name="settings_suggestion_correction_title">Assistentie</string>
     <string name="settings_suggestion_summary">Woordsuggesties tonen tijdens het typen</string>

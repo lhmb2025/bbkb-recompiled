@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Sensorli klaviaturada tuzatish</string>
     <string name="settings_correction_summary">Avtomatik tuzatish, bosh harf, ikki probel</string>
     <string name="settings_correction_title">Tuzatish</string>
+    <string name="settings_status_not_required">Bu telefon uchun talab qilinmaydi</string>
     <string name="settings_suggestion_correction_summary">Takliflar, avtomatik tuzatish va lug‘atlar</string>
     <string name="settings_suggestion_correction_title">Yordam</string>
     <string name="settings_suggestion_summary">Yozayotganda so‘z takliflarini ko‘rsatish</string>

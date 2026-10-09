@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Skārienekrāna tastatūras labošana</string>
     <string name="settings_correction_summary">Automātiskā labošana, lielie burti, divkārša atstarpe</string>
     <string name="settings_correction_title">Labošana</string>
+    <string name="settings_status_not_required">Šim tālrunim nav nepieciešams</string>
     <string name="settings_suggestion_correction_summary">Ieteikumi, automātiskā labošana un vārdnīcas</string>
     <string name="settings_suggestion_correction_title">Palīdzība</string>
     <string name="settings_suggestion_summary">Rādīt vārdu ieteikumus rakstīšanas laikā</string>

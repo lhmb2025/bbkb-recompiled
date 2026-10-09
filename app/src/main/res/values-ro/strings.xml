@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Corectare tastatură ecran tactil</string>
     <string name="settings_correction_summary">Corectare automată, majuscule, spațiu dublu</string>
     <string name="settings_correction_title">Corectare</string>
+    <string name="settings_status_not_required">Nu este necesar pe acest telefon</string>
     <string name="settings_suggestion_correction_summary">Sugestii, corectare automată și dicționare</string>
     <string name="settings_suggestion_correction_title">Asistență</string>
     <string name="settings_suggestion_summary">Afișează sugestii de cuvinte în timp ce tastați</string>

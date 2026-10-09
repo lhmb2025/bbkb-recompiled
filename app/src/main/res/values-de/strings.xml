@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Korrektur der Bildschirmtastatur</string>
     <string name="settings_correction_summary">Autokorrektur, Großschreibung, doppelte Leertaste</string>
     <string name="settings_correction_title">Korrektur</string>
+    <string name="settings_status_not_required">Für dieses Telefon nicht erforderlich</string>
     <string name="settings_suggestion_correction_summary">Vorschläge, Autokorrektur und Wörterbücher</string>
     <string name="settings_suggestion_correction_title">Unterstützung</string>
     <string name="settings_suggestion_summary">Wortvorschläge während der Eingabe anzeigen</string>

@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Rettelse på berøringsfølsomt tastatur</string>
     <string name="settings_correction_summary">Autokorrektur, store bogstaver, dobbelt mellemrum</string>
     <string name="settings_correction_title">Rettelse</string>
+    <string name="settings_status_not_required">Ikke nødvendig på denne telefon</string>
     <string name="settings_suggestion_correction_summary">Forslag, autokorrektur og ordbøger</string>
     <string name="settings_suggestion_correction_title">Skrivehjælp</string>
     <string name="settings_suggestion_summary">Vis ordforslag, mens du skriver</string>

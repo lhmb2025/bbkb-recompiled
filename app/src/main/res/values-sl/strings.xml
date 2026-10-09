@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Popravljanje na zaslonski tipkovnici</string>
     <string name="settings_correction_summary">Samodejno popravljanje, velike začetnice, dvojna preslednica</string>
     <string name="settings_correction_title">Popravljanje</string>
+    <string name="settings_status_not_required">Ni potrebno v tem telefonu</string>
     <string name="settings_suggestion_correction_summary">Predlogi, samodejno popravljanje in slovarji</string>
     <string name="settings_suggestion_correction_title">Pomoč pri tipkanju</string>
     <string name="settings_suggestion_summary">Prikaz predlogov besed med tipkanjem</string>

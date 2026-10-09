@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Koreksi keyboard layar sentuh</string>
     <string name="settings_correction_summary">Koreksi otomatis, huruf kapital, spasi ganda</string>
     <string name="settings_correction_title">Koreksi</string>
+    <string name="settings_status_not_required">Tidak diperlukan untuk ponsel ini</string>
     <string name="settings_suggestion_correction_summary">Saran, koreksi otomatis, dan kamus</string>
     <string name="settings_suggestion_correction_title">Bantuan</string>
     <string name="settings_suggestion_summary">Tampilkan saran kata saat mengetik</string>

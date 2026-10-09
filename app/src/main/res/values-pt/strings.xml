@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Correção do teclado na tela</string>
     <string name="settings_correction_summary">Correção automática, maiúsculas, espaço duplo</string>
     <string name="settings_correction_title">Correção</string>
+    <string name="settings_status_not_required">Não é necessário neste telefone</string>
     <string name="settings_suggestion_correction_summary">Sugestões, correção automática e dicionários</string>
     <string name="settings_suggestion_correction_title">Assistência</string>
     <string name="settings_suggestion_summary">Mostrar sugestões de palavras durante a digitação</string>

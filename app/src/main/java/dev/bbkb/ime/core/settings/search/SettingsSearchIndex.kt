@@ -24,6 +24,8 @@ data class SearchDeviceCapabilities(
     val declaresTouchKeypad: Boolean = false,
     /** The touch-source selector gives that surface to the Shizuku reader. */
     val touchKeypadUsesShizuku: Boolean = false,
+    /** The BBKB helper is offered on this phone: its profile does not switch it off. */
+    val accessibilityHelperAvailable: Boolean = true,
 ) {
     companion object {
         fun current(): SearchDeviceCapabilities {
@@ -33,6 +35,8 @@ data class SearchDeviceCapabilities(
                 hasMultifunctionKey =
                     profile?.getDeviceMapping()?.getMultifunctionKeyMapping() != null,
                 declaresTouchKeypad = profile?.declaresTouchKeypad() ?: false,
+                accessibilityHelperAvailable =
+                    !dev.bbkb.ime.core.device.interceptor.KeyInterceptorComponent.isOffForDevice(profile?.getDeviceMapping()),
                 touchKeypadUsesShizuku =
                     profile?.touchSourceSelection?.choice == TouchSourceSelector.Choice.SHIZUKU,
             )
@@ -66,19 +70,20 @@ enum class DeviceRequirement {
     /** Row sits behind a device mapping that declares a MULTIFUNCTION key (the KEY2 mic key). */
     MULTIFUNCTION_KEY,
 
-    /** Row sits behind a profile that declares a touch surface over the keys (the Titans). */
-    TOUCH_KEYPAD_DECLARED,
 
     /** Row sits in the Touch surface helper's Shizuku section: the selector picks the reader. */
-    TOUCH_KEYPAD_SHIZUKU;
+    TOUCH_KEYPAD_SHIZUKU,
+
+    /** Row sits on the BBKB helper's screen, whose entry row is greyed out where it is not required. */
+    ACCESSIBILITY_HELPER_AVAILABLE;
 
     fun isMetBy(capabilities: SearchDeviceCapabilities): Boolean = when (this) {
         ANY -> true
         PHYSICAL_KEYBOARD -> capabilities.hasPhysicalKeyboard
         TOUCH_ONLY -> !capabilities.hasPhysicalKeyboard
         MULTIFUNCTION_KEY -> capabilities.hasMultifunctionKey
-        TOUCH_KEYPAD_DECLARED -> capabilities.declaresTouchKeypad
         TOUCH_KEYPAD_SHIZUKU -> capabilities.declaresTouchKeypad && capabilities.touchKeypadUsesShizuku
+        ACCESSIBILITY_HELPER_AVAILABLE -> capabilities.accessibilityHelperAvailable
     }
 }
 
@@ -242,9 +247,9 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.prefs_ckb_gesture_activation_delay_title, "ckb gesture activation delay suppression timeout while typing physical keyboard", SettingsRoute.CkbGestures.route, TYPING, "pref_CKB_gesture_suppression_timeout"),
 
         // ── Typing & input: Keyboard Helper (accessibility key interception) ────
-        SearchableSetting(R.string.pref_key_interceptor_enabled, "special key support accessibility interceptor helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_key_interceptor_enabled"),
-        SearchableSetting(R.string.pref_preprocess_all_keys, "process all key events accessibility helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_preprocess_all_key_events"),
-        SearchableSetting(R.string.settings_pkb_keyboard_helper_title, "unified key mapping xml experimental helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_use_unified_key_mapping"),
+        SearchableSetting(R.string.pref_key_interceptor_enabled, "special key support accessibility interceptor helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_key_interceptor_enabled", DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE),
+        SearchableSetting(R.string.pref_preprocess_all_keys, "process all key events accessibility helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_preprocess_all_key_events", DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE),
+        SearchableSetting(R.string.settings_pkb_keyboard_helper_title, "unified key mapping xml experimental helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_use_unified_key_mapping", DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE),
 
         // ── Appearance & layout: symbol page ordering ──────────────────────────
         // SymbolCustomizationScreen renders exactly one of these two — the symbol page the device can
@@ -260,9 +265,10 @@ object SettingsSearchIndex {
         // on. No anchor — the row holds no preference.
         SearchableSetting(R.string.device_profile_builder_entry_title, "device profile builder capture keys scancode keycode export import share unknown phone config", SettingsRoute.DeviceConfiguration.route, ADVANCED, requires = DeviceRequirement.PHYSICAL_KEYBOARD),
         // ── Advanced: Touch surface helper (Unihertz Titans) ────────────────────
-        // The row on Device compatibility, and the Shizuku section of the screen it opens; both
-        // are actions, anchored by the ids TouchSurfaceAnchors declares.
-        SearchableSetting(R.string.touch_surface_helper_title, "touch surface touchpad keyboard gestures swipe scroll assistant cursor shizuku titan unihertz", SettingsRoute.DeviceCompatibility.route, ADVANCED, TouchSurfaceAnchors.HELPER, DeviceRequirement.TOUCH_KEYPAD_DECLARED),
+        // The row on Device compatibility (drawn on every phone, enabled only on a declared pad,
+        // so its entry is ungated) and the Shizuku section of the screen it opens (drawn only on
+        // the Shizuku route); both are actions, anchored by the ids TouchSurfaceAnchors declares.
+        SearchableSetting(R.string.touch_surface_helper_title, "touch surface touchpad keyboard gestures swipe scroll assistant cursor shizuku titan unihertz", SettingsRoute.DeviceCompatibility.route, ADVANCED, TouchSurfaceAnchors.HELPER),
         SearchableSetting(R.string.touch_surface_shizuku_category, "shizuku touch surface touchpad wireless debugging adb root grant access permission", SettingsRoute.TouchSurfaceHelper.route, ADVANCED, TouchSurfaceAnchors.SHIZUKU, DeviceRequirement.TOUCH_KEYPAD_SHIZUKU),
         SearchableSetting(R.string.settings_debug_title, "debug developer", SettingsRoute.Advanced.route, ADVANCED),
         SearchableSetting(R.string.settings_clear_settings_title, "reset clear settings data", SettingsRoute.Advanced.route, ADVANCED),

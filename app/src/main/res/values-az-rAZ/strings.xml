@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Sensor ekran klaviaturası düzəlişi</string>
     <string name="settings_correction_summary">Avtodüzəliş, böyük hərf, ikiqat boşluq</string>
     <string name="settings_correction_title">Düzəliş</string>
+    <string name="settings_status_not_required">Bu telefon üçün tələb olunmur</string>
     <string name="settings_suggestion_correction_summary">Təkliflər, avtodüzəliş və lüğətlər</string>
     <string name="settings_suggestion_correction_title">Yardım</string>
     <string name="settings_suggestion_summary">Yazarkən söz təkliflərini göstərin</string>

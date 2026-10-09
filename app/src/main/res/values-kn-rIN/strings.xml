@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">ಟಚ್ ಸ್ಕ್ರೀನ್ ಕೀಬೋರ್ಡ್ ತಿದ್ದುಪಡಿ</string>
     <string name="settings_correction_summary">ಸ್ವಯಂ ತಿದ್ದುಪಡಿ, ದೊಡ್ಡಕ್ಷರ, ಡಬಲ್-ಸ್ಪೇಸ್</string>
     <string name="settings_correction_title">ತಿದ್ದುಪಡಿ</string>
+    <string name="settings_status_not_required">ಈ ಫೋನ್‌ಗೆ ಅಗತ್ಯವಿಲ್ಲ</string>
     <string name="settings_suggestion_correction_summary">ಸಲಹೆಗಳು, ಸ್ವಯಂ ತಿದ್ದುಪಡಿ ಮತ್ತು ನಿಘಂಟುಗಳು</string>
     <string name="settings_suggestion_correction_title">ಸಹಾಯ</string>
     <string name="settings_suggestion_summary">ಟೈಪ್ ಮಾಡುವಾಗ ಪದ ಸಲಹೆಗಳನ್ನು ತೋರಿಸು</string>

@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Ceartú ar an méarchlár tadhaill</string>
     <string name="settings_correction_summary">Uathcheartú, ceannlitreacha, spás dúbailte</string>
     <string name="settings_correction_title">Ceartú</string>
+    <string name="settings_status_not_required">Níl sé ag teastáil ar an bhfón seo</string>
     <string name="settings_suggestion_correction_summary">Moltaí, uathcheartú agus foclóirí</string>
     <string name="settings_suggestion_correction_title">Cúnamh</string>
     <string name="settings_suggestion_summary">Taispeáin moltaí focal agus tú ag clóscríobh</string>

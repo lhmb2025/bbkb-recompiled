@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">টাচ স্ক্রিন কীবোর্ডে সংশোধন</string>
     <string name="settings_correction_summary">স্বয়ংক্রিয় সংশোধন, বড় হাতের অক্ষর, ডাবল-স্পেস</string>
     <string name="settings_correction_title">সংশোধন</string>
+    <string name="settings_status_not_required">এই ফোনের জন্য প্রয়োজন নেই</string>
     <string name="settings_suggestion_correction_summary">পরামর্শ, স্বয়ংক্রিয় সংশোধন ও অভিধান</string>
     <string name="settings_suggestion_correction_title">সহায়তা</string>
     <string name="settings_suggestion_summary">টাইপ করার সময় শব্দের পরামর্শ দেখান</string>

@@ -166,6 +166,7 @@
     <string name="settings_autocorrect_vkb_title">Korrigjimi në tastierën me prekje</string>
     <string name="settings_correction_summary">Korrigjim automatik, shkronja e madhe, hapësirë e dyfishtë</string>
     <string name="settings_correction_title">Korrigjimi</string>
+    <string name="settings_status_not_required">Nuk nevojitet në këtë telefon</string>
     <string name="settings_suggestion_correction_summary">Sugjerime, korrigjim automatik dhe fjalorë</string>
     <string name="settings_suggestion_correction_title">Ndihma</string>
     <string name="settings_suggestion_summary">Shfaq sugjerime fjalësh ndërsa shkruan</string>

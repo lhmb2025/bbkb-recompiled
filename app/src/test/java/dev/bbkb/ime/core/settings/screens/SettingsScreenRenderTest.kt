@@ -937,13 +937,16 @@ class SettingsScreenRenderTest(private val screenName: String) {
             name = "DeviceCompatibilityScreen",
             route = SettingsRoute.DeviceCompatibility.route,
             title = "Device compatibility",
-            // "key_interceptor_service_label" for the same reason as KeyboardHelperScreen below:
-            // three resources now share the value "BBKB Helper" and the first name wins.
+            // The row reads "BBKB helper" (lower-case h), a value no other resource shares, so it
+            // resolves to its own name; the screen it opens keeps "BBKB Helper" (see below).
             resources = setOf(
-                "key_interceptor_service_label", "pref_override_device_meta_state",
+                "settings_pkb_keyboard_helper_title", "pref_override_device_meta_state",
                 "pref_override_device_meta_state_summary", "settings_device_compatibility_title",
                 "settings_device_configuration_summary", "settings_device_configuration_title",
-                "settings_pkb_keyboard_helper_summary"
+                "settings_pkb_keyboard_helper_summary",
+                // The Touch surface helper row is drawn on every phone, greyed out where the
+                // profile declares no pad (this JVM's shape), with that state as its summary.
+                "touch_surface_helper_title", "settings_status_not_required"
             ),
             literals = emptySet(),
         ),
@@ -1285,7 +1288,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             // The touch-only test device declares no touch surface: the header says so, and
             // neither the Built-in nor the Shizuku section is drawn. Its states on a Titan are
             // pinned by TouchSurfaceHelperScreenTest.
-            resources = setOf("touch_surface_helper_title", "touch_surface_status_unavailable"),
+            resources = setOf("touch_surface_helper_title", "settings_status_not_required"),
             literals = emptySet(),
         ),
         Case(
