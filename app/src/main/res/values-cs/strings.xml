@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Rozpoznávání řeči je zaneprázdněné. Zkuste to znovu za chvíli.</string>
     <string name="voice_status_too_many_requests">Příliš mnoho požadavků. Zkuste to znovu později.</string>
     <string name="voice_status_recognizer_needs_permission">Aplikace %1$s potřebuje oprávnění k mikrofonu</string>
+    <string name="voice_status_recognizer_refused">Aplikace %1$s nepovolila diktování. Zkuste jiné rozpoznávání řeči v nastavení hlasového zadávání.</string>
     <string name="voice_status_service_disconnected">Služba rozpoznávání řeči se odpojila. Klepnutím na mikrofon to zkuste znovu.</string>
 </resources>

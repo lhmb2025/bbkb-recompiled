@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Abala ang speech recognition. Subukang muli maya-maya.</string>
     <string name="voice_status_too_many_requests">Masyadong maraming request. Subukang muli mamaya.</string>
     <string name="voice_status_recognizer_needs_permission">Kailangan ng %1$s ng pahintulot sa mikropono</string>
+    <string name="voice_status_recognizer_refused">Hindi pinayagan ng %1$s ang dictation. Sumubok ng ibang speech recognizer sa mga setting ng Voice input.</string>
     <string name="voice_status_service_disconnected">Nadiskonekta ang speech service. I-tap ang mic para subukang muli.</string>
 </resources>

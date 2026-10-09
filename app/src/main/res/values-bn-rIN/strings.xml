@@ -823,5 +823,6 @@
     <string name="voice_status_busy">স্পিচ শনাক্তকরণ এখন ব্যস্ত। কিছুক্ষণ পরে আবার চেষ্টা করুন।</string>
     <string name="voice_status_too_many_requests">অনেক বেশি অনুরোধ। পরে আবার চেষ্টা করুন।</string>
     <string name="voice_status_recognizer_needs_permission">%1$s-এর মাইক্রোফোনের অনুমতি প্রয়োজন</string>
+    <string name="voice_status_recognizer_refused">%1$s ডিক্টেশনের অনুমতি দেয়নি। ভয়েস ইনপুট সেটিংসে অন্য কোনো স্পিচ শনাক্তকারী চেষ্টা করুন।</string>
     <string name="voice_status_service_disconnected">স্পিচ পরিষেবার সংযোগ বিচ্ছিন্ন হয়েছে। আবার চেষ্টা করতে মাইকে আলতো চাপুন।</string>
 </resources>

@@ -823,5 +823,6 @@
     <string name="voice_status_busy">זיהוי הדיבור עסוק. נסה שוב בעוד רגע.</string>
     <string name="voice_status_too_many_requests">יותר מדי בקשות. נסה שוב מאוחר יותר.</string>
     <string name="voice_status_recognizer_needs_permission">ל-%1$s נדרשת הרשאה למיקרופון</string>
+    <string name="voice_status_recognizer_refused">האפליקציה %1$s לא אפשרה הכתבה. אפשר לנסות מנגנון זיהוי דיבור אחר בהגדרות של קלט קולי.</string>
     <string name="voice_status_service_disconnected">החיבור לשירות הדיבור נותק. הקש על המיקרופון כדי לנסות שוב.</string>
 </resources>

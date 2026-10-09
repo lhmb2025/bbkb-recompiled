@@ -242,14 +242,42 @@ public final class VoiceRecognizerChoice {
         return isBlank(selectionId) ? LANGUAGE_CACHE_KEY : LANGUAGE_CACHE_KEY + "_" + selectionId.trim();
     }
 
+    /** What to do when the recogniser answers {@code ERROR_INSUFFICIENT_PERMISSIONS}. */
+    public enum PermissionErrorAction {
+        /** Ask for this keyboard's own microphone permission, as before there was a choice. */
+        REQUEST_OWN_PERMISSION,
+        /** The chosen app has no microphone permission: "<app> needs microphone permission". */
+        APP_NEEDS_PERMISSION,
+        /**
+         * The chosen app has the microphone and still refused: it will not serve this keyboard
+         * ("<app> did not allow dictation"). Claude's service did this on the KEY2 (2026-10-08).
+         */
+        APP_REFUSED
+    }
+
     /**
-     * The app to name when the recogniser answers {@code ERROR_INSUFFICIENT_PERMISSIONS}, or null to
-     * ask for the microphone ourselves as before. A chosen app is named only once this keyboard holds
-     * the permission: the recogniser checks the caller as well as itself, so until then asking for
-     * ours is still the first step.
+     * Who the permission error is about. The error does not say: a service sends it when it lacks
+     * the microphone itself, and also when it refuses the app that called it. So a chosen app is
+     * blamed for its microphone only when its own grant says it lacks one; when it has one, or that
+     * cannot be checked, it refused us. Nothing is put on a chosen app while this keyboard lacks the
+     * permission, because the service checks its caller too, and asking for ours comes first.
+     *
+     * @param appPermissionGranted the chosen app's own microphone grant, or null when it could not be
+     *        checked
      */
-    public static String appNeedingPermission(Selection selection, boolean ownPermissionGranted) {
+    public static PermissionErrorAction permissionErrorAction(Selection selection, boolean ownPermissionGranted,
+            Boolean appPermissionGranted) {
         if (selection == null || selection.kind != Kind.COMPONENT || !ownPermissionGranted) {
+            return PermissionErrorAction.REQUEST_OWN_PERMISSION;
+        }
+        return Boolean.FALSE.equals(appPermissionGranted)
+                ? PermissionErrorAction.APP_NEEDS_PERMISSION
+                : PermissionErrorAction.APP_REFUSED;
+    }
+
+    /** The name a message about the chosen app uses: its label, or its package without one. */
+    public static String appName(Selection selection) {
+        if (selection == null) {
             return null;
         }
         return isBlank(selection.label) ? selection.packageName : selection.label;

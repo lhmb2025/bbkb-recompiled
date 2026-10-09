@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Rozpoznawanie mowy jest zajęte. Spróbuj ponownie za chwilę.</string>
     <string name="voice_status_too_many_requests">Zbyt wiele żądań. Spróbuj ponownie później.</string>
     <string name="voice_status_recognizer_needs_permission">Aplikacja %1$s potrzebuje uprawnienia do mikrofonu</string>
+    <string name="voice_status_recognizer_refused">Aplikacja %1$s nie zezwoliła na dyktowanie. Wypróbuj inne rozpoznawanie mowy w ustawieniach wprowadzania głosowego.</string>
     <string name="voice_status_service_disconnected">Usługa rozpoznawania mowy została rozłączona. Dotknij mikrofonu, aby spróbować ponownie.</string>
 </resources>

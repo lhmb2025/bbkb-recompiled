@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Pangenalan ucapan keur sibuk. Cobi deui sakedap deui.</string>
     <string name="voice_status_too_many_requests">Seueur teuing pamundut. Cobi deui engké.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s butuh idin mikropon</string>
+    <string name="voice_status_recognizer_refused">%1$s henteu ngijinkeun dikte. Cobian pangenal ucapan sanés dina setélan Asupan sora.</string>
     <string name="voice_status_service_disconnected">Layanan ucapan pegat. Toél mikropon pikeun nyobian deui.</string>
 </resources>

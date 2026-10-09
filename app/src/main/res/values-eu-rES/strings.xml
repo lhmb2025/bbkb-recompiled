@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Hizketa-ezagutza lanpetuta dago. Saiatu berriro une batean.</string>
     <string name="voice_status_too_many_requests">Eskaera gehiegi. Saiatu berriro geroago.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s aplikazioak mikrofonoa erabiltzeko baimena behar du</string>
+    <string name="voice_status_recognizer_refused">%1$s aplikazioak ez du diktatzea onartu. Probatu beste hizketa-ezagutzaile bat Ahots bidezko idazketaren ezarpenetan.</string>
     <string name="voice_status_service_disconnected">Hizketa-zerbitzua deskonektatu egin da. Sakatu mikrofonoa berriro saiatzeko.</string>
 </resources>

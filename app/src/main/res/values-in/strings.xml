@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Pengenalan ucapan sedang sibuk. Coba lagi sebentar lagi.</string>
     <string name="voice_status_too_many_requests">Terlalu banyak permintaan. Coba lagi nanti.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s memerlukan izin mikrofon</string>
+    <string name="voice_status_recognizer_refused">%1$s tidak mengizinkan dikte. Coba pengenal ucapan lain di setelan Input suara.</string>
     <string name="voice_status_service_disconnected">Layanan ucapan terputus. Ketuk mik untuk mencoba lagi.</string>
 </resources>

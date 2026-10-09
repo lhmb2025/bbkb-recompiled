@@ -823,5 +823,6 @@
     <string name="voice_status_busy">語音識別服務正忙。請稍候片刻再試。</string>
     <string name="voice_status_too_many_requests">要求過多。請稍後再試。</string>
     <string name="voice_status_recognizer_needs_permission">%1$s 需要麥克風權限</string>
+    <string name="voice_status_recognizer_refused">%1$s 不允許聽寫。請在語音輸入設定中試用其他語音識別器。</string>
     <string name="voice_status_service_disconnected">語音服務已中斷連線。輕觸麥克風即可重試。</string>
 </resources>

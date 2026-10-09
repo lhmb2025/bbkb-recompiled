@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Njohja e të folurit është e zënë. Provo përsëri pas pak.</string>
     <string name="voice_status_too_many_requests">Shumë kërkesa. Provo përsëri më vonë.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s ka nevojë për leje për mikrofonin</string>
+    <string name="voice_status_recognizer_refused">%1$s nuk e lejoi diktimin. Provo një njohës tjetër të të folurit te cilësimet e Shkrimit me zë.</string>
     <string name="voice_status_service_disconnected">Shërbimi i të folurit u shkëput. Prek mikrofonin për të provuar përsëri.</string>
 </resources>

@@ -823,5 +823,6 @@
     <string name="voice_status_busy">స్పీచ్ గుర్తింపు బిజీగా ఉంది. కొద్దిసేపటిలో మళ్లీ ప్రయత్నించండి.</string>
     <string name="voice_status_too_many_requests">చాలా ఎక్కువ అభ్యర్థనలు. తర్వాత మళ్లీ ప్రయత్నించండి.</string>
     <string name="voice_status_recognizer_needs_permission">%1$sకి మైక్రోఫోన్ అనుమతి అవసరం</string>
+    <string name="voice_status_recognizer_refused">%1$s డిక్టేషన్‌ను అనుమతించలేదు. వాయిస్ ఇన్‌పుట్ సెట్టింగ్‌లలో మరో స్పీచ్ గుర్తింపు సాధనాన్ని ప్రయత్నించండి.</string>
     <string name="voice_status_service_disconnected">స్పీచ్ సేవ డిస్‌కనెక్ట్ అయింది. మళ్లీ ప్రయత్నించడానికి మైక్‌ను నొక్కండి.</string>
 </resources>

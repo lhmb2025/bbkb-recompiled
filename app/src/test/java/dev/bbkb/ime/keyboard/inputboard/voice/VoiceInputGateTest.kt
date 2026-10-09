@@ -215,8 +215,39 @@ class VoiceInputGateTest {
     @Test
     fun `no permission notice once the board has gone`() {
         controller.onRecognizerNeedsPermission("Sayboard")
+        controller.onRecognizerRefused("Claude")
 
         assertNull(ShadowToast.getTextOfLatestToast())
+    }
+
+    /**
+     * KEY2, 2026-10-08: Claude holds the microphone and still refused. The notice must not send the
+     * user after a permission Claude already has; another recognizer is the only fix.
+     */
+    @Test
+    fun `a refusing app is named and another recognizer suggested on the status line`() {
+        val view = mock(VoiceInputView::class.java)
+        `when`(view.isShowing).thenReturn(true)
+        `when`(view.showStatusMessage(any(CharSequence::class.java))).thenReturn(true)
+        controller.setVoiceInputView(view)
+
+        controller.onRecognizerRefused("Claude")
+
+        verify(view).showStatusMessage("Claude did not allow dictation. Try another recognizer in Voice input settings.")
+        assertNull(ShadowToast.getTextOfLatestToast())
+    }
+
+    @Test
+    fun `the refusal notice is a toast where the board has no status line`() {
+        val view = mock(VoiceInputView::class.java)
+        `when`(view.isShowing).thenReturn(true)
+        `when`(view.showStatusMessage(any(CharSequence::class.java))).thenReturn(false)
+        controller.setVoiceInputView(view)
+
+        controller.onRecognizerRefused("Claude")
+
+        assertEquals("Claude did not allow dictation. Try another recognizer in Voice input settings.",
+            ShadowToast.getTextOfLatestToast())
     }
 
     /** Built-in voice off hands the mic to the system voice keyboard, which needs no recogniser of ours. */

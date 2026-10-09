@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Кепти таануу бош эмес. Бир аздан кийин кайра аракет кылыңыз.</string>
     <string name="voice_status_too_many_requests">Өтө көп сурам. Кийинчерээк кайра аракет кылыңыз.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s колдонмосуна микрофонго уруксат керек</string>
+    <string name="voice_status_recognizer_refused">%1$s жазып алууга уруксат берген жок. Үн менен киргизүү жөндөөлөрүнөн башка кеп таануучуну колдонуп көрүңүз.</string>
     <string name="voice_status_service_disconnected">Кеп кызматы ажыратылды. Кайра аракет кылуу үчүн микрофонду басыңыз.</string>
 </resources>

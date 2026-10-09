@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Препознавање говора је заузето. Покушајте поново за тренутак.</string>
     <string name="voice_status_too_many_requests">Превише захтева. Покушајте поново касније.</string>
     <string name="voice_status_recognizer_needs_permission">Апликацији %1$s је потребна дозвола за микрофон</string>
+    <string name="voice_status_recognizer_refused">Апликација %1$s није дозволила диктирање. Испробајте друго препознавање говора у подешавањима гласовног уноса.</string>
     <string name="voice_status_service_disconnected">Веза са услугом за говор је прекинута. Додирните микрофон да бисте покушали поново.</string>
 </resources>

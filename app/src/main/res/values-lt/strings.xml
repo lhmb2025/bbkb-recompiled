@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Kalbos atpažinimas užimtas. Po akimirkos bandykite dar kartą.</string>
     <string name="voice_status_too_many_requests">Per daug užklausų. Bandykite dar kartą vėliau.</string>
     <string name="voice_status_recognizer_needs_permission">Programai %1$s reikia leidimo naudoti mikrofoną</string>
+    <string name="voice_status_recognizer_refused">Programa %1$s neleido diktuoti. Išbandykite kitą kalbos atpažinimo programą balso įvesties nustatymuose.</string>
     <string name="voice_status_service_disconnected">Kalbos paslauga atsijungė. Bakstelėkite mikrofoną ir bandykite dar kartą.</string>
 </resources>

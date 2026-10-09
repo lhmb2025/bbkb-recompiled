@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Puheentunnistus on varattu. Yritä hetken kuluttua uudelleen.</string>
     <string name="voice_status_too_many_requests">Liian monta pyyntöä. Yritä myöhemmin uudelleen.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s tarvitsee mikrofonin käyttöoikeuden</string>
+    <string name="voice_status_recognizer_refused">%1$s ei sallinut sanelua. Kokeile toista puheentunnistinta Äänisyöttö-asetuksissa.</string>
     <string name="voice_status_service_disconnected">Yhteys puhepalveluun katkesi. Yritä uudelleen napauttamalla mikrofonia.</string>
 </resources>

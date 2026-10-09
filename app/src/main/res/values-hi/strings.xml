@@ -823,5 +823,6 @@
     <string name="voice_status_busy">वाक् पहचान व्यस्त है। थोड़ी देर में फिर कोशिश करें।</string>
     <string name="voice_status_too_many_requests">बहुत अधिक अनुरोध। बाद में फिर कोशिश करें।</string>
     <string name="voice_status_recognizer_needs_permission">%1$s को माइक्रोफ़ोन की अनुमति चाहिए</string>
+    <string name="voice_status_recognizer_refused">%1$s ने डिक्टेशन की अनुमति नहीं दी। ध्वनि इनपुट सेटिंग में कोई दूसरा स्पीच पहचानकर्ता आज़माएं।</string>
     <string name="voice_status_service_disconnected">वाक् सेवा डिस्कनेक्ट हो गई। फिर से कोशिश करने के लिए माइक टैप करें।</string>
 </resources>

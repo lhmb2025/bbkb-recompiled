@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Recunoașterea vocală este ocupată. Încercați din nou peste câteva momente.</string>
     <string name="voice_status_too_many_requests">Prea multe solicitări. Încercați din nou mai târziu.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s are nevoie de permisiunea pentru microfon</string>
+    <string name="voice_status_recognizer_refused">%1$s nu a permis dictarea. Încearcă alt serviciu de recunoaștere vocală în setările pentru Introducere vocală.</string>
     <string name="voice_status_service_disconnected">Serviciul vocal s-a deconectat. Atingeți microfonul pentru a încerca din nou.</string>
 </resources>

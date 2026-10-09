@@ -823,5 +823,6 @@
     <string name="voice_status_busy">A beszédfelismerés foglalt. Próbálja újra egy pillanat múlva.</string>
     <string name="voice_status_too_many_requests">Túl sok kérés. Próbálja újra később.</string>
     <string name="voice_status_recognizer_needs_permission">A(z) %1$s alkalmazásnak mikrofonengedélyre van szüksége</string>
+    <string name="voice_status_recognizer_refused">A(z) %1$s alkalmazás nem engedélyezte a diktálást. Próbáljon ki egy másik beszédfelismerőt a Hangbevitel beállításaiban.</string>
     <string name="voice_status_service_disconnected">Megszakadt a kapcsolat a beszédszolgáltatással. Az újrapróbálkozáshoz koppintson a mikrofonra.</string>
 </resources>

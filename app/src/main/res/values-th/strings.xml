@@ -823,5 +823,6 @@
     <string name="voice_status_busy">ระบบจดจำเสียงพูดไม่ว่าง ลองอีกครั้งในอีกสักครู่</string>
     <string name="voice_status_too_many_requests">มีคำขอมากเกินไป ลองอีกครั้งในภายหลัง</string>
     <string name="voice_status_recognizer_needs_permission">%1$s ต้องได้รับสิทธิ์เข้าถึงไมโครโฟน</string>
+    <string name="voice_status_recognizer_refused">%1$s ไม่อนุญาตให้ป้อนตามคำบอก ลองใช้ตัวจดจำเสียงพูดอื่นในการตั้งค่าการป้อนด้วยเสียง</string>
     <string name="voice_status_service_disconnected">บริการเสียงพูดตัดการเชื่อมต่อแล้ว แตะไมโครโฟนเพื่อลองอีกครั้ง</string>
 </resources>

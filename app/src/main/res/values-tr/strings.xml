@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Konuşma tanıma meşgul. Biraz sonra tekrar deneyin.</string>
     <string name="voice_status_too_many_requests">Çok fazla istek. Daha sonra tekrar deneyin.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s mikrofon iznine ihtiyaç duyuyor</string>
+    <string name="voice_status_recognizer_refused">%1$s dikteye izin vermedi. Sesli giriş ayarlarında başka bir konuşma tanıyıcı deneyin.</string>
     <string name="voice_status_service_disconnected">Konuşma hizmetinin bağlantısı kesildi. Tekrar denemek için mikrofona dokunun.</string>
 </resources>

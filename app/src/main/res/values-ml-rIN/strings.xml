@@ -823,5 +823,6 @@
     <string name="voice_status_busy">സംഭാഷണം തിരിച്ചറിയൽ തിരക്കിലാണ്. അൽപ്പസമയത്തിന് ശേഷം വീണ്ടും ശ്രമിക്കുക.</string>
     <string name="voice_status_too_many_requests">വളരെയധികം അഭ്യർത്ഥനകൾ. പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s-ന് മൈക്രോഫോൺ അനുമതി ആവശ്യമാണ്</string>
+    <string name="voice_status_recognizer_refused">%1$s ഡിക്റ്റേഷൻ അനുവദിച്ചില്ല. വോയ്‌സ് ഇൻപുട്ട് ക്രമീകരണത്തിൽ മറ്റൊരു സംഭാഷണ തിരിച്ചറിയൽ പരീക്ഷിക്കുക.</string>
     <string name="voice_status_service_disconnected">സംഭാഷണ സേവനം വിച്ഛേദിക്കപ്പെട്ടു. വീണ്ടും ശ്രമിക്കാൻ മൈക്ക് ടാപ്പ് ചെയ്യുക.</string>
 </resources>

@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Nitqin tanınması məşğuldur. Bir azdan yenidən cəhd edin.</string>
     <string name="voice_status_too_many_requests">Həddindən çox sorğu. Sonra yenidən cəhd edin.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s mikrofon icazəsinə ehtiyac duyur</string>
+    <string name="voice_status_recognizer_refused">%1$s diktəyə icazə vermədi. Səsli daxiletmə ayarlarında başqa nitq tanıyıcı sınayın.</string>
     <string name="voice_status_service_disconnected">Nitq xidməti ilə əlaqə kəsildi. Yenidən cəhd etmək üçün mikrofona toxunun.</string>
 </resources>

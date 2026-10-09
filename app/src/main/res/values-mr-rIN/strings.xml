@@ -823,5 +823,6 @@
     <string name="voice_status_busy">स्पीच ओळख व्यस्त आहे. थोड्या वेळाने पुन्हा प्रयत्न करा.</string>
     <string name="voice_status_too_many_requests">खूप जास्त विनंत्या. नंतर पुन्हा प्रयत्न करा.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s ला मायक्रोफोन परवानगी आवश्यक आहे</string>
+    <string name="voice_status_recognizer_refused">%1$s ने डिक्टेशनला परवानगी दिली नाही. व्हॉइस इनपुट सेटिंग्जमध्ये दुसरा स्पीच ओळखकर्ता वापरून पाहा.</string>
     <string name="voice_status_service_disconnected">स्पीच सेवा डिस्कनेक्ट झाली. पुन्हा प्रयत्न करण्यासाठी माइकवर टॅप करा.</string>
 </resources>

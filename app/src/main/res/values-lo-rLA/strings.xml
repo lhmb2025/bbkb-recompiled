@@ -823,5 +823,6 @@
     <string name="voice_status_busy">ການຈຳແນກສຽງເວົ້າບໍ່ຫວ່າງ. ລອງອີກຄັ້ງໃນອີກບໍ່ດົນ.</string>
     <string name="voice_status_too_many_requests">ມີຄຳຂໍຫຼາຍເກີນໄປ. ລອງອີກຄັ້ງພາຍຫຼັງ.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s ຕ້ອງການສິດເຂົ້າເຖິງໄມໂຄຣໂຟນ</string>
+    <string name="voice_status_recognizer_refused">%1$s ບໍ່ອະນຸຍາດໃຫ້ພິມດ້ວຍສຽງ. ລອງໃຊ້ຕົວຮັບຮູ້ສຽງເວົ້າອື່ນໃນການຕັ້ງຄ່າການປ້ອນດ້ວຍສຽງ.</string>
     <string name="voice_status_service_disconnected">ບໍລິການສຽງເວົ້າຕັດການເຊື່ອມຕໍ່ແລ້ວ. ແຕະໄມໂຄຣໂຟນເພື່ອລອງອີກຄັ້ງ.</string>
 </resources>

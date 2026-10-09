@@ -823,5 +823,6 @@
     <string name="voice_status_busy">خدمة التعرّف على الكلام مشغولة. أعد المحاولة بعد قليل.</string>
     <string name="voice_status_too_many_requests">طلبات كثيرة جدًا. أعد المحاولة لاحقًا.</string>
     <string name="voice_status_recognizer_needs_permission">يحتاج %1$s إلى إذن الوصول إلى الميكروفون</string>
+    <string name="voice_status_recognizer_refused">لم يسمح %1$s بالإملاء. جرّب أداة تعرّف أخرى في إعدادات الإدخال الصوتي.</string>
     <string name="voice_status_service_disconnected">انقطع الاتصال بخدمة الكلام. اضغط على الميكروفون لإعادة المحاولة.</string>
 </resources>

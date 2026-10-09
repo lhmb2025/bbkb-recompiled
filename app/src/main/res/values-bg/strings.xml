@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Разпознаването на реч е заето. Опитайте отново след малко.</string>
     <string name="voice_status_too_many_requests">Твърде много заявки. Опитайте отново по-късно.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s се нуждае от разрешение за микрофона</string>
+    <string name="voice_status_recognizer_refused">%1$s не разреши диктовката. Опитайте друго разпознаване на реч в настройките за гласово въвеждане.</string>
     <string name="voice_status_service_disconnected">Връзката с услугата за реч прекъсна. Докоснете микрофона, за да опитате отново.</string>
 </resources>

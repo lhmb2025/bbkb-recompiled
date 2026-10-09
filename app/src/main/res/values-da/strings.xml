@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Talegenkendelse er optaget. Prøv igen om et øjeblik.</string>
     <string name="voice_status_too_many_requests">For mange anmodninger. Prøv igen senere.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s skal have tilladelse til mikrofonen</string>
+    <string name="voice_status_recognizer_refused">%1$s tillod ikke diktering. Prøv en anden talegenkendelse under indstillingerne for Stemmeinput.</string>
     <string name="voice_status_service_disconnected">Forbindelsen til taletjenesten blev afbrudt. Tryk på mikrofonen for at prøve igen.</string>
 </resources>

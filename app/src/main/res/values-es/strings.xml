@@ -823,5 +823,6 @@
     <string name="voice_status_busy">El reconocimiento de voz está ocupado. Inténtalo de nuevo en un momento.</string>
     <string name="voice_status_too_many_requests">Demasiadas solicitudes. Inténtalo de nuevo más tarde.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s necesita permiso para usar el micrófono</string>
+    <string name="voice_status_recognizer_refused">%1$s no ha permitido el dictado. Prueba otro reconocedor de voz en los ajustes de Entrada de voz.</string>
     <string name="voice_status_service_disconnected">El servicio de voz se ha desconectado. Toca el micrófono para volver a intentarlo.</string>
 </resources>

@@ -823,5 +823,6 @@
     <string name="voice_status_busy">பேச்சு அறிதல் பிஸியாக உள்ளது. சிறிது நேரத்தில் மீண்டும் முயலவும்.</string>
     <string name="voice_status_too_many_requests">அதிகமான கோரிக்கைகள். பிறகு மீண்டும் முயலவும்.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s ஆப்ஸுக்கு மைக்ரோஃபோன் அனுமதி தேவை</string>
+    <string name="voice_status_recognizer_refused">%1$s டிக்டேஷனை அனுமதிக்கவில்லை. குரல் உள்ளீட்டு அமைப்புகளில் வேறொரு பேச்சு அறிதல் கருவியை முயலவும்.</string>
     <string name="voice_status_service_disconnected">பேச்சுச் சேவையின் இணைப்பு துண்டிக்கப்பட்டது. மீண்டும் முயல மைக்கைத் தட்டவும்.</string>
 </resources>

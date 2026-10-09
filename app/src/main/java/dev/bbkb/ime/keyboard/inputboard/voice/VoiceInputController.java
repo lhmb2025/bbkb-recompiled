@@ -280,6 +280,18 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
         }
     }
 
+    /**
+     * The app chosen as the speech recognizer has the microphone but would not serve this keyboard
+     * (KEY2, 2026-10-08: Claude's service, with its microphone granted). Only another recognizer
+     * can help, so the board says so.
+     */
+    @Override
+    public void onRecognizerRefused(String appLabel) {
+        if (isViewShowing()) {
+            showNotice(this.mContext.getString(R.string.voice_status_recognizer_refused, appLabel));
+        }
+    }
+
     /** Drops the language-pack dialog listener from the process-wide event bus. */
     private void unsubscribeDialogListener() {
         if (this.mEventListener != null) {

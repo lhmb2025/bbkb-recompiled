@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Talegjenkjenning er opptatt. Prøv igjen om et øyeblikk.</string>
     <string name="voice_status_too_many_requests">For mange forespørsler. Prøv igjen senere.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s trenger tillatelse til mikrofonen</string>
+    <string name="voice_status_recognizer_refused">%1$s tillot ikke diktering. Prøv en annen talegjenkjenning i innstillingene for Taleinndata.</string>
     <string name="voice_status_service_disconnected">Taletjenesten ble koblet fra. Trykk på mikrofonen for å prøve igjen.</string>
 </resources>

@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Служба распознавания речи занята. Повторите попытку чуть позже.</string>
     <string name="voice_status_too_many_requests">Слишком много запросов. Повторите попытку позже.</string>
     <string name="voice_status_recognizer_needs_permission">Приложению %1$s нужно разрешение на доступ к микрофону</string>
+    <string name="voice_status_recognizer_refused">Приложение %1$s не разрешило диктовку. Попробуйте другое распознавание речи в настройках голосового ввода.</string>
     <string name="voice_status_service_disconnected">Служба распознавания речи отключилась. Нажмите микрофон, чтобы попробовать снова.</string>
 </resources>

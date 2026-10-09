@@ -823,5 +823,6 @@
     <string name="voice_status_busy">ការសម្គាល់ការនិយាយកំពុងរវល់។ សូមព្យាយាមម្ដងទៀតបន្តិចទៀត។</string>
     <string name="voice_status_too_many_requests">សំណើច្រើនពេក។ សូមព្យាយាមម្ដងទៀតនៅពេលក្រោយ។</string>
     <string name="voice_status_recognizer_needs_permission">%1$s ត្រូវការការអនុញ្ញាតមីក្រូហ្វូន</string>
+    <string name="voice_status_recognizer_refused">%1$s មិនបានអនុញ្ញាតឱ្យសរសេរតាមអានទេ។ សាកល្បងកម្មវិធីស្គាល់ការនិយាយផ្សេងទៀតនៅក្នុងការកំណត់ការបញ្ចូលដោយសំឡេង។</string>
     <string name="voice_status_service_disconnected">សេវានិយាយបានផ្ដាច់។ ប៉ះមីក្រូហ្វូនដើម្បីព្យាយាមម្ដងទៀត។</string>
 </resources>

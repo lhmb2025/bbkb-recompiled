@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Die Spracherkennung ist ausgelastet. Versuchen Sie es gleich noch einmal.</string>
     <string name="voice_status_too_many_requests">Zu viele Anfragen. Versuchen Sie es später erneut.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s benötigt die Mikrofonberechtigung</string>
+    <string name="voice_status_recognizer_refused">%1$s hat das Diktieren nicht zugelassen. Probieren Sie in den Spracheingabe-Einstellungen eine andere Spracherkennung aus.</string>
     <string name="voice_status_service_disconnected">Die Verbindung zum Sprachdienst wurde getrennt. Tippen Sie auf das Mikrofon, um es erneut zu versuchen.</string>
 </resources>

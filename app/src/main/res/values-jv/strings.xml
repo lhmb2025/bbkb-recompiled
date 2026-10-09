@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Pangenalan swara lagi sibuk. Coba maneh sedhela engkas.</string>
     <string name="voice_status_too_many_requests">Kakehan panjaluk. Coba maneh mengko.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s butuh idin mikrofon</string>
+    <string name="voice_status_recognizer_refused">%1$s ora ngidini dikte. Coba pangenal wicara liyane ing setelan Input swara.</string>
     <string name="voice_status_service_disconnected">Layanan swara pedhot. Tutul mikrofon kanggo nyoba maneh.</string>
 </resources>

@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Mae adnabod lleferydd yn brysur. Ceisiwch eto mewn munud.</string>
     <string name="voice_status_too_many_requests">Gormod o geisiadau. Ceisiwch eto yn nes ymlaen.</string>
     <string name="voice_status_recognizer_needs_permission">Mae ar %1$s angen caniatâd i ddefnyddio\'r meicroffon</string>
+    <string name="voice_status_recognizer_refused">Ni wnaeth %1$s ganiatáu arddywediad. Rhowch gynnig ar adnabyddwr lleferydd arall yng ngosodiadau Mewnbwn llais.</string>
     <string name="voice_status_service_disconnected">Mae\'r gwasanaeth lleferydd wedi datgysylltu. Tapiwch y meic i geisio eto.</string>
 </resources>

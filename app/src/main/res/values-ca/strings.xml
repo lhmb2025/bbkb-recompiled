@@ -823,5 +823,6 @@
     <string name="voice_status_busy">El reconeixement de veu està ocupat. Torneu-ho a provar d\'aquí a un moment.</string>
     <string name="voice_status_too_many_requests">Massa sol·licituds. Torneu-ho a provar més tard.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s necessita permís per utilitzar el micròfon</string>
+    <string name="voice_status_recognizer_refused">%1$s no ha permès el dictat. Prova un altre reconeixedor de veu a la configuració d\'Entrada de veu.</string>
     <string name="voice_status_service_disconnected">El servei de veu s\'ha desconnectat. Toqueu el micròfon per tornar-ho a provar.</string>
 </resources>

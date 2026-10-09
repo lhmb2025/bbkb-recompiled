@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Nutqni aniqlash band. Birozdan keyin qayta urinib ko‘ring.</string>
     <string name="voice_status_too_many_requests">So‘rovlar juda ko‘p. Keyinroq qayta urinib ko‘ring.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s uchun mikrofon ruxsati kerak</string>
+    <string name="voice_status_recognizer_refused">%1$s diktovkaga ruxsat bermadi. Ovozli kiritish sozlamalarida boshqa nutqni aniqlagichni sinab ko‘ring.</string>
     <string name="voice_status_service_disconnected">Nutq xizmati bilan aloqa uzildi. Qayta urinish uchun mikrofonni bosing.</string>
 </resources>

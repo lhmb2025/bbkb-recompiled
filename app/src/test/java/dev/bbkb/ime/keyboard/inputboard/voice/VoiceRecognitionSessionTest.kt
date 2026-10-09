@@ -32,6 +32,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.inOrder
 import org.mockito.Mockito.never
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
@@ -299,14 +300,19 @@ class VoiceRecognitionSessionTest {
     private val sayboard = ComponentName("com.elishaazaria.sayboard", "com.elishaazaria.sayboard.recognition.RecognitionService")
 
     /** A recognition app the package query can see, labelled as its launcher would show it. */
-    private fun installRecognizer(component: ComponentName, label: String) {
+    private fun installRecognizer(component: ComponentName, label: String, microphoneGranted: Boolean = true) {
         val app = ApplicationInfo().apply {
             packageName = component.packageName
             nonLocalizedLabel = label
+            targetSdkVersion = 34
         }
         shadowOf(context.packageManager).installPackage(PackageInfo().apply {
             packageName = component.packageName
             applicationInfo = app
+            // The app's own microphone grant, as PackageManager.checkPermission reports it.
+            requestedPermissions = arrayOf(Manifest.permission.RECORD_AUDIO)
+            requestedPermissionsFlags = intArrayOf(
+                if (microphoneGranted) PackageInfo.REQUESTED_PERMISSION_GRANTED else 0)
         })
         shadowOf(context.packageManager).addResolveInfoForIntent(
             Intent(RecognitionService.SERVICE_INTERFACE),
@@ -433,8 +439,8 @@ class VoiceRecognitionSessionTest {
     // ── a refused microphone ─────────────────────────────────────────────────
 
     @Test
-    fun `a permission error from a chosen app names that app`() {
-        installRecognizer(sayboard, "Sayboard")
+    fun `a permission error from a chosen app without the microphone names that app`() {
+        installRecognizer(sayboard, "Sayboard", microphoneGranted = false)
         chooseRecognizer(sayboard.flattenToString())
         grantMicrophone(true)
         `when`(callback.isViewShowing).thenReturn(true)
@@ -443,7 +449,34 @@ class VoiceRecognitionSessionTest {
         recognizer().triggerOnError(SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS)
 
         verify(callback).onRecognizerNeedsPermission("Sayboard")
+        verify(callback, never()).onRecognizerRefused(anyString())
         verify(callback, never()).onPermissionNeeded()
+    }
+
+    /**
+     * KEY2, 2026-10-08: Claude picked and granted the microphone, and its service still answered
+     * with the permission error. It refused the keyboard; telling the user to grant Claude the
+     * microphone sent them after a permission it already had.
+     */
+    @Test
+    fun `a permission error from a chosen app that holds the microphone says it refused`() {
+        installRecognizer(sayboard, "Sayboard", microphoneGranted = true)
+        chooseRecognizer(sayboard.flattenToString())
+        grantMicrophone(true)
+        `when`(callback.isViewShowing).thenReturn(true)
+        start()
+
+        recognizer().triggerOnError(SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS)
+
+        verify(callback).onRecognizerRefused("Sayboard")
+        verify(callback, never()).onRecognizerNeedsPermission(anyString())
+        verify(callback, never()).onPermissionNeeded()
+        // The session is over and the board is told so, not left listening.
+        assertEquals(VoiceRecognitionManager.Mode.NONE, manager.mode)
+        val order = inOrder(callback)
+        order.verify(callback).onStateChanged(VoiceRecognitionManager.Mode.NONE, VoiceRecognitionManager.STATE_STOPPED)
+        // ...and STOPPED comes first, so the idle text it sets does not cover the message.
+        order.verify(callback).onRecognizerRefused("Sayboard")
     }
 
     @Test
@@ -456,6 +489,7 @@ class VoiceRecognitionSessionTest {
 
         verify(callback).onPermissionNeeded()
         verify(callback, never()).onRecognizerNeedsPermission(anyString())
+        verify(callback, never()).onRecognizerRefused(anyString())
     }
 
     /** The service checks its caller as well as itself: our own permission comes first. */
@@ -471,5 +505,6 @@ class VoiceRecognitionSessionTest {
 
         verify(callback).onPermissionNeeded()
         verify(callback, never()).onRecognizerNeedsPermission(anyString())
+        verify(callback, never()).onRecognizerRefused(anyString())
     }
 }

@@ -1,6 +1,7 @@
 package dev.bbkb.ime.keyboard.inputboard.voice
 
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceRecognizerChoice.Kind
+import dev.bbkb.ime.keyboard.inputboard.voice.VoiceRecognizerChoice.PermissionErrorAction
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceRecognizerChoice.Service
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -205,25 +206,53 @@ class VoiceRecognizerChoiceTest {
 
     // ── the permission error ─────────────────────────────────────────────────
 
-    @Test
-    fun `a chosen app without the microphone is named`() {
-        val selection = VoiceRecognizerChoice.select(component(claude), 34, false, installed)
+    private val chosenClaude get() = VoiceRecognizerChoice.select(component(claude), 34, false, installed)
 
-        assertEquals("Claude", VoiceRecognizerChoice.appNeedingPermission(selection, true))
+    @Test
+    fun `a chosen app whose own grant lacks the microphone is told to get it`() {
+        assertEquals(PermissionErrorAction.APP_NEEDS_PERMISSION,
+            VoiceRecognizerChoice.permissionErrorAction(chosenClaude, true, false))
+    }
+
+    /**
+     * KEY2, 2026-10-08: Claude picked, Claude granted the microphone, and the error still came. The
+     * service was refusing the keyboard, not missing the microphone, so it must not be told to get it.
+     */
+    @Test
+    fun `a chosen app that holds the microphone and still errors refused us`() {
+        assertEquals(PermissionErrorAction.APP_REFUSED,
+            VoiceRecognizerChoice.permissionErrorAction(chosenClaude, true, true))
+    }
+
+    /** Not knowing is not evidence of a missing grant: say what can be said for certain. */
+    @Test
+    fun `when the app's grant cannot be checked it refused us`() {
+        assertEquals(PermissionErrorAction.APP_REFUSED,
+            VoiceRecognizerChoice.permissionErrorAction(chosenClaude, true, null))
     }
 
     /** The recogniser checks the caller too, so while we lack it, asking for ours comes first. */
     @Test
     fun `a chosen app is not blamed while this keyboard lacks the permission itself`() {
-        val selection = VoiceRecognizerChoice.select(component(claude), 34, false, installed)
-
-        assertNull(VoiceRecognizerChoice.appNeedingPermission(selection, false))
+        for (appGranted in listOf(true, false, null)) {
+            assertEquals("app grant $appGranted", PermissionErrorAction.REQUEST_OWN_PERMISSION,
+                VoiceRecognizerChoice.permissionErrorAction(chosenClaude, false, appGranted))
+        }
     }
 
     @Test
     fun `the default and on-device recognisers keep asking for our own permission`() {
-        assertNull(VoiceRecognizerChoice.appNeedingPermission(VoiceRecognizerChoice.Selection.DEFAULT, true))
-        assertNull(VoiceRecognizerChoice.appNeedingPermission(VoiceRecognizerChoice.Selection.DEVICE, true))
-        assertNull(VoiceRecognizerChoice.appNeedingPermission(null, true))
+        for (selection in listOf(VoiceRecognizerChoice.Selection.DEFAULT, VoiceRecognizerChoice.Selection.DEVICE, null)) {
+            for (appGranted in listOf(true, false, null)) {
+                assertEquals(PermissionErrorAction.REQUEST_OWN_PERMISSION,
+                    VoiceRecognizerChoice.permissionErrorAction(selection, true, appGranted))
+            }
+        }
+    }
+
+    @Test
+    fun `messages name the chosen app by its label`() {
+        assertEquals("Claude", VoiceRecognizerChoice.appName(chosenClaude))
+        assertNull(VoiceRecognizerChoice.appName(null))
     }
 }

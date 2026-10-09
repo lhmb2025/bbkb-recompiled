@@ -823,5 +823,6 @@
     <string name="voice_status_busy">Taligenkänningen är upptagen. Försök igen om en stund.</string>
     <string name="voice_status_too_many_requests">För många förfrågningar. Försök igen senare.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s behöver behörighet till mikrofonen</string>
+    <string name="voice_status_recognizer_refused">%1$s tillät inte diktering. Testa en annan taligenkänning i inställningarna för Röstinmatning.</string>
     <string name="voice_status_service_disconnected">Taltjänsten kopplades från. Tryck på mikrofonen för att försöka igen.</string>
 </resources>

@@ -823,5 +823,6 @@
     <string name="voice_status_busy">La reconnaissance vocale est occupée. Réessayez dans un instant.</string>
     <string name="voice_status_too_many_requests">Trop de demandes. Réessayez plus tard.</string>
     <string name="voice_status_recognizer_needs_permission">%1$s a besoin de l\'autorisation d\'accéder au microphone</string>
+    <string name="voice_status_recognizer_refused">%1$s n\'a pas autorisé la dictée. Essayez un autre outil de reconnaissance vocale dans les paramètres d\'Entrée vocale.</string>
     <string name="voice_status_service_disconnected">Le service vocal s\'est déconnecté. Touchez le micro pour réessayer.</string>
 </resources>

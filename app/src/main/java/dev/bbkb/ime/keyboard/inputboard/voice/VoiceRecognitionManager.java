@@ -84,6 +84,9 @@ public class VoiceRecognitionManager {
         /** The chosen recognition app was refused the microphone; {@code appLabel} names it. */
         void onRecognizerNeedsPermission(String appLabel);
 
+        /** The chosen recognition app has the microphone but would not serve this keyboard. */
+        void onRecognizerRefused(String appLabel);
+
         void onLanguageUnavailable();
 
         /** The recogniser refused the language itself (error 12 or 13); {@code languageTag} is what was sent. */
@@ -227,6 +230,22 @@ public class VoiceRecognitionManager {
         return this.mContext.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 
+    /**
+     * Whether the chosen app holds the microphone permission, or null when that cannot be checked.
+     * Its package is visible to us through the manifest's {@code RecognitionService} query.
+     */
+    private Boolean appMicrophonePermission(VoiceRecognizerChoice.Selection selection) {
+        if (selection == null || selection.packageName == null) {
+            return null;
+        }
+        try {
+            return this.mContext.getPackageManager().checkPermission(Manifest.permission.RECORD_AUDIO,
+                    selection.packageName) == PackageManager.PERMISSION_GRANTED;
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
+
     private void startRecognition(Mode aVar, Intent intent) {
         if (this.mSpeechRecognizer == null) {
             return;
@@ -351,15 +370,21 @@ public class VoiceRecognitionManager {
                     break;
                 case 9:
                     if (VoiceRecognitionManager.this.mController.isViewShowing()) {
-                        // A chosen app with no microphone of its own: asking for ours again cannot
-                        // fix that, so say which app needs it.
-                        final String app = VoiceRecognizerChoice.appNeedingPermission(
-                                VoiceRecognitionManager.this.mSelection,
-                                VoiceRecognitionManager.this.hasOwnMicrophonePermission());
-                        if (app != null) {
-                            VoiceRecognitionManager.this.mCallback.onRecognizerNeedsPermission(app);
-                        } else {
-                            VoiceRecognitionManager.this.mCallback.onPermissionNeeded();
+                        // STOPPED has already gone out above, so the board is idle; with a chosen
+                        // app, asking for our own permission again cannot help, so say what is wrong.
+                        final VoiceRecognizerChoice.Selection selection = VoiceRecognitionManager.this.mSelection;
+                        final boolean ownGranted = VoiceRecognitionManager.this.hasOwnMicrophonePermission();
+                        switch (VoiceRecognizerChoice.permissionErrorAction(selection, ownGranted,
+                                ownGranted ? VoiceRecognitionManager.this.appMicrophonePermission(selection) : null)) {
+                            case APP_NEEDS_PERMISSION:
+                                VoiceRecognitionManager.this.mCallback.onRecognizerNeedsPermission(VoiceRecognizerChoice.appName(selection));
+                                break;
+                            case APP_REFUSED:
+                                VoiceRecognitionManager.this.mCallback.onRecognizerRefused(VoiceRecognizerChoice.appName(selection));
+                                break;
+                            default:
+                                VoiceRecognitionManager.this.mCallback.onPermissionNeeded();
+                                break;
                         }
                     }
                     break;
