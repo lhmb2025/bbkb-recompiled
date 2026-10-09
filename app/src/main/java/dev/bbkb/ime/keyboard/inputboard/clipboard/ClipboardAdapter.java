@@ -1,371 +1,402 @@
 package dev.bbkb.ime.keyboard.inputboard.clipboard;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
-import android.util.Patterns;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import dev.bbkb.ime.BuildConfig;
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.databinding.ClipDataHeaderBinding;
 import dev.bbkb.ime.keyboard.KeyboardColorManager;
+import dev.bbkb.ime.keyboard.KeyboardView;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+/**
+ * The clipboard board's list: section headers and clip rows, diffed by {@link ClipboardItem}.
+ *
+ * <p>A tap on a row pastes it. A long-press on the row and a tap on its overflow button open the
+ * same {@link ClipboardEntryMenu}; "Show full text" is handled here (it only changes how the row
+ * is drawn), every other action goes to the {@link ClipboardActionCallback}.
+ *
+ * <p>Link previews are bound by entry id: the provider reports a finished preview for an id, and
+ * the adapter rebinds whichever row shows that entry now, with {@link #PAYLOAD_PREVIEW} so only
+ * the image and text are touched.
+ */
+public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.ViewHolder>
+        implements ClipboardWebImageProvider.Listener {
 
+    /** Partial rebind: the row's link preview arrived. */
+    static final Object PAYLOAD_PREVIEW = new Object();
 
-public class ClipboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    /** How a built row menu is put on screen; replaced in tests, where nothing can be shown. */
+    interface MenuLauncher {
+        void show(PopupMenu menu);
+    }
 
-    private List<ClipboardItem> clipboardItems;
+    private static final DiffUtil.ItemCallback<ClipboardItem> DIFF =
+            new DiffUtil.ItemCallback<ClipboardItem>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull ClipboardItem a, @NonNull ClipboardItem b) {
+                    return a.getStableId() == b.getStableId();
+                }
 
-    private ClipboardActionCallback actionCallback;
+                @Override
+                public boolean areContentsTheSame(@NonNull ClipboardItem a, @NonNull ClipboardItem b) {
+                    return a.equals(b);
+                }
+            };
+
+    private static final int COLLAPSED_MAX_LINES = 3;
 
     private final ClipboardWebImageProvider imageProvider;
 
-    private int expandedItemHeight;
-
-    private final Context context;
-
     /**
-     * Audit IB-4: these were all recomputed on every bind, i.e. on every row of every
-     * scroll of the clipboard list. None of them depends on the bound item.
+     * Audit IB-4: resolved once rather than on every bind of every row of every scroll.
      */
     private final String passwordKeeperAddText;
 
     private final String passwordKeeperMaskText;
 
-    private final java.util.regex.Matcher webUrlMatcher = Patterns.WEB_URL.matcher("");
+    /** Rows the user expanded with "Show full text". Cleared each time the board opens. */
+    private final Set<Long> expandedIds = new HashSet<>();
 
-    
-    interface TextExpansionListener {
-        void onTextExpandable(boolean expandable);
+    private ClipboardActionCallback actionCallback;
+
+    /** The list this adapter is attached to, for deferring a notification out of a layout pass. */
+    private RecyclerView attachedList;
+
+    MenuLauncher menuLauncher = PopupMenu::show;
+
+    ClipboardAdapter(Context context, ClipboardWebImageProvider imageProvider) {
+        super(DIFF);
+        setHasStableIds(true);
+        this.imageProvider = imageProvider;
+        this.passwordKeeperAddText = context.getString(R.string.clip_password_keeper_add);
+        this.passwordKeeperMaskText = context.getString(R.string.clip_password_keeper_mask);
+        imageProvider.setListener(this);
     }
 
     public ClipboardWebImageProvider getImageProvider() {
         return this.imageProvider;
     }
 
-    // Removed ViewHolder type 'd' - menu expansion no longer used
-
-    ClipboardAdapter(Context context, List<ClipboardItem> list) {
-        this.clipboardItems = list;
-        this.imageProvider = new ClipboardWebImageProvider(context);
-        this.context = context;
-        this.passwordKeeperAddText = context.getString(R.string.clip_password_keeper_add);
-        this.passwordKeeperMaskText = context.getString(R.string.clip_password_keeper_mask);
-        initializeItemHeight(context);
-    }
-
-    private void initializeItemHeight(Context context) {
-        TypedValue typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(android.R.attr.listPreferredItemHeightLarge, typedValue, true);
-        Resources resources = context.getResources();
-        this.expandedItemHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, resources.getDisplayMetrics()) + resources.getInteger(R.integer.config_clipboard_extra_header_height);
-    }
-
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        ClipDataHeaderBinding binding = ClipDataHeaderBinding.inflate(
-            LayoutInflater.from(viewGroup.getContext()), 
-            viewGroup, 
-            false
-        );
-        ClipboardViewHolder holder = new ClipboardViewHolder(binding);
-        // The click listeners read holder.boundClipItem, so they survive rebinding
-        // and belong here rather than in bindClipboardItem (audit IB-4).
-        setupClickListeners(holder);
-        return holder;
-    }
-
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int i) {
-        bindClipboardItem((ClipboardViewHolder) holder, i);
-    }
-
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
-    public int getItemViewType(int i) {
-        return 0; // Only one view type now
-    }
-
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
-    public int getItemCount() {
-        return this.clipboardItems.size();
-    }
-
-    private void bindClipboardItem(ClipboardViewHolder bVar, int i) {
-        String string;
-        ClipboardItem aVar = this.clipboardItems.get(i);
-        bVar.boundClipItem = aVar;
-        bVar.clipImageView.setImageResource(R.drawable.ic_inputboard_clipboard_text);
-        String string2 = aVar.toString();
-        if (string2 != null) {
-            TextView textView = bVar.dataTextView;
-            if (ClipboardHistoryManager.hasLabel(aVar.historyItem.mClipData, this.passwordKeeperAddText)) {
-                string = this.passwordKeeperMaskText;
-            } else {
-                string = string2;
-            }
-            textView.setText(string);
-            // Accessibility: describe the row with what it actually shows (so a masked
-            // password stays masked). setContentDescription() used to compute this
-            // string and discard it.
-            bVar.itemView.setContentDescription(string);
-            String strTrim = string2.trim();
-            if (this.webUrlMatcher.reset(strTrim).matches()) {
-                OpenGraphMetadata c1014lM6983a = this.imageProvider.getCachedMetadata(strTrim);
-                if (c1014lM6983a != null) {
-                    displayOpenGraphData(bVar, c1014lM6983a);
-                } else {
-                    loadWebImage(bVar, strTrim);
-                }
-            }
-        }
-        
-        // Apply colors from KeyboardColorManager
-        if (KeyboardColorManager.INSTANCE.isInitialized()) {
-            boolean modernBoards = KeyboardColorManager.styleSpec().getModernBoards();
-            final float density = bVar.itemView.getResources().getDisplayMetrics().density;
-            // Remove any drawable background/borders first
-            bVar.foreground.setBackground(null);
-
-            if (modernBoards) {
-                // M3 card: rounded keyAlt surface floating on the board background,
-                // with rounded state-layer press feedback.
-                // IB-4: the holder owns these objects; only their colour/radius is per-bind.
-                bVar.cardBackground.setColor(KeyboardColorManager.INSTANCE.getKeyColorAlt());
-                bVar.cardBackground.setCornerRadius(12 * density);
-                bVar.foreground.setBackground(bVar.cardBackground);
-                bVar.foreground.setForeground(KeyboardColorManager.pressedHighlight());
-                // Round-clip the reveal layer so the swipe actions share the card's
-                // corners; its own fill is the board background.
-                android.widget.LinearLayout actions = bVar.getBinding().clipboardBackgroundActions;
-                // Fill the reveal layer with the SHARE colour, not the board background. Both
-                // actions sit at the right end behind a weighted spacer, so the strip the card's
-                // rounded corners uncover when the row is fully open is this fill: with the board
-                // background it read as a dark notch cut out of the share button (KEY2,
-                // 2026-09-15 — mid-drag the corners are over the button itself and look right,
-                // only the settled state showed it). Share is the leftmost action, so its colour
-                // is the one that should continue underneath the card.
-                bVar.revealClip.setColor(KeyboardColorManager.INSTANCE.getAccentColor());
-                bVar.revealClip.setCornerRadius(12 * density);
-                actions.setBackground(bVar.revealClip);
-                // The outline must come from the view's own size, not from the background: the
-                // background's radius is clamped to half its bounds, and bind runs before layout
-                // (0x0), which produced square corners on the revealed actions.
-                actions.setOutlineProvider(bVar.roundedRevealOutline);
-                actions.setClipToOutline(true);
-                // Mock schema: both actions on the RIGHT, revealed by one left swipe
-                // (SwipeToRevealHelper's single-sided mode) — order [spacer, share, delete].
-                if (bVar.shareButton != null && actions.indexOfChild(bVar.shareButton) == 0) {
-                    actions.removeView(bVar.shareButton);
-                    actions.addView(bVar.shareButton, actions.indexOfChild(bVar.deleteButton));
-                }
-                setSwipeButtonWidth(bVar.shareButton, 72, density);
-                setSwipeButtonWidth(bVar.deleteButton, 72, density);
-                // Rounded thumbnail
-                bVar.clipImageView.setOutlineProvider(bVar.roundedThumbnailOutline);
-                bVar.clipImageView.setClipToOutline(true);
-            } else {
-                // Legacy: flat full-bleed row on the background slot.
-                bVar.foreground.setBackgroundColor(
-                        KeyboardColorManager.INSTANCE.getBackgroundColor());
-                bVar.foreground.setForeground(null);
-                android.widget.LinearLayout actions = bVar.getBinding().clipboardBackgroundActions;
-                actions.setBackground(null);
-                actions.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND);
-                actions.setClipToOutline(false);
-                // Legacy schema: share on the left, delete on the right.
-                if (bVar.shareButton != null && actions.indexOfChild(bVar.shareButton) != 0) {
-                    actions.removeView(bVar.shareButton);
-                    actions.addView(bVar.shareButton, 0);
-                }
-                setSwipeButtonWidth(bVar.shareButton, 90, density);
-                setSwipeButtonWidth(bVar.deleteButton, 90, density);
-                bVar.clipImageView.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND);
-                bVar.clipImageView.setClipToOutline(false);
-            }
-
-            bVar.dataTextView.setTextColor(
-                KeyboardColorManager.INSTANCE.getTextColor()
-            );
-            // Tint icon
-            KeyboardColorManager.INSTANCE.tint(bVar.clipImageView);
-            // Themed header divider (legacy only — Material drops the hairline),
-            // re-applied per bind so an in-place theme change never leaves a stale
-            // color. Sized fill(): the ImageView is wrap_content, so it measures from
-            // the drawable's intrinsic width.
-            bVar.getBinding().dividerImage.setVisibility(
-                    modernBoards ? android.view.View.GONE : android.view.View.VISIBLE);
-            if (!modernBoards) {
-                bVar.getBinding().dividerImage.setImageDrawable(KeyboardColorManager.fill(
-                        KeyboardColorManager.INSTANCE.getIconColor(KeyboardColorManager.ALPHA_DISABLED),
-                        Math.max(1, Math.round(density)), Math.round(56 * density)));
-            }
-
-            // Swipe-action colors. Delete stays semantic red everywhere; share is the
-            // palette accent under Material (glyph in the board background color for
-            // contrast) and the legacy Material-blue otherwise (white glyph).
-            if (bVar.shareButton != null) {
-                bVar.shareButton.setBackgroundColor(modernBoards
-                        ? KeyboardColorManager.INSTANCE.getAccentColor()
-                        : this.context.getColor(R.color.swipe_background_share));
-                if (bVar.shareButton.getDrawable() != null) {
-                    androidx.core.graphics.drawable.DrawableCompat.setTint(
-                        bVar.shareButton.getDrawable(), modernBoards
-                            ? KeyboardColorManager.INSTANCE.getBackgroundColor()
-                            : android.graphics.Color.WHITE);
-                }
-            }
-            if (bVar.deleteButton != null && bVar.deleteButton.getDrawable() != null) {
-                androidx.core.graphics.drawable.DrawableCompat.setTint(
-                    bVar.deleteButton.getDrawable(), android.graphics.Color.WHITE);
-            }
-        }
-        
-        // The long-click (expand) handler is the one bind-dependent listener: whether a
-        // row is expandable depends on the text just set. It must also be cleared when
-        // the recycled row is no longer truncated.
-        bindTextExpansion(bVar);
-        bVar.foreground.setTag(aVar);
-    }
-
-    /**
-     * Enables long-press-to-expand only while the bound text is actually truncated,
-     * and clears the handler otherwise - a recycled row used to keep the previous
-     * item's long-click listener.
-     */
-    private void bindTextExpansion(final ClipboardViewHolder bVar) {
-        checkTextTruncation(bVar, expandable -> {
-            if (expandable) {
-                bVar.foreground.setOnLongClickListener(view -> {
-                    toggleTextExpansion(bVar);
-                    return true;
-                });
-            } else {
-                bVar.foreground.setOnLongClickListener(null);
-                bVar.foreground.setLongClickable(false);
-            }
-        });
-    }
-
-    private static void setSwipeButtonWidth(android.view.View button, int widthDp, float density) {
-        if (button == null) return;
-        android.view.ViewGroup.LayoutParams params = button.getLayoutParams();
-        int widthPx = (int) (widthDp * density);
-        if (params != null && params.width != widthPx) {
-            params.width = widthPx;
-            button.setLayoutParams(params);
-        }
-    }
-
-    private void setupClickListeners(final ClipboardViewHolder bVar) {
-        // Tap to paste. The listener lives on the card (foreground) rather than the
-        // text container so the whole row — thumbnail included — pastes, and so the
-        // card's pressed state (Material state layer) actually triggers. The text
-        // container must not be clickable or it would swallow the touch without
-        // pressing the card.
-        bVar.textContainer.setClickable(false);
-        bVar.foreground.setOnClickListener(new View.OnClickListener() {
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                ClipboardAdapter.this.actionCallback.onPasteClip(bVar.boundClipItem);
-            }
-        });
-
-        // Share button (revealed on swipe)
-        if (bVar.shareButton != null) {
-            bVar.shareButton.setOnClickListener(v -> {
-                final ClipboardItem clipItem = bVar.boundClipItem;
-                if (clipItem != null && actionCallback != null) {
-                    actionCallback.onShareClip(clipItem);
-                }
-            });
-        }
-
-        // Delete button (revealed on swipe)
-        if (bVar.deleteButton != null) {
-            bVar.deleteButton.setOnClickListener(v -> {
-                final ClipboardItem clipItem = bVar.boundClipItem;
-                if (clipItem != null && actionCallback != null) {
-                    actionCallback.onDeleteClip(clipItem);
-                }
-            });
-        }
-    }
-
-        void toggleTextExpansion(ClipboardViewHolder bVar) {
-        ViewGroup.LayoutParams layoutParams = bVar.foreground.getLayoutParams();
-        boolean z = layoutParams.height == -2;
-        layoutParams.height = z ? this.expandedItemHeight : -2;
-        bVar.dataTextView.setMaxLines(z ? 3 : Integer.MAX_VALUE);
-        bVar.dataTextView.setEllipsize(z ? TextUtils.TruncateAt.END : null);
-        // Don't override background - it's already set in bindClipboardItem with proper color
-        // Only this row changed; notifyDataSetChanged() re-ran the whole per-bind pass
-        // for every visible row (audit IB-11).
-        int position = bVar.getBindingAdapterPosition();
-        if (position != RecyclerView.NO_POSITION) {
-            notifyItemChanged(position);
-        }
-    }
-
-    private void checkTextTruncation(ClipboardViewHolder bVar, final TextExpansionListener eVar) {
-        final TextView textView = bVar.dataTextView;
-        textView.post(() -> {
-            int lineCount = textView.getLineCount();
-            if (lineCount <= 0 || textView.getLayout() == null) {
-                return;
-            }
-            eVar.onTextExpandable(textView.getLayout().getEllipsisCount(lineCount - 1) > 0);
-        });
-    }
-
-    void setClipboardItems(List<ClipboardItem> list) {
-        this.clipboardItems = list;
-    }
-
     public void setActionCallback(ClipboardActionCallback cVar) {
         this.actionCallback = cVar;
     }
 
-        void displayOpenGraphData(ClipboardViewHolder bVar, OpenGraphMetadata c1014l) {
-        ImageView imageView = bVar.clipImageView;
-        Bitmap bitmapM7076d = c1014l.getImage();
-        if (imageView != null && bitmapM7076d != null) {
-            imageView.setImageBitmap(bitmapM7076d);
-        }
-        TextView textView = bVar.dataTextView;
-        StringBuilder sb = new StringBuilder();
-        if (c1014l.getTitle() != null) {
-            sb.append(c1014l.getTitle());
-            sb.append("\n");
-        }
-        sb.append(c1014l.getUrl());
-        if (textView != null) {
-            textView.setText(sb.toString());
+    @Override
+    public long getItemId(int position) {
+        return getItem(position).getStableId();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return getItem(position).viewType;
+    }
+
+    boolean isMasked(ClipEntry entry) {
+        return entry.hasLabel(this.passwordKeeperAddText);
+    }
+
+    /**
+     * The board is opening: collapse expanded rows and apply the link-preview setting, rebinding
+     * the visible rows if either changes what they show.
+     */
+    void onBoardShown(boolean linkPreviewsEnabled) {
+        boolean changed = !this.expandedIds.isEmpty() || this.imageProvider.isEnabled() != linkPreviewsEnabled;
+        this.expandedIds.clear();
+        this.imageProvider.setEnabled(linkPreviewsEnabled);
+        if (changed) {
+            notifyItemRangeChanged(0, getItemCount());
         }
     }
 
-    private void loadWebImage(ClipboardViewHolder bVar, String str) {
-        OpenGraphMetadata c1014l = new OpenGraphMetadata();
-        c1014l.setUrl(str);
-        this.imageProvider.loadPreview(c1014l, createImageLoadCallback(bVar, c1014l));
-    }
+    // ── view holders ─────────────────────────────────────────────────────────
 
-    private ClipboardImageLoadCallback createImageLoadCallback(final ClipboardViewHolder bVar, final OpenGraphMetadata c1014l) {
-        return new ClipboardImageLoadCallback() {
-            @Override // dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardImageLoadCallback
-            public void onImageReady() {
-                ClipboardAdapter.this.displayOpenGraphData(bVar, c1014l);
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        if (viewType == ClipboardItem.TYPE_HEADER) {
+            return new HeaderViewHolder(
+                    inflater.inflate(R.layout.clipboard_section_header, parent, false));
+        }
+        ClipboardViewHolder holder =
+                new ClipboardViewHolder(ClipDataHeaderBinding.inflate(inflater, parent, false));
+        // The listeners read holder.boundEntry, so they survive rebinding and are set once here
+        // rather than on every bind (audit IB-4).
+        holder.foreground.setOnClickListener(view -> {
+            ClipEntry entry = holder.boundEntry;
+            if (entry != null && this.actionCallback != null) {
+                this.actionCallback.onPasteClip(entry);
             }
-        };
+        });
+        holder.foreground.setOnLongClickListener(view -> showMenu(holder));
+        holder.overflowButton.setOnClickListener(view -> showMenu(holder));
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        ClipboardItem item = getItem(position);
+        if (holder instanceof HeaderViewHolder) {
+            ((HeaderViewHolder) holder).bind(item.headerTitle);
+        } else if (item.entry != null) {
+            bindClip((ClipboardViewHolder) holder, item.entry);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position,
+            @NonNull List<Object> payloads) {
+        ClipboardItem item = getItem(position);
+        if (payloads.contains(PAYLOAD_PREVIEW) && holder instanceof ClipboardViewHolder
+                && item.entry != null) {
+            bindPreview((ClipboardViewHolder) holder, item.entry);
+            return;
+        }
+        super.onBindViewHolder(holder, position, payloads);
+    }
+
+    private void bindClip(ClipboardViewHolder holder, ClipEntry entry) {
+        holder.boundEntry = entry;
+        boolean masked = isMasked(entry);
+        boolean expanded = !masked && this.expandedIds.contains(entry.getId());
+        String shown = masked ? this.passwordKeeperMaskText : entry.getText();
+
+        TextView text = holder.dataTextView;
+        text.setMaxLines(expanded ? Integer.MAX_VALUE : COLLAPSED_MAX_LINES);
+        text.setEllipsize(expanded ? null : TextUtils.TruncateAt.END);
+        // Accessibility: describe the row with what it actually shows, so a masked password stays
+        // masked.
+        holder.itemView.setContentDescription(shown);
+        holder.pinGlyph.setVisibility(entry.isPinned() ? View.VISIBLE : View.GONE);
+
+        applyStyle(holder);
+        bindPreview(holder, entry);
+    }
+
+    /**
+     * The leading image and the text: a link's preview (thumbnail, title over the address) once
+     * one has been fetched, otherwise the link or text icon and the clip itself.
+     */
+    private void bindPreview(ClipboardViewHolder holder, ClipEntry entry) {
+        boolean masked = isMasked(entry);
+        String previewUrl = ClipboardWebImageProvider.previewUrlFor(entry.getText(), masked);
+        OpenGraphMetadata preview = null;
+        if (previewUrl != null) {
+            // A no-op once the entry has a result (or is being fetched); asked first so a result
+            // that is ready immediately is shown by this bind.
+            this.imageProvider.request(entry.getId(), previewUrl);
+            preview = this.imageProvider.previewFor(entry.getId());
+        }
+
+        Bitmap thumbnail = preview != null ? preview.getImage() : null;
+        if (thumbnail != null) {
+            showThumbnail(holder.clipImageView, thumbnail);
+        } else {
+            boolean link = !masked && ClipboardWebImageProvider.isWebUrl(entry.getText().trim());
+            showIcon(holder.clipImageView, link
+                    ? R.drawable.ic_inputboard_clipboard_link
+                    : R.drawable.ic_inputboard_clipboard_text);
+        }
+
+        if (preview != null && preview.getTitle() != null) {
+            holder.dataTextView.setText(preview.getTitle() + "\n" + preview.getUrl());
+        } else {
+            holder.dataTextView.setText(masked ? this.passwordKeeperMaskText : entry.getText());
+        }
+    }
+
+    private void showThumbnail(ImageView image, Bitmap bitmap) {
+        image.setPadding(0, 0, 0, 0);
+        image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        image.setImageTintList(null);
+        image.setImageBitmap(bitmap);
+    }
+
+    private void showIcon(ImageView image, int drawable) {
+        int pad = Math.round(8 * image.getResources().getDisplayMetrics().density);
+        image.setPadding(pad, pad, pad, pad);
+        image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        image.setImageResource(drawable);
+        if (KeyboardColorManager.INSTANCE.isInitialized()) {
+            KeyboardColorManager.INSTANCE.tint(image);
+        }
+    }
+
+    /** The modern card or the legacy flat row, from the keyboard palette. */
+    private void applyStyle(ClipboardViewHolder holder) {
+        if (!KeyboardColorManager.INSTANCE.isInitialized()) {
+            return;
+        }
+        KeyboardColorManager colors = KeyboardColorManager.INSTANCE;
+        boolean modernBoards = KeyboardColorManager.styleSpec().getModernBoards();
+        float density = holder.itemView.getResources().getDisplayMetrics().density;
+        if (modernBoards) {
+            // M3 card: a rounded keyAlt surface floating on the board background, with a rounded
+            // state layer for press feedback.
+            holder.cardBackground.setColor(colors.getKeyColorAlt());
+            holder.cardBackground.setCornerRadius(12 * density);
+            holder.foreground.setBackground(holder.cardBackground);
+            holder.foreground.setForeground(KeyboardColorManager.pressedHighlight());
+            holder.clipImageView.setOutlineProvider(holder.roundedThumbnailOutline);
+            holder.clipImageView.setClipToOutline(true);
+            holder.getBinding().dividerImage.setVisibility(View.GONE);
+        } else {
+            // Legacy: a flat full-bleed row on the background slot, with the BlackBerry hairline
+            // between icon and text. Re-applied per bind so a theme change in place never leaves a
+            // stale colour; sized by fill() because the ImageView measures from the drawable.
+            holder.foreground.setBackgroundColor(colors.getBackgroundColor());
+            holder.foreground.setForeground(null);
+            holder.clipImageView.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND);
+            holder.clipImageView.setClipToOutline(false);
+            holder.getBinding().dividerImage.setVisibility(View.VISIBLE);
+            holder.getBinding().dividerImage.setImageDrawable(KeyboardColorManager.fill(
+                    colors.getIconColor(KeyboardColorManager.ALPHA_DISABLED),
+                    Math.max(1, Math.round(density)), Math.round(40 * density)));
+        }
+        holder.overflowButton.setBackground(KeyboardColorManager.pressedHighlight());
+        holder.dataTextView.setTextColor(colors.getTextColor());
+        colors.tint(holder.overflowButton);
+        colors.tint(holder.pinGlyph, modernBoards ? colors.getAccentColor() : colors.getIconColor());
+    }
+
+    // ── the row menu ─────────────────────────────────────────────────────────
+
+    /** Long-press and overflow both land here, and both anchor the menu to the overflow button. */
+    boolean showMenu(ClipboardViewHolder holder) {
+        PopupMenu menu = buildMenu(holder);
+        if (menu == null) {
+            return false;
+        }
+        this.menuLauncher.show(menu);
+        return true;
+    }
+
+    PopupMenu buildMenu(ClipboardViewHolder holder) {
+        final ClipEntry entry = holder.boundEntry;
+        if (entry == null) {
+            return null;
+        }
+        boolean masked = isMasked(entry);
+        boolean truncated = !this.expandedIds.contains(entry.getId()) && holder.isTextTruncated();
+        return ClipboardEntryMenu.build(holder.overflowButton,
+                ClipboardEntryMenu.actionsFor(entry, masked, truncated),
+                action -> onMenuAction(entry, action));
+    }
+
+    void onMenuAction(ClipEntry entry, int action) {
+        if (action == ClipboardEntryMenu.ACTION_SHOW_FULL_TEXT) {
+            this.expandedIds.add(entry.getId());
+            int position = positionOf(entry.getId());
+            if (position != RecyclerView.NO_POSITION) {
+                notifyItemChanged(position);
+            }
+            return;
+        }
+        ClipboardActionCallback callback = this.actionCallback;
+        if (callback == null) {
+            return;
+        }
+        switch (action) {
+            case ClipboardEntryMenu.ACTION_PIN:
+                callback.onPinClip(entry, true);
+                break;
+            case ClipboardEntryMenu.ACTION_UNPIN:
+                callback.onPinClip(entry, false);
+                break;
+            case ClipboardEntryMenu.ACTION_COPY:
+                callback.onCopyClip(entry);
+                break;
+            case ClipboardEntryMenu.ACTION_SHARE:
+                callback.onShareClip(entry);
+                break;
+            case ClipboardEntryMenu.ACTION_DELETE:
+                callback.onDeleteClip(entry);
+                break;
+            default:
+                break;
+        }
+    }
+
+    // ── link previews ────────────────────────────────────────────────────────
+
+    @Override
+    public void onPreviewReady(long entryId) {
+        RecyclerView list = this.attachedList;
+        if (list != null && list.isComputingLayout()) {
+            // Finished inside a bind (the fetch did not need to suspend): RecyclerView refuses
+            // change notifications mid-layout, so announce it once the pass is over.
+            list.post(() -> onPreviewReady(entryId));
+            return;
+        }
+        int position = positionOf(entryId);
+        if (position != RecyclerView.NO_POSITION) {
+            notifyItemChanged(position, PAYLOAD_PREVIEW);
+        }
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.attachedList = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        if (this.attachedList == recyclerView) {
+            this.attachedList = null;
+        }
+    }
+
+    private int positionOf(long stableId) {
+        List<ClipboardItem> items = getCurrentList();
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getStableId() == stableId) {
+                return i;
+            }
+        }
+        return RecyclerView.NO_POSITION;
+    }
+
+    /** "Pinned" / "Recent". */
+    static final class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView title;
+
+        HeaderViewHolder(View view) {
+            super(view);
+            this.title = (TextView) view;
+            ViewCompat.setAccessibilityHeading(view, true);
+        }
+
+        void bind(int titleRes) {
+            this.title.setText(titleRes);
+            if (KeyboardColorManager.INSTANCE.isInitialized()) {
+                KeyboardColorManager colors = KeyboardColorManager.INSTANCE;
+                boolean modernBoards = KeyboardColorManager.styleSpec().getModernBoards();
+                // M3 list subheaders are primary-coloured; the legacy board keeps its grey.
+                this.title.setTextColor(modernBoards
+                        ? colors.getAccentColor()
+                        : colors.getHintColor(KeyboardColorManager.ALPHA_FULL));
+                this.title.setTypeface(KeyboardView.mediumWeightTypeface(this.title.getTypeface()));
+            }
+        }
     }
 }

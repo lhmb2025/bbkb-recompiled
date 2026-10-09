@@ -16,7 +16,8 @@ import dev.bbkb.ime.R
 
 /**
  * On-Screen Keyboard Settings Screen
- * Categories: Gestures, Behavior (Ctrl key, unified input menu, slideboard, key-press feedback).
+ * Categories: Gestures, Behavior (Ctrl key, unified input menu, clipboard, slideboard, key-press
+ * feedback).
  *
  * The custom symbol page still lives under Appearance & layout; Slideboard settings moved here,
  * because everything it configures is on-screen-keyboard behaviour.
@@ -26,7 +27,8 @@ fun TouchScreenKeyboardScreen(
     onNavigateBack: () -> Unit,
     onNavigateToKeyPressFeedback: () -> Unit = {},
     onNavigateToCustomizeMenu: () -> Unit = {},
-    onNavigateToSlideboard: () -> Unit = {}
+    onNavigateToSlideboard: () -> Unit = {},
+    onNavigateToClipboard: () -> Unit = {},
 ) {
     // Chinese locale disables swipe typing (NuanceSDK limitation)
     val isChineseLocale = remember { LocaleUtils.isCurrentSubtypeChinese() }
@@ -78,6 +80,14 @@ fun TouchScreenKeyboardScreen(
             summary = R.string.settings_customize_menu_summary,
             enabled = { it.bool("pref_uim_enabled") },
             onClick = { onNavigateToCustomizeMenu() },
+        ),
+        // Clipboard history (capture, retention, link previews). Beside the menu rows because the
+        // menu is one of the two ways into the clipboard board; it stays enabled with the menu
+        // off, since the multifunction key and the physical keyboard's shortcut open it too.
+        Nav(
+            title = R.string.settings_uim_toggle_clipboard,
+            summary = R.string.clipboard_settings_summary,
+            onClick = { onNavigateToClipboard() },
         ),
         // Slideboard (enable, swap sides, number pad, quick phrases). No icon: the rows around it
         // carry none.

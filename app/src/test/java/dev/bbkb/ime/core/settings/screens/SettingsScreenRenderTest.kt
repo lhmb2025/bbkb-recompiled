@@ -207,6 +207,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "AppearanceLayoutScreen" -> ({ AppearanceLayoutScreen({}, {}) })
         "AutoCorrectionScreen" -> ({ AutoCorrectionScreen({}) })
         "CkbGesturesScreen" -> ({ CkbGesturesScreen({}) })
+        "ClipboardScreen" -> ({ ClipboardScreen({}) })
         "CorrectionLearningScreen" -> ({ CorrectionLearningScreen({}, {}, {}, {}) })
         "CreditsScreen" -> ({ CreditsScreen({}, {}) })
         "CustomMacrosScreen" -> ({ CustomMacrosScreen({}) })
@@ -479,7 +480,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
          */
         private val SCREEN_NAMES = listOf(
             "AdvancedGestureParametersScreen", "AdvancedSettingsScreen", "AnimationParametersScreen",
-            "AppearanceLayoutScreen", "AutoCorrectionScreen", "CkbGesturesScreen",
+            "AppearanceLayoutScreen", "AutoCorrectionScreen", "CkbGesturesScreen", "ClipboardScreen",
             "CorrectionLearningScreen", "CreditsScreen", "CustomMacrosScreen",
             "CustomPhysicalLayoutsScreen", "CustomSymbolPageScreen_PKB", "CustomSymbolPageScreen_VKB", "CustomizationScreen",
             "CustomizeMenuScreen", "CustomizeSlideBoardScreen", "DebugSettingsScreen",
@@ -638,6 +639,21 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 // uppercases, so it never matches its own resource).
                 "GESTURE TIMING",
             ),
+        ),
+        Case(
+            name = "ClipboardScreen",
+            route = SettingsRoute.Clipboard.route,
+            // "Clipboard" has three resources; the index records the lexicographically first.
+            title = "Clipboard",
+            resources = setOf(
+                "clipboard_clear_history_summary", "clipboard_clear_history_title",
+                "clipboard_history_summary", "clipboard_history_title",
+                "clipboard_link_previews_summary", "clipboard_link_previews_title",
+                // The retention row's summary is its current option: one hour on a fresh install.
+                "clipboard_retention_1h", "clipboard_retention_title",
+                "settings_pkb_multifunction_action_clipboard",
+            ),
+            literals = emptySet(),
         ),
         Case(
             name = "CorrectionLearningScreen",
@@ -1244,6 +1260,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_slideboard_hub_summary", "settings_slideboard_settings_title",
                 "settings_touch_feedback_summary", "settings_touch_feedback_title",
                 "settings_uim_enable_summary_on", "settings_uim_enable_title",
+                // The clipboard settings row, beside the unified input menu rows. Its title is
+                // "Clipboard", recorded under the lexicographically first resource of that value.
+                "clipboard_settings_summary", "settings_pkb_multifunction_action_clipboard",
                 "settings_vkb_swipe_down_dismiss_summary", "settings_vkb_swipe_down_dismiss_title",
                 "settings_vkb_swipe_gestures_summary", "settings_vkb_swipe_gestures_title",
                 "settings_vkb_type_by_swiping_summary", "vkb_control_key_summary", "vkb_control_key_title"

@@ -39,6 +39,7 @@ import dev.bbkb.ime.core.settings.screens.CustomPhysicalLayoutsScreen
 import dev.bbkb.ime.core.settings.screens.PredictionsSuggestionsScreen
 import dev.bbkb.ime.core.settings.screens.QuickPhrasesScreen
 import dev.bbkb.ime.core.settings.screens.ShakeGesturesScreen
+import dev.bbkb.ime.core.settings.screens.ClipboardScreen
 import dev.bbkb.ime.core.settings.screens.CustomizeMenuScreen
 import dev.bbkb.ime.core.settings.screens.SlideboardLayoutScreen
 import dev.bbkb.ime.core.settings.screens.SymbolCustomizationScreen
@@ -207,7 +208,15 @@ fun SettingsNavHost(
                 onNavigateBack = back,
                 onNavigateToKeyPressFeedback = go(SettingsRoute.TouchFeedback),
                 onNavigateToCustomizeMenu = go(SettingsRoute.CustomizeMenu),
-                onNavigateToSlideboard = go(SettingsRoute.SlideboardSettings)
+                onNavigateToSlideboard = go(SettingsRoute.SlideboardSettings),
+                onNavigateToClipboard = go(SettingsRoute.Clipboard)
+            )
+        }
+
+        // Clipboard history — linked page from On-Screen Keyboard → Behavior
+        composable(SettingsRoute.Clipboard.route) {
+            ClipboardScreen(
+                onNavigateBack = back
             )
         }
 

@@ -1221,6 +1221,9 @@ class BlackBerryIME : InputMethodService(),
         physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.EDITOR_SWITCHED)
 
         sweepBoardsWhenUimBarIsOff()
+        // Expire clipboard history past its retention at every input start, including the
+        // physical-keyboard sessions that never show the board.
+        clipboardController?.onStartInput()
         if (str != null && (str == "com.blackberry.help" || str == "com.blackberry.retaildemo")) {
             z2 = true
         }

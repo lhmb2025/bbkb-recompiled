@@ -1015,7 +1015,6 @@
     <public type="id" name="clipboardView" id="0x7f0a0068" />
     <public type="id" name="clipboard_data_text" id="0x7f0a0069" />
     <public type="id" name="clipboard_image" id="0x7f0a006b" />
-    <public type="id" name="clipboard_image_container" id="0x7f0a006c" />
     <public type="id" name="clipboard_text_container" id="0x7f0a006d" />
     <public type="id" name="collapseActionView" id="0x7f0a006e" />
     <public type="id" name="container" id="0x7f0a0071" />
@@ -1291,7 +1290,6 @@
     <public type="integer" name="bottom_sheet_slide_duration" id="0x7f0b0003" />
     <public type="integer" name="cancel_button_image_alpha" id="0x7f0b0004" />
     <public type="integer" name="config_ckb_touch_noise_threshold_time" id="0x7f0b0008" />
-    <public type="integer" name="config_clipboard_extra_header_height" id="0x7f0b0009" />
     <public type="integer" name="config_default_CKB_swipe_gesture_suppression_timeout" id="0x7f0b000a" />
     <public type="integer" name="config_default_PKB_auto_correction_mode" id="0x7f0b000b" />
     <public type="integer" name="config_default_VKB_auto_correction_mode" id="0x7f0b000d" />

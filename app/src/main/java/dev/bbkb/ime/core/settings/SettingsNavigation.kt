@@ -89,6 +89,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object CustomizeSlideBoard : SettingsRoute("customize_slideboard", "Customize SlideBoard")
     object SlideboardSettings : SettingsRoute("slideboard_settings", "Touch Screen Keyboard")
     object CustomizeMenu : SettingsRoute("customize_menu", "Customize Menu")
+    object Clipboard : SettingsRoute("clipboard", "Clipboard")
     object About : SettingsRoute("about", "About")
     object Updates : SettingsRoute("updates", "Updates")
     object KeyboardHelper : SettingsRoute("keyboard_helper", "BBKB Helper")
@@ -157,6 +158,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 CustomizeSlideBoard.route -> CustomizeSlideBoard
                 SlideboardSettings.route -> SlideboardSettings
                 CustomizeMenu.route -> CustomizeMenu
+                Clipboard.route -> Clipboard
                 About.route -> About
                 Updates.route -> Updates
                 KeyboardHelper.route -> KeyboardHelper

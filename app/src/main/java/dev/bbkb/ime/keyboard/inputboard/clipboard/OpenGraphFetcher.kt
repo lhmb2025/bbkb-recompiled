@@ -2,175 +2,145 @@ package dev.bbkb.ime.keyboard.inputboard.clipboard
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Patterns
 import dev.bbkb.ime.core.shared.Logger
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
 import java.net.URL
 
 /**
- * Modern coroutine-based Open Graph metadata and image fetcher.
- * Replaces deprecated AsyncTask implementations (FetchOpenGraphTask and DownloadImageTask).
+ * Fetches a link preview — the page's Open Graph title and a scaled thumbnail — for one copied
+ * URL.
+ *
+ * Everything it requests comes from untrusted text (what the user copied) or from what the
+ * fetched page names, so every request is bounded:
+ *  - **https only**, for the page and for the image ([UrlUtils.httpsUrlOrNull]);
+ *  - **[TIMEOUT_MS] per request**: the page's whole connect-and-read, and the image's connect
+ *    plus its body read, which [readCapped] stops at the deadline;
+ *  - **[MAX_PAGE_BYTES]** of page (jsoup stops reading there; the Open Graph tags are in the
+ *    head) and **[MAX_IMAGE_BYTES]** of image, beyond which the image is dropped rather than
+ *    decoded;
+ *  - the image is decoded subsampled to roughly the thumbnail size, so a small file that expands
+ *    to an enormous bitmap cannot exhaust memory.
  */
 object OpenGraphFetcher {
-    
+
     private const val TAG = "OpenGraphFetcher"
     private const val USER_AGENT = "Mozilla/5.0 AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.122 Safari/534.30"
-    
-    /**
-     * Fetches Open Graph metadata from ClipboardItem URL and invokes callback on completion.
-     * This is ClipboardItem Java-friendly wrapper around the suspend function.
-     * 
-     * @param metadata OpenGraphMetadata object with URL set
-     * @param callback Callback to invoke when metadata is fetched
-     * @param scope CoroutineScope to launch the coroutine in
-     */
-    @JvmStatic
-    fun fetchMetadata(
-        metadata: OpenGraphMetadata,
-        callback: ClipboardImageLoadCallback?,
-        scope: CoroutineScope
-    ) {
-        scope.launch {
-            try {
-                fetchMetadataInternal(metadata)
-                
-                // Invoke callback on main thread
-                withContext(Dispatchers.Main) {
-                    val imageUrl = metadata.getImageUrl()
-                    if (imageUrl != null && Patterns.WEB_URL.matcher(imageUrl).matches()) {
-                        callback?.onImageReady()
-                    } else {
-                        Logger.debug(TAG, "No valid image URL found in Open Graph metadata")
-                    }
-                }
-            } catch (e: Exception) {
-                Logger.debug(TAG, "Error fetching Open Graph metadata: ${e.message}")
-            }
-        }
-    }
-    
-    /**
-     * Fetches Open Graph metadata from ClipboardItem URL (suspend function).
-     * 
-     * @param metadata OpenGraphMetadata object with URL set
-     * @return The same metadata object, populated with fetched data
-     */
-    suspend fun fetchMetadataInternal(metadata: OpenGraphMetadata): OpenGraphMetadata = withContext(Dispatchers.IO) {
-        val url = metadata.getUrl() ?: return@withContext metadata
-        // null = not an https URL (or not a URL at all); previews are fetched over https only.
-        val normalizedUrl = UrlUtils.httpsUrlOrNull(url) ?: return@withContext metadata
 
-        try {
-            Logger.debug(TAG, "Fetching Open Graph metadata from: $normalizedUrl")
-            
-            val document = Jsoup.connect(normalizedUrl)
-                .userAgent(USER_AGENT)
-                .get()
-            
-            metadata.parse(document)
-            Logger.debug(TAG, "Successfully fetched Open Graph metadata")
-        } catch (e: Exception) {
-            Logger.debug(TAG, "Unable to fetch Open Graph metadata from: $url - ${e.message}")
-        }
-        
-        metadata
-    }
-    
+    const val TIMEOUT_MS = 5_000
+    const val MAX_PAGE_BYTES = 1024 * 1024
+    const val MAX_IMAGE_BYTES = 2 * 1024 * 1024
+
     /**
-     * Downloads and scales an image from ClipboardItem URL, then invokes callback.
-     * This is ClipboardItem Java-friendly wrapper around the suspend function.
-     * 
-     * @param metadata OpenGraphMetadata with image URL
-     * @param targetWidth Target width for scaled bitmap
-     * @param targetHeight Target height for scaled bitmap
-     * @param callback Callback to invoke when image is downloaded
-     * @param scope CoroutineScope to launch the coroutine in
+     * The preview for [url], or null when there is nothing to show (not https, unreachable, no
+     * title and no image). Never throws; the blocking work runs on [Dispatchers.IO].
+     */
+    suspend fun fetchPreview(url: String, targetWidth: Int, targetHeight: Int): OpenGraphMetadata? =
+        withContext(Dispatchers.IO) {
+            val pageUrl = UrlUtils.httpsUrlOrNull(url) ?: return@withContext null
+            val metadata = OpenGraphMetadata()
+            metadata.url = url
+            if (UrlUtils.isImageUrl(url)) {
+                // The row IS the image: no page to read.
+                metadata.imageUrl = pageUrl
+            } else {
+                fetchPage(pageUrl, metadata)
+            }
+            metadata.imageUrl
+                ?.let { UrlUtils.httpsUrlOrNull(it) }
+                ?.let { downloadImage(it, targetWidth, targetHeight) }
+                ?.let { metadata.image = it }
+            if (metadata.title == null && metadata.image == null) null else metadata
+        }
+
+    private fun fetchPage(url: String, metadata: OpenGraphMetadata) {
+        try {
+            val document = Jsoup.connect(url)
+                .userAgent(USER_AGENT)
+                .timeout(TIMEOUT_MS)
+                .maxBodySize(MAX_PAGE_BYTES)
+                .get()
+            metadata.parse(document)
+        } catch (e: Exception) {
+            Logger.debug(TAG, "No Open Graph metadata from $url: ${e.message}")
+        }
+    }
+
+    private fun downloadImage(url: String, targetWidth: Int, targetHeight: Int): Bitmap? {
+        val connection = try {
+            URL(url).openConnection() as? HttpURLConnection ?: return null
+        } catch (e: IOException) {
+            return null
+        }
+        return try {
+            connection.connectTimeout = TIMEOUT_MS
+            connection.readTimeout = TIMEOUT_MS
+            connection.setRequestProperty("User-Agent", USER_AGENT)
+            if (connection.responseCode !in 200..299 || connection.contentLength > MAX_IMAGE_BYTES) {
+                return null
+            }
+            val bytes = connection.inputStream.use { readCapped(it, MAX_IMAGE_BYTES, TIMEOUT_MS.toLong()) }
+                ?: return null
+            decodeScaled(bytes, targetWidth, targetHeight)
+        } catch (e: Exception) {
+            Logger.debug(TAG, "No image from $url: ${e.message}")
+            null
+        } finally {
+            connection.disconnect()
+        }
+    }
+
+    /**
+     * The whole of [input], or null if it is longer than [maxBytes] or is still arriving after
+     * [timeoutMs]. A server that drips one byte just inside every read timeout is stopped here.
      */
     @JvmStatic
-    fun downloadImage(
-        metadata: OpenGraphMetadata,
-        targetWidth: Int,
-        targetHeight: Int,
-        callback: ClipboardImageLoadCallback?,
-        scope: CoroutineScope
-    ) {
-        scope.launch {
-            try {
-                val bitmap = downloadImageInternal(metadata, targetWidth, targetHeight)
-                
-                // Update metadata and invoke callback on main thread
-                withContext(Dispatchers.Main) {
-                    if (bitmap != null) {
-                        metadata.setImage(bitmap)
-                        Logger.debug(TAG, "Image downloaded and scaled successfully")
-                    } else {
-                        Logger.debug(TAG, "Image download yielded null")
-                    }
-                    callback?.onImageReady()
-                }
-            } catch (e: Exception) {
-                Logger.debug(TAG, "Error downloading image: ${e.message}")
-                withContext(Dispatchers.Main) {
-                    callback?.onImageReady()
-                }
-            }
+    fun readCapped(
+        input: InputStream,
+        maxBytes: Int,
+        timeoutMs: Long,
+        nanoTime: () -> Long = System::nanoTime,
+    ): ByteArray? {
+        val deadline = nanoTime() + timeoutMs * 1_000_000L
+        val out = ByteArrayOutputStream()
+        val buffer = ByteArray(8 * 1024)
+        while (true) {
+            val read = input.read(buffer)
+            if (read < 0) return out.toByteArray()
+            if (out.size() + read > maxBytes || nanoTime() > deadline) return null
+            out.write(buffer, 0, read)
         }
     }
-    
+
     /**
-     * Downloads and scales an image from ClipboardItem URL (suspend function).
-     * 
-     * @param metadata OpenGraphMetadata with image URL set
-     * @param targetWidth Target width for scaled bitmap
-     * @param targetHeight Target height for scaled bitmap
-     * @return Scaled bitmap or null if download fails
+     * The largest power-of-two subsampling that still leaves the decoded image at least the target
+     * size in both dimensions, as `BitmapFactory.Options.inSampleSize` wants it.
      */
-    suspend fun downloadImageInternal(
-        metadata: OpenGraphMetadata,
-        targetWidth: Int,
-        targetHeight: Int
-    ): Bitmap? = withContext(Dispatchers.IO) {
-        val imageUrl = metadata.getImageUrl() ?: return@withContext null
-        // null = not an https URL. og:image comes from the fetched page, so a file:/jar:/ftp: value
-        // must never reach URL.openStream().
-        val normalizedUrl = UrlUtils.httpsUrlOrNull(imageUrl) ?: return@withContext null
-        
-        try {
-            Logger.debug(TAG, "Downloading image from: $normalizedUrl")
-            
-            val inputStream = URL(normalizedUrl).openStream()
-            val originalBitmap = BitmapFactory.decodeStream(inputStream)
-            inputStream.close()
-            
-            if (originalBitmap != null) {
-                Logger.debug(TAG, "Downloaded image, original size: ${originalBitmap.byteCount} bytes")
-                
-                // Scale the bitmap
-                val scaledBitmap = Bitmap.createScaledBitmap(
-                    originalBitmap,
-                    targetWidth,
-                    targetHeight,
-                    true
-                )
-                
-                // Recycle original if it's ClipboardItem different instance
-                if (scaledBitmap != originalBitmap) {
-                    originalBitmap.recycle()
-                }
-                
-                Logger.debug(TAG, "Scaled image to ${targetWidth}x${targetHeight}")
-                scaledBitmap
-            } else {
-                Logger.debug(TAG, "Failed to decode bitmap from stream")
-                null
-            }
-        } catch (e: Exception) {
-            Logger.debug(TAG, "Unable to fetch image from: $imageUrl - ${e.message}")
-            null
+    @JvmStatic
+    fun sampleSizeFor(sourceWidth: Int, sourceHeight: Int, targetWidth: Int, targetHeight: Int): Int {
+        var sample = 1
+        if (targetWidth <= 0 || targetHeight <= 0) return sample
+        while (sourceWidth / (sample * 2) >= targetWidth && sourceHeight / (sample * 2) >= targetHeight) {
+            sample *= 2
         }
+        return sample
+    }
+
+    private fun decodeScaled(bytes: ByteArray, targetWidth: Int, targetHeight: Int): Bitmap? {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
+        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+        val options = BitmapFactory.Options().apply {
+            inSampleSize = sampleSizeFor(bounds.outWidth, bounds.outHeight, targetWidth, targetHeight)
+        }
+        val decoded = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options) ?: return null
+        val scaled = Bitmap.createScaledBitmap(decoded, targetWidth, targetHeight, true)
+        if (scaled != decoded) decoded.recycle()
+        return scaled
     }
 }

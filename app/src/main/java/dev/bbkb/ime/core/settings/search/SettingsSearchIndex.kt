@@ -5,6 +5,7 @@ import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.SettingsRoute
 import dev.bbkb.ime.core.settings.backup.LayoutsBundle
 import dev.bbkb.ime.core.settings.backup.SettingsBackup
+import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardPrefs
 
 /**
  * The device facts the index needs in order to decide whether a setting's row exists at all.
@@ -175,6 +176,13 @@ object SettingsSearchIndex {
 
         // ── Typing & input: Customize menu (UIM toggle order, lives under On-Screen Keyboard) ──
         SearchableSetting(R.string.settings_customize_menu_title, "unified input menu order reorder shortcuts toggles voice emoji cursor clipboard number pad math", SettingsRoute.CustomizeMenu.route, TYPING, "customize_menu"),
+
+        // ── Typing & input: Clipboard (entry row lives on On-Screen Keyboard) ───
+        SearchableSetting(R.string.clipboard_history_title, "clipboard history copy paste clips keep save remember", SettingsRoute.Clipboard.route, TYPING, "pref_clipboard_history_enabled"),
+        SearchableSetting(R.string.clipboard_retention_title, "clipboard retention expire delete keep clips hour day week time", SettingsRoute.Clipboard.route, TYPING, "pref_clipboard_retention"),
+        SearchableSetting(R.string.clipboard_link_previews_title, "clipboard link preview url web page thumbnail title network", SettingsRoute.Clipboard.route, TYPING, "pref_clipboard_link_previews"),
+        // An action, anchored by the id ClipboardPrefs declares, like the backup rows below.
+        SearchableSetting(R.string.clipboard_clear_history_title, "clipboard clear delete wipe erase history clips pinned", SettingsRoute.Clipboard.route, TYPING, ClipboardPrefs.ANCHOR_CLEAR_HISTORY),
 
         // ── Suggestion & correction: Suggestions ────────────────────────────────
         SearchableSetting(R.string.settings_pred_show_predictions_title, "prediction suggestion strip", SettingsRoute.Suggestion.route, SUGGESTION, "show_predictions"),

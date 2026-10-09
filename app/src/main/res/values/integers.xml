@@ -112,7 +112,6 @@
     <!-- =========================== -->
     <!-- Clipboard and input board -->
     <!-- =========================== -->
-    <integer name="config_clipboard_extra_header_height">40</integer>
     <integer name="config_input_board_bar_slide_in_animation">200</integer>
     <integer name="config_slideboard_snap_animation">500</integer>
     <integer name="config_uim_default_focus_move_delay">650</integer>
