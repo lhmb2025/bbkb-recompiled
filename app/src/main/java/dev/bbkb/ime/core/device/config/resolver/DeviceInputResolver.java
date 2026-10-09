@@ -93,10 +93,8 @@ public class DeviceInputResolver {
             return findMappingFromAllDevices();
         }
 
-        String deviceName = device.getName();
-
-        // Find mapping
-        DeviceInputMapping mapping = sConfig.findMappingForDevice(deviceName);
+        // Find mapping: name, and vendor/product ids for configs that match on them
+        DeviceInputMapping mapping = sConfig.findMappingForInputDevice(device);
 
         cacheMapping(deviceId, mapping);
         return mapping;
@@ -123,9 +121,7 @@ public class DeviceInputResolver {
             boolean isExternal = !device.isVirtual();
 
             if (isKeyboard && isExternal) {
-                String deviceName = device.getName();
-
-                DeviceInputMapping mapping = sConfig.findMappingForDevice(deviceName);
+                DeviceInputMapping mapping = sConfig.findMappingForInputDevice(device);
                 if (mapping != null) {
                     cacheMapping(ALL_DEVICES, mapping);
                     return mapping;

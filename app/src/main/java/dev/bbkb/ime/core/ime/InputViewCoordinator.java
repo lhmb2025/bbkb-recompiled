@@ -125,9 +125,25 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
      * Only shows if:
      * - Predictions are enabled in settings
      * - The current field supports suggestions (not password, URI, email, etc.)
+     * - "Show the suggestion bar" is not hiding the strip (a Chinese or Japanese one still shows)
+     * - The "Show or hide the input menu" key has not raised the menu, which owns the bar until
+     *   it is put away (the window coming up for that very key press starts the view after it)
      */
     private void preShowSuggestionStripForPkb() {
+        if (SettingsValues.isInputMenuRequestedByKey()) {
+            return;
+        }
         SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
+        if (settings.isPkbSuggestionBarHidden()) {
+            // AuxBarView starts VISIBLE and empty until its first hide(), and nothing else takes
+            // it down when no strip or menu is coming.
+            if (auxBarManager != null) {
+                auxBarManager.hideSuggestionBar();
+            }
+            if (!isChineseOrJapaneseSubtype()) {
+                return;
+            }
+        }
         if (settings.isPredictionsEnabled && settings.editorCapabilities.shouldShowSuggestions) {
             if (auxBarManager != null) {
                 auxBarManager.showSuggestionStrip(SuggestedWords.EMPTY);
@@ -327,12 +343,60 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     }
 
     public boolean isUimEnabled() {
-        return this.settingsManager.getSettingsValues().isUimEnabled;
+        return this.settingsManager.getSettingsValues().isUimEnabled();
     }
 
     public boolean shouldShowUim() {
+        // The key asked for the menu, so the menu is what the bar shows until it is put away.
+        if (SettingsValues.isInputMenuRequestedByKey()) {
+            return true;
+        }
         SettingsValues c0804dM5050c = SettingsManager.getInstance().getSettingsValues();
-        return c0804dM5050c.isUimEnabled && !shouldShowSuggestionStrip(c0804dM5050c, this.imeService.isOnScreenKeyboardVisible(), this.subtypeManager.getCurrentSubtype());
+        return c0804dM5050c.isUimEnabled() && !shouldShowSuggestionStrip(c0804dM5050c, this.imeService.isOnScreenKeyboardVisible(), this.subtypeManager.getCurrentSubtype());
+    }
+
+    /**
+     * The "Show or hide the input menu" action of the multifunction key and of the Alt+Sym
+     * shortcut: the unified input menu bar comes up if it is not showing and goes away if it is.
+     *
+     * <p>It comes up even where its settings keep it off: "Enable unified input menu" off, or
+     * "Show the suggestion bar" off on a physical keyboard, which leaves no hamburger button to
+     * reach it. That is a session override ({@link SettingsValues#setInputMenuRequestedByKey}),
+     * not a change to the stored preferences, and while it is set the bar is an ordinary menu
+     * bar: its toggles open boards through the board coordinator, the board keys take the same
+     * route instead of their menu-off fallbacks, and a closed board leaves the menu up. See
+     * {@link SettingsValues#isInputMenuRequestedByKey()} for what ends it.
+     *
+     * <p>Going away closes the menu bar and any board open under it, as leaving the field would,
+     * then puts back what the settings give this field: the suggestion strip, or nothing at all
+     * when "Show the suggestion bar" is hiding the bar. Where the settings make the menu itself
+     * the bar (the menu on, no strip), the press still takes it away; it is back at the next field
+     * or the next press.
+     */
+    public void toggleInputMenu() {
+        UnifiedInputBoardManager uibm = this.keyboardSwitcher.getUnifiedInputBoardManager();
+        if (uibm == null) {
+            return;
+        }
+        if (uibm.isShowing()) {
+            SettingsValues.setInputMenuRequestedByKey(false);
+            uibm.hide();
+            if (DeviceProfile.current().isPkbDevice()) {
+                preShowSuggestionStripForPkb();
+            }
+            // A strip that came back empty gets the words for wherever the cursor is, as it does
+            // when cursor mode ends (the menu covered whatever was there). With the bar hidden
+            // there is no strip to fill, and nothing to re-open the word at the cursor for.
+            if (this.imeService.isInputActive() && auxBarManager != null && auxBarManager.isShowing()) {
+                this.imeService.getUiUpdateHandler().postUpdateShiftState(true, true);
+            }
+            return;
+        }
+        SettingsValues.setInputMenuRequestedByKey(true);
+        if (!uibm.showMenuForKey()) {
+            // Nothing to show it in (no bar view yet): the settings keep their say.
+            SettingsValues.setInputMenuRequestedByKey(false);
+        }
     }
 
     private boolean shouldShowPredictionsInStrip(SettingsValues c0804d) {
@@ -377,6 +441,11 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
      */
     public boolean shouldShowSuggestionStrip(SettingsValues c0804d, boolean z, InputMethodSubtype inputMethodSubtype) {
         if (c0804d.editorCapabilities.isPassword) {
+            return false;
+        }
+        // "Show the suggestion bar" is off. A Chinese or Japanese keyboard picks its words from
+        // the candidate strip, so that strip stays.
+        if (c0804d.isPkbSuggestionBarHidden() && !isChineseOrJapaneseSubtype()) {
             return false;
         }
         if (!shouldShowPredictionsInStrip(c0804d) && !c0804d.shouldShowMoreKeys()) {
@@ -460,6 +529,10 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
             return;
         }
         showCjkSuggestionStripIfNeeded();
+    }
+
+    private static boolean isChineseOrJapaneseSubtype() {
+        return LocaleUtils.isCurrentSubtypeChinese() || LocaleUtils.isCurrentSubtypeJapanese();
     }
 
     private boolean hasFlickSuggestionView() {

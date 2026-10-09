@@ -147,6 +147,15 @@ class CustomSymbolRepository(private val context: Context) {
         }
     }
 
+    /**
+     * Replaces the whole custom palette with [symbols], in order, dropping blanks and repeats —
+     * what importing a layouts file does. Goes through the same write as add/remove, so the
+     * keyboard cache is cleared the same way.
+     */
+    fun replaceCustomSymbols(symbols: List<String>) {
+        saveCustomSymbols(symbols.filter { it.isNotEmpty() && it != NULL_MARKER }.distinct())
+    }
+
     private fun saveCustomSymbols(list: List<String>) {
         val serialized = list.joinToString(DELIMITER) { sanitize(it) }
         prefs.edit().putString(KEY_CUSTOM_LIST, serialized).apply()

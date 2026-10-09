@@ -2,10 +2,12 @@ package dev.bbkb.ime.keyboard.inputboard.clipboard;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,8 +17,9 @@ import dev.bbkb.ime.core.AudioAndHapticFeedbackManager;
 import dev.bbkb.ime.keyboard.KeyboardColorManager;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import dev.bbkb.ime.keyboard.inputboard.BoardHeightPolicy;
 
 
@@ -41,13 +44,13 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
      * although the view is already resolved in the constructor.
      */
     private View emptyStateView;
-    
-    /* Swipe reveal helper */
-    private SwipeToRevealHelper swipeHelper;
 
-    
+    private ClipboardAdapter adapter;
+
+
     public interface OnPasteListener {
-        void onPaste();
+        /** Insert {@code text} into the focused field. */
+        void onPaste(CharSequence text);
     }
 
     public ClipboardView(Context context, AttributeSet attributeSet) {
@@ -192,8 +195,16 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
         this.isOpening = z;
     }
 
+    /**
+     * Open the board: apply the link-preview setting, collapse rows expanded last time, and prune
+     * the history (which also loads it, the first time after unlock).
+     */
     public void show() {
         setVisibility(View.VISIBLE);
+        if (this.adapter != null && this.clipboardHistoryManager != null) {
+            this.adapter.onBoardShown(ClipboardPrefs.isLinkPreviewsEnabled(this.context));
+            this.clipboardHistoryManager.prune();
+        }
         updateEmptyState();
     }
 
@@ -215,84 +226,93 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
 
     @Override
     public void onHistoryChanged() {
-        ClipboardHistoryManager historyManager;
-        ClipboardAdapter c1004b = (ClipboardAdapter) this.recyclerView.getAdapter();
-        if (c1004b == null || (historyManager = this.clipboardHistoryManager) == null) {
+        if (this.adapter == null || this.clipboardHistoryManager == null) {
             return;
         }
-        c1004b.setClipboardItems(convertToClipboardItems(historyManager.getHistory()));
-        c1004b.notifyDataSetChanged();
+        List<ClipboardItem> items = ClipboardItem.build(
+                this.clipboardHistoryManager.getPinned(), this.clipboardHistoryManager.getRecent());
+        this.adapter.submitList(items);
+        // Previews of rows that are gone (deleted, expired, evicted) are dropped with them.
+        Set<Long> ids = new HashSet<>();
+        for (ClipboardItem item : items) {
+            if (item.entry != null) {
+                ids.add(item.entry.getId());
+            }
+        }
+        this.adapter.getImageProvider().retainOnly(ids);
         updateEmptyState();
     }
 
     public void initialize(ClipboardHistoryManager historyManager, Context context) {
         this.clipboardHistoryManager = historyManager;
-        ClipboardAdapter c1004b = new ClipboardAdapter(context, convertToClipboardItems(this.clipboardHistoryManager.getHistory()));
-        this.recyclerView.setAdapter(c1004b);
-        c1004b.setActionCallback(this);
+        this.adapter = new ClipboardAdapter(context, ClipboardWebImageProvider.create(context));
+        this.adapter.setActionCallback(this);
+        this.recyclerView.setAdapter(this.adapter);
         this.clipboardHistoryManager.addHistoryChangedListener(this);
-        this.clipboardHistoryManager.setOnClipEvictedListener(c1004b.getImageProvider());
-        
-        // Initialize swipe-to-reveal helper
-        this.swipeHelper = new SwipeToRevealHelper(this.recyclerView, c1004b);
+        onHistoryChanged();
     }
 
     public void unregisteredListener() {
         this.clipboardHistoryManager.removeHistoryChangedListener(this);
     }
 
-    private List<ClipboardItem> convertToClipboardItems(List<ClipboardHistoryManager.ClipEntry> list) {
-        ArrayList arrayList = new ArrayList();
-        for (ClipboardHistoryManager.ClipEntry aVar : list) {
-            arrayList.add(new ClipboardItem(aVar));
+    @Override
+    public void onPasteClip(ClipEntry entry) {
+        if (this.keyboardDelegate != null) {
+            this.keyboardDelegate.onPaste(entry.getText());
         }
-        return arrayList;
+        AudioAndHapticFeedbackManager.getInstance().performAudioAndHapticFeedback(-1, this);
     }
 
     @Override
-    public void onDeleteClip(ClipboardItem aVar) {
-        this.clipboardHistoryManager.removeEntry(aVar.historyItem);
-        
-        // Manually refresh the adapter since the history manager doesn't notify us.
-        // onHistoryChanged() already ends with updateEmptyState().
-        onHistoryChanged();
+    public void onCopyClip(ClipEntry entry) {
+        this.clipboardHistoryManager.copyToSystemClipboard(entry);
+        // From Android 13 the system confirms every copy itself; a toast as well would be a
+        // second notice for the same thing.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            Toast.makeText(this.context, R.string.clipboard_copy_toast_message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
-    public void onShareClip(ClipboardItem aVar) {
+    public void onPinClip(ClipEntry entry, boolean pin) {
+        this.clipboardHistoryManager.setPinned(entry.getId(), pin);
+    }
+
+    @Override
+    public void onDeleteClip(ClipEntry entry) {
+        this.clipboardHistoryManager.removeEntry(entry.getId());
+    }
+
+    @Override
+    public void onShareClip(ClipEntry entry) {
         Intent intent = new Intent();
-        intent.setAction("android.intent.action.SEND");
-        intent.putExtra("android.intent.extra.TEXT", aVar.toString());
+        intent.setAction(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, entry.getText());
         intent.setType("text/plain");
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         this.context.startActivity(Intent.createChooser(intent, getResources().getText(R.string.send_to)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
-    @Override
-    public void onPasteClip(ClipboardItem aVar) {
-        this.clipboardHistoryManager.setPrimaryClip(aVar.historyItem.mClipData);
-        this.keyboardDelegate.onPaste();
-        AudioAndHapticFeedbackManager.getInstance().performAudioAndHapticFeedback(-1, this);
-    }
-
     private void updateEmptyState() {
-        // getAdapter() is null until initialize() has run, and show() is reachable from
-        // ClipboardController.showClipboard() which only checks hasView() (audit IB-27).
-        RecyclerView.Adapter<?> adapter = this.recyclerView.getAdapter();
-        if (this.emptyStateView == null || adapter == null) {
+        // The manager is null until initialize() has run, and show() is reachable from
+        // ClipboardController.showClipboard() which only checks hasView() (audit IB-27). The
+        // history, not the adapter, decides: submitList() diffs asynchronously, so the adapter's
+        // count can still be the previous list's.
+        if (this.emptyStateView == null || this.clipboardHistoryManager == null) {
             return;
         }
-        this.emptyStateView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        this.emptyStateView.setVisibility(
+                this.clipboardHistoryManager.getHistory().isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     /**
-     * Cancels in-flight link-preview fetches and drops their bitmaps. Called from
-     * {@link ClipboardController#destroy()}.
+     * Cancels in-flight link-preview fetches and drops their results. Called when the controller
+     * binds a new board view in place of this one, and from {@link ClipboardController#destroy()}.
      */
     public void release() {
-        ClipboardAdapter adapter = (ClipboardAdapter) this.recyclerView.getAdapter();
-        if (adapter != null) {
-            adapter.getImageProvider().release();
+        if (this.adapter != null) {
+            this.adapter.getImageProvider().release();
         }
     }
 }

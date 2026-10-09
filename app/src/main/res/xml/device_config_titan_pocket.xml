@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Device Configuration: Unihertz Titan Pocket (2021)
+    Schema v2.4
+
+    Helio P70, Android 11. Keyboard "aw9523-key" (35 keys); a separate touch device over the keys,
+    "mtk-pad", declared a touchpad by its idc. The Titan Slim has the same key tables and idc and
+    its own config only so its model name matches (device_config_titan_slim.xml).
+
+    Facts come from the stock key layout and device trees, NOT from a unit in hand. Verify on a
+    Pocket.
+-->
+
+<device-input-config version="2.1" name="Unihertz Titan Pocket">
+
+    <device>
+        <match>
+            <model exact="Titan Pocket"/>
+            <device-name exact="aw9523-key"/>
+        </match>
+
+        <device-type>PKB</device-type>
+
+        <keypad-layout>qwerty</keypad-layout>
+
+        <!-- UNVERIFIED: about 720 by 360, inferred from a community tool. No native-min-sdk: the
+             OS hands the pad over whenever it enumerates it (unconfirmed for a third-party IME).
+             No <kdb-variant>: swipe typing stays off until a captured variant exists. -->
+        <touch-keypad range-x="720" range-y="360" contacts="single" source="auto">
+            <input-device exact="mtk-pad"/>
+        </touch-keypad>
+
+        <input-mappings>
+            <alt-mappings>
+                <source>device_alt_mappings_titan_pocket</source>
+                <enabled>true</enabled>
+            </alt-mappings>
+
+            <scancode-mappings>
+
+                <!-- Sym is KEY_COMPOSE (scancode 127). -->
+                <key rawScanCode="127" role="BOARD_SYM"
+                     treatAs="KEYCODE_SYM" notes="Titan Pocket Sym key (KEY_COMPOSE)"/>
+
+                <!-- F13 (scancode 183) is the programmable FUNC1 key. -->
+                <key rawScanCode="183" role="FUNCTION" notes="Titan Pocket FUNC1 (F13)"/>
+
+                <!-- The vendor key layout also lists 249 and 250. FUNCTION with no board, so the
+                     key interceptor's legacy table never reads them as the Minimal Phone's Sym
+                     and Emoji keys. -->
+                <key rawScanCode="249" role="FUNCTION" notes="Titan Pocket vendor key 249"/>
+                <key rawScanCode="250" role="FUNCTION" notes="Titan Pocket vendor key 250"/>
+
+                <!-- Alt is RIGHTALT (scancode 100). -->
+                <key rawScanCode="100" role="MODIFIER"
+                     treatAs="KEYCODE_ALT_RIGHT" notes="Titan Pocket Alt key (RIGHTALT)"/>
+
+            </scancode-mappings>
+        </input-mappings>
+    </device>
+
+</device-input-config>

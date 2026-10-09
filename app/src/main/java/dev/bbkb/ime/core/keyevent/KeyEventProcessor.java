@@ -19,6 +19,7 @@ import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
 import dev.bbkb.ime.keyboard.inputboard.UnifiedInputBoardManager;
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPalettesView;
+import dev.bbkb.ime.keyboard.inputboard.fcc.FccController;
 import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadController;
 import dev.bbkb.ime.BuildConfig;
 import dev.bbkb.ime.core.locale.SubtypeManager;
@@ -633,6 +634,10 @@ public class KeyEventProcessor {
             releaseConsumedBoardKey(keyEventRemapped);
             if (!ime.isInputActive() || !ime.isInputViewShown()) {
                 ime.getHardwareKeys().launchVoiceAssistant();
+            } else if (ime.getHardwareKeys().voiceKeyRefused()) {
+                // No recognition service (KEY2, 2026-10-06). The notice is already up; the press
+                // opens nothing — not the board, and not the UIM bar the coordinator's open path
+                // would raise first — and, like every other end of this branch, types nothing.
             } else {
                 UnifiedInputBoardManager unifiedManager = ime.getKeyboardSwitcher().getUnifiedInputBoardManager();
                 if (unifiedManager != null && ime.isUimEnabled()) {
@@ -681,16 +686,28 @@ public class KeyEventProcessor {
                         });
                         break;
                     case MultifunctionKeyHandler.ACTION_FCC:
-                        // FCC lives in the UIM; -42 toggles it. No non-UIM fallback (FCC is
-                        // a UIM-only board), so pass a no-op.
-                        toggleBoardOrFallback(-42, () -> {});
+                        // -42 toggles FCC in the UIM. With the menu off (or hidden with the
+                        // suggestion bar) the board opens on its own, as the clipboard does.
+                        toggleBoardOrFallback(FccController.KEY_CODE, () -> {
+                            if (ime.getFccController() != null) {
+                                ime.getFccController().toggle();
+                            }
+                        });
                         break;
                     case MultifunctionKeyHandler.ACTION_NUMBER_PAD:
-                        // UIM-only board, like FCC.
-                        toggleBoardOrFallback(NumberPadController.KEY_CODE, () -> {});
+                        toggleBoardOrFallback(NumberPadController.KEY_CODE, () -> {
+                            if (ime.getNumberPadController() != null) {
+                                ime.getNumberPadController().toggle();
+                            }
+                        });
                         break;
                     case MultifunctionKeyHandler.ACTION_SYMBOL_KEYBOARD:
                         ime.getKeyboardSwitcher().onSymbolShiftToggle(ime.getCurrentInputType(), ime.getCurrentImeOptions(), false, true);
+                        break;
+                    case MultifunctionKeyHandler.ACTION_TOGGLE_UIM:
+                        // Up even where the menu is off or hidden with the suggestion bar; the
+                        // board actions above then take the menu's route until it goes again.
+                        ime.getUiCoordinator().toggleInputMenu();
                         break;
                     default:
                         if (BuildConfig.DEBUG) Log.w(TAG, "Unknown multifunction key action: " + multifunctionAction);
@@ -812,7 +829,8 @@ public class KeyEventProcessor {
      * Toggle a UIM board by keycode. When the Unified Input Menu is enabled, routes through
      * {@link UnifiedInputBoardManager#requestBoard(int)} — the coordinator's single toggle
      * choke point, which decides from the active-board state so a second press reliably
-     * closes the board. Otherwise runs {@code fallback} for the non-UIM path.
+     * closes the board. Otherwise runs {@code fallback} for the non-UIM path. A menu the
+     * "Show or hide the input menu" action has up counts as enabled, so it gets the first route.
      */
     private void toggleBoardOrFallback(int boardKeyCode, Runnable fallback) {
         UnifiedInputBoardManager unifiedManager = ime.getKeyboardSwitcher().getUnifiedInputBoardManager();

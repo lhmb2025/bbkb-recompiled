@@ -89,7 +89,9 @@ object SettingsBackup {
      *    a specific server (often a laptop on the local network during development); carrying them
      *    to another device silently redirects its update checks.
      *  - `voice_input_language_cache` — the recogniser languages this device reported last time;
-     *    another device has its own recogniser.
+     *    another device has its own recogniser. Each speech recognizer the user picks keeps its own
+     *    list under this prefix (`voice_input_language_cache_<recognizer>`), and the prefix covers
+     *    them all.
      */
     val DENIED_PREFIXES: List<String> = listOf("pref_update_", "pref_distribution_", "voice_input_language_cache")
 
@@ -119,6 +121,10 @@ object SettingsBackup {
         // cache, rebuilt on the next layout sync). Carrying it to another device would hand the
         // gesture arbiter the wrong grid until it refreshed.
         "ckb_key_grid_cache_v2",
+        // UserLetterMapRepository.PREF_ACTIVE_LETTER_MAP: names a letter-map file in THIS
+        // device's storage, as active_device_config_id names a config. The maps themselves travel
+        // in a layouts export (LayoutsBundle), and are switched on by hand after import.
+        "pref_pkb_active_letter_map",
     )
 
     /** Whether [key] is excluded from both export and import. */

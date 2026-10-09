@@ -219,6 +219,29 @@ public class VoiceInputView extends RelativeLayout {
         }
     }
 
+    /**
+     * Why the last session stopped (no recognition service, a network error, nothing heard...),
+     * where the "Listening" line normally goes, until the next session starts.
+     *
+     * @return false when this style has no status line (Classic/Modern), so the caller can say it
+     *         some other way
+     */
+    public boolean showStatusMessage(int messageRes) {
+        return showStatusMessage(getContext().getText(messageRes));
+    }
+
+    /** {@link #showStatusMessage(int)} for a message with the app's name (or anything else) in it. */
+    public boolean showStatusMessage(CharSequence message) {
+        if (this.mStatusText == null) {
+            return false;
+        }
+        this.mStatusText.setText(message);
+        if (this.mWaveform != null) {
+            this.mWaveform.setActive(false);
+        }
+        return true;
+    }
+
     /** Audio level from the recognizer (Material waveform). */
     public void setAudioLevel(float rmsDb) {
         if (this.mWaveform != null) {

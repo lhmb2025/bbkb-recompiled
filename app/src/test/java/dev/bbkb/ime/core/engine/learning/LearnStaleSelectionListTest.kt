@@ -100,6 +100,29 @@ class LearnStaleSelectionListTest {
     }
 
     @Test
+    fun staleIndex_withoutContentLearning_learnsNothing() {
+        // A session that may not learn (preference off, password, incognito) passes
+        // learnByContent=false: the stale fallback is pure learning, so it is dropped.
+        val info = wordInfo("hello", 3, NuanceSDK.getSelectionListGeneration() - 1L)
+
+        model.learnWord(suggestion(info), false)
+
+        verify(sdk, never()).selectionListSelectWord(3, true, "hello")
+        verify(sdk, never()).addWord("hello")
+    }
+
+    @Test
+    fun freshIndex_withoutContentLearning_stillSelects() {
+        // The index select is the engine's end-of-selection transition (CJK forced commits need
+        // it); only the content fallback is learning-only.
+        val info = wordInfo("hello", 3, NuanceSDK.getSelectionListGeneration())
+
+        model.learnWord(suggestion(info), false)
+
+        verify(sdk).selectionListSelectWord(3, true, "hello")
+    }
+
+    @Test
     fun generationAdvancesOnRebuild() {
         // Guards the tests above: if the generation stopped moving, "stale" could never be
         // detected and the staleIndex tests would pass for the wrong reason.

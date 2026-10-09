@@ -6,10 +6,6 @@
     <color name="highlight_light">#4db6ac</color>
     <color name="input_board_background_color">#262626</color>
     
-    <!-- Clipboard swipe action colors - Material Design -->
-    <color name="swipe_background_delete">#E53935</color>  <!-- Material Red 600 -->
-    <color name="swipe_background_share">#1E88E5</color>   <!-- Material Blue 600 -->
-    
     <!-- Keyboard colors - Simplified names, mapped to Material 3 tokens -->
     <color name="language_indicator_text_color">@color/m3_on_surface_variant_dark</color>
     

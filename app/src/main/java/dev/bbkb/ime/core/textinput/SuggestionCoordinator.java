@@ -202,7 +202,9 @@ class SuggestionCoordinator {
      * @param str text context passed to the dictionary for the commit
      */
     void commitWordToDictionary(String str) {
-        if (mInputLogic.mComposingTracker.hasRecorrectionChanged()) {
+        // The re-correction is learning (the engine's word-changed note): not while the session may not learn.
+        if (mInputLogic.mComposingTracker.hasRecorrectionChanged()
+                && mInputLogic.mIme.getDynamicLearningManager().isLearningAllowed()) {
             mInputLogic.mDictionaryLoader.getMainDictionary().onWordChanged(str, mInputLogic.mComposingTracker.getRecorrectionCursorPosition(), mInputLogic.mComposingTracker.getRecorrectionOriginalWord(), mInputLogic.mComposingTracker.getRecorrectionCurrentWord());
         }
         mInputLogic.mComposingTracker.resetRecorrection();

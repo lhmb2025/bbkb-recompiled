@@ -207,9 +207,11 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "AppearanceLayoutScreen" -> ({ AppearanceLayoutScreen({}, {}) })
         "AutoCorrectionScreen" -> ({ AutoCorrectionScreen({}) })
         "CkbGesturesScreen" -> ({ CkbGesturesScreen({}) })
+        "ClipboardScreen" -> ({ ClipboardScreen({}) })
         "CorrectionLearningScreen" -> ({ CorrectionLearningScreen({}, {}, {}, {}) })
         "CreditsScreen" -> ({ CreditsScreen({}, {}) })
         "CustomMacrosScreen" -> ({ CustomMacrosScreen({}) })
+        "CustomPhysicalLayoutsScreen" -> ({ CustomPhysicalLayoutsScreen({}) })
         "CustomSymbolPageScreen_PKB" -> ({ CustomSymbolPageScreen(isPkb = true, onBack = {}) })
         "CustomSymbolPageScreen_VKB" -> ({ CustomSymbolPageScreen(isPkb = false, onBack = {}) })
         "CustomizeMenuScreen" -> ({ CustomizeMenuScreen({}) })
@@ -233,6 +235,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "SpellCheckerSettingsScreen" -> ({ SpellCheckerSettingsScreen({}) })
         "SymbolCustomizationScreen" -> ({ SymbolCustomizationScreen({}, {}, {}) })
         "TextShortcutsScreen" -> ({ TextShortcutsScreen({}, {}) })
+        "TouchSurfaceHelperScreen" -> ({ TouchSurfaceHelperScreen({}) })
         "CustomizationScreen" -> ({ CustomizationScreen({}, {}, {}, {}, {}) })
         "UpdatesScreen" -> ({ UpdatesScreen({}) })
         "UserDictionaryScreen" -> ({ UserDictionaryScreen({}) })
@@ -478,9 +481,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
          */
         private val SCREEN_NAMES = listOf(
             "AdvancedGestureParametersScreen", "AdvancedSettingsScreen", "AnimationParametersScreen",
-            "AppearanceLayoutScreen", "AutoCorrectionScreen", "CkbGesturesScreen",
+            "AppearanceLayoutScreen", "AutoCorrectionScreen", "CkbGesturesScreen", "ClipboardScreen",
             "CorrectionLearningScreen", "CreditsScreen", "CustomMacrosScreen",
-            "CustomSymbolPageScreen_PKB", "CustomSymbolPageScreen_VKB", "CustomizationScreen",
+            "CustomPhysicalLayoutsScreen", "CustomSymbolPageScreen_PKB", "CustomSymbolPageScreen_VKB", "CustomizationScreen",
             "CustomizeMenuScreen", "CustomizeSlideBoardScreen", "DebugSettingsScreen",
             "DeviceCompatibilityScreen", "DeviceConfigurationScreen", "DictionariesLearningScreen",
             "GestureLabScreen", "KeyPressFeedbackScreen", "KeyboardHelperScreen",
@@ -489,6 +492,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             "PhysicalKeyboardScreen", "PredictionsSuggestionsScreen", "QuickPhrasesScreen",
             "ShakeGesturesScreen", "SlideboardLayoutScreen", "SpellCheckerSettingsScreen",
             "SymbolCustomizationScreen", "TextShortcutsScreen", "TouchScreenKeyboardScreen",
+            "TouchSurfaceHelperScreen",
             "UpdatesScreen", "UserDictionaryScreen", "VoiceInputSettingsScreen",
             "VoiceLanguageSelectionScreen",
             "WordListEditorScreen",
@@ -554,7 +558,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_backup_summary", "settings_backup_title",
                 "settings_clear_settings_summary", "settings_clear_settings_title", "settings_debug_summary",
                 "settings_debug_title", "settings_device_compatibility_summary",
-                "settings_device_compatibility_title", "settings_restore_summary",
+                "settings_device_compatibility_title", "settings_layouts_export_summary",
+                "settings_layouts_export_title", "settings_layouts_import_summary",
+                "settings_layouts_import_title", "settings_restore_summary",
                 "settings_restore_title"
             ),
             literals = setOf(
@@ -637,6 +643,21 @@ class SettingsScreenRenderTest(private val screenName: String) {
             ),
         ),
         Case(
+            name = "ClipboardScreen",
+            route = SettingsRoute.Clipboard.route,
+            // "Clipboard" has three resources; the index records the lexicographically first.
+            title = "Clipboard",
+            resources = setOf(
+                "clipboard_clear_history_summary", "clipboard_clear_history_title",
+                "clipboard_history_summary", "clipboard_history_title",
+                "clipboard_link_previews_summary", "clipboard_link_previews_title",
+                // The retention row's summary is its current option: one hour on a fresh install.
+                "clipboard_retention_1h", "clipboard_retention_title",
+                "settings_pkb_multifunction_action_clipboard",
+            ),
+            literals = emptySet(),
+        ),
+        Case(
             name = "CorrectionLearningScreen",
             route = SettingsRoute.SuggestionCorrection.route,
             title = "Assistance",
@@ -694,6 +715,22 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "Add macro",
                 "Tap Add macro to create your first one",
             ),
+        ),
+        Case(
+            name = "CustomPhysicalLayoutsScreen",
+            route = SettingsRoute.CustomPhysicalLayouts.route,
+            title = "Custom physical layouts",
+            resources = setOf(
+                // "None" — the first resource name carrying that value; the row's own is
+                // settings_pkb_letter_maps_none.
+                "ckb_action_none",
+                "settings_pkb_letter_maps_none_summary", "settings_pkb_letter_maps_swipe_note",
+                "settings_pkb_letter_maps_title",
+            ),
+            literals = emptySet(),
+            // The list of imported maps is read on Dispatchers.IO; on a fresh install it comes
+            // back empty and the empty-state line appears once it has.
+            lateResources = setOf("settings_pkb_letter_maps_empty"),
         ),
         Case(
             name = "CustomSymbolPageScreen_PKB",
@@ -900,13 +937,16 @@ class SettingsScreenRenderTest(private val screenName: String) {
             name = "DeviceCompatibilityScreen",
             route = SettingsRoute.DeviceCompatibility.route,
             title = "Device compatibility",
-            // "key_interceptor_service_label" for the same reason as KeyboardHelperScreen below:
-            // three resources now share the value "BBKB Helper" and the first name wins.
+            // The row reads "BBKB helper" (lower-case h), a value no other resource shares, so it
+            // resolves to its own name; the screen it opens keeps "BBKB Helper" (see below).
             resources = setOf(
-                "key_interceptor_service_label", "pref_override_device_meta_state",
+                "settings_pkb_keyboard_helper_title", "pref_override_device_meta_state",
                 "pref_override_device_meta_state_summary", "settings_device_compatibility_title",
                 "settings_device_configuration_summary", "settings_device_configuration_title",
-                "settings_pkb_keyboard_helper_summary"
+                "settings_pkb_keyboard_helper_summary",
+                // The Touch surface helper row is drawn on every phone, greyed out where the
+                // profile declares no pad (this JVM's shape), with that state as its summary.
+                "touch_surface_helper_title", "settings_status_not_required"
             ),
             literals = emptySet(),
         ),
@@ -932,8 +972,15 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "BlackBerry Key2 (Athena)",
                 "BlackBerry PKB Devices",
                 "Minimal Phone (MP01)",
+                // The five Unihertz Titan profiles are preloaded configs like the rest; listed by
+                // display name, they push "Zinwa Q25" below this case's viewport (a lazy list
+                // composes only what is on screen), so it is no longer among the rendered rows.
+                "Unihertz Titan",
+                "Unihertz Titan 2",
+                "Unihertz Titan 2 Elite",
+                "Unihertz Titan Pocket",
+                "Unihertz Titan Slim",
                 "W2 Emulator Replay (virtual KEY2)",
-                "Zinwa Q25",
             ),
         ),
         Case(
@@ -974,11 +1021,14 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "popup_on_keypress_summary", "prefs_keypress_sound_volume_settings",
                 "prefs_keypress_vibration_duration_settings", "settings_category_sound",
                 "settings_category_vibrate", "settings_key_press_feedback_title", "sound_on_keypress_summary",
-                "vibrate_on_keypress_summary"
+                "vibrate_on_keypress_summary",
+                // Still the screen's hardcoded "System default" summary: the voice screen's Speech
+                // recognizer row added a resource with that value, and the recorder names any
+                // rendered string after the resource that holds it.
+                "settings_voice_recognizer_system_default"
             ),
             literals = setOf(
                 "VIBRATE",
-                "System default",
                 "SOUND",
                 "KEY POPUP",
             ),
@@ -1222,10 +1272,23 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_slideboard_hub_summary", "settings_slideboard_settings_title",
                 "settings_touch_feedback_summary", "settings_touch_feedback_title",
                 "settings_uim_enable_summary_on", "settings_uim_enable_title",
+                // The clipboard settings row, beside the unified input menu rows. Its title is
+                // "Clipboard", recorded under the lexicographically first resource of that value.
+                "clipboard_settings_summary", "settings_pkb_multifunction_action_clipboard",
                 "settings_vkb_swipe_down_dismiss_summary", "settings_vkb_swipe_down_dismiss_title",
                 "settings_vkb_swipe_gestures_summary", "settings_vkb_swipe_gestures_title",
                 "settings_vkb_type_by_swiping_summary", "vkb_control_key_summary", "vkb_control_key_title"
             ),
+            literals = emptySet(),
+        ),
+        Case(
+            name = "TouchSurfaceHelperScreen",
+            route = SettingsRoute.TouchSurfaceHelper.route,
+            title = "Touch surface helper",
+            // The touch-only test device declares no touch surface: the header says so, and
+            // neither the Built-in nor the Shizuku section is drawn. Its states on a Titan are
+            // pinned by TouchSurfaceHelperScreenTest.
+            resources = setOf("touch_surface_helper_title", "settings_status_not_required"),
             literals = emptySet(),
         ),
         Case(
@@ -1275,7 +1338,11 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_voice_auto_start_title", "settings_voice_builtin_summary",
                 "settings_voice_builtin_title", "settings_voice_prefer_offline_summary",
                 "settings_voice_prefer_offline_title", "settings_voice_use_keyboard_lang_summary",
-                "settings_voice_use_keyboard_lang_title"
+                "settings_voice_use_keyboard_lang_title", "settings_voice_show_partial_results_summary",
+                "settings_voice_show_partial_results_title",
+                // The "Speech recognizer" row. Robolectric has no recognition app installed, so its
+                // summary is the one that says so and suggests apps to install.
+                "settings_voice_recognizer_title", "settings_voice_recognizer_none_installed"
             ),
             literals = emptySet(),
         ),

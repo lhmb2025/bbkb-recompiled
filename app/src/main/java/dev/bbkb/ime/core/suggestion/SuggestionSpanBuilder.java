@@ -28,7 +28,12 @@ public final class SuggestionSpanBuilder {
         return spannableString;
     }
 
-    public static CharSequence getTextWithSuggestionSpan(Context context, String committedWord, SuggestedWords suggestedWords, boolean isBatchInput) {
+    /**
+     * @param rememberPick whether a later pick from the editor's popup may be learned
+     *                     ({@link SuggestionPickLearner}); {@code false} when the session may not
+     *                     learn. The span and its alternatives are attached either way.
+     */
+    public static CharSequence getTextWithSuggestionSpan(Context context, String committedWord, SuggestedWords suggestedWords, boolean isBatchInput, boolean rememberPick) {
         if (TextUtils.isEmpty(committedWord) || suggestedWords.isEmpty() || suggestedWords.isValidInputStyle() || suggestedWords.isAutoCorrection()) {
             if (BuildConfig.DEBUG) Log.d("SuggestionSpanBuilder", "spanAttach:SKIPPED word=\"" + committedWord + "\" empty=" + suggestedWords.isEmpty() + " isPrediction=" + suggestedWords.isValidInputStyle());
             return committedWord;
@@ -44,7 +49,9 @@ public final class SuggestionSpanBuilder {
             }
         }
         if (BuildConfig.DEBUG) Log.d("SuggestionSpanBuilder", "spanAttach:" + (alternatives.isEmpty() ? "NO_ALTERNATIVES" : "attached") + " committedWord=\"" + committedWord + "\" alternatives=" + alternatives);
-        SuggestionPickLearner.remember(committedWord, alternatives);
+        if (rememberPick) {
+            SuggestionPickLearner.remember(committedWord, alternatives);
+        }
         SuggestionSpan suggestionSpan = new SuggestionSpan(context, null, (String[]) alternatives.toArray(new String[alternatives.size()]), 0, SuggestionSpanReceiver.class);
         SpannableString spannableString = new SpannableString(committedWord);
         spannableString.setSpan(suggestionSpan, 0, committedWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

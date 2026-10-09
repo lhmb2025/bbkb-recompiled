@@ -32,12 +32,15 @@ import dev.bbkb.ime.core.settings.screens.LanguageSwitchingScreen
 import dev.bbkb.ime.core.settings.screens.LanguagesHubScreen
 import dev.bbkb.ime.core.settings.screens.MainSettingsScreen
 import dev.bbkb.ime.core.settings.screens.KeyboardHelperScreen
+import dev.bbkb.ime.core.settings.screens.TouchSurfaceHelperScreen
 import dev.bbkb.ime.core.settings.screens.DeviceConfigurationScreen
 import dev.bbkb.ime.core.settings.screens.DeviceProfileBuilderScreen
 import dev.bbkb.ime.core.settings.screens.PhysicalKeyboardScreen
+import dev.bbkb.ime.core.settings.screens.CustomPhysicalLayoutsScreen
 import dev.bbkb.ime.core.settings.screens.PredictionsSuggestionsScreen
 import dev.bbkb.ime.core.settings.screens.QuickPhrasesScreen
 import dev.bbkb.ime.core.settings.screens.ShakeGesturesScreen
+import dev.bbkb.ime.core.settings.screens.ClipboardScreen
 import dev.bbkb.ime.core.settings.screens.CustomizeMenuScreen
 import dev.bbkb.ime.core.settings.screens.SlideboardLayoutScreen
 import dev.bbkb.ime.core.settings.screens.SymbolCustomizationScreen
@@ -206,7 +209,15 @@ fun SettingsNavHost(
                 onNavigateBack = back,
                 onNavigateToKeyPressFeedback = go(SettingsRoute.TouchFeedback),
                 onNavigateToCustomizeMenu = go(SettingsRoute.CustomizeMenu),
-                onNavigateToSlideboard = go(SettingsRoute.SlideboardSettings)
+                onNavigateToSlideboard = go(SettingsRoute.SlideboardSettings),
+                onNavigateToClipboard = go(SettingsRoute.Clipboard)
+            )
+        }
+
+        // Clipboard history — linked page from On-Screen Keyboard → Behavior
+        composable(SettingsRoute.Clipboard.route) {
+            ClipboardScreen(
+                onNavigateBack = back
             )
         }
 
@@ -236,6 +247,15 @@ fun SettingsNavHost(
         composable(SettingsRoute.PhysicalKeyboard.route) {
             PhysicalKeyboardScreen(
                 onNavigateToCkbGestures = go(SettingsRoute.CkbGestures),
+                onNavigateToCustomLayouts = go(SettingsRoute.CustomPhysicalLayouts),
+                onNavigateToTouchSurfaceHelper = go(SettingsRoute.TouchSurfaceHelper),
+                onNavigateBack = back
+            )
+        }
+
+        // Custom physical layouts — imported letter maps for the physical keys
+        composable(SettingsRoute.CustomPhysicalLayouts.route) {
+            CustomPhysicalLayoutsScreen(
                 onNavigateBack = back
             )
         }
@@ -260,12 +280,20 @@ fun SettingsNavHost(
             DeviceCompatibilityScreen(
                 onNavigateToDeviceConfiguration = go(SettingsRoute.DeviceConfiguration),
                 onNavigateToKeyboardHelper = go(SettingsRoute.KeyboardHelper),
+                onNavigateToTouchSurfaceHelper = go(SettingsRoute.TouchSurfaceHelper),
                 onNavigateBack = back
             )
         }
 
         composable(SettingsRoute.KeyboardHelper.route) {
             KeyboardHelperScreen(
+                onNavigateBack = back
+            )
+        }
+
+        // Touch surface helper — the Titans' keyboard touch surface (Scroll assistant or Shizuku)
+        composable(SettingsRoute.TouchSurfaceHelper.route) {
+            TouchSurfaceHelperScreen(
                 onNavigateBack = back
             )
         }

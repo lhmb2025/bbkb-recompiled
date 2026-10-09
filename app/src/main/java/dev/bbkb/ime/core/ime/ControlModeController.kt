@@ -30,6 +30,12 @@ class ControlModeController(private val host: Host) {
          * on the ordinary key path.
          */
         val isAltActiveForCharacter: Boolean
+        /**
+         * The device's Ctrl key sends no key-up and auto-repeats while held (the profile's
+         * `fn-no-key-up` quirk; the Titan 2 Elite's Fn). Ctrl is then a one-shot modifier for the
+         * next key, and its repeats never latch the sticky mode. False everywhere else.
+         */
+        val ctrlKeySendsNoKeyUp: Boolean get() = false
         fun sendKeyDownWithMeta(keyCode: Int, metaState: Int)
         fun sendKeyUpWithMeta(keyCode: Int, metaState: Int)
         /** Show the control-mode notice and hide the strip (no-op if already showing). */
@@ -87,6 +93,13 @@ class ControlModeController(private val host: Host) {
      */
     private var multifunctionCtrlDown = false
 
+    /**
+     * `fn-no-key-up` devices only: the one-shot Ctrl of the current Fn hold has been spent on a
+     * chord, so the hold's remaining repeats must not arm it again. Cleared by a fresh Ctrl press
+     * (repeat 0) or by a plain key typed without Ctrl, which means the hold is over.
+     */
+    private var oneShotCtrlSpent = false
+
     /** True while a soft Shift chord (not the sticky Sym mode) should route keys through here. */
     val isVkbShiftChordActive: Boolean get() = shiftPressed && !inSymMode
 
@@ -115,6 +128,7 @@ class ControlModeController(private val host: Host) {
         inSymMode = false
         inCtrlMode = false
         multifunctionCtrlDown = false
+        oneShotCtrlSpent = false
     }
 
     /** Leave both sticky modes and hide the notice. */
@@ -212,6 +226,18 @@ class ControlModeController(private val host: Host) {
     /** Returns true when the key-down was consumed as a Ctrl key or a Ctrl chord. */
     fun handleHardKeyDown(keyCode: Int, repeatCount: Int, isPrintingKey: Boolean): Boolean {
         if (isCtrlKey(keyCode)) {
+            if (host.ctrlKeySendsNoKeyUp) {
+                // One-shot Ctrl: armed by the press — or, should the press itself never arrive, by
+                // the first repeat — and never counted toward the sticky latch, because on this
+                // device a repeating Ctrl is just the Fn key being held, not "Ctrl held alone".
+                if (repeatCount == 0) {
+                    oneShotCtrlSpent = false
+                    ctrlKeyDown = true
+                } else if (!ctrlKeyDown && !oneShotCtrlSpent) {
+                    ctrlKeyDown = true
+                }
+                return true
+            }
             if (repeatCount == 0) ctrlKeyDown = true
             else if (repeatCount > 1) ctrlRepeating = true
             return true
@@ -221,6 +247,7 @@ class ControlModeController(private val host: Host) {
             if (!inCtrlMode && ctrlKeyDown) ctrlUsedWithKey = true
             if (keyCode == KeyEvent.KEYCODE_SPACE) {
                 clearControlState()
+                spendOneShotCtrl()
                 return true
             }
             if (isPrintingKey || keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DEL) {
@@ -228,13 +255,37 @@ class ControlModeController(private val host: Host) {
                 sendChord(keyCode, down = true)
                 return true
             }
+        } else if (host.ctrlKeySendsNoKeyUp) {
+            // A key typed with no Ctrl armed: whatever Fn hold spent the one-shot is over.
+            oneShotCtrlSpent = false
         }
         clearControlState()
         return false
     }
 
+    /**
+     * `fn-no-key-up` devices: the chord that used the one-shot Ctrl has ended and no Ctrl
+     * release will ever come, so disarm here instead. A no-op everywhere else.
+     */
+    private fun spendOneShotCtrl() {
+        if (!host.ctrlKeySendsNoKeyUp || !ctrlKeyDown) return
+        ctrlKeyDown = false
+        ctrlUsedWithKey = false
+        ctrlRepeating = false
+        oneShotCtrlSpent = true
+    }
+
     /** Returns true when the key-up was consumed as a Ctrl key or a Ctrl chord. */
     fun handleHardKeyUp(keyCode: Int, repeatCount: Int, isPrintingKey: Boolean): Boolean {
+        if (isCtrlKey(keyCode) && repeatCount >= 0 && host.ctrlKeySendsNoKeyUp) {
+            // Should a release arrive after all, it ends the hold — and never latches.
+            ctrlKeyDown = false
+            ctrlRepeating = false
+            ctrlUsedWithKey = false
+            inCtrlMode = false
+            host.hideControlModeUi()
+            return true
+        }
         if (isCtrlKey(keyCode) && repeatCount >= 0) {
             if (repeatCount == 0) {
                 ctrlKeyDown = false
@@ -268,12 +319,14 @@ class ControlModeController(private val host: Host) {
             if (inCtrlMode && !ctrlKeyDown) inCtrlMode = false
             if (keyCode == KeyEvent.KEYCODE_SPACE) {
                 clearControlState()
+                spendOneShotCtrl()
                 return true
             }
             if (isPrintingKey || keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DEL) {
                 if (BuildConfig.DEBUG) Logger.info("CTRL_SHORTCUT_DEBUG", "handleHardKeyUp: chord keyCode=$keyCode")
                 sendChord(keyCode, down = false)
                 clearControlState()
+                spendOneShotCtrl()
                 return true
             }
         }
@@ -320,6 +373,26 @@ class ControlModeController(private val host: Host) {
         if (event.action == KeyEvent.ACTION_UP) multifunctionCtrlDown = false
         return withKeyAndMeta(event, KeyEvent.KEYCODE_CTRL_LEFT,
             event.metaState or META_CTRL_LEFT)
+    }
+
+    /**
+     * A key the device config declares as a Ctrl-like modifier — role `MODIFIER` with
+     * `treatAs="KEYCODE_CTRL_LEFT"` (or `_RIGHT`), the Titan 2's Fn key on scancode 251 — is
+     * rewritten to that Ctrl key code, so the physical-Ctrl machinery treats it as Ctrl whatever key
+     * code the ROM attached to it. Keys already arriving as that Ctrl are left alone, and so is
+     * every key on a device whose config declares no such modifier (the KEY2, the MP01).
+     */
+    fun remapProfileCtrlKey(event: KeyEvent): KeyEvent {
+        val mapping = dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+            .getInstance().resolve(event.scanCode, event.keyCode) ?: return event
+        if (mapping.role != dev.bbkb.ime.core.device.config.model.KeyRole.MODIFIER) return event
+        val (ctrlCode, ctrlMeta) = when (mapping.treatAs) {
+            "KEYCODE_CTRL_LEFT" -> KeyEvent.KEYCODE_CTRL_LEFT to META_CTRL_LEFT
+            "KEYCODE_CTRL_RIGHT" -> KeyEvent.KEYCODE_CTRL_RIGHT to META_CTRL_RIGHT
+            else -> return event
+        }
+        if (event.keyCode == ctrlCode) return event
+        return withKeyAndMeta(event, ctrlCode, event.metaState or ctrlMeta)
     }
 
     /** The Ctrl key code the control_mode setting maps a Shift key onto, or 2 when the remap is off. */

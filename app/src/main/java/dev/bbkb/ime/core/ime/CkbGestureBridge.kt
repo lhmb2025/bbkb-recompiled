@@ -1,7 +1,10 @@
 package dev.bbkb.ime.core.ime
 import android.content.SharedPreferences
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+import dev.bbkb.ime.core.gesture.arbiter.FirmwareGestureKeys
 import dev.bbkb.ime.core.gesture.arbiter.GestureAction
 import dev.bbkb.ime.core.gesture.arbiter.GestureAssignments
 import dev.bbkb.ime.core.gesture.arbiter.GestureClassification
@@ -14,6 +17,7 @@ import dev.bbkb.ime.core.gesture.arbiter.KeyTiming
 import dev.bbkb.ime.core.gesture.arbiter.KeyTypingGuard
 import dev.bbkb.ime.core.gesture.arbiter.ModeState
 import dev.bbkb.ime.core.gesture.arbiter.PolicyOutcome
+import dev.bbkb.ime.core.gesture.arbiter.TracePoint
 import dev.bbkb.ime.core.keyevent.InputSource
 import dev.bbkb.ime.core.suggestion.SuggestedWords
 import dev.bbkb.ime.core.shared.InputPathDebug
@@ -157,6 +161,29 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
     fun feed(event: MotionEvent): Boolean {
         recorder.onMotionEvent(event)
         return contactConsumed
+    }
+
+    /**
+     * A key the device's firmware synthesised from a swipe across the keys — its config gives it
+     * a gesture role ([FirmwareGestureKeys]; the Titan 2's keycodes 322 and 404). The press runs
+     * the user's swipe-left slot through the policy, as a pad swipe left would; the press, its
+     * repeats and its release are all consumed, so the key is never typed and never reaches the
+     * system. Returns false, touching nothing, for every other key.
+     */
+    fun handleFirmwareGestureKey(event: KeyEvent): Boolean {
+        val mapping = ScancodeMappingResolver.getInstance().resolve(event.scanCode, event.keyCode)
+            ?: return false
+        if (FirmwareGestureKeys.swipeFor(mapping.role) == null) return false
+        if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0 && ime.isInputActive) {
+            val outcome = FirmwareGestureKeys.outcome(
+                mapping.role, currentModeState(KeyTiming.CLEAR), gestureAssignments(), policy)
+            if (InputPathDebug.perGesture()) Logger.info(TAG, "firmware ${mapping.role} -> ${outcome?.label}")
+            if (outcome is PolicyOutcome.Act) {
+                executeGestureAction(outcome.action,
+                    GestureTrace(listOf(TracePoint(0.5f, 0.5f, event.eventTime))))
+            }
+        }
+        return true
     }
 
     // ------------------------------------------------------------------ cursor-mode drag
@@ -310,9 +337,14 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
         )
     }
 
-    /** Current user gesture-slot assignments from prefs. */
+    /**
+     * Current user gesture-slot assignments from prefs, an unset slot reading as this device's
+     * default (the profile's `default-value`, e.g. double-tap: none on the Titans) or the
+     * app-wide one.
+     */
     private fun gestureAssignments(): GestureAssignments =
-        cachedAssignments ?: GestureAssignments.fromPrefs(prefs()).also { cachedAssignments = it }
+        cachedAssignments ?: GestureAssignments.fromPrefs(prefs(), GestureAssignments.deviceDefaults())
+            .also { cachedAssignments = it }
 
     /** Classifier config, sourced from prefs (tuned in the Gesture Lab), defaulting to the tuned defaults. */
     private fun gestureConfig(): GestureConfig =

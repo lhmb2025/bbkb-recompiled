@@ -12,9 +12,17 @@ import dev.bbkb.ime.core.device.config.model.AltMappingsTable;
  * Consolidated resolver for Alt+key character mappings.
  *
  * Priority order:
+ * 0. The user's own letter map ({@link HardwareScriptLayouts#userAltFor}), when one is switched on
+ *    and bound to the current keyboard — the user said what this key types under Alt
  * 1. AltMappingsTable (device XML config) — most specific
  * 2. Layout-specific overrides, from the active config's {@code <layout-alt-overrides>}
  * 3. System KCM via KeyEvent.getUnicodeChar(META_ALT_ON) — universal fallback
+ *
+ * <p>Tier 0 is read per call rather than built into the resolver, so the cached resolver
+ * {@code HardwareKeyBridge} keeps needs no rebuilding when the user switches maps or keyboards.
+ * It is also the one tier that can produce a character outside the Basic Multilingual Plane; read
+ * {@link Result#codePoint} rather than {@link Result#character} wherever such a character can
+ * be typed.
  *
  * <p>Tier 2 exists only for devices whose firmware ships ONE KeyCharacterMap for every keypad
  * layout. It is not one of those on a BlackBerry: the KEY2 (athena) carries
@@ -31,11 +39,19 @@ public final class AuxCharacterResolver {
 
     /** Result of a character resolution attempt. */
     public static final class Result {
+        /** The character as a code point; 0 for none. */
+        public final int codePoint;
+        /**
+         * The same character as a {@code char}, for the callers that hold one. 0 when there is
+         * none, and also when {@link #codePoint} lies outside the Basic Multilingual Plane, which
+         * only the user's letter map can produce.
+         */
         public final char character;
         public final String source;
 
-        private Result(char character, String source) {
-            this.character = character;
+        private Result(int codePoint, String source) {
+            this.codePoint = codePoint;
+            this.character = Character.isBmpCodePoint(codePoint) ? (char) codePoint : (char) 0;
             this.source = source;
         }
 
@@ -43,18 +59,27 @@ public final class AuxCharacterResolver {
             return new Result(c, source);
         }
 
+        public static Result ofCodePoint(int codePoint, String source) {
+            return new Result(codePoint, source);
+        }
+
         public static Result none() {
-            return new Result((char) 0, "none");
+            return new Result(0, "none");
         }
 
         public boolean hasCharacter() {
-            return character != 0;
+            return codePoint != 0;
+        }
+
+        /** The character as a string, or "" for none. */
+        public String text() {
+            return hasCharacter() ? new String(Character.toChars(codePoint)) : "";
         }
 
         @Override
         public String toString() {
             if (!hasCharacter()) return "Result{none}";
-            return "Result{'" + character + "' (0x" + Integer.toHexString(character) + "), source=" + source + "}";
+            return "Result{'" + text() + "' (0x" + Integer.toHexString(codePoint) + "), source=" + source + "}";
         }
     }
 
@@ -79,6 +104,12 @@ public final class AuxCharacterResolver {
      * Falls back to Result.none() if no mapping found (no KCM available without KeyEvent).
      */
     public Result resolve(int keyCode) {
+        // Tier 0: the user's letter map. No event, so no scan code to narrow by.
+        int user = HardwareScriptLayouts.userAltFor(keyCode, -1);
+        if (user != 0) {
+            return Result.ofCodePoint(user, "user");
+        }
+
         // Tier 1: AltMappingsTable (device XML config)
         if (altMappingsTable != null) {
             char c = altMappingsTable.getMapping(keyCode);
@@ -105,6 +136,12 @@ public final class AuxCharacterResolver {
     public Result resolve(@NonNull KeyEvent event) {
         int keyCode = event.getKeyCode();
 
+        // Tier 0: the user's letter map
+        int user = HardwareScriptLayouts.userAltFor(keyCode, event.getScanCode());
+        if (user != 0) {
+            return Result.ofCodePoint(user, "user");
+        }
+
         // Tier 1: AltMappingsTable (device XML config)
         if (altMappingsTable != null) {
             char c = altMappingsTable.getMapping(keyCode);
@@ -125,7 +162,7 @@ public final class AuxCharacterResolver {
             uc = uc & KeyCharacterMap.COMBINING_ACCENT_MASK;
         }
         if (uc > 0 && Character.isValidCodePoint(uc)) {
-            return Result.of((char) uc, "kcm");
+            return Result.ofCodePoint(uc, "kcm");
         }
 
         return Result.none();

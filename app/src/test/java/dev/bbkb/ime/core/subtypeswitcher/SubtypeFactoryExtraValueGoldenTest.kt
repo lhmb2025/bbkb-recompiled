@@ -3,6 +3,8 @@ package dev.bbkb.ime.core.subtypeswitcher
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils
+import dev.bbkb.ime.core.locale.multilanguage.LocaleItem
+import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageConfig
 import dev.bbkb.ime.R
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -13,6 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import java.util.Locale
 
 /**
  * GOLDEN-STRING CHARACTERISATION TEST — READ THIS BEFORE "FIXING" A FAILURE.
@@ -403,6 +406,40 @@ class SubtypeFactoryExtraValueGoldenTest {
             "KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable,isAdditionalSubtype," +
                 "collisionHack=1f,AdditionalLocales=fr/de",
             SubtypeFactory.createLanguageSubtype("nl", arrayListOf("fr", "de"), "qwerty")!!.extraValue
+        )
+    }
+
+    /**
+     * The extras in the string are the ones [MultiLanguageConfig] hands over, and it sorts them by
+     * locale code first, so the same languages picked in any order are the same keyboard. Reading
+     * them back keeps that written order (getAdditionalLocales used to re-sort through a TreeSet);
+     * the string itself must not change.
+     */
+    @Test
+    fun multiLanguageConfig_writesItsExtrasSortedByCode_andTheyReadBackInThatOrder() {
+        fun config(vararg extras: String) = MultiLanguageConfig(
+            LocaleItem("en_US", "English (US)"),
+            ArrayList(extras.map { LocaleItem(it, it) }),
+            "qwerty",
+        ).toSubtype()!!
+
+        val picked = config("fr", "de", "es")
+        assertEquals(
+            "KeyboardLayoutSet=qwerty,AsciiCapable,UntranslatableReplacementStringInSubtypeName=QWERTY," +
+                "EmojiCapable,isAdditionalSubtype,AdditionalLocales=de/es/fr",
+            picked.extraValue,
+        )
+        assertEquals(config("es", "fr", "de").hashCode(), picked.hashCode())
+        assertEquals(
+            listOf(Locale("de"), Locale("es"), Locale("fr")),
+            ResourceLocaleUtils.getAdditionalLocales(picked)!!.toList(),
+        )
+
+        // A string written in another order (by SubtypeFactory directly) reads back as written.
+        val written = SubtypeFactory.createLanguageSubtype("en_US", arrayListOf("fr", "de", "es"), "qwerty")!!
+        assertEquals(
+            listOf(Locale("fr"), Locale("de"), Locale("es")),
+            ResourceLocaleUtils.getAdditionalLocales(written)!!.toList(),
         )
     }
 

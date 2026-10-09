@@ -22,12 +22,24 @@ data class CkbKey(
 
 object CkbKeyGrid {
 
-    /** Keypad coordinate-space dimensions for athena (BlackBerry Key2), from NuanceSDK.sPkbDimensionsMap. */
-    const val WIDTH = 1080
-    const val HEIGHT = 525
+    /**
+     * Keypad coordinate-space width: the active pad's frame from
+     * [TouchKeypadGeometry][dev.bbkb.ime.core.device.touch.TouchKeypadGeometry] (1080 on the
+     * KEY2, whose pad the root KDB is authored for). Was a KEY2 constant.
+     */
+    @JvmStatic
+    val width: Int
+        get() = dev.bbkb.ime.core.device.touch.TouchKeypadGeometry.current().frameWidth()
+
+    /** Keypad coordinate-space height (525 on the KEY2). Was a KEY2 constant. */
+    @JvmStatic
+    val height: Int
+        get() = dev.bbkb.ime.core.device.touch.TouchKeypadGeometry.current().frameHeight()
 
     /** Aspect ratio (w/h) of the keypad surface — used to letterbox the overlay accurately. */
-    const val ASPECT = WIDTH.toFloat() / HEIGHT.toFloat()
+    @JvmStatic
+    val aspect: Float
+        get() = dev.bbkb.ime.core.device.touch.TouchKeypadGeometry.current().frameAspect()
 
     /** The letter key in [cells] whose cell contains the normalized keypad point, or null. */
     fun keyAt(cells: List<CkbKey>, nx: Float, ny: Float): CkbKey? = cells.firstOrNull { k ->

@@ -14,6 +14,10 @@ package dev.bbkb.ime.core.device.config.model;
  *       language switch, …) is chosen in Settings → Physical keyboard. Never consumed at the
  *       accessibility level: the action may be a held Ctrl modifier, so the key must always
  *       reach the IME key pipeline. See MultifunctionKeyHandler.</li>
+ *   <li>{@link #GESTURE_SWIPE_LEFT} — a key the firmware synthesises from a leftward swipe across
+ *       the keys (Titan 2: keycode 322 on Android 15, 404 on Android 16). The IME hands it to the
+ *       touch-keypad gesture arbiter as a swipe left, so whatever the user assigned to that slot
+ *       runs; the key itself is consumed, down and up, and never typed.</li>
  * </ul>
  *
  * @see ScancodeMapping
@@ -25,7 +29,8 @@ public enum KeyRole {
     BOARD_VOICE,
     BOARD_SYM,
     FUNCTION,
-    MULTIFUNCTION;
+    MULTIFUNCTION,
+    GESTURE_SWIPE_LEFT;
 
     /**
      * Returns true if this role causes the key to be consumed at the accessibility service level

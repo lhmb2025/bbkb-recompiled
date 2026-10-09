@@ -89,14 +89,14 @@ public class MultiPointerGestureDetector {
      *
      * Audit GD-30: this was a hardcoded {@code new Rect(0, 0, 1080, 450)} with no source and no
      * scaling — a third, different set of keypad dimensions alongside the device-config
-     * mechanism. It now derives from {@link CkbKeyGrid}, which owns the keypad coordinate-space
-     * size (1080x525 for athena) that the arbiter and the Gesture Lab already share; the old 450
-     * silently excluded the bottom of the pad.
+     * mechanism. It now derives from {@link CkbKeyGrid}, which reads the keypad coordinate-space
+     * size (1080x525 for athena) from the touch keypad's frame, shared with the arbiter and the
+     * Gesture Lab; the old 450 silently excluded the bottom of the pad.
      */
     private final Rect doubleTapRegion = new Rect(
             0, 0,
-            dev.bbkb.ime.core.gesture.arbiter.CkbKeyGrid.WIDTH,
-            dev.bbkb.ime.core.gesture.arbiter.CkbKeyGrid.HEIGHT);
+            dev.bbkb.ime.core.gesture.arbiter.CkbKeyGrid.getWidth(),
+            dev.bbkb.ime.core.gesture.arbiter.CkbKeyGrid.getHeight());
 
     
     public interface OnDoubleTapListener {

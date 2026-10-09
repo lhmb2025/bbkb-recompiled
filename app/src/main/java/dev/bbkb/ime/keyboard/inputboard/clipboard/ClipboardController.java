@@ -38,6 +38,8 @@ public class ClipboardController extends AbstractBoardController<ClipboardContro
         if (clipboardView != null) {
             clipboardView.unregisteredListener();
             this.mClipboardView.setListener(null);
+            // The old view's link-preview fetches must not outlive it.
+            this.mClipboardView.release();
         }
         this.mClipboardView = (ClipboardView) view.findViewById(R.id.inputboard_clipboard_view);
         ClipboardView clipboardView2 = this.mClipboardView;
@@ -49,6 +51,20 @@ public class ClipboardController extends AbstractBoardController<ClipboardContro
 
     public void dismiss() {
         hideClipboard();
+    }
+
+    /** The focused field is incognito: stop capturing clips into the history until it is not. */
+    public void setNoPersonalizedLearning(boolean z) {
+        if (hasHistoryManager()) {
+            this.mHistoryManager.setNoPersonalizedLearning(z);
+        }
+    }
+
+    /** A new input session: expire clips past the retention setting (and load, once unlocked). */
+    public void onStartInput() {
+        if (hasHistoryManager()) {
+            this.mHistoryManager.prune();
+        }
     }
 
     @Override
@@ -101,9 +117,15 @@ public class ClipboardController extends AbstractBoardController<ClipboardContro
         }
     }
 
+    /**
+     * A row was tapped: insert its text. The system clipboard is not touched, so pasting from the
+     * board never replaces what the user last copied.
+     */
     @Override // dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardView.OnPasteListener
-    public void onPaste() {
-        this.ime.getInputLogic().pasteFromClipboard();
+    public void onPaste(CharSequence text) {
+        if (this.ime != null) {
+            this.ime.getInputLogic().pasteText(text);
+        }
     }
 
     @Override

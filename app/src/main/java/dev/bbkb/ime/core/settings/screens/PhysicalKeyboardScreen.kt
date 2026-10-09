@@ -9,6 +9,7 @@ import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.keyevent.AltSymShortcutHandler
 import dev.bbkb.ime.core.keyevent.MultifunctionKeyHandler
 import dev.bbkb.ime.core.locale.LocaleUtils
+import dev.bbkb.ime.core.settings.util.SettingsManager
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.Category
 import dev.bbkb.ime.core.settings.ui.Choice
@@ -36,10 +37,16 @@ private const val CKB_GESTURES = "ckb_gestures_enabled"
 @Composable
 fun PhysicalKeyboardScreen(
     onNavigateBack: () -> Unit,
-    onNavigateToCkbGestures: () -> Unit = {}
+    onNavigateToCkbGestures: () -> Unit = {},
+    onNavigateToCustomLayouts: () -> Unit = {},
+    onNavigateToTouchSurfaceHelper: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val hasTouchKeypad = remember { DeviceProfile.current()?.hasTouchKeypad() ?: false }
+    // A profile can describe a touch surface whose events cannot reach BBKB yet (Shizuku not set
+    // up, Scroll assistant off): the category still shows, with the one row that leads to setup.
+    val touchSurface = rememberTouchSurfaceState()
+    val hasPhysicalKeyboard = remember { DeviceProfile.current()?.hasPhysicalKeyboard() ?: false }
     val isChineseLocale = remember { LocaleUtils.isCurrentSubtypeChinese() }
 
     // Multifunction key action — only for devices whose config declares a MULTIFUNCTION key
@@ -100,9 +107,35 @@ fun PhysicalKeyboardScreen(
             fallbackIndex = 2,
             modifier = Modifier.settingsSearchAnchor("control_mode"),
         ),
+        // Off: no suggestion strip and no input menu above the physical keys (see
+        // SettingsValues.isPkbSuggestionBarHidden). Only a physical keyboard has that bar.
+        Toggle(
+            store = boolPref(SettingsManager.PREF_PKB_SHOW_SUGGESTION_BAR, true),
+            title = R.string.settings_pkb_suggestion_bar_title,
+            summary = RowSummary.Res(R.string.settings_pkb_suggestion_bar_summary),
+            modifier = Modifier.settingsSearchAnchor("pref_pkb_show_suggestion_bar"),
+            visible = { hasPhysicalKeyboard },
+        ),
+        // Imported letter maps for the physical keys; only a physical keyboard has keys to remap.
+        Nav(
+            title = R.string.settings_pkb_letter_maps_title,
+            summary = R.string.settings_pkb_letter_maps_summary,
+            visible = { hasPhysicalKeyboard },
+            onClick = { onNavigateToCustomLayouts() },
+        ),
 
         // ── CAPACITIVE KEYBOARD GESTURES (CKB devices only) ──────────────────────
-        Category(R.string.settings_category_ckb_gestures, visible = { hasTouchKeypad }),
+        Category(R.string.settings_category_ckb_gestures, visible = { hasTouchKeypad || touchSurface.declared }),
+        // Setup lives on Advanced > Device compatibility > Touch surface helper; this is the way
+        // there from where the gestures are, with the same live status line.
+        Nav(
+            title = R.string.touch_surface_link_title,
+            summaryText = { ctx ->
+                ctx.getString(R.string.touch_surface_link_summary, ctx.getString(touchSurface.statusLine))
+            },
+            visible = { touchSurface.declared },
+            onClick = { onNavigateToTouchSurfaceHelper() },
+        ),
         ManagedToggle(
             store = boolPref("type_by_swiping_ckb", false),
             title = R.string.settings_screen_type_by_swiping,
@@ -177,6 +210,8 @@ private fun sharedShortcutActions(context: Context) = listOf(
     MultifunctionKeyHandler.ACTION_NUMBER_PAD to R.string.settings_pkb_multifunction_action_number_pad,
     MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH to R.string.settings_pkb_multifunction_action_language_switch,
     MultifunctionKeyHandler.ACTION_SYMBOL_KEYBOARD to R.string.settings_pkb_multifunction_action_symbol,
+    // Reaches the menu where "Show the suggestion bar" leaves no hamburger button to tap.
+    MultifunctionKeyHandler.ACTION_TOGGLE_UIM to R.string.settings_pkb_multifunction_action_input_menu,
 ).map { (value, label) -> ChoiceOption(value, context.getString(label)) }
 
 private fun holdActions(context: Context) = listOf(

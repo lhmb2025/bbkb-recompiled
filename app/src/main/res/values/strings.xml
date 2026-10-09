@@ -200,6 +200,7 @@
     <string name="settings_autocorrect_vkb_title">Touch screen keyboard correction</string>
     <string name="settings_correction_summary">Auto-correction, capitalization, double-space</string>
     <string name="settings_correction_title">Correction</string>
+    <string name="settings_status_not_required">Not required for this phone</string>
     <string name="settings_suggestion_correction_summary">Suggestions, auto-correction, and dictionaries</string>
     <string name="settings_suggestion_correction_title">Assistance</string>
     <string name="settings_suggestion_summary">Show word suggestions while typing</string>
@@ -234,6 +235,20 @@
     <string name="settings_language_switching_title">Language switching</string>
     <string name="settings_languages_summary">Keyboard languages, language switching, and language packs</string>
     <string name="settings_languages_title">Language</string>
+    <string name="settings_layouts_export_failed">Could not write the layouts file</string>
+    <string name="settings_layouts_export_summary">Save symbol pages, slideboard, quick phrases and custom physical layouts to a file</string>
+    <string name="settings_layouts_export_title">Export layouts</string>
+    <string name="settings_layouts_exported">Layouts exported</string>
+    <string name="settings_layouts_import_confirm">Import</string>
+    <string name="settings_layouts_import_dialog_letter_maps">Physical keyboard layouts in the file: %1$d</string>
+    <string name="settings_layouts_import_dialog_message">Replace your current layouts with the ones in this file? Anything the file does not include stays as it is.</string>
+    <string name="settings_layouts_import_failed">Could not save the imported layouts</string>
+    <string name="settings_layouts_import_invalid">Could not import this file</string>
+    <string name="settings_layouts_import_letter_map_message">Import the physical keyboard layout “%1$s”? Switch it on under Physical keyboard &gt; Custom physical layouts.</string>
+    <string name="settings_layouts_import_read_failed">Could not read the file</string>
+    <string name="settings_layouts_import_summary">Load layouts, or one custom physical layout, from a file</string>
+    <string name="settings_layouts_import_title">Import layouts</string>
+    <string name="settings_layouts_imported">Layouts imported</string>
 
     <!-- ============================== -->
     <!-- Settings — physical keyboard -->
@@ -260,15 +275,33 @@
     <string name="settings_pkb_hold_action_uppercase">Capitalize</string>
     <string name="settings_pkb_hold_action_uppercase_summary">Continue holding past accents to type uppercase</string>
     <string name="settings_pkb_keyboard_helper_summary">Accessibility service for third-party keyboards</string>
-    <string name="settings_pkb_keyboard_helper_title">BBKB Helper</string>
+    <string name="settings_pkb_keyboard_helper_title">BBKB helper</string>
+    <string name="settings_pkb_letter_maps_any_language">All keyboards</string>
+    <string name="settings_pkb_letter_maps_delete">Delete %1$s</string>
+    <string name="settings_pkb_letter_maps_delete_message">Delete “%1$s”? This cannot be undone.</string>
+    <string name="settings_pkb_letter_maps_delete_title">Delete layout</string>
+    <string name="settings_pkb_letter_maps_details">%1$s · %2$d keys</string>
+    <string name="settings_pkb_letter_maps_empty">No custom layouts yet. Import one with Advanced &gt; Import layouts.</string>
+    <string name="settings_pkb_letter_maps_none">None</string>
+    <string name="settings_pkb_letter_maps_none_summary">The keys type the active keyboard\'s own letters</string>
+    <string name="settings_pkb_letter_maps_other_keypad">Made for a %1$s keypad, so it does nothing on this phone</string>
+    <string name="settings_pkb_letter_maps_share">Share %1$s</string>
+    <string name="settings_pkb_letter_maps_share_chooser">Share layout</string>
+    <string name="settings_pkb_letter_maps_share_failed">Could not share the layout</string>
+    <string name="settings_pkb_letter_maps_summary">Change the letters the physical keys type</string>
+    <string name="settings_pkb_letter_maps_swipe_note">Swipe typing on the keypad is off while a custom layout changes letters.</string>
+    <string name="settings_pkb_letter_maps_title">Custom physical layouts</string>
     <string name="settings_pkb_multifunction_action_clipboard">Clipboard</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl key</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji board</string>
     <string name="settings_pkb_multifunction_action_fcc">Cursor control</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Show or hide the input menu</string>
     <string name="settings_pkb_multifunction_action_language_switch">Switch language</string>
     <string name="settings_pkb_multifunction_action_number_pad">Number pad</string>
     <string name="settings_pkb_multifunction_action_symbol">Symbol keyboard</string>
     <string name="settings_pkb_multifunction_key_title">Multifunction key</string>
+    <string name="settings_pkb_suggestion_bar_summary">Turn off to hide the bar above the keys (suggestions and the input menu) while typing on the physical keyboard</string>
+    <string name="settings_pkb_suggestion_bar_title">Show the suggestion bar</string>
 
     <!-- ============================================== -->
     <!-- Settings — on-screen keyboard and appearance -->
@@ -290,6 +323,16 @@
     <string name="voice_status_idle">Tap the mic to speak</string>
     <string name="voice_status_listening">Listening&#8230;</string>
     <string name="voice_status_language_unsupported">Voice input isn\'t available for %1$s. Change the voice language in BBKB Settings.</string>
+    <string name="voice_status_no_recognition_service">No selected voice recognition service</string>
+    <string name="voice_status_network_error">Network problem. Check your connection.</string>
+    <string name="voice_status_audio_error">Couldn\'t record audio.</string>
+    <string name="voice_status_no_match">Didn\'t catch that. Tap the mic to try again.</string>
+    <string name="voice_status_no_speech">No speech heard. Tap the mic to try again.</string>
+    <string name="voice_status_busy">Speech recognition is busy. Try again in a moment.</string>
+    <string name="voice_status_too_many_requests">Too many requests. Try again later.</string>
+    <string name="voice_status_recognizer_needs_permission">%1$s needs microphone permission</string>
+    <string name="voice_status_recognizer_refused">%1$s did not allow dictation. Try another recognizer in Voice input settings.</string>
+    <string name="voice_status_service_disconnected">The speech service disconnected. Tap the mic to try again.</string>
     <string name="settings_appearance_modern">Modern</string>
     <string name="settings_color_scheme_title">Color scheme</string>
     <string name="settings_use_system_colors_title">Use system colors</string>
@@ -390,9 +433,31 @@
     <string name="clip_password_keeper_add">bb.pk</string>
     <string name="clip_password_keeper_clear">bb.pk.clear</string>
     <string name="clip_password_keeper_mask">********</string>
+    <string name="clipboard_clear_history_dialog_title">Clear clipboard history?</string>
+    <string name="clipboard_clear_history_summary">Delete every saved clip, including pinned ones</string>
+    <string name="clipboard_clear_history_title">Clear history</string>
     <string name="clipboard_copy_toast_message">Copied to Clipboard</string>
     <string name="clipboard_empty_indicator">Clipboard is empty</string>
     <string name="clipboard_empty_user_hint">Copy content to add it to the clipboard</string>
+    <string name="clipboard_history_summary">Keep what you copy so you can paste it again</string>
+    <string name="clipboard_history_title">Clipboard history</string>
+    <string name="clipboard_link_previews_summary">Show a title and image for copied web links. Uses the internet.</string>
+    <string name="clipboard_link_previews_title">Link previews</string>
+    <string name="clipboard_menu_copy">Copy</string>
+    <string name="clipboard_menu_delete">Delete</string>
+    <string name="clipboard_menu_pin">Pin</string>
+    <string name="clipboard_menu_share">Share</string>
+    <string name="clipboard_menu_show_full_text">Show full text</string>
+    <string name="clipboard_menu_unpin">Unpin</string>
+    <string name="clipboard_more_options">More options</string>
+    <string name="clipboard_retention_1h">1 hour</string>
+    <string name="clipboard_retention_24h">24 hours</string>
+    <string name="clipboard_retention_7d">7 days</string>
+    <string name="clipboard_retention_never">No time limit</string>
+    <string name="clipboard_retention_title">Keep unpinned clips for</string>
+    <string name="clipboard_section_pinned">Pinned</string>
+    <string name="clipboard_section_recent">Recent</string>
+    <string name="clipboard_settings_summary">History, retention and link previews</string>
 
     <!-- ======================== -->
     <!-- Settings — voice input -->
@@ -407,6 +472,13 @@
     <string name="settings_voice_input_title">Voice input</string>
     <string name="settings_voice_prefer_offline_summary">Use on-device recognition when available</string>
     <string name="settings_voice_prefer_offline_title">Prefer offline recognition</string>
+    <string name="settings_voice_recognizer_none_installed">No speech recognition app is installed. You can install one such as Sayboard, WhisperIME or Transcribro.</string>
+    <string name="settings_voice_recognizer_on_device">On-device recognizer</string>
+    <string name="settings_voice_recognizer_system_default">System default</string>
+    <string name="settings_voice_recognizer_system_default_named">System default (%1$s)</string>
+    <string name="settings_voice_recognizer_title">Speech recognizer</string>
+    <string name="settings_voice_show_partial_results_summary">Show what is heard while you are still speaking, then replace it with the final result</string>
+    <string name="settings_voice_show_partial_results_title">Show words as you speak</string>
     <string name="settings_voice_use_keyboard_lang_summary">Use current keyboard language for voice input</string>
     <string name="settings_voice_use_keyboard_lang_title">Use keyboard language</string>
     <string name="voice_input_lang_pack_available_offline_mode">Please download the language model for %1$s for offline use or connect to Wi-Fi.</string>
@@ -429,6 +501,48 @@
     <string name="settings_device_config_category_standard">Standard</string>
     <string name="settings_device_configuration_summary">Select or import device input configurations</string>
     <string name="settings_device_configuration_title">Device configuration</string>
+    <!-- Touch surface helper (Unihertz Titans). "Shizuku", "Scroll assistant" and "Cursor
+         assistant" are product and OEM page names: left as they are. -->
+    <string name="touch_surface_builtin_category">Built-in</string>
+    <string name="touch_surface_builtin_intro">The phone delivers the keyboard\'s touch surface to BBKB while its Scroll assistant is on.</string>
+    <string name="touch_surface_cursor_assistant_summary">Cursor assistant claims double-tap on the keys, so BBKB never receives it</string>
+    <string name="touch_surface_cursor_assistant_title">Turn off Cursor assistant</string>
+    <string name="touch_surface_grant_access">Grant access</string>
+    <string name="touch_surface_grant_access_denied">Access was refused, so Shizuku will not ask again. Open Shizuku and allow BBKB there.</string>
+    <string name="touch_surface_grant_access_summary">Let BBKB read the touch surface through Shizuku</string>
+    <string name="touch_surface_helper_title">Touch surface helper</string>
+    <string name="touch_surface_install_shizuku">Install Shizuku</string>
+    <string name="touch_surface_install_shizuku_summary">Download it from the Shizuku releases page on GitHub</string>
+    <string name="touch_surface_link_summary">%1$s\nSet up in Device compatibility</string>
+    <string name="touch_surface_link_title">Touch surface</string>
+    <string name="touch_surface_open_scroll_assistant">Open Scroll assistant</string>
+    <string name="touch_surface_open_shizuku">Open Shizuku</string>
+    <string name="touch_surface_open_shizuku_summary">Start Shizuku, or manage which apps can use it</string>
+    <string name="touch_surface_shizuku_category" translatable="false">Shizuku</string>
+    <string name="touch_surface_shizuku_guide_category">Set up Shizuku</string>
+    <string name="touch_surface_shizuku_guide_steps">1. Turn on Developer options, then Wireless debugging.\n2. Start Shizuku from its app, or with root.\n3. Come back here and tap Grant access.</string>
+    <string name="touch_surface_shizuku_intro">Shizuku is a free app that lets BBKB read the touch surface directly. BBKB takes it over only while the keyboard is open; the rest of the time it works as the phone normally does.</string>
+    <string name="touch_surface_shizuku_mediatek">Use Shizuku 13.5.4 on this phone: version 13.6.0 does not work fully on MediaTek phones.</string>
+    <string name="touch_surface_shizuku_reboot">Shizuku stops every time the phone restarts. Start it again after each restart; the status above says when it is not running.</string>
+    <string name="touch_surface_shizuku_state_denied">Running, but BBKB was refused access</string>
+    <string name="touch_surface_shizuku_state_granted">Running, and BBKB has access</string>
+    <string name="touch_surface_shizuku_state_not_granted">Running, but BBKB does not have access yet</string>
+    <string name="touch_surface_shizuku_state_not_installed">Not installed</string>
+    <string name="touch_surface_shizuku_state_not_running">Installed, but not running</string>
+    <string name="touch_surface_shizuku_state_outdated">Running, but too old for BBKB</string>
+    <string name="touch_surface_shizuku_status_title">Shizuku status</string>
+    <string name="touch_surface_status_android_unsupported">Not available on this version of Android</string>
+    <string name="touch_surface_status_native_off">Needs setup: turn on Scroll assistant</string>
+    <string name="touch_surface_status_native_working">Working, using the phone\'s Scroll assistant</string>
+    <string name="touch_surface_status_pad_not_found">Not working: the touch surface was not found</string>
+    <string name="touch_surface_status_reader_failed">Not working: the touch surface could not be read</string>
+    <string name="touch_surface_status_shizuku_not_granted">Needs setup: grant BBKB access in Shizuku</string>
+    <string name="touch_surface_status_shizuku_not_installed">Needs setup: install Shizuku</string>
+    <string name="touch_surface_status_shizuku_not_running">Needs setup: Shizuku is not running</string>
+    <string name="touch_surface_status_shizuku_outdated">Needs setup: update Shizuku</string>
+    <string name="touch_surface_status_shizuku_ready">Ready, using Shizuku</string>
+    <string name="touch_surface_status_shizuku_working">Working, using Shizuku</string>
+    <string name="touch_surface_status_unavailable">Not available on this phone</string>
 
     <!-- ======================================== -->
     <!-- Settings — predictions and flow typing -->

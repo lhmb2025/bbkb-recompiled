@@ -11,12 +11,13 @@ import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
 import com.blackberry.nuanceshim.NuanceSDK;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.TreeSet;
 import dev.bbkb.ime.core.shared.RunInLocale;
 import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.core.shared.DebugLogUtils;
@@ -272,21 +273,44 @@ public final class ResourceLocaleUtils {
         return inputMethodSubtype.getExtraValueOf("ConverterDescriptor");
     }
 
+    /**
+     * A multi-language keyboard's extra languages, in the order its extra value lists them
+     * ("de/es" is de, then es), each once; null for a keyboard without extras.
+     *
+     * <p>The order is the extra value's own. That string is part of the subtype's identity, so
+     * it is never rewritten here: {@code MultiLanguageConfig} writes the extras sorted by locale
+     * code, and that canonical order is what comes back. This used to be a TreeSet sorted by
+     * {@code Locale.toString()}, which re-sorted whatever the string said.
+     */
     public static Set<Locale> getAdditionalLocales(InputMethodSubtype inputMethodSubtype) {
         String extraValueOf;
         if (inputMethodSubtype == null || (extraValueOf = inputMethodSubtype.getExtraValueOf("AdditionalLocales")) == null) {
             return null;
         }
-        TreeSet treeSet = new TreeSet(new Comparator<Locale>() {
-            @Override
-            public int compare(Locale locale, Locale locale2) {
-                return locale.toString().compareTo(locale2.toString());
-            }
-        });
+        Set<Locale> locales = new LinkedHashSet<>();
         for (String str : extraValueOf.split("/")) {
-            treeSet.add(LocaleUtils.constructLocaleFromString(str));
+            locales.add(LocaleUtils.constructLocaleFromString(str));
         }
-        return treeSet;
+        return locales;
+    }
+
+    /**
+     * Every language a keyboard types in: {@code primary} first, then {@code additional} (as
+     * {@link #getAdditionalLocales} returns it, so possibly null) in its order, each once.
+     */
+    public static List<Locale> getKeyboardLocales(Locale primary, Set<Locale> additional) {
+        Set<Locale> locales = new LinkedHashSet<>();
+        if (primary != null) {
+            locales.add(primary);
+        }
+        if (additional != null) {
+            for (Locale locale : additional) {
+                if (locale != null) {
+                    locales.add(locale);
+                }
+            }
+        }
+        return new ArrayList<>(locales);
     }
 
     public static boolean isNonCjkLanguage(InputMethodSubtype inputMethodSubtype) {

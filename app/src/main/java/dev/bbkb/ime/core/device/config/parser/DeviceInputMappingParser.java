@@ -8,9 +8,11 @@ import dev.bbkb.ime.core.device.config.model.CkbKeyGridConfig;
 import dev.bbkb.ime.core.device.config.model.DeviceInputConfig;
 import dev.bbkb.ime.core.device.config.model.DeviceInputMapping;
 import dev.bbkb.ime.core.device.config.model.DeviceMatchCriteria;
+import dev.bbkb.ime.core.device.config.model.DeviceQuirk;
 import dev.bbkb.ime.core.device.config.model.DeviceSettingOverride;
 import dev.bbkb.ime.core.device.config.model.KeyRole;
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping;
+import dev.bbkb.ime.core.device.config.model.TouchKeypadConfig;
 import dev.bbkb.ime.core.device.detection.KeypadLayoutDetector;
 import dev.bbkb.ime.core.shared.Logger;
 
@@ -253,6 +255,34 @@ public class DeviceInputMappingParser {
                     if (warp != null) mapping.ckbYWarp = warp;
                     break;
                 }
+                case "touch-keypad":
+                    mapping.touchKeypad = parseTouchKeypad(p);
+                    break;
+                case "quirk": {
+                    final String name = attr(p, "name");
+                    final DeviceQuirk quirk = DeviceQuirk.of(name);
+                    if (quirk != null) {
+                        mapping.quirks.add(quirk);
+                    } else {
+                        Logger.error(TAG, "Ignoring unknown <quirk name=\"" + name + "\"/>");
+                    }
+                    break;
+                }
+                case "accessibility-helper": {
+                    // Schema v2.5: whether this phone needs the BBKB helper at all. "off" removes
+                    // it from the system's Accessibility list on this phone (see
+                    // KeyInterceptorComponent); "available", or no element, offers it as usual.
+                    final String value = trimmedText(p);
+                    if ("off".equalsIgnoreCase(value)) {
+                        mapping.accessibilityHelperOff = true;
+                    } else if ("available".equalsIgnoreCase(value)) {
+                        mapping.accessibilityHelperOff = false;
+                    } else {
+                        Logger.error(TAG, "Ignoring <accessibility-helper>" + value
+                                + "</accessibility-helper>: expected off or available");
+                    }
+                    break;
+                }
                 case "keypad-layout": {
                     // Schema v2.3: the one override for the detected physical keypad layout.
                     // Validated here so a typo is rejected at parse time rather than becoming a
@@ -279,7 +309,7 @@ public class DeviceInputMappingParser {
     }
 
     /**
-     * Parse match criteria section. Five element names, one rule shape: {@code exact} wins over
+     * Parse match criteria section. Every element name, one rule shape: {@code exact} wins over
      * {@code regex}, and {@code device-name} additionally records a display string for logging.
      */
     private static void parseMatchCriteria(XmlPullParser parser, DeviceInputMapping mapping)
@@ -289,19 +319,72 @@ public class DeviceInputMappingParser {
         children(parser, "match", (p, tag) -> {
             final DeviceMatchCriteria.Field field = DeviceMatchCriteria.Field.of(tag);
             if (field == null) return;
-            final String exact = attr(p, "exact");
-            final String regex = attr(p, "regex");
-            if (exact == null && regex == null) return;
-            criteria.set(field, exact != null ? DeviceMatchCriteria.exact(exact)
-                                              : DeviceMatchCriteria.regex(regex));
+            final DeviceMatchCriteria.Rule rule = rule(p);
+            if (rule == null) return;
+            criteria.set(field, rule);
             if (field == DeviceMatchCriteria.Field.DEVICE_NAME) {
-                mapping.deviceName = exact != null ? exact : "regex:" + regex;  // For logging
+                final String exact = attr(p, "exact");
+                mapping.deviceName = exact != null ? exact : "regex:" + attr(p, "regex");  // For logging
             }
         });
 
         if (criteria.hasAnyCriteria()) {
             mapping.matchCriteria = criteria;
         }
+    }
+
+    /** The element's {@code exact} (preferred) or {@code regex} rule; null when it has neither. */
+    private static DeviceMatchCriteria.Rule rule(XmlPullParser parser) {
+        final String exact = attr(parser, "exact");
+        final String regex = attr(parser, "regex");
+        if (exact != null) return DeviceMatchCriteria.exact(exact);
+        if (regex != null) return DeviceMatchCriteria.regex(regex);
+        return null;
+    }
+
+    // ── <touch-keypad> ───────────────────────────────────────────────────────
+
+    /**
+     * Parse a {@code <touch-keypad>} block (see {@link TouchKeypadConfig} for the schema). An
+     * unrecognised {@code contacts} or {@code source} value is logged and left at its default
+     * rather than dropping the block: the pad's name and ranges are still worth having.
+     */
+    private static TouchKeypadConfig parseTouchKeypad(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+        final TouchKeypadConfig pad = new TouchKeypadConfig();
+        pad.rangeX = Math.max(0, intAttr(parser, "range-x", 0));
+        pad.rangeY = Math.max(0, intAttr(parser, "range-y", 0));
+        pad.nativeMinSdk = intAttr(parser, "native-min-sdk", TouchKeypadConfig.NATIVE_MIN_SDK_UNSET);
+
+        final String contacts = attr(parser, "contacts");
+        if (contacts != null) {
+            final TouchKeypadConfig.Contacts parsed = TouchKeypadConfig.Contacts.fromString(contacts);
+            if (parsed != null) {
+                pad.contacts = parsed;
+            } else {
+                Logger.error(TAG, "Ignoring <touch-keypad contacts=\"" + contacts
+                        + "\">: expected single or multi");
+            }
+        }
+        final String source = attr(parser, "source");
+        if (source != null) {
+            final TouchKeypadConfig.SourcePreference parsed =
+                    TouchKeypadConfig.SourcePreference.fromString(source);
+            if (parsed != null) {
+                pad.source = parsed;
+            } else {
+                Logger.error(TAG, "Ignoring <touch-keypad source=\"" + source
+                        + "\">: expected auto, native or shizuku");
+            }
+        }
+
+        children(parser, "touch-keypad", (p, tag) -> {
+            if ("input-device".equals(tag)) {
+                final DeviceMatchCriteria.Rule name = rule(p);
+                if (name != null) pad.inputDeviceName = name;
+            }
+        });
+        return pad;
     }
 
     // ── <input-mappings> ─────────────────────────────────────────────────────
@@ -485,6 +568,20 @@ public class DeviceInputMappingParser {
             default:
                 Logger.error(TAG, "Unknown setting type: " + typeStr);
                 return null;
+        }
+
+        // default-value: what the setting reads as on this device until the user picks one. Kept
+        // apart from forced-value, which locks the setting; a default does not. Only the string
+        // forms carry one today (the gesture-slot assignments are string preferences).
+        final String defaultValueStr = attr(parser, "default-value");
+        if (defaultValueStr != null) {
+            if (override.type == DeviceSettingOverride.SettingType.STRING
+                    || override.type == DeviceSettingOverride.SettingType.LIST) {
+                override.defaultValue = defaultValueStr;
+            } else {
+                Logger.error(TAG, "Ignoring default-value on " + typeStr + " setting " + key
+                        + ": only string and list settings take one");
+            }
         }
 
         override.readOnly = "true".equals(attr(parser, "read-only"));

@@ -40,8 +40,14 @@ import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.device.interceptor.KeyInterceptorManager
 import dev.bbkb.ime.core.contacts.ContactsLearningManager
+import dev.bbkb.ime.core.device.config.model.DeviceQuirk
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.device.state.PhysicalKeyboardStateTracker
+import dev.bbkb.ime.core.device.config.model.TouchKeypadConfig
+import dev.bbkb.ime.core.device.touch.KeypadTouchSources
+import dev.bbkb.ime.core.device.touch.NativeTouchSource
+import dev.bbkb.ime.core.device.touch.ShizukuTouchSource
+import dev.bbkb.ime.core.device.touch.TouchSourceSelector
 import dev.bbkb.ime.core.engine.DictionaryLoader
 import dev.bbkb.ime.personaldictionary.DictionaryManager
 import dev.bbkb.ime.personaldictionary.OneTapAddWord
@@ -325,6 +331,8 @@ class BlackBerryIME : InputMethodService(),
         override val controlModeSetting: Int get() = settingsManager.getSettingsValues().controlMode
         override val isAltActiveForCharacter: Boolean
             get() = physicalKeyboardStateTracker.getModifierState().isAltActiveForCharacter
+        override val ctrlKeySendsNoKeyUp: Boolean
+            get() = DeviceProfile.current().hasQuirk(DeviceQuirk.FN_NO_KEY_UP)
         override fun sendKeyDownWithMeta(keyCode: Int, metaState: Int) = inputLogic.sendKeyDownWithMeta(keyCode, metaState)
         override fun sendKeyUpWithMeta(keyCode: Int, metaState: Int) = inputLogic.sendKeyUpWithMeta(keyCode, metaState)
         override fun showControlModeUi() {
@@ -346,6 +354,34 @@ class BlackBerryIME : InputMethodService(),
 
     /** CKB gesture arbiter (classify → policy → action) and the cursor-mode drag. */
     private val ckbGestures = CkbGestureBridge(this)
+
+    /**
+     * The touch keypad delivered to this window's decor view (Titan 2 / Elite on Android 16 with
+     * the OEM Scroll assistant on). Inert unless the device profile's `<touch-keypad>` selects it:
+     * on the KEY2, the MP01 and the emulators it never touches the window.
+     */
+    private val nativeTouch = NativeTouchSource(object : NativeTouchSource.Host {
+        override fun decorView(): View? = window?.window?.decorView
+        override fun onGenericMotionEvent(event: MotionEvent): Boolean =
+            this@BlackBerryIME.onGenericMotionEvent(event)
+        override fun selection(): TouchSourceSelector.Selection =
+            DeviceProfile.current().touchSourceSelection
+    })
+
+    /**
+     * The touch keypad read through Shizuku (Titan 2 on Android 15, a Titan whose pad the OS does
+     * not enumerate). Inert unless the profile's `<touch-keypad>` selects it: the engine is never
+     * started anywhere else. Started on the first window show, kept for the IME's life, grabbing
+     * the pad only while the window is shown.
+     */
+    private val shizukuTouch = ShizukuTouchSource(object : ShizukuTouchSource.Host {
+        override fun context(): Context = this@BlackBerryIME
+        override fun onGenericMotionEvent(event: MotionEvent): Boolean =
+            this@BlackBerryIME.onGenericMotionEvent(event)
+        override fun selection(): TouchSourceSelector.Selection =
+            DeviceProfile.current().touchSourceSelection
+        override fun touchKeypad(): TouchKeypadConfig? = DeviceProfile.current().touchKeypadConfig
+    }, KeypadTouchSources.shizukuEngine())
 
     /**
      * Audit CT-27: the bounded worker pool for cold-start warmups. These used to be four raw
@@ -755,6 +791,8 @@ class BlackBerryIME : InputMethodService(),
         // Audit CT-27: stop accepting new warmup work; in-flight tasks are allowed to finish.
         startupExecutor.shutdown()
         ckbGestures.release()
+        nativeTouch.stop()
+        shizukuTouch.stop()
         if (nonCriticalReceiversRegistered) {
             nonCriticalReceiversRegistered = false
             try { unregisterReceiver(connectivityAndScreenReceiver) } catch (ignored: IllegalArgumentException) {}
@@ -958,8 +996,11 @@ class BlackBerryIME : InputMethodService(),
      * (the side effect is the point; callers that ignore the return value want the publish).
      */
     fun refreshOnScreenKeyboardShowing(): Boolean {
-        val z = super.onEvaluateInputViewShown() || DeviceProfile.isVkbForcedForPackage(currentPackageName) || DeviceProfile.isForceVkbMode() || isUimVisible() || isLandscapeOrientation()
-        DeviceProfile.setOnScreenKeyboardShowing(z)
+        // An input board open over the physical keys counts as the on-screen keyboard here, but is
+        // published apart from a real one: "Show the suggestion bar" must stay off over a board.
+        val typingKeyboard = super.onEvaluateInputViewShown() || DeviceProfile.isVkbForcedForPackage(currentPackageName) || DeviceProfile.isForceVkbMode() || isLandscapeOrientation()
+        val z = typingKeyboard || isUimVisible()
+        DeviceProfile.setOnScreenKeyboardShowing(z, typingKeyboard)
         return z
     }
 
@@ -1112,10 +1153,14 @@ class BlackBerryIME : InputMethodService(),
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerBackInvokedCallback()
         }
+        nativeTouch.attach()
+        shizukuTouch.onWindowShown()
     }
 
     override fun onWindowHidden() {
         super.onWindowHidden()
+        nativeTouch.detach()
+        shizukuTouch.onWindowHidden()
         resetUiState()
         fccController?.dismiss()
         clipboardController?.dismiss()
@@ -1218,6 +1263,9 @@ class BlackBerryIME : InputMethodService(),
         physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.EDITOR_SWITCHED)
 
         sweepBoardsWhenUimBarIsOff()
+        // Expire clipboard history past its retention at every input start, including the
+        // physical-keyboard sessions that never show the board.
+        clipboardController?.onStartInput()
         if (str != null && (str == "com.blackberry.help" || str == "com.blackberry.retaildemo")) {
             z2 = true
         }
@@ -1254,6 +1302,9 @@ class BlackBerryIME : InputMethodService(),
         // input session really is up, since the system clears the IME's status-bar slot between
         // sessions and the updater posts only on a change.
         physicalKeyboardStateTracker.refreshModifierStatus()
+        // Re-attached on every input-view start as well as window show: the decor view's focus
+        // and listener do not survive every window re-creation.
+        nativeTouch.attach()
     }
 
     override fun onFinishInputView(z: Boolean) {
@@ -1590,15 +1641,16 @@ class BlackBerryIME : InputMethodService(),
     }
 
     fun updateLanguagePacksForSubtype(inputMethodSubtype: InputMethodSubtype) {
-        val arrayList = ArrayList<Locale>()
-        arrayList.add(ResourceLocaleUtils.getSubtypeLocale(inputMethodSubtype))
         // The extra value is a slash-joined list ("de/es", "fr_CA"). One Locale built from the
         // whole string made the engine refuse the entire set as soon as a keyboard had two extras
         // or a regional one; parse it the way the subtype manager does.
-        ResourceLocaleUtils.getAdditionalLocales(inputMethodSubtype)?.let { arrayList.addAll(it) }
+        val locales = ResourceLocaleUtils.getKeyboardLocales(
+            ResourceLocaleUtils.getSubtypeLocale(inputMethodSubtype),
+            ResourceLocaleUtils.getAdditionalLocales(inputMethodSubtype),
+        )
         val sdk = NuanceSDKManager.getInstance()
         if (sdk != null) {
-            LanguagePackManager.getInstance(applicationContext).setLanguages(sdk, arrayList.toTypedArray())
+            LanguagePackManager.getInstance(applicationContext).setLanguages(sdk, locales.toTypedArray())
         } else {
             Logger.warn(LOG_TAG, "NuanceSDK unavailable; skipping language update in updateLanguagePacksForSubtype")
         }
@@ -1638,7 +1690,10 @@ class BlackBerryIME : InputMethodService(),
         languagePackLocaleMonitor!!.onLocaleChanged(localeM4259h, setM4260i)
         initDictionaryForLocale(localeM4259h, forceReload)
         multitapEventHandler.refreshAltMultitapSupport()
-        DictionaryManager.getInstance().initialiseOrSwitchLanguages(applicationContext, java.util.Collections.singletonList(localeM4259h))
+        // Every language the keyboard types in, not just the layout language: shortcuts and
+        // personal words saved for an extra language are as much the user's as the primary's.
+        DictionaryManager.getInstance().initialiseOrSwitchLanguages(applicationContext,
+            ResourceLocaleUtils.getKeyboardLocales(localeM4259h, setM4260i))
     }
 
     fun reloadAdditionalLocales() {
@@ -1655,11 +1710,13 @@ class BlackBerryIME : InputMethodService(),
         val settingsValues = settingsManager.getSettingsValues()
         val localeM4644a = dictionaryLoader.getLocale()
         if (localeM4644a != null) {
-            languagePackLocaleMonitor!!.onLocaleChanged(localeM4644a, subtypeManager.getCurrentSubtypeAdditionalLocales())
+            val additional = subtypeManager.getCurrentSubtypeAdditionalLocales()
+            languagePackLocaleMonitor!!.onLocaleChanged(localeM4644a, additional)
             dictionaryLoader.initDictionary(this, localeM4644a, settingsValues.useContactsDicts, true, this)
             applyAutoCorrectionSettings(settingsValues)
             multitapEventHandler.refreshAltMultitapSupport()
-            DictionaryManager.getInstance().initialiseOrSwitchLanguages(applicationContext, java.util.Collections.singletonList(localeM4644a))
+            DictionaryManager.getInstance().initialiseOrSwitchLanguages(applicationContext,
+                ResourceLocaleUtils.getKeyboardLocales(localeM4644a, additional))
         }
     }
 
@@ -1740,12 +1797,16 @@ class BlackBerryIME : InputMethodService(),
 
     override fun onKeyDown(i: Int, keyEvent: KeyEvent): Boolean {
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "BlackBerryIME.onKeyDown: keyCode=$i deviceId=${keyEvent.deviceId} source=0x${Integer.toHexString(keyEvent.source)} scanCode=${keyEvent.scanCode} flags=0x${Integer.toHexString(keyEvent.flags)}")
+        // A firmware-synthesised swipe key (the Titan 2's 322 / 404) is a gesture, not typing:
+        // handled and consumed before the typing guard or the key pipeline sees it.
+        if (ckbGestures.handleFirmwareGestureKey(keyEvent)) return true
         ckbGestures.onHardwareKey(keyEvent.eventTime)
         return keyEventProcessor.onKeyDownInternal(i, keyEvent)
     }
 
     override fun onKeyUp(i: Int, keyEvent: KeyEvent): Boolean {
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "BlackBerryIME.onKeyUp: keyCode=$i deviceId=${keyEvent.deviceId} source=0x${Integer.toHexString(keyEvent.source)} scanCode=${keyEvent.scanCode} flags=0x${Integer.toHexString(keyEvent.flags)}")
+        if (ckbGestures.handleFirmwareGestureKey(keyEvent)) return true
         ckbGestures.onHardwareKey(keyEvent.eventTime)
         return keyEventProcessor.onKeyUpInternal(i, keyEvent)
     }
@@ -1771,9 +1832,11 @@ class BlackBerryIME : InputMethodService(),
     }
 
     fun remapKeyEvent(i: Int, ev: KeyEvent): KeyEvent {
-        // Both remaps belong to ControlModeController: it owns Ctrl, including the multifunction
-        // key's "held as Ctrl" latch, which used to be a field here (Phase 1f).
-        val mfRemapped = controlMode.remapMultifunctionCtrlKey(ev)
+        // All three remaps belong to ControlModeController: it owns Ctrl, including the
+        // multifunction key's "held as Ctrl" latch, which used to be a field here (Phase 1f), and
+        // a config-declared Ctrl-like modifier (the Titan 2's Fn).
+        val profileRemapped = controlMode.remapProfileCtrlKey(ev)
+        val mfRemapped = controlMode.remapMultifunctionCtrlKey(profileRemapped)
         return controlMode.remapModifierKeyEvent(mfRemapped.keyCode, mfRemapped)
     }
 
@@ -2149,6 +2212,17 @@ class BlackBerryIME : InputMethodService(),
     // ==================== Touch and gesture entry ====================
 
     override fun onGenericMotionEvent(motionEvent: MotionEvent): Boolean {
+        // With the native touch source attached, one pad event can arrive twice: through its
+        // decor-view listener and through this entry. The second arrival gets the first one's
+        // answer. Both calls are no-ops while the source is not attached (every device without a
+        // `<touch-keypad>` that selects it), so nothing changes there.
+        nativeTouch.duplicateResult(motionEvent)?.let { return it }
+        val handled = handleGenericMotionEvent(motionEvent)
+        nativeTouch.recordResult(motionEvent, handled)
+        return handled
+    }
+
+    private fun handleGenericMotionEvent(motionEvent: MotionEvent): Boolean {
         if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
             val profile = DeviceProfile.current()
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "onGenericMotionEvent ACTION_DOWN: deviceId=${motionEvent.deviceId}" +

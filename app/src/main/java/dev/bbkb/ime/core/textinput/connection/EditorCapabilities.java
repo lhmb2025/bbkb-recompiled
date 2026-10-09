@@ -64,6 +64,16 @@ public final class EditorCapabilities {
      */
     public final boolean isMultiLine;
 
+    /**
+     * {@code true} when the field asks for no personalized learning
+     * ({@link EditorInfo#IME_FLAG_NO_PERSONALIZED_LEARNING}: incognito tabs, private messengers).
+     * Suggestions stay on; only learning and personal-data capture stop. The per-session switch
+     * that the learning sinks read is {@code DynamicLearningManager}, set in
+     * {@code InputLogic.updateDynamicLearningState()} from the live {@link EditorInfo}, because
+     * that runs before {@code loadSettings} rebuilds this object.
+     */
+    public final boolean noPersonalizedLearning;
+
     private final int rawInputType;
 
     private final EditorInfo editorInfo;
@@ -94,6 +104,7 @@ public final class EditorCapabilities {
         int inputType = editorInfo != null ? editorInfo.inputType : InputType.TYPE_NULL;
         int inputClass = inputType & InputType.TYPE_MASK_CLASS;
         this.rawInputType = inputType;
+        this.noPersonalizedLearning = hasNoPersonalizedLearningFlag(editorInfo);
         this.isPassword = InputTypeUtils.isPasswordInputType(inputType) || InputTypeUtils.isVisiblePasswordInputType(inputType);
         if (inputClass != InputType.TYPE_CLASS_TEXT && inputType != InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) {
             if (editorInfo == null) {
@@ -207,6 +218,19 @@ public final class EditorCapabilities {
         objArr[10] = this.isMultiLine ? " multiLine" : "";
         objArr[11] = this.packageName;
         return String.format("%s: inputType=0x%08x%s%s%s%s%s%s%s%s%s targetApp=%s\n", objArr);
+    }
+
+    /**
+     * Whether the editor set {@link EditorInfo#IME_FLAG_NO_PERSONALIZED_LEARNING}. The constant is
+     * API 26 but a compile-time int, so it is inlined and safe at minSdk 23; older editors simply
+     * never set the bit.
+     *
+     * @param editorInfo the focused editor, or {@code null}
+     * @return {@code true} if the field is incognito
+     */
+    public static boolean hasNoPersonalizedLearningFlag(EditorInfo editorInfo) {
+        return editorInfo != null
+                && (editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) != 0;
     }
 
     /**

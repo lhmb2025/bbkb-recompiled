@@ -206,10 +206,11 @@ private fun TestTab(
             onBoxSize(IntSize(size.width.toInt(), size.height.toInt()))
 
             if (grid != null && showGrid) {
-                // Letterbox the keypad rect (CkbKeyGrid.ASPECT) into the canvas, centered.
+                // Letterbox the keypad rect (CkbKeyGrid.aspect) into the canvas, centered.
+                val aspect = CkbKeyGrid.aspect
                 var gw = size.width
-                var gh = gw / CkbKeyGrid.ASPECT
-                if (gh > size.height) { gh = size.height; gw = gh * CkbKeyGrid.ASPECT }
+                var gh = gw / aspect
+                if (gh > size.height) { gh = size.height; gw = gh * aspect }
                 val ox = (size.width - gw) / 2f
                 val oy = (size.height - gh) / 2f
                 drawRect(Color(0x33FFFFFF), topLeft = Offset(ox, oy), size = androidx.compose.ui.geometry.Size(gw, gh), style = Stroke(width = 2f))

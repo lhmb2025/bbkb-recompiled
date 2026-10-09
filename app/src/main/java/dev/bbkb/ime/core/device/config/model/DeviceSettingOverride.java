@@ -16,6 +16,12 @@ public class DeviceSettingOverride {
     public String key;                      // Preference key (e.g., "pref_override_device_meta_state")
     public SettingType type;                // Type of setting
     public Object forcedValue;              // Value to force (null = no force)
+    /**
+     * The device's default for this setting, from {@code default-value} (null = the app-wide
+     * default). Unlike {@link #forcedValue} it neither locks nor overrides anything: it is what
+     * an unset preference reads as on this device, and the user can still change it.
+     */
+    public Object defaultValue;
     public boolean readOnly;                // Whether setting can be changed
     public boolean hidden;                  // Whether setting is hidden from the UI entirely
     
@@ -69,12 +75,23 @@ public class DeviceSettingOverride {
         return null;
     }
     
+    /**
+     * The device default as a string (STRING and LIST settings), or null when there is none.
+     */
+    public String getDefaultStringValue() {
+        if ((type == SettingType.STRING || type == SettingType.LIST) && defaultValue instanceof String) {
+            return (String) defaultValue;
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return "DeviceSettingOverride{" +
                 "key='" + key + '\'' +
                 ", type=" + type +
                 ", forcedValue=" + forcedValue +
+                ", defaultValue=" + defaultValue +
                 ", readOnly=" + readOnly +
                 ", hidden=" + hidden +
                 '}';

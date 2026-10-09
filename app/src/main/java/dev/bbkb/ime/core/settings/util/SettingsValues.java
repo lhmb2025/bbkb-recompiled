@@ -127,7 +127,24 @@ public final class SettingsValues {
 
     public final float inLetterMaxSwipeToWordDistance;
 
-    public final boolean isUimEnabled;
+    /** "Enable unified input menu" as stored; {@link #isUimEnabled()} is the effective value. */
+    private final boolean uimEnabledSetting;
+
+    /**
+     * "Show the suggestion bar" (Physical keyboard settings) is off. Stored inverted so that a
+     * zero-filled instance means the shipped default, bar shown. See
+     * {@link #isPkbSuggestionBarHidden()}.
+     */
+    private final boolean pkbSuggestionBarOff;
+
+    /**
+     * The "Show or hide the input menu" key action (multifunction key or Alt+Sym) raised the
+     * unified input menu, and nothing has put it away since. See
+     * {@link #isInputMenuRequestedByKey()}. Static, not part of the snapshot: it belongs to the
+     * input session, never to the stored settings, and must survive the settings reloads that
+     * happen mid-session (show-on-keypress reloads them, for one).
+     */
+    private static volatile boolean inputMenuRequestedByKey;
 
     public final boolean flickCommitAnimationEnabled;
 
@@ -233,6 +250,9 @@ public final class SettingsValues {
     public final boolean voiceInputUseInputLanguage;
 
     public final boolean voiceInputPreferOffline;
+
+    /** Dictation partial results are shown in the editor as composing text; read per partial. */
+    public final boolean voiceInputShowPartialResults;
 
     public final String voiceInputLanguageList;
 
@@ -410,7 +430,8 @@ public final class SettingsValues {
         this.maxAccentsChangeSpeedMultiplier = SettingsManager.getMaxScrollAccentSpeedMultiplier(sharedPreferences, resources);
         this.inLetterMaxSwipeToWordDistance = Math.round(SettingsManager.getInLetterMaxSwipeToWordDistance(sharedPreferences, resources) * fM5549d);
         this.showOnKeyPressMode = SettingsManager.getStringAsInt(sharedPreferences, resources, "pref_show_on_keypress_mode", R.string.config_default_show_on_keypress_mode);
-        this.isUimEnabled = sharedPreferences.getBoolean("pref_uim_enabled", resources.getBoolean(R.bool.config_default_uim_enabled));
+        this.uimEnabledSetting = sharedPreferences.getBoolean("pref_uim_enabled", resources.getBoolean(R.bool.config_default_uim_enabled));
+        this.pkbSuggestionBarOff = !SettingsManager.isPkbSuggestionBarEnabled(sharedPreferences);
         this.flickCommitAnimationEnabled = sharedPreferences.getBoolean("pref_flick_commit_animation", resources.getBoolean(R.bool.config_default_flick_commit_animation));
         this.uimFocusMoveDelay = SettingsManager.getIntPrefWithResourceDefault(sharedPreferences, resources, "pref_uim_focus_move_delay", R.integer.config_uim_default_focus_move_delay);
         this.cangjieMode = SettingsManager.getCangjieMode(sharedPreferences, resources);
@@ -433,6 +454,7 @@ public final class SettingsValues {
         this.pkbUsesActiveLanguageAlphabet = sharedPreferences.getBoolean(dev.bbkb.ime.core.keyevent.HardwareScriptLayouts.PREF_KEY, true);
         this.voiceInputUseInputLanguage = SettingsManager.isVoiceInputUseInputLanguage(sharedPreferences);
         this.voiceInputPreferOffline = SettingsManager.isVoiceInputPreferOffline(sharedPreferences);
+        this.voiceInputShowPartialResults = SettingsManager.isVoiceInputShowPartialResults(sharedPreferences);
         this.voiceInputLanguageList = SettingsManager.getVoiceInputLanguageList(sharedPreferences);
         this.isEmojiDynamicSearchEnabled = SettingsManager.isEmojiDynamicSearchEnabled(sharedPreferences);
         this.altSymShortcutAction = sharedPreferences.getString("pref_alt_sym_shortcut_action", "disabled");
@@ -450,6 +472,62 @@ public final class SettingsValues {
         this.quickPhrase5 = SettingsManager.getStringPref(sharedPreferences, resources, "quick_phrase_5", R.string.pref_quick_phrase_5_default);
         this.slideboardStillBoardsEnabled = sharedPreferences.getBoolean("pref_slideboard_still_boards", true);
         this.customSlideboardSymbols = SettingsManager.getStringListPref(sharedPreferences, "custom_slideboard_symbols");
+    }
+
+    /**
+     * The unified input menu is on: its setting, unless the bar it sits in is hidden by
+     * {@link #isPkbSuggestionBarHidden()}. Read live because that depends on whether the
+     * on-screen keyboard is up, which changes without a settings reload. Whatever the two
+     * settings say, the menu is on while the key has asked for it
+     * ({@link #isInputMenuRequestedByKey()}).
+     */
+    public boolean isUimEnabled() {
+        return inputMenuRequestedByKey || (this.uimEnabledSetting && !isPkbSuggestionBarHidden());
+    }
+
+    /**
+     * The "Show or hide the input menu" key action has the input menu up, and it counts as on
+     * whatever "Enable unified input menu" and "Show the suggestion bar" say: the two
+     * {@code isUimEnabled} readers and {@code InputViewCoordinator.shouldShowUim()} answer yes,
+     * so the bar behaves as a menu bar does with the menu on (its toggles open boards through
+     * the board coordinator, and a closed board leaves the menu up) instead of taking the
+     * menu-off routes.
+     *
+     * <p>Never stored: the preferences are untouched, and the user's settings win again once it
+     * clears. It clears when the key hides the menu, when the menu bar is taken down any other
+     * way ({@code UnifiedInputBoardManager.hide()}: the window going down, the suggestion strip
+     * replacing the menu, cursor mode, a settings change), and at the next input start
+     * ({@code InputSessionCoordinator.onStartInputInternal}).
+     */
+    public static boolean isInputMenuRequestedByKey() {
+        return inputMenuRequestedByKey;
+    }
+
+    /** See {@link #isInputMenuRequestedByKey()}. */
+    public static void setInputMenuRequestedByKey(boolean requested) {
+        inputMenuRequestedByKey = requested;
+    }
+
+    /**
+     * "Show the suggestion bar" is off and a physical keyboard is in use with no on-screen
+     * keyboard up, so the bar above the keys shows neither the suggestion strip nor the input
+     * menu. A Chinese or Japanese keyboard's candidate strip, autofill chips, the arrow bar and
+     * the accent bar still show. Landscape, a forced on-screen keyboard and touch-only devices
+     * all count as the on-screen keyboard being up, so the setting does not apply there. An
+     * input board opened over the physical keys does not: the bar stays hidden above it, and the
+     * board keys keep their menu-off route (a second press closes the board). The menu itself
+     * can still be called up with the "Show or hide the input menu" key action
+     * ({@link #isInputMenuRequestedByKey()}); this stays true meanwhile, so the strip stays away.
+     */
+    public boolean isPkbSuggestionBarHidden() {
+        return isPkbSuggestionBarHidden(!this.pkbSuggestionBarOff);
+    }
+
+    /** {@link #isPkbSuggestionBarHidden()} for a stored "Show the suggestion bar" value. */
+    public static boolean isPkbSuggestionBarHidden(boolean showSuggestionBar) {
+        return !showSuggestionBar
+                && DeviceProfile.current().hasPhysicalKeyboard()
+                && !DeviceProfile.isOnScreenTypingKeyboardVisible();
     }
 
     public boolean shouldShowMoreKeys() {
@@ -607,8 +685,19 @@ public final class SettingsValues {
         return this.isVkbGestureInputEnabled && !LocaleUtils.isCurrentSubtypeChinese();
     }
 
+    /**
+     * Type-by-swiping on the touch keypad, for the current keyboard. Off on Chinese keyboards,
+     * off while the user's custom letter map changes what any letter key types (the swipe decoder
+     * reads the engine's own key geometry, so it would spell a swipe in the keypad's old letters),
+     * and off on a pad the engine has no key geometry for: the root KDB is the KEY2's pad, so a
+     * profile that declares its own {@code <touch-keypad>} (the Titans) needs a
+     * {@code <kdb-variant>} first. Evaluated per call, like the Chinese check, so a map switched
+     * on in settings or a change of keyboard takes effect the next time the keyboard asks.
+     */
     public boolean isCkbGestureInputEnabledForLocale() {
-        return this.isCkbGestureInputEnabled && !LocaleUtils.isCurrentSubtypeChinese();
+        return this.isCkbGestureInputEnabled && !LocaleUtils.isCurrentSubtypeChinese()
+                && !dev.bbkb.ime.core.keyevent.HardwareScriptLayouts.userMapChangesLetters()
+                && DeviceProfile.current().isTouchKeypadSwipeTypingSupported();
     }
 
     public String dumpSettings() {

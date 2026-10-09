@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.compat.InputMethodSubtypeCompat;
 import dev.bbkb.ime.core.BlackBerryIME;
+import dev.bbkb.ime.core.engine.learning.DynamicLearningManager;
 import dev.bbkb.ime.core.SymbolPageProvider;
 import dev.bbkb.ime.core.locale.RichInputMethodManager;
 import dev.bbkb.ime.core.ime.InputView;
@@ -426,6 +427,16 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         logic.commitTouchEventText();
     }
 
+    /**
+     * Whether the focused field asked for no personalized learning (incognito).
+     * Called by the emoji board, which then keeps no recents.
+     */
+    public boolean isNoPersonalizedLearning() {
+        if (this.blackberryIme == null) return false;
+        DynamicLearningManager learning = this.blackberryIme.getDynamicLearningManager();
+        return learning != null && learning.isNoPersonalizedLearning();
+    }
+
     private KeyboardSwitcher() {
     }
 
@@ -507,7 +518,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     private boolean shouldShowSecondaryIcon(int i) {
         if (i == -23) {
-            return SettingsManager.getInstance().getSettingsValues().isUimEnabled;
+            return SettingsManager.getInstance().getSettingsValues().isUimEnabled();
         }
         if (i != -10) {
             return false;
@@ -1514,6 +1525,12 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     @Override // dev.bbkb.ime.core.KeyboardLayoutCallback
     public String[] getMoreKeysForKey(String str) {
+        // A user letter map's long-press list for the key that typed this letter replaces the
+        // keyboard's own: it is what the user wrote for that key.
+        String[] userMoreKeys = HardwareScriptLayouts.userMoreKeysFor(str);
+        if (userMoreKeys != null) {
+            return userMoreKeys;
+        }
         Keyboard c0965eM6834l = getCurrentKeyboard();
         if (c0965eM6834l != null) {
             return c0965eM6834l.getMultiTapAlternates(str);
@@ -1523,10 +1540,12 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     @Override // dev.bbkb.ime.core.KeyboardLayoutCallback
     public String[] getMoreKeysForKeyByStyle(String str) {
-        // While the physical keys follow a script layout, its doubled keycaps (й/ё, щ/з) are the
-        // double-tap sequence; the pkbd_* multitap tables describe other keycap sets.
-        if (HardwareScriptLayouts.isActive()) {
-            return HardwareScriptLayouts.alternatesFor(str);
+        // A user letter map's multitap list comes first. While the physical keys follow a script
+        // layout, its doubled keycaps (й/ё, щ/з) are the double-tap sequence; the pkbd_* multitap
+        // tables describe other keycap sets.
+        String[] alternates = HardwareScriptLayouts.alternatesFor(str);
+        if (alternates != null || HardwareScriptLayouts.isActive()) {
+            return alternates;
         }
         Keyboard pkb = physicalKeyboardForTables();
         return pkb == null ? null : pkb.getMultiTapSequence(str);
@@ -1563,10 +1582,11 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     /**
      * True while a symbol page is the current keyboard, so the physical letter keys mean symbols.
      * Not {@code wasSymbolEnteredFromAlphabet()}: that records how the last symbol page was
-     * entered and stays set on the alphabet keyboard afterwards.
+     * entered and stays set on the alphabet keyboard afterwards. False before the IME has
+     * initialised the switcher: the user letter-map tier asks this for any key its map names.
      */
     public boolean isPhysicalSymbolMappingActive() {
-        return this.keyboardState.isInSymbolMode();
+        return this.keyboardState != null && this.keyboardState.isInSymbolMode();
     }
 
     public String[] getMoreKeysForCode(int i) {

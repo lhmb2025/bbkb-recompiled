@@ -9,6 +9,8 @@ import com.blackberry.nuanceshim.NuanceSDK
 import com.blackberry.nuanceshim.WordInfo
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -166,11 +168,92 @@ class DynamicLearningManagerTest {
 
     @Test
     fun contacts_disabled_doNothing() {
-        manager.setDynamicLearningEnabled(false)
+        manager.setLearningPreferenceEnabled(false)
         manager.addContactsWords(Array(600) { "w$it" }, ContactsType.ALL)
         manager.addContactsWords(arrayOf("a"), ContactsType.ALL)
         verify(engine, never()).addContactsWords(org.mockito.ArgumentMatchers.any())
         assertEquals(0, deferred.size)
+    }
+
+    @Test
+    fun contacts_followThePreference_notTheFocusedField() {
+        // A password or incognito field turns session learning off; the address-book import is
+        // not typed text and must not stop with it.
+        manager.setDynamicLearningEnabled(false)
+        manager.setNoPersonalizedLearning(true)
+        val words = arrayOf("a")
+        manager.addContactsWords(words, ContactsType.ALL)
+        verify(engine).addContactsWords(words)
+    }
+
+    // ── incognito (IME_FLAG_NO_PERSONALIZED_LEARNING) ─────────────────────────
+
+    private fun staleSuggestion() = SuggestedWords.SuggestedWordInfo(
+        "secret", 100, 0, Dictionary.DICTIONARY_USER_TYPED, -1, -1,
+        WordInfo().apply {
+            word = "secret"; spell = "secret"
+            selectionListIndex = 1
+            selectionListGeneration = NuanceSDK.getSelectionListGeneration() - 1L
+        },
+    )
+
+    /** What InputLogic.updateDynamicLearningState does for an incognito field with learning on. */
+    private fun enterIncognitoField() {
+        manager.setLearningPreferenceEnabled(true)
+        manager.setNoPersonalizedLearning(true)
+        manager.setDynamicLearningEnabled(false)
+    }
+
+    @Test
+    fun incognito_sessionReportsLearningNotAllowed() {
+        manager.setDynamicLearningEnabled(true)
+        assertTrue(manager.isLearningAllowed)
+        enterIncognitoField()
+        assertFalse(manager.isLearningAllowed)
+        assertTrue(manager.isNoPersonalizedLearning)
+        verify(engine).setIsExplicitLearning(true)
+    }
+
+    @Test
+    fun incognito_ordinaryCommitOnlyEndsTheWord() {
+        manager.onManagedModeChanged(false)
+        enterIncognitoField()
+        manager.learn(freshSuggestion())
+        verify(engine).clear()
+        verify(engine, never()).selectionListSelectWord(anyInt(), anyBoolean(), anyString())
+        verify(engine, never()).addWord(anyString())
+    }
+
+    @Test
+    fun incognito_forcedLearnNeverLearnsByContent() {
+        // force=true is the CJK prediction commit. A stale index would fall back to addWord, which
+        // is pure learning: in incognito it must not happen.
+        manager.onManagedModeChanged(false)
+        enterIncognitoField()
+        manager.learn(staleSuggestion(), true)
+        verify(engine, never()).addWord(anyString())
+        verify(engine, never()).selectionListSelectWord(anyInt(), anyBoolean(), anyString())
+    }
+
+    @Test
+    fun incognito_forcedLearnKeepsTheEngineSelection() {
+        // A Japanese or partial Chinese pick needs the engine's own selection to keep the rest of
+        // the composition: that transition survives, with the engine in explicit-learning mode
+        // exactly as when the preference is off.
+        manager.onManagedModeChanged(false)
+        enterIncognitoField()
+        manager.learn(freshSuggestion(6), true)
+        verify(engine).selectionListSelectWord(6, true, "hello")
+        verify(engine, never()).addWord(anyString())
+    }
+
+    @Test
+    fun learningOn_forcedStaleLearnStillLearnsByContent() {
+        // The EB-3 fallback is unchanged for a session that may learn.
+        manager.onManagedModeChanged(false)
+        manager.setDynamicLearningEnabled(true)
+        manager.learn(staleSuggestion(), true)
+        verify(engine).addWord("secret")
     }
 
     @Test

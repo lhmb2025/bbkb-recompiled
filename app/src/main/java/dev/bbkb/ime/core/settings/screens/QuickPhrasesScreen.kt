@@ -54,6 +54,12 @@ private val QUICK_PHRASES = listOf(
 )
 
 /**
+ * The five phrase keys in the order this screen lists them — what a layouts export and import
+ * (`LayoutsBundle`) read and write, so the keys are still formed only here.
+ */
+internal val QUICK_PHRASE_KEYS: List<String> get() = QUICK_PHRASES.map { it.prefKey }
+
+/**
  * Quick Phrases Screen
  * Configure the 5 customizable quick phrases for slideboard
  */

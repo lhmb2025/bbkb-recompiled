@@ -1,6 +1,7 @@
 package dev.bbkb.ime.core.device.config.model;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +24,13 @@ public class DeviceInputMapping {
 
     /**
      * Physical keypad layout override from {@code <keypad-layout>} — "qwerty", "qwertz" or
-     * "azerty", already validated by the parser; null (the normal case) leaves
-     * {@code KeypadLayoutDetector} to work it out from the firmware. This is the ONLY override
-     * for the detected layout, and it exists for a unit whose firmware answers nothing; a shipped
-     * config must not declare it, or every unit matching that config is pinned to one layout.
+     * "azerty", already validated by the parser; null leaves {@code KeypadLayoutDetector} to work
+     * it out from the firmware. This is the ONLY override for the detected layout. A shipped
+     * config declares it only for a model sold in one layout (every unit matching the config has
+     * the same keypad), because user letter maps bind to the effective layout and live detection
+     * should not decide that on a known device; a config that matches several keypad variants
+     * (athena: every KEY2 in the world) must not, or every unit is pinned to one layout.
+     * {@code ShippedDeviceConfigsTest} keeps that list by name.
      */
     public String keypadLayout;
     public String description;              // Optional description for logging
@@ -67,6 +71,26 @@ public class DeviceInputMapping {
     /** Piecewise CKB sensor-Y -> engine-Y warp, "s0:a0,s1:a1,..." ascending breakpoints
      * (§8.7.12 retail swipe config). Null = identity. Applies only to the gesture engine feed. */
     public String ckbYWarp;
+
+    /** The touch surface over the keys, from {@code <touch-keypad>}; null when undeclared. */
+    public TouchKeypadConfig touchKeypad;
+
+    /** Firmware behaviours to tolerate, from {@code <quirk name="..."/>}; empty when none. */
+    public final EnumSet<DeviceQuirk> quirks = EnumSet.noneOf(DeviceQuirk.class);
+
+    public boolean hasQuirk(DeviceQuirk quirk) {
+        return quirk != null && quirks.contains(quirk);
+    }
+
+    /**
+     * This phone never needs the BBKB helper (the accessibility key interceptor), from
+     * {@code <accessibility-helper>off</accessibility-helper>}: its firmware delivers every key the
+     * keyboard handles, as BlackBerry hardware does. The helper's service component is then
+     * switched off at runtime ({@code KeyInterceptorComponent}), which also takes it out of the
+     * system's Accessibility list, and its settings row is greyed out. False (the default and
+     * {@code available}): the helper is offered as usual.
+     */
+    public boolean accessibilityHelperOff = false;
 
     public DeviceInputMapping() {
         // Default constructor
@@ -161,6 +185,8 @@ public class DeviceInputMapping {
                 ", matchCriteria=" + (matchCriteria != null ? matchCriteria.toString() : "null") +
                 ", forcePkbDevice=" + forcePkbDevice +
                 ", forceTouchKeypad=" + forceTouchKeypad +
+                ", touchKeypad=" + touchKeypad +
+                ", quirks=" + quirks +
                 ", layoutOverrides=" + layoutOverrides.size() + " entries" +
                 ", settingsOverrides=" + settingsOverrides.size() + " entries" +
                 '}';

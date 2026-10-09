@@ -22,6 +22,13 @@ class GestureTraceRecorder(
     private val configProvider: () -> GestureConfig,
     private val listener: Listener,
     handler: Handler? = null,
+    /**
+     * The normalisation reference for a contact whose InputDevice reports no motion ranges: the
+     * touch keypad frame's larger dimension (1080 on the KEY2's pad).
+     */
+    private val fallbackReference: () -> Float = {
+        dev.bbkb.ime.core.device.touch.TouchKeypadGeometry.current().normalizationReference()
+    },
 ) {
     interface Listener {
         /** A completed contact (UP). [previousTap] is the prior completed trace, for double-tap. */
@@ -86,10 +93,11 @@ class GestureTraceRecorder(
         // normalized threshold in GestureConfig is trivially cleared, and any straight
         // word-swipe misclassifies as a ballistic flick (the replay corpus lost every
         // straight leftward word — of/tea/its/our/poor — to Act(delete_word) this way).
-        // Fall back to the keypad coordinate-space width, which is what a real capacitive
-        // keypad's motion range reports anyway.
+        // Fall back to the keypad frame's larger dimension (TouchKeypadGeometry: the KEY2's
+        // 1080, or the profile's declared pad range on a Titan whose pad events are
+        // synthesised), which is what a real capacitive keypad's motion range reports anyway.
         ref = max(max(rx, ry), 1f)
-        if (ref <= 1f) ref = CkbKeyGrid.WIDTH.toFloat()
+        if (ref <= 1f) ref = fallbackReference()
         raw.clear()
         addPoint(event, event.actionIndex, first = true)
         val cfg = configProvider()

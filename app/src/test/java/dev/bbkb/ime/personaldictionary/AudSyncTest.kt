@@ -11,6 +11,7 @@ import dev.bbkb.ime.personaldictionary.util.CompletionListener
 import com.blackberry.nuanceshim.NuanceSDK
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -63,9 +64,9 @@ class AudSyncTest {
 
     private fun pduDir() = File(context.filesDir, "dev.bbkb.ime.basl.pdu")
 
-    private fun loadAndRegisterObserver() {
+    private fun loadAndRegisterObserver(locales: List<Locale> = listOf(Locale.US)) {
         val loaded = CountDownLatch(1)
-        pdu.load(listOf(Locale.US), CompletionListener { loaded.countDown() }, true, false)
+        pdu.load(locales, CompletionListener { loaded.countDown() }, true, false)
         assertTrue("PDU load never completed", loaded.await(15, TimeUnit.SECONDS))
         // load() registers the observer immediately after reporting completion, on the same
         // coroutine; wait for the registration itself rather than racing it.
@@ -118,6 +119,26 @@ class AudSyncTest {
         waitFor("omw to reach the substitutions") {
             pdu.getWordSubstitutions().containsKey("omw")
         }
+    }
+
+    /**
+     * A multi-language keyboard's languages all pass the sync's locale filter: a shortcut saved
+     * in AUD for an extra language comes through, one for a language the keyboard does not have
+     * stays out.
+     */
+    @Test
+    fun aShortcutForAnExtraKeyboardLanguageReachesBasl_andOneForAnotherLanguageDoesNot() {
+        loadAndRegisterObserver(listOf(Locale.US, Locale.GERMAN))
+
+        // fr first: by the time the de row has come through, a sync has seen both.
+        insertIntoAud(word = "s'il te plait", shortcut = "zzfr", locale = "fr")
+        insertIntoAud(word = "mit freundlichen Gruessen", shortcut = "zzde", locale = "de")
+
+        waitFor("zzde to reach the substitutions") {
+            pdu.getWordSubstitutions().containsKey("zzde")
+        }
+        assertFalse("a shortcut for a language not on the keyboard came through",
+            pdu.getWordSubstitutions().containsKey("zzfr"))
     }
 
     /**

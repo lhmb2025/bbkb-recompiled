@@ -42,4 +42,40 @@ class AdditionalLocalesParsingTest {
         assertNull(ResourceLocaleUtils.getAdditionalLocales(subtype(null)))
         assertNull(ResourceLocaleUtils.getAdditionalLocales(null))
     }
+
+    /**
+     * The extras come back in the order the extra value lists them. They used to go through a
+     * TreeSet sorted by Locale.toString(), so "fr/de/es" reached the engine as de, es, fr.
+     */
+    @Test
+    fun extrasKeepTheOrderTheExtraValueListsThem() {
+        assertEquals(
+            listOf(Locale("fr"), Locale("de"), Locale("es")),
+            ResourceLocaleUtils.getAdditionalLocales(subtype("fr/de/es"))!!.toList(),
+        )
+        assertEquals(
+            listOf(Locale("fr", "CA"), Locale("de")),
+            ResourceLocaleUtils.getAdditionalLocales(subtype("fr_CA/de"))!!.toList(),
+        )
+    }
+
+    @Test
+    fun aRepeatedExtraIsListedOnce_whereItFirstAppears() {
+        assertEquals(
+            listOf(Locale("es"), Locale("de")),
+            ResourceLocaleUtils.getAdditionalLocales(subtype("es/de/es"))!!.toList(),
+        )
+    }
+
+    /** What the personal dictionary, the language packs and the spell checker are handed. */
+    @Test
+    fun keyboardLocales_areThePrimaryThenTheExtrasInOrder_eachOnce() {
+        val extras = ResourceLocaleUtils.getAdditionalLocales(subtype("fr/de"))
+        assertEquals(listOf(Locale.US, Locale("fr"), Locale("de")), ResourceLocaleUtils.getKeyboardLocales(Locale.US, extras))
+        assertEquals(listOf(Locale.US), ResourceLocaleUtils.getKeyboardLocales(Locale.US, null))
+        assertEquals(
+            listOf(Locale("de"), Locale("fr")),
+            ResourceLocaleUtils.getKeyboardLocales(Locale("de"), linkedSetOf(Locale("de"), Locale("fr"))),
+        )
+    }
 }

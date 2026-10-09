@@ -52,6 +52,7 @@ public class AltSymShortcutHandler {
     public static final String ACTION_NUMBER_PAD = MultifunctionKeyHandler.ACTION_NUMBER_PAD;
     public static final String ACTION_LANGUAGE_SWITCH = MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH;
     public static final String ACTION_SYMBOL_KEYBOARD = MultifunctionKeyHandler.ACTION_SYMBOL_KEYBOARD;
+    public static final String ACTION_TOGGLE_UIM = MultifunctionKeyHandler.ACTION_TOGGLE_UIM;
 
     /**
      * Retired ids: "emoji_picker" was renamed to {@link #ACTION_EMOJI_BOARD}; "ctrl_mode" and
@@ -76,6 +77,7 @@ public class AltSymShortcutHandler {
         void toggleClipboard();
         void toggleFcc();
         void toggleNumberPad();
+        void toggleInputMenu();
     }
 
     private ActionCallback callback;
@@ -191,6 +193,9 @@ public class AltSymShortcutHandler {
                 break;
             case ACTION_NUMBER_PAD:
                 callback.toggleNumberPad();
+                break;
+            case ACTION_TOGGLE_UIM:
+                callback.toggleInputMenu();
                 break;
             default:
                 Logger.warn(TAG, "Unknown Alt+Sym action: " + action);

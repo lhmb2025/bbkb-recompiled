@@ -617,7 +617,22 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
 
     public static boolean isUimEnabled(Context context) {
         SharedPreferences prefs = PrefsManager.INSTANCE.getPrefs(context);
-        return prefs.getBoolean("pref_uim_enabled", true);
+        // The menu sits in the bar "Show the suggestion bar" hides, so it goes with the bar,
+        // unless the "Show or hide the input menu" key has asked for it.
+        return SettingsValues.isInputMenuRequestedByKey()
+                || (prefs.getBoolean("pref_uim_enabled", true)
+                        && !SettingsValues.isPkbSuggestionBarHidden(isPkbSuggestionBarEnabled(prefs)));
+    }
+
+    /** Physical keyboard settings: "Show the suggestion bar". */
+    public static final String PREF_PKB_SHOW_SUGGESTION_BAR = "pref_pkb_show_suggestion_bar";
+
+    /**
+     * "Show the suggestion bar" as stored. Whether the bar is actually hidden also depends on the
+     * device: see {@link SettingsValues#isPkbSuggestionBarHidden()}.
+     */
+    public static boolean isPkbSuggestionBarEnabled(SharedPreferences sharedPreferences) {
+        return sharedPreferences.getBoolean(PREF_PKB_SHOW_SUGGESTION_BAR, true);
     }
 
     public static boolean isLanguageQuickSwitchEnabled() {
@@ -652,6 +667,15 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     /**
+     * Voice input settings: "Show words as you speak". On, dictation's partial results appear in
+     * the editor as composing text until the final result replaces them; off, nothing appears until
+     * the final result is committed.
+     */
+    public static boolean isVoiceInputShowPartialResults(SharedPreferences sharedPreferences) {
+        return sharedPreferences.getBoolean("voice_input_show_partial_results", true);
+    }
+
+    /**
      * A BCP-47 language tag, the form {@code RecognizerIntent.EXTRA_LANGUAGE} documents and the form
      * the voice language picker stores (the recognizer's own supported-language codes). Both voice
      * settings screens read this constant.
@@ -668,6 +692,18 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
 
     public static boolean isVoiceInputAutoStart(SharedPreferences sharedPreferences) {
         return sharedPreferences.getBoolean("voice_input_auto_start", true);
+    }
+
+    /**
+     * Voice input settings: "Speech recognizer". Empty for the phone's default recognition service,
+     * {@code "ondevice"} for the platform's on-device recogniser, otherwise the flattened component
+     * of the chosen app's service. {@code VoiceRecognizerChoice} resolves it against what is
+     * installed. Read straight from the preferences rather than from {@link SettingsValues}: the
+     * voice settings screens and the voice-input gate need it outside the keyboard too.
+     */
+    public static String getVoiceInputRecognizer(SharedPreferences sharedPreferences) {
+        final String recognizer = sharedPreferences.getString("voice_input_recognizer", "");
+        return recognizer == null ? "" : recognizer;
     }
 
     // REMOVED: Tutorial-related methods - Tutorial system eliminated

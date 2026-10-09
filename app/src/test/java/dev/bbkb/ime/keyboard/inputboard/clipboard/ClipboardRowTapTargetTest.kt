@@ -9,6 +9,7 @@ import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.databinding.ClipDataHeaderBinding
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,23 +18,27 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 /**
- * A clipboard row must paste wherever you tap it, not only on the thumbnail.
+ * A clipboard row must paste wherever you tap it, and only the overflow button may take a touch
+ * for itself.
  *
- * `View.onTouchEvent` consumes a gesture when the view is clickable **or** long-clickable, and
- * `clip_data_header.xml` used to declare `android:longClickable="true"` on the text container.
- * `ClipboardViewHolder` cleared `clickable`/`focusable` but not `longClickable`, so the container
- * swallowed every touch over the text; only the thumbnail — the one child with neither flag — let
- * the touch reach the card, and pasting worked only there (found on the KEY2, 2026-09-15).
- * The long-press that expands a row lives on the foreground card, so nothing wanted the flag.
+ * `View.onTouchEvent` consumes a gesture when the view is clickable **or** long-clickable.
+ * `clip_data_header.xml` once declared `android:longClickable="true"` on the text container, so it
+ * swallowed every touch over the text; only the thumbnail let the touch reach the card, and pasting
+ * worked only there (found on the KEY2, 2026-09-15). The card is now the row's root and owns both
+ * the paste tap and the menu long-press; the overflow button beside it opens the same menu.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
 class ClipboardRowTapTargetTest {
 
-    private fun row(): ClipDataHeaderBinding {
+    private fun inflate(): ClipDataHeaderBinding {
         val context = ApplicationProvider.getApplicationContext<Context>()
         context.setTheme(dev.bbkb.ime.R.style.Theme_BlackberryKeyboard_IME)
-        val binding = ClipDataHeaderBinding.inflate(LayoutInflater.from(context), null, false)
+        return ClipDataHeaderBinding.inflate(LayoutInflater.from(context), null, false)
+    }
+
+    private fun row(): ClipDataHeaderBinding {
+        val binding = inflate()
         ClipboardViewHolder(binding)          // the holder is what clears the flags
         val root = binding.root
         root.measure(
@@ -42,6 +47,19 @@ class ClipboardRowTapTargetTest {
         )
         root.layout(0, 0, 1080, 270)
         return binding
+    }
+
+    private fun touchCentreOf(binding: ClipDataHeaderBinding, target: View) {
+        val x = (target.left + target.width / 2).toFloat()
+        val y = (target.top + target.height / 2).toFloat()
+        val t = SystemClock.uptimeMillis()
+        binding.root.dispatchTouchEvent(MotionEvent.obtain(t, t, MotionEvent.ACTION_DOWN, x, y, 0))
+    }
+
+    private fun release(binding: ClipDataHeaderBinding) {
+        val t = SystemClock.uptimeMillis()
+        binding.root.dispatchTouchEvent(MotionEvent.obtain(t, t + 20, MotionEvent.ACTION_UP, 0f, 0f, 0))
+        shadowOf(Looper.getMainLooper()).idle()
     }
 
     @Test
@@ -57,9 +75,11 @@ class ClipboardRowTapTargetTest {
     }
 
     @Test
-    fun theCardItselfTakesTapsAndLongPresses() {
+    fun theCardIsTheRowAndTakesTapsAndLongPresses() {
         val b = row()
+        assertSame("the card is the row's root", b.root, b.clipboardForeground)
         assertTrue("the card is the paste target", b.clipboardForeground.isClickable)
+        assertTrue("the card opens the menu on a long-press", b.clipboardForeground.isLongClickable)
     }
 
     @Test
@@ -67,28 +87,34 @@ class ClipboardRowTapTargetTest {
         val b = row()
         val text = b.clipboardTextContainer
         assertTrue("text container laid out", text.width > 0 && text.height > 0)
-        val x = (text.left + text.width / 2).toFloat()
-        val y = (text.top + text.height / 2).toFloat()
-        val t = SystemClock.uptimeMillis()
-        b.root.dispatchTouchEvent(MotionEvent.obtain(t, t, MotionEvent.ACTION_DOWN, x, y, 0))
-        // The card is the paste target (ClipboardAdapter.setupClickListeners puts the listener
-        // there). If the text container consumes the DOWN, the card never presses and the tap is
-        // lost -- which is exactly what android:longClickable="true" on it used to cause.
+
+        touchCentreOf(b, text)
+
         assertTrue(
             "a touch over the text must reach the card, not be swallowed by the text container",
             b.clipboardForeground.isPressed,
         )
-        b.root.dispatchTouchEvent(MotionEvent.obtain(t, t + 20, MotionEvent.ACTION_UP, x, y, 0))
-        shadowOf(Looper.getMainLooper()).idle()
+        release(b)
+    }
+
+    @Test
+    fun aTouchOnTheOverflowButtonIsTheButtonsNotTheCards() {
+        val b = row()
+        val overflow = b.clipboardOverflow
+        assertTrue("overflow laid out", overflow.width > 0 && overflow.height > 0)
+
+        touchCentreOf(b, overflow)
+
+        assertTrue(overflow.isPressed)
+        assertFalse("the card must not paste when the menu button is pressed", b.clipboardForeground.isPressed)
+        release(b)
     }
 
     @Test
     fun theLayoutItselfDeclaresNoTouchConsumingFlagsOnTheTextContainer() {
         // The holder clears these defensively, so this case guards the other layer: the XML must
         // not re-introduce android:longClickable (or clickable/focusable) on the text container.
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        context.setTheme(dev.bbkb.ime.R.style.Theme_BlackberryKeyboard_IME)
-        val raw = ClipDataHeaderBinding.inflate(LayoutInflater.from(context), null, false)
+        val raw = inflate()
         assertFalse("layout sets longClickable on the text container", raw.clipboardTextContainer.isLongClickable)
         assertFalse("layout sets clickable on the text container", raw.clipboardTextContainer.isClickable)
     }

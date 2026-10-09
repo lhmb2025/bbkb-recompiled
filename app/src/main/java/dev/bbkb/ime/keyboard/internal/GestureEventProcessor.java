@@ -11,6 +11,7 @@ import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.engine.NuanceSDKManager;
 import com.blackberry.nuanceshim.NuanceSDK;
 import dev.bbkb.ime.core.device.state.PhysicalKeyboardStateTracker;
+import dev.bbkb.ime.core.device.touch.TouchKeypadGeometry;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
 import dev.bbkb.ime.core.keyevent.InputSource;
 import dev.bbkb.ime.core.shared.Logger;
@@ -141,17 +142,53 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
      * from these two numbers in {@link GestureStrokeAnalyzer#setKeyboardGeometry}: the fast-move
      * speed threshold, both dynamic distance thresholds, the sampling minimum distance, the
      * recognition speed threshold, and the min/max Y band that decides whether a batch is
-     * cancelled. They were baked into the original app as bare literals with no device
-     * qualifier; they do NOT track the per-device {@code <ckb-y-warp>} table used by
-     * {@link #warpY}, so a device whose warp table changes needs these revisited too.
+     * cancelled. The original app baked them in as bare literals (144 / 610) for the KEY2's pad;
+     * they now come from {@link TouchKeypadGeometry#strokeKeyWidth()} /
+     * {@link TouchKeypadGeometry#strokeBoardHeight()}, which are exactly those literals on the
+     * KEY2's frame and scale with any other pad's. They do NOT track the per-device
+     * {@code <ckb-y-warp>} table used by {@link #warpY}, so a device whose warp table changes
+     * needs these revisited too. Pushed by {@code DeviceProfile} on the same lifecycle as the warp.
      */
-    private static final int CKB_KEY_WIDTH = 144;
-    private static final int CKB_BOARD_HEIGHT = 610;
+    private static volatile int sStrokeKeyWidth = TouchKeypadGeometry.KEY2_STROKE_KEY_WIDTH;
+    private static volatile int sStrokeBoardHeight = TouchKeypadGeometry.KEY2_STROKE_BOARD_HEIGHT;
 
     private GestureEventProcessor(int i) {
         super(i);
         this.gesturePathTracker = new GesturePathTracker(i, sGestureRecognitionParams);
-        this.gesturePathTracker.setKeyboardGeometry(CKB_KEY_WIDTH, CKB_BOARD_HEIGHT);
+        this.gesturePathTracker.setKeyboardGeometry(sStrokeKeyWidth, sStrokeBoardHeight);
+    }
+
+    /**
+     * Adopt the touch keypad's frame: new processors use it, and the existing ones (one per
+     * pointer id, created on first use) are re-pointed. A no-op when the numbers are unchanged,
+     * which on the KEY2 they always are (144 / 610).
+     */
+    public static void setKeypadGeometry(TouchKeypadGeometry geometry) {
+        if (geometry == null) return;
+        final int keyWidth = geometry.strokeKeyWidth();
+        final int boardHeight = geometry.strokeBoardHeight();
+        if (keyWidth == sStrokeKeyWidth && boardHeight == sStrokeBoardHeight) return;
+        // Statics first, so a processor created while this runs picks the new numbers up itself.
+        sStrokeKeyWidth = keyWidth;
+        sStrokeBoardHeight = boardHeight;
+        // By index, not by iterator: this can run on the profile's loader thread while the main
+        // thread adds a processor, and ArrayList.get does not throw on that.
+        final ArrayList<GestureEventProcessor> trackers = sTrackers;
+        for (int i = 0; i < trackers.size(); i++) {
+            trackers.get(i).gesturePathTracker.setKeyboardGeometry(keyWidth, boardHeight);
+        }
+        android.util.Log.i("XT9KDB", "ckb stroke geometry " + keyWidth + "/" + boardHeight
+                + " from " + geometry);
+    }
+
+    /** The stroke analyser's current key width (144 on the KEY2's pad). */
+    public static int strokeKeyWidth() {
+        return sStrokeKeyWidth;
+    }
+
+    /** The stroke analyser's current board height (610 on the KEY2's pad). */
+    public static int strokeBoardHeight() {
+        return sStrokeBoardHeight;
     }
 
     public void processMotionEvent(MotionEvent motionEvent) {

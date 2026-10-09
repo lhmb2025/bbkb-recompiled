@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import dev.bbkb.ime.core.settings.PrefsManager;
 import android.view.ContextThemeWrapper;
+import android.view.View;
 import android.view.inputmethod.InlineSuggestion;
 
 import androidx.annotation.NonNull;
@@ -293,8 +294,13 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         if (DeviceProfile.isOnScreenKeyboardVisible()) {
             return;
         }
+
+        if (isLatinStripHidden()) {
+            hideSuggestionBar();
+            return;
+        }
         
-        boolean isCJK = currentLocale != null && LocaleUtils.isChineseOrJapanese(currentLocale);
+        boolean isCJK = isChineseOrJapaneseLocale();
         auxBarView.showSuggestions(words, isCJK);
     }
 
@@ -316,8 +322,57 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         if (!DeviceProfile.current().isPkbDevice()) {
             return;
         }
+
+        if (!isCJK && isLatinStripHidden()) {
+            hideSuggestionBar();
+            return;
+        }
         
         auxBarView.showSuggestions(words, isCJK);
+    }
+
+    /**
+     * Take down what "Show the suggestion bar" hides: a Latin strip, the unified input menu, or
+     * the empty container AuxBarView starts as (VISIBLE in state NONE until its first hide()).
+     * Autofill chips, the arrow and accent bars, and a Chinese or Japanese candidate strip stay;
+     * an accent bar up over the menu or a Latin strip closes onto nothing instead of putting
+     * them back. A menu the "Show or hide the input menu" key raised stays too: the key asked for
+     * it over the setting ({@link SettingsValues#isInputMenuRequestedByKey()}).
+     */
+    public void hideSuggestionBar() {
+        if (auxBarView == null) {
+            return;
+        }
+        AuxBarState state = auxBarView.getCurrentState();
+        if (state == AuxBarState.ACCENT_BAR && isHiddenWithTheBar(stateBeforeAccentBar)) {
+            stateBeforeAccentBar = AuxBarState.NONE;
+        }
+        boolean emptyContainer = state == AuxBarState.NONE && auxBarView.getVisibility() == View.VISIBLE;
+        if (emptyContainer || isHiddenWithTheBar(state)) {
+            auxBarView.hide();
+        }
+    }
+
+    /**
+     * The unified input menu, unless the key asked for it, or a Latin strip on a keyboard that is
+     * not Chinese or Japanese.
+     */
+    private boolean isHiddenWithTheBar(AuxBarState state) {
+        return (state == AuxBarState.UNIFIED_INPUT_MENU && !SettingsValues.isInputMenuRequestedByKey())
+                || (state == AuxBarState.LATIN_SUGGESTIONS && !isChineseOrJapaneseLocale());
+    }
+
+    /**
+     * "Show the suggestion bar" is off here ({@link SettingsValues#isPkbSuggestionBarHidden()})
+     * and the keyboard is not Chinese or Japanese, whose candidate strip stays.
+     */
+    private boolean isLatinStripHidden() {
+        SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
+        return settings != null && settings.isPkbSuggestionBarHidden() && !isChineseOrJapaneseLocale();
+    }
+
+    private boolean isChineseOrJapaneseLocale() {
+        return currentLocale != null && LocaleUtils.isChineseOrJapanese(currentLocale);
     }
 
     /**
@@ -484,7 +539,14 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         // brings it back), and it calls suggestionView.clear(), destroying suggestions
         // that are still valid — the arrow bar only ever covered them.
         if (auxBarView != null && auxBarView.getCurrentState() == AuxBarState.ARROW_BAR) {
-            auxBarView.dismissKeyViewAndRestoreSuggestions();
+            // With "Show the suggestion bar" off there was no Latin strip under the arrow bar
+            // (entering cursor mode hides the bar first), so restoring one would leave an empty
+            // strip up.
+            if (auxBarView.getSuggestionView().getMode() == SuggestionMode.LATIN && isLatinStripHidden()) {
+                auxBarView.hide();
+            } else {
+                auxBarView.dismissKeyViewAndRestoreSuggestions();
+            }
         }
     }
 
@@ -907,7 +969,7 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
                     dev.bbkb.ime.core.keyevent.AuxCharacterResolver.Result result = 
                         resolver.resolve(keyCode);
                     if (result.hasCharacter()) {
-                        return String.valueOf(result.character);
+                        return result.text();
                     }
                 }
             }

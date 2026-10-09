@@ -36,17 +36,16 @@ public final class DeviceCapabilities {
     private final String keypadVariant;     // "3row", "4row", "none"
     private final KeyboardDeviceInfo primaryKeyboard;
     private final boolean hasTouchKeypad;
-    private final int touchKeypadDeviceId;
-    private final float touchKeypadResolution;
-    private final float touchKeypadYMax;
+    /** The scanned pad; null when none was found (and always null in a {@link #forShape}). */
+    private final TouchKeypadInfo touchKeypad;
     private final boolean isBlackBerryDevice;
     private final boolean isEmulator;
 
     private DeviceCapabilities(DetectedDeviceType deviceType, boolean hasPhysicalKeyboard,
             String keypadLayout, KeypadLayoutDetector.Source keypadLayoutSource,
             String keypadVariant, KeyboardDeviceInfo primaryKeyboard,
-            boolean hasTouchKeypad, int touchKeypadDeviceId, float touchKeypadResolution,
-            float touchKeypadYMax, boolean isBlackBerryDevice, boolean isEmulator) {
+            boolean hasTouchKeypad, TouchKeypadInfo touchKeypad, boolean isBlackBerryDevice,
+            boolean isEmulator) {
         this.deviceType = deviceType;
         this.hasPhysicalKeyboard = hasPhysicalKeyboard;
         this.keypadLayout = keypadLayout;
@@ -54,9 +53,7 @@ public final class DeviceCapabilities {
         this.keypadVariant = keypadVariant;
         this.primaryKeyboard = primaryKeyboard;
         this.hasTouchKeypad = hasTouchKeypad;
-        this.touchKeypadDeviceId = touchKeypadDeviceId;
-        this.touchKeypadResolution = touchKeypadResolution;
-        this.touchKeypadYMax = touchKeypadYMax;
+        this.touchKeypad = touchKeypad;
         this.isBlackBerryDevice = isBlackBerryDevice;
         this.isEmulator = isEmulator;
     }
@@ -76,6 +73,10 @@ public final class DeviceCapabilities {
      */
     public static DeviceCapabilities detect(DeviceInputMapping mapping) {
         KeyboardDeviceScanner scanner = KeyboardDeviceScanner.getInstance();
+        // A config that names its pad lets the scanner find it by name; a config that names none
+        // (every one but the Titans') leaves the scan exactly as it was.
+        scanner.setDeclaredTouchKeypadName(mapping != null && mapping.touchKeypad != null
+                ? mapping.touchKeypad.inputDeviceName : null);
         KeyboardDeviceInfo primary = scanner.getPrimaryKeyboard();
         TouchKeypadInfo touch = scanner.getPrimaryTouchKeypad();
 
@@ -90,11 +91,19 @@ public final class DeviceCapabilities {
                 HardwareProbe.getSystemKeypadType(),
                 primary,
                 touch != null,
-                touch != null ? touch.getDeviceId() : -1,
-                touch != null ? touch.getResolution() : 0f,
-                touch != null ? touch.getYRangeMax() : 0f,
+                touch,
                 HardwareProbe.isBlackBerryDevice(),
                 HardwareProbe.isEmulator());
+    }
+
+    /**
+     * These capabilities with a different touch keypad: what a live re-scan found after the pad
+     * appeared, vanished or changed. Everything else is kept as detected.
+     */
+    public DeviceCapabilities withTouchKeypad(TouchKeypadInfo touch) {
+        return new DeviceCapabilities(deviceType, hasPhysicalKeyboard, keypadLayout,
+                keypadLayoutSource, keypadVariant, primaryKeyboard,
+                touch != null, touch, isBlackBerryDevice, isEmulator);
     }
 
     /**
@@ -117,7 +126,7 @@ public final class DeviceCapabilities {
             String keypadLayout, String keypadVariant) {
         return new DeviceCapabilities(deviceType, hasPhysicalKeyboard, keypadLayout,
                 KeypadLayoutDetector.Source.DEVICE_CONFIG, keypadVariant,
-                null, hasTouchKeypad, -1, 0f, 0f, isBlackBerryDevice, false);
+                null, hasTouchKeypad, null, isBlackBerryDevice, false);
     }
 
     private static DetectedDeviceType determineDeviceType(KeyboardDeviceInfo primary) {
@@ -130,9 +139,11 @@ public final class DeviceCapabilities {
     public DetectedDeviceType getDeviceType() { return deviceType; }
     public boolean hasPhysicalKeyboard() { return hasPhysicalKeyboard; }
     public boolean hasTouchKeypad() { return hasTouchKeypad; }
-    public int getTouchKeypadDeviceId() { return touchKeypadDeviceId; }
-    public float getTouchKeypadResolution() { return touchKeypadResolution; }
-    public float getTouchKeypadYMax() { return touchKeypadYMax; }
+    /** The scanned pad, or null when none was found. */
+    public TouchKeypadInfo getTouchKeypad() { return touchKeypad; }
+    public int getTouchKeypadDeviceId() { return touchKeypad != null ? touchKeypad.getDeviceId() : -1; }
+    public float getTouchKeypadResolution() { return touchKeypad != null ? touchKeypad.getResolution() : 0f; }
+    public float getTouchKeypadYMax() { return touchKeypad != null ? touchKeypad.getYRangeMax() : 0f; }
     public String getKeypadLayout() { return keypadLayout; }
     public KeypadLayoutDetector.Source getKeypadLayoutSource() { return keypadLayoutSource; }
     public String getKeypadVariant() { return keypadVariant; }

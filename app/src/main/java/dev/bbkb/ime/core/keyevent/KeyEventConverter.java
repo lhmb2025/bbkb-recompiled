@@ -222,7 +222,7 @@ public class KeyEventConverter {
                         android.util.Log.d("AltChordDebug", "AuxCharacterResolver: keyCode=" + keyCode +
                             " -> '" + result.character + "' (source=" + result.source + ")");
                         }
-                        return InputEvent.createHardwareKeyPressEx((int) result.character, keyCode, null, isRepeat, keyEvent.getEventTime(), false);
+                        return InputEvent.createHardwareKeyPressEx(result.codePoint, keyCode, null, isRepeat, keyEvent.getEventTime(), false);
                     }
                 }
             }
@@ -435,7 +435,7 @@ public class KeyEventConverter {
                         // Output the alt character via the resolver
                         AuxCharacterResolver.Result result = auxCharacterResolver.resolve(keyEvent);
                         if (result.hasCharacter()) {
-                            return InputEvent.createHardwareKeyPressEx((int) result.character, keyCode2, null, z2, keyEvent.getEventTime(), false);
+                            return InputEvent.createHardwareKeyPressEx(result.codePoint, keyCode2, null, z2, keyEvent.getEventTime(), false);
                         }
                         // No alt character defined, consume silently
                         return InputEvent.createGestureEndCopy(InputEvent.createEmptyEvent());
@@ -517,7 +517,7 @@ public class KeyEventConverter {
                     AuxCharacterResolver.Result result =
                             auxCharacterResolver.resolve(ResolvedKey.PSEUDO_KEYCODE_EMOJI);
                     if (result.hasCharacter()) {
-                        return InputEvent.createHardwareKeyPressEx((int) result.character, keyCode2, null, z2, keyEvent.getEventTime(), false);
+                        return InputEvent.createHardwareKeyPressEx(result.codePoint, keyCode2, null, z2, keyEvent.getEventTime(), false);
                     }
                     return InputEvent.createHardwareKeyPressEx((int)'0', keyCode2, null, z2, keyEvent.getEventTime(), false);
                 }

@@ -80,6 +80,7 @@ class AuxBarManagerTransitionTest {
 
     @After
     fun tearDown() {
+        SettingsValues.setInputMenuRequestedByKey(false)
         DeviceProfile.setOnScreenKeyboardShowing(false)
         DeviceProfile.initialize(null)
         suggestionsAllowed(null)
@@ -109,6 +110,15 @@ class AuxBarManagerTransitionTest {
             }
         }
         ReflectionHelpers.setField(SettingsManager.getInstance(), "settingsValues", values)
+    }
+
+    /**
+     * "Show the suggestion bar" is off and applies here, in a field that allows suggestions. The
+     * predicate itself (device shape, on-screen keyboard) is PkbSuggestionBarTest's.
+     */
+    private fun suggestionBarHidden() {
+        suggestionsAllowed(true)
+        Mockito.`when`(SettingsManager.getInstance().getSettingsValues().isPkbSuggestionBarHidden()).thenReturn(true)
     }
 
     private fun words() = SuggestedWords(ArrayList(), false, false, 0)
@@ -307,6 +317,183 @@ class AuxBarManagerTransitionTest {
         manager.showUnifiedInputMenu(keyboard("a"))
         manager.showSuggestionStrip(words(), false)
         assertEquals(AuxBarState.LATIN_SUGGESTIONS, manager.currentState)
+    }
+
+    // ── "Show the suggestion bar" off ───────────────────────────────────────
+
+    @Test
+    fun withTheBarHiddenNeitherOverloadShowsALatinStrip() {
+        suggestionBarHidden()
+
+        manager.showSuggestionStrip(words())
+        manager.showSuggestionStrip(words(), false)
+
+        assertEquals(AuxBarState.NONE, manager.currentState)
+        assertEquals(View.GONE, bar.visibility)
+    }
+
+    @Test
+    fun withTheBarHiddenAChineseOrJapaneseStripStillShows() {
+        suggestionBarHidden()
+
+        manager.showSuggestionStrip(words(), true)
+        assertEquals(AuxBarState.CJK_SUGGESTIONS, manager.currentState)
+
+        for (locale in listOf(Locale.CHINA, Locale.JAPAN)) {
+            manager.hide()
+            manager.setCurrentLocale(locale)
+            manager.showSuggestionStrip(words())
+            assertEquals("$locale", AuxBarState.CJK_SUGGESTIONS, manager.currentState)
+            // The sync delivery path passes isCJK=false whatever the keyboard; a Chinese or
+            // Japanese keyboard keeps whatever strip it is given.
+            manager.showSuggestionStrip(words(), false)
+            assertEquals("$locale", AuxBarState.LATIN_SUGGESTIONS, manager.currentState)
+        }
+    }
+
+    @Test
+    fun withTheBarHiddenALatinStripAlreadyUpIsTakenDown() {
+        for (overload in 1..2) {
+            suggestionsAllowed(null)
+            manager.showSuggestionStrip(words(), false)
+            suggestionBarHidden()
+
+            if (overload == 1) manager.showSuggestionStrip(words()) else manager.showSuggestionStrip(words(), false)
+
+            assertEquals("overload=$overload", AuxBarState.NONE, manager.currentState)
+            assertEquals(View.GONE, bar.visibility)
+        }
+    }
+
+    @Test
+    fun hideSuggestionBarTakesDownTheEmptyContainerTheBarStartsAs() {
+        assertEquals(AuxBarState.NONE, manager.currentState)
+        assertEquals(View.VISIBLE, bar.visibility)
+
+        manager.hideSuggestionBar()
+
+        assertEquals(View.GONE, bar.visibility)
+        verify(events, never()).onAuxBarStateChanged(Mockito.any(), Mockito.any())
+    }
+
+    @Test
+    fun hideSuggestionBarTakesDownALatinStripAndTheMenu() {
+        manager.showSuggestionStrip(words(), false)
+        manager.hideSuggestionBar()
+        assertEquals(AuxBarState.NONE, manager.currentState)
+
+        manager.showUnifiedInputMenu(keyboard("a"))
+        manager.hideSuggestionBar()
+        assertEquals(AuxBarState.NONE, manager.currentState)
+        assertEquals(View.GONE, bar.visibility)
+    }
+
+    @Test
+    fun hideSuggestionBarLeavesAutofillTheKeyBarsAndAChineseStrip() {
+        manager.showAutofillBar(emptyList(), 10, 10)
+        manager.hideSuggestionBar()
+        assertEquals(AuxBarState.AUTOFILL, manager.currentState)
+
+        showArrowBarWith(keyboard("←", "→"))
+        manager.hideSuggestionBar()
+        assertEquals(AuxBarState.ARROW_BAR, manager.currentState)
+
+        manager.showAccentBar(listOf("é"))
+        manager.hideSuggestionBar()
+        assertEquals(AuxBarState.ACCENT_BAR, manager.currentState)
+
+        manager.showSuggestionStrip(words(), true)
+        manager.hideSuggestionBar()
+        assertEquals(AuxBarState.CJK_SUGGESTIONS, manager.currentState)
+
+        // A Chinese keyboard handed a Latin-mode strip keeps it too.
+        manager.setCurrentLocale(Locale.CHINA)
+        manager.showSuggestionStrip(words(), false)
+        manager.hideSuggestionBar()
+        assertEquals(AuxBarState.LATIN_SUGGESTIONS, manager.currentState)
+    }
+
+    /**
+     * A menu the "Show or hide the input menu" key raised over "Show the suggestion bar" is not
+     * the bar's to hide: every route the hidden bar takes things down by leaves it up, including
+     * an accent pick made over it. Once the override is gone the bar setting has its way again.
+     */
+    @Test
+    fun withTheBarHiddenAMenuTheKeyRaisedStays() {
+        suggestionBarHidden()
+        manager.showUnifiedInputMenu(keyboard("a"))
+        SettingsValues.setInputMenuRequestedByKey(true)
+
+        manager.hideSuggestionBar()
+        assertEquals(AuxBarState.UNIFIED_INPUT_MENU, manager.currentState)
+
+        // A suggestion delivery while the bar is hidden goes through hideSuggestionBar too.
+        manager.showSuggestionStrip(words())
+        manager.showSuggestionStrip(words(), false)
+        assertEquals(AuxBarState.UNIFIED_INPUT_MENU, manager.currentState)
+
+        manager.showAccentBar(listOf("é"))
+        manager.hideSuggestionBar()
+        manager.hideAccentBar()
+        assertEquals(AuxBarState.UNIFIED_INPUT_MENU, manager.currentState)
+        assertEquals(View.VISIBLE, bar.visibility)
+
+        SettingsValues.setInputMenuRequestedByKey(false)
+        manager.hideSuggestionBar()
+        assertEquals(AuxBarState.NONE, manager.currentState)
+        assertEquals(View.GONE, bar.visibility)
+    }
+
+    @Test
+    fun hideSuggestionBarUnderAnAccentBarStopsItPuttingTheMenuOrStripBack() {
+        for (covered in listOf("menu", "strip")) {
+            if (covered == "menu") manager.showUnifiedInputMenu(keyboard("a")) else manager.showSuggestionStrip(words(), false)
+            manager.showAccentBar(listOf("é"))
+
+            manager.hideSuggestionBar()
+            assertEquals(covered, AuxBarState.ACCENT_BAR, manager.currentState)
+            manager.hideAccentBar()
+
+            assertEquals(covered, AuxBarState.NONE, manager.currentState)
+            assertEquals(covered, View.GONE, bar.visibility)
+        }
+    }
+
+    @Test
+    fun withTheBarHiddenClosingTheArrowBarLeavesNoEmptyStrip() {
+        suggestionBarHidden()
+        showArrowBarWith(keyboard("←", "→"))
+        assertEquals(AuxBarState.ARROW_BAR, manager.currentState)
+
+        manager.hideArrowBar()
+
+        assertEquals(AuxBarState.NONE, manager.currentState)
+        assertEquals(View.GONE, bar.visibility)
+    }
+
+    @Test
+    fun withTheBarHiddenClosingTheArrowBarStillRestoresAutofillChips() {
+        suggestionBarHidden()
+        manager.showAutofillBar(emptyList(), 10, 10)
+        showArrowBarWith(keyboard("←", "→"))
+
+        manager.hideArrowBar()
+
+        assertEquals(AuxBarState.AUTOFILL, manager.currentState)
+        assertEquals(View.VISIBLE, bar.visibility)
+    }
+
+    @Test
+    fun withTheBarHiddenTheAccentBarStillComesAndGoes() {
+        suggestionBarHidden()
+
+        manager.showAccentBar(listOf("é", "è"))
+        assertEquals(AuxBarState.ACCENT_BAR, manager.currentState)
+        assertEquals(View.VISIBLE, bar.visibility)
+
+        manager.hideAccentBar()
+        assertEquals(AuxBarState.NONE, manager.currentState)
+        assertEquals(View.GONE, bar.visibility)
     }
 
     // ── autofill ────────────────────────────────────────────────────────────

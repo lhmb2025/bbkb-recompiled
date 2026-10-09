@@ -26,7 +26,11 @@ import dev.bbkb.ime.core.shared.Logger
  * i.e. what the user types in today) plus the new language: nothing the user had disappears.
  *
  * Multi-language keyboards (subtypes carrying `AdditionalLocales`) never count as "the language
- * is on": one with a non-Latin primary types in its Latin layout, not in that language.
+ * is on", and [pickSubtypeFor] never picks one. That is not about layouts any more (Cyrillic,
+ * Devanagari and Arabic keyboards can have extras too and type in their own layout): such a
+ * keyboard is one the user put together on the Languages screen, and turning it on for a pack
+ * would also switch on prediction languages nobody asked for. An old one saved without a layout
+ * (`KeyboardLayoutSet=null`) types in a fallback layout, not in the language it names.
  */
 object SubtypeEnabler {
 

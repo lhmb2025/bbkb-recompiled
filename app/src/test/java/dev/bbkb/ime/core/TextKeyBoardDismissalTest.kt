@@ -93,7 +93,7 @@ class TextKeyBoardDismissalTest {
     }
 
     private fun setUim(enabled: Boolean) = ReflectionHelpers.setField(
-        SettingsManager.getInstance().getSettingsValues(), "isUimEnabled", enabled,
+        SettingsManager.getInstance().getSettingsValues(), "uimEnabledSetting", enabled,
     )
 
     private fun setDynamicSearch(enabled: Boolean) = ReflectionHelpers.setField(

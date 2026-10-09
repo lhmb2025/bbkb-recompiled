@@ -89,11 +89,14 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object CustomizeSlideBoard : SettingsRoute("customize_slideboard", "Customize SlideBoard")
     object SlideboardSettings : SettingsRoute("slideboard_settings", "Touch Screen Keyboard")
     object CustomizeMenu : SettingsRoute("customize_menu", "Customize Menu")
+    object Clipboard : SettingsRoute("clipboard", "Clipboard")
     object About : SettingsRoute("about", "About")
     object Updates : SettingsRoute("updates", "Updates")
     object KeyboardHelper : SettingsRoute("keyboard_helper", "BBKB Helper")
+    object TouchSurfaceHelper : SettingsRoute("touch_surface_helper", "Touch surface helper")
     object DeviceConfiguration : SettingsRoute("device_configuration", "Device Configuration")
     object DeviceProfileBuilder : SettingsRoute("device_profile_builder", "Build a device profile")
+    object CustomPhysicalLayouts : SettingsRoute("custom_physical_layouts", "Custom physical layouts")
 
     /** Back-compat deep link onto the same page as [TouchFeedback]; nothing navigates here. */
     object KeyPressFeedback : SettingsRoute("key_press_feedback", "Key Press Feedback")
@@ -156,11 +159,14 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 CustomizeSlideBoard.route -> CustomizeSlideBoard
                 SlideboardSettings.route -> SlideboardSettings
                 CustomizeMenu.route -> CustomizeMenu
+                Clipboard.route -> Clipboard
                 About.route -> About
                 Updates.route -> Updates
                 KeyboardHelper.route -> KeyboardHelper
+                TouchSurfaceHelper.route -> TouchSurfaceHelper
                 DeviceConfiguration.route -> DeviceConfiguration
                 DeviceProfileBuilder.route -> DeviceProfileBuilder
+                CustomPhysicalLayouts.route -> CustomPhysicalLayouts
                 KeyPressFeedback.route -> KeyPressFeedback
                 else -> null
             }

@@ -96,10 +96,14 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                 }
             }
             override fun toggleFcc() {
-                if (canShowBoard()) toggleBoard(FccController.KEY_CODE) {}
+                if (canShowBoard()) toggleBoard(FccController.KEY_CODE) { ime.fccController?.toggle() }
             }
             override fun toggleNumberPad() {
-                if (canShowBoard()) toggleBoard(NumberPadController.KEY_CODE) {}
+                if (canShowBoard()) toggleBoard(NumberPadController.KEY_CODE) { ime.numberPadController?.toggle() }
+            }
+            override fun toggleInputMenu() {
+                // The menu lives in the IME window too, so it needs the window as a board does.
+                if (canShowBoard()) ime.getUiCoordinator().toggleInputMenu()
             }
         })
     }
@@ -112,8 +116,9 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
     private fun canShowBoard(): Boolean = ime.isInputViewShown() || ime.requestShowOnKeyPress()
 
     /**
-     * Toggle a UIM board through the coordinator, or run [fallback] when the UIM is off. FCC and
-     * the number pad are UIM-only boards, so their fallback does nothing.
+     * Toggle a UIM board through the coordinator, or run [fallback] when the UIM is off (or hidden
+     * with the suggestion bar): the board's own toggle, without the menu bar. A menu the "Show or
+     * hide the input menu" action has up counts as on, so the coordinator's route applies then.
      */
     private inline fun toggleBoard(boardKeyCode: Int, fallback: () -> Unit) {
         val uibm = ime.getKeyboardSwitcher().getUnifiedInputBoardManager()
@@ -233,6 +238,9 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
             InputMethodHelper.getInstance().switchToVoiceIme(ime)
             return
         }
+        // Asked before the toggle, not left to VoiceInputController.show(): the open branch below
+        // raises the UIM bar, which a refused open must not do either.
+        if (voiceKeyRefused()) return
         val wasInVoiceMode = voice.isInVoiceMode()
         voice.toggleVoiceInput()
         if (ime.isUimEnabled()) {
@@ -242,11 +250,24 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                 // coordinator's state for whatever OTHER board it is holding (see
                 // UnifiedInputBoardManager.reportBoardClosed).
                 unifiedManager.reportBoardClosed(voice.keyCode)
-            } else {
+            } else if (voice.isInVoiceMode()) {
                 unifiedManager.setActiveComponent(voice)
                 if (!unifiedManager.isShowing()) unifiedManager.show(false)
             }
         }
+    }
+
+    /**
+     * Whether a voice-key press must stop here. True when built-in voice input has no recognition
+     * service to use: [VoiceInputController.ensureRecognitionService] has then shown the "No
+     * selected voice recognition service" notice, and the press must open nothing — no board, no
+     * UIM bar, no voice mode left switched on. A press that would close voice input (it is open, or
+     * its view is up) is never refused.
+     */
+    fun voiceKeyRefused(): Boolean {
+        val voice = ime.voiceInputController ?: return false
+        if (voice.isInVoiceMode() || voice.isShowing) return false
+        return !voice.ensureRecognitionService()
     }
 
     /**
@@ -346,7 +367,9 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                         val voiceBoardId = if (mapping != null && mapping.boardId != 0) mapping.boardId else VOICE_BOARD
                         if (ime.isInputActive && ime.isInputViewShown()) {
                             val uibm = keyboardSwitcher.getUnifiedInputBoardManager()
-                            if (uibm != null && ime.isUimEnabled()) {
+                            if (voiceKeyRefused()) {
+                                // No recognition service: the notice is up; open nothing.
+                            } else if (uibm != null && ime.isUimEnabled()) {
                                 uibm.requestBoard(voiceBoardId)
                             } else {
                                 triggerVoiceInput()
@@ -375,10 +398,10 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
             if (mapping != null && mapping.hasAltChar()) return mapping.altChar.toString()
             val resolver = auxCharacterResolver()
             val result = resolver.resolve(fallbackKeyCode)
-            if (result.hasCharacter()) return result.character.toString()
+            if (result.hasCharacter()) return result.text()
             if (fallbackKeyCode == ResolvedKey.PSEUDO_KEYCODE_VOICE) {
                 val result2 = resolver.resolve(231)
-                if (result2.hasCharacter()) return result2.character.toString()
+                if (result2.hasCharacter()) return result2.text()
             }
             return hardcodedFallback
         }

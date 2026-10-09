@@ -161,8 +161,8 @@ public class CustomDeviceConfigManager {
         // preloaded configs say, and asking anyway cost an R.xml reflection sweep plus one XML
         // pull-parse per preloaded config -- on the IME's cold-start path and on every cold
         // Settings launch, on phones that can never match.
-        final List<String> keyboardNames = connectedExternalKeyboardNames();
-        if (keyboardNames.isEmpty()) return null;
+        final List<android.view.InputDevice> keyboards = connectedExternalKeyboards();
+        if (keyboards.isEmpty()) return null;
 
         List<ConfigInfo> preloaded = getPreloadedConfigs();
         if (preloaded.isEmpty()) return null;
@@ -171,7 +171,7 @@ public class CustomDeviceConfigManager {
         // preloaded config from XML once per connected keyboard device.
         final Map<String, DeviceInputConfig> parsed = new HashMap<>();
 
-        for (String deviceName : keyboardNames) {
+        for (android.view.InputDevice keyboard : keyboards) {
             // Check each preloaded config for a match
             for (ConfigInfo info : preloaded) {
                 DeviceInputConfig config;
@@ -181,7 +181,7 @@ public class CustomDeviceConfigManager {
                     config = loadConfigById(info.id);
                     parsed.put(info.id, config);
                 }
-                if (config != null && config.findMappingForDevice(deviceName) != null) {
+                if (config != null && config.findMappingForInputDevice(keyboard) != null) {
                     return info.id;
                 }
             }
@@ -190,12 +190,14 @@ public class CustomDeviceConfigManager {
     }
 
     /**
-     * Names of the connected non-virtual keyboard devices, in {@code InputDevice.getDeviceIds()}
-     * order -- the same devices, in the same order, as the nested loop this was lifted out of.
+     * The connected non-virtual keyboard devices, in {@code InputDevice.getDeviceIds()} order --
+     * the same devices, in the same order, as the nested loop this was lifted out of. Devices
+     * rather than names so a config's {@code vendor-id} / {@code product-id} rules can match.
      */
-    private static List<String> connectedExternalKeyboardNames() {
-        final List<String> names = new ArrayList<>(2);
+    private static List<android.view.InputDevice> connectedExternalKeyboards() {
+        final List<android.view.InputDevice> keyboards = new ArrayList<>(2);
         int[] deviceIds = android.view.InputDevice.getDeviceIds();
+        if (deviceIds == null) return keyboards;
         for (int id : deviceIds) {
             android.view.InputDevice device = android.view.InputDevice.getDevice(id);
             if (device == null) continue;
@@ -205,10 +207,10 @@ public class CustomDeviceConfigManager {
             boolean isExternal = !device.isVirtual();
 
             if (isKeyboard && isExternal) {
-                names.add(device.getName());
+                keyboards.add(device);
             }
         }
-        return names;
+        return keyboards;
     }
 
     /**

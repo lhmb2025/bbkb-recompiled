@@ -20,6 +20,20 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
     private boolean dynamicLearningEnabled = true;
 
     /**
+     * The user's global {@code dynamic_learning} preference, without the per-field gates that
+     * {@link #dynamicLearningEnabled} folds in. Contacts import reads this one: it learns names
+     * from the address book, not text typed into the focused field.
+     */
+    private boolean learningPreferenceEnabled = true;
+
+    /**
+     * The focused field set {@code IME_FLAG_NO_PERSONALIZED_LEARNING} (incognito). Already folded
+     * into {@link #dynamicLearningEnabled}; kept on its own for the boards that capture personal
+     * data without learning from typing (emoji recents, clipboard history, add-to-dictionary).
+     */
+    private boolean noPersonalizedLearning = false;
+
+    /**
      * The executor deferred learning work runs on. Held in a field rather than looked up per call
      * so a test can substitute a direct executor; production always gets the process-wide
      * single-thread executor, so ordering against the init task is unchanged.
@@ -47,6 +61,24 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
         this.dynamicLearningEnabled = z;
         NuanceSDK engine = engineOrNull();
         if (engine != null) engine.setIsExplicitLearning(!z);
+    }
+
+    /** Whether this session may learn: the preference is on, the field type allows it, and the field is not incognito. */
+    public boolean isLearningAllowed() {
+        return this.dynamicLearningEnabled;
+    }
+
+    public void setLearningPreferenceEnabled(boolean z) {
+        this.learningPreferenceEnabled = z;
+    }
+
+    public void setNoPersonalizedLearning(boolean z) {
+        this.noPersonalizedLearning = z;
+    }
+
+    /** Whether the focused field asked for no personalized learning (incognito). */
+    public boolean isNoPersonalizedLearning() {
+        return this.noPersonalizedLearning;
     }
 
     /** Ends the current word in the engine; nothing to end when the engine failed to load. */
@@ -104,6 +136,14 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
         this.personalLearner.deactivate();
     }
 
+    /**
+     * @param z "force": the CJK prediction commit passes {@code true} for a Japanese pick or a
+     *          partial Chinese pick, where the engine's selection IS the transition that keeps the
+     *          rest of the composition alive (Romaji, stroke and Cangjie buffers are never replayed
+     *          from the tracker). So force still selects by index when the session may not learn,
+     *          as it always has with the preference off (the engine is in explicit-learning mode
+     *          then), but it no longer learns by content: no {@code addWord} fallback.
+     */
     public void learn(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, boolean z) {
         if (suggestedWordInfoVar == null || (!this.dynamicLearningEnabled && !z)) {
             clearEngine();
@@ -117,7 +157,9 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
     }
 
     public void addContactsWords(final String[] strArr, final ContactsDataProvider.ContactsType bVar) {
-        if (this.dynamicLearningEnabled) {
+        // The global preference only: this imports the address book, not what was typed, so the
+        // focused field (password, incognito) has no say in it.
+        if (this.learningPreferenceEnabled) {
             if (strArr.length <= 500) {
                 addContactsWordsInternal(strArr, bVar);
             } else {
@@ -138,7 +180,7 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
                                                 : abstractC0928aM6055e.getClass().getSimpleName()));
         }
         if (abstractC0928aM6055e != null) {
-            abstractC0928aM6055e.learnWord(suggestedWordInfoVar);
+            abstractC0928aM6055e.learnWord(suggestedWordInfoVar, this.dynamicLearningEnabled);
             return;
         }
         // Audit EB-6: with no active learner this returned having done NOTHING — neither

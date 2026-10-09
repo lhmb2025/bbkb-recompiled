@@ -324,6 +324,15 @@ public class KeyInterceptorService extends AccessibilityService {
      * Decide whether this key is a board key (SYM / EMOJI / VOICE), preferring the device
      * config's answer and falling back to the legacy hardcoded scancode table.
      *
+     * <p>The legacy table is the Minimal Phone's: 249 / 250 / 251 are its Sym, Emoji and Mic
+     * keys. On a Unihertz Titan those scancodes are Func1, Func2 and Fn, so the table's answer
+     * yields to any matched config that declares the scancode: the config's role decides, even
+     * with the unified pipeline off. A config that declares it as a board key (the MP01's own)
+     * gets the same answer the table would have given, so the MP01 is unchanged; one that
+     * declares it as anything else (FUNCTION, MODIFIER) makes it an ordinary key. Keys the table
+     * does not know are never re-classified here, so a config's board roles still reach this
+     * service only through the unified pipeline, as before.
+     *
      * @param mapping  the resolved mapping, or null when unified mapping is off / no config matched
      * @return the board key type, or null if this is an ordinary key
      */
@@ -348,8 +357,20 @@ public class KeyInterceptorService extends AccessibilityService {
                 return unifiedKeyType;
             }
         }
-        // No mapping, or a non-BOARD role: fall back to the legacy hardcoded table.
-        return identifyKeyType(scanCode, keyCode, deviceId);
+        // No mapping, or a non-BOARD role: fall back to the legacy hardcoded table...
+        SpecialKeyType legacyKeyType = identifyKeyType(scanCode, keyCode, deviceId);
+        if (legacyKeyType == null) {
+            return null;
+        }
+        // ...unless the matched config declares this key: then its role is the answer. Asked of
+        // the resolver directly, so it holds with the unified pipeline off (the shipped default).
+        ScancodeMapping declared = mapping != null
+                ? mapping
+                : ScancodeMappingResolver.getInstance().resolve(scanCode, keyCode);
+        if (declared != null && declared.role != null) {
+            return keyRoleToSpecialKeyType(declared.role);
+        }
+        return legacyKeyType;
     }
 
     /**

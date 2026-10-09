@@ -32,6 +32,17 @@ public abstract class BaseLearningModel {
     }
 
     void learnWord(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
+        learnWord(suggestedWordInfoVar, true);
+    }
+
+    /**
+     * @param learnByContent whether a stale index may fall back to {@code addWord}. That fallback
+     *                       is learning and nothing else (it does not end the word), so a session
+     *                       that may not learn passes {@code false}: a forced CJK commit in such a
+     *                       session still gets the index select its engine transition needs, but
+     *                       never an {@code addWord}.
+     */
+    void learnWord(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, boolean learnByContent) {
         if (this.nuanceSdk == null) {
             // FIX-D2: the engine had failed to load when this learner was built. Nothing to learn
             // into and no word to end.
@@ -65,7 +76,7 @@ public abstract class BaseLearningModel {
                 + " now=" + generationNow
                 + " -> addWord fallback (EB-3)");
         }
-        if (wordInfo.word != null && !wordInfo.word.isEmpty()) {
+        if (learnByContent && wordInfo.word != null && !wordInfo.word.isEmpty()) {
             this.nuanceSdk.addWord(wordInfo.word);
         }
     }

@@ -58,8 +58,8 @@ object CkbKeyGridCapture {
     fun needsCapture(width: Int, height: Int): Boolean =
         capturedFor != geometryKey(normalizedWidth(width), normalizedHeight(height))
 
-    private fun normalizedWidth(width: Int): Int = if (width > 0) width else CkbKeyGrid.WIDTH
-    private fun normalizedHeight(height: Int): Int = if (height > 0) height else CkbKeyGrid.HEIGHT
+    private fun normalizedWidth(width: Int): Int = if (width > 0) width else CkbKeyGrid.width
+    private fun normalizedHeight(height: Int): Int = if (height > 0) height else CkbKeyGrid.height
     private fun geometryKey(width: Int, height: Int): Long =
         (width.toLong() shl 32) or (height.toLong() and 0xffffffffL)
 
@@ -123,8 +123,8 @@ object CkbKeyGridCapture {
     fun exportXml(context: Context): java.io.File? {
         val root = loadCachedRoot(context) ?: return null
         val cells = loadCached(context) ?: return null
-        val w = root.optInt("w", CkbKeyGrid.WIDTH)
-        val h = root.optInt("h", CkbKeyGrid.HEIGHT)
+        val w = root.optInt("w", CkbKeyGrid.width)
+        val h = root.optInt("h", CkbKeyGrid.height)
         val sb = StringBuilder()
         sb.append("<ckb-key-grid width=\"").append(w).append("\" height=\"").append(h).append("\">\n")
         for (c in cells) {

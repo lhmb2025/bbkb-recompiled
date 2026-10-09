@@ -168,7 +168,7 @@ class SettingsSearchIndexTest {
         val onTouch = anchorsOn(touchDevice)
 
         // Physical-keyboard-only rows: offered on the KEY2, hidden on a touch-only phone.
-        for (anchor in listOf("auto_correction_mode_PKB", "pkb_custom_page_first")) {
+        for (anchor in listOf("auto_correction_mode_PKB", "pkb_custom_page_first", "pref_pkb_show_suggestion_bar")) {
             assertTrue("$anchor should be searchable on a physical-keyboard device", anchor in onPkb)
             assertFalse("$anchor is not rendered on a touch-only device, so search must not offer it", anchor in onTouch)
         }
@@ -190,14 +190,74 @@ class SettingsSearchIndexTest {
         )
 
         // Everything else is device-independent and must not have been swept up by the gating.
+        // The BBKB helper's entries count here: both shapes are phones whose profile keeps the
+        // helper offered (keyboardHelperEntriesFollowTheProfilesHelperSwitch covers the switch).
         assertEquals(
             "gating changed the entries that are NOT device-specific",
             SettingsSearchIndex.entries
-                .filter { it.requires == DeviceRequirement.ANY }
+                .filter {
+                    it.requires == DeviceRequirement.ANY ||
+                        it.requires == DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE
+                }
                 .mapNotNull { it.anchor }
                 .toSet(),
             onPkb intersect onTouch
         )
+    }
+
+    /**
+     * The Touch surface helper row is drawn on every phone (greyed out without a declared pad), so
+     * its entry is offered everywhere; its Shizuku section only where the profile declares a pad
+     * and the selector gives it to the Shizuku reader — not on a Titan 2 on Android 16, whose
+     * built-in route works.
+     */
+    /** The BBKB helper's settings are not offered where its row is greyed out (BlackBerry phones). */
+    @Test
+    fun keyboardHelperEntriesFollowTheProfilesHelperSwitch() {
+        val helperAnchors = setOf("pref_key_interceptor_enabled", "pref_preprocess_all_key_events", "pref_use_unified_key_mapping")
+        assertTrue(helperAnchors.all { it in anchorsOn(pkbDevice) })
+        val blackBerry = pkbDevice.copy(accessibilityHelperAvailable = false)
+        assertTrue(helperAnchors.none { it in anchorsOn(blackBerry) })
+    }
+
+    @Test
+    fun touchSurfaceEntriesFollowTheProfilesPadAndRoute() {
+        val titanOnShizuku = pkbDevice.copy(declaresTouchKeypad = true, touchKeypadUsesShizuku = true)
+        val titanBuiltIn = pkbDevice.copy(declaresTouchKeypad = true, touchKeypadUsesShizuku = false)
+
+        assertTrue("touch_surface_helper" in anchorsOn(titanOnShizuku))
+        assertTrue("touch_surface_shizuku" in anchorsOn(titanOnShizuku))
+        assertTrue("touch_surface_helper" in anchorsOn(titanBuiltIn))
+        assertFalse(
+            "the Shizuku section is not drawn on the built-in route, so search must not offer it",
+            "touch_surface_shizuku" in anchorsOn(titanBuiltIn)
+        )
+        for (device in listOf(pkbDevice, touchDevice)) {
+            assertTrue("the row is drawn, greyed out, on every phone", "touch_surface_helper" in anchorsOn(device))
+            assertFalse("touch_surface_shizuku" in anchorsOn(device))
+        }
+        // Reading the selector alone is not enough: no declared pad, no Shizuku section.
+        assertFalse("touch_surface_shizuku" in anchorsOn(pkbDevice.copy(touchKeypadUsesShizuku = true)))
+    }
+
+    /**
+     * "Show or hide the input menu" is an action of the multifunction key and of the Alt+Sym
+     * shortcut, and the way back to the menu once "Show the suggestion bar" has hidden it: a
+     * search for the menu finds both settings that can be set to it, as well as that toggle.
+     * Matched as MainSettingsScreen matches, by substring of the keywords.
+     */
+    @Test
+    fun searchingForTheInputMenuFindsTheShortcutsThatShowOrHideIt() {
+        val found = SettingsSearchIndex.entriesFor(pkbDevice)
+            .filter { it.keywords.contains("input menu") }
+            .mapNotNull { it.anchor }
+            .toSet()
+
+        for (anchor in listOf(
+            "pref_multifunction_key_action", "pref_alt_sym_shortcut_action", "pref_pkb_show_suggestion_bar",
+        )) {
+            assertTrue("a search for the input menu should offer $anchor", anchor in found)
+        }
     }
 
     /**

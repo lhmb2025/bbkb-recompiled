@@ -546,7 +546,10 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
             dynamicSearchActive = false;
         }
 
-        this.pagerAdapter.addToRecents(key.getKeySpecOutputText());
+        // Recents are persisted to prefs: an incognito field leaves no trace there.
+        if (!KeyboardSwitcher.getInstance().isNoPersonalizedLearning()) {
+            this.pagerAdapter.addToRecents(key.getKeySpecOutputText());
+        }
         int iM6232c = key.getCode();
         if (iM6232c == -4) {
             int iM5661a = GraphemeUtils.surrogatePairToCodePoint(key.getKeySpecOutputText());

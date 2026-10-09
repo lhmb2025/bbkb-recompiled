@@ -14,6 +14,11 @@
     <files-path
         name="device_configs"
         path="device_configs/"/>
+    <!-- Imported physical letter maps (UserLetterMapRepository, layouts/pkb/<id>.json). Shared
+         out of here by Custom physical layouts' "Share" action. -->
+    <files-path
+        name="layouts"
+        path="layouts/"/>
     <!-- cacheDir/downloads/ — DistributionConfig.downloadDir. A downloaded APK has to be handed
          to the platform installer as a content:// URI (file:// is refused since API 24), so
          ApkInstaller needs this provider to be able to serve out of that directory. Extending the

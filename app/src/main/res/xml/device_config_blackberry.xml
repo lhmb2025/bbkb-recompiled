@@ -23,6 +23,11 @@
         <match>
             <brand exact="blackberry"/>
         </match>
+        <!-- Schema v2.5: BlackBerry firmware delivers every key the keyboard handles (Sym, the
+             Speed Key, the mic key), so the BBKB helper (the accessibility key interceptor) is
+             never needed here. "off" switches its component off at runtime, which also removes
+             it from Settings > Accessibility on this phone, and greys out its settings row. -->
+        <accessibility-helper>off</accessibility-helper>
     </device>
 
 </device-input-config>

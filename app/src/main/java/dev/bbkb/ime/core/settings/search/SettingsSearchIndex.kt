@@ -1,9 +1,13 @@
 package dev.bbkb.ime.core.settings.search
 
 import dev.bbkb.ime.core.device.profile.DeviceProfile
+import dev.bbkb.ime.core.device.touch.TouchSourceSelector
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.SettingsRoute
+import dev.bbkb.ime.core.settings.backup.LayoutsBundle
 import dev.bbkb.ime.core.settings.backup.SettingsBackup
+import dev.bbkb.ime.core.settings.screens.TouchSurfaceAnchors
+import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardPrefs
 
 /**
  * The device facts the index needs in order to decide whether a setting's row exists at all.
@@ -16,6 +20,12 @@ import dev.bbkb.ime.core.settings.backup.SettingsBackup
 data class SearchDeviceCapabilities(
     val hasPhysicalKeyboard: Boolean,
     val hasMultifunctionKey: Boolean,
+    /** The profile describes a touch surface over the keys (`DeviceProfile.declaresTouchKeypad`). */
+    val declaresTouchKeypad: Boolean = false,
+    /** The touch-source selector gives that surface to the Shizuku reader. */
+    val touchKeypadUsesShizuku: Boolean = false,
+    /** The BBKB helper is offered on this phone: its profile does not switch it off. */
+    val accessibilityHelperAvailable: Boolean = true,
 ) {
     companion object {
         fun current(): SearchDeviceCapabilities {
@@ -24,6 +34,11 @@ data class SearchDeviceCapabilities(
                 hasPhysicalKeyboard = profile?.hasPhysicalKeyboard() ?: false,
                 hasMultifunctionKey =
                     profile?.getDeviceMapping()?.getMultifunctionKeyMapping() != null,
+                declaresTouchKeypad = profile?.declaresTouchKeypad() ?: false,
+                accessibilityHelperAvailable =
+                    !dev.bbkb.ime.core.device.interceptor.KeyInterceptorComponent.isOffForDevice(profile?.getDeviceMapping()),
+                touchKeypadUsesShizuku =
+                    profile?.touchSourceSelection?.choice == TouchSourceSelector.Choice.SHIZUKU,
             )
         }
     }
@@ -53,13 +68,22 @@ enum class DeviceRequirement {
     TOUCH_ONLY,
 
     /** Row sits behind a device mapping that declares a MULTIFUNCTION key (the KEY2 mic key). */
-    MULTIFUNCTION_KEY;
+    MULTIFUNCTION_KEY,
+
+
+    /** Row sits in the Touch surface helper's Shizuku section: the selector picks the reader. */
+    TOUCH_KEYPAD_SHIZUKU,
+
+    /** Row sits on the BBKB helper's screen, whose entry row is greyed out where it is not required. */
+    ACCESSIBILITY_HELPER_AVAILABLE;
 
     fun isMetBy(capabilities: SearchDeviceCapabilities): Boolean = when (this) {
         ANY -> true
         PHYSICAL_KEYBOARD -> capabilities.hasPhysicalKeyboard
         TOUCH_ONLY -> !capabilities.hasPhysicalKeyboard
         MULTIFUNCTION_KEY -> capabilities.hasMultifunctionKey
+        TOUCH_KEYPAD_SHIZUKU -> capabilities.declaresTouchKeypad && capabilities.touchKeypadUsesShizuku
+        ACCESSIBILITY_HELPER_AVAILABLE -> capabilities.accessibilityHelperAvailable
     }
 }
 
@@ -120,18 +144,24 @@ object SettingsSearchIndex {
         // ── Typing & input: Physical keyboard ───────────────────────────────────
         SearchableSetting(R.string.settings_pkb_ctrl_key_behavior_title, "ctrl control physical", SettingsRoute.PhysicalKeyboard.route, TYPING, "control_mode"),
         SearchableSetting(R.string.settings_pkb_dictation_key_title, "voice dictation mic key", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_voice_input_key"),
-        SearchableSetting(R.string.settings_pkb_multifunction_key_title, "multifunction convenience mic key custom action ctrl emoji clipboard cursor arrow bar", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_multifunction_key_action", DeviceRequirement.MULTIFUNCTION_KEY),
+        SearchableSetting(R.string.settings_pkb_multifunction_key_title, "multifunction convenience mic key custom action ctrl emoji clipboard cursor arrow bar input menu show hide", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_multifunction_key_action", DeviceRequirement.MULTIFUNCTION_KEY),
         SearchableSetting(R.string.settings_pkb_hold_action_title, "hold long press key", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_pkb_hold_auto_commit"),
-        SearchableSetting(R.string.settings_pkb_alt_sym_shortcut_title, "alt sym shortcut", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_alt_sym_shortcut_action"),
+        SearchableSetting(R.string.settings_pkb_alt_sym_shortcut_title, "alt sym shortcut input menu show hide", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_alt_sym_shortcut_action"),
+        SearchableSetting(R.string.settings_pkb_suggestion_bar_title, "suggestion bar strip predictions hide input menu physical keyboard", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_pkb_show_suggestion_bar", DeviceRequirement.PHYSICAL_KEYBOARD),
         SearchableSetting(R.string.pref_show_pkb_modifier_status_icon, "modifier status icon shift alt", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_show_pkb_modifier_status_icon"),
         SearchableSetting(R.string.pref_shift_double_tap_lock, "shift double tap caps lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_shift_double_tap_lock"),
         SearchableSetting(R.string.pref_alt_double_tap_lock, "alt double tap lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_alt_double_tap_lock"),
+        // The screen itself, so no anchor; its Nav row on Physical keyboard is behind the same
+        // physical-keyboard gate.
+        SearchableSetting(R.string.settings_pkb_letter_maps_title, "custom physical layout letter map remap keys keycaps alphabet qwerty qwertz azerty json import", SettingsRoute.CustomPhysicalLayouts.route, TYPING, requires = DeviceRequirement.PHYSICAL_KEYBOARD),
 
         // ── Typing & input: Voice input ─────────────────────────────────────────
         SearchableSetting(R.string.settings_voice_builtin_title, "voice dictation speech", SettingsRoute.VoiceInput.route, TYPING, "voice_input_enabled"),
+        SearchableSetting(R.string.settings_voice_recognizer_title, "voice dictation speech recognizer recognition service provider engine app", SettingsRoute.VoiceInput.route, TYPING, "voice_input_recognizer"),
         SearchableSetting(R.string.settings_voice_auto_start_title, "voice auto start listening", SettingsRoute.VoiceInput.route, TYPING, "voice_input_auto_start"),
         SearchableSetting(R.string.settings_voice_use_keyboard_lang_title, "voice language keyboard", SettingsRoute.VoiceInput.route, TYPING, "voice_input_use_input_language"),
         SearchableSetting(R.string.settings_voice_prefer_offline_title, "voice offline on device", SettingsRoute.VoiceInput.route, TYPING, "voice_input_prefer_offline"),
+        SearchableSetting(R.string.settings_voice_show_partial_results_title, "voice dictation partial live words speak", SettingsRoute.VoiceInput.route, TYPING, "voice_input_show_partial_results"),
         // "Block offensive words" lives on the voice screen: masking the recogniser's results
         // (EXTRA_MASK_OFFENSIVE_WORDS) is all it does. Frozen anchor, moved route and category —
         // a result for "profanity" must now land under Typing & input, on Voice input.
@@ -168,6 +198,13 @@ object SettingsSearchIndex {
 
         // ── Typing & input: Customize menu (UIM toggle order, lives under On-Screen Keyboard) ──
         SearchableSetting(R.string.settings_customize_menu_title, "unified input menu order reorder shortcuts toggles voice emoji cursor clipboard number pad math", SettingsRoute.CustomizeMenu.route, TYPING, "customize_menu"),
+
+        // ── Typing & input: Clipboard (entry row lives on On-Screen Keyboard) ───
+        SearchableSetting(R.string.clipboard_history_title, "clipboard history copy paste clips keep save remember", SettingsRoute.Clipboard.route, TYPING, "pref_clipboard_history_enabled"),
+        SearchableSetting(R.string.clipboard_retention_title, "clipboard retention expire delete keep clips hour day week time", SettingsRoute.Clipboard.route, TYPING, "pref_clipboard_retention"),
+        SearchableSetting(R.string.clipboard_link_previews_title, "clipboard link preview url web page thumbnail title network", SettingsRoute.Clipboard.route, TYPING, "pref_clipboard_link_previews"),
+        // An action, anchored by the id ClipboardPrefs declares, like the backup rows below.
+        SearchableSetting(R.string.clipboard_clear_history_title, "clipboard clear delete wipe erase history clips pinned", SettingsRoute.Clipboard.route, TYPING, ClipboardPrefs.ANCHOR_CLEAR_HISTORY),
 
         // ── Suggestion & correction: Suggestions ────────────────────────────────
         SearchableSetting(R.string.settings_pred_show_predictions_title, "prediction suggestion strip", SettingsRoute.Suggestion.route, SUGGESTION, "show_predictions"),
@@ -210,9 +247,9 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.prefs_ckb_gesture_activation_delay_title, "ckb gesture activation delay suppression timeout while typing physical keyboard", SettingsRoute.CkbGestures.route, TYPING, "pref_CKB_gesture_suppression_timeout"),
 
         // ── Typing & input: Keyboard Helper (accessibility key interception) ────
-        SearchableSetting(R.string.pref_key_interceptor_enabled, "special key support accessibility interceptor helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_key_interceptor_enabled"),
-        SearchableSetting(R.string.pref_preprocess_all_keys, "process all key events accessibility helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_preprocess_all_key_events"),
-        SearchableSetting(R.string.settings_pkb_keyboard_helper_title, "unified key mapping xml experimental helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_use_unified_key_mapping"),
+        SearchableSetting(R.string.pref_key_interceptor_enabled, "special key support accessibility interceptor helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_key_interceptor_enabled", DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE),
+        SearchableSetting(R.string.pref_preprocess_all_keys, "process all key events accessibility helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_preprocess_all_key_events", DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE),
+        SearchableSetting(R.string.settings_pkb_keyboard_helper_title, "unified key mapping xml experimental helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_use_unified_key_mapping", DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE),
 
         // ── Appearance & layout: symbol page ordering ──────────────────────────
         // SymbolCustomizationScreen renders exactly one of these two — the symbol page the device can
@@ -227,6 +264,12 @@ object SettingsSearchIndex {
         // task, and its entry row (with the detected facts behind it) is what search should land
         // on. No anchor — the row holds no preference.
         SearchableSetting(R.string.device_profile_builder_entry_title, "device profile builder capture keys scancode keycode export import share unknown phone config", SettingsRoute.DeviceConfiguration.route, ADVANCED, requires = DeviceRequirement.PHYSICAL_KEYBOARD),
+        // ── Advanced: Touch surface helper (Unihertz Titans) ────────────────────
+        // The row on Device compatibility (drawn on every phone, enabled only on a declared pad,
+        // so its entry is ungated) and the Shizuku section of the screen it opens (drawn only on
+        // the Shizuku route); both are actions, anchored by the ids TouchSurfaceAnchors declares.
+        SearchableSetting(R.string.touch_surface_helper_title, "touch surface touchpad keyboard gestures swipe scroll assistant cursor shizuku titan unihertz", SettingsRoute.DeviceCompatibility.route, ADVANCED, TouchSurfaceAnchors.HELPER),
+        SearchableSetting(R.string.touch_surface_shizuku_category, "shizuku touch surface touchpad wireless debugging adb root grant access permission", SettingsRoute.TouchSurfaceHelper.route, ADVANCED, TouchSurfaceAnchors.SHIZUKU, DeviceRequirement.TOUCH_KEYPAD_SHIZUKU),
         SearchableSetting(R.string.settings_debug_title, "debug developer", SettingsRoute.Advanced.route, ADVANCED),
         SearchableSetting(R.string.settings_clear_settings_title, "reset clear settings data", SettingsRoute.Advanced.route, ADVANCED),
         // ── Advanced: Manage data (settings backup/restore) ─────────────────────
@@ -236,6 +279,9 @@ object SettingsSearchIndex {
         // them by.
         SearchableSetting(R.string.settings_backup_title, "backup back up export save settings file json copy transfer", SettingsRoute.Advanced.route, ADVANCED, SettingsBackup.ANCHOR_BACK_UP),
         SearchableSetting(R.string.settings_restore_title, "restore import load settings file json backup transfer migrate", SettingsRoute.Advanced.route, ADVANCED, SettingsBackup.ANCHOR_RESTORE),
+        // Same shape as the two above, ids from LayoutsBundle.
+        SearchableSetting(R.string.settings_layouts_export_title, "export layouts symbol page palette slideboard quick phrases currency custom physical layout file json share", SettingsRoute.Advanced.route, ADVANCED, LayoutsBundle.ANCHOR_EXPORT),
+        SearchableSetting(R.string.settings_layouts_import_title, "import layouts symbol page palette slideboard quick phrases currency custom physical layout letter map file json", SettingsRoute.Advanced.route, ADVANCED, LayoutsBundle.ANCHOR_IMPORT),
         // ── Advanced: OTA app updates (About -> Updates) ────────────────────────
         SearchableSetting(R.string.settings_updates_title, "update ota new version apk download install upgrade", SettingsRoute.Updates.route, ADVANCED),
         SearchableSetting(R.string.settings_update_background_check_title, "update daily background check notify notification", SettingsRoute.Updates.route, ADVANCED, "pref_update_background_check"),
