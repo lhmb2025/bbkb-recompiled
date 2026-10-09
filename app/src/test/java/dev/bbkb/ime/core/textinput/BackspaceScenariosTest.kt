@@ -316,6 +316,15 @@ class BackspaceScenariosTest {
         assertEquals("ab|", editorState())
     }
 
+    @Test
+    fun shiftBackspace_overAnEmojiFollowedByText_deletesOnlyTheEmoji() {
+        // Forward delete runs the same leading-emoji scan as a cursor step right. It used to
+        // take the text after the emoji as well (up to 20 chars).
+        h.startSession("😀bc", 0)
+        backspace(shiftPressed = true)
+        assertEquals("|bc", editorState())
+    }
+
     // ── surrogate pairs / emoji ─────────────────────────────────────────────────
 
     @Test

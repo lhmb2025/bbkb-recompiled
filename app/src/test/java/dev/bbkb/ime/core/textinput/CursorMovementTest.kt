@@ -304,6 +304,26 @@ class CursorMovementTest {
         assertEquals(listOf("setSelection(0,0)"), log())
     }
 
+    // ── CursorController: an emoji followed by text is still one step ───────────
+
+    @Test
+    fun moveCursorRight_singleStepOverAnEmojiFollowedByText_stopsAfterTheEmoji() {
+        // The leading-emoji scan used to accept every longer prefix once the text started with
+        // an emoji, so one step right from 0 over "😀bc" jumped to the end of the field.
+        val settings = h.settingsWith("allowBatchedCursorMove" to true)
+        arm("😀bc", 0)
+        h.inputLogic.moveCursorRight(settings, 1, false)
+        assertEquals(listOf("setSelection(2,2)"), log())
+    }
+
+    @Test
+    fun moveCursorRight_multiStepOverAnEmojiFollowedByText_countsTheEmojiAsOneStep() {
+        val settings = h.settingsWith("allowBatchedCursorMove" to true)
+        arm("😀bc", 0)
+        h.inputLogic.moveCursorRight(settings, 2, false)
+        assertEquals(listOf("setSelection(3,3)"), log())
+    }
+
     // ── onUpdateSelection: the no-op case ───────────────────────────────────────
 
     @Test

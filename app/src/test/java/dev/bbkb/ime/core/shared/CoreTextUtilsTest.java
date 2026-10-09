@@ -53,4 +53,50 @@ public class CoreTextUtilsTest {
         assertEquals(5.0f, GeometryUtils.getDistance(0f, 0f, 3f, 4f), 0.0001f);
         assertEquals(0.0f, GeometryUtils.getDistance(2f, 2f, 2f, 2f), 0.0001f);
     }
+
+    // ── the grapheme after the cursor: the emoji scan must stop at the emoji ────
+
+    private static int graphemeAfter(String text) {
+        return GraphemeUtils.getGraphemeLengthAfterCursor(text, text.codePointAt(0));
+    }
+
+    /**
+     * Regression: the leading-emoji scan only checked that the FIRST code point of a growing
+     * prefix was an emoji, so once the text started with one every longer prefix matched too
+     * and the whole string (capped at 20 chars) came back. One cursor step or forward delete
+     * over an emoji then took the text after it as well.
+     */
+    @Test
+    public void getGraphemeLengthAfterCursorStopsAtTheEndOfTheEmoji() {
+        assertEquals(2, graphemeAfter(GRINNING_FACE + "bcdef"));
+        assertEquals(2, EmojiTextAnalyzer.getLeadingEmojiLength(GRINNING_FACE + "bcdef", 0x1F600));
+    }
+
+    @Test
+    public void getGraphemeLengthAfterCursorKeepsAnEmojiSequenceTogether() {
+        assertEquals("skin tone", 4, graphemeAfter("👍🏽x"));
+        assertEquals("ZWJ family", 8, graphemeAfter("👨\u200d👩\u200d👧x"));
+        assertEquals("keycap", 3, graphemeAfter("1\ufe0f\u20e3x"));
+        assertEquals("flag", 4, graphemeAfter("🇺🇸x"));
+    }
+
+    @Test
+    public void getGraphemeLengthAfterCursorOverPlainTextIsOneChar() {
+        assertEquals(1, graphemeAfter("abc"));
+        // A digit is only a keycap when the enclosing keycap follows it.
+        assertEquals(1, graphemeAfter("1x"));
+        assertEquals(0, EmojiTextAnalyzer.getLeadingEmojiLength("abc", 'a'));
+    }
+
+    @Test
+    public void getGraphemeLengthAfterCursorTreatsNeighbouringEmojiAsSeparate() {
+        // Two emoji side by side are two steps, as they are stepping backwards.
+        assertEquals(2, graphemeAfter(GRINNING_FACE + GRINNING_FACE + "x"));
+        assertEquals("two flags", 4, graphemeAfter("🇺🇸🇬🇧"));
+    }
+
+    @Test
+    public void getGraphemeLengthBeforeCursorStillStopsAtTheEmoji() {
+        assertEquals(2, GraphemeUtils.getGraphemeLengthBeforeCursor("abc" + GRINNING_FACE, 0x1F600));
+    }
 }

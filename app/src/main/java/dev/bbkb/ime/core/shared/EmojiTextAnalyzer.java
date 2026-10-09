@@ -17,6 +17,8 @@ public final class EmojiTextAnalyzer {
     private static final int MAX_EMOJI_LENGTH = 20;
 
     private static final char ZERO_WIDTH_JOINER = '\u200d';
+    private static final char VARIATION_SELECTOR_16 = '\ufe0f';
+    private static final char COMBINING_ENCLOSING_KEYCAP = '\u20e3';
 
     private static boolean isEmojiOrModifier(String str) {
         return str != null && !str.isEmpty() && isEmojiOrModifier(str, 0, str.length());
@@ -107,6 +109,16 @@ public final class EmojiTextAnalyzer {
         return bestLength;
     }
 
+    /**
+     * The length in chars of the emoji the text starts with, or 0 when it does not start with
+     * one. The cursor and forward-delete paths step over exactly this much.
+     *
+     * <p>The original app looked the growing prefix up in a table of every known emoji
+     * sequence. This walks the sequence grammar instead: an emoji, a keycap base or a regional
+     * indicator, followed only by code points that extend it. It must not accept a prefix just
+     * because its first code point is an emoji, or every longer prefix matches too and one step
+     * over "😀bc" lands at the end of the field.
+     */
     public static int getLeadingEmojiLength(CharSequence charSequence, int i) {
         if (charSequence == null) {
             throw new NullPointerException();
@@ -116,15 +128,73 @@ public final class EmojiTextAnalyzer {
             return iM5739a;
         }
         final String string = charSequence.toString();
-        int candidateLength = 0;
-        int bestLength = 0;
-        while (candidateLength < MAX_EMOJI_LENGTH && candidateLength < string.length()) {
-            candidateLength++;
-            if (isEmojiOrModifier(string, 0, candidateLength)) {
-                bestLength = candidateLength;
-            }
+        final int length = string.length();
+        if (length == 0) {
+            return 0;
         }
-        return bestLength;
+        final int first = string.codePointAt(0);
+        int end = Character.charCount(first);
+        int regionalIndicators = 0;
+        if (isKeycapBase(first)) {
+            // "1️⃣": the digit alone is text; only the enclosing keycap makes it an emoji.
+            int keycap = end;
+            if (keycap < length && string.charAt(keycap) == VARIATION_SELECTOR_16) {
+                keycap++;
+            }
+            if (keycap < length && string.charAt(keycap) == COMBINING_ENCLOSING_KEYCAP) {
+                end = keycap + 1;
+            } else {
+                return 0;
+            }
+        } else if (isRegionalIndicator(first)) {
+            regionalIndicators = 1;
+        } else if (!isEmojiOrModifier(string, 0, end)) {
+            return 0;
+        }
+        boolean joined = false; // the previous code point was a ZWJ
+        while (end < length) {
+            final int codePoint = string.codePointAt(end);
+            final int charCount = Character.charCount(codePoint);
+            if (end + charCount > MAX_EMOJI_LENGTH) {
+                break;
+            }
+            final boolean extendsSequence;
+            if (joined) {
+                // Whatever a ZWJ joins belongs to the sequence: 👨‍👩‍👧 is one emoji.
+                extendsSequence = true;
+                joined = false;
+            } else if (codePoint == ZERO_WIDTH_JOINER) {
+                extendsSequence = true;
+                joined = true;
+            } else if (isRegionalIndicator(codePoint)) {
+                // A flag is a PAIR of regional indicators; a third one starts the next flag.
+                extendsSequence = regionalIndicators == 1;
+                regionalIndicators = 2;
+            } else {
+                extendsSequence = extendsEmoji(codePoint);
+            }
+            if (!extendsSequence) {
+                break;
+            }
+            end += charCount;
+        }
+        return end;
+    }
+
+    /** A code point that attaches to the emoji before it rather than starting a new one. */
+    private static boolean extendsEmoji(int codePoint) {
+        return (codePoint >= 0x1F3FB && codePoint <= 0x1F3FF)      // skin tone modifiers
+                || (codePoint >= 0xFE00 && codePoint <= 0xFE0F)    // variation selectors (U+FE0F)
+                || codePoint == COMBINING_ENCLOSING_KEYCAP
+                || (codePoint >= 0xE0020 && codePoint <= 0xE007F); // tag characters (subdivision flags)
+    }
+
+    private static boolean isRegionalIndicator(int codePoint) {
+        return codePoint >= 0x1F1E6 && codePoint <= 0x1F1FF;
+    }
+
+    private static boolean isKeycapBase(int codePoint) {
+        return (codePoint >= '0' && codePoint <= '9') || codePoint == '#' || codePoint == '*';
     }
 
     public static int findEmoticonShortcodeLength(boolean z, CharSequence charSequence, int i) {
