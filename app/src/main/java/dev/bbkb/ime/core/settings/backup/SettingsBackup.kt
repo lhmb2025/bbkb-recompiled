@@ -121,6 +121,10 @@ object SettingsBackup {
         // cache, rebuilt on the next layout sync). Carrying it to another device would hand the
         // gesture arbiter the wrong grid until it refreshed.
         "ckb_key_grid_cache_v2",
+        // UserLetterMapRepository.PREF_ACTIVE_LETTER_MAP: names a letter-map file in THIS
+        // device's storage, as active_device_config_id names a config. The maps themselves travel
+        // in a layouts export (LayoutsBundle), and are switched on by hand after import.
+        "pref_pkb_active_letter_map",
     )
 
     /** Whether [key] is excluded from both export and import. */

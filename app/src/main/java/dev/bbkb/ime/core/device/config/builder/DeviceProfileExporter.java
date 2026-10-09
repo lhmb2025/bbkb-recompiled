@@ -239,11 +239,21 @@ public final class DeviceProfileExporter {
     @Nullable
     public static Intent shareIntent(@NonNull Context context, @NonNull File file,
                                      @NonNull String chooserTitle) {
+        return shareIntent(context, file, chooserTitle, "text/xml");
+    }
+
+    /**
+     * {@link #shareIntent(Context, File, String)} for a file of another type — the letter maps
+     * Custom physical layouts shares are JSON, out of the {@code layouts} provider path.
+     */
+    @Nullable
+    public static Intent shareIntent(@NonNull Context context, @NonNull File file,
+                                     @NonNull String chooserTitle, @NonNull String mimeType) {
         try {
             final Uri uri = FileProvider.getUriForFile(
                     context, context.getPackageName() + ".fileprovider", file);
             final Intent send = new Intent(Intent.ACTION_SEND)
-                    .setType("text/xml")
+                    .setType(mimeType)
                     .putExtra(Intent.EXTRA_STREAM, uri)
                     .putExtra(Intent.EXTRA_SUBJECT, file.getName())
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.view.KeyEvent
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier
+import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.locale.LocaleUtils
 import dev.bbkb.ime.core.locale.SubtypeManager
 import dev.bbkb.ime.core.settings.util.SettingsManager
@@ -28,6 +29,18 @@ import java.util.concurrent.ConcurrentHashMap
  * where BlackBerry recorded the firmware's Shift layer: ص→ض, ة→ء, Hebrew finals), else the second
  * `keyCodes` entry of the engine layout. On a cased script the second legend (ё on the й key) is
  * reached by double-tapping instead, through the multitap tables: see [alternatesFor].
+ *
+ * ## The user's own letter map
+ *
+ * Ahead of all that sits the letter map the user imported and switched on ([UserLetterMap], on
+ * Physical keyboard > Custom physical layouts). It is consulted on every keyboard, Latin ones
+ * included, whenever it is bound to the current keyboard's language and this phone's keypad: a key
+ * it names types its `base` (Shift: its `shift`), double-taps through its `multitap`, offers its
+ * `moreKeys` when held, and types its `alt` under Alt ([userAltFor], the first tier of
+ * [AuxCharacterResolver]). A key it does not name falls through to the script layout and then to
+ * the system key map, exactly as before. The parsed map is cached by
+ * [UserLetterMapRepository.activeForTyping], keyed by the active id it re-reads per call, so
+ * nothing here needs resetting on a language switch: the binding is checked per key.
  */
 object HardwareScriptLayouts {
 
@@ -53,8 +66,86 @@ object HardwareScriptLayouts {
 
     @JvmStatic
     fun init(context: Context) {
-        assets = context.applicationContext.assets
+        val app = context.applicationContext
+        assets = app.assets
+        userMapSource = { UserLetterMapRepository.activeForTyping(app) }
     }
+
+    // ── the user tier ────────────────────────────────────────────────────────
+
+    /** The active user map, whatever it is bound to. Set by [init]; tests replace it. */
+    @Volatile
+    internal var userMapSource: () -> UserLetterMap? = { null }
+
+    /** The current keyboard's language in the app's spelling (`iw`, not `he`). Tests replace it. */
+    @Volatile
+    internal var languageSource: () -> String? = {
+        SubtypeManager.getInstance()?.currentSubtypeLocale?.let { LocaleUtils.languageCode(it) }
+    }
+
+    /** This phone's keypad layout (`qwerty`/`qwertz`/`azerty`), or null when unknown. Tests replace it. */
+    @Volatile
+    internal var keypadLayoutSource: () -> String? = { DeviceProfile.current()?.keypadLayout }
+
+    /**
+     * The user's letter map when it drives the physical keys right now — switched on, bound to the
+     * current keyboard's language (or to none) and to this phone's keypad — else null.
+     */
+    @JvmStatic
+    fun userMap(): UserLetterMap? {
+        val map = try {
+            userMapSource()
+        } catch (e: Exception) {
+            null
+        } ?: return null
+        val language = try { languageSource() } catch (e: Exception) { null }
+        val keypad = try { keypadLayoutSource() } catch (e: Exception) { null }
+        return if (map.appliesTo(language, keypad)) map else null
+    }
+
+    /**
+     * The Alt character the user's map gives the key [keyCode] (with [scanCode], -1 when unknown),
+     * or 0 when no map applies or it names no Alt character for that key. The first tier of
+     * [AuxCharacterResolver].
+     */
+    @JvmStatic
+    fun userAltFor(keyCode: Int, scanCode: Int): Int = userMap()?.key(keyCode, scanCode)?.alt ?: 0
+
+    /**
+     * [userAltFor] for an event, and only while Alt is what decides the character. The multitap
+     * interpreter runs before [AuxCharacterResolver] and asks the system key map for the Alt
+     * character itself; this is what makes the user's Alt character the one it starts from.
+     */
+    @JvmStatic
+    fun userAltForEvent(event: KeyEvent, interpretedMeta: Int): Int {
+        val key = userMap()?.key(event.keyCode, event.scanCode) ?: return 0
+        if (key.alt == 0) return 0
+        if (!KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(event)) return 0
+        val modifiers = ModifierState.builder().event(event).interpretedMeta(interpretedMeta).build()
+        return if (modifiers.isAltActiveForCharacter) key.alt else 0
+    }
+
+    /** What holding the key that typed [label] offers under the user's map, or null. */
+    @JvmStatic
+    fun userMoreKeysFor(label: String?): Array<String>? = userMap()?.moreKeysFor(label)
+
+    /**
+     * True while the user's map types a different letter on any of the 26 letter keys than the
+     * key typed without it — the script layout's letter on an Arabic or Cyrillic keyboard, the
+     * Latin letter otherwise. The touch keypad's swipe typing decodes against the engine's own
+     * key geometry, which knows nothing of the map, so it is switched off for as long as this
+     * holds (`SettingsValues.isCkbGestureInputEnabledForLocale`).
+     */
+    @JvmStatic
+    fun userMapChangesLetters(): Boolean {
+        val map = userMap() ?: return false
+        val script = current()
+        return map.changesLetters { keyCode ->
+            script?.cell(keyCode)?.letter ?: ('a'.code + (keyCode - KeyEvent.KEYCODE_A))
+        }
+    }
+
+    // ── the script tier ──────────────────────────────────────────────────────
 
     /**
      * Whether a keyboard locale (`ar`, `ru`, `iw_IL`, either spelling of Hebrew) has an alphabet
@@ -99,29 +190,40 @@ object HardwareScriptLayouts {
     }
 
     /**
-     * The letter [event] types under the current layout, or 0 when the key is not a letter key,
-     * a modifier other than Shift is active, the physical symbol page is mapping the keys, or no
-     * script layout is active — every case in which the caller should ask the system key map as
-     * before. [interpretedMeta] is the meta state the caller interprets characters against.
+     * The letter [event] types under the user's map or the current layout, or 0 when neither
+     * names the key (or the key is not a letter key), a modifier other than Shift is active, the
+     * physical symbol page is mapping the keys, or no map or script layout applies — every case in
+     * which the caller should ask the system key map as before. [interpretedMeta] is the meta
+     * state the caller interprets characters against.
      */
     @JvmStatic
     fun letterFor(event: KeyEvent, interpretedMeta: Int): Int {
         val keyCode = event.keyCode
+        // The user's map first, for any key it names: it is the one tier that reaches past the
+        // letter keys (digits, punctuation) and the one that applies on Latin keyboards too.
+        val userKey = userMap()?.key(keyCode, event.scanCode)
         val isLetterKey = keyCode in KeyEvent.KEYCODE_A..KeyEvent.KEYCODE_Z
         val isExtraKey = !isLetterKey && keyCode == KeyEvent.KEYCODE_4
                 && Character.getType(event.unicodeChar) == Character.CURRENCY_SYMBOL.toInt()
-        if (!isLetterKey && !isExtraKey) return 0
+        if (userKey == null && !isLetterKey && !isExtraKey) return 0
         if (!KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(event)) return skipped("not a physical keyboard event")
-        val layout = current() ?: return skipped("no script layout for the current keyboard")
+        val layout = if (userKey != null) null else current() ?: return skipped("no script layout for the current keyboard")
         val switcher = KeyboardSwitcher.getInstance()
         if (switcher != null && switcher.isPhysicalSymbolMappingActive) return skipped("symbol page is mapping the keys")
         val modifiers = ModifierState.builder().event(event).interpretedMeta(interpretedMeta).build()
         if (modifiers.isAltActiveForCharacter || modifiers.isCtrlActive || modifiers.isSymActive) return skipped("Alt, Ctrl or Sym is active")
         if (event.metaState and (KeyEvent.META_META_ON or KeyEvent.META_FUNCTION_ON) != 0) return skipped("Meta or Fn is held")
-        val cell = (if (isLetterKey) layout.cell(keyCode) else layout.extraKey?.takeIf { Character.isLetter(it.letter) })
-            ?: return skipped("no letter on this key")
         val shifted = modifiers.isShiftActive || modifiers.isShiftLockedForLayout
                 || (interpretedMeta and ModifierState.SHIFT_ANY_MASK) != 0
+        if (userKey != null) {
+            val letter = userKey.letter(shifted)
+            if (InputPathDebug.on()) {
+                Logger.info(TAG, "user map: keyCode=$keyCode shifted=$shifted -> U+${Integer.toHexString(letter).uppercase()}")
+            }
+            return letter
+        }
+        val cell = (if (isLetterKey) layout?.cell(keyCode) else layout?.extraKey?.takeIf { Character.isLetter(it.letter) })
+            ?: return skipped("no letter on this key")
         val letter = letterOf(cell, shifted) { label -> switcher?.getPhysicalShiftLetter(label) }
         if (InputPathDebug.on()) {
             Logger.info(TAG, "keyCode=$keyCode shifted=$shifted -> U+${Integer.toHexString(letter).uppercase()}")
@@ -171,14 +273,16 @@ object HardwareScriptLayouts {
     fun isActive(): Boolean = current() != null
 
     /**
-     * The double-tap sequence for a letter under the current layout: the further legends of its
-     * key when the script is cased (Shift is taken by upper case there: й twice gives ё), null
-     * otherwise. Upper-case labels get upper-case alternates. Null when no script layout is
-     * active, so callers can fall through to their own tables.
+     * The double-tap sequence for a letter: the user map's `multitap` for the key that typed it,
+     * else, under a script layout, the further legends of its key when the script is cased (Shift
+     * is taken by upper case there: й twice gives ё), null otherwise. Upper-case labels get
+     * upper-case alternates. Null when neither applies, so callers can fall through to their own
+     * tables.
      */
     @JvmStatic
     fun alternatesFor(label: String?): Array<String>? {
         if (label.isNullOrEmpty()) return null
+        userMap()?.multitapFor(label)?.let { return it }
         val layout = current() ?: return null
         val labelCodePoint = label.codePointAt(0)
         val lower = Character.toLowerCase(labelCodePoint)

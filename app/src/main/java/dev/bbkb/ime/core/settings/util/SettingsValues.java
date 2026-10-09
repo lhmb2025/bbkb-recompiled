@@ -649,8 +649,16 @@ public final class SettingsValues {
         return this.isVkbGestureInputEnabled && !LocaleUtils.isCurrentSubtypeChinese();
     }
 
+    /**
+     * Type-by-swiping on the touch keypad, for the current keyboard. Off on Chinese keyboards, and
+     * off while the user's custom letter map changes what any letter key types: the swipe decoder
+     * reads the engine's own key geometry, so it would spell a swipe in the keypad's old letters.
+     * Evaluated per call, like the Chinese check, so a map switched on in settings or a change of
+     * keyboard takes effect the next time the keyboard asks.
+     */
     public boolean isCkbGestureInputEnabledForLocale() {
-        return this.isCkbGestureInputEnabled && !LocaleUtils.isCurrentSubtypeChinese();
+        return this.isCkbGestureInputEnabled && !LocaleUtils.isCurrentSubtypeChinese()
+                && !dev.bbkb.ime.core.keyevent.HardwareScriptLayouts.userMapChangesLetters();
     }
 
     public String dumpSettings() {

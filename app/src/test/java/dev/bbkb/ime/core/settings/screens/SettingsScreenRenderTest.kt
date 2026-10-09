@@ -210,6 +210,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "CorrectionLearningScreen" -> ({ CorrectionLearningScreen({}, {}, {}, {}) })
         "CreditsScreen" -> ({ CreditsScreen({}, {}) })
         "CustomMacrosScreen" -> ({ CustomMacrosScreen({}) })
+        "CustomPhysicalLayoutsScreen" -> ({ CustomPhysicalLayoutsScreen({}) })
         "CustomSymbolPageScreen_PKB" -> ({ CustomSymbolPageScreen(isPkb = true, onBack = {}) })
         "CustomSymbolPageScreen_VKB" -> ({ CustomSymbolPageScreen(isPkb = false, onBack = {}) })
         "CustomizeMenuScreen" -> ({ CustomizeMenuScreen({}) })
@@ -480,7 +481,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             "AdvancedGestureParametersScreen", "AdvancedSettingsScreen", "AnimationParametersScreen",
             "AppearanceLayoutScreen", "AutoCorrectionScreen", "CkbGesturesScreen",
             "CorrectionLearningScreen", "CreditsScreen", "CustomMacrosScreen",
-            "CustomSymbolPageScreen_PKB", "CustomSymbolPageScreen_VKB", "CustomizationScreen",
+            "CustomPhysicalLayoutsScreen", "CustomSymbolPageScreen_PKB", "CustomSymbolPageScreen_VKB", "CustomizationScreen",
             "CustomizeMenuScreen", "CustomizeSlideBoardScreen", "DebugSettingsScreen",
             "DeviceCompatibilityScreen", "DeviceConfigurationScreen", "DictionariesLearningScreen",
             "GestureLabScreen", "KeyPressFeedbackScreen", "KeyboardHelperScreen",
@@ -554,7 +555,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_backup_summary", "settings_backup_title",
                 "settings_clear_settings_summary", "settings_clear_settings_title", "settings_debug_summary",
                 "settings_debug_title", "settings_device_compatibility_summary",
-                "settings_device_compatibility_title", "settings_restore_summary",
+                "settings_device_compatibility_title", "settings_layouts_export_summary",
+                "settings_layouts_export_title", "settings_layouts_import_summary",
+                "settings_layouts_import_title", "settings_restore_summary",
                 "settings_restore_title"
             ),
             literals = setOf(
@@ -694,6 +697,22 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "Add macro",
                 "Tap Add macro to create your first one",
             ),
+        ),
+        Case(
+            name = "CustomPhysicalLayoutsScreen",
+            route = SettingsRoute.CustomPhysicalLayouts.route,
+            title = "Custom physical layouts",
+            resources = setOf(
+                // "None" — the first resource name carrying that value; the row's own is
+                // settings_pkb_letter_maps_none.
+                "ckb_action_none",
+                "settings_pkb_letter_maps_none_summary", "settings_pkb_letter_maps_swipe_note",
+                "settings_pkb_letter_maps_title",
+            ),
+            literals = emptySet(),
+            // The list of imported maps is read on Dispatchers.IO; on a fresh install it comes
+            // back empty and the empty-state line appears once it has.
+            lateResources = setOf("settings_pkb_letter_maps_empty"),
         ),
         Case(
             name = "CustomSymbolPageScreen_PKB",

@@ -35,6 +35,7 @@ import dev.bbkb.ime.core.settings.screens.KeyboardHelperScreen
 import dev.bbkb.ime.core.settings.screens.DeviceConfigurationScreen
 import dev.bbkb.ime.core.settings.screens.DeviceProfileBuilderScreen
 import dev.bbkb.ime.core.settings.screens.PhysicalKeyboardScreen
+import dev.bbkb.ime.core.settings.screens.CustomPhysicalLayoutsScreen
 import dev.bbkb.ime.core.settings.screens.PredictionsSuggestionsScreen
 import dev.bbkb.ime.core.settings.screens.QuickPhrasesScreen
 import dev.bbkb.ime.core.settings.screens.ShakeGesturesScreen
@@ -236,6 +237,14 @@ fun SettingsNavHost(
         composable(SettingsRoute.PhysicalKeyboard.route) {
             PhysicalKeyboardScreen(
                 onNavigateToCkbGestures = go(SettingsRoute.CkbGestures),
+                onNavigateToCustomLayouts = go(SettingsRoute.CustomPhysicalLayouts),
+                onNavigateBack = back
+            )
+        }
+
+        // Custom physical layouts — imported letter maps for the physical keys
+        composable(SettingsRoute.CustomPhysicalLayouts.route) {
+            CustomPhysicalLayoutsScreen(
                 onNavigateBack = back
             )
         }

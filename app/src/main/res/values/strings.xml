@@ -234,6 +234,20 @@
     <string name="settings_language_switching_title">Language switching</string>
     <string name="settings_languages_summary">Keyboard languages, language switching, and language packs</string>
     <string name="settings_languages_title">Language</string>
+    <string name="settings_layouts_export_failed">Could not write the layouts file</string>
+    <string name="settings_layouts_export_summary">Save symbol pages, slideboard, quick phrases and custom physical layouts to a file</string>
+    <string name="settings_layouts_export_title">Export layouts</string>
+    <string name="settings_layouts_exported">Layouts exported</string>
+    <string name="settings_layouts_import_confirm">Import</string>
+    <string name="settings_layouts_import_dialog_letter_maps">Physical keyboard layouts in the file: %1$d</string>
+    <string name="settings_layouts_import_dialog_message">Replace your current layouts with the ones in this file? Anything the file does not include stays as it is.</string>
+    <string name="settings_layouts_import_failed">Could not save the imported layouts</string>
+    <string name="settings_layouts_import_invalid">Could not import this file</string>
+    <string name="settings_layouts_import_letter_map_message">Import the physical keyboard layout “%1$s”? Switch it on under Physical keyboard &gt; Custom physical layouts.</string>
+    <string name="settings_layouts_import_read_failed">Could not read the file</string>
+    <string name="settings_layouts_import_summary">Load layouts, or one custom physical layout, from a file</string>
+    <string name="settings_layouts_import_title">Import layouts</string>
+    <string name="settings_layouts_imported">Layouts imported</string>
 
     <!-- ============================== -->
     <!-- Settings — physical keyboard -->
@@ -261,6 +275,21 @@
     <string name="settings_pkb_hold_action_uppercase_summary">Continue holding past accents to type uppercase</string>
     <string name="settings_pkb_keyboard_helper_summary">Accessibility service for third-party keyboards</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB Helper</string>
+    <string name="settings_pkb_letter_maps_any_language">All keyboards</string>
+    <string name="settings_pkb_letter_maps_delete">Delete %1$s</string>
+    <string name="settings_pkb_letter_maps_delete_message">Delete “%1$s”? This cannot be undone.</string>
+    <string name="settings_pkb_letter_maps_delete_title">Delete layout</string>
+    <string name="settings_pkb_letter_maps_details">%1$s · %2$d keys</string>
+    <string name="settings_pkb_letter_maps_empty">No custom layouts yet. Import one with Advanced &gt; Import layouts.</string>
+    <string name="settings_pkb_letter_maps_none">None</string>
+    <string name="settings_pkb_letter_maps_none_summary">The keys type the active keyboard\'s own letters</string>
+    <string name="settings_pkb_letter_maps_other_keypad">Made for a %1$s keypad, so it does nothing on this phone</string>
+    <string name="settings_pkb_letter_maps_share">Share %1$s</string>
+    <string name="settings_pkb_letter_maps_share_chooser">Share layout</string>
+    <string name="settings_pkb_letter_maps_share_failed">Could not share the layout</string>
+    <string name="settings_pkb_letter_maps_summary">Change the letters the physical keys type</string>
+    <string name="settings_pkb_letter_maps_swipe_note">Swipe typing on the keypad is off while a custom layout changes letters.</string>
+    <string name="settings_pkb_letter_maps_title">Custom physical layouts</string>
     <string name="settings_pkb_multifunction_action_clipboard">Clipboard</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl key</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji board</string>

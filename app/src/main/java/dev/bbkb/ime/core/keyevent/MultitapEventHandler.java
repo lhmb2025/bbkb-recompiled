@@ -144,7 +144,11 @@ public final class MultitapEventHandler extends WeakOwnerHandler<BlackBerryIME> 
             // flag to get the real character; return null if nothing usable remains.
             // The active keyboard's alphabet comes first: on an Arabic or Russian keyboard the
             // multitap base is the script letter, and its sequence comes from the same layout.
+            // Under Alt, a user letter map's Alt character outranks the system key map's.
             int rawUnicode = HardwareScriptLayouts.letterFor(keyEvent, i);
+            if (rawUnicode == 0) {
+                rawUnicode = HardwareScriptLayouts.userAltForEvent(keyEvent, i);
+            }
             if (rawUnicode == 0) {
                 rawUnicode = keyEvent.getUnicodeChar(i);
             }

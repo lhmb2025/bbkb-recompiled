@@ -3,6 +3,7 @@ package dev.bbkb.ime.core.settings.search
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.SettingsRoute
+import dev.bbkb.ime.core.settings.backup.LayoutsBundle
 import dev.bbkb.ime.core.settings.backup.SettingsBackup
 
 /**
@@ -127,6 +128,9 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.pref_show_pkb_modifier_status_icon, "modifier status icon shift alt", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_show_pkb_modifier_status_icon"),
         SearchableSetting(R.string.pref_shift_double_tap_lock, "shift double tap caps lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_shift_double_tap_lock"),
         SearchableSetting(R.string.pref_alt_double_tap_lock, "alt double tap lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_alt_double_tap_lock"),
+        // The screen itself, so no anchor; its Nav row on Physical keyboard is behind the same
+        // physical-keyboard gate.
+        SearchableSetting(R.string.settings_pkb_letter_maps_title, "custom physical layout letter map remap keys keycaps alphabet qwerty qwertz azerty json import", SettingsRoute.CustomPhysicalLayouts.route, TYPING, requires = DeviceRequirement.PHYSICAL_KEYBOARD),
 
         // ── Typing & input: Voice input ─────────────────────────────────────────
         SearchableSetting(R.string.settings_voice_builtin_title, "voice dictation speech", SettingsRoute.VoiceInput.route, TYPING, "voice_input_enabled"),
@@ -239,6 +243,9 @@ object SettingsSearchIndex {
         // them by.
         SearchableSetting(R.string.settings_backup_title, "backup back up export save settings file json copy transfer", SettingsRoute.Advanced.route, ADVANCED, SettingsBackup.ANCHOR_BACK_UP),
         SearchableSetting(R.string.settings_restore_title, "restore import load settings file json backup transfer migrate", SettingsRoute.Advanced.route, ADVANCED, SettingsBackup.ANCHOR_RESTORE),
+        // Same shape as the two above, ids from LayoutsBundle.
+        SearchableSetting(R.string.settings_layouts_export_title, "export layouts symbol page palette slideboard quick phrases currency custom physical layout file json share", SettingsRoute.Advanced.route, ADVANCED, LayoutsBundle.ANCHOR_EXPORT),
+        SearchableSetting(R.string.settings_layouts_import_title, "import layouts symbol page palette slideboard quick phrases currency custom physical layout letter map file json", SettingsRoute.Advanced.route, ADVANCED, LayoutsBundle.ANCHOR_IMPORT),
         // ── Advanced: OTA app updates (About -> Updates) ────────────────────────
         SearchableSetting(R.string.settings_updates_title, "update ota new version apk download install upgrade", SettingsRoute.Updates.route, ADVANCED),
         SearchableSetting(R.string.settings_update_background_check_title, "update daily background check notify notification", SettingsRoute.Updates.route, ADVANCED, "pref_update_background_check"),

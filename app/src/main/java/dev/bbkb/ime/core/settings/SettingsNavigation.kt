@@ -94,6 +94,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object KeyboardHelper : SettingsRoute("keyboard_helper", "BBKB Helper")
     object DeviceConfiguration : SettingsRoute("device_configuration", "Device Configuration")
     object DeviceProfileBuilder : SettingsRoute("device_profile_builder", "Build a device profile")
+    object CustomPhysicalLayouts : SettingsRoute("custom_physical_layouts", "Custom physical layouts")
 
     /** Back-compat deep link onto the same page as [TouchFeedback]; nothing navigates here. */
     object KeyPressFeedback : SettingsRoute("key_press_feedback", "Key Press Feedback")
@@ -161,6 +162,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 KeyboardHelper.route -> KeyboardHelper
                 DeviceConfiguration.route -> DeviceConfiguration
                 DeviceProfileBuilder.route -> DeviceProfileBuilder
+                CustomPhysicalLayouts.route -> CustomPhysicalLayouts
                 KeyPressFeedback.route -> KeyPressFeedback
                 else -> null
             }

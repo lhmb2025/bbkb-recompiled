@@ -5,6 +5,7 @@ import dev.bbkb.ime.core.device.config.model.AltMappingsTable
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -87,5 +88,67 @@ class AuxCharacterResolverTest {
         val result = resolver.resolve(KeyEvent.KEYCODE_Z)
         assertEquals('7', result.character)
         assertEquals("xml", result.source)
+    }
+
+    // ── tier 0: the user's letter map ────────────────────────────────────────
+
+    private fun withUserMap(keys: String, locales: String = "", block: () -> Unit) {
+        val saved = Triple(
+            HardwareScriptLayouts.userMapSource,
+            HardwareScriptLayouts.languageSource,
+            HardwareScriptLayouts.keypadLayoutSource,
+        )
+        val map = UserLetterMap.parse(
+            """{"format": "bbkb-layout", "version": 1, "kind": "pkb", "id": "t", "name": "t",
+                "bind": {"locales": [$locales], "keypadLayout": "qwerty"}, "keys": $keys}"""
+        )
+        HardwareScriptLayouts.userMapSource = { map }
+        HardwareScriptLayouts.languageSource = { "en" }
+        HardwareScriptLayouts.keypadLayoutSource = { "qwerty" }
+        try {
+            block()
+        } finally {
+            HardwareScriptLayouts.userMapSource = saved.first
+            HardwareScriptLayouts.languageSource = saved.second
+            HardwareScriptLayouts.keypadLayoutSource = saved.third
+        }
+    }
+
+    @Test
+    fun userMap_outranksTheDeviceTable_forTheKeysItNames() = withUserMap(
+        """{"KEYCODE_Z": {"base": "z", "alt": "§"}}"""
+    ) {
+        val resolver = AuxCharacterResolver.Builder()
+            .withAltMappingsTable(tableOf(KeyEvent.KEYCODE_Z to '7', KeyEvent.KEYCODE_X to '8'))
+            .build()
+        val z = resolver.resolve(KeyEvent.KEYCODE_Z)
+        assertEquals('§', z.character)
+        assertEquals("user", z.source)
+        assertEquals("user", resolver.resolve(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_Z)).source)
+        // A key the map does not name keeps the device table's answer.
+        assertEquals('8', resolver.resolve(KeyEvent.KEYCODE_X).character)
+        assertEquals("xml", resolver.resolve(KeyEvent.KEYCODE_X).source)
+    }
+
+    @Test
+    fun userMap_boundToAnotherKeyboard_isNotConsulted() = withUserMap(
+        """{"KEYCODE_Z": {"base": "z", "alt": "§"}}""", locales = "\"fr\""
+    ) {
+        val resolver = AuxCharacterResolver.Builder()
+            .withAltMappingsTable(tableOf(KeyEvent.KEYCODE_Z to '7'))
+            .build()
+        assertEquals('7', resolver.resolve(KeyEvent.KEYCODE_Z).character)
+    }
+
+    @Test
+    fun userMap_canGiveACharacterOutsideTheBmp() = withUserMap(
+        """{"KEYCODE_Z": {"base": "z", "alt": "😀"}}"""
+    ) {
+        val result = AuxCharacterResolver.Builder().build().resolve(KeyEvent.KEYCODE_Z)
+        assertTrue(result.hasCharacter())
+        assertEquals(0x1F600, result.codePoint)
+        assertEquals("😀", result.text())
+        // The char view cannot hold it, and says so with 0 rather than half a surrogate pair.
+        assertEquals(0.toChar(), result.character)
     }
 }

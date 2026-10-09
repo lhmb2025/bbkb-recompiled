@@ -393,10 +393,10 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
             if (mapping != null && mapping.hasAltChar()) return mapping.altChar.toString()
             val resolver = auxCharacterResolver()
             val result = resolver.resolve(fallbackKeyCode)
-            if (result.hasCharacter()) return result.character.toString()
+            if (result.hasCharacter()) return result.text()
             if (fallbackKeyCode == ResolvedKey.PSEUDO_KEYCODE_VOICE) {
                 val result2 = resolver.resolve(231)
-                if (result2.hasCharacter()) return result2.character.toString()
+                if (result2.hasCharacter()) return result2.text()
             }
             return hardcodedFallback
         }

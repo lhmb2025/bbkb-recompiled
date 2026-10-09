@@ -965,7 +965,7 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
                     dev.bbkb.ime.core.keyevent.AuxCharacterResolver.Result result = 
                         resolver.resolve(keyCode);
                     if (result.hasCharacter()) {
-                        return String.valueOf(result.character);
+                        return result.text();
                     }
                 }
             }
