@@ -75,6 +75,7 @@ android {
         buildConfig = true // Required for BuildConfig.DEBUG usage in pipeline logging
         viewBinding = true // Enabled for ViewBinding (type-safe view access)
         compose = true // Enable Jetpack Compose
+        aidl = true // IEvdevService/IEvdevCallback: the Shizuku evdev touch reader (core.device.touch.shizuku)
     }
     // Compose compiler is now handled by org.jetbrains.kotlin.plugin.compose plugin
     buildTypes {
@@ -221,6 +222,13 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.jsoup:jsoup:1.18.3'
+
+    // Shizuku (dev.bbkb.ime.core.device.touch.shizuku): runs EvdevUserService as shell/root so the
+    // IME can read a keyboard's touch surface straight from /dev/input. 13.1.5 is the newest 13.1.x
+    // on Maven Central. The api AAR declares minSdk 24, so the manifest overrides it and every
+    // Shizuku call sits behind ShizukuFacade.create(), which never touches Shizuku below API 24.
+    implementation 'dev.rikka.shizuku:api:13.1.5'
+    implementation 'dev.rikka.shizuku:provider:13.1.5'
 }
 
 // ============================================================================

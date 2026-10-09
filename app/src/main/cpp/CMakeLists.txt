@@ -47,3 +47,12 @@ target_include_directories(xt9kdb PRIVATE ${XT9KDB_DIR}/include)
 target_compile_options(xt9kdb PRIVATE -Wall)
 find_library(m-lib m)   # sqrtf for the NKL diagonals (+0x50/+0x60)
 target_link_libraries(xt9kdb ${log-lib} ${m-lib})
+
+# --- Shizuku evdev reader (libbbkbevdev.so) ---------------------------------------------------
+# Raw /dev/input access for dev.bbkb.ime.core.device.touch.shizuku.EvdevUserService, which
+# Shizuku runs as shell/root in its own "<applicationId>:evdev" process. Loaded ONLY there: the
+# IME process never loads it, and that process never loads the engine blob. libc only, and
+# independent of the XT9KDB_CUTOVER switch above.
+add_library(bbkbevdev SHARED bbkbevdev/bbkbevdev.c)
+target_compile_options(bbkbevdev PRIVATE -Wall -Wextra)
+target_link_options(bbkbevdev PRIVATE -Wl,--as-needed)   # drop the toolchain's default libm/libdl

@@ -3,6 +3,14 @@
     <supports-screens
         android:normalScreens="true"
         android:largeScreens="true"/>
+
+    <!--
+        Shizuku's api AAR (package rikka.shizuku.api) declares minSdk 24; the app keeps 23. The
+        override is safe because nothing calls into Shizuku below API 24: ShizukuFacade.create()
+        hands out a do-nothing facade there and the engine reports UNSUPPORTED. The provider,
+        aidl and shared AARs already declare 23 and need no override.
+    -->
+    <uses-sdk tools:overrideLibrary="rikka.shizuku.api"/>
     
     <!-- Package visibility declarations for API 30+ -->
     <queries>
@@ -42,6 +50,11 @@
             provider under a different package name.
         -->
         <provider android:authorities="user_dictionary"/>
+        <!--
+            The Shizuku manager app. Without this, on API 30+ getPackageInfo() cannot see it and
+            the touch engine would report NOT_INSTALLED where the truth is NOT_RUNNING.
+        -->
+        <package android:name="moe.shizuku.privileged.api"/>
     </queries>
     
     <!-- Dangerous permissions - require runtime requests on API 23+ -->
@@ -267,6 +280,21 @@
             android:name="dev.bbkb.ime.personaldictionary.AddWordDialog"
             android:windowSoftInputMode="stateVisible|adjustResize"
             android:exported="false"/>
+        <!--
+            Shizuku hands its binder to this process through this provider (core.device.touch.shizuku).
+            The library refuses to start unless it is exported and not multiprocess. The authority
+            must be ${applicationId}.shizuku: the library builds the same string from
+            getPackageName(), and it keeps the debug (.debug) and release builds from colliding.
+            INTERACT_ACROSS_USERS_FULL is signature-level, so only the system and the
+            Shizuku server (shell/root) can call it.
+        -->
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:multiprocess="false"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:exported="false"

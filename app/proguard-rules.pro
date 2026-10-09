@@ -76,6 +76,35 @@
 -keep class * extends android.inputmethodservice.InputMethodService { *; }
 
 # ---------------------------------------------------------------------------
+# Shizuku evdev touch reader (dev.bbkb.ime.core.device.touch.shizuku)
+# ---------------------------------------------------------------------------
+# Shizuku's server starts EvdevUserService in its own app_process by CLASS NAME
+# (the ComponentName built in RealShizukuFacade) and instantiates it reflectively,
+# trying the (Context) constructor and then the no-arg one. Nothing in the app
+# calls either, so without this R8 would strip them and the reader process
+# would fail to start in release builds only.
+-keep class dev.bbkb.ime.core.device.touch.shizuku.EvdevUserService {
+    public <init>();
+    public <init>(android.content.Context);
+}
+# The AIDL contract between the IME and that process: interfaces, Stub/Proxy and
+# the structured parcelables. Both ends ship in this one APK, but keeping the
+# generated binder classes whole keeps the transaction table (including Shizuku's
+# reserved destroy() code) out of the optimiser's reach.
+-keep class dev.bbkb.ime.core.device.touch.shizuku.IEvdevService { *; }
+-keep class dev.bbkb.ime.core.device.touch.shizuku.IEvdevService$* { *; }
+-keep class dev.bbkb.ime.core.device.touch.shizuku.IEvdevCallback { *; }
+-keep class dev.bbkb.ime.core.device.touch.shizuku.IEvdevCallback$* { *; }
+-keep class dev.bbkb.ime.core.device.touch.shizuku.EvdevDeviceInfo { *; }
+-keep class dev.bbkb.ime.core.device.touch.shizuku.EvdevOpenResult { *; }
+# libbbkbevdev.so binds Java_dev_bbkb_ime_core_device_touch_shizuku_EvdevNative_*
+# by name (also covered by the generic native-methods rule above; explicit here
+# because the class is otherwise only reachable from the reader process).
+-keep class dev.bbkb.ime.core.device.touch.shizuku.EvdevNative {
+    native <methods>;
+}
+
+# ---------------------------------------------------------------------------
 # Reflection inside the app
 # ---------------------------------------------------------------------------
 # ComposingTextTracker instantiates the registered converters with
