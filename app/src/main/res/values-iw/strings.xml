@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">מקש Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">לוח אמוג\'י</string>
     <string name="settings_pkb_multifunction_action_fcc">בקרת סמן</string>
+    <string name="settings_pkb_multifunction_action_input_menu">הצג או הסתר את תפריט הקלט</string>
     <string name="settings_pkb_multifunction_action_language_switch">החלף שפה</string>
     <string name="settings_pkb_multifunction_action_number_pad">לוח ספרות</string>
     <string name="settings_pkb_multifunction_action_symbol">מקלדת סמלים</string>

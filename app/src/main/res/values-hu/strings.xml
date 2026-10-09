@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl billentyű</string>
     <string name="settings_pkb_multifunction_action_emoji">Hangulatjel-tábla</string>
     <string name="settings_pkb_multifunction_action_fcc">Kurzorvezérlés</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Beviteli menü megjelenítése vagy elrejtése</string>
     <string name="settings_pkb_multifunction_action_language_switch">Nyelvváltás</string>
     <string name="settings_pkb_multifunction_action_number_pad">Számbillentyűzet</string>
     <string name="settings_pkb_multifunction_action_symbol">Szimbólum-billentyűzet</string>

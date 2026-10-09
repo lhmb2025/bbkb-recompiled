@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Клавіша Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Панэль эмодзі</string>
     <string name="settings_pkb_multifunction_action_fcc">Кіраванне курсорам</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Паказаць або схаваць меню ўводу</string>
     <string name="settings_pkb_multifunction_action_language_switch">Перамкнуць мову</string>
     <string name="settings_pkb_multifunction_action_number_pad">Лічбавая панэль</string>
     <string name="settings_pkb_multifunction_action_symbol">Клавіятура сімвалаў</string>

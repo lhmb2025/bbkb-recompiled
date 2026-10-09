@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">ປຸ່ມ Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">ກະດານອີໂມຈິ</string>
     <string name="settings_pkb_multifunction_action_fcc">ການຄວບຄຸມຕົວກະພິບ</string>
+    <string name="settings_pkb_multifunction_action_input_menu">ສະແດງ ຫຼື ເຊື່ອງເມນູການປ້ອນ</string>
     <string name="settings_pkb_multifunction_action_language_switch">ສະຫຼັບພາສາ</string>
     <string name="settings_pkb_multifunction_action_number_pad">ແປ້ນຕົວເລກ</string>
     <string name="settings_pkb_multifunction_action_symbol">ແປ້ນພິມສັນຍາລັກ</string>

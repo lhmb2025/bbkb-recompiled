@@ -45,6 +45,12 @@ public final class MultifunctionKeyHandler {
     public static final String ACTION_NUMBER_PAD = "number_pad";
     public static final String ACTION_LANGUAGE_SWITCH = "language_switch";
     public static final String ACTION_SYMBOL_KEYBOARD = "symbol_keyboard";
+    /**
+     * Show or hide the unified input menu bar, even where its settings keep it off ("Enable
+     * unified input menu", or "Show the suggestion bar" hiding the bar on a physical keyboard).
+     * See {@code InputViewCoordinator.toggleInputMenu()}.
+     */
+    public static final String ACTION_TOGGLE_UIM = "toggle_uim";
 
     /** Fallback when neither the user pref nor the device config provides an action. */
     public static final String DEFAULT_ACTION = ACTION_EMOJI_BOARD;

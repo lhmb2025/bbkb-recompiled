@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">„Ctrl“ klavišas</string>
     <string name="settings_pkb_multifunction_action_emoji">Jaustukų lenta</string>
     <string name="settings_pkb_multifunction_action_fcc">Žymeklio valdymas</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Rodyti arba slėpti įvesties meniu</string>
     <string name="settings_pkb_multifunction_action_language_switch">Perjungti kalbą</string>
     <string name="settings_pkb_multifunction_action_number_pad">Skaičių klaviatūra</string>
     <string name="settings_pkb_multifunction_action_symbol">Simbolių klaviatūra</string>

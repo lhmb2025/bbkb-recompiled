@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl კლავიში</string>
     <string name="settings_pkb_multifunction_action_emoji">სიცილაკების დაფა</string>
     <string name="settings_pkb_multifunction_action_fcc">კურსორის მართვა</string>
+    <string name="settings_pkb_multifunction_action_input_menu">შეყვანის მენიუს ჩვენება ან დამალვა</string>
     <string name="settings_pkb_multifunction_action_language_switch">ენის გადართვა</string>
     <string name="settings_pkb_multifunction_action_number_pad">ციფრული პანელი</string>
     <string name="settings_pkb_multifunction_action_symbol">სიმბოლოების კლავიატურა</string>

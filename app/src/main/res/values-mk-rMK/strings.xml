@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Копче Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Табла со емотикони</string>
     <string name="settings_pkb_multifunction_action_fcc">Контрола на курсорот</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Прикажи или скриј го менито за внесување</string>
     <string name="settings_pkb_multifunction_action_language_switch">Менување јазик</string>
     <string name="settings_pkb_multifunction_action_number_pad">Нумеричка тастатура</string>
     <string name="settings_pkb_multifunction_action_symbol">Тастатура со симболи</string>

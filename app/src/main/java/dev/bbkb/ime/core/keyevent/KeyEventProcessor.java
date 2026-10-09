@@ -704,6 +704,11 @@ public class KeyEventProcessor {
                     case MultifunctionKeyHandler.ACTION_SYMBOL_KEYBOARD:
                         ime.getKeyboardSwitcher().onSymbolShiftToggle(ime.getCurrentInputType(), ime.getCurrentImeOptions(), false, true);
                         break;
+                    case MultifunctionKeyHandler.ACTION_TOGGLE_UIM:
+                        // Up even where the menu is off or hidden with the suggestion bar; the
+                        // board actions above then take the menu's route until it goes again.
+                        ime.getUiCoordinator().toggleInputMenu();
+                        break;
                     default:
                         if (BuildConfig.DEBUG) Log.w(TAG, "Unknown multifunction key action: " + multifunctionAction);
                         break;
@@ -824,7 +829,8 @@ public class KeyEventProcessor {
      * Toggle a UIM board by keycode. When the Unified Input Menu is enabled, routes through
      * {@link UnifiedInputBoardManager#requestBoard(int)} — the coordinator's single toggle
      * choke point, which decides from the active-board state so a second press reliably
-     * closes the board. Otherwise runs {@code fallback} for the non-UIM path.
+     * closes the board. Otherwise runs {@code fallback} for the non-UIM path. A menu the
+     * "Show or hide the input menu" action has up counts as enabled, so it gets the first route.
      */
     private void toggleBoardOrFallback(int boardKeyCode, Runnable fallback) {
         UnifiedInputBoardManager unifiedManager = ime.getKeyboardSwitcher().getUnifiedInputBoardManager();

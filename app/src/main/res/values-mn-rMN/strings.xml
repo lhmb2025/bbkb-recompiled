@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl товч</string>
     <string name="settings_pkb_multifunction_action_emoji">Инээмсэглэлийн самбар</string>
     <string name="settings_pkb_multifunction_action_fcc">Курсор удирдлага</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Оролтын цэсийг харуулах эсвэл нуух</string>
     <string name="settings_pkb_multifunction_action_language_switch">Хэл солих</string>
     <string name="settings_pkb_multifunction_action_number_pad">Тооны самбар</string>
     <string name="settings_pkb_multifunction_action_symbol">Тэмдэгтийн гар</string>

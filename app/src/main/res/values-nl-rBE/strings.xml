@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl-toets</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji-bord</string>
     <string name="settings_pkb_multifunction_action_fcc">Cursorbesturing</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Invoermenu tonen of verbergen</string>
     <string name="settings_pkb_multifunction_action_language_switch">Taal wisselen</string>
     <string name="settings_pkb_multifunction_action_number_pad">Numeriek toetsenblok</string>
     <string name="settings_pkb_multifunction_action_symbol">Symbolentoetsenbord</string>

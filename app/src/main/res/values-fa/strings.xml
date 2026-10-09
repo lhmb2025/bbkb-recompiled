@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">کلید Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">صفحه Emoji</string>
     <string name="settings_pkb_multifunction_action_fcc">کنترل مکان‌نما</string>
+    <string name="settings_pkb_multifunction_action_input_menu">نمایش یا پنهان کردن منوی ورودی</string>
     <string name="settings_pkb_multifunction_action_language_switch">تعویض زبان</string>
     <string name="settings_pkb_multifunction_action_number_pad">صفحه اعداد</string>
     <string name="settings_pkb_multifunction_action_symbol">صفحه کلید نمادها</string>

@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Tombol Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Papan emoji</string>
     <string name="settings_pkb_multifunction_action_fcc">Kontrol kursor</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Tampilkan atau sembunyikan menu masukan</string>
     <string name="settings_pkb_multifunction_action_language_switch">Ganti bahasa</string>
     <string name="settings_pkb_multifunction_action_number_pad">Tombol angka</string>
     <string name="settings_pkb_multifunction_action_symbol">Keyboard simbol</string>

@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl कुंजी</string>
     <string name="settings_pkb_multifunction_action_emoji">ईमोजी बोर्ड</string>
     <string name="settings_pkb_multifunction_action_fcc">कर्सर नियंत्रण</string>
+    <string name="settings_pkb_multifunction_action_input_menu">इनपुट मेनू दिखाएं या छिपाएं</string>
     <string name="settings_pkb_multifunction_action_language_switch">भाषा बदलें</string>
     <string name="settings_pkb_multifunction_action_number_pad">नंबर पैड</string>
     <string name="settings_pkb_multifunction_action_symbol">प्रतीक कीबोर्ड</string>

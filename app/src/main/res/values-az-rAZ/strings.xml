@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl klavişi</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji paneli</string>
     <string name="settings_pkb_multifunction_action_fcc">Kursor idarəsi</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Daxiletmə menyusunu göstər və ya gizlət</string>
     <string name="settings_pkb_multifunction_action_language_switch">Dili dəyişin</string>
     <string name="settings_pkb_multifunction_action_number_pad">Rəqəm paneli</string>
     <string name="settings_pkb_multifunction_action_symbol">Simvol klaviaturası</string>

@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl ստեղն</string>
     <string name="settings_pkb_multifunction_action_emoji">Զմայլիկների վահանակ</string>
     <string name="settings_pkb_multifunction_action_fcc">Կուրսորի կառավարում</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Ցույց տալ կամ թաքցնել ներածման ընտրացանկը</string>
     <string name="settings_pkb_multifunction_action_language_switch">Փոխել լեզուն</string>
     <string name="settings_pkb_multifunction_action_number_pad">Թվային վահանակ</string>
     <string name="settings_pkb_multifunction_action_symbol">Նշանների ստեղնաշար</string>

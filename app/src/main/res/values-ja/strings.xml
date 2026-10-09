@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrlキー</string>
     <string name="settings_pkb_multifunction_action_emoji">絵文字ボード</string>
     <string name="settings_pkb_multifunction_action_fcc">カーソル操作</string>
+    <string name="settings_pkb_multifunction_action_input_menu">入力メニューの表示/非表示</string>
     <string name="settings_pkb_multifunction_action_language_switch">言語を切り替え</string>
     <string name="settings_pkb_multifunction_action_number_pad">テンキー</string>
     <string name="settings_pkb_multifunction_action_symbol">記号キーボード</string>

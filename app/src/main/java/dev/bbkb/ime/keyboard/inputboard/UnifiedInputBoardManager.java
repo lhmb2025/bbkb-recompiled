@@ -11,6 +11,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.BlackBerryIME;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
+import dev.bbkb.ime.core.settings.util.SettingsValues;
 import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardController;
 import dev.bbkb.ime.keyboard.inputboard.fcc.FccController;
 import dev.bbkb.ime.core.textinput.InputLogic;
@@ -413,6 +414,40 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         refresh();
     }
 
+    /**
+     * The show half of the "Show or hide the input menu" key action. The caller has already set
+     * {@link SettingsValues#setInputMenuRequestedByKey}, which is what lets {@link #show(boolean)}
+     * through where the menu's own settings keep it off.
+     *
+     * <p>A board the menu-off route opened on its own ({@code AbstractBoardController.toggle()}
+     * and the other fallbacks, which the coordinator never hears about) is adopted: with the menu
+     * up, that board's key and its toggle on the bar take the coordinator's route, and a board the
+     * coordinator does not know is open costs them a dead press (an "open" of what is already
+     * open) before the second press closes it.
+     *
+     * @return whether the menu bar is up afterwards
+     */
+    public boolean showMenuForKey() {
+        show(true);
+        if (!isShowing()) {
+            return false;
+        }
+        if (getActiveComponent() == null && this.componentMap != null) {
+            for (Map.Entry<Integer, UnifiedInputBoardComponent> entry : this.componentMap.entrySet()) {
+                int keyCode = entry.getKey().intValue();
+                UnifiedInputBoardComponent component = entry.getValue();
+                // The autofill strip is not a board the bar toggles; see updateKeyHighlightedStates.
+                if (component != null && keyCode != InlineAutofillManager.KEY_CODE_AUTOFILL
+                        && CrossAxisRules.isPanelBoard(keyCode) && component.isShowing()) {
+                    setActiveComponent(component);
+                    break;
+                }
+            }
+        }
+        dumpUimState("showMenuForKey.EXIT");
+        return true;
+    }
+
     public boolean isShowing() {
         // UIM-02 fix: AuxBarManager is the single source of truth for UIM visibility.
         // This eliminates dual-ownership between UIBM view check and AuxBarView.currentState.
@@ -478,6 +513,10 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
 
     public void hide() {
         Logger.debug(TAG, "Hiding Input Board Bar via AuxBarManager");
+        // Whatever takes the menu bar down (the key's second press, the window going away, the
+        // suggestion strip replacing it, cursor mode, a settings change) ends a menu the "Show or
+        // hide the input menu" key asked for: the settings decide again.
+        SettingsValues.setInputMenuRequestedByKey(false);
         // UIM-05: Cancel any running animation and its safety timeout on hide
         this.keyboardView.animate().cancel();
         this.invalidationHandler.removeCallbacks(animationSafetyReset);

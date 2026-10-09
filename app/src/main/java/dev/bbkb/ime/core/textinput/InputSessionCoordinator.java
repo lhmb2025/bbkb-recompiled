@@ -47,6 +47,15 @@ public class InputSessionCoordinator {
      */
     public void onStartInputInternal(EditorInfo editorInfo, boolean restarting) {
         Logger.debug(TAG, "onStartInputInternal(): restarting=" + restarting);
+        // An input menu the "Show or hide the input menu" key raised was for the last field (or
+        // the last session of this one): it goes, with any board open under it, and the user's
+        // menu and suggestion-bar settings decide again. Taken down through the menu manager
+        // (whose hide() also ends the override) so its board bookkeeping stays true, and before
+        // BlackBerryIME.onStartInput's board sweep, which reads those settings.
+        if (SettingsValues.isInputMenuRequestedByKey()) {
+            ime.getUiCoordinator().hideUnifiedInputBoard();
+            SettingsValues.setInputMenuRequestedByKey(false);
+        }
         ime.superOnStartInput(editorInfo, restarting);
         if (shouldReloadKeyboard(editorInfo, restarting)) {
             ime.setNeedsKeyboardReload(true);

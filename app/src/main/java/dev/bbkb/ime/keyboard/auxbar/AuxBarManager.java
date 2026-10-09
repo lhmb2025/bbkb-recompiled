@@ -336,7 +336,8 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
      * the empty container AuxBarView starts as (VISIBLE in state NONE until its first hide()).
      * Autofill chips, the arrow and accent bars, and a Chinese or Japanese candidate strip stay;
      * an accent bar up over the menu or a Latin strip closes onto nothing instead of putting
-     * them back.
+     * them back. A menu the "Show or hide the input menu" key raised stays too: the key asked for
+     * it over the setting ({@link SettingsValues#isInputMenuRequestedByKey()}).
      */
     public void hideSuggestionBar() {
         if (auxBarView == null) {
@@ -352,9 +353,12 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         }
     }
 
-    /** The unified input menu, or a Latin strip on a keyboard that is not Chinese or Japanese. */
+    /**
+     * The unified input menu, unless the key asked for it, or a Latin strip on a keyboard that is
+     * not Chinese or Japanese.
+     */
     private boolean isHiddenWithTheBar(AuxBarState state) {
-        return state == AuxBarState.UNIFIED_INPUT_MENU
+        return (state == AuxBarState.UNIFIED_INPUT_MENU && !SettingsValues.isInputMenuRequestedByKey())
                 || (state == AuxBarState.LATIN_SUGGESTIONS && !isChineseOrJapaneseLocale());
     }
 

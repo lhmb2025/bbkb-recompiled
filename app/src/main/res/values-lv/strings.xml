@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl taustiņš</string>
     <string name="settings_pkb_multifunction_action_emoji">Emocijzīmju panelis</string>
     <string name="settings_pkb_multifunction_action_fcc">Kursora vadība</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Rādīt vai paslēpt ievades izvēlni</string>
     <string name="settings_pkb_multifunction_action_language_switch">Pārslēgt valodu</string>
     <string name="settings_pkb_multifunction_action_number_pad">Ciparu panelis</string>
     <string name="settings_pkb_multifunction_action_symbol">Simbolu tastatūra</string>

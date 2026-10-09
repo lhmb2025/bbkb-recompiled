@@ -1,6 +1,7 @@
 package dev.bbkb.ime.core.keyevent
 
 import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
 import dev.bbkb.ime.core.BlackBerryIME
 import dev.bbkb.ime.core.device.config.model.KeyRole
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping
@@ -9,9 +10,12 @@ import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier
 import dev.bbkb.ime.core.device.profile.DeviceCapabilities
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.device.state.PhysicalKeyboardStateTracker
+import dev.bbkb.ime.core.ime.InputViewCoordinator
 import dev.bbkb.ime.core.locale.SubtypeManager
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.util.SettingsManager
+import dev.bbkb.ime.core.settings.util.SettingsValues
+import dev.bbkb.ime.core.textinput.InputSessionCoordinator
 import dev.bbkb.ime.core.textinput.connection.EditorCapabilities
 import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardController
 import dev.bbkb.ime.keyboard.inputboard.fcc.FccController
@@ -19,6 +23,7 @@ import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadController
 import androidx.test.core.app.ApplicationProvider
 import android.content.Context
 import org.junit.After
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -29,6 +34,7 @@ import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.MockedStatic
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
+import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.doReturn
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.doReturn
@@ -142,6 +148,9 @@ class BoardKeyPairingCharacterisationTest {
     @After
     fun tearDown() {
         clearPairing()
+        // Session state outside the settings snapshot: it must not leak into the next test.
+        SettingsValues.setInputMenuRequestedByKey(false)
+        DeviceProfile.setOnScreenKeyboardShowing(false)
         classifierStatic.close()
         resolverStatic.close()
         subtypeStatic.close()
@@ -248,6 +257,88 @@ class BoardKeyPairingCharacterisationTest {
         pressMultifunction(MultifunctionKeyHandler.ACTION_FCC)
         pressMultifunction(MultifunctionKeyHandler.ACTION_NUMBER_PAD)
 
+        verify(boardManager(), never()).requestBoard(anyInt())
+    }
+
+    // ===================================================== the "Show or hide the input menu" action
+
+    /**
+     * The menu is hidden with "Show the suggestion bar", so there is no hamburger button to reach
+     * it: the action raises it anyway, as a session override that leaves the preferences alone,
+     * and while it is up the board actions take the menu's route instead of their own toggles.
+     */
+    @Test
+    fun `with the bar hidden the input-menu action raises the menu and the board actions take its route`() {
+        val menu = inputMenuWithTheBarHidden()
+        val fcc = mock(FccController::class.java)
+        `when`(ime.fccController).thenReturn(fcc)
+        assertFalse("the fixture: the setting keeps the menu off", ime.isUimEnabled())
+
+        pressMultifunction(MultifunctionKeyHandler.ACTION_TOGGLE_UIM)
+
+        verify(boardManager()).showMenuForKey()
+        assertTrue(menu.up)
+        assertTrue(SettingsValues.isInputMenuRequestedByKey())
+        assertTrue(ime.isUimEnabled())
+
+        pressMultifunction(MultifunctionKeyHandler.ACTION_FCC)
+        verify(boardManager()).requestBoard(FccController.KEY_CODE)
+        verify(fcc, never()).toggle()
+
+        // A session override, not a settings change.
+        assertFalse(PrefsManager.getPrefs(context).getBoolean(SettingsManager.PREF_PKB_SHOW_SUGGESTION_BAR, true))
+        assertFalse(PrefsManager.getPrefs(context).contains("pref_uim_enabled"))
+    }
+
+    @Test
+    fun `a second press hides the menu and the board actions go back to their own toggles`() {
+        val menu = inputMenuWithTheBarHidden()
+        val fcc = mock(FccController::class.java)
+        `when`(ime.fccController).thenReturn(fcc)
+
+        pressMultifunction(MultifunctionKeyHandler.ACTION_TOGGLE_UIM)
+        pressMultifunction(MultifunctionKeyHandler.ACTION_TOGGLE_UIM)
+
+        verify(boardManager(), times(1)).showMenuForKey()
+        verify(boardManager()).hide()
+        assertFalse(menu.up)
+        assertFalse(SettingsValues.isInputMenuRequestedByKey())
+        assertFalse(ime.isUimEnabled())
+
+        pressMultifunction(MultifunctionKeyHandler.ACTION_FCC)
+        verify(fcc).toggle()
+        verify(boardManager(), never()).requestBoard(anyInt())
+    }
+
+    /** A menu the settings already show is taken away by the press, and not marked as the key's. */
+    @Test
+    fun `the input-menu action hides a menu that is already up`() {
+        val menu = inputMenuWithTheBarHidden()
+        menu.up = true
+
+        pressMultifunction(MultifunctionKeyHandler.ACTION_TOGGLE_UIM)
+
+        verify(boardManager()).hide()
+        verify(boardManager(), never()).showMenuForKey()
+        assertFalse(SettingsValues.isInputMenuRequestedByKey())
+    }
+
+    /** The next field gets the user's settings back: the menu the key raised goes at input start. */
+    @Test
+    fun `the menu the key raised ends at the next input start`() {
+        val menu = inputMenuWithTheBarHidden()
+        val fcc = mock(FccController::class.java)
+        `when`(ime.fccController).thenReturn(fcc)
+        pressMultifunction(MultifunctionKeyHandler.ACTION_TOGGLE_UIM)
+        assertTrue(SettingsValues.isInputMenuRequestedByKey())
+
+        InputSessionCoordinator(ime).onStartInputInternal(EditorInfo(), false)
+
+        assertFalse(SettingsValues.isInputMenuRequestedByKey())
+        verify(boardManager()).hide()
+        assertFalse(menu.up)
+        pressMultifunction(MultifunctionKeyHandler.ACTION_FCC)
+        verify(fcc).toggle()
         verify(boardManager(), never()).requestBoard(anyInt())
     }
 
@@ -597,6 +688,38 @@ class BoardKeyPairingCharacterisationTest {
 
     private fun clearPairing() {
         BoardKeyPressTracker.getInstance().clearPendingActions()
+    }
+
+    /** The menu bar as far as the toggle can see it: up or not. */
+    private class FakeMenu(var up: Boolean = false)
+
+    /**
+     * "Show the suggestion bar" off on this physical keyboard, the IME's menu setting answered by
+     * the real [SettingsValues] (the production [BlackBerryIME.isUimEnabled] reads nothing else),
+     * the real [InputViewCoordinator] behind the action, and a menu bar the board manager mock
+     * raises and lowers.
+     */
+    private fun inputMenuWithTheBarHidden(): FakeMenu {
+        PrefsManager.getPrefs(context).edit()
+            .putBoolean(SettingsManager.PREF_PKB_SHOW_SUGGESTION_BAR, false).commit()
+        SettingsManager.getInstance().loadSettings(
+            context, Locale.US,
+            EditorCapabilities(null, false, context.packageName, Locale.US, false)
+        )
+        DeviceProfile.setOnScreenKeyboardShowing(false)
+        assertTrue(SettingsManager.getInstance().settingsValues.isPkbSuggestionBarHidden)
+        `when`(ime.isUimEnabled()).thenAnswer { SettingsManager.getInstance().settingsValues.isUimEnabled }
+
+        val coordinator = InputViewCoordinator(ime)
+        coordinator.initialize()
+        `when`(ime.getUiCoordinator()).thenReturn(coordinator)
+
+        val menu = FakeMenu()
+        val manager = boardManager()
+        `when`(manager.isShowing()).thenAnswer { menu.up }
+        doAnswer { menu.up = true; true }.`when`(manager).showMenuForKey()
+        doAnswer { menu.up = false; null }.`when`(manager).hide()
+        return menu
     }
 
     private fun mapKey(

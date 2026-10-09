@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Πλήκτρο Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Πίνακας emoji</string>
     <string name="settings_pkb_multifunction_action_fcc">Έλεγχος δρομέα</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Εμφάνιση ή απόκρυψη του μενού εισόδου</string>
     <string name="settings_pkb_multifunction_action_language_switch">Αλλαγή γλώσσας</string>
     <string name="settings_pkb_multifunction_action_number_pad">Αριθμητικό πληκτρολόγιο</string>
     <string name="settings_pkb_multifunction_action_symbol">Πληκτρολόγιο συμβόλων</string>

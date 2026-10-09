@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">ปุ่ม Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">บอร์ดอีโมจิ</string>
     <string name="settings_pkb_multifunction_action_fcc">การควบคุมเคอร์เซอร์</string>
+    <string name="settings_pkb_multifunction_action_input_menu">แสดงหรือซ่อนเมนูการป้อนข้อมูล</string>
     <string name="settings_pkb_multifunction_action_language_switch">สลับภาษา</string>
     <string name="settings_pkb_multifunction_action_number_pad">แป้นตัวเลข</string>
     <string name="settings_pkb_multifunction_action_symbol">แป้นพิมพ์สัญลักษณ์</string>

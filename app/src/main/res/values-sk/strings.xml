@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Kláves Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Panel emoji</string>
     <string name="settings_pkb_multifunction_action_fcc">Ovládanie kurzora</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Zobraziť alebo skryť ponuku zadávania</string>
     <string name="settings_pkb_multifunction_action_language_switch">Prepnúť jazyk</string>
     <string name="settings_pkb_multifunction_action_number_pad">Numerická klávesnica</string>
     <string name="settings_pkb_multifunction_action_symbol">Klávesnica so symbolmi</string>

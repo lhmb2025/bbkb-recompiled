@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Klawisz Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Panel emotikonów</string>
     <string name="settings_pkb_multifunction_action_fcc">Sterowanie kursorem</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Pokaż lub ukryj menu wprowadzania</string>
     <string name="settings_pkb_multifunction_action_language_switch">Przełącz język</string>
     <string name="settings_pkb_multifunction_action_number_pad">Klawiatura numeryczna</string>
     <string name="settings_pkb_multifunction_action_symbol">Klawiatura symboli</string>

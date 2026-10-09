@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl 鍵</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji 面板</string>
     <string name="settings_pkb_multifunction_action_fcc">游標控制</string>
+    <string name="settings_pkb_multifunction_action_input_menu">顯示或隱藏輸入選單</string>
     <string name="settings_pkb_multifunction_action_language_switch">切換語言</string>
     <string name="settings_pkb_multifunction_action_number_pad">數字鍵盤</string>
     <string name="settings_pkb_multifunction_action_symbol">符號鍵盤</string>

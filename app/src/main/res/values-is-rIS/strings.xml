@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl-lykill</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji-spjald</string>
     <string name="settings_pkb_multifunction_action_fcc">Bendilstýring</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Sýna eða fela innsláttarvalmyndina</string>
     <string name="settings_pkb_multifunction_action_language_switch">Skipta um tungumál</string>
     <string name="settings_pkb_multifunction_action_number_pad">Talnaborð</string>
     <string name="settings_pkb_multifunction_action_symbol">Táknlyklaborð</string>

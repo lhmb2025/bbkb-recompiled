@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl-näppäin</string>
     <string name="settings_pkb_multifunction_action_emoji">Emojipaneeli</string>
     <string name="settings_pkb_multifunction_action_fcc">Kohdistimen ohjaus</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Näytä tai piilota syöttövalikko</string>
     <string name="settings_pkb_multifunction_action_language_switch">Vaihda kieli</string>
     <string name="settings_pkb_multifunction_action_number_pad">Numeronäppäimistö</string>
     <string name="settings_pkb_multifunction_action_symbol">Symbolinäppäimistö</string>

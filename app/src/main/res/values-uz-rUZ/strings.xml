@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl tugmasi</string>
     <string name="settings_pkb_multifunction_action_emoji">Kulgichlar paneli</string>
     <string name="settings_pkb_multifunction_action_fcc">Kursorni boshqarish</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Kiritish menyusini ko‘rsatish yoki yashirish</string>
     <string name="settings_pkb_multifunction_action_language_switch">Tilni almashtirish</string>
     <string name="settings_pkb_multifunction_action_number_pad">Raqam paneli</string>
     <string name="settings_pkb_multifunction_action_symbol">Belgilar klaviaturasi</string>

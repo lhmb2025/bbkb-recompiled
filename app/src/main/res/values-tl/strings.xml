@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl key</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji board</string>
     <string name="settings_pkb_multifunction_action_fcc">Kontrol ng cursor</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Ipakita o itago ang input menu</string>
     <string name="settings_pkb_multifunction_action_language_switch">Lumipat ng wika</string>
     <string name="settings_pkb_multifunction_action_number_pad">Number pad</string>
     <string name="settings_pkb_multifunction_action_symbol">Symbol keyboard</string>

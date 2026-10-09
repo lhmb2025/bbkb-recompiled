@@ -14,7 +14,9 @@ import dev.bbkb.ime.core.settings.util.SettingsManager
 import dev.bbkb.ime.core.settings.util.SettingsValues
 import dev.bbkb.ime.core.suggestion.SuggestedWords
 import dev.bbkb.ime.core.textinput.connection.EditorCapabilities
+import dev.bbkb.ime.keyboard.KeyboardSwitcher
 import dev.bbkb.ime.keyboard.auxbar.AuxBarManager
+import dev.bbkb.ime.keyboard.inputboard.UnifiedInputBoardManager
 import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -42,6 +44,7 @@ class PkbSuggestionBarTest {
 
     private lateinit var context: Context
     private lateinit var auxBar: AuxBarManager
+    private lateinit var ime: BlackBerryIME
     private lateinit var coordinator: InputViewCoordinator
 
     @Before
@@ -55,7 +58,8 @@ class PkbSuggestionBarTest {
         subtype("en_US")
 
         auxBar = Mockito.mock(AuxBarManager::class.java)
-        coordinator = InputViewCoordinator(Mockito.mock(BlackBerryIME::class.java))
+        ime = Mockito.mock(BlackBerryIME::class.java)
+        coordinator = InputViewCoordinator(ime)
         coordinator.setAuxBarManager(auxBar)
         // initialize() would also resolve the views through the IME; these two are all the
         // predicates under test read.
@@ -65,6 +69,7 @@ class PkbSuggestionBarTest {
 
     @After
     fun tearDown() {
+        SettingsValues.setInputMenuRequestedByKey(false)
         // As SettingsValuesSnapshotTest: SettingsManager is a process singleton whose preference
         // listener would otherwise outlive this class.
         val manager = SettingsManager.getInstance()
@@ -111,6 +116,24 @@ class PkbSuggestionBarTest {
 
     private fun preShowSuggestionStripForPkb() =
         ReflectionHelpers.callInstanceMethod<Any?>(coordinator, "preShowSuggestionStripForPkb")
+
+    /** The menu manager the coordinator reaches through the keyboard switcher, its bar up or not. */
+    private fun boardManager(showing: Boolean): UnifiedInputBoardManager {
+        val uim = Mockito.mock(UnifiedInputBoardManager::class.java)
+        Mockito.`when`(uim.isShowing).thenReturn(showing)
+        val switcher = Mockito.mock(KeyboardSwitcher::class.java)
+        Mockito.`when`(switcher.unifiedInputBoardManager).thenReturn(uim)
+        ReflectionHelpers.setField(coordinator, "keyboardSwitcher", switcher)
+        return uim
+    }
+
+    /** An active editor, and the handler a refill of the strip is posted on. */
+    private fun suggestionUpdates(): UIUpdateHandler {
+        val handler = Mockito.mock(UIUpdateHandler::class.java)
+        Mockito.`when`(ime.isInputActive).thenReturn(true)
+        Mockito.`when`(ime.getUiUpdateHandler()).thenReturn(handler)
+        return handler
+    }
 
     // ── the predicate ───────────────────────────────────────────────────────
 
@@ -254,6 +277,125 @@ class PkbSuggestionBarTest {
 
         verify(auxBar).hideSuggestionBar()
         verify(auxBar, never()).showSuggestionStrip(Mockito.any<SuggestedWords>())
+    }
+
+    // ── the "Show or hide the input menu" key's override ────────────────────
+
+    /**
+     * The key raised the menu over "Show the suggestion bar": both isUimEnabled readers and
+     * shouldShowUim() say on, so the board keys take the menu's route, while the bar setting
+     * itself still reads hidden and keeps the Latin strip away.
+     */
+    @Test
+    fun theKeysMenuCountsAsOnWithTheBarHidden() {
+        val sv = load(showBar = false)
+
+        SettingsValues.setInputMenuRequestedByKey(true)
+
+        assertTrue(sv.isPkbSuggestionBarHidden)
+        assertTrue(sv.isUimEnabled)
+        assertTrue(SettingsManager.isUimEnabled(context))
+        assertTrue(coordinator.isUimEnabled())
+        assertTrue(coordinator.shouldShowUim())
+        assertFalse(coordinator.shouldShowSuggestionStrip(sv, false, null))
+        // Never written to the preferences: clearing it gives the setting back.
+        assertFalse(prefs().getBoolean(SettingsManager.PREF_PKB_SHOW_SUGGESTION_BAR, true))
+
+        SettingsValues.setInputMenuRequestedByKey(false)
+        assertFalse(sv.isUimEnabled)
+        assertFalse(SettingsManager.isUimEnabled(context))
+        assertFalse(coordinator.shouldShowUim())
+    }
+
+    @Test
+    fun theKeysMenuCountsAsOnWithTheMenuSettingOff() {
+        prefs().edit().putBoolean("pref_uim_enabled", false).commit()
+        val sv = load(showBar = true)
+
+        SettingsValues.setInputMenuRequestedByKey(true)
+
+        assertTrue(sv.isUimEnabled)
+        assertTrue(SettingsManager.isUimEnabled(context))
+        // The menu, not the strip, is what the bar shows until it is put away.
+        assertTrue(coordinator.shouldShowUim())
+        assertFalse(prefs().getBoolean("pref_uim_enabled", true))
+    }
+
+    /**
+     * The window coming up for the very key press that raised the menu starts the input view
+     * after it: the pre-show must not take the menu down again (with the bar hidden) or cover it
+     * with an empty strip (with the bar shown).
+     */
+    @Test
+    fun startingTheViewWithTheKeysMenuUpLeavesTheBarToIt() {
+        for (showBar in listOf(false, true)) {
+            Mockito.clearInvocations(auxBar)
+            load(showBar)
+            SettingsValues.setInputMenuRequestedByKey(true)
+
+            preShowSuggestionStripForPkb()
+
+            verify(auxBar, never()).hideSuggestionBar()
+            verify(auxBar, never()).showSuggestionStrip(Mockito.any<SuggestedWords>())
+        }
+    }
+
+    @Test
+    fun theKeyRaisesTheHiddenMenu() {
+        load(showBar = false)
+        val uim = boardManager(showing = false)
+        Mockito.`when`(uim.showMenuForKey()).thenReturn(true)
+
+        coordinator.toggleInputMenu()
+
+        verify(uim).showMenuForKey()
+        verify(uim, never()).hide()
+        assertTrue(SettingsValues.isInputMenuRequestedByKey())
+    }
+
+    /** No bar view to show the menu in yet: the override does not linger with nothing up. */
+    @Test
+    fun aMenuThatCouldNotComeUpLeavesNoOverrideBehind() {
+        load(showBar = false)
+        val uim = boardManager(showing = false)
+        Mockito.`when`(uim.showMenuForKey()).thenReturn(false)
+
+        coordinator.toggleInputMenu()
+
+        assertFalse(SettingsValues.isInputMenuRequestedByKey())
+    }
+
+    /** With the bar hidden, hiding the menu leaves nothing: no strip, nothing to fill it with. */
+    @Test
+    fun theKeyHidesTheMenuBackToTheHiddenBar() {
+        load(showBar = false)
+        val uim = boardManager(showing = true)
+        val handler = suggestionUpdates()
+        SettingsValues.setInputMenuRequestedByKey(true)
+
+        coordinator.toggleInputMenu()
+
+        verify(uim).hide()
+        verify(uim, never()).showMenuForKey()
+        assertFalse(SettingsValues.isInputMenuRequestedByKey())
+        verify(auxBar).hideSuggestionBar()
+        verify(auxBar, never()).showSuggestionStrip(Mockito.any<SuggestedWords>())
+        verify(handler, never()).postUpdateShiftState(Mockito.anyBoolean(), Mockito.anyBoolean())
+    }
+
+    /** With the bar shown, the strip comes back in the menu's place and is refilled. */
+    @Test
+    fun theKeyHidesTheMenuBackToTheSuggestionStrip() {
+        load(showBar = true)
+        val uim = boardManager(showing = true)
+        val handler = suggestionUpdates()
+        Mockito.`when`(auxBar.isShowing).thenReturn(true)
+
+        coordinator.toggleInputMenu()
+
+        verify(uim).hide()
+        verify(auxBar).showSuggestionStrip(SuggestedWords.EMPTY)
+        verify(handler).postUpdateShiftState(true, true)
     }
 
     @Test

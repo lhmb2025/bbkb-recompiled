@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Tombol Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Papan emoji</string>
     <string name="settings_pkb_multifunction_action_fcc">Kontrol kursor</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Tuduhake utawa dhelikake menu input</string>
     <string name="settings_pkb_multifunction_action_language_switch">Ganti basa</string>
     <string name="settings_pkb_multifunction_action_number_pad">Papan angka</string>
     <string name="settings_pkb_multifunction_action_symbol">Papan tombol simbol</string>

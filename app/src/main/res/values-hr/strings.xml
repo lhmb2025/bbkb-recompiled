@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Tipka Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Ploča s emojijima</string>
     <string name="settings_pkb_multifunction_action_fcc">Upravljanje pokazivačem</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Prikaži ili sakrij izbornik za unos</string>
     <string name="settings_pkb_multifunction_action_language_switch">Promijeni jezik</string>
     <string name="settings_pkb_multifunction_action_number_pad">Brojčana tipkovnica</string>
     <string name="settings_pkb_multifunction_action_symbol">Tipkovnica sa simbolima</string>

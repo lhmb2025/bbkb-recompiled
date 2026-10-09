@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Клавиш Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Панел с емотикони</string>
     <string name="settings_pkb_multifunction_action_fcc">Управление на курсора</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Показване или скриване на менюто за въвеждане</string>
     <string name="settings_pkb_multifunction_action_language_switch">Смяна на езика</string>
     <string name="settings_pkb_multifunction_action_number_pad">Цифров блок</string>
     <string name="settings_pkb_multifunction_action_symbol">Клавиатура със символи</string>

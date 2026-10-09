@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Bysell Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Bwrdd emoji</string>
     <string name="settings_pkb_multifunction_action_fcc">Rheoli\'r cyrchwr</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Dangos neu guddio\'r ddewislen fewnbwn</string>
     <string name="settings_pkb_multifunction_action_language_switch">Newid iaith</string>
     <string name="settings_pkb_multifunction_action_number_pad">Pad rhifau</string>
     <string name="settings_pkb_multifunction_action_symbol">Bysellfwrdd symbolau</string>

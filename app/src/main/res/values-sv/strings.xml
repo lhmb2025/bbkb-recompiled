@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl-tangent</string>
     <string name="settings_pkb_multifunction_action_emoji">Emojipanel</string>
     <string name="settings_pkb_multifunction_action_fcc">Markörstyrning</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Visa eller dölj inmatningsmenyn</string>
     <string name="settings_pkb_multifunction_action_language_switch">Byt språk</string>
     <string name="settings_pkb_multifunction_action_number_pad">Siffersats</string>
     <string name="settings_pkb_multifunction_action_symbol">Symboltangentbord</string>

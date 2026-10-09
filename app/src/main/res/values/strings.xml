@@ -294,6 +294,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl key</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji board</string>
     <string name="settings_pkb_multifunction_action_fcc">Cursor control</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Show or hide the input menu</string>
     <string name="settings_pkb_multifunction_action_language_switch">Switch language</string>
     <string name="settings_pkb_multifunction_action_number_pad">Number pad</string>
     <string name="settings_pkb_multifunction_action_symbol">Symbol keyboard</string>

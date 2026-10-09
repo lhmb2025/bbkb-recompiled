@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Phím Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Bảng biểu tượng cảm xúc</string>
     <string name="settings_pkb_multifunction_action_fcc">Điều khiển con trỏ</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Hiện hoặc ẩn trình đơn nhập liệu</string>
     <string name="settings_pkb_multifunction_action_language_switch">Chuyển ngôn ngữ</string>
     <string name="settings_pkb_multifunction_action_number_pad">Bảng số</string>
     <string name="settings_pkb_multifunction_action_symbol">Bàn phím biểu tượng</string>

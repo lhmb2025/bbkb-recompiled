@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Tasta Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Tastatură emoji</string>
     <string name="settings_pkb_multifunction_action_fcc">Control cursor</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Afișează sau ascunde meniul de introducere</string>
     <string name="settings_pkb_multifunction_action_language_switch">Schimbați limba</string>
     <string name="settings_pkb_multifunction_action_number_pad">Tastatură numerică</string>
     <string name="settings_pkb_multifunction_action_symbol">Tastatură de simboluri</string>

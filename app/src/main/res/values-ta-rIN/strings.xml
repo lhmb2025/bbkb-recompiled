@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl விசை</string>
     <string name="settings_pkb_multifunction_action_emoji">எமோஜி பலகை</string>
     <string name="settings_pkb_multifunction_action_fcc">கர்சர் கட்டுப்பாடு</string>
+    <string name="settings_pkb_multifunction_action_input_menu">உள்ளீட்டு மெனுவைக் காட்டு அல்லது மறை</string>
     <string name="settings_pkb_multifunction_action_language_switch">மொழியை மாற்று</string>
     <string name="settings_pkb_multifunction_action_number_pad">எண் பேடு</string>
     <string name="settings_pkb_multifunction_action_symbol">குறியீட்டு விசைப்பலகை</string>

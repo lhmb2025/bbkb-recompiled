@@ -122,9 +122,9 @@ object SettingsSearchIndex {
         // ── Typing & input: Physical keyboard ───────────────────────────────────
         SearchableSetting(R.string.settings_pkb_ctrl_key_behavior_title, "ctrl control physical", SettingsRoute.PhysicalKeyboard.route, TYPING, "control_mode"),
         SearchableSetting(R.string.settings_pkb_dictation_key_title, "voice dictation mic key", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_voice_input_key"),
-        SearchableSetting(R.string.settings_pkb_multifunction_key_title, "multifunction convenience mic key custom action ctrl emoji clipboard cursor arrow bar", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_multifunction_key_action", DeviceRequirement.MULTIFUNCTION_KEY),
+        SearchableSetting(R.string.settings_pkb_multifunction_key_title, "multifunction convenience mic key custom action ctrl emoji clipboard cursor arrow bar input menu show hide", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_multifunction_key_action", DeviceRequirement.MULTIFUNCTION_KEY),
         SearchableSetting(R.string.settings_pkb_hold_action_title, "hold long press key", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_pkb_hold_auto_commit"),
-        SearchableSetting(R.string.settings_pkb_alt_sym_shortcut_title, "alt sym shortcut", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_alt_sym_shortcut_action"),
+        SearchableSetting(R.string.settings_pkb_alt_sym_shortcut_title, "alt sym shortcut input menu show hide", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_alt_sym_shortcut_action"),
         SearchableSetting(R.string.settings_pkb_suggestion_bar_title, "suggestion bar strip predictions hide input menu physical keyboard", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_pkb_show_suggestion_bar", DeviceRequirement.PHYSICAL_KEYBOARD),
         SearchableSetting(R.string.pref_show_pkb_modifier_status_icon, "modifier status icon shift alt", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_show_pkb_modifier_status_icon"),
         SearchableSetting(R.string.pref_shift_double_tap_lock, "shift double tap caps lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_shift_double_tap_lock"),

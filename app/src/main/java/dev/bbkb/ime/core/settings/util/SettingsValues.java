@@ -137,6 +137,15 @@ public final class SettingsValues {
      */
     private final boolean pkbSuggestionBarOff;
 
+    /**
+     * The "Show or hide the input menu" key action (multifunction key or Alt+Sym) raised the
+     * unified input menu, and nothing has put it away since. See
+     * {@link #isInputMenuRequestedByKey()}. Static, not part of the snapshot: it belongs to the
+     * input session, never to the stored settings, and must survive the settings reloads that
+     * happen mid-session (show-on-keypress reloads them, for one).
+     */
+    private static volatile boolean inputMenuRequestedByKey;
+
     public final boolean flickCommitAnimationEnabled;
 
     public final int autoCorrectionMode;
@@ -468,10 +477,35 @@ public final class SettingsValues {
     /**
      * The unified input menu is on: its setting, unless the bar it sits in is hidden by
      * {@link #isPkbSuggestionBarHidden()}. Read live because that depends on whether the
-     * on-screen keyboard is up, which changes without a settings reload.
+     * on-screen keyboard is up, which changes without a settings reload. Whatever the two
+     * settings say, the menu is on while the key has asked for it
+     * ({@link #isInputMenuRequestedByKey()}).
      */
     public boolean isUimEnabled() {
-        return this.uimEnabledSetting && !isPkbSuggestionBarHidden();
+        return inputMenuRequestedByKey || (this.uimEnabledSetting && !isPkbSuggestionBarHidden());
+    }
+
+    /**
+     * The "Show or hide the input menu" key action has the input menu up, and it counts as on
+     * whatever "Enable unified input menu" and "Show the suggestion bar" say: the two
+     * {@code isUimEnabled} readers and {@code InputViewCoordinator.shouldShowUim()} answer yes,
+     * so the bar behaves as a menu bar does with the menu on (its toggles open boards through
+     * the board coordinator, and a closed board leaves the menu up) instead of taking the
+     * menu-off routes.
+     *
+     * <p>Never stored: the preferences are untouched, and the user's settings win again once it
+     * clears. It clears when the key hides the menu, when the menu bar is taken down any other
+     * way ({@code UnifiedInputBoardManager.hide()}: the window going down, the suggestion strip
+     * replacing the menu, cursor mode, a settings change), and at the next input start
+     * ({@code InputSessionCoordinator.onStartInputInternal}).
+     */
+    public static boolean isInputMenuRequestedByKey() {
+        return inputMenuRequestedByKey;
+    }
+
+    /** See {@link #isInputMenuRequestedByKey()}. */
+    public static void setInputMenuRequestedByKey(boolean requested) {
+        inputMenuRequestedByKey = requested;
     }
 
     /**
@@ -481,7 +515,9 @@ public final class SettingsValues {
      * the accent bar still show. Landscape, a forced on-screen keyboard and touch-only devices
      * all count as the on-screen keyboard being up, so the setting does not apply there. An
      * input board opened over the physical keys does not: the bar stays hidden above it, and the
-     * board keys keep their menu-off route (a second press closes the board).
+     * board keys keep their menu-off route (a second press closes the board). The menu itself
+     * can still be called up with the "Show or hide the input menu" key action
+     * ({@link #isInputMenuRequestedByKey()}); this stays true meanwhile, so the strip stays away.
      */
     public boolean isPkbSuggestionBarHidden() {
         return isPkbSuggestionBarHidden(!this.pkbSuggestionBarOff);

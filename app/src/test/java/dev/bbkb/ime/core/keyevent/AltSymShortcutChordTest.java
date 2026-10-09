@@ -81,6 +81,7 @@ public class AltSymShortcutChordTest {
         int numberPad;
         int languageSwitch;
         int emojiPicker;
+        int inputMenu;
 
         @Override public void openSymbolKeyboard() { symbolKeyboard++; }
         @Override public void switchLanguage() { languageSwitch++; }
@@ -88,6 +89,7 @@ public class AltSymShortcutChordTest {
         @Override public void toggleClipboard() { clipboard++; }
         @Override public void toggleFcc() { fcc++; }
         @Override public void toggleNumberPad() { numberPad++; }
+        @Override public void toggleInputMenu() { inputMenu++; }
     }
 
     @Before

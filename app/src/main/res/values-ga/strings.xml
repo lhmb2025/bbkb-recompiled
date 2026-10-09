@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Eochair Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Clár emoji</string>
     <string name="settings_pkb_multifunction_action_fcc">Rialú an chúrsóra</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Taispeáin nó folaigh an roghchlár ionchuir</string>
     <string name="settings_pkb_multifunction_action_language_switch">Athraigh an teanga</string>
     <string name="settings_pkb_multifunction_action_number_pad">Eochaircheap uimhreacha</string>
     <string name="settings_pkb_multifunction_action_symbol">Méarchlár siombailí</string>

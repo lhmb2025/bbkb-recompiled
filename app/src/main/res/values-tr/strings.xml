@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl tuşu</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji klavyesi</string>
     <string name="settings_pkb_multifunction_action_fcc">İmleç denetimi</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Giriş menüsünü göster veya gizle</string>
     <string name="settings_pkb_multifunction_action_language_switch">Dili değiştir</string>
     <string name="settings_pkb_multifunction_action_number_pad">Numara tuşları</string>
     <string name="settings_pkb_multifunction_action_symbol">Sembol klavyesi</string>

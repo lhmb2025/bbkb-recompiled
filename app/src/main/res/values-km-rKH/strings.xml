@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">គ្រាប់ចុច Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">ក្ដារសញ្ញាអារម្មណ៍</string>
     <string name="settings_pkb_multifunction_action_fcc">ការគ្រប់គ្រងទស្សន៍ទ្រនិច</string>
+    <string name="settings_pkb_multifunction_action_input_menu">បង្ហាញ ឬលាក់ម៉ឺនុយបញ្ចូល</string>
     <string name="settings_pkb_multifunction_action_language_switch">ប្ដូរភាសា</string>
     <string name="settings_pkb_multifunction_action_number_pad">បន្ទះលេខ</string>
     <string name="settings_pkb_multifunction_action_symbol">ក្ដារចុចនិមិត្តសញ្ញា</string>

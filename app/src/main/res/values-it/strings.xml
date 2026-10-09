@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Tasto Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Tastiera emoji</string>
     <string name="settings_pkb_multifunction_action_fcc">Controllo cursore</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Mostra o nascondi il menu di inserimento</string>
     <string name="settings_pkb_multifunction_action_language_switch">Cambia lingua</string>
     <string name="settings_pkb_multifunction_action_number_pad">Tastierino numerico</string>
     <string name="settings_pkb_multifunction_action_symbol">Tastiera dei simboli</string>

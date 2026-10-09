@@ -101,6 +101,10 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
             override fun toggleNumberPad() {
                 if (canShowBoard()) toggleBoard(NumberPadController.KEY_CODE) { ime.numberPadController?.toggle() }
             }
+            override fun toggleInputMenu() {
+                // The menu lives in the IME window too, so it needs the window as a board does.
+                if (canShowBoard()) ime.getUiCoordinator().toggleInputMenu()
+            }
         })
     }
 
@@ -113,7 +117,8 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
 
     /**
      * Toggle a UIM board through the coordinator, or run [fallback] when the UIM is off (or hidden
-     * with the suggestion bar): the board's own toggle, without the menu bar.
+     * with the suggestion bar): the board's own toggle, without the menu bar. A menu the "Show or
+     * hide the input menu" action has up counts as on, so the coordinator's route applies then.
      */
     private inline fun toggleBoard(boardKeyCode: Int, fallback: () -> Unit) {
         val uibm = ime.getKeyboardSwitcher().getUnifiedInputBoardManager()

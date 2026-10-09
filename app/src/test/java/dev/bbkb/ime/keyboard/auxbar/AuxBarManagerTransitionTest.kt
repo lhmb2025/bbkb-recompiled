@@ -80,6 +80,7 @@ class AuxBarManagerTransitionTest {
 
     @After
     fun tearDown() {
+        SettingsValues.setInputMenuRequestedByKey(false)
         DeviceProfile.setOnScreenKeyboardShowing(false)
         DeviceProfile.initialize(null)
         suggestionsAllowed(null)
@@ -410,6 +411,37 @@ class AuxBarManagerTransitionTest {
         manager.showSuggestionStrip(words(), false)
         manager.hideSuggestionBar()
         assertEquals(AuxBarState.LATIN_SUGGESTIONS, manager.currentState)
+    }
+
+    /**
+     * A menu the "Show or hide the input menu" key raised over "Show the suggestion bar" is not
+     * the bar's to hide: every route the hidden bar takes things down by leaves it up, including
+     * an accent pick made over it. Once the override is gone the bar setting has its way again.
+     */
+    @Test
+    fun withTheBarHiddenAMenuTheKeyRaisedStays() {
+        suggestionBarHidden()
+        manager.showUnifiedInputMenu(keyboard("a"))
+        SettingsValues.setInputMenuRequestedByKey(true)
+
+        manager.hideSuggestionBar()
+        assertEquals(AuxBarState.UNIFIED_INPUT_MENU, manager.currentState)
+
+        // A suggestion delivery while the bar is hidden goes through hideSuggestionBar too.
+        manager.showSuggestionStrip(words())
+        manager.showSuggestionStrip(words(), false)
+        assertEquals(AuxBarState.UNIFIED_INPUT_MENU, manager.currentState)
+
+        manager.showAccentBar(listOf("é"))
+        manager.hideSuggestionBar()
+        manager.hideAccentBar()
+        assertEquals(AuxBarState.UNIFIED_INPUT_MENU, manager.currentState)
+        assertEquals(View.VISIBLE, bar.visibility)
+
+        SettingsValues.setInputMenuRequestedByKey(false)
+        manager.hideSuggestionBar()
+        assertEquals(AuxBarState.NONE, manager.currentState)
+        assertEquals(View.GONE, bar.visibility)
     }
 
     @Test

@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl ಕೀ</string>
     <string name="settings_pkb_multifunction_action_emoji">ಎಮೋಜಿ ಬೋರ್ಡ್</string>
     <string name="settings_pkb_multifunction_action_fcc">ಕರ್ಸರ್ ನಿಯಂತ್ರಣ</string>
+    <string name="settings_pkb_multifunction_action_input_menu">ಇನ್‌ಪುಟ್ ಮೆನು ತೋರಿಸು ಅಥವಾ ಮರೆಮಾಡು</string>
     <string name="settings_pkb_multifunction_action_language_switch">ಭಾಷೆ ಬದಲಾಯಿಸು</string>
     <string name="settings_pkb_multifunction_action_number_pad">ಸಂಖ್ಯಾ ಪ್ಯಾಡ್</string>
     <string name="settings_pkb_multifunction_action_symbol">ಚಿಹ್ನೆ ಕೀಬೋರ್ಡ್</string>

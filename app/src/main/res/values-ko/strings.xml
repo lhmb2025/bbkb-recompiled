@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl 키</string>
     <string name="settings_pkb_multifunction_action_emoji">이모티콘 보드</string>
     <string name="settings_pkb_multifunction_action_fcc">커서 제어</string>
+    <string name="settings_pkb_multifunction_action_input_menu">입력 메뉴 표시/숨기기</string>
     <string name="settings_pkb_multifunction_action_language_switch">언어 전환</string>
     <string name="settings_pkb_multifunction_action_number_pad">숫자 패드</string>
     <string name="settings_pkb_multifunction_action_symbol">기호 키보드</string>

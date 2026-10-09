@@ -247,6 +247,7 @@
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl tekla</string>
     <string name="settings_pkb_multifunction_action_emoji">Emotikono-taula</string>
     <string name="settings_pkb_multifunction_action_fcc">Kurtsore-kontrola</string>
+    <string name="settings_pkb_multifunction_action_input_menu">Erakutsi edo ezkutatu idazketa-menua</string>
     <string name="settings_pkb_multifunction_action_language_switch">Aldatu hizkuntza</string>
     <string name="settings_pkb_multifunction_action_number_pad">Zenbaki-teklatua</string>
     <string name="settings_pkb_multifunction_action_symbol">Ikur-teklatua</string>

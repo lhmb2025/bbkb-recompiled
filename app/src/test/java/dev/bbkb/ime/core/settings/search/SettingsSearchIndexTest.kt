@@ -201,6 +201,26 @@ class SettingsSearchIndexTest {
     }
 
     /**
+     * "Show or hide the input menu" is an action of the multifunction key and of the Alt+Sym
+     * shortcut, and the way back to the menu once "Show the suggestion bar" has hidden it: a
+     * search for the menu finds both settings that can be set to it, as well as that toggle.
+     * Matched as MainSettingsScreen matches, by substring of the keywords.
+     */
+    @Test
+    fun searchingForTheInputMenuFindsTheShortcutsThatShowOrHideIt() {
+        val found = SettingsSearchIndex.entriesFor(pkbDevice)
+            .filter { it.keywords.contains("input menu") }
+            .mapNotNull { it.anchor }
+            .toSet()
+
+        for (anchor in listOf(
+            "pref_multifunction_key_action", "pref_alt_sym_shortcut_action", "pref_pkb_show_suggestion_bar",
+        )) {
+            assertTrue("a search for the input menu should offer $anchor", anchor in found)
+        }
+    }
+
+    /**
      * The gating is only worth anything if the search UI consumes the filtered view. This is a
      * source check rather than a behavioural one because `MainSettingsScreen` is a composable with
      * no seam to observe its result list from here; the render test covers reachability, this
