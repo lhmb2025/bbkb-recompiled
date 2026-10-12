@@ -321,6 +321,9 @@ class BackspaceController {
         RichInputConnection ric = mInputLogic.mRichInputConnection;
         dev.bbkb.ime.core.textinput.composing.ComposingTextTracker ct = mInputLogic.mComposingTracker;
         if (ct.isPredictionMode()) {
+            // A word held open after a gesture commit goes in one keystroke, and that keystroke
+            // is a rejection of the swipe result: forget the word, as the swipe-delete gesture
+            // does. The hook used to be a no-op; since 2026-10-12 it reaches the learned model.
             String composingText = ct.getComposingText();
             ct.clearAll();
             ct.setLastCommittedWord(composingText);

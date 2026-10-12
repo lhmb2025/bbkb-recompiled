@@ -168,6 +168,11 @@ static int freq_rank(const char* w) {
     return 0x7fffffff;
 }
 
+/* Typed-word guard (2026-10-12): the same table, for Java. */
+int xt9kdb_word_zipf10(const char* w) {
+    return (w && *w) ? freq_zipf10(w) : 0;
+}
+
 /* ==== W5: trace-native owned recall (plan §3 W5 / §12) =========================================
  * SHARK2-style lexicon recall over the RAW trace: prune the 30k-word table by start/end
  * anchor keys (top-3 nearest each) + ideal-path-vs-arc length ratio, score survivors with

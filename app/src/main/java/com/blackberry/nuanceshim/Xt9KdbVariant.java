@@ -135,6 +135,22 @@ public final class Xt9KdbVariant {
     private static native int nativeRankSeq();
 
     /**
+     * zipf*10 of a lowercase English word in the LDB frequency table the owned decoder ships
+     * (kdb_freq_en.h), or 0 when the word is absent from it or the native library is unavailable.
+     * The typed-word guard weighs the two spellings of an apostrophe correction with it.
+     */
+    public static int wordZipf10(String lowercaseWord) {
+        if (!sLoaded || lowercaseWord == null || lowercaseWord.isEmpty()) return 0;
+        try {
+            return nativeWordZipf10(lowercaseWord);
+        } catch (Throwable t) {
+            return 0;
+        }
+    }
+
+    private static native int nativeWordZipf10(String word);
+
+    /**
      * AUDIT L10: how many times the owned module could not reach a gesture recognizer at all
      * this process — a null engine handle, or the blob's {@code ET9KDB_ProcessTrace} failing to
      * bind. Monotonic, never reset; {@code 0} means the path is healthy.

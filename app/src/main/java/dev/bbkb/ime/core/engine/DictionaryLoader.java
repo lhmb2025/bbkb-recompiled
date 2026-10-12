@@ -43,19 +43,24 @@ public class DictionaryLoader {
     }
 
     /**
-     * Hook called when a word should be removed (or demoted) in the dynamic learning model:
-     * after an auto-correction is reverted, and when backspacing through a word in
-     * prediction mode.
+     * Forgets a word the user rejected: after an auto-correction is reverted
+     * ({@code RecorrectionController.revertAutoCorrection}), and when one backspace wipes a word
+     * still held open after a gesture commit ({@code BackspaceController}).
      *
-     * <p><b>Intentionally a no-op.</b> Verified against the original smali
-     * ({@code core/g.a(Ljava/lang/String;)V} is {@code return-void}): the original
-     * keyboard never implemented unlearning at these call sites either. This was
-     * previously misnamed {@code onLanguagePackInstalled(String languageTag)} by the
-     * deobfuscation. If unlearning is ever wanted, {@code NuanceSDK.deleteDLMWord(String)}
-     * is the available engine API — note it deletes the learned entry outright rather
-     * than decrementing its frequency.
+     * <p>The original keyboard left this empty ({@code core/g.a(Ljava/lang/String;)V} is
+     * {@code return-void}; it was once misnamed {@code onLanguagePackInstalled} by the
+     * deobfuscation). Since 2026-10-12 it reaches the engine's learned model: a reverted
+     * correction is an explicit rejection, and leaving the word learned is how a bad correction
+     * reinforces itself — every space that committed "bout" for the typed "about" taught the
+     * model "bout" again. The engine offers only outright deletion of the learned entry
+     * ({@code NuanceSDK.deleteDLMWord}); the static lexicon is never touched, so a dictionary
+     * word merely loses its learned boost.
      */
     public void unlearnWord(String word) {
+        Dictionary dict = this.mDictionaryGroup.mMainDictionary;
+        if (dict != null && !TextUtils.isEmpty(word)) {
+            dict.unlearnWord(word);
+        }
     }
 
     /**

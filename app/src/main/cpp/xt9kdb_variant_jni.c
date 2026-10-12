@@ -149,3 +149,16 @@ Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeTakeGestureWord(JNIEnv* env, 
     if (xt9kdb_take_gesture_word((ET9U32)seq, buf, (int)sizeof(buf)) <= 0) return NULL;
     return (*env)->NewStringUTF(env, buf);
 }
+
+/* Typed-word guard (2026-10-12): zipf*10 of a lowercase word from the English LDB frequency
+ * table, 0 when absent. Java weighs apostrophe-only auto-corrections with it. */
+JNIEXPORT jint JNICALL
+Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeWordZipf10(JNIEnv* env, jclass cls, jstring word) {
+    (void)cls;
+    if (!word) return 0;
+    const char* w = (*env)->GetStringUTFChars(env, word, NULL);
+    if (!w) return 0;
+    int z = xt9kdb_word_zipf10(w);
+    (*env)->ReleaseStringUTFChars(env, word, w);
+    return (jint)z;
+}

@@ -103,10 +103,18 @@ public final class SuggestionEngine {
         boolean shouldAutoCorrect;
         int finalSuggestionType;
         int trailingApostrophes = countTrailingApostrophes((CharSequence) composingTracker.getComposingText());
+        // Typed-word guard (2026-10-12): is what the user typed a word the dictionary knows? Asked
+        // BEFORE the list is built, so whatever the lookup does inside the engine is undone by the
+        // bridge's own clear-and-replay of the composing text, and only when the answer can
+        // matter: auto-correct on and a word of two or more letters being composed.
+        final String composingText = composingTracker.getComposingText();
+        final boolean typedWordIsValid = autoCorrectEnabled && composingTracker.isComposing()
+                && composingText != null && composingText.length() > 1
+                && this.mDictionaryLoader.isWordValid(composingText, true);
         SuggestionResult perfLogger = this.mDictionaryLoader.generateSuggestions(composingTracker, prevWordsInfo, proximityGrid, stripSettings, 0);
         ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = applyCaseTransform(composingTracker, perfLogger, trailingApostrophes);
         boolean isPrediction = !composingTracker.isComposing();
-        boolean hasGoodCorrection = shouldAutoCorrect(composingTracker, suggestions);
+        boolean hasGoodCorrection = shouldAutoCorrect(composingTracker, suggestions, typedWordIsValid, perfLogger.locale);
         
         // Corrected control flow logic to match Smali bytecode
         boolean cond_acEnabled = autoCorrectEnabled;
@@ -239,7 +247,15 @@ public final class SuggestionEngine {
         return new SuggestedWords.SuggestedWordInfo(sb.toString(), suggestedWordInfoVar.score, suggestedWordInfoVar.kindAndFlags, suggestedWordInfoVar.sourceDictionary, suggestedWordInfoVar.indexInDictionary, suggestedWordInfoVar.indexInSuggestions, suggestedWordInfoVar.nuanceWordInfo);
     }
 
-    private boolean shouldAutoCorrect(ComposingTextTracker composingTracker, ArrayList<SuggestedWords.SuggestedWordInfo> suggestions) {
+    /**
+     * The spelling heuristic: does {@code suggestions[1]} replace the typed word on space?
+     *
+     * @param typedWordIsValid the dictionary knows the typed word. Then the answer is no unless
+     *                         the correction is the same word in different dress
+     *                         ({@link TypedWordGuard}); see the comment at the guard below.
+     */
+    private boolean shouldAutoCorrect(ComposingTextTracker composingTracker, ArrayList<SuggestedWords.SuggestedWordInfo> suggestions,
+            boolean typedWordIsValid, Locale locale) {
         boolean meetsThreshold;
         if (suggestions.size() <= 1 || this.mBlockAutoCorrect) {
             if (BuildConfig.DEBUG) android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "shouldAutoCorrect: EARLY_RETURN size=" + suggestions.size() + " blocked=" + this.mBlockAutoCorrect);
@@ -274,11 +290,14 @@ public final class SuggestionEngine {
         // see the bridge's kind assignment), so isKind(1)/isKind(2) here are intentionally
         // transposed relative to the original source. Corrections auto-correct at ANY length;
         // the length/threshold gate is word-completion-point logic and applies only to
-        // completions. Valid typed words are protected upstream by the engine's default-word
-        // index: the bridge duplicates the typed word into sugg[1] when the engine's default is
-        // index 0 (NuanceSDKDictionaryBridge:233), which trips typedEqualsCorrection below.
-        // That duplicate is the original's guard for validly-typed words; it supersedes the
-        // interim "Option A" dictionary-validity gate that briefly lived here.
+        // completions. Valid typed words have two guards. The original's: the bridge duplicates
+        // the typed word into sugg[1] when the engine's default-word index is 0, which trips
+        // typedEqualsCorrection below. And ours, at the end: when the dictionary knows the typed
+        // word, a correction that changes its letters is refused even if the engine ranked it
+        // first — the engine's default moves off a valid word once the learned model has boosted
+        // a neighbour (about -> bout, this -> his, 2026-10-12), and the duplicate alone cannot
+        // tell that from a genuine misspelling. The owner's rule: space corrects a misspelled
+        // word, never a word the dictionary has.
         if (!suggestedWordInfoVar.isKind(1)) {
             meetsThreshold = false;
         } else if (this.mAutoCorrectMode == 0) {
@@ -299,6 +318,14 @@ public final class SuggestionEngine {
         boolean isUserOverride = composingTracker.looksLikeEmail();
         boolean typedEqualsCorrection = typedWord.equals(suggestedWordInfoVar.word);
         if (isExactMatch || isUserOverride || typedEqualsCorrection) {
+            return false;
+        }
+        if (canAutoCorrect && typedWordIsValid
+                && !TypedWordGuard.allowsCorrection(typedWord, suggestedWordInfoVar.word, locale)) {
+            if (BuildConfig.DEBUG) {
+                android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "shouldAutoCorrect: typed='" + typedWord
+                    + "' is a dictionary word; '" + suggestedWordInfoVar.word + "' would change it -> keep typed");
+            }
             return false;
         }
         return canAutoCorrect;

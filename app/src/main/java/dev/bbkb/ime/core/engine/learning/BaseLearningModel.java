@@ -69,6 +69,14 @@ public abstract class BaseLearningModel {
         // Stale (or unstamped) index. Learn by CONTENT instead: addWord records the same word
         // without indexing a list that has moved on. Losing the index-based path costs the
         // engine's end-of-word transition, which the post-commit clear already performs.
+        //
+        // Only a word the engine does NOT already know, though (2026-10-12). addWord is how a
+        // NEW word enters the learned model; for a word the dictionary already holds it only adds
+        // a learned entry that boosts that word over the typed one. Every swipe result lands here
+        // (the bridge clears the engine after taking it, so a gesture word never has a live
+        // index), which made each misread swipe a permanent boost — "bout" over the typed
+        // "about". A swiped dictionary word is therefore no longer taught; a swiped word the
+        // dictionary lacks still is, and a typed word still learns through the index path above.
         if (BuildConfig.DEBUG) {
             Log.d("PIPELINE", "IME:learn:staleSelectionList"
                 + " word=\"" + wordInfo.word + "\""
@@ -76,7 +84,8 @@ public abstract class BaseLearningModel {
                 + " now=" + generationNow
                 + " -> addWord fallback (EB-3)");
         }
-        if (learnByContent && wordInfo.word != null && !wordInfo.word.isEmpty()) {
+        if (learnByContent && wordInfo.word != null && !wordInfo.word.isEmpty()
+                && !this.nuanceSdk.isSpellingCorrect(wordInfo.word)) {
             this.nuanceSdk.addWord(wordInfo.word);
         }
     }

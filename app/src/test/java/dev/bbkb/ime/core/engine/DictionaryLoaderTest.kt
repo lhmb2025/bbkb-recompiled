@@ -671,4 +671,35 @@ class DictionaryLoaderTest {
         assertTrue(executor.tasks.isEmpty())
         assertSame(d, loader.mainDictionary)
     }
+
+    // ---- unlearning (2026-10-12) ------------------------------------------------------------
+
+    @Test
+    fun unlearnWord_reachesTheLoadedDictionary() {
+        // A reverted auto-correction forgets the word in the engine's learned model. The loader
+        // only delegates; the bridge decides how (deleteDLMWord, both cases).
+        val d = dict()
+        loaded(en, d)
+
+        loader.unlearnWord("bout")
+
+        verify(d).unlearnWord("bout")
+    }
+
+    @Test
+    fun unlearnWord_withoutADictionary_isIgnored() {
+        loader.unlearnWord("bout")   // fresh loader: nothing to forget into, no exception
+        assertNull(loader.mainDictionary)
+    }
+
+    @Test
+    fun unlearnWord_ofNothing_isIgnored() {
+        val d = dict()
+        loaded(en, d)
+
+        loader.unlearnWord("")
+        loader.unlearnWord(null)
+
+        verify(d, never()).unlearnWord(anyString())
+    }
 }

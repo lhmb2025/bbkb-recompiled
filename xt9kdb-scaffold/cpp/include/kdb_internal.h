@@ -202,6 +202,10 @@ ET9U32 xt9kdb_rank_seq(void);   /* deposit sequence number; bridge consumes each
 /* W1 (§8.7.14): take the deposit-ranked gesture word for `seq` (consume-once). Returns length
  * written (0 if none for this seq / not enabled). Filled synchronously in owned_pst_v2. */
 int  xt9kdb_take_gesture_word(ET9U32 seq, char* out, int outsz);
+/* zipf*10 of a LOWERCASE ASCII word from the generated English LDB table (kdb_freq_en.h);
+ * 0 = absent (rare, non-word, or never enumerated). The Java typed-word guard weighs an
+ * apostrophe insertion with it (well->we'll stays "well", cant->can't goes through). */
+int  xt9kdb_word_zipf10(const char* w);
 
 /* Decode the accumulated gesture path + feed AW via the commit hooks (no result-block write).
  * xt9kdb_decode_scratch() runs it on a NULL context — the W3a scratch/DIFF path: TouchStart/TouchMove

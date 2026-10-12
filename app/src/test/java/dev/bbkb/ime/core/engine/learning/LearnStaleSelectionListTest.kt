@@ -11,6 +11,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -97,6 +98,42 @@ class LearnStaleSelectionListTest {
 
         verify(sdk, never()).selectionListSelectWord(3, true, "hello")
         verify(sdk).addWord("hello")
+    }
+
+    @Test
+    fun unstampedIndex_ofAWordTheEngineKnows_learnsNothing() {
+        // 2026-10-12: a gesture result never carries a live index, so every swipe took this
+        // path and addWord'ed a word the dictionary already held — a learned entry that then
+        // outranked the typed word ("bout" over "about"). Known words are no longer re-added.
+        `when`(sdk.isSpellingCorrect("hello")).thenReturn(true)
+        val info = wordInfo("hello", 3, -1L)
+
+        model.learnWord(suggestion(info))
+
+        verify(sdk, never()).selectionListSelectWord(3, true, "hello")
+        verify(sdk, never()).addWord("hello")
+    }
+
+    @Test
+    fun staleIndex_ofAWordTheEngineKnows_learnsNothing() {
+        `when`(sdk.isSpellingCorrect("hello")).thenReturn(true)
+        val info = wordInfo("hello", 3, NuanceSDK.getSelectionListGeneration() - 1L)
+
+        model.learnWord(suggestion(info))
+
+        verify(sdk, never()).addWord("hello")
+    }
+
+    @Test
+    fun unstampedIndex_ofAWordTheEngineLacks_isStillAdded() {
+        // The content path keeps its one job: a word the dictionary does not have (a swiped
+        // word from the owned recall lexicon, a typed new word whose list was rebuilt).
+        `when`(sdk.isSpellingCorrect("zinwa")).thenReturn(false)
+        val info = wordInfo("zinwa", 3, -1L)
+
+        model.learnWord(suggestion(info))
+
+        verify(sdk).addWord("zinwa")
     }
 
     @Test

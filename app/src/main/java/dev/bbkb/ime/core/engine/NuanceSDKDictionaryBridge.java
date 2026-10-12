@@ -677,6 +677,24 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         return this.nuanceSdk.isSpellingCorrect(str);
     }
 
+    /**
+     * Removes the word's learned entry; the static lexicon is untouched. The entry may have been
+     * learned in either case (a sentence-start auto-correction commits "Bout" for a learned
+     * "bout"), so the lower-case form is tried when the committed spelling is not there.
+     */
+    @Override // dev.bbkb.ime.core.engine.Dictionary
+    public boolean unlearnWord(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return false;
+        }
+        if (this.nuanceSdk.deleteDLMWord(str)) {
+            return true;
+        }
+        Locale locale = getPrimaryEngineLocale();
+        String lower = str.toLowerCase(locale != null ? locale : Locale.ROOT);
+        return !lower.equals(str) && this.nuanceSdk.deleteDLMWord(lower);
+    }
+
     @Override // dev.bbkb.ime.core.engine.Dictionary
     public String getWordSeparator(String str) {
         return this.nuanceSdk.isCurrLocaleChinese() ? "" : String.valueOf(this.nuanceSdk.getDefaultWordSeparator());

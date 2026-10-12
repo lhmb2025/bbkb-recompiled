@@ -41,6 +41,14 @@ public abstract class Dictionary {
 
     public abstract boolean isWordValid(String str);
 
+    /**
+     * Forget a learned word, after the user reverted an auto-correction to it. Dictionaries
+     * without a learned model ignore the call. True when an entry was removed.
+     */
+    public boolean unlearnWord(String str) {
+        return false;
+    }
+
     public String getWordSeparator(String str) {
         return "";
     }
