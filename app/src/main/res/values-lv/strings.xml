@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Lietotāja vārdnīca, teksta saīsnes un iemācītie vārdi</string>
     <string name="reset_dialog_confirm">Atiestatīt</string>
     <string name="reset_done">Atiestatīšana pabeigta</string>
+    <string name="settings_voice_stop_on_pause_title">Pārtraukt klausīšanos, kad ieturat pauzi</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Klausīšanās beidzas pēc īsas pauzes. Pieskarieties mikrofonam, lai to beigtu ātrāk.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Turpina klausīties arī pauzēs, līdz pieskaraties mikrofonam vai pēc pusminūtes klusuma</string>
+    <string name="voice_status_listening_tap_to_stop">Klausās&#8230; Pieskarieties mikrofonam, lai apturētu</string>
 </resources>

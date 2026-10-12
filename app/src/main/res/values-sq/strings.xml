@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Fjalori i përdoruesit, shkurtoret e tekstit dhe fjalët e mësuara</string>
     <string name="reset_dialog_confirm">Rivendos</string>
     <string name="reset_done">Rivendosja përfundoi</string>
+    <string name="settings_voice_stop_on_pause_title">Ndalo dëgjimin kur bën pauzë</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Dëgjimi përfundon pas një pauze të shkurtër. Prek mikrofonin për ta përfunduar më herët.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Vazhdon të dëgjojë gjatë pauzave derisa të prekësh mikrofonin ose pas gjysmë minute heshtjeje</string>
+    <string name="voice_status_listening_tap_to_stop">Po dëgjon&#8230; Prek mikrofonin për të ndaluar</string>
 </resources>

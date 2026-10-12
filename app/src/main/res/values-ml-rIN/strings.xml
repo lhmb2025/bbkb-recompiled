@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">ഉപയോക്തൃ നിഘണ്ടു, ടെക്‌സ്റ്റ് കുറുക്കുവഴികൾ, പഠിച്ച വാക്കുകൾ</string>
     <string name="reset_dialog_confirm">പുനഃസജ്ജമാക്കുക</string>
     <string name="reset_done">പുനഃസജ്ജീകരണം പൂർത്തിയായി</string>
+    <string name="settings_voice_stop_on_pause_title">സംസാരം നിർത്തുമ്പോൾ കേൾക്കൽ നിർത്തുക</string>
+    <string name="settings_voice_stop_on_pause_summary_on">ചെറിയൊരു ഇടവേളയ്ക്ക് ശേഷം കേൾക്കൽ അവസാനിക്കും. നേരത്തെ അവസാനിപ്പിക്കാൻ മൈക്രോഫോൺ ടാപ്പ് ചെയ്യുക.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">മൈക്രോഫോൺ ടാപ്പ് ചെയ്യുന്നത് വരെയോ അര മിനിറ്റ് നിശബ്ദമാകുന്നത് വരെയോ ഇടവേളകളിലും കേൾക്കുന്നത് തുടരും</string>
+    <string name="voice_status_listening_tap_to_stop">കേൾക്കുന്നു&#8230; നിർത്താൻ മൈക്ക് ടാപ്പ് ചെയ്യുക</string>
 </resources>

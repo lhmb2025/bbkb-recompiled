@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">מילון המשתמש, קיצורי טקסט ומילים שנלמדו</string>
     <string name="reset_dialog_confirm">איפוס</string>
     <string name="reset_done">האיפוס הושלם</string>
+    <string name="settings_voice_stop_on_pause_title">הפסק להאזין בהפסקה בדיבור</string>
+    <string name="settings_voice_stop_on_pause_summary_on">ההאזנה מסתיימת אחרי הפסקה קצרה. הקש על המיקרופון כדי לסיים מוקדם יותר.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">ממשיך להאזין גם בהפסקות עד שתקיש על המיקרופון, או אחרי חצי דקה של שקט</string>
+    <string name="voice_status_listening_tap_to_stop">מאזין&#8230; הקש על המיקרופון כדי לעצור</string>
 </resources>

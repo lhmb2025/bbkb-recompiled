@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Používateľský slovník, textové skratky a naučené slová</string>
     <string name="reset_dialog_confirm">Obnoviť</string>
     <string name="reset_done">Predvolené hodnoty boli obnovené</string>
+    <string name="settings_voice_stop_on_pause_title">Zastaviť počúvanie pri pauze</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Počúvanie sa skončí po krátkej pauze. Ťuknutím na mikrofón ho ukončíte skôr.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Počúvanie pokračuje aj počas páuz, kým neťuknete na mikrofón alebo kým nenastane pol minúty ticha</string>
+    <string name="voice_status_listening_tap_to_stop">Počúvam&#8230; Ťuknutím na mikrofón zastavíte</string>
 </resources>

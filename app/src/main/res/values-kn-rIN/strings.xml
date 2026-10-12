@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">ಬಳಕೆದಾರ ನಿಘಂಟು, ಪಠ್ಯ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು ಮತ್ತು ಕಲಿತ ಪದಗಳು</string>
     <string name="reset_dialog_confirm">ಮರುಹೊಂದಿಸಿ</string>
     <string name="reset_done">ಮರುಹೊಂದಿಕೆ ಪೂರ್ಣಗೊಂಡಿದೆ</string>
+    <string name="settings_voice_stop_on_pause_title">ವಿರಾಮ ನೀಡಿದಾಗ ಆಲಿಸುವುದನ್ನು ನಿಲ್ಲಿಸಿ</string>
+    <string name="settings_voice_stop_on_pause_summary_on">ಸಣ್ಣ ವಿರಾಮದ ನಂತರ ಆಲಿಸುವಿಕೆ ಕೊನೆಗೊಳ್ಳುತ್ತದೆ. ಬೇಗ ಕೊನೆಗೊಳಿಸಲು ಮೈಕ್ರೊಫೋನ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">ನೀವು ಮೈಕ್ರೊಫೋನ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವವರೆಗೆ ಅಥವಾ ಅರ್ಧ ನಿಮಿಷ ಮೌನವಾಗುವವರೆಗೆ ವಿರಾಮಗಳಲ್ಲೂ ಆಲಿಸುತ್ತಲೇ ಇರುತ್ತದೆ</string>
+    <string name="voice_status_listening_tap_to_stop">ಆಲಿಸಲಾಗುತ್ತಿದೆ&#8230; ನಿಲ್ಲಿಸಲು ಮೈಕ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ</string>
 </resources>

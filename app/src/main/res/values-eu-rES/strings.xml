@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Erabiltzailearen hiztegia, testu-lasterbideak eta ikasitako hitzak</string>
     <string name="reset_dialog_confirm">Berrezarri</string>
     <string name="reset_done">Berrezarpena osatu da</string>
+    <string name="settings_voice_stop_on_pause_title">Utzi entzuteari etenaldi bat egitean</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Etenaldi labur baten ondoren amaitzen da entzuketa. Sakatu mikrofonoa lehenago amaitzeko.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Etenaldietan ere entzuten jarraitzen du, mikrofonoa sakatu arte edo minutu erdiko isilunearen ondoren</string>
+    <string name="voice_status_listening_tap_to_stop">Entzuten&#8230; Sakatu mikrofonoa gelditzeko</string>
 </resources>

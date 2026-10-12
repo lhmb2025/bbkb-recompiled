@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Lični rječnik, tekstualne prečice i naučene riječi</string>
     <string name="reset_dialog_confirm">Vrati na zadano</string>
     <string name="reset_done">Vraćanje na zadano je završeno</string>
+    <string name="settings_voice_stop_on_pause_title">Zaustavi slušanje pri pauzi</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Slušanje se završava nakon kratke pauze. Dodirnite mikrofon da ga završite ranije.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Nastavlja slušati i tokom pauza dok ne dodirnete mikrofon ili dok ne prođe pola minute tišine</string>
+    <string name="voice_status_listening_tap_to_stop">Slušam&#8230; Dodirnite mikrofon da zaustavite</string>
 </resources>

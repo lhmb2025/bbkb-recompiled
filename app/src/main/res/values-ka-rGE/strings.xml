@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">მომხმარებლის ლექსიკონი, ტექსტური მალსახმობები და ნასწავლი სიტყვები</string>
     <string name="reset_dialog_confirm">გადაყენება</string>
     <string name="reset_done">გადაყენება დასრულდა</string>
+    <string name="settings_voice_stop_on_pause_title">მოსმენის შეწყვეტა პაუზისას</string>
+    <string name="settings_voice_stop_on_pause_summary_on">მოსმენა მოკლე პაუზის შემდეგ სრულდება. ადრე დასასრულებლად შეეხეთ მიკროფონს.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">მოსმენა პაუზების დროსაც გრძელდება, სანამ მიკროფონს არ შეეხებით, ან ნახევარი წუთის სიჩუმემდე</string>
+    <string name="voice_status_listening_tap_to_stop">გისმენთ&#8230; შესაჩერებლად შეეხეთ მიკროფონს</string>
 </resources>

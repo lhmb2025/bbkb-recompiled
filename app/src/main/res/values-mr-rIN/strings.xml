@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">वापरकर्ता शब्दकोश, मजकूर शॉर्टकट आणि शिकलेले शब्द</string>
     <string name="reset_dialog_confirm">रीसेट करा</string>
     <string name="reset_done">रीसेट पूर्ण झाले</string>
+    <string name="settings_voice_stop_on_pause_title">विराम घेतल्यावर ऐकणे थांबवा</string>
+    <string name="settings_voice_stop_on_pause_summary_on">छोट्या विरामानंतर ऐकणे संपते. लवकर संपवण्यासाठी मायक्रोफोनवर टॅप करा.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">तुम्ही मायक्रोफोनवर टॅप करेपर्यंत किंवा अर्धा मिनिट शांतता राहीपर्यंत विरामांमध्येही ऐकणे सुरू राहते</string>
+    <string name="voice_status_listening_tap_to_stop">ऐकत आहे&#8230; थांबवण्यासाठी माइकवर टॅप करा</string>
 </resources>

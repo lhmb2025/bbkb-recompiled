@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">القاموس الشخصي واختصارات النص والكلمات المتعلَّمة</string>
     <string name="reset_dialog_confirm">إعادة التعيين</string>
     <string name="reset_done">اكتملت إعادة التعيين</string>
+    <string name="settings_voice_stop_on_pause_title">إيقاف الاستماع عند توقفك عن الكلام</string>
+    <string name="settings_voice_stop_on_pause_summary_on">ينتهي الاستماع بعد توقف قصير. اضغط على الميكروفون لإنهائه قبل ذلك.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">يستمر الاستماع خلال فترات التوقف إلى أن تضغط على الميكروفون، أو بعد نصف دقيقة من الصمت</string>
+    <string name="voice_status_listening_tap_to_stop">جارٍ الاستماع&#8230; اضغط على الميكروفون للإيقاف</string>
 </resources>

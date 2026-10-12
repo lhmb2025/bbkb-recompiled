@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">उपयोगकर्ता डिक्शनरी, टेक्स्ट शॉर्टकट और सीखे गए शब्द</string>
     <string name="reset_dialog_confirm">रीसेट करें</string>
     <string name="reset_done">रीसेट पूरा हुआ</string>
+    <string name="settings_voice_stop_on_pause_title">रुकने पर सुनना बंद करें</string>
+    <string name="settings_voice_stop_on_pause_summary_on">थोड़ा रुकने के बाद सुनना बंद हो जाता है. पहले ही बंद करने के लिए माइक्रोफ़ोन टैप करें.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">रुकने पर भी सुनना जारी रहता है, जब तक आप माइक्रोफ़ोन टैप न करें या आधे मिनट तक चुप्पी न रहे</string>
+    <string name="voice_status_listening_tap_to_stop">सुन रहा है&#8230; रोकने के लिए माइक टैप करें</string>
 </resources>

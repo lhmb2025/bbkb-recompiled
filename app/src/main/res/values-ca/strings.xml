@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Diccionari personal, dreceres de text i paraules apreses</string>
     <string name="reset_dialog_confirm">Restableix</string>
     <string name="reset_done">S\'ha completat el restabliment</string>
+    <string name="settings_voice_stop_on_pause_title">Deixa d\'escoltar quan feu una pausa</string>
+    <string name="settings_voice_stop_on_pause_summary_on">L\'escolta s\'acaba després d\'una pausa breu. Toqueu el micròfon per acabar-la abans.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Continua escoltant durant les pauses fins que toqueu el micròfon o després de mig minut de silenci</string>
+    <string name="voice_status_listening_tap_to_stop">S\'està escoltant&#8230; Toqueu el micròfon per aturar</string>
 </resources>

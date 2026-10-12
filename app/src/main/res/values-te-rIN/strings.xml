@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">వ్యక్తిగత నిఘంటువు, టెక్స్ట్ షార్ట్‌కట్‌లు మరియు నేర్చుకున్న పదాలు</string>
     <string name="reset_dialog_confirm">రీసెట్ చేయి</string>
     <string name="reset_done">రీసెట్ పూర్తయింది</string>
+    <string name="settings_voice_stop_on_pause_title">విరామం ఇచ్చినప్పుడు వినడం ఆపివేయి</string>
+    <string name="settings_voice_stop_on_pause_summary_on">చిన్న విరామం తర్వాత వినడం ముగుస్తుంది. ముందుగానే ముగించడానికి మైక్రోఫోన్‌ను నొక్కండి.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">మీరు మైక్రోఫోన్‌ను నొక్కే వరకు లేదా అర నిమిషం నిశ్శబ్దం వచ్చే వరకు విరామాల్లోనూ వింటూనే ఉంటుంది</string>
+    <string name="voice_status_listening_tap_to_stop">వింటోంది&#8230; ఆపడానికి మైక్‌ను నొక్కండి</string>
 </resources>

@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Особистий словник, текстові скорочення та вивчені слова</string>
     <string name="reset_dialog_confirm">Скинути</string>
     <string name="reset_done">Скидання завершено</string>
+    <string name="settings_voice_stop_on_pause_title">Зупиняти розпізнавання після паузи</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Розпізнавання завершується після короткої паузи. Торкніться мікрофона, щоб завершити раніше.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Розпізнавання триває під час пауз, доки ви не торкнетеся мікрофона або не мине пів хвилини тиші</string>
+    <string name="voice_status_listening_tap_to_stop">Слухаю&#8230; Торкніться мікрофона, щоб зупинити</string>
 </resources>

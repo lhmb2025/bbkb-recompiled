@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">사용자 사전, 텍스트 바로가기, 학습한 단어</string>
     <string name="reset_dialog_confirm">재설정</string>
     <string name="reset_done">재설정 완료</string>
+    <string name="settings_voice_stop_on_pause_title">말을 멈추면 듣기 중지</string>
+    <string name="settings_voice_stop_on_pause_summary_on">잠시 말을 멈추면 듣기가 종료됩니다. 더 빨리 종료하려면 마이크를 탭하세요.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">마이크를 탭하거나 30초 동안 소리가 없을 때까지 말을 멈춰도 계속 듣습니다</string>
+    <string name="voice_status_listening_tap_to_stop">듣는 중&#8230; 마이크를 탭하여 중지</string>
 </resources>

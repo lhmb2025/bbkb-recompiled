@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Şəxsi lüğət, mətn qısayolları və öyrənilmiş sözlər</string>
     <string name="reset_dialog_confirm">Sıfırla</string>
     <string name="reset_done">Sıfırlama tamamlandı</string>
+    <string name="settings_voice_stop_on_pause_title">Fasilə verdikdə dinləməni dayandırın</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Qısa fasilədən sonra dinləmə bitir. Daha tez bitirmək üçün mikrofona toxunun.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Mikrofona toxunana və ya yarım dəqiqə sükut olana qədər fasilələrdə də dinləməyə davam edir</string>
+    <string name="voice_status_listening_tap_to_stop">Dinlənilir&#8230; Dayandırmaq üçün mikrofona toxunun</string>
 </resources>

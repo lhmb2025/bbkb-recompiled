@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Naudotojo žodynas, teksto trumpiniai ir išmokti žodžiai</string>
     <string name="reset_dialog_confirm">Nustatyti iš naujo</string>
     <string name="reset_done">Nustatyta iš naujo</string>
+    <string name="settings_voice_stop_on_pause_title">Nustoti klausytis, kai padarote pauzę</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Klausymasis baigiamas po trumpos pauzės. Bakstelėkite mikrofoną, kad baigtumėte anksčiau.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Klausomasi ir per pauzes, kol bakstelėsite mikrofoną arba kol pusę minutės bus tylu</string>
+    <string name="voice_status_listening_tap_to_stop">Klausoma&#8230; Bakstelėkite mikrofoną, kad sustabdytumėte</string>
 </resources>

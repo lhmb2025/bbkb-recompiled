@@ -690,6 +690,15 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return language == null ? DEFAULT_VOICE_INPUT_LANGUAGE : language.replace('_', '-');
     }
 
+    /**
+     * "Stop listening when you pause" (default on: today's one-utterance dictation). Off keeps the
+     * session going through pauses until the mic is tapped or the recogniser hears nothing for a
+     * long while — see VoiceRecognitionManager's continuous mode.
+     */
+    public static boolean isVoiceInputStopOnPause(SharedPreferences sharedPreferences) {
+        return sharedPreferences.getBoolean("voice_input_stop_on_pause", true);
+    }
+
     public static boolean isVoiceInputAutoStart(SharedPreferences sharedPreferences) {
         return sharedPreferences.getBoolean("voice_input_auto_start", true);
     }

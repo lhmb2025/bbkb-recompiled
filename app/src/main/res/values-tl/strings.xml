@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Personal na diksyunaryo, mga text shortcut at mga natutunang salita</string>
     <string name="reset_dialog_confirm">I-reset</string>
     <string name="reset_done">Tapos na ang pag-reset</string>
+    <string name="settings_voice_stop_on_pause_title">Ihinto ang pakikinig kapag tumigil ka sandali</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Natatapos ang pakikinig pagkatapos ng maikling paghinto. I-tap ang mikropono para tapusin ito nang mas maaga.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Patuloy na nakikinig kahit may paghinto hanggang i-tap mo ang mikropono, o pagkatapos ng kalahating minutong katahimikan</string>
+    <string name="voice_status_listening_tap_to_stop">Nakikinig&#8230; I-tap ang mic para ihinto</string>
 </resources>

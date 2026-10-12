@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Пользовательский словарь, текстовые сокращения и выученные слова</string>
     <string name="reset_dialog_confirm">Сбросить</string>
     <string name="reset_done">Сброс выполнен</string>
+    <string name="settings_voice_stop_on_pause_title">Останавливать распознавание после паузы</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Распознавание завершается после короткой паузы. Нажмите микрофон, чтобы завершить раньше.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Распознавание продолжается во время пауз, пока вы не нажмёте микрофон или не пройдёт полминуты тишины</string>
+    <string name="voice_status_listening_tap_to_stop">Слушаю&#8230; Нажмите микрофон, чтобы остановить</string>
 </resources>

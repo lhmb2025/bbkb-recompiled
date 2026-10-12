@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Dictionnaire utilisateur, raccourcis de texte et mots appris</string>
     <string name="reset_dialog_confirm">Réinitialiser</string>
     <string name="reset_done">Réinitialisation terminée</string>
+    <string name="settings_voice_stop_on_pause_title">Arrêter l\'écoute lors d\'une pause</string>
+    <string name="settings_voice_stop_on_pause_summary_on">L\'écoute s\'arrête après une courte pause. Touchez le micro pour l\'arrêter plus tôt.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">L\'écoute continue pendant les pauses jusqu\'à ce que vous touchiez le micro, ou après une demi-minute de silence</string>
+    <string name="voice_status_listening_tap_to_stop">Écoute en cours&#8230; Touchez le micro pour arrêter</string>
 </resources>

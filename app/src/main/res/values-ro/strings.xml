@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Dicționar personal, comenzi rapide de text și cuvinte învățate</string>
     <string name="reset_dialog_confirm">Resetați</string>
     <string name="reset_done">Resetare finalizată</string>
+    <string name="settings_voice_stop_on_pause_title">Oprirea ascultării când faceți o pauză</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Ascultarea se încheie după o scurtă pauză. Atingeți microfonul pentru a o încheia mai devreme.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Continuă ascultarea în timpul pauzelor până când atingeți microfonul sau după jumătate de minut de liniște</string>
+    <string name="voice_status_listening_tap_to_stop">Se ascultă&#8230; Atingeți microfonul pentru a opri</string>
 </resources>

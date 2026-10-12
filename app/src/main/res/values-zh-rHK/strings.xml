@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">個人字典、文字捷徑和已學習的字詞</string>
     <string name="reset_dialog_confirm">重設</string>
     <string name="reset_done">重設完成</string>
+    <string name="settings_voice_stop_on_pause_title">停頓時停止聆聽</string>
+    <string name="settings_voice_stop_on_pause_summary_on">短暫停頓後便會停止聆聽。輕觸麥克風可提早結束。</string>
+    <string name="settings_voice_stop_on_pause_summary_off">停頓期間會繼續聆聽，直至你輕觸麥克風或半分鐘內沒有聲音</string>
+    <string name="voice_status_listening_tap_to_stop">聆聽中&#8230;輕觸麥克風即可停止</string>
 </resources>

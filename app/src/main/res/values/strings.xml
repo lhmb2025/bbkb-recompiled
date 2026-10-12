@@ -308,6 +308,7 @@
     <string name="fcc_jump_word_right">Next word</string>
     <string name="voice_status_idle">Tap the mic to speak</string>
     <string name="voice_status_listening">Listening&#8230;</string>
+    <string name="voice_status_listening_tap_to_stop">Listening&#8230; Tap the mic to stop</string>
     <string name="voice_status_language_unsupported">Voice input isn\'t available for %1$s. Change the voice language in BBKB Settings.</string>
     <string name="voice_status_no_recognition_service">No selected voice recognition service</string>
     <string name="voice_status_network_error">Network problem. Check your connection.</string>
@@ -451,6 +452,9 @@
     <string name="settings_voice_auto_start_summary_off">Tap the microphone to start listening</string>
     <string name="settings_voice_auto_start_summary_on">Voice input starts automatically when opened</string>
     <string name="settings_voice_auto_start_title">Auto-start listening</string>
+    <string name="settings_voice_stop_on_pause_title">Stop listening when you pause</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Listening ends after a short pause. Tap the microphone to end it sooner.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Keeps listening through pauses until you tap the microphone, or after half a minute of silence</string>
     <string name="settings_voice_builtin_summary">Turn this off to use Google voice typing instead</string>
     <string name="settings_voice_builtin_title">Enable built-in voice input</string>
     <string name="settings_voice_input_lang_title">Voice input language</string>

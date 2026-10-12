@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">ব্যক্তিগত অভিধান, টেক্সট শর্টকাট এবং শেখা শব্দ</string>
     <string name="reset_dialog_confirm">রিসেট করুন</string>
     <string name="reset_done">রিসেট সম্পন্ন হয়েছে</string>
+    <string name="settings_voice_stop_on_pause_title">বিরতি দিলে শোনা বন্ধ</string>
+    <string name="settings_voice_stop_on_pause_summary_on">অল্প বিরতির পরে শোনা শেষ হয়। আগেই শেষ করতে মাইক্রোফোনে আলতো চাপুন।</string>
+    <string name="settings_voice_stop_on_pause_summary_off">মাইক্রোফোনে আলতো না চাপা পর্যন্ত বা আধা মিনিট নীরবতা না থাকা পর্যন্ত বিরতির মধ্যেও শুনতে থাকে</string>
+    <string name="voice_status_listening_tap_to_stop">শোনা হচ্ছে&#8230; থামাতে মাইকে আলতো চাপুন</string>
 </resources>

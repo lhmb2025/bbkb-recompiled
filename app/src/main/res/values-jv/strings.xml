@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Kamus panganggo, cekakan teks, lan tembung sing disinaoni</string>
     <string name="reset_dialog_confirm">Reset</string>
     <string name="reset_done">Reset rampung</string>
+    <string name="settings_voice_stop_on_pause_title">Mandheg ngrungokake nalika ngaso</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Ngrungokake rampung sawise ngaso sedhela. Tutul mikrofon kanggo mungkasi luwih cepet.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Tetep ngrungokake nalika ngaso nganti sampeyan nutul mikrofon, utawa sawise setengah menit sepi</string>
+    <string name="voice_status_listening_tap_to_stop">Ngrungokake&#8230; Tutul mikrofon kanggo mandheg</string>
 </resources>

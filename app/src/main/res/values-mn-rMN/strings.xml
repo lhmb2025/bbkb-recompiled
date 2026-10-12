@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Хэрэглэгчийн толь бичиг, текстийн товчлол болон сурсан үгс</string>
     <string name="reset_dialog_confirm">Дахин тохируулах</string>
     <string name="reset_done">Дахин тохируулж дууслаа</string>
+    <string name="settings_voice_stop_on_pause_title">Завсарлахад сонсохыг зогсоох</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Богино завсарлагааны дараа сонсох нь дуусна. Эрт дуусгахын тулд микрофоныг товшино уу.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Микрофоныг товших хүртэл эсвэл хагас минут чимээгүй болтол завсарлагааны үед ч сонссоор байна</string>
+    <string name="voice_status_listening_tap_to_stop">Сонсож байна&#8230; Зогсоохын тулд микрофоныг товшино уу</string>
 </resources>

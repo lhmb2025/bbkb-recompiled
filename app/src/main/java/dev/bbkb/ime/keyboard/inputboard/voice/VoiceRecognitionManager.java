@@ -61,6 +61,47 @@ public class VoiceRecognitionManager {
      */
     private boolean mStaleClientErrorPossible;
 
+    /**
+     * The user asked to finish ({@link #stopDictation}): {@code stopListening()} was sent and the
+     * final result is awaited, for up to {@link #STOP_GRACE_MILLIS}.
+     */
+    private boolean mStopRequested;
+
+    /**
+     * "Stop listening when you pause" is off for this dictation: the session is kept going through
+     * pauses until the user stops it. On Android 13+ the recogniser is asked for a segmented
+     * session, which hands phrases over as they finish without ending; elsewhere, and whenever a
+     * session ends on its own, the next one is started straight away ({@link #chain}).
+     */
+    private boolean mContinuous;
+
+    /** Continuous mode: whether the running session has committed anything yet. */
+    private boolean mCommittedThisSession;
+
+    /** Continuous mode: sessions in a row that ended with nothing heard. {@link #MAX_EMPTY_SESSIONS} ends listening. */
+    private int mEmptySessionsInARow;
+
+    /** The last dictation request, replayed by {@link #chain}. */
+    private Intent mDictationIntent;
+
+    /** Posted by {@link #stopDictation}: a stop the recogniser never answered is cancelled. */
+    private final Runnable mFinaliseRunnable;
+
+    /** The listener given to the recogniser; kept so a test can play the recogniser's side. */
+    private RecognitionListener mListener;
+
+    /** How long a stop waits for the final result before giving up on it. */
+    static final long STOP_GRACE_MILLIS = 2000L;
+
+    /** With "stop when you pause" on: the silence the recogniser is asked to allow before ending. A hint; recognisers cap it. */
+    static final long PAUSE_SILENCE_MILLIS = 2500L;
+
+    /** Continuous mode on Android 13+: the silence after which a segmented session ends on its own. */
+    static final long CONTINUOUS_SILENCE_MILLIS = 30_000L;
+
+    /** Continuous mode: silent sessions in a row after which listening ends rather than chaining again. */
+    static final int MAX_EMPTY_SESSIONS = 3;
+
     /** Application context, kept only to name ourselves as the recogniser's calling package. */
     private final Context mContext;
 
@@ -109,7 +150,8 @@ public class VoiceRecognitionManager {
         this.mContext = context.getApplicationContext();
         this.mSelection = InstalledVoiceRecognizers.resolve(this.mContext);
         this.mSpeechRecognizer = InstalledVoiceRecognizers.create(this.mContext, this.mSelection);
-        this.mSpeechRecognizer.setRecognitionListener(new RecognitionListenerImpl());
+        this.mListener = new RecognitionListenerImpl();
+        this.mSpeechRecognizer.setRecognitionListener(this.mListener);
         this.mCallback = c1122b;
         this.mController = c1122b;
         this.mMode = Mode.NONE;
@@ -123,6 +165,21 @@ public class VoiceRecognitionManager {
                 VoiceRecognitionManager.this.stopListening();
             }
         };
+        this.mFinaliseRunnable = new Runnable() {
+            @Override // java.lang.Runnable
+            public void run() {
+                if (VoiceRecognitionManager.this.mMode == Mode.NONE || !VoiceRecognitionManager.this.mStopRequested) {
+                    return;
+                }
+                Logger.debug(TAG, "No final result after the stop; cancelling");
+                VoiceRecognitionManager.this.stopListening();
+            }
+        };
+    }
+
+    /** The recogniser's listener, for a test to play the recogniser's side of the conversation. */
+    RecognitionListener listenerForTest() {
+        return this.mListener;
     }
 
     public void startDictation() {
@@ -162,7 +219,48 @@ public class VoiceRecognitionManager {
         // Our own package: recognisers attribute the request to whatever this names, so a
         // hardcoded id would credit (and, on some ROMs, be permission-checked as) a different app.
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this.mContext.getPackageName());
+        // "Stop listening when you pause". On: one utterance, ended by the recogniser's own
+        // endpointer, with a hint to allow a longer pause than its default (a hint only: Google's
+        // service caps it). Off: continuous — on Android 13+ a segmented session, which delivers
+        // each phrase through onSegmentResults and only ends after CONTINUOUS_SILENCE_MILLIS of
+        // silence or our stopListening(); on older Android the plain session, chained again by
+        // onResults for as long as the user has not stopped (see chain()).
+        final boolean stopOnPause = c0804dM5050c.voiceInputStopOnPause;
+        this.mContinuous = !stopOnPause;
+        this.mEmptySessionsInARow = 0;
+        if (stopOnPause) {
+            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, PAUSE_SILENCE_MILLIS);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.putExtra(RecognizerIntent.EXTRA_SEGMENTED_SESSION,
+                    RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS);
+            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, CONTINUOUS_SILENCE_MILLIS);
+        }
+        this.mDictationIntent = intent;
         startRecognition(Mode.DICTATION, intent);
+    }
+
+    /**
+     * The user asked to finish — the on-screen mic while listening. Unlike {@link #stopListening},
+     * this keeps what was heard: the recogniser is told to stop and finalise, its final result
+     * commits through {@code onResults} (or the last segment) as usual, and only a stop it never
+     * answers is cancelled, after {@link #STOP_GRACE_MILLIS}. Before this, a tap while listening
+     * cancelled outright and whatever was still being transcribed was lost.
+     */
+    public void stopDictation() {
+        if (this.mSpeechRecognizer == null || this.mMode == Mode.NONE || this.mStopRequested) {
+            return;
+        }
+        Logger.debug(TAG, "Stop requested; waiting for the final result");
+        this.mStopRequested = true;
+        this.mHandler.removeCallbacks(this.mTimeoutRunnable);
+        this.mSpeechRecognizer.stopListening();
+        this.mHandler.removeCallbacks(this.mFinaliseRunnable);
+        this.mHandler.postDelayed(this.mFinaliseRunnable, STOP_GRACE_MILLIS);
+    }
+
+    /** Whether the running session is a continuous one (the board says "tap to stop"). */
+    public boolean isContinuous() {
+        return this.mContinuous && this.mMode != Mode.NONE;
     }
 
     public void stopListening() {
@@ -170,6 +268,10 @@ public class VoiceRecognitionManager {
             return;
         }
         Logger.debug(TAG, "Stopped listening to mode " + this.mMode);
+        this.mHandler.removeCallbacks(this.mTimeoutRunnable);
+        this.mHandler.removeCallbacks(this.mFinaliseRunnable);
+        this.mStopRequested = false;
+        this.mContinuous = false;
         // cancel() fires an async onError(ERROR_CLIENT); mark it deliberate so the
         // transient-error hack below doesn't re-arm mMode (which made the mic
         // untappable: every tap "stopped" a phantom session forever).
@@ -180,6 +282,57 @@ public class VoiceRecognitionManager {
         // cancel() means no final result will come for whatever was being transcribed.
         this.mCallback.onDictationAbandoned();
         notifyState(STATE_STOPPED);
+    }
+
+    /**
+     * Continuous mode: whether to start the next session when the current one ends on its own —
+     * the user has not stopped, the board is still up, and the last few sessions were not all
+     * silent (a forgotten open mic is not kept open for ever).
+     */
+    private boolean shouldChain() {
+        return this.mContinuous && !this.mStopRequested && this.mSpeechRecognizer != null
+                && this.mController.isViewShowing() && this.mEmptySessionsInARow < MAX_EMPTY_SESSIONS;
+    }
+
+    /** Starts the next session of a continuous dictation with the same request. */
+    private void chain() {
+        Logger.debug(TAG, "Continuous: next session (silent in a row: " + this.mEmptySessionsInARow + ")");
+        startRecognition(Mode.DICTATION, this.mDictationIntent);
+    }
+
+    /** A session ended for good: the flags that only mean something while one runs. */
+    private void endSession() {
+        this.mHandler.removeCallbacks(this.mTimeoutRunnable);
+        this.mHandler.removeCallbacks(this.mFinaliseRunnable);
+        this.mStopRequested = false;
+        this.mContinuous = false;
+        this.mMode = Mode.NONE;
+        this.mReadyForSpeech = false;
+    }
+
+    /** Counts the session that just ended toward the silent-sessions cap. */
+    private void noteSessionOutcome() {
+        this.mEmptySessionsInARow = this.mCommittedThisSession ? 0 : this.mEmptySessionsInARow + 1;
+    }
+
+    /**
+     * Commits the first result of {@code bundle} as dictation, or abandons the partial when there
+     * is none. True when something was committed.
+     */
+    private boolean commitResult(Bundle bundle) {
+        ArrayList<String> stringArrayList = bundle == null ? null
+                : bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        Logger.debug(TAG, stringArrayList != null ? stringArrayList.toString() : "Result matches were null");
+        if (stringArrayList != null && !stringArrayList.isEmpty()) {
+            String str = stringArrayList.get(0);
+            if (this.mMode == Mode.DICTATION && str != null && !str.isEmpty()) {
+                this.mCallback.onDictationResult(str);
+                this.mCommittedThisSession = true;
+                return true;
+            }
+        }
+        this.mCallback.onDictationAbandoned();
+        return false;
     }
 
     /**
@@ -222,7 +375,8 @@ public class VoiceRecognitionManager {
         this.mCancelRequested = false;
         this.mSelection = selection;
         this.mSpeechRecognizer = InstalledVoiceRecognizers.create(this.mContext, selection);
-        this.mSpeechRecognizer.setRecognitionListener(new RecognitionListenerImpl());
+        this.mListener = new RecognitionListenerImpl();
+        this.mSpeechRecognizer.setRecognitionListener(this.mListener);
     }
 
     /** Whether this keyboard itself holds the microphone permission. */
@@ -252,12 +406,20 @@ public class VoiceRecognitionManager {
         }
         this.mMode = aVar;
         this.mReadyForSpeech = false;
+        this.mStopRequested = false;
+        this.mCommittedThisSession = false;
+        this.mHandler.removeCallbacks(this.mFinaliseRunnable);
         this.mStaleClientErrorPossible = this.mCancelRequested;
         this.mCancelRequested = false;
         notifyState(STATE_STARTED);
         this.mSpeechRecognizer.startListening(intent);
         this.mHandler.removeCallbacks(this.mTimeoutRunnable);
-        this.mHandler.postDelayed(this.mTimeoutRunnable, 6000L);
+        // The "nothing heard for 6 s" cut-off is for one-utterance dictation. Continuous mode
+        // waits: the recogniser's own no-speech timeout ends a silent session, and the
+        // silent-sessions cap in shouldChain() keeps that from going on for ever.
+        if (!this.mContinuous) {
+            this.mHandler.postDelayed(this.mTimeoutRunnable, 6000L);
+        }
     }
 
     public Mode getMode() {
@@ -312,8 +474,15 @@ public class VoiceRecognitionManager {
             final boolean sessionActive = VoiceRecognitionManager.this.mMode != Mode.NONE;
             final boolean noService = VoiceRecognitionAvailability.isNoServiceError(i, sessionActive,
                     VoiceRecognitionManager.this.mReadyForSpeech, VoiceRecognitionManager.this.mStaleClientErrorPossible);
+            // The two flags that describe the session that just ended; put back below in the one
+            // case where it has not ended (the transient ERROR_CLIENT re-arm).
+            final boolean stopRequested = VoiceRecognitionManager.this.mStopRequested;
+            final boolean continuous = VoiceRecognitionManager.this.mContinuous;
             VoiceRecognitionManager.this.mMode = Mode.NONE;
             VoiceRecognitionManager.this.mReadyForSpeech = false;
+            VoiceRecognitionManager.this.mStopRequested = false;
+            VoiceRecognitionManager.this.mContinuous = false;
+            VoiceRecognitionManager.this.mHandler.removeCallbacks(VoiceRecognitionManager.this.mFinaliseRunnable);
             // Deliberate stop/cancel: the session is over; skip the transient-error
             // handling entirely (notably the case-5 mMode re-arm).
             if (VoiceRecognitionManager.this.mCancelRequested) {
@@ -345,13 +514,29 @@ public class VoiceRecognitionManager {
                 // Transient: the answer to an earlier stop, arriving after this session started.
                 // The session is still live, so its partial text stays composing.
                 VoiceRecognitionManager.this.mMode = Mode.DICTATION;
+                VoiceRecognitionManager.this.mStopRequested = stopRequested;
+                VoiceRecognitionManager.this.mContinuous = continuous;
                 return;
             }
             VoiceRecognitionManager.this.mCallback.onDictationAbandoned();
+            final boolean nothingHeard = i == SpeechRecognizer.ERROR_SPEECH_TIMEOUT || i == SpeechRecognizer.ERROR_NO_MATCH;
+            if (nothingHeard && continuous && !stopRequested && sessionActive) {
+                // Continuous dictation: a silent session is just a pause. Chain the next one
+                // without a word, until the silent-sessions cap says the mic was forgotten.
+                VoiceRecognitionManager.this.mContinuous = true;
+                VoiceRecognitionManager.this.noteSessionOutcome();
+                if (VoiceRecognitionManager.this.shouldChain()) {
+                    VoiceRecognitionManager.this.chain();
+                    return;
+                }
+                VoiceRecognitionManager.this.mContinuous = false;
+            }
             if (i != 5) {
                 VoiceRecognitionManager.this.notifyState(STATE_STOPPED);
             }
-            final int message = VoiceRecognitionAvailability.messageForError(i);
+            // A stop with nothing said: the user ended it, so "No speech heard" is noise.
+            final int message = nothingHeard && stopRequested
+                    ? VoiceRecognitionAvailability.NO_MESSAGE : VoiceRecognitionAvailability.messageForError(i);
             if (message != VoiceRecognitionAvailability.NO_MESSAGE) {
                 // These used to end the session silently, straight back to "Tap the mic to speak".
                 VoiceRecognitionManager.this.mCallback.onRecognitionError(message);
@@ -432,22 +617,48 @@ public class VoiceRecognitionManager {
         @Override // android.speech.RecognitionListener
         public void onResults(Bundle bundle) {
             Logger.debug(VoiceRecognitionManager.TAG, "onResults");
-            ArrayList<String> stringArrayList =
-                    bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            Logger.debug(VoiceRecognitionManager.TAG, stringArrayList != null ? stringArrayList.toString() : "Result matches were null");
-            boolean committed = false;
-            if (stringArrayList != null && stringArrayList.size() > 0) {
-                String str = stringArrayList.get(0);
-                if (VoiceRecognitionManager.this.mMode == Mode.DICTATION && str != null && !str.isEmpty()) {
-                    VoiceRecognitionManager.this.mCallback.onDictationResult(str);
-                    committed = true;
-                }
+            VoiceRecognitionManager.this.commitResult(bundle);
+            VoiceRecognitionManager.this.mReadyForSpeech = false;
+            VoiceRecognitionManager.this.noteSessionOutcome();
+            if (VoiceRecognitionManager.this.shouldChain()) {
+                // Continuous dictation on a recogniser without segmented sessions (or one that
+                // ended the session anyway): straight on to the next one.
+                VoiceRecognitionManager.this.chain();
+                return;
             }
-            if (!committed) {
-                VoiceRecognitionManager.this.mCallback.onDictationAbandoned();
+            VoiceRecognitionManager.this.endSession();
+            VoiceRecognitionManager.this.notifyState(STATE_STOPPED);
+        }
+
+        @Override // android.speech.RecognitionListener
+        public void onSegmentResults(Bundle bundle) {
+            // Continuous mode on Android 13+: one phrase of a session that goes on. Commit it and
+            // keep listening; nothing about the session changes.
+            Logger.debug(VoiceRecognitionManager.TAG, "onSegmentResults");
+            if (VoiceRecognitionManager.this.mMode != Mode.DICTATION) {
+                return;
+            }
+            if (VoiceRecognitionManager.this.commitResult(bundle)) {
+                VoiceRecognitionManager.this.mEmptySessionsInARow = 0;
+            }
+        }
+
+        @Override // android.speech.RecognitionListener
+        public void onEndOfSegmentedSession() {
+            // The segmented session ended: our stop, or CONTINUOUS_SILENCE_MILLIS of silence. A
+            // session that heard something and was not stopped is chained like a plain one; a
+            // silent one counts toward the cap.
+            Logger.debug(VoiceRecognitionManager.TAG, "onEndOfSegmentedSession");
+            if (VoiceRecognitionManager.this.mMode == Mode.NONE) {
+                return;
             }
             VoiceRecognitionManager.this.mReadyForSpeech = false;
-            VoiceRecognitionManager.this.mMode = Mode.NONE;
+            VoiceRecognitionManager.this.noteSessionOutcome();
+            if (VoiceRecognitionManager.this.shouldChain()) {
+                VoiceRecognitionManager.this.chain();
+                return;
+            }
+            VoiceRecognitionManager.this.endSession();
             VoiceRecognitionManager.this.notifyState(STATE_STOPPED);
         }
 

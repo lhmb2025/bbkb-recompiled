@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">ユーザー辞書、テキストショートカット、学習した単語</string>
     <string name="reset_dialog_confirm">リセット</string>
     <string name="reset_done">リセットしました</string>
+    <string name="settings_voice_stop_on_pause_title">話が途切れたら聞き取りを終了</string>
+    <string name="settings_voice_stop_on_pause_summary_on">少し間が空くと聞き取りを終了します。早めに終了するにはマイクをタップします。</string>
+    <string name="settings_voice_stop_on_pause_summary_off">途中で間が空いても、マイクをタップするか30秒間無音が続くまで聞き取りを続けます</string>
+    <string name="voice_status_listening_tap_to_stop">聞き取り中&#8230; マイクをタップして停止</string>
 </resources>

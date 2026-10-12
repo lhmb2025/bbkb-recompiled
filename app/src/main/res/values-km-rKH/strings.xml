@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">វចនានុក្រមអ្នកប្រើ ផ្លូវកាត់អត្ថបទ និងពាក្យដែលបានរៀន</string>
     <string name="reset_dialog_confirm">កំណត់ឡើងវិញ</string>
     <string name="reset_done">បានកំណត់ឡើងវិញរួចរាល់</string>
+    <string name="settings_voice_stop_on_pause_title">ឈប់ស្ដាប់នៅពេលអ្នកផ្អាក</string>
+    <string name="settings_voice_stop_on_pause_summary_on">ការស្ដាប់បញ្ចប់បន្ទាប់ពីការផ្អាកខ្លី។ ប៉ះមីក្រូហ្វូនដើម្បីបញ្ចប់វាឱ្យឆាប់ជាងនេះ។</string>
+    <string name="settings_voice_stop_on_pause_summary_off">បន្តស្ដាប់ទោះបីមានការផ្អាក រហូតដល់អ្នកប៉ះមីក្រូហ្វូន ឬបន្ទាប់ពីស្ងាត់កន្លះនាទី</string>
+    <string name="voice_status_listening_tap_to_stop">កំពុងស្ដាប់&#8230; ប៉ះមីក្រូហ្វូនដើម្បីឈប់</string>
 </resources>

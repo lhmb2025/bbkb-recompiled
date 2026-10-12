@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">தனிப்பட்ட அகராதி, உரைக் குறுக்குவழிகள், கற்ற சொற்கள்</string>
     <string name="reset_dialog_confirm">மீட்டமை</string>
     <string name="reset_done">மீட்டமைப்பு முடிந்தது</string>
+    <string name="settings_voice_stop_on_pause_title">இடைநிறுத்தும்போது கேட்பதை நிறுத்து</string>
+    <string name="settings_voice_stop_on_pause_summary_on">சிறிய இடைநிறுத்தத்திற்குப் பிறகு கேட்பது முடியும். முன்னதாக முடிக்க மைக்ரோஃபோனைத் தட்டவும்.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">மைக்ரோஃபோனைத் தட்டும் வரை அல்லது அரை நிமிடம் அமைதி நிலவும் வரை இடைநிறுத்தங்களின்போதும் தொடர்ந்து கேட்கும்</string>
+    <string name="voice_status_listening_tap_to_stop">கேட்கிறது&#8230; நிறுத்த மைக்கைத் தட்டவும்</string>
 </resources>

@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Foclóir an úsáideora, aicearraí téacs agus focail fhoghlamtha</string>
     <string name="reset_dialog_confirm">Athshocraigh</string>
     <string name="reset_done">Athshocrú críochnaithe</string>
+    <string name="settings_voice_stop_on_pause_title">Stad ag éisteacht nuair a dhéanann tú sos</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Stopann an éisteacht tar éis sos gearr. Tapáil an micreafón chun stopadh níos luaithe.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Leanann sé ag éisteacht le linn sosanna go dtí go dtapálann tú an micreafón, nó tar éis leathnóiméad ciúnais</string>
+    <string name="voice_status_listening_tap_to_stop">Ag éisteacht&#8230; Tapáil an micreafón chun stopadh</string>
 </resources>

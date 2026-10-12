@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Kişisel sözlük, metin kısayolları ve öğrenilen kelimeler</string>
     <string name="reset_dialog_confirm">Sıfırla</string>
     <string name="reset_done">Sıfırlama tamamlandı</string>
+    <string name="settings_voice_stop_on_pause_title">Ara verdiğinizde dinlemeyi durdur</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Dinleme kısa bir duraklamadan sonra sona erer. Daha erken bitirmek için mikrofona dokunun.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Mikrofona dokunana ya da yarım dakika sessizlik olana kadar duraklamalarda da dinlemeye devam eder</string>
+    <string name="voice_status_listening_tap_to_stop">Dinleniyor&#8230; Durdurmak için mikrofona dokunun</string>
 </resources>

@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">ວັດຈະນານຸກົມຜູ້ໃຊ້, ທາງລັດຂໍ້ຄວາມ ແລະ ຄຳສັບທີ່ຮຽນຮູ້ແລ້ວ</string>
     <string name="reset_dialog_confirm">ຕັ້ງຄ່າໃໝ່</string>
     <string name="reset_done">ຕັ້ງຄ່າໃໝ່ສຳເລັດແລ້ວ</string>
+    <string name="settings_voice_stop_on_pause_title">ຢຸດຟັງເມື່ອທ່ານຢຸດເວົ້າ</string>
+    <string name="settings_voice_stop_on_pause_summary_on">ການຟັງຈະສິ້ນສຸດຫຼັງຈາກຢຸດເວົ້າສັ້ນໆ. ແຕະໄມໂຄຣໂຟນເພື່ອສິ້ນສຸດໄວກວ່ານັ້ນ.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">ຟັງຕໍ່ໄປເຖິງແມ່ນຈະຢຸດເວົ້າ ຈົນກວ່າທ່ານຈະແຕະໄມໂຄຣໂຟນ ຫຼື ຫຼັງຈາກງຽບເຄິ່ງນາທີ</string>
+    <string name="voice_status_listening_tap_to_stop">ກຳລັງຟັງ&#8230; ແຕະໄມໂຄຣໂຟນເພື່ອຢຸດ</string>
 </resources>

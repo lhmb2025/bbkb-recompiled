@@ -254,6 +254,9 @@ public final class SettingsValues {
     /** Dictation partial results are shown in the editor as composing text; read per partial. */
     public final boolean voiceInputShowPartialResults;
 
+    /** "Stop listening when you pause"; off is continuous dictation until the mic is tapped. */
+    public final boolean voiceInputStopOnPause;
+
     public final String voiceInputLanguageList;
 
     public final boolean isEmojiDynamicSearchEnabled;
@@ -455,6 +458,7 @@ public final class SettingsValues {
         this.voiceInputUseInputLanguage = SettingsManager.isVoiceInputUseInputLanguage(sharedPreferences);
         this.voiceInputPreferOffline = SettingsManager.isVoiceInputPreferOffline(sharedPreferences);
         this.voiceInputShowPartialResults = SettingsManager.isVoiceInputShowPartialResults(sharedPreferences);
+        this.voiceInputStopOnPause = SettingsManager.isVoiceInputStopOnPause(sharedPreferences);
         this.voiceInputLanguageList = SettingsManager.getVoiceInputLanguageList(sharedPreferences);
         this.isEmojiDynamicSearchEnabled = SettingsManager.isEmojiDynamicSearchEnabled(sharedPreferences);
         this.altSymShortcutAction = sharedPreferences.getString("pref_alt_sym_shortcut_action", "disabled");

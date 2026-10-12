@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Oma sanakirja, tekstioikotiet ja opitut sanat</string>
     <string name="reset_dialog_confirm">Nollaa</string>
     <string name="reset_done">Nollaus valmis</string>
+    <string name="settings_voice_stop_on_pause_title">Lopeta kuuntelu, kun pidät tauon</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Kuuntelu päättyy lyhyen tauon jälkeen. Lopeta aiemmin napauttamalla mikrofonia.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Kuuntelee myös taukojen ajan, kunnes napautat mikrofonia tai on ollut puoli minuuttia hiljaista</string>
+    <string name="voice_status_listening_tap_to_stop">Kuunnellaan&#8230; Lopeta napauttamalla mikrofonia</string>
 </resources>

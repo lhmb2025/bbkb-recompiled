@@ -68,6 +68,9 @@ fun VoiceInputSettingsScreen(
     var autoStartListening by remember {
         mutableStateOf(prefs.getBoolean("voice_input_auto_start", true))
     }
+    var stopOnPause by remember {
+        mutableStateOf(prefs.getBoolean("voice_input_stop_on_pause", true))
+    }
     var blockOffensive by remember {
         // Frozen key, and the engine reads it with
         // resources.getBoolean(R.bool.config_block_potentially_offensive) — now false — via
@@ -198,6 +201,23 @@ fun VoiceInputSettingsScreen(
                 onCheckedChange = { newValue ->
                     preferOffline = newValue
                     prefs.edit().putBoolean("voice_input_prefer_offline", newValue).apply()
+                }
+            )
+
+            // Stop listening when you pause: off is continuous dictation until the mic is tapped.
+            // The pair with Auto-start covers starting and ending by hand, automatically, or either.
+            SwitchPreference(
+                title = context.getString(R.string.settings_voice_stop_on_pause_title),
+                summary = if (stopOnPause)
+                    context.getString(R.string.settings_voice_stop_on_pause_summary_on)
+                else
+                    context.getString(R.string.settings_voice_stop_on_pause_summary_off),
+                checked = stopOnPause,
+                enabled = builtInVoiceEnabled,
+                modifier = Modifier.settingsSearchAnchor("voice_input_stop_on_pause"),
+                onCheckedChange = { newValue ->
+                    stopOnPause = newValue
+                    prefs.edit().putBoolean("voice_input_stop_on_pause", newValue).apply()
                 }
             )
 

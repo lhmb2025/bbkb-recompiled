@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Kamus pribadi, pintonan singget téks jeung kecap nu diajar</string>
     <string name="reset_dialog_confirm">Reset</string>
     <string name="reset_done">Reset réngsé</string>
+    <string name="settings_voice_stop_on_pause_title">Eureun ngadangukeun waktu jeda</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Ngadangukeun réngsé sanggeus jeda pondok. Toél mikropon pikeun ngeureunkeun leuwih gancang.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Tetep ngadangukeun salila jeda nepi ka anjeun noél mikropon, atawa sanggeus satengah menit jempé</string>
+    <string name="voice_status_listening_tap_to_stop">Ngadangukeun&#8230; Toél mikropon pikeun ngeureunkeun</string>
 </resources>

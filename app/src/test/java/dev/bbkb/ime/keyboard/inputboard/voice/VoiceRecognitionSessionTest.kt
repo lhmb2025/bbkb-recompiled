@@ -300,6 +300,166 @@ class VoiceRecognitionSessionTest {
     private val sayboard = ComponentName("com.elishaazaria.sayboard", "com.elishaazaria.sayboard.recognition.RecognitionService")
 
     /** A recognition app the package query can see, labelled as its launcher would show it. */
+    // ── stopping by hand ─────────────────────────────────────────────────────
+
+    private fun stopOnPause(on: Boolean) {
+        prefs().edit().putBoolean("voice_input_stop_on_pause", on).commit()
+        SettingsManager.getInstance().loadSettings(
+            context, Locale.US, EditorCapabilities(null, false, context.packageName, Locale.US, false))
+    }
+
+    private fun boardShowing() {
+        org.mockito.Mockito.`when`(callback.isViewShowing()).thenReturn(true)
+    }
+
+    private fun startsReported(): Int =
+        org.mockito.Mockito.mockingDetails(callback).invocations.count {
+            it.method.name == "onStateChanged" && it.arguments[1] == VoiceRecognitionManager.STATE_STARTED
+        }
+
+    @Test
+    fun `a stop keeps what was heard and the final result still commits`() {
+        start()
+        recognizer().triggerOnPartialResults(results("hello"))
+
+        manager.stopDictation()
+        verify(callback, never()).onDictationAbandoned()
+        assertEquals(VoiceRecognitionManager.Mode.DICTATION, manager.mode)
+
+        recognizer().triggerOnResults(results("hello world"))
+        verify(callback).onDictationResult("hello world")
+        verify(callback, never()).onDictationAbandoned()
+        assertEquals(VoiceRecognitionManager.Mode.NONE, manager.mode)
+    }
+
+    @Test
+    fun `a stop the recogniser never answers is cancelled after the grace period`() {
+        start()
+        recognizer().triggerOnPartialResults(results("hello"))
+        manager.stopDictation()
+
+        shadowOf(Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(VoiceRecognitionManager.STOP_GRACE_MILLIS + 100))
+
+        verify(callback).onDictationAbandoned()
+        assertEquals(VoiceRecognitionManager.Mode.NONE, manager.mode)
+    }
+
+    @Test
+    fun `a stop with nothing said ends quietly`() {
+        start()
+        manager.stopDictation()
+        recognizer().triggerOnError(SpeechRecognizer.ERROR_NO_MATCH)
+
+        verify(callback, never()).onRecognitionError(org.mockito.ArgumentMatchers.anyInt())
+        assertEquals(VoiceRecognitionManager.Mode.NONE, manager.mode)
+    }
+
+    // ── "Stop listening when you pause" ──────────────────────────────────────
+
+    @Test
+    fun `with stop on pause on the request carries a pause hint and no segmented session`() {
+        start()
+        val intent = recognizer().lastRecognizerIntent
+        assertEquals(VoiceRecognitionManager.PAUSE_SILENCE_MILLIS,
+            intent.getLongExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, -1L))
+        assertNull(intent.getStringExtra(RecognizerIntent.EXTRA_SEGMENTED_SESSION))
+        assertFalse(manager.isContinuous)
+    }
+
+    @Test
+    fun `with stop on pause off the request asks for a segmented session`() {
+        stopOnPause(false)
+        start()
+        val intent = recognizer().lastRecognizerIntent
+        assertEquals(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,
+            intent.getStringExtra(RecognizerIntent.EXTRA_SEGMENTED_SESSION))
+        assertEquals(VoiceRecognitionManager.CONTINUOUS_SILENCE_MILLIS,
+            intent.getLongExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, -1L))
+        assertTrue(manager.isContinuous)
+    }
+
+    @Test
+    fun `continuous dictation chains the next session when one ends on its own`() {
+        stopOnPause(false)
+        boardShowing()
+        start()
+        recognizer().triggerOnResults(results("one"))
+
+        verify(callback).onDictationResult("one")
+        assertEquals(VoiceRecognitionManager.Mode.DICTATION, manager.mode)
+        assertEquals(2, startsReported())
+    }
+
+    @Test
+    fun `continuous dictation does not chain after the user stops`() {
+        stopOnPause(false)
+        boardShowing()
+        start()
+        manager.stopDictation()
+        recognizer().triggerOnResults(results("one"))
+
+        verify(callback).onDictationResult("one")
+        assertEquals(VoiceRecognitionManager.Mode.NONE, manager.mode)
+        assertEquals(1, startsReported())
+    }
+
+    @Test
+    fun `continuous dictation does not chain once the board is gone`() {
+        stopOnPause(false)
+        start()
+        recognizer().triggerOnResults(results("one"))
+
+        assertEquals(VoiceRecognitionManager.Mode.NONE, manager.mode)
+        assertEquals(1, startsReported())
+    }
+
+    @Test
+    fun `segment results commit and the session goes on`() {
+        stopOnPause(false)
+        boardShowing()
+        start()
+        manager.listenerForTest().onSegmentResults(results("one"))
+        manager.listenerForTest().onSegmentResults(results("two"))
+
+        verify(callback).onDictationResult("one")
+        verify(callback).onDictationResult("two")
+        assertEquals(VoiceRecognitionManager.Mode.DICTATION, manager.mode)
+        assertEquals(1, startsReported())
+
+        manager.listenerForTest().onEndOfSegmentedSession()
+        // Heard something and was not stopped: chained like a plain session.
+        assertEquals(VoiceRecognitionManager.Mode.DICTATION, manager.mode)
+        assertEquals(2, startsReported())
+    }
+
+    @Test
+    fun `continuous dictation ends after the silent sessions cap`() {
+        stopOnPause(false)
+        boardShowing()
+        start()
+        repeat(VoiceRecognitionManager.MAX_EMPTY_SESSIONS - 1) {
+            recognizer().triggerOnError(SpeechRecognizer.ERROR_NO_MATCH)
+            assertEquals(VoiceRecognitionManager.Mode.DICTATION, manager.mode)
+        }
+        recognizer().triggerOnError(SpeechRecognizer.ERROR_NO_MATCH)
+
+        assertEquals(VoiceRecognitionManager.Mode.NONE, manager.mode)
+        assertEquals(VoiceRecognitionManager.MAX_EMPTY_SESSIONS, startsReported())
+    }
+
+    @Test
+    fun `a cancel from the close path discards even in continuous mode`() {
+        stopOnPause(false)
+        boardShowing()
+        start()
+        recognizer().triggerOnPartialResults(results("hel"))
+        manager.stopListening()
+
+        verify(callback).onDictationAbandoned()
+        assertEquals(VoiceRecognitionManager.Mode.NONE, manager.mode)
+        assertFalse(manager.isContinuous)
+    }
+
     private fun installRecognizer(component: ComponentName, label: String, microphoneGranted: Boolean = true) {
         val app = ApplicationInfo().apply {
             packageName = component.packageName

@@ -272,6 +272,15 @@ public class VoiceInputView extends RelativeLayout {
     }
 
     public void updateState(VoiceRecognitionManager.Mode aVar, int i) {
+        updateState(aVar, i, false);
+    }
+
+    /**
+     * @param continuous the session keeps listening through pauses ("Stop listening when you
+     *                   pause" off), so the status line says the mic is what ends it
+     */
+    public void updateState(VoiceRecognitionManager.Mode aVar, int i, boolean continuous) {
+        this.mContinuous = continuous;
         if (aVar == VoiceRecognitionManager.Mode.NONE) {
             deactivateOthers((ImageButton) null);
             fadeOthers(null, false);
@@ -292,8 +301,7 @@ public class VoiceInputView extends RelativeLayout {
 
     private void updateMaterialStatus(boolean listening) {
         if (this.mStatusText != null) {
-            this.mStatusText.setText(
-                    listening ? R.string.voice_status_listening : R.string.voice_status_idle);
+            this.mStatusText.setText(listeningStatusRes(listening));
         }
         if (this.mWaveform != null) {
             this.mWaveform.setActive(listening);
@@ -312,9 +320,19 @@ public class VoiceInputView extends RelativeLayout {
      */
     private void setContentDescriptionMicOnOff(boolean idle) {
         if (this.mVoiceButton != null) {
-            this.mVoiceButton.setContentDescription(getContext().getString(
-                    idle ? R.string.voice_status_idle : R.string.voice_status_listening));
+            this.mVoiceButton.setContentDescription(getContext().getString(listeningStatusRes(!idle)));
         }
+    }
+
+    /** Whether the running session is continuous; set with each state update. */
+    private boolean mContinuous;
+
+    /** The status line (and the mic's description) for a listening or idle board. */
+    private int listeningStatusRes(boolean listening) {
+        if (!listening) {
+            return R.string.voice_status_idle;
+        }
+        return this.mContinuous ? R.string.voice_status_listening_tap_to_stop : R.string.voice_status_listening;
     }
 
     /**

@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Personlig ordlista, textgenvägar och inlärda ord</string>
     <string name="reset_dialog_confirm">Återställ</string>
     <string name="reset_done">Återställningen är klar</string>
+    <string name="settings_voice_stop_on_pause_title">Sluta lyssna när du pausar</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Lyssnandet avslutas efter en kort paus. Tryck på mikrofonen för att avsluta tidigare.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Fortsätter lyssna genom pauser tills du trycker på mikrofonen, eller efter en halv minuts tystnad</string>
+    <string name="voice_status_listening_tap_to_stop">Lyssnar&#8230; Tryck på mikrofonen för att sluta</string>
 </resources>

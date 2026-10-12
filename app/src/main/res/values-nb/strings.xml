@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Personlig ordliste, tekstsnarveier og lærte ord</string>
     <string name="reset_dialog_confirm">Tilbakestill</string>
     <string name="reset_done">Tilbakestillingen er fullført</string>
+    <string name="settings_voice_stop_on_pause_title">Stopp lytting når du tar en pause</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Lyttingen avsluttes etter en kort pause. Trykk på mikrofonen for å avslutte tidligere.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Fortsetter å lytte gjennom pauser til du trykker på mikrofonen, eller etter et halvt minutt med stillhet</string>
+    <string name="voice_status_listening_tap_to_stop">Lytter&#8230; Trykk på mikrofonen for å stoppe</string>
 </resources>

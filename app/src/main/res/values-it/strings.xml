@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Dizionario utente, scorciatoie di testo e parole apprese</string>
     <string name="reset_dialog_confirm">Reimposta</string>
     <string name="reset_done">Reimpostazione completata</string>
+    <string name="settings_voice_stop_on_pause_title">Interrompi l\'ascolto quando fai una pausa</string>
+    <string name="settings_voice_stop_on_pause_summary_on">L\'ascolto termina dopo una breve pausa. Tocca il microfono per terminarlo prima.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Continua ad ascoltare anche durante le pause, finché non tocchi il microfono o dopo mezzo minuto di silenzio</string>
+    <string name="voice_status_listening_tap_to_stop">In ascolto&#8230; Tocca il microfono per interrompere</string>
 </resources>

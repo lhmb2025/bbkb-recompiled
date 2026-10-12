@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Persönliches Wörterbuch, Textkürzel und gelernte Wörter</string>
     <string name="reset_dialog_confirm">Zurücksetzen</string>
     <string name="reset_done">Zurücksetzen abgeschlossen</string>
+    <string name="settings_voice_stop_on_pause_title">Spracherkennung bei Pausen beenden</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Die Spracherkennung endet nach einer kurzen Pause. Zum vorzeitigen Beenden auf das Mikrofon tippen.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Hört auch bei Pausen weiter zu, bis zum Tippen auf das Mikrofon oder nach einer halben Minute Stille</string>
+    <string name="voice_status_listening_tap_to_stop">Höre zu&#8230; Zum Beenden auf das Mikrofon tippen</string>
 </resources>

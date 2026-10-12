@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Słownik użytkownika, skróty tekstowe i zapamiętane słowa</string>
     <string name="reset_dialog_confirm">Resetuj</string>
     <string name="reset_done">Zresetowano</string>
+    <string name="settings_voice_stop_on_pause_title">Zatrzymanie słuchania po pauzie</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Słuchanie kończy się po krótkiej pauzie. Dotknij mikrofonu, aby zakończyć je wcześniej.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Słucha również w trakcie pauz, aż dotkniesz mikrofonu lub minie pół minuty ciszy</string>
+    <string name="voice_status_listening_tap_to_stop">Słucham&#8230; Dotknij mikrofonu, aby zatrzymać</string>
 </resources>

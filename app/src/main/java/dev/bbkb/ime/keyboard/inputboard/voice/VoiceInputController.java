@@ -228,11 +228,16 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
         return false;
     }
 
+    /**
+     * The on-screen mic while listening: finish and keep what was heard. (The mic key and the
+     * board's close path go through {@link #cancelVoiceInput}, which discards — that is a close,
+     * not a stop.)
+     */
     private boolean stopIfListening(VoiceRecognitionManager.Mode aVar) {
         if (aVar == VoiceRecognitionManager.Mode.NONE) {
             return false;
         }
-        this.mRecognitionManager.stopListening();
+        this.mRecognitionManager.stopDictation();
         return true;
     }
 
@@ -249,7 +254,7 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
     @Override
     public void onStateChanged(VoiceRecognitionManager.Mode aVar, int i) {
         if (hasView()) {
-            this.mVoiceInputView.updateState(aVar, i);
+            this.mVoiceInputView.updateState(aVar, i, this.mRecognitionManager.isContinuous());
         }
     }
 

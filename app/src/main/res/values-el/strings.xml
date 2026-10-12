@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Προσωπικό λεξικό, συντομεύσεις κειμένου και εκμαθημένες λέξεις</string>
     <string name="reset_dialog_confirm">Επαναφορά</string>
     <string name="reset_done">Η επαναφορά προεπιλογών ολοκληρώθηκε</string>
+    <string name="settings_voice_stop_on_pause_title">Διακοπή ακρόασης όταν κάνετε παύση</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Η ακρόαση τελειώνει μετά από μια σύντομη παύση. Πατήστε το μικρόφωνο για να την τερματίσετε νωρίτερα.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Η ακρόαση συνεχίζεται και στις παύσεις μέχρι να πατήσετε το μικρόφωνο ή μετά από μισό λεπτό σιωπής</string>
+    <string name="voice_status_listening_tap_to_stop">Ακρόαση&#8230; Πατήστε το μικρόφωνο για διακοπή</string>
 </resources>

@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Личен речник, текстови преки пътища и запаметени думи</string>
     <string name="reset_dialog_confirm">Нулиране</string>
     <string name="reset_done">Нулирането е завършено</string>
+    <string name="settings_voice_stop_on_pause_title">Спиране на слушането при пауза</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Слушането приключва след кратка пауза. Докоснете микрофона, за да го прекратите по-рано.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Продължава да слуша и при паузи, докато не докоснете микрофона или не настъпи половин минута тишина</string>
+    <string name="voice_status_listening_tap_to_stop">Слушане&#8230; Докоснете микрофона, за да спрете</string>
 </resources>

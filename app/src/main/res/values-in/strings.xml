@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Kamus pengguna, pintasan teks, dan kata yang dipelajari</string>
     <string name="reset_dialog_confirm">Setel ulang</string>
     <string name="reset_done">Penyetelan ulang selesai</string>
+    <string name="settings_voice_stop_on_pause_title">Berhenti mendengarkan saat jeda</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Mendengarkan berakhir setelah jeda singkat. Ketuk mikrofon untuk mengakhirinya lebih cepat.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Tetap mendengarkan saat jeda hingga Anda mengetuk mikrofon, atau setelah setengah menit tanpa suara</string>
+    <string name="voice_status_listening_tap_to_stop">Mendengarkan&#8230; Ketuk mik untuk berhenti</string>
 </resources>

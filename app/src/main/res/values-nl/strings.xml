@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Gebruikerswoordenboek, tekstsnelkoppelingen en geleerde woorden</string>
     <string name="reset_dialog_confirm">Resetten</string>
     <string name="reset_done">Reset voltooid</string>
+    <string name="settings_voice_stop_on_pause_title">Stoppen met luisteren bij een pauze</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Het luisteren stopt na een korte pauze. Tik op de microfoon om eerder te stoppen.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Blijft luisteren tijdens pauzes totdat u op de microfoon tikt, of na een halve minuut stilte</string>
+    <string name="voice_status_listening_tap_to_stop">Luisteren&#8230; Tik op de microfoon om te stoppen</string>
 </resources>

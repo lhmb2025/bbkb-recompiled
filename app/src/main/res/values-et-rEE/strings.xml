@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Kasutaja sõnastik, tekstiotseteed ja õpitud sõnad</string>
     <string name="reset_dialog_confirm">Lähtesta</string>
     <string name="reset_done">Lähtestamine lõpetatud</string>
+    <string name="settings_voice_stop_on_pause_title">Lõpeta kuulamine pausi korral</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Kuulamine lõpeb pärast lühikest pausi. Varem lõpetamiseks puudutage mikrofoni.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Jätkab kuulamist ka pauside ajal, kuni puudutate mikrofoni või kuni on olnud pool minutit vaikust</string>
+    <string name="voice_status_listening_tap_to_stop">Kuulan&#8230; Peatamiseks puudutage mikrofoni</string>
 </resources>

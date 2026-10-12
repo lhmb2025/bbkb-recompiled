@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Orðabók notanda, textaflýtileiðir og lærð orð</string>
     <string name="reset_dialog_confirm">Endurstilla</string>
     <string name="reset_done">Endurstillingu lokið</string>
+    <string name="settings_voice_stop_on_pause_title">Hætta hlustun þegar þú gerir hlé</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Hlustun lýkur eftir stutt hlé. Ýttu á hljóðnemann til að ljúka henni fyrr.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Heldur áfram að hlusta í hléum þar til þú ýtir á hljóðnemann, eða eftir hálfrar mínútu þögn</string>
+    <string name="voice_status_listening_tap_to_stop">Hlusta&#8230; Ýttu á hljóðnemann til að hætta</string>
 </resources>

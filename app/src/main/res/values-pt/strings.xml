@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Dicionário do usuário, atalhos de texto e palavras aprendidas</string>
     <string name="reset_dialog_confirm">Redefinir</string>
     <string name="reset_done">Redefinição concluída</string>
+    <string name="settings_voice_stop_on_pause_title">Parar de ouvir quando você pausar</string>
+    <string name="settings_voice_stop_on_pause_summary_on">A escuta termina após uma breve pausa. Toque no microfone para encerrá-la antes.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Continua ouvindo durante as pausas até você tocar no microfone ou após meio minuto de silêncio</string>
+    <string name="voice_status_listening_tap_to_stop">Ouvindo&#8230; Toque no microfone para parar</string>
 </resources>

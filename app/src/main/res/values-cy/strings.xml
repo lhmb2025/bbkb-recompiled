@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Geiriadur personol, llwybrau byr testun a geiriau a ddysgwyd</string>
     <string name="reset_dialog_confirm">Ailosod</string>
     <string name="reset_done">Wedi ailosod</string>
+    <string name="settings_voice_stop_on_pause_title">Stopio gwrando pan fyddwch yn oedi</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Mae\'r gwrando\'n dod i ben ar ôl saib byr. Tapiwch y meicroffon i\'w orffen yn gynt.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Yn dal i wrando drwy seibiau nes i chi dapio\'r meicroffon, neu ar ôl hanner munud o dawelwch</string>
+    <string name="voice_status_listening_tap_to_stop">Yn gwrando&#8230; Tapiwch y meic i stopio</string>
 </resources>

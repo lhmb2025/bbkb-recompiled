@@ -1359,6 +1359,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_voice_prefer_offline_title", "settings_voice_use_keyboard_lang_summary",
                 "settings_voice_use_keyboard_lang_title", "settings_voice_show_partial_results_summary",
                 "settings_voice_show_partial_results_title",
+                "settings_voice_stop_on_pause_summary_on", "settings_voice_stop_on_pause_title",
                 // The "Speech recognizer" row. Robolectric has no recognition app installed, so its
                 // summary is the one that says so and suggests apps to install.
                 "settings_voice_recognizer_title", "settings_voice_recognizer_none_installed"

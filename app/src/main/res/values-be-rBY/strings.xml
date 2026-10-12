@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Асабісты слоўнік, тэкставыя скарачэнні і вывучаныя словы</string>
     <string name="reset_dialog_confirm">Скінуць</string>
     <string name="reset_done">Скід завершаны</string>
+    <string name="settings_voice_stop_on_pause_title">Спыняць слуханне пры паўзе</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Слуханне заканчваецца пасля кароткай паўзы. Націсніце мікрафон, каб скончыць раней.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Працягвае слухаць падчас паўз, пакуль вы не націснеце мікрафон або не пройдзе паўхвіліны цішыні</string>
+    <string name="voice_status_listening_tap_to_stop">Слухаю&#8230; Націсніце мікрафон, каб спыніць</string>
 </resources>

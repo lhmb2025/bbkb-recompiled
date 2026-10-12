@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">فرهنگ لغت کاربر، میانبرهای متنی و کلمه‌های یادگرفته‌شده</string>
     <string name="reset_dialog_confirm">بازنشانی</string>
     <string name="reset_done">بازنشانی انجام شد</string>
+    <string name="settings_voice_stop_on_pause_title">توقف شنیدن هنگام مکث</string>
+    <string name="settings_voice_stop_on_pause_summary_on">شنیدن پس از مکثی کوتاه پایان می‌یابد. برای پایان زودتر روی میکروفون ضربه بزنید.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">در مکث‌ها نیز به شنیدن ادامه می‌دهد تا وقتی روی میکروفون ضربه بزنید یا پس از نیم دقیقه سکوت</string>
+    <string name="voice_status_listening_tap_to_stop">در حال شنیدن&#8230; برای توقف روی میکروفون ضربه بزنید</string>
 </resources>

@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Từ điển cá nhân, lối tắt văn bản và từ đã học</string>
     <string name="reset_dialog_confirm">Đặt lại</string>
     <string name="reset_done">Đã đặt lại xong</string>
+    <string name="settings_voice_stop_on_pause_title">Dừng nghe khi bạn tạm ngừng</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Ngừng nghe sau một khoảng dừng ngắn. Chạm vào micrô để kết thúc sớm hơn.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Tiếp tục nghe qua các khoảng dừng cho đến khi bạn chạm vào micrô hoặc sau nửa phút im lặng</string>
+    <string name="voice_status_listening_tap_to_stop">Đang nghe&#8230; Chạm vào micrô để dừng</string>
 </resources>

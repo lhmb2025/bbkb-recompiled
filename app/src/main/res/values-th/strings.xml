@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">พจนานุกรมส่วนตัว ทางลัดข้อความ และคำที่เรียนรู้</string>
     <string name="reset_dialog_confirm">รีเซ็ต</string>
     <string name="reset_done">รีเซ็ตเสร็จสมบูรณ์</string>
+    <string name="settings_voice_stop_on_pause_title">หยุดฟังเมื่อคุณหยุดพูด</string>
+    <string name="settings_voice_stop_on_pause_summary_on">การฟังจะสิ้นสุดหลังหยุดพูดสักครู่ แตะไมโครโฟนเพื่อหยุดก่อนได้</string>
+    <string name="settings_voice_stop_on_pause_summary_off">ฟังต่อเนื่องแม้หยุดพูด จนกว่าคุณจะแตะไมโครโฟนหรือเงียบไปครึ่งนาที</string>
+    <string name="voice_status_listening_tap_to_stop">กำลังฟัง&#8230; แตะไมโครโฟนเพื่อหยุด</string>
 </resources>

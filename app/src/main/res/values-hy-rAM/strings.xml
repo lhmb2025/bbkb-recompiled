@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Օգտատիրոջ բառարան, տեքստային դյուրանցումներ և սովորած բառեր</string>
     <string name="reset_dialog_confirm">Զրոյացնել</string>
     <string name="reset_done">Զրոյացումն ավարտվեց</string>
+    <string name="settings_voice_stop_on_pause_title">Ավարտել լսելը դադարի դեպքում</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Լսելն ավարտվում է կարճ դադարից հետո։ Հպեք խոսափողին՝ ավելի շուտ ավարտելու համար։</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Շարունակում է լսել դադարների ընթացքում, մինչև հպեք խոսափողին, կամ կես րոպե լռությունից հետո</string>
+    <string name="voice_status_listening_tap_to_stop">Լսում է&#8230; Հպեք խոսափողին՝ կանգնեցնելու համար</string>
 </resources>

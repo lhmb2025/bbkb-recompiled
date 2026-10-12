@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Shaxsiy lug‘at, matn yorliqlari va o‘rganilgan so‘zlar</string>
     <string name="reset_dialog_confirm">Asliga qaytarish</string>
     <string name="reset_done">Asliga qaytarildi</string>
+    <string name="settings_voice_stop_on_pause_title">Pauza qilganda tinglashni to‘xtatish</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Tinglash qisqa pauzadan keyin tugaydi. Ertaroq tugatish uchun mikrofonni bosing.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Mikrofonni bosguningizcha yoki yarim daqiqa sukunat bo‘lguncha pauzalarda ham tinglashda davom etadi</string>
+    <string name="voice_status_listening_tap_to_stop">Tinglanmoqda&#8230; To‘xtatish uchun mikrofonni bosing</string>
 </resources>

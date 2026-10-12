@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Felhasználói szótár, szöveges rövidítések és megtanult szavak</string>
     <string name="reset_dialog_confirm">Alaphelyzetbe állítás</string>
     <string name="reset_done">Alaphelyzetbe állítás kész</string>
+    <string name="settings_voice_stop_on_pause_title">Figyelés leállítása szünetkor</string>
+    <string name="settings_voice_stop_on_pause_summary_on">A figyelés rövid szünet után véget ér. Koppintson a mikrofonra a korábbi befejezéshez.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Szünetekben is tovább figyel, amíg nem koppint a mikrofonra, vagy fél perc csend után leáll</string>
+    <string name="voice_status_listening_tap_to_stop">Figyelek&#8230; Koppintson a mikrofonra a leállításhoz</string>
 </resources>

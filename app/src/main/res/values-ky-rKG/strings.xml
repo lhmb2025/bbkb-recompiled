@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Колдонуучу сөздүгү, текст кыска жолдору жана үйрөнүлгөн сөздөр</string>
     <string name="reset_dialog_confirm">Баштапкы абалга келтирүү</string>
     <string name="reset_done">Баштапкы абалга келтирилди</string>
+    <string name="settings_voice_stop_on_pause_title">Тыныгуу болгондо угууну токтотуу</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Кыска тыныгуудан кийин угуу аяктайт. Эртерээк бүтүрүү үчүн микрофонду басыңыз.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Микрофонду баспаганча же жарым мүнөт тынчтык болмоюнча тыныгууларда да уга берет</string>
+    <string name="voice_status_listening_tap_to_stop">Угулууда&#8230; Токтотуу үчүн микрофонду басыңыз</string>
 </resources>

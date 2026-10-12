@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Persoonlike woordeboek, tekskortpaaie en geleerde woorde</string>
     <string name="reset_dialog_confirm">Stel terug</string>
     <string name="reset_done">Terugstelling voltooi</string>
+    <string name="settings_voice_stop_on_pause_title">Hou op luister wanneer jy pouseer</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Luister eindig ná \'n kort pouse. Tik die mikrofoon om dit gouer te beëindig.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Luister deur pouses heen totdat jy die mikrofoon tik, of ná \'n halwe minuut se stilte</string>
+    <string name="voice_status_listening_tap_to_stop">Luister tans&#8230; Tik die mikrofoon om te stop</string>
 </resources>

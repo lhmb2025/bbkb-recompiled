@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Diccionario del usuario, atajos de texto y palabras aprendidas</string>
     <string name="reset_dialog_confirm">Restablecer</string>
     <string name="reset_done">Restablecimiento completado</string>
+    <string name="settings_voice_stop_on_pause_title">Dejar de escuchar al hacer una pausa</string>
+    <string name="settings_voice_stop_on_pause_summary_on">La escucha termina después de una pausa breve. Toca el micrófono para terminarla antes.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Sigue escuchando durante las pausas hasta que toques el micrófono o después de medio minuto de silencio</string>
+    <string name="voice_status_listening_tap_to_stop">Escuchando&#8230; Toca el micrófono para detener</string>
 </resources>

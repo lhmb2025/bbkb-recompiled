@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Кориснички речник, текстуалне пречице и научене речи</string>
     <string name="reset_dialog_confirm">Врати</string>
     <string name="reset_done">Подразумеване вредности су враћене</string>
+    <string name="settings_voice_stop_on_pause_title">Заустави слушање при паузи</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Слушање се завршава после кратке паузе. Додирните микрофон да бисте га раније завршили.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Слушање се наставља током пауза док не додирнете микрофон или после пола минута тишине</string>
+    <string name="voice_status_listening_tap_to_stop">Слушање&#8230; Додирните микрофон да бисте зауставили</string>
 </resources>

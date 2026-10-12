@@ -881,4 +881,8 @@
     <string name="reset_part_words_summary">Uporabniški slovar, besedilne bližnjice in naučene besede</string>
     <string name="reset_dialog_confirm">Ponastavi</string>
     <string name="reset_done">Ponastavitev je končana</string>
+    <string name="settings_voice_stop_on_pause_title">Ustavi poslušanje ob premoru</string>
+    <string name="settings_voice_stop_on_pause_summary_on">Poslušanje se konča po kratkem premoru. Dotaknite se mikrofona, da ga končate prej.</string>
+    <string name="settings_voice_stop_on_pause_summary_off">Poslušanje se nadaljuje med premori, dokler se ne dotaknete mikrofona ali dokler ne mine pol minute tišine</string>
+    <string name="voice_status_listening_tap_to_stop">Poslušanje&#8230; Dotaknite se mikrofona za ustavitev</string>
 </resources>
