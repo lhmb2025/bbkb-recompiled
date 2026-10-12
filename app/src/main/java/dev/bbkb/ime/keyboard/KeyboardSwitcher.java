@@ -825,6 +825,15 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     private void setAlphabetKeyboard(int i) {
+        // No keyboard has been built yet, or it has been torn down: nothing to switch. A physical
+        // key can reach the shift-state machine before startInput() has run — the first key after
+        // an install or update cold-starts the keyboard process, and the key is delivered in the
+        // same breath as the field's first show request — and it dereferenced the null builder
+        // here (NPE on the KEY2, 2026-10-09). The requested shift mode is already recorded in
+        // keyboardState; startInput() builds the keyboard from it when the view comes up.
+        if (this.keyboardBuilder == null || this.blackberryIme == null) {
+            return;
+        }
         transitions().apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.ALPHABET));
         boolean zM4042U = this.blackberryIme.refreshOnScreenKeyboardShowing();
         if (!zM4042U && this.slideboardManager != null) {

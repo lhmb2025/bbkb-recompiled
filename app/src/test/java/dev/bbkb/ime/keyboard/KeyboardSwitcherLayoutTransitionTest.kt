@@ -16,6 +16,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
+import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -113,6 +114,23 @@ class KeyboardSwitcherLayoutTransitionTest {
         switcher.requestShiftOnce()
 
         verify(uim).hideKeyboardOnKeyboardStateChange()
+    }
+
+    /**
+     * Cold start: a physical key can drive the shift chain before startInput() has built a
+     * keyboard (the first key after an install or update starts the keyboard process, and lands
+     * together with the field's first show request). With no builder there is nothing to switch:
+     * the load is skipped rather than dereferencing it, and the board axis is not told anything.
+     */
+    @Test
+    fun aShiftRequestBeforeTheFirstStartInputIsIgnored() {
+        inject("keyboardBuilder", null)
+
+        switcher.requestAutomaticShift()
+        switcher.requestShiftOnce()
+
+        verify(uim, never()).hideKeyboardOnKeyboardStateChange()
+        verify(ime, never()).refreshOnScreenKeyboardShowing()
     }
 
     @Test
