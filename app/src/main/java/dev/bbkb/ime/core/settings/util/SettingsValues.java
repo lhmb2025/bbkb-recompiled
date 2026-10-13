@@ -454,7 +454,7 @@ public final class SettingsValues {
         this.shiftDoubleTapLock = sharedPreferences.getBoolean(context.getString(R.string.pref_shift_double_tap_lock_key), true);
         this.altDoubleTapLock = sharedPreferences.getBoolean(context.getString(R.string.pref_alt_double_tap_lock_key), true);
         this.showPkbModifierStatusIcon = sharedPreferences.getBoolean(context.getString(R.string.pref_show_pkb_modifier_status_icon_key), true);
-        this.pkbUsesActiveLanguageAlphabet = sharedPreferences.getBoolean(dev.bbkb.ime.core.keyevent.HardwareScriptLayouts.PREF_KEY, true);
+        this.pkbUsesActiveLanguageAlphabet = sharedPreferences.getBoolean(dev.bbkb.ime.core.layout.PhysicalKeyResolver.PREF_KEY, true);
         this.voiceInputUseInputLanguage = SettingsManager.isVoiceInputUseInputLanguage(sharedPreferences);
         this.voiceInputPreferOffline = SettingsManager.isVoiceInputPreferOffline(sharedPreferences);
         this.voiceInputShowPartialResults = SettingsManager.isVoiceInputShowPartialResults(sharedPreferences);
@@ -690,17 +690,18 @@ public final class SettingsValues {
     }
 
     /**
-     * Type-by-swiping on the touch keypad, for the current keyboard. Off on Chinese keyboards,
-     * off while the user's custom letter map changes what any letter key types (the swipe decoder
-     * reads the engine's own key geometry, so it would spell a swipe in the keypad's old letters),
-     * and off on a pad the engine has no key geometry for: the root KDB is the KEY2's pad, so a
-     * profile that declares its own {@code <touch-keypad>} (the Titans) needs a
-     * {@code <kdb-variant>} first. Evaluated per call, like the Chinese check, so a map switched
-     * on in settings or a change of keyboard takes effect the next time the keyboard asks.
+     * Type-by-swiping on the touch keypad, for the current keyboard. Off on Chinese keyboards and
+     * on a pad the engine has no key geometry for: the root KDB is the KEY2's pad, so a profile
+     * that declares its own {@code <touch-keypad>} (the Titans) needs a {@code <kdb-variant>}
+     * first. Evaluated per call, like the Chinese check, so a change of keyboard takes effect the
+     * next time the keyboard asks.
+     *
+     * <p>A custom letter layout no longer switches it off: the engine's key letters follow the
+     * active layout ({@code LetterLayoutEngineSync} registers KDBs rewritten from it), so a swipe
+     * is decoded in the letters the keys type.
      */
     public boolean isCkbGestureInputEnabledForLocale() {
         return this.isCkbGestureInputEnabled && !LocaleUtils.isCurrentSubtypeChinese()
-                && !dev.bbkb.ime.core.keyevent.HardwareScriptLayouts.userMapChangesLetters()
                 && DeviceProfile.current().isTouchKeypadSwipeTypingSupported();
     }
 

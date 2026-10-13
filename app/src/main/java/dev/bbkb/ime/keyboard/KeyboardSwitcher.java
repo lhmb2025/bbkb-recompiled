@@ -26,6 +26,7 @@ import dev.bbkb.ime.core.ime.InputView;
 import dev.bbkb.ime.core.KeyboardLayoutCallback;
 import dev.bbkb.ime.core.engine.NuanceSDKManager;
 import dev.bbkb.ime.core.locale.SubtypeManager;
+import dev.bbkb.ime.core.layout.PhysicalKeyResolver;
 import dev.bbkb.ime.core.keyevent.KeyCharacterInterpreter;
 import dev.bbkb.ime.core.keyevent.KeyCharacterResult;
 import dev.bbkb.ime.core.keyevent.ModifierResetReason;
@@ -34,7 +35,6 @@ import dev.bbkb.ime.keyboard.internal.KeyHintPosition;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
 import dev.bbkb.ime.core.textinput.InputMethodHelper;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
-import dev.bbkb.ime.core.keyevent.HardwareScriptLayouts;
 import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.core.shared.SystemProps;
@@ -1532,67 +1532,31 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return keyM6611d;
     }
 
+    /**
+     * What holding the physical key that typed {@code str} offers: the user's letter layout, then
+     * the built-in document for the keyboard's language, then the currency key's list
+     * ({@link PhysicalKeyResolver#moreKeys}). The same whichever keyboard is current: the on-screen,
+     * URL, password and symbol keyboards used to read copies of the tables of their own.
+     */
     @Override // dev.bbkb.ime.core.KeyboardLayoutCallback
     public String[] getMoreKeysForKey(String str) {
-        // A user letter map's long-press list for the key that typed this letter replaces the
-        // keyboard's own: it is what the user wrote for that key.
-        String[] userMoreKeys = HardwareScriptLayouts.userMoreKeysFor(str);
-        if (userMoreKeys != null) {
-            return userMoreKeys;
-        }
-        Keyboard c0965eM6834l = getCurrentKeyboard();
-        if (c0965eM6834l != null) {
-            return c0965eM6834l.getMultiTapAlternates(str);
-        }
-        return null;
+        return PhysicalKeyResolver.moreKeys(str);
     }
 
+    /**
+     * The double-tap sequence for {@code str}: the user's letter layout, then the built-in
+     * document's doubled keycaps (й/ё, щ/з) ({@link PhysicalKeyResolver#multitap}).
+     */
     @Override // dev.bbkb.ime.core.KeyboardLayoutCallback
     public String[] getMoreKeysForKeyByStyle(String str) {
-        // A user letter map's multitap list comes first. While the physical keys follow a script
-        // layout, its doubled keycaps (й/ё, щ/з) are the double-tap sequence; the pkbd_* multitap
-        // tables describe other keycap sets.
-        String[] alternates = HardwareScriptLayouts.alternatesFor(str);
-        if (alternates != null || HardwareScriptLayouts.isActive()) {
-            return alternates;
-        }
-        Keyboard pkb = physicalKeyboardForTables();
-        return pkb == null ? null : pkb.getMultiTapSequence(str);
-    }
-
-    /**
-     * The keyboard whose physical-key tables (`pkbd_*.xml`) apply: the physical-keyboard build of
-     * the current element when the current keyboard is an on-screen one, else the keyboard itself.
-     */
-    @Nullable
-    private Keyboard physicalKeyboardForTables() {
-        Keyboard c0965eM6834l = getCurrentKeyboard();
-        if (c0965eM6834l == null) {
-            return null;
-        }
-        if (c0965eM6834l.mId.mElementId < 100 && hasShiftedSymbolKeyboard()) {
-            return this.keyboardBuilder.getKeyboardInternal(c0965eM6834l.mId.mElementId, true);
-        }
-        return c0965eM6834l;
-    }
-
-    /**
-     * What Shift types on a physical key whose script has no upper case: the {@code
-     * characterMapKeys} legend of the key's {@code pkbd_*.xml} entry (ص→ض, Hebrew finals, Korean
-     * doubled consonants), or null when the table has none for {@code label}.
-     */
-    @Nullable
-    public String getPhysicalShiftLetter(String label) {
-        Keyboard pkb = physicalKeyboardForTables();
-        String[] keys = pkb == null ? null : pkb.getCharacterMapKeys(label);
-        return keys == null || keys.length == 0 ? null : keys[0];
+        return PhysicalKeyResolver.multitap(str);
     }
 
     /**
      * True while a symbol page is the current keyboard, so the physical letter keys mean symbols.
      * Not {@code wasSymbolEnteredFromAlphabet()}: that records how the last symbol page was
      * entered and stays set on the alphabet keyboard afterwards. False before the IME has
-     * initialised the switcher: the user letter-map tier asks this for any key its map names.
+     * initialised the switcher: the user letter-layout tier asks this for any key its layout names.
      */
     public boolean isPhysicalSymbolMappingActive() {
         return this.keyboardState != null && this.keyboardState.isInSymbolMode();

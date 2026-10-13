@@ -2,7 +2,9 @@ package dev.bbkb.ime.core.settings.backup
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.view.KeyEvent
 import androidx.test.core.app.ApplicationProvider
+import dev.bbkb.ime.core.layout.LetterLayoutXml
 import dev.bbkb.ime.core.settings.data.DictionaryEntry
 import dev.bbkb.ime.personaldictionary.macro.CustomMacro
 import org.json.JSONObject
@@ -63,12 +65,23 @@ class BackupBundleTest {
         learnedWords = listOf("keypad", "athena"),
     )
 
+    private fun letterLayoutXml(id: String = "swap", keySpec: String = "w") = """
+        <letter-layout version="1" id="$id" name="Swap">
+            <bind languages="en"/>
+            <key code="KEYCODE_Q" keySpec="$keySpec"/>
+        </letter-layout>
+    """.trimIndent()
+
+    private fun letterLayoutFile(id: String = "swap", xml: String = letterLayoutXml(id)) =
+        BackupBundle.LetterLayoutFile("$id.xml", xml.toByteArray())
+
     private fun fullContents() = BackupBundle.Contents(
         settingsJson = SettingsBackup.serialize(prefs, "5.0.0-test", 1, excludeKeys = LayoutsBundle.PREF_KEYS),
         macrosJson = MacrosBundle.serialize(listOf(CustomMacro("p", "Phone", "+1 555 0100", 1L))),
         deviceConfigs = listOf(BackupBundle.DeviceConfigFile("my-phone.xml", "<device-input-config/>".toByteArray())),
         layoutsJson = LayoutsBundle.serialize(layouts(), "5.0.0-test", 1),
         wordsJson = WordsBundle.serialize(words(), "5.0.0-test", 1),
+        letterLayouts = listOf(letterLayoutFile()),
     )
 
     private fun writeBytes(contents: BackupBundle.Contents): ByteArray {
@@ -106,6 +119,8 @@ class BackupBundleTest {
         assertEquals(listOf("★", "→"), layouts.palette)
         assertEquals("On my way!", layouts.quickPhrases!![0])
         assertEquals("€", layouts.currency)
+        assertEquals(listOf("swap"), bundle.letterLayouts.map { it.id })
+        assertEquals('w'.code, bundle.letterLayouts[0].key(KeyEvent.KEYCODE_Q, -1)!!.keySpec)
 
         val words = bundle.words!!
         assertEquals(2, words.dictionary!!.size)
@@ -122,6 +137,25 @@ class BackupBundleTest {
         assertNull(bundle.settings)
         assertNull(bundle.macros)
         assertTrue(bundle.deviceConfigs.isEmpty())
+        assertTrue(bundle.letterLayouts.isEmpty())
+    }
+
+    @Test
+    fun letterLayoutsAloneAreALayoutsBackup() {
+        val bundle = read(writeBytes(BackupBundle.Contents(letterLayouts = listOf(letterLayoutFile("a"), letterLayoutFile("b"))))).getOrThrow()
+        assertEquals(setOf(BackupBundle.Part.LAYOUTS), bundle.parts())
+        assertNull("no layouts file, so the editors are left alone", bundle.layouts)
+        assertEquals(listOf("a", "b"), bundle.letterLayouts.map { it.id })
+    }
+
+    @Test
+    fun aLetterLayoutRestoresUnderItsEntryName() {
+        // The entry name is the id, as the file name is on the phone; a document that names
+        // itself otherwise, or not at all, takes the entry's.
+        val renamed = letterLayoutFile("kept", xml = letterLayoutXml("other"))
+        val anonymous = letterLayoutFile("plain", xml = letterLayoutXml("x").replace(""" id="x"""", ""))
+        val bundle = read(writeBytes(BackupBundle.Contents(letterLayouts = listOf(renamed, anonymous)))).getOrThrow()
+        assertEquals(listOf("kept", "plain"), bundle.letterLayouts.map { it.id })
     }
 
     @Test
@@ -136,13 +170,31 @@ class BackupBundleTest {
         val entries = entriesOf(writeBytes(fullContents()))
         val manifest = JSONObject(String(entries.getValue(BackupBundle.MANIFEST)))
         assertEquals(BackupBundle.FORMAT, manifest.getString("format"))
+        assertEquals(2, manifest.getInt("version"))
         val listed = manifest.getJSONArray("parts")
         val paths = (0 until listed.length()).map { listed.getJSONObject(it).getString("path") }
         assertEquals(
-            listOf("settings.json", "macros.json", "device-configs/my-phone.xml", "layouts.json", "words.json"),
+            listOf("settings.json", "macros.json", "device-configs/my-phone.xml", "layouts.json",
+                "letter-layouts/swap.xml", "words.json"),
             paths,
         )
         assertEquals(64, listed.getJSONObject(0).getString("sha256").length)
+        val layoutPart = listed.getJSONObject(paths.indexOf("letter-layouts/swap.xml"))
+        assertEquals(entries.getValue("letter-layouts/swap.xml").size, layoutPart.getInt("bytes"))
+        assertEquals(64, layoutPart.getString("sha256").length)
+    }
+
+    @Test
+    fun aVersion1BundleStillReads() {
+        // Version 1 had no letter-layouts/ entries; everything else is the same.
+        val entries = entriesOf(writeBytes(fullContents().let {
+            BackupBundle.Contents(it.settingsJson, it.macrosJson, it.deviceConfigs, it.layoutsJson, it.wordsJson)
+        }))
+        val manifest = JSONObject(String(entries.getValue(BackupBundle.MANIFEST))).put("version", 1)
+        entries[BackupBundle.MANIFEST] = manifest.toString().toByteArray()
+        val bundle = read(zipOf(entries)).getOrThrow()
+        assertEquals(setOf(BackupBundle.Part.SETTINGS, BackupBundle.Part.LAYOUTS, BackupBundle.Part.WORDS), bundle.parts())
+        assertTrue(bundle.letterLayouts.isEmpty())
     }
 
     // ── refusals ─────────────────────────────────────────────────────────────
@@ -178,6 +230,41 @@ class BackupBundleTest {
         val nested = entriesOf(writeBytes(fullContents()))
         nested["device-configs/../../x.xml"] = "<a/>".toByteArray()
         assertTrue(read(zipOf(nested)).exceptionOrNull()!!.message!!.contains("unexpected entry"))
+
+        // A letter layout's entry is named by a layout id: lower case, no path.
+        for (name in listOf("letter-layouts/../x.xml", "letter-layouts/Swap.xml", "letter-layouts/a/b.xml", "letter-layouts/x.json")) {
+            val withLayout = entriesOf(writeBytes(fullContents()))
+            withLayout[name] = letterLayoutXml().toByteArray()
+            assertTrue(name, read(zipOf(withLayout)).exceptionOrNull()!!.message!!.contains("unexpected entry"))
+        }
+    }
+
+    @Test
+    fun aLetterLayoutThatDoesNotParseRefusesTheWholeFile() {
+        val contents = BackupBundle.Contents(
+            layoutsJson = LayoutsBundle.serialize(layouts(), "t", 1),
+            letterLayouts = listOf(letterLayoutFile("bad", xml = letterLayoutXml("bad", keySpec = "qu"))),
+        )
+        val failure = read(writeBytes(contents)).exceptionOrNull()
+        assertTrue(failure is BackupBundle.NotABackupException)
+        assertTrue(failure!!.message, failure.message!!.startsWith("letter-layouts/bad.xml:"))
+        assertTrue(failure.message, failure.message!!.contains("KEYCODE_Q.keySpec"))
+    }
+
+    @Test
+    fun tooManyLetterLayoutsAreRefused() {
+        val many = List(BackupBundle.MAX_LETTER_LAYOUTS + 1) { letterLayoutFile("l$it") }
+        val failure = read(writeBytes(BackupBundle.Contents(letterLayouts = many))).exceptionOrNull()
+        assertTrue(failure!!.message!!.contains("more than ${BackupBundle.MAX_LETTER_LAYOUTS} letter layouts"))
+        val most = List(BackupBundle.MAX_LETTER_LAYOUTS) { letterLayoutFile("l$it") }
+        assertEquals(BackupBundle.MAX_LETTER_LAYOUTS, read(writeBytes(BackupBundle.Contents(letterLayouts = most))).getOrThrow().letterLayouts.size)
+    }
+
+    @Test
+    fun anOversizedLetterLayoutEntryIsRefused() {
+        val big = letterLayoutXml() + "<!-- ${"x".repeat(LetterLayoutXml.MAX_BYTES)} -->"
+        val failure = read(writeBytes(BackupBundle.Contents(letterLayouts = listOf(letterLayoutFile(xml = big))))).exceptionOrNull()
+        assertTrue(failure!!.message!!.contains("larger than"))
     }
 
     @Test
@@ -238,6 +325,23 @@ class BackupBundleTest {
         val bundle = read(json.toByteArray()).getOrThrow()
         assertEquals(setOf(BackupBundle.Part.LAYOUTS), bundle.parts())
         assertEquals("€", bundle.layouts!!.currency)
+    }
+
+    @Test
+    fun aSingleLetterLayoutReadsAsALayoutsOnlyBundle() {
+        val bundle = read(("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + letterLayoutXml()).toByteArray()).getOrThrow()
+        assertFalse(bundle.origin.isBundle)
+        assertEquals(setOf(BackupBundle.Part.LAYOUTS), bundle.parts())
+        assertNull(bundle.layouts)
+        assertEquals(listOf("swap"), bundle.letterLayouts.map { it.id })
+
+        // Another XML document is not a backup, and says what it is instead.
+        val config = read("<device-input-config/>".toByteArray()).exceptionOrNull()
+        assertTrue(config is BackupBundle.NotABackupException)
+        assertTrue(config!!.message, config.message!!.contains("letter-layout"))
+        // Nor is a letter layout with a problem; the refusal names it.
+        val bad = read(letterLayoutXml(keySpec = "").toByteArray()).exceptionOrNull()
+        assertTrue(bad!!.message, bad.message!!.contains("KEYCODE_Q.keySpec"))
     }
 
     @Test

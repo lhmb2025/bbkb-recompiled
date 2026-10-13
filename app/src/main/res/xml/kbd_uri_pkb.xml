@@ -12,21 +12,4 @@
             <include latin:keyboardLayout="@xml/row_supplementaluri_pkb_3row"/>
         </case>
     </switch>
-    <switch>
-        <case latin:keyboardLayoutSet="arabic">
-            <include latin:keyboardLayout="@xml/pkbd_arabic"/>
-        </case>
-        <case latin:keyboardLayoutSet="east_slavic">
-            <include latin:keyboardLayout="@xml/pkbd_slavic"/>
-        </case>
-        <case latin:keyboardLayoutSet="hangul">
-            <include latin:keyboardLayout="@xml/pkbd_hangul"/>
-        </case>
-        <case latin:keyboardLayoutSet="translit">
-            <include latin:keyboardLayout="@xml/pkbd_slavic_translit"/>
-        </case>
-        <default>
-            <include latin:keyboardLayout="@xml/pkbd_latin"/>
-        </default>
-    </switch>
 </Keyboard>

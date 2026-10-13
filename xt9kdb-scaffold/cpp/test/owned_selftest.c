@@ -127,6 +127,39 @@ static void test_selection(unsigned char* xml, long n) {
     CHECK(st == ET9STATUS_NONE && MODEL->authoredHeight == 384,
           "variant->default did not reload root (h=%u)", MODEL->authoredHeight);
 
+    /* A letter layout's generated KDBs ("layout:<id>", LetterLayoutKdb). Two names that agree on
+     * their first 27 bytes must still select their own nodes — the old 24-byte field cut both to
+     * the same prefix — and re-registering the selected variant's bytes (the layout was edited)
+     * must reload on the next SetKdbNum without a change of variant. */
+    {
+        static const char LAYOUT_A[] = "layout:layout-0123456789ab-a";
+        static const char LAYOUT_B[] = "layout:layout-0123456789ab-b";
+        CHECK(xt9kdb_register_variant_kdb(LAYOUT_A, (const ET9U8*)VARIANT_XML,
+                                          (ET9U32)strlen(VARIANT_XML)) == 0, "layout A register failed");
+        CHECK(xt9kdb_register_variant_kdb(LAYOUT_B, xml, (ET9U32)n) == 0, "layout B register failed");
+        xt9kdb_set_requested_variant(LAYOUT_A);
+        st = xt9kdb_SetKdbNum(c, 0x609, 0);
+        CHECK(st == ET9STATUS_NONE && MODEL->keyCount == 2, "layout A not selected (keyCount=%u)", MODEL->keyCount);
+        xt9kdb_set_requested_variant(LAYOUT_B);
+        st = xt9kdb_SetKdbNum(c, 0x609, 0);
+        CHECK(st == ET9STATUS_NONE && MODEL->keyCount == 30, "layout B not selected (keyCount=%u)", MODEL->keyCount);
+        CHECK(xt9kdb_register_variant_kdb(LAYOUT_B, (const ET9U8*)VARIANT_XML,
+                                          (ET9U32)strlen(VARIANT_XML)) == 0, "layout B re-register failed");
+        st = xt9kdb_SetKdbNum(c, 0x609, 0);
+        CHECK(st == ET9STATUS_NONE && MODEL->keyCount == 2,
+              "re-registered layout B not reloaded (keyCount=%u)", MODEL->keyCount);
+
+        char name[XT9KDB_VARIANT_NAME_MAX + 1];
+        memset(name, 'x', sizeof(name));
+        name[XT9KDB_VARIANT_NAME_MAX] = 0;                     /* 80 characters: refused */
+        CHECK(xt9kdb_register_variant_kdb(name, (const ET9U8*)VARIANT_XML, (ET9U32)strlen(VARIANT_XML)) == -1,
+              "an over-long variant name was accepted");
+        name[XT9KDB_VARIANT_NAME_MAX - 1] = 0;                 /* 79: the longest that fits */
+        CHECK(xt9kdb_register_variant_kdb(name, (const ET9U8*)VARIANT_XML, (ET9U32)strlen(VARIANT_XML)) == 0,
+              "the longest variant name was refused");
+        xt9kdb_set_requested_variant(0);
+    }
+
     CHECK(xt9kdb_SetKdbNum(c, 0x60A, 0) == ET9STATUS_KDB_NOT_LOADED, "missing (pid,sid) not rejected");
 #undef MODEL
 }

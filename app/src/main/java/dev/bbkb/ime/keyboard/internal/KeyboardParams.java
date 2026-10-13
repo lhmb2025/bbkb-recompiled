@@ -112,8 +112,6 @@ public class KeyboardParams {
 
     public final KeyStylesSet mKeyStyles = new KeyStylesSet(this.mTextsSet);
 
-    public PhysicalKeySpecTable mPhysicalKeyboardRow = null;
-
     public int mMostCommonKeyHeight = 0;
 
     public int mMostCommonKeyWidth = 0;

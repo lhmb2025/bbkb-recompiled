@@ -1850,13 +1850,6 @@
     <public type="xml" name="keystyle_devanagari_vowel_sign_uu" id="0x7f1500ad" />
     <public type="xml" name="keystyle_devanagari_vowel_sign_vocalic_r" id="0x7f1500ae" />
     <public type="xml" name="method" id="0x7f1500af" />
-    <public type="xml" name="pkbd_arabic" id="0x7f1500b0" />
-    <public type="xml" name="pkbd_greek" id="0x7f1500b1" />
-    <public type="xml" name="pkbd_hangul" id="0x7f1500b2" />
-    <public type="xml" name="pkbd_hebrew" id="0x7f1500b3" />
-    <public type="xml" name="pkbd_latin" id="0x7f1500b4" />
-    <public type="xml" name="pkbd_slavic" id="0x7f1500b5" />
-    <public type="xml" name="pkbd_slavic_translit" id="0x7f1500b6" />
     <public type="xml" name="row_arrows" id="0x7f1500c5" />
     <public type="xml" name="row_password_keeper" id="0x7f1500c6" />
     <public type="xml" name="row_password_numbers" id="0x7f1500c7" />

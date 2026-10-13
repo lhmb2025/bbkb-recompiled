@@ -96,7 +96,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object TouchSurfaceHelper : SettingsRoute("touch_surface_helper", "Touch surface helper")
     object DeviceConfiguration : SettingsRoute("device_configuration", "Device Configuration")
     object DeviceProfileBuilder : SettingsRoute("device_profile_builder", "Build a device profile")
-    object CustomPhysicalLayouts : SettingsRoute("custom_physical_layouts", "Custom physical layouts")
+    object PhysicalLayouts : SettingsRoute("physical_layouts", "Physical layouts")
     object BackupRestore : SettingsRoute("backup_restore", "Backup and restore")
 
     /** Back-compat deep link onto the same page as [TouchFeedback]; nothing navigates here. */
@@ -167,7 +167,9 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 TouchSurfaceHelper.route -> TouchSurfaceHelper
                 DeviceConfiguration.route -> DeviceConfiguration
                 DeviceProfileBuilder.route -> DeviceProfileBuilder
-                CustomPhysicalLayouts.route -> CustomPhysicalLayouts
+                // The page listed only imported layouts, under this route, until the built-in
+                // ones joined it (2026-10).
+                PhysicalLayouts.route, "custom_physical_layouts" -> PhysicalLayouts
                 BackupRestore.route -> BackupRestore
                 KeyPressFeedback.route -> KeyPressFeedback
                 else -> null

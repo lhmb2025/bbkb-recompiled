@@ -1,5 +1,8 @@
 package dev.bbkb.ime.core.settings.backup
 
+import dev.bbkb.ime.core.layout.InvalidLetterLayoutException
+import dev.bbkb.ime.core.layout.LetterLayout
+import dev.bbkb.ime.core.layout.LetterLayoutXml
 import dev.bbkb.ime.personaldictionary.macro.CustomMacro
 import org.json.JSONArray
 import org.json.JSONException
@@ -29,8 +32,9 @@ import java.util.zip.ZipOutputStream
  * ├── settings.json          Settings  — the preferences (SettingsBackup), minus the layout keys
  * ├── macros.json            Settings  — custom macros (MacrosBundle)
  * ├── device-configs/<name>.xml   Settings  — custom device profiles, as imported
- * ├── layouts.json           Layouts   — symbol pages, palette, slideboard, phrases, currency,
- * │                                      physical letter maps (LayoutsBundle)
+ * ├── layouts.json           Layouts   — symbol pages, palette, slideboard, phrases, currency
+ * │                                      (LayoutsBundle)
+ * ├── letter-layouts/<id>.xml     Layouts   — the user's letter layouts (LetterLayoutXml)
  * └── words.json             Words     — personal dictionary, shortcuts, learned words (WordsBundle)
  * ```
  *
@@ -41,16 +45,19 @@ import java.util.zip.ZipOutputStream
  * ## Reading
  *
  * [read] takes either a bundle or one of the single documents the app used to write
- * (`bbkb-settings`, `bbkb-layouts`, a `bbkb-layout` letter map, `bbkb-words`), so a backup
- * saved by an earlier build still restores. Everything is validated before anything is applied:
- * the manifest must list every entry and each entry's size and SHA-256 must match it, entry names
- * must be the known ones (no paths, so a crafted zip cannot write outside its parts), and every
- * part must parse. A file that fails any of this changes nothing.
+ * (`bbkb-settings`, `bbkb-layouts`, `bbkb-words`), or one `letter-layout` XML document, so a
+ * backup saved by an earlier build still restores and a layout someone shared imports the same
+ * way. Everything is validated before anything is applied: the manifest must list every entry and
+ * each entry's size and SHA-256 must match it, entry names must be the known ones (no paths, so a
+ * crafted zip cannot write outside its parts), and every part must parse. A file that fails any
+ * of this changes nothing.
+ *
+ * Version 2 added the `letter-layouts/` entries; a version 1 bundle has none and reads as before.
  */
 object BackupBundle {
 
     const val FORMAT: String = "bbkb-backup"
-    const val VERSION: Int = 1
+    const val VERSION: Int = 2
     const val MIME_TYPE: String = "application/zip"
 
     const val MANIFEST: String = "manifest.json"
@@ -59,14 +66,19 @@ object BackupBundle {
     const val LAYOUTS: String = "layouts.json"
     const val WORDS: String = "words.json"
     const val DEVICE_CONFIG_DIR: String = "device-configs/"
+    const val LETTER_LAYOUT_DIR: String = "letter-layouts/"
 
     const val MAX_SETTINGS_BYTES: Int = 4 * 1024 * 1024
     const val MAX_DEVICE_CONFIG_BYTES: Int = 512 * 1024
     const val MAX_DEVICE_CONFIGS: Int = 32
+    const val MAX_LETTER_LAYOUTS: Int = 64
     /** Largest file [read] accepts, zip or single document. */
     const val MAX_TOTAL_BYTES: Long = 24L * 1024 * 1024
 
     private val DEVICE_CONFIG_NAME = Regex("[A-Za-z0-9][A-Za-z0-9._-]{0,99}\\.xml")
+
+    /** A layout's id (`LetterLayout.isValidId`) and `.xml`: the file name the registry gives it. */
+    private val LETTER_LAYOUT_NAME = Regex("[a-z0-9][a-z0-9._-]{0,63}\\.xml")
 
     /** The three things a backup can hold, as the user sees them. */
     enum class Part { SETTINGS, LAYOUTS, WORDS }
@@ -107,6 +119,9 @@ object BackupBundle {
     /** One custom device profile, as the file the user imported. */
     class DeviceConfigFile(val name: String, val xml: ByteArray)
 
+    /** One of the user's letter layouts, as the document `<id>.xml` the registry keeps it in. */
+    class LetterLayoutFile(val name: String, val xml: ByteArray)
+
     /** The phone a bundle was written on, for the restore summary. */
     class DeviceInfo(val manufacturer: String?, val model: String?)
 
@@ -120,6 +135,7 @@ object BackupBundle {
         val deviceConfigs: List<DeviceConfigFile> = emptyList(),
         val layoutsJson: String? = null,
         val wordsJson: String? = null,
+        val letterLayouts: List<LetterLayoutFile> = emptyList(),
     )
 
     /** The header of a bundle or single document: where it came from. */
@@ -140,9 +156,11 @@ object BackupBundle {
         val deviceConfigs: List<DeviceConfigFile> = emptyList(),
         val layouts: LayoutsBundle.Layouts? = null,
         val words: WordsBundle.Words? = null,
+        /** The user's letter layouts, each parsed; part of [Part.LAYOUTS]. */
+        val letterLayouts: List<LetterLayout> = emptyList(),
     ) {
         val hasSettings: Boolean get() = settings != null || macros != null || deviceConfigs.isNotEmpty()
-        val hasLayouts: Boolean get() = layouts != null
+        val hasLayouts: Boolean get() = layouts != null || letterLayouts.isNotEmpty()
         val hasWords: Boolean get() = words != null
 
         fun parts(): Set<Part> = buildSet {
@@ -186,6 +204,10 @@ object BackupBundle {
             entries[DEVICE_CONFIG_DIR + config.name] = config.xml
         }
         contents.layoutsJson?.let { entries[LAYOUTS] = it.toByteArray(Charsets.UTF_8) }
+        contents.letterLayouts.forEach { layout ->
+            require(LETTER_LAYOUT_NAME.matches(layout.name)) { "letter layout name ${layout.name}" }
+            entries[LETTER_LAYOUT_DIR + layout.name] = layout.xml
+        }
         contents.wordsJson?.let { entries[WORDS] = it.toByteArray(Charsets.UTF_8) }
 
         val manifest = JSONObject().apply {
@@ -299,6 +321,8 @@ object BackupBundle {
 
         val configNames = entries.keys.filter { it.startsWith(DEVICE_CONFIG_DIR) }
         if (configNames.size > MAX_DEVICE_CONFIGS) fail("more than $MAX_DEVICE_CONFIGS device profiles")
+        val layoutNames = entries.keys.filter { it.startsWith(LETTER_LAYOUT_DIR) }
+        if (layoutNames.size > MAX_LETTER_LAYOUTS) fail("more than $MAX_LETTER_LAYOUTS letter layouts")
 
         val bundle = Bundle(
             origin = Origin(
@@ -322,19 +346,43 @@ object BackupBundle {
             words = entries[WORDS]?.let { bytes ->
                 WordsBundle.parse(String(bytes, Charsets.UTF_8)).getOrElse { fail("$WORDS: ${it.message}") }
             },
+            letterLayouts = layoutNames.map { parseLetterLayout(it, entries.getValue(it)) },
         )
         if (bundle.parts().isEmpty()) fail("the backup is empty")
         return bundle
     }
 
     /**
-     * A single JSON document: the settings backup, layouts file or letter map an earlier build
-     * wrote, or a words document. Dispatched on its `format` header.
+     * One `letter-layouts/<id>.xml` entry. The entry name is the layout's id, as the file name is
+     * in the registry, so a layout restores under the name the backup listed it by.
+     */
+    private fun parseLetterLayout(path: String, bytes: ByteArray): LetterLayout {
+        val id = path.removePrefix(LETTER_LAYOUT_DIR).removeSuffix(LetterLayoutXml.FILE_SUFFIX)
+        val layout = try {
+            LetterLayoutXml.parse(bytes.inputStream()) { id }
+        } catch (e: InvalidLetterLayoutException) {
+            fail("$path: ${e.message}")
+        }
+        return if (layout.id == id) layout else layout.withId(id)
+    }
+
+    /**
+     * A single document: the settings backup or layouts file an earlier build wrote, or a words
+     * document, dispatched on its `format` header; or one letter layout, which is XML.
      */
     private fun readSingleDocument(input: InputStream): Bundle {
         val bytes = readCapped(input, MAX_SETTINGS_BYTES.coerceAtLeast(WordsBundle.MAX_BYTES))
             ?: fail("the file is larger than ${WordsBundle.MAX_BYTES / (1024 * 1024)} MB")
         val json = String(bytes, Charsets.UTF_8)
+        if (LetterLayoutXml.looksLikeXml(json)) {
+            val layout = try {
+                LetterLayoutXml.parse(bytes.inputStream())
+            } catch (e: InvalidLetterLayoutException) {
+                fail(e.message ?: "not a letter layout")
+            }
+            return Bundle(Origin(app = null, versionCode = 0, created = null, device = null, isBundle = false),
+                letterLayouts = listOf(layout))
+        }
         val root = try {
             JSONObject(json)
         } catch (e: JSONException) {
@@ -349,7 +397,7 @@ object BackupBundle {
         )
         return when (val format = root.optString("format")) {
             SettingsBackup.FORMAT -> Bundle(origin, settings = parseSettings(json))
-            LayoutsBundle.FORMAT, "bbkb-layout" -> Bundle(origin, layouts = parseLayouts(json, "the file"))
+            LayoutsBundle.FORMAT -> Bundle(origin, layouts = parseLayouts(json, "the file"))
             WordsBundle.FORMAT -> Bundle(origin, words = WordsBundle.parse(json).getOrElse { fail(it.message ?: "not a words file") })
             else -> fail("format is \"$format\": not a BBKB backup")
         }
@@ -358,15 +406,17 @@ object BackupBundle {
     private fun parseSettings(json: String): SettingsBackup.Backup =
         SettingsBackup.parse(json).getOrElse { fail("$SETTINGS: ${it.message}") }
 
+    /** `layouts.json`, which is always the JSON bundle: a letter layout travels as its own entry. */
     private fun parseLayouts(json: String, where: String): LayoutsBundle.Layouts =
         when (val parsed = LayoutsBundle.parse(json).getOrElse { fail("$where: ${it.message}") }) {
             is LayoutsBundle.Import.Bundle -> parsed.layouts
-            is LayoutsBundle.Import.LetterMap -> LayoutsBundle.Layouts(pkbLetterMaps = listOf(parsed.map))
+            is LayoutsBundle.Import.LetterMap -> fail("$where: a letter layout, where the layouts file belongs")
         }
 
     private fun isKnownEntry(name: String): Boolean = when {
         name == MANIFEST || name == SETTINGS || name == MACROS || name == LAYOUTS || name == WORDS -> true
         name.startsWith(DEVICE_CONFIG_DIR) -> DEVICE_CONFIG_NAME.matches(name.removePrefix(DEVICE_CONFIG_DIR))
+        name.startsWith(LETTER_LAYOUT_DIR) -> LETTER_LAYOUT_NAME.matches(name.removePrefix(LETTER_LAYOUT_DIR))
         else -> false
     }
 
@@ -376,6 +426,7 @@ object BackupBundle {
         name == MACROS -> MacrosBundle.MAX_BYTES
         name == LAYOUTS -> LayoutsBundle.MAX_BYTES
         name == WORDS -> WordsBundle.MAX_BYTES
+        name.startsWith(LETTER_LAYOUT_DIR) -> LetterLayoutXml.MAX_BYTES
         else -> MAX_DEVICE_CONFIG_BYTES
     }
 

@@ -2,8 +2,8 @@ package dev.bbkb.ime.core.settings.backup
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import dev.bbkb.ime.core.keyevent.UserLetterMap
-import dev.bbkb.ime.core.keyevent.UserLetterMapRepository
+import dev.bbkb.ime.core.layout.LetterLayoutRegistry
+import dev.bbkb.ime.core.layout.LetterLayoutXml
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.data.CustomSymbolRepository
 import dev.bbkb.ime.core.settings.screens.keyeditor.EMPTY_SLOT
@@ -56,7 +56,7 @@ class LayoutsBundleTest {
     @Before
     fun clear() {
         prefs.edit().clear().commit()
-        UserLetterMapRepository.directoryOf(context).deleteRecursively()
+        LetterLayoutRegistry.directoryOf(context).deleteRecursively()
     }
 
     @After
@@ -72,7 +72,7 @@ class LayoutsBundleTest {
     }
 
     private fun export(): String = LayoutsBundle.serialize(
-        LayoutsBundle.capture(context, UserLetterMapRepository(context).list()),
+        LayoutsBundle.capture(context),
         appVersion = "5.0.0-beta.24",
         versionCode = 1437,
     )
@@ -82,10 +82,13 @@ class LayoutsBundleTest {
 
     private fun strings(array: JSONArray) = (0 until array.length()).map { array.optString(it) }
 
-    private val letterMap = """
-        {"format": "bbkb-layout", "version": 1, "kind": "pkb", "id": "swap", "name": "Swap",
-         "bind": {"locales": [], "keypadLayout": "qwerty"},
-         "keys": {"KEYCODE_Q": {"base": "w"}, "KEYCODE_W": {"base": "q"}}}
+    private val letterLayout = """
+        <?xml version="1.0" encoding="utf-8"?>
+        <letter-layout version="1" id="swap" name="Swap">
+            <bind keypad="qwerty"/>
+            <key code="KEYCODE_Q" keySpec="w"/>
+            <key code="KEYCODE_W" keySpec="q"/>
+        </letter-layout>
     """.trimIndent()
 
     // ── export: editor order ─────────────────────────────────────────────────
@@ -125,7 +128,7 @@ class LayoutsBundleTest {
         assertTrue("an unset phrase is null, so the translated default survives", phrases.isNull(0))
         assertEquals("On my way", phrases.getString(1))
         assertEquals("€", json.getString("currency"))
-        assertFalse("no letter maps, no section", json.has("pkbLetterMaps"))
+        assertFalse("letter layouts travel as their own files", json.has("pkbLetterMaps"))
     }
 
     @Test
@@ -223,38 +226,38 @@ class LayoutsBundleTest {
     }
 
     @Test
-    fun letterMapsTravelInTheBundle() {
-        val repository = UserLetterMapRepository(context)
-        repository.save(UserLetterMap.parse(letterMap))
-        val json = export()
-        assertEquals(1, JSONObject(json).getJSONArray("pkbLetterMaps").length())
+    fun letterLayoutsStayOutOfTheLayoutsFile() {
+        LetterLayoutRegistry(context).save(LetterLayoutXml.parse(letterLayout))
+        val json = JSONObject(export())
+        assertFalse(json.has("pkbLetterMaps"))
+        assertTrue(json.keys().asSequence().none { it.contains("etter") })
+    }
 
-        UserLetterMapRepository.directoryOf(context).deleteRecursively()
-        val layouts = bundleOf(json)
-        LayoutsBundle.saveLetterMaps(repository, layouts.pkbLetterMaps)
-        val back = repository.get("swap")!!
-        assertEquals("Swap", back.name)
-        assertEquals('w'.code, back.key(android.view.KeyEvent.KEYCODE_Q, -1)!!.base)
-        assertEquals("importing never switches a map on", "", repository.activeId)
+    @Test
+    fun anOldLetterMapsSectionIsReadPastNotRefused() {
+        // Builds before the XML layouts kept letter maps in the file; that format never shipped,
+        // so its section is skipped and the rest of the file still restores.
+        val json = base().put("currency", "€")
+            .put("pkbLetterMaps", JSONArray().put(JSONObject().put("format", "bbkb-layout"))).toString()
+        assertEquals("€", bundleOf(json).currency)
+        // A file that held nothing else holds nothing this build reads.
+        assertRefused(base().put("pkbLetterMaps", JSONArray()).toString(), "holds no layouts")
     }
 
     // ── one import row, two kinds of file ────────────────────────────────────
 
     @Test
-    fun aSingleLetterMapIsRecognisedByItsFormat() {
-        val parsed = LayoutsBundle.parse(letterMap).getOrThrow()
+    fun aSingleLetterLayoutIsRecognisedAsXml() {
+        val parsed = LayoutsBundle.parse(letterLayout).getOrThrow()
         assertTrue(parsed is LayoutsBundle.Import.LetterMap)
-        assertEquals("swap", (parsed as LayoutsBundle.Import.LetterMap).map.id)
-    }
-
-    @Test
-    fun aBundleOfOnlyLetterMapsHasNoEditorSections() {
-        val json = JSONObject().put("format", "bbkb-layouts").put("version", 1)
-            .put("pkbLetterMaps", JSONArray().put(JSONObject(letterMap))).toString()
-        val layouts = bundleOf(json)
-        assertFalse(layouts.hasEditorSections)
-        assertEquals(1, layouts.pkbLetterMaps.size)
-        assertEquals(0, LayoutsBundle.applyEditors(context, layouts))
+        val layout = (parsed as LayoutsBundle.Import.LetterMap).layout
+        assertEquals("swap", layout.id)
+        assertEquals('w'.code, layout.key(android.view.KeyEvent.KEYCODE_Q, -1)!!.keySpec)
+        // A byte-order mark, or white space before a document with no XML declaration, does not
+        // hide it. (White space before a declaration is not well-formed XML, and is refused.)
+        assertTrue(LayoutsBundle.parse("\uFEFF$letterLayout").getOrThrow() is LayoutsBundle.Import.LetterMap)
+        val undeclared = letterLayout.substringAfter("?>")
+        assertTrue(LayoutsBundle.parse("\n  $undeclared").getOrThrow() is LayoutsBundle.Import.LetterMap)
     }
 
     // ── refusals ─────────────────────────────────────────────────────────────
@@ -307,13 +310,12 @@ class LayoutsBundleTest {
     }
 
     @Test
-    fun refusesABadLetterMapInsideABundleAndSaysWhichOne() {
-        val bad = JSONObject(letterMap).apply { getJSONObject("keys").put("KEYCODE_SPACE", JSONObject().put("base", "x")) }
-        assertRefused(base().put("pkbLetterMaps", JSONArray().put(JSONObject(letterMap)).put(bad)).toString(), "pkbLetterMaps[1]", "KEYCODE_SPACE")
-        assertRefused(base().put("pkbLetterMaps", JSONArray().put(JSONObject(letterMap)).put(JSONObject(letterMap))).toString(), "two layouts", "swap")
-        assertRefused(base().put("pkbLetterMaps", JSONArray().put("swap")).toString(), "pkbLetterMaps[0]", "object")
-        // And a single map with a problem is refused with the map's own reason.
-        assertRefused(JSONObject(letterMap).put("kind", "vkb").toString(), "kind")
+    fun refusesABadLetterLayoutWithItsOwnReason() {
+        assertRefused(letterLayout.replace("KEYCODE_W", "KEYCODE_ZERO"), "KEYCODE_ZERO")
+        assertRefused(letterLayout.replace("""keySpec="q"""", """keySpec="qu""""), "KEYCODE_W.keySpec")
+        // The JSON letter maps of earlier builds are not layouts files.
+        val oldMap = JSONObject().put("format", "bbkb-layout").put("version", 1).put("kind", "pkb").toString()
+        assertRefused(oldMap, "format", "bbkb-layout")
     }
 
     @Test
@@ -322,10 +324,10 @@ class LayoutsBundleTest {
         val read = LayoutsBundle.readCapped(huge.byteInputStream())
         assertEquals(LayoutsBundle.MAX_BYTES + 1, read.toByteArray(Charsets.UTF_8).size)
         assertRefused(read, "larger than")
-        // A single letter map has the smaller cap.
-        val bigMap = JSONObject(letterMap).put("name", "big").toString()
-            .replace("\"big\"", "\"big\", \"pad\": \"${"x".repeat(UserLetterMap.MAX_BYTES)}\"")
-        assertRefused(bigMap, "larger than")
+        // A single letter layout has the smaller cap.
+        val bigLayout = letterLayout + "<!-- ${"x".repeat(LetterLayoutXml.MAX_BYTES)} -->"
+        assertTrue(bigLayout.length < LayoutsBundle.MAX_BYTES)
+        assertRefused(bigLayout, "larger than")
     }
 
     @Test

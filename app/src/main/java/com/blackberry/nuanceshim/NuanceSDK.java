@@ -980,10 +980,13 @@ public class NuanceSDK {
      * KDB registry: the athena override could never win because the PKB branch was never selected.
      */
     public boolean syncKeyboardLayout(boolean z, String str, int i, int i2) {
+        final boolean isPkb = !z;   // engine wants isPkb; callers hand us isTouchKb
+        // A change of keyboard can change whether the active letter layout's KDBs apply; any
+        // switch it queues is on the registration thread awaited just below.
+        dev.bbkb.ime.core.layout.LetterLayoutEngineSync.beforeEngineLayoutSync(isPkb);
         // Device KDB variants register on a worker; make sure the registry is populated
         // before the engine's first SetKdbNum. No-op once registration has completed.
         Xt9KdbVariant.awaitReady(2000);
-        final boolean isPkb = !z;   // engine wants isPkb; callers hand us isTouchKb
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: isTouchKb=" + z + " locale='" + str + "' width=" + i + " height=" + i2 + " kdbVariant='" + Xt9KdbVariant.applied() + "'");
         sDbgKbZ = z; sDbgKbStr = str;   // remember for the RE re-parse trigger
         synchronized (sMutex) {

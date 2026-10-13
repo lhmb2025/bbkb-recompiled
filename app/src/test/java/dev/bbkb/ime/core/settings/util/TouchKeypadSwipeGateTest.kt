@@ -7,8 +7,7 @@ import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser
 import dev.bbkb.ime.core.device.profile.DeviceCapabilities
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.device.profile.DeviceProfileTestSupport
-import dev.bbkb.ime.core.keyevent.HardwareScriptLayouts
-import dev.bbkb.ime.core.keyevent.UserLetterMap
+import dev.bbkb.ime.core.layout.PhysicalKeyResolver
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.textinput.connection.EditorCapabilities
 import org.junit.After
@@ -25,14 +24,15 @@ import java.util.Locale
  * The touch-keypad swipe-typing gate's device term: `SettingsValues.isCkbGestureInputEnabledForLocale`
  * is off on a pad the engine has no key geometry for — a profile that declares its own
  * `<touch-keypad>` (the Titans) and no `<kdb-variant>` — and unchanged everywhere else, the KEY2
- * included. Same set-up as [CustomLayoutSwipeGateTest], which holds the other AND terms.
+ * included. Same set-up as [CustomLayoutSwipeGateTest], which shows that a custom letter layout
+ * is no longer one of the terms; no layout is active here, so only the device decides.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class TouchKeypadSwipeGateTest {
 
     private lateinit var context: Context
-    private lateinit var savedMapSource: () -> UserLetterMap?
+    private lateinit var saved: PhysicalKeyResolver.Snapshot
 
     @Before
     fun setUp() {
@@ -41,13 +41,13 @@ class TouchKeypadSwipeGateTest {
         DeviceProfile.clearPendingInitForTest()
         DeviceProfile.initialize(null)
         SettingsManager.initialize(context)
-        savedMapSource = HardwareScriptLayouts.userMapSource
-        HardwareScriptLayouts.userMapSource = { null }
+        saved = PhysicalKeyResolver.Snapshot()
+        PhysicalKeyResolver.userLayoutSource = { null }
     }
 
     @After
     fun tearDown() {
-        HardwareScriptLayouts.userMapSource = savedMapSource
+        saved.restore()
         val manager = SettingsManager.getInstance()
         runCatching { manager.unregisteredListener() }
         listOf("settingsValues", "sharedPreferences", "deviceProfile", "listeners").forEach {

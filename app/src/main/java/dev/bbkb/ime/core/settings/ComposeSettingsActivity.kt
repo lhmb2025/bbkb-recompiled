@@ -37,7 +37,7 @@ import dev.bbkb.ime.core.settings.screens.DeviceConfigurationScreen
 import dev.bbkb.ime.core.settings.screens.DeviceProfileBuilderScreen
 import dev.bbkb.ime.core.settings.screens.PhysicalKeyboardScreen
 import dev.bbkb.ime.core.settings.screens.BackupRestoreScreen
-import dev.bbkb.ime.core.settings.screens.CustomPhysicalLayoutsScreen
+import dev.bbkb.ime.core.settings.screens.PhysicalLayoutsScreen
 import dev.bbkb.ime.core.settings.screens.PredictionsSuggestionsScreen
 import dev.bbkb.ime.core.settings.screens.QuickPhrasesScreen
 import dev.bbkb.ime.core.settings.screens.ShakeGesturesScreen
@@ -256,15 +256,15 @@ fun SettingsNavHost(
         composable(SettingsRoute.PhysicalKeyboard.route) {
             PhysicalKeyboardScreen(
                 onNavigateToCkbGestures = go(SettingsRoute.CkbGestures),
-                onNavigateToCustomLayouts = go(SettingsRoute.CustomPhysicalLayouts),
+                onNavigateToPhysicalLayouts = go(SettingsRoute.PhysicalLayouts),
                 onNavigateToTouchSurfaceHelper = go(SettingsRoute.TouchSurfaceHelper),
                 onNavigateBack = back
             )
         }
 
-        // Custom physical layouts — imported letter maps for the physical keys
-        composable(SettingsRoute.CustomPhysicalLayouts.route) {
-            CustomPhysicalLayoutsScreen(
+        // Physical layouts — the built-in and imported letter layouts for the physical keys
+        composable(SettingsRoute.PhysicalLayouts.route) {
+            PhysicalLayoutsScreen(
                 onNavigateBack = back
             )
         }

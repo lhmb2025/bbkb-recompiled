@@ -6,7 +6,8 @@ import android.os.Build
 import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser
 import dev.bbkb.ime.core.engine.NuanceSDKManager
-import dev.bbkb.ime.core.keyevent.UserLetterMapRepository
+import dev.bbkb.ime.core.layout.LetterLayoutRegistry
+import dev.bbkb.ime.core.layout.LetterLayoutXml
 import dev.bbkb.ime.core.locale.SubtypeManager
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.data.DictionaryEntry
@@ -34,7 +35,7 @@ import java.util.Locale
  *
  * ## Restore order
  *
- * Device profiles and letter maps (files) first, so a failure there leaves the preferences
+ * Device profiles and letter layouts (files) first, so a failure there leaves the preferences
  * untouched; then settings and macros; then the layout editors on the main thread, because
  * writing them clears `KeyboardBuilder`'s cache, which the keyboard reads on the main thread;
  * then the dictionary through [DictionaryRepository] (never by copying its files, which the
@@ -59,14 +60,14 @@ object BackupOperations {
         var macros: Int = 0
         var deviceConfigs: Int = 0
         var layoutSections: Int = 0
-        var letterMaps: Int = 0
+        var letterLayouts: Int = 0
         var dictionaryAdded: Int = 0
         var learnedAdded: Int = 0
         /** The bundle carried learned words but the engine was not running to take them. */
         var learnedSkipped: Boolean = false
 
         val restoredSettings: Boolean get() = settings > 0 || macros > 0 || deviceConfigs > 0
-        val restoredLayouts: Boolean get() = layoutSections > 0 || letterMaps > 0
+        val restoredLayouts: Boolean get() = layoutSections > 0 || letterLayouts > 0
         val restoredWords: Boolean get() = dictionaryAdded > 0 || learnedAdded > 0
     }
 
@@ -100,9 +101,9 @@ object BackupOperations {
             } else null
             val deviceConfigs = if (selection.settings) captureDeviceConfigs(app) else emptyList()
             val layoutsJson = if (selection.layouts) {
-                val layouts = LayoutsBundle.capture(app, UserLetterMapRepository(app).list())
-                LayoutsBundle.serialize(layouts, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
+                LayoutsBundle.serialize(LayoutsBundle.capture(app), BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
             } else null
+            val letterLayouts = if (selection.layouts) captureLetterLayouts(app) else emptyList()
             val wordsJson = if (selection.words) {
                 val words = WordsBundle.Words(
                     dictionary = dictionaryEntries(app),
@@ -110,8 +111,31 @@ object BackupOperations {
                 )
                 WordsBundle.serialize(words, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
             } else null
-            BackupBundle.Contents(settingsJson, macrosJson, deviceConfigs, layoutsJson, wordsJson)
+            BackupBundle.Contents(
+                settingsJson = settingsJson,
+                macrosJson = macrosJson,
+                deviceConfigs = deviceConfigs,
+                layoutsJson = layoutsJson,
+                wordsJson = wordsJson,
+                letterLayouts = letterLayouts,
+            )
         }
+
+    /**
+     * The user's letter layouts, each written out afresh from its parsed form rather than copied:
+     * a file that no longer parses is skipped by the registry, and copying it would make the
+     * whole backup one the reader refuses.
+     */
+    private fun captureLetterLayouts(context: Context): List<BackupBundle.LetterLayoutFile> =
+        LetterLayoutRegistry(context).list()
+            .sortedBy { it.id }
+            .take(BackupBundle.MAX_LETTER_LAYOUTS)
+            .map { layout ->
+                BackupBundle.LetterLayoutFile(
+                    layout.id + LetterLayoutXml.FILE_SUFFIX,
+                    LetterLayoutXml.serialize(layout).toByteArray(Charsets.UTF_8),
+                )
+            }
 
     private fun captureDeviceConfigs(context: Context): List<BackupBundle.DeviceConfigFile> {
         val dir = File(context.filesDir, DEVICE_CONFIG_DIR)
@@ -239,11 +263,12 @@ object BackupOperations {
             if (wanted.settings) {
                 report.deviceConfigs = restoreDeviceConfigs(app, bundle.deviceConfigs)
             }
-            if (wanted.layouts) {
-                bundle.layouts?.let { layouts ->
-                    LayoutsBundle.saveLetterMaps(UserLetterMapRepository(app), layouts.pkbLetterMaps)
-                    report.letterMaps = layouts.pkbLetterMaps.size
-                }
+            if (wanted.layouts && bundle.letterLayouts.isNotEmpty()) {
+                // Added or replaced by id, never switched on: the active layout stays the user's
+                // choice on this phone.
+                val registry = LetterLayoutRegistry(app)
+                bundle.letterLayouts.forEach { registry.save(it) }
+                report.letterLayouts = bundle.letterLayouts.size
             }
             if (wanted.settings) {
                 bundle.settings?.let {
@@ -347,7 +372,7 @@ object BackupOperations {
 
     /**
      * Puts the selected parts back to a fresh install's state. Settings: every preference that is
-     * not a layout key, plus the macros. Layouts: the editor sections and every letter map. Words:
+     * not a layout key, plus the macros. Layouts: the editor sections and every letter layout. Words:
      * the whole dictionary and the engine's learned-word model.
      */
     suspend fun reset(context: Context, selection: BackupBundle.Selection) {
@@ -366,9 +391,9 @@ object BackupOperations {
         }
         if (selection.layouts) {
             withContext(Dispatchers.IO) {
-                val repository = UserLetterMapRepository(app)
-                repository.list().forEach { repository.delete(it.id) }
-                repository.activeId = ""
+                val registry = LetterLayoutRegistry(app)
+                registry.list().forEach { registry.delete(it.id) }
+                registry.activeId = ""
             }
             withContext(Dispatchers.Main) { LayoutsBundle.resetEditors(app) }
         }

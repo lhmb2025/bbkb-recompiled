@@ -6,6 +6,7 @@ import dev.bbkb.ime.core.shared.WeakOwnerHandler;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
 import dev.bbkb.ime.core.BlackBerryIME;
 import dev.bbkb.ime.core.KeyboardLayoutCallback;
+import dev.bbkb.ime.core.layout.PhysicalKeyResolver;
 
 public final class MultitapEventHandler extends WeakOwnerHandler<BlackBerryIME> implements KeyCharacterInterpreter {
 
@@ -142,12 +143,12 @@ public final class MultitapEventHandler extends WeakOwnerHandler<BlackBerryIME> 
             // ALT_DOT FIX: getUnicodeChar() can return COMBINING_ACCENT (0x80000000) ORed
             // with an accent code point (e.g. 0x800000B4 = dead acute accent). Strip the
             // flag to get the real character; return null if nothing usable remains.
-            // The active keyboard's alphabet comes first: on an Arabic or Russian keyboard the
-            // multitap base is the script letter, and its sequence comes from the same layout.
-            // Under Alt, a user letter map's Alt character outranks the system key map's.
-            int rawUnicode = HardwareScriptLayouts.letterFor(keyEvent, i);
+            // The letter layouts come first: on an Arabic or Russian keyboard the multitap base is
+            // the script letter, and its sequence comes from the same document. Under Alt, a
+            // letter layout's Alt character outranks the system key map's.
+            int rawUnicode = PhysicalKeyResolver.letter(keyEvent, i);
             if (rawUnicode == 0) {
-                rawUnicode = HardwareScriptLayouts.userAltForEvent(keyEvent, i);
+                rawUnicode = PhysicalKeyResolver.altFor(keyEvent, i);
             }
             if (rawUnicode == 0) {
                 rawUnicode = keyEvent.getUnicodeChar(i);

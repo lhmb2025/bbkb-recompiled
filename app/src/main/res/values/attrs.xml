@@ -964,13 +964,6 @@
         <attr name="styleName" />
     </declare-styleable>
 
-    <declare-styleable name="Keyboard_PhysicalKey">
-        <attr name="characterMapKeys" />
-        <attr name="keySpec" />
-        <attr name="moreKeys" />
-        <attr name="multitapKeys" />
-    </declare-styleable>
-
     <declare-styleable name="KeyboardTheme">
         <attr name="emojiPalettesViewStyle" />
         <attr name="keyboardStyle" />

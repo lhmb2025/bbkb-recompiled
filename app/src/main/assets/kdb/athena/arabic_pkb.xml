@@ -3,9 +3,10 @@
 <!-- arabic_pkb keyboard layout
 PID: ET9PLIDArabic
 SID: ET9SKIDPhonePad -->
-<!-- Doubled keycaps (Q: ص ض, A: س ش) list the UNSHIFTED letter first: the physical-key
-     alphabet map (HardwareScriptLayout) reads the first code as the key's letter and the
-     rest as its Shift / double-tap legends, matching pkbd_arabic.xml (keySpec ص, characterMapKeys ض). -->
+<!-- Doubled keycaps (Q: ص ض, A: س ش) list the UNSHIFTED letter first: the letter-layout
+     generator (xt9kdb-scaffold/tools/letter_layouts_gen.py) reads the first code as the key's
+     letter and the rest as its Shift / double-tap legends, matching the Arabic letter layout
+     (letter-layouts/ar.xml: keySpec ص, characterMapKeys ض). -->
 <!-- ATHENA variant (BlackBerry KEY2) — GENERATED from the root layout of the same name.
 UNEVEN ROW BANDS: the capacitive sensor (1080x525) allocates uneven per-row bands, not even rows:
   row1 sensor 0..90 (90px) | row2 90..270 (180px) | row3 270..450 (180px)

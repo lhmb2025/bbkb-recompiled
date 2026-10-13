@@ -54,7 +54,7 @@ import dev.bbkb.ime.personaldictionary.OneTapAddWord
 import dev.bbkb.ime.core.gesture.MultiPointerGestureDetector
 import dev.bbkb.ime.core.gesture.ShakeGestureHandler
 import dev.bbkb.ime.core.keyevent.CompositeKeyCharacterInterpreter
-import dev.bbkb.ime.core.keyevent.HardwareScriptLayouts
+import dev.bbkb.ime.core.layout.PhysicalKeyResolver
 import dev.bbkb.ime.core.keyevent.InputEvent
 import dev.bbkb.ime.core.keyevent.InputEventContext
 import dev.bbkb.ime.core.keyevent.KeyEventConverter
@@ -455,7 +455,10 @@ class BlackBerryIME : InputMethodService(),
         var t = StartupTiming.begin()
         SettingsManager.initialize(applicationContext)
         StartupTiming.end("ime.onCreate.settingsManagerInitialize", t)
-        HardwareScriptLayouts.init(applicationContext)
+        PhysicalKeyResolver.init(applicationContext)
+        // The engine's key letters follow the active letter layout; off the main thread, and
+        // decided again once the device profile has applied its KDB variant.
+        startupExecutor.execute { dev.bbkb.ime.core.layout.LetterLayoutEngineSync.start(applicationContext) }
         settingsManager.addOnSettingsChangeListener(this)
         t = StartupTiming.begin()
         KeyboardSwitcher.initialize(this, uiCoordinator)

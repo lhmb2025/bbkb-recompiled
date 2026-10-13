@@ -15,7 +15,7 @@ import dev.bbkb.ime.core.suggestion.SuggestedWords;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
-import dev.bbkb.ime.core.keyevent.HardwareScriptLayouts;
+import dev.bbkb.ime.core.layout.PhysicalKeyResolver;
 import dev.bbkb.ime.core.keyevent.InputSource;
 import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.keyboard.Keyboard;
@@ -779,8 +779,8 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
             holdBaseChar = getBaseCharacterForEvent(event);
             // On a keyboard with its own alphabet the held key's "capital" is its Shift letter
             // (Й, or ض on the ص key), not the upper case of the Latin letter the system reports.
-            holdOnScriptLayout = HardwareScriptLayouts.letterFor(event, 0) != 0;
-            int heldLetter = holdOnScriptLayout ? HardwareScriptLayouts.heldLetterFor(event) : 0;
+            holdOnScriptLayout = PhysicalKeyResolver.letter(event, 0) != 0;
+            int heldLetter = holdOnScriptLayout ? PhysicalKeyResolver.heldLetter(event) : 0;
             holdShiftChar = heldLetter != 0 ? new String(Character.toChars(heldLetter)) : null;
 
             return false; // Don't consume first press — base char committed by normal IME flow
@@ -1125,9 +1125,9 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
             }
         }
         
-        // The active keyboard's alphabet first: the long-press tables for Arabic, Cyrillic, Hebrew,
-        // Greek and Korean are keyed by that letter, and the system key map says "q".
-        int scriptLetter = HardwareScriptLayouts.letterFor(event, metaState);
+        // The letter layouts first: the long-press lists for Arabic, Cyrillic, Hebrew, Greek and
+        // Korean are found by that letter, and the system key map says "q".
+        int scriptLetter = PhysicalKeyResolver.letter(event, metaState);
         if (scriptLetter != 0) {
             return new String(Character.toChars(scriptLetter));
         }

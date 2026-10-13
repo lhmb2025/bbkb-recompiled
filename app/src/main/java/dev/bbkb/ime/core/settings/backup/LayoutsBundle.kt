@@ -1,9 +1,9 @@
 package dev.bbkb.ime.core.settings.backup
 
 import android.content.Context
-import dev.bbkb.ime.core.keyevent.InvalidLetterMapException
-import dev.bbkb.ime.core.keyevent.UserLetterMap
-import dev.bbkb.ime.core.keyevent.UserLetterMapRepository
+import dev.bbkb.ime.core.layout.InvalidLetterLayoutException
+import dev.bbkb.ime.core.layout.LetterLayout
+import dev.bbkb.ime.core.layout.LetterLayoutXml
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.data.CustomSymbolRepository
 import dev.bbkb.ime.core.settings.screens.QUICK_PHRASE_KEYS
@@ -24,9 +24,11 @@ import java.util.TimeZone
 
 /**
  * The user's layouts as one JSON file, and reading one back: the two symbol pages, the custom
- * palette, the slideboard keypad, the quick phrases, the currency key and any imported physical
- * letter maps. The settings backup ([SettingsBackup]) carries the raw preferences; this carries
- * the layouts in a form a person can read, edit and hand to someone else.
+ * palette, the slideboard keypad, the quick phrases and the currency key. The settings backup
+ * ([SettingsBackup]) carries the raw preferences; this carries the layouts in a form a person can
+ * read, edit and hand to someone else. The imported letter layouts are not in it: each is its own
+ * XML document ([LetterLayoutXml]), and a backup carries them as files beside this one
+ * ([BackupBundle]).
  *
  * ## Document shape
  *
@@ -42,8 +44,7 @@ import java.util.TimeZone
  *   "palette": ["★", "→"],
  *   "slideboard": ["7", "8", "9", "&", "*", …20 slots],
  *   "quickPhrases": ["On my way!", null, null, null, null],
- *   "currency": "€",
- *   "pkbLetterMaps": [ { "format": "bbkb-layout", … } ]
+ *   "currency": "€"
  * }
  * ```
  *
@@ -61,8 +62,12 @@ import java.util.TimeZone
  * merges rather than replaces. A section that is present must be complete: a symbol page with 25
  * slots is refused, not padded, because the user's 26th key would silently go blank. The parse
  * runs to completion before anything is written ([parse] then [applyEditors]), so a bad file
- * changes nothing. [parse] also accepts a single `bbkb-layout` letter map, so one Import row
+ * changes nothing. [parse] also accepts a single `letter-layout` XML document, so one Import row
  * serves both kinds of file.
+ *
+ * A `pkbLetterMaps` array, where builds before the XML layouts kept letter maps, is skipped
+ * rather than refused: that format never reached users, and refusing it would refuse a developer's
+ * whole backup over one section this build no longer reads.
  */
 object LayoutsBundle {
 
@@ -70,7 +75,7 @@ object LayoutsBundle {
     const val VERSION: Int = 1
     const val MIME_TYPE: String = "application/json"
 
-    /** Largest file [parse] reads. A full bundle with a few letter maps is tens of kilobytes. */
+    /** Largest file [parse] reads. A full bundle is tens of kilobytes. */
     const val MAX_BYTES: Int = 1024 * 1024
 
     const val VKB_SLOTS: Int = 26
@@ -89,7 +94,6 @@ object LayoutsBundle {
     const val MAX_SLOT_LENGTH: Int = 64
     const val MAX_PHRASE_LENGTH: Int = 1000
     const val MAX_CURRENCY_LENGTH: Int = 8
-    const val MAX_LETTER_MAPS: Int = 32
 
     /** `SettingsManager.getCurrencySymbol` / `SymbolCustomizationScreen`'s key. */
     private const val CURRENCY_KEY = "pref_currency_key"
@@ -99,7 +103,7 @@ object LayoutsBundle {
      * (`CustomSymbolRepository`), the slideboard numpad (`KeyEditorSpec`), the quick phrases and
      * the currency key. A backup bundle keeps these out of its settings part so that Settings and
      * Layouts are two separate things to restore or reset; [resetEditors] clears exactly these.
-     * The physical letter maps are files, not preferences, and the active map's id is already on
+     * The letter layouts are files, not preferences, and the active layout's id is already on
      * [SettingsBackup.DENIED_KEYS].
      */
     val PREF_KEYS: Set<String> by lazy {
@@ -115,7 +119,7 @@ object LayoutsBundle {
     /**
      * Puts every editor section back to its default by removing [PREF_KEYS], then clears the
      * keyboard cache the way an edit does (see `CustomSymbolRepository.saveLayout`). Main thread,
-     * as [applyEditors]. Letter maps are not touched here: the caller deletes those files.
+     * as [applyEditors]. Letter layouts are not touched here: the caller deletes those files.
      */
     fun resetEditors(context: Context) {
         val editor = PrefsManager.getPrefs(context).edit()
@@ -130,8 +134,10 @@ object LayoutsBundle {
     private val KNOWN_FIELDS = setOf(
         "format", "version", "app", "versionCode", "created",
         "vkbSymbolPage", "pkbSymbolPage", "palette", "slideboard", "quickPhrases", "currency",
-        "pkbLetterMaps",
     )
+
+    /** Fields earlier builds wrote that this one reads past; see the class comment. */
+    private val RETIRED_FIELDS = setOf("pkbLetterMaps")
 
     /**
      * What a layouts file holds. A null section is one the file does not carry (on import: leave
@@ -145,18 +151,17 @@ object LayoutsBundle {
         /** `null` entries are phrases the user never set. */
         val quickPhrases: List<String?>? = null,
         val currency: String? = null,
-        val pkbLetterMaps: List<UserLetterMap> = emptyList(),
     ) {
-        /** Whether the file carries any of the editor sections, as opposed to only letter maps. */
+        /** Whether the file carries any of the editor sections. */
         val hasEditorSections: Boolean
             get() = vkbSymbolPage != null || pkbSymbolPage != null || palette != null ||
                 slideboard != null || quickPhrases != null || currency != null
     }
 
-    /** What the Import row was handed: a layouts bundle, or one physical letter map. */
+    /** What the Import row was handed: a layouts bundle, or one letter layout document. */
     sealed interface Import {
         class Bundle(val layouts: Layouts) : Import
-        class LetterMap(val map: UserLetterMap) : Import
+        class LetterMap(val layout: LetterLayout) : Import
     }
 
     /** The file is not one this build can import; [message] says why, for the user to fix it. */
@@ -172,7 +177,7 @@ object LayoutsBundle {
      * The user's current layouts, every section present, read the way the editors read them —
      * defaults included, so the file describes what the keyboard shows. Safe off the main thread.
      */
-    fun capture(context: Context, letterMaps: List<UserLetterMap>): Layouts {
+    fun capture(context: Context): Layouts {
         val prefs = PrefsManager.getPrefs(context)
         return Layouts(
             vkbSymbolPage = fromSlots(VkbSymbolPageSpec.load(context)),
@@ -181,7 +186,6 @@ object LayoutsBundle {
             slideboard = fromSlots(SlideboardNumpadSpec.load(context)),
             quickPhrases = QUICK_PHRASE_KEYS.map { key -> if (prefs.contains(key)) prefs.getString(key, null) else null },
             currency = prefs.getString(CURRENCY_KEY, "") ?: "",
-            pkbLetterMaps = letterMaps,
         )
     }
 
@@ -206,9 +210,6 @@ object LayoutsBundle {
             put("quickPhrases", JSONArray().apply { phrases.forEach { put(it ?: JSONObject.NULL) } })
         }
         layouts.currency?.let { put("currency", it) }
-        if (layouts.pkbLetterMaps.isNotEmpty()) {
-            put("pkbLetterMaps", JSONArray().apply { layouts.pkbLetterMaps.forEach { put(it.toJson()) } })
-        }
     }.toString(2)
 
     // ── import ───────────────────────────────────────────────────────────────
@@ -235,36 +236,31 @@ object LayoutsBundle {
     }
 
     /**
-     * Reads a layouts bundle or a single letter map, validating all of it. Failures are
-     * [InvalidLayoutsException]s whose message names the field and the problem.
+     * Reads a layouts bundle (JSON) or a single letter layout (XML), validating all of it.
+     * Failures are [InvalidLayoutsException]s whose message names the field and the problem.
      */
-    fun parse(json: String): Result<Import> = try {
-        Result.success(parseOrThrow(json))
+    fun parse(text: String): Result<Import> = try {
+        Result.success(parseOrThrow(text))
     } catch (e: InvalidLayoutsException) {
         Result.failure(e)
-    } catch (e: InvalidLetterMapException) {
+    } catch (e: InvalidLetterLayoutException) {
         Result.failure(InvalidLayoutsException(e.message ?: "not a valid layout"))
     }
 
-    private fun parseOrThrow(json: String): Import {
-        val size = json.toByteArray(Charsets.UTF_8).size
+    private fun parseOrThrow(text: String): Import {
+        if (LetterLayoutXml.looksLikeXml(text)) return Import.LetterMap(LetterLayoutXml.parse(text))
+        val size = text.toByteArray(Charsets.UTF_8).size
         if (size > MAX_BYTES) fail("the file is larger than ${MAX_BYTES / 1024} KB")
         val root = try {
-            JSONObject(json)
+            JSONObject(text)
         } catch (e: JSONException) {
             fail("not JSON: ${e.message}")
         }
-        when (val format = root.optString("format")) {
-            UserLetterMap.FORMAT -> {
-                if (size > UserLetterMap.MAX_BYTES) fail("the layout is larger than ${UserLetterMap.MAX_BYTES / 1024} KB")
-                return Import.LetterMap(UserLetterMap.fromJson(root))
-            }
-            FORMAT -> {}
-            else -> fail("format is \"$format\", expected \"$FORMAT\" or \"${UserLetterMap.FORMAT}\"")
-        }
+        val format = root.optString("format")
+        if (format != FORMAT) fail("format is \"$format\", expected \"$FORMAT\"")
         val version = root.opt("version") as? Int ?: 0
         if (version < 1 || version > VERSION) fail("version ${root.opt("version")}, this build reads up to $VERSION")
-        root.keys().forEach { if (it !in KNOWN_FIELDS) fail("unknown field \"$it\"") }
+        root.keys().forEach { if (it !in KNOWN_FIELDS && it !in RETIRED_FIELDS) fail("unknown field \"$it\"") }
 
         val layouts = Layouts(
             vkbSymbolPage = slots(root, "vkbSymbolPage", VKB_SLOTS..VKB_SLOTS),
@@ -273,9 +269,8 @@ object LayoutsBundle {
             slideboard = slots(root, "slideboard", SLIDEBOARD_SLOTS..SLIDEBOARD_SLOTS),
             quickPhrases = quickPhrases(root),
             currency = currency(root),
-            pkbLetterMaps = letterMaps(root),
         )
-        if (!layouts.hasEditorSections && layouts.pkbLetterMaps.isEmpty()) fail("the file holds no layouts")
+        if (!layouts.hasEditorSections) fail("the file holds no layouts")
         return Import.Bundle(layouts)
     }
 
@@ -326,23 +321,6 @@ object LayoutsBundle {
         return value
     }
 
-    private fun letterMaps(root: JSONObject): List<UserLetterMap> {
-        val array = optArray(root, "pkbLetterMaps") ?: return emptyList()
-        if (array.length() > MAX_LETTER_MAPS) fail("pkbLetterMaps has ${array.length()} layouts, at most $MAX_LETTER_MAPS")
-        val maps = (0 until array.length()).map { i ->
-            val obj = array.opt(i) as? JSONObject ?: fail("pkbLetterMaps[$i] must be an object")
-            try {
-                UserLetterMap.fromJson(obj)
-            } catch (e: InvalidLetterMapException) {
-                fail("pkbLetterMaps[$i]: ${e.message}")
-            }
-        }
-        maps.groupBy { it.id }.filterValues { it.size > 1 }.keys.firstOrNull()?.let {
-            fail("pkbLetterMaps has two layouts with the id \"$it\"")
-        }
-        return maps
-    }
-
     private fun optArray(root: JSONObject, field: String): JSONArray? {
         val raw = root.opt(field) ?: return null
         if (raw == JSONObject.NULL) return null
@@ -368,7 +346,8 @@ object LayoutsBundle {
      * Writes the editor sections [layouts] carries, through the same repositories and specs the
      * editors save with — so the symbol pages and the palette clear `KeyboardBuilder`'s cache as
      * an edit does. Main thread: that cache is a plain `HashMap` the keyboard reads on the main
-     * thread. Letter maps are not written here; [saveLetterMaps] does that, off it.
+     * thread. Letter layouts are not written here; they are files, saved off it through
+     * `LetterLayoutRegistry`.
      *
      * @return how many sections were written
      */
@@ -391,12 +370,6 @@ object LayoutsBundle {
             editor.apply()
         }
         return written
-    }
-
-    /** Saves [maps] into [repository], replacing maps with the same ids. File IO: not the main thread. */
-    @Throws(IOException::class)
-    fun saveLetterMaps(repository: UserLetterMapRepository, maps: List<UserLetterMap>) {
-        maps.forEach { repository.save(it) }
     }
 
     /** Editor slots as the file writes them: the blank-slot marker becomes `""`. */

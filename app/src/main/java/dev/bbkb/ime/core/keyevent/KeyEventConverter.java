@@ -10,6 +10,7 @@ import dev.bbkb.ime.core.device.config.model.ScancodeMapping;
 import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
 import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
+import dev.bbkb.ime.core.layout.PhysicalKeyResolver;
 import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.core.subtypeswitcher.InputTypeUtils;
 
@@ -242,9 +243,10 @@ public class KeyEventConverter {
                     z = false;
                 }
             } else {
-                // A physical letter key follows the active keyboard's alphabet (Arabic, Cyrillic,
-                // Hebrew, Greek, Hangul) before the system key map, which spells it in Latin.
-                int unicodeChar2 = HardwareScriptLayouts.letterFor(keyEvent, i);
+                // A physical letter key follows the user's letter layout, then the active
+                // keyboard's alphabet (Arabic, Cyrillic, Hebrew, Greek, Hangul), before the system
+                // key map, which spells it in Latin.
+                int unicodeChar2 = PhysicalKeyResolver.letter(keyEvent, i);
                 if (unicodeChar2 == 0) {
                     unicodeChar2 = keyEvent.getUnicodeChar(i);
                 }

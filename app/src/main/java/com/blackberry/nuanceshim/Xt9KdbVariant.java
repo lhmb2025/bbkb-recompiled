@@ -4,10 +4,13 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
+import androidx.annotation.VisibleForTesting;
+
 import dev.bbkb.ime.core.shared.SystemProps;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,6 +28,13 @@ import java.util.concurrent.TimeoutException;
  * files and hands the bytes to the owned module's registry; the owned ET9KDB_SetKdbNum does the
  * per-layout selection.
  *
+ * The same registry carries the KDBs generated for a letter layout
+ * ({@code dev.bbkb.ime.core.layout.LetterLayoutEngineSync}): {@link #registerGenerated} hands
+ * over bytes built in memory rather than read from an asset folder, and {@link #selectVariant}
+ * makes them the engine's while the layout drives the keys. The device variant stays what
+ * {@link #apply} settled on ({@link #deviceVariant}); a generated variant is built from it and
+ * gives way to it again when the layout stops applying.
+ *
  * Only effective in a CUTOVER build (libkb.so owns SetKdbNum). In a DIFF build the registry is
  * populated but the blob still selects layouts, and in a stock build no owned lib loads — both
  * degrade gracefully to the root layouts.
@@ -32,11 +42,61 @@ import java.util.concurrent.TimeoutException;
 public final class Xt9KdbVariant {
     private static final String TAG = "XT9KDB";
     private static boolean sLoaded;
-    private static volatile String sApplied;   // last applied variant ("" = default), to skip rework
+    private static volatile String sApplied;   // selected variant ("" = default), to skip rework
+    // The variant the device profile asked for, as apply settled it ("" = root layouts, null =
+    // no apply yet). Kept apart from sApplied because a letter layout's generated variant can be
+    // the selected one while this stays the device's.
+    private static volatile String sDeviceVariant;
+    // Told, on the registration thread, when apply changes the device variant: a generated
+    // variant was built from the old one's files and has to be rebuilt.
+    private static volatile Runnable sDeviceVariantListener;
 
-    /** Last applied variant ("" = default layouts, null = none applied yet). Debug/logging use. */
+    /** The longest variant name the owned module accepts, in bytes (XT9KDB_VARIANT_NAME_MAX - 1). */
+    public static final int MAX_VARIANT_NAME_BYTES = 79;
+
+    /**
+     * The native registry calls. A seam only so JVM tests can drive the registration logic: the
+     * owned library cannot load there, and every method here is a no-op without it.
+     */
+    @VisibleForTesting
+    public interface NativeBridge {
+        /** 0 when registered. */
+        int register(String variant, byte[] xml);
+
+        void setVariant(String variant);
+    }
+
+    private static final NativeBridge LIBRARY = new NativeBridge() {
+        @Override
+        public int register(String variant, byte[] xml) {
+            return nativeRegister(variant, xml);
+        }
+
+        @Override
+        public void setVariant(String variant) {
+            nativeSetVariant(variant);
+        }
+    };
+
+    private static volatile NativeBridge sNative = LIBRARY;
+    private static volatile boolean sTestBridge;
+
+    /** Selected variant ("" = default layouts, null = none applied yet). Debug/logging use. */
     public static String applied() {
         return sApplied;
+    }
+
+    /**
+     * The device profile's variant as {@link #apply} settled it: {@code ""} for the root layouts
+     * (no variant, or one whose folder registered nothing), null before the first apply.
+     */
+    public static String deviceVariant() {
+        return sDeviceVariant;
+    }
+
+    /** Whether there is an owned KDB registry to talk to (a CUTOVER or DIFF build). */
+    public static boolean isAvailable() {
+        return sLoaded || sTestBridge;
     }
     // Applies run on one shared single-thread executor rather than a fresh bare Thread per
     // call: it is FIFO, so awaiting the most recently submitted Future also awaits every
@@ -49,9 +109,12 @@ public final class Xt9KdbVariant {
         t.setDaemon(true);
         return t;
     });
-    // Most recent async apply; loaders await this so the engine never selects a KDB
-    // before the variant registry is populated.
+    // Most recent registration job (an apply or a submitted one); loaders await this so the
+    // engine never selects a KDB before the variant registry is populated.
     private static volatile Future<?> sPending;
+    // Held while enqueueing, so sPending is always the job enqueued last; FIFO then makes
+    // awaiting it await every earlier job as well, whichever thread submitted them.
+    private static final Object SUBMIT_LOCK = new Object();
 
     static {
         // CUTOVER builds ship the owned module as libkb.so, DIFF builds as libxt9kdb.so;
@@ -81,7 +144,7 @@ public final class Xt9KdbVariant {
      * first SetKdbNum.
      */
     public static void apply(Context context, String variant) {
-        if (!sLoaded || context == null) return;
+        if (!isAvailable() || context == null) return;
         String requested = (variant == null) ? "" : variant.trim();
         // debug.et9.kdbvariant overrides the device-config variant for on-device geometry A/B
         // ("default" forces the root/original flat layouts). Debug builds only; set the prop,
@@ -94,13 +157,119 @@ public final class Xt9KdbVariant {
             }
         }
         final String v = requested;
-        // Advisory fast path only -- sApplied is volatile so the read cannot tear, but two
+        // Advisory fast path only -- sDeviceVariant is volatile so the read cannot tear, but two
         // concurrent applies of the same variant can both pass it. applySync re-checks under
-        // the class monitor, which is the authoritative test.
-        if (v.equals(sApplied)) return;
+        // the class monitor, which is the authoritative test. It compares against the device
+        // variant, not the selected one: a letter layout's generated variant being selected is
+        // no reason to register the device's files again.
+        if (v.equals(sDeviceVariant)) return;
 
         final Context app = context.getApplicationContext();
-        sPending = APPLY_EXEC.submit(() -> applySync(app, v));
+        enqueue(() -> {
+            if (applySync(app, v)) notifyDeviceVariantChanged();
+        });
+    }
+
+    /**
+     * Registers one KDB built in memory under {@code variant} (a letter layout's
+     * {@code layout:<id>}), keyed natively by the file's own primaryId/secondaryId like the
+     * device variant's files. Registering the same (variant, primaryId, secondaryId) again
+     * replaces the bytes, and the engine reloads them on its next layout sync if they were the
+     * loaded ones. Call it on the registration thread ({@link #submit}) so layout syncs wait
+     * for it.
+     *
+     * @return false when there is no owned registry, the name is empty or too long
+     *     ({@link #MAX_VARIANT_NAME_BYTES}), or the native side refused the bytes
+     */
+    public static boolean registerGenerated(String variant, byte[] xml) {
+        if (!isAvailable() || variant == null || variant.isEmpty() || xml == null || xml.length == 0) {
+            return false;
+        }
+        if (variant.getBytes(StandardCharsets.UTF_8).length > MAX_VARIANT_NAME_BYTES) {
+            Log.w(TAG, "variant: name too long to register: " + variant);
+            return false;
+        }
+        try {
+            return sNative.register(variant, xml) == 0;
+        } catch (Throwable t) {
+            Log.w(TAG, "variant: register failed for '" + variant + "': " + t.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Makes {@code variant} the one the engine's next PKB layout load picks from ({@code ""} or
+     * null for the root layouts); a real change invalidates the loaded KDB natively, exactly as
+     * a device variant change does. Unlike {@link #apply} it registers nothing: the variant's
+     * files must be registered already ({@link #registerGenerated}, or apply's own folder scan).
+     * A layout the variant does not carry falls back to the root copy.
+     */
+    public static synchronized void selectVariant(String variant) {
+        if (!isAvailable()) return;
+        final String v = (variant == null) ? "" : variant;
+        if (v.equals(sApplied)) return;
+        try {
+            sNative.setVariant(v);
+            sApplied = v;
+            Log.i(TAG, "variant selected: '" + (v.isEmpty() ? "(default)" : v) + "'"
+                    + (v.equals(sDeviceVariant) ? " (device)" : ""));
+        } catch (Throwable t) {
+            Log.w(TAG, "variant: nativeSetVariant failed: " + t.getMessage());
+        }
+    }
+
+    /**
+     * Runs {@code job} on the registration thread, after every apply and job enqueued before
+     * it. KDB layout syncs wait for it through {@link #awaitReady}, so whatever the job
+     * registers and selects is in place before the engine's next SetKdbNum. A no-op without an
+     * owned registry.
+     */
+    public static void submit(Runnable job) {
+        if (!isAvailable() || job == null) return;
+        enqueue(job);
+    }
+
+    /**
+     * Called on the registration thread whenever {@link #apply} changes the device variant
+     * (null to stop). The letter-layout sync uses it to rebuild a generated variant from the
+     * new device files.
+     */
+    public static void setDeviceVariantListener(Runnable listener) {
+        sDeviceVariantListener = listener;
+    }
+
+    private static void enqueue(Runnable job) {
+        synchronized (SUBMIT_LOCK) {
+            sPending = APPLY_EXEC.submit(job);
+        }
+    }
+
+    private static void notifyDeviceVariantChanged() {
+        final Runnable listener = sDeviceVariantListener;
+        if (listener == null) return;
+        try {
+            listener.run();
+        } catch (Throwable t) {
+            Log.w(TAG, "variant: device variant listener failed", t);
+        }
+    }
+
+    /**
+     * Replaces the native registry calls (null restores the library's) and forgets every
+     * variant applied or selected so far. JVM tests only: with a bridge in place the class
+     * behaves as if the owned library had loaded.
+     */
+    @VisibleForTesting
+    public static void setNativeBridgeForTest(NativeBridge bridge) {
+        awaitReady(5000);
+        synchronized (Xt9KdbVariant.class) {
+            sNative = (bridge != null) ? bridge : LIBRARY;
+            sTestBridge = bridge != null;
+            sApplied = null;
+            sDeviceVariant = null;
+            sDeviceVariantListener = null;
+            sPending = null;
+        }
     }
 
     /**
@@ -234,9 +403,10 @@ public final class Xt9KdbVariant {
         }
     }
 
-    private static synchronized void applySync(Context context, String variant) {
+    /** @return whether the device variant changed (and was selected). */
+    private static synchronized boolean applySync(Context context, String variant) {
         String v = variant;
-        if (v.equals(sApplied)) return;
+        if (v.equals(sDeviceVariant)) return false;
 
         int registered = 0;
         if (!v.isEmpty()) {
@@ -248,7 +418,7 @@ public final class Xt9KdbVariant {
                     for (String f : files) {
                         if (!f.endsWith(".xml")) continue;
                         byte[] xml = readAsset(am, dir + "/" + f);
-                        if (xml != null && nativeRegister(v, xml) == 0) registered++;
+                        if (xml != null && sNative.register(v, xml) == 0) registered++;
                         else Log.w(TAG, "variant: failed to register " + dir + "/" + f);
                     }
                 }
@@ -260,14 +430,20 @@ public final class Xt9KdbVariant {
                 v = "";
             }
         }
+        // Already the device variant (a variant with no files, asked for again): selecting it
+        // again would only unselect a letter layout's variant built on top of it.
+        if (v.equals(sDeviceVariant)) return false;
 
         try {
-            nativeSetVariant(v);
+            sNative.setVariant(v);
             sApplied = v;
+            sDeviceVariant = v;
             Log.i(TAG, "variant applied: '" + (v.isEmpty() ? "(default)" : v)
                     + "' (" + registered + " layout(s) registered)");
+            return true;
         } catch (Throwable t) {
             Log.w(TAG, "variant: nativeSetVariant failed: " + t.getMessage());
+            return false;
         }
     }
 

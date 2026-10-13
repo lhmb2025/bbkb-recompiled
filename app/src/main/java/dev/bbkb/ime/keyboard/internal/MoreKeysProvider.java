@@ -3,7 +3,7 @@ package dev.bbkb.ime.keyboard.internal;
 import android.text.TextUtils;
 
 import dev.bbkb.ime.core.keyevent.ModifierState;
-import dev.bbkb.ime.keyboard.Keyboard;
+import dev.bbkb.ime.core.layout.PhysicalKeyResolver;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
 
 import java.util.ArrayList;
@@ -17,8 +17,9 @@ import java.util.Set;
  *
  * <p>Three sources, queried in this order: accent/diacritic variants of the base character
  * ({@link KeyboardSwitcher#getMoreKeysForKey}), Alt-held style variants
- * ({@link KeyboardSwitcher#getMoreKeysForKeyByStyle}), and symbol-mode multitap alternates
- * ({@link Keyboard#getMultiTapAlternates}). Duplicates keep their first position.
+ * ({@link KeyboardSwitcher#getMoreKeysForKeyByStyle}), and, in symbol mode, the list of what the
+ * symbol page typed ({@link PhysicalKeyResolver#moreKeys}: the currency key's list on a currency
+ * symbol). Duplicates keep their first position.
  */
 public final class MoreKeysProvider {
 
@@ -92,12 +93,11 @@ public final class MoreKeysProvider {
         if (hasBase && context.modifiers.isAltHeld()) {
             addAll(out, keyboardSwitcher.getMoreKeysForKeyByStyle(context.baseCharacter));
         }
-        // Symbol multitap alternates: no base-empty guard; getMultiTapAlternates tolerates null.
+        // What the symbol page typed: the symbol keyboards used to carry a copy of the physical-key
+        // tables for this (the currency symbols' lists); the resolver answers it now, and
+        // tolerates an empty base.
         if (context.inSymbolMode) {
-            final Keyboard keyboard = keyboardSwitcher.getCurrentKeyboard();
-            if (keyboard != null) {
-                addAll(out, keyboard.getMultiTapAlternates(context.baseCharacter));
-            }
+            addAll(out, PhysicalKeyResolver.moreKeys(context.baseCharacter));
         }
         return out.isEmpty() ? Collections.<String>emptyList() : new ArrayList<>(out);
     }

@@ -177,10 +177,6 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
                     parseSwitchKeyboardContent(xmlPullParser, z);
                 } else if ("key-style".equals(name)) {
                     parseKeyStyle(xmlPullParser, z);
-                } else if ("PhysicalKeyboardExtension".equals(name)) {
-                    KP kp = this.mParams;
-                    kp.mPhysicalKeyboardRow = new PhysicalKeySpecTable(kp);
-                    parsePhysicalKeyboardExtensionContent(xmlPullParser, this.mParams.mPhysicalKeyboardRow, z);
                 } else {
                     throw new XmlParseUtils.IllegalStartTag(xmlPullParser, name, "Row");
                 }
@@ -470,14 +466,14 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
     }
 
     private void parseSwitchKeyboardContent(XmlPullParser xmlPullParser, boolean z) throws XmlPullParserException, IOException {
-        parseSwitchInternal(xmlPullParser, (KeyboardRow) null, (PhysicalKeySpecTable) null, z);
+        parseSwitchInternal(xmlPullParser, (KeyboardRow) null, z);
     }
 
     private void parseSwitchRowContent(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlPullParserException, IOException {
-        parseSwitchInternal(xmlPullParser, c1027aj, (PhysicalKeySpecTable) null, z);
+        parseSwitchInternal(xmlPullParser, c1027aj, z);
     }
 
-    private void parseSwitchInternal(XmlPullParser xmlPullParser, KeyboardRow c1027aj, PhysicalKeySpecTable c1026ai, boolean z) throws XmlPullParserException, IOException {
+    private void parseSwitchInternal(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlPullParserException, IOException {
         boolean zM7141b = false;
         while (true) {
             if (xmlPullParser.getEventType() == 1) {
@@ -487,9 +483,9 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
             if (next == 2) {
                 String name = xmlPullParser.getName();
                 if ("case".equals(name)) {
-                    zM7141b |= parseCase(xmlPullParser, c1027aj, c1026ai, zM7141b ? true : z);
+                    zM7141b |= parseCase(xmlPullParser, c1027aj, zM7141b ? true : z);
                 } else if ("default".equals(name)) {
-                    zM7141b |= parseDefault(xmlPullParser, c1027aj, c1026ai, zM7141b ? true : z);
+                    zM7141b |= parseDefault(xmlPullParser, c1027aj, zM7141b ? true : z);
                 } else {
                     throw new XmlParseUtils.IllegalStartTag(xmlPullParser, name, "switch");
                 }
@@ -503,23 +499,15 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         }
     }
 
-    private boolean parseCase(XmlPullParser xmlPullParser, KeyboardRow c1027aj, PhysicalKeySpecTable c1026ai, boolean z) throws XmlPullParserException, Resources.NotFoundException, IOException {
+    private boolean parseCase(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlPullParserException, Resources.NotFoundException, IOException {
         boolean zM7150d = matchCaseConditions(xmlPullParser);
-        if (c1027aj == null && c1026ai == null) {
-            if (!zM7150d) {
-                z = true;
-            }
+        if (!zM7150d) {
+            z = true;
+        }
+        if (c1027aj == null) {
             parseKeyboardContent(xmlPullParser, z);
-        } else if (c1026ai == null) {
-            if (!zM7150d) {
-                z = true;
-            }
-            parseRowContent(xmlPullParser, c1027aj, z);
         } else {
-            if (!zM7150d) {
-                z = true;
-            }
-            parsePhysicalKeyboardExtensionContent(xmlPullParser, c1026ai, z);
+            parseRowContent(xmlPullParser, c1027aj, z);
         }
         return zM7150d;
     }
@@ -610,16 +598,12 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         return (typedArray.hasValue(i) && c1024ag.getIconDrawable(KeyboardIconSet.getIconId(typedArray.getString(i))) == null) ? false : true;
     }
 
-    private boolean parseDefault(XmlPullParser xmlPullParser, KeyboardRow c1027aj, PhysicalKeySpecTable c1026ai, boolean z) throws XmlPullParserException, Resources.NotFoundException, IOException {
-        if (c1027aj == null && c1026ai == null) {
+    private boolean parseDefault(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlPullParserException, Resources.NotFoundException, IOException {
+        if (c1027aj == null) {
             parseKeyboardContent(xmlPullParser, z);
-            return true;
-        }
-        if (c1026ai == null) {
+        } else {
             parseRowContent(xmlPullParser, c1027aj, z);
-            return true;
         }
-        parsePhysicalKeyboardExtensionContent(xmlPullParser, c1026ai, z);
         return true;
     }
 
@@ -643,49 +627,6 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
             typedArrayObtainAttributes2.recycle();
             throw th;
         }
-    }
-
-    private void parsePhysicalKeyboardExtensionContent(XmlPullParser xmlPullParser, PhysicalKeySpecTable c1026ai, boolean z) throws XmlPullParserException, IOException {
-        while (xmlPullParser.getEventType() != 1) {
-            int next = xmlPullParser.next();
-            if (next == 2) {
-                String name = xmlPullParser.getName();
-                if ("PhysicalKey".equals(name)) {
-                    parsePhysicalKey(xmlPullParser, c1026ai, z);
-                } else if ("switch".equals(name)) {
-                    parseSwitchPhysicalKeyboardContent(xmlPullParser, c1026ai, z);
-                } else {
-                    throw new XmlParseUtils.IllegalStartTag(xmlPullParser, name, "Row");
-                }
-            } else if (next == 3) {
-                String name2 = xmlPullParser.getName();
-                if (!"PhysicalKeyboardExtension".equals(name2) && !"case".equals(name2) && !"default".equals(name2)) {
-                    throw new XmlParseUtils.IllegalEndTag(xmlPullParser, name2, "Row");
-                }
-                return;
-            }
-        }
-    }
-
-    private void parseSwitchPhysicalKeyboardContent(XmlPullParser xmlPullParser, PhysicalKeySpecTable c1026ai, boolean z) throws XmlPullParserException, IOException {
-        parseSwitchInternal(xmlPullParser, (KeyboardRow) null, c1026ai, z);
-    }
-
-    private void parsePhysicalKey(XmlPullParser xmlPullParser, PhysicalKeySpecTable c1026ai, boolean z) throws XmlParseUtils.ParseException {
-        if (z) {
-            XmlParseUtils.checkEndTag("PhysicalKey", xmlPullParser);
-            return;
-        }
-        TypedArray typedArrayObtainAttributes = this.mResources.obtainAttributes(Xml.asAttributeSet(xmlPullParser), R.styleable.Keyboard_PhysicalKey);
-        KeyStyle abstractC1067zM7090a = this.mParams.mKeyStyles.getEmptyKeyStyle();
-        String strMo7100b = abstractC1067zM7090a.getString(typedArrayObtainAttributes, R.styleable.Keyboard_PhysicalKey_keySpec);
-        if (TextUtils.isEmpty(strMo7100b)) {
-            throw new XmlParseUtils.ParseException("Empty keySpec", xmlPullParser);
-        }
-        PhysicalKeySpec keySpec = new PhysicalKeySpec(strMo7100b, typedArrayObtainAttributes, abstractC1067zM7090a);
-        typedArrayObtainAttributes.recycle();
-        XmlParseUtils.checkEndTag("PhysicalKey", xmlPullParser);
-        c1026ai.addPhysicalKeySpec(keySpec);
     }
 
     private void startKeyboard() {

@@ -16,6 +16,7 @@ import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.distribution.DistributionConfig
 import dev.bbkb.ime.core.distribution.LocalHttpServer
 import dev.bbkb.ime.core.distribution.ManifestSource
+import dev.bbkb.ime.core.layout.LetterLayoutRegistry
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils
 import dev.bbkb.ime.core.locale.RichInputMethodManager
 import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageRepository
@@ -37,6 +38,7 @@ import org.junit.runner.RunWith
 import org.robolectric.ParameterizedRobolectricTestRunner
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
+import java.io.InputStream
 
 /**
  * CHARACTERISATION TEST — renders every Compose settings screen and pins what it puts on screen.
@@ -212,7 +214,6 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "CorrectionLearningScreen" -> ({ CorrectionLearningScreen({}, {}, {}, {}) })
         "CreditsScreen" -> ({ CreditsScreen({}, {}) })
         "CustomMacrosScreen" -> ({ CustomMacrosScreen({}) })
-        "CustomPhysicalLayoutsScreen" -> ({ CustomPhysicalLayoutsScreen({}) })
         "CustomSymbolPageScreen_PKB" -> ({ CustomSymbolPageScreen(isPkb = true, onBack = {}) })
         "CustomSymbolPageScreen_VKB" -> ({ CustomSymbolPageScreen(isPkb = false, onBack = {}) })
         "CustomizeMenuScreen" -> ({ CustomizeMenuScreen({}) })
@@ -229,6 +230,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "MainSettingsScreen" -> ({ MainSettingsScreen({}, {}) })
         "TouchScreenKeyboardScreen" -> ({ TouchScreenKeyboardScreen({}, {}, {}, {}) })
         "PhysicalKeyboardScreen" -> ({ PhysicalKeyboardScreen({}, {}) })
+        "PhysicalLayoutsScreen" -> ({ PhysicalLayoutsScreen({}, builtInDocuments = OneBuiltInLayout) })
         "PredictionsSuggestionsScreen" -> ({ PredictionsSuggestionsScreen({}) })
         "QuickPhrasesScreen" -> ({ QuickPhrasesScreen({}) })
         "ShakeGesturesScreen" -> ({ ShakeGesturesScreen({}) })
@@ -469,6 +471,23 @@ class SettingsScreenRenderTest(private val screenName: String) {
         return byValue
     }
 
+    /**
+     * The built-in documents [PhysicalLayoutsScreen] lists here: one, so the Built-in section has a
+     * row to pin, and the case does not change each time the generated assets do.
+     */
+    private object OneBuiltInLayout : LetterLayoutRegistry.BuiltInDocuments {
+        private const val ID = "sample"
+        private const val DOCUMENT = """<letter-layout version="1" id="sample" name="Sample layout">
+            <bind/>
+            <key code="KEYCODE_Q" keySpec="a"/>
+            <key code="KEYCODE_A" keySpec="q"/>
+        </letter-layout>"""
+
+        override fun ids(): List<String> = listOf(ID)
+
+        override fun open(id: String): InputStream? = if (id == ID) DOCUMENT.byteInputStream() else null
+    }
+
     companion object {
 
         @JvmStatic
@@ -484,13 +503,13 @@ class SettingsScreenRenderTest(private val screenName: String) {
             "AdvancedGestureParametersScreen", "AdvancedSettingsScreen", "AnimationParametersScreen",
             "AppearanceLayoutScreen", "AutoCorrectionScreen", "BackupRestoreScreen", "CkbGesturesScreen", "ClipboardScreen",
             "CorrectionLearningScreen", "CreditsScreen", "CustomMacrosScreen",
-            "CustomPhysicalLayoutsScreen", "CustomSymbolPageScreen_PKB", "CustomSymbolPageScreen_VKB", "CustomizationScreen",
+            "CustomSymbolPageScreen_PKB", "CustomSymbolPageScreen_VKB", "CustomizationScreen",
             "CustomizeMenuScreen", "CustomizeSlideBoardScreen", "DebugSettingsScreen",
             "DeviceCompatibilityScreen", "DeviceConfigurationScreen", "DictionariesLearningScreen",
             "GestureLabScreen", "KeyPressFeedbackScreen", "KeyboardHelperScreen",
             "LanguagePacksScreen", "LanguageSwitchingScreen",
             "MainSettingsScreen",
-            "PhysicalKeyboardScreen", "PredictionsSuggestionsScreen", "QuickPhrasesScreen",
+            "PhysicalKeyboardScreen", "PhysicalLayoutsScreen", "PredictionsSuggestionsScreen", "QuickPhrasesScreen",
             "ShakeGesturesScreen", "SlideboardLayoutScreen", "SpellCheckerSettingsScreen",
             "SymbolCustomizationScreen", "TextShortcutsScreen", "TouchScreenKeyboardScreen",
             "TouchSurfaceHelperScreen",
@@ -734,22 +753,6 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "Add macro",
                 "Tap Add macro to create your first one",
             ),
-        ),
-        Case(
-            name = "CustomPhysicalLayoutsScreen",
-            route = SettingsRoute.CustomPhysicalLayouts.route,
-            title = "Custom physical layouts",
-            resources = setOf(
-                // "None" — the first resource name carrying that value; the row's own is
-                // settings_pkb_letter_maps_none.
-                "ckb_action_none",
-                "settings_pkb_letter_maps_none_summary", "settings_pkb_letter_maps_swipe_note",
-                "settings_pkb_letter_maps_title",
-            ),
-            literals = emptySet(),
-            // The list of imported maps is read on Dispatchers.IO; on a fresh install it comes
-            // back empty and the empty-state line appears once it has.
-            lateResources = setOf("settings_pkb_letter_maps_empty"),
         ),
         Case(
             name = "CustomSymbolPageScreen_PKB",
@@ -1157,6 +1160,28 @@ class SettingsScreenRenderTest(private val screenName: String) {
             // The multifunction-key row sits inside `if (multifunctionKeyMapping != null)`
             // (PhysicalKeyboardScreen.kt:163), which is null when no physical keyboard is
             // present: the same one-way trip from search as above.
+        ),
+        Case(
+            name = "PhysicalLayoutsScreen",
+            route = SettingsRoute.PhysicalLayouts.route,
+            title = "Physical layouts",
+            resources = setOf(
+                "settings_pkb_layouts_title",
+                // The Custom header, upper-cased as every category is; "CUSTOM" is also the symbol
+                // list's category title, the first resource name carrying that value.
+                "symbol_list_category_custom_title",
+                "settings_pkb_layouts_none", "settings_pkb_layouts_none_summary",
+                "settings_pkb_layouts_builtin_note",
+            ),
+            literals = setOf(
+                // The Built-in header: no resource holds the upper-cased value.
+                "BUILT-IN",
+            ),
+            // Both lists are read on Dispatchers.IO. On a fresh install the custom list comes back
+            // empty, and its empty-state line appears once it has; the built-in list is the one
+            // document [OneBuiltInLayout] supplies, which names no language and two keys.
+            lateLiterals = setOf("Sample layout", "All keyboards · 2 keys"),
+            lateResources = setOf("settings_pkb_layouts_empty"),
         ),
         Case(
             name = "PredictionsSuggestionsScreen",

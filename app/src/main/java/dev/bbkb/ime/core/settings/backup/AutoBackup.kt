@@ -211,7 +211,7 @@ object AutoBackup {
                     BackupBundle.Selection(settings = true, layouts = true, words = false))
                 Logger.info(TAG, "phone restore applied: ${report.settings} settings, ${report.macros} macros, " +
                     "${report.deviceConfigs} device profiles, ${report.layoutSections} layout sections, " +
-                    "${report.letterMaps} letter maps")
+                    "${report.letterLayouts} letter layouts")
                 if (bundle.hasWords) {
                     val words = file(app, PENDING_WORDS_PATH)
                     words.delete()

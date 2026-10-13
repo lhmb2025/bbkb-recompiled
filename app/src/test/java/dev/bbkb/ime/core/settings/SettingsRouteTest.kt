@@ -122,6 +122,9 @@ class SettingsRouteTest {
         assertEquals(SettingsRoute.LanguagesHub, SettingsRoute.fromRoute("languages_input"))
         assertEquals(SettingsRoute.LanguagesHub, SettingsRoute.fromRoute("multi_language_keyboards"))
         assertEquals(SettingsRoute.LanguagesHub, SettingsRoute.fromRoute("multi_language_wizard_add"))
+        // Physical layouts listed only the imported ones, under this route, until the built-in
+        // layouts joined them (2026-10).
+        assertEquals(SettingsRoute.PhysicalLayouts, SettingsRoute.fromRoute("custom_physical_layouts"))
     }
 
     @Test

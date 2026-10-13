@@ -7,19 +7,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import dev.bbkb.ime.core.device.config.model.AltMappingsTable;
+import dev.bbkb.ime.core.layout.PhysicalKeyResolver;
 
 /**
  * Consolidated resolver for Alt+key character mappings.
  *
  * Priority order:
- * 0. The user's own letter map ({@link HardwareScriptLayouts#userAltFor}), when one is switched on
- *    and bound to the current keyboard — the user said what this key types under Alt
+ * 0. The letter layouts ({@link PhysicalKeyResolver#alt}): the user's own, when one is switched on
+ *    and bound to the current keyboard — the user said what this key types under Alt — then the
+ *    built-in document for the keyboard's language, should it name an Alt character
  * 1. AltMappingsTable (device XML config) — most specific
  * 2. Layout-specific overrides, from the active config's {@code <layout-alt-overrides>}
  * 3. System KCM via KeyEvent.getUnicodeChar(META_ALT_ON) — universal fallback
  *
  * <p>Tier 0 is read per call rather than built into the resolver, so the cached resolver
- * {@code HardwareKeyBridge} keeps needs no rebuilding when the user switches maps or keyboards.
+ * {@code HardwareKeyBridge} keeps needs no rebuilding when the user switches layouts or keyboards.
  * It is also the one tier that can produce a character outside the Basic Multilingual Plane; read
  * {@link Result#codePoint} rather than {@link Result#character} wherever such a character can
  * be typed.
@@ -44,7 +46,7 @@ public final class AuxCharacterResolver {
         /**
          * The same character as a {@code char}, for the callers that hold one. 0 when there is
          * none, and also when {@link #codePoint} lies outside the Basic Multilingual Plane, which
-         * only the user's letter map can produce.
+         * only the user's letter layout can produce.
          */
         public final char character;
         public final String source;
@@ -104,8 +106,8 @@ public final class AuxCharacterResolver {
      * Falls back to Result.none() if no mapping found (no KCM available without KeyEvent).
      */
     public Result resolve(int keyCode) {
-        // Tier 0: the user's letter map. No event, so no scan code to narrow by.
-        int user = HardwareScriptLayouts.userAltFor(keyCode, -1);
+        // Tier 0: the letter layouts. No event, so no scan code to narrow by.
+        int user = PhysicalKeyResolver.alt(keyCode, -1);
         if (user != 0) {
             return Result.ofCodePoint(user, "user");
         }
@@ -136,8 +138,8 @@ public final class AuxCharacterResolver {
     public Result resolve(@NonNull KeyEvent event) {
         int keyCode = event.getKeyCode();
 
-        // Tier 0: the user's letter map
-        int user = HardwareScriptLayouts.userAltFor(keyCode, event.getScanCode());
+        // Tier 0: the letter layouts
+        int user = PhysicalKeyResolver.alt(event);
         if (user != 0) {
             return Result.ofCodePoint(user, "user");
         }

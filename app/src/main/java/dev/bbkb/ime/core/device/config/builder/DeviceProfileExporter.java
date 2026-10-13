@@ -243,8 +243,8 @@ public final class DeviceProfileExporter {
     }
 
     /**
-     * {@link #shareIntent(Context, File, String)} for a file of another type — the letter maps
-     * Custom physical layouts shares are JSON, out of the {@code layouts} provider path.
+     * {@link #shareIntent(Context, File, String)} for a file of another type — the custom letter
+     * layouts Physical layouts shares, out of the {@code letter_layouts} provider path.
      */
     @Nullable
     public static Intent shareIntent(@NonNull Context context, @NonNull File file,

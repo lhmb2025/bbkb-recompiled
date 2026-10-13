@@ -1,0 +1,438 @@
+package dev.bbkb.ime.core.settings.screens
+
+import android.content.Context
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SaveAlt
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import dev.bbkb.ime.R
+import dev.bbkb.ime.core.device.config.builder.DeviceProfileExporter
+import dev.bbkb.ime.core.device.profile.DeviceProfile
+import dev.bbkb.ime.core.layout.LetterLayout
+import dev.bbkb.ime.core.layout.LetterLayoutRegistry
+import dev.bbkb.ime.core.layout.LetterLayoutXml
+import dev.bbkb.ime.core.locale.LocaleUtils
+import dev.bbkb.ime.core.locale.ResourceLocaleUtils
+import dev.bbkb.ime.core.locale.SubtypeManager
+import dev.bbkb.ime.core.settings.ui.Category
+import dev.bbkb.ime.core.settings.ui.Custom
+import dev.bbkb.ime.core.settings.ui.LocalSpacing
+import dev.bbkb.ime.core.settings.ui.PreferenceDeleteButton
+import dev.bbkb.ime.core.settings.ui.PreferenceInfo
+import dev.bbkb.ime.core.settings.ui.PreferenceItem
+import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
+import dev.bbkb.ime.core.shared.Logger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.Collator
+import java.util.Locale
+
+private const val TAG = "PhysicalLayouts"
+
+/**
+ * Physical keyboard > Physical layouts: every letter layout on the phone ([LetterLayout]), the
+ * user's own and the ones the app ships, listed the same way — name, which keyboards it is for,
+ * how many keys it names.
+ *
+ * **Custom** holds the layouts imported through Advanced > Backup and restore > Restore from file.
+ * One of them, or none, is the active choice: picking a row writes
+ * [LetterLayoutRegistry.PREF_ACTIVE_LAYOUT], and the typing path reads it on the next key, so
+ * there is nothing to restart. Share hands the stored XML file to the share sheet, the way the
+ * device profile builder shares a config; delete removes it (and switches it off if it was on).
+ *
+ * **Built-in** holds the documents under `assets/letter-layouts/`. They are read-only and are not
+ * picked here: which one a keyboard uses follows its language. What a row offers is "Save as
+ * file", which writes the document wherever the user chooses — the way to start a layout of one's
+ * own is to save the nearest built-in, edit it, and restore it from file. The current keyboard's
+ * language comes first, the document it would use at the top, then the rest by name.
+ *
+ * Custom comes first because it is the part with a choice in it; the built-in list has a document
+ * per language and would push that choice off the screen.
+ *
+ * Both lists are read off the main thread, so on first composition they are briefly empty.
+ *
+ * @param builtInDocuments where the built-in documents come from; the app's assets when null. The
+ *   render test hands in a fixed set, so what it pins does not move with every generated asset.
+ */
+@Composable
+fun PhysicalLayoutsScreen(
+    onNavigateBack: () -> Unit,
+    builtInDocuments: LetterLayoutRegistry.BuiltInDocuments? = null,
+) {
+    val context = LocalContext.current
+    val registry = remember { LetterLayoutRegistry(context, builtInDocuments) }
+    val scope = rememberCoroutineScope()
+    val phoneKeypad = remember { DeviceProfile.current()?.keypadLayout }
+    val phoneKeypadType = remember { DeviceProfile.current()?.effectiveKeypadType }
+    val keyboardLocale = remember { currentKeyboardLocale() }
+    val keyboardLayoutSet = remember { currentKeyboardLayoutSet() }
+
+    // null until the first read lands.
+    var customLayouts by remember { mutableStateOf<List<LetterLayout>?>(null) }
+    var builtInLayouts by remember { mutableStateOf<List<LetterLayout>?>(null) }
+    var activeId by remember { mutableStateOf(registry.activeId) }
+    var deleteTarget by remember { mutableStateOf<LetterLayout?>(null) }
+    // The built-in being saved, by id. Saveable, because the activity can be recreated while the
+    // file picker is open.
+    var savingId by rememberSaveable { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) {
+        customLayouts = withContext(Dispatchers.IO) { registry.list() }
+        builtInLayouts = withContext(Dispatchers.IO) {
+            orderBuiltInLayouts(
+                layouts = registry.builtInIds().mapNotNull { registry.builtIn(it) },
+                keyboardLocale = keyboardLocale,
+                chosenId = registry.builtIn(keyboardLocale, phoneKeypad, phoneKeypadType, keyboardLayoutSet)?.id,
+            )
+        }
+    }
+
+    val saveLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument(LetterLayoutXml.MIME_TYPE)
+    ) { uri ->
+        val id = savingId
+        savingId = null
+        if (uri != null && id != null) scope.launch {
+            val saved = saveBuiltIn(context, registry, id, uri)
+            toast(context, if (saved) R.string.settings_pkb_layouts_saved else R.string.settings_pkb_layouts_save_failed)
+        }
+    }
+
+    fun select(id: String) {
+        registry.activeId = id
+        activeId = id
+    }
+
+    SettingsScreenHost(R.string.settings_pkb_layouts_title, onNavigateBack, listOf(
+        // ── Custom: the user's layouts, one of which (or none) the keys follow ──
+        Category(R.string.settings_pkb_layouts_category_custom),
+        Custom {
+            Column(Modifier.selectableGroup()) {
+                LayoutChoiceRow(
+                    title = stringResource(R.string.settings_pkb_layouts_none),
+                    summary = stringResource(R.string.settings_pkb_layouts_none_summary),
+                    selected = activeId.isEmpty() || customLayouts?.none { it.id == activeId } == true,
+                    onSelect = { select("") },
+                )
+                customLayouts.orEmpty().forEach { layout ->
+                    key(layout.id) {
+                        LayoutChoiceRow(
+                            title = layout.name,
+                            summary = layoutSummary(context, layout, phoneKeypad, phoneKeypadType),
+                            selected = layout.id == activeId,
+                            onSelect = { select(layout.id) },
+                            onShare = { share(context, registry, layout) },
+                            onDelete = { deleteTarget = layout },
+                        )
+                    }
+                }
+            }
+        },
+        Custom(visible = { customLayouts?.isEmpty() == true }) {
+            PreferenceInfo(text = stringResource(R.string.settings_pkb_layouts_empty))
+        },
+
+        // ── Built-in: read-only, each one a template to save as a file ──
+        // Shown while the list loads; left out only when the build ships no documents at all.
+        Category(R.string.settings_pkb_layouts_category_builtin, visible = { builtInLayouts?.isEmpty() != true }),
+        Custom(visible = { builtInLayouts?.isEmpty() != true }) {
+            PreferenceInfo(text = stringResource(R.string.settings_pkb_layouts_builtin_note))
+        },
+        Custom {
+            builtInLayouts.orEmpty().forEach { layout ->
+                key(layout.id) {
+                    BuiltInLayoutRow(
+                        layout = layout,
+                        summary = layoutSummary(context, layout, phoneKeypad, phoneKeypadType),
+                        onSave = {
+                            savingId = layout.id
+                            saveLauncher.launch(layout.id + LetterLayoutXml.FILE_SUFFIX)
+                        },
+                    )
+                }
+            }
+        },
+    ))
+
+    deleteTarget?.let { layout ->
+        AlertDialog(
+            onDismissRequest = { deleteTarget = null },
+            title = { Text(stringResource(R.string.settings_pkb_layouts_delete_title)) },
+            text = { Text(stringResource(R.string.settings_pkb_layouts_delete_message, layout.name)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    deleteTarget = null
+                    scope.launch {
+                        customLayouts = withContext(Dispatchers.IO) {
+                            registry.delete(layout.id)
+                            registry.list()
+                        }
+                        activeId = registry.activeId
+                    }
+                }) {
+                    Text(
+                        stringResource(R.string.settings_pkb_layouts_delete_title),
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { deleteTarget = null }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+}
+
+/**
+ * One choice, radio in the leading slot as on Device configuration; the whole row is the
+ * selectable target. Share and delete sit in the trailing slot for imported layouts.
+ */
+@Composable
+private fun LayoutChoiceRow(
+    title: String,
+    summary: String,
+    selected: Boolean,
+    onSelect: () -> Unit,
+    onShare: (() -> Unit)? = null,
+    onDelete: (() -> Unit)? = null,
+) {
+    PreferenceItem(
+        title = title,
+        summary = summary,
+        leading = { RadioButton(selected = selected, onClick = null) },
+        modifier = Modifier.selectable(selected = selected, onClick = onSelect, role = Role.RadioButton),
+        trailing = if (onShare == null && onDelete == null) null else {
+            {
+                Row {
+                    onShare?.let { share ->
+                        RowIconButton(
+                            icon = Icons.Default.Share,
+                            contentDescription = stringResource(R.string.settings_pkb_layouts_share, title),
+                            onClick = share,
+                        )
+                    }
+                    onDelete?.let { delete ->
+                        PreferenceDeleteButton(
+                            contentDescription = stringResource(R.string.settings_pkb_layouts_delete, title),
+                            onClick = delete,
+                        )
+                    }
+                }
+            }
+        },
+    )
+}
+
+/**
+ * A built-in layout. There is nothing to pick, so the row itself does nothing and its name and
+ * summary read as one item; the save button is a stop of its own. The leading space is kept so
+ * the names line up with the custom rows above, which carry a radio there.
+ */
+@Composable
+private fun BuiltInLayoutRow(layout: LetterLayout, summary: String, onSave: () -> Unit) {
+    PreferenceItem(
+        title = layout.name,
+        summary = summary,
+        iconSpaceReserved = true,
+        modifier = Modifier.semantics(mergeDescendants = true) {},
+        trailing = {
+            RowIconButton(
+                icon = Icons.Default.SaveAlt,
+                contentDescription = stringResource(R.string.settings_pkb_layouts_save, layout.name),
+                onClick = onSave,
+            )
+        },
+    )
+}
+
+/**
+ * A trailing icon button laid out at the glyph's height, as [PreferenceDeleteButton] is, so a row
+ * holding one is no taller than a row holding none, and share, save and delete line up. The
+ * button keeps its 48dp touch target, drawn unbounded around the glyph.
+ */
+@Composable
+private fun RowIconButton(icon: ImageVector, contentDescription: String, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier.height(LocalSpacing.current.iconSize),
+        contentAlignment = Alignment.Center,
+    ) {
+        IconButton(
+            onClick = onClick,
+            modifier = Modifier.wrapContentHeight(unbounded = true),
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = contentDescription,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+/**
+ * The built-in list in the order the screen shows it: the documents bound to the current
+ * keyboard's language first — [chosenId], the one that keyboard would use, at their head — then
+ * every other document by name. A document bound to no language (Colemak) belongs to no
+ * language, so it sorts with the rest. Names compare the way the reader's language orders them;
+ * equal names fall back to the id, so the order never depends on how the files were listed.
+ *
+ * @param keyboardLocale the current keyboard's locale in the app's spelling (`iw`, `pt_BR`), or
+ *   null when there is none; matched as [LetterLayout.Binding.matchesLanguage] matches, so a
+ *   document bound to `zh_TW` is not a `zh_CN` keyboard's.
+ */
+internal fun orderBuiltInLayouts(
+    layouts: List<LetterLayout>,
+    keyboardLocale: String?,
+    chosenId: String?,
+): List<LetterLayout> {
+    val collator = Collator.getInstance()
+    val byName = Comparator<LetterLayout> { a, b -> collator.compare(a.name, b.name) }.thenBy { it.id }
+    val (forKeyboard, others) = layouts.partition {
+        !keyboardLocale.isNullOrEmpty() && it.binding.isLanguageBound && it.binding.matchesLanguage(keyboardLocale)
+    }
+    return forKeyboard.sortedWith(compareByDescending<LetterLayout> { it.id == chosenId }.then(byName)) +
+        others.sortedWith(byName)
+}
+
+/**
+ * A layout row's second line: "German · QWERTZ keypad · 30 keys" — the languages it is bound to
+ * (by name; "All keyboards" when none), the keypad shape or type it is bound to, and how many keys
+ * it names. When it is bound to a keypad this phone does not have, a second line says it does
+ * nothing here. A phone whose keypad is unknown gets no such line: unknown is not different.
+ *
+ * @param languageName a language code's display name; the keyboard's own names by default.
+ */
+internal fun layoutSummary(
+    context: Context,
+    layout: LetterLayout,
+    phoneKeypad: String?,
+    phoneKeypadType: String?,
+    languageName: (String) -> String = ::languageDisplayName,
+): String {
+    val binding = layout.binding
+    val parts = ArrayList<String>(3)
+    parts += if (binding.languages.isEmpty()) {
+        context.getString(R.string.settings_pkb_layouts_any_language)
+    } else {
+        binding.languages.joinToString(", ") { languageName(it) }
+    }
+    if (binding.keypad != LetterLayout.ANY) {
+        parts += context.getString(R.string.settings_pkb_layouts_keypad, binding.keypad.uppercase(Locale.ROOT))
+    }
+    if (binding.keypadType != LetterLayout.ANY) {
+        parts += if (binding.keypadType == LetterLayout.KEYPAD_TYPE_THREE_ROW) {
+            context.getString(R.string.settings_pkb_layouts_three_row)
+        } else {
+            binding.keypadType
+        }
+    }
+    val details = context.getString(R.string.settings_pkb_layouts_details, parts.joinToString(" · "), layout.keyCount)
+    val notThisKeypad =
+        (binding.keypad != LetterLayout.ANY && phoneKeypad != null &&
+            !phoneKeypad.equals(binding.keypad, ignoreCase = true)) ||
+            (binding.keypadType != LetterLayout.ANY && phoneKeypadType != null &&
+                !binding.keypadTypeMatches(phoneKeypadType))
+    return if (notThisKeypad) details + "\n" + context.getString(R.string.settings_pkb_layouts_other_keypad) else details
+}
+
+/** "iw" → "Hebrew", in the phone's language, the way the keyboard names its languages elsewhere. */
+private fun languageDisplayName(code: String): String = try {
+    ResourceLocaleUtils.getSubtypeLocaleDisplayName(code).takeIf { it.isNotBlank() } ?: code
+} catch (e: RuntimeException) {
+    code
+}
+
+/**
+ * The current keyboard's locale in the app's spelling. Settings can open before the keyboard has
+ * been shown in this process; [SubtypeManager] then answers with the phone's language, a fair
+ * guess at the keyboard someone opening this screen types with.
+ */
+private fun currentKeyboardLocale(): String? = try {
+    LocaleUtils.localeString(SubtypeManager.getInstance().currentSubtypeLocale)
+} catch (e: RuntimeException) {
+    null
+}
+
+/** The current keyboard's layout set (`translit`, `qwerty`, …): a document bound to one applies only there. */
+private fun currentKeyboardLayoutSet(): String? = try {
+    SubtypeManager.getInstance()?.currentSubtype?.let { ResourceLocaleUtils.getKeyboardLayoutSetName(it) }
+} catch (e: RuntimeException) {
+    null
+}
+
+/** Writes built-in [id]'s document to [uri], the file the picker just created. */
+private suspend fun saveBuiltIn(context: Context, registry: LetterLayoutRegistry, id: String, uri: Uri): Boolean =
+    withContext(Dispatchers.IO) {
+        val layout = registry.builtIn(id) ?: return@withContext false
+        try {
+            val stream = context.contentResolver.openOutputStream(uri, "wt")
+                ?: return@withContext false
+            stream.use { it.write(LetterLayoutXml.serialize(layout).toByteArray(Charsets.UTF_8)) }
+            true
+        } catch (e: Exception) {
+            Logger.warn(TAG, "Could not save built-in $id: ${e.message}")
+            false
+        }
+    }
+
+private fun share(context: Context, registry: LetterLayoutRegistry, layout: LetterLayout) {
+    val file = registry.fileFor(layout.id)
+    val intent = if (file.isFile) {
+        DeviceProfileExporter.shareIntent(
+            context,
+            file,
+            context.getString(R.string.settings_pkb_layouts_share_chooser),
+            LetterLayoutXml.MIME_TYPE,
+        )
+    } else null
+    if (intent == null) {
+        toast(context, R.string.settings_pkb_layouts_share_failed)
+        return
+    }
+    try {
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        toast(context, R.string.settings_pkb_layouts_share_failed)
+    }
+}
+
+private fun toast(context: Context, @StringRes message: Int) {
+    Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
+}

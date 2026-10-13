@@ -2,6 +2,8 @@ package dev.bbkb.ime.core.keyevent
 
 import android.view.KeyEvent
 import dev.bbkb.ime.core.device.config.model.AltMappingsTable
+import dev.bbkb.ime.core.layout.LetterLayoutXml
+import dev.bbkb.ime.core.layout.PhysicalKeyResolver
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
@@ -10,6 +12,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import java.util.Locale
 
 /**
  * Pins the tier chain of [AuxCharacterResolver] — and, above all, pins that there is no tier
@@ -90,33 +93,31 @@ class AuxCharacterResolverTest {
         assertEquals("xml", result.source)
     }
 
-    // ── tier 0: the user's letter map ────────────────────────────────────────
+    // ── tier 0: the user's letter layout ─────────────────────────────────────
 
-    private fun withUserMap(keys: String, locales: String = "", block: () -> Unit) {
-        val saved = Triple(
-            HardwareScriptLayouts.userMapSource,
-            HardwareScriptLayouts.languageSource,
-            HardwareScriptLayouts.keypadLayoutSource,
+    private fun withUserMap(keys: String, languages: String = "", block: () -> Unit) {
+        val saved = PhysicalKeyResolver.Snapshot()
+        val map = LetterLayoutXml.parse(
+            """<letter-layout version="1" id="t" name="t">
+                <bind languages="$languages" keypad="qwerty"/>
+                $keys
+            </letter-layout>"""
         )
-        val map = UserLetterMap.parse(
-            """{"format": "bbkb-layout", "version": 1, "kind": "pkb", "id": "t", "name": "t",
-                "bind": {"locales": [$locales], "keypadLayout": "qwerty"}, "keys": $keys}"""
-        )
-        HardwareScriptLayouts.userMapSource = { map }
-        HardwareScriptLayouts.languageSource = { "en" }
-        HardwareScriptLayouts.keypadLayoutSource = { "qwerty" }
+        // Only the user tier: no built-in documents, as on a keyboard whose language has none.
+        PhysicalKeyResolver.userLayoutSource = { map }
+        PhysicalKeyResolver.builtIns = null
+        PhysicalKeyResolver.localeSource = { Locale.ENGLISH }
+        PhysicalKeyResolver.keypadLayoutSource = { "qwerty" }
         try {
             block()
         } finally {
-            HardwareScriptLayouts.userMapSource = saved.first
-            HardwareScriptLayouts.languageSource = saved.second
-            HardwareScriptLayouts.keypadLayoutSource = saved.third
+            saved.restore()
         }
     }
 
     @Test
     fun userMap_outranksTheDeviceTable_forTheKeysItNames() = withUserMap(
-        """{"KEYCODE_Z": {"base": "z", "alt": "§"}}"""
+        """<key code="KEYCODE_Z" keySpec="z" alt="§"/>"""
     ) {
         val resolver = AuxCharacterResolver.Builder()
             .withAltMappingsTable(tableOf(KeyEvent.KEYCODE_Z to '7', KeyEvent.KEYCODE_X to '8'))
@@ -132,7 +133,7 @@ class AuxCharacterResolverTest {
 
     @Test
     fun userMap_boundToAnotherKeyboard_isNotConsulted() = withUserMap(
-        """{"KEYCODE_Z": {"base": "z", "alt": "§"}}""", locales = "\"fr\""
+        """<key code="KEYCODE_Z" keySpec="z" alt="§"/>""", languages = "fr"
     ) {
         val resolver = AuxCharacterResolver.Builder()
             .withAltMappingsTable(tableOf(KeyEvent.KEYCODE_Z to '7'))
@@ -142,7 +143,7 @@ class AuxCharacterResolverTest {
 
     @Test
     fun userMap_canGiveACharacterOutsideTheBmp() = withUserMap(
-        """{"KEYCODE_Z": {"base": "z", "alt": "😀"}}"""
+        """<key code="KEYCODE_Z" keySpec="z" alt="😀"/>"""
     ) {
         val result = AuxCharacterResolver.Builder().build().resolve(KeyEvent.KEYCODE_Z)
         assertTrue(result.hasCharacter())

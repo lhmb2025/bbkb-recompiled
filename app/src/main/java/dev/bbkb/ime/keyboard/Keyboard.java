@@ -13,11 +13,9 @@ import dev.bbkb.ime.keyboard.internal.MoreKeySpec;
 import dev.bbkb.ime.keyboard.internal.KeyboardIconSet;
 import dev.bbkb.ime.keyboard.internal.KeyboardId;
 import dev.bbkb.ime.keyboard.internal.KeyboardParams;
-import dev.bbkb.ime.keyboard.internal.PhysicalKeySpecTable;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,8 +71,6 @@ public class Keyboard {
 
     private final boolean mAllowRedundantMoreKeys;
 
-    private final PhysicalKeySpecTable mPhysicalKeyboardRow;
-
     private final Locale mLocale;
 
     public Keyboard(KeyboardParams c1025ah) {
@@ -102,7 +98,6 @@ public class Keyboard {
         this.mIconsSet = c1025ah.mIconsSet;
         this.mProximityGrid = new ProximityGrid(c1025ah.mGridWidth, c1025ah.mGridHeight, this.mOccupiedWidth, this.mOccupiedHeight, this.mMostCommonKeyWidth, this.mSortedKeys);
         this.mAllowRedundantMoreKeys = c1025ah.mAllowRedundantMoreKeys;
-        this.mPhysicalKeyboardRow = c1025ah.mPhysicalKeyboardRow;
         int iM6595g = computeDefaultMetaState();
         this.mDefaultKeyInterpretation = new KeyCharacterInterpreter.MetaMask(iM6595g, iM6595g);
     }
@@ -132,7 +127,6 @@ public class Keyboard {
         this.mIconsSet = c0965e.mIconsSet;
         this.mProximityGrid = c0965e.mProximityGrid;
         this.mAllowRedundantMoreKeys = c0965e.mAllowRedundantMoreKeys;
-        this.mPhysicalKeyboardRow = c0965e.mPhysicalKeyboardRow;
         this.mDefaultKeyInterpretation = c0965e.mDefaultKeyInterpretation;
     }
 
@@ -287,46 +281,12 @@ public class Keyboard {
         return this.mKeysByScanCode.get(i);
     }
 
-    public String[] getMultiTapAlternates(String str) {
-        PhysicalKeySpecTable c1026ai = this.mPhysicalKeyboardRow;
-        if (c1026ai != null) {
-            return c1026ai.getMultiTapAlternates(str);
-        }
-        return null;
-    }
-
-    public String[] getMultiTapSequence(String str) {
-        PhysicalKeySpecTable c1026ai = this.mPhysicalKeyboardRow;
-        if (c1026ai != null) {
-            return c1026ai.getMultiTapSequence(str);
-        }
-        return null;
-    }
-
-    /** The physical-key table's {@code characterMapKeys} for {@code str}: its Shift legend. */
-    public String[] getCharacterMapKeys(String str) {
-        PhysicalKeySpecTable c1026ai = this.mPhysicalKeyboardRow;
-        if (c1026ai != null) {
-            return c1026ai.getCharacterMapKeys(str);
-        }
-        return null;
-    }
-
     public String[] getKeyLabelSetForCode(int i) {
         Key keyM6604b = getKeyByCode(i);
         if (keyM6604b == null || !keyM6604b.isActive()) {
             return null;
         }
         return keyM6604b.getKeyLabelSet();
-    }
-
-
-    public HashMap<String, String[]> getMultiTapHash() {
-        PhysicalKeySpecTable c1026ai = this.mPhysicalKeyboardRow;
-        if (c1026ai != null) {
-            return c1026ai.getMultiTapHash();
-        }
-        return null;
     }
 
     public KeyCharacterInterpreter.MetaMask getDefaultKeyInterpretation() {

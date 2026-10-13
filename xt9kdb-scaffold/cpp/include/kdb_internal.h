@@ -126,7 +126,13 @@ extern ET9U32 g_kdb_checksum;
  * each variant file's raw bytes (copied) and then requests the variant; SetKdbNum prefers a
  * registered (variant,pid,sid) node and falls back to the blob-built index (the root layouts).
  * Setting a different variant (or "" / NULL for default) invalidates the active KDB so the next
- * SetKdbNum reloads. register returns 0 on success, -1 on bad args / unparsable header / OOM. */
+ * SetKdbNum reloads. register returns 0 on success, -1 on bad args / unparsable header / OOM /
+ * a name of XT9KDB_VARIANT_NAME_MAX bytes or more.
+ *
+ * Besides the device variants, the shim registers the KDBs it generates for a letter layout
+ * (LetterLayoutKdb) as "layout:<id>", with ids of up to 64 characters — hence the length. A name
+ * is refused rather than cut short, so two long names can never select each other's layouts. */
+#define XT9KDB_VARIANT_NAME_MAX 80
 int  xt9kdb_register_variant_kdb(const char* variant, const ET9U8* xml, ET9U32 len);
 void xt9kdb_set_requested_variant(const char* v);
 

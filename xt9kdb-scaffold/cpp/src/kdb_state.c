@@ -10,6 +10,7 @@
 #include "et9kdb.h"
 #include "et9_context.h"
 #include "kdb_internal.h"
+#include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -25,7 +26,7 @@
  * layout overrides the root copy per (pid,sid) and everything else falls back to root. */
 typedef struct Xt9VariantNode {
     ET9U32 pid, sid;
-    char   variant[24];
+    char   variant[XT9KDB_VARIANT_NAME_MAX];
     ET9U8* contents;                 /* malloc'd copy, owned by the registry */
     ET9U32 size;
     struct Xt9VariantNode* next;
@@ -34,7 +35,7 @@ static Xt9VariantNode* g_variant_head;
 
 /* Requested device variant, set by the shim from the matched device config.
  * Empty => default (blob-index (pid,sid) match), preserving original behaviour. */
-static char g_req_variant[24];
+static char g_req_variant[XT9KDB_VARIANT_NAME_MAX];
 
 /* Active-KDB state (owned). g_active_src points at whichever node (registry or blob index) is
  * loaded, so SetKdbNum reloads only on a real change (selector OR variant), and
@@ -43,29 +44,41 @@ static const void* g_active_src;
 static ET9U32      g_active_selector;
 static int         g_active_valid;
 
+/* One lock over the registry, the requested variant and the active-node marker. The shim writes
+ * the registry from its own registration thread while the engine thread picks from it and parses
+ * a node's bytes in SetKdbNum. That used to be safe by timing alone — the device variant was
+ * registered once at start-up, before the first layout load — but a letter layout switched on in
+ * settings re-registers a variant's files mid-session, and re-registering frees the bytes a
+ * concurrent load may be reading. Never held across a call back into the shim. */
+static pthread_mutex_t g_variant_mu = PTHREAD_MUTEX_INITIALIZER;
+
 void xt9kdb_set_requested_variant(const char* v) {
     char nv[sizeof(g_req_variant)] = {0};
     if (v) { strncpy(nv, v, sizeof(nv) - 1); }
+    pthread_mutex_lock(&g_variant_mu);
     if (strcmp(nv, g_req_variant) != 0) {
         memcpy(g_req_variant, nv, sizeof(nv));
         /* Variant changed: force a re-pick + reload on the next SetKdbNum. */
         g_active_src = 0; g_active_valid = 0;
     }
+    pthread_mutex_unlock(&g_variant_mu);
 }
 
 int xt9kdb_register_variant_kdb(const char* variant, const ET9U8* xml, ET9U32 len) {
     ET9U32 pid, sid;
     if (!variant || !variant[0] || !xml || !len) return -1;
+    if (strlen(variant) >= XT9KDB_VARIANT_NAME_MAX) return -1;   /* refused, never cut short */
     if (xt9kdb_scan_kdb_ids(xml, len, &pid, &sid) != 0) return -1;
-    Xt9VariantNode* n;
-    for (n = g_variant_head; n; n = n->next)
-        if (n->pid == pid && n->sid == sid && strcmp(n->variant, variant) == 0) break;
     ET9U8* copy = (ET9U8*)malloc(len);
     if (!copy) return -1;
     memcpy(copy, xml, len);
+    pthread_mutex_lock(&g_variant_mu);
+    Xt9VariantNode* n;
+    for (n = g_variant_head; n; n = n->next)
+        if (n->pid == pid && n->sid == sid && strcmp(n->variant, variant) == 0) break;
     if (!n) {
         n = (Xt9VariantNode*)calloc(1, sizeof(*n));
-        if (!n) { free(copy); return -1; }
+        if (!n) { pthread_mutex_unlock(&g_variant_mu); free(copy); return -1; }
         strncpy(n->variant, variant, sizeof(n->variant) - 1);
         n->pid = pid; n->sid = sid;
         n->next = g_variant_head; g_variant_head = n;
@@ -74,6 +87,7 @@ int xt9kdb_register_variant_kdb(const char* variant, const ET9U8* xml, ET9U32 le
         if (g_active_src == n) { g_active_src = 0; g_active_valid = 0; }  /* content changed */
     }
     n->contents = copy; n->size = len;
+    pthread_mutex_unlock(&g_variant_mu);
     return 0;
 }
 
@@ -93,7 +107,9 @@ static ET9U8  g_mode_regional, g_mode_discrete, g_mode_ambig, g_mode_multitap;
 
 ET9STATUS XT9KDB(Init)(ET9KDBInfoPtr ctx) {
     if (!ctx) return ET9STATUS_INVALID_MEMORY;
+    pthread_mutex_lock(&g_variant_mu);
     g_active_src = 0; g_active_selector = 0; g_active_valid = 0;
+    pthread_mutex_unlock(&g_variant_mu);
     g_page = 0; g_regionality = 0;
     g_mode_regional = g_mode_discrete = g_mode_ambig = g_mode_multitap = 0;
     /* The variant registry + requested variant survive Init: the shim registers them once per
@@ -110,8 +126,18 @@ static ET9KdbNode* pick_node(ET9KdbIndex* idx, ET9U32 pid, ET9U32 sid) {
     return 0;
 }
 
+static ET9STATUS set_kdb_num_locked(ET9KDBInfoPtr ctx, ET9U32 selector, ET9U32 flags);
+
 ET9STATUS XT9KDB(SetKdbNum)(ET9KDBInfoPtr ctx, ET9U32 selector, ET9U32 flags) {
     if (!ctx) return ET9STATUS_INVALID_MEMORY;
+    /* Held from the pick through the parse: the node's bytes must outlive Load_XmlKDB. */
+    pthread_mutex_lock(&g_variant_mu);
+    ET9STATUS st = set_kdb_num_locked(ctx, selector, flags);
+    pthread_mutex_unlock(&g_variant_mu);
+    return st;
+}
+
+static ET9STATUS set_kdb_num_locked(ET9KDBInfoPtr ctx, ET9U32 selector, ET9U32 flags) {
     ET9U32 pid = selector & 0xff, sid = (selector >> 8) & 0xff;
     const int is_pkb = (sid == ET9_KDB_SID_PKB);
     /* Owned variant registry first (assets/kdb/<variant>/), blob index (assets/kdb/) as the
@@ -165,11 +191,21 @@ ET9STATUS XT9KDB(SetKdbNum)(ET9KDBInfoPtr ctx, ET9U32 selector, ET9U32 flags) {
     return ET9STATUS_NONE;
 }
 
-ET9U32    XT9KDB(GetKdbNum)(ET9KDBInfoPtr ctx) { (void)ctx; return g_active_valid ? g_active_selector : 0; }
+ET9U32    XT9KDB(GetKdbNum)(ET9KDBInfoPtr ctx) {
+    (void)ctx;
+    pthread_mutex_lock(&g_variant_mu);
+    ET9U32 num = g_active_valid ? g_active_selector : 0;
+    pthread_mutex_unlock(&g_variant_mu);
+    return num;
+}
 
 /* Clear the active marker so the next SetKdbNum re-parses (e.g. after the index/asset changes). */
 ET9STATUS XT9KDB(InvalidateLoadedKdbInfo)(ET9KDBInfoPtr ctx) {
-    (void)ctx; g_active_src = 0; g_active_valid = 0; return ET9STATUS_NONE;
+    (void)ctx;
+    pthread_mutex_lock(&g_variant_mu);
+    g_active_src = 0; g_active_valid = 0;
+    pthread_mutex_unlock(&g_variant_mu);
+    return ET9STATUS_NONE;
 }
 
 ET9STATUS XT9KDB(SetPageNum)(ET9KDBInfoPtr ctx, ET9U16 p) { (void)ctx; g_page = p; return ET9STATUS_NONE; }

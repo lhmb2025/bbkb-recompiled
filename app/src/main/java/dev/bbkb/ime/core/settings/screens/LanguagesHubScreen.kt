@@ -73,7 +73,7 @@ import dev.bbkb.ime.core.languagepack.PackOfferSource
 import dev.bbkb.ime.core.languagepack.PackState
 import dev.bbkb.ime.core.languagepack.PackText
 import dev.bbkb.ime.core.device.profile.DeviceProfile
-import dev.bbkb.ime.core.keyevent.HardwareScriptLayouts
+import dev.bbkb.ime.core.layout.PhysicalKeyResolver
 import dev.bbkb.ime.core.locale.KeyboardLanguages
 import dev.bbkb.ime.core.locale.SubtypeEnabler
 import dev.bbkb.ime.core.settings.PrefsManager
@@ -112,7 +112,7 @@ fun LanguagesHubScreen(
     val direct = remember { SubtypeEnabler.canEnableDirectly() }
     val hasPhysicalKeyboard = remember { DeviceProfile.current()?.hasPhysicalKeyboard() ?: false }
     val prefs = remember { PrefsManager.getPrefs(context) }
-    var keysFollowAlphabet by remember { mutableStateOf(prefs.getBoolean(HardwareScriptLayouts.PREF_KEY, true)) }
+    var keysFollowAlphabet by remember { mutableStateOf(prefs.getBoolean(PhysicalKeyResolver.PREF_KEY, true)) }
 
     var snapshot by remember { mutableStateOf<KeyboardLanguages.Snapshot?>(null) }
     var packs by remember { mutableStateOf<Packs?>(null) }
@@ -250,7 +250,7 @@ fun LanguagesHubScreen(
             // Only where it means something: a phone with physical keys, and at least one
             // enabled keyboard whose alphabet those keys can type (Arabic, Cyrillic, Hebrew,
             // Greek, Korean). Everyone else never sees the row.
-            if (hasPhysicalKeyboard && current?.keyboards.orEmpty().any { HardwareScriptLayouts.supportsLocale(it.locales.first()) }) {
+            if (hasPhysicalKeyboard && current?.keyboards.orEmpty().any { PhysicalKeyResolver.supportsLocale(it.locales.first()) }) {
                 item(key = "pkb-alphabet") {
                     SwitchPreference(
                         title = stringResource(R.string.settings_pkb_active_language_alphabet_title),
@@ -263,7 +263,7 @@ fun LanguagesHubScreen(
                         modifier = Modifier.settingsSearchAnchor("pref_pkb_active_language_alphabet"),
                         onCheckedChange = { on ->
                             keysFollowAlphabet = on
-                            prefs.edit().putBoolean(HardwareScriptLayouts.PREF_KEY, on).apply()
+                            prefs.edit().putBoolean(PhysicalKeyResolver.PREF_KEY, on).apply()
                         },
                     )
                 }

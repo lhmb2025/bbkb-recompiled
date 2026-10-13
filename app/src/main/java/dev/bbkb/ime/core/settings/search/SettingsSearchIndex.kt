@@ -153,7 +153,7 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.pref_alt_double_tap_lock, "alt double tap lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_alt_double_tap_lock"),
         // The screen itself, so no anchor; its Nav row on Physical keyboard is behind the same
         // physical-keyboard gate.
-        SearchableSetting(R.string.settings_pkb_letter_maps_title, "custom physical layout letter map remap keys keycaps alphabet qwerty qwertz azerty json import", SettingsRoute.CustomPhysicalLayouts.route, TYPING, requires = DeviceRequirement.PHYSICAL_KEYBOARD),
+        SearchableSetting(R.string.settings_pkb_layouts_title, "physical layouts custom built-in builtin letter layout map remap keys keycaps alphabet qwerty qwertz azerty xml import template save file export share", SettingsRoute.PhysicalLayouts.route, TYPING, requires = DeviceRequirement.PHYSICAL_KEYBOARD),
 
         // ── Typing & input: Voice input ─────────────────────────────────────────
         SearchableSetting(R.string.settings_voice_builtin_title, "voice dictation speech", SettingsRoute.VoiceInput.route, TYPING, "voice_input_enabled"),
@@ -280,7 +280,7 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_backup_restore_title, "backup back up restore export import save load settings layouts words file zip copy transfer migrate google account", SettingsRoute.Advanced.route, ADVANCED, ManageDataAnchors.BACKUP_RESTORE),
         SearchableSetting(R.string.settings_reset_title, "reset clear settings layouts words dictionary learned defaults erase wipe data", SettingsRoute.Advanced.route, ADVANCED, ManageDataAnchors.RESET),
         SearchableSetting(R.string.backup_save_title, "backup back up export save settings layouts symbol page slideboard quick phrases custom physical layout dictionary shortcuts learned words file zip", SettingsRoute.BackupRestore.route, ADVANCED, BackupAnchors.SAVE),
-        SearchableSetting(R.string.backup_restore_file_title, "restore import load settings layouts letter map dictionary words file zip json backup transfer migrate", SettingsRoute.BackupRestore.route, ADVANCED, BackupAnchors.RESTORE),
+        SearchableSetting(R.string.backup_restore_file_title, "restore import load settings layouts letter layout map dictionary words file zip json xml backup transfer migrate", SettingsRoute.BackupRestore.route, ADVANCED, BackupAnchors.RESTORE),
         SearchableSetting(R.string.backup_phone_include_title, "phone backup google account cloud automatic android back up sync", SettingsRoute.BackupRestore.route, ADVANCED, BackupAnchors.PHONE),
         // ── Advanced: OTA app updates (About -> Updates) ────────────────────────
         SearchableSetting(R.string.settings_updates_title, "update ota new version apk download install upgrade", SettingsRoute.Updates.route, ADVANCED),
