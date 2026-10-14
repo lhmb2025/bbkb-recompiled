@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">वर्तनी जांच के लिए संपर्कों का उपयोग करें</string>
     <string name="pref_alt_double_tap_lock">Alt डबल-क्लिक लॉक सक्षम करें</string>
     <string name="pref_alt_double_tap_lock_summary">Alt पर डबल-क्लिक करने से वह लॉक हो जाएगी. दोबारा Alt क्लिक करने पर वह बंद हो जाएगी.</string>
+    <string name="pref_ctrl_double_tap_lock">Ctrl डबल-क्लिक लॉक सक्षम करें</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ctrl पर डबल-क्लिक करने से वह लॉक हो जाएगी. दोबारा Ctrl क्लिक करने पर वह बंद हो जाएगी.</string>
     <string name="pref_override_device_meta_state">डिवाइस मेटा स्थिति ओवरराइड करें</string>
     <string name="pref_override_device_meta_state_summary">डिवाइस के KCM कॉन्फ़िगरेशन की परवाह किए बिना भौतिक कीबोर्ड पर स्टिकी मॉडिफ़ायर (shift/alt लॉक) सक्षम करें.</string>
     <string name="pref_shift_double_tap_lock">Shift डबल-क्लिक लॉक सक्षम करें</string>

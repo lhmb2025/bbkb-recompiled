@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Nganggo kontak kanggo mriksa ejaan</string>
     <string name="pref_alt_double_tap_lock">Aktifake kunci Alt kanthi klik pindho</string>
     <string name="pref_alt_double_tap_lock_summary">Ngeklik Alt kaping pindho bakal ngunci. Ngeklik Alt maneh bakal mbukak kuncine.</string>
+    <string name="pref_ctrl_double_tap_lock">Aktifake kunci Ctrl kanthi klik pindho</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ngeklik Ctrl kaping pindho bakal ngunci. Ngeklik Ctrl maneh bakal mbukak kuncine.</string>
     <string name="pref_override_device_meta_state">Timpa meta state piranti</string>
     <string name="pref_override_device_meta_state_summary">Aktifake modifier lengket (kunci shift/alt) ing papan tombol fisik tanpa nggatekake konfigurasi KCM piranti.</string>
     <string name="pref_shift_double_tap_lock">Aktifake kunci Shift kanthi klik pindho</string>

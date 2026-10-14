@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">使用聯絡人進行拼字檢查</string>
     <string name="pref_alt_double_tap_lock">啟用 Alt 連按兩下鎖定</string>
     <string name="pref_alt_double_tap_lock_summary">連按兩下 Alt 會將它鎖定，再按一次 Alt 即可關閉。</string>
+    <string name="pref_ctrl_double_tap_lock">啟用 Ctrl 連按兩下鎖定</string>
+    <string name="pref_ctrl_double_tap_lock_summary">連按兩下 Ctrl 會將它鎖定，再按一次 Ctrl 即可關閉。</string>
     <string name="pref_override_device_meta_state">覆寫裝置 meta 狀態</string>
     <string name="pref_override_device_meta_state_summary">無論裝置的 KCM 設定為何，都在實體鍵盤上啟用黏性輔助按鍵 (Shift/Alt 鎖定)。</string>
     <string name="pref_shift_double_tap_lock">啟用 Shift 連按兩下鎖定</string>

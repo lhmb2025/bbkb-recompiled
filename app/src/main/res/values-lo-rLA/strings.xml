@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">ໃຊ້ລາຍຊື່ຜູ້ຕິດຕໍ່ໃນການກວດການສະກົດຄຳ</string>
     <string name="pref_alt_double_tap_lock">ເປີດໃຊ້ການລັອກ Alt ດ້ວຍການກົດສອງເທື່ອ</string>
     <string name="pref_alt_double_tap_lock_summary">ການກົດ Alt ສອງເທື່ອຈະລັອກມັນໄວ້. ກົດ Alt ອີກເທື່ອໜຶ່ງເພື່ອປິດ.</string>
+    <string name="pref_ctrl_double_tap_lock">ເປີດໃຊ້ການລັອກ Ctrl ດ້ວຍການກົດສອງເທື່ອ</string>
+    <string name="pref_ctrl_double_tap_lock_summary">ການກົດ Ctrl ສອງເທື່ອຈະລັອກມັນໄວ້. ກົດ Ctrl ອີກເທື່ອໜຶ່ງເພື່ອປິດ.</string>
     <string name="pref_override_device_meta_state">ແທນທີ່ສະຖານະ meta ຂອງອຸປະກອນ</string>
     <string name="pref_override_device_meta_state_summary">ເປີດໃຊ້ປຸ່ມດັດແປງແບບຄ້າງ (ລັອກ shift/alt) ເທິງແປ້ນພິມແທ້ ໂດຍບໍ່ຄຳນຶງເຖິງການກຳນົດຄ່າ KCM ຂອງອຸປະກອນ.</string>
     <string name="pref_shift_double_tap_lock">ເປີດໃຊ້ການລັອກ Shift ດ້ວຍການກົດສອງເທື່ອ</string>

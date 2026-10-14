@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">კონტაქტების გამოყენება მართლწერის შემოწმებისას</string>
     <string name="pref_alt_double_tap_lock">Alt-ის ორმაგი დაჭერით ჩაკეტვის ჩართვა</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-ზე ორჯერ დაჭერა მას ჩაკეტავს. Alt-ზე ხელახლა დაჭერა გამორთავს.</string>
+    <string name="pref_ctrl_double_tap_lock">Ctrl-ის ორმაგი დაჭერით ჩაკეტვის ჩართვა</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ctrl-ზე ორჯერ დაჭერა მას ჩაკეტავს. Ctrl-ზე ხელახლა დაჭერა გამორთავს.</string>
     <string name="pref_override_device_meta_state">მოწყობილობის მეტა-მდგომარეობის გადაფარვა</string>
     <string name="pref_override_device_meta_state_summary">წებოვანი მოდიფიკატორების (Shift/Alt ჩაკეტვა) ჩართვა ფიზიკურ კლავიატურებზე მოწყობილობის KCM კონფიგურაციის მიუხედავად.</string>
     <string name="pref_shift_double_tap_lock">Shift-ის ორმაგი დაჭერით ჩაკეტვის ჩართვა</string>

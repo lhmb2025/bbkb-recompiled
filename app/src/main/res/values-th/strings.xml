@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">ใช้รายชื่อสำหรับการตรวจการสะกด</string>
     <string name="pref_alt_double_tap_lock">เปิดใช้งานการล็อก Alt ด้วยการกดสองครั้ง</string>
     <string name="pref_alt_double_tap_lock_summary">การกด Alt สองครั้งจะล็อกให้เปิดค้างไว้ กด Alt อีกครั้งเพื่อปิด</string>
+    <string name="pref_ctrl_double_tap_lock">เปิดใช้งานการล็อก Ctrl ด้วยการกดสองครั้ง</string>
+    <string name="pref_ctrl_double_tap_lock_summary">การกด Ctrl สองครั้งจะล็อกให้เปิดค้างไว้ กด Ctrl อีกครั้งเพื่อปิด</string>
     <string name="pref_override_device_meta_state">แทนที่สถานะเมตาของอุปกรณ์</string>
     <string name="pref_override_device_meta_state_summary">เปิดใช้งานปุ่มปรับเปลี่ยนแบบค้าง (ล็อก Shift/Alt) บนแป้นพิมพ์จริง โดยไม่คำนึงถึงการกำหนดค่า KCM ของอุปกรณ์</string>
     <string name="pref_shift_double_tap_lock">เปิดใช้งานการล็อก Shift ด้วยการกดสองครั้ง</string>

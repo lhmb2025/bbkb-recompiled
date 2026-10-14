@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">スペルチェックに連絡先を使用</string>
     <string name="pref_alt_double_tap_lock">Altのダブルクリックロックを有効にする</string>
     <string name="pref_alt_double_tap_lock_summary">Altをダブルクリックするとオンで固定されます。もう一度Altを押すと解除されます。</string>
+    <string name="pref_ctrl_double_tap_lock">Ctrlのダブルクリックロックを有効にする</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ctrlをダブルクリックするとオンで固定されます。もう一度Ctrlを押すと解除されます。</string>
     <string name="pref_override_device_meta_state">端末のメタ状態を上書き</string>
     <string name="pref_override_device_meta_state_summary">端末のKCM設定に関係なく、物理キーボードで固定修飾キー(Shift/Altロック)を有効にします。</string>
     <string name="pref_shift_double_tap_lock">Shiftのダブルクリックロックを有効にする</string>

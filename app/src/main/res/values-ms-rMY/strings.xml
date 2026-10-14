@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Gunakan kenalan untuk semakan ejaan</string>
     <string name="pref_alt_double_tap_lock">Dayakan kunci klik dua kali Alt</string>
     <string name="pref_alt_double_tap_lock_summary">Mengklik Alt dua kali akan menguncinya. Mengklik Alt sekali lagi akan mematikannya.</string>
+    <string name="pref_ctrl_double_tap_lock">Dayakan kunci klik dua kali Ctrl</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Mengklik Ctrl dua kali akan menguncinya. Mengklik Ctrl sekali lagi akan mematikannya.</string>
     <string name="pref_override_device_meta_state">Ganti keadaan meta peranti</string>
     <string name="pref_override_device_meta_state_summary">Dayakan pengubah melekat (kunci shift/alt) pada papan kekunci fizikal tanpa mengira konfigurasi KCM peranti.</string>
     <string name="pref_shift_double_tap_lock">Dayakan kunci klik dua kali Shift</string>

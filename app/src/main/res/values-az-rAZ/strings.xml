@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Orfoqrafik yoxlanış üçün kontaktlardan istifadə edin</string>
     <string name="pref_alt_double_tap_lock">Alt ikiqat klikləmə kilidini aktivləşdirin</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-a ikiqat klikləmə onu kilidləyəcək. Alt-a yenidən klikləmə onu söndürəcək.</string>
+    <string name="pref_ctrl_double_tap_lock">Ctrl ikiqat klikləmə kilidini aktivləşdirin</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ctrl-a ikiqat klikləmə onu kilidləyəcək. Ctrl-a yenidən klikləmə onu söndürəcək.</string>
     <string name="pref_override_device_meta_state">Cihazın meta vəziyyətini ləğv edin</string>
     <string name="pref_override_device_meta_state_summary">Cihazın KCM konfiqurasiyasından asılı olmayaraq fiziki klaviaturalarda yapışqan modifikatorları (shift/alt kilidi) aktivləşdirin.</string>
     <string name="pref_shift_double_tap_lock">Shift ikiqat klikləmə kilidini aktivləşdirin</string>

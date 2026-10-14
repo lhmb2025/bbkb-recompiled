@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Използване на контактите при правописна проверка</string>
     <string name="pref_alt_double_tap_lock">Включване на заключване с двойно натискане на Alt</string>
     <string name="pref_alt_double_tap_lock_summary">Двойното натискане на Alt го заключва. Повторното натискане на Alt го изключва.</string>
+    <string name="pref_ctrl_double_tap_lock">Включване на заключване с двойно натискане на Ctrl</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Двойното натискане на Ctrl го заключва. Повторното натискане на Ctrl го изключва.</string>
     <string name="pref_override_device_meta_state">Заместване на мета състоянието на устройството</string>
     <string name="pref_override_device_meta_state_summary">Включва задържащи се модификатори (заключване на Shift/Alt) на физически клавиатури независимо от конфигурацията KCM на устройството.</string>
     <string name="pref_shift_double_tap_lock">Включване на заключване с двойно натискане на Shift</string>

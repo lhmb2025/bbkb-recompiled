@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Gunakan kontak untuk pemeriksaan ejaan</string>
     <string name="pref_alt_double_tap_lock">Aktifkan kunci klik ganda Alt</string>
     <string name="pref_alt_double_tap_lock_summary">Mengeklik Alt dua kali akan menguncinya tetap aktif. Klik Alt lagi untuk menonaktifkannya.</string>
+    <string name="pref_ctrl_double_tap_lock">Aktifkan kunci klik ganda Ctrl</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Mengeklik Ctrl dua kali akan menguncinya tetap aktif. Klik Ctrl lagi untuk menonaktifkannya.</string>
     <string name="pref_override_device_meta_state">Timpa status meta perangkat</string>
     <string name="pref_override_device_meta_state_summary">Aktifkan pengubah lengket (kunci shift/alt) pada keyboard fisik terlepas dari konfigurasi KCM perangkat.</string>
     <string name="pref_shift_double_tap_lock">Aktifkan kunci klik ganda Shift</string>

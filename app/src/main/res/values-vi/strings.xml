@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Dùng danh bạ để kiểm tra chính tả</string>
     <string name="pref_alt_double_tap_lock">Bật khóa Alt khi nhấn đúp</string>
     <string name="pref_alt_double_tap_lock_summary">Nhấn đúp phím Alt sẽ khóa phím này. Nhấn Alt lần nữa để tắt.</string>
+    <string name="pref_ctrl_double_tap_lock">Bật khóa Ctrl khi nhấn đúp</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Nhấn đúp phím Ctrl sẽ khóa phím này. Nhấn Ctrl lần nữa để tắt.</string>
     <string name="pref_override_device_meta_state">Ghi đè trạng thái meta của thiết bị</string>
     <string name="pref_override_device_meta_state_summary">Bật phím bổ trợ dính (khóa shift/alt) trên bàn phím vật lý bất kể cấu hình KCM của thiết bị.</string>
     <string name="pref_shift_double_tap_lock">Bật khóa Shift khi nhấn đúp</string>

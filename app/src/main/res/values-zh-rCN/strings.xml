@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">使用联系人进行拼写检查</string>
     <string name="pref_alt_double_tap_lock">启用 Alt 双击锁定</string>
     <string name="pref_alt_double_tap_lock_summary">双击 Alt 键可将其锁定。再次按 Alt 键即可关闭。</string>
+    <string name="pref_ctrl_double_tap_lock">启用 Ctrl 双击锁定</string>
+    <string name="pref_ctrl_double_tap_lock_summary">双击 Ctrl 键可将其锁定。再次按 Ctrl 键即可关闭。</string>
     <string name="pref_override_device_meta_state">覆盖设备元状态</string>
     <string name="pref_override_device_meta_state_summary">无论设备的 KCM 配置如何，都在实体键盘上启用粘滞修饰键（shift/alt 锁定）。</string>
     <string name="pref_shift_double_tap_lock">启用 Shift 双击锁定</string>

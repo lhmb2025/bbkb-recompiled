@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Usa els contactes en la correcció ortogràfica</string>
     <string name="pref_alt_double_tap_lock">Activa el bloqueig d\'Alt amb doble toc</string>
     <string name="pref_alt_double_tap_lock_summary">En prémer Alt dues vegades quedarà bloquejada. Torneu a prémer Alt per desbloquejar-la.</string>
+    <string name="pref_ctrl_double_tap_lock">Activa el bloqueig d\'Ctrl amb doble toc</string>
+    <string name="pref_ctrl_double_tap_lock_summary">En prémer Ctrl dues vegades quedarà bloquejada. Torneu a prémer Ctrl per desbloquejar-la.</string>
     <string name="pref_override_device_meta_state">Ignora l\'estat meta del dispositiu</string>
     <string name="pref_override_device_meta_state_summary">Activa els modificadors persistents (bloqueig de Maj/Alt) als teclats físics independentment de la configuració KCM del dispositiu.</string>
     <string name="pref_shift_double_tap_lock">Activa el bloqueig de Maj amb doble toc</string>

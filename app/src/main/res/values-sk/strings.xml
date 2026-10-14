@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Používať kontakty pri kontrole pravopisu</string>
     <string name="pref_alt_double_tap_lock">Zapnúť uzamknutie klávesu Alt dvojitým stlačením</string>
     <string name="pref_alt_double_tap_lock_summary">Dvojitým stlačením klávesu Alt ho uzamknete. Ďalším stlačením ho vypnete.</string>
+    <string name="pref_ctrl_double_tap_lock">Zapnúť uzamknutie klávesu Ctrl dvojitým stlačením</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Dvojitým stlačením klávesu Ctrl ho uzamknete. Ďalším stlačením ho vypnete.</string>
     <string name="pref_override_device_meta_state">Prepísať meta stav zariadenia</string>
     <string name="pref_override_device_meta_state_summary">Zapnúť lepkavé modifikátory (uzamknutie Shift/Alt) na fyzických klávesniciach bez ohľadu na konfiguráciu KCM zariadenia.</string>
     <string name="pref_shift_double_tap_lock">Zapnúť uzamknutie klávesu Shift dvojitým stlačením</string>

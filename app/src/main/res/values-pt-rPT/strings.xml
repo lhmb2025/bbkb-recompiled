@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Usar contactos na verificação ortográfica</string>
     <string name="pref_alt_double_tap_lock">Ativar o bloqueio com duplo clique em Alt</string>
     <string name="pref_alt_double_tap_lock_summary">O duplo clique em Alt mantém a tecla ativa. Clique novamente em Alt para a desativar.</string>
+    <string name="pref_ctrl_double_tap_lock">Ativar o bloqueio com duplo clique em Ctrl</string>
+    <string name="pref_ctrl_double_tap_lock_summary">O duplo clique em Ctrl mantém a tecla ativa. Clique novamente em Ctrl para a desativar.</string>
     <string name="pref_override_device_meta_state">Substituir o meta estado do dispositivo</string>
     <string name="pref_override_device_meta_state_summary">Ativar modificadores fixos (bloqueio de Shift/Alt) em teclados físicos, independentemente da configuração KCM do dispositivo.</string>
     <string name="pref_shift_double_tap_lock">Ativar o bloqueio com duplo clique em Shift</string>

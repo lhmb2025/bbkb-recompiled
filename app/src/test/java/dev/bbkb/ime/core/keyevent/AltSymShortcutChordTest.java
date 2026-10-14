@@ -82,6 +82,7 @@ public class AltSymShortcutChordTest {
         int languageSwitch;
         int emojiPicker;
         int inputMenu;
+        int ctrlTaps;
 
         @Override public void openSymbolKeyboard() { symbolKeyboard++; }
         @Override public void switchLanguage() { languageSwitch++; }
@@ -90,6 +91,7 @@ public class AltSymShortcutChordTest {
         @Override public void toggleFcc() { fcc++; }
         @Override public void toggleNumberPad() { numberPad++; }
         @Override public void toggleInputMenu() { inputMenu++; }
+        @Override public void tapCtrl() { ctrlTaps++; }
     }
 
     @Before
@@ -353,5 +355,54 @@ public class AltSymShortcutChordTest {
         KeyEvent altUp = physical(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ALT_LEFT, 0);
         tracker.handleKeyDown(KeyEvent.KEYCODE_ALT_LEFT, altDown);
         tracker.handleKeyUp(KeyEvent.KEYCODE_ALT_LEFT, altUp);
+    }
+
+    // ==================== Alt+Sym set to Ctrl ====================
+
+    private void useAction(String action) {
+        PrefsManager.INSTANCE.getPrefs(context).edit()
+                .putString(AltSymShortcutHandler.PREF_KEY, action).commit();
+        SettingsManager.getInstance().loadSettings(context, Locale.US,
+                new EditorCapabilities(null, false, context.getPackageName(), Locale.US, false));
+    }
+
+    private void symTapThroughProcessor() {
+        KeyEvent down = physical(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SYM, /* metaState */ 0);
+        when(ime.remapKeyEvent(KeyEvent.KEYCODE_SYM, down)).thenReturn(down);
+        processor.onKeyDownInternal(KeyEvent.KEYCODE_SYM, down);
+        assertTrue("the chord's Sym release is swallowed", handler.consumeSymKeyUp());
+    }
+
+    /**
+     * Hold Alt, tap Sym twice: two taps of Ctrl, which is the double tap that locks it. The first
+     * Alt+Sym spends the Alt it used (so a released Alt is not left on for the next key), and the
+     * Alt still held down must count for the second all the same.
+     */
+    @Test
+    public void heldAltWithTwoSymTapsIsTwoCtrlTaps() {
+        useAction(AltSymShortcutHandler.ACTION_CTRL);
+        tracker.handleKeyDown(KeyEvent.KEYCODE_ALT_LEFT, physical(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ALT_LEFT, 0));
+
+        symTapThroughProcessor();
+        assertTrue("premise: the first chord spent the Alt", tracker.isAltKeyConsumed());
+        symTapThroughProcessor();
+
+        assertEquals(2, actions.ctrlTaps);
+        verifySymbolBoardNotToggled();
+    }
+
+    /** Only the Ctrl action reads a spent, still-held Alt as Alt; the board actions keep their rule. */
+    @Test
+    public void onlyTheCtrlActionIsTheCtrlAction() {
+        assertFalse(handler.isCtrlAction());
+        useAction(AltSymShortcutHandler.ACTION_CTRL);
+        assertTrue(handler.isCtrlAction());
+    }
+
+    /** The retired "ctrl_mode" choice comes back as Ctrl rather than as nothing. */
+    @Test
+    public void theRetiredCtrlModeChoiceUpgradesToCtrl() {
+        assertEquals(AltSymShortcutHandler.ACTION_CTRL,
+                AltSymShortcutHandler.upgradeLegacyAction(AltSymShortcutHandler.LEGACY_ACTION_CTRL_MODE));
     }
 }

@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Använd kontakter vid stavningskontroll</string>
     <string name="pref_alt_double_tap_lock">Aktivera Alt-lås vid dubbeltryck</string>
     <string name="pref_alt_double_tap_lock_summary">Om du trycker två gånger på Alt låses den på. Tryck på Alt igen för att stänga av.</string>
+    <string name="pref_ctrl_double_tap_lock">Aktivera Ctrl-lås vid dubbeltryck</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Om du trycker två gånger på Ctrl låses den på. Tryck på Ctrl igen för att stänga av.</string>
     <string name="pref_override_device_meta_state">Åsidosätt enhetens metatillstånd</string>
     <string name="pref_override_device_meta_state_summary">Aktivera låsta modifierare (skift-/alt-lås) på fysiska tangentbord oavsett enhetens KCM-konfiguration.</string>
     <string name="pref_shift_double_tap_lock">Aktivera Shift-lås vid dubbeltryck</string>

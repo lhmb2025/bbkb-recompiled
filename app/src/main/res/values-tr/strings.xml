@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Yazım denetiminde kişileri kullan</string>
     <string name="pref_alt_double_tap_lock">Alt çift tıklama kilidini etkinleştir</string>
     <string name="pref_alt_double_tap_lock_summary">Alt tuşuna çift tıklamak onu açık konumda kilitler. Alt\'a tekrar tıklamak kilidi kaldırır.</string>
+    <string name="pref_ctrl_double_tap_lock">Ctrl çift tıklama kilidini etkinleştir</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ctrl tuşuna çift tıklamak onu açık konumda kilitler. Ctrl tuşuna tekrar tıklamak kilidi kaldırır.</string>
     <string name="pref_override_device_meta_state">Cihazın meta durumunu geçersiz kıl</string>
     <string name="pref_override_device_meta_state_summary">Cihazın KCM yapılandırmasından bağımsız olarak fiziksel klavyelerde yapışkan değiştiricileri (shift/alt kilidi) etkinleştirin.</string>
     <string name="pref_shift_double_tap_lock">Shift çift tıklama kilidini etkinleştir</string>

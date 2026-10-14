@@ -43,6 +43,11 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
     /** Supplies {@link ModifierState#isCtrlActive()} from the one Ctrl owner. */
     public interface CtrlStateSource {
         boolean isCtrlActive();
+
+        /** Ctrl is locked on (double tap). */
+        default boolean isCtrlLocked() {
+            return false;
+        }
     }
 
     private Editable mMetaKeyText = new SpannableStringBuilder("");
@@ -144,6 +149,7 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
                 .altUsedWithKey(this.mAltUsedWithKey)
                 .symKeyHeld(isSymKeyHeld())
                 .ctrlActive(this.mCtrlStateSource != null && this.mCtrlStateSource.isCtrlActive())
+                .ctrlLocked(this.mCtrlStateSource != null && this.mCtrlStateSource.isCtrlLocked())
                 .shiftSurvivesMask(
                         (this.mKeyInterpreter.apply(KeyEvent.META_SHIFT_ON) & KeyEvent.META_SHIFT_ON) != 0)
                 .keysHeld(getNumberOfKeysDown())
@@ -161,6 +167,14 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         if (listener != null) {
             listener.onModifierStateChanged(getModifierState(), force);
         }
+    }
+
+    /**
+     * The Ctrl owner changed state (on, locked, off). Ctrl is not span state, so no transition in
+     * this class reports it; the owner calls in, and the change goes out on the one feed.
+     */
+    public void onCtrlStateChanged() {
+        publishModifierState(false);
     }
 
     public void handleKeyDown(int i, KeyEvent keyEvent) {

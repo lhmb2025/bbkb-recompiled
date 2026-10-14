@@ -19,9 +19,9 @@ import org.robolectric.annotation.Config
 
 /**
  * The Titan 2 Elite's Fn key sends CTRL_LEFT with no key-up and auto-repeats while held (the
- * `fn-no-key-up` quirk). [ControlModeController] must not read those repeats as "Ctrl held alone"
- * and latch its sticky Ctrl mode, and must not leave Ctrl stuck down for want of a release.
- * Everywhere else — no quirk — the latch behaves exactly as before.
+ * `fn-no-key-up` quirk). [ControlModeController] must not read those repeats as anything but a
+ * held Ctrl, and must not leave Ctrl stuck down for want of a release: there Ctrl is a one-shot
+ * for the next key. Everywhere else — no quirk — a tap of Ctrl is on for the next key.
  *
  * Also the config-declared Ctrl-like modifier remap (the Titan 2's Fn on scancode 251).
  */
@@ -48,17 +48,18 @@ class ControlModeFnQuirkTest {
         ScancodeMappingResolver.getInstance().reset()
     }
 
-    // ── without the quirk: the latch as it always was ────────────────────────
+    // ── without the quirk: Ctrl works like Shift and Alt ─────────────────────
 
     @Test
-    fun noQuirk_ctrlHeldAloneUntilItRepeats_latchesTheStickyMode() {
+    fun noQuirk_ctrlPressedAndReleasedAlone_isOnForTheNextKey_howeverLongItWasHeld() {
         val host = FakeHost(ctrlKeySendsNoKeyUp = false)
         val c = ControlModeController(host)
         assertTrue(c.handleHardKeyDown(ctrl, 0, false))
         assertTrue(c.handleHardKeyDown(ctrl, 1, false))
         assertTrue(c.handleHardKeyDown(ctrl, 2, false))
         assertTrue(c.handleHardKeyUp(ctrl, 0, false))
-        assertTrue("held alone until it repeated: sticky Ctrl", c.isInCtrlMode)
+        assertTrue("released without a key: on for the next key", c.isInCtrlMode)
+        assertFalse("holding it alone does not lock it", c.isCtrlLocked)
         assertEquals(1, host.showCount)
     }
 

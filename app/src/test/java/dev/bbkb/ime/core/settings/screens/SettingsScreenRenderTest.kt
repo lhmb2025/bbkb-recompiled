@@ -1148,6 +1148,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             title = "Physical keyboard",
             resources = setOf(
                 "ckb_action_none", "pref_alt_double_tap_lock", "pref_alt_double_tap_lock_summary",
+                "pref_ctrl_double_tap_lock", "pref_ctrl_double_tap_lock_summary",
                 "pref_shift_double_tap_lock", "pref_shift_double_tap_lock_summary",
                 "pref_show_pkb_modifier_status_icon", "pref_show_pkb_modifier_status_icon_summary",
                 "settings_category_behavior", "settings_category_modifiers", "settings_physical_keyboard_title",

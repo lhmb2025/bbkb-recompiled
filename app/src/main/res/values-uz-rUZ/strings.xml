@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Imlo tekshiruvida kontaktlardan foydalanish</string>
     <string name="pref_alt_double_tap_lock">Alt ikki marta bosilganda qulflanishini yoqish</string>
     <string name="pref_alt_double_tap_lock_summary">Alt ikki marta bosilsa, u yoqilgan holda qulflanadi. Alt yana bosilsa, o‘chadi.</string>
+    <string name="pref_ctrl_double_tap_lock">Ctrl ikki marta bosilganda qulflanishini yoqish</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ctrl ikki marta bosilsa, u yoqilgan holda qulflanadi. Ctrl yana bosilsa, o‘chadi.</string>
     <string name="pref_override_device_meta_state">Qurilmaning meta holatini almashtirish</string>
     <string name="pref_override_device_meta_state_summary">Qurilmaning KCM konfiguratsiyasidan qat’i nazar, jismoniy klaviaturalarda yopishqoq modifikatorlarni (shift/alt qulfi) yoqish.</string>
     <string name="pref_shift_double_tap_lock">Shift ikki marta bosilganda qulflanishini yoqish</string>

@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Uporabi stike pri preverjanju črkovanja</string>
     <string name="pref_alt_double_tap_lock">Omogoči zaklep tipke Alt z dvojnim pritiskom</string>
     <string name="pref_alt_double_tap_lock_summary">Z dvojnim pritiskom tipke Alt jo zaklenete. Z naslednjim pritiskom jo izklopite.</string>
+    <string name="pref_ctrl_double_tap_lock">Omogoči zaklep tipke Ctrl z dvojnim pritiskom</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Z dvojnim pritiskom tipke Ctrl jo zaklenete. Z naslednjim pritiskom jo izklopite.</string>
     <string name="pref_override_device_meta_state">Preglasi meta stanje naprave</string>
     <string name="pref_override_device_meta_state_summary">Omogoči lepljive spremenilne tipke (zaklep Shift/Alt) na fizičnih tipkovnicah ne glede na konfiguracijo KCM naprave.</string>
     <string name="pref_shift_double_tap_lock">Omogoči zaklep tipke Shift z dvojnim pritiskom</string>

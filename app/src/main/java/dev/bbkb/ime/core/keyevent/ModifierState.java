@@ -96,6 +96,7 @@ public final class ModifierState {
     private final boolean altUsedWithKey;
     private final boolean symKeyHeld;
     private final boolean ctrlActive;
+    private final boolean ctrlLocked;
     private final boolean shiftSurvivesMask;
     private final int keysHeld;
 
@@ -111,6 +112,7 @@ public final class ModifierState {
         this.altUsedWithKey = b.altUsedWithKey;
         this.symKeyHeld = b.symKeyHeld;
         this.ctrlActive = b.ctrlActive;
+        this.ctrlLocked = b.ctrlLocked;
         this.shiftSurvivesMask = b.shiftSurvivesMask;
         this.keysHeld = b.keysHeld;
     }
@@ -356,6 +358,11 @@ public final class ModifierState {
         return ctrlActive || (eventMeta & KeyEvent.META_CTRL_ON) != 0;
     }
 
+    /** Ctrl is locked on (double tap), from the same one owner as {@link #isCtrlActive()}. */
+    public boolean isCtrlLocked() {
+        return ctrlLocked;
+    }
+
     // ===================================================================== misc
 
     /** Any modifier at all. */
@@ -410,6 +417,7 @@ public final class ModifierState {
         private boolean altUsedWithKey;
         private boolean symKeyHeld;
         private boolean ctrlActive;
+        private boolean ctrlLocked;
         private boolean shiftSurvivesMask = true;
         private int keysHeld;
 
@@ -473,6 +481,11 @@ public final class ModifierState {
 
         public Builder ctrlActive(boolean value) {
             this.ctrlActive = value;
+            return this;
+        }
+
+        public Builder ctrlLocked(boolean value) {
+            this.ctrlLocked = value;
             return this;
         }
 

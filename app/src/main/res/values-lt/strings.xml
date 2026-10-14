@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Naudoti kontaktus rašybai tikrinti</string>
     <string name="pref_alt_double_tap_lock">Įjungti „Alt“ fiksavimą dukart spustelėjus</string>
     <string name="pref_alt_double_tap_lock_summary">Dukart spustelėjus „Alt“ jis bus užfiksuotas. Dar kartą spustelėjus „Alt“ jis bus išjungtas.</string>
+    <string name="pref_ctrl_double_tap_lock">Įjungti „Ctrl“ fiksavimą dukart spustelėjus</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Dukart spustelėjus „Ctrl“ jis bus užfiksuotas. Dar kartą spustelėjus „Ctrl“ jis bus išjungtas.</string>
     <string name="pref_override_device_meta_state">Nepaisyti įrenginio meta būsenos</string>
     <string name="pref_override_device_meta_state_summary">Įjungti fiksuojamus modifikavimo klavišus („Shift“ / „Alt“ fiksavimą) fizinėse klaviatūrose, nepaisant įrenginio KCM konfigūracijos.</string>
     <string name="pref_shift_double_tap_lock">Įjungti „Shift“ fiksavimą dukart spustelėjus</string>

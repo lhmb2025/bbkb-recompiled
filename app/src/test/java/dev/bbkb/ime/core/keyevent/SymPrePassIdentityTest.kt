@@ -82,6 +82,7 @@ class SymPrePassIdentityTest {
         var languageSwitch = 0
         var emojiPicker = 0
         var inputMenu = 0
+        var ctrlTaps = 0
         override fun openSymbolKeyboard() { symbolKeyboard++ }
         override fun switchLanguage() { languageSwitch++ }
         override fun toggleEmojiPicker() { emojiPicker++ }
@@ -89,6 +90,7 @@ class SymPrePassIdentityTest {
         override fun toggleFcc() { fcc++ }
         override fun toggleNumberPad() { numberPad++ }
         override fun toggleInputMenu() { inputMenu++ }
+        override fun tapCtrl() { ctrlTaps++ }
     }
 
     @Before

@@ -274,4 +274,96 @@ public class ModifierStatusIconTest {
 
         verify(ime, never()).showStatusIcon(Mockito.anyInt());
     }
+
+    // ==================== Ctrl ====================
+
+    /** Ctrl's one owner, as the tracker sees it: two switches the test flips. */
+    private final boolean[] ctrlActive = {false};
+    private final boolean[] ctrlLocked = {false};
+
+    private void installCtrlSource() {
+        tracker.setCtrlStateSource(new PhysicalKeyboardStateTracker.CtrlStateSource() {
+            @Override public boolean isCtrlActive() { return ctrlActive[0]; }
+            @Override public boolean isCtrlLocked() { return ctrlLocked[0]; }
+        });
+    }
+
+    private void setCtrl(boolean active, boolean locked) {
+        ctrlActive[0] = active;
+        ctrlLocked[0] = locked;
+        tracker.onCtrlStateChanged();
+    }
+
+    @Test
+    public void ctrlOnForTheNextKeyShowsTheCtrlIcon() {
+        installCtrlSource();
+        setCtrl(true, false);
+
+        verify(ime).showStatusIcon(R.drawable.ic_status_ctrl);
+    }
+
+    @Test
+    public void lockedCtrlShowsTheCtrlLockedIconAndTurningItOffHidesIt() {
+        installCtrlSource();
+        setCtrl(true, false);
+        setCtrl(true, true);
+        setCtrl(false, false);
+
+        InOrder order = Mockito.inOrder(ime);
+        order.verify(ime).showStatusIcon(R.drawable.ic_status_ctrl);
+        order.verify(ime).showStatusIcon(R.drawable.ic_status_ctrl_locked);
+        order.verify(ime).hideStatusIcon();
+    }
+
+    @Test
+    public void ctrlWithAShiftShowsTheCombinedIcon() {
+        installCtrlSource();
+        setCtrl(true, false);
+        trackerTap(KeyEvent.KEYCODE_SHIFT_LEFT);
+
+        verify(ime).showStatusIcon(R.drawable.ic_status_ctrl_shift);
+    }
+
+    @Test
+    public void lockedCtrlWithALockedShiftShowsTheDoubleLockedIcon() {
+        installCtrlSource();
+        setCtrl(true, true);
+        trackerTap(KeyEvent.KEYCODE_SHIFT_LEFT);
+        trackerTap(KeyEvent.KEYCODE_SHIFT_LEFT);
+
+        verify(ime).showStatusIcon(R.drawable.ic_status_ctrl_locked_shift_locked);
+    }
+
+    /** Alt on top of a latched Ctrl wins the next key, so the icon shows Alt. */
+    @Test
+    public void altOutranksCtrlInTheIcon() {
+        installCtrlSource();
+        setCtrl(true, true);
+        trackerDown(KeyEvent.KEYCODE_ALT_LEFT);
+
+        InOrder order = Mockito.inOrder(ime);
+        order.verify(ime).showStatusIcon(R.drawable.ic_status_ctrl_locked);
+        order.verify(ime).showStatusIcon(R.drawable.ic_status_alt);
+    }
+
+    /** Every Ctrl state and Shift state lands on its own drawable. */
+    @Test
+    public void everyCtrlAndShiftCombinationHasItsIcon() {
+        int shift = KeyEvent.META_SHIFT_ON;
+        int shiftLocked = android.text.method.MetaKeyKeyListener.META_CAP_LOCKED;
+        assertEquals(R.drawable.ic_status_ctrl,
+                ModifierStatusBarUpdater.getStatusIconDrawable(ModifierStatusBarUpdater.withCtrl(0, true, false)));
+        assertEquals(R.drawable.ic_status_ctrl_locked,
+                ModifierStatusBarUpdater.getStatusIconDrawable(ModifierStatusBarUpdater.withCtrl(0, true, true)));
+        assertEquals(R.drawable.ic_status_ctrl_shift,
+                ModifierStatusBarUpdater.getStatusIconDrawable(ModifierStatusBarUpdater.withCtrl(shift, true, false)));
+        assertEquals(R.drawable.ic_status_ctrl_shift_locked,
+                ModifierStatusBarUpdater.getStatusIconDrawable(ModifierStatusBarUpdater.withCtrl(shiftLocked, true, false)));
+        assertEquals(R.drawable.ic_status_ctrl_locked_shift,
+                ModifierStatusBarUpdater.getStatusIconDrawable(ModifierStatusBarUpdater.withCtrl(shift, true, true)));
+        assertEquals(R.drawable.ic_status_ctrl_locked_shift_locked,
+                ModifierStatusBarUpdater.getStatusIconDrawable(ModifierStatusBarUpdater.withCtrl(shiftLocked, true, true)));
+        assertEquals(R.drawable.ic_status_shift,
+                ModifierStatusBarUpdater.getStatusIconDrawable(ModifierStatusBarUpdater.withCtrl(shift, false, false)));
+    }
 }

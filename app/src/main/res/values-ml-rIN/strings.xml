@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">അക്ഷരത്തെറ്റ് പരിശോധനയ്ക്ക് കോൺടാക്റ്റുകൾ ഉപയോഗിക്കുക</string>
     <string name="pref_alt_double_tap_lock">Alt ഡബിൾ-ക്ലിക്ക് ലോക്ക് പ്രവർത്തനക്ഷമമാക്കുക</string>
     <string name="pref_alt_double_tap_lock_summary">Alt ഡബിൾ-ക്ലിക്ക് ചെയ്താൽ അത് ലോക്ക് ആകും. Alt വീണ്ടും ക്ലിക്ക് ചെയ്താൽ അത് ഓഫാകും.</string>
+    <string name="pref_ctrl_double_tap_lock">Ctrl ഡബിൾ-ക്ലിക്ക് ലോക്ക് പ്രവർത്തനക്ഷമമാക്കുക</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ctrl ഡബിൾ-ക്ലിക്ക് ചെയ്താൽ അത് ലോക്ക് ആകും. Ctrl വീണ്ടും ക്ലിക്ക് ചെയ്താൽ അത് ഓഫാകും.</string>
     <string name="pref_override_device_meta_state">ഉപകരണത്തിന്റെ മെറ്റാ അവസ്ഥ അസാധുവാക്കുക</string>
     <string name="pref_override_device_meta_state_summary">ഉപകരണത്തിന്റെ KCM കോൺഫിഗറേഷൻ എന്തായാലും, ഫിസിക്കൽ കീബോർഡുകളിൽ സ്റ്റിക്കി മോഡിഫയറുകൾ (shift/alt ലോക്ക്) പ്രവർത്തനക്ഷമമാക്കുക.</string>
     <string name="pref_shift_double_tap_lock">Shift ഡബിൾ-ക്ലിക്ക് ലോക്ക് പ്രവർത്തനക്ഷമമാക്കുക</string>

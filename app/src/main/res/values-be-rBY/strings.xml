@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Выкарыстоўваць кантакты пры праверцы правапісу</string>
     <string name="pref_alt_double_tap_lock">Уключыць фіксацыю Alt падвойным націсканнем</string>
     <string name="pref_alt_double_tap_lock_summary">Падвойнае націсканне Alt фіксуе яго. Наступнае націсканне Alt выключае фіксацыю.</string>
+    <string name="pref_ctrl_double_tap_lock">Уключыць фіксацыю Ctrl падвойным націсканнем</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Падвойнае націсканне Ctrl фіксуе яго. Наступнае націсканне Ctrl выключае фіксацыю.</string>
     <string name="pref_override_device_meta_state">Перавызначыць мета-стан прылады</string>
     <string name="pref_override_device_meta_state_summary">Уключыць фіксаваныя мадыфікатары (фіксацыю Shift/Alt) на фізічных клавіятурах незалежна ад канфігурацыі KCM прылады.</string>
     <string name="pref_shift_double_tap_lock">Уключыць фіксацыю Shift падвойным націсканнем</string>

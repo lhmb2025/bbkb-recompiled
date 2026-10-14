@@ -57,11 +57,12 @@ fun PhysicalKeyboardScreen(
     val multifunctionDefault = MultifunctionKeyHandler.upgradeLegacyAction(multifunctionKeyMapping?.defaultAction)
         ?.takeIf { it.isNotEmpty() } ?: MultifunctionKeyHandler.DEFAULT_ACTION
 
-    // Three keys are declared in strings.xml rather than inline; they are resolved through the
+    // Four keys are declared in strings.xml rather than inline; they are resolved through the
     // same resource the rest of the app reads them by.
     val modifierStatusIconKey = context.getString(R.string.pref_show_pkb_modifier_status_icon_key)
     val shiftDoubleTapLockKey = context.getString(R.string.pref_shift_double_tap_lock_key)
     val altDoubleTapLockKey = context.getString(R.string.pref_alt_double_tap_lock_key)
+    val ctrlDoubleTapLockKey = context.getString(R.string.pref_ctrl_double_tap_lock_key)
 
     SettingsScreenHost(R.string.settings_physical_keyboard_title, onNavigateBack, listOf(
         Category(R.string.settings_category_behavior),
@@ -177,6 +178,12 @@ fun PhysicalKeyboardScreen(
             summary = RowSummary.Res(R.string.pref_alt_double_tap_lock_summary),
             modifier = Modifier.settingsSearchAnchor("pref_alt_double_tap_lock"),
         ),
+        Toggle(
+            store = boolPref(ctrlDoubleTapLockKey, true),
+            title = R.string.pref_ctrl_double_tap_lock,
+            summary = RowSummary.Res(R.string.pref_ctrl_double_tap_lock_summary),
+            modifier = Modifier.settingsSearchAnchor("pref_ctrl_double_tap_lock"),
+        ),
     ))
 }
 
@@ -201,8 +208,9 @@ private fun multifunctionActions(context: Context) = listOf(
 ) + sharedShortcutActions(context)
 
 /**
- * The actions the multifunction key and the Alt+Sym shortcut both offer — everything but Ctrl.
- * The two settings share action ids and labels.
+ * The actions the multifunction key and the Alt+Sym shortcut both offer, after each one's own
+ * first entry (Ctrl for the key, Disabled for the shortcut). The two settings share action ids
+ * and labels.
  */
 private fun sharedShortcutActions(context: Context) = listOf(
     MultifunctionKeyHandler.ACTION_EMOJI_BOARD to R.string.settings_pkb_multifunction_action_emoji,
@@ -231,4 +239,5 @@ private fun holdActionSummary(context: Context, value: String): String = context
 
 private fun altSymActions(context: Context) = listOf(
     ChoiceOption(AltSymShortcutHandler.ACTION_DISABLED, context.getString(R.string.settings_pkb_alt_sym_shortcut_disabled)),
+    ChoiceOption(AltSymShortcutHandler.ACTION_CTRL, context.getString(R.string.settings_pkb_multifunction_action_ctrl)),
 ) + sharedShortcutActions(context)

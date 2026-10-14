@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Partnerek használata a helyesírás-ellenőrzéshez</string>
     <string name="pref_alt_double_tap_lock">Alt dupla kattintásos rögzítésének engedélyezése</string>
     <string name="pref_alt_double_tap_lock_summary">Az Alt dupla lenyomása bekapcsolva rögzíti. Az Alt újbóli lenyomása kikapcsolja.</string>
+    <string name="pref_ctrl_double_tap_lock">Ctrl dupla kattintásos rögzítésének engedélyezése</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Az Ctrl dupla lenyomása bekapcsolva rögzíti. Az Ctrl újbóli lenyomása kikapcsolja.</string>
     <string name="pref_override_device_meta_state">A készülék metaállapotának felülbírálása</string>
     <string name="pref_override_device_meta_state_summary">Ragadós módosítóbillentyűk (shift/alt rögzítése) engedélyezése fizikai billentyűzeteken a készülék KCM-konfigurációjától függetlenül.</string>
     <string name="pref_shift_double_tap_lock">Shift dupla kattintásos rögzítésének engedélyezése</string>

@@ -51,6 +51,7 @@ import dev.bbkb.ime.keyboard.internal.KeyRepeatHandler;
 import dev.bbkb.ime.keyboard.internal.KeyboardIconSet;
 import dev.bbkb.ime.keyboard.internal.KeyboardTextsSet;
 import dev.bbkb.ime.keyboard.internal.MoreKeySpec;
+import dev.bbkb.ime.keyboard.internal.VkbShiftModeTracker;
 import dev.bbkb.ime.keyboard.internal.KeyboardState;
 import dev.bbkb.ime.keyboard.state.CrossAxisRules;
 import dev.bbkb.ime.keyboard.state.KeyboardStateCoordinator;
@@ -1428,6 +1429,28 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     public boolean isShiftKeyPressed() {
         return this.keyboardState.isShiftKeyPressed();
+    }
+
+    /**
+     * Whether an on-screen Ctrl chord should carry Shift: the user shifted the board by hand for
+     * the next key, or is holding Shift. Auto-capitalisation does not count (Ctrl+C at the start
+     * of a sentence must stay Ctrl+C), and neither does caps lock.
+     */
+    public boolean isShiftedForCtrlChord() {
+        VkbShiftModeTracker tracker = this.keyboardState.getShiftModeTracker();
+        boolean manual = tracker.isManualShifted() && !tracker.isShiftLocked();
+        return manual || this.keyboardState.isShiftKeyPressed();
+    }
+
+    /**
+     * A Ctrl chord used the hand-set Shift: unshift the board, as a typed letter does
+     * ({@code KeyboardState.onCodeInput}). A held Shift stays until it is let go.
+     */
+    public void releaseShiftAfterCtrlChord() {
+        VkbShiftModeTracker tracker = this.keyboardState.getShiftModeTracker();
+        if (tracker.isManualShifted() && !tracker.isShiftLocked() && this.keyboardState.isShiftKeyReleasing()) {
+            requestShiftOff();
+        }
     }
 
     public boolean isShiftKeyReleasing() {

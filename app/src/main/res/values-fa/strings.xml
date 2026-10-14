@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">استفاده از مخاطبین برای غلط‌گیری املایی</string>
     <string name="pref_alt_double_tap_lock">فعال کردن قفل Alt با دوبار کلیک</string>
     <string name="pref_alt_double_tap_lock_summary">دوبار کلیک روی Alt آن را قفل می‌کند. کلیک دوباره روی Alt آن را خاموش می‌کند.</string>
+    <string name="pref_ctrl_double_tap_lock">فعال کردن قفل Ctrl با دوبار کلیک</string>
+    <string name="pref_ctrl_double_tap_lock_summary">دوبار کلیک روی Ctrl آن را قفل می‌کند. کلیک دوباره روی Ctrl آن را خاموش می‌کند.</string>
     <string name="pref_override_device_meta_state">نادیده گرفتن وضعیت meta دستگاه</string>
     <string name="pref_override_device_meta_state_summary">فعال کردن کلیدهای تغییردهنده چسبان (قفل shift/alt) روی صفحه کلیدهای فیزیکی، صرف‌نظر از پیکربندی KCM دستگاه.</string>
     <string name="pref_shift_double_tap_lock">فعال کردن قفل Shift با دوبار کلیک</string>

@@ -259,4 +259,37 @@ class CharacterInputCharacterisationTest {
             0, h.editor.callLog.count { it.startsWith("commitText") },
         )
     }
+
+    // ── the word is no longer in the editor ─────────────────────────────────────
+
+    /**
+     * An app can change the text without moving the caret, and then no selection update comes.
+     * Messages, 2026-10-14: type "hi", cut it, undo (the recorrection re-opens "Hi" with the caret
+     * at 0), redo (the field empties, the caret stays at 0). Typing A then wrote the deleted word
+     * back as "AHi", because this stage rewrites the whole word from the tracker's copy.
+     */
+    @Test
+    fun aWordTheAppEmptiedWithoutMovingTheCaret_isNotWrittenBack() {
+        armComposingWithCaretInside("Hi", atCodePoint = 0)
+        h.editor.appSetText("", 0, 0)
+        h.editor.dropPendingSelectionEvents()   // the caret did not move, so none was sent
+
+        character('a'.code)
+
+        assertEquals("a", h.editor.text)
+        assertEquals("a", h.inputLogic.mComposingTracker.composingText)
+        assertEquals(1, h.editor.selStart)
+    }
+
+    @Test
+    fun aWordTheAppReplacedWithoutMovingTheCaret_isNotWrittenBackEither() {
+        armComposingWithCaretInside("hello", atCodePoint = 0)
+        h.editor.appSetText("bye", 0, 0)
+        h.editor.dropPendingSelectionEvents()
+
+        character('X'.code)
+
+        assertEquals("Xbye", h.editor.text)
+        assertTrue("the old word must be gone", !h.editor.text.contains("hello"))
+    }
 }

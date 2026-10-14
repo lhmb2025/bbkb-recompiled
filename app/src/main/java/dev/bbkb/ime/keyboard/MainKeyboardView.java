@@ -116,6 +116,14 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
 
     private boolean mShiftKeyLocked;
 
+    /** The ?123 key ({@code key_switch_alpha_symbol}), which doubles as the on-screen Ctrl key. */
+    private static final int TO_SYMBOL_KEY_CODE = -3;
+
+    /** What ?123 reads while on-screen Ctrl is armed. A key cap, not prose: not translated. */
+    private static final String CTRL_LABEL = "CTRL";
+
+    private boolean mCtrlLabelActive;
+
     /** Shift-state indicator bar paint; reused across repaints, its colour is set per draw. */
     private final Paint mShiftIndicatorPaint = newShiftIndicatorPaint();
 
@@ -695,6 +703,30 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
     public void setShiftLocked(boolean locked) {
         this.mShiftKeyLocked = locked;
         invalidateKey(this.mShiftKey);
+    }
+
+    /**
+     * On-screen Ctrl is armed (the long-press of ?123 fired, or Ctrl is latched for the next key):
+     * the ?123 key reads {@link #CTRL_LABEL} until it is not. See ControlModeController.
+     */
+    public void setCtrlLabelActive(boolean active) {
+        if (this.mCtrlLabelActive == active) {
+            return;
+        }
+        this.mCtrlLabelActive = active;
+        Keyboard keyboard = getKeyboard();
+        Key key = keyboard == null ? null : keyboard.getKeyByCode(TO_SYMBOL_KEY_CODE);
+        if (key != null) {
+            invalidateKey(key);
+        }
+    }
+
+    @Override // dev.bbkb.ime.keyboard.KeyboardView
+    protected String labelFor(Key key) {
+        if (this.mCtrlLabelActive && key.getCode() == TO_SYMBOL_KEY_CODE) {
+            return CTRL_LABEL;
+        }
+        return super.labelFor(key);
     }
 
     public void setFunctionalKeyEnabled(boolean z) {

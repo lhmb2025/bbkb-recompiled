@@ -1201,8 +1201,13 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
             appendAutoSpace(c0804d, c0920g.getInputSource());
         }
         if (this.mComposingTracker.isCursorMoved() && zM4354g) {
-            insertCodePointInsideComposingWord(event.mCodePoint, c0920g);
-            return;
+            if (isComposingWordStillInEditor()) {
+                insertCodePointInsideComposingWord(event.mCodePoint, c0920g);
+                return;
+            }
+            // The word is no longer in the editor: drop it and type the key as a new word.
+            resetComposingAndSelect(this.mRichInputConnection.getCursorStart(), this.mRichInputConnection.getCursorEnd(), true);
+            zM4354g = this.mComposingTracker.isComposing();
         }
         boolean z2 = this.mComposingTracker.hasInputMethodConverter() && ((editorInfoM4500g = getCurrentEditorInfo()) == null || !(InputTypeUtils.isDateTimeInputType(editorInfoM4500g.inputType) || InputTypeUtils.isNumberInputType(editorInfoM4500g.inputType) || InputTypeUtils.isPhoneInputType(editorInfoM4500g.inputType)));
         if (!zM4354g && c0804d.isWordCodePoint(i) && ((c0804d.shouldShowLxxButton || z2) && (!LocaleUtils.isCurrentSubtypeJapanese() || !isAnyPasswordField()))) {
@@ -1328,6 +1333,25 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
      *       2026-06_composition-pipeline_audit.md F5).</li>
      * </ul>
      */
+    /**
+     * Whether the composing word the caret sits inside is still in the editor, split at the
+     * caret. The in-word insert below rewrites the WHOLE word from the tracker's copy, so a stale
+     * copy writes a deleted word back: after an app-side undo the recorrection re-opened "Hi"
+     * with the caret at 0, the redo then emptied the field without moving the caret (so no
+     * selection update came), and typing A produced "AHi" (emulator, 2026-10-14). A caret inside
+     * a composing word is rare, so the editor round-trip is only paid there.
+     */
+    private boolean isComposingWordStillInEditor() {
+        String composing = this.mComposingTracker.getComposingText();
+        int caret = Character.offsetByCodePoints(composing, 0, this.mComposingTracker.getComposingCursorPos());
+        boolean present = this.mRichInputConnection.editorHasTextAroundCursor(
+                composing.substring(0, caret), composing.substring(caret));
+        if (!present && BuildConfig.DEBUG) {
+            Log.d("TEXT_EDIT_DEBUG", "handleCharacterInput: composing '" + composing + "' is gone from the editor; dropping it");
+        }
+        return present;
+    }
+
     private void insertCodePointInsideComposingWord(int codePoint, InputEventContext c0920g) {
         String oldComposing = this.mComposingTracker.getComposingText();
         int oldCursorCharOffset = Character.offsetByCodePoints(oldComposing, 0,

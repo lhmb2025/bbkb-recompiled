@@ -925,6 +925,11 @@ public class KeyboardView extends View {
         canvas.restore();
     }
 
+    /** The text painted on a key's face; a subclass can stand another in for it while a mode is on. */
+    protected String labelFor(Key key) {
+        return key.getLabel();
+    }
+
     /**
      * @param suppressLabel do not paint the key's label or its icon - something has already been
      *     painted over the key face (MainKeyboardView paints the autocorrect word on the
@@ -949,7 +954,7 @@ public class KeyboardView extends View {
             applyIconTint(key, iconDrawable);
         }
         float labelBaselineY = (formatter.labelVerticalBaselineRatio + 1.0f) * centerY;
-        String labelText = key.getLabel();
+        String labelText = labelFor(key);
         if (suppressLabel || labelText == null) {
             label = labelText;
             keyHeight = keyHeightInt;

@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Gebruik kontakte vir speltoetsing</string>
     <string name="pref_alt_double_tap_lock">Ontsper Alt-dubbelklikslot</string>
     <string name="pref_alt_double_tap_lock_summary">’n Dubbelklik op Alt sluit dit aan. Klik weer op Alt om dit af te skakel.</string>
+    <string name="pref_ctrl_double_tap_lock">Ontsper Ctrl-dubbelklikslot</string>
+    <string name="pref_ctrl_double_tap_lock_summary">’n Dubbelklik op Ctrl sluit dit aan. Klik weer op Ctrl om dit af te skakel.</string>
     <string name="pref_override_device_meta_state">Oorheers die toestel se metatoestand</string>
     <string name="pref_override_device_meta_state_summary">Ontsper taai wysigertoetse (Shift-/Alt-slot) op fisiese toetsborde ongeag die toestel se KCM-konfigurasie.</string>
     <string name="pref_shift_double_tap_lock">Ontsper Shift-dubbelklikslot</string>

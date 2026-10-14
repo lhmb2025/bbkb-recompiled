@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Користење на контактите за проверка на правопис</string>
     <string name="pref_alt_double_tap_lock">Овозможување заклучување со двоен клик на Alt</string>
     <string name="pref_alt_double_tap_lock_summary">Двојниот клик на Alt го заклучува. Повторниот клик на Alt го исклучува.</string>
+    <string name="pref_ctrl_double_tap_lock">Овозможување заклучување со двоен клик на Ctrl</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Двојниот клик на Ctrl го заклучува. Повторниот клик на Ctrl го исклучува.</string>
     <string name="pref_override_device_meta_state">Пребришување на мета-состојбата на уредот</string>
     <string name="pref_override_device_meta_state_summary">Овозможува лепливи модификатори (заклучување на Shift/Alt) на физички тастатури без оглед на конфигурацијата KCM на уредот.</string>
     <string name="pref_shift_double_tap_lock">Овозможување заклучување со двоен клик на Shift</string>

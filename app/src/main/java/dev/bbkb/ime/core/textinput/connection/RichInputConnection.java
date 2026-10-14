@@ -1097,6 +1097,30 @@ public class RichInputConnection {
     }
 
     /**
+     * Asks the editor, not the cache, whether the text right around the cursor is still
+     * {@code before} followed by {@code after}. The composing word's two halves are what a caller
+     * passes: an app can change the text without moving the cursor (an undo-then-redo empties the
+     * field with the cursor staying at 0), and then no selection update ever arrives to say the
+     * word is gone. An unreachable editor (null answers) counts as a match: the caller must not
+     * act on what it cannot see. Two round-trips, so callers reserve it for rare events.
+     *
+     * @return {@code false} only when the editor answered and disagrees
+     */
+    public boolean editorHasTextAroundCursor(String before, String after) {
+        this.mInputConnection = this.mImeService.getCurrentInputConnection();
+        InputConnection inputConnection = this.mInputConnection;
+        if (inputConnection == null) {
+            return true;
+        }
+        CharSequence actualBefore = inputConnection.getTextBeforeCursor(before.length(), 0);
+        CharSequence actualAfter = inputConnection.getTextAfterCursor(after.length(), 0);
+        if (actualBefore == null || actualAfter == null) {
+            return true;
+        }
+        return before.contentEquals(actualBefore) && after.contentEquals(actualAfter);
+    }
+
+    /**
      * Returns {@code true} if the text currently before the cursor appears to be part of a URL.
      * Used to suppress auto-spacing after word commits in URL fields.
      *

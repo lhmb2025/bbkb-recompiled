@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Χρήση επαφών στον ορθογραφικό έλεγχο</string>
     <string name="pref_alt_double_tap_lock">Ενεργοποίηση κλειδώματος Alt με διπλό κλικ</string>
     <string name="pref_alt_double_tap_lock_summary">Με διπλό κλικ στο Alt κλειδώνει ενεργό. Με νέο κλικ στο Alt απενεργοποιείται.</string>
+    <string name="pref_ctrl_double_tap_lock">Ενεργοποίηση κλειδώματος Ctrl με διπλό κλικ</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Με διπλό κλικ στο Ctrl κλειδώνει ενεργό. Με νέο κλικ στο Ctrl απενεργοποιείται.</string>
     <string name="pref_override_device_meta_state">Παράκαμψη της μετα-κατάστασης της συσκευής</string>
     <string name="pref_override_device_meta_state_summary">Ενεργοποίηση των σταθερών τροποποιητών (κλείδωμα shift/alt) στα φυσικά πληκτρολόγια, ανεξάρτητα από τη διαμόρφωση KCM της συσκευής.</string>
     <string name="pref_shift_double_tap_lock">Ενεργοποίηση κλειδώματος Shift με διπλό κλικ</string>

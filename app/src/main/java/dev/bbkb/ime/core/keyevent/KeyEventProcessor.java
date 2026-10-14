@@ -317,6 +317,11 @@ public class KeyEventProcessor {
             // state carries the symbol board's own Alt page as META_ALT_ON.
             int effectiveMeta = ime.getPhysicalKeyboardStateTracker()
                     .getModifierState(keyEventRemapped).getChordMetaState();
+            // Alt+Sym as Ctrl: an Alt still held down after it was spent on the previous Alt+Sym
+            // counts for the next one, so "hold Alt, tap Sym twice" is a double tap of Ctrl.
+            if (altSym.isCtrlAction() && ime.getPhysicalKeyboardStateTracker().isAltKeyConsumed()) {
+                effectiveMeta |= KeyEvent.META_ALT_ON;
+            }
             if (altSym.detectAndExecute(effectiveMeta)) {
                 altSym.markSymPressConsumed();
                 ime.getPhysicalKeyboardStateTracker().consumeModifiersAfterKey(0, true);

@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">השתמש באנשי קשר לבדיקת איות</string>
     <string name="pref_alt_double_tap_lock">הפעל נעילת Alt בלחיצה כפולה</string>
     <string name="pref_alt_double_tap_lock_summary">לחיצה כפולה על Alt תנעל אותו במצב פעיל. לחיצה נוספת על Alt תכבה אותו.</string>
+    <string name="pref_ctrl_double_tap_lock">הפעל נעילת Ctrl בלחיצה כפולה</string>
+    <string name="pref_ctrl_double_tap_lock_summary">לחיצה כפולה על Ctrl תנעל אותו במצב פעיל. לחיצה נוספת על Ctrl תכבה אותו.</string>
     <string name="pref_override_device_meta_state">עקוף את מצב המטא של המכשיר</string>
     <string name="pref_override_device_meta_state_summary">הפעל מקשי החלפה דביקים (נעילת shift/alt) במקלדות פיזיות ללא תלות בתצורת ה-KCM של המכשיר.</string>
     <string name="pref_shift_double_tap_lock">הפעל נעילת Shift בלחיצה כפולה</string>

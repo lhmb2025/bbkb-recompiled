@@ -45,7 +45,12 @@ public class AltSymShortcutHandler {
 
     public static final String PREF_KEY = "pref_alt_sym_shortcut_action";
     public static final String ACTION_DISABLED = "disabled";
-    // The rest share their ids with the multifunction key's actions (all of them but Ctrl).
+    /**
+     * Alt+Sym is a Ctrl key: each Alt+Sym is one tap of Ctrl (on for the next key), two in a row
+     * lock it, one more turns it off. Same id as the multifunction key's Ctrl.
+     */
+    public static final String ACTION_CTRL = MultifunctionKeyHandler.ACTION_CTRL;
+    // The rest share their ids with the multifunction key's actions.
     public static final String ACTION_EMOJI_BOARD = MultifunctionKeyHandler.ACTION_EMOJI_BOARD;
     public static final String ACTION_CLIPBOARD_BOARD = MultifunctionKeyHandler.ACTION_CLIPBOARD_BOARD;
     public static final String ACTION_FCC = MultifunctionKeyHandler.ACTION_FCC;
@@ -55,8 +60,8 @@ public class AltSymShortcutHandler {
     public static final String ACTION_TOGGLE_UIM = MultifunctionKeyHandler.ACTION_TOGGLE_UIM;
 
     /**
-     * Retired ids: "emoji_picker" was renamed to {@link #ACTION_EMOJI_BOARD}; "ctrl_mode" and
-     * "hide_keyboard" were dropped.
+     * Retired ids: "emoji_picker" was renamed to {@link #ACTION_EMOJI_BOARD}, "ctrl_mode" to
+     * {@link #ACTION_CTRL}; "hide_keyboard" was dropped.
      */
     public static final String LEGACY_ACTION_EMOJI_PICKER = "emoji_picker";
     public static final String LEGACY_ACTION_CTRL_MODE = "ctrl_mode";
@@ -78,6 +83,8 @@ public class AltSymShortcutHandler {
         void toggleFcc();
         void toggleNumberPad();
         void toggleInputMenu();
+        /** One tap of Ctrl; see {@link #ACTION_CTRL}. */
+        void tapCtrl();
     }
 
     private ActionCallback callback;
@@ -197,12 +204,20 @@ public class AltSymShortcutHandler {
             case ACTION_TOGGLE_UIM:
                 callback.toggleInputMenu();
                 break;
+            case ACTION_CTRL:
+                callback.tapCtrl();
+                break;
             default:
                 Logger.warn(TAG, "Unknown Alt+Sym action: " + action);
                 return false;
         }
 
         return true;
+    }
+
+    /** The shortcut is set to Ctrl ({@link #ACTION_CTRL}). */
+    public boolean isCtrlAction() {
+        return ACTION_CTRL.equals(getConfiguredAction());
     }
 
     /**
@@ -219,8 +234,8 @@ public class AltSymShortcutHandler {
     /** Map a retired action id onto its replacement; anything else is returned as-is. */
     public static String upgradeLegacyAction(String action) {
         if (LEGACY_ACTION_EMOJI_PICKER.equals(action)) return ACTION_EMOJI_BOARD;
-        if (LEGACY_ACTION_CTRL_MODE.equals(action)
-                || MultifunctionKeyHandler.LEGACY_ACTION_HIDE_KEYBOARD.equals(action)) return ACTION_DISABLED;
+        if (LEGACY_ACTION_CTRL_MODE.equals(action)) return ACTION_CTRL;
+        if (MultifunctionKeyHandler.LEGACY_ACTION_HIDE_KEYBOARD.equals(action)) return ACTION_DISABLED;
         return action;
     }
 }

@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Paké kontak pikeun mariksa éjahan</string>
     <string name="pref_alt_double_tap_lock">Aktipkeun konci Alt ku klik dua kali</string>
     <string name="pref_alt_double_tap_lock_summary">Ngaklik Alt dua kali bakal nguncina. Ngaklik Alt deui bakal mareuman.</string>
+    <string name="pref_ctrl_double_tap_lock">Aktipkeun konci Ctrl ku klik dua kali</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ngaklik Ctrl dua kali bakal nguncina. Ngaklik Ctrl deui bakal mareuman.</string>
     <string name="pref_override_device_meta_state">Tumpangan meta state parangkat</string>
     <string name="pref_override_device_meta_state_summary">Aktipkeun modifier lengket (konci shift/alt) dina papan tombol fisik sanajan konfigurasi KCM parangkat béda.</string>
     <string name="pref_shift_double_tap_lock">Aktipkeun konci Shift ku klik dua kali</string>

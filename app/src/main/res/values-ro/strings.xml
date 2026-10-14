@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Folosiți contactele la verificarea ortografică</string>
     <string name="pref_alt_double_tap_lock">Activați blocarea Alt prin dublu clic</string>
     <string name="pref_alt_double_tap_lock_summary">Dublul clic pe Alt îl blochează în poziția activă. Un nou clic pe Alt îl dezactivează.</string>
+    <string name="pref_ctrl_double_tap_lock">Activați blocarea Ctrl prin dublu clic</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Dublul clic pe Ctrl îl blochează în poziția activă. Un nou clic pe Ctrl îl dezactivează.</string>
     <string name="pref_override_device_meta_state">Ignorați meta-starea dispozitivului</string>
     <string name="pref_override_device_meta_state_summary">Activează modificatorii persistenți (blocare Shift/Alt) pe tastaturile fizice, indiferent de configurația KCM a dispozitivului.</string>
     <string name="pref_shift_double_tap_lock">Activați blocarea Shift prin dublu clic</string>

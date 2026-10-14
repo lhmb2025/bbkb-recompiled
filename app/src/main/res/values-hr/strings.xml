@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Upotrijebi kontakte za provjeru pravopisa</string>
     <string name="pref_alt_double_tap_lock">Omogući zaključavanje dvostrukim klikom na Alt</string>
     <string name="pref_alt_double_tap_lock_summary">Dvostruki klik na Alt zaključat će ga. Ponovni klik na Alt isključit će ga.</string>
+    <string name="pref_ctrl_double_tap_lock">Omogući zaključavanje dvostrukim klikom na Ctrl</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Dvostruki klik na Ctrl zaključat će ga. Ponovni klik na Ctrl isključit će ga.</string>
     <string name="pref_override_device_meta_state">Zanemari meta stanje uređaja</string>
     <string name="pref_override_device_meta_state_summary">Omogući ljepljive modifikatore (zaključavanje tipki shift/alt) na fizičkim tipkovnicama bez obzira na KCM konfiguraciju uređaja.</string>
     <string name="pref_shift_double_tap_lock">Omogući zaključavanje dvostrukim klikom na Shift</string>

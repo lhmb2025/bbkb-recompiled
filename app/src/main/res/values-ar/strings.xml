@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">استخدام جهات الاتصال في التدقيق الإملائي</string>
     <string name="pref_alt_double_tap_lock">تمكين قفل Alt بالنقر المزدوج</string>
     <string name="pref_alt_double_tap_lock_summary">النقر المزدوج على Alt يقفله قيد التشغيل. النقر على Alt مرة أخرى يوقف تشغيله.</string>
+    <string name="pref_ctrl_double_tap_lock">تمكين قفل Ctrl بالنقر المزدوج</string>
+    <string name="pref_ctrl_double_tap_lock_summary">النقر المزدوج على Ctrl يقفله قيد التشغيل. النقر على Ctrl مرة أخرى يوقف تشغيله.</string>
     <string name="pref_override_device_meta_state">تجاوز حالة meta للجهاز</string>
     <string name="pref_override_device_meta_state_summary">تمكين مفاتيح التعديل الثابتة (قفل shift/alt) على لوحات المفاتيح الفعلية بغض النظر عن تكوين KCM للجهاز.</string>
     <string name="pref_shift_double_tap_lock">تمكين قفل Shift بالنقر المزدوج</string>

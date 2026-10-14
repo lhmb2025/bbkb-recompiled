@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Kasuta õigekirjakontrollis kontakte</string>
     <string name="pref_alt_double_tap_lock">Luba Alt-klahvi topeltklõpsuga lukustus</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-klahvi topeltklõps lukustab selle sisse. Uus klõps Alt-klahvil lülitab selle välja.</string>
+    <string name="pref_ctrl_double_tap_lock">Luba Ctrl-klahvi topeltklõpsuga lukustus</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ctrl-klahvi topeltklõps lukustab selle sisse. Uus klõps Ctrl-klahvil lülitab selle välja.</string>
     <string name="pref_override_device_meta_state">Alista seadme metaolek</string>
     <string name="pref_override_device_meta_state_summary">Luba füüsilistel klaviatuuridel kleepuvad muuteklahvid (shift/alt lukk) sõltumata seadme KCM-i konfiguratsioonist.</string>
     <string name="pref_shift_double_tap_lock">Luba Shift-klahvi topeltklõpsuga lukustus</string>

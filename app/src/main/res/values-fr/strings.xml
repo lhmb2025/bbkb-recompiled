@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Utiliser les contacts pour la vérification orthographique</string>
     <string name="pref_alt_double_tap_lock">Activer le verrouillage Alt par double appui</string>
     <string name="pref_alt_double_tap_lock_summary">Un double appui sur Alt la verrouille. Un nouvel appui sur Alt la désactive.</string>
+    <string name="pref_ctrl_double_tap_lock">Activer le verrouillage Ctrl par double appui</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Un double appui sur Ctrl la verrouille. Un nouvel appui sur Ctrl la désactive.</string>
     <string name="pref_override_device_meta_state">Remplacer l\'état méta de l\'appareil</string>
     <string name="pref_override_device_meta_state_summary">Activer les modificateurs persistants (verrouillage Maj/Alt) sur les claviers physiques, quelle que soit la configuration KCM de l\'appareil.</string>
     <string name="pref_shift_double_tap_lock">Activer le verrouillage Maj par double appui</string>

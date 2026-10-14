@@ -16,14 +16,34 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
 
     private final BlackBerryIME mBlackberryIme;
 
+    /**
+     * What was last posted: the meta state, plus {@link #CTRL_ACTIVE_BIT} / {@link #CTRL_LOCKED_BIT}
+     * for Ctrl, which is not span state and so has no meta bit of its own.
+     */
     private int mLastMetaState = 0;
+
+    /** Unused by both meta encodings (KeyEvent's and the span tracker's); see {@link #withCtrl}. */
+    private static final int CTRL_ACTIVE_BIT = 1 << 30;
+    private static final int CTRL_LOCKED_BIT = 1 << 29;
+
+    /** {@code metaState} with Ctrl folded in, so a Ctrl change is a change of the posted state. */
+    static int withCtrl(int metaState, boolean ctrlActive, boolean ctrlLocked) {
+        int state = metaState & ~(CTRL_ACTIVE_BIT | CTRL_LOCKED_BIT);
+        if (ctrlActive || ctrlLocked) {
+            state |= CTRL_ACTIVE_BIT;
+        }
+        if (ctrlLocked) {
+            state |= CTRL_LOCKED_BIT;
+        }
+        return state;
+    }
 
     /**
      * Audit CT-22: the four masks were bare integers, so a reader could not tell that {@code &512}
-     * is Alt-lock and {@code &256} is caps-lock — and those two decide which of eight status icons
+     * is Alt-lock and {@code &256} is caps-lock — and those two decide which status icon
      * the PKB user sees.
      */
-    private int getStatusIconDrawable(int metaState) {
+    static int getStatusIconDrawable(int metaState) {
         int altMask = metaState & MetaKeyKeyListener.META_ALT_LOCKED;
         boolean isAltLocked = altMask != 0;
         boolean isAltPressed = altMask == 0 && (metaState & KeyEvent.META_ALT_ON) != 0;
@@ -41,6 +61,18 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
         }
         if (isAltPressed && isShiftPressed) {
             return R.drawable.ic_status_alt_shift;
+        }
+        // Ctrl, alone or with Shift. Alt outranks it (above): a Ctrl that Alt is on top of is
+        // turned off by the next key, which types its Alt character.
+        if ((metaState & CTRL_ACTIVE_BIT) != 0 && !isAltLocked && !isAltPressed) {
+            boolean isCtrlLocked = (metaState & CTRL_LOCKED_BIT) != 0;
+            if (isShiftLocked) {
+                return isCtrlLocked ? R.drawable.ic_status_ctrl_locked_shift_locked : R.drawable.ic_status_ctrl_shift_locked;
+            }
+            if (isShiftPressed) {
+                return isCtrlLocked ? R.drawable.ic_status_ctrl_locked_shift : R.drawable.ic_status_ctrl_shift;
+            }
+            return isCtrlLocked ? R.drawable.ic_status_ctrl_locked : R.drawable.ic_status_ctrl;
         }
         if (isAltLocked) {
             return R.drawable.ic_status_alt_locked;
@@ -79,13 +111,14 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
      * The single feed: {@code PhysicalKeyboardStateTracker} publishes every modifier transition
      * here and nowhere else. The icon is chosen from
      * {@link ModifierState#getInterpretedMetaState()} — the state a character key is interpreted
-     * against, which is what the icon has always shown and what the eight drawables encode
+     * against, which is what the icon has always shown and what the Shift/Alt drawables encode
      * (including the span tracker's own alt-lock 0x200 and caps-lock 0x100 bits, which are not
      * {@link KeyEvent} values).
      */
     @Override
     public void onModifierStateChanged(ModifierState state, boolean force) {
-        updateModifierStatus(state == null ? 0 : state.getInterpretedMetaState(), force);
+        updateModifierStatus(state == null ? 0
+                : withCtrl(state.getInterpretedMetaState(), state.isCtrlActive(), state.isCtrlLocked()), force);
     }
 
     public void updateModifierStatus(int metaState, boolean forceUpdate) {

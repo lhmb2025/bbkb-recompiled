@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Brug kontakter til stavekontrol</string>
     <string name="pref_alt_double_tap_lock">Aktiver Alt-lås ved dobbeltklik</string>
     <string name="pref_alt_double_tap_lock_summary">Hvis du dobbeltklikker på Alt, låses den. Tryk på Alt igen for at slå den fra.</string>
+    <string name="pref_ctrl_double_tap_lock">Aktiver Ctrl-lås ved dobbeltklik</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Hvis du dobbeltklikker på Ctrl, låses den. Tryk på Ctrl igen for at slå den fra.</string>
     <string name="pref_override_device_meta_state">Tilsidesæt enhedens metatilstand</string>
     <string name="pref_override_device_meta_state_summary">Aktiver låste modifikatortaster (shift-/alt-lås) på fysiske tastaturer uanset enhedens KCM-konfiguration.</string>
     <string name="pref_shift_double_tap_lock">Aktiver Shift-lås ved dobbeltklik</string>

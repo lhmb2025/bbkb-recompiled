@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">అక్షరక్రమ తనిఖీ కోసం కాంటాక్ట్‌లను ఉపయోగించు</string>
     <string name="pref_alt_double_tap_lock">Alt డబుల్-క్లిక్ లాక్‌ను ప్రారంభించు</string>
     <string name="pref_alt_double_tap_lock_summary">Alt ను డబుల్-క్లిక్ చేస్తే అది లాక్ అవుతుంది. మళ్లీ Alt ను క్లిక్ చేస్తే ఆఫ్ అవుతుంది.</string>
+    <string name="pref_ctrl_double_tap_lock">Ctrl డబుల్-క్లిక్ లాక్‌ను ప్రారంభించు</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ctrl ను డబుల్-క్లిక్ చేస్తే అది లాక్ అవుతుంది. మళ్లీ Ctrl ను క్లిక్ చేస్తే ఆఫ్ అవుతుంది.</string>
     <string name="pref_override_device_meta_state">పరికర మెటా స్థితిని భర్తీ చేయి</string>
     <string name="pref_override_device_meta_state_summary">పరికరం KCM కాన్ఫిగరేషన్‌తో సంబంధం లేకుండా, ఫిజికల్ కీబోర్డ్‌లలో స్టికీ మాడిఫైయర్‌లను (shift/alt లాక్) ప్రారంభించు.</string>
     <string name="pref_shift_double_tap_lock">Shift డబుల్-క్లిక్ లాక్‌ను ప్రారంభించు</string>

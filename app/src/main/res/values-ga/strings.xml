@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Úsáid teagmhálacha don litreoir</string>
     <string name="pref_alt_double_tap_lock">Cumasaigh glasáil Alt le cliceáil dhúbailte</string>
     <string name="pref_alt_double_tap_lock_summary">Glasálann cliceáil dhúbailte ar Alt é. Múchann cliceáil ar Alt arís é.</string>
+    <string name="pref_ctrl_double_tap_lock">Cumasaigh glasáil Ctrl le cliceáil dhúbailte</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Glasálann cliceáil dhúbailte ar Ctrl é. Múchann cliceáil ar Ctrl arís é.</string>
     <string name="pref_override_device_meta_state">Sáraigh meitea-staid an ghléis</string>
     <string name="pref_override_device_meta_state_summary">Cumasaigh mionathraitheoirí greamaitheacha (glas shift/alt) ar mhéarchláir fhisiciúla beag beann ar chumraíocht KCM an ghléis.</string>
     <string name="pref_shift_double_tap_lock">Cumasaigh glasáil Shift le cliceáil dhúbailte</string>

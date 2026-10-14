@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Usar os contactos na corrección ortográfica</string>
     <string name="pref_alt_double_tap_lock">Activar o bloqueo de Alt con dobre clic</string>
     <string name="pref_alt_double_tap_lock_summary">Ao premer Alt dúas veces quedará bloqueada. Ao premer Alt de novo desactivarase.</string>
+    <string name="pref_ctrl_double_tap_lock">Activar o bloqueo de Ctrl con dobre clic</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ao premer Ctrl dúas veces quedará bloqueada. Ao premer Ctrl de novo desactivarase.</string>
     <string name="pref_override_device_meta_state">Substituír o metaestado do dispositivo</string>
     <string name="pref_override_device_meta_state_summary">Activa os modificadores persistentes (bloqueo de maiúsculas/alt) nos teclados físicos, independentemente da configuración KCM do dispositivo.</string>
     <string name="pref_shift_double_tap_lock">Activar o bloqueo de Maiús con dobre clic</string>

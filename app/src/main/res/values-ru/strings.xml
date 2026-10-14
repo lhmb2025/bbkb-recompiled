@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Использовать контакты при проверке орфографии</string>
     <string name="pref_alt_double_tap_lock">Включить фиксацию Alt двойным нажатием</string>
     <string name="pref_alt_double_tap_lock_summary">Двойное нажатие Alt фиксирует его. Повторное нажатие Alt отключает фиксацию.</string>
+    <string name="pref_ctrl_double_tap_lock">Включить фиксацию Ctrl двойным нажатием</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Двойное нажатие Ctrl фиксирует его. Повторное нажатие Ctrl отключает фиксацию.</string>
     <string name="pref_override_device_meta_state">Переопределить мета-состояние устройства</string>
     <string name="pref_override_device_meta_state_summary">Включить залипающие модификаторы (фиксацию Shift/Alt) на физических клавиатурах независимо от конфигурации KCM устройства.</string>
     <string name="pref_shift_double_tap_lock">Включить фиксацию Shift двойным нажатием</string>

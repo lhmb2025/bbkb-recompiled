@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Kontakte für die Rechtschreibprüfung verwenden</string>
     <string name="pref_alt_double_tap_lock">Alt-Doppelklick-Sperre aktivieren</string>
     <string name="pref_alt_double_tap_lock_summary">Ein Doppelklick auf Alt aktiviert die Sperre. Ein erneuter Klick auf Alt hebt sie auf.</string>
+    <string name="pref_ctrl_double_tap_lock">Strg-Doppelklick-Sperre aktivieren</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ein Doppelklick auf Strg aktiviert die Sperre. Ein erneuter Klick auf Strg hebt sie auf.</string>
     <string name="pref_override_device_meta_state">Meta-Status des Geräts überschreiben</string>
     <string name="pref_override_device_meta_state_summary">Fixierte Modifikatortasten (Umschalt-/Alt-Sperre) auf physischen Tastaturen unabhängig von der KCM-Konfiguration des Geräts aktivieren.</string>
     <string name="pref_shift_double_tap_lock">Umschalt-Doppelklick-Sperre aktivieren</string>

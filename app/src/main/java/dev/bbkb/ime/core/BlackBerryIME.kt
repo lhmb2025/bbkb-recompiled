@@ -43,6 +43,7 @@ import dev.bbkb.ime.core.contacts.ContactsLearningManager
 import dev.bbkb.ime.core.device.config.model.DeviceQuirk
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.device.state.PhysicalKeyboardStateTracker
+import dev.bbkb.ime.core.device.state.MetaKeyStateTracker
 import dev.bbkb.ime.core.device.config.model.TouchKeypadConfig
 import dev.bbkb.ime.core.device.touch.KeypadTouchSources
 import dev.bbkb.ime.core.device.touch.NativeTouchSource
@@ -138,6 +139,7 @@ import dev.bbkb.ime.core.ime.SwipeToDeleteAnimatorView
 import dev.bbkb.ime.core.ime.VkbGestureListener
 import dev.bbkb.ime.core.keyevent.KeyEventProcessor
 import dev.bbkb.ime.core.keyevent.ModifierResetReason
+import dev.bbkb.ime.core.keyevent.ModifierState
 import dev.bbkb.ime.core.keyevent.MultitapEventHandler
 import dev.bbkb.ime.core.keyevent.SoftwareMultitapHandler
 import dev.bbkb.ime.core.keyevent.ModifierStatusBarUpdater
@@ -333,15 +335,33 @@ class BlackBerryIME : InputMethodService(),
             get() = physicalKeyboardStateTracker.getModifierState().isAltActiveForCharacter
         override val ctrlKeySendsNoKeyUp: Boolean
             get() = DeviceProfile.current().hasQuirk(DeviceQuirk.FN_NO_KEY_UP)
+        override val isCtrlDoubleTapLockEnabled: Boolean get() = settingsManager.getSettingsValues().ctrlDoubleTapLock
+        override val ctrlDoubleTapTimeoutMs: Long get() = MetaKeyStateTracker.getDoubleTapTimeout().toLong()
+        // Modifier-KEY state only: the symbol board's own Alt page is not the user holding Alt,
+        // and an Alt already spent (the Alt of an Alt+Sym) has left the span state.
+        override val isPkbAltActiveForChord: Boolean
+            get() = (physicalKeyboardStateTracker.getModifierState().modifierKeyMetaState and ModifierState.ALT_ANY_MASK) != 0
+        override val isPkbShiftActiveForChord: Boolean
+            get() = physicalKeyboardStateTracker.getModifierState().let { s ->
+                (s.isShiftHeld || s.isShiftConsumed || s.isShiftSticky) && !s.isShiftLocked
+            }
+        override val isVkbShiftActiveForChord: Boolean get() = keyboardSwitcher.isShiftedForCtrlChord()
+        override fun onPkbCtrlStateChanged() = physicalKeyboardStateTracker.onCtrlStateChanged()
+        override fun setVkbCtrlLabel(active: Boolean) {
+            keyboardSwitcher.getMainKeyboardView()?.setCtrlLabelActive(active)
+        }
+        override fun consumePkbModifiersAfterChord(keyCode: Int) =
+            physicalKeyboardStateTracker.consumeModifiersAfterKey(keyCode, true)
+        override fun consumeVkbShiftAfterChord() = keyboardSwitcher.releaseShiftAfterCtrlChord()
         override fun sendKeyDownWithMeta(keyCode: Int, metaState: Int) = inputLogic.sendKeyDownWithMeta(keyCode, metaState)
         override fun sendKeyUpWithMeta(keyCode: Int, metaState: Int) = inputLogic.sendKeyUpWithMeta(keyCode, metaState)
         override fun showControlModeUi() {
-            // The notice bar itself is gone (its view forced itself GONE), but these four
-            // actions ran on every sticky-control-mode entry and are the visible behaviour.
+            // The original hid the suggestion strip and the input bar here to make room for its
+            // "Ctrl is on" notice bar. That bar is gone (its view forced itself GONE), so hiding
+            // them only took the suggestions and the bar away; the ?123 label and the status icon
+            // show Ctrl now, and both stay.
             sweepBoardsWhenUimBarIsOff()
             enableCursorMode(false)
-            uiCoordinator.hideSuggestionViews()
-            hideInputBoard()
         }
         override fun hideControlModeUi() {
             // Was hideControlModeNotice(), whose body was unreachable: it returned early on
@@ -1988,7 +2008,9 @@ class BlackBerryIME : InputMethodService(),
         val keyY = mainKeyboardView.getKeyY(i3)
         // Shift on a non-alphabet keyboard means "symbol shift" (-13).
         val code = if (i == -1 && keyboardSwitcher.getCurrentKeyboard()?.mId?.isAlphabetKeyboard() != true) -13 else i
-        val shouldProcessKey = (i < 0) || controlMode.isVkbShiftChordActive || (i > 0 && isInputViewShown())
+        // On-screen Ctrl on: the letter, Enter or Delete already went to the app as a Ctrl chord
+        // when it was pressed, so it must not be typed as well.
+        val shouldProcessKey = !controlMode.suppressesSoftCodeInput(i) && ((i < 0) || (i > 0 && isInputViewShown()))
         if (shouldProcessKey) {
             val interpretation = softwareMultitapHandler.interpretCodePoint(code)
             val event = if (interpretation != null && interpretation.isModifier()) {

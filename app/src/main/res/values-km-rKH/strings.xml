@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">ប្រើទំនាក់ទំនងសម្រាប់ការពិនិត្យអក្ខរាវិរុទ្ធ</string>
     <string name="pref_alt_double_tap_lock">បើកការចាក់សោដោយចុច Alt ពីរដង</string>
     <string name="pref_alt_double_tap_lock_summary">ការចុច Alt ពីរដងនឹងចាក់សោវា។ ការចុច Alt ម្ដងទៀតនឹងបិទវា។</string>
+    <string name="pref_ctrl_double_tap_lock">បើកការចាក់សោដោយចុច Ctrl ពីរដង</string>
+    <string name="pref_ctrl_double_tap_lock_summary">ការចុច Ctrl ពីរដងនឹងចាក់សោវា។ ការចុច Ctrl ម្ដងទៀតនឹងបិទវា។</string>
     <string name="pref_override_device_meta_state">បដិសេធស្ថានភាពមេតារបស់ឧបករណ៍</string>
     <string name="pref_override_device_meta_state_summary">បើកគ្រាប់ចុចកែប្រែជាប់ (ការចាក់សោ shift/alt) នៅលើក្ដារចុចរូបវន្ត ដោយមិនគិតពីការកំណត់រចនាសម្ព័ន្ធ KCM របស់ឧបករណ៍។</string>
     <string name="pref_shift_double_tap_lock">បើកការចាក់សោដោយចុច Shift ពីរដង</string>

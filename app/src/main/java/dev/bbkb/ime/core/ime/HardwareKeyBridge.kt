@@ -67,7 +67,10 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
         // Nullable on purpose: install() runs early in IME construction, and tests build a bridge
         // over an IME that has no tracker at all.
         val tracker: PhysicalKeyboardStateTracker? = ime.getPhysicalKeyboardStateTracker()
-        tracker?.setCtrlStateSource { ime.getControlMode().isCtrlActive }
+        tracker?.setCtrlStateSource(object : PhysicalKeyboardStateTracker.CtrlStateSource {
+            override fun isCtrlActive(): Boolean = ime.getControlMode().isCtrlActive
+            override fun isCtrlLocked(): Boolean = ime.getControlMode().isCtrlLocked
+        })
 
         altSymShortcutHandler.setCallback(object : AltSymShortcutHandler.ActionCallback {
             override fun openSymbolKeyboard() {
@@ -104,6 +107,9 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
             override fun toggleInputMenu() {
                 // The menu lives in the IME window too, so it needs the window as a board does.
                 if (canShowBoard()) ime.getUiCoordinator().toggleInputMenu()
+            }
+            override fun tapCtrl() {
+                ime.getControlMode().tapCtrlFromShortcut(android.os.SystemClock.uptimeMillis())
             }
         })
     }

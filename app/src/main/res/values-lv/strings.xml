@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Izmantot kontaktpersonas pareizrakstības pārbaudei</string>
     <string name="pref_alt_double_tap_lock">Iespējot Alt dubultklikšķa fiksēšanu</string>
     <string name="pref_alt_double_tap_lock_summary">Divreiz noklikšķinot uz Alt, tas tiks fiksēts. Noklikšķinot uz Alt vēlreiz, tas tiks izslēgts.</string>
+    <string name="pref_ctrl_double_tap_lock">Iespējot Ctrl dubultklikšķa fiksēšanu</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Divreiz noklikšķinot uz Ctrl, tas tiks fiksēts. Noklikšķinot uz Ctrl vēlreiz, tas tiks izslēgts.</string>
     <string name="pref_override_device_meta_state">Ignorēt ierīces meta stāvokli</string>
     <string name="pref_override_device_meta_state_summary">Iespējot fiksējamus modifikatorus (Shift/Alt fiksēšanu) fiziskajās tastatūrās neatkarīgi no ierīces KCM konfigurācijas.</string>
     <string name="pref_shift_double_tap_lock">Iespējot Shift dubultklikšķa fiksēšanu</string>

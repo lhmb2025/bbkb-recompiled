@@ -619,6 +619,9 @@
     <string name="pref_alt_double_tap_lock">Enable Alt double-click lock</string>
     <string name="pref_alt_double_tap_lock_key" translatable="false">pref_alt_double_tap_lock</string>
     <string name="pref_alt_double_tap_lock_summary">Double-clicking Alt will lock it on. Clicking Alt again will turn it off.</string>
+    <string name="pref_ctrl_double_tap_lock">Enable Ctrl double-click lock</string>
+    <string name="pref_ctrl_double_tap_lock_key" translatable="false">pref_ctrl_double_tap_lock</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Double-clicking Ctrl will lock it on. Clicking Ctrl again will turn it off.</string>
     <string name="pref_override_device_meta_state">Override device meta state</string>
     <string name="pref_override_device_meta_state_key" translatable="false">pref_override_device_meta_state</string>
     <string name="pref_override_device_meta_state_summary">Enable sticky modifiers (shift/alt lock) on physical keyboards regardless of device KCM configuration.</string>

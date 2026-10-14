@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">Алдаа шалгахад харилцагчдыг ашиглах</string>
     <string name="pref_alt_double_tap_lock">Alt давхар товшилтын түгжээг идэвхжүүлэх</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-г давхар товшвол түгжигдэнэ. Alt-г дахин товшвол унтарна.</string>
+    <string name="pref_ctrl_double_tap_lock">Ctrl давхар товшилтын түгжээг идэвхжүүлэх</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ctrl-г давхар товшвол түгжигдэнэ. Ctrl-г дахин товшвол унтарна.</string>
     <string name="pref_override_device_meta_state">Төхөөрөмжийн мета төлөвийг дарж бичих</string>
     <string name="pref_override_device_meta_state_summary">Төхөөрөмжийн KCM тохиргооноос үл хамааран биет гар дээр наалдамхай өөрчлөгч товч (shift/alt түгжээ)-ийг идэвхжүүлэх.</string>
     <string name="pref_shift_double_tap_lock">Shift давхар товшилтын түгжээг идэвхжүүлэх</string>

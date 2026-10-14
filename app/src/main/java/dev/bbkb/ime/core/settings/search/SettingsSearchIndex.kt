@@ -154,6 +154,7 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.pref_show_pkb_modifier_status_icon, "modifier status icon shift alt", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_show_pkb_modifier_status_icon"),
         SearchableSetting(R.string.pref_shift_double_tap_lock, "shift double tap caps lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_shift_double_tap_lock"),
         SearchableSetting(R.string.pref_alt_double_tap_lock, "alt double tap lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_alt_double_tap_lock"),
+        SearchableSetting(R.string.pref_ctrl_double_tap_lock, "ctrl control double tap lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_ctrl_double_tap_lock"),
         // The screen itself, so no anchor; its Nav row on Physical keyboard is behind the same
         // physical-keyboard gate.
         SearchableSetting(R.string.settings_pkb_layouts_title, "physical layouts custom built-in builtin letter layout map remap keys keycaps alphabet qwerty qwertz azerty xml import template save file export share", SettingsRoute.PhysicalLayouts.route, TYPING, requires = DeviceRequirement.PHYSICAL_KEYBOARD),

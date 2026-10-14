@@ -507,6 +507,8 @@
     <string name="settings_spellcheck_use_contacts_title">বানান পরীক্ষায় পরিচিতি ব্যবহার করুন</string>
     <string name="pref_alt_double_tap_lock">Alt ডাবল-ক্লিক লক সক্রিয় করুন</string>
     <string name="pref_alt_double_tap_lock_summary">Alt দুবার ক্লিক করলে তা লক হয়ে থাকবে। আবার Alt চাপলে বন্ধ হয়ে যাবে।</string>
+    <string name="pref_ctrl_double_tap_lock">Ctrl ডাবল-ক্লিক লক সক্রিয় করুন</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Ctrl দুবার ক্লিক করলে তা লক হয়ে থাকবে। আবার Ctrl চাপলে বন্ধ হয়ে যাবে।</string>
     <string name="pref_override_device_meta_state">ডিভাইসের মেটা স্টেট উপেক্ষা করুন</string>
     <string name="pref_override_device_meta_state_summary">ডিভাইসের KCM কনফিগারেশন যাই হোক না কেন, ফিজিক্যাল কীবোর্ডে স্টিকি মডিফায়ার (শিফট/অল্ট লক) সক্রিয় করুন।</string>
     <string name="pref_shift_double_tap_lock">Shift ডাবল-ক্লিক লক সক্রিয় করুন</string>
