@@ -150,13 +150,13 @@ class LetterLayoutRegistry @JvmOverloads constructor(
      * profile reports), built from the layout set [layoutSet] (the subtype's `KeyboardLayoutSet`:
      * `east_slavic`, `translit`, `qwerty`, …), or null when none is bound to that keyboard.
      *
-     * Only documents bound to a language take part: one bound to none (`colemak`) is a layout to
-     * choose, not a language's default. Among those that match, the most specific binding wins —
-     * a named keypad beats `any`, then a named keypad type, then a named layout set, then the
-     * document bound to fewer languages, then the one whose id is the language code — and a
-     * document bound to a keypad, keypad type or layout set is chosen only when the keyboard's is
-     * known and is that one. Remaining ties go to the lowest id, so the answer never depends on
-     * the order the files are listed in.
+     * Only documents for the physical keys (`pkb` among their targets) and bound to a language take
+     * part: one bound to none is a layout to choose, not a language's default. Among those that
+     * match, the most specific binding wins — a named keypad beats `any`, then a named keypad type,
+     * then a named layout set, then the document bound to fewer languages, then the one whose id is
+     * the language code — and a document bound to a keypad, keypad type or layout set is chosen
+     * only when the keyboard's is known and is that one. Remaining ties go to the lowest id, so the
+     * answer never depends on the order the files are listed in.
      */
     fun builtIn(language: String?, keypad: String?, keypadType: String?, layoutSet: String?): LetterLayout? =
         builtIns.select(
@@ -212,7 +212,7 @@ class LetterLayoutRegistry @JvmOverloads constructor(
             val cacheKey = "$language|$keypad|$keypadType|$layoutSet"
             selections[cacheKey]?.let { return it as? LetterLayout }
             val result = ids.mapNotNull { get(it) }
-                .filter { selects(it.binding, language, keypad, keypadType, layoutSet) }
+                .filter { LetterLayout.Target.PKB in it.targets && selects(it.binding, language, keypad, keypadType, layoutSet) }
                 .sortedWith(SPECIFICITY.thenByDescending { it.id == language }.thenBy { it.id })
                 .firstOrNull()
             selections[cacheKey] = result ?: NONE
@@ -326,12 +326,14 @@ class LetterLayoutRegistry @JvmOverloads constructor(
         }
 
         /**
-         * Drops the typing path's copy, so the next key reads the active layout again, and has the
-         * engine's key letters decided again ([LetterLayoutEngineSync]).
+         * Drops the typing path's copies — the active layout's and each language's chosen layout
+         * ([LetterLayoutChoice]) — so the next key reads them again, and has the engine's key
+         * letters decided again ([LetterLayoutEngineSync]).
          */
         @JvmStatic
         fun invalidate() {
             snapshot = null
+            LetterLayoutChoice.invalidate()
             LetterLayoutEngineSync.onActiveLayoutChanged()
         }
     }

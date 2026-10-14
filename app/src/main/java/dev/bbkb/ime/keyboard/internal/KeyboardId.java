@@ -17,6 +17,14 @@ public final class KeyboardId {
 
     public final InputMethodSubtype mSubtype;
 
+    /**
+     * The layout set the keyboard is built from ({@code qwerty}, {@code colemak}), or null when its
+     * builder named none. Usually the subtype's own; a letter layout chosen for the language
+     * (AZERTY, Colemak…) can stand in for it, which is why it is part of the keyboard's identity:
+     * the same subtype then builds a different keyboard.
+     */
+    public final String mKeyboardLayoutSet;
+
     public final Locale mLocale;
 
     public final int mWidth;
@@ -131,6 +139,7 @@ public final class KeyboardId {
 
     public KeyboardId(int i, KeyboardBuilder.Params dVar) {
         this.mSubtype = dVar.mSubtype;
+        this.mKeyboardLayoutSet = dVar.keyboardLayoutSet();
         this.mLocale = ResourceLocaleUtils.getSubtypeLocale(this.mSubtype);
         this.mWidth = dVar.mKeyboardWidth;
         this.mHeight = dVar.mKeyboardHeight;
@@ -147,14 +156,24 @@ public final class KeyboardId {
     }
 
     private static int computeHashCode(KeyboardId c0977g) {
-        return Arrays.hashCode(new Object[]{Integer.valueOf(c0977g.mElementId), Integer.valueOf(c0977g.mMode), Integer.valueOf(c0977g.mWidth), Integer.valueOf(c0977g.mHeight), Boolean.valueOf(c0977g.passwordInput()), Boolean.valueOf(c0977g.mClobberSettingsKey), Boolean.valueOf(c0977g.mVoiceKeyEnabled), Boolean.valueOf(c0977g.mLanguageSwitchKeyEnabled), Boolean.valueOf(c0977g.mLanguageQuickSwitchKeyEnabled), Boolean.valueOf(c0977g.mInputBoardBarEnabled), Boolean.valueOf(c0977g.isMultiLine()), Integer.valueOf(c0977g.imeAction()), c0977g.mCustomActionLabel, Boolean.valueOf(c0977g.navigateNext()), Boolean.valueOf(c0977g.navigatePrevious()), c0977g.mSubtype});
+        return Arrays.hashCode(new Object[]{Integer.valueOf(c0977g.mElementId), Integer.valueOf(c0977g.mMode), Integer.valueOf(c0977g.mWidth), Integer.valueOf(c0977g.mHeight), Boolean.valueOf(c0977g.passwordInput()), Boolean.valueOf(c0977g.mClobberSettingsKey), Boolean.valueOf(c0977g.mVoiceKeyEnabled), Boolean.valueOf(c0977g.mLanguageSwitchKeyEnabled), Boolean.valueOf(c0977g.mLanguageQuickSwitchKeyEnabled), Boolean.valueOf(c0977g.mInputBoardBarEnabled), Boolean.valueOf(c0977g.isMultiLine()), Integer.valueOf(c0977g.imeAction()), c0977g.mCustomActionLabel, Boolean.valueOf(c0977g.navigateNext()), Boolean.valueOf(c0977g.navigatePrevious()), c0977g.mSubtype, c0977g.mKeyboardLayoutSet});
+    }
+
+    /**
+     * The layout set {@code <case latin:keyboardLayoutSet>} matches against: the one the keyboard
+     * is built from, so a Dvorak keyboard takes the bottom row's {@code dvorak} cases (q and z on
+     * the comma and period keys) whatever its subtype says; the subtype's own for a keyboard
+     * whose builder named none.
+     */
+    public String keyboardLayoutSet() {
+        return this.mKeyboardLayoutSet != null ? this.mKeyboardLayoutSet : ResourceLocaleUtils.getKeyboardLayoutSetName(this.mSubtype);
     }
 
     private boolean equalsInternal(KeyboardId c0977g) {
         if (c0977g == this) {
             return true;
         }
-        return c0977g.mElementId == this.mElementId && c0977g.mMode == this.mMode && c0977g.mWidth == this.mWidth && c0977g.mHeight == this.mHeight && c0977g.passwordInput() == passwordInput() && c0977g.mClobberSettingsKey == this.mClobberSettingsKey && c0977g.mVoiceKeyEnabled == this.mVoiceKeyEnabled && c0977g.mLanguageSwitchKeyEnabled == this.mLanguageSwitchKeyEnabled && c0977g.mLanguageQuickSwitchKeyEnabled == this.mLanguageQuickSwitchKeyEnabled && c0977g.mInputBoardBarEnabled == this.mInputBoardBarEnabled && c0977g.isMultiLine() == isMultiLine() && c0977g.imeAction() == imeAction() && TextUtils.equals(c0977g.mCustomActionLabel, this.mCustomActionLabel) && c0977g.navigateNext() == navigateNext() && c0977g.navigatePrevious() == navigatePrevious() && c0977g.mSubtype.equals(this.mSubtype);
+        return c0977g.mElementId == this.mElementId && c0977g.mMode == this.mMode && c0977g.mWidth == this.mWidth && c0977g.mHeight == this.mHeight && c0977g.passwordInput() == passwordInput() && c0977g.mClobberSettingsKey == this.mClobberSettingsKey && c0977g.mVoiceKeyEnabled == this.mVoiceKeyEnabled && c0977g.mLanguageSwitchKeyEnabled == this.mLanguageSwitchKeyEnabled && c0977g.mLanguageQuickSwitchKeyEnabled == this.mLanguageQuickSwitchKeyEnabled && c0977g.mInputBoardBarEnabled == this.mInputBoardBarEnabled && c0977g.isMultiLine() == isMultiLine() && c0977g.imeAction() == imeAction() && TextUtils.equals(c0977g.mCustomActionLabel, this.mCustomActionLabel) && c0977g.navigateNext() == navigateNext() && c0977g.navigatePrevious() == navigatePrevious() && c0977g.mSubtype.equals(this.mSubtype) && TextUtils.equals(c0977g.mKeyboardLayoutSet, this.mKeyboardLayoutSet);
     }
 
     public boolean isAlphabetKeyboard() {

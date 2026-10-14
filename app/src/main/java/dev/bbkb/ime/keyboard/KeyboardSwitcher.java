@@ -534,6 +534,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         Resources resources = this.themeContext.getResources();
         aVar.setKeyboardGeometry(ResourceConfigManager.getScreenWidthPixels(resources), ResourceConfigManager.getKeyboardHeight(resources));
         aVar.setSubtype(getSubtypeForEditorInfo(editorInfo, this.subtypeManager.getCurrentSubtype()));
+        // The layout chosen for this language on the Language screen (AZERTY, Colemak…), if any.
+        aVar.useChosenLetterLayout();
         aVar.setVoiceInputKeyEnabled(InputMethodHelper.shouldShowVoiceInputKey());
         aVar.setLanguageSwitchKeyEnabled(this.blackberryIme.shouldShowLanguageSwitchKey());
         aVar.setLanguageQuickSwitchKeyEnabled(SettingsManager.isLanguageQuickSwitchEnabled());
@@ -729,6 +731,27 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
             return mainKeyboardView.getKeyboard();
         }
         return null;
+    }
+
+    /**
+     * The layout set the keyboard on screen was built from ({@code qwerty}, or {@code colemak}
+     * when that was chosen for its language), or null with no keyboard. What the engine's
+     * on-screen KDB follows ({@code LetterLayoutEngineSync}).
+     */
+    public String getCurrentKeyboardLayoutSet() {
+        final Keyboard keyboard = getCurrentKeyboard();
+        return keyboard != null && keyboard.mId != null ? keyboard.mId.keyboardLayoutSet() : null;
+    }
+
+    /**
+     * The layout set the keyboard on screen would be built from with nothing chosen for its
+     * language: its subtype's own ({@code qwerty}, {@code azerty}…), or null with no keyboard. When
+     * {@link #getCurrentKeyboardLayoutSet()} differs from it, a chosen layout is on screen.
+     */
+    public String getCurrentKeyboardOwnLayoutSet() {
+        final Keyboard keyboard = getCurrentKeyboard();
+        final InputMethodSubtype subtype = keyboard != null && keyboard.mId != null ? keyboard.mId.mSubtype : null;
+        return subtype != null ? ResourceLocaleUtils.getKeyboardLayoutSetName(subtype) : null;
     }
 
     public Keyboard getAlphabetKeyboard() {

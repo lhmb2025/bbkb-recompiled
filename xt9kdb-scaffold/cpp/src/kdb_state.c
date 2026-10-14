@@ -98,6 +98,13 @@ static Xt9VariantNode* pick_variant(ET9U32 pid, ET9U32 sid) {
     return 0;
 }
 
+/* A letter layout's generated variant (LetterLayoutKdb.VARIANT_PREFIX "layout:"): it may carry
+ * on-screen KDBs drawn from that layout, which the VKB must load. Device variants (athena…) never
+ * reach the VKB — a device folder describes the keypad's geometry only (2026-08-19). */
+static int is_letter_layout_variant(const char* v) {
+    return strncmp(v, "layout:", 7) == 0;
+}
+
 /* Recognition mode/state held by the owned module. These are STORED faithfully but not yet consumed
  * by the owned decoder (they drive AW-side scoring, which remains the blob); kept so the API is
  * complete and state survives across queries. */
@@ -147,7 +154,7 @@ static ET9STATUS set_kdb_num_locked(ET9KDBInfoPtr ctx, ET9U32 selector, ET9U32 f
      * the screen: apply the variant only to the PKB; the VKB always uses the root default KDB
      * (owner directive 2026-08-19; the athena variant folder ships PKB layouts only, so this is
      * belt-and-braces against any variant that also carries a vkb/root-named layout). */
-    Xt9VariantNode* vn = is_pkb ? pick_variant(pid, sid) : 0;
+    Xt9VariantNode* vn = (is_pkb || is_letter_layout_variant(g_req_variant)) ? pick_variant(pid, sid) : 0;
     ET9KdbNode*     n  = vn ? 0 : pick_node(et9_ctx_kdb_index(ctx), pid, sid);
     if (!vn && !n) return ET9STATUS_KDB_NOT_LOADED; /* 0x15, mirrors original */
     XT9KDB_LOGI("SetKdbNum sel=0x%x pid=%u sid=%u pkb=%d req_variant='%s' variantApplied=%d",

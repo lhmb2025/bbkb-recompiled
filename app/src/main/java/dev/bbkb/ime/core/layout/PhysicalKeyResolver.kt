@@ -25,8 +25,10 @@ import java.util.WeakHashMap
  *
  * Each answer walks the same stack:
  *
- *  1. the letter layout the user switched on (Physical keyboard > Physical layouts), while
- *     it is bound to the current keyboard and this phone's keypad;
+ *  1. the user's letter layout, while it is bound to the current keyboard and this phone's keypad:
+ *     the layout chosen for the keyboard's language on the Language screen ([LetterLayoutChoice],
+ *     when it is for the physical keys), else the one switched on in Physical keyboard > Physical
+ *     layouts — the two never compete, see [userLayout];
  *  2. the built-in document for the current keyboard's language, keypad, keypad type and layout
  *     set (`assets/letter-layouts/`), while "Use active language's alphabet for physical keyboard"
  *     ([PREF_KEY]) is on — that switch turns the built-in documents off and leaves a user layout
@@ -82,17 +84,28 @@ object PhysicalKeyResolver {
         override fun all(): List<LetterLayout> = registry.builtInIds().mapNotNull { registry.builtIn(it) }
     }
 
-    /** Points the sources at the running keyboard: the user's active layout and the shipped documents. */
+    /**
+     * Points the sources at the running keyboard: each language's chosen layout, the layout
+     * switched on in Physical layouts, and the shipped documents.
+     */
     @JvmStatic
     fun init(context: Context) {
         val app = context.applicationContext
+        chosenLayoutSource = { language -> LetterLayoutChoice.forTyping(app, language) }
         userLayoutSource = { LetterLayoutRegistry.activeForTyping(app) }
         builtIns = RegistryBuiltIns(LetterLayoutRegistry(app))
     }
 
     // ── sources ──────────────────────────────────────────────────────────────
 
-    /** The active user layout, whatever it is bound to. Set by [init]; tests replace it. */
+    /**
+     * The layout chosen for a keyboard language on the Language screen ([LetterLayoutChoice]),
+     * whatever it is for. Set by [init]; tests replace it.
+     */
+    @Volatile
+    internal var chosenLayoutSource: (language: String?) -> LetterLayout? = { null }
+
+    /** The layout switched on in Physical layouts, whatever it is bound to. Set by [init]; tests replace it. */
     @Volatile
     internal var userLayoutSource: () -> LetterLayout? = { null }
 
@@ -147,6 +160,7 @@ object PhysicalKeyResolver {
 
     /** Every source as it is now, to be put back with [Snapshot.restore]. For tests. */
     internal class Snapshot {
+        private val chosen = chosenLayoutSource
         private val user = userLayoutSource
         private val docs = builtIns
         private val locale = localeSource
@@ -159,6 +173,7 @@ object PhysicalKeyResolver {
         private val zero = zeroKeySource
 
         fun restore() {
+            chosenLayoutSource = chosen
             userLayoutSource = user
             builtIns = docs
             localeSource = locale
@@ -191,23 +206,35 @@ object PhysicalKeyResolver {
     private var typingCopy: Pair<LetterLayout, LetterLayout>? = null
 
     /**
-     * The user's letter layout when it drives the physical keys right now — switched on, bound to
-     * the current keyboard's language (or to none), its layout set and this phone's keypad — else
-     * null. Only its character keys: the typing path never lets a document take Space, Enter or a
-     * modifier.
+     * The user's letter layout when it drives the physical keys right now, else null: bound to the
+     * current keyboard's language (or to none), its layout set and this phone's keypad. Only its
+     * character keys: the typing path never lets a document take Space, Enter or a modifier.
+     *
+     * Two choices feed it, and the first that drives the keys wins outright: the layout chosen for
+     * the keyboard's language on the Language screen ([LetterLayoutChoice]) when it is for the
+     * physical keys (`pkb` in its targets) and fits, else the one switched on in Physical layouts.
+     * So a language with a choice of its own never reads the Physical layouts selection, and every
+     * other language reads it as it always has. A chosen layout is a user layout even when it is a
+     * built-in document: its letters apply instead of the key map's.
      */
     @JvmStatic
     fun userLayout(): LetterLayout? {
-        val layout = ask(userLayoutSource, null) ?: return null
         val language = language(locale())
         val keypad = ask(keypadLayoutSource, null)
+        val chosen = ask({ chosenLayoutSource(language) }, null)
+            ?.takeIf { LetterLayout.Target.PKB in it.targets && fits(it, language, keypad) }
+        val layout = chosen ?: ask(userLayoutSource, null)?.takeIf { fits(it, language, keypad) } ?: return null
+        typingCopy?.let { (source, trimmed) -> if (source === layout) return trimmed }
+        return layout.onlyKeys(LetterLayout::isCharacterKey).also { typingCopy = layout to it }
+    }
+
+    /** Whether [layout]'s binding fits the current keyboard in [language] on a [keypad] keypad. */
+    private fun fits(layout: LetterLayout, language: String?, keypad: String?): Boolean {
         // Almost every layout is for any keypad type and any layout set; only ask the device
         // profile and the subtype when the binding names one.
         val keypadType = if (layout.binding.keypadType == LetterLayout.ANY) null else ask(keypadTypeSource, null)
         val layoutSet = if (layout.binding.layoutSet == LetterLayout.ANY) null else ask(layoutSetSource, null)
-        if (!layout.appliesTo(language, keypad, keypadType, layoutSet)) return null
-        typingCopy?.let { (source, trimmed) -> if (source === layout) return trimmed }
-        return layout.onlyKeys(LetterLayout::isCharacterKey).also { typingCopy = layout to it }
+        return layout.appliesTo(language, keypad, keypadType, layoutSet)
     }
 
     /** The keyboard the last built-in selection was made for, and what it selected. */

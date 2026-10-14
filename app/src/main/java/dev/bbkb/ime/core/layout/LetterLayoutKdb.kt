@@ -47,37 +47,97 @@ import java.util.Locale
  * and type already are what the layout says. A key that changes has only its `keyLabel`, `keyCodes`
  * and `keyType` attributes rewritten, in place.
  *
- * Positions follow the physical keypad as [Template.PKB] describes it: row 1 Q–P, row 2 A–L, row 3
- * Alt then Z–M and the extra key past M (the KEY2's `$` key, named by `KEYCODE_4`), function keys
- * skipped; the column is the key's centre over its width. The generator
- * (`xt9kdb-scaffold/tools/letter_layouts_gen.py`) reads the same files by the same rules when it
- * writes the built-in documents. A layout key that names some other key code (Space, a digit,
+ * Positions follow the keyboard the file describes ([Template]). On the physical keypad
+ * ([Template.PKB]): row 1 Q–P, row 2 A–L, row 3 Alt then Z–M and the extra key past M (the KEY2's
+ * `$` key, named by `KEYCODE_4`), function keys skipped; the column is the key's centre over its
+ * width. The generator (`xt9kdb-scaffold/tools/letter_layouts_gen.py`) reads the same files by the
+ * same rules when it writes the built-in documents. On the on-screen keyboard ([Template.VKB]) the
+ * keys of each of the first three rows, left to right and function keys skipped, are Q–P, A–L
+ * then the semicolon key for a tenth key (the `spanish` rows), and Z–M; the fourth row (comma,
+ * space, period) has no positions. A layout key that names some other key code (Space, a digit,
  * punctuation keys) has no position in a KDB and changes nothing here.
+ *
+ * ## The on-screen keyboard
+ *
+ * The engine picks an on-screen KDB by the language's ids alone, so a Colemak board on an English
+ * keyboard would be decoded against `qwerty_vkb.xml`'s QWERTY letters, in rows of the wrong length
+ * (Colemak has ten keys in the middle row). [forOnScreenKeyboard] builds the KDB the engine should
+ * load instead: the geometry of the layout's rows template (`assets/kdb/<template>_vkb.xml`, whose
+ * rows match the drawn ones), the layout's letters, and the ids of the KDB it stands in for, so the
+ * engine finds it for that language.
  */
 object LetterLayoutKdb {
 
-    /**
-     * The geometry a KDB file describes, which decides how its keys map to key codes. The physical
-     * keypad today; the on-screen keyboard's `<name>_vkb.xml` files follow once on-screen layouts
-     * read letter layouts too.
-     */
+    /** The geometry a KDB file describes, which decides how its keys map to key codes. */
     enum class Template(
         /** The suffix of the KDB files of this kind under `assets/kdb/`. */
         val fileSuffix: String,
     ) {
+        /** The physical keypad: `<name>_pkb.xml`, positions by key centre on the keypad's grid. */
         PKB("_pkb.xml"),
+
+        /** The on-screen keyboard: `<name>_vkb.xml`, positions by order within each letter row. */
         VKB("_vkb.xml"),
     }
 
     /** The prefix of the engine variant a layout's generated KDBs are registered under. */
     const val VARIANT_PREFIX: String = "layout:"
 
-    /** The engine variant name for [layout]'s generated KDBs of [template]. */
+    /**
+     * The engine variant name for [layout]'s generated KDBs. One name for both keyboards: the
+     * engine keys a variant's files by their ids as well, and the physical keypad's files
+     * (secondaryId 6) never share ids with the on-screen keyboard's.
+     */
     @JvmStatic
     @JvmOverloads
-    fun variantName(layout: LetterLayout, template: Template = Template.PKB): String {
-        requireSupported(template)
-        return VARIANT_PREFIX + layout.id
+    @Suppress("UNUSED_PARAMETER")
+    fun variantName(layout: LetterLayout, template: Template = Template.PKB): String = VARIANT_PREFIX + layout.id
+
+    /** The on-screen KDB a rows template's geometry comes from: `qwerty_vkb.xml`, `spanish_vkb.xml`. */
+    @JvmStatic
+    fun templateFile(rowsTemplate: String): String = rowsTemplate + Template.VKB.fileSuffix
+
+    /**
+     * The on-screen KDB the engine should load for [target]'s language while the on-screen
+     * keyboard is drawn from [layout]: [template] (the KDB named by the layout's rows template,
+     * [templateFile]) with the layout's letters and [target]'s `primaryId` and `secondaryId`. Null
+     * when either file carries no ids.
+     */
+    @JvmStatic
+    fun forOnScreenKeyboard(template: String, target: String, layout: LetterLayout): String? {
+        val (primaryId, secondaryId) = engineIds(target) ?: return null
+        val stamped = withEngineIds(template, primaryId, secondaryId) ?: return null
+        return rewrite(stamped, layout, Template.VKB)
+    }
+
+    private val KEYBOARD_ELEMENT = Regex("<keyboard\\b[^>]*>")
+    private val PRIMARY_ID = Regex("(\\bprimaryId\\s*=\\s*\")(\\d+)(\")")
+    private val SECONDARY_ID = Regex("(\\bsecondaryId\\s*=\\s*\")(\\d+)(\")")
+
+    /**
+     * The `primaryId` and `secondaryId` of [xml]'s `<keyboard>` element: what the engine selects a
+     * KDB by (the language, and 6 for the physical keypad or 1 for the on-screen keyboard). Null
+     * when the element or either id is missing.
+     */
+    @JvmStatic
+    fun engineIds(xml: String): Pair<Int, Int>? {
+        val keyboard = KEYBOARD_ELEMENT.find(COMMENT.replace(xml) { " ".repeat(it.value.length) }) ?: return null
+        val element = xml.substring(keyboard.range)
+        val primary = PRIMARY_ID.find(element)?.groupValues?.get(2)?.toIntOrNull() ?: return null
+        val secondary = SECONDARY_ID.find(element)?.groupValues?.get(2)?.toIntOrNull() ?: return null
+        return primary to secondary
+    }
+
+    /** [xml] with its `<keyboard>` element's ids replaced, every other byte as it was; null without them. */
+    @JvmStatic
+    fun withEngineIds(xml: String, primaryId: Int, secondaryId: Int): String? {
+        val keyboard = KEYBOARD_ELEMENT.find(COMMENT.replace(xml) { " ".repeat(it.value.length) }) ?: return null
+        var element = xml.substring(keyboard.range)
+        for ((attribute, value) in listOf(PRIMARY_ID to primaryId, SECONDARY_ID to secondaryId)) {
+            val digits = attribute.find(element)?.groups?.get(2)?.range ?: return null
+            element = element.replaceRange(digits, value.toString())
+        }
+        return xml.replaceRange(keyboard.range, element)
     }
 
     /**
@@ -87,9 +147,8 @@ object LetterLayoutKdb {
     @JvmStatic
     @JvmOverloads
     fun rewrite(xml: String, layout: LetterLayout, template: Template = Template.PKB): String {
-        requireSupported(template)
         val edits = ArrayList<Edit>()
-        for (key in keys(xml)) {
+        for (key in keys(xml, template)) {
             val entry = layout.keys[key.keyCode] ?: continue
             edits += rewriteKey(key, entry) ?: continue
         }
@@ -105,10 +164,8 @@ object LetterLayoutKdb {
      */
     @JvmStatic
     @JvmOverloads
-    fun codesByKeyCode(xml: String, template: Template = Template.PKB): Map<Int, IntArray> {
-        requireSupported(template)
-        return keys(xml).associate { it.keyCode to it.codes }
-    }
+    fun codesByKeyCode(xml: String, template: Template = Template.PKB): Map<Int, IntArray> =
+        keys(xml, template).associate { it.keyCode to it.codes }
 
     /**
      * The letter the engine has on each position of [xml]: its primary, in the compatibility jamo a
@@ -152,6 +209,16 @@ object LetterLayoutKdb {
     private val ATTRIBUTE = Regex("(\\s+)([A-Za-z_][\\w.-]*)\\s*=\\s*\"([^\"]*)\"")
 
     private val ROWS = arrayOf("QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM")
+
+    /**
+     * The on-screen letter rows by position, left to right: the `spanish` rows' tenth middle key is
+     * the one right of L on a QWERTY board, which a layout names `KEYCODE_SEMICOLON`.
+     */
+    private val VKB_ROWS: Array<IntArray> = arrayOf(
+        ROWS[0].map { KeyEvent.KEYCODE_A + (it - 'A') }.toIntArray(),
+        (ROWS[1].map { KeyEvent.KEYCODE_A + (it - 'A') } + KeyEvent.KEYCODE_SEMICOLON).toIntArray(),
+        ROWS[2].map { KeyEvent.KEYCODE_A + (it - 'A') }.toIntArray(),
+    )
     private const val EXTRA_KEY_ROW = 2
     private const val EXTRA_KEY_COLUMN = 8
     private const val DEFAULT_KEY_WIDTH = 108
@@ -162,13 +229,16 @@ object LetterLayoutKdb {
     /** The engine's symbols are 16-bit (`ET9SYMB`); the loader drops anything larger. */
     private const val MAX_ENGINE_CODE = 0xFFFF
 
-    private fun keys(xml: String): List<KdbKey> {
+    private fun keys(xml: String, template: Template): List<KdbKey> {
         // Comments are blanked (same length, so offsets hold) before anything is matched: a
         // commented-out key must not count as one.
         val masked = COMMENT.replace(xml) { " ".repeat(it.value.length) }
         val keys = ArrayList<KdbKey>()
         AREA.findAll(masked).forEachIndexed { row, area ->
             if (row >= ROWS.size) return@forEachIndexed
+            // The on-screen rows are numbered left to right, so their keys are placed once the
+            // whole row is read; the keypad's are placed by their own grid column.
+            val rowKeys = ArrayList<Pair<Int, KdbKey>>()
             val body = area.groups[1]!!.range
             for (match in KEY.findAll(masked, body.first)) {
                 if (match.range.first > body.last) break
@@ -192,13 +262,26 @@ object LetterLayoutKdb {
                 if (attributes["keyType"]?.value == "function" || attributes.containsKey("keyName")) continue
                 val left = attributes["keyLeft"]?.let { dp(it.value) } ?: continue
                 val width = attributes["keyWidth"]?.let { dp(it.value) }?.takeIf { it > 0 } ?: DEFAULT_KEY_WIDTH
-                val keyCode = keyCodeAt(row, (left + width / 2) / width)
-                if (keyCode == 0) continue
+                val keyCode = when (template) {
+                    Template.PKB -> keyCodeAt(row, (left + width / 2) / width).takeIf { it != 0 } ?: continue
+                    Template.VKB -> 0
+                }
                 val label = attributes["keyLabel"]?.value?.singleOrNull()?.takeIf { it in 'A'..'Z' || it in 'a'..'z' }
                 val codes = ArrayList<Int>()
                 if (label != null) codes += label.lowercaseChar().code
                 attributes["keyCodes"]?.let { codes += parseCodes(it.value) }
-                keys += KdbKey(keyCode, element.first + "<key".length, attributes, codes.distinct().toIntArray(), label != null)
+                rowKeys += left to KdbKey(keyCode, element.first + "<key".length, attributes, codes.distinct().toIntArray(), label != null)
+            }
+            when (template) {
+                Template.PKB -> rowKeys.mapTo(keys) { it.second }
+                Template.VKB -> {
+                    val positions = VKB_ROWS[row]
+                    rowKeys.sortedBy { it.first }.forEachIndexed { index, (_, key) ->
+                        if (index < positions.size) {
+                            keys += KdbKey(positions[index], key.nameEnd, key.attributes, key.codes, key.labelForm)
+                        }
+                    }
+                }
             }
         }
         return keys
@@ -293,12 +376,6 @@ object LetterLayoutKdb {
      */
     private fun singleCodePoints(entries: Array<String>): List<Int> =
         entries.filter { it.isNotEmpty() && it.codePointCount(0, it.length) == 1 }.map { it.codePointAt(0) }
-
-    private fun requireSupported(template: Template) {
-        if (template != Template.PKB) {
-            throw UnsupportedOperationException("letter layouts rewrite physical-keyboard KDBs only, not $template")
-        }
-    }
 
     // ── Hangul ───────────────────────────────────────────────────────────────
 

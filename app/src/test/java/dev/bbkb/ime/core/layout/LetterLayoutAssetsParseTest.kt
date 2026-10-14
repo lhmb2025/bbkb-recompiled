@@ -107,10 +107,20 @@ class LetterLayoutAssetsParseTest {
             assertEquals("$id.xml: the file name is the id", id, layout.id)
             assertEquals(LetterLayout.Origin.BUILT_IN, layout.origin)
             assertTrue("$id.xml: names keys", layout.keyCount > 0)
-            // Generated files begin with their GENERATED comment, the form without a declaration.
             val head = open(id).use { it.readBytes() }.toString(Charsets.UTF_8)
-            assertTrue("$id.xml: opens with the generator's comment", head.startsWith("<!-- GENERATED"))
+            if (id in SOURCE_DOCUMENTS) {
+                // Kept by hand: the generator reads them for the on-screen rows and never writes them.
+                assertTrue("$id.xml: a source document, with a declaration", head.startsWith("<?xml"))
+                assertTrue("$id.xml: never generated", !head.contains("<!-- GENERATED"))
+                // The on-screen layouts (QWERTY, AZERTY, QWERTZ, Colemak, Dvorak) are not keypad layouts.
+                assertEquals("$id.xml: for the on-screen keyboard only", setOf(LetterLayout.Target.VKB), layout.targets)
+            } else {
+                // Generated files begin with their GENERATED comment, the form without a declaration.
+                assertTrue("$id.xml: opens with the generator's comment", head.startsWith("<!-- GENERATED"))
+                assertEquals("$id.xml: for the physical keys", setOf(LetterLayout.Target.PKB), layout.targets)
+            }
         }
+        assertTrue(layouts.keys.containsAll(SOURCE_DOCUMENTS))
     }
 
     @Test
@@ -191,5 +201,8 @@ class LetterLayoutAssetsParseTest {
 
     private companion object {
         const val ANDROID = "http://schemas.android.com/apk/res/android"
+
+        /** The documents kept by hand rather than generated: the on-screen keyboard's sources. */
+        val SOURCE_DOCUMENTS = setOf("azerty", "colemak", "dvorak", "qwerty", "qwertz")
     }
 }

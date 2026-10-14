@@ -24,8 +24,27 @@ bbkb-attic/docs/2026-10_unified-pkb-layouts_plan.md):
   * which language uses which tables: res/xml/method.xml, plus the built-in translit keyboards
     (res/values/arrays.xml, predefined_builtin_keyboard_subtypes).
 
-Colemak and Dvorak, which no subtype names, come from res/xml/rowkeys_colemak1..3.xml and
-rowkeys_dvorak1..3.xml.
+Not every document is generated. A file in assets/letter-layouts/ that does not open with the
+GENERATED comment is a source document, kept by hand (the on-screen layouts QWERTY, AZERTY, QWERTZ,
+Colemak and Dvorak, which no subtype names); the script reads it and never rewrites or deletes it.
+
+The other direction: every document whose targets include `vkb` is the source of the on-screen
+keyboard's letter rows, and the script writes them, res/xml/rowkeys_<id>1.xml to rowkeys_<id>3.xml,
+each with a GENERATED comment. Each row holds the document's keys at the positions its rows template
+names (`qwerty`: Q-P, A-L, Z-M; `spanish`: the same with the semicolon key ending the middle row), as
+<Key latin:keySpec=".." latin:moreKeys=".."/> in the shape the hand-made rows had. A key spec or hold
+list is written as a !text/ reference (keyspec_<letter>, morekeys_<letter>) when the text table of
+the document's language (English for a document bound to none) holds exactly what the document
+says, so the row follows the keyboard language's own lists the way the QWERTY rows do; otherwise it
+is written out. A Shift legend that is not the upper case becomes a <switch> on the shifted
+alphabet. The hand-maintained wrapper res/xml/rows_<id>.xml arranges the rows and may put keys of
+its own ahead of a generated row (Dvorak's punctuation keys, keys_dvorak_123.xml): those positions
+are left out of the generated row, and the script checks that the wrapper's keys type what the
+document says. Generated rows a document no longer asks for are deleted; rows without the
+GENERATED comment are never touched. Rows the app already draws by hand — rowkeys_<id>1.xml exists
+without the GENERATED comment (QWERTY, AZERTY and QWERTZ, whose rows every keyboard of that layout
+set draws) — are not written at all: the script checks that each letter row types the document's
+keys, position by position, and stops on a difference.
 
 A document derived from one layout set's tables is bound to that layout set (<bind layoutSet>):
 the three translit documents to `translit`, the script documents to the set their keyboard uses
@@ -41,7 +60,8 @@ Hebrew letters with geresh, Catalan l·l, Uzbek oʻ and gʻ), at most 32 to a li
 
 The script prints a report: the documents written and every warning (list entries dropped because
 the format cannot hold them, references it could not resolve, table entries that no key types,
-lists cut to the format's 32-entry cap) and the multi-character entries the documents carry.
+lists cut to the format's 32-entry cap), the multi-character entries the documents carry, and the
+on-screen rows written.
 """
 
 import os
@@ -739,74 +759,342 @@ def latin_document(language, table, sources, layout_set=None):
     return doc
 
 
-def rowkeys_document(doc_id, name, texts, table_key):
-    """Colemak or Dvorak from its three rowkeys files: each <Key> in row order on the QWERTY key
-    code of its position. Row 1 holds Q..P; row 2 A..L and, for a tenth key, KEYCODE_SEMICOLON
-    (the key right of L on a QWERTY board); row 3 Z..M then KEYCODE_COMMA, KEYCODE_PERIOD and
-    KEYCODE_SLASH for further keys. A <switch> contributes its <default> (the unshifted alphabet);
-    a case naming the shifted alphabet elements gives that key's Shift legend."""
-    doc = Document(doc_id, name, [], "pkb,vkb",
-                   ["res/xml/rowkeys_%s1..3.xml" % doc_id, "KeyboardTextSet en table"])
-    doc.rows_template = "qwerty"
-    row_codes = [["KEYCODE_" + c for c in KEYCODE_ROWS[0]],
-                 ["KEYCODE_" + c for c in KEYCODE_ROWS[1]] + ["KEYCODE_SEMICOLON"],
-                 ["KEYCODE_" + c for c in KEYCODE_ROWS[2]] + ["KEYCODE_COMMA", "KEYCODE_PERIOD",
-                                                             "KEYCODE_SLASH"]]
-    shifted_elements = {"alphabetManualShifted", "alphabetShiftLocked", "alphabetShiftLockShifted"}
+# ── source documents ─────────────────────────────────────────────────────────────────────────────
 
-    def keys_of(element, shifted):
-        """The <Key>s an element contributes, in order, descending into includes and switches."""
-        out = []
-        for child in element:
-            if child.tag == "Key":
-                out.append(child)
-            elif child.tag == "include":
-                target = child.get(LATIN_NS + "keyboardLayout").replace("@xml/", "")
-                out.extend(keys_of(ET.parse(os.path.join(RES_XML, target + ".xml")).getroot(), shifted))
-            elif child.tag == "switch":
-                chosen = None
-                for case in child:
-                    elements = set((case.get(LATIN_NS + "keyboardLayoutSetElement") or "").split("|"))
-                    if case.tag == "default" or (shifted and elements & shifted_elements and
-                                                 len(case.attrib) == 1):
-                        chosen = case
-                        break
-                if chosen is not None:
-                    out.extend(keys_of(chosen, shifted))
-        return out
+# What every generated file carries in its first comment; a file without it is kept by hand.
+GENERATED_MARK = HEADER.split(" — ")[0]
 
-    for row in range(3):
-        path = os.path.join(RES_XML, "rowkeys_%s%d.xml" % (doc_id, row + 1))
-        root = ET.parse(path).getroot()
-        plain = keys_of(root, False)
-        shifted = keys_of(root, True)
-        if len(plain) > len(row_codes[row]):
-            warn("%s: row %d has %d keys, more than the %d positions named for it; the rest are "
-                 "dropped" % (doc_id, row + 1, len(plain), len(row_codes[row])))
-        for index, element in enumerate(plain[:len(row_codes[row])]):
-            code = row_codes[row][index]
-            spec = texts.resolve(element.get(LATIN_NS + "keySpec"), table_key)
-            if not spec or len(spec) != 1:
-                warn("%s %s: keySpec %r is not one code point; key skipped" % (doc_id, code, spec))
-                continue
-            key = Key(code, spec)
-            more = filter_more_key_flags(split_key_specs(texts.resolve(element.get(LATIN_NS + "moreKeys"),
-                                                                       table_key)))
-            key.more_keys = clean_list(doc_id, code, "moreKeys", more)
-            if index < len(shifted) and shifted[index] is not element:
-                legend = texts.resolve(shifted[index].get(LATIN_NS + "keySpec"), table_key)
-                if legend and len(legend) == 1 and ord(legend) != java_upper(ord(spec)):
-                    key.character_map_keys = legend
-            doc.keys.append(key)
-        if len(plain) < len(KEYCODE_ROWS[row]):
-            missing = [c for c in row_codes[row][len(plain):len(KEYCODE_ROWS[row])]]
-            doc.notes.append("Row %d has %d keys, so %s carry nothing here and fall through to "
-                             "the key map." % (row + 1, len(plain), ", ".join(missing)))
-    present = {k.key_spec for k in doc.keys}
-    absent = [c for c in "abcdefghijklmnopqrstuvwxyz" if c not in present]
-    if absent:
-        warn("%s: no key types %s" % (doc_id, ", ".join(absent)))
+
+def is_generated(path):
+    """Whether [path] opens with this script's GENERATED comment: on its first line, or on its second
+    after an XML declaration (the form the on-screen rows take, as Android resource files)."""
+    with open(path, encoding="utf-8") as f:
+        head = f.readline() + f.readline()
+    return GENERATED_MARK in head
+
+
+def split_document_list(value):
+    """A document's comma list as LetterLayoutXml reads it: `\\,` is a comma, `\\\\` a backslash."""
+    if not value:
+        return []
+    out = []
+    current = []
+    i = 0
+    while i < len(value):
+        c = value[i]
+        if c == "\\" and i + 1 < len(value):
+            current.append(value[i + 1])
+            i += 2
+            continue
+        if c == ",":
+            out.append("".join(current))
+            current = []
+        else:
+            current.append(c)
+        i += 1
+    out.append("".join(current))
+    return out
+
+
+def read_source_document(path):
+    """A document kept by hand: read, never written. Only what this script needs from it."""
+    root = ET.parse(path).getroot()
+    if root.tag != "letter-layout":
+        raise ValueError("%s: the root element is <%s>, not <letter-layout>" % (rel(path), root.tag))
+    bind = root.find("bind")
+    if bind is None:
+        raise ValueError("%s: no <bind>" % rel(path))
+    doc = Document(root.get("id"), root.get("name"),
+                   [language for language in (bind.get("languages") or "").split(",") if language],
+                   root.get("targets") or "pkb", ["%s, kept by hand" % rel(path)],
+                   layout_set=bind.get("layoutSet") or ANY)
+    rows = root.find("rows")
+    doc.rows_template = rows.get("template") if rows is not None else None
+    for element in root.findall("key"):
+        key = Key(element.get("code"), element.get("keySpec"))
+        key.character_map_keys = element.get("characterMapKeys")
+        key.multitap_keys = split_document_list(element.get("multitapKeys"))
+        key.more_keys = split_document_list(element.get("moreKeys"))
+        doc.keys.append(key)
+    if os.path.basename(path) != "%s.xml" % doc.id:
+        raise ValueError("%s: the file name is not the id %s" % (rel(path), doc.id))
+    validate(doc)
     return doc
+
+
+def read_source_documents():
+    """Every document in OUT_DIR without the GENERATED comment, by id."""
+    sources = {}
+    if not os.path.isdir(OUT_DIR):
+        return sources
+    for name in sorted(os.listdir(OUT_DIR)):
+        path = os.path.join(OUT_DIR, name)
+        if name.endswith(".xml") and not is_generated(path):
+            doc = read_source_document(path)
+            sources[doc.id] = doc
+    return sources
+
+
+# ── the on-screen rows, res/xml/rowkeys_<id>1..3.xml ─────────────────────────────────────────────
+
+# The positions each rows template gives the on-screen letter rows, by the QWERTY key code a
+# document names them with. The engine's matching geometry is assets/kdb/<template>_vkb.xml.
+ROWS_TEMPLATES = {
+    "qwerty": [["KEYCODE_" + c for c in KEYCODE_ROWS[0]],
+               ["KEYCODE_" + c for c in KEYCODE_ROWS[1]],
+               ["KEYCODE_" + c for c in KEYCODE_ROWS[2]]],
+    "spanish": [["KEYCODE_" + c for c in KEYCODE_ROWS[0]],
+                ["KEYCODE_" + c for c in KEYCODE_ROWS[1]] + ["KEYCODE_SEMICOLON"],
+                ["KEYCODE_" + c for c in KEYCODE_ROWS[2]]],
+}
+
+SHIFTED_ELEMENTS = ("alphabetManualShifted", "alphabetShiftLocked", "alphabetShiftLockShifted")
+ROW_HEADER = '<merge xmlns:latin="http://schemas.android.com/apk/res-auto">'
+
+
+def keys_of(element, shifted):
+    """The <Key>s an element of an on-screen keyboard file contributes, in order, through its
+    includes and switches: a switch's <default>, or with [shifted] a case naming only the shifted
+    alphabet elements."""
+    out = []
+    for child in element:
+        if child.tag == "Key":
+            out.append(child)
+        elif child.tag == "include":
+            target = child.get(LATIN_NS + "keyboardLayout").replace("@xml/", "")
+            out.extend(keys_of(ET.parse(os.path.join(RES_XML, target + ".xml")).getroot(), shifted))
+        elif child.tag == "switch":
+            chosen = None
+            for case in child:
+                elements = set((case.get(LATIN_NS + "keyboardLayoutSetElement") or "").split("|"))
+                if case.tag == "default" or (shifted and elements & set(SHIFTED_ELEMENTS) and
+                                             len(case.attrib) == 1):
+                    chosen = case
+                    break
+            if chosen is not None:
+                out.extend(keys_of(chosen, shifted))
+    return out
+
+
+def wrapper_rows(doc_id):
+    """What res/xml/rows_<id>.xml puts ahead of each generated row in the same <Row>: for rows 1 to
+    3, the (unshifted, shifted) keys that take that row's first positions. Keys without a key spec
+    (Shift, Delete) are not letter positions."""
+    path = os.path.join(RES_XML, "rows_%s.xml" % doc_id)
+    if not os.path.exists(path):
+        raise ValueError("%s targets the on-screen keyboard, but there is no %s to arrange its rows"
+                         % (doc_id, rel(path)))
+    root = ET.parse(path).getroot()
+    found = {}
+    for row in root.iter("Row"):
+        children = list(row)
+        for index, child in enumerate(children):
+            if child.tag != "include":
+                continue
+            target = child.get(LATIN_NS + "keyboardLayout").replace("@xml/", "")
+            m = re.fullmatch(r"rowkeys_%s([123])" % re.escape(doc_id), target)
+            if not m:
+                continue
+            number = int(m.group(1))
+            if number in found:
+                raise ValueError("%s includes rowkeys_%s%d twice" % (rel(path), doc_id, number))
+            ahead = ET.Element("merge")
+            ahead.extend(children[:index])
+            behind = ET.Element("merge")
+            behind.extend(children[index + 1:])
+            if any(k.get(LATIN_NS + "keySpec") for k in keys_of(behind, False)):
+                raise ValueError("%s: keys after rowkeys_%s%d in its row; only keys ahead of a "
+                                 "generated row can be kept by hand" % (rel(path), doc_id, number))
+            found[number] = ([k for k in keys_of(ahead, False) if k.get(LATIN_NS + "keySpec")],
+                             [k for k in keys_of(ahead, True) if k.get(LATIN_NS + "keySpec")])
+    missing = [n for n in (1, 2, 3) if n not in found]
+    if missing:
+        raise ValueError("%s does not include rowkeys_%s%s" % (rel(path), doc_id, missing[0]))
+    return found
+
+
+def resolved_list(texts, text, table_key):
+    """A key-spec list as the keyboard shows it in one text table: references resolved, flag
+    tokens and the % marker dropped, escapes undone."""
+    tokens = filter_more_key_flags(split_key_specs(texts.resolve(text, table_key))) or []
+    return [unescape_token(t) for t in tokens if not FLAG_TOKEN.match(t)]
+
+
+def check_wrapper_key(doc, code, plain, shifted, texts, table_key):
+    """A key the wrapper keeps by hand must type what the document says at that position."""
+    key = next((k for k in doc.keys if k.code == code), None)
+    where = "rows_%s.xml at %s" % (doc.id, code)
+    if key is None:
+        raise ValueError("%s: the document names no key there" % where)
+    spec = texts.resolve(plain.get(LATIN_NS + "keySpec"), table_key)
+    if spec != key.key_spec:
+        raise ValueError("%s types %r, the document %r" % (where, spec, key.key_spec))
+    more = resolved_list(texts, plain.get(LATIN_NS + "moreKeys"), table_key)
+    if more != key.more_keys:
+        raise ValueError("%s holds %s, the document %s" % (where, more, key.more_keys))
+    legend = texts.resolve(shifted.get(LATIN_NS + "keySpec"), table_key) if shifted is not plain else None
+    if legend is not None and len(spec) == 1 and legend == chr(java_upper(ord(spec))):
+        legend = None
+    if legend != key.character_map_keys:
+        raise ValueError("%s gives %r with Shift, the document %r" % (where, legend, key.character_map_keys))
+
+
+def needs_key_spec_escape(value):
+    """Whether KeySpecParser would read [value] as something other than itself."""
+    return any(c in value for c in "\\,|") or value == "%" or (value.startswith("!") and len(value) > 1)
+
+
+def rowkey_attr(value):
+    return xml_attr(value).replace("'", "&apos;")
+
+
+def key_spec_value(key, texts, table_key):
+    """`!text/keyspec_<letter>` when the language's table types exactly this letter there, else the
+    letter itself."""
+    name = "keyspec_" + key.key_spec
+    if name in texts.index and texts.resolve("!text/" + name, table_key) == key.key_spec:
+        return "!text/" + name
+    if needs_key_spec_escape(key.key_spec):
+        raise ValueError("%s %s: keySpec %r cannot be written into an on-screen row yet"
+                         % (key.code, key.key_spec, key.key_spec))
+    return key.key_spec
+
+
+def more_keys_value(key, texts, table_key, doc_id):
+    """`!text/morekeys_<letter>` when the language's table holds exactly this list (an empty list
+    included: the row then offers whatever the keyboard language adds), else the list written out,
+    else None."""
+    name = "morekeys_" + key.key_spec
+    if name in texts.index and resolved_list(texts, "!text/" + name, table_key) == key.more_keys:
+        return "!text/" + name
+    if not key.more_keys:
+        return None
+    for entry in key.more_keys:
+        if needs_key_spec_escape(entry):
+            raise ValueError("%s %s: moreKeys entry %r cannot be written into an on-screen row yet"
+                             % (doc_id, key.code, entry))
+    return ",".join(key.more_keys)
+
+
+def render_key_element(indent, attributes):
+    """A <Key> in the hand-made rows' shape: one attribute on one line, several one per line."""
+    if len(attributes) == 1:
+        return ['%s<Key latin:%s="%s"/>' % (indent, attributes[0][0], rowkey_attr(attributes[0][1]))]
+    lines = ["%s<Key" % indent]
+    for i, (name, value) in enumerate(attributes):
+        lines.append('%s    latin:%s="%s"%s' % (indent, name, rowkey_attr(value),
+                                                 "/>" if i == len(attributes) - 1 else ""))
+    return lines
+
+
+def render_row_key(key, texts, table_key, doc_id):
+    attributes = [("keySpec", key_spec_value(key, texts, table_key))]
+    more = more_keys_value(key, texts, table_key, doc_id)
+    if more is not None:
+        attributes.append(("moreKeys", more))
+    legend = key.character_map_keys
+    if not legend or legend == chr(java_upper(ord(key.key_spec))):
+        return render_key_element("    ", attributes)
+    # A Shift legend that is not the upper case: the shifted alphabet shows the legend instead.
+    if needs_key_spec_escape(legend):
+        raise ValueError("%s %s: Shift legend %r cannot be written into an on-screen row yet"
+                         % (doc_id, key.code, legend))
+    lines = ["    <switch>",
+             '        <case latin:keyboardLayoutSetElement="%s">' % "|".join(SHIFTED_ELEMENTS)]
+    lines += render_key_element("            ", [("keySpec", legend)])
+    lines += ["        </case>", "        <default>"]
+    lines += render_key_element("            ", attributes)
+    lines += ["        </default>", "    </switch>"]
+    return lines
+
+
+def position_names(codes):
+    return ", ".join(c.replace("KEYCODE_", "") for c in codes)
+
+
+def rows_kept_by_hand(doc_id):
+    """Whether the on-screen rows of a document are the app's own rather than this script's: its
+    first row file exists without the GENERATED comment."""
+    first = os.path.join(RES_XML, "rowkeys_%s1.xml" % doc_id)
+    return os.path.exists(first) and not is_generated(first)
+
+
+def check_hand_kept_rows(doc, texts):
+    """A document whose rows the app keeps by hand must say what they draw: each letter <Row> of
+    res/xml/rows_<id>.xml, through its includes, types the document's keys at the positions the rows
+    template names, in that order. Hold lists are the keyboard language's own there and are not
+    compared."""
+    if doc.rows_template not in ROWS_TEMPLATES:
+        raise ValueError("%s: an on-screen document needs a rows template (%s), not %r"
+                         % (doc.id, ", ".join(sorted(ROWS_TEMPLATES)), doc.rows_template))
+    path = os.path.join(RES_XML, "rows_%s.xml" % doc.id)
+    if not os.path.exists(path):
+        raise ValueError("%s keeps its rows by hand, but there is no %s" % (doc.id, rel(path)))
+    language = doc.languages[0] if doc.languages else "en"
+    table_key = texts.table_key_for(locale_string(language), language_code(language))
+    by_code = {k.code: k for k in doc.keys}
+    template = ROWS_TEMPLATES[doc.rows_template]
+    rows = [[k for k in keys_of(row, False) if k.get(LATIN_NS + "keySpec")]
+            for row in ET.parse(path).getroot().iter("Row")]
+    if len(rows) != len(template):
+        raise ValueError("%s has %d letter rows, the %s rows template %d"
+                         % (rel(path), len(rows), doc.rows_template, len(template)))
+    for number, (codes, drawn) in enumerate(zip(template, rows), 1):
+        expected = []
+        for code in codes:
+            if code not in by_code:
+                raise ValueError("%s: the %s rows template has a key at %s, the document none"
+                                 % (doc.id, doc.rows_template, code))
+            expected.append(by_code[code].key_spec)
+        specs = [texts.resolve(k.get(LATIN_NS + "keySpec"), table_key) for k in drawn]
+        if specs != expected:
+            raise ValueError("%s row %d types %s, the document says %s"
+                             % (rel(path), number, " ".join(specs), " ".join(expected)))
+
+
+def on_screen_rows(doc, texts):
+    """The three generated row files of a vkb document: {file name: text}."""
+    if not re.fullmatch(r"[a-z0-9_]+", doc.id):
+        raise ValueError("%s: an on-screen document's id names res/xml files, so it may hold only "
+                         "letters, digits and underscores" % doc.id)
+    if doc.rows_template not in ROWS_TEMPLATES:
+        raise ValueError("%s: an on-screen document needs a rows template (%s), not %r"
+                         % (doc.id, ", ".join(sorted(ROWS_TEMPLATES)), doc.rows_template))
+    language = doc.languages[0] if doc.languages else "en"
+    table_key = texts.table_key_for(locale_string(language), language_code(language))
+    by_code = {k.code: k for k in doc.keys}
+    template = ROWS_TEMPLATES[doc.rows_template]
+    placed = set()
+    wrapper = wrapper_rows(doc.id)
+    files = {}
+    for row, codes in enumerate(template):
+        plain, shifted = wrapper[row + 1]
+        if len(plain) != len(shifted) or len(plain) > len(codes):
+            raise ValueError("rows_%s.xml: %d keys ahead of row %d" % (doc.id, len(plain), row + 1))
+        for index, element in enumerate(plain):
+            check_wrapper_key(doc, codes[index], element, shifted[index], texts, table_key)
+            placed.add(codes[index])
+        generated = codes[len(plain):]
+        missing = [c for c in generated if c not in by_code]
+        if missing:
+            raise ValueError("%s: the %s rows template has a key at %s, the document none"
+                             % (doc.id, doc.rows_template, ", ".join(missing)))
+        note = "Row %d of the on-screen %s keyboard, from assets/letter-layouts/%s.xml (rows template %s): %s." % (
+            row + 1, doc.name, doc.id, doc.rows_template, position_names(generated))
+        if plain:
+            note += " rows_%s.xml puts %s ahead of it." % (doc.id, position_names(codes[:len(plain)]))
+        lines = ['<?xml version="1.0" encoding="utf-8"?>', "<!-- %s -->" % HEADER,
+                 "<!-- %s -->" % comment_text(note), ROW_HEADER]
+        for code in generated:
+            lines += render_row_key(by_code[code], texts, table_key, doc.id)
+            placed.add(code)
+        lines.append("</merge>")
+        files["rowkeys_%s%d.xml" % (doc.id, row + 1)] = "\n".join(lines) + "\n"
+    off_rows = [k.code for k in doc.keys if k.code not in placed]
+    if off_rows:
+        warn("%s: %s are not on the on-screen letter rows (physical keys only)"
+             % (doc.id, position_names(off_rows)))
+    return files
 
 
 # ── writing ──────────────────────────────────────────────────────────────────────────────────────
@@ -887,6 +1175,8 @@ def main():
     files = SCRIPT_KDB
     pkbd_cases, pkbd_default = PKBD_CASES, PKBD_DEFAULT
     subtypes = read_subtypes()
+    # The documents kept by hand (Colemak, Dvorak): read for their on-screen rows, never written.
+    kept_by_hand = read_source_documents()
 
     # Languages typed on Latin keys that also have a keyboard with no physical-key table (Chinese:
     # stroke and Zhuyin beside pinyin and cangjie). A document bound to any layout set would reach
@@ -985,20 +1275,39 @@ def main():
             raise ValueError("%s are all bound to %s on layout set %s; the registry cannot tell them apart"
                              % (", ".join(doc_ids), ",".join(languages), layout_set))
 
-    for doc_id, name in (("colemak", "Colemak"), ("dvorak", "Dvorak")):
-        doc = rowkeys_document(doc_id, name, texts, texts.table_key_for("en", "en"))
-        validate(doc)
-        documents[doc_id] = doc
+    for doc_id in sorted(set(documents) & set(kept_by_hand)):
+        raise ValueError("%s.xml is kept by hand, and the script would also generate it" % doc_id)
 
     os.makedirs(OUT_DIR, exist_ok=True)
     wanted = {doc_id + ".xml" for doc_id in documents}
     for stale in sorted(set(os.listdir(OUT_DIR)) - wanted):
-        if stale.endswith(".xml"):
+        # Only a document this script wrote is its to delete; one kept by hand never is.
+        if stale.endswith(".xml") and is_generated(os.path.join(OUT_DIR, stale)):
             os.remove(os.path.join(OUT_DIR, stale))
             print("removed stale %s" % stale)
     for doc_id in sorted(documents):
         with open(os.path.join(OUT_DIR, doc_id + ".xml"), "w", encoding="utf-8", newline="\n") as out:
             out.write(render(documents[doc_id]))
+
+    # The on-screen rows of every document for the on-screen keyboard, generated or kept by hand.
+    every = dict(documents)
+    every.update(kept_by_hand)
+    rows = {}
+    checked = []
+    for doc_id in sorted(every):
+        if "vkb" in every[doc_id].targets.split(","):
+            if rows_kept_by_hand(doc_id):
+                check_hand_kept_rows(every[doc_id], texts)
+                checked.append(doc_id)
+            else:
+                rows.update(on_screen_rows(every[doc_id], texts))
+    for stale in sorted(set(os.listdir(RES_XML)) - set(rows)):
+        if re.fullmatch(r"rowkeys_.*\.xml", stale) and is_generated(os.path.join(RES_XML, stale)):
+            os.remove(os.path.join(RES_XML, stale))
+            print("removed stale %s" % stale)
+    for name in sorted(rows):
+        with open(os.path.join(RES_XML, name), "w", encoding="utf-8", newline="\n") as out:
+            out.write(rows[name])
 
     print("Wrote %d documents to %s:" % (len(documents), rel(OUT_DIR)))
     for doc_id in sorted(documents):
@@ -1008,6 +1317,10 @@ def main():
         print("  %-12s %-28s languages=%-4s layoutSet=%-11s keys=%2d with-lists=%2d  from %s"
               % (doc_id, doc.name, ",".join(doc.languages) or "-", doc.layout_set, len(doc.keys),
                  listed, ", ".join(subtypes_of) or doc.sources[0]))
+    print()
+    print("Read %d documents kept by hand: %s" % (len(kept_by_hand), ", ".join(sorted(kept_by_hand)) or "none"))
+    print("Wrote %d on-screen rows to %s: %s" % (len(rows), rel(RES_XML), ", ".join(sorted(rows)) or "none"))
+    print("Checked the rows kept by hand of: %s" % (", ".join(checked) or "none"))
     print()
     multi = [(doc_id, k.code, field, value)
              for doc_id in sorted(documents) for k in documents[doc_id].keys

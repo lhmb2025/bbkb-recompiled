@@ -21,9 +21,9 @@ import java.util.Locale
  *
  * ```xml
  * <?xml version="1.0" encoding="utf-8"?>
- * <letter-layout version="1" id="colemak" name="Colemak" targets="pkb,vkb">
+ * <letter-layout version="1" id="mine" name="My layout" targets="pkb,vkb">
  *     <bind languages="" keypad="any" keypadType="any" layoutSet="any"/>
- *     <rows template="qwerty"/>
+ *     <rows template="spanish"/>
  *     <key code="KEYCODE_Q" keySpec="q"/>
  *     <key code="KEYCODE_E" keySpec="f" characterMapKeys="F" alt="#" multitapKeys="ƒ" moreKeys="ƒ,ḟ"/>
  *     <key code="KEYCODE_SEMICOLON" scanCode="39" keySpec="o"/>
@@ -65,8 +65,13 @@ object LetterLayoutXml {
     const val MAX_NAME_LENGTH: Int = 64
     const val MAX_LANGUAGES: Int = 32
 
-    /** The geometry templates `<rows template>` may name. */
-    val ROWS_TEMPLATES: List<String> = listOf("qwerty")
+    /**
+     * The geometry templates `<rows template>` may name: the on-screen letter rows' key counts,
+     * each with an engine KDB of the same shape, `assets/kdb/<template>_vkb.xml`. `qwerty` is
+     * 10/9/7; `spanish` is 10/10/7, the semicolon key ending the middle row (Colemak puts o there,
+     * Dvorak s).
+     */
+    val ROWS_TEMPLATES: List<String> = listOf("qwerty", "spanish")
 
     private const val BIND = "bind"
     private const val ROWS = "rows"

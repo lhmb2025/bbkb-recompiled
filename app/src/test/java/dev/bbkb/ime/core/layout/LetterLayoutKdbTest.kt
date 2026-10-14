@@ -7,7 +7,6 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
-import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -391,12 +390,5 @@ class LetterLayoutKdbTest {
         assertEquals("_pkb.xml", LetterLayoutKdb.Template.PKB.fileSuffix)
     }
 
-    @Test
-    fun onScreenKdbsAreNotRewrittenYet() {
-        try {
-            LetterLayoutKdb.rewrite(kdb("qwerty"), layout(key('Q', "w")), LetterLayoutKdb.Template.VKB)
-            fail("a VKB rewrite was accepted")
-        } catch (expected: UnsupportedOperationException) {
-        }
-    }
+    // The on-screen KDBs are rewritten too now: LetterLayoutKdbOnScreenTest.
 }

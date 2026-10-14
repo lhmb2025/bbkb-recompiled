@@ -21,6 +21,7 @@ import dev.bbkb.ime.core.locale.SubtypeManager;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
 import dev.bbkb.ime.core.settings.data.CustomSymbolRepository;
+import dev.bbkb.ime.core.layout.LetterLayoutChoice;
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils;
 import dev.bbkb.ime.core.shared.EmojiTextAnalyzer;
 import dev.bbkb.ime.core.subtypeswitcher.InputTypeUtils;
@@ -48,6 +49,9 @@ public final class KeyboardBuilder {
 
     private static final String TAG = "KeyboardBuilder";
 
+    /** A layout set's XML resource is this prefix and its name: {@code keyboard_layout_set_qwerty}. */
+    static final String LAYOUT_SET_PREFIX = "keyboard_layout_set_";
+
     private static boolean sLowerRightCornerIsEnter = false;
 
     private static final HashMap<KeyboardId, SoftReference<Keyboard>> sKeyboardCache = new HashMap<>();
@@ -74,7 +78,18 @@ public final class KeyboardBuilder {
     
     public static final class Params {
 
+        /** The layout set's resource name: {@link #LAYOUT_SET_PREFIX} and the layout set. */
         String mKeyboardLayoutSetName;
+
+        /**
+         * The layout set this keyboard is built from ({@code qwerty}, {@code colemak}), or null when
+         * none was given. Usually the subtype's own; a letter layout chosen for the language can
+         * stand in for it ({@link Builder#setKeyboardLayoutSet}).
+         */
+        public String keyboardLayoutSet() {
+            final String name = mKeyboardLayoutSetName;
+            return name != null && name.startsWith(LAYOUT_SET_PREFIX) ? name.substring(LAYOUT_SET_PREFIX.length()) : null;
+        }
 
         public int mMode;
 
@@ -410,7 +425,32 @@ public final class KeyboardBuilder {
             }
             Params dVar = this.mParams;
             dVar.mSubtype = inputMethodSubtype;
-            dVar.mKeyboardLayoutSetName = "keyboard_layout_set_" + ResourceLocaleUtils.getKeyboardLayoutSetName(inputMethodSubtype);
+            dVar.mKeyboardLayoutSetName = LAYOUT_SET_PREFIX + ResourceLocaleUtils.getKeyboardLayoutSetName(inputMethodSubtype);
+            return this;
+        }
+
+        /**
+         * Builds the keyboard from the layout set [layoutSet] instead of the subtype's own. The
+         * subtype still decides everything else: language, dictionaries, the keyboard's identity.
+         */
+        public Builder setKeyboardLayoutSet(String layoutSet) {
+            this.mParams.mKeyboardLayoutSetName = LAYOUT_SET_PREFIX + layoutSet;
+            return this;
+        }
+
+        /**
+         * Builds the keyboard from the letter layout chosen for its language on the Language
+         * screen, when that layout has on-screen rows of its own (QWERTY, AZERTY, QWERTZ, Colemak, Dvorak:
+         * {@link LetterLayoutChoice#keyboardLayoutSet}); otherwise nothing changes. For the typing
+         * keyboard only: boards, the input menu and the spell checker's keyboards keep their own
+         * layout sets. Call after {@link #setSubtype}, so a field that forces the no-language
+         * keyboard gets that keyboard's choice.
+         */
+        public Builder useChosenLetterLayout() {
+            final InputMethodSubtype subtype = this.mParams.mSubtype;
+            if (subtype != null) {
+                setKeyboardLayoutSet(LetterLayoutChoice.keyboardLayoutSet(this.mContext, subtype));
+            }
             return this;
         }
 

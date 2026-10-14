@@ -73,8 +73,13 @@ import dev.bbkb.ime.core.languagepack.PackOfferSource
 import dev.bbkb.ime.core.languagepack.PackState
 import dev.bbkb.ime.core.languagepack.PackText
 import dev.bbkb.ime.core.device.profile.DeviceProfile
+import dev.bbkb.ime.core.layout.LetterLayout
+import dev.bbkb.ime.core.layout.LetterLayoutChoice
+import dev.bbkb.ime.core.layout.LetterLayoutRegistry
 import dev.bbkb.ime.core.layout.PhysicalKeyResolver
 import dev.bbkb.ime.core.locale.KeyboardLanguages
+import dev.bbkb.ime.core.locale.ResourceLocaleUtils
+import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageRepository
 import dev.bbkb.ime.core.locale.SubtypeEnabler
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
@@ -127,9 +132,15 @@ fun LanguagesHubScreen(
     val downloads = remember { PackDownloadManager.getInstance(context) }
     val downloadStates by downloads.states.collectAsStateWithLifecycle()
 
+    // The letter layouts a keyboard's Layout row offers: the shipped ones and the user's.
+    var layoutDocuments by remember { mutableStateOf<LayoutDocuments?>(null) }
+    // Bumped when a keyboard's layout is chosen, so its sheet reads the choice again.
+    var layoutChoices by remember { mutableIntStateOf(0) }
+
     fun reload() { reloads++ }
 
     LaunchedEffect(Unit) { packs = PackOfferSource.loadPacks(context) }
+    LaunchedEffect(reloads) { layoutDocuments = withContext(Dispatchers.IO) { LayoutDocuments.read(context) } }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { reload() }
     // A finished download may have registered and turned on a keyboard.
     LaunchedEffect(downloadStates.values.count { it is PackState.Installed }) { reload() }
@@ -280,8 +291,23 @@ fun LanguagesHubScreen(
     }
 
     sheetFor?.let { keyboard ->
+        val language = remember(keyboard) { LetterLayoutChoice.languageOf(keyboard.subtype) }
+        val layoutRows = remember(keyboard, layoutDocuments) {
+            layoutDocuments?.rowsFor(context, keyboard, language, hasPhysicalKeyboard).orEmpty()
+        }
+        val chosenLayout = remember(keyboard, layoutChoices) { LetterLayoutChoice.chosenId(prefs, language) }
         KeyboardSheet(
             keyboard = keyboard,
+            layoutRows = layoutRows,
+            // A choice whose layout is gone (deleted, or no longer offered) types the keyboard's
+            // own layout, so that is the row shown chosen.
+            chosenLayoutId = chosenLayout.takeIf { id -> layoutRows.any { it.id == id } } ?: "",
+            onChooseLayout = { id ->
+                if (language != null) {
+                    LetterLayoutChoice.choose(context, language, id)
+                    layoutChoices++
+                }
+            },
             canRemove = (snapshot?.keyboards?.size ?: 0) > 1,
             choices = remember(keyboard) { KeyboardLanguages.extraChoices(context, keyboard) },
             onSave = { extras ->
@@ -423,17 +449,76 @@ private fun KeyboardRow(
 }
 
 /**
+ * The letter layouts a keyboard's Layout row can offer, read once per load of the screen (the
+ * built-in documents parse once per process; the user's are a directory listing).
+ */
+private class LayoutDocuments(val builtIns: List<LetterLayout>, val custom: List<LetterLayout>) {
+
+    /**
+     * The Layout rows for [keyboard] in [language]: its own layout; QWERTY, AZERTY, QWERTZ, Colemak
+     * and Dvorak (less its own) on a keyboard written in the Latin alphabet; and the user's layouts
+     * for its language on a phone with
+     * physical keys ([LetterLayoutChoice.options]). Empty without a language.
+     */
+    fun rowsFor(
+        context: Context,
+        keyboard: KeyboardLanguages.Keyboard,
+        language: String?,
+        physicalKeys: Boolean,
+    ): List<LayoutChoiceRow> {
+        if (language == null) return emptyList()
+        val drawsOnScreen = { layout: LetterLayout -> LetterLayoutChoice.drawsOnScreen(context, layout) }
+        val ownSet = ResourceLocaleUtils.getKeyboardLayoutSetName(keyboard.subtype)
+        val options = LetterLayoutChoice.options(
+            builtIns = builtIns,
+            custom = custom,
+            language = language,
+            latin = MultiLanguageRepository.isLatinScript(keyboard.locale),
+            physicalKeys = physicalKeys,
+            // A shipped layout is offered where it changes something on this phone.
+            usable = { drawsOnScreen(it) || (physicalKeys && LetterLayout.Target.PKB in it.targets) },
+            ownLayoutSet = ownSet,
+        )
+        val texts = LayoutChoiceTexts(
+            // QWERTY, QWERTZ, AZERTY…; a layout set with no name of its own (Spanish, Nordic) is
+            // the keyboard's.
+            ownTitle = ResourceLocaleUtils.getKeyboardLayoutSetDisplayName(ownSet) ?: keyboard.name,
+            // The Physical layouts screen's words for the same two things, so the screens agree.
+            ownSummary = context.getString(R.string.settings_pkb_layouts_none_summary),
+            both = context.getString(R.string.languages_hub_layout_both),
+            onScreen = context.getString(R.string.settings_keyboard_title),
+            physical = context.getString(R.string.languages_hub_layout_physical),
+        )
+        return layoutChoiceRows(options, texts, physicalKeys, drawsOnScreen)
+    }
+
+    companion object {
+        fun read(context: Context): LayoutDocuments {
+            val registry = LetterLayoutRegistry(context)
+            return LayoutDocuments(registry.builtInIds().mapNotNull { registry.builtIn(it) }, registry.list())
+        }
+    }
+}
+
+/**
  * Everything about one keyboard, as a modal bottom sheet over the list it was tapped in: its
- * extra prediction languages (Latin-script keyboards only) and, at the bottom, its removal.
+ * letter layout, its extra prediction languages (Latin-script keyboards only) and, at the bottom,
+ * its removal.
  *
  * A sheet rather than a page or a dialog: it is the Material surface for a short set of options
  * about the item just tapped, it keeps the list in view, and a keyboard with nothing to combine
  * gets a small sheet instead of an empty page.
+ *
+ * The Layout row shows only when there is something to choose: a keyboard in a script of its own
+ * on a phone without custom layouts has nothing but its own layout.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun KeyboardSheet(
     keyboard: KeyboardLanguages.Keyboard,
+    layoutRows: List<LayoutChoiceRow>,
+    chosenLayoutId: String,
+    onChooseLayout: (String) -> Unit,
     canRemove: Boolean,
     choices: List<LocaleItem>,
     onSave: (List<LocaleItem>) -> Unit,
@@ -446,6 +531,7 @@ private fun KeyboardSheet(
     var selected by remember(keyboard) { mutableStateOf(initial) }
     var query by remember(keyboard) { mutableStateOf("") }
     var confirmRemove by remember { mutableStateOf(false) }
+    var chooseLayout by remember { mutableStateOf(false) }
     val changed = selected != initial
 
     // Chosen-when-opened first, then the rest, each alphabetical. Grouped by the opening state
@@ -481,6 +567,12 @@ private fun KeyboardSheet(
                         enabled = changed,
                     ) { Text(stringResource(R.string.languages_hub_sheet_done)) }
                 }
+            }
+
+            val currentLayout = layoutRows.firstOrNull { it.id == chosenLayoutId }
+            if (currentLayout != null && layoutRows.size > 1) {
+                KeyboardLayoutRow(current = currentLayout, onClick = { chooseLayout = true })
+                HorizontalDivider(modifier = Modifier.padding(horizontal = spacing.listItemPadding))
             }
 
             if (keyboard.canHaveExtras) {
@@ -545,6 +637,18 @@ private fun KeyboardSheet(
             )
             Spacer(modifier = Modifier.height(spacing.large))
         }
+    }
+
+    if (chooseLayout) {
+        KeyboardLayoutDialog(
+            rows = layoutRows,
+            selectedId = chosenLayoutId,
+            onSelect = { id ->
+                chooseLayout = false
+                onChooseLayout(id)
+            },
+            onDismiss = { chooseLayout = false },
+        )
     }
 
     if (confirmRemove) {

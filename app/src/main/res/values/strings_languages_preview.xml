@@ -32,4 +32,7 @@
     <string name="languages_hub_turn_on_in_settings">Turn on %1$s in the list, then come back.</string>
     <string name="languages_hub_turn_off_in_settings">Turn off %1$s in the list, then come back.</string>
     <string name="languages_hub_failed">That did not work. Try again.</string>
+    <string name="languages_hub_layout_title">Layout</string>
+    <string name="languages_hub_layout_both">On-screen keyboard and physical keys</string>
+    <string name="languages_hub_layout_physical">Physical keys only</string>
 </resources>

@@ -119,6 +119,9 @@ object SettingsSearchIndex {
         // ── Languages ────────────────────────────────────────────────────────────
         SearchableSetting(R.string.settings_languages_title, "language keyboard add remove layout predict multi-language", SettingsRoute.LanguagesHub.route, LANGUAGES),
         SearchableSetting(R.string.settings_language_packs_title, "download language pack", SettingsRoute.LanguagePacks.route, LANGUAGES),
+        // Each keyboard's Layout is a row in the sheet its row on the Language screen opens, so
+        // the entry leads to the screen and has no anchor to highlight.
+        SearchableSetting(R.string.languages_hub_layout_title, "keyboard layout colemak dvorak qwerty qwertz azerty letters keys arrangement on-screen physical keypad", SettingsRoute.LanguagesHub.route, LANGUAGES),
         // On the Language screen, and only once an Arabic, Cyrillic, Hebrew, Greek or Korean
         // keyboard is enabled; the device gate is the half of that rule the index can express.
         SearchableSetting(R.string.settings_pkb_active_language_alphabet_title, "alphabet script arabic cyrillic russian hebrew greek korean hangul latin physical keyboard keys", SettingsRoute.LanguagesHub.route, LANGUAGES, "pref_pkb_active_language_alphabet", DeviceRequirement.PHYSICAL_KEYBOARD),

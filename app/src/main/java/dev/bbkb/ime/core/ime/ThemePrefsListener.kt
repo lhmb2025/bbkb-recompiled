@@ -3,6 +3,8 @@ import android.content.SharedPreferences
 import android.util.Log
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.device.ResourceConfigManager
+import dev.bbkb.ime.core.layout.LetterLayoutChoice
+import dev.bbkb.ime.core.layout.LetterLayoutRegistry
 import dev.bbkb.ime.core.settings.util.SettingsManager
 import dev.bbkb.ime.core.settings.util.SettingsValues
 import dev.bbkb.ime.keyboard.KeyboardBuilder
@@ -13,8 +15,8 @@ import dev.bbkb.ime.core.BlackBerryIME
 
 /**
  * Reacts to the preference changes that must rebuild or re-theme the live keyboard:
- * UIM on/off, the physical keyboard's suggestion bar on/off, UIM menu order, keyboard height
- * mode, and the three theme keys.
+ * UIM on/off, the physical keyboard's suggestion bar on/off, UIM menu order, a keyboard language's
+ * letter layout, keyboard height mode, and the three theme keys.
  * Registered by [BlackBerryIME] on the default shared preferences for the service's lifetime.
  */
 class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnSharedPreferenceChangeListener {
@@ -55,6 +57,15 @@ class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnS
             // its no-arg show path re-fetches the recomposed bar from the UIM manager.
             ime.auxBarManager?.clearKeyboardCache()
             keyboardSwitcher.getUnifiedInputBoardManager()?.onMenuOrderChanged()
+        }
+
+        if (LetterLayoutChoice.isPrefKey(key)) {
+            // A language's Layout changed (here, or by a settings restore): the physical keys and
+            // the engine re-read it, and the on-screen keyboard is rebuilt from the chosen layout
+            // set on the next startInput. Its keyboards differ by layout set in the cache key, so
+            // the old ones only take memory.
+            LetterLayoutRegistry.invalidate()
+            KeyboardBuilder.clearKeyboardCache()
         }
 
         if ("pref_keyboard_height_mode" == key) {

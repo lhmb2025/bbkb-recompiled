@@ -522,7 +522,7 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
             // NOTE: Keyboard_Case_isFormFillAllowed (index 4) is declared and used by
             // kbd_unified_input_menu_pkb.xml, but no check for it survived decompilation
             // and no backing state exists -- such a case currently always matches.
-            return matchString(typedArrayObtainAttributes, R.styleable.Keyboard_Case_keyboardLayoutSet, ResourceLocaleUtils.getKeyboardLayoutSetName(c0977g.mSubtype))
+            return matchString(typedArrayObtainAttributes, R.styleable.Keyboard_Case_keyboardLayoutSet, c0977g.keyboardLayoutSet())
                     && matchTypedValue(typedArrayObtainAttributes, R.styleable.Keyboard_Case_keyboardLayoutSetElement, c0977g.mElementId, KeyboardId.elementIdToName(c0977g.mElementId))
                     && matchTypedValue(typedArrayObtainAttributes, R.styleable.Keyboard_Case_mode, c0977g.mMode, KeyboardId.modeName(c0977g.mMode))
                     && matchBoolean(typedArrayObtainAttributes, R.styleable.Keyboard_Case_navigateNext, c0977g.navigateNext())

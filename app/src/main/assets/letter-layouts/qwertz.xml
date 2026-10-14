@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- QWERTZ, for the on-screen keyboard. A source document, kept by hand: y and z swapped against
+     QWERTY.
+
+     On screen only (targets="vkb"), bound to no language: any keyboard written in the Latin alphabet
+     may choose it in its Layout list on the Language screen, except a keyboard whose own layout it
+     already is. Choosing it changes the on-screen keyboard and the engine's on-screen key positions
+     for that language, never the physical keys.
+
+     The rows are the app's own, res/xml/rowkeys_qwertz*.xml under rows_qwertz.xml, which every
+     keyboard of the QWERTZ layout set draws; the hold lists there are the keyboard language's own.
+     xt9kdb-scaffold/tools/letter_layouts_gen.py does not write those rows: it checks that each letter
+     row types the keys this document names, position by position, and stops on a difference. The
+     rows template is "qwerty": ten, nine and seven keys. The engine's on-screen key map for a language
+     that chose this layout is built from these letters on that geometry. -->
+<letter-layout version="1" id="qwertz" name="QWERTZ" targets="vkb">
+    <bind/>
+    <rows template="qwerty"/>
+    <key code="KEYCODE_Q" keySpec="q"/>
+    <key code="KEYCODE_W" keySpec="w"/>
+    <key code="KEYCODE_E" keySpec="e"/>
+    <key code="KEYCODE_R" keySpec="r"/>
+    <key code="KEYCODE_T" keySpec="t"/>
+    <key code="KEYCODE_Y" keySpec="z"/>
+    <key code="KEYCODE_U" keySpec="u"/>
+    <key code="KEYCODE_I" keySpec="i"/>
+    <key code="KEYCODE_O" keySpec="o"/>
+    <key code="KEYCODE_P" keySpec="p"/>
+    <key code="KEYCODE_A" keySpec="a"/>
+    <key code="KEYCODE_S" keySpec="s"/>
+    <key code="KEYCODE_D" keySpec="d"/>
+    <key code="KEYCODE_F" keySpec="f"/>
+    <key code="KEYCODE_G" keySpec="g"/>
+    <key code="KEYCODE_H" keySpec="h"/>
+    <key code="KEYCODE_J" keySpec="j"/>
+    <key code="KEYCODE_K" keySpec="k"/>
+    <key code="KEYCODE_L" keySpec="l"/>
+    <key code="KEYCODE_Z" keySpec="y"/>
+    <key code="KEYCODE_X" keySpec="x"/>
+    <key code="KEYCODE_C" keySpec="c"/>
+    <key code="KEYCODE_V" keySpec="v"/>
+    <key code="KEYCODE_B" keySpec="b"/>
+    <key code="KEYCODE_N" keySpec="n"/>
+    <key code="KEYCODE_M" keySpec="m"/>
+</letter-layout>

@@ -25,7 +25,10 @@ class LetterLayout internal constructor(
     /** Which keyboards the document describes. Never empty. */
     val targets: Set<Target>,
     val binding: Binding,
-    /** The on-screen geometry template the letters fill (`qwerty`), or null when not given. */
+    /**
+     * The on-screen geometry template the letters fill (`qwerty`, `spanish`; see
+     * [LetterLayoutXml.ROWS_TEMPLATES]), or null when not given.
+     */
     val rowsTemplate: String?,
     /** By Android key code, in document order. */
     val keys: Map<Int, Key>,

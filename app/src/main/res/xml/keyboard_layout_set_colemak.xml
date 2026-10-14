@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- The keyboards a Colemak keyboard is built from. Chosen as a keyboard language's Layout on the
+     Language screen (LetterLayoutChoice), it stands in for that language's own layout set, so it
+     carries the same physical-keyboard elements as keyboard_layout_set_qwerty.xml and only the
+     on-screen alphabet changes. Without them a phone with a keypad would build its keypad keyboards
+     (and the input menu bar) from this on-screen alphabet. -->
 <KeyboardLayoutSet xmlns:latin="http://schemas.android.com/apk/res-auto">
     <Element
         latin:elementKeyboard="@xml/kbd_colemak"
         latin:elementName="alphabet"
         latin:enableProximityCharsCorrection="true"/>
+    <Element
+        latin:elementKeyboard="@xml/kbd_alphabet_pkb"
+        latin:elementName="alphabetPkb"/>
     <Element
         latin:elementKeyboard="@xml/kbd_symbols"
         latin:elementName="symbols"/>
@@ -29,6 +37,21 @@
         latin:elementKeyboard="@xml/kbd_phone_symbols"
         latin:elementName="phoneSymbols"/>
     <Element
+        latin:elementKeyboard="@xml/kbd_phone_pkb"
+        latin:elementName="phonePkb"/>
+    <Element
         latin:elementKeyboard="@xml/kbd_number"
         latin:elementName="number"/>
+    <Element
+        latin:elementKeyboard="@xml/kbd_number_pkb"
+        latin:elementName="numberPkb"/>
+    <Element
+        latin:elementKeyboard="@xml/kbd_password_pkb"
+        latin:elementName="passwordPkb"/>
+    <Element
+        latin:elementKeyboard="@xml/kbd_uri_pkb"
+        latin:elementName="uriPkb"/>
+    <Element
+        latin:elementKeyboard="@xml/kbd_unified_input_menu_pkb"
+        latin:elementName="unifiedInputMenuPkb"/>
 </KeyboardLayoutSet>

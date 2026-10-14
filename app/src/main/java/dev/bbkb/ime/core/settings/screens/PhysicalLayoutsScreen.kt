@@ -75,11 +75,13 @@ private const val TAG = "PhysicalLayouts"
  * there is nothing to restart. Share hands the stored XML file to the share sheet, the way the
  * device profile builder shares a config; delete removes it (and switches it off if it was on).
  *
- * **Built-in** holds the documents under `assets/letter-layouts/`. They are read-only and are not
- * picked here: which one a keyboard uses follows its language. What a row offers is "Save as
- * file", which writes the document wherever the user chooses — the way to start a layout of one's
- * own is to save the nearest built-in, edit it, and restore it from file. The current keyboard's
- * language comes first, the document it would use at the top, then the rest by name.
+ * **Built-in** holds the documents under `assets/letter-layouts/` that are for the physical keys
+ * (the on-screen-only ones, Colemak and Dvorak, are chosen per keyboard on the Language screen).
+ * They are read-only and are not picked here: which one a keyboard uses follows its language.
+ * What a row offers is "Save as file", which writes the document wherever the user chooses — the
+ * way to start a layout of one's own is to save the nearest built-in, edit it, and restore it
+ * from file. The current keyboard's language comes first, the document it would use at the top,
+ * then the rest by name.
  *
  * Custom comes first because it is the part with a choice in it; the built-in list has a document
  * per language and would push that choice off the screen.
@@ -115,7 +117,10 @@ fun PhysicalLayoutsScreen(
         customLayouts = withContext(Dispatchers.IO) { registry.list() }
         builtInLayouts = withContext(Dispatchers.IO) {
             orderBuiltInLayouts(
-                layouts = registry.builtInIds().mapNotNull { registry.builtIn(it) },
+                // Only the documents for the physical keys: an on-screen-only document (Colemak,
+                // Dvorak) is chosen per keyboard on the Language screen and does nothing here.
+                layouts = registry.builtInIds().mapNotNull { registry.builtIn(it) }
+                    .filter { LetterLayout.Target.PKB in it.targets },
                 keyboardLocale = keyboardLocale,
                 chosenId = registry.builtIn(keyboardLocale, phoneKeypad, phoneKeypadType, keyboardLayoutSet)?.id,
             )
@@ -309,7 +314,7 @@ private fun RowIconButton(icon: ImageVector, contentDescription: String, onClick
 /**
  * The built-in list in the order the screen shows it: the documents bound to the current
  * keyboard's language first — [chosenId], the one that keyboard would use, at their head — then
- * every other document by name. A document bound to no language (Colemak) belongs to no
+ * every other document by name. A document bound to no language belongs to no
  * language, so it sorts with the rest. Names compare the way the reader's language orders them;
  * equal names fall back to the id, so the order never depends on how the files were listed.
  *
