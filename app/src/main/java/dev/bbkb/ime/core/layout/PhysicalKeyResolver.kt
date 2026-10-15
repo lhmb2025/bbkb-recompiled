@@ -30,7 +30,7 @@ import java.util.WeakHashMap
  *     when it is for the physical keys), else the one switched on in Physical keyboard > Physical
  *     layouts — the two never compete, see [userLayout];
  *  2. the built-in document for the current keyboard's language, keypad, keypad type and layout
- *     set (`assets/letter-layouts/`), while "Use active language's alphabet for physical keyboard"
+ *     set (`assets/letter_layouts/`), while "Use active language's alphabet for physical keyboard"
  *     ([PREF_KEY]) is on — that switch turns the built-in documents off and leaves a user layout
  *     in charge, as it always has;
  *  3. for Alt only, the device's own Alt tables, which stay in `AuxCharacterResolver` as the tier

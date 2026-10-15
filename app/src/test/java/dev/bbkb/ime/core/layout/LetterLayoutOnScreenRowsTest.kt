@@ -170,7 +170,7 @@ class LetterLayoutOnScreenRowsTest {
             }
             assertFalse("rows_${layout.id} is kept by hand", xml("rows_${layout.id}").readText().contains("<!-- GENERATED"))
             // The source document itself is kept by hand too.
-            val document = context.assets.open("letter-layouts/${layout.id}.xml").use { it.readBytes().toString(Charsets.UTF_8) }
+            val document = context.assets.open("letter_layouts/${layout.id}.xml").use { it.readBytes().toString(Charsets.UTF_8) }
             assertFalse("${layout.id}.xml is a source document", document.contains("<!-- GENERATED"))
         }
     }

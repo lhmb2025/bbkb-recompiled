@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Every letter layout on the phone: the ones the app ships, read from
- * `assets/letter-layouts/<id>.xml` when first asked for, and the ones the user imported, one file
+ * `assets/letter_layouts/<id>.xml` when first asked for, and the ones the user imported, one file
  * each under `files/layouts/letter/<id>.xml`. The id of the layout the physical keys follow is in
  * [PREF_ACTIVE_LAYOUT] (`""` for none).
  *
@@ -273,7 +273,7 @@ class LetterLayoutRegistry @JvmOverloads constructor(
         const val DIRECTORY: String = "layouts/letter"
 
         /** Under the app's assets. */
-        const val ASSET_DIRECTORY: String = "letter-layouts"
+        const val ASSET_DIRECTORY: String = "letter_layouts"
 
         private const val TAG = "LetterLayouts"
 

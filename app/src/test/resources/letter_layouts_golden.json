@@ -1,5 +1,5 @@
 {
-  "format": "letter-layouts-golden",
+  "format": "letter_layouts_golden",
   "version": 1,
   "about": "Answers of the old physical-key path (HardwareScriptLayouts and the pkbd_*.xml tables), recorded by LetterLayoutGoldenTest. Letters: [unshifted, shifted], null = ask the key map. Lists: labels whose answers are all null are left out; a missing field is null.",
   "subtypes": [

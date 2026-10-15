@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the built-in letter-layout documents, app/src/main/assets/letter-layouts/<id>.xml.
+"""Generate the built-in letter-layout documents, app/src/main/assets/letter_layouts/<id>.xml.
 
 Run from the repository root:
 
@@ -24,7 +24,7 @@ bbkb-attic/docs/2026-10_unified-pkb-layouts_plan.md):
   * which language uses which tables: res/xml/method.xml, plus the built-in translit keyboards
     (res/values/arrays.xml, predefined_builtin_keyboard_subtypes).
 
-Not every document is generated. A file in assets/letter-layouts/ that does not open with the
+Not every document is generated. A file in assets/letter_layouts/ that does not open with the
 GENERATED comment is a source document, kept by hand (the on-screen layouts QWERTY, AZERTY, QWERTZ,
 Colemak and Dvorak, which no subtype names); the script reads it and never rewrites or deletes it.
 
@@ -77,7 +77,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 MAIN = os.path.join(ROOT, "app", "src", "main")
 RES_XML = os.path.join(MAIN, "res", "xml")
 KDB_DIR = os.path.join(MAIN, "assets", "kdb")
-OUT_DIR = os.path.join(MAIN, "assets", "letter-layouts")
+OUT_DIR = os.path.join(MAIN, "assets", "letter_layouts")
 TEXT_SET_JAVA = os.path.join(MAIN, "java", "dev", "bbkb", "ime", "keyboard", "internal",
                              "KeyboardTextSet.java")
 # The physical-key tables BlackBerry shipped in res/xml; the app no longer carries them.
@@ -1079,7 +1079,7 @@ def on_screen_rows(doc, texts):
         if missing:
             raise ValueError("%s: the %s rows template has a key at %s, the document none"
                              % (doc.id, doc.rows_template, ", ".join(missing)))
-        note = "Row %d of the on-screen %s keyboard, from assets/letter-layouts/%s.xml (rows template %s): %s." % (
+        note = "Row %d of the on-screen %s keyboard, from assets/letter_layouts/%s.xml (rows template %s): %s." % (
             row + 1, doc.name, doc.id, doc.rows_template, position_names(generated))
         if plain:
             note += " rows_%s.xml puts %s ahead of it." % (doc.id, position_names(codes[:len(plain)]))

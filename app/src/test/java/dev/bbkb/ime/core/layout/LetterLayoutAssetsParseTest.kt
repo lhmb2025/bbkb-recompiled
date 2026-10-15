@@ -20,7 +20,7 @@ import org.xmlpull.v1.XmlPullParserFactory
 import java.io.InputStream
 
 /**
- * Every letter layout the app ships (`assets/letter-layouts/<id>.xml`) reads with the reader the
+ * Every letter layout the app ships (`assets/letter_layouts/<id>.xml`) reads with the reader the
  * registry itself uses, [LetterLayoutXml], as a built-in: the generated files open with a comment
  * and carry no XML declaration, and a format change on either side (generator or reader) that
  * left them unreadable would otherwise only show on a phone, as keys quietly typing their old

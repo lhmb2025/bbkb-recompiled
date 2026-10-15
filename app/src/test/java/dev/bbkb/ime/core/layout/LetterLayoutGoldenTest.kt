@@ -27,7 +27,7 @@ import java.io.File
 import java.util.Locale
 
 /**
- * The golden fixture for the move to letter layouts (`src/test/resources/letter-layouts-golden.json`):
+ * The golden fixture for the move to letter layouts (`src/test/resources/letter_layouts_golden.json`):
  * what the OLD physical-key path answered (the engine's script layouts through
  * `HardwareScriptLayouts`, and the label-keyed `pkbd_*.xml` tables through `PhysicalKeySpecTable`),
  * recorded before that path was deleted. It is frozen: nothing writes it any more.
@@ -361,7 +361,7 @@ class LetterLayoutGoldenTest {
     class Tolerance(val name: String, val count: Int, val covers: (Difference) -> Boolean)
 
     private companion object {
-        const val FIXTURE = "letter-layouts-golden.json"
+        const val FIXTURE = "letter_layouts_golden.json"
 
         /** The keyboards whose Cyrillic letters are cased, so Shift types the capital. */
         val CASED_CYRILLIC = setOf(

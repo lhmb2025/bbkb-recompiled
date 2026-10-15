@@ -175,18 +175,18 @@ class BackupBundleTest {
         val paths = (0 until listed.length()).map { listed.getJSONObject(it).getString("path") }
         assertEquals(
             listOf("settings.json", "macros.json", "device-configs/my-phone.xml", "layouts.json",
-                "letter-layouts/swap.xml", "words.json"),
+                "letter_layouts/swap.xml", "words.json"),
             paths,
         )
         assertEquals(64, listed.getJSONObject(0).getString("sha256").length)
-        val layoutPart = listed.getJSONObject(paths.indexOf("letter-layouts/swap.xml"))
-        assertEquals(entries.getValue("letter-layouts/swap.xml").size, layoutPart.getInt("bytes"))
+        val layoutPart = listed.getJSONObject(paths.indexOf("letter_layouts/swap.xml"))
+        assertEquals(entries.getValue("letter_layouts/swap.xml").size, layoutPart.getInt("bytes"))
         assertEquals(64, layoutPart.getString("sha256").length)
     }
 
     @Test
     fun aVersion1BundleStillReads() {
-        // Version 1 had no letter-layouts/ entries; everything else is the same.
+        // Version 1 had no letter_layouts/ entries; everything else is the same.
         val entries = entriesOf(writeBytes(fullContents().let {
             BackupBundle.Contents(it.settingsJson, it.macrosJson, it.deviceConfigs, it.layoutsJson, it.wordsJson)
         }))
@@ -232,7 +232,7 @@ class BackupBundleTest {
         assertTrue(read(zipOf(nested)).exceptionOrNull()!!.message!!.contains("unexpected entry"))
 
         // A letter layout's entry is named by a layout id: lower case, no path.
-        for (name in listOf("letter-layouts/../x.xml", "letter-layouts/Swap.xml", "letter-layouts/a/b.xml", "letter-layouts/x.json")) {
+        for (name in listOf("letter_layouts/../x.xml", "letter_layouts/Swap.xml", "letter_layouts/a/b.xml", "letter_layouts/x.json")) {
             val withLayout = entriesOf(writeBytes(fullContents()))
             withLayout[name] = letterLayoutXml().toByteArray()
             assertTrue(name, read(zipOf(withLayout)).exceptionOrNull()!!.message!!.contains("unexpected entry"))
@@ -247,7 +247,7 @@ class BackupBundleTest {
         )
         val failure = read(writeBytes(contents)).exceptionOrNull()
         assertTrue(failure is BackupBundle.NotABackupException)
-        assertTrue(failure!!.message, failure.message!!.startsWith("letter-layouts/bad.xml:"))
+        assertTrue(failure!!.message, failure.message!!.startsWith("letter_layouts/bad.xml:"))
         assertTrue(failure.message, failure.message!!.contains("KEYCODE_Q.keySpec"))
     }
 

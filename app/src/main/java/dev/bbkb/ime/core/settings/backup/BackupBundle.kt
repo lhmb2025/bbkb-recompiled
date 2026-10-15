@@ -34,7 +34,7 @@ import java.util.zip.ZipOutputStream
  * ├── device-configs/<name>.xml   Settings  — custom device profiles, as imported
  * ├── layouts.json           Layouts   — symbol pages, palette, slideboard, phrases, currency
  * │                                      (LayoutsBundle)
- * ├── letter-layouts/<id>.xml     Layouts   — the user's letter layouts (LetterLayoutXml)
+ * ├── letter_layouts/<id>.xml     Layouts   — the user's letter layouts (LetterLayoutXml)
  * └── words.json             Words     — personal dictionary, shortcuts, learned words (WordsBundle)
  * ```
  *
@@ -52,7 +52,7 @@ import java.util.zip.ZipOutputStream
  * crafted zip cannot write outside its parts), and every part must parse. A file that fails any
  * of this changes nothing.
  *
- * Version 2 added the `letter-layouts/` entries; a version 1 bundle has none and reads as before.
+ * Version 2 added the `letter_layouts/` entries; a version 1 bundle has none and reads as before.
  */
 object BackupBundle {
 
@@ -66,7 +66,7 @@ object BackupBundle {
     const val LAYOUTS: String = "layouts.json"
     const val WORDS: String = "words.json"
     const val DEVICE_CONFIG_DIR: String = "device-configs/"
-    const val LETTER_LAYOUT_DIR: String = "letter-layouts/"
+    const val LETTER_LAYOUT_DIR: String = "letter_layouts/"
 
     const val MAX_SETTINGS_BYTES: Int = 4 * 1024 * 1024
     const val MAX_DEVICE_CONFIG_BYTES: Int = 512 * 1024
@@ -353,7 +353,7 @@ object BackupBundle {
     }
 
     /**
-     * One `letter-layouts/<id>.xml` entry. The entry name is the layout's id, as the file name is
+     * One `letter_layouts/<id>.xml` entry. The entry name is the layout's id, as the file name is
      * in the registry, so a layout restores under the name the backup listed it by.
      */
     private fun parseLetterLayout(path: String, bytes: ByteArray): LetterLayout {

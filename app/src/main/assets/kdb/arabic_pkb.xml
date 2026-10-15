@@ -6,7 +6,7 @@ SID: ET9SKIDPhonePad -->
 <!-- Doubled keycaps (Q: ص ض, A: س ش) list the UNSHIFTED letter first: the letter-layout
      generator (xt9kdb-scaffold/tools/letter_layouts_gen.py) reads the first code as the key's
      letter and the rest as its Shift / double-tap legends, matching the Arabic letter layout
-     (letter-layouts/ar.xml: keySpec ص, characterMapKeys ض). -->
+     (letter_layouts/ar.xml: keySpec ص, characterMapKeys ض). -->
 
 <keyboard
   primaryId="1"

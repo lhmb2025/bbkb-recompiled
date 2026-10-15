@@ -9,7 +9,7 @@ import java.util.UUID
 /**
  * One letter layout: what each physical key types, with and without Shift, under Alt, on a
  * double tap and on a long press. Read from a `letter-layout` document ([LetterLayoutXml]),
- * either one the app ships (`assets/letter-layouts/`) or one the user imported
+ * either one the app ships (`assets/letter_layouts/`) or one the user imported
  * (`files/layouts/letter/`); [LetterLayoutRegistry] knows both.
  *
  * Keys are named by their Android key code, which is what the phone reports whatever its keycaps

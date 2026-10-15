@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Kept by hand. The letter rows rowkeys_colemak1..3 are generated from
-     assets/letter-layouts/colemak.xml by xt9kdb-scaffold/tools/letter_layouts_gen.py. Its rows
+     assets/letter_layouts/colemak.xml by xt9kdb-scaffold/tools/letter_layouts_gen.py. Its rows
      template is "spanish", ten keys in the middle row, so that row is ten keys of 10%p, as in
      rows_spanish.xml and the engine's spanish_vkb.xml, not nine keys between spacers. -->
 <merge xmlns:latin="http://schemas.android.com/apk/res-auto">

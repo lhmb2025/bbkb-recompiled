@@ -114,7 +114,7 @@ object SettingsBackup {
         "ckb_key_grid_cache_v2",
         // LetterLayoutRegistry.PREF_ACTIVE_LAYOUT: names a letter-layout file in THIS device's
         // storage, as active_device_config_id names a config. The layouts themselves travel as
-        // files in a backup (BackupBundle's letter-layouts/), and are switched on by hand after
+        // files in a backup (BackupBundle's letter_layouts/), and are switched on by hand after
         // import. The key it replaced stays here until every phone has migrated off it.
         "pref_pkb_active_layout",
         "pref_pkb_active_letter_map",

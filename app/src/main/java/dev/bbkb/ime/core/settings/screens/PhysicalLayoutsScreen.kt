@@ -75,7 +75,7 @@ private const val TAG = "PhysicalLayouts"
  * there is nothing to restart. Share hands the stored XML file to the share sheet, the way the
  * device profile builder shares a config; delete removes it (and switches it off if it was on).
  *
- * **Built-in** holds the documents under `assets/letter-layouts/` that are for the physical keys
+ * **Built-in** holds the documents under `assets/letter_layouts/` that are for the physical keys
  * (the on-screen-only ones, Colemak and Dvorak, are chosen per keyboard on the Language screen).
  * They are read-only and are not picked here: which one a keyboard uses follows its language.
  * What a row offers is "Save as file", which writes the document wherever the user chooses — the

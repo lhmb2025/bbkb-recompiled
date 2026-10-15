@@ -13,7 +13,7 @@ import org.xmlpull.v1.XmlPullParserFactory
 import java.io.File
 
 /**
- * The built-in letter layouts (`assets/letter-layouts/<id>.xml`, written by
+ * The built-in letter layouts (`assets/letter_layouts/<id>.xml`, written by
  * `xt9kdb-scaffold/tools/letter_layouts_gen.py`) type exactly the letters the engine decodes
  * against.
  *
@@ -157,8 +157,8 @@ class LetterLayoutsMatchEngineTest {
         }
 
         fun layoutsDir(): File = moduleFile(
-            "src/main/assets/letter-layouts", "app/src/main/assets/letter-layouts",
-            "../app/src/main/assets/letter-layouts",
+            "src/main/assets/letter_layouts", "app/src/main/assets/letter_layouts",
+            "../app/src/main/assets/letter_layouts",
         )
 
         private fun kdbDir(): File =
