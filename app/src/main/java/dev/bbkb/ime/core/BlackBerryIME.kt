@@ -548,6 +548,10 @@ class BlackBerryIME : InputMethodService(),
         // already unregistered, leaving three process-scoped receivers holding the dead service.
         uiUpdateHandler.postTokenized(deferredInitToken, 150L) { registerNonCriticalReceivers() }
         uiUpdateHandler.postTokenized(deferredInitToken, 0L) { hardwareKeys.registerInterceptorCallbacks() }
+        // Build every enabled keyboard's engine KDBs ahead of its first use (kept on storage).
+        uiUpdateHandler.postTokenized(deferredInitToken, dev.bbkb.ime.keyboard.KdbPrebuilder.START_DELAY_MS) {
+            dev.bbkb.ime.keyboard.KdbPrebuilder.start(applicationContext)
+        }
 
         t = StartupTiming.begin()
         initializeControllers()

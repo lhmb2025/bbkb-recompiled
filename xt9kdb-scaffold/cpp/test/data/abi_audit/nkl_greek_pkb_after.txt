@@ -1,5 +1,5 @@
 loaded 1080x324 keys=30  pid=8 sid=6
-NKL dump: ../../app/src/main/assets/kdb/greek_pkb.xml
+NKL dump: ../reference/kdb_pkb/greek_pkb.xml
 header
   +0x00 format      = 0x00000101
   +0x04 pid/sid     = 8/6

@@ -2,6 +2,7 @@ package dev.bbkb.ime.core.layout
 
 import android.content.Context
 import android.content.res.AssetManager
+import android.os.Looper
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import com.blackberry.nuanceshim.Xt9KdbVariant
@@ -11,8 +12,10 @@ import dev.bbkb.ime.core.locale.LocaleUtils
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils
 import dev.bbkb.ime.core.locale.SubtypeManager
 import dev.bbkb.ime.core.settings.PrefsManager
+import dev.bbkb.ime.keyboard.DrawnKeyboards
 import dev.bbkb.ime.keyboard.KeyboardSwitcher
 import java.io.IOException
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Keeps the engine's key letters in step with the letter layout the keys show, so tap correction
@@ -39,16 +42,18 @@ import java.io.IOException
  * the layout does not name) and the shipped file for every other id, so a layout changes letters
  * and never the key geometry the decoder is tuned to.
  *
- * **On-screen keyboard.** While the on-screen keyboard is drawn from a letter layout (a built-in
- * one with rows of its own, Colemak or Dvorak, chosen for the keyboard's language), every on-screen
- * KDB the engine could load is replaced by one with that layout's rows template's geometry and its
- * letters ([LetterLayoutKdb.forOnScreenKeyboard]), registered under the same `layout:<id>` and
- * selected; the engine keeps the two keyboards' files apart by their ids. While it is drawn from a
- * keyboard's own layout, the device variant is selected again. The on-screen files are built from
- * the root KDBs only: no device variant has on-screen geometry. Note that the owned KDB module
- * applies a variant to the on-screen keyboard only from the native change that lets `layout:`
- * variants through (the device variant must never reach it); until then these selections are
- * harmless and change nothing on screen.
+ * **On-screen keyboard.** The engine's on-screen KDB is built from the keyboard actually drawn
+ * ([DrawnKeyboard], read off the built keyboard on every on-screen sync): its letters on the shipped
+ * on-screen file of its row shape ([OnScreenKdbs]), under every id the on-screen keyboard may ask
+ * for, registered as `layout:screen:<fingerprint>` and selected. Whatever the keyboard was drawn
+ * from (its own layout set, a chosen Colemak, a language's text table), the engine reads the drawn
+ * letters. Only the Chinese stroke, zhuyin and Cangjie keyboards select the device variant and
+ * their shipped files ([OnScreenKdbs.KEPT_LAYOUT_SETS]). The owned KDB module applies only `layout:`
+ * variants to the on-screen keyboard (the device variant must never reach it).
+ *
+ * **Built once.** Built KDBs are kept on storage ([KdbStore]), so a keyboard is built once per
+ * install; [prebuildKeypad] and [prebuildOnScreen] build them ahead, off the registration thread,
+ * for the keyboards the user has enabled, so a switch only reads and registers them.
  *
  * The decision is taken again whenever its inputs may have changed: the IME starting ([start]),
  * the registry saving, deleting or switching layouts or a language's choice changing
@@ -87,10 +92,10 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
     /** The layout chosen for a language on the Language screen, whatever it is for. */
     private val chosenLayout: (language: String?) -> LetterLayout? = { null },
     /**
-     * The layout the on-screen keyboard is drawn from right now, or null while it shows a
-     * keyboard's own layout. Without this source, on-screen syncs are not followed at all.
+     * The on-screen keyboard as drawn right now, or null when there is none to read. Asked on the
+     * thread of the on-screen sync. Without this source, on-screen syncs are not followed at all.
      */
-    private val onScreenLayout: (() -> LetterLayout?)? = null,
+    private val onScreenKeyboard: (() -> DrawnKeyboard?)? = null,
     /**
      * The built-in document a keyboard in a language types with on the physical keys, or null where
      * none is bound. Without this source, a keyboard no chosen or imported layout applies to keeps
@@ -103,6 +108,8 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
      * from the shipped files alone.
      */
     private val shippedLayout: (language: String, layoutSet: String?) -> LetterLayout? = { _, _ -> null },
+    /** Where built KDBs are kept between processes; none keeps them in memory only. */
+    private val store: KdbStore? = null,
 ) {
 
     /** What the sync needs from the engine's KDB registry; [Xt9KdbVariant] in the app. */
@@ -142,7 +149,7 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
         val language: String?,
         val activeId: String,
         val chosenId: String,
-        val onScreenId: String,
+        val onScreen: String,
         val layoutSet: String?,
         val changes: Int,
     )
@@ -167,9 +174,12 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
     /** By variant name and keyboard; touched on the registration thread only. */
     private val built = HashMap<Pair<String, Template>, Built>()
 
+    /** The on-screen variants registered so far; touched on the registration thread only. */
+    private val builtOnScreen = HashSet<String>()
+
     /** A layout sync of the physical keypad ([pkb]) or the on-screen keyboard is about to load a KDB. */
     fun onLayoutSync(pkb: Boolean = true) {
-        if (!pkb && onScreenLayout == null) return
+        if (!pkb && onScreenKeyboard == null) return
         request(currentLanguageSafely(), pkb)
     }
 
@@ -204,11 +214,11 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
         val chosen = try { chosenId(language) } catch (e: Exception) { "" }
         // What the screen shows is read here, on the caller's thread (the keyboard's), not on the
         // registration thread, and handed to the decision.
-        val drawn = if (pkb) null else try { onScreenLayout?.invoke() } catch (e: Exception) { null }
+        val drawn = if (pkb) null else try { onScreenKeyboard?.invoke() } catch (e: Exception) { null }
         val set = try { layoutSet() } catch (e: Exception) { null }
         synchronized(lock) {
             lastPkb = pkb
-            val request = Request(pkb, language, id, chosen, drawn?.id ?: "", set, changes)
+            val request = Request(pkb, language, id, chosen, drawn?.fingerprint ?: "", set, changes)
             if (request == lastRequest) return
             lastRequest = request
             // Queued under the lock, so the job queued last is the one for the newest request.
@@ -222,11 +232,10 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
 
     /**
      * Selects the variant the engine should load from now, for the physical keypad ([pkb]) or the
-     * on-screen keyboard drawn from [drawn] (null: a keyboard's own layout). On the registration
-     * thread.
+     * on-screen keyboard as [drawn]. On the registration thread.
      */
     @VisibleForTesting
-    internal fun decide(language: String?, pkb: Boolean, drawn: LetterLayout? = null) {
+    internal fun decide(language: String?, pkb: Boolean, drawn: DrawnKeyboard? = null) {
         if (!engine.isAvailable) return
         // Before the device profile has applied its variant there is nothing to build on; the
         // variant's listener decides again once it has, and so does the next sync, which the
@@ -235,14 +244,18 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
             synchronized(lock) { lastRequest = null }
             return
         }
-        val template = if (pkb) Template.PKB else Template.VKB
+        if (!pkb) {
+            decideOnScreen(device, drawn)
+            return
+        }
+        val template = Template.PKB
         val chosen = try {
-            if (pkb) wanted(language) else drawn?.takeIf { LetterLayout.Target.VKB in it.targets }
+            wanted(language)
         } catch (e: Exception) {
             Log.w(TAG, "layout: could not read the active layout: ${e.message}")
             null
         }
-        val builtIn = if (chosen != null || !pkb) null else try {
+        val builtIn = if (chosen != null) null else try {
             builtInLayout(language)?.takeIf { LetterLayout.Target.PKB in it.targets }
         } catch (e: Exception) {
             Log.w(TAG, "layout: could not read the built-in layout for '$language': ${e.message}")
@@ -255,17 +268,37 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
         }
         val name = if (chosen != null) LetterLayoutKdb.variantName(layout, template) else LetterLayoutKdb.builtInVariantName(layout)
         val content = LetterLayoutXml.serialize(layout)
-        // The on-screen files come from the root KDBs whatever the device variant is.
-        val from = if (pkb) device else ""
+        val from = device
         if (built[name to template] != Built(content, from)) {
             built.remove(name to template)
-            val registered = if (pkb) build(layout, name, device) else buildOnScreen(layout, name)
+            val registered = build(layout, name, device)
             if (registered == 0) {
                 Log.w(TAG, "layout '$name': no KDB registered, keeping '$device'")
                 engine.select(device)
                 return
             }
             built[name to template] = Built(content, from)
+        }
+        engine.select(name)
+    }
+
+    /** The on-screen half of [decide]: [drawn]'s KDBs, built or read back, else the device variant. */
+    private fun decideOnScreen(device: String, drawn: DrawnKeyboard?) {
+        if (drawn == null || drawn.layoutSet in OnScreenKdbs.KEPT_LAYOUT_SETS) {
+            engine.select(device)
+            return
+        }
+        val name = SCREEN_VARIANT_PREFIX + drawn.fingerprint
+        if (name !in builtOnScreen) {
+            val files = onScreenFiles(drawn)
+            var registered = 0
+            files?.forEach { if (engine.register(name, it)) registered++ }
+            if (registered == 0) {
+                Log.w(TAG, "layout '$name': no on-screen KDB for rows ${drawn.shape} ('${drawn.layoutSet}'), keeping '$device'")
+                engine.select(device)
+                return
+            }
+            builtOnScreen += name
         }
         engine.select(name)
     }
@@ -292,8 +325,8 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
         return layout.appliesTo(language, keypad, keypadType, layoutSet)
     }
 
-    /** [device]'s keypad KDBs by engine id ([KeypadKdbs.forDevice]); on the registration thread. */
-    private val deviceKdbs = HashMap<String, Map<Int, String>>()
+    /** [device]'s keypad KDBs by engine id ([KeypadKdbs.forDevice]); built once per process, from any thread. */
+    private val deviceKdbs = ConcurrentHashMap<String, Map<Int, String>>()
 
     private fun deviceKdbs(device: String): Map<Int, String> = deviceKdbs.getOrPut(device) {
         val template = kdbFiles.read(KeypadKdbs.templateFile(device))
@@ -302,13 +335,38 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
         KeypadKdbs.forDevice(String(template, Charsets.UTF_8), shippedLayout)
     }
 
+    /** The on-screen row-shape templates by file name; read once, from any thread. */
+    private val screenTemplates: Map<String, String> by lazy {
+        kdbFiles.list(Template.VKB).filter(OnScreenKdbs::isTemplate).sorted()
+            .mapNotNull { name -> kdbFiles.read(name)?.let { name to String(it, Charsets.UTF_8) } }.toMap()
+    }
+
     /**
-     * Rewrites every KDB of [Template.PKB] the engine could load — [device]'s keypad KDB for each
-     * engine id it builds, the shipped file for every other id — and registers each under [name],
-     * unchanged files included: the engine falls back to the shipped root file, not the device's,
-     * for an id a selected variant lacks. Returns how many were registered.
+     * Rewrites every KDB of [Template.PKB] the engine could load ([keypadFiles]) and registers each
+     * under [name]. Returns how many were registered.
      */
     private fun build(layout: LetterLayout, name: String, device: String): Int {
+        var registered = 0
+        val files = keypadFiles(layout, device)
+        for (bytes in files) {
+            if (engine.register(name, bytes)) registered++
+            else Log.w(TAG, "layout '$name': engine refused a KDB")
+        }
+        Log.i(TAG, "layout '$name': registered $registered of ${files.size} KDB(s), from '$device'")
+        return registered
+    }
+
+    /**
+     * [layout]'s keypad KDBs on [device]: every one the engine could load — [device]'s keypad KDB
+     * for each engine id it builds, the shipped file for every other id — rewritten with the
+     * layout's letters, unchanged files included (the engine falls back to the shipped root file,
+     * not the device's, for an id a selected variant lacks). Read back from the [store] when built
+     * before. From any thread.
+     */
+    internal fun keypadFiles(layout: LetterLayout, device: String): List<ByteArray> {
+        val key = KdbStore.key("pkb", device, LetterLayoutXml.serialize(layout))
+        store?.get(key)?.let { return it }
+        val started = System.nanoTime()
         val bases = LinkedHashMap(deviceKdbs(device))
         for (file in kdbFiles.list(Template.PKB).sorted()) {
             if (KeypadKdbs.isTemplate(file)) continue
@@ -316,57 +374,70 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
             val id = LetterLayoutKdb.engineIds(text)?.first ?: continue
             bases.putIfAbsent(id, text)
         }
-        var registered = 0
-        var rewritten = 0
-        for ((id, original) in bases) {
-            val bytes = try {
-                val out = LetterLayoutKdb.rewrite(original, layout, Template.PKB)
-                if (out !== original) rewritten++
-                out.toByteArray(Charsets.UTF_8)
+        val files = bases.map { (id, original) ->
+            try {
+                LetterLayoutKdb.rewrite(original, layout, Template.PKB).toByteArray(Charsets.UTF_8)
             } catch (e: RuntimeException) {
-                Log.w(TAG, "layout '$name': could not rewrite the KDB of id $id, registering it unchanged: ${e.message}")
+                Log.w(TAG, "layout '${layout.id}': could not rewrite the KDB of id $id, keeping it unchanged: ${e.message}")
                 original.toByteArray(Charsets.UTF_8)
             }
-            if (engine.register(name, bytes)) registered++
-            else Log.w(TAG, "layout '$name': engine refused the KDB of id $id")
         }
-        Log.i(TAG, "layout '$name': registered $registered of ${bases.size} KDB(s), $rewritten rewritten, from '$device'")
-        return registered
+        store?.put(key, files)
+        Log.i(TAG, "keypad KDBs for '${layout.id}' on '$device' built in ${(System.nanoTime() - started) / 1_000_000} ms")
+        return files
     }
 
     /**
-     * Builds an on-screen KDB for every one the engine could load (the root `*_vkb.xml` files):
-     * [layout]'s rows template's geometry and letters under each file's own ids, so whichever
-     * language the engine loads for, it finds the drawn letters. Registers each under [name] and
-     * returns how many were registered.
+     * [drawn]'s on-screen KDBs ([OnScreenKdbs.build]), read back from the [store] when built
+     * before; null when no shipped file has its row shape. From any thread.
      */
-    private fun buildOnScreen(layout: LetterLayout, name: String): Int {
-        val rows = layout.rowsTemplate ?: return 0
-        val template = kdbFiles.read(LetterLayoutKdb.templateFile(rows))?.toString(Charsets.UTF_8) ?: run {
-            Log.w(TAG, "layout '$name': no on-screen KDB ${LetterLayoutKdb.templateFile(rows)} for its rows")
-            return 0
+    internal fun onScreenFiles(drawn: DrawnKeyboard): List<ByteArray>? {
+        val key = KdbStore.key("vkb", drawn.fingerprint)
+        store?.get(key)?.let { return it }
+        val started = System.nanoTime()
+        val template = OnScreenKdbs.choose(screenTemplates, drawn) ?: return null
+        val files = OnScreenKdbs.build(screenTemplates.getValue(template), drawn)?.map { it.toByteArray(Charsets.UTF_8) } ?: return null
+        store?.put(key, files)
+        Log.i(TAG, "on-screen KDBs for '${drawn.layoutSet}' ${drawn.shape} built on $template in ${(System.nanoTime() - started) / 1_000_000} ms")
+        return files
+    }
+
+    /**
+     * Builds [layout]'s keypad KDBs into the [store] ahead of its keyboard's first use, so the
+     * switch only reads them. Off the registration thread; nothing before the device variant is
+     * known.
+     */
+    fun prebuildKeypad(layout: LetterLayout) {
+        if (!engine.isAvailable || store == null || LetterLayout.Target.PKB !in layout.targets) return
+        val device = engine.deviceVariant() ?: return
+        try {
+            keypadFiles(layout, device)
+        } catch (e: RuntimeException) {
+            Log.w(TAG, "layout '${layout.id}': building ahead failed: ${e.message}")
         }
-        val files = kdbFiles.list(Template.VKB).sorted()
-        var registered = 0
-        for (file in files) {
-            val target = kdbFiles.read(file)?.toString(Charsets.UTF_8) ?: continue
-            val xml = try {
-                LetterLayoutKdb.forOnScreenKeyboard(template, target, layout)
-            } catch (e: RuntimeException) {
-                Log.w(TAG, "layout '$name': could not build an on-screen KDB for $file: ${e.message}")
-                null
-            } ?: continue
-            if (engine.register(name, xml.toByteArray(Charsets.UTF_8))) registered++
-            else Log.w(TAG, "layout '$name': engine refused the on-screen KDB for $file")
+    }
+
+    /** As [prebuildKeypad], for a drawn on-screen keyboard. */
+    fun prebuildOnScreen(drawn: DrawnKeyboard) {
+        if (!engine.isAvailable || store == null || drawn.layoutSet in OnScreenKdbs.KEPT_LAYOUT_SETS) return
+        try {
+            onScreenFiles(drawn)
+        } catch (e: RuntimeException) {
+            Log.w(TAG, "on-screen '${drawn.layoutSet}': building ahead failed: ${e.message}")
         }
-        Log.i(TAG, "layout '$name': registered $registered of ${files.size} on-screen KDB(s), rows '$rows'")
-        return registered
     }
 
     private fun currentLanguageSafely(): String? = try { currentLanguage() } catch (e: Exception) { null }
 
     companion object {
         private const val TAG = "XT9KDB"
+
+        /** The prefix of an on-screen variant: a `layout:` one, which the owned module lets reach the on-screen keyboard. */
+        const val SCREEN_VARIANT_PREFIX: String = LetterLayoutKdb.VARIANT_PREFIX + "screen:"
+
+        /** The process's instance, once [start] has made it. */
+        @JvmStatic
+        fun current(): LetterLayoutEngineSync? = instance
 
         @Volatile
         private var instance: LetterLayoutEngineSync? = null
@@ -438,34 +509,35 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
                 engineLetters = { language -> engineLettersFor(builtIns, language, keypad(), keypadType(), layoutSet()) },
                 chosenId = { language -> LetterLayoutChoice.chosenId(PrefsManager.getPrefs(app), language) },
                 chosenLayout = { language -> LetterLayoutChoice.forTyping(app, language) },
-                onScreenLayout = {
-                    val switcher = KeyboardSwitcher.getInstance()
-                    onScreenLayoutOf(app, builtIns, switcher?.currentKeyboardLayoutSet, switcher?.currentKeyboardOwnLayoutSet)
-                },
+                onScreenKeyboard = { drawnOnScreen() },
                 builtInLayout = { language -> builtIns.builtIn(language, keypad(), keypadType(), layoutSet()) },
                 shippedLayout = { language, set -> KeypadKdbs.shippedLetters(builtIns)(language, set) },
+                store = KdbStore.forApp(app),
             )
         }
 
+        /** The last keyboard read on the main thread, for a decision taken elsewhere (a settings change). */
+        @Volatile
+        private var lastDrawn: DrawnKeyboard? = null
+
         /**
-         * The layout an on-screen keyboard built from the layout set [layoutSet] is drawn from, when
-         * that is not the keyboard's own set [ownLayoutSet]: the built-in document of that id when it
-         * draws the on-screen keyboard (QWERTY, AZERTY, QWERTZ, Colemak, Dvorak), else null. A
-         * keyboard on its own set keeps the engine's own KDB for its language even when a document
-         * is named after that set: a French keyboard drawn from `azerty` is not a choice. Read off
-         * the keyboard actually built rather than the preferences, so the engine follows what is on
-         * screen even before a changed choice has rebuilt the keyboard.
+         * The on-screen keyboard as drawn: its alphabet and Shift layer, read off the switcher's
+         * builder. Keyboards are built and cached on the main thread only, so elsewhere this is the
+         * last one read there.
          */
-        @VisibleForTesting
-        @JvmStatic
-        internal fun onScreenLayoutOf(
-            context: Context,
-            builtIns: LetterLayoutRegistry,
-            layoutSet: String?,
-            ownLayoutSet: String?,
-        ): LetterLayout? {
-            if (layoutSet.isNullOrEmpty() || layoutSet == ownLayoutSet) return null
-            return builtIns.builtIn(layoutSet)?.takeIf { LetterLayoutChoice.drawsOnScreen(context, it) }
+        private fun drawnOnScreen(): DrawnKeyboard? {
+            if (Looper.myLooper() != Looper.getMainLooper()) return lastDrawn
+            val builder = KeyboardSwitcher.getInstance()?.keyboardBuilder ?: return lastDrawn
+            val drawn = try {
+                val alphabet = builder.getKeyboardForShift(0, false)
+                val shifted = try { builder.getKeyboardForShift(1, false) } catch (e: Exception) { null }
+                DrawnKeyboards.read(alphabet, shifted)
+            } catch (e: Exception) {
+                Log.w(TAG, "on-screen keyboard: could not read it: ${e.message}")
+                null
+            }
+            if (drawn != null) lastDrawn = drawn
+            return drawn ?: lastDrawn
         }
 
         /**

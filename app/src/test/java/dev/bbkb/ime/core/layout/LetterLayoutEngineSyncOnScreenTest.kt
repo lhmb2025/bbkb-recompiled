@@ -12,7 +12,9 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -25,11 +27,12 @@ import java.util.Collections
  * registry calls replaced by a recorder keyed as the native registry keys it: by variant,
  * primaryId and secondaryId.
  *
- * On screen: while the keyboard is drawn from Colemak or Dvorak, every on-screen KDB is replaced by
- * one with the layout's rows template's geometry and letters under its own ids, and selected; a
- * keyboard's own layout selects the device variant again. On the keypad: a language's choice wins
- * over the Physical layouts selection for that language, and only there. The KDB files are the
- * shipped ones, read off disk.
+ * On screen: whatever keyboard is drawn, its letters go on the shipped on-screen file of its row
+ * shape, under every on-screen id, registered as `layout:screen:<fingerprint>` and selected; the
+ * Chinese stroke, zhuyin and Cangjie keyboards select the device variant and their shipped files.
+ * Built files are kept in a [KdbStore]. On the keypad: a language's choice wins over the Physical
+ * layouts selection for that language, and only there. The KDB files are the shipped ones, read off
+ * disk.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -71,7 +74,12 @@ class LetterLayoutEngineSyncOnScreenTest {
     private var language: String? = "en"
     private var active: LetterLayout? = null
     private val chosen = HashMap<String, LetterLayout>()
-    private var onScreen: LetterLayout? = null
+    private var onScreen: DrawnKeyboard? = null
+
+    @get:Rule
+    val folder = TemporaryFolder()
+
+    private val store by lazy { KdbStore(folder.newFolder("kdb")) }
     private var submits = 0
 
     private val engine = object : LetterLayoutEngineSync.Engine by LetterLayoutEngineSync.XtEngine {
@@ -91,7 +99,7 @@ class LetterLayoutEngineSyncOnScreenTest {
 
     private fun vkb(name: String) = File(kdbDir(), "${name}_vkb.xml").readText(Charsets.UTF_8)
 
-    private fun newSync(onScreenSource: (() -> LetterLayout?)? = { onScreen }) = LetterLayoutEngineSync(
+    private fun newSync(onScreenSource: (() -> DrawnKeyboard?)? = { onScreen }, kdbStore: KdbStore? = store) = LetterLayoutEngineSync(
         engine = engine,
         kdbFiles = DiskKdbFiles(kdbDir()),
         activeId = { active?.id ?: "" },
@@ -103,9 +111,41 @@ class LetterLayoutEngineSyncOnScreenTest {
         engineLetters = { { keyCode -> LetterLayoutEngineSync.latinLetter(keyCode) } },
         chosenId = { lang -> chosen[lang]?.id ?: "" },
         chosenLayout = { lang -> chosen[lang] },
-        onScreenLayout = onScreenSource,
+        onScreenKeyboard = onScreenSource,
         shippedLayout = KeypadKdbs.shippedLetters(registry),
+        store = kdbStore,
     )
+
+    /**
+     * A drawn keyboard of [rows] (one letter per position; `.` for a period), with its positions at
+     * the key centres of the shipped on-screen file [like].
+     */
+    private fun drawn(set: String, like: String, vararg rows: String, spaceRow: Int = 2): DrawnKeyboard {
+        val centres = LetterLayoutKdb.screenRows(vkb(like))
+        return DrawnKeyboard(
+            set,
+            rows.mapIndexed { r, row ->
+                row.codePoints().toArray().mapIndexed { i, c -> DrawnKeyboard.Position(intArrayOf(c), centres[r][i]) }
+            },
+            spaceRow,
+        )
+    }
+
+    private val colemakDrawn get() = drawn("colemak", "spanish", "qwfpgjluy;", "arstdhneio", "zxcvbkm")
+    private val dvorakDrawn get() = drawn("dvorak", "spanish", "',.pyfgcrl", "aoeuidhtns", ";qjkxbm")
+    private val azertyDrawn get() = drawn("azerty", "qwerty", "azertyuiop", "qsdfghjkl", "wxcvbnm")
+
+    private fun screenVariant(drawn: DrawnKeyboard) = LetterLayoutEngineSync.SCREEN_VARIANT_PREFIX + drawn.fingerprint
+
+    private fun letters(xml: String): String {
+        val byCode = LetterLayoutKdb.lettersByKeyCode(xml, Template.VKB)
+        return listOf("QWERTYUIOP", "ASDFGHJKL;", "ZXCVBNM").joinToString("|") { row ->
+            row.mapNotNull { c ->
+                val code = if (c == ';') KeyEvent.KEYCODE_SEMICOLON else KeyEvent.KEYCODE_A + (c - 'A')
+                byCode[code]?.let { String(Character.toChars(it)) }
+            }.joinToString("")
+        }
+    }
 
     @Before
     fun setUp() {
@@ -158,68 +198,95 @@ class LetterLayoutEngineSyncOnScreenTest {
     // ── the on-screen keyboard ───────────────────────────────────────────────
 
     @Test
-    fun aKeyboardDrawnFromColemak_getsColemakKdbsForEveryLanguage() {
+    fun theDrawnKeyboard_isBuiltOnTheFileOfItsShape_forEveryOnScreenId() {
         deviceVariant("athena")
-        onScreen = colemak
+        onScreen = colemakDrawn
         sync(pkb = false)
-        assertEquals("layout:colemak", Xt9KdbVariant.applied())
+        val name = screenVariant(colemakDrawn)
+        assertEquals(name, Xt9KdbVariant.applied())
         assertEquals("the device variant is still athena", "athena", Xt9KdbVariant.deviceVariant())
-        val count = kdbDir().list()!!.count { it.endsWith("_vkb.xml") }
-        assertEquals("one per on-screen KDB the engine could load", count, native.registrations.count { it == "layout:colemak" })
-        // English: the spanish rows' geometry, Colemak's letters, English's ids.
-        val english = native.text("layout:colemak", 9, 1)
-        assertEquals(LetterLayoutKdb.forOnScreenKeyboard(vkb("spanish"), vkb("qwerty"), colemak), english)
-        assertEquals(listOf('o'.code), LetterLayoutKdb.codesByKeyCode(english, Template.VKB)[KeyEvent.KEYCODE_SEMICOLON]!!.toList())
-        // German loads its own ids, with the same drawn letters.
-        val german = native.text("layout:colemak", 7, 1)
-        assertEquals(listOf('f'.code), LetterLayoutKdb.codesByKeyCode(german, Template.VKB)[KeyEvent.KEYCODE_E]!!.toList())
-        assertEquals("no physical-keypad file is built for the on-screen keyboard", 0, native.of("layout:colemak", 6))
+        assertEquals("one per on-screen id", OnScreenKdbs.IDS.size, native.registrations.count { it == name })
+        // English: the spanish rows' geometry (ten keys in the middle), Colemak's letters, English's ids.
+        val english = native.text(name, 9, 1)
+        assertEquals("qwfpgjluy;|arstdhneio|zxcvbkm", letters(english))
+        assertEquals(LetterLayoutKdb.withEngineIds(LetterLayoutKdb.forDrawnKeyboard(vkb("spanish"), colemakDrawn.rows.map { r -> r.map { it.codes } })!!, 9, 1), english)
+        // German and Japanese romaji load their own ids, with the same drawn letters.
+        assertEquals("qwfpgjluy;|arstdhneio|zxcvbkm", letters(native.text(name, 7, 1)))
+        assertEquals("qwfpgjluy;|arstdhneio|zxcvbkm", letters(native.text(name, 17, 5)))
+        assertEquals("no physical-keypad file is built for the on-screen keyboard", 0, native.of(name, 6))
     }
 
     @Test
-    fun aKeyboardsOwnLayoutOnScreen_selectsTheDeviceVariant() {
-        deviceVariant("")
-        onScreen = colemak
+    fun aBelgianAzertyKeyboard_isDecodedInTheLettersItDraws() {
+        deviceVariant("athena")
+        onScreen = azertyDrawn
         sync(pkb = false)
-        assertEquals("layout:colemak", Xt9KdbVariant.applied())
-        onScreen = null
+        // Dutch asks for English's file (9) and German for QWERTZ's (7): both now hold AZERTY.
+        assertEquals("azertyuiop|qsdfghjkl|wxcvbnm", letters(native.text(screenVariant(azertyDrawn), 9, 1)))
+        assertEquals("azertyuiop|qsdfghjkl|wxcvbnm", letters(native.text(screenVariant(azertyDrawn), 7, 1)))
+    }
+
+    @Test
+    fun theChineseStrokeZhuyinAndCangjieKeyboards_keepTheirShippedFiles() {
+        deviceVariant("")
+        for (set in OnScreenKdbs.KEPT_LAYOUT_SETS) {
+            onScreen = drawn(set, "qwerty", "qwertyuiop", "asdfghjkl", "zxcvbnm")
+            sync(pkb = false)
+            assertEquals(set, KeypadKdbs.GENERIC, Xt9KdbVariant.applied())
+        }
+        assertTrue(native.registrations.none { it.startsWith(LetterLayoutEngineSync.SCREEN_VARIANT_PREFIX) })
+    }
+
+    @Test
+    fun aShapeNoFileHas_keepsTheDeviceVariant() {
+        deviceVariant("")
+        onScreen = drawn("odd", "qwerty", "qwertyuiop", "asdfghjkl", "zxcvbnm").let {
+            DrawnKeyboard("odd", it.rows.take(2), 2)
+        }
         sync(pkb = false)
         assertEquals(KeypadKdbs.GENERIC, Xt9KdbVariant.applied())
-        onScreen = dvorak
-        sync(pkb = false)
-        assertEquals("layout:dvorak", Xt9KdbVariant.applied())
-        val english = native.text("layout:dvorak", 9, 1)
-        assertEquals(listOf('\''.code, '"'.code), LetterLayoutKdb.codesByKeyCode(english, Template.VKB)[KeyEvent.KEYCODE_Q]!!.toList())
     }
 
     @Test
-    fun switchingBetweenTheKeyboards_decidesForEach_andBuildsOnce() {
+    fun switchingKeyboards_selectsEach_andBuildsOnce() {
+        deviceVariant("")
+        onScreen = colemakDrawn
+        sync(pkb = false)
+        onScreen = dvorakDrawn
+        sync(pkb = false)
+        assertEquals(screenVariant(dvorakDrawn), Xt9KdbVariant.applied())
+        assertEquals(listOf('\''.code, '"'.code).take(1), LetterLayoutKdb.codesByKeyCode(native.text(screenVariant(dvorakDrawn), 9, 1), Template.VKB)[KeyEvent.KEYCODE_Q]!!.toList().take(1))
+        onScreen = colemakDrawn
+        sync(pkb = false)
+        assertEquals(screenVariant(colemakDrawn), Xt9KdbVariant.applied())
+        assertEquals("built once", OnScreenKdbs.IDS.size, native.registrations.count { it == screenVariant(colemakDrawn) })
+    }
+
+    @Test
+    fun switchingBetweenTheKeyboards_decidesForEach() {
         deviceVariant("athena")
         active = swap
         changed()
         assertEquals("the keypad follows the swap", "layout:swap", Xt9KdbVariant.applied())
-        onScreen = colemak
+        onScreen = colemakDrawn
         sync(pkb = false)
-        assertEquals("the screen shows Colemak", "layout:colemak", Xt9KdbVariant.applied())
+        assertEquals("the screen shows Colemak", screenVariant(colemakDrawn), Xt9KdbVariant.applied())
         sync(pkb = true)
         assertEquals("layout:swap", Xt9KdbVariant.applied())
         sync(pkb = false)
-        assertEquals("layout:colemak", Xt9KdbVariant.applied())
-        assertEquals(listOf("athena", "layout:swap", "layout:colemak", "layout:swap", "layout:colemak"), native.selections)
-        val onScreenFiles = kdbDir().list()!!.count { it.endsWith("_vkb.xml") }
-        assertEquals("built once", onScreenFiles, native.registrations.count { it == "layout:colemak" })
-        assertEquals("built once", 40, native.registrations.count { it == "layout:swap" })
+        assertEquals(screenVariant(colemakDrawn), Xt9KdbVariant.applied())
+        assertEquals("built once", 39, native.registrations.count { it == "layout:swap" })
     }
 
     @Test
     fun anOnScreenSyncWithNothingNew_queuesNothing() {
         deviceVariant("athena")
-        onScreen = colemak
+        onScreen = colemakDrawn
         sync(pkb = false)
         val before = submits
         repeat(3) { sync(pkb = false) }
         assertEquals(before, submits)
-        onScreen = dvorak
+        onScreen = dvorakDrawn
         sync(pkb = false)
         assertEquals(before + 1, submits)
     }
@@ -228,23 +295,50 @@ class LetterLayoutEngineSyncOnScreenTest {
     fun withoutAnOnScreenSource_onScreenSyncsAreNotFollowed() {
         LetterLayoutEngineSync.setInstanceForTest(newSync(onScreenSource = null))
         deviceVariant("athena")
-        onScreen = colemak
         val before = submits
         sync(pkb = false)
         assertEquals(before, submits)
         assertEquals("athena", Xt9KdbVariant.applied())
     }
 
+    // ── kept on storage ──────────────────────────────────────────────────────
+
     @Test
-    fun theKeyboardOnScreenIsReadByItsLayoutSet() {
-        assertEquals("colemak", LetterLayoutEngineSync.onScreenLayoutOf(context, registry, "colemak", "qwerty")!!.id)
-        assertEquals("dvorak", LetterLayoutEngineSync.onScreenLayoutOf(context, registry, "dvorak", "azerty")!!.id)
-        assertEquals("AZERTY chosen for an English keyboard", "azerty", LetterLayoutEngineSync.onScreenLayoutOf(context, registry, "azerty", "qwerty")!!.id)
-        assertEquals("QWERTY chosen for a German keyboard", "qwerty", LetterLayoutEngineSync.onScreenLayoutOf(context, registry, "qwerty", "qwertz")!!.id)
-        assertNull("a keyboard's own set is not a choice, even with a document of that name", LetterLayoutEngineSync.onScreenLayoutOf(context, registry, "qwerty", "qwerty"))
-        assertNull(LetterLayoutEngineSync.onScreenLayoutOf(context, registry, "azerty", "azerty"))
-        assertNull(LetterLayoutEngineSync.onScreenLayoutOf(context, registry, "east_slavic", "east_slavic"))
-        assertNull(LetterLayoutEngineSync.onScreenLayoutOf(context, registry, null, null))
+    fun builtKdbs_areKeptOnStorage_andReadBackByTheNextProcess() {
+        deviceVariant("athena")
+        onScreen = colemakDrawn
+        sync(pkb = false)
+        active = swap
+        changed()
+        sync(pkb = true)
+        assertTrue(store.has(KdbStore.key("vkb", colemakDrawn.fingerprint)))
+        val first = native.text(screenVariant(colemakDrawn), 9, 1)
+        val keypad = native.text("layout:swap", 9, 6)
+        // A new process: a fresh sync and engine, the same store.
+        val nextNative = Recorder()
+        Xt9KdbVariant.setNativeBridgeForTest(nextNative)
+        val next = newSync()
+        LetterLayoutEngineSync.setInstanceForTest(next)
+        assertEquals(store.get(KdbStore.key("vkb", colemakDrawn.fingerprint))!!.size, OnScreenKdbs.IDS.size)
+        deviceVariant("athena")
+        sync(pkb = false)
+        assertEquals(first, nextNative.text(screenVariant(colemakDrawn), 9, 1))
+        sync(pkb = true)
+        assertEquals(keypad, nextNative.text("layout:swap", 9, 6))
+    }
+
+    @Test
+    fun buildingAhead_fillsTheStore_withoutTouchingTheEngine() {
+        deviceVariant("athena")
+        val sync = LetterLayoutEngineSync.current()!!
+        val before = native.registrations.size
+        sync.prebuildOnScreen(dvorakDrawn)
+        sync.prebuildKeypad(swap)
+        assertEquals(before, native.registrations.size)
+        assertTrue(store.has(KdbStore.key("vkb", dvorakDrawn.fingerprint)))
+        assertTrue(store.has(KdbStore.key("pkb", "athena", LetterLayoutXml.serialize(swap))))
+        sync.prebuildOnScreen(drawn("stroke", "qwerty", "qwertyuiop", "asdfghjkl", "zxcvbnm"))
+        assertTrue("nothing for a kept keyboard", folder.root.walk().count { it.isFile } == 2)
     }
 
     // ── a language's chosen layout on the keypad ─────────────────────────────
@@ -256,7 +350,7 @@ class LetterLayoutEngineSyncOnScreenTest {
         chosen["en"] = colemakForKeypad
         changed()
         assertEquals("English follows its choice", "layout:colemak", Xt9KdbVariant.applied())
-        assertEquals("every keypad KDB", 40, native.of("layout:colemak", 6))
+        assertEquals("every keypad KDB", 39, native.of("layout:colemak", 6))
         val english = native.text("layout:colemak", 9, 6)
         val athena = KeypadKdbs.forDevice(File(kdbDir(), KeypadKdbs.templateFile("athena")).readText(Charsets.UTF_8), KeypadKdbs.shippedLetters(registry))
         assertEquals(LetterLayoutKdb.rewrite(athena.getValue(9), colemakForKeypad), english)

@@ -16,7 +16,7 @@ set -o pipefail
 cd "$(dirname "$0")/.."                                   # -> cpp/
 
 CORPUS="${CORPUS:-test/data/w6_s1_corpus.txt}"
-KDB="${KDB:-../../app/src/main/assets/kdb/athena/qwerty_pkb.xml}"   # the KEY2 layout these ran on
+KDB="${KDB:-../../app/src/main/assets/kdb/keypad_pkb_athena_test.xml}"   # the KEY2 layout these ran on
 WORDS="${WORDS:-test/data/w24_words.txt}"
 CC="${CC:-cc}"
 OUT="$(mktemp -d)"

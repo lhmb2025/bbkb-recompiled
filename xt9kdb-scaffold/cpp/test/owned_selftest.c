@@ -7,7 +7,7 @@
  *   3. Geometry resolution : every key center resolves to itself; ByTap (sensor+offset) -> code
  *
  * Build:  gcc -std=c11 -Iinclude src/[a-z]*.c test/owned_selftest.c -lm -o owned_selftest
- * Run:    ./owned_selftest path/to/kdb/athena/qwerty_pkb.xml
+ * Run:    ./owned_selftest path/to/kdb/keypad_pkb_athena_test.xml
  */
 #include <stdio.h>
 #include <stdlib.h>

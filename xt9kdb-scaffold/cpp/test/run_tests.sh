@@ -73,7 +73,10 @@ stage "NKL vkb header (regional maxW: RADX 120, not the 540 SPACE)" nkl_vkb_stag
 multicode_stage() {
     local rc=0 d=test/data/abi_audit l
     for l in greek_pkb arabic_pkb arabic_vkb; do
-        if ! "$OUT/nkl" --dump "../../app/src/main/assets/kdb/$l.xml" > "$OUT/$l.txt"; then
+        # The app builds most per-language KDBs now; the files it shipped are kept for reference.
+        local f="../../app/src/main/assets/kdb/$l.xml"
+        [ -f "$f" ] || f="../reference/kdb_${l##*_}/$l.xml"
+        if ! "$OUT/nkl" --dump "$f" > "$OUT/$l.txt"; then
             echo "  FAIL $l: dump failed"; rc=1; continue
         fi
         if diff -u "$d/nkl_${l}_after.txt" "$OUT/$l.txt" > "$OUT/$l.diff"; then
@@ -85,7 +88,7 @@ multicode_stage() {
     return $rc
 }
 stage "multi-code keyCodes (L13): Greek/Arabic NKL == committed dumps" multicode_stage
-stage "athena uneven row bands (90/180/180)"                      "$OUT/band" ../../app/src/main/assets/kdb/athena/qwerty_pkb.xml
+stage "athena uneven row bands (90/180/180)"                      "$OUT/band" ../../app/src/main/assets/kdb/keypad_pkb_athena_test.xml
 stage "owned-recall index (O(N) builder == reference; negative control)" "$OUT/recall"
 stage "gesture decoder (synthetic curved paths; shallow corners must resolve)" "$OUT/decode"
 # The touch/gesture ABI contracts (the 2026-09 KDB touch-ABI audit, now in the local attic). Noisy on

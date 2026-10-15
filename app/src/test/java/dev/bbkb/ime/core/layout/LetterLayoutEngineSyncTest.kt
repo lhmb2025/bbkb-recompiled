@@ -229,8 +229,8 @@ class LetterLayoutEngineSyncTest {
         keyboard("en")
         keyboard("es")
         assertEquals("layout:builtin:es", Xt9KdbVariant.applied())
-        assertEquals(40, native.count("layout:builtin:en"))
-        assertEquals(40, native.count("layout:builtin:es"))
+        assertEquals(39, native.count("layout:builtin:en"))
+        assertEquals(39, native.count("layout:builtin:es"))
     }
 
     @Test
@@ -282,7 +282,7 @@ class LetterLayoutEngineSyncTest {
         activate(swap)
         assertEquals("layout:swap", Xt9KdbVariant.applied())
         assertEquals("the device variant is still athena", "athena", Xt9KdbVariant.deviceVariant())
-        assertEquals("every PKB KDB, so none falls back to the root copy", 40, native.files["layout:swap"]!!.size)
+        assertEquals("every PKB KDB, so none falls back to the root copy", 39, native.files["layout:swap"]!!.size)
         // English: athena's keypad, with the layout's letters.
         val english = registered("layout:swap", 9)
         assertEquals(LetterLayoutKdb.rewrite(deviceKdb("athena", 9), swap), english)
@@ -339,7 +339,7 @@ class LetterLayoutEngineSyncTest {
         assertEquals("athena", Xt9KdbVariant.applied())
         keyboard("de")
         assertEquals("layout:de-qwertz", Xt9KdbVariant.applied())
-        assertEquals("built once", 40, native.count("layout:de-qwertz"))
+        assertEquals("built once", 39, native.count("layout:de-qwertz"))
     }
 
     @Test
@@ -348,7 +348,7 @@ class LetterLayoutEngineSyncTest {
         activate(swap)
         val edited = layout("""<key code="KEYCODE_Q" keySpec="e"/><key code="KEYCODE_E" keySpec="q"/>""")
         activate(edited)
-        assertEquals(80, native.count("layout:swap"))
+        assertEquals(78, native.count("layout:swap"))
         assertEquals(listOf('e'.code), LetterLayoutKdb.codesByKeyCode(registered("layout:swap", 9))[KeyEvent.KEYCODE_Q]!!.toList())
         assertEquals("layout:swap", Xt9KdbVariant.applied())
     }
@@ -493,7 +493,7 @@ class LetterLayoutEngineSyncTest {
     fun theAppsAssetsHoldTheKeypadGeometriesAndTheShippedKdbs() {
         val assets = LetterLayoutEngineSync.AssetKdbFiles(context.assets)
         val pkb = assets.list(Template.PKB)
-        assertEquals(pkb.toString(), 23, pkb.size)
+        assertEquals(pkb.toString(), 22, pkb.size)
         assertEquals(listOf("keypad_pkb.xml"), pkb.filter { KeypadKdbs.isTemplate(it) })
         assertArrayEquals(File(kdbDir(), "keypad_pkb_athena.xml").readBytes(), assets.read(KeypadKdbs.templateFile("athena")))
         assertNull(assets.read("missing_pkb.xml"))

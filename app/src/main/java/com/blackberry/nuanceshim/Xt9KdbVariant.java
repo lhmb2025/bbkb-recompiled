@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.VisibleForTesting;
 
+import dev.bbkb.ime.core.layout.KdbStore;
 import dev.bbkb.ime.core.layout.KeypadKdbs;
 import dev.bbkb.ime.core.shared.SystemProps;
 
@@ -417,13 +418,13 @@ public final class Xt9KdbVariant {
 
         List<byte[]> files = null;
         try {
-            files = KeypadKdbs.forDevice(context, v);
+            files = deviceFiles(context, v);
             if (files == null && !v.equals(KeypadKdbs.GENERIC)) {
                 Log.w(TAG, "variant '" + v + "': no kdb/" + KeypadKdbs.templateFile(v)
                         + " — using the generic keypad");
                 v = KeypadKdbs.GENERIC;
                 if (v.equals(sDeviceVariant)) return false;
-                files = KeypadKdbs.forDevice(context, v);
+                files = deviceFiles(context, v);
             }
         } catch (Throwable t) {
             Log.w(TAG, "variant '" + v + "': building the keypad KDBs failed: " + t.getMessage());
@@ -443,13 +444,28 @@ public final class Xt9KdbVariant {
             sNative.setVariant(v);
             sApplied = v;
             sDeviceVariant = v;
-            Log.i(TAG, "variant applied: '" + v + "' (" + registered + " keypad KDB(s) built from "
+            Log.i(TAG, "variant applied: '" + v + "' (" + registered + " keypad KDB(s) of "
                     + KeypadKdbs.templateFile(v) + ")");
             return true;
         } catch (Throwable t) {
             Log.w(TAG, "variant: nativeSetVariant failed: " + t.getMessage());
             return false;
         }
+    }
+
+    /**
+     * The device's keypad KDBs ({@link KeypadKdbs#forDevice}), read back from the app's
+     * {@link KdbStore} when built before (once per install); null when the device has no geometry
+     * file of its own.
+     */
+    private static List<byte[]> deviceFiles(Context context, String variant) {
+        final KdbStore store = KdbStore.forApp(context);
+        final String key = KdbStore.key("device", variant);
+        final List<byte[]> stored = store.get(key);
+        if (stored != null) return stored;
+        final List<byte[]> files = KeypadKdbs.forDevice(context, variant);
+        if (files != null) store.put(key, files);
+        return files;
     }
 
     /** Package-visible so Xt9Kdb.selfCheck can share this loop rather than keeping its own

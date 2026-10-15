@@ -65,7 +65,7 @@ void xt9kdb_set_model(const ET9KdbLoaded* m) { if (m) g_kdb_model = m; }
 /* Both default to ZERO. The Y default was 50 for a while — an experiment aimed at a different
  * problem, kept as a bring-up default from the old 324-tall root layout. It is wrong for the
  * layouts we actually ship: the athena PKB is authored for a 1:1 sensor mapping ("offset 0, no
- * scale", see assets/kdb/athena/qwerty_pkb.xml), and a 50px shift moves every point near a row
+ * scale", see assets/kdb/keypad_pkb_athena_test.xml), and a 50px shift moves every point near a row
  * boundary a full row up — raw (453,312) is row 3 (V) but resolved as row 2 (G), which is where
  * the spurious keys in a decoded swipe path came from. Removed 2026-08-12.
  *

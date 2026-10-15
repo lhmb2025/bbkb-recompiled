@@ -969,7 +969,7 @@ public class NuanceSDK {
      *   passing isTouchKb (false) -> NKL 1080x600, 33 keys  = a VKB layout   (wrong)
      *   passing isPkb     (true)  -> NKL 1080x450, 30 keys  = athena PKB     (correct)
      * </pre>
-     * The second matches assets/kdb/athena/qwerty_pkb.xml exactly (1080x450, 30 keys, 108x180
+     * The second matched the then-shipped KEY2 uneven-band layout (now assets/kdb/keypad_pkb_athena_test.xml) exactly (1080x450, 30 keys, 108x180
      * keys), and is the only polarity under which {@link #setKeyboardSize(boolean, short, short)}
      * takes its documented "true = PKB" branch at all — with isTouchKb it never ran on the PKB,
      * and {@code setKeyboardSizePkb()} was dead code (since removed).

@@ -18,8 +18,8 @@ import java.io.File
 /**
  * The engine's on-screen KDBs rewritten from a letter layout ([LetterLayoutKdb] with
  * [Template.VKB]), on the shipped `qwerty_vkb.xml` and `spanish_vkb.xml`: the positions of the
- * on-screen rows, the letters a rewritten key gets, that nothing but those letters changes, and the
- * KDB built for a language from a rows template's geometry ([LetterLayoutKdb.forOnScreenKeyboard]).
+ * on-screen rows, the letters a rewritten key gets, that nothing but those letters changes, and a
+ * drawn keyboard's letters put on a template's rows ([LetterLayoutKdb.forDrawnKeyboard]).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -113,19 +113,29 @@ class LetterLayoutKdbOnScreenTest {
     }
 
     @Test
-    fun theKdbForALanguageHasItsIdsAndTheTemplatesRows() {
-        val english = LetterLayoutKdb.forOnScreenKeyboard(vkb("spanish"), vkb("qwerty"), colemak)!!
-        assertEquals(9 to 1, LetterLayoutKdb.engineIds(english))
-        assertEquals("qwfpgjluy;|arstdhneio|zxcvbkm", letters(english))
-        assertEquals("the spanish geometry: ten keys in the middle row", geometryOf(vkb("spanish")), geometryOf(english))
-        // Japanese romaji's KDB has a secondary id of its own; the copy keeps it.
-        val japanese = LetterLayoutKdb.forOnScreenKeyboard(vkb("spanish"), vkb("japanese"), colemak)!!
-        assertEquals(17 to 5, LetterLayoutKdb.engineIds(japanese))
-        // Everything outside the ids is the template's, rewritten.
-        assertEquals(
-            LetterLayoutKdb.rewrite(vkb("spanish"), colemak, Template.VKB).replace("primaryId=\"10\"", "primaryId=\"9\""),
-            english,
-        )
+    fun theDrawnLettersGoOnTheTemplatesRows_positionByPosition() {
+        fun row(text: String) = text.codePoints().toArray().map { intArrayOf(it) }
+        val colemak = LetterLayoutKdb.forDrawnKeyboard(
+            vkb("spanish"),
+            listOf(row("QWFPGJLUY;"), row("ARSTDHNEIO"), row("ZXCVBKM")),
+        )!!
+        assertEquals("lower case, the punctuation positions included", "qwfpgjluy;|arstdhneio|zxcvbkm", letters(colemak))
+        assertEquals("the template's geometry", geometryOf(vkb("spanish")), geometryOf(colemak))
+        assertEquals("the template's ids", 10 to 1, LetterLayoutKdb.engineIds(colemak))
+        // A position's further codes follow its primary; Hangul goes in as conjoining jamo.
+        val korean = LetterLayoutKdb.forDrawnKeyboard(vkb("qwerty"), listOf(listOf(intArrayOf('ㅂ'.code, 'ㅃ'.code)) + row("WERTYUIOP").drop(0)))
+        assertEquals(listOf(0x1107, 0x1108), LetterLayoutKdb.codesByKeyCode(korean!!, Template.VKB)[KeyEvent.KEYCODE_Q]!!.toList())
+        assertNull("a row of another length does not fit", LetterLayoutKdb.forDrawnKeyboard(vkb("qwerty"), listOf(row("QWERTYUIOPX"))))
+        val qwerty = vkb("qwerty")
+        assertSame("nothing to change: the same text back", qwerty, LetterLayoutKdb.forDrawnKeyboard(qwerty, listOf(row("qwertyuiop"))))
+    }
+
+    @Test
+    fun theScreenRowsAreEveryRowsPositions_byCentre() {
+        val rows = LetterLayoutKdb.screenRows(vkb("qwerty"))
+        assertEquals(listOf(10, 9, 7, 2), rows.map { it.size })
+        assertEquals(54f / 1080f, rows[0][0], 0.001f)
+        assertTrue(rows.all { r -> r.zipWithNext().all { (a, b) -> a < b } })
     }
 
     @Test
@@ -145,7 +155,6 @@ class LetterLayoutKdbOnScreenTest {
     fun oneVariantNameForBothKeyboards() {
         assertEquals("layout:colemak", LetterLayoutKdb.variantName(colemak, Template.PKB))
         assertEquals("layout:colemak", LetterLayoutKdb.variantName(colemak, Template.VKB))
-        assertEquals("spanish_vkb.xml", LetterLayoutKdb.templateFile("spanish"))
         assertEquals("_vkb.xml", Template.VKB.fileSuffix)
     }
 }

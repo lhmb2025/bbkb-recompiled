@@ -59,12 +59,11 @@ import java.util.Locale
  *
  * ## The on-screen keyboard
  *
- * The engine picks an on-screen KDB by the language's ids alone, so a Colemak board on an English
- * keyboard would be decoded against `qwerty_vkb.xml`'s QWERTY letters, in rows of the wrong length
- * (Colemak has ten keys in the middle row). [forOnScreenKeyboard] builds the KDB the engine should
- * load instead: the geometry of the layout's rows template (`assets/kdb/<template>_vkb.xml`, whose
- * rows match the drawn ones), the layout's letters, and the ids of the KDB it stands in for, so the
- * engine finds it for that language.
+ * The on-screen KDB's letters come from the keyboard actually drawn ([DrawnKeyboard]), whatever
+ * it was drawn from, and its key boxes from the shipped on-screen file of the same row shape
+ * ([OnScreenKdbs]). [forDrawnKeyboard] puts each drawn row's letters on that file's keys of the
+ * same row, left to right ([screenRows]): every key that is not a function key is a position, the
+ * punctuation of a Dvorak row included.
  */
 object LetterLayoutKdb {
 
@@ -104,21 +103,46 @@ object LetterLayoutKdb {
     @JvmStatic
     fun builtInVariantName(layout: LetterLayout): String = BUILT_IN_VARIANT_PREFIX + layout.id
 
-    /** The on-screen KDB a rows template's geometry comes from: `qwerty_vkb.xml`, `spanish_vkb.xml`. */
-    @JvmStatic
-    fun templateFile(rowsTemplate: String): String = rowsTemplate + Template.VKB.fileSuffix
-
     /**
-     * The on-screen KDB the engine should load for [target]'s language while the on-screen
-     * keyboard is drawn from [layout]: [template] (the KDB named by the layout's rows template,
-     * [templateFile]) with the layout's letters and [target]'s `primaryId` and `secondaryId`. Null
-     * when either file carries no ids.
+     * [template], an on-screen KDB, with the letters of [rows] on its keys: row by row, left to
+     * right, each position's code points (primary first) as the engine keeps them (lower case,
+     * Hangul in conjoining jamo). Rows past [rows] keep their keys. Null when a row of [rows] has
+     * a different number of positions than the template's row, or the template has fewer rows.
      */
     @JvmStatic
-    fun forOnScreenKeyboard(template: String, target: String, layout: LetterLayout): String? {
-        val (primaryId, secondaryId) = engineIds(target) ?: return null
-        val stamped = withEngineIds(template, primaryId, secondaryId) ?: return null
-        return rewrite(stamped, layout, Template.VKB)
+    fun forDrawnKeyboard(template: String, rows: List<List<IntArray>>): String? {
+        val templateRows = screenKeys(template)
+        if (templateRows.size < rows.size) return null
+        val edits = ArrayList<Edit>()
+        for ((r, row) in rows.withIndex()) {
+            val keys = templateRows[r]
+            if (keys.size != row.size) return null
+            for ((i, codes) in row.withIndex()) {
+                val engineCodes = codes.map(::engineCode).distinct()
+                edits += rewriteKeyCodes(keys[i], engineCodes) ?: continue
+            }
+        }
+        if (edits.isEmpty()) return template
+        val out = StringBuilder(template)
+        edits.sortedByDescending { it.start }.forEach { out.replace(it.start, it.end, it.text) }
+        return out.toString()
+    }
+
+    /**
+     * The positions of on-screen KDB [xml], row by row (every `<area>`), left to right: the centre
+     * of each key that is not a function key, as a fraction of the file's `defaultLayoutWidth`.
+     */
+    @JvmStatic
+    fun screenRows(xml: String): List<List<Float>> {
+        val width = Regex("defaultLayoutWidth\\s*=\\s*\"(\\d+)\"").find(COMMENT.replace(xml, ""))
+            ?.groupValues?.get(1)?.toFloatOrNull()?.takeIf { it > 0 } ?: 1080f
+        return screenKeys(xml).map { row ->
+            row.map { key ->
+                val left = key.attributes["keyLeft"]?.let { dp(it.value) } ?: 0
+                val keyWidth = key.attributes["keyWidth"]?.let { dp(it.value) } ?: DEFAULT_KEY_WIDTH
+                (left + keyWidth / 2f) / width
+            }
+        }
     }
 
     private val KEYBOARD_ELEMENT = Regex("<keyboard\\b[^>]*>")
@@ -298,6 +322,37 @@ object LetterLayoutKdb {
         return keys
     }
 
+    /** Every `<area>`'s keys that are not function keys, left to right; see [screenRows]. */
+    private fun screenKeys(xml: String): List<List<KdbKey>> {
+        val masked = COMMENT.replace(xml) { " ".repeat(it.value.length) }
+        return AREA.findAll(masked).map { area ->
+            val body = area.groups[1]!!.range
+            val row = ArrayList<Pair<Int, KdbKey>>()
+            for (match in KEY.findAll(masked, body.first)) {
+                if (match.range.first > body.last) break
+                val element = match.range
+                val attributes = HashMap<String, Attribute>()
+                for (a in ATTRIBUTE.findAll(masked.substring(element.first, element.last + 1))) {
+                    val base = element.first
+                    val value = a.groups[3]!!
+                    attributes.putIfAbsent(
+                        a.groups[2]!!.value,
+                        Attribute(base + a.range.first, base + value.range.first, base + value.range.last + 1, base + a.range.last + 1, value.value),
+                    )
+                }
+                if (attributes["keyType"]?.value == "function" || attributes.containsKey("keyName")) continue
+                val left = attributes["keyLeft"]?.let { dp(it.value) } ?: continue
+                val label = attributes["keyLabel"]?.value?.singleOrNull()?.takeIf { it in 'A'..'Z' || it in 'a'..'z' }
+                val codes = ArrayList<Int>()
+                if (label != null) codes += label.lowercaseChar().code
+                attributes["keyCodes"]?.let { codes += parseCodes(it.value) }
+                if (codes.isEmpty()) attributes["keyLabel"]?.value?.takeIf { it.isNotEmpty() }?.let { codes += it.codePointAt(0) }
+                row += left to KdbKey(0, element.first + "<key".length, attributes, codes.distinct().toIntArray(), label != null)
+            }
+            row.sortedBy { it.first }.map { it.second }
+        }.toList()
+    }
+
     /** The key code at [row]/[column] of the keypad grid, [KeyEvent.KEYCODE_4] for the extra key, or 0. */
     private fun keyCodeAt(row: Int, column: Int): Int {
         if (row == EXTRA_KEY_ROW && column == EXTRA_KEY_COLUMN) return KeyEvent.KEYCODE_4
@@ -321,15 +376,23 @@ object LetterLayoutKdb {
 
     /** The edits that give [key] the letters of [entry], or null when it already has them (or cannot). */
     private fun rewriteKey(key: KdbKey, entry: LetterLayout.Key): List<Edit>? {
-        val primary = engineCode(entry.keySpec)
-        // A primary the engine cannot hold leaves the key as it was: dropping its letter
-        // altogether would make the key a dead spot for the decoder.
-        if (primary <= 0 || primary > MAX_ENGINE_CODE) return null
-        val codes = LinkedHashSet<Int>().apply { add(primary) }
+        val codes = LinkedHashSet<Int>().apply { add(engineCode(entry.keySpec)) }
         if (entry.shift != 0 && entry.shift != Character.toUpperCase(entry.keySpec)) codes += engineCode(entry.shift)
         singleCodePoints(entry.multitap).forEach { codes += engineCode(it) }
         entry.engineKeys.forEach { codes += engineCode(it) }
-        val wanted = codes.filter { it in 1..MAX_ENGINE_CODE }.take(MAX_KEY_CODES)
+        return rewriteKeyCodes(key, codes.toList())
+    }
+
+    /**
+     * The edits that give [key] the engine codes [codes], primary first, or null when it already has
+     * them (or cannot).
+     */
+    private fun rewriteKeyCodes(key: KdbKey, codes: List<Int>): List<Edit>? {
+        val primary = codes.firstOrNull() ?: return null
+        // A primary the engine cannot hold leaves the key as it was: dropping its letter
+        // altogether would make the key a dead spot for the decoder.
+        if (primary <= 0 || primary > MAX_ENGINE_CODE) return null
+        val wanted = codes.filter { it in 1..MAX_ENGINE_CODE }.distinct().take(MAX_KEY_CODES)
 
         val labelForm = primary in 'a'.code..'z'.code
         // The type changes only when the layout moves a key between letter and non-letter, so a

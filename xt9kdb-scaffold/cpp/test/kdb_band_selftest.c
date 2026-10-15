@@ -32,7 +32,7 @@ static void chk_bbox(const char* name, ET9U16 code, int l, int t, int r, int b) 
 }
 
 int main(int argc, char** argv) {
-    const char* path = (argc > 1) ? argv[1] : "../../app/src/main/assets/kdb/athena/qwerty_pkb.xml";
+    const char* path = (argc > 1) ? argv[1] : "../../app/src/main/assets/kdb/keypad_pkb_athena_test.xml";
     FILE* f = fopen(path, "rb"); if (!f) { printf("open fail %s\n", path); return 2; }
     fseek(f, 0, SEEK_END); long n = ftell(f); fseek(f, 0, SEEK_SET);
     unsigned char* x = malloc((size_t)n);

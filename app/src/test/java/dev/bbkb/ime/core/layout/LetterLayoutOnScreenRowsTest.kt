@@ -178,7 +178,7 @@ class LetterLayoutOnScreenRowsTest {
     @Test
     fun theRowsTemplateIsTheShapeOfTheEnginesKdbOfThatName() {
         for (layout in onScreenDocuments()) {
-            val file = File(mainDir(), "assets/kdb/${LetterLayoutKdb.templateFile(layout.rowsTemplate!!)}")
+            val file = File(mainDir(), "assets/kdb/${layout.rowsTemplate!!}_vkb.xml")
             assertTrue("${file.name} exists", file.isFile)
             val perRow = Regex("<area>(.*?)</area>", RegexOption.DOT_MATCHES_ALL).findAll(file.readText())
                 .map { area -> Regex("""keyType="regional"""").findAll(area.groupValues[1]).count() }

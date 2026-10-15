@@ -1,5 +1,5 @@
 loaded 1080x324 keys=30  pid=1 sid=6
-NKL dump: ../../app/src/main/assets/kdb/arabic_pkb.xml
+NKL dump: ../reference/kdb_pkb/arabic_pkb.xml
 header
   +0x00 format      = 0x00000101
   +0x04 pid/sid     = 1/6
@@ -28,7 +28,7 @@ header
   +0x64 keyCount    = 30
 keys
   key[ 0] idx=0 type=1 flag8=1 c=(53,53) bbox=(0,0,107,107) core=(22,22,85,85) exp=(0,0,129,129) geo=(53,53) bias=(53,53)
-          +0x40 chars=2  +0x48 arena=+0x1058  [0636 0635]
+          +0x40 chars=2  +0x48 arena=+0x1058  [0635 0636]
   key[ 1] idx=1 type=1 flag8=1 c=(161,53) bbox=(108,0,215,107) core=(130,22,193,85) exp=(86,0,237,129) geo=(161,53) bias=(161,53)
           +0x40 chars=1  +0x48 arena=+0x105c  [062b]
   key[ 2] idx=2 type=1 flag8=1 c=(269,53) bbox=(216,0,323,107) core=(238,22,301,85) exp=(194,0,345,129) geo=(269,53) bias=(269,53)
@@ -48,7 +48,7 @@ keys
   key[ 9] idx=9 type=1 flag8=1 c=(1025,53) bbox=(972,0,1079,107) core=(994,22,1057,85) exp=(950,0,65535,107) geo=(1025,53) bias=(1025,53)
           +0x40 chars=1  +0x48 arena=+0x106c  [062c]
   key[10] idx=10 type=1 flag8=1 c=(53,161) bbox=(0,108,107,215) core=(22,130,85,193) exp=(0,86,129,215) geo=(53,161) bias=(53,161)
-          +0x40 chars=2  +0x48 arena=+0x106e  [0634 0633]
+          +0x40 chars=2  +0x48 arena=+0x106e  [0633 0634]
   key[11] idx=11 type=1 flag8=1 c=(161,161) bbox=(108,108,215,215) core=(130,130,193,193) exp=(86,86,237,237) geo=(161,161) bias=(161,161)
           +0x40 chars=1  +0x48 arena=+0x1072  [064a]
   key[12] idx=12 type=1 flag8=1 c=(269,161) bbox=(216,108,323,215) core=(238,130,301,193) exp=(194,86,345,237) geo=(269,161) bias=(269,161)
