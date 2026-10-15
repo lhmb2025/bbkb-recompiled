@@ -34,8 +34,8 @@
              answers nothing. -->
 
         <!-- RETAIL SWIPE CONFIG (2026-08-14, remediation log §8.7.12/§8.6): the engine uses the
-             ROOT flat KDB (uniform 108px rows, authored 324, RADY=108 — the geometry its swipe
-             decoder is tuned for) and the capacitive Y is PIECEWISE-warped so each measured
+             even KDB geometry (uniform 108px rows, authored 324, RADY=108 — the geometry its
+             swipe decoder is tuned for; assets/kdb/keypad_pkb_athena.xml, named below) and the capacitive Y is PIECEWISE-warped so each measured
              sensor band (0-90 / 90-270 / 270-450, pen-on-dividers) maps exactly onto one
              authored row. This reproduces the stock KEY2 stack — the only configuration that
              ever decoded the boundary-riding corpus words cleanly (S5: hello 10/10). The warp
@@ -44,9 +44,14 @@
              essential bias absorber (§8.7.5) — whereas exact band mapping preserves in-band
              position and reproduces the boundary-riding failures (piecewise was tried 2026-08-14:
              done→some, hello→heel, that→hat — §8.7.12 retail verify run 1). The uneven-band
-             variant layouts remain in assets/kdb/athena/ for experiments via
-             debug.et9.kdbvariant; no <kdb-variant> is requested here, deliberately. -->
+             geometry remains as assets/kdb/keypad_pkb_athena_test.xml for experiments
+             (debug.et9.kdbvariant=athena_test on a debug build). -->
         <ckb-y-warp>0:0,450:324</ckb-y-warp>
+
+        <!-- The KEY2's keypad geometry: the engine's keypad KDBs for every language are built
+             from assets/kdb/keypad_pkb_athena.xml (KeypadKdbs). The same even rows as the
+             generic keypad_pkb.xml, kept as the KEY2's own file so it can change on its own. -->
+        <kdb-variant>athena</kdb-variant>
 
         <input-mappings>
             <scancode-mappings>

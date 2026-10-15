@@ -6,7 +6,10 @@ import android.util.Log;
 
 import androidx.annotation.VisibleForTesting;
 
+import dev.bbkb.ime.core.layout.KeypadKdbs;
 import dev.bbkb.ime.core.shared.SystemProps;
+
+import java.util.List;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -21,12 +24,14 @@ import java.util.concurrent.TimeoutException;
 /**
  * Device-variant KDB registration for the OWNED ET9KDB module.
  *
- * A device config can name a KDB variant (<kdb-variant> in device_config_*.xml); the layouts in
- * assets/kdb/&lt;variant&gt;/ then override the same-named root assets/kdb/ layouts per
- * (primaryId, secondaryId), with root fallback for anything the folder doesn't carry. The blob's
- * own asset indexer scans assets/kdb/ flat (never subfolders), so this class reads the variant
- * files and hands the bytes to the owned module's registry; the owned ET9KDB_SetKdbNum does the
- * per-layout selection.
+ * Every device has one physical-keypad geometry, assets/kdb/keypad_pkb_&lt;variant&gt;.xml for the
+ * variant its config names (<kdb-variant> in device_config_*.xml), assets/kdb/keypad_pkb.xml
+ * ({@link KeypadKdbs#GENERIC}) for the rest. {@link #apply} builds the engine's keypad KDBs from
+ * it ({@link KeypadKdbs}: one per engine language id, each with the letters its shipped file used
+ * to carry) and registers them under the variant in the owned module's registry, keyed by
+ * (primaryId, secondaryId); the owned ET9KDB_SetKdbNum picks from the selected variant first and
+ * falls back to the root assets/kdb/ files, which the blob indexes itself, for any id the variant
+ * lacks (the keyboards whose letters no letter layout holds yet keep shipped files).
  *
  * The same registry carries the KDBs generated for a letter layout
  * ({@code dev.bbkb.ime.core.layout.LetterLayoutEngineSync}): {@link #registerGenerated} hands
@@ -81,14 +86,15 @@ public final class Xt9KdbVariant {
     private static volatile NativeBridge sNative = LIBRARY;
     private static volatile boolean sTestBridge;
 
-    /** Selected variant ("" = default layouts, null = none applied yet). Debug/logging use. */
+    /** Selected variant ("" = the root files only, null = none applied yet). Debug/logging use. */
     public static String applied() {
         return sApplied;
     }
 
     /**
-     * The device profile's variant as {@link #apply} settled it: {@code ""} for the root layouts
-     * (no variant, or one whose folder registered nothing), null before the first apply.
+     * The device profile's variant as {@link #apply} settled it: the name its keypad KDBs are
+     * registered under ({@link KeypadKdbs#GENERIC} for a device whose config names none, or whose
+     * named geometry file is missing), null before the first apply.
      */
     public static String deviceVariant() {
         return sDeviceVariant;
@@ -133,12 +139,13 @@ public final class Xt9KdbVariant {
     private static native void nativeSetVariant(String variant);
 
     /**
-     * Register assets/kdb/&lt;variant&gt;/*.xml with the owned KDB module and select the variant.
-     * Pass null/empty to select the default (root) layouts. Safe to call repeatedly (no-op when
-     * the variant is unchanged); a real change invalidates the active KDB natively, so the next
-     * keyboard layout sync reloads through the new selection.
+     * Build the device's keypad KDBs from its geometry file ({@link KeypadKdbs#forDevice}),
+     * register them with the owned KDB module and select the variant. Null/empty means the
+     * generic keypad. Safe to call repeatedly (no-op when the variant is unchanged); a real change
+     * invalidates the active KDB natively, so the next keyboard layout sync reloads through the
+     * new selection.
      *
-     * The asset reads run on a worker thread (~58 ms for 19 layouts, measured on the KEY2) so
+     * The build runs on a worker thread so
      * DeviceProfile.initialize doesn't block cold start on them; KDB load paths call
      * {@link #awaitReady} first, which guarantees the registration completes before the engine's
      * first SetKdbNum.
@@ -147,8 +154,8 @@ public final class Xt9KdbVariant {
         if (!isAvailable() || context == null) return;
         String requested = (variant == null) ? "" : variant.trim();
         // debug.et9.kdbvariant overrides the device-config variant for on-device geometry A/B
-        // ("default" forces the root/original flat layouts). Debug builds only; set the prop,
-        // then force-stop the IME so the next apply sees it.
+        // ("athena_test" loads keypad_pkb_athena_test.xml, "default" the generic keypad). Debug
+        // builds only; set the prop, then force-stop the IME so the next apply sees it.
         if (dev.bbkb.ime.BuildConfig.DEBUG) {
             String o = readDebugVariantOverride();
             if (o != null) {
@@ -156,7 +163,7 @@ public final class Xt9KdbVariant {
                 Log.w(TAG, "variant: debug.et9.kdbvariant override active -> '" + requested + "'");
             }
         }
-        final String v = requested;
+        final String v = requested.isEmpty() ? KeypadKdbs.GENERIC : requested;
         // Advisory fast path only -- sDeviceVariant is volatile so the read cannot tear, but two
         // concurrent applies of the same variant can both pass it. applySync re-checks under
         // the class monitor, which is the authoritative test. It compares against the device
@@ -408,38 +415,36 @@ public final class Xt9KdbVariant {
         String v = variant;
         if (v.equals(sDeviceVariant)) return false;
 
-        int registered = 0;
-        if (!v.isEmpty()) {
-            final String dir = "kdb/" + v;
-            try {
-                AssetManager am = context.getAssets();
-                String[] files = am.list(dir);
-                if (files != null) {
-                    for (String f : files) {
-                        if (!f.endsWith(".xml")) continue;
-                        byte[] xml = readAsset(am, dir + "/" + f);
-                        if (xml != null && sNative.register(v, xml) == 0) registered++;
-                        else Log.w(TAG, "variant: failed to register " + dir + "/" + f);
-                    }
-                }
-            } catch (Throwable t) {
-                Log.w(TAG, "variant: asset scan failed for " + dir + ": " + t.getMessage());
+        List<byte[]> files = null;
+        try {
+            files = KeypadKdbs.forDevice(context, v);
+            if (files == null && !v.equals(KeypadKdbs.GENERIC)) {
+                Log.w(TAG, "variant '" + v + "': no kdb/" + KeypadKdbs.templateFile(v)
+                        + " — using the generic keypad");
+                v = KeypadKdbs.GENERIC;
+                if (v.equals(sDeviceVariant)) return false;
+                files = KeypadKdbs.forDevice(context, v);
             }
-            if (registered == 0) {
-                Log.w(TAG, "variant '" + v + "': no layouts registered — using default KDBs");
-                v = "";
+        } catch (Throwable t) {
+            Log.w(TAG, "variant '" + v + "': building the keypad KDBs failed: " + t.getMessage());
+        }
+        int registered = 0;
+        if (files != null) {
+            for (byte[] xml : files) {
+                if (sNative.register(v, xml) == 0) registered++;
+                else Log.w(TAG, "variant '" + v + "': the engine refused a keypad KDB");
             }
         }
-        // Already the device variant (a variant with no files, asked for again): selecting it
-        // again would only unselect a letter layout's variant built on top of it.
-        if (v.equals(sDeviceVariant)) return false;
+        if (registered == 0) {
+            Log.w(TAG, "variant '" + v + "': no keypad KDBs registered — the engine uses the shipped files");
+        }
 
         try {
             sNative.setVariant(v);
             sApplied = v;
             sDeviceVariant = v;
-            Log.i(TAG, "variant applied: '" + (v.isEmpty() ? "(default)" : v)
-                    + "' (" + registered + " layout(s) registered)");
+            Log.i(TAG, "variant applied: '" + v + "' (" + registered + " keypad KDB(s) built from "
+                    + KeypadKdbs.templateFile(v) + ")");
             return true;
         } catch (Throwable t) {
             Log.w(TAG, "variant: nativeSetVariant failed: " + t.getMessage());

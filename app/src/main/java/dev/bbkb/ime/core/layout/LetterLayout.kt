@@ -126,6 +126,13 @@ class LetterLayout internal constructor(
         val multitap: Array<String>,
         /** What holding the key offers. Read only. */
         val moreKeys: Array<String>,
+        /**
+         * Letters the engine's word matching also counts as this key, after [keySpec], the Shift
+         * legend and the [multitap] letters: ñ on the Spanish n, å and æ on the Danish a. They
+         * change nothing the key types; they keep tap correction and swipe reaching the words that
+         * use them. Read only.
+         */
+        val engineKeys: IntArray = NO_CODE_POINTS,
     ) {
         /** Whether an event with [eventScanCode] is this key. -1 on either side matches anything. */
         fun matches(eventScanCode: Int): Boolean =
@@ -185,6 +192,9 @@ class LetterLayout internal constructor(
     }
 
     companion object {
+        /** The [Key.engineKeys] of a key that names none; empty, so sharing it cannot leak a change between keys. */
+        internal val NO_CODE_POINTS: IntArray = IntArray(0)
+
         const val ANY: String = "any"
         const val KEYPAD_TYPE_THREE_ROW: String = "3row"
 

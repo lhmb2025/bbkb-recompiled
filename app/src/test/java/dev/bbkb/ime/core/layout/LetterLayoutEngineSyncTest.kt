@@ -9,6 +9,7 @@ import dev.bbkb.ime.core.settings.PrefsManager
 import org.junit.After
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -60,13 +61,11 @@ class LetterLayoutEngineSyncTest {
 
     /** The shipped KDB files on disk. */
     private class DiskKdbFiles(private val root: File) : LetterLayoutEngineSync.KdbFiles {
-        override fun list(variant: String, template: Template): List<String> =
-            dir(variant).list()?.filter { it.endsWith(template.fileSuffix) } ?: emptyList()
+        override fun list(template: Template): List<String> =
+            root.list()?.filter { it.endsWith(template.fileSuffix) } ?: emptyList()
 
-        override fun read(variant: String, name: String): ByteArray? =
-            File(dir(variant), name).takeIf { it.isFile }?.readBytes()
-
-        private fun dir(variant: String) = if (variant.isEmpty()) root else File(root, variant)
+        override fun read(name: String): ByteArray? =
+            File(root, name).takeIf { it.isFile }?.readBytes()
     }
 
     private val context: Context get() = ApplicationProvider.getApplicationContext()
@@ -108,6 +107,7 @@ class LetterLayoutEngineSyncTest {
         activeId: () -> String = { this.activeId },
         activeLayout: () -> LetterLayout? = { active },
         letters: (String?) -> (Int) -> Int = latin,
+        builtIn: (String?) -> LetterLayout? = { null },
     ) = LetterLayoutEngineSync(
         engine = engine,
         kdbFiles = DiskKdbFiles(kdbDir()),
@@ -118,6 +118,8 @@ class LetterLayoutEngineSyncTest {
         keypadType = { null },
         layoutSet = { layoutSet },
         engineLetters = letters,
+        builtInLayout = builtIn,
+        shippedLayout = KeypadKdbs.shippedLetters(builtIns),
     )
 
     private fun kdbDir(): File {
@@ -161,10 +163,110 @@ class LetterLayoutEngineSyncTest {
     private fun registered(variant: String, primaryId: Int): String =
         String(native.files[variant]!![primaryId]!!, Charsets.UTF_8)
 
-    private fun kdbFile(name: String, variant: String = ""): String =
-        File(if (variant.isEmpty()) kdbDir() else File(kdbDir(), variant), "${name}_pkb.xml").readText(Charsets.UTF_8)
+    /** A keypad KDB the app used to ship, kept in `xt9kdb-scaffold/reference/kdb_pkb/`. */
+    private fun shippedFile(name: String): String {
+        val dir = sequenceOf("../xt9kdb-scaffold/reference/kdb_pkb", "xt9kdb-scaffold/reference/kdb_pkb")
+            .map { File(it).canonicalFile }
+            .first { it.isDirectory }
+        return File(dir, "${name}_pkb.xml").readText(Charsets.UTF_8)
+    }
+
+    /** What [device]'s keypad KDB for [primaryId] is: built from its geometry file. */
+    private fun deviceKdb(device: String, primaryId: Int): String =
+        KeypadKdbs.forDevice(File(kdbDir(), KeypadKdbs.templateFile(device)).readText(Charsets.UTF_8), KeypadKdbs.shippedLetters(builtIns))[primaryId]!!
+
+    // ── the built-in layouts ─────────────────────────────────────────────────
+
+    private val builtIns by lazy { LetterLayoutRegistry(context) }
+
+    /** The sync with every keyboard's built-in document as the app gives it (Spanish and English here). */
+    private fun withBuiltIns() {
+        LetterLayoutEngineSync.setInstanceForTest(newSync(builtIn = { language ->
+            builtIns.builtIn(language, keypad, null, layoutSet)
+        }))
+    }
+
+    @Test
+    fun withNoLayout_theKeyboardsBuiltInIsBuiltAndSelected() {
+        withBuiltIns()
+        deviceVariant("athena")
+        keyboard("es")
+        assertEquals("layout:builtin:es", Xt9KdbVariant.applied())
+        // The engine reads Spanish's file (ID 10): the built-in's letters, ñ still on the n key.
+        val spanish = registered("layout:builtin:es", 10)
+        assertEquals(listOf('n'.code, 'ñ'.code), LetterLayoutKdb.codesByKeyCode(spanish)[KeyEvent.KEYCODE_N]!!.toList())
+        assertTrue("athena's even rows", spanish.contains("keyHeight=\"108dp\""))
+    }
+
+    @Test
+    fun aKeyboardWithNoBuiltIn_keepsTheShippedFiles() {
+        withBuiltIns()
+        language = "hi"
+        deviceVariant("athena")
+        keyboard("hi")
+        assertEquals("athena", Xt9KdbVariant.applied())
+        assertEquals(0, native.layoutRegistrations())
+    }
+
+    @Test
+    fun anImportedLayout_winsOverTheBuiltIn() {
+        withBuiltIns()
+        deviceVariant("athena")
+        keyboard("en")
+        assertEquals("layout:builtin:en", Xt9KdbVariant.applied())
+        activate(swap)
+        assertEquals("layout:swap", Xt9KdbVariant.applied())
+        activate(null)
+        assertEquals("layout:builtin:en", Xt9KdbVariant.applied())
+    }
+
+    @Test
+    fun switchingKeyboards_switchesBuiltIns_eachBuiltOnce() {
+        withBuiltIns()
+        deviceVariant("athena")
+        keyboard("en")
+        keyboard("es")
+        keyboard("en")
+        keyboard("es")
+        assertEquals("layout:builtin:es", Xt9KdbVariant.applied())
+        assertEquals(40, native.count("layout:builtin:en"))
+        assertEquals(40, native.count("layout:builtin:es"))
+    }
+
+    @Test
+    fun noUserLayoutIdCanNameABuiltInsVariant() {
+        assertFalse(LetterLayout.isValidId("builtin:en"))
+        assertEquals("layout:builtin:en", LetterLayoutKdb.builtInVariantName(builtIns.builtIn("en")!!))
+    }
 
     // ── following a layout ───────────────────────────────────────────────────
+
+    // ── the device's keypad ──────────────────────────────────────────────────
+
+    @Test
+    fun theDevicesKeypadKdbsAreBuiltFromItsGeometry_andSelected() {
+        deviceVariant("athena")
+        assertEquals("athena", Xt9KdbVariant.applied())
+        assertEquals(KeypadKdbs.SHIPPED.map { it.primaryId }.toSet(), native.files["athena"]!!.keys)
+        assertEquals(deviceKdb("athena", 25), registered("athena", 25))
+        assertEquals('й'.code, LetterLayoutKdb.codesByKeyCode(registered("athena", 25))[KeyEvent.KEYCODE_Q]!![0])
+    }
+
+    @Test
+    fun noVariant_isTheGenericKeypad_andAMissingGeometry_fallsBackToIt() {
+        deviceVariant("")
+        assertEquals(KeypadKdbs.GENERIC, Xt9KdbVariant.applied())
+        assertEquals(18, native.files[KeypadKdbs.GENERIC]!!.size)
+        deviceVariant("no_such_phone")
+        assertEquals(KeypadKdbs.GENERIC, Xt9KdbVariant.deviceVariant())
+    }
+
+    @Test
+    fun theUnevenTestGeometry_isOneDebugPropertyAway() {
+        deviceVariant("athena_test")
+        assertEquals("athena_test", Xt9KdbVariant.applied())
+        assertTrue(registered("athena_test", 9).contains("keyHeight=\"90dp\""))
+    }
 
     @Test
     fun withNoLayout_theDeviceVariantStaysAndNothingIsBuilt() {
@@ -181,21 +283,31 @@ class LetterLayoutEngineSyncTest {
         assertEquals("layout:swap", Xt9KdbVariant.applied())
         assertEquals("the device variant is still athena", "athena", Xt9KdbVariant.deviceVariant())
         assertEquals("every PKB KDB, so none falls back to the root copy", 40, native.files["layout:swap"]!!.size)
-        // English: athena's uneven rows, with the layout's letters.
+        // English: athena's keypad, with the layout's letters.
         val english = registered("layout:swap", 9)
-        assertEquals(LetterLayoutKdb.rewrite(kdbFile("qwerty", "athena"), swap), english)
-        assertTrue(english.contains("keyHeight=\"90dp\""))
+        assertEquals(LetterLayoutKdb.rewrite(deviceKdb("athena", 9), swap), english)
         assertEquals(listOf('w'.code), LetterLayoutKdb.codesByKeyCode(english)[KeyEvent.KEYCODE_Q]!!.toList())
         // Arabic too: the selection, not the files, follows the binding.
         assertEquals(listOf('w'.code), LetterLayoutKdb.codesByKeyCode(registered("layout:swap", 1))[KeyEvent.KEYCODE_Q]!!.toList())
+        // A key the layout does not name keeps that id's own letters: Arabic's, on the A key.
+        assertArrayEquals(
+            LetterLayoutKdb.codesByKeyCode(deviceKdb("athena", 1))[KeyEvent.KEYCODE_A],
+            LetterLayoutKdb.codesByKeyCode(registered("layout:swap", 1))[KeyEvent.KEYCODE_A],
+        )
+        assertTrue(LetterLayoutKdb.codesByKeyCode(registered("layout:swap", 1))[KeyEvent.KEYCODE_A]!![0] > 0x600)
+        // An id the device does not build comes from its shipped file: Hindi's.
+        assertEquals(
+            LetterLayoutKdb.rewrite(File(kdbDir(), "hindi_pkb.xml").readText(Charsets.UTF_8), swap),
+            registered("layout:swap", 57),
+        )
     }
 
     @Test
-    fun onTheRootLayouts_theRootKdbsAreRewritten() {
+    fun onTheGenericKeypad_itsKdbsAreRewritten() {
         deviceVariant("")
         activate(swap)
         assertEquals("layout:swap", Xt9KdbVariant.applied())
-        assertEquals(LetterLayoutKdb.rewrite(kdbFile("qwerty"), swap), registered("layout:swap", 9))
+        assertEquals(LetterLayoutKdb.rewrite(deviceKdb(KeypadKdbs.GENERIC, 9), swap), registered("layout:swap", 9))
     }
 
     @Test
@@ -246,10 +358,11 @@ class LetterLayoutEngineSyncTest {
         deviceVariant("")
         activate(swap)
         assertTrue(registered("layout:swap", 9).contains("keyHeight=\"108dp\""))
-        deviceVariant("athena")
-        assertEquals(LetterLayoutKdb.rewrite(kdbFile("qwerty", "athena"), swap), registered("layout:swap", 9))
+        deviceVariant("athena_test")
+        assertEquals(LetterLayoutKdb.rewrite(deviceKdb("athena_test", 9), swap), registered("layout:swap", 9))
+        assertTrue(registered("layout:swap", 9).contains("keyHeight=\"90dp\""))
         assertEquals("layout:swap", Xt9KdbVariant.applied())
-        assertEquals("athena", Xt9KdbVariant.deviceVariant())
+        assertEquals("athena_test", Xt9KdbVariant.deviceVariant())
     }
 
     @Test
@@ -368,7 +481,7 @@ class LetterLayoutEngineSyncTest {
             Triple("en", "qwerty", "qwerty"), Triple("de", "qwertz", "qwertz"), Triple("fr", "azerty", "azerty"),
         )
         for ((language, set, kdb) in keyboards) {
-            val engine = LetterLayoutKdb.lettersByKeyCode(kdbFile(kdb))
+            val engine = LetterLayoutKdb.lettersByKeyCode(shippedFile(kdb))
             val letters = LetterLayoutEngineSync.engineLettersFor(builtIns, language, "qwerty", null, set)
             for (keyCode in KeyEvent.KEYCODE_A..KeyEvent.KEYCODE_Z) {
                 assertEquals("$language:$set ${LetterLayoutXml.nameOf(keyCode)}", engine[keyCode], letters(keyCode))
@@ -377,12 +490,12 @@ class LetterLayoutEngineSyncTest {
     }
 
     @Test
-    fun theAppsAssetsHoldEveryPhysicalKeyboardKdb() {
+    fun theAppsAssetsHoldTheKeypadGeometriesAndTheShippedKdbs() {
         val assets = LetterLayoutEngineSync.AssetKdbFiles(context.assets)
-        assertEquals(assets.list("", Template.PKB).toString(), 40, assets.list("", Template.PKB).size)
-        assertEquals(40, assets.list("athena", Template.PKB).size)
-        assertTrue(assets.list("", Template.PKB).all { it.endsWith("_pkb.xml") })
-        assertArrayEquals(File(kdbDir(), "athena/qwerty_pkb.xml").readBytes(), assets.read("athena", "qwerty_pkb.xml"))
-        assertNull(assets.read("athena", "missing_pkb.xml"))
+        val pkb = assets.list(Template.PKB)
+        assertEquals(pkb.toString(), 23, pkb.size)
+        assertEquals(listOf("keypad_pkb.xml"), pkb.filter { KeypadKdbs.isTemplate(it) })
+        assertArrayEquals(File(kdbDir(), "keypad_pkb_athena.xml").readBytes(), assets.read(KeypadKdbs.templateFile("athena")))
+        assertNull(assets.read("missing_pkb.xml"))
     }
 }

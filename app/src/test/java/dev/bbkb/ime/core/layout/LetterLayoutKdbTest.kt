@@ -36,12 +36,20 @@ class LetterLayoutKdbTest {
         return dir!!
     }
 
-    private fun kdb(name: String, variant: String = ""): String =
-        File(if (variant.isEmpty()) kdbDir() else File(kdbDir(), variant), "${name}_pkb.xml").readText(Charsets.UTF_8)
+    /** The keypad KDBs the app used to ship per language, kept for comparison. */
+    private fun referenceDir(): File =
+        sequenceOf("../xt9kdb-scaffold/reference/kdb_pkb", "xt9kdb-scaffold/reference/kdb_pkb")
+            .map { File(it).canonicalFile }
+            .first { it.isDirectory }
 
+    /** A language's keypad KDB, shipped or kept for reference. */
+    private fun kdb(name: String): String =
+        (File(kdbDir(), "${name}_pkb.xml").takeIf { it.isFile } ?: File(referenceDir(), "${name}_pkb.xml")).readText(Charsets.UTF_8)
+
+    /** Every keypad KDB: the shipped ones, the devices' geometries and the reference copies. */
     private fun allPkbFiles(): List<File> =
-        (kdbDir().listFiles()?.toList().orEmpty() + File(kdbDir(), "athena").listFiles()?.toList().orEmpty())
-            .filter { it.isFile && it.name.endsWith("_pkb.xml") }
+        (kdbDir().listFiles()?.toList().orEmpty() + referenceDir().listFiles()?.toList().orEmpty())
+            .filter { it.isFile && it.name.endsWith(".xml") && it.name.contains("_pkb") }
             .sortedBy { it.path }
 
     private fun layout(keys: String, id: String = "test", targets: String? = null): LetterLayout =
@@ -320,11 +328,11 @@ class LetterLayoutKdbTest {
         assertTrue(mark.contains("""<key keyType="regional" keyCodes="0x093E""""))
     }
 
-    // ── the athena variant's uneven rows ─────────────────────────────────────
+    // ── the KEY2's uneven test rows ──────────────────────────────────────────
 
     @Test
-    fun theAthenaVariantMapsByTheSameColumnsWhateverItsRowHeights() {
-        val athena = kdb("qwerty", "athena")
+    fun theUnevenGeometryMapsByTheSameColumnsWhateverItsRowHeights() {
+        val athena = File(kdbDir(), "keypad_pkb_athena_test.xml").readText(Charsets.UTF_8)
         val after = LetterLayoutKdb.rewrite(athena, layout(key('A', "z") + key('Z', "a") + """<key code="KEYCODE_4" keySpec="ю"/>"""))
         assertTrue(after.contains("""<key keyType="regional" keyLabel="Z" keyWidth="108dp" keyHeight="180dp" keyTop="90dp" keyLeft="0dp" />"""))
         assertTrue(after.contains("""<key keyType="regional" keyLabel="A" keyWidth="108dp" keyHeight="180dp" keyTop="270dp" keyLeft="108dp" />"""))

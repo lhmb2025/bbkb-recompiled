@@ -57,13 +57,11 @@ class LetterLayoutEngineSyncOnScreenTest {
     }
 
     private class DiskKdbFiles(private val root: File) : LetterLayoutEngineSync.KdbFiles {
-        override fun list(variant: String, template: Template): List<String> =
-            dir(variant).list()?.filter { it.endsWith(template.fileSuffix) } ?: emptyList()
+        override fun list(template: Template): List<String> =
+            root.list()?.filter { it.endsWith(template.fileSuffix) } ?: emptyList()
 
-        override fun read(variant: String, name: String): ByteArray? =
-            File(dir(variant), name).takeIf { it.isFile }?.readBytes()
-
-        private fun dir(variant: String) = if (variant.isEmpty()) root else File(root, variant)
+        override fun read(name: String): ByteArray? =
+            File(root, name).takeIf { it.isFile }?.readBytes()
     }
 
     private val context: Context get() = ApplicationProvider.getApplicationContext()
@@ -106,6 +104,7 @@ class LetterLayoutEngineSyncOnScreenTest {
         chosenId = { lang -> chosen[lang]?.id ?: "" },
         chosenLayout = { lang -> chosen[lang] },
         onScreenLayout = onScreenSource,
+        shippedLayout = KeypadKdbs.shippedLetters(registry),
     )
 
     @Before
@@ -185,7 +184,7 @@ class LetterLayoutEngineSyncOnScreenTest {
         assertEquals("layout:colemak", Xt9KdbVariant.applied())
         onScreen = null
         sync(pkb = false)
-        assertEquals("", Xt9KdbVariant.applied())
+        assertEquals(KeypadKdbs.GENERIC, Xt9KdbVariant.applied())
         onScreen = dvorak
         sync(pkb = false)
         assertEquals("layout:dvorak", Xt9KdbVariant.applied())
@@ -259,7 +258,8 @@ class LetterLayoutEngineSyncOnScreenTest {
         assertEquals("English follows its choice", "layout:colemak", Xt9KdbVariant.applied())
         assertEquals("every keypad KDB", 40, native.of("layout:colemak", 6))
         val english = native.text("layout:colemak", 9, 6)
-        assertEquals(LetterLayoutKdb.rewrite(File(kdbDir(), "athena/qwerty_pkb.xml").readText(Charsets.UTF_8), colemakForKeypad), english)
+        val athena = KeypadKdbs.forDevice(File(kdbDir(), KeypadKdbs.templateFile("athena")).readText(Charsets.UTF_8), KeypadKdbs.shippedLetters(registry))
+        assertEquals(LetterLayoutKdb.rewrite(athena.getValue(9), colemakForKeypad), english)
         language = "de"
         sync(pkb = true)
         assertEquals("German has no choice: the Physical layouts selection", "layout:swap", Xt9KdbVariant.applied())

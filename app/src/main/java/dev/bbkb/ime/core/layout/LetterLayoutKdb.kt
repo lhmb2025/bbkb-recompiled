@@ -93,6 +93,17 @@ object LetterLayoutKdb {
     @Suppress("UNUSED_PARAMETER")
     fun variantName(layout: LetterLayout, template: Template = Template.PKB): String = VARIANT_PREFIX + layout.id
 
+    /**
+     * The prefix of a built-in document's variant: what the engine loads for a keyboard no chosen or
+     * imported layout applies to. A layout id cannot contain `:`, so no user layout's
+     * [variantName] can ever equal one of these.
+     */
+    const val BUILT_IN_VARIANT_PREFIX: String = VARIANT_PREFIX + "builtin:"
+
+    /** The variant the keypad KDBs built from the built-in [layout] are registered under. */
+    @JvmStatic
+    fun builtInVariantName(layout: LetterLayout): String = BUILT_IN_VARIANT_PREFIX + layout.id
+
     /** The on-screen KDB a rows template's geometry comes from: `qwerty_vkb.xml`, `spanish_vkb.xml`. */
     @JvmStatic
     fun templateFile(rowsTemplate: String): String = rowsTemplate + Template.VKB.fileSuffix
@@ -317,6 +328,7 @@ object LetterLayoutKdb {
         val codes = LinkedHashSet<Int>().apply { add(primary) }
         if (entry.shift != 0 && entry.shift != Character.toUpperCase(entry.keySpec)) codes += engineCode(entry.shift)
         singleCodePoints(entry.multitap).forEach { codes += engineCode(it) }
+        entry.engineKeys.forEach { codes += engineCode(it) }
         val wanted = codes.filter { it in 1..MAX_ENGINE_CODE }.take(MAX_KEY_CODES)
 
         val labelForm = primary in 'a'.code..'z'.code

@@ -31,7 +31,8 @@ import java.util.Locale
  * ```
  *
  * The attribute names are the physical-key tables' own (`keySpec`, `characterMapKeys`,
- * `multitapKeys`, `moreKeys`), plus `alt`. The legends are one character each; the lists are
+ * `multitapKeys`, `moreKeys`), plus `alt` and `engineKeys` (letters the engine's word matching also
+ * counts as the key, one character each: ñ on the Spanish n). The legends are one character each; the lists are
  * comma-separated entries of one to [MAX_ENTRY_CODE_POINTS] characters (the tables offer
  * ligatures such as لا and l·l), with `\,` for a literal comma and `\\` for a literal backslash.
  * The XML declaration is optional: the generated documents open with a comment instead, which
@@ -80,7 +81,7 @@ object LetterLayoutXml {
     private val ROOT_ATTRIBUTES = setOf("version", "id", "name", "targets")
     private val BIND_ATTRIBUTES = setOf("languages", "keypad", "keypadType", "layoutSet")
     private val ROWS_ATTRIBUTES = setOf("template")
-    private val KEY_ATTRIBUTES = setOf("code", "scanCode", "keySpec", "characterMapKeys", "alt", "multitapKeys", "moreKeys")
+    private val KEY_ATTRIBUTES = setOf("code", "scanCode", "keySpec", "characterMapKeys", "alt", "multitapKeys", "moreKeys", "engineKeys")
 
     private val LANGUAGE = Regex("^[A-Za-z]{2,3}([_-][A-Za-z0-9]{1,8}){0,2}$")
 
@@ -359,6 +360,7 @@ object LetterLayoutXml {
             alt = codePoint(parser, "alt", code) ?: 0,
             multitap = sequence(parser, "multitapKeys", code),
             moreKeys = sequence(parser, "moreKeys", code),
+            engineKeys = codePoints(parser, "engineKeys", code),
         )
         rejectChildren(parser, code)
         return key
@@ -366,6 +368,12 @@ object LetterLayoutXml {
 
     private fun codePoint(parser: XmlPullParser, field: String, code: String): Int? =
         parser.getAttributeValue(null, field)?.let { singleCodePoint(it, "$code.$field") }
+
+    /** A comma list, as [sequence] reads one, whose entries are one character each: the engine holds one code per letter. */
+    private fun codePoints(parser: XmlPullParser, field: String, code: String): IntArray {
+        if (parser.getAttributeValue(null, field) == null) return LetterLayout.NO_CODE_POINTS
+        return sequence(parser, field, code).map { singleCodePoint(it, "$code.$field") }.toIntArray()
+    }
 
     /**
      * A comma list of entries of one to [MAX_ENTRY_CODE_POINTS] characters: `\,` is a comma and
@@ -515,6 +523,7 @@ object LetterLayoutXml {
             if (key.alt != 0) attribute("alt", LetterLayout.string(key.alt))
             if (key.multitap.isNotEmpty()) attribute("multitapKeys", list(key.multitap))
             if (key.moreKeys.isNotEmpty()) attribute("moreKeys", list(key.moreKeys))
+            if (key.engineKeys.isNotEmpty()) attribute("engineKeys", list(key.engineKeys.map { LetterLayout.string(it) }.toTypedArray()))
             append("/>\n")
         }
         append("</").append(ROOT).append(">\n")

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- The BlackBerry KEY2's physical keypad (device config <kdb-variant>athena</kdb-variant>): 30 key
+     boxes in three even 108px rows (1080x324), the same geometry as keypad_pkb.xml. The KEY2's
+     sensor is taller (525px) with uneven row bands; its config's <ckb-y-warp> scales the swipe
+     points onto these rows, which decodes better than matching the bands (see
+     keypad_pkb_athena_test.xml). The app builds every engine keypad file for the KEY2 from this
+     one (KeypadKdbs); the QWERTY letters are a placeholder. The ids 0/0 belong to no language,
+     so the engine never loads this file by itself. -->
+
+<keyboard
+  primaryId="0"
+  secondaryId="0"
+  defaultLayoutWidth="1080"
+  defaultLayoutHeight="324"
+  addAltChars="true">
+
+  <area>
+    <key keyType="regional" keyLabel="Q" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="0dp" />
+    <key keyType="regional" keyLabel="W" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="108dp" />
+    <key keyType="regional" keyLabel="E" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="216dp" />
+    <key keyType="regional" keyLabel="R" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="324dp" />
+    <key keyType="regional" keyLabel="T" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="432dp" />
+    <key keyType="regional" keyLabel="Y" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="540dp" />
+    <key keyType="regional" keyLabel="U" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="648dp" />
+    <key keyType="regional" keyLabel="I" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="756dp" />
+    <key keyType="regional" keyLabel="O" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="864dp" />
+    <key keyType="regional" keyLabel="P" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="972dp" />
+  </area>
+
+  <area>
+    <key keyType="regional" keyLabel="A" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="0dp" />
+    <key keyType="regional" keyLabel="S" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="108dp" />
+    <key keyType="regional" keyLabel="D" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="216dp" />
+    <key keyType="regional" keyLabel="F" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="324dp" />
+    <key keyType="regional" keyLabel="G" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="432dp" />
+    <key keyType="regional" keyLabel="H" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="540dp" />
+    <key keyType="regional" keyLabel="J" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="648dp" />
+    <key keyType="regional" keyLabel="K" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="756dp" />
+    <key keyType="regional" keyLabel="L" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="864dp" />
+    <key keyType="function" keyCodes="0x21E6" keyName="ET9KEY_BACK" keyWidth="108dp" keyHeight="108dp" keyTop="108dp" keyLeft="972dp" />
+  </area>
+
+  <area>
+    <key keyType="function" keyLabel="ALT" keyName="ET9KEY_ALT" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="0dp" />
+    <key keyType="regional" keyLabel="Z" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="108dp" />
+    <key keyType="regional" keyLabel="X" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="216dp" />
+    <key keyType="regional" keyLabel="C" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="324dp" />
+    <key keyType="regional" keyLabel="V" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="432dp" />
+    <key keyType="regional" keyLabel="B" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="540dp" />
+    <key keyType="regional" keyLabel="N" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="648dp" />
+    <key keyType="regional" keyLabel="M" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="756dp" />
+    <key keyType="nonRegional" keyCodes="0x0024" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="864dp" />
+    <key keyType="function" keyLabel="DONE" keyName="ET9KEY_RETURN" keyWidth="108dp" keyHeight="108dp" keyTop="216dp" keyLeft="972dp" />
+  </area>
+</keyboard>

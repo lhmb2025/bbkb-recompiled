@@ -540,4 +540,27 @@ class LetterLayoutXmlTest {
             assertTrue(e.message!!.contains("larger than"))
         }
     }
+
+    // ── engineKeys ───────────────────────────────────────────────────────────
+
+    @Test
+    fun engineKeysAreReadAsSingleCharacters_andWrittenBack() {
+        val layout = parse(withKeys("""<key code="KEYCODE_N" keySpec="n" moreKeys="ñ,ń" engineKeys="ñ"/>"""))
+        assertEquals(listOf('ñ'.code), layout.keys[android.view.KeyEvent.KEYCODE_N]!!.engineKeys.toList())
+        val again = parse(LetterLayoutXml.serialize(layout))
+        assertEquals(listOf('ñ'.code), again.keys[android.view.KeyEvent.KEYCODE_N]!!.engineKeys.toList())
+        assertTrue(LetterLayoutXml.serialize(layout).contains("engineKeys=\"ñ\""))
+    }
+
+    @Test
+    fun aKeyWithoutEngineKeysHasNone_andWritesNone() {
+        val layout = parse(withKeys("""<key code="KEYCODE_N" keySpec="n"/>"""))
+        assertEquals(0, layout.keys[android.view.KeyEvent.KEYCODE_N]!!.engineKeys.size)
+        assertFalse(LetterLayoutXml.serialize(layout).contains("engineKeys"))
+    }
+
+    @Test
+    fun anEngineKeyOfTwoCharactersIsRefused() {
+        assertRefused(withKeys("""<key code="KEYCODE_L" keySpec="l" engineKeys="l·l"/>"""), "KEYCODE_L.engineKeys")
+    }
 }

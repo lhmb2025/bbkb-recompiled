@@ -77,6 +77,9 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 MAIN = os.path.join(ROOT, "app", "src", "main")
 RES_XML = os.path.join(MAIN, "res", "xml")
 KDB_DIR = os.path.join(MAIN, "assets", "kdb")
+# The per-language keypad KDBs the app used to ship: the app now builds them from a device's
+# geometry file and these documents (KeypadKdbs), so their letters are read from the copies kept here.
+REFERENCE_KDB_DIR = os.path.join(ROOT, "xt9kdb-scaffold", "reference", "kdb_pkb")
 OUT_DIR = os.path.join(MAIN, "assets", "letter_layouts")
 TEXT_SET_JAVA = os.path.join(MAIN, "java", "dev", "bbkb", "ime", "keyboard", "internal",
                              "KeyboardTextSet.java")
@@ -102,6 +105,19 @@ PKBD_DEFAULT = "pkbd_latin"
 # LetterLayoutsMatchEngineTest.SCRIPT_KDB holds the same map and checks the documents against it.
 SCRIPT_KDB = {"ar": "arabic", "ru": "east_slavic", "uk": "ukranian", "be": "belarusian",
               "iw": "hebrew", "el": "greek", "ko": "korean"}
+
+# The engine KDB each keyboard's engine loads (assets/kdb/<name>_pkb.xml), by language: measured
+# 2026-10-15 by switching through every keyboard on the emulator and reading the XT9KDB SetKdbNum
+# log. Most Latin keyboards share English's qwerty file. The letters a key's KDB carries beyond what
+# its document types (ñ on the Spanish n) become the key's engineKeys, so a KDB built from the
+# document holds the same letters as the file the engine loads today.
+ENGINE_KDB = {"cs": "qwertz", "de": "qwertz", "hr": "qwertz", "hu": "qwertz",
+              "es": "spanish", "eu": "spanish", "fil": "spanish", "gl": "spanish",
+              "fi": "finnish", "sv": "finnish", "fr": "azerty", "ca": "catalan", "da": "danish",
+              "nb": "norwegian", "tr": "turkish", "et": "estonian", "ja": "japanese",
+              "ar": "arabic", "ru": "east_slavic", "uk": "ukranian", "be": "belarusian",
+              "iw": "hebrew", "el": "greek", "ko": "korean"}
+ENGINE_KDB_DEFAULT = "qwerty"
 
 # English names for the documents' name attribute. The app shows its own localised names; this is
 # only the label a file carries.
@@ -509,19 +525,69 @@ class ScriptLayout:
                     self.extra = codes
 
 
+def kdb_letters(name):
+    """Every letter a key of assets/kdb/<name>_pkb.xml carries, primary first, by key code: the
+    owned loader's reading (kdb_load_xml.c key_codes_of). A single ASCII keyLabel is the primary,
+    in lower case, and a keyCodes list beside it the alternates; otherwise keyCodes holds them all.
+    The shipped file, or the reference copy of one the app now builds."""
+    path = kdb_path(name)
+    xml = open(path, encoding="utf-8").read()
+    letters = {}
+    for row, area in enumerate(AREA.finditer(xml)):
+        if row >= len(KEYCODE_ROWS):
+            continue
+        for key in KEY.finditer(area.group(1)):
+            attributes = dict(ATTRIBUTE.findall(key.group(1)))
+            if attributes.get("keyType") == "function" or "keyLeft" not in attributes:
+                continue
+            codes = [int(t[2:] if t[:2] in ("0x", "0X") else t, 16)
+                     for t in (s.strip() for s in attributes.get("keyCodes", "").split(",")) if t]
+            label = attributes.get("keyLabel", "")
+            if len(label) == 1 and label.isascii() and label.isalpha():
+                codes = [ord(label.lower())] + codes
+            if not codes:
+                continue
+            width = dp(attributes.get("keyWidth", "")) or 108
+            column = (dp(attributes["keyLeft"]) + width // 2) // width
+            code = key_code_at(row, column)
+            if code is None and row == 2 and column == 8:
+                code = "KEYCODE_4"
+            if code is not None:
+                letters[code] = [to_compatibility_jamo(c) for c in codes]
+    return path, letters
+
+
+def add_engine_keys(doc, language):
+    """Gives each key of [doc] the letters the KDB its keyboard's engine loads carries on that key
+    beyond the ones the key already names (its letter, Shift legend and double-tap letters)."""
+    path, letters = kdb_letters(ENGINE_KDB.get(language, ENGINE_KDB_DEFAULT))
+    added = 0
+    for key in doc.keys:
+        named = [ord(key.key_spec)]
+        if key.character_map_keys:
+            named.append(ord(key.character_map_keys))
+        named += [ord(m) for m in key.multitap_keys if len(m) == 1]
+        extra = []
+        for c in letters.get(key.code, []):
+            if c not in named and c not in extra:
+                extra.append(c)
+        key.engine_keys = [chr(c) for c in extra]
+        added += len(extra)
+    if added:
+        doc.sources.append("engine letters %s" % rel(path))
+
+
+def kdb_path(name):
+    """assets/kdb/<name>_pkb.xml, or the reference copy of a file the app now builds."""
+    path = os.path.join(KDB_DIR, name + "_pkb.xml")
+    if os.path.exists(path):
+        return path
+    return os.path.normpath(os.path.join(REFERENCE_KDB_DIR, name + "_pkb.xml"))
+
+
 def load_script_layout(name):
-    """The athena copy when there is one (the KEY2's engine reads it), else the root file. The two
-    differ only in row geometry; the letters must agree, and a disagreement is reported."""
-    root_path = os.path.join(KDB_DIR, name + "_pkb.xml")
-    athena_path = os.path.join(KDB_DIR, "athena", name + "_pkb.xml")
-    root_layout = ScriptLayout(root_path)
-    if not os.path.exists(athena_path):
-        return root_layout
-    athena = ScriptLayout(athena_path)
-    if athena.cells != root_layout.cells or athena.extra != root_layout.extra:
-        warn("%s: letters differ from %s; the typing path today reads the root file"
-             % (rel(athena_path), rel(root_path)))
-    return athena
+    """The language's keypad KDB letters (kdb_path)."""
+    return ScriptLayout(kdb_path(name))
 
 
 # ── subtypes: which language uses which tables ───────────────────────────────────────────────────
@@ -582,6 +648,7 @@ class Key:
         self.character_map_keys = None
         self.multitap_keys = []
         self.more_keys = []
+        self.engine_keys = []
 
 
 class Document:
@@ -600,8 +667,8 @@ class Document:
         self.unplaced = []
 
     def signature(self):
-        return [(k.code, k.key_spec, k.character_map_keys, tuple(k.multitap_keys), tuple(k.more_keys))
-                for k in self.keys]
+        return [(k.code, k.key_spec, k.character_map_keys, tuple(k.multitap_keys), tuple(k.more_keys),
+                 tuple(k.engine_keys)) for k in self.keys]
 
 
 # Key-spec flags and references (!fixedColumnOrder!3, !hasLabels!, !icon/..., !code/...). A lone
@@ -1146,6 +1213,8 @@ def render(doc):
             parts.append('multitapKeys="%s"' % xml_attr(list_attr(key.multitap_keys)))
         if key.more_keys:
             parts.append('moreKeys="%s"' % xml_attr(list_attr(key.more_keys)))
+        if key.engine_keys:
+            parts.append('engineKeys="%s"' % xml_attr(list_attr(key.engine_keys)))
         lines.append("    <key %s/>" % " ".join(parts))
     lines.append("</letter-layout>")
     return "\n".join(lines) + "\n"
@@ -1232,6 +1301,7 @@ def main():
             # alphabet, which carries no physical-key table: the key map's letters, nothing more.
             skipped.append((locale, layout_set, "no physical-key table (the physical keyboard is %s)" % kbd))
             continue
+        add_engine_keys(doc, language)
         validate(doc)
         existing = documents.get(doc.id)
         if existing is None:

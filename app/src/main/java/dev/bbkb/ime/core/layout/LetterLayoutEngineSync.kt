@@ -26,10 +26,18 @@ import java.io.IOException
  * types with. While that layout fits this keyboard and keypad and changes at least one letter key
  * against the engine's own letters for the language, every physical-keyboard KDB the engine could
  * load is rewritten from it ([LetterLayoutKdb]) and registered under the engine variant
- * `layout:<id>`, which is then selected. Otherwise the device variant
- * ([Xt9KdbVariant.deviceVariant], `athena` or the root layouts) is selected again. The rewritten
- * files start from the device variant's copy of each file where it has one and the root copy
- * otherwise, so a layout changes letters and never the key geometry the decoder is tuned to.
+ * `layout:<id>`, which is then selected. Otherwise, when the keyboard has a built-in document (the
+ * letters its keys type: QWERTY on most Latin keyboards, the script on Arabic, Cyrillic, Hebrew,
+ * Greek and Korean ones), every physical-keyboard KDB is rewritten from that document instead and
+ * registered under `layout:builtin:<id>` ([LetterLayoutKdb.builtInVariantName]), so the engine
+ * always reads the letters the keys type, even where several keyboards share one engine id
+ * (Italian, Polish and Belgian Dutch all ask for English's). Only a keyboard with no built-in
+ * document (the native-script keyboards whose keypad types the KEY2's etched Latin letters)
+ * selects the device variant ([Xt9KdbVariant.deviceVariant]) again: the device's own keypad KDBs
+ * ([KeypadKdbs]) and the shipped files. The rewritten files start from the device's: its keypad
+ * KDB for each engine id it builds ([KeypadKdbs.forDevice], with that id's own letters on the keys
+ * the layout does not name) and the shipped file for every other id, so a layout changes letters
+ * and never the key geometry the decoder is tuned to.
  *
  * **On-screen keyboard.** While the on-screen keyboard is drawn from a letter layout (a built-in
  * one with rows of its own, Colemak or Dvorak, chosen for the keyboard's language), every on-screen
@@ -83,6 +91,18 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
      * keyboard's own layout. Without this source, on-screen syncs are not followed at all.
      */
     private val onScreenLayout: (() -> LetterLayout?)? = null,
+    /**
+     * The built-in document a keyboard in a language types with on the physical keys, or null where
+     * none is bound. Without this source, a keyboard no chosen or imported layout applies to keeps
+     * the shipped KDB files.
+     */
+    private val builtInLayout: (language: String?) -> LetterLayout? = { null },
+    /**
+     * The built-in document holding the letters of an engine id's keypad KDB ([KeypadKdbs.SHIPPED]):
+     * what the device's keypad KDBs are built with. Without it, a layout's keypad KDBs are built
+     * from the shipped files alone.
+     */
+    private val shippedLayout: (language: String, layoutSet: String?) -> LetterLayout? = { _, _ -> null },
 ) {
 
     /** What the sync needs from the engine's KDB registry; [Xt9KdbVariant] in the app. */
@@ -101,12 +121,12 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
         fun submit(job: Runnable)
     }
 
-    /** The engine's KDB files: `kdb/` for variant `""`, `kdb/<variant>/` otherwise. */
+    /** The engine's KDB files, under `assets/kdb/`. */
     interface KdbFiles {
-        /** The names of the files of [template] in [variant]'s folder; empty when it has none. */
-        fun list(variant: String, template: Template): List<String>
+        /** The names of the files of [template]; a device's keypad geometry ([KeypadKdbs.isTemplate]) among them. */
+        fun list(template: Template): List<String>
 
-        fun read(variant: String, name: String): ByteArray?
+        fun read(name: String): ByteArray?
     }
 
     /**
@@ -216,17 +236,24 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
             return
         }
         val template = if (pkb) Template.PKB else Template.VKB
-        val layout = try {
+        val chosen = try {
             if (pkb) wanted(language) else drawn?.takeIf { LetterLayout.Target.VKB in it.targets }
         } catch (e: Exception) {
             Log.w(TAG, "layout: could not read the active layout: ${e.message}")
             null
         }
+        val builtIn = if (chosen != null || !pkb) null else try {
+            builtInLayout(language)?.takeIf { LetterLayout.Target.PKB in it.targets }
+        } catch (e: Exception) {
+            Log.w(TAG, "layout: could not read the built-in layout for '$language': ${e.message}")
+            null
+        }
+        val layout = chosen ?: builtIn
         if (layout == null) {
             engine.select(device)
             return
         }
-        val name = LetterLayoutKdb.variantName(layout, template)
+        val name = if (chosen != null) LetterLayoutKdb.variantName(layout, template) else LetterLayoutKdb.builtInVariantName(layout)
         val content = LetterLayoutXml.serialize(layout)
         // The on-screen files come from the root KDBs whatever the device variant is.
         val from = if (pkb) device else ""
@@ -234,7 +261,7 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
             built.remove(name to template)
             val registered = if (pkb) build(layout, name, device) else buildOnScreen(layout, name)
             if (registered == 0) {
-                Log.w(TAG, "layout '$name': no KDB registered, keeping '${device.ifEmpty { "(default)" }}'")
+                Log.w(TAG, "layout '$name': no KDB registered, keeping '$device'")
                 engine.select(device)
                 return
             }
@@ -265,36 +292,45 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
         return layout.appliesTo(language, keypad, keypadType, layoutSet)
     }
 
+    /** [device]'s keypad KDBs by engine id ([KeypadKdbs.forDevice]); on the registration thread. */
+    private val deviceKdbs = HashMap<String, Map<Int, String>>()
+
+    private fun deviceKdbs(device: String): Map<Int, String> = deviceKdbs.getOrPut(device) {
+        val template = kdbFiles.read(KeypadKdbs.templateFile(device))
+            ?: kdbFiles.read(KeypadKdbs.templateFile(KeypadKdbs.GENERIC))
+            ?: return@getOrPut emptyMap()
+        KeypadKdbs.forDevice(String(template, Charsets.UTF_8), shippedLayout)
+    }
+
     /**
-     * Rewrites every KDB of [Template.PKB] the engine could load — [device]'s copy where it has
-     * one, the root's otherwise — and registers each under [name], unchanged files included: the
-     * engine falls back to the ROOT copy, not the device variant's, for a file a selected variant
-     * lacks. Returns how many were registered.
+     * Rewrites every KDB of [Template.PKB] the engine could load — [device]'s keypad KDB for each
+     * engine id it builds, the shipped file for every other id — and registers each under [name],
+     * unchanged files included: the engine falls back to the shipped root file, not the device's,
+     * for an id a selected variant lacks. Returns how many were registered.
      */
     private fun build(layout: LetterLayout, name: String, device: String): Int {
-        val fromDevice = if (device.isEmpty()) emptySet() else kdbFiles.list(device, Template.PKB).toSet()
-        val files = (kdbFiles.list("", Template.PKB) + fromDevice).toSortedSet()
+        val bases = LinkedHashMap(deviceKdbs(device))
+        for (file in kdbFiles.list(Template.PKB).sorted()) {
+            if (KeypadKdbs.isTemplate(file)) continue
+            val text = kdbFiles.read(file)?.toString(Charsets.UTF_8) ?: continue
+            val id = LetterLayoutKdb.engineIds(text)?.first ?: continue
+            bases.putIfAbsent(id, text)
+        }
         var registered = 0
         var rewritten = 0
-        for (file in files) {
-            val folder = if (file in fromDevice) device else ""
-            val original = kdbFiles.read(folder, file) ?: continue
+        for ((id, original) in bases) {
             val bytes = try {
-                val text = String(original, Charsets.UTF_8)
-                val out = LetterLayoutKdb.rewrite(text, layout, Template.PKB)
-                if (out === text) original else out.toByteArray(Charsets.UTF_8).also { rewritten++ }
+                val out = LetterLayoutKdb.rewrite(original, layout, Template.PKB)
+                if (out !== original) rewritten++
+                out.toByteArray(Charsets.UTF_8)
             } catch (e: RuntimeException) {
-                Log.w(TAG, "layout '$name': could not rewrite $file, registering it unchanged: ${e.message}")
-                original
+                Log.w(TAG, "layout '$name': could not rewrite the KDB of id $id, registering it unchanged: ${e.message}")
+                original.toByteArray(Charsets.UTF_8)
             }
             if (engine.register(name, bytes)) registered++
-            else Log.w(TAG, "layout '$name': engine refused $file")
+            else Log.w(TAG, "layout '$name': engine refused the KDB of id $id")
         }
-        Log.i(
-            TAG,
-            "layout '$name': registered $registered of ${files.size} KDB(s), $rewritten rewritten, " +
-                "from '${device.ifEmpty { "(default)" }}'",
-        )
+        Log.i(TAG, "layout '$name': registered $registered of ${bases.size} KDB(s), $rewritten rewritten, from '$device'")
         return registered
     }
 
@@ -306,14 +342,14 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
      */
     private fun buildOnScreen(layout: LetterLayout, name: String): Int {
         val rows = layout.rowsTemplate ?: return 0
-        val template = kdbFiles.read("", LetterLayoutKdb.templateFile(rows))?.toString(Charsets.UTF_8) ?: run {
+        val template = kdbFiles.read(LetterLayoutKdb.templateFile(rows))?.toString(Charsets.UTF_8) ?: run {
             Log.w(TAG, "layout '$name': no on-screen KDB ${LetterLayoutKdb.templateFile(rows)} for its rows")
             return 0
         }
-        val files = kdbFiles.list("", Template.VKB).sorted()
+        val files = kdbFiles.list(Template.VKB).sorted()
         var registered = 0
         for (file in files) {
-            val target = kdbFiles.read("", file)?.toString(Charsets.UTF_8) ?: continue
+            val target = kdbFiles.read(file)?.toString(Charsets.UTF_8) ?: continue
             val xml = try {
                 LetterLayoutKdb.forOnScreenKeyboard(template, target, layout)
             } catch (e: RuntimeException) {
@@ -406,6 +442,8 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
                     val switcher = KeyboardSwitcher.getInstance()
                     onScreenLayoutOf(app, builtIns, switcher?.currentKeyboardLayoutSet, switcher?.currentKeyboardOwnLayoutSet)
                 },
+                builtInLayout = { language -> builtIns.builtIn(language, keypad(), keypadType(), layoutSet()) },
+                shippedLayout = { language, set -> KeypadKdbs.shippedLetters(builtIns)(language, set) },
             )
         }
 
@@ -469,21 +507,23 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
     /** [KdbFiles] over the app's assets. */
     @VisibleForTesting
     internal class AssetKdbFiles(private val assets: AssetManager) : KdbFiles {
-        override fun list(variant: String, template: Template): List<String> = try {
+        override fun list(template: Template): List<String> = try {
             // The folder's own files only: a phone lists a sub-folder by its name, which the suffix
-            // already excludes, but some asset managers (Robolectric's) list its files as "athena/…".
-            assets.list(folder(variant)).orEmpty().filter { '/' !in it && it.endsWith(template.fileSuffix) }
+            // already excludes, but some asset managers (Robolectric's) list its files as "sub/…".
+            assets.list(FOLDER).orEmpty().filter { '/' !in it && it.endsWith(template.fileSuffix) }
         } catch (e: IOException) {
             emptyList()
         }
 
-        override fun read(variant: String, name: String): ByteArray? = try {
-            assets.open("${folder(variant)}/$name").use { it.readBytes() }
+        override fun read(name: String): ByteArray? = try {
+            assets.open("$FOLDER/$name").use { it.readBytes() }
         } catch (e: IOException) {
-            Log.w(TAG, "layout: cannot read KDB ${folder(variant)}/$name: ${e.message}")
+            Log.w(TAG, "layout: cannot read KDB $FOLDER/$name: ${e.message}")
             null
         }
 
-        private fun folder(variant: String) = if (variant.isEmpty()) "kdb" else "kdb/$variant"
+        private companion object {
+            const val FOLDER = "kdb"
+        }
     }
 }

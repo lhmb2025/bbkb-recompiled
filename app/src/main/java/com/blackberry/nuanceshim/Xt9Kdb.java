@@ -52,10 +52,10 @@ public final class Xt9Kdb {
     public static void traceMove(float x, float y, long t)  { if (sLoaded) try { nativeTraceMove(x, y, t);  } catch (Throwable ignored) {} }
     public static void traceEnd(float x, float y, long t)   { if (sLoaded) try { nativeTraceEnd(x, y, t);   } catch (Throwable ignored) {} }
 
-    /** Load kdb/&lt;variant&gt;/qwerty_pkb.xml into the owned module and log the parsed model. */
+    /** Load the device's keypad geometry (kdb/keypad_pkb_&lt;variant&gt;.xml) into the owned module and log the parsed model. */
     public static void selfCheck(Context ctx, String variant) {
         if (!sLoaded || ctx == null) return;
-        final String path = "kdb/" + variant + "/qwerty_pkb.xml";
+        final String path = "kdb/" + dev.bbkb.ime.core.layout.KeypadKdbs.templateFile(variant);
         try {
             // Xt9KdbVariant.readAsset is the same loop with try-with-resources; the copy that
             // used to live here closed the stream only on the success path, so a read failure

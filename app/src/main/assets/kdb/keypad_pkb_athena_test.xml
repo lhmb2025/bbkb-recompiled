@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!-- bulgarian_pkb: QWERTY hardware geometry for the bulgarian on-screen layout.
-     The only physical keyboards with their own script are Cyrillic, Arabic and Korean;
-     every other language types on the Latin QWERTY keys, so the engine gets the
-     QWERTY key boxes under this language's id (owner decision 2026-09-28).
-     Generated from qwerty_pkb.xml; regenerate rather than edit. -->
+<!-- EXPERIMENT ONLY: the KEY2 keypad with UNEVEN row bands. The KEY2 itself uses
+keypad_pkb_athena.xml (even rows); swipe decoded worse on this geometry (2026-08-14 retail runs,
+remediation log §8.6-8.7). Load it on a debug build with
+  adb shell setprop debug.et9.kdbvariant athena_test
+then force-stop the keyboard. The KEY2 config's <ckb-y-warp> still applies; clear it in a custom
+device profile for a 1:1 sensor mapping. Ids 0/0 belong to no language, so the engine never loads
+this file by itself; the app builds the engine's keypad files from it (KeypadKdbs).
+UNEVEN ROW BANDS — matches the firmware's real per-row sensor allocation (measured via the visualizer
++ pen-on-dividers). The capacitive sensor (1080x525) splits into uneven row bands, NOT even rows:
+  row1 QWERTY  sensor 0..90    (90px)
+  row2 ASDF    sensor 90..270  (180px)
+  row3 ZXCV    sensor 270..450 (180px)
+  (row4 space  sensor 450..525 (75px) — not part of the letter KDB)
+Columns are even (108px x 10 = 1080 = sensor width). Sensor->authored is 1:1 (offset 0, no scale), so
+authored Y == sensor Y and every touch falls in the correct row band by construction. authored 1080x450.
+
+RADY note (2026-08-14): the blob's swipe-segmentation thresholds all scale off NKL RADY (default =
+home-row height = 180 here, vs the ~108 even-grid pitch the blob's decoder is tuned for). No single
+RADY fits these uneven bands: 180 under-segments short tail hooks in the 90px row (hello->help,
+0/10), an authored radiusY="108" over-segments transits through the 180px rows (done->songs) —
+corpus evidence in remediation log §8.6-8.7. The layouts therefore carry NO radiusY (blob-parity
+default) and the fix is the owned per-row-threshold gesture decoder (§8.7); the radiusY= attribute
+remains available for experiments (kdb_nkl.c RADY note). -->
+
 <keyboard
-  primaryId="2"
-  secondaryId="6"
+  primaryId="0"
+  secondaryId="0"
   defaultLayoutWidth="1080"
   defaultLayoutHeight="450"
   addAltChars="true">

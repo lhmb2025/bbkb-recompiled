@@ -2,6 +2,7 @@ package com.blackberry.nuanceshim
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import dev.bbkb.ime.core.layout.KeypadKdbs
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -16,8 +17,8 @@ import java.util.Collections
 
 /**
  * [Xt9KdbVariant]'s registry calls with the owned library replaced by a recording bridge (the
- * library cannot load on the JVM): the device variant [Xt9KdbVariant.apply] registers from the
- * app's assets, and the generated variants a letter layout registers ([Xt9KdbVariant.registerGenerated])
+ * library cannot load on the JVM): the device variant [Xt9KdbVariant.apply] builds from the
+ * app's assets (its keypad geometry and the built-in letter layouts), and the generated variants a letter layout registers ([Xt9KdbVariant.registerGenerated])
  * and selects ([Xt9KdbVariant.selectVariant]) on top of it.
  */
 @RunWith(RobolectricTestRunner::class)
@@ -71,28 +72,37 @@ class Xt9KdbVariantRegistrationTest {
     }
 
     @Test
-    fun applyRegistersTheDeviceFolderAndSelectsIt() {
+    fun applyBuildsTheDevicesKeypadKdbsAndSelectsIt() {
         applied("athena")
-        assertEquals("all 40 athena PKB layouts", 40, native.registeredUnder("athena"))
+        assertEquals("one per engine id the app builds", KeypadKdbs.SHIPPED.size, native.registeredUnder("athena"))
         assertEquals(listOf("athena"), native.selected)
         assertEquals("athena", Xt9KdbVariant.deviceVariant())
         assertEquals("athena", Xt9KdbVariant.applied())
     }
 
     @Test
-    fun aVariantWithNoFolderFallsBackToTheRootLayouts() {
+    fun aVariantWithNoGeometryFallsBackToTheGenericKeypad() {
         applied("venice")
-        assertEquals("", Xt9KdbVariant.deviceVariant())
-        assertEquals(listOf(""), native.selected)
+        assertEquals(KeypadKdbs.GENERIC, Xt9KdbVariant.deviceVariant())
+        assertEquals(listOf(KeypadKdbs.GENERIC), native.selected)
+        assertEquals(KeypadKdbs.SHIPPED.size, native.registeredUnder(KeypadKdbs.GENERIC))
     }
 
     @Test
-    fun aVariantWithNoFolderAskedForAgain_keepsALayoutSelection() {
+    fun noVariant_isTheGenericKeypad() {
+        applied(null)
+        assertEquals(KeypadKdbs.GENERIC, Xt9KdbVariant.deviceVariant())
+        applied("")
+        assertEquals("nothing built again", KeypadKdbs.SHIPPED.size, native.registered.size)
+    }
+
+    @Test
+    fun aVariantWithNoGeometryAskedForAgain_keepsALayoutSelection() {
         applied("venice")
         Xt9KdbVariant.selectVariant("layout:swap")
         applied("venice")
         assertEquals("layout:swap", Xt9KdbVariant.applied())
-        assertEquals(listOf("", "layout:swap"), native.selected)
+        assertEquals(listOf(KeypadKdbs.GENERIC, "layout:swap"), native.selected)
     }
 
     @Test
@@ -144,7 +154,7 @@ class Xt9KdbVariantRegistrationTest {
         applied("")
         applied("athena")
         applied("athena")
-        assertEquals(listOf("Xt9KdbVariantApply|", "Xt9KdbVariantApply|athena"), calls)
+        assertEquals(listOf("Xt9KdbVariantApply|keypad", "Xt9KdbVariantApply|athena"), calls)
         assertEquals("athena", Xt9KdbVariant.applied())
     }
 

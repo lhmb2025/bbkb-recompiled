@@ -92,9 +92,9 @@ class LetterLayoutsMatchEngineTest {
                 }
             }
         }
-        // Ten documents (seven languages and three translit keyboards), each against a root and
-        // an athena copy: about 530 keys. A small number would mean the loops ran empty.
-        assertTrue("only $checked keys checked", checked > 400)
+        // Ten documents (seven languages and three translit keyboards), each against its
+        // language's file: about 265 keys. A small number would mean the loops ran empty.
+        assertTrue("only $checked keys checked", checked > 200)
     }
 
     @Test
@@ -164,9 +164,15 @@ class LetterLayoutsMatchEngineTest {
         private fun kdbDir(): File =
             moduleFile("src/main/assets/kdb", "app/src/main/assets/kdb", "../app/src/main/assets/kdb")
 
-        /** The root file and, when there is one, the athena (KEY2) copy. */
+        private fun referenceDir(): File =
+            moduleFile("../xt9kdb-scaffold/reference/kdb_pkb", "xt9kdb-scaffold/reference/kdb_pkb")
+
+        /**
+         * The language's keypad KDB: the shipped file, or for a language whose file the app now
+         * builds ([KeypadKdbs]), the copy of the one it used to ship.
+         */
         fun kdbFiles(name: String): List<File> =
-            listOf(File(kdbDir(), "${name}_pkb.xml"), File(kdbDir(), "athena/${name}_pkb.xml"))
+            listOf(File(kdbDir(), "${name}_pkb.xml"), File(referenceDir(), "${name}_pkb.xml"))
                 .filter { it.isFile }
 
         /** Every generated document by file name, in file-name order. */
@@ -244,7 +250,7 @@ class LetterLayoutsMatchEngineTest {
                         rows = attrs["template"]
                     }
                     "key" -> {
-                        only("code", "scanCode", "keySpec", "characterMapKeys", "alt", "multitapKeys", "moreKeys")
+                        only("code", "scanCode", "keySpec", "characterMapKeys", "alt", "multitapKeys", "moreKeys", "engineKeys")
                         keys.add(DocKey(
                             code = required("code"),
                             scanCode = attrs["scanCode"]?.toInt(),
