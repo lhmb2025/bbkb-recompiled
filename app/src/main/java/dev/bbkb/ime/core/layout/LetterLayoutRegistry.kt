@@ -151,7 +151,8 @@ class LetterLayoutRegistry @JvmOverloads constructor(
      * `east_slavic`, `translit`, `qwerty`, …), or null when none is bound to that keyboard.
      *
      * Only documents for the physical keys (`pkb` among their targets) and bound to a language take
-     * part: one bound to none is a layout to choose, not a language's default. Among those that
+     * part: one bound to none, or marked opt-in ([LetterLayout.optIn]), is a layout to choose, not
+     * a language's default. Among those that
      * match, the most specific binding wins — a named keypad beats `any`, then a named keypad type,
      * then a named layout set, then the document bound to fewer languages, then the one whose id is
      * the language code — and a document bound to a keypad, keypad type or layout set is chosen
@@ -212,7 +213,7 @@ class LetterLayoutRegistry @JvmOverloads constructor(
             val cacheKey = "$language|$keypad|$keypadType|$layoutSet"
             selections[cacheKey]?.let { return it as? LetterLayout }
             val result = ids.mapNotNull { get(it) }
-                .filter { LetterLayout.Target.PKB in it.targets && selects(it.binding, language, keypad, keypadType, layoutSet) }
+                .filter { !it.optIn && LetterLayout.Target.PKB in it.targets && selects(it.binding, language, keypad, keypadType, layoutSet) }
                 .sortedWith(SPECIFICITY.thenByDescending { it.id == language }.thenBy { it.id })
                 .firstOrNull()
             selections[cacheKey] = result ?: NONE

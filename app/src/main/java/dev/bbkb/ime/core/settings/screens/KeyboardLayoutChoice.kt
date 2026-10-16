@@ -29,64 +29,37 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.clickable
 import dev.bbkb.ime.R
-import dev.bbkb.ime.core.layout.LetterLayout
 import dev.bbkb.ime.core.layout.LetterLayoutChoice
 import dev.bbkb.ime.core.settings.ui.LocalShapes
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 
 /**
- * One entry of a keyboard's Layout list on the Language screen: the layout's id (`""` for the
- * keyboard's own), what the row says, and which keyboards it changes.
+ * One entry of a keyboard's layout list on the Language screen: the layout's id (`""` for the
+ * keyboard's default), what the row says, and a note under it where there is one.
  */
-internal data class LayoutChoiceRow(val id: String, val title: String, val summary: String)
-
-/** The row texts that come from resources, so [layoutChoiceRows] stays a plain function. */
-internal class LayoutChoiceTexts(
-    /** The keyboard's own layout's name: its layout set's (QWERTY, AZERTY…), else the keyboard's. */
-    val ownTitle: String,
-    /** "Uses the keyboard's own layout". */
-    val ownSummary: String,
-    /** "On-screen keyboard and physical keys". */
-    val both: String,
-    /** "On-screen keyboard". */
-    val onScreen: String,
-    /** "Physical keys only". */
-    val physical: String,
-)
+internal data class LayoutChoiceRow(val id: String, val title: String, val summary: String? = null)
 
 /**
- * The rows for a keyboard's Layout list, one per [options] entry and in its order: the keyboard's
- * own layout, then each layout by its name, saying which keyboards it changes on this phone. A
- * layout draws the on-screen keyboard when [drawsOnScreen] says so (Colemak and Dvorak, which have
- * rows of their own); it changes the physical keys on a phone with them ([physicalKeys]) when it
- * is for the physical keyboard. A custom layout for the on-screen keyboard has no rows of its own
- * yet, so it reads "Physical keys only": the on-screen keyboard keeps its own layout.
+ * The rows for one of a keyboard's layout lists, one per [options] entry and in its order: the
+ * keyboard's default first ([ownTitle], with [ownSummary] under it), then each layout by its name.
  */
 internal fun layoutChoiceRows(
     options: List<LetterLayoutChoice.Option>,
-    texts: LayoutChoiceTexts,
-    physicalKeys: Boolean,
-    drawsOnScreen: (LetterLayout) -> Boolean,
+    ownTitle: String,
+    ownSummary: String,
 ): List<LayoutChoiceRow> = options.map { option ->
-    val layout = option.layout ?: return@map LayoutChoiceRow(option.id, texts.ownTitle, texts.ownSummary)
-    val onScreen = drawsOnScreen(layout)
-    val physical = physicalKeys && LetterLayout.Target.PKB in layout.targets
-    val summary = when {
-        onScreen && physical -> texts.both
-        onScreen -> texts.onScreen
-        else -> texts.physical
-    }
-    LayoutChoiceRow(option.id, layout.name, summary)
+    val layout = option.layout ?: return@map LayoutChoiceRow(option.id, ownTitle, ownSummary)
+    LayoutChoiceRow(option.id, layout.name)
 }
 
 /**
- * The row a keyboard's sheet shows for its layout: "Layout", the chosen layout's name under it.
- * Opens [KeyboardLayoutDialog].
+ * The row a keyboard's sheet shows for one of its layouts: [title] ("On-screen keyboard" or
+ * "Physical keyboard"), the chosen layout's name under it. Opens [KeyboardLayoutDialog].
  */
 @Composable
-internal fun KeyboardLayoutRow(current: LayoutChoiceRow, onClick: () -> Unit) {
+internal fun KeyboardLayoutRow(title: String, current: LayoutChoiceRow, onClick: () -> Unit) {
     ListItem(
-        headlineContent = { Text(stringResource(R.string.languages_hub_layout_title)) },
+        headlineContent = { Text(title) },
         supportingContent = { Text(current.title) },
         leadingContent = { Icon(Icons.Outlined.Keyboard, contentDescription = null) },
         trailingContent = {
@@ -98,11 +71,12 @@ internal fun KeyboardLayoutRow(current: LayoutChoiceRow, onClick: () -> Unit) {
 }
 
 /**
- * The Layout list itself: one radio row per layout, its name and which keyboards it changes.
- * Picking one applies it and closes the dialog, as the app's other single-choice lists do.
+ * One layout list itself: one radio row per layout, its name and its note. Picking one applies it
+ * and closes the dialog, as the app's other single-choice lists do.
  */
 @Composable
 internal fun KeyboardLayoutDialog(
+    title: String,
     rows: List<LayoutChoiceRow>,
     selectedId: String,
     onSelect: (String) -> Unit,
@@ -111,7 +85,7 @@ internal fun KeyboardLayoutDialog(
     val spacing = LocalSpacing.current
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.languages_hub_layout_title), style = MaterialTheme.typography.headlineSmall) },
+        title = { Text(title, style = MaterialTheme.typography.headlineSmall) },
         text = {
             Column(modifier = Modifier.selectableGroup().verticalScroll(rememberScrollState())) {
                 rows.forEach { row ->
@@ -127,11 +101,13 @@ internal fun KeyboardLayoutDialog(
                         Spacer(modifier = Modifier.width(spacing.iconTextGap))
                         Column {
                             Text(row.title, style = MaterialTheme.typography.bodyLarge)
-                            Text(
-                                row.summary,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+                            row.summary?.let {
+                                Text(
+                                    it,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
                         }
                     }
                 }

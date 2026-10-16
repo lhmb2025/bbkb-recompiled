@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Thai KEY2 keypad: what its etched keys carry, for a phone with that keypad (or anyone who
+     wants its arrangement on a Latin keypad). A source document, kept by hand, from the owner's
+     reading of the keypad.
+
+     Each key is etched with up to three Thai characters: the one at the upper right types on a
+     tap, the one at the lower left with Shift, the one at the lower right with Alt (in place of
+     the digit or symbol a Latin keypad types there). No double-tap or hold lists: the keypad has
+     none.
+
+     Every key confirmed against the keypad by its owner (2026-10-16). The 0 key, the KEY2's
+     microphone key, carries ป: it types with Shift, and a plain tap keeps starting voice input.
+
+     Opt-in: offered for Thai keyboards under Physical keyboard on the Language screen, never
+     applied by itself. -->
+<letter-layout version="1" id="thai-keypad" name="Thai keypad" targets="pkb" optIn="true">
+    <bind languages="th" keypad="qwerty"/>
+    <key code="KEYCODE_Q" keySpec="ๆ" characterMapKeys="ไ"/>
+    <key code="KEYCODE_W" keySpec="ภ" characterMapKeys="ำ" alt="ฑ"/>
+    <key code="KEYCODE_E" keySpec="ฎ" characterMapKeys="พ" alt="ถ"/>
+    <key code="KEYCODE_R" keySpec="ธ" characterMapKeys="ะ" alt="ุ"/>
+    <key code="KEYCODE_T" keySpec="ู" characterMapKeys="ั" alt="ึ"/>
+    <key code="KEYCODE_Y" keySpec="ี" characterMapKeys="ค"/>
+    <key code="KEYCODE_U" keySpec="ณ" characterMapKeys="ร" alt="ต"/>
+    <key code="KEYCODE_I" keySpec="ฯ" characterMapKeys="น" alt="จ"/>
+    <key code="KEYCODE_O" keySpec="ญ" characterMapKeys="ย" alt="ข"/>
+    <key code="KEYCODE_P" keySpec="ฐ" characterMapKeys="บ" alt="ช"/>
+    <key code="KEYCODE_A" keySpec="ฤ" characterMapKeys="ฟ" alt="ห"/>
+    <key code="KEYCODE_S" keySpec="ฏ" characterMapKeys="ก" alt="ด"/>
+    <key code="KEYCODE_D" keySpec="โ" characterMapKeys="เ"/>
+    <key code="KEYCODE_F" keySpec="็" characterMapKeys="้"/>
+    <key code="KEYCODE_G" keySpec="๋" characterMapKeys="่"/>
+    <key code="KEYCODE_H" keySpec="๊" characterMapKeys="า"/>
+    <key code="KEYCODE_J" keySpec="ษ" characterMapKeys="ส"/>
+    <key code="KEYCODE_K" keySpec="ศ" characterMapKeys="ว"/>
+    <key code="KEYCODE_L" keySpec="ซ" characterMapKeys="ง"/>
+    <key code="KEYCODE_Z" keySpec="ฆ" characterMapKeys="ผ"/>
+    <key code="KEYCODE_X" keySpec="ฌ" characterMapKeys="แ"/>
+    <key code="KEYCODE_C" keySpec="ฉ" characterMapKeys="อ"/>
+    <key code="KEYCODE_V" keySpec="ฮ" characterMapKeys="ิ"/>
+    <key code="KEYCODE_B" keySpec="ฺ" characterMapKeys="ื"/>
+    <key code="KEYCODE_N" keySpec="์" characterMapKeys="ท" alt="ม"/>
+    <key code="KEYCODE_M" keySpec="ฒ" characterMapKeys="ใ" alt="ฬ"/>
+    <key code="KEYCODE_4" keySpec="ล" characterMapKeys="ฝ"/>
+    <key code="KEYCODE_0" keySpec="0" characterMapKeys="ป"/>
+</letter-layout>

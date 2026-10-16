@@ -170,13 +170,13 @@ class PhysicalKeyResolverChoiceTest {
         PhysicalKeyResolver.localeSource = { locale }
         PhysicalKeyResolver.keypadLayoutSource = { keypad }
         assertNull(letter(KeyEvent.KEYCODE_E))
-        LetterLayoutChoice.choose(context, "en", "dvorak")
+        LetterLayoutChoice.choose(context, "en", LetterLayout.Target.PKB, "dvorak")
         assertNull("Dvorak is for the on-screen keyboard only", letter(KeyEvent.KEYCODE_E))
         registry.save(layout("dot-on-e", """<key code="KEYCODE_E" keySpec="." characterMapKeys="&gt;"/>"""))
-        LetterLayoutChoice.choose(context, "en", "dot-on-e")
+        LetterLayoutChoice.choose(context, "en", LetterLayout.Target.PKB, "dot-on-e")
         assertEquals(".", letter(KeyEvent.KEYCODE_E))
         assertEquals(">", letter(KeyEvent.KEYCODE_E, KeyEvent.META_SHIFT_ON))
-        LetterLayoutChoice.choose(context, "en", "")
+        LetterLayoutChoice.choose(context, "en", LetterLayout.Target.PKB, "")
         assertNull(letter(KeyEvent.KEYCODE_E))
     }
 }

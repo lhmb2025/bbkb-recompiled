@@ -339,7 +339,7 @@ class LetterLayoutGoldenTest {
         language: String,
         layoutSet: String,
     ): LetterLayoutsMatchEngineTest.Companion.Doc? = docs
-        .filter { language in it.languages && (it.layoutSet == "any" || it.layoutSet == layoutSet) }
+        .filter { !it.optIn && language in it.languages && (it.layoutSet == "any" || it.layoutSet == layoutSet) }
         .sortedWith(
             compareByDescending<LetterLayoutsMatchEngineTest.Companion.Doc> { it.layoutSet != "any" }
                 .thenBy { it.languages.size }

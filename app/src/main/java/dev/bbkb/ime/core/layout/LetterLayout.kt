@@ -32,6 +32,12 @@ class LetterLayout internal constructor(
     val rowsTemplate: String?,
     /** By Android key code, in document order. */
     val keys: Map<Int, Key>,
+    /**
+     * A shipped layout offered to the keyboards its binding names as a choice, never applied as
+     * their default: the layout of an etched keypad edition (Thai, Zhuyin), which a user with that
+     * edition picks once. The registry never selects it for a language on its own.
+     */
+    val optIn: Boolean = false,
 ) {
 
     /** Where a layout came from: shipped with the app, or imported by the user. */
@@ -177,7 +183,7 @@ class LetterLayout internal constructor(
 
     /** The same layout under another id. */
     fun withId(newId: String): LetterLayout =
-        LetterLayout(newId, name, origin, targets, binding, rowsTemplate, keys)
+        LetterLayout(newId, name, origin, targets, binding, rowsTemplate, keys, optIn)
 
     /**
      * This layout with only the keys [keep] accepts, or this layout itself when it accepts them
@@ -188,7 +194,7 @@ class LetterLayout internal constructor(
         if (keys.keys.all(keep)) return this
         val kept = LinkedHashMap<Int, Key>()
         keys.forEach { (code, key) -> if (keep(code)) kept[code] = key }
-        return LetterLayout(id, name, origin, targets, binding, rowsTemplate, kept)
+        return LetterLayout(id, name, origin, targets, binding, rowsTemplate, kept, optIn)
     }
 
     companion object {

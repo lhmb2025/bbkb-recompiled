@@ -132,9 +132,9 @@ fun LanguagesHubScreen(
     val downloads = remember { PackDownloadManager.getInstance(context) }
     val downloadStates by downloads.states.collectAsStateWithLifecycle()
 
-    // The letter layouts a keyboard's Layout row offers: the shipped ones and the user's.
+    // The letter layouts a keyboard's layout rows offer: the shipped ones and the user's.
     var layoutDocuments by remember { mutableStateOf<LayoutDocuments?>(null) }
-    // Bumped when a keyboard's layout is chosen, so its sheet reads the choice again.
+    // Bumped when a keyboard's layout is chosen, so its sheet reads the choices again.
     var layoutChoices by remember { mutableIntStateOf(0) }
 
     fun reload() { reloads++ }
@@ -292,19 +292,27 @@ fun LanguagesHubScreen(
 
     sheetFor?.let { keyboard ->
         val language = remember(keyboard) { LetterLayoutChoice.languageOf(keyboard.subtype) }
-        val layoutRows = remember(keyboard, layoutDocuments) {
-            layoutDocuments?.rowsFor(context, keyboard, language, hasPhysicalKeyboard).orEmpty()
+        val onScreenRows = remember(keyboard, layoutDocuments) {
+            layoutDocuments?.rowsFor(context, keyboard, language, LetterLayout.Target.VKB).orEmpty()
         }
-        val chosenLayout = remember(keyboard, layoutChoices) { LetterLayoutChoice.chosenId(prefs, language) }
+        val physicalRows = remember(keyboard, layoutDocuments, hasPhysicalKeyboard) {
+            if (!hasPhysicalKeyboard) emptyList() else layoutDocuments?.rowsFor(context, keyboard, language, LetterLayout.Target.PKB).orEmpty()
+        }
+        // A choice whose layout is gone (deleted, or no longer offered) leaves the keyboard its
+        // default, so that is the row shown chosen.
+        fun chosenIn(rows: List<LayoutChoiceRow>, target: LetterLayout.Target): String =
+            LetterLayoutChoice.chosenId(prefs, language, target).takeIf { id -> rows.any { it.id == id } } ?: ""
+        val chosenOnScreen = remember(keyboard, layoutChoices, onScreenRows) { chosenIn(onScreenRows, LetterLayout.Target.VKB) }
+        val chosenPhysical = remember(keyboard, layoutChoices, physicalRows) { chosenIn(physicalRows, LetterLayout.Target.PKB) }
         KeyboardSheet(
             keyboard = keyboard,
-            layoutRows = layoutRows,
-            // A choice whose layout is gone (deleted, or no longer offered) types the keyboard's
-            // own layout, so that is the row shown chosen.
-            chosenLayoutId = chosenLayout.takeIf { id -> layoutRows.any { it.id == id } } ?: "",
-            onChooseLayout = { id ->
+            onScreenRows = onScreenRows,
+            physicalRows = physicalRows,
+            chosenOnScreenId = chosenOnScreen,
+            chosenPhysicalId = chosenPhysical,
+            onChooseLayout = { target, id ->
                 if (language != null) {
-                    LetterLayoutChoice.choose(context, language, id)
+                    LetterLayoutChoice.choose(context, language, target, id)
                     layoutChoices++
                 }
             },
@@ -455,41 +463,34 @@ private fun KeyboardRow(
 private class LayoutDocuments(val builtIns: List<LetterLayout>, val custom: List<LetterLayout>) {
 
     /**
-     * The Layout rows for [keyboard] in [language]: its own layout; QWERTY, AZERTY, QWERTZ, Colemak
-     * and Dvorak (less its own) on a keyboard written in the Latin alphabet; and the user's layouts
-     * for its language on a phone with
-     * physical keys ([LetterLayoutChoice.options]). Empty without a language.
+     * The rows of [keyboard]'s layout list for its [target] keyboard, in [language]: its default
+     * first, then what [LetterLayoutChoice.options] offers. Empty without a language.
      */
     fun rowsFor(
         context: Context,
         keyboard: KeyboardLanguages.Keyboard,
         language: String?,
-        physicalKeys: Boolean,
+        target: LetterLayout.Target,
     ): List<LayoutChoiceRow> {
         if (language == null) return emptyList()
-        val drawsOnScreen = { layout: LetterLayout -> LetterLayoutChoice.drawsOnScreen(context, layout) }
         val ownSet = ResourceLocaleUtils.getKeyboardLayoutSetName(keyboard.subtype)
         val options = LetterLayoutChoice.options(
             builtIns = builtIns,
             custom = custom,
             language = language,
+            target = target,
             latin = MultiLanguageRepository.isLatinScript(keyboard.locale),
-            physicalKeys = physicalKeys,
-            // A shipped layout is offered where it changes something on this phone.
-            usable = { drawsOnScreen(it) || (physicalKeys && LetterLayout.Target.PKB in it.targets) },
+            drawsOnScreen = { layout -> LetterLayoutChoice.drawsOnScreen(context, layout) },
             ownLayoutSet = ownSet,
         )
-        val texts = LayoutChoiceTexts(
+        return layoutChoiceRows(
+            options,
             // QWERTY, QWERTZ, AZERTY…; a layout set with no name of its own (Spanish, Nordic) is
             // the keyboard's.
             ownTitle = ResourceLocaleUtils.getKeyboardLayoutSetDisplayName(ownSet) ?: keyboard.name,
-            // The Physical layouts screen's words for the same two things, so the screens agree.
+            // The Physical layouts screen's words for the same thing, so the screens agree.
             ownSummary = context.getString(R.string.settings_pkb_layouts_none_summary),
-            both = context.getString(R.string.languages_hub_layout_both),
-            onScreen = context.getString(R.string.settings_keyboard_title),
-            physical = context.getString(R.string.languages_hub_layout_physical),
         )
-        return layoutChoiceRows(options, texts, physicalKeys, drawsOnScreen)
     }
 
     companion object {
@@ -509,16 +510,18 @@ private class LayoutDocuments(val builtIns: List<LetterLayout>, val custom: List
  * about the item just tapped, it keeps the list in view, and a keyboard with nothing to combine
  * gets a small sheet instead of an empty page.
  *
- * The Layout row shows only when there is something to choose: a keyboard in a script of its own
- * on a phone without custom layouts has nothing but its own layout.
+ * A layout row shows only when there is something to choose: a keyboard in a script of its own
+ * on a phone without custom layouts has nothing but its default.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun KeyboardSheet(
     keyboard: KeyboardLanguages.Keyboard,
-    layoutRows: List<LayoutChoiceRow>,
-    chosenLayoutId: String,
-    onChooseLayout: (String) -> Unit,
+    onScreenRows: List<LayoutChoiceRow>,
+    physicalRows: List<LayoutChoiceRow>,
+    chosenOnScreenId: String,
+    chosenPhysicalId: String,
+    onChooseLayout: (LetterLayout.Target, String) -> Unit,
     canRemove: Boolean,
     choices: List<LocaleItem>,
     onSave: (List<LocaleItem>) -> Unit,
@@ -531,7 +534,7 @@ private fun KeyboardSheet(
     var selected by remember(keyboard) { mutableStateOf(initial) }
     var query by remember(keyboard) { mutableStateOf("") }
     var confirmRemove by remember { mutableStateOf(false) }
-    var chooseLayout by remember { mutableStateOf(false) }
+    var chooseLayout by remember { mutableStateOf<LetterLayout.Target?>(null) }
     val changed = selected != initial
 
     // Chosen-when-opened first, then the rest, each alphabetical. Grouped by the opening state
@@ -569,9 +572,25 @@ private fun KeyboardSheet(
                 }
             }
 
-            val currentLayout = layoutRows.firstOrNull { it.id == chosenLayoutId }
-            if (currentLayout != null && layoutRows.size > 1) {
-                KeyboardLayoutRow(current = currentLayout, onClick = { chooseLayout = true })
+            val currentOnScreen = onScreenRows.firstOrNull { it.id == chosenOnScreenId }
+            val currentPhysical = physicalRows.firstOrNull { it.id == chosenPhysicalId }
+            val showOnScreen = currentOnScreen != null && onScreenRows.size > 1
+            val showPhysical = currentPhysical != null && physicalRows.size > 1
+            if (showOnScreen) {
+                KeyboardLayoutRow(
+                    title = stringResource(R.string.settings_keyboard_title),
+                    current = currentOnScreen!!,
+                    onClick = { chooseLayout = LetterLayout.Target.VKB },
+                )
+            }
+            if (showPhysical) {
+                KeyboardLayoutRow(
+                    title = stringResource(R.string.settings_physical_keyboard_title),
+                    current = currentPhysical!!,
+                    onClick = { chooseLayout = LetterLayout.Target.PKB },
+                )
+            }
+            if (showOnScreen || showPhysical) {
                 HorizontalDivider(modifier = Modifier.padding(horizontal = spacing.listItemPadding))
             }
 
@@ -639,15 +658,17 @@ private fun KeyboardSheet(
         }
     }
 
-    if (chooseLayout) {
+    chooseLayout?.let { target ->
+        val onScreen = target == LetterLayout.Target.VKB
         KeyboardLayoutDialog(
-            rows = layoutRows,
-            selectedId = chosenLayoutId,
+            title = stringResource(if (onScreen) R.string.settings_keyboard_title else R.string.settings_physical_keyboard_title),
+            rows = if (onScreen) onScreenRows else physicalRows,
+            selectedId = if (onScreen) chosenOnScreenId else chosenPhysicalId,
             onSelect = { id ->
-                chooseLayout = false
-                onChooseLayout(id)
+                chooseLayout = null
+                onChooseLayout(target, id)
             },
-            onDismiss = { chooseLayout = false },
+            onDismiss = { chooseLayout = null },
         )
     }
 

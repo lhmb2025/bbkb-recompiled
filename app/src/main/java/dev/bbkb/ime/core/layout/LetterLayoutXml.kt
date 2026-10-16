@@ -78,7 +78,7 @@ object LetterLayoutXml {
     private const val ROWS = "rows"
     private const val KEY = "key"
 
-    private val ROOT_ATTRIBUTES = setOf("version", "id", "name", "targets")
+    private val ROOT_ATTRIBUTES = setOf("version", "id", "name", "targets", "optIn")
     private val BIND_ATTRIBUTES = setOf("languages", "keypad", "keypadType", "layoutSet")
     private val ROWS_ATTRIBUTES = setOf("template")
     private val KEY_ATTRIBUTES = setOf("code", "scanCode", "keySpec", "characterMapKeys", "alt", "multitapKeys", "moreKeys", "engineKeys")
@@ -248,6 +248,11 @@ object LetterLayoutXml {
         if (name.any { Character.isISOControl(it) }) fail("name contains a control character")
 
         val targets = parser.getAttributeValue(null, "targets")?.let(::targets) ?: setOf(Target.PKB)
+        val optIn = when (val raw = parser.getAttributeValue(null, "optIn")) {
+            null, "false" -> false
+            "true" -> true
+            else -> fail("optIn is \"$raw\", expected true or false")
+        }
 
         var binding: LetterLayout.Binding? = null
         var rowsTemplate: String? = null
@@ -288,6 +293,7 @@ object LetterLayoutXml {
             binding = binding ?: fail("<$BIND> is missing"),
             rowsTemplate = rowsTemplate,
             keys = keys,
+            optIn = optIn,
         )
     }
 
@@ -498,6 +504,7 @@ object LetterLayoutXml {
         if (layout.targets != setOf(Target.PKB)) {
             attribute("targets", Target.entries.filter { it in layout.targets }.joinToString(",") { it.token })
         }
+        if (layout.optIn) attribute("optIn", "true")
         append(">\n")
 
         val binding = layout.binding

@@ -632,6 +632,7 @@ object PhysicalKeyResolver {
         val parsed = LocaleUtils.constructLocaleFromString(locale) ?: return false
         val language = LocaleUtils.languageCode(parsed)
         val docs = builtIns ?: ImeApplication.getInstance()?.let { RegistryBuiltIns(LetterLayoutRegistry(it)) } ?: return false
-        return docs.all().any { it.binding.isLanguageBound && it.binding.matchesLanguage(language) && isScriptDocument(it) }
+        // An opt-in document (an etched keypad's layout) is a choice, not the language's alphabet.
+        return docs.all().any { !it.optIn && it.binding.isLanguageBound && it.binding.matchesLanguage(language) && isScriptDocument(it) }
     }
 }

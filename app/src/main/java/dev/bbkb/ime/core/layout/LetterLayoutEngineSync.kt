@@ -507,7 +507,7 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
                 keypadType = keypadType,
                 layoutSet = layoutSet,
                 engineLetters = { language -> engineLettersFor(builtIns, language, keypad(), keypadType(), layoutSet()) },
-                chosenId = { language -> LetterLayoutChoice.chosenId(PrefsManager.getPrefs(app), language) },
+                chosenId = { language -> LetterLayoutChoice.chosenId(PrefsManager.getPrefs(app), language, LetterLayout.Target.PKB) },
                 chosenLayout = { language -> LetterLayoutChoice.forTyping(app, language) },
                 onScreenKeyboard = { drawnOnScreen() },
                 builtInLayout = { language -> builtIns.builtIn(language, keypad(), keypadType(), layoutSet()) },

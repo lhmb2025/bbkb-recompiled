@@ -114,6 +114,14 @@ class LetterLayoutAssetsParseTest {
                 assertTrue("$id.xml: never generated", !head.contains("<!-- GENERATED"))
                 // The on-screen layouts (QWERTY, AZERTY, QWERTZ, Colemak, Dvorak) are not keypad layouts.
                 assertEquals("$id.xml: for the on-screen keyboard only", setOf(LetterLayout.Target.VKB), layout.targets)
+            } else if (id in KEYPAD_SOURCE_DOCUMENTS) {
+                // The etched keypad editions, transcribed by hand: for the physical keys, offered
+                // to their languages as a choice and never applied by themselves.
+                assertTrue("$id.xml: a source document, with a declaration", head.startsWith("<?xml"))
+                assertTrue("$id.xml: never generated", !head.contains("<!-- GENERATED"))
+                assertEquals("$id.xml: for the physical keys", setOf(LetterLayout.Target.PKB), layout.targets)
+                assertTrue("$id.xml: opt-in", layout.optIn)
+                assertTrue("$id.xml: bound to its language", layout.binding.isLanguageBound)
             } else {
                 // Generated files begin with their GENERATED comment, the form without a declaration.
                 assertTrue("$id.xml: opens with the generator's comment", head.startsWith("<!-- GENERATED"))
@@ -121,6 +129,7 @@ class LetterLayoutAssetsParseTest {
             }
         }
         assertTrue(layouts.keys.containsAll(SOURCE_DOCUMENTS))
+        assertTrue(layouts.keys.containsAll(KEYPAD_SOURCE_DOCUMENTS))
     }
 
     @Test
@@ -157,7 +166,7 @@ class LetterLayoutAssetsParseTest {
         }
         // The seven script languages, the three translit keyboards, and Chinese pinyin and
         // cangjie (bound apart so that no document reaches the stroke and Zhuyin keyboards).
-        assertEquals("documents bound to a layout set", 12, bound)
+        assertEquals("documents bound to a layout set", 13, bound)
     }
 
     @Test
@@ -204,5 +213,8 @@ class LetterLayoutAssetsParseTest {
 
         /** The documents kept by hand rather than generated: the on-screen keyboard's sources. */
         val SOURCE_DOCUMENTS = setOf("azerty", "colemak", "dvorak", "qwerty", "qwertz")
+
+        /** The etched keypad editions' layouts, transcribed by hand. */
+        val KEYPAD_SOURCE_DOCUMENTS = setOf("thai-keypad", "zhuyin-keypad")
     }
 }

@@ -100,7 +100,7 @@ class LetterLayoutsMatchEngineTest {
     @Test
     fun latinDocumentsTypeTheKeyMapLetters() {
         for (doc in documents().values) {
-            if (doc.languages.any { it in SCRIPT_KDB } || doc.languages.isEmpty()) continue
+            if (doc.languages.any { it in SCRIPT_KDB } || doc.languages.isEmpty() || doc.optIn) continue
             assertEquals("${doc.id}: 26 letter keys", 26, doc.keys.size)
             // One Latin table serves QWERTY, QWERTZ, AZERTY and the rest alike; only a language
             // that also has a keyboard with no physical-key table (Chinese stroke and Zhuyin) has
@@ -148,6 +148,8 @@ class LetterLayoutsMatchEngineTest {
             val layoutSet: String,
             val rowsTemplate: String?,
             val keys: List<DocKey>,
+            /** Offered to its languages as a choice, never their default (an etched keypad's layout). */
+            val optIn: Boolean = false,
         )
 
         fun moduleFile(vararg candidates: String): File {
@@ -210,6 +212,7 @@ class LetterLayoutsMatchEngineTest {
             var id = ""
             var name = ""
             var targets = listOf("pkb")
+            var optIn = false
             var languages = emptyList<String>()
             var keypad = "any"
             var keypadType = "any"
@@ -229,11 +232,12 @@ class LetterLayoutsMatchEngineTest {
                     ?: throw AssertionError("${file.name}: <${p.name}> ${attrs["code"].orEmpty()} has no $attribute")
                 when (p.name) {
                     "letter-layout" -> {
-                        only("version", "id", "name", "targets")
+                        only("version", "id", "name", "targets", "optIn")
                         assertEquals("${file.name}: version", "1", attrs["version"])
                         id = required("id")
                         name = required("name")
                         attrs["targets"]?.let { targets = it.split(',') }
+                        optIn = attrs["optIn"] == "true"
                         sawRoot = true
                     }
                     "bind" -> {
@@ -266,7 +270,7 @@ class LetterLayoutsMatchEngineTest {
             }
             assertTrue("${file.name}: no <letter-layout>", sawRoot)
             assertTrue("${file.name}: no <bind>", sawBind)
-            return Doc(id, name, targets, languages, keypad, keypadType, layoutSet, rows, keys)
+            return Doc(id, name, targets, languages, keypad, keypadType, layoutSet, rows, keys, optIn)
         }
 
         private val CHOSEONG_TO_COMPATIBILITY = intArrayOf(

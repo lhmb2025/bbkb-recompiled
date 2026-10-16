@@ -309,6 +309,16 @@ public class KeyEventConverter {
                     this.mVoiceKeyPending = false;
                     return digit;
                 }
+                // With Shift, the key types the letter the user's letter layout puts on it (the
+                // Thai keypad's ป): a layout that names the key answers a letter only when Shift
+                // is held, since its unshifted entry is the digit.
+                if (!unifiedAltPressed) {
+                    int layoutLetter = PhysicalKeyResolver.letter(keyEvent, i);
+                    if (layoutLetter != 0 && Character.isLetter(layoutLetter)) {
+                        this.mVoiceKeyPending = false;
+                        return InputEvent.createHardwareKeyPressEx(layoutLetter, keyCode2, null, z2, keyEvent.getEventTime(), false);
+                    }
+                }
                 if (keyEvent.getRepeatCount() == 0) {
                     boolean dictEnabled = isDictationKeyEnabled();
                     boolean shouldVoice = dictEnabled ? !unifiedAltPressed : unifiedAltPressed;

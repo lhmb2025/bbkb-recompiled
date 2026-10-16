@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Zhuyin (Bopomofo) BlackBerry keypad, sold in Taiwan for Traditional Chinese: what its
+     etched keys carry. A source document, kept by hand, transcribed from a photo of the keypad on
+     2026-10-15.
+
+     Most keys are etched with two symbols; this document gives the key the left one on a tap and
+     the right one on Shift. The tone marks sit on T (ˇ, on Shift), Z (ˊ), N (ˋ) and M (˙). The
+     engine's Zhuyin input method composes the characters from what the keys type.
+
+     Opt-in: offered for the Chinese (Traditional, Zhuyin) keyboard under Physical keyboard on
+     the Language screen, never applied by itself. -->
+<letter-layout version="1" id="zhuyin-keypad" name="Zhuyin keypad" targets="pkb" optIn="true">
+    <bind languages="zh" keypad="qwerty" layoutSet="zhuyin"/>
+    <key code="KEYCODE_Q" keySpec="ㄅ" characterMapKeys="ㄆ"/>
+    <key code="KEYCODE_W" keySpec="ㄉ" characterMapKeys="ㄊ"/>
+    <key code="KEYCODE_E" keySpec="ㄍ" characterMapKeys="ㄐ"/>
+    <key code="KEYCODE_R" keySpec="ㄓ" characterMapKeys="ㄔ"/>
+    <key code="KEYCODE_T" keySpec="ㄗ" characterMapKeys="ˇ"/>
+    <key code="KEYCODE_Y" keySpec="ㄧ"/>
+    <key code="KEYCODE_U" keySpec="ㄚ" characterMapKeys="ㄛ"/>
+    <key code="KEYCODE_I" keySpec="ㄞ" characterMapKeys="ㄟ"/>
+    <key code="KEYCODE_O" keySpec="ㄢ" characterMapKeys="ㄣ"/>
+    <key code="KEYCODE_P" keySpec="ㄦ"/>
+    <key code="KEYCODE_A" keySpec="ㄇ" characterMapKeys="ㄈ"/>
+    <key code="KEYCODE_S" keySpec="ㄋ" characterMapKeys="ㄌ"/>
+    <key code="KEYCODE_D" keySpec="ㄎ" characterMapKeys="ㄑ"/>
+    <key code="KEYCODE_F" keySpec="ㄕ"/>
+    <key code="KEYCODE_G" keySpec="ㄘ"/>
+    <key code="KEYCODE_H" keySpec="ㄨ"/>
+    <key code="KEYCODE_J" keySpec="ㄜ" characterMapKeys="ㄝ"/>
+    <key code="KEYCODE_K" keySpec="ㄠ" characterMapKeys="ㄡ"/>
+    <key code="KEYCODE_L" keySpec="ㄤ" characterMapKeys="ㄥ"/>
+    <key code="KEYCODE_Z" keySpec="ˊ"/>
+    <key code="KEYCODE_X" keySpec="ㄏ" characterMapKeys="ㄒ"/>
+    <key code="KEYCODE_C" keySpec="ㄖ"/>
+    <key code="KEYCODE_V" keySpec="ㄙ"/>
+    <key code="KEYCODE_B" keySpec="ㄩ"/>
+    <key code="KEYCODE_N" keySpec="ˋ"/>
+    <key code="KEYCODE_M" keySpec="˙"/>
+</letter-layout>

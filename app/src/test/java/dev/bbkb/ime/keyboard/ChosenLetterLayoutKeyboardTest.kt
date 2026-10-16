@@ -5,6 +5,7 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodSubtype
 import androidx.test.core.app.ApplicationProvider
+import dev.bbkb.ime.core.layout.LetterLayout
 import dev.bbkb.ime.core.layout.LetterLayoutChoice
 import dev.bbkb.ime.core.layout.LetterLayoutRegistry
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils
@@ -90,7 +91,7 @@ class ChosenLetterLayoutKeyboardTest {
 
     @Test
     fun colemakChosen_drawsColemakWithTenKeysInTheMiddleRow() {
-        LetterLayoutChoice.choose(app, "en", "colemak")
+        LetterLayoutChoice.choose(app, "en", LetterLayout.Target.VKB, "colemak")
         val keyboard = alphabet()
         assertEquals("colemak", keyboard.mId.keyboardLayoutSet())
         val rows = rows(keyboard)
@@ -103,7 +104,7 @@ class ChosenLetterLayoutKeyboardTest {
 
     @Test
     fun dvorakChosen_drawsItsPunctuationAndPutsQAndZOnTheBottomRow() {
-        LetterLayoutChoice.choose(app, "en", "dvorak")
+        LetterLayoutChoice.choose(app, "en", LetterLayout.Target.VKB, "dvorak")
         val keyboard = alphabet()
         val rows = rows(keyboard)
         assertTrue(rows.toString(), rows.contains("',.pyfgcrl"))
@@ -120,18 +121,18 @@ class ChosenLetterLayoutKeyboardTest {
                     <key code="KEYCODE_Q" keySpec="w"/></letter-layout>"""
             )
         )
-        LetterLayoutChoice.choose(app, "en", "mine")
+        LetterLayoutChoice.choose(app, "en", LetterLayout.Target.VKB, "mine")
         assertEquals("qwerty", alphabet().mId.keyboardLayoutSet())
     }
 
     @Test
     fun theLayoutSetIsPartOfTheKeyboardsIdentity() {
         val qwerty = alphabet()
-        LetterLayoutChoice.choose(app, "en", "colemak")
+        LetterLayoutChoice.choose(app, "en", LetterLayout.Target.VKB, "colemak")
         val colemak = alphabet()
         assertNotEquals("not the cached QWERTY keyboard", qwerty.mId, colemak.mId)
         assertTrue(rows(colemak).contains("qwfpgjluy;"))
-        LetterLayoutChoice.choose(app, "en", "")
+        LetterLayoutChoice.choose(app, "en", LetterLayout.Target.VKB, "")
         assertEquals(qwerty.mId, alphabet().mId)
     }
 
