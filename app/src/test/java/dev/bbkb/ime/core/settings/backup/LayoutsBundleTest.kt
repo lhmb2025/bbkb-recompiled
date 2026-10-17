@@ -121,7 +121,8 @@ class LayoutsBundleTest {
 
         assertEquals("bbkb-layouts", json.getString("format"))
         assertEquals(1, json.getInt("version"))
-        assertEquals(List(28) { "p$it" }, strings(json.getJSONArray("pkbSymbolPage")))
+        // The editor shows 27; a 28th stored entry (old editor) has no key and is not exported.
+        assertEquals(List(27) { "p$it" }, strings(json.getJSONArray("pkbSymbolPage")))
         assertEquals(listOf("★", "→", "♪"), strings(json.getJSONArray("palette")))
         val phrases = json.getJSONArray("quickPhrases")
         assertEquals(5, phrases.length())
@@ -166,7 +167,7 @@ class LayoutsBundleTest {
     @Test
     fun aRoundTripPutsTheSameBytesBackInEveryStore() {
         seed("pref_vkb_symbol_page_layout", List(28) { "s$it" })
-        seed("pref_pkb_symbol_page_layout", List(28) { "p$it" })
+        seed("pref_pkb_symbol_page_layout", List(27) { "p$it" })
         seed("pref_additional_symbol_list", listOf("★", "→"))
         prefs.edit()
             .putString("custom_slideboard_symbols", List(20) { "n$it" }.joinToString(delimiter) + delimiter)

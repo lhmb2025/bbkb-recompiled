@@ -181,13 +181,10 @@ class SettingsSearchIndexTest {
             "pref_multifunction_key_action" in onTouch
         )
 
-        // ...and the mirror image: the on-screen symbol page is the branch a KEY2 never draws.
+        // The on-screen symbol page section is drawn on every device (a KEY2 has the on-screen
+        // keyboard too), so its toggle is searchable on both shapes.
         assertTrue("vkb_custom_page_first" in onTouch)
-        assertFalse(
-            "vkb_custom_page_first sits in the `else` of SymbolCustomizationScreen's " +
-                "hasPhysicalKeyboard gate, so a physical-keyboard device never renders it",
-            "vkb_custom_page_first" in onPkb
-        )
+        assertTrue("vkb_custom_page_first" in onPkb)
 
         // Everything else is device-independent and must not have been swept up by the gating.
         // The BBKB helper's entries count here: both shapes are phones whose profile keeps the

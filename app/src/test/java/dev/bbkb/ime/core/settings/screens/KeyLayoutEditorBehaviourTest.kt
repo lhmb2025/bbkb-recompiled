@@ -84,7 +84,7 @@ class KeyLayoutEditorBehaviourTest {
     /**
      * That same singleton outlives this class, and `SettingsScreenRenderTest` records every screen
      * in the state a fresh install produces — so a layout left behind here reappears there as a
-     * grid full of `t0`…`t27`. Leave the file the way it was found.
+     * grid full of `t0`…`t27` (`t26` on the physical page). Leave the file the way it was found.
      */
     @After
     fun clearPreferencesAgain() {
@@ -146,7 +146,7 @@ class KeyLayoutEditorBehaviourTest {
     @Test
     fun pkbSymbolPageRendersStoredSymbolsInStorageOrder() {
         // The PKB layout is stored in visual order: no permutation on either side.
-        val stored = tokens(28)
+        val stored = tokens(27)
         seed("pref_pkb_symbol_page_layout", stored)
 
         setContent { CustomSymbolPageScreen(isPkb = true, onBack = {}) }
@@ -197,7 +197,7 @@ class KeyLayoutEditorBehaviourTest {
 
     @Test
     fun pkbSwapWritesTheSwappedPairInStorageOrder() {
-        val stored = tokens(28)
+        val stored = tokens(27)
         seed("pref_pkb_symbol_page_layout", stored)
         setContent { CustomSymbolPageScreen(isPkb = true, onBack = {}) }
 
@@ -253,7 +253,7 @@ class KeyLayoutEditorBehaviourTest {
 
     @Test
     fun tappingAKeyTwiceDeselectsItAndWritesNothing() {
-        seed("pref_pkb_symbol_page_layout", tokens(28))
+        seed("pref_pkb_symbol_page_layout", tokens(27))
         setContent { CustomSymbolPageScreen(isPkb = true, onBack = {}) }
 
         // The editor holds the layout in memory from here on, so taking the key away lets the
@@ -304,7 +304,7 @@ class KeyLayoutEditorBehaviourTest {
 
     @Test
     fun clearingASelectedKeyWritesTheNullMarkerAtThatSlot() {
-        val stored = tokens(28)
+        val stored = tokens(27)
         seed("pref_pkb_symbol_page_layout", stored)
         setContent { CustomSymbolPageScreen(isPkb = true, onBack = {}) }
 
@@ -335,7 +335,7 @@ class KeyLayoutEditorBehaviourTest {
 
     @Test
     fun tappingAPaletteSymbolThenAKeyAssignsIt() {
-        val stored = tokens(28)
+        val stored = tokens(27)
         seed("pref_pkb_symbol_page_layout", stored)
         setContent { CustomSymbolPageScreen(isPkb = true, onBack = {}) }
 
@@ -353,7 +353,7 @@ class KeyLayoutEditorBehaviourTest {
 
     @Test
     fun tappingAKeyThenAPaletteSymbolAssignsIt() {
-        val stored = tokens(28)
+        val stored = tokens(27)
         seed("pref_pkb_symbol_page_layout", stored)
         setContent { CustomSymbolPageScreen(isPkb = true, onBack = {}) }
 
@@ -373,7 +373,7 @@ class KeyLayoutEditorBehaviourTest {
 
     @Test
     fun resetToPageTwoWritesThePageTwoDefaults() {
-        seed("pref_pkb_symbol_page_layout", tokens(28))
+        seed("pref_pkb_symbol_page_layout", tokens(27))
         setContent { CustomSymbolPageScreen(isPkb = true, onBack = {}) }
 
         composeRule.onNodeWithContentDescription("Menu").performClick()
@@ -381,16 +381,14 @@ class KeyLayoutEditorBehaviourTest {
             .performClick()
         composeRule.waitForIdle()
 
-        // pkb_page_2 is 27 entries against a 28-slot editor, so the last slot keeps what it had.
+        // pkb_page_2 is 27 entries, one per editor slot.
         val page2 = context.resources.getStringArray(R.array.pkb_page_2).toList()
-        val expected = tokens(28).toMutableList()
-        page2.forEachIndexed { i, s -> expected[i] = s }
-        assertEquals(expected, storedList("pref_pkb_symbol_page_layout"))
+        assertEquals(page2, storedList("pref_pkb_symbol_page_layout"))
     }
 
     @Test
     fun resetToBlankWritesTheNullMarkerEverywhere() {
-        seed("pref_pkb_symbol_page_layout", tokens(28))
+        seed("pref_pkb_symbol_page_layout", tokens(27))
         setContent { CustomSymbolPageScreen(isPkb = true, onBack = {}) }
 
         composeRule.onNodeWithContentDescription("Menu").performClick()
@@ -398,12 +396,12 @@ class KeyLayoutEditorBehaviourTest {
             .performClick()
         composeRule.waitForIdle()
 
-        assertEquals(List(28) { nul }, storedList("pref_pkb_symbol_page_layout"))
+        assertEquals(List(27) { nul }, storedList("pref_pkb_symbol_page_layout"))
     }
 
     @Test
     fun resetToUmlautWritesTheUmlautLayout() {
-        seed("pref_pkb_symbol_page_layout", tokens(28))
+        seed("pref_pkb_symbol_page_layout", tokens(27))
         setContent { CustomSymbolPageScreen(isPkb = true, onBack = {}) }
 
         composeRule.onNodeWithContentDescription("Menu").performClick()
@@ -412,9 +410,7 @@ class KeyLayoutEditorBehaviourTest {
         composeRule.waitForIdle()
 
         val umlaut = context.resources.getStringArray(R.array.pkb_umlaut_layout).toList()
-        val expected = tokens(28).toMutableList()
-        umlaut.forEachIndexed { i, s -> expected[i] = s }
-        assertEquals(expected, storedList("pref_pkb_symbol_page_layout"))
+        assertEquals(umlaut, storedList("pref_pkb_symbol_page_layout"))
     }
 
     @Test

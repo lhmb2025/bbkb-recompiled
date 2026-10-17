@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
+import dev.bbkb.ime.core.settings.ui.Category
 import dev.bbkb.ime.core.settings.ui.Custom
 import dev.bbkb.ime.core.settings.ui.GridPreference
 import dev.bbkb.ime.core.settings.ui.Nav
@@ -25,10 +26,10 @@ private const val VKB_ENABLED = "enable_symbol_customization_vkb"
  * Symbol Customization Screen
  * Configure custom symbol layouts for physical and touch screen keyboards
  *
- * The device draws exactly one of the two symbol-page branches — a physical keyboard reaches the
- * PKB page, a touchscreen-only device the on-screen one — so each branch's three rows carry the
- * matching `visible` gate. `SettingsSearchIndex` mirrors that with PHYSICAL_KEYBOARD /
- * TOUCH_ONLY on the two `*_custom_page_first` entries.
+ * The on-screen symbol page section is always drawn (every device has the on-screen keyboard);
+ * the physical-keyboard section, whose Sym pages are denser, is added under its own header on
+ * keypad devices, as the original app did. `SettingsSearchIndex` mirrors that with
+ * PHYSICAL_KEYBOARD on the `pkb_custom_page_first` entry only.
  */
 @Composable
 fun SymbolCustomizationScreen(
@@ -41,11 +42,32 @@ fun SymbolCustomizationScreen(
         // so it stays a hand-written block rather than earning a row type of its own.
         Custom { CurrencyPicker() },
 
+        Category(R.string.settings_category_on_screen_keyboard),
+        Toggle(
+            store = boolPref(VKB_ENABLED, false),
+            title = R.string.settings_symbol_enable_customization_title,
+            summary = RowSummary.Res(R.string.settings_symbol_enable_customization_summary),
+            modifier = Modifier.settingsSearchAnchor("symbol_customization"),
+        ),
+        Nav(
+            title = R.string.settings_symbol_customize_page_title,
+            summary = R.string.settings_symbol_customize_page_summary,
+            enabled = { it.bool(VKB_ENABLED) },
+            onClick = { onNavigateToCustomSymbolPageVKB() },
+        ),
+        Toggle(
+            store = boolPref("vkb_custom_page_first", false),
+            title = R.string.settings_symbol_custom_page_first_title,
+            summary = RowSummary.Res(R.string.settings_symbol_custom_page_first_summary),
+            enabled = { it.bool(VKB_ENABLED) },
+            modifier = Modifier.settingsSearchAnchor("vkb_custom_page_first"),
+        ),
+
+        Category(R.string.settings_category_physical_keyboard, visible = { it.hasPhysicalKeyboard }),
         Toggle(
             store = boolPref(PKB_ENABLED, false),
             title = R.string.settings_symbol_enable_customization_title,
             summary = RowSummary.Res(R.string.settings_symbol_enable_customization_summary),
-            modifier = Modifier.settingsSearchAnchor("symbol_customization"),
             visible = { it.hasPhysicalKeyboard },
         ),
         Nav(
@@ -62,29 +84,6 @@ fun SymbolCustomizationScreen(
             enabled = { it.bool(PKB_ENABLED) },
             modifier = Modifier.settingsSearchAnchor("pkb_custom_page_first"),
             visible = { it.hasPhysicalKeyboard },
-        ),
-
-        Toggle(
-            store = boolPref(VKB_ENABLED, false),
-            title = R.string.settings_symbol_enable_customization_title,
-            summary = RowSummary.Res(R.string.settings_symbol_enable_customization_summary),
-            modifier = Modifier.settingsSearchAnchor("symbol_customization"),
-            visible = { !it.hasPhysicalKeyboard },
-        ),
-        Nav(
-            title = R.string.settings_symbol_customize_page_title,
-            summary = R.string.settings_symbol_customize_page_summary,
-            enabled = { it.bool(VKB_ENABLED) },
-            visible = { !it.hasPhysicalKeyboard },
-            onClick = { onNavigateToCustomSymbolPageVKB() },
-        ),
-        Toggle(
-            store = boolPref("vkb_custom_page_first", false),
-            title = R.string.settings_symbol_custom_page_first_title,
-            summary = RowSummary.Res(R.string.settings_symbol_custom_page_first_summary),
-            enabled = { it.bool(VKB_ENABLED) },
-            modifier = Modifier.settingsSearchAnchor("vkb_custom_page_first"),
-            visible = { !it.hasPhysicalKeyboard },
         ),
     ))
 }

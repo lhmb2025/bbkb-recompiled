@@ -766,9 +766,6 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "symbol_list_category_math_title", "symbol_list_category_punctuation_title"
             ),
             literals = setOf(
-                // An empty slot in the symbol grid renders an empty Text node
-                // (CustomSymbolPageScreen.kt: `if (text == "\u0000" || text == "null") ""`).
-                "",
                 "#",
                 "1",
                 "2",
@@ -1274,6 +1271,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.SymbolCustomization.route,
             title = "Custom symbol page",
             resources = setOf(
+                "settings_category_on_screen_keyboard",
                 "settings_default_currency_title", "settings_symbol_custom_page_first_summary",
                 "settings_symbol_custom_page_first_title", "settings_symbol_customization_title",
                 "settings_symbol_customize_page_summary", "settings_symbol_customize_page_title",

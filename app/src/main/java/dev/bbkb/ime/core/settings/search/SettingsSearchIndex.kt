@@ -257,7 +257,7 @@ object SettingsSearchIndex {
         // SymbolCustomizationScreen renders exactly one of these two — the symbol page the device can
         // actually reach. Both stay indexed; the gate picks the one this device draws.
         SearchableSetting(R.string.settings_symbol_custom_page_first_title, "custom symbol page first physical", SettingsRoute.SymbolCustomization.route, APPEARANCE, "pkb_custom_page_first", DeviceRequirement.PHYSICAL_KEYBOARD),
-        SearchableSetting(R.string.settings_symbol_custom_page_first_title, "custom symbol page first on screen", SettingsRoute.SymbolCustomization.route, APPEARANCE, "vkb_custom_page_first", DeviceRequirement.TOUCH_ONLY),
+        SearchableSetting(R.string.settings_symbol_custom_page_first_title, "custom symbol page first on screen", SettingsRoute.SymbolCustomization.route, APPEARANCE, "vkb_custom_page_first"),
 
         // ── Advanced ────────────────────────────────────────────────────────────
         SearchableSetting(R.string.settings_about_title, "about version credits", SettingsRoute.Advanced.route, ADVANCED),

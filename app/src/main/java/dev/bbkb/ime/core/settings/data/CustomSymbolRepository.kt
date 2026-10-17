@@ -17,6 +17,14 @@ class CustomSymbolRepository(private val context: Context) {
     private val prefs: SharedPreferences = PrefsManager.getPrefs(context)
 
     companion object {
+        /** Editable keys on the on-screen custom page (10+9+7). */
+        const val VKB_SLOTS = 26
+        /**
+         * Editable keys on the physical custom page (10+9+8, `rows_symbols_custom_pkb.xml`). A
+         * store saved by the old 28-slot editor loads trimmed to this; the keyboard never had a
+         * 28th key to draw the extra entry on.
+         */
+        const val PKB_SLOTS = 27
         private const val DELIMITER = "\u0378"
         private const val KEY_VKB_LAYOUT = "pref_vkb_symbol_page_layout"
         private const val KEY_PKB_LAYOUT = "pref_pkb_symbol_page_layout"
@@ -44,8 +52,8 @@ class CustomSymbolRepository(private val context: Context) {
         val key = if (isPkb) KEY_PKB_LAYOUT else KEY_VKB_LAYOUT
         val stored = prefs.getString(key, null)
         
-        val maxKeys = if (isPkb) 28 else 26
-        
+        val maxKeys = if (isPkb) PKB_SLOTS else VKB_SLOTS
+
         if (stored != null) {
             val rawLayout = stored.split(DELIMITER)
             
@@ -177,9 +185,9 @@ class CustomSymbolRepository(private val context: Context) {
         }
         val fullArray = context.resources.getStringArray(resId).toList()
         
-        // VKB has only 26 customizable positions (10+9+7), but arrays have 28 items
-        // PKB has 28 customizable positions (10+9+9)
-        val maxKeys = if (isPkb) 28 else 26
+        // VKB has only 26 customizable positions (10+9+7), but arrays have 28 items;
+        // PKB has 27 (10+9+8) and its arrays hold exactly those.
+        val maxKeys = if (isPkb) PKB_SLOTS else VKB_SLOTS
         return fullArray.take(maxKeys)
     }
 

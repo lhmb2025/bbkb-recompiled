@@ -201,7 +201,11 @@ internal val VkbSymbolPageSpec = symbolPageSpec(
     ),
 )
 
-/** Physical keyboard: 3 rows, 28 editable slots. */
+/**
+ * Physical keyboard: 3 rows, 27 editable slots, the shape of `rows_symbols_custom_pkb.xml` —
+ * ten, nine plus delete, then the page key, eight (the seven letter keys and the currency key)
+ * and enter. The page used to be drawn with a 28th slot the keyboard has no key for.
+ */
 internal val PkbSymbolPageSpec = symbolPageSpec(
     isPkb = true,
     height = R.dimen.config_pkb_symbol_page_height,
@@ -209,7 +213,7 @@ internal val PkbSymbolPageSpec = symbolPageSpec(
         (0..9).map { Slot.Key(it) },
         (10..18).map { Slot.Key(it) } + Slot.Fixed(icon = R.drawable.ic_key_delete),
         listOf(Slot.Fixed(text = "alt")) +
-            (19..27).map { Slot.Key(it) } +
+            (19..26).map { Slot.Key(it) } +
             Slot.Fixed(icon = R.drawable.ic_key_return),
     ),
 )

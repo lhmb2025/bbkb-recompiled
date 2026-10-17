@@ -40,7 +40,7 @@ import java.util.TimeZone
  *   "versionCode": 1437,
  *   "created": "2026-10-06T09:14:07Z",
  *   "vkbSymbolPage": ["1", "2", "3", …26 slots],
- *   "pkbSymbolPage": ["!", "@", "#", …28 slots],
+ *   "pkbSymbolPage": ["!", "@", "#", …27 slots],
  *   "palette": ["★", "→"],
  *   "slideboard": ["7", "8", "9", "&", "*", …20 slots],
  *   "quickPhrases": ["On my way!", null, null, null, null],
@@ -79,15 +79,13 @@ object LayoutsBundle {
     const val MAX_BYTES: Int = 1024 * 1024
 
     const val VKB_SLOTS: Int = 26
-    const val PKB_SLOTS: Int = 28
+    const val PKB_SLOTS: Int = 27
 
     /**
-     * The physical page may also come with 27 slots: the shipped default page (`pkb_page_1`) has
-     * 27 entries, so a page that was never saved, or saved straight from it, loads as 27, and the
-     * keyboard keeps its own symbol on the 28th key. Padding it to 28 would blank that key instead
-     * (a stored blank is drawn as an empty key), so 27 is carried as 27.
+     * Bundles written while the physical editor still drew a 28th slot carry 28 entries; they are
+     * still accepted, and the editor trims the extra on load since the keyboard has no key for it.
      */
-    const val PKB_SLOTS_MIN: Int = 27
+    const val PKB_SLOTS_LEGACY: Int = 28
     const val SLIDEBOARD_SLOTS: Int = 20
     const val QUICK_PHRASES: Int = 5
     const val MAX_PALETTE: Int = 500
@@ -264,7 +262,7 @@ object LayoutsBundle {
 
         val layouts = Layouts(
             vkbSymbolPage = slots(root, "vkbSymbolPage", VKB_SLOTS..VKB_SLOTS),
-            pkbSymbolPage = slots(root, "pkbSymbolPage", PKB_SLOTS_MIN..PKB_SLOTS),
+            pkbSymbolPage = slots(root, "pkbSymbolPage", PKB_SLOTS..PKB_SLOTS_LEGACY),
             palette = palette(root),
             slideboard = slots(root, "slideboard", SLIDEBOARD_SLOTS..SLIDEBOARD_SLOTS),
             quickPhrases = quickPhrases(root),
