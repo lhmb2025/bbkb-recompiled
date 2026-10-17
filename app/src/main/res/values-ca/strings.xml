@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Comparteix la disposició</string>
     <string name="settings_pkb_layouts_share_failed">No s\'ha pogut compartir la disposició</string>
     <string name="settings_pkb_layouts_summary">Canvia les lletres que escriuen les tecles físiques</string>
+    <string name="settings_pkb_keypad_layout_title">Disposició del teclat</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automàtica (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Lletres del teclat (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Mostra sempre el teclat en pantalla</string>
     <string name="settings_pkb_layouts_three_row">teclat de tres files</string>
     <string name="settings_pkb_layouts_title">Disposicions físiques</string>
     <string name="settings_pkb_multifunction_action_clipboard">Porta-retalls</string>

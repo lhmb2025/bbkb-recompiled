@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">लेआउट शेअर करा</string>
     <string name="settings_pkb_layouts_share_failed">लेआउट शेअर करता आला नाही</string>
     <string name="settings_pkb_layouts_summary">फिजिकल कळा टाइप करत असलेली अक्षरे बदला</string>
+    <string name="settings_pkb_keypad_layout_title">कीपॅड लेआउट</string>
+    <string name="settings_pkb_keypad_layout_automatic">स्वयंचलित (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">कीपॅडची अक्षरे (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">ऑन-स्क्रीन कीबोर्ड नेहमी दाखवा</string>
     <string name="settings_pkb_layouts_three_row">तीन ओळींचा कीपॅड</string>
     <string name="settings_pkb_layouts_title">फिजिकल लेआउट</string>
     <string name="settings_pkb_multifunction_action_clipboard">क्लिपबोर्ड</string>

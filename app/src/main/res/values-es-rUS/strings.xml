@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Compartir distribución</string>
     <string name="settings_pkb_layouts_share_failed">No se pudo compartir la distribución</string>
     <string name="settings_pkb_layouts_summary">Cambiar las letras que escriben las teclas físicas</string>
+    <string name="settings_pkb_keypad_layout_title">Distribución del teclado</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automática (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Letras del teclado (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Mostrar siempre el teclado en pantalla</string>
     <string name="settings_pkb_layouts_three_row">teclado de tres filas</string>
     <string name="settings_pkb_layouts_title">Distribuciones físicas</string>
     <string name="settings_pkb_multifunction_action_clipboard">Portapapeles</string>

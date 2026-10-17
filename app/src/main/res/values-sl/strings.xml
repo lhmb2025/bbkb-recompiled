@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Deli razporeditev</string>
     <string name="settings_pkb_layouts_share_failed">Razporeditve ni bilo mogoče deliti</string>
     <string name="settings_pkb_layouts_summary">Spremenite črke, ki jih vnašajo fizične tipke</string>
+    <string name="settings_pkb_keypad_layout_title">Razporeditev tipkovnice</string>
+    <string name="settings_pkb_keypad_layout_automatic">Samodejno (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Črke tipkovnice (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Vedno prikaži zaslonsko tipkovnico</string>
     <string name="settings_pkb_layouts_three_row">tipkovnica s tremi vrsticami</string>
     <string name="settings_pkb_layouts_title">Fizične razporeditve</string>
     <string name="settings_pkb_multifunction_action_clipboard">Odložišče</string>

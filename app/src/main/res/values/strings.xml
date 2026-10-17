@@ -282,6 +282,12 @@
     <string name="settings_pkb_layouts_share_chooser">Share layout</string>
     <string name="settings_pkb_layouts_share_failed">Could not share the layout</string>
     <string name="settings_pkb_layouts_summary">Change the letters the physical keys type</string>
+    <string name="settings_pkb_keypad_layout_title">Keypad layout</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatic (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Keypad letters (%1$s)</string>
+    <!-- A layout row's name: the arrangement, then the letters it carries: "QWERTY (English)". -->
+    <string name="layout_choice_name" translatable="false">%1$s (%2$s)</string>
+    <string name="languages_hub_always_on_screen_title">Always show the on-screen keyboard</string>
     <string name="settings_pkb_layouts_three_row">three-row keypad</string>
     <string name="settings_pkb_layouts_title">Physical layouts</string>
     <string name="settings_pkb_multifunction_action_clipboard">Clipboard</string>

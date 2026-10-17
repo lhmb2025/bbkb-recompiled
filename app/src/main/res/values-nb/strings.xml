@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Del layout</string>
     <string name="settings_pkb_layouts_share_failed">Kunne ikke dele layouten</string>
     <string name="settings_pkb_layouts_summary">Endre bokstavene de fysiske tastene skriver</string>
+    <string name="settings_pkb_keypad_layout_title">Tastaturoppsett</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatisk (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Tastaturets bokstaver (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Vis alltid skjermtastaturet</string>
     <string name="settings_pkb_layouts_three_row">tastatur med tre rader</string>
     <string name="settings_pkb_layouts_title">Fysiske layouter</string>
     <string name="settings_pkb_multifunction_action_clipboard">Utklippstavle</string>

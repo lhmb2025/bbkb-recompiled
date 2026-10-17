@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">레이아웃 공유</string>
     <string name="settings_pkb_layouts_share_failed">레이아웃을 공유할 수 없습니다</string>
     <string name="settings_pkb_layouts_summary">물리 키로 입력되는 문자를 변경합니다</string>
+    <string name="settings_pkb_keypad_layout_title">키패드 배열</string>
+    <string name="settings_pkb_keypad_layout_automatic">자동 (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">키패드 문자 (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">화면 키보드 항상 표시</string>
     <string name="settings_pkb_layouts_three_row">3줄 키패드</string>
     <string name="settings_pkb_layouts_title">물리 레이아웃</string>
     <string name="settings_pkb_multifunction_action_clipboard">클립보드</string>

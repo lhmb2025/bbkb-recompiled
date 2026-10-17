@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Düzümü paylaşın</string>
     <string name="settings_pkb_layouts_share_failed">Düzümü paylaşmaq alınmadı</string>
     <string name="settings_pkb_layouts_summary">Fiziki düymələrin yazdığı hərfləri dəyişin</string>
+    <string name="settings_pkb_keypad_layout_title">Klaviatura düzümü</string>
+    <string name="settings_pkb_keypad_layout_automatic">Avtomatik (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Klaviatura hərfləri (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Ekran klaviaturasını həmişə göstər</string>
     <string name="settings_pkb_layouts_three_row">üç sıralı klaviatura</string>
     <string name="settings_pkb_layouts_title">Fiziki düzümlər</string>
     <string name="settings_pkb_multifunction_action_clipboard">Mübadilə buferi</string>

@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Udostępnianie układu</string>
     <string name="settings_pkb_layouts_share_failed">Nie udało się udostępnić układu</string>
     <string name="settings_pkb_layouts_summary">Zmień litery wpisywane przez klawisze fizyczne</string>
+    <string name="settings_pkb_keypad_layout_title">Układ klawiatury</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatycznie (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Litery klawiatury (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Zawsze pokazuj klawiaturę ekranową</string>
     <string name="settings_pkb_layouts_three_row">klawiatura trzyrzędowa</string>
     <string name="settings_pkb_layouts_title">Układy fizyczne</string>
     <string name="settings_pkb_multifunction_action_clipboard">Schowek</string>

@@ -3,6 +3,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.device.ResourceConfigManager
+import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.layout.LetterLayoutChoice
 import dev.bbkb.ime.core.layout.LetterLayoutRegistry
 import dev.bbkb.ime.core.settings.util.SettingsManager
@@ -57,6 +58,21 @@ class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnS
             // its no-arg show path re-fetches the recomposed bar from the UIM manager.
             ime.auxBarManager?.clearKeyboardCache()
             keyboardSwitcher.getUnifiedInputBoardManager()?.onMenuOrderChanged()
+        }
+
+        if (DeviceProfile.PREF_KEYPAD_LAYOUT == key) {
+            // The keypad's shape changed by the user's word: the device profile is rebuilt
+            // (symbol rows, Alt characters and the letter layouts' bindings all follow it), and
+            // every keyboard built on the old shape goes.
+            DeviceProfile.initialize(ime.applicationContext)
+            LetterLayoutRegistry.invalidate()
+            KeyboardBuilder.clearKeyboardCache()
+        }
+
+        if (dev.bbkb.ime.core.layout.OnScreenKeyboardChoice.isPrefKey(key)) {
+            // A language's "Always show the on-screen keyboard" changed: shown or hidden now if
+            // that is the current keyboard's language.
+            ime.refreshLanguageOnScreenKeyboard()
         }
 
         if (LetterLayoutChoice.isPrefKey(key)) {

@@ -300,7 +300,15 @@ public final class DeviceProfile {
                 ? DeviceInputResolver.resolveInputMapping(context, deviceId)
                 : null;
 
-        DeviceCapabilities caps = DeviceCapabilities.detect(mapping);
+        // The user's own word on the keypad shape (Physical keyboard > Keypad layout), when the
+        // config offers a choice; it outranks every detection source.
+        String userKeypadLayout = null;
+        if (context != null && mapping != null && !mapping.keypadLayoutOptions.isEmpty()) {
+            String chosen = dev.bbkb.ime.core.settings.PrefsManager.INSTANCE.getPrefs(context)
+                    .getString(PREF_KEYPAD_LAYOUT, "");
+            if (chosen != null && mapping.keypadLayoutOptions.contains(chosen)) userKeypadLayout = chosen;
+        }
+        DeviceCapabilities caps = DeviceCapabilities.detect(mapping, userKeypadLayout);
         DeviceRuntimeState state = DeviceRuntimeState.getInstance();
         DeviceProfile profile = new DeviceProfile(caps, state);
         profile.deviceMapping = mapping;
@@ -622,6 +630,28 @@ public final class DeviceProfile {
         return capabilities.getKeypadLayout();
     }
 
+    /** Physical keyboard > Keypad layout: the shape the user chose, {@code ""} for automatic. */
+    public static final String PREF_KEYPAD_LAYOUT = "pref_pkb_keypad_layout";
+
+    /**
+     * The keypad shapes the device config lists for this model ({@code <keypad-layouts>}): what
+     * the Keypad layout choice offers. Empty when there is nothing to choose.
+     */
+    public java.util.List<String> getKeypadLayoutOptions() {
+        return deviceMapping != null ? deviceMapping.keypadLayoutOptions : java.util.Collections.emptyList();
+    }
+
+    /**
+     * The keypad shape detection alone would give, with the user's choice set aside: what the
+     * Keypad layout choice's "Automatic" row names.
+     */
+    public String getDetectedKeypadLayout() {
+        if (capabilities.getKeypadLayoutSource() != dev.bbkb.ime.core.device.detection.KeypadLayoutDetector.Source.USER) {
+            return getKeypadLayout();
+        }
+        return DeviceCapabilities.detect(deviceMapping).getKeypadLayout();
+    }
+
     public String getKeypadVariant() {
         if (deviceMapping != null && deviceMapping.keypadType != null) {
             return deviceMapping.keypadType;
@@ -900,7 +930,12 @@ public final class DeviceProfile {
 
     public static boolean isForceVkbMode() {
         DeviceRuntimeState st = DeviceRuntimeState.getInstance();
-        return st.isForceVkbMode() || st.isDebugForceVkbMode();
+        return st.isForceVkbMode() || st.isDebugForceVkbMode() || st.isLanguageForceVkbMode();
+    }
+
+    /** The current keyboard's language asked for the on-screen keyboard; see {@code OnScreenKeyboardChoice}. */
+    public static void setLanguageForceVkbMode(boolean force) {
+        DeviceRuntimeState.getInstance().setLanguageForceVkbMode(force);
     }
 
     /** Live setter for the Debug settings "Force touchscreen-only mode" toggle (no IME restart

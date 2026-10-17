@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Shpërnda paraqitjen</string>
     <string name="settings_pkb_layouts_share_failed">Paraqitja nuk u shpërnda dot</string>
     <string name="settings_pkb_layouts_summary">Ndrysho shkronjat që shkruajnë tastet fizike</string>
+    <string name="settings_pkb_keypad_layout_title">Skema e tastierës</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatike (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Shkronjat e tastierës (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Shfaq gjithmonë tastierën në ekran</string>
     <string name="settings_pkb_layouts_three_row">tastierë me tre rreshta</string>
     <string name="settings_pkb_layouts_title">Paraqitjet fizike</string>
     <string name="settings_pkb_multifunction_action_clipboard">Kujtesa e fragmenteve</string>

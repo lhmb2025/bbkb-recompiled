@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Deel uitleg</string>
     <string name="settings_pkb_layouts_share_failed">Kon nie die uitleg deel nie</string>
     <string name="settings_pkb_layouts_summary">Verander die letters wat die fisiese sleutels tik</string>
+    <string name="settings_pkb_keypad_layout_title">Toetsbord-uitleg</string>
+    <string name="settings_pkb_keypad_layout_automatic">Outomaties (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Toetsbordletters (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Wys altyd die skermtoetsbord</string>
     <string name="settings_pkb_layouts_three_row">sleutelbord met drie rye</string>
     <string name="settings_pkb_layouts_title">Fisiese uitlegte</string>
     <string name="settings_pkb_multifunction_action_clipboard">Knipbord</string>

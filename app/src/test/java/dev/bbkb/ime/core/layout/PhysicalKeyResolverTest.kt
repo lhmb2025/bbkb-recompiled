@@ -61,14 +61,14 @@ class PhysicalKeyResolverTest {
     @Before
     fun setUp() {
         saved = PhysicalKeyResolver.Snapshot()
-        PhysicalKeyResolver.userLayoutSource = { activeLayout }
+        PhysicalKeyResolver.chosenLayoutSource = { _ -> activeLayout }
         PhysicalKeyResolver.builtIns = shipped()
         PhysicalKeyResolver.localeSource = { locale }
         PhysicalKeyResolver.additionalLocalesSource = { extraLocales }
         PhysicalKeyResolver.keypadLayoutSource = { keypad }
         PhysicalKeyResolver.keypadTypeSource = { keypadType }
         PhysicalKeyResolver.layoutSetSource = { layoutSetAsked++; layoutSet }
-        PhysicalKeyResolver.alphabetSwitchSource = { alphabetSwitch }
+        PhysicalKeyResolver.keypadLettersSource = { _ -> !alphabetSwitch }
         PhysicalKeyResolver.currencySettingSource = { currencySetting }
         PhysicalKeyResolver.zeroKeySource = { "0" }
 
@@ -541,43 +541,42 @@ class PhysicalKeyResolverTest {
     // ── switching layouts ────────────────────────────────────────────────────
 
     @Test
-    fun theTypingPathFollowsTheActiveLayoutAndItsFile() {
-        PhysicalKeyResolver.userLayoutSource = { LetterLayoutRegistry.activeForTyping(context) }
+    fun theTypingPathFollowsTheChosenLayoutAndItsFile() {
+        PhysicalKeyResolver.chosenLayoutSource = { language -> LetterLayoutChoice.forTyping(context, language) }
         val registry = LetterLayoutRegistry(context)
         registry.save(user(id = "first"))
         registry.save(user(id = "second", keys = """<key code="KEYCODE_Q" keySpec="ж"/>"""))
 
-        assertNull("nothing switched on yet", letter(KeyEvent.KEYCODE_Q))
+        assertNull("nothing chosen yet", letter(KeyEvent.KEYCODE_Q))
 
-        registry.activeId = "first"
+        LetterLayoutChoice.choose(context, "en", LetterLayout.Target.PKB, "first")
         assertEquals("w", letter(KeyEvent.KEYCODE_Q))
 
-        registry.activeId = "second"
+        LetterLayoutChoice.choose(context, "en", LetterLayout.Target.PKB, "second")
         assertEquals("ж", letter(KeyEvent.KEYCODE_Q))
 
         // Re-importing under the same id replaces what the keys type, though the id is unchanged.
         registry.save(user(id = "second", keys = """<key code="KEYCODE_Q" keySpec="з"/>"""))
         assertEquals("з", letter(KeyEvent.KEYCODE_Q))
 
-        // So does a write to the preference that did not come through the registry.
+        // So does a write to the preference that did not come through the choice.
         PrefsManager.getPrefs(context).edit()
-            .putString(LetterLayoutRegistry.PREF_ACTIVE_LAYOUT, "first").commit()
+            .putString(LetterLayoutChoice.prefKey("en", LetterLayout.Target.PKB), "first").commit()
         assertEquals("w", letter(KeyEvent.KEYCODE_Q))
 
-        // Deleting the active layout switches it off.
+        // Deleting the chosen layout leaves the keys to the key map.
         assertTrue(registry.delete("first"))
-        assertEquals("", registry.activeId)
         assertNull(letter(KeyEvent.KEYCODE_Q))
         assertEquals(listOf("second"), registry.list().map { it.id })
     }
 
     @Test
-    fun anUnreadableActiveFileMeansNoUserLayout() {
-        PhysicalKeyResolver.userLayoutSource = { LetterLayoutRegistry.activeForTyping(context) }
+    fun anUnreadableChosenFileMeansNoUserLayout() {
+        PhysicalKeyResolver.chosenLayoutSource = { language -> LetterLayoutChoice.forTyping(context, language) }
         val registry = LetterLayoutRegistry(context)
         registry.save(user(id = "broken"))
         registry.fileFor("broken").writeText("<letter-layout")
-        registry.activeId = "broken"
+        LetterLayoutChoice.choose(context, "en", LetterLayout.Target.PKB, "broken")
         assertNull(letter(KeyEvent.KEYCODE_Q))
         assertTrue("the directory listing skips it rather than failing", registry.list().isEmpty())
     }

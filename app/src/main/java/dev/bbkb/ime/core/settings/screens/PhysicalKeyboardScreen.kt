@@ -5,6 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import dev.bbkb.ime.core.device.detection.KeypadLayoutDetector
+import dev.bbkb.ime.core.locale.ResourceLocaleUtils
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.keyevent.AltSymShortcutHandler
 import dev.bbkb.ime.core.keyevent.MultifunctionKeyHandler
@@ -117,6 +119,16 @@ fun PhysicalKeyboardScreen(
             modifier = Modifier.settingsSearchAnchor("pref_pkb_show_suggestion_bar"),
             visible = { hasPhysicalKeyboard },
         ),
+        // The keypad's shape, for a model sold in several (the KEY2: QWERTY, QWERTZ and AZERTY
+        // editions): automatic detection, or the user's word for it. A model the device config
+        // lists one shape for has nothing to choose.
+        Choice(
+            store = stringPref(DeviceProfile.PREF_KEYPAD_LAYOUT, ""),
+            title = R.string.settings_pkb_keypad_layout_title,
+            options = ::keypadLayouts,
+            modifier = Modifier.settingsSearchAnchor("pref_pkb_keypad_layout"),
+            visible = { hasPhysicalKeyboard && (DeviceProfile.current()?.keypadLayoutOptions?.size ?: 0) > 1 },
+        ),
         // The letter layouts for the physical keys, built-in and imported; only a physical
         // keyboard has keys to lay out.
         Nav(
@@ -222,6 +234,15 @@ private fun sharedShortcutActions(context: Context) = listOf(
     // Reaches the menu where "Show the suggestion bar" leaves no hamburger button to tap.
     MultifunctionKeyHandler.ACTION_TOGGLE_UIM to R.string.settings_pkb_multifunction_action_input_menu,
 ).map { (value, label) -> ChoiceOption(value, context.getString(label)) }
+
+/** Automatic (with what detection found) first, then each shape the device config lists. */
+private fun keypadLayouts(context: Context): List<ChoiceOption> {
+    val profile = DeviceProfile.current()
+    val detected = profile?.detectedKeypadLayout ?: KeypadLayoutDetector.QWERTY
+    fun name(layout: String) = ResourceLocaleUtils.getKeyboardLayoutSetDisplayName(layout) ?: layout.uppercase()
+    return listOf(ChoiceOption("", context.getString(R.string.settings_pkb_keypad_layout_automatic, name(detected)))) +
+        profile?.keypadLayoutOptions.orEmpty().map { ChoiceOption(it, name(it)) }
+}
 
 private fun holdActions(context: Context) = listOf(
     ChoiceOption("off", context.getString(R.string.settings_pkb_hold_action_off)),

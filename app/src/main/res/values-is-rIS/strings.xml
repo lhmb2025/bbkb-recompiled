@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Deila uppsetningu</string>
     <string name="settings_pkb_layouts_share_failed">Ekki tókst að deila uppsetningunni</string>
     <string name="settings_pkb_layouts_summary">Breyta stöfunum sem vélbúnaðarlyklarnir slá inn</string>
+    <string name="settings_pkb_keypad_layout_title">Uppsetning lyklaborðs</string>
+    <string name="settings_pkb_keypad_layout_automatic">Sjálfvirkt (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Stafir lyklaborðsins (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Sýna alltaf lyklaborð á skjá</string>
     <string name="settings_pkb_layouts_three_row">þriggja raða lyklaborð</string>
     <string name="settings_pkb_layouts_title">Vélbúnaðaruppsetningar</string>
     <string name="settings_pkb_multifunction_action_clipboard">Klippiborð</string>

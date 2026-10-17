@@ -104,7 +104,7 @@ class AuxCharacterResolverTest {
             </letter-layout>"""
         )
         // Only the user tier: no built-in documents, as on a keyboard whose language has none.
-        PhysicalKeyResolver.userLayoutSource = { map }
+        PhysicalKeyResolver.chosenLayoutSource = { _ -> map }
         PhysicalKeyResolver.builtIns = null
         PhysicalKeyResolver.localeSource = { Locale.ENGLISH }
         PhysicalKeyResolver.keypadLayoutSource = { "qwerty" }

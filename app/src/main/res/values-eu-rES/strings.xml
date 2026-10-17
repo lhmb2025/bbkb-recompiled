@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Partekatu diseinua</string>
     <string name="settings_pkb_layouts_share_failed">Ezin izan da partekatu diseinua</string>
     <string name="settings_pkb_layouts_summary">Aldatu tekla fisikoek idazten dituzten hizkiak</string>
+    <string name="settings_pkb_keypad_layout_title">Teklatuaren diseinua</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatikoa (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Teklatuko letrak (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Erakutsi beti pantailako teklatua</string>
     <string name="settings_pkb_layouts_three_row">hiru errenkadako teklatua</string>
     <string name="settings_pkb_layouts_title">Diseinu fisikoak</string>
     <string name="settings_pkb_multifunction_action_clipboard">Arbela</string>

@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Partager la disposition</string>
     <string name="settings_pkb_layouts_share_failed">Impossible de partager la disposition</string>
     <string name="settings_pkb_layouts_summary">Modifier les lettres saisies par les touches physiques</string>
+    <string name="settings_pkb_keypad_layout_title">Disposition du clavier</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatique (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Lettres du clavier (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Toujours afficher le clavier à l\'écran</string>
     <string name="settings_pkb_layouts_three_row">clavier à trois rangées</string>
     <string name="settings_pkb_layouts_title">Dispositions physiques</string>
     <string name="settings_pkb_multifunction_action_clipboard">Presse-papiers</string>

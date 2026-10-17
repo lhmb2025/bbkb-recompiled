@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Կիսվել դասավորությամբ</string>
     <string name="settings_pkb_layouts_share_failed">Չհաջողվեց կիսվել դասավորությամբ</string>
     <string name="settings_pkb_layouts_summary">Փոխել ֆիզիկական ստեղներով մուտքագրվող տառերը</string>
+    <string name="settings_pkb_keypad_layout_title">Ստեղնաշարի դասավորություն</string>
+    <string name="settings_pkb_keypad_layout_automatic">Ավտոմատ (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Ստեղնաշարի տառեր (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Միշտ ցույց տալ էկրանային ստեղնաշարը</string>
     <string name="settings_pkb_layouts_three_row">եռաշարք ստեղնաշար</string>
     <string name="settings_pkb_layouts_title">Ֆիզիկական դասավորություններ</string>
     <string name="settings_pkb_multifunction_action_clipboard">Սեղմատախտակ</string>

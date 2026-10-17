@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Kopīgot izkārtojumu</string>
     <string name="settings_pkb_layouts_share_failed">Neizdevās kopīgot izkārtojumu</string>
     <string name="settings_pkb_layouts_summary">Mainīt burtus, ko raksta fiziskie taustiņi</string>
+    <string name="settings_pkb_keypad_layout_title">Tastatūras izkārtojums</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automātiski (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Tastatūras burti (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Vienmēr rādīt ekrāna tastatūru</string>
     <string name="settings_pkb_layouts_three_row">trīsrindu tastatūra</string>
     <string name="settings_pkb_layouts_title">Fiziskie izkārtojumi</string>
     <string name="settings_pkb_multifunction_action_clipboard">Starpliktuve</string>

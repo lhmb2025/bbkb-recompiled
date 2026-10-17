@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Jaga paigutust</string>
     <string name="settings_pkb_layouts_share_failed">Paigutuse jagamine ebaõnnestus</string>
     <string name="settings_pkb_layouts_summary">Muuda tähti, mida füüsilised klahvid sisestavad</string>
+    <string name="settings_pkb_keypad_layout_title">Klahvistiku paigutus</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automaatne (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Klahvistiku tähed (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Kuva ekraaniklaviatuur alati</string>
     <string name="settings_pkb_layouts_three_row">kolmerealine klahvistik</string>
     <string name="settings_pkb_layouts_title">Füüsilised paigutused</string>
     <string name="settings_pkb_multifunction_action_clipboard">Lõikelaud</string>

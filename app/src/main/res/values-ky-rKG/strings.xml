@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Жайгашууну бөлүшүү</string>
     <string name="settings_pkb_layouts_share_failed">Жайгашууну бөлүшүү мүмкүн болгон жок</string>
     <string name="settings_pkb_layouts_summary">Физикалык баскычтар тере турган тамгаларды өзгөртүү</string>
+    <string name="settings_pkb_keypad_layout_title">Баскычтоптун жайгашуусу</string>
+    <string name="settings_pkb_keypad_layout_automatic">Автоматтык (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Баскычтоптун тамгалары (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Экрандагы баскычтопту ар дайым көрсөтүү</string>
     <string name="settings_pkb_layouts_three_row">үч катар баскычтоп</string>
     <string name="settings_pkb_layouts_title">Физикалык жайгашуулар</string>
     <string name="settings_pkb_multifunction_action_clipboard">Алмашуу буфери</string>

@@ -22,6 +22,9 @@
         </match>
 
         <device-type>CKB</device-type>
+        <!-- The editions the KEY2 was sold in: what the Physical keyboard screen's Keypad layout
+             choice offers, above the automatic detection below. -->
+        <keypad-layouts>qwerty, qwertz, azerty</keypad-layouts>
 
         <!-- NO <keypad-layout> HERE, DELIBERATELY (pinned by ShippedDeviceConfigsTest).
              The schema has an optional <keypad-layout>qwerty|qwertz|azerty</keypad-layout>, and

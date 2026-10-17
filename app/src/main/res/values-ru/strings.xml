@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Поделиться раскладкой</string>
     <string name="settings_pkb_layouts_share_failed">Не удалось поделиться раскладкой</string>
     <string name="settings_pkb_layouts_summary">Изменить буквы, которые вводят физические клавиши</string>
+    <string name="settings_pkb_keypad_layout_title">Раскладка клавиатуры</string>
+    <string name="settings_pkb_keypad_layout_automatic">Автоматически (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Буквы клавиатуры (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Всегда показывать экранную клавиатуру</string>
     <string name="settings_pkb_layouts_three_row">трёхрядная клавиатура</string>
     <string name="settings_pkb_layouts_title">Физические раскладки</string>
     <string name="settings_pkb_multifunction_action_clipboard">Буфер обмена</string>

@@ -60,6 +60,14 @@ public final class DeviceRuntimeState {
     public boolean isDebugForceVkbMode() { return debugForceVkbMode; }
     public void setDebugForceVkbMode(boolean force) { this.debugForceVkbMode = force; }
 
+    /** The current keyboard's language asked for the on-screen keyboard ("Always show the
+     *  on-screen keyboard" on the Language screen; {@code OnScreenKeyboardChoice}). Set by the IME
+     *  when the keyboard changes and when the choice does; forces the on-screen keyboard exactly
+     *  as the debug override above does, for that language's keyboards only. */
+    private volatile boolean languageForceVkbMode = false;
+    public boolean isLanguageForceVkbMode() { return languageForceVkbMode; }
+    public void setLanguageForceVkbMode(boolean force) { this.languageForceVkbMode = force; }
+
     public boolean isVkbForcedForPackage(String packageName) {
         return packageName != null && vkbForcedPackages.contains(packageName);
     }

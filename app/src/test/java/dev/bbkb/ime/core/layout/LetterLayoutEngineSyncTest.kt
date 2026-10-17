@@ -71,7 +71,6 @@ class LetterLayoutEngineSyncTest {
     private val context: Context get() = ApplicationProvider.getApplicationContext()
     private val native = Recorder()
 
-    private var activeId = ""
     private var active: LetterLayout? = null
     private var language: String? = "en"
     private var keypad: String? = "qwerty"
@@ -103,16 +102,17 @@ class LetterLayoutEngineSyncTest {
         LetterLayoutRegistry.invalidate()
     }
 
+    /** The test's one "active" layout stands for a layout chosen for every language it is bound to. */
     private fun newSync(
-        activeId: () -> String = { this.activeId },
-        activeLayout: () -> LetterLayout? = { active },
+        chosenId: (String?) -> String = { lang -> active?.takeIf { it.binding.matchesLanguage(lang) }?.id ?: "" },
+        chosenLayout: (String?) -> LetterLayout? = { lang -> active?.takeIf { it.binding.matchesLanguage(lang) } },
         letters: (String?) -> (Int) -> Int = latin,
         builtIn: (String?) -> LetterLayout? = { null },
     ) = LetterLayoutEngineSync(
         engine = engine,
         kdbFiles = DiskKdbFiles(kdbDir()),
-        activeId = activeId,
-        activeLayout = activeLayout,
+        chosenId = chosenId,
+        chosenLayout = chosenLayout,
         currentLanguage = { language },
         keypad = { keypad },
         keypadType = { null },
@@ -139,7 +139,6 @@ class LetterLayoutEngineSyncTest {
 
     private fun activate(layout: LetterLayout?) {
         active = layout
-        activeId = layout?.id ?: ""
         LetterLayoutRegistry.invalidate()
         settle()
     }
@@ -424,15 +423,15 @@ class LetterLayoutEngineSyncTest {
         deviceVariant("athena")
         LetterLayoutEngineSync.setInstanceForTest(
             newSync(
-                activeId = { PrefsManager.getPrefs(context).getString(LetterLayoutRegistry.PREF_ACTIVE_LAYOUT, "") ?: "" },
-                activeLayout = { LetterLayoutRegistry.activeForTyping(context) },
+                chosenId = { lang -> LetterLayoutChoice.chosenId(PrefsManager.getPrefs(context), lang, LetterLayout.Target.PKB) },
+                chosenLayout = { lang -> LetterLayoutChoice.forTyping(context, lang) },
             )
         )
         val registry = LetterLayoutRegistry(context)
         registry.save(swap)
         settle()
         assertEquals("saved, not yet chosen", "athena", Xt9KdbVariant.applied())
-        registry.activeId = "swap"
+        LetterLayoutChoice.choose(context, "en", LetterLayout.Target.PKB, "swap")
         settle()
         assertEquals("layout:swap", Xt9KdbVariant.applied())
         registry.delete("swap")

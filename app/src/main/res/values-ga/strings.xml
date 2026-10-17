@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Comhroinn an leagan amach</string>
     <string name="settings_pkb_layouts_share_failed">Níorbh fhéidir an leagan amach a chomhroinnt</string>
     <string name="settings_pkb_layouts_summary">Athraigh na litreacha a chlóscríobhann na heochracha fisiciúla</string>
+    <string name="settings_pkb_keypad_layout_title">Leagan amach an eochairchláir</string>
+    <string name="settings_pkb_keypad_layout_automatic">Uathoibríoch (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Litreacha an eochairchláir (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Taispeáin an méarchlár ar an scáileán i gcónaí</string>
     <string name="settings_pkb_layouts_three_row">eochaircheap trí shraith</string>
     <string name="settings_pkb_layouts_title">Leaganacha amach fisiciúla</string>
     <string name="settings_pkb_multifunction_action_clipboard">Gearrthaisce</string>

@@ -90,7 +90,6 @@ object KdbPrebuilder {
             registry.builtIn(language, profile?.keypadLayout, profile?.effectiveKeypadType, set)?.let(sync::prebuildKeypad)
             LetterLayoutChoice.forTyping(app, language)?.let(sync::prebuildKeypad)
         }
-        LetterLayoutRegistry.activeForTyping(app)?.let(sync::prebuildKeypad)
         Log.i(TAG, "build ahead: keypad KDBs for ${subtypes.size} keyboard(s) ready in ${(System.nanoTime() - started) / 1_000_000} ms")
     }
 

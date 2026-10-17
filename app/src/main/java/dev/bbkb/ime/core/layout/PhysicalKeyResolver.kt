@@ -27,12 +27,10 @@ import java.util.WeakHashMap
  *
  *  1. the user's letter layout, while it is bound to the current keyboard and this phone's keypad:
  *     the layout chosen for the keyboard's language on the Language screen ([LetterLayoutChoice],
- *     when it is for the physical keys), else the one switched on in Physical keyboard > Physical
- *     layouts — the two never compete, see [userLayout];
+ *     when it is for the physical keys), see [userLayout];
  *  2. the built-in document for the current keyboard's language, keypad, keypad type and layout
- *     set (`assets/letter_layouts/`), while "Use active language's alphabet for physical keyboard"
- *     ([PREF_KEY]) is on — that switch turns the built-in documents off and leaves a user layout
- *     in charge, as it always has;
+ *     set (`assets/letter_layouts/`), unless the language's choice is the keypad's own letters
+ *     ([LetterLayoutChoice.KEYPAD_LETTERS]), which turns the built-in document off for it;
  *  3. for Alt only, the device's own Alt tables, which stay in `AuxCharacterResolver` as the tier
  *     under this one (it asks [alt] first);
  *  4. the firmware key map: 0 or null here, and the caller asks the key map as before.
@@ -63,8 +61,6 @@ import java.util.WeakHashMap
  */
 object PhysicalKeyResolver {
 
-    /** "Use active language's alphabet for physical keyboard"; on by default. */
-    const val PREF_KEY = "pref_pkb_active_language_alphabet"
     private const val TAG = "PhysicalKeys"
 
     /** The built-in documents, as the resolver needs them. [init] hands it the registry's. */
@@ -85,14 +81,14 @@ object PhysicalKeyResolver {
     }
 
     /**
-     * Points the sources at the running keyboard: each language's chosen layout, the layout
-     * switched on in Physical layouts, and the shipped documents.
+     * Points the sources at the running keyboard: each language's chosen layout, whether it chose
+     * the keypad's own letters, and the shipped documents.
      */
     @JvmStatic
     fun init(context: Context) {
         val app = context.applicationContext
         chosenLayoutSource = { language -> LetterLayoutChoice.forTyping(app, language) }
-        userLayoutSource = { LetterLayoutRegistry.activeForTyping(app) }
+        keypadLettersSource = { language -> LetterLayoutChoice.keypadLettersChosen(app, language) }
         builtIns = RegistryBuiltIns(LetterLayoutRegistry(app))
     }
 
@@ -105,9 +101,12 @@ object PhysicalKeyResolver {
     @Volatile
     internal var chosenLayoutSource: (language: String?) -> LetterLayout? = { null }
 
-    /** The layout switched on in Physical layouts, whatever it is bound to. Set by [init]; tests replace it. */
+    /**
+     * Whether a language chose the keypad's own letters ([LetterLayoutChoice.KEYPAD_LETTERS]),
+     * which leaves its built-in document out. Set by [init]; tests replace it.
+     */
     @Volatile
-    internal var userLayoutSource: () -> LetterLayout? = { null }
+    internal var keypadLettersSource: (language: String?) -> Boolean = { false }
 
     /**
      * The built-in documents for the typing path; null (no built-in tier) until [init]. Tests
@@ -140,12 +139,6 @@ object PhysicalKeyResolver {
         SubtypeManager.getInstance()?.currentSubtype?.let { ResourceLocaleUtils.getKeyboardLayoutSetName(it) }
     }
 
-    /** The [PREF_KEY] switch, as the loaded settings hold it; on when there are none yet. */
-    @Volatile
-    internal var alphabetSwitchSource: () -> Boolean = {
-        SettingsManager.getInstance()?.settingsValues?.pkbUsesActiveLanguageAlphabet ?: true
-    }
-
     /** The "Default currency" setting; "" leaves the currency key's own symbol alone. */
     @Volatile
     internal var currencySettingSource: () -> String = {
@@ -161,27 +154,25 @@ object PhysicalKeyResolver {
     /** Every source as it is now, to be put back with [Snapshot.restore]. For tests. */
     internal class Snapshot {
         private val chosen = chosenLayoutSource
-        private val user = userLayoutSource
+        private val keypadLetters = keypadLettersSource
         private val docs = builtIns
         private val locale = localeSource
         private val additional = additionalLocalesSource
         private val keypad = keypadLayoutSource
         private val keypadType = keypadTypeSource
         private val layoutSet = layoutSetSource
-        private val alphabet = alphabetSwitchSource
         private val currency = currencySettingSource
         private val zero = zeroKeySource
 
         fun restore() {
             chosenLayoutSource = chosen
-            userLayoutSource = user
+            keypadLettersSource = keypadLetters
             builtIns = docs
             localeSource = locale
             additionalLocalesSource = additional
             keypadLayoutSource = keypad
             keypadTypeSource = keypadType
             layoutSetSource = layoutSet
-            alphabetSwitchSource = alphabet
             currencySettingSource = currency
             zeroKeySource = zero
             typingCopy = null
@@ -210,20 +201,16 @@ object PhysicalKeyResolver {
      * current keyboard's language (or to none), its layout set and this phone's keypad. Only its
      * character keys: the typing path never lets a document take Space, Enter or a modifier.
      *
-     * Two choices feed it, and the first that drives the keys wins outright: the layout chosen for
-     * the keyboard's language on the Language screen ([LetterLayoutChoice]) when it is for the
-     * physical keys (`pkb` in its targets) and fits, else the one switched on in Physical layouts.
-     * So a language with a choice of its own never reads the Physical layouts selection, and every
-     * other language reads it as it always has. A chosen layout is a user layout even when it is a
-     * built-in document: its letters apply instead of the key map's.
+     * The layout chosen for the keyboard's language on the Language screen ([LetterLayoutChoice])
+     * when it is for the physical keys (`pkb` in its targets) and fits. A chosen layout is a user
+     * layout even when it is a built-in document: its letters apply instead of the key map's.
      */
     @JvmStatic
     fun userLayout(): LetterLayout? {
         val language = language(locale())
         val keypad = ask(keypadLayoutSource, null)
-        val chosen = ask({ chosenLayoutSource(language) }, null)
-            ?.takeIf { LetterLayout.Target.PKB in it.targets && fits(it, language, keypad) }
-        val layout = chosen ?: ask(userLayoutSource, null)?.takeIf { fits(it, language, keypad) } ?: return null
+        val layout = ask({ chosenLayoutSource(language) }, null)
+            ?.takeIf { LetterLayout.Target.PKB in it.targets && fits(it, language, keypad) } ?: return null
         typingCopy?.let { (source, trimmed) -> if (source === layout) return trimmed }
         return layout.onlyKeys(LetterLayout::isCharacterKey).also { typingCopy = layout to it }
     }
@@ -251,14 +238,15 @@ object PhysicalKeyResolver {
     private var lastBuiltIn: BuiltInChoice? = null
 
     /**
-     * The built-in document for the current keyboard while the [PREF_KEY] switch is on, else
-     * null. The registry caches its selection; the last one is kept here as well, because the
-     * typing path asks several times per keystroke.
+     * The built-in document for the current keyboard, unless its language chose the keypad's own
+     * letters ([keypadLettersSource]); null then. The registry caches its selection; the last one
+     * is kept here as well, because the typing path asks several times per keystroke.
      */
     @JvmStatic
     fun builtInLayout(): LetterLayout? {
-        if (!ask(alphabetSwitchSource, true)) return null
-        return builtInFor(language(locale()) ?: return null)
+        val language = language(locale()) ?: return null
+        if (ask({ keypadLettersSource(language) }, false)) return null
+        return builtInFor(language)
     }
 
     private fun builtInFor(language: String): LetterLayout? {
@@ -612,7 +600,8 @@ object PhysicalKeyResolver {
     private val scriptDocuments: MutableMap<LetterLayout, Boolean> = Collections.synchronizedMap(WeakHashMap())
 
     /** Whether any key of [layout] types a letter outside the Latin script. */
-    private fun isScriptDocument(layout: LetterLayout): Boolean = scriptDocuments.getOrPut(layout) {
+    @JvmStatic
+    internal fun isScriptDocument(layout: LetterLayout): Boolean = scriptDocuments.getOrPut(layout) {
         layout.keys.values.any { key ->
             Character.isLetter(key.keySpec) && when (Character.UnicodeScript.of(key.keySpec)) {
                 Character.UnicodeScript.LATIN, Character.UnicodeScript.COMMON, Character.UnicodeScript.INHERITED -> false

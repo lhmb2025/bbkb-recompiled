@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">தளவமைப்பைப் பகிர்</string>
     <string name="settings_pkb_layouts_share_failed">தளவமைப்பைப் பகிர முடியவில்லை</string>
     <string name="settings_pkb_layouts_summary">இயற்பியல் விசைகள் தட்டச்சு செய்யும் எழுத்துகளை மாற்றவும்</string>
+    <string name="settings_pkb_keypad_layout_title">கீபேட் அமைப்பு</string>
+    <string name="settings_pkb_keypad_layout_automatic">தானியங்கு (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">கீபேட் எழுத்துகள் (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">திரை விசைப்பலகையை எப்போதும் காட்டு</string>
     <string name="settings_pkb_layouts_three_row">மூன்று வரிசை விசைப்பலகை</string>
     <string name="settings_pkb_layouts_title">இயற்பியல் தளவமைப்புகள்</string>
     <string name="settings_pkb_multifunction_action_clipboard">கிளிப்போர்டு</string>

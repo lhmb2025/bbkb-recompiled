@@ -1171,7 +1171,6 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 // The Custom header, upper-cased as every category is; "CUSTOM" is also the symbol
                 // list's category title, the first resource name carrying that value.
                 "symbol_list_category_custom_title",
-                "settings_pkb_layouts_none", "settings_pkb_layouts_none_summary",
                 "settings_pkb_layouts_builtin_note",
             ),
             literals = setOf(

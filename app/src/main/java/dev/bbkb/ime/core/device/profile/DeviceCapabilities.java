@@ -72,6 +72,14 @@ public final class DeviceCapabilities {
      *        calling this rather than after.
      */
     public static DeviceCapabilities detect(DeviceInputMapping mapping) {
+        return detect(mapping, null);
+    }
+
+    /**
+     * {@link #detect(DeviceInputMapping)} with the user's own word on the keypad shape
+     * ({@code DeviceProfile.PREF_KEYPAD_LAYOUT}; null or empty for none), the top-ranked source.
+     */
+    public static DeviceCapabilities detect(DeviceInputMapping mapping, String userKeypadLayout) {
         KeyboardDeviceScanner scanner = KeyboardDeviceScanner.getInstance();
         // A config that names its pad lets the scanner find it by name; a config that names none
         // (every one but the Titans') leaves the scan exactly as it was.
@@ -81,7 +89,7 @@ public final class DeviceCapabilities {
         TouchKeypadInfo touch = scanner.getPrimaryTouchKeypad();
 
         KeypadLayoutDetector.Detection layout = KeypadLayoutDetector.detectLive(
-                mapping != null ? mapping.keypadLayout : null, primary);
+                userKeypadLayout, mapping != null ? mapping.keypadLayout : null, primary);
 
         return new DeviceCapabilities(
                 determineDeviceType(primary),

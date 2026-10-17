@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Rhannu cynllun</string>
     <string name="settings_pkb_layouts_share_failed">Methu rhannu\'r cynllun</string>
     <string name="settings_pkb_layouts_summary">Newid y llythrennau y mae\'r bysellau ffisegol yn eu teipio</string>
+    <string name="settings_pkb_keypad_layout_title">Cynllun y bysellbad</string>
+    <string name="settings_pkb_keypad_layout_automatic">Awtomatig (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Llythrennau\'r bysellbad (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Dangos y bysellfwrdd ar y sgrin bob amser</string>
     <string name="settings_pkb_layouts_three_row">pad bysellau tair rhes</string>
     <string name="settings_pkb_layouts_title">Cynlluniau ffisegol</string>
     <string name="settings_pkb_multifunction_action_clipboard">Clipfwrdd</string>

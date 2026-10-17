@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">ലേഔട്ട് പങ്കിടുക</string>
     <string name="settings_pkb_layouts_share_failed">ലേഔട്ട് പങ്കിടാനായില്ല</string>
     <string name="settings_pkb_layouts_summary">ഫിസിക്കൽ കീകൾ ടൈപ്പ് ചെയ്യുന്ന അക്ഷരങ്ങൾ മാറ്റുക</string>
+    <string name="settings_pkb_keypad_layout_title">കീപാഡ് ലേഔട്ട്</string>
+    <string name="settings_pkb_keypad_layout_automatic">സ്വയമേവ (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">കീപാഡ് അക്ഷരങ്ങൾ (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">ഓൺ-സ്ക്രീൻ കീബോർഡ് എപ്പോഴും കാണിക്കുക</string>
     <string name="settings_pkb_layouts_three_row">മൂന്ന് വരി കീപാഡ്</string>
     <string name="settings_pkb_layouts_title">ഫിസിക്കൽ ലേഔട്ടുകൾ</string>
     <string name="settings_pkb_multifunction_action_clipboard">ക്ലിപ്പ്ബോർഡ്</string>

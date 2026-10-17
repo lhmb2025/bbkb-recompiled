@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Jaa asettelu</string>
     <string name="settings_pkb_layouts_share_failed">Asettelua ei voitu jakaa</string>
     <string name="settings_pkb_layouts_summary">Muuta kirjaimia, joita fyysiset näppäimet kirjoittavat</string>
+    <string name="settings_pkb_keypad_layout_title">Näppäimistön asettelu</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automaattinen (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Näppäimistön kirjaimet (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Näytä näyttönäppäimistö aina</string>
     <string name="settings_pkb_layouts_three_row">kolmirivinen näppäimistö</string>
     <string name="settings_pkb_layouts_title">Fyysiset asettelut</string>
     <string name="settings_pkb_multifunction_action_clipboard">Leikepöytä</string>

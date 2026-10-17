@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Dela layout</string>
     <string name="settings_pkb_layouts_share_failed">Det gick inte att dela layouten</string>
     <string name="settings_pkb_layouts_summary">Ändra vilka bokstäver de fysiska tangenterna skriver</string>
+    <string name="settings_pkb_keypad_layout_title">Tangentbordslayout</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatisk (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Tangentbordets bokstäver (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Visa alltid skärmtangentbordet</string>
     <string name="settings_pkb_layouts_three_row">tangentbord med tre rader</string>
     <string name="settings_pkb_layouts_title">Fysiska layouter</string>
     <string name="settings_pkb_multifunction_action_clipboard">Urklipp</string>

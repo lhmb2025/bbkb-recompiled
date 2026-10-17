@@ -86,6 +86,15 @@ class DeviceInputMappingParserTest {
     }
 
     @Test
+    fun keypadLayouts_listsTheShapesTheModelWasSoldIn_droppingUnknownOnes() {
+        val m = parseSingle("""<match><device-name exact="d"/></match>
+            <keypad-layouts> qwerty, Dvorak , azerty, qwerty </keypad-layouts>""")
+        assertEquals(listOf("qwerty", "azerty"), m.keypadLayoutOptions)
+        assertNull("the single override is a different element", m.keypadLayout)
+        assertEquals("none declared: nothing to choose", emptyList<String>(), parseSingle("""<match><device-name exact="d"/></match>""").keypadLayoutOptions)
+    }
+
+    @Test
     fun kdbVariant_absent_isNull() {
         val m = parseSingle("""<match><device-name exact="d"/></match>""")
         assertNull(m.kdbVariant)

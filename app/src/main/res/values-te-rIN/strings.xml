@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">లేఅవుట్‌ను షేర్ చేయి</string>
     <string name="settings_pkb_layouts_share_failed">లేఅవుట్‌ను షేర్ చేయడం సాధ్యపడలేదు</string>
     <string name="settings_pkb_layouts_summary">ఫిజికల్ కీలు టైప్ చేసే అక్షరాలను మార్చండి</string>
+    <string name="settings_pkb_keypad_layout_title">కీప్యాడ్ లేఅవుట్</string>
+    <string name="settings_pkb_keypad_layout_automatic">ఆటోమేటిక్ (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">కీప్యాడ్ అక్షరాలు (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">ఆన్-స్క్రీన్ కీబోర్డ్‌ను ఎల్లప్పుడూ చూపించు</string>
     <string name="settings_pkb_layouts_three_row">మూడు వరుసల కీప్యాడ్</string>
     <string name="settings_pkb_layouts_title">ఫిజికల్ లేఅవుట్‌లు</string>
     <string name="settings_pkb_multifunction_action_clipboard">క్లిప్‌బోర్డ్</string>

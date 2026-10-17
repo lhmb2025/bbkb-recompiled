@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Байрлал хуваалцах</string>
     <string name="settings_pkb_layouts_share_failed">Байрлалыг хуваалцаж чадсангүй</string>
     <string name="settings_pkb_layouts_summary">Биет товчлууруудын бичих үсгийг өөрчлөх</string>
+    <string name="settings_pkb_keypad_layout_title">Гарын байрлал</string>
+    <string name="settings_pkb_keypad_layout_automatic">Автомат (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Гарын үсэг (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Дэлгэцийн гарыг үргэлж харуулах</string>
     <string name="settings_pkb_layouts_three_row">гурван эгнээтэй гар</string>
     <string name="settings_pkb_layouts_title">Биет байрлалууд</string>
     <string name="settings_pkb_multifunction_action_clipboard">Түр санах ой</string>

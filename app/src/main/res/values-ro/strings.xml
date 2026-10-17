@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Distribuie aspectul</string>
     <string name="settings_pkb_layouts_share_failed">Aspectul nu a putut fi distribuit</string>
     <string name="settings_pkb_layouts_summary">Schimbă literele introduse de tastele fizice</string>
+    <string name="settings_pkb_keypad_layout_title">Aspectul tastaturii</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automat (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Literele tastaturii (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Afișează întotdeauna tastatura de pe ecran</string>
     <string name="settings_pkb_layouts_three_row">tastatură cu trei rânduri</string>
     <string name="settings_pkb_layouts_title">Aspecte fizice</string>
     <string name="settings_pkb_multifunction_action_clipboard">Clipboard</string>

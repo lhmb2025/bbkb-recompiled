@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">分享布局</string>
     <string name="settings_pkb_layouts_share_failed">无法分享布局</string>
     <string name="settings_pkb_layouts_summary">更改实体按键输入的字母</string>
+    <string name="settings_pkb_keypad_layout_title">键盘布局</string>
+    <string name="settings_pkb_keypad_layout_automatic">自动 (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">键盘字母 (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">始终显示屏幕键盘</string>
     <string name="settings_pkb_layouts_three_row">三排键区</string>
     <string name="settings_pkb_layouts_title">实体布局</string>
     <string name="settings_pkb_multifunction_action_clipboard">剪贴板</string>

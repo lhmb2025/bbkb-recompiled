@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Condividi layout</string>
     <string name="settings_pkb_layouts_share_failed">Impossibile condividere il layout</string>
     <string name="settings_pkb_layouts_summary">Cambia le lettere digitate dai tasti fisici</string>
+    <string name="settings_pkb_keypad_layout_title">Layout della tastiera</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatico (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Lettere della tastiera (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Mostra sempre la tastiera su schermo</string>
     <string name="settings_pkb_layouts_three_row">tastierino a tre righe</string>
     <string name="settings_pkb_layouts_title">Layout fisici</string>
     <string name="settings_pkb_multifunction_action_clipboard">Appunti</string>

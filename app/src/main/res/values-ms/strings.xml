@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Kongsi susun atur</string>
     <string name="settings_pkb_layouts_share_failed">Tidak dapat berkongsi susun atur</string>
     <string name="settings_pkb_layouts_summary">Tukar huruf yang ditaip oleh kekunci fizikal</string>
+    <string name="settings_pkb_keypad_layout_title">Susun atur pad kekunci</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatik (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Huruf pad kekunci (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Sentiasa tunjukkan papan kekunci pada skrin</string>
     <string name="settings_pkb_layouts_three_row">pad kekunci tiga baris</string>
     <string name="settings_pkb_layouts_title">Susun atur fizikal</string>
     <string name="settings_pkb_multifunction_action_clipboard">Papan keratan</string>

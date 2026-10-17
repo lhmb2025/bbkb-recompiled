@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">שיתוף פריסה</string>
     <string name="settings_pkb_layouts_share_failed">לא ניתן לשתף את הפריסה</string>
     <string name="settings_pkb_layouts_summary">שינוי האותיות שהמקשים הפיזיים מקלידים</string>
+    <string name="settings_pkb_keypad_layout_title">פריסת המקלדת</string>
+    <string name="settings_pkb_keypad_layout_automatic">אוטומטי (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">אותיות המקלדת (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">הצג תמיד את המקלדת שעל המסך</string>
     <string name="settings_pkb_layouts_three_row">מקלדת בת שלוש שורות</string>
     <string name="settings_pkb_layouts_title">פריסות פיזיות</string>
     <string name="settings_pkb_multifunction_action_clipboard">לוח העריכה</string>

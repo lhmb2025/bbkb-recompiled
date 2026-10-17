@@ -26,6 +26,10 @@ import java.util.Locale;
  *
  * <p><b>Source order</b> (first definitive answer wins):
  * <ol>
+ *   <li>{@link Source#USER} — the Keypad layout the user chose on the Physical keyboard screen
+ *       ({@code DeviceProfile.PREF_KEYPAD_LAYOUT}), offered only where the device config lists
+ *       the shapes the model was sold in ({@code <keypad-layouts>}). Their word, above every
+ *       guess: a LineageOS build that reports nothing is where detection is weakest.</li>
  *   <li>{@link Source#DEVICE_CONFIG} — a {@code <keypad-layout>} element on the active device
  *       config XML. The single override, for a unit whose firmware tells us nothing; no shipped
  *       config declares one (pinned by {@code ShippedDeviceConfigsTest}) because hard-coding it
@@ -52,7 +56,7 @@ import java.util.Locale;
  * from fake tables in a unit test without a real {@link KeyCharacterMap} or a real
  * {@link InputDevice}. {@link #detectLive} is the thin adapter that reads the real ones.
  *
- * <p>There is deliberately no user-facing setting for this.
+ * <p>The user setting is the one override above; everything below it stays automatic.
  */
 public final class KeypadLayoutDetector {
 
@@ -63,7 +67,7 @@ public final class KeypadLayoutDetector {
     public static final String AZERTY = "azerty";
 
     /** Where a {@link Detection} came from, in descending confidence. */
-    public enum Source { DEVICE_CONFIG, DEVICE_NAME, SYSPROP, KCM, SCANCODE, FALLBACK }
+    public enum Source { USER, DEVICE_CONFIG, DEVICE_NAME, SYSPROP, KCM, SCANCODE, FALLBACK }
 
     /** An answer, and the source that produced it. */
     public static final class Detection {
@@ -135,7 +139,22 @@ public final class KeypadLayoutDetector {
                                    @Nullable String keypadLanguageProp,
                                    @Nullable AltCharLookup altChars,
                                    @Nullable String observedLayout) {
-        String layout = normalize(configLayout);
+        return detect(null, configLayout, deviceName, keypadLanguageProp, altChars, observedLayout);
+    }
+
+    /** {@link #detect} with the user's own choice ({@link Source#USER}) ahead of every source. */
+    @NonNull
+    @VisibleForTesting
+    public static Detection detect(@Nullable String userLayout,
+                                   @Nullable String configLayout,
+                                   @Nullable String deviceName,
+                                   @Nullable String keypadLanguageProp,
+                                   @Nullable AltCharLookup altChars,
+                                   @Nullable String observedLayout) {
+        String layout = normalize(userLayout);
+        if (layout != null) return Detection.of(layout, Source.USER);
+
+        layout = normalize(configLayout);
         if (layout != null) return Detection.of(layout, Source.DEVICE_CONFIG);
 
         layout = fromDeviceName(deviceName);
@@ -299,7 +318,16 @@ public final class KeypadLayoutDetector {
     @NonNull
     public static Detection detectLive(@Nullable String configLayout,
                                        @Nullable KeyboardDeviceInfo primaryKeyboard) {
+        return detectLive(null, configLayout, primaryKeyboard);
+    }
+
+    /** {@link #detectLive} with the user's own choice ({@link Source#USER}) ahead of every source. */
+    @NonNull
+    public static Detection detectLive(@Nullable String userLayout,
+                                       @Nullable String configLayout,
+                                       @Nullable KeyboardDeviceInfo primaryKeyboard) {
         final Detection detection = detect(
+                userLayout,
                 configLayout,
                 primaryKeyboard != null ? primaryKeyboard.getName() : null,
                 HardwareProbe.getKeypadLanguageProp(),
@@ -307,7 +335,8 @@ public final class KeypadLayoutDetector {
                 sObservedLayout);
         sLast = detection;
         Logger.info(TAG, "keypad layout = " + detection.layout + ", source = " + detection.source
-                + " (config=" + (configLayout == null ? "none" : configLayout)
+                + " (user=" + (userLayout == null ? "none" : userLayout)
+                + ", config=" + (configLayout == null ? "none" : configLayout)
                 + ", name=" + (primaryKeyboard != null ? primaryKeyboard.getName() : "none")
                 + ", prop=" + HardwareProbe.getKeypadLanguageProp()
                 + ", observed=" + (sObservedLayout == null ? "none" : sObservedLayout) + ")");

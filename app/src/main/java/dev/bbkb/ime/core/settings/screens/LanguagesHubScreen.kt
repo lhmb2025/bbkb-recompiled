@@ -76,6 +76,7 @@ import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.layout.LetterLayout
 import dev.bbkb.ime.core.layout.LetterLayoutChoice
 import dev.bbkb.ime.core.layout.LetterLayoutRegistry
+import dev.bbkb.ime.core.layout.OnScreenKeyboardChoice
 import dev.bbkb.ime.core.layout.PhysicalKeyResolver
 import dev.bbkb.ime.core.locale.KeyboardLanguages
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils
@@ -117,7 +118,6 @@ fun LanguagesHubScreen(
     val direct = remember { SubtypeEnabler.canEnableDirectly() }
     val hasPhysicalKeyboard = remember { DeviceProfile.current()?.hasPhysicalKeyboard() ?: false }
     val prefs = remember { PrefsManager.getPrefs(context) }
-    var keysFollowAlphabet by remember { mutableStateOf(prefs.getBoolean(PhysicalKeyResolver.PREF_KEY, true)) }
 
     var snapshot by remember { mutableStateOf<KeyboardLanguages.Snapshot?>(null) }
     var packs by remember { mutableStateOf<Packs?>(null) }
@@ -258,27 +258,6 @@ fun LanguagesHubScreen(
                     onClick = onNavigateToLanguageSwitching,
                 )
             }
-            // Only where it means something: a phone with physical keys, and at least one
-            // enabled keyboard whose alphabet those keys can type (Arabic, Cyrillic, Hebrew,
-            // Greek, Korean). Everyone else never sees the row.
-            if (hasPhysicalKeyboard && current?.keyboards.orEmpty().any { PhysicalKeyResolver.supportsLocale(it.locales.first()) }) {
-                item(key = "pkb-alphabet") {
-                    SwitchPreference(
-                        title = stringResource(R.string.settings_pkb_active_language_alphabet_title),
-                        summary = stringResource(
-                            if (keysFollowAlphabet) R.string.settings_pkb_active_language_alphabet_summary_on
-                            else R.string.settings_pkb_active_language_alphabet_summary_off
-                        ),
-                        icon = ImageVector.vectorResource(R.drawable.ic_settings_keyboard_alphabet),
-                        checked = keysFollowAlphabet,
-                        modifier = Modifier.settingsSearchAnchor("pref_pkb_active_language_alphabet"),
-                        onCheckedChange = { on ->
-                            keysFollowAlphabet = on
-                            prefs.edit().putBoolean(PhysicalKeyResolver.PREF_KEY, on).apply()
-                        },
-                    )
-                }
-            }
             item(key = "files") {
                 PreferenceScreen(
                     title = stringResource(R.string.settings_language_packs_title),
@@ -299,11 +278,17 @@ fun LanguagesHubScreen(
             if (!hasPhysicalKeyboard) emptyList() else layoutDocuments?.rowsFor(context, keyboard, language, LetterLayout.Target.PKB).orEmpty()
         }
         // A choice whose layout is gone (deleted, or no longer offered) leaves the keyboard its
-        // default, so that is the row shown chosen.
-        fun chosenIn(rows: List<LayoutChoiceRow>, target: LetterLayout.Target): String =
-            LetterLayoutChoice.chosenId(prefs, language, target).takeIf { id -> rows.any { it.id == id } } ?: ""
-        val chosenOnScreen = remember(keyboard, layoutChoices, onScreenRows) { chosenIn(onScreenRows, LetterLayout.Target.VKB) }
-        val chosenPhysical = remember(keyboard, layoutChoices, physicalRows) { chosenIn(physicalRows, LetterLayout.Target.PKB) }
+        // default, so that is the row shown chosen: the on-screen list's first row, or on the
+        // physical keys the language's alphabet document, else the keypad's letters.
+        fun chosenIn(rows: List<LayoutChoiceRow>, target: LetterLayout.Target, default: String): String =
+            LetterLayoutChoice.chosenId(prefs, language, target).takeIf { id -> rows.any { it.id == id } } ?: default
+        val chosenOnScreen = remember(keyboard, layoutChoices, onScreenRows) { chosenIn(onScreenRows, LetterLayout.Target.VKB, "") }
+        val chosenPhysical = remember(keyboard, layoutChoices, physicalRows) {
+            chosenIn(physicalRows, LetterLayout.Target.PKB, layoutDocuments?.defaultPhysicalId(context, keyboard, language) ?: "")
+        }
+        val alwaysOnScreen = remember(keyboard, layoutChoices) {
+            if (hasPhysicalKeyboard && language != null) OnScreenKeyboardChoice.isOn(prefs, language) else null
+        }
         KeyboardSheet(
             keyboard = keyboard,
             onScreenRows = onScreenRows,
@@ -313,6 +298,13 @@ fun LanguagesHubScreen(
             onChooseLayout = { target, id ->
                 if (language != null) {
                     LetterLayoutChoice.choose(context, language, target, id)
+                    layoutChoices++
+                }
+            },
+            alwaysOnScreen = alwaysOnScreen,
+            onAlwaysOnScreen = { on ->
+                if (language != null) {
+                    OnScreenKeyboardChoice.choose(context, language, on)
                     layoutChoices++
                 }
             },
@@ -460,7 +452,7 @@ private fun KeyboardRow(
  * The letter layouts a keyboard's Layout row can offer, read once per load of the screen (the
  * built-in documents parse once per process; the user's are a directory listing).
  */
-private class LayoutDocuments(val builtIns: List<LetterLayout>, val custom: List<LetterLayout>) {
+private class LayoutDocuments(val registry: LetterLayoutRegistry, val builtIns: List<LetterLayout>, val custom: List<LetterLayout>) {
 
     /**
      * The rows of [keyboard]'s layout list for its [target] keyboard, in [language]: its default
@@ -482,21 +474,57 @@ private class LayoutDocuments(val builtIns: List<LetterLayout>, val custom: List
             latin = MultiLanguageRepository.isLatinScript(keyboard.locale),
             drawsOnScreen = { layout -> LetterLayoutChoice.drawsOnScreen(context, layout) },
             ownLayoutSet = ownSet,
+            languageDocument = if (target == LetterLayout.Target.PKB) languageDocument(keyboard, language) else null,
         )
+        val keypad = DeviceProfile.current()?.keypadLayout
+        val keypadName = ResourceLocaleUtils.getKeyboardLayoutSetDisplayName(keypad) ?: keypad?.uppercase() ?: ""
+        val latin = MultiLanguageRepository.isLatinScript(keyboard.locale)
+        // The letters' name: the language's ("English", "Arabic"), without the region.
+        val letters = ResourceLocaleUtils.getSubtypeLocaleDisplayName(language) ?: keyboard.name
+        fun named(arrangement: String) = context.getString(R.string.layout_choice_name, arrangement, letters)
+        // The keyboard's own arrangement: its layout set's name (QWERTY, AZERTY, QWERTZ); a Latin
+        // set with no name of its own (Spanish, Nordic) is a QWERTY arrangement.
+        val ownArrangement = ResourceLocaleUtils.getKeyboardLayoutSetDisplayName(ownSet) ?: if (latin) "QWERTY" else null
         return layoutChoiceRows(
             options,
-            // QWERTY, QWERTZ, AZERTY…; a layout set with no name of its own (Spanish, Nordic) is
-            // the keyboard's.
-            ownTitle = ResourceLocaleUtils.getKeyboardLayoutSetDisplayName(ownSet) ?: keyboard.name,
+            // "QWERTY (English)"; a keyboard in a script of its own is named by its keyboard: "Arabic".
+            ownTitle = ownArrangement?.let(::named) ?: keyboard.name,
             // The Physical layouts screen's words for the same thing, so the screens agree.
             ownSummary = context.getString(R.string.settings_pkb_layouts_none_summary),
+            keypadLettersTitle = context.getString(R.string.languages_hub_layout_keypad_letters, keypadName),
+            name = { layout ->
+                when {
+                    // A shipped arrangement for the screen (Colemak, AZERTY…) carries this keyboard's letters.
+                    target == LetterLayout.Target.VKB && layout.origin == LetterLayout.Origin.BUILT_IN -> named(layout.name)
+                    // The language's own alphabet document on the keypad: its letters on the keypad's keys.
+                    target == LetterLayout.Target.PKB && layout.origin == LetterLayout.Origin.BUILT_IN &&
+                        !layout.optIn && layout.binding.isLanguageBound -> named(keypadName)
+                    // An etched keypad's layout, or the user's own: the name it carries.
+                    else -> layout.name
+                }
+            },
         )
     }
+
+    /** The alphabet document the registry selects for [keyboard] on this phone's keypad, or null. */
+    private fun languageDocument(keyboard: KeyboardLanguages.Keyboard, language: String): LetterLayout? {
+        val profile = DeviceProfile.current()
+        return registry.builtIn(
+            language,
+            profile?.keypadLayout,
+            profile?.effectiveKeypadType,
+            ResourceLocaleUtils.getKeyboardLayoutSetName(keyboard.subtype),
+        )
+    }
+
+    /** The physical row chosen for choice `""`: [LetterLayoutChoice.defaultPhysicalId]. */
+    fun defaultPhysicalId(context: Context, keyboard: KeyboardLanguages.Keyboard, language: String?): String =
+        LetterLayoutChoice.defaultPhysicalId(language?.let { languageDocument(keyboard, it) })
 
     companion object {
         fun read(context: Context): LayoutDocuments {
             val registry = LetterLayoutRegistry(context)
-            return LayoutDocuments(registry.builtInIds().mapNotNull { registry.builtIn(it) }, registry.list())
+            return LayoutDocuments(registry, registry.builtInIds().mapNotNull { registry.builtIn(it) }, registry.list())
         }
     }
 }
@@ -522,6 +550,9 @@ private fun KeyboardSheet(
     chosenOnScreenId: String,
     chosenPhysicalId: String,
     onChooseLayout: (LetterLayout.Target, String) -> Unit,
+    /** "Always show the on-screen keyboard" for this keyboard's language; null hides the row. */
+    alwaysOnScreen: Boolean?,
+    onAlwaysOnScreen: (Boolean) -> Unit,
     canRemove: Boolean,
     choices: List<LocaleItem>,
     onSave: (List<LocaleItem>) -> Unit,
@@ -552,7 +583,8 @@ private fun KeyboardSheet(
     val maxSheetHeight = (LocalConfiguration.current.screenHeightDp * 0.88f).dp
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
         Column(modifier = Modifier.fillMaxWidth().heightIn(max = maxSheetHeight)) {
-            // Title row: the keyboard's name, and Done when there is something to apply.
+            // Title row: the keyboard's name, and Done: applies a changed extras selection, else
+            // closes the sheet.
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -564,12 +596,12 @@ private fun KeyboardSheet(
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.weight(1f),
                 )
-                if (keyboard.canHaveExtras) {
-                    TextButton(
-                        onClick = { onSave(choices.filter { it.first in selected }.map { LocaleItem(it.first) }) },
-                        enabled = changed,
-                    ) { Text(stringResource(R.string.languages_hub_sheet_done)) }
-                }
+                TextButton(
+                    onClick = {
+                        if (changed) onSave(choices.filter { it.first in selected }.map { LocaleItem(it.first) })
+                        else onDismiss()
+                    },
+                ) { Text(stringResource(R.string.languages_hub_sheet_done)) }
             }
 
             val currentOnScreen = onScreenRows.firstOrNull { it.id == chosenOnScreenId }
@@ -590,7 +622,14 @@ private fun KeyboardSheet(
                     onClick = { chooseLayout = LetterLayout.Target.PKB },
                 )
             }
-            if (showOnScreen || showPhysical) {
+            if (alwaysOnScreen != null) {
+                SwitchPreference(
+                    title = stringResource(R.string.languages_hub_always_on_screen_title),
+                    checked = alwaysOnScreen,
+                    onCheckedChange = onAlwaysOnScreen,
+                )
+            }
+            if (showOnScreen || showPhysical || alwaysOnScreen != null) {
                 HorizontalDivider(modifier = Modifier.padding(horizontal = spacing.listItemPadding))
             }
 

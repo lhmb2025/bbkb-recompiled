@@ -24,9 +24,8 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * **Physical keypad.** The layout that drives the physical keys of the current keyboard is the
  * one chosen for its language on the Language screen ([LetterLayoutChoice]) when that is for the
- * physical keys and fits, else the one switched on in Physical layouts
- * ([LetterLayoutRegistry.activeForTyping]) — the same precedence [PhysicalKeyResolver.userLayout]
- * types with. While that layout fits this keyboard and keypad and changes at least one letter key
+ * physical keys and fits — what [PhysicalKeyResolver.userLayout] types with. While that layout
+ * fits this keyboard and keypad and changes at least one letter key
  * against the engine's own letters for the language, every physical-keyboard KDB the engine could
  * load is rewritten from it ([LetterLayoutKdb]) and registered under the engine variant
  * `layout:<id>`, which is then selected. Otherwise, when the keyboard has a built-in document (the
@@ -34,10 +33,12 @@ import java.util.concurrent.ConcurrentHashMap
  * Greek and Korean ones), every physical-keyboard KDB is rewritten from that document instead and
  * registered under `layout:builtin:<id>` ([LetterLayoutKdb.builtInVariantName]), so the engine
  * always reads the letters the keys type, even where several keyboards share one engine id
- * (Italian, Polish and Belgian Dutch all ask for English's). Only a keyboard with no built-in
- * document (the native-script keyboards whose keypad types the KEY2's etched Latin letters)
- * selects the device variant ([Xt9KdbVariant.deviceVariant]) again: the device's own keypad KDBs
- * ([KeypadKdbs]) and the shipped files. The rewritten files start from the device's: its keypad
+ * (Italian, Polish and Belgian Dutch all ask for English's). A language that chose the keypad's
+ * own letters ([LetterLayoutChoice.KEYPAD_LETTERS]) gets the keypad shape's Latin document the
+ * same way, so the engine decodes the Latin letters its keys now type. Only a keyboard with no
+ * built-in document (the native-script keyboards whose keypad types the KEY2's etched Latin
+ * letters) selects the device variant ([Xt9KdbVariant.deviceVariant]) again: the device's own
+ * keypad KDBs ([KeypadKdbs]) and the shipped files. The rewritten files start from the device's: its keypad
  * KDB for each engine id it builds ([KeypadKdbs.forDevice], with that id's own letters on the keys
  * the layout does not name) and the shipped file for every other id, so a layout changes letters
  * and never the key geometry the decoder is tuned to.
@@ -73,10 +74,6 @@ import java.util.concurrent.ConcurrentHashMap
 class LetterLayoutEngineSync @VisibleForTesting internal constructor(
     private val engine: Engine,
     private val kdbFiles: KdbFiles,
-    /** The Physical layouts selection's id as stored, read cheaply on every sync to notice a change. */
-    private val activeId: () -> String,
-    /** The Physical layouts selection itself, parsed (a file read after a change). */
-    private val activeLayout: () -> LetterLayout?,
     /** The current keyboard's language in the app's spelling (`iw`, not `he`), or null. */
     private val currentLanguage: () -> String?,
     /** This phone's keypad shape (`qwerty`/`qwertz`/`azerty`), or null when unknown. */
@@ -87,9 +84,9 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
     private val layoutSet: () -> String? = { null },
     /** The letter the engine has on each letter key for a language: what a layout "changes". */
     private val engineLetters: (language: String?) -> (keyCode: Int) -> Int,
-    /** The id chosen for a language on the Language screen as stored, `""` for none; cheap. */
+    /** The physical choice of a language on the Language screen as stored, `""` for none; cheap. */
     private val chosenId: (language: String?) -> String = { "" },
-    /** The layout chosen for a language on the Language screen, whatever it is for. */
+    /** The layout chosen for a language's physical keys on the Language screen, whatever it is for. */
     private val chosenLayout: (language: String?) -> LetterLayout? = { null },
     /**
      * The on-screen keyboard as drawn right now, or null when there is none to read. Asked on the
@@ -97,9 +94,10 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
      */
     private val onScreenKeyboard: (() -> DrawnKeyboard?)? = null,
     /**
-     * The built-in document a keyboard in a language types with on the physical keys, or null where
-     * none is bound. Without this source, a keyboard no chosen or imported layout applies to keeps
-     * the shipped KDB files.
+     * The built-in document a keyboard in a language types with on the physical keys (the keypad
+     * shape's Latin document for a language that chose the keypad's own letters), or null where
+     * none is bound. Without this source, a keyboard no chosen layout applies to keeps the shipped
+     * KDB files.
      */
     private val builtInLayout: (language: String?) -> LetterLayout? = { null },
     /**
@@ -147,7 +145,6 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
     private data class Request(
         val pkb: Boolean,
         val language: String?,
-        val activeId: String,
         val chosenId: String,
         val onScreen: String,
         val layoutSet: String?,
@@ -210,7 +207,6 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
 
     private fun request(language: String?, pkb: Boolean) {
         if (!engine.isAvailable) return
-        val id = try { activeId() } catch (e: Exception) { "" }
         val chosen = try { chosenId(language) } catch (e: Exception) { "" }
         // What the screen shows is read here, on the caller's thread (the keyboard's), not on the
         // registration thread, and handed to the decision.
@@ -218,7 +214,7 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
         val set = try { layoutSet() } catch (e: Exception) { null }
         synchronized(lock) {
             lastPkb = pkb
-            val request = Request(pkb, language, id, chosen, drawn?.fingerprint ?: "", set, changes)
+            val request = Request(pkb, language, chosen, drawn?.fingerprint ?: "", set, changes)
             if (request == lastRequest) return
             lastRequest = request
             // Queued under the lock, so the job queued last is the one for the newest request.
@@ -305,12 +301,11 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
 
     /**
      * The layout the physical keys follow for [language] when the engine should follow it too,
-     * else null. The language's own choice when it is for the physical keys and fits, else the
-     * Physical layouts selection when that does; either must also change a letter key.
+     * else null: the language's own choice when it is for the physical keys, fits, and changes a
+     * letter key.
      */
     private fun wanted(language: String?): LetterLayout? {
-        val chosen = chosenLayout(language)?.takeIf { fitsPhysicalKeys(it, language) }
-        val layout = chosen ?: activeLayout()?.takeIf { fitsPhysicalKeys(it, language) } ?: return null
+        val layout = chosenLayout(language)?.takeIf { fitsPhysicalKeys(it, language) } ?: return null
         if (!layout.changesLetters(engineLetters(language))) return null
         return layout
     }
@@ -496,10 +491,6 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
             return LetterLayoutEngineSync(
                 engine = XtEngine,
                 kdbFiles = AssetKdbFiles(app.assets),
-                activeId = {
-                    PrefsManager.getPrefs(app).getString(LetterLayoutRegistry.PREF_ACTIVE_LAYOUT, "") ?: ""
-                },
-                activeLayout = { LetterLayoutRegistry.activeForTyping(app) },
                 currentLanguage = {
                     SubtypeManager.getInstance()?.currentSubtypeLocale?.let { LocaleUtils.languageCode(it) }
                 },
@@ -510,7 +501,10 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
                 chosenId = { language -> LetterLayoutChoice.chosenId(PrefsManager.getPrefs(app), language, LetterLayout.Target.PKB) },
                 chosenLayout = { language -> LetterLayoutChoice.forTyping(app, language) },
                 onScreenKeyboard = { drawnOnScreen() },
-                builtInLayout = { language -> builtIns.builtIn(language, keypad(), keypadType(), layoutSet()) },
+                builtInLayout = { language ->
+                    if (LetterLayoutChoice.keypadLettersChosen(app, language)) keypadLettersDocument(builtIns, keypad())
+                    else builtIns.builtIn(language, keypad(), keypadType(), layoutSet())
+                },
                 shippedLayout = { language, set -> KeypadKdbs.shippedLetters(builtIns)(language, set) },
                 store = KdbStore.forApp(app),
             )
@@ -564,6 +558,23 @@ class LetterLayoutEngineSync @VisibleForTesting internal constructor(
 
         @JvmStatic
         internal fun latinLetter(keyCode: Int): Int = 'a'.code + (keyCode - android.view.KeyEvent.KEYCODE_A)
+
+        /**
+         * The built-in document whose letters are the keypad's own on a [keypad] of that shape:
+         * the English, French and German keyboards' (QWERTY, AZERTY, QWERTZ), which the generator
+         * writes from the firmware key maps. What the engine decodes against for a language that
+         * chose the keypad's letters.
+         */
+        @VisibleForTesting
+        @JvmStatic
+        internal fun keypadLettersDocument(builtIns: LetterLayoutRegistry, keypad: String?): LetterLayout? =
+            builtIns.builtIn(
+                when (keypad?.lowercase(java.util.Locale.ROOT)) {
+                    "azerty" -> "fr"
+                    "qwertz" -> "de"
+                    else -> "en"
+                },
+            )
     }
 
     /** [Engine] over [Xt9KdbVariant]. */

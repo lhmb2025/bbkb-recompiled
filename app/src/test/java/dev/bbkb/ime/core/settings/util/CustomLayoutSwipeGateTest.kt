@@ -51,7 +51,7 @@ class CustomLayoutSwipeGateTest {
         SettingsManager.initialize(context)
 
         saved = PhysicalKeyResolver.Snapshot()
-        PhysicalKeyResolver.userLayoutSource = { activeMap }
+        PhysicalKeyResolver.chosenLayoutSource = { _ -> activeMap }
         PhysicalKeyResolver.localeSource = { Locale.ENGLISH }
         PhysicalKeyResolver.keypadLayoutSource = { "qwerty" }
     }

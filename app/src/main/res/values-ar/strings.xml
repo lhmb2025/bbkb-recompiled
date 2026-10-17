@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">مشاركة التخطيط</string>
     <string name="settings_pkb_layouts_share_failed">تعذّرت مشاركة التخطيط</string>
     <string name="settings_pkb_layouts_summary">تغيير الأحرف التي تكتبها المفاتيح الفعلية</string>
+    <string name="settings_pkb_keypad_layout_title">تخطيط لوحة المفاتيح</string>
+    <string name="settings_pkb_keypad_layout_automatic">تلقائي (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">حروف لوحة المفاتيح (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">إظهار لوحة المفاتيح على الشاشة دائمًا</string>
     <string name="settings_pkb_layouts_three_row">لوحة مفاتيح بثلاثة صفوف</string>
     <string name="settings_pkb_layouts_title">التخطيطات الفعلية</string>
     <string name="settings_pkb_multifunction_action_clipboard">الحافظة</string>

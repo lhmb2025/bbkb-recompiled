@@ -40,6 +40,7 @@ class LetterLayoutChoiceTest {
     @After
     fun tearDown() {
         LetterLayoutChoice.resetMigrationForTest()
+        LetterLayoutChoice.enabledLanguages = { emptyList() }
         prefs.edit().clear().commit()
         LetterLayoutRegistry.directoryOf(context).deleteRecursively()
         LetterLayoutRegistry.invalidate()
@@ -114,6 +115,53 @@ class LetterLayoutChoiceTest {
         assertEquals("both", prefs.getString("pref_letter_layout_pkb_fr", null))
         assertNull(prefs.getString("pref_letter_layout_vkb_fr", null))
         assertFalse("a choice whose layout is gone is dropped", prefs.all.keys.any { it.endsWith("_es") })
+    }
+
+    @Test
+    fun theOneActiveLayout_becomesThePhysicalChoiceOfTheLanguagesItIsBoundTo() {
+        val registry = LetterLayoutRegistry(context)
+        registry.save(layout("mine", languages = "de,fr"))
+        registry.save(layout("all"))
+        prefs.edit()
+            .putString(LetterLayoutRegistry.PREF_ACTIVE_LAYOUT, "mine")
+            .putString("pref_letter_layout_pkb_fr", "all")
+            .commit()
+        LetterLayoutChoice.enabledLanguages = { listOf("en", "de", "fr") }
+        LetterLayoutChoice.migrate(context)
+        assertNull("not bound to English", prefs.getString("pref_letter_layout_pkb_en", null))
+        assertEquals("mine", prefs.getString("pref_letter_layout_pkb_de", null))
+        assertEquals("a language with a choice keeps it", "all", prefs.getString("pref_letter_layout_pkb_fr", null))
+        assertFalse(prefs.contains(LetterLayoutRegistry.PREF_ACTIVE_LAYOUT))
+
+        // One bound to no language: every enabled language.
+        LetterLayoutChoice.resetMigrationForTest()
+        prefs.edit().clear().putString(LetterLayoutRegistry.LEGACY_PREF_ACTIVE_LETTER_MAP, "all").commit()
+        LetterLayoutChoice.migrate(context)
+        assertEquals("all", prefs.getString("pref_letter_layout_pkb_en", null))
+        assertEquals("all", prefs.getString("pref_letter_layout_pkb_de", null))
+        assertFalse(prefs.contains(LetterLayoutRegistry.LEGACY_PREF_ACTIVE_LETTER_MAP))
+    }
+
+    @Test
+    fun theAlphabetSwitchOff_becomesTheKeypadsLettersForTheScriptLanguages() {
+        prefs.edit().putBoolean(LetterLayoutChoice.LEGACY_ALPHABET_PREF, false).commit()
+        LetterLayoutChoice.enabledLanguages = { listOf("en", "ar", "ru", "th") }
+        LetterLayoutChoice.migrate(context)
+        assertEquals(LetterLayoutChoice.KEYPAD_LETTERS, prefs.getString("pref_letter_layout_pkb_ar", null))
+        assertEquals(LetterLayoutChoice.KEYPAD_LETTERS, prefs.getString("pref_letter_layout_pkb_ru", null))
+        assertNull("English's document is Latin: the switch never changed it", prefs.getString("pref_letter_layout_pkb_en", null))
+        assertNull("Thai has no document of its own", prefs.getString("pref_letter_layout_pkb_th", null))
+        assertFalse(prefs.contains(LetterLayoutChoice.LEGACY_ALPHABET_PREF))
+        assertTrue(LetterLayoutChoice.keypadLettersChosen(context, "ar"))
+        assertFalse(LetterLayoutChoice.keypadLettersChosen(context, "en"))
+        assertNull("the keypad's letters name no layout", LetterLayoutChoice.forTyping(context, "ar"))
+
+        // On: nothing to carry, the key just goes.
+        LetterLayoutChoice.resetMigrationForTest()
+        prefs.edit().clear().putBoolean(LetterLayoutChoice.LEGACY_ALPHABET_PREF, true).commit()
+        LetterLayoutChoice.migrate(context)
+        assertFalse(prefs.contains(LetterLayoutChoice.LEGACY_ALPHABET_PREF))
+        assertFalse(prefs.contains("pref_letter_layout_pkb_ar"))
     }
 
     @Test
@@ -245,26 +293,55 @@ class LetterLayoutChoiceTest {
         val draws = { it: LetterLayout -> LetterLayoutChoice.drawsOnScreen(context, it) }
         fun ids(options: List<LetterLayoutChoice.Option>) = options.map { it.id }
         assertEquals(
-            "default, then the user's layouts for the language or for every language, by name; the shipped Colemak is for the screen",
-            listOf("", "a-english", "b-everywhere"),
+            "the keypad's letters, then the user's layouts for the language or for every language, by name; the shipped Colemak is for the screen",
+            listOf(LetterLayoutChoice.KEYPAD_LETTERS, "a-english", "b-everywhere"),
             ids(LetterLayoutChoice.options(builtIns, custom, "en", Target.PKB, latin = true, drawsOnScreen = draws, ownLayoutSet = "qwerty")),
         )
         assertEquals(
             "the Thai keypad's layout is offered to Thai, never applied by itself",
-            listOf("", "thai-keypad", "b-everywhere", "t-thai"),
+            listOf(LetterLayoutChoice.KEYPAD_LETTERS, "thai-keypad", "b-everywhere", "t-thai"),
             ids(LetterLayoutChoice.options(builtIns, custom, "th", Target.PKB, latin = false, drawsOnScreen = draws, ownLayoutSet = "thai")),
         )
         assertNull("not a Thai keyboard's default", registry.builtIn("th", "qwerty", "3row", "thai"))
         assertEquals(
             "the Zhuyin keypad's layout only on the Zhuyin keyboard",
-            listOf("", "zhuyin-keypad", "b-everywhere"),
+            listOf(LetterLayoutChoice.KEYPAD_LETTERS, "zhuyin-keypad", "b-everywhere"),
             ids(LetterLayoutChoice.options(builtIns, custom, "zh", Target.PKB, latin = false, drawsOnScreen = draws, ownLayoutSet = "zhuyin")),
         )
         assertEquals(
-            listOf("", "b-everywhere"),
+            listOf(LetterLayoutChoice.KEYPAD_LETTERS, "b-everywhere"),
             ids(LetterLayoutChoice.options(builtIns, custom, "zh", Target.PKB, latin = false, drawsOnScreen = draws, ownLayoutSet = "pinyin")),
         )
-        assertEquals("a Greek keyboard's own document is its default, not a choice", listOf("", "b-everywhere"),
-            ids(LetterLayoutChoice.options(builtIns, custom, "el", Target.PKB, latin = false, drawsOnScreen = draws, ownLayoutSet = "greek")))
+        // A Greek keyboard's own alphabet document is its second row, right after the keypad's
+        // letters, and the row chosen for a keyboard with no choice.
+        val greek = registry.builtIn("el", "qwerty", null, "greek")!!
+        assertEquals(
+            listOf(LetterLayoutChoice.KEYPAD_LETTERS, "el", "b-everywhere"),
+            ids(LetterLayoutChoice.options(builtIns, custom, "el", Target.PKB, latin = false, drawsOnScreen = draws, ownLayoutSet = "greek", languageDocument = greek)),
+        )
+        assertEquals("el", LetterLayoutChoice.defaultPhysicalId(greek))
+        assertEquals(LetterLayoutChoice.KEYPAD_LETTERS, LetterLayoutChoice.defaultPhysicalId(null))
+        // An English keyboard's document types the keypad's own letters, so it stands in for them:
+        // one row for the keyboard's letters, not two that mean the same.
+        val english = registry.builtIn("en", "qwerty", null, "qwerty")!!
+        assertEquals(
+            listOf("en", "a-english", "b-everywhere"),
+            ids(LetterLayoutChoice.options(builtIns, custom, "en", Target.PKB, latin = true, drawsOnScreen = draws, ownLayoutSet = "qwerty", languageDocument = english)),
+        )
+        assertEquals("en", LetterLayoutChoice.defaultPhysicalId(english))
+    }
+
+    @Test
+    fun alwaysShowingTheOnScreenKeyboard_isOneSwitchPerLanguage() {
+        assertFalse(OnScreenKeyboardChoice.isOn(prefs, "en"))
+        assertFalse(OnScreenKeyboardChoice.isOn(prefs, null))
+        OnScreenKeyboardChoice.choose(context, "en", true)
+        assertTrue(OnScreenKeyboardChoice.isOn(prefs, "en"))
+        assertFalse(OnScreenKeyboardChoice.isOn(prefs, "fr"))
+        assertTrue(OnScreenKeyboardChoice.isPrefKey("pref_always_on_screen_en"))
+        assertFalse(OnScreenKeyboardChoice.isPrefKey("pref_always_on_screen_"))
+        assertFalse(OnScreenKeyboardChoice.isPrefKey("pref_letter_layout_pkb_en"))
+        OnScreenKeyboardChoice.choose(context, "en", false)
+        assertFalse("off is the absence of the key", prefs.contains("pref_always_on_screen_en"))
     }
 }

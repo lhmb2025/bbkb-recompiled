@@ -1256,7 +1256,23 @@ class BlackBerryIME : InputMethodService(),
         return inputMethodImpl!!
     }
 
+    /**
+     * Publishes whether the current keyboard's language asked for the on-screen keyboard
+     * ([OnScreenKeyboardChoice]) and has the input view evaluated again, so the keyboard appears
+     * or goes as the choice says. From the keyboard changing and from a change of the choice.
+     */
+    fun refreshLanguageOnScreenKeyboard() {
+        val forced = dev.bbkb.ime.core.layout.OnScreenKeyboardChoice.isOnForCurrentKeyboard(this)
+        if (DeviceProfile.isForceVkbMode() != forced || forced) {
+            DeviceProfile.setLanguageForceVkbMode(forced)
+            updateInputViewShown()
+        } else {
+            DeviceProfile.setLanguageForceVkbMode(false)
+        }
+    }
+
     override fun onStartInput(editorInfo: EditorInfo?, z: Boolean) {
+        DeviceProfile.setLanguageForceVkbMode(dev.bbkb.ime.core.layout.OnScreenKeyboardChoice.isOnForCurrentKeyboard(this))
         Logger.info(LOG_TAG, "onStartInput(): restarting=$z, editorInfo=${if (editorInfo == null) "NULL" else "valid"}")
         // Investigation hook (debug only, opt-in via `setprop debug.et9.probe 1`): dump the ET9
         // engine's live ranking/adaptation configuration. onStartInput (not ...View) because PKB
@@ -1542,6 +1558,7 @@ class BlackBerryIME : InputMethodService(),
     @Throws(Resources.NotFoundException::class)
     override fun onCurrentInputMethodSubtypeChanged(inputMethodSubtype: InputMethodSubtype) {
         subtypeManager.onSubtypeChanged(inputMethodSubtype)
+        refreshLanguageOnScreenKeyboard()
         updateLanguagePacksForSubtype(inputMethodSubtype)
         if (!ResourceLocaleUtils.isNonCjkLanguage(richInputMethodManager!!.getLastInputMethodSubtype()) && keyboardSwitcher.getUnifiedInputBoardManager() != null && !keyboardSwitcher.getUnifiedInputBoardManager()!!.isShowing()) {
             keyboardSwitcher.onFinishShiftLongPress()

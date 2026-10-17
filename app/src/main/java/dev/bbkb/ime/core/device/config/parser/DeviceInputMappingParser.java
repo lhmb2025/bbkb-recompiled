@@ -283,6 +283,23 @@ public class DeviceInputMappingParser {
                     }
                     break;
                 }
+                case "keypad-layouts": {
+                    // The shapes the model was sold in, for the Physical keyboard screen's
+                    // Keypad layout choice; unknown names are dropped with a log line.
+                    final String declared = trimmedText(p);
+                    if (declared != null) {
+                        for (String part : declared.split(",")) {
+                            final String layout = KeypadLayoutDetector.normalize(part.trim());
+                            if (layout != null) {
+                                if (!mapping.keypadLayoutOptions.contains(layout)) mapping.keypadLayoutOptions.add(layout);
+                            } else if (!part.trim().isEmpty()) {
+                                Logger.error(TAG, "Ignoring keypad-layouts entry \"" + part.trim()
+                                        + "\": expected qwerty, qwertz or azerty");
+                            }
+                        }
+                    }
+                    break;
+                }
                 case "keypad-layout": {
                     // Schema v2.3: the one override for the detected physical keypad layout.
                     // Validated here so a typo is rejected at parse time rather than becoming a

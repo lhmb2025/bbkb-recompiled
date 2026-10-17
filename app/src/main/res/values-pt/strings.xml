@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Compartilhar leiaute</string>
     <string name="settings_pkb_layouts_share_failed">Não foi possível compartilhar o leiaute</string>
     <string name="settings_pkb_layouts_summary">Alterar as letras que as teclas físicas digitam</string>
+    <string name="settings_pkb_keypad_layout_title">Disposição do teclado</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automática (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Letras do teclado (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Sempre mostrar o teclado na tela</string>
     <string name="settings_pkb_layouts_three_row">teclado de três fileiras</string>
     <string name="settings_pkb_layouts_title">Leiautes físicos</string>
     <string name="settings_pkb_multifunction_action_clipboard">Área de transferência</string>

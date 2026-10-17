@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">ವಿನ್ಯಾಸ ಹಂಚಿಕೊಳ್ಳಿ</string>
     <string name="settings_pkb_layouts_share_failed">ವಿನ್ಯಾಸವನ್ನು ಹಂಚಿಕೊಳ್ಳಲಾಗಲಿಲ್ಲ</string>
     <string name="settings_pkb_layouts_summary">ಭೌತಿಕ ಕೀಗಳು ಟೈಪ್ ಮಾಡುವ ಅಕ್ಷರಗಳನ್ನು ಬದಲಾಯಿಸಿ</string>
+    <string name="settings_pkb_keypad_layout_title">ಕೀಪ್ಯಾಡ್ ವಿನ್ಯಾಸ</string>
+    <string name="settings_pkb_keypad_layout_automatic">ಸ್ವಯಂಚಾಲಿತ (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">ಕೀಪ್ಯಾಡ್ ಅಕ್ಷರಗಳು (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">ಆನ್-ಸ್ಕ್ರೀನ್ ಕೀಬೋರ್ಡ್ ಅನ್ನು ಯಾವಾಗಲೂ ತೋರಿಸಿ</string>
     <string name="settings_pkb_layouts_three_row">ಮೂರು ಸಾಲಿನ ಕೀಪ್ಯಾಡ್</string>
     <string name="settings_pkb_layouts_title">ಭೌತಿಕ ವಿನ್ಯಾಸಗಳು</string>
     <string name="settings_pkb_multifunction_action_clipboard">ಕ್ಲಿಪ್‌ಬೋರ್ಡ್</string>

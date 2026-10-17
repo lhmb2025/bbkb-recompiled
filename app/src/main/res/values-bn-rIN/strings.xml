@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">লেআউট শেয়ার করুন</string>
     <string name="settings_pkb_layouts_share_failed">লেআউট শেয়ার করা যায়নি</string>
     <string name="settings_pkb_layouts_summary">ফিজিক্যাল কীগুলি যে অক্ষর টাইপ করে তা পরিবর্তন করুন</string>
+    <string name="settings_pkb_keypad_layout_title">কীপ্যাড লেআউট</string>
+    <string name="settings_pkb_keypad_layout_automatic">স্বয়ংক্রিয় (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">কীপ্যাডের অক্ষর (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">সর্বদা অন-স্ক্রিন কীবোর্ড দেখান</string>
     <string name="settings_pkb_layouts_three_row">তিন সারির কীপ্যাড</string>
     <string name="settings_pkb_layouts_title">ফিজিক্যাল লেআউট</string>
     <string name="settings_pkb_multifunction_action_clipboard">ক্লিপবোর্ড</string>

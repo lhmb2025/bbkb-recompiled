@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Zdieľať rozloženie</string>
     <string name="settings_pkb_layouts_share_failed">Rozloženie sa nepodarilo zdieľať</string>
     <string name="settings_pkb_layouts_summary">Zmeniť písmená, ktoré píšu fyzické klávesy</string>
+    <string name="settings_pkb_keypad_layout_title">Rozloženie klávesnice</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automaticky (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Písmená klávesnice (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Vždy zobrazovať klávesnicu na obrazovke</string>
     <string name="settings_pkb_layouts_three_row">trojriadková klávesnica</string>
     <string name="settings_pkb_layouts_title">Fyzické rozloženia</string>
     <string name="settings_pkb_multifunction_action_clipboard">Schránka</string>

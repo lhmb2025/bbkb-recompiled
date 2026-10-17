@@ -43,7 +43,6 @@ class PhysicalKeyResolverChoiceTest {
     private val registry by lazy { LetterLayoutRegistry(context) }
 
     /** The Physical layouts selection. */
-    private var active: LetterLayout? = null
 
     /** Each language's choice. */
     private val chosen = HashMap<String, LetterLayout>()
@@ -56,14 +55,13 @@ class PhysicalKeyResolverChoiceTest {
     fun setUp() {
         saved = PhysicalKeyResolver.Snapshot()
         PhysicalKeyResolver.chosenLayoutSource = { language -> asked += language; chosen[language] }
-        PhysicalKeyResolver.userLayoutSource = { active }
         PhysicalKeyResolver.builtIns = PhysicalKeyResolver.RegistryBuiltIns(registry)
         PhysicalKeyResolver.localeSource = { locale }
         PhysicalKeyResolver.additionalLocalesSource = { null }
         PhysicalKeyResolver.keypadLayoutSource = { keypad }
         PhysicalKeyResolver.keypadTypeSource = { "4row" }
         PhysicalKeyResolver.layoutSetSource = { "qwerty" }
-        PhysicalKeyResolver.alphabetSwitchSource = { true }
+        PhysicalKeyResolver.keypadLettersSource = { _ -> false }
         PhysicalKeyResolver.currencySettingSource = { "" }
         PhysicalKeyResolver.zeroKeySource = { "0" }
 
@@ -113,20 +111,23 @@ class PhysicalKeyResolverChoiceTest {
         keys.map { letter(KeyEvent.keyCodeFromString("KEYCODE_$it")) ?: "·" }.joinToString("")
 
     @Test
-    fun aLanguagesChoiceWinsOverThePhysicalLayoutsSelection_forThatLanguageOnly() {
-        active = swap
+    fun aLanguagesChoiceDrivesItsKeys_forThatLanguageOnly() {
         chosen["en"] = colemakForKeypad
+        chosen["de"] = swap
         // English follows Colemak, letters and all; the swap is not consulted.
         assertEquals("qwfpgjluy;", row("QWERTYUIOP"))
         assertEquals("arstdhneio", row("ASDFGHJKL") + letter(KeyEvent.KEYCODE_SEMICOLON))
         assertEquals("zxcvbkm", row("ZXCVBNM"))
         assertEquals("F", letter(KeyEvent.KEYCODE_E, KeyEvent.META_SHIFT_ON))
-        // German has no choice of its own: the Physical layouts selection, exactly as before.
+        // German has its own choice: the swap.
         locale = Locale.GERMAN
         assertEquals("w", letter(KeyEvent.KEYCODE_Q))
         assertEquals("q", letter(KeyEvent.KEYCODE_W))
         assertNull("the swap names no E: the key map's", letter(KeyEvent.KEYCODE_E))
-        assertEquals("the choice is asked per language", listOf("en", "de"), asked.distinct())
+        // French has none: the key map's.
+        locale = Locale.FRENCH
+        assertNull(letter(KeyEvent.KEYCODE_Q))
+        assertEquals("the choice is asked per language", listOf("en", "de", "fr"), asked.distinct())
     }
 
     @Test
@@ -141,16 +142,15 @@ class PhysicalKeyResolverChoiceTest {
     }
 
     @Test
-    fun aChoiceThatIsNotForThePhysicalKeysLeavesThemToThePhysicalLayoutsSelection() {
-        active = swap
-        // The shipped Colemak is for the on-screen keyboard only: the swap types, and E is the key map's.
+    fun aChoiceThatIsNotForThePhysicalKeysLeavesThemToTheKeyMap() {
+        // The shipped Colemak is for the on-screen keyboard only: the keys are the key map's.
         chosen["en"] = colemak
-        assertEquals("w", letter(KeyEvent.KEYCODE_Q))
+        assertNull(letter(KeyEvent.KEYCODE_Q))
         assertNull(letter(KeyEvent.KEYCODE_E))
         chosen["en"] = layout("screen-only", """<key code="KEYCODE_Q" keySpec="z"/>""", targets = "vkb")
-        assertEquals("w", letter(KeyEvent.KEYCODE_Q))
+        assertNull(letter(KeyEvent.KEYCODE_Q))
         chosen["en"] = layout("azerty-pad", """<key code="KEYCODE_Q" keySpec="z"/>""", keypad = "azerty")
-        assertEquals("bound to another keypad: the swap types", "w", letter(KeyEvent.KEYCODE_Q))
+        assertNull("bound to another keypad: the key map's", letter(KeyEvent.KEYCODE_Q))
         keypad = "azerty"
         assertEquals("z", letter(KeyEvent.KEYCODE_Q))
     }

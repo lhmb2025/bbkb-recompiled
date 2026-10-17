@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Bagikan tata letak</string>
     <string name="settings_pkb_layouts_share_failed">Tidak dapat membagikan tata letak</string>
     <string name="settings_pkb_layouts_summary">Ubah huruf yang diketik oleh tombol fisik</string>
+    <string name="settings_pkb_keypad_layout_title">Tata letak keypad</string>
+    <string name="settings_pkb_keypad_layout_automatic">Otomatis (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Huruf keypad (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Selalu tampilkan keyboard di layar</string>
     <string name="settings_pkb_layouts_three_row">keypad tiga baris</string>
     <string name="settings_pkb_layouts_title">Tata letak fisik</string>
     <string name="settings_pkb_multifunction_action_clipboard">Clipboard</string>

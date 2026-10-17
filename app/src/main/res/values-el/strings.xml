@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Κοινοποίηση διάταξης</string>
     <string name="settings_pkb_layouts_share_failed">Δεν ήταν δυνατή η κοινοποίηση της διάταξης</string>
     <string name="settings_pkb_layouts_summary">Αλλαγή των γραμμάτων που πληκτρολογούν τα φυσικά πλήκτρα</string>
+    <string name="settings_pkb_keypad_layout_title">Διάταξη πληκτρολογίου</string>
+    <string name="settings_pkb_keypad_layout_automatic">Αυτόματα (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Γράμματα πληκτρολογίου (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Να εμφανίζεται πάντα το πληκτρολόγιο οθόνης</string>
     <string name="settings_pkb_layouts_three_row">πληκτρολόγιο τριών σειρών</string>
     <string name="settings_pkb_layouts_title">Φυσικές διατάξεις</string>
     <string name="settings_pkb_multifunction_action_clipboard">Πρόχειρο</string>

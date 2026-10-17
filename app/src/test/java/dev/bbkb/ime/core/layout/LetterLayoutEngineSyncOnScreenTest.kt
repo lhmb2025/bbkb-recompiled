@@ -102,15 +102,14 @@ class LetterLayoutEngineSyncOnScreenTest {
     private fun newSync(onScreenSource: (() -> DrawnKeyboard?)? = { onScreen }, kdbStore: KdbStore? = store) = LetterLayoutEngineSync(
         engine = engine,
         kdbFiles = DiskKdbFiles(kdbDir()),
-        activeId = { active?.id ?: "" },
-        activeLayout = { active },
         currentLanguage = { language },
         keypad = { "qwerty" },
         keypadType = { null },
         layoutSet = { null },
         engineLetters = { { keyCode -> LetterLayoutEngineSync.latinLetter(keyCode) } },
-        chosenId = { lang -> chosen[lang]?.id ?: "" },
-        chosenLayout = { lang -> chosen[lang] },
+        // [active] stands for a layout chosen for every language that has no choice of its own.
+        chosenId = { lang -> (chosen[lang] ?: active)?.id ?: "" },
+        chosenLayout = { lang -> chosen[lang] ?: active },
         onScreenKeyboard = onScreenSource,
         shippedLayout = KeypadKdbs.shippedLetters(registry),
         store = kdbStore,
@@ -344,7 +343,7 @@ class LetterLayoutEngineSyncOnScreenTest {
     // ── a language's chosen layout on the keypad ─────────────────────────────
 
     @Test
-    fun aLanguagesChoiceDrivesTheKeypadKdbs_overThePhysicalLayoutsSelection() {
+    fun aLanguagesChoiceDrivesTheKeypadKdbs_overTheOneEveryOtherLanguageHas() {
         deviceVariant("athena")
         active = swap
         chosen["en"] = colemakForKeypad
@@ -356,38 +355,33 @@ class LetterLayoutEngineSyncOnScreenTest {
         assertEquals(LetterLayoutKdb.rewrite(athena.getValue(9), colemakForKeypad), english)
         language = "de"
         sync(pkb = true)
-        assertEquals("German has no choice: the Physical layouts selection", "layout:swap", Xt9KdbVariant.applied())
+        assertEquals("German has no choice of its own: the one the other languages share", "layout:swap", Xt9KdbVariant.applied())
         language = "en"
         sync(pkb = true)
         assertEquals("layout:colemak", Xt9KdbVariant.applied())
     }
 
     @Test
-    fun aChoiceForTheScreenOnly_leavesTheKeypadToThePhysicalLayoutsSelection() {
+    fun aChoiceForTheScreenOnly_leavesTheKeypadToTheEnginesOwnLetters() {
         deviceVariant("athena")
-        active = swap
-        // The shipped Colemak is for the on-screen keyboard only.
+        // The shipped Colemak is for the on-screen keyboard only: the keypad keeps the engine's own.
         chosen["en"] = colemak
         changed()
-        assertEquals("layout:swap", Xt9KdbVariant.applied())
+        assertEquals("athena", Xt9KdbVariant.applied())
         assertEquals("no keypad KDB is built for it", 0, native.of("layout:colemak", 6))
         chosen["en"] = LetterLayoutXml.parse(
             """<letter-layout version="1" id="screen" name="Screen" targets="vkb"><bind/>
                 <key code="KEYCODE_Q" keySpec="z"/></letter-layout>"""
         )
         changed()
-        assertEquals("layout:swap", Xt9KdbVariant.applied())
+        assertEquals("athena", Xt9KdbVariant.applied())
         chosen.clear()
         chosen["en"] = LetterLayoutXml.parse(
             """<letter-layout version="1" id="same" name="Same"><bind/>
                 <key code="KEYCODE_Q" keySpec="q"/></letter-layout>"""
         )
         changed()
-        assertEquals(
-            "a choice that changes no letter still wins over the selection; the engine keeps its own letters",
-            "athena",
-            Xt9KdbVariant.applied(),
-        )
+        assertEquals("a choice that changes no letter: the engine keeps its own letters", "athena", Xt9KdbVariant.applied())
         assertTrue(native.registrations.none { it == "layout:same" })
     }
 }

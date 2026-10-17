@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.clickable
 import dev.bbkb.ime.R
+import dev.bbkb.ime.core.layout.LetterLayout
 import dev.bbkb.ime.core.layout.LetterLayoutChoice
 import dev.bbkb.ime.core.settings.ui.LocalShapes
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
@@ -41,15 +42,22 @@ internal data class LayoutChoiceRow(val id: String, val title: String, val summa
 
 /**
  * The rows for one of a keyboard's layout lists, one per [options] entry and in its order: the
- * keyboard's default first ([ownTitle], with [ownSummary] under it), then each layout by its name.
+ * keyboard's default ([ownTitle], with [ownSummary] under it) or, on the physical keys, the
+ * keypad's own letters ([keypadLettersTitle]), then each layout under the name [name] gives it
+ * (its own name unless the caller says otherwise).
  */
 internal fun layoutChoiceRows(
     options: List<LetterLayoutChoice.Option>,
     ownTitle: String,
     ownSummary: String,
+    keypadLettersTitle: String = "",
+    name: (LetterLayout) -> String = { it.name },
 ): List<LayoutChoiceRow> = options.map { option ->
-    val layout = option.layout ?: return@map LayoutChoiceRow(option.id, ownTitle, ownSummary)
-    LayoutChoiceRow(option.id, layout.name)
+    val layout = option.layout ?: return@map when (option.id) {
+        LetterLayoutChoice.KEYPAD_LETTERS -> LayoutChoiceRow(option.id, keypadLettersTitle)
+        else -> LayoutChoiceRow(option.id, ownTitle, ownSummary)
+    }
+    LayoutChoiceRow(option.id, name(layout))
 }
 
 /**

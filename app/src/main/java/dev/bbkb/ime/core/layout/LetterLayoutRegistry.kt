@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap
  * each under `files/layouts/letter/<id>.xml`. The id of the layout the physical keys follow is in
  * [PREF_ACTIVE_LAYOUT] (`""` for none).
  *
- * The settings screens and the importer use an instance; the typing path asks [activeForTyping],
+ * The settings screens and the importer use an instance; the typing path asks [LetterLayoutChoice],
  * which keeps the parsed active layout so a keystroke never reads a file. That copy is keyed by
  * the active id, read from preferences on each call, so switching layouts (here, or by any other
  * write to the preference) takes effect on the next key; [save] and [delete] drop it as well,
@@ -50,7 +50,6 @@ class LetterLayoutRegistry @JvmOverloads constructor(
         builtInDocuments?.let { BuiltIns(it) } ?: assetBuiltIns(appContext.assets)
 
     init {
-        migrateActivePreference(prefs)
     }
 
     // ── the user's layouts ───────────────────────────────────────────────────
@@ -99,18 +98,9 @@ class LetterLayoutRegistry @JvmOverloads constructor(
     fun delete(id: String): Boolean {
         if (!LetterLayout.isValidId(id)) return false
         val deleted = fileFor(id).delete()
-        if (activeId == id) activeId = ""
         invalidate()
         return deleted
     }
-
-    /** The id of the layout the physical keys follow, or `""` for none. */
-    var activeId: String
-        get() = prefs.getString(PREF_ACTIVE_LAYOUT, "") ?: ""
-        set(value) {
-            prefs.edit().putString(PREF_ACTIVE_LAYOUT, value).apply()
-            invalidate()
-        }
 
     private fun read(file: File): LetterLayout? {
         if (!file.isFile) return null
@@ -265,6 +255,7 @@ class LetterLayoutRegistry @JvmOverloads constructor(
 
     companion object {
         /** The active layout's id; `""` (or absent) means the keys type their own letters. */
+        /** Retired: the one layout the keys followed for every language; see [LetterLayoutChoice.migrate]. */
         const val PREF_ACTIVE_LAYOUT: String = "pref_pkb_active_layout"
 
         /** Where the active id was kept before layouts were XML; read once, then removed. */
@@ -292,8 +283,9 @@ class LetterLayoutRegistry @JvmOverloads constructor(
 
         /**
          * Moves the active id from [LEGACY_PREF_ACTIVE_LETTER_MAP] to [PREF_ACTIVE_LAYOUT], once:
-         * only while the new key is absent and the old one present. Cheap enough to run on every
-         * read of the active id, which is what makes "once" hold whichever reader comes first.
+         * only while the new key is absent and the old one present. Both are retired keys now,
+         * read only by [LetterLayoutChoice.migrate], which carries the one active layout into the
+         * per-language choices.
          */
         @JvmStatic
         fun migrateActivePreference(prefs: SharedPreferences) {
@@ -305,35 +297,13 @@ class LetterLayoutRegistry @JvmOverloads constructor(
                 .apply()
         }
 
-        /** The active id and the layout it named when last read; the layout is null for none or unreadable. */
-        private class Snapshot(val id: String, val layout: LetterLayout?)
-
-        @Volatile
-        private var snapshot: Snapshot? = null
-
         /**
-         * The active user layout for the typing path, parsed once per change. The file is read on
-         * the first key after a change and not again.
-         */
-        @JvmStatic
-        fun activeForTyping(context: Context): LetterLayout? {
-            val prefs = PrefsManager.getPrefs(context)
-            migrateActivePreference(prefs)
-            val id = prefs.getString(PREF_ACTIVE_LAYOUT, "") ?: ""
-            snapshot?.let { if (it.id == id) return it.layout }
-            val layout = if (id.isEmpty()) null else LetterLayoutRegistry(context).get(id)
-            snapshot = Snapshot(id, layout)
-            return layout
-        }
-
-        /**
-         * Drops the typing path's copies — the active layout's and each language's chosen layout
-         * ([LetterLayoutChoice]) — so the next key reads them again, and has the engine's key
-         * letters decided again ([LetterLayoutEngineSync]).
+         * Drops the typing path's copies of each language's chosen layout ([LetterLayoutChoice])
+         * so the next key reads them again, and has the engine's key letters decided again
+         * ([LetterLayoutEngineSync]).
          */
         @JvmStatic
         fun invalidate() {
-            snapshot = null
             LetterLayoutChoice.invalidate()
             LetterLayoutEngineSync.onActiveLayoutChanged()
         }

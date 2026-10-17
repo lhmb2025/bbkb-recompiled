@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Поділитися розкладкою</string>
     <string name="settings_pkb_layouts_share_failed">Не вдалося поділитися розкладкою</string>
     <string name="settings_pkb_layouts_summary">Змінити літери, які вводять фізичні клавіші</string>
+    <string name="settings_pkb_keypad_layout_title">Розкладка клавіатури</string>
+    <string name="settings_pkb_keypad_layout_automatic">Автоматично (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Літери клавіатури (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Завжди показувати екранну клавіатуру</string>
     <string name="settings_pkb_layouts_three_row">трирядна клавіатура</string>
     <string name="settings_pkb_layouts_title">Фізичні розкладки</string>
     <string name="settings_pkb_multifunction_action_clipboard">Буфер обміну</string>

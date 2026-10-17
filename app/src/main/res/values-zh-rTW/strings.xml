@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">分享配置</string>
     <string name="settings_pkb_layouts_share_failed">無法分享配置</string>
     <string name="settings_pkb_layouts_summary">變更實體按鍵輸入的字母</string>
+    <string name="settings_pkb_keypad_layout_title">鍵盤配置</string>
+    <string name="settings_pkb_keypad_layout_automatic">自動 (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">鍵盤字母 (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">一律顯示螢幕鍵盤</string>
     <string name="settings_pkb_layouts_three_row">三排鍵盤</string>
     <string name="settings_pkb_layouts_title">實體配置</string>
     <string name="settings_pkb_multifunction_action_clipboard">剪貼簿</string>

@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">แบ่งปันเลย์เอาท์</string>
     <string name="settings_pkb_layouts_share_failed">แบ่งปันเลย์เอาท์ไม่ได้</string>
     <string name="settings_pkb_layouts_summary">เปลี่ยนตัวอักษรที่ปุ่มบนแป้นพิมพ์จริงพิมพ์ออกมา</string>
+    <string name="settings_pkb_keypad_layout_title">เค้าโครงแป้นพิมพ์</string>
+    <string name="settings_pkb_keypad_layout_automatic">อัตโนมัติ (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">ตัวอักษรของแป้นพิมพ์ (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">แสดงแป้นพิมพ์บนหน้าจอเสมอ</string>
     <string name="settings_pkb_layouts_three_row">แป้นพิมพ์สามแถว</string>
     <string name="settings_pkb_layouts_title">เลย์เอาท์แป้นพิมพ์จริง</string>
     <string name="settings_pkb_multifunction_action_clipboard">คลิปบอร์ด</string>

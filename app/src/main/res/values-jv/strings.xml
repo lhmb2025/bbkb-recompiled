@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Bagekake tata letak</string>
     <string name="settings_pkb_layouts_share_failed">Ora bisa mbagekake tata letak</string>
     <string name="settings_pkb_layouts_summary">Ganti aksara sing diketik tombol fisik</string>
+    <string name="settings_pkb_keypad_layout_title">Tata letak keypad</string>
+    <string name="settings_pkb_keypad_layout_automatic">Otomatis (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Aksara keypad (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Tansah tampilake keyboard ing layar</string>
     <string name="settings_pkb_layouts_three_row">papan tombol telung larik</string>
     <string name="settings_pkb_layouts_title">Tata letak fisik</string>
     <string name="settings_pkb_multifunction_action_clipboard">Papan klip</string>

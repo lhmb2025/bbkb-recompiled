@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Подели распоред</string>
     <string name="settings_pkb_layouts_share_failed">Дељење распореда није успело</string>
     <string name="settings_pkb_layouts_summary">Промени слова која куцају физички тастери</string>
+    <string name="settings_pkb_keypad_layout_title">Распоред тастатуре</string>
+    <string name="settings_pkb_keypad_layout_automatic">Аутоматски (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Слова тастатуре (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Увек прикажи тастатуру на екрану</string>
     <string name="settings_pkb_layouts_three_row">тастатура са три реда</string>
     <string name="settings_pkb_layouts_title">Физички распореди</string>
     <string name="settings_pkb_multifunction_action_clipboard">Привремена меморија</string>

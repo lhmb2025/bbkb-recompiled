@@ -393,7 +393,6 @@ object BackupOperations {
             withContext(Dispatchers.IO) {
                 val registry = LetterLayoutRegistry(app)
                 registry.list().forEach { registry.delete(it.id) }
-                registry.activeId = ""
             }
             withContext(Dispatchers.Main) { LayoutsBundle.resetEditors(app) }
         }

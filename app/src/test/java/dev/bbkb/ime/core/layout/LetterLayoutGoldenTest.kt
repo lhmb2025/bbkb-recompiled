@@ -75,13 +75,14 @@ class LetterLayoutGoldenTest {
         ResourceLocaleUtils.reinit(context)
         saved = PhysicalKeyResolver.Snapshot()
         PhysicalKeyResolver.builtIns = PhysicalKeyResolver.RegistryBuiltIns(LetterLayoutRegistry(context))
-        PhysicalKeyResolver.userLayoutSource = { null }
         PhysicalKeyResolver.localeSource = { locale }
         PhysicalKeyResolver.additionalLocalesSource = { null }
         PhysicalKeyResolver.keypadLayoutSource = { keypad }
         PhysicalKeyResolver.keypadTypeSource = { "4row" }
         PhysicalKeyResolver.layoutSetSource = { layoutSet }
-        PhysicalKeyResolver.alphabetSwitchSource = { alphabetSwitch }
+        // The fixture's "alphabetSwitchOff" answers are what a language that chose the keypad's
+        // own letters gets today.
+        PhysicalKeyResolver.keypadLettersSource = { _ -> !alphabetSwitch }
         // The fixture was recorded with the default (empty) "Default currency" setting.
         PhysicalKeyResolver.currencySettingSource = { "" }
         PhysicalKeyResolver.zeroKeySource = { "0" }

@@ -122,9 +122,6 @@ object SettingsSearchIndex {
         // Each keyboard's Layout is a row in the sheet its row on the Language screen opens, so
         // the entry leads to the screen and has no anchor to highlight.
         SearchableSetting(R.string.languages_hub_layout_title, "keyboard layout colemak dvorak qwerty qwertz azerty letters keys arrangement on-screen physical keypad", SettingsRoute.LanguagesHub.route, LANGUAGES),
-        // On the Language screen, and only once an Arabic, Cyrillic, Hebrew, Greek or Korean
-        // keyboard is enabled; the device gate is the half of that rule the index can express.
-        SearchableSetting(R.string.settings_pkb_active_language_alphabet_title, "alphabet script arabic cyrillic russian hebrew greek korean hangul latin physical keyboard keys", SettingsRoute.LanguagesHub.route, LANGUAGES, "pref_pkb_active_language_alphabet", DeviceRequirement.PHYSICAL_KEYBOARD),
         SearchableSetting(R.string.settings_lang_switch_key_title, "globe switch language", SettingsRoute.LanguageSwitching.route, LANGUAGES, "pref_show_language_switch_key"),
         SearchableSetting(R.string.settings_lang_include_other_title, "other input methods ime", SettingsRoute.LanguageSwitching.route, LANGUAGES, "pref_include_other_imes_in_language_switch_list"),
         SearchableSetting(R.string.settings_lang_quick_switch_title, "quick switch language key", SettingsRoute.LanguageSwitching.route, LANGUAGES, "pref_language_quick_switch_key"),
@@ -158,6 +155,8 @@ object SettingsSearchIndex {
         // The screen itself, so no anchor; its Nav row on Physical keyboard is behind the same
         // physical-keyboard gate.
         SearchableSetting(R.string.settings_pkb_layouts_title, "physical layouts custom built-in builtin letter layout map remap keys keycaps alphabet qwerty qwertz azerty xml import template save file export share", SettingsRoute.PhysicalLayouts.route, TYPING, requires = DeviceRequirement.PHYSICAL_KEYBOARD),
+        // Only on a phone whose device config lists more than one keypad shape (the KEY2's three editions).
+        SearchableSetting(R.string.settings_pkb_keypad_layout_title, "keypad layout shape qwerty qwertz azerty edition detected automatic physical keyboard", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_pkb_keypad_layout", DeviceRequirement.PHYSICAL_KEYBOARD),
 
         // ── Typing & input: Voice input ─────────────────────────────────────────
         SearchableSetting(R.string.settings_voice_builtin_title, "voice dictation speech", SettingsRoute.VoiceInput.route, TYPING, "voice_input_enabled"),

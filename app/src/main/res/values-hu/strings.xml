@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Kiosztás megosztása</string>
     <string name="settings_pkb_layouts_share_failed">Nem sikerült megosztani a kiosztást</string>
     <string name="settings_pkb_layouts_summary">A fizikai billentyűkkel írt betűk módosítása</string>
+    <string name="settings_pkb_keypad_layout_title">Billentyűzetkiosztás</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatikus (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Billentyűzet betűi (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Mindig jelenjen meg a képernyő-billentyűzet</string>
     <string name="settings_pkb_layouts_three_row">háromsoros billentyűzet</string>
     <string name="settings_pkb_layouts_title">Fizikai kiosztások</string>
     <string name="settings_pkb_multifunction_action_clipboard">Vágólap</string>

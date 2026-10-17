@@ -247,8 +247,6 @@ public final class SettingsValues {
 
     public final boolean showPkbModifierStatusIcon;
 
-    /** Physical letter keys type the active keyboard's alphabet (Arabic, Cyrillic, ...), not Latin. */
-    public final boolean pkbUsesActiveLanguageAlphabet;
 
     public final boolean voiceInputUseInputLanguage;
 
@@ -458,7 +456,6 @@ public final class SettingsValues {
         this.altDoubleTapLock = sharedPreferences.getBoolean(context.getString(R.string.pref_alt_double_tap_lock_key), true);
         this.ctrlDoubleTapLock = sharedPreferences.getBoolean(context.getString(R.string.pref_ctrl_double_tap_lock_key), true);
         this.showPkbModifierStatusIcon = sharedPreferences.getBoolean(context.getString(R.string.pref_show_pkb_modifier_status_icon_key), true);
-        this.pkbUsesActiveLanguageAlphabet = sharedPreferences.getBoolean(dev.bbkb.ime.core.layout.PhysicalKeyResolver.PREF_KEY, true);
         this.voiceInputUseInputLanguage = SettingsManager.isVoiceInputUseInputLanguage(sharedPreferences);
         this.voiceInputPreferOffline = SettingsManager.isVoiceInputPreferOffline(sharedPreferences);
         this.voiceInputShowPartialResults = SettingsManager.isVoiceInputShowPartialResults(sharedPreferences);

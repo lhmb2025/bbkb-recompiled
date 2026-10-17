@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">განლაგების გაზიარება</string>
     <string name="settings_pkb_layouts_share_failed">განლაგების გაზიარება ვერ მოხერხდა</string>
     <string name="settings_pkb_layouts_summary">ფიზიკური კლავიშებით აკრეფილი ასოების შეცვლა</string>
+    <string name="settings_pkb_keypad_layout_title">კლავიატურის განლაგება</string>
+    <string name="settings_pkb_keypad_layout_automatic">ავტომატური (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">კლავიატურის ასოები (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">ეკრანული კლავიატურის ყოველთვის ჩვენება</string>
     <string name="settings_pkb_layouts_three_row">სამრიგიანი კლავიატურა</string>
     <string name="settings_pkb_layouts_title">ფიზიკური განლაგებები</string>
     <string name="settings_pkb_multifunction_action_clipboard">ბუფერი</string>

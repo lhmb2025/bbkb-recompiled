@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">اشتراک‌گذاری چیدمان</string>
     <string name="settings_pkb_layouts_share_failed">اشتراک‌گذاری چیدمان ممکن نشد</string>
     <string name="settings_pkb_layouts_summary">تغییر حروفی که کلیدهای فیزیکی تایپ می‌کنند</string>
+    <string name="settings_pkb_keypad_layout_title">چیدمان صفحه‌کلید</string>
+    <string name="settings_pkb_keypad_layout_automatic">خودکار (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">حروف صفحه‌کلید (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">همیشه صفحه‌کلید روی صفحه نمایش داده شود</string>
     <string name="settings_pkb_layouts_three_row">صفحه کلید سه‌ردیفه</string>
     <string name="settings_pkb_layouts_title">چیدمان‌های فیزیکی</string>
     <string name="settings_pkb_multifunction_action_clipboard">بریده‌دان</string>

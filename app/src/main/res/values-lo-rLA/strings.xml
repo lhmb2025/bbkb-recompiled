@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">ແບ່ງປັນຮູບແບບ</string>
     <string name="settings_pkb_layouts_share_failed">ແບ່ງປັນຮູບແບບບໍ່ໄດ້</string>
     <string name="settings_pkb_layouts_summary">ປ່ຽນຕົວອັກສອນທີ່ປຸ່ມແທ້ພິມອອກມາ</string>
+    <string name="settings_pkb_keypad_layout_title">ຮູບແບບແປ້ນພິມ</string>
+    <string name="settings_pkb_keypad_layout_automatic">ອັດຕະໂນມັດ (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">ຕົວອັກສອນແປ້ນພິມ (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">ສະແດງແປ້ນພິມໃນໜ້າຈໍສະເໝີ</string>
     <string name="settings_pkb_layouts_three_row">ແປ້ນພິມສາມແຖວ</string>
     <string name="settings_pkb_layouts_title">ຮູບແບບແປ້ນພິມແທ້</string>
     <string name="settings_pkb_multifunction_action_clipboard">ຄລິບບອດ</string>

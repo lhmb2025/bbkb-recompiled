@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Compartir deseño</string>
     <string name="settings_pkb_layouts_share_failed">Non se puido compartir o deseño</string>
     <string name="settings_pkb_layouts_summary">Cambia as letras que escriben as teclas físicas</string>
+    <string name="settings_pkb_keypad_layout_title">Disposición do teclado</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automática (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Letras do teclado (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Mostrar sempre o teclado en pantalla</string>
     <string name="settings_pkb_layouts_three_row">teclado de tres filas</string>
     <string name="settings_pkb_layouts_title">Deseños físicos</string>
     <string name="settings_pkb_multifunction_action_clipboard">Portapapeis</string>

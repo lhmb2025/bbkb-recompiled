@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Del layout</string>
     <string name="settings_pkb_layouts_share_failed">Layoutet kunne ikke deles</string>
     <string name="settings_pkb_layouts_summary">Skift de bogstaver, de fysiske taster skriver</string>
+    <string name="settings_pkb_keypad_layout_title">Tastaturlayout</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatisk (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Tastaturets bogstaver (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Vis altid skærmtastaturet</string>
     <string name="settings_pkb_layouts_three_row">tastatur med tre rækker</string>
     <string name="settings_pkb_layouts_title">Fysiske layouts</string>
     <string name="settings_pkb_multifunction_action_clipboard">Udklipsholder</string>

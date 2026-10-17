@@ -42,7 +42,7 @@ class TouchKeypadSwipeGateTest {
         DeviceProfile.initialize(null)
         SettingsManager.initialize(context)
         saved = PhysicalKeyResolver.Snapshot()
-        PhysicalKeyResolver.userLayoutSource = { null }
+        PhysicalKeyResolver.chosenLayoutSource = { null }
     }
 
     @After

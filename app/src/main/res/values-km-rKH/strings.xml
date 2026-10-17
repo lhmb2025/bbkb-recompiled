@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">ចែករំលែកប្លង់</string>
     <string name="settings_pkb_layouts_share_failed">មិនអាចចែករំលែកប្លង់បានទេ</string>
     <string name="settings_pkb_layouts_summary">ប្ដូរអក្សរដែលគ្រាប់ចុចរូបវន្តវាយ</string>
+    <string name="settings_pkb_keypad_layout_title">ប្លង់បន្ទះគ្រាប់ចុច</string>
+    <string name="settings_pkb_keypad_layout_automatic">ស្វ័យប្រវត្តិ (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">អក្សរបន្ទះគ្រាប់ចុច (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">បង្ហាញក្ដារចុចលើអេក្រង់ជានិច្ច</string>
     <string name="settings_pkb_layouts_three_row">ក្ដារចុចបីជួរ</string>
     <string name="settings_pkb_layouts_title">ប្លង់រូបវន្ត</string>
     <string name="settings_pkb_multifunction_action_clipboard">ក្ដារតម្បៀតខ្ទាស់</string>

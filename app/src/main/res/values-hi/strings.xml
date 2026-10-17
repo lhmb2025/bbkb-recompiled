@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">लेआउट साझा करें</string>
     <string name="settings_pkb_layouts_share_failed">लेआउट साझा नहीं किया जा सका</string>
     <string name="settings_pkb_layouts_summary">भौतिक कुंजियों से टाइप होने वाले अक्षर बदलें</string>
+    <string name="settings_pkb_keypad_layout_title">कीपैड लेआउट</string>
+    <string name="settings_pkb_keypad_layout_automatic">स्वचालित (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">कीपैड के अक्षर (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">ऑन-स्क्रीन कीबोर्ड हमेशा दिखाएँ</string>
     <string name="settings_pkb_layouts_three_row">तीन पंक्तियों वाला कीपैड</string>
     <string name="settings_pkb_layouts_title">भौतिक लेआउट</string>
     <string name="settings_pkb_multifunction_action_clipboard">क्लिपबोर्ड</string>

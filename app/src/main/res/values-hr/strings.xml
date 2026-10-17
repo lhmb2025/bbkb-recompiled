@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Podijeli raspored</string>
     <string name="settings_pkb_layouts_share_failed">Raspored nije moguće podijeliti</string>
     <string name="settings_pkb_layouts_summary">Promijeni slova koja upisuju fizičke tipke</string>
+    <string name="settings_pkb_keypad_layout_title">Raspored tipkovnice</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatski (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Slova tipkovnice (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Uvijek prikaži zaslonsku tipkovnicu</string>
     <string name="settings_pkb_layouts_three_row">tipkovnica s tri reda</string>
     <string name="settings_pkb_layouts_title">Fizički rasporedi</string>
     <string name="settings_pkb_multifunction_action_clipboard">Međuspremnik</string>

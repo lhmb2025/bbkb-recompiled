@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Layout teilen</string>
     <string name="settings_pkb_layouts_share_failed">Das Layout konnte nicht geteilt werden</string>
     <string name="settings_pkb_layouts_summary">Ändern, welche Buchstaben die physischen Tasten eingeben</string>
+    <string name="settings_pkb_keypad_layout_title">Tastaturlayout</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatisch (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Tastaturbuchstaben (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Bildschirmtastatur immer anzeigen</string>
     <string name="settings_pkb_layouts_three_row">dreireihiges Tastenfeld</string>
     <string name="settings_pkb_layouts_title">Physische Layouts</string>
     <string name="settings_pkb_multifunction_action_clipboard">Zwischenablage</string>

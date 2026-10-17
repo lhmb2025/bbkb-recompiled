@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Chia sẻ bố cục</string>
     <string name="settings_pkb_layouts_share_failed">Không chia sẻ được bố cục</string>
     <string name="settings_pkb_layouts_summary">Thay đổi chữ cái mà các phím vật lý nhập</string>
+    <string name="settings_pkb_keypad_layout_title">Bố cục bàn phím</string>
+    <string name="settings_pkb_keypad_layout_automatic">Tự động (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Chữ cái trên bàn phím (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Luôn hiện bàn phím trên màn hình</string>
     <string name="settings_pkb_layouts_three_row">bàn phím ba hàng</string>
     <string name="settings_pkb_layouts_title">Bố cục vật lý</string>
     <string name="settings_pkb_multifunction_action_clipboard">Bộ nhớ đệm</string>

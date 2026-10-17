@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Joylashuvni ulashish</string>
     <string name="settings_pkb_layouts_share_failed">Joylashuvni ulashib bo‘lmadi</string>
     <string name="settings_pkb_layouts_summary">Jismoniy tugmalar yozadigan harflarni o‘zgartirish</string>
+    <string name="settings_pkb_keypad_layout_title">Klaviatura joylashuvi</string>
+    <string name="settings_pkb_keypad_layout_automatic">Avtomatik (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Klaviatura harflari (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Ekran klaviaturasini doim ko\'rsatish</string>
     <string name="settings_pkb_layouts_three_row">uch qatorli klaviatura</string>
     <string name="settings_pkb_layouts_title">Jismoniy joylashuvlar</string>
     <string name="settings_pkb_multifunction_action_clipboard">Klipbord</string>

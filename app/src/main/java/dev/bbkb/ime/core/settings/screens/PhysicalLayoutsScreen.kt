@@ -70,10 +70,9 @@ private const val TAG = "PhysicalLayouts"
  * how many keys it names.
  *
  * **Custom** holds the layouts imported through Advanced > Backup and restore > Restore from file.
- * One of them, or none, is the active choice: picking a row writes
- * [LetterLayoutRegistry.PREF_ACTIVE_LAYOUT], and the typing path reads it on the next key, so
- * there is nothing to restart. Share hands the stored XML file to the share sheet, the way the
- * device profile builder shares a config; delete removes it (and switches it off if it was on).
+ * Which keyboard uses one is chosen per language on the Language screen ([LetterLayoutChoice]);
+ * here they are managed. Share hands the stored XML file to the share sheet, the way the device
+ * profile builder shares a config; delete removes it.
  *
  * **Built-in** holds the documents under `assets/letter_layouts/` that are for the physical keys
  * (the on-screen-only ones, Colemak and Dvorak, are chosen per keyboard on the Language screen).
@@ -83,8 +82,8 @@ private const val TAG = "PhysicalLayouts"
  * from file. The current keyboard's language comes first, the document it would use at the top,
  * then the rest by name.
  *
- * Custom comes first because it is the part with a choice in it; the built-in list has a document
- * per language and would push that choice off the screen.
+ * Custom comes first because it is the part the user can change; the built-in list has a document
+ * per language and would push it off the screen.
  *
  * Both lists are read off the main thread, so on first composition they are briefly empty.
  *
@@ -107,7 +106,6 @@ fun PhysicalLayoutsScreen(
     // null until the first read lands.
     var customLayouts by remember { mutableStateOf<List<LetterLayout>?>(null) }
     var builtInLayouts by remember { mutableStateOf<List<LetterLayout>?>(null) }
-    var activeId by remember { mutableStateOf(registry.activeId) }
     var deleteTarget by remember { mutableStateOf<LetterLayout?>(null) }
     // The built-in being saved, by id. Saveable, because the activity can be recreated while the
     // file picker is open.
@@ -138,29 +136,16 @@ fun PhysicalLayoutsScreen(
         }
     }
 
-    fun select(id: String) {
-        registry.activeId = id
-        activeId = id
-    }
-
     SettingsScreenHost(R.string.settings_pkb_layouts_title, onNavigateBack, listOf(
-        // ── Custom: the user's layouts, one of which (or none) the keys follow ──
+        // ── Custom: the user's layouts, chosen per language on the Language screen ──
         Category(R.string.settings_pkb_layouts_category_custom),
         Custom {
-            Column(Modifier.selectableGroup()) {
-                LayoutChoiceRow(
-                    title = stringResource(R.string.settings_pkb_layouts_none),
-                    summary = stringResource(R.string.settings_pkb_layouts_none_summary),
-                    selected = activeId.isEmpty() || customLayouts?.none { it.id == activeId } == true,
-                    onSelect = { select("") },
-                )
+            Column {
                 customLayouts.orEmpty().forEach { layout ->
                     key(layout.id) {
-                        LayoutChoiceRow(
+                        CustomLayoutRow(
                             title = layout.name,
                             summary = layoutSummary(context, layout, phoneKeypad, phoneKeypadType),
-                            selected = layout.id == activeId,
-                            onSelect = { select(layout.id) },
                             onShare = { share(context, registry, layout) },
                             onDelete = { deleteTarget = layout },
                         )
@@ -207,7 +192,6 @@ fun PhysicalLayoutsScreen(
                             registry.delete(layout.id)
                             registry.list()
                         }
-                        activeId = registry.activeId
                     }
                 }) {
                     Text(
@@ -225,41 +209,28 @@ fun PhysicalLayoutsScreen(
     }
 }
 
-/**
- * One choice, radio in the leading slot as on Device configuration; the whole row is the
- * selectable target. Share and delete sit in the trailing slot for imported layouts.
- */
+/** One imported layout: its name and binding, share and delete in the trailing slot. */
 @Composable
-private fun LayoutChoiceRow(
+private fun CustomLayoutRow(
     title: String,
     summary: String,
-    selected: Boolean,
-    onSelect: () -> Unit,
-    onShare: (() -> Unit)? = null,
-    onDelete: (() -> Unit)? = null,
+    onShare: () -> Unit,
+    onDelete: () -> Unit,
 ) {
     PreferenceItem(
         title = title,
         summary = summary,
-        leading = { RadioButton(selected = selected, onClick = null) },
-        modifier = Modifier.selectable(selected = selected, onClick = onSelect, role = Role.RadioButton),
-        trailing = if (onShare == null && onDelete == null) null else {
-            {
-                Row {
-                    onShare?.let { share ->
-                        RowIconButton(
-                            icon = Icons.Default.Share,
-                            contentDescription = stringResource(R.string.settings_pkb_layouts_share, title),
-                            onClick = share,
-                        )
-                    }
-                    onDelete?.let { delete ->
-                        PreferenceDeleteButton(
-                            contentDescription = stringResource(R.string.settings_pkb_layouts_delete, title),
-                            onClick = delete,
-                        )
-                    }
-                }
+        trailing = {
+            Row {
+                RowIconButton(
+                    icon = Icons.Default.Share,
+                    contentDescription = stringResource(R.string.settings_pkb_layouts_share, title),
+                    onClick = onShare,
+                )
+                PreferenceDeleteButton(
+                    contentDescription = stringResource(R.string.settings_pkb_layouts_delete, title),
+                    onClick = onDelete,
+                )
             }
         },
     )

@@ -127,60 +127,29 @@ class LetterLayoutRegistryTest {
     }
 
     @Test
-    fun deletingTheActiveLayoutSwitchesItOff() {
+    fun deletingALayoutRemovesItsFile() {
         val registry = LetterLayoutRegistry(context)
         registry.save(layout("one"))
         registry.save(layout("two"))
-        registry.activeId = "one"
-        assertEquals("one", prefs.getString(LetterLayoutRegistry.PREF_ACTIVE_LAYOUT, null))
-
         assertTrue(registry.delete("two"))
-        assertEquals("deleting another layout leaves the choice alone", "one", registry.activeId)
+        assertEquals(listOf("one"), registry.list().map { it.id })
         assertTrue(registry.delete("one"))
-        assertEquals("", registry.activeId)
         assertFalse(registry.delete("one"))
         assertTrue(registry.list().isEmpty())
     }
 
-    // ── the active layout for typing ─────────────────────────────────────────
+    // ── the retired active-layout preferences ────────────────────────────────
 
     @Test
-    fun theTypingCopyFollowsThePreferenceAndTheFile() {
-        val registry = LetterLayoutRegistry(context)
-        registry.save(layout("first", keys = """<key code="KEYCODE_Q" keySpec="ж"/>"""))
-        assertNull(LetterLayoutRegistry.activeForTyping(context))
-
-        registry.activeId = "first"
-        val active = LetterLayoutRegistry.activeForTyping(context)!!
-        assertEquals("first", active.id)
-        assertSame("parsed once, then kept", active, LetterLayoutRegistry.activeForTyping(context))
-
-        registry.save(layout("first", keys = """<key code="KEYCODE_Q" keySpec="з"/>"""))
-        assertEquals('з'.code, LetterLayoutRegistry.activeForTyping(context)!!.key(KeyEvent.KEYCODE_Q, -1)!!.keySpec)
-
-        prefs.edit().putString(LetterLayoutRegistry.PREF_ACTIVE_LAYOUT, "missing").commit()
-        assertNull(LetterLayoutRegistry.activeForTyping(context))
-    }
-
-    @Test
-    fun theOldPreferenceIsMovedOnce() {
+    fun theOldestPreferenceIsMovedToTheRetiredOne_forTheChoicesMigration() {
         prefs.edit().putString(LetterLayoutRegistry.LEGACY_PREF_ACTIVE_LETTER_MAP, "kept").commit()
-        LetterLayoutRegistry(context).save(layout("kept"))
-        assertEquals("kept", LetterLayoutRegistry.activeForTyping(context)?.id)
+        LetterLayoutRegistry.migrateActivePreference(prefs)
         assertEquals("kept", prefs.getString(LetterLayoutRegistry.PREF_ACTIVE_LAYOUT, null))
         assertFalse(prefs.contains(LetterLayoutRegistry.LEGACY_PREF_ACTIVE_LETTER_MAP))
-
         // Once the new key exists, a stray old one is not copied over it.
         prefs.edit().putString(LetterLayoutRegistry.LEGACY_PREF_ACTIVE_LETTER_MAP, "stale").commit()
-        assertEquals("kept", LetterLayoutRegistry(context).activeId)
-    }
-
-    @Test
-    fun theOldPreferenceIsMovedByTheSettingsScreenToo() {
-        prefs.edit().putString(LetterLayoutRegistry.LEGACY_PREF_ACTIVE_LETTER_MAP, "").commit()
-        assertEquals("", LetterLayoutRegistry(context).activeId)
-        assertTrue(prefs.contains(LetterLayoutRegistry.PREF_ACTIVE_LAYOUT))
-        assertFalse(prefs.contains(LetterLayoutRegistry.LEGACY_PREF_ACTIVE_LETTER_MAP))
+        LetterLayoutRegistry.migrateActivePreference(prefs)
+        assertEquals("kept", prefs.getString(LetterLayoutRegistry.PREF_ACTIVE_LAYOUT, null))
     }
 
     // ── built-ins ────────────────────────────────────────────────────────────

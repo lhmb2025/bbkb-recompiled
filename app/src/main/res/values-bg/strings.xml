@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Споделяне на подредбата</string>
     <string name="settings_pkb_layouts_share_failed">Подредбата не можа да бъде споделена</string>
     <string name="settings_pkb_layouts_summary">Промяна на буквите, които въвеждат физическите клавиши</string>
+    <string name="settings_pkb_keypad_layout_title">Подредба на клавиатурата</string>
+    <string name="settings_pkb_keypad_layout_automatic">Автоматично (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Букви на клавиатурата (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Винаги показвай екранната клавиатура</string>
     <string name="settings_pkb_layouts_three_row">клавиатура с три реда</string>
     <string name="settings_pkb_layouts_title">Физически подредби</string>
     <string name="settings_pkb_multifunction_action_clipboard">Клипборд</string>

@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">レイアウトを共有</string>
     <string name="settings_pkb_layouts_share_failed">レイアウトを共有できませんでした</string>
     <string name="settings_pkb_layouts_summary">物理キーで入力される文字を変更します</string>
+    <string name="settings_pkb_keypad_layout_title">キーパッドの配列</string>
+    <string name="settings_pkb_keypad_layout_automatic">自動 (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">キーパッドの文字 (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">画面上のキーボードを常に表示</string>
     <string name="settings_pkb_layouts_three_row">3段キーパッド</string>
     <string name="settings_pkb_layouts_title">物理レイアウト</string>
     <string name="settings_pkb_multifunction_action_clipboard">クリップボード</string>

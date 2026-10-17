@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Düzeni paylaş</string>
     <string name="settings_pkb_layouts_share_failed">Düzen paylaşılamadı</string>
     <string name="settings_pkb_layouts_summary">Fiziksel tuşların yazdığı harfleri değiştirin</string>
+    <string name="settings_pkb_keypad_layout_title">Tuş takımı düzeni</string>
+    <string name="settings_pkb_keypad_layout_automatic">Otomatik (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Tuş takımı harfleri (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Ekran klavyesini her zaman göster</string>
     <string name="settings_pkb_layouts_three_row">üç sıralı tuş takımı</string>
     <string name="settings_pkb_layouts_title">Fiziksel düzenler</string>
     <string name="settings_pkb_multifunction_action_clipboard">Pano</string>

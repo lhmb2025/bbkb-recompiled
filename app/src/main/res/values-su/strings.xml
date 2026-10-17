@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Bagikeun tata perenah</string>
     <string name="settings_pkb_layouts_share_failed">Teu bisa ngabagikeun tata perenah</string>
     <string name="settings_pkb_layouts_summary">Robah hurup nu diketik ku tombol fisik</string>
+    <string name="settings_pkb_keypad_layout_title">Tata perenah keypad</string>
+    <string name="settings_pkb_keypad_layout_automatic">Otomatis (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Aksara keypad (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Salawasna témbongkeun kibor dina layar</string>
     <string name="settings_pkb_layouts_three_row">papan tombol tilu jajar</string>
     <string name="settings_pkb_layouts_title">Tata perenah fisik</string>
     <string name="settings_pkb_multifunction_action_clipboard">Papan klip</string>

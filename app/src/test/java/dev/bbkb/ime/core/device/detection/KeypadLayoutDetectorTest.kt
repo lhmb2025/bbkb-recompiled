@@ -303,4 +303,15 @@ class KeypadLayoutDetectorTest {
         assertDetected("azerty", Source.DEVICE_CONFIG,
             KeypadLayoutDetector.detectLive("azerty", null))
     }
+
+    @Test
+    fun theUsersChoiceOutranksEverySource() {
+        val user = KeypadLayoutDetector.detect("azerty", "qwertz", "stmpe_qwertz_keypad", "1 qwerty", null, "qwerty")
+        assertEquals("azerty", user.layout)
+        assertEquals(KeypadLayoutDetector.Source.USER, user.source)
+        val none = KeypadLayoutDetector.detect("", "qwertz", "stmpe_qwertz_keypad", "1 qwerty", null, "qwerty")
+        assertEquals("an empty choice abstains", KeypadLayoutDetector.Source.DEVICE_CONFIG, none.source)
+        val unknown = KeypadLayoutDetector.detect("dvorak", null, null, null, null, null)
+        assertEquals("a name that is not a shape abstains", KeypadLayoutDetector.Source.FALLBACK, unknown.source)
+    }
 }

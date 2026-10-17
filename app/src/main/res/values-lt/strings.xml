@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Bendrinti išdėstymą</string>
     <string name="settings_pkb_layouts_share_failed">Nepavyko bendrinti išdėstymo</string>
     <string name="settings_pkb_layouts_summary">Keisti raides, kurias rašo fiziniai klavišai</string>
+    <string name="settings_pkb_keypad_layout_title">Klaviatūros išdėstymas</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatiškai (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Klaviatūros raidės (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Visada rodyti ekrano klaviatūrą</string>
     <string name="settings_pkb_layouts_three_row">trijų eilių klaviatūra</string>
     <string name="settings_pkb_layouts_title">Fiziniai išdėstymai</string>
     <string name="settings_pkb_multifunction_action_clipboard">Iškarpinė</string>

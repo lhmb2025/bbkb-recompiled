@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Lay-out delen</string>
     <string name="settings_pkb_layouts_share_failed">Kan de lay-out niet delen</string>
     <string name="settings_pkb_layouts_summary">De letters wijzigen die de fysieke toetsen typen</string>
+    <string name="settings_pkb_keypad_layout_title">Toetsenbordindeling</string>
+    <string name="settings_pkb_keypad_layout_automatic">Automatisch (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Toetsenbordletters (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Schermtoetsenbord altijd tonen</string>
     <string name="settings_pkb_layouts_three_row">toetsenblok met drie rijen</string>
     <string name="settings_pkb_layouts_title">Fysieke lay-outs</string>
     <string name="settings_pkb_multifunction_action_clipboard">Klembord</string>

@@ -33,6 +33,12 @@ public class DeviceInputMapping {
      * {@code ShippedDeviceConfigsTest} keeps that list by name.
      */
     public String keypadLayout;
+    /**
+     * The keypad shapes the model was sold in ({@code <keypad-layouts>qwerty, qwertz, azerty</keypad-layouts>}),
+     * which the Physical keyboard screen offers as the user's own word on the shape, above
+     * detection. Empty when the config lists none: nothing to choose.
+     */
+    public java.util.List<String> keypadLayoutOptions = new java.util.ArrayList<>();
     public String description;              // Optional description for logging
     
     // NEW: Device matching criteria

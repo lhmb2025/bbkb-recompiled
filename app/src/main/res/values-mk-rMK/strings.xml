@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Споделување распоред</string>
     <string name="settings_pkb_layouts_share_failed">Распоредот не можеше да се сподели</string>
     <string name="settings_pkb_layouts_summary">Променете ги буквите што ги внесуваат физичките копчиња</string>
+    <string name="settings_pkb_keypad_layout_title">Распоред на тастатурата</string>
+    <string name="settings_pkb_keypad_layout_automatic">Автоматски (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Букви на тастатурата (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Секогаш прикажувај ја тастатурата на екранот</string>
     <string name="settings_pkb_layouts_three_row">тастатура со три реда</string>
     <string name="settings_pkb_layouts_title">Физички распореди</string>
     <string name="settings_pkb_multifunction_action_clipboard">Клипборд</string>

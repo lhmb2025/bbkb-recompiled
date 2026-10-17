@@ -235,6 +235,10 @@
     <string name="settings_pkb_layouts_share_chooser">Ibahagi ang layout</string>
     <string name="settings_pkb_layouts_share_failed">Hindi maibahagi ang layout</string>
     <string name="settings_pkb_layouts_summary">Baguhin ang mga titik na tina-type ng mga pisikal na key</string>
+    <string name="settings_pkb_keypad_layout_title">Layout ng keypad</string>
+    <string name="settings_pkb_keypad_layout_automatic">Awtomatiko (%1$s)</string>
+    <string name="languages_hub_layout_keypad_letters">Mga titik ng keypad (%1$s)</string>
+    <string name="languages_hub_always_on_screen_title">Palaging ipakita ang on-screen na keyboard</string>
     <string name="settings_pkb_layouts_three_row">keypad na may tatlong hilera</string>
     <string name="settings_pkb_layouts_title">Mga pisikal na layout</string>
     <string name="settings_pkb_multifunction_action_clipboard">Clipboard</string>
