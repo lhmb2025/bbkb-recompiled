@@ -276,7 +276,6 @@ class PipelineHarness {
     object Msg {
         const val UPDATE_SUGGESTIONS = 2
         const val BATCH_INPUT_SUGGESTIONS = 6
-        const val CANCEL_QUICK_SWITCH = 13
         const val UPDATE_GESTURE_SUGGESTIONS = 14
         const val UPDATE_JAPANESE_SUGGESTIONS = 15
         const val COMMIT_TEXT = 17
@@ -286,7 +285,6 @@ class PipelineHarness {
         val CANCEL_SET = mapOf(
             UPDATE_SUGGESTIONS to "MSG_UPDATE_SUGGESTIONS",
             BATCH_INPUT_SUGGESTIONS to "MSG_BATCH_INPUT_SUGGESTIONS",
-            CANCEL_QUICK_SWITCH to "MSG_CANCEL_QUICK_SWITCH",
             UPDATE_GESTURE_SUGGESTIONS to "MSG_UPDATE_GESTURE_SUGGESTIONS",
             UPDATE_JAPANESE_SUGGESTIONS to "MSG_UPDATE_JAPANESE_SUGGESTIONS",
             COMMIT_TEXT to "MSG_COMMIT_TEXT",

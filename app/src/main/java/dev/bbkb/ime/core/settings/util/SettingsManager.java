@@ -180,7 +180,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
 
     /**
      * One-shot preference migrations. These used to run from inside the {@link SettingsValues}
-     * constructor and from {@link #isLanguageSwitchKeyVisible}: writing preferences there
+     * constructor: writing preferences there
      * dispatched {@link #onSharedPreferenceChanged} synchronously on the calling thread, which
      * re-entered {@link #loadSettings} and notified every listener with the inner value first.
      */
@@ -213,12 +213,6 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         final String upgradedAltSym = AltSymShortcutHandler.upgradeLegacyAction(altSymAction);
         if (altSymAction != null && !altSymAction.equals(upgradedAltSym)) {
             prefs.edit().putString(AltSymShortcutHandler.PREF_KEY, upgradedAltSym).apply();
-        }
-        if (prefs.contains("pref_suppress_language_switch_key")) {
-            prefs.edit()
-                    .putBoolean("pref_show_language_switch_key", !prefs.getBoolean("pref_suppress_language_switch_key", false))
-                    .remove("pref_suppress_language_switch_key")
-                    .apply();
         }
     }
 
@@ -313,10 +307,6 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return Integer.parseInt(sharedPreferences.getString("pref_key_preview_popup_dismiss_delay", Integer.toString(resources.getInteger(R.integer.config_key_preview_linger_timeout))));
     }
 
-    public static boolean isLanguageSwitchKeyVisible(SharedPreferences sharedPreferences) {
-        // The "pref_suppress_language_switch_key" migration runs in migrateLegacyPreferences().
-        return sharedPreferences.getBoolean("pref_show_language_switch_key", true);
-    }
 
     public static String getCustomInputStyles(SharedPreferences sharedPreferences, Resources resources) {
         String strM5503a = SubtypeFactory.createPrefSubtypes(resources.getStringArray(R.array.predefined_subtypes));

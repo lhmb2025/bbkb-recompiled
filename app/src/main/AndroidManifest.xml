@@ -21,10 +21,6 @@
         <intent>
             <action android:name="android.settings.SETTINGS"/>
         </intent>
-        <!-- Other input methods, for the "Other keyboards" rows of the Change-language menu -->
-        <intent>
-            <action android:name="android.view.InputMethod"/>
-        </intent>
         <!--
             Speech recognition services, for voice input. Targeting API 30+, an undeclared service
             is invisible: SpeechRecognizer.isRecognitionAvailable() answers false whatever is
@@ -259,17 +255,6 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:label="@string/rationale_dialog_header"
             android:name="dev.bbkb.ime.core.permissions.RationaleDialog"
-            android:exported="false"/>
-        <!--
-            SubtypeSwitcherDialog historically declared windowSoftInputMode="stateVisible",
-            which forced the IME visible whenever the dialog appeared. The dialog has no
-            EditText inside it, so the attribute served no purpose other than to keep the
-            IME up after the dialog was dismissed — one cause of "IME stays after home"
-            in the audit (Issue 3). Removed.
-        -->
-        <activity
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:name="dev.bbkb.ime.core.subtypeswitcher.SubtypeSwitcherDialog"
             android:exported="false"/>
         <activity
             android:theme="@android:style/Theme.Translucent.NoTitleBar"

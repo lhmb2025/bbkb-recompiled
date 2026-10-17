@@ -14,7 +14,6 @@ import dev.bbkb.ime.core.settings.ui.Toggle
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.R
 
-private const val SHOW_SWITCH_KEY = "pref_show_language_switch_key"
 
 /** Same key and default as the Physical keyboard screen's CKB gestures master switch. */
 private const val CKB_GESTURES = "ckb_gestures_enabled"
@@ -42,21 +41,6 @@ fun LanguageSwitchingScreen(
 
     SettingsScreenHost(R.string.settings_language_switching_title, onNavigateBack, listOf(
         Category(R.string.settings_category_on_screen_keyboard),
-        Toggle(
-            store = boolPref(SHOW_SWITCH_KEY, true),
-            title = R.string.settings_lang_switch_key_title,
-            summary = RowSummary.Res(R.string.settings_lang_switch_key_summary),
-            modifier = Modifier.settingsSearchAnchor("pref_show_language_switch_key"),
-        ),
-        Toggle(
-            store = boolPref("pref_include_other_imes_in_language_switch_list", false),
-            title = R.string.settings_lang_include_other_title,
-            summary = RowSummary.Res(R.string.settings_lang_include_other_summary),
-            // The setting adds the other input methods to the language menu, which the spacebar
-            // gesture (and the Alt+Sym / multifunction "switch language" actions) open.
-            enabled = { it.bool("pref_spacebar_language_switching") },
-            modifier = Modifier.settingsSearchAnchor("pref_include_other_imes_in_language_switch_list"),
-        ),
         Toggle(
             store = boolPref("pref_language_quick_switch_key", false),
             title = R.string.settings_lang_quick_switch_title,

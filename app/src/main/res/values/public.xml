@@ -1224,10 +1224,6 @@
     <public type="id" name="submenuarrow" id="0x7f0a019c" />
     <public type="id" name="submit_area" id="0x7f0a019d" />
     <public type="id" name="subpanel_divider_vertical" id="0x7f0a019e" />
-    <public type="id" name="subtype_switcher_dialog_title" id="0x7f0a019f" />
-    <public type="id" name="subtype_switcher_language_name" id="0x7f0a01a0" />
-    <public type="id" name="subtype_switcher_radio" id="0x7f0a01a1" />
-    <public type="id" name="subtype_switcher_settings_btn" id="0x7f0a01a2" />
     <public type="id" name="suggested_word" id="0x7f0a01a3" />
     <public type="id" name="symbols" id="0x7f0a01ac" />
     <public type="id" name="symbolsCustom" id="0x7f0a01ad" />
@@ -1449,8 +1445,6 @@
     <public type="layout" name="select_dialog_singlechoice_material" id="0x7f0d0063" />
     <public type="layout" name="slideboard_numeric_subpanel" id="0x7f0d0064" />
     <public type="layout" name="slideboard_quickphrases" id="0x7f0d0065" />
-    <public type="layout" name="subtype_switcher_list_view" id="0x7f0d0068" />
-    <public type="layout" name="subtype_switcher_title" id="0x7f0d0069" />
     <public type="layout" name="suggestion_divider" id="0x7f0d006a" />
     <public type="layout" name="voice_input_view" id="0x7f0d0079" />
     <public type="mipmap" name="ic_launcher_round" id="0x7f0f0000" />
@@ -1501,7 +1495,6 @@
     <public type="string" name="clipboard_copy_toast_message" id="0x7f12005f" />
     <public type="string" name="clipboard_empty_indicator" id="0x7f120060" />
     <public type="string" name="clipboard_empty_user_hint" id="0x7f120061" />
-    <public type="string" name="combine_subtypes" id="0x7f120062" />
     <public type="string" name="config_default_numeric_location" id="0x7f120069" />
     <public type="string" name="config_default_quick_phrases_location" id="0x7f12006a" />
     <public type="string" name="config_default_shake_action_fallback" id="0x7f12006b" />
@@ -1584,7 +1577,6 @@
     <public type="string" name="subtype_no_language_pcqwerty" id="0x7f120648" />
     <public type="string" name="subtype_no_language_qwerty" id="0x7f120649" />
     <public type="string" name="subtype_no_language_qwertz" id="0x7f12064a" />
-    <public type="string" name="subtype_switcher_dialog_header" id="0x7f12064b" />
     <public type="string" name="subtype_with_layout_en_GB" id="0x7f12064c" />
     <public type="string" name="subtype_with_layout_en_US" id="0x7f12064d" />
     <public type="string" name="subtype_with_layout_es_US" id="0x7f12064e" />

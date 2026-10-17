@@ -122,10 +122,8 @@ object SettingsSearchIndex {
         // Each keyboard's Layout is a row in the sheet its row on the Language screen opens, so
         // the entry leads to the screen and has no anchor to highlight.
         SearchableSetting(R.string.languages_hub_layout_title, "keyboard layout colemak dvorak qwerty qwertz azerty letters keys arrangement on-screen physical keypad", SettingsRoute.LanguagesHub.route, LANGUAGES),
-        SearchableSetting(R.string.settings_lang_switch_key_title, "globe switch language", SettingsRoute.LanguageSwitching.route, LANGUAGES, "pref_show_language_switch_key"),
-        SearchableSetting(R.string.settings_lang_include_other_title, "other input methods ime", SettingsRoute.LanguageSwitching.route, LANGUAGES, "pref_include_other_imes_in_language_switch_list"),
-        SearchableSetting(R.string.settings_lang_quick_switch_title, "quick switch language key", SettingsRoute.LanguageSwitching.route, LANGUAGES, "pref_language_quick_switch_key"),
-        SearchableSetting(R.string.settings_lang_spacebar_switch_title, "spacebar swipe language", SettingsRoute.LanguageSwitching.route, LANGUAGES, "pref_spacebar_language_switching"),
+        SearchableSetting(R.string.settings_lang_quick_switch_title, "quick switch key last two languages quick switch language key", SettingsRoute.LanguageSwitching.route, LANGUAGES, "pref_language_quick_switch_key"),
+        SearchableSetting(R.string.settings_lang_spacebar_switch_title, "spacebar swipe gesture language", SettingsRoute.LanguageSwitching.route, LANGUAGES, "pref_spacebar_language_switching"),
 
         // ── Typing & input: On-screen keyboard ──────────────────────────────────
         SearchableSetting(R.string.settings_vkb_type_by_swiping_title, "swipe glide type trace", SettingsRoute.OnScreenKeyboard.route, TYPING, "type_by_swiping_vkb"),

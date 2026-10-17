@@ -156,6 +156,12 @@ public class InputSessionCoordinator {
         SettingsValues updatedSettings = ime.getSettingsManager().getSettingsValues();
         if (shouldInit) {
             mainKeyboardView.closing();
+            // The settings for THIS editor come first: the keyboard built below reads them (the
+            // mic key and its hint follow the field's microphone allowance), and loading them
+            // after the build left the first keyboard of a new field drawn for the previous
+            // field — the mic hint missing until the next rebuild.
+            ime.loadSettings();
+            updatedSettings = ime.getSettingsManager().getSettingsValues();
             ime.applyAutoCorrectionSettings(updatedSettings);
             ks.startInput(editorInfo, ime.getCurrentInputType(), ime.getCurrentImeOptions());
 
@@ -164,8 +170,6 @@ public class InputSessionCoordinator {
                 auxBarManager.setCurrentLocale(ime.getSubtypeManager().getCurrentSubtypeLocale());
             }
 
-            ime.loadSettings();
-            updatedSettings = ime.getSettingsManager().getSettingsValues();
             if (z2) {
                 ks.saveKeyboardState(editorInfo.inputType);
             }

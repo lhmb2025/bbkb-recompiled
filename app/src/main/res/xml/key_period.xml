@@ -71,6 +71,13 @@
                 latin:keySpec="z"
                 latin:moreKeys="!text/morekeys_z"/>
         </case>
+        <!-- The quick-switch key takes the comma's slot, so the comma moves to the period key's
+             long-press list, first in the punctuation popup. -->
+        <case latin:languageQuickSwitchKeyEnabled="true">
+            <Key
+                latin:keySpec="!text/keyspec_period"
+                latin:moreKeys="!text/morekeys_punctuation"/>
+        </case>
         <default>
             <Key
                 latin:keySpec="!text/keyspec_period"

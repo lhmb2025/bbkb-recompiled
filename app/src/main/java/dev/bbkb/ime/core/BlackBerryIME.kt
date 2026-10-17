@@ -64,7 +64,6 @@ import dev.bbkb.ime.core.engine.learning.DynamicLearningManager
 import dev.bbkb.ime.core.settings.ComposeSettingsActivity
 import dev.bbkb.ime.core.settings.util.SettingsManager
 import dev.bbkb.ime.core.settings.util.SettingsValues
-import dev.bbkb.ime.core.subtypeswitcher.SubtypeSwitcherReceiver
 import dev.bbkb.ime.core.suggestion.SuggestedWords
 import dev.bbkb.ime.core.suggestion.SuggestionEngine
 import dev.bbkb.ime.core.suggestion.SuggestionStripPresenter
@@ -286,7 +285,6 @@ class BlackBerryIME : InputMethodService(),
 
     var dynamicLearningManager: DynamicLearningManager? = null
 
-    var subtypeSwitcherReceiver: SubtypeSwitcherReceiver? = null
 
     var shakeGestureHandler: ShakeGestureHandler? = null
 
@@ -659,7 +657,6 @@ class BlackBerryIME : InputMethodService(),
     }
 
     private fun initializeControllers() {
-        subtypeSwitcherReceiver = SubtypeSwitcherReceiver(this, uiUpdateHandler)
         shakeGestureHandler = ShakeGestureHandler(this, this)
         if (Looper.myLooper() == Looper.getMainLooper()) {
             voiceInputController = VoiceInputController(this, uiCoordinator)
@@ -1332,6 +1329,8 @@ class BlackBerryIME : InputMethodService(),
 
     @Throws(Resources.NotFoundException::class)
     override fun onStartInputView(editorInfo: EditorInfo?, z: Boolean) {
+        // A field change under the language-chip bar: the bar goes with the field it was for.
+        auxBarManager?.hideLanguageChips()
         Logger.info(LOG_TAG, "onStartInputView()")
         // Window re-show for a still-bound editor delivers onStartInputView WITHOUT a
         // preceding onStartInput, leaving isInputActive stale-false after
@@ -1795,11 +1794,50 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
+    /**
+     * "Change language": the language-chip bar on the suggestion strip, this keyboard's enabled
+     * languages with the current one first and bold, then the most recently used. Nothing with
+     * one language. ("Spacebar swipe gesture" governs the swipe only, not this.)
+     */
     fun switchToNextSubtype(enumC0690f: InputSource): Boolean {
-        if (!richInputMethodManager!!.hasMultipleEnabledSubtypesInThisIme(false) || !settingsManager.getSettingsValues().isSpacebarLanguageSwitchingEnabled) {
+        if (!richInputMethodManager!!.hasMultipleEnabledSubtypesInThisIme(false)) {
             return false
         }
-        return subtypeSwitcherReceiver!!.show(this, this, enumC0690f)
+        val chips = languageChips()
+        if (chips.size < 2) return false
+        val manager = auxBarManager ?: return false
+        if (manager.isShowingLanguageChips()) {
+            manager.hideLanguageChips()
+            return true
+        }
+        manager.showLanguageChips(chips)
+        return true
+    }
+
+    /** The chips in their order: the current language, then the switch history newest first, then the rest. */
+    private fun languageChips(): List<dev.bbkb.ime.keyboard.auxbar.LanguageChip> {
+        val enabled = richInputMethodManager!!.enabledSubtypesOfThisIme.filter { !it.isAuxiliary }
+        val current = subtypeManager.currentSubtype
+        val ordered = LinkedHashSet<InputMethodSubtype>()
+        if (current != null && current in enabled) ordered += current
+        for (recent in richInputMethodManager!!.subtypeSwitchHistory.asReversed()) {
+            if (recent != null && recent in enabled) ordered += recent
+        }
+        ordered += enabled
+        // The language's name only ("English (US)"), not the subtype's, which appends the
+        // on-screen layout where it is not the default one.
+        return ordered.map { dev.bbkb.ime.keyboard.auxbar.LanguageChip(ResourceLocaleUtils.getSubtypeLocaleDisplayName(it.locale), it, it == current) }
+    }
+
+    override fun onLanguageChosen(subtype: InputMethodSubtype) {
+        richInputMethodManager!!.setInputMethodAndSubtype(this, subtype)
+    }
+
+    override fun onLanguageSettingsClicked() {
+        val intent = Intent(this, dev.bbkb.ime.core.settings.ComposeSettingsActivity::class.java)
+        intent.putExtra("screen", "languages_hub")
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
     }
 
     fun updateSuggestionsFromSubtype(enumC0690f: InputSource): Boolean {
@@ -2848,11 +2886,6 @@ class BlackBerryIME : InputMethodService(),
         return auxBarManager?.getAuxBarView()
     }
 
-    fun cancelQuickSwitch() {
-        if (isInputViewShown()) {
-            richInputMethodManager!!.getInputMethodManager().hideSoftInputFromInputMethod(window.window!!.attributes.token, 2)
-        }
-    }
 
     fun showInputOptions() {
         if (isAlertDialogShowing()) return

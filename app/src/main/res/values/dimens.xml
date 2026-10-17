@@ -44,6 +44,9 @@
          height, which deliberately stays at its pre-M3 value). -->
     <dimen name="config_suggestion_min_width_material">48dp</dimen>
     <dimen name="config_suggestion_text_horizontal_padding">6dp</dimen>
+    <!-- A language chip's side padding: the chip is as wide as its name plus this on each side,
+         with no minimum width, so the gaps between chips are the same whatever the names. -->
+    <dimen name="config_language_chip_horizontal_padding">12dp</dimen>
     <dimen name="config_suggestion_text_size">18dp</dimen>
     <!-- A hint icon in a key's corner (the mic on the comma key, the globe on the space bar): every
          icon drawn as a hint is fitted to this, whatever size its drawable has. -->

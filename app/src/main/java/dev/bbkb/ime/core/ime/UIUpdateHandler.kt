@@ -37,7 +37,6 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         private const val MSG_MULTITAP_TIMEOUT = 10
         private const val MSG_DICTIONARY_LOADED = 11
         private const val MSG_ADDITIONAL_LOCALES_READY = 12
-        private const val MSG_CANCEL_QUICK_SWITCH = 13
         private const val MSG_UPDATE_GESTURE_SUGGESTIONS = 14
         private const val MSG_UPDATE_JAPANESE_SUGGESTIONS = 15
         private const val MSG_COMMIT_TEXT = 17
@@ -201,11 +200,6 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
                     blackBerryIMEV.reloadAdditionalLocales()
                     return
                 }
-                MSG_CANCEL_QUICK_SWITCH -> {
-                    if (BuildConfig.DEBUG) Log.i(BlackBerryIME.LOG_TAG, "Quick subtype switcher canceled")
-                    blackBerryIMEV.cancelQuickSwitch()
-                    return
-                }
                 MSG_UPDATE_GESTURE_SUGGESTIONS -> {
                     cancelPendingSuggestionUpdates()
                     if (!blackBerryIMEV.getSettingsManager().getSettingsValues().isPredictionsEnabled) {
@@ -283,9 +277,6 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         sendMessageDelayed(message, delayMillis)
     }
 
-    fun postCancelQuickSwitch() {
-        sendMessageDelayed(obtainMessage(MSG_CANCEL_QUICK_SWITCH), suggestionUpdateDelay.toLong())
-    }
 
     fun postUpdateSuggestions(i: Int) {
         sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS, i, 0), suggestionUpdateDelay.toLong())
@@ -367,10 +358,8 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         removeMessages(MSG_BATCH_INPUT_SUGGESTIONS)
         // Audit DW-5/DW-8: neither of these had a removeMessages site anywhere.
         // MSG_COMMIT_TEXT writes text into whatever editor is current at delivery (voice
-        // board); MSG_CANCEL_QUICK_SWITCH hides the keyboard on a decision that may be stale
         // by the time it lands. Both belong in the teardown cancel set.
         removeMessages(MSG_COMMIT_TEXT)
-        removeMessages(MSG_CANCEL_QUICK_SWITCH)
     }
 
     fun hasPendingSuggestionUpdate(): Boolean = hasMessages(MSG_UPDATE_SUGGESTIONS)

@@ -41,5 +41,10 @@ public enum AuxBarState {
      * Accent character selection bar displayed in SharedKeyView.
      * Uses dynamically generated accent keyboard.
      */
-    ACCENT_BAR
+    ACCENT_BAR,
+
+    /**
+     * The language-chip bar in UnifiedSuggestionView: this keyboard's languages, a tap switches.
+     */
+    LANGUAGE_CHIPS
 }

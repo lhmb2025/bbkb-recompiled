@@ -113,6 +113,42 @@ public class AuxBarView extends FrameLayout {
         enter(oldState, isCJK ? AuxBarState.CJK_SUGGESTIONS : AuxBarState.LATIN_SUGGESTIONS);
     }
 
+    /** What the suggestion view showed before the language-chip bar took it over. */
+    private SuggestionMode modeBeforeLanguageChips = SuggestionMode.LATIN;
+    private SuggestedWords wordsBeforeLanguageChips;
+
+    /** Show the language-chip bar: this keyboard's languages, the current one first and bold. */
+    public void showLanguageChips(List<LanguageChip> chips) {
+        AuxBarState oldState = currentState;
+        if (oldState != AuxBarState.LANGUAGE_CHIPS) {
+            modeBeforeLanguageChips = suggestionView.getMode();
+            wordsBeforeLanguageChips = suggestionView.getCurrentSuggestions();
+        }
+        showSuggestionChild();
+        suggestionView.setMode(SuggestionMode.LANGUAGES);
+        suggestionView.setLanguageChips(chips);
+        enter(oldState, AuxBarState.LANGUAGE_CHIPS);
+    }
+
+    /**
+     * The suggestion view as it was before the language-chip bar: its mode and words put back
+     * (the chips replaced them in the one view, unlike a key view drawn over it).
+     */
+    public void restoreSuggestionsAfterLanguageChips() {
+        AuxBarState oldState = currentState;
+        showSuggestionChild();
+        suggestionView.setMode(modeBeforeLanguageChips);
+        if (modeBeforeLanguageChips != SuggestionMode.AUTOFILL) {
+            if (wordsBeforeLanguageChips != null) {
+                suggestionView.setSuggestions(wordsBeforeLanguageChips);
+            } else {
+                suggestionView.clear();
+            }
+        }
+        wordsBeforeLanguageChips = null;
+        enter(oldState, stateForSuggestionMode(modeBeforeLanguageChips));
+    }
+
     /**
      * Show autofill suggestions (Android 11+).
      */

@@ -74,6 +74,25 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
         void onSuggestionClick(int position, SuggestedWords.SuggestedWordInfo wordInfo);
         void onSuggestionLongClick(int position, SuggestedWords.SuggestedWordInfo wordInfo);
         void onAutofillClick(int position);
+        void onLanguageChipClick(LanguageChip chip);
+    }
+
+    private List<LanguageChip> languageChips = new ArrayList<>();
+
+    /** The chips of {@link SuggestionMode#LANGUAGES}, in the order they are shown. */
+    public void setLanguageChips(List<LanguageChip> chips) {
+        this.languageChips = chips == null ? new ArrayList<>() : new ArrayList<>(chips);
+        if (currentMode == SuggestionMode.LANGUAGES) {
+            notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * The chip a holder shows: read off the holder, not its adapter position, which is
+     * NO_POSITION while an adapter update is pending (the strip's width change rebinds).
+     */
+    private LanguageChip boundChip(WordViewHolder holder) {
+        return currentMode == SuggestionMode.LANGUAGES ? holder.chip : null;
     }
 
     public UnifiedSuggestionAdapter(Context context, OnSuggestionClickListener listener) {
@@ -165,8 +184,14 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
         // Installed here rather than per bind: onCreateViewHolder runs a handful of times, the
         // binds run on every keystroke. The position is read at click time instead of captured.
         view.setOnClickListener(v -> {
+            if (listener == null) return;
+            LanguageChip chip = boundChip(holder);
+            if (chip != null) {
+                listener.onLanguageChipClick(chip);
+                return;
+            }
             SuggestedWords.SuggestedWordInfo wordInfo = boundWordInfo(holder);
-            if (wordInfo != null && listener != null) {
+            if (wordInfo != null) {
                 listener.onSuggestionClick(holder.getBindingAdapterPosition(), wordInfo);
             }
         });
@@ -183,11 +208,51 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof WordViewHolder) {
+        if (holder instanceof WordViewHolder && currentMode == SuggestionMode.LANGUAGES) {
+            bindLanguageChip((WordViewHolder) holder, position);
+        } else if (holder instanceof WordViewHolder) {
             bindWordViewHolder((WordViewHolder) holder, position);
         } else if (holder instanceof AutofillViewHolder) {
             bindAutofillViewHolder((AutofillViewHolder) holder, position);
         }
+    }
+
+    /**
+     * A language chip: the language's name in the strip's text, the current language bold and in
+     * the text colour, the others in the hint colour the strip gives its other candidates; sized
+     * to its name, so the row scrolls when there are more than fit.
+     */
+    private void bindLanguageChip(WordViewHolder holder, int position) {
+        if (holder.highlightGeneration != this.paletteGeneration) {
+            holder.itemView.setForeground(KeyboardColorManager.pressedHighlight());
+            holder.highlightGeneration = this.paletteGeneration;
+        }
+        ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
+        if (params != null && params.width != ViewGroup.LayoutParams.WRAP_CONTENT) {
+            params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            holder.itemView.setLayoutParams(params);
+        }
+        // As wide as the name plus an even padding, no minimum: a minimum would pad "Thai" out
+        // to the width of a word slot and make the gaps between chips uneven.
+        holder.itemView.setMinimumWidth(0);
+        int chipPadding = context.getResources().getDimensionPixelSize(R.dimen.config_language_chip_horizontal_padding);
+        holder.textView.setPadding(chipPadding, holder.textView.getPaddingTop(), chipPadding, holder.textView.getPaddingBottom());
+        if (holder.moreSuggestionsIndicator != null) {
+            holder.moreSuggestionsIndicator.setVisibility(View.GONE);
+        }
+        holder.textView.setTextScaleX(1.0f);
+        if (position >= languageChips.size()) {
+            holder.chip = null;
+            holder.textView.setText("");
+            return;
+        }
+        LanguageChip chip = languageChips.get(position);
+        holder.chip = chip;
+        holder.textView.setText(chip.displayName);
+        holder.textView.setTypeface(chip.current ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
+        holder.textView.setTextColor(chip.current
+                ? KeyboardColorManager.INSTANCE.getTextColor()
+                : KeyboardColorManager.INSTANCE.getHintColor(KeyboardColorManager.ALPHA_FULL));
     }
 
     /** The word a holder is currently bound to, or null if its position is stale/out of range. */
@@ -201,6 +266,12 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     private void bindWordViewHolder(WordViewHolder holder, int position) {
+        holder.chip = null;
+        // A holder that last showed a language chip carries the chip padding; words get the strip's.
+        int wordPadding = context.getResources().getDimensionPixelSize(R.dimen.config_suggestion_text_horizontal_padding);
+        if (holder.textView.getPaddingStart() != wordPadding) {
+            holder.textView.setPadding(wordPadding, holder.textView.getPaddingTop(), wordPadding, holder.textView.getPaddingBottom());
+        }
         if (suggestedWords == null || position >= suggestedWords.size()) {
             holder.textView.setText("");
             holder.textView.setTextScaleX(1.0f);
@@ -389,6 +460,9 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public int getItemCount() {
+        if (currentMode == SuggestionMode.LANGUAGES) {
+            return languageChips.size();
+        }
         if (currentMode == SuggestionMode.AUTOFILL) {
             return autofillSuggestions.size();
         } else if (currentMode == SuggestionMode.LATIN) {
@@ -433,6 +507,8 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
         final ImageView moreSuggestionsIndicator;
         /** Palette generation the current itemView foreground was built for. */
         int highlightGeneration = -1;
+        /** The chip this holder shows in the language-chip mode, else null. */
+        LanguageChip chip;
 
         WordViewHolder(@NonNull View itemView) {
             super(itemView);

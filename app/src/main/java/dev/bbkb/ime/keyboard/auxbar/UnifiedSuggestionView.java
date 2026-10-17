@@ -79,6 +79,10 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         void onAutofillSuggestionClicked(int position);
         void onHamburgerClicked();
         void onExpandClicked();
+        /** A tap on a chip of the language-chip bar. */
+        void onLanguageChipClicked(LanguageChip chip);
+        /** The gear that stands in the hamburger's place on the language-chip bar. */
+        void onLanguageSettingsClicked();
         /**
          * Called when user long-presses the center suggestion to show more suggestions.
          * @return The current Keyboard to use for building the MoreSuggestions panel, or null if unavailable.
@@ -137,7 +141,12 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
 
         // Setup hamburger button
         hamburgerBtn.setOnClickListener(v -> {
-            if (listener != null) {
+            if (listener == null) {
+                return;
+            }
+            if (currentMode == SuggestionMode.LANGUAGES) {
+                listener.onLanguageSettingsClicked();
+            } else {
                 listener.onHamburgerClicked();
             }
         });
@@ -202,7 +211,16 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
                     layoutManager.setScrollEnabled(true);
                     recyclerView.setNestedScrollingEnabled(true);
                     break;
+                case LANGUAGES:
+                    actionBtn.setVisibility(GONE);
+                    layoutManager.setScrollEnabled(true);
+                    recyclerView.setNestedScrollingEnabled(true);
+                    break;
             }
+            // The language-chip bar's left button is the language settings gear; every other
+            // mode's is the hamburger.
+            hamburgerBtn.setImageResource(mode == SuggestionMode.LANGUAGES
+                    ? R.drawable.ic_auxbar_language_settings : R.drawable.ic_auxbar_hamburger);
             
             // Update adapter with current dimensions
             updateAdapterDimensions();
@@ -229,6 +247,11 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
 
     public SuggestionMode getMode() {
         return currentMode;
+    }
+
+    /** The words last given to {@link #setSuggestions}, or null. */
+    public SuggestedWords getCurrentSuggestions() {
+        return currentSuggestions;
     }
 
     public void flashCommittedSlot(int slot) {
@@ -269,6 +292,22 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         currentSuggestions = null;
         adapter.clear();
         hideOverlays();
+    }
+
+    /** The language-chip bar's chips; shown when the mode is {@link SuggestionMode#LANGUAGES}. */
+    public void setLanguageChips(List<LanguageChip> chips) {
+        hideOverlays();
+        adapter.setLanguageChips(chips);
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
+    }
+
+    @Override
+    public void onLanguageChipClick(LanguageChip chip) {
+        if (listener != null) {
+            listener.onLanguageChipClicked(chip);
+        }
     }
 
     public void hideOverlays() {

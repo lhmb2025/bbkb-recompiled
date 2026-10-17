@@ -1117,10 +1117,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             title = "Language switching",
             resources = setOf(
                 "settings_category_on_screen_keyboard",
-                "settings_lang_include_other_summary", "settings_lang_include_other_title",
                 "settings_lang_quick_switch_summary", "settings_lang_quick_switch_title",
                 "settings_lang_spacebar_switch_summary", "settings_lang_spacebar_switch_title",
-                "settings_lang_switch_key_summary", "settings_lang_switch_key_title",
                 "settings_language_switching_title"
             ),
             literals = emptySet(),

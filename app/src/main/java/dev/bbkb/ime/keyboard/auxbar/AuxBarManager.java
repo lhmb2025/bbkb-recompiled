@@ -77,6 +77,9 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
      * emptying the strip: the suggestions the user was reading, or the unified input menu.
      */
     private AuxBarState stateBeforeAccentBar = AuxBarState.NONE;
+
+    /** What the language-chip bar covered, put back when it goes. */
+    private AuxBarState stateBeforeLanguageChips = AuxBarState.NONE;
     
     // State tracking for key hold detection (mirrors original AccentBarController)
     private int lastKeyCode = -1;
@@ -130,6 +133,10 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         dev.bbkb.ime.keyboard.Keyboard getMainKeyboard();
         /** Called when an accent character is selected from the accent bar */
         void onAccentSelected(String accentChar);
+        /** A language chosen on the language-chip bar. */
+        void onLanguageChosen(android.view.inputmethod.InputMethodSubtype subtype);
+        /** The gear on the language-chip bar: the Language settings screen. */
+        void onLanguageSettingsClicked();
         /** The letter a pick from the accent bar would replace ("" when none): the bar shows its list in that letter's case. */
         String letterAnAccentWouldReplace();
         /** Whether the unified input menu is what this editor shows when the strip is not. */
@@ -348,6 +355,9 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         AuxBarState state = auxBarView.getCurrentState();
         if (state == AuxBarState.ACCENT_BAR && isHiddenWithTheBar(stateBeforeAccentBar)) {
             stateBeforeAccentBar = AuxBarState.NONE;
+        }
+        if (state == AuxBarState.LANGUAGE_CHIPS && isHiddenWithTheBar(stateBeforeLanguageChips)) {
+            stateBeforeLanguageChips = AuxBarState.NONE;
         }
         boolean emptyContainer = state == AuxBarState.NONE && auxBarView.getVisibility() == View.VISIBLE;
         if (emptyContainer || isHiddenWithTheBar(state)) {
@@ -588,6 +598,56 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         }
         AuxBarState covered = stateBeforeAccentBar;
         stateBeforeAccentBar = AuxBarState.NONE;
+        restoreCovered(covered);
+    }
+
+    // ========== Language-chip bar ==========
+
+    /**
+     * The language-chip bar over whatever the bar shows: this keyboard's languages, the current
+     * one first and bold, the gear in the hamburger's place. A tap on a chip switches and puts
+     * back what the bar showed; so does the next key, or {@link #hideLanguageChips()}.
+     */
+    public void showLanguageChips(@NonNull List<LanguageChip> chips) {
+        if (auxBarView == null || chips.isEmpty()) {
+            return;
+        }
+        if (auxBarView.getCurrentState() == AuxBarState.ACCENT_BAR) {
+            hideAccentBar();
+        }
+        if (auxBarView.getCurrentState() != AuxBarState.LANGUAGE_CHIPS) {
+            stateBeforeLanguageChips = auxBarView.getCurrentState();
+        }
+        auxBarView.showLanguageChips(chips);
+    }
+
+    /** Whether the language-chip bar is what the bar shows. */
+    public boolean isShowingLanguageChips() {
+        return auxBarView != null && auxBarView.getCurrentState() == AuxBarState.LANGUAGE_CHIPS;
+    }
+
+    /** Dismiss the language-chip bar and put back what it covered. */
+    public void hideLanguageChips() {
+        if (!isShowingLanguageChips()) {
+            return;
+        }
+        AuxBarState covered = stateBeforeLanguageChips;
+        stateBeforeLanguageChips = AuxBarState.NONE;
+        switch (covered) {
+            case LATIN_SUGGESTIONS:
+            case CJK_SUGGESTIONS:
+            case AUTOFILL:
+                // The chips took the suggestion view itself: put its words back.
+                auxBarView.restoreSuggestionsAfterLanguageChips();
+                break;
+            default:
+                restoreCovered(covered);
+                break;
+        }
+    }
+
+    /** Put back the state a bar drawn over it covered. */
+    private void restoreCovered(AuxBarState covered) {
         switch (covered) {
             case LATIN_SUGGESTIONS:
             case CJK_SUGGESTIONS:
@@ -711,6 +771,22 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
     }
 
     @Override
+    public void onLanguageChipClicked(LanguageChip chip) {
+        hideLanguageChips();
+        if (eventListener != null && !chip.current) {
+            eventListener.onLanguageChosen(chip.subtype);
+        }
+    }
+
+    @Override
+    public void onLanguageSettingsClicked() {
+        hideLanguageChips();
+        if (eventListener != null) {
+            eventListener.onLanguageSettingsClicked();
+        }
+    }
+
+    @Override
     public void onExpandClicked() {
         if (eventListener != null) {
             eventListener.onExpandSuggestionsClicked();
@@ -763,6 +839,8 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
                 hideAccentBar();
                 accentBarTriggered = false;
             }
+            // A key typed under the language-chip bar: the user went on typing, the bar goes.
+            hideLanguageChips();
             
             // Store state for this new key press
             lastKeyCode = keyCode;

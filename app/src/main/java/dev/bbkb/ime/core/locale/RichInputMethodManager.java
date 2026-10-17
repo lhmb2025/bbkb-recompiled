@@ -265,20 +265,6 @@ public class RichInputMethodManager {
         }
     }
 
-    /**
-     * Hand the keyboard over to another input method - the "Other keyboards" rows of the language
-     * menu. Token-free on API 28+; the IBinder form below that.
-     */
-    public void switchToInputMethod(InputMethodService ims, String imeId) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            ims.switchInputMethod(imeId);
-            return;
-        }
-        final IBinder token = windowToken(ims);
-        if (token != null) {
-            this.imm.setInputMethod(token, imeId);
-        }
-    }
 
     /** The IME window's token, or null before the window exists. */
     private static IBinder windowToken(InputMethodService ims) {

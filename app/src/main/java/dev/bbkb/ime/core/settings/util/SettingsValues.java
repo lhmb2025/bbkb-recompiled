@@ -291,9 +291,7 @@ public final class SettingsValues {
 
     public final boolean showsVoiceInputKey;
 
-    public final boolean includesOtherImesInLanguageSwitch;
 
-    public final boolean showsLanguageSwitchKey;
 
     public final boolean useContactsDicts;
 
@@ -355,8 +353,6 @@ public final class SettingsValues {
         // the key on phones that have a recogniser but no Google voice typing.
         this.showsVoiceInputKey = loadVoiceInputKeySetting(sharedPreferences, resources) && this.editorCapabilities.isMicrophoneAllowed
                 && (android.speech.SpeechRecognizer.isRecognitionAvailable(context) || SubtypeManager.getInstance().isShortcutImeEnabled());
-        this.includesOtherImesInLanguageSwitch = sharedPreferences.getBoolean("pref_include_other_imes_in_language_switch_list", false);
-        this.showsLanguageSwitchKey = SettingsManager.isLanguageSwitchKeyVisible(sharedPreferences);
         this.useContactsDicts = sharedPreferences.getBoolean("pref_key_use_contacts_dict", true);
         this.usePersonalizedDicts = sharedPreferences.getBoolean("pref_key_use_personalized_dicts", true);
         this.useDoubleSpacePeriod = sharedPreferences.getBoolean("pref_key_use_double_space_period", true) && c0696l.normalVariation;
@@ -622,14 +618,7 @@ public final class SettingsValues {
     }
 
     public boolean hasMultipleEnabledInputMethodsOrSubtypes() {
-        if (!this.showsLanguageSwitchKey) {
-            return false;
-        }
-        RichInputMethodManager c0910yM5863a = RichInputMethodManager.getInstance();
-        if (this.includesOtherImesInLanguageSwitch) {
-            return c0910yM5863a.hasMultipleEnabledIMEsOrSubtypes(false);
-        }
-        return c0910yM5863a.hasMultipleEnabledSubtypesInThisIme(false);
+        return RichInputMethodManager.getInstance().hasMultipleEnabledSubtypesInThisIme(false);
     }
 
     public boolean shouldInsertSpacesAutomatically(EditorInfo editorInfo) {
@@ -722,10 +711,6 @@ public final class SettingsValues {
         sb.append("" + this.isKeyPreviewPopupEnabled);
         sb.append("\n   mShowsVoiceInputKey = ");
         sb.append("" + this.showsVoiceInputKey);
-        sb.append("\n   mIncludesOtherImesInLanguageSwitchList = ");
-        sb.append("" + this.includesOtherImesInLanguageSwitch);
-        sb.append("\n   mShowsLanguageSwitchKey = ");
-        sb.append("" + this.showsLanguageSwitchKey);
         sb.append("\n   mUseContactsDict = ");
         sb.append("" + this.useContactsDicts);
         sb.append("\n   mUsePersonalizedDicts = ");

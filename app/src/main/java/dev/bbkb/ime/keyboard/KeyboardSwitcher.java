@@ -524,7 +524,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         if (i != -10) {
             return false;
         }
-        return RichInputMethodManager.getInstance().hasMultipleEnabledSubtypesInThisIme(false) && SettingsManager.getInstance().getSettingsValues().isSpacebarLanguageSwitchingEnabled;
+        // The globe on the space bar: whenever there is another language to switch to.
+        return RichInputMethodManager.getInstance().hasMultipleEnabledSubtypesInThisIme(false);
     }
 
     public void startInput(EditorInfo editorInfo, int i, int i2) throws Resources.NotFoundException {

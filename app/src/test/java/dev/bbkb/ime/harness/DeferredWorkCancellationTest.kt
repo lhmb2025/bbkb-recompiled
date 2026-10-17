@@ -12,7 +12,7 @@ import org.robolectric.annotation.Config
 
 /**
  * Executable proof for the "deferred work outlives its context" findings of the Phase 2 audit
- * (docs/2026-07_pipeline-audit-findings_reference.md): `DW-2`, `DW-5`, `DW-8`.
+ * (docs/2026-07_pipeline-audit-findings_reference.md): `DW-2`, `DW-5` (`DW-8`, the quick-switch cancel, went with the Change language dialog).
  *
  * All three were the same defect — a message that writes text or hides the keyboard, with no
  * `removeMessages` site anywhere, so it landed in whatever field was current when it finally
@@ -64,13 +64,6 @@ class DeferredWorkCancellationTest {
     fun dw5_voiceCommitMessageIsCancellable() {
         // DW-5: MSG_COMMIT_TEXT writes text into whatever editor is current at delivery.
         assertCancelled(PipelineHarness.Msg.COMMIT_TEXT, "MSG_COMMIT_TEXT")
-    }
-
-    @Test
-    fun dw8_quickSwitchCancelMessageIsCancellable() {
-        // DW-8: MSG_CANCEL_QUICK_SWITCH hides the keyboard on a decision that may be stale by
-        // the time it lands.
-        assertCancelled(PipelineHarness.Msg.CANCEL_QUICK_SWITCH, "MSG_CANCEL_QUICK_SWITCH")
     }
 
     // ── DW-4: multitap state and its timer surviving session teardown ────────────

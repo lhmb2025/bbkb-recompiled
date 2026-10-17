@@ -23,5 +23,12 @@ public enum SuggestionMode {
      * Data source: List<InlineSuggestion> from Android Autofill service.
      * Uses InlineContentView items.
      */
-    AUTOFILL
+    AUTOFILL,
+
+    /**
+     * The language-chip bar: one chip per enabled keyboard language, the current one bold.
+     * Data source: List<LanguageChip> from the IME. The hamburger slot shows the language
+     * settings gear instead.
+     */
+    LANGUAGES
 }
