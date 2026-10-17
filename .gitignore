@@ -53,3 +53,6 @@ tools/__pycache__/
 
 # Language-pack publishing source (411 MB of LDBs; published to GitHub Releases by dist/publish_packs.py)
 /ldb/
+
+# Swype 1.7.4136 iOS IPA (decrypted Nuance binary, analysis input only; harvested to bbkb-attic/reference/ski8-xt9-v12)
+/Swype_1.7.4136/
