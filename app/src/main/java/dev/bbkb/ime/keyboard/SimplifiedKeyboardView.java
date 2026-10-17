@@ -75,6 +75,11 @@ public class SimplifiedKeyboardView extends KeyboardView {
         this.keyEventListener = NO_OP_KEY_LISTENER;
     }
 
+    @Override
+    protected boolean anchorsHintToMainIcon() {
+        return true;
+    }
+
     /** Labels drawn as the suggestion strip draws its words; see {@link #setStripTextStyle}. */
     private boolean stripTextStyle;
 

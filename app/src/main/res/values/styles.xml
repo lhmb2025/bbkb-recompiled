@@ -54,7 +54,7 @@
         <item name="iconFccKeyDisabled">@drawable/ic_auxbar_fcc_disabled</item>
         <item name="iconGoKey">@drawable/ic_key_go</item>
         <item name="iconSlideboardSettingsKey">@drawable/ic_auxbar_slideboard_settings</item>
-        <item name="iconLanguageQuickSwitchKey">@drawable/ic_key_language_switch</item>
+        <item name="iconLanguageQuickSwitchKey">@drawable/ic_key_language_quick_switch</item>
         <item name="iconLanguageSwitchKey">@drawable/ic_key_language_switch</item>
         <item name="iconNextKey">@drawable/ic_key_next</item>
         <item name="iconNumberPadActiveKey">@drawable/ic_auxbar_numpad</item>

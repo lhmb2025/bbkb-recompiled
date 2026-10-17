@@ -581,7 +581,6 @@ public class KeyboardView extends View {
 
     /** KeyboardCodesSet "key_enter" — the enter/action key ('\n'). */
     private static final int CODE_ENTER = 10;
-    private static final int CODE_SPACE = 32;
 
     /**
      * Medium-weight (500) key labels where the platform supports typeface weights
@@ -1101,6 +1100,16 @@ public class KeyboardView extends View {
         return key.getCode() == 32 && !KeyboardColorManager.styleSpec().getDrawSpacebarIcon();
     }
 
+    /**
+     * Whether a hint icon on an icon key is anchored to the key's main icon as a badge instead of
+     * the key's corner. The aux bar's wide icon keys say yes (their cell corner floats far from
+     * the perceived button); the typing keyboard's keys say no, so the mic on the quick-switch
+     * globe, the globe on the space bar and the comma on the period key all sit in the corner.
+     */
+    protected boolean anchorsHintToMainIcon() {
+        return false;
+    }
+
     protected void applyIconTint(Key key, Drawable iconDrawable) {
         if (KeyboardColorManager.styleSpec().getAccentEnterKey() && key.getCode() == CODE_ENTER) {
             // Icon on the accent-filled action key (K4): keyboard background color
@@ -1165,9 +1174,7 @@ public class KeyboardView extends View {
             // on the UIM show-keyboard key) anchors to the key's main icon as a badge.
             // On wide icon-row keys the cell corner floats far outside the perceived
             // button. Clamped so partial redraws (which clip to key bounds) keep it.
-            // The space bar's icon is the bar across it, not a glyph to badge: its hint (the
-            // globe) takes the corner like every other key's.
-            if (insetCaps && hasIcon && mode == KeyHintPosition.TOP_RIGHT_CORNER && key.getCode() != CODE_SPACE) {
+            if (insetCaps && hasIcon && mode == KeyHintPosition.TOP_RIGHT_CORNER && anchorsHintToMainIcon()) {
                 Drawable mainIcon = key.getIcon(this.keyboard.mIconsSet, 255);
                 if (mainIcon != null && mainIcon.getIntrinsicWidth() > 0) {
                     int mainIconWidth = Math.min(mainIcon.getIntrinsicWidth(), keyWidth);
