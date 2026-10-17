@@ -2976,6 +2976,8 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
+    override fun letterAnAccentWouldReplace(): String = inputLogic.letterAnAccentWouldReplace()
+
     override fun isInSymbolMode(): Boolean {
         val symbolPageOrder = physicalKeyboardStateTracker.getSymbolPageOrder()
         return symbolPageOrder == SYMBOL_PAGE_ORDER_FIRST || symbolPageOrder == SYMBOL_PAGE_ORDER_SECOND

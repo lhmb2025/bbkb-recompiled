@@ -152,6 +152,9 @@ public class AuxBarView extends FrameLayout {
         
         suggestionView.setVisibility(GONE);
         sharedKeyView.setVisibility(VISIBLE);
+        // The accent bar reads as part of the suggestion strip it covers: its letters are drawn
+        // with the strip's text size, typeface and centring, not a key's.
+        sharedKeyView.setStripTextStyle(state == AuxBarState.ACCENT_BAR);
         sharedKeyView.setKeyboard(keyboard);
         
         // Force remeasure after setting keyboard

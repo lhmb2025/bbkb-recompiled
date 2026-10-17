@@ -2066,6 +2066,7 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
             TouchPointerCoordTracker coords = this.mComposingTracker.getCoordinateTracker();
             if (composing.length() > 0) {
                 int lastStart = composing.offsetByCodePoints(composing.length(), -1);
+                accentChar = matchCase(composing.substring(lastStart), accentChar, currentLocale());
                 CharSequence trimmed = composing.subSequence(0, lastStart);
                 if (trimmed.length() > 0) {
                     int[] codePoints = toCodePointArray(trimmed);
@@ -2080,11 +2081,66 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
             this.mRichInputConnection.setComposingText(this.mComposingTracker.getComposingText(), 1);
         } else {
             // No composing text: delete base char and commit accent through RichInputConnection
+            CharSequence before = this.mRichInputConnection.getTextBeforeCursor(2, 0);
+            if (before != null && before.length() > 0) {
+                int lastStart = Character.offsetByCodePoints(before, before.length(), -1);
+                accentChar = matchCase(before.subSequence(lastStart, before.length()).toString(), accentChar, currentLocale());
+            }
             this.mRichInputConnection.deleteSurroundingText(1, 0);
             this.mRichInputConnection.commitText(accentChar, 1);
         }
 
         this.mRichInputConnection.endBatchEdit(); // endBatchEdit
+    }
+
+    /**
+     * The letter an accent picked from the bar would replace: the composing text's last code
+     * point, else the one before the cursor; "" when there is none. The bar shows its list in
+     * this letter's case.
+     */
+    public String letterAnAccentWouldReplace() {
+        if (this.mComposingTracker.isComposing()) {
+            String composing = this.mComposingTracker.getComposingText();
+            if (composing.isEmpty()) return "";
+            return composing.substring(composing.offsetByCodePoints(composing.length(), -1));
+        }
+        CharSequence before = this.mRichInputConnection.getTextBeforeCursor(2, 0);
+        if (before == null || before.length() == 0) return "";
+        return before.subSequence(Character.offsetByCodePoints(before, before.length(), -1), before.length()).toString();
+    }
+
+    /** [matchCase] over a list: the accent bar's entries in the case of [replaced]. */
+    public static java.util.List<String> matchCase(String replaced, java.util.List<String> accents, Locale locale) {
+        if (replaced == null || replaced.isEmpty() || !Character.isUpperCase(replaced.codePointAt(0))) return accents;
+        java.util.ArrayList<String> out = new java.util.ArrayList<>(accents.size());
+        for (String accent : accents) out.add(matchCase(replaced, accent, locale));
+        return out;
+    }
+
+    /**
+     * The accent in the case of the letter it replaces: the accent bar lists lower-case letters,
+     * and a letter typed as a capital (auto-caps at the start of a sentence, Shift) keeps its
+     * case when one of them is picked, so "К" with қ picked becomes "Қ", not "қ". A replaced
+     * letter that is not upper case, or an accent that is not a letter, is left as listed.
+     */
+    static String matchCase(String replaced, String accent, Locale locale) {
+        if (replaced == null || replaced.isEmpty() || accent == null || accent.isEmpty()) return accent;
+        int replacedCode = replaced.codePointAt(0);
+        if (!Character.isUpperCase(replacedCode)) return accent;
+        if (!Character.isLetter(accent.codePointAt(0))) return accent;
+        String upper = accent.toUpperCase(locale);
+        // A letter whose upper case spells more code points than it (ß → SS) would be another
+        // word on the accent bar; it keeps its lower case.
+        return upper.codePointCount(0, upper.length()) == accent.codePointCount(0, accent.length()) ? upper : accent;
+    }
+
+    private static Locale currentLocale() {
+        try {
+            Locale locale = SubtypeManager.getInstance().getCurrentSubtypeLocale();
+            return locale != null ? locale : Locale.getDefault();
+        } catch (RuntimeException e) {
+            return Locale.getDefault();
+        }
     }
 
     private void handleCjkAutoCorrect(SettingsValues c0804d, InputEventContext c0920g, UIUpdateHandler handlerC0650c, String str) {

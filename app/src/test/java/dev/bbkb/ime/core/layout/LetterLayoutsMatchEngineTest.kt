@@ -123,6 +123,7 @@ class LetterLayoutsMatchEngineTest {
          */
         val SCRIPT_KDB = linkedMapOf(
             "ar" to "arabic", "ru" to "east_slavic", "uk" to "ukranian", "be" to "belarusian",
+            "ky" to "east_slavic", "kk" to "east_slavic", "tg" to "east_slavic", "tt" to "east_slavic",
             "iw" to "hebrew", "el" to "greek", "ko" to "korean",
         )
 

@@ -261,6 +261,10 @@ class LetterLayoutGoldenTest {
             val layoutSet = name.substringAfter(':')
             val groups = entry.getJSONArray("keypads")
             val doc = documentFor(docs, language, layoutSet)
+            // Kyrgyz was recorded without a document (its keys typed Latin); its documents, on
+            // the Russian key map since 2026-10-17, are held to the engine file by
+            // LetterLayoutsMatchEngineTest and to the fixture by the resolver test's tolerance.
+            if (language == "ky") continue
             // The translit keyboards and Chinese pinyin and cangjie have documents of their own
             // layout set; every other keyboard takes its language's document.
             val expectedId = when {
@@ -419,11 +423,13 @@ class LetterLayoutGoldenTest {
                 !d.switchOff && d.field == "shiftLegend" && d.recorded == null &&
                     (d.subtype to d.label) in LEGENDS_NOW_IN_THE_DOCUMENTS
             },
-            // Kyrgyz keys type the key map's Latin letters (no Kyrgyz engine layout), so the
-            // Cyrillic-keyed tables it was given never matched a typed letter, and it has no
-            // document.
-            Tolerance("Kyrgyz: tables keyed by letters its keys never type", 168) { d ->
-                !d.switchOff && d.subtype.startsWith("ky:") && d.now == null
+            // Kyrgyz keys typed the key map's Latin letters when the fixture was recorded (no
+            // Kyrgyz engine layout, so the Cyrillic-keyed tables never matched a typed letter).
+            // Since 2026-10-17 it has a document on the Russian key map, with its own letters
+            // (ң ө ү) as hold lists: every answer the fixture recorded as nothing is Cyrillic now.
+            Tolerance("Kyrgyz types Cyrillic on the keypad now", 348) { d ->
+                !d.switchOff && d.subtype.startsWith("ky:") &&
+                    !(d.field == "hold" && d.label in PhysicalKeyResolver.CURRENCY_SYMBOLS)
             },
             // "Use active language's alphabet" off turns the built-in documents off; the keys type
             // the key map's Latin letters, and the old tables' lists, legends and double taps for

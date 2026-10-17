@@ -581,6 +581,7 @@ public class KeyboardView extends View {
 
     /** KeyboardCodesSet "key_enter" — the enter/action key ('\n'). */
     private static final int CODE_ENTER = 10;
+    private static final int CODE_SPACE = 32;
 
     /**
      * Medium-weight (500) key labels where the platform supports typeface weights
@@ -1139,7 +1140,17 @@ public class KeyboardView extends View {
                 paint.setTextAlign(Paint.Align.LEFT);
                 paint.getTextBounds(str, 0, str.length(), rect);
             } else if (hasIcon) {
-                rect.set(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                // Every hint icon at the one hint size, so the globe on the space bar (the
+                // language key's 24dp icon) sits like the 16dp mic on the comma key.
+                int hintSize = getResources().getDimensionPixelSize(R.dimen.config_key_hint_icon_size);
+                int iconW = drawable.getIntrinsicWidth();
+                int iconH = drawable.getIntrinsicHeight();
+                if (iconW > 0 && iconH > 0 && Math.max(iconW, iconH) != hintSize) {
+                    float scale = hintSize / (float) Math.max(iconW, iconH);
+                    iconW = Math.round(iconW * scale);
+                    iconH = Math.round(iconH * scale);
+                }
+                rect.set(0, 0, iconW, iconH);
             }
             // Corner hints are positioned from the key bounds; on cap styles the
             // visible cap is inset from those bounds, so pad by the cap insets (0 for
@@ -1154,7 +1165,9 @@ public class KeyboardView extends View {
             // on the UIM show-keyboard key) anchors to the key's main icon as a badge.
             // On wide icon-row keys the cell corner floats far outside the perceived
             // button. Clamped so partial redraws (which clip to key bounds) keep it.
-            if (insetCaps && hasIcon && mode == KeyHintPosition.TOP_RIGHT_CORNER) {
+            // The space bar's icon is the bar across it, not a glyph to badge: its hint (the
+            // globe) takes the corner like every other key's.
+            if (insetCaps && hasIcon && mode == KeyHintPosition.TOP_RIGHT_CORNER && key.getCode() != CODE_SPACE) {
                 Drawable mainIcon = key.getIcon(this.keyboard.mIconsSet, 255);
                 if (mainIcon != null && mainIcon.getIntrinsicWidth() > 0) {
                     int mainIconWidth = Math.min(mainIcon.getIntrinsicWidth(), keyWidth);

@@ -45,6 +45,9 @@
     <dimen name="config_suggestion_min_width_material">48dp</dimen>
     <dimen name="config_suggestion_text_horizontal_padding">6dp</dimen>
     <dimen name="config_suggestion_text_size">18dp</dimen>
+    <!-- A hint icon in a key's corner (the mic on the comma key, the globe on the space bar): every
+         icon drawn as a hint is fitted to this, whatever size its drawable has. -->
+    <dimen name="config_key_hint_icon_size">16dp</dimen>
     <dimen name="config_suggestions_strip_height">40dp</dimen>
     <dimen name="config_suggestions_strip_horizontal_margin">12dp</dimen>
 

@@ -33,10 +33,22 @@
         <PhysicalKey
             latin:keySpec="о"
             latin:moreKeys="!text/morekeys_cyrillic_o"/>
+        <!-- The on-screen э key's list (Kazakh һ, Tajik ҳ, Tatar һ) on the keypad's х key, which
+             carries э as its multitap. -->
         <PhysicalKey
-            latin:keySpec="ж"
+            latin:keySpec="х"
             latin:moreKeys="!text/morekeys_east_slavic_row2_11"
             latin:multitapKeys="!text/keyspec_east_slavic_row2_11"/>
+        <!-- ж is the д key's multitap on the keypad: its list (Tatar җ) goes with д. -->
+        <PhysicalKey
+            latin:keySpec="д"
+            latin:moreKeys="!text/morekeys_cyrillic_zhe"/>
+        <PhysicalKey
+            latin:keySpec="ч"
+            latin:moreKeys="!text/morekeys_cyrillic_che"/>
+        <PhysicalKey
+            latin:keySpec="и"
+            latin:moreKeys="!text/morekeys_east_slavic_row3_5"/>
         <PhysicalKey
             latin:keySpec="я"
             latin:multitapKeys="ч"/>

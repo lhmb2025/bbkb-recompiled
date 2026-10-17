@@ -104,7 +104,17 @@ PKBD_DEFAULT = "pkbd_latin"
 # (assets/kdb/<name>_pkb.xml) the letters come from: the old HardwareScriptLayouts.FILES.
 # LetterLayoutsMatchEngineTest.SCRIPT_KDB holds the same map and checks the documents against it.
 SCRIPT_KDB = {"ar": "arabic", "ru": "east_slavic", "uk": "ukranian", "be": "belarusian",
-              "iw": "hebrew", "el": "greek", "ko": "korean"}
+              "iw": "hebrew", "el": "greek", "ko": "korean",
+              # The Cyrillic languages on the Russian key map: Kyrgyz (method.xml) and the three
+              # offered as runtime subtypes once their pack is installed (SideloadedSubtypes).
+              # Their extra letters come from the text tables as lists.
+              "ky": "east_slavic", "kk": "east_slavic", "tg": "east_slavic", "tt": "east_slavic"}
+
+# Layout sets a runtime-subtype language (SideloadedSubtypes.java) gets a document for: the ones
+# with physical-key tables. A script layout with none (hindi, myanmar…) gets no document here.
+SIDELOADED_LAYOUT_SETS = ("qwerty", "east_slavic")
+SIDELOADED_JAVA = os.path.join(MAIN, "java", "dev", "bbkb", "ime", "core", "subtypeswitcher",
+                               "SideloadedSubtypes.java")
 
 # The engine KDB each keyboard's engine loads (assets/kdb/<name>_pkb.xml), by language: measured
 # 2026-10-15 by switching through every keyboard on the emulator and reading the XT9KDB SetKdbNum
@@ -116,7 +126,8 @@ ENGINE_KDB = {"cs": "qwertz", "de": "qwertz", "hr": "qwertz", "hu": "qwertz",
               "fi": "finnish", "sv": "finnish", "fr": "azerty", "ca": "catalan", "da": "danish",
               "nb": "norwegian", "tr": "turkish", "et": "estonian", "ja": "japanese",
               "ar": "arabic", "ru": "east_slavic", "uk": "ukranian", "be": "belarusian",
-              "iw": "hebrew", "el": "greek", "ko": "korean"}
+              "iw": "hebrew", "el": "greek", "ko": "korean",
+              "ky": "east_slavic", "kk": "east_slavic", "tg": "east_slavic", "tt": "east_slavic"}
 ENGINE_KDB_DEFAULT = "qwerty"
 
 # English names for the documents' name attribute. The app shows its own localised names; this is
@@ -128,6 +139,9 @@ LANGUAGE_NAMES = {
     "fil": "Filipino", "fr": "French", "ga": "Irish", "gl": "Galician", "hr": "Croatian",
     "hu": "Hungarian", "in": "Indonesian", "is": "Icelandic", "it": "Italian", "iw": "Hebrew",
     "jv": "Javanese", "ko": "Korean", "lt": "Lithuanian", "lv": "Latvian", "ms": "Malay",
+    "kk": "Kazakh", "ky": "Kyrgyz", "tg": "Tajik", "tt": "Tatar",
+    "ha": "Hausa", "ig": "Igbo", "ku": "Kurdish", "ln": "Lingala", "mg": "Malagasy", "st": "Sesotho",
+    "sw": "Swahili", "tk": "Turkmen", "xh": "Xhosa", "yo": "Yoruba", "zu": "Zulu",
     "nb": "Norwegian Bokmål", "nl": "Dutch", "pl": "Polish", "pt": "Portuguese",
     "ro": "Romanian", "ru": "Russian", "sk": "Slovak", "sl": "Slovenian", "sq": "Albanian",
     "sr": "Serbian", "su": "Sundanese", "sv": "Swedish", "tr": "Turkish", "uk": "Ukrainian",
@@ -636,7 +650,25 @@ def read_subtypes():
     for item in array("predefined_builtin_keyboard_subtypes"):
         locale, layout = item.split(":")
         subtypes.append((locale, layout, "arrays.xml predefined_builtin_keyboard_subtypes"))
+    declared = {language_code(locale) for locale, _, _ in subtypes}
+    for language, layout in read_sideloaded_subtypes():
+        if layout in SIDELOADED_LAYOUT_SETS and language not in declared:
+            subtypes.append((language, layout, "SideloadedSubtypes.java"))
     return subtypes
+
+
+def read_sideloaded_subtypes():
+    """SideloadedSubtypes.LAYOUT_FOR_LANGUAGE, read off the Java: [(language, layout set)]."""
+    with open(SIDELOADED_JAVA, encoding="utf-8") as f:
+        java = f.read()
+    out = []
+    latin = re.search(r'for \(String latin : new String\[\] \{([^}]*)\}\)\s*\{\s*m\.put\(latin, "([a-z_]+)"\)', java)
+    if latin:
+        for language in re.findall(r'"([a-z]+)"', latin.group(1)):
+            out.append((language, latin.group(2)))
+    for language, layout in re.findall(r'm\.put\("([a-z]+)", "([a-z_]+)"\)', java):
+        out.append((language, layout))
+    return out
 
 
 # ── documents ────────────────────────────────────────────────────────────────────────────────────

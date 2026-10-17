@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.locale.LocaleUtils
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils
+import dev.bbkb.ime.core.subtypeswitcher.SideloadedSubtypes
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -96,6 +97,10 @@ class LetterLayoutAssetsParseTest {
             val language = LocaleUtils.languageCode(LocaleUtils.constructLocaleFromString(locale)!!)
             out.add(Keyboard(item, language, layoutSet))
         }
+        // The runtime subtypes a language gets once its pack is installed.
+        for ((language, layoutSet) in SideloadedSubtypes.layouts()) {
+            out.add(Keyboard("$language:$layoutSet", language, layoutSet))
+        }
         return out
     }
 
@@ -164,9 +169,10 @@ class LetterLayoutAssetsParseTest {
                 )
             }
         }
-        // The seven script languages, the three translit keyboards, and Chinese pinyin and
-        // cangjie (bound apart so that no document reaches the stroke and Zhuyin keyboards).
-        assertEquals("documents bound to a layout set", 13, bound)
+        // The seven script languages, the three translit keyboards, Chinese pinyin and cangjie
+        // (bound apart so that no document reaches the stroke and Zhuyin keyboards), and the four
+        // Cyrillic languages on the Russian key map (Kyrgyz, Kazakh, Tajik, Tatar).
+        assertEquals("documents bound to a layout set", 18, bound)
     }
 
     @Test
@@ -199,7 +205,7 @@ class LetterLayoutAssetsParseTest {
             assertNotNull("$name got no document", chosen[name])
             assertEquals(name, id, chosen[name]?.id)
         }
-        assertNull("Kyrgyz has no document of its own", chosen["ky:translit"])
+        assertEquals("Kyrgyz types Cyrillic on the keypad, with a translit document of its own", "ky-translit", chosen["ky:translit"]?.id)
         for (name in listOf("zh_CN_stroke:stroke", "zh_HK_stroke:stroke", "zh_TW_zhuyin:zhuyin", "zh_TW_stroke:stroke")) {
             assertTrue("no keyboard $name in ${chosen.keys}", chosen.containsKey(name))
             assertNull("$name keeps the firmware key map", chosen[name])

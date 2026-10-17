@@ -93,6 +93,13 @@ public final class ScriptUtils {
         map.put("ur", 0);
         map.put("uz", 14);
         map.put("vi", 21);
+        // The languages offered only as runtime subtypes once their pack is installed
+        // (SideloadedSubtypes): Cyrillic for the three Turkic/Persian ones, Latin for the rest.
+        map.put("tg", 3);
+        map.put("tt", 3);
+        for (String latin : new String[] {"ha", "ig", "ku", "ln", "mg", "st", "tk", "xh", "yo", "zu"}) {
+            map.put(latin, 14);
+        }
         map.put(NuanceSDK.CHINESE_LOCALE, 7);
         // The five scripts that got on-screen layouts on 2026-09-28 (ids continue attrs.xml's
         // supportedScript enum after 21 = Vietnamese).

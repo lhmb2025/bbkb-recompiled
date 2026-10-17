@@ -15,7 +15,9 @@
         latin:moreKeys="!text/morekeys_cyrillic_o"/>
     <Key latin:keySpec="л"/>
     <Key latin:keySpec="д"/>
-    <Key latin:keySpec="ж"/>
+    <Key
+        latin:keySpec="ж"
+        latin:moreKeys="!text/morekeys_cyrillic_zhe"/>
     <Key
         latin:keySpec="!text/keyspec_east_slavic_row2_11"
         latin:moreKeys="!text/morekeys_east_slavic_row2_11"/>

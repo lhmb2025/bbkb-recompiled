@@ -520,10 +520,11 @@ class PhysicalKeyResolverTest {
     /** The Language screen offers the switch only when an enabled keyboard is one of these. */
     @Test
     fun onlyKeyboardsWithTheirOwnAlphabetOfferTheSwitch() {
-        for (locale in listOf("ar", "ru", "uk", "be", "iw", "he", "iw_IL", "el", "ko")) {
+        // Kyrgyz, Kazakh, Tajik and Tatar type Cyrillic on the Russian key map since 2026-10-17.
+        for (locale in listOf("ar", "ru", "uk", "be", "iw", "he", "iw_IL", "el", "ko", "ky", "kk", "tg", "tt")) {
             assertTrue("$locale should offer it", PhysicalKeyResolver.supportsLocale(locale))
         }
-        for (locale in listOf("en_US", "fr", "in", "fa", "hi", "th", "bg", "zz", "zh_CN_pinyin", "ky", "", null)) {
+        for (locale in listOf("en_US", "fr", "in", "fa", "hi", "th", "bg", "zz", "zh_CN_pinyin", "", null)) {
             assertFalse("$locale should not offer it", PhysicalKeyResolver.supportsLocale(locale))
         }
     }

@@ -87,6 +87,11 @@ public final class SideloadedSubtypes {
     private SideloadedSubtypes() {
     }
 
+    /** Every language this app can offer a runtime subtype for, with its layout; in table order. */
+    public static Map<String, String> layouts() {
+        return LAYOUT_FOR_LANGUAGE;
+    }
+
     /** {@code true} when this app can offer a runtime subtype for {@code language}. */
     public static boolean canOfferSubtypeFor(String language) {
         return LAYOUT_FOR_LANGUAGE.containsKey(language);

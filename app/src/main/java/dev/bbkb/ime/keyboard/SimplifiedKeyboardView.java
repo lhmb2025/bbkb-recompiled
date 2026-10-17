@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import dev.bbkb.ime.keyboard.internal.KeyDetector;
+import dev.bbkb.ime.keyboard.internal.KeyDrawParams;
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.AudioAndHapticFeedbackManager;
 import dev.bbkb.ime.keyboard.internal.LongPressTimer;
@@ -72,6 +73,41 @@ public class SimplifiedKeyboardView extends KeyboardView {
         this.keyboardActionListener = new KeyDetector();
         this.keyboardCoordinates = new LongPressTimer();
         this.keyEventListener = NO_OP_KEY_LISTENER;
+    }
+
+    /** Labels drawn as the suggestion strip draws its words; see {@link #setStripTextStyle}. */
+    private boolean stripTextStyle;
+
+    /**
+     * Draw key labels the way the suggestion strip draws its words: the strip's text size
+     * ({@code config_suggestion_text_size}), the default typeface, and centred on the font's
+     * full height as a TextView centres, rather than a key's letter size and cap-height
+     * centring. For the accent bar, which stands in for the strip and should read as part of it.
+     */
+    public void setStripTextStyle(boolean on) {
+        if (stripTextStyle != on) {
+            stripTextStyle = on;
+            invalidate();
+        }
+    }
+
+    @Override
+    protected void drawKeyContent(Key key, Canvas canvas, Paint paint, KeyDrawParams formatter, boolean suppressLabel) {
+        String label = stripTextStyle && !suppressLabel ? labelFor(key) : null;
+        if (label == null || getKeyboard() == null || key.getIcon(getKeyboard().mIconsSet, formatter.animAlpha) != null) {
+            super.drawKeyContent(key, canvas, paint, formatter, suppressLabel);
+            return;
+        }
+        paint.setTypeface(android.graphics.Typeface.DEFAULT);
+        paint.setTextSize(getResources().getDimension(R.dimen.config_suggestion_text_size));
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextScaleX(1.0f);
+        paint.clearShadowLayer();
+        paint.setColor(key.isActive() ? key.getLabelColor(formatter) : 0);
+        Paint.FontMetrics metrics = paint.getFontMetrics();
+        float centerY = key.getHeight() * 0.5f;
+        float baseline = centerY - (metrics.ascent + metrics.descent) / 2.0f;
+        canvas.drawText(label, key.getDrawWidth() * 0.5f, baseline, paint);
     }
 
     /**

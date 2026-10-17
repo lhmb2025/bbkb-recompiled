@@ -130,6 +130,8 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         dev.bbkb.ime.keyboard.Keyboard getMainKeyboard();
         /** Called when an accent character is selected from the accent bar */
         void onAccentSelected(String accentChar);
+        /** The letter a pick from the accent bar would replace ("" when none): the bar shows its list in that letter's case. */
+        String letterAnAccentWouldReplace();
         /** Whether the unified input menu is what this editor shows when the strip is not. */
         boolean shouldShowUim();
         /** Check if currently in symbol mode (symbol keyboard active) */
@@ -1014,7 +1016,7 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         
         if (moreKeys != null && !moreKeys.isEmpty()) {
             currentAccentBarKeyCode = keyCode;
-            showAccentBar(moreKeys);
+            showAccentBar(inCaseOfTheTypedLetter(moreKeys));
             return true;
         }
         
@@ -1086,8 +1088,19 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         
         if (moreKeys != null && !moreKeys.isEmpty()) {
             currentAccentBarKeyCode = keyCode;
-            showAccentBar(moreKeys);
+            showAccentBar(inCaseOfTheTypedLetter(moreKeys));
         }
+    }
+
+    /**
+     * The list in the case of the letter it would replace: a capital (auto-caps at a sentence
+     * start, Shift) shows and commits capitals, the way the pick itself keeps that case
+     * ({@code InputLogic.replaceLastCharWithAccent}).
+     */
+    private List<String> inCaseOfTheTypedLetter(List<String> moreKeys) {
+        if (eventListener == null) return moreKeys;
+        Locale locale = currentLocale != null ? currentLocale : Locale.getDefault();
+        return dev.bbkb.ime.core.textinput.InputLogic.matchCase(eventListener.letterAnAccentWouldReplace(), moreKeys, locale);
     }
     
     @Override
