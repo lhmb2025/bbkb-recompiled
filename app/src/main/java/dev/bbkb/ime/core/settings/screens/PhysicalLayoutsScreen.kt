@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.SaveAlt
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
@@ -48,6 +49,8 @@ import dev.bbkb.ime.core.layout.LetterLayoutXml
 import dev.bbkb.ime.core.locale.LocaleUtils
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils
 import dev.bbkb.ime.core.locale.SubtypeManager
+import dev.bbkb.ime.core.settings.backup.BackupBundle
+import dev.bbkb.ime.core.settings.backup.BackupOperations
 import dev.bbkb.ime.core.settings.ui.Category
 import dev.bbkb.ime.core.settings.ui.Custom
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
@@ -65,21 +68,23 @@ import java.util.Locale
 private const val TAG = "PhysicalLayouts"
 
 /**
- * Physical keyboard > Physical layouts: every letter layout on the phone ([LetterLayout]), the
- * user's own and the ones the app ships, listed the same way — name, which keyboards it is for,
- * how many keys it names.
+ * Advanced > Device compatibility > Custom keypad layouts: every letter layout on the phone
+ * ([LetterLayout]), the user's own and the ones the app ships, listed the same way — name, which
+ * keyboards it is for, how many keys it names.
  *
- * **Custom** holds the layouts imported through Advanced > Backup and restore > Restore from file.
- * Which keyboard uses one is chosen per language on the Language screen ([LetterLayoutChoice]);
- * here they are managed. Share hands the stored XML file to the share sheet, the way the device
- * profile builder shares a config; delete removes it.
+ * **Custom** holds the user's layouts. Add layout reads one from a file the user picks (a letter
+ * layout document, or a backup holding some; [BackupOperations.readFrom] tells them apart), the
+ * same reading Advanced > Backup and restore > Restore from file does. Which keyboard uses one is
+ * chosen per language on the Language screen ([LetterLayoutChoice]); here they are managed. Share
+ * hands the stored XML file to the share sheet, the way the device profile builder shares a
+ * config; delete removes it.
  *
  * **Built-in** holds the documents under `assets/letter_layouts/` that are for the physical keys
  * (the on-screen-only ones, Colemak and Dvorak, are chosen per keyboard on the Language screen).
  * They are read-only and are not picked here: which one a keyboard uses follows its language.
  * What a row offers is "Save as file", which writes the document wherever the user chooses — the
- * way to start a layout of one's own is to save the nearest built-in, edit it, and restore it
- * from file. The current keyboard's language comes first, the document it would use at the top,
+ * way to start a layout of one's own is to save the nearest built-in, edit it, and add it from
+ * the file. The current keyboard's language comes first, the document it would use at the top,
  * then the rest by name.
  *
  * Custom comes first because it is the part the user can change; the built-in list has a document
@@ -136,6 +141,14 @@ fun PhysicalLayoutsScreen(
         }
     }
 
+    val addLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) scope.launch {
+            val added = addFromFile(context, registry, uri)
+            if (added) customLayouts = withContext(Dispatchers.IO) { registry.list() }
+            toast(context, if (added) R.string.settings_pkb_layouts_added else R.string.settings_pkb_layouts_add_failed)
+        }
+    }
+
     SettingsScreenHost(R.string.settings_pkb_layouts_title, onNavigateBack, listOf(
         // ── Custom: the user's layouts, chosen per language on the Language screen ──
         Category(R.string.settings_pkb_layouts_category_custom),
@@ -155,6 +168,16 @@ fun PhysicalLayoutsScreen(
         },
         Custom(visible = { customLayouts?.isEmpty() == true }) {
             PreferenceInfo(text = stringResource(R.string.settings_pkb_layouts_empty))
+        },
+        // Where a layout comes from: a file. Pickers filter by type unevenly (a file manager may
+        // call an .xml document text or octet-stream), so every file is offered and the reader
+        // says no to what is not a layout.
+        Custom {
+            PreferenceItem(
+                title = stringResource(R.string.settings_pkb_layouts_add),
+                icon = Icons.Default.Add,
+                onClick = { addLauncher.launch(arrayOf(LetterLayoutXml.MIME_TYPE, BackupBundle.MIME_TYPE, "*/*")) },
+            )
         },
 
         // ── Built-in: read-only, each one a template to save as a file ──
@@ -371,6 +394,21 @@ private fun currentKeyboardLayoutSet(): String? = try {
     SubtypeManager.getInstance()?.currentSubtype?.let { ResourceLocaleUtils.getKeyboardLayoutSetName(it) }
 } catch (e: RuntimeException) {
     null
+}
+
+/**
+ * Reads the letter layouts in the file at [uri] (one document, or a backup holding some) into the
+ * registry. False when the file holds none or cannot be read; nothing is stored then.
+ */
+private suspend fun addFromFile(context: Context, registry: LetterLayoutRegistry, uri: Uri): Boolean {
+    val result = BackupOperations.readFrom(context, uri)
+    val layouts = (result as? BackupOperations.ReadResult.Ok)?.bundle?.letterLayouts.orEmpty()
+    if (layouts.isEmpty()) {
+        Logger.warn(TAG, "Could not add a layout from $uri: $result")
+        return false
+    }
+    withContext(Dispatchers.IO) { layouts.forEach(registry::save) }
+    return true
 }
 
 /** Writes built-in [id]'s document to [uri], the file the picker just created. */

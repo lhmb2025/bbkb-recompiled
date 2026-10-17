@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">മൂന്നാം കക്ഷി കീബോർഡുകൾക്കുള്ള ഉപയോഗസഹായി സേവനം</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB സഹായി</string>
     <string name="settings_pkb_layouts_any_language">എല്ലാ കീബോർഡുകളും</string>
+    <string name="settings_pkb_layouts_add">ലേഔട്ട് ചേർക്കുക</string>
+    <string name="settings_pkb_layouts_add_failed">ലേഔട്ട് വായിക്കാനായില്ല</string>
+    <string name="settings_pkb_layouts_added">ലേഔട്ട് ചേർത്തു</string>
     <string name="settings_pkb_layouts_builtin_note">ഇവ കീബോർഡിനൊപ്പം വരുന്നവയാണ്, മാറ്റാനാകില്ല. സ്വന്തം ലേഔട്ട് തുടങ്ങാൻ ഒരെണ്ണം ഫയലായി സംരക്ഷിക്കുക.</string>
     <string name="settings_pkb_layouts_category_builtin">ബിൽറ്റ്-ഇൻ</string>
     <string name="settings_pkb_layouts_category_custom">ഇഷ്ടാനുസൃതം</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s” ഇല്ലാതാക്കണോ? ഇത് പഴയപടിയാക്കാനാകില്ല.</string>
     <string name="settings_pkb_layouts_delete_title">ലേഔട്ട് ഇല്ലാതാക്കുക</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d കീകൾ</string>
-    <string name="settings_pkb_layouts_empty">ഇതുവരെ ഇഷ്ടാനുസൃത ലേഔട്ടുകളൊന്നുമില്ല. വിപുലമായത് &gt; ബാക്കപ്പും പുനഃസ്ഥാപിക്കലും &gt; ഫയലിൽ നിന്ന് പുനഃസ്ഥാപിക്കുക എന്നതിൽ നിന്ന് ഒരെണ്ണം ഇറക്കുമതി ചെയ്യുക.</string>
+    <string name="settings_pkb_layouts_empty">ഇതുവരെ ഇഷ്ടാനുസൃത ലേഔട്ടുകളൊന്നുമില്ല. ഒരു ഫയലിൽ നിന്ന് ഒന്ന് ചേർക്കുക.</string>
     <string name="settings_pkb_layouts_keypad">%1$s കീപാഡ്</string>
     <string name="settings_pkb_layouts_none">ഉപയോഗത്തിലില്ല</string>
     <string name="settings_pkb_layouts_none_summary">കീബോർഡിന്റെ സ്വന്തം ലേഔട്ട് ഉപയോഗിക്കുന്നു</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">%1$s പങ്കിടുക</string>
     <string name="settings_pkb_layouts_share_chooser">ലേഔട്ട് പങ്കിടുക</string>
     <string name="settings_pkb_layouts_share_failed">ലേഔട്ട് പങ്കിടാനായില്ല</string>
-    <string name="settings_pkb_layouts_summary">ഫിസിക്കൽ കീകൾ ടൈപ്പ് ചെയ്യുന്ന അക്ഷരങ്ങൾ മാറ്റുക</string>
+    <string name="settings_pkb_layouts_summary">കീപാഡിനായി അക്ഷര ലേഔട്ടുകൾ ചേർക്കുക, പങ്കിടുക, ഇല്ലാതാക്കുക</string>
     <string name="settings_pkb_keypad_layout_title">കീപാഡ് ലേഔട്ട്</string>
     <string name="settings_pkb_keypad_layout_automatic">സ്വയമേവ (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">കീപാഡ് അക്ഷരങ്ങൾ (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">ഓൺ-സ്ക്രീൻ കീബോർഡ് എപ്പോഴും കാണിക്കുക</string>
     <string name="settings_pkb_layouts_three_row">മൂന്ന് വരി കീപാഡ്</string>
-    <string name="settings_pkb_layouts_title">ഫിസിക്കൽ ലേഔട്ടുകൾ</string>
+    <string name="settings_pkb_layouts_title">ഇഷ്ടാനുസൃത കീപാഡ് ലേഔട്ടുകൾ</string>
     <string name="settings_pkb_multifunction_action_clipboard">ക്ലിപ്പ്ബോർഡ്</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl കീ</string>
     <string name="settings_pkb_multifunction_action_emoji">ഇമോജി ബോർഡ്</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">സ്ഥിരം പേജിനു മുമ്പ് ഇഷ്ടാനുസൃത ചിഹ്ന പേജ് കാണിക്കുക</string>
     <string name="settings_symbol_custom_page_first_title">പേജ് ആദ്യം കാണിക്കുക</string>
     <string name="settings_symbol_customization_summary">കീബോർഡ് ചിഹ്ന പേജിന്റെ ലേഔട്ട് ഇഷ്ടാനുസൃതമാക്കുക</string>
-    <string name="settings_symbol_customization_title">ചിഹ്ന ഇഷ്ടാനുസൃതമാക്കൽ</string>
+    <string name="settings_symbol_customization_title">ഇഷ്ടാനുസൃത ചിഹ്ന പേജ്</string>
     <string name="settings_symbol_customize_page_summary">ഇഷ്ടാനുസൃത ചിഹ്ന പേജിന്റെ ലേഔട്ട് തിരുത്തുക</string>
     <string name="settings_symbol_customize_page_title">ചിഹ്ന പേജ് ഇഷ്ടാനുസൃതമാക്കുക</string>
     <string name="settings_symbol_enable_customization_summary">ഇഷ്ടാനുസൃത ഉള്ളടക്കമുള്ള മൂന്നാമത്തെ ചിഹ്ന പേജ് കാണിക്കുക</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">ബദൽ പ്രവർത്തനത്തിനുള്ള ആകെ കുലുക്കലുകൾ (ഏത് ദിശയിലും)</string>
     <string name="prefs_fallback_trigger_count_title">ബദൽ ട്രിഗർ എണ്ണം</string>
     <string name="prefs_force_vkb_mode_summary_off">കണ്ടെത്തിയ ഉപകരണ തരം ഉപയോഗിക്കുക</string>
-    <string name="prefs_force_vkb_mode_summary_on">ഉപകരണം ടച്ച്‌സ്ക്രീൻ മാത്രമുള്ളതായി കണക്കാക്കും (റീസ്റ്റാർട്ട് ആവശ്യം)</string>
+    <string name="prefs_force_vkb_mode_summary_on">ഉപകരണം ടച്ച്‌സ്ക്രീൻ മാത്രമുള്ളതായി കണക്കാക്കും</string>
     <string name="prefs_force_vkb_mode_title">ടച്ച്‌സ്ക്രീൻ-മാത്ര മോഡ് നിർബന്ധമാക്കുക</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">ഹാർഡ്‌വെയർ മൈക്രോഫോൺ ബട്ടൺ സിസ്റ്റം വോയ്‌സ് അസിസ്റ്റന്റിലേക്ക് നയിക്കുക</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">മൈക്ക് കീ വോയ്‌സ് അസിസ്റ്റന്റിനെ സജീവമാക്കുന്നു</string>

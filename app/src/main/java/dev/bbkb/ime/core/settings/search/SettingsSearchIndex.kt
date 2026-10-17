@@ -154,7 +154,7 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.pref_ctrl_double_tap_lock, "ctrl control double tap lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_ctrl_double_tap_lock"),
         // The screen itself, so no anchor; its Nav row on Physical keyboard is behind the same
         // physical-keyboard gate.
-        SearchableSetting(R.string.settings_pkb_layouts_title, "physical layouts custom built-in builtin letter layout map remap keys keycaps alphabet qwerty qwertz azerty xml import template save file export share", SettingsRoute.PhysicalLayouts.route, TYPING, requires = DeviceRequirement.PHYSICAL_KEYBOARD),
+        SearchableSetting(R.string.settings_pkb_layouts_title, "custom keypad physical layouts built-in builtin letter layout map remap keys keycaps alphabet qwerty qwertz azerty etched thai xml add import template save file export share", SettingsRoute.PhysicalLayouts.route, ADVANCED, requires = DeviceRequirement.PHYSICAL_KEYBOARD),
         // Only on a phone whose device config lists more than one keypad shape (the KEY2's three editions).
         SearchableSetting(R.string.settings_pkb_keypad_layout_title, "keypad layout shape qwerty qwertz azerty edition detected automatic physical keyboard", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_pkb_keypad_layout", DeviceRequirement.PHYSICAL_KEYBOARD),
 

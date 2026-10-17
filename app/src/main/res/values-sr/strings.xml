@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Услуга приступачности за тастатуре других произвођача</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB помоћник</string>
     <string name="settings_pkb_layouts_any_language">Све тастатуре</string>
+    <string name="settings_pkb_layouts_add">Додај распоред</string>
+    <string name="settings_pkb_layouts_add_failed">Распоред није могуће прочитати</string>
+    <string name="settings_pkb_layouts_added">Распоред је додат</string>
     <string name="settings_pkb_layouts_builtin_note">Долазе уз тастатуру и не могу да се мењају. Сачувајте један као датотеку да бисте започели сопствени распоред.</string>
     <string name="settings_pkb_layouts_category_builtin">Уграђени</string>
     <string name="settings_pkb_layouts_category_custom">Прилагођени</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Избрисати „%1$s”? Ово не може да се опозове.</string>
     <string name="settings_pkb_layouts_delete_title">Избриши распоред</string>
     <string name="settings_pkb_layouts_details">%1$s · тастери: %2$d</string>
-    <string name="settings_pkb_layouts_empty">Још нема прилагођених распореда. Увезите га у одељку Напредно &gt; Резервна копија и враћање &gt; Врати из датотеке.</string>
+    <string name="settings_pkb_layouts_empty">Још нема прилагођених распореда. Додајте један из датотеке.</string>
     <string name="settings_pkb_layouts_keypad">тастатура %1$s</string>
     <string name="settings_pkb_layouts_none">Не користи се</string>
     <string name="settings_pkb_layouts_none_summary">Користи сопствени распоред тастатуре</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Подели %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Подели распоред</string>
     <string name="settings_pkb_layouts_share_failed">Дељење распореда није успело</string>
-    <string name="settings_pkb_layouts_summary">Промени слова која куцају физички тастери</string>
+    <string name="settings_pkb_layouts_summary">Додајте, делите и бришите распореде слова за тастатуру</string>
     <string name="settings_pkb_keypad_layout_title">Распоред тастатуре</string>
     <string name="settings_pkb_keypad_layout_automatic">Аутоматски (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Слова тастатуре (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Увек прикажи тастатуру на екрану</string>
     <string name="settings_pkb_layouts_three_row">тастатура са три реда</string>
-    <string name="settings_pkb_layouts_title">Физички распореди</string>
+    <string name="settings_pkb_layouts_title">Прилагођени распореди тастатуре</string>
     <string name="settings_pkb_multifunction_action_clipboard">Привремена меморија</string>
     <string name="settings_pkb_multifunction_action_ctrl">Тастер Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Tabла са емоџијима</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Прикажи прилагођену страницу симбола пре подразумеване</string>
     <string name="settings_symbol_custom_page_first_title">Прикажи страницу прву</string>
     <string name="settings_symbol_customization_summary">Прилагодите распоред странице са симболима</string>
-    <string name="settings_symbol_customization_title">Прилагођавање симбола</string>
+    <string name="settings_symbol_customization_title">Прилагођена страница симбола</string>
     <string name="settings_symbol_customize_page_summary">Уредите распоред прилагођене странице симбола</string>
     <string name="settings_symbol_customize_page_title">Прилагоди страницу симбола</string>
     <string name="settings_symbol_enable_customization_summary">Прикажи трећу страницу симбола са прилагођеним садржајем</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Укупан број протресања (у било ком смеру) за резервну радњу</string>
     <string name="prefs_fallback_trigger_count_title">Број протресања за резервну радњу</string>
     <string name="prefs_force_vkb_mode_summary_off">Користи препознати тип уређаја</string>
-    <string name="prefs_force_vkb_mode_summary_on">Уређај се третира као искључиво додирни (потребно је поновно покретање)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Уређај се третира као искључиво додирни</string>
     <string name="prefs_force_vkb_mode_title">Принудно искључиво додирни режим</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Преусмери хардверски тастер микрофона на гласовног асистента система</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Тастер микрофона покреће гласовног асистента</string>

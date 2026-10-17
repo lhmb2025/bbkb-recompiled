@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">บริการการเข้าถึงสำหรับแป้นพิมพ์ของบุคคลที่สาม</string>
     <string name="settings_pkb_keyboard_helper_title">ตัวช่วย BBKB</string>
     <string name="settings_pkb_layouts_any_language">แป้นพิมพ์ทั้งหมด</string>
+    <string name="settings_pkb_layouts_add">เพิ่มเลย์เอาต์</string>
+    <string name="settings_pkb_layouts_add_failed">ไม่สามารถอ่านเลย์เอาต์ได้</string>
+    <string name="settings_pkb_layouts_added">เพิ่มเลย์เอาต์แล้ว</string>
     <string name="settings_pkb_layouts_builtin_note">เลย์เอาท์เหล่านี้มาพร้อมแป้นพิมพ์และเปลี่ยนแปลงไม่ได้ บันทึกเลย์เอาท์หนึ่งเป็นไฟล์เพื่อเริ่มสร้างเลย์เอาท์ของคุณเอง</string>
     <string name="settings_pkb_layouts_category_builtin">ในตัว</string>
     <string name="settings_pkb_layouts_category_custom">กำหนดเอง</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">ลบ “%1$s” ไหม การดำเนินการนี้เลิกทำไม่ได้</string>
     <string name="settings_pkb_layouts_delete_title">ลบเลย์เอาท์</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d ปุ่ม</string>
-    <string name="settings_pkb_layouts_empty">ยังไม่มีเลย์เอาท์ที่กำหนดเอง นำเข้าได้ที่ ขั้นสูง &gt; สำรองและกู้คืนข้อมูล &gt; กู้คืนจากไฟล์</string>
+    <string name="settings_pkb_layouts_empty">ยังไม่มีเลย์เอาต์ที่กำหนดเอง เพิ่มจากไฟล์ได้เลย</string>
     <string name="settings_pkb_layouts_keypad">แป้นพิมพ์ %1$s</string>
     <string name="settings_pkb_layouts_none">ไม่ได้ใช้</string>
     <string name="settings_pkb_layouts_none_summary">ใช้เลย์เอาท์ของแป้นพิมพ์เอง</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">แบ่งปัน %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">แบ่งปันเลย์เอาท์</string>
     <string name="settings_pkb_layouts_share_failed">แบ่งปันเลย์เอาท์ไม่ได้</string>
-    <string name="settings_pkb_layouts_summary">เปลี่ยนตัวอักษรที่ปุ่มบนแป้นพิมพ์จริงพิมพ์ออกมา</string>
+    <string name="settings_pkb_layouts_summary">เพิ่ม แชร์ และลบเลย์เอาต์ตัวอักษรสำหรับแป้นพิมพ์</string>
     <string name="settings_pkb_keypad_layout_title">เค้าโครงแป้นพิมพ์</string>
     <string name="settings_pkb_keypad_layout_automatic">อัตโนมัติ (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">ตัวอักษรของแป้นพิมพ์ (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">แสดงแป้นพิมพ์บนหน้าจอเสมอ</string>
     <string name="settings_pkb_layouts_three_row">แป้นพิมพ์สามแถว</string>
-    <string name="settings_pkb_layouts_title">เลย์เอาท์แป้นพิมพ์จริง</string>
+    <string name="settings_pkb_layouts_title">เลย์เอาต์แป้นพิมพ์ที่กำหนดเอง</string>
     <string name="settings_pkb_multifunction_action_clipboard">คลิปบอร์ด</string>
     <string name="settings_pkb_multifunction_action_ctrl">ปุ่ม Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">บอร์ดอีโมจิ</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">แสดงหน้าสัญลักษณ์ที่กำหนดเองก่อนหน้าเริ่มต้น</string>
     <string name="settings_symbol_custom_page_first_title">แสดงหน้านี้ก่อน</string>
     <string name="settings_symbol_customization_summary">ปรับแต่งเลย์เอาท์หน้าสัญลักษณ์ของแป้นพิมพ์</string>
-    <string name="settings_symbol_customization_title">การปรับแต่งสัญลักษณ์</string>
+    <string name="settings_symbol_customization_title">หน้าสัญลักษณ์ที่กำหนดเอง</string>
     <string name="settings_symbol_customize_page_summary">แก้ไขเลย์เอาท์หน้าสัญลักษณ์ที่กำหนดเอง</string>
     <string name="settings_symbol_customize_page_title">ปรับแต่งหน้าสัญลักษณ์</string>
     <string name="settings_symbol_enable_customization_summary">แสดงหน้าสัญลักษณ์ที่สามพร้อมเนื้อหาที่กำหนดเอง</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">จำนวนการเขย่าทั้งหมด (ทุกทิศทาง) สำหรับการทำงานสำรอง</string>
     <string name="prefs_fallback_trigger_count_title">จำนวนครั้งที่กระตุ้นการทำงานสำรอง</string>
     <string name="prefs_force_vkb_mode_summary_off">ใช้ประเภทอุปกรณ์ที่ตรวจพบ</string>
-    <string name="prefs_force_vkb_mode_summary_on">ถืออุปกรณ์เป็นแบบหน้าจอสัมผัสเท่านั้น (ต้องเริ่มระบบใหม่)</string>
+    <string name="prefs_force_vkb_mode_summary_on">ถืออุปกรณ์เป็นแบบหน้าจอสัมผัสเท่านั้น</string>
     <string name="prefs_force_vkb_mode_title">บังคับโหมดหน้าจอสัมผัสเท่านั้น</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">ส่งปุ่มไมโครโฟนฮาร์ดแวร์ไปยังผู้ช่วยเสียงของระบบ</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">ปุ่มไมโครโฟนเรียกผู้ช่วยเสียง</string>

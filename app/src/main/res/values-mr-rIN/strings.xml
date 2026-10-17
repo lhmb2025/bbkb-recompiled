@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">तृतीय-पक्ष कीबोर्डसाठी अ‍ॅक्सेसिबिलिटी सेवा</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB हेल्पर</string>
     <string name="settings_pkb_layouts_any_language">सर्व कीबोर्ड</string>
+    <string name="settings_pkb_layouts_add">लेआउट जोडा</string>
+    <string name="settings_pkb_layouts_add_failed">लेआउट वाचता आला नाही</string>
+    <string name="settings_pkb_layouts_added">लेआउट जोडला</string>
     <string name="settings_pkb_layouts_builtin_note">हे कीबोर्डसोबत येतात आणि बदलता येत नाहीत. स्वतःचा लेआउट सुरू करण्यासाठी एक फाइल म्हणून सेव्ह करा.</string>
     <string name="settings_pkb_layouts_category_builtin">अंगभूत</string>
     <string name="settings_pkb_layouts_category_custom">सानुकूल</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s” हटवायचा? हे पूर्ववत करता येणार नाही.</string>
     <string name="settings_pkb_layouts_delete_title">लेआउट हटवा</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d कळा</string>
-    <string name="settings_pkb_layouts_empty">अद्याप कोणतेही सानुकूल लेआउट नाहीत. प्रगत &gt; बॅकअप आणि रिस्टोअर &gt; फाइलमधून रिस्टोअर करा येथून एक इंपोर्ट करा.</string>
+    <string name="settings_pkb_layouts_empty">अद्याप कोणतेही कस्टम लेआउट नाहीत. फाइलमधून एक जोडा.</string>
     <string name="settings_pkb_layouts_keypad">%1$s कीपॅड</string>
     <string name="settings_pkb_layouts_none">वापरात नाही</string>
     <string name="settings_pkb_layouts_none_summary">कीबोर्डचा स्वतःचा लेआउट वापरतो</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">%1$s शेअर करा</string>
     <string name="settings_pkb_layouts_share_chooser">लेआउट शेअर करा</string>
     <string name="settings_pkb_layouts_share_failed">लेआउट शेअर करता आला नाही</string>
-    <string name="settings_pkb_layouts_summary">फिजिकल कळा टाइप करत असलेली अक्षरे बदला</string>
+    <string name="settings_pkb_layouts_summary">कीपॅडसाठी अक्षर लेआउट जोडा, शेअर करा आणि हटवा</string>
     <string name="settings_pkb_keypad_layout_title">कीपॅड लेआउट</string>
     <string name="settings_pkb_keypad_layout_automatic">स्वयंचलित (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">कीपॅडची अक्षरे (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">ऑन-स्क्रीन कीबोर्ड नेहमी दाखवा</string>
     <string name="settings_pkb_layouts_three_row">तीन ओळींचा कीपॅड</string>
-    <string name="settings_pkb_layouts_title">फिजिकल लेआउट</string>
+    <string name="settings_pkb_layouts_title">कस्टम कीपॅड लेआउट</string>
     <string name="settings_pkb_multifunction_action_clipboard">क्लिपबोर्ड</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl की</string>
     <string name="settings_pkb_multifunction_action_emoji">इमोजी बोर्ड</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">डीफॉल्ट पानाच्या आधी सानुकूल चिन्ह पान दाखवा</string>
     <string name="settings_symbol_custom_page_first_title">पान आधी दाखवा</string>
     <string name="settings_symbol_customization_summary">कीबोर्डच्या चिन्ह पानाचा लेआउट सानुकूल करा</string>
-    <string name="settings_symbol_customization_title">चिन्ह सानुकूलन</string>
+    <string name="settings_symbol_customization_title">कस्टम चिन्ह पृष्ठ</string>
     <string name="settings_symbol_customize_page_summary">सानुकूल चिन्ह पानाचा लेआउट संपादित करा</string>
     <string name="settings_symbol_customize_page_title">चिन्ह पान सानुकूल करा</string>
     <string name="settings_symbol_enable_customization_summary">सानुकूल आशयासह तिसरे चिन्ह पान दाखवा</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">फॉलबॅक क्रियेसाठी एकूण झटके (कोणत्याही दिशेने)</string>
     <string name="prefs_fallback_trigger_count_title">फॉलबॅक ट्रिगर संख्या</string>
     <string name="prefs_force_vkb_mode_summary_off">ओळखलेला डिव्हाइस प्रकार वापरा</string>
-    <string name="prefs_force_vkb_mode_summary_on">डिव्हाइस फक्त-टचस्क्रीन मानले जाईल (रीस्टार्ट आवश्यक)</string>
+    <string name="prefs_force_vkb_mode_summary_on">डिव्हाइस फक्त-टचस्क्रीन मानले जाईल</string>
     <string name="prefs_force_vkb_mode_title">फक्त-टचस्क्रीन मोड सक्तीने लागू करा</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">हार्डवेअर मायक्रोफोन बटण सिस्टम व्हॉइस असिस्टंटकडे पाठवा</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">माइक कीने व्हॉइस असिस्टंट सुरू होतो</string>

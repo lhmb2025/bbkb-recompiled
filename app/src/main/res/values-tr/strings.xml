@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Üçüncü taraf klavyeler için erişilebilirlik hizmeti</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB yardımcısı</string>
     <string name="settings_pkb_layouts_any_language">Tüm klavyeler</string>
+    <string name="settings_pkb_layouts_add">Düzen ekle</string>
+    <string name="settings_pkb_layouts_add_failed">Düzen okunamadı</string>
+    <string name="settings_pkb_layouts_added">Düzen eklendi</string>
     <string name="settings_pkb_layouts_builtin_note">Bunlar klavyeyle birlikte gelir ve değiştirilemez. Kendi düzeninizi başlatmak için birini dosya olarak kaydedin.</string>
     <string name="settings_pkb_layouts_category_builtin">Yerleşik</string>
     <string name="settings_pkb_layouts_category_custom">Özel</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s” silinsin mi? Bu işlem geri alınamaz.</string>
     <string name="settings_pkb_layouts_delete_title">Düzeni sil</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d tuş</string>
-    <string name="settings_pkb_layouts_empty">Henüz özel düzen yok. Gelişmiş &gt; Yedekleme ve geri yükleme &gt; Dosyadan geri yükle ile bir tane içe aktarın.</string>
+    <string name="settings_pkb_layouts_empty">Henüz özel düzen yok. Bir dosyadan ekleyin.</string>
     <string name="settings_pkb_layouts_keypad">%1$s tuş takımı</string>
     <string name="settings_pkb_layouts_none">Kullanılmıyor</string>
     <string name="settings_pkb_layouts_none_summary">Klavyenin kendi düzenini kullanır</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">%1$s öğesini paylaş</string>
     <string name="settings_pkb_layouts_share_chooser">Düzeni paylaş</string>
     <string name="settings_pkb_layouts_share_failed">Düzen paylaşılamadı</string>
-    <string name="settings_pkb_layouts_summary">Fiziksel tuşların yazdığı harfleri değiştirin</string>
+    <string name="settings_pkb_layouts_summary">Tuş takımı için harf düzenleri ekleyin, paylaşın ve silin</string>
     <string name="settings_pkb_keypad_layout_title">Tuş takımı düzeni</string>
     <string name="settings_pkb_keypad_layout_automatic">Otomatik (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Tuş takımı harfleri (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Ekran klavyesini her zaman göster</string>
     <string name="settings_pkb_layouts_three_row">üç sıralı tuş takımı</string>
-    <string name="settings_pkb_layouts_title">Fiziksel düzenler</string>
+    <string name="settings_pkb_layouts_title">Özel tuş takımı düzenleri</string>
     <string name="settings_pkb_multifunction_action_clipboard">Pano</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl tuşu</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji klavyesi</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Özel sembol sayfasını varsayılan sayfadan önce göster</string>
     <string name="settings_symbol_custom_page_first_title">Sayfayı önce göster</string>
     <string name="settings_symbol_customization_summary">Klavye sembol sayfası yerleşimini özelleştir</string>
-    <string name="settings_symbol_customization_title">Sembol özelleştirme</string>
+    <string name="settings_symbol_customization_title">Özel simge sayfası</string>
     <string name="settings_symbol_customize_page_summary">Özel sembol sayfası yerleşimini düzenle</string>
     <string name="settings_symbol_customize_page_title">Sembol sayfasını özelleştir</string>
     <string name="settings_symbol_enable_customization_summary">Özel içerikli üçüncü sembol sayfasını göster</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Yedek eylem için toplam sallama sayısı (herhangi bir yönde)</string>
     <string name="prefs_fallback_trigger_count_title">Yedek tetikleme sayısı</string>
     <string name="prefs_force_vkb_mode_summary_off">Algılanan cihaz türünü kullan</string>
-    <string name="prefs_force_vkb_mode_summary_on">Cihaz yalnızca dokunmatik ekranlı olarak değerlendirilir (yeniden başlatma gerekir)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Cihaz yalnızca dokunmatik ekranlı olarak değerlendirilir</string>
     <string name="prefs_force_vkb_mode_title">Yalnızca dokunmatik ekran modunu zorla</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Donanım mikrofon düğmesini sistem sesli asistanına yönlendir</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Mikrofon tuşu sesli asistanı açar</string>

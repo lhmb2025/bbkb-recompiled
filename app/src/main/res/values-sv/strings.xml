@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Tillgänglighetstjänst för tangentbord från tredje part</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB-hjälp</string>
     <string name="settings_pkb_layouts_any_language">Alla tangentbord</string>
+    <string name="settings_pkb_layouts_add">Lägg till layout</string>
+    <string name="settings_pkb_layouts_add_failed">Det gick inte att läsa layouten</string>
+    <string name="settings_pkb_layouts_added">Layouten har lagts till</string>
     <string name="settings_pkb_layouts_builtin_note">De följer med tangentbordet och kan inte ändras. Spara en som fil för att börja på en egen layout.</string>
     <string name="settings_pkb_layouts_category_builtin">Inbyggda</string>
     <string name="settings_pkb_layouts_category_custom">Anpassade</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Vill du radera ”%1$s”? Det går inte att ångra.</string>
     <string name="settings_pkb_layouts_delete_title">Radera layout</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d tangenter</string>
-    <string name="settings_pkb_layouts_empty">Inga anpassade layouter än. Importera en via Avancerat &gt; Säkerhetskopiering och återställning &gt; Återställ från fil.</string>
+    <string name="settings_pkb_layouts_empty">Inga anpassade layouter ännu. Lägg till en från en fil.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-tangentbord</string>
     <string name="settings_pkb_layouts_none">Används inte</string>
     <string name="settings_pkb_layouts_none_summary">Använder tangentbordets egen layout</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Dela %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Dela layout</string>
     <string name="settings_pkb_layouts_share_failed">Det gick inte att dela layouten</string>
-    <string name="settings_pkb_layouts_summary">Ändra vilka bokstäver de fysiska tangenterna skriver</string>
+    <string name="settings_pkb_layouts_summary">Lägg till, dela och ta bort bokstavslayouter för tangentbordet</string>
     <string name="settings_pkb_keypad_layout_title">Tangentbordslayout</string>
     <string name="settings_pkb_keypad_layout_automatic">Automatisk (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Tangentbordets bokstäver (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Visa alltid skärmtangentbordet</string>
     <string name="settings_pkb_layouts_three_row">tangentbord med tre rader</string>
-    <string name="settings_pkb_layouts_title">Fysiska layouter</string>
+    <string name="settings_pkb_layouts_title">Anpassade tangentbordslayouter</string>
     <string name="settings_pkb_multifunction_action_clipboard">Urklipp</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl-tangent</string>
     <string name="settings_pkb_multifunction_action_emoji">Emojipanel</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Visa den anpassade symbolsidan före standardsidan</string>
     <string name="settings_symbol_custom_page_first_title">Visa sidan först</string>
     <string name="settings_symbol_customization_summary">Anpassa layouten för tangentbordets symbolsida</string>
-    <string name="settings_symbol_customization_title">Symbolanpassning</string>
+    <string name="settings_symbol_customization_title">Anpassad symbolsida</string>
     <string name="settings_symbol_customize_page_summary">Redigera layouten för den anpassade symbolsidan</string>
     <string name="settings_symbol_customize_page_title">Anpassa symbolsidan</string>
     <string name="settings_symbol_enable_customization_summary">Visa en tredje symbolsida med eget innehåll</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Totalt antal skakningar (valfri riktning) för reservåtgärden</string>
     <string name="prefs_fallback_trigger_count_title">Antal skakningar för reservåtgärd</string>
     <string name="prefs_force_vkb_mode_summary_off">Använd identifierad enhetstyp</string>
-    <string name="prefs_force_vkb_mode_summary_on">Enheten behandlas som att den bara har pekskärm (omstart krävs)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Enheten behandlas som att den bara har pekskärm</string>
     <string name="prefs_force_vkb_mode_title">Tvinga läge med endast pekskärm</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Skicka den fysiska mikrofonknappen till systemets röstassistent</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Mikrofontangenten startar röstassistenten</string>

@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Servizio di accessibilità per tastiere di terze parti</string>
     <string name="settings_pkb_keyboard_helper_title">Assistente BBKB</string>
     <string name="settings_pkb_layouts_any_language">Tutte le tastiere</string>
+    <string name="settings_pkb_layouts_add">Aggiungi layout</string>
+    <string name="settings_pkb_layouts_add_failed">Impossibile leggere il layout</string>
+    <string name="settings_pkb_layouts_added">Layout aggiunto</string>
     <string name="settings_pkb_layouts_builtin_note">Sono inclusi nella tastiera e non possono essere modificati. Salvane uno come file per iniziare un layout tutto tuo.</string>
     <string name="settings_pkb_layouts_category_builtin">Integrati</string>
     <string name="settings_pkb_layouts_category_custom">Personalizzati</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Eliminare “%1$s”? L\'operazione non può essere annullata.</string>
     <string name="settings_pkb_layouts_delete_title">Elimina layout</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d tasti</string>
-    <string name="settings_pkb_layouts_empty">Ancora nessun layout personalizzato. Importane uno da Avanzate &gt; Backup e ripristino &gt; Ripristina da file.</string>
+    <string name="settings_pkb_layouts_empty">Ancora nessun layout personalizzato. Aggiungine uno da un file.</string>
     <string name="settings_pkb_layouts_keypad">tastierino %1$s</string>
     <string name="settings_pkb_layouts_none">Non in uso</string>
     <string name="settings_pkb_layouts_none_summary">Usa il layout proprio della tastiera</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Condividi %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Condividi layout</string>
     <string name="settings_pkb_layouts_share_failed">Impossibile condividere il layout</string>
-    <string name="settings_pkb_layouts_summary">Cambia le lettere digitate dai tasti fisici</string>
+    <string name="settings_pkb_layouts_summary">Aggiungi, condividi ed elimina layout di lettere per la tastiera</string>
     <string name="settings_pkb_keypad_layout_title">Layout della tastiera</string>
     <string name="settings_pkb_keypad_layout_automatic">Automatico (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Lettere della tastiera (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Mostra sempre la tastiera su schermo</string>
     <string name="settings_pkb_layouts_three_row">tastierino a tre righe</string>
-    <string name="settings_pkb_layouts_title">Layout fisici</string>
+    <string name="settings_pkb_layouts_title">Layout di tastiera personalizzati</string>
     <string name="settings_pkb_multifunction_action_clipboard">Appunti</string>
     <string name="settings_pkb_multifunction_action_ctrl">Tasto Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Tastiera emoji</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Mostra la pagina simboli personalizzata prima di quella predefinita</string>
     <string name="settings_symbol_custom_page_first_title">Mostra prima la pagina</string>
     <string name="settings_symbol_customization_summary">Personalizza il layout della pagina simboli della tastiera</string>
-    <string name="settings_symbol_customization_title">Personalizzazione dei simboli</string>
+    <string name="settings_symbol_customization_title">Pagina dei simboli personalizzata</string>
     <string name="settings_symbol_customize_page_summary">Modifica il layout della pagina simboli personalizzata</string>
     <string name="settings_symbol_customize_page_title">Personalizza la pagina simboli</string>
     <string name="settings_symbol_enable_customization_summary">Mostra una terza pagina simboli con contenuti personalizzati</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Numero totale di scuotimenti (in qualsiasi direzione) per l\'azione di riserva</string>
     <string name="prefs_fallback_trigger_count_title">Scuotimenti per l\'azione di riserva</string>
     <string name="prefs_force_vkb_mode_summary_off">Usa il tipo di dispositivo rilevato</string>
-    <string name="prefs_force_vkb_mode_summary_on">Dispositivo trattato come solo touchscreen (riavvio necessario)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Dispositivo trattato come solo touchscreen</string>
     <string name="prefs_force_vkb_mode_title">Forza la modalità solo touchscreen</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Indirizza il tasto microfono hardware all\'assistente vocale di sistema</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Il tasto microfono attiva l\'assistente vocale</string>

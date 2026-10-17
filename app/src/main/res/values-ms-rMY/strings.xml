@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Perkhidmatan kebolehaksesan untuk papan kekunci pihak ketiga</string>
     <string name="settings_pkb_keyboard_helper_title">Pembantu BBKB</string>
     <string name="settings_pkb_layouts_any_language">Semua papan kekunci</string>
+    <string name="settings_pkb_layouts_add">Tambah susun atur</string>
+    <string name="settings_pkb_layouts_add_failed">Tidak dapat membaca susun atur</string>
+    <string name="settings_pkb_layouts_added">Susun atur ditambah</string>
     <string name="settings_pkb_layouts_builtin_note">Susun atur ini disertakan dengan papan kekunci dan tidak boleh diubah. Simpan satu sebagai fail untuk memulakan susun atur anda sendiri.</string>
     <string name="settings_pkb_layouts_category_builtin">Terbina dalam</string>
     <string name="settings_pkb_layouts_category_custom">Tersuai</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Padam “%1$s”? Tindakan ini tidak boleh dibuat asal.</string>
     <string name="settings_pkb_layouts_delete_title">Padam susun atur</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d kekunci</string>
-    <string name="settings_pkb_layouts_empty">Belum ada susun atur tersuai. Import satu melalui Lanjutan &gt; Sandaran dan pemulihan &gt; Pulihkan daripada fail.</string>
+    <string name="settings_pkb_layouts_empty">Belum ada susun atur tersuai. Tambah satu daripada fail.</string>
     <string name="settings_pkb_layouts_keypad">pad kekunci %1$s</string>
     <string name="settings_pkb_layouts_none">Tidak digunakan</string>
     <string name="settings_pkb_layouts_none_summary">Menggunakan susun atur papan kekunci itu sendiri</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Kongsikan %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Kongsikan susun atur</string>
     <string name="settings_pkb_layouts_share_failed">Tidak dapat berkongsi susun atur</string>
-    <string name="settings_pkb_layouts_summary">Tukar huruf yang ditaip oleh kekunci fizikal</string>
+    <string name="settings_pkb_layouts_summary">Tambah, kongsi dan padam susun atur huruf untuk pad kekunci</string>
     <string name="settings_pkb_keypad_layout_title">Susun atur pad kekunci</string>
     <string name="settings_pkb_keypad_layout_automatic">Automatik (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Huruf pad kekunci (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Sentiasa tunjukkan papan kekunci pada skrin</string>
     <string name="settings_pkb_layouts_three_row">pad kekunci tiga baris</string>
-    <string name="settings_pkb_layouts_title">Susun atur fizikal</string>
+    <string name="settings_pkb_layouts_title">Susun atur pad kekunci tersuai</string>
     <string name="settings_pkb_multifunction_action_clipboard">Papan klip</string>
     <string name="settings_pkb_multifunction_action_ctrl">Kekunci Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Papan emoji</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Tunjukkan halaman simbol tersuai sebelum halaman lalai</string>
     <string name="settings_symbol_custom_page_first_title">Tunjukkan halaman dahulu</string>
     <string name="settings_symbol_customization_summary">Sesuaikan susun atur halaman simbol papan kekunci</string>
-    <string name="settings_symbol_customization_title">Penyesuaian simbol</string>
+    <string name="settings_symbol_customization_title">Halaman simbol tersuai</string>
     <string name="settings_symbol_customize_page_summary">Edit susun atur halaman simbol tersuai</string>
     <string name="settings_symbol_customize_page_title">Sesuaikan halaman simbol</string>
     <string name="settings_symbol_enable_customization_summary">Tunjukkan halaman simbol ketiga dengan kandungan tersuai</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Jumlah goncangan (mana-mana arah) untuk tindakan sandaran</string>
     <string name="prefs_fallback_trigger_count_title">Kiraan pencetus sandaran</string>
     <string name="prefs_force_vkb_mode_summary_off">Gunakan jenis peranti yang dikesan</string>
-    <string name="prefs_force_vkb_mode_summary_on">Peranti dianggap skrin sentuh sahaja (mulakan semula diperlukan)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Peranti dianggap skrin sentuh sahaja</string>
     <string name="prefs_force_vkb_mode_title">Paksa mod skrin sentuh sahaja</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Halakan butang mikrofon perkakasan ke pembantu suara sistem</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Kekunci mikrofon mencetus pembantu suara</string>

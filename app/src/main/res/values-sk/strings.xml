@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Služba dostupnosti pre klávesnice tretích strán</string>
     <string name="settings_pkb_keyboard_helper_title">Pomocník BBKB</string>
     <string name="settings_pkb_layouts_any_language">Všetky klávesnice</string>
+    <string name="settings_pkb_layouts_add">Pridať rozloženie</string>
+    <string name="settings_pkb_layouts_add_failed">Rozloženie sa nepodarilo načítať</string>
+    <string name="settings_pkb_layouts_added">Rozloženie pridané</string>
     <string name="settings_pkb_layouts_builtin_note">Sú súčasťou klávesnice a nedajú sa zmeniť. Uložte si jedno ako súbor a začnite z neho vlastné rozloženie.</string>
     <string name="settings_pkb_layouts_category_builtin">Vstavané</string>
     <string name="settings_pkb_layouts_category_custom">Vlastné</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Odstrániť „%1$s“? Táto akcia sa nedá vrátiť späť.</string>
     <string name="settings_pkb_layouts_delete_title">Odstrániť rozloženie</string>
     <string name="settings_pkb_layouts_details">%1$s · klávesy: %2$d</string>
-    <string name="settings_pkb_layouts_empty">Zatiaľ žiadne vlastné rozloženia. Rozloženie importujete v časti Rozšírené &gt; Zálohovanie a obnovenie &gt; Obnoviť zo súboru.</string>
+    <string name="settings_pkb_layouts_empty">Zatiaľ žiadne vlastné rozloženia. Pridajte jedno zo súboru.</string>
     <string name="settings_pkb_layouts_keypad">klávesnica %1$s</string>
     <string name="settings_pkb_layouts_none">Nepoužíva sa</string>
     <string name="settings_pkb_layouts_none_summary">Používa vlastné rozloženie klávesnice</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Zdieľať %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Zdieľať rozloženie</string>
     <string name="settings_pkb_layouts_share_failed">Rozloženie sa nepodarilo zdieľať</string>
-    <string name="settings_pkb_layouts_summary">Zmeniť písmená, ktoré píšu fyzické klávesy</string>
+    <string name="settings_pkb_layouts_summary">Pridávajte, zdieľajte a odstraňujte rozloženia písmen pre klávesnicu</string>
     <string name="settings_pkb_keypad_layout_title">Rozloženie klávesnice</string>
     <string name="settings_pkb_keypad_layout_automatic">Automaticky (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Písmená klávesnice (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Vždy zobrazovať klávesnicu na obrazovke</string>
     <string name="settings_pkb_layouts_three_row">trojriadková klávesnica</string>
-    <string name="settings_pkb_layouts_title">Fyzické rozloženia</string>
+    <string name="settings_pkb_layouts_title">Vlastné rozloženia klávesnice</string>
     <string name="settings_pkb_multifunction_action_clipboard">Schránka</string>
     <string name="settings_pkb_multifunction_action_ctrl">Kláves Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Panel emoji</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Zobraziť vlastnú stránku symbolov pred predvolenou</string>
     <string name="settings_symbol_custom_page_first_title">Zobraziť stránku ako prvú</string>
     <string name="settings_symbol_customization_summary">Prispôsobte rozloženie stránky so symbolmi</string>
-    <string name="settings_symbol_customization_title">Prispôsobenie symbolov</string>
+    <string name="settings_symbol_customization_title">Vlastná stránka symbolov</string>
     <string name="settings_symbol_customize_page_summary">Upravte rozloženie vlastnej stránky symbolov</string>
     <string name="settings_symbol_customize_page_title">Prispôsobiť stránku symbolov</string>
     <string name="settings_symbol_enable_customization_summary">Zobraziť tretiu stránku symbolov s vlastným obsahom</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Celkový počet potrasení (v ľubovoľnom smere) pre záložnú akciu</string>
     <string name="prefs_fallback_trigger_count_title">Počet potrasení pre záložnú akciu</string>
     <string name="prefs_force_vkb_mode_summary_off">Použiť zistený typ zariadenia</string>
-    <string name="prefs_force_vkb_mode_summary_on">Zariadenie sa považuje len za dotykové (vyžaduje reštart)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Zariadenie sa považuje len za dotykové</string>
     <string name="prefs_force_vkb_mode_title">Vynútiť len dotykový režim</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Nasmerovať hardvérové tlačidlo mikrofónu na systémového hlasového asistenta</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Kláves mikrofónu spúšťa hlasového asistenta</string>

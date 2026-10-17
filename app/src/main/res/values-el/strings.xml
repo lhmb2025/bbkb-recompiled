@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Υπηρεσία προσβασιμότητας για πληκτρολόγια τρίτων</string>
     <string name="settings_pkb_keyboard_helper_title">Βοηθός BBKB</string>
     <string name="settings_pkb_layouts_any_language">Όλα τα πληκτρολόγια</string>
+    <string name="settings_pkb_layouts_add">Προσθήκη διάταξης</string>
+    <string name="settings_pkb_layouts_add_failed">Δεν ήταν δυνατή η ανάγνωση της διάταξης</string>
+    <string name="settings_pkb_layouts_added">Η διάταξη προστέθηκε</string>
     <string name="settings_pkb_layouts_builtin_note">Συνοδεύουν το πληκτρολόγιο και δεν μπορούν να αλλάξουν. Αποθηκεύστε μία ως αρχείο για να ξεκινήσετε δική σας διάταξη.</string>
     <string name="settings_pkb_layouts_category_builtin">Ενσωματωμένες</string>
     <string name="settings_pkb_layouts_category_custom">Προσαρμοσμένες</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Διαγραφή «%1$s»; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.</string>
     <string name="settings_pkb_layouts_delete_title">Διαγραφή διάταξης</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d πλήκτρα</string>
-    <string name="settings_pkb_layouts_empty">Δεν υπάρχουν ακόμη προσαρμοσμένες διατάξεις. Εισαγάγετε μία από Για προχωρημένους &gt; Αντίγραφο ασφαλείας και επαναφορά &gt; Επαναφορά από αρχείο.</string>
+    <string name="settings_pkb_layouts_empty">Δεν υπάρχουν ακόμη προσαρμοσμένες διατάξεις. Προσθέστε μία από αρχείο.</string>
     <string name="settings_pkb_layouts_keypad">πληκτρολόγιο %1$s</string>
     <string name="settings_pkb_layouts_none">Δεν χρησιμοποιείται</string>
     <string name="settings_pkb_layouts_none_summary">Χρησιμοποιεί τη διάταξη του ίδιου του πληκτρολογίου</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Κοινοποίηση %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Κοινοποίηση διάταξης</string>
     <string name="settings_pkb_layouts_share_failed">Δεν ήταν δυνατή η κοινοποίηση της διάταξης</string>
-    <string name="settings_pkb_layouts_summary">Αλλαγή των γραμμάτων που πληκτρολογούν τα φυσικά πλήκτρα</string>
+    <string name="settings_pkb_layouts_summary">Προσθήκη, κοινοποίηση και διαγραφή διατάξεων γραμμάτων για το πληκτρολόγιο</string>
     <string name="settings_pkb_keypad_layout_title">Διάταξη πληκτρολογίου</string>
     <string name="settings_pkb_keypad_layout_automatic">Αυτόματα (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Γράμματα πληκτρολογίου (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Να εμφανίζεται πάντα το πληκτρολόγιο οθόνης</string>
     <string name="settings_pkb_layouts_three_row">πληκτρολόγιο τριών σειρών</string>
-    <string name="settings_pkb_layouts_title">Φυσικές διατάξεις</string>
+    <string name="settings_pkb_layouts_title">Προσαρμοσμένες διατάξεις πληκτρολογίου</string>
     <string name="settings_pkb_multifunction_action_clipboard">Πρόχειρο</string>
     <string name="settings_pkb_multifunction_action_ctrl">Πλήκτρο Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Πίνακας emoji</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Εμφάνιση της προσαρμοσμένης σελίδας συμβόλων πριν από την προεπιλεγμένη</string>
     <string name="settings_symbol_custom_page_first_title">Εμφάνιση της σελίδας πρώτα</string>
     <string name="settings_symbol_customization_summary">Προσαρμογή της διάταξης της σελίδας συμβόλων του πληκτρολογίου</string>
-    <string name="settings_symbol_customization_title">Προσαρμογή συμβόλων</string>
+    <string name="settings_symbol_customization_title">Προσαρμοσμένη σελίδα συμβόλων</string>
     <string name="settings_symbol_customize_page_summary">Επεξεργασία της διάταξης της προσαρμοσμένης σελίδας συμβόλων</string>
     <string name="settings_symbol_customize_page_title">Προσαρμογή σελίδας συμβόλων</string>
     <string name="settings_symbol_enable_customization_summary">Εμφάνιση τρίτης σελίδας συμβόλων με προσαρμοσμένο περιεχόμενο</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Συνολικά κουνήματα (σε οποιαδήποτε κατεύθυνση) για την εφεδρική ενέργεια</string>
     <string name="prefs_fallback_trigger_count_title">Αριθμός κουνημάτων για εφεδρική ενέργεια</string>
     <string name="prefs_force_vkb_mode_summary_off">Χρήση του τύπου συσκευής που εντοπίστηκε</string>
-    <string name="prefs_force_vkb_mode_summary_on">Η συσκευή αντιμετωπίζεται ως συσκευή μόνο με οθόνη αφής (απαιτείται επανεκκίνηση)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Η συσκευή αντιμετωπίζεται ως συσκευή μόνο με οθόνη αφής</string>
     <string name="prefs_force_vkb_mode_title">Επιβολή λειτουργίας μόνο με οθόνη αφής</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Δρομολόγηση του κουμπιού μικροφώνου υλικού στον φωνητικό βοηθό του συστήματος</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Το πλήκτρο μικροφώνου καλεί τον φωνητικό βοηθό</string>

@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Layanan aksesibilitas pikeun papan tombol pihak katilu</string>
     <string name="settings_pkb_keyboard_helper_title">Pangbantu BBKB</string>
     <string name="settings_pkb_layouts_any_language">Sadaya papan tombol</string>
+    <string name="settings_pkb_layouts_add">Tambahkeun tata perenah</string>
+    <string name="settings_pkb_layouts_add_failed">Teu bisa maca tata perenah</string>
+    <string name="settings_pkb_layouts_added">Tata perenah ditambahkeun</string>
     <string name="settings_pkb_layouts_builtin_note">Ieu kaasup kana keyboard sareng teu tiasa dirobih. Simpen salah sahijina jadi berkas pikeun ngamimitian tata perenah anjeun sorangan.</string>
     <string name="settings_pkb_layouts_category_builtin">Bawaan</string>
     <string name="settings_pkb_layouts_category_custom">Pribadi</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Pupus “%1$s”? Ieu teu bisa dibolaykeun.</string>
     <string name="settings_pkb_layouts_delete_title">Pupus tata perenah</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d tombol</string>
-    <string name="settings_pkb_layouts_empty">Can aya tata perenah pribadi. Impor hiji ku Lanjut &gt; Cadangan jeung pamulihan &gt; Pulihkeun tina berkas.</string>
+    <string name="settings_pkb_layouts_empty">Can aya tata perenah kustom. Tambahkeun hiji tina file.</string>
     <string name="settings_pkb_layouts_keypad">papan tombol %1$s</string>
     <string name="settings_pkb_layouts_none">Teu dianggo</string>
     <string name="settings_pkb_layouts_none_summary">Nganggo tata perenah keyboard sorangan</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Bagikeun %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Bagikeun tata perenah</string>
     <string name="settings_pkb_layouts_share_failed">Teu bisa ngabagikeun tata perenah</string>
-    <string name="settings_pkb_layouts_summary">Robah hurup nu diketik ku tombol fisik</string>
+    <string name="settings_pkb_layouts_summary">Tambahkeun, bagikeun, jeung hapus tata perenah aksara pikeun keypad</string>
     <string name="settings_pkb_keypad_layout_title">Tata perenah keypad</string>
     <string name="settings_pkb_keypad_layout_automatic">Otomatis (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Aksara keypad (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Salawasna témbongkeun kibor dina layar</string>
     <string name="settings_pkb_layouts_three_row">papan tombol tilu jajar</string>
-    <string name="settings_pkb_layouts_title">Tata perenah fisik</string>
+    <string name="settings_pkb_layouts_title">Tata perenah keypad kustom</string>
     <string name="settings_pkb_multifunction_action_clipboard">Papan klip</string>
     <string name="settings_pkb_multifunction_action_ctrl">Tombol Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Papan emoji</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Témbongkeun kaca simbol pribadi saméméh kaca baku</string>
     <string name="settings_symbol_custom_page_first_title">Témbongkeun kacana pangheulana</string>
     <string name="settings_symbol_customization_summary">Atur tata perenah kaca simbol dina papan tombol</string>
-    <string name="settings_symbol_customization_title">Panataan simbol</string>
+    <string name="settings_symbol_customization_title">Kaca simbol kustom</string>
     <string name="settings_symbol_customize_page_summary">Ropéa tata perenah kaca simbol pribadi</string>
     <string name="settings_symbol_customize_page_title">Atur kaca simbol</string>
     <string name="settings_symbol_enable_customization_summary">Témbongkeun kaca simbol katilu kalawan eusi pribadi</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Jumlah oyagan (arah naon waé) pikeun lampah cadangan</string>
     <string name="prefs_fallback_trigger_count_title">Jumlah oyagan pikeun lampah cadangan</string>
     <string name="prefs_force_vkb_mode_summary_off">Paké jinis parangkat nu kadeteksi</string>
-    <string name="prefs_force_vkb_mode_summary_on">Parangkat dianggap ngan layar toél (kudu dimimitian deui)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Parangkat dianggap ngan layar toél</string>
     <string name="prefs_force_vkb_mode_title">Paksa modeu ngan layar toél</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Arahkeun tombol mikropon fisik ka asistén sora sistem</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Tombol mikropon muka asistén sora</string>

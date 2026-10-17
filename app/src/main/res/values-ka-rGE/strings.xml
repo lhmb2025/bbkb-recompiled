@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">მარტივი წვდომის სერვისი სხვა დეველოპერების კლავიატურებისთვის</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB-ის დამხმარე</string>
     <string name="settings_pkb_layouts_any_language">ყველა კლავიატურა</string>
+    <string name="settings_pkb_layouts_add">განლაგების დამატება</string>
+    <string name="settings_pkb_layouts_add_failed">განლაგების წაკითხვა ვერ მოხერხდა</string>
+    <string name="settings_pkb_layouts_added">განლაგება დაემატა</string>
     <string name="settings_pkb_layouts_builtin_note">ეს განლაგებები კლავიატურას მოყვება და მათი შეცვლა შეუძლებელია. შეინახეთ ერთ-ერთი ფაილად, რომ საკუთარი განლაგება დაიწყოთ.</string>
     <string name="settings_pkb_layouts_category_builtin">ჩაშენებული</string>
     <string name="settings_pkb_layouts_category_custom">მორგებული</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">წაიშალოს „%1$s“? ამის გაუქმება შეუძლებელია.</string>
     <string name="settings_pkb_layouts_delete_title">განლაგების წაშლა</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d კლავიში</string>
-    <string name="settings_pkb_layouts_empty">მორგებული განლაგებები ჯერ არ არის. დააიმპორტეთ აქედან: დამატებითი &gt; სარეზერვო ასლი და აღდგენა &gt; ფაილიდან აღდგენა.</string>
+    <string name="settings_pkb_layouts_empty">მორგებული განლაგებები ჯერ არ არის. დაამატეთ ერთი ფაილიდან.</string>
     <string name="settings_pkb_layouts_keypad">%1$s კლავიატურა</string>
     <string name="settings_pkb_layouts_none">არ გამოიყენება</string>
     <string name="settings_pkb_layouts_none_summary">იყენებს კლავიატურის საკუთარ განლაგებას</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">გაზიარება: %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">განლაგების გაზიარება</string>
     <string name="settings_pkb_layouts_share_failed">განლაგების გაზიარება ვერ მოხერხდა</string>
-    <string name="settings_pkb_layouts_summary">ფიზიკური კლავიშებით აკრეფილი ასოების შეცვლა</string>
+    <string name="settings_pkb_layouts_summary">დაამატეთ, გააზიარეთ და წაშალეთ კლავიატურის ასოების განლაგებები</string>
     <string name="settings_pkb_keypad_layout_title">კლავიატურის განლაგება</string>
     <string name="settings_pkb_keypad_layout_automatic">ავტომატური (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">კლავიატურის ასოები (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">ეკრანული კლავიატურის ყოველთვის ჩვენება</string>
     <string name="settings_pkb_layouts_three_row">სამრიგიანი კლავიატურა</string>
-    <string name="settings_pkb_layouts_title">ფიზიკური განლაგებები</string>
+    <string name="settings_pkb_layouts_title">კლავიატურის მორგებული განლაგებები</string>
     <string name="settings_pkb_multifunction_action_clipboard">ბუფერი</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl კლავიში</string>
     <string name="settings_pkb_multifunction_action_emoji">სიცილაკების დაფა</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">მორგებული სიმბოლოების გვერდის ჩვენება ნაგულისხმევამდე</string>
     <string name="settings_symbol_custom_page_first_title">გვერდის პირველად ჩვენება</string>
     <string name="settings_symbol_customization_summary">კლავიატურის სიმბოლოების გვერდის განლაგების მორგება</string>
-    <string name="settings_symbol_customization_title">სიმბოლოების მორგება</string>
+    <string name="settings_symbol_customization_title">სიმბოლოების მორგებული გვერდი</string>
     <string name="settings_symbol_customize_page_summary">მორგებული სიმბოლოების გვერდის განლაგების რედაქტირება</string>
     <string name="settings_symbol_customize_page_title">სიმბოლოების გვერდის მორგება</string>
     <string name="settings_symbol_enable_customization_summary">მესამე სიმბოლოების გვერდის ჩვენება მორგებული შიგთავსით</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">შენჯღრევების საერთო რაოდენობა (ნებისმიერი მიმართულებით) სარეზერვო მოქმედებისთვის</string>
     <string name="prefs_fallback_trigger_count_title">სარეზერვო მოქმედების რაოდენობა</string>
     <string name="prefs_force_vkb_mode_summary_off">აღმოჩენილი მოწყობილობის ტიპის გამოყენება</string>
-    <string name="prefs_force_vkb_mode_summary_on">მოწყობილობა მხოლოდ სენსორულად ჩაითვლება (საჭიროა გადატვირთვა)</string>
+    <string name="prefs_force_vkb_mode_summary_on">მოწყობილობა მხოლოდ სენსორულად ჩაითვლება</string>
     <string name="prefs_force_vkb_mode_title">მხოლოდ სენსორული რეჟიმის იძულება</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">მიკროფონის აპარატურული ღილაკის გადამისამართება სისტემის ხმოვან ასისტენტზე</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">მიკროფონის კლავიში იძახებს ხმოვან ასისტენტს</string>

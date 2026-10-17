@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Հատուկ հնարավորությունների ծառայություն երրորդ կողմի ստեղնաշարերի համար</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB-ի օգնական</string>
     <string name="settings_pkb_layouts_any_language">Բոլոր ստեղնաշարերը</string>
+    <string name="settings_pkb_layouts_add">Ավելացնել դասավորություն</string>
+    <string name="settings_pkb_layouts_add_failed">Չհաջողվեց կարդալ դասավորությունը</string>
+    <string name="settings_pkb_layouts_added">Դասավորությունն ավելացվեց</string>
     <string name="settings_pkb_layouts_builtin_note">Սրանք տրամադրվում են ստեղնաշարի հետ և չեն կարող փոփոխվել։ Պահեք մեկը որպես ֆայլ՝ ձեր սեփական դասավորությունը սկսելու համար։</string>
     <string name="settings_pkb_layouts_category_builtin">Ներկառուցված</string>
     <string name="settings_pkb_layouts_category_custom">Հարմարեցված</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Ջնջե՞լ «%1$s»-ը։ Այս գործողությունը հնարավոր չէ հետարկել։</string>
     <string name="settings_pkb_layouts_delete_title">Ջնջել դասավորությունը</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d ստեղն</string>
-    <string name="settings_pkb_layouts_empty">Հարմարեցված դասավորություններ դեռ չկան։ Ներմուծեք մեկը այստեղից՝ Ընդլայնված &gt; Պահուստավորում և վերականգնում &gt; Վերականգնել ֆայլից։</string>
+    <string name="settings_pkb_layouts_empty">Անհատական դասավորություններ դեռ չկան։ Ավելացրեք մեկը ֆայլից։</string>
     <string name="settings_pkb_layouts_keypad">%1$s ստեղնաշար</string>
     <string name="settings_pkb_layouts_none">Չի օգտագործվում</string>
     <string name="settings_pkb_layouts_none_summary">Օգտագործում է ստեղնաշարի սեփական դասավորությունը</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Կիսվել՝ %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Կիսվել դասավորությամբ</string>
     <string name="settings_pkb_layouts_share_failed">Չհաջողվեց կիսվել դասավորությամբ</string>
-    <string name="settings_pkb_layouts_summary">Փոխել ֆիզիկական ստեղներով մուտքագրվող տառերը</string>
+    <string name="settings_pkb_layouts_summary">Ավելացրեք, կիսվեք և ջնջեք ստեղնաշարի տառերի դասավորությունները</string>
     <string name="settings_pkb_keypad_layout_title">Ստեղնաշարի դասավորություն</string>
     <string name="settings_pkb_keypad_layout_automatic">Ավտոմատ (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Ստեղնաշարի տառեր (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Միշտ ցույց տալ էկրանային ստեղնաշարը</string>
     <string name="settings_pkb_layouts_three_row">եռաշարք ստեղնաշար</string>
-    <string name="settings_pkb_layouts_title">Ֆիզիկական դասավորություններ</string>
+    <string name="settings_pkb_layouts_title">Ստեղնաշարի անհատական դասավորություններ</string>
     <string name="settings_pkb_multifunction_action_clipboard">Սեղմատախտակ</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl ստեղն</string>
     <string name="settings_pkb_multifunction_action_emoji">Զմայլիկների վահանակ</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Ցույց տալ հարմարեցված նշանների էջը նախնական էջից առաջ</string>
     <string name="settings_symbol_custom_page_first_title">Ցույց տալ էջն առաջինը</string>
     <string name="settings_symbol_customization_summary">Հարմարեցնել ստեղնաշարի նշանների էջի դասավորությունը</string>
-    <string name="settings_symbol_customization_title">Նշանների հարմարեցում</string>
+    <string name="settings_symbol_customization_title">Նշանների անհատական էջ</string>
     <string name="settings_symbol_customize_page_summary">Խմբագրել հարմարեցված նշանների էջի դասավորությունը</string>
     <string name="settings_symbol_customize_page_title">Հարմարեցնել նշանների էջը</string>
     <string name="settings_symbol_enable_customization_summary">Ցույց տալ երրորդ նշանների էջը՝ հարմարեցված բովանդակությամբ</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Ցնցումների ընդհանուր քանակը (ցանկացած ուղղությամբ) պահեստային գործողության համար</string>
     <string name="prefs_fallback_trigger_count_title">Պահեստային գործարկման քանակ</string>
     <string name="prefs_force_vkb_mode_summary_off">Օգտագործել հայտնաբերված սարքի տեսակը</string>
-    <string name="prefs_force_vkb_mode_summary_on">Սարքը դիտվում է որպես միայն հպէկրանով (պահանջվում է վերագործարկում)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Սարքը դիտվում է որպես միայն հպէկրանով</string>
     <string name="prefs_force_vkb_mode_title">Հարկադրել միայն հպէկրանի ռեժիմը</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Ուղղորդել խոսափողի սարքային կոճակը համակարգի ձայնային օգնականին</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Խոսափողի ստեղնը գործարկում է ձայնային օգնականը</string>

@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Гуравдагч этгээдийн гарт зориулсан хандалтын үйлчилгээ</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB туслах</string>
     <string name="settings_pkb_layouts_any_language">Бүх гар</string>
+    <string name="settings_pkb_layouts_add">Байрлал нэмэх</string>
+    <string name="settings_pkb_layouts_add_failed">Байрлалыг уншиж чадсангүй</string>
+    <string name="settings_pkb_layouts_added">Байрлал нэмэгдлээ</string>
     <string name="settings_pkb_layouts_builtin_note">Эдгээр нь гартай хамт ирдэг бөгөөд өөрчлөх боломжгүй. Өөрийн байрлалыг эхлүүлэхийн тулд нэгийг нь файл болгон хадгална уу.</string>
     <string name="settings_pkb_layouts_category_builtin">Суулгасан</string>
     <string name="settings_pkb_layouts_category_custom">Тохируулсан</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s”-г устгах уу? Үүнийг буцаах боломжгүй.</string>
     <string name="settings_pkb_layouts_delete_title">Байрлал устгах</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d товчлуур</string>
-    <string name="settings_pkb_layouts_empty">Одоогоор тохируулсан байрлал алга. Нарийвчилсан &gt; Нөөцлөх ба сэргээх &gt; Файлаас сэргээх хэсгээс импортлоно уу.</string>
+    <string name="settings_pkb_layouts_empty">Өөрийн байрлал одоогоор алга. Файлаас нэгийг нэмнэ үү.</string>
     <string name="settings_pkb_layouts_keypad">%1$s гар</string>
     <string name="settings_pkb_layouts_none">Ашиглаагүй</string>
     <string name="settings_pkb_layouts_none_summary">Гарын өөрийн байрлалыг ашиглана</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Хуваалцах: %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Байрлал хуваалцах</string>
     <string name="settings_pkb_layouts_share_failed">Байрлалыг хуваалцаж чадсангүй</string>
-    <string name="settings_pkb_layouts_summary">Биет товчлууруудын бичих үсгийг өөрчлөх</string>
+    <string name="settings_pkb_layouts_summary">Гарын үсгийн байрлалуудыг нэмэх, хуваалцах, устгах</string>
     <string name="settings_pkb_keypad_layout_title">Гарын байрлал</string>
     <string name="settings_pkb_keypad_layout_automatic">Автомат (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Гарын үсэг (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Дэлгэцийн гарыг үргэлж харуулах</string>
     <string name="settings_pkb_layouts_three_row">гурван эгнээтэй гар</string>
-    <string name="settings_pkb_layouts_title">Биет байрлалууд</string>
+    <string name="settings_pkb_layouts_title">Гарын өөрийн байрлалууд</string>
     <string name="settings_pkb_multifunction_action_clipboard">Түр санах ой</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl товч</string>
     <string name="settings_pkb_multifunction_action_emoji">Инээмсэглэлийн самбар</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Захиалгат тэмдэгтийн хуудсыг анхдагч хуудсаас өмнө харуулах</string>
     <string name="settings_symbol_custom_page_first_title">Хуудсыг эхэнд харуулах</string>
     <string name="settings_symbol_customization_summary">Гарын тэмдэгтийн хуудасны байрлалыг тохируулах</string>
-    <string name="settings_symbol_customization_title">Тэмдэгтийн тохируулга</string>
+    <string name="settings_symbol_customization_title">Тэмдэгтийн өөрийн хуудас</string>
     <string name="settings_symbol_customize_page_summary">Захиалгат тэмдэгтийн хуудасны байрлалыг засах</string>
     <string name="settings_symbol_customize_page_title">Тэмдэгтийн хуудсыг тохируулах</string>
     <string name="settings_symbol_enable_customization_summary">Гурав дахь тэмдэгтийн хуудсыг захиалгат агуулгатайгаар харуулах</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Нөөц үйлдэлд шаардах нийт сэгсрэлт (аль ч чиглэлд)</string>
     <string name="prefs_fallback_trigger_count_title">Нөөц үйлдэл өдөөх тоо</string>
     <string name="prefs_force_vkb_mode_summary_off">Илрүүлсэн төхөөрөмжийн төрлийг ашиглах</string>
-    <string name="prefs_force_vkb_mode_summary_on">Төхөөрөмжийг зөвхөн мэдрэгч дэлгэцтэй гэж үзнэ (дахин эхлүүлэх шаардлагатай)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Төхөөрөмжийг зөвхөн мэдрэгч дэлгэцтэй гэж үзнэ</string>
     <string name="prefs_force_vkb_mode_title">Зөвхөн мэдрэгч дэлгэцийн горимыг албадах</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Техник хангамжийн микрофон товчийг системийн дуут туслах руу чиглүүлэх</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Микрофон товч дуут туслахыг ажиллуулна</string>

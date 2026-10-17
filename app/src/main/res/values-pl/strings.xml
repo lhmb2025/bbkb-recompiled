@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Usługa ułatwień dostępu dla klawiatur innych firm</string>
     <string name="settings_pkb_keyboard_helper_title">Pomocnik BBKB</string>
     <string name="settings_pkb_layouts_any_language">Wszystkie klawiatury</string>
+    <string name="settings_pkb_layouts_add">Dodaj układ</string>
+    <string name="settings_pkb_layouts_add_failed">Nie udało się odczytać układu</string>
+    <string name="settings_pkb_layouts_added">Układ dodany</string>
     <string name="settings_pkb_layouts_builtin_note">Są dostarczane z klawiaturą i nie można ich zmienić. Zapisz jeden jako plik, aby zacząć własny układ.</string>
     <string name="settings_pkb_layouts_category_builtin">Wbudowane</string>
     <string name="settings_pkb_layouts_category_custom">Niestandardowe</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Usunąć „%1$s”? Tej operacji nie można cofnąć.</string>
     <string name="settings_pkb_layouts_delete_title">Usuń układ</string>
     <string name="settings_pkb_layouts_details">%1$s · klawisze: %2$d</string>
-    <string name="settings_pkb_layouts_empty">Nie ma jeszcze niestandardowych układów. Zaimportuj układ w menu Zaawansowane &gt; Kopia zapasowa i przywracanie &gt; Przywróć z pliku.</string>
+    <string name="settings_pkb_layouts_empty">Brak niestandardowych układów. Dodaj jeden z pliku.</string>
     <string name="settings_pkb_layouts_keypad">klawiatura %1$s</string>
     <string name="settings_pkb_layouts_none">Nieużywany</string>
     <string name="settings_pkb_layouts_none_summary">Używa własnego układu klawiatury</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Udostępnij %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Udostępnianie układu</string>
     <string name="settings_pkb_layouts_share_failed">Nie udało się udostępnić układu</string>
-    <string name="settings_pkb_layouts_summary">Zmień litery wpisywane przez klawisze fizyczne</string>
+    <string name="settings_pkb_layouts_summary">Dodawaj, udostępniaj i usuwaj układy liter dla klawiatury</string>
     <string name="settings_pkb_keypad_layout_title">Układ klawiatury</string>
     <string name="settings_pkb_keypad_layout_automatic">Automatycznie (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Litery klawiatury (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Zawsze pokazuj klawiaturę ekranową</string>
     <string name="settings_pkb_layouts_three_row">klawiatura trzyrzędowa</string>
-    <string name="settings_pkb_layouts_title">Układy fizyczne</string>
+    <string name="settings_pkb_layouts_title">Niestandardowe układy klawiatury</string>
     <string name="settings_pkb_multifunction_action_clipboard">Schowek</string>
     <string name="settings_pkb_multifunction_action_ctrl">Klawisz Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Panel emotikonów</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Pokazuj własną stronę symboli przed stroną domyślną</string>
     <string name="settings_symbol_custom_page_first_title">Pokazuj stronę jako pierwszą</string>
     <string name="settings_symbol_customization_summary">Dostosuj układ strony symboli klawiatury</string>
-    <string name="settings_symbol_customization_title">Dostosowanie symboli</string>
+    <string name="settings_symbol_customization_title">Niestandardowa strona symboli</string>
     <string name="settings_symbol_customize_page_summary">Edytuj układ własnej strony symboli</string>
     <string name="settings_symbol_customize_page_title">Dostosuj stronę symboli</string>
     <string name="settings_symbol_enable_customization_summary">Pokazuj trzecią stronę symboli z własną zawartością</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Łączna liczba potrząśnięć (w dowolnym kierunku) dla działania zapasowego</string>
     <string name="prefs_fallback_trigger_count_title">Liczba potrząśnięć działania zapasowego</string>
     <string name="prefs_force_vkb_mode_summary_off">Używaj wykrytego typu urządzenia</string>
-    <string name="prefs_force_vkb_mode_summary_on">Urządzenie traktowane jako wyłącznie dotykowe (wymagany restart)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Urządzenie traktowane jako wyłącznie dotykowe</string>
     <string name="prefs_force_vkb_mode_title">Wymuś tryb wyłącznie dotykowy</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Kieruj sprzętowy przycisk mikrofonu do asystenta głosowego systemu</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Klawisz mikrofonu uruchamia asystenta głosowego</string>

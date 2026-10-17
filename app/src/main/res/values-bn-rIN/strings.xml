@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">তৃতীয় পক্ষের কীবোর্ডের জন্য অ্যাক্সেসিবিলিটি পরিষেবা</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB সহায়ক</string>
     <string name="settings_pkb_layouts_any_language">সব কীবোর্ড</string>
+    <string name="settings_pkb_layouts_add">লেআউট যোগ করুন</string>
+    <string name="settings_pkb_layouts_add_failed">লেআউট পড়া যায়নি</string>
+    <string name="settings_pkb_layouts_added">লেআউট যোগ করা হয়েছে</string>
     <string name="settings_pkb_layouts_builtin_note">এগুলো কীবোর্ডের সঙ্গে আসে এবং পরিবর্তন করা যায় না। নিজের লেআউট শুরু করতে একটি ফাইল হিসেবে সংরক্ষণ করুন।</string>
     <string name="settings_pkb_layouts_category_builtin">বিল্ট-ইন</string>
     <string name="settings_pkb_layouts_category_custom">কাস্টম</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s” মুছবেন? এটি আর ফেরানো যাবে না।</string>
     <string name="settings_pkb_layouts_delete_title">লেআউট মুছুন</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$dটি কী</string>
-    <string name="settings_pkb_layouts_empty">এখনও কোনো কাস্টম লেআউট নেই। উন্নত &gt; ব্যাকআপ ও পুনরুদ্ধার &gt; ফাইল থেকে পুনরুদ্ধার করুন থেকে একটি ইমপোর্ট করুন।</string>
+    <string name="settings_pkb_layouts_empty">এখনও কোনো কাস্টম লেআউট নেই। ফাইল থেকে একটি যোগ করুন।</string>
     <string name="settings_pkb_layouts_keypad">%1$s কীপ্যাড</string>
     <string name="settings_pkb_layouts_none">ব্যবহার করা হচ্ছে না</string>
     <string name="settings_pkb_layouts_none_summary">কীবোর্ডের নিজস্ব লেআউট ব্যবহার করে</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">%1$s শেয়ার করুন</string>
     <string name="settings_pkb_layouts_share_chooser">লেআউট শেয়ার করুন</string>
     <string name="settings_pkb_layouts_share_failed">লেআউট শেয়ার করা যায়নি</string>
-    <string name="settings_pkb_layouts_summary">ফিজিক্যাল কীগুলি যে অক্ষর টাইপ করে তা পরিবর্তন করুন</string>
+    <string name="settings_pkb_layouts_summary">কীপ্যাডের জন্য অক্ষর লেআউট যোগ করুন, শেয়ার করুন ও মুছুন</string>
     <string name="settings_pkb_keypad_layout_title">কীপ্যাড লেআউট</string>
     <string name="settings_pkb_keypad_layout_automatic">স্বয়ংক্রিয় (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">কীপ্যাডের অক্ষর (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">সর্বদা অন-স্ক্রিন কীবোর্ড দেখান</string>
     <string name="settings_pkb_layouts_three_row">তিন সারির কীপ্যাড</string>
-    <string name="settings_pkb_layouts_title">ফিজিক্যাল লেআউট</string>
+    <string name="settings_pkb_layouts_title">কাস্টম কীপ্যাড লেআউট</string>
     <string name="settings_pkb_multifunction_action_clipboard">ক্লিপবোর্ড</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl কী</string>
     <string name="settings_pkb_multifunction_action_emoji">ইমোজি বোর্ড</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">ডিফল্ট পৃষ্ঠার আগে কাস্টম প্রতীক পৃষ্ঠা দেখান</string>
     <string name="settings_symbol_custom_page_first_title">পৃষ্ঠা আগে দেখান</string>
     <string name="settings_symbol_customization_summary">কীবোর্ডের প্রতীক পৃষ্ঠার লেআউট কাস্টমাইজ করুন</string>
-    <string name="settings_symbol_customization_title">প্রতীক কাস্টমাইজেশন</string>
+    <string name="settings_symbol_customization_title">কাস্টম প্রতীক পৃষ্ঠা</string>
     <string name="settings_symbol_customize_page_summary">কাস্টম প্রতীক পৃষ্ঠার লেআউট সম্পাদনা করুন</string>
     <string name="settings_symbol_customize_page_title">প্রতীক পৃষ্ঠা কাস্টমাইজ করুন</string>
     <string name="settings_symbol_enable_customization_summary">কাস্টম বিষয়বস্তু সহ তৃতীয় প্রতীক পৃষ্ঠা দেখান</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">বিকল্প ক্রিয়ার জন্য মোট ঝাঁকুনি (যেকোনো দিকে)</string>
     <string name="prefs_fallback_trigger_count_title">বিকল্প ক্রিয়ার ঝাঁকুনির সংখ্যা</string>
     <string name="prefs_force_vkb_mode_summary_off">শনাক্ত করা ডিভাইসের ধরন ব্যবহার করুন</string>
-    <string name="prefs_force_vkb_mode_summary_on">ডিভাইসটি শুধু টাচস্ক্রিন হিসেবে গণ্য হবে (রিস্টার্ট প্রয়োজন)</string>
+    <string name="prefs_force_vkb_mode_summary_on">ডিভাইসটি শুধু টাচস্ক্রিন হিসেবে গণ্য হবে</string>
     <string name="prefs_force_vkb_mode_title">জোর করে শুধু-টাচস্ক্রিন মোড</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">হার্ডওয়্যার মাইক্রোফোন বোতামকে সিস্টেমের ভয়েস সহকারীতে পাঠান</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">মাইক কী ভয়েস সহকারী চালু করে</string>

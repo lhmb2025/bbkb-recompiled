@@ -256,13 +256,13 @@ fun SettingsNavHost(
         composable(SettingsRoute.PhysicalKeyboard.route) {
             PhysicalKeyboardScreen(
                 onNavigateToCkbGestures = go(SettingsRoute.CkbGestures),
-                onNavigateToPhysicalLayouts = go(SettingsRoute.PhysicalLayouts),
                 onNavigateToTouchSurfaceHelper = go(SettingsRoute.TouchSurfaceHelper),
                 onNavigateBack = back
             )
         }
 
-        // Physical layouts — the built-in and imported letter layouts for the physical keys
+        // Custom keypad layouts — the user's and the built-in letter layouts for the physical keys;
+        // reached from Device compatibility
         composable(SettingsRoute.PhysicalLayouts.route) {
             PhysicalLayoutsScreen(
                 onNavigateBack = back
@@ -290,6 +290,7 @@ fun SettingsNavHost(
                 onNavigateToDeviceConfiguration = go(SettingsRoute.DeviceConfiguration),
                 onNavigateToKeyboardHelper = go(SettingsRoute.KeyboardHelper),
                 onNavigateToTouchSurfaceHelper = go(SettingsRoute.TouchSurfaceHelper),
+                onNavigateToPhysicalLayouts = go(SettingsRoute.PhysicalLayouts),
                 onNavigateBack = back
             )
         }

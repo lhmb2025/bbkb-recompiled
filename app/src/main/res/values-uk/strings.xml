@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Служба спеціальних можливостей для сторонніх клавіатур</string>
     <string name="settings_pkb_keyboard_helper_title">Помічник BBKB</string>
     <string name="settings_pkb_layouts_any_language">Усі клавіатури</string>
+    <string name="settings_pkb_layouts_add">Додати розкладку</string>
+    <string name="settings_pkb_layouts_add_failed">Не вдалося прочитати розкладку</string>
+    <string name="settings_pkb_layouts_added">Розкладку додано</string>
     <string name="settings_pkb_layouts_builtin_note">Вони постачаються з клавіатурою, і їх не можна змінити. Збережіть одну з них у файл, щоб почати власну розкладку.</string>
     <string name="settings_pkb_layouts_category_builtin">Вбудовані</string>
     <string name="settings_pkb_layouts_category_custom">Власні</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Видалити «%1$s»? Цю дію не можна скасувати.</string>
     <string name="settings_pkb_layouts_delete_title">Видалити розкладку</string>
     <string name="settings_pkb_layouts_details">%1$s · клавіш: %2$d</string>
-    <string name="settings_pkb_layouts_empty">Власних розкладок ще немає. Імпортуйте розкладку через Додатково &gt; Резервне копіювання та відновлення &gt; Відновити з файлу.</string>
+    <string name="settings_pkb_layouts_empty">Власних розкладок поки немає. Додайте одну з файлу.</string>
     <string name="settings_pkb_layouts_keypad">клавіатура %1$s</string>
     <string name="settings_pkb_layouts_none">Не використовується</string>
     <string name="settings_pkb_layouts_none_summary">Використовується власна розкладка клавіатури</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Поділитися розкладкою %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Поділитися розкладкою</string>
     <string name="settings_pkb_layouts_share_failed">Не вдалося поділитися розкладкою</string>
-    <string name="settings_pkb_layouts_summary">Змінити літери, які вводять фізичні клавіші</string>
+    <string name="settings_pkb_layouts_summary">Додавайте, діліться та видаляйте літерні розкладки для клавіатури</string>
     <string name="settings_pkb_keypad_layout_title">Розкладка клавіатури</string>
     <string name="settings_pkb_keypad_layout_automatic">Автоматично (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Літери клавіатури (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Завжди показувати екранну клавіатуру</string>
     <string name="settings_pkb_layouts_three_row">трирядна клавіатура</string>
-    <string name="settings_pkb_layouts_title">Фізичні розкладки</string>
+    <string name="settings_pkb_layouts_title">Власні розкладки клавіатури</string>
     <string name="settings_pkb_multifunction_action_clipboard">Буфер обміну</string>
     <string name="settings_pkb_multifunction_action_ctrl">Клавіша Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Панель емодзі</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Показувати власну сторінку символів перед стандартною</string>
     <string name="settings_symbol_custom_page_first_title">Показувати сторінку першою</string>
     <string name="settings_symbol_customization_summary">Налаштування розкладки сторінки символів клавіатури</string>
-    <string name="settings_symbol_customization_title">Налаштування символів</string>
+    <string name="settings_symbol_customization_title">Власна сторінка символів</string>
     <string name="settings_symbol_customize_page_summary">Змінити розкладку власної сторінки символів</string>
     <string name="settings_symbol_customize_page_title">Налаштувати сторінку символів</string>
     <string name="settings_symbol_enable_customization_summary">Показувати третю сторінку символів із власним вмістом</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Загальна кількість струшувань (у будь-якому напрямку) для резервної дії</string>
     <string name="prefs_fallback_trigger_count_title">Кількість струшувань для резервної дії</string>
     <string name="prefs_force_vkb_mode_summary_off">Використовувати визначений тип пристрою</string>
-    <string name="prefs_force_vkb_mode_summary_on">Пристрій вважається лише сенсорним (потрібен перезапуск)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Пристрій вважається лише сенсорним</string>
     <string name="prefs_force_vkb_mode_title">Примусовий сенсорний режим</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Спрямовувати апаратну кнопку мікрофона до голосового помічника системи</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Клавіша мікрофона викликає голосового помічника</string>

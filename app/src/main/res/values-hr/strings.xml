@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Usluga pristupačnosti za tipkovnice drugih proizvođača</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB pomoćnik</string>
     <string name="settings_pkb_layouts_any_language">Sve tipkovnice</string>
+    <string name="settings_pkb_layouts_add">Dodaj raspored</string>
+    <string name="settings_pkb_layouts_add_failed">Raspored nije moguće pročitati</string>
+    <string name="settings_pkb_layouts_added">Raspored je dodan</string>
     <string name="settings_pkb_layouts_builtin_note">Dolaze s tipkovnicom i ne mogu se mijenjati. Spremite jedan kao datoteku da biste započeli vlastiti raspored.</string>
     <string name="settings_pkb_layouts_category_builtin">Ugrađeni</string>
     <string name="settings_pkb_layouts_category_custom">Prilagođeni</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Izbrisati „%1$s”? Ovo se ne može poništiti.</string>
     <string name="settings_pkb_layouts_delete_title">Izbriši raspored</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d tipki</string>
-    <string name="settings_pkb_layouts_empty">Još nema prilagođenih rasporeda. Uvezite jedan putem Napredno &gt; Sigurnosno kopiranje i vraćanje &gt; Vrati iz datoteke.</string>
+    <string name="settings_pkb_layouts_empty">Još nema prilagođenih rasporeda. Dodajte jedan iz datoteke.</string>
     <string name="settings_pkb_layouts_keypad">tipkovnica %1$s</string>
     <string name="settings_pkb_layouts_none">Ne upotrebljava se</string>
     <string name="settings_pkb_layouts_none_summary">Upotrebljava vlastiti raspored tipkovnice</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Podijeli %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Podijeli raspored</string>
     <string name="settings_pkb_layouts_share_failed">Raspored nije moguće podijeliti</string>
-    <string name="settings_pkb_layouts_summary">Promijeni slova koja upisuju fizičke tipke</string>
+    <string name="settings_pkb_layouts_summary">Dodajte, dijelite i brišite rasporede slova za tipkovnicu</string>
     <string name="settings_pkb_keypad_layout_title">Raspored tipkovnice</string>
     <string name="settings_pkb_keypad_layout_automatic">Automatski (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Slova tipkovnice (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Uvijek prikaži zaslonsku tipkovnicu</string>
     <string name="settings_pkb_layouts_three_row">tipkovnica s tri reda</string>
-    <string name="settings_pkb_layouts_title">Fizički rasporedi</string>
+    <string name="settings_pkb_layouts_title">Prilagođeni rasporedi tipkovnice</string>
     <string name="settings_pkb_multifunction_action_clipboard">Međuspremnik</string>
     <string name="settings_pkb_multifunction_action_ctrl">Tipka Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Ploča s emojijima</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Prikaži prilagođenu stranicu simbola prije zadane</string>
     <string name="settings_symbol_custom_page_first_title">Prikaži stranicu prvu</string>
     <string name="settings_symbol_customization_summary">Prilagodite izgled stranice sa simbolima</string>
-    <string name="settings_symbol_customization_title">Prilagodba simbola</string>
+    <string name="settings_symbol_customization_title">Prilagođena stranica simbola</string>
     <string name="settings_symbol_customize_page_summary">Uredite izgled prilagođene stranice simbola</string>
     <string name="settings_symbol_customize_page_title">Prilagodi stranicu simbola</string>
     <string name="settings_symbol_enable_customization_summary">Prikaži treću stranicu simbola s prilagođenim sadržajem</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Ukupan broj protresanja (u bilo kojem smjeru) za rezervnu radnju</string>
     <string name="prefs_fallback_trigger_count_title">Broj protresanja za rezervnu radnju</string>
     <string name="prefs_force_vkb_mode_summary_off">Upotrijebi prepoznatu vrstu uređaja</string>
-    <string name="prefs_force_vkb_mode_summary_on">Uređaj se tretira kao isključivo dodirni (potrebno je ponovno pokretanje)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Uređaj se tretira kao isključivo dodirni</string>
     <string name="prefs_force_vkb_mode_title">Prisili isključivo dodirni način</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Preusmjeri hardversku tipku mikrofona na glasovnog asistenta sustava</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Tipka mikrofona pokreće glasovnog asistenta</string>

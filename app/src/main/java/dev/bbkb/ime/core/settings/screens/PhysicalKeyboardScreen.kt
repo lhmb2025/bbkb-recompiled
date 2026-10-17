@@ -40,7 +40,6 @@ private const val CKB_GESTURES = "ckb_gestures_enabled"
 fun PhysicalKeyboardScreen(
     onNavigateBack: () -> Unit,
     onNavigateToCkbGestures: () -> Unit = {},
-    onNavigateToPhysicalLayouts: () -> Unit = {},
     onNavigateToTouchSurfaceHelper: () -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -128,14 +127,6 @@ fun PhysicalKeyboardScreen(
             options = ::keypadLayouts,
             modifier = Modifier.settingsSearchAnchor("pref_pkb_keypad_layout"),
             visible = { hasPhysicalKeyboard && (DeviceProfile.current()?.keypadLayoutOptions?.size ?: 0) > 1 },
-        ),
-        // The letter layouts for the physical keys, built-in and imported; only a physical
-        // keyboard has keys to lay out.
-        Nav(
-            title = R.string.settings_pkb_layouts_title,
-            summary = R.string.settings_pkb_layouts_summary,
-            visible = { hasPhysicalKeyboard },
-            onClick = { onNavigateToPhysicalLayouts() },
         ),
 
         // ── CAPACITIVE KEYBOARD GESTURES (CKB devices only) ──────────────────────

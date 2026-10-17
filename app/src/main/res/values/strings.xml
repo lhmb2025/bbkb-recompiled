@@ -262,6 +262,9 @@
     <string name="settings_pkb_hold_action_uppercase_summary">Continue holding past accents to type uppercase</string>
     <string name="settings_pkb_keyboard_helper_summary">Accessibility service for third-party keyboards</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB helper</string>
+    <string name="settings_pkb_layouts_add">Add layout</string>
+    <string name="settings_pkb_layouts_add_failed">Could not read the layout</string>
+    <string name="settings_pkb_layouts_added">Layout added</string>
     <string name="settings_pkb_layouts_any_language">All keyboards</string>
     <string name="settings_pkb_layouts_builtin_note">These come with the keyboard and cannot be changed. Save one as a file to start a layout of your own.</string>
     <string name="settings_pkb_layouts_category_builtin">Built-in</string>
@@ -270,7 +273,7 @@
     <string name="settings_pkb_layouts_delete_message">Delete “%1$s”? This cannot be undone.</string>
     <string name="settings_pkb_layouts_delete_title">Delete layout</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d keys</string>
-    <string name="settings_pkb_layouts_empty">No custom layouts yet. Import one with Advanced &gt; Backup and restore &gt; Restore from file.</string>
+    <string name="settings_pkb_layouts_empty">No custom layouts yet. Add one from a file.</string>
     <string name="settings_pkb_layouts_keypad">%1$s keypad</string>
     <string name="settings_pkb_layouts_none">Not in use</string>
     <string name="settings_pkb_layouts_none_summary">Uses the keyboard\'s own layout</string>
@@ -281,7 +284,7 @@
     <string name="settings_pkb_layouts_share">Share %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Share layout</string>
     <string name="settings_pkb_layouts_share_failed">Could not share the layout</string>
-    <string name="settings_pkb_layouts_summary">Change the letters the physical keys type</string>
+    <string name="settings_pkb_layouts_summary">Add, share and delete letter layouts for the keypad</string>
     <string name="settings_pkb_keypad_layout_title">Keypad layout</string>
     <string name="settings_pkb_keypad_layout_automatic">Automatic (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Keypad letters (%1$s)</string>
@@ -289,7 +292,7 @@
     <string name="layout_choice_name" translatable="false">%1$s (%2$s)</string>
     <string name="languages_hub_always_on_screen_title">Always show the on-screen keyboard</string>
     <string name="settings_pkb_layouts_three_row">three-row keypad</string>
-    <string name="settings_pkb_layouts_title">Physical layouts</string>
+    <string name="settings_pkb_layouts_title">Custom keypad layouts</string>
     <string name="settings_pkb_multifunction_action_clipboard">Clipboard</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl key</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji board</string>
@@ -401,7 +404,7 @@
     <string name="settings_symbol_custom_page_first_summary">Show custom symbol page before default page</string>
     <string name="settings_symbol_custom_page_first_title">Show page first</string>
     <string name="settings_symbol_customization_summary">Customize the keyboard symbol page layout</string>
-    <string name="settings_symbol_customization_title">Symbol customization</string>
+    <string name="settings_symbol_customization_title">Custom symbol page</string>
     <string name="settings_symbol_customize_page_summary">Edit custom symbol page layout</string>
     <string name="settings_symbol_customize_page_title">Customize symbol page</string>
     <string name="settings_symbol_enable_customization_summary">Show third symbol page with custom contents</string>
@@ -700,7 +703,7 @@
     <string name="prefs_fallback_trigger_count_summary">Total shakes (any direction) for fallback action</string>
     <string name="prefs_fallback_trigger_count_title">Fallback trigger count</string>
     <string name="prefs_force_vkb_mode_summary_off">Use detected device type</string>
-    <string name="prefs_force_vkb_mode_summary_on">Device treated as touchscreen-only (restart required)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Device treated as touchscreen-only</string>
     <string name="prefs_force_vkb_mode_title">Force touchscreen-only mode</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Route hardware microphone button to system voice assistant</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Mic key triggers voice assistant</string>

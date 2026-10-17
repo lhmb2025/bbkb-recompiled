@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Kisegítő szolgáltatás külső billentyűzetekhez</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB-segéd</string>
     <string name="settings_pkb_layouts_any_language">Minden billentyűzet</string>
+    <string name="settings_pkb_layouts_add">Kiosztás hozzáadása</string>
+    <string name="settings_pkb_layouts_add_failed">A kiosztást nem sikerült beolvasni</string>
+    <string name="settings_pkb_layouts_added">Kiosztás hozzáadva</string>
     <string name="settings_pkb_layouts_builtin_note">Ezek a billentyűzettel együtt érkeznek, és nem módosíthatók. Mentsen el egyet fájlként, és kezdje abból a saját kiosztását.</string>
     <string name="settings_pkb_layouts_category_builtin">Beépített</string>
     <string name="settings_pkb_layouts_category_custom">Egyéni</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Törli a(z) „%1$s” kiosztást? Ez nem vonható vissza.</string>
     <string name="settings_pkb_layouts_delete_title">Kiosztás törlése</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d billentyű</string>
-    <string name="settings_pkb_layouts_empty">Még nincsenek egyéni kiosztások. Importáljon egyet itt: Speciális &gt; Biztonsági mentés és visszaállítás &gt; Visszaállítás fájlból.</string>
+    <string name="settings_pkb_layouts_empty">Még nincs egyéni kiosztás. Adjon hozzá egyet fájlból.</string>
     <string name="settings_pkb_layouts_keypad">%1$s billentyűzet</string>
     <string name="settings_pkb_layouts_none">Nincs használatban</string>
     <string name="settings_pkb_layouts_none_summary">A billentyűzet saját kiosztását használja</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">%1$s megosztása</string>
     <string name="settings_pkb_layouts_share_chooser">Kiosztás megosztása</string>
     <string name="settings_pkb_layouts_share_failed">Nem sikerült megosztani a kiosztást</string>
-    <string name="settings_pkb_layouts_summary">A fizikai billentyűkkel írt betűk módosítása</string>
+    <string name="settings_pkb_layouts_summary">Betűkiosztások hozzáadása, megosztása és törlése a billentyűzethez</string>
     <string name="settings_pkb_keypad_layout_title">Billentyűzetkiosztás</string>
     <string name="settings_pkb_keypad_layout_automatic">Automatikus (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Billentyűzet betűi (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Mindig jelenjen meg a képernyő-billentyűzet</string>
     <string name="settings_pkb_layouts_three_row">háromsoros billentyűzet</string>
-    <string name="settings_pkb_layouts_title">Fizikai kiosztások</string>
+    <string name="settings_pkb_layouts_title">Egyéni billentyűzetkiosztások</string>
     <string name="settings_pkb_multifunction_action_clipboard">Vágólap</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl billentyű</string>
     <string name="settings_pkb_multifunction_action_emoji">Hangulatjel-tábla</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Az egyéni szimbólumoldal megjelenítése az alapértelmezett oldal előtt</string>
     <string name="settings_symbol_custom_page_first_title">Az oldal megjelenítése elsőként</string>
     <string name="settings_symbol_customization_summary">A billentyűzet szimbólumoldalának testreszabása</string>
-    <string name="settings_symbol_customization_title">Szimbólumok testreszabása</string>
+    <string name="settings_symbol_customization_title">Egyéni szimbólumoldal</string>
     <string name="settings_symbol_customize_page_summary">Az egyéni szimbólumoldal elrendezésének szerkesztése</string>
     <string name="settings_symbol_customize_page_title">Szimbólumoldal testreszabása</string>
     <string name="settings_symbol_enable_customization_summary">Harmadik szimbólumoldal megjelenítése egyéni tartalommal</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">A tartalék művelethez szükséges rázások száma (bármely irányban)</string>
     <string name="prefs_fallback_trigger_count_title">Tartalék művelet rázásszáma</string>
     <string name="prefs_force_vkb_mode_summary_off">Az észlelt készüléktípus használata</string>
-    <string name="prefs_force_vkb_mode_summary_on">A készülék csak érintőképernyősként kezelve (újraindítás szükséges)</string>
+    <string name="prefs_force_vkb_mode_summary_on">A készülék csak érintőképernyősként kezelve</string>
     <string name="prefs_force_vkb_mode_title">Csak érintőképernyős mód kényszerítése</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">A hardveres mikrofongomb átirányítása a rendszer hangsegédjéhez</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">A mikrofonbillentyű a hangsegédet indítja</string>

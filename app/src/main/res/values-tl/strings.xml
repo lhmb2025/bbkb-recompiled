@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Serbisyo sa accessibility para sa mga third-party na keyboard</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB helper</string>
     <string name="settings_pkb_layouts_any_language">Lahat ng keyboard</string>
+    <string name="settings_pkb_layouts_add">Magdagdag ng layout</string>
+    <string name="settings_pkb_layouts_add_failed">Hindi mabasa ang layout</string>
+    <string name="settings_pkb_layouts_added">Naidagdag ang layout</string>
     <string name="settings_pkb_layouts_builtin_note">Kasama ang mga ito sa keyboard at hindi mababago. I-save ang isa bilang file para magsimula ng sarili mong layout.</string>
     <string name="settings_pkb_layouts_category_builtin">Built-in</string>
     <string name="settings_pkb_layouts_category_custom">Custom</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Tanggalin ang “%1$s”? Hindi na ito maa-undo.</string>
     <string name="settings_pkb_layouts_delete_title">Tanggalin ang layout</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d key</string>
-    <string name="settings_pkb_layouts_empty">Wala pang custom na layout. Mag-import ng isa sa Advanced &gt; Backup at pag-restore &gt; I-restore mula sa file.</string>
+    <string name="settings_pkb_layouts_empty">Wala pang custom na layout. Magdagdag ng isa mula sa file.</string>
     <string name="settings_pkb_layouts_keypad">%1$s na keypad</string>
     <string name="settings_pkb_layouts_none">Hindi ginagamit</string>
     <string name="settings_pkb_layouts_none_summary">Ginagamit ang sariling layout ng keyboard</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Ibahagi ang %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Ibahagi ang layout</string>
     <string name="settings_pkb_layouts_share_failed">Hindi maibahagi ang layout</string>
-    <string name="settings_pkb_layouts_summary">Baguhin ang mga titik na tina-type ng mga pisikal na key</string>
+    <string name="settings_pkb_layouts_summary">Magdagdag, magbahagi at magtanggal ng mga layout ng titik para sa keypad</string>
     <string name="settings_pkb_keypad_layout_title">Layout ng keypad</string>
     <string name="settings_pkb_keypad_layout_automatic">Awtomatiko (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Mga titik ng keypad (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Palaging ipakita ang on-screen na keyboard</string>
     <string name="settings_pkb_layouts_three_row">keypad na may tatlong hilera</string>
-    <string name="settings_pkb_layouts_title">Mga pisikal na layout</string>
+    <string name="settings_pkb_layouts_title">Mga custom na layout ng keypad</string>
     <string name="settings_pkb_multifunction_action_clipboard">Clipboard</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl key</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji board</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Ipakita ang custom na page ng simbolo bago ang default na page</string>
     <string name="settings_symbol_custom_page_first_title">Ipakita muna ang page</string>
     <string name="settings_symbol_customization_summary">I-customize ang layout ng page ng simbolo sa keyboard</string>
-    <string name="settings_symbol_customization_title">Pag-customize ng simbolo</string>
+    <string name="settings_symbol_customization_title">Custom na pahina ng simbolo</string>
     <string name="settings_symbol_customize_page_summary">I-edit ang layout ng custom na page ng simbolo</string>
     <string name="settings_symbol_customize_page_title">I-customize ang page ng simbolo</string>
     <string name="settings_symbol_enable_customization_summary">Ipakita ang ikatlong page ng simbolo na may custom na nilalaman</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Kabuuang shake (kahit anong direksyon) para sa fallback na aksyon</string>
     <string name="prefs_fallback_trigger_count_title">Bilang ng trigger ng fallback</string>
     <string name="prefs_force_vkb_mode_summary_off">Gamitin ang natukoy na uri ng device</string>
-    <string name="prefs_force_vkb_mode_summary_on">Ituturing ang device na touchscreen-only (kailangang i-restart)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Ituturing ang device na touchscreen-only</string>
     <string name="prefs_force_vkb_mode_title">Sapilitang touchscreen-only na mode</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Ipadala ang hardware na microphone button sa voice assistant ng system</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Bino-trigger ng mic key ang voice assistant</string>

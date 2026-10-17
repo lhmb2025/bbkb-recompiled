@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">மூன்றாம் தரப்பு விசைப்பலகைகளுக்கான அணுகல்தன்மை சேவை</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB உதவியாளர்</string>
     <string name="settings_pkb_layouts_any_language">அனைத்து விசைப்பலகைகளும்</string>
+    <string name="settings_pkb_layouts_add">அமைப்பைச் சேர்</string>
+    <string name="settings_pkb_layouts_add_failed">அமைப்பைப் படிக்க முடியவில்லை</string>
+    <string name="settings_pkb_layouts_added">அமைப்பு சேர்க்கப்பட்டது</string>
     <string name="settings_pkb_layouts_builtin_note">இவை விசைப்பலகையுடன் வருகின்றன, இவற்றை மாற்ற முடியாது. உங்கள் சொந்தத் தளவமைப்பைத் தொடங்க ஒன்றைக் கோப்பாகச் சேமிக்கவும்.</string>
     <string name="settings_pkb_layouts_category_builtin">உள்ளமைந்தவை</string>
     <string name="settings_pkb_layouts_category_custom">தனிப்பயன்</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s”-ஐ நீக்கவா? இதைச் செயல்தவிர்க்க முடியாது.</string>
     <string name="settings_pkb_layouts_delete_title">தளவமைப்பை நீக்கு</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d விசைகள்</string>
-    <string name="settings_pkb_layouts_empty">இதுவரை தனிப்பயன் தளவமைப்புகள் இல்லை. மேம்பட்டவை &gt; காப்புப் பிரதியும் மீட்டெடுப்பும் &gt; கோப்பிலிருந்து மீட்டெடு என்பதில் ஒன்றை இறக்குமதி செய்யவும்.</string>
+    <string name="settings_pkb_layouts_empty">இன்னும் தனிப்பயன் அமைப்புகள் இல்லை. கோப்பிலிருந்து ஒன்றைச் சேர்க்கவும்.</string>
     <string name="settings_pkb_layouts_keypad">%1$s விசைப்பலகை</string>
     <string name="settings_pkb_layouts_none">பயன்பாட்டில் இல்லை</string>
     <string name="settings_pkb_layouts_none_summary">விசைப்பலகையின் சொந்தத் தளவமைப்பைப் பயன்படுத்தும்</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">%1$s-ஐப் பகிர்</string>
     <string name="settings_pkb_layouts_share_chooser">தளவமைப்பைப் பகிர்</string>
     <string name="settings_pkb_layouts_share_failed">தளவமைப்பைப் பகிர முடியவில்லை</string>
-    <string name="settings_pkb_layouts_summary">இயற்பியல் விசைகள் தட்டச்சு செய்யும் எழுத்துகளை மாற்றவும்</string>
+    <string name="settings_pkb_layouts_summary">கீபேடுக்கான எழுத்து அமைப்புகளைச் சேர்க்கவும், பகிரவும், நீக்கவும்</string>
     <string name="settings_pkb_keypad_layout_title">கீபேட் அமைப்பு</string>
     <string name="settings_pkb_keypad_layout_automatic">தானியங்கு (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">கீபேட் எழுத்துகள் (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">திரை விசைப்பலகையை எப்போதும் காட்டு</string>
     <string name="settings_pkb_layouts_three_row">மூன்று வரிசை விசைப்பலகை</string>
-    <string name="settings_pkb_layouts_title">இயற்பியல் தளவமைப்புகள்</string>
+    <string name="settings_pkb_layouts_title">தனிப்பயன் கீபேட் அமைப்புகள்</string>
     <string name="settings_pkb_multifunction_action_clipboard">கிளிப்போர்டு</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl விசை</string>
     <string name="settings_pkb_multifunction_action_emoji">எமோஜி பலகை</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">இயல்புநிலைப் பக்கத்திற்கு முன் தனிப்பயன் குறியீட்டுப் பக்கத்தைக் காட்டு</string>
     <string name="settings_symbol_custom_page_first_title">பக்கத்தை முதலில் காட்டு</string>
     <string name="settings_symbol_customization_summary">விசைப்பலகை குறியீட்டுப் பக்கத் தளவமைப்பைத் தனிப்பயனாக்கு</string>
-    <string name="settings_symbol_customization_title">குறியீட்டுத் தனிப்பயனாக்கம்</string>
+    <string name="settings_symbol_customization_title">தனிப்பயன் குறியீட்டுப் பக்கம்</string>
     <string name="settings_symbol_customize_page_summary">தனிப்பயன் குறியீட்டுப் பக்கத் தளவமைப்பைத் திருத்து</string>
     <string name="settings_symbol_customize_page_title">குறியீட்டுப் பக்கத்தைத் தனிப்பயனாக்கு</string>
     <string name="settings_symbol_enable_customization_summary">தனிப்பயன் உள்ளடக்கத்துடன் மூன்றாவது குறியீட்டுப் பக்கத்தைக் காட்டு</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">மாற்றுச் செயலுக்கான மொத்தக் குலுக்கல்கள் (எந்தத் திசையிலும்)</string>
     <string name="prefs_fallback_trigger_count_title">மாற்றுச் செயல் தூண்டல் எண்ணிக்கை</string>
     <string name="prefs_force_vkb_mode_summary_off">கண்டறியப்பட்ட சாதன வகையைப் பயன்படுத்து</string>
-    <string name="prefs_force_vkb_mode_summary_on">சாதனம் தொடுதிரை மட்டுமே எனக் கருதப்படும் (மறுதொடக்கம் தேவை)</string>
+    <string name="prefs_force_vkb_mode_summary_on">சாதனம் தொடுதிரை மட்டுமே எனக் கருதப்படும்</string>
     <string name="prefs_force_vkb_mode_title">தொடுதிரை மட்டும் பயன்முறையைக் கட்டாயப்படுத்து</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">வன்பொருள் மைக்ரோஃபோன் பட்டனைக் கணினி குரல் உதவியாளருக்குத் திருப்பிவிடு</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">மைக் விசை குரல் உதவியாளரைத் தூண்டும்</string>

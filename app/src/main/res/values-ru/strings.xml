@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Служба специальных возможностей для сторонних клавиатур</string>
     <string name="settings_pkb_keyboard_helper_title">Помощник BBKB</string>
     <string name="settings_pkb_layouts_any_language">Все клавиатуры</string>
+    <string name="settings_pkb_layouts_add">Добавить раскладку</string>
+    <string name="settings_pkb_layouts_add_failed">Не удалось прочитать раскладку</string>
+    <string name="settings_pkb_layouts_added">Раскладка добавлена</string>
     <string name="settings_pkb_layouts_builtin_note">Они входят в состав клавиатуры, и их нельзя изменить. Сохраните одну из них в файл, чтобы начать собственную раскладку.</string>
     <string name="settings_pkb_layouts_category_builtin">Встроенные</string>
     <string name="settings_pkb_layouts_category_custom">Пользовательские</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Удалить «%1$s»? Это действие нельзя отменить.</string>
     <string name="settings_pkb_layouts_delete_title">Удалить раскладку</string>
     <string name="settings_pkb_layouts_details">%1$s · клавиш: %2$d</string>
-    <string name="settings_pkb_layouts_empty">Пользовательских раскладок пока нет. Импортируйте раскладку в разделе Дополнительно &gt; Резервное копирование и восстановление &gt; Восстановить из файла.</string>
+    <string name="settings_pkb_layouts_empty">Пользовательских раскладок пока нет. Добавьте одну из файла.</string>
     <string name="settings_pkb_layouts_keypad">клавиатура %1$s</string>
     <string name="settings_pkb_layouts_none">Не используется</string>
     <string name="settings_pkb_layouts_none_summary">Используется собственная раскладка клавиатуры</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Поделиться раскладкой %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Поделиться раскладкой</string>
     <string name="settings_pkb_layouts_share_failed">Не удалось поделиться раскладкой</string>
-    <string name="settings_pkb_layouts_summary">Изменить буквы, которые вводят физические клавиши</string>
+    <string name="settings_pkb_layouts_summary">Добавляйте, отправляйте и удаляйте буквенные раскладки для клавиатуры</string>
     <string name="settings_pkb_keypad_layout_title">Раскладка клавиатуры</string>
     <string name="settings_pkb_keypad_layout_automatic">Автоматически (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Буквы клавиатуры (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Всегда показывать экранную клавиатуру</string>
     <string name="settings_pkb_layouts_three_row">трёхрядная клавиатура</string>
-    <string name="settings_pkb_layouts_title">Физические раскладки</string>
+    <string name="settings_pkb_layouts_title">Пользовательские раскладки клавиатуры</string>
     <string name="settings_pkb_multifunction_action_clipboard">Буфер обмена</string>
     <string name="settings_pkb_multifunction_action_ctrl">Клавиша Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Панель эмодзи</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Показывать пользовательскую страницу символов перед стандартной</string>
     <string name="settings_symbol_custom_page_first_title">Показывать страницу первой</string>
     <string name="settings_symbol_customization_summary">Настройка раскладки страницы символов клавиатуры</string>
-    <string name="settings_symbol_customization_title">Настройка символов</string>
+    <string name="settings_symbol_customization_title">Пользовательская страница символов</string>
     <string name="settings_symbol_customize_page_summary">Изменить раскладку пользовательской страницы символов</string>
     <string name="settings_symbol_customize_page_title">Настроить страницу символов</string>
     <string name="settings_symbol_enable_customization_summary">Показывать третью страницу символов с пользовательским содержимым</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Общее число встряхиваний (в любом направлении) для резервного действия</string>
     <string name="prefs_fallback_trigger_count_title">Число встряхиваний для резервного действия</string>
     <string name="prefs_force_vkb_mode_summary_off">Использовать определенный тип устройства</string>
-    <string name="prefs_force_vkb_mode_summary_on">Устройство считается только сенсорным (требуется перезапуск)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Устройство считается только сенсорным</string>
     <string name="prefs_force_vkb_mode_title">Принудительный сенсорный режим</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Направлять аппаратную кнопку микрофона системному голосовому помощнику</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Клавиша микрофона вызывает голосовой помощник</string>

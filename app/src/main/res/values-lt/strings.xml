@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Pritaikymo neįgaliesiems paslauga trečiųjų šalių klaviatūroms</string>
     <string name="settings_pkb_keyboard_helper_title">„BBKB“ pagalbinė programa</string>
     <string name="settings_pkb_layouts_any_language">Visos klaviatūros</string>
+    <string name="settings_pkb_layouts_add">Pridėti išdėstymą</string>
+    <string name="settings_pkb_layouts_add_failed">Nepavyko nuskaityti išdėstymo</string>
+    <string name="settings_pkb_layouts_added">Išdėstymas pridėtas</string>
     <string name="settings_pkb_layouts_builtin_note">Jie pateikiami su klaviatūra ir jų pakeisti negalima. Išsaugokite vieną kaip failą, kad pradėtumėte savo išdėstymą.</string>
     <string name="settings_pkb_layouts_category_builtin">Įtaisytieji</string>
     <string name="settings_pkb_layouts_category_custom">Pasirinktiniai</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Ištrinti „%1$s“? Šio veiksmo anuliuoti negalima.</string>
     <string name="settings_pkb_layouts_delete_title">Ištrinti išdėstymą</string>
     <string name="settings_pkb_layouts_details">%1$s · klavišų: %2$d</string>
-    <string name="settings_pkb_layouts_empty">Pasirinktinių išdėstymų dar nėra. Importuokite skiltyje Išplėstiniai &gt; Atsarginė kopija ir atkūrimas &gt; Atkurti iš failo.</string>
+    <string name="settings_pkb_layouts_empty">Tinkintų išdėstymų dar nėra. Pridėkite vieną iš failo.</string>
     <string name="settings_pkb_layouts_keypad">%1$s klaviatūra</string>
     <string name="settings_pkb_layouts_none">Nenaudojama</string>
     <string name="settings_pkb_layouts_none_summary">Naudojamas pačios klaviatūros išdėstymas</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Bendrinti %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Bendrinti išdėstymą</string>
     <string name="settings_pkb_layouts_share_failed">Nepavyko bendrinti išdėstymo</string>
-    <string name="settings_pkb_layouts_summary">Keisti raides, kurias rašo fiziniai klavišai</string>
+    <string name="settings_pkb_layouts_summary">Pridėkite, bendrinkite ir ištrinkite klaviatūros raidžių išdėstymus</string>
     <string name="settings_pkb_keypad_layout_title">Klaviatūros išdėstymas</string>
     <string name="settings_pkb_keypad_layout_automatic">Automatiškai (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Klaviatūros raidės (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Visada rodyti ekrano klaviatūrą</string>
     <string name="settings_pkb_layouts_three_row">trijų eilių klaviatūra</string>
-    <string name="settings_pkb_layouts_title">Fiziniai išdėstymai</string>
+    <string name="settings_pkb_layouts_title">Tinkinti klaviatūros išdėstymai</string>
     <string name="settings_pkb_multifunction_action_clipboard">Iškarpinė</string>
     <string name="settings_pkb_multifunction_action_ctrl">„Ctrl“ klavišas</string>
     <string name="settings_pkb_multifunction_action_emoji">Jaustukų lenta</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Rodyti tinkintą simbolių puslapį prieš numatytąjį</string>
     <string name="settings_symbol_custom_page_first_title">Rodyti puslapį pirmą</string>
     <string name="settings_symbol_customization_summary">Tinkinti klaviatūros simbolių puslapio išdėstymą</string>
-    <string name="settings_symbol_customization_title">Simbolių tinkinimas</string>
+    <string name="settings_symbol_customization_title">Tinkintas simbolių puslapis</string>
     <string name="settings_symbol_customize_page_summary">Redaguoti tinkinto simbolių puslapio išdėstymą</string>
     <string name="settings_symbol_customize_page_title">Tinkinti simbolių puslapį</string>
     <string name="settings_symbol_enable_customization_summary">Rodyti trečią simbolių puslapį su tinkintu turiniu</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Bendras papurtymų (bet kuria kryptimi) skaičius atsarginiam veiksmui</string>
     <string name="prefs_fallback_trigger_count_title">Atsarginio veiksmo suveikimų skaičius</string>
     <string name="prefs_force_vkb_mode_summary_off">Naudoti aptiktą įrenginio tipą</string>
-    <string name="prefs_force_vkb_mode_summary_on">Įrenginys laikomas tik jutikliniu (reikia paleisti iš naujo)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Įrenginys laikomas tik jutikliniu</string>
     <string name="prefs_force_vkb_mode_title">Priverstinis tik jutiklinio ekrano režimas</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Nukreipti aparatinį mikrofono mygtuką į sistemos balso asistentą</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Mikrofono klavišas paleidžia balso asistentą</string>

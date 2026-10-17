@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Hirugarrenen teklatuentzako erabilerraztasun-zerbitzua</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB laguntzailea</string>
     <string name="settings_pkb_layouts_any_language">Teklatu guztiak</string>
+    <string name="settings_pkb_layouts_add">Gehitu diseinua</string>
+    <string name="settings_pkb_layouts_add_failed">Ezin izan da diseinua irakurri</string>
+    <string name="settings_pkb_layouts_added">Diseinua gehitu da</string>
     <string name="settings_pkb_layouts_builtin_note">Teklatuarekin batera datoz, eta ezin dira aldatu. Gorde bat fitxategi gisa zure diseinua sortzen hasteko.</string>
     <string name="settings_pkb_layouts_category_builtin">Integratuak</string>
     <string name="settings_pkb_layouts_category_custom">Pertsonalizatuak</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s” ezabatu nahi duzu? Ezin da desegin.</string>
     <string name="settings_pkb_layouts_delete_title">Ezabatu diseinua</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d tekla</string>
-    <string name="settings_pkb_layouts_empty">Ez dago diseinu pertsonalizaturik oraindik. Inportatu bat hemen: Aurreratua &gt; Babeskopia eta leheneratzea &gt; Leheneratu fitxategitik.</string>
+    <string name="settings_pkb_layouts_empty">Oraindik ez dago diseinu pertsonalizaturik. Gehitu bat fitxategi batetik.</string>
     <string name="settings_pkb_layouts_keypad">%1$s teklatua</string>
     <string name="settings_pkb_layouts_none">Ez da erabiltzen</string>
     <string name="settings_pkb_layouts_none_summary">Teklatuaren beraren diseinua erabiltzen du</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Partekatu %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Partekatu diseinua</string>
     <string name="settings_pkb_layouts_share_failed">Ezin izan da partekatu diseinua</string>
-    <string name="settings_pkb_layouts_summary">Aldatu tekla fisikoek idazten dituzten hizkiak</string>
+    <string name="settings_pkb_layouts_summary">Gehitu, partekatu eta ezabatu teklatuaren letra-diseinuak</string>
     <string name="settings_pkb_keypad_layout_title">Teklatuaren diseinua</string>
     <string name="settings_pkb_keypad_layout_automatic">Automatikoa (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Teklatuko letrak (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Erakutsi beti pantailako teklatua</string>
     <string name="settings_pkb_layouts_three_row">hiru errenkadako teklatua</string>
-    <string name="settings_pkb_layouts_title">Diseinu fisikoak</string>
+    <string name="settings_pkb_layouts_title">Teklatu-diseinu pertsonalizatuak</string>
     <string name="settings_pkb_multifunction_action_clipboard">Arbela</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl tekla</string>
     <string name="settings_pkb_multifunction_action_emoji">Emotikono-taula</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Erakutsi ikur-orri pertsonalizatua orri lehenetsiaren aurretik</string>
     <string name="settings_symbol_custom_page_first_title">Erakutsi orria lehenengo</string>
     <string name="settings_symbol_customization_summary">Pertsonalizatu teklatuko ikur-orriaren diseinua</string>
-    <string name="settings_symbol_customization_title">Ikurren pertsonalizazioa</string>
+    <string name="settings_symbol_customization_title">Ikur-orri pertsonalizatua</string>
     <string name="settings_symbol_customize_page_summary">Editatu ikur-orri pertsonalizatuaren diseinua</string>
     <string name="settings_symbol_customize_page_title">Pertsonalizatu ikur-orria</string>
     <string name="settings_symbol_enable_customization_summary">Erakutsi hirugarren ikur-orria eduki pertsonalizatuarekin</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Ordezko ekintzarako astindu kopurua (edozein norabidetan)</string>
     <string name="prefs_fallback_trigger_count_title">Ordezko ekintzaren astindu kopurua</string>
     <string name="prefs_force_vkb_mode_summary_off">Erabili detektatutako gailu mota</string>
-    <string name="prefs_force_vkb_mode_summary_on">Gailua ukipen-pantaila hutsa balitz bezala tratatzen da (berrabiarazi behar da)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Gailua ukipen-pantaila hutsa balitz bezala tratatzen da</string>
     <string name="prefs_force_vkb_mode_title">Behartu ukipen-pantaila hutsaren modua</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Bideratu mikrofonoaren hardware-botoia sistemaren ahots-laguntzailera</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Mikrofono-teklak ahots-laguntzailea abiarazten du</string>

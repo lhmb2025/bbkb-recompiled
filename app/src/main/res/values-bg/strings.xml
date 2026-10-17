@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Услуга за достъпност за клавиатури на други разработчици</string>
     <string name="settings_pkb_keyboard_helper_title">Помощник за BBKB</string>
     <string name="settings_pkb_layouts_any_language">Всички клавиатури</string>
+    <string name="settings_pkb_layouts_add">Добавяне на подредба</string>
+    <string name="settings_pkb_layouts_add_failed">Подредбата не можа да бъде прочетена</string>
+    <string name="settings_pkb_layouts_added">Подредбата е добавена</string>
     <string name="settings_pkb_layouts_builtin_note">Те идват с клавиатурата и не могат да се променят. Запазете една като файл, за да започнете своя подредба.</string>
     <string name="settings_pkb_layouts_category_builtin">Вградени</string>
     <string name="settings_pkb_layouts_category_custom">Персонализирани</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Да се изтрие ли „%1$s“? Това действие не може да бъде отменено.</string>
     <string name="settings_pkb_layouts_delete_title">Изтриване на подредбата</string>
     <string name="settings_pkb_layouts_details">%1$s · клавиши: %2$d</string>
-    <string name="settings_pkb_layouts_empty">Все още няма персонализирани подредби. Импортирайте от Разширени &gt; Архивиране и възстановяване &gt; Възстановяване от файл.</string>
+    <string name="settings_pkb_layouts_empty">Все още няма персонализирани подредби. Добавете една от файл.</string>
     <string name="settings_pkb_layouts_keypad">клавиатура %1$s</string>
     <string name="settings_pkb_layouts_none">Не се използва</string>
     <string name="settings_pkb_layouts_none_summary">Използва собствената подредба на клавиатурата</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Споделяне на %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Споделяне на подредбата</string>
     <string name="settings_pkb_layouts_share_failed">Подредбата не можа да бъде споделена</string>
-    <string name="settings_pkb_layouts_summary">Промяна на буквите, които въвеждат физическите клавиши</string>
+    <string name="settings_pkb_layouts_summary">Добавяйте, споделяйте и изтривайте буквени подредби за клавиатурата</string>
     <string name="settings_pkb_keypad_layout_title">Подредба на клавиатурата</string>
     <string name="settings_pkb_keypad_layout_automatic">Автоматично (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Букви на клавиатурата (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Винаги показвай екранната клавиатура</string>
     <string name="settings_pkb_layouts_three_row">клавиатура с три реда</string>
-    <string name="settings_pkb_layouts_title">Физически подредби</string>
+    <string name="settings_pkb_layouts_title">Персонализирани подредби на клавиатурата</string>
     <string name="settings_pkb_multifunction_action_clipboard">Клипборд</string>
     <string name="settings_pkb_multifunction_action_ctrl">Клавиш Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Панел с емотикони</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Показване на персонализираната страница със символи преди страницата по подразбиране</string>
     <string name="settings_symbol_custom_page_first_title">Показване на страницата първа</string>
     <string name="settings_symbol_customization_summary">Персонализиране на подредбата на страницата със символи</string>
-    <string name="settings_symbol_customization_title">Персонализиране на символите</string>
+    <string name="settings_symbol_customization_title">Персонализирана страница със символи</string>
     <string name="settings_symbol_customize_page_summary">Редактиране на подредбата на персонализираната страница със символи</string>
     <string name="settings_symbol_customize_page_title">Персонализиране на страницата със символи</string>
     <string name="settings_symbol_enable_customization_summary">Показване на трета страница със символи с персонализирано съдържание</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Общ брой разтърсвания (във всяка посока) за резервното действие</string>
     <string name="prefs_fallback_trigger_count_title">Брой разтърсвания за резервно действие</string>
     <string name="prefs_force_vkb_mode_summary_off">Използва се разпознатият тип устройство</string>
-    <string name="prefs_force_vkb_mode_summary_on">Устройството се третира само като сензорно (необходимо е рестартиране)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Устройството се третира само като сензорно</string>
     <string name="prefs_force_vkb_mode_title">Принудителен режим само за сензорен екран</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Насочване на хардуерния бутон за микрофон към гласовия асистент на системата</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Бутонът за микрофон стартира гласовия асистент</string>

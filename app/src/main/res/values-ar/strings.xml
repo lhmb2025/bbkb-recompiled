@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">خدمة إمكانية الوصول للوحات المفاتيح من جهات خارجية</string>
     <string name="settings_pkb_keyboard_helper_title">مساعد BBKB</string>
     <string name="settings_pkb_layouts_any_language">جميع لوحات المفاتيح</string>
+    <string name="settings_pkb_layouts_add">إضافة تخطيط</string>
+    <string name="settings_pkb_layouts_add_failed">تعذّرت قراءة التخطيط</string>
+    <string name="settings_pkb_layouts_added">تمت إضافة التخطيط</string>
     <string name="settings_pkb_layouts_builtin_note">تأتي هذه التخطيطات مع لوحة المفاتيح ولا يمكن تغييرها. احفظ أحدها كملف لتبدأ تخطيطًا خاصًا بك.</string>
     <string name="settings_pkb_layouts_category_builtin">مضمّنة</string>
     <string name="settings_pkb_layouts_category_custom">مخصصة</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">هل تريد حذف «%1$s»؟ لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="settings_pkb_layouts_delete_title">حذف التخطيط</string>
     <string name="settings_pkb_layouts_details">%1$s · عدد المفاتيح: %2$d</string>
-    <string name="settings_pkb_layouts_empty">لا توجد تخطيطات مخصصة بعد. استورد تخطيطًا من إعدادات متقدمة &gt; النسخ الاحتياطي والاستعادة &gt; الاستعادة من ملف.</string>
+    <string name="settings_pkb_layouts_empty">لا توجد تخطيطات مخصصة بعد. أضف واحدًا من ملف.</string>
     <string name="settings_pkb_layouts_keypad">لوحة مفاتيح %1$s</string>
     <string name="settings_pkb_layouts_none">غير مستخدم</string>
     <string name="settings_pkb_layouts_none_summary">يستخدم تخطيط لوحة المفاتيح نفسها</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">مشاركة %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">مشاركة التخطيط</string>
     <string name="settings_pkb_layouts_share_failed">تعذّرت مشاركة التخطيط</string>
-    <string name="settings_pkb_layouts_summary">تغيير الأحرف التي تكتبها المفاتيح الفعلية</string>
+    <string name="settings_pkb_layouts_summary">إضافة تخطيطات الحروف للوحة المفاتيح ومشاركتها وحذفها</string>
     <string name="settings_pkb_keypad_layout_title">تخطيط لوحة المفاتيح</string>
     <string name="settings_pkb_keypad_layout_automatic">تلقائي (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">حروف لوحة المفاتيح (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">إظهار لوحة المفاتيح على الشاشة دائمًا</string>
     <string name="settings_pkb_layouts_three_row">لوحة مفاتيح بثلاثة صفوف</string>
-    <string name="settings_pkb_layouts_title">التخطيطات الفعلية</string>
+    <string name="settings_pkb_layouts_title">تخطيطات لوحة المفاتيح المخصصة</string>
     <string name="settings_pkb_multifunction_action_clipboard">الحافظة</string>
     <string name="settings_pkb_multifunction_action_ctrl">مفتاح Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">لوحة الرموز التعبيرية</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">عرض صفحة الرموز المخصصة قبل الصفحة الافتراضية</string>
     <string name="settings_symbol_custom_page_first_title">عرض الصفحة أولاً</string>
     <string name="settings_symbol_customization_summary">تخصيص تخطيط صفحة رموز لوحة المفاتيح</string>
-    <string name="settings_symbol_customization_title">تخصيص الرموز</string>
+    <string name="settings_symbol_customization_title">صفحة الرموز المخصصة</string>
     <string name="settings_symbol_customize_page_summary">تحرير تخطيط صفحة الرموز المخصصة</string>
     <string name="settings_symbol_customize_page_title">تخصيص صفحة الرموز</string>
     <string name="settings_symbol_enable_customization_summary">عرض صفحة رموز ثالثة بمحتويات مخصصة</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">إجمالي الهزات (بأي اتجاه) للإجراء الاحتياطي</string>
     <string name="prefs_fallback_trigger_count_title">عدد هزات الإجراء الاحتياطي</string>
     <string name="prefs_force_vkb_mode_summary_off">استخدام نوع الجهاز المكتشَف</string>
-    <string name="prefs_force_vkb_mode_summary_on">يُعامل الجهاز على أنه بشاشة لمس فقط (يلزم إعادة التشغيل)</string>
+    <string name="prefs_force_vkb_mode_summary_on">يُعامل الجهاز على أنه بشاشة لمس فقط</string>
     <string name="prefs_force_vkb_mode_title">فرض وضع شاشة اللمس فقط</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">توجيه زر الميكروفون المادي إلى المساعد الصوتي للنظام</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">مفتاح الميكروفون يشغّل المساعد الصوتي</string>

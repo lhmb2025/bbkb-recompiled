@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Tilgjengelighetstjeneste for tredjeparts tastaturer</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB-hjelper</string>
     <string name="settings_pkb_layouts_any_language">Alle tastaturer</string>
+    <string name="settings_pkb_layouts_add">Legg til oppsett</string>
+    <string name="settings_pkb_layouts_add_failed">Kunne ikke lese oppsettet</string>
+    <string name="settings_pkb_layouts_added">Oppsett lagt til</string>
     <string name="settings_pkb_layouts_builtin_note">Disse følger med tastaturet og kan ikke endres. Lagre en som fil for å starte din egen layout.</string>
     <string name="settings_pkb_layouts_category_builtin">Innebygde</string>
     <string name="settings_pkb_layouts_category_custom">Egendefinerte</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Vil du slette «%1$s»? Dette kan ikke angres.</string>
     <string name="settings_pkb_layouts_delete_title">Slett layout</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d taster</string>
-    <string name="settings_pkb_layouts_empty">Ingen egendefinerte layouter ennå. Importer en via Avansert &gt; Sikkerhetskopiering og gjenoppretting &gt; Gjenopprett fra fil.</string>
+    <string name="settings_pkb_layouts_empty">Ingen egendefinerte oppsett ennå. Legg til ett fra en fil.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-tastatur</string>
     <string name="settings_pkb_layouts_none">Ikke i bruk</string>
     <string name="settings_pkb_layouts_none_summary">Bruker tastaturets egen layout</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Del %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Del layout</string>
     <string name="settings_pkb_layouts_share_failed">Kunne ikke dele layouten</string>
-    <string name="settings_pkb_layouts_summary">Endre bokstavene de fysiske tastene skriver</string>
+    <string name="settings_pkb_layouts_summary">Legg til, del og slett bokstavoppsett for tastaturet</string>
     <string name="settings_pkb_keypad_layout_title">Tastaturoppsett</string>
     <string name="settings_pkb_keypad_layout_automatic">Automatisk (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Tastaturets bokstaver (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Vis alltid skjermtastaturet</string>
     <string name="settings_pkb_layouts_three_row">tastatur med tre rader</string>
-    <string name="settings_pkb_layouts_title">Fysiske layouter</string>
+    <string name="settings_pkb_layouts_title">Egendefinerte tastaturoppsett</string>
     <string name="settings_pkb_multifunction_action_clipboard">Utklippstavle</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl-tast</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji-panel</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Vis den egendefinerte symbolsiden før standardsiden</string>
     <string name="settings_symbol_custom_page_first_title">Vis siden først</string>
     <string name="settings_symbol_customization_summary">Tilpass layouten på tastaturets symbolside</string>
-    <string name="settings_symbol_customization_title">Symboltilpasning</string>
+    <string name="settings_symbol_customization_title">Egendefinert symbolside</string>
     <string name="settings_symbol_customize_page_summary">Rediger layouten på den egendefinerte symbolsiden</string>
     <string name="settings_symbol_customize_page_title">Tilpass symbolsiden</string>
     <string name="settings_symbol_enable_customization_summary">Vis en tredje symbolside med egendefinert innhold</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Totalt antall ristinger (i alle retninger) for reservehandlingen</string>
     <string name="prefs_fallback_trigger_count_title">Antall ristinger for reservehandling</string>
     <string name="prefs_force_vkb_mode_summary_off">Bruk den oppdagede enhetstypen</string>
-    <string name="prefs_force_vkb_mode_summary_on">Enheten behandles som om den bare har berøringsskjerm (krever omstart)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Enheten behandles som om den bare har berøringsskjerm</string>
     <string name="prefs_force_vkb_mode_title">Tving modus for kun berøringsskjerm</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Send mikrofonknappen på enheten til systemets taleassistent</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Mikrofontasten utløser taleassistenten</string>

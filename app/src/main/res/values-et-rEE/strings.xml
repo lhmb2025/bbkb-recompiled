@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Juurdepääsetavuse teenus kolmandate osapoolte klaviatuuridele</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB abiline</string>
     <string name="settings_pkb_layouts_any_language">Kõik klaviatuurid</string>
+    <string name="settings_pkb_layouts_add">Lisa paigutus</string>
+    <string name="settings_pkb_layouts_add_failed">Paigutust ei õnnestunud lugeda</string>
+    <string name="settings_pkb_layouts_added">Paigutus lisatud</string>
     <string name="settings_pkb_layouts_builtin_note">Need on klaviatuuriga kaasas ja neid ei saa muuta. Oma paigutuse alustamiseks salvestage üks neist failina.</string>
     <string name="settings_pkb_layouts_category_builtin">Sisseehitatud</string>
     <string name="settings_pkb_layouts_category_custom">Kohandatud</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Kas kustutada „%1$s“? Seda ei saa tagasi võtta.</string>
     <string name="settings_pkb_layouts_delete_title">Kustuta paigutus</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d klahvi</string>
-    <string name="settings_pkb_layouts_empty">Kohandatud paigutusi veel pole. Importige üks jaotises Täpsemad &gt; Varundus ja taastamine &gt; Taasta failist.</string>
+    <string name="settings_pkb_layouts_empty">Kohandatud paigutusi pole veel. Lisa üks failist.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-klahvistik</string>
     <string name="settings_pkb_layouts_none">Pole kasutusel</string>
     <string name="settings_pkb_layouts_none_summary">Kasutab klaviatuuri enda paigutust</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Jaga %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Jaga paigutust</string>
     <string name="settings_pkb_layouts_share_failed">Paigutuse jagamine ebaõnnestus</string>
-    <string name="settings_pkb_layouts_summary">Muuda tähti, mida füüsilised klahvid sisestavad</string>
+    <string name="settings_pkb_layouts_summary">Lisa, jaga ja kustuta klaviatuuri tähepaigutusi</string>
     <string name="settings_pkb_keypad_layout_title">Klahvistiku paigutus</string>
     <string name="settings_pkb_keypad_layout_automatic">Automaatne (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Klahvistiku tähed (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Kuva ekraaniklaviatuur alati</string>
     <string name="settings_pkb_layouts_three_row">kolmerealine klahvistik</string>
-    <string name="settings_pkb_layouts_title">Füüsilised paigutused</string>
+    <string name="settings_pkb_layouts_title">Kohandatud klaviatuuripaigutused</string>
     <string name="settings_pkb_multifunction_action_clipboard">Lõikelaud</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl-klahv</string>
     <string name="settings_pkb_multifunction_action_emoji">Emotikonide paneel</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Kuva kohandatud sümbolileht enne vaikelehte</string>
     <string name="settings_symbol_custom_page_first_title">Kuva leht esimesena</string>
     <string name="settings_symbol_customization_summary">Kohanda klaviatuuri sümbolilehe paigutust</string>
-    <string name="settings_symbol_customization_title">Sümbolite kohandamine</string>
+    <string name="settings_symbol_customization_title">Kohandatud sümbolileht</string>
     <string name="settings_symbol_customize_page_summary">Muuda kohandatud sümbolilehe paigutust</string>
     <string name="settings_symbol_customize_page_title">Kohanda sümbolilehte</string>
     <string name="settings_symbol_enable_customization_summary">Kuva kolmas sümbolileht kohandatud sisuga</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Raputuste koguarv (mis tahes suunas) varutoimingu jaoks</string>
     <string name="prefs_fallback_trigger_count_title">Varutoimingu raputuste arv</string>
     <string name="prefs_force_vkb_mode_summary_off">Kasuta tuvastatud seadmetüüpi</string>
-    <string name="prefs_force_vkb_mode_summary_on">Seadet käsitletakse ainult puuteekraaniga seadmena (vajab taaskäivitust)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Seadet käsitletakse ainult puuteekraaniga seadmena</string>
     <string name="prefs_force_vkb_mode_title">Sunni ainult puuteekraani režiim</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Suuna riistvaraline mikrofoninupp süsteemi hääleassistendile</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Mikrofoniklahv käivitab hääleassistendi</string>

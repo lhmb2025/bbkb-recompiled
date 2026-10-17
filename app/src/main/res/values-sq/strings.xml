@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Shërbim qasshmërie për tastierat e palëve të treta</string>
     <string name="settings_pkb_keyboard_helper_title">Ndihmësi i BBKB</string>
     <string name="settings_pkb_layouts_any_language">Të gjitha tastierat</string>
+    <string name="settings_pkb_layouts_add">Shto skemë</string>
+    <string name="settings_pkb_layouts_add_failed">Skema nuk mund të lexohej</string>
+    <string name="settings_pkb_layouts_added">Skema u shtua</string>
     <string name="settings_pkb_layouts_builtin_note">Këto vijnë me tastierën dhe nuk mund të ndryshohen. Ruaj një si skedar për të nisur një paraqitje tënden.</string>
     <string name="settings_pkb_layouts_category_builtin">Të integruara</string>
     <string name="settings_pkb_layouts_category_custom">Të personalizuara</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Të fshihet “%1$s”? Ky veprim nuk mund të zhbëhet.</string>
     <string name="settings_pkb_layouts_delete_title">Fshi paraqitjen</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d taste</string>
-    <string name="settings_pkb_layouts_empty">Ende nuk ka paraqitje të personalizuara. Importo një te Të përparuara &gt; Rezervimi dhe restaurimi &gt; Restauro nga skedari.</string>
+    <string name="settings_pkb_layouts_empty">Ende nuk ka skema të personalizuara. Shto një nga një skedar.</string>
     <string name="settings_pkb_layouts_keypad">tastierë %1$s</string>
     <string name="settings_pkb_layouts_none">Nuk përdoret</string>
     <string name="settings_pkb_layouts_none_summary">Përdor paraqitjen e vetë tastierës</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Shpërnda %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Shpërnda paraqitjen</string>
     <string name="settings_pkb_layouts_share_failed">Paraqitja nuk u shpërnda dot</string>
-    <string name="settings_pkb_layouts_summary">Ndrysho shkronjat që shkruajnë tastet fizike</string>
+    <string name="settings_pkb_layouts_summary">Shto, ndaj dhe fshi skema shkronjash për tastierën</string>
     <string name="settings_pkb_keypad_layout_title">Skema e tastierës</string>
     <string name="settings_pkb_keypad_layout_automatic">Automatike (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Shkronjat e tastierës (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Shfaq gjithmonë tastierën në ekran</string>
     <string name="settings_pkb_layouts_three_row">tastierë me tre rreshta</string>
-    <string name="settings_pkb_layouts_title">Paraqitjet fizike</string>
+    <string name="settings_pkb_layouts_title">Skema të personalizuara tastiere</string>
     <string name="settings_pkb_multifunction_action_clipboard">Kujtesa e fragmenteve</string>
     <string name="settings_pkb_multifunction_action_ctrl">Tasti Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Tabela e emoji-ve</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Shfaq faqen e personalizuar të simboleve para asaj të parazgjedhur</string>
     <string name="settings_symbol_custom_page_first_title">Shfaqe faqen të parën</string>
     <string name="settings_symbol_customization_summary">Përshtat paraqitjen e faqes së simboleve të tastierës</string>
-    <string name="settings_symbol_customization_title">Personalizimi i simboleve</string>
+    <string name="settings_symbol_customization_title">Faqe e personalizuar simbolesh</string>
     <string name="settings_symbol_customize_page_summary">Redakto paraqitjen e faqes së personalizuar të simboleve</string>
     <string name="settings_symbol_customize_page_title">Përshtat faqen e simboleve</string>
     <string name="settings_symbol_enable_customization_summary">Shfaq një faqe të tretë simbolesh me përmbajtje të personalizuar</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Tundjet gjithsej (në çdo drejtim) për veprimin rezervë</string>
     <string name="prefs_fallback_trigger_count_title">Numri i tundjeve për veprimin rezervë</string>
     <string name="prefs_force_vkb_mode_summary_off">Përdor llojin e zbuluar të pajisjes</string>
-    <string name="prefs_force_vkb_mode_summary_on">Pajisja trajtohet si vetëm me ekran prekës (kërkohet rinisje)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Pajisja trajtohet si vetëm me ekran prekës</string>
     <string name="prefs_force_vkb_mode_title">Detyro modalitetin vetëm me ekran prekës</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Drejtoje butonin fizik të mikrofonit te asistenti zanor i sistemit</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Tasti i mikrofonit hap asistentin zanor</string>

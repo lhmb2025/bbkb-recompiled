@@ -1,6 +1,7 @@
 package dev.bbkb.ime.core.settings.screens
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.GridOn
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.KeyboardCapslock
 import androidx.compose.material.icons.filled.PhoneAndroid
@@ -10,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import dev.bbkb.ime.core.device.interceptor.KeyInterceptorComponent
+import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.ManagedToggle
 import dev.bbkb.ime.core.settings.ui.Nav
@@ -21,8 +23,9 @@ import dev.bbkb.ime.R
 
 /**
  * Device Compatibility Screen
- * Configuration loader, device meta state override, the BBKB helper and the Touch surface helper.
- * The BBKB helper is greyed out where the profile says the phone never needs it.
+ * Configuration loader, device meta state override, the BBKB helper, the custom keypad layouts
+ * and the Touch surface helper. The BBKB helper is greyed out where the profile says the phone
+ * never needs it; the layouts are offered only where there is a keypad to lay out.
  * The last is shown on every phone and enabled only where the profile declares a touch surface
  * over the keys, like the other rows that depend on what the device has.
  * Accessed from Advanced settings.
@@ -33,7 +36,9 @@ fun DeviceCompatibilityScreen(
     onNavigateToKeyboardHelper: () -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToTouchSurfaceHelper: () -> Unit = {},
+    onNavigateToPhysicalLayouts: () -> Unit = {},
 ) {
+    val hasPhysicalKeyboard = remember { DeviceProfile.current()?.hasPhysicalKeyboard() ?: false }
     // This one key is declared in strings.xml rather than inline, and is read back through the
     // same resource by SettingsValues — so it is resolved here rather than re-spelled.
     val metaStateKey = LocalContext.current.getString(R.string.pref_override_device_meta_state_key)
@@ -57,6 +62,16 @@ fun DeviceCompatibilityScreen(
             title = R.string.pref_override_device_meta_state,
             summary = RowSummary.Res(R.string.pref_override_device_meta_state_summary),
             icon = Icons.Default.KeyboardCapslock.asRowIcon(),
+        ),
+        // The user's letter layouts for the physical keys (an etched Thai keypad, a layout of
+        // one's own): added from a file, shared, deleted; which keyboard uses one is chosen on
+        // the Language screen. Only a phone with a keypad has keys to lay out.
+        Nav(
+            title = R.string.settings_pkb_layouts_title,
+            summary = R.string.settings_pkb_layouts_summary,
+            icon = Icons.Default.GridOn.asRowIcon(),
+            visible = { hasPhysicalKeyboard },
+            onClick = { onNavigateToPhysicalLayouts() },
         ),
         Nav(
             title = R.string.settings_pkb_keyboard_helper_title,

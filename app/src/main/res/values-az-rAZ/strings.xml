@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Üçüncü tərəf klaviaturaları üçün əlçatanlıq xidməti</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB köməkçisi</string>
     <string name="settings_pkb_layouts_any_language">Bütün klaviaturalar</string>
+    <string name="settings_pkb_layouts_add">Düzən əlavə et</string>
+    <string name="settings_pkb_layouts_add_failed">Düzən oxuna bilmədi</string>
+    <string name="settings_pkb_layouts_added">Düzən əlavə edildi</string>
     <string name="settings_pkb_layouts_builtin_note">Bunlar klaviatura ilə birlikdə gəlir və dəyişdirilə bilməz. Öz düzümünüzü başlatmaq üçün birini fayl kimi yadda saxlayın.</string>
     <string name="settings_pkb_layouts_category_builtin">Daxili</string>
     <string name="settings_pkb_layouts_category_custom">Fərdi</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">«%1$s» silinsin? Bu əməliyyatı geri qaytarmaq olmaz.</string>
     <string name="settings_pkb_layouts_delete_title">Düzümü silin</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d düymə</string>
-    <string name="settings_pkb_layouts_empty">Hələ fərdi düzüm yoxdur. Qabaqcıl &gt; Ehtiyat nüsxə və bərpa &gt; Fayldan bərpa edin bölməsindən birini idxal edin.</string>
+    <string name="settings_pkb_layouts_empty">Hələ fərdi düzən yoxdur. Fayldan birini əlavə edin.</string>
     <string name="settings_pkb_layouts_keypad">%1$s klaviaturası</string>
     <string name="settings_pkb_layouts_none">İstifadə olunmur</string>
     <string name="settings_pkb_layouts_none_summary">Klaviaturanın öz düzümündən istifadə edir</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Paylaş: %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Düzümü paylaşın</string>
     <string name="settings_pkb_layouts_share_failed">Düzümü paylaşmaq alınmadı</string>
-    <string name="settings_pkb_layouts_summary">Fiziki düymələrin yazdığı hərfləri dəyişin</string>
+    <string name="settings_pkb_layouts_summary">Klaviatura üçün hərf düzənlərini əlavə edin, paylaşın və silin</string>
     <string name="settings_pkb_keypad_layout_title">Klaviatura düzümü</string>
     <string name="settings_pkb_keypad_layout_automatic">Avtomatik (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Klaviatura hərfləri (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Ekran klaviaturasını həmişə göstər</string>
     <string name="settings_pkb_layouts_three_row">üç sıralı klaviatura</string>
-    <string name="settings_pkb_layouts_title">Fiziki düzümlər</string>
+    <string name="settings_pkb_layouts_title">Fərdi klaviatura düzənləri</string>
     <string name="settings_pkb_multifunction_action_clipboard">Mübadilə buferi</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl klavişi</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji paneli</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Fərdi simvol səhifəsini varsayılan səhifədən əvvəl göstərin</string>
     <string name="settings_symbol_custom_page_first_title">Səhifəni birinci göstərin</string>
     <string name="settings_symbol_customization_summary">Klaviaturanın simvol səhifəsi düzümünü fərdiləşdirin</string>
-    <string name="settings_symbol_customization_title">Simvol fərdiləşdirməsi</string>
+    <string name="settings_symbol_customization_title">Fərdi simvol səhifəsi</string>
     <string name="settings_symbol_customize_page_summary">Fərdi simvol səhifəsi düzümünü redaktə edin</string>
     <string name="settings_symbol_customize_page_title">Simvol səhifəsini fərdiləşdirin</string>
     <string name="settings_symbol_enable_customization_summary">Fərdi məzmunlu üçüncü simvol səhifəsini göstərin</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Ehtiyat əməliyyat üçün ümumi silkələmə sayı (istənilən istiqamətdə)</string>
     <string name="prefs_fallback_trigger_count_title">Ehtiyat tətik sayı</string>
     <string name="prefs_force_vkb_mode_summary_off">Aşkarlanmış cihaz tipindən istifadə edin</string>
-    <string name="prefs_force_vkb_mode_summary_on">Cihaz yalnız sensor ekranlı kimi qəbul olunur (yenidən başlatma tələb olunur)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Cihaz yalnız sensor ekranlı kimi qəbul olunur</string>
     <string name="prefs_force_vkb_mode_title">Yalnız sensor ekran rejimini məcburi edin</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Aparat mikrofon düyməsini sistemin səs köməkçisinə yönləndirin</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Mikrofon klavişi səs köməkçisini işə salır</string>

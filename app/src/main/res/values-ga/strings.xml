@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Seirbhís inrochtaineachta do mhéarchláir tríú páirtí</string>
     <string name="settings_pkb_keyboard_helper_title">Cúntóir BBKB</string>
     <string name="settings_pkb_layouts_any_language">Gach méarchlár</string>
+    <string name="settings_pkb_layouts_add">Cuir leagan amach leis</string>
+    <string name="settings_pkb_layouts_add_failed">Níorbh fhéidir an leagan amach a léamh</string>
+    <string name="settings_pkb_layouts_added">Cuireadh an leagan amach leis</string>
     <string name="settings_pkb_layouts_builtin_note">Tagann siad seo leis an méarchlár agus ní féidir iad a athrú. Sábháil ceann mar chomhad chun do leagan amach féin a thosú.</string>
     <string name="settings_pkb_layouts_category_builtin">Ionsuite</string>
     <string name="settings_pkb_layouts_category_custom">Saincheaptha</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s” a scriosadh? Ní féidir é seo a chealú.</string>
     <string name="settings_pkb_layouts_delete_title">Scrios an leagan amach</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d eochair</string>
-    <string name="settings_pkb_layouts_empty">Níl aon leagan amach saincheaptha ann fós. Iompórtáil ceann le Ardsocruithe &gt; Cúltaca agus athchóiriú &gt; Athchóirigh ó chomhad.</string>
+    <string name="settings_pkb_layouts_empty">Níl aon leagan amach saincheaptha fós. Cuir ceann leis ó chomhad.</string>
     <string name="settings_pkb_layouts_keypad">eochaircheap %1$s</string>
     <string name="settings_pkb_layouts_none">Gan úsáid</string>
     <string name="settings_pkb_layouts_none_summary">Úsáideann sé leagan amach an mhéarchláir féin</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Comhroinn %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Comhroinn an leagan amach</string>
     <string name="settings_pkb_layouts_share_failed">Níorbh fhéidir an leagan amach a chomhroinnt</string>
-    <string name="settings_pkb_layouts_summary">Athraigh na litreacha a chlóscríobhann na heochracha fisiciúla</string>
+    <string name="settings_pkb_layouts_summary">Cuir leaganacha amach litreacha leis an méarchlár, roinn iad agus scrios iad</string>
     <string name="settings_pkb_keypad_layout_title">Leagan amach an eochairchláir</string>
     <string name="settings_pkb_keypad_layout_automatic">Uathoibríoch (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Litreacha an eochairchláir (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Taispeáin an méarchlár ar an scáileán i gcónaí</string>
     <string name="settings_pkb_layouts_three_row">eochaircheap trí shraith</string>
-    <string name="settings_pkb_layouts_title">Leaganacha amach fisiciúla</string>
+    <string name="settings_pkb_layouts_title">Leaganacha amach saincheaptha an mhéarchláir</string>
     <string name="settings_pkb_multifunction_action_clipboard">Gearrthaisce</string>
     <string name="settings_pkb_multifunction_action_ctrl">Eochair Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Clár emoji</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Taispeáin an leathanach siombailí saincheaptha roimh an leathanach réamhshocraithe</string>
     <string name="settings_symbol_custom_page_first_title">Taispeáin an leathanach ar dtús</string>
     <string name="settings_symbol_customization_summary">Saincheap leagan amach leathanach siombailí an mhéarchláir</string>
-    <string name="settings_symbol_customization_title">Saincheapadh siombailí</string>
+    <string name="settings_symbol_customization_title">Leathanach siombailí saincheaptha</string>
     <string name="settings_symbol_customize_page_summary">Cuir leagan amach an leathanaigh shiombailí shaincheaptha in eagar</string>
     <string name="settings_symbol_customize_page_title">Saincheap an leathanach siombailí</string>
     <string name="settings_symbol_enable_customization_summary">Taispeáin tríú leathanach siombailí le hábhar saincheaptha</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Líon iomlán na gcroití (in aon treo) don ghníomh cúltaca</string>
     <string name="prefs_fallback_trigger_count_title">Líon croití don ghníomh cúltaca</string>
     <string name="prefs_force_vkb_mode_summary_off">Úsáid an cineál gléis a braitheadh</string>
-    <string name="prefs_force_vkb_mode_summary_on">Caitear leis an ngléas mar ghléas scáileáin tadhaill amháin (atosú de dhíth)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Caitear leis an ngléas mar ghléas scáileáin tadhaill amháin</string>
     <string name="prefs_force_vkb_mode_title">Éiligh mód scáileáin tadhaill amháin</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Seol cnaipe micreafóin na gcrua-earraí chuig cúntóir gutha an chórais</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Osclaíonn eochair an mhicreafóin an cúntóir gutha</string>

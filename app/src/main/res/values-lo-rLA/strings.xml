@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">ບໍລິການການເຂົ້າເຖິງສຳລັບແປ້ນພິມຈາກພາກສ່ວນທີສາມ</string>
     <string name="settings_pkb_keyboard_helper_title">ຕົວຊ່ວຍ BBKB</string>
     <string name="settings_pkb_layouts_any_language">ແປ້ນພິມທັງໝົດ</string>
+    <string name="settings_pkb_layouts_add">ເພີ່ມຮູບແບບ</string>
+    <string name="settings_pkb_layouts_add_failed">ບໍ່ສາມາດອ່ານຮູບແບບໄດ້</string>
+    <string name="settings_pkb_layouts_added">ເພີ່ມຮູບແບບແລ້ວ</string>
     <string name="settings_pkb_layouts_builtin_note">ຮູບແບບເຫຼົ່ານີ້ມາພ້ອມກັບແປ້ນພິມ ແລະ ປ່ຽນແປງບໍ່ໄດ້. ບັນທຶກອັນໜຶ່ງເປັນໄຟລ໌ ເພື່ອເລີ່ມຮູບແບບຂອງທ່ານເອງ.</string>
     <string name="settings_pkb_layouts_category_builtin">ມີມາໃຫ້</string>
     <string name="settings_pkb_layouts_category_custom">ກຳນົດເອງ</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">ລຶບ “%1$s” ບໍ? ການກະທຳນີ້ບໍ່ສາມາດຍົກເລີກໄດ້.</string>
     <string name="settings_pkb_layouts_delete_title">ລຶບຮູບແບບ</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d ປຸ່ມ</string>
-    <string name="settings_pkb_layouts_empty">ຍັງບໍ່ມີຮູບແບບທີ່ກຳນົດເອງ. ນຳເຂົ້າໄດ້ທີ່ ຂັ້ນສູງ &gt; ສຳຮອງ ແລະ ກູ້ຄືນ &gt; ກູ້ຄືນຈາກໄຟລ໌.</string>
+    <string name="settings_pkb_layouts_empty">ຍັງບໍ່ມີຮູບແບບແບບກຳນົດເອງ. ເພີ່ມອັນໜຶ່ງຈາກໄຟລ໌.</string>
     <string name="settings_pkb_layouts_keypad">ແປ້ນພິມ %1$s</string>
     <string name="settings_pkb_layouts_none">ບໍ່ໄດ້ໃຊ້</string>
     <string name="settings_pkb_layouts_none_summary">ໃຊ້ຮູບແບບຂອງແປ້ນພິມເອງ</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">ແບ່ງປັນ %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">ແບ່ງປັນຮູບແບບ</string>
     <string name="settings_pkb_layouts_share_failed">ແບ່ງປັນຮູບແບບບໍ່ໄດ້</string>
-    <string name="settings_pkb_layouts_summary">ປ່ຽນຕົວອັກສອນທີ່ປຸ່ມແທ້ພິມອອກມາ</string>
+    <string name="settings_pkb_layouts_summary">ເພີ່ມ, ແບ່ງປັນ ແລະ ລຶບຮູບແບບຕົວອັກສອນສຳລັບແປ້ນພິມ</string>
     <string name="settings_pkb_keypad_layout_title">ຮູບແບບແປ້ນພິມ</string>
     <string name="settings_pkb_keypad_layout_automatic">ອັດຕະໂນມັດ (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">ຕົວອັກສອນແປ້ນພິມ (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">ສະແດງແປ້ນພິມໃນໜ້າຈໍສະເໝີ</string>
     <string name="settings_pkb_layouts_three_row">ແປ້ນພິມສາມແຖວ</string>
-    <string name="settings_pkb_layouts_title">ຮູບແບບແປ້ນພິມແທ້</string>
+    <string name="settings_pkb_layouts_title">ຮູບແບບແປ້ນພິມແບບກຳນົດເອງ</string>
     <string name="settings_pkb_multifunction_action_clipboard">ຄລິບບອດ</string>
     <string name="settings_pkb_multifunction_action_ctrl">ປຸ່ມ Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">ກະດານອີໂມຈິ</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">ສະແດງໜ້າສັນຍາລັກທີ່ປັບແຕ່ງກ່ອນໜ້າເລີ່ມຕົ້ນ</string>
     <string name="settings_symbol_custom_page_first_title">ສະແດງໜ້ານີ້ກ່ອນ</string>
     <string name="settings_symbol_customization_summary">ປັບແຕ່ງຮູບແບບໜ້າສັນຍາລັກຂອງແປ້ນພິມ</string>
-    <string name="settings_symbol_customization_title">ການປັບແຕ່ງສັນຍາລັກ</string>
+    <string name="settings_symbol_customization_title">ໜ້າສັນຍາລັກແບບກຳນົດເອງ</string>
     <string name="settings_symbol_customize_page_summary">ແກ້ໄຂຮູບແບບໜ້າສັນຍາລັກທີ່ປັບແຕ່ງ</string>
     <string name="settings_symbol_customize_page_title">ປັບແຕ່ງໜ້າສັນຍາລັກ</string>
     <string name="settings_symbol_enable_customization_summary">ສະແດງໜ້າສັນຍາລັກທີສາມພ້ອມເນື້ອຫາທີ່ປັບແຕ່ງ</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">ຈຳນວນການເຂຍ່າທັງໝົດ (ທິດທາງໃດກໍໄດ້) ສຳລັບການເຮັດວຽກສຳຮອງ</string>
     <string name="prefs_fallback_trigger_count_title">ຈຳນວນຄັ້ງທີ່ກະຕຸ້ນການເຮັດວຽກສຳຮອງ</string>
     <string name="prefs_force_vkb_mode_summary_off">ໃຊ້ປະເພດອຸປະກອນທີ່ກວດພົບ</string>
-    <string name="prefs_force_vkb_mode_summary_on">ຖືວ່າອຸປະກອນເປັນແບບໜ້າຈໍສຳຜັດເທົ່ານັ້ນ (ຕ້ອງເລີ່ມໃໝ່)</string>
+    <string name="prefs_force_vkb_mode_summary_on">ຖືວ່າອຸປະກອນເປັນແບບໜ້າຈໍສຳຜັດເທົ່ານັ້ນ</string>
     <string name="prefs_force_vkb_mode_title">ບັງຄັບໂໝດໜ້າຈໍສຳຜັດເທົ່ານັ້ນ</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">ສົ່ງປຸ່ມໄມໂຄຣໂຟນຮາດແວໄປຫາຜູ້ຊ່ວຍສຽງຂອງລະບົບ</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">ປຸ່ມໄມໂຄຣໂຟນເປີດຜູ້ຊ່ວຍສຽງ</string>

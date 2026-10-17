@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Služba přístupnosti pro klávesnice třetích stran</string>
     <string name="settings_pkb_keyboard_helper_title">Pomocník BBKB</string>
     <string name="settings_pkb_layouts_any_language">Všechny klávesnice</string>
+    <string name="settings_pkb_layouts_add">Přidat rozložení</string>
+    <string name="settings_pkb_layouts_add_failed">Rozložení se nepodařilo načíst</string>
+    <string name="settings_pkb_layouts_added">Rozložení přidáno</string>
     <string name="settings_pkb_layouts_builtin_note">Tato rozložení jsou součástí klávesnice a nelze je měnit. Uložte si některé jako soubor a začněte z něj vlastní rozložení.</string>
     <string name="settings_pkb_layouts_category_builtin">Vestavěná</string>
     <string name="settings_pkb_layouts_category_custom">Vlastní</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Smazat „%1$s“? Tuto akci nelze vrátit zpět.</string>
     <string name="settings_pkb_layouts_delete_title">Smazat rozložení</string>
     <string name="settings_pkb_layouts_details">%1$s · kláves: %2$d</string>
-    <string name="settings_pkb_layouts_empty">Zatím nemáte žádná vlastní rozložení. Importujte je v části Pokročilé &gt; Zálohování a obnovení &gt; Obnovit ze souboru.</string>
+    <string name="settings_pkb_layouts_empty">Zatím žádná vlastní rozložení. Přidejte jedno ze souboru.</string>
     <string name="settings_pkb_layouts_keypad">klávesnice %1$s</string>
     <string name="settings_pkb_layouts_none">Nepoužívá se</string>
     <string name="settings_pkb_layouts_none_summary">Používá vlastní rozložení klávesnice</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Sdílet %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Sdílet rozložení</string>
     <string name="settings_pkb_layouts_share_failed">Rozložení se nepodařilo sdílet</string>
-    <string name="settings_pkb_layouts_summary">Změnit písmena, která píší fyzické klávesy</string>
+    <string name="settings_pkb_layouts_summary">Přidávejte, sdílejte a mažte rozložení písmen pro klávesnici</string>
     <string name="settings_pkb_keypad_layout_title">Rozložení klávesnice</string>
     <string name="settings_pkb_keypad_layout_automatic">Automaticky (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Písmena klávesnice (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Vždy zobrazovat klávesnici na obrazovce</string>
     <string name="settings_pkb_layouts_three_row">třířádková klávesnice</string>
-    <string name="settings_pkb_layouts_title">Fyzická rozložení</string>
+    <string name="settings_pkb_layouts_title">Vlastní rozložení klávesnice</string>
     <string name="settings_pkb_multifunction_action_clipboard">Schránka</string>
     <string name="settings_pkb_multifunction_action_ctrl">Klávesa Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Panel emodži</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Zobrazovat vlastní stránku symbolů před výchozí stránkou</string>
     <string name="settings_symbol_custom_page_first_title">Zobrazit stránku jako první</string>
     <string name="settings_symbol_customization_summary">Přizpůsobit rozložení stránky se symboly</string>
-    <string name="settings_symbol_customization_title">Přizpůsobení symbolů</string>
+    <string name="settings_symbol_customization_title">Vlastní stránka symbolů</string>
     <string name="settings_symbol_customize_page_summary">Upravit rozložení vlastní stránky se symboly</string>
     <string name="settings_symbol_customize_page_title">Přizpůsobit stránku se symboly</string>
     <string name="settings_symbol_enable_customization_summary">Zobrazovat třetí stránku symbolů s vlastním obsahem</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Celkový počet zatřesení (v libovolném směru) pro záložní akci</string>
     <string name="prefs_fallback_trigger_count_title">Počet zatřesení pro záložní akci</string>
     <string name="prefs_force_vkb_mode_summary_off">Používat zjištěný typ zařízení</string>
-    <string name="prefs_force_vkb_mode_summary_on">Zařízení považováno pouze za dotykové (vyžaduje restart)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Zařízení považováno pouze za dotykové</string>
     <string name="prefs_force_vkb_mode_title">Vynutit pouze dotykový režim</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Směrovat hardwarové tlačítko mikrofonu na hlasového asistenta systému</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Klávesa mikrofonu spouští hlasového asistenta</string>

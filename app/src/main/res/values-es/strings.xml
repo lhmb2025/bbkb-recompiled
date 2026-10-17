@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Servicio de accesibilidad para teclados de terceros</string>
     <string name="settings_pkb_keyboard_helper_title">Asistente de BBKB</string>
     <string name="settings_pkb_layouts_any_language">Todos los teclados</string>
+    <string name="settings_pkb_layouts_add">Añadir distribución</string>
+    <string name="settings_pkb_layouts_add_failed">No se pudo leer la distribución</string>
+    <string name="settings_pkb_layouts_added">Distribución añadida</string>
     <string name="settings_pkb_layouts_builtin_note">Vienen con el teclado y no se pueden cambiar. Guarda una como archivo para empezar una distribución propia.</string>
     <string name="settings_pkb_layouts_category_builtin">Integradas</string>
     <string name="settings_pkb_layouts_category_custom">Personalizadas</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">¿Eliminar «%1$s»? Esta acción no se puede deshacer.</string>
     <string name="settings_pkb_layouts_delete_title">Eliminar distribución</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d teclas</string>
-    <string name="settings_pkb_layouts_empty">Aún no hay distribuciones personalizadas. Importa una en Avanzado &gt; Copia de seguridad y restauración &gt; Restaurar desde archivo.</string>
+    <string name="settings_pkb_layouts_empty">Aún no hay distribuciones personalizadas. Añade una desde un archivo.</string>
     <string name="settings_pkb_layouts_keypad">teclado %1$s</string>
     <string name="settings_pkb_layouts_none">Sin usar</string>
     <string name="settings_pkb_layouts_none_summary">Usa la distribución propia del teclado</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Compartir %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Compartir distribución</string>
     <string name="settings_pkb_layouts_share_failed">No se ha podido compartir la distribución</string>
-    <string name="settings_pkb_layouts_summary">Cambiar las letras que escriben las teclas físicas</string>
+    <string name="settings_pkb_layouts_summary">Añade, comparte y elimina distribuciones de letras para el teclado</string>
     <string name="settings_pkb_keypad_layout_title">Distribución del teclado</string>
     <string name="settings_pkb_keypad_layout_automatic">Automática (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Letras del teclado (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Mostrar siempre el teclado en pantalla</string>
     <string name="settings_pkb_layouts_three_row">teclado de tres filas</string>
-    <string name="settings_pkb_layouts_title">Distribuciones físicas</string>
+    <string name="settings_pkb_layouts_title">Distribuciones de teclado personalizadas</string>
     <string name="settings_pkb_multifunction_action_clipboard">Portapapeles</string>
     <string name="settings_pkb_multifunction_action_ctrl">Tecla Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Panel de emojis</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Muestra la página de símbolos personalizada antes que la predeterminada</string>
     <string name="settings_symbol_custom_page_first_title">Mostrar esta página primero</string>
     <string name="settings_symbol_customization_summary">Personaliza el diseño de la página de símbolos del teclado</string>
-    <string name="settings_symbol_customization_title">Personalización de símbolos</string>
+    <string name="settings_symbol_customization_title">Página de símbolos personalizada</string>
     <string name="settings_symbol_customize_page_summary">Edita el diseño de la página de símbolos personalizada</string>
     <string name="settings_symbol_customize_page_title">Personalizar la página de símbolos</string>
     <string name="settings_symbol_enable_customization_summary">Muestra una tercera página de símbolos con contenido personalizado</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Total de sacudidas (en cualquier dirección) para la acción alternativa</string>
     <string name="prefs_fallback_trigger_count_title">Número de sacudidas para la acción alternativa</string>
     <string name="prefs_force_vkb_mode_summary_off">Usa el tipo de dispositivo detectado</string>
-    <string name="prefs_force_vkb_mode_summary_on">El dispositivo se trata como si solo tuviera pantalla táctil (requiere reiniciar)</string>
+    <string name="prefs_force_vkb_mode_summary_on">El dispositivo se trata como si solo tuviera pantalla táctil</string>
     <string name="prefs_force_vkb_mode_title">Forzar el modo solo pantalla táctil</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Envía el botón físico del micrófono al asistente de voz del sistema</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">La tecla del micrófono activa el asistente de voz</string>

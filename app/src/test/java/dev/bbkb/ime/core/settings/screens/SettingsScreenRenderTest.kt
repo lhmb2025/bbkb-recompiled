@@ -1165,9 +1165,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
         Case(
             name = "PhysicalLayoutsScreen",
             route = SettingsRoute.PhysicalLayouts.route,
-            title = "Physical layouts",
+            title = "Custom keypad layouts",
             resources = setOf(
-                "settings_pkb_layouts_title",
+                "settings_pkb_layouts_title", "settings_pkb_layouts_add",
                 // The Custom header, upper-cased as every category is; "CUSTOM" is also the symbol
                 // list's category title, the first resource name carrying that value.
                 "symbol_list_category_custom_title",
@@ -1274,7 +1274,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         Case(
             name = "SymbolCustomizationScreen",
             route = SettingsRoute.SymbolCustomization.route,
-            title = "Symbol customization",
+            title = "Custom symbol page",
             resources = setOf(
                 "settings_default_currency_title", "settings_symbol_custom_page_first_summary",
                 "settings_symbol_custom_page_first_title", "settings_symbol_customization_title",

@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Pieejamības pakalpojums trešo pušu tastatūrām</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB palīgs</string>
     <string name="settings_pkb_layouts_any_language">Visas tastatūras</string>
+    <string name="settings_pkb_layouts_add">Pievienot izkārtojumu</string>
+    <string name="settings_pkb_layouts_add_failed">Neizdevās nolasīt izkārtojumu</string>
+    <string name="settings_pkb_layouts_added">Izkārtojums pievienots</string>
     <string name="settings_pkb_layouts_builtin_note">Tie ir iekļauti tastatūrā, un tos nevar mainīt. Saglabājiet kādu kā failu, lai sāktu veidot savu izkārtojumu.</string>
     <string name="settings_pkb_layouts_category_builtin">Iebūvēti</string>
     <string name="settings_pkb_layouts_category_custom">Pielāgoti</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Vai dzēst „%1$s“? Šo darbību nevar atsaukt.</string>
     <string name="settings_pkb_layouts_delete_title">Dzēst izkārtojumu</string>
     <string name="settings_pkb_layouts_details">%1$s · taustiņi: %2$d</string>
-    <string name="settings_pkb_layouts_empty">Pielāgotu izkārtojumu vēl nav. Importējiet tos sadaļā Papildu &gt; Dublēšana un atjaunošana &gt; Atjaunot no faila.</string>
+    <string name="settings_pkb_layouts_empty">Pielāgotu izkārtojumu vēl nav. Pievienojiet vienu no faila.</string>
     <string name="settings_pkb_layouts_keypad">%1$s tastatūra</string>
     <string name="settings_pkb_layouts_none">Netiek izmantots</string>
     <string name="settings_pkb_layouts_none_summary">Izmanto pašas tastatūras izkārtojumu</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Kopīgot %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Kopīgot izkārtojumu</string>
     <string name="settings_pkb_layouts_share_failed">Neizdevās kopīgot izkārtojumu</string>
-    <string name="settings_pkb_layouts_summary">Mainīt burtus, ko raksta fiziskie taustiņi</string>
+    <string name="settings_pkb_layouts_summary">Pievienojiet, kopīgojiet un dzēsiet tastatūras burtu izkārtojumus</string>
     <string name="settings_pkb_keypad_layout_title">Tastatūras izkārtojums</string>
     <string name="settings_pkb_keypad_layout_automatic">Automātiski (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Tastatūras burti (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Vienmēr rādīt ekrāna tastatūru</string>
     <string name="settings_pkb_layouts_three_row">trīsrindu tastatūra</string>
-    <string name="settings_pkb_layouts_title">Fiziskie izkārtojumi</string>
+    <string name="settings_pkb_layouts_title">Pielāgoti tastatūras izkārtojumi</string>
     <string name="settings_pkb_multifunction_action_clipboard">Starpliktuve</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl taustiņš</string>
     <string name="settings_pkb_multifunction_action_emoji">Emocijzīmju panelis</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Rādīt pielāgoto simbolu lapu pirms noklusējuma lapas</string>
     <string name="settings_symbol_custom_page_first_title">Rādīt lapu pirmo</string>
     <string name="settings_symbol_customization_summary">Pielāgot tastatūras simbolu lapas izkārtojumu</string>
-    <string name="settings_symbol_customization_title">Simbolu pielāgošana</string>
+    <string name="settings_symbol_customization_title">Pielāgota simbolu lapa</string>
     <string name="settings_symbol_customize_page_summary">Rediģēt pielāgotās simbolu lapas izkārtojumu</string>
     <string name="settings_symbol_customize_page_title">Pielāgot simbolu lapu</string>
     <string name="settings_symbol_enable_customization_summary">Rādīt trešo simbolu lapu ar pielāgotu saturu</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Kopējais kratīšanas reižu skaits (jebkurā virzienā) rezerves darbībai</string>
     <string name="prefs_fallback_trigger_count_title">Rezerves darbības izraisīšanas skaits</string>
     <string name="prefs_force_vkb_mode_summary_off">Izmantot noteikto ierīces tipu</string>
-    <string name="prefs_force_vkb_mode_summary_on">Ierīce tiek uzskatīta tikai par skārienekrāna ierīci (nepieciešama restartēšana)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Ierīce tiek uzskatīta tikai par skārienekrāna ierīci</string>
     <string name="prefs_force_vkb_mode_title">Piespiedu tikai skārienekrāna režīms</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Novirzīt aparatūras mikrofona pogu uz sistēmas balss asistentu</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Mikrofona taustiņš izsauc balss asistentu</string>

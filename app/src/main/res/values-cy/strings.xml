@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Gwasanaeth hygyrchedd ar gyfer bysellfyrddau trydydd parti</string>
     <string name="settings_pkb_keyboard_helper_title">Cynorthwyydd BBKB</string>
     <string name="settings_pkb_layouts_any_language">Pob bysellfwrdd</string>
+    <string name="settings_pkb_layouts_add">Ychwanegu cynllun</string>
+    <string name="settings_pkb_layouts_add_failed">Methu darllen y cynllun</string>
+    <string name="settings_pkb_layouts_added">Cynllun wedi\'i ychwanegu</string>
     <string name="settings_pkb_layouts_builtin_note">Mae\'r rhain yn dod gyda\'r bysellfwrdd ac nid oes modd eu newid. Cadwch un fel ffeil i ddechrau cynllun eich hun.</string>
     <string name="settings_pkb_layouts_category_builtin">Mewnol</string>
     <string name="settings_pkb_layouts_category_custom">Personol</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Dileu “%1$s”? Does dim modd dadwneud hyn.</string>
     <string name="settings_pkb_layouts_delete_title">Dileu cynllun</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d bysell</string>
-    <string name="settings_pkb_layouts_empty">Dim cynlluniau personol eto. Mewnforiwch un drwy Uwch &gt; Copi wrth gefn ac adfer &gt; Adfer o ffeil.</string>
+    <string name="settings_pkb_layouts_empty">Dim cynlluniau personol eto. Ychwanegwch un o ffeil.</string>
     <string name="settings_pkb_layouts_keypad">pad bysellau %1$s</string>
     <string name="settings_pkb_layouts_none">Heb ei ddefnyddio</string>
     <string name="settings_pkb_layouts_none_summary">Yn defnyddio cynllun y bysellfwrdd ei hun</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Rhannu %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Rhannu cynllun</string>
     <string name="settings_pkb_layouts_share_failed">Methu rhannu\'r cynllun</string>
-    <string name="settings_pkb_layouts_summary">Newid y llythrennau y mae\'r bysellau ffisegol yn eu teipio</string>
+    <string name="settings_pkb_layouts_summary">Ychwanegu, rhannu a dileu cynlluniau llythrennau ar gyfer y bysellbad</string>
     <string name="settings_pkb_keypad_layout_title">Cynllun y bysellbad</string>
     <string name="settings_pkb_keypad_layout_automatic">Awtomatig (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Llythrennau\'r bysellbad (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Dangos y bysellfwrdd ar y sgrin bob amser</string>
     <string name="settings_pkb_layouts_three_row">pad bysellau tair rhes</string>
-    <string name="settings_pkb_layouts_title">Cynlluniau ffisegol</string>
+    <string name="settings_pkb_layouts_title">Cynlluniau bysellbad personol</string>
     <string name="settings_pkb_multifunction_action_clipboard">Clipfwrdd</string>
     <string name="settings_pkb_multifunction_action_ctrl">Bysell Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Bwrdd emoji</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Dangos y dudalen symbolau bersonol o flaen y dudalen ragosodedig</string>
     <string name="settings_symbol_custom_page_first_title">Dangos y dudalen yn gyntaf</string>
     <string name="settings_symbol_customization_summary">Addasu cynllun tudalen symbolau\'r bysellfwrdd</string>
-    <string name="settings_symbol_customization_title">Addasu symbolau</string>
+    <string name="settings_symbol_customization_title">Tudalen symbolau bersonol</string>
     <string name="settings_symbol_customize_page_summary">Golygu cynllun y dudalen symbolau bersonol</string>
     <string name="settings_symbol_customize_page_title">Addasu\'r dudalen symbolau</string>
     <string name="settings_symbol_enable_customization_summary">Dangos trydedd dudalen symbolau â chynnwys personol</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Cyfanswm yr ysgydwadau (i unrhyw gyfeiriad) ar gyfer y weithred wrth gefn</string>
     <string name="prefs_fallback_trigger_count_title">Nifer yr ysgydwadau ar gyfer y weithred wrth gefn</string>
     <string name="prefs_force_vkb_mode_summary_off">Defnyddio\'r math o ddyfais a ganfuwyd</string>
-    <string name="prefs_force_vkb_mode_summary_on">Trinnir y ddyfais fel un sgrin gyffwrdd yn unig (rhaid ailgychwyn)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Trinnir y ddyfais fel un sgrin gyffwrdd yn unig</string>
     <string name="prefs_force_vkb_mode_title">Gorfodi modd sgrin gyffwrdd yn unig</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Anfon botwm meicroffon y caledwedd at gynorthwyydd llais y system</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Mae\'r fysell meic yn agor y cynorthwyydd llais</string>

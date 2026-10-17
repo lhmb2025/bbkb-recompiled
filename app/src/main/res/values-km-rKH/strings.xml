@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">សេវាកម្មភាពងាយស្រួលសម្រាប់ក្ដារចុចភាគីទីបី</string>
     <string name="settings_pkb_keyboard_helper_title">ជំនួយការ BBKB</string>
     <string name="settings_pkb_layouts_any_language">ក្ដារចុចទាំងអស់</string>
+    <string name="settings_pkb_layouts_add">បន្ថែមប្លង់</string>
+    <string name="settings_pkb_layouts_add_failed">មិនអាចអានប្លង់បានទេ</string>
+    <string name="settings_pkb_layouts_added">បានបន្ថែមប្លង់</string>
     <string name="settings_pkb_layouts_builtin_note">ប្លង់ទាំងនេះភ្ជាប់មកជាមួយក្ដារចុច ហើយមិនអាចផ្លាស់ប្ដូរបានទេ។ រក្សាទុកមួយជាឯកសារ ដើម្បីចាប់ផ្ដើមប្លង់ផ្ទាល់ខ្លួនរបស់អ្នក។</string>
     <string name="settings_pkb_layouts_category_builtin">ភ្ជាប់មកជាមួយ</string>
     <string name="settings_pkb_layouts_category_custom">ផ្ទាល់ខ្លួន</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">លុប “%1$s” ឬ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។</string>
     <string name="settings_pkb_layouts_delete_title">លុបប្លង់</string>
     <string name="settings_pkb_layouts_details">%1$s · គ្រាប់ចុច %2$d</string>
-    <string name="settings_pkb_layouts_empty">មិនទាន់មានប្លង់ផ្ទាល់ខ្លួននៅឡើយទេ។ នាំចូលមួយតាមរយៈ កម្រិតខ្ពស់ &gt; បម្រុងទុក និងស្ដារ &gt; ស្ដារពីឯកសារ។</string>
+    <string name="settings_pkb_layouts_empty">មិនទាន់មានប្លង់ផ្ទាល់ខ្លួននៅឡើយទេ។ បន្ថែមមួយពីឯកសារ។</string>
     <string name="settings_pkb_layouts_keypad">ក្ដារចុច %1$s</string>
     <string name="settings_pkb_layouts_none">មិនប្រើ</string>
     <string name="settings_pkb_layouts_none_summary">ប្រើប្លង់ផ្ទាល់របស់ក្ដារចុច</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">ចែករំលែក %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">ចែករំលែកប្លង់</string>
     <string name="settings_pkb_layouts_share_failed">មិនអាចចែករំលែកប្លង់បានទេ</string>
-    <string name="settings_pkb_layouts_summary">ប្ដូរអក្សរដែលគ្រាប់ចុចរូបវន្តវាយ</string>
+    <string name="settings_pkb_layouts_summary">បន្ថែម ចែករំលែក និងលុបប្លង់អក្សរសម្រាប់ក្ដារចុច</string>
     <string name="settings_pkb_keypad_layout_title">ប្លង់បន្ទះគ្រាប់ចុច</string>
     <string name="settings_pkb_keypad_layout_automatic">ស្វ័យប្រវត្តិ (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">អក្សរបន្ទះគ្រាប់ចុច (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">បង្ហាញក្ដារចុចលើអេក្រង់ជានិច្ច</string>
     <string name="settings_pkb_layouts_three_row">ក្ដារចុចបីជួរ</string>
-    <string name="settings_pkb_layouts_title">ប្លង់រូបវន្ត</string>
+    <string name="settings_pkb_layouts_title">ប្លង់ក្ដារចុចផ្ទាល់ខ្លួន</string>
     <string name="settings_pkb_multifunction_action_clipboard">ក្ដារតម្បៀតខ្ទាស់</string>
     <string name="settings_pkb_multifunction_action_ctrl">គ្រាប់ចុច Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">ក្ដារសញ្ញាអារម្មណ៍</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">បង្ហាញទំព័រនិមិត្តសញ្ញាផ្ទាល់ខ្លួនមុនទំព័រលំនាំដើម</string>
     <string name="settings_symbol_custom_page_first_title">បង្ហាញទំព័រនេះមុនគេ</string>
     <string name="settings_symbol_customization_summary">កំណត់ប្លង់ទំព័រនិមិត្តសញ្ញារបស់ក្ដារចុចតាមបំណង</string>
-    <string name="settings_symbol_customization_title">ការកំណត់និមិត្តសញ្ញាតាមបំណង</string>
+    <string name="settings_symbol_customization_title">ទំព័រនិមិត្តសញ្ញាផ្ទាល់ខ្លួន</string>
     <string name="settings_symbol_customize_page_summary">កែប្លង់ទំព័រនិមិត្តសញ្ញាផ្ទាល់ខ្លួន</string>
     <string name="settings_symbol_customize_page_title">កំណត់ទំព័រនិមិត្តសញ្ញាតាមបំណង</string>
     <string name="settings_symbol_enable_customization_summary">បង្ហាញទំព័រនិមិត្តសញ្ញាទីបីដែលមានមាតិកាផ្ទាល់ខ្លួន</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">ចំនួនអង្រួនសរុប (គ្រប់ទិស) សម្រាប់សកម្មភាពបម្រុង</string>
     <string name="prefs_fallback_trigger_count_title">ចំនួនកេះសម្រាប់សកម្មភាពបម្រុង</string>
     <string name="prefs_force_vkb_mode_summary_off">ប្រើប្រភេទឧបករណ៍ដែលបានរកឃើញ</string>
-    <string name="prefs_force_vkb_mode_summary_on">ឧបករណ៍ត្រូវបានចាត់ទុកថាមានតែអេក្រង់ប៉ះ (ត្រូវចាប់ផ្ដើមឡើងវិញ)</string>
+    <string name="prefs_force_vkb_mode_summary_on">ឧបករណ៍ត្រូវបានចាត់ទុកថាមានតែអេក្រង់ប៉ះ</string>
     <string name="prefs_force_vkb_mode_title">បង្ខំរបៀបអេក្រង់ប៉ះតែមួយគត់</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">បញ្ជូនប៊ូតុងមីក្រូហ្វូនផ្នែករឹងទៅកាន់ជំនួយការសំឡេងរបស់ប្រព័ន្ធ</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">គ្រាប់ចុចមីក្រូហ្វូនកេះជំនួយការសំឡេង</string>

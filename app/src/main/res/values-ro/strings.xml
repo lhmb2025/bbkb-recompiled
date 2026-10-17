@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Serviciu de accesibilitate pentru tastaturi de la terți</string>
     <string name="settings_pkb_keyboard_helper_title">Asistent BBKB</string>
     <string name="settings_pkb_layouts_any_language">Toate tastaturile</string>
+    <string name="settings_pkb_layouts_add">Adaugă aranjament</string>
+    <string name="settings_pkb_layouts_add_failed">Aranjamentul nu a putut fi citit</string>
+    <string name="settings_pkb_layouts_added">Aranjament adăugat</string>
     <string name="settings_pkb_layouts_builtin_note">Acestea vin cu tastatura și nu pot fi modificate. Salvați unul ca fișier pentru a începe propriul aspect.</string>
     <string name="settings_pkb_layouts_category_builtin">Integrate</string>
     <string name="settings_pkb_layouts_category_custom">Personalizate</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Ștergi „%1$s”? Acțiunea nu poate fi anulată.</string>
     <string name="settings_pkb_layouts_delete_title">Șterge aspectul</string>
     <string name="settings_pkb_layouts_details">%1$s · taste: %2$d</string>
-    <string name="settings_pkb_layouts_empty">Încă nu există aspecte personalizate. Importați unul din Avansate &gt; Backup și restabilire &gt; Restabiliți din fișier.</string>
+    <string name="settings_pkb_layouts_empty">Încă nu există aranjamente personalizate. Adăugați unul dintr-un fișier.</string>
     <string name="settings_pkb_layouts_keypad">tastatură %1$s</string>
     <string name="settings_pkb_layouts_none">Neutilizat</string>
     <string name="settings_pkb_layouts_none_summary">Folosește aspectul propriu al tastaturii</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Distribuie %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Distribuie aspectul</string>
     <string name="settings_pkb_layouts_share_failed">Aspectul nu a putut fi distribuit</string>
-    <string name="settings_pkb_layouts_summary">Schimbă literele introduse de tastele fizice</string>
+    <string name="settings_pkb_layouts_summary">Adăugați, partajați și ștergeți aranjamente de litere pentru tastatură</string>
     <string name="settings_pkb_keypad_layout_title">Aspectul tastaturii</string>
     <string name="settings_pkb_keypad_layout_automatic">Automat (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Literele tastaturii (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Afișează întotdeauna tastatura de pe ecran</string>
     <string name="settings_pkb_layouts_three_row">tastatură cu trei rânduri</string>
-    <string name="settings_pkb_layouts_title">Aspecte fizice</string>
+    <string name="settings_pkb_layouts_title">Aranjamente de tastatură personalizate</string>
     <string name="settings_pkb_multifunction_action_clipboard">Clipboard</string>
     <string name="settings_pkb_multifunction_action_ctrl">Tasta Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Tastatură emoji</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Afișează pagina de simboluri personalizată înaintea celei implicite</string>
     <string name="settings_symbol_custom_page_first_title">Afișați pagina mai întâi</string>
     <string name="settings_symbol_customization_summary">Personalizați aspectul paginii de simboluri a tastaturii</string>
-    <string name="settings_symbol_customization_title">Personalizare simboluri</string>
+    <string name="settings_symbol_customization_title">Pagină de simboluri personalizată</string>
     <string name="settings_symbol_customize_page_summary">Editați aspectul paginii de simboluri personalizate</string>
     <string name="settings_symbol_customize_page_title">Personalizați pagina de simboluri</string>
     <string name="settings_symbol_enable_customization_summary">Afișează o a treia pagină de simboluri cu conținut personalizat</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Numărul total de scuturări (în orice direcție) pentru acțiunea de rezervă</string>
     <string name="prefs_fallback_trigger_count_title">Scuturări pentru acțiunea de rezervă</string>
     <string name="prefs_force_vkb_mode_summary_off">Folosește tipul de dispozitiv detectat</string>
-    <string name="prefs_force_vkb_mode_summary_on">Dispozitiv tratat ca fiind doar cu ecran tactil (necesită repornire)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Dispozitiv tratat ca fiind doar cu ecran tactil</string>
     <string name="prefs_force_vkb_mode_title">Forțați modul doar cu ecran tactil</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Direcționează butonul hardware de microfon către asistentul vocal al sistemului</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Tasta microfon pornește asistentul vocal</string>

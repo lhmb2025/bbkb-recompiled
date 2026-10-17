@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">适用于第三方键盘的无障碍服务</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB 助手</string>
     <string name="settings_pkb_layouts_any_language">所有键盘</string>
+    <string name="settings_pkb_layouts_add">添加布局</string>
+    <string name="settings_pkb_layouts_add_failed">无法读取布局</string>
+    <string name="settings_pkb_layouts_added">布局已添加</string>
     <string name="settings_pkb_layouts_builtin_note">这些布局随键盘提供，无法更改。可将其中一个保存为文件，作为自定义布局的起点。</string>
     <string name="settings_pkb_layouts_category_builtin">内置</string>
     <string name="settings_pkb_layouts_category_custom">自定义</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">要删除“%1$s”吗？此操作无法撤消。</string>
     <string name="settings_pkb_layouts_delete_title">删除布局</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d 个按键</string>
-    <string name="settings_pkb_layouts_empty">尚无自定义布局。请通过“高级 &gt; 备份和恢复 &gt; 从文件恢复”导入。</string>
+    <string name="settings_pkb_layouts_empty">还没有自定义布局。从文件添加一个。</string>
     <string name="settings_pkb_layouts_keypad">%1$s 键区</string>
     <string name="settings_pkb_layouts_none">不使用</string>
     <string name="settings_pkb_layouts_none_summary">使用键盘自身的布局</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">分享%1$s</string>
     <string name="settings_pkb_layouts_share_chooser">分享布局</string>
     <string name="settings_pkb_layouts_share_failed">无法分享布局</string>
-    <string name="settings_pkb_layouts_summary">更改实体按键输入的字母</string>
+    <string name="settings_pkb_layouts_summary">添加、分享和删除键盘的字母布局</string>
     <string name="settings_pkb_keypad_layout_title">键盘布局</string>
     <string name="settings_pkb_keypad_layout_automatic">自动 (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">键盘字母 (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">始终显示屏幕键盘</string>
     <string name="settings_pkb_layouts_three_row">三排键区</string>
-    <string name="settings_pkb_layouts_title">实体布局</string>
+    <string name="settings_pkb_layouts_title">自定义键盘布局</string>
     <string name="settings_pkb_multifunction_action_clipboard">剪贴板</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl 键</string>
     <string name="settings_pkb_multifunction_action_emoji">表情符号面板</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">在默认页面之前显示自定义符号页面</string>
     <string name="settings_symbol_custom_page_first_title">优先显示该页面</string>
     <string name="settings_symbol_customization_summary">自定义键盘符号页面布局</string>
-    <string name="settings_symbol_customization_title">符号自定义</string>
+    <string name="settings_symbol_customization_title">自定义符号页</string>
     <string name="settings_symbol_customize_page_summary">编辑自定义符号页面布局</string>
     <string name="settings_symbol_customize_page_title">自定义符号页面</string>
     <string name="settings_symbol_enable_customization_summary">显示包含自定义内容的第三个符号页面</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">触发后备操作所需的摇动总次数（任意方向）</string>
     <string name="prefs_fallback_trigger_count_title">后备触发次数</string>
     <string name="prefs_force_vkb_mode_summary_off">使用检测到的设备类型</string>
-    <string name="prefs_force_vkb_mode_summary_on">将设备视为仅触摸屏设备（需要重启）</string>
+    <string name="prefs_force_vkb_mode_summary_on">将设备视为仅触摸屏设备</string>
     <string name="prefs_force_vkb_mode_title">强制仅触摸屏模式</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">将硬件麦克风按键转给系统语音助理</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">麦克风键触发语音助理</string>

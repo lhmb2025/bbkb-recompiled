@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">థర్డ్-పార్టీ కీబోర్డ్‌ల కోసం యాక్సెసిబిలిటీ సేవ</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB హెల్పర్</string>
     <string name="settings_pkb_layouts_any_language">అన్ని కీబోర్డ్‌లు</string>
+    <string name="settings_pkb_layouts_add">లేఅవుట్ జోడించు</string>
+    <string name="settings_pkb_layouts_add_failed">లేఅవుట్‌ను చదవలేకపోయాము</string>
+    <string name="settings_pkb_layouts_added">లేఅవుట్ జోడించబడింది</string>
     <string name="settings_pkb_layouts_builtin_note">ఇవి కీబోర్డ్‌తో వస్తాయి, వీటిని మార్చలేరు. మీ సొంత లేఅవుట్‌ను ప్రారంభించడానికి ఒకదాన్ని ఫైల్‌గా సేవ్ చేయండి.</string>
     <string name="settings_pkb_layouts_category_builtin">అంతర్నిర్మితం</string>
     <string name="settings_pkb_layouts_category_custom">అనుకూలం</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s”ను తొలగించాలా? దీన్ని రద్దు చేయడం సాధ్యం కాదు.</string>
     <string name="settings_pkb_layouts_delete_title">లేఅవుట్‌ను తొలగించు</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d కీలు</string>
-    <string name="settings_pkb_layouts_empty">ఇంకా అనుకూల లేఅవుట్‌లు లేవు. అధునాతనం &gt; బ్యాకప్ మరియు పునరుద్ధరణ &gt; ఫైల్ నుండి పునరుద్ధరించు ద్వారా ఒకదాన్ని దిగుమతి చేయండి.</string>
+    <string name="settings_pkb_layouts_empty">ఇంకా అనుకూల లేఅవుట్‌లు లేవు. ఫైల్ నుండి ఒకదాన్ని జోడించండి.</string>
     <string name="settings_pkb_layouts_keypad">%1$s కీప్యాడ్</string>
     <string name="settings_pkb_layouts_none">ఉపయోగంలో లేదు</string>
     <string name="settings_pkb_layouts_none_summary">కీబోర్డ్ సొంత లేఅవుట్‌ను ఉపయోగిస్తుంది</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">%1$sను షేర్ చేయి</string>
     <string name="settings_pkb_layouts_share_chooser">లేఅవుట్‌ను షేర్ చేయి</string>
     <string name="settings_pkb_layouts_share_failed">లేఅవుట్‌ను షేర్ చేయడం సాధ్యపడలేదు</string>
-    <string name="settings_pkb_layouts_summary">ఫిజికల్ కీలు టైప్ చేసే అక్షరాలను మార్చండి</string>
+    <string name="settings_pkb_layouts_summary">కీప్యాడ్ కోసం అక్షర లేఅవుట్‌లను జోడించండి, షేర్ చేయండి మరియు తొలగించండి</string>
     <string name="settings_pkb_keypad_layout_title">కీప్యాడ్ లేఅవుట్</string>
     <string name="settings_pkb_keypad_layout_automatic">ఆటోమేటిక్ (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">కీప్యాడ్ అక్షరాలు (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">ఆన్-స్క్రీన్ కీబోర్డ్‌ను ఎల్లప్పుడూ చూపించు</string>
     <string name="settings_pkb_layouts_three_row">మూడు వరుసల కీప్యాడ్</string>
-    <string name="settings_pkb_layouts_title">ఫిజికల్ లేఅవుట్‌లు</string>
+    <string name="settings_pkb_layouts_title">అనుకూల కీప్యాడ్ లేఅవుట్‌లు</string>
     <string name="settings_pkb_multifunction_action_clipboard">క్లిప్‌బోర్డ్</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl కీ</string>
     <string name="settings_pkb_multifunction_action_emoji">ఎమోజి బోర్డ్</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">డిఫాల్ట్ పేజీకి ముందు అనుకూల చిహ్నాల పేజీని చూపు</string>
     <string name="settings_symbol_custom_page_first_title">పేజీని ముందుగా చూపు</string>
     <string name="settings_symbol_customization_summary">కీబోర్డ్ చిహ్నాల పేజీ లేఅవుట్‌ను అనుకూలీకరించు</string>
-    <string name="settings_symbol_customization_title">చిహ్నాల అనుకూలీకరణ</string>
+    <string name="settings_symbol_customization_title">అనుకూల చిహ్నాల పేజీ</string>
     <string name="settings_symbol_customize_page_summary">అనుకూల చిహ్నాల పేజీ లేఅవుట్‌ను సవరించు</string>
     <string name="settings_symbol_customize_page_title">చిహ్నాల పేజీని అనుకూలీకరించు</string>
     <string name="settings_symbol_enable_customization_summary">అనుకూల కంటెంట్‌తో మూడో చిహ్నాల పేజీని చూపు</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">ప్రత్యామ్నాయ చర్య కోసం మొత్తం కుదుపులు (ఏ దిశలోనైనా)</string>
     <string name="prefs_fallback_trigger_count_title">ప్రత్యామ్నాయ ట్రిగ్గర్ సంఖ్య</string>
     <string name="prefs_force_vkb_mode_summary_off">గుర్తించిన పరికర రకాన్ని ఉపయోగించు</string>
-    <string name="prefs_force_vkb_mode_summary_on">పరికరం టచ్‌స్క్రీన్ మాత్రమే అని పరిగణించబడుతుంది (రీస్టార్ట్ అవసరం)</string>
+    <string name="prefs_force_vkb_mode_summary_on">పరికరం టచ్‌స్క్రీన్ మాత్రమే అని పరిగణించబడుతుంది</string>
     <string name="prefs_force_vkb_mode_title">టచ్‌స్క్రీన్-మాత్రమే మోడ్‌ను బలవంతంగా అమలు చేయి</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">హార్డ్‌వేర్ మైక్రోఫోన్ బటన్‌ను సిస్టమ్ వాయిస్ అసిస్టెంట్‌కు మళ్లించు</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">మైక్ కీ వాయిస్ అసిస్టెంట్‌ను ప్రారంభిస్తుంది</string>

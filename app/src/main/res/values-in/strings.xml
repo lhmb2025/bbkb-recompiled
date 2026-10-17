@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Layanan aksesibilitas untuk keyboard pihak ketiga</string>
     <string name="settings_pkb_keyboard_helper_title">Pembantu BBKB</string>
     <string name="settings_pkb_layouts_any_language">Semua keyboard</string>
+    <string name="settings_pkb_layouts_add">Tambahkan tata letak</string>
+    <string name="settings_pkb_layouts_add_failed">Tidak dapat membaca tata letak</string>
+    <string name="settings_pkb_layouts_added">Tata letak ditambahkan</string>
     <string name="settings_pkb_layouts_builtin_note">Tata letak ini disertakan dengan keyboard dan tidak dapat diubah. Simpan salah satunya sebagai file untuk memulai tata letak Anda sendiri.</string>
     <string name="settings_pkb_layouts_category_builtin">Bawaan</string>
     <string name="settings_pkb_layouts_category_custom">Khusus</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Hapus “%1$s”? Tindakan ini tidak dapat diurungkan.</string>
     <string name="settings_pkb_layouts_delete_title">Hapus tata letak</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d tombol</string>
-    <string name="settings_pkb_layouts_empty">Belum ada tata letak khusus. Impor dari Lanjutan &gt; Pencadangan dan pemulihan &gt; Pulihkan dari file.</string>
+    <string name="settings_pkb_layouts_empty">Belum ada tata letak kustom. Tambahkan satu dari file.</string>
     <string name="settings_pkb_layouts_keypad">keypad %1$s</string>
     <string name="settings_pkb_layouts_none">Tidak digunakan</string>
     <string name="settings_pkb_layouts_none_summary">Menggunakan tata letak keyboard itu sendiri</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Bagikan %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Bagikan tata letak</string>
     <string name="settings_pkb_layouts_share_failed">Tidak dapat membagikan tata letak</string>
-    <string name="settings_pkb_layouts_summary">Ubah huruf yang diketik oleh tombol fisik</string>
+    <string name="settings_pkb_layouts_summary">Tambahkan, bagikan, dan hapus tata letak huruf untuk keypad</string>
     <string name="settings_pkb_keypad_layout_title">Tata letak keypad</string>
     <string name="settings_pkb_keypad_layout_automatic">Otomatis (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Huruf keypad (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Selalu tampilkan keyboard di layar</string>
     <string name="settings_pkb_layouts_three_row">keypad tiga baris</string>
-    <string name="settings_pkb_layouts_title">Tata letak fisik</string>
+    <string name="settings_pkb_layouts_title">Tata letak keypad kustom</string>
     <string name="settings_pkb_multifunction_action_clipboard">Clipboard</string>
     <string name="settings_pkb_multifunction_action_ctrl">Tombol Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Papan emoji</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Tampilkan halaman simbol khusus sebelum halaman default</string>
     <string name="settings_symbol_custom_page_first_title">Tampilkan halaman lebih dulu</string>
     <string name="settings_symbol_customization_summary">Sesuaikan tata letak halaman simbol keyboard</string>
-    <string name="settings_symbol_customization_title">Penyesuaian simbol</string>
+    <string name="settings_symbol_customization_title">Halaman simbol kustom</string>
     <string name="settings_symbol_customize_page_summary">Edit tata letak halaman simbol khusus</string>
     <string name="settings_symbol_customize_page_title">Sesuaikan halaman simbol</string>
     <string name="settings_symbol_enable_customization_summary">Tampilkan halaman simbol ketiga dengan konten khusus</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Total guncangan (segala arah) untuk tindakan cadangan</string>
     <string name="prefs_fallback_trigger_count_title">Jumlah pemicu cadangan</string>
     <string name="prefs_force_vkb_mode_summary_off">Gunakan jenis perangkat yang terdeteksi</string>
-    <string name="prefs_force_vkb_mode_summary_on">Perangkat diperlakukan sebagai layar sentuh saja (perlu mulai ulang)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Perangkat diperlakukan sebagai layar sentuh saja</string>
     <string name="prefs_force_vkb_mode_title">Paksa mode layar sentuh saja</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Arahkan tombol mikrofon perangkat keras ke asisten suara sistem</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Tombol mik memicu asisten suara</string>

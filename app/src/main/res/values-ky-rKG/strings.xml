@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Үчүнчү тараптын баскычтоптору үчүн атайын мүмкүнчүлүктөр кызматы</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB жардамчысы</string>
     <string name="settings_pkb_layouts_any_language">Бардык баскычтоптор</string>
+    <string name="settings_pkb_layouts_add">Жайгашуу кошуу</string>
+    <string name="settings_pkb_layouts_add_failed">Жайгашууну окуу мүмкүн болгон жок</string>
+    <string name="settings_pkb_layouts_added">Жайгашуу кошулду</string>
     <string name="settings_pkb_layouts_builtin_note">Булар баскычтоп менен кошо келет жана өзгөртүлбөйт. Өз жайгашууңузду баштоо үчүн бирин файл катары сактаңыз.</string>
     <string name="settings_pkb_layouts_category_builtin">Камтылган</string>
     <string name="settings_pkb_layouts_category_custom">Ыңгайлаштырылган</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s” жок кылынсынбы? Муну кайтаруу мүмкүн эмес.</string>
     <string name="settings_pkb_layouts_delete_title">Жайгашууну жок кылуу</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d баскыч</string>
-    <string name="settings_pkb_layouts_empty">Азырынча ыңгайлаштырылган жайгашуулар жок. Аны Кошумча &gt; Камдык көчүрмө жана калыбына келтирүү &gt; Файлдан калыбына келтирүү аркылуу импорттоңуз.</string>
+    <string name="settings_pkb_layouts_empty">Азырынча жеке жайгашуулар жок. Файлдан бирин кошуңуз.</string>
     <string name="settings_pkb_layouts_keypad">%1$s баскычтобу</string>
     <string name="settings_pkb_layouts_none">Колдонулбайт</string>
     <string name="settings_pkb_layouts_none_summary">Баскычтоптун өз жайгашуусун колдонот</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Бөлүшүү: %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Жайгашууну бөлүшүү</string>
     <string name="settings_pkb_layouts_share_failed">Жайгашууну бөлүшүү мүмкүн болгон жок</string>
-    <string name="settings_pkb_layouts_summary">Физикалык баскычтар тере турган тамгаларды өзгөртүү</string>
+    <string name="settings_pkb_layouts_summary">Баскычтоп үчүн тамга жайгашууларын кошуңуз, бөлүшүңүз жана өчүрүңүз</string>
     <string name="settings_pkb_keypad_layout_title">Баскычтоптун жайгашуусу</string>
     <string name="settings_pkb_keypad_layout_automatic">Автоматтык (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Баскычтоптун тамгалары (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Экрандагы баскычтопту ар дайым көрсөтүү</string>
     <string name="settings_pkb_layouts_three_row">үч катар баскычтоп</string>
-    <string name="settings_pkb_layouts_title">Физикалык жайгашуулар</string>
+    <string name="settings_pkb_layouts_title">Баскычтоптун жеке жайгашуулары</string>
     <string name="settings_pkb_multifunction_action_clipboard">Алмашуу буфери</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl баскычы</string>
     <string name="settings_pkb_multifunction_action_emoji">Эмодзи панели</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Ыңгайлаштырылган символ бетин демейки беттен мурун көрсөтүү</string>
     <string name="settings_symbol_custom_page_first_title">Бетти биринчи көрсөтүү</string>
     <string name="settings_symbol_customization_summary">Баскычтоптун символ бетинин жайгашуусун ыңгайлаштыруу</string>
-    <string name="settings_symbol_customization_title">Символдорду ыңгайлаштыруу</string>
+    <string name="settings_symbol_customization_title">Символдордун жеке барагы</string>
     <string name="settings_symbol_customize_page_summary">Ыңгайлаштырылган символ бетинин жайгашуусун түзөтүү</string>
     <string name="settings_symbol_customize_page_title">Символ бетин ыңгайлаштыруу</string>
     <string name="settings_symbol_enable_customization_summary">Ыңгайлаштырылган мазмуну бар үчүнчү символ бетин көрсөтүү</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Кошумча аракет үчүн жалпы силкүүлөрдүн саны (каалаган багытта)</string>
     <string name="prefs_fallback_trigger_count_title">Кошумча аракетти иштетүү саны</string>
     <string name="prefs_force_vkb_mode_summary_off">Аныкталган түзмөк түрүн колдонуу</string>
-    <string name="prefs_force_vkb_mode_summary_on">Түзмөк сенсордук экрандуу гана деп эсептелет (кайра иштетүү керек)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Түзмөк сенсордук экрандуу гана деп эсептелет</string>
     <string name="prefs_force_vkb_mode_title">Сенсордук экран режимин мажбурлоо</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Аппараттык микрофон баскычын системанын үн жардамчысына багыттоо</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Микрофон баскычы үн жардамчысын иштетет</string>

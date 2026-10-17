@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Bedienungshilfendienst für Tastaturen von Drittanbietern</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB-Helfer</string>
     <string name="settings_pkb_layouts_any_language">Alle Tastaturen</string>
+    <string name="settings_pkb_layouts_add">Layout hinzufügen</string>
+    <string name="settings_pkb_layouts_add_failed">Layout konnte nicht gelesen werden</string>
+    <string name="settings_pkb_layouts_added">Layout hinzugefügt</string>
     <string name="settings_pkb_layouts_builtin_note">Diese sind in der Tastatur enthalten und können nicht geändert werden. Speichern Sie eines als Datei, um ein eigenes Layout zu beginnen.</string>
     <string name="settings_pkb_layouts_category_builtin">Integriert</string>
     <string name="settings_pkb_layouts_category_custom">Eigene</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">„%1$s“ löschen? Dies kann nicht rückgängig gemacht werden.</string>
     <string name="settings_pkb_layouts_delete_title">Layout löschen</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d Tasten</string>
-    <string name="settings_pkb_layouts_empty">Noch keine eigenen Layouts. Importieren Sie eines über Erweitert &gt; Sichern und wiederherstellen &gt; Aus Datei wiederherstellen.</string>
+    <string name="settings_pkb_layouts_empty">Noch keine eigenen Layouts. Füge eines aus einer Datei hinzu.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-Tastenfeld</string>
     <string name="settings_pkb_layouts_none">Nicht verwendet</string>
     <string name="settings_pkb_layouts_none_summary">Verwendet das eigene Layout der Tastatur</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">%1$s teilen</string>
     <string name="settings_pkb_layouts_share_chooser">Layout teilen</string>
     <string name="settings_pkb_layouts_share_failed">Das Layout konnte nicht geteilt werden</string>
-    <string name="settings_pkb_layouts_summary">Ändern, welche Buchstaben die physischen Tasten eingeben</string>
+    <string name="settings_pkb_layouts_summary">Buchstabenlayouts für die Tastatur hinzufügen, teilen und löschen</string>
     <string name="settings_pkb_keypad_layout_title">Tastaturlayout</string>
     <string name="settings_pkb_keypad_layout_automatic">Automatisch (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Tastaturbuchstaben (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Bildschirmtastatur immer anzeigen</string>
     <string name="settings_pkb_layouts_three_row">dreireihiges Tastenfeld</string>
-    <string name="settings_pkb_layouts_title">Physische Layouts</string>
+    <string name="settings_pkb_layouts_title">Eigene Tastaturlayouts</string>
     <string name="settings_pkb_multifunction_action_clipboard">Zwischenablage</string>
     <string name="settings_pkb_multifunction_action_ctrl">Strg-Taste</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji-Tastatur</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Benutzerdefinierte Symbolseite vor der Standardseite anzeigen</string>
     <string name="settings_symbol_custom_page_first_title">Seite zuerst anzeigen</string>
     <string name="settings_symbol_customization_summary">Layout der Symbolseite der Tastatur anpassen</string>
-    <string name="settings_symbol_customization_title">Symbolanpassung</string>
+    <string name="settings_symbol_customization_title">Eigene Symbolseite</string>
     <string name="settings_symbol_customize_page_summary">Layout der benutzerdefinierten Symbolseite bearbeiten</string>
     <string name="settings_symbol_customize_page_title">Symbolseite anpassen</string>
     <string name="settings_symbol_enable_customization_summary">Dritte Symbolseite mit benutzerdefinierten Inhalten anzeigen</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Gesamtzahl der Schüttelbewegungen (beliebige Richtung) für die Ersatzaktion</string>
     <string name="prefs_fallback_trigger_count_title">Auslöseanzahl für Ersatzaktion</string>
     <string name="prefs_force_vkb_mode_summary_off">Erkannten Gerätetyp verwenden</string>
-    <string name="prefs_force_vkb_mode_summary_on">Gerät wird als reines Touchscreen-Gerät behandelt (Neustart erforderlich)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Gerät wird als reines Touchscreen-Gerät behandelt</string>
     <string name="prefs_force_vkb_mode_title">Reinen Touchscreen-Modus erzwingen</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Hardware-Mikrofontaste an den Sprachassistenten des Systems weiterleiten</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Mikrofontaste startet Sprachassistenten</string>

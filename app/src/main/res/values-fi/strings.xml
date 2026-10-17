@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Esteettömyyspalvelu kolmannen osapuolen näppäimistöille</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB-apuri</string>
     <string name="settings_pkb_layouts_any_language">Kaikki näppäimistöt</string>
+    <string name="settings_pkb_layouts_add">Lisää asettelu</string>
+    <string name="settings_pkb_layouts_add_failed">Asettelua ei voitu lukea</string>
+    <string name="settings_pkb_layouts_added">Asettelu lisätty</string>
     <string name="settings_pkb_layouts_builtin_note">Nämä tulevat näppäimistön mukana, eikä niitä voi muuttaa. Tallenna jokin tiedostoksi aloittaaksesi oman asettelun.</string>
     <string name="settings_pkb_layouts_category_builtin">Sisäänrakennetut</string>
     <string name="settings_pkb_layouts_category_custom">Mukautetut</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Poistetaanko ”%1$s”? Tätä ei voi kumota.</string>
     <string name="settings_pkb_layouts_delete_title">Poista asettelu</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d näppäintä</string>
-    <string name="settings_pkb_layouts_empty">Mukautettuja asetteluja ei vielä ole. Tuo sellainen kohdasta Lisäasetukset &gt; Varmuuskopiointi ja palautus &gt; Palauta tiedostosta.</string>
+    <string name="settings_pkb_layouts_empty">Ei vielä mukautettuja asetteluja. Lisää sellainen tiedostosta.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-näppäimistö</string>
     <string name="settings_pkb_layouts_none">Ei käytössä</string>
     <string name="settings_pkb_layouts_none_summary">Käyttää näppäimistön omaa asettelua</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Jaa %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Jaa asettelu</string>
     <string name="settings_pkb_layouts_share_failed">Asettelua ei voitu jakaa</string>
-    <string name="settings_pkb_layouts_summary">Muuta kirjaimia, joita fyysiset näppäimet kirjoittavat</string>
+    <string name="settings_pkb_layouts_summary">Lisää, jaa ja poista näppäimistön kirjainasetteluja</string>
     <string name="settings_pkb_keypad_layout_title">Näppäimistön asettelu</string>
     <string name="settings_pkb_keypad_layout_automatic">Automaattinen (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Näppäimistön kirjaimet (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Näytä näyttönäppäimistö aina</string>
     <string name="settings_pkb_layouts_three_row">kolmirivinen näppäimistö</string>
-    <string name="settings_pkb_layouts_title">Fyysiset asettelut</string>
+    <string name="settings_pkb_layouts_title">Mukautetut näppäimistöasettelut</string>
     <string name="settings_pkb_multifunction_action_clipboard">Leikepöytä</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl-näppäin</string>
     <string name="settings_pkb_multifunction_action_emoji">Emojipaneeli</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Näytä mukautettu symbolisivu ennen oletussivua</string>
     <string name="settings_symbol_custom_page_first_title">Näytä sivu ensin</string>
     <string name="settings_symbol_customization_summary">Mukauta näppäimistön symbolisivun asettelua</string>
-    <string name="settings_symbol_customization_title">Symbolien mukautus</string>
+    <string name="settings_symbol_customization_title">Mukautettu symbolisivu</string>
     <string name="settings_symbol_customize_page_summary">Muokkaa mukautetun symbolisivun asettelua</string>
     <string name="settings_symbol_customize_page_title">Mukauta symbolisivua</string>
     <string name="settings_symbol_enable_customization_summary">Näytä kolmas symbolisivu mukautetulla sisällöllä</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Ravistusten kokonaismäärä (mihin tahansa suuntaan) varatoimintoa varten</string>
     <string name="prefs_fallback_trigger_count_title">Varatoiminnon ravistusmäärä</string>
     <string name="prefs_force_vkb_mode_summary_off">Käytä tunnistettua laitetyyppiä</string>
-    <string name="prefs_force_vkb_mode_summary_on">Laitetta käsitellään pelkkänä kosketusnäyttölaitteena (vaatii uudelleenkäynnistyksen)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Laitetta käsitellään pelkkänä kosketusnäyttölaitteena</string>
     <string name="prefs_force_vkb_mode_title">Pakota pelkkä kosketusnäyttötila</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Ohjaa laitteen mikrofonipainike järjestelmän ääniavustajaan</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Mikrofoninäppäin käynnistää ääniavustajan</string>

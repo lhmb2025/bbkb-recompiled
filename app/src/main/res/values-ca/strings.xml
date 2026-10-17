@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Servei d\'accessibilitat per a teclats de tercers</string>
     <string name="settings_pkb_keyboard_helper_title">Assistent de BBKB</string>
     <string name="settings_pkb_layouts_any_language">Tots els teclats</string>
+    <string name="settings_pkb_layouts_add">Afegeix una disposició</string>
+    <string name="settings_pkb_layouts_add_failed">No s\'ha pogut llegir la disposició</string>
+    <string name="settings_pkb_layouts_added">Disposició afegida</string>
     <string name="settings_pkb_layouts_builtin_note">Vénen amb el teclat i no es poden canviar. Deseu-ne una com a fitxer per començar una disposició pròpia.</string>
     <string name="settings_pkb_layouts_category_builtin">Integrades</string>
     <string name="settings_pkb_layouts_category_custom">Personalitzades</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Voleu suprimir “%1$s”? Aquesta acció no es pot desfer.</string>
     <string name="settings_pkb_layouts_delete_title">Suprimeix la disposició</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d tecles</string>
-    <string name="settings_pkb_layouts_empty">Encara no hi ha cap disposició personalitzada. Importeu-ne una a Avançat &gt; Còpia de seguretat i restauració &gt; Restaura des d\'un fitxer.</string>
+    <string name="settings_pkb_layouts_empty">Encara no hi ha disposicions personalitzades. Afegeix-ne una des d\'un fitxer.</string>
     <string name="settings_pkb_layouts_keypad">teclat %1$s</string>
     <string name="settings_pkb_layouts_none">No s\'utilitza</string>
     <string name="settings_pkb_layouts_none_summary">Fa servir la disposició pròpia del teclat</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Comparteix %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Comparteix la disposició</string>
     <string name="settings_pkb_layouts_share_failed">No s\'ha pogut compartir la disposició</string>
-    <string name="settings_pkb_layouts_summary">Canvia les lletres que escriuen les tecles físiques</string>
+    <string name="settings_pkb_layouts_summary">Afegeix, comparteix i suprimeix disposicions de lletres per al teclat</string>
     <string name="settings_pkb_keypad_layout_title">Disposició del teclat</string>
     <string name="settings_pkb_keypad_layout_automatic">Automàtica (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Lletres del teclat (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Mostra sempre el teclat en pantalla</string>
     <string name="settings_pkb_layouts_three_row">teclat de tres files</string>
-    <string name="settings_pkb_layouts_title">Disposicions físiques</string>
+    <string name="settings_pkb_layouts_title">Disposicions personalitzades del teclat</string>
     <string name="settings_pkb_multifunction_action_clipboard">Porta-retalls</string>
     <string name="settings_pkb_multifunction_action_ctrl">Tecla Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Tauler d\'emojis</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Mostra la pàgina de símbols personalitzada abans de la pàgina per defecte</string>
     <string name="settings_symbol_custom_page_first_title">Mostra la pàgina primer</string>
     <string name="settings_symbol_customization_summary">Personalitza la disposició de la pàgina de símbols del teclat</string>
-    <string name="settings_symbol_customization_title">Personalització de símbols</string>
+    <string name="settings_symbol_customization_title">Pàgina de símbols personalitzada</string>
     <string name="settings_symbol_customize_page_summary">Edita la disposició de la pàgina de símbols personalitzada</string>
     <string name="settings_symbol_customize_page_title">Personalitza la pàgina de símbols</string>
     <string name="settings_symbol_enable_customization_summary">Mostra una tercera pàgina de símbols amb contingut personalitzat</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Sacsejades totals (en qualsevol direcció) per a l\'acció alternativa</string>
     <string name="prefs_fallback_trigger_count_title">Nombre de sacsejades per a l\'acció alternativa</string>
     <string name="prefs_force_vkb_mode_summary_off">Utilitza el tipus de dispositiu detectat</string>
-    <string name="prefs_force_vkb_mode_summary_on">El dispositiu es tracta com a només tàctil (cal reiniciar)</string>
+    <string name="prefs_force_vkb_mode_summary_on">El dispositiu es tracta com a només tàctil</string>
     <string name="prefs_force_vkb_mode_title">Força el mode només tàctil</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Dirigeix el botó físic del micròfon a l\'assistent de veu del sistema</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">La tecla del micròfon activa l\'assistent de veu</string>

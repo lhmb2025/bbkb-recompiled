@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Услуга за пристапност за тастатури од трети страни</string>
     <string name="settings_pkb_keyboard_helper_title">Помошник за BBKB</string>
     <string name="settings_pkb_layouts_any_language">Сите тастатури</string>
+    <string name="settings_pkb_layouts_add">Додај распоред</string>
+    <string name="settings_pkb_layouts_add_failed">Распоредот не може да се прочита</string>
+    <string name="settings_pkb_layouts_added">Распоредот е додаден</string>
     <string name="settings_pkb_layouts_builtin_note">Тие доаѓаат со тастатурата и не можат да се менуваат. Зачувајте еден како датотека за да започнете свој распоред.</string>
     <string name="settings_pkb_layouts_category_builtin">Вградени</string>
     <string name="settings_pkb_layouts_category_custom">Приспособени</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Да се избрише „%1$s“? Ова не може да се врати.</string>
     <string name="settings_pkb_layouts_delete_title">Бришење распоред</string>
     <string name="settings_pkb_layouts_details">%1$s · копчиња: %2$d</string>
-    <string name="settings_pkb_layouts_empty">Сè уште нема приспособени распореди. Увезете еден преку Напредни &gt; Резервна копија и враќање &gt; Враќање од датотека.</string>
+    <string name="settings_pkb_layouts_empty">Сè уште нема приспособени распореди. Додајте еден од датотека.</string>
     <string name="settings_pkb_layouts_keypad">тастатура %1$s</string>
     <string name="settings_pkb_layouts_none">Не се користи</string>
     <string name="settings_pkb_layouts_none_summary">Го користи сопствениот распоред на тастатурата</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Сподели %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Споделување распоред</string>
     <string name="settings_pkb_layouts_share_failed">Распоредот не можеше да се сподели</string>
-    <string name="settings_pkb_layouts_summary">Променете ги буквите што ги внесуваат физичките копчиња</string>
+    <string name="settings_pkb_layouts_summary">Додавајте, споделувајте и бришете распореди на букви за тастатурата</string>
     <string name="settings_pkb_keypad_layout_title">Распоред на тастатурата</string>
     <string name="settings_pkb_keypad_layout_automatic">Автоматски (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Букви на тастатурата (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Секогаш прикажувај ја тастатурата на екранот</string>
     <string name="settings_pkb_layouts_three_row">тастатура со три реда</string>
-    <string name="settings_pkb_layouts_title">Физички распореди</string>
+    <string name="settings_pkb_layouts_title">Приспособени распореди на тастатурата</string>
     <string name="settings_pkb_multifunction_action_clipboard">Клипборд</string>
     <string name="settings_pkb_multifunction_action_ctrl">Копче Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Табла со емотикони</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Прикажување на приспособената страница со симболи пред стандардната</string>
     <string name="settings_symbol_custom_page_first_title">Прикажување на страницата прва</string>
     <string name="settings_symbol_customization_summary">Приспособување на распоредот на страницата со симболи</string>
-    <string name="settings_symbol_customization_title">Приспособување на симболите</string>
+    <string name="settings_symbol_customization_title">Приспособена страница со симболи</string>
     <string name="settings_symbol_customize_page_summary">Уредување на распоредот на приспособената страница со симболи</string>
     <string name="settings_symbol_customize_page_title">Приспособување на страницата со симболи</string>
     <string name="settings_symbol_enable_customization_summary">Прикажување трета страница со симболи со приспособена содржина</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Вкупен број протресувања (во која било насока) за резервното дејство</string>
     <string name="prefs_fallback_trigger_count_title">Број протресувања за резервно дејство</string>
     <string name="prefs_force_vkb_mode_summary_off">Се користи откриениот тип на уред</string>
-    <string name="prefs_force_vkb_mode_summary_on">Уредот се третира само како уред со екран на допир (потребно е рестартирање)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Уредот се третира само како уред со екран на допир</string>
     <string name="prefs_force_vkb_mode_title">Присилен режим само со екран на допир</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Насочување на хардверското копче за микрофон кон системскиот гласовен помошник</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Копчето за микрофон го активира гласовниот помошник</string>

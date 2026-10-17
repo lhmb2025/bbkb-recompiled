@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Toegankelijkheidsservice voor toetsenborden van derden</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB-hulp</string>
     <string name="settings_pkb_layouts_any_language">Alle toetsenborden</string>
+    <string name="settings_pkb_layouts_add">Indeling toevoegen</string>
+    <string name="settings_pkb_layouts_add_failed">Kan de indeling niet lezen</string>
+    <string name="settings_pkb_layouts_added">Indeling toegevoegd</string>
     <string name="settings_pkb_layouts_builtin_note">Deze horen bij het toetsenbord en kunnen niet worden gewijzigd. Sla er een op als bestand om een eigen lay-out te beginnen.</string>
     <string name="settings_pkb_layouts_category_builtin">Ingebouwd</string>
     <string name="settings_pkb_layouts_category_custom">Aangepast</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">‘%1$s’ verwijderen? Dit kan niet ongedaan worden gemaakt.</string>
     <string name="settings_pkb_layouts_delete_title">Lay-out verwijderen</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d toetsen</string>
-    <string name="settings_pkb_layouts_empty">Nog geen aangepaste lay-outs. Importeer er een via Geavanceerd &gt; Back-up en herstel &gt; Herstellen uit bestand.</string>
+    <string name="settings_pkb_layouts_empty">Nog geen aangepaste indelingen. Voeg er een toe vanuit een bestand.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-toetsenblok</string>
     <string name="settings_pkb_layouts_none">Niet in gebruik</string>
     <string name="settings_pkb_layouts_none_summary">Gebruikt de eigen lay-out van het toetsenbord</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">%1$s delen</string>
     <string name="settings_pkb_layouts_share_chooser">Lay-out delen</string>
     <string name="settings_pkb_layouts_share_failed">Kan de lay-out niet delen</string>
-    <string name="settings_pkb_layouts_summary">De letters wijzigen die de fysieke toetsen typen</string>
+    <string name="settings_pkb_layouts_summary">Letterindelingen voor het toetsenbord toevoegen, delen en verwijderen</string>
     <string name="settings_pkb_keypad_layout_title">Toetsenbordindeling</string>
     <string name="settings_pkb_keypad_layout_automatic">Automatisch (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Toetsenbordletters (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Schermtoetsenbord altijd tonen</string>
     <string name="settings_pkb_layouts_three_row">toetsenblok met drie rijen</string>
-    <string name="settings_pkb_layouts_title">Fysieke lay-outs</string>
+    <string name="settings_pkb_layouts_title">Aangepaste toetsenbordindelingen</string>
     <string name="settings_pkb_multifunction_action_clipboard">Klembord</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl-toets</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji-bord</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">De aangepaste symbolenpagina vóór de standaardpagina tonen</string>
     <string name="settings_symbol_custom_page_first_title">Pagina eerst tonen</string>
     <string name="settings_symbol_customization_summary">De lay-out van de symbolenpagina aanpassen</string>
-    <string name="settings_symbol_customization_title">Symbolen aanpassen</string>
+    <string name="settings_symbol_customization_title">Aangepaste symbolenpagina</string>
     <string name="settings_symbol_customize_page_summary">De lay-out van de aangepaste symbolenpagina bewerken</string>
     <string name="settings_symbol_customize_page_title">Symbolenpagina aanpassen</string>
     <string name="settings_symbol_enable_customization_summary">Een derde symbolenpagina met eigen inhoud tonen</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Totaal aantal schudbewegingen (elke richting) voor de terugvalactie</string>
     <string name="prefs_fallback_trigger_count_title">Aantal voor terugvalactie</string>
     <string name="prefs_force_vkb_mode_summary_off">Het gedetecteerde apparaattype gebruiken</string>
-    <string name="prefs_force_vkb_mode_summary_on">Apparaat wordt behandeld als alleen-touchscreen (opnieuw opstarten vereist)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Apparaat wordt behandeld als alleen-touchscreen</string>
     <string name="prefs_force_vkb_mode_title">Alleen-touchscreenmodus afdwingen</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">De hardwaremicrofoontoets doorsturen naar de spraakassistent van het systeem</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Microfoontoets start spraakassistent</string>

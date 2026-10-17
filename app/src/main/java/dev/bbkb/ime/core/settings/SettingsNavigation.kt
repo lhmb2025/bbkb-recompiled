@@ -83,7 +83,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object UserDictionary : SettingsRoute("user_dictionary", "User Dictionary")
     object TextShortcuts : SettingsRoute("text_shortcuts", "Text Shortcuts")
     object CustomMacros : SettingsRoute("custom_macros", "Custom Macros")
-    object SymbolCustomization : SettingsRoute("symbol_customization", "Symbol Customization")
+    object SymbolCustomization : SettingsRoute("symbol_customization", "Custom symbol page")
     object CustomSymbolPagePkb : SettingsRoute("custom_symbol_page_pkb", "Custom Symbol Page (PKB)")
     object CustomSymbolPageVkb : SettingsRoute("custom_symbol_page_vkb", "Custom Symbol Page (VKB)")
     object CustomizeSlideBoard : SettingsRoute("customize_slideboard", "Customize SlideBoard")
@@ -96,7 +96,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object TouchSurfaceHelper : SettingsRoute("touch_surface_helper", "Touch surface helper")
     object DeviceConfiguration : SettingsRoute("device_configuration", "Device Configuration")
     object DeviceProfileBuilder : SettingsRoute("device_profile_builder", "Build a device profile")
-    object PhysicalLayouts : SettingsRoute("physical_layouts", "Physical layouts")
+    object PhysicalLayouts : SettingsRoute("physical_layouts", "Custom keypad layouts")
     object BackupRestore : SettingsRoute("backup_restore", "Backup and restore")
 
     /** Back-compat deep link onto the same page as [TouchFeedback]; nothing navigates here. */

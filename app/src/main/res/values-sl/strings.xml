@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Storitev za dostopnost za tipkovnice drugih ponudnikov</string>
     <string name="settings_pkb_keyboard_helper_title">Pomočnik za BBKB</string>
     <string name="settings_pkb_layouts_any_language">Vse tipkovnice</string>
+    <string name="settings_pkb_layouts_add">Dodaj razporeditev</string>
+    <string name="settings_pkb_layouts_add_failed">Razporeditve ni bilo mogoče prebrati</string>
+    <string name="settings_pkb_layouts_added">Razporeditev je dodana</string>
     <string name="settings_pkb_layouts_builtin_note">Te so priložene tipkovnici in jih ni mogoče spremeniti. Shranite eno kot datoteko, da začnete lastno razporeditev.</string>
     <string name="settings_pkb_layouts_category_builtin">Vgrajene</string>
     <string name="settings_pkb_layouts_category_custom">Prilagojene</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Želite izbrisati »%1$s«? Tega ni mogoče razveljaviti.</string>
     <string name="settings_pkb_layouts_delete_title">Izbriši razporeditev</string>
     <string name="settings_pkb_layouts_details">%1$s · tipke: %2$d</string>
-    <string name="settings_pkb_layouts_empty">Prilagojenih razporeditev še ni. Uvozite jo v razdelku Napredno &gt; Varnostno kopiranje in obnovitev &gt; Obnovi iz datoteke.</string>
+    <string name="settings_pkb_layouts_empty">Razporeditev po meri še ni. Dodajte eno iz datoteke.</string>
     <string name="settings_pkb_layouts_keypad">tipkovnica %1$s</string>
     <string name="settings_pkb_layouts_none">Ni v uporabi</string>
     <string name="settings_pkb_layouts_none_summary">Uporablja lastno razporeditev tipkovnice</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Deli %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Deli razporeditev</string>
     <string name="settings_pkb_layouts_share_failed">Razporeditve ni bilo mogoče deliti</string>
-    <string name="settings_pkb_layouts_summary">Spremenite črke, ki jih vnašajo fizične tipke</string>
+    <string name="settings_pkb_layouts_summary">Dodajajte, delite in brišite razporeditve črk za tipkovnico</string>
     <string name="settings_pkb_keypad_layout_title">Razporeditev tipkovnice</string>
     <string name="settings_pkb_keypad_layout_automatic">Samodejno (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Črke tipkovnice (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Vedno prikaži zaslonsko tipkovnico</string>
     <string name="settings_pkb_layouts_three_row">tipkovnica s tremi vrsticami</string>
-    <string name="settings_pkb_layouts_title">Fizične razporeditve</string>
+    <string name="settings_pkb_layouts_title">Razporeditve tipkovnice po meri</string>
     <string name="settings_pkb_multifunction_action_clipboard">Odložišče</string>
     <string name="settings_pkb_multifunction_action_ctrl">Tipka Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">Plošča emoji</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Prikaži prilagojeno stran s simboli pred privzeto</string>
     <string name="settings_symbol_custom_page_first_title">Prikaži stran najprej</string>
     <string name="settings_symbol_customization_summary">Prilagodite razporeditev strani s simboli</string>
-    <string name="settings_symbol_customization_title">Prilagajanje simbolov</string>
+    <string name="settings_symbol_customization_title">Stran s simboli po meri</string>
     <string name="settings_symbol_customize_page_summary">Uredite razporeditev prilagojene strani s simboli</string>
     <string name="settings_symbol_customize_page_title">Prilagodi stran s simboli</string>
     <string name="settings_symbol_enable_customization_summary">Prikaži tretjo stran s simboli s prilagojeno vsebino</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Skupno število stresljajev (v katero koli smer) za nadomestno dejanje</string>
     <string name="prefs_fallback_trigger_count_title">Število stresljajev za nadomestno dejanje</string>
     <string name="prefs_force_vkb_mode_summary_off">Uporabi zaznano vrsto naprave</string>
-    <string name="prefs_force_vkb_mode_summary_on">Naprava se obravnava samo kot zaslonska (potreben je ponovni zagon)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Naprava se obravnava samo kot zaslonska</string>
     <string name="prefs_force_vkb_mode_title">Vsili samo zaslonski način</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Preusmeri strojni gumb za mikrofon na sistemskega glasovnega pomočnika</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Tipka za mikrofon zažene glasovnega pomočnika</string>

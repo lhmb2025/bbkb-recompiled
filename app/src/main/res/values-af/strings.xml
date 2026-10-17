@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Toeganklikheidsdiens vir derdeparty-toetsborde</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB-helper</string>
     <string name="settings_pkb_layouts_any_language">Alle toetsborde</string>
+    <string name="settings_pkb_layouts_add">Voeg uitleg by</string>
+    <string name="settings_pkb_layouts_add_failed">Kon die uitleg nie lees nie</string>
+    <string name="settings_pkb_layouts_added">Uitleg bygevoeg</string>
     <string name="settings_pkb_layouts_builtin_note">Dié kom saam met die sleutelbord en kan nie verander word nie. Stoor een as \'n lêer om jou eie uitleg te begin.</string>
     <string name="settings_pkb_layouts_category_builtin">Ingebou</string>
     <string name="settings_pkb_layouts_category_custom">Pasgemaak</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Skrap “%1$s”? Dit kan nie ontdoen word nie.</string>
     <string name="settings_pkb_layouts_delete_title">Skrap uitleg</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d sleutels</string>
-    <string name="settings_pkb_layouts_empty">Nog geen pasgemaakte uitlegte nie. Voer een in met Gevorderd &gt; Rugsteun en herstel &gt; Herstel uit lêer.</string>
+    <string name="settings_pkb_layouts_empty">Nog geen pasgemaakte uitlegte nie. Voeg een vanaf \'n lêer by.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-sleutelbord</string>
     <string name="settings_pkb_layouts_none">Nie in gebruik nie</string>
     <string name="settings_pkb_layouts_none_summary">Gebruik die sleutelbord se eie uitleg</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Deel %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Deel uitleg</string>
     <string name="settings_pkb_layouts_share_failed">Kon nie die uitleg deel nie</string>
-    <string name="settings_pkb_layouts_summary">Verander die letters wat die fisiese sleutels tik</string>
+    <string name="settings_pkb_layouts_summary">Voeg letteruitlegte vir die sleutelbord by, deel en verwyder dit</string>
     <string name="settings_pkb_keypad_layout_title">Toetsbord-uitleg</string>
     <string name="settings_pkb_keypad_layout_automatic">Outomaties (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Toetsbordletters (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Wys altyd die skermtoetsbord</string>
     <string name="settings_pkb_layouts_three_row">sleutelbord met drie rye</string>
-    <string name="settings_pkb_layouts_title">Fisiese uitlegte</string>
+    <string name="settings_pkb_layouts_title">Pasgemaakte sleutelborduitlegte</string>
     <string name="settings_pkb_multifunction_action_clipboard">Knipbord</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl-toets</string>
     <string name="settings_pkb_multifunction_action_emoji">Emojibord</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Wys die pasgemaakte simboolbladsy voor die verstekbladsy</string>
     <string name="settings_symbol_custom_page_first_title">Wys bladsy eerste</string>
     <string name="settings_symbol_customization_summary">Pasmaak die uitleg van die toetsbord se simboolbladsy</string>
-    <string name="settings_symbol_customization_title">Simboolaanpassing</string>
+    <string name="settings_symbol_customization_title">Pasgemaakte simboolbladsy</string>
     <string name="settings_symbol_customize_page_summary">Redigeer die uitleg van die pasgemaakte simboolbladsy</string>
     <string name="settings_symbol_customize_page_title">Pasmaak simboolbladsy</string>
     <string name="settings_symbol_enable_customization_summary">Wys ’n derde simboolbladsy met pasgemaakte inhoud</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Totale aantal skuddings (enige rigting) vir die terugvalaksie</string>
     <string name="prefs_fallback_trigger_count_title">Snellertelling vir terugvalaksie</string>
     <string name="prefs_force_vkb_mode_summary_off">Gebruik die bespeurde toesteltipe</string>
-    <string name="prefs_force_vkb_mode_summary_on">Die toestel word as slegs tasskerm hanteer (herbegin word vereis)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Die toestel word as slegs tasskerm hanteer</string>
     <string name="prefs_force_vkb_mode_title">Dwing slegs-tasskerm-modus af</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Stuur die hardeware-mikrofoonknoppie na die stelsel se stemassistent</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Mikrofoontoets sneller die stemassistent</string>

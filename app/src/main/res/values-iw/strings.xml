@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">שירות נגישות עבור מקלדות של צד שלישי</string>
     <string name="settings_pkb_keyboard_helper_title">העוזר של BBKB</string>
     <string name="settings_pkb_layouts_any_language">כל המקלדות</string>
+    <string name="settings_pkb_layouts_add">הוספת פריסה</string>
+    <string name="settings_pkb_layouts_add_failed">לא ניתן לקרוא את הפריסה</string>
+    <string name="settings_pkb_layouts_added">הפריסה נוספה</string>
     <string name="settings_pkb_layouts_builtin_note">הפריסות האלה מגיעות עם המקלדת ואי אפשר לשנות אותן. אפשר לשמור אחת כקובץ כדי להתחיל פריסה משלך.</string>
     <string name="settings_pkb_layouts_category_builtin">מובנות</string>
     <string name="settings_pkb_layouts_category_custom">מותאמות אישית</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">למחוק את \"%1$s\"? לא ניתן לבטל פעולה זו.</string>
     <string name="settings_pkb_layouts_delete_title">מחיקת פריסה</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d מקשים</string>
-    <string name="settings_pkb_layouts_empty">עדיין אין פריסות מותאמות אישית. ייבא פריסה דרך מתקדם &gt; גיבוי ושחזור &gt; שחזור מקובץ.</string>
+    <string name="settings_pkb_layouts_empty">אין עדיין פריסות מותאמות אישית. הוסיפו אחת מקובץ.</string>
     <string name="settings_pkb_layouts_keypad">מקלדת %1$s</string>
     <string name="settings_pkb_layouts_none">לא בשימוש</string>
     <string name="settings_pkb_layouts_none_summary">נעשה שימוש בפריסה של המקלדת עצמה</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">שתף את %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">שיתוף פריסה</string>
     <string name="settings_pkb_layouts_share_failed">לא ניתן לשתף את הפריסה</string>
-    <string name="settings_pkb_layouts_summary">שינוי האותיות שהמקשים הפיזיים מקלידים</string>
+    <string name="settings_pkb_layouts_summary">הוספה, שיתוף ומחיקה של פריסות אותיות למקלדת</string>
     <string name="settings_pkb_keypad_layout_title">פריסת המקלדת</string>
     <string name="settings_pkb_keypad_layout_automatic">אוטומטי (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">אותיות המקלדת (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">הצג תמיד את המקלדת שעל המסך</string>
     <string name="settings_pkb_layouts_three_row">מקלדת בת שלוש שורות</string>
-    <string name="settings_pkb_layouts_title">פריסות פיזיות</string>
+    <string name="settings_pkb_layouts_title">פריסות מקלדת מותאמות אישית</string>
     <string name="settings_pkb_multifunction_action_clipboard">לוח העריכה</string>
     <string name="settings_pkb_multifunction_action_ctrl">מקש Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">לוח אמוג\'י</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">הצג את דף הסמלים המותאם אישית לפני דף ברירת המחדל</string>
     <string name="settings_symbol_custom_page_first_title">הצג את הדף ראשון</string>
     <string name="settings_symbol_customization_summary">התאם אישית את פריסת דף הסמלים של המקלדת</string>
-    <string name="settings_symbol_customization_title">התאמת סמלים אישית</string>
+    <string name="settings_symbol_customization_title">דף סמלים מותאם אישית</string>
     <string name="settings_symbol_customize_page_summary">ערוך את פריסת דף הסמלים המותאם אישית</string>
     <string name="settings_symbol_customize_page_title">התאם אישית את דף הסמלים</string>
     <string name="settings_symbol_enable_customization_summary">הצג דף סמלים שלישי עם תוכן מותאם אישית</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">סך הניעורים (בכל כיוון) לפעולת ברירת המחדל</string>
     <string name="prefs_fallback_trigger_count_title">מספר ניעורים לפעולת ברירת מחדל</string>
     <string name="prefs_force_vkb_mode_summary_off">השתמש בסוג המכשיר שזוהה</string>
-    <string name="prefs_force_vkb_mode_summary_on">המכשיר נחשב למכשיר מסך מגע בלבד (נדרשת הפעלה מחדש)</string>
+    <string name="prefs_force_vkb_mode_summary_on">המכשיר נחשב למכשיר מסך מגע בלבד</string>
     <string name="prefs_force_vkb_mode_title">אלץ מצב מסך מגע בלבד</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">נתב את לחצן המיקרופון החומרתי לעוזר הקולי של המערכת</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">מקש המיקרופון מפעיל את העוזר הקולי</string>

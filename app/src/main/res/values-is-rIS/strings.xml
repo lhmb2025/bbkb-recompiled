@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">Aðgengisþjónusta fyrir lyklaborð frá þriðja aðila</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB hjálp</string>
     <string name="settings_pkb_layouts_any_language">Öll lyklaborð</string>
+    <string name="settings_pkb_layouts_add">Bæta við uppsetningu</string>
+    <string name="settings_pkb_layouts_add_failed">Ekki tókst að lesa uppsetninguna</string>
+    <string name="settings_pkb_layouts_added">Uppsetningu bætt við</string>
     <string name="settings_pkb_layouts_builtin_note">Þessar fylgja lyklaborðinu og ekki er hægt að breyta þeim. Vistaðu eina sem skrá til að byrja á eigin uppsetningu.</string>
     <string name="settings_pkb_layouts_category_builtin">Innbyggðar</string>
     <string name="settings_pkb_layouts_category_custom">Sérsniðnar</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">Eyða „%1$s“? Ekki er hægt að afturkalla þetta.</string>
     <string name="settings_pkb_layouts_delete_title">Eyða uppsetningu</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d lyklar</string>
-    <string name="settings_pkb_layouts_empty">Engar sérsniðnar uppsetningar enn. Flyttu eina inn með Ítarlegt &gt; Öryggisafrit og endurheimt &gt; Endurheimta úr skrá.</string>
+    <string name="settings_pkb_layouts_empty">Engar sérsniðnar uppsetningar enn. Bættu einni við úr skrá.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-lyklaborð</string>
     <string name="settings_pkb_layouts_none">Ekki í notkun</string>
     <string name="settings_pkb_layouts_none_summary">Notar eigin uppsetningu lyklaborðsins</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">Deila %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">Deila uppsetningu</string>
     <string name="settings_pkb_layouts_share_failed">Ekki tókst að deila uppsetningunni</string>
-    <string name="settings_pkb_layouts_summary">Breyta stöfunum sem vélbúnaðarlyklarnir slá inn</string>
+    <string name="settings_pkb_layouts_summary">Bæta við, deila og eyða stafauppsetningum fyrir lyklaborðið</string>
     <string name="settings_pkb_keypad_layout_title">Uppsetning lyklaborðs</string>
     <string name="settings_pkb_keypad_layout_automatic">Sjálfvirkt (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Stafir lyklaborðsins (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">Sýna alltaf lyklaborð á skjá</string>
     <string name="settings_pkb_layouts_three_row">þriggja raða lyklaborð</string>
-    <string name="settings_pkb_layouts_title">Vélbúnaðaruppsetningar</string>
+    <string name="settings_pkb_layouts_title">Sérsniðnar lyklaborðsuppsetningar</string>
     <string name="settings_pkb_multifunction_action_clipboard">Klippiborð</string>
     <string name="settings_pkb_multifunction_action_ctrl">Ctrl-lykill</string>
     <string name="settings_pkb_multifunction_action_emoji">Emoji-spjald</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">Sýna sérsniðnu táknsíðuna á undan sjálfgefnu síðunni</string>
     <string name="settings_symbol_custom_page_first_title">Sýna síðu fyrst</string>
     <string name="settings_symbol_customization_summary">Sérsníða uppsetningu táknsíðu lyklaborðsins</string>
-    <string name="settings_symbol_customization_title">Sérsnið tákna</string>
+    <string name="settings_symbol_customization_title">Sérsniðin táknasíða</string>
     <string name="settings_symbol_customize_page_summary">Breyta uppsetningu sérsniðnu táknsíðunnar</string>
     <string name="settings_symbol_customize_page_title">Sérsníða táknsíðu</string>
     <string name="settings_symbol_enable_customization_summary">Sýna þriðju táknsíðu með sérsniðnu efni</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">Heildarfjöldi hristinga (í hvaða átt sem er) fyrir varaaðgerð</string>
     <string name="prefs_fallback_trigger_count_title">Fjöldi hristinga fyrir varaaðgerð</string>
     <string name="prefs_force_vkb_mode_summary_off">Nota greinda tegund tækis</string>
-    <string name="prefs_force_vkb_mode_summary_on">Tækið meðhöndlað sem eingöngu með snertiskjá (þarf að endurræsa)</string>
+    <string name="prefs_force_vkb_mode_summary_on">Tækið meðhöndlað sem eingöngu með snertiskjá</string>
     <string name="prefs_force_vkb_mode_title">Þvinga ham fyrir eingöngu snertiskjá</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">Beina vélbúnaðarhljóðnemahnappi á raddaðstoð kerfisins</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">Hljóðnemalykill ræsir raddaðstoð</string>

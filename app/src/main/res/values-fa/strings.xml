@@ -216,6 +216,9 @@
     <string name="settings_pkb_keyboard_helper_summary">سرویس دسترس‌پذیری برای صفحه کلیدهای دیگر</string>
     <string name="settings_pkb_keyboard_helper_title">دستیار BBKB</string>
     <string name="settings_pkb_layouts_any_language">همه صفحه کلیدها</string>
+    <string name="settings_pkb_layouts_add">افزودن چیدمان</string>
+    <string name="settings_pkb_layouts_add_failed">چیدمان خوانده نشد</string>
+    <string name="settings_pkb_layouts_added">چیدمان اضافه شد</string>
     <string name="settings_pkb_layouts_builtin_note">این‌ها همراه صفحه‌کلید ارائه می‌شوند و قابل تغییر نیستند. یکی را به‌صورت فایل ذخیره کنید تا چیدمان خودتان را شروع کنید.</string>
     <string name="settings_pkb_layouts_category_builtin">داخلی</string>
     <string name="settings_pkb_layouts_category_custom">سفارشی</string>
@@ -223,7 +226,7 @@
     <string name="settings_pkb_layouts_delete_message">«%1$s» حذف شود؟ این کار برگشت‌پذیر نیست.</string>
     <string name="settings_pkb_layouts_delete_title">حذف چیدمان</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d کلید</string>
-    <string name="settings_pkb_layouts_empty">هنوز هیچ چیدمان سفارشی‌ای وجود ندارد. یکی را از پیشرفته &gt; پشتیبان‌گیری و بازیابی &gt; بازیابی از فایل وارد کنید.</string>
+    <string name="settings_pkb_layouts_empty">هنوز چیدمان سفارشی وجود ندارد. یکی را از فایل اضافه کنید.</string>
     <string name="settings_pkb_layouts_keypad">صفحه کلید %1$s</string>
     <string name="settings_pkb_layouts_none">استفاده نمی‌شود</string>
     <string name="settings_pkb_layouts_none_summary">از چیدمان خود صفحه‌کلید استفاده می‌کند</string>
@@ -234,13 +237,13 @@
     <string name="settings_pkb_layouts_share">اشتراک‌گذاری %1$s</string>
     <string name="settings_pkb_layouts_share_chooser">اشتراک‌گذاری چیدمان</string>
     <string name="settings_pkb_layouts_share_failed">اشتراک‌گذاری چیدمان ممکن نشد</string>
-    <string name="settings_pkb_layouts_summary">تغییر حروفی که کلیدهای فیزیکی تایپ می‌کنند</string>
+    <string name="settings_pkb_layouts_summary">چیدمان‌های حروف صفحه‌کلید را اضافه، هم‌رسانی و حذف کنید</string>
     <string name="settings_pkb_keypad_layout_title">چیدمان صفحه‌کلید</string>
     <string name="settings_pkb_keypad_layout_automatic">خودکار (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">حروف صفحه‌کلید (%1$s)</string>
     <string name="languages_hub_always_on_screen_title">همیشه صفحه‌کلید روی صفحه نمایش داده شود</string>
     <string name="settings_pkb_layouts_three_row">صفحه کلید سه‌ردیفه</string>
-    <string name="settings_pkb_layouts_title">چیدمان‌های فیزیکی</string>
+    <string name="settings_pkb_layouts_title">چیدمان‌های سفارشی صفحه‌کلید</string>
     <string name="settings_pkb_multifunction_action_clipboard">بریده‌دان</string>
     <string name="settings_pkb_multifunction_action_ctrl">کلید Ctrl</string>
     <string name="settings_pkb_multifunction_action_emoji">صفحه Emoji</string>
@@ -323,7 +326,7 @@
     <string name="settings_symbol_custom_page_first_summary">نمایش صفحه نماد سفارشی پیش از صفحه پیش‌فرض</string>
     <string name="settings_symbol_custom_page_first_title">نمایش این صفحه در ابتدا</string>
     <string name="settings_symbol_customization_summary">سفارشی‌سازی چیدمان صفحه نمادهای صفحه کلید</string>
-    <string name="settings_symbol_customization_title">سفارشی‌سازی نمادها</string>
+    <string name="settings_symbol_customization_title">صفحه نمادهای سفارشی</string>
     <string name="settings_symbol_customize_page_summary">ویرایش چیدمان صفحه نماد سفارشی</string>
     <string name="settings_symbol_customize_page_title">سفارشی‌سازی صفحه نمادها</string>
     <string name="settings_symbol_enable_customization_summary">نمایش صفحه نماد سوم با محتوای سفارشی</string>
@@ -575,7 +578,7 @@
     <string name="prefs_fallback_trigger_count_summary">مجموع تکان‌ها (در هر جهت) برای کنش جایگزین</string>
     <string name="prefs_fallback_trigger_count_title">تعداد تکان برای کنش جایگزین</string>
     <string name="prefs_force_vkb_mode_summary_off">استفاده از نوع دستگاه تشخیص‌داده‌شده</string>
-    <string name="prefs_force_vkb_mode_summary_on">دستگاه فقط لمسی در نظر گرفته می‌شود (راه‌اندازی دوباره لازم است)</string>
+    <string name="prefs_force_vkb_mode_summary_on">دستگاه فقط لمسی در نظر گرفته می‌شود</string>
     <string name="prefs_force_vkb_mode_title">اجبار به حالت فقط لمسی</string>
     <string name="prefs_mic_key_triggers_voice_assistant_summary">هدایت دکمه سخت‌افزاری میکروفون به دستیار صوتی سیستم</string>
     <string name="prefs_mic_key_triggers_voice_assistant_title">کلید میکروفون دستیار صوتی را اجرا کند</string>
