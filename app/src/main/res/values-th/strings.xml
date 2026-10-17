@@ -245,7 +245,8 @@
     <string name="settings_pkb_multifunction_action_emoji">บอร์ดอีโมจิ</string>
     <string name="settings_pkb_multifunction_action_fcc">การควบคุมเคอร์เซอร์</string>
     <string name="settings_pkb_multifunction_action_input_menu">แสดงหรือซ่อนเมนูการป้อนข้อมูล</string>
-    <string name="settings_pkb_multifunction_action_language_switch">สลับภาษา</string>
+    <string name="settings_pkb_multifunction_action_language_quick_switch">สลับภาษาด่วน</string>
+    <string name="settings_pkb_multifunction_action_language_switch">แสดง/ซ่อนแถบภาษา</string>
     <string name="settings_pkb_multifunction_action_number_pad">แป้นตัวเลข</string>
     <string name="settings_pkb_multifunction_action_symbol">แป้นพิมพ์สัญลักษณ์</string>
     <string name="settings_pkb_multifunction_key_title">ปุ่มอเนกประสงค์</string>

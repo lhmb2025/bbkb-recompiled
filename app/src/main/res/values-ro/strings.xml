@@ -245,7 +245,8 @@
     <string name="settings_pkb_multifunction_action_emoji">Tastatură emoji</string>
     <string name="settings_pkb_multifunction_action_fcc">Control cursor</string>
     <string name="settings_pkb_multifunction_action_input_menu">Afișează sau ascunde meniul de introducere</string>
-    <string name="settings_pkb_multifunction_action_language_switch">Schimbați limba</string>
+    <string name="settings_pkb_multifunction_action_language_quick_switch">Comutare rapidă a limbii</string>
+    <string name="settings_pkb_multifunction_action_language_switch">Afișează/ascunde bara de limbi</string>
     <string name="settings_pkb_multifunction_action_number_pad">Tastatură numerică</string>
     <string name="settings_pkb_multifunction_action_symbol">Tastatură de simboluri</string>
     <string name="settings_pkb_multifunction_key_title">Tastă multifuncțională</string>

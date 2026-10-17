@@ -245,7 +245,8 @@
     <string name="settings_pkb_multifunction_action_emoji">Emoji-panel</string>
     <string name="settings_pkb_multifunction_action_fcc">Markørstyring</string>
     <string name="settings_pkb_multifunction_action_input_menu">Vis eller skjul inputmenuen</string>
-    <string name="settings_pkb_multifunction_action_language_switch">Skift sprog</string>
+    <string name="settings_pkb_multifunction_action_language_quick_switch">Hurtigt sprogskift</string>
+    <string name="settings_pkb_multifunction_action_language_switch">Vis/skjul sproglinjen</string>
     <string name="settings_pkb_multifunction_action_number_pad">Numerisk tastatur</string>
     <string name="settings_pkb_multifunction_action_symbol">Symboltastatur</string>
     <string name="settings_pkb_multifunction_key_title">Multifunktionstast</string>

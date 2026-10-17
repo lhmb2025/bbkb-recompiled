@@ -245,7 +245,8 @@
     <string name="settings_pkb_multifunction_action_emoji">Эмодзи панели</string>
     <string name="settings_pkb_multifunction_action_fcc">Курсорду башкаруу</string>
     <string name="settings_pkb_multifunction_action_input_menu">Киргизүү менюсун көрсөтүү же жашыруу</string>
-    <string name="settings_pkb_multifunction_action_language_switch">Тилди алмаштыруу</string>
+    <string name="settings_pkb_multifunction_action_language_quick_switch">Тилди тез алмаштыруу</string>
+    <string name="settings_pkb_multifunction_action_language_switch">Тил тилкесин көрсөтүү/жашыруу</string>
     <string name="settings_pkb_multifunction_action_number_pad">Сандык панель</string>
     <string name="settings_pkb_multifunction_action_symbol">Символ баскычтобу</string>
     <string name="settings_pkb_multifunction_key_title">Көп функциялуу баскыч</string>

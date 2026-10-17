@@ -245,7 +245,8 @@
     <string name="settings_pkb_multifunction_action_emoji">Emojipaneeli</string>
     <string name="settings_pkb_multifunction_action_fcc">Kohdistimen ohjaus</string>
     <string name="settings_pkb_multifunction_action_input_menu">Näytä tai piilota syöttövalikko</string>
-    <string name="settings_pkb_multifunction_action_language_switch">Vaihda kieli</string>
+    <string name="settings_pkb_multifunction_action_language_quick_switch">Pikakielenvaihto</string>
+    <string name="settings_pkb_multifunction_action_language_switch">Näytä tai piilota kielipalkki</string>
     <string name="settings_pkb_multifunction_action_number_pad">Numeronäppäimistö</string>
     <string name="settings_pkb_multifunction_action_symbol">Symbolinäppäimistö</string>
     <string name="settings_pkb_multifunction_key_title">Monitoiminäppäin</string>

@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -257,10 +258,12 @@ fun ListPreference(
             onDismissRequest = { showDialog = false },
             title = { Text(title, style = MaterialTheme.typography.headlineSmall) },
             text = {
-                // Scrollable so long option lists (e.g. the multifunction-key picker) don't
-                // overflow the dialog's max height and clip the last row into a text-less
-                // "bubble". AlertDialog bounds the height; verticalScroll makes it reachable.
-                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                // Scrollable, and never taller than about half the screen, so long option lists
+                // (the multifunction-key and Alt+Sym pickers) keep their title and Cancel button
+                // on a short screen and scroll inside; the dialog's own bound alone let the last
+                // rows clip into text-less "bubbles" on the KEY2.
+                val maxListHeight = (LocalConfiguration.current.screenHeightDp * 0.55f).dp
+                Column(modifier = Modifier.heightIn(max = maxListHeight).verticalScroll(rememberScrollState())) {
                     entries.forEachIndexed { index, entry ->
                         Row(
                             modifier = Modifier

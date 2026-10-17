@@ -56,6 +56,7 @@ public class AltSymShortcutHandler {
     public static final String ACTION_FCC = MultifunctionKeyHandler.ACTION_FCC;
     public static final String ACTION_NUMBER_PAD = MultifunctionKeyHandler.ACTION_NUMBER_PAD;
     public static final String ACTION_LANGUAGE_SWITCH = MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH;
+    public static final String ACTION_LANGUAGE_QUICK_SWITCH = MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH;
     public static final String ACTION_SYMBOL_KEYBOARD = MultifunctionKeyHandler.ACTION_SYMBOL_KEYBOARD;
     public static final String ACTION_TOGGLE_UIM = MultifunctionKeyHandler.ACTION_TOGGLE_UIM;
 
@@ -77,7 +78,10 @@ public class AltSymShortcutHandler {
      */
     public interface ActionCallback {
         void openSymbolKeyboard();
+        /** Toggle the language bar on the suggestion strip. */
         void switchLanguage();
+        /** Jump to the other of the last two languages. */
+        void quickSwitchLanguage();
         void toggleEmojiPicker();
         void toggleClipboard();
         void toggleFcc();
@@ -188,6 +192,9 @@ public class AltSymShortcutHandler {
                 break;
             case ACTION_LANGUAGE_SWITCH:
                 callback.switchLanguage();
+                break;
+            case ACTION_LANGUAGE_QUICK_SWITCH:
+                callback.quickSwitchLanguage();
                 break;
             case ACTION_EMOJI_BOARD:
                 callback.toggleEmojiPicker();

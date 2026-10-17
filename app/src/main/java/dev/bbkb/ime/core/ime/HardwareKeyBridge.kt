@@ -81,6 +81,9 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
             override fun switchLanguage() {
                 ime.switchToNextSubtype(InputSource.HARDWARE)
             }
+            override fun quickSwitchLanguage() {
+                ime.updateSuggestionsFromSubtype(InputSource.HARDWARE)
+            }
             override fun toggleEmojiPicker() {
                 if (canShowBoard()) {
                     val uibm = ime.getKeyboardSwitcher().getUnifiedInputBoardManager()

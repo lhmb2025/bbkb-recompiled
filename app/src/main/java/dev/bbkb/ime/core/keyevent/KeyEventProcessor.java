@@ -677,6 +677,10 @@ public class KeyEventProcessor {
                 final String multifunctionAction = key.getMultifunctionAction();
                 switch (multifunctionAction) {
                     case MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH:
+                        // The language bar on the strip, as Alt+Sym's action of the same name.
+                        ime.switchToNextSubtype(InputSource.HARDWARE);
+                        break;
+                    case MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH:
                         ime.updateSuggestionsFromSubtype(InputSource.HARDWARE);
                         break;
                     case MultifunctionKeyHandler.ACTION_CLIPBOARD_BOARD:

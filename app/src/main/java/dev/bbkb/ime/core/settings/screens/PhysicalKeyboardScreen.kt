@@ -221,6 +221,7 @@ private fun sharedShortcutActions(context: Context) = listOf(
     MultifunctionKeyHandler.ACTION_FCC to R.string.settings_pkb_multifunction_action_fcc,
     MultifunctionKeyHandler.ACTION_NUMBER_PAD to R.string.settings_pkb_multifunction_action_number_pad,
     MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH to R.string.settings_pkb_multifunction_action_language_switch,
+    MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH to R.string.settings_pkb_multifunction_action_language_quick_switch,
     MultifunctionKeyHandler.ACTION_SYMBOL_KEYBOARD to R.string.settings_pkb_multifunction_action_symbol,
     // Reaches the menu where "Show the suggestion bar" leaves no hamburger button to tap.
     MultifunctionKeyHandler.ACTION_TOGGLE_UIM to R.string.settings_pkb_multifunction_action_input_menu,

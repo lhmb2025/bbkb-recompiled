@@ -182,7 +182,7 @@ class BoardKeyPairingCharacterisationTest {
 
     @Test
     fun `an armed multifunction key dispatches its action on release`() {
-        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH)
+        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH)
         arm(PendingKeyAction.MULTIFUNCTION, MIC_KEY, MIC_SCANCODE)
 
         processor.onKeyUpInternal(MIC_KEY, keyUp(MIC_KEY, MIC_SCANCODE))
@@ -385,7 +385,7 @@ class BoardKeyPairingCharacterisationTest {
 
     @Test
     fun `a spent multifunction arm is not spent twice`() {
-        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH)
+        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH)
         arm(PendingKeyAction.MULTIFUNCTION, MIC_KEY, MIC_SCANCODE)
 
         processor.onKeyUpInternal(MIC_KEY, keyUp(MIC_KEY, MIC_SCANCODE))
@@ -428,7 +428,7 @@ class BoardKeyPairingCharacterisationTest {
 
     @Test
     fun `an unarmed multifunction key-up dispatches nothing`() {
-        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH)
+        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH)
 
         processor.onKeyUpInternal(MIC_KEY, keyUp(MIC_KEY, MIC_SCANCODE))
 
@@ -517,7 +517,7 @@ class BoardKeyPairingCharacterisationTest {
 
     @Test
     fun `a remap to a non-physical event does not spend a pending multifunction action`() {
-        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH)
+        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH)
         arm(PendingKeyAction.MULTIFUNCTION, MIC_KEY, MIC_SCANCODE)
         val raw = keyUp(MIC_KEY, MIC_SCANCODE)
         val remapped = keyUp(MIC_KEY, MIC_SCANCODE)
@@ -604,7 +604,7 @@ class BoardKeyPairingCharacterisationTest {
      */
     @Test
     fun `a full modifier reset discards a pending multifunction action`() {
-        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH)
+        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH)
         arm(PendingKeyAction.MULTIFUNCTION, MIC_KEY, MIC_SCANCODE)
 
         tracker.resetAllMetaState()
@@ -649,7 +649,7 @@ class BoardKeyPairingCharacterisationTest {
 
     @Test
     fun `a multifunction key-down does not dismiss boards`() {
-        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH)
+        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH)
 
         processor.onKeyDownInternal(MIC_KEY, keyDown(MIC_KEY, MIC_SCANCODE))
 

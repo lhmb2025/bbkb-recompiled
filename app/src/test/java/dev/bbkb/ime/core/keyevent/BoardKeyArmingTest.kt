@@ -206,7 +206,7 @@ class BoardKeyArmingTest {
 
     @Test
     fun `a KEY2 multifunction key set to switch language arms the multifunction action`() {
-        installKey2(multifunctionAction = MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH)
+        installKey2(multifunctionAction = MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH)
 
         val result = convert(down(KEY2_MULTIFUNCTION_KEYCODE, KEY2_MULTIFUNCTION_SCANCODE))
 
@@ -270,7 +270,7 @@ class BoardKeyArmingTest {
     /** The KEY2's dedicated mic key (keyCode 7, role BOARD_VOICE, altChar '0'). */
     @Test
     fun `the KEY2 mic key arms voice input and Alt plus it types a zero`() {
-        installKey2(multifunctionAction = MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH)
+        installKey2(multifunctionAction = MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH)
 
         convert(down(MIC_KEYCODE_7, /* scanCode */ 8))
         assertArmedOnly(PendingKeyAction.VOICE_INPUT)
@@ -408,7 +408,7 @@ class BoardKeyArmingTest {
     /** An ordinary letter arms nothing at all. */
     @Test
     fun `an ordinary letter arms nothing`() {
-        installKey2(multifunctionAction = MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH)
+        installKey2(multifunctionAction = MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH)
 
         convert(down(KeyEvent.KEYCODE_A, /* scanCode */ 30))
 

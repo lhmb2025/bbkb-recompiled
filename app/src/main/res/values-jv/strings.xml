@@ -245,7 +245,8 @@
     <string name="settings_pkb_multifunction_action_emoji">Papan emoji</string>
     <string name="settings_pkb_multifunction_action_fcc">Kontrol kursor</string>
     <string name="settings_pkb_multifunction_action_input_menu">Tuduhake utawa dhelikake menu input</string>
-    <string name="settings_pkb_multifunction_action_language_switch">Ganti basa</string>
+    <string name="settings_pkb_multifunction_action_language_quick_switch">Ganti basa cepet</string>
+    <string name="settings_pkb_multifunction_action_language_switch">Tampilake/dhelikake bar basa</string>
     <string name="settings_pkb_multifunction_action_number_pad">Papan angka</string>
     <string name="settings_pkb_multifunction_action_symbol">Papan tombol simbol</string>
     <string name="settings_pkb_multifunction_key_title">Tombol multifungsi</string>

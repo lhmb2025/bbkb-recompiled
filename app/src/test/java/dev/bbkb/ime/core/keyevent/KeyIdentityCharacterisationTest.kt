@@ -329,7 +329,7 @@ class KeyIdentityCharacterisationTest {
 
     @Test
     fun `a MULTIFUNCTION key set to switch language switches language on release`() {
-        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH)
+        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH)
         arm(PendingKeyAction.MULTIFUNCTION)
 
         processor.onKeyUpInternal(KeyEvent.KEYCODE_7, keyUp(KeyEvent.KEYCODE_7))
@@ -387,7 +387,7 @@ class KeyIdentityCharacterisationTest {
 
     @Test
     fun `a MULTIFUNCTION key-down leaves the open boards alone`() {
-        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH)
+        mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH)
 
         processor.onKeyDownInternal(KeyEvent.KEYCODE_7, keyDown(KeyEvent.KEYCODE_7))
 

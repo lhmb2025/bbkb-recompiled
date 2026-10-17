@@ -245,7 +245,8 @@
     <string name="settings_pkb_multifunction_action_emoji">Emojibord</string>
     <string name="settings_pkb_multifunction_action_fcc">Wyserbeheer</string>
     <string name="settings_pkb_multifunction_action_input_menu">Wys of versteek die invoerkieslys</string>
-    <string name="settings_pkb_multifunction_action_language_switch">Wissel taal</string>
+    <string name="settings_pkb_multifunction_action_language_quick_switch">Taal-vinnige-wissel</string>
+    <string name="settings_pkb_multifunction_action_language_switch">Wissel taalbalk</string>
     <string name="settings_pkb_multifunction_action_number_pad">Syferblok</string>
     <string name="settings_pkb_multifunction_action_symbol">Simbooltoetsbord</string>
     <string name="settings_pkb_multifunction_key_title">Multifunksietoets</string>

@@ -43,7 +43,10 @@ public final class MultifunctionKeyHandler {
     public static final String ACTION_FCC = "fcc";
     /** The Number Pad board (UIM keycode -46). */
     public static final String ACTION_NUMBER_PAD = "number_pad";
+    /** The language bar on the suggestion strip (toggled). */
     public static final String ACTION_LANGUAGE_SWITCH = "language_switch";
+    /** Straight to the other of the last two languages, as the on-screen quick-switch key does. */
+    public static final String ACTION_LANGUAGE_QUICK_SWITCH = "language_quick_switch";
     public static final String ACTION_SYMBOL_KEYBOARD = "symbol_keyboard";
     /**
      * Show or hide the unified input menu bar, even where its settings keep it off ("Enable

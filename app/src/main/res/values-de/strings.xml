@@ -245,7 +245,8 @@
     <string name="settings_pkb_multifunction_action_emoji">Emoji-Tastatur</string>
     <string name="settings_pkb_multifunction_action_fcc">Cursorsteuerung</string>
     <string name="settings_pkb_multifunction_action_input_menu">Eingabemenü ein- oder ausblenden</string>
-    <string name="settings_pkb_multifunction_action_language_switch">Sprache wechseln</string>
+    <string name="settings_pkb_multifunction_action_language_quick_switch">Schneller Sprachwechsel</string>
+    <string name="settings_pkb_multifunction_action_language_switch">Sprachleiste ein-/ausblenden</string>
     <string name="settings_pkb_multifunction_action_number_pad">Ziffernblock</string>
     <string name="settings_pkb_multifunction_action_symbol">Symboltastatur</string>
     <string name="settings_pkb_multifunction_key_title">Multifunktionstaste</string>

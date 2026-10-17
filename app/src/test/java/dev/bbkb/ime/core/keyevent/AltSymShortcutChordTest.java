@@ -86,6 +86,7 @@ public class AltSymShortcutChordTest {
 
         @Override public void openSymbolKeyboard() { symbolKeyboard++; }
         @Override public void switchLanguage() { languageSwitch++; }
+        @Override public void quickSwitchLanguage() { languageSwitch++; }
         @Override public void toggleEmojiPicker() { emojiPicker++; }
         @Override public void toggleClipboard() { clipboard++; }
         @Override public void toggleFcc() { fcc++; }

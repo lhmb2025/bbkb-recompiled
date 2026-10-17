@@ -245,7 +245,8 @@
     <string name="settings_pkb_multifunction_action_emoji">इमोजी बोर्ड</string>
     <string name="settings_pkb_multifunction_action_fcc">कर्सर नियंत्रण</string>
     <string name="settings_pkb_multifunction_action_input_menu">इनपुट मेनू दाखवा किंवा लपवा</string>
-    <string name="settings_pkb_multifunction_action_language_switch">भाषा बदला</string>
+    <string name="settings_pkb_multifunction_action_language_quick_switch">भाषा त्वरित बदल</string>
+    <string name="settings_pkb_multifunction_action_language_switch">भाषा पट्टी दाखवा/लपवा</string>
     <string name="settings_pkb_multifunction_action_number_pad">नंबर पॅड</string>
     <string name="settings_pkb_multifunction_action_symbol">चिन्ह कीबोर्ड</string>
     <string name="settings_pkb_multifunction_key_title">बहुकार्यी की</string>

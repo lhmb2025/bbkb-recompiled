@@ -245,7 +245,8 @@
     <string name="settings_pkb_multifunction_action_emoji">Tabela e emoji-ve</string>
     <string name="settings_pkb_multifunction_action_fcc">Kontrolli i kursorit</string>
     <string name="settings_pkb_multifunction_action_input_menu">Shfaq ose fshih menynë e shkrimit</string>
-    <string name="settings_pkb_multifunction_action_language_switch">Ndërro gjuhën</string>
+    <string name="settings_pkb_multifunction_action_language_quick_switch">Ndërrim i shpejtë i gjuhës</string>
+    <string name="settings_pkb_multifunction_action_language_switch">Shfaq/fshih shiritin e gjuhëve</string>
     <string name="settings_pkb_multifunction_action_number_pad">Tastiera numerike</string>
     <string name="settings_pkb_multifunction_action_symbol">Tastiera e simboleve</string>
     <string name="settings_pkb_multifunction_key_title">Tasti shumëfunksionësh</string>

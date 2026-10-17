@@ -245,7 +245,8 @@
     <string name="settings_pkb_multifunction_action_emoji">Emotikonide paneel</string>
     <string name="settings_pkb_multifunction_action_fcc">Kursori juhtimine</string>
     <string name="settings_pkb_multifunction_action_input_menu">Kuva või peida sisestusmenüü</string>
-    <string name="settings_pkb_multifunction_action_language_switch">Vaheta keelt</string>
+    <string name="settings_pkb_multifunction_action_language_quick_switch">Kiire keelevahetus</string>
+    <string name="settings_pkb_multifunction_action_language_switch">Keeleriba kuvamine/peitmine</string>
     <string name="settings_pkb_multifunction_action_number_pad">Numbriklahvistik</string>
     <string name="settings_pkb_multifunction_action_symbol">Sümboliklaviatuur</string>
     <string name="settings_pkb_multifunction_key_title">Multifunktsionaalne klahv</string>

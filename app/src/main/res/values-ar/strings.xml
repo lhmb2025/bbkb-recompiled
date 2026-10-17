@@ -245,7 +245,8 @@
     <string name="settings_pkb_multifunction_action_emoji">لوحة الرموز التعبيرية</string>
     <string name="settings_pkb_multifunction_action_fcc">التحكم بالمؤشر</string>
     <string name="settings_pkb_multifunction_action_input_menu">إظهار قائمة الإدخال أو إخفاؤها</string>
-    <string name="settings_pkb_multifunction_action_language_switch">تبديل اللغة</string>
+    <string name="settings_pkb_multifunction_action_language_quick_switch">التبديل السريع للغة</string>
+    <string name="settings_pkb_multifunction_action_language_switch">إظهار/إخفاء شريط اللغة</string>
     <string name="settings_pkb_multifunction_action_number_pad">لوحة الأرقام</string>
     <string name="settings_pkb_multifunction_action_symbol">لوحة مفاتيح الرموز</string>
     <string name="settings_pkb_multifunction_key_title">المفتاح متعدد الوظائف</string>

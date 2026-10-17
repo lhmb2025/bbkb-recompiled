@@ -245,7 +245,8 @@
     <string name="settings_pkb_multifunction_action_emoji">Plošča emoji</string>
     <string name="settings_pkb_multifunction_action_fcc">Upravljanje kazalke</string>
     <string name="settings_pkb_multifunction_action_input_menu">Prikaži ali skrij meni za vnos</string>
-    <string name="settings_pkb_multifunction_action_language_switch">Zamenjaj jezik</string>
+    <string name="settings_pkb_multifunction_action_language_quick_switch">Hitri preklop jezika</string>
+    <string name="settings_pkb_multifunction_action_language_switch">Pokaži/skrij vrstico jezikov</string>
     <string name="settings_pkb_multifunction_action_number_pad">Številska tipkovnica</string>
     <string name="settings_pkb_multifunction_action_symbol">Tipkovnica s simboli</string>
     <string name="settings_pkb_multifunction_key_title">Večnamenska tipka</string>

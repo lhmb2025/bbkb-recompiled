@@ -245,7 +245,8 @@
     <string name="settings_pkb_multifunction_action_emoji">Jaustukų lenta</string>
     <string name="settings_pkb_multifunction_action_fcc">Žymeklio valdymas</string>
     <string name="settings_pkb_multifunction_action_input_menu">Rodyti arba slėpti įvesties meniu</string>
-    <string name="settings_pkb_multifunction_action_language_switch">Perjungti kalbą</string>
+    <string name="settings_pkb_multifunction_action_language_quick_switch">Greitas kalbos perjungimas</string>
+    <string name="settings_pkb_multifunction_action_language_switch">Rodyti arba slėpti kalbų juostą</string>
     <string name="settings_pkb_multifunction_action_number_pad">Skaičių klaviatūra</string>
     <string name="settings_pkb_multifunction_action_symbol">Simbolių klaviatūra</string>
     <string name="settings_pkb_multifunction_key_title">Daugiafunkcis klavišas</string>
