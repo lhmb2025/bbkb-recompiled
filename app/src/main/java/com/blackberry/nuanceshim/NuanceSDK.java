@@ -1125,13 +1125,26 @@ public class NuanceSDK {
         return zDeleteDLMWord;
     }
 
+    /**
+     * Every word in the dynamic language model.
+     *
+     * <p>The blob's {@code getDLMWord(i)} is not an indexed read. It hands {@code i} to
+     * {@code ET9AWDLMGetWord} in the in/out halfword that engine API uses as a cursor command:
+     * 0 rewinds to the first word, anything else steps to the next one, and the engine rejects
+     * a value above 64 (status 26) because that field doubles as a word length. Walking the
+     * model as {@code getDLMWord(0), getDLMWord(1), …, getDLMWord(n-1)} therefore worked only by
+     * accident, and stopped dead at the 66th word: the Learned words screen and the Words
+     * backup never saw more than 65 entries (owner's KEY2, 2026-10-12; reproduced on the
+     * emulator 2026-10-17 with 72 learned words: indices 65–71 came back null). Rewind once,
+     * then step.
+     */
     public ArrayList<String> getDLMWords() {
         ArrayList<String> arrayList;
         synchronized (sMutex) {
             arrayList = new ArrayList<>();
             int dLMWordCount = getDLMWordCount(false);
             for (int i = 0; i < dLMWordCount; i++) {
-                String dLMWord = getDLMWord(i);
+                String dLMWord = getDLMWord(i == 0 ? 0 : 1);
                 if (dLMWord != null) {
                     arrayList.add(dLMWord);
                 }

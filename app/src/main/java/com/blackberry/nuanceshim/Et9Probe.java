@@ -53,7 +53,8 @@ public final class Et9Probe {
      * ({@code et9probe.c}), so it also needs this property set.
      */
     static boolean isProbeEnabled() {
-        return "1".equals(SystemProps.get(PROBE_PROPERTY));
+        String v = SystemProps.get(PROBE_PROPERTY);
+        return "1".equals(v) || "2".equals(v);
     }
 
     /**
@@ -62,8 +63,38 @@ public final class Et9Probe {
      * @param sdk the live engine instance (from {@code NuanceSDKManager.getInstance()})
      * @return a JSON-ish diagnostic string, or null if unavailable or not opted in
      */
+    /**
+     * Logs what the DLM enumeration returns (the Learned words screen and the Words backup both
+     * read it): both counts, how many words came back, and the first/last. This is what found
+     * the 65-word cap (see {@link NuanceSDK#getDLMWords}); {@code setprop debug.et9.probe 2}
+     * runs just this dump without the native probe.
+     */
+    private static void dumpDlm(NuanceSDK sdk) {
+        try {
+            int plain = sdk.getDLMWordCount(false);
+            int explicit = sdk.getDLMWordCount(true);
+            java.util.ArrayList<String> words = sdk.getDLMWords();
+            Log.i(TAG, "dlm: count(false)=" + plain + " count(true)=" + explicit
+                    + " enumerated=" + words.size()
+                    + " first=" + (words.isEmpty() ? "-" : words.get(0))
+                    + " last=" + (words.isEmpty() ? "-" : words.get(words.size() - 1)));
+            Log.i(TAG, "dlm words: " + words);
+        } catch (Throwable t) {
+            Log.w(TAG, "dlm dump failed", t);
+        }
+    }
+
     public static String probe(NuanceSDK sdk) {
         if (!BuildConfig.DEBUG || sdk == null || !isProbeEnabled()) return null;
+        // Experiment hook: `setprop debug.et9.quarantine N` applies N as the DLM quarantine level.
+        String q = SystemProps.get("debug.et9.quarantine");
+        if (q != null && !q.isEmpty()) {
+            Log.i(TAG, "setQuarantine(" + q + ") -> " + setQuarantine(sdk, Integer.parseInt(q.trim())));
+        }
+        dumpDlm(sdk);
+        // `setprop debug.et9.probe 2`: the DLM dump only, skipping the native probe (which can
+        // SIGSEGV on a cold start, see isProbeEnabled).
+        if ("2".equals(SystemProps.get(PROBE_PROPERTY))) return null;
         try {
             String result = nativeProbe(sdk.getNativeHandleForDebug());
             Log.i(TAG, "probe: " + result);

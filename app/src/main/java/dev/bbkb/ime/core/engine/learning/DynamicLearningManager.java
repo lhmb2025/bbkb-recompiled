@@ -61,6 +61,7 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
         this.dynamicLearningEnabled = z;
         NuanceSDK engine = engineOrNull();
         if (engine != null) engine.setIsExplicitLearning(!z);
+        if (BuildConfig.DEBUG) android.util.Log.d("PIPELINE", "IME:learn:setDynamicLearningEnabled=" + z + " engine=" + (engine != null));
     }
 
     /** Whether this session may learn: the preference is on, the field type allows it, and the field is not incognito. */

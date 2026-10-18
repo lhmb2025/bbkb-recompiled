@@ -63,12 +63,42 @@ public abstract class BaseLearningModel {
         // candidate. Only trust the index while the list still has the identity it was read from.
         long generationNow = NuanceSDK.getSelectionListGeneration();
         if (wordInfo.selectionListGeneration >= 0L && wordInfo.selectionListGeneration == generationNow) {
-            this.nuanceSdk.selectionListSelectWord(wordInfo.selectionListIndex, true, wordInfo.spell);
-            return;
+            boolean ok = this.nuanceSdk.selectionListSelectWord(wordInfo.selectionListIndex, true, wordInfo.spell);
+            if (!ok) {
+                // The engine refused the pick (the shim logs "Failed to select word"): its
+                // selection list is no longer current at commit time, because the main thread
+                // feeds every typed character into the engine (ComposingTextTracker) while the
+                // worker clears, replays and builds the list asynchronously, so the list the
+                // engine holds when the separator lands has been invalidated by a later feed.
+                // ET9AWSelLstSelWord then returns NEED_SELLIST_BUILD and the word is never
+                // learned: on the emulator (2026-10-17) a novel word typed twelve times was
+                // never predicted. Rebuild and retry when the rebuilt entry is still this word;
+                // otherwise fall through to learning by content below.
+                this.nuanceSdk.buildSelectionList();
+                WordInfo now = this.nuanceSdk.getSelectionListWord(wordInfo.selectionListIndex);
+                if (now != null && now.word != null && wordInfo.word != null
+                        && now.word.equalsIgnoreCase(wordInfo.word)) {
+                    ok = this.nuanceSdk.selectionListSelectWord(wordInfo.selectionListIndex, true, wordInfo.spell);
+                }
+            }
+            if (BuildConfig.DEBUG) {
+                Log.d("PIPELINE", "IME:learn:indexPath word=\"" + wordInfo.word + "\" index=" + wordInfo.selectionListIndex
+                    + " learnByContent=" + learnByContent + " -> " + ok);
+            }
+            if (ok) {
+                return;
+            }
+        } else if (BuildConfig.DEBUG) {
+            Log.d("PIPELINE", "IME:learn:staleSelectionList"
+                + " word=\"" + wordInfo.word + "\""
+                + " stamped=" + wordInfo.selectionListGeneration
+                + " now=" + generationNow
+                + " -> addWord fallback (EB-3)");
         }
-        // Stale (or unstamped) index. Learn by CONTENT instead: addWord records the same word
-        // without indexing a list that has moved on. Losing the index-based path costs the
-        // engine's end-of-word transition, which the post-commit clear already performs.
+        // Stale (or unstamped) index, or a pick the engine refused twice. Learn by CONTENT
+        // instead: addWord records the same word without indexing a list that has moved on.
+        // Losing the index-based path costs the engine's end-of-word transition, which the
+        // post-commit clear already performs.
         //
         // Only a word the engine does NOT already know, though (2026-10-12). addWord is how a
         // NEW word enters the learned model; for a word the dictionary already holds it only adds
@@ -77,16 +107,10 @@ public abstract class BaseLearningModel {
         // index), which made each misread swipe a permanent boost — "bout" over the typed
         // "about". A swiped dictionary word is therefore no longer taught; a swiped word the
         // dictionary lacks still is, and a typed word still learns through the index path above.
-        if (BuildConfig.DEBUG) {
-            Log.d("PIPELINE", "IME:learn:staleSelectionList"
-                + " word=\"" + wordInfo.word + "\""
-                + " stamped=" + wordInfo.selectionListGeneration
-                + " now=" + generationNow
-                + " -> addWord fallback (EB-3)");
-        }
         if (learnByContent && wordInfo.word != null && !wordInfo.word.isEmpty()
                 && !this.nuanceSdk.isSpellingCorrect(wordInfo.word)) {
-            this.nuanceSdk.addWord(wordInfo.word);
+            boolean added = this.nuanceSdk.addWord(wordInfo.word);
+            if (BuildConfig.DEBUG) Log.d("PIPELINE", "IME:learn:addWord word=\"" + wordInfo.word + "\" -> " + added);
         }
     }
 

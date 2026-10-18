@@ -67,13 +67,78 @@ class LearnStaleSelectionListTest {
     @Test
     fun freshIndex_isSelectedByIndex() {
         // The healthy path, and the regression guard: nothing rebuilt the list between assembly
-        // and learn, so the precise index-based select must still happen.
+        // and learn, so the precise index-based select must still happen, and succeed, with no
+        // content learning on top.
+        `when`(sdk.selectionListSelectWord(3, true, "hello")).thenReturn(true)
         val info = wordInfo("hello", 3, NuanceSDK.getSelectionListGeneration())
 
         model.learnWord(suggestion(info))
 
         verify(sdk).selectionListSelectWord(3, true, "hello")
+        verify(sdk, never()).buildSelectionList()
         verify(sdk, never()).addWord("hello")
+    }
+
+    // ── 2026-10-17: the engine refuses the pick ───────────────────────────────────────────
+    //
+    // The main thread feeds each typed character into the engine while the worker clears,
+    // replays and builds the list, so at commit time the engine's list is often no longer
+    // current and ET9AWSelLstSelWord answers NEED_SELLIST_BUILD (the shim logs "Failed to
+    // select word" and returns false). Before this, a typed word the dictionary lacked was
+    // simply never learned. Now: rebuild, retry if the rebuilt entry is still this word, and
+    // otherwise learn by content.
+
+    @Test
+    fun refusedPick_isRetriedAfterARebuild() {
+        `when`(sdk.selectionListSelectWord(3, true, "zinwa")).thenReturn(false, true)
+        `when`(sdk.getSelectionListWord(3)).thenReturn(WordInfo().apply { word = "zinwa" })
+        val info = wordInfo("zinwa", 3, NuanceSDK.getSelectionListGeneration())
+
+        model.learnWord(suggestion(info))
+
+        verify(sdk).buildSelectionList()
+        verify(sdk, org.mockito.Mockito.times(2)).selectionListSelectWord(3, true, "zinwa")
+        verify(sdk, never()).addWord("zinwa")
+    }
+
+    @Test
+    fun refusedPick_whoseRebuiltEntryIsAnotherWord_learnsByContent() {
+        // The rebuilt list no longer has this word at that index (the engine's input moved on),
+        // so selecting the index would learn the wrong word: fall back to content.
+        `when`(sdk.selectionListSelectWord(3, true, "zinwa")).thenReturn(false)
+        `when`(sdk.getSelectionListWord(3)).thenReturn(WordInfo().apply { word = "other" })
+        `when`(sdk.isSpellingCorrect("zinwa")).thenReturn(false)
+        val info = wordInfo("zinwa", 3, NuanceSDK.getSelectionListGeneration())
+
+        model.learnWord(suggestion(info))
+
+        verify(sdk, org.mockito.Mockito.times(1)).selectionListSelectWord(3, true, "zinwa")
+        verify(sdk).addWord("zinwa")
+    }
+
+    @Test
+    fun refusedPick_ofAWordTheEngineKnows_isNotAdded() {
+        // A known word the engine refused to pick gains nothing from addWord (a learned entry
+        // that outranks the typed word); it is left alone.
+        `when`(sdk.selectionListSelectWord(3, true, "hello")).thenReturn(false)
+        `when`(sdk.getSelectionListWord(3)).thenReturn(null)
+        `when`(sdk.isSpellingCorrect("hello")).thenReturn(true)
+        val info = wordInfo("hello", 3, NuanceSDK.getSelectionListGeneration())
+
+        model.learnWord(suggestion(info))
+
+        verify(sdk, never()).addWord("hello")
+    }
+
+    @Test
+    fun refusedPick_withoutContentLearning_isNotAdded() {
+        `when`(sdk.selectionListSelectWord(3, true, "zinwa")).thenReturn(false)
+        `when`(sdk.getSelectionListWord(3)).thenReturn(null)
+        val info = wordInfo("zinwa", 3, NuanceSDK.getSelectionListGeneration())
+
+        model.learnWord(suggestion(info), false)
+
+        verify(sdk, never()).addWord("zinwa")
     }
 
     @Test
@@ -152,6 +217,7 @@ class LearnStaleSelectionListTest {
     fun freshIndex_withoutContentLearning_stillSelects() {
         // The index select is the engine's end-of-selection transition (CJK forced commits need
         // it); only the content fallback is learning-only.
+        `when`(sdk.selectionListSelectWord(3, true, "hello")).thenReturn(true)
         val info = wordInfo("hello", 3, NuanceSDK.getSelectionListGeneration())
 
         model.learnWord(suggestion(info), false)
