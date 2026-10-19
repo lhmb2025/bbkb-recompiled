@@ -100,6 +100,12 @@ fun WordListEditorScreen(
             isLoading = true
             val loadedWords = withContext(Dispatchers.IO) {
                 try {
+                    // Only the keyboard initialises DictionaryManager (BlackBerryIME, on its
+                    // locale setup), so this screen opened in a fresh process, before any field
+                    // has been focused, found it unloaded and showed "No learned words" for a
+                    // full model (KEY2, 2026-10-17). The add/undo paths below already initialise
+                    // through the repository and wait for the load; do the same before reading.
+                    dictionaryRepository.initialize()
                     // The callback is delivered on whichever thread the dictionary finishes on.
                     // Sleeping 100 ms and reading a plain MutableList had no happens-before edge
                     // and no guarantee the callback had fired at all - on a slow first DLM load

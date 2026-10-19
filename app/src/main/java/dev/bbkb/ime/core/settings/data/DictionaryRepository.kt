@@ -28,8 +28,12 @@ class DictionaryRepository(private val context: Context) : DictionaryEntryStore 
      */
     override suspend fun initialize(): InitResult = withContext(Dispatchers.IO) {
         try {
-            val isLoaded =
-                personalDictManager.getWordSubstitutions() != null || personalDictManager.getPersonalDictionary() != null
+            // isLoaded() flips in DictionaryManager.onLoadComplete, after the BASL load. The
+            // old readiness test (getWordSubstitutions() != null || getPersonalDictionary() !=
+            // null) was satisfied the moment the substitutions map existed, so the wait below
+            // returned "Initialized successfully" ~250 ms into a load that had not finished and
+            // the learned-words read right after it found the manager unloaded.
+            val isLoaded = personalDictManager.isLoaded()
             if (!isLoaded) {
                 if (BuildConfig.DEBUG) Log.d("DictionaryRepository", "Initializing DictionaryManager...")
 
@@ -56,9 +60,9 @@ class DictionaryRepository(private val context: Context) : DictionaryEntryStore 
                 // entered from every dictionary screen, so the poll must be suspending and must
                 // stop when the caller backs out of the screen.
                 var attempts = 0
-                while (attempts < 30) {
+                while (attempts < 50) {
                     delay(100)
-                    if (personalDictManager.getWordSubstitutions() != null || personalDictManager.getPersonalDictionary() != null) {
+                    if (personalDictManager.isLoaded()) {
                         if (BuildConfig.DEBUG) Log.d("DictionaryRepository", "Initialized successfully")
                         return@withContext if (dataWasCorrupted) {
                             InitResult.SuccessAfterRecovery

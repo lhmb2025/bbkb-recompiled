@@ -3,6 +3,9 @@ package dev.bbkb.ime.personaldictionary.util
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.blackberry.nuanceshim.NuanceSDK
+import com.blackberry.nuanceshim.languagepack.LanguagePackManager
+import dev.bbkb.ime.core.locale.ResourceLocaleUtils
+import dev.bbkb.ime.core.locale.SubtypeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -20,11 +23,10 @@ import kotlin.collections.HashSet
  */
 class LearnedWordsUtil @VisibleForTesting internal constructor(
     private val mNuanceSDK: NuanceSDK,
-    @Suppress("UNUSED_PARAMETER") context: Context,
+    context: Context,
     @Suppress("UNUSED_PARAMETER") str: String
 ) {
-    // (The mContext field that stood here was assigned and never read anywhere in the
-    // class, so the retained Context bought nothing - audit PD-21.)
+    private val appContext: Context = context.applicationContext
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -63,7 +65,39 @@ class LearnedWordsUtil @VisibleForTesting internal constructor(
         }
     }
 
+    /**
+     * The engine attaches the learned model only inside `NuanceSDK.setLanguage`, which the
+     * keyboard calls from its dictionary setup. A settings process that has never bound the
+     * keyboard (Personal learned words opened straight after an install or a force-stop) has
+     * an engine with no language and no model, so the enumeration came back empty and the
+     * screen said "No learned words" for a full model (KEY2, 2026-10-17). Give the engine the
+     * keyboard's languages first, the way the spell checker does for its own session.
+     */
+    private fun ensureEngineHasLanguage() {
+        // (getPrimaryLanguage() answers English for an engine with nothing loaded, so it cannot
+        // be the test; the attached model is.)
+        if (mNuanceSDK.isDLMAttached) return
+        val locales: List<Locale> = try {
+            SubtypeManager.ensureInitialized(appContext)
+            val subtypes = SubtypeManager.getInstance()
+            ResourceLocaleUtils.getKeyboardLocales(
+                subtypes.currentSubtypeLocale, subtypes.currentSubtypeAdditionalLocales)
+        } catch (e: Exception) {
+            emptyList()
+        }
+        val wanted = locales.ifEmpty { listOf(Locale.US) }.toTypedArray()
+        val set = try {
+            LanguagePackManager.getInstance(appContext).setLanguages(mNuanceSDK, wanted)
+        } catch (e: Exception) {
+            false
+        }
+        if (!set && !mNuanceSDK.setLanguage(wanted)) {
+            mNuanceSDK.setLanguage(arrayOf(Locale.US))
+        }
+    }
+
     fun getLearnedWords(toLowerCase: Boolean, explicit: Boolean): List<String> {
+        ensureEngineHasLanguage()
         val dlmWords = if (explicit) {
             mNuanceSDK.workDLMWordsExplicitly
         } else {

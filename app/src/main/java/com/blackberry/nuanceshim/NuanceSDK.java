@@ -134,6 +134,15 @@ public class NuanceSDK {
     // Read and written under sMutex only.
     private boolean mEthiopicTranslation = false;
     private boolean mIsExplicitLearning = false;
+    /** Whether {@link #loadDLMFromFile} has attached the learned model to this engine. */
+    private boolean mDlmAttached = false;
+
+    /** Whether the learned model is attached, i.e. a language has been set up on this engine. */
+    public boolean isDLMAttached() {
+        synchronized (sMutex) {
+            return this.mDlmAttached;
+        }
+    }
     public boolean mIsPkb = true;
 
     
@@ -276,8 +285,19 @@ public class NuanceSDK {
     }
 
     public void setCallbackHandler(ManagedModeCallback callback) {
+        boolean replay;
         synchronized (sMutex) {
             this.mCallbackHandler = callback;
+            replay = callback != null && this.mDlmAttached;
+        }
+        // The learned model may already be attached when the handler arrives: the Personal
+        // learned words screen gives this engine a language (and so the model) when it is
+        // opened before the keyboard has bound in the process, and the keyboard's later
+        // setLanguage then skips loadDLMFromFile (the language-init latch). Without this
+        // replay DynamicLearningManager never heard onManagedModeChanged and no learner was
+        // active for the rest of the process -- the "open question (2026-08)" in its source.
+        if (replay) {
+            callback.onManagedModeChanged(this.mIsManaged);
         }
     }
 
@@ -1082,6 +1102,7 @@ public class NuanceSDK {
             if (!reattachDLM()) {
                 return false;
             }
+            this.mDlmAttached = true;
             if (this.mCallbackHandler != null) {
                 this.mCallbackHandler.onManagedModeChanged(this.mIsManaged);
             }
