@@ -212,11 +212,17 @@ fun SwitchPreference(
         modifier = modifier,
         onClick = if (enabled) { { onCheckedChange(!checked) } } else null,
         trailing = {
-            Switch(
-                checked = checked,
-                onCheckedChange = if (enabled) onCheckedChange else null,
-                enabled = enabled
-            )
+            // The switch asks for a 48dp touch target, which made a switch row a few dp taller
+            // than a navigation row and shifted its text down (Learning's first row sat lower
+            // than Assistance's). The row itself is the touch target, so the switch is laid out
+            // at its drawn height and the row keeps the same height as every other row.
+            Box(modifier = Modifier.height(32.dp), contentAlignment = Alignment.Center) {
+                Switch(
+                    checked = checked,
+                    onCheckedChange = if (enabled) onCheckedChange else null,
+                    enabled = enabled
+                )
+            }
         }
     )
 }
@@ -579,6 +585,8 @@ fun GridPreference(
     title: String,
     summary: String,
     icon: ImageVector? = null,
+    /** Composed leading art, e.g. the chosen symbol drawn as text; see [PreferenceItem]. */
+    leading: (@Composable () -> Unit)? = null,
     iconSpaceReserved: Boolean = false,
     entries: List<String>,
     value: String,
@@ -593,6 +601,7 @@ fun GridPreference(
         title = title,
         summary = summary,
         icon = icon,
+        leading = leading,
         iconSpaceReserved = iconSpaceReserved,
         enabled = enabled,
         modifier = modifier,

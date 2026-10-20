@@ -286,8 +286,8 @@ class BoardKeyPairingCharacterisationTest {
         verify(fcc, never()).toggle()
 
         // A session override, not a settings change.
-        assertFalse(PrefsManager.getPrefs(context).getBoolean(SettingsManager.PREF_PKB_SHOW_SUGGESTION_BAR, true))
-        assertFalse(PrefsManager.getPrefs(context).contains("pref_uim_enabled"))
+        assertFalse(PrefsManager.getPrefs(context).getBoolean("show_predictions", true))
+        assertFalse(PrefsManager.getPrefs(context).getBoolean("pref_uim_enabled", true))
     }
 
     @Test
@@ -700,8 +700,9 @@ class BoardKeyPairingCharacterisationTest {
      * raises and lowers.
      */
     private fun inputMenuWithTheBarHidden(): FakeMenu {
+        // The bar hides when suggestions and the menu are both off.
         PrefsManager.getPrefs(context).edit()
-            .putBoolean(SettingsManager.PREF_PKB_SHOW_SUGGESTION_BAR, false).commit()
+            .putBoolean("show_predictions", false).putBoolean("pref_uim_enabled", false).commit()
         SettingsManager.getInstance().loadSettings(
             context, Locale.US,
             EditorCapabilities(null, false, context.packageName, Locale.US, false)

@@ -61,6 +61,9 @@ class SuggestionCoordinator {
                 if (BuildConfig.DEBUG) Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not requested!");
             }
             mInputLogic.mSuggestionStripListener.showSuggestionStrip(SuggestedWords.EMPTY);
+        } else if (!InputLogic.needsSuggestionLookups(c0804d) && !NuanceSDKManager.isGesturePending()) {
+            // Composing only for learning: nothing consumes a candidate list, so none is built.
+            mInputLogic.mSuggestionStripListener.showSuggestionStrip(SuggestedWords.EMPTY);
         } else {
             if (!mInputLogic.mComposingTracker.isComposing() && !c0804d.isBigramPredictionEnabled) {
                 mInputLogic.mSuggestionStripListener.setNeutralSuggestionStrip();
@@ -102,6 +105,9 @@ class SuggestionCoordinator {
             if (mInputLogic.mComposingTracker.isComposing()) {
                 if (BuildConfig.DEBUG) Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not requested!");
             }
+            mInputLogic.mSuggestionStripListener.showSuggestionStrip(SuggestedWords.EMPTY);
+        } else if (!InputLogic.needsSuggestionLookups(c0804d) && !NuanceSDKManager.isGesturePending()) {
+            // Composing only for learning: nothing consumes a candidate list, so none is built.
             mInputLogic.mSuggestionStripListener.showSuggestionStrip(SuggestedWords.EMPTY);
         } else if (!mInputLogic.mComposingTracker.isComposing() && !c0804d.isBigramPredictionEnabled) {
             if (BuildConfig.DEBUG) android.util.Log.d("SUGG", "updateSuggestionsAsync: not composing + bigram off -> setNeutralSuggestionStrip");

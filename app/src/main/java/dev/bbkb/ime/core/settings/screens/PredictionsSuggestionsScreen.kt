@@ -36,6 +36,7 @@ import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceActionItem
+import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
 
 /**
@@ -94,9 +95,6 @@ fun PredictionsSuggestionsScreen(
     var nextWordPrediction by remember {
         mutableStateOf(prefs.getBoolean("next_word_prediction", true))
     }
-    var flickCommitAnimation by remember {
-        mutableStateOf(prefs.getBoolean("pref_flick_commit_animation", true))
-    }
     var personalizedSuggestions by remember {
         mutableStateOf(prefs.getBoolean("pref_key_use_personalized_dicts", true))
     }
@@ -111,19 +109,6 @@ fun PredictionsSuggestionsScreen(
     }
     var forceSuggestions by remember {
         mutableStateOf(prefs.getBoolean("pref_force_suggestions", false))
-    }
-    var emojiDynamicSearch by remember {
-        mutableStateOf(
-            if (prefs.contains("pref_emoji_dynamic_search")) {
-                prefs.getBoolean("pref_emoji_dynamic_search", false)
-            } else {
-                // Migrate from the legacy "pref_emoji_search_mode" multi-option setting.
-                prefs.getString("pref_emoji_search_mode", "none") == "dynamic"
-            }
-        )
-    }
-    var emojiSearchReplaceText by remember {
-        mutableStateOf(prefs.getBoolean("pref_emoji_search_replace_text", true))
     }
     
     // Permission launcher for READ_CONTACTS
@@ -177,18 +162,6 @@ fun PredictionsSuggestionsScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            // The contacts permission, as the row it gates rather than as a tinted card above it.
-            if (!hasContactsPermission) {
-                PreferenceActionItem(
-                    title = context.getString(R.string.settings_pred_contacts_permission_title),
-                    summary = context.getString(R.string.settings_pred_contacts_permission_summary),
-                    actionLabel = context.getString(R.string.settings_pred_grant_permission),
-                    onAction = {
-                        contactsPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
-                    },
-                )
-            }
-
             // Show predictions (master toggle)
             SwitchPreference(
                 title = context.getString(R.string.settings_pred_show_predictions_title),
@@ -202,6 +175,7 @@ fun PredictionsSuggestionsScreen(
             )
             
             
+            PreferenceCategory(title = context.getString(R.string.settings_category_display))
             // On-key predictions (dependent)
             SwitchPreference(
                 title = context.getString(R.string.settings_pred_on_key_title),
@@ -216,20 +190,21 @@ fun PredictionsSuggestionsScreen(
             )
             
             
-            // Emoji predictions (dependent)
+            // Force suggestions: override an app's "no suggestions" declaration and show the
+            // suggestion strip anyway (e.g. for apps like Google Keep that suppress it).
             SwitchPreference(
-                title = context.getString(R.string.settings_pred_emoji_title),
-                summary = context.getString(R.string.settings_pred_emoji_summary),
+                title = context.getString(R.string.settings_pred_force_suggestions_title),
+                summary = context.getString(R.string.settings_pred_force_suggestions_summary),
                 enabled = showPredictions,
-                checked = emojiPredictions,
-                modifier = Modifier.settingsSearchAnchor("emoji_predictions"),
+                checked = forceSuggestions,
+                modifier = Modifier.settingsSearchAnchor("pref_force_suggestions"),
                 onCheckedChange = { newValue ->
-                    emojiPredictions = newValue
-                    prefs.edit().putBoolean("emoji_predictions", newValue).apply()
+                    forceSuggestions = newValue
+                    prefs.edit().putBoolean("pref_force_suggestions", newValue).apply()
                 }
             )
-            
-            
+
+            PreferenceCategory(title = context.getString(R.string.settings_category_sources))
             // Next word prediction
             SwitchPreference(
                 title = context.getString(R.string.settings_pred_next_word_title),
@@ -244,6 +219,20 @@ fun PredictionsSuggestionsScreen(
             )
 
 
+            // Emoji predictions (dependent)
+            SwitchPreference(
+                title = context.getString(R.string.settings_pred_emoji_title),
+                summary = context.getString(R.string.settings_pred_emoji_summary),
+                enabled = showPredictions,
+                checked = emojiPredictions,
+                modifier = Modifier.settingsSearchAnchor("emoji_predictions"),
+                onCheckedChange = { newValue ->
+                    emojiPredictions = newValue
+                    prefs.edit().putBoolean("emoji_predictions", newValue).apply()
+                }
+            )
+            
+            
             // Personalized suggestions
             SwitchPreference(
                 title = context.getString(R.string.settings_pred_personalized_title),
@@ -273,6 +262,19 @@ fun PredictionsSuggestionsScreen(
                 )
             }
 
+
+            PreferenceCategory(title = context.getString(R.string.settings_category_contacts_accounts))
+            // The contacts permission, as the row it gates rather than as a tinted card above it.
+            if (!hasContactsPermission) {
+                PreferenceActionItem(
+                    title = context.getString(R.string.settings_pred_contacts_permission_title),
+                    summary = context.getString(R.string.settings_pred_contacts_permission_summary),
+                    actionLabel = context.getString(R.string.settings_pred_grant_permission),
+                    onAction = {
+                        contactsPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
+                    },
+                )
+            }
 
             // Suggest from contacts (requires READ_CONTACTS permission)
             SwitchPreference(
@@ -321,64 +323,6 @@ fun PredictionsSuggestionsScreen(
                 )
             }
             
-            // Force suggestions: override an app's "no suggestions" declaration and show the
-            // suggestion strip anyway (e.g. for apps like Google Keep that suppress it).
-            SwitchPreference(
-                title = context.getString(R.string.settings_pred_force_suggestions_title),
-                summary = context.getString(R.string.settings_pred_force_suggestions_summary),
-                enabled = showPredictions,
-                checked = forceSuggestions,
-                modifier = Modifier.settingsSearchAnchor("pref_force_suggestions"),
-                onCheckedChange = { newValue ->
-                    forceSuggestions = newValue
-                    prefs.edit().putBoolean("pref_force_suggestions", newValue).apply()
-                }
-            )
-
-            // Flick commit animation (committed word floats up on swipe-to-commit)
-            SwitchPreference(
-                title = context.getString(R.string.settings_pred_flick_animation_title),
-                summary = context.getString(R.string.settings_pred_flick_animation_summary),
-                enabled = showPredictions,
-                checked = flickCommitAnimation,
-                modifier = Modifier.settingsSearchAnchor("pref_flick_commit_animation"),
-                onCheckedChange = { newValue ->
-                    flickCommitAnimation = newValue
-                    prefs.edit().putBoolean("pref_flick_commit_animation", newValue).apply()
-                }
-            )
-
-            // Emoji dynamic search — surface emoji as you type
-            SwitchPreference(
-                title = context.getString(R.string.pref_emoji_dynamic_search_title),
-                summary = if (emojiDynamicSearch)
-                    context.getString(R.string.pref_emoji_dynamic_search_summary_on)
-                else
-                    context.getString(R.string.pref_emoji_dynamic_search_summary_off),
-                checked = emojiDynamicSearch,
-                modifier = Modifier.settingsSearchAnchor("pref_emoji_dynamic_search"),
-                onCheckedChange = { newValue ->
-                    emojiDynamicSearch = newValue
-                    prefs.edit().putBoolean("pref_emoji_dynamic_search", newValue).apply()
-                }
-            )
-
-            // Replace text with emoji — only visible when Dynamic Search is enabled
-            if (emojiDynamicSearch) {
-                SwitchPreference(
-                    title = context.getString(R.string.pref_emoji_search_replace_text_title),
-                    summary = if (emojiSearchReplaceText)
-                        context.getString(R.string.pref_emoji_search_replace_text_summary_on)
-                    else
-                        context.getString(R.string.pref_emoji_search_replace_text_summary_off),
-                    checked = emojiSearchReplaceText,
-                    onCheckedChange = { newValue ->
-                        emojiSearchReplaceText = newValue
-                        prefs.edit().putBoolean("pref_emoji_search_replace_text", newValue).apply()
-                    }
-                )
-            }
-
             Spacer(modifier = Modifier.height(spacing.extraLarge))
         }
     }

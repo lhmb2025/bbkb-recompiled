@@ -7,7 +7,6 @@ import dev.bbkb.ime.core.settings.SettingsRoute
 import dev.bbkb.ime.core.settings.screens.BackupAnchors
 import dev.bbkb.ime.core.settings.screens.ManageDataAnchors
 import dev.bbkb.ime.core.settings.screens.TouchSurfaceAnchors
-import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardPrefs
 
 /**
  * The device facts the index needs in order to decide whether a setting's row exists at all.
@@ -130,6 +129,7 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_vkb_swipe_gestures_title, "swipe gesture", SettingsRoute.OnScreenKeyboard.route, TYPING, "swipe_gesture_vkb"),
         SearchableSetting(R.string.settings_vkb_swipe_down_dismiss_title, "swipe down dismiss hide", SettingsRoute.OnScreenKeyboard.route, TYPING, "swipe_down_vkb"),
         SearchableSetting(R.string.vkb_control_key_title, "ctrl control key", SettingsRoute.OnScreenKeyboard.route, TYPING, "vkb_control_mode_enabled"),
+        SearchableSetting(R.string.prefs_key_longpress_delay_title, "long press delay hold timeout alternates accents popup", SettingsRoute.OnScreenKeyboard.route, TYPING, "pref_key_longpress_timeout"),
 
         // ── Typing & input: Key press feedback ──────────────────────────────────
         SearchableSetting(R.string.vibrate_on_keypress, "haptic vibration buzz", SettingsRoute.TouchFeedback.route, TYPING, "vibrate_on"),
@@ -145,7 +145,6 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_pkb_multifunction_key_title, "multifunction convenience mic key custom action ctrl emoji clipboard cursor arrow bar input menu show hide", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_multifunction_key_action", DeviceRequirement.MULTIFUNCTION_KEY),
         SearchableSetting(R.string.settings_pkb_hold_action_title, "hold long press key", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_pkb_hold_auto_commit"),
         SearchableSetting(R.string.settings_pkb_alt_sym_shortcut_title, "alt sym shortcut input menu show hide", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_alt_sym_shortcut_action"),
-        SearchableSetting(R.string.settings_pkb_suggestion_bar_title, "suggestion bar strip predictions hide input menu physical keyboard", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_pkb_show_suggestion_bar", DeviceRequirement.PHYSICAL_KEYBOARD),
         SearchableSetting(R.string.pref_show_pkb_modifier_status_icon, "modifier status icon shift alt", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_show_pkb_modifier_status_icon"),
         SearchableSetting(R.string.pref_shift_double_tap_lock, "shift double tap caps lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_shift_double_tap_lock"),
         SearchableSetting(R.string.pref_alt_double_tap_lock, "alt double tap lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_alt_double_tap_lock"),
@@ -182,13 +181,14 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_keyboard_height_title, "keyboard size height tall", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_height_mode"),
 
         // Default currency now lives on the Symbol customization screen
-        SearchableSetting(R.string.settings_default_currency_title, "currency symbol dollar", SettingsRoute.SymbolCustomization.route, APPEARANCE, "pref_currency_key"),
+        SearchableSetting(R.string.settings_default_currency_title, "currency symbol dollar euro pound", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_currency_key"),
 
         // Unified input menu moved to Input → On-Screen Keyboard
-        SearchableSetting(R.string.settings_uim_enable_title, "unified input menu", SettingsRoute.OnScreenKeyboard.route, TYPING, "pref_uim_enabled"),
+        SearchableSetting(R.string.settings_uim_enable_title, "unified input menu hamburger", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_uim_enabled"),
 
         // Emoji dynamic search moved to Assistance → Suggestions
-        SearchableSetting(R.string.pref_emoji_dynamic_search_title, "emoji search", SettingsRoute.Suggestion.route, SUGGESTION, "pref_emoji_dynamic_search"),
+        SearchableSetting(R.string.pref_emoji_dynamic_search_title, "emoji search", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_emoji_dynamic_search"),
+        SearchableSetting(R.string.pref_emoji_search_replace_text_title, "emoji replace typed text insert", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_emoji_search_replace_text"),
 
         // ── Typing & input: Slideboard (entry row lives on On-Screen Keyboard) ──
         SearchableSetting(R.string.settings_vkb_slideboard_enable_title, "slideboard number pad", SettingsRoute.SlideboardSettings.route, TYPING, "slideboard_active"),
@@ -196,30 +196,29 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_vkb_quick_phrases_title, "quick phrases canned", SettingsRoute.SlideboardSettings.route, TYPING),
 
         // ── Appearance & layout: Custom symbol page ─────────────────────────────
-        SearchableSetting(R.string.settings_symbol_customization_title, "symbol page custom layout", SettingsRoute.SymbolCustomization.route, APPEARANCE, "symbol_customization"),
+        SearchableSetting(R.string.settings_symbol_customization_title, "symbol page custom layout customize symbols", SettingsRoute.SymbolCustomization.route, APPEARANCE, "symbol_customization"),
 
         // ── Typing & input: Customize menu (UIM toggle order, lives under On-Screen Keyboard) ──
         SearchableSetting(R.string.settings_customize_menu_title, "unified input menu order reorder shortcuts toggles voice emoji cursor clipboard number pad math", SettingsRoute.CustomizeMenu.route, TYPING, "customize_menu"),
 
-        // ── Typing & input: Clipboard (entry row lives on On-Screen Keyboard) ───
-        SearchableSetting(R.string.clipboard_history_title, "clipboard history copy paste clips keep save remember", SettingsRoute.Clipboard.route, TYPING, "pref_clipboard_history_enabled"),
-        SearchableSetting(R.string.clipboard_retention_title, "clipboard retention expire delete keep clips hour day week time", SettingsRoute.Clipboard.route, TYPING, "pref_clipboard_retention"),
-        SearchableSetting(R.string.clipboard_link_previews_title, "clipboard link preview url web page thumbnail title network", SettingsRoute.Clipboard.route, TYPING, "pref_clipboard_link_previews"),
-        // An action, anchored by the id ClipboardPrefs declares, like the backup rows below.
-        SearchableSetting(R.string.clipboard_clear_history_title, "clipboard clear delete wipe erase history clips pinned", SettingsRoute.Clipboard.route, TYPING, ClipboardPrefs.ANCHOR_CLEAR_HISTORY),
+        // ── Typing & input: Clipboard (rows live on Auxiliary input) ───
+        SearchableSetting(R.string.clipboard_history_title, "clipboard history copy paste clips keep save remember", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_clipboard_history_enabled"),
+        SearchableSetting(R.string.clipboard_retention_title, "clipboard retention expire delete keep clips hour day week time", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_clipboard_retention"),
+        SearchableSetting(R.string.clipboard_link_previews_title, "clipboard link preview url web page thumbnail title network", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_clipboard_link_previews"),
 
         // ── Suggestion & correction: Suggestions ────────────────────────────────
         SearchableSetting(R.string.settings_pred_show_predictions_title, "prediction suggestion strip", SettingsRoute.Suggestion.route, SUGGESTION, "show_predictions"),
         SearchableSetting(R.string.settings_pred_on_key_title, "on key prediction", SettingsRoute.Suggestion.route, SUGGESTION, "on_key_predictions"),
         SearchableSetting(R.string.settings_pred_emoji_title, "emoji prediction suggestion", SettingsRoute.Suggestion.route, SUGGESTION, "emoji_predictions"),
         SearchableSetting(R.string.settings_pred_next_word_title, "next word prediction", SettingsRoute.Suggestion.route, SUGGESTION, "next_word_prediction"),
-        SearchableSetting(R.string.settings_pred_personalized_title, "personalized suggestions", SettingsRoute.Suggestion.route, SUGGESTION, "pref_key_use_personalized_dicts"),
+        SearchableSetting(R.string.settings_pred_personalized_title, "personalized suggestions learned words", SettingsRoute.Suggestion.route, SUGGESTION, "pref_key_use_personalized_dicts"),
         SearchableSetting(R.string.settings_pred_inline_autofill_title, "autofill password address saved details", SettingsRoute.Suggestion.route, SUGGESTION, "pref_inline_autofill_enabled"),
         SearchableSetting(R.string.settings_pred_contacts_title, "contacts names suggestion", SettingsRoute.Suggestion.route, SUGGESTION, "pref_key_use_contacts_dict"),
         SearchableSetting(R.string.settings_pred_force_suggestions_title, "force suggestions strip", SettingsRoute.Suggestion.route, SUGGESTION, "pref_force_suggestions"),
-        SearchableSetting(R.string.settings_pred_flick_animation_title, "flick commit animation", SettingsRoute.Suggestion.route, SUGGESTION, "pref_flick_commit_animation"),
+        SearchableSetting(R.string.settings_pred_flick_animation_title, "flick commit animation swipe up", SettingsRoute.OnScreenKeyboard.route, TYPING, "pref_flick_commit_animation"),
 
         // ── Suggestion & correction: Correction ─────────────────────────────────
+        SearchableSetting(R.string.settings_autocorrect_enable_title, "auto correction autocorrect enable off on spell fix backspace undo", SettingsRoute.Correction.route, SUGGESTION, "auto_correction_enabled"),
         SearchableSetting(R.string.settings_autocorrect_pkb_title, "autocorrect physical", SettingsRoute.Correction.route, SUGGESTION, "auto_correction_mode_PKB", DeviceRequirement.PHYSICAL_KEYBOARD),
         SearchableSetting(R.string.settings_autocorrect_vkb_title, "autocorrect on screen", SettingsRoute.Correction.route, SUGGESTION, "auto_correction_mode_VKB"),
         SearchableSetting(R.string.settings_autocorrect_auto_cap_title, "auto capitalization caps", SettingsRoute.Correction.route, SUGGESTION, "auto_cap"),
@@ -227,6 +226,7 @@ object SettingsSearchIndex {
 
         // ── Suggestion & correction: Learning ───────────────────────────────────
         SearchableSetting(R.string.settings_dict_dynamic_learning_title, "learning learn words", SettingsRoute.Learning.route, SUGGESTION, "dynamic_learning"),
+        SearchableSetting(R.string.settings_dict_add_reverted_words_title, "add typed word dictionary undo correction backspace accept button", SettingsRoute.Learning.route, SUGGESTION, "pref_show_ui_to_accept_typed_word"),
         SearchableSetting(R.string.settings_dict_user_dictionary_title, "user dictionary personal words", SettingsRoute.Learning.route, SUGGESTION),
         SearchableSetting(R.string.settings_dict_text_shortcuts_title, "text shortcuts substitution macro", SettingsRoute.Learning.route, SUGGESTION),
         SearchableSetting(R.string.settings_dict_learned_words_title, "learned words", SettingsRoute.Learning.route, SUGGESTION),

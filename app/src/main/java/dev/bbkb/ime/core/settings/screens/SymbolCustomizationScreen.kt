@@ -1,17 +1,9 @@
 package dev.bbkb.ime.core.settings.screens
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.Category
-import dev.bbkb.ime.core.settings.ui.Custom
-import dev.bbkb.ime.core.settings.ui.GridPreference
 import dev.bbkb.ime.core.settings.ui.Nav
 import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
@@ -26,6 +18,7 @@ private const val VKB_ENABLED = "enable_symbol_customization_vkb"
  * Symbol Customization Screen
  * Configure custom symbol layouts for physical and touch screen keyboards
  *
+ * The default currency row moved to the Personalization hub (2026-10-19).
  * The on-screen symbol page section is always drawn (every device has the on-screen keyboard);
  * the physical-keyboard section, whose Sym pages are denser, is added under its own header on
  * keypad devices, as the original app did. `SettingsSearchIndex` mirrors that with
@@ -35,13 +28,10 @@ private const val VKB_ENABLED = "enable_symbol_customization_vkb"
 fun SymbolCustomizationScreen(
     onNavigateToCustomSymbolPagePKB: () -> Unit,
     onNavigateToCustomSymbolPageVKB: () -> Unit,
+    onNavigateToCustomizeSlideBoard: () -> Unit = {},
     onNavigateBack: () -> Unit
 ) {
     SettingsScreenHost(R.string.settings_symbol_customization_title, onNavigateBack, listOf(
-        // Default currency — independent of keyboard type, and the one grid picker in settings,
-        // so it stays a hand-written block rather than earning a row type of its own.
-        Custom { CurrencyPicker() },
-
         Category(R.string.settings_category_on_screen_keyboard),
         Toggle(
             store = boolPref(VKB_ENABLED, false),
@@ -85,35 +75,16 @@ fun SymbolCustomizationScreen(
             modifier = Modifier.settingsSearchAnchor("pkb_custom_page_first"),
             visible = { it.hasPhysicalKeyboard },
         ),
-    ))
-}
 
-@Composable
-private fun CurrencyPicker() {
-    val context = LocalContext.current
-    val prefs = remember { PrefsManager.getPrefs(context) }
-    val currencySymbols = remember {
-        context.resources.getStringArray(R.array.symbols_list_currency).toList()
-    }
-    // "" is the runtime default (SettingsManager.getCurrencySymbol) and means "leave the layout's own
-    // currency key alone" — CurrencyKeyHandler, KeyboardSwitcher and the slideboard number pad all
-    // skip the replacement on it. So an unset key is not "$" (a £ layout shows £); say so, and
-    // highlight no cell.
-    var currency by remember { mutableStateOf(prefs.getString("pref_currency_key", "") ?: "") }
-
-    GridPreference(
-        title = context.getString(R.string.settings_default_currency_title),
-        summary = context.getString(
-            R.string.settings_default_currency_summary,
-            currency.ifEmpty { "Keyboard default" },
+        // The slideboard's number pad is the same key-layout editor with a 4x5 grid; the link on
+        // the Slideboard screen stays, this one puts every symbol editor in one place
+        // (2026-10-20). Greyed out while the slideboard is off, as on that screen.
+        Category(R.string.settings_category_slideboard),
+        Nav(
+            title = R.string.settings_vkb_customize_numberpad_title,
+            summary = R.string.settings_vkb_customize_numberpad_summary,
+            enabled = { it.bool("slideboard_active") },
+            onClick = { onNavigateToCustomizeSlideBoard() },
         ),
-        entries = currencySymbols,
-        value = currency,
-        columns = 5,
-        modifier = Modifier.settingsSearchAnchor("pref_currency_key"),
-        onValueChange = { newValue ->
-            currency = newValue
-            prefs.edit().putString("pref_currency_key", newValue).apply()
-        }
-    )
+    ))
 }

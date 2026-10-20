@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import dev.bbkb.ime.R;
+import dev.bbkb.ime.core.settings.util.SettingsManager;
+import dev.bbkb.ime.core.settings.util.SettingsValues;
 import dev.bbkb.ime.core.suggestion.SuggestedWords;
 import dev.bbkb.ime.keyboard.Keyboard;
 import dev.bbkb.ime.keyboard.SimplifiedKeyboardView;
@@ -108,9 +110,17 @@ public class AuxBarView extends FrameLayout {
 
         showSuggestionChild();
         suggestionView.setMode(isCJK ? SuggestionMode.CJK : SuggestionMode.LATIN);
+        suggestionView.setMenuButtonVisible(menuEnabled());
         suggestionView.setSuggestions(words);
 
         enter(oldState, isCJK ? AuxBarState.CJK_SUGGESTIONS : AuxBarState.LATIN_SUGGESTIONS);
+    }
+
+    /** "Enable unified input menu" (or the key's request); on when no settings are loaded yet. */
+    private static boolean menuEnabled() {
+        SettingsManager manager = SettingsManager.getInstance();
+        SettingsValues values = manager == null ? null : manager.getSettingsValues();
+        return values == null || values.isUimEnabled();
     }
 
     /** What the suggestion view showed before the language-chip bar took it over. */
@@ -126,6 +136,7 @@ public class AuxBarView extends FrameLayout {
         }
         showSuggestionChild();
         suggestionView.setMode(SuggestionMode.LANGUAGES);
+        suggestionView.setMenuButtonVisible(true);
         suggestionView.setLanguageChips(chips);
         enter(oldState, AuxBarState.LANGUAGE_CHIPS);
     }

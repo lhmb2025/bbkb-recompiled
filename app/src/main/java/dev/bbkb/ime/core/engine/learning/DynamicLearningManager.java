@@ -157,6 +157,20 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
         learn(suggestedWordInfoVar, false);
     }
 
+    /**
+     * A typed word committed with no candidate behind it: with "Show suggestions" and
+     * auto-correction both off nothing looks the word up, so there is no list to select from.
+     * Learned by content when learning is allowed; either way the word is ended in the engine.
+     */
+    public void learnTypedWord(String word) {
+        BaseLearningModel learner = this.dynamicLearningEnabled ? getActiveLearner() : null;
+        if (learner != null && word != null && !word.isEmpty()) {
+            learner.learnTypedWord(word);
+            return;
+        }
+        clearEngine();
+    }
+
     public void addContactsWords(final String[] strArr, final ContactsDataProvider.ContactsType bVar) {
         // The global preference only: this imports the address book, not what was typed, so the
         // focused field (password, incognito) has no say in it.

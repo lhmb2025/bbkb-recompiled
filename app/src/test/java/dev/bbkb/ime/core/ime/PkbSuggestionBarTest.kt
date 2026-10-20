@@ -97,14 +97,21 @@ class PkbSuggestionBarTest {
         DeviceCapabilities.forShape(DeviceCapabilities.DetectedDeviceType.VKB, false, false, false, "qwerty", "none"),
     )
 
-    /** Settings for a plain text field; [showBar] null leaves the preference untouched. */
-    private fun load(showBar: Boolean?): SettingsValues {
-        if (showBar != null) {
-            prefs().edit().putBoolean(SettingsManager.PREF_PKB_SHOW_SUGGESTION_BAR, showBar).commit()
+    /**
+     * Settings for a plain text field. The bar above a physical keyboard's keys hides when
+     * "Show suggestions" and "Enable unified input menu" are both off (the separate "Show the
+     * suggestion bar" switch is gone): [showBar] false turns both off, true turns suggestions
+     * on and leaves the menu setting as the test set it, null leaves both untouched.
+     */
+    private fun load(showBar: Boolean?, editorLocale: Locale = Locale.US): SettingsValues {
+        if (showBar == false) {
+            prefs().edit().putBoolean("show_predictions", false).putBoolean("pref_uim_enabled", false).commit()
+        } else if (showBar == true) {
+            prefs().edit().putBoolean("show_predictions", true).commit()
         }
         val info = EditorInfo().apply { inputType = InputType.TYPE_CLASS_TEXT }
         val manager = SettingsManager.getInstance()
-        manager.loadSettings(context, Locale.US, EditorCapabilities(info, false, context.packageName, Locale.US, false))
+        manager.loadSettings(context, Locale.US, EditorCapabilities(info, false, context.packageName, editorLocale, false))
         return manager.settingsValues
     }
 
@@ -167,8 +174,8 @@ class PkbSuggestionBarTest {
 
         DeviceProfile.setOnScreenKeyboardShowing(true)
         assertFalse(sv.isPkbSuggestionBarHidden)
-        assertTrue(sv.isUimEnabled)
-        assertTrue(SettingsManager.isUimEnabled(context))
+        // The menu setting itself is off, so the menu stays off; only the bar's own hiding lifts.
+        assertFalse(sv.isUimEnabled)
 
         DeviceProfile.setOnScreenKeyboardShowing(false)
         assertTrue(sv.isPkbSuggestionBarHidden)
@@ -201,7 +208,6 @@ class PkbSuggestionBarTest {
         DeviceProfile.setForceVkbMode(true)
 
         assertFalse(sv.isPkbSuggestionBarHidden)
-        assertTrue(sv.isUimEnabled)
     }
 
     @Test
@@ -210,8 +216,6 @@ class PkbSuggestionBarTest {
         val sv = load(showBar = false)
 
         assertFalse(sv.isPkbSuggestionBarHidden)
-        assertTrue(sv.isUimEnabled)
-        assertTrue(SettingsManager.isUimEnabled(context))
     }
 
     @Test
@@ -249,10 +253,11 @@ class PkbSuggestionBarTest {
 
     @Test
     fun withTheBarHiddenAChineseOrJapaneseKeyboardKeepsItsCandidateStrip() {
-        val sv = load(showBar = false)
-
+        // Suggestions and the menu both off: a Chinese or Japanese keyboard still picks its
+        // words from the candidate strip, which does not answer to "Show suggestions".
         for (locale in listOf("zh_CN", "ja_JP")) {
             subtype(locale)
+            val sv = load(showBar = false, editorLocale = Locale.forLanguageTag(locale.replace('_', '-')))
             assertTrue(locale, coordinator.shouldShowSuggestionStrip(sv, false, null))
             assertTrue(locale, coordinator.shouldShowCjkSuggestionStrip(sv, false, null))
             assertFalse(locale, coordinator.isUimEnabled())
@@ -298,8 +303,9 @@ class PkbSuggestionBarTest {
         assertTrue(coordinator.isUimEnabled())
         assertTrue(coordinator.shouldShowUim())
         assertFalse(coordinator.shouldShowSuggestionStrip(sv, false, null))
-        // Never written to the preferences: clearing it gives the setting back.
-        assertFalse(prefs().getBoolean(SettingsManager.PREF_PKB_SHOW_SUGGESTION_BAR, true))
+        // Never written to the preferences: clearing it gives the settings back.
+        assertFalse(prefs().getBoolean("show_predictions", true))
+        assertFalse(prefs().getBoolean("pref_uim_enabled", true))
 
         SettingsValues.setInputMenuRequestedByKey(false)
         assertFalse(sv.isUimEnabled)

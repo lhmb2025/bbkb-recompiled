@@ -607,22 +607,28 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
 
     public static boolean isUimEnabled(Context context) {
         SharedPreferences prefs = PrefsManager.INSTANCE.getPrefs(context);
-        // The menu sits in the bar "Show the suggestion bar" hides, so it goes with the bar,
-        // unless the "Show or hide the input menu" key has asked for it.
-        return SettingsValues.isInputMenuRequestedByKey()
-                || (prefs.getBoolean("pref_uim_enabled", true)
-                        && !SettingsValues.isPkbSuggestionBarHidden(isPkbSuggestionBarEnabled(prefs)));
+        // The menu is on when its setting says so, or while the "Show or hide the input menu"
+        // key has asked for it. (It used to go with the physical keyboard's "Show the
+        // suggestion bar" switch; that switch is gone -- the bar hides itself when neither
+        // suggestions nor the menu would be on it, see SettingsValues.isPkbSuggestionBarHidden.)
+        return SettingsValues.isInputMenuRequestedByKey() || prefs.getBoolean("pref_uim_enabled", true);
     }
 
-    /** Physical keyboard settings: "Show the suggestion bar". */
-    public static final String PREF_PKB_SHOW_SUGGESTION_BAR = "pref_pkb_show_suggestion_bar";
+    /** Correction settings: "Enable auto-correction", the switch over the two strength choices. */
+    public static final String PREF_AUTO_CORRECTION_ENABLED = "auto_correction_enabled";
+
+    public static boolean isAutoCorrectionSwitchedOn(SharedPreferences sharedPreferences) {
+        return sharedPreferences.getBoolean(PREF_AUTO_CORRECTION_ENABLED, true);
+    }
 
     /**
-     * "Show the suggestion bar" as stored. Whether the bar is actually hidden also depends on the
-     * device: see {@link SettingsValues#isPkbSuggestionBarHidden()}.
+     * Whether the bar above a physical keyboard's keys has anything to show: suggestions or the
+     * unified input menu, each by its own setting. Read from the preferences, for the listener
+     * that reacts before SettingsValues reloads.
      */
-    public static boolean isPkbSuggestionBarEnabled(SharedPreferences sharedPreferences) {
-        return sharedPreferences.getBoolean(PREF_PKB_SHOW_SUGGESTION_BAR, true);
+    public static boolean pkbBarHasContent(SharedPreferences sharedPreferences, Resources resources) {
+        return sharedPreferences.getBoolean("show_predictions", resources.getBoolean(R.bool.config_default_show_predictions))
+                || sharedPreferences.getBoolean("pref_uim_enabled", resources.getBoolean(R.bool.config_default_uim_enabled));
     }
 
     public static boolean isLanguageQuickSwitchEnabled() {

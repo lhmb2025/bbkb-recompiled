@@ -881,7 +881,28 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
      * @param c0804d current settings values (not forwarded; used by callers to gate the call)
      */
     public void requestSuggestions(SettingsValues c0804d) {
+        if (!needsSuggestionLookups(c0804d)) {
+            return;
+        }
         this.mSuggestionRequestQueue.requestSuggestions();
+    }
+
+    /**
+     * Whether a typed word's candidate lookup has anyone to serve: "Show suggestions" or
+     * auto-correction on (either consumes the list), or a CJK editor (its candidates are the
+     * input). With all of them off the per-keystroke lookup is skipped entirely (2026-10-19);
+     * the word is still composed and learned at commit (the index path when a list exists,
+     * otherwise {@link DynamicLearningManager#learnTypedWord}). A swipe's result travels through
+     * the prediction request while a gesture is pending, which {@link #requestPredictions} lets
+     * through on its own.
+     */
+    static boolean needsSuggestionLookups(SettingsValues sv) {
+        return sv.isPredictionsEnabled
+                || sv.isAutoCorrectionEnabledPerUserSettings
+                || sv.editorCapabilities.shouldShowChineseSuggestions
+                || sv.editorCapabilities.shouldShowJapaneseSuggestions
+                || LocaleUtils.isCurrentSubtypeChinese()
+                || LocaleUtils.isCurrentSubtypeJapanese();
     }
 
     /**
@@ -891,6 +912,10 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
      */
     public void requestPredictions(InputSource enumC0690f) {
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.requestPredictions: source=" + enumC0690f + " — refreshing suggestion strip (does NOT commit anything)");
+        SettingsValues sv = SettingsManager.getInstance().getSettingsValues();
+        if (sv != null && !needsSuggestionLookups(sv) && !NuanceSDKManager.isGesturePending()) {
+            return;
+        }
         this.mSuggestionRequestQueue.requestPredictions(enumC0690f);
     }
 

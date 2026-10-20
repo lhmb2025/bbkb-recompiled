@@ -186,6 +186,20 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         this.listener = listener;
     }
 
+    /**
+     * Whether the menu button at the left edge is drawn. With the unified input menu off it is
+     * gone and the suggestions take the whole width (2026-10-19); the language-chip bar keeps
+     * its gear whatever the menu setting, since that button opens the language settings.
+     */
+    public void setMenuButtonVisible(boolean visible) {
+        boolean show = visible || currentMode == SuggestionMode.LANGUAGES;
+        int visibility = show ? VISIBLE : GONE;
+        if (hamburgerBtn.getVisibility() != visibility) {
+            hamburgerBtn.setVisibility(visibility);
+            updateAdapterDimensions();
+        }
+    }
+
     public void setMode(SuggestionMode mode) {
         if (this.currentMode != mode) {
             this.currentMode = mode;

@@ -210,7 +210,6 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "AutoCorrectionScreen" -> ({ AutoCorrectionScreen({}) })
         "BackupRestoreScreen" -> ({ BackupRestoreScreen({}) })
         "CkbGesturesScreen" -> ({ CkbGesturesScreen({}) })
-        "ClipboardScreen" -> ({ ClipboardScreen({}) })
         "CorrectionLearningScreen" -> ({ CorrectionLearningScreen({}, {}, {}, {}) })
         "CreditsScreen" -> ({ CreditsScreen({}, {}) })
         "CustomMacrosScreen" -> ({ CustomMacrosScreen({}) })
@@ -228,15 +227,17 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "LanguagePacksScreen" -> ({ LanguagePacksScreen({}) })
         "LanguageSwitchingScreen" -> ({ LanguageSwitchingScreen({}) })
         "MainSettingsScreen" -> ({ MainSettingsScreen({}, {}) })
-        "TouchScreenKeyboardScreen" -> ({ TouchScreenKeyboardScreen({}, {}, {}, {}) })
+        "TouchScreenKeyboardScreen" -> ({ TouchScreenKeyboardScreen({}, {}, {}) })
+        "AuxiliaryInputScreen" -> ({ AuxiliaryInputScreen({}, {}, {}) })
         "PhysicalKeyboardScreen" -> ({ PhysicalKeyboardScreen({}, {}) })
         "PhysicalLayoutsScreen" -> ({ PhysicalLayoutsScreen({}, builtInDocuments = OneBuiltInLayout) })
         "PredictionsSuggestionsScreen" -> ({ PredictionsSuggestionsScreen({}) })
         "QuickPhrasesScreen" -> ({ QuickPhrasesScreen({}) })
         "ShakeGesturesScreen" -> ({ ShakeGesturesScreen({}) })
+        "ShakeTuningScreen" -> ({ ShakeTuningScreen({}) })
         "SlideboardLayoutScreen" -> ({ SlideboardLayoutScreen({}, {}, {}) })
         "SpellCheckerSettingsScreen" -> ({ SpellCheckerSettingsScreen({}) })
-        "SymbolCustomizationScreen" -> ({ SymbolCustomizationScreen({}, {}, {}) })
+        "SymbolCustomizationScreen" -> ({ SymbolCustomizationScreen({}, {}, onNavigateBack = {}) })
         "TextShortcutsScreen" -> ({ TextShortcutsScreen({}, {}) })
         "TouchSurfaceHelperScreen" -> ({ TouchSurfaceHelperScreen({}) })
         "CustomizationScreen" -> ({ CustomizationScreen({}, {}, {}, {}, {}) })
@@ -501,7 +502,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
          */
         private val SCREEN_NAMES = listOf(
             "AdvancedGestureParametersScreen", "AdvancedSettingsScreen", "AnimationParametersScreen",
-            "AppearanceLayoutScreen", "AutoCorrectionScreen", "BackupRestoreScreen", "CkbGesturesScreen", "ClipboardScreen",
+            "AppearanceLayoutScreen", "AutoCorrectionScreen", "AuxiliaryInputScreen", "BackupRestoreScreen", "CkbGesturesScreen",
             "CorrectionLearningScreen", "CreditsScreen", "CustomMacrosScreen",
             "CustomSymbolPageScreen_PKB", "CustomSymbolPageScreen_VKB", "CustomizationScreen",
             "CustomizeMenuScreen", "CustomizeSlideBoardScreen", "DebugSettingsScreen",
@@ -510,7 +511,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             "LanguagePacksScreen", "LanguageSwitchingScreen",
             "MainSettingsScreen",
             "PhysicalKeyboardScreen", "PhysicalLayoutsScreen", "PredictionsSuggestionsScreen", "QuickPhrasesScreen",
-            "ShakeGesturesScreen", "SlideboardLayoutScreen", "SpellCheckerSettingsScreen",
+            "ShakeGesturesScreen", "ShakeTuningScreen", "SlideboardLayoutScreen", "SpellCheckerSettingsScreen",
             "SymbolCustomizationScreen", "TextShortcutsScreen", "TouchScreenKeyboardScreen",
             "TouchSurfaceHelperScreen",
             "UpdatesScreen", "UserDictionaryScreen", "VoiceInputSettingsScreen",
@@ -634,10 +635,37 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_keyboard_height_title", "settings_keyboard_theme_title",
                 // The two `settings_slideboard_*` names are gone: the Slideboard settings row
                 // moved to the On-Screen Keyboard screen, under Behavior.
+                // The default currency picker moved here from the symbols screen (2026-10-19).
+                "settings_default_currency_summary", "settings_default_currency_title",
                 "settings_symbol_customization_summary", "settings_symbol_customization_title",
                 "settings_use_system_colors_summary", "settings_use_system_colors_title"
             ),
-            literals = emptySet(),
+            literals = setOf(
+                // The default currency row's icon: the generic currency sign while unset.
+                "¤",
+            ),
+        ),
+        Case(
+            name = "AuxiliaryInputScreen",
+            route = SettingsRoute.AuxiliaryInput.route,
+            title = "Auxiliary input",
+            resources = setOf(
+                "settings_auxiliary_input_title", "settings_category_input_menu",
+                "settings_uim_enable_summary_on", "settings_uim_enable_title",
+                "settings_customize_menu_summary", "settings_customize_menu_title",
+                "settings_category_voice", "settings_uim_toggle_voice", "settings_voice_input_summary",
+                "settings_category_emoji", "pref_emoji_dynamic_search_summary_off",
+                "pref_emoji_dynamic_search_title", "pref_emoji_search_replace_text_summary_on",
+                "pref_emoji_search_replace_text_title",
+                // (The clipboard group's "Clipboard" header is a category, which the recorder
+                // does not count.)
+                "clipboard_history_title", "clipboard_history_summary",
+                "clipboard_retention_title", "clipboard_retention_1h",
+                "clipboard_link_previews_title", "clipboard_link_previews_summary"
+            ),
+            // The clipboard group's header reuses the "Clipboard" string upper-cased, which the
+            // recorder sees as a literal.
+            literals = setOf("CLIPBOARD"),
         ),
         Case(
             name = "AutoCorrectionScreen",
@@ -646,7 +674,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             resources = setOf(
                 "settings_auto_correction_title", "settings_autocorrect_auto_cap_summary",
                 "settings_autocorrect_auto_cap_title", "settings_autocorrect_double_space_summary",
-                "settings_autocorrect_double_space_title", "settings_autocorrect_mode_aggressive",
+                "settings_autocorrect_double_space_title", "settings_autocorrect_enable_summary",
+                "settings_autocorrect_enable_title", "settings_autocorrect_mode_aggressive",
                 "settings_autocorrect_vkb_title"
             ),
             literals = emptySet(),
@@ -679,21 +708,6 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 // uppercases, so it never matches its own resource).
                 "GESTURE TIMING",
             ),
-        ),
-        Case(
-            name = "ClipboardScreen",
-            route = SettingsRoute.Clipboard.route,
-            // "Clipboard" has three resources; the index records the lexicographically first.
-            title = "Clipboard",
-            resources = setOf(
-                "clipboard_clear_history_summary", "clipboard_clear_history_title",
-                "clipboard_history_summary", "clipboard_history_title",
-                "clipboard_link_previews_summary", "clipboard_link_previews_title",
-                // The retention row's summary is its current option: one hour on a fresh install.
-                "clipboard_retention_1h", "clipboard_retention_title",
-                "settings_pkb_multifunction_action_clipboard",
-            ),
-            literals = emptySet(),
         ),
         Case(
             name = "CorrectionLearningScreen",
@@ -844,9 +858,10 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.Preferences.route,
             title = "Input",
             resources = setOf(
-                "prefs_category_shake_gestures", "settings_keyboard_summary", "settings_keyboard_title",
-                "settings_preferences_title", "settings_shake_summary", "settings_uim_toggle_voice",
-                "settings_voice_input_summary"
+                "settings_shake_title", "settings_keyboard_summary", "settings_keyboard_title",
+                "settings_preferences_title", "settings_shake_summary",
+                // Auxiliary input replaced the Voice input link (voice sits inside it).
+                "settings_auxiliary_input_summary", "settings_auxiliary_input_title"
             ),
             literals = emptySet(),
         ),
@@ -907,49 +922,23 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.Debug.route,
             title = "Debug Settings",
             resources = setOf(
-                // Its hardcoded "PHYSICAL KEYBOARD" header text now matches this resource's value.
-                "settings_category_physical_keyboard",
-                "prefs_acceleration_threshold_summary", "prefs_acceleration_threshold_title",
+                // 2026-10-20: tuning links, diagnostics and developer switches only. The
+                // "DEVELOPER" header reads as the CKB screen's resource of the same value.
+                "ckb_gestures_developer_category",
                 "prefs_advanced_gesture_thresholds_summary", "prefs_advanced_gesture_thresholds_title",
                 "prefs_advanced_settings_title", "prefs_autofill_debug_logging_summary",
                 "prefs_autofill_debug_logging_title", "prefs_autofill_event_toasts_summary",
-                "prefs_autofill_event_toasts_title", "prefs_batch_cursor_movements_summary",
-                "prefs_batch_cursor_movements_title", "prefs_cross_field_boundaries_summary",
-                "prefs_cross_field_boundaries_title", "prefs_disable_auto_scroll_summary",
-                "prefs_disable_auto_scroll_title", "prefs_double_consonant_delay_summary",
-                "prefs_double_consonant_delay_title", "prefs_double_consonant_timing_summary",
-                "prefs_double_consonant_timing_title", "prefs_fallback_trigger_count_summary",
-                "prefs_fallback_trigger_count_title", "prefs_flow_mode_min_velocity_summary",
-                "prefs_flow_mode_min_velocity_title", "prefs_flow_mode_min_y_summary",
-                "prefs_flow_mode_min_y_title", "prefs_force_vkb_mode_summary_off", "prefs_force_vkb_mode_title",
-                "prefs_key_longpress_delay_summary", "prefs_key_longpress_delay_title",
+                "prefs_autofill_event_toasts_title", "prefs_category_diagnostics", "prefs_category_tuning",
+                "prefs_disable_auto_scroll_summary", "prefs_disable_auto_scroll_title",
+                "prefs_force_vkb_mode_summary_off", "prefs_force_vkb_mode_title",
                 "prefs_key_preview_animations_summary", "prefs_key_preview_animations_title",
-                "prefs_mic_key_triggers_voice_assistant_summary", "prefs_mic_key_triggers_voice_assistant_title",
-                "prefs_on_axis_trigger_count_summary", "prefs_on_axis_trigger_count_title",
-                "prefs_persistent_symbol_page_hint_summary", "prefs_persistent_symbol_page_hint_title",
-                "prefs_pkb_debug_logging_summary", "prefs_pkb_debug_logging_title",
-                "prefs_pkb_special_key_handling_summary", "prefs_pkb_special_key_handling_title",
-                "prefs_reset_time_summary", "prefs_reset_time_title", "prefs_slide_to_type_preview_summary",
-                "prefs_slide_to_type_preview_title", "prefs_slideboard_longpress_delay_summary",
-                "prefs_slideboard_longpress_delay_title", "prefs_slop_time_summary", "prefs_slop_time_title",
+                "prefs_shake_tuning_summary", "prefs_shake_tuning_title",
                 "prefs_show_ckb_developer_settings_summary", "prefs_show_ckb_developer_settings_title",
-                "prefs_show_device_profile_builder_summary", "prefs_show_device_profile_builder_title",
-                "prefs_typed_word_accept_button_summary", "prefs_typed_word_accept_button_title",
-                "prefs_virtual_keyboard_visibility_title", "prefs_vkb_gesture_activation_delay_summary",
-                "prefs_vkb_gesture_activation_delay_title", "settings_category_gestures"
+                "prefs_show_device_profile_builder_summary", "prefs_show_device_profile_builder_title"
             ),
             literals = setOf(
-                "TIMING & RESPONSIVENESS",
-                "SWIPE & FLOW TYPING",
                 "Gesture Lab (prototype)",
                 "Visualize swipes and see the new gesture classifier's verdict; tune thresholds live",
-                "VISUAL FEEDBACK",
-                "When to show VKB on physical keyboard devices: Always",
-                "CURSOR CONTROL",
-                "SLIDEBOARD",
-                "KOREAN INPUT",
-                "SHAKE GESTURES",
-                "TESTING & DIAGNOSTICS",
             ),
         ),
         Case(
@@ -1007,6 +996,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.Learning.route,
             title = "Learning",
             resources = setOf(
+                "settings_dict_add_reverted_words_summary", "settings_dict_add_reverted_words_title",
                 "settings_dict_dynamic_learning_summary", "settings_dict_dynamic_learning_title",
                 "settings_dict_learned_words_summary", "settings_dict_learned_words_title",
                 "settings_dict_text_shortcuts_summary", "settings_dict_text_shortcuts_title",
@@ -1034,12 +1024,12 @@ class SettingsScreenRenderTest(private val screenName: String) {
         Case(
             name = "KeyPressFeedbackScreen",
             route = SettingsRoute.TouchFeedback.route,
-            title = "Key press feedback",
+            title = "Touch feedback",
             resources = setOf(
                 "key_preview_popup_dismiss_default_delay", "key_preview_popup_dismiss_delay", "popup_on_keypress",
                 "popup_on_keypress_summary", "prefs_keypress_sound_volume_settings",
                 "prefs_keypress_vibration_duration_settings", "settings_category_sound",
-                "settings_category_vibrate", "settings_key_press_feedback_title", "sound_on_keypress_summary",
+                "settings_category_vibrate", "settings_touch_feedback_title", "sound_on_keypress_summary",
                 "vibrate_on_keypress_summary",
                 // Still the screen's hardcoded "System default" summary: the voice screen's Speech
                 // recognizer row added a resource with that value, and the recorder names any
@@ -1185,11 +1175,13 @@ class SettingsScreenRenderTest(private val screenName: String) {
             resources = setOf(
                 // "Block offensive words" is no longer here: dictation masking is its only
                 // effect, so the row moved to VoiceInputSettingsScreen (same preference key).
-                "pref_emoji_dynamic_search_summary_off", "pref_emoji_dynamic_search_title",
+                // The emoji dynamic search rows moved to Auxiliary input (2026-10-19).
                 "settings_pred_contacts_permission_summary", "settings_pred_contacts_permission_title",
                 "settings_pred_contacts_summary_disabled", "settings_pred_contacts_title",
                 "settings_pred_emoji_summary", "settings_pred_emoji_title",
-                "settings_pred_flick_animation_summary", "settings_pred_flick_animation_title",
+                // Grouped 2026-10-20: Display / Sources / Contacts and accounts; the flick
+                // animation row moved to the On-screen keyboard screen.
+                "settings_category_contacts_accounts", "settings_category_display", "settings_category_sources",
                 "settings_pred_force_suggestions_summary", "settings_pred_force_suggestions_title",
                 "settings_pred_grant_permission", "settings_pred_inline_autofill_summary",
                 "settings_pred_inline_autofill_title", "settings_pred_next_word_summary",
@@ -1216,11 +1208,24 @@ class SettingsScreenRenderTest(private val screenName: String) {
             literals = emptySet(),
         ),
         Case(
+            name = "ShakeTuningScreen",
+            route = SettingsRoute.ShakeTuning.route,
+            title = "Shake gesture tuning",
+            resources = setOf(
+                "prefs_acceleration_threshold_summary", "prefs_acceleration_threshold_title",
+                "prefs_fallback_trigger_count_summary", "prefs_fallback_trigger_count_title",
+                "prefs_on_axis_trigger_count_summary", "prefs_on_axis_trigger_count_title",
+                "prefs_reset_time_summary", "prefs_reset_time_title",
+                "prefs_shake_tuning_title", "prefs_slop_time_summary", "prefs_slop_time_title"
+            ),
+            literals = emptySet(),
+        ),
+        Case(
             name = "ShakeGesturesScreen",
             route = SettingsRoute.Shake.route,
             title = "Shake Gestures",
             resources = setOf(
-                "prefs_category_shake_gestures", "settings_shake_fallback_title", "settings_shake_info_summary",
+                "settings_shake_title", "settings_shake_fallback_title", "settings_shake_info_summary",
                 "settings_shake_x_axis_title", "settings_shake_y_axis_title", "settings_shake_z_axis_title"
             ),
             literals = setOf(
@@ -1269,18 +1274,19 @@ class SettingsScreenRenderTest(private val screenName: String) {
         Case(
             name = "SymbolCustomizationScreen",
             route = SettingsRoute.SymbolCustomization.route,
-            title = "Custom symbol page",
+            title = "Customize symbols",
             resources = setOf(
                 "settings_category_on_screen_keyboard",
-                "settings_default_currency_title", "settings_symbol_custom_page_first_summary",
+                // The default currency moved to the Personalization hub (2026-10-19).
+                "settings_symbol_custom_page_first_summary",
                 "settings_symbol_custom_page_first_title", "settings_symbol_customization_title",
                 "settings_symbol_customize_page_summary", "settings_symbol_customize_page_title",
-                "settings_symbol_enable_customization_summary", "settings_symbol_enable_customization_title"
+                "settings_symbol_enable_customization_summary", "settings_symbol_enable_customization_title",
+                // The slideboard number pad editor link (2026-10-20).
+                "settings_category_slideboard", "settings_vkb_customize_numberpad_summary",
+                "settings_vkb_customize_numberpad_title"
             ),
-            literals = setOf(
-                // Was "Selected: $": the screen claimed a dollar default the runtime never applied.
-                "Selected: Keyboard default",
-            ),
+            literals = emptySet(),
         ),
         Case(
             name = "TextShortcutsScreen",
@@ -1306,18 +1312,20 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.OnScreenKeyboard.route,
             title = "On-screen keyboard",
             resources = setOf(
-                "settings_category_behavior", "settings_category_gestures", "settings_customize_menu_summary",
-                "settings_customize_menu_title", "settings_keyboard_title", "settings_screen_type_by_swiping",
+                "settings_category_behavior", "settings_category_gestures",
+                "settings_keyboard_title", "settings_screen_type_by_swiping",
                 // Moved here from Personalization, into the Behavior list.
                 "settings_slideboard_hub_summary", "settings_slideboard_settings_title",
                 "settings_touch_feedback_summary", "settings_touch_feedback_title",
-                "settings_uim_enable_summary_on", "settings_uim_enable_title",
-                // The clipboard settings row, beside the unified input menu rows. Its title is
-                // "Clipboard", recorded under the lexicographically first resource of that value.
-                "clipboard_settings_summary", "settings_pkb_multifunction_action_clipboard",
+                // The unified input menu rows and the clipboard link moved to Auxiliary input
+                // (2026-10-19).
                 "settings_vkb_swipe_down_dismiss_summary", "settings_vkb_swipe_down_dismiss_title",
                 "settings_vkb_swipe_gestures_summary", "settings_vkb_swipe_gestures_title",
-                "settings_vkb_type_by_swiping_summary", "vkb_control_key_summary", "vkb_control_key_title"
+                "settings_vkb_type_by_swiping_summary", "vkb_control_key_summary", "vkb_control_key_title",
+                // The flick commit animation moved here from Suggestions (2026-10-20), and the
+                // key long-press delay from Debug.
+                "settings_pred_flick_animation_summary", "settings_pred_flick_animation_title",
+                "prefs_key_longpress_delay_summary", "prefs_key_longpress_delay_title"
             ),
             literals = emptySet(),
         ),
@@ -1338,7 +1346,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             resources = setOf(
                 // "Never" - the last-checked row on a fresh install. Several resources share that
                 // value and the index records the lexicographically first, which is this one.
-                "prefs_vkb_visibility_status_never",
+                "settings_update_never",
                 "settings_update_background_check_summary", "settings_update_background_check_title",
                 // The tests run against the debug BuildConfig, so the channel row honestly reads
                 // "no update channel for debug builds" and there is no card to draw.

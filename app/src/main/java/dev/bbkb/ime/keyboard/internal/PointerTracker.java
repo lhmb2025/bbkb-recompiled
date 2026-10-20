@@ -1013,9 +1013,9 @@ public final class PointerTracker extends AbstractDrawingHandler {
         if (i == -1) {
             return sParams.mLongPressShiftLockTimeout;
         }
-        final SettingsValues sv = SettingsManager.getInstance().getSettingsValues();
-        int i2 = sv.keyLongpressTimeoutMs;
-        return sv.isSlideboardEnabled ? sv.slideboardKeyLongpressTimeout : i2;
+        // One delay for every key (2026-10-20): the slideboard used to swap in a second
+        // preference of its own for the whole keyboard while it was enabled.
+        return SettingsManager.getInstance().getSettingsValues().keyLongpressTimeoutMs;
     }
 
     private void detectAndSendKey(Key key, int i, int i2, long j) {
@@ -1060,7 +1060,8 @@ public final class PointerTracker extends AbstractDrawingHandler {
     private int getKeyRepeatStartTimeout() {
         final SettingsValues sv = SettingsManager.getInstance().getSettingsValues();
         if (sv.isSlideboardEnabled) {
-            return sv.slideboardKeyLongpressTimeout;
+            // The slideboard's repeating keys start after the long-press delay.
+            return sv.keyLongpressTimeoutMs;
         }
         return sParams.mKeyRepeatStartTimeout;
     }

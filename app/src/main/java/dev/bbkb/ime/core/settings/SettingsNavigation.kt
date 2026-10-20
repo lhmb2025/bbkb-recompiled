@@ -71,25 +71,26 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object QuickPhrases : SettingsRoute("quick_phrases", "Quick Phrases")
     object Shake : SettingsRoute("shake", "Shake Gestures")
     object VoiceInput : SettingsRoute("voice_input", "Voice Input Settings")
+    object AuxiliaryInput : SettingsRoute("auxiliary_input", "Auxiliary input")
     object VoiceLanguageSelection : SettingsRoute("voice_language_selection", "Voice Input Language")
     object LanguagePacks : SettingsRoute("language_packs", "Language Packs")
     object LanguagesHub : SettingsRoute("languages_hub", "Language")
     object Debug : SettingsRoute("debug", "Debug Settings")
     object AdvancedGestureParameters : SettingsRoute("advanced_gesture_parameters", "Advanced Gesture Parameters")
     object GestureLab : SettingsRoute("gesture_lab", "Gesture Lab")
+    object ShakeTuning : SettingsRoute("shake_tuning", "Shake gesture tuning")
     object CkbGestures : SettingsRoute("ckb_gestures", "CKB Gestures")
     object AnimationParameters : SettingsRoute("animation_parameters", "Animation Parameters")
     object PersonalLearnedWords : SettingsRoute("personal_learned_words", "Personal Learned Words")
     object UserDictionary : SettingsRoute("user_dictionary", "User Dictionary")
     object TextShortcuts : SettingsRoute("text_shortcuts", "Text Shortcuts")
     object CustomMacros : SettingsRoute("custom_macros", "Custom Macros")
-    object SymbolCustomization : SettingsRoute("symbol_customization", "Custom symbol page")
+    object SymbolCustomization : SettingsRoute("symbol_customization", "Customize symbols")
     object CustomSymbolPagePkb : SettingsRoute("custom_symbol_page_pkb", "Custom Symbol Page (PKB)")
     object CustomSymbolPageVkb : SettingsRoute("custom_symbol_page_vkb", "Custom Symbol Page (VKB)")
     object CustomizeSlideBoard : SettingsRoute("customize_slideboard", "Customize SlideBoard")
     object SlideboardSettings : SettingsRoute("slideboard_settings", "Touch Screen Keyboard")
     object CustomizeMenu : SettingsRoute("customize_menu", "Customize Menu")
-    object Clipboard : SettingsRoute("clipboard", "Clipboard")
     object About : SettingsRoute("about", "About")
     object Updates : SettingsRoute("updates", "Updates")
     object KeyboardHelper : SettingsRoute("keyboard_helper", "BBKB Helper")
@@ -141,12 +142,14 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 QuickPhrases.route -> QuickPhrases
                 Shake.route -> Shake
                 VoiceInput.route -> VoiceInput
+                AuxiliaryInput.route -> AuxiliaryInput
                 VoiceLanguageSelection.route -> VoiceLanguageSelection
                 LanguagePacks.route -> LanguagePacks
                 LanguagesHub.route -> LanguagesHub
                 Debug.route -> Debug
                 AdvancedGestureParameters.route -> AdvancedGestureParameters
                 GestureLab.route -> GestureLab
+                ShakeTuning.route -> ShakeTuning
                 CkbGestures.route -> CkbGestures
                 AnimationParameters.route -> AnimationParameters
                 PersonalLearnedWords.route, "learned_words" -> PersonalLearnedWords
@@ -160,7 +163,8 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 CustomizeSlideBoard.route -> CustomizeSlideBoard
                 SlideboardSettings.route -> SlideboardSettings
                 CustomizeMenu.route -> CustomizeMenu
-                Clipboard.route -> Clipboard
+                // "clipboard" (its own screen until 2026-10-19) opens Auxiliary input.
+                "clipboard" -> AuxiliaryInput
                 About.route -> About
                 Updates.route -> Updates
                 KeyboardHelper.route -> KeyboardHelper

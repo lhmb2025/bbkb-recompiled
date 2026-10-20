@@ -38,17 +38,17 @@ class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnS
             }
         }
 
-        if (SettingsManager.PREF_PKB_SHOW_SUGGESTION_BAR == key) {
-            // Read from the preferences, not SettingsValues: SettingsManager's own listener may
-            // not have reloaded it yet.
-            val shown = SettingsManager.isPkbSuggestionBarEnabled(sharedPreferences)
+        if ("show_predictions" == key || "pref_uim_enabled" == key) {
+            // The bar above a physical keyboard's keys hides when neither suggestions nor the
+            // menu would be on it. Read from the preferences, not SettingsValues: SettingsManager's
+            // own listener may not have reloaded it yet.
+            val hasContent = SettingsManager.pkbBarHasContent(sharedPreferences, ime.resources)
             val uimManager = keyboardSwitcher.getUnifiedInputBoardManager()
-            if (SettingsValues.isPkbSuggestionBarHidden(shown)) {
+            if (SettingsValues.isPkbSuggestionBarHidden(hasContent)) {
                 uimManager?.hide()
                 ime.auxBarManager?.hideSuggestionBar()
-            } else if (shown && uimManager != null && ime.isInputViewShown()) {
-                // As for the menu above: back now if it is enabled; the strip returns with the
-                // next suggestions.
+            } else if (hasContent && uimManager != null && ime.isInputViewShown()) {
+                // Back now if the menu is enabled; the strip returns with the next suggestions.
                 uimManager.show(false)
             }
         }

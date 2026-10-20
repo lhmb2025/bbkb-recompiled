@@ -25,16 +25,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Behaviour of the two navigation rows in the On-Screen Keyboard screen's Behavior list.
- *
- * "Customize unified input menu" configures the order of a menu that "Enable unified input menu"
- * — the toggle directly above it — can switch off entirely. With the menu off there is nothing
- * for that screen to configure, so the row is disabled rather than opening it; and because the
- * toggle's value lives in the host's state map, switching it back on must re-enable the row
- * without leaving and re-entering the screen.
- *
  * "Slideboard settings" is here rather than under Personalization: everything behind it is
- * on-screen-keyboard behaviour.
+ * on-screen-keyboard behaviour. (The unified input menu rows moved to Auxiliary input, see
+ * [AuxiliaryInputScreenTest].)
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -60,7 +53,6 @@ class OnScreenKeyboardScreenTest {
         PrefsManager.getPrefs(context).edit().clear().commit()
     }
 
-    private var customizeMenuOpened = 0
     private var slideboardOpened = 0
 
     private fun render() {
@@ -78,7 +70,6 @@ class OnScreenKeyboardScreenTest {
     private fun Content() {
         TouchScreenKeyboardScreen(
             onNavigateBack = {},
-            onNavigateToCustomizeMenu = { customizeMenuOpened++ },
             onNavigateToSlideboard = { slideboardOpened++ },
         )
     }
@@ -88,37 +79,6 @@ class OnScreenKeyboardScreenTest {
     private fun click(id: Int) {
         composeRule.onNodeWithText(string(id)).performScrollTo().performClick()
         composeRule.waitForIdle()
-    }
-
-    /** The menu is on by default, so the row it configures opens as it always did. */
-    @Test
-    fun `customize menu opens while the unified input menu is on`() {
-        render()
-        click(R.string.settings_customize_menu_title)
-        assertEquals(1, customizeMenuOpened)
-    }
-
-    @Test
-    fun `customize menu does not open while the unified input menu is off`() {
-        PrefsManager.getPrefs(context).edit().putBoolean("pref_uim_enabled", false).commit()
-        render()
-        click(R.string.settings_customize_menu_title)
-        assertEquals(0, customizeMenuOpened)
-    }
-
-    /**
-     * The re-enable has to happen live: the toggle writes through the host's state map, which is
-     * what the row's `enabled` gate reads.
-     */
-    @Test
-    fun `turning the unified input menu back on re-enables the row`() {
-        PrefsManager.getPrefs(context).edit().putBoolean("pref_uim_enabled", false).commit()
-        render()
-
-        click(R.string.settings_uim_enable_title)
-        click(R.string.settings_customize_menu_title)
-
-        assertEquals(1, customizeMenuOpened)
     }
 
     @Test

@@ -6,12 +6,12 @@ import dev.bbkb.ime.core.settings.PrefsManager
 /**
  * The clipboard board's preferences: their keys, defaults and how a stored value is read.
  *
- * `ClipboardScreen` writes them and the board reads them through here. The settings search index
+ * `AuxiliaryInputScreen` writes them and the board reads them through here. The settings search index
  * anchors on the keys, so they must not be renamed.
  */
 object ClipboardPrefs {
 
-    /** Off stops capturing and wipes the stored history (see `ClipboardScreen`). */
+    /** Off stops capturing and wipes the stored history (see `AuxiliaryInputScreen`). */
     const val KEY_HISTORY_ENABLED = "pref_clipboard_history_enabled"
     const val DEFAULT_HISTORY_ENABLED = true
 
@@ -28,7 +28,6 @@ object ClipboardPrefs {
     const val DEFAULT_LINK_PREVIEWS = false
 
     /** Search anchor of the "Clear history" action row, which has no preference of its own. */
-    const val ANCHOR_CLEAR_HISTORY = "clipboard_clear_history"
 
     /** The retention of [RETENTION_NEVER]: no unpinned clip expires. */
     const val NO_EXPIRY = Long.MAX_VALUE

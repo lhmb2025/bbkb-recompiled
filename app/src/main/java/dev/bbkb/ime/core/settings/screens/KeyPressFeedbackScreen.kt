@@ -1,10 +1,6 @@
 package dev.bbkb.ime.core.settings.screens
 
 import android.content.Context
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.VolumeUp
-import androidx.compose.material.icons.filled.Vibration
-import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
@@ -15,7 +11,6 @@ import dev.bbkb.ime.core.settings.ui.PrefStore
 import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
-import dev.bbkb.ime.core.settings.ui.asRowIcon
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.core.settings.ui.stringPref
 import dev.bbkb.ime.R
@@ -33,13 +28,12 @@ import dev.bbkb.ime.R
 fun KeyPressFeedbackScreen(
     onNavigateBack: () -> Unit
 ) {
-    SettingsScreenHost(R.string.settings_key_press_feedback_title, onNavigateBack, listOf(
+    SettingsScreenHost(R.string.settings_touch_feedback_title, onNavigateBack, listOf(
         Category(R.string.settings_category_vibrate),
         Toggle(
             store = boolPref("vibrate_on", R.bool.config_default_vibration_enabled),
             title = R.string.vibrate_on_keypress,
             summary = RowSummary.Res(R.string.vibrate_on_keypress_summary),
-            icon = Icons.Default.Vibration.asRowIcon(),
             modifier = Modifier.settingsSearchAnchor("vibrate_on"),
         ),
         Choice(
@@ -47,7 +41,6 @@ fun KeyPressFeedbackScreen(
             title = R.string.prefs_keypress_vibration_duration_settings,
             options = { VIBRATION_DURATIONS },
             summary = { _, value -> vibrationDurationLabel(value) },
-            iconSpaceReserved = true,
             enabled = { it.bool("vibrate_on") },
             modifier = Modifier.settingsSearchAnchor("pref_vibration_duration_settings"),
         ),
@@ -57,7 +50,6 @@ fun KeyPressFeedbackScreen(
             store = boolPref("sound_on", R.bool.config_default_sound_enabled),
             title = R.string.sound_on_keypress,
             summary = RowSummary.Res(R.string.sound_on_keypress_summary),
-            icon = Icons.AutoMirrored.Filled.VolumeUp.asRowIcon(),
             modifier = Modifier.settingsSearchAnchor("sound_on"),
         ),
         Choice(
@@ -65,7 +57,6 @@ fun KeyPressFeedbackScreen(
             title = R.string.prefs_keypress_sound_volume_settings,
             options = { SOUND_VOLUMES },
             summary = { _, value -> soundVolumeLabel(value) },
-            iconSpaceReserved = true,
             enabled = { it.bool("sound_on") },
             modifier = Modifier.settingsSearchAnchor("pref_keypress_sound_volume"),
         ),
@@ -75,7 +66,6 @@ fun KeyPressFeedbackScreen(
             store = boolPref("popup_on", R.bool.config_default_key_preview_popup),
             title = R.string.popup_on_keypress,
             summary = RowSummary.Res(R.string.popup_on_keypress_summary),
-            icon = Icons.Default.Visibility.asRowIcon(),
             modifier = Modifier.settingsSearchAnchor("popup_on"),
         ),
         Choice(
@@ -83,7 +73,6 @@ fun KeyPressFeedbackScreen(
             title = R.string.key_preview_popup_dismiss_delay,
             options = ::popupDismissDelays,
             summary = { _, value -> popupDismissDelayLabel(value) },
-            iconSpaceReserved = true,
             enabled = { it.bool("popup_on") },
             modifier = Modifier.settingsSearchAnchor("pref_key_preview_popup_dismiss_delay"),
         ),

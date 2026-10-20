@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.backup.BackupBundle
 import dev.bbkb.ime.core.settings.backup.BackupOperations
@@ -76,10 +77,12 @@ fun AdvancedSettingsScreen(
             icon = Icons.Default.PhoneAndroid.asRowIcon(),
             onClick = { onNavigateToDeviceCompatibility() },
         ),
+        // Debug builds only (2026-10-20): advanced tuning and developer switches.
         Nav(
             title = R.string.settings_debug_title,
             summary = R.string.settings_debug_summary,
             icon = Icons.Default.BugReport.asRowIcon(),
+            visible = { BuildConfig.DEBUG },
             onClick = { onNavigateToDebug() },
         ),
 

@@ -160,7 +160,6 @@ class PointerTrackerCallbackStreamTest {
         val sv = unsafeAllocate(SettingsValues::class.java) as SettingsValues
         setField(sv, SettingsValues::class.java, "isSlideboardEnabled", false)
         setField(sv, SettingsValues::class.java, "keyLongpressTimeoutMs", 400)
-        setField(sv, SettingsValues::class.java, "slideboardKeyLongpressTimeout", 300)
         setField(sv, SettingsValues::class.java, "isVkbGestureInputEnabled", false)
         val capsType = SettingsValues::class.java.getDeclaredField("editorCapabilities").type
         val caps = unsafeAllocate(capsType)

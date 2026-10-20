@@ -1,7 +1,7 @@
 package dev.bbkb.ime.core.settings.screens
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material.icons.filled.Vibration
 import androidx.compose.runtime.Composable
 import dev.bbkb.ime.core.settings.ui.Nav
@@ -18,7 +18,7 @@ import dev.bbkb.ime.R
 fun CustomizationScreen(
     onNavigateToTouchScreenKeyboard: () -> Unit,
     onNavigateToPhysicalKeyboard: () -> Unit = {},
-    onNavigateToVoiceInput: () -> Unit,
+    onNavigateToAuxiliaryInput: () -> Unit,
     onNavigateToShakeGestures: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
@@ -38,10 +38,10 @@ fun CustomizationScreen(
             onClick = { onNavigateToPhysicalKeyboard() },
         ),
         Nav(
-            title = R.string.settings_voice_input_title,
-            summary = R.string.settings_voice_input_summary,
-            icon = Icons.Default.Mic.asRowIcon(),
-            onClick = { onNavigateToVoiceInput() },
+            title = R.string.settings_auxiliary_input_title,
+            summary = R.string.settings_auxiliary_input_summary,
+            icon = Icons.Default.Widgets.asRowIcon(),
+            onClick = { onNavigateToAuxiliaryInput() },
         ),
         Nav(
             title = R.string.settings_shake_title,

@@ -41,10 +41,11 @@ import dev.bbkb.ime.core.settings.screens.PhysicalLayoutsScreen
 import dev.bbkb.ime.core.settings.screens.PredictionsSuggestionsScreen
 import dev.bbkb.ime.core.settings.screens.QuickPhrasesScreen
 import dev.bbkb.ime.core.settings.screens.ShakeGesturesScreen
-import dev.bbkb.ime.core.settings.screens.ClipboardScreen
 import dev.bbkb.ime.core.settings.screens.CustomizeMenuScreen
 import dev.bbkb.ime.core.settings.screens.SlideboardLayoutScreen
 import dev.bbkb.ime.core.settings.screens.SymbolCustomizationScreen
+import dev.bbkb.ime.core.settings.screens.AuxiliaryInputScreen
+import dev.bbkb.ime.core.settings.screens.ShakeTuningScreen
 import dev.bbkb.ime.core.settings.screens.CustomSymbolPageScreen
 import dev.bbkb.ime.core.settings.screens.CustomizeSlideBoardScreen
 import dev.bbkb.ime.core.settings.screens.CustomMacrosScreen
@@ -198,7 +199,7 @@ fun SettingsNavHost(
             CustomizationScreen(
                 onNavigateToTouchScreenKeyboard = go(SettingsRoute.OnScreenKeyboard),
                 onNavigateToPhysicalKeyboard = go(SettingsRoute.PhysicalKeyboard),
-                onNavigateToVoiceInput = go(SettingsRoute.VoiceInput),
+                onNavigateToAuxiliaryInput = go(SettingsRoute.AuxiliaryInput),
                 onNavigateToShakeGestures = go(SettingsRoute.Shake),
                 onNavigateBack = back
             )
@@ -217,18 +218,20 @@ fun SettingsNavHost(
             TouchScreenKeyboardScreen(
                 onNavigateBack = back,
                 onNavigateToKeyPressFeedback = go(SettingsRoute.TouchFeedback),
-                onNavigateToCustomizeMenu = go(SettingsRoute.CustomizeMenu),
                 onNavigateToSlideboard = go(SettingsRoute.SlideboardSettings),
-                onNavigateToClipboard = go(SettingsRoute.Clipboard)
+            )
+        }
+
+        // Auxiliary input (input menu, clipboard, emoji, voice)
+        composable(SettingsRoute.AuxiliaryInput.route) {
+            AuxiliaryInputScreen(
+                onNavigateToCustomizeMenu = go(SettingsRoute.CustomizeMenu),
+                onNavigateToVoiceInput = go(SettingsRoute.VoiceInput),
+                onNavigateBack = back,
             )
         }
 
         // Clipboard history — linked page from On-Screen Keyboard → Behavior
-        composable(SettingsRoute.Clipboard.route) {
-            ClipboardScreen(
-                onNavigateBack = back
-            )
-        }
 
         // Touch Feedback — linked page from On-Screen Keyboard → Behavior
         composable(SettingsRoute.TouchFeedback.route) {
@@ -425,8 +428,13 @@ fun SettingsNavHost(
                 onNavigateToAdvancedGestureParameters = go(SettingsRoute.AdvancedGestureParameters),
                 onNavigateToAnimationParameters = go(SettingsRoute.AnimationParameters),
                 onNavigateToGestureLab = go(SettingsRoute.GestureLab),
+                onNavigateToShakeTuning = go(SettingsRoute.ShakeTuning),
                 onNavigateBack = back
             )
+        }
+
+        composable(SettingsRoute.ShakeTuning.route) {
+            ShakeTuningScreen(onNavigateBack = back)
         }
 
         composable(SettingsRoute.CkbGestures.route) {
@@ -481,6 +489,7 @@ fun SettingsNavHost(
             SymbolCustomizationScreen(
                 onNavigateToCustomSymbolPagePKB = go(SettingsRoute.CustomSymbolPagePkb),
                 onNavigateToCustomSymbolPageVKB = go(SettingsRoute.CustomSymbolPageVkb),
+                onNavigateToCustomizeSlideBoard = go(SettingsRoute.CustomizeSlideBoard),
                 onNavigateBack = back
             )
         }

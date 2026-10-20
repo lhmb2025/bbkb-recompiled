@@ -205,7 +205,7 @@ public class AltSymShortcutBoardGateTest {
     private FakeMenu chordWithTheBarHidden(String action) {
         PrefsManager.INSTANCE.getPrefs(context).edit().clear()
                 .putString(AltSymShortcutHandler.PREF_KEY, action)
-                .putBoolean(SettingsManager.PREF_PKB_SHOW_SUGGESTION_BAR, false).commit();
+                .putBoolean("show_predictions", false).putBoolean("pref_uim_enabled", false).commit();
         SettingsManager.initialize(context);
         SettingsManager.getInstance().loadSettings(context, Locale.US,
                 new EditorCapabilities(null, false, context.getPackageName(), Locale.US, false));
@@ -260,8 +260,8 @@ public class AltSymShortcutBoardGateTest {
         org.junit.Assert.assertFalse(SettingsValues.isInputMenuRequestedByKey());
         org.junit.Assert.assertFalse(ime.isUimEnabled());
         org.junit.Assert.assertFalse(PrefsManager.INSTANCE.getPrefs(context)
-                .getBoolean(SettingsManager.PREF_PKB_SHOW_SUGGESTION_BAR, true));
-        org.junit.Assert.assertFalse(PrefsManager.INSTANCE.getPrefs(context).contains("pref_uim_enabled"));
+                .getBoolean("show_predictions", true));
+        org.junit.Assert.assertFalse(PrefsManager.INSTANCE.getPrefs(context).getBoolean("pref_uim_enabled", true));
     }
 
     @Test

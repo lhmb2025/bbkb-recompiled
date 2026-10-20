@@ -11,6 +11,8 @@ import dev.bbkb.ime.core.settings.ui.Nav
 import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
+import dev.bbkb.ime.core.settings.ui.intPref
+import dev.bbkb.ime.core.settings.ui.Slide
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.R
 
@@ -26,14 +28,47 @@ import dev.bbkb.ime.R
 fun TouchScreenKeyboardScreen(
     onNavigateBack: () -> Unit,
     onNavigateToKeyPressFeedback: () -> Unit = {},
-    onNavigateToCustomizeMenu: () -> Unit = {},
     onNavigateToSlideboard: () -> Unit = {},
-    onNavigateToClipboard: () -> Unit = {},
 ) {
     // Chinese locale disables swipe typing (NuanceSDK limitation)
     val isChineseLocale = remember { LocaleUtils.isCurrentSubtypeChinese() }
 
     SettingsScreenHost(R.string.settings_keyboard_title, onNavigateBack, listOf(
+        Category(R.string.settings_category_behavior_vkb),
+        Toggle(
+            store = boolPref("vkb_control_mode_enabled", false),
+            title = R.string.vkb_control_key_title,
+            summary = RowSummary.Res(R.string.vkb_control_key_summary),
+            modifier = Modifier.settingsSearchAnchor("vkb_control_mode_enabled"),
+        ),
+        // How long a key is held before its alternates pop up (the physical Alt key's accent
+        // popup uses twice this). Was two Debug sliders, one swapped in while the slideboard was
+        // on (2026-10-20).
+        Slide(intPref("pref_key_longpress_timeout", 400),
+            R.string.prefs_key_longpress_delay_title,
+            R.string.prefs_key_longpress_delay_summary, 100..1000, step = 50, unit = "ms",
+            modifier = Modifier.settingsSearchAnchor("pref_key_longpress_timeout")),
+        // The committed word floating up on a flick: an on-screen animation, so it lives here
+        // rather than under Suggestions (2026-10-20).
+        Toggle(
+            store = boolPref("pref_flick_commit_animation", true),
+            title = R.string.settings_pred_flick_animation_title,
+            summary = RowSummary.Res(R.string.settings_pred_flick_animation_summary),
+            modifier = Modifier.settingsSearchAnchor("pref_flick_commit_animation"),
+        ),
+        // Slideboard (enable, swap sides, number pad, quick phrases). No icon: the rows around it
+        // carry none.
+        Nav(
+            title = R.string.settings_slideboard_settings_title,
+            summary = R.string.settings_slideboard_hub_summary,
+            onClick = { onNavigateToSlideboard() },
+        ),
+        // Touch feedback (links to KeyPressFeedbackScreen) — VKB only
+        Nav(
+            title = R.string.settings_touch_feedback_title,
+            summary = R.string.settings_touch_feedback_summary,
+            onClick = { onNavigateToKeyPressFeedback() },
+        ),
         Category(R.string.settings_category_gestures),
         Toggle(
             store = boolPref("type_by_swiping_vkb", R.bool.config_vkb_type_by_swiping_enabled_by_build_config),
@@ -56,51 +91,5 @@ fun TouchScreenKeyboardScreen(
             modifier = Modifier.settingsSearchAnchor("swipe_down_vkb"),
         ),
 
-        Category(R.string.settings_category_behavior_vkb),
-        Toggle(
-            store = boolPref("vkb_control_mode_enabled", false),
-            title = R.string.vkb_control_key_title,
-            summary = RowSummary.Res(R.string.vkb_control_key_summary),
-            modifier = Modifier.settingsSearchAnchor("vkb_control_mode_enabled"),
-        ),
-        Toggle(
-            store = boolPref("pref_uim_enabled", true),
-            title = R.string.settings_uim_enable_title,
-            summary = RowSummary.OnOff(
-                R.string.settings_uim_enable_summary_on,
-                R.string.settings_uim_enable_summary_off,
-            ),
-            modifier = Modifier.settingsSearchAnchor("pref_uim_enabled"),
-        ),
-        // Reorder the unified input menu shortcuts (voice, emoji, cursor, clipboard, number pad).
-        // There is nothing to customize while the menu itself is off, so the row greys out with
-        // the toggle above it rather than opening a screen that configures a hidden menu.
-        Nav(
-            title = R.string.settings_customize_menu_title,
-            summary = R.string.settings_customize_menu_summary,
-            enabled = { it.bool("pref_uim_enabled") },
-            onClick = { onNavigateToCustomizeMenu() },
-        ),
-        // Clipboard history (capture, retention, link previews). Beside the menu rows because the
-        // menu is one of the two ways into the clipboard board; it stays enabled with the menu
-        // off, since the multifunction key and the physical keyboard's shortcut open it too.
-        Nav(
-            title = R.string.settings_uim_toggle_clipboard,
-            summary = R.string.clipboard_settings_summary,
-            onClick = { onNavigateToClipboard() },
-        ),
-        // Slideboard (enable, swap sides, number pad, quick phrases). No icon: the rows around it
-        // carry none.
-        Nav(
-            title = R.string.settings_slideboard_settings_title,
-            summary = R.string.settings_slideboard_hub_summary,
-            onClick = { onNavigateToSlideboard() },
-        ),
-        // Touch feedback (links to KeyPressFeedbackScreen) — VKB only
-        Nav(
-            title = R.string.settings_touch_feedback_title,
-            summary = R.string.settings_touch_feedback_summary,
-            onClick = { onNavigateToKeyPressFeedback() },
-        ),
     ))
 }

@@ -107,14 +107,12 @@ class SettingsScreenDefaultsTest {
 
     @Test
     fun debugSlidersShowTheRuntimeDefaults() {
-        render { DebugSettingsScreen({}, {}, {}, {}) }
-        assertEquals(
-            "Value: ${SettingsManager.DEFAULT_KOREAN_DOUBLE_CONSONANT_RESOLUTION_DELAY_MS}ms",
-            sliderValueOf(context.getString(R.string.prefs_double_consonant_delay_title)),
-        )
+        // The Debug screen's own sliders are gone (2026-10-20); the gesture activation delay
+        // lives on Advanced gesture thresholds, which still has to open on the engine's default.
+        render { AdvancedGestureParametersScreen({}) }
         assertEquals(
             "Value: ${context.resources.getInteger(R.integer.config_default_VKB_swipe_gesture_suppression_timeout)}ms",
-            sliderValueOf(context.getString(R.string.prefs_vkb_gesture_activation_delay_title)),
+            sliderValueOf(context.getString(R.string.settings_gesture_vkb_suppression_title)),
         )
     }
 
@@ -147,17 +145,18 @@ class SettingsScreenDefaultsTest {
     fun anUnsetCurrencyShowsTheKeyboardsOwnSymbolNotADollar() {
         // "" is what the runtime reads for an unset key, and it means "leave the layout's own
         // currency key alone" — so claiming "$" was wrong for every non-dollar layout.
-        render { SymbolCustomizationScreen({}, {}, {}) }
+        // The row's icon is the chosen symbol; unset shows the generic currency sign.
+        render { AppearanceLayoutScreen({}, {}) }
         val texts = rendered()
-        assertTrue(texts.toString(), context.getString(R.string.settings_default_currency_summary, "Keyboard default") in texts)
-        assertTrue(texts.toString(), context.getString(R.string.settings_default_currency_summary, "$") !in texts)
+        assertTrue(texts.toString(), "¤" in texts)
+        assertTrue(texts.toString(), "$" !in texts)
     }
 
     @Test
     fun aChosenCurrencyIsStillShown() {
         prefs.edit().putString("pref_currency_key", "€").commit()
-        render { SymbolCustomizationScreen({}, {}, {}) }
-        assertTrue(context.getString(R.string.settings_default_currency_summary, "€") in rendered())
+        render { AppearanceLayoutScreen({}, {}) }
+        assertTrue("€" in rendered())
     }
 
     @Test

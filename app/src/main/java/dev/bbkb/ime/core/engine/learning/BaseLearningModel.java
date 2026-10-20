@@ -114,6 +114,18 @@ public abstract class BaseLearningModel {
         }
     }
 
+    /** Learn {@code word} by content when the engine does not know it, then end the word. */
+    void learnTypedWord(String word) {
+        if (this.nuanceSdk == null) {
+            return;
+        }
+        if (!this.nuanceSdk.isSpellingCorrect(word)) {
+            boolean added = this.nuanceSdk.addWord(word);
+            if (BuildConfig.DEBUG) Log.d("PIPELINE", "IME:learn:typedWord word=\"" + word + "\" -> " + added);
+        }
+        this.nuanceSdk.clear();
+    }
+
     // There is deliberately no save() here. The engine learner has no store of its own to flush:
     // everything it learns goes into the native dynamic model, which the engine writes through
     // attachDLMFile/detachDLMFile — there is no "save the DLM" entry point on NuanceSDK at all.

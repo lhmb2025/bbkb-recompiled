@@ -232,7 +232,14 @@ class CommitController {
             // returned completions of the committed word instead of next-word predictions.
             // See docs/archived/2026-05_composing-and-ckb-gestures/2026-05_post-commit-next-word-prediction_investigation.md. learn either records the
             // pick via selectionListSelectWord or clears the engine, both of which end the word.
-            mInputLogic.mIme.getDynamicLearningManager().learn(matched);
+            if (matched != null || isBatchInput) {
+                mInputLogic.mIme.getDynamicLearningManager().learn(matched);
+            } else {
+                // No candidate list carried this word (suggestions and auto-correction off, so
+                // no lookup ran; or the word was not among the alternatives): learn it by
+                // content, which is also what ends the word in the engine.
+                mInputLogic.mIme.getDynamicLearningManager().learnTypedWord(word);
+            }
         }
         mInputLogic.mTouchHighlightTracker.clear();
         if (mInputLogic.mSmartPunctuationAnalyzer != null) {

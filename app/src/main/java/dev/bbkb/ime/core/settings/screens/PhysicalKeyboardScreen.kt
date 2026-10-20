@@ -48,6 +48,9 @@ fun PhysicalKeyboardScreen(
     // up, Scroll assistant off): the category still shows, with the one row that leads to setup.
     val touchSurface = rememberTouchSurfaceState()
     val hasPhysicalKeyboard = remember { DeviceProfile.current()?.hasPhysicalKeyboard() ?: false }
+    // The KEY2 (Athena profile) has no key to assign as Ctrl: its Ctrl is the Alt+Sym / multifunction
+    // choice, so the row is hidden there (2026-10-20).
+    val isAthena = remember { DeviceProfile.current()?.deviceMapping?.kdbVariant == "athena" }
     val isChineseLocale = remember { LocaleUtils.isCurrentSubtypeChinese() }
 
     // Multifunction key action — only for devices whose config declares a MULTIFUNCTION key
@@ -108,15 +111,7 @@ fun PhysicalKeyboardScreen(
             options = ::controlModes,
             fallbackIndex = 2,
             modifier = Modifier.settingsSearchAnchor("control_mode"),
-        ),
-        // Off: no suggestion strip and no input menu above the physical keys (see
-        // SettingsValues.isPkbSuggestionBarHidden). Only a physical keyboard has that bar.
-        Toggle(
-            store = boolPref(SettingsManager.PREF_PKB_SHOW_SUGGESTION_BAR, true),
-            title = R.string.settings_pkb_suggestion_bar_title,
-            summary = RowSummary.Res(R.string.settings_pkb_suggestion_bar_summary),
-            modifier = Modifier.settingsSearchAnchor("pref_pkb_show_suggestion_bar"),
-            visible = { hasPhysicalKeyboard },
+            visible = { !isAthena },
         ),
         // The keypad's shape, for a model sold in several (the KEY2: QWERTY, QWERTZ and AZERTY
         // editions): automatic detection, or the user's word for it. A model the device config

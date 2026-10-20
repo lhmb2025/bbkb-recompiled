@@ -63,7 +63,6 @@ public final class SettingsValues {
 
     public final boolean isSlideboardEnabled;
 
-    public final int slideboardKeyLongpressTimeout;
 
     public final int slideboardNumericLocation;
 
@@ -127,7 +126,7 @@ public final class SettingsValues {
 
     public final float inLetterMaxSwipeToWordDistance;
 
-    /** "Enable unified input menu" as stored; {@link #isUimEnabled()} is the effective value. */
+    /** "Enable unified input menu" as stored; {@link #isUimEnabled()} adds the key request. */
     private final boolean uimEnabledSetting;
 
     /**
@@ -373,9 +372,12 @@ public final class SettingsValues {
         this.isCkbGestureInputEnabled = SettingsManager.isCbkTypeBySwipingEnabled(sharedPreferences, resources);
         this.isVkbSwipeDownEnabled = SettingsManager.isVkbSwipeDownEnabled(sharedPreferences);
         this.isVkbSwipeGesturesEnabled = SettingsManager.isVkbSwipeGesturesEnabled(sharedPreferences, resources);
-        this.isAutoCorrectEnabled = SettingsManager.isResourceNonZero(this.autoCorrectionMode, resources);
+        this.isAutoCorrectEnabled = SettingsManager.isAutoCorrectionSwitchedOn(sharedPreferences)
+                && SettingsManager.isResourceNonZero(this.autoCorrectionMode, resources);
         this.isAutoCorrectionEnabledPerUserSettings = this.isAutoCorrectEnabled && !this.editorCapabilities.noAutoCorrect;
         this.isPredictionsEnabled = loadPredictionsEnabledSetting(sharedPreferences, resources);
+        // Read before shouldShowLxxButton, which consults it.
+        this.isDynamicLearningEnabled = SettingsManager.isDynamicLearningEnabled(sharedPreferences, resources);
         this.shouldShowLxxButton = shouldShowLxxButton(context);
         this.isOnKeyPredictionsEnabled = loadOnKeyPredictionsSetting(sharedPreferences, resources);
         this.isEmojiPredictionsEnabled = loadEmojiPredictionsSetting(sharedPreferences, resources);
@@ -392,7 +394,6 @@ public final class SettingsValues {
         this.displayOrientation = resources.getConfiguration().orientation;
         this.controlMode = SettingsManager.getControlMode(sharedPreferences, resources);
         this.isVkbControlModeEnabled = SettingsManager.isVkbControlModeEnabled(sharedPreferences, resources);
-        this.isDynamicLearningEnabled = SettingsManager.isDynamicLearningEnabled(sharedPreferences, resources);
         this.isLanguageQuickSwitchEnabled = SettingsManager.isLanguageQuickSwitchEnabled(sharedPreferences, resources);
         this.isSpacebarLanguageSwitchingEnabled = SettingsManager.isSpacebarLanguageSwitchingEnabled(sharedPreferences, resources);
         this.currencySymbol = SettingsManager.getCurrencySymbol(sharedPreferences, resources);
@@ -431,7 +432,7 @@ public final class SettingsValues {
         this.inLetterMaxSwipeToWordDistance = Math.round(SettingsManager.getInLetterMaxSwipeToWordDistance(sharedPreferences, resources) * fM5549d);
         this.showOnKeyPressMode = SettingsManager.getStringAsInt(sharedPreferences, resources, "pref_show_on_keypress_mode", R.string.config_default_show_on_keypress_mode);
         this.uimEnabledSetting = sharedPreferences.getBoolean("pref_uim_enabled", resources.getBoolean(R.bool.config_default_uim_enabled));
-        this.pkbSuggestionBarOff = !SettingsManager.isPkbSuggestionBarEnabled(sharedPreferences);
+        this.pkbSuggestionBarOff = !SettingsManager.pkbBarHasContent(sharedPreferences, resources);
         this.flickCommitAnimationEnabled = sharedPreferences.getBoolean("pref_flick_commit_animation", resources.getBoolean(R.bool.config_default_flick_commit_animation));
         this.uimFocusMoveDelay = SettingsManager.getIntPrefWithResourceDefault(sharedPreferences, resources, "pref_uim_focus_move_delay", R.integer.config_uim_default_focus_move_delay);
         this.cangjieMode = SettingsManager.getCangjieMode(sharedPreferences, resources);
@@ -463,7 +464,6 @@ public final class SettingsValues {
         this.isEmojiSearchReplaceText = SettingsManager.isEmojiSearchReplaceTextEnabled(sharedPreferences);
         this.keyboardHeightMode = sharedPreferences.getString("pref_keyboard_height_mode", "regular");
         this.isSlideboardEnabled = SettingsManager.isSlideboardActive(sharedPreferences, resources);
-        this.slideboardKeyLongpressTimeout = SettingsManager.getIntPref(sharedPreferences, resources, "pref_slideboard_key_longpress_timeout", R.integer.config_default_slideboard_longpress_key_timeout);
         this.slideboardNumericLocation = SettingsManager.getStringAsInt(sharedPreferences, resources, "slideboard_numeric_location", R.string.config_default_numeric_location);
         this.slideboardQuickPhrasesLocation = SettingsManager.getStringAsInt(sharedPreferences, resources, "slideboard_quick_phrases_location", R.string.config_default_quick_phrases_location);
         this.quickPhrase1 = SettingsManager.getStringPref(sharedPreferences, resources, "quick_phrase_1", R.string.pref_quick_phrase_1_default);
@@ -483,7 +483,7 @@ public final class SettingsValues {
      * ({@link #isInputMenuRequestedByKey()}).
      */
     public boolean isUimEnabled() {
-        return inputMenuRequestedByKey || (this.uimEnabledSetting && !isPkbSuggestionBarHidden());
+        return inputMenuRequestedByKey || this.uimEnabledSetting;
     }
 
     /**
@@ -524,9 +524,14 @@ public final class SettingsValues {
         return isPkbSuggestionBarHidden(!this.pkbSuggestionBarOff);
     }
 
-    /** {@link #isPkbSuggestionBarHidden()} for a stored "Show the suggestion bar" value. */
-    public static boolean isPkbSuggestionBarHidden(boolean showSuggestionBar) {
-        return !showSuggestionBar
+    /**
+     * {@link #isPkbSuggestionBarHidden()} for whether the bar has content: the bar above a
+     * physical keyboard's keys hides when "Show suggestions" and "Enable unified input menu"
+     * are both off (there was a separate "Show the suggestion bar" switch until 2026-10-19).
+     * On-screen, the bar belongs to the keyboard and stays.
+     */
+    public static boolean isPkbSuggestionBarHidden(boolean barHasContent) {
+        return !barHasContent
                 && DeviceProfile.current().hasPhysicalKeyboard()
                 && !DeviceProfile.isOnScreenTypingKeyboardVisible();
     }
@@ -536,7 +541,11 @@ public final class SettingsValues {
     }
 
     public boolean shouldShowPredictionsInCandidateStrip() {
-        return this.isPredictionsEnabled && (getKeyCodeHandler().shouldShowSuggestions() || getKeyCodeHandler().shouldShowChineseSuggestions() || getKeyCodeHandler().shouldShowJapaneseSuggestions());
+        // A Chinese or Japanese keyboard picks its words from the candidate strip, so that strip
+        // does not answer to "Show suggestions" (2026-10-19: the switch only toggles suggestions).
+        return (this.isPredictionsEnabled && getKeyCodeHandler().shouldShowSuggestions())
+                || getKeyCodeHandler().shouldShowChineseSuggestions()
+                || getKeyCodeHandler().shouldShowJapaneseSuggestions();
     }
 
     private boolean isGestureInputEnabledForDevice(Context context) {
@@ -552,8 +561,19 @@ public final class SettingsValues {
         return this.isVkbGestureInputEnabled;
     }
 
+    /**
+     * Whether typed letters are composed as a word (the underline, the commit at the separator):
+     * the field allows suggestions and something consumes the word -- predictions, auto-correction
+     * or learning (a typed word is learned at commit, so learning alone keeps composing on even
+     * with suggestions and auto-correction off, 2026-10-19) -- or swipe typing, or a CJK editor.
+     * The name is historical.
+     */
     private boolean shouldShowLxxButton(Context context) {
-        return (this.editorCapabilities.shouldShowSuggestions && (this.isAutoCorrectionEnabledPerUserSettings || this.isPredictionsEnabled)) || (isGestureInputEnabledForDevice(context) && this.editorCapabilities.shouldSupportGestureInput) || this.editorCapabilities.shouldShowJapaneseSuggestions || this.editorCapabilities.shouldShowChineseSuggestions;
+        return (this.editorCapabilities.shouldShowSuggestions
+                        && (this.isAutoCorrectionEnabledPerUserSettings || this.isPredictionsEnabled || this.isDynamicLearningEnabled))
+                || (isGestureInputEnabledForDevice(context) && this.editorCapabilities.shouldSupportGestureInput)
+                || this.editorCapabilities.shouldShowJapaneseSuggestions
+                || this.editorCapabilities.shouldShowChineseSuggestions;
     }
 
     public boolean isWordSeparator(int i) {
@@ -775,8 +795,6 @@ public final class SettingsValues {
         sb.append("" + this.keyPreviewDismissEndScaleY);
         sb.append("\n   mSlideboardEnabled = ");
         sb.append("" + this.isSlideboardEnabled);
-        sb.append("\n   mSlideboardKeyLongpressTimeout = ");
-        sb.append("" + this.slideboardKeyLongpressTimeout);
         sb.append("\n   mSlideboardStillBoardsEnabled = ");
         sb.append("" + this.slideboardStillBoardsEnabled);
         sb.append("\n   mSlideboardNumericLocation = ");

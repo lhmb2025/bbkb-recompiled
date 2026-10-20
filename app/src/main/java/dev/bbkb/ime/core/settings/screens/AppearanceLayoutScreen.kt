@@ -9,6 +9,13 @@ import androidx.compose.material.icons.filled.Height
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
+import dev.bbkb.ime.core.settings.ui.GridPreference
+import dev.bbkb.ime.core.settings.ui.Custom
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -80,7 +87,11 @@ fun AppearanceLayoutScreen(
             icon = Icons.Default.Height.asRowIcon(),
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_height_mode"),
         ),
-        // Custom symbol page + default currency (VKB + PKB)
+        // Default currency: the one grid picker in settings, so a hand-written block rather than
+        // a row type of its own. Here rather than on the symbols screen (2026-10-19): it is a
+        // keyboard-wide choice, not a custom page.
+        Custom { CurrencyPicker() },
+        // Custom symbol pages (on-screen + physical)
         Nav(
             title = R.string.settings_symbol_customization_title,
             summary = R.string.settings_symbol_customization_summary,
@@ -88,6 +99,42 @@ fun AppearanceLayoutScreen(
             onClick = { onNavigateToSymbolCustomization() },
         ),
     ))
+}
+
+@Composable
+private fun CurrencyPicker() {
+    val context = LocalContext.current
+    val prefs = remember { PrefsManager.getPrefs(context) }
+    val currencySymbols = remember {
+        context.resources.getStringArray(R.array.symbols_list_currency).toList()
+    }
+    // "" is the runtime default (SettingsManager.getCurrencySymbol) and means "leave the layout's own
+    // currency key alone" — CurrencyKeyHandler, KeyboardSwitcher and the slideboard number pad all
+    // skip the replacement on it. So an unset key is not "$" (a £ layout shows £); say so, and
+    // highlight no cell.
+    var currency by remember { mutableStateOf(prefs.getString("pref_currency_key", "") ?: "") }
+
+    GridPreference(
+        title = context.getString(R.string.settings_default_currency_title),
+        summary = context.getString(R.string.settings_default_currency_summary),
+        // The chosen symbol stands where the row's icon would be; the generic currency sign
+        // while the layout's own key is left alone.
+        leading = {
+            Text(
+                text = currency.ifEmpty { "¤" },
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        },
+        entries = currencySymbols,
+        value = currency,
+        columns = 5,
+        modifier = Modifier.settingsSearchAnchor("pref_currency_key"),
+        onValueChange = { newValue ->
+            currency = newValue
+            prefs.edit().putString("pref_currency_key", newValue).apply()
+        }
+    )
 }
 
 /** Classic and BB10 are fixed looks, so they hide the colour controls. */

@@ -144,7 +144,9 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
                 return;
             }
         }
-        if (settings.isPredictionsEnabled && settings.editorCapabilities.shouldShowSuggestions) {
+        // A Chinese or Japanese keyboard's candidate strip does not answer to "Show suggestions".
+        if ((settings.isPredictionsEnabled || isChineseOrJapaneseSubtype())
+                && settings.editorCapabilities.shouldShowSuggestions) {
             if (auxBarManager != null) {
                 auxBarManager.showSuggestionStrip(SuggestedWords.EMPTY);
             }
