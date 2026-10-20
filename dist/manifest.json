@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "generated": "2026-10-02T03:54:16Z",
+  "generated": "2026-10-20T06:34:06Z",
   "app": {
     "release": {
-      "versionCode": 1437,
-      "versionName": "5.0.0-beta.24",
-      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.24/bbkb-5.0.0-beta.24-release.apk",
-      "sha256": "dbfd1014fa1bea4fd6932bf9219186121c13643d034734db5d5a8dabd387f907",
-      "size": 56907424,
+      "versionCode": 1438,
+      "versionName": "5.0.0-beta.25",
+      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.25/bbkb-5.0.0-beta.25-release.apk",
+      "sha256": "c573dcb20f45e52266d694db8f3692ca073a47e86cf83bf78bd2f7437d3e79b6",
+      "size": 57703337,
       "minSdk": 23,
-      "notes": "Fixes holding a key on Arabic and other non-Latin physical keyboards, language switching after a keyboard is removed, and the toolbar flashing on the Sym board. KEY2s that report bbf100 are now recognised."
+      "notes": "Change language popup replaced with a language selection bar. Adds support for per-language layout overrides. Adds support for Kazakh, Kyrgyz, Tajik, and Tatar. Zhuyin and stroke Chinese input now work (since beta.23). Adds additional etched layouts for Athena PKB. Settings reorganized with more logical grouping, detangling, and removal of no-op toggles. Improves additional core features including dictation, ctrl key, backup/restore, clipboard, and device support."
     }
   },
   "packs": {
