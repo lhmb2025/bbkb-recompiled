@@ -317,6 +317,13 @@ public final class DeviceProfile {
         if (context != null) {
             SharedPreferences prefs =
                     dev.bbkb.ime.core.settings.PrefsManager.INSTANCE.getPrefs(context);
+            // The switch lives on the Debug screen, which release builds no longer show
+            // (2026-10-20): a user who turned it on with an earlier beta would be stuck in
+            // on-screen mode with no way back. Release builds therefore drop the preference on
+            // every start, so an upgrade clears it; debug builds keep honouring it.
+            if (!dev.bbkb.ime.BuildConfig.DEBUG && prefs.contains(PREF_DEBUG_FORCE_VKB_MODE)) {
+                prefs.edit().remove(PREF_DEBUG_FORCE_VKB_MODE).apply();
+            }
             // Standing debug override — set unconditionally so a pref flipped off also clears it.
             state.setDebugForceVkbMode(prefs.getBoolean(PREF_DEBUG_FORCE_VKB_MODE, false));
         }
