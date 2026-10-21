@@ -27,7 +27,14 @@
     <Key
         latin:keySpec="!text/keyspec_y"
         latin:moreKeys="!text/morekeys_y"/>
-    <Key
-        latin:keySpec=";"
-        latin:moreKeys=":"/>
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
+            <Key latin:keySpec=":"/>
+        </case>
+        <default>
+            <Key
+                latin:keySpec=";"
+                latin:moreKeys=":"/>
+        </default>
+    </switch>
 </merge>

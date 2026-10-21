@@ -25,7 +25,7 @@
     <key code="KEYCODE_U" keySpec="l"/>
     <key code="KEYCODE_I" keySpec="u" moreKeys="ú,û,ü,ù,ū"/>
     <key code="KEYCODE_O" keySpec="y"/>
-    <key code="KEYCODE_P" keySpec=";" moreKeys=":"/>
+    <key code="KEYCODE_P" keySpec=";" characterMapKeys=":" moreKeys=":"/>
     <key code="KEYCODE_A" keySpec="a" moreKeys="à,á,â,ä,æ,ã,å,ā"/>
     <key code="KEYCODE_S" keySpec="r" moreKeys="®"/>
     <key code="KEYCODE_D" keySpec="s" moreKeys="ß"/>

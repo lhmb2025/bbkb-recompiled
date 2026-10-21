@@ -83,8 +83,9 @@ class LetterLayoutKdbOnScreenTest {
         assertEquals("the header untouched", before.substringBefore("<area>"), after.substringBefore("<area>"))
         assertEquals("the bottom row untouched", before.substringAfterLast("<area>"), after.substringAfterLast("<area>"))
         // The semicolon on P is a symbol: written as a code, and out of tap correction like the
-        // files' other symbols; o where ñ was is a letter in the label form.
-        assertTrue(after.contains("""<key keyType="nonRegional" keyCodes="0x003B" keyWidth="108dp" keyHeight="140dp" keyTop="9dp" keyLeft="972dp" />"""))
+        // files' other symbols, with its Shift legend (the colon, 2026-10-20) as an alternate the
+        // way Dvorak's apostrophe carries its quote; o where ñ was is a letter in the label form.
+        assertTrue(after.contains("""<key keyType="nonRegional" keyCodes="0x003B, 0x003A" keyWidth="108dp" keyHeight="140dp" keyTop="9dp" keyLeft="972dp" />"""))
         assertTrue(after.contains("""<key keyType="regional" keyLabel="O" keyWidth="108dp" keyHeight="140dp" keyTop="158dp" keyLeft="972dp" />"""))
         // A key the layout leaves as it is stays byte for byte.
         assertTrue(after.contains("""<key keyType="regional" keyLabel="Q" keyWidth="108dp" keyHeight="140dp" keyTop="9dp" keyLeft="0dp" />"""))
