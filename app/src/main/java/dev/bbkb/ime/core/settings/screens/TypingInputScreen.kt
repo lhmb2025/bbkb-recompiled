@@ -1,7 +1,6 @@
 package dev.bbkb.ime.core.settings.screens
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Widgets
 import androidx.compose.material.icons.outlined.Vibration
 import androidx.compose.runtime.Composable
 import dev.bbkb.ime.core.settings.ui.Nav
@@ -40,7 +39,7 @@ fun CustomizationScreen(
         Nav(
             title = R.string.settings_auxiliary_input_title,
             summary = R.string.settings_auxiliary_input_summary,
-            icon = Icons.Outlined.Widgets.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_auxiliary_input),
             onClick = { onNavigateToAuxiliaryInput() },
         ),
         Nav(
