@@ -1,0 +1,37 @@
+<!-- Custom keypad layouts row on the Device compatibility screen: keyboard with a plus. Owner's SVG (2026-10-22), 24-unit grid; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 9 8 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 9 11.5 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 17 11.5 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 21 18 H 3 V 6 h 13 v -2 H 3 c -0.55 0 -1.021 0.196 -1.412 0.588 s -0.588 0.862 -0.588 1.412 v 12 c 0 0.55 0.196 1.021 0.588 1.412 s 0.862 0.588 1.412 0.588 h 18 c 0.55 0 1.021 -0.196 1.412 -0.588 s 0.588 -0.862 0.588 -1.412 v -7 h -2 v 7 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 13 11.5 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 5 11.5 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 5 8 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 13 8 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 8 15 h 8 v 2 h -8 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 19 10 L 19 8 L 17 8 L 17 6 L 19 6 L 19 4 L 21 4 L 21 6 L 23 6 L 23 8 L 21 8 L 21 10 L 19 10 Z"/>
+</vector>

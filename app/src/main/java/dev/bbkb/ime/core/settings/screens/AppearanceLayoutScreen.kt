@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BrightnessMedium
-import androidx.compose.material.icons.outlined.EmojiSymbols
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Wallpaper
 import androidx.compose.runtime.Composable
@@ -95,7 +94,7 @@ fun AppearanceLayoutScreen(
         Nav(
             title = R.string.settings_symbol_customization_title,
             summary = R.string.settings_symbol_customization_summary,
-            icon = Icons.Outlined.EmojiSymbols.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_custom_symbols),
             onClick = { onNavigateToSymbolCustomization() },
         ),
     ))

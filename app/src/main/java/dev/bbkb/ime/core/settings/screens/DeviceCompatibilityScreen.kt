@@ -1,7 +1,6 @@
 package dev.bbkb.ime.core.settings.screens
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.GridOn
 import androidx.compose.material.icons.outlined.Keyboard
 import androidx.compose.material.icons.outlined.KeyboardCapslock
 import androidx.compose.material.icons.outlined.PhonelinkSetup
@@ -70,7 +69,7 @@ fun DeviceCompatibilityScreen(
         Nav(
             title = R.string.settings_pkb_layouts_title,
             summary = R.string.settings_pkb_layouts_summary,
-            icon = Icons.Outlined.GridOn.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_custom_layouts),
             visible = { hasPhysicalKeyboard },
             onClick = { onNavigateToPhysicalLayouts() },
         ),

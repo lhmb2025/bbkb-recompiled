@@ -14,6 +14,7 @@ import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.core.settings.ui.stringPref
+import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardHistoryManager
 import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardPrefs
 
@@ -50,6 +51,7 @@ fun AuxiliaryInputScreen(
             title = R.string.settings_customize_menu_title,
             summary = R.string.settings_customize_menu_summary,
             enabled = { it.bool("pref_uim_enabled") },
+            icon = drawableIcon(R.drawable.ic_settings_customize_uim),
             onClick = { onNavigateToCustomizeMenu() },
         ),
 
