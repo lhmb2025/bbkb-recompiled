@@ -1,0 +1,22 @@
+<!-- Keyboard height row on the Personalization screen: keyboard with a ghost outline of the taller frame and a double up-arrow. Owner's SVG (2026-10-22), 24-unit grid; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 11.9 7.17 L 14.26 9.53 L 9.54 9.53 L 11.9 7.17 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 7.88 18.8 h 7.94 v -2 h -7.94 s 0 2 0 2 Z M 4.9 18.8 h 2 v -2 h -2 v 2 Z M 16.79 18.8 h 2 v -2 h -2 v 2 Z M 4.9 15.8 h 2 v -2 h -2 v 2 Z M 7.88 15.8 h 2 v -2 h -2 v 2 Z M 10.85 15.8 h 2 v -2 h -2 v 2 Z M 13.82 15.8 h 2 v -2 h -2 v 2 Z M 16.79 15.8 h 2 v -2 h -2 v 2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 2.74 9.629 v -5.469 c 0 -0.3 0.1 -0.52 0.32 -0.74 0.24 -0.23 0.5 -0.33 0.85 -0.33 h 15.86 c 0.35 0 0.61 0.1 0.85 0.33 0.23 0.22 0.32 0.44 0.32 0.74 v 5.463 c 0.409 0.122 0.78 0.324 1.1 0.592 v -6.055 c 0 -0.6 -0.22 -1.11 -0.67 -1.53 -0.44 -0.42 -0.98 -0.63 -1.61 -0.63 H 3.92 c -0.63 0 -1.17 0.21 -1.61 0.63 s -0.67 0.93 -0.67 1.53 v 6.071 c 0.319 -0.272 0.69 -0.477 1.1 -0.602 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 20.06 12.58 h 0 l 0 7.42 -16.42 0 0 -7.42 h 16.421 Z M 20.06 10.58 H 3.64 c -1.104 0 -2 0.895 -2 2 v 7.421 c 0 1.104 0.895 2 2 2 h 16.421 c 1.104 0 2 -0.895 2 -2 v -7.421 c 0 -1.104 -0.895 -2 -2 -2 h 0 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 11.91 4.07 L 14.27 6.43 L 12.72 6.43 L 12.68 6.39 L 11.9 5.61 L 11.12 6.39 L 11.08 6.43 L 9.53 6.43 L 11.89 4.07 L 11.89 4.07 L 11.91 4.07 Z"/>
+</vector>

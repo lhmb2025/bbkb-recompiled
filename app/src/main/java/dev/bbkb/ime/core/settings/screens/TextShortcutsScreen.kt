@@ -11,12 +11,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Code
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.Clear
+import androidx.compose.material.icons.outlined.Code
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.ExpandLess
+import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
@@ -59,7 +59,7 @@ internal val ShortcutsSpec = EntryListSpec(
     noun = "Shortcut",
     plural = "shortcuts",
     loadFailurePrefix = "Failed to load shortcuts",
-    emptyIcon = Icons.Default.Edit,
+    emptyIcon = Icons.Outlined.Edit,
     emptyTitle = "No text shortcuts",
     // Names the button, now that the button says what it does.
     emptyHint = "Tap Add shortcut to create shortcuts that expand to phrases",
@@ -99,11 +99,11 @@ fun TextShortcutsScreen(
         actions = {
             // Custom macros button
             IconButton(onClick = onNavigateToCustomMacros) {
-                Icon(Icons.Default.Code, "Custom Macros")
+                Icon(Icons.Outlined.Code, "Custom Macros")
             }
             // Macro help button
             IconButton(onClick = { showMacroHelp = true }) {
-                Icon(Icons.Default.Info, "Macro help")
+                Icon(Icons.Outlined.Info, "Macro help")
             }
         },
         dialogs = { host ->
@@ -169,7 +169,7 @@ private fun ShortcutListItem(
     PreferenceItem(
         title = entry.shortcut ?: "",
         summary = entry.word,
-        icon = Icons.Default.Edit,
+        icon = Icons.Outlined.Edit,
         onClick = onClick,
         trailing = if (markers.isEmpty()) null else {
             {
@@ -348,7 +348,7 @@ private fun TextShortcutAddEditDialog(
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
-                                    Icons.Default.Code,
+                                    Icons.Outlined.Code,
                                     "Macros",
                                     modifier = Modifier.size(20.dp),
                                     tint = MaterialTheme.colorScheme.primary
@@ -360,7 +360,7 @@ private fun TextShortcutAddEditDialog(
                                 )
                             }
                             Icon(
-                                if (showMacroSection) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                                if (showMacroSection) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
                                 "Expand"
                             )
                         }
@@ -442,7 +442,7 @@ private fun TextShortcutAddEditDialog(
                         )
                     ) {
                         Icon(
-                            Icons.Default.Clear,
+                            Icons.Outlined.Clear,
                             contentDescription = "Delete",
                             modifier = Modifier.size(18.dp)
                         )

@@ -1,14 +1,14 @@
 package dev.bbkb.ime.core.settings.screens
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.OpenInNew
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.ErrorOutline
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Key
-import androidx.compose.material.icons.filled.Swipe
-import androidx.compose.material.icons.filled.TouchApp
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Key
+import androidx.compose.material.icons.outlined.Swipe
+import androidx.compose.material.icons.outlined.TouchApp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -70,14 +70,14 @@ fun TouchSurfaceHelperScreen(
         },
         Nav(
             title = R.string.touch_surface_open_scroll_assistant,
-            icon = Icons.Default.Swipe.asRowIcon(),
+            icon = Icons.Outlined.Swipe.asRowIcon(),
             visible = builtIn,
             onClick = { TouchSurfaceLinks.open(it, TouchSurfaceLinks.scrollAssistant()) },
         ),
         Nav(
             title = R.string.touch_surface_cursor_assistant_title,
             summary = R.string.touch_surface_cursor_assistant_summary,
-            icon = Icons.Default.TouchApp.asRowIcon(),
+            icon = Icons.Outlined.TouchApp.asRowIcon(),
             visible = builtIn,
             onClick = { TouchSurfaceLinks.open(it, TouchSurfaceLinks.cursorAssistant()) },
         ),
@@ -90,7 +90,7 @@ fun TouchSurfaceHelperScreen(
         Simple(
             title = R.string.touch_surface_shizuku_status_title,
             summary = state.shizukuStateLine,
-            icon = Icons.Default.Info.asRowIcon(),
+            icon = Icons.Outlined.Info.asRowIcon(),
             // Literal (== TouchSurfaceAnchors.SHIZUKU): the search-index sync test scans for it.
             modifier = Modifier.settingsSearchAnchor("touch_surface_shizuku"),
             visible = shizuku,
@@ -98,14 +98,14 @@ fun TouchSurfaceHelperScreen(
         Nav(
             title = R.string.touch_surface_install_shizuku,
             summary = R.string.touch_surface_install_shizuku_summary,
-            icon = Icons.Default.Download.asRowIcon(),
+            icon = Icons.Outlined.Download.asRowIcon(),
             visible = shizuku,
             onClick = { TouchSurfaceLinks.open(it, TouchSurfaceLinks.installShizuku()) },
         ),
         Nav(
             title = R.string.touch_surface_open_shizuku,
             summary = R.string.touch_surface_open_shizuku_summary,
-            icon = Icons.AutoMirrored.Filled.OpenInNew.asRowIcon(),
+            icon = Icons.AutoMirrored.Outlined.OpenInNew.asRowIcon(),
             enabled = { shizukuApp != null },
             visible = shizuku,
             onClick = { ctx -> shizukuApp?.let { TouchSurfaceLinks.open(ctx, listOf(it)) } },
@@ -116,7 +116,7 @@ fun TouchSurfaceHelperScreen(
             // something to add when Shizuku will not ask again.
             summary = if (state.shizukuAccessDenied) R.string.touch_surface_grant_access_denied
                 else R.string.touch_surface_grant_access_summary,
-            icon = Icons.Default.Key.asRowIcon(),
+            icon = Icons.Outlined.Key.asRowIcon(),
             enabled = { state.canRequestShizukuAccess },
             visible = shizuku,
             onClick = { KeypadTouchSources.shizukuEngine().requestPermission(it) },
@@ -139,6 +139,6 @@ fun TouchSurfaceHelperScreen(
 private fun TouchSurfaceStatusHeader(state: TouchSurfaceState) {
     PreferenceItem(
         title = stringResource(state.statusLine),
-        icon = if (state.isWorking) Icons.Default.CheckCircle else Icons.Default.ErrorOutline,
+        icon = if (state.isWorking) Icons.Outlined.CheckCircle else Icons.Outlined.ErrorOutline,
     )
 }

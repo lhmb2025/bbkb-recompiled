@@ -19,10 +19,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CloudDownload
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.CloudDownload
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -138,7 +138,7 @@ fun UpdatesScreen(
                 title = { Text(context.getString(R.string.settings_updates_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -161,7 +161,7 @@ fun UpdatesScreen(
                 // the one string on the page that legitimately changes every release.
                 summary = "Version ${BuildConfig.VERSION_NAME} " +
                     "(Build ${BuildConfig.VERSION_CODE}) · ${BuildConfig.BUILD_TYPE}",
-                icon = Icons.Default.Info,
+                icon = Icons.Outlined.Info,
                 onClick = null
             )
             PreferenceItem(
@@ -318,7 +318,7 @@ fun UpdatesScreen(
             SwitchPreference(
                 title = context.getString(R.string.settings_update_background_check_title),
                 summary = context.getString(R.string.settings_update_background_check_summary),
-                icon = Icons.Default.Notifications,
+                icon = Icons.Outlined.Notifications,
                 checked = backgroundCheck,
                 // Spelled out rather than referring to UpdateJobService.PREF_BACKGROUND_CHECK:
                 // SettingsSearchIndexTest greps the screens for the string literal each
@@ -400,7 +400,7 @@ private fun UpdateCard(
         Column(modifier = Modifier.padding(spacing.large)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    Icons.Default.CloudDownload,
+                    Icons.Outlined.CloudDownload,
                     contentDescription = null,
                     modifier = Modifier
                         .padding(end = spacing.iconTextGap)

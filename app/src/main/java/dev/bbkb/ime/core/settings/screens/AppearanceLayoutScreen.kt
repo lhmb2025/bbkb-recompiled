@@ -3,11 +3,10 @@ package dev.bbkb.ime.core.settings.screens
 import android.content.Context
 import android.os.Build
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BrightnessMedium
-import androidx.compose.material.icons.filled.EmojiSymbols
-import androidx.compose.material.icons.filled.Height
-import androidx.compose.material.icons.filled.Palette
-import androidx.compose.material.icons.filled.Wallpaper
+import androidx.compose.material.icons.outlined.BrightnessMedium
+import androidx.compose.material.icons.outlined.EmojiSymbols
+import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Wallpaper
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +27,7 @@ import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
 import dev.bbkb.ime.core.settings.ui.asRowIcon
+import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.core.settings.ui.stringPref
 import dev.bbkb.ime.R
@@ -58,7 +58,7 @@ fun AppearanceLayoutScreen(
             title = R.string.settings_keyboard_theme_title,
             options = ::themeStyles,
             fallbackIndex = 1,
-            icon = Icons.Default.Palette.asRowIcon(),
+            icon = Icons.Outlined.Palette.asRowIcon(),
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_theme_style"),
         ),
         Choice(
@@ -66,7 +66,7 @@ fun AppearanceLayoutScreen(
             title = R.string.settings_color_scheme_title,
             options = ::colorSchemes,
             fallbackIndex = 2,
-            icon = Icons.Default.BrightnessMedium.asRowIcon(),
+            icon = Icons.Outlined.BrightnessMedium.asRowIcon(),
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_theme_mode"),
             visible = { it.hasColorScheme() },
         ),
@@ -75,7 +75,7 @@ fun AppearanceLayoutScreen(
             store = boolPref("pref_keyboard_use_system_colors", false),
             title = R.string.settings_use_system_colors_title,
             summary = RowSummary.Res(R.string.settings_use_system_colors_summary),
-            icon = Icons.Default.Wallpaper.asRowIcon(),
+            icon = Icons.Outlined.Wallpaper.asRowIcon(),
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_use_system_colors"),
             visible = { it.hasColorScheme() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
         ),
@@ -84,7 +84,7 @@ fun AppearanceLayoutScreen(
             title = R.string.settings_keyboard_height_title,
             options = ::keyboardHeights,
             fallbackIndex = 1,
-            icon = Icons.Default.Height.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_keyboard_height),
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_height_mode"),
         ),
         // Default currency: the one grid picker in settings, so a hand-written block rather than
@@ -95,7 +95,7 @@ fun AppearanceLayoutScreen(
         Nav(
             title = R.string.settings_symbol_customization_title,
             summary = R.string.settings_symbol_customization_summary,
-            icon = Icons.Default.EmojiSymbols.asRowIcon(),
+            icon = Icons.Outlined.EmojiSymbols.asRowIcon(),
             onClick = { onNavigateToSymbolCustomization() },
         ),
     ))

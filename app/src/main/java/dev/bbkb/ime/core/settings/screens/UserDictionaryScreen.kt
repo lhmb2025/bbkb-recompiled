@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.outlined.Create
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,7 +47,7 @@ internal fun userDictionarySpec(title: String) = EntryListSpec(
     noun = "Word",
     plural = "words",
     loadFailurePrefix = "Failed to load dictionary",
-    emptyIcon = Icons.Default.Create,
+    emptyIcon = Icons.Outlined.Create,
     emptyTitle = "No personal words",
     // Names the button, now that the button says what it does.
     emptyHint = "Tap Add word to add custom words to your dictionary",
@@ -125,7 +125,7 @@ private fun WordListItem(
 ) {
     PreferenceItem(
         title = entry.word,
-        icon = Icons.Default.Create,
+        icon = Icons.Outlined.Create,
         onClick = onClick,
     )
 }
@@ -216,7 +216,7 @@ private fun PersonalWordDialog(
                         )
                     ) {
                         Icon(
-                            Icons.Default.Delete,
+                            Icons.Outlined.Delete,
                             contentDescription = "Delete",
                             modifier = Modifier.size(18.dp)
                         )

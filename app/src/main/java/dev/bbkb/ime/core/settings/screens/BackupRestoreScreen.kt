@@ -16,11 +16,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Backup
-import androidx.compose.material.icons.filled.FileOpen
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Backup
+import androidx.compose.material.icons.outlined.FileOpen
+import androidx.compose.material.icons.outlined.History
+import androidx.compose.material.icons.outlined.Save
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.LinearProgressIndicator
@@ -137,7 +137,7 @@ fun BackupRestoreScreen(
         Simple(
             title = R.string.backup_save_title,
             summary = R.string.backup_save_summary,
-            icon = Icons.Default.Save.asRowIcon(),
+            icon = Icons.Outlined.Save.asRowIcon(),
             // Literal (== BackupAnchors.SAVE): the search-index sync test scans for it.
             modifier = Modifier.settingsSearchAnchor("backup_save"),
             onClick = {
@@ -154,7 +154,7 @@ fun BackupRestoreScreen(
         Simple(
             title = R.string.backup_restore_file_title,
             summary = R.string.backup_restore_file_summary,
-            icon = Icons.Default.FileOpen.asRowIcon(),
+            icon = Icons.Outlined.FileOpen.asRowIcon(),
             // Literal (== BackupAnchors.RESTORE).
             modifier = Modifier.settingsSearchAnchor("backup_restore_file"),
             // The zip type plus JSON for the single-document backups earlier builds wrote, plus
@@ -168,7 +168,7 @@ fun BackupRestoreScreen(
             SwitchPreference(
                 title = stringResource(R.string.backup_phone_include_title),
                 summary = stringResource(R.string.backup_phone_include_summary),
-                icon = Icons.Default.Backup,
+                icon = Icons.Outlined.Backup,
                 checked = includedInPhoneBackup,
                 enabled = !busy,
                 // Literal (== BackupAnchors.PHONE).
@@ -186,14 +186,14 @@ fun BackupRestoreScreen(
                 } else {
                     stringResource(R.string.backup_phone_last_never)
                 },
-                icon = Icons.Default.History,
+                icon = Icons.Outlined.History,
                 enabled = includedInPhoneBackup,
             )
         },
         Nav(
             title = R.string.backup_phone_settings_title,
             summary = R.string.backup_phone_settings_summary,
-            icon = Icons.Default.Settings.asRowIcon(),
+            icon = Icons.Outlined.Settings.asRowIcon(),
             onClick = ::openPhoneBackupSettings,
         ),
     ))

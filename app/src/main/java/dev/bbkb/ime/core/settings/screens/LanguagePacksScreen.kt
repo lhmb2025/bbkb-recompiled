@@ -27,10 +27,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -222,7 +222,7 @@ fun LanguagePacksScreen(
                 title = { Text(context.getString(R.string.settings_language_packs_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
                     }
                 },
                 actions = {
@@ -233,7 +233,7 @@ fun LanguagePacksScreen(
                         enabled = !catalogLoading,
                     ) {
                         Icon(
-                            Icons.Default.Refresh,
+                            Icons.Outlined.Refresh,
                             contentDescription = stringResource(R.string.language_packs_refresh),
                         )
                     }
@@ -249,7 +249,7 @@ fun LanguagePacksScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { filePickerLauncher.launch("*/*") }, // any file; validated as LDB after
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
+                icon = { Icon(Icons.Outlined.Add, contentDescription = null) },
                 text = { Text(stringResource(R.string.language_packs_load_ldb)) }
             )
         }
@@ -670,7 +670,7 @@ private fun PackActionRow(
                     )
                     IconButton(onClick = { onCancel(item.locale) }) {
                         Icon(
-                            Icons.Default.Close,
+                            Icons.Outlined.Close,
                             contentDescription = context.getString(R.string.cancel),
                         )
                     }

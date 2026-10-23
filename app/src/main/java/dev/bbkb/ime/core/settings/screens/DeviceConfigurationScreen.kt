@@ -16,9 +16,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -118,7 +118,7 @@ fun DeviceConfigurationScreen(
                 title = { Text(context.getString(R.string.settings_device_configuration_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -132,7 +132,7 @@ fun DeviceConfigurationScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { filePickerLauncher.launch(arrayOf("text/xml", "application/xml")) },
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
+                icon = { Icon(Icons.Outlined.Add, contentDescription = null) },
                 text = { Text("Import configuration") }
             )
         }
@@ -158,7 +158,7 @@ fun DeviceConfigurationScreen(
                         onClick = onNavigateToProfileBuilder,
                         trailing = {
                             Icon(
-                                imageVector = Icons.Default.ChevronRight,
+                                imageVector = Icons.Outlined.ChevronRight,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             )

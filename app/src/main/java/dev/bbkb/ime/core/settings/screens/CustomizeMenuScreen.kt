@@ -14,8 +14,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.DragHandle
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.DragHandle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -130,7 +130,7 @@ fun CustomizeMenuScreen(
                 title = { Text(context.getString(R.string.settings_customize_menu_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -223,7 +223,7 @@ private fun ToggleRow(
                 .graphicsLayer { alpha = if (position == null) 0.6f else 1f }
         ) {
             Icon(
-                imageVector = Icons.Default.DragHandle,
+                imageVector = Icons.Outlined.DragHandle,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )

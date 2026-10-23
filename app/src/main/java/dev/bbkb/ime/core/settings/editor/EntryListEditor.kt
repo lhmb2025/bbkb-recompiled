@@ -19,11 +19,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Clear
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -294,7 +294,7 @@ internal fun EntryListEditorScreen(
                     },
                     navigationIcon = {
                         IconButton(onClick = onNavigateBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                            Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
                         }
                     },
                     actions = {
@@ -306,7 +306,7 @@ internal fun EntryListEditorScreen(
                             showSearchBar = !showSearchBar
                         }) {
                             Icon(
-                                if (showSearchBar) Icons.Default.Close else Icons.Default.Search,
+                                if (showSearchBar) Icons.Outlined.Close else Icons.Outlined.Search,
                                 if (showSearchBar) "Close search" else "Search"
                             )
                         }
@@ -329,11 +329,11 @@ internal fun EntryListEditorScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 8.dp),
                         placeholder = { Text(spec.searchHint) },
-                        leadingIcon = { Icon(Icons.Default.Search, null) },
+                        leadingIcon = { Icon(Icons.Outlined.Search, null) },
                         trailingIcon = if (searchQuery.isNotEmpty()) {
                             {
                                 IconButton(onClick = { searchQuery = "" }) {
-                                    Icon(Icons.Default.Clear, "Clear")
+                                    Icon(Icons.Outlined.Clear, "Clear")
                                 }
                             }
                         } else null,
@@ -347,7 +347,7 @@ internal fun EntryListEditorScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { showAddDialog = true },
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
+                icon = { Icon(Icons.Outlined.Add, contentDescription = null) },
                 text = { Text(spec.addDescription.replaceFirstChar { it.uppercase() }) }
             )
         }

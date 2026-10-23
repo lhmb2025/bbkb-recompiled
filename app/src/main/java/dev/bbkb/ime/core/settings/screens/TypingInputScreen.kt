@@ -1,8 +1,8 @@
 package dev.bbkb.ime.core.settings.screens
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Widgets
-import androidx.compose.material.icons.filled.Vibration
+import androidx.compose.material.icons.outlined.Widgets
+import androidx.compose.material.icons.outlined.Vibration
 import androidx.compose.runtime.Composable
 import dev.bbkb.ime.core.settings.ui.Nav
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
@@ -40,13 +40,13 @@ fun CustomizationScreen(
         Nav(
             title = R.string.settings_auxiliary_input_title,
             summary = R.string.settings_auxiliary_input_summary,
-            icon = Icons.Default.Widgets.asRowIcon(),
+            icon = Icons.Outlined.Widgets.asRowIcon(),
             onClick = { onNavigateToAuxiliaryInput() },
         ),
         Nav(
             title = R.string.settings_shake_title,
             summary = R.string.settings_shake_summary,
-            icon = Icons.Default.Vibration.asRowIcon(),
+            icon = Icons.Outlined.Vibration.asRowIcon(),
             onClick = { onNavigateToShakeGestures() },
         ),
     ))

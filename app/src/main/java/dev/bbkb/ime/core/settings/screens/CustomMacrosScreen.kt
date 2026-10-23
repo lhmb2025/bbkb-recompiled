@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.*
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.automirrored.outlined.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -48,7 +48,7 @@ fun CustomMacrosScreen(
                 title = { Text(context.getString(R.string.settings_custom_macros_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -62,7 +62,7 @@ fun CustomMacrosScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { showAddDialog = true },
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
+                icon = { Icon(Icons.Outlined.Add, contentDescription = null) },
                 text = { Text("Add macro") }
             )
         }
@@ -93,7 +93,7 @@ fun CustomMacrosScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
-                            Icons.Default.Code,
+                            Icons.Outlined.Code,
                             contentDescription = null,
                             modifier = Modifier.size(64.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
@@ -216,7 +216,7 @@ private fun MacroListItem(
             Box {
                 IconButton(onClick = { showMenu = true }) {
                     Icon(
-                        Icons.Default.MoreVert,
+                        Icons.Outlined.MoreVert,
                         contentDescription = "Options",
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -233,7 +233,7 @@ private fun MacroListItem(
                             onEdit()
                         },
                         leadingIcon = {
-                            Icon(Icons.Default.Edit, contentDescription = null)
+                            Icon(Icons.Outlined.Edit, contentDescription = null)
                         }
                     )
                     DropdownMenuItem(
@@ -244,7 +244,7 @@ private fun MacroListItem(
                         },
                         leadingIcon = {
                             Icon(
-                                Icons.Default.Delete,
+                                Icons.Outlined.Delete,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.error
                             )

@@ -14,12 +14,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.LibraryBooks
-import androidx.compose.material.icons.automirrored.filled.MenuBook
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
+import androidx.compose.material.icons.automirrored.outlined.MenuBook
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.DeleteSweep
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
@@ -280,26 +280,26 @@ fun WordListEditorScreen(
                             onNavigateBack()
                         }
                     }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
                     }
                 },
                 actions = {
                     if (isSelectionMode && selectedWords.isNotEmpty()) {
                         // Add to dictionary button
                         IconButton(onClick = { showPromoteDialog = true }) {
-                            Icon(Icons.Default.Add, "Add to dictionary")
+                            Icon(Icons.Outlined.Add, "Add to dictionary")
                         }
                         // Delete button
                         IconButton(onClick = {
                             pendingDeleteWords = selectedWords.toList()
                             showDeleteDialog = true
                         }) {
-                            Icon(Icons.Default.Delete, "Delete selected")
+                            Icon(Icons.Outlined.Delete, "Delete selected")
                         }
                     }
                     if (!isSelectionMode && words.isNotEmpty()) {
                         IconButton(onClick = { showClearAllDialog = true }) {
-                            Icon(Icons.Default.DeleteSweep, "Clear all")
+                            Icon(Icons.Outlined.DeleteSweep, "Clear all")
                         }
                     }
                 },
@@ -339,7 +339,7 @@ fun WordListEditorScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.LibraryBooks,
+                            imageVector = Icons.AutoMirrored.Outlined.LibraryBooks,
                             contentDescription = null,
                             modifier = Modifier.size(64.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -432,7 +432,7 @@ fun WordListEditorScreen(
                                         Box {
                                             IconButton(onClick = { showWordMenu = word }) {
                                                 Icon(
-                                                    Icons.AutoMirrored.Filled.MenuBook,
+                                                    Icons.AutoMirrored.Outlined.MenuBook,
                                                     "Options",
                                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                                 )
@@ -448,7 +448,7 @@ fun WordListEditorScreen(
                                                         promoteToUserDictionary(word)
                                                     },
                                                     leadingIcon = {
-                                                        Icon(Icons.Default.Add, null)
+                                                        Icon(Icons.Outlined.Add, null)
                                                     }
                                                 )
                                                 DropdownMenuItem(
@@ -458,7 +458,7 @@ fun WordListEditorScreen(
                                                         deleteWords(listOf(word))
                                                     },
                                                     leadingIcon = {
-                                                        Icon(Icons.Default.Delete, null)
+                                                        Icon(Icons.Outlined.Delete, null)
                                                     }
                                                 )
                                             }

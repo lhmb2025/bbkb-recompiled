@@ -18,9 +18,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.CloudOff
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -142,7 +142,7 @@ fun VoiceLanguageSelectionScreen(
                 title = { Text(context.getString(R.string.settings_voice_input_lang_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -261,7 +261,7 @@ private fun LanguageListItem(
         leading = if (isSelected) {
             {
                 Icon(
-                    imageVector = Icons.Default.Check,
+                    imageVector = Icons.Outlined.Check,
                     contentDescription = "Selected",
                     tint = MaterialTheme.colorScheme.primary,
                 )
@@ -276,7 +276,7 @@ private fun LanguageListItem(
         trailing = if (isOfflineReady == true) {
             {
                 Icon(
-                    imageVector = Icons.Default.CloudOff,
+                    imageVector = Icons.Outlined.CloudOff,
                     contentDescription = "Offline ready",
                     tint = MaterialTheme.colorScheme.tertiary,
                 )

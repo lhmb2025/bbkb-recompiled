@@ -16,8 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -107,7 +107,7 @@ fun GestureLabScreen(onNavigateBack: () -> Unit) {
                 title = { Text("Gesture Lab") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -365,7 +365,7 @@ private fun LabRangeSlider(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("%.2f–%.2f".format(low, high), style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
                 IconButton(onClick = { onChange(defaultLow, defaultHigh) }, modifier = Modifier.size(28.dp)) {
-                    Icon(Icons.Filled.Refresh, contentDescription = "Reset $label", modifier = Modifier.size(16.dp))
+                    Icon(Icons.Outlined.Refresh, contentDescription = "Reset $label", modifier = Modifier.size(16.dp))
                 }
             }
         }
@@ -385,7 +385,7 @@ private fun LabSlider(label: String, value: Float, default: Float, min: Float, m
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("%.3f".format(value), style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
                 IconButton(onClick = { onChange(default) }, modifier = Modifier.size(28.dp)) {
-                    Icon(Icons.Filled.Refresh, contentDescription = "Reset $label", modifier = Modifier.size(16.dp))
+                    Icon(Icons.Outlined.Refresh, contentDescription = "Reset $label", modifier = Modifier.size(16.dp))
                 }
             }
         }

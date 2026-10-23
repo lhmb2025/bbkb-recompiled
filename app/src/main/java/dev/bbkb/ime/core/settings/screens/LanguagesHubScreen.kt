@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Clear
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
@@ -30,9 +30,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -172,7 +172,7 @@ fun LanguagesHubScreen(
                 title = { Text(stringResource(R.string.settings_languages_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -241,7 +241,7 @@ fun LanguagesHubScreen(
             item(key = "add") {
                 PreferenceItem(
                     title = stringResource(R.string.languages_hub_add),
-                    icon = Icons.Default.Add,
+                    icon = Icons.Outlined.Add,
                     enabled = current != null,
                     onClick = { showPicker = true },
                 )
@@ -439,7 +439,7 @@ private fun KeyboardRow(
                     }
                 }
                 Icon(
-                    Icons.Default.ChevronRight,
+                    Icons.Outlined.ChevronRight,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -640,11 +640,11 @@ private fun KeyboardSheet(
                     onValueChange = { query = it },
                     singleLine = true,
                     placeholder = { Text(stringResource(R.string.languages_hub_search)) },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                    leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
                     trailingIcon = {
                         if (query.isNotEmpty()) {
                             IconButton(onClick = { query = "" }) {
-                                Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.languages_hub_sheet_clear_search))
+                                Icon(Icons.Outlined.Clear, contentDescription = stringResource(R.string.languages_hub_sheet_clear_search))
                             }
                         }
                     },
@@ -749,7 +749,7 @@ private fun LanguagePickerDialog(
                     horizontalArrangement = Arrangement.spacedBy(spacing.small),
                 ) {
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
                     }
                     OutlinedTextField(
                         value = query,

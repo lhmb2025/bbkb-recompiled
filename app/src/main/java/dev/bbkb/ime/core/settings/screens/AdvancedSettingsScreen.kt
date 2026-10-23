@@ -6,11 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BugReport
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.PhoneAndroid
-import androidx.compose.material.icons.filled.RestartAlt
-import androidx.compose.material.icons.filled.SettingsBackupRestore
+import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.PhoneAndroid
+import androidx.compose.material.icons.outlined.RestartAlt
+import androidx.compose.material.icons.outlined.SettingsBackupRestore
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -67,21 +67,21 @@ fun AdvancedSettingsScreen(
         Nav(
             title = R.string.settings_about_title,
             summary = R.string.settings_about_summary,
-            icon = Icons.Default.Info.asRowIcon(),
+            icon = Icons.Outlined.Info.asRowIcon(),
             onClick = { onNavigateToAbout() },
         ),
         // Device Compatibility (config loader, meta state override, keyboard helper)
         Nav(
             title = R.string.settings_device_compatibility_title,
             summary = R.string.settings_device_compatibility_summary,
-            icon = Icons.Default.PhoneAndroid.asRowIcon(),
+            icon = Icons.Outlined.PhoneAndroid.asRowIcon(),
             onClick = { onNavigateToDeviceCompatibility() },
         ),
         // Debug builds only (2026-10-20): advanced tuning and developer switches.
         Nav(
             title = R.string.settings_debug_title,
             summary = R.string.settings_debug_summary,
-            icon = Icons.Default.BugReport.asRowIcon(),
+            icon = Icons.Outlined.BugReport.asRowIcon(),
             visible = { BuildConfig.DEBUG },
             onClick = { onNavigateToDebug() },
         ),
@@ -92,7 +92,7 @@ fun AdvancedSettingsScreen(
         Nav(
             title = R.string.settings_backup_restore_title,
             summary = R.string.settings_backup_restore_summary,
-            icon = Icons.Default.SettingsBackupRestore.asRowIcon(),
+            icon = Icons.Outlined.SettingsBackupRestore.asRowIcon(),
             // Literal (== ManageDataAnchors.BACKUP_RESTORE): the search-index sync test scans for it.
             modifier = Modifier.settingsSearchAnchor("settings_backup_restore"),
             onClick = { onNavigateToBackupRestore() },
@@ -100,7 +100,7 @@ fun AdvancedSettingsScreen(
         Simple(
             title = R.string.settings_reset_title,
             summary = R.string.settings_reset_summary,
-            icon = Icons.Default.RestartAlt.asRowIcon(),
+            icon = Icons.Outlined.RestartAlt.asRowIcon(),
             // Literal (== ManageDataAnchors.RESET).
             modifier = Modifier.settingsSearchAnchor("settings_reset"),
             onClick = { showReset = true },

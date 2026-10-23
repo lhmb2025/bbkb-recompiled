@@ -8,9 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Accessibility
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Accessibility
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -94,7 +94,7 @@ fun KeyboardHelperScreen(
                 title = { Text(context.getString(R.string.keyboard_helper_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -120,7 +120,7 @@ fun KeyboardHelperScreen(
                 } else {
                     context.getString(R.string.pref_accessibility_service_disabled)
                 },
-                icon = Icons.Default.Settings,
+                icon = Icons.Outlined.Settings,
                 onClick = {
                     KeyInterceptorManager.openAccessibilitySettings(context)
                 }
@@ -130,7 +130,7 @@ fun KeyboardHelperScreen(
             SwitchPreference(
                 title = context.getString(R.string.pref_key_interceptor_enabled),
                 summary = context.getString(R.string.pref_key_interceptor_enabled_summary),
-                icon = Icons.Default.Accessibility,
+                icon = Icons.Outlined.Accessibility,
                 checked = specialKeyEnabled && serviceEnabled,
                 enabled = serviceEnabled,
                 modifier = Modifier.settingsSearchAnchor("pref_key_interceptor_enabled"),
@@ -144,7 +144,7 @@ fun KeyboardHelperScreen(
             SwitchPreference(
                 title = context.getString(R.string.pref_preprocess_all_keys),
                 summary = context.getString(R.string.pref_preprocess_all_keys_summary),
-                icon = Icons.Default.Accessibility,
+                icon = Icons.Outlined.Accessibility,
                 checked = preprocessAllKeys && serviceEnabled,
                 enabled = serviceEnabled,
                 modifier = Modifier.settingsSearchAnchor("pref_preprocess_all_key_events"),
@@ -158,7 +158,7 @@ fun KeyboardHelperScreen(
             SwitchPreference(
                 title = "Unified Key Mapping",
                 summary = "Route special keys via XML config instead of hardcoded logic (experimental)",
-                icon = Icons.Default.Settings,
+                icon = Icons.Outlined.Settings,
                 checked = unifiedKeyMapping && serviceEnabled,
                 enabled = serviceEnabled && specialKeyEnabled,
                 modifier = Modifier.settingsSearchAnchor("pref_use_unified_key_mapping"),

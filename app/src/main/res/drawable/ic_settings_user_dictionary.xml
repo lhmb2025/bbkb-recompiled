@@ -1,0 +1,12 @@
+<!-- User dictionary row on the Learning screen. Owner's SVG (2026-10-22), Material Symbols-style 960-unit grid (the group shifts the -960 viewBox into view); tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 240 -80 q -50 0 -85 -35 t -35 -85 v -560 q 0 -50 35 -85 t 85 -35 h 440 v 640 H 240 q -17 0 -28.5 11.5 T 200 -200 q 0 17 11.5 28.5 T 240 -160 h 520 v -640 h 80 v 720 H 240 Z m 0 -240 h 360 v -480 H 240 q -17 0 -28.5 11.5 T 200 -760 v 447 q 10 -3 19.5 -5 t 20.5 -2 Z m 30 -100 h 48 l 26 -72 h 113 l 25 72 h 48 L 425 -700 h -50 L 270 -420 Z m 88 -112 41 -116 h 2 l 41 116 h -84 Z M 200 -313 v -487 487 Z"/>
+  </group>
+</vector>

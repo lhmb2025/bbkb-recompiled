@@ -5,7 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.filled.CloudDownload
+import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,14 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Keyboard
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Palette
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Spellcheck
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Clear
+import androidx.compose.material.icons.outlined.Keyboard
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Spellcheck
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -91,7 +91,7 @@ fun MainSettingsScreen(
                 title = { Text(context.getString(R.string.settings_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -115,11 +115,11 @@ fun MainSettingsScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 placeholder = { Text(context.getString(R.string.settings_search_hint)) },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
                 trailingIcon = {
                     if (query.isNotEmpty()) {
                         IconButton(onClick = { query = "" }) {
-                            Icon(Icons.Default.Clear, contentDescription = "Clear")
+                            Icon(Icons.Outlined.Clear, contentDescription = "Clear")
                         }
                     }
                 },
@@ -166,7 +166,7 @@ fun MainSettingsScreen(
                 PreferenceScreen(
                     title = context.getString(R.string.settings_languages_title),
                     summary = context.getString(R.string.settings_languages_summary),
-                    icon = Icons.Default.Language,
+                    icon = Icons.Outlined.Language,
                     onClick = { onNavigateToScreen(SettingsRoute.LanguagesHub.route) }
                 )
 
@@ -174,7 +174,7 @@ fun MainSettingsScreen(
                 PreferenceScreen(
                     title = context.getString(R.string.settings_preferences_title),
                     summary = context.getString(R.string.settings_preferences_summary),
-                    icon = Icons.Default.Keyboard,
+                    icon = Icons.Outlined.Keyboard,
                     onClick = { onNavigateToScreen(SettingsRoute.Preferences.route) }
                 )
 
@@ -182,7 +182,7 @@ fun MainSettingsScreen(
                 PreferenceScreen(
                     title = context.getString(R.string.settings_suggestion_correction_title),
                     summary = context.getString(R.string.settings_suggestion_correction_summary),
-                    icon = Icons.Default.Spellcheck,
+                    icon = Icons.Outlined.Spellcheck,
                     onClick = { onNavigateToScreen(SettingsRoute.SuggestionCorrection.route) }
                 )
 
@@ -190,7 +190,7 @@ fun MainSettingsScreen(
                 PreferenceScreen(
                     title = context.getString(R.string.settings_appearance_layout_title),
                     summary = context.getString(R.string.settings_appearance_layout_summary),
-                    icon = Icons.Default.Palette,
+                    icon = Icons.Outlined.Palette,
                     onClick = { onNavigateToScreen(SettingsRoute.AppearanceLayout.route) }
                 )
 
@@ -198,7 +198,7 @@ fun MainSettingsScreen(
                 PreferenceScreen(
                     title = context.getString(R.string.settings_advanced_title),
                     summary = context.getString(R.string.settings_advanced_summary),
-                    icon = Icons.Default.Settings,
+                    icon = Icons.Outlined.Settings,
                     onClick = { onNavigateToScreen(SettingsRoute.Advanced.route) }
                 )
             }
@@ -232,7 +232,7 @@ private fun UpdateAvailableBanner(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Default.CloudDownload,
+                imageVector = Icons.Outlined.CloudDownload,
                 contentDescription = null,
                 modifier = Modifier
                     .padding(end = 16.dp)

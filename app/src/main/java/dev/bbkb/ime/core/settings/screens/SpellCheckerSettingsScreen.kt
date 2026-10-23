@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Contacts
-import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Contacts
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -96,7 +96,7 @@ fun SpellCheckerSettingsScreen(
                 title = { Text(context.getString(R.string.settings_spell_checker_screen_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -141,7 +141,7 @@ fun SpellCheckerSettingsScreen(
                 } else {
                     context.getString(R.string.settings_spellcheck_use_contacts_summary_disabled)
                 },
-                icon = Icons.Default.Contacts,
+                icon = Icons.Outlined.Contacts,
                 checked = useContacts && hasContactsPermission,
                 enabled = hasContactsPermission,
                 onCheckedChange = { newValue ->
@@ -164,7 +164,7 @@ fun SpellCheckerSettingsScreen(
                     "strict" -> context.getString(R.string.settings_spellcheck_sensitivity_strict)
                     else -> context.getString(R.string.settings_spellcheck_sensitivity_balanced)
                 },
-                icon = Icons.Default.Tune,
+                icon = Icons.Outlined.Tune,
                 value = sensitivity,
                 entries = listOf("Lenient", "Balanced", "Strict"),
                 entryValues = listOf("lenient", "balanced", "strict"),

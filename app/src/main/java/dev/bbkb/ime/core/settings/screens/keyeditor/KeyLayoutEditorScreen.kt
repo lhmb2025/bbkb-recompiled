@@ -25,10 +25,10 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -166,18 +166,18 @@ private fun EditorTopBar(spec: KeyEditorSpec, viewModel: KeyEditorViewModel, onB
         title = { Text(stringResource(spec.title)) },
         navigationIcon = {
             IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
             }
         },
         actions = {
             // The trash appears only while a key is selected.
             if (viewModel.selectedKeyIndex != null) {
                 IconButton(onClick = { viewModel.clearSelectedKey() }) {
-                    Icon(Icons.Default.Delete, "Clear selected key")
+                    Icon(Icons.Outlined.Delete, "Clear selected key")
                 }
             }
             IconButton(onClick = { showMenu = true }) {
-                Icon(Icons.Default.MoreVert, "Menu")
+                Icon(Icons.Outlined.MoreVert, "Menu")
             }
             DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
                 spec.resets.forEach { reset ->
@@ -254,13 +254,13 @@ private fun BoxScope.CustomSymbolBar(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         IconButton(onClick = onAdd) {
-            Icon(Icons.Default.Add, "Add")
+            Icon(Icons.Outlined.Add, "Add")
         }
         IconButton(
             onClick = { viewModel.selectedSymbol?.let { viewModel.deleteCustomSymbol(it) } },
             enabled = viewModel.selectedSymbol != null
         ) {
-            Icon(Icons.Default.Delete, "Delete")
+            Icon(Icons.Outlined.Delete, "Delete")
         }
     }
 }

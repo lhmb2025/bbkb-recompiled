@@ -1,11 +1,11 @@
 package dev.bbkb.ime.core.settings.screens
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.GridOn
-import androidx.compose.material.icons.filled.Keyboard
-import androidx.compose.material.icons.filled.KeyboardCapslock
-import androidx.compose.material.icons.filled.PhoneAndroid
-import androidx.compose.material.icons.filled.TouchApp
+import androidx.compose.material.icons.outlined.GridOn
+import androidx.compose.material.icons.outlined.Keyboard
+import androidx.compose.material.icons.outlined.KeyboardCapslock
+import androidx.compose.material.icons.outlined.PhonelinkSetup
+import androidx.compose.material.icons.outlined.TouchApp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -51,7 +51,7 @@ fun DeviceCompatibilityScreen(
         Nav(
             title = R.string.settings_device_configuration_title,
             summary = R.string.settings_device_configuration_summary,
-            icon = Icons.Default.PhoneAndroid.asRowIcon(),
+            icon = Icons.Outlined.PhonelinkSetup.asRowIcon(),
             onClick = { onNavigateToDeviceConfiguration() },
         ),
         // Override Device Meta State. The default must match SettingsValues.overrideDeviceMetaState,
@@ -61,7 +61,7 @@ fun DeviceCompatibilityScreen(
             store = boolPref(metaStateKey, true),
             title = R.string.pref_override_device_meta_state,
             summary = RowSummary.Res(R.string.pref_override_device_meta_state_summary),
-            icon = Icons.Default.KeyboardCapslock.asRowIcon(),
+            icon = Icons.Outlined.KeyboardCapslock.asRowIcon(),
         ),
         // The user's letter layouts for the physical keys (an etched Thai keypad, a layout of
         // one's own): added from a file, shared, deleted; which keyboard uses one is chosen on
@@ -69,7 +69,7 @@ fun DeviceCompatibilityScreen(
         Nav(
             title = R.string.settings_pkb_layouts_title,
             summary = R.string.settings_pkb_layouts_summary,
-            icon = Icons.Default.GridOn.asRowIcon(),
+            icon = Icons.Outlined.GridOn.asRowIcon(),
             visible = { hasPhysicalKeyboard },
             onClick = { onNavigateToPhysicalLayouts() },
         ),
@@ -77,7 +77,7 @@ fun DeviceCompatibilityScreen(
             title = R.string.settings_pkb_keyboard_helper_title,
             summary = if (helperNotRequired) R.string.settings_status_not_required
                 else R.string.settings_pkb_keyboard_helper_summary,
-            icon = Icons.Default.Keyboard.asRowIcon(),
+            icon = Icons.Outlined.Keyboard.asRowIcon(),
             enabled = { !helperNotRequired },
             onClick = { onNavigateToKeyboardHelper() },
         ),
@@ -87,7 +87,7 @@ fun DeviceCompatibilityScreen(
         Nav(
             title = R.string.touch_surface_helper_title,
             summary = touchSurface.statusLine,
-            icon = Icons.Default.TouchApp.asRowIcon(),
+            icon = Icons.Outlined.TouchApp.asRowIcon(),
             // Literal (== TouchSurfaceAnchors.HELPER): the search-index sync test scans for it.
             modifier = Modifier.settingsSearchAnchor("touch_surface_helper"),
             enabled = { touchSurface.declared },

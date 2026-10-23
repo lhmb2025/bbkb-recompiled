@@ -2,8 +2,8 @@ package dev.bbkb.ime.core.settings.screens
 
 import android.content.Intent
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AutoFixHigh
-import androidx.compose.material.icons.filled.Spellcheck
+import androidx.compose.material.icons.outlined.AutoFixHigh
+import androidx.compose.material.icons.outlined.Spellcheck
 import androidx.compose.runtime.Composable
 import dev.bbkb.ime.core.settings.SpellCheckerComposeActivity
 import dev.bbkb.ime.core.settings.ui.Nav
@@ -33,7 +33,7 @@ fun CorrectionLearningScreen(
         Nav(
             title = R.string.settings_correction_title,
             summary = R.string.settings_correction_summary,
-            icon = Icons.Default.AutoFixHigh.asRowIcon(),
+            icon = Icons.Outlined.AutoFixHigh.asRowIcon(),
             onClick = { onNavigateToAutoCorrection() },
         ),
         Nav(
@@ -46,7 +46,7 @@ fun CorrectionLearningScreen(
         Nav(
             title = R.string.settings_spell_checker_title,
             summary = R.string.settings_spell_checker_summary,
-            icon = Icons.Default.Spellcheck.asRowIcon(),
+            icon = Icons.Outlined.Spellcheck.asRowIcon(),
             onClick = { context ->
                 context.startActivity(Intent(context, SpellCheckerComposeActivity::class.java))
             },

@@ -14,9 +14,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.SaveAlt
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.SaveAlt
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -175,7 +175,7 @@ fun PhysicalLayoutsScreen(
         Custom {
             PreferenceItem(
                 title = stringResource(R.string.settings_pkb_layouts_add),
-                icon = Icons.Default.Add,
+                icon = Icons.Outlined.Add,
                 onClick = { addLauncher.launch(arrayOf(LetterLayoutXml.MIME_TYPE, BackupBundle.MIME_TYPE, "*/*")) },
             )
         },
@@ -246,7 +246,7 @@ private fun CustomLayoutRow(
         trailing = {
             Row {
                 RowIconButton(
-                    icon = Icons.Default.Share,
+                    icon = Icons.Outlined.Share,
                     contentDescription = stringResource(R.string.settings_pkb_layouts_share, title),
                     onClick = onShare,
                 )
@@ -273,7 +273,7 @@ private fun BuiltInLayoutRow(layout: LetterLayout, summary: String, onSave: () -
         modifier = Modifier.semantics(mergeDescendants = true) {},
         trailing = {
             RowIconButton(
-                icon = Icons.Default.SaveAlt,
+                icon = Icons.Outlined.SaveAlt,
                 contentDescription = stringResource(R.string.settings_pkb_layouts_save, layout.name),
                 onClick = onSave,
             )

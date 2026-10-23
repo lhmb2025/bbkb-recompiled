@@ -11,7 +11,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.Keyboard
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -71,7 +71,7 @@ internal fun KeyboardLayoutRow(title: String, current: LayoutChoiceRow, onClick:
         supportingContent = { Text(current.title) },
         leadingContent = { Icon(Icons.Outlined.Keyboard, contentDescription = null) },
         trailingContent = {
-            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            Icon(Icons.Outlined.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
         },
         colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         modifier = Modifier.clickable(onClick = onClick),
