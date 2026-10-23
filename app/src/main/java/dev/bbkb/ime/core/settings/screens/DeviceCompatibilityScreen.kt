@@ -18,6 +18,7 @@ import dev.bbkb.ime.core.settings.ui.Nav
 import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.asRowIcon
+import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.R
 
@@ -77,7 +78,7 @@ fun DeviceCompatibilityScreen(
             title = R.string.settings_pkb_keyboard_helper_title,
             summary = if (helperNotRequired) R.string.settings_status_not_required
                 else R.string.settings_pkb_keyboard_helper_summary,
-            icon = Icons.Outlined.Keyboard.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_bbkb_helper),
             enabled = { !helperNotRequired },
             onClick = { onNavigateToKeyboardHelper() },
         ),

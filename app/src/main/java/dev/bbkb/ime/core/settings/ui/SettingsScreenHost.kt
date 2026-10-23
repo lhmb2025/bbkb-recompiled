@@ -23,7 +23,9 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.settings.PrefsManager
 
@@ -185,7 +187,7 @@ private fun RenderRow(
                     ?: (options.firstOrNull { it.value == value }
                         ?: options.getOrNull(row.fallbackIndex))?.label
                     ?: "",
-                icon = (row.icon as? RowIcon.Vector)?.image,
+                icon = row.icon.asImageVector(),
                 iconSpaceReserved = row.iconSpaceReserved,
                 entries = options.map { it.label },
                 entryValues = options.map { it.value },
@@ -203,7 +205,7 @@ private fun RenderRow(
         is Slide -> SliderPreference(
             title = context.getString(row.title),
             summary = row.summary?.let { context.getString(it) },
-            icon = (row.icon as? RowIcon.Vector)?.image,
+            icon = row.icon.asImageVector(),
             iconSpaceReserved = row.iconSpaceReserved,
             value = env.int(row.store.key),
             valueRange = row.range,
@@ -247,6 +249,18 @@ private fun managedInitialValue(
     }
 }
 
+/**
+ * A row's icon as the [ImageVector] the preference composables take: a vector as it is, a drawable
+ * loaded through `vectorResource`. Before this, every row type but [Nav] cast the icon to
+ * [RowIcon.Vector] and silently dropped a drawable (the Keyboard height row drew no icon).
+ */
+@Composable
+private fun RowIcon?.asImageVector(): ImageVector? = when (this) {
+    null -> null
+    is RowIcon.Vector -> image
+    is RowIcon.Drawable -> ImageVector.vectorResource(id)
+}
+
 @Composable
 private fun PreferenceItemRow(
     title: String,
@@ -259,7 +273,7 @@ private fun PreferenceItemRow(
     SimplePreference(
         title = title,
         summary = summary,
-        icon = (icon as? RowIcon.Vector)?.image,
+        icon = icon.asImageVector(),
         iconSpaceReserved = iconSpaceReserved,
         modifier = modifier,
         onClick = onClick,
@@ -290,7 +304,7 @@ private fun NavRow(
         PreferenceScreen(
             title = title,
             summary = summary,
-            icon = (icon as? RowIcon.Vector)?.image,
+            icon = icon.asImageVector(),
             iconSpaceReserved = iconSpaceReserved,
             enabled = enabled,
             modifier = modifier,
@@ -313,7 +327,7 @@ private fun SwitchRow(
     SwitchPreference(
         title = title,
         summary = summary,
-        icon = (icon as? RowIcon.Vector)?.image,
+        icon = icon.asImageVector(),
         iconSpaceReserved = iconSpaceReserved,
         checked = checked,
         enabled = enabled,
