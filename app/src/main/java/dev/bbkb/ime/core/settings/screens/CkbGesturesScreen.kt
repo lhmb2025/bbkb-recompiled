@@ -97,9 +97,9 @@ fun CkbGesturesScreen(onNavigateBack: () -> Unit) {
                 GestureSlot(R.string.ckb_gesture_slot_swipe_down, GestureAssignments.KEY_SWIPE_DOWN, defaults.swipeDown, prefs,
                     Modifier.settingsSearchAnchor("ckb_gesture_swipe_down"), iconRes = R.drawable.ic_settings_gesture_swipe_down)
                 GestureSlot(R.string.ckb_gesture_slot_double_tap, GestureAssignments.KEY_DOUBLE_TAP, defaults.doubleTap, prefs,
-                    Modifier.settingsSearchAnchor("ckb_gesture_double_tap"))
+                    Modifier.settingsSearchAnchor("ckb_gesture_double_tap"), iconRes = R.drawable.ic_settings_gesture_double_tap)
                 GestureSlot(R.string.ckb_gesture_slot_hold, GestureAssignments.KEY_HOLD, defaults.hold, prefs,
-                    Modifier.settingsSearchAnchor("ckb_gesture_hold"))
+                    Modifier.settingsSearchAnchor("ckb_gesture_hold"), iconRes = R.drawable.ic_settings_gesture_tap_hold)
             }
 
             // The "no gesture within N ms of a key press" window the arbiter honours through

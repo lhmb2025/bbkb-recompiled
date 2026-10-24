@@ -1,0 +1,12 @@
+<!-- ic_settings_vibrate. Material Symbols glyph, weight 400 (owner's download 2026-10-24), Material Symbols-style 960-unit grid (the group shifts the -960 viewBox into view); Vibrate on key press; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 320 -120 q -33 0 -56.5 -23.5 T 240 -200 v -560 q 0 -33 23.5 -56.5 T 320 -840 h 320 q 33 0 56.5 23.5 T 720 -760 v 560 q 0 33 -23.5 56.5 T 640 -120 H 320 Z m 320 -80 v -560 H 320 v 560 h 320 Z M 508.5 -651.5 Q 520 -663 520 -680 t -11.5 -28.5 Q 497 -720 480 -720 t -28.5 11.5 Q 440 -697 440 -680 t 11.5 28.5 Q 463 -640 480 -640 t 28.5 -11.5 Z M 0 -360 v -240 h 80 v 240 H 0 Z m 120 80 v -400 h 80 v 400 h -80 Z m 760 -80 v -240 h 80 v 240 h -80 Z m -120 80 v -400 h 80 v 400 h -80 Z m -440 80 v -560 560 Z"/>
+  </group>
+</vector>

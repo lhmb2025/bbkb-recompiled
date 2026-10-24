@@ -1,0 +1,12 @@
+<!-- ic_settings_popup_dismiss_delay. Material Symbols glyph, weight 400 (owner's download 2026-10-24), Material Symbols-style 960-unit grid (the group shifts the -960 viewBox into view); Popup dismiss delay; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 340 -520 q 42 0 71 -29 t 29 -71 v -100 H 240 v 100 q 0 42 29 71 t 71 29 Z M 240 -240 h 200 v -100 q 0 -42 -29 -71 t -71 -29 q -42 0 -71 29 t -29 71 v 100 Z m -140 80 v -80 h 60 v -100 q 0 -42 18 -78 t 50 -62 q -32 -26 -50 -62 t -18 -78 v -100 h -60 v -80 h 480 v 80 h -60 v 100 q 0 42 -18 78 t -50 62 q 32 26 50 62 t 18 78 v 100 h 60 v 80 H 100 Z m 680 0 L 640 -300 l 57 -56 43 43 v -487 h 80 v 488 l 44 -44 56 56 -140 140 Z M 340 -720 Z m 0 480 Z"/>
+  </group>
+</vector>

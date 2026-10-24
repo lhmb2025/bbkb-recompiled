@@ -1,0 +1,12 @@
+<!-- ic_settings_touch_feedback. Material Symbols glyph, weight 400 (owner's download 2026-10-24), Material Symbols-style 960-unit grid (the group shifts the -960 viewBox into view); Key press feedback; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 750 -614 q -27 27 -62 41 t -70 14 q -35 0 -69 -13.5 T 488 -614 l -75 -75 q -15 -15 -34 -22.5 t -39 -7.5 q -20 0 -39 7.5 T 267 -689 l -75 75 -57 -57 75 -75 q 27 -27 61 -40.5 t 69 -13.5 q 35 0 68.5 13.5 T 469 -746 l 75 75 q 16 16 35 23.5 t 39 7.5 q 20 0 39.5 -7.5 T 693 -671 l 75 -75 57 57 -75 75 Z m 0 200 q -27 27 -61.5 40.5 T 619 -360 q -35 0 -69.5 -13.5 T 488 -414 l -75 -75 q -15 -15 -34 -22.5 t -39 -7.5 q -20 0 -39 7.5 T 267 -489 l -75 75 -57 -56 75 -76 q 27 -27 61 -40.5 t 69 -13.5 q 35 0 68.5 13.5 T 469 -546 l 75 75 q 16 16 35 23.5 t 39 7.5 q 20 0 39.5 -7.5 T 693 -471 l 75 -75 57 57 -75 75 Z m -1 200 q -27 27 -61 40.5 T 619 -160 q -35 0 -69.5 -13.5 T 488 -214 l -76 -75 q -15 -15 -34 -22.5 t -39 -7.5 q -20 0 -39 7.5 T 266 -289 l -75 75 -56 -56 75 -76 q 27 -27 61 -40.5 t 69 -13.5 q 35 0 68.5 13.5 T 469 -346 l 75 75 q 16 16 35.5 23.5 T 619 -240 q 20 0 39 -7.5 t 35 -23.5 l 75 -75 56 57 -75 75 Z"/>
+  </group>
+</vector>

@@ -15,6 +15,7 @@ import dev.bbkb.ime.core.settings.ui.intPref
 import dev.bbkb.ime.core.settings.ui.Slide
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.R
+import dev.bbkb.ime.core.settings.ui.drawableIcon
 
 /**
  * On-Screen Keyboard Settings Screen
@@ -38,6 +39,7 @@ fun TouchScreenKeyboardScreen(
         Toggle(
             store = boolPref("vkb_control_mode_enabled", false),
             title = R.string.vkb_control_key_title,
+            icon = drawableIcon(R.drawable.ic_settings_ctrl_key),
             summary = RowSummary.Res(R.string.vkb_control_key_summary),
             modifier = Modifier.settingsSearchAnchor("vkb_control_mode_enabled"),
         ),
@@ -47,25 +49,28 @@ fun TouchScreenKeyboardScreen(
         Slide(intPref("pref_key_longpress_timeout", 400),
             R.string.prefs_key_longpress_delay_title,
             R.string.prefs_key_longpress_delay_summary, 100..1000, step = 50, unit = "ms",
+            icon = drawableIcon(R.drawable.ic_settings_gesture_delay),
             modifier = Modifier.settingsSearchAnchor("pref_key_longpress_timeout")),
         // The committed word floating up on a flick: an on-screen animation, so it lives here
         // rather than under Suggestions (2026-10-20).
         Toggle(
             store = boolPref("pref_flick_commit_animation", true),
             title = R.string.settings_pred_flick_animation_title,
+            icon = drawableIcon(R.drawable.ic_settings_flick_animation),
             summary = RowSummary.Res(R.string.settings_pred_flick_animation_summary),
             modifier = Modifier.settingsSearchAnchor("pref_flick_commit_animation"),
         ),
-        // Slideboard (enable, swap sides, number pad, quick phrases). No icon: the rows around it
-        // carry none.
+        // Slideboard (enable, swap sides, number pad, quick phrases).
         Nav(
             title = R.string.settings_slideboard_settings_title,
+            icon = drawableIcon(R.drawable.ic_settings_slideboard),
             summary = R.string.settings_slideboard_hub_summary,
             onClick = { onNavigateToSlideboard() },
         ),
         // Touch feedback (links to KeyPressFeedbackScreen) — VKB only
         Nav(
             title = R.string.settings_touch_feedback_title,
+            icon = drawableIcon(R.drawable.ic_settings_touch_feedback),
             summary = R.string.settings_touch_feedback_summary,
             onClick = { onNavigateToKeyPressFeedback() },
         ),
@@ -73,6 +78,7 @@ fun TouchScreenKeyboardScreen(
         Toggle(
             store = boolPref("type_by_swiping_vkb", R.bool.config_vkb_type_by_swiping_enabled_by_build_config),
             title = R.string.settings_vkb_type_by_swiping_title,
+            icon = drawableIcon(R.drawable.ic_settings_swipe_typing),
             summary = RowSummary.Res(R.string.settings_vkb_type_by_swiping_summary),
             enabled = { !isChineseLocale },
             modifier = Modifier.settingsSearchAnchor("type_by_swiping_vkb"),
@@ -81,12 +87,14 @@ fun TouchScreenKeyboardScreen(
         Toggle(
             store = boolPref("swipe_gesture_vkb", R.bool.config_vkb_swipe_gestures_enabled_by_build_config),
             title = R.string.settings_vkb_swipe_gestures_title,
+            icon = drawableIcon(R.drawable.ic_settings_gesture_ckb),
             summary = RowSummary.Res(R.string.settings_vkb_swipe_gestures_summary),
             modifier = Modifier.settingsSearchAnchor("swipe_gesture_vkb"),
         ),
         Toggle(
             store = boolPref("swipe_down_vkb", true),
             title = R.string.settings_vkb_swipe_down_dismiss_title,
+            icon = drawableIcon(R.drawable.ic_settings_swipe_down_dismiss),
             summary = RowSummary.Res(R.string.settings_vkb_swipe_down_dismiss_summary),
             modifier = Modifier.settingsSearchAnchor("swipe_down_vkb"),
         ),

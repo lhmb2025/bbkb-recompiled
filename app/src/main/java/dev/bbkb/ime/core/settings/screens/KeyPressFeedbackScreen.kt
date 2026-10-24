@@ -14,6 +14,7 @@ import dev.bbkb.ime.core.settings.ui.Toggle
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.core.settings.ui.stringPref
 import dev.bbkb.ime.R
+import dev.bbkb.ime.core.settings.ui.drawableIcon
 
 /**
  * Key Press Feedback Settings Screen
@@ -33,12 +34,14 @@ fun KeyPressFeedbackScreen(
         Toggle(
             store = boolPref("vibrate_on", R.bool.config_default_vibration_enabled),
             title = R.string.vibrate_on_keypress,
+            icon = drawableIcon(R.drawable.ic_settings_vibrate),
             summary = RowSummary.Res(R.string.vibrate_on_keypress_summary),
             modifier = Modifier.settingsSearchAnchor("vibrate_on"),
         ),
         Choice(
             store = VIBRATION_DURATION,
             title = R.string.prefs_keypress_vibration_duration_settings,
+            icon = drawableIcon(R.drawable.ic_settings_vibration_duration),
             options = { VIBRATION_DURATIONS },
             summary = { _, value -> vibrationDurationLabel(value) },
             enabled = { it.bool("vibrate_on") },
@@ -49,12 +52,14 @@ fun KeyPressFeedbackScreen(
         Toggle(
             store = boolPref("sound_on", R.bool.config_default_sound_enabled),
             title = R.string.sound_on_keypress,
+            icon = drawableIcon(R.drawable.ic_settings_key_sound),
             summary = RowSummary.Res(R.string.sound_on_keypress_summary),
             modifier = Modifier.settingsSearchAnchor("sound_on"),
         ),
         Choice(
             store = SOUND_VOLUME,
             title = R.string.prefs_keypress_sound_volume_settings,
+            icon = drawableIcon(R.drawable.ic_settings_sound_volume),
             options = { SOUND_VOLUMES },
             summary = { _, value -> soundVolumeLabel(value) },
             enabled = { it.bool("sound_on") },
@@ -65,12 +70,14 @@ fun KeyPressFeedbackScreen(
         Toggle(
             store = boolPref("popup_on", R.bool.config_default_key_preview_popup),
             title = R.string.popup_on_keypress,
+            icon = drawableIcon(R.drawable.ic_settings_key_popup),
             summary = RowSummary.Res(R.string.popup_on_keypress_summary),
             modifier = Modifier.settingsSearchAnchor("popup_on"),
         ),
         Choice(
             store = stringPref("pref_key_preview_popup_dismiss_delay", ::defaultLingerTimeout),
             title = R.string.key_preview_popup_dismiss_delay,
+            icon = drawableIcon(R.drawable.ic_settings_popup_dismiss_delay),
             options = ::popupDismissDelays,
             summary = { _, value -> popupDismissDelayLabel(value) },
             enabled = { it.bool("popup_on") },

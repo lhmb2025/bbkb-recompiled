@@ -1,0 +1,12 @@
+<!-- ic_settings_slideboard. Material Symbols glyph, weight 400 (owner's download 2026-10-24), Material Symbols-style 960-unit grid (the group shifts the -960 viewBox into view); Slideboard settings; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 500 -640 v 320 l 160 -160 -160 -160 Z M 200 -120 q -33 0 -56.5 -23.5 T 120 -200 v -560 q 0 -33 23.5 -56.5 T 200 -840 h 560 q 33 0 56.5 23.5 T 840 -760 v 560 q 0 33 -23.5 56.5 T 760 -120 H 200 Z m 120 -80 v -560 H 200 v 560 h 120 Z m 80 0 h 360 v -560 H 400 v 560 Z m -80 0 H 200 h 120 Z"/>
+  </group>
+</vector>
