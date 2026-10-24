@@ -104,7 +104,7 @@ class CkbGesturesScreenTest {
         render()
 
         composeRule.onNodeWithText(string(R.string.ckb_gesture_slot_flick_left)).assertIsDisplayed()
-        composeRule.onNodeWithText(string(R.string.settings_gesture_category_timing).uppercase())
+        composeRule.onNodeWithText(string(R.string.settings_gesture_category_timing))
             .assertExists()
         composeRule.onNodeWithText(string(R.string.prefs_ckb_gesture_activation_delay_title))
             .assertExists()

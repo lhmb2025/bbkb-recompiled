@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">ក្ដារចុចធ្វើតាមភាសាទូរសព្ទរបស់អ្នក។ ការបន្ថែម ឬលុបនឹងបិទវា។</string>
     <string name="languages_hub_follow_system_off">អ្នកជ្រើសរើសក្ដារចុចខាងក្រោម</string>
     <string name="languages_hub_keyboards_header">ក្ដារចុចរបស់អ្នក</string>
-    <string name="languages_hub_keyboards_hint">ចុចលើក្ដារចុចដើម្បីបន្ថែមភាសាទស្សន៍ទាយបន្ថែម ឬលុបវា</string>
+    <string name="languages_hub_keyboards_hint">ចុចលើក្ដារចុចដើម្បីបន្ថែមភាសាទស្សន៍ទាយបន្ថែម ប្ដូរប្លង់របស់វា ឬលុបវា</string>
     <string name="languages_hub_add">បន្ថែមភាសា</string>
     <string name="languages_hub_more_header">ជម្រើសបន្ថែម</string>
     <string name="languages_hub_also_predicts">ក៏ទស្សន៍ទាយផងដែរ៖ %1$s</string>

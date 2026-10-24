@@ -9,21 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -49,9 +41,11 @@ import dev.bbkb.ime.core.device.config.builder.HardwareKeyCaptureBus
 import dev.bbkb.ime.core.device.config.builder.KeyCodeNames
 import dev.bbkb.ime.core.settings.ui.EditTextPreference
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
+import dev.bbkb.ime.core.settings.ui.PreferenceGroup
 import dev.bbkb.ime.core.settings.ui.PreferenceInfo
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.ui.PreferenceTrailingLabel
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.R
 import java.io.File
 
@@ -72,7 +66,6 @@ import java.io.File
  * consumes Sym, Emoji and Mic before any window sees them. Both routes end at the same listener,
  * and only one of them delivers any given press.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeviceProfileBuilderScreen(
     onNavigateBack: () -> Unit
@@ -117,7 +110,9 @@ fun DeviceProfileBuilderScreen(
         runCatching { focusRequester.requestFocus() }
     }
 
-    Scaffold(
+    SettingsScaffold(
+        title = stringResource(R.string.device_profile_builder_title),
+        onNavigateBack = onNavigateBack,
         modifier = Modifier
             .focusRequester(focusRequester)
             .focusable()
@@ -132,20 +127,6 @@ fun DeviceProfileBuilderScreen(
                     native.eventTime,
                 )
             },
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.device_profile_builder_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                ),
-            )
-        },
         // One primary action. Sharing is a row further down, because a profile can only be shared
         // after it exists.
         floatingActionButton = {
@@ -159,13 +140,16 @@ fun DeviceProfileBuilderScreen(
         },
     ) { paddingValues ->
 
+        // Each run of rows is one group, composed as one list item: the runs are short and fixed
+        // (the facts, the nine capture steps, the four profile rows), and a group composed whole
+        // gets its corners and inset from PreferenceGroup like every other screen's groups.
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
             item { PreferenceCategory(title = stringResource(R.string.device_profile_category_detected)) }
-            detectedRows(facts)
+            item { PreferenceGroup { DetectedRows(facts) } }
 
             item { PreferenceCategory(title = stringResource(R.string.device_profile_category_capture)) }
             item { PreferenceInfo(text = stringResource(R.string.device_profile_capture_intro)) }
@@ -173,95 +157,93 @@ fun DeviceProfileBuilderScreen(
                 item { PreferenceInfo(text = stringResource(R.string.device_profile_capture_no_keyboard)) }
             }
             item {
-                // Reading captureTick here is what subscribes this row — and the step rows below
-                // it, which are emitted by the same lambda — to the capture's mutations.
-                val answered = captureTick.let { capture.answered() }
-                PreferenceItem(
-                    title = if (capture.isComplete()) {
-                        stringResource(R.string.device_profile_capture_complete)
-                    } else {
-                        stringResource(
-                            R.string.device_profile_capture_progress,
-                            answered,
-                            capture.steps().size,
-                        )
-                    },
-                    trailing = if (answered > 0) {
-                        {
-                            TextButton(onClick = {
+                PreferenceGroup {
+                    // Reading captureTick here is what subscribes this row — and the step rows below
+                    // it, which are emitted by the same lambda — to the capture's mutations.
+                    val answered = captureTick.let { capture.answered() }
+                    PreferenceItem(
+                        title = if (capture.isComplete()) {
+                            stringResource(R.string.device_profile_capture_complete)
+                        } else {
+                            stringResource(
+                                R.string.device_profile_capture_progress,
+                                answered,
+                                capture.steps().size,
+                            )
+                        },
+                        trailing = if (answered > 0) {
+                            {
+                                TextButton(onClick = {
+                                    capture.reset()
+                                    captureTick++
+                                }) { Text(stringResource(R.string.device_profile_action_restart)) }
+                            }
+                        } else null,
+                    )
+                    capture.steps().forEach { step ->
+                        CaptureStepRow(
+                            step = step,
+                            captured = captureTick.let { capture.resultFor(step) },
+                            isCurrent = capture.current() == step,
+                            isHeld = capture.isKeyHeld(),
+                            isDuplicate = capture.duplicateSteps().contains(step),
+                            onSkip = {
+                                capture.skip()
+                                captureTick++
+                            },
+                            onRedo = {
                                 capture.reset()
                                 captureTick++
-                            }) { Text(stringResource(R.string.device_profile_action_restart)) }
-                        }
-                    } else null,
-                )
-            }
-            items(capture.steps()) { step ->
-                CaptureStepRow(
-                    step = step,
-                    captured = captureTick.let { capture.resultFor(step) },
-                    isCurrent = capture.current() == step,
-                    isHeld = capture.isKeyHeld(),
-                    isDuplicate = capture.duplicateSteps().contains(step),
-                    onSkip = {
-                        capture.skip()
-                        captureTick++
-                    },
-                    onRedo = {
-                        capture.reset()
-                        captureTick++
-                    },
-                )
+                            },
+                        )
+                    }
+                }
             }
 
             item { PreferenceCategory(title = stringResource(R.string.device_profile_category_profile)) }
             item {
-                EditTextPreference(
-                    title = stringResource(R.string.device_profile_name),
-                    value = profileName,
-                    onValueChange = { profileName = it.trim().ifEmpty { facts.suggestedProfileName() } },
-                )
-            }
-            item {
-                PreferenceItem(
-                    title = stringResource(R.string.device_profile_summary_type),
-                    trailing = { PreferenceTrailingLabel(facts.deviceType()) },
-                )
-            }
-            item {
-                val count = captureTick.let { capture.usableResults().size }
-                PreferenceItem(
-                    title = stringResource(R.string.device_profile_summary_keys),
-                    trailing = {
-                        PreferenceTrailingLabel(
-                            stringResource(R.string.device_profile_summary_keys_value, count)
-                        )
-                    },
-                )
-            }
-            item {
-                val file = savedFile
-                val shareTitle = stringResource(R.string.device_profile_share)
-                val chooserTitle = stringResource(R.string.device_profile_share_chooser)
-                val notSavedYet = stringResource(R.string.device_profile_share_before_save)
-                val noSharer = stringResource(R.string.device_profile_share_unavailable)
-                PreferenceItem(
-                    title = shareTitle,
-                    summary = stringResource(R.string.device_profile_share_summary),
-                    onClick = {
-                        if (file == null) {
-                            toast(context, notSavedYet)
-                        } else {
-                            val intent = DeviceProfileExporter.shareIntent(context, file, chooserTitle)
-                            if (intent == null) {
-                                toast(context, noSharer)
+                PreferenceGroup {
+                    EditTextPreference(
+                        title = stringResource(R.string.device_profile_name),
+                        value = profileName,
+                        onValueChange = { profileName = it.trim().ifEmpty { facts.suggestedProfileName() } },
+                    )
+                    PreferenceItem(
+                        title = stringResource(R.string.device_profile_summary_type),
+                        trailing = { PreferenceTrailingLabel(facts.deviceType()) },
+                    )
+                    val count = captureTick.let { capture.usableResults().size }
+                    PreferenceItem(
+                        title = stringResource(R.string.device_profile_summary_keys),
+                        trailing = {
+                            PreferenceTrailingLabel(
+                                stringResource(R.string.device_profile_summary_keys_value, count)
+                            )
+                        },
+                    )
+                    val file = savedFile
+                    val shareTitle = stringResource(R.string.device_profile_share)
+                    val chooserTitle = stringResource(R.string.device_profile_share_chooser)
+                    val notSavedYet = stringResource(R.string.device_profile_share_before_save)
+                    val noSharer = stringResource(R.string.device_profile_share_unavailable)
+                    PreferenceItem(
+                        title = shareTitle,
+                        summary = stringResource(R.string.device_profile_share_summary),
+                        onClick = {
+                            if (file == null) {
+                                toast(context, notSavedYet)
                             } else {
-                                runCatching { context.startActivity(intent) }
-                                    .onFailure { toast(context, noSharer) }
+                                val intent = DeviceProfileExporter.shareIntent(context, file, chooserTitle)
+                                if (intent == null) {
+                                    toast(context, noSharer)
+                                } else {
+                                    runCatching { context.startActivity(intent) }
+                                        .onFailure { toast(context, noSharer) }
+                                }
                             }
-                        }
-                    },
-                )
+                        },
+                    )
+                }
             }
             savedFile?.let { file ->
                 item {
@@ -278,52 +260,39 @@ fun DeviceProfileBuilderScreen(
 }
 
 /** The read-only facts, one per row: label as the title, the value as the summary. */
-private fun LazyListScope.detectedRows(facts: DeviceFacts) {
-    item {
-        PreferenceItem(
-            title = stringResource(R.string.device_profile_detected_model),
-            summary = facts.buildModel.ifEmpty { "—" },
-        )
-    }
-    item {
-        PreferenceItem(
-            title = stringResource(R.string.device_profile_detected_build_device),
-            summary = facts.buildDevice.ifEmpty { "—" },
-        )
-    }
-    item {
-        PreferenceItem(
-            title = stringResource(R.string.device_profile_detected_manufacturer),
-            summary = facts.buildManufacturer.ifEmpty { "—" },
-        )
-    }
-    item {
-        PreferenceItem(
-            title = stringResource(R.string.device_profile_detected_brand),
-            summary = facts.buildBrand.ifEmpty { "—" },
-        )
-    }
-    item {
-        PreferenceItem(
-            title = stringResource(R.string.device_profile_detected_rom),
-            summary = facts.romDisplayId.ifEmpty { "—" },
-        )
-    }
-    item {
-        PreferenceItem(
-            title = stringResource(R.string.device_profile_detected_android),
-            summary = "${facts.androidRelease} (SDK ${facts.sdkInt})",
-        )
-    }
+@Composable
+private fun DetectedRows(facts: DeviceFacts) {
+    PreferenceItem(
+        title = stringResource(R.string.device_profile_detected_model),
+        summary = facts.buildModel.ifEmpty { "—" },
+    )
+    PreferenceItem(
+        title = stringResource(R.string.device_profile_detected_build_device),
+        summary = facts.buildDevice.ifEmpty { "—" },
+    )
+    PreferenceItem(
+        title = stringResource(R.string.device_profile_detected_manufacturer),
+        summary = facts.buildManufacturer.ifEmpty { "—" },
+    )
+    PreferenceItem(
+        title = stringResource(R.string.device_profile_detected_brand),
+        summary = facts.buildBrand.ifEmpty { "—" },
+    )
+    PreferenceItem(
+        title = stringResource(R.string.device_profile_detected_rom),
+        summary = facts.romDisplayId.ifEmpty { "—" },
+    )
+    PreferenceItem(
+        title = stringResource(R.string.device_profile_detected_android),
+        summary = "${facts.androidRelease} (SDK ${facts.sdkInt})",
+    )
     if (facts.keyboards.isEmpty()) {
-        item {
-            PreferenceItem(
-                title = stringResource(R.string.device_profile_detected_keyboard),
-                summary = stringResource(R.string.device_profile_detected_keyboard_none),
-            )
-        }
+        PreferenceItem(
+            title = stringResource(R.string.device_profile_detected_keyboard),
+            summary = stringResource(R.string.device_profile_detected_keyboard_none),
+        )
     } else {
-        items(facts.keyboards) { keyboard ->
+        facts.keyboards.forEach { keyboard ->
             PreferenceItem(
                 title = stringResource(R.string.device_profile_detected_keyboard),
                 summary = stringResource(
@@ -335,41 +304,35 @@ private fun LazyListScope.detectedRows(facts: DeviceFacts) {
             )
         }
     }
-    item {
-        val note = if (facts.shouldDeclareKeypadLayout()) {
-            stringResource(R.string.device_profile_keypad_layout_recorded)
-        } else {
-            stringResource(R.string.device_profile_keypad_layout_omitted)
-        }
-        PreferenceItem(
-            title = stringResource(R.string.device_profile_detected_keypad_layout),
-            summary = stringResource(
-                R.string.device_profile_keypad_layout_summary,
-                facts.keypadLayout,
-                facts.keypadLayoutSource.name,
-            ) + " · " + note,
-        )
+    val note = if (facts.shouldDeclareKeypadLayout()) {
+        stringResource(R.string.device_profile_keypad_layout_recorded)
+    } else {
+        stringResource(R.string.device_profile_keypad_layout_omitted)
     }
-    item {
-        PreferenceItem(
-            title = stringResource(R.string.device_profile_detected_touch_keypad),
-            trailing = {
-                PreferenceTrailingLabel(
-                    stringResource(
-                        if (facts.hasTouchKeypad) R.string.device_profile_value_yes
-                        else R.string.device_profile_value_no
-                    )
+    PreferenceItem(
+        title = stringResource(R.string.device_profile_detected_keypad_layout),
+        summary = stringResource(
+            R.string.device_profile_keypad_layout_summary,
+            facts.keypadLayout,
+            facts.keypadLayoutSource.name,
+        ) + " · " + note,
+    )
+    PreferenceItem(
+        title = stringResource(R.string.device_profile_detected_touch_keypad),
+        trailing = {
+            PreferenceTrailingLabel(
+                stringResource(
+                    if (facts.hasTouchKeypad) R.string.device_profile_value_yes
+                    else R.string.device_profile_value_no
                 )
-            },
-        )
-    }
-    item {
-        PreferenceItem(
-            title = stringResource(R.string.device_profile_detected_matched_config),
-            summary = facts.matchedConfigName
-                ?: stringResource(R.string.device_profile_detected_matched_none),
-        )
-    }
+            )
+        },
+    )
+    PreferenceItem(
+        title = stringResource(R.string.device_profile_detected_matched_config),
+        summary = facts.matchedConfigName
+            ?: stringResource(R.string.device_profile_detected_matched_none),
+    )
 }
 
 /**

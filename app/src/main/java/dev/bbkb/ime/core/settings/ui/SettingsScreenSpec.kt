@@ -263,6 +263,7 @@ class ManagedToggle(
     @StringRes val title: Int,
     val summary: RowSummary = RowSummary.None,
     val icon: RowIcon? = null,
+    val iconSpaceReserved: Boolean = false,
     val enabled: (SettingsEnv) -> Boolean = { true },
     override val visible: (SettingsEnv) -> Boolean = { true },
     val onWrite: ((Context, Boolean) -> Unit)? = null,
@@ -316,5 +317,11 @@ class Slide(
  */
 class Custom(
     override val visible: (SettingsEnv) -> Boolean = { true },
+    /**
+     * True for a block that is row-shaped (a `PreferenceItem` under a hand-written trailing
+     * slot, a grid picker): it then sits inside the surrounding group as an item. False, the
+     * default, for paragraphs, progress bars and dialogs, which sit at page level between groups.
+     */
+    val inGroup: Boolean = false,
     val content: @Composable (SettingsEnv) -> Unit,
 ) : SettingsRow

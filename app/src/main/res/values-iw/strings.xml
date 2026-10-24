@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">המקלדות פועלות לפי שפות הטלפון שלך. הוספה או הסרה של מקלדת תכבה אפשרות זו.</string>
     <string name="languages_hub_follow_system_off">בחר את המקלדות למטה</string>
     <string name="languages_hub_keyboards_header">המקלדות שלך</string>
-    <string name="languages_hub_keyboards_hint">הקש על מקלדת כדי להוסיף שפות הצעה נוספות או להסיר אותה</string>
+    <string name="languages_hub_keyboards_hint">הקש על מקלדת כדי להוסיף שפות הצעה נוספות, לשנות את הפריסה שלה או להסיר אותה</string>
     <string name="languages_hub_add">הוספת שפה</string>
     <string name="languages_hub_more_header">אפשרויות נוספות</string>
     <string name="languages_hub_also_predicts">מציע גם: %1$s</string>

@@ -1,0 +1,12 @@
+<!-- ic_settings_gesture_ckb. Material Symbols gesture, weight 400 (owner's download 2026-10-23), Material Symbols-style 960-unit grid (the group shifts the -960 viewBox into view); tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 554 -120 q -54 0 -91 -37 t -37 -89 q 0 -76 61.5 -137.5 T 641 -460 q -3 -36 -18 -54.5 T 582 -533 q -30 0 -65 25 t -83 82 q -78 93 -114.5 121 T 241 -277 q -51 0 -86 -38 t -35 -92 q 0 -54 23.5 -110.5 T 223 -653 q 19 -26 28 -44 t 9 -29 q 0 -7 -2.5 -10.5 T 250 -740 q -10 0 -25 12.5 T 190 -689 l -70 -71 q 32 -39 65 -59.5 t 65 -20.5 q 46 0 78 32 t 32 80 q 0 29 -15 64 t -50 84 q -38 54 -56.5 95 T 220 -413 q 0 17 5.5 26.5 T 241 -377 q 10 0 17.5 -5.5 T 286 -409 q 13 -14 31 -34.5 t 44 -50.5 q 63 -75 114 -107 t 107 -32 q 67 0 110 45 t 49 123 h 99 v 100 h -99 q -8 112 -58.5 178.5 T 554 -120 Z m 2 -100 q 32 0 54 -36.5 T 640 -358 q -46 11 -80 43.5 T 526 -250 q 0 14 8 22 t 22 8 Z"/>
+  </group>
+</vector>

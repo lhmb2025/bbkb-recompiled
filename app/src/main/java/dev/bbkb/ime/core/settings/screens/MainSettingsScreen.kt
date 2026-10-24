@@ -3,7 +3,10 @@ package dev.bbkb.ime.core.settings.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material3.Surface
@@ -14,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Keyboard
 import androidx.compose.material.icons.outlined.Language
@@ -22,21 +24,19 @@ import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Spellcheck
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -45,15 +45,17 @@ import dev.bbkb.ime.core.settings.SettingsRoute
 import dev.bbkb.ime.core.settings.search.LocalSettingsHighlight
 import dev.bbkb.ime.core.settings.search.SearchDeviceCapabilities
 import dev.bbkb.ime.core.settings.search.SettingsSearchIndex
+import dev.bbkb.ime.core.settings.ui.LocalSpacing
+import dev.bbkb.ime.core.settings.ui.PreferenceGroup
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.ui.PreferenceScreen
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.update.UpdateChecker
 
 /**
  * Main Settings Screen - Root navigation menu for all settings
  * Displays a search bar and all primary settings categories.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainSettingsScreen(
     onNavigateToScreen: (String) -> Unit,
@@ -85,22 +87,11 @@ fun MainSettingsScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(context.getString(R.string.settings_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        }
+    SettingsScaffold(
+        title = context.getString(R.string.settings_title),
+        onNavigateBack = onNavigateBack,
     ) { paddingValues ->
+        val spacing = LocalSpacing.current
 
         Column(
             modifier = Modifier
@@ -108,12 +99,14 @@ fun MainSettingsScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            OutlinedTextField(
+            // The search field as the Android 16 Settings app draws it: a pill on the page with no
+            // outline, its fill one step above the page colour.
+            TextField(
                 value = query,
                 onValueChange = { query = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = spacing.groupInset, vertical = spacing.small),
                 placeholder = { Text(context.getString(R.string.settings_search_hint)) },
                 leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
                 trailingIcon = {
@@ -124,6 +117,14 @@ fun MainSettingsScreen(
                     }
                 },
                 singleLine = true,
+                shape = CircleShape,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                ),
                 keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(imeAction = ImeAction.Search)
             )
 
@@ -134,18 +135,21 @@ fun MainSettingsScreen(
                         text = context.getString(R.string.settings_search_no_results),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp)
+                        modifier = Modifier.padding(horizontal = spacing.categoryStartPadding, vertical = 24.dp)
                     )
                 } else {
-                    results.forEach { entry ->
-                        PreferenceItem(
-                            title = context.getString(entry.titleRes),
-                            summary = context.getString(entry.categoryTitleRes),
-                            onClick = {
-                                entry.anchor?.let { highlight.request(it) }
-                                onNavigateToScreen(entry.route)
-                            }
-                        )
+                    Spacer(modifier = Modifier.height(spacing.small))
+                    PreferenceGroup {
+                        results.forEach { entry ->
+                            PreferenceItem(
+                                title = context.getString(entry.titleRes),
+                                summary = context.getString(entry.categoryTitleRes),
+                                onClick = {
+                                    entry.anchor?.let { highlight.request(it) }
+                                    onNavigateToScreen(entry.route)
+                                }
+                            )
+                        }
                     }
                 }
             } else {
@@ -161,47 +165,52 @@ fun MainSettingsScreen(
                     )
                 }
 
-                // 1. Languages: straight to the consolidated screen. The old Languages
-                // menu stays registered for deep links and search results that route to it.
-                PreferenceScreen(
-                    title = context.getString(R.string.settings_languages_title),
-                    summary = context.getString(R.string.settings_languages_summary),
-                    icon = Icons.Outlined.Language,
-                    onClick = { onNavigateToScreen(SettingsRoute.LanguagesHub.route) }
-                )
+                Spacer(modifier = Modifier.height(spacing.small))
+                PreferenceGroup {
+                    // 1. Languages: straight to the consolidated screen. The old Languages
+                    // menu stays registered for deep links and search results that route to it.
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_languages_title),
+                        summary = context.getString(R.string.settings_languages_summary),
+                        icon = Icons.Outlined.Language,
+                        onClick = { onNavigateToScreen(SettingsRoute.LanguagesHub.route) }
+                    )
 
-                // 2. Typing and input
-                PreferenceScreen(
-                    title = context.getString(R.string.settings_preferences_title),
-                    summary = context.getString(R.string.settings_preferences_summary),
-                    icon = Icons.Outlined.Keyboard,
-                    onClick = { onNavigateToScreen(SettingsRoute.Preferences.route) }
-                )
+                    // 2. Typing and input
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_preferences_title),
+                        summary = context.getString(R.string.settings_preferences_summary),
+                        icon = Icons.Outlined.Keyboard,
+                        onClick = { onNavigateToScreen(SettingsRoute.Preferences.route) }
+                    )
 
-                // 3. Suggestion and correction
-                PreferenceScreen(
-                    title = context.getString(R.string.settings_suggestion_correction_title),
-                    summary = context.getString(R.string.settings_suggestion_correction_summary),
-                    icon = Icons.Outlined.Spellcheck,
-                    onClick = { onNavigateToScreen(SettingsRoute.SuggestionCorrection.route) }
-                )
+                    // 3. Suggestion and correction
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_suggestion_correction_title),
+                        summary = context.getString(R.string.settings_suggestion_correction_summary),
+                        icon = Icons.Outlined.Spellcheck,
+                        onClick = { onNavigateToScreen(SettingsRoute.SuggestionCorrection.route) }
+                    )
 
-                // 4. Appearance and layout
-                PreferenceScreen(
-                    title = context.getString(R.string.settings_appearance_layout_title),
-                    summary = context.getString(R.string.settings_appearance_layout_summary),
-                    icon = Icons.Outlined.Palette,
-                    onClick = { onNavigateToScreen(SettingsRoute.AppearanceLayout.route) }
-                )
+                    // 4. Appearance and layout
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_appearance_layout_title),
+                        summary = context.getString(R.string.settings_appearance_layout_summary),
+                        icon = Icons.Outlined.Palette,
+                        onClick = { onNavigateToScreen(SettingsRoute.AppearanceLayout.route) }
+                    )
 
-                // 5. Advanced
-                PreferenceScreen(
-                    title = context.getString(R.string.settings_advanced_title),
-                    summary = context.getString(R.string.settings_advanced_summary),
-                    icon = Icons.Outlined.Settings,
-                    onClick = { onNavigateToScreen(SettingsRoute.Advanced.route) }
-                )
+                    // 5. Advanced
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_advanced_title),
+                        summary = context.getString(R.string.settings_advanced_summary),
+                        icon = Icons.Outlined.Settings,
+                        onClick = { onNavigateToScreen(SettingsRoute.Advanced.route) }
+                    )
+                }
             }
+
+            Spacer(modifier = Modifier.height(spacing.extraLarge))
         }
     }
 }

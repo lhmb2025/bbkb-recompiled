@@ -557,18 +557,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_gesture_vert_tap_height_title", "settings_gesture_vert_tap_width_summary",
                 "settings_gesture_vert_tap_width_title", "settings_gesture_vert_theta_summary",
                 "settings_gesture_vert_theta_title", "settings_gesture_vkb_suppression_summary",
-                "settings_gesture_vkb_suppression_title"
+                "settings_gesture_vkb_suppression_title", "settings_gesture_category_angles", "settings_gesture_category_distance", "settings_gesture_category_scroll", "settings_gesture_category_speed", "settings_gesture_category_tap_regions", "settings_gesture_category_timing", "settings_gesture_category_velocity", "settings_gesture_category_word_detection"
             ),
-            literals = setOf(
-                "GESTURE TIMING",
-                "SWIPE ANGLES",
-                "SWIPE DISTANCE THRESHOLDS",
-                "SWIPE VELOCITY THRESHOLDS",
-                "CURSOR TAP REGIONS",
-                "SCROLL DISTANCES",
-                "SPEED MULTIPLIERS",
-                "WORD DETECTION",
-            ),
+            literals = emptySet(),
         ),
         Case(
             name = "AdvancedSettingsScreen",
@@ -581,11 +572,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_device_compatibility_title",
                 // "Reset" — the first resource name carrying that value; the row's own is
                 // settings_reset_title.
-                "reset_dialog_confirm", "settings_reset_summary",
+                "reset_dialog_confirm", "settings_reset_summary", "settings_category_manage_data",
             ),
-            literals = setOf(
-                "MANAGE DATA",
-            ),
+            literals = emptySet(),
         ),
         Case(
             name = "BackupRestoreScreen",
@@ -600,11 +589,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "backup_restore_file_title", "backup_restore_file_summary",
                 "backup_phone_include_title", "backup_phone_include_summary",
                 "backup_phone_last_title", "backup_phone_last_never",
-                "backup_phone_settings_title", "backup_phone_settings_summary",
+                "backup_phone_settings_title", "backup_phone_settings_summary", "backup_category_back_up", "backup_category_phone", "backup_category_restore",
             ),
-            literals = setOf(
-                "BACK UP", "RESTORE", "AUTOMATIC BACKUPS",
-            ),
+            literals = emptySet(),
         ),
         Case(
             name = "AnimationParametersScreen",
@@ -618,12 +605,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_anim_show_duration_summary", "settings_anim_show_duration_title",
                 "settings_anim_show_start_x_summary", "settings_anim_show_start_x_title",
                 "settings_anim_show_start_y_summary", "settings_anim_show_start_y_title",
-                "settings_animation_params_title"
+                "settings_animation_params_title", "settings_anim_category_scale", "settings_anim_category_timing"
             ),
-            literals = setOf(
-                "SCALE PARAMETERS",
-                "TIMING PARAMETERS",
-            ),
+            literals = emptySet(),
         ),
         Case(
             name = "AppearanceLayoutScreen",
@@ -654,18 +638,18 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_uim_enable_summary_on", "settings_uim_enable_title",
                 "settings_customize_menu_summary", "settings_customize_menu_title",
                 "settings_category_voice", "settings_uim_toggle_voice", "settings_voice_input_summary",
-                "settings_category_emoji", "pref_emoji_dynamic_search_summary_off",
+                 "pref_emoji_dynamic_search_summary_off",
                 "pref_emoji_dynamic_search_title", "pref_emoji_search_replace_text_summary_on",
                 "pref_emoji_search_replace_text_title",
                 // (The clipboard group's "Clipboard" header is a category, which the recorder
                 // does not count.)
                 "clipboard_history_title", "clipboard_history_summary",
                 "clipboard_retention_title", "clipboard_retention_1h",
-                "clipboard_link_previews_title", "clipboard_link_previews_summary"
+                "clipboard_link_previews_title", "clipboard_link_previews_summary", "ckb_action_emoji", "settings_pkb_multifunction_action_clipboard"
             ),
+            literals = emptySet(),
             // The clipboard group's header reuses the "Clipboard" string upper-cased, which the
             // recorder sees as a literal.
-            literals = setOf("CLIPBOARD"),
         ),
         Case(
             name = "AutoCorrectionScreen",
@@ -699,14 +683,13 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "ckb_gesture_slot_double_tap", "ckb_gesture_slot_flick_left", "ckb_gesture_slot_flick_right",
                 "ckb_gesture_slot_hold", "ckb_gesture_slot_swipe_down", "ckb_gesture_slot_swipe_left",
                 "ckb_gesture_slot_swipe_right", "ckb_gestures_reserved_note", "ckb_gestures_screen_title",
-                "prefs_ckb_gesture_activation_delay_summary", "prefs_ckb_gesture_activation_delay_title"
+                "prefs_ckb_gesture_activation_delay_summary", "prefs_ckb_gesture_activation_delay_title", "settings_gesture_category_timing"
             ),
             literals = setOf(
                 // Same gate: the sensor visualizer's switch and the sensor-map export — four
                 // hardcoded strings — went with the rest of the DEVELOPER category. "GESTURE
                 // TIMING" is the timing subhead, which is not gated (PreferenceCategory
                 // uppercases, so it never matches its own resource).
-                "GESTURE TIMING",
             ),
         ),
         Case(
@@ -728,10 +711,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
             resources = setOf(
                 "english_ime_name", "settings_about_title",
                 // The Updates row: About is where a user looks for "what version am I on".
-                "settings_updates_summary", "settings_updates_title"
+                "settings_updates_summary", "settings_updates_title", "settings_category_credits"
             ),
             literals = setOf(
-                "CREDITS",
                 "Emojibase",
                 "Miles Johnson • MIT License",
                 "Kotlin Coroutines",
@@ -858,10 +840,10 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.Preferences.route,
             title = "Input",
             resources = setOf(
-                "settings_shake_title", "settings_keyboard_summary", "settings_keyboard_title",
+                "settings_shake_title", "settings_keyboard_summary", 
                 "settings_preferences_title", "settings_shake_summary",
                 // Auxiliary input replaced the Voice input link (voice sits inside it).
-                "settings_auxiliary_input_summary", "settings_auxiliary_input_title"
+                "settings_auxiliary_input_summary", "settings_auxiliary_input_title", "settings_category_on_screen_keyboard"
             ),
             literals = emptySet(),
         ),
@@ -924,7 +906,6 @@ class SettingsScreenRenderTest(private val screenName: String) {
             resources = setOf(
                 // 2026-10-20: tuning links, diagnostics and developer switches only. The
                 // "DEVELOPER" header reads as the CKB screen's resource of the same value.
-                "ckb_gestures_developer_category",
                 "prefs_advanced_gesture_thresholds_summary", "prefs_advanced_gesture_thresholds_title",
                 "prefs_advanced_settings_title", "prefs_autofill_debug_logging_summary",
                 "prefs_autofill_debug_logging_title", "prefs_autofill_event_toasts_summary",
@@ -934,7 +915,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "prefs_key_preview_animations_summary", "prefs_key_preview_animations_title",
                 "prefs_shake_tuning_summary", "prefs_shake_tuning_title",
                 "prefs_show_ckb_developer_settings_summary", "prefs_show_ckb_developer_settings_title",
-                "prefs_show_device_profile_builder_summary", "prefs_show_device_profile_builder_title"
+                "prefs_show_device_profile_builder_summary", "prefs_show_device_profile_builder_title", "prefs_category_developer"
             ),
             literals = setOf(
                 "Gesture Lab (prototype)",
@@ -966,17 +947,17 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 // The profile builder's entry row is NOT here: the builder is unfinished, so the
                 // row and its "THIS DEVICE" subhead only compose when the debug flag
                 // `pref_show_device_profile_builder` is on, and this case renders a fresh install.
-                "settings_device_configuration_title"
+                "settings_device_configuration_title", "settings_device_config_category_preloaded", "settings_device_config_category_standard"
             ),
+            // The device list is a lazy column; under the 179dp header the last two rows fall
+            // below the 891dp test viewport and are not composed, so they are not recorded.
             literals = setOf(
                 // The importer moved from a bare + in the app bar to an extended FAB, which
                 // renders its label as text rather than only as a content description.
                 "Import configuration",
                 // PreferenceCategory uppercases, so a subhead never matches its own resource.
-                "STANDARD",
                 "Default (System Auto-detection)",
                 "System auto-detection",
-                "PRELOADED",
                 "BlackBerry Key2 (Athena)",
                 "BlackBerry PKB Devices",
                 "Minimal Phone (MP01)",
@@ -987,8 +968,6 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "Unihertz Titan 2",
                 "Unihertz Titan 2 Elite",
                 "Unihertz Titan Pocket",
-                "Unihertz Titan Slim",
-                "W2 Emulator Replay (virtual KEY2)",
             ),
         ),
         Case(
@@ -1009,10 +988,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
             name = "GestureLabScreen",
             route = SettingsRoute.GestureLab.route,
             title = "Gesture Lab",
-            resources = emptySet(),
+            resources = setOf("prefs_category_tuning"),
             literals = setOf(
                 "Test",
-                "Tuning",
                 "Drag on the surface to draw a gesture. Hold still for tap/hold; two quick taps for double-tap. Switch to Tuning to adjust thresholds.",
                 "Verdict",
                 "—",
@@ -1034,13 +1012,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 // Still the screen's hardcoded "System default" summary: the voice screen's Speech
                 // recognizer row added a resource with that value, and the recorder names any
                 // rendered string after the resource that holds it.
-                "settings_voice_recognizer_system_default"
+                "settings_voice_recognizer_system_default", "settings_category_key_popup"
             ),
-            literals = setOf(
-                "VIBRATE",
-                "SOUND",
-                "KEY POPUP",
-            ),
+            literals = emptySet(),
         ),
         Case(
             name = "KeyboardHelperScreen",
@@ -1069,8 +1043,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 // hardcoded "Add dictionary" until it became "Load LDB file" and a translated
                 // resource with it.
                 "language_packs_load_ldb",
-                "settings_language_packs_title"
+                "settings_language_packs_title", "language_packs_available_header", "language_packs_installed_header"
             ),
+            literals = emptySet(),
             // The info banner and the per-row "Version: … • Preinstalled" line are gone
             // (Material 3 redesign, 2026-09-16): rows are titles only.
             //
@@ -1078,7 +1053,6 @@ class SettingsScreenRenderTest(private val screenName: String) {
             // title, so the rendered text is not the resource's own value. They render
             // unconditionally - the list is always there, with a spinner in whichever half is
             // still loading - which is what keeps them out of `lateLiterals`.
-            literals = setOf("INSTALLED", "AVAILABLE TO DOWNLOAD"),
             // Everything else arrives with the IO load: one row per shipped pack, each with its
             // two-letter code badge (too short to resolve to a resource name) and the
             // "Preinstalled" tag. Recorded as late so the race decides nothing.
@@ -1136,11 +1110,11 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "pref_ctrl_double_tap_lock", "pref_ctrl_double_tap_lock_summary",
                 "pref_shift_double_tap_lock", "pref_shift_double_tap_lock_summary",
                 "pref_show_pkb_modifier_status_icon", "pref_show_pkb_modifier_status_icon_summary",
-                "settings_category_behavior", "settings_category_modifiers", "settings_physical_keyboard_title",
+                "settings_category_behavior", "settings_category_modifiers", 
                 "settings_pkb_alt_sym_shortcut_disabled", "settings_pkb_alt_sym_shortcut_title",
                 "settings_pkb_ctrl_key_behavior_title", "settings_pkb_dictation_key_summary_on",
                 "settings_pkb_dictation_key_title", "settings_pkb_hold_action_off_summary",
-                "settings_pkb_hold_action_title"
+                "settings_pkb_hold_action_title", "settings_category_physical_keyboard"
             ),
             literals = emptySet(),
             // The multifunction-key row sits inside `if (multifunctionKeyMapping != null)`
@@ -1155,12 +1129,10 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_pkb_layouts_title", "settings_pkb_layouts_add",
                 // The Custom header, upper-cased as every category is; "CUSTOM" is also the symbol
                 // list's category title, the first resource name carrying that value.
-                "symbol_list_category_custom_title",
-                "settings_pkb_layouts_builtin_note",
+                "settings_pkb_layouts_builtin_note", "settings_device_config_category_custom", "settings_pkb_layouts_category_builtin",
             ),
             literals = setOf(
                 // The Built-in header: no resource holds the upper-cased value.
-                "BUILT-IN",
             ),
             // Both lists are read on Dispatchers.IO. On a fresh install the custom list comes back
             // empty, and its empty-state line appears once it has; the built-in list is the one
@@ -1313,7 +1285,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             title = "On-screen keyboard",
             resources = setOf(
                 "settings_category_behavior", "settings_category_gestures",
-                "settings_keyboard_title", "settings_screen_type_by_swiping",
+                 "settings_screen_type_by_swiping",
                 // Moved here from Personalization, into the Behavior list.
                 "settings_slideboard_hub_summary", "settings_slideboard_settings_title",
                 "settings_touch_feedback_summary", "settings_touch_feedback_title",
@@ -1325,7 +1297,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 // The flick commit animation moved here from Suggestions (2026-10-20), and the
                 // key long-press delay from Debug.
                 "settings_pred_flick_animation_summary", "settings_pred_flick_animation_title",
-                "prefs_key_longpress_delay_summary", "prefs_key_longpress_delay_title"
+                "prefs_key_longpress_delay_summary", "prefs_key_longpress_delay_title", "settings_category_on_screen_keyboard"
             ),
             literals = emptySet(),
         ),
@@ -1354,9 +1326,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_update_check_now", "settings_update_installed_version_title",
                 "settings_update_last_checked_title", "settings_updates_title"
             ),
-            literals = setOf(
-                "UPDATES"
-            ),
+            literals = emptySet(),
         ),
         Case(
             name = "UserDictionaryScreen",

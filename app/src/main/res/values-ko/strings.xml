@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">키보드가 휴대폰 언어를 따릅니다. 추가하거나 삭제하면 이 기능이 꺼집니다.</string>
     <string name="languages_hub_follow_system_off">아래에서 키보드를 직접 선택합니다</string>
     <string name="languages_hub_keyboards_header">내 키보드</string>
-    <string name="languages_hub_keyboards_hint">키보드를 탭하면 추가 예측 언어를 더하거나 삭제할 수 있습니다</string>
+    <string name="languages_hub_keyboards_hint">키보드를 탭하면 추가 예측 언어를 더하거나 레이아웃을 변경하거나 삭제할 수 있습니다</string>
     <string name="languages_hub_add">언어 추가</string>
     <string name="languages_hub_more_header">추가 옵션</string>
     <string name="languages_hub_also_predicts">추가 예측 언어: %1$s</string>

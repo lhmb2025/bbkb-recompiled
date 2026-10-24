@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -39,13 +40,21 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
@@ -73,30 +82,46 @@ fun PreferenceItem(
     enabled: Boolean = true,
     modifier: Modifier = Modifier,
     /**
-     * The row's own background. Defaults to the page's surface; a list with a selection mode
-     * passes a tinted one for the rows that are selected, which is the only reason a settings row
-     * is ever anything but flat.
+     * The row's own background. Defaults to the group card inside a [PreferenceGroup] and to
+     * nothing (the page shows through) outside one; a list with a selection mode passes a tinted
+     * one for the rows that are selected.
      */
     containerColor: Color? = null,
+    /**
+     * Where the row sits in a group that a lazy list lays out: the first and last rows paint the
+     * group's outer corners (see [groupOuterCorners]). Rows inside a [PreferenceGroup] leave this
+     * at [GroupEdge.Middle]; the group's clip rounds their outer corners for them.
+     */
+    groupEdge: GroupEdge = GroupEdge.Middle,
     onClick: (() -> Unit)? = null,
     trailing: @Composable (() -> Unit)? = null
 ) {
     val spacing = LocalSpacing.current
     val motion = LocalMotion.current
+    val shapes = LocalShapes.current
+    val inGroup = LocalInGroup.current
+    val settingsColors = LocalSettingsColors.current
 
     Surface(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
+            .groupOuterCorners(groupEdge)
             .animateContentSize(animationSpec = motion.fastSpec())
             .then(
                 if (onClick != null && enabled) {
                     Modifier.clickable { onClick() }
                 } else Modifier
             ),
-        color = containerColor ?: MaterialTheme.colorScheme.surface
+        // Inside a group a row is a card with the group's small inner corners; the group's clip
+        // rounds the first and last rows' outer corners to the group radius. Outside a group the
+        // row stays flat on the page, as every row was before the grouped layout.
+        shape = if (inGroup) shapes.row else RectangleShape,
+        color = containerColor ?: if (inGroup) settingsColors.card else Color.Transparent
     ) {
         Row(
-            modifier = Modifier
+            // The caller's modifier (a search anchor, a selectable) sits inside the surface's
+            // clip, so the search pulse takes the row's shape instead of a square over the card.
+            modifier = modifier
                 // The minimum applies to the WHOLE row, padding included. It used to sit inside the
                 // 16dp vertical padding (min 48dp content), which made every single-line row
                 // 16 + 48 + 16 = 80dp instead of Material 3's 56dp one-line list item. A 56dp row
@@ -308,7 +333,9 @@ fun ListPreference(
 }
 
 /**
- * Preference category header - Modern Android Material 3 styled section header
+ * Preference category header: the label above a [PreferenceGroup], in sentence case as the
+ * Android 16 Settings app draws it (the string itself carries the case; nothing is uppercased
+ * here any more), aligned with the row text inside the group.
  */
 @Composable
 fun PreferenceCategory(
@@ -318,18 +345,103 @@ fun PreferenceCategory(
     val spacing = LocalSpacing.current
     
     Text(
-        text = title.uppercase(),  // Modern Android uses uppercase for categories
-        style = MaterialTheme.typography.labelLarge,  // Modern Android uses labelLarge (12sp medium)
+        text = title,
+        style = MaterialTheme.typography.titleSmall,
         color = MaterialTheme.colorScheme.primary,
         modifier = modifier
             .fillMaxWidth()
             .padding(
-                start = spacing.listItemPadding,
+                start = spacing.categoryStartPadding,
                 end = spacing.listItemPadding,
                 top = spacing.categoryTopPadding,
                 bottom = spacing.categoryBottomPadding
             )
     )
+}
+
+/** True inside a [PreferenceGroup]; rows read it to paint themselves as cards. */
+val LocalInGroup = compositionLocalOf { false }
+
+/** Where a row sits in a group that a lazy list lays out: which of the group's outer edges it is on. */
+enum class GroupEdge { Middle, Top, Bottom, Only }
+
+/** The [GroupEdge] of row [index] in a run of [count] rows. */
+fun groupEdge(index: Int, count: Int): GroupEdge = when {
+    count <= 1 -> GroupEdge.Only
+    index == 0 -> GroupEdge.Top
+    index == count - 1 -> GroupEdge.Bottom
+    else -> GroupEdge.Middle
+}
+
+/**
+ * Paints the group's outer corners onto a row on the group's top or bottom edge, for lists a
+ * [PreferenceGroup] cannot wrap (a `LazyColumn`): the page colour is drawn over the corner regions
+ * outside the group radius, after the row's own content. The row keeps the uniform inner corners
+ * for its clip, so hit-testing inside it is the same as in a middle row. (A clip with mixed corner
+ * radii is hit-tested through path operations, which the JVM test environment does not implement:
+ * every tap inside such a row missed its buttons there and landed on the row itself.)
+ */
+fun Modifier.groupOuterCorners(edge: GroupEdge): Modifier = composed {
+    if (edge == GroupEdge.Middle) return@composed this
+    val page = LocalSettingsColors.current.page
+    val outer = LocalShapes.current.group.topStart
+    val top = edge == GroupEdge.Top || edge == GroupEdge.Only
+    val bottom = edge == GroupEdge.Bottom || edge == GroupEdge.Only
+    drawWithContent {
+        drawContent()
+        val r = outer.toPx(size, this)
+        if (r <= 0f) return@drawWithContent
+        val w = size.width
+        val h = size.height
+        val caps = Path()
+        if (top) {
+            caps.moveTo(0f, 0f)
+            caps.lineTo(r, 0f)
+            caps.arcTo(Rect(0f, 0f, 2 * r, 2 * r), 270f, -90f, false)
+            caps.close()
+            caps.moveTo(w, 0f)
+            caps.lineTo(w - r, 0f)
+            caps.arcTo(Rect(w - 2 * r, 0f, w, 2 * r), 270f, 90f, false)
+            caps.close()
+        }
+        if (bottom) {
+            caps.moveTo(0f, h)
+            caps.lineTo(0f, h - r)
+            caps.arcTo(Rect(0f, h - 2 * r, 2 * r, h), 180f, -90f, false)
+            caps.close()
+            caps.moveTo(w, h)
+            caps.lineTo(w, h - r)
+            caps.arcTo(Rect(w - 2 * r, h - 2 * r, w, h), 0f, 90f, false)
+            caps.close()
+        }
+        drawPath(caps, page)
+    }
+}
+
+/**
+ * A group of rows in the Android 16 Settings look: inset from the screen edge, clipped to the
+ * group's outer radius, rows 2dp apart. Each row paints its own card with small inner corners and
+ * the clip turns the first and last rows' outer corners into the group's. A row that is not
+ * composed (hidden by a gate) leaves no gap, so a group needs no first/last bookkeeping, and the
+ * same holds for a `LazyColumn` given the same clip and spacing.
+ */
+@Composable
+fun PreferenceGroup(
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    val spacing = LocalSpacing.current
+    val shapes = LocalShapes.current
+    CompositionLocalProvider(LocalInGroup provides true) {
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = spacing.groupInset)
+                .clip(shapes.group),
+            verticalArrangement = Arrangement.spacedBy(spacing.groupGap),
+            content = content,
+        )
+    }
 }
 
 /**
@@ -674,8 +786,9 @@ fun GridPreference(
  * their own padding and their own type ramp. Material 3 spends a card on a tappable *object*; a
  * tinted one reads as a warning the reader is supposed to act on. A sentence is neither.
  *
- * So this is the sentence, at the list's own metrics: the same 16dp gutter the rows use — so it
- * shares their left edge — in the same body style the rows give their summaries.
+ * So this is the sentence, at the list's own metrics: its left edge is the row text's left edge
+ * inside a group (group inset plus row padding), in the same body style the rows give their
+ * summaries.
  *
  * [detail] is a second, smaller line for the screens that have one (a token list, a worked
  * example). [monospaceDetail] is for the one case where the characters themselves are the content
@@ -694,8 +807,10 @@ fun PreferenceInfo(
         modifier = modifier
             .fillMaxWidth()
             .padding(
-                horizontal = spacing.listItemPadding,
-                vertical = spacing.medium,
+                start = spacing.categoryStartPadding,
+                end = spacing.listItemPadding,
+                top = spacing.medium,
+                bottom = spacing.medium,
             )
     ) {
         Text(

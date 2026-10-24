@@ -9,16 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +20,8 @@ import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.ui.EditTextPreference
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
+import dev.bbkb.ime.core.settings.ui.PreferenceGroup
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 
 /**
  * One slideboard quick phrase.
@@ -63,7 +55,6 @@ internal val QUICK_PHRASE_KEYS: List<String> get() = QUICK_PHRASES.map { it.pref
  * Quick Phrases Screen
  * Configure the 5 customizable quick phrases for slideboard
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuickPhrasesScreen(
     onNavigateBack: () -> Unit
@@ -71,21 +62,9 @@ fun QuickPhrasesScreen(
     val context = LocalContext.current
     val prefs = remember { PrefsManager.getPrefs(context) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(context.getString(R.string.settings_quick_phrases_screen_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        }
+    SettingsScaffold(
+        title = context.getString(R.string.settings_quick_phrases_screen_title),
+        onNavigateBack = onNavigateBack,
     ) { paddingValues ->
         val spacing = LocalSpacing.current
 
@@ -95,8 +74,10 @@ fun QuickPhrasesScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            QUICK_PHRASES.forEach { phrase ->
-                QuickPhraseRow(prefs, phrase, context.getString(phrase.titleRes), context.getString(phrase.defaultRes))
+            PreferenceGroup {
+                QUICK_PHRASES.forEach { phrase ->
+                    QuickPhraseRow(prefs, phrase, context.getString(phrase.titleRes), context.getString(phrase.defaultRes))
+                }
             }
 
             Spacer(modifier = Modifier.height(spacing.extraLarge))

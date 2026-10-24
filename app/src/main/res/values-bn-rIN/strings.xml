@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">কীবোর্ডগুলি আপনার ফোনের ভাষা অনুসরণ করে। একটি যোগ বা অপসারণ করলে এটি বন্ধ হয়ে যাবে।</string>
     <string name="languages_hub_follow_system_off">আপনি নিচের কীবোর্ডগুলি বেছে নেন</string>
     <string name="languages_hub_keyboards_header">আপনার কীবোর্ড</string>
-    <string name="languages_hub_keyboards_hint">অতিরিক্ত পূর্বাভাস ভাষা যোগ করতে বা কীবোর্ডটি অপসারণ করতে সেটিতে আলতো চাপুন</string>
+    <string name="languages_hub_keyboards_hint">অতিরিক্ত পূর্বাভাস ভাষা যোগ করতে, লেআউট পরিবর্তন করতে বা কীবোর্ডটি অপসারণ করতে সেটিতে আলতো চাপুন</string>
     <string name="languages_hub_add">একটি ভাষা জুড়ুন</string>
     <string name="languages_hub_more_header">আরও বিকল্প</string>
     <string name="languages_hub_also_predicts">এছাড়াও পূর্বাভাস দেয়: %1$s</string>

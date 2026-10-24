@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">కీబోర్డ్‌లు మీ ఫోన్ భాషలను అనుసరిస్తాయి. ఒకదాన్ని చేర్చడం లేదా తొలగించడం దీన్ని ఆఫ్ చేస్తుంది.</string>
     <string name="languages_hub_follow_system_off">మీరు కింద కీబోర్డ్‌లను ఎంచుకుంటారు</string>
     <string name="languages_hub_keyboards_header">మీ కీబోర్డ్‌లు</string>
-    <string name="languages_hub_keyboards_hint">అదనపు సూచన భాషలను చేర్చడానికి లేదా దాన్ని తొలగించడానికి ఒక కీబోర్డ్‌ను నొక్కండి</string>
+    <string name="languages_hub_keyboards_hint">అదనపు సూచన భాషలను చేర్చడానికి, దాని లేఅవుట్‌ను మార్చడానికి లేదా దాన్ని తొలగించడానికి ఒక కీబోర్డ్‌ను నొక్కండి</string>
     <string name="languages_hub_add">భాషను చేర్చు</string>
     <string name="languages_hub_more_header">మరిన్ని ఎంపికలు</string>
     <string name="languages_hub_also_predicts">ఇంకా సూచిస్తుంది: %1$s</string>

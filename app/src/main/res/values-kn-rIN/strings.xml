@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">ಕೀಬೋರ್ಡ್‌ಗಳು ನಿಮ್ಮ ಫೋನ್‌ನ ಭಾಷೆಗಳನ್ನು ಅನುಸರಿಸುತ್ತವೆ. ಒಂದನ್ನು ಸೇರಿಸುವುದು ಅಥವಾ ತೆಗೆದುಹಾಕುವುದು ಇದನ್ನು ಆಫ್ ಮಾಡುತ್ತದೆ.</string>
     <string name="languages_hub_follow_system_off">ಕೆಳಗಿನ ಕೀಬೋರ್ಡ್‌ಗಳನ್ನು ನೀವು ಆಯ್ಕೆಮಾಡುತ್ತೀರಿ</string>
     <string name="languages_hub_keyboards_header">ನಿಮ್ಮ ಕೀಬೋರ್ಡ್‌ಗಳು</string>
-    <string name="languages_hub_keyboards_hint">ಹೆಚ್ಚುವರಿ ಊಹೆ ಭಾಷೆಗಳನ್ನು ಸೇರಿಸಲು ಅಥವಾ ತೆಗೆದುಹಾಕಲು ಕೀಬೋರ್ಡ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ</string>
+    <string name="languages_hub_keyboards_hint">ಹೆಚ್ಚುವರಿ ಊಹೆ ಭಾಷೆಗಳನ್ನು ಸೇರಿಸಲು, ಅದರ ವಿನ್ಯಾಸವನ್ನು ಬದಲಾಯಿಸಲು ಅಥವಾ ತೆಗೆದುಹಾಕಲು ಕೀಬೋರ್ಡ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ</string>
     <string name="languages_hub_add">ಭಾಷೆ ಸೇರಿಸಿ</string>
     <string name="languages_hub_more_header">ಹೆಚ್ಚಿನ ಆಯ್ಕೆಗಳು</string>
     <string name="languages_hub_also_predicts">ಸಹ ಊಹಿಸುತ್ತದೆ: %1$s</string>

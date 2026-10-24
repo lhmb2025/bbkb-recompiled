@@ -25,7 +25,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.MoreVert
@@ -33,18 +32,14 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -67,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.bbkb.ime.keyboard.KeyboardColorManager
 import dev.bbkb.ime.R
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -82,7 +78,6 @@ import kotlinx.coroutines.withContext
  * This is *not* the drag-reorder editor: `CustomizeMenuScreen` is a different interaction and
  * shares nothing useful with this one.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun KeyLayoutEditorScreen(spec: KeyEditorSpec, onBack: () -> Unit) {
     val context = LocalContext.current
@@ -108,7 +103,11 @@ internal fun KeyLayoutEditorScreen(spec: KeyEditorSpec, onBack: () -> Unit) {
 
     var showAddDialog by remember { mutableStateOf(false) }
 
-    Scaffold(topBar = { EditorTopBar(spec, viewModel, onBack) }) { padding ->
+    SettingsScaffold(
+        title = stringResource(spec.title),
+        onNavigateBack = onBack,
+        actions = { EditorTopBarActions(spec, viewModel) },
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -158,41 +157,31 @@ private class KeyPalette(
     val hint: Color,
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+/** The top bar's action icons: the trash for the selected key and the resets overflow. */
 @Composable
-private fun EditorTopBar(spec: KeyEditorSpec, viewModel: KeyEditorViewModel, onBack: () -> Unit) {
+private fun RowScope.EditorTopBarActions(spec: KeyEditorSpec, viewModel: KeyEditorViewModel) {
     var showMenu by remember { mutableStateOf(false) }
-    TopAppBar(
-        title = { Text(stringResource(spec.title)) },
-        navigationIcon = {
-            IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
+    // The trash appears only while a key is selected.
+    if (viewModel.selectedKeyIndex != null) {
+        IconButton(onClick = { viewModel.clearSelectedKey() }) {
+            Icon(Icons.Outlined.Delete, "Clear selected key")
+        }
+    }
+    // Boxed with its button so the menu opens at the overflow icon rather than at the start of
+    // the whole toolbar row.
+    Box {
+        IconButton(onClick = { showMenu = true }) {
+            Icon(Icons.Outlined.MoreVert, "Menu")
+        }
+        DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
+            spec.resets.forEach { reset ->
+                DropdownMenuItem(
+                    text = { Text(stringResource(reset.label)) },
+                    onClick = { viewModel.applyReset(reset); showMenu = false }
+                )
             }
-        },
-        actions = {
-            // The trash appears only while a key is selected.
-            if (viewModel.selectedKeyIndex != null) {
-                IconButton(onClick = { viewModel.clearSelectedKey() }) {
-                    Icon(Icons.Outlined.Delete, "Clear selected key")
-                }
-            }
-            IconButton(onClick = { showMenu = true }) {
-                Icon(Icons.Outlined.MoreVert, "Menu")
-            }
-            DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
-                spec.resets.forEach { reset ->
-                    DropdownMenuItem(
-                        text = { Text(stringResource(reset.label)) },
-                        onClick = { viewModel.applyReset(reset); showMenu = false }
-                    )
-                }
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface
-        )
-    )
+        }
+    }
 }
 
 @Composable

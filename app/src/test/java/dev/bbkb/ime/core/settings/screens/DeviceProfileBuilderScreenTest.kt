@@ -184,7 +184,7 @@ class DeviceProfileBuilderScreenTest {
         composeRule.onNodeWithText(string(R.string.device_profile_builder_entry_title)).assertDoesNotExist()
         composeRule.onNodeWithText(string(R.string.device_profile_builder_entry_summary)).assertDoesNotExist()
         composeRule.onNodeWithText(
-            string(R.string.device_profile_category_this_device).uppercase()
+            string(R.string.device_profile_category_this_device)
         ).assertDoesNotExist()
     }
 

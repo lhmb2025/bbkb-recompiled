@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">कीबोर्ड तुमच्या फोनच्या भाषांचे अनुसरण करतात. एक जोडल्यास किंवा काढल्यास हे बंद होते.</string>
     <string name="languages_hub_follow_system_off">खालील कीबोर्ड तुम्ही निवडता</string>
     <string name="languages_hub_keyboards_header">तुमचे कीबोर्ड</string>
-    <string name="languages_hub_keyboards_hint">अतिरिक्त अंदाज भाषा जोडण्यासाठी किंवा तो काढण्यासाठी कीबोर्डवर टॅप करा</string>
+    <string name="languages_hub_keyboards_hint">अतिरिक्त अंदाज भाषा जोडण्यासाठी, लेआउट बदलण्यासाठी किंवा तो काढण्यासाठी कीबोर्डवर टॅप करा</string>
     <string name="languages_hub_add">भाषा जोडा</string>
     <string name="languages_hub_more_header">अधिक पर्याय</string>
     <string name="languages_hub_also_predicts">असाही अंदाज लावतो: %1$s</string>

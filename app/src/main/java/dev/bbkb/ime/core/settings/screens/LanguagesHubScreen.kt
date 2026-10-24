@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import dev.bbkb.ime.core.locale.multilanguage.LocaleItem
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Add
@@ -38,13 +40,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -54,11 +54,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -84,11 +86,16 @@ import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageRepository
 import dev.bbkb.ime.core.locale.SubtypeEnabler
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
+import dev.bbkb.ime.core.settings.ui.LocalInGroup
+import dev.bbkb.ime.core.settings.ui.GroupEdge
+import dev.bbkb.ime.core.settings.ui.groupEdge
+import dev.bbkb.ime.core.settings.ui.groupOuterCorners
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.ui.PreferenceLeadingBadge
 import dev.bbkb.ime.core.settings.ui.PreferenceScreen
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -106,7 +113,6 @@ import java.util.Locale
  * All state that says which keyboards are on is re-read from the framework ([KeyboardLanguages.read])
  * on resume and after every edit; nothing here is the source of truth.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LanguagesHubScreen(
     onNavigateToLanguageSwitching: () -> Unit,
@@ -166,105 +172,126 @@ fun LanguagesHubScreen(
         entries.forEach { downloads.download(catalogue, it, turnOn) }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.settings_languages_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                ),
-            )
-        },
+    SettingsScaffold(
+        title = stringResource(R.string.settings_languages_title),
+        onNavigateBack = onNavigateBack,
     ) { padding ->
         val current = snapshot
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(padding),
-            contentPadding = PaddingValues(bottom = 24.dp),
-        ) {
-            if (!direct) {
-                item(key = "old-android") {
-                    PreferenceItem(title = stringResource(R.string.languages_hub_old_android))
+        val spacing = LocalSpacing.current
+        // Three groups in one list: the follow-the-phone rows, the keyboards with the Add row,
+        // and the two links. The list carries the group inset and gap; each group's first and
+        // last row take the group's outer corners (groupOuterCorners).
+        val topCount = if (!direct) 2 else 1
+        val keyboards = current?.keyboards.orEmpty()
+        val keyboardsCount = keyboards.size + 1 // the Add row closes the group
+        CompositionLocalProvider(LocalInGroup provides true) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize().padding(padding),
+                contentPadding = PaddingValues(
+                    start = spacing.groupInset,
+                    end = spacing.groupInset,
+                    bottom = 24.dp,
+                ),
+                verticalArrangement = Arrangement.spacedBy(spacing.groupGap),
+            ) {
+                if (!direct) {
+                    item(key = "old-android") {
+                        PreferenceItem(
+                            title = stringResource(R.string.languages_hub_old_android),
+                            groupEdge = groupEdge(0, topCount),
+                        )
+                    }
                 }
-            }
-            item(key = "follow") {
-                val follows = current?.followsSystem == true
-                SwitchPreference(
-                    title = stringResource(R.string.languages_hub_follow_system_title),
-                    summary = stringResource(
-                        if (follows) R.string.languages_hub_follow_system_on else R.string.languages_hub_follow_system_off
-                    ),
-                    checked = follows,
-                    enabled = current != null,
-                    onCheckedChange = { follow ->
-                        if (!direct) {
-                            SubtypeEnabler.openLanguageSettings(context)
-                        } else scope.launch {
-                            val ok = withContext(Dispatchers.IO) { KeyboardLanguages.setFollowsSystem(context, follow) }
-                            if (!ok) toast(context.getString(R.string.languages_hub_failed))
-                            reload()
-                        }
-                    },
-                )
-            }
+                item(key = "follow") {
+                    val follows = current?.followsSystem == true
+                    // SwitchPreference and PreferenceScreen take no edge, so the item paints the
+                    // group's outer corners around them instead.
+                    Box(modifier = Modifier.groupOuterCorners(groupEdge(topCount - 1, topCount))) {
+                        SwitchPreference(
+                            title = stringResource(R.string.languages_hub_follow_system_title),
+                            summary = stringResource(
+                                if (follows) R.string.languages_hub_follow_system_on else R.string.languages_hub_follow_system_off
+                            ),
+                            checked = follows,
+                            enabled = current != null,
+                            onCheckedChange = { follow ->
+                                if (!direct) {
+                                    SubtypeEnabler.openLanguageSettings(context)
+                                } else scope.launch {
+                                    val ok = withContext(Dispatchers.IO) { KeyboardLanguages.setFollowsSystem(context, follow) }
+                                    if (!ok) toast(context.getString(R.string.languages_hub_failed))
+                                    reload()
+                                }
+                            },
+                        )
+                    }
+                }
 
-            item(key = "keyboards-header") {
-                PreferenceCategory(stringResource(R.string.languages_hub_keyboards_header))
-                Text(
-                    text = stringResource(R.string.languages_hub_keyboards_hint),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(
-                        start = LocalSpacing.current.listItemPadding,
-                        end = LocalSpacing.current.listItemPadding,
-                        bottom = LocalSpacing.current.small,
-                    ),
-                )
-            }
-            items(current?.keyboards.orEmpty(), key = { "kb-" + it.subtype.hashCode() }) { keyboard ->
-                val needed = missing[keyboard.subtype.hashCode()].orEmpty()
-                KeyboardRow(
-                    keyboard = keyboard,
-                    dictionaryLine = dictionaryLine(context, needed, downloadStates),
-                    // Offered while nothing is downloading: a Download that queues a duplicate
-                    // would read as a button that did nothing.
-                    downloadable = needed.filter { downloadStates[it.locale] !is PackState.Downloading },
-                    onDownload = { download(it, turnOn = false) },
-                    onOpen = { sheetFor = keyboard },
-                )
-            }
-            item(key = "add") {
-                PreferenceItem(
-                    title = stringResource(R.string.languages_hub_add),
-                    icon = Icons.Outlined.Add,
-                    enabled = current != null,
-                    onClick = { showPicker = true },
-                )
-            }
+                item(key = "keyboards-header") {
+                    PreferenceCategory(
+                        stringResource(R.string.languages_hub_keyboards_header),
+                        modifier = Modifier.outsideGroupInset(spacing.groupInset),
+                    )
+                    Text(
+                        text = stringResource(R.string.languages_hub_keyboards_hint),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(
+                            start = LocalSpacing.current.listItemPadding,
+                            end = LocalSpacing.current.listItemPadding,
+                            bottom = LocalSpacing.current.small,
+                        ),
+                    )
+                }
+                itemsIndexed(keyboards, key = { _, kb -> "kb-" + kb.subtype.hashCode() }) { index, keyboard ->
+                    val needed = missing[keyboard.subtype.hashCode()].orEmpty()
+                    KeyboardRow(
+                        keyboard = keyboard,
+                        edge = groupEdge(index, keyboardsCount),
+                        dictionaryLine = dictionaryLine(context, needed, downloadStates),
+                        // Offered while nothing is downloading: a Download that queues a duplicate
+                        // would read as a button that did nothing.
+                        downloadable = needed.filter { downloadStates[it.locale] !is PackState.Downloading },
+                        onDownload = { download(it, turnOn = false) },
+                        onOpen = { sheetFor = keyboard },
+                    )
+                }
+                item(key = "add") {
+                    PreferenceItem(
+                        title = stringResource(R.string.languages_hub_add),
+                        icon = Icons.Outlined.Add,
+                        enabled = current != null,
+                        groupEdge = groupEdge(keyboardsCount - 1, keyboardsCount),
+                        onClick = { showPicker = true },
+                    )
+                }
 
-            item(key = "more-header") {
-                PreferenceCategory(stringResource(R.string.languages_hub_more_header))
-            }
-            item(key = "switching") {
-                PreferenceScreen(
-                    title = stringResource(R.string.settings_language_switching_title),
-                    summary = stringResource(R.string.settings_language_switching_summary),
-                    icon = ImageVector.vectorResource(R.drawable.ic_settings_language_switching),
-                    onClick = onNavigateToLanguageSwitching,
-                )
-            }
-            item(key = "files") {
-                PreferenceScreen(
-                    title = stringResource(R.string.settings_language_packs_title),
-                    summary = stringResource(R.string.settings_language_packs_summary),
-                    icon = ImageVector.vectorResource(R.drawable.ic_settings_language_packs),
-                    onClick = onNavigateToDictionaryFiles,
-                )
+                item(key = "more-header") {
+                    PreferenceCategory(
+                        stringResource(R.string.languages_hub_more_header),
+                        modifier = Modifier.outsideGroupInset(spacing.groupInset),
+                    )
+                }
+                item(key = "switching") {
+                    Box(modifier = Modifier.groupOuterCorners(groupEdge(0, 2))) {
+                        PreferenceScreen(
+                            title = stringResource(R.string.settings_language_switching_title),
+                            summary = stringResource(R.string.settings_language_switching_summary),
+                            icon = ImageVector.vectorResource(R.drawable.ic_settings_language_switching),
+                            onClick = onNavigateToLanguageSwitching,
+                        )
+                    }
+                }
+                item(key = "files") {
+                    Box(modifier = Modifier.groupOuterCorners(groupEdge(1, 2))) {
+                        PreferenceScreen(
+                            title = stringResource(R.string.settings_language_packs_title),
+                            summary = stringResource(R.string.settings_language_packs_summary),
+                            icon = ImageVector.vectorResource(R.drawable.ic_settings_language_packs),
+                            onClick = onNavigateToDictionaryFiles,
+                        )
+                    }
+                }
             }
         }
     }
@@ -388,6 +415,23 @@ fun LanguagesHubScreen(
     }
 }
 
+/**
+ * Lays an item out [inset] wider on each side than the list gives it, so a category label inside
+ * a list that carries the group inset sits where a label does on every other screen rather than a
+ * second inset further in.
+ */
+private fun Modifier.outsideGroupInset(inset: Dp): Modifier = layout { measurable, constraints ->
+    val extra = inset.roundToPx() * 2
+    val wider = if (constraints.hasBoundedWidth) {
+        constraints.copy(maxWidth = constraints.maxWidth + extra)
+    } else {
+        constraints
+    }
+    val placeable = measurable.measure(wider)
+    val width = (placeable.width - extra).coerceIn(constraints.minWidth, constraints.maxWidth)
+    layout(width, placeable.height) { placeable.placeRelative(-extra / 2, 0) }
+}
+
 /** The dictionary status for a keyboard's row, or null when every dictionary it needs is here. */
 private fun dictionaryLine(
     context: Context,
@@ -416,6 +460,8 @@ private fun dictionaryLine(
 @Composable
 private fun KeyboardRow(
     keyboard: KeyboardLanguages.Keyboard,
+    /** The row's place in the keyboards group. */
+    edge: GroupEdge,
     dictionaryLine: String?,
     downloadable: List<PackEntry>,
     onDownload: (List<PackEntry>) -> Unit,
@@ -430,6 +476,7 @@ private fun KeyboardRow(
         title = keyboard.name,
         summary = summary,
         leading = { PreferenceLeadingBadge(keyboard.locale.substringBefore('_').uppercase(Locale.ROOT)) },
+        groupEdge = edge,
         onClick = onOpen,
         trailing = {
             Row(verticalAlignment = Alignment.CenterVertically) {

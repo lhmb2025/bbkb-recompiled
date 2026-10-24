@@ -8,17 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -35,7 +26,9 @@ import dev.bbkb.ime.R
 import dev.bbkb.ime.core.device.interceptor.KeyInterceptorManager
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
+import dev.bbkb.ime.core.settings.ui.PreferenceGroup
 import dev.bbkb.ime.core.settings.ui.PreferenceScreen
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
 
 /**
@@ -47,7 +40,6 @@ import dev.bbkb.ime.core.settings.ui.SwitchPreference
  * - Enable special key support toggle (moved from Advanced Settings)
  * - Pre-process all key events toggle (new feature)
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KeyboardHelperScreen(
     onNavigateBack: () -> Unit
@@ -88,21 +80,9 @@ fun KeyboardHelperScreen(
         }
     }
     
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(context.getString(R.string.keyboard_helper_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        }
+    SettingsScaffold(
+        title = context.getString(R.string.keyboard_helper_title),
+        onNavigateBack = onNavigateBack,
     ) { paddingValues ->
         val spacing = LocalSpacing.current
         
@@ -112,61 +92,63 @@ fun KeyboardHelperScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            // Manage Accessibility Service link
-            PreferenceScreen(
-                title = context.getString(R.string.pref_manage_accessibility_service),
-                summary = if (serviceEnabled) {
-                    context.getString(R.string.pref_accessibility_service_enabled)
-                } else {
-                    context.getString(R.string.pref_accessibility_service_disabled)
-                },
-                icon = Icons.Outlined.Settings,
-                onClick = {
-                    KeyInterceptorManager.openAccessibilitySettings(context)
-                }
-            )
+            PreferenceGroup {
+                // Manage Accessibility Service link
+                PreferenceScreen(
+                    title = context.getString(R.string.pref_manage_accessibility_service),
+                    summary = if (serviceEnabled) {
+                        context.getString(R.string.pref_accessibility_service_enabled)
+                    } else {
+                        context.getString(R.string.pref_accessibility_service_disabled)
+                    },
+                    icon = Icons.Outlined.Settings,
+                    onClick = {
+                        KeyInterceptorManager.openAccessibilitySettings(context)
+                    }
+                )
             
-            // Enable special key support toggle
-            SwitchPreference(
-                title = context.getString(R.string.pref_key_interceptor_enabled),
-                summary = context.getString(R.string.pref_key_interceptor_enabled_summary),
-                icon = Icons.Outlined.Accessibility,
-                checked = specialKeyEnabled && serviceEnabled,
-                enabled = serviceEnabled,
-                modifier = Modifier.settingsSearchAnchor("pref_key_interceptor_enabled"),
-                onCheckedChange = { newValue ->
-                    specialKeyEnabled = newValue
-                    KeyInterceptorManager.setFeatureEnabled(context, newValue)
-                }
-            )
+                // Enable special key support toggle
+                SwitchPreference(
+                    title = context.getString(R.string.pref_key_interceptor_enabled),
+                    summary = context.getString(R.string.pref_key_interceptor_enabled_summary),
+                    icon = Icons.Outlined.Accessibility,
+                    checked = specialKeyEnabled && serviceEnabled,
+                    enabled = serviceEnabled,
+                    modifier = Modifier.settingsSearchAnchor("pref_key_interceptor_enabled"),
+                    onCheckedChange = { newValue ->
+                        specialKeyEnabled = newValue
+                        KeyInterceptorManager.setFeatureEnabled(context, newValue)
+                    }
+                )
             
-            // Pre-process all key events toggle
-            SwitchPreference(
-                title = context.getString(R.string.pref_preprocess_all_keys),
-                summary = context.getString(R.string.pref_preprocess_all_keys_summary),
-                icon = Icons.Outlined.Accessibility,
-                checked = preprocessAllKeys && serviceEnabled,
-                enabled = serviceEnabled,
-                modifier = Modifier.settingsSearchAnchor("pref_preprocess_all_key_events"),
-                onCheckedChange = { newValue ->
-                    preprocessAllKeys = newValue
-                    KeyInterceptorManager.setPreprocessAllKeysEnabled(context, newValue)
-                }
-            )
+                // Pre-process all key events toggle
+                SwitchPreference(
+                    title = context.getString(R.string.pref_preprocess_all_keys),
+                    summary = context.getString(R.string.pref_preprocess_all_keys_summary),
+                    icon = Icons.Outlined.Accessibility,
+                    checked = preprocessAllKeys && serviceEnabled,
+                    enabled = serviceEnabled,
+                    modifier = Modifier.settingsSearchAnchor("pref_preprocess_all_key_events"),
+                    onCheckedChange = { newValue ->
+                        preprocessAllKeys = newValue
+                        KeyInterceptorManager.setPreprocessAllKeysEnabled(context, newValue)
+                    }
+                )
             
-            // Unified key mapping pipeline toggle
-            SwitchPreference(
-                title = "Unified Key Mapping",
-                summary = "Route special keys via XML config instead of hardcoded logic (experimental)",
-                icon = Icons.Outlined.Settings,
-                checked = unifiedKeyMapping && serviceEnabled,
-                enabled = serviceEnabled && specialKeyEnabled,
-                modifier = Modifier.settingsSearchAnchor("pref_use_unified_key_mapping"),
-                onCheckedChange = { newValue ->
-                    unifiedKeyMapping = newValue
-                    KeyInterceptorManager.setUnifiedKeyMappingEnabled(context, newValue)
-                }
-            )
+                // Unified key mapping pipeline toggle
+                SwitchPreference(
+                    title = "Unified Key Mapping",
+                    summary = "Route special keys via XML config instead of hardcoded logic (experimental)",
+                    icon = Icons.Outlined.Settings,
+                    checked = unifiedKeyMapping && serviceEnabled,
+                    enabled = serviceEnabled && specialKeyEnabled,
+                    modifier = Modifier.settingsSearchAnchor("pref_use_unified_key_mapping"),
+                    onCheckedChange = { newValue ->
+                        unifiedKeyMapping = newValue
+                        KeyInterceptorManager.setUnifiedKeyMappingEnabled(context, newValue)
+                    }
+                )
+            }
             
             // Bottom spacing for gesture navigation
             Spacer(modifier = Modifier.height(spacing.extraLarge))

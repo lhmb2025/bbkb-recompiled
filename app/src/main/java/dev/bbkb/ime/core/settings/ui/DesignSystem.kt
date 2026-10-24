@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -180,7 +181,13 @@ data class Spacing(
     val oneLineListItemHeight: Dp = 56.dp,   // Material 3 one-line list item height
     val titleSummaryGap: Dp = 8.dp,          // Gap between title and summary (Modern Android standard)
     val categoryTopPadding: Dp = 24.dp,      // Extra top padding for categories (increased for modern look)
-    val categoryBottomPadding: Dp = 8.dp     // Bottom padding for categories
+    val categoryBottomPadding: Dp = 8.dp,    // Bottom padding for categories
+
+    // Grouped rows (the Android 16 Settings look): a group is inset from the screen edge, its rows
+    // sit 2dp apart, and a category label aligns with the row text inside the group.
+    val groupInset: Dp = 16.dp,
+    val groupGap: Dp = 2.dp,
+    val categoryStartPadding: Dp = 32.dp     // groupInset + listItemPadding
 )
 
 val LocalSpacing = staticCompositionLocalOf { Spacing() }
@@ -195,7 +202,11 @@ val LocalSpacing = staticCompositionLocalOf { Spacing() }
  */
 @Immutable
 data class Shapes(
-    val dialog: RoundedCornerShape = RoundedCornerShape(28.dp)
+    val dialog: RoundedCornerShape = RoundedCornerShape(28.dp),
+    /** A group of rows' outer corners; the first and last row inherit them through the clip. */
+    val group: RoundedCornerShape = RoundedCornerShape(24.dp),
+    /** One row's own corners inside a group. */
+    val row: RoundedCornerShape = RoundedCornerShape(4.dp),
 )
 
 val LocalShapes = staticCompositionLocalOf { Shapes() }
@@ -224,3 +235,21 @@ data class Motion(
 }
 
 val LocalMotion = staticCompositionLocalOf { Motion() }
+
+// ============================================================================
+// SETTINGS SURFACES
+// ============================================================================
+
+/**
+ * The two surfaces the grouped settings layout is built from: the page behind everything and the
+ * card each row paints. Light mode puts white rows on a tinted page (surfaceContainerLowest on
+ * surfaceContainer); dark mode puts lighter rows on the plain surface (surfaceContainerHigh on
+ * surface). [BlackBerryTheme] derives both from the active colour scheme.
+ */
+@Immutable
+data class SettingsColors(
+    val page: Color,
+    val card: Color,
+)
+
+val LocalSettingsColors = staticCompositionLocalOf { SettingsColors(Color.Unspecified, Color.Unspecified) }

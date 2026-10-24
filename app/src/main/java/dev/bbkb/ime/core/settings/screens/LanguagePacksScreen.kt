@@ -6,9 +6,9 @@ import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.draw.clip
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,26 +25,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.RadioButton
 import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -54,8 +50,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -76,12 +75,17 @@ import dev.bbkb.ime.core.shared.InAppEventBus
 import com.blackberry.nuanceshim.languagepack.CustomPackRegistryStore
 import com.blackberry.nuanceshim.languagepack.LanguageVariantStore
 import com.blackberry.nuanceshim.languagepack.LanguagePackManager
+import dev.bbkb.ime.core.settings.ui.LocalInGroup
+import dev.bbkb.ime.core.settings.ui.GroupEdge
+import dev.bbkb.ime.core.settings.ui.groupEdge
+import dev.bbkb.ime.core.settings.ui.LocalShapes
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.PreferenceDeleteButton
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.ui.PreferenceLeadingBadge
 import dev.bbkb.ime.core.settings.ui.PreferenceTrailingLabel
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -110,7 +114,6 @@ import androidx.compose.runtime.Immutable
  *    and a regional dictionary that loads in place of another language is an ordinary row that
  *    says so in its summary rather than an indented child of the language it replaces.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LanguagePacksScreen(
     onNavigateBack: () -> Unit
@@ -216,33 +219,21 @@ fun LanguagePacksScreen(
         }
     }
     
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(context.getString(R.string.settings_language_packs_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
-                    }
-                },
-                actions = {
-                    // Force a manifest fetch. Disabled while one is in flight so a double tap
-                    // does not queue a second request behind the first.
-                    IconButton(
-                        onClick = { refreshCount++ },
-                        enabled = !catalogLoading,
-                    ) {
-                        Icon(
-                            Icons.Outlined.Refresh,
-                            contentDescription = stringResource(R.string.language_packs_refresh),
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
+    SettingsScaffold(
+        title = context.getString(R.string.settings_language_packs_title),
+        onNavigateBack = onNavigateBack,
+        actions = {
+            // Force a manifest fetch. Disabled while one is in flight so a double tap
+            // does not queue a second request behind the first.
+            IconButton(
+                onClick = { refreshCount++ },
+                enabled = !catalogLoading,
+            ) {
+                Icon(
+                    Icons.Outlined.Refresh,
+                    contentDescription = stringResource(R.string.language_packs_refresh),
                 )
-            )
+            }
         },
         // The screen's one creative action, named. It used to be a bare + in the app bar, which
         // is where Material 3 puts secondary actions and which never said what it added.
@@ -254,112 +245,134 @@ fun LanguagePacksScreen(
             )
         }
     ) { paddingValues ->
+        val spacing = LocalSpacing.current
         // No info banner: what it said ("preinstalled packs cannot be deleted") is now shown by
         // the rows themselves - only removable dictionaries carry a delete button.
         //
         // The two section headers are always in the list, even while either half is still
         // loading, so the screen never re-flows from "spinner" to "list" and the user can see
         // that a downloadable half exists before it has finished arriving.
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            // Rows bring their own horizontal padding (PreferenceItem); the bottom inset keeps
-            // the last row clear of the extended FAB (56dp + 16dp margin + 16dp breathing room).
-            contentPadding = PaddingValues(bottom = 88.dp)
-        ) {
-            item(key = "installed-header") {
-                PreferenceCategory(stringResource(R.string.language_packs_installed_header))
-            }
-            if (isLoading) {
-                item(key = "installed-loading") { PackLoadingRow() }
-            }
-            items(languagePacks, key = { "installed-" + it.languageCode + it.countryCode }) { pack ->
-                LanguagePackItem(
-                    pack = pack,
-                    variantGroup = variantGroups[pack.languageCode],
-                    onSelectVariant = { tag ->
-                        scope.launch {
-                            withContext(Dispatchers.IO) {
-                                LanguageVariantStore.activate(context, pack.languageCode, tag)
-                            }
-                            InAppEventBus.getInstance()
-                                .post(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED, null)
-                            variantGroups = LanguageVariantStore.read(context)
-                            installedPacks = readInstalledPacks(context, manifest)
-                            // The swap moved files in and out of the base language's slot, so
-                            // the rows' paths and "preinstalled" flags are stale until re-read.
-                            loadLanguagePacks(context) { packs -> languagePacks = packs }
-                        }
-                    },
-                    onDeleteVariant = { member ->
-                        showVariantDeleteDialog = pack.languageCode to member
-                    },
-                    onTurnOn = {
-                        scope.launch {
-                            val on = withContext(Dispatchers.IO) {
-                                SubtypeEnabler.enable(context, pack.localeId)
-                            }
-                            if (on) {
-                                Toast.makeText(
-                                    context,
-                                    context.getString(R.string.language_packs_turned_on, pack.displayName),
-                                    Toast.LENGTH_LONG,
-                                ).show()
-                                loadLanguagePacks(context) { packs -> languagePacks = packs }
-                            } else {
-                                // Before Android 14 only the user can turn it on; the list is
-                                // re-read when they come back (ON_RESUME below).
-                                Toast.makeText(
-                                    context,
-                                    context.getString(R.string.language_packs_turn_on_in_settings, pack.displayName),
-                                    Toast.LENGTH_LONG,
-                                ).show()
-                                SubtypeEnabler.openLanguageSettings(context)
-                            }
-                        }
-                    },
-                    onDelete = if (pack.isDeletable) {
-                        { showDeleteDialog = pack }
-                    } else null
-                )
-            }
-
-            item(key = "available-header") {
-                PreferenceCategory(stringResource(R.string.language_packs_available_header))
-            }
-            if (catalogLoading && catalog == null) {
-                item(key = "available-loading") { PackLoadingRow() }
-            }
-            catalogError?.takeIf { catalog == null }?.let { error ->
-                item(key = "available-error") {
-                    PackMessageRow(
-                        message = PackText.errorMessage(context, error),
-                        actionLabel = stringResource(R.string.language_packs_retry),
-                        onAction = { refreshCount++ },
+        //
+        // Each half is one group: the list carries the group inset and gap, and the first and
+        // last row of each half take the group's outer corners (groupEdge).
+        CompositionLocalProvider(LocalInGroup provides true) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                // The group inset on both sides; the bottom inset keeps the last row clear of the
+                // extended FAB (56dp + 16dp margin + 16dp breathing room).
+                contentPadding = PaddingValues(
+                    start = spacing.groupInset,
+                    end = spacing.groupInset,
+                    bottom = 88.dp,
+                ),
+                verticalArrangement = Arrangement.spacedBy(spacing.groupGap),
+            ) {
+                item(key = "installed-header") {
+                    PreferenceCategory(
+                        stringResource(R.string.language_packs_installed_header),
+                        modifier = Modifier.outsideGroupInset(spacing.groupInset),
                     )
                 }
-            }
-            if (catalog != null) {
-                val packs = manifest?.packs
-                items(availablePacks, key = { "available-" + it.locale }) { available ->
-                    PackActionRow(
-                        item = available.item,
-                        // Named, not implied: installing one of these REPLACES the dictionary the
-                        // language loads today, which is not what "German (Switzerland)" on its
-                        // own suggests — and the row no longer sits under the language it names.
-                        summary = available.replaces?.let {
-                            context.getString(R.string.language_packs_variant_summary, it)
+                if (isLoading) {
+                    item(key = "installed-loading") { PackLoadingRow() }
+                }
+                itemsIndexed(
+                    languagePacks,
+                    key = { _, row -> "installed-" + row.languageCode + row.countryCode }
+                ) { index, pack ->
+                    LanguagePackItem(
+                        pack = pack,
+                        edge = groupEdge(index, languagePacks.size),
+                        variantGroup = variantGroups[pack.languageCode],
+                        onSelectVariant = { tag ->
+                            scope.launch {
+                                withContext(Dispatchers.IO) {
+                                    LanguageVariantStore.activate(context, pack.languageCode, tag)
+                                }
+                                InAppEventBus.getInstance()
+                                    .post(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED, null)
+                                variantGroups = LanguageVariantStore.read(context)
+                                installedPacks = readInstalledPacks(context, manifest)
+                                // The swap moved files in and out of the base language's slot, so
+                                // the rows' paths and "preinstalled" flags are stale until re-read.
+                                loadLanguagePacks(context) { packs -> languagePacks = packs }
+                            }
                         },
-                        onDownload = { item ->
-                            packs?.let { downloads.download(it, item.entry) }
+                        onDeleteVariant = { member ->
+                            showVariantDeleteDialog = pack.languageCode to member
                         },
-                        onCancel = { locale -> downloads.cancel(locale) },
-                        onRetry = { item ->
-                            downloads.clearFailure(item.locale)
-                            packs?.let { downloads.download(it, item.entry) }
+                        onTurnOn = {
+                            scope.launch {
+                                val on = withContext(Dispatchers.IO) {
+                                    SubtypeEnabler.enable(context, pack.localeId)
+                                }
+                                if (on) {
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.language_packs_turned_on, pack.displayName),
+                                        Toast.LENGTH_LONG,
+                                    ).show()
+                                    loadLanguagePacks(context) { packs -> languagePacks = packs }
+                                } else {
+                                    // Before Android 14 only the user can turn it on; the list is
+                                    // re-read when they come back (ON_RESUME below).
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.language_packs_turn_on_in_settings, pack.displayName),
+                                        Toast.LENGTH_LONG,
+                                    ).show()
+                                    SubtypeEnabler.openLanguageSettings(context)
+                                }
+                            }
                         },
+                        onDelete = if (pack.isDeletable) {
+                            { showDeleteDialog = pack }
+                        } else null
                     )
+                }
+
+                item(key = "available-header") {
+                    PreferenceCategory(
+                        stringResource(R.string.language_packs_available_header),
+                        modifier = Modifier.outsideGroupInset(spacing.groupInset),
+                    )
+                }
+                if (catalogLoading && catalog == null) {
+                    item(key = "available-loading") { PackLoadingRow() }
+                }
+                catalogError?.takeIf { catalog == null }?.let { error ->
+                    item(key = "available-error") {
+                        PackMessageRow(
+                            message = PackText.errorMessage(context, error),
+                            actionLabel = stringResource(R.string.language_packs_retry),
+                            onAction = { refreshCount++ },
+                        )
+                    }
+                }
+                if (catalog != null) {
+                    val packs = manifest?.packs
+                    itemsIndexed(availablePacks, key = { _, row -> "available-" + row.locale }) { index, available ->
+                        PackActionRow(
+                            item = available.item,
+                            edge = groupEdge(index, availablePacks.size),
+                            // Named, not implied: installing one of these REPLACES the dictionary the
+                            // language loads today, which is not what "German (Switzerland)" on its
+                            // own suggests — and the row no longer sits under the language it names.
+                            summary = available.replaces?.let {
+                                context.getString(R.string.language_packs_variant_summary, it)
+                            },
+                            onDownload = { item ->
+                                packs?.let { downloads.download(it, item.entry) }
+                            },
+                            onCancel = { locale -> downloads.cancel(locale) },
+                            onRetry = { item ->
+                                downloads.clearFailure(item.locale)
+                                packs?.let { downloads.download(it, item.entry) }
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -460,6 +473,8 @@ fun LanguagePacksScreen(
 @Composable
 private fun LanguagePackItem(
     pack: InstalledLanguagePack,
+    /** The plain row's place in its group; a language with regional dictionaries keeps its card. */
+    edge: GroupEdge = GroupEdge.Middle,
     variantGroup: LanguageVariantStore.Group? = null,
     onSelectVariant: (String) -> Unit = {},
     onDeleteVariant: (LanguageVariantStore.Member) -> Unit = {},
@@ -476,6 +491,7 @@ private fun LanguagePackItem(
             // available but I can't type in it"), so the row says so and tapping it fixes it.
             summary = if (pack.needsTurningOn) stringResource(R.string.language_packs_not_on_summary) else null,
             onClick = if (pack.needsTurningOn) onTurnOn else null,
+            groupEdge = edge,
             leading = { LanguageCodeBadge(pack.languageCode) },
             // The trailing slot holds either the Preinstalled tag or the delete button - the same
             // one-slot, two-meanings rule the dictionary rows use, at the same right edge.
@@ -495,13 +511,15 @@ private fun LanguagePackItem(
     // A language with regional dictionaries sits on a light rounded surface, so the language and
     // its choices read as one object. The surface is inset by [inset] on each side and every inner
     // horizontal padding is reduced by the same amount, which keeps the code column, the title and
-    // the trailing controls at exactly the x positions of the plain rows around it.
-    val inset = spacing.small
+    // the trailing controls at exactly the x positions of the plain rows around it. The list
+    // already insets every item by the group inset, so the card adds none of its own: its edges
+    // meet the group rows' edges.
+    val inset = spacing.none
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = inset, vertical = spacing.extraSmall)
-            .clip(RoundedCornerShape(16.dp))
+            .clip(LocalShapes.current.group)
             // surfaceVariant at half strength: the theme defines no surfaceContainer tokens, and
             // Material's defaults for those would bring in the baseline purple.
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
@@ -584,6 +602,23 @@ private fun LanguagePackItem(
     }
 }
 
+/**
+ * Lays an item out [inset] wider on each side than the list gives it, so a category label inside
+ * a list that carries the group inset sits where a label does on every other screen rather than a
+ * second inset further in.
+ */
+private fun Modifier.outsideGroupInset(inset: Dp): Modifier = layout { measurable, constraints ->
+    val extra = inset.roundToPx() * 2
+    val wider = if (constraints.hasBoundedWidth) {
+        constraints.copy(maxWidth = constraints.maxWidth + extra)
+    } else {
+        constraints
+    }
+    val placeable = measurable.measure(wider)
+    val width = (placeable.width - extra).coerceIn(constraints.minWidth, constraints.maxWidth)
+    layout(width, placeable.height) { placeable.placeRelative(-extra / 2, 0) }
+}
+
 /** A row-height spinner, for a section whose contents are still being read off disk or network. */
 @Composable
 private fun PackLoadingRow() {
@@ -641,6 +676,8 @@ private fun PackMessageRow(
 @Composable
 private fun PackActionRow(
     item: PackCatalog.Item,
+    /** The row's place in its group. */
+    edge: GroupEdge,
     summary: String?,
     onDownload: (PackCatalog.Item) -> Unit,
     onCancel: (String) -> Unit,
@@ -658,6 +695,7 @@ private fun PackActionRow(
     PreferenceItem(
         title = item.displayName,
         summary = summaryLine,
+        groupEdge = edge,
         leading = { LanguageCodeBadge(item.locale) },
         trailing = {
             when (state) {

@@ -69,7 +69,7 @@ fun DebugSettingsScreen(
             R.string.prefs_autofill_event_toasts_title,
             RowSummary.Res(R.string.prefs_autofill_event_toasts_summary)),
         // Hardcoded copy, so it rides the escape hatch rather than inventing a literal-title row.
-        Custom {
+        Custom(inGroup = true) {
             PreferenceScreen(
                 title = "Gesture Lab (prototype)",
                 summary = "Visualize swipes and see the new gesture classifier's verdict; tune thresholds live",

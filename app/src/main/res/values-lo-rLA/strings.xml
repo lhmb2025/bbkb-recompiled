@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">ແປ້ນພິມຈະປະຕິບັດຕາມພາສາຂອງໂທລະສັບທ່ານ. ການເພີ່ມ ຫຼື ລຶບອັນໜຶ່ງຈະປິດຄຸນສົມບັດນີ້.</string>
     <string name="languages_hub_follow_system_off">ທ່ານເລືອກແປ້ນພິມຂ້າງລຸ່ມນີ້ເອງ</string>
     <string name="languages_hub_keyboards_header">ແປ້ນພິມຂອງທ່ານ</string>
-    <string name="languages_hub_keyboards_hint">ແຕະແປ້ນພິມເພື່ອເພີ່ມພາສາຄາດເດົາເພີ່ມເຕີມ ຫຼື ລຶບມັນອອກ</string>
+    <string name="languages_hub_keyboards_hint">ແຕະແປ້ນພິມເພື່ອເພີ່ມພາສາຄາດເດົາເພີ່ມເຕີມ, ປ່ຽນຮູບແບບຂອງມັນ ຫຼື ລຶບມັນອອກ</string>
     <string name="languages_hub_add">ເພີ່ມພາສາ</string>
     <string name="languages_hub_more_header">ຕົວເລືອກເພີ່ມເຕີມ</string>
     <string name="languages_hub_also_predicts">ຄາດເດົານຳ: %1$s</string>

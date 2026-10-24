@@ -1,0 +1,12 @@
+<!-- ic_settings_dictation_key. Owner's SVG (2026-10-23), Material Symbols-style 960-unit grid (the group shifts the -960 viewBox into view); tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 395 -435 q -35 -35 -35 -85 v -240 q 0 -50 35 -85 t 85 -35 q 50 0 85 35 t 35 85 v 240 q 0 50 -35 85 t -85 35 q -50 0 -85 -35 Z m 85 -205 Z m -40 520 v -123 q -104 -14 -172 -93 t -68 -184 h 80 q 0 83 58.5 141.5 T 480 -320 q 83 0 141.5 -58.5 T 680 -520 h 80 q 0 105 -68 184 t -172 93 v 123 h -80 Z m 68.5 -371.5 Q 520 -503 520 -520 v -240 q 0 -17 -11.5 -28.5 T 480 -800 q -17 0 -28.5 11.5 T 440 -760 v 240 q 0 17 11.5 28.5 T 480 -480 q 17 0 28.5 -11.5 Z"/>
+  </group>
+</vector>

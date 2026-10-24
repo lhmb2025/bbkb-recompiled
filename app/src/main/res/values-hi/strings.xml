@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">कीबोर्ड आपके फ़ोन की भाषाओं के अनुसार सेट होते हैं. कोई भाषा जोड़ने या हटाने पर यह बंद हो जाएगा.</string>
     <string name="languages_hub_follow_system_off">आप नीचे दिए गए कीबोर्ड खुद चुनते हैं</string>
     <string name="languages_hub_keyboards_header">आपके कीबोर्ड</string>
-    <string name="languages_hub_keyboards_hint">अतिरिक्त सुझाव भाषाएं जोड़ने या कीबोर्ड हटाने के लिए उस पर टैप करें</string>
+    <string name="languages_hub_keyboards_hint">अतिरिक्त सुझाव भाषाएं जोड़ने, लेआउट बदलने या कीबोर्ड हटाने के लिए उस पर टैप करें</string>
     <string name="languages_hub_add">भाषा जोड़ें</string>
     <string name="languages_hub_more_header">अन्य विकल्प</string>
     <string name="languages_hub_also_predicts">यह भी सुझाव देता है: %1$s</string>

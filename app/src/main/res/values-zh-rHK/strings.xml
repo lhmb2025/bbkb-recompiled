@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">鍵盤會跟隨你手機的語言。新增或移除鍵盤會關閉此設定。</string>
     <string name="languages_hub_follow_system_off">你可在下方自行選擇鍵盤</string>
     <string name="languages_hub_keyboards_header">你的鍵盤</string>
-    <string name="languages_hub_keyboards_hint">輕觸鍵盤即可新增其他預測語言或將其移除</string>
+    <string name="languages_hub_keyboards_hint">輕觸鍵盤即可新增其他預測語言、變更其配置或將其移除</string>
     <string name="languages_hub_add">新增語言</string>
     <string name="languages_hub_more_header">更多選項</string>
     <string name="languages_hub_also_predicts">同時預測：%1$s</string>

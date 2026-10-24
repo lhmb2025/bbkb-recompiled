@@ -10,16 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Language
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +25,9 @@ import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.ChoiceOption
 import dev.bbkb.ime.core.settings.ui.ListPreference
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
+import dev.bbkb.ime.core.settings.ui.PreferenceGroup
 import dev.bbkb.ime.core.settings.ui.PreferenceScreen
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
 import dev.bbkb.ime.keyboard.inputboard.voice.InstalledVoiceRecognizers
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceRecognizerChoice
@@ -43,7 +36,6 @@ import dev.bbkb.ime.keyboard.inputboard.voice.VoiceRecognizerChoice
  * Voice Input Settings Screen
  * Configure voice input recognition settings
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VoiceInputSettingsScreen(
     onNavigateToLanguageSelection: () -> Unit,
@@ -91,21 +83,9 @@ fun VoiceInputSettingsScreen(
             ?: SettingsManager.DEFAULT_VOICE_INPUT_LANGUAGE
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(context.getString(R.string.settings_voice_input_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        }
+    SettingsScaffold(
+        title = context.getString(R.string.settings_voice_input_title),
+        onNavigateBack = onNavigateBack,
     ) { paddingValues ->
         val spacing = LocalSpacing.current
         
@@ -115,140 +95,142 @@ fun VoiceInputSettingsScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            // Enable Built-in Voice Input
-            SwitchPreference(
-                title = context.getString(R.string.settings_voice_builtin_title),
-                summary = context.getString(R.string.settings_voice_builtin_summary),
-                checked = builtInVoiceEnabled,
-                modifier = Modifier.settingsSearchAnchor("voice_input_enabled"),
-                onCheckedChange = { newValue ->
-                    builtInVoiceEnabled = newValue
-                    prefs.edit().putBoolean("voice_input_enabled", newValue).apply()
-                }
-            )
+            PreferenceGroup {
+                // Enable Built-in Voice Input
+                SwitchPreference(
+                    title = context.getString(R.string.settings_voice_builtin_title),
+                    summary = context.getString(R.string.settings_voice_builtin_summary),
+                    checked = builtInVoiceEnabled,
+                    modifier = Modifier.settingsSearchAnchor("voice_input_enabled"),
+                    onCheckedChange = { newValue ->
+                        builtInVoiceEnabled = newValue
+                        prefs.edit().putBoolean("voice_input_enabled", newValue).apply()
+                    }
+                )
 
-            // Speech recognizer: which recognition service dictation binds. The row shows what the
-            // setting resolves to now, so a chosen app that has since been uninstalled reads as the
-            // system default, which is what dictation falls back to.
-            val recognizerOptions = voiceRecognizerOptions(context, recognizers, onDeviceAvailable)
-            val resolvedRecognizer = VoiceRecognizerChoice
-                .select(recognizer, Build.VERSION.SDK_INT, onDeviceAvailable, recognizers)
-                .id()
-            ListPreference(
-                title = context.getString(R.string.settings_voice_recognizer_title),
-                summary = if (recognizers.isEmpty() && resolvedRecognizer == VoiceRecognizerChoice.SYSTEM_DEFAULT)
-                    context.getString(R.string.settings_voice_recognizer_none_installed)
-                else
-                    recognizerOptions.firstOrNull { it.value == resolvedRecognizer }?.label
-                        ?: recognizerOptions.first().label,
-                entries = recognizerOptions.map { it.label },
-                entryValues = recognizerOptions.map { it.value },
-                value = resolvedRecognizer,
-                enabled = builtInVoiceEnabled,
-                modifier = Modifier.settingsSearchAnchor("voice_input_recognizer"),
-                onValueChange = { newValue ->
-                    recognizer = newValue
-                    prefs.edit().putString("voice_input_recognizer", newValue).apply()
-                }
-            )
+                // Speech recognizer: which recognition service dictation binds. The row shows what the
+                // setting resolves to now, so a chosen app that has since been uninstalled reads as the
+                // system default, which is what dictation falls back to.
+                val recognizerOptions = voiceRecognizerOptions(context, recognizers, onDeviceAvailable)
+                val resolvedRecognizer = VoiceRecognizerChoice
+                    .select(recognizer, Build.VERSION.SDK_INT, onDeviceAvailable, recognizers)
+                    .id()
+                ListPreference(
+                    title = context.getString(R.string.settings_voice_recognizer_title),
+                    summary = if (recognizers.isEmpty() && resolvedRecognizer == VoiceRecognizerChoice.SYSTEM_DEFAULT)
+                        context.getString(R.string.settings_voice_recognizer_none_installed)
+                    else
+                        recognizerOptions.firstOrNull { it.value == resolvedRecognizer }?.label
+                            ?: recognizerOptions.first().label,
+                    entries = recognizerOptions.map { it.label },
+                    entryValues = recognizerOptions.map { it.value },
+                    value = resolvedRecognizer,
+                    enabled = builtInVoiceEnabled,
+                    modifier = Modifier.settingsSearchAnchor("voice_input_recognizer"),
+                    onValueChange = { newValue ->
+                        recognizer = newValue
+                        prefs.edit().putString("voice_input_recognizer", newValue).apply()
+                    }
+                )
 
-            // Auto-start listening
-            SwitchPreference(
-                title = context.getString(R.string.settings_voice_auto_start_title),
-                summary = if (autoStartListening)
-                    context.getString(R.string.settings_voice_auto_start_summary_on)
-                else
-                    context.getString(R.string.settings_voice_auto_start_summary_off),
-                checked = autoStartListening,
-                enabled = builtInVoiceEnabled,
-                modifier = Modifier.settingsSearchAnchor("voice_input_auto_start"),
-                onCheckedChange = { newValue ->
-                    autoStartListening = newValue
-                    prefs.edit().putBoolean("voice_input_auto_start", newValue).apply()
-                }
-            )
+                // Auto-start listening
+                SwitchPreference(
+                    title = context.getString(R.string.settings_voice_auto_start_title),
+                    summary = if (autoStartListening)
+                        context.getString(R.string.settings_voice_auto_start_summary_on)
+                    else
+                        context.getString(R.string.settings_voice_auto_start_summary_off),
+                    checked = autoStartListening,
+                    enabled = builtInVoiceEnabled,
+                    modifier = Modifier.settingsSearchAnchor("voice_input_auto_start"),
+                    onCheckedChange = { newValue ->
+                        autoStartListening = newValue
+                        prefs.edit().putBoolean("voice_input_auto_start", newValue).apply()
+                    }
+                )
 
-            // Use Input Language
-            SwitchPreference(
-                title = context.getString(R.string.settings_voice_use_keyboard_lang_title),
-                summary = context.getString(R.string.settings_voice_use_keyboard_lang_summary),
-                checked = useInputLanguage,
-                enabled = builtInVoiceEnabled,
-                modifier = Modifier.settingsSearchAnchor("voice_input_use_input_language"),
-                onCheckedChange = { newValue ->
-                    useInputLanguage = newValue
-                    prefs.edit().putBoolean("voice_input_use_input_language", newValue).apply()
-                }
-            )
+                // Use Input Language
+                SwitchPreference(
+                    title = context.getString(R.string.settings_voice_use_keyboard_lang_title),
+                    summary = context.getString(R.string.settings_voice_use_keyboard_lang_summary),
+                    checked = useInputLanguage,
+                    enabled = builtInVoiceEnabled,
+                    modifier = Modifier.settingsSearchAnchor("voice_input_use_input_language"),
+                    onCheckedChange = { newValue ->
+                        useInputLanguage = newValue
+                        prefs.edit().putBoolean("voice_input_use_input_language", newValue).apply()
+                    }
+                )
             
-            // Language Selection (when not using input language)
-            if (builtInVoiceEnabled && !useInputLanguage) {
-                PreferenceScreen(
-                    title = context.getString(R.string.settings_voice_input_lang_title),
-                    summary = voiceLanguageDisplayName(voiceLanguage),
-                    icon = Icons.Outlined.Language,
-                    onClick = onNavigateToLanguageSelection
+                // Language Selection (when not using input language)
+                if (builtInVoiceEnabled && !useInputLanguage) {
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_voice_input_lang_title),
+                        summary = voiceLanguageDisplayName(voiceLanguage),
+                        icon = Icons.Outlined.Language,
+                        onClick = onNavigateToLanguageSelection
+                    )
+                }
+            
+                // Prefer Offline Recognition
+                SwitchPreference(
+                    title = context.getString(R.string.settings_voice_prefer_offline_title),
+                    summary = context.getString(R.string.settings_voice_prefer_offline_summary),
+                    checked = preferOffline,
+                    enabled = builtInVoiceEnabled,
+                    modifier = Modifier.settingsSearchAnchor("voice_input_prefer_offline"),
+                    onCheckedChange = { newValue ->
+                        preferOffline = newValue
+                        prefs.edit().putBoolean("voice_input_prefer_offline", newValue).apply()
+                    }
+                )
+
+                // Stop listening when you pause: off is continuous dictation until the mic is tapped.
+                // The pair with Auto-start covers starting and ending by hand, automatically, or either.
+                SwitchPreference(
+                    title = context.getString(R.string.settings_voice_stop_on_pause_title),
+                    summary = if (stopOnPause)
+                        context.getString(R.string.settings_voice_stop_on_pause_summary_on)
+                    else
+                        context.getString(R.string.settings_voice_stop_on_pause_summary_off),
+                    checked = stopOnPause,
+                    enabled = builtInVoiceEnabled,
+                    modifier = Modifier.settingsSearchAnchor("voice_input_stop_on_pause"),
+                    onCheckedChange = { newValue ->
+                        stopOnPause = newValue
+                        prefs.edit().putBoolean("voice_input_stop_on_pause", newValue).apply()
+                    }
+                )
+
+                // Show words as you speak: partial results as composing text in the editor
+                SwitchPreference(
+                    title = context.getString(R.string.settings_voice_show_partial_results_title),
+                    summary = context.getString(R.string.settings_voice_show_partial_results_summary),
+                    checked = showPartialResults,
+                    enabled = builtInVoiceEnabled,
+                    modifier = Modifier.settingsSearchAnchor("voice_input_show_partial_results"),
+                    onCheckedChange = { newValue ->
+                        showPartialResults = newValue
+                        prefs.edit().putBoolean("voice_input_show_partial_results", newValue).apply()
+                    }
+                )
+
+                // Block offensive words — the recogniser's EXTRA_MASK_OFFENSIVE_WORDS. It used to sit
+                // on the Suggestions screen, among the prediction toggles, but dictation masking is
+                // its only effect (VoiceRecognitionManager.startDictation), so it belongs here. The
+                // preference key is unchanged, so nobody's setting moved with it.
+                SwitchPreference(
+                    title = context.getString(R.string.settings_pred_block_offensive_title),
+                    summary = context.getString(R.string.settings_pred_block_offensive_summary),
+                    checked = blockOffensive,
+                    enabled = builtInVoiceEnabled,
+                    modifier = Modifier.settingsSearchAnchor("pref_key_block_potentially_offensive"),
+                    onCheckedChange = { newValue ->
+                        blockOffensive = newValue
+                        prefs.edit().putBoolean("pref_key_block_potentially_offensive", newValue).apply()
+                    }
                 )
             }
-            
-            // Prefer Offline Recognition
-            SwitchPreference(
-                title = context.getString(R.string.settings_voice_prefer_offline_title),
-                summary = context.getString(R.string.settings_voice_prefer_offline_summary),
-                checked = preferOffline,
-                enabled = builtInVoiceEnabled,
-                modifier = Modifier.settingsSearchAnchor("voice_input_prefer_offline"),
-                onCheckedChange = { newValue ->
-                    preferOffline = newValue
-                    prefs.edit().putBoolean("voice_input_prefer_offline", newValue).apply()
-                }
-            )
-
-            // Stop listening when you pause: off is continuous dictation until the mic is tapped.
-            // The pair with Auto-start covers starting and ending by hand, automatically, or either.
-            SwitchPreference(
-                title = context.getString(R.string.settings_voice_stop_on_pause_title),
-                summary = if (stopOnPause)
-                    context.getString(R.string.settings_voice_stop_on_pause_summary_on)
-                else
-                    context.getString(R.string.settings_voice_stop_on_pause_summary_off),
-                checked = stopOnPause,
-                enabled = builtInVoiceEnabled,
-                modifier = Modifier.settingsSearchAnchor("voice_input_stop_on_pause"),
-                onCheckedChange = { newValue ->
-                    stopOnPause = newValue
-                    prefs.edit().putBoolean("voice_input_stop_on_pause", newValue).apply()
-                }
-            )
-
-            // Show words as you speak: partial results as composing text in the editor
-            SwitchPreference(
-                title = context.getString(R.string.settings_voice_show_partial_results_title),
-                summary = context.getString(R.string.settings_voice_show_partial_results_summary),
-                checked = showPartialResults,
-                enabled = builtInVoiceEnabled,
-                modifier = Modifier.settingsSearchAnchor("voice_input_show_partial_results"),
-                onCheckedChange = { newValue ->
-                    showPartialResults = newValue
-                    prefs.edit().putBoolean("voice_input_show_partial_results", newValue).apply()
-                }
-            )
-
-            // Block offensive words — the recogniser's EXTRA_MASK_OFFENSIVE_WORDS. It used to sit
-            // on the Suggestions screen, among the prediction toggles, but dictation masking is
-            // its only effect (VoiceRecognitionManager.startDictation), so it belongs here. The
-            // preference key is unchanged, so nobody's setting moved with it.
-            SwitchPreference(
-                title = context.getString(R.string.settings_pred_block_offensive_title),
-                summary = context.getString(R.string.settings_pred_block_offensive_summary),
-                checked = blockOffensive,
-                enabled = builtInVoiceEnabled,
-                modifier = Modifier.settingsSearchAnchor("pref_key_block_potentially_offensive"),
-                onCheckedChange = { newValue ->
-                    blockOffensive = newValue
-                    prefs.edit().putBoolean("pref_key_block_potentially_offensive", newValue).apply()
-                }
-            )
 
             Spacer(modifier = Modifier.height(spacing.extraLarge))
         }

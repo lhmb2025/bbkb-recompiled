@@ -9,7 +9,7 @@
     <string name="languages_hub_follow_system_on">Keyboards follow your phone\'s languages. Adding or removing one turns this off.</string>
     <string name="languages_hub_follow_system_off">You choose the keyboards below</string>
     <string name="languages_hub_keyboards_header">Your keyboards</string>
-    <string name="languages_hub_keyboards_hint">Tap a keyboard to add additional prediction languages or remove it</string>
+    <string name="languages_hub_keyboards_hint">Tap on a keyboard to add additional prediction languages, change its layout, or remove it</string>
     <string name="languages_hub_add">Add a language</string>
     <string name="languages_hub_more_header">More options</string>
     <string name="languages_hub_also_predicts">Also predicts: %1$s</string>

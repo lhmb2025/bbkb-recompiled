@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">تتبع لوحات المفاتيح لغات هاتفك. إضافة لوحة مفاتيح أو إزالتها يعطّل هذا الخيار.</string>
     <string name="languages_hub_follow_system_off">تختار لوحات المفاتيح أدناه</string>
     <string name="languages_hub_keyboards_header">لوحات مفاتيحك</string>
-    <string name="languages_hub_keyboards_hint">اضغط على لوحة مفاتيح لإضافة لغات اقتراح إضافية أو لإزالتها</string>
+    <string name="languages_hub_keyboards_hint">اضغط على لوحة مفاتيح لإضافة لغات اقتراح إضافية أو تغيير تخطيطها أو إزالتها</string>
     <string name="languages_hub_add">إضافة لغة</string>
     <string name="languages_hub_more_header">خيارات إضافية</string>
     <string name="languages_hub_also_predicts">تقترح أيضًا: %1$s</string>

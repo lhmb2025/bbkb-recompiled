@@ -21,6 +21,7 @@ import dev.bbkb.ime.core.settings.ui.ManagedToggle
 import dev.bbkb.ime.core.settings.ui.Nav
 import dev.bbkb.ime.core.settings.ui.PrefStore
 import dev.bbkb.ime.core.settings.ui.RowSummary
+import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
 import dev.bbkb.ime.core.settings.ui.boolPref
@@ -73,6 +74,7 @@ fun PhysicalKeyboardScreen(
         Toggle(
             store = boolPref("pref_voice_input_key", true),
             title = R.string.settings_pkb_dictation_key_title,
+            icon = drawableIcon(R.drawable.ic_settings_dictation_key),
             summary = RowSummary.OnOff(
                 R.string.settings_pkb_dictation_key_summary_on,
                 R.string.settings_pkb_dictation_key_summary_off,
@@ -82,6 +84,7 @@ fun PhysicalKeyboardScreen(
         Choice(
             store = multifunctionStore(multifunctionDefault),
             title = R.string.settings_pkb_multifunction_key_title,
+            icon = drawableIcon(R.drawable.ic_settings_multifunction_key),
             options = ::multifunctionActions,
             // Emoji board: the fallback default action.
             fallbackIndex = 1,
@@ -93,12 +96,14 @@ fun PhysicalKeyboardScreen(
         Choice(
             store = stringPref("pref_alt_sym_shortcut_action", "disabled"),
             title = R.string.settings_pkb_alt_sym_shortcut_title,
+            icon = drawableIcon(R.drawable.ic_settings_altsym),
             options = ::altSymActions,
             modifier = Modifier.settingsSearchAnchor("pref_alt_sym_shortcut_action"),
         ),
         Choice(
             store = stringPref("pref_pkb_hold_auto_commit", "off"),
             title = R.string.settings_pkb_hold_action_title,
+            icon = drawableIcon(R.drawable.ic_settings_hold_action),
             options = ::holdActions,
             // The row's summary uses a different resource from the dialog's label, so it is
             // spelled out rather than derived from the options.
@@ -108,6 +113,7 @@ fun PhysicalKeyboardScreen(
         Choice(
             store = stringPref("control_mode", "2"),
             title = R.string.settings_pkb_ctrl_key_behavior_title,
+            icon = drawableIcon(R.drawable.ic_settings_ctrl_key),
             options = ::controlModes,
             fallbackIndex = 2,
             modifier = Modifier.settingsSearchAnchor("control_mode"),
@@ -119,6 +125,7 @@ fun PhysicalKeyboardScreen(
         Choice(
             store = stringPref(DeviceProfile.PREF_KEYPAD_LAYOUT, ""),
             title = R.string.settings_pkb_keypad_layout_title,
+            icon = drawableIcon(R.drawable.ic_settings_keypad_layout),
             options = ::keypadLayouts,
             modifier = Modifier.settingsSearchAnchor("pref_pkb_keypad_layout"),
             visible = { hasPhysicalKeyboard && (DeviceProfile.current()?.keypadLayoutOptions?.size ?: 0) > 1 },
@@ -130,6 +137,7 @@ fun PhysicalKeyboardScreen(
         // there from where the gestures are, with the same live status line.
         Nav(
             title = R.string.touch_surface_link_title,
+            iconSpaceReserved = true,
             summaryText = { ctx ->
                 ctx.getString(R.string.touch_surface_link_summary, ctx.getString(touchSurface.statusLine))
             },
@@ -139,6 +147,7 @@ fun PhysicalKeyboardScreen(
         ManagedToggle(
             store = boolPref("type_by_swiping_ckb", false),
             title = R.string.settings_screen_type_by_swiping,
+            icon = drawableIcon(R.drawable.ic_settings_swipe_typing),
             summary = RowSummary.Res(R.string.settings_screen_type_by_swiping_summary),
             enabled = { !isChineseLocale },
             visible = { hasTouchKeypad },
@@ -147,11 +156,13 @@ fun PhysicalKeyboardScreen(
         ManagedToggle(
             store = boolPref(CKB_GESTURES, true),
             title = R.string.ckb_gestures_enable_title,
+            icon = drawableIcon(R.drawable.ic_settings_gesture_ckb),
             summary = RowSummary.Res(R.string.ckb_gestures_enable_summary),
             visible = { hasTouchKeypad },
         ),
         Nav(
             title = R.string.ckb_gestures_configure_title,
+            icon = drawableIcon(R.drawable.ic_settings_gesture_ckb_configure),
             summary = R.string.ckb_gestures_configure_summary,
             visible = { hasTouchKeypad && it.bool(CKB_GESTURES) },
             onClick = { onNavigateToCkbGestures() },
@@ -161,24 +172,28 @@ fun PhysicalKeyboardScreen(
         Toggle(
             store = boolPref(modifierStatusIconKey, true),
             title = R.string.pref_show_pkb_modifier_status_icon,
+            icon = drawableIcon(R.drawable.ic_settings_modifier_icons),
             summary = RowSummary.Res(R.string.pref_show_pkb_modifier_status_icon_summary),
             modifier = Modifier.settingsSearchAnchor("pref_show_pkb_modifier_status_icon"),
         ),
         Toggle(
             store = boolPref(shiftDoubleTapLockKey, true),
             title = R.string.pref_shift_double_tap_lock,
+            icon = drawableIcon(R.drawable.ic_settings_shift_lock),
             summary = RowSummary.Res(R.string.pref_shift_double_tap_lock_summary),
             modifier = Modifier.settingsSearchAnchor("pref_shift_double_tap_lock"),
         ),
         Toggle(
             store = boolPref(altDoubleTapLockKey, true),
             title = R.string.pref_alt_double_tap_lock,
+            icon = drawableIcon(R.drawable.ic_settings_alt_lock),
             summary = RowSummary.Res(R.string.pref_alt_double_tap_lock_summary),
             modifier = Modifier.settingsSearchAnchor("pref_alt_double_tap_lock"),
         ),
         Toggle(
             store = boolPref(ctrlDoubleTapLockKey, true),
             title = R.string.pref_ctrl_double_tap_lock,
+            icon = drawableIcon(R.drawable.ic_settings_ctrl_lock),
             summary = RowSummary.Res(R.string.pref_ctrl_double_tap_lock_summary),
             modifier = Modifier.settingsSearchAnchor("pref_ctrl_double_tap_lock"),
         ),

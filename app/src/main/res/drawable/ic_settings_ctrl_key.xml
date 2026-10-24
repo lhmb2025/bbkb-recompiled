@@ -1,0 +1,12 @@
+<!-- ic_settings_ctrl_key. Material Symbols keyboard_control_key, weight 400 (owner's download 2026-10-23), Material Symbols-style 960-unit grid (the group shifts the -960 viewBox into view); tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="m 256 -424 -56 -56 280 -280 280 280 -56 56 -224 -223 -224 223 Z"/>
+  </group>
+</vector>

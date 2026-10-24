@@ -76,33 +76,33 @@
     <!-- =========================================== -->
     <!-- Settings — category headers and hierarchy -->
     <!-- =========================================== -->
-    <string name="settings_category_behavior">BEHAVIOR</string>
-    <string name="settings_category_slideboard">SLIDEBOARD</string>
-    <string name="prefs_category_tuning">TUNING</string>
-    <string name="prefs_category_diagnostics">DIAGNOSTICS</string>
-    <string name="prefs_category_developer">DEVELOPER</string>
+    <string name="settings_category_behavior">Behavior</string>
+    <string name="settings_category_slideboard">Slideboard</string>
+    <string name="prefs_category_tuning">Tuning</string>
+    <string name="prefs_category_diagnostics">Diagnostics</string>
+    <string name="prefs_category_developer">Developer</string>
     <string name="prefs_shake_tuning_title">Shake gesture tuning</string>
     <string name="prefs_shake_tuning_summary">Trigger counts, acceleration threshold and timing</string>
-    <string name="settings_category_display">DISPLAY</string>
-    <string name="settings_category_sources">SOURCES</string>
-    <string name="settings_category_contacts_accounts">CONTACTS AND ACCOUNTS</string>
+    <string name="settings_category_display">Display</string>
+    <string name="settings_category_sources">Sources</string>
+    <string name="settings_category_contacts_accounts">Contacts and accounts</string>
     <string name="settings_dict_add_reverted_words_title">Show add word button</string>
     <string name="settings_dict_add_reverted_words_summary">After backspace undoes a correction, show a button to add the word</string>
     <string name="settings_auxiliary_input_title">Auxiliary input</string>
     <string name="settings_auxiliary_input_summary">Input menu, voice input and other tools</string>
-    <string name="settings_category_input_menu">INPUT MENU</string>
-    <string name="settings_category_emoji">EMOJI</string>
-    <string name="settings_category_voice">VOICE</string>
+    <string name="settings_category_input_menu">Input menu</string>
+    <string name="settings_category_emoji">Emoji</string>
+    <string name="settings_category_voice">Voice</string>
     <string name="settings_autocorrect_enable_title">Enable auto-correction</string>
     <string name="settings_autocorrect_enable_summary">Correct words as you type. Press backspace to undo a correction.</string>
-    <string name="settings_category_behavior_vkb">BEHAVIOR</string>
-    <string name="settings_category_ckb_gestures">CAPACITIVE KEYBOARD GESTURES</string>
-    <string name="settings_category_on_screen_keyboard">ON-SCREEN KEYBOARD</string>
-    <string name="settings_category_physical_keyboard">PHYSICAL KEYBOARD</string>
+    <string name="settings_category_behavior_vkb">Behavior</string>
+    <string name="settings_category_ckb_gestures">Capacitive keyboard gestures</string>
+    <string name="settings_category_on_screen_keyboard">On-screen keyboard</string>
+    <string name="settings_category_physical_keyboard">Physical keyboard</string>
     <string name="settings_category_credits">Credits</string>
-    <string name="settings_category_gestures">GESTURES</string>
+    <string name="settings_category_gestures">Gestures</string>
     <string name="settings_category_key_popup">Key popup</string>
-    <string name="settings_category_modifiers">MODIFIERS</string>
+    <string name="settings_category_modifiers">Modifiers</string>
     <string name="settings_category_sound">Sound</string>
     <string name="settings_category_vibrate">Vibrate</string>
 

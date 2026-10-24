@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">صفحه کلیدها از زبان‌های گوشی شما پیروی می‌کنند. افزودن یا حذف یکی، این گزینه را خاموش می‌کند.</string>
     <string name="languages_hub_follow_system_off">شما صفحه کلیدهای زیر را انتخاب می‌کنید</string>
     <string name="languages_hub_keyboards_header">صفحه کلیدهای شما</string>
-    <string name="languages_hub_keyboards_hint">برای افزودن زبان‌های پیش‌بینی اضافی یا حذف صفحه کلید، روی آن ضربه بزنید</string>
+    <string name="languages_hub_keyboards_hint">برای افزودن زبان‌های پیش‌بینی اضافی، تغییر چیدمان یا حذف صفحه کلید، روی آن ضربه بزنید</string>
     <string name="languages_hub_add">افزودن زبان</string>
     <string name="languages_hub_more_header">گزینه‌های بیشتر</string>
     <string name="languages_hub_also_predicts">همچنین پیش‌بینی می‌کند: %1$s</string>

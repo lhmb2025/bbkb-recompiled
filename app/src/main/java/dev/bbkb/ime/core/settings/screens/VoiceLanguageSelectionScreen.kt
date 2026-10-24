@@ -7,6 +7,8 @@ import android.speech.RecognitionSupportCallback
 import android.speech.RecognizerIntent
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,22 +17,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,8 +41,13 @@ import androidx.compose.ui.unit.dp
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.R
+import dev.bbkb.ime.core.settings.ui.LocalInGroup
+import dev.bbkb.ime.core.settings.ui.GroupEdge
+import dev.bbkb.ime.core.settings.ui.groupEdge
+import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.settings.util.SettingsManager
 import android.view.inputmethod.InputMethodManager
 import dev.bbkb.ime.keyboard.inputboard.voice.InstalledVoiceRecognizers
@@ -79,7 +81,6 @@ internal fun voiceLanguageDisplayName(code: String): String = try {
  * discovery path, and the built-in fallback list — there is one unsectioned list and no offline
  * markers. Both shapes come out of the same `sections` list below.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VoiceLanguageSelectionScreen(
     onNavigateBack: () -> Unit
@@ -136,20 +137,9 @@ fun VoiceLanguageSelectionScreen(
             }
         }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(context.getString(R.string.settings_voice_input_lang_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            )
-        }
+    SettingsScaffold(
+        title = context.getString(R.string.settings_voice_input_lang_title),
+        onNavigateBack = onNavigateBack,
     ) { paddingValues ->
         when {
             isLoading -> CenteredMessage(paddingValues) {
@@ -176,32 +166,39 @@ fun VoiceLanguageSelectionScreen(
                 )
             }
 
-            else -> LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                sections.forEach { (header, languages) ->
-                    if (header != null) {
-                        item { SectionHeader(header) }
+            // Each section is a group laid out by the list itself: the rows paint themselves as
+            // cards, a section's first and last row carry the group's outer corners, and the rows
+            // take the group inset themselves so the section headers keep their page-level alignment.
+            else -> CompositionLocalProvider(LocalInGroup provides true) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    verticalArrangement = Arrangement.spacedBy(LocalSpacing.current.groupGap)
+                ) {
+                    sections.forEach { (header, languages) ->
+                        if (header != null) {
+                            item { SectionHeader(header) }
+                        }
+                        itemsIndexed(languages) { index, language ->
+                            LanguageListItem(
+                                languageCode = language,
+                                displayName = voiceLanguageDisplayName(language),
+                                isSelected = language == selectedLanguage ||
+                                    language.replace("-", "_") == selectedLanguage.replace("-", "_"),
+                                // Unknown, not "no", when the device could not tell us.
+                                isOfflineReady = if (offlineLanguages.isEmpty()) null else isOfflineReady(language),
+                                edge = groupEdge(index, languages.size),
+                                onClick = {
+                                    selectedLanguage = language
+                                    prefs.edit().putString(VOICE_LANGUAGE_PREF, language).apply()
+                                    onNavigateBack()
+                                }
+                            )
+                        }
                     }
-                    items(languages) { language ->
-                        LanguageListItem(
-                            languageCode = language,
-                            displayName = voiceLanguageDisplayName(language),
-                            isSelected = language == selectedLanguage ||
-                                language.replace("-", "_") == selectedLanguage.replace("-", "_"),
-                            // Unknown, not "no", when the device could not tell us.
-                            isOfflineReady = if (offlineLanguages.isEmpty()) null else isOfflineReady(language),
-                            onClick = {
-                                selectedLanguage = language
-                                prefs.edit().putString(VOICE_LANGUAGE_PREF, language).apply()
-                                onNavigateBack()
-                            }
-                        )
-                    }
+                    item { Spacer(modifier = Modifier.height(16.dp)) }
                 }
-                item { Spacer(modifier = Modifier.height(16.dp)) }
             }
         }
     }
@@ -253,36 +250,40 @@ private fun LanguageListItem(
     displayName: String,
     isSelected: Boolean,
     isOfflineReady: Boolean?,
+    edge: GroupEdge,
     onClick: () -> Unit
 ) {
-    PreferenceItem(
-        title = displayName,
-        summary = languageCode,
-        leading = if (isSelected) {
-            {
-                Icon(
-                    imageVector = Icons.Outlined.Check,
-                    contentDescription = "Selected",
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-            }
-        } else null,
-        iconSpaceReserved = true,
-        modifier = Modifier.selectable(
-            selected = isSelected,
-            onClick = onClick,
-            role = Role.RadioButton,
-        ),
-        trailing = if (isOfflineReady == true) {
-            {
-                Icon(
-                    imageVector = Icons.Outlined.CloudOff,
-                    contentDescription = "Offline ready",
-                    tint = MaterialTheme.colorScheme.tertiary,
-                )
-            }
-        } else null,
-    )
+    Box(modifier = Modifier.padding(horizontal = LocalSpacing.current.groupInset)) {
+        PreferenceItem(
+            title = displayName,
+            summary = languageCode,
+            leading = if (isSelected) {
+                {
+                    Icon(
+                        imageVector = Icons.Outlined.Check,
+                        contentDescription = "Selected",
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            } else null,
+            iconSpaceReserved = true,
+            modifier = Modifier.selectable(
+                selected = isSelected,
+                onClick = onClick,
+                role = Role.RadioButton,
+            ),
+            groupEdge = edge,
+            trailing = if (isOfflineReady == true) {
+                {
+                    Icon(
+                        imageVector = Icons.Outlined.CloudOff,
+                        contentDescription = "Offline ready",
+                        tint = MaterialTheme.colorScheme.tertiary,
+                    )
+                }
+            } else null,
+        )
+    }
 }
 
 /**

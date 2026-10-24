@@ -125,13 +125,13 @@ fun BackupRestoreScreen(
 
         // ── Back up: pick the parts, then write the file ─────────────────────
         Category(R.string.backup_category_back_up),
-        Custom {
+        Custom(inGroup = true) {
             PartCheckboxRow(BackupBundle.Part.SETTINGS, includeSettings, enabled = !busy) { includeSettings = it }
         },
-        Custom {
+        Custom(inGroup = true) {
             PartCheckboxRow(BackupBundle.Part.LAYOUTS, includeLayouts, enabled = !busy) { includeLayouts = it }
         },
-        Custom {
+        Custom(inGroup = true) {
             PartCheckboxRow(BackupBundle.Part.WORDS, includeWords, enabled = !busy) { includeWords = it }
         },
         Simple(
@@ -164,7 +164,7 @@ fun BackupRestoreScreen(
 
         // ── Phone backup: the same bundle, carried by Android to the Google account ──
         Category(R.string.backup_category_phone),
-        Custom {
+        Custom(inGroup = true) {
             SwitchPreference(
                 title = stringResource(R.string.backup_phone_include_title),
                 summary = stringResource(R.string.backup_phone_include_summary),
@@ -178,7 +178,7 @@ fun BackupRestoreScreen(
                 AutoBackup.setIncludedInPhoneBackup(context, on)
             }
         },
-        Custom {
+        Custom(inGroup = true) {
             PreferenceItem(
                 title = stringResource(R.string.backup_phone_last_title),
                 summary = if (lastPhoneBackup > 0L) {

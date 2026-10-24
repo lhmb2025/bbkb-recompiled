@@ -12,17 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Contacts
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,13 +27,14 @@ import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceActionItem
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
+import dev.bbkb.ime.core.settings.ui.PreferenceGroup
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
 
 /**
  * Predictions & Suggestions Settings (Subpage 2 of Correction & Learning)
  * What gets predicted and suggested
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PredictionsSuggestionsScreen(
     onNavigateBack: () -> Unit
@@ -138,21 +129,9 @@ fun PredictionsSuggestionsScreen(
     }
     
     
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(context.getString(R.string.settings_suggestion_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        }
+    SettingsScaffold(
+        title = context.getString(R.string.settings_suggestion_title),
+        onNavigateBack = onNavigateBack,
     ) { paddingValues ->
         val spacing = LocalSpacing.current
         
@@ -162,165 +141,173 @@ fun PredictionsSuggestionsScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            // Show predictions (master toggle)
-            SwitchPreference(
-                title = context.getString(R.string.settings_pred_show_predictions_title),
-                summary = context.getString(R.string.settings_pred_show_predictions_summary),
-                checked = showPredictions,
-                modifier = Modifier.settingsSearchAnchor("show_predictions"),
-                onCheckedChange = { newValue ->
-                    showPredictions = newValue
-                    prefs.edit().putBoolean("show_predictions", newValue).apply()
-                }
-            )
+            PreferenceGroup {
+                // Show predictions (master toggle)
+                SwitchPreference(
+                    title = context.getString(R.string.settings_pred_show_predictions_title),
+                    summary = context.getString(R.string.settings_pred_show_predictions_summary),
+                    checked = showPredictions,
+                    modifier = Modifier.settingsSearchAnchor("show_predictions"),
+                    onCheckedChange = { newValue ->
+                        showPredictions = newValue
+                        prefs.edit().putBoolean("show_predictions", newValue).apply()
+                    }
+                )
+            }
             
             
             PreferenceCategory(title = context.getString(R.string.settings_category_display))
-            // On-key predictions (dependent)
-            SwitchPreference(
-                title = context.getString(R.string.settings_pred_on_key_title),
-                summary = context.getString(R.string.settings_pred_on_key_summary),
-                enabled = showPredictions,
-                checked = onKeyPredictions,
-                modifier = Modifier.settingsSearchAnchor("on_key_predictions"),
-                onCheckedChange = { newValue ->
-                    onKeyPredictions = newValue
-                    prefs.edit().putBoolean("on_key_predictions", newValue).apply()
-                }
-            )
-            
-            
-            // Force suggestions: override an app's "no suggestions" declaration and show the
-            // suggestion strip anyway (e.g. for apps like Google Keep that suppress it).
-            SwitchPreference(
-                title = context.getString(R.string.settings_pred_force_suggestions_title),
-                summary = context.getString(R.string.settings_pred_force_suggestions_summary),
-                enabled = showPredictions,
-                checked = forceSuggestions,
-                modifier = Modifier.settingsSearchAnchor("pref_force_suggestions"),
-                onCheckedChange = { newValue ->
-                    forceSuggestions = newValue
-                    prefs.edit().putBoolean("pref_force_suggestions", newValue).apply()
-                }
-            )
-
-            PreferenceCategory(title = context.getString(R.string.settings_category_sources))
-            // Next word prediction
-            SwitchPreference(
-                title = context.getString(R.string.settings_pred_next_word_title),
-                summary = context.getString(R.string.settings_pred_next_word_summary),
-                enabled = showPredictions,
-                checked = nextWordPrediction,
-                modifier = Modifier.settingsSearchAnchor("next_word_prediction"),
-                onCheckedChange = { newValue ->
-                    nextWordPrediction = newValue
-                    prefs.edit().putBoolean("next_word_prediction", newValue).apply()
-                }
-            )
-
-
-            // Emoji predictions (dependent)
-            SwitchPreference(
-                title = context.getString(R.string.settings_pred_emoji_title),
-                summary = context.getString(R.string.settings_pred_emoji_summary),
-                enabled = showPredictions,
-                checked = emojiPredictions,
-                modifier = Modifier.settingsSearchAnchor("emoji_predictions"),
-                onCheckedChange = { newValue ->
-                    emojiPredictions = newValue
-                    prefs.edit().putBoolean("emoji_predictions", newValue).apply()
-                }
-            )
-            
-            
-            // Personalized suggestions
-            SwitchPreference(
-                title = context.getString(R.string.settings_pred_personalized_title),
-                summary = context.getString(R.string.settings_pred_personalized_summary),
-                enabled = showPredictions,
-                checked = personalizedSuggestions,
-                modifier = Modifier.settingsSearchAnchor("pref_key_use_personalized_dicts"),
-                onCheckedChange = { newValue ->
-                    personalizedSuggestions = newValue
-                    prefs.edit().putBoolean("pref_key_use_personalized_dicts", newValue).apply()
-                }
-            )
-
-
-            // Inline autofill chips (Android 11+). The manager re-reads this at the start of
-            // every input session, so the change applies without an IME restart.
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            PreferenceGroup {
+                // On-key predictions (dependent)
                 SwitchPreference(
-                    title = context.getString(R.string.settings_pred_inline_autofill_title),
-                    summary = context.getString(R.string.settings_pred_inline_autofill_summary),
-                    checked = inlineAutofill,
-                    modifier = Modifier.settingsSearchAnchor("pref_inline_autofill_enabled"),
+                    title = context.getString(R.string.settings_pred_on_key_title),
+                    summary = context.getString(R.string.settings_pred_on_key_summary),
+                    enabled = showPredictions,
+                    checked = onKeyPredictions,
+                    modifier = Modifier.settingsSearchAnchor("on_key_predictions"),
                     onCheckedChange = { newValue ->
-                        inlineAutofill = newValue
-                        prefs.edit().putBoolean("pref_inline_autofill_enabled", newValue).apply()
+                        onKeyPredictions = newValue
+                        prefs.edit().putBoolean("on_key_predictions", newValue).apply()
                     }
                 )
+            
+            
+                // Force suggestions: override an app's "no suggestions" declaration and show the
+                // suggestion strip anyway (e.g. for apps like Google Keep that suppress it).
+                SwitchPreference(
+                    title = context.getString(R.string.settings_pred_force_suggestions_title),
+                    summary = context.getString(R.string.settings_pred_force_suggestions_summary),
+                    enabled = showPredictions,
+                    checked = forceSuggestions,
+                    modifier = Modifier.settingsSearchAnchor("pref_force_suggestions"),
+                    onCheckedChange = { newValue ->
+                        forceSuggestions = newValue
+                        prefs.edit().putBoolean("pref_force_suggestions", newValue).apply()
+                    }
+                )
+            }
+
+            PreferenceCategory(title = context.getString(R.string.settings_category_sources))
+            PreferenceGroup {
+                // Next word prediction
+                SwitchPreference(
+                    title = context.getString(R.string.settings_pred_next_word_title),
+                    summary = context.getString(R.string.settings_pred_next_word_summary),
+                    enabled = showPredictions,
+                    checked = nextWordPrediction,
+                    modifier = Modifier.settingsSearchAnchor("next_word_prediction"),
+                    onCheckedChange = { newValue ->
+                        nextWordPrediction = newValue
+                        prefs.edit().putBoolean("next_word_prediction", newValue).apply()
+                    }
+                )
+
+
+                // Emoji predictions (dependent)
+                SwitchPreference(
+                    title = context.getString(R.string.settings_pred_emoji_title),
+                    summary = context.getString(R.string.settings_pred_emoji_summary),
+                    enabled = showPredictions,
+                    checked = emojiPredictions,
+                    modifier = Modifier.settingsSearchAnchor("emoji_predictions"),
+                    onCheckedChange = { newValue ->
+                        emojiPredictions = newValue
+                        prefs.edit().putBoolean("emoji_predictions", newValue).apply()
+                    }
+                )
+            
+            
+                // Personalized suggestions
+                SwitchPreference(
+                    title = context.getString(R.string.settings_pred_personalized_title),
+                    summary = context.getString(R.string.settings_pred_personalized_summary),
+                    enabled = showPredictions,
+                    checked = personalizedSuggestions,
+                    modifier = Modifier.settingsSearchAnchor("pref_key_use_personalized_dicts"),
+                    onCheckedChange = { newValue ->
+                        personalizedSuggestions = newValue
+                        prefs.edit().putBoolean("pref_key_use_personalized_dicts", newValue).apply()
+                    }
+                )
+
+
+                // Inline autofill chips (Android 11+). The manager re-reads this at the start of
+                // every input session, so the change applies without an IME restart.
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                    SwitchPreference(
+                        title = context.getString(R.string.settings_pred_inline_autofill_title),
+                        summary = context.getString(R.string.settings_pred_inline_autofill_summary),
+                        checked = inlineAutofill,
+                        modifier = Modifier.settingsSearchAnchor("pref_inline_autofill_enabled"),
+                        onCheckedChange = { newValue ->
+                            inlineAutofill = newValue
+                            prefs.edit().putBoolean("pref_inline_autofill_enabled", newValue).apply()
+                        }
+                    )
+                }
             }
 
 
             PreferenceCategory(title = context.getString(R.string.settings_category_contacts_accounts))
-            // The contacts permission, as the row it gates rather than as a tinted card above it.
-            if (!hasContactsPermission) {
-                PreferenceActionItem(
-                    title = context.getString(R.string.settings_pred_contacts_permission_title),
-                    summary = context.getString(R.string.settings_pred_contacts_permission_summary),
-                    actionLabel = context.getString(R.string.settings_pred_grant_permission),
-                    onAction = {
-                        contactsPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
-                    },
-                )
-            }
-
-            // Suggest from contacts (requires READ_CONTACTS permission)
-            SwitchPreference(
-                title = context.getString(R.string.settings_pred_contacts_title),
-                summary = if (hasContactsPermission) {
-                    context.getString(R.string.settings_pred_contacts_summary_enabled)
-                } else {
-                    context.getString(R.string.settings_pred_contacts_summary_disabled)
-                },
-                checked = suggestContacts && hasContactsPermission,
-                enabled = showPredictions && hasContactsPermission,
-                modifier = Modifier.settingsSearchAnchor("pref_key_use_contacts_dict"),
-                onCheckedChange = { newValue ->
-                    suggestContacts = newValue
-                    prefs.edit().putBoolean("pref_key_use_contacts_dict", newValue).apply()
-                }
-            )
-            
-            // Suggest email addresses (only available on API < 26 where GET_ACCOUNTS works)
-            if (showEmailToggle) {
-                // Same treatment as the contacts prompt above.
-                if (!hasAccountsPermission) {
+            PreferenceGroup {
+                // The contacts permission, as the row it gates rather than as a tinted card above it.
+                if (!hasContactsPermission) {
                     PreferenceActionItem(
-                        title = context.getString(R.string.settings_pred_accounts_permission_title),
-                        summary = context.getString(R.string.settings_pred_accounts_permission_summary),
+                        title = context.getString(R.string.settings_pred_contacts_permission_title),
+                        summary = context.getString(R.string.settings_pred_contacts_permission_summary),
                         actionLabel = context.getString(R.string.settings_pred_grant_permission),
                         onAction = {
-                            accountsPermissionLauncher.launch(Manifest.permission.GET_ACCOUNTS)
+                            contactsPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
                         },
                     )
                 }
 
+                // Suggest from contacts (requires READ_CONTACTS permission)
                 SwitchPreference(
-                    title = context.getString(R.string.settings_pred_email_title),
-                    summary = if (hasAccountsPermission) {
-                        context.getString(R.string.settings_pred_email_summary_enabled)
+                    title = context.getString(R.string.settings_pred_contacts_title),
+                    summary = if (hasContactsPermission) {
+                        context.getString(R.string.settings_pred_contacts_summary_enabled)
                     } else {
-                        context.getString(R.string.settings_pred_email_summary_disabled)
+                        context.getString(R.string.settings_pred_contacts_summary_disabled)
                     },
-                    checked = suggestEmails && hasAccountsPermission,
-                    enabled = hasAccountsPermission,
+                    checked = suggestContacts && hasContactsPermission,
+                    enabled = showPredictions && hasContactsPermission,
+                    modifier = Modifier.settingsSearchAnchor("pref_key_use_contacts_dict"),
                     onCheckedChange = { newValue ->
-                        suggestEmails = newValue
-                        prefs.edit().putBoolean("pref_key_use_accounts_dict", newValue).apply()
+                        suggestContacts = newValue
+                        prefs.edit().putBoolean("pref_key_use_contacts_dict", newValue).apply()
                     }
                 )
+            
+                // Suggest email addresses (only available on API < 26 where GET_ACCOUNTS works)
+                if (showEmailToggle) {
+                    // Same treatment as the contacts prompt above.
+                    if (!hasAccountsPermission) {
+                        PreferenceActionItem(
+                            title = context.getString(R.string.settings_pred_accounts_permission_title),
+                            summary = context.getString(R.string.settings_pred_accounts_permission_summary),
+                            actionLabel = context.getString(R.string.settings_pred_grant_permission),
+                            onAction = {
+                                accountsPermissionLauncher.launch(Manifest.permission.GET_ACCOUNTS)
+                            },
+                        )
+                    }
+
+                    SwitchPreference(
+                        title = context.getString(R.string.settings_pred_email_title),
+                        summary = if (hasAccountsPermission) {
+                            context.getString(R.string.settings_pred_email_summary_enabled)
+                        } else {
+                            context.getString(R.string.settings_pred_email_summary_disabled)
+                        },
+                        checked = suggestEmails && hasAccountsPermission,
+                        enabled = hasAccountsPermission,
+                        onCheckedChange = { newValue ->
+                            suggestEmails = newValue
+                            prefs.edit().putBoolean("pref_key_use_accounts_dict", newValue).apply()
+                        }
+                    )
+                }
             }
             
             Spacer(modifier = Modifier.height(spacing.extraLarge))

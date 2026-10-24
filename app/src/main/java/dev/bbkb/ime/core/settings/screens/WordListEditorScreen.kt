@@ -12,9 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
 import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.outlined.Add
@@ -25,11 +24,9 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -37,9 +34,8 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,7 +51,11 @@ import dev.bbkb.ime.core.engine.NuanceSDKManager
 import dev.bbkb.ime.personaldictionary.DictionaryManager
 import dev.bbkb.ime.core.settings.data.DictionaryEntry
 import dev.bbkb.ime.core.settings.data.DictionaryRepository
+import dev.bbkb.ime.core.settings.ui.LocalInGroup
+import dev.bbkb.ime.core.settings.ui.groupEdge
+import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.personaldictionary.PersonalDictionaryConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -70,7 +70,6 @@ import dev.bbkb.ime.BuildConfig
  * Displays and manages learned words with multi-select, delete, clear all, and promote to dictionary
  * Includes undo functionality for deletions
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WordListEditorScreen(
     isWorkProfile: Boolean = false,
@@ -259,63 +258,40 @@ fun WordListEditorScreen(
     
     val title = if (isWorkProfile) "Work Learned Words" else "Personal Learned Words"
     
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { 
-                    Text(
-                        if (isSelectionMode) {
-                            "${selectedWords.size} selected"
-                        } else {
-                            title
-                        }
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        if (isSelectionMode) {
-                            isSelectionMode = false
-                            selectedWords = emptySet()
-                        } else {
-                            onNavigateBack()
-                        }
-                    }) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
-                    }
-                },
-                actions = {
-                    if (isSelectionMode && selectedWords.isNotEmpty()) {
-                        // Add to dictionary button
-                        IconButton(onClick = { showPromoteDialog = true }) {
-                            Icon(Icons.Outlined.Add, "Add to dictionary")
-                        }
-                        // Delete button
-                        IconButton(onClick = {
-                            pendingDeleteWords = selectedWords.toList()
-                            showDeleteDialog = true
-                        }) {
-                            Icon(Icons.Outlined.Delete, "Delete selected")
-                        }
-                    }
-                    if (!isSelectionMode && words.isNotEmpty()) {
-                        IconButton(onClick = { showClearAllDialog = true }) {
-                            Icon(Icons.Outlined.DeleteSweep, "Clear all")
-                        }
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = if (isSelectionMode) {
-                        MaterialTheme.colorScheme.primaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.surface
-                    },
-                    titleContentColor = if (isSelectionMode) {
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    }
-                )
-            )
+    SettingsScaffold(
+        title = if (isSelectionMode) {
+            "${selectedWords.size} selected"
+        } else {
+            title
+        },
+        // In selection mode the back arrow leaves selection mode rather than the screen.
+        onNavigateBack = {
+            if (isSelectionMode) {
+                isSelectionMode = false
+                selectedWords = emptySet()
+            } else {
+                onNavigateBack()
+            }
+        },
+        actions = {
+            if (isSelectionMode && selectedWords.isNotEmpty()) {
+                // Add to dictionary button
+                IconButton(onClick = { showPromoteDialog = true }) {
+                    Icon(Icons.Outlined.Add, "Add to dictionary")
+                }
+                // Delete button
+                IconButton(onClick = {
+                    pendingDeleteWords = selectedWords.toList()
+                    showDeleteDialog = true
+                }) {
+                    Icon(Icons.Outlined.Delete, "Delete selected")
+                }
+            }
+            if (!isSelectionMode && words.isNotEmpty()) {
+                IconButton(onClick = { showClearAllDialog = true }) {
+                    Icon(Icons.Outlined.DeleteSweep, "Clear all")
+                }
+            }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
@@ -360,117 +336,133 @@ fun WordListEditorScreen(
                     }
                 }
                 else -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        // Header with explanation
-                        item {
-                            Surface(
-                                color = MaterialTheme.colorScheme.surfaceVariant,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
+                    val spacing = LocalSpacing.current
+                    // The words are one group laid out by the list itself: the rows paint
+                    // themselves as cards, the first and last carry the group's outer corners, and
+                    // the rows take the group inset themselves so the header and the count above
+                    // them keep their page-level alignment.
+                    CompositionLocalProvider(LocalInGroup provides true) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(spacing.groupGap)
+                        ) {
+                            // Header with explanation
+                            item {
+                                Surface(
+                                    color = MaterialTheme.colorScheme.surfaceVariant,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = if (isWorkProfile) {
+                                            "Manage words learned in your work profile"
+                                        } else {
+                                            "Manage words learned from your typing"
+                                        },
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.padding(16.dp)
+                                    )
+                                }
+                            }
+                        
+                            // Word count
+                            item {
                                 Text(
-                                    text = if (isWorkProfile) {
-                                        "Manage words learned in your work profile"
-                                    } else {
-                                        "Manage words learned from your typing"
-                                    },
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.padding(16.dp)
+                                    text = "${words.size} ${if (words.size == 1) "word" else "words"}",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.padding(
+                                        start = spacing.categoryStartPadding,
+                                        top = 16.dp,
+                                        end = 16.dp,
+                                        bottom = 16.dp
+                                    )
                                 )
                             }
-                        }
                         
-                        // Word count
-                        item {
-                            Text(
-                                text = "${words.size} ${if (words.size == 1) "word" else "words"}",
-                                style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.padding(16.dp)
-                            )
-                        }
-                        
-                        // Word list
-                        items(words) { word ->
-                            val isSelected = selectedWords.contains(word)
+                            // Word list
+                            itemsIndexed(words) { index, word ->
+                                val isSelected = selectedWords.contains(word)
                             
-                            // PreferenceItem, not a Material 3 ListItem with a rule under it: the
-                            // selected tint is the one thing this list needs that a flat row does
-                            // not have, and it is a parameter now rather than a reason to draw the
-                            // row a different way.
-                            PreferenceItem(
-                                title = word,
-                                leading = if (isSelectionMode) {
-                                    {
-                                        Checkbox(
-                                            checked = isSelected,
-                                            onCheckedChange = null
-                                        )
-                                    }
-                                } else null,
-                                iconSpaceReserved = true,
-                                containerColor = if (isSelected) {
-                                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-                                } else null,
-                                onClick = {
-                                    if (isSelectionMode) {
-                                        selectedWords = if (isSelected) {
-                                            selectedWords - word
-                                        } else {
-                                            selectedWords + word
-                                        }
-                                    } else {
-                                        // Start selection mode on long press would be better, but click for now
-                                        isSelectionMode = true
-                                        selectedWords = setOf(word)
-                                    }
-                                },
-                                trailing = if (!isSelectionMode) {
-                                    {
-                                        Box {
-                                            IconButton(onClick = { showWordMenu = word }) {
-                                                Icon(
-                                                    Icons.AutoMirrored.Outlined.MenuBook,
-                                                    "Options",
-                                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                // PreferenceItem, not a Material 3 ListItem with a rule under it: the
+                                // selected tint is the one thing this list needs that a flat row does
+                                // not have, and it is a parameter now rather than a reason to draw the
+                                // row a different way.
+                                Box(modifier = Modifier.padding(horizontal = spacing.groupInset)) {
+                                    PreferenceItem(
+                                        title = word,
+                                        leading = if (isSelectionMode) {
+                                            {
+                                                Checkbox(
+                                                    checked = isSelected,
+                                                    onCheckedChange = null
                                                 )
                                             }
-                                            DropdownMenu(
-                                                expanded = showWordMenu == word,
-                                                onDismissRequest = { showWordMenu = null }
-                                            ) {
-                                                DropdownMenuItem(
-                                                    text = { Text("Add to dictionary") },
-                                                    onClick = {
-                                                        showWordMenu = null
-                                                        promoteToUserDictionary(word)
-                                                    },
-                                                    leadingIcon = {
-                                                        Icon(Icons.Outlined.Add, null)
-                                                    }
-                                                )
-                                                DropdownMenuItem(
-                                                    text = { Text("Delete") },
-                                                    onClick = {
-                                                        showWordMenu = null
-                                                        deleteWords(listOf(word))
-                                                    },
-                                                    leadingIcon = {
-                                                        Icon(Icons.Outlined.Delete, null)
-                                                    }
-                                                )
+                                        } else null,
+                                        iconSpaceReserved = true,
+                                        groupEdge = groupEdge(index, words.size),
+                                        containerColor = if (isSelected) {
+                                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                                        } else null,
+                                        onClick = {
+                                            if (isSelectionMode) {
+                                                selectedWords = if (isSelected) {
+                                                    selectedWords - word
+                                                } else {
+                                                    selectedWords + word
+                                                }
+                                            } else {
+                                                // Start selection mode on long press would be better, but click for now
+                                                isSelectionMode = true
+                                                selectedWords = setOf(word)
                                             }
-                                        }
-                                    }
-                                } else null,
-                            )
-                        }
+                                        },
+                                        trailing = if (!isSelectionMode) {
+                                            {
+                                                Box {
+                                                    IconButton(onClick = { showWordMenu = word }) {
+                                                        Icon(
+                                                            Icons.AutoMirrored.Outlined.MenuBook,
+                                                            "Options",
+                                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                                        )
+                                                    }
+                                                    DropdownMenu(
+                                                        expanded = showWordMenu == word,
+                                                        onDismissRequest = { showWordMenu = null }
+                                                    ) {
+                                                        DropdownMenuItem(
+                                                            text = { Text("Add to dictionary") },
+                                                            onClick = {
+                                                                showWordMenu = null
+                                                                promoteToUserDictionary(word)
+                                                            },
+                                                            leadingIcon = {
+                                                                Icon(Icons.Outlined.Add, null)
+                                                            }
+                                                        )
+                                                        DropdownMenuItem(
+                                                            text = { Text("Delete") },
+                                                            onClick = {
+                                                                showWordMenu = null
+                                                                deleteWords(listOf(word))
+                                                            },
+                                                            leadingIcon = {
+                                                                Icon(Icons.Outlined.Delete, null)
+                                                            }
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        } else null,
+                                    )
+                                }
+                            }
                         
-                        // Bottom spacing
-                        item {
-                            Spacer(modifier = Modifier.height(16.dp))
+                            // Bottom spacing
+                            item {
+                                Spacer(modifier = Modifier.height(16.dp))
+                            }
                         }
                     }
                 }

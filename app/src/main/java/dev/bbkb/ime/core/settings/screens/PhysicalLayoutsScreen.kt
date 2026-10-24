@@ -7,6 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -152,8 +153,8 @@ fun PhysicalLayoutsScreen(
     SettingsScreenHost(R.string.settings_pkb_layouts_title, onNavigateBack, listOf(
         // ── Custom: the user's layouts, chosen per language on the Language screen ──
         Category(R.string.settings_pkb_layouts_category_custom),
-        Custom {
-            Column {
+        Custom(inGroup = true) {
+            Column(verticalArrangement = Arrangement.spacedBy(LocalSpacing.current.groupGap)) {
                 customLayouts.orEmpty().forEach { layout ->
                     key(layout.id) {
                         CustomLayoutRow(
@@ -172,7 +173,7 @@ fun PhysicalLayoutsScreen(
         // Where a layout comes from: a file. Pickers filter by type unevenly (a file manager may
         // call an .xml document text or octet-stream), so every file is offered and the reader
         // says no to what is not a layout.
-        Custom {
+        Custom(inGroup = true) {
             PreferenceItem(
                 title = stringResource(R.string.settings_pkb_layouts_add),
                 icon = Icons.Outlined.Add,
@@ -186,7 +187,7 @@ fun PhysicalLayoutsScreen(
         Custom(visible = { builtInLayouts?.isEmpty() != true }) {
             PreferenceInfo(text = stringResource(R.string.settings_pkb_layouts_builtin_note))
         },
-        Custom {
+        Custom(inGroup = true) {
             builtInLayouts.orEmpty().forEach { layout ->
                 key(layout.id) {
                     BuiltInLayoutRow(

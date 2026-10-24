@@ -17,28 +17,25 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,7 +52,14 @@ import androidx.compose.ui.unit.dp
 import dev.bbkb.ime.core.settings.data.DictionaryEntry
 import dev.bbkb.ime.core.settings.data.DictionaryEntryStore
 import dev.bbkb.ime.core.settings.data.DictionaryRepository
+import dev.bbkb.ime.core.settings.ui.LocalInGroup
+import dev.bbkb.ime.core.settings.ui.LocalShapes
+import dev.bbkb.ime.core.settings.ui.groupEdge
+import dev.bbkb.ime.core.settings.ui.groupOuterCorners
+import dev.bbkb.ime.core.settings.ui.LocalSettingsColors
+import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.personaldictionary.util.LocaleUtil
 import dev.bbkb.ime.BuildConfig
 import kotlinx.coroutines.launch
@@ -147,7 +151,6 @@ internal class EntryEditorHost(
  * @param actions extra top-app-bar icons, placed before the search toggle.
  * @param dialogs the screen's own add/edit dialogs, driven from [EntryEditorHost].
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun EntryListEditorScreen(
     spec: EntryListSpec,
@@ -275,73 +278,24 @@ internal fun EntryListEditorScreen(
         filteredEntries.groupBy { it.locale }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = {
-            Column {
-                TopAppBar(
-                    title = {
-                        Column {
-                            Text(spec.title)
-                            Text(
-                                // While searching, count what is listed; otherwise the counter
-                                // read "2 shortcuts" above a single filtered row.
-                                text = spec.counter(filteredEntries.size),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = onNavigateBack) {
-                            Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
-                        }
-                    },
-                    actions = {
-                        actions()
-                        IconButton(onClick = {
-                            if (showSearchBar && searchQuery.isNotEmpty()) {
-                                searchQuery = ""
-                            }
-                            showSearchBar = !showSearchBar
-                        }) {
-                            Icon(
-                                if (showSearchBar) Icons.Outlined.Close else Icons.Outlined.Search,
-                                if (showSearchBar) "Close search" else "Search"
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        titleContentColor = MaterialTheme.colorScheme.onSurface
-                    )
-                )
-
-                AnimatedVisibility(
-                    visible = showSearchBar,
-                    enter = expandVertically() + fadeIn(),
-                    exit = shrinkVertically() + fadeOut()
-                ) {
-                    OutlinedTextField(
-                        value = searchQuery,
-                        onValueChange = { searchQuery = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        placeholder = { Text(spec.searchHint) },
-                        leadingIcon = { Icon(Icons.Outlined.Search, null) },
-                        trailingIcon = if (searchQuery.isNotEmpty()) {
-                            {
-                                IconButton(onClick = { searchQuery = "" }) {
-                                    Icon(Icons.Outlined.Clear, "Clear")
-                                }
-                            }
-                        } else null,
-                        singleLine = true
-                    )
+    SettingsScaffold(
+        title = spec.title,
+        onNavigateBack = onNavigateBack,
+        actions = {
+            actions()
+            IconButton(onClick = {
+                if (showSearchBar && searchQuery.isNotEmpty()) {
+                    searchQuery = ""
                 }
+                showSearchBar = !showSearchBar
+            }) {
+                Icon(
+                    if (showSearchBar) Icons.Outlined.Close else Icons.Outlined.Search,
+                    if (showSearchBar) "Close search" else "Search"
+                )
             }
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         // The editor's one creative action, named — "Add shortcut", "Add word". It was a round
         // FAB carrying that text only as a content description, so a sighted user got a bare +.
         floatingActionButton = {
@@ -352,45 +306,108 @@ internal fun EntryListEditorScreen(
             )
         }
     ) { paddingValues ->
-        Box(
+        val spacing = LocalSpacing.current
+
+        // The counter and the collapsing search field sat in the top bar, under the title. The
+        // settings top bar carries a title and actions only, so they open the content instead,
+        // in the same order.
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            when {
-                isLoading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                filteredEntries.isEmpty() -> {
-                    EntryListEmptyState(spec, hasSearchQuery = searchQuery.isNotEmpty())
-                }
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        groupedEntries.forEach { (locale, localeEntries) ->
-                            item(key = "header_$locale") {
-                                EntryLanguageHeader(
-                                    locale = locale,
-                                    count = localeEntries.size,
-                                    context = context
-                                )
-                            }
+            Text(
+                // While searching, count what is listed; otherwise the counter
+                // read "2 shortcuts" above a single filtered row.
+                text = spec.counter(filteredEntries.size),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(
+                    start = spacing.categoryStartPadding,
+                    end = spacing.listItemPadding
+                )
+            )
 
-                            items(
-                                items = localeEntries,
-                                key = { spec.identity(it) }
-                            ) { entry ->
-                                row(entry) { selectedEntry = entry }
+            AnimatedVisibility(
+                visible = showSearchBar,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    placeholder = { Text(spec.searchHint) },
+                    leadingIcon = { Icon(Icons.Outlined.Search, null) },
+                    trailingIcon = if (searchQuery.isNotEmpty()) {
+                        {
+                            IconButton(onClick = { searchQuery = "" }) {
+                                Icon(Icons.Outlined.Clear, "Clear")
                             }
                         }
+                    } else null,
+                    singleLine = true
+                )
+            }
 
-                        // Keeps the last row clear of the extended FAB (56dp + 16dp margin + 16dp
-                        // breathing room), as Language packs does.
-                        item {
-                            Spacer(modifier = Modifier.height(88.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                when {
+                    isLoading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                    filteredEntries.isEmpty() -> {
+                        EntryListEmptyState(spec, hasSearchQuery = searchQuery.isNotEmpty())
+                    }
+                    else -> {
+                        // Each language's entries are a group laid out by the list itself: the
+                        // rows paint themselves as cards, and the rows take the group inset
+                        // themselves so the language headers keep their page-level alignment.
+                        CompositionLocalProvider(LocalInGroup provides true) {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(spacing.groupGap)
+                            ) {
+                                groupedEntries.forEach { (locale, localeEntries) ->
+                                    item(key = "header_$locale") {
+                                        EntryLanguageHeader(
+                                            locale = locale,
+                                            count = localeEntries.size,
+                                            context = context
+                                        )
+                                    }
+
+                                    itemsIndexed(
+                                        items = localeEntries,
+                                        key = { _, entry -> spec.identity(entry) }
+                                    ) { index, entry ->
+                                        // The row is the screen's own; this surface gives a
+                                        // language's first and last entry the group's outer corners.
+                                        Surface(
+                                            modifier = Modifier
+                                                .padding(horizontal = spacing.groupInset)
+                                                .groupOuterCorners(groupEdge(index, localeEntries.size)),
+                                            shape = LocalShapes.current.row,
+                                            color = LocalSettingsColors.current.card
+                                        ) {
+                                            row(entry) { selectedEntry = entry }
+                                        }
+                                    }
+                                }
+
+                                // Keeps the last row clear of the extended FAB (56dp + 16dp margin + 16dp
+                                // breathing room), as Language packs does.
+                                item {
+                                    Spacer(modifier = Modifier.height(88.dp))
+                                }
+                            }
                         }
                     }
                 }

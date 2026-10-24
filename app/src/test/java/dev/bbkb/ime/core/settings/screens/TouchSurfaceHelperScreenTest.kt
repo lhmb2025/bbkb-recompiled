@@ -135,8 +135,8 @@ class TouchSurfaceHelperScreenTest {
     private fun s(id: Int): String = context.getString(id)
     private fun shown(id: Int) = composeRule.onNodeWithText(s(id)).assertExists()
     private fun absent(id: Int) = composeRule.onNodeWithText(s(id)).assertDoesNotExist()
-    private fun categoryShown(id: Int) = composeRule.onNodeWithText(s(id).uppercase()).assertExists()
-    private fun categoryAbsent(id: Int) = composeRule.onNodeWithText(s(id).uppercase()).assertDoesNotExist()
+    private fun categoryShown(id: Int) = composeRule.onNodeWithText(s(id)).assertExists()
+    private fun categoryAbsent(id: Int) = composeRule.onNodeWithText(s(id)).assertDoesNotExist()
     /** A row that can be tapped (PreferenceItem only makes an enabled row clickable). */
     private fun row(titleId: Int) = composeRule.onNode(hasClickAction() and hasText(s(titleId)))
 

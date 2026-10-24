@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">விசைப்பலகைகள் உங்கள் தொலைபேசியின் மொழிகளைப் பின்பற்றும். ஒன்றைச் சேர்த்தல் அல்லது நீக்குதல் இதை நிறுத்தும்.</string>
     <string name="languages_hub_follow_system_off">கீழே உள்ள விசைப்பலகைகளை நீங்கள் தேர்ந்தெடுக்கிறீர்கள்</string>
     <string name="languages_hub_keyboards_header">உங்கள் விசைப்பலகைகள்</string>
-    <string name="languages_hub_keyboards_hint">கூடுதல் பரிந்துரை மொழிகளைச் சேர்க்க அல்லது நீக்க ஒரு விசைப்பலகையைத் தட்டவும்</string>
+    <string name="languages_hub_keyboards_hint">கூடுதல் பரிந்துரை மொழிகளைச் சேர்க்க, அதன் தளவமைப்பை மாற்ற அல்லது நீக்க ஒரு விசைப்பலகையைத் தட்டவும்</string>
     <string name="languages_hub_add">மொழியைச் சேர்</string>
     <string name="languages_hub_more_header">மேலும் விருப்பங்கள்</string>
     <string name="languages_hub_also_predicts">மேலும் பரிந்துரைக்கும்: %1$s</string>

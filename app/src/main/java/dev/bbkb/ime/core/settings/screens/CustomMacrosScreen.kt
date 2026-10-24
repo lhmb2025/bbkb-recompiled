@@ -3,9 +3,8 @@ package dev.bbkb.ime.core.settings.screens
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,9 +14,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import dev.bbkb.ime.R
 import androidx.compose.ui.unit.dp
+import dev.bbkb.ime.core.settings.ui.LocalInGroup
+import dev.bbkb.ime.core.settings.ui.GroupEdge
+import dev.bbkb.ime.core.settings.ui.groupEdge
+import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceInfo
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.ui.PreferenceLeadingBadge
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.personaldictionary.macro.CustomMacro
 import dev.bbkb.ime.personaldictionary.macro.CustomMacroRepository
 
@@ -25,7 +29,6 @@ import dev.bbkb.ime.personaldictionary.macro.CustomMacroRepository
  * Screen for managing user-defined custom macros.
  * Allows users to create their own %x placeholders for use in text shortcuts.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomMacrosScreen(
     onNavigateBack: () -> Unit
@@ -42,21 +45,9 @@ fun CustomMacrosScreen(
         macros = repository.getAllMacros()
     }
     
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(context.getString(R.string.settings_custom_macros_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        },
+    SettingsScaffold(
+        title = context.getString(R.string.settings_custom_macros_title),
+        onNavigateBack = onNavigateBack,
         // One naming of one action. The screen used to offer adding a macro twice — a bare + in
         // the app bar and an unlabelled round FAB — and neither said what it would add.
         floatingActionButton = {
@@ -114,18 +105,28 @@ fun CustomMacrosScreen(
                     }
                 }
             } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    // Rows bring their own 16dp gutter (PreferenceItem); the bottom inset keeps the
-                    // last one clear of the extended FAB.
-                    contentPadding = PaddingValues(bottom = 88.dp)
-                ) {
-                    items(macros, key = { it.tag }) { macro ->
-                        MacroListItem(
-                            macro = macro,
-                            onEdit = { editingMacro = macro },
-                            onDelete = { showDeleteConfirm = macro }
-                        )
+                val spacing = LocalSpacing.current
+                CompositionLocalProvider(LocalInGroup provides true) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        // The rows are one group: inset from the screen edge like every group; the
+                        // bottom inset keeps the last one clear of the extended FAB.
+                        contentPadding = PaddingValues(
+                            start = spacing.groupInset,
+                            end = spacing.groupInset,
+                            bottom = 88.dp
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(spacing.groupGap)
+                    ) {
+                        val count = macros.size
+                        itemsIndexed(macros, key = { _, macro -> macro.tag }) { index, macro ->
+                            MacroListItem(
+                                macro = macro,
+                                edge = groupEdge(index, count),
+                                onEdit = { editingMacro = macro },
+                                onDelete = { showDeleteConfirm = macro }
+                            )
+                        }
                     }
                 }
             }
@@ -202,6 +203,7 @@ fun CustomMacrosScreen(
 @Composable
 private fun MacroListItem(
     macro: CustomMacro,
+    edge: GroupEdge,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
@@ -211,6 +213,7 @@ private fun MacroListItem(
         title = macro.name,
         summary = macro.value.replace("\n", "↵"),
         leading = { PreferenceLeadingBadge(macro.fullTag) },
+        groupEdge = edge,
         onClick = onEdit,
         trailing = {
             Box {

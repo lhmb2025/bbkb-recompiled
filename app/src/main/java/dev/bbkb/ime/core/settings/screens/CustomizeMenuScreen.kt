@@ -1,6 +1,7 @@
 package dev.bbkb.ime.core.settings.screens
 
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,17 +15,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.DragHandle
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -35,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -44,8 +40,14 @@ import androidx.compose.ui.zIndex
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
+import dev.bbkb.ime.core.settings.ui.LocalSettingsColors
+import dev.bbkb.ime.core.settings.ui.GroupEdge
+import dev.bbkb.ime.core.settings.ui.LocalShapes
+import dev.bbkb.ime.core.settings.ui.groupEdge
+import dev.bbkb.ime.core.settings.ui.groupOuterCorners
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceInfo
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.settings.ui.Spacing
 import dev.bbkb.ime.keyboard.inputboard.UimMenuOrder
 import kotlin.math.abs
@@ -84,7 +86,6 @@ private fun toggleInfo(id: String): UimToggleInfo = when (id) {
 private fun visualSlotOf(i: Int): Int =
     if (i < UimMenuOrder.SHOWN_COUNT) i else i + 1
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomizeMenuScreen(
     onNavigateBack: () -> Unit
@@ -95,7 +96,9 @@ fun CustomizeMenuScreen(
     val order = remember { mutableStateListOf<String>().apply { addAll(UimMenuOrder.getOrder(prefs)) } }
     var draggingId by remember { mutableStateOf<String?>(null) }
     var dragOffset by remember { mutableFloatStateOf(0f) }
-    val rowHeightPx = with(LocalDensity.current) { ROW_HEIGHT.toPx() }
+    // One slot is a cell plus the group gap below it: the cells sit groupGap apart, as the rows of
+    // a group do, so that is how far a row moves when it trades places with a neighbour.
+    val rowHeightPx = with(LocalDensity.current) { (ROW_HEIGHT + spacing.groupGap).toPx() }
 
     fun onDragBy(id: String, dy: Float) {
         val i = order.indexOf(id)
@@ -124,20 +127,9 @@ fun CustomizeMenuScreen(
         UimMenuOrder.saveOrder(prefs, order.toList())
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(context.getString(R.string.settings_customize_menu_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            )
-        }
+    SettingsScaffold(
+        title = context.getString(R.string.settings_customize_menu_title),
+        onNavigateBack = onNavigateBack,
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -149,24 +141,37 @@ fun CustomizeMenuScreen(
                 text = context.getString(R.string.settings_customize_menu_instructions),
                 modifier = Modifier.settingsSearchAnchor("customize_menu"),
             )
-            for (i in order.indices) {
-                if (i == UimMenuOrder.SHOWN_COUNT) {
-                    HiddenSectionRow()
-                }
-                val id = order[i]
-                key(id) {
-                    ToggleRow(
-                        id = id,
-                        position = if (i < UimMenuOrder.SHOWN_COUNT) i + 1 else null,
-                        isDragging = draggingId == id,
-                        offsetY = dragOffset,
-                        onDragStart = {
-                            draggingId = id
-                            dragOffset = 0f
-                        },
-                        onDragBy = { dy -> onDragBy(id, dy) },
-                        onDragEnd = { onDragFinished() }
-                    )
+            // The bar slots and the rows under the marker are two groups of cards, laid out in one
+            // column rather than two PreferenceGroups: a dragged row has to stay the same
+            // composition (and keep its gesture) when it crosses the marker, and a group's clip
+            // would cut it off as it lifts past the group's edge.
+            Column(verticalArrangement = Arrangement.spacedBy(spacing.groupGap)) {
+                val shownCount = minOf(order.size, UimMenuOrder.SHOWN_COUNT)
+                for (i in order.indices) {
+                    if (i == UimMenuOrder.SHOWN_COUNT) {
+                        HiddenSectionRow()
+                    }
+                    val id = order[i]
+                    key(id) {
+                        ToggleRow(
+                            id = id,
+                            position = if (i < UimMenuOrder.SHOWN_COUNT) i + 1 else null,
+                            // Each section's first and last cards carry the group's outer corners.
+                            edge = if (i < shownCount) {
+                                groupEdge(i, shownCount)
+                            } else {
+                                groupEdge(i - shownCount, order.size - shownCount)
+                            },
+                            isDragging = draggingId == id,
+                            offsetY = dragOffset,
+                            onDragStart = {
+                                draggingId = id
+                                dragOffset = 0f
+                            },
+                            onDragBy = { dy -> onDragBy(id, dy) },
+                            onDragEnd = { onDragFinished() }
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(spacing.extraLarge))
@@ -178,6 +183,7 @@ fun CustomizeMenuScreen(
 private fun ToggleRow(
     id: String,
     position: Int?,
+    edge: GroupEdge,
     isDragging: Boolean,
     offsetY: Float,
     onDragStart: () -> Unit,
@@ -187,22 +193,30 @@ private fun ToggleRow(
     val context = LocalContext.current
     val spacing = LocalSpacing.current
     val info = toggleInfo(id)
+    val rowShape = LocalShapes.current.row
     Surface(
-        // surface, not Color.Transparent: a dragged row lifts off the page, and the rows it passes
-        // over have to be opaque or it reads as a ghost sliding behind them.
+        shape = rowShape,
+        // The card colour, not Color.Transparent: a dragged row lifts off the page, and the rows it
+        // passes over have to be opaque or it reads as a ghost sliding behind them.
         color = if (isDragging) {
             MaterialTheme.colorScheme.surfaceVariant
         } else {
-            MaterialTheme.colorScheme.surface
+            LocalSettingsColors.current.card
         },
         modifier = Modifier
             .fillMaxWidth()
             .height(ROW_HEIGHT)
             .zIndex(if (isDragging) 1f else 0f)
+            // The group inset, outside the layer, so the lifted row's shadow is the card's shape.
+            .padding(horizontal = spacing.groupInset)
             .graphicsLayer {
                 translationY = if (isDragging) offsetY else 0f
                 shadowElevation = if (isDragging) 8f else 0f
+                this.shape = rowShape
             }
+            // The group's outer corners, painted inside the layer so they travel with the row;
+            // a lifted row drops them, since it is passing over other cards.
+            .groupOuterCorners(if (isDragging) GroupEdge.Middle else edge)
             .pointerInput(id) {
                 detectDragGesturesAfterLongPress(
                     onDragStart = { onDragStart() },
@@ -274,7 +288,7 @@ private fun HiddenSectionRow() {
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .padding(horizontal = spacing.listItemPadding)
+                .padding(start = spacing.categoryStartPadding, end = spacing.listItemPadding)
         )
     }
 }

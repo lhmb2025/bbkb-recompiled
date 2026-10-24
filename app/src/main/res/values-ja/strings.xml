@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">キーボードは端末の言語に従います。追加または削除するとオフになります。</string>
     <string name="languages_hub_follow_system_off">下のキーボードから選択します</string>
     <string name="languages_hub_keyboards_header">使用中のキーボード</string>
-    <string name="languages_hub_keyboards_hint">キーボードをタップすると、追加の入力候補言語の追加や削除ができます</string>
+    <string name="languages_hub_keyboards_hint">キーボードをタップすると、追加の入力候補言語の追加、レイアウトの変更、削除ができます</string>
     <string name="languages_hub_add">言語を追加</string>
     <string name="languages_hub_more_header">その他のオプション</string>
     <string name="languages_hub_also_predicts">%1$sの入力候補も表示</string>

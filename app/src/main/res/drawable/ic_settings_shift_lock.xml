@@ -1,0 +1,10 @@
+<!-- ic_settings_shift_lock. Owner's SVG (2026-10-23), 24-unit grid; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 8 18 v -5 H 3 L 12 2 l 9 11 h -5 v 5 h -8 Z M 10 16 h 4 v -5 h 2.775 l -4.775 -5.85 -4.775 5.85 h 2.775 v 5 Z M 4 22 v -2 h 16 v 2 H 4 Z"/>
+</vector>

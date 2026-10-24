@@ -71,8 +71,8 @@
     <string name="settings_category_behavior">ქცევა</string>
     <string name="settings_category_behavior_vkb">ქცევა</string>
     <string name="settings_category_ckb_gestures">ტევადობითი კლავიატურის ჟესტები</string>
-    <string name="settings_category_on_screen_keyboard">ᲔᲙᲠᲐᲜᲣᲚᲘ ᲙᲚᲐᲕᲘᲐᲢᲣᲠᲐ</string>
-    <string name="settings_category_physical_keyboard">ᲤᲘᲖᲘᲙᲣᲠᲘ ᲙᲚᲐᲕᲘᲐᲢᲣᲠᲐ</string>
+    <string name="settings_category_on_screen_keyboard">Ეკრანული კლავიატურა</string>
+    <string name="settings_category_physical_keyboard">Ფიზიკური კლავიატურა</string>
     <string name="settings_category_credits">მადლობები</string>
     <string name="settings_category_gestures">ჟესტები</string>
     <string name="settings_category_key_popup">კლავიშის გადიდება</string>
@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">კლავიატურები მიჰყვება თქვენი ტელეფონის ენებს. დამატება ან წაშლა გამორთავს ამას.</string>
     <string name="languages_hub_follow_system_off">თქვენ ირჩევთ კლავიატურებს ქვემოთ</string>
     <string name="languages_hub_keyboards_header">თქვენი კლავიატურები</string>
-    <string name="languages_hub_keyboards_hint">შეეხეთ კლავიატურას დამატებითი პროგნოზირების ენების დასამატებლად ან წასაშლელად</string>
+    <string name="languages_hub_keyboards_hint">შეეხეთ კლავიატურას დამატებითი პროგნოზირების ენების დასამატებლად, მისი განლაგების შესაცვლელად ან წასაშლელად</string>
     <string name="languages_hub_add">ენის დამატება</string>
     <string name="languages_hub_more_header">სხვა პარამეტრები</string>
     <string name="languages_hub_also_predicts">ასევე პროგნოზირებს: %1$s</string>

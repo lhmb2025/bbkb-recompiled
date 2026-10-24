@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">കീബോർഡുകൾ നിങ്ങളുടെ ഫോണിന്റെ ഭാഷകൾ പിന്തുടരുന്നു. ഒന്ന് ചേർക്കുകയോ നീക്കം ചെയ്യുകയോ ചെയ്താൽ ഇത് ഓഫാകും.</string>
     <string name="languages_hub_follow_system_off">താഴെയുള്ള കീബോർഡുകൾ നിങ്ങൾ തിരഞ്ഞെടുക്കുന്നു</string>
     <string name="languages_hub_keyboards_header">നിങ്ങളുടെ കീബോർഡുകൾ</string>
-    <string name="languages_hub_keyboards_hint">അധിക പ്രവചന ഭാഷകൾ ചേർക്കാനോ നീക്കം ചെയ്യാനോ ഒരു കീബോർഡിൽ ടാപ്പ് ചെയ്യുക</string>
+    <string name="languages_hub_keyboards_hint">അധിക പ്രവചന ഭാഷകൾ ചേർക്കാനോ ലേഔട്ട് മാറ്റാനോ നീക്കം ചെയ്യാനോ ഒരു കീബോർഡിൽ ടാപ്പ് ചെയ്യുക</string>
     <string name="languages_hub_add">ഒരു ഭാഷ ചേർക്കുക</string>
     <string name="languages_hub_more_header">കൂടുതൽ ഓപ്ഷനുകൾ</string>
     <string name="languages_hub_also_predicts">ഇതും പ്രവചിക്കുന്നു: %1$s</string>

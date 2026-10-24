@@ -12,17 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Contacts
 import androidx.compose.material.icons.outlined.Tune
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,14 +28,15 @@ import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.ui.ListPreference
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceActionItem
+import dev.bbkb.ime.core.settings.ui.PreferenceGroup
 import dev.bbkb.ime.core.settings.ui.PreferenceInfo
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
 
 /**
  * Spell Checker Settings Screen
  * Configure spell checking behavior and permissions
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpellCheckerSettingsScreen(
     onNavigateBack: () -> Unit
@@ -90,21 +82,9 @@ fun SpellCheckerSettingsScreen(
         }
     }
     
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(context.getString(R.string.settings_spell_checker_screen_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        }
+    SettingsScaffold(
+        title = context.getString(R.string.settings_spell_checker_screen_title),
+        onNavigateBack = onNavigateBack,
     ) { paddingValues ->
         val spacing = LocalSpacing.current
         
@@ -121,58 +101,60 @@ fun SpellCheckerSettingsScreen(
                 text = "The BBKB spell checker provides intelligent spell checking across all apps that support spell checking. It uses advanced language models to detect typos and suggest corrections."
             )
 
-            // The contacts permission, as the row it gates rather than as a tinted card above it.
-            if (!hasContactsPermission) {
-                PreferenceActionItem(
-                    title = "Contacts Permission Required",
-                    summary = "Grant contacts permission to recognize contact names as valid words during spell checking.",
-                    actionLabel = "Grant Permission",
-                    onAction = {
-                        permissionLauncher.launch(Manifest.permission.READ_CONTACTS)
+            PreferenceGroup {
+                // The contacts permission, as the row it gates rather than as a tinted card above it.
+                if (!hasContactsPermission) {
+                    PreferenceActionItem(
+                        title = "Contacts Permission Required",
+                        summary = "Grant contacts permission to recognize contact names as valid words during spell checking.",
+                        actionLabel = "Grant Permission",
+                        onAction = {
+                            permissionLauncher.launch(Manifest.permission.READ_CONTACTS)
+                        },
+                    )
+                }
+
+                // Use Contacts for Spellchecking
+                SwitchPreference(
+                    title = context.getString(R.string.settings_spellcheck_use_contacts_title),
+                    summary = if (hasContactsPermission) {
+                        context.getString(R.string.settings_spellcheck_use_contacts_summary_enabled)
+                    } else {
+                        context.getString(R.string.settings_spellcheck_use_contacts_summary_disabled)
                     },
+                    icon = Icons.Outlined.Contacts,
+                    checked = useContacts && hasContactsPermission,
+                    enabled = hasContactsPermission,
+                    onCheckedChange = { newValue ->
+                        if (!hasContactsPermission && newValue) {
+                            // Request permission if trying to enable
+                            permissionLauncher.launch(Manifest.permission.READ_CONTACTS)
+                        } else {
+                            useContacts = newValue
+                            prefs.edit().putBoolean("pref_spellcheck_use_contacts", newValue).apply()
+                        }
+                    }
+                )
+
+                // Spell Check Sensitivity
+                ListPreference(
+                    title = context.getString(R.string.settings_spellcheck_sensitivity_title),
+                    summary = when (sensitivity) {
+                        "lenient" -> context.getString(R.string.settings_spellcheck_sensitivity_lenient)
+                        "balanced" -> context.getString(R.string.settings_spellcheck_sensitivity_balanced)
+                        "strict" -> context.getString(R.string.settings_spellcheck_sensitivity_strict)
+                        else -> context.getString(R.string.settings_spellcheck_sensitivity_balanced)
+                    },
+                    icon = Icons.Outlined.Tune,
+                    value = sensitivity,
+                    entries = listOf("Lenient", "Balanced", "Strict"),
+                    entryValues = listOf("lenient", "balanced", "strict"),
+                    onValueChange = { newValue ->
+                        sensitivity = newValue
+                        prefs.edit().putString("pref_spellcheck_sensitivity", newValue).apply()
+                    }
                 )
             }
-
-            // Use Contacts for Spellchecking
-            SwitchPreference(
-                title = context.getString(R.string.settings_spellcheck_use_contacts_title),
-                summary = if (hasContactsPermission) {
-                    context.getString(R.string.settings_spellcheck_use_contacts_summary_enabled)
-                } else {
-                    context.getString(R.string.settings_spellcheck_use_contacts_summary_disabled)
-                },
-                icon = Icons.Outlined.Contacts,
-                checked = useContacts && hasContactsPermission,
-                enabled = hasContactsPermission,
-                onCheckedChange = { newValue ->
-                    if (!hasContactsPermission && newValue) {
-                        // Request permission if trying to enable
-                        permissionLauncher.launch(Manifest.permission.READ_CONTACTS)
-                    } else {
-                        useContacts = newValue
-                        prefs.edit().putBoolean("pref_spellcheck_use_contacts", newValue).apply()
-                    }
-                }
-            )
-
-            // Spell Check Sensitivity
-            ListPreference(
-                title = context.getString(R.string.settings_spellcheck_sensitivity_title),
-                summary = when (sensitivity) {
-                    "lenient" -> context.getString(R.string.settings_spellcheck_sensitivity_lenient)
-                    "balanced" -> context.getString(R.string.settings_spellcheck_sensitivity_balanced)
-                    "strict" -> context.getString(R.string.settings_spellcheck_sensitivity_strict)
-                    else -> context.getString(R.string.settings_spellcheck_sensitivity_balanced)
-                },
-                icon = Icons.Outlined.Tune,
-                value = sensitivity,
-                entries = listOf("Lenient", "Balanced", "Strict"),
-                entryValues = listOf("lenient", "balanced", "strict"),
-                onValueChange = { newValue ->
-                    sensitivity = newValue
-                    prefs.edit().putString("pref_spellcheck_sensitivity", newValue).apply()
-                }
-            )
             
             Spacer(modifier = Modifier.height(spacing.extraLarge))
         }

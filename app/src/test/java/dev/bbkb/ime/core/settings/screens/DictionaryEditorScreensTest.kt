@@ -164,7 +164,7 @@ class DictionaryEditorScreensTest {
             listOf(
                 "Text Shortcuts",
                 "2 shortcuts",
-                "ENGLISH (UNITED STATES) (2)",
+                "English (United States) (2)",
                 // Sorted by shortcut, lower-cased: "addr" before "sig".
                 "addr", "1 Main Street",
                 "sig", "Best regards",
@@ -193,7 +193,7 @@ class DictionaryEditorScreensTest {
             listOf(
                 "Text Shortcuts",
                 "3 shortcuts",
-                "ENGLISH (UNITED STATES) (3)",
+                "English (United States) (3)",
                 // A row is a PreferenceItem now, so its texts lay out title / trailing markers /
                 // summary rather than headline / supporting content: the shortcut, then its
                 // markers, then the phrase it expands to.
@@ -226,7 +226,7 @@ class DictionaryEditorScreensTest {
             listOf(
                 "Text Shortcuts",
                 "1 shortcuts",
-                "ENGLISH (UNITED STATES) (1)",
+                "English (United States) (1)",
                 "sig", "Best regards",
                 "Add shortcut",
             ),
@@ -250,9 +250,9 @@ class DictionaryEditorScreensTest {
             listOf(
                 "Text Shortcuts",
                 "2 shortcuts",
-                "ENGLISH (UNITED STATES) (1)",
+                "English (United States) (1)",
                 "sig", "Best regards",
-                "FRENCH (FRANCE) (1)",
+                "French (France) (1)",
                 "cdt", "Cordialement",
                 "Add shortcut",
             ),
@@ -279,9 +279,9 @@ class DictionaryEditorScreensTest {
             listOf(
                 "Text Shortcuts",
                 "2 shortcuts",
-                "ENGLISH (UNITED STATES) (1)",
+                "English (United States) (1)",
                 "sig", "Best regards",
-                "FRENCH (FRANCE) (1)",
+                "French (France) (1)",
                 "sig", "Cordialement",
                 "Add shortcut",
             ),
@@ -312,7 +312,7 @@ class DictionaryEditorScreensTest {
                 "Text Shortcuts",
                 // While searching, the counter reports the filtered rows it sits above.
                 "1 shortcuts",
-                "ENGLISH (UNITED STATES) (1)",
+                "English (United States) (1)",
                 "sig", "Best regards",
                     "Add shortcut",
             ),
@@ -366,7 +366,7 @@ class DictionaryEditorScreensTest {
             listOf(
                 "Text Shortcuts",
                 "1 shortcuts",
-                "ENGLISH (UNITED STATES) (1)",
+                "English (United States) (1)",
                 "sig", "Best regards",
                 "Add shortcut",
             ),
@@ -459,7 +459,7 @@ class DictionaryEditorScreensTest {
             listOf(
                 "Text Shortcuts",
                 "1 shortcuts",
-                "ENGLISH (UNITED STATES) (1)",
+                "English (United States) (1)",
                 "sig", "Best regards",
                 "Dictionary was recovered from corrupted state",
                 "Add shortcut",
@@ -485,7 +485,7 @@ class DictionaryEditorScreensTest {
             listOf(
                 context.getString(dev.bbkb.ime.R.string.settings_user_dictionary_screen_title),
                 "2 words",
-                "ENGLISH (UNITED STATES) (2)",
+                "English (United States) (2)",
                 // Sorted by word, lower-cased.
                 "Kaptur",
                 "Landrum",
@@ -515,7 +515,7 @@ class DictionaryEditorScreensTest {
             listOf(
                 context.getString(dev.bbkb.ime.R.string.settings_user_dictionary_screen_title),
                 "2 words",
-                "ENGLISH (UNITED STATES) (2)",
+                "English (United States) (2)",
                 "Kaptur",
                 "Landrum",
                 "Add word",
@@ -540,9 +540,9 @@ class DictionaryEditorScreensTest {
             listOf(
                 context.getString(dev.bbkb.ime.R.string.settings_user_dictionary_screen_title),
                 "2 words",
-                "ENGLISH (UNITED STATES) (1)",
+                "English (United States) (1)",
                 "Landrum",
-                "FRENCH (FRANCE) (1)",
+                "French (France) (1)",
                 "Landrum",
                 "Add word",
             ),
@@ -570,7 +570,7 @@ class DictionaryEditorScreensTest {
             listOf(
                 context.getString(dev.bbkb.ime.R.string.settings_user_dictionary_screen_title),
                 "1 words",
-                "ENGLISH (UNITED STATES) (1)",
+                "English (United States) (1)",
                 "Landrum",
                 "Add word",
             ),
@@ -628,11 +628,10 @@ class DictionaryEditorScreensTest {
             listOf(
                 context.getString(dev.bbkb.ime.R.string.settings_user_dictionary_screen_title),
                 "2 words",
-                // Upper-cased like every other subhead: PreferenceCategory draws it now.
-                context.getString(dev.bbkb.ime.R.string.user_dict_settings_all_languages)
-                    .uppercase() + " (1)",
+                // Sentence case like every other subhead: PreferenceCategory draws it now.
+                context.getString(dev.bbkb.ime.R.string.user_dict_settings_all_languages) + " (1)",
                 "Landrum",
-                "ENGLISH (UNITED STATES) (1)",
+                "English (United States) (1)",
                 "Kaptur",
                 "Add word",
             ),

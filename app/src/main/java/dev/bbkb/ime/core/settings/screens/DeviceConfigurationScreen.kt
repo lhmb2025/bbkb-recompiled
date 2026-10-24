@@ -6,6 +6,8 @@ import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,25 +15,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,9 +44,14 @@ import dev.bbkb.ime.core.device.config.builder.DeviceConfigSummary
 import dev.bbkb.ime.core.device.config.builder.DeviceProfileBuilder
 import dev.bbkb.ime.core.device.config.builder.DeviceProfileExporter
 import dev.bbkb.ime.core.settings.PrefsManager
+import dev.bbkb.ime.core.settings.ui.LocalInGroup
+import dev.bbkb.ime.core.settings.ui.GroupEdge
+import dev.bbkb.ime.core.settings.ui.groupEdge
+import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.PreferenceDeleteButton
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import java.io.File
 
 /**
@@ -67,7 +69,6 @@ internal const val PREF_SHOW_DEVICE_PROFILE_BUILDER = "pref_show_device_profile_
  * Allows users to select, import, and manage device input configurations.
  * Accessible from Physical Keyboard settings.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeviceConfigurationScreen(
     onNavigateToProfileBuilder: () -> Unit,
@@ -112,21 +113,9 @@ fun DeviceConfigurationScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(context.getString(R.string.settings_device_configuration_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        },
+    SettingsScaffold(
+        title = context.getString(R.string.settings_device_configuration_title),
+        onNavigateBack = onNavigateBack,
         // The screen's one creative action, named. It was a bare + in the app bar, which gave no
         // hint that it opened a file picker for an XML device config.
         floatingActionButton = {
@@ -141,53 +130,48 @@ fun DeviceConfigurationScreen(
         val standardConfigs = configs.filter { it.type == CustomDeviceConfigManager.ConfigType.DEFAULT }
         val preloadedConfigs = configs.filter { it.type == CustomDeviceConfigManager.ConfigType.PRELOADED }
         val customConfigs = configs.filter { it.type == CustomDeviceConfigManager.ConfigType.CUSTOM }
+        val spacing = LocalSpacing.current
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            // This device — the builder, before the list of configs someone else made. Unfinished,
-            // so it is behind the debug flag; see [PREF_SHOW_DEVICE_PROFILE_BUILDER].
-            if (showProfileBuilder) {
-                item { PreferenceCategory(title = stringResource(R.string.device_profile_category_this_device)) }
-                item {
-                    PreferenceItem(
-                        title = stringResource(R.string.device_profile_builder_entry_title),
-                        summary = stringResource(R.string.device_profile_builder_entry_summary),
-                        onClick = onNavigateToProfileBuilder,
-                        trailing = {
-                            Icon(
-                                imageVector = Icons.Outlined.ChevronRight,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        // Each section is a group laid out by the list itself: the rows paint themselves as cards,
+        // each section's first and last row carry the group's outer corners, and the rows take the
+        // group inset themselves so the section labels between them keep their page-level alignment.
+        CompositionLocalProvider(LocalInGroup provides true) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                verticalArrangement = Arrangement.spacedBy(spacing.groupGap)
+            ) {
+                // This device — the builder, before the list of configs someone else made. Unfinished,
+                // so it is behind the debug flag; see [PREF_SHOW_DEVICE_PROFILE_BUILDER].
+                if (showProfileBuilder) {
+                    item { PreferenceCategory(title = stringResource(R.string.device_profile_category_this_device)) }
+                    item {
+                        Box(modifier = Modifier.padding(horizontal = spacing.groupInset)) {
+                            PreferenceItem(
+                                title = stringResource(R.string.device_profile_builder_entry_title),
+                                summary = stringResource(R.string.device_profile_builder_entry_summary),
+                                groupEdge = groupEdge(0, 1),
+                                onClick = onNavigateToProfileBuilder,
+                                trailing = {
+                                    Icon(
+                                        imageVector = Icons.Outlined.ChevronRight,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                },
                             )
-                        },
-                    )
+                        }
+                    }
                 }
-            }
 
-            // Standard section
-            item { PreferenceCategory(title = context.getString(R.string.settings_device_config_category_standard)) }
-            items(standardConfigs) { config ->
-                ConfigItem(
-                    config = config,
-                    isSelected = config.id == activeId,
-                    onSelect = {
-                        manager.activeConfigId = config.id
-                        activeId = config.id
-                    },
-                    onDelete = null
-                )
-            }
-
-            // Preloaded section
-            if (preloadedConfigs.isNotEmpty()) {
-                item { PreferenceCategory(title = context.getString(R.string.settings_device_config_category_preloaded)) }
-                items(preloadedConfigs) { config ->
+                // Standard section
+                item { PreferenceCategory(title = context.getString(R.string.settings_device_config_category_standard)) }
+                itemsIndexed(standardConfigs) { index, config ->
                     ConfigItem(
                         config = config,
                         isSelected = config.id == activeId,
+                        edge = groupEdge(index, standardConfigs.size),
                         onSelect = {
                             manager.activeConfigId = config.id
                             activeId = config.id
@@ -195,27 +179,45 @@ fun DeviceConfigurationScreen(
                         onDelete = null
                     )
                 }
-            }
 
-            // Custom section
-            if (customConfigs.isNotEmpty()) {
-                item { PreferenceCategory(title = context.getString(R.string.settings_device_config_category_custom)) }
-                items(customConfigs) { config ->
-                    ConfigItem(
-                        config = config,
-                        isSelected = config.id == activeId,
-                        onSelect = {
-                            manager.activeConfigId = config.id
-                            activeId = config.id
-                        },
-                        onDelete = { deleteTarget = config }
-                    )
+                // Preloaded section
+                if (preloadedConfigs.isNotEmpty()) {
+                    item { PreferenceCategory(title = context.getString(R.string.settings_device_config_category_preloaded)) }
+                    itemsIndexed(preloadedConfigs) { index, config ->
+                        ConfigItem(
+                            config = config,
+                            isSelected = config.id == activeId,
+                            edge = groupEdge(index, preloadedConfigs.size),
+                            onSelect = {
+                                manager.activeConfigId = config.id
+                                activeId = config.id
+                            },
+                            onDelete = null
+                        )
+                    }
                 }
-            }
 
-            // Keeps the last row clear of the extended FAB (56dp + 16dp margin + 16dp breathing
-            // room), as Language packs does.
-            item { Spacer(modifier = Modifier.height(88.dp)) }
+                // Custom section
+                if (customConfigs.isNotEmpty()) {
+                    item { PreferenceCategory(title = context.getString(R.string.settings_device_config_category_custom)) }
+                    itemsIndexed(customConfigs) { index, config ->
+                        ConfigItem(
+                            config = config,
+                            isSelected = config.id == activeId,
+                            edge = groupEdge(index, customConfigs.size),
+                            onSelect = {
+                                manager.activeConfigId = config.id
+                                activeId = config.id
+                            },
+                            onDelete = { deleteTarget = config }
+                        )
+                    }
+                }
+
+                // Keeps the last row clear of the extended FAB (56dp + 16dp margin + 16dp breathing
+                // room), as Language packs does.
+                item { Spacer(modifier = Modifier.height(88.dp)) }
+            }
         }
     }
 
@@ -278,26 +280,30 @@ fun DeviceConfigurationScreen(
 private fun ConfigItem(
     config: CustomDeviceConfigManager.ConfigInfo,
     isSelected: Boolean,
+    edge: GroupEdge,
     onSelect: () -> Unit,
     onDelete: (() -> Unit)?
 ) {
-    PreferenceItem(
-        title = config.name,
-        summary = if (config.type == CustomDeviceConfigManager.ConfigType.DEFAULT) {
-            "System auto-detection"
-        } else null,
-        leading = {
-            RadioButton(selected = isSelected, onClick = null)
-        },
-        modifier = Modifier.selectable(
-            selected = isSelected,
-            onClick = onSelect,
-            role = Role.RadioButton,
-        ),
-        trailing = onDelete?.let { delete ->
-            { PreferenceDeleteButton(contentDescription = "Delete ${config.name}", onClick = delete) }
-        }
-    )
+    Box(modifier = Modifier.padding(horizontal = LocalSpacing.current.groupInset)) {
+        PreferenceItem(
+            title = config.name,
+            summary = if (config.type == CustomDeviceConfigManager.ConfigType.DEFAULT) {
+                "System auto-detection"
+            } else null,
+            leading = {
+                RadioButton(selected = isSelected, onClick = null)
+            },
+            modifier = Modifier.selectable(
+                selected = isSelected,
+                onClick = onSelect,
+                role = Role.RadioButton,
+            ),
+            groupEdge = edge,
+            trailing = onDelete?.let { delete ->
+                { PreferenceDeleteButton(contentDescription = "Delete ${config.name}", onClick = delete) }
+            }
+        )
+    }
 }
 
 /** An imported config waiting for the user to look at its `<match>` block. */

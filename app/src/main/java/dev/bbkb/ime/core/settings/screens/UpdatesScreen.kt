@@ -16,28 +16,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -58,9 +51,12 @@ import dev.bbkb.ime.core.distribution.OfflineException
 import dev.bbkb.ime.core.distribution.UnsupportedSchemaException
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
+import dev.bbkb.ime.core.settings.ui.LocalShapes
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
+import dev.bbkb.ime.core.settings.ui.PreferenceGroup
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
+import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
 import dev.bbkb.ime.core.update.ApkInstaller
 import dev.bbkb.ime.core.update.UpdateChecker
@@ -85,7 +81,6 @@ import java.util.Date
  * On a debug build the honest answer is usually "no update channel": the published manifest
  * carries `release` only. That is stated as a fact, not as an error — see [UpdateStatus.NoChannel].
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdatesScreen(
     onNavigateBack: () -> Unit
@@ -132,21 +127,9 @@ fun UpdatesScreen(
         if (existing != null) download = DownloadState.Done(existing)
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(context.getString(R.string.settings_updates_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        }
+    SettingsScaffold(
+        title = context.getString(R.string.settings_updates_title),
+        onNavigateBack = onNavigateBack,
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -155,27 +138,29 @@ fun UpdatesScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             // ── This build ──────────────────────────────────────────────────────
-            PreferenceItem(
-                title = context.getString(R.string.settings_update_installed_version_title),
-                // Same shape as the About screen's version row, and for the same reason: it is
-                // the one string on the page that legitimately changes every release.
-                summary = "Version ${BuildConfig.VERSION_NAME} " +
-                    "(Build ${BuildConfig.VERSION_CODE}) · ${BuildConfig.BUILD_TYPE}",
-                icon = Icons.Outlined.Info,
-                onClick = null
-            )
-            PreferenceItem(
-                title = context.getString(R.string.settings_update_channel_title),
-                summary = channelSummary(context, checker),
-                iconSpaceReserved = true,
-                onClick = null
-            )
-            PreferenceItem(
-                title = context.getString(R.string.settings_update_last_checked_title),
-                summary = lastCheckedSummary(context, checker.lastCheckedAt()),
-                iconSpaceReserved = true,
-                onClick = null
-            )
+            PreferenceGroup {
+                PreferenceItem(
+                    title = context.getString(R.string.settings_update_installed_version_title),
+                    // Same shape as the About screen's version row, and for the same reason: it is
+                    // the one string on the page that legitimately changes every release.
+                    summary = "Version ${BuildConfig.VERSION_NAME} " +
+                        "(Build ${BuildConfig.VERSION_CODE}) · ${BuildConfig.BUILD_TYPE}",
+                    icon = Icons.Outlined.Info,
+                    onClick = null
+                )
+                PreferenceItem(
+                    title = context.getString(R.string.settings_update_channel_title),
+                    summary = channelSummary(context, checker),
+                    iconSpaceReserved = true,
+                    onClick = null
+                )
+                PreferenceItem(
+                    title = context.getString(R.string.settings_update_last_checked_title),
+                    summary = lastCheckedSummary(context, checker.lastCheckedAt()),
+                    iconSpaceReserved = true,
+                    onClick = null
+                )
+            }
 
             // ── Check now ───────────────────────────────────────────────────────
             Row(
@@ -315,29 +300,31 @@ fun UpdatesScreen(
 
             // ── Background check ────────────────────────────────────────────────
             PreferenceCategory(title = context.getString(R.string.settings_updates_title))
-            SwitchPreference(
-                title = context.getString(R.string.settings_update_background_check_title),
-                summary = context.getString(R.string.settings_update_background_check_summary),
-                icon = Icons.Outlined.Notifications,
-                checked = backgroundCheck,
-                // Spelled out rather than referring to UpdateJobService.PREF_BACKGROUND_CHECK:
-                // SettingsSearchIndexTest greps the screens for the string literal each
-                // settingsSearchAnchor call is given, and cannot resolve a constant.
-                modifier = Modifier.settingsSearchAnchor("pref_update_background_check"),
-                onCheckedChange = { enabled ->
-                    backgroundCheck = enabled
-                    PrefsManager.getPrefs(context).edit()
-                        .putBoolean(UpdateJobService.PREF_BACKGROUND_CHECK, enabled)
-                        .apply()
-                    UpdateJobService.sync(context)
-                    if (enabled &&
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                        !UpdateNotifier.canPostNotifications(context)
-                    ) {
-                        notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            PreferenceGroup {
+                SwitchPreference(
+                    title = context.getString(R.string.settings_update_background_check_title),
+                    summary = context.getString(R.string.settings_update_background_check_summary),
+                    icon = Icons.Outlined.Notifications,
+                    checked = backgroundCheck,
+                    // Spelled out rather than referring to UpdateJobService.PREF_BACKGROUND_CHECK:
+                    // SettingsSearchIndexTest greps the screens for the string literal each
+                    // settingsSearchAnchor call is given, and cannot resolve a constant.
+                    modifier = Modifier.settingsSearchAnchor("pref_update_background_check"),
+                    onCheckedChange = { enabled ->
+                        backgroundCheck = enabled
+                        PrefsManager.getPrefs(context).edit()
+                            .putBoolean(UpdateJobService.PREF_BACKGROUND_CHECK, enabled)
+                            .apply()
+                        UpdateJobService.sync(context)
+                        if (enabled &&
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                            !UpdateNotifier.canPostNotifications(context)
+                        ) {
+                            notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
                     }
-                }
-            )
+                )
+            }
 
             Spacer(modifier = Modifier.height(spacing.extraLarge))
         }
@@ -391,8 +378,8 @@ private fun UpdateCard(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = spacing.contentPadding, vertical = spacing.small),
-        shape = RoundedCornerShape(spacing.medium),
+            .padding(horizontal = spacing.groupInset, vertical = spacing.small),
+        shape = LocalShapes.current.group,
         // surfaceVariant at half strength, as elsewhere in settings: the theme defines no
         // surfaceContainer tokens.
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)

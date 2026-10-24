@@ -8,16 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
@@ -32,10 +22,11 @@ import dev.bbkb.ime.core.settings.PrefsManager
 /**
  * The one renderer for every [ScreenSpec].
  *
- * It emits the frame the 17 hand-written screens each carried a copy of — `Scaffold`, a
- * `TopAppBar` with a back arrow, a `fillMaxSize` scrolling `Column`, a trailing `extraLarge`
- * spacer — and then one preference composable per row, from the same `ui/Preferences.kt` widgets
- * the screens called directly.
+ * It emits the frame the 17 hand-written screens each carried a copy of — [SettingsScaffold]
+ * (the collapsing top bar on the page colour), a `fillMaxSize` scrolling `Column`, a trailing
+ * `extraLarge` spacer — and then the rows in the grouped layout: the visible rows are split by
+ * [groupRows] into labelled groups of cards and page-level blocks, and each row is drawn by the
+ * same `ui/Preferences.kt` widgets the screens called directly.
  *
  * **State lifetime is the contract.** The value map is `remember`ed with no key and seeded once,
  * from every row that owns a preference, whether or not that row is currently visible. That is
@@ -46,7 +37,6 @@ import dev.bbkb.ime.core.settings.PrefsManager
  * [rows] may be rebuilt on every recomposition — it is plain data plus lambdas, and nothing in it
  * captures a live value; summaries and gates are evaluated here, against the map.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreenHost(
     @StringRes title: Int,
@@ -69,23 +59,19 @@ fun SettingsScreenHost(
     }
     val env = remember { SettingsEnv(context, prefs, state) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(context.getString(title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        }
+    SettingsScaffold(
+        title = context.getString(title),
+        onNavigateBack = onNavigateBack,
     ) { paddingValues ->
         val spacing = LocalSpacing.current
+
+        // Visibility is decided here, before grouping, so a hidden row never opens a gap in a
+        // group: the row's own gate, and for a ManagedToggle the device profile's hide as well.
+        val deviceProfile = DeviceProfile.current()
+        val visibleRows = rows.filter { row ->
+            row.visible(env) &&
+                (row !is ManagedToggle || deviceProfile?.isSettingHidden(row.store.key) != true)
+        }
 
         Column(
             modifier = Modifier
@@ -93,9 +79,13 @@ fun SettingsScreenHost(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            rows.forEach { row ->
-                if (row.visible(env)) {
-                    RenderRow(row, env, state)
+            groupRows(visibleRows).forEach { block ->
+                when (block) {
+                    is RowBlock.Label -> PreferenceCategory(title = context.getString(block.row.title))
+                    is RowBlock.Page -> block.row.content(env)
+                    is RowBlock.Group -> PreferenceGroup {
+                        block.rows.forEach { row -> RenderRow(row, env, state) }
+                    }
                 }
             }
 
@@ -154,28 +144,26 @@ private fun RenderRow(
         }
 
         is ManagedToggle -> {
+            // A hidden ManagedToggle never reaches here: the host's visibility pass drops it.
             val key = row.store.key
-            val deviceProfile = DeviceProfile.current()
-            if (!deviceProfile.isSettingHidden(key)) {
-                val readOnly = deviceProfile.isSettingReadOnly(key)
-                val value = env.bool(key)
-                SwitchRow(
-                    title = context.getString(row.title),
-                    summary = row.summary.render(context, value),
-                    icon = row.icon,
-                    iconSpaceReserved = false,
-                    checked = value,
-                    enabled = row.enabled(env) && !readOnly,
-                    modifier = Modifier,
-                    onCheckedChange = { newValue ->
-                        if (!readOnly) {
-                            state[key] = newValue
-                            row.store.write(env.prefs, newValue)
-                            row.onWrite?.invoke(context, newValue)
-                        }
-                    },
-                )
-            }
+            val readOnly = DeviceProfile.current()?.isSettingReadOnly(key) == true
+            val value = env.bool(key)
+            SwitchRow(
+                title = context.getString(row.title),
+                summary = row.summary.render(context, value),
+                icon = row.icon,
+                iconSpaceReserved = row.iconSpaceReserved,
+                checked = value,
+                enabled = row.enabled(env) && !readOnly,
+                modifier = Modifier,
+                onCheckedChange = { newValue ->
+                    if (!readOnly) {
+                        state[key] = newValue
+                        row.store.write(env.prefs, newValue)
+                        row.onWrite?.invoke(context, newValue)
+                    }
+                },
+            )
         }
 
         is Choice -> {

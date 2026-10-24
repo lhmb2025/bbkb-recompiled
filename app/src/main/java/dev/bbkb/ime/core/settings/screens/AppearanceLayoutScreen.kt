@@ -89,7 +89,7 @@ fun AppearanceLayoutScreen(
         // Default currency: the one grid picker in settings, so a hand-written block rather than
         // a row type of its own. Here rather than on the symbols screen (2026-10-19): it is a
         // keyboard-wide choice, not a custom page.
-        Custom { CurrencyPicker() },
+        Custom(inGroup = true) { CurrencyPicker() },
         // Custom symbol pages (on-screen + physical)
         Nav(
             title = R.string.settings_symbol_customization_title,

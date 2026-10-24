@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">键盘将跟随手机的语言。添加或移除键盘会关闭此设置。</string>
     <string name="languages_hub_follow_system_off">您可在下方自行选择键盘</string>
     <string name="languages_hub_keyboards_header">您的键盘</string>
-    <string name="languages_hub_keyboards_hint">点按键盘可添加更多预测语言或将其移除</string>
+    <string name="languages_hub_keyboards_hint">点按键盘可添加更多预测语言、更改其布局或将其移除</string>
     <string name="languages_hub_add">添加语言</string>
     <string name="languages_hub_more_header">更多选项</string>
     <string name="languages_hub_also_predicts">同时预测：%1$s</string>

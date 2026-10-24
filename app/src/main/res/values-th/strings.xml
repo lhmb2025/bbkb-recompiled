@@ -774,7 +774,7 @@
     <string name="languages_hub_follow_system_on">แป้นพิมพ์จะใช้ภาษาตามโทรศัพท์ของคุณ การเพิ่มหรือนำแป้นพิมพ์ออกจะปิดการตั้งค่านี้</string>
     <string name="languages_hub_follow_system_off">คุณเลือกแป้นพิมพ์ด้านล่างเอง</string>
     <string name="languages_hub_keyboards_header">แป้นพิมพ์ของคุณ</string>
-    <string name="languages_hub_keyboards_hint">แตะแป้นพิมพ์เพื่อเพิ่มภาษาสำหรับการแนะนำคำเพิ่มเติมหรือนำออก</string>
+    <string name="languages_hub_keyboards_hint">แตะแป้นพิมพ์เพื่อเพิ่มภาษาสำหรับการแนะนำคำเพิ่มเติม เปลี่ยนเลย์เอาท์ หรือนำออก</string>
     <string name="languages_hub_add">เพิ่มภาษา</string>
     <string name="languages_hub_more_header">ตัวเลือกเพิ่มเติม</string>
     <string name="languages_hub_also_predicts">แนะนำคำในภาษาด้วย: %1$s</string>

@@ -50,7 +50,20 @@ private val DarkColors = darkColorScheme(
     onBackground = Color(0xFFE2E2E9),         // m3_on_background_dark
 
     error = Color(0xFFFFB4AB),                // m3_error_dark
-    onError = Color(0xFF690005)               // m3_on_error_dark
+    onError = Color(0xFF690005),              // m3_on_error_dark
+
+    // Surface containers: the keyboard's m3_surface_container_* tokens with the steps between
+    // them. The grouped settings layout reads these (page, row cards, search field); left unset,
+    // the builder fills them with the Material baseline purples.
+    outline = Color(0xFF8E9099),
+    outlineVariant = Color(0xFF44474F),
+    surfaceDim = Color(0xFF1A1C1E),
+    surfaceBright = Color(0xFF3A3B41),
+    surfaceContainerLowest = Color(0xFF14151A),
+    surfaceContainerLow = Color(0xFF1E1F25),  // m3_surface_container_dark
+    surfaceContainer = Color(0xFF22242A),
+    surfaceContainerHigh = Color(0xFF2B2D33),
+    surfaceContainerHighest = Color(0xFF33343A) // m3_surface_container_highest_dark
 )
 
 private val LightColors = lightColorScheme(
@@ -74,7 +87,17 @@ private val LightColors = lightColorScheme(
     onBackground = Color(0xFF1A1C1E),         // m3_on_background_light
 
     error = Color(0xFFBA1A1A),                // m3_error_light
-    onError = Color(0xFFFFFFFF)               // m3_on_error_light
+    onError = Color(0xFFFFFFFF),              // m3_on_error_light
+
+    outline = Color(0xFF74777F),
+    outlineVariant = Color(0xFFC4C6D0),
+    surfaceDim = Color(0xFFD9DAE0),
+    surfaceBright = Color(0xFFF9F9FF),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFF3F4FA),
+    surfaceContainer = Color(0xFFEDEEF4),     // m3_surface_container_light
+    surfaceContainerHigh = Color(0xFFE7E8EE),
+    surfaceContainerHighest = Color(0xFFE2E2E9) // m3_surface_container_highest_light
 )
 
 /**
@@ -118,15 +141,27 @@ fun BlackBerryTheme(content: @Composable () -> Unit) {
         else -> systemInDarkMode // "auto" or unknown
     }
 
+    val colorScheme = if (isDarkTheme) DarkColors else LightColors
+    // The grouped layout's two surfaces: white cards on a tinted page in light mode, lighter cards
+    // on the plain surface in dark mode (the Android 16 Settings pairing).
+    val settingsColors = remember(isDarkTheme) {
+        if (isDarkTheme) {
+            SettingsColors(page = colorScheme.surface, card = colorScheme.surfaceContainerHigh)
+        } else {
+            SettingsColors(page = colorScheme.surfaceContainer, card = colorScheme.surfaceContainerLowest)
+        }
+    }
+
     MaterialTheme(
-        colorScheme = if (isDarkTheme) DarkColors else LightColors,
+        colorScheme = colorScheme,
         typography = SettingsTypography,
         content = {
             // Provide design system tokens to all composables
             CompositionLocalProvider(
                 LocalSpacing provides SettingsSpacing,
                 LocalShapes provides SettingsShapes,
-                LocalMotion provides SettingsMotion
+                LocalMotion provides SettingsMotion,
+                LocalSettingsColors provides settingsColors
             ) {
                 content()
             }
