@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Ni uspelo. Poskusite znova.</string>
     <string name="language_packs_error_verification">Datoteka se ni ujemala s katalogom, zato ni bilo nič nameščeno</string>
     <string name="language_packs_error_app_too_old">Ta aplikacija je prestara za branje kataloga</string>
-    <string name="languages_hub_old_android">V tej različici Androida se tipkovnice vklapljajo in izklapljajo v nastavitvah Androida. Dodajanje ali odstranjevanje tipkovnice tukaj odpre ta zaslon.</string>
+    <string name="languages_hub_old_android">Ta različica Androida zahteva, da nove tipkovnice omogočite v nastavitvah Androida.</string>
     <string name="languages_hub_follow_system_title">Sledi jezikom telefona</string>
     <string name="languages_hub_follow_system_on">Tipkovnice sledijo jezikom vašega telefona. Dodajanje ali odstranitev tipkovnice to izklopi.</string>
     <string name="languages_hub_follow_system_off">Tipkovnice izberete spodaj</string>

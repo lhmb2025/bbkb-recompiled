@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Tidak berjaya. Cuba lagi.</string>
     <string name="language_packs_error_verification">Fail tidak sepadan dengan katalog, jadi tiada apa-apa dipasang</string>
     <string name="language_packs_error_app_too_old">Apl ini terlalu lama untuk membaca katalog</string>
-    <string name="languages_hub_old_android">Pada versi Android ini, papan kekunci dihidupkan dan dimatikan dalam tetapan Android. Menambah atau mengalih keluar satu di sini akan membuka skrin itu.</string>
+    <string name="languages_hub_old_android">Versi Android ini memerlukan papan kekunci baharu didayakan dalam tetapan Android.</string>
     <string name="languages_hub_follow_system_title">Padankan dengan bahasa telefon</string>
     <string name="languages_hub_follow_system_on">Papan kekunci mengikut bahasa telefon anda. Menambah atau mengalih keluar satu akan mematikan ini.</string>
     <string name="languages_hub_follow_system_off">Anda memilih papan kekunci di bawah</string>

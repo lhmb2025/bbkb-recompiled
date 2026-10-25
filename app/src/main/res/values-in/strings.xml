@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Tidak berhasil. Coba lagi.</string>
     <string name="language_packs_error_verification">Berkas tidak cocok dengan katalog, jadi tidak ada yang dipasang</string>
     <string name="language_packs_error_app_too_old">Aplikasi ini terlalu lama untuk membaca katalog</string>
-    <string name="languages_hub_old_android">Pada versi Android ini, keyboard diaktifkan dan dinonaktifkan di setelan Android. Menambahkan atau menghapus keyboard di sini akan membuka layar tersebut.</string>
+    <string name="languages_hub_old_android">Versi Android ini mengharuskan keyboard baru diaktifkan di setelan Android.</string>
     <string name="languages_hub_follow_system_title">Samakan dengan bahasa ponsel</string>
     <string name="languages_hub_follow_system_on">Keyboard mengikuti bahasa ponsel Anda. Menambahkan atau menghapus salah satu akan menonaktifkan ini.</string>
     <string name="languages_hub_follow_system_off">Anda memilih keyboard di bawah ini</string>

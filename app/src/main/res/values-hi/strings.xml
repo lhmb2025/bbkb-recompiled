@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">यह काम नहीं आया। फिर कोशिश करें।</string>
     <string name="language_packs_error_verification">फ़ाइल कैटलॉग से मेल नहीं खाई, इसलिए कुछ भी इंस्टॉल नहीं हुआ</string>
     <string name="language_packs_error_app_too_old">यह ऐप्लिकेशन कैटलॉग पढ़ने के लिए बहुत पुराना है</string>
-    <string name="languages_hub_old_android">इस Android वर्ज़न पर, कीबोर्ड Android की सेटिंग में चालू और बंद किए जाते हैं. यहां कोई कीबोर्ड जोड़ने या हटाने पर वह स्क्रीन खुल जाएगी.</string>
+    <string name="languages_hub_old_android">Android के इस वर्शन में नए कीबोर्ड को Android सेटिंग में चालू करना ज़रूरी है।</string>
     <string name="languages_hub_follow_system_title">फ़ोन की भाषाओं से मिलाएं</string>
     <string name="languages_hub_follow_system_on">कीबोर्ड आपके फ़ोन की भाषाओं के अनुसार सेट होते हैं. कोई भाषा जोड़ने या हटाने पर यह बंद हो जाएगा.</string>
     <string name="languages_hub_follow_system_off">आप नीचे दिए गए कीबोर्ड खुद चुनते हैं</string>

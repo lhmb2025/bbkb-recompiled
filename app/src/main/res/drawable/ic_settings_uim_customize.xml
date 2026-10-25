@@ -1,0 +1,12 @@
+<!-- ic_settings_uim_customize. Material Symbols glyph, weight 400 (owner's download 2026-10-24), Material Symbols-style 960-unit grid (the group shifts the -960 viewBox into view); Customize unified input menu; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 400 -600 Z M 280 -360 Z m 240 120 v -120 h 280 v 120 H 520 Z M 160 -600 v -120 h 240 v 120 H 160 Z m 0 360 v -120 h 120 v 120 H 160 Z m 280 80 h 440 v -280 H 440 v 280 Z M 80 -520 h 400 v -280 H 80 v 280 Z m 0 360 h 280 v -280 H 80 v 280 Z m 440 -200 Z m 160 -160 v -120 H 560 v -80 h 120 v -120 h 80 v 120 h 120 v 80 H 760 v 120 h -80 Z"/>
+  </group>
+</vector>

@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">실패했습니다. 다시 시도하세요.</string>
     <string name="language_packs_error_verification">파일이 카탈로그와 일치하지 않아 아무것도 설치되지 않았습니다</string>
     <string name="language_packs_error_app_too_old">이 앱은 너무 오래되어 카탈로그를 읽을 수 없습니다</string>
-    <string name="languages_hub_old_android">이 Android 버전에서는 키보드를 Android 설정에서 켜고 끕니다. 여기서 추가하거나 삭제하면 해당 화면이 열립니다.</string>
+    <string name="languages_hub_old_android">이 Android 버전에서는 새 키보드를 Android 설정에서 사용 설정해야 합니다.</string>
     <string name="languages_hub_follow_system_title">휴대폰 언어에 맞추기</string>
     <string name="languages_hub_follow_system_on">키보드가 휴대폰 언어를 따릅니다. 추가하거나 삭제하면 이 기능이 꺼집니다.</string>
     <string name="languages_hub_follow_system_off">아래에서 키보드를 직접 선택합니다</string>

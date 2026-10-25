@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Ni weithiodd hynny. Ceisiwch eto.</string>
     <string name="language_packs_error_verification">Nid oedd y ffeil yn cyfateb i\'r catalog, felly ni osodwyd dim</string>
     <string name="language_packs_error_app_too_old">Mae\'r ap hwn yn rhy hen i ddarllen y catalog</string>
-    <string name="languages_hub_old_android">Ar y fersiwn hon o Android, mae bysellfyrddau\'n cael eu troi ymlaen ac i ffwrdd yng ngosodiadau Android. Bydd ychwanegu neu ddileu un yma yn agor y sgrin honno.</string>
+    <string name="languages_hub_old_android">Mae\'r fersiwn hwn o Android yn gofyn i fysellfyrddau newydd gael eu galluogi yng ngosodiadau Android.</string>
     <string name="languages_hub_follow_system_title">Cyfateb ag ieithoedd y ffôn</string>
     <string name="languages_hub_follow_system_on">Mae\'r bysellfyrddau\'n dilyn ieithoedd eich ffôn. Bydd ychwanegu neu ddileu un yn diffodd hyn.</string>
     <string name="languages_hub_follow_system_off">Rydych chi\'n dewis y bysellfyrddau isod</string>

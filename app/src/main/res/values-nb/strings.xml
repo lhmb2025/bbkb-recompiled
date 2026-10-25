@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Det fungerte ikke. Prøv igjen.</string>
     <string name="language_packs_error_verification">Filen stemte ikke med katalogen, så ingenting ble installert</string>
     <string name="language_packs_error_app_too_old">Denne appen er for gammel til å lese katalogen</string>
-    <string name="languages_hub_old_android">På denne Android-versjonen slås tastaturer av og på i Androids innstillinger. Hvis du legger til eller fjerner et her, åpnes den skjermen.</string>
+    <string name="languages_hub_old_android">Denne Android-versjonen krever at nye tastaturer aktiveres i Android-innstillingene.</string>
     <string name="languages_hub_follow_system_title">Match telefonens språk</string>
     <string name="languages_hub_follow_system_on">Tastaturene følger telefonens språk. Hvis du legger til eller fjerner et, slås dette av.</string>
     <string name="languages_hub_follow_system_off">Du velger tastaturene nedenfor</string>

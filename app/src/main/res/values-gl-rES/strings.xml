@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Non funcionou. Téntao de novo.</string>
     <string name="language_packs_error_verification">O ficheiro non coincidiu co catálogo, así que non se instalou nada</string>
     <string name="language_packs_error_app_too_old">Esta aplicación é demasiado antiga para ler o catálogo</string>
-    <string name="languages_hub_old_android">Nesta versión de Android, os teclados actívanse e desactívanse nos axustes de Android. Engadir ou eliminar un aquí abre esa pantalla.</string>
+    <string name="languages_hub_old_android">Esta versión de Android require que os teclados novos se activen na configuración de Android.</string>
     <string name="languages_hub_follow_system_title">Coincidir cos idiomas do teléfono</string>
     <string name="languages_hub_follow_system_on">Os teclados seguen os idiomas do teu teléfono. Engadir ou eliminar un desactiva isto.</string>
     <string name="languages_hub_follow_system_off">Ti escolles os teclados de abaixo</string>

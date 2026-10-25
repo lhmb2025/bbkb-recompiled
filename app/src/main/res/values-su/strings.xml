@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Teu hasil. Cobi deui.</string>
     <string name="language_packs_error_verification">Koropak teu cocog jeung katalog, jadi teu aya nu diinstal</string>
     <string name="language_packs_error_app_too_old">Aplikasi ieu kolot teuing pikeun maca katalog</string>
-    <string name="languages_hub_old_android">Dina vérsi Android ieu, papan tombol diaktipkeun jeung dipareuman dina setélan Android. Nambah atawa miceun hiji papan tombol di dieu bakal muka layar éta.</string>
+    <string name="languages_hub_old_android">Vérsi Android ieu merlukeun papan tombol anyar diaktipkeun dina setélan Android.</string>
     <string name="languages_hub_follow_system_title">Cocogkeun jeung basa telepon</string>
     <string name="languages_hub_follow_system_on">Papan tombol nuturkeun basa telepon anjeun. Nambah atawa miceun bakal mareuman ieu.</string>
     <string name="languages_hub_follow_system_off">Anjeun milih papan tombol di handap</string>

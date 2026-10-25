@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Не успеа. Обиди се повторно.</string>
     <string name="language_packs_error_verification">Датотеката не се совпадна со каталогот, па не е инсталирано ништо</string>
     <string name="language_packs_error_app_too_old">Апликацијата е премногу стара за да го прочита каталогот</string>
-    <string name="languages_hub_old_android">На оваа верзија на Android, тастатурите се вклучуваат и исклучуваат во поставките на Android. Додавањето или отстранувањето овде го отвора тој екран.</string>
+    <string name="languages_hub_old_android">Оваа верзија на Android бара новите тастатури да се овозможат во поставките на Android.</string>
     <string name="languages_hub_follow_system_title">Усогласи со јазиците на телефонот</string>
     <string name="languages_hub_follow_system_on">Тастатурите ги следат јазиците на вашиот телефон. Додавањето или отстранувањето на некоја ја исклучува оваа опција.</string>
     <string name="languages_hub_follow_system_off">Вие ги избирате тастатурите подолу</string>

@@ -1,0 +1,12 @@
+<!-- ic_settings_info. Material Symbols info, weight 400 (owner's download 2026-10-24), Material Symbols-style 960-unit grid (the group shifts the -960 viewBox into view); the Android-version note on the Language screen; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 440 -280 h 80 v -240 h -80 v 240 Z m 68.5 -331.5 Q 520 -623 520 -640 t -11.5 -28.5 Q 497 -680 480 -680 t -28.5 11.5 Q 440 -657 440 -640 t 11.5 28.5 Q 463 -600 480 -600 t 28.5 -11.5 Z M 480 -80 q -83 0 -156 -31.5 T 197 -197 q -54 -54 -85.5 -127 T 80 -480 q 0 -83 31.5 -156 T 197 -763 q 54 -54 127 -85.5 T 480 -880 q 83 0 156 31.5 T 763 -763 q 54 54 85.5 127 T 880 -480 q 0 83 -31.5 156 T 763 -197 q -54 54 -127 85.5 T 480 -80 Z m 0 -80 q 134 0 227 -93 t 93 -227 q 0 -134 -93 -227 t -227 -93 q -134 0 -227 93 t -93 227 q 0 134 93 227 t 227 93 Z m 0 -320 Z"/>
+  </group>
+</vector>

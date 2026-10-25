@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">ไม่สำเร็จ ลองอีกครั้ง</string>
     <string name="language_packs_error_verification">ไฟล์ไม่ตรงกับแคตตาล็อก จึงไม่ได้ติดตั้งอะไรเลย</string>
     <string name="language_packs_error_app_too_old">แอปนี้เก่าเกินกว่าจะอ่านแคตตาล็อกได้</string>
-    <string name="languages_hub_old_android">ใน Android เวอร์ชันนี้ การเปิดหรือปิดแป้นพิมพ์ทำได้ในการตั้งค่าของ Android การเพิ่มหรือนำแป้นพิมพ์ออกที่นี่จะเปิดหน้าจอนั้น</string>
+    <string name="languages_hub_old_android">Android เวอร์ชันนี้กำหนดให้ต้องเปิดใช้แป้นพิมพ์ใหม่ในการตั้งค่า Android</string>
     <string name="languages_hub_follow_system_title">ใช้ภาษาตามโทรศัพท์</string>
     <string name="languages_hub_follow_system_on">แป้นพิมพ์จะใช้ภาษาตามโทรศัพท์ของคุณ การเพิ่มหรือนำแป้นพิมพ์ออกจะปิดการตั้งค่านี้</string>
     <string name="languages_hub_follow_system_off">คุณเลือกแป้นพิมพ์ด้านล่างเอง</string>

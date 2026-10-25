@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Nepovedlo se. Zkuste to znovu.</string>
     <string name="language_packs_error_verification">Soubor neodpovídá katalogu, nic se nenainstalovalo</string>
     <string name="language_packs_error_app_too_old">Tato aplikace je pro čtení katalogu příliš stará</string>
-    <string name="languages_hub_old_android">V této verzi Androidu se klávesnice zapínají a vypínají v nastavení Androidu. Přidání nebo odebrání klávesnice zde otevře tuto obrazovku.</string>
+    <string name="languages_hub_old_android">Tato verze Androidu vyžaduje zapnutí nových klávesnic v nastavení Androidu.</string>
     <string name="languages_hub_follow_system_title">Použít jazyky telefonu</string>
     <string name="languages_hub_follow_system_on">Klávesnice se řídí jazyky telefonu. Přidáním nebo odebráním klávesnice se toto vypne.</string>
     <string name="languages_hub_follow_system_off">Klávesnice vybíráte sami v seznamu níže</string>

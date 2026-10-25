@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Ez du funtzionatu. Saiatu berriro.</string>
     <string name="language_packs_error_verification">Fitxategia ez zegokion katalogoari, beraz ez da ezer instalatu</string>
     <string name="language_packs_error_app_too_old">Aplikazio hau zaharregia da katalogoa irakurtzeko</string>
-    <string name="languages_hub_old_android">Android bertsio honetan, teklatuak Androiden ezarpenetan aktibatzen eta desaktibatzen dira. Bat gehitzeak edo kentzeak hemen pantaila hori irekiko du.</string>
+    <string name="languages_hub_old_android">Android bertsio honek teklatu berriak Android-en ezarpenetan gaitzea eskatzen du.</string>
     <string name="languages_hub_follow_system_title">Egokitu telefonoaren hizkuntzetara</string>
     <string name="languages_hub_follow_system_on">Teklatuek zure telefonoaren hizkuntzak jarraitzen dituzte. Bat gehitzeak edo kentzeak hau desaktibatuko du.</string>
     <string name="languages_hub_follow_system_off">Zuk aukeratzen dituzu beheko teklatuak</string>

@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Nie udało się. Spróbuj ponownie.</string>
     <string name="language_packs_error_verification">Plik nie zgadzał się z katalogiem, więc nic nie zainstalowano</string>
     <string name="language_packs_error_app_too_old">Ta aplikacja jest za stara, aby odczytać katalog</string>
-    <string name="languages_hub_old_android">W tej wersji Androida klawiatury włącza się i wyłącza w ustawieniach Androida. Dodanie lub usunięcie klawiatury tutaj otworzy ten ekran.</string>
+    <string name="languages_hub_old_android">Ta wersja Androida wymaga włączenia nowych klawiatur w ustawieniach Androida.</string>
     <string name="languages_hub_follow_system_title">Dopasuj do języków telefonu</string>
     <string name="languages_hub_follow_system_on">Klawiatury podążają za językami telefonu. Dodanie lub usunięcie klawiatury wyłączy tę opcję.</string>
     <string name="languages_hub_follow_system_off">Wybierasz klawiatury poniżej</string>

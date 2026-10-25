@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">ಅದು ಕೆಲಸ ಮಾಡಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="language_packs_error_verification">ಫೈಲ್ ಕ್ಯಾಟಲಾಗ್‌ಗೆ ಹೊಂದಿಕೆಯಾಗಲಿಲ್ಲ, ಆದ್ದರಿಂದ ಏನೂ ಸ್ಥಾಪನೆಯಾಗಿಲ್ಲ</string>
     <string name="language_packs_error_app_too_old">ಕ್ಯಾಟಲಾಗ್ ಓದಲು ಈ ಆ್ಯಪ್ ತುಂಬಾ ಹಳೆಯದು</string>
-    <string name="languages_hub_old_android">ಈ Android ಆವೃತ್ತಿಯಲ್ಲಿ, ಕೀಬೋರ್ಡ್‌ಗಳನ್ನು Android ನ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಆನ್ ಮತ್ತು ಆಫ್ ಮಾಡಲಾಗುತ್ತದೆ. ಇಲ್ಲಿ ಒಂದನ್ನು ಸೇರಿಸುವುದು ಅಥವಾ ತೆಗೆದುಹಾಕುವುದು ಆ ಪರದೆಯನ್ನು ತೆರೆಯುತ್ತದೆ.</string>
+    <string name="languages_hub_old_android">Android ನ ಈ ಆವೃತ್ತಿಯಲ್ಲಿ ಹೊಸ ಕೀಬೋರ್ಡ್‌ಗಳನ್ನು Android ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಸಕ್ರಿಯಗೊಳಿಸಬೇಕು.</string>
     <string name="languages_hub_follow_system_title">ಫೋನ್ ಭಾಷೆಗಳಿಗೆ ಹೊಂದಿಸಿ</string>
     <string name="languages_hub_follow_system_on">ಕೀಬೋರ್ಡ್‌ಗಳು ನಿಮ್ಮ ಫೋನ್‌ನ ಭಾಷೆಗಳನ್ನು ಅನುಸರಿಸುತ್ತವೆ. ಒಂದನ್ನು ಸೇರಿಸುವುದು ಅಥವಾ ತೆಗೆದುಹಾಕುವುದು ಇದನ್ನು ಆಫ್ ಮಾಡುತ್ತದೆ.</string>
     <string name="languages_hub_follow_system_off">ಕೆಳಗಿನ ಕೀಬೋರ್ಡ್‌ಗಳನ್ನು ನೀವು ಆಯ್ಕೆಮಾಡುತ್ತೀರಿ</string>

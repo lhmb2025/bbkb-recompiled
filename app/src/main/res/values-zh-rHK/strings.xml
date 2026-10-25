@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">操作失敗，請重試。</string>
     <string name="language_packs_error_verification">檔案與目錄不符，因此未安裝任何內容</string>
     <string name="language_packs_error_app_too_old">此應用程式版本過舊，無法讀取目錄</string>
-    <string name="languages_hub_old_android">在此 Android 版本中，鍵盤的開關是在 Android 的設定中進行。在此新增或移除鍵盤會開啟該畫面。</string>
+    <string name="languages_hub_old_android">此 Android 版本要求在 Android 設定中啟用新鍵盤。</string>
     <string name="languages_hub_follow_system_title">配合手機語言</string>
     <string name="languages_hub_follow_system_on">鍵盤會跟隨你手機的語言。新增或移除鍵盤會關閉此設定。</string>
     <string name="languages_hub_follow_system_off">你可在下方自行選擇鍵盤</string>

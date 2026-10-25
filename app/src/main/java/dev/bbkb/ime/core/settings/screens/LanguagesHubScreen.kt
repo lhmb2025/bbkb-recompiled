@@ -198,6 +198,7 @@ fun LanguagesHubScreen(
                     item(key = "old-android") {
                         PreferenceItem(
                             title = stringResource(R.string.languages_hub_old_android),
+                            icon = ImageVector.vectorResource(R.drawable.ic_settings_info),
                             groupEdge = groupEdge(0, topCount),
                         )
                     }
@@ -209,6 +210,7 @@ fun LanguagesHubScreen(
                     Box(modifier = Modifier.groupOuterCorners(groupEdge(topCount - 1, topCount))) {
                         SwitchPreference(
                             title = stringResource(R.string.languages_hub_follow_system_title),
+                            icon = ImageVector.vectorResource(R.drawable.ic_settings_phone_languages),
                             summary = stringResource(
                                 if (follows) R.string.languages_hub_follow_system_on else R.string.languages_hub_follow_system_off
                             ),

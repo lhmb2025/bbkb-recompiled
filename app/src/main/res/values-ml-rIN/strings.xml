@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">അത് നടന്നില്ല. വീണ്ടും ശ്രമിക്കുക.</string>
     <string name="language_packs_error_verification">ഫയൽ കാറ്റലോഗുമായി പൊരുത്തപ്പെട്ടില്ല, അതിനാൽ ഒന്നും ഇൻസ്റ്റാൾ ചെയ്തില്ല</string>
     <string name="language_packs_error_app_too_old">കാറ്റലോഗ് വായിക്കാൻ ഈ ആപ്പ് വളരെ പഴയതാണ്</string>
-    <string name="languages_hub_old_android">ഈ Android പതിപ്പിൽ, കീബോർഡുകൾ ഓണാക്കുന്നതും ഓഫാക്കുന്നതും Android-ന്റെ സെറ്റിംഗ്സിലാണ്. ഇവിടെ ഒന്ന് ചേർക്കുകയോ നീക്കം ചെയ്യുകയോ ചെയ്യുമ്പോൾ ആ സ്ക്രീൻ തുറക്കും.</string>
+    <string name="languages_hub_old_android">Android-ന്റെ ഈ പതിപ്പിൽ പുതിയ കീബോർഡുകൾ Android ക്രമീകരണങ്ങളിൽ പ്രവർത്തനക്ഷമമാക്കേണ്ടതുണ്ട്.</string>
     <string name="languages_hub_follow_system_title">ഫോണിന്റെ ഭാഷകളുമായി പൊരുത്തപ്പെടുത്തുക</string>
     <string name="languages_hub_follow_system_on">കീബോർഡുകൾ നിങ്ങളുടെ ഫോണിന്റെ ഭാഷകൾ പിന്തുടരുന്നു. ഒന്ന് ചേർക്കുകയോ നീക്കം ചെയ്യുകയോ ചെയ്താൽ ഇത് ഓഫാകും.</string>
     <string name="languages_hub_follow_system_off">താഴെയുള്ള കീബോർഡുകൾ നിങ്ങൾ തിരഞ്ഞെടുക്കുന്നു</string>

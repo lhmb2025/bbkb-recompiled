@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Se ei onnistunut. Yritä uudelleen.</string>
     <string name="language_packs_error_verification">Tiedosto ei vastannut luetteloa, joten mitään ei asennettu</string>
     <string name="language_packs_error_app_too_old">Tämä sovellus on liian vanha lukemaan luetteloa</string>
-    <string name="languages_hub_old_android">Tässä Android-versiossa näppäimistöt otetaan käyttöön ja poistetaan käytöstä Androidin asetuksissa. Näppäimistön lisääminen tai poistaminen täältä avaa kyseisen näytön.</string>
+    <string name="languages_hub_old_android">Tämä Android-versio edellyttää, että uudet näppäimistöt otetaan käyttöön Androidin asetuksissa.</string>
     <string name="languages_hub_follow_system_title">Vastaa puhelimen kieliä</string>
     <string name="languages_hub_follow_system_on">Näppäimistöt seuraavat puhelimesi kieliä. Näppäimistön lisääminen tai poistaminen poistaa tämän käytöstä.</string>
     <string name="languages_hub_follow_system_off">Valitset näppäimistöt alta</string>

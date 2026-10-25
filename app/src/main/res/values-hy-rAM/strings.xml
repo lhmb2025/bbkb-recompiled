@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Չստացվեց։ Կրկին փորձեք։</string>
     <string name="language_packs_error_verification">Ֆայլը չհամապատասխանեց կատալոգին, ոչինչ չտեղադրվեց</string>
     <string name="language_packs_error_app_too_old">Այս հավելվածը շատ հին է կատալոգը կարդալու համար</string>
-    <string name="languages_hub_old_android">Այս Android տարբերակում ստեղնաշարերը միացվում և անջատվում են Android-ի կարգավորումներից: Այստեղ ավելացնելը կամ հեռացնելը կբացի այդ էկրանը:</string>
+    <string name="languages_hub_old_android">Android-ի այս տարբերակը պահանջում է նոր ստեղնաշարերը միացնել Android-ի կարգավորումներում։</string>
     <string name="languages_hub_follow_system_title">Համապատասխանեցնել հեռախոսի լեզուներին</string>
     <string name="languages_hub_follow_system_on">Ստեղնաշարերը հետևում են ձեր հեռախոսի լեզուներին: Որևէ մեկը ավելացնելը կամ հեռացնելը կանջատի սա:</string>
     <string name="languages_hub_follow_system_off">Դուք ընտրում եք ստորև նշված ստեղնաշարերը</string>

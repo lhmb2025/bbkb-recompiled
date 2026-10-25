@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">لم ينجح ذلك. أعد المحاولة.</string>
     <string name="language_packs_error_verification">الملف لا يطابق الفهرس، لذلك لم يُثبَّت أي شيء</string>
     <string name="language_packs_error_app_too_old">هذا التطبيق قديم جدًا لقراءة الفهرس</string>
-    <string name="languages_hub_old_android">في إصدار Android هذا، يتم تشغيل لوحات المفاتيح وإيقافها من إعدادات Android. إضافة لوحة مفاتيح أو إزالتها من هنا يفتح تلك الشاشة.</string>
+    <string name="languages_hub_old_android">يتطلب هذا الإصدار من Android تفعيل لوحات المفاتيح الجديدة في إعدادات Android.</string>
     <string name="languages_hub_follow_system_title">مطابقة لغات الهاتف</string>
     <string name="languages_hub_follow_system_on">تتبع لوحات المفاتيح لغات هاتفك. إضافة لوحة مفاتيح أو إزالتها يعطّل هذا الخيار.</string>
     <string name="languages_hub_follow_system_off">تختار لوحات المفاتيح أدناه</string>

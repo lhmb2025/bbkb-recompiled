@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Das hat nicht funktioniert. Erneut versuchen.</string>
     <string name="language_packs_error_verification">Die Datei passte nicht zum Katalog, es wurde nichts installiert</string>
     <string name="language_packs_error_app_too_old">Diese App ist zu alt, um den Katalog zu lesen</string>
-    <string name="languages_hub_old_android">In dieser Android-Version werden Tastaturen in den Android-Einstellungen aktiviert und deaktiviert. Das Hinzufügen oder Entfernen einer Tastatur hier öffnet diesen Bildschirm.</string>
+    <string name="languages_hub_old_android">Diese Android-Version verlangt, dass neue Tastaturen in den Android-Einstellungen aktiviert werden.</string>
     <string name="languages_hub_follow_system_title">Telefonsprachen übernehmen</string>
     <string name="languages_hub_follow_system_on">Die Tastaturen folgen den Sprachen Ihres Telefons. Beim Hinzufügen oder Entfernen einer Tastatur wird dies deaktiviert.</string>
     <string name="languages_hub_follow_system_off">Sie wählen die Tastaturen unten selbst aus</string>

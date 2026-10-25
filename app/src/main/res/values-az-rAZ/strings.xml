@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Alınmadı. Yenidən cəhd edin.</string>
     <string name="language_packs_error_verification">Fayl kataloqa uyğun gəlmədi, heç nə quraşdırılmadı</string>
     <string name="language_packs_error_app_too_old">Bu tətbiq kataloqu oxumaq üçün çox köhnədir</string>
-    <string name="languages_hub_old_android">Bu Android versiyasında klaviaturalar Android-in parametrlərində aktiv və deaktiv edilir. Burada bir klaviatura əlavə etmək və ya silmək o ekranı açır.</string>
+    <string name="languages_hub_old_android">Android-in bu versiyası yeni klaviaturaların Android ayarlarında aktiv edilməsini tələb edir.</string>
     <string name="languages_hub_follow_system_title">Telefon dilləri ilə uyğunlaşdırın</string>
     <string name="languages_hub_follow_system_on">Klaviaturalar telefonunuzun dillərini izləyir. Bir klaviatura əlavə etmək və ya silmək bunu söndürür.</string>
     <string name="languages_hub_follow_system_off">Aşağıdakı klaviaturaları siz seçirsiniz</string>

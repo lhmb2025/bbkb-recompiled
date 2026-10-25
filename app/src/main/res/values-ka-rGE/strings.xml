@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">არ გამოვიდა. სცადეთ ხელახლა.</string>
     <string name="language_packs_error_verification">ფაილი კატალოგს არ ემთხვევა, ამიტომ არაფერი დაინსტალირდა</string>
     <string name="language_packs_error_app_too_old">ეს აპი ძალიან ძველია კატალოგის წასაკითხად</string>
-    <string name="languages_hub_old_android">ამ Android ვერსიაზე კლავიატურების ჩართვა და გამორთვა ხდება Android-ის პარამეტრებში. აქ დამატება ან წაშლა გახსნის იმ ეკრანს.</string>
+    <string name="languages_hub_old_android">Android-ის ეს ვერსია მოითხოვს ახალი კლავიატურების ჩართვას Android-ის პარამეტრებში.</string>
     <string name="languages_hub_follow_system_title">ტელეფონის ენების მიბაძვა</string>
     <string name="languages_hub_follow_system_on">კლავიატურები მიჰყვება თქვენი ტელეფონის ენებს. დამატება ან წაშლა გამორთავს ამას.</string>
     <string name="languages_hub_follow_system_off">თქვენ ირჩევთ კლავიატურებს ქვემოთ</string>

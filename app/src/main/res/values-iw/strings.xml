@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">זה לא עבד. נסה שוב.</string>
     <string name="language_packs_error_verification">הקובץ לא התאים לקטלוג, ולכן לא הותקן דבר</string>
     <string name="language_packs_error_app_too_old">האפליקציה הזו ישנה מדי לקריאת הקטלוג</string>
-    <string name="languages_hub_old_android">בגרסת Android הזו, מקלדות מופעלות וכבות בהגדרות של Android. הוספה או הסרה של מקלדת כאן תפתח את המסך הזה.</string>
+    <string name="languages_hub_old_android">גרסה זו של Android מחייבת להפעיל מקלדות חדשות בהגדרות Android.</string>
     <string name="languages_hub_follow_system_title">התאמה לשפות הטלפון</string>
     <string name="languages_hub_follow_system_on">המקלדות פועלות לפי שפות הטלפון שלך. הוספה או הסרה של מקלדת תכבה אפשרות זו.</string>
     <string name="languages_hub_follow_system_off">בחר את המקלדות למטה</string>

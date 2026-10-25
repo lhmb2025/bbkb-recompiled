@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Не получилось. Повторите попытку.</string>
     <string name="language_packs_error_verification">Файл не соответствует каталогу, поэтому ничего не установлено</string>
     <string name="language_packs_error_app_too_old">Это приложение слишком старое, чтобы прочитать каталог</string>
-    <string name="languages_hub_old_android">В этой версии Android клавиатуры включаются и отключаются в настройках Android. Добавление или удаление клавиатуры здесь открывает этот экран.</string>
+    <string name="languages_hub_old_android">Эта версия Android требует включать новые клавиатуры в настройках Android.</string>
     <string name="languages_hub_follow_system_title">Соответствовать языкам телефона</string>
     <string name="languages_hub_follow_system_on">Клавиатуры следуют языкам вашего телефона. Добавление или удаление клавиатуры отключает эту функцию.</string>
     <string name="languages_hub_follow_system_off">Вы выбираете клавиатуры ниже</string>

@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Не вдалося. Спробуйте ще раз.</string>
     <string name="language_packs_error_verification">Файл не відповідає каталогу, тому нічого не встановлено</string>
     <string name="language_packs_error_app_too_old">Ця програма застаріла, щоб прочитати каталог</string>
-    <string name="languages_hub_old_android">У цій версії Android клавіатури вмикаються й вимикаються в налаштуваннях Android. Додавання або вилучення клавіатури тут відкриває цей екран.</string>
+    <string name="languages_hub_old_android">Ця версія Android вимагає вмикати нові клавіатури в налаштуваннях Android.</string>
     <string name="languages_hub_follow_system_title">Відповідати мовам телефону</string>
     <string name="languages_hub_follow_system_on">Клавіатури відповідають мовам вашого телефону. Додавання або вилучення клавіатури вимкне цю опцію.</string>
     <string name="languages_hub_follow_system_off">Ви самі обираєте клавіатури нижче</string>

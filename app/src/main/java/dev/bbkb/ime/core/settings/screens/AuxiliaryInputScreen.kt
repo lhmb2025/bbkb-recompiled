@@ -13,6 +13,7 @@ import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
 import dev.bbkb.ime.core.settings.ui.boolPref
+import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.core.settings.ui.stringPref
 import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardHistoryManager
 import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardPrefs
@@ -39,6 +40,7 @@ fun AuxiliaryInputScreen(
         Toggle(
             store = boolPref("pref_uim_enabled", true),
             title = R.string.settings_uim_enable_title,
+            icon = drawableIcon(R.drawable.ic_settings_uim),
             summary = RowSummary.OnOff(
                 R.string.settings_uim_enable_summary_on,
                 R.string.settings_uim_enable_summary_off,
@@ -48,6 +50,7 @@ fun AuxiliaryInputScreen(
         // There is nothing to customize while the menu itself is off.
         Nav(
             title = R.string.settings_customize_menu_title,
+            icon = drawableIcon(R.drawable.ic_settings_uim_customize),
             summary = R.string.settings_customize_menu_summary,
             enabled = { it.bool("pref_uim_enabled") },
             onClick = { onNavigateToCustomizeMenu() },
@@ -56,6 +59,7 @@ fun AuxiliaryInputScreen(
         Category(R.string.settings_category_voice),
         Nav(
             title = R.string.settings_voice_input_title,
+            icon = drawableIcon(R.drawable.ic_settings_voice_input),
             summary = R.string.settings_voice_input_summary,
             onClick = { onNavigateToVoiceInput() },
         ),
@@ -64,6 +68,7 @@ fun AuxiliaryInputScreen(
         Toggle(
             store = boolPref("pref_emoji_dynamic_search", false),
             title = R.string.pref_emoji_dynamic_search_title,
+            icon = drawableIcon(R.drawable.ic_settings_emoji_search),
             summary = RowSummary.OnOff(
                 R.string.pref_emoji_dynamic_search_summary_on,
                 R.string.pref_emoji_dynamic_search_summary_off,
@@ -73,6 +78,7 @@ fun AuxiliaryInputScreen(
         Toggle(
             store = boolPref("pref_emoji_search_replace_text", true),
             title = R.string.pref_emoji_search_replace_text_title,
+            icon = drawableIcon(R.drawable.ic_settings_emoji_replace_text),
             summary = RowSummary.OnOff(
                 R.string.pref_emoji_search_replace_text_summary_on,
                 R.string.pref_emoji_search_replace_text_summary_off,
@@ -87,6 +93,7 @@ fun AuxiliaryInputScreen(
         Toggle(
             store = boolPref("pref_clipboard_history_enabled", ClipboardPrefs.DEFAULT_HISTORY_ENABLED),
             title = R.string.clipboard_history_title,
+            icon = drawableIcon(R.drawable.ic_settings_clipboard_history),
             summary = RowSummary.Res(R.string.clipboard_history_summary),
             modifier = Modifier.settingsSearchAnchor("pref_clipboard_history_enabled"),
             onWrite = { context, enabled ->
@@ -96,6 +103,7 @@ fun AuxiliaryInputScreen(
         Choice(
             store = stringPref("pref_clipboard_retention", ClipboardPrefs.DEFAULT_RETENTION),
             title = R.string.clipboard_retention_title,
+            icon = drawableIcon(R.drawable.ic_settings_clip_retention),
             options = ::retentionOptions,
             // An unknown stored value reads as the default, one hour, as ClipboardPrefs does.
             fallbackIndex = 0,
@@ -105,6 +113,7 @@ fun AuxiliaryInputScreen(
         Toggle(
             store = boolPref("pref_clipboard_link_previews", ClipboardPrefs.DEFAULT_LINK_PREVIEWS),
             title = R.string.clipboard_link_previews_title,
+            icon = drawableIcon(R.drawable.ic_settings_link_previews),
             summary = RowSummary.Res(R.string.clipboard_link_previews_summary),
             enabled = { it.bool("pref_clipboard_history_enabled") },
             modifier = Modifier.settingsSearchAnchor("pref_clipboard_link_previews"),

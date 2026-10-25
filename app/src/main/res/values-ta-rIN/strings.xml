@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">அது வேலை செய்யவில்லை. மீண்டும் முயலுங்கள்.</string>
     <string name="language_packs_error_verification">கோப்பு பட்டியலுடன் பொருந்தவில்லை, எனவே எதுவும் நிறுவப்படவில்லை</string>
     <string name="language_packs_error_app_too_old">பட்டியலைப் படிக்க இந்த ஆப்ஸ் மிகவும் பழையது</string>
-    <string name="languages_hub_old_android">இந்த Android பதிப்பில், விசைப்பலகைகள் Android அமைப்புகளில் இயக்கப்படும்/நிறுத்தப்படும். ஒன்றை இங்கே சேர்ப்பது அல்லது நீக்குவது அந்தத் திரையைத் திறக்கும்.</string>
+    <string name="languages_hub_old_android">Android-இன் இந்தப் பதிப்பில் புதிய விசைப்பலகைகளை Android அமைப்புகளில் இயக்க வேண்டும்.</string>
     <string name="languages_hub_follow_system_title">தொலைபேசி மொழிகளுடன் பொருத்து</string>
     <string name="languages_hub_follow_system_on">விசைப்பலகைகள் உங்கள் தொலைபேசியின் மொழிகளைப் பின்பற்றும். ஒன்றைச் சேர்த்தல் அல்லது நீக்குதல் இதை நிறுத்தும்.</string>
     <string name="languages_hub_follow_system_off">கீழே உள்ள விசைப்பலகைகளை நீங்கள் தேர்ந்தெடுக்கிறீர்கள்</string>

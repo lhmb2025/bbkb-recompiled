@@ -1,0 +1,12 @@
+<!-- ic_settings_clipboard_history. Material Symbols glyph, weight 400 (owner's download 2026-10-24), Material Symbols-style 960-unit grid (the group shifts the -960 viewBox into view); Clipboard history; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 538.5 -138.5 Q 480 -197 480 -280 t 58.5 -141.5 Q 597 -480 680 -480 t 141.5 58.5 Q 880 -363 880 -280 t -58.5 141.5 Q 763 -80 680 -80 t -141.5 -58.5 Z M 747 -185 l 28 -28 -75 -75 v -112 h -40 v 128 l 87 87 Z m -547 65 q -33 0 -56.5 -23.5 T 120 -200 v -560 q 0 -33 23.5 -56.5 T 200 -840 h 167 q 11 -35 43 -57.5 t 70 -22.5 q 40 0 71.5 22.5 T 594 -840 h 166 q 33 0 56.5 23.5 T 840 -760 v 250 q -18 -13 -38 -22 t -42 -16 v -212 h -80 v 120 H 280 v -120 h -80 v 560 h 212 q 7 22 16 42 t 22 38 H 200 Z m 308.5 -651.5 Q 520 -783 520 -800 t -11.5 -28.5 Q 497 -840 480 -840 t -28.5 11.5 Q 440 -817 440 -800 t 11.5 28.5 Q 463 -760 480 -760 t 28.5 -11.5 Z"/>
+  </group>
+</vector>

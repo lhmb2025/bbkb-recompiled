@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Nepavyko. Bandykite dar kartą.</string>
     <string name="language_packs_error_verification">Failas neatitiko katalogo, todėl nieko neįdiegta</string>
     <string name="language_packs_error_app_too_old">Ši programa per sena, kad perskaitytų katalogą</string>
-    <string name="languages_hub_old_android">Šioje Android versijoje klaviatūros įjungiamos ir išjungiamos Android nustatymuose. Pridėjus ar pašalinus vieną čia, atsivers tas ekranas.</string>
+    <string name="languages_hub_old_android">Ši Android versija reikalauja naujas klaviatūras įjungti Android nustatymuose.</string>
     <string name="languages_hub_follow_system_title">Derinti prie telefono kalbų</string>
     <string name="languages_hub_follow_system_on">Klaviatūros seka jūsų telefono kalbas. Pridėjus ar pašalinus vieną, ši parinktis išjungiama.</string>
     <string name="languages_hub_follow_system_off">Klaviatūras pasirenkate patys toliau</string>

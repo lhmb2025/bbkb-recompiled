@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Non ha funzionato. Riprova.</string>
     <string name="language_packs_error_verification">Il file non corrisponde al catalogo, quindi non è stato installato nulla</string>
     <string name="language_packs_error_app_too_old">Questa app è troppo vecchia per leggere il catalogo</string>
-    <string name="languages_hub_old_android">In questa versione di Android, le tastiere si attivano e disattivano nelle impostazioni di Android. Aggiungerne o rimuoverne una qui aprirà quella schermata.</string>
+    <string name="languages_hub_old_android">Questa versione di Android richiede che le nuove tastiere vengano attivate nelle impostazioni di Android.</string>
     <string name="languages_hub_follow_system_title">Adatta alle lingue del telefono</string>
     <string name="languages_hub_follow_system_on">Le tastiere seguono le lingue del telefono. Aggiungerne o rimuoverne una disattiva questa opzione.</string>
     <string name="languages_hub_follow_system_off">Scegli tu le tastiere qui sotto</string>

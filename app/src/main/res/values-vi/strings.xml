@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Không thành công. Hãy thử lại.</string>
     <string name="language_packs_error_verification">Tệp không khớp với danh mục nên không có gì được cài đặt</string>
     <string name="language_packs_error_app_too_old">Ứng dụng này quá cũ để đọc danh mục</string>
-    <string name="languages_hub_old_android">Trên phiên bản Android này, việc bật/tắt bàn phím được thực hiện trong phần cài đặt của Android. Thêm hoặc gỡ một bàn phím ở đây sẽ mở màn hình đó.</string>
+    <string name="languages_hub_old_android">Phiên bản Android này yêu cầu bật bàn phím mới trong phần cài đặt của Android.</string>
     <string name="languages_hub_follow_system_title">Khớp với ngôn ngữ điện thoại</string>
     <string name="languages_hub_follow_system_on">Bàn phím theo ngôn ngữ của điện thoại bạn. Thêm hoặc gỡ một bàn phím sẽ tắt tùy chọn này.</string>
     <string name="languages_hub_follow_system_off">Bạn tự chọn các bàn phím bên dưới</string>

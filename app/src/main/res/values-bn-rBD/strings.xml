@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">কাজ হয়নি। আবার চেষ্টা করুন।</string>
     <string name="language_packs_error_verification">ফাইলটি ক্যাটালগের সঙ্গে মেলেনি, তাই কিছুই ইনস্টল হয়নি</string>
     <string name="language_packs_error_app_too_old">ক্যাটালগ পড়ার জন্য এই অ্যাপটি খুব পুরনো</string>
-    <string name="languages_hub_old_android">এই Android সংস্করণে, কীবোর্ড Android-এর নিজস্ব সেটিংসে চালু ও বন্ধ করা হয়। এখানে একটি কীবোর্ড যোগ বা অপসারণ করলে সেই স্ক্রিন খুলবে।</string>
+    <string name="languages_hub_old_android">Android-এর এই সংস্করণে নতুন কীবোর্ড Android সেটিংসে চালু করা আবশ্যক।</string>
     <string name="languages_hub_follow_system_title">ফোনের ভাষার সাথে মেলান</string>
     <string name="languages_hub_follow_system_on">কীবোর্ডগুলি আপনার ফোনের ভাষা অনুসরণ করে। একটি যোগ বা অপসারণ করলে এটি বন্ধ হয়ে যাবে।</string>
     <string name="languages_hub_follow_system_off">আপনি নিচের কীবোর্ডগুলি বেছে নেন</string>

@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Ora kasil. Coba maneh.</string>
     <string name="language_packs_error_verification">Fail ora cocog karo katalog, mula ora ana sing diinstal</string>
     <string name="language_packs_error_app_too_old">Aplikasi iki kesepuhen kanggo maca katalog</string>
-    <string name="languages_hub_old_android">Ing versi Android iki, keyboard diaktifake lan dipateni ing setelan Android. Nambah utawa mbusak siji ing kene bakal mbukak layar kasebut.</string>
+    <string name="languages_hub_old_android">Versi Android iki mbutuhake keyboard anyar diaktifake ing setelan Android.</string>
     <string name="languages_hub_follow_system_title">Cocog karo basa HP</string>
     <string name="languages_hub_follow_system_on">Keyboard ngetutake basa HP-mu. Nambah utawa mbusak siji bakal mateni iki.</string>
     <string name="languages_hub_follow_system_off">Kowe milih keyboard ing ngisor iki</string>

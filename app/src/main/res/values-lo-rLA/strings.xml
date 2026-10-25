@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">ບໍ່ສຳເລັດ. ລອງອີກຄັ້ງ.</string>
     <string name="language_packs_error_verification">ໄຟລ໌ບໍ່ຕົງກັບລາຍການ ຈຶ່ງບໍ່ໄດ້ຕິດຕັ້ງຫຍັງ</string>
     <string name="language_packs_error_app_too_old">ແອັບນີ້ເກົ່າເກີນໄປທີ່ຈະອ່ານລາຍການ</string>
-    <string name="languages_hub_old_android">ໃນເວີຊັນ Android ນີ້, ແປ້ນພິມຈະຖືກເປີດ ແລະ ປິດຢູ່ໃນການຕັ້ງຄ່າຂອງ Android. ການເພີ່ມ ຫຼື ລຶບອັນໜຶ່ງຢູ່ບ່ອນນີ້ຈະເປີດໜ້າຈໍນັ້ນ.</string>
+    <string name="languages_hub_old_android">Android ເວີຊັນນີ້ຕ້ອງການໃຫ້ເປີດໃຊ້ແປ້ນພິມໃໝ່ໃນການຕັ້ງຄ່າ Android.</string>
     <string name="languages_hub_follow_system_title">ໃຫ້ກົງກັບພາສາໂທລະສັບ</string>
     <string name="languages_hub_follow_system_on">ແປ້ນພິມຈະປະຕິບັດຕາມພາສາຂອງໂທລະສັບທ່ານ. ການເພີ່ມ ຫຼື ລຶບອັນໜຶ່ງຈະປິດຄຸນສົມບັດນີ້.</string>
     <string name="languages_hub_follow_system_off">ທ່ານເລືອກແປ້ນພິມຂ້າງລຸ່ມນີ້ເອງ</string>

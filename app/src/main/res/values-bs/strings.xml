@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Nije uspjelo. Pokušaj ponovo.</string>
     <string name="language_packs_error_verification">Datoteka ne odgovara katalogu, pa nije instalirano ništa</string>
     <string name="language_packs_error_app_too_old">Ova aplikacija je prestara da pročita katalog</string>
-    <string name="languages_hub_old_android">Na ovoj verziji Androida, tastature se uključuju i isključuju u Android postavkama. Dodavanje ili uklanjanje tastature ovdje otvara taj ekran.</string>
+    <string name="languages_hub_old_android">Ova verzija Androida zahtijeva da se nove tastature omoguće u Android postavkama.</string>
     <string name="languages_hub_follow_system_title">Uskladi sa jezicima telefona</string>
     <string name="languages_hub_follow_system_on">Tastature prate jezike vašeg telefona. Dodavanje ili uklanjanje tastature isključuje ovo.</string>
     <string name="languages_hub_follow_system_off">Vi birate tastature ispod</string>

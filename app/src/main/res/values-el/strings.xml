@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Δεν λειτούργησε. Δοκιμάστε ξανά.</string>
     <string name="language_packs_error_verification">Το αρχείο δεν ταίριαζε με τον κατάλογο, οπότε δεν εγκαταστάθηκε τίποτα</string>
     <string name="language_packs_error_app_too_old">Αυτή η εφαρμογή είναι πολύ παλιά για να διαβάσει τον κατάλογο</string>
-    <string name="languages_hub_old_android">Σε αυτήν την έκδοση Android, τα πληκτρολόγια ενεργοποιούνται και απενεργοποιούνται στις ρυθμίσεις του Android. Αν προσθέσετε ή αφαιρέσετε ένα εδώ, θα ανοίξει αυτή η οθόνη.</string>
+    <string name="languages_hub_old_android">Αυτή η έκδοση του Android απαιτεί την ενεργοποίηση των νέων πληκτρολογίων στις ρυθμίσεις του Android.</string>
     <string name="languages_hub_follow_system_title">Ταίριασμα με τις γλώσσες του τηλεφώνου</string>
     <string name="languages_hub_follow_system_on">Τα πληκτρολόγια ακολουθούν τις γλώσσες του τηλεφώνου σας. Η προσθήκη ή αφαίρεση ενός θα το απενεργοποιήσει.</string>
     <string name="languages_hub_follow_system_off">Επιλέγετε εσείς τα πληκτρολόγια παρακάτω</string>

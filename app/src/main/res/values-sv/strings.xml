@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Det fungerade inte. Försök igen.</string>
     <string name="language_packs_error_verification">Filen matchade inte katalogen, så inget installerades</string>
     <string name="language_packs_error_app_too_old">Den här appen är för gammal för att läsa katalogen</string>
-    <string name="languages_hub_old_android">I den här Android-versionen aktiveras och inaktiveras tangentbord i Androids inställningar. Att lägga till eller ta bort ett här öppnar den skärmen.</string>
+    <string name="languages_hub_old_android">Den här versionen av Android kräver att nya tangentbord aktiveras i Android-inställningarna.</string>
     <string name="languages_hub_follow_system_title">Matcha telefonens språk</string>
     <string name="languages_hub_follow_system_on">Tangentborden följer telefonens språk. Att lägga till eller ta bort ett stänger av detta.</string>
     <string name="languages_hub_follow_system_off">Du väljer tangentborden nedan</string>

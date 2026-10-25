@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Níor éirigh leis. Bain triail eile as.</string>
     <string name="language_packs_error_verification">Níor mheaitseáil an comhad an chatalóg, mar sin níor suiteáladh aon rud</string>
     <string name="language_packs_error_app_too_old">Tá an aip seo róshean chun an chatalóg a léamh</string>
-    <string name="languages_hub_old_android">Sa leagan seo d\'Android, castar méarchláir air agus as i socruithe Android. Osclaíonn cur ceann leis nó ceann a scriosadh anseo an scáileán sin.</string>
+    <string name="languages_hub_old_android">Éilíonn an leagan seo d\'Android go gcumasófar méarchláir nua i socruithe Android.</string>
     <string name="languages_hub_follow_system_title">Meaitseáil teangacha an fhóin</string>
     <string name="languages_hub_follow_system_on">Leanann na méarchláir teangacha d\'fhóin. Múchann cur ceann leis nó ceann a scriosadh é seo.</string>
     <string name="languages_hub_follow_system_off">Roghnaíonn tú na méarchláir thíos</string>

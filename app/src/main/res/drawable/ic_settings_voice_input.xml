@@ -1,0 +1,12 @@
+<!-- ic_settings_voice_input. Material Symbols glyph, weight 400 (owner's download 2026-10-24), Material Symbols-style 960-unit grid (the group shifts the -960 viewBox into view); Voice input; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 315 -435 q -35 -35 -35 -85 v -240 q 0 -50 35 -85 t 85 -35 q 50 0 85 35 t 35 85 v 240 q 0 50 -35 85 t -85 35 q -50 0 -85 -35 Z m 113.5 -56.5 Q 440 -503 440 -520 v -240 q 0 -17 -11.5 -28.5 T 400 -800 q -17 0 -28.5 11.5 T 360 -760 v 240 q 0 17 11.5 28.5 T 400 -480 q 17 0 28.5 -11.5 Z M 440 -120 h -80 v -123 q -104 -14 -172 -93 t -68 -184 h 80 q 0 83 58.5 141.5 T 400 -320 q 11 0 20.5 -1 t 19.5 -3 v 204 Z m -40 -520 Z M 640 -80 l -12 -60 q -12 -5 -22.5 -10.5 T 584 -164 l -58 18 -40 -68 46 -40 q -2 -13 -2 -26 t 2 -26 l -46 -40 40 -68 58 18 q 11 -8 21.5 -13.5 T 628 -420 l 12 -60 h 80 l 12 60 q 12 5 22.5 10.5 T 776 -396 l 58 -18 40 68 -46 40 q 2 13 2 26 t -2 26 l 46 40 -40 68 -58 -18 q -11 8 -21.5 13.5 T 732 -140 l -12 60 h -80 Z m 96.5 -143.5 Q 760 -247 760 -280 t -23.5 -56.5 Q 713 -360 680 -360 t -56.5 23.5 Q 600 -313 600 -280 t 23.5 56.5 Q 647 -200 680 -200 t 56.5 -23.5 Z"/>
+  </group>
+</vector>

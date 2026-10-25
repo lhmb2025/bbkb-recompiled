@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">See ei õnnestunud. Proovi uuesti.</string>
     <string name="language_packs_error_verification">Fail ei vastanud kataloogile, seega ei paigaldatud midagi</string>
     <string name="language_packs_error_app_too_old">See rakendus on kataloogi lugemiseks liiga vana</string>
-    <string name="languages_hub_old_android">Selles Androidi versioonis lülitatakse klaviatuurid sisse ja välja Androidi seadetes. Ühe lisamine või eemaldamine siin avab selle ekraani.</string>
+    <string name="languages_hub_old_android">See Androidi versioon nõuab uute klaviatuuride sisselülitamist Androidi seadetes.</string>
     <string name="languages_hub_follow_system_title">Vasta telefoni keeltele</string>
     <string name="languages_hub_follow_system_on">Klaviatuurid järgivad teie telefoni keeli. Ühe lisamine või eemaldamine lülitab selle välja.</string>
     <string name="languages_hub_follow_system_off">Valite klaviatuurid allpool</string>

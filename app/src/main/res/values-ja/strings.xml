@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">うまくいきませんでした。再試行してください。</string>
     <string name="language_packs_error_verification">ファイルがカタログと一致しなかったため、何もインストールされませんでした</string>
     <string name="language_packs_error_app_too_old">このアプリは古すぎてカタログを読み取れません</string>
-    <string name="languages_hub_old_android">このAndroidバージョンでは、キーボードのオン/オフはAndroidの設定で行います。ここで追加または削除すると、その画面が開きます。</string>
+    <string name="languages_hub_old_android">このバージョンのAndroidでは、新しいキーボードをAndroidの設定で有効にする必要があります。</string>
     <string name="languages_hub_follow_system_title">端末の言語に合わせる</string>
     <string name="languages_hub_follow_system_on">キーボードは端末の言語に従います。追加または削除するとオフになります。</string>
     <string name="languages_hub_follow_system_off">下のキーボードから選択します</string>

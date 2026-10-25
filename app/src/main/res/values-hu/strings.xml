@@ -769,7 +769,7 @@
     <string name="language_packs_error_network">Nem sikerült. Próbálja újra.</string>
     <string name="language_packs_error_verification">A fájl nem egyezett a katalógussal, ezért semmi sem lett telepítve</string>
     <string name="language_packs_error_app_too_old">Ez az alkalmazás túl régi a katalógus olvasásához</string>
-    <string name="languages_hub_old_android">Ezen az Android-verzión a billentyűzeteket az Android beállításaiban lehet be- és kikapcsolni. Ha itt ad hozzá vagy távolít el egyet, az megnyitja azt a képernyőt.</string>
+    <string name="languages_hub_old_android">Az Android ezen verziója megköveteli, hogy az új billentyűzeteket az Android beállításaiban engedélyezze.</string>
     <string name="languages_hub_follow_system_title">Igazodás a telefon nyelveihez</string>
     <string name="languages_hub_follow_system_on">A billentyűzetek követik a telefon nyelveit. Ha hozzáad vagy eltávolít egyet, ez kikapcsol.</string>
     <string name="languages_hub_follow_system_off">Az alábbi billentyűzeteket Ön választja ki</string>
