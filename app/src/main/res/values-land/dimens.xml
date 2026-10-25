@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Landscape values from the original keyboard (4.1904 res/values-land). Only resources whose
+    portrait value still matches the original are overridden here; ones we deliberately changed
+    (suggestion strip height, more-suggestions row, more-keys vertical correction) are left out.
+-->
+<resources>
+
+    <!-- Keyboard geometry -->
+    <dimen name="config_default_keyboard_height">176dp</dimen>
+    <dimen name="config_symbol_page_height">176dp</dimen>
+    <dimen name="config_pkb_symbol_page_height">132dp</dimen>
+
+    <!-- More keys popup -->
+    <dimen name="config_more_keys_keyboard_key_height">48dp</dimen>
+    <dimen name="config_more_keys_keyboard_slide_allowance">53.76dp</dimen>
+
+    <!-- Suggestion strip -->
+    <dimen name="config_suggestion_text_size">14dp</dimen>
+    <dimen name="config_suggestions_strip_horizontal_margin">30dp</dimen>
+
+    <!-- Clipboard / empty-state panels -->
+    <dimen name="config_clipboard_empty_margin_horizontal">21dp</dimen>
+    <dimen name="config_clipboard_empty_margin_vertical">0dp</dimen>
+    <dimen name="config_empty_indicator_margin_vertical">143dp</dimen>
+    <dimen name="config_empty_user_hint_margin_vertical">25dp</dimen>
+
+</resources>

@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.compat.InputMethodSubtypeCompat;
 import dev.bbkb.ime.core.BlackBerryIME;
+import dev.bbkb.ime.core.ime.ImeResourcesContext;
 import dev.bbkb.ime.core.engine.learning.DynamicLearningManager;
 import dev.bbkb.ime.core.SymbolPageProvider;
 import dev.bbkb.ime.core.locale.RichInputMethodManager;
@@ -477,7 +478,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
      */
     private void ensureThemeContext(Context context) {
         if (this.themeContext == null) {
-            this.themeContext = new ContextThemeWrapper(context.getApplicationContext(), R.style.KeyboardTheme_LXX);
+            this.themeContext = new ContextThemeWrapper(new ImeResourcesContext(context), R.style.KeyboardTheme_LXX);
             KeyboardBuilder.onSystemLocaleChanged();
         }
     }
@@ -1409,8 +1410,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         this.mainKeyboardView = (MainKeyboardView) this.inputView.findViewById(R.id.keyboard_view);
         this.mainKeyboardView.setHardwareAcceleratedDrawingEnabled(z);
         this.mainKeyboardView.setKeyboardActionListener(this.blackberryIme);
-        this.slideboardManager = new SlideboardManager(this.blackberryIme.getApplicationContext(), this.inputView, this.blackberryIme);
-        this.unifiedInputBoardManager = new UnifiedInputBoardManager(this.blackberryIme.getApplicationContext(), this.inputView, this.blackberryIme);
+        this.slideboardManager = new SlideboardManager(new ImeResourcesContext(this.blackberryIme), this.inputView, this.blackberryIme);
+        this.unifiedInputBoardManager = new UnifiedInputBoardManager(new ImeResourcesContext(this.blackberryIme), this.inputView, this.blackberryIme);
         NumericSubpanelKeyboardView numericSubpanelKeyboardViewM6764am = createNumericSubpanel();
         QuickPhrasesView quickPhrasesViewM6765an = createQuickPhrasesView();
         this.slideboardManager.setSlideboardComponent((SlideboardComponent) numericSubpanelKeyboardViewM6764am);

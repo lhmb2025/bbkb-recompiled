@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Landscape values from the original keyboard (4.1904 res/values-land). Emoji grid fractions are
+    left out: our emoji palette no longer uses the original's portrait values either.
+-->
+<resources>
+
+    <!-- Keyboard height clamp. The portrait minimum is negative (a share of the screen WIDTH),
+         which on a wide landscape screen overrides the 46% maximum and fills the display. -->
+    <fraction name="config_min_keyboard_height">45%p</fraction>
+
+    <!-- Key text ratios -->
+    <fraction name="config_key_letter_ratio_5row">65%</fraction>
+    <fraction name="config_key_shifted_letter_hint_ratio_5row">48%</fraction>
+    <fraction name="config_key_preview_text_ratio">90%</fraction>
+    <fraction name="config_autocorrection_on_spacebar_text_ratio">40%</fraction>
+
+    <!-- Keyboard padding and gaps -->
+    <fraction name="config_key_vertical_gap_holo">2.35%p</fraction>
+    <fraction name="config_keyboard_top_padding_holo">1.9%p</fraction>
+    <fraction name="config_keyboard_bottom_padding_holo">1.1%p</fraction>
+
+    <!-- Column widths, paired with their spacers -->
+    <fraction name="config_key_width_3_column">20%p</fraction>
+    <fraction name="config_spacer_width_3_column">20%p</fraction>
+    <fraction name="config_key_width_4_column">20%p</fraction>
+    <fraction name="config_spacer_width_4_column">10%p</fraction>
+    <fraction name="config_key_width_9_column">10%p</fraction>
+    <fraction name="config_spacer_width_9_column">5%p</fraction>
+
+</resources>

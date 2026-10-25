@@ -575,7 +575,7 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
 
         this.imeService.getInputLogic().setTimerProxy(new TextDecoratorUi(this.imeService, view));
         ArrowBarController arrowBarController = new ArrowBarController(
-                this.imeService.getApplicationContext(), this.imeService, view);
+                new ImeResourcesContext(this.imeService), this.imeService, view);
         AuxBarManager abmForArrowBar = this.imeService.getAuxBarManager();
         if (BuildConfig.DEBUG) Log.d(SETUP_TAG, "ARROW_BAR_DIAG setupInputView: abmForArrowBar=" + (abmForArrowBar != null ? "NON-NULL" : "NULL"));
         if (abmForArrowBar != null) {

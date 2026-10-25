@@ -257,15 +257,14 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     /**
-     * The height scale actually applied, given the current orientation. Landscape always
-     * renders extra-compact regardless of the user's height mode -- deliberate and not a
-     * user-facing setting. This replaces the deleted values-land sizing table (see
-     * docs/landscape-dimensions.md) with a single factor through the height manager.
+     * The height scale applied to the keyboard's base height. The same factor in both
+     * orientations: landscape gets its own base from res/values-land (the original keyboard's
+     * landscape sizing), and the user's height mode scales that base by the same relative
+     * amount it scales the portrait one. Landscape used to be forced to extra-compact
+     * instead, which with the portrait minimum-height clamp (a share of the screen width)
+     * still left the board filling most of a wide screen.
      */
     public static float getEffectiveKeyboardHeightScale(Resources resources) {
-        if (resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            return HEIGHT_SCALE_EXTRA_COMPACT;
-        }
         return getKeyboardHeightScale();
     }
 
