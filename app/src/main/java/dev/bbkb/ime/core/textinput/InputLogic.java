@@ -1728,8 +1728,8 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         mRecorrectionController.performRecorrection(c0804d, z, i);
     }
 
-    void revertAutoCorrection(InputEventContext c0920g, SettingsValues c0804d) {
-        mRecorrectionController.revertAutoCorrection(c0920g, c0804d);
+    void revertAutoCorrection(InputEventContext c0920g, SettingsValues c0804d, boolean dropWhitespaceSeparator) {
+        mRecorrectionController.revertAutoCorrection(c0920g, c0804d, dropWhitespaceSeparator);
     }
 
     int getShiftState(SettingsValues c0804d, int i) {

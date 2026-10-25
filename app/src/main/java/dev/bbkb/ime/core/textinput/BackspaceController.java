@@ -532,10 +532,17 @@ class BackspaceController {
             // double-space-period / swap-punctuation reverts further down this method, which
             // own the undo for those. Everything else - the committed word itself, or the plain
             // separator committed with it - reverts.
+            //
+            // The original keyboard did revert from the keyboard, on the SECOND press: the first
+            // deleted the space, and with a letter before the cursor the old gate opened. One
+            // press here therefore also drops a whitespace separator, so the word comes back
+            // composing with no space after it, as it did there (otherwise the next space
+            // leaves two). Swipe-to-delete keeps the separator.
             boolean isFollowedBySpaceSymbol = settings.isUsuallyFollowedBySpace(cpBefore);
             boolean revertGateOpen = !isFollowedBySpaceSymbol;
-            if (mInputLogic.mEventDispatcher.isRevertEligible() && (revertGateOpen || event.mX == InputEvent.COORD_SWIPE_DELETE_REVERT)) {
-                mInputLogic.revertAutoCorrection(context, context.settingsValues);
+            boolean isSwipeDeleteRevert = event.mX == InputEvent.COORD_SWIPE_DELETE_REVERT;
+            if (mInputLogic.mEventDispatcher.isRevertEligible() && (revertGateOpen || isSwipeDeleteRevert)) {
+                mInputLogic.revertAutoCorrection(context, context.settingsValues, !isSwipeDeleteRevert);
                 return;
             }
             String lastCommitted = mInputLogic.mLastCommittedText;

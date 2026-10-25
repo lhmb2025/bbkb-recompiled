@@ -152,16 +152,29 @@ class RevertAutoCorrectionTest {
         // that was committed together with the correction. The gate used to demand word
         // content there — a state no post-auto-correction cursor can be in — so keyboard
         // backspace never reverted a correction at all; only the swipe-delete coordinate
-        // reached `revertAutoCorrection`. One backspace now puts the typed word back along
-        // with its separator.
+        // reached `revertAutoCorrection`. One backspace now puts the typed word back.
+        //
+        // The space goes too, and the word comes back composing: that is where the original
+        // keyboard ended up after its two presses (space deleted, then reverted). Restoring
+        // "teh |" left the next space press typing a second space (beta report 2026-10-23).
         afterAutoCorrection("the ", 4, typed = "teh", committed = "the", separator = " ")
         assertTrue(h.inputLogic.mEventDispatcher.isRevertEligible())
         backspace()
-        assertEquals("teh |", editorState())
+        assertEquals("teh|", editorState())
+        assertTrue(h.editor.hasComposingRegion())
+        assertEquals("teh", h.inputLogic.mComposingTracker.composingText)
         assertSame(
             "the record must go idle so a second backspace cannot revert again",
             CommitEventRecord.IDLE, h.inputLogic.mEventDispatcher,
         )
+    }
+
+    @Test
+    fun keyboardRevert_dropsAWhitespaceSeparatorButKeepsEarlierText() {
+        afterAutoCorrection("i think the\n", 12, typed = "teh", committed = "the", separator = "\n")
+        backspace()
+        assertEquals("i think teh|", editorState())
+        assertTrue(h.editor.hasComposingRegion())
     }
 
     @Test

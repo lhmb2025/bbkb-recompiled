@@ -161,7 +161,15 @@ class RecorrectionController {
         }
     }
 
-    void revertAutoCorrection(InputEventContext c0920g, SettingsValues c0804d) {
+    /**
+     * @param dropWhitespaceSeparator {@code true} for a keyboard backspace: a whitespace
+     *        separator committed with the correction is deleted rather than restored, so the
+     *        typed word comes back composing. The original keyboard needed two presses here (the
+     *        first deleted the space, the second reverted); this one press must end in the same
+     *        state, or the next space leaves two spaces after the word. Swipe-to-delete passes
+     *        {@code false} and keeps the separator.
+     */
+    void revertAutoCorrection(InputEventContext c0920g, SettingsValues c0804d, boolean dropWhitespaceSeparator) {
         String str;
         int i;
         CharSequence charSequence;
@@ -200,6 +208,9 @@ class RecorrectionController {
         }
         CharSequence charSequenceM5815a2 = mInputLogic.mRichInputConnection.getTextBeforeCursor(length2, 0);
         if (charSequenceM5815a2 == null || !TextUtils.equals(str3, charSequenceM5815a2.toString())) {
+            z = false;
+        }
+        if (z && dropWhitespaceSeparator && TextUtils.getTrimmedLength(str3) == 0) {
             z = false;
         }
         mInputLogic.mRichInputConnection.deleteSurroundingText(length + i2, 0);
