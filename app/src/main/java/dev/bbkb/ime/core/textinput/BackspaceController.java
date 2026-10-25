@@ -352,6 +352,15 @@ class BackspaceController {
      * @param context     the current input event context
      * @param symbolPage  symbol page order / shift state passed to recorrection
      */
+    /**
+     * Whether the cursor is at the very start of the field: the tracked selection start is 0 and
+     * nothing is selected. Asked of the tracked position, never of the before-cursor text, which
+     * some editors return empty while a composing span is active mid-word.
+     */
+    private static boolean isAtStartOfField(RichInputConnection ric) {
+        return ric.getCursorStart() == 0 && !ric.hasSelection();
+    }
+
     private void handleAcceleratedDelete(InputEvent event, boolean shiftHeld, InputEventContext context, int symbolPage) {
         RichInputConnection ric = mInputLogic.mRichInputConnection;
         dev.bbkb.ime.core.textinput.composing.ComposingTextTracker ct = mInputLogic.mComposingTracker;
@@ -370,11 +379,10 @@ class BackspaceController {
         boolean deleted = false;
         int cpBefore = ric.getCodePointBeforeCursor();
         int cpAfter = ric.getCodePointAfterCursor();
-        // Forward-delete only on Shift. The original condition also forward-deleted when
-        // cpBefore == -1, but some editors return "" for getTextBeforeCursor() while a
-        // composing span is active, making cpBefore == -1 even with text to the left —
-        // the same quirk already fixed in the non-repeat path below (see handleBackspace).
-        if (cpAfter != -1 && shiftHeld) {
+        // Forward delete on Shift, or at the start of the field: the tracked cursor at 0, not
+        // cpBefore == -1, which some editors fake mid-word while a composing span is active
+        // (see handleBackspace).
+        if (cpAfter != -1 && (shiftHeld || isAtStartOfField(ric))) {
             ric.deleteSurroundingText(0, Character.isSupplementaryCodePoint(cpAfter) ? 2 : 1);
             return;
         }
@@ -564,15 +572,14 @@ class BackspaceController {
             } else {
                 int cpBefore2 = ric.getCodePointBeforeCursor();
                 int cpAfter = ric.getCodePointAfterCursor();
-                // Removed automatic forward-delete trigger (cpBefore2 == -1).
-                // When cursor is repositioned mid-word via tap, some editors return "" for
-                // getTextBeforeCursor() while a composing span is still active (they return
-                // text before the composing span start rather than text before the cursor position).
-                // This made cpBefore2 == -1 even with text to the left of the cursor, causing
-                // backspace to forward-delete the character to the RIGHT instead of the left
-                // (original condition: cpAfter != -1 && (shiftHeld || cpBefore2 == -1)).
-                // Intentional forward delete remains available via Shift+Backspace (shiftHeld).
-                if (cpAfter != -1 && shiftHeld) {
+                // Forward delete on Shift, or at the very start of the field, as in the original
+                // app. The original read "start of the field" as cpBefore2 == -1, and that bit
+                // back: with the cursor tapped into a word, some editors answer
+                // getTextBeforeCursor() with "" while a composing span is active (text before
+                // the span start, not before the cursor), so backspace mid-word ate the
+                // character to the RIGHT. The start of the field is the TRACKED cursor being at
+                // 0, which that quirk never fakes (beta report, 2026-10-25).
+                if (cpAfter != -1 && (shiftHeld || isAtStartOfField(ric))) {
                     ric.deleteSurroundingText(0, GraphemeUtils.getGraphemeLengthAfterCursor(ric.getTextAfterCursor(48, 0), cpAfter));
                 } else {
                     if (cpBefore2 == -1) {

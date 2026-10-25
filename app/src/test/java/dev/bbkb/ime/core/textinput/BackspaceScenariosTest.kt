@@ -20,6 +20,7 @@ import org.mockito.Mockito.mockStatic
 import org.mockito.Mockito.`when`
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import org.robolectric.util.ReflectionHelpers
 import java.util.Locale
 
 /**
@@ -158,10 +159,27 @@ class BackspaceScenariosTest {
 
     @Test
     fun backspace_midText_deletesBeforeTheCursorNotAfterIt() {
-        // The comment above the `cpAfter != -1 && shiftHeld` branch records that this used to
-        // forward-delete when getTextBeforeCursor came back empty. Pin the direction.
         h.startSession("abcdef", 3)
         backspace()
+        assertEquals("ab|def", editorState())
+    }
+
+    /**
+     * The editor quirk the start-of-field forward delete must not trip on: with the cursor tapped
+     * into a word, some editors answer getTextBeforeCursor() with "" while a composing span is
+     * active, so the cached before-cursor text is empty although the cursor is at 3. The original
+     * app read that as "start of the field" and deleted the character to the RIGHT. The gate is
+     * the tracked cursor position, so this still deletes to the left.
+     */
+    @Test
+    fun backspace_midText_withAnEmptyBeforeCursorRead_stillDeletesBeforeTheCursor() {
+        h.startSession("abcdef", 3)
+        val cached = ReflectionHelpers.getField<StringBuilder>(h.inputLogic.mRichInputConnection, "mTextBeforeCursor")
+        cached.setLength(0)
+        assertEquals(-1, h.inputLogic.mRichInputConnection.getCodePointBeforeCursor())
+
+        backspace()
+
         assertEquals("ab|def", editorState())
     }
 
@@ -176,15 +194,22 @@ class BackspaceScenariosTest {
     // ── the empty / start-of-field edges ────────────────────────────────────────
 
     @Test
-    fun backspace_atStartOfANonEmptyField_deletesNothingAndSendsNoKeyEvent() {
+    fun backspace_atStartOfANonEmptyField_deletesTheCharacterAfterTheCursor() {
         // Cursor at 0 with text after it: `getCursorEnd() == 0` but `getCodePointAfterCursor()`
-        // is not -1, so the raw-key branch is NOT taken. cpBefore is -1, so the controller
-        // takes the `deleteSurroundingText(1, 0)` shortcut — which deletes nothing, there being
-        // nothing before the cursor.
+        // is not -1, so the raw-key branch is NOT taken. Nothing can be deleted to the left, so
+        // DEL deletes to the right, as the original app did (beta report, 2026-10-25).
         h.startSession("hello", 0)
         backspace()
-        assertEquals("|hello", editorState())
+        assertEquals("|ello", editorState())
         assertTrue("no raw key event should be sent here", h.editor.sentKeyEvents.isEmpty())
+    }
+
+    @Test
+    fun repeatedBackspacesAtStartOfField_eatTheFieldFromTheFront() {
+        h.startSession("abc", 0)
+        backspace(); assertEquals("|bc", editorState())
+        backspace(); assertEquals("|c", editorState())
+        backspace(); assertEquals("|", editorState())
     }
 
     @Test
@@ -460,13 +485,13 @@ class BackspaceScenariosTest {
     }
 
     @Test
-    fun acceleratedDelete_withNothingComposingAndNoTextBefore_deletesForwardByOne() {
-        // cpBefore == -1 and not composing: a single deleteSurroundingText(1, 0), which at
-        // position 0 removes nothing.
+    fun acceleratedDelete_atStartOfField_deletesForwardByOne() {
+        // The hold reaches the start of the field: each repeat takes one character from the
+        // front, as the ordinary path does.
         armAcceleratedDelete()
         h.startSession("abc", 0)
         backspace(repeat = true)
-        assertEquals("|abc", editorState())
+        assertEquals("|bc", editorState())
     }
 
     @Test
