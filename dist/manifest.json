@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "generated": "2026-10-20T06:34:06Z",
+  "generated": "2026-10-25T22:37:08Z",
   "app": {
     "release": {
-      "versionCode": 1438,
-      "versionName": "5.0.0-beta.25",
-      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.25/bbkb-5.0.0-beta.25-release.apk",
-      "sha256": "c573dcb20f45e52266d694db8f3692ca073a47e86cf83bf78bd2f7437d3e79b6",
-      "size": 57703337,
+      "versionCode": 1439,
+      "versionName": "5.0.0-beta.26",
+      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.26/bbkb-5.0.0-beta.26-release.apk",
+      "sha256": "9710cda60832cfc58801ad47720edffe1c6d82681313e54d0abb088eaf192006",
+      "size": 57745181,
       "minSdk": 23,
-      "notes": "Change language popup replaced with a language selection bar. Adds support for per-language layout overrides. Adds support for Kazakh, Kyrgyz, Tajik, and Tatar. Zhuyin and stroke Chinese input now work (since beta.23). Adds additional etched layouts for Athena PKB. Settings reorganized with more logical grouping, detangling, and removal of no-op toggles. Improves additional core features including dictation, ctrl key, backup/restore, clipboard, and device support."
+      "notes": "Settings updated to Android 16 UX standards. Fixed landscape keyboard sizing, autocorrect double-space glitch, ABC key behavior on PKB devices, and reverse-backspace. Updated Colemak layout to include colon on shift."
     }
   },
   "packs": {
