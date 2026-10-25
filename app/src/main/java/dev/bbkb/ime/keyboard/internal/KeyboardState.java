@@ -674,8 +674,20 @@ public final class KeyboardState {
      * This is the software counterpart to {@link #onHardwareKeyEvent} for physical keys: the
      * return is deferred from key-press to here so the tapped symbol is not lost (see the note
      * in {@link #onCodeInput}). No-op unless a PKB SYM entry (method 2) is still pending.
+     *
+     * <p>Only a character ({@code code >= 32}) is a committed symbol. The IME fires this for every
+     * soft key, and a function key must leave the entry alone: the on-screen ABC key (−3) is a
+     * toggle whose release {@link #onSymbolKeyRelease} reads against the CURRENT mode. Ending the
+     * entry here first put the mode on the alphabet, and the release then toggled the other way
+     * — onto the on-screen symbols page instead of the on-screen alphabet the original app shows
+     * (KEY2 report, 2026-10-25). The original closed the board after a character only.
+     *
+     * @param code the soft key's code, as given to the IME's onCodeInput
      */
-    public void onSoftwareSymbolCommitted(int i, int i2) {
+    public void onSoftwareSymbolCommitted(int code, int i, int i2) {
+        if (!Constants.isLetterCode(code)) {
+            return;
+        }
         if (this.currentMode == KeyboardModeState.SYMBOL && this.symbolEntryMethod == 2
                 && this.switcherCallbacks.isPkbDevice() && !this.switcherCallbacks.isSymHeld()) {
             this.symbolEntryMethod = 0;

@@ -1221,9 +1221,18 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return mainKeyboardViewM6790T != null && mainKeyboardViewM6790T.isInDoubleTapShiftKeyTimeout();
     }
 
+    /**
+     * Whether ABC on the symbols goes to the ON-SCREEN alphabet ({@link #requestManualShiftOff},
+     * which forces the on-screen keyboard) rather than the hidden physical-keyboard alphabet. The
+     * original asked "physical keyboard present, and this layout set has a physical-keyboard
+     * layout". This used to be {@code hasShiftedSymbolKeyboard()}, whose
+     * {@code hasAlphabeticKeyboard()} half means an EXTERNAL keyboard is attached: false for the
+     * KEY2's built-in keypad, so ABC on the Sym board just closed it (KEY2, 2026-10-25).
+     */
     @Override
     public boolean isManualTemporaryUppercase() {
-        return DeviceProfile.current().hasShiftedSymbolKeyboard();
+        return DeviceProfile.current().isPkbDevice()
+                && this.keyboardBuilder != null && this.keyboardBuilder.hasPkbLayout();
     }
 
     public void onInputCodeChanged(int i, int i2, int i3) {
@@ -1235,8 +1244,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         this.keyboardState.onInputCodeChanged(i, i2, i3);
     }
 
-    public void onSoftwareSymbolCommitted(int i, int i2) {
-        this.keyboardState.onSoftwareSymbolCommitted(i, i2);
+    public void onSoftwareSymbolCommitted(int code, int i, int i2) {
+        this.keyboardState.onSoftwareSymbolCommitted(code, i, i2);
     }
 
     public boolean isEmojiKeyboardShowing() {

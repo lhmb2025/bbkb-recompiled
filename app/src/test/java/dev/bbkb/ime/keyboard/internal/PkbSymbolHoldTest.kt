@@ -139,7 +139,55 @@ class PkbSymbolHoldTest {
         assertTrue(state.isInSymbolMode)
     }
 
+    // ── the on-screen ABC key on the Sym board ───────────────────────────────
+
+    /**
+     * Sym tapped, then the board's on-screen ABC key (−3) tapped. The soft-key path fires, in
+     * production order: the press, the IME's onCodeInput (which runs `onInputCodeChanged` and the
+     * symbol-committed hook), then the release. ABC is a toggle read against the current mode, so
+     * the hook must not end the entry first: with the entry still up, the release asks for the
+     * on-screen alphabet (`requestManualShiftOff`, which forces the on-screen keyboard), as in the
+     * original app. Before the fix the hook treated −3 as a committed symbol, the release found
+     * the alphabet already loaded and toggled onto the on-screen SYMBOLS page (KEY2, 2026-10-25).
+     */
+    @Test
+    fun theOnScreenAbcKeyOnTheSymBoardAsksForTheOnScreenAlphabet() {
+        fake.manualTemporaryUppercase = true // a KEY2: PKB device with an alphabetic keypad
+        symDown()
+        symUp()
+        fake.clear()
+
+        state.onCodeInput(ABC_KEY, false, 0, NO_RECAPITALIZE)
+        state.onInputCodeChanged(ABC_KEY, 0, NO_RECAPITALIZE)
+        state.onSoftwareSymbolCommitted(ABC_KEY, 0, NO_RECAPITALIZE)
+        assertTrue("a function key is not a committed symbol: the entry is still up", state.isInSymbolMode)
+
+        state.onCodeRelease(ABC_KEY, false, 0, NO_RECAPITALIZE)
+
+        assertFalse(state.isInSymbolMode)
+        fake.assertCalls(
+            FakeSwitcherCallbacks.Call.OnKeyRelease,
+            FakeSwitcherCallbacks.Call.RequestManualShiftOff,
+            FakeSwitcherCallbacks.Call.SetAlphabetKeyboard(0, NO_RECAPITALIZE),
+        )
+    }
+
+    /** A character tapped on the board still ends the one-shot entry through the same hook. */
+    @Test
+    fun aCharacterTappedOnTheSymBoardStillClosesIt() {
+        symDown()
+        symUp()
+        fake.clear()
+
+        state.onCodeInput('a'.code, false, 0, NO_RECAPITALIZE)
+        state.onSoftwareSymbolCommitted('a'.code, 0, NO_RECAPITALIZE)
+
+        assertFalse(state.isInSymbolMode)
+    }
+
     private companion object {
+        /** `key_switch_alpha_symbol`: the on-screen ABC / ?123 key. */
+        const val ABC_KEY = -3
         const val KEYCODE_A = 29
         const val KEYCODE_B = 30
         const val KEYCODE_C = 31

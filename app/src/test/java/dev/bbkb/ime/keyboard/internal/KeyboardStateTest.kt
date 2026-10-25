@@ -1517,13 +1517,13 @@ class KeyboardStateTest {
         tapSymbolKey() // in symbols, but by the on-screen SYM key: entry method 0
         fake.clear()
 
-        state.onSoftwareSymbolCommitted(0, NO_RECAPITALIZE)
+        state.onSoftwareSymbolCommitted('a'.code, 0, NO_RECAPITALIZE)
         fake.assertNoCalls() // nothing armed yet
 
         state.onHardwareKeyEvent(KEYCODE_SYM, 0, NO_RECAPITALIZE) // arms entry method 2
         fake.assertNoCalls()
 
-        state.onSoftwareSymbolCommitted(0, NO_RECAPITALIZE)
+        state.onSoftwareSymbolCommitted('a'.code, 0, NO_RECAPITALIZE)
         fake.assertCalls(RequestShiftOff, SetAlphabetKeyboard(0, NO_RECAPITALIZE), OnReturnToAlphabetFromSymbol)
         assertFalse(state.isInSymbolMode)
     }
@@ -1615,7 +1615,7 @@ class KeyboardStateTest {
         fake.assertCalls(OnKeyRelease)
         assertTrue(state.isInSymbolMode)
 
-        state.onSoftwareSymbolCommitted(0, NO_RECAPITALIZE)
+        state.onSoftwareSymbolCommitted('a'.code, 0, NO_RECAPITALIZE)
         fake.assertCalls(RequestShiftOff, SetAlphabetKeyboard(0, NO_RECAPITALIZE), OnReturnToAlphabetFromSymbol)
         assertFalse(state.isInSymbolMode)
     }
@@ -1626,7 +1626,7 @@ class KeyboardStateTest {
         tapSymbolKey()
         fake.clear()
 
-        state.onSoftwareSymbolCommitted(0, NO_RECAPITALIZE)
+        state.onSoftwareSymbolCommitted('a'.code, 0, NO_RECAPITALIZE)
 
         fake.assertNoCalls()
         assertTrue(state.isInSymbolMode)

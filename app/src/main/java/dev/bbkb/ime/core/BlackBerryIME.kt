@@ -2082,10 +2082,16 @@ class BlackBerryIME : InputMethodService(),
             keyboardSwitcher.onInputCodeChanged(code, getCurrentInputType(), getCurrentImeOptions())
             // For an on-screen PKB SYM keyboard tap, return to the alphabet AFTER the symbol has
             // been committed above. The state machine defers this from key-press so the tap isn't
-            // lost (see KeyboardState.onCodeInput). No-op unless a PKB SYM entry is pending.
-            keyboardSwitcher.onSoftwareSymbolCommitted(getCurrentInputType(), getCurrentImeOptions())
+            // lost (see KeyboardState.onCodeInput). No-op unless a PKB SYM entry is pending and
+            // the code is a character: a function key such as ABC (-3) is not a committed symbol.
+            keyboardSwitcher.onSoftwareSymbolCommitted(code, getCurrentInputType(), getCurrentImeOptions())
         }
-        if (!Constants.isLetterCode(code)) handleSymbolKeyLongPress()
+        // Not for the ABC / ?123 key (-3): it is a toggle, and its release (onSymbolKeyRelease)
+        // reads the CURRENT mode. Ending a PKB Sym entry here first put the mode on the alphabet,
+        // so ABC on the physical-keyboard Sym board then opened the on-screen symbols page instead
+        // of the on-screen alphabet (KEY2, 2026-10-25). The original only called this from
+        // physical-key paths.
+        if (!Constants.isLetterCode(code) && code != -3) handleSymbolKeyLongPress()
     }
 
     /** A key code <= 0 is a function key (no code point); > 0 is a code point with no key code. */
