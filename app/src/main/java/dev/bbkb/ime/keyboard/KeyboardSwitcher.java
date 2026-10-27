@@ -322,6 +322,9 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     private Context themeContext;
 
+    /** The IME service {@link #themeContext} was built on; see {@link #ensureThemeContext}. */
+    private Context themeContextIme;
+
     private final KeyboardTextsSet keyboardLayoutSet = new KeyboardTextsSet();
 
 
@@ -475,10 +478,18 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
      * There is one keyboard style tree; light/dark/classic/dynamic are palettes in
      * KeyboardColorManager, applied at draw time. The themed context therefore never
      * changes after creation, and theme switches no longer recreate the input view.
+     *
+     * <p>It reads its resources through the IME service ({@link ImeResourcesContext}), so it
+     * belongs to ONE service instance. Switching to another keyboard destroys the service and
+     * switching back creates a new one, while this singleton lives on: a themed context kept from
+     * the old service answered with that dead service's frozen configuration, and the keyboard
+     * stayed sized for whichever orientation it had at the switch until a reboot (beta.26 report,
+     * 2026-10-26). So it is rebuilt for each new service.
      */
     private void ensureThemeContext(Context context) {
-        if (this.themeContext == null) {
+        if (this.themeContext == null || this.themeContextIme != context) {
             this.themeContext = new ContextThemeWrapper(new ImeResourcesContext(context), R.style.KeyboardTheme_LXX);
+            this.themeContextIme = context;
             KeyboardBuilder.onSystemLocaleChanged();
         }
     }
@@ -1364,6 +1375,9 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         this.keyboardBuilder = null;
         this.switcherCallbacks = null;
         this.blackberryIme = null;
+        // The themed context wraps the service being destroyed: make the next input view build a
+        // new one. It is left non-null so nothing that reads it before then can crash.
+        this.themeContextIme = null;
         this.sharedPreferences = null;
     }
 
