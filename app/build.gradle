@@ -53,8 +53,8 @@ android {
         applicationId = "dev.bbkb.ime"
         minSdk = 23
         targetSdk = 36
-        versionCode = 1439  //  Most recent build is 1439
-        versionName = "5.0.0-beta.26"
+        versionCode = 1440  //  Most recent build is 1440
+        versionName = "5.0.0-beta.27"
 
         // Native instrumentation (libxt9trace.so) — arm64 only, matching the engine blob.
         externalNativeBuild {
