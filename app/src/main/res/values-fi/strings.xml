@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Kuunnellaan&#8230;</string>
     <string name="settings_appearance_modern">Moderni</string>
     <string name="settings_color_scheme_title">Värimaailma</string>
-    <string name="settings_use_system_colors_title">Käytä järjestelmän värejä</string>
-    <string name="settings_use_system_colors_summary">Sävytä näppäimistö taustakuvan väreillä</string>
+    <string name="settings_use_system_colors_title">Dynaamiset värit</string>
+    <string name="settings_use_system_colors_summary">Sävytä näppäimistö ja asetukset taustakuvan väreillä</string>
     <string name="settings_appearance_layout_summary">Teema, Slideboard, symbolit ja oletusarvot</string>
     <string name="settings_appearance_layout_title">Mukauttaminen</string>
     <string name="settings_appearance_light">Vaalea</string>

@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Yn gwrando&#8230;</string>
     <string name="settings_appearance_modern">Modern</string>
     <string name="settings_color_scheme_title">Cynllun lliwiau</string>
-    <string name="settings_use_system_colors_title">Defnyddio lliwiau\'r system</string>
-    <string name="settings_use_system_colors_summary">Lliwio\'r bysellfwrdd â lliwiau o\'ch papur wal</string>
+    <string name="settings_use_system_colors_title">Lliwiau deinamig</string>
+    <string name="settings_use_system_colors_summary">Lliwio\'r bysellfwrdd a\'r gosodiadau â lliwiau o\'ch papur wal</string>
     <string name="settings_appearance_layout_summary">Thema, Slideboard, symbolau a rhagosodiadau</string>
     <string name="settings_appearance_layout_title">Personoli</string>
     <string name="settings_appearance_light">Golau</string>

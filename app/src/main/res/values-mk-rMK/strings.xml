@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Слушање&#8230;</string>
     <string name="settings_appearance_modern">Модерна</string>
     <string name="settings_color_scheme_title">Шема на бои</string>
-    <string name="settings_use_system_colors_title">Системски бои</string>
-    <string name="settings_use_system_colors_summary">Обојување на тастатурата со боите од вашата тапета</string>
+    <string name="settings_use_system_colors_title">Динамични бои</string>
+    <string name="settings_use_system_colors_summary">Обојување на тастатурата и поставките со боите од вашата тапета</string>
     <string name="settings_appearance_layout_summary">Тема, Slideboard, симболи и стандардни поставки</string>
     <string name="settings_appearance_layout_title">Персонализација</string>
     <string name="settings_appearance_light">Светла</string>

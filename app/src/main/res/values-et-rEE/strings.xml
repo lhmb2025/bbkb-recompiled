@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Kuulan&#8230;</string>
     <string name="settings_appearance_modern">Kaasaegne</string>
     <string name="settings_color_scheme_title">Värviskeem</string>
-    <string name="settings_use_system_colors_title">Kasuta süsteemi värve</string>
-    <string name="settings_use_system_colors_summary">Värvi klaviatuur taustapildi värvidega</string>
+    <string name="settings_use_system_colors_title">Dünaamilised värvid</string>
+    <string name="settings_use_system_colors_summary">Värvi klaviatuur ja seaded taustapildi värvidega</string>
     <string name="settings_appearance_layout_summary">Teema, Slideboard, sümbolid ja vaikeseaded</string>
     <string name="settings_appearance_layout_title">Isikupärastamine</string>
     <string name="settings_appearance_light">Hele</string>

@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Lytter&#8230;</string>
     <string name="settings_appearance_modern">Moderne</string>
     <string name="settings_color_scheme_title">Fargetema</string>
-    <string name="settings_use_system_colors_title">Bruk systemfarger</string>
-    <string name="settings_use_system_colors_summary">Fargelegg tastaturet med farger fra bakgrunnsbildet</string>
+    <string name="settings_use_system_colors_title">Dynamiske farger</string>
+    <string name="settings_use_system_colors_summary">Fargelegg tastaturet og innstillingene med farger fra bakgrunnsbildet</string>
     <string name="settings_appearance_layout_summary">Tema, Slideboard, symboler og standardvalg</string>
     <string name="settings_appearance_layout_title">Tilpasning</string>
     <string name="settings_appearance_light">Lyst</string>

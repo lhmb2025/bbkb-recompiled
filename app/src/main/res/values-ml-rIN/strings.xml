@@ -285,8 +285,8 @@
     <string name="voice_status_listening">കേൾക്കുന്നു&#8230;</string>
     <string name="settings_appearance_modern">ആധുനികം</string>
     <string name="settings_color_scheme_title">വർണ്ണ പദ്ധതി</string>
-    <string name="settings_use_system_colors_title">സിസ്റ്റം നിറങ്ങൾ ഉപയോഗിക്കുക</string>
-    <string name="settings_use_system_colors_summary">നിങ്ങളുടെ വാൾപേപ്പറിലെ നിറങ്ങൾ കീബോർഡിന് നൽകുക</string>
+    <string name="settings_use_system_colors_title">ഡൈനാമിക് നിറങ്ങൾ</string>
+    <string name="settings_use_system_colors_summary">നിങ്ങളുടെ വാൾപേപ്പറിലെ നിറങ്ങൾ കീബോർഡിനും ക്രമീകരണങ്ങൾക്കും നൽകുക</string>
     <string name="settings_appearance_layout_summary">തീം, Slideboard, ചിഹ്നങ്ങൾ, സ്ഥിരമൂല്യങ്ങൾ</string>
     <string name="settings_appearance_layout_title">വ്യക്തിഗതമാക്കൽ</string>
     <string name="settings_appearance_light">ലൈറ്റ്</string>

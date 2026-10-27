@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Slušanje&#8230;</string>
     <string name="settings_appearance_modern">Moderna</string>
     <string name="settings_color_scheme_title">Shema boja</string>
-    <string name="settings_use_system_colors_title">Upotrijebi boje sustava</string>
-    <string name="settings_use_system_colors_summary">Oboji tipkovnicu bojama s vaše pozadinske slike</string>
+    <string name="settings_use_system_colors_title">Dinamične boje</string>
+    <string name="settings_use_system_colors_summary">Oboji tipkovnicu i postavke bojama s vaše pozadinske slike</string>
     <string name="settings_appearance_layout_summary">Tema, Slideboard, simboli i zadane postavke</string>
     <string name="settings_appearance_layout_title">Personalizacija</string>
     <string name="settings_appearance_light">Svijetla</string>

@@ -285,8 +285,8 @@
     <string name="voice_status_listening">正在聆听&#8230;</string>
     <string name="settings_appearance_modern">现代</string>
     <string name="settings_color_scheme_title">配色方案</string>
-    <string name="settings_use_system_colors_title">使用系统颜色</string>
-    <string name="settings_use_system_colors_summary">使用壁纸中的颜色为键盘着色</string>
+    <string name="settings_use_system_colors_title">动态颜色</string>
+    <string name="settings_use_system_colors_summary">使用壁纸中的颜色为键盘和设置着色</string>
     <string name="settings_appearance_layout_summary">主题、Slideboard、符号和默认设置</string>
     <string name="settings_appearance_layout_title">个性化</string>
     <string name="settings_appearance_light">浅色</string>

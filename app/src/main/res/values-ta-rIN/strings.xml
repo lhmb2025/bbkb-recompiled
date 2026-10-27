@@ -285,8 +285,8 @@
     <string name="voice_status_listening">கேட்கிறது&#8230;</string>
     <string name="settings_appearance_modern">நவீனம்</string>
     <string name="settings_color_scheme_title">வண்ணத் திட்டம்</string>
-    <string name="settings_use_system_colors_title">கணினி வண்ணங்களைப் பயன்படுத்து</string>
-    <string name="settings_use_system_colors_summary">உங்கள் வால்பேப்பரின் வண்ணங்களை விசைப்பலகைக்குப் பயன்படுத்து</string>
+    <string name="settings_use_system_colors_title">டைனமிக் வண்ணங்கள்</string>
+    <string name="settings_use_system_colors_summary">உங்கள் வால்பேப்பரின் வண்ணங்களை விசைப்பலகைக்கும் அமைப்புகளுக்கும் பயன்படுத்து</string>
     <string name="settings_appearance_layout_summary">தீம், Slideboard, குறியீடுகள் மற்றும் இயல்புநிலைகள்</string>
     <string name="settings_appearance_layout_title">தனிப்பயனாக்கம்</string>
     <string name="settings_appearance_light">வெளிர்</string>

@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Dinlənilir&#8230;</string>
     <string name="settings_appearance_modern">Müasir</string>
     <string name="settings_color_scheme_title">Rəng sxemi</string>
-    <string name="settings_use_system_colors_title">Sistem rənglərindən istifadə edin</string>
-    <string name="settings_use_system_colors_summary">Klaviaturanı divar kağızınızın rəngləri ilə rəngləyin</string>
+    <string name="settings_use_system_colors_title">Dinamik rənglər</string>
+    <string name="settings_use_system_colors_summary">Klaviaturanı və ayarları divar kağızınızın rəngləri ilə rəngləyin</string>
     <string name="settings_appearance_layout_summary">Mövzu, Slideboard, simvollar və varsayılanlar</string>
     <string name="settings_appearance_layout_title">Fərdiləşdirmə</string>
     <string name="settings_appearance_light">Açıq</string>

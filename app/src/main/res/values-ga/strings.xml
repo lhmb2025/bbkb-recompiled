@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Ag éisteacht&#8230;</string>
     <string name="settings_appearance_modern">Nua-aimseartha</string>
     <string name="settings_color_scheme_title">Scéim dathanna</string>
-    <string name="settings_use_system_colors_title">Úsáid dathanna an chórais</string>
-    <string name="settings_use_system_colors_summary">Cuir dath ar an méarchlár ó dhathanna do chúlbhrait</string>
+    <string name="settings_use_system_colors_title">Dathanna dinimiciúla</string>
+    <string name="settings_use_system_colors_summary">Cuir dath ar an méarchlár agus ar na socruithe ó dhathanna do chúlbhrait</string>
     <string name="settings_appearance_layout_summary">Téama, Slideboard, siombailí agus réamhshocruithe</string>
     <string name="settings_appearance_layout_title">Pearsantú</string>
     <string name="settings_appearance_light">Geal</string>

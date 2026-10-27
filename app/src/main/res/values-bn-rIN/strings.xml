@@ -285,8 +285,8 @@
     <string name="voice_status_listening">শোনা হচ্ছে&#8230;</string>
     <string name="settings_appearance_modern">আধুনিক</string>
     <string name="settings_color_scheme_title">রঙের স্কিম</string>
-    <string name="settings_use_system_colors_title">সিস্টেমের রং ব্যবহার করুন</string>
-    <string name="settings_use_system_colors_summary">আপনার ওয়ালপেপারের রং দিয়ে কীবোর্ড রাঙান</string>
+    <string name="settings_use_system_colors_title">ডায়নামিক রং</string>
+    <string name="settings_use_system_colors_summary">আপনার ওয়ালপেপারের রং দিয়ে কীবোর্ড ও সেটিংস রাঙান</string>
     <string name="settings_appearance_layout_summary">থিম, Slideboard, প্রতীক ও ডিফল্ট</string>
     <string name="settings_appearance_layout_title">ব্যক্তিগতকরণ</string>
     <string name="settings_appearance_light">হালকা</string>

@@ -285,8 +285,8 @@
     <string name="voice_status_listening">正在聆聽&#8230;</string>
     <string name="settings_appearance_modern">現代</string>
     <string name="settings_color_scheme_title">配色</string>
-    <string name="settings_use_system_colors_title">使用系統色彩</string>
-    <string name="settings_use_system_colors_summary">使用桌布的色彩為鍵盤上色</string>
+    <string name="settings_use_system_colors_title">動態色彩</string>
+    <string name="settings_use_system_colors_summary">使用桌布的色彩為鍵盤和設定上色</string>
     <string name="settings_appearance_layout_summary">主題、Slideboard、符號和預設值</string>
     <string name="settings_appearance_layout_title">個人化</string>
     <string name="settings_appearance_light">淺色</string>

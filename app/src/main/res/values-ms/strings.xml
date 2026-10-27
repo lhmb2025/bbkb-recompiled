@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Mendengar&#8230;</string>
     <string name="settings_appearance_modern">Moden</string>
     <string name="settings_color_scheme_title">Skema warna</string>
-    <string name="settings_use_system_colors_title">Gunakan warna sistem</string>
-    <string name="settings_use_system_colors_summary">Warnakan papan kekunci dengan warna daripada kertas dinding anda</string>
+    <string name="settings_use_system_colors_title">Warna dinamik</string>
+    <string name="settings_use_system_colors_summary">Warnakan papan kekunci dan tetapan dengan warna daripada kertas dinding anda</string>
     <string name="settings_appearance_layout_summary">Tema, Slideboard, simbol dan tetapan lalai</string>
     <string name="settings_appearance_layout_title">Pemperibadian</string>
     <string name="settings_appearance_light">Cerah</string>

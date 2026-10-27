@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Ngrungokake&#8230;</string>
     <string name="settings_appearance_modern">Modheren</string>
     <string name="settings_color_scheme_title">Skema warna</string>
-    <string name="settings_use_system_colors_title">Nganggo warna sistem</string>
-    <string name="settings_use_system_colors_summary">Warnani papan tombol nganggo warna saka gambar latarmu</string>
+    <string name="settings_use_system_colors_title">Warna dinamis</string>
+    <string name="settings_use_system_colors_summary">Warnani papan tombol lan setelan nganggo warna saka gambar latarmu</string>
     <string name="settings_appearance_layout_summary">Tema, Slideboard, simbol, lan setelan gawan</string>
     <string name="settings_appearance_layout_title">Personalisasi</string>
     <string name="settings_appearance_light">Padhang</string>

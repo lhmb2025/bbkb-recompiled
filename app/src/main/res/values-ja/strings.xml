@@ -285,8 +285,8 @@
     <string name="voice_status_listening">聞き取り中&#8230;</string>
     <string name="settings_appearance_modern">モダン</string>
     <string name="settings_color_scheme_title">カラースキーム</string>
-    <string name="settings_use_system_colors_title">システムの色を使用</string>
-    <string name="settings_use_system_colors_summary">壁紙の色でキーボードを色付けします</string>
+    <string name="settings_use_system_colors_title">ダイナミックカラー</string>
+    <string name="settings_use_system_colors_summary">壁紙の色でキーボードと設定を色付けします</string>
     <string name="settings_appearance_layout_summary">テーマ、Slideboard、記号、デフォルト</string>
     <string name="settings_appearance_layout_title">カスタマイズ</string>
     <string name="settings_appearance_light">ライト</string>

@@ -285,8 +285,8 @@
     <string name="voice_status_listening">ಆಲಿಸಲಾಗುತ್ತಿದೆ&#8230;</string>
     <string name="settings_appearance_modern">ಆಧುನಿಕ</string>
     <string name="settings_color_scheme_title">ಬಣ್ಣ ಯೋಜನೆ</string>
-    <string name="settings_use_system_colors_title">ಸಿಸ್ಟಂ ಬಣ್ಣಗಳನ್ನು ಬಳಸಿ</string>
-    <string name="settings_use_system_colors_summary">ನಿಮ್ಮ ವಾಲ್‌ಪೇಪರ್‌ನ ಬಣ್ಣಗಳಿಂದ ಕೀಬೋರ್ಡ್‌ಗೆ ಬಣ್ಣ ನೀಡಿ</string>
+    <string name="settings_use_system_colors_title">ಡೈನಾಮಿಕ್ ಬಣ್ಣಗಳು</string>
+    <string name="settings_use_system_colors_summary">ನಿಮ್ಮ ವಾಲ್‌ಪೇಪರ್‌ನ ಬಣ್ಣಗಳಿಂದ ಕೀಬೋರ್ಡ್ ಮತ್ತು ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಗೆ ಬಣ್ಣ ನೀಡಿ</string>
     <string name="settings_appearance_layout_summary">ಥೀಮ್, Slideboard, ಚಿಹ್ನೆಗಳು ಮತ್ತು ಪೂರ್ವನಿಯೋಜಿತಗಳು</string>
     <string name="settings_appearance_layout_title">ವೈಯಕ್ತೀಕರಣ</string>
     <string name="settings_appearance_light">ಲೈಟ್</string>

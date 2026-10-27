@@ -285,8 +285,8 @@
     <string name="voice_status_listening">გისმენთ&#8230;</string>
     <string name="settings_appearance_modern">თანამედროვე</string>
     <string name="settings_color_scheme_title">ფერთა სქემა</string>
-    <string name="settings_use_system_colors_title">სისტემის ფერების გამოყენება</string>
-    <string name="settings_use_system_colors_summary">კლავიატურის შეფერადება ფონის სურათის ფერებით</string>
+    <string name="settings_use_system_colors_title">დინამიური ფერები</string>
+    <string name="settings_use_system_colors_summary">კლავიატურისა და პარამეტრების შეფერადება ფონის სურათის ფერებით</string>
     <string name="settings_appearance_layout_summary">თემა, Slideboard, სიმბოლოები და ნაგულისხმევი პარამეტრები</string>
     <string name="settings_appearance_layout_title">პერსონალიზაცია</string>
     <string name="settings_appearance_light">ღია</string>

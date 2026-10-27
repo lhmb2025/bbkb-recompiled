@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Poslouchám&#8230;</string>
     <string name="settings_appearance_modern">Moderní</string>
     <string name="settings_color_scheme_title">Barevné schéma</string>
-    <string name="settings_use_system_colors_title">Používat barvy systému</string>
-    <string name="settings_use_system_colors_summary">Obarvit klávesnici podle barev tapety</string>
+    <string name="settings_use_system_colors_title">Dynamické barvy</string>
+    <string name="settings_use_system_colors_summary">Obarvit klávesnici a nastavení podle barev tapety</string>
     <string name="settings_appearance_layout_summary">Motiv, Slideboard, symboly a výchozí nastavení</string>
     <string name="settings_appearance_layout_title">Přizpůsobení</string>
     <string name="settings_appearance_light">Světlý</string>

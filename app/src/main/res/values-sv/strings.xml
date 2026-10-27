@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Lyssnar&#8230;</string>
     <string name="settings_appearance_modern">Modernt</string>
     <string name="settings_color_scheme_title">Färgschema</string>
-    <string name="settings_use_system_colors_title">Använd systemfärger</string>
-    <string name="settings_use_system_colors_summary">Färga tangentbordet med färger från bakgrundsbilden</string>
+    <string name="settings_use_system_colors_title">Dynamiska färger</string>
+    <string name="settings_use_system_colors_summary">Färga tangentbordet och inställningarna med färger från bakgrundsbilden</string>
     <string name="settings_appearance_layout_summary">Tema, Slideboard, symboler och standardval</string>
     <string name="settings_appearance_layout_title">Anpassning</string>
     <string name="settings_appearance_light">Ljust</string>

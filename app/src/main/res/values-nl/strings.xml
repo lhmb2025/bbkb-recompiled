@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Luisteren&#8230;</string>
     <string name="settings_appearance_modern">Modern</string>
     <string name="settings_color_scheme_title">Kleurenschema</string>
-    <string name="settings_use_system_colors_title">Systeemkleuren gebruiken</string>
-    <string name="settings_use_system_colors_summary">Het toetsenbord kleuren met tinten uit uw achtergrond</string>
+    <string name="settings_use_system_colors_title">Dynamische kleuren</string>
+    <string name="settings_use_system_colors_summary">Het toetsenbord en de instellingen kleuren met tinten uit uw achtergrond</string>
     <string name="settings_appearance_layout_summary">Thema, Slideboard, symbolen en standaardinstellingen</string>
     <string name="settings_appearance_layout_title">Personalisatie</string>
     <string name="settings_appearance_light">Licht</string>

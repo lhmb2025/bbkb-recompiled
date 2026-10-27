@@ -177,7 +177,7 @@ object SettingsSearchIndex {
         // ── Personalization: theme & height (on the hub) ────────────────────────
         SearchableSetting(R.string.settings_keyboard_theme_title, "theme classic modern material bb10 blackberry style", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_theme_style"),
         SearchableSetting(R.string.settings_color_scheme_title, "color scheme dark light auto night", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_theme_mode"),
-        SearchableSetting(R.string.settings_use_system_colors_title, "system colors dynamic material you wallpaper", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_use_system_colors"),
+        SearchableSetting(R.string.settings_use_system_colors_title, "dynamic color system colors dynamic material you wallpaper", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_use_system_colors"),
         SearchableSetting(R.string.settings_keyboard_height_title, "keyboard size height tall", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_height_mode"),
 
         // Default currency now lives on the Symbol customization screen

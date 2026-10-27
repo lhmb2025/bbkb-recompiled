@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Klausoma&#8230;</string>
     <string name="settings_appearance_modern">Moderni</string>
     <string name="settings_color_scheme_title">Spalvų schema</string>
-    <string name="settings_use_system_colors_title">Naudoti sistemos spalvas</string>
-    <string name="settings_use_system_colors_summary">Nuspalvinti klaviatūrą ekrano fono spalvomis</string>
+    <string name="settings_use_system_colors_title">Dinaminės spalvos</string>
+    <string name="settings_use_system_colors_summary">Nuspalvinti klaviatūrą ir nustatymus ekrano fono spalvomis</string>
     <string name="settings_appearance_layout_summary">Tema, Slideboard, simboliai ir numatytieji nustatymai</string>
     <string name="settings_appearance_layout_title">Suasmeninimas</string>
     <string name="settings_appearance_light">Šviesi</string>

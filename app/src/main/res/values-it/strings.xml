@@ -285,8 +285,8 @@
     <string name="voice_status_listening">In ascolto&#8230;</string>
     <string name="settings_appearance_modern">Moderno</string>
     <string name="settings_color_scheme_title">Combinazione di colori</string>
-    <string name="settings_use_system_colors_title">Usa i colori di sistema</string>
-    <string name="settings_use_system_colors_summary">Colora la tastiera con le tinte del tuo sfondo</string>
+    <string name="settings_use_system_colors_title">Colori dinamici</string>
+    <string name="settings_use_system_colors_summary">Colora la tastiera e le impostazioni con le tinte del tuo sfondo</string>
     <string name="settings_appearance_layout_summary">Tema, Slideboard, simboli e impostazioni predefinite</string>
     <string name="settings_appearance_layout_title">Personalizzazione</string>
     <string name="settings_appearance_light">Chiaro</string>

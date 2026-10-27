@@ -285,8 +285,8 @@
     <string name="voice_status_listening">सुन रहा है&#8230;</string>
     <string name="settings_appearance_modern">मॉडर्न</string>
     <string name="settings_color_scheme_title">रंग योजना</string>
-    <string name="settings_use_system_colors_title">सिस्टम रंगों का उपयोग करें</string>
-    <string name="settings_use_system_colors_summary">कीबोर्ड को अपने वॉलपेपर के रंगों से रंगें</string>
+    <string name="settings_use_system_colors_title">डायनामिक रंग</string>
+    <string name="settings_use_system_colors_summary">कीबोर्ड और सेटिंग को अपने वॉलपेपर के रंगों से रंगें</string>
     <string name="settings_appearance_layout_summary">थीम, Slideboard, प्रतीक और डिफ़ॉल्ट</string>
     <string name="settings_appearance_layout_title">वैयक्तिकरण</string>
     <string name="settings_appearance_light">हल्का</string>

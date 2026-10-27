@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Écoute en cours&#8230;</string>
     <string name="settings_appearance_modern">Moderne</string>
     <string name="settings_color_scheme_title">Palette de couleurs</string>
-    <string name="settings_use_system_colors_title">Utiliser les couleurs du système</string>
-    <string name="settings_use_system_colors_summary">Teinter le clavier avec les couleurs de votre fond d\'écran</string>
+    <string name="settings_use_system_colors_title">Couleurs dynamiques</string>
+    <string name="settings_use_system_colors_summary">Teinter le clavier et les paramètres avec les couleurs de votre fond d\'écran</string>
     <string name="settings_appearance_layout_summary">Thème, Slideboard, symboles et valeurs par défaut</string>
     <string name="settings_appearance_layout_title">Personnalisation</string>
     <string name="settings_appearance_light">Clair</string>

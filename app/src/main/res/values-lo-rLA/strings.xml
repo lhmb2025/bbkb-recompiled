@@ -285,8 +285,8 @@
     <string name="voice_status_listening">ກຳລັງຟັງ&#8230;</string>
     <string name="settings_appearance_modern">ທັນສະໄໝ</string>
     <string name="settings_color_scheme_title">ຊຸດສີ</string>
-    <string name="settings_use_system_colors_title">ໃຊ້ສີຂອງລະບົບ</string>
-    <string name="settings_use_system_colors_summary">ໃສ່ສີແປ້ນພິມຕາມສີຈາກພາບພື້ນຫຼັງຂອງທ່ານ</string>
+    <string name="settings_use_system_colors_title">ສີແບບໄດນາມິກ</string>
+    <string name="settings_use_system_colors_summary">ໃສ່ສີແປ້ນພິມ ແລະ ການຕັ້ງຄ່າຕາມສີຈາກພາບພື້ນຫຼັງຂອງທ່ານ</string>
     <string name="settings_appearance_layout_summary">ຊຸດຮູບແບບ, Slideboard, ສັນຍາລັກ ແລະ ຄ່າເລີ່ມຕົ້ນ</string>
     <string name="settings_appearance_layout_title">ການປັບແຕ່ງສ່ວນຕົວ</string>
     <string name="settings_appearance_light">ສະຫວ່າງ</string>

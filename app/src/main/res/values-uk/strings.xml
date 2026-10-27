@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Слухаю&#8230;</string>
     <string name="settings_appearance_modern">Сучасна</string>
     <string name="settings_color_scheme_title">Кольорова схема</string>
-    <string name="settings_use_system_colors_title">Кольори системи</string>
-    <string name="settings_use_system_colors_summary">Забарвлювати клавіатуру кольорами ваших шпалер</string>
+    <string name="settings_use_system_colors_title">Динамічні кольори</string>
+    <string name="settings_use_system_colors_summary">Забарвлювати клавіатуру й налаштування кольорами ваших шпалер</string>
     <string name="settings_appearance_layout_summary">Тема, Slideboard, символи та значення за умовчанням</string>
     <string name="settings_appearance_layout_title">Персоналізація</string>
     <string name="settings_appearance_light">Світла</string>

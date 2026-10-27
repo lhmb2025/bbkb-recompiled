@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Escuchando&#8230;</string>
     <string name="settings_appearance_modern">Moderno</string>
     <string name="settings_color_scheme_title">Combinación de colores</string>
-    <string name="settings_use_system_colors_title">Usar los colores del sistema</string>
-    <string name="settings_use_system_colors_summary">Aplica al teclado los colores de tu fondo de pantalla</string>
+    <string name="settings_use_system_colors_title">Colores dinámicos</string>
+    <string name="settings_use_system_colors_summary">Aplica al teclado y a los ajustes los colores de tu fondo de pantalla</string>
     <string name="settings_appearance_layout_summary">Tema, Slideboard, símbolos y valores predeterminados</string>
     <string name="settings_appearance_layout_title">Personalización</string>
     <string name="settings_appearance_light">Claro</string>

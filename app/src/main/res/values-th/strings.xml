@@ -285,8 +285,8 @@
     <string name="voice_status_listening">กำลังฟัง&#8230;</string>
     <string name="settings_appearance_modern">โมเดิร์น</string>
     <string name="settings_color_scheme_title">ชุดสี</string>
-    <string name="settings_use_system_colors_title">ใช้สีของระบบ</string>
-    <string name="settings_use_system_colors_summary">ปรับสีแป้นพิมพ์ตามสีจากวอลเปเปอร์ของคุณ</string>
+    <string name="settings_use_system_colors_title">สีไดนามิก</string>
+    <string name="settings_use_system_colors_summary">ปรับสีแป้นพิมพ์และการตั้งค่าตามสีจากวอลเปเปอร์ของคุณ</string>
     <string name="settings_appearance_layout_summary">ธีม Slideboard สัญลักษณ์ และค่าเริ่มต้น</string>
     <string name="settings_appearance_layout_title">การปรับแต่งส่วนบุคคล</string>
     <string name="settings_appearance_light">สว่าง</string>

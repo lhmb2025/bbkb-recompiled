@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Слушане&#8230;</string>
     <string name="settings_appearance_modern">Модерна</string>
     <string name="settings_color_scheme_title">Цветова схема</string>
-    <string name="settings_use_system_colors_title">Системни цветове</string>
-    <string name="settings_use_system_colors_summary">Оцветяване на клавиатурата с цветовете от тапета ви</string>
+    <string name="settings_use_system_colors_title">Динамични цветове</string>
+    <string name="settings_use_system_colors_summary">Оцветяване на клавиатурата и настройките с цветовете от тапета ви</string>
     <string name="settings_appearance_layout_summary">Тема, Slideboard, символи и настройки по подразбиране</string>
     <string name="settings_appearance_layout_title">Персонализиране</string>
     <string name="settings_appearance_light">Светла</string>

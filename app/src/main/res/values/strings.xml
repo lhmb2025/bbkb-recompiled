@@ -351,8 +351,8 @@
     <string name="voice_status_service_disconnected">The speech service disconnected. Tap the mic to try again.</string>
     <string name="settings_appearance_modern">Modern</string>
     <string name="settings_color_scheme_title">Color scheme</string>
-    <string name="settings_use_system_colors_title">Use system colors</string>
-    <string name="settings_use_system_colors_summary">Tint the keyboard with colors from your wallpaper</string>
+    <string name="settings_use_system_colors_title">Dynamic color</string>
+    <string name="settings_use_system_colors_summary">Tint the keyboard and settings with colors from your wallpaper</string>
     <string name="settings_appearance_layout_summary">Theme, slideboard, symbols, and defaults</string>
     <string name="settings_appearance_layout_title">Personalization</string>
     <string name="settings_appearance_light">Light</string>

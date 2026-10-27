@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Entzuten&#8230;</string>
     <string name="settings_appearance_modern">Modernoa</string>
     <string name="settings_color_scheme_title">Kolore-eskema</string>
-    <string name="settings_use_system_colors_title">Erabili sistemaren koloreak</string>
-    <string name="settings_use_system_colors_summary">Tindatu teklatua horma-paperaren koloreekin</string>
+    <string name="settings_use_system_colors_title">Kolore dinamikoak</string>
+    <string name="settings_use_system_colors_summary">Tindatu teklatua eta ezarpenak horma-paperaren koloreekin</string>
     <string name="settings_appearance_layout_summary">Gaia, Slideboard-a, ikurrak eta balio lehenetsiak</string>
     <string name="settings_appearance_layout_title">Pertsonalizazioa</string>
     <string name="settings_appearance_light">Argia</string>

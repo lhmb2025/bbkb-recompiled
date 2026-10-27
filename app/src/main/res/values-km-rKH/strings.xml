@@ -285,8 +285,8 @@
     <string name="voice_status_listening">កំពុងស្ដាប់&#8230;</string>
     <string name="settings_appearance_modern">ទំនើប</string>
     <string name="settings_color_scheme_title">ឈុតពណ៌</string>
-    <string name="settings_use_system_colors_title">ប្រើពណ៌ប្រព័ន្ធ</string>
-    <string name="settings_use_system_colors_summary">ដាក់ពណ៌ក្ដារចុចតាមពណ៌ផ្ទាំងរូបភាពរបស់អ្នក</string>
+    <string name="settings_use_system_colors_title">ពណ៌ថាមវន្ត</string>
+    <string name="settings_use_system_colors_summary">ដាក់ពណ៌ក្ដារចុច និងការកំណត់តាមពណ៌ផ្ទាំងរូបភាពរបស់អ្នក</string>
     <string name="settings_appearance_layout_summary">ស្បែក Slideboard និមិត្តសញ្ញា និងតម្លៃលំនាំដើម</string>
     <string name="settings_appearance_layout_title">ការកំណត់ផ្ទាល់ខ្លួន</string>
     <string name="settings_appearance_light">ភ្លឺ</string>

@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Угулууда&#8230;</string>
     <string name="settings_appearance_modern">Заманбап</string>
     <string name="settings_color_scheme_title">Түс схемасы</string>
-    <string name="settings_use_system_colors_title">Системанын түстөрүн колдонуу</string>
-    <string name="settings_use_system_colors_summary">Баскычтопту тушкагаздын түстөрү менен боёо</string>
+    <string name="settings_use_system_colors_title">Динамикалык түстөр</string>
+    <string name="settings_use_system_colors_summary">Баскычтопту жана жөндөөлөрдү тушкагаздын түстөрү менен боёо</string>
     <string name="settings_appearance_layout_summary">Тема, Slideboard, символдор жана демейки жөндөөлөр</string>
     <string name="settings_appearance_layout_title">Жекелештирүү</string>
     <string name="settings_appearance_light">Жарык</string>

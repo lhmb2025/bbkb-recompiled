@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Dinleniyor&#8230;</string>
     <string name="settings_appearance_modern">Modern</string>
     <string name="settings_color_scheme_title">Renk şeması</string>
-    <string name="settings_use_system_colors_title">Sistem renklerini kullan</string>
-    <string name="settings_use_system_colors_summary">Klavyeyi duvar kâğıdınızın renkleriyle renklendir</string>
+    <string name="settings_use_system_colors_title">Dinamik renkler</string>
+    <string name="settings_use_system_colors_summary">Klavyeyi ve ayarları duvar kâğıdınızın renkleriyle renklendir</string>
     <string name="settings_appearance_layout_summary">Tema, Slideboard, semboller ve varsayılanlar</string>
     <string name="settings_appearance_layout_title">Kişiselleştirme</string>
     <string name="settings_appearance_light">Açık</string>

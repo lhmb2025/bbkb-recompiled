@@ -4,9 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -115,7 +118,11 @@ private val LightColors = lightColorScheme(
  * while this file — the one with the shared name — held an unused default-colours stub. Both
  * activities now call this.
  *
- * Dark mode follows `pref_keyboard_theme_mode`: "auto" (system), "light" or "dark".
+ * Dark mode follows `pref_keyboard_theme_mode`: "auto" (system), "light" or "dark". The palette
+ * follows `pref_keyboard_use_system_colors`: on Android 12+ with it on, the Material You scheme
+ * built from the wallpaper; otherwise the fixed blue tables above. The settings screens are
+ * always Material — the keyboard's Classic and BB10 styles do not reach them (owner decision,
+ * 2026-10-27) — so these two keyboard preferences are the whole theme choice here.
  * Provides the full design system: colours, typography, spacing, shapes, motion.
  */
 @Composable
@@ -127,11 +134,25 @@ fun BlackBerryTheme(content: @Composable () -> Unit) {
     var themeMode by remember {
         mutableStateOf(prefs.getString("pref_keyboard_theme_mode", "auto") ?: "auto")
     }
+    var useSystemColors by remember {
+        mutableStateOf(prefs.getBoolean("pref_keyboard_use_system_colors", false))
+    }
+    // The Classic and BB10 keyboard styles hide the Color scheme and Use system colors rows, so
+    // while one of them is chosen neither preference can be reached: Settings then follows the
+    // system's light/dark and keeps the fixed palette, as Gboard does.
+    var themeStyle by remember {
+        mutableStateOf(prefs.getString(PrefsManager.Keys.KEYBOARD_THEME_STYLE, "modern") ?: "modern")
+    }
 
     DisposableEffect(Unit) {
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            if (key == "pref_keyboard_theme_mode") {
-                themeMode = prefs.getString("pref_keyboard_theme_mode", "auto") ?: "auto"
+            when (key) {
+                "pref_keyboard_theme_mode" ->
+                    themeMode = prefs.getString("pref_keyboard_theme_mode", "auto") ?: "auto"
+                "pref_keyboard_use_system_colors" ->
+                    useSystemColors = prefs.getBoolean("pref_keyboard_use_system_colors", false)
+                PrefsManager.Keys.KEYBOARD_THEME_STYLE ->
+                    themeStyle = prefs.getString(PrefsManager.Keys.KEYBOARD_THEME_STYLE, "modern") ?: "modern"
             }
         }
         prefs.registerOnSharedPreferenceChangeListener(listener)
@@ -141,13 +162,24 @@ fun BlackBerryTheme(content: @Composable () -> Unit) {
     }
 
     val systemInDarkMode = isSystemInDarkTheme()
-    val isDarkTheme = when (themeMode) {
-        "light" -> false
-        "dark" -> true
+    val plainStyle = themeStyle == "classic" || themeStyle == "bb10"
+    val isDarkTheme = when {
+        plainStyle -> systemInDarkMode
+        themeMode == "light" -> false
+        themeMode == "dark" -> true
         else -> systemInDarkMode // "auto" or unknown
     }
 
-    val colorScheme = if (isDarkTheme) DarkColors else LightColors
+    // Material You needs Android 12; below that the switch is hidden and the fixed tables stay.
+    val dynamic = !plainStyle && useSystemColors && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    val colorScheme = remember(dynamic, isDarkTheme, context) {
+        when {
+            dynamic && isDarkTheme -> dynamicDarkColorScheme(context)
+            dynamic -> dynamicLightColorScheme(context)
+            isDarkTheme -> DarkColors
+            else -> LightColors
+        }
+    }
 
     // The activities draw edge to edge, so the status and navigation bars sit on this theme's
     // own surfaces and their icons must follow the theme the user picked here, not the system's
@@ -166,7 +198,7 @@ fun BlackBerryTheme(content: @Composable () -> Unit) {
 
     // The grouped layout's two surfaces: white cards on a tinted page in light mode, lighter cards
     // on the plain surface in dark mode (the Android 16 Settings pairing).
-    val settingsColors = remember(isDarkTheme) {
+    val settingsColors = remember(colorScheme, isDarkTheme) {
         if (isDarkTheme) {
             SettingsColors(page = colorScheme.surface, card = colorScheme.surfaceContainerHigh)
         } else {

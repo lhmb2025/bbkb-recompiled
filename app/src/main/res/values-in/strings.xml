@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Mendengarkan&#8230;</string>
     <string name="settings_appearance_modern">Modern</string>
     <string name="settings_color_scheme_title">Skema warna</string>
-    <string name="settings_use_system_colors_title">Gunakan warna sistem</string>
-    <string name="settings_use_system_colors_summary">Warnai keyboard dengan warna dari wallpaper Anda</string>
+    <string name="settings_use_system_colors_title">Warna dinamis</string>
+    <string name="settings_use_system_colors_summary">Warnai keyboard dan setelan dengan warna dari wallpaper Anda</string>
     <string name="settings_appearance_layout_summary">Tema, Slideboard, simbol, dan default</string>
     <string name="settings_appearance_layout_title">Personalisasi</string>
     <string name="settings_appearance_light">Terang</string>

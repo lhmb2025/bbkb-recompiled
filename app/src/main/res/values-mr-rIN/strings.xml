@@ -285,8 +285,8 @@
     <string name="voice_status_listening">ऐकत आहे&#8230;</string>
     <string name="settings_appearance_modern">मॉडर्न</string>
     <string name="settings_color_scheme_title">रंगसंगती</string>
-    <string name="settings_use_system_colors_title">सिस्टम रंग वापरा</string>
-    <string name="settings_use_system_colors_summary">तुमच्या वॉलपेपरमधील रंगांची छटा कीबोर्डला द्या</string>
+    <string name="settings_use_system_colors_title">डायनॅमिक रंग</string>
+    <string name="settings_use_system_colors_summary">तुमच्या वॉलपेपरमधील रंगांची छटा कीबोर्ड आणि सेटिंग्जला द्या</string>
     <string name="settings_appearance_layout_summary">थीम, Slideboard, चिन्हे आणि डीफॉल्ट</string>
     <string name="settings_appearance_layout_title">वैयक्तिकरण</string>
     <string name="settings_appearance_light">फिकट</string>

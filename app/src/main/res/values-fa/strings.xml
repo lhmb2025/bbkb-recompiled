@@ -285,8 +285,8 @@
     <string name="voice_status_listening">در حال شنیدن&#8230;</string>
     <string name="settings_appearance_modern">مدرن</string>
     <string name="settings_color_scheme_title">طرح رنگ</string>
-    <string name="settings_use_system_colors_title">استفاده از رنگ‌های سیستم</string>
-    <string name="settings_use_system_colors_summary">رنگ‌آمیزی صفحه کلید با رنگ‌های کاغذدیواری شما</string>
+    <string name="settings_use_system_colors_title">رنگ‌های پویا</string>
+    <string name="settings_use_system_colors_summary">رنگ‌آمیزی صفحه کلید و تنظیمات با رنگ‌های کاغذدیواری شما</string>
     <string name="settings_appearance_layout_summary">طرح زمینه، Slideboard، نمادها و پیش‌فرض‌ها</string>
     <string name="settings_appearance_layout_title">شخصی‌سازی</string>
     <string name="settings_appearance_light">روشن</string>

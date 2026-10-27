@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Сонсож байна&#8230;</string>
     <string name="settings_appearance_modern">Орчин үеийн</string>
     <string name="settings_color_scheme_title">Өнгөний схем</string>
-    <string name="settings_use_system_colors_title">Системийн өнгө ашиглах</string>
-    <string name="settings_use_system_colors_summary">Гарыг дэлгэцийн зурагны өнгөөр будах</string>
+    <string name="settings_use_system_colors_title">Динамик өнгө</string>
+    <string name="settings_use_system_colors_summary">Гар болон тохиргоог дэлгэцийн зурагны өнгөөр будах</string>
     <string name="settings_appearance_layout_summary">Загвар, Slideboard, тэмдэгт, анхдагч утга</string>
     <string name="settings_appearance_layout_title">Хувийн тохиргоо</string>
     <string name="settings_appearance_light">Цайвар</string>

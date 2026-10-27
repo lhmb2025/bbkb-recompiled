@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Se ascultă&#8230;</string>
     <string name="settings_appearance_modern">Modernă</string>
     <string name="settings_color_scheme_title">Schemă de culori</string>
-    <string name="settings_use_system_colors_title">Folosiți culorile sistemului</string>
-    <string name="settings_use_system_colors_summary">Colorează tastatura cu nuanțele imaginii de fundal</string>
+    <string name="settings_use_system_colors_title">Culori dinamice</string>
+    <string name="settings_use_system_colors_summary">Colorează tastatura și setările cu nuanțele imaginii de fundal</string>
     <string name="settings_appearance_layout_summary">Temă, Slideboard, simboluri și setări implicite</string>
     <string name="settings_appearance_layout_title">Personalizare</string>
     <string name="settings_appearance_light">Luminoasă</string>

@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Klausās&#8230;</string>
     <string name="settings_appearance_modern">Moderna</string>
     <string name="settings_color_scheme_title">Krāsu shēma</string>
-    <string name="settings_use_system_colors_title">Izmantot sistēmas krāsas</string>
-    <string name="settings_use_system_colors_summary">Tonēt tastatūru ar fona tapetes krāsām</string>
+    <string name="settings_use_system_colors_title">Dinamiskās krāsas</string>
+    <string name="settings_use_system_colors_summary">Tonēt tastatūru un iestatījumus ar fona tapetes krāsām</string>
     <string name="settings_appearance_layout_summary">Motīvs, Slideboard, simboli un noklusējumi</string>
     <string name="settings_appearance_layout_title">Personalizācija</string>
     <string name="settings_appearance_light">Gaiša</string>

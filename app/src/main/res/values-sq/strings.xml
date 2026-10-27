@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Po dëgjon&#8230;</string>
     <string name="settings_appearance_modern">Moderne</string>
     <string name="settings_color_scheme_title">Skema e ngjyrave</string>
-    <string name="settings_use_system_colors_title">Përdor ngjyrat e sistemit</string>
-    <string name="settings_use_system_colors_summary">Ngjyros tastierën me ngjyrat e sfondit tënd</string>
+    <string name="settings_use_system_colors_title">Ngjyra dinamike</string>
+    <string name="settings_use_system_colors_summary">Ngjyros tastierën dhe cilësimet me ngjyrat e sfondit tënd</string>
     <string name="settings_appearance_layout_summary">Tema, Slideboard, simbolet dhe parazgjedhjet</string>
     <string name="settings_appearance_layout_title">Personalizimi</string>
     <string name="settings_appearance_light">E çelët</string>

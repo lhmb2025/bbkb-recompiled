@@ -285,8 +285,8 @@
     <string name="voice_status_listening">جارٍ الاستماع&#8230;</string>
     <string name="settings_appearance_modern">عصري</string>
     <string name="settings_color_scheme_title">نظام الألوان</string>
-    <string name="settings_use_system_colors_title">استخدام ألوان النظام</string>
-    <string name="settings_use_system_colors_summary">تلوين لوحة المفاتيح بألوان خلفيتك</string>
+    <string name="settings_use_system_colors_title">الألوان الديناميكية</string>
+    <string name="settings_use_system_colors_summary">تلوين لوحة المفاتيح والإعدادات بألوان خلفيتك</string>
     <string name="settings_appearance_layout_summary">المظهر وSlideboard والرموز والإعدادات الافتراضية</string>
     <string name="settings_appearance_layout_title">التخصيص</string>
     <string name="settings_appearance_light">فاتح</string>

@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Figyelek&#8230;</string>
     <string name="settings_appearance_modern">Modern</string>
     <string name="settings_color_scheme_title">Színséma</string>
-    <string name="settings_use_system_colors_title">Rendszerszínek használata</string>
-    <string name="settings_use_system_colors_summary">A billentyűzet színezése a háttérkép színeivel</string>
+    <string name="settings_use_system_colors_title">Dinamikus színek</string>
+    <string name="settings_use_system_colors_summary">A billentyűzet és a beállítások színezése a háttérkép színeivel</string>
     <string name="settings_appearance_layout_summary">Téma, Slideboard, szimbólumok és alapértékek</string>
     <string name="settings_appearance_layout_title">Személyre szabás</string>
     <string name="settings_appearance_light">Világos</string>

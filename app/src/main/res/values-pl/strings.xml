@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Słucham&#8230;</string>
     <string name="settings_appearance_modern">Nowoczesny</string>
     <string name="settings_color_scheme_title">Schemat kolorów</string>
-    <string name="settings_use_system_colors_title">Używaj kolorów systemu</string>
-    <string name="settings_use_system_colors_summary">Zabarw klawiaturę kolorami z tapety</string>
+    <string name="settings_use_system_colors_title">Dynamiczne kolory</string>
+    <string name="settings_use_system_colors_summary">Zabarw klawiaturę i ustawienia kolorami z tapety</string>
     <string name="settings_appearance_layout_summary">Motyw, Slideboard, symbole i ustawienia domyślne</string>
     <string name="settings_appearance_layout_title">Personalizacja</string>
     <string name="settings_appearance_light">Jasny</string>

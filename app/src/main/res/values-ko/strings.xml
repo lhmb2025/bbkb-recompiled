@@ -285,8 +285,8 @@
     <string name="voice_status_listening">듣는 중&#8230;</string>
     <string name="settings_appearance_modern">모던</string>
     <string name="settings_color_scheme_title">색 구성표</string>
-    <string name="settings_use_system_colors_title">시스템 색상 사용</string>
-    <string name="settings_use_system_colors_summary">배경화면의 색상으로 키보드에 색을 입힙니다</string>
+    <string name="settings_use_system_colors_title">다이내믹 색상</string>
+    <string name="settings_use_system_colors_summary">배경화면의 색상으로 키보드와 설정에 색을 입힙니다</string>
     <string name="settings_appearance_layout_summary">테마, Slideboard, 기호, 기본값</string>
     <string name="settings_appearance_layout_title">개인 설정</string>
     <string name="settings_appearance_light">밝음</string>

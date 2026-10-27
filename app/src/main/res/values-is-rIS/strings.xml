@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Hlusta&#8230;</string>
     <string name="settings_appearance_modern">Nútímalegt</string>
     <string name="settings_color_scheme_title">Litastef</string>
-    <string name="settings_use_system_colors_title">Nota liti kerfisins</string>
-    <string name="settings_use_system_colors_summary">Lita lyklaborðið með litum úr veggfóðrinu þínu</string>
+    <string name="settings_use_system_colors_title">Breytilegir litir</string>
+    <string name="settings_use_system_colors_summary">Lita lyklaborðið og stillingarnar með litum úr veggfóðrinu þínu</string>
     <string name="settings_appearance_layout_summary">Þema, Slideboard, tákn og sjálfgefnar stillingar</string>
     <string name="settings_appearance_layout_title">Sérstilling</string>
     <string name="settings_appearance_light">Ljóst</string>

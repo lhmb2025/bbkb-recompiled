@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Լսում է&#8230;</string>
     <string name="settings_appearance_modern">Ժամանակակից</string>
     <string name="settings_color_scheme_title">Գունային սխեմա</string>
-    <string name="settings_use_system_colors_title">Օգտագործել համակարգի գույները</string>
-    <string name="settings_use_system_colors_summary">Ներկել ստեղնաշարը ձեր պաստառի գույներով</string>
+    <string name="settings_use_system_colors_title">Դինամիկ գույներ</string>
+    <string name="settings_use_system_colors_summary">Ներկել ստեղնաշարը և կարգավորումները ձեր պաստառի գույներով</string>
     <string name="settings_appearance_layout_summary">Թեմա, Slideboard, նշաններ և նախնականներ</string>
     <string name="settings_appearance_layout_title">Անհատականացում</string>
     <string name="settings_appearance_light">Բաց</string>

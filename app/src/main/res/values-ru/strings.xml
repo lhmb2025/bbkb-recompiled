@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Слушаю&#8230;</string>
     <string name="settings_appearance_modern">Современная</string>
     <string name="settings_color_scheme_title">Цветовая схема</string>
-    <string name="settings_use_system_colors_title">Системные цвета</string>
-    <string name="settings_use_system_colors_summary">Окрашивать клавиатуру в цвета ваших обоев</string>
+    <string name="settings_use_system_colors_title">Динамические цвета</string>
+    <string name="settings_use_system_colors_summary">Окрашивать клавиатуру и настройки в цвета ваших обоев</string>
     <string name="settings_appearance_layout_summary">Тема, Slideboard, символы и значения по умолчанию</string>
     <string name="settings_appearance_layout_title">Персонализация</string>
     <string name="settings_appearance_light">Светлая</string>

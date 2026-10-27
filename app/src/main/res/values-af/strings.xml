@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Luister tans&#8230;</string>
     <string name="settings_appearance_modern">Modern</string>
     <string name="settings_color_scheme_title">Kleurskema</string>
-    <string name="settings_use_system_colors_title">Gebruik stelselkleure</string>
-    <string name="settings_use_system_colors_summary">Kleur die toetsbord met kleure uit jou muurpapier</string>
+    <string name="settings_use_system_colors_title">Dinamiese kleure</string>
+    <string name="settings_use_system_colors_summary">Kleur die toetsbord en instellings met kleure uit jou muurpapier</string>
     <string name="settings_appearance_layout_summary">Tema, Slideboard, simbole en verstekwaardes</string>
     <string name="settings_appearance_layout_title">Verpersoonliking</string>
     <string name="settings_appearance_light">Lig</string>

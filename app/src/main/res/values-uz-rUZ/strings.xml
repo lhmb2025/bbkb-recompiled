@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Tinglanmoqda&#8230;</string>
     <string name="settings_appearance_modern">Zamonaviy</string>
     <string name="settings_color_scheme_title">Rang sxemasi</string>
-    <string name="settings_use_system_colors_title">Tizim ranglaridan foydalanish</string>
-    <string name="settings_use_system_colors_summary">Klaviaturani fon rasmi ranglari bilan bo‘yash</string>
+    <string name="settings_use_system_colors_title">Dinamik ranglar</string>
+    <string name="settings_use_system_colors_summary">Klaviatura va sozlamalarni fon rasmi ranglari bilan bo‘yash</string>
     <string name="settings_appearance_layout_summary">Mavzu, Slideboard, belgilar va standart sozlamalar</string>
     <string name="settings_appearance_layout_title">Shaxsiylashtirish</string>
     <string name="settings_appearance_light">Yorug‘</string>

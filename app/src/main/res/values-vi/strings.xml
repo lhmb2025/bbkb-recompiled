@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Đang nghe&#8230;</string>
     <string name="settings_appearance_modern">Hiện đại</string>
     <string name="settings_color_scheme_title">Bảng màu</string>
-    <string name="settings_use_system_colors_title">Dùng màu hệ thống</string>
-    <string name="settings_use_system_colors_summary">Tô màu bàn phím theo màu hình nền của bạn</string>
+    <string name="settings_use_system_colors_title">Màu động</string>
+    <string name="settings_use_system_colors_summary">Tô màu bàn phím và phần cài đặt theo màu hình nền của bạn</string>
     <string name="settings_appearance_layout_summary">Giao diện, Slideboard, biểu tượng và mặc định</string>
     <string name="settings_appearance_layout_title">Cá nhân hóa</string>
     <string name="settings_appearance_light">Sáng</string>

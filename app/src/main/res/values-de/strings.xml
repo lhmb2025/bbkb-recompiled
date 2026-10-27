@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Höre zu&#8230;</string>
     <string name="settings_appearance_modern">Modern</string>
     <string name="settings_color_scheme_title">Farbschema</string>
-    <string name="settings_use_system_colors_title">Systemfarben verwenden</string>
-    <string name="settings_use_system_colors_summary">Die Tastatur mit Farben aus Ihrem Hintergrundbild einfärben</string>
+    <string name="settings_use_system_colors_title">Dynamische Farben</string>
+    <string name="settings_use_system_colors_summary">Die Tastatur und die Einstellungen mit Farben aus Ihrem Hintergrundbild einfärben</string>
     <string name="settings_appearance_layout_summary">Design, Slideboard, Symbole und Standardwerte</string>
     <string name="settings_appearance_layout_title">Personalisierung</string>
     <string name="settings_appearance_light">Hell</string>

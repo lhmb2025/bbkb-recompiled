@@ -285,8 +285,8 @@
     <string name="voice_status_listening">వింటోంది&#8230;</string>
     <string name="settings_appearance_modern">ఆధునికం</string>
     <string name="settings_color_scheme_title">రంగుల పథకం</string>
-    <string name="settings_use_system_colors_title">సిస్టమ్ రంగులను ఉపయోగించు</string>
-    <string name="settings_use_system_colors_summary">మీ వాల్‌పేపర్ రంగులను కీబోర్డ్‌కు వర్తింపజేయి</string>
+    <string name="settings_use_system_colors_title">డైనమిక్ రంగులు</string>
+    <string name="settings_use_system_colors_summary">మీ వాల్‌పేపర్ రంగులను కీబోర్డ్‌కు, సెట్టింగ్‌లకు వర్తింపజేయి</string>
     <string name="settings_appearance_layout_summary">థీమ్, Slideboard, చిహ్నాలు మరియు డిఫాల్ట్‌లు</string>
     <string name="settings_appearance_layout_title">వ్యక్తిగతీకరణ</string>
     <string name="settings_appearance_light">లైట్</string>

@@ -285,8 +285,8 @@
     <string name="voice_status_listening">מאזין&#8230;</string>
     <string name="settings_appearance_modern">מודרני</string>
     <string name="settings_color_scheme_title">ערכת צבעים</string>
-    <string name="settings_use_system_colors_title">השתמש בצבעי המערכת</string>
-    <string name="settings_use_system_colors_summary">צבע את המקלדת בצבעים מטפט הרקע שלך</string>
+    <string name="settings_use_system_colors_title">צבעים דינמיים</string>
+    <string name="settings_use_system_colors_summary">צבע את המקלדת ואת ההגדרות בצבעים מטפט הרקע שלך</string>
     <string name="settings_appearance_layout_summary">ערכת נושא, Slideboard, סמלים וברירות מחדל</string>
     <string name="settings_appearance_layout_title">התאמה אישית</string>
     <string name="settings_appearance_light">בהיר</string>

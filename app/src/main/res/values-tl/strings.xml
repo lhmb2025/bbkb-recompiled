@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Nakikinig&#8230;</string>
     <string name="settings_appearance_modern">Moderno</string>
     <string name="settings_color_scheme_title">Color scheme</string>
-    <string name="settings_use_system_colors_title">Gamitin ang mga kulay ng system</string>
-    <string name="settings_use_system_colors_summary">Kulayan ang keyboard gamit ang mga kulay mula sa iyong wallpaper</string>
+    <string name="settings_use_system_colors_title">Dynamic na kulay</string>
+    <string name="settings_use_system_colors_summary">Kulayan ang keyboard at mga setting gamit ang mga kulay mula sa iyong wallpaper</string>
     <string name="settings_appearance_layout_summary">Theme, Slideboard, mga simbolo at mga default</string>
     <string name="settings_appearance_layout_title">Pag-personalize</string>
     <string name="settings_appearance_light">Maliwanag</string>

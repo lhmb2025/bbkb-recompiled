@@ -285,8 +285,8 @@
     <string name="voice_status_listening">S\'està escoltant&#8230;</string>
     <string name="settings_appearance_modern">Modern</string>
     <string name="settings_color_scheme_title">Combinació de colors</string>
-    <string name="settings_use_system_colors_title">Usa els colors del sistema</string>
-    <string name="settings_use_system_colors_summary">Acoloreix el teclat amb els colors del vostre fons de pantalla</string>
+    <string name="settings_use_system_colors_title">Colors dinàmics</string>
+    <string name="settings_use_system_colors_summary">Acoloreix el teclat i la configuració amb els colors del vostre fons de pantalla</string>
     <string name="settings_appearance_layout_summary">Tema, Slideboard, símbols i valors per defecte</string>
     <string name="settings_appearance_layout_title">Personalització</string>
     <string name="settings_appearance_light">Clar</string>

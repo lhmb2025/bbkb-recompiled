@@ -285,8 +285,8 @@
     <string name="voice_status_listening">Ακρόαση&#8230;</string>
     <string name="settings_appearance_modern">Μοντέρνο</string>
     <string name="settings_color_scheme_title">Χρωματικό σχήμα</string>
-    <string name="settings_use_system_colors_title">Χρήση χρωμάτων συστήματος</string>
-    <string name="settings_use_system_colors_summary">Χρωματισμός του πληκτρολογίου με βάση την ταπετσαρία σας</string>
+    <string name="settings_use_system_colors_title">Δυναμικά χρώματα</string>
+    <string name="settings_use_system_colors_summary">Χρωματισμός του πληκτρολογίου και των ρυθμίσεων με βάση την ταπετσαρία σας</string>
     <string name="settings_appearance_layout_summary">Θέμα, Slideboard, σύμβολα και προεπιλογές</string>
     <string name="settings_appearance_layout_title">Εξατομίκευση</string>
     <string name="settings_appearance_light">Φωτεινό</string>
