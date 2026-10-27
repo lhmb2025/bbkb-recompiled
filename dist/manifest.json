@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "generated": "2026-10-25T22:37:08Z",
+  "generated": "2026-10-27T20:45:49Z",
   "app": {
     "release": {
-      "versionCode": 1439,
-      "versionName": "5.0.0-beta.26",
-      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.26/bbkb-5.0.0-beta.26-release.apk",
-      "sha256": "9710cda60832cfc58801ad47720edffe1c6d82681313e54d0abb088eaf192006",
-      "size": 57745181,
+      "versionCode": 1440,
+      "versionName": "5.0.0-beta.27",
+      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.27/bbkb-5.0.0-beta.27-release.apk",
+      "sha256": "f5c511f8bfbce265fde4950b32040223ac443f5777bee478249aa3117333fa80",
+      "size": 57762344,
       "minSdk": 23,
-      "notes": "Settings updated to Android 16 UX standards. Fixed landscape keyboard sizing, autocorrect double-space glitch, ABC key behavior on PKB devices, and reverse-backspace. Updated Colemak layout to include colon on shift."
+      "notes": "Dynamic color now tints the settings screens as well as the keyboard. Fixed a bug where the keyboard kept the wrong size after the screen rotated. Fixed status bar icons showing light gray on light mode."
     }
   },
   "packs": {
