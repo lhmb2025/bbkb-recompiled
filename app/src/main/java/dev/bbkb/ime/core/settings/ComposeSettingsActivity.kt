@@ -3,11 +3,11 @@ package dev.bbkb.ime.core.settings
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
 import dev.bbkb.ime.core.settings.ui.BlackBerryTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -94,8 +94,9 @@ class ComposeSettingsActivity : ComponentActivity() {
         DeviceProfile.startInitialize(applicationContext, null)
         StartupTiming.end("settings.onCreate.deviceProfileStart", t)
 
-        // Enable edge-to-edge for modern feel
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        // Draw behind transparent system bars on every version, not only where Android 15+
+        // forces it. BlackBerryTheme sets the bar icon colours to match the chosen theme.
+        enableEdgeToEdge()
 
         // Get initial screen from intent, default to main menu. Validated through
         // SettingsRoute.fromRoute so an unknown "screen" extra cannot reach navigation-compose

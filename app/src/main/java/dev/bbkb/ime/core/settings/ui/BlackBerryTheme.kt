@@ -1,5 +1,8 @@
 package dev.bbkb.ime.core.settings.ui
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.SharedPreferences
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -8,12 +11,15 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 import dev.bbkb.ime.core.settings.PrefsManager
 
@@ -142,6 +148,22 @@ fun BlackBerryTheme(content: @Composable () -> Unit) {
     }
 
     val colorScheme = if (isDarkTheme) DarkColors else LightColors
+
+    // The activities draw edge to edge, so the status and navigation bars sit on this theme's
+    // own surfaces and their icons must follow the theme the user picked here, not the system's
+    // day/night setting. Without this the icons stay light (the manifest theme's default), which
+    // was invisible while the status bar was an opaque dark strip and became white-on-white once
+    // Android 15 made the bar transparent.
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = view.context.findActivity()?.window ?: return@SideEffect
+            val controller = WindowCompat.getInsetsController(window, view)
+            controller.isAppearanceLightStatusBars = !isDarkTheme
+            controller.isAppearanceLightNavigationBars = !isDarkTheme
+        }
+    }
+
     // The grouped layout's two surfaces: white cards on a tinted page in light mode, lighter cards
     // on the plain surface in dark mode (the Android 16 Settings pairing).
     val settingsColors = remember(isDarkTheme) {
@@ -167,4 +189,10 @@ fun BlackBerryTheme(content: @Composable () -> Unit) {
             }
         }
     )
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
