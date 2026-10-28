@@ -33,7 +33,7 @@ import java.util.TimeZone
  *
  * A dictionary entry without a `shortcut` is a plain personal word; `locale` is `""` for an entry
  * that applies to every language. `learnedWords` is the portable form of the dynamic model: the
- * words only, not their counts, recency or pairs. That is deliberate — the raw model file is
+ * words only, not their counts, quality or pairs. That is deliberate — the raw model file is
  * tied to one phone's typing and carries its mistakes wholesale, so it never travels; replaying
  * the words through the engine's learn call on the other phone gives it a clean start with the
  * same vocabulary.

@@ -1379,11 +1379,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
         Case(
             name = "WordListEditorScreen",
             route = SettingsRoute.PersonalLearnedWords.route,
-            title = "Personal Learned Words",
-            resources = emptySet(),
-            literals = setOf(
-                "Personal Learned Words",
-            ),
+            title = "Learned words",
+            resources = setOf("settings_dict_learned_words_title"),
+            literals = emptySet(),
             lateLiterals = setOf(
                 "No learned words",
                 "Words you type will be learned and appear here",

@@ -81,7 +81,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object ShakeTuning : SettingsRoute("shake_tuning", "Shake gesture tuning")
     object CkbGestures : SettingsRoute("ckb_gestures", "CKB Gestures")
     object AnimationParameters : SettingsRoute("animation_parameters", "Animation Parameters")
-    object PersonalLearnedWords : SettingsRoute("personal_learned_words", "Personal Learned Words")
+    object PersonalLearnedWords : SettingsRoute("personal_learned_words", "Learned words")
     object UserDictionary : SettingsRoute("user_dictionary", "User Dictionary")
     object TextShortcuts : SettingsRoute("text_shortcuts", "Text Shortcuts")
     object CustomMacros : SettingsRoute("custom_macros", "Custom Macros")

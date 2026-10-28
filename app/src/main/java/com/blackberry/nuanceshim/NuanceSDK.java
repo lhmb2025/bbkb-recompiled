@@ -1174,6 +1174,84 @@ public class NuanceSDK {
         return arrayList;
     }
 
+    /** {@link #importDLM} succeeded. */
+    public static final int DLM_IMPORT_OK = 0;
+    /** No engine, no attached model, or the shim could not reach the engine on this phone. */
+    public static final int DLM_IMPORT_NOT_AVAILABLE = -1;
+    /** The engine refused the data: checksum or structure (its status 22). */
+    public static final int DLM_IMPORT_CORRUPT = 22;
+    /** The data was written by a newer engine (its status 91). */
+    public static final int DLM_IMPORT_NEWER_VERSION = 91;
+
+    /**
+     * Whether the engine's own learned-model export and import ({@link #exportDLM},
+     * {@link #importDLM}) can reach the engine on this phone: the model is attached and the shim
+     * recognises the engine build. False on any phone whose engine library is not the one the
+     * shim was pinned to, where both calls do nothing.
+     */
+    public boolean isDLMTransferAvailable() {
+        synchronized (sMutex) {
+            if (this.mNativeHandle == 0 || !this.mDlmAttached || !Et9Dlm.isLoaded()) return false;
+            try {
+                return Et9Dlm.nativeExportMaxSize(this.mNativeHandle) > 0;
+            } catch (Throwable t) {
+                if (BuildConfig.DEBUG) Log.w(TAG, "isDLMTransferAvailable", t);
+                return false;
+            }
+        }
+    }
+
+    /**
+     * The whole learned model in the engine's own portable form (every word with its use count,
+     * language, category and quality, the categories, the next-word pairs), as the engine's
+     * {@code ET9AWDLMExport} writes it: a byte stream with a trailing checksum, independent of
+     * the process pointers the model file embeds. Null when the model is not attached or the
+     * engine cannot be reached. Read it with {@code LearnedModelStream}.
+     */
+    public byte[] exportDLM() {
+        synchronized (sMutex) {
+            if (this.mNativeHandle == 0 || !this.mDlmAttached || !Et9Dlm.isLoaded()) return null;
+            try {
+                return Et9Dlm.nativeExport(this.mNativeHandle);
+            } catch (Throwable t) {
+                if (BuildConfig.DEBUG) Log.w(TAG, "exportDLM failed", t);
+                return null;
+            }
+        }
+    }
+
+    /**
+     * Replaces the learned model with one from {@link #exportDLM} (this phone's or another's),
+     * then re-attaches the model so every engine cache is rebuilt from the file. Returns
+     * {@link #DLM_IMPORT_OK}, {@link #DLM_IMPORT_CORRUPT}, {@link #DLM_IMPORT_NEWER_VERSION},
+     * another engine status, or {@link #DLM_IMPORT_NOT_AVAILABLE}.
+     *
+     * <p>The engine resets the model BEFORE it checks the data, so a refused import leaves the
+     * model empty: callers validate the stream first ({@code LearnedModelStream.parse}) and keep an
+     * export of the current model to put back on a refusal — {@code LearnedModelTransfer} does
+     * both. The secondary (spell-checker) engine maps the same file and has to be re-attached
+     * afterwards too; that is also the transfer's job.
+     */
+    public int importDLM(byte[] data) {
+        synchronized (sMutex) {
+            if (this.mNativeHandle == 0 || !this.mDlmAttached || !Et9Dlm.isLoaded() || data == null) {
+                return DLM_IMPORT_NOT_AVAILABLE;
+            }
+            int status;
+            try {
+                status = Et9Dlm.nativeImport(this.mNativeHandle, data);
+            } catch (Throwable t) {
+                if (BuildConfig.DEBUG) Log.w(TAG, "importDLM failed", t);
+                return DLM_IMPORT_NOT_AVAILABLE;
+            }
+            // Attached or not, the engine rewrote the model in place: re-attach so the caches
+            // (hash buckets, prediction cache) are rebuilt from what the file holds now.
+            reattachDLM();
+            if (BuildConfig.DEBUG) Log.i(TAG, "importDLM: status=" + status + " words=" + getDLMWordCount(false));
+            return status < 0 ? DLM_IMPORT_NOT_AVAILABLE : status;
+        }
+    }
+
     public String getDLMFilePath() {
         synchronized (sMutex) {
             return this.mIsCurrLocaleChinese ? this.mIsManaged ? DYNAMIC_MODEL_FILE_NAME_ZH_WORK : DYNAMIC_MODEL_FILE_NAME_ZH : this.mIsManaged ? DYNAMIC_MODEL_FILE_NAME_WORK : DYNAMIC_MODEL_FILE_NAME;

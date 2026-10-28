@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(appnative C)
 
-add_library(xt9trace SHARED xt9trace/xt9trace.c et9probe.c)
+add_library(xt9trace SHARED xt9trace/xt9trace.c et9probe.c et9dlm.c)
 find_library(log-lib log)
 find_library(dl-lib dl)   # dladdr() for the NKL-writer watchpoint (maps PC -> blob symbol/offset)
 target_link_libraries(xt9trace ${log-lib} ${dl-lib})

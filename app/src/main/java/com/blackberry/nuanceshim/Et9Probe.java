@@ -54,7 +54,7 @@ public final class Et9Probe {
      */
     static boolean isProbeEnabled() {
         String v = SystemProps.get(PROBE_PROPERTY);
-        return "1".equals(v) || "2".equals(v);
+        return "1".equals(v) || "2".equals(v) || "3".equals(v);
     }
 
     /**
@@ -84,6 +84,50 @@ public final class Et9Probe {
         }
     }
 
+    /**
+     * {@code setprop debug.et9.probe 3}: the engine's own export of the learned model
+     * ({@link NuanceSDK#exportDLM}), read back with {@code LearnedModelStream} and logged word by
+     * word with use count, language, category, quality and flags, then saved as
+     * {@code files/dlm-export.bin}. With {@code setprop debug.et9.dlmimport 1} as well, that saved
+     * file is imported again through {@code LearnedModelTransfer} and the model re-read, which
+     * exercises the whole round trip on a device.
+     */
+    private static void dumpDlmExport(NuanceSDK sdk) {
+        try {
+            byte[] stream = sdk.exportDLM();
+            if (stream == null) {
+                Log.i(TAG, "dlm export: unavailable (transferAvailable=" + sdk.isDLMTransferAvailable() + ")");
+                return;
+            }
+            dev.bbkb.ime.core.engine.dlm.LearnedModelStream.Model model =
+                    dev.bbkb.ime.core.engine.dlm.LearnedModelStream.INSTANCE.parse(stream);
+            Log.i(TAG, "dlm export: " + stream.length + " bytes, version " + model.getVersion()
+                    + ", updates " + model.getUpdateCount() + ", categories " + model.getCategories().size()
+                    + ", words " + model.getWords().size() + ", next-word records " + model.getNextWordRecords());
+            for (dev.bbkb.ime.core.engine.dlm.LearnedModelStream.Word w : model.getWords()) {
+                Log.i(TAG, "dlm word: " + w.getText() + " count=" + w.getCount() + " lang=" + w.getLanguage()
+                        + " cat=" + w.getCategory() + " quality=" + w.getQuality() + " flags=" + w.getFlags());
+            }
+            android.content.Context app = dev.bbkb.ime.core.ImeApplication.getInstance();
+            if (app != null) {
+                java.io.File file = new java.io.File(app.getFilesDir(), "dlm-export.bin");
+                try (java.io.FileOutputStream out = new java.io.FileOutputStream(file)) { out.write(stream); }
+                Log.i(TAG, "dlm export: saved " + file);
+                if ("1".equals(SystemProps.get("debug.et9.dlmimport"))) {
+                    byte[] again = java.nio.file.Files.readAllBytes(file.toPath());
+                    dev.bbkb.ime.core.engine.dlm.LearnedModelTransfer.Outcome outcome =
+                            dev.bbkb.ime.core.engine.dlm.LearnedModelTransfer.INSTANCE.importModel(again);
+                    Log.i(TAG, "dlm import: " + outcome.getClass().getSimpleName()
+                            + (outcome instanceof dev.bbkb.ime.core.engine.dlm.LearnedModelTransfer.Outcome.Refused
+                                ? " status=" + ((dev.bbkb.ime.core.engine.dlm.LearnedModelTransfer.Outcome.Refused) outcome).getStatus() : "")
+                            + " words now " + sdk.getDLMWordCount(false));
+                }
+            }
+        } catch (Throwable t) {
+            Log.w(TAG, "dlm export failed", t);
+        }
+    }
+
     public static String probe(NuanceSDK sdk) {
         if (!BuildConfig.DEBUG || sdk == null || !isProbeEnabled()) return null;
         // Experiment hook: `setprop debug.et9.quarantine N` applies N as the DLM quarantine level.
@@ -93,8 +137,10 @@ public final class Et9Probe {
         }
         dumpDlm(sdk);
         // `setprop debug.et9.probe 2`: the DLM dump only, skipping the native probe (which can
-        // SIGSEGV on a cold start, see isProbeEnabled).
-        if ("2".equals(SystemProps.get(PROBE_PROPERTY))) return null;
+        // SIGSEGV on a cold start, see isProbeEnabled); `3` adds the model export round trip.
+        String level = SystemProps.get(PROBE_PROPERTY);
+        if ("3".equals(level)) dumpDlmExport(sdk);
+        if ("2".equals(level) || "3".equals(level)) return null;
         try {
             String result = nativeProbe(sdk.getNativeHandleForDebug());
             Log.i(TAG, "probe: " + result);

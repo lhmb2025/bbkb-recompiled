@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -55,6 +56,9 @@ fun SettingsTopBar(
     onNavigateBack: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     actions: @Composable RowScope.() -> Unit = {},
+    /** The leading icon: the back arrow, or a close cross while a screen is in selection mode. */
+    navigationIcon: ImageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+    navigationContentDescription: String = "Back",
 ) {
     val density = LocalDensity.current
     val collapseRange = with(density) {
@@ -89,7 +93,7 @@ fun SettingsTopBar(
             ) {
                 Spacer(modifier = Modifier.width(4.dp))
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Outlined.ArrowBack, "Back")
+                    Icon(navigationIcon, navigationContentDescription)
                 }
                 Text(
                     text = title,
@@ -165,13 +169,15 @@ fun SettingsScaffold(
     actions: @Composable RowScope.() -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
+    navigationIcon: ImageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+    navigationContentDescription: String = "Back",
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val scrollBehavior = rememberSettingsTopBarScrollBehavior()
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = LocalSettingsColors.current.page,
-        topBar = { SettingsTopBar(title, onNavigateBack, scrollBehavior, actions) },
+        topBar = { SettingsTopBar(title, onNavigateBack, scrollBehavior, actions, navigationIcon, navigationContentDescription) },
         snackbarHost = snackbarHost,
         floatingActionButton = floatingActionButton,
         content = content,

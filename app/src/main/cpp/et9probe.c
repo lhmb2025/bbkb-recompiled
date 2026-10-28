@@ -55,12 +55,7 @@
 #define OFF_STM_MODE     0x15038
 #define OFF_STM_MODEL    0x30408
 
-typedef struct {
-    unsigned char *ling;
-    unsigned char *info;
-    unsigned char *core;
-    const char *error;
-} et9_ctx;
+#include "et9probe.h"
 
 /* Resolve the engine context by SIGNATURE SCAN rather than a hardcoded pointer path.
  *
@@ -96,7 +91,7 @@ static int chain_ok(unsigned char *ling) {
  * passes it to ET9ClearAllSymbs, and its magic sits at offset 0, matching the third level of
  * the chain every ET9AW entry validates. From there we walk BACKWARDS to the structs that
  * point at it, because those (info, ling) are separate allocations, not inline in the block. */
-static et9_ctx resolve(jlong handle) {
+et9_ctx et9_resolve(jlong handle) {
     et9_ctx c = {0, 0, 0, 0};
     if (!handle) { c.error = "handle is 0"; return c; }
     unsigned char *block = (unsigned char *)(intptr_t)handle;
@@ -207,7 +202,7 @@ static int find_blob_cb(struct dl_phdr_info *info, size_t size, void *out) {
     return 0;
 }
 
-static uintptr_t blob_base(void) {
+uintptr_t et9_blob_base(void) {
     static uintptr_t base = 0;
     static int done = 0;
     if (!done) { done = 1; dl_iterate_phdr(find_blob_cb, &base);
@@ -217,7 +212,7 @@ static uintptr_t blob_base(void) {
 
 /* Call one (pLingInfo, u8) setter by address. Returns the engine status, or -1 if unresolved. */
 static int call_ling_setter(unsigned vaddr, void *ling, int value, const char *what) {
-    uintptr_t b = blob_base();
+    uintptr_t b = et9_blob_base();
     if (!b || !ling) { LOGI("%s: unresolved (base=%p ling=%p)", what, (void *)b, ling); return -1; }
     fn_set_ling_u8 f = (fn_set_ling_u8)(b + vaddr);
     int st = f(ling, (unsigned char)value);
@@ -260,7 +255,7 @@ JNIEXPORT jstring JNICALL
 Java_com_blackberry_nuanceshim_Et9Probe_nativeProbe(JNIEnv *env, jclass cls, jlong handle) {
     (void)cls;
     char buf[1400];
-    et9_ctx c = resolve(handle);
+    et9_ctx c = et9_resolve(handle);
     if (!c.core) {
         snprintf(buf, sizeof(buf), "{\"ok\":false,\"error\":\"%s\"}", c.error ? c.error : "?");
         LOGI("probe failed: %s", c.error ? c.error : "?");
@@ -347,7 +342,7 @@ JNIEXPORT jint JNICALL
 Java_com_blackberry_nuanceshim_Et9Probe_nativeSetFences(JNIEnv *env, jclass cls,
                                                        jlong handle, jint primary, jint secondary) {
     (void)env; (void)cls;
-    et9_ctx c = resolve(handle);
+    et9_ctx c = et9_resolve(handle);
     if (!c.ling) { LOGI("setFences: ling unavailable"); return -1; }
     int st = 0;
     if (primary   >= 0) st |= call_ling_setter(BLOB_SET_PRIMARY_FENCE,   c.ling, primary,   "SetPrimaryFence");
@@ -359,7 +354,7 @@ JNIEXPORT jint JNICALL
 Java_com_blackberry_nuanceshim_Et9Probe_nativeSetQuarantine(JNIEnv *env, jclass cls,
                                                            jlong handle, jint level) {
     (void)env; (void)cls;
-    et9_ctx c = resolve(handle);
+    et9_ctx c = et9_resolve(handle);
     if (!c.ling) { LOGI("setQuarantine: ling unavailable"); return -1; }
     return call_ling_setter(BLOB_SET_DLM_QUARANTINE, c.ling, level, "SetDLMQuarantineLevel");
 }
