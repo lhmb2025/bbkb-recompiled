@@ -364,7 +364,11 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
             // wrong here: the editor leaves the composing region alone and deletes AROUND it,
             // so a word re-opened by backspacing into it stayed put while the word before it
             // vanished.
-            GestureAction.DELETE_WORD -> ime.onSwipeDelete()
+            // The backspace icon sweeps with the finger; a firmware gesture key has no trace, so
+            // it gets a fixed right-to-left sweep across the middle of the keyboard.
+            GestureAction.DELETE_WORD ->
+                if (trace.isDegenerate) ime.onCkbSwipeDelete(0.75f, 0.25f)
+                else ime.onCkbSwipeDelete(trace.start.x, trace.end.x)
             // Toggle the arrow-bar cursor mode — the same control the original double-tap used.
             GestureAction.ENTER_CURSOR_MODE -> ime.toggleCursorMode()
             GestureAction.NEXT_LANGUAGE -> ime.updateSuggestionsFromSubtype(InputSource.SOFTWARE)

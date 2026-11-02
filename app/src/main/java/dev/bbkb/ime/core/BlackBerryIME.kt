@@ -2480,12 +2480,32 @@ class BlackBerryIME : InputMethodService(),
         return zM4481b
     }
 
+    /**
+     * The physical keyboard's swipe-delete: the original ran the same handler as the on-screen
+     * one and fed the keypad event's raw X straight into the animation, which lined up with the
+     * screen only because the KEY2 pad and screen are both 1080 units wide. The gesture arbiter
+     * hands over X as a fraction of the pad width, so scale it to the keyboard view here.
+     */
+    fun onCkbSwipeDelete(startXFraction: Float, endXFraction: Float): Boolean {
+        if (inputLogic.hasSelectionOrCursor()) {
+            val width = animationWidth()
+            updateSwipeToDelete(startXFraction * width, 0f, endXFraction * width)
+        }
+        return onSwipeDelete()
+    }
+
+    /** The width the swipe-delete icon travels across: the keyboard view, else the input view. */
+    private fun animationWidth(): Int {
+        val keyboardWidth = keyboardSwitcher.getMainKeyboardView()?.width ?: 0
+        return if (keyboardWidth > 0) keyboardWidth else (rootInputView?.width ?: 0)
+    }
+
     fun updateSwipeToDelete(f: Float, f2: Float, f3: Float) {
-        val mainKeyboardViewM6790T = keyboardSwitcher.getMainKeyboardView()!!
-        swipeToDeleteAnimatorView?.setCurrentKeyboardHeight(mainKeyboardViewM6790T.height)
+        val mainKeyboardView = keyboardSwitcher.getMainKeyboardView()
+        swipeToDeleteAnimatorView?.setCurrentKeyboardHeight(mainKeyboardView?.height ?: 0)
         val auxBarShown = auxBarManager != null && auxBarManager!!.getAuxBarView() != null && (auxBarManager!!.getAuxBarView()?.isShowing() ?: false)
         swipeToDeleteAnimatorView?.setSuggestionStripShown(auxBarShown)
-        swipeToDeleteAnimatorView?.setCurrentKeyboardWidth(mainKeyboardViewM6790T.width)
+        swipeToDeleteAnimatorView?.setCurrentKeyboardWidth(animationWidth())
         // Audit CT-33: the icon comes from android:src in main_keyboard_frame.xml, resolved once
         // at inflate; it was being re-resolved on every swipe-delete.
         swipeToDeleteAnimatorView?.startSwipeAnimation(f, f2, f3)

@@ -564,8 +564,13 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
      */
     public void setupInputView(View view) {
         this.imeService.setRootInputView(view);
-        this.imeService.setSwipeToDeleteAnimatorView(
-                (SwipeToDeleteAnimatorView) view.findViewById(R.id.delete_animation_view));
+        SwipeToDeleteAnimatorView deleteAnimationView =
+                (SwipeToDeleteAnimatorView) view.findViewById(R.id.delete_animation_view);
+        // The overlay's drawable is the white key icon; the keys get their color from
+        // KeyboardView.applyIconTint, this view does not, so tint it here. A theme change
+        // recreates the input view, so a tint applied at bind time stays current.
+        dev.bbkb.ime.keyboard.KeyboardColorManager.INSTANCE.tint(deleteAnimationView);
+        this.imeService.setSwipeToDeleteAnimatorView(deleteAnimationView);
 
         initializeAuxBar(view);
         initializeCjkViews(view);
