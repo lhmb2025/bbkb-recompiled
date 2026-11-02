@@ -9,6 +9,7 @@ import dev.bbkb.ime.core.suggestion.SuggestedWords;
 import dev.bbkb.ime.core.suggestion.SuggestionEngine;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
 import dev.bbkb.ime.core.shared.AsyncResultHolder;
+import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker;
 import dev.bbkb.ime.BuildConfig;
 
 /**
@@ -43,6 +44,14 @@ class SuggestionCoordinator {
 
     private final InputLogic mInputLogic;
 
+    /**
+     * The latest asynchronous request handed to the worker and the composing-text edit count it
+     * was made at. The separator flush waits on it instead of racing it. Main thread only; the
+     * holder itself is filled on the worker.
+     */
+    private AsyncResultHolder<SuggestedWords> mInFlightResult;
+    private int mInFlightEditCount = -1;
+
     SuggestionCoordinator(InputLogic inputLogic) {
         this.mInputLogic = inputLogic;
     }
@@ -54,8 +63,9 @@ class SuggestionCoordinator {
      *
      * @param c0804d current settings values
      * @param i      update reason code forwarded to the worker
+     * @return {@code true} if the worker answered in time and its result was shown
      */
-    void updateSuggestionsSync(SettingsValues c0804d, int i) {
+    boolean updateSuggestionsSync(SettingsValues c0804d, int i) {
         if (!c0804d.shouldShowLxxButton) {
             if (mInputLogic.mComposingTracker.isComposing()) {
                 if (BuildConfig.DEBUG) Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not requested!");
@@ -67,29 +77,33 @@ class SuggestionCoordinator {
         } else {
             if (!mInputLogic.mComposingTracker.isComposing() && !c0804d.isBigramPredictionEnabled) {
                 mInputLogic.mSuggestionStripListener.setNeutralSuggestionStrip();
-                return;
+                return false;
             }
             final AsyncResultHolder c0883c = new AsyncResultHolder();
+            // The main thread is parked until the reply, so no edit can land in between.
+            final int requestEditCount = mInputLogic.mComposingTracker.getEditCount();
             mInputLogic.mSuggestionRequestQueue.sendToWorkerThread(i, new SuggestionEngine.SuggestionCallback() {
                 @Override
                 public void onSuggestionsReady(SuggestedWords c0666ac) {
                     String strM4360m = mInputLogic.mComposingTracker.getComposingText();
                     if (c0666ac.size() > 1 || strM4360m.length() <= 1) {
-                        c0883c.set(c0666ac);
+                        c0883c.set(stampEditCount(c0666ac, requestEditCount));
                     } else {
                         if (NuanceSDKManager.getInstance().isCurrLocaleChinese()) {
-                            c0883c.set(c0666ac);
+                            c0883c.set(stampEditCount(c0666ac, requestEditCount));
                             return;
                         }
-                        c0883c.set(createSuggestionsWithTypedWord(strM4360m, mInputLogic.mCurrentSuggestions));
+                        c0883c.set(stampEditCount(createSuggestionsWithTypedWord(strM4360m, mInputLogic.mCurrentSuggestions), requestEditCount));
                     }
                 }
             });
             SuggestedWords c0666ac = (SuggestedWords) c0883c.get(null, SYNC_SUGGESTION_TIMEOUT_MS);
             if (c0666ac != null) {
                 mInputLogic.mSuggestionStripListener.showSuggestionStrip(c0666ac);
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -125,25 +139,42 @@ class SuggestionCoordinator {
             // the session it was REQUESTED under. Stamping at post time would read as current no
             // matter what, because the worker always posts after any teardown.
             final int requestGeneration = mInputLogic.getSessionGeneration();
+            // Same reasoning as the generation: the edit count the request was MADE at. A key
+            // typed while the worker runs bumps the tracker's count, so the reply reads as stale.
+            final int requestEditCount = mInputLogic.mComposingTracker.getEditCount();
+            final AsyncResultHolder<SuggestedWords> inFlight = new AsyncResultHolder<>();
+            mInFlightResult = inFlight;
+            mInFlightEditCount = requestEditCount;
             mInputLogic.mSuggestionRequestQueue.sendToWorkerThread(i, new SuggestionEngine.SuggestionCallback() {
                 @Override
                 public void onSuggestionsReady(SuggestedWords c0666ac) {
                     if (BuildConfig.DEBUG) android.util.Log.d("SUGG", "updateSuggestionsAsync: onSuggestionsReady size=" + c0666ac.size() + " thread=" + Thread.currentThread().getName());
                     String strM4360m = mInputLogic.mComposingTracker.getComposingText();
-                    if (c0666ac.size() > 1 || strM4360m.length() <= 1) {
-                        mInputLogic.mIme.uiUpdateHandler.postShowSuggestionStrip(c0666ac, requestGeneration);
-                        return;
-                    }
-                    SuggestedWords processedSuggestions = createSuggestionsWithTypedWord(strM4360m, mInputLogic.mCurrentSuggestions);
-                    mInputLogic.mIme.uiUpdateHandler.postShowSuggestionStrip(processedSuggestions, requestGeneration);
+                    SuggestedWords reply = c0666ac.size() > 1 || strM4360m.length() <= 1
+                            ? c0666ac
+                            : createSuggestionsWithTypedWord(strM4360m, mInputLogic.mCurrentSuggestions);
+                    stampEditCount(reply, requestEditCount);
+                    inFlight.set(reply);
+                    mInputLogic.mIme.uiUpdateHandler.postShowSuggestionStrip(reply, requestGeneration);
                 }
             });
         }
     }
 
     /**
-     * If there is a pending asynchronous suggestion update, cancels it and runs a synchronous
-     * update instead. Ensures suggestion state is consistent before a commit.
+     * Makes sure the auto-correction candidate belongs to the text being composed before a
+     * commit. If an asynchronous update is still queued, it is cancelled and run synchronously.
+     * If one has already been handed to the worker for the current text, the flush waits for
+     * that reply and shows it now. Only when neither exists is a synchronous update made.
+     *
+     * <p>The in-flight case is the race behind "bb sometimes stays bb" (2026-11-02): once the
+     * queued update reached the worker nothing was pending any more, but the last keystroke had
+     * cleared the candidate and the new one had not arrived (or a reply for the previous text
+     * arrived late and stood in for it). A separator in that window committed the typed word
+     * with no correction and no text shortcut. It is widest on the physical keyboard (10 ms
+     * update delay) and whenever the engine is slow. Waiting on the reply already being computed
+     * matters: a fresh synchronous request would queue behind it on the single worker and
+     * take twice as long.
      *
      * @param c0804d        current settings values
      * @param handlerC0650c UI update handler used to cancel pending async requests
@@ -151,21 +182,57 @@ class SuggestionCoordinator {
     void flushPendingSuggestions(SettingsValues c0804d, UIUpdateHandler handlerC0650c) {
         boolean hasPendingUpdate = handlerC0650c.hasPendingSuggestionUpdate();
         boolean hasPendingJapanese = handlerC0650c.hasPendingJapaneseSuggestionUpdate();
+        ComposingTextTracker tracker = mInputLogic.mComposingTracker;
+        boolean awaitingResult = tracker.isComposing() && !tracker.isGestureInput()
+                && !tracker.hasAutoCorrectionForComposingText();
         if (BuildConfig.DEBUG) {
         android.util.Log.d("AC_DEBUG", "flushPendingSuggestions: hasPendingUpdate=" + hasPendingUpdate
             + " hasPendingJapanese=" + hasPendingJapanese
-            + " composing='" + mInputLogic.mComposingTracker.getComposingText() + "'");
+            + " awaitingResult=" + awaitingResult
+            + " composing='" + tracker.getComposingText() + "'");
         }
         if (hasPendingUpdate || hasPendingJapanese) {
             handlerC0650c.cancelPendingSuggestionUpdates();
             if (BuildConfig.DEBUG) android.util.Log.d("AC_DEBUG", "flushPendingSuggestions: running sync update");
-            updateSuggestionsSync(c0804d, 1);
+            if (updateSuggestionsSync(c0804d, 1)) {
+                // A reply to an earlier request that landed in the queue while we waited is
+                // older than what was just shown; delivered after the commit it would put a
+                // stale strip back.
+                handlerC0650c.cancelPendingSuggestionDelivery();
+            }
+        } else if (awaitingResult) {
+            AsyncResultHolder<SuggestedWords> inFlight = mInFlightResult;
+            if (inFlight != null && mInFlightEditCount == tracker.getEditCount()) {
+                SuggestedWords reply = inFlight.get(null, SYNC_SUGGESTION_TIMEOUT_MS);
+                if (BuildConfig.DEBUG) android.util.Log.d("AC_DEBUG", "flushPendingSuggestions: waited for in-flight reply, arrived=" + (reply != null));
+                if (reply != null) {
+                    // Show it now rather than when its queued MSG_SHOW_SUGGESTIONS comes round,
+                    // which would be after this commit.
+                    handlerC0650c.cancelPendingSuggestionDelivery();
+                    mInputLogic.mSuggestionStripListener.showSuggestionStrip(reply);
+                }
+                // On timeout the word commits as typed, as it always did; a second request
+                // would only queue behind the slow one.
+            } else {
+                if (BuildConfig.DEBUG) android.util.Log.d("AC_DEBUG", "flushPendingSuggestions: nothing in flight for this text, running sync update");
+                if (updateSuggestionsSync(c0804d, 1)) {
+                    handlerC0650c.cancelPendingSuggestionDelivery();
+                }
+            }
         } else {
             if (BuildConfig.DEBUG) {
             android.util.Log.d("AC_DEBUG", "flushPendingSuggestions: NO pending update, using cached acWord='"
                 + mInputLogic.mComposingTracker.getAutoCorrection() + "' score=" + mInputLogic.mComposingTracker.getAutoCorrectionScore());
             }
         }
+    }
+
+    /** Records the request's edit count on {@code words}, never on the shared EMPTY instance. */
+    private static SuggestedWords stampEditCount(SuggestedWords words, int editCount) {
+        if (words != SuggestedWords.EMPTY) {
+            words.mRequestEditCount = editCount;
+        }
+        return words;
     }
 
     /**

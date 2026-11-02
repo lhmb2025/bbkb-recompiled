@@ -364,6 +364,11 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
 
     fun hasPendingSuggestionUpdate(): Boolean = hasMessages(MSG_UPDATE_SUGGESTIONS)
 
+    /** Drops a suggestion reply that has been posted but not yet shown. */
+    fun cancelPendingSuggestionDelivery() {
+        removeMessages(MSG_SHOW_SUGGESTIONS)
+    }
+
     fun hasPendingJapaneseSuggestionUpdate(): Boolean = hasMessages(MSG_UPDATE_JAPANESE_SUGGESTIONS)
 
     fun hasPendingAdditionalLocalesLoad(): Boolean = hasMessages(MSG_LOAD_ADDITIONAL_LOCALES)

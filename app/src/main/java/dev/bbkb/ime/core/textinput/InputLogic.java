@@ -976,7 +976,11 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
                 + " composing='" + this.mComposingTracker.getComposingText() + "'"
                 + " thread=" + Thread.currentThread().getName());
             }
-            this.mComposingTracker.setAutoCorrection(strMo4284a, iM4296a);
+            if (c0666ac.mRequestEditCount >= 0) {
+                this.mComposingTracker.setAutoCorrection(strMo4284a, iM4296a, c0666ac.mRequestEditCount);
+            } else {
+                this.mComposingTracker.setAutoCorrection(strMo4284a, iM4296a);
+            }
             if (c0666ac.size() > SuggestedWords.getMinSuggestionsIndex()) {
                 this.mComposingTracker.setPickedSuggestion(c0666ac.getWordInfo(SuggestedWords.getMinSuggestionsIndex()));
             }

@@ -27,6 +27,13 @@ public class SuggestedWords {
 
     protected final ArrayList<SuggestedWordInfo> mSuggestionsList;
 
+    /**
+     * {@code ComposingTextTracker.getEditCount()} when the request that produced this list was
+     * made, or -1 when unknown (then the list is taken as current). Set by
+     * {@code SuggestionCoordinator} before the list leaves the worker.
+     */
+    public int mRequestEditCount = -1;
+
     private static final ArrayList<SuggestedWordInfo> EMPTY_SUGGESTIONS_LIST = new ArrayList<>(0);
 
     public static final SuggestedWords EMPTY = new SuggestedWords(EMPTY_SUGGESTIONS_LIST, false, false, 0);

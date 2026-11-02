@@ -194,6 +194,37 @@ public class ComposingTextTrackerTest {
         assertEquals(0, mTracker.getAutoCorrectionScore());
     }
 
+    @Test
+    public void autoCorrectionResultIsTrackedPerComposingText() {
+        seed("bb");
+        assertFalse("no result has arrived for the seeded text",
+                mTracker.hasAutoCorrectionForComposingText());
+
+        mTracker.setAutoCorrection("BlackBerry", 7);
+        assertTrue(mTracker.hasAutoCorrectionForComposingText());
+
+        mTracker.insertCodePointAtCursor('x');
+        assertFalse("an edit makes the stored result stale",
+                mTracker.hasAutoCorrectionForComposingText());
+
+        mTracker.setAutoCorrection("bbx", 0);
+        mTracker.deleteCodePointBeforeCursor();
+        assertFalse(mTracker.hasAutoCorrectionForComposingText());
+    }
+
+    @Test
+    public void autoCorrectionFromARequestMadeBeforeTheLatestEditIsStale() {
+        seed("alo");
+        int requestedAt = mTracker.getEditCount();
+        mTracker.insertCodePointAtCursor('t');
+
+        mTracker.setAutoCorrection("alo", 0, requestedAt);
+        assertFalse(mTracker.hasAutoCorrectionForComposingText());
+
+        mTracker.setAutoCorrection("a lot", 7, mTracker.getEditCount());
+        assertTrue(mTracker.hasAutoCorrectionForComposingText());
+    }
+
     // --- H1: shift state set while idle must reach the engine ---
 
     @Test

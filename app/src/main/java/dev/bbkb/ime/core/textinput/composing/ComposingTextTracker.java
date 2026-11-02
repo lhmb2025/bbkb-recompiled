@@ -41,6 +41,17 @@ public final class ComposingTextTracker {
 
     private int mAutoCorrectionScore;
 
+    /**
+     * Counts edits of the composing text; every site that drops the auto-correction candidate
+     * because the text changed bumps it. A suggestion request records the count it was made at,
+     * so a reply that arrives after a later keystroke can be told apart from a current one (the
+     * async race in {@code SuggestionCoordinator.flushPendingSuggestions}).
+     */
+    private int mEditCount;
+
+    /** {@link #mEditCount} as of the request that produced {@link #mAutoCorrection}; -1 = none. */
+    private int mAutoCorrectionEditCount = -1;
+
     private SuggestedWords.SuggestedWordInfo mPickedSuggestion;
 
     private boolean mIsGestureInput;
@@ -141,7 +152,7 @@ public final class ComposingTextTracker {
     public ComposingTextTracker(NuanceSDK nuanceSDK) {
         this.mNuanceSDK = nuanceSDK;
         this.mComposingText.clear();
-        setAutoCorrection((String) null, 0);
+        clearAutoCorrection();
         this.mIsGestureInput = false;
         this.mEventIndex = 0;
         this.mIsPredictionMode = false;
@@ -227,7 +238,7 @@ public final class ComposingTextTracker {
         if (this.mInputMethodConverter != null) {
             this.mInputMethodConverter.reset();
         }
-        setAutoCorrection((String) null, 0);
+        clearAutoCorrection();
         this.mUpperCaseCount = 0;
         this.mDigitCount = 0;
         this.mFirstLetterUppercase = false;
@@ -284,7 +295,7 @@ public final class ComposingTextTracker {
         recalculateTextStats(true);
         // The append path clears any pending auto-correction on every event; the candidate
         // computed for the pre-edit text must not survive the edit either.
-        setAutoCorrection((String) null, 0);
+        clearAutoCorrection();
         rebuildNuanceFromComposing();
     }
 
@@ -314,7 +325,7 @@ public final class ComposingTextTracker {
         recalculateTextStats(false);
         // Same rationale as insertCodePointAtCursor: the pending auto-correction was
         // computed for the pre-edit text and must not survive the edit.
-        setAutoCorrection((String) null, 0);
+        clearAutoCorrection();
         rebuildNuanceFromComposing();
     }
 
@@ -487,7 +498,7 @@ public final class ComposingTextTracker {
             this.mFirstLetterUppercase = false;
         }
         updateCoordinatesAndCaps(c0914a, iM4319b, length);
-        setAutoCorrection((String) null, 0);
+        clearAutoCorrection();
         if (length == 0) {
             this.mNuanceSDK.clear();
             if (iM4319b == 1) {
@@ -912,8 +923,38 @@ public final class ComposingTextTracker {
      * @param i   confidence score (0 = disabled/none)
      */
     public synchronized void setAutoCorrection(String str, int i) {
+        setAutoCorrection(str, i, this.mEditCount);
+    }
+
+    /**
+     * Stores the auto-correction candidate from a suggestion request made at {@code editCount}
+     * (see {@link #getEditCount()}). A request made before the latest edit leaves
+     * {@link #hasAutoCorrectionForComposingText()} false.
+     */
+    public synchronized void setAutoCorrection(String str, int i, int editCount) {
         this.mAutoCorrection = str;
         this.mAutoCorrectionScore = i;
+        this.mAutoCorrectionEditCount = editCount;
+    }
+
+    /** Drops the auto-correction candidate because the composing text it was computed for changed. */
+    private void clearAutoCorrection() {
+        this.mAutoCorrection = null;
+        this.mAutoCorrectionScore = 0;
+        this.mEditCount++;
+    }
+
+    /** Returns the composing-text edit count; record it when making a suggestion request. */
+    public synchronized int getEditCount() {
+        return this.mEditCount;
+    }
+
+    /**
+     * Returns {@code true} if the stored auto-correction came from a request made since the
+     * composing text last changed, so {@link #getAutoCorrection()} answers for the current text.
+     */
+    public synchronized boolean hasAutoCorrectionForComposingText() {
+        return this.mAutoCorrectionEditCount == this.mEditCount;
     }
 
     /**
