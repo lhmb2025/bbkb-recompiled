@@ -35,30 +35,33 @@ class SuggestionEngineCaseTransformTest {
         word: String,
         allCaps: Boolean = false,
         firstCaps: Boolean = false,
-        forceLowercase: Boolean = false,
         trailingApostrophes: Int = 0,
-    ) = SuggestionEngine.transformCase(info(word), en, allCaps, firstCaps, forceLowercase, trailingApostrophes)
+    ) = SuggestionEngine.transformCase(info(word), en, allCaps, firstCaps, trailingApostrophes)
 
     // ── the fast path: nothing to do, so nothing is allocated ────────────────
 
     @Test
-    fun alreadyLowercase_withForceLowercase_returnsTheSameInstance() {
-        // The per-keystroke common case: forceLowercase is on (it is `!firstCaps && !allCaps`,
-        // i.e. on for most keystrokes) but the word does not start with an upper-case letter.
-        val input = info("hello")
-        assertSame(input, SuggestionEngine.transformCase(input, en, false, false, true, 0))
-    }
-
-    @Test
     fun noFlagsAtAll_returnsTheSameInstance() {
-        val input = info("Hello")
-        assertSame(input, SuggestionEngine.transformCase(input, en, false, false, false, 0))
+        val input = info("hello")
+        assertSame(input, SuggestionEngine.transformCase(input, en, false, false, 0))
     }
 
     @Test
     fun emptyWord_returnsTheSameInstance() {
         val input = info("")
-        assertSame(input, SuggestionEngine.transformCase(input, en, false, false, true, 0))
+        assertSame(input, SuggestionEngine.transformCase(input, en, false, false, 0))
+    }
+
+    // ── a capital the dictionary spells is never lowered ──────────────────────
+
+    @Test
+    fun capitalizedWord_midSentence_keepsItsCapitals() {
+        // Bug report 2026-11-02: BlackBerry was committed as blackBerry, and personal-dictionary
+        // names lost their capital, because a forceLowercase step lowered the first letter.
+        val input = info("BlackBerry")
+        val out = SuggestionEngine.transformCase(input, en, false, false, 0)
+        assertSame(input, out)
+        assertEquals("BlackBerry", out.word)
     }
 
     // ── every branch that DOES transform still transforms ────────────────────
@@ -73,14 +76,6 @@ class SuggestionEngineCaseTransformTest {
     fun firstCaps_stillCapitalizes() {
         val out = transform("hello", firstCaps = true)
         assertEquals("Hello", out.word)
-    }
-
-    @Test
-    fun forceLowercase_stillLowercasesALeadingCapital() {
-        val input = info("Hello")
-        val out = SuggestionEngine.transformCase(input, en, false, false, true, 0)
-        assertNotSame(input, out)
-        assertEquals("hello", out.word)
     }
 
     @Test
@@ -101,7 +96,7 @@ class SuggestionEngineCaseTransformTest {
     @Test
     fun transformedResult_carriesTheOriginalMetadata() {
         val input = SuggestedWords.SuggestedWordInfo("hello", 42, 7, null, 3, 5, null)
-        val out = SuggestionEngine.transformCase(input, en, true, false, false, 0)
+        val out = SuggestionEngine.transformCase(input, en, true, false, 0)
         assertNotSame(input, out)
         assertEquals("HELLO", out.word)
         assertEquals(42, out.score)

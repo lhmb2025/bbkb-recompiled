@@ -51,14 +51,6 @@ public final class StringHelper {
         return str.substring(0, offset).toUpperCase(locale) + str.substring(offset);
     }
     
-    public static String lowercaseFirstCodePoint(String str, Locale locale) {
-        if (str.length() <= 1) {
-            return str.toLowerCase(locale);
-        }
-        int offset = str.offsetByCodePoints(0, 1);
-        return str.substring(0, offset).toLowerCase(locale) + str.substring(offset);
-    }
-    
     public static String capitalizeFirstAndLowercaseRest(String str, Locale locale) {
         if (str.length() <= 1) {
             return str.toUpperCase(locale);

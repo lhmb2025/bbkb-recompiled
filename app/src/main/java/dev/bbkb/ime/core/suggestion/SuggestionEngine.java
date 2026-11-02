@@ -85,16 +85,13 @@ public final class SuggestionEngine {
     private static ArrayList<SuggestedWords.SuggestedWordInfo> applyCaseTransform(ComposingTextTracker composingTracker, SuggestionResult perfLogger, int trailingApostrophes) {
         boolean allCaps = composingTracker.isAllCaps();
         boolean firstCaps = composingTracker.shouldCapitalizeFirstLetter(); // first letter caps (start of sentence)
-        // FIX: Add forceLowercase for predictions too
-        boolean forceLowercase = !firstCaps && !allCaps;
         ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = perfLogger.getSuggestions();
         int size = suggestions.size();
-        // UT-2: the old guard here was `firstCaps || allCaps || forceLowercase || ...`, and
-        // forceLowercase is by construction `!firstCaps && !allCaps` — i.e. always true. The loop
-        // therefore always ran; transformCase now returns its argument unchanged when there is
-        // nothing to transform, which is where the per-keystroke allocations actually went.
+        // Case is only ever raised, never lowered, as in the original (ab.java): a word the
+        // dictionary spells with a capital (BlackBerry, a personal-dictionary name) keeps it.
+        // transformCase returns its argument unchanged when there is nothing to transform (UT-2).
         for (int i = 0; i < size; i++) {
-            suggestions.set(i, transformCase(suggestions.get(i), perfLogger.locale, allCaps, firstCaps, forceLowercase, trailingApostrophes));
+            suggestions.set(i, transformCase(suggestions.get(i), perfLogger.locale, allCaps, firstCaps, trailingApostrophes));
         }
         return suggestions;
     }
@@ -203,10 +200,8 @@ public final class SuggestionEngine {
         boolean userTypedUppercase = composingText.length() > 0 && Character.isUpperCase(composingText.codePointAt(0));
         boolean shouldCapitalize = isStartOfSentence || userTypedUppercase;
         boolean allCaps = composingTracker.isAllCaps();
-        boolean forceLowercase = !isStartOfSentence && !userTypedUppercase && !allCaps;
-        // UT-2: same always-true guard as applyCaseTransform — dropped; transformCase self-shorts.
         for (int i = 0; i < size; i++) {
-            predictions.set(i, transformCase(predictions.get(i), perfLogger.locale, allCaps, shouldCapitalize, forceLowercase, 0));
+            predictions.set(i, transformCase(predictions.get(i), perfLogger.locale, allCaps, shouldCapitalize, 0));
         }
         if (predictions.size() > 1 && TextUtils.equals(predictions.get(0).word, composingTracker.getLastCommittedWord())) {
             predictions.add(1, predictions.remove(0));
@@ -220,15 +215,13 @@ public final class SuggestionEngine {
         callback.onSuggestionsReady(new SuggestedWords(predictions, true, false, suggestionType));
     }
 
-    static SuggestedWords.SuggestedWordInfo transformCase(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, Locale locale, boolean allCaps, boolean firstCaps, boolean forceLowercase, int trailingApostrophes) {
+    static SuggestedWords.SuggestedWordInfo transformCase(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, Locale locale, boolean allCaps, boolean firstCaps, int trailingApostrophes) {
         // UT-2 (hot path): this runs for every entry of every suggestion request. When no case
         // change and no apostrophe fix-up applies, the body below rebuilds a byte-identical
         // SuggestedWordInfo; return the input instead. `completionInfo` is part of the guard
         // because the copying constructor drops it, so the copy is only identical when it is null.
-        String word = suggestedWordInfoVar.word;
         if (!allCaps && !firstCaps && trailingApostrophes == 0
-                && suggestedWordInfoVar.completionInfo == null
-                && !(forceLowercase && word.length() > 0 && Character.isUpperCase(word.codePointAt(0)))) {
+                && suggestedWordInfoVar.completionInfo == null) {
             return suggestedWordInfoVar;
         }
         StringBuilder sb = new StringBuilder(suggestedWordInfoVar.word.length());
@@ -236,8 +229,6 @@ public final class SuggestionEngine {
             sb.append(suggestedWordInfoVar.word.toUpperCase(locale));
         } else if (firstCaps) {
             sb.append(capitalizeFirstCodePoint(suggestedWordInfoVar.word, locale));
-        } else if (forceLowercase && suggestedWordInfoVar.word.length() > 0 && Character.isUpperCase(suggestedWordInfoVar.word.codePointAt(0))) {
-            sb.append(lowercaseFirstCodePoint(suggestedWordInfoVar.word, locale));
         } else {
             sb.append(suggestedWordInfoVar.word);
         }
