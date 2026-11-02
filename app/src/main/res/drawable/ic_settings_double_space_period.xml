@@ -1,0 +1,13 @@
+<!-- Double-space period: the owner's art (a space bar under a 2 and a period), 24-unit grid; tinted by the row. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M4,18.99787v-6h2v4h12v-4h2v6H4Z" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M9,15.00213v-4c0,-.55,.19583,-1.02083,.5875,-1.4125,.39167,-.39167,.8625,-.5875,1.4125,-.5875h2v-2h-4v-2h4c.55,0,1.02083,.19583,1.4125,.5875s.5875,.8625,.5875,1.4125v2c0,.55,-.19583,1.02083,-.5875,1.4125s-.8625,.5875,-1.4125,.5875h-2v2h4v2h-6Z" />
+</vector>

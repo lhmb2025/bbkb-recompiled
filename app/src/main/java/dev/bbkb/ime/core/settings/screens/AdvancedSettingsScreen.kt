@@ -9,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.PhoneAndroid
-import androidx.compose.material.icons.outlined.RestartAlt
 import androidx.compose.material.icons.outlined.SettingsBackupRestore
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +34,7 @@ import dev.bbkb.ime.core.settings.ui.Nav
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Simple
 import dev.bbkb.ime.core.settings.ui.asRowIcon
+import dev.bbkb.ime.core.settings.ui.drawableIcon
 import kotlinx.coroutines.launch
 
 /** Search anchors for the Manage data rows; spelled as literals in the screen for the sync test. */
@@ -100,7 +100,7 @@ fun AdvancedSettingsScreen(
         Simple(
             title = R.string.settings_reset_title,
             summary = R.string.settings_reset_summary,
-            icon = Icons.Outlined.RestartAlt.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_reset),
             // Literal (== ManageDataAnchors.RESET).
             modifier = Modifier.settingsSearchAnchor("settings_reset"),
             onClick = { showReset = true },

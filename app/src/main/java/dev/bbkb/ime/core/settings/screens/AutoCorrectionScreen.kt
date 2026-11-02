@@ -9,6 +9,7 @@ import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
 import dev.bbkb.ime.core.settings.ui.boolPref
+import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.core.settings.ui.intAsStringPref
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.util.SettingsManager
@@ -29,6 +30,7 @@ fun AutoCorrectionScreen(
             store = boolPref(SettingsManager.PREF_AUTO_CORRECTION_ENABLED, true),
             title = R.string.settings_autocorrect_enable_title,
             summary = RowSummary.Res(R.string.settings_autocorrect_enable_summary),
+            icon = drawableIcon(R.drawable.ic_settings_autocorrect),
             modifier = Modifier.settingsSearchAnchor("auto_correction_enabled"),
         ),
         // PKB auto-correction mode — only on devices with a physical keyboard.
@@ -37,6 +39,7 @@ fun AutoCorrectionScreen(
             title = R.string.settings_autocorrect_pkb_title,
             options = ::autoCorrectionModes,
             fallbackIndex = 1,
+            icon = drawableIcon(R.drawable.ic_settings_keyboard_physical_correction),
             enabled = { it.bool(SettingsManager.PREF_AUTO_CORRECTION_ENABLED) },
             modifier = Modifier.settingsSearchAnchor("auto_correction_mode_PKB"),
             visible = { it.hasPhysicalKeyboard },
@@ -46,6 +49,7 @@ fun AutoCorrectionScreen(
             title = R.string.settings_autocorrect_vkb_title,
             options = ::autoCorrectionModes,
             fallbackIndex = 2,
+            icon = drawableIcon(R.drawable.ic_settings_keyboard_virtual_correction),
             enabled = { it.bool(SettingsManager.PREF_AUTO_CORRECTION_ENABLED) },
             modifier = Modifier.settingsSearchAnchor("auto_correction_mode_VKB"),
         ),
@@ -53,12 +57,14 @@ fun AutoCorrectionScreen(
             store = boolPref("auto_cap", true),
             title = R.string.settings_autocorrect_auto_cap_title,
             summary = RowSummary.Res(R.string.settings_autocorrect_auto_cap_summary),
+            icon = drawableIcon(R.drawable.ic_settings_auto_capitalization),
             modifier = Modifier.settingsSearchAnchor("auto_cap"),
         ),
         Toggle(
             store = boolPref("pref_key_use_double_space_period", true),
             title = R.string.settings_autocorrect_double_space_title,
             summary = RowSummary.Res(R.string.settings_autocorrect_double_space_summary),
+            icon = drawableIcon(R.drawable.ic_settings_double_space_period),
             modifier = Modifier.settingsSearchAnchor("pref_key_use_double_space_period"),
         ),
     ))
