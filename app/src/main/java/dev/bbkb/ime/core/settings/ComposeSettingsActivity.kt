@@ -4,7 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
+import dev.bbkb.ime.core.settings.ui.LocalSettingsColors
+import dev.bbkb.ime.core.settings.ui.SettingsTransitions
 import dev.bbkb.ime.core.settings.ui.BlackBerryTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -141,10 +145,21 @@ fun SettingsNavHost(
     val back: () -> Unit = { if (!navController.popBackStack()) onExit() }
     fun go(route: SettingsRoute): () -> Unit = { navController.navigate(route.route) }
 
+    // The system Settings app's page transition (see SettingsTransitions); the navigation
+    // library's default is a plain cross-fade.
+    val transitions = SettingsTransitions
+
     CompositionLocalProvider(LocalSettingsHighlight provides highlightController) {
     NavHost(
         navController = navController,
-        startDestination = initialRoute
+        startDestination = initialRoute,
+        // The page colour behind the pages: while they slide, the edge they uncover shows the
+        // page and not the window's own background.
+        modifier = Modifier.background(LocalSettingsColors.current.page),
+        enterTransition = transitions.enter,
+        exitTransition = transitions.exit,
+        popEnterTransition = transitions.popEnter,
+        popExitTransition = transitions.popExit,
     ) {
         // Main Settings Menu (root)
         composable(SettingsRoute.Main.route) {
