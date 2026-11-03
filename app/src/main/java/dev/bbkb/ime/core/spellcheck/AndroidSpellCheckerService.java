@@ -3,11 +3,13 @@ package dev.bbkb.ime.core.spellcheck;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import dev.bbkb.ime.core.settings.PrefsManager;
-import android.provider.Settings;
 import android.service.textservice.SpellCheckerService;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 import android.view.textservice.SuggestionsInfo;
+
+import com.blackberry.nuanceshim.NuanceSDK;
+import com.blackberry.nuanceshim.languagepack.LanguagePackManager;
 
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker;
 import dev.bbkb.ime.core.engine.DictionaryLoader;
@@ -24,7 +26,8 @@ import dev.bbkb.ime.keyboard.Keyboard;
 import dev.bbkb.ime.keyboard.ProximityGrid;
 import dev.bbkb.ime.keyboard.KeyboardBuilder;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -32,11 +35,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 
-import android.util.Log;
-
-import dev.bbkb.ime.BuildConfig;
 import dev.bbkb.ime.core.engine.NuanceSDKManager;
 
 
@@ -44,23 +44,30 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
 
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
+    /**
+     * How many languages the spell checker's engine keeps loaded at once. A request in a language
+     * that is not loaded adds it rather than replacing the others, so two fields in different
+     * languages do not reload the engine on every check; past this many, the oldest are dropped.
+     */
+    static final int MAX_LOADED_LANGUAGES = 4;
+
     private boolean mUseContacts;
 
     private ContactsLearningManager mContactsManager;
 
     private volatile boolean mPreferenceChanged;
 
-    // --- SC-AUDIT: Debug counters for runtime validation ---
-    private static final String SC_AUDIT_TAG = "SC-AUDIT";
-    private final AtomicInteger scAuditDictUnavailableCount = new AtomicInteger(0);
-    private final AtomicInteger scAuditWordCheckCount = new AtomicInteger(0);
-    // --- end SC-AUDIT ---
-
     private final Semaphore mDictSemaphore = new Semaphore(2, true);
 
     private final ConcurrentLinkedQueue<Integer> mSessionIdPool = new ConcurrentLinkedQueue<>();
 
     private DictionaryLoader mDictionaryLoader = null;
+
+    /**
+     * The languages the engine holds, the dictionary's own language first; null when nothing is
+     * loaded. Written only with both dictionary permits held.
+     */
+    private volatile List<Locale> mLoadedLocales = null;
 
     private final ConcurrentHashMap<Locale, Keyboard> mKeyboardCache = new ConcurrentHashMap<>();
 
@@ -75,7 +82,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     @Override // android.app.Service
     public void onCreate() {
         super.onCreate();
-            if (BuildConfig.DEBUG) Log.d("PIPELINE", "SC:service:onCreate");
         SubtypeManager.ensureInitialized(getApplicationContext());
         SharedPreferences defaultSharedPreferences = PrefsManager.INSTANCE.getPrefs(this);
         this.mContactsManager = new ContactsLearningManager(this);
@@ -108,14 +114,19 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
             null /* 12 Khmer */, null /* 13 Lao */, "qwerty", "malayalam", null /* 16 Myanmar */,
             null /* 17 Sinhala */, "tamil", "telugu", "thai", "qwerty" /* 21 Vietnamese */};
 
-    private static String getKeyboardLayoutName(Locale locale) {
+    /**
+     * The keyboard layout the spell checker reads key positions from for {@code locale}, or null
+     * when it has none for that script. Null is not an error: the words are still checked, only
+     * without knowing which keys sit next to each other. (This used to throw, and the throw
+     * escaped session creation, so a session in, say, Chinese crashed the service.)
+     */
+    static String getKeyboardLayoutName(Locale locale) {
         final int script = ScriptUtils.getScriptFromLocale(locale);
         if (script == 3) {
             // Cyrillic. This was a jadx-reconstructed String switch left as raw
             // hash comparisons against 3141/3486/3489 with a char sentinel, which
             // would silently mis-key the moment a language tag was added
-            // (audit GD-21). An unhandled script throws below, so a mis-keyed
-            // branch here would crash the spell-checker service.
+            // (audit GD-21).
             switch (locale.getLanguage()) {
                 case "bg":
                     return "bulgarian";
@@ -127,11 +138,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
                     return "east_slavic";
             }
         }
-        final String name = script >= 0 && script < LAYOUT_BY_SCRIPT.length ? LAYOUT_BY_SCRIPT[script] : null;
-        if (name == null) {
-            throw new RuntimeException("Unknown script supplied for [" + locale + "] locale: " + script);
-        }
-        return name;
+        return script >= 0 && script < LAYOUT_BY_SCRIPT.length ? LAYOUT_BY_SCRIPT[script] : null;
     }
 
     @Override // android.content.SharedPreferences.OnSharedPreferenceChangeListener
@@ -141,10 +148,9 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
             this.mDictSemaphore.acquireUninterruptibly(2);
             try {
                 this.mUseContacts = useContacts;
-                if (this.mDictionaryLoader != null) {
-                    Locale currentLocale = this.mDictionaryLoader.getLocale();
-                    this.mDictionaryLoader = null;
-                    initDictionaryInternal(currentLocale);
+                final List<Locale> loaded = this.mLoadedLocales;
+                if (loaded != null) {
+                    loadLanguages(loaded);
                 }
                 this.mContactsManager.setContactsDictEnabled(this.mUseContacts);
                 this.mPreferenceChanged = true;
@@ -156,11 +162,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
 
     @Override // android.service.textservice.SpellCheckerService
     public SpellCheckerService.Session createSession() {
-        if (BuildConfig.DEBUG) {
-            Log.d("PIPELINE", "SC:service:createSession" +
-                " dictAvailable=" + (this.mDictionaryLoader != null && this.mDictionaryLoader.isDictionaryReady()) +
-                " dictLocale=" + (this.mDictionaryLoader != null ? this.mDictionaryLoader.getLocale() : "null"));
-        }
         return new AndroidSpellCheckerSession(this);
     }
 
@@ -172,61 +173,39 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
         return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY, EMPTY_STRING_ARRAY);
     }
 
+    /**
+     * No opinion on the word: neither in the dictionary nor a typo, so nothing is underlined.
+     * The answer while the session's language cannot be loaded (its pack is not installed), in
+     * place of checking the words against whichever language the engine held before.
+     */
+    public static SuggestionsInfo createUnknownResult() {
+        return new SuggestionsInfo(0, EMPTY_STRING_ARRAY);
+    }
+
+    /**
+     * Whether the loaded dictionary knows {@code word}. The session asks only after
+     * {@link #initDictionaryForLocale} has succeeded; with no dictionary the answer is true, so
+     * a stray call never underlines a word.
+     */
     public boolean isValidWord(String word) {
-        boolean valid;
         this.mDictSemaphore.acquireUninterruptibly();
         try {
-            if (this.mDictionaryLoader != null) {
-                valid = this.mDictionaryLoader.isWordValid(word, false);
-                if (BuildConfig.DEBUG) {
-                    Log.d("PIPELINE", "SC:wordCheck" +
-                        " word=\"" + word + "\"" +
-                        " valid=" + valid +
-                        " dictLocale=" + this.mDictionaryLoader.getLocale() +
-                        " dictType=" + (this.mDictionaryLoader.getMainDictionary() != null ? this.mDictionaryLoader.getMainDictionary().getClass().getSimpleName() : "null"));
-                }
-                // SC-AUDIT SC-03: Log word validation results periodically
-                if (BuildConfig.DEBUG) {
-                    int count = scAuditWordCheckCount.incrementAndGet();
-                    if (count <= 5 || count % 50 == 0) {
-                        Logger.info(SC_AUDIT_TAG, "SC-03 wordCheck word=\"" + word + "\" valid=" + valid
-                            + " dictLocale=" + this.mDictionaryLoader.getLocale()
-                            + " totalChecks=" + count);
-                    }
-                }
-            } else {
-                Logger.info("BlackBerrySpellChecker", "Dictionary Facilitator isn't available, can't check if word is valid");
-                // SC-AUDIT SC-03: Log every dict-unavailable event
-                if (BuildConfig.DEBUG) {
-                    int unavailCount = scAuditDictUnavailableCount.incrementAndGet();
-                    Logger.info(SC_AUDIT_TAG, "SC-03 DICT_UNAVAILABLE word=\"" + word
-                        + "\" returningValid=true count=" + unavailCount);
-                }
-                valid = true;
+            if (this.mDictionaryLoader == null) {
+                Logger.info("BlackBerrySpellChecker", "No dictionary loaded, can't check if word is valid");
+                return true;
             }
-            return valid;
+            return this.mDictionaryLoader.isWordValid(word, false);
         } finally {
             this.mDictSemaphore.release();
         }
     }
 
     public SuggestionResult getSuggestions(ComposingTextTracker composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid) throws Throwable {
-        if (BuildConfig.DEBUG) {
-            String composing = composingTracker.isComposing() ? composingTracker.getComposingText() : "(not composing)";
-            if (BuildConfig.DEBUG) {
-            Log.d("PIPELINE", "SC:getSuggestions" +
-                " composing=\"" + composing + "\"" +
-                " dictAvailable=" + (this.mDictionaryLoader != null && this.mDictionaryLoader.isDictionaryReady()) +
-                " dictLocale=" + (this.mDictionaryLoader != null ? this.mDictionaryLoader.getLocale() : "null"));
-            }
-        }
         this.mDictSemaphore.acquireUninterruptibly();
         // Audit GD-12: poll() returns null on an empty queue and sessionId.intValue()
-        // dereferenced it unguarded - the two `if (sessionId != null)` checks below it
-        // were dead, because the NPE had already fired. mDictionaryLoader was likewise
-        // dereferenced with no check although every sibling method checks it. The pool
-        // and the semaphore both hold 2, so this is balanced today, but any permit
-        // change turns it into an NPE inside the spell-checker binder call.
+        // dereferenced it unguarded. The pool and the semaphore both hold 2, so this is
+        // balanced today, but any permit change turns it into an NPE inside the
+        // spell-checker binder call.
         Integer sessionId = this.mSessionIdPool.poll();
         if (sessionId == null || this.mDictionaryLoader == null) {
             this.mDictSemaphore.release();
@@ -241,67 +220,151 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
         }
     }
 
+    /**
+     * Makes sure the engine holds every language a session in {@code locale} checks against (see
+     * {@link #languagesForSession}). False when that cannot be done, chiefly because the session's
+     * own language has no installed pack; the session then has no opinion on its words.
+     *
+     * <p>Nothing is reloaded while those languages are all loaded already. That used to happen on
+     * every request: the check compared the session's language with the dictionary's own language
+     * only, so text in a keyboard's second language reloaded the dictionary each time, and the
+     * other languages were re-sent to the engine on every call. A reload holds the engine lock the
+     * keyboard also types through, so it could stall typing as well as the underlines.
+     */
     public boolean initDictionaryForLocale(Locale locale) {
-        boolean isAutoSubtype = isAutoSubtypeSelected();
-        SubtypeManager subtypes = SubtypeManager.getInstance();
-        Set<Locale> extraLocales = extraLocalesForSession(locale,
-                subtypes.getCurrentSubtypeLocale(), subtypes.getCurrentSubtypeAdditionalLocales());
+        final SubtypeManager subtypes = SubtypeManager.getInstance();
+        final LanguagePackManager packs = LanguagePackManager.getInstance(this);
+        final List<Locale> wanted = languagesForSession(locale, subtypes.getCurrentSubtypeLocale(),
+                subtypes.getCurrentSubtypeAdditionalLocales(), packs::isInstalled);
+        if (wanted.isEmpty()) {
+            return false;
+        }
         this.mDictSemaphore.acquireUninterruptibly();
         try {
-            if (this.mDictionaryLoader == null || !locale.equals(this.mDictionaryLoader.getLocale())) {
-                initDictionaryInternal(locale);
+            if (isLoaded(wanted)) {
+                return true;
             }
-            if (this.mDictionaryLoader.isDictionaryReady()) {
-                return extraLocales == null || this.mDictionaryLoader.updateAdditionalLocales(extraLocales, false, null);
-            }
-            return false;
         } finally {
             this.mDictSemaphore.release();
         }
+        // Loading needs the engine to itself: no other session may be reading the dictionary.
+        this.mDictSemaphore.acquireUninterruptibly(2);
+        try {
+            if (!isLoaded(wanted)) {
+                loadLanguages(mergeLanguages(this.mLoadedLocales, wanted, MAX_LOADED_LANGUAGES));
+            }
+            return isLoaded(wanted);
+        } finally {
+            this.mDictSemaphore.release(2);
+        }
+    }
+
+    private boolean isLoaded(List<Locale> wanted) {
+        final List<Locale> loaded = this.mLoadedLocales;
+        return loaded != null && this.mDictionaryLoader != null
+                && this.mDictionaryLoader.isDictionaryReady() && loaded.containsAll(wanted);
     }
 
     /**
-     * The other languages a spell-check session in {@code sessionLocale} also accepts words from:
-     * when the session's language is one of the current keyboard's ({@code keyboardPrimary} or
-     * one of its {@code keyboardAdditional} extras), the rest of that keyboard's languages, layout
-     * language first, then the extras in their order. The session's own language is left out: it
-     * is the dictionary's own language and stays first. Null when the session's language is not
-     * on the current keyboard, or the keyboard has only the one language.
-     *
-     * <p>This used to apply only when the session's language was the keyboard's layout language,
-     * so text in an extra language was checked against that language alone.
+     * Loads {@code languages} into a fresh dictionary, the first as its own language, and the
+     * keyboard layout of that first language for key positions. Callers hold both permits.
      */
-    static Set<Locale> extraLocalesForSession(Locale sessionLocale, Locale keyboardPrimary, Set<Locale> keyboardAdditional) {
-        if (sessionLocale == null || keyboardAdditional == null) {
-            return null;
+    private void loadLanguages(List<Locale> languages) {
+        this.mLoadedLocales = null;
+        DictionaryLoader oldLoader = this.mDictionaryLoader;
+        if (oldLoader != null) {
+            oldLoader.closeAndReset();
         }
-        List<Locale> keyboardLocales = ResourceLocaleUtils.getKeyboardLocales(keyboardPrimary, keyboardAdditional);
+        final Locale primary = languages.get(0);
+        this.mDictionaryLoader = new DictionaryLoader();
+        this.mDictionaryLoader.initDictionaryWithPrefix(this, primary, this.mUseContacts, false, null, "spellcheck_");
+        if (!this.mDictionaryLoader.isDictionaryReady()) {
+            return;
+        }
+        if (languages.size() > 1) {
+            final Set<Locale> others = new LinkedHashSet<>(languages.subList(1, languages.size()));
+            if (!this.mDictionaryLoader.updateAdditionalLocales(others, false, null)) {
+                // The engine refused the extras: keep the dictionary's own language alone.
+                languages = Collections.singletonList(primary);
+            }
+        }
+        final NuanceSDK engine = NuanceSDKManager.getSecondary();
+        final Keyboard keyboard = getKeyboardForLocale(primary);
+        if (engine != null && keyboard != null) {
+            engine.loadKeyboardLayout(keyboard.isTouchKeyboard());
+        }
+        this.mLoadedLocales = Collections.unmodifiableList(new ArrayList<>(languages));
+    }
+
+    /**
+     * The languages a session in {@code sessionLocale} checks words against, its own first: when
+     * the session's language is one of the current keyboard's ({@code keyboardPrimary} or one of
+     * its {@code keyboardAdditional} extras), the rest of that keyboard's languages too, layout
+     * language first, then the extras in their order. Languages without an installed pack are
+     * left out. Empty when the session's own language is not installed: checking its words
+     * against another language would underline nearly all of them.
+     */
+    static List<Locale> languagesForSession(Locale sessionLocale, Locale keyboardPrimary,
+            Set<Locale> keyboardAdditional, Predicate<Locale> isInstalled) {
+        final List<Locale> result = new ArrayList<>();
+        if (sessionLocale == null || !isInstalled.test(sessionLocale)) {
+            return result;
+        }
+        result.add(sessionLocale);
+        if (keyboardAdditional == null) {
+            return result;
+        }
+        final List<Locale> keyboardLocales = ResourceLocaleUtils.getKeyboardLocales(keyboardPrimary, keyboardAdditional);
         if (!keyboardLocales.contains(sessionLocale)) {
-            return null;
+            return result;
         }
-        Set<Locale> others = new LinkedHashSet<>(keyboardLocales);
-        others.remove(sessionLocale);
-        return others.isEmpty() ? null : others;
+        for (Locale locale : keyboardLocales) {
+            if (!result.contains(locale) && isInstalled.test(locale)) {
+                result.add(locale);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * The languages to load for a request needing {@code wanted}: those first, in their order,
+     * then the languages already {@code loaded} that still fit under {@code max}, most recently
+     * loaded first. Keeping them means a field in another language next to this one does not
+     * reload the engine on each check.
+     */
+    static List<Locale> mergeLanguages(List<Locale> loaded, List<Locale> wanted, int max) {
+        final List<Locale> result = new ArrayList<>(wanted);
+        if (loaded != null) {
+            for (Locale locale : loaded) {
+                if (result.size() >= max) {
+                    break;
+                }
+                if (!result.contains(locale)) {
+                    result.add(locale);
+                }
+            }
+        }
+        return result;
     }
 
     @Override // android.app.Service
     public boolean onUnbind(Intent intent) {
         this.mDictSemaphore.acquireUninterruptibly(2);
         try {
+            this.mLoadedLocales = null;
             if (this.mDictionaryLoader != null) {
                 this.mDictionaryLoader.closeAndReset();
                 this.mDictionaryLoader = null;
             }
             this.mContactsManager.unregister();
-            this.mDictSemaphore.release(2);
             this.mKeyboardCache.clear();
             return false;
-        } catch (Throwable th) {
+        } finally {
             this.mDictSemaphore.release(2);
-            throw th;
         }
     }
 
+    /** The proximity keyboard for {@code locale}, or null when there is no layout for its script. */
     public Keyboard getKeyboardForLocale(Locale locale) {
         Keyboard keyboard = this.mKeyboardCache.get(locale);
         if (keyboard == null && (keyboard = buildKeyboard(locale)) != null) {
@@ -311,7 +374,11 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     }
 
     private Keyboard buildKeyboard(Locale locale) {
-        return createKeyboardBuilder(SubtypeFactory.createSubtype(locale.toString(), getKeyboardLayoutName(locale))).getKeyboard(0);
+        final String layoutName = getKeyboardLayoutName(locale);
+        if (layoutName == null) {
+            return null;
+        }
+        return createKeyboardBuilder(SubtypeFactory.createSubtype(locale.toString(), layoutName)).getKeyboard(0);
     }
 
     private KeyboardBuilder createKeyboardBuilder(InputMethodSubtype inputMethodSubtype) {
@@ -322,38 +389,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
         aVar.setSubtype(inputMethodSubtype);
         aVar.setSplitLayoutEnabled(true);
         return aVar.build();
-    }
-
-    private boolean isAutoSubtypeSelected() {
-        String string = Settings.Secure.getString(getContentResolver(), "selected_spell_checker_subtype");
-        return string != null && string.equals("0");
-    }
-
-    private void initDictionaryInternal(Locale locale) {
-        if (BuildConfig.DEBUG) {
-            Log.d("PIPELINE", "SC:initDictionary" +
-                " locale=" + locale +
-                " useContacts=" + this.mUseContacts +
-                " previousDictLocale=" + (this.mDictionaryLoader != null ? this.mDictionaryLoader.getLocale() : "null"));
-        }
-        DictionaryLoader oldLoader = this.mDictionaryLoader;
-        if (oldLoader != null) {
-            oldLoader.closeAndReset();
-        }
-        this.mDictionaryLoader = new DictionaryLoader();
-        this.mDictionaryLoader.initDictionaryWithPrefix(this, locale, this.mUseContacts, false, null, "spellcheck_");
-        // SC-AUDIT SC-01/SC-04: Log dictionary initialization with locale and NuanceSDK state
-        if (BuildConfig.DEBUG) {
-            Locale[] primaryLangs = NuanceSDKManager.getInstance() != null ? NuanceSDKManager.getInstance().getLanguage() : null;
-            Locale[] secondaryLangs = NuanceSDKManager.getSecondary() != null ? NuanceSDKManager.getSecondary().getLanguage() : null;
-            String imeLocale = SubtypeManager.getInstance() != null ? String.valueOf(SubtypeManager.getInstance().getCurrentSubtypeLocale()) : "null";
-            Logger.info(SC_AUDIT_TAG, "SC-01/SC-04 dictInit"
-                + " spellCheckerLocale=" + locale
-                + " imeActiveLocale=" + imeLocale
-                + " primarySDKLangs=" + (primaryLangs != null ? Arrays.toString(primaryLangs) : "null")
-                + " secondarySDKLangs=" + (secondaryLangs != null ? Arrays.toString(secondaryLangs) : "null")
-                + " dictAvailable=" + (this.mDictionaryLoader != null && this.mDictionaryLoader.isDictionaryReady()));
-        }
     }
 
     boolean hasPreferenceChanged() {

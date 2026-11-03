@@ -11,9 +11,6 @@ import dev.bbkb.ime.core.engine.NuanceSDKManager;
 
 import java.util.Locale;
 
-import dev.bbkb.ime.BuildConfig;
-import dev.bbkb.ime.core.shared.Logger;
-
 /**
  * Splits a sentence into words with the secondary engine's tokenizer, and maps per-word results
  * back onto the sentence.
@@ -22,8 +19,8 @@ public class SentenceTokenizer {
 
     private static final SuggestionsInfo EMPTY_SUGGESTIONS_INFO = new SuggestionsInfo(0, null);
 
-    // SC-AUDIT SC-07: Store the session locale for comparison
-    private final Locale scAuditSessionLocale;
+    /** The session's language: words are split by its rules. */
+    private final Locale mLocale;
 
     private static class EmptyResultHolder {
 
@@ -35,21 +32,16 @@ public class SentenceTokenizer {
     }
 
     public SentenceTokenizer(Locale locale) {
-        this.scAuditSessionLocale = locale;
+        this.mLocale = locale;
     }
 
+    /**
+     * Splits by the session's language. The engine's first language used to decide, and the
+     * engine can hold several sessions' languages, with another session's first.
+     */
     public SentenceTextInfoParams tokenize(TextInfo textInfo) {
-        Locale tokenizerLocale = NuanceSDKManager.getSecondary().getPrimaryLanguage();
-        // SC-AUDIT SC-07: Log tokenizer locale vs session locale
-        if (BuildConfig.DEBUG) {
-            boolean match = scAuditSessionLocale != null && scAuditSessionLocale.equals(tokenizerLocale);
-            Logger.info("SC-AUDIT", "SC-07 tokenize"
-                + " sessionLocale=" + scAuditSessionLocale
-                + " tokenizerLocale=" + tokenizerLocale
-                + " match=" + match
-                + " textLen=" + (textInfo != null ? textInfo.getText().length() : -1));
-        }
-        return new BlackBerryTokenizer(tokenizerLocale).split(textInfo);
+        Locale locale = this.mLocale != null ? this.mLocale : NuanceSDKManager.getSecondary().getPrimaryLanguage();
+        return new BlackBerryTokenizer(locale).split(textInfo);
     }
 
     /**
