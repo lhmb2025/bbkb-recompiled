@@ -14,6 +14,7 @@ import dev.bbkb.ime.keyboard.ProximityGrid;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Set;
 import dev.bbkb.ime.BuildConfig;
 
 /**
@@ -45,6 +46,8 @@ public final class SuggestionEngine {
 
     private volatile boolean mSkipNuanceCheck = false;
 
+    private volatile boolean mSuggestLearnedWords = true;
+
     
     public interface SuggestionCallback {
         void onSuggestionsReady(SuggestedWords suggestedWords);
@@ -72,6 +75,43 @@ public final class SuggestionEngine {
 
     public void setSkipNuanceCheck(boolean skip) {
         this.mSkipNuanceCheck = skip;
+    }
+
+    /** "Suggest learned words": off leaves the words the keyboard learned out of the strip. */
+    public void setSuggestLearnedWords(boolean suggest) {
+        this.mSuggestLearnedWords = suggest;
+    }
+
+    /**
+     * "Suggest learned words" off: drops the candidates the engine knows only because the
+     * keyboard learned them ({@link NuanceSDKDictionaryBridge#learnedOnlyWords}). Before the case
+     * transform, since the model holds exact spellings; a candidate the engine capitalised for the
+     * shift state is tried in lower case too. The typed word itself stays whatever it is, at index
+     * 0 and as the bridge's duplicate of it at index 1: the setting is about what is offered, not
+     * about what the user wrote, and the heuristic needs the duplicate to stand down.
+     */
+    private void dropLearnedOnlyWords(ArrayList<SuggestedWords.SuggestedWordInfo> suggestions, String typedWord, Locale locale) {
+        if (this.mSuggestLearnedWords || suggestions.isEmpty()) {
+            return;
+        }
+        Dictionary mainDict = this.mDictionaryLoader.getMainDictionary();
+        if (!(mainDict instanceof NuanceSDKDictionaryBridge)) {
+            return;
+        }
+        Set<String> learned = ((NuanceSDKDictionaryBridge) mainDict).learnedOnlyWords();
+        if (learned == null || learned.isEmpty()) {
+            return;
+        }
+        Locale lower = locale != null ? locale : Locale.ROOT;
+        for (int i = suggestions.size() - 1; i >= 0; i--) {
+            String word = suggestions.get(i).word;
+            if (word == null || word.equals(typedWord)) {
+                continue;
+            }
+            if (learned.contains(word) || learned.contains(word.toLowerCase(lower))) {
+                suggestions.remove(i);
+            }
+        }
     }
 
     public void getSuggestedWords(Context context, ComposingTextTracker composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, boolean autoCorrectEnabled, int suggestionType, SuggestionCallback callback) {
@@ -109,6 +149,7 @@ public final class SuggestionEngine {
                 && composingText != null && composingText.length() > 1
                 && this.mDictionaryLoader.isWordValid(composingText, true);
         SuggestionResult perfLogger = this.mDictionaryLoader.generateSuggestions(composingTracker, prevWordsInfo, proximityGrid, stripSettings, 0);
+        dropLearnedOnlyWords(perfLogger.getSuggestions(), composingText, perfLogger.locale);
         ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = applyCaseTransform(composingTracker, perfLogger, trailingApostrophes);
         boolean isPrediction = !composingTracker.isComposing();
         boolean hasGoodCorrection = shouldAutoCorrect(composingTracker, suggestions, typedWordIsValid, perfLogger.locale);
@@ -193,6 +234,7 @@ public final class SuggestionEngine {
 
     private void getPredictions(ComposingTextTracker composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, int suggestionType, SuggestionCallback callback) {
         SuggestionResult perfLogger = this.mDictionaryLoader.generateSuggestions(composingTracker, prevWordsInfo, proximityGrid, stripSettings, 1);
+        dropLearnedOnlyWords(perfLogger.getSuggestions(), null, perfLogger.locale);
         ArrayList<SuggestedWords.SuggestedWordInfo> predictions = perfLogger.getSuggestions();
         int size = predictions.size();
         boolean isStartOfSentence = composingTracker.isStartOfSentence();

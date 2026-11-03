@@ -2,7 +2,6 @@ package dev.bbkb.ime.core.spellcheck;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.SystemClock;
 import dev.bbkb.ime.core.settings.PrefsManager;
 import android.service.textservice.SpellCheckerService;
 import android.view.inputmethod.EditorInfo;
@@ -14,7 +13,7 @@ import com.blackberry.nuanceshim.languagepack.LanguagePackManager;
 
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker;
 import dev.bbkb.ime.core.engine.DictionaryLoader;
-import dev.bbkb.ime.core.engine.dlm.LearnedModelStream;
+import dev.bbkb.ime.core.engine.dlm.LearnedOnlyWords;
 import dev.bbkb.ime.core.suggestion.PrevWordsInfo;
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils;
 import dev.bbkb.ime.core.locale.SubtypeManager;
@@ -30,7 +29,6 @@ import dev.bbkb.ime.keyboard.KeyboardBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -57,24 +55,9 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     /** Preference: whether words the keyboard learned from typing count as spelled correctly. */
     static final String PREF_ACCEPT_LEARNED_WORDS = "pref_spellcheck_accept_learned_words";
 
-    /** How long a read of the learned words is trusted before the model is read again. */
-    private static final long LEARNED_WORDS_REFRESH_MS = 30_000L;
-
-    /**
-     * The learned-model qualities of a word that is known only because the keyboard learned it:
-     * 0/1 learned, −11…−1 typed once and not kept yet. Words added on purpose (15, the personal
-     * dictionary) and the usage records of dictionary and contact words (2/3) are not in it.
-     */
-    private static final int LEARNED_QUALITY_MIN = -11;
-    private static final int LEARNED_QUALITY_MAX = 1;
-
     private boolean mUseContacts;
 
     private volatile boolean mAcceptLearnedWords = true;
-
-    /** The learned-only words as last read from the model, and when; null until first read. */
-    private volatile Set<String> mLearnedWords = null;
-    private volatile long mLearnedWordsReadAt = 0L;
 
     private ContactsLearningManager mContactsManager;
 
@@ -185,7 +168,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
             final boolean accept = sharedPreferences.getBoolean(PREF_ACCEPT_LEARNED_WORDS, true);
             if (accept != this.mAcceptLearnedWords) {
                 this.mAcceptLearnedWords = accept;
-                this.mLearnedWords = null;
                 this.mPreferenceChanged = true;
             }
         }
@@ -194,62 +176,18 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     /**
      * Whether {@code word} is known only because the keyboard learned it, and learned words are
      * not to count: the session then judges it misspelled even though the engine knows it.
-     * Always false while learned words are accepted (the default).
+     * Always false while learned words are accepted (the default). Read from this service's own
+     * engine when it can export the model, else from the keyboard's ({@link LearnedOnlyWords}).
      */
     public boolean isRejectedLearnedWord(String word) {
         if (this.mAcceptLearnedWords) {
             return false;
         }
-        final Set<String> learned = learnedWords();
-        return learned != null && learned.contains(word);
-    }
-
-    /**
-     * The learned-only words, read from the engine's export of the learned model at most every
-     * {@link #LEARNED_WORDS_REFRESH_MS}; the keyboard keeps learning while this runs. Exact
-     * spellings: a learned capitalisation of a dictionary word ("BlackBerry") must not reject the
-     * dictionary word itself. Null when the model cannot be read on this phone.
-     */
-    private Set<String> learnedWords() {
-        final long now = SystemClock.elapsedRealtime();
-        final Set<String> cached = this.mLearnedWords;
-        if (cached != null && now - this.mLearnedWordsReadAt < LEARNED_WORDS_REFRESH_MS) {
-            return cached;
-        }
         NuanceSDK engine = NuanceSDKManager.peekSecondary();
         if (engine == null || !engine.isDLMTransferAvailable()) {
             engine = NuanceSDKManager.peekInstance();
         }
-        if (engine == null || !engine.isDLMTransferAvailable()) {
-            return cached;
-        }
-        final byte[] bytes = engine.exportDLM();
-        if (bytes == null) {
-            return cached;
-        }
-        final Set<String> words;
-        try {
-            words = learnedOnlyWords(LearnedModelStream.INSTANCE.parse(bytes).getWords());
-        } catch (Exception e) {
-            // LearnedModelStream.InvalidModelException; Kotlin does not declare it for Java.
-            Logger.warn("BlackBerrySpellChecker", "the learned model does not parse: " + e.getMessage());
-            return cached;
-        }
-        this.mLearnedWords = words;
-        this.mLearnedWordsReadAt = now;
-        return words;
-    }
-
-    /** The words of {@code records} known only because the keyboard learned them. */
-    static Set<String> learnedOnlyWords(List<LearnedModelStream.Word> records) {
-        final Set<String> words = new HashSet<>();
-        for (LearnedModelStream.Word record : records) {
-            final int quality = record.getQuality();
-            if (quality >= LEARNED_QUALITY_MIN && quality <= LEARNED_QUALITY_MAX) {
-                words.add(record.getText());
-            }
-        }
-        return words;
+        return engine != null && LearnedOnlyWords.contains(engine, word);
     }
 
     @Override // android.service.textservice.SpellCheckerService
@@ -381,6 +319,11 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
             }
         }
         final NuanceSDK engine = NuanceSDKManager.getSecondary();
+        if (engine != null) {
+            // This engine's own copy of the model holds the contact names the keyboard learned;
+            // "Use contacts for spellchecking" switches that category off in it.
+            engine.setContactsCategoryState(this.mUseContacts);
+        }
         final Keyboard keyboard = getKeyboardForLocale(primary);
         if (engine != null && keyboard != null) {
             engine.loadKeyboardLayout(keyboard.isTouchKeyboard());

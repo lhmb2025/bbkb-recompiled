@@ -137,6 +137,12 @@ public class NuanceSDK {
     /** Whether {@link #loadDLMFromFile} has attached the learned model to this engine. */
     private boolean mDlmAttached = false;
 
+    /**
+     * The last {@link #setContactsCategoryState} choice, applied again whenever the model is
+     * (re)attached; null until the first call leaves the engine's own default alone.
+     */
+    private Boolean mContactsCategoryEnabled = null;
+
     /** Whether the learned model is attached, i.e. a language has been set up on this engine. */
     public boolean isDLMAttached() {
         synchronized (sMutex) {
@@ -226,6 +232,8 @@ public class NuanceSDK {
     private native boolean scanBuffer(long j, String str);
 
     private native boolean selectionListSelectWord(long j, int i, boolean z, String str);
+
+    private native boolean setCategoryState(long j, char c, boolean z);
 
     private native boolean setContextBuffer(long j, String str);
 
@@ -816,6 +824,36 @@ public class NuanceSDK {
         }
     }
 
+    /**
+     * Whether the engine may offer the words filed under the contacts category, the names
+     * {@link #addContactsWords} adds: the engine half of "Suggest from contacts", which until now
+     * only started or stopped the address-book sync and left the names already learned active.
+     * The choice is kept on this instance and applied again whenever the model is (re)attached,
+     * since the state lives in the engine's copy of the model. Returns false when the model is
+     * not attached yet (the choice is applied on attach) or the engine refused: a model that has
+     * no contacts category yet answers status 93, and then there is nothing to switch off.
+     */
+    public boolean setContactsCategoryState(boolean enabled) {
+        synchronized (sMutex) {
+            this.mContactsCategoryEnabled = enabled;
+            if (this.mNativeHandle == 0 || !this.mDlmAttached) {
+                return false;
+            }
+            return applyContactsCategoryState();
+        }
+    }
+
+    /** Pushes the remembered contacts choice into the attached model; callers hold sMutex. */
+    private boolean applyContactsCategoryState() {
+        if (this.mContactsCategoryEnabled == null || this.mNativeHandle == 0) {
+            return false;
+        }
+        boolean enabled = this.mContactsCategoryEnabled;
+        boolean ok = setCategoryState(this.mNativeHandle, CATEGORY_CONTACTS, enabled);
+        if (BuildConfig.DEBUG) Log.d(TAG, "contacts category " + (enabled ? "on" : "off") + " -> " + ok);
+        return ok;
+    }
+
     public boolean invalidateKeyboard(String str) {
         synchronized (sMutex) {
             if (this.mNativeHandle == 0L) {
@@ -1346,6 +1384,10 @@ public class NuanceSDK {
         boolean z;
         synchronized (sMutex) {
             z = detachDLMFile(this.mNativeHandle) && attachDLMFile(this.mNativeHandle, getDLMFilePath());
+            if (z) {
+                // The category states live in the attached copy of the model.
+                applyContactsCategoryState();
+            }
         }
         return z;
     }

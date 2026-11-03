@@ -18,6 +18,7 @@ import dev.bbkb.ime.core.settings.util.SettingsValues;
 import dev.bbkb.ime.core.settings.util.SuggestionStripSettings;
 import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.core.engine.NuanceSDKManager;
+import dev.bbkb.ime.core.engine.dlm.LearnedOnlyWords;
 import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.core.shared.SystemProps;
 import dev.bbkb.ime.core.suggestion.SuggestionResult;
@@ -675,6 +676,14 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
     @Override // dev.bbkb.ime.core.engine.Dictionary
     public boolean isWordValid(String str) {
         return this.nuanceSdk.isSpellingCorrect(str);
+    }
+
+    /**
+     * The words the engine knows only because the keyboard learned them, exact spellings; null
+     * when the model cannot be read. "Suggest learned words" off leaves them out of the strip.
+     */
+    public Set<String> learnedOnlyWords() {
+        return LearnedOnlyWords.of(this.nuanceSdk);
     }
 
     /**

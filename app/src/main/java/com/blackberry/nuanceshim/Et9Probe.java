@@ -33,7 +33,7 @@ public final class Et9Probe {
 
     private static native String nativeProbe(long handle);
     private static native int nativeSetFences(long handle, int primary, int secondary);
-    private static native int nativeSetQuarantine(long handle, int level);
+    private static native int nativeSetQuarantine(long handle, int level1, int level2, int level3);
 
     /** System property that opts in to {@link #probe}: {@code adb shell setprop debug.et9.probe 1}. */
     static final String PROBE_PROPERTY = "debug.et9.probe";
@@ -130,10 +130,12 @@ public final class Et9Probe {
 
     public static String probe(NuanceSDK sdk) {
         if (!BuildConfig.DEBUG || sdk == null || !isProbeEnabled()) return null;
-        // Experiment hook: `setprop debug.et9.quarantine N` applies N as the DLM quarantine level.
+        // Experiment hook: `setprop debug.et9.quarantine A[,B,C]` sets the engine's three DLM
+        // quarantine levels (each 0-5); a level left out keeps the engine's current value.
         String q = SystemProps.get("debug.et9.quarantine");
         if (q != null && !q.isEmpty()) {
-            Log.i(TAG, "setQuarantine(" + q + ") -> " + setQuarantine(sdk, Integer.parseInt(q.trim())));
+            int[] levels = parseLevels(q);
+            Log.i(TAG, "setQuarantine(" + q + ") -> " + setQuarantine(sdk, levels[0], levels[1], levels[2]));
         }
         dumpDlm(sdk);
         // `setprop debug.et9.probe 2`: the DLM dump only, skipping the native probe (which can
@@ -162,14 +164,33 @@ public final class Et9Probe {
         }
     }
 
-    /** Set the DLM quarantine level. Returns the engine status (0 = success). */
-    public static int setQuarantine(NuanceSDK sdk, int level) {
+    /**
+     * Set the three DLM quarantine levels, each 0-5 (the engine answers status 26 otherwise); a
+     * negative level keeps the engine's current value. Returns the engine status (0 = success).
+     * {@code ET9AWSetDLMQuarantineLevel} takes three bytes, not one; what the second and third
+     * mean is not yet known (the engine's defaults are 1, 1 and 0).
+     */
+    public static int setQuarantine(NuanceSDK sdk, int level1, int level2, int level3) {
         if (!BuildConfig.DEBUG || sdk == null) return -1;
         try {
-            return nativeSetQuarantine(sdk.getNativeHandleForDebug(), level);
+            return nativeSetQuarantine(sdk.getNativeHandleForDebug(), level1, level2, level3);
         } catch (Throwable t) {
             Log.w(TAG, "setQuarantine failed", t);
             return -1;
         }
+    }
+
+    /** "A", "A,B" or "A,B,C" as three levels; -1 (keep) where a level is missing or not a number. */
+    static int[] parseLevels(String spec) {
+        int[] levels = {-1, -1, -1};
+        String[] parts = spec.split(",", -1);
+        for (int i = 0; i < levels.length && i < parts.length; i++) {
+            try {
+                levels[i] = Integer.parseInt(parts[i].trim());
+            } catch (NumberFormatException ignored) {
+                // keep
+            }
+        }
+        return levels;
     }
 }

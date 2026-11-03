@@ -1630,6 +1630,9 @@ class BlackBerryIME : InputMethodService(),
             DictionaryManager.getInstance().ensureEnglishCapitalISubstitution(localeM4259h)
         }
         contactsLearningManager?.setContactsDictEnabled(settingsValues.useContactsDicts)
+        // "Suggest learned words": read by the suggestion engine, which leaves the words the
+        // keyboard learned out of the strip when it is off.
+        inputLogic.mSuggestionEngine.setSuggestLearnedWords(settingsValues.usePersonalizedDicts)
         // Re-apply the KeyInterceptor toggle. Registration used to happen only once, from the
         // deferred-init token in onCreate(), so turning "Enable special key support" on in
         // Settings had no effect until the IME process restarted. The call is idempotent, and
@@ -1647,6 +1650,10 @@ class BlackBerryIME : InputMethodService(),
         StartupTiming.endIfOver("ime.loadSettings.nuanceSdkGet", sdkToken, 5L)
         if (sdkM4875a2 != null) {
             sdkM4875a2.setEmojiPredictionEnabled(settingsValues.isEmojiPredictionsEnabled)
+            // The engine half of "Suggest from contacts": the contacts manager above only starts
+            // or stops the address-book sync, and the names already learned stayed active in the
+            // engine until its contacts category is switched off (as the original app did).
+            sdkM4875a2.setContactsCategoryState(settingsValues.useContactsDicts)
         } else {
             Logger.warn(LOG_TAG, "NuanceSDK unavailable; skipping setEmojiPredictionEnabled")
         }

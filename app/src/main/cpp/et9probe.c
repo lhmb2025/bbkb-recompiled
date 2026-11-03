@@ -182,7 +182,10 @@ static void invalidate_caches(unsigned char *core) {
  * entry validates the 0x1428 magic at pLingInfo+0x38 before doing anything, so a wrong one reports
  * a status code rather than corrupting state.
  *
- * Signature confirmed at 0xd4438: ET9STATUS f(void* pLingInfo, ET9U8 value). */
+ * Signature confirmed at 0xd4438: ET9STATUS f(void* pLingInfo, ET9U8 value). NOT every setter
+ * has that shape (2026-11-03): ET9AWSetDLMQuarantineLevel takes three ET9U8 levels, and the
+ * Set/Clear pairs (FastAdaptation and the like) take the handle alone. Only the fences go through
+ * call_ling_setter. */
 #define BLOB_SET_PRIMARY_FENCE    0xd4438u
 #define BLOB_SET_SECONDARY_FENCE  0xd4548u
 #define BLOB_SET_DLM_QUARANTINE   0xd1e20u
@@ -192,6 +195,7 @@ static void invalidate_caches(unsigned char *core) {
 #define BLOB_SET_WORDCOMP_POINT   0xd1694u
 
 typedef int (*fn_set_ling_u8)(void *ling, unsigned char v);
+typedef int (*fn_set_ling_u8x3)(void *ling, unsigned char a, unsigned char b, unsigned char c);
 
 static int find_blob_cb(struct dl_phdr_info *info, size_t size, void *out) {
     (void)size;
@@ -210,7 +214,8 @@ uintptr_t et9_blob_base(void) {
     return base;
 }
 
-/* Call one (pLingInfo, u8) setter by address. Returns the engine status, or -1 if unresolved. */
+/* Call one (pLingInfo, u8) setter by address. Returns the engine status, or -1 if unresolved.
+ * Not for the multi-byte setters: the extra arguments would be whatever w2/w3 hold. */
 static int call_ling_setter(unsigned vaddr, void *ling, int value, const char *what) {
     uintptr_t b = et9_blob_base();
     if (!b || !ling) { LOGI("%s: unresolved (base=%p ling=%p)", what, (void *)b, ling); return -1; }
@@ -291,7 +296,8 @@ Java_com_blackberry_nuanceshim_Et9Probe_nativeProbe(JNIEnv *env, jclass cls, jlo
         "{\"ok\":true,\"resolved\":\"core=%d info=%d ling=%d\","
         "\"stmModeByte\":%d,\"stmModelAttached\":%d,"
         "\"primaryFence\":%d,\"secondaryFence\":%d,"
-        "\"dlmQuarantine\":%u,\"explicitLearning\":%u,\"fastAdaptation\":%u,"
+        "\"dlmQuarantine\":%u,\"dlmQuarantine2\":%u,\"dlmQuarantine3\":%u,"
+        "\"explicitLearning\":%u,\"fastAdaptation\":%u,"
         "\"newWordCleaning\":%u,\"contextBasedPrediction\":%u,\"nextWordPrediction\":%u,"
         "\"incrementalBuilds\":%u,\"dbStems\":%u,\"dbCompletion\":%u,\"spaceSegmentation\":%u,"
         "\"autoSpace\":%u,\"selectionListMode\":%u,\"spellCorrectionMode\":%u,"
@@ -300,6 +306,8 @@ Java_com_blackberry_nuanceshim_Et9Probe_nativeProbe(JNIEnv *env, jclass cls, jlo
         stm_mode, stm_model ? 1 : 0,
         fenceP, fenceS,
         *(unsigned char *)(k + K_QUARANTINE),
+        *(unsigned char *)(k + K_QUARANTINE + 1),
+        *(unsigned char *)(k + K_QUARANTINE + 2),
         *(unsigned char *)(k + K_EXPLICITLRN),
         *(unsigned char *)(k + K_FASTADAPT),
         *(unsigned char *)(k + K_NEWWORDCLEAN),
@@ -350,11 +358,31 @@ Java_com_blackberry_nuanceshim_Et9Probe_nativeSetFences(JNIEnv *env, jclass cls,
     return st;
 }
 
+/* ET9AWSetDLMQuarantineLevel (0xd1e20) takes THREE levels, stored at info+0x246c1d/1e/1f, each
+ * 0..5 (status 26 otherwise). Until 2026-11-03 this went through call_ling_setter and so passed
+ * whatever w2/w3 happened to hold into the other two fields. A negative level keeps the engine's
+ * current value of that field. */
 JNIEXPORT jint JNICALL
 Java_com_blackberry_nuanceshim_Et9Probe_nativeSetQuarantine(JNIEnv *env, jclass cls,
-                                                           jlong handle, jint level) {
+                                                           jlong handle, jint l1, jint l2, jint l3) {
     (void)env; (void)cls;
     et9_ctx c = et9_resolve(handle);
     if (!c.ling) { LOGI("setQuarantine: ling unavailable"); return -1; }
-    return call_ling_setter(BLOB_SET_DLM_QUARANTINE, c.ling, level, "SetDLMQuarantineLevel");
+    uintptr_t b = et9_blob_base();
+    if (!b) { LOGI("setQuarantine: blob base unresolved"); return -1; }
+    unsigned char *q = c.info ? c.info + K_QUARANTINE : NULL;
+    if (!q && (l1 < 0 || l2 < 0 || l3 < 0)) {
+        LOGI("setQuarantine: info unavailable, cannot keep the current levels");
+        return -1;
+    }
+    unsigned char v1 = l1 < 0 ? q[0] : (unsigned char)l1;
+    unsigned char v2 = l2 < 0 ? q[1] : (unsigned char)l2;
+    unsigned char v3 = l3 < 0 ? q[2] : (unsigned char)l3;
+    fn_set_ling_u8x3 f = (fn_set_ling_u8x3)(b + BLOB_SET_DLM_QUARANTINE);
+    int st = f(c.ling, v1, v2, v3);
+    if (q)
+        LOGI("SetDLMQuarantineLevel(%u,%u,%u) -> status=%d readback=%u/%u/%u", v1, v2, v3, st, q[0], q[1], q[2]);
+    else
+        LOGI("SetDLMQuarantineLevel(%u,%u,%u) -> status=%d", v1, v2, v3, st);
+    return st;
 }
