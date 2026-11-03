@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">动画开始时的垂直缩放比例</string>
     <string name="settings_anim_show_start_y_title">显示开始 Y 缩放</string>
     <string name="settings_animation_params_title">动画参数</string>
-    <string name="settings_spellcheck_sensitivity_balanced">平衡 - 适合大多数用户</string>
-    <string name="settings_spellcheck_sensitivity_lenient">宽松 - 标记为拼写错误的字词较少</string>
-    <string name="settings_spellcheck_sensitivity_strict">严格 - 标记为拼写错误的字词较多</string>
-    <string name="settings_spellcheck_sensitivity_title">拼写检查灵敏度</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">授予联系人权限即可使用此功能</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">联系人姓名将被识别为有效字词</string>
     <string name="settings_spellcheck_use_contacts_title">使用联系人进行拼写检查</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">检查词典</string>
     <string name="language_packs_load_ldb">加载 LDB 文件</string>
     <string name="language_packs_variant_summary">将代替%1$s加载</string>
-    <string name="language_packs_not_on_summary">尚未在键盘中启用。点按以启用。</string>
+    <string name="language_packs_not_on_summary">点按以创建新的%1$s键盘。</string>
     <string name="language_packs_turned_on">已启用%1$s。可从语言切换器切换到它。</string>
     <string name="language_packs_turn_on_in_settings">请在列表中启用%1$s，然后返回。</string>
     <string name="language_packs_installed_and_on">已安装%1$s。已启用：可从语言切换器切换到它。</string>

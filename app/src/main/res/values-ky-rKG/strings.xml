@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Анимациянын башындагы тигинен масштаб</string>
     <string name="settings_anim_show_start_y_title">Пайда болуунун башындагы Y масштабы</string>
     <string name="settings_animation_params_title">Анимация параметрлери</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Тең салмактуу - көпчүлүк колдонуучуларга сунушталат</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Жумшак - азыраак сөз ката деп белгиленет</string>
-    <string name="settings_spellcheck_sensitivity_strict">Катаал - көбүрөөк сөз ката деп белгиленет</string>
-    <string name="settings_spellcheck_sensitivity_title">Орфографияны текшерүүнүн сезгичтиги</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Бул функцияны колдонуу үчүн байланыштарга уруксат бериңиз</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Байланыштардын ысымдары туура сөз катары таанылат</string>
     <string name="settings_spellcheck_use_contacts_title">Орфографияны текшерүүдө байланыштарды колдонуу</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Сөздүктөрдү текшерүү</string>
     <string name="language_packs_load_ldb">LDB файлын жүктөө</string>
     <string name="language_packs_variant_summary">%1$s ордуна жүктөлөт</string>
-    <string name="language_packs_not_on_summary">Азырынча баскычтопто күйгүзүлгөн эмес. Күйгүзүү үчүн таптап коюңуз.</string>
+    <string name="language_packs_not_on_summary">Жаңы %1$s баскычтобун түзүү үчүн таптап коюңуз.</string>
     <string name="language_packs_turned_on">%1$s күйгүзүлдү. Тил алмаштыргычтан ага өтүңүз.</string>
     <string name="language_packs_turn_on_in_settings">Тизмеден %1$s тилин күйгүзүп, кайра келиңиз.</string>
     <string name="language_packs_installed_and_on">%1$s орнотулду. Ал күйүк: тил алмаштыргычтан ага өтүңүз.</string>

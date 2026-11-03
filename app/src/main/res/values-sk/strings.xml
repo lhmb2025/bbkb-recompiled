@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Zvislá mierka na začiatku animácie</string>
     <string name="settings_anim_show_start_y_title">Mierka Y na začiatku zobrazenia</string>
     <string name="settings_animation_params_title">Parametre animácie</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Vyvážená – odporúčané pre väčšinu používateľov</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Zhovievavá – menej slov označených ako chybné</string>
-    <string name="settings_spellcheck_sensitivity_strict">Prísna – viac slov označených ako chybné</string>
-    <string name="settings_spellcheck_sensitivity_title">Citlivosť kontroly pravopisu</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Na používanie tejto funkcie udeľte povolenie pre kontakty</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Mená kontaktov sa budú rozpoznávať ako platné slová</string>
     <string name="settings_spellcheck_use_contacts_title">Používať kontakty pri kontrole pravopisu</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Skontrolovať slovníky</string>
     <string name="language_packs_load_ldb">Načítať súbor LDB</string>
     <string name="language_packs_variant_summary">Načíta sa namiesto %1$s</string>
-    <string name="language_packs_not_on_summary">Zatiaľ nie je zapnutý v klávesnici. Ťuknutím ho zapnete.</string>
+    <string name="language_packs_not_on_summary">Ťuknutím vytvoríte novú klávesnicu: %1$s.</string>
     <string name="language_packs_turned_on">%1$s je zapnutý. Prepnite naň v prepínači jazykov.</string>
     <string name="language_packs_turn_on_in_settings">Zapnite %1$s v zozname a potom sa vráťte.</string>
     <string name="language_packs_installed_and_on">%1$s nainštalovaný. Je zapnutý: prepnite naň v prepínači jazykov.</string>

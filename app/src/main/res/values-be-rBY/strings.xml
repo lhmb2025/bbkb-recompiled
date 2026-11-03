@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Вертыкальны маштаб у пачатку анімацыі</string>
     <string name="settings_anim_show_start_y_title">Пачатковы маштаб Y пры з\'яўленні</string>
     <string name="settings_animation_params_title">Параметры анімацыі</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Збалансавана — рэкамендуецца большасці карыстальнікаў</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Мякка — менш слоў пазначаецца як памылковыя</string>
-    <string name="settings_spellcheck_sensitivity_strict">Строга — больш слоў пазначаецца як памылковыя</string>
-    <string name="settings_spellcheck_sensitivity_title">Адчувальнасць праверкі правапісу</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Дайце дазвол на кантакты, каб карыстацца гэтай функцыяй</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Імёны кантактаў будуць лічыцца правільнымі словамі</string>
     <string name="settings_spellcheck_use_contacts_title">Выкарыстоўваць кантакты пры праверцы правапісу</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Праверыць слоўнікі</string>
     <string name="language_packs_load_ldb">Загрузіць файл LDB</string>
     <string name="language_packs_variant_summary">Загружаецца замест %1$s</string>
-    <string name="language_packs_not_on_summary">Пакуль не ўключана ў клавіятуры. Націсніце, каб уключыць.</string>
+    <string name="language_packs_not_on_summary">Націсніце, каб стварыць новую клавіятуру: %1$s.</string>
     <string name="language_packs_turned_on">%1$s уключана. Пераключыцеся на яе праз пераключальнік моў.</string>
     <string name="language_packs_turn_on_in_settings">Уключыце %1$s у спісе, а потым вярніцеся.</string>
     <string name="language_packs_installed_and_on">%1$s усталявана. Яна ўключана: пераключыцеся на яе праз пераключальнік моў.</string>

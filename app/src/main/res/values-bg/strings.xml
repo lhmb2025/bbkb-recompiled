@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Вертикален мащаб в началото на анимацията</string>
     <string name="settings_anim_show_start_y_title">Вертикален мащаб в началото на показването</string>
     <string name="settings_animation_params_title">Параметри на анимацията</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Балансирана – препоръчва се за повечето потребители</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Снизходителна – по-малко думи се отбелязват като сгрешени</string>
-    <string name="settings_spellcheck_sensitivity_strict">Строга – повече думи се отбелязват като сгрешени</string>
-    <string name="settings_spellcheck_sensitivity_title">Чувствителност на правописната проверка</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Дайте разрешение за контакти, за да използвате тази функция</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Имената на контактите ще се разпознават като валидни думи</string>
     <string name="settings_spellcheck_use_contacts_title">Използване на контактите при правописна проверка</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Проверка за речници</string>
     <string name="language_packs_load_ldb">Зареждане на LDB файл</string>
     <string name="language_packs_variant_summary">Зарежда се вместо %1$s</string>
-    <string name="language_packs_not_on_summary">Все още не е включен в клавиатурата. Докоснете, за да го включите.</string>
+    <string name="language_packs_not_on_summary">Докоснете, за да създадете нова клавиатура за %1$s.</string>
     <string name="language_packs_turned_on">%1$s е включен. Превключете към него от превключвателя на езици.</string>
     <string name="language_packs_turn_on_in_settings">Включете %1$s в списъка, после се върнете.</string>
     <string name="language_packs_installed_and_on">%1$s е инсталиран. Включен е: превключете към него от превключвателя на езици.</string>

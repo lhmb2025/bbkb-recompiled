@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Animasiyanın əvvəlində şaquli miqyas</string>
     <string name="settings_anim_show_start_y_title">Görünmənin başlanğıc Y miqyası</string>
     <string name="settings_animation_params_title">Animasiya parametrləri</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Balanslı — əksər istifadəçilər üçün tövsiyə olunur</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Yumşaq — daha az söz səhv kimi qeyd olunur</string>
-    <string name="settings_spellcheck_sensitivity_strict">Sərt — daha çox söz səhv kimi qeyd olunur</string>
-    <string name="settings_spellcheck_sensitivity_title">Orfoqrafik yoxlanışın həssaslığı</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Bu funksiyadan istifadə etmək üçün kontaktlara icazə verin</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontakt adları düzgün söz kimi tanınacaq</string>
     <string name="settings_spellcheck_use_contacts_title">Orfoqrafik yoxlanış üçün kontaktlardan istifadə edin</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Lüğətləri yoxla</string>
     <string name="language_packs_load_ldb">LDB faylını yüklə</string>
     <string name="language_packs_variant_summary">%1$s yerinə yüklənir</string>
-    <string name="language_packs_not_on_summary">Hələ klaviaturada aktiv deyil. Aktivləşdirmək üçün toxunun.</string>
+    <string name="language_packs_not_on_summary">Yeni %1$s klaviaturası yaratmaq üçün toxunun.</string>
     <string name="language_packs_turned_on">%1$s aktivdir. Dil dəyişdiricidən ona keçin.</string>
     <string name="language_packs_turn_on_in_settings">Siyahıda %1$s dilini aktivləşdirin, sonra geri qayıdın.</string>
     <string name="language_packs_installed_and_on">%1$s quraşdırıldı. O aktivdir: dil dəyişdiricidən ona keçin.</string>

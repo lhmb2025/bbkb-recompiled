@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Vertikale skaal aan die begin van die animasie</string>
     <string name="settings_anim_show_start_y_title">Y-skaal aan die begin van die verskyning</string>
     <string name="settings_animation_params_title">Animasieparameters</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Gebalanseerd – aanbeveel vir die meeste gebruikers</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Toegeeflik – minder woorde word as verkeerd gespel gemerk</string>
-    <string name="settings_spellcheck_sensitivity_strict">Streng – meer woorde word as verkeerd gespel gemerk</string>
-    <string name="settings_spellcheck_sensitivity_title">Sensitiwiteit van die speltoetser</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Verleen kontaktoestemming om hierdie kenmerk te gebruik</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontakname sal as geldige woorde herken word</string>
     <string name="settings_spellcheck_use_contacts_title">Gebruik kontakte vir speltoetsing</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Kyk vir woordeboeke</string>
     <string name="language_packs_load_ldb">Laai LDB-lêer</string>
     <string name="language_packs_variant_summary">Laai in plek van %1$s</string>
-    <string name="language_packs_not_on_summary">Nog nie aan in die toetsbord nie. Tik om dit aan te skakel.</string>
+    <string name="language_packs_not_on_summary">Tik om \'n nuwe sleutelbord vir %1$s te skep.</string>
     <string name="language_packs_turned_on">%1$s is aan. Wissel daarna via die taalwisselaar.</string>
     <string name="language_packs_turn_on_in_settings">Skakel %1$s aan in die lys, en kom dan terug.</string>
     <string name="language_packs_installed_and_on">%1$s is geïnstalleer. Dit is aan: wissel daarna via die taalwisselaar.</string>

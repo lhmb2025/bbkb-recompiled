@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Animatsiya boshidagi vertikal masshtab</string>
     <string name="settings_anim_show_start_y_title">Paydo bo‘lish boshidagi Y masshtabi</string>
     <string name="settings_animation_params_title">Animatsiya parametrlari</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Muvozanatli - aksariyat foydalanuvchilarga tavsiya etiladi</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Yumshoq - kamroq so‘z xato deb belgilanadi</string>
-    <string name="settings_spellcheck_sensitivity_strict">Qattiq - ko‘proq so‘z xato deb belgilanadi</string>
-    <string name="settings_spellcheck_sensitivity_title">Imlo tekshiruvi sezgirligi</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Bu funksiyadan foydalanish uchun kontaktlarga ruxsat bering</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontakt ismlari to‘g‘ri so‘z sifatida qabul qilinadi</string>
     <string name="settings_spellcheck_use_contacts_title">Imlo tekshiruvida kontaktlardan foydalanish</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Lug‘atlarni tekshirish</string>
     <string name="language_packs_load_ldb">LDB faylini yuklash</string>
     <string name="language_packs_variant_summary">%1$s o‘rniga yuklanadi</string>
-    <string name="language_packs_not_on_summary">Klaviaturada hali yoqilmagan. Yoqish uchun bosing.</string>
+    <string name="language_packs_not_on_summary">Yangi %1$s klaviaturasini yaratish uchun bosing.</string>
     <string name="language_packs_turned_on">%1$s yoqildi. Til almashtirgichda unga o‘ting.</string>
     <string name="language_packs_turn_on_in_settings">Ro‘yxatda %1$s ni yoqing, so‘ng qaytib keling.</string>
     <string name="language_packs_installed_and_on">%1$s o‘rnatildi. Yoqilgan: til almashtirgichda unga o‘ting.</string>

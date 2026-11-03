@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">An scála ingearach ag tús na beochana</string>
     <string name="settings_anim_show_start_y_title">Scála Y tosaigh an nochta</string>
     <string name="settings_animation_params_title">Paraiméadair beochana</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Cothrom - molta don chuid is mó d\'úsáideoirí</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Bog - níos lú focal marcáilte mar litriú mícheart</string>
-    <string name="settings_spellcheck_sensitivity_strict">Dian - níos mó focal marcáilte mar litriú mícheart</string>
-    <string name="settings_spellcheck_sensitivity_title">Íogaireacht an litrithe</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Tabhair cead teagmhálacha chun an ghné seo a úsáid</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Aithneofar ainmneacha teagmhálacha mar fhocail bhailí</string>
     <string name="settings_spellcheck_use_contacts_title">Úsáid teagmhálacha don litreoir</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Seiceáil le haghaidh foclóirí</string>
     <string name="language_packs_load_ldb">Luchtaigh comhad LDB</string>
     <string name="language_packs_variant_summary">Lódáiltear in ionad %1$s</string>
-    <string name="language_packs_not_on_summary">Níl sé cumasaithe sa mhéarchlár fós. Tapáil chun é a chumasú.</string>
+    <string name="language_packs_not_on_summary">Tapáil chun méarchlár nua %1$s a chruthú.</string>
     <string name="language_packs_turned_on">Tá %1$s cumasaithe. Athraigh chuige ón malartóir teanga.</string>
     <string name="language_packs_turn_on_in_settings">Cumasaigh %1$s sa liosta, ansin tar ar ais.</string>
     <string name="language_packs_installed_and_on">Suiteáladh %1$s. Tá sé cumasaithe: athraigh chuige ón malartóir teanga.</string>

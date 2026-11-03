@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Хөдөлгөөн эхлэх үеийн босоо масштаб</string>
     <string name="settings_anim_show_start_y_title">Гарч ирэх эхний Y масштаб</string>
     <string name="settings_animation_params_title">Хөдөлгөөний үзүүлэлт</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Тэнцвэртэй — ихэнх хэрэглэгчдэд тохиромжтой</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Зөөлөн — цөөн үгийг алдаатай гэж тэмдэглэнэ</string>
-    <string name="settings_spellcheck_sensitivity_strict">Хатуу — олон үгийг алдаатай гэж тэмдэглэнэ</string>
-    <string name="settings_spellcheck_sensitivity_title">Алдаа шалгах мэдрэг байдал</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Энэ боломжийг ашиглахын тулд харилцагчийн зөвшөөрөл олгоно уу</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Харилцагчийн нэрийг зөв үг гэж тооцно</string>
     <string name="settings_spellcheck_use_contacts_title">Алдаа шалгахад харилцагчдыг ашиглах</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Толь бичиг шалгах</string>
     <string name="language_packs_load_ldb">LDB файл ачаалах</string>
     <string name="language_packs_variant_summary">%1$s-ын оронд ачаалагдана</string>
-    <string name="language_packs_not_on_summary">Гар дээр одоогоор асаагаагүй байна. Асаахын тулд товшино уу.</string>
+    <string name="language_packs_not_on_summary">Шинэ %1$s гар үүсгэхийн тулд товшино уу.</string>
     <string name="language_packs_turned_on">%1$s асаалттай боллоо. Хэл сэлгэгчээс энэ рүү шилжинэ үү.</string>
     <string name="language_packs_turn_on_in_settings">Жагсаалт дахь %1$s-ыг асааж, дараа нь буцаж ирнэ үү.</string>
     <string name="language_packs_installed_and_on">%1$s суулгасан. Асаалттай байна: хэл сэлгэгчээс энэ рүү шилжинэ үү.</string>

@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Vertikaalne mastaap animatsiooni alguses</string>
     <string name="settings_anim_show_start_y_title">Ilmumise alguse Y-mastaap</string>
     <string name="settings_animation_params_title">Animatsiooni parameetrid</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Tasakaalustatud – soovitatav enamikule kasutajatest</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Leebe – vähem sõnu märgitakse veaks</string>
-    <string name="settings_spellcheck_sensitivity_strict">Range – rohkem sõnu märgitakse veaks</string>
-    <string name="settings_spellcheck_sensitivity_title">Õigekirjakontrolli tundlikkus</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Selle funktsiooni kasutamiseks andke kontaktide luba</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktide nimesid tunnustatakse õigete sõnadena</string>
     <string name="settings_spellcheck_use_contacts_title">Kasuta õigekirjakontrollis kontakte</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Otsi sõnastikke</string>
     <string name="language_packs_load_ldb">Laadi LDB-fail</string>
     <string name="language_packs_variant_summary">Laaditakse %1$s asemel</string>
-    <string name="language_packs_not_on_summary">Pole veel klaviatuuris sisse lülitatud. Puudutage, et see sisse lülitada.</string>
+    <string name="language_packs_not_on_summary">Puudutage, et luua uus klaviatuur: %1$s.</string>
     <string name="language_packs_turned_on">%1$s on sisse lülitatud. Vahetage sellele keelevahetajast.</string>
     <string name="language_packs_turn_on_in_settings">Lülitage %1$s loendis sisse ja tulge siis tagasi.</string>
     <string name="language_packs_installed_and_on">%1$s on paigaldatud. See on sisse lülitatud: vahetage sellele keelevahetajast.</string>

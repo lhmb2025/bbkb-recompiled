@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">動畫開始時的垂直比例</string>
     <string name="settings_anim_show_start_y_title">顯示動畫起始 Y 比例</string>
     <string name="settings_animation_params_title">動畫參數</string>
-    <string name="settings_spellcheck_sensitivity_balanced">平衡 - 建議大部分使用者採用</string>
-    <string name="settings_spellcheck_sensitivity_lenient">寬鬆 - 較少字詞會標示為拼錯</string>
-    <string name="settings_spellcheck_sensitivity_strict">嚴格 - 較多字詞會標示為拼錯</string>
-    <string name="settings_spellcheck_sensitivity_title">拼字檢查敏感度</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">授予聯絡人權限即可使用此功能</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">聯絡人名稱會視為有效字詞</string>
     <string name="settings_spellcheck_use_contacts_title">使用聯絡人進行拼字檢查</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">檢查詞典</string>
     <string name="language_packs_load_ldb">載入 LDB 檔案</string>
     <string name="language_packs_variant_summary">將代替%1$s載入</string>
-    <string name="language_packs_not_on_summary">尚未在鍵盤中啟用。輕觸即可啟用。</string>
+    <string name="language_packs_not_on_summary">輕觸即可建立新的%1$s鍵盤。</string>
     <string name="language_packs_turned_on">已啟用%1$s。可在語言切換器中切換至它。</string>
     <string name="language_packs_turn_on_in_settings">請在清單中啟用%1$s，然後返回。</string>
     <string name="language_packs_installed_and_on">已安裝%1$s。已啟用：可在語言切換器中切換至它。</string>

@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Вертикална размера на почетку анимације</string>
     <string name="settings_anim_show_start_y_title">Размера Y на почетку појављивања</string>
     <string name="settings_animation_params_title">Параметри анимације</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Уравнотежено – препоручено за већину корисника</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Благо – мање речи означено као погрешно написано</string>
-    <string name="settings_spellcheck_sensitivity_strict">Строго – више речи означено као погрешно написано</string>
-    <string name="settings_spellcheck_sensitivity_title">Осетљивост провере правописа</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Дозволите приступ контактима да бисте користили ову функцију</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Имена контаката ће се препознавати као исправне речи</string>
     <string name="settings_spellcheck_use_contacts_title">Користи контакте за проверу правописа</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Провери речнике</string>
     <string name="language_packs_load_ldb">Учитај LDB датотеку</string>
     <string name="language_packs_variant_summary">Учитава се уместо %1$s</string>
-    <string name="language_packs_not_on_summary">Још није укључен на тастатури. Додирните да га укључите.</string>
+    <string name="language_packs_not_on_summary">Додирните да направите нову тастатуру за %1$s.</string>
     <string name="language_packs_turned_on">%1$s је укључен. Пребаците се на њега преко бирача језика.</string>
     <string name="language_packs_turn_on_in_settings">Укључите %1$s на листи, па се вратите.</string>
     <string name="language_packs_installed_and_on">Инсталиран је %1$s. Укључен је: пребаците се на њега преко бирача језика.</string>

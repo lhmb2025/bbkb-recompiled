@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Navpično merilo na začetku animacije</string>
     <string name="settings_anim_show_start_y_title">Merilo Y na začetku prikaza</string>
     <string name="settings_animation_params_title">Parametri animacije</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Uravnoteženo – priporočeno za večino uporabnikov</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Prizanesljivo – manj besed, označenih kot napačne</string>
-    <string name="settings_spellcheck_sensitivity_strict">Strogo – več besed, označenih kot napačne</string>
-    <string name="settings_spellcheck_sensitivity_title">Občutljivost preverjanja črkovanja</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Za uporabo te funkcije dodelite dovoljenje za stike</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Imena stikov bodo prepoznana kot veljavne besede</string>
     <string name="settings_spellcheck_use_contacts_title">Uporabi stike pri preverjanju črkovanja</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Preveri slovarje</string>
     <string name="language_packs_load_ldb">Naloži datoteko LDB</string>
     <string name="language_packs_variant_summary">Naloži se namesto %1$s</string>
-    <string name="language_packs_not_on_summary">Še ni vklopljen v tipkovnici. Dotaknite se za vklop.</string>
+    <string name="language_packs_not_on_summary">Dotaknite se, da ustvarite novo tipkovnico: %1$s.</string>
     <string name="language_packs_turned_on">%1$s je vklopljen. Preklopite nanj v preklopniku jezikov.</string>
     <string name="language_packs_turn_on_in_settings">Vklopite %1$s na seznamu in se nato vrnite.</string>
     <string name="language_packs_installed_and_on">%1$s nameščen. Vklopljen je: preklopite nanj v preklopniku jezikov.</string>

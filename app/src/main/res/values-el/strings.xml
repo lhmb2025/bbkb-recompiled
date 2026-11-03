@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Κατακόρυφη κλίμακα στην αρχή της κίνησης</string>
     <string name="settings_anim_show_start_y_title">Κλίμακα Y στην αρχή της εμφάνισης</string>
     <string name="settings_animation_params_title">Παράμετροι κίνησης</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Ισορροπημένη - Συνιστάται για τους περισσότερους χρήστες</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Επιεικής - Λιγότερες λέξεις επισημαίνονται ως ανορθόγραφες</string>
-    <string name="settings_spellcheck_sensitivity_strict">Αυστηρή - Περισσότερες λέξεις επισημαίνονται ως ανορθόγραφες</string>
-    <string name="settings_spellcheck_sensitivity_title">Ευαισθησία ορθογραφικού ελέγχου</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Παραχωρήστε άδεια για τις επαφές, ώστε να χρησιμοποιήσετε αυτήν τη λειτουργία</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Τα ονόματα επαφών θα αναγνωρίζονται ως έγκυρες λέξεις</string>
     <string name="settings_spellcheck_use_contacts_title">Χρήση επαφών στον ορθογραφικό έλεγχο</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Έλεγχος για λεξικά</string>
     <string name="language_packs_load_ldb">Φόρτωση αρχείου LDB</string>
     <string name="language_packs_variant_summary">Φορτώνεται στη θέση του %1$s</string>
-    <string name="language_packs_not_on_summary">Δεν είναι ακόμη ενεργή στο πληκτρολόγιο. Πατήστε για να την ενεργοποιήσετε.</string>
+    <string name="language_packs_not_on_summary">Πατήστε για να δημιουργήσετε νέο πληκτρολόγιο: %1$s.</string>
     <string name="language_packs_turned_on">Η γλώσσα %1$s είναι ενεργή. Αλλάξτε σε αυτήν από τον επιλογέα γλώσσας.</string>
     <string name="language_packs_turn_on_in_settings">Ενεργοποιήστε τη γλώσσα %1$s στη λίστα και μετά επιστρέψτε.</string>
     <string name="language_packs_installed_and_on">Η γλώσσα %1$s εγκαταστάθηκε. Είναι ενεργή: αλλάξτε σε αυτήν από τον επιλογέα γλώσσας.</string>

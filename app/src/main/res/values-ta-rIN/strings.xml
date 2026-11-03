@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">அனிமேஷன் தொடக்கத்தில் செங்குத்து அளவு</string>
     <string name="settings_anim_show_start_y_title">தோற்றத் தொடக்க Y அளவு</string>
     <string name="settings_animation_params_title">அனிமேஷன் அளவுருக்கள்</string>
-    <string name="settings_spellcheck_sensitivity_balanced">சமநிலை - பெரும்பாலான பயனர்களுக்குப் பரிந்துரைக்கப்படுகிறது</string>
-    <string name="settings_spellcheck_sensitivity_lenient">தளர்வானது - குறைவான சொற்கள் எழுத்துப்பிழையாகக் குறிக்கப்படும்</string>
-    <string name="settings_spellcheck_sensitivity_strict">கடுமையானது - அதிக சொற்கள் எழுத்துப்பிழையாகக் குறிக்கப்படும்</string>
-    <string name="settings_spellcheck_sensitivity_title">எழுத்துப்பிழை சரிபார்ப்பு உணர்திறன்</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">இந்த அம்சத்தைப் பயன்படுத்த தொடர்புகள் அனுமதியை வழங்கவும்</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">தொடர்புப் பெயர்கள் செல்லுபடியாகும் சொற்களாக அங்கீகரிக்கப்படும்</string>
     <string name="settings_spellcheck_use_contacts_title">எழுத்துப்பிழை சரிபார்ப்பிற்கு தொடர்புகளைப் பயன்படுத்து</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">அகராதிகளைச் சரிபார்க்கவும்</string>
     <string name="language_packs_load_ldb">LDB கோப்பை ஏற்றவும்</string>
     <string name="language_packs_variant_summary">%1$s க்குப் பதிலாக ஏற்றப்படும்</string>
-    <string name="language_packs_not_on_summary">இன்னும் விசைப்பலகையில் இயக்கப்படவில்லை. இயக்க தட்டவும்.</string>
+    <string name="language_packs_not_on_summary">புதிய %1$s விசைப்பலகையை உருவாக்க தட்டவும்.</string>
     <string name="language_packs_turned_on">%1$s இயக்கப்பட்டது. மொழி மாற்றியில் அதற்கு மாறவும்.</string>
     <string name="language_packs_turn_on_in_settings">பட்டியலில் %1$s ஐ இயக்கி, பிறகு திரும்பி வாருங்கள்.</string>
     <string name="language_packs_installed_and_on">%1$s நிறுவப்பட்டது. இது இயக்கப்பட்டுள்ளது: மொழி மாற்றியில் அதற்கு மாறவும்.</string>

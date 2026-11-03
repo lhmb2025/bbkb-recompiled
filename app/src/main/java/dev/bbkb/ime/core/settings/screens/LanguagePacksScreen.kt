@@ -489,7 +489,9 @@ private fun LanguagePackItem(
             title = pack.displayName,
             // An installed language the user cannot switch to reads as broken ("it says it is
             // available but I can't type in it"), so the row says so and tapping it fixes it.
-            summary = if (pack.needsTurningOn) stringResource(R.string.language_packs_not_on_summary) else null,
+            summary = if (pack.needsTurningOn) {
+                stringResource(R.string.language_packs_not_on_summary, pack.displayName)
+            } else null,
             onClick = if (pack.needsTurningOn) onTurnOn else null,
             groupEdge = edge,
             leading = { LanguageCodeBadge(pack.languageCode) },
@@ -763,8 +765,12 @@ data class InstalledLanguagePack(
     val filePath: String,
     val isPreinstalled: Boolean,
     val isDeletable: Boolean = !isPreinstalled,
-    /** The directory / registry identifier (`ko`, `pt_BR`): what [SubtypeEnabler] matches on. */
-    val localeId: String = "",
+    /**
+     * The directory / registry identifier (`ko`, `pt_BR`, `iw`): what [SubtypeEnabler] matches on
+     * and what a delete removes. Not rebuilt from [languageCode]: from Android 15 [Locale] spells
+     * `iw` and `in` as `he` and `id`, which names a directory that does not exist.
+     */
+    val localeId: String,
     /**
      * Installed, has a keyboard layout, but is not on in the keyboard's language list, so the
      * user cannot switch to it yet. Only ever true for packs the user added: the shipped ones
@@ -991,8 +997,7 @@ private suspend fun deleteLanguagePack(
         onResult(false, "Cannot delete preinstalled language packs")
         return
     }
-    val locale = if (pack.countryCode.isEmpty()) pack.languageCode else "${pack.languageCode}_${pack.countryCode}"
-    val outcome = PackInstallService(context).uninstall(locale)
+    val outcome = PackInstallService(context).uninstall(pack.localeId)
     withContext(Dispatchers.Main) {
         outcome.fold(
             onSuccess = { result ->

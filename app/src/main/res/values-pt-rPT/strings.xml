@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Escala vertical no início da animação</string>
     <string name="settings_anim_show_start_y_title">Escala Y inicial da entrada</string>
     <string name="settings_animation_params_title">Parâmetros de animação</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Equilibrada - recomendada para a maioria dos utilizadores</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Tolerante - menos palavras assinaladas como incorretas</string>
-    <string name="settings_spellcheck_sensitivity_strict">Rigorosa - mais palavras assinaladas como incorretas</string>
-    <string name="settings_spellcheck_sensitivity_title">Sensibilidade da verificação ortográfica</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Conceda a permissão de contactos para usar esta funcionalidade</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Os nomes dos contactos serão reconhecidos como palavras válidas</string>
     <string name="settings_spellcheck_use_contacts_title">Usar contactos na verificação ortográfica</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Procurar dicionários</string>
     <string name="language_packs_load_ldb">Carregar ficheiro LDB</string>
     <string name="language_packs_variant_summary">Carrega em vez de %1$s</string>
-    <string name="language_packs_not_on_summary">Ainda não está ativado no teclado. Toque para ativar.</string>
+    <string name="language_packs_not_on_summary">Toque para criar um novo teclado em %1$s.</string>
     <string name="language_packs_turned_on">%1$s está ativado. Mude para ele no seletor de idiomas.</string>
     <string name="language_packs_turn_on_in_settings">Ative %1$s na lista e depois regresse.</string>
     <string name="language_packs_installed_and_on">%1$s instalado. Está ativado: mude para ele no seletor de idiomas.</string>

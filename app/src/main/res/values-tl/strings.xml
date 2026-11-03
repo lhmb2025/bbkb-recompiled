@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Patayong scale sa simula ng animation</string>
     <string name="settings_anim_show_start_y_title">Y scale sa simula ng paglabas</string>
     <string name="settings_animation_params_title">Mga parameter ng animation</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Balanse - Inirerekomenda para sa karamihan ng user</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Maluwag - Mas kaunting salita ang mamarkahang maling baybay</string>
-    <string name="settings_spellcheck_sensitivity_strict">Mahigpit - Mas maraming salita ang mamarkahang maling baybay</string>
-    <string name="settings_spellcheck_sensitivity_title">Sensitivity ng spell check</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Magbigay ng pahintulot sa mga contact para magamit ang feature na ito</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kikilalanin ang mga pangalan ng contact bilang wastong salita</string>
     <string name="settings_spellcheck_use_contacts_title">Gamitin ang mga contact sa spellchecking</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Maghanap ng diksyunaryo</string>
     <string name="language_packs_load_ldb">I-load ang LDB file</string>
     <string name="language_packs_variant_summary">Nag-lo-load kapalit ng %1$s</string>
-    <string name="language_packs_not_on_summary">Hindi pa naka-on sa keyboard. I-tap para i-on.</string>
+    <string name="language_packs_not_on_summary">I-tap para gumawa ng bagong %1$s keyboard.</string>
     <string name="language_packs_turned_on">Naka-on na ang %1$s. Lumipat dito gamit ang language switcher.</string>
     <string name="language_packs_turn_on_in_settings">I-on ang %1$s sa listahan, pagkatapos ay bumalik dito.</string>
     <string name="language_packs_installed_and_on">Na-install ang %1$s. Naka-on ito: lumipat dito gamit ang language switcher.</string>

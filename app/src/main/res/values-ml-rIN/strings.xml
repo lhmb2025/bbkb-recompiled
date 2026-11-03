@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">ആനിമേഷന്റെ തുടക്കത്തിലെ ലംബ അനുപാതം</string>
     <string name="settings_anim_show_start_y_title">പ്രത്യക്ഷപ്പെടൽ തുടക്കത്തെ Y അനുപാതം</string>
     <string name="settings_animation_params_title">ആനിമേഷൻ പാരാമീറ്ററുകൾ</string>
-    <string name="settings_spellcheck_sensitivity_balanced">സന്തുലിതം - മിക്ക ഉപയോക്താക്കൾക്കും ശുപാർശ ചെയ്യുന്നു</string>
-    <string name="settings_spellcheck_sensitivity_lenient">അയവുള്ളത് - കുറച്ച് വാക്കുകൾ മാത്രം അക്ഷരത്തെറ്റായി അടയാളപ്പെടുത്തും</string>
-    <string name="settings_spellcheck_sensitivity_strict">കർശനം - കൂടുതൽ വാക്കുകൾ അക്ഷരത്തെറ്റായി അടയാളപ്പെടുത്തും</string>
-    <string name="settings_spellcheck_sensitivity_title">അക്ഷരത്തെറ്റ് പരിശോധനയുടെ സംവേദനക്ഷമത</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">ഈ സവിശേഷത ഉപയോഗിക്കാൻ കോൺടാക്റ്റ് അനുമതി നൽകുക</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">കോൺടാക്റ്റ് പേരുകൾ ശരിയായ വാക്കുകളായി കണക്കാക്കും</string>
     <string name="settings_spellcheck_use_contacts_title">അക്ഷരത്തെറ്റ് പരിശോധനയ്ക്ക് കോൺടാക്റ്റുകൾ ഉപയോഗിക്കുക</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">നിഘണ്ടുക്കൾ പരിശോധിക്കുക</string>
     <string name="language_packs_load_ldb">LDB ഫയൽ ലോഡ് ചെയ്യുക</string>
     <string name="language_packs_variant_summary">%1$s-ന് പകരം ലോഡ് ചെയ്യുന്നു</string>
-    <string name="language_packs_not_on_summary">ഇതുവരെ കീബോർഡിൽ ഓണായിട്ടില്ല. ഓണാക്കാൻ ടാപ്പ് ചെയ്യുക.</string>
+    <string name="language_packs_not_on_summary">പുതിയ %1$s കീബോർഡ് സൃഷ്ടിക്കാൻ ടാപ്പ് ചെയ്യുക.</string>
     <string name="language_packs_turned_on">%1$s ഓണാണ്. ഭാഷാ സ്വിച്ചറിൽ നിന്ന് ഇതിലേക്ക് മാറുക.</string>
     <string name="language_packs_turn_on_in_settings">ലിസ്റ്റിൽ %1$s ഓണാക്കി തിരികെ വരിക.</string>
     <string name="language_packs_installed_and_on">%1$s ഇൻസ്റ്റാൾ ചെയ്തു. ഇത് ഓണാണ്: ഭാഷാ സ്വിച്ചറിൽ നിന്ന് ഇതിലേക്ക് മാറുക.</string>

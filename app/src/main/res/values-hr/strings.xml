@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Okomito mjerilo na početku animacije</string>
     <string name="settings_anim_show_start_y_title">Mjerilo Y na početku pojavljivanja</string>
     <string name="settings_animation_params_title">Parametri animacije</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Uravnoteženo – preporučeno za većinu korisnika</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Blago – manje riječi označeno kao pogrešno napisano</string>
-    <string name="settings_spellcheck_sensitivity_strict">Strogo – više riječi označeno kao pogrešno napisano</string>
-    <string name="settings_spellcheck_sensitivity_title">Osjetljivost provjere pravopisa</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Dopustite pristup kontaktima da biste upotrijebili ovu značajku</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Imena kontakata prepoznavat će se kao ispravne riječi</string>
     <string name="settings_spellcheck_use_contacts_title">Upotrijebi kontakte za provjeru pravopisa</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Provjeri rječnike</string>
     <string name="language_packs_load_ldb">Učitaj LDB datoteku</string>
     <string name="language_packs_variant_summary">Učitava se umjesto %1$s</string>
-    <string name="language_packs_not_on_summary">Još nije uključeno u tipkovnici. Dodirni za uključivanje.</string>
+    <string name="language_packs_not_on_summary">Dodirni za izradu nove tipkovnice za %1$s.</string>
     <string name="language_packs_turned_on">%1$s je uključen. Prebaci se na njega u izborniku jezika.</string>
     <string name="language_packs_turn_on_in_settings">Uključi %1$s na popisu, pa se vrati.</string>
     <string name="language_packs_installed_and_on">Instalirano: %1$s. Uključen je: prebaci se na njega u izborniku jezika.</string>

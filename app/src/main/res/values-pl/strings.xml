@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Skala pionowa na początku animacji</string>
     <string name="settings_anim_show_start_y_title">Skala Y na początku pojawiania</string>
     <string name="settings_animation_params_title">Parametry animacji</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Zrównoważona – zalecana dla większości użytkowników</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Łagodna – mniej słów oznaczanych jako błędne</string>
-    <string name="settings_spellcheck_sensitivity_strict">Rygorystyczna – więcej słów oznaczanych jako błędne</string>
-    <string name="settings_spellcheck_sensitivity_title">Czułość sprawdzania pisowni</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Przyznaj uprawnienie do kontaktów, aby korzystać z tej funkcji</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Nazwy kontaktów będą rozpoznawane jako poprawne słowa</string>
     <string name="settings_spellcheck_use_contacts_title">Używaj kontaktów przy sprawdzaniu pisowni</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Sprawdź słowniki</string>
     <string name="language_packs_load_ldb">Wczytaj plik LDB</string>
     <string name="language_packs_variant_summary">Wczytywany zamiast %1$s</string>
-    <string name="language_packs_not_on_summary">Jeszcze nie włączony w klawiaturze. Dotknij, aby włączyć.</string>
+    <string name="language_packs_not_on_summary">Dotknij, aby utworzyć nową klawiaturę: %1$s.</string>
     <string name="language_packs_turned_on">%1$s jest włączony. Przełącz się na niego w przełączniku języków.</string>
     <string name="language_packs_turn_on_in_settings">Włącz %1$s na liście, a potem wróć.</string>
     <string name="language_packs_installed_and_on">Zainstalowano %1$s. Jest włączony: przełącz się na niego w przełączniku języków.</string>

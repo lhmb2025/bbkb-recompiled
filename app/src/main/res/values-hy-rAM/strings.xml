@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Ուղղահայաց մասշտաբը շարժապատկերի սկզբում</string>
     <string name="settings_anim_show_start_y_title">Հայտնվելու սկզբի Y մասշտաբ</string>
     <string name="settings_animation_params_title">Շարժապատկերի պարամետրեր</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Հավասարակշռված — խորհուրդ է տրվում օգտատերերի մեծ մասին</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Մեղմ — ավելի քիչ բառեր կնշվեն որպես սխալ</string>
-    <string name="settings_spellcheck_sensitivity_strict">Խիստ — ավելի շատ բառեր կնշվեն որպես սխալ</string>
-    <string name="settings_spellcheck_sensitivity_title">Տառասխալների ստուգման զգայունություն</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Տվեք կոնտակտների թույլտվությունը՝ այս գործառույթն օգտագործելու համար</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Կոնտակտների անունները կճանաչվեն որպես ճիշտ բառեր</string>
     <string name="settings_spellcheck_use_contacts_title">Օգտագործել կոնտակտները տառասխալների ստուգման համար</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Ստուգել բառարանները</string>
     <string name="language_packs_load_ldb">Բեռնել LDB ֆայլը</string>
     <string name="language_packs_variant_summary">Բեռնվում է %1$s-ի փոխարեն</string>
-    <string name="language_packs_not_on_summary">Դեռ միացված չէ ստեղնաշարում։ Հպեք՝ միացնելու համար։</string>
+    <string name="language_packs_not_on_summary">Հպեք՝ նոր %1$s ստեղնաշար ստեղծելու համար։</string>
     <string name="language_packs_turned_on">%1$s-ը միացված է։ Անցեք դրան լեզվի փոխարկիչից։</string>
     <string name="language_packs_turn_on_in_settings">Միացրեք %1$s-ը ցանկում, ապա վերադարձեք։</string>
     <string name="language_packs_installed_and_on">Տեղադրված է %1$s-ը։ Այն միացված է՝ անցեք դրան լեզվի փոխարկիչից։</string>

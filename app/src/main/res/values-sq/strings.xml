@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Shkalla vertikale në fillim të animimit</string>
     <string name="settings_anim_show_start_y_title">Shkalla Y në fillim të shfaqjes</string>
     <string name="settings_animation_params_title">Parametrat e animimit</string>
-    <string name="settings_spellcheck_sensitivity_balanced">E baraspeshuar - e rekomanduar për shumicën e përdoruesve</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Tolerante - më pak fjalë shënohen si të gabuara</string>
-    <string name="settings_spellcheck_sensitivity_strict">Rigoroze - më shumë fjalë shënohen si të gabuara</string>
-    <string name="settings_spellcheck_sensitivity_title">Ndjeshmëria e kontrollit drejtshkrimor</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Jep lejen e kontakteve për ta përdorur këtë veçori</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Emrat e kontakteve do të njihen si fjalë të sakta</string>
     <string name="settings_spellcheck_use_contacts_title">Përdor kontaktet në kontrollin drejtshkrimor</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Kontrollo fjalorët</string>
     <string name="language_packs_load_ldb">Ngarko skedarin LDB</string>
     <string name="language_packs_variant_summary">Ngarkohet në vend të %1$s</string>
-    <string name="language_packs_not_on_summary">Ende nuk është aktivizuar në tastierë. Prek për ta aktivizuar.</string>
+    <string name="language_packs_not_on_summary">Prek për të krijuar një tastierë të re për %1$s.</string>
     <string name="language_packs_turned_on">%1$s është aktivizuar. Kalo tek ai nga ndërruesi i gjuhëve.</string>
     <string name="language_packs_turn_on_in_settings">Aktivizo %1$s në listë, pastaj kthehu.</string>
     <string name="language_packs_installed_and_on">U instalua %1$s. Është aktivizuar: kalo tek ai nga ndërruesi i gjuhëve.</string>

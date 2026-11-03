@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">एनिमेशन की शुरुआत में लंबवत स्केल</string>
     <string name="settings_anim_show_start_y_title">दिखने की शुरुआत का Y स्केल</string>
     <string name="settings_animation_params_title">एनिमेशन पैरामीटर</string>
-    <string name="settings_spellcheck_sensitivity_balanced">संतुलित - अधिकांश उपयोगकर्ताओं के लिए अनुशंसित</string>
-    <string name="settings_spellcheck_sensitivity_lenient">उदार - कम शब्द गलत वर्तनी के रूप में चिह्नित</string>
-    <string name="settings_spellcheck_sensitivity_strict">सख्त - अधिक शब्द गलत वर्तनी के रूप में चिह्नित</string>
-    <string name="settings_spellcheck_sensitivity_title">वर्तनी जांच संवेदनशीलता</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">इस सुविधा का उपयोग करने के लिए संपर्क अनुमति दें</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">संपर्क नामों को मान्य शब्दों के रूप में पहचाना जाएगा</string>
     <string name="settings_spellcheck_use_contacts_title">वर्तनी जांच के लिए संपर्कों का उपयोग करें</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">शब्दकोश देखें</string>
     <string name="language_packs_load_ldb">LDB फ़ाइल लोड करें</string>
     <string name="language_packs_variant_summary">%1$s की जगह लोड होता है</string>
-    <string name="language_packs_not_on_summary">अभी तक कीबोर्ड में चालू नहीं है. इसे चालू करने के लिए टैप करें.</string>
+    <string name="language_packs_not_on_summary">नया %1$s कीबोर्ड बनाने के लिए टैप करें.</string>
     <string name="language_packs_turned_on">%1$s चालू है. भाषा स्विचर से इस पर स्विच करें.</string>
     <string name="language_packs_turn_on_in_settings">सूची में %1$s को चालू करें, फिर वापस आएं.</string>
     <string name="language_packs_installed_and_on">%1$s इंस्टॉल हो गई है. यह चालू है: भाषा स्विचर से इस पर स्विच करें.</string>

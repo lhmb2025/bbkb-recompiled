@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Scara verticală la începutul animației</string>
     <string name="settings_anim_show_start_y_title">Scară Y inițială la apariție</string>
     <string name="settings_animation_params_title">Parametri de animație</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Echilibrată - Recomandată pentru majoritatea utilizatorilor</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Permisivă - Mai puține cuvinte semnalate ca greșite</string>
-    <string name="settings_spellcheck_sensitivity_strict">Strictă - Mai multe cuvinte semnalate ca greșite</string>
-    <string name="settings_spellcheck_sensitivity_title">Sensibilitatea verificării ortografice</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Acordați permisiunea pentru contacte, pentru a folosi această funcție</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Numele contactelor vor fi recunoscute drept cuvinte valide</string>
     <string name="settings_spellcheck_use_contacts_title">Folosiți contactele la verificarea ortografică</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Caută dicționare</string>
     <string name="language_packs_load_ldb">Încarcă fișier LDB</string>
     <string name="language_packs_variant_summary">Se încarcă în locul %1$s</string>
-    <string name="language_packs_not_on_summary">Încă nu este activată în tastatură. Atingeți pentru a activa.</string>
+    <string name="language_packs_not_on_summary">Atingeți pentru a crea o tastatură nouă pentru %1$s.</string>
     <string name="language_packs_turned_on">%1$s este activată. Comutați la ea din comutatorul de limbi.</string>
     <string name="language_packs_turn_on_in_settings">Activați %1$s din listă, apoi reveniți.</string>
     <string name="language_packs_installed_and_on">%1$s instalată. Este activată: comutați la ea din comutatorul de limbi.</string>

@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Skala vertikal dina awal animasi</string>
     <string name="settings_anim_show_start_y_title">Skala Y awal pamunculan</string>
     <string name="settings_animation_params_title">Paraméter animasi</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Saimbang - disarankeun pikeun lolobana pamaké</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Longgar - leuwih saeutik kecap nu ditandaan salah</string>
-    <string name="settings_spellcheck_sensitivity_strict">Ketat - leuwih loba kecap nu ditandaan salah</string>
-    <string name="settings_spellcheck_sensitivity_title">Sénsitivitas pamariksa éjahan</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Pasihan idin kontak pikeun maké fitur ieu</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Ngaran kontak bakal dianggap kecap nu bener</string>
     <string name="settings_spellcheck_use_contacts_title">Paké kontak pikeun mariksa éjahan</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Pariksa kamus</string>
     <string name="language_packs_load_ldb">Muat berkas LDB</string>
     <string name="language_packs_variant_summary">Dimuat ngaganti %1$s</string>
-    <string name="language_packs_not_on_summary">Acan diaktipkeun dina papan tombol. Toél pikeun ngaktipkeunana.</string>
+    <string name="language_packs_not_on_summary">Toél pikeun nyieun papan tombol %1$s anyar.</string>
     <string name="language_packs_turned_on">%1$s aktip. Ganti ka éta tina pamilih basa.</string>
     <string name="language_packs_turn_on_in_settings">Aktipkeun %1$s dina daptar, tuluy balik deui.</string>
     <string name="language_packs_installed_and_on">%1$s parantos diinstal. Aktip: ganti ka éta tina pamilih basa.</string>

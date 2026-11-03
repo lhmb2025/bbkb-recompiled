@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Vertikale Skalierung am Animationsbeginn</string>
     <string name="settings_anim_show_start_y_title">Y-Skalierung am Beginn des Einblendens</string>
     <string name="settings_animation_params_title">Animationsparameter</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Ausgewogen – für die meisten Nutzer empfohlen</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Nachsichtig – weniger Wörter werden als falsch geschrieben markiert</string>
-    <string name="settings_spellcheck_sensitivity_strict">Streng – mehr Wörter werden als falsch geschrieben markiert</string>
-    <string name="settings_spellcheck_sensitivity_title">Empfindlichkeit der Rechtschreibprüfung</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Erteilen Sie die Berechtigung für Kontakte, um diese Funktion zu nutzen</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktnamen werden als gültige Wörter erkannt</string>
     <string name="settings_spellcheck_use_contacts_title">Kontakte für die Rechtschreibprüfung verwenden</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Nach Wörterbüchern suchen</string>
     <string name="language_packs_load_ldb">LDB-Datei laden</string>
     <string name="language_packs_variant_summary">Wird anstelle von %1$s geladen</string>
-    <string name="language_packs_not_on_summary">Noch nicht in der Tastatur aktiviert. Zum Aktivieren tippen.</string>
+    <string name="language_packs_not_on_summary">Tippen, um eine neue Tastatur für %1$s zu erstellen.</string>
     <string name="language_packs_turned_on">%1$s ist aktiviert. Über den Sprachumschalter dorthin wechseln.</string>
     <string name="language_packs_turn_on_in_settings">Aktivieren Sie %1$s in der Liste und kehren Sie dann zurück.</string>
     <string name="language_packs_installed_and_on">%1$s wurde installiert. Sie ist aktiviert: über den Sprachumschalter dorthin wechseln.</string>

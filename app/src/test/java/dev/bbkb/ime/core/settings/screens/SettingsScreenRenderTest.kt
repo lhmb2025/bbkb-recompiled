@@ -1226,13 +1226,12 @@ class SettingsScreenRenderTest(private val screenName: String) {
         Case(
             name = "SpellCheckerSettingsScreen",
             // Not in the settings NavHost at all: it is hosted by SpellCheckerComposeActivity,
-            // which is why SettingsSearchIndex routes its two entries at the hub row instead.
+            // which is why SettingsSearchIndex routes its entry at the hub row instead.
             route = "(SpellCheckerComposeActivity)",
             title = "Spell checker settings",
             resources = setOf(
                 "settings_pred_contacts_permission_title", "settings_pred_grant_permission",
-                "settings_spell_checker_screen_title", "settings_spellcheck_sensitivity_balanced",
-                "settings_spellcheck_sensitivity_title", "settings_spellcheck_use_contacts_summary_disabled",
+                "settings_spell_checker_screen_title", "settings_spellcheck_use_contacts_summary_disabled",
                 "settings_spellcheck_use_contacts_title"
             ),
             literals = setOf(

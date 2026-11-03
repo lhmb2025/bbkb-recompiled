@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Animasyon başındaki dikey ölçek</string>
     <string name="settings_anim_show_start_y_title">Görünme başlangıç Y ölçeği</string>
     <string name="settings_animation_params_title">Animasyon parametreleri</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Dengeli - Çoğu kullanıcı için önerilir</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Hoşgörülü - Daha az kelime yanlış yazılmış olarak işaretlenir</string>
-    <string name="settings_spellcheck_sensitivity_strict">Katı - Daha çok kelime yanlış yazılmış olarak işaretlenir</string>
-    <string name="settings_spellcheck_sensitivity_title">Yazım denetimi hassasiyeti</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Bu özelliği kullanmak için kişiler iznini verin</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kişi adları geçerli kelime olarak tanınır</string>
     <string name="settings_spellcheck_use_contacts_title">Yazım denetiminde kişileri kullan</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Sözlükleri denetle</string>
     <string name="language_packs_load_ldb">LDB dosyası yükle</string>
     <string name="language_packs_variant_summary">%1$s yerine yüklenir</string>
-    <string name="language_packs_not_on_summary">Klavyede henüz açık değil. Açmak için dokunun.</string>
+    <string name="language_packs_not_on_summary">Yeni bir %1$s klavye oluşturmak için dokunun.</string>
     <string name="language_packs_turned_on">%1$s açık. Dil değiştiriciden ona geçin.</string>
     <string name="language_packs_turn_on_in_settings">Listede %1$s öğesini açın, sonra geri dönün.</string>
     <string name="language_packs_installed_and_on">%1$s yüklendi. Açık: dil değiştiriciden ona geçin.</string>

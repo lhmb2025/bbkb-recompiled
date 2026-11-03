@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Lodrät skala vid animeringens början</string>
     <string name="settings_anim_show_start_y_title">Y-skala vid intoningens början</string>
     <string name="settings_animation_params_title">Animeringsparametrar</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Balanserad – rekommenderas för de flesta</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Tillåtande – färre ord markeras som felstavade</string>
-    <string name="settings_spellcheck_sensitivity_strict">Strikt – fler ord markeras som felstavade</string>
-    <string name="settings_spellcheck_sensitivity_title">Känslighet för stavningskontroll</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Ge behörighet till kontakter för att kunna använda funktionen</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktnamn godkänns som korrekta ord</string>
     <string name="settings_spellcheck_use_contacts_title">Använd kontakter vid stavningskontroll</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Sök efter ordlistor</string>
     <string name="language_packs_load_ldb">Läs in LDB-fil</string>
     <string name="language_packs_variant_summary">Läses in i stället för %1$s</string>
-    <string name="language_packs_not_on_summary">Inte aktiverat i tangentbordet än. Tryck för att aktivera.</string>
+    <string name="language_packs_not_on_summary">Tryck för att skapa ett nytt tangentbord för %1$s.</string>
     <string name="language_packs_turned_on">%1$s är aktiverat. Byt till det via språkväxlaren.</string>
     <string name="language_packs_turn_on_in_settings">Aktivera %1$s i listan och kom sedan tillbaka.</string>
     <string name="language_packs_installed_and_on">%1$s installerat. Det är aktiverat: byt till det via språkväxlaren.</string>

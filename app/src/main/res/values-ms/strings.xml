@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Skala menegak pada permulaan animasi</string>
     <string name="settings_anim_show_start_y_title">Skala Y permulaan kemunculan</string>
     <string name="settings_animation_params_title">Parameter animasi</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Seimbang - Disyorkan untuk kebanyakan pengguna</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Longgar - Kurang perkataan ditanda salah eja</string>
-    <string name="settings_spellcheck_sensitivity_strict">Ketat - Lebih banyak perkataan ditanda salah eja</string>
-    <string name="settings_spellcheck_sensitivity_title">Kepekaan semakan ejaan</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Berikan kebenaran kenalan untuk menggunakan ciri ini</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Nama kenalan akan dikenali sebagai perkataan yang sah</string>
     <string name="settings_spellcheck_use_contacts_title">Gunakan kenalan untuk semakan ejaan</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Periksa kamus</string>
     <string name="language_packs_load_ldb">Muat fail LDB</string>
     <string name="language_packs_variant_summary">Dimuatkan sebagai ganti %1$s</string>
-    <string name="language_packs_not_on_summary">Belum dihidupkan pada papan kekunci. Ketik untuk menghidupkannya.</string>
+    <string name="language_packs_not_on_summary">Ketik untuk mencipta papan kekunci %1$s baharu.</string>
     <string name="language_packs_turned_on">%1$s dihidupkan. Tukar kepadanya melalui penukar bahasa.</string>
     <string name="language_packs_turn_on_in_settings">Hidupkan %1$s dalam senarai, kemudian kembali.</string>
     <string name="language_packs_installed_and_on">%1$s dipasang. Ia dihidupkan: tukar kepadanya melalui penukar bahasa.</string>

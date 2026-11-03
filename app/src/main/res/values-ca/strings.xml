@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Escala vertical a l\'inici de l\'animació</string>
     <string name="settings_anim_show_start_y_title">Escala Y inicial de l\'aparició</string>
     <string name="settings_animation_params_title">Paràmetres d\'animació</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Equilibrada: recomanada per a la majoria d\'usuaris</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Permissiva: menys paraules marcades com a incorrectes</string>
-    <string name="settings_spellcheck_sensitivity_strict">Estricta: més paraules marcades com a incorrectes</string>
-    <string name="settings_spellcheck_sensitivity_title">Sensibilitat de la correcció ortogràfica</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Concediu el permís de contactes per utilitzar aquesta funció</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Els noms dels contactes es reconeixeran com a paraules vàlides</string>
     <string name="settings_spellcheck_use_contacts_title">Usa els contactes en la correcció ortogràfica</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Cerca diccionaris</string>
     <string name="language_packs_load_ldb">Carrega un fitxer LDB</string>
     <string name="language_packs_variant_summary">Es carrega en lloc de %1$s</string>
-    <string name="language_packs_not_on_summary">Encara no està activada al teclat. Toca-la per activar-la.</string>
+    <string name="language_packs_not_on_summary">Toca per crear un teclat nou per a %1$s.</string>
     <string name="language_packs_turned_on">%1$s està activada. Canvia-hi des del selector de llengua.</string>
     <string name="language_packs_turn_on_in_settings">Activa %1$s a la llista i després torna.</string>
     <string name="language_packs_installed_and_on">S\'ha instal·lat %1$s. Està activada: canvia-hi des del selector de llengua.</string>

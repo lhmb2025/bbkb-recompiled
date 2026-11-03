@@ -619,10 +619,6 @@
     <!-- ========================== -->
     <!-- Settings — spell checker -->
     <!-- ========================== -->
-    <string name="settings_spellcheck_sensitivity_balanced">Balanced - Recommended for most users</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Lenient - Fewer words flagged as misspelled</string>
-    <string name="settings_spellcheck_sensitivity_strict">Strict - More words flagged as misspelled</string>
-    <string name="settings_spellcheck_sensitivity_title">Spell check sensitivity</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Grant contacts permission to use this feature</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Contact names will be recognized as valid words</string>
     <string name="settings_spellcheck_use_contacts_title">Use contacts for spellchecking</string>
@@ -952,7 +948,7 @@
     <string name="language_packs_refresh">Check for dictionaries</string>
     <string name="language_packs_load_ldb">Load LDB file</string>
     <string name="language_packs_variant_summary">Loads in place of %1$s</string>
-    <string name="language_packs_not_on_summary">Not on in the keyboard yet. Tap to turn it on.</string>
+    <string name="language_packs_not_on_summary">Tap to create new %1$s keyboard.</string>
     <string name="language_packs_turned_on">%1$s is on. Switch to it from the language switcher.</string>
     <string name="language_packs_turn_on_in_settings">Turn on %1$s in the list, then come back.</string>
     <string name="language_packs_installed_and_on">Installed %1$s. It is on: switch to it from the language switcher.</string>

@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Lóðréttur kvarði við upphaf hreyfimyndar</string>
     <string name="settings_anim_show_start_y_title">Y-kvarði við upphaf birtingar</string>
     <string name="settings_animation_params_title">Breytur hreyfimynda</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Jafnvægi – mælt með fyrir flesta notendur</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Vægt – færri orð merkt sem rangt stafsett</string>
-    <string name="settings_spellcheck_sensitivity_strict">Strangt – fleiri orð merkt sem rangt stafsett</string>
-    <string name="settings_spellcheck_sensitivity_title">Næmni ritvilluleitar</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Veittu heimild fyrir tengiliði til að nota þennan eiginleika</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Nöfn tengiliða verða talin gild orð</string>
     <string name="settings_spellcheck_use_contacts_title">Nota tengiliði við ritvilluleit</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Leita að orðabókum</string>
     <string name="language_packs_load_ldb">Hlaða LDB-skrá</string>
     <string name="language_packs_variant_summary">Hleðst í stað %1$s</string>
-    <string name="language_packs_not_on_summary">Ekki virkt á lyklaborðinu ennþá. Ýttu til að virkja.</string>
+    <string name="language_packs_not_on_summary">Ýttu til að búa til nýtt lyklaborð: %1$s.</string>
     <string name="language_packs_turned_on">%1$s er virkt. Skiptu yfir í það í tungumálaskiptaranum.</string>
     <string name="language_packs_turn_on_in_settings">Virkjaðu %1$s á listanum og komdu svo til baka.</string>
     <string name="language_packs_installed_and_on">%1$s uppsett. Það er virkt: skiptu yfir í það í tungumálaskiptaranum.</string>

@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">مقیاس عمودی در آغاز پویانمایی</string>
     <string name="settings_anim_show_start_y_title">مقیاس Y در آغاز ظاهر شدن</string>
     <string name="settings_animation_params_title">پارامترهای پویانمایی</string>
-    <string name="settings_spellcheck_sensitivity_balanced">متعادل - توصیه‌شده برای بیشتر کاربران</string>
-    <string name="settings_spellcheck_sensitivity_lenient">آسان‌گیر - کلمه‌های کمتری غلط املایی شناخته می‌شوند</string>
-    <string name="settings_spellcheck_sensitivity_strict">سخت‌گیر - کلمه‌های بیشتری غلط املایی شناخته می‌شوند</string>
-    <string name="settings_spellcheck_sensitivity_title">حساسیت غلط‌گیری املایی</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">برای استفاده از این ویژگی، مجوز مخاطبین را بدهید</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">نام مخاطبین به‌عنوان کلمه‌های درست شناخته می‌شوند</string>
     <string name="settings_spellcheck_use_contacts_title">استفاده از مخاطبین برای غلط‌گیری املایی</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">بررسی واژه‌نامه‌ها</string>
     <string name="language_packs_load_ldb">بارگذاری فایل LDB</string>
     <string name="language_packs_variant_summary">به‌جای %1$s بارگذاری می‌شود</string>
-    <string name="language_packs_not_on_summary">هنوز در صفحه‌کلید فعال نشده است. برای فعال‌سازی ضربه بزنید.</string>
+    <string name="language_packs_not_on_summary">برای ایجاد صفحه‌کلید جدید %1$s ضربه بزنید.</string>
     <string name="language_packs_turned_on">%1$s فعال است. از تعویض‌کننده زبان به آن تغییر دهید.</string>
     <string name="language_packs_turn_on_in_settings">%1$s را در فهرست فعال کنید، سپس بازگردید.</string>
     <string name="language_packs_installed_and_on">%1$s نصب شد. فعال است: از تعویض‌کننده زبان به آن تغییر دهید.</string>

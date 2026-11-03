@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Eskala bertikala animazioaren hasieran</string>
     <string name="settings_anim_show_start_y_title">Agertzeko hasierako Y eskala</string>
     <string name="settings_animation_params_title">Animazio-parametroak</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Orekatua - Erabiltzaile gehienentzat gomendatua</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Malgua - Hitz gutxiago markatzen dira gaizki idatzitzat</string>
-    <string name="settings_spellcheck_sensitivity_strict">Zorrotza - Hitz gehiago markatzen dira gaizki idatzitzat</string>
-    <string name="settings_spellcheck_sensitivity_title">Zuzenketa ortografikoaren sentikortasuna</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Eman kontaktuetarako baimena eginbide hau erabiltzeko</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktuen izenak hitz baliodun gisa onartuko dira</string>
     <string name="settings_spellcheck_use_contacts_title">Erabili kontaktuak zuzenketa ortografikorako</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Bilatu hiztegiak</string>
     <string name="language_packs_load_ldb">Kargatu LDB fitxategia</string>
     <string name="language_packs_variant_summary">%1$s-en ordez kargatzen da</string>
-    <string name="language_packs_not_on_summary">Oraindik ez dago gaituta teklatuan. Sakatu gaitzeko.</string>
+    <string name="language_packs_not_on_summary">Sakatu %1$s hizkuntzarako teklatu berri bat sortzeko.</string>
     <string name="language_packs_turned_on">%1$s gaituta dago. Aldatu bertara hizkuntza-aldatzailetik.</string>
     <string name="language_packs_turn_on_in_settings">Gaitu %1$s zerrendan, gero itzuli.</string>
     <string name="language_packs_installed_and_on">%1$s instalatu da. Gaituta dago: aldatu bertara hizkuntza-aldatzailetik.</string>

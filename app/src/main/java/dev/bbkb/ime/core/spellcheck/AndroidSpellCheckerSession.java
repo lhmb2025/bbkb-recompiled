@@ -360,10 +360,10 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
             composingTracker.setComposingFromCodePoints(codePoints, CoordinateUtils.newCoordinateArray(codePoints.length, -1, -1));
             SuggestionResult suggestionResult;
             try {
-                suggestionResult = extractSuggestions(capMode, this.mSessionLocale, sugLimit, this.mService.getSensitivityThreshold(), normalizedWord, isInDict ? null : this.mService.getSuggestions(composingTracker, prevWordsInfo, proximityGrid));
+                suggestionResult = extractSuggestions(capMode, this.mSessionLocale, sugLimit, normalizedWord, isInDict ? null : this.mService.getSuggestions(composingTracker, prevWordsInfo, proximityGrid));
             } catch (Throwable e) {
                 // Fallback to basic spell checking if advanced features fail
-                suggestionResult = extractSuggestions(capMode, this.mSessionLocale, sugLimit, this.mService.getSensitivityThreshold(), normalizedWord, null);
+                suggestionResult = extractSuggestions(capMode, this.mSessionLocale, sugLimit, normalizedWord, null);
             }
             if (Logger.isLoggable("BlackBerrySpellChecker", Log.DEBUG)) {
                 Logger.debug("BlackBerrySpellChecker", "Spell checking results for " + normalizedWord + " with suggestion limit " + sugLimit);
@@ -407,7 +407,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         }
     }
 
-    private static SuggestionResult extractSuggestions(int capMode, Locale locale, int sugLimit, float threshold, String word, dev.bbkb.ime.core.suggestion.SuggestionResult perfLogger) {
+    private static SuggestionResult extractSuggestions(int capMode, Locale locale, int sugLimit, String word, dev.bbkb.ime.core.suggestion.SuggestionResult perfLogger) {
         String transformedWord;
         if (perfLogger == null || perfLogger.isEmpty() || sugLimit <= 0) {
             if (BuildConfig.DEBUG) {

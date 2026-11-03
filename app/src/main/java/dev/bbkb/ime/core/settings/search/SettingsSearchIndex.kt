@@ -233,10 +233,9 @@ object SettingsSearchIndex {
 
         // ── Suggestion & correction: Spell checker ──────────────────────────────
         // ST-16: the spell-checker settings live in their own Activity
-        // (SpellCheckerComposeActivity), not in this NavHost, so these two have no anchor —
+        // (SpellCheckerComposeActivity), not in this NavHost, so this one has no anchor —
         // search lands on the hub row that launches it.
         SearchableSetting(R.string.settings_spellcheck_use_contacts_title, "spell check contacts names", SettingsRoute.SuggestionCorrection.route, SUGGESTION),
-        SearchableSetting(R.string.settings_spellcheck_sensitivity_title, "spell check sensitivity lenient balanced strict", SettingsRoute.SuggestionCorrection.route, SUGGESTION),
 
         // ── Typing & input: CKB gestures (Physical keyboard → Configure) ────────
         SearchableSetting(R.string.ckb_gesture_slot_flick_left, "ckb gesture flick left physical keyboard", SettingsRoute.CkbGestures.route, TYPING, "ckb_gesture_flick_left"),

@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Вертикальний масштаб на початку анімації</string>
     <string name="settings_anim_show_start_y_title">Масштаб Y на початку появи</string>
     <string name="settings_animation_params_title">Параметри анімації</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Збалансована — рекомендовано для більшості користувачів</string>
-    <string name="settings_spellcheck_sensitivity_lenient">М\'яка — менше слів позначається як помилкові</string>
-    <string name="settings_spellcheck_sensitivity_strict">Сувора — більше слів позначається як помилкові</string>
-    <string name="settings_spellcheck_sensitivity_title">Чутливість перевірки орфографії</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Надайте доступ до контактів, щоб використовувати цю функцію</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Імена контактів розпізнаватимуться як правильні слова</string>
     <string name="settings_spellcheck_use_contacts_title">Використовувати контакти для перевірки орфографії</string>
@@ -760,7 +756,7 @@
     <string name="language_packs_refresh">Перевірити словники</string>
     <string name="language_packs_load_ldb">Завантажити файл LDB</string>
     <string name="language_packs_variant_summary">Завантажується замість %1$s</string>
-    <string name="language_packs_not_on_summary">Ще не ввімкнено на клавіатурі. Торкніться, щоб увімкнути.</string>
+    <string name="language_packs_not_on_summary">Торкніться, щоб створити нову клавіатуру: %1$s.</string>
     <string name="language_packs_turned_on">%1$s увімкнено. Перемкніться на нього в перемикачі мов.</string>
     <string name="language_packs_turn_on_in_settings">Увімкніть %1$s у списку, потім поверніться.</string>
     <string name="language_packs_installed_and_on">%1$s установлено. Увімкнено: перемкніться на нього в перемикачі мов.</string>
