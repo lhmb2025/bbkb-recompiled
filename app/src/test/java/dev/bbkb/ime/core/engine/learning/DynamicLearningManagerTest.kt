@@ -73,6 +73,17 @@ class DynamicLearningManagerTest {
     }
 
     @Test
+    fun anEngineThatAnswersTheCallbackAtOnce_activatesTheLearner_insteadOfCrashing() {
+        // The learned model already attached (the Learned words screen opened before the keyboard
+        // bound): setCallbackHandler replays onManagedModeChanged(false) inside the constructor.
+        val replaying = mock(NuanceSDK::class.java)
+        org.mockito.Mockito.doAnswer { (it.getArgument<Any>(0) as NuanceSDK.ManagedModeCallback).onManagedModeChanged(false); null }
+            .`when`(replaying).setCallbackHandler(org.mockito.ArgumentMatchers.any())
+        sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.getInstance() }.thenReturn(replaying)
+        DynamicLearningManager(RuntimeEnvironment.getApplication())
+    }
+
+    @Test
     fun beforeTheDlmReportsUnmanaged_noLearnerIsActive_andCommitsOnlyClear() {
         manager.learn(freshSuggestion())
         verify(engine).clear()

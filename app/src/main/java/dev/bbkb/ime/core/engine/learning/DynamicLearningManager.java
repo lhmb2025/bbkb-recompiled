@@ -52,9 +52,13 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
     public DynamicLearningManager(Context context) {
         // No engine, no managed-mode callback: the learner is then never activated, so every
         // commit takes the clear-only path (itself a no-op without an engine).
+        // The learner first: setCallbackHandler answers at once when the learned model is already
+        // attached (the Learned words screen opened before the keyboard bound in this process),
+        // and onManagedModeChanged activates the learner. Registering first crashed the keyboard
+        // on start with a null learner.
+        this.personalLearner = new PersonalLearner(context);
         NuanceSDK engine = engineOrNull();
         if (engine != null) engine.setCallbackHandler(this);
-        this.personalLearner = new PersonalLearner(context);
     }
 
     public void setDynamicLearningEnabled(boolean z) {
