@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">امنح إذن جهات الاتصال لاستخدام هذه الميزة</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">سيتم التعرف على أسماء جهات الاتصال ككلمات صحيحة</string>
     <string name="settings_spellcheck_use_contacts_title">استخدام جهات الاتصال في التدقيق الإملائي</string>
+    <string name="settings_spellcheck_accept_learned_title">قبول الكلمات المكتسبة</string>
+    <string name="settings_spellcheck_accept_learned_summary">تُعدّ الكلمات المكتسبة من كتابتك مكتوبة بشكل صحيح</string>
     <string name="pref_alt_double_tap_lock">تمكين قفل Alt بالنقر المزدوج</string>
     <string name="pref_alt_double_tap_lock_summary">النقر المزدوج على Alt يقفله قيد التشغيل. النقر على Alt مرة أخرى يوقف تشغيله.</string>
     <string name="pref_ctrl_double_tap_lock">تمكين قفل Ctrl بالنقر المزدوج</string>

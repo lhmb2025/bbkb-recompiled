@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Tabhair cead teagmhálacha chun an ghné seo a úsáid</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Aithneofar ainmneacha teagmhálacha mar fhocail bhailí</string>
     <string name="settings_spellcheck_use_contacts_title">Úsáid teagmhálacha don litreoir</string>
+    <string name="settings_spellcheck_accept_learned_title">Glac le focail foghlamtha</string>
+    <string name="settings_spellcheck_accept_learned_summary">Meastar focail a foghlaimíodh ó do chlóscríobh a bheith litrithe i gceart</string>
     <string name="pref_alt_double_tap_lock">Cumasaigh glasáil Alt le cliceáil dhúbailte</string>
     <string name="pref_alt_double_tap_lock_summary">Glasálann cliceáil dhúbailte ar Alt é. Múchann cliceáil ar Alt arís é.</string>
     <string name="pref_ctrl_double_tap_lock">Cumasaigh glasáil Ctrl le cliceáil dhúbailte</string>

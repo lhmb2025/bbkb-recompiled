@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Selle funktsiooni kasutamiseks andke kontaktide luba</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktide nimesid tunnustatakse õigete sõnadena</string>
     <string name="settings_spellcheck_use_contacts_title">Kasuta õigekirjakontrollis kontakte</string>
+    <string name="settings_spellcheck_accept_learned_title">Aktsepteeri õpitud sõnu</string>
+    <string name="settings_spellcheck_accept_learned_summary">Teie trükkimisest õpitud sõnu loetakse õigesti kirjutatuks</string>
     <string name="pref_alt_double_tap_lock">Luba Alt-klahvi topeltklõpsuga lukustus</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-klahvi topeltklõps lukustab selle sisse. Uus klõps Alt-klahvil lülitab selle välja.</string>
     <string name="pref_ctrl_double_tap_lock">Luba Ctrl-klahvi topeltklõpsuga lukustus</string>

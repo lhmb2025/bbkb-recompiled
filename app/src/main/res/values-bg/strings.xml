@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Дайте разрешение за контакти, за да използвате тази функция</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Имената на контактите ще се разпознават като валидни думи</string>
     <string name="settings_spellcheck_use_contacts_title">Използване на контактите при правописна проверка</string>
+    <string name="settings_spellcheck_accept_learned_title">Приемане на научените думи</string>
+    <string name="settings_spellcheck_accept_learned_summary">Думите, научени от писането ви, се смятат за правилно написани</string>
     <string name="pref_alt_double_tap_lock">Включване на заключване с двойно натискане на Alt</string>
     <string name="pref_alt_double_tap_lock_summary">Двойното натискане на Alt го заключва. Повторното натискане на Alt го изключва.</string>
     <string name="pref_ctrl_double_tap_lock">Включване на заключване с двойно натискане на Ctrl</string>

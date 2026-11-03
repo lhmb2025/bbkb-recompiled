@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Myönnä yhteystietojen käyttöoikeus, jotta voit käyttää tätä ominaisuutta</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Yhteystietojen nimet tunnistetaan kelvollisiksi sanoiksi</string>
     <string name="settings_spellcheck_use_contacts_title">Käytä yhteystietoja oikoluvussa</string>
+    <string name="settings_spellcheck_accept_learned_title">Hyväksy opitut sanat</string>
+    <string name="settings_spellcheck_accept_learned_summary">Kirjoituksestasi opitut sanat katsotaan oikein kirjoitetuiksi</string>
     <string name="pref_alt_double_tap_lock">Ota Alt-lukitus kaksoisnapautuksella käyttöön</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-näppäimen kaksoisnapautus lukitsee sen päälle. Napauta Alt-näppäintä uudelleen, niin lukitus poistuu.</string>
     <string name="pref_ctrl_double_tap_lock">Ota Ctrl-lukitus kaksoisnapautuksella käyttöön</string>

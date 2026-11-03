@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">この機能を使用するには連絡先の権限を許可してください</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">連絡先の名前が正しい単語として認識されます</string>
     <string name="settings_spellcheck_use_contacts_title">スペルチェックに連絡先を使用</string>
+    <string name="settings_spellcheck_accept_learned_title">学習した単語を受け入れる</string>
+    <string name="settings_spellcheck_accept_learned_summary">入力から学習した単語を正しいスペルとして扱います</string>
     <string name="pref_alt_double_tap_lock">Altのダブルクリックロックを有効にする</string>
     <string name="pref_alt_double_tap_lock_summary">Altをダブルクリックするとオンで固定されます。もう一度Altを押すと解除されます。</string>
     <string name="pref_ctrl_double_tap_lock">Ctrlのダブルクリックロックを有効にする</string>

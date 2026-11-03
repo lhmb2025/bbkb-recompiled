@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">הענק הרשאת אנשי קשר כדי להשתמש בתכונה זו</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">שמות אנשי קשר יזוהו כמילים תקינות</string>
     <string name="settings_spellcheck_use_contacts_title">השתמש באנשי קשר לבדיקת איות</string>
+    <string name="settings_spellcheck_accept_learned_title">קבלת מילים שנלמדו</string>
+    <string name="settings_spellcheck_accept_learned_summary">מילים שנלמדו מההקלדה שלך נחשבות לכתובות נכון</string>
     <string name="pref_alt_double_tap_lock">הפעל נעילת Alt בלחיצה כפולה</string>
     <string name="pref_alt_double_tap_lock_summary">לחיצה כפולה על Alt תנעל אותו במצב פעיל. לחיצה נוספת על Alt תכבה אותו.</string>
     <string name="pref_ctrl_double_tap_lock">הפעל נעילת Ctrl בלחיצה כפולה</string>

@@ -85,4 +85,14 @@ class SpellCheckerSessionLanguagesTest {
     fun merging_withNothingLoaded_isTheWantedList() {
         assertEquals(listOf(de, en), AndroidSpellCheckerService.mergeLanguages(null, listOf(de, en), 4))
     }
+
+    @Test
+    fun learnedOnlyWords_areTheLearnedAndTypedOnceQualities() {
+        fun word(text: String, quality: Int) = dev.bbkb.ime.core.engine.dlm.LearnedModelStream.Word(text, 1, 9, 0, quality, 0, 0)
+        val words = AndroidSpellCheckerService.learnedOnlyWords(listOf(
+            word("Beezone", 0), word("Americam", 1), word("brianlandrum", -3), word("gone", -11),
+            word("pinned", 15), word("the", 3), word("Mom", 2), word("deleted", -15),
+        ))
+        assertEquals(setOf("Beezone", "Americam", "brianlandrum", "gone"), words)
+    }
 }

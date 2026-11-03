@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Erteilen Sie die Berechtigung für Kontakte, um diese Funktion zu nutzen</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktnamen werden als gültige Wörter erkannt</string>
     <string name="settings_spellcheck_use_contacts_title">Kontakte für die Rechtschreibprüfung verwenden</string>
+    <string name="settings_spellcheck_accept_learned_title">Gelernte Wörter akzeptieren</string>
+    <string name="settings_spellcheck_accept_learned_summary">Aus Ihrer Eingabe gelernte Wörter gelten als richtig geschrieben</string>
     <string name="pref_alt_double_tap_lock">Alt-Doppelklick-Sperre aktivieren</string>
     <string name="pref_alt_double_tap_lock_summary">Ein Doppelklick auf Alt aktiviert die Sperre. Ein erneuter Klick auf Alt hebt sie auf.</string>
     <string name="pref_ctrl_double_tap_lock">Strg-Doppelklick-Sperre aktivieren</string>

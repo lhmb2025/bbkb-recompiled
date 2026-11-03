@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Ge behörighet till kontakter för att kunna använda funktionen</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktnamn godkänns som korrekta ord</string>
     <string name="settings_spellcheck_use_contacts_title">Använd kontakter vid stavningskontroll</string>
+    <string name="settings_spellcheck_accept_learned_title">Godkänn inlärda ord</string>
+    <string name="settings_spellcheck_accept_learned_summary">Ord som lärts in från det du skriver räknas som rättstavade</string>
     <string name="pref_alt_double_tap_lock">Aktivera Alt-lås vid dubbeltryck</string>
     <string name="pref_alt_double_tap_lock_summary">Om du trycker två gånger på Alt låses den på. Tryck på Alt igen för att stänga av.</string>
     <string name="pref_ctrl_double_tap_lock">Aktivera Ctrl-lås vid dubbeltryck</string>

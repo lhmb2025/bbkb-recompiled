@@ -622,6 +622,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Grant contacts permission to use this feature</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Contact names will be recognized as valid words</string>
     <string name="settings_spellcheck_use_contacts_title">Use contacts for spellchecking</string>
+    <string name="settings_spellcheck_accept_learned_title">Accept learned words</string>
+    <string name="settings_spellcheck_accept_learned_summary">Words learned from your typing count as spelled correctly</string>
 
     <!-- ========================== -->
     <!-- Settings — modifier keys -->

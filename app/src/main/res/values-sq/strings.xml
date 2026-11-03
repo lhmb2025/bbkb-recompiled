@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Jep lejen e kontakteve për ta përdorur këtë veçori</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Emrat e kontakteve do të njihen si fjalë të sakta</string>
     <string name="settings_spellcheck_use_contacts_title">Përdor kontaktet në kontrollin drejtshkrimor</string>
+    <string name="settings_spellcheck_accept_learned_title">Prano fjalët e mësuara</string>
+    <string name="settings_spellcheck_accept_learned_summary">Fjalët e mësuara nga shkrimi juaj konsiderohen të shkruara saktë</string>
     <string name="pref_alt_double_tap_lock">Aktivizo kyçjen e Alt me klikim të dyfishtë</string>
     <string name="pref_alt_double_tap_lock_summary">Klikimi i dyfishtë i Alt e kyç atë. Klikimi i Alt përsëri e çkyç.</string>
     <string name="pref_ctrl_double_tap_lock">Aktivizo kyçjen e Ctrl me klikim të dyfishtë</string>

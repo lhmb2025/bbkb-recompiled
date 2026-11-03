@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Na používanie tejto funkcie udeľte povolenie pre kontakty</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Mená kontaktov sa budú rozpoznávať ako platné slová</string>
     <string name="settings_spellcheck_use_contacts_title">Používať kontakty pri kontrole pravopisu</string>
+    <string name="settings_spellcheck_accept_learned_title">Prijímať naučené slová</string>
+    <string name="settings_spellcheck_accept_learned_summary">Slová naučené z vášho písania sa považujú za správne napísané</string>
     <string name="pref_alt_double_tap_lock">Zapnúť uzamknutie klávesu Alt dvojitým stlačením</string>
     <string name="pref_alt_double_tap_lock_summary">Dvojitým stlačením klávesu Alt ho uzamknete. Ďalším stlačením ho vypnete.</string>
     <string name="pref_ctrl_double_tap_lock">Zapnúť uzamknutie klávesu Ctrl dvojitým stlačením</string>

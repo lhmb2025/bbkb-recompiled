@@ -374,4 +374,36 @@ class SpellCheckerSessionTest {
         assertEquals("a=0 n=0 []", describe(session.onGetSuggestions(ti("hello"), 5)))
         assertEquals(emptyList<String>(), validWordCalls())
     }
+
+    /** The session's own word check (case fallbacks and the learned-word rule), without the engine path. */
+    private fun inDictionary(word: String, capMode: Int): Boolean =
+        session.javaClass.getDeclaredMethod("isWordInDictionary", String::class.java, Int::class.javaPrimitiveType)
+            .apply { isAccessible = true }
+            .invoke(session, word, capMode) as Boolean
+
+    @Test
+    fun aRejectedLearnedWord_isMisspelledInEveryCaseForm() {
+        valid += setOf("Beezone", "beezone")
+        Mockito.doAnswer { it.getArgument<String>(0) == "Beezone" }
+            .`when`(service).isRejectedLearnedWord(ArgumentMatchers.anyString())
+        // Capitalised (mode 1): the lower-case retry must not let it through
+        assertEquals(false, inDictionary("Beezone", 1))
+        // All caps (mode 2): its capitalised form is the learned word
+        assertEquals(false, inDictionary("BEEZONE", 2))
+    }
+
+    @Test
+    fun aLearnedCapitalisation_doesNotRejectTheDictionaryWord() {
+        valid += setOf("blackberry", "BlackBerry")
+        Mockito.doAnswer { it.getArgument<String>(0) == "BlackBerry" }
+            .`when`(service).isRejectedLearnedWord(ArgumentMatchers.anyString())
+        assertEquals(true, inDictionary("blackberry", 0))
+        assertEquals(true, inDictionary("Blackberry", 1))
+    }
+
+    @Test
+    fun withLearnedWordsAccepted_theCheckIsUnchanged() {
+        valid += "Beezone"
+        assertEquals(true, inDictionary("Beezone", 1))
+    }
 }

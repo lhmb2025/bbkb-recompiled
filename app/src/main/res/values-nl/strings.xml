@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Verleen toegang tot contactpersonen om deze functie te gebruiken</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Namen van contactpersonen worden herkend als geldige woorden</string>
     <string name="settings_spellcheck_use_contacts_title">Contactpersonen gebruiken bij spellingcontrole</string>
+    <string name="settings_spellcheck_accept_learned_title">Geleerde woorden accepteren</string>
+    <string name="settings_spellcheck_accept_learned_summary">Woorden die zijn geleerd van wat je typt, gelden als correct gespeld</string>
     <string name="pref_alt_double_tap_lock">Alt-vergrendeling met dubbelklik inschakelen</string>
     <string name="pref_alt_double_tap_lock_summary">Dubbelklikken op Alt vergrendelt de toets. Nogmaals op Alt klikken schakelt deze uit.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl-vergrendeling met dubbelklik inschakelen</string>

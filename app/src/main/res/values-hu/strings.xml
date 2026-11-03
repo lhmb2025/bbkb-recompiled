@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">A funkció használatához adjon partnerengedélyt</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">A partnerneveket a rendszer érvényes szavaknak tekinti</string>
     <string name="settings_spellcheck_use_contacts_title">Partnerek használata a helyesírás-ellenőrzéshez</string>
+    <string name="settings_spellcheck_accept_learned_title">Tanult szavak elfogadása</string>
+    <string name="settings_spellcheck_accept_learned_summary">A gépelésedből tanult szavak helyesen írtnak számítanak</string>
     <string name="pref_alt_double_tap_lock">Alt dupla kattintásos rögzítésének engedélyezése</string>
     <string name="pref_alt_double_tap_lock_summary">Az Alt dupla lenyomása bekapcsolva rögzíti. Az Alt újbóli lenyomása kikapcsolja.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl dupla kattintásos rögzítésének engedélyezése</string>

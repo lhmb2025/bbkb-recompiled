@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Rhowch ganiatâd cysylltiadau i ddefnyddio\'r nodwedd hon</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Bydd enwau cysylltiadau\'n cael eu cydnabod fel geiriau dilys</string>
     <string name="settings_spellcheck_use_contacts_title">Defnyddio cysylltiadau wrth wirio sillafu</string>
+    <string name="settings_spellcheck_accept_learned_title">Derbyn geiriau a ddysgwyd</string>
+    <string name="settings_spellcheck_accept_learned_summary">Mae geiriau a ddysgwyd o\'ch teipio yn cyfrif fel rhai wedi\'u sillafu\'n gywir</string>
     <string name="pref_alt_double_tap_lock">Galluogi clo Alt drwy glicio ddwywaith</string>
     <string name="pref_alt_double_tap_lock_summary">Bydd clicio Alt ddwywaith yn ei gloi. Bydd clicio Alt eto yn ei ddiffodd.</string>
     <string name="pref_ctrl_double_tap_lock">Galluogi clo Ctrl drwy glicio ddwywaith</string>

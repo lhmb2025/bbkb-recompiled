@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">ಈ ವೈಶಿಷ್ಟ್ಯ ಬಳಸಲು ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ನೀಡಿ</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಸರಿಯಾದ ಪದಗಳೆಂದು ಗುರುತಿಸಲಾಗುತ್ತದೆ</string>
     <string name="settings_spellcheck_use_contacts_title">ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಗೆ ಸಂಪರ್ಕಗಳನ್ನು ಬಳಸಿ</string>
+    <string name="settings_spellcheck_accept_learned_title">ಕಲಿತ ಪದಗಳನ್ನು ಸ್ವೀಕರಿಸಿ</string>
+    <string name="settings_spellcheck_accept_learned_summary">ನಿಮ್ಮ ಟೈಪಿಂಗ್‌ನಿಂದ ಕಲಿತ ಪದಗಳನ್ನು ಸರಿಯಾದ ಕಾಗುಣಿತವೆಂದು ಪರಿಗಣಿಸಲಾಗುತ್ತದೆ</string>
     <string name="pref_alt_double_tap_lock">Alt ಡಬಲ್-ಕ್ಲಿಕ್ ಲಾಕ್ ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
     <string name="pref_alt_double_tap_lock_summary">Alt ಅನ್ನು ಡಬಲ್-ಕ್ಲಿಕ್ ಮಾಡಿದರೆ ಅದು ಲಾಕ್ ಆಗುತ್ತದೆ. Alt ಅನ್ನು ಮತ್ತೆ ಕ್ಲಿಕ್ ಮಾಡಿದರೆ ಅದು ಆಫ್ ಆಗುತ್ತದೆ.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl ಡಬಲ್-ಕ್ಲಿಕ್ ಲಾಕ್ ಸಕ್ರಿಯಗೊಳಿಸಿ</string>

@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Magbigay ng pahintulot sa mga contact para magamit ang feature na ito</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kikilalanin ang mga pangalan ng contact bilang wastong salita</string>
     <string name="settings_spellcheck_use_contacts_title">Gamitin ang mga contact sa spellchecking</string>
+    <string name="settings_spellcheck_accept_learned_title">Tanggapin ang mga natutunang salita</string>
+    <string name="settings_spellcheck_accept_learned_summary">Itinuturing na tama ang baybay ng mga salitang natutunan mula sa iyong pagta-type</string>
     <string name="pref_alt_double_tap_lock">I-enable ang Alt double-click lock</string>
     <string name="pref_alt_double_tap_lock_summary">Kapag dalawang beses na-click ang Alt, mala-lock ito. I-click ulit ang Alt para i-off.</string>
     <string name="pref_ctrl_double_tap_lock">I-enable ang Ctrl double-click lock</string>

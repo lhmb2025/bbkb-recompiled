@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">இந்த அம்சத்தைப் பயன்படுத்த தொடர்புகள் அனுமதியை வழங்கவும்</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">தொடர்புப் பெயர்கள் செல்லுபடியாகும் சொற்களாக அங்கீகரிக்கப்படும்</string>
     <string name="settings_spellcheck_use_contacts_title">எழுத்துப்பிழை சரிபார்ப்பிற்கு தொடர்புகளைப் பயன்படுத்து</string>
+    <string name="settings_spellcheck_accept_learned_title">கற்ற சொற்களை ஏற்கவும்</string>
+    <string name="settings_spellcheck_accept_learned_summary">உங்கள் தட்டச்சிலிருந்து கற்ற சொற்கள் சரியான எழுத்துப்பிழையற்றவையாகக் கருதப்படும்</string>
     <string name="pref_alt_double_tap_lock">Alt இரட்டைக் கிளிக் பூட்டை இயக்கு</string>
     <string name="pref_alt_double_tap_lock_summary">Alt ஐ இரட்டைக் கிளிக் செய்தால் அது பூட்டப்படும். மீண்டும் Alt ஐக் கிளிக் செய்தால் அணைக்கப்படும்.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl இரட்டைக் கிளிக் பூட்டை இயக்கு</string>

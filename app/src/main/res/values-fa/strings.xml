@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">برای استفاده از این ویژگی، مجوز مخاطبین را بدهید</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">نام مخاطبین به‌عنوان کلمه‌های درست شناخته می‌شوند</string>
     <string name="settings_spellcheck_use_contacts_title">استفاده از مخاطبین برای غلط‌گیری املایی</string>
+    <string name="settings_spellcheck_accept_learned_title">پذیرش واژه‌های آموخته‌شده</string>
+    <string name="settings_spellcheck_accept_learned_summary">واژه‌هایی که از تایپ شما آموخته شده‌اند درست‌نویسی‌شده به حساب می‌آیند</string>
     <string name="pref_alt_double_tap_lock">فعال کردن قفل Alt با دوبار کلیک</string>
     <string name="pref_alt_double_tap_lock_summary">دوبار کلیک روی Alt آن را قفل می‌کند. کلیک دوباره روی Alt آن را خاموش می‌کند.</string>
     <string name="pref_ctrl_double_tap_lock">فعال کردن قفل Ctrl با دوبار کلیک</string>

@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">ផ្ដល់ការអនុញ្ញាតទំនាក់ទំនងដើម្បីប្រើមុខងារនេះ</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">ឈ្មោះទំនាក់ទំនងនឹងត្រូវបានទទួលស្គាល់ថាជាពាក្យត្រឹមត្រូវ</string>
     <string name="settings_spellcheck_use_contacts_title">ប្រើទំនាក់ទំនងសម្រាប់ការពិនិត្យអក្ខរាវិរុទ្ធ</string>
+    <string name="settings_spellcheck_accept_learned_title">ទទួលយកពាក្យដែលបានរៀន</string>
+    <string name="settings_spellcheck_accept_learned_summary">ពាក្យដែលបានរៀនពីការវាយរបស់អ្នក ត្រូវបានចាត់ទុកថាសរសេរត្រឹមត្រូវ</string>
     <string name="pref_alt_double_tap_lock">បើកការចាក់សោដោយចុច Alt ពីរដង</string>
     <string name="pref_alt_double_tap_lock_summary">ការចុច Alt ពីរដងនឹងចាក់សោវា។ ការចុច Alt ម្ដងទៀតនឹងបិទវា។</string>
     <string name="pref_ctrl_double_tap_lock">បើកការចាក់សោដោយចុច Ctrl ពីរដង</string>

@@ -1232,7 +1232,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             resources = setOf(
                 "settings_pred_contacts_permission_title", "settings_pred_grant_permission",
                 "settings_spell_checker_screen_title", "settings_spellcheck_use_contacts_summary_disabled",
-                "settings_spellcheck_use_contacts_title"
+                "settings_spellcheck_use_contacts_title", "settings_spellcheck_accept_learned_title",
+                "settings_spellcheck_accept_learned_summary"
             ),
             literals = setOf(
                 // "About Spell Checker" is gone: it was the heading of an info card, one line

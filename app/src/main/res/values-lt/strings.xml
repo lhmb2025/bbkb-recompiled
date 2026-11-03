@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Suteikite kontaktų leidimą, kad galėtumėte naudoti šią funkciją</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktų vardai bus atpažįstami kaip taisyklingi žodžiai</string>
     <string name="settings_spellcheck_use_contacts_title">Naudoti kontaktus rašybai tikrinti</string>
+    <string name="settings_spellcheck_accept_learned_title">Priimti išmoktus žodžius</string>
+    <string name="settings_spellcheck_accept_learned_summary">Iš jūsų rašymo išmokti žodžiai laikomi parašytais teisingai</string>
     <string name="pref_alt_double_tap_lock">Įjungti „Alt“ fiksavimą dukart spustelėjus</string>
     <string name="pref_alt_double_tap_lock_summary">Dukart spustelėjus „Alt“ jis bus užfiksuotas. Dar kartą spustelėjus „Alt“ jis bus išjungtas.</string>
     <string name="pref_ctrl_double_tap_lock">Įjungti „Ctrl“ fiksavimą dukart spustelėjus</string>
