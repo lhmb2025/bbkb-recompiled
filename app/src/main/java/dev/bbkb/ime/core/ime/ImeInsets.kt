@@ -67,6 +67,7 @@ class ImeInsets {
         if (isPkbDevice && keyboardView.visibility == View.GONE && !auxBarShown) {
             if (BuildConfig.DEBUG) Log.w("BBKBdiag", "onComputeInsets: EARLY-RETURN pass-through (PKB, mainKb GONE, aux bar not shown)")
             passThrough(insets, height)
+            (root as? InputView)?.setNavBarFillShown(false)
             return null
         }
         beforeRegion()
@@ -80,8 +81,10 @@ class ImeInsets {
         if (!anyVisible) {
             if (BuildConfig.DEBUG) Log.w("BBKBdiag", "onComputeInsets: no visible IME content - pass-through")
             passThrough(insets, height)
+            (root as? InputView)?.setNavBarFillShown(false)
             return null
         }
+        (root as? InputView)?.setNavBarFillShown(true)
         insets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION
         region.getBounds(tmpRegionBounds)
         val contentTop = tmpRegionBounds.top

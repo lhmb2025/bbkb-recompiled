@@ -91,6 +91,7 @@ import dev.bbkb.ime.core.device.ResourceConfigManager
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils
 import dev.bbkb.ime.core.shared.StringHelper.capitalizeFirstCodePoint
 import dev.bbkb.ime.core.ime.CursorMovementListener
+import dev.bbkb.ime.core.ime.InputView
 import dev.bbkb.ime.core.textinput.CursorTracker
 import dev.bbkb.ime.keyboard.auxbar.suggestions.FlickSuggestionView
 import dev.bbkb.ime.keyboard.KeyboardActionListenerInterface
@@ -950,6 +951,7 @@ class BlackBerryIME : InputMethodService(),
         super.setInputView(view)
         uiCoordinator.setupInputView(view)
         ImeInsets.installNavBarInsetListener(view)
+        (view as? InputView)?.setImeWindow(window.window)
     }
 
     override fun setExtractView(view: View?) {
