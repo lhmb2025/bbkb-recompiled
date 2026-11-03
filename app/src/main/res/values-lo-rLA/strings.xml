@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">ໃຫ້ສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່ເພື່ອໃຊ້ຄຸນສົມບັດນີ້</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">ຊື່ຜູ້ຕິດຕໍ່ຈະຖືກຮັບຮູ້ວ່າເປັນຄຳທີ່ຖືກຕ້ອງ</string>
     <string name="settings_spellcheck_use_contacts_title">ໃຊ້ລາຍຊື່ຜູ້ຕິດຕໍ່ໃນການກວດການສະກົດຄຳ</string>
+    <string name="settings_spellcheck_accept_learned_title">ຍອມຮັບຄຳທີ່ຮຽນຮູ້</string>
+    <string name="settings_spellcheck_accept_learned_summary">ຄຳທີ່ຮຽນຮູ້ຈາກການພິມຂອງທ່ານຖືວ່າສະກົດຖືກຕ້ອງ</string>
     <string name="pref_alt_double_tap_lock">ເປີດໃຊ້ການລັອກ Alt ດ້ວຍການກົດສອງເທື່ອ</string>
     <string name="pref_alt_double_tap_lock_summary">ການກົດ Alt ສອງເທື່ອຈະລັອກມັນໄວ້. ກົດ Alt ອີກເທື່ອໜຶ່ງເພື່ອປິດ.</string>
     <string name="pref_ctrl_double_tap_lock">ເປີດໃຊ້ການລັອກ Ctrl ດ້ວຍການກົດສອງເທື່ອ</string>

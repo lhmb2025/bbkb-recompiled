@@ -20,8 +20,11 @@ import android.os.Looper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 
@@ -36,6 +39,15 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
     private boolean contactsDictEnabled = false;
 
     private boolean initialSyncStarted = false;
+
+    /**
+     * The name words of the last full sync, as they went to the engine; empty while contacts are
+     * not used. The spell checker keeps them with learned words left out ({@link #isContactWord}).
+     */
+    private volatile Set<String> contactWords = Collections.emptySet();
+
+    /** The words the sync in progress has collected so far; null between syncs. */
+    private volatile Set<String> collectingWords;
     
     private static final int NUANCE_READY_CHECK_DELAY_MS = 500;
     private static final int NUANCE_READY_MAX_RETRIES = 10;
@@ -85,8 +97,14 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
                 }
                 return;
             }
+            this.contactWords = Collections.emptySet();
             stopLearning();
         }
+    }
+
+    /** Whether {@code word} is a word of a contact's name or an account address, exact spelling. */
+    public boolean isContactWord(String word) {
+        return this.contactWords.contains(word);
     }
 
     @Override
@@ -108,8 +126,10 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
     }
     
     private void m4557aWithRetry(final ContactsDataProvider.ContactsType bVar, final ContactsDataProvider.Listener aVar, final int retryCount) {
-        // Check if NuanceSDK DLM is ready before syncing contacts
-        if (!NuanceSDKManager.isDLMReady()) {
+        // Check if NuanceSDK DLM is ready before syncing contacts. Only the keyboard adds the names
+        // to the engine; the spell checker's sync just collects them (contactWords), so it does not
+        // wait for the keyboard's engine, which is not running while another keyboard is in use.
+        if (this.context instanceof BlackBerryIME && !NuanceSDKManager.isDLMReady()) {
             if (retryCount < NUANCE_READY_MAX_RETRIES) {
                 mainHandler.postDelayed(new Runnable() {
                     @Override
@@ -141,9 +161,18 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
     }
 
         void learnAllContacts(ContactsDataProvider.ContactsType bVar) {
-        learnAccountEmails();
-        learnContactsFromUri(bVar, ContactsContract.Profile.CONTENT_URI);
-        learnContactsFromUri(bVar, ContactsContract.Contacts.CONTENT_URI);
+        final Set<String> words = ConcurrentHashMap.newKeySet();
+        this.collectingWords = words;
+        try {
+            learnAccountEmails();
+            learnContactsFromUri(bVar, ContactsContract.Profile.CONTENT_URI);
+            learnContactsFromUri(bVar, ContactsContract.Contacts.CONTENT_URI);
+        } finally {
+            this.collectingWords = null;
+        }
+        if (this.contactsDictEnabled) {
+            this.contactWords = words;
+        }
     }
 
     private void learnAccountEmails() {
@@ -179,6 +208,10 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         Iterator<String> it = list.iterator();
         while (it.hasNext()) {
             arrayList.addAll(Arrays.asList(it.next().split("\\s*(,|\\s+)\\s*")));
+        }
+        final Set<String> collecting = this.collectingWords;
+        if (collecting != null) {
+            collecting.addAll(arrayList);
         }
         if (arrayList.size() > 0) {
             Context context = this.context;

@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Wenehi idin kontak kanggo nganggo fitur iki</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Jeneng kontak bakal dianggep tembung sing bener</string>
     <string name="settings_spellcheck_use_contacts_title">Nganggo kontak kanggo mriksa ejaan</string>
+    <string name="settings_spellcheck_accept_learned_title">Tampa tembung sing disinaoni</string>
+    <string name="settings_spellcheck_accept_learned_summary">Tembung sing disinaoni saka ketikan sampeyan dianggep ejaané bener</string>
     <string name="pref_alt_double_tap_lock">Aktifake kunci Alt kanthi klik pindho</string>
     <string name="pref_alt_double_tap_lock_summary">Ngeklik Alt kaping pindho bakal ngunci. Ngeklik Alt maneh bakal mbukak kuncine.</string>
     <string name="pref_ctrl_double_tap_lock">Aktifake kunci Ctrl kanthi klik pindho</string>

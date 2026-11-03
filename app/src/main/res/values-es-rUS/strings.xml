@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Otorga el permiso de contactos para usar esta función</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Los nombres de tus contactos se reconocerán como palabras válidas</string>
     <string name="settings_spellcheck_use_contacts_title">Usar los contactos para la corrección ortográfica</string>
+    <string name="settings_spellcheck_accept_learned_title">Aceptar palabras aprendidas</string>
+    <string name="settings_spellcheck_accept_learned_summary">Las palabras aprendidas de lo que escribes se consideran bien escritas</string>
     <string name="pref_alt_double_tap_lock">Habilitar el bloqueo de Alt con doble pulsación</string>
     <string name="pref_alt_double_tap_lock_summary">Si presionas Alt dos veces, quedará bloqueada. Vuelve a presionar Alt para desactivarla.</string>
     <string name="pref_ctrl_double_tap_lock">Habilitar el bloqueo de Ctrl con doble pulsación</string>

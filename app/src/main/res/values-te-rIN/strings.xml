@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">ఈ ఫీచర్‌ను ఉపయోగించడానికి కాంటాక్ట్‌ల అనుమతిని ఇవ్వండి</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">కాంటాక్ట్ పేర్లు సరైన పదాలుగా గుర్తించబడతాయి</string>
     <string name="settings_spellcheck_use_contacts_title">అక్షరక్రమ తనిఖీ కోసం కాంటాక్ట్‌లను ఉపయోగించు</string>
+    <string name="settings_spellcheck_accept_learned_title">నేర్చుకున్న పదాలను అంగీకరించు</string>
+    <string name="settings_spellcheck_accept_learned_summary">మీ టైపింగ్ నుండి నేర్చుకున్న పదాలు సరైన అక్షరక్రమంగా పరిగణించబడతాయి</string>
     <string name="pref_alt_double_tap_lock">Alt డబుల్-క్లిక్ లాక్‌ను ప్రారంభించు</string>
     <string name="pref_alt_double_tap_lock_summary">Alt ను డబుల్-క్లిక్ చేస్తే అది లాక్ అవుతుంది. మళ్లీ Alt ను క్లిక్ చేస్తే ఆఫ్ అవుతుంది.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl డబుల్-క్లిక్ లాక్‌ను ప్రారంభించు</string>

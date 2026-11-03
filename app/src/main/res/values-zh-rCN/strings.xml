@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">授予联系人权限即可使用此功能</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">联系人姓名将被识别为有效字词</string>
     <string name="settings_spellcheck_use_contacts_title">使用联系人进行拼写检查</string>
+    <string name="settings_spellcheck_accept_learned_title">接受已学习的字词</string>
+    <string name="settings_spellcheck_accept_learned_summary">从您的输入中学习的字词将视为拼写正确</string>
     <string name="pref_alt_double_tap_lock">启用 Alt 双击锁定</string>
     <string name="pref_alt_double_tap_lock_summary">双击 Alt 键可将其锁定。再次按 Alt 键即可关闭。</string>
     <string name="pref_ctrl_double_tap_lock">启用 Ctrl 双击锁定</string>

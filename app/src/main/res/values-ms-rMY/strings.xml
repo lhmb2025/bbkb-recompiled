@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Berikan kebenaran kenalan untuk menggunakan ciri ini</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Nama kenalan akan dikenali sebagai perkataan yang sah</string>
     <string name="settings_spellcheck_use_contacts_title">Gunakan kenalan untuk semakan ejaan</string>
+    <string name="settings_spellcheck_accept_learned_title">Terima perkataan yang dipelajari</string>
+    <string name="settings_spellcheck_accept_learned_summary">Perkataan yang dipelajari daripada taipan anda dikira sebagai ejaan yang betul</string>
     <string name="pref_alt_double_tap_lock">Dayakan kunci klik dua kali Alt</string>
     <string name="pref_alt_double_tap_lock_summary">Mengklik Alt dua kali akan menguncinya. Mengklik Alt sekali lagi akan mematikannya.</string>
     <string name="pref_ctrl_double_tap_lock">Dayakan kunci klik dua kali Ctrl</string>

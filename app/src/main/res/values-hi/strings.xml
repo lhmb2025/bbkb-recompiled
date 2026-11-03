@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">इस सुविधा का उपयोग करने के लिए संपर्क अनुमति दें</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">संपर्क नामों को मान्य शब्दों के रूप में पहचाना जाएगा</string>
     <string name="settings_spellcheck_use_contacts_title">वर्तनी जांच के लिए संपर्कों का उपयोग करें</string>
+    <string name="settings_spellcheck_accept_learned_title">सीखे गए शब्द स्वीकार करें</string>
+    <string name="settings_spellcheck_accept_learned_summary">आपकी टाइपिंग से सीखे गए शब्दों को सही वर्तनी माना जाएगा</string>
     <string name="pref_alt_double_tap_lock">Alt डबल-क्लिक लॉक सक्षम करें</string>
     <string name="pref_alt_double_tap_lock_summary">Alt पर डबल-क्लिक करने से वह लॉक हो जाएगी. दोबारा Alt क्लिक करने पर वह बंद हो जाएगी.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl डबल-क्लिक लॉक सक्षम करें</string>

@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Gi tilgang til kontakter for å bruke denne funksjonen</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktnavn godtas som gyldige ord</string>
     <string name="settings_spellcheck_use_contacts_title">Bruk kontakter i stavekontrollen</string>
+    <string name="settings_spellcheck_accept_learned_title">Godta lærte ord</string>
+    <string name="settings_spellcheck_accept_learned_summary">Ord som er lært fra det du skriver, regnes som riktig stavet</string>
     <string name="pref_alt_double_tap_lock">Aktiver Alt-lås med dobbeltklikk</string>
     <string name="pref_alt_double_tap_lock_summary">Dobbeltklikk på Alt låser den på. Klikk på Alt igjen for å slå den av.</string>
     <string name="pref_ctrl_double_tap_lock">Aktiver Ctrl-lås med dobbeltklikk</string>

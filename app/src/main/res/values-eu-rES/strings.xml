@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Eman kontaktuetarako baimena eginbide hau erabiltzeko</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktuen izenak hitz baliodun gisa onartuko dira</string>
     <string name="settings_spellcheck_use_contacts_title">Erabili kontaktuak zuzenketa ortografikorako</string>
+    <string name="settings_spellcheck_accept_learned_title">Onartu ikasitako hitzak</string>
+    <string name="settings_spellcheck_accept_learned_summary">Idazten duzunetik ikasitako hitzak ondo idatzitzat hartzen dira</string>
     <string name="pref_alt_double_tap_lock">Gaitu Alt teklaren klik bikoitzeko blokeoa</string>
     <string name="pref_alt_double_tap_lock_summary">Alt tekla birritan sakatuz gero, blokeatuta geratuko da. Alt berriro sakatzean, desaktibatuko da.</string>
     <string name="pref_ctrl_double_tap_lock">Gaitu Ctrl teklaren klik bikoitzeko blokeoa</string>

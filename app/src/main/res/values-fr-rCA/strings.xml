@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Accordez l\'autorisation d\'accès aux contacts pour utiliser cette fonction</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Les noms de contacts seront reconnus comme des mots valides</string>
     <string name="settings_spellcheck_use_contacts_title">Utiliser les contacts pour la vérification orthographique</string>
+    <string name="settings_spellcheck_accept_learned_title">Accepter les mots appris</string>
+    <string name="settings_spellcheck_accept_learned_summary">Les mots appris de votre saisie sont considérés comme bien orthographiés</string>
     <string name="pref_alt_double_tap_lock">Activer le verrouillage Alt par double appui</string>
     <string name="pref_alt_double_tap_lock_summary">Un double appui sur Alt la verrouille. Un nouvel appui sur Alt la désactive.</string>
     <string name="pref_ctrl_double_tap_lock">Activer le verrouillage Ctrl par double appui</string>

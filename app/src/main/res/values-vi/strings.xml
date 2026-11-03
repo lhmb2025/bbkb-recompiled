@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Cấp quyền truy cập danh bạ để dùng tính năng này</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Tên liên hệ sẽ được xem là từ hợp lệ</string>
     <string name="settings_spellcheck_use_contacts_title">Dùng danh bạ để kiểm tra chính tả</string>
+    <string name="settings_spellcheck_accept_learned_title">Chấp nhận từ đã học</string>
+    <string name="settings_spellcheck_accept_learned_summary">Các từ học được từ việc bạn nhập được coi là viết đúng chính tả</string>
     <string name="pref_alt_double_tap_lock">Bật khóa Alt khi nhấn đúp</string>
     <string name="pref_alt_double_tap_lock_summary">Nhấn đúp phím Alt sẽ khóa phím này. Nhấn Alt lần nữa để tắt.</string>
     <string name="pref_ctrl_double_tap_lock">Bật khóa Ctrl khi nhấn đúp</string>

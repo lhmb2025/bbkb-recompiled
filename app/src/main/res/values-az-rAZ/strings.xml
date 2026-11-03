@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Bu funksiyadan istifadə etmək üçün kontaktlara icazə verin</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontakt adları düzgün söz kimi tanınacaq</string>
     <string name="settings_spellcheck_use_contacts_title">Orfoqrafik yoxlanış üçün kontaktlardan istifadə edin</string>
+    <string name="settings_spellcheck_accept_learned_title">Öyrənilmiş sözləri qəbul et</string>
+    <string name="settings_spellcheck_accept_learned_summary">Yazınızdan öyrənilmiş sözlər düzgün yazılmış sayılır</string>
     <string name="pref_alt_double_tap_lock">Alt ikiqat klikləmə kilidini aktivləşdirin</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-a ikiqat klikləmə onu kilidləyəcək. Alt-a yenidən klikləmə onu söndürəcək.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl ikiqat klikləmə kilidini aktivləşdirin</string>

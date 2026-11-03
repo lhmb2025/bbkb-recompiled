@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Piešķiriet kontaktpersonu atļauju, lai izmantotu šo funkciju</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktpersonu vārdi tiks atpazīti kā derīgi vārdi</string>
     <string name="settings_spellcheck_use_contacts_title">Izmantot kontaktpersonas pareizrakstības pārbaudei</string>
+    <string name="settings_spellcheck_accept_learned_title">Pieņemt apgūtos vārdus</string>
+    <string name="settings_spellcheck_accept_learned_summary">No jūsu rakstītā apgūtie vārdi tiek uzskatīti par pareizi uzrakstītiem</string>
     <string name="pref_alt_double_tap_lock">Iespējot Alt dubultklikšķa fiksēšanu</string>
     <string name="pref_alt_double_tap_lock_summary">Divreiz noklikšķinot uz Alt, tas tiks fiksēts. Noklikšķinot uz Alt vēlreiz, tas tiks izslēgts.</string>
     <string name="pref_ctrl_double_tap_lock">Iespējot Ctrl dubultklikšķa fiksēšanu</string>

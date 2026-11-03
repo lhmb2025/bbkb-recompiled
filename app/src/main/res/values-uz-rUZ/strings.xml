@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Bu funksiyadan foydalanish uchun kontaktlarga ruxsat bering</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontakt ismlari to‘g‘ri so‘z sifatida qabul qilinadi</string>
     <string name="settings_spellcheck_use_contacts_title">Imlo tekshiruvida kontaktlardan foydalanish</string>
+    <string name="settings_spellcheck_accept_learned_title">Oʻrganilgan soʻzlarni qabul qilish</string>
+    <string name="settings_spellcheck_accept_learned_summary">Yozganlaringizdan oʻrganilgan soʻzlar toʻgʻri yozilgan deb hisoblanadi</string>
     <string name="pref_alt_double_tap_lock">Alt ikki marta bosilganda qulflanishini yoqish</string>
     <string name="pref_alt_double_tap_lock_summary">Alt ikki marta bosilsa, u yoqilgan holda qulflanadi. Alt yana bosilsa, o‘chadi.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl ikki marta bosilganda qulflanishini yoqish</string>

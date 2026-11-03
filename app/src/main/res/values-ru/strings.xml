@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Предоставьте доступ к контактам, чтобы использовать эту функцию</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Имена контактов будут распознаваться как правильные слова</string>
     <string name="settings_spellcheck_use_contacts_title">Использовать контакты при проверке орфографии</string>
+    <string name="settings_spellcheck_accept_learned_title">Принимать изученные слова</string>
+    <string name="settings_spellcheck_accept_learned_summary">Слова, изученные по вашему набору, считаются написанными правильно</string>
     <string name="pref_alt_double_tap_lock">Включить фиксацию Alt двойным нажатием</string>
     <string name="pref_alt_double_tap_lock_summary">Двойное нажатие Alt фиксирует его. Повторное нажатие Alt отключает фиксацию.</string>
     <string name="pref_ctrl_double_tap_lock">Включить фиксацию Ctrl двойным нажатием</string>

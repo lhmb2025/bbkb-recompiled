@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Bu özelliği kullanmak için kişiler iznini verin</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kişi adları geçerli kelime olarak tanınır</string>
     <string name="settings_spellcheck_use_contacts_title">Yazım denetiminde kişileri kullan</string>
+    <string name="settings_spellcheck_accept_learned_title">Öğrenilen sözcükleri kabul et</string>
+    <string name="settings_spellcheck_accept_learned_summary">Yazdıklarınızdan öğrenilen sözcükler doğru yazılmış sayılır</string>
     <string name="pref_alt_double_tap_lock">Alt çift tıklama kilidini etkinleştir</string>
     <string name="pref_alt_double_tap_lock_summary">Alt tuşuna çift tıklamak onu açık konumda kilitler. Alt\'a tekrar tıklamak kilidi kaldırır.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl çift tıklama kilidini etkinleştir</string>

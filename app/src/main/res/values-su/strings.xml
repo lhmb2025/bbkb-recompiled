@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Pasihan idin kontak pikeun maké fitur ieu</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Ngaran kontak bakal dianggap kecap nu bener</string>
     <string name="settings_spellcheck_use_contacts_title">Paké kontak pikeun mariksa éjahan</string>
+    <string name="settings_spellcheck_accept_learned_title">Tampa kecap anu diajar</string>
+    <string name="settings_spellcheck_accept_learned_summary">Kecap anu diajar tina ketikan anjeun dianggap éjahanana bener</string>
     <string name="pref_alt_double_tap_lock">Aktipkeun konci Alt ku klik dua kali</string>
     <string name="pref_alt_double_tap_lock_summary">Ngaklik Alt dua kali bakal nguncina. Ngaklik Alt deui bakal mareuman.</string>
     <string name="pref_ctrl_double_tap_lock">Aktipkeun konci Ctrl ku klik dua kali</string>

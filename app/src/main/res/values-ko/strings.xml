@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">이 기능을 사용하려면 연락처 권한을 허용하세요</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">연락처 이름이 올바른 단어로 인식됩니다</string>
     <string name="settings_spellcheck_use_contacts_title">맞춤법 검사에 연락처 사용</string>
+    <string name="settings_spellcheck_accept_learned_title">학습한 단어 허용</string>
+    <string name="settings_spellcheck_accept_learned_summary">입력에서 학습한 단어를 맞춤법이 올바른 단어로 처리합니다</string>
     <string name="pref_alt_double_tap_lock">Alt 두 번 클릭 잠금 사용</string>
     <string name="pref_alt_double_tap_lock_summary">Alt를 두 번 클릭하면 켜진 상태로 잠깁니다. Alt를 다시 클릭하면 해제됩니다.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl 두 번 클릭 잠금 사용</string>

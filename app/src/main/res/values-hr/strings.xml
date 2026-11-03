@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Dopustite pristup kontaktima da biste upotrijebili ovu značajku</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Imena kontakata prepoznavat će se kao ispravne riječi</string>
     <string name="settings_spellcheck_use_contacts_title">Upotrijebi kontakte za provjeru pravopisa</string>
+    <string name="settings_spellcheck_accept_learned_title">Prihvati naučene riječi</string>
+    <string name="settings_spellcheck_accept_learned_summary">Riječi naučene iz vašeg tipkanja smatraju se ispravno napisanima</string>
     <string name="pref_alt_double_tap_lock">Omogući zaključavanje dvostrukim klikom na Alt</string>
     <string name="pref_alt_double_tap_lock_summary">Dvostruki klik na Alt zaključat će ga. Ponovni klik na Alt isključit će ga.</string>
     <string name="pref_ctrl_double_tap_lock">Omogući zaključavanje dvostrukim klikom na Ctrl</string>

@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">এই সুবিধাটি ব্যবহার করতে পরিচিতির অনুমতি দিন</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">পরিচিতির নাম বৈধ শব্দ হিসেবে গণ্য হবে</string>
     <string name="settings_spellcheck_use_contacts_title">বানান পরীক্ষায় পরিচিতি ব্যবহার করুন</string>
+    <string name="settings_spellcheck_accept_learned_title">শেখা শব্দ গ্রহণ করুন</string>
+    <string name="settings_spellcheck_accept_learned_summary">আপনার টাইপিং থেকে শেখা শব্দগুলো সঠিক বানান হিসেবে গণ্য হবে</string>
     <string name="pref_alt_double_tap_lock">Alt ডাবল-ক্লিক লক সক্রিয় করুন</string>
     <string name="pref_alt_double_tap_lock_summary">Alt দুবার ক্লিক করলে তা লক হয়ে থাকবে। আবার Alt চাপলে বন্ধ হয়ে যাবে।</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl ডাবল-ক্লিক লক সক্রিয় করুন</string>

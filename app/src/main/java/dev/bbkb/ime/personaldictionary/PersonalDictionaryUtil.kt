@@ -101,6 +101,14 @@ class PersonalDictionaryUtil private constructor(
         @Volatile
         private var sInstance: PersonalDictionaryUtil? = null
 
+        /**
+         * Whether [word] is in the personal dictionary (words added on purpose), exact spelling;
+         * false until the dictionary is loaded. Safe on any thread and cheap enough to ask per
+         * suggestion: "Suggest learned words" and "Accept learned words" keep these words.
+         */
+        @JvmStatic
+        fun isPersonalWord(word: String): Boolean = sInstance?.mPersonalWords?.containsWord(word) ?: false
+
         @JvmStatic
         @Throws(IOException::class)
         fun getInstance(context: Context, baseDir: String, resourceDir: String, nuanceSDK: NuanceSDK): PersonalDictionaryUtil {

@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Contacts
+import androidx.compose.material.icons.outlined.Spellcheck
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -56,8 +57,11 @@ fun SpellCheckerSettingsScreen(
     var useContacts by remember {
         mutableStateOf(prefs.getBoolean("pref_spellcheck_use_contacts", true))
     }
-    
-    
+    // Read by AndroidSpellCheckerService.PREF_ACCEPT_LEARNED_WORDS
+    var acceptLearnedWords by remember {
+        mutableStateOf(prefs.getBoolean("pref_spellcheck_accept_learned_words", true))
+    }
+
     // Permission launcher
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -131,8 +135,18 @@ fun SpellCheckerSettingsScreen(
                     }
                 )
 
+                SwitchPreference(
+                    title = context.getString(R.string.settings_spellcheck_accept_learned_title),
+                    summary = context.getString(R.string.settings_spellcheck_accept_learned_summary),
+                    icon = Icons.Outlined.Spellcheck,
+                    checked = acceptLearnedWords,
+                    onCheckedChange = { newValue ->
+                        acceptLearnedWords = newValue
+                        prefs.edit().putBoolean("pref_spellcheck_accept_learned_words", newValue).apply()
+                    }
+                )
             }
-            
+
             Spacer(modifier = Modifier.height(spacing.extraLarge))
         }
     }

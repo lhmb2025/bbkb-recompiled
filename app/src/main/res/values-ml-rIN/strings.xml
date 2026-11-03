@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">ഈ സവിശേഷത ഉപയോഗിക്കാൻ കോൺടാക്റ്റ് അനുമതി നൽകുക</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">കോൺടാക്റ്റ് പേരുകൾ ശരിയായ വാക്കുകളായി കണക്കാക്കും</string>
     <string name="settings_spellcheck_use_contacts_title">അക്ഷരത്തെറ്റ് പരിശോധനയ്ക്ക് കോൺടാക്റ്റുകൾ ഉപയോഗിക്കുക</string>
+    <string name="settings_spellcheck_accept_learned_title">പഠിച്ച വാക്കുകൾ സ്വീകരിക്കുക</string>
+    <string name="settings_spellcheck_accept_learned_summary">നിങ്ങളുടെ ടൈപ്പിംഗിൽ നിന്ന് പഠിച്ച വാക്കുകൾ ശരിയായ അക്ഷരവിന്യാസമായി കണക്കാക്കും</string>
     <string name="pref_alt_double_tap_lock">Alt ഡബിൾ-ക്ലിക്ക് ലോക്ക് പ്രവർത്തനക്ഷമമാക്കുക</string>
     <string name="pref_alt_double_tap_lock_summary">Alt ഡബിൾ-ക്ലിക്ക് ചെയ്താൽ അത് ലോക്ക് ആകും. Alt വീണ്ടും ക്ലിക്ക് ചെയ്താൽ അത് ഓഫാകും.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl ഡബിൾ-ക്ലിക്ക് ലോക്ക് പ്രവർത്തനക്ഷമമാക്കുക</string>

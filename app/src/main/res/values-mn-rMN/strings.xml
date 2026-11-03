@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Энэ боломжийг ашиглахын тулд харилцагчийн зөвшөөрөл олгоно уу</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Харилцагчийн нэрийг зөв үг гэж тооцно</string>
     <string name="settings_spellcheck_use_contacts_title">Алдаа шалгахад харилцагчдыг ашиглах</string>
+    <string name="settings_spellcheck_accept_learned_title">Сурсан үгсийг хүлээн авах</string>
+    <string name="settings_spellcheck_accept_learned_summary">Таны бичвэрээс сурсан үгсийг зөв бичсэн гэж тооцно</string>
     <string name="pref_alt_double_tap_lock">Alt давхар товшилтын түгжээг идэвхжүүлэх</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-г давхар товшвол түгжигдэнэ. Alt-г дахин товшвол унтарна.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl давхар товшилтын түгжээг идэвхжүүлэх</string>

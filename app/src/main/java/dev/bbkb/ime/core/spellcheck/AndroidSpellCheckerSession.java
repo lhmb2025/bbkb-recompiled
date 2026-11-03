@@ -9,7 +9,6 @@ import android.os.ConditionVariable;
 import android.provider.UserDictionary;
 import android.service.textservice.SpellCheckerService;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.textservice.SentenceSuggestionsInfo;
 import android.view.textservice.SuggestionsInfo;
@@ -19,7 +18,6 @@ import dev.bbkb.ime.core.engine.NuanceSDKManager;
 import dev.bbkb.ime.core.inputmethod.HangulInputProcessor;
 import dev.bbkb.ime.core.inputmethod.InputMethodCallback;
 import dev.bbkb.ime.core.locale.LocaleUtils;
-import dev.bbkb.ime.core.locale.SubtypeManager;
 import dev.bbkb.ime.core.shared.CoordinateUtils;
 import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.core.shared.ScriptUtils;
@@ -30,13 +28,10 @@ import dev.bbkb.ime.keyboard.Keyboard;
 import dev.bbkb.ime.keyboard.ProximityGrid;
 import dev.bbkb.ime.personaldictionary.tokenizer.SentenceTextInfoParams;
 import dev.bbkb.ime.personaldictionary.tokenizer.SentenceWordItem;
-import dev.bbkb.ime.BuildConfig;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
@@ -51,8 +46,6 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
     private Locale mSessionLocale;
-
-    private Set<Locale> mCachedLocaleSet;
 
     private int mScriptCode;
 
@@ -160,28 +153,11 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
             throw new NullPointerException("Failed to create locale: " + locale);
         }
         this.mScriptCode = ScriptUtils.getScriptFromLocale(sessionLocale);
-        NuanceSDKManager.getSecondary().setLanguage(new Locale[]{this.mSessionLocale});
-        if (ensureDictionaryLoaded()) {
-            NuanceSDKManager.getSecondary().loadKeyboardLayout(this.mService.getKeyboardForLocale(this.mSessionLocale).isTouchKeyboard());
-        }
-        // SC-AUDIT SC-01/SC-04: Log session creation locale vs IME locale and NuanceSDK states
-        if (BuildConfig.DEBUG) {
-            Locale[] primaryLangs = NuanceSDKManager.getInstance() != null ? NuanceSDKManager.getInstance().getLanguage() : null;
-            Locale[] secondaryLangs = NuanceSDKManager.getSecondary() != null ? NuanceSDKManager.getSecondary().getLanguage() : null;
-            String imeLocale = SubtypeManager.getInstance() != null ? String.valueOf(SubtypeManager.getInstance().getCurrentSubtypeLocale()) : "null";
-            Logger.info("SC-AUDIT", "SC-01/SC-04 sessionCreated"
-                + " sessionLocale=" + this.mSessionLocale
-                + " imeActiveLocale=" + imeLocale
-                + " primarySDKLangs=" + (primaryLangs != null ? Arrays.toString(primaryLangs) : "null")
-                + " secondarySDKLangs=" + (secondaryLangs != null ? Arrays.toString(secondaryLangs) : "null")
-                + " primarySDK==secondarySDK=" + (NuanceSDKManager.getInstance() == NuanceSDKManager.getSecondary()));
-            Log.d("PIPELINE", "SC:sessionCreated" +
-                " sessionLocale=" + this.mSessionLocale +
-                " imeLocale=" + imeLocale +
-                " secondarySDKLangs=" + (secondaryLangs != null ? Arrays.toString(secondaryLangs) : "null") +
-                " sdkInstancesShared=" + (NuanceSDKManager.getInstance() == NuanceSDKManager.getSecondary()) +
-                " scriptCode=" + this.mScriptCode);
-        }
+        // Through the service, not straight to the engine: setting the engine's language here
+        // used to drop the keyboard's other languages behind the service's back (it still
+        // recorded them as loaded), and the keyboard layout lookup crashed for a script with no
+        // layout. The service loads the languages, and the layout when there is one.
+        ensureDictionaryLoaded();
     }
 
     @Override // android.service.textservice.SpellCheckerService.Session
@@ -192,23 +168,12 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         this.mUserDictLatch.open();
     }
 
+    /**
+     * Whether the service's engine holds this session's languages, loading them when it does not.
+     * Cheap once they are loaded, so every request asks; false while the session's language has
+     * no installed pack.
+     */
     private boolean ensureDictionaryLoaded() {
-        Set<Locale> activeLocales = SubtypeManager.getInstance().getCurrentSubtypeAdditionalLocales();
-        if (activeLocales == null) {
-            this.mCachedLocaleSet = null;
-        }
-        if (activeLocales != null && !activeLocales.equals(this.mCachedLocaleSet)) {
-            this.mCachedLocaleSet = activeLocales;
-            this.mScriptCode = ScriptUtils.getScriptFromLocale(this.mSessionLocale);
-            if (!this.mService.initDictionaryForLocale(this.mSessionLocale)) {
-                return false;
-            }
-            if (!LocaleUtils.isCurrentSubtypeKorean()) {
-                return true;
-            }
-            NuanceSDKManager.getSecondary().loadKeyboardLayout(this.mService.getKeyboardForLocale(this.mSessionLocale).isTouchKeyboard());
-            return true;
-        }
         return this.mService.initDictionaryForLocale(this.mSessionLocale);
     }
 
@@ -241,59 +206,32 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
 
     private boolean isWordInDictionary(String word, int capMode) {
         if (this.mService.isValidWord(word)) {
-            if (BuildConfig.DEBUG) {
-                Log.d("PIPELINE", "SC:wordValid" +
-                    " word=\"" + word + "\"" +
-                    " capMode=" + capMode +
-                    " result=true matchType=exact");
-            }
             return true;
         }
         if (capMode == 0) {
-            if (BuildConfig.DEBUG) {
-                Log.d("PIPELINE", "SC:wordValid" +
-                    " word=\"" + word + "\"" +
-                    " capMode=" + capMode +
-                    " result=false matchType=none(noCaseFallback)");
-            }
             return false;
         }
         String lowerCase = word.toLowerCase(this.mSessionLocale);
         if (this.mService.isValidWord(lowerCase)) {
-            if (BuildConfig.DEBUG) {
-                Log.d("PIPELINE", "SC:wordValid" +
-                    " word=\"" + word + "\"" +
-                    " capMode=" + capMode +
-                    " result=true matchType=lowercased(\"" + lowerCase + "\")");
-            }
             return true;
         }
         if (1 == capMode) {
-            if (BuildConfig.DEBUG) {
-                Log.d("PIPELINE", "SC:wordValid" +
-                    " word=\"" + word + "\"" +
-                    " capMode=" + capMode +
-                    " result=false matchType=none(capFirst)");
-            }
             return false;
         }
         String capFirst = capitalizeFirstAndLowercaseRest(lowerCase, this.mSessionLocale);
         boolean result = this.mService.isValidWord(capFirst);
-        if (BuildConfig.DEBUG) {
-            Log.d("PIPELINE", "SC:wordValid" +
-                " word=\"" + word + "\"" +
-                " capMode=" + capMode +
-                " result=" + result +
-                " matchType=" + (result ? "capitalizedFirst(\"" + capFirst + "\")" : "none(allCasesExhausted)"));
-        }
         return result;
     }
 
     private SuggestionsInfo spellCheckWord(TextInfo textInfo, PrevWordsInfo prevWordsInfo, int sugLimit) {
         // Bounded: an unbounded block() parks the spell-check binder thread forever if
         // the reopen task is ever lost (audit GD-7).
-        if (!this.mUserDictLatch.block(USER_DICT_LATCH_MS) && BuildConfig.DEBUG) {
-            Log.w("BlackBerrySpellChecker", "user-dictionary latch timed out; proceeding");
+        this.mUserDictLatch.block(USER_DICT_LATCH_MS);
+        // The single-word entry points reach here without the sentence path's load, and used to
+        // check against no dictionary at all (every word passed). Load first; with no dictionary
+        // for this language, say nothing rather than mark the word right or wrong.
+        if (!ensureDictionaryLoaded()) {
+            return AndroidSpellCheckerService.createUnknownResult();
         }
         try {
             String text = textInfo.getText();
@@ -304,15 +242,6 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
             String normalizedWord = text.replace('’', '\'');
             int capMode = getCapitalizationMode(normalizedWord);
             boolean isInDict = isWordInDictionary(normalizedWord, capMode);
-            if (BuildConfig.DEBUG) {
-                Log.d("PIPELINE", "SC:spellCheck" +
-                    " word=\"" + normalizedWord + "\"" +
-                    " capMode=" + capMode +
-                    " isInDict=" + isInDict +
-                    " sugLimit=" + sugLimit +
-                    " locale=" + this.mSessionLocale +
-                    " hasPrevWords=" + (prevWordsInfo != null && prevWordsInfo.isValid()));
-            }
             if (this.mService.hasPreferenceChanged()) {
                 this.mSuggestionCache.clearCache();
                 this.mService.clearPreferenceChanged();
@@ -323,9 +252,6 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
             // post-processes - was written and never read.
             CachedResult cached = this.mSuggestionCache.getCached(normalizedWord, prevWordsInfo);
             if (cached != null) {
-                if (Logger.isLoggable("BlackBerrySpellChecker", Log.DEBUG)) {
-                    Logger.debug("BlackBerrySpellChecker", "Cache hit: " + text + ", " + cached.mFlags);
-                }
                 if ((cached.mFlags == 1) == isInDict) {
                     return new SuggestionsInfo(cached.mFlags, cached.mSuggestions);
                 }
@@ -365,27 +291,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
                 // Fallback to basic spell checking if advanced features fail
                 suggestionResult = extractSuggestions(capMode, this.mSessionLocale, sugLimit, normalizedWord, null);
             }
-            if (Logger.isLoggable("BlackBerrySpellChecker", Log.DEBUG)) {
-                Logger.debug("BlackBerrySpellChecker", "Spell checking results for " + normalizedWord + " with suggestion limit " + sugLimit);
-                Logger.debug("BlackBerrySpellChecker", "IsInDict = " + isInDict);
-                Logger.debug("BlackBerrySpellChecker", "LooksLikeTypo = " + !isInDict);
-                Logger.debug("BlackBerrySpellChecker", "HasRecommendedSuggestions = " + suggestionResult.mHasRecommended);
-                if (suggestionResult.mSuggestions != null) {
-                    for (String sug : suggestionResult.mSuggestions) {
-                        Logger.debug("BlackBerrySpellChecker", sug);
-                    }
-                }
-            }
             int flags = (suggestionResult.mHasRecommended ? SuggestionsInfo.RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS : 0) | (isInDict ? 1 : 2);
-            if (BuildConfig.DEBUG) {
-                Log.d("PIPELINE", "SC:spellCheckResult" +
-                    " word=\"" + normalizedWord + "\"" +
-                    " isInDict=" + isInDict +
-                    " hasRecommended=" + suggestionResult.mHasRecommended +
-                    " suggestions=" + (suggestionResult.mSuggestions != null ? Arrays.toString(suggestionResult.mSuggestions) : "null") +
-                    " flags=" + flags +
-                    " locale=" + this.mSessionLocale);
-            }
             SuggestionsInfo suggestionsInfo = new SuggestionsInfo(flags, suggestionResult.mSuggestions);
             this.mSuggestionCache.putCached(normalizedWord, prevWordsInfo, suggestionResult.mSuggestions, flags);
             return suggestionsInfo;
@@ -407,27 +313,13 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         }
     }
 
-    private static SuggestionResult extractSuggestions(int capMode, Locale locale, int sugLimit, String word, dev.bbkb.ime.core.suggestion.SuggestionResult perfLogger) {
+    private static SuggestionResult extractSuggestions(int capMode, Locale locale, int sugLimit, String word, dev.bbkb.ime.core.suggestion.SuggestionResult engineResult) {
         String transformedWord;
-        if (perfLogger == null || perfLogger.isEmpty() || sugLimit <= 0) {
-            if (BuildConfig.DEBUG) {
-                Log.d("PIPELINE", "SC:extractSuggestions:empty" +
-                    " word=\"" + word + "\"" +
-                    " perfLoggerNull=" + (perfLogger == null) +
-                    " perfLoggerEmpty=" + (perfLogger != null && perfLogger.isEmpty()) +
-                    " limit=" + sugLimit);
-            }
+        if (engineResult == null || engineResult.isEmpty() || sugLimit <= 0) {
             return new SuggestionResult(null, false);
         }
-        if (Logger.isLoggable("BlackBerrySpellChecker", Log.DEBUG)) {
-            Iterator<SuggestedWords.SuggestedWordInfo> it = perfLogger.getSuggestions().iterator();
-            while (it.hasNext()) {
-                SuggestedWords.SuggestedWordInfo next = it.next();
-                Logger.debug("BlackBerrySpellChecker", "" + next.score + " " + next.word);
-            }
-        }
         ArrayList<String> suggestions = new ArrayList<>();
-        Iterator<SuggestedWords.SuggestedWordInfo> it2 = perfLogger.getSuggestions().iterator();
+        Iterator<SuggestedWords.SuggestedWordInfo> it2 = engineResult.getSuggestions().iterator();
         while (it2.hasNext()) {
             SuggestedWords.SuggestedWordInfo suggestion = it2.next();
             if (!suggestion.isKind(0)) {
@@ -509,9 +401,6 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
                 }
                 final SuggestionsInfo override = new SuggestionsInfo(0, EMPTY_STRING_ARRAY);
                 override.setCookieAndSequence(wordInfo.getCookie(), wordInfo.getSequence());
-                if (Logger.isLoggable("BlackBerrySpellChecker", Log.DEBUG)) {
-                    Logger.debug("BlackBerrySpellChecker", "Override and remove old span over: " + part + ", " + partOffset + "," + part.length());
-                }
                 offsets.add(partOffset);
                 lengths.add(part.length());
                 overrides.add(override);
@@ -556,31 +445,6 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
                 sentenceResults[i2] = apostropheFixed;
             }
         }
-        // Diagnostic: log the final SentenceSuggestionsInfo returned to framework
-        if (BuildConfig.DEBUG) {
-            for (int idx = 0; idx < sentenceResults.length; idx++) {
-                SentenceSuggestionsInfo ssi = sentenceResults[idx];
-                if (ssi == null) {
-                    Log.d("PIPELINE", "SC:sentenceResult[" + idx + "] null");
-                    continue;
-                }
-                int wc = ssi.getSuggestionsCount();
-                Log.d("PIPELINE", "SC:sentenceResult[" + idx + "] wordCount=" + wc);
-                for (int w = 0; w < wc; w++) {
-                    SuggestionsInfo si = ssi.getSuggestionsInfoAt(w);
-                    int flags = si != null ? si.getSuggestionsAttributes() : -1;
-                    int offset = ssi.getOffsetAt(w);
-                    int len = ssi.getLengthAt(w);
-                    int sugCount = si != null ? si.getSuggestionsCount() : 0;
-                    String firstSug = sugCount > 0 ? si.getSuggestionAt(0) : "(none)";
-                    Log.d("PIPELINE", "SC:sentenceResult[" + idx + "] word[" + w + "]"
-                        + " offset=" + offset + " len=" + len
-                        + " flags=" + flags
-                        + " sugCount=" + sugCount
-                        + " firstSug=\"" + firstSug + "\"");
-                }
-            }
-        }
         return sentenceResults;
     }
 
@@ -597,8 +461,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
                     // Audit GD-26: getLocale() returns the framework's subtype locale
                     // string ("en_US"), and new Locale("en_US") builds a Locale whose
                     // *language* is the literal "en_us" - not en/US. onCreate parses the
-                    // same string correctly, and the SC-07 audit line compares this against
-                    // the engine's tokenizer locale, so that comparison could never match.
+                    // same string correctly, and the tokenizer now splits by this locale.
                     tokenizer = new SentenceTokenizer(LocaleUtils.constructLocaleFromString(locale));
                     this.mSentenceTokenizer = tokenizer;
                 }

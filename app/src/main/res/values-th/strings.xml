@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">ให้สิทธิ์เข้าถึงรายชื่อเพื่อใช้คุณสมบัตินี้</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">ชื่อผู้ติดต่อจะถูกถือว่าเป็นคำที่ถูกต้อง</string>
     <string name="settings_spellcheck_use_contacts_title">ใช้รายชื่อสำหรับการตรวจการสะกด</string>
+    <string name="settings_spellcheck_accept_learned_title">ยอมรับคำที่เรียนรู้</string>
+    <string name="settings_spellcheck_accept_learned_summary">คำที่เรียนรู้จากการพิมพ์ของคุณจะถือว่าสะกดถูกต้อง</string>
     <string name="pref_alt_double_tap_lock">เปิดใช้งานการล็อก Alt ด้วยการกดสองครั้ง</string>
     <string name="pref_alt_double_tap_lock_summary">การกด Alt สองครั้งจะล็อกให้เปิดค้างไว้ กด Alt อีกครั้งเพื่อปิด</string>
     <string name="pref_ctrl_double_tap_lock">เปิดใช้งานการล็อก Ctrl ด้วยการกดสองครั้ง</string>

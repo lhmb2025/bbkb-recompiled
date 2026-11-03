@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Παραχωρήστε άδεια για τις επαφές, ώστε να χρησιμοποιήσετε αυτήν τη λειτουργία</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Τα ονόματα επαφών θα αναγνωρίζονται ως έγκυρες λέξεις</string>
     <string name="settings_spellcheck_use_contacts_title">Χρήση επαφών στον ορθογραφικό έλεγχο</string>
+    <string name="settings_spellcheck_accept_learned_title">Αποδοχή λέξεων που έχουν μαθευτεί</string>
+    <string name="settings_spellcheck_accept_learned_summary">Οι λέξεις που μαθεύτηκαν από την πληκτρολόγησή σας θεωρούνται σωστά γραμμένες</string>
     <string name="pref_alt_double_tap_lock">Ενεργοποίηση κλειδώματος Alt με διπλό κλικ</string>
     <string name="pref_alt_double_tap_lock_summary">Με διπλό κλικ στο Alt κλειδώνει ενεργό. Με νέο κλικ στο Alt απενεργοποιείται.</string>
     <string name="pref_ctrl_double_tap_lock">Ενεργοποίηση κλειδώματος Ctrl με διπλό κλικ</string>

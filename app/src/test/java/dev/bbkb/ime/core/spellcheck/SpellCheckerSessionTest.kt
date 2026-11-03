@@ -41,6 +41,8 @@ class SpellCheckerSessionTest {
     private lateinit var service: AndroidSpellCheckerService
     private lateinit var session: AndroidSpellCheckerSession
     private val valid = mutableSetOf<String>()
+    /** What the stubbed service answers when the session asks for its languages to be loaded. */
+    private var dictionaryLoaded = true
     private val resolver get() = RuntimeEnvironment.getApplication().contentResolver
 
     @Before
@@ -49,6 +51,7 @@ class SpellCheckerSessionTest {
         Mockito.doReturn(resolver).`when`(service).contentResolver
         Mockito.doAnswer { valid.contains(it.getArgument<String>(0)) }
             .`when`(service).isValidWord(ArgumentMatchers.anyString())
+        Mockito.doAnswer { dictionaryLoaded }.`when`(service).initDictionaryForLocale(ArgumentMatchers.any())
         session = AndroidSpellCheckerSession(service)
         field("mSessionLocale").set(session, Locale.US)
         field("mScriptCode").setInt(session, 14)
@@ -362,5 +365,13 @@ class SpellCheckerSessionTest {
     fun emptyResultIsASharedZeroLengthArray() {
         assertEquals(0, SentenceTokenizer.getEmptyResult().size)
         assertSame(SentenceTokenizer.getEmptyResult(), SentenceTokenizer.getEmptyResult())
+    }
+
+    @Test
+    fun withoutADictionaryForTheLanguage_aWordIsNeitherRightNorWrong() {
+        dictionaryLoaded = false
+        assertEquals("a=0 n=0 []", describe(single("Xyzzy")))
+        assertEquals("a=0 n=0 []", describe(session.onGetSuggestions(ti("hello"), 5)))
+        assertEquals(emptyList<String>(), validWordCalls())
     }
 }

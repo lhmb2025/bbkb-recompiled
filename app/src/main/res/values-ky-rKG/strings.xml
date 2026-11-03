@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Бул функцияны колдонуу үчүн байланыштарга уруксат бериңиз</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Байланыштардын ысымдары туура сөз катары таанылат</string>
     <string name="settings_spellcheck_use_contacts_title">Орфографияны текшерүүдө байланыштарды колдонуу</string>
+    <string name="settings_spellcheck_accept_learned_title">Үйрөнүлгөн сөздөрдү кабыл алуу</string>
+    <string name="settings_spellcheck_accept_learned_summary">Терүүңүздөн үйрөнүлгөн сөздөр туура жазылган деп эсептелет</string>
     <string name="pref_alt_double_tap_lock">Alt эки жолу басылганда бекитилишин иштетүү</string>
     <string name="pref_alt_double_tap_lock_summary">Alt эки жолу басылса, ал күйүк бойдон бекитилет. Alt кайра басылса, өчөт.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl эки жолу басылганда бекитилишин иштетүү</string>

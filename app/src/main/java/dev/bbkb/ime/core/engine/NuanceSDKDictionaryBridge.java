@@ -347,6 +347,9 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         final long listGeneration = NuanceSDK.getSelectionListGeneration();
 
         selectionListSize = this.nuanceSdk.getSelectionListSize();
+        // Where each word came from, read with the list rather than looked up per word; only
+        // "Suggest learned words" uses it (SuggestionEngine).
+        final byte[] sources = this.nuanceSdk.getSelectionListSources(selectionListSize);
         if (BuildConfig.DEBUG) {
             Log.d("PIPELINE", "IME:nuanceDict:defaultIndex typed=\"" + strM4360m + "\""
                     + " engineDefaultWordIndex=" + engineDefaultWordIndex
@@ -376,6 +379,8 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
             WordInfo selectionListWord = this.nuanceSdk.getSelectionListWord(i4);
             if (selectionListWord != null) {
                 selectionListWord.selectionListGeneration = listGeneration;   // audit EB-3
+                selectionListWord.fromLearnedModel = sources != null && i4 < sources.length
+                        && sources[i4] == NuanceSDK.WORD_SOURCE_LEARNED_MODEL;
             }
             // Diacritics fix (2026-08-27): the engine resolves accented symbols to their host key
             // (KDB char lists: ď->d-key) and builds its exact-word candidate from BASE letters, so
@@ -675,6 +680,11 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
     @Override // dev.bbkb.ime.core.engine.Dictionary
     public boolean isWordValid(String str) {
         return this.nuanceSdk.isSpellingCorrect(str);
+    }
+
+    @Override // dev.bbkb.ime.core.engine.Dictionary
+    public boolean isDictionaryWord(String str) {
+        return this.nuanceSdk.isSpellingCorrectWithoutLearnedWords(str);
     }
 
     /**

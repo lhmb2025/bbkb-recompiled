@@ -39,6 +39,13 @@ public class NuanceSDK {
     public static final String DYNAMIC_MODEL_FILE_NAME_ZH_WORK = "zhdlm_work.bin";
     public static final char ET9CPSYLLABLEDELIMITER = '\'';
     public static final int MAX_CONTEXT_LENGTH = 1024;
+
+    /**
+     * {@link #getSelectionListSources} value of a word from the learned model: learned,
+     * typed-once and added-on-purpose words alike. Language-dictionary words and contact names
+     * are 2, the typed word 9.
+     */
+    public static final int WORD_SOURCE_LEARNED_MODEL = 1;
     public static final String QUICK_CANGJIE_VARIANT = "quick_cangjie";
     private static final String TAG = "NuanceSDK";
     private AutoCommitCallback mAutoCommitHandler;
@@ -137,6 +144,12 @@ public class NuanceSDK {
     /** Whether {@link #loadDLMFromFile} has attached the learned model to this engine. */
     private boolean mDlmAttached = false;
 
+    /**
+     * The last {@link #setContactsCategoryState} choice, applied again whenever the model is
+     * (re)attached; null until the first call leaves the engine's own default alone.
+     */
+    private Boolean mContactsCategoryEnabled = null;
+
     /** Whether the learned model is attached, i.e. a language has been set up on this engine. */
     public boolean isDLMAttached() {
         synchronized (sMutex) {
@@ -226,6 +239,8 @@ public class NuanceSDK {
     private native boolean scanBuffer(long j, String str);
 
     private native boolean selectionListSelectWord(long j, int i, boolean z, String str);
+
+    private native boolean setCategoryState(long j, char c, boolean z);
 
     private native boolean setContextBuffer(long j, String str);
 
@@ -465,6 +480,23 @@ public class NuanceSDK {
             selectionListSize = getSelectionListSize(this.mNativeHandle);
         }
         return selectionListSize;
+    }
+
+    /**
+     * The source of each of the first {@code count} words of the selection list as last built
+     * ({@link #WORD_SOURCE_LEARNED_MODEL} and the others), which the blob's own word read leaves
+     * out; null when the engine cannot be reached. One read of the engine's list, no lookups.
+     */
+    public byte[] getSelectionListSources(int count) {
+        synchronized (sMutex) {
+            if (this.mNativeHandle == 0 || count <= 0 || !Et9Dlm.isLoaded()) return null;
+            try {
+                return Et9Dlm.nativeSelectionListSources(this.mNativeHandle, count);
+            } catch (Throwable t) {
+                if (BuildConfig.DEBUG) Log.w(TAG, "getSelectionListSources", t);
+                return null;
+            }
+        }
     }
 
     public WordInfo getSelectionListWord(int i) {
@@ -714,6 +746,37 @@ public class NuanceSDK {
         return zIsSpellingCorrect;
     }
 
+    /**
+     * Whether the language dictionaries alone know {@code str}: the learned model is switched off
+     * for this one check (this instance only; the other instance and the model file are untouched)
+     * and back on. Words added on purpose and contact names live in the learned model too, so they
+     * fail here. Where the model cannot be switched off, the ordinary check answers.
+     */
+    public boolean isSpellingCorrectWithoutLearnedWords(String str) {
+        synchronized (sMutex) {
+            String word = toEngineForm(str);
+            if (!this.mDlmAttached || !Et9Dlm.isLoaded()) {
+                return isSpellingCorrect(this.mNativeHandle, word);
+            }
+            int off;
+            try {
+                off = Et9Dlm.nativeSetLearnedModelEnabled(this.mNativeHandle, false);
+            } catch (Throwable t) {
+                off = Et9Dlm.ERR_BLOB;
+            }
+            if (off != 0) {
+                Log.w(TAG, "learned model could not be switched off (" + off + ")");
+                return isSpellingCorrect(this.mNativeHandle, word);
+            }
+            try {
+                return isSpellingCorrect(this.mNativeHandle, word);
+            } finally {
+                int on = Et9Dlm.nativeSetLearnedModelEnabled(this.mNativeHandle, true);
+                if (on != 0) Log.w(TAG, "learned model could not be switched back on (" + on + ")");
+            }
+        }
+    }
+
     public boolean selectionListSelectWord(int i, boolean z, String str) {
         boolean zSelectionListSelectWord;
         synchronized (sMutex) {
@@ -814,6 +877,36 @@ public class NuanceSDK {
                 addContactsWords(strArr);
             }
         }
+    }
+
+    /**
+     * Whether the engine may offer the words filed under the contacts category, the names
+     * {@link #addContactsWords} adds: the engine half of "Suggest from contacts", which until now
+     * only started or stopped the address-book sync and left the names already learned active.
+     * The choice is kept on this instance and applied again whenever the model is (re)attached,
+     * since the state lives in the engine's copy of the model. Returns false when the model is
+     * not attached yet (the choice is applied on attach) or the engine refused: a model that has
+     * no contacts category yet answers status 93, and then there is nothing to switch off.
+     */
+    public boolean setContactsCategoryState(boolean enabled) {
+        synchronized (sMutex) {
+            this.mContactsCategoryEnabled = enabled;
+            if (this.mNativeHandle == 0 || !this.mDlmAttached) {
+                return false;
+            }
+            return applyContactsCategoryState();
+        }
+    }
+
+    /** Pushes the remembered contacts choice into the attached model; callers hold sMutex. */
+    private boolean applyContactsCategoryState() {
+        if (this.mContactsCategoryEnabled == null || this.mNativeHandle == 0) {
+            return false;
+        }
+        boolean enabled = this.mContactsCategoryEnabled;
+        boolean ok = setCategoryState(this.mNativeHandle, CATEGORY_CONTACTS, enabled);
+        if (BuildConfig.DEBUG) Log.d(TAG, "contacts category " + (enabled ? "on" : "off") + " -> " + ok);
+        return ok;
     }
 
     public boolean invalidateKeyboard(String str) {
@@ -1346,6 +1439,10 @@ public class NuanceSDK {
         boolean z;
         synchronized (sMutex) {
             z = detachDLMFile(this.mNativeHandle) && attachDLMFile(this.mNativeHandle, getDLMFilePath());
+            if (z) {
+                // The category states live in the attached copy of the model.
+                applyContactsCategoryState();
+            }
         }
         return z;
     }

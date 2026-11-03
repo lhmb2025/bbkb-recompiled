@@ -2,7 +2,7 @@ package dev.bbkb.ime.core.spellcheck
 
 import dev.bbkb.ime.core.shared.ScriptUtils
 import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
@@ -12,7 +12,8 @@ import java.util.Locale
 /**
  * Characterises `AndroidSpellCheckerService.getKeyboardLayoutName`: script code -> keyboard layout
  * name used to build the spell checker's proximity keyboard, with a language sub-switch for
- * Cyrillic and a RuntimeException for every script it has no layout for.
+ * Cyrillic and null for every script it has no layout for (it used to throw, which crashed the
+ * service for a session in such a script).
  *
  * The script code is stubbed so every arm is reached independently of which languages the JVM's
  * Locale can express (e.g. "iw" is normalised to "he" on modern JDKs, so Hebrew is unreachable
@@ -24,13 +25,13 @@ class SpellCheckerLayoutNameTest {
         .getDeclaredMethod("getKeyboardLayoutName", Locale::class.java)
         .apply { isAccessible = true }
 
-    private fun layoutFor(locale: Locale): String = try {
-        method.invoke(null, locale) as String
+    private fun layoutFor(locale: Locale): String? = try {
+        method.invoke(null, locale) as String?
     } catch (e: InvocationTargetException) {
         throw e.cause!!
     }
 
-    /** Independent copy of the expected mapping; null = throws. */
+    /** Independent copy of the expected mapping; null = no layout. */
     private fun expected(code: Int, language: String): String? = when (code) {
         0 -> "arabic"
         1 -> "armenian_phonetic"
@@ -58,22 +59,11 @@ class SpellCheckerLayoutNameTest {
     }
 
     private fun assertMapping(code: Int, locale: Locale) {
-        val want = expected(code, locale.language)
-        if (want != null) {
-            assertEquals("script $code, $locale", want, layoutFor(locale))
-            return
-        }
-        try {
-            val got = layoutFor(locale)
-            fail("script $code, $locale: expected RuntimeException, got $got")
-        } catch (e: RuntimeException) {
-            assertEquals(RuntimeException::class.java, e.javaClass)
-            assertEquals("Unknown script supplied for [$locale] locale: $code", e.message)
-        }
+        assertEquals("script $code, $locale", expected(code, locale.language), layoutFor(locale))
     }
 
     @Test
-    fun everyScriptCodeMapsOrThrows() {
+    fun everyScriptCodeMapsOrHasNoLayout() {
         val languages = listOf("xx", "bg", "mn", "mk", "ru", "uk", "sr", "", "BG")
         Mockito.mockStatic(ScriptUtils::class.java, Mockito.CALLS_REAL_METHODS).use { scripts ->
             for (code in -3..30) {
@@ -131,11 +121,6 @@ class SpellCheckerLayoutNameTest {
         assertEquals("qwerty", layoutFor(Locale.US))
         assertEquals("qwerty", layoutFor(Locale("vi")))
         assertEquals("thai", layoutFor(Locale("th")))
-        try {
-            layoutFor(Locale.CHINA)
-            fail("zh has no spell-checker layout")
-        } catch (e: RuntimeException) {
-            assertEquals("Unknown script supplied for [zh_CN] locale: 7", e.message)
-        }
+        assertNull("zh has no spell-checker layout", layoutFor(Locale.CHINA))
     }
 }

@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Za uporabo te funkcije dodelite dovoljenje za stike</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Imena stikov bodo prepoznana kot veljavne besede</string>
     <string name="settings_spellcheck_use_contacts_title">Uporabi stike pri preverjanju črkovanja</string>
+    <string name="settings_spellcheck_accept_learned_title">Sprejmi naučene besede</string>
+    <string name="settings_spellcheck_accept_learned_summary">Besede, naučene iz vašega tipkanja, veljajo za pravilno črkovane</string>
     <string name="pref_alt_double_tap_lock">Omogoči zaklep tipke Alt z dvojnim pritiskom</string>
     <string name="pref_alt_double_tap_lock_summary">Z dvojnim pritiskom tipke Alt jo zaklenete. Z naslednjim pritiskom jo izklopite.</string>
     <string name="pref_ctrl_double_tap_lock">Omogoči zaklep tipke Ctrl z dvojnim pritiskom</string>

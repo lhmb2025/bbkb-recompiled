@@ -513,6 +513,8 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">ამ ფუნქციის გამოსაყენებლად მიეცით კონტაქტების ნებართვა</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">კონტაქტების სახელები სწორ სიტყვებად ჩაითვლება</string>
     <string name="settings_spellcheck_use_contacts_title">კონტაქტების გამოყენება მართლწერის შემოწმებისას</string>
+    <string name="settings_spellcheck_accept_learned_title">ნასწავლი სიტყვების მიღება</string>
+    <string name="settings_spellcheck_accept_learned_summary">თქვენი აკრეფიდან ნასწავლი სიტყვები სწორად დაწერილად ითვლება</string>
     <string name="pref_alt_double_tap_lock">Alt-ის ორმაგი დაჭერით ჩაკეტვის ჩართვა</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-ზე ორჯერ დაჭერა მას ჩაკეტავს. Alt-ზე ხელახლა დაჭერა გამორთავს.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl-ის ორმაგი დაჭერით ჩაკეტვის ჩართვა</string>
