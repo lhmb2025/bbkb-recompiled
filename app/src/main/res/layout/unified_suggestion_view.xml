@@ -32,6 +32,19 @@
             android:overScrollMode="never"
             tools:listitem="@layout/suggestion_word_item" />
 
+        <!-- Emoji slot: the emojibase hit for the word being typed (EmojibaseStripSuggestion).
+             Outside the word slots so the three words keep their widths; tap inserts, long-press
+             shows the skin tones. -->
+        <TextView
+            android:id="@+id/emoji_suggestion_slot"
+            android:layout_width="@dimen/config_suggestion_min_width_material"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="@dimen/config_suggestion_text_size"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone" />
+
         <!-- Right action button (CJK expand) -->
         <ImageButton
             android:id="@+id/action_btn"

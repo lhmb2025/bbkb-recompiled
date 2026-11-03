@@ -175,6 +175,11 @@ public final class SuggestionEngine {
             }
         }
         
+        // The strip's emoji comes from emojibase, not the engine (owner requirement 2026-11-02):
+        // the engine's own emoji entries are dropped and, with Emoji suggestions on, the top
+        // emojibase hit for the word is appended (EmojibaseStripSuggestion).
+        EmojibaseStripSuggestion.apply(context, suggestions, composingText, perfLogger.locale);
+
         // Emojis should appear as suggestions but never as autocorrection targets
         if (willAutoCorrect) {
             int acIdx = SuggestedWords.getMinSuggestionsIndex();
@@ -194,6 +199,9 @@ public final class SuggestionEngine {
     private void getPredictions(ComposingTextTracker composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, int suggestionType, SuggestionCallback callback) {
         SuggestionResult perfLogger = this.mDictionaryLoader.generateSuggestions(composingTracker, prevWordsInfo, proximityGrid, stripSettings, 1);
         ArrayList<SuggestedWords.SuggestedWordInfo> predictions = perfLogger.getSuggestions();
+        // The engine's emoji prediction is switched off, but an entry that slips through has no
+        // place in the strip: its emoji is the emojibase hit for the word being composed.
+        EmojibaseStripSuggestion.dropEngineEmoji(predictions);
         int size = predictions.size();
         boolean isStartOfSentence = composingTracker.isStartOfSentence();
         String composingText = composingTracker.getComposingText();

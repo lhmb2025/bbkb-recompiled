@@ -37,10 +37,11 @@ import org.robolectric.annotation.Config
  *
  * ## The second open (audit §6 defect 11)
  * `KeyboardSwitcher.hideEmojiKeyboard()` calls `detachPagerAdapter()`, which sets the pager's
- * adapter to null. The ONLY place the adapter is attached again is `updateDeleteButton(...)`, which
- * `showEmojiKeyboardInternal()` calls on every open. [secondOpenIsEmptyUntilUpdateDeleteButtonReattaches]
- * replays that exact call sequence and pins both halves: without the call the pager is empty, with it
- * the same adapter is back at the page the user left.
+ * adapter to null. The ONLY place the adapter is attached again is `attachPagerAdapter()`, which
+ * `showEmojiKeyboardInternal()` calls on every open (it used to hide inside the delete-icon
+ * update). [secondOpenIsEmptyUntilAttachPagerAdapter] replays that exact call sequence and pins
+ * both halves: without the call the pager is empty, with it the same adapter is back at the page
+ * the user left.
  *
  * ## Remembered category
  * A remembered category id must name a category that has a tab; anything else (an empty category,
@@ -277,7 +278,7 @@ class EmojiPalettesViewCharacterisationTest {
     // ------------------------------------------------------------------ second open (defect 11)
 
     @Test
-    fun secondOpenIsEmptyUntilUpdateDeleteButtonReattaches() {
+    fun secondOpenIsEmptyUntilAttachPagerAdapter() {
         val v = open()
         v.select(3)
         val adapter = v.pager().adapter
@@ -290,16 +291,16 @@ class EmojiPalettesViewCharacterisationTest {
         assertNull(v.pager().adapter)
         assertEquals(0, v.pager().childCount)
 
-        // showEmojiKeyboardInternal() without its updateDeleteButton(...) call
+        // showEmojiKeyboardInternal() without its attachPagerAdapter() call
         v.visibility = View.VISIBLE
-        v.setTabChanged(false)
+        v.updateDeleteButton(EmojiTestEnv.templateKeyboard().mIconsSet, "en")
         v.setSwitchingToEmoji(true)
         idle()
         assertNull(v.pager().adapter)
         assertEquals(0, v.pager().childCount)
 
         // ...and with it
-        v.updateDeleteButton(null, null, null, EmojiTestEnv.templateKeyboard().mIconsSet, "en")
+        v.attachPagerAdapter()
         idle()
         assertSame(adapter, v.pager().adapter)
         assertEquals(3, v.pager().currentItem)
@@ -433,7 +434,7 @@ class EmojiPalettesViewCharacterisationTest {
         assertEquals(listOf("s40"), emojiOutputs(pages[1]))
         assertEquals(40, pages[1].keys.size)
 
-        v.onComposingTextChanged("zzzz")
+        v.onEmojiOpened("zzzz")
         assertTrue(EmojiTestEnv.waitUntil { !v.overlay().isOverlayVisible })
     }
 

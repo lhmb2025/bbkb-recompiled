@@ -1020,6 +1020,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         EmojiPalettesView emojiPalettesView = this.emojiPalettesView;
         if (emojiPalettesView != null) {
             emojiPalettesView.setVisibility(View.GONE);
+            // Closing the board ends its search query: reopening starts clean.
+            emojiPalettesView.clearQuery();
             emojiPalettesView.detachPagerAdapter();
         }
 
@@ -1095,16 +1097,18 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
             if (BuildConfig.DEBUG) Log.e(TAG, "Emoji keyboard view is unavailable");
             return;
         }
-        emojiPalettesView.updateDeleteButton(this.keyboardLayoutSet.getText("keylabel_to_alpha"), this.keyboardLayoutSet.getText("keylabel_to_symbol"), this.mainKeyboardView.getKeyVisualAttribute(), c0965eM6733a.mIconsSet, LocaleUtils.languageCode(c0965eM6733a.mId.mLocale));
+        emojiPalettesView.updateDeleteButton(c0965eM6733a.mIconsSet, LocaleUtils.languageCode(c0965eM6733a.mId.mLocale));
+        emojiPalettesView.attachPagerAdapter();
         emojiPalettesView.setVisibility(View.VISIBLE);
-        emojiPalettesView.setTabChanged(false);
         emojiPalettesView.setSwitchingToEmoji(true);
         updateKeyboardLayout();
 
-        // Dynamic search: trigger search from composing text when enabled.
-        if (SettingsManager.getInstance().getSettingsValues().isEmojiDynamicSearchEnabled) {
-            String composingText = getComposingText();
-            emojiPalettesView.onEmojiOpened(composingText);
+        // The on-screen path of emoji dynamic search: the board opens filtered on the word being
+        // composed. A physical keyboard never seeds the query (owner decision 2026-11-02): there
+        // the user types into the open board instead (KeyEventProcessor -> appendToQuery).
+        if (SettingsManager.getInstance().getSettingsValues().isEmojiDynamicSearchEnabled
+                && DeviceProfile.isOnScreenKeyboardVisible()) {
+            emojiPalettesView.onEmojiOpened(getComposingText());
         }
     }
 

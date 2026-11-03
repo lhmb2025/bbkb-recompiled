@@ -14,26 +14,29 @@
         android:id="@+id/emoji_pager_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        
+
         <!-- Main emoji category ViewPager (static categories) -->
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/emoji_keyboard_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
-        
+
         <!-- Search/Recents overlay (sits on top, shown when in search mode) -->
         <dev.bbkb.ime.keyboard.inputboard.emoji.EmojiSearchOverlayView
             android:id="@+id/emoji_search_overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"/>
-            
+
     </FrameLayout>
     <dev.bbkb.ime.keyboard.inputboard.emoji.EmojiCategoryPageIndicatorView
         android:id="@+id/emoji_category_page_id_view"
         android:layout_width="match_parent"
         android:layout_height="8dp"/>
+
+    <!-- The tab row: category icons and the delete key. Hidden while a typed query is active. -->
     <LinearLayout
+        android:id="@+id/emoji_tab_row"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/config_suggestions_strip_height">
@@ -64,6 +67,50 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="12.5"
+            android:soundEffectsEnabled="false"
+            android:hapticFeedbackEnabled="false"/>
+    </LinearLayout>
+
+    <!-- The search field that takes the tab row's place while a query is typed on a physical
+         keyboard: the search icon where Recents was, the query, and a clear button where the
+         delete key was. Same height and the same column split as the row it replaces. -->
+    <LinearLayout
+        android:id="@+id/emoji_search_field"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/config_suggestions_strip_height"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/emoji_search_icon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="8.75"
+            android:scaleType="center"
+            android:src="@drawable/ic_key_search"
+            android:contentDescription="@null"/>
+        <TextView
+            android:id="@+id/emoji_search_query"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="78.75"
+            android:gravity="center_vertical|start"
+            android:paddingStart="4dp"
+            android:paddingEnd="8dp"
+            android:singleLine="true"
+            android:ellipsize="start"
+            android:textSize="@dimen/config_suggestion_text_size"
+            android:textDirection="locale"
+            android:contentDescription="@string/label_search_key"/>
+        <include layout="@layout/suggestion_divider"/>
+        <ImageButton
+            android:id="@+id/emoji_search_clear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="12.5"
+            android:background="@android:color/transparent"
+            android:scaleType="center"
+            android:src="@drawable/ic_key_clear_search"
+            android:contentDescription="@string/cancel"
             android:soundEffectsEnabled="false"
             android:hapticFeedbackEnabled="false"/>
     </LinearLayout>

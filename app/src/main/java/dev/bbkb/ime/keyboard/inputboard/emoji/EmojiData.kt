@@ -98,28 +98,10 @@ data class EmojiData(
      * description, a tag or an alias, and each of those containments scores at least 5. So
      * `searchRelevance(q) > 0` is exactly "the description, a tag or an alias contains q".
      */
-    fun searchRelevance(query: String): Int {
-        val lowerQuery = query.lowercase()
-        var score = 0
-
-        // Exact description match (highest priority)
-        if (description.lowercase() == lowerQuery) score += 100
-        // Description starts with query
-        else if (description.lowercase().startsWith(lowerQuery)) score += 50
-        // Description contains query
-        else if (description.lowercase().contains(lowerQuery)) score += 25
-
-        // Tag exact match
-        if (tags?.any { it.lowercase() == lowerQuery } == true) score += 40
-        // Tag starts with query
-        else if (tags?.any { it.lowercase().startsWith(lowerQuery) } == true) score += 20
-        // Tag contains query
-        else if (tags?.any { it.lowercase().contains(lowerQuery) } == true) score += 10
-
-        // Alias match
-        if (aliases?.any { it.lowercase() == lowerQuery } == true) score += 30
-        else if (aliases?.any { it.lowercase().contains(lowerQuery) } == true) score += 5
-
-        return score
-    }
+    fun searchRelevance(query: String): Int = EmojiSearchScoring.score(
+        description.lowercase(),
+        tags?.map { it.lowercase() } ?: emptyList(),
+        aliases?.map { it.lowercase() } ?: emptyList(),
+        query.lowercase()
+    )
 }

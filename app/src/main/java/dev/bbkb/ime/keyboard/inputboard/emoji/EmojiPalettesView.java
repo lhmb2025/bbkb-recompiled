@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
+import android.widget.TextView;
 
 import androidx.viewpager.widget.ViewPager;
 
@@ -31,7 +32,6 @@ import dev.bbkb.ime.keyboard.KeyboardColorManager;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
-import dev.bbkb.ime.keyboard.internal.KeyVisualAttributes;
 import dev.bbkb.ime.keyboard.internal.KeyboardIconSet;
 
 import java.util.List;
@@ -47,9 +47,22 @@ import dev.bbkb.ime.keyboard.inputboard.BoardKeyboardFactory;
  * Provides a tabbed interface with category tabs, paginated emoji grids, and functional
  * keys (delete, alphabet switch). Integrates with the unified input board system and
  * supports both legacy emoji data and modern Emojibase data sources.
+ *
+ * <h2>Search</h2>
+ *
+ * <p>The query lives in {@link EmojiSearchQuery} and has two origins. On a physical keyboard the
+ * user types into the open board: {@code KeyEventProcessor} routes each printable key to
+ * {@link #appendToQuery} and Backspace to {@link #backspaceQuery}. The first character turns the
+ * tab row into the search field (search icon, the query, a clear button where the delete key was)
+ * and hides the page dots; from the second character the results overlay shows the matches
+ * whatever tab was current; a pick inserts the emoji and leaves the query alone; Backspace on the
+ * last character, the clear button, or closing the board ends it and the tab row returns. On an
+ * on-screen keyboard, with Dynamic Search on, {@link #onEmojiOpened} seeds the query from the word
+ * being composed and today's behaviour stands: results on the Recents tab only, and a pick replaces
+ * or appends the word. Owner decisions, 2026-11-02.
  */
 
-public final class EmojiPalettesView extends LinearLayout implements ViewPager.OnPageChangeListener, View.OnClickListener, View.OnTouchListener, TabHost.OnTabChangeListener, EmojiPageKeyboardView.OnEmojiKeyListener {
+public final class EmojiPalettesView extends LinearLayout implements ViewPager.OnPageChangeListener, TabHost.OnTabChangeListener, EmojiPageKeyboardView.OnEmojiKeyListener {
 
     private static final String TAG = "EmojiPalettesView";
 
@@ -85,20 +98,26 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
 
     private final EmojiCategoryManager categoryManager;
 
-    // Dynamic search functionality (driven by composing text, no on-screen search bar)
+    // The search query and its machinery (no on-screen text field: a physical keyboard types into
+    // the board, the on-screen keyboard seeds it from the composing word).
+    private final EmojiSearchQuery query = new EmojiSearchQuery();
     private EmojibaseDataProvider emojiDataProvider;
     private android.os.Handler searchHandler;
     private Runnable pendingSearchRunnable;
     private ExecutorService searchExecutor;
-    private boolean isAttachedToWindow = false;
-    private boolean dynamicSearchActive = false;
-    /** Bumped on every query change; a search result for an older generation is stale and dropped. */
-    private int searchGeneration = 0;
+    private boolean attached = false;
     private static final long SEARCH_DEBOUNCE_MS = 150;
 
     // Search/Recents overlay - separate from category ViewPager to avoid state conflicts
     private EmojiSearchOverlayView searchOverlay;
     private FrameLayout pagerContainer;
+
+    // The tab row and the search field that takes its place while a query is typed.
+    private View tabRow;
+    private View searchFieldRow;
+    private ImageView searchIcon;
+    private TextView searchQueryText;
+    private ImageButton clearSearchButton;
 
     private final kotlin.jvm.functions.Function0<kotlin.Unit> colorObserver = () -> {
         applyColors();
@@ -212,6 +231,16 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         this.deleteButton.setTag(-5);
         this.deleteButton.setOnTouchListener(this.deleteKeyTouchListener);
 
+        this.tabRow = findViewById(R.id.emoji_tab_row);
+        this.searchFieldRow = findViewById(R.id.emoji_search_field);
+        this.searchIcon = findViewById(R.id.emoji_search_icon);
+        this.searchQueryText = findViewById(R.id.emoji_search_query);
+        this.clearSearchButton = findViewById(R.id.emoji_search_clear);
+        this.clearSearchButton.setOnClickListener(v -> {
+            AudioAndHapticFeedbackManager.getInstance().performAudioAndHapticFeedback(-21, this);
+            clearQuery();
+        });
+
         applyColors();
 
         // Initialize dynamic search infrastructure
@@ -219,9 +248,9 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
     }
 
     /**
-     * Initialize the dynamic-search infrastructure (background executor, handler and
-     * emoji data provider). Search is driven by composing text from the physical
-     * keyboard; there is no on-screen search bar.
+     * Initialize the search infrastructure (background executor, handler and emoji data
+     * provider). There is no on-screen search bar: a physical keyboard types into the board, the
+     * on-screen keyboard seeds the query from the composing word.
      */
     private void initSearch() {
         // Use main looper handler for UI updates
@@ -241,7 +270,7 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        isAttachedToWindow = true;
+        attached = true;
         KeyboardColorManager.INSTANCE.addObserver(colorObserver);
     }
 
@@ -249,7 +278,7 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
     protected void onDetachedFromWindow() {
         KeyboardColorManager.INSTANCE.removeObserver(colorObserver);
         super.onDetachedFromWindow();
-        isAttachedToWindow = false;
+        attached = false;
 
         // Clean up to prevent memory leaks
         if (pendingSearchRunnable != null && searchHandler != null) {
@@ -280,7 +309,7 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         return searchExecutor;
     }
 
-    private void debounceSearch(String query) {
+    private void debounceSearch(String queryText) {
 
         if (searchHandler == null) {
             return;
@@ -288,8 +317,8 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
 
         cancelPendingSearch();
 
-        final int generation = searchGeneration;
-        pendingSearchRunnable = () -> performSearchAsync(query, generation);
+        final int generation = query.generation();
+        pendingSearchRunnable = () -> performSearchAsync(queryText, generation);
         searchHandler.postDelayed(pendingSearchRunnable, SEARCH_DEBOUNCE_MS);
     }
 
@@ -302,17 +331,17 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
 
     /**
      * Perform search on background thread to keep UI responsive.
-     * Results are posted back to main thread. The query is never empty: only
-     * {@link #onEmojiOpened(String)} schedules a search, and only for two or more characters.
+     * Results are posted back to main thread. The query is never empty: a search is only
+     * scheduled for two or more characters ({@link EmojiSearchQuery#isSearchable()}).
      */
-    private void performSearchAsync(String query, int generation) {
-        if (!isAttachedToWindow) {
+    private void performSearchAsync(String queryText, int generation) {
+        if (!attached) {
             return;
         }
 
         searchExecutor().execute(() -> {
             // Guard: Don't process if view is detached
-            if (!isAttachedToWindow) {
+            if (!attached) {
                 return;
             }
 
@@ -321,13 +350,13 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
             }
 
             // Perform search on background thread
-            List<EmojiData> results = emojiDataProvider.searchEmojis(query);
+            List<EmojiData> results = emojiDataProvider.searchEmojis(queryText);
 
             // Post results to main thread
             postToMainThread(() -> {
-                if (!isAttachedToWindow) return;  // Double-check after post
-                // The query changed while this search ran (e.g. shortened to recents): drop it.
-                if (generation != searchGeneration) return;
+                if (!attached) return;  // Double-check after post
+                // The query changed while this search ran (shortened, cleared, or retyped): drop it.
+                if (generation != query.generation()) return;
                 showSearchResults(results);
             });
         });
@@ -344,6 +373,10 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         if (!overlayMayShow()) {
             return;
         }
+        // Results of a typed query are never displaced by recents.
+        if (query.isTypedInBoard() && query.isSearchable()) {
+            return;
+        }
         List<String> recentEmojis = categoryManager.getRecentEmojis();
         if (recentEmojis.isEmpty()) {
             searchOverlay.hide();
@@ -352,65 +385,181 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         }
     }
 
-    /** Search results in the overlay; with no results the overlay hides and the category pager shows. */
+    /**
+     * Search results in the overlay. With no results, a typed query shows an empty page under
+     * its field (so the user sees the query failed rather than the tab behind it); the on-screen
+     * dynamic-search query hides the overlay and the category pager shows, as before.
+     */
     private void showSearchResults(List<EmojiData> results) {
         if (!overlayMayShow()) {
             return;
         }
+        EmojiKeyboardFactory factory = categoryManager.getKeyboardFactory();
         if (results.isEmpty()) {
-            searchOverlay.hide();
+            if (query.isTypedInBoard()) {
+                searchOverlay.showKeyboards(factory.createEmptyResultsPage());
+            } else {
+                searchOverlay.hide();
+            }
         } else {
-            searchOverlay.showKeyboards(categoryManager.getKeyboardFactory().createSearchResultsKeyboards(results));
+            searchOverlay.showKeyboards(factory.createSearchResultsKeyboards(results));
         }
     }
 
     /**
-     * The overlay only changes while the Recents/search category (0) is current. This prevents
-     * delayed search results from showing when the user has switched tabs.
+     * Whether the overlay may change now. A typed query shows its results whatever tab was
+     * current when typing began (owner decision 2026-11-02). The on-screen dynamic-search query
+     * keeps today's rule and only changes the overlay while the Recents/search category (0) is
+     * current, so delayed results do not land on a tab the user has moved to.
      */
     private boolean overlayMayShow() {
         if (searchOverlay == null) {
             if (BuildConfig.DEBUG) android.util.Log.w(TAG, "Search overlay not initialized");
             return false;
         }
-        return categoryManager.getCurrentCategoryId() == 0;
+        return query.isTypedInBoard() || categoryManager.getCurrentCategoryId() == 0;
     }
 
-    // ==================== Dynamic Search Methods ====================
+    // ==================== Typed query (physical keyboard) ====================
 
     /**
-     * Called when the emoji board is opened with composing text available.
-     * Triggers dynamic search if text is >= 2 characters.
-     * Also called by onComposingTextChanged for live PKB typing updates.
+     * A hardware key typed while the board is open, routed here by {@code KeyEventProcessor}.
+     * The first character turns the tab row into the search field; from the second character the
+     * page shows the matches. Space is a space, so a two-word query is allowed.
+     *
+     * @return false only for empty input; the caller treats true as "the board took the key"
+     */
+    public boolean appendToQuery(CharSequence chars) {
+        if (chars == null || chars.length() == 0) {
+            return false;
+        }
+        boolean started = query.append(chars, categoryManager.getCurrentCategoryId());
+        if (started) {
+            showSearchField();
+        }
+        searchQueryText.setText(query.text());
+        refreshTypedResults();
+        return true;
+    }
+
+    /**
+     * Hardware Backspace while the board is open. Removes the last character of a typed query;
+     * removing the only one ends the query and the tab row returns.
+     *
+     * @return false when there is no typed query, so the key passes through to the editor
+     */
+    public boolean backspaceQuery() {
+        if (!query.isTypedInBoard() || query.isEmpty()) {
+            return false;
+        }
+        query.backspace();
+        if (query.isEmpty()) {
+            endTypedQuery();
+        } else {
+            searchQueryText.setText(query.text());
+            refreshTypedResults();
+        }
+        return true;
+    }
+
+    /** Ends whichever query is active: the clear button, and every route that closes the board. */
+    public void clearQuery() {
+        if (query.isTypedInBoard()) {
+            endTypedQuery();
+        } else if (query.isFromEditor()) {
+            query.clear();
+            cancelPendingSearch();
+        }
+    }
+
+    /** Whether a typed query is active, i.e. the search field stands in for the tab row. */
+    public boolean isSearchFieldShowing() {
+        return query.isTypedInBoard();
+    }
+
+    /** The current query text, of either origin; empty when there is none. */
+    public String getQueryText() {
+        return query.text();
+    }
+
+    private void endTypedQuery() {
+        query.clear();
+        cancelPendingSearch();
+        hideSearchField();
+        if (searchOverlay != null) {
+            searchOverlay.hide();
+        }
+        updatePageIndicator();
+        // Back to the tab that was current before the first letter: the tabs were hidden
+        // throughout, so it is the current category still.
+        updateRecentsForCategory(categoryManager.getCurrentCategoryId());
+    }
+
+    /** Searches a typed query of two or more characters; a shorter one shows the tab's own page. */
+    private void refreshTypedResults() {
+        if (query.isSearchable()) {
+            debounceSearch(query.text());
+            return;
+        }
+        cancelPendingSearch();
+        if (categoryManager.getCurrentCategoryId() == 0) {
+            showRecents();
+        } else if (searchOverlay != null) {
+            searchOverlay.hide();
+        }
+    }
+
+    private void showSearchField() {
+        if (tabRow == null || searchFieldRow == null) {
+            return;
+        }
+        tabRow.setVisibility(GONE);
+        searchFieldRow.setVisibility(VISIBLE);
+        if (pageIndicatorView != null) {
+            pageIndicatorView.setVisibility(INVISIBLE);
+        }
+    }
+
+    private void hideSearchField() {
+        if (tabRow == null || searchFieldRow == null) {
+            return;
+        }
+        searchQueryText.setText("");
+        searchFieldRow.setVisibility(GONE);
+        tabRow.setVisibility(VISIBLE);
+        if (pageIndicatorView != null) {
+            pageIndicatorView.setVisibility(VISIBLE);
+        }
+    }
+
+    // ==================== Query from the editor (on-screen dynamic search) ====================
+
+    /**
+     * The board was opened from the on-screen keyboard with Dynamic Search on: the word being
+     * composed becomes the query. Two or more characters search; fewer show recents.
      *
      * <p>Every call supersedes the previous query: shorter text cancels a debounced search, and a
      * search already running for an older query has its results dropped.
      */
     public void onEmojiOpened(String composingText) {
-        searchGeneration++;
-        if (composingText != null && composingText.length() >= 2) {
-            dynamicSearchActive = true;
-            debounceSearch(composingText);
+        if (query.isTypedInBoard()) {
+            endTypedQuery();
+        }
+        query.setFromEditor(composingText);
+        if (query.isSearchable()) {
+            debounceSearch(query.text());
         } else {
-            dynamicSearchActive = false;
             cancelPendingSearch();
             showRecents();
         }
     }
 
     /**
-     * Called when composing text changes while emoji board is showing.
-     * Delegates to onEmojiOpened for unified search behavior.
-     */
-    public void onComposingTextChanged(String composingText) {
-        onEmojiOpened(composingText);
-    }
-
-    /**
-     * Check if dynamic search is currently active.
+     * Check if dynamic search is currently active: a query from the editor that is long enough to
+     * search on. A pick then replaces or appends the composing word.
      */
     public boolean isDynamicSearchActive() {
-        return dynamicSearchActive;
+        return query.isFromEditor() && query.isSearchable();
     }
 
     /**
@@ -447,8 +596,8 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
             if (searchOverlay != null && searchOverlay.isOverlayVisible()) {
                 searchOverlay.hide();
             }
-            if (dynamicSearch) {
-                dynamicSearchActive = false;
+            if (dynamicSearch && query.isFromEditor()) {
+                query.clear();
             }
         } else if (dynamicSearch) {
             // Returning to first tab in dynamic mode — re-trigger search if composing text exists
@@ -461,14 +610,6 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
 
         // Refresh recents overlay when tab changes
         updateRecentsForCategory(iM6661a);
-    }
-
-    /**
-     * No effect. The adapter flag this set only guarded a branch of {@code destroyItem} that no page
-     * object can reach (see {@link EmojiPagerAdapter}). Kept because
-     * {@code KeyboardSwitcher.showEmojiKeyboardInternal()} still calls it.
-     */
-    public void setTabChanged(boolean z) {
     }
 
     public void setSwitchingToEmoji(boolean z) {
@@ -506,29 +647,6 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         }
     }
 
-    @Override // android.view.View.OnTouchListener
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        if (motionEvent.getActionMasked() != 0) {
-            return false;
-        }
-        Object tag = view.getTag();
-        if (!(tag instanceof Integer)) {
-            return false;
-        }
-        this.keyboardActionListener.onPressKey(((Integer) tag).intValue(), 0, true);
-        return false;
-    }
-
-    @Override // android.view.View.OnClickListener
-    public void onClick(View view) {
-        Object tag = view.getTag();
-        if (tag instanceof Integer) {
-            int iIntValue = ((Integer) tag).intValue();
-            this.keyboardActionListener.onCodeInput(iIntValue, -1, -1, 0L, false);
-            this.keyboardActionListener.onReleaseKey(iIntValue, false);
-        }
-    }
-
     @Override // dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPageKeyboardView.OnEmojiKeyListener
     public void onEmojiKeyPressed(Key key) {
         this.keyboardActionListener.onPressKey(key.getCode(), 0, true);
@@ -536,19 +654,22 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
 
     @Override // dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPageKeyboardView.OnEmojiKeyListener
     public void onEmojiKeyReleased(Key key) {
-        // Handle dynamic search mode: replace or append composing text
+        // On-screen dynamic search: replace or append the composing word, and the query ends. A
+        // typed query stays, so a second emoji from the same results is one more tap.
         if (isDynamicSearchActive()) {
             if (isReplaceMode()) {
                 KeyboardSwitcher.getInstance().clearComposingText();
             } else {
                 KeyboardSwitcher.getInstance().commitComposingText();
             }
-            dynamicSearchActive = false;
+            query.clear();
         }
 
-        // Recents are persisted to prefs: an incognito field leaves no trace there.
+        // Recents and the remembered skin tone are persisted to prefs: an incognito field leaves
+        // no trace there.
         if (!KeyboardSwitcher.getInstance().isNoPersonalizedLearning()) {
             this.pagerAdapter.addToRecents(key.getKeySpecOutputText());
+            EmojiToneMemory.onEmojiPicked(PrefsManager.INSTANCE.getPrefs(getContext()), key.getKeySpecOutputText());
         }
         int iM6232c = key.getCode();
         if (iM6232c == -4) {
@@ -570,19 +691,27 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         }
     }
 
-    public void updateDeleteButton(String str, String str2, KeyVisualAttributes c1021ad, KeyboardIconSet c1024ag, String str3) {
-        int iM7164b;
-        if (str3.equals("ar") || str3.equals("fa") || str3.equals("iw")) {
-            iM7164b = c1024ag.getIconResourceId("delete_rtl_key");
+    /** The delete key's icon for the current language (a mirrored one for RTL scripts). */
+    public void updateDeleteButton(KeyboardIconSet icons, String languageCode) {
+        int iconId;
+        if (languageCode.equals("ar") || languageCode.equals("fa") || languageCode.equals("iw")) {
+            iconId = icons.getIconResourceId("delete_rtl_key");
         } else {
-            iM7164b = c1024ag.getIconResourceId("delete_key");
+            iconId = icons.getIconResourceId("delete_key");
         }
-        if (iM7164b != 0) {
-            this.deleteButton.setImageResource(iM7164b);
+        if (iconId != 0) {
+            this.deleteButton.setImageResource(iconId);
             if (KeyboardColorManager.INSTANCE.isInitialized()) {
                 KeyboardColorManager.INSTANCE.tint(this.deleteButton);
             }
         }
+    }
+
+    /**
+     * Re-attaches the pager adapter after {@link #detachPagerAdapter()}, at the page the user left.
+     * The open path calls it on every open; it used to hide inside the delete-icon update.
+     */
+    public void attachPagerAdapter() {
         this.viewPager.setAdapter(this.pagerAdapter);
         this.viewPager.setCurrentItem(this.currentPagePosition);
     }
@@ -590,6 +719,8 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
     public void detachPagerAdapter() {
         this.pagerAdapter.commitPendingRecents();
         this.viewPager.setAdapter(null);
+        // Pages are rebuilt on the next open, so a skin tone remembered meanwhile shows on the keys.
+        this.categoryManager.clearKeyboardCache();
     }
 
     public void setKeyboardActionListener(KeyboardActionListenerInterface interfaceC0976f) {
@@ -646,6 +777,18 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
             KeyboardColorManager.INSTANCE.getIconColor(0.3f),
             panelColor
         );
+        // The search field: same surface as the tab row it replaces; the search icon in the
+        // accent (modern) or icon colour, the clear button like the delete key it stands in for.
+        if (this.searchFieldRow != null) {
+            this.searchFieldRow.setBackgroundColor(panelColor);
+            KeyboardColorManager.INSTANCE.tint(this.searchIcon,
+                    modernBoards ? KeyboardColorManager.INSTANCE.getAccentColor()
+                                 : KeyboardColorManager.INSTANCE.getIconColor());
+            this.searchQueryText.setTextColor(KeyboardColorManager.INSTANCE.getTextColor());
+            KeyboardColorManager.INSTANCE.tint(this.clearSearchButton);
+            this.clearSearchButton.setForeground(
+                    modernBoards ? KeyboardColorManager.pressedHighlight() : null);
+        }
         updateTabIconColors();
     }
 

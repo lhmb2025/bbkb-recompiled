@@ -65,6 +65,7 @@ import dev.bbkb.ime.core.settings.ComposeSettingsActivity
 import dev.bbkb.ime.core.settings.util.SettingsManager
 import dev.bbkb.ime.core.settings.util.SettingsValues
 import dev.bbkb.ime.core.suggestion.SuggestedWords
+import dev.bbkb.ime.core.suggestion.EmojibaseStripSuggestion
 import dev.bbkb.ime.core.suggestion.SuggestionEngine
 import dev.bbkb.ime.core.suggestion.SuggestionStripPresenter
 import dev.bbkb.ime.core.suggestion.SuggestionUpdater
@@ -104,6 +105,7 @@ import dev.bbkb.ime.keyboard.MainKeyboardView
 import dev.bbkb.ime.keyboard.auxbar.ArrowBarController
 import dev.bbkb.ime.keyboard.auxbar.autofill.InlineAutofillManager
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojibaseDataProvider
+import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiToneMemory
 import dev.bbkb.ime.keyboard.auxbar.suggestions.CJKSuggestionGridView
 import dev.bbkb.ime.keyboard.auxbar.suggestions.SuggestionStripListener
 import dev.bbkb.ime.keyboard.inputboard.UnifiedInputBoardHandler
@@ -1646,9 +1648,16 @@ class BlackBerryIME : InputMethodService(),
         val sdkM4875a2 = NuanceSDKManager.getInstance()
         StartupTiming.endIfOver("ime.loadSettings.nuanceSdkGet", sdkToken, 5L)
         if (sdkM4875a2 != null) {
-            sdkM4875a2.setEmojiPredictionEnabled(settingsValues.isEmojiPredictionsEnabled)
+            // Off for good: the strip's emoji comes from emojibase now (EmojibaseStripSuggestion),
+            // and the Emoji suggestions switch governs that lookup instead of the engine's.
+            sdkM4875a2.setEmojiPredictionEnabled(false)
         } else {
             Logger.warn(LOG_TAG, "NuanceSDK unavailable; skipping setEmojiPredictionEnabled")
+        }
+        if (settingsValues.isEmojiPredictionsEnabled) {
+            // Parse the emojibase dataset off the UI thread now, so the first word typed already
+            // has its emoji instead of the first strip update paying for the 735 KB parse.
+            EmojibaseDataProvider.preloadAsync(this)
         }
     }
 
@@ -1970,13 +1979,9 @@ class BlackBerryIME : InputMethodService(),
         val sv = SettingsManager.getInstance().getSettingsValues()
         val coordinator = uim?.getBoardCoordinator()
 
-        // R3(c): a text key typed while emoji dynamic search is running is SEARCH input, not
-        // typing, so it closes no board at all. A row of the table now, not a flag buried here.
-        val closesNoBoard = CrossAxisRules.textKeyClosesNoBoard(
-            sv != null
-                && sv.isEmojiDynamicSearchEnabled
-                && keyboardSwitcher.isEmojiKeyboardShowing()
-        )
+        // The emoji board's own text keys never get here: KeyEventProcessor routes a printable
+        // key or Backspace typed while the board is up into its search query first
+        // (EmojiQueryKeyRouting, 2026-11-02), which retired owner ruling R3(c).
         val cursorBoard = CrossAxisRules.CURSOR_BOARD_KEY_CODE
 
         fccController?.let { fcc ->
@@ -1989,23 +1994,21 @@ class BlackBerryIME : InputMethodService(),
         }
 
         if (uim != null && sv != null && sv.isUimEnabled) {
-            if (!closesNoBoard) {
-                // Primary: close the active board via the coordinator (per-board close
-                // semantics + state cleared) — unless the table says this board survives a text
-                // key. FCC was handled above with its own mid-toggle exemption; R3(b) added the
-                // number pad, because typing a letter must not close a board typed FROM.
-                val openBoard = coordinator?.activeBoard() ?: UnifiedBoardCoordinator.NO_BOARD
-                if (coordinator != null && !CrossAxisRules.boardSurvivesTextKey(openBoard)) {
-                    coordinator.onTextKeyPressed()
-                }
-                // Defense-in-depth sweep for components showing outside coordinator
-                // tracking (e.g. auto-shown autofill). Spares the same set.
-                uim.hideComponentsExcept(CrossAxisRules.boardsExemptFromTextKey())
+            // Primary: close the active board via the coordinator (per-board close
+            // semantics + state cleared) — unless the table says this board survives a text
+            // key. FCC was handled above with its own mid-toggle exemption; R3(b) added the
+            // number pad, because typing a letter must not close a board typed FROM.
+            val openBoard = coordinator?.activeBoard() ?: UnifiedBoardCoordinator.NO_BOARD
+            if (coordinator != null && !CrossAxisRules.boardSurvivesTextKey(openBoard)) {
+                coordinator.onTextKeyPressed()
             }
+            // Defense-in-depth sweep for components showing outside coordinator
+            // tracking (e.g. auto-shown autofill). Spares the same set.
+            uim.hideComponentsExcept(CrossAxisRules.boardsExemptFromTextKey())
             uim.refresh()
         }
         if (sv == null || !keyboardSwitcher.isEmojiKeyboardShowing() || sv.isUimEnabled) return
-        if (!closesNoBoard) keyboardSwitcher.getUnifiedInputBoardManager()!!.closeActiveComponent()
+        keyboardSwitcher.getUnifiedInputBoardManager()!!.closeActiveComponent()
     }
 
     /**
@@ -2797,6 +2800,10 @@ class BlackBerryIME : InputMethodService(),
     }
 
     override fun onSuggestionPicked(suggestedWordInfoVar: SuggestedWords.SuggestedWordInfo, enumC0690f: InputSource) {
+        if (suggestedWordInfoVar.isKind(EmojibaseStripSuggestion.KIND_EMOJI) && !keyboardSwitcher.isNoPersonalizedLearning()) {
+            // The strip's emoji slot, or a tone from its long-press popup: remember the tone.
+            EmojiToneMemory.onEmojiPicked(PrefsManager.getPrefs(this), suggestedWordInfoVar.word)
+        }
         applyPostEventUpdates(inputLogic.handleManualPick(settingsManager.getSettingsValues(), suggestedWordInfoVar, getSymbolPageProvider(), keyboardSwitcher.getKeyboardElementId(), uiUpdateHandler, enumC0690f), true)
     }
 

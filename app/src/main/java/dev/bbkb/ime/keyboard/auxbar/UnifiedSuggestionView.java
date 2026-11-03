@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.suggestion.SuggestedWords;
+import dev.bbkb.ime.core.suggestion.EmojibaseStripSuggestion;
 import dev.bbkb.ime.core.keyevent.InputSource;
 import dev.bbkb.ime.keyboard.internal.MoreKeysPanel;
 import dev.bbkb.ime.keyboard.Keyboard;
@@ -29,8 +30,11 @@ import dev.bbkb.ime.keyboard.KeyboardColorManager;
 import dev.bbkb.ime.keyboard.auxbar.suggestions.FlickSuggestionAnimationView;
 import dev.bbkb.ime.keyboard.auxbar.suggestions.MoreSuggestionsKeyboard;
 import dev.bbkb.ime.keyboard.auxbar.suggestions.MoreSuggestionsView;
+import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiToneMemory;
+import dev.bbkb.ime.keyboard.inputboard.emoji.EmojibaseDataProvider;
 
 import java.util.List;
+import java.util.ArrayList;
 import dev.bbkb.ime.BuildConfig;
 
 /**
@@ -51,10 +55,22 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
     private SuggestionMode currentMode = SuggestionMode.LATIN;
     private NonScrollableLayoutManager layoutManager;
     private GestureDetector gestureDetector;
+    /** The words as the strip shows them: {@link #currentWords} without the emoji entry. */
     private SuggestedWords currentSuggestions;
+    /** The words as given to {@link #setSuggestions}, emoji entry included, for a round trip through {@link #getCurrentSuggestions}. */
+    private SuggestedWords currentWords;
     
     private Listener listener;
     private FlickSuggestionAnimationView suggestionAnimationView;
+
+    /**
+     * The emoji slot at the strip's right end: the emojibase hit for the word being typed
+     * (kind 11, {@link EmojibaseStripSuggestion}), or hidden. It rides outside the word slots so
+     * the three words keep their positions and widths. A tap inserts it like any suggestion; a
+     * long-press shows its skin tones ({@link #showEmojiVariants}).
+     */
+    private android.widget.TextView emojiSlot;
+    private SuggestedWords.SuggestedWordInfo emojiSuggestion;
 
     private final kotlin.jvm.functions.Function0<kotlin.Unit> colorObserver = () -> {
         updateColors();
@@ -123,6 +139,13 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         hamburgerBtn = findViewById(R.id.hamburger_btn);
         actionBtn = findViewById(R.id.action_btn);
         overlayContainer = findViewById(R.id.overlay_container);
+        emojiSlot = findViewById(R.id.emoji_suggestion_slot);
+        emojiSlot.setOnClickListener(v -> {
+            if (listener != null && emojiSuggestion != null) {
+                listener.onSuggestionClicked(emojiSuggestion, InputSource.UNKNOWN);
+            }
+        });
+        emojiSlot.setOnLongClickListener(v -> showEmojiVariants(emojiSuggestion));
 
         // Setup RecyclerView with custom non-scrollable layout manager for Latin mode
         adapter = new UnifiedSuggestionAdapter(context, this);
@@ -238,6 +261,7 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             
             // Update adapter with current dimensions
             updateAdapterDimensions();
+            updateEmojiSlot();
         }
     }
     
@@ -263,9 +287,9 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         return currentMode;
     }
 
-    /** The words last given to {@link #setSuggestions}, or null. */
+    /** The words last given to {@link #setSuggestions}, emoji entry included, or null. */
     public SuggestedWords getCurrentSuggestions() {
-        return currentSuggestions;
+        return currentWords;
     }
 
     public void flashCommittedSlot(int slot) {
@@ -292,8 +316,53 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
 
     public void setSuggestions(SuggestedWords words) {
         hideOverlays();
-        currentSuggestions = words;
-        adapter.setSuggestions(words);
+        currentWords = words;
+        // The strip's emoji (kind 11) goes to its own slot at the right end, not into a word slot.
+        SuggestedWords.SuggestedWordInfo emoji = null;
+        ArrayList<SuggestedWords.SuggestedWordInfo> wordsOnly = null;
+        if (words != null) {
+            for (int i = 0; i < words.size(); i++) {
+                SuggestedWords.SuggestedWordInfo info = words.getWordInfo(i);
+                if (info != null && info.isKind(EmojibaseStripSuggestion.KIND_EMOJI)) {
+                    if (emoji == null) {
+                        emoji = info;
+                    }
+                    if (wordsOnly == null) {
+                        wordsOnly = new ArrayList<>(words.size());
+                        for (int j = 0; j < i; j++) {
+                            wordsOnly.add(words.getWordInfo(j));
+                        }
+                    }
+                } else if (wordsOnly != null) {
+                    wordsOnly.add(info);
+                }
+            }
+        }
+        if (wordsOnly == null) {
+            currentSuggestions = words;
+        } else {
+            SuggestedWords filtered = new SuggestedWords(wordsOnly, words.mAutoCorrectWord,
+                    words.mTypedWordValid, words.mWillAutoCorrect, words.mInputStyle);
+            filtered.mRequestEditCount = words.mRequestEditCount;
+            currentSuggestions = filtered;
+        }
+        adapter.setSuggestions(currentSuggestions);
+        emojiSuggestion = emoji;
+        updateEmojiSlot();
+    }
+
+    /** Shows the emoji slot while there is an emoji and the strip is in its Latin mode. */
+    private void updateEmojiSlot() {
+        if (emojiSlot == null) {
+            return;
+        }
+        boolean show = emojiSuggestion != null && currentMode == SuggestionMode.LATIN;
+        emojiSlot.setText(show ? emojiSuggestion.word : "");
+        int visibility = show ? VISIBLE : GONE;
+        if (emojiSlot.getVisibility() != visibility) {
+            emojiSlot.setVisibility(visibility);
+            updateAdapterDimensions();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
@@ -304,7 +373,10 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
 
     public void clear() {
         currentSuggestions = null;
+        currentWords = null;
         adapter.clear();
+        emojiSuggestion = null;
+        updateEmojiSlot();
         hideOverlays();
     }
 
@@ -348,6 +420,11 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
                 : R.dimen.config_suggestion_half_hamburger_icon_width);
         applyButtonWidth(hamburgerBtn, buttonWidth);
         applyButtonWidth(actionBtn, buttonWidth);
+        if (emojiSlot != null) {
+            emojiSlot.setForeground(modernBoards ? KeyboardColorManager.pressedHighlight() : null);
+            emojiSlot.setTextColor(colorManager.getTextColor());
+            applyButtonWidth(emojiSlot, buttonWidth);
+        }
 
         // Update background
         int bgColor = colorManager.getBackgroundColor();
@@ -425,7 +502,44 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             if (BuildConfig.DEBUG) android.util.Log.d(TAG, "Not enough suggestions to show MoreSuggestions panel");
             return false;
         }
-        
+        return showSuggestionsPanel(currentSuggestions, LATIN_MAX_SUGGESTIONS, keyboard);
+    }
+
+    /**
+     * The skin-tone popup for the emoji slot (owner decision 2026-11-03): a long-press on an emoji
+     * that has tones shows the base emoji and every tone in the more-suggestions panel. Picking one
+     * replaces the typed word as a tap does, and the IME remembers the tone ({@link EmojiToneMemory}).
+     * An emoji without tones returns false and keeps today's long-press behaviour. Never pays for
+     * the emojibase parse: a provider not loaded yet also returns false.
+     */
+    private boolean showEmojiVariants(SuggestedWords.SuggestedWordInfo emoji) {
+        if (emoji == null || listener == null) {
+            return false;
+        }
+        EmojibaseDataProvider provider = EmojibaseDataProvider.peekShared();
+        if (provider == null) {
+            return false;
+        }
+        String base = EmojiToneMemory.hasSkinTone(emoji.word) ? EmojiToneMemory.normalize(emoji.word) : emoji.word;
+        List<String> tones = provider.getSkinToneVariants(base);
+        if (tones.isEmpty()) {
+            return false;
+        }
+        Keyboard keyboard = listener.onMoreSuggestionsRequested();
+        if (keyboard == null) {
+            return false;
+        }
+        ArrayList<SuggestedWords.SuggestedWordInfo> variants = new ArrayList<>(tones.size() + 1);
+        variants.add(EmojibaseStripSuggestion.emojiEntry(base));
+        for (String tone : tones) {
+            variants.add(EmojibaseStripSuggestion.emojiEntry(tone));
+        }
+        int inputStyle = currentSuggestions != null ? currentSuggestions.mInputStyle : 0;
+        return showSuggestionsPanel(new SuggestedWords(variants, false, false, inputStyle), 0, keyboard);
+    }
+
+    /** Lays out {@code words} from {@code fromIndex} in the panel above the strip and shows it. */
+    private boolean showSuggestionsPanel(SuggestedWords words, int fromIndex, Keyboard keyboard) {
         try {
             int width = getWidth();
             int paddingLeft = recyclerView.getPaddingLeft();
@@ -440,8 +554,8 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             
             // Build the MoreSuggestions keyboard
             moreSuggestionsBuilder.layout(
-                    currentSuggestions, 
-                    LATIN_MAX_SUGGESTIONS,  // Start from after visible suggestions
+                    words, 
+                    fromIndex,  // Start from after visible suggestions
                     availableWidth, 
                     maxHeight, 
                     (int) suggestionTextSize, 

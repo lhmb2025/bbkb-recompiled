@@ -312,6 +312,17 @@ final class EmojiCategoryManager {
         }
     }
 
+    /**
+     * Drops every built page so the next open rebuilds them: after a skin-tone pick the keys must
+     * show the remembered tone (EmojiKeyboardFactory reads EmojiToneMemory when it builds a key).
+     * Called from EmojiPalettesView.detachPagerAdapter(), after the pending recents are committed.
+     */
+    public void clearKeyboardCache() {
+        synchronized (this.keyboardCache) {
+            this.keyboardCache.clear();
+        }
+    }
+
     public int getTotalPageCount() {
         return this.categoryStarts[this.categoryIds.length];
     }

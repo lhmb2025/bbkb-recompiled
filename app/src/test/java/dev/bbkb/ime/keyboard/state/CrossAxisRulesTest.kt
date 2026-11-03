@@ -298,12 +298,8 @@ class CrossAxisRulesTest {
         assertFalse("no board", CrossAxisRules.boardSurvivesTextKey(0))
     }
 
-    /** **R3(c).** Emoji dynamic search overrides the exempt set: nothing closes at all. */
-    @Test
-    fun emojiDynamicSearchStopsATextKeyClosingAnything() {
-        assertTrue(CrossAxisRules.textKeyClosesNoBoard(true))
-        assertFalse(CrossAxisRules.textKeyClosesNoBoard(false))
-    }
+    // R3(c) (a text key closes nothing while emoji dynamic search runs) was retired on 2026-11-02:
+    // the emoji board now takes its text keys before dismissal runs (EmojiQueryKeyRoutingTest).
 
     // ══════════════════════════════════════════ every keyboard is a board
 

@@ -115,7 +115,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
      * swipe.
      */
     private static final java.util.Set<String> KEYS_NOT_IN_SETTINGS_VALUES =
-            new java.util.HashSet<>(Arrays.asList("emoji_recent_keys", "last_shown_emoji_category_id"));
+            new java.util.HashSet<>(Arrays.asList("emoji_recent_keys", "last_shown_emoji_category_id", "emoji_tone_memory"));
 
     @Override // android.content.SharedPreferences.OnSharedPreferenceChangeListener
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {

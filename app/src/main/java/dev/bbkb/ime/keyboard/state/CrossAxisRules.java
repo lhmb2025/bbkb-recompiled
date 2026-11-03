@@ -120,8 +120,9 @@ import java.util.Map;
  *   <li><b>Physical text key</b> ({@link #boardsExemptFromTextKey()}) —
  *       {@code BlackBerryIME.dismissBoardsForTextKey}, from a non-Shift, non-Enter, non-board
  *       key-down. Spares FCC and the number pad; voice does NOT survive it, because typing means
- *       the user has stopped dictating. And while emoji dynamic search is running it closes
- *       nothing at all ({@link #textKeyClosesNoBoard(boolean)}) — the key is search input.</li>
+ *       the user has stopped dictating. The emoji board's own text keys never reach it:
+ *       {@code KeyEventProcessor} routes a printable key or Backspace typed while the board is
+ *       up into the board's search query first ({@code EmojiQueryKeyRouting}).</li>
  * </ul>
  *
  * <h2>What this table deliberately does NOT express</h2>
@@ -520,16 +521,11 @@ public final class CrossAxisRules {
         return contains(BOARDS_EXEMPT_FROM_TEXT_KEY, keyCode);
     }
 
-    /**
-     * <b>Owner ruling R3(c).</b> While emoji dynamic search is running a text key is search input,
-     * not typing, so it closes NO board — not even the ones the exempt set above would let go.
-     * A row of the table rather than a flag buried in the dismissal.
-     *
-     * @param emojiDynamicSearchActive the emoji board is up AND dynamic search is enabled.
-     */
-    public static boolean textKeyClosesNoBoard(boolean emojiDynamicSearchActive) {
-        return emojiDynamicSearchActive;
-    }
+    // Owner ruling R3(c) (2026-09-22) made a text key close no board while emoji dynamic search
+    // ran. Retired 2026-11-02, when the emoji board started taking its text keys itself:
+    // KeyEventProcessor routes a printable key or Backspace typed while the board is up into the
+    // board's search query (EmojiQueryKeyRouting) before this dismissal runs, so a text key that
+    // reaches dismissBoardsForTextKey is one the board did not want.
 
     // ═════════════════════════════════════════════════════════ the probe
 

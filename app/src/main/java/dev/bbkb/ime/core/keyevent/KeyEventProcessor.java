@@ -39,8 +39,12 @@ public class KeyEventProcessor {
 
     private static final String TAG = "KeyEventProcessor";
 
-    /** Cancel token for the emoji dynamic-search composing-text push (audit CT-3). */
-    private static final Object EMOJI_SEARCH_TOKEN = new Object();
+    /**
+     * Key codes whose key-down the open emoji board's search query consumed. Their key-up is
+     * consumed too, so neither the typing pipeline nor the app sees half a key press
+     * (see {@link #routeKeyDownToEmojiQuery}).
+     */
+    private final java.util.Set<Integer> emojiQueryKeysDown = new java.util.HashSet<>();
 
     private final BlackBerryIME ime;
 
@@ -330,6 +334,15 @@ public class KeyEventProcessor {
             altSym.clearPendingSymKeyUp();
         }
 
+        // The open emoji board takes its text keys before the bar, the hold handler and the
+        // typing pipeline see them: a letter filters the board, Backspace edits the query (owner
+        // decisions 2026-11-02, rules in EmojiQueryKeyRouting). Nothing downstream - the accent
+        // bar, type-to-dismiss, the editor - learns of a consumed key, and onKeyUpInternal
+        // swallows its release.
+        if (routeKeyDownToEmojiQuery(key, keyEventRemapped)) {
+            return true;
+        }
+
         dev.bbkb.ime.keyboard.auxbar.AuxBarManager auxBarManager = ime.getAuxBarManager();
         if (auxBarManager != null) {
             int symbolPageOrder = ime.getPhysicalKeyboardStateTracker().getSymbolPageOrder();
@@ -339,10 +352,6 @@ public class KeyEventProcessor {
         }
 
         KeyHoldHandler.getInstance().processKeyDown(keyEventRemapped);
-
-        if (handleEmojiSearchIntercept(keyCode, keyEventRemapped)) {
-            return true;
-        }
 
         if (ime.getNeedsKeyboardReload() && ime.getKeyboardSwitcher().getCurrentKeyboard() != null) {
             ime.setNeedsKeyboardReload(false);
@@ -589,6 +598,12 @@ public class KeyEventProcessor {
         // go before Sym, and swallowing the Alt release would strand the tracker's Alt state.
         if (key.isPhysical() && key.isSymKey()
                 && ime.getHardwareKeys().getAltSymShortcutHandler().consumeSymKeyUp()) {
+            releaseConsumedBoardKey(keyEventRemapped);
+            return true;
+        }
+
+        // The release of a key the emoji board's search query took on the way down.
+        if (key.isPhysical() && emojiQueryKeysDown.remove(keyCode)) {
             releaseConsumedBoardKey(keyEventRemapped);
             return true;
         }
@@ -862,27 +877,52 @@ public class KeyEventProcessor {
         return false;
     }
 
-    private boolean handleEmojiSearchIntercept(int keyCode, KeyEvent keyEvent) {
-        if (!ime.isInputViewShown() || !ime.getKeyboardSwitcher().isEmojiKeyboardShowing()) {
+    /**
+     * Routes a hardware key-down into the open emoji board's search query (owner decisions,
+     * 2026-11-02; the pure rules are {@link EmojiQueryKeyRouting}). A printable key appends its
+     * character, resolved by the same converter the typing path uses so Alt characters and
+     * remapped layouts search with what the user sees; Backspace edits the query while there is
+     * one and passes through otherwise. A consumed key is tracked so its release is swallowed too.
+     *
+     * @return true when the board took the key
+     */
+    private boolean routeKeyDownToEmojiQuery(ResolvedKey key, KeyEvent event) {
+        if (!key.isPhysical() || !ime.isInputViewShown()
+                || !ime.getKeyboardSwitcher().isEmojiKeyboardShowing()
+                || !EmojiQueryKeyRouting.mayFeedQuery(key)) {
             return false;
         }
-
-        SettingsValues sv = SettingsManager.getInstance().getSettingsValues();
-        if (sv != null && sv.isEmojiDynamicSearchEnabled) {
-            // Audit CT-3: this allocated a throwaway Handler PER KEYSTROKE and the post was
-            // never cancelled, so a burst of typing queued N stale composing-text pushes into
-            // EmojiPalettesView. Route through the IME's own handler under a token and drop any
-            // still-pending push first, so only the latest composing text is delivered.
-            ime.getUiUpdateHandler().removeCallbacksAndMessages(EMOJI_SEARCH_TOKEN);
-            ime.getUiUpdateHandler().postTokenized(EMOJI_SEARCH_TOKEN, 0L, () -> {
-                String composing = ime.getKeyboardSwitcher().getComposingText();
-                EmojiPalettesView emojiView = ime.getKeyboardSwitcher().peekEmojiPalettesView();
-                if (emojiView != null) {
-                    emojiView.onComposingTextChanged(composing);
-                }
-            });
+        EmojiPalettesView board = ime.getKeyboardSwitcher().peekEmojiPalettesView();
+        if (board == null) {
+            return false;
         }
+        final int keyCode = key.keyCode();
+        if (key.isBackspaceKey()) {
+            if (!board.backspaceQuery()) {
+                return false;
+            }
+            trackEmojiQueryKey(keyCode, event);
+            return true;
+        }
+        PhysicalKeyboardStateTracker tracker = ime.getPhysicalKeyboardStateTracker();
+        EditorInfo editorInfo = ime.getCurrentInputEditorInfo();
+        int inputType = editorInfo == null ? 0 : editorInfo.inputType;
+        InputEvent converted = ime.getOrCreateKeyEventConverter(event.getDeviceId())
+                .convertKeyEvent(event, tracker.getComputedMetaState(event), inputType);
+        CharSequence text = EmojiQueryKeyRouting.queryText(converted);
+        if (text == null) {
+            return false;
+        }
+        tracker.handleKeyDown(keyCode, event);
+        board.appendToQuery(text);
+        // A one-shot Shift or Alt is spent on this character, as it would be on a typed one.
+        tracker.consumeModifiersAfterKey(keyCode, true);
+        trackEmojiQueryKey(keyCode, event);
+        return true;
+    }
 
-        return false;
+    private void trackEmojiQueryKey(int keyCode, KeyEvent event) {
+        emojiQueryKeysDown.add(keyCode);
+        ime.getInputLogic().trackKeyEvent(event);
     }
 }

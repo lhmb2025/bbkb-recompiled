@@ -74,6 +74,13 @@ class EmojiKeyboardFactory(
             .chunked(maxKeysPerPage)
             .map { buildPage(it, maxKeysPerPage, SEARCH_RESULTS_CATEGORY_ID, pad = true) }
 
+    /**
+     * One blank padded page, for a typed query with no matches: the search field stays up and the
+     * page shows nothing, so the user sees that the query failed rather than the tab behind it.
+     */
+    fun createEmptyResultsPage(): List<EmojiKeyboard> =
+        listOf(buildPage(emptyList(), maxKeysPerPage, SEARCH_RESULTS_CATEGORY_ID, pad = true))
+
     /** Recents for the overlay: never more than one padded page. */
     fun createRecentsKeyboards(emojis: List<String>): List<EmojiKeyboard> {
         // Recents come from a stored preference that may be corrupted: an entry the key-spec parser
@@ -124,16 +131,19 @@ class EmojiKeyboardFactory(
      * skin-tone or ZWJ sequence spans several code points and must be inserted atomically, or the
      * text field briefly shows the base emoji plus a modifier square.
      *
-     * The more-keys array serves two purposes: its first element is the base emoji (what the key
-     * displays), and the rest are the skin-tone variants shown on long-press —
+     * The key shows and inserts the skin tone the user last chose for this emoji
+     * ([EmojiToneMemory]), or the base emoji when none was chosen. The more-keys array is the
+     * long-press popup: the base emoji first, then every skin-tone variant —
      * EmojiPageKeyboardView.onLongPress builds the MoreKeysKeyboard popup from it.
      */
-    private fun createEmojiKey(emoji: String): Key =
-        Key(
+    private fun createEmojiKey(emoji: String): Key {
+        val shown = EmojiToneMemory.preferred(sharedPreferences, emoji) ?: emoji
+        return Key(
             templateKey,
-            MoreKeySpec(emoji, 0, -4, emoji),
+            MoreKeySpec(shown, 0, -4, shown),
             (listOf(emoji) + emojiProvider.getSkinToneVariants(emoji))
                 .map { MoreKeySpec(it, false, locale) }
                 .toTypedArray()
         )
+    }
 }

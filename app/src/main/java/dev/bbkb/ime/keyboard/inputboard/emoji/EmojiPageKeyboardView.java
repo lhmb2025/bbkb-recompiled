@@ -14,12 +14,14 @@ import android.view.accessibility.AccessibilityEvent;
 
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.AudioAndHapticFeedbackManager;
+import dev.bbkb.ime.core.settings.PrefsManager;
 import dev.bbkb.ime.core.shared.CoordinateUtils;
 import dev.bbkb.ime.keyboard.internal.MoreKeysPanel;
 import dev.bbkb.ime.keyboard.Key;
 import dev.bbkb.ime.keyboard.Keyboard;
 import dev.bbkb.ime.keyboard.internal.KeyDetector;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
+import dev.bbkb.ime.keyboard.KeyboardActionListenerInterface;
 import dev.bbkb.ime.keyboard.KeyboardView;
 import dev.bbkb.ime.keyboard.internal.MoreKeysKeyboard;
 import dev.bbkb.ime.keyboard.internal.MoreKeysKeyboardView;
@@ -498,8 +500,70 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         MoreKeysKeyboardView moreKeysKeyboardView = (MoreKeysKeyboardView) view.findViewById(R.id.more_keys_keyboard_view);
         moreKeysKeyboardView.setKeyboard(moreKeysKeyboardMo5338b);
         view.measure(-2, -2);
-        moreKeysKeyboardView.showMoreKeysPanel(this, this, keyM6620b.getX() + (keyM6620b.getWidth() / 2), keyM6620b.getY(), KeyboardSwitcher.getInstance().getKeyboardActionListener());
+        moreKeysKeyboardView.showMoreKeysPanel(this, this, keyM6620b.getX() + (keyM6620b.getWidth() / 2), keyM6620b.getY(),
+                new ToneRecordingListener(KeyboardSwitcher.getInstance().getKeyboardActionListener(), getContext()));
         PointerTracker.getPointerTracker(motionEvent.getPointerId(motionEvent.getActionIndex())).startMoreKeysPanel(moreKeysKeyboardView);
         dismissKeyPreviewWithoutDelay(keyM6620b);
+    }
+
+    /**
+     * Wraps the IME's listener for the skin-tone popup: a variant picked there is remembered for
+     * its base emoji ({@link EmojiToneMemory}) and the plain emoji forgets it, so the key shows the
+     * chosen tone from then on. Nothing is remembered in an incognito field.
+     */
+    private static final class ToneRecordingListener implements KeyboardActionListenerInterface {
+        private final KeyboardActionListenerInterface delegate;
+        private final Context context;
+
+        ToneRecordingListener(KeyboardActionListenerInterface delegate, Context context) {
+            this.delegate = delegate;
+            this.context = context.getApplicationContext();
+        }
+
+        @Override
+        public void onMoreKeysKeyTyped() {
+            delegate.onMoreKeysKeyTyped();
+        }
+
+        @Override
+        public void onCodeInput(int code, int x, int y, long time, boolean fromMoreKeys) {
+            if (code > 0) {
+                remember(new String(Character.toChars(code)));
+            }
+            delegate.onCodeInput(code, x, y, time, fromMoreKeys);
+        }
+
+        @Override
+        public void onReleaseKey(int code, boolean withSliding) {
+            delegate.onReleaseKey(code, withSliding);
+        }
+
+        @Override
+        public void onTextInput(String text, long time) {
+            remember(text);
+            delegate.onTextInput(text, time);
+        }
+
+        @Override
+        public void onPressKey(int code, int repeatCount, boolean isSinglePointer) {
+            delegate.onPressKey(code, repeatCount, isSinglePointer);
+        }
+
+        @Override
+        public boolean onCustomRequest(int requestCode) {
+            return delegate.onCustomRequest(requestCode);
+        }
+
+        @Override
+        public void onCancelInput() {
+            delegate.onCancelInput();
+        }
+
+        private void remember(String emoji) {
+            if (KeyboardSwitcher.getInstance().isNoPersonalizedLearning()) {
+                return;
+            }
+            EmojiToneMemory.onEmojiPicked(PrefsManager.INSTANCE.getPrefs(context), emoji);
+        }
     }
 }

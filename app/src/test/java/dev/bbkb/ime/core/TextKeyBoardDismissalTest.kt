@@ -199,22 +199,24 @@ class TextKeyBoardDismissalTest {
         verify(uim).refresh()
     }
 
-    // ════════════════════════════════════════ emoji dynamic search wins
+    // ════════════════════════════════════════ emoji dynamic search no longer special
 
     /**
-     * **R3(c).** While emoji dynamic search is active a text key is search input, not typing: it
-     * closes NO board, not even the ones that would otherwise go.
+     * R3(c) (a text key closes nothing while emoji dynamic search runs) was retired on 2026-11-02:
+     * the emoji board takes its own text keys upstream, in KeyEventProcessor, so a text key that
+     * reaches this dismissal is one the board did not want and the ordinary policy applies, with
+     * the board up and dynamic search on or off.
      */
     @Test
-    fun aTextKeyDuringEmojiDynamicSearchClosesNothing() {
+    fun aTextKeyThatReachesDismissalDuringEmojiDynamicSearchFollowsTheOrdinaryPolicy() {
         setDynamicSearch(true)
         Mockito.`when`(switcher.isEmojiKeyboardShowing()).thenReturn(true)
         open(voice)
 
         ime.dismissBoardsForTextKey()
 
-        verify(coordinator, never()).onTextKeyPressed()
-        verify(uim, never()).hideComponentsExcept(Mockito.any())
+        verify(coordinator).onTextKeyPressed()
+        verify(uim).hideComponentsExcept(intArrayOf(cursorBoard, numberPad))
         verify(uim).refresh()
     }
 
