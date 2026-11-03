@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Provjeri rječnike</string>
     <string name="language_packs_load_ldb">Učitaj LDB datoteku</string>
     <string name="language_packs_variant_summary">Učitava se umjesto %1$s</string>
-    <string name="language_packs_not_on_summary">Još nije omogućen na tastaturi. Dodirnite da ga omogućite.</string>
+    <string name="language_packs_not_on_summary">Dodirnite da kreirate novu tastaturu za %1$s.</string>
     <string name="language_packs_turned_on">%1$s je omogućen. Prebacite se na njega putem birača jezika.</string>
     <string name="language_packs_turn_on_in_settings">Omogućite %1$s na listi, pa se vratite.</string>
     <string name="language_packs_installed_and_on">%1$s je instaliran. Omogućen je: prebacite se na njega putem birača jezika.</string>

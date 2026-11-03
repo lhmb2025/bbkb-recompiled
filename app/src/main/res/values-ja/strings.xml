@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">辞書を確認</string>
     <string name="language_packs_load_ldb">LDBファイルを読み込む</string>
     <string name="language_packs_variant_summary">%1$sの代わりに読み込まれます</string>
-    <string name="language_packs_not_on_summary">まだキーボードで有効になっていません。タップして有効にしてください。</string>
+    <string name="language_packs_not_on_summary">タップして新しい%1$sキーボードを作成します。</string>
     <string name="language_packs_turned_on">%1$sが有効になりました。言語切り替えから切り替えられます。</string>
     <string name="language_packs_turn_on_in_settings">リストで%1$sを有効にしてから、戻ってください。</string>
     <string name="language_packs_installed_and_on">%1$sをインストールしました。有効になっています。言語切り替えから切り替えられます。</string>

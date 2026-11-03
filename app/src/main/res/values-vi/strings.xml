@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Kiểm tra từ điển</string>
     <string name="language_packs_load_ldb">Tải tệp LDB</string>
     <string name="language_packs_variant_summary">Tải thay cho %1$s</string>
-    <string name="language_packs_not_on_summary">Chưa được bật trên bàn phím. Chạm để bật.</string>
+    <string name="language_packs_not_on_summary">Chạm để tạo bàn phím %1$s mới.</string>
     <string name="language_packs_turned_on">%1$s đã được bật. Chuyển sang ngôn ngữ này từ bộ chuyển đổi ngôn ngữ.</string>
     <string name="language_packs_turn_on_in_settings">Bật %1$s trong danh sách, sau đó quay lại.</string>
     <string name="language_packs_installed_and_on">Đã cài đặt %1$s. Đã bật: chuyển sang ngôn ngữ này từ bộ chuyển đổi ngôn ngữ.</string>

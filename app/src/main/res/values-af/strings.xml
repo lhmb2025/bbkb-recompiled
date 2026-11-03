@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Kyk vir woordeboeke</string>
     <string name="language_packs_load_ldb">Laai LDB-lêer</string>
     <string name="language_packs_variant_summary">Laai in plek van %1$s</string>
-    <string name="language_packs_not_on_summary">Nog nie aan in die toetsbord nie. Tik om dit aan te skakel.</string>
+    <string name="language_packs_not_on_summary">Tik om \'n nuwe sleutelbord vir %1$s te skep.</string>
     <string name="language_packs_turned_on">%1$s is aan. Wissel daarna via die taalwisselaar.</string>
     <string name="language_packs_turn_on_in_settings">Skakel %1$s aan in die lys, en kom dan terug.</string>
     <string name="language_packs_installed_and_on">%1$s is geïnstalleer. Dit is aan: wissel daarna via die taalwisselaar.</string>

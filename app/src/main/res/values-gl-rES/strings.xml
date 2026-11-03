@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Buscar dicionarios</string>
     <string name="language_packs_load_ldb">Cargar ficheiro LDB</string>
     <string name="language_packs_variant_summary">Cárgase en lugar de %1$s</string>
-    <string name="language_packs_not_on_summary">Aínda non está activado no teclado. Tócao para activalo.</string>
+    <string name="language_packs_not_on_summary">Toca para crear un teclado novo para %1$s.</string>
     <string name="language_packs_turned_on">%1$s está activado. Cambia a el desde o selector de idioma.</string>
     <string name="language_packs_turn_on_in_settings">Activa %1$s na lista e despois volve.</string>
     <string name="language_packs_installed_and_on">Instalouse %1$s. Está activado: cambia a el desde o selector de idioma.</string>

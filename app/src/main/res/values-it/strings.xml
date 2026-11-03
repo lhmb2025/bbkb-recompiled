@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Cerca dizionari</string>
     <string name="language_packs_load_ldb">Carica file LDB</string>
     <string name="language_packs_variant_summary">Si carica al posto di %1$s</string>
-    <string name="language_packs_not_on_summary">Non ancora attiva sulla tastiera. Tocca per attivarla.</string>
+    <string name="language_packs_not_on_summary">Tocca per creare una nuova tastiera in %1$s.</string>
     <string name="language_packs_turned_on">%1$s è attiva. Passa a questa lingua dal selettore lingua.</string>
     <string name="language_packs_turn_on_in_settings">Attiva %1$s nell\'elenco, poi torna qui.</string>
     <string name="language_packs_installed_and_on">%1$s installata. È attiva: passa a questa lingua dal selettore lingua.</string>

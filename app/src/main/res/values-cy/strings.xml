@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Chwilio am eiriaduron</string>
     <string name="language_packs_load_ldb">Llwytho ffeil LDB</string>
     <string name="language_packs_variant_summary">Yn llwytho yn lle %1$s</string>
-    <string name="language_packs_not_on_summary">Heb ei alluogi ar y bysellfwrdd eto. Tapiwch i\'w alluogi.</string>
+    <string name="language_packs_not_on_summary">Tapiwch i greu bysellfwrdd %1$s newydd.</string>
     <string name="language_packs_turned_on">Mae %1$s ymlaen. Newidiwch iddo o\'r newidydd iaith.</string>
     <string name="language_packs_turn_on_in_settings">Galluogwch %1$s yn y rhestr, yna dewch yn ôl.</string>
     <string name="language_packs_installed_and_on">Gosodwyd %1$s. Mae wedi\'i alluogi: newidiwch iddo o\'r newidydd iaith.</string>

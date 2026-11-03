@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Проверка за речници</string>
     <string name="language_packs_load_ldb">Зареждане на LDB файл</string>
     <string name="language_packs_variant_summary">Зарежда се вместо %1$s</string>
-    <string name="language_packs_not_on_summary">Все още не е включен в клавиатурата. Докоснете, за да го включите.</string>
+    <string name="language_packs_not_on_summary">Докоснете, за да създадете нова клавиатура за %1$s.</string>
     <string name="language_packs_turned_on">%1$s е включен. Превключете към него от превключвателя на езици.</string>
     <string name="language_packs_turn_on_in_settings">Включете %1$s в списъка, после се върнете.</string>
     <string name="language_packs_installed_and_on">%1$s е инсталиран. Включен е: превключете към него от превключвателя на езици.</string>

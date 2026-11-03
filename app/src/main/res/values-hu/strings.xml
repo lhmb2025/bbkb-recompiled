@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Szótárak keresése</string>
     <string name="language_packs_load_ldb">LDB-fájl betöltése</string>
     <string name="language_packs_variant_summary">A(z) %1$s helyett töltődik be</string>
-    <string name="language_packs_not_on_summary">Még nincs bekapcsolva a billentyűzeten. Koppintson a bekapcsoláshoz.</string>
+    <string name="language_packs_not_on_summary">Koppintson új %1$s billentyűzet létrehozásához.</string>
     <string name="language_packs_turned_on">%1$s bekapcsolva. Váltson rá a nyelvváltóval.</string>
     <string name="language_packs_turn_on_in_settings">Kapcsolja be a(z) %1$s nyelvet a listán, majd térjen vissza.</string>
     <string name="language_packs_installed_and_on">Telepítve: %1$s. Be van kapcsolva: váltson rá a nyelvváltóval.</string>

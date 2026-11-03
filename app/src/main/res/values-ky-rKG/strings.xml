@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Сөздүктөрдү текшерүү</string>
     <string name="language_packs_load_ldb">LDB файлын жүктөө</string>
     <string name="language_packs_variant_summary">%1$s ордуна жүктөлөт</string>
-    <string name="language_packs_not_on_summary">Азырынча баскычтопто күйгүзүлгөн эмес. Күйгүзүү үчүн таптап коюңуз.</string>
+    <string name="language_packs_not_on_summary">Жаңы %1$s баскычтобун түзүү үчүн таптап коюңуз.</string>
     <string name="language_packs_turned_on">%1$s күйгүзүлдү. Тил алмаштыргычтан ага өтүңүз.</string>
     <string name="language_packs_turn_on_in_settings">Тизмеден %1$s тилин күйгүзүп, кайра келиңиз.</string>
     <string name="language_packs_installed_and_on">%1$s орнотулду. Ал күйүк: тил алмаштыргычтан ага өтүңүз.</string>

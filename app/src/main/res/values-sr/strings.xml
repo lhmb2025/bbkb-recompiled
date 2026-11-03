@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Провери речнике</string>
     <string name="language_packs_load_ldb">Учитај LDB датотеку</string>
     <string name="language_packs_variant_summary">Учитава се уместо %1$s</string>
-    <string name="language_packs_not_on_summary">Још није укључен на тастатури. Додирните да га укључите.</string>
+    <string name="language_packs_not_on_summary">Додирните да направите нову тастатуру за %1$s.</string>
     <string name="language_packs_turned_on">%1$s је укључен. Пребаците се на њега преко бирача језика.</string>
     <string name="language_packs_turn_on_in_settings">Укључите %1$s на листи, па се вратите.</string>
     <string name="language_packs_installed_and_on">Инсталиран је %1$s. Укључен је: пребаците се на њега преко бирача језика.</string>

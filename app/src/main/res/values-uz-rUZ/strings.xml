@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Lug‘atlarni tekshirish</string>
     <string name="language_packs_load_ldb">LDB faylini yuklash</string>
     <string name="language_packs_variant_summary">%1$s o‘rniga yuklanadi</string>
-    <string name="language_packs_not_on_summary">Klaviaturada hali yoqilmagan. Yoqish uchun bosing.</string>
+    <string name="language_packs_not_on_summary">Yangi %1$s klaviaturasini yaratish uchun bosing.</string>
     <string name="language_packs_turned_on">%1$s yoqildi. Til almashtirgichda unga o‘ting.</string>
     <string name="language_packs_turn_on_in_settings">Ro‘yxatda %1$s ni yoqing, so‘ng qaytib keling.</string>
     <string name="language_packs_installed_and_on">%1$s o‘rnatildi. Yoqilgan: til almashtirgichda unga o‘ting.</string>

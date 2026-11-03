@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Cerca diccionaris</string>
     <string name="language_packs_load_ldb">Carrega un fitxer LDB</string>
     <string name="language_packs_variant_summary">Es carrega en lloc de %1$s</string>
-    <string name="language_packs_not_on_summary">Encara no està activada al teclat. Toca-la per activar-la.</string>
+    <string name="language_packs_not_on_summary">Toca per crear un teclat nou per a %1$s.</string>
     <string name="language_packs_turned_on">%1$s està activada. Canvia-hi des del selector de llengua.</string>
     <string name="language_packs_turn_on_in_settings">Activa %1$s a la llista i després torna.</string>
     <string name="language_packs_installed_and_on">S\'ha instal·lat %1$s. Està activada: canvia-hi des del selector de llengua.</string>

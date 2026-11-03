@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Tikrinti žodynus</string>
     <string name="language_packs_load_ldb">Įkelti LDB failą</string>
     <string name="language_packs_variant_summary">Įkeliama vietoje %1$s</string>
-    <string name="language_packs_not_on_summary">Dar neįjungta klaviatūroje. Bakstelėkite, kad įjungtumėte.</string>
+    <string name="language_packs_not_on_summary">Bakstelėkite, kad sukurtumėte naują %1$s klaviatūrą.</string>
     <string name="language_packs_turned_on">%1$s įjungta. Perjunkite į ją kalbų perjungiklyje.</string>
     <string name="language_packs_turn_on_in_settings">Įjunkite %1$s sąraše, tada grįžkite.</string>
     <string name="language_packs_installed_and_on">Įdiegta %1$s. Ji įjungta: perjunkite į ją kalbų perjungiklyje.</string>

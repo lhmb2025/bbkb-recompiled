@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Перевірити словники</string>
     <string name="language_packs_load_ldb">Завантажити файл LDB</string>
     <string name="language_packs_variant_summary">Завантажується замість %1$s</string>
-    <string name="language_packs_not_on_summary">Ще не ввімкнено на клавіатурі. Торкніться, щоб увімкнути.</string>
+    <string name="language_packs_not_on_summary">Торкніться, щоб створити нову клавіатуру: %1$s.</string>
     <string name="language_packs_turned_on">%1$s увімкнено. Перемкніться на нього в перемикачі мов.</string>
     <string name="language_packs_turn_on_in_settings">Увімкніть %1$s у списку, потім поверніться.</string>
     <string name="language_packs_installed_and_on">%1$s установлено. Увімкнено: перемкніться на нього в перемикачі мов.</string>

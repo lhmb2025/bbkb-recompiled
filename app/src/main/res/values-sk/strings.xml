@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Skontrolovať slovníky</string>
     <string name="language_packs_load_ldb">Načítať súbor LDB</string>
     <string name="language_packs_variant_summary">Načíta sa namiesto %1$s</string>
-    <string name="language_packs_not_on_summary">Zatiaľ nie je zapnutý v klávesnici. Ťuknutím ho zapnete.</string>
+    <string name="language_packs_not_on_summary">Ťuknutím vytvoríte novú klávesnicu: %1$s.</string>
     <string name="language_packs_turned_on">%1$s je zapnutý. Prepnite naň v prepínači jazykov.</string>
     <string name="language_packs_turn_on_in_settings">Zapnite %1$s v zozname a potom sa vráťte.</string>
     <string name="language_packs_installed_and_on">%1$s nainštalovaný. Je zapnutý: prepnite naň v prepínači jazykov.</string>

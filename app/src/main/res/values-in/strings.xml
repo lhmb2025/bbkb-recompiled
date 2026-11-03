@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Periksa kamus</string>
     <string name="language_packs_load_ldb">Muat file LDB</string>
     <string name="language_packs_variant_summary">Dimuat sebagai ganti %1$s</string>
-    <string name="language_packs_not_on_summary">Belum aktif di keyboard. Ketuk untuk mengaktifkannya.</string>
+    <string name="language_packs_not_on_summary">Ketuk untuk membuat keyboard %1$s baru.</string>
     <string name="language_packs_turned_on">%1$s aktif. Beralih ke bahasa ini dari pengalih bahasa.</string>
     <string name="language_packs_turn_on_in_settings">Aktifkan %1$s di daftar, lalu kembali ke sini.</string>
     <string name="language_packs_installed_and_on">%1$s terpasang. Sudah aktif: beralih ke bahasa ini dari pengalih bahasa.</string>

@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Lüğətləri yoxla</string>
     <string name="language_packs_load_ldb">LDB faylını yüklə</string>
     <string name="language_packs_variant_summary">%1$s yerinə yüklənir</string>
-    <string name="language_packs_not_on_summary">Hələ klaviaturada aktiv deyil. Aktivləşdirmək üçün toxunun.</string>
+    <string name="language_packs_not_on_summary">Yeni %1$s klaviaturası yaratmaq üçün toxunun.</string>
     <string name="language_packs_turned_on">%1$s aktivdir. Dil dəyişdiricidən ona keçin.</string>
     <string name="language_packs_turn_on_in_settings">Siyahıda %1$s dilini aktivləşdirin, sonra geri qayıdın.</string>
     <string name="language_packs_installed_and_on">%1$s quraşdırıldı. O aktivdir: dil dəyişdiricidən ona keçin.</string>

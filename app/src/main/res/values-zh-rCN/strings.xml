@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">检查词典</string>
     <string name="language_packs_load_ldb">加载 LDB 文件</string>
     <string name="language_packs_variant_summary">将代替%1$s加载</string>
-    <string name="language_packs_not_on_summary">尚未在键盘中启用。点按以启用。</string>
+    <string name="language_packs_not_on_summary">点按以创建新的%1$s键盘。</string>
     <string name="language_packs_turned_on">已启用%1$s。可从语言切换器切换到它。</string>
     <string name="language_packs_turn_on_in_settings">请在列表中启用%1$s，然后返回。</string>
     <string name="language_packs_installed_and_on">已安装%1$s。已启用：可从语言切换器切换到它。</string>

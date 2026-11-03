@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">التحقق من القواميس</string>
     <string name="language_packs_load_ldb">تحميل ملف LDB</string>
     <string name="language_packs_variant_summary">يُحمَّل بدلاً من %1$s</string>
-    <string name="language_packs_not_on_summary">غير مفعّلة بعد في لوحة المفاتيح. اضغط لتفعيلها.</string>
+    <string name="language_packs_not_on_summary">اضغط لإنشاء لوحة مفاتيح جديدة للغة %1$s.</string>
     <string name="language_packs_turned_on">%1$s مفعّلة. يمكنك التبديل إليها من مبدّل اللغة.</string>
     <string name="language_packs_turn_on_in_settings">فعّل %1$s في القائمة، ثم عد إلى التطبيق.</string>
     <string name="language_packs_installed_and_on">تم تثبيت %1$s. وهي مفعّلة: يمكنك التبديل إليها من مبدّل اللغة.</string>

@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Provjeri rječnike</string>
     <string name="language_packs_load_ldb">Učitaj LDB datoteku</string>
     <string name="language_packs_variant_summary">Učitava se umjesto %1$s</string>
-    <string name="language_packs_not_on_summary">Još nije uključeno u tipkovnici. Dodirni za uključivanje.</string>
+    <string name="language_packs_not_on_summary">Dodirni za izradu nove tipkovnice za %1$s.</string>
     <string name="language_packs_turned_on">%1$s je uključen. Prebaci se na njega u izborniku jezika.</string>
     <string name="language_packs_turn_on_in_settings">Uključi %1$s na popisu, pa se vrati.</string>
     <string name="language_packs_installed_and_on">Instalirano: %1$s. Uključen je: prebaci se na njega u izborniku jezika.</string>

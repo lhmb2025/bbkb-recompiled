@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Nach Wörterbüchern suchen</string>
     <string name="language_packs_load_ldb">LDB-Datei laden</string>
     <string name="language_packs_variant_summary">Wird anstelle von %1$s geladen</string>
-    <string name="language_packs_not_on_summary">Noch nicht in der Tastatur aktiviert. Zum Aktivieren tippen.</string>
+    <string name="language_packs_not_on_summary">Tippen, um eine neue Tastatur für %1$s zu erstellen.</string>
     <string name="language_packs_turned_on">%1$s ist aktiviert. Über den Sprachumschalter dorthin wechseln.</string>
     <string name="language_packs_turn_on_in_settings">Aktivieren Sie %1$s in der Liste und kehren Sie dann zurück.</string>
     <string name="language_packs_installed_and_on">%1$s wurde installiert. Sie ist aktiviert: über den Sprachumschalter dorthin wechseln.</string>

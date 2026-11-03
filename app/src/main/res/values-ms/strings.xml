@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Periksa kamus</string>
     <string name="language_packs_load_ldb">Muat fail LDB</string>
     <string name="language_packs_variant_summary">Dimuatkan sebagai ganti %1$s</string>
-    <string name="language_packs_not_on_summary">Belum dihidupkan pada papan kekunci. Ketik untuk menghidupkannya.</string>
+    <string name="language_packs_not_on_summary">Ketik untuk mencipta papan kekunci %1$s baharu.</string>
     <string name="language_packs_turned_on">%1$s dihidupkan. Tukar kepadanya melalui penukar bahasa.</string>
     <string name="language_packs_turn_on_in_settings">Hidupkan %1$s dalam senarai, kemudian kembali.</string>
     <string name="language_packs_installed_and_on">%1$s dipasang. Ia dihidupkan: tukar kepadanya melalui penukar bahasa.</string>

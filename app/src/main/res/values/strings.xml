@@ -952,7 +952,7 @@
     <string name="language_packs_refresh">Check for dictionaries</string>
     <string name="language_packs_load_ldb">Load LDB file</string>
     <string name="language_packs_variant_summary">Loads in place of %1$s</string>
-    <string name="language_packs_not_on_summary">Not on in the keyboard yet. Tap to turn it on.</string>
+    <string name="language_packs_not_on_summary">Tap to create new %1$s keyboard.</string>
     <string name="language_packs_turned_on">%1$s is on. Switch to it from the language switcher.</string>
     <string name="language_packs_turn_on_in_settings">Turn on %1$s in the list, then come back.</string>
     <string name="language_packs_installed_and_on">Installed %1$s. It is on: switch to it from the language switcher.</string>

@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Толь бичиг шалгах</string>
     <string name="language_packs_load_ldb">LDB файл ачаалах</string>
     <string name="language_packs_variant_summary">%1$s-ын оронд ачаалагдана</string>
-    <string name="language_packs_not_on_summary">Гар дээр одоогоор асаагаагүй байна. Асаахын тулд товшино уу.</string>
+    <string name="language_packs_not_on_summary">Шинэ %1$s гар үүсгэхийн тулд товшино уу.</string>
     <string name="language_packs_turned_on">%1$s асаалттай боллоо. Хэл сэлгэгчээс энэ рүү шилжинэ үү.</string>
     <string name="language_packs_turn_on_in_settings">Жагсаалт дахь %1$s-ыг асааж, дараа нь буцаж ирнэ үү.</string>
     <string name="language_packs_installed_and_on">%1$s суулгасан. Асаалттай байна: хэл сэлгэгчээс энэ рүү шилжинэ үү.</string>

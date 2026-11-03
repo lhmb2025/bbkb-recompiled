@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Pariksa kamus</string>
     <string name="language_packs_load_ldb">Muat berkas LDB</string>
     <string name="language_packs_variant_summary">Dimuat ngaganti %1$s</string>
-    <string name="language_packs_not_on_summary">Acan diaktipkeun dina papan tombol. Toél pikeun ngaktipkeunana.</string>
+    <string name="language_packs_not_on_summary">Toél pikeun nyieun papan tombol %1$s anyar.</string>
     <string name="language_packs_turned_on">%1$s aktip. Ganti ka éta tina pamilih basa.</string>
     <string name="language_packs_turn_on_in_settings">Aktipkeun %1$s dina daptar, tuluy balik deui.</string>
     <string name="language_packs_installed_and_on">%1$s parantos diinstal. Aktip: ganti ka éta tina pamilih basa.</string>

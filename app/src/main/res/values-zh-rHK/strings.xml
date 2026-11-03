@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">檢查詞典</string>
     <string name="language_packs_load_ldb">載入 LDB 檔案</string>
     <string name="language_packs_variant_summary">將代替%1$s載入</string>
-    <string name="language_packs_not_on_summary">尚未在鍵盤中啟用。輕觸即可啟用。</string>
+    <string name="language_packs_not_on_summary">輕觸即可建立新的%1$s鍵盤。</string>
     <string name="language_packs_turned_on">已啟用%1$s。可在語言切換器中切換至它。</string>
     <string name="language_packs_turn_on_in_settings">請在清單中啟用%1$s，然後返回。</string>
     <string name="language_packs_installed_and_on">已安裝%1$s。已啟用：可在語言切換器中切換至它。</string>

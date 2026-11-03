@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Sprawdź słowniki</string>
     <string name="language_packs_load_ldb">Wczytaj plik LDB</string>
     <string name="language_packs_variant_summary">Wczytywany zamiast %1$s</string>
-    <string name="language_packs_not_on_summary">Jeszcze nie włączony w klawiaturze. Dotknij, aby włączyć.</string>
+    <string name="language_packs_not_on_summary">Dotknij, aby utworzyć nową klawiaturę: %1$s.</string>
     <string name="language_packs_turned_on">%1$s jest włączony. Przełącz się na niego w przełączniku języków.</string>
     <string name="language_packs_turn_on_in_settings">Włącz %1$s na liście, a potem wróć.</string>
     <string name="language_packs_installed_and_on">Zainstalowano %1$s. Jest włączony: przełącz się na niego w przełączniku języków.</string>

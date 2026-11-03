@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">בדיקת מילונים</string>
     <string name="language_packs_load_ldb">טעינת קובץ LDB</string>
     <string name="language_packs_variant_summary">נטען במקום %1$s</string>
-    <string name="language_packs_not_on_summary">עדיין לא מופעלת במקלדת. הקש כדי להפעיל.</string>
+    <string name="language_packs_not_on_summary">הקש כדי ליצור מקלדת %1$s חדשה.</string>
     <string name="language_packs_turned_on">%1$s פועלת. עבור אליה מבורר השפות.</string>
     <string name="language_packs_turn_on_in_settings">הפעל את %1$s ברשימה ולאחר מכן חזור לכאן.</string>
     <string name="language_packs_installed_and_on">%1$s הותקנה. היא פעילה: עבור אליה מבורר השפות.</string>

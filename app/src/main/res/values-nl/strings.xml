@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Zoeken naar woordenboeken</string>
     <string name="language_packs_load_ldb">LDB-bestand laden</string>
     <string name="language_packs_variant_summary">Wordt geladen in plaats van %1$s</string>
-    <string name="language_packs_not_on_summary">Nog niet ingeschakeld in het toetsenbord. Tik om in te schakelen.</string>
+    <string name="language_packs_not_on_summary">Tik om een nieuw toetsenbord voor %1$s te maken.</string>
     <string name="language_packs_turned_on">%1$s is ingeschakeld. Wissel ernaartoe via de taalwisselaar.</string>
     <string name="language_packs_turn_on_in_settings">Schakel %1$s in de lijst in en kom dan terug.</string>
     <string name="language_packs_installed_and_on">%1$s geïnstalleerd. Het is ingeschakeld: wissel ernaartoe via de taalwisselaar.</string>

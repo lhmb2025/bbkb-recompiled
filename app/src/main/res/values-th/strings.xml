@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">ตรวจหาพจนานุกรม</string>
     <string name="language_packs_load_ldb">โหลดไฟล์ LDB</string>
     <string name="language_packs_variant_summary">โหลดแทน %1$s</string>
-    <string name="language_packs_not_on_summary">ยังไม่ได้เปิดใช้งานในแป้นพิมพ์ แตะเพื่อเปิดใช้งาน</string>
+    <string name="language_packs_not_on_summary">แตะเพื่อสร้างแป้นพิมพ์ภาษา%1$sใหม่</string>
     <string name="language_packs_turned_on">เปิดใช้งาน %1$s แล้ว สลับไปใช้ได้จากตัวสลับภาษา</string>
     <string name="language_packs_turn_on_in_settings">เปิดใช้งาน %1$s ในรายการ แล้วกลับมาที่นี่</string>
     <string name="language_packs_installed_and_on">ติดตั้ง %1$s แล้ว เปิดใช้งานอยู่ สลับไปใช้ได้จากตัวสลับภาษา</string>

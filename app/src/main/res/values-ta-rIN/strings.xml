@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">அகராதிகளைச் சரிபார்க்கவும்</string>
     <string name="language_packs_load_ldb">LDB கோப்பை ஏற்றவும்</string>
     <string name="language_packs_variant_summary">%1$s க்குப் பதிலாக ஏற்றப்படும்</string>
-    <string name="language_packs_not_on_summary">இன்னும் விசைப்பலகையில் இயக்கப்படவில்லை. இயக்க தட்டவும்.</string>
+    <string name="language_packs_not_on_summary">புதிய %1$s விசைப்பலகையை உருவாக்க தட்டவும்.</string>
     <string name="language_packs_turned_on">%1$s இயக்கப்பட்டது. மொழி மாற்றியில் அதற்கு மாறவும்.</string>
     <string name="language_packs_turn_on_in_settings">பட்டியலில் %1$s ஐ இயக்கி, பிறகு திரும்பி வாருங்கள்.</string>
     <string name="language_packs_installed_and_on">%1$s நிறுவப்பட்டது. இது இயக்கப்பட்டுள்ளது: மொழி மாற்றியில் அதற்கு மாறவும்.</string>

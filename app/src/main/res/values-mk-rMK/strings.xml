@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Провери речници</string>
     <string name="language_packs_load_ldb">Вчитај LDB-датотека</string>
     <string name="language_packs_variant_summary">Се вчитува наместо %1$s</string>
-    <string name="language_packs_not_on_summary">Сè уште не е вклучено во тастатурата. Допрете за да го вклучите.</string>
+    <string name="language_packs_not_on_summary">Допрете за да создадете нова тастатура за %1$s.</string>
     <string name="language_packs_turned_on">%1$s е вклучен. Префрлете се на него преку менувачот на јазици.</string>
     <string name="language_packs_turn_on_in_settings">Вклучете го %1$s на списокот, па вратете се.</string>
     <string name="language_packs_installed_and_on">Инсталиран е %1$s. Вклучен е: префрлете се на него преку менувачот на јазици.</string>

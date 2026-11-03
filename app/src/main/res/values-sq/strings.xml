@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Kontrollo fjalorët</string>
     <string name="language_packs_load_ldb">Ngarko skedarin LDB</string>
     <string name="language_packs_variant_summary">Ngarkohet në vend të %1$s</string>
-    <string name="language_packs_not_on_summary">Ende nuk është aktivizuar në tastierë. Prek për ta aktivizuar.</string>
+    <string name="language_packs_not_on_summary">Prek për të krijuar një tastierë të re për %1$s.</string>
     <string name="language_packs_turned_on">%1$s është aktivizuar. Kalo tek ai nga ndërruesi i gjuhëve.</string>
     <string name="language_packs_turn_on_in_settings">Aktivizo %1$s në listë, pastaj kthehu.</string>
     <string name="language_packs_installed_and_on">U instalua %1$s. Është aktivizuar: kalo tek ai nga ndërruesi i gjuhëve.</string>

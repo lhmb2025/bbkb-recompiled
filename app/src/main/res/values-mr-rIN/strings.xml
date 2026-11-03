@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">शब्दकोश तपासा</string>
     <string name="language_packs_load_ldb">LDB फाइल लोड करा</string>
     <string name="language_packs_variant_summary">%1$s च्या जागी लोड होते</string>
-    <string name="language_packs_not_on_summary">अद्याप कीबोर्डवर सुरू केलेले नाही. सुरू करण्यासाठी टॅप करा.</string>
+    <string name="language_packs_not_on_summary">नवीन %1$s कीबोर्ड तयार करण्यासाठी टॅप करा.</string>
     <string name="language_packs_turned_on">%1$s सुरू आहे. भाषा स्विचरमधून त्यावर स्विच करा.</string>
     <string name="language_packs_turn_on_in_settings">यादीत %1$s सुरू करा, नंतर परत या.</string>
     <string name="language_packs_installed_and_on">%1$s इंस्टॉल केले. ते सुरू आहे: भाषा स्विचरमधून त्यावर स्विच करा.</string>

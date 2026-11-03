@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Caută dicționare</string>
     <string name="language_packs_load_ldb">Încarcă fișier LDB</string>
     <string name="language_packs_variant_summary">Se încarcă în locul %1$s</string>
-    <string name="language_packs_not_on_summary">Încă nu este activată în tastatură. Atingeți pentru a activa.</string>
+    <string name="language_packs_not_on_summary">Atingeți pentru a crea o tastatură nouă pentru %1$s.</string>
     <string name="language_packs_turned_on">%1$s este activată. Comutați la ea din comutatorul de limbi.</string>
     <string name="language_packs_turn_on_in_settings">Activați %1$s din listă, apoi reveniți.</string>
     <string name="language_packs_installed_and_on">%1$s instalată. Este activată: comutați la ea din comutatorul de limbi.</string>

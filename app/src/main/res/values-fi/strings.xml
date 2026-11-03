@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Etsi sanakirjoja</string>
     <string name="language_packs_load_ldb">Lataa LDB-tiedosto</string>
     <string name="language_packs_variant_summary">Ladataan kohteen %1$s tilalle</string>
-    <string name="language_packs_not_on_summary">Ei vielä käytössä näppäimistössä. Ota käyttöön napauttamalla.</string>
+    <string name="language_packs_not_on_summary">Luo uusi näppäimistö napauttamalla: %1$s.</string>
     <string name="language_packs_turned_on">%1$s on käytössä. Vaihda siihen kielenvaihtajasta.</string>
     <string name="language_packs_turn_on_in_settings">Ota %1$s käyttöön luettelossa ja palaa sitten takaisin.</string>
     <string name="language_packs_installed_and_on">%1$s asennettiin. Se on käytössä: vaihda siihen kielenvaihtajasta.</string>

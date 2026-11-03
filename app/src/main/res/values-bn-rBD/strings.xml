@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">অভিধান খুঁজুন</string>
     <string name="language_packs_load_ldb">LDB ফাইল লোড করুন</string>
     <string name="language_packs_variant_summary">%1$s-এর জায়গায় লোড হয়</string>
-    <string name="language_packs_not_on_summary">এখনও কীবোর্ডে সক্রিয় নেই। সক্রিয় করতে আলতো চাপুন।</string>
+    <string name="language_packs_not_on_summary">নতুন %1$s কীবোর্ড তৈরি করতে আলতো চাপুন।</string>
     <string name="language_packs_turned_on">%1$s সক্রিয় আছে। ভাষা পরিবর্তনকারী থেকে এতে পরিবর্তন করুন।</string>
     <string name="language_packs_turn_on_in_settings">তালিকায় %1$s সক্রিয় করুন, তারপর ফিরে আসুন।</string>
     <string name="language_packs_installed_and_on">%1$s ইনস্টল করা হয়েছে। এটি সক্রিয়: ভাষা পরিবর্তনকারী থেকে এতে পরিবর্তন করুন।</string>

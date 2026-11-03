@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">사전 확인</string>
     <string name="language_packs_load_ldb">LDB 파일 불러오기</string>
     <string name="language_packs_variant_summary">%1$s 대신 로드됨</string>
-    <string name="language_packs_not_on_summary">아직 키보드에서 켜지지 않았습니다. 탭하여 켜세요.</string>
+    <string name="language_packs_not_on_summary">탭하여 새 %1$s 키보드를 만드세요.</string>
     <string name="language_packs_turned_on">%1$s이(가) 켜졌습니다. 언어 전환기에서 전환하세요.</string>
     <string name="language_packs_turn_on_in_settings">목록에서 %1$s을(를) 켠 후 돌아오세요.</string>
     <string name="language_packs_installed_and_on">%1$s 설치됨. 켜져 있습니다: 언어 전환기에서 전환하세요.</string>

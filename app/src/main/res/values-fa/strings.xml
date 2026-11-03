@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">بررسی واژه‌نامه‌ها</string>
     <string name="language_packs_load_ldb">بارگذاری فایل LDB</string>
     <string name="language_packs_variant_summary">به‌جای %1$s بارگذاری می‌شود</string>
-    <string name="language_packs_not_on_summary">هنوز در صفحه‌کلید فعال نشده است. برای فعال‌سازی ضربه بزنید.</string>
+    <string name="language_packs_not_on_summary">برای ایجاد صفحه‌کلید جدید %1$s ضربه بزنید.</string>
     <string name="language_packs_turned_on">%1$s فعال است. از تعویض‌کننده زبان به آن تغییر دهید.</string>
     <string name="language_packs_turn_on_in_settings">%1$s را در فهرست فعال کنید، سپس بازگردید.</string>
     <string name="language_packs_installed_and_on">%1$s نصب شد. فعال است: از تعویض‌کننده زبان به آن تغییر دهید.</string>

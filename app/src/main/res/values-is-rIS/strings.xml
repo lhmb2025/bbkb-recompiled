@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Leita að orðabókum</string>
     <string name="language_packs_load_ldb">Hlaða LDB-skrá</string>
     <string name="language_packs_variant_summary">Hleðst í stað %1$s</string>
-    <string name="language_packs_not_on_summary">Ekki virkt á lyklaborðinu ennþá. Ýttu til að virkja.</string>
+    <string name="language_packs_not_on_summary">Ýttu til að búa til nýtt lyklaborð: %1$s.</string>
     <string name="language_packs_turned_on">%1$s er virkt. Skiptu yfir í það í tungumálaskiptaranum.</string>
     <string name="language_packs_turn_on_in_settings">Virkjaðu %1$s á listanum og komdu svo til baka.</string>
     <string name="language_packs_installed_and_on">%1$s uppsett. Það er virkt: skiptu yfir í það í tungumálaskiptaranum.</string>

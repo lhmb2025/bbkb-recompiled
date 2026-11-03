@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Проверить словари</string>
     <string name="language_packs_load_ldb">Загрузить файл LDB</string>
     <string name="language_packs_variant_summary">Загружается вместо %1$s</string>
-    <string name="language_packs_not_on_summary">Ещё не включён в клавиатуре. Нажмите, чтобы включить.</string>
+    <string name="language_packs_not_on_summary">Нажмите, чтобы создать новую клавиатуру: %1$s.</string>
     <string name="language_packs_turned_on">%1$s включён. Переключитесь на него в переключателе языков.</string>
     <string name="language_packs_turn_on_in_settings">Включите %1$s в списке, затем вернитесь.</string>
     <string name="language_packs_installed_and_on">%1$s установлен. Он включён: переключитесь на него в переключателе языков.</string>

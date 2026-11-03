@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Meklēt vārdnīcas</string>
     <string name="language_packs_load_ldb">Ielādēt LDB failu</string>
     <string name="language_packs_variant_summary">Tiek ielādēts %1$s vietā</string>
-    <string name="language_packs_not_on_summary">Vēl nav ieslēgta tastatūrā. Pieskarieties, lai ieslēgtu.</string>
+    <string name="language_packs_not_on_summary">Pieskarieties, lai izveidotu jaunu tastatūru: %1$s.</string>
     <string name="language_packs_turned_on">%1$s ir ieslēgta. Pārslēdzieties uz to valodu pārslēgā.</string>
     <string name="language_packs_turn_on_in_settings">Ieslēdziet %1$s sarakstā un atgriezieties.</string>
     <string name="language_packs_installed_and_on">Instalēta %1$s. Tā ir ieslēgta: pārslēdzieties uz to valodu pārslēgā.</string>

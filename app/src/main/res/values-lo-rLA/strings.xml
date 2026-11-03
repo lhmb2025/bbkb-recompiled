@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">ກວດຫາວັດຈະນານຸກົມ</string>
     <string name="language_packs_load_ldb">ໂຫລ່ດໄຟລ໌ LDB</string>
     <string name="language_packs_variant_summary">ໂຫຼດແທນ %1$s</string>
-    <string name="language_packs_not_on_summary">ຍັງບໍ່ໄດ້ເປີດໃຊ້ໃນແປ້ນພິມ. ແຕະເພື່ອເປີດໃຊ້.</string>
+    <string name="language_packs_not_on_summary">ແຕະເພື່ອສ້າງແປ້ນພິມ %1$s ໃໝ່.</string>
     <string name="language_packs_turned_on">%1$s ເປີດໃຊ້ແລ້ວ. ສະຫຼັບໄປໃຊ້ຈາກຕົວສະຫຼັບພາສາ.</string>
     <string name="language_packs_turn_on_in_settings">ເປີດໃຊ້ %1$s ໃນລາຍການ ແລ້ວກັບມາ.</string>
     <string name="language_packs_installed_and_on">ຕິດຕັ້ງ %1$s ແລ້ວ. ມັນເປີດໃຊ້ຢູ່: ສະຫຼັບໄປໃຊ້ຈາກຕົວສະຫຼັບພາສາ.</string>

@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Priksa kamus</string>
     <string name="language_packs_load_ldb">Muat file LDB</string>
     <string name="language_packs_variant_summary">Dimuat ngganti %1$s</string>
-    <string name="language_packs_not_on_summary">Durung aktif ing keyboard. Tutul kanggo ngaktifake.</string>
+    <string name="language_packs_not_on_summary">Tutul kanggo nggawe keyboard %1$s anyar.</string>
     <string name="language_packs_turned_on">%1$s wis aktif. Ganti menyang basa iki liwat pangalih basa.</string>
     <string name="language_packs_turn_on_in_settings">Aktifake %1$s ing daftar, banjur bali mrene.</string>
     <string name="language_packs_installed_and_on">%1$s wis diinstal. Wis aktif: ganti menyang basa iki liwat pangalih basa.</string>

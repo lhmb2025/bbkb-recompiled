@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">നിഘണ്ടുക്കൾ പരിശോധിക്കുക</string>
     <string name="language_packs_load_ldb">LDB ഫയൽ ലോഡ് ചെയ്യുക</string>
     <string name="language_packs_variant_summary">%1$s-ന് പകരം ലോഡ് ചെയ്യുന്നു</string>
-    <string name="language_packs_not_on_summary">ഇതുവരെ കീബോർഡിൽ ഓണായിട്ടില്ല. ഓണാക്കാൻ ടാപ്പ് ചെയ്യുക.</string>
+    <string name="language_packs_not_on_summary">പുതിയ %1$s കീബോർഡ് സൃഷ്ടിക്കാൻ ടാപ്പ് ചെയ്യുക.</string>
     <string name="language_packs_turned_on">%1$s ഓണാണ്. ഭാഷാ സ്വിച്ചറിൽ നിന്ന് ഇതിലേക്ക് മാറുക.</string>
     <string name="language_packs_turn_on_in_settings">ലിസ്റ്റിൽ %1$s ഓണാക്കി തിരികെ വരിക.</string>
     <string name="language_packs_installed_and_on">%1$s ഇൻസ്റ്റാൾ ചെയ്തു. ഇത് ഓണാണ്: ഭാഷാ സ്വിച്ചറിൽ നിന്ന് ഇതിലേക്ക് മാറുക.</string>

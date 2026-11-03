@@ -760,7 +760,7 @@
     <string name="language_packs_refresh">Søg efter ordbøger</string>
     <string name="language_packs_load_ldb">Indlæs LDB-fil</string>
     <string name="language_packs_variant_summary">Indlæses i stedet for %1$s</string>
-    <string name="language_packs_not_on_summary">Ikke aktiveret i tastaturet endnu. Tryk for at aktivere det.</string>
+    <string name="language_packs_not_on_summary">Tryk for at oprette et nyt tastatur til %1$s.</string>
     <string name="language_packs_turned_on">%1$s er aktiveret. Skift til det fra sprogskifteren.</string>
     <string name="language_packs_turn_on_in_settings">Aktiver %1$s på listen, og kom så tilbage.</string>
     <string name="language_packs_installed_and_on">%1$s er installeret. Det er aktiveret: skift til det fra sprogskifteren.</string>
