@@ -619,10 +619,6 @@
     <!-- ========================== -->
     <!-- Settings — spell checker -->
     <!-- ========================== -->
-    <string name="settings_spellcheck_sensitivity_balanced">Balanced - Recommended for most users</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Lenient - Fewer words flagged as misspelled</string>
-    <string name="settings_spellcheck_sensitivity_strict">Strict - More words flagged as misspelled</string>
-    <string name="settings_spellcheck_sensitivity_title">Spell check sensitivity</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Grant contacts permission to use this feature</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Contact names will be recognized as valid words</string>
     <string name="settings_spellcheck_use_contacts_title">Use contacts for spellchecking</string>

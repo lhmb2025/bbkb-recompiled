@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Хөдөлгөөн эхлэх үеийн босоо масштаб</string>
     <string name="settings_anim_show_start_y_title">Гарч ирэх эхний Y масштаб</string>
     <string name="settings_animation_params_title">Хөдөлгөөний үзүүлэлт</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Тэнцвэртэй — ихэнх хэрэглэгчдэд тохиромжтой</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Зөөлөн — цөөн үгийг алдаатай гэж тэмдэглэнэ</string>
-    <string name="settings_spellcheck_sensitivity_strict">Хатуу — олон үгийг алдаатай гэж тэмдэглэнэ</string>
-    <string name="settings_spellcheck_sensitivity_title">Алдаа шалгах мэдрэг байдал</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Энэ боломжийг ашиглахын тулд харилцагчийн зөвшөөрөл олгоно уу</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Харилцагчийн нэрийг зөв үг гэж тооцно</string>
     <string name="settings_spellcheck_use_contacts_title">Алдаа шалгахад харилцагчдыг ашиглах</string>

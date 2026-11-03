@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Анимациянын башындагы тигинен масштаб</string>
     <string name="settings_anim_show_start_y_title">Пайда болуунун башындагы Y масштабы</string>
     <string name="settings_animation_params_title">Анимация параметрлери</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Тең салмактуу - көпчүлүк колдонуучуларга сунушталат</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Жумшак - азыраак сөз ката деп белгиленет</string>
-    <string name="settings_spellcheck_sensitivity_strict">Катаал - көбүрөөк сөз ката деп белгиленет</string>
-    <string name="settings_spellcheck_sensitivity_title">Орфографияны текшерүүнүн сезгичтиги</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Бул функцияны колдонуу үчүн байланыштарга уруксат бериңиз</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Байланыштардын ысымдары туура сөз катары таанылат</string>
     <string name="settings_spellcheck_use_contacts_title">Орфографияны текшерүүдө байланыштарды колдонуу</string>

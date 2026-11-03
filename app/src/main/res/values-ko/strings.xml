@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">애니메이션 시작 시 세로 배율</string>
     <string name="settings_anim_show_start_y_title">표시 시작 Y 배율</string>
     <string name="settings_animation_params_title">애니메이션 매개변수</string>
-    <string name="settings_spellcheck_sensitivity_balanced">균형 - 대부분의 사용자에게 권장</string>
-    <string name="settings_spellcheck_sensitivity_lenient">느슨함 - 맞춤법 오류로 표시되는 단어가 적음</string>
-    <string name="settings_spellcheck_sensitivity_strict">엄격함 - 맞춤법 오류로 표시되는 단어가 많음</string>
-    <string name="settings_spellcheck_sensitivity_title">맞춤법 검사 민감도</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">이 기능을 사용하려면 연락처 권한을 허용하세요</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">연락처 이름이 올바른 단어로 인식됩니다</string>
     <string name="settings_spellcheck_use_contacts_title">맞춤법 검사에 연락처 사용</string>

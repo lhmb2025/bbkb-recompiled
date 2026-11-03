@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Vertikālais mērogs animācijas sākumā</string>
     <string name="settings_anim_show_start_y_title">Parādīšanās sākuma Y mērogs</string>
     <string name="settings_animation_params_title">Animācijas parametri</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Līdzsvarota – ieteicama lielākajai daļai lietotāju</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Iecietīga – mazāk vārdu atzīmēti kā kļūdaini</string>
-    <string name="settings_spellcheck_sensitivity_strict">Stingra – vairāk vārdu atzīmēti kā kļūdaini</string>
-    <string name="settings_spellcheck_sensitivity_title">Pareizrakstības pārbaudes jutīgums</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Piešķiriet kontaktpersonu atļauju, lai izmantotu šo funkciju</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktpersonu vārdi tiks atpazīti kā derīgi vārdi</string>
     <string name="settings_spellcheck_use_contacts_title">Izmantot kontaktpersonas pareizrakstības pārbaudei</string>

@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Skala menegak pada permulaan animasi</string>
     <string name="settings_anim_show_start_y_title">Skala Y permulaan kemunculan</string>
     <string name="settings_animation_params_title">Parameter animasi</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Seimbang - Disyorkan untuk kebanyakan pengguna</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Longgar - Kurang perkataan ditanda salah eja</string>
-    <string name="settings_spellcheck_sensitivity_strict">Ketat - Lebih banyak perkataan ditanda salah eja</string>
-    <string name="settings_spellcheck_sensitivity_title">Kepekaan semakan ejaan</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Berikan kebenaran kenalan untuk menggunakan ciri ini</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Nama kenalan akan dikenali sebagai perkataan yang sah</string>
     <string name="settings_spellcheck_use_contacts_title">Gunakan kenalan untuk semakan ejaan</string>

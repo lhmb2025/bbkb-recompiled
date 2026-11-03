@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Pystyskaalaus animaation alussa</string>
     <string name="settings_anim_show_start_y_title">Näyttämisen alun Y-skaalaus</string>
     <string name="settings_animation_params_title">Animaatioparametrit</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Tasapainoinen – suositellaan useimmille</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Salliva – harvempia sanoja merkitään virheellisiksi</string>
-    <string name="settings_spellcheck_sensitivity_strict">Tiukka – useampia sanoja merkitään virheellisiksi</string>
-    <string name="settings_spellcheck_sensitivity_title">Oikoluvun herkkyys</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Myönnä yhteystietojen käyttöoikeus, jotta voit käyttää tätä ominaisuutta</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Yhteystietojen nimet tunnistetaan kelvollisiksi sanoiksi</string>
     <string name="settings_spellcheck_use_contacts_title">Käytä yhteystietoja oikoluvussa</string>

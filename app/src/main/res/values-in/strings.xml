@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Skala vertikal di awal animasi</string>
     <string name="settings_anim_show_start_y_title">Skala Y awal kemunculan</string>
     <string name="settings_animation_params_title">Parameter animasi</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Seimbang - Disarankan untuk sebagian besar pengguna</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Longgar - Lebih sedikit kata ditandai salah eja</string>
-    <string name="settings_spellcheck_sensitivity_strict">Ketat - Lebih banyak kata ditandai salah eja</string>
-    <string name="settings_spellcheck_sensitivity_title">Sensitivitas pemeriksaan ejaan</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Berikan izin kontak untuk menggunakan fitur ini</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Nama kontak akan dikenali sebagai kata yang valid</string>
     <string name="settings_spellcheck_use_contacts_title">Gunakan kontak untuk pemeriksaan ejaan</string>

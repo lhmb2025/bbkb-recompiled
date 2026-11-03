@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Vertikaalne mastaap animatsiooni alguses</string>
     <string name="settings_anim_show_start_y_title">Ilmumise alguse Y-mastaap</string>
     <string name="settings_animation_params_title">Animatsiooni parameetrid</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Tasakaalustatud – soovitatav enamikule kasutajatest</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Leebe – vähem sõnu märgitakse veaks</string>
-    <string name="settings_spellcheck_sensitivity_strict">Range – rohkem sõnu märgitakse veaks</string>
-    <string name="settings_spellcheck_sensitivity_title">Õigekirjakontrolli tundlikkus</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Selle funktsiooni kasutamiseks andke kontaktide luba</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktide nimesid tunnustatakse õigete sõnadena</string>
     <string name="settings_spellcheck_use_contacts_title">Kasuta õigekirjakontrollis kontakte</string>

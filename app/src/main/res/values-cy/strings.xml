@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Y raddfa fertigol ar ddechrau\'r animeiddiad</string>
     <string name="settings_anim_show_start_y_title">Graddfa Y gychwynnol yr ymddangos</string>
     <string name="settings_animation_params_title">Paramedrau animeiddio</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Cytbwys - argymhellir i\'r rhan fwyaf o ddefnyddwyr</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Goddefgar - llai o eiriau\'n cael eu nodi fel camsillafiad</string>
-    <string name="settings_spellcheck_sensitivity_strict">Llym - mwy o eiriau\'n cael eu nodi fel camsillafiad</string>
-    <string name="settings_spellcheck_sensitivity_title">Sensitifrwydd y gwirio sillafu</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Rhowch ganiatâd cysylltiadau i ddefnyddio\'r nodwedd hon</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Bydd enwau cysylltiadau\'n cael eu cydnabod fel geiriau dilys</string>
     <string name="settings_spellcheck_use_contacts_title">Defnyddio cysylltiadau wrth wirio sillafu</string>

@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Vertikalus mastelis animacijos pradžioje</string>
     <string name="settings_anim_show_start_y_title">Pasirodymo pradžios Y mastelis</string>
     <string name="settings_animation_params_title">Animacijos parametrai</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Subalansuotas – rekomenduojama daugumai naudotojų</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Atlaidus – mažiau žodžių pažymima kaip klaidingi</string>
-    <string name="settings_spellcheck_sensitivity_strict">Griežtas – daugiau žodžių pažymima kaip klaidingi</string>
-    <string name="settings_spellcheck_sensitivity_title">Rašybos tikrinimo jautrumas</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Suteikite kontaktų leidimą, kad galėtumėte naudoti šią funkciją</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktų vardai bus atpažįstami kaip taisyklingi žodžiai</string>
     <string name="settings_spellcheck_use_contacts_title">Naudoti kontaktus rašybai tikrinti</string>

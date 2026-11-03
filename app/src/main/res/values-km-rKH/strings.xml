@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">មាត្រដ្ឋានបញ្ឈរនៅពេលចលនាចាប់ផ្ដើម</string>
     <string name="settings_anim_show_start_y_title">មាត្រដ្ឋាន Y ដំបូងនៃការលេចឡើង</string>
     <string name="settings_animation_params_title">ប៉ារ៉ាម៉ែត្រចលនា</string>
-    <string name="settings_spellcheck_sensitivity_balanced">មធ្យម — ណែនាំសម្រាប់អ្នកប្រើភាគច្រើន</string>
-    <string name="settings_spellcheck_sensitivity_lenient">ធូរ — ពាក្យតិចជាងត្រូវបានសម្គាល់ថាសរសេរខុស</string>
-    <string name="settings_spellcheck_sensitivity_strict">តឹងរឹង — ពាក្យច្រើនជាងត្រូវបានសម្គាល់ថាសរសេរខុស</string>
-    <string name="settings_spellcheck_sensitivity_title">កម្រិតតឹងរឹងនៃការពិនិត្យអក្ខរាវិរុទ្ធ</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">ផ្ដល់ការអនុញ្ញាតទំនាក់ទំនងដើម្បីប្រើមុខងារនេះ</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">ឈ្មោះទំនាក់ទំនងនឹងត្រូវបានទទួលស្គាល់ថាជាពាក្យត្រឹមត្រូវ</string>
     <string name="settings_spellcheck_use_contacts_title">ប្រើទំនាក់ទំនងសម្រាប់ការពិនិត្យអក្ខរាវិរុទ្ធ</string>

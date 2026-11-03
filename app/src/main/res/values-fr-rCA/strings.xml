@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Échelle verticale au début de l\'animation</string>
     <string name="settings_anim_show_start_y_title">Échelle Y initiale d\'apparition</string>
     <string name="settings_animation_params_title">Paramètres d\'animation</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Équilibrée - Recommandée pour la plupart des utilisateurs</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Souple - Moins de mots signalés comme mal orthographiés</string>
-    <string name="settings_spellcheck_sensitivity_strict">Stricte - Plus de mots signalés comme mal orthographiés</string>
-    <string name="settings_spellcheck_sensitivity_title">Sensibilité du vérificateur orthographique</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Accordez l\'autorisation d\'accès aux contacts pour utiliser cette fonction</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Les noms de contacts seront reconnus comme des mots valides</string>
     <string name="settings_spellcheck_use_contacts_title">Utiliser les contacts pour la vérification orthographique</string>

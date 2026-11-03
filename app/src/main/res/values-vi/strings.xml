@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Tỷ lệ dọc khi bắt đầu hiệu ứng</string>
     <string name="settings_anim_show_start_y_title">Tỷ lệ Y đầu khi hiện</string>
     <string name="settings_animation_params_title">Thông số hiệu ứng</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Cân bằng - Khuyên dùng cho đa số người dùng</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Dễ dãi - Ít từ bị báo là sai chính tả hơn</string>
-    <string name="settings_spellcheck_sensitivity_strict">Nghiêm ngặt - Nhiều từ bị báo là sai chính tả hơn</string>
-    <string name="settings_spellcheck_sensitivity_title">Độ nhạy kiểm tra chính tả</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Cấp quyền truy cập danh bạ để dùng tính năng này</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Tên liên hệ sẽ được xem là từ hợp lệ</string>
     <string name="settings_spellcheck_use_contacts_title">Dùng danh bạ để kiểm tra chính tả</string>

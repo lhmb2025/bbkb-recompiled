@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Okomita skala na početku animacije</string>
     <string name="settings_anim_show_start_y_title">Početna Y skala pojavljivanja</string>
     <string name="settings_animation_params_title">Parametri animacije</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Uravnoteženo - preporučeno za većinu korisnika</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Blago - manje riječi označeno kao pogrešno napisano</string>
-    <string name="settings_spellcheck_sensitivity_strict">Strogo - više riječi označeno kao pogrešno napisano</string>
-    <string name="settings_spellcheck_sensitivity_title">Osjetljivost provjere pravopisa</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Dajte dozvolu za kontakte da biste koristili ovu funkciju</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Imena kontakata će se prepoznavati kao ispravne riječi</string>
     <string name="settings_spellcheck_use_contacts_title">Koristi kontakte pri provjeri pravopisa</string>

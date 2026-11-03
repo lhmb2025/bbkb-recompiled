@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">অ্যানিমেশনের শুরুতে উল্লম্ব স্কেল</string>
     <string name="settings_anim_show_start_y_title">দেখা দেওয়ার শুরুর Y স্কেল</string>
     <string name="settings_animation_params_title">অ্যানিমেশন প্যারামিটার</string>
-    <string name="settings_spellcheck_sensitivity_balanced">ভারসাম্যপূর্ণ - বেশিরভাগ ব্যবহারকারীর জন্য প্রস্তাবিত</string>
-    <string name="settings_spellcheck_sensitivity_lenient">শিথিল - কম শব্দ ভুল বানান হিসেবে চিহ্নিত হবে</string>
-    <string name="settings_spellcheck_sensitivity_strict">কঠোর - বেশি শব্দ ভুল বানান হিসেবে চিহ্নিত হবে</string>
-    <string name="settings_spellcheck_sensitivity_title">বানান পরীক্ষার সংবেদনশীলতা</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">এই সুবিধাটি ব্যবহার করতে পরিচিতির অনুমতি দিন</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">পরিচিতির নাম বৈধ শব্দ হিসেবে গণ্য হবে</string>
     <string name="settings_spellcheck_use_contacts_title">বানান পরীক্ষায় পরিচিতি ব্যবহার করুন</string>

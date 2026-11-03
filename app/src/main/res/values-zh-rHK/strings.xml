@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">動畫開始時的垂直比例</string>
     <string name="settings_anim_show_start_y_title">顯示動畫起始 Y 比例</string>
     <string name="settings_animation_params_title">動畫參數</string>
-    <string name="settings_spellcheck_sensitivity_balanced">平衡 - 建議大部分使用者採用</string>
-    <string name="settings_spellcheck_sensitivity_lenient">寬鬆 - 較少字詞會標示為拼錯</string>
-    <string name="settings_spellcheck_sensitivity_strict">嚴格 - 較多字詞會標示為拼錯</string>
-    <string name="settings_spellcheck_sensitivity_title">拼字檢查敏感度</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">授予聯絡人權限即可使用此功能</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">聯絡人名稱會視為有效字詞</string>
     <string name="settings_spellcheck_use_contacts_title">使用聯絡人進行拼字檢查</string>

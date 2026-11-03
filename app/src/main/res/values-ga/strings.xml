@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">An scála ingearach ag tús na beochana</string>
     <string name="settings_anim_show_start_y_title">Scála Y tosaigh an nochta</string>
     <string name="settings_animation_params_title">Paraiméadair beochana</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Cothrom - molta don chuid is mó d\'úsáideoirí</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Bog - níos lú focal marcáilte mar litriú mícheart</string>
-    <string name="settings_spellcheck_sensitivity_strict">Dian - níos mó focal marcáilte mar litriú mícheart</string>
-    <string name="settings_spellcheck_sensitivity_title">Íogaireacht an litrithe</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Tabhair cead teagmhálacha chun an ghné seo a úsáid</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Aithneofar ainmneacha teagmhálacha mar fhocail bhailí</string>
     <string name="settings_spellcheck_use_contacts_title">Úsáid teagmhálacha don litreoir</string>

@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">ვერტიკალური მასშტაბი ანიმაციის დასაწყისში</string>
     <string name="settings_anim_show_start_y_title">გამოჩენის საწყისი Y მასშტაბი</string>
     <string name="settings_animation_params_title">ანიმაციის პარამეტრები</string>
-    <string name="settings_spellcheck_sensitivity_balanced">დაბალანსებული — რეკომენდებულია მომხმარებელთა უმეტესობისთვის</string>
-    <string name="settings_spellcheck_sensitivity_lenient">რბილი — ნაკლები სიტყვა მოინიშნება შეცდომად</string>
-    <string name="settings_spellcheck_sensitivity_strict">მკაცრი — მეტი სიტყვა მოინიშნება შეცდომად</string>
-    <string name="settings_spellcheck_sensitivity_title">მართლწერის შემოწმების მგრძნობელობა</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">ამ ფუნქციის გამოსაყენებლად მიეცით კონტაქტების ნებართვა</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">კონტაქტების სახელები სწორ სიტყვებად ჩაითვლება</string>
     <string name="settings_spellcheck_use_contacts_title">კონტაქტების გამოყენება მართლწერის შემოწმებისას</string>

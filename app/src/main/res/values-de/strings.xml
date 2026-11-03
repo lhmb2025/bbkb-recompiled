@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Vertikale Skalierung am Animationsbeginn</string>
     <string name="settings_anim_show_start_y_title">Y-Skalierung am Beginn des Einblendens</string>
     <string name="settings_animation_params_title">Animationsparameter</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Ausgewogen – für die meisten Nutzer empfohlen</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Nachsichtig – weniger Wörter werden als falsch geschrieben markiert</string>
-    <string name="settings_spellcheck_sensitivity_strict">Streng – mehr Wörter werden als falsch geschrieben markiert</string>
-    <string name="settings_spellcheck_sensitivity_title">Empfindlichkeit der Rechtschreibprüfung</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Erteilen Sie die Berechtigung für Kontakte, um diese Funktion zu nutzen</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktnamen werden als gültige Wörter erkannt</string>
     <string name="settings_spellcheck_use_contacts_title">Kontakte für die Rechtschreibprüfung verwenden</string>

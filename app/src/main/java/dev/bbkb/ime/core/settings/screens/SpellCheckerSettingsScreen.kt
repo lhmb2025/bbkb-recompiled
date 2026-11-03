@@ -13,7 +13,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Contacts
-import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.R
-import dev.bbkb.ime.core.settings.ui.ListPreference
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceActionItem
 import dev.bbkb.ime.core.settings.ui.PreferenceGroup
@@ -59,9 +57,6 @@ fun SpellCheckerSettingsScreen(
         mutableStateOf(prefs.getBoolean("pref_spellcheck_use_contacts", true))
     }
     
-    var sensitivity by remember {
-        mutableStateOf(prefs.getString("pref_spellcheck_sensitivity", "balanced") ?: "balanced")
-    }
     
     // Permission launcher
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -136,24 +131,6 @@ fun SpellCheckerSettingsScreen(
                     }
                 )
 
-                // Spell Check Sensitivity
-                ListPreference(
-                    title = context.getString(R.string.settings_spellcheck_sensitivity_title),
-                    summary = when (sensitivity) {
-                        "lenient" -> context.getString(R.string.settings_spellcheck_sensitivity_lenient)
-                        "balanced" -> context.getString(R.string.settings_spellcheck_sensitivity_balanced)
-                        "strict" -> context.getString(R.string.settings_spellcheck_sensitivity_strict)
-                        else -> context.getString(R.string.settings_spellcheck_sensitivity_balanced)
-                    },
-                    icon = Icons.Outlined.Tune,
-                    value = sensitivity,
-                    entries = listOf("Lenient", "Balanced", "Strict"),
-                    entryValues = listOf("lenient", "balanced", "strict"),
-                    onValueChange = { newValue ->
-                        sensitivity = newValue
-                        prefs.edit().putString("pref_spellcheck_sensitivity", newValue).apply()
-                    }
-                )
             }
             
             Spacer(modifier = Modifier.height(spacing.extraLarge))

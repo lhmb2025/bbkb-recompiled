@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Вертикальный масштаб в начале анимации</string>
     <string name="settings_anim_show_start_y_title">Масштаб Y в начале появления</string>
     <string name="settings_animation_params_title">Параметры анимации</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Сбалансированная — рекомендуется большинству пользователей</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Мягкая — меньше слов помечается как ошибочные</string>
-    <string name="settings_spellcheck_sensitivity_strict">Строгая — больше слов помечается как ошибочные</string>
-    <string name="settings_spellcheck_sensitivity_title">Чувствительность проверки орфографии</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Предоставьте доступ к контактам, чтобы использовать эту функцию</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Имена контактов будут распознаваться как правильные слова</string>
     <string name="settings_spellcheck_use_contacts_title">Использовать контакты при проверке орфографии</string>

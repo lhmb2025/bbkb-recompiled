@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">యానిమేషన్ ప్రారంభంలో నిలువు స్కేల్</string>
     <string name="settings_anim_show_start_y_title">కనిపించే ప్రారంభ Y స్కేల్</string>
     <string name="settings_animation_params_title">యానిమేషన్ పారామితులు</string>
-    <string name="settings_spellcheck_sensitivity_balanced">సమతుల్యం - చాలా మంది వినియోగదారులకు సిఫార్సు చేయబడింది</string>
-    <string name="settings_spellcheck_sensitivity_lenient">సడలింపు - తక్కువ పదాలు తప్పుగా గుర్తించబడతాయి</string>
-    <string name="settings_spellcheck_sensitivity_strict">కఠినం - ఎక్కువ పదాలు తప్పుగా గుర్తించబడతాయి</string>
-    <string name="settings_spellcheck_sensitivity_title">అక్షరక్రమ తనిఖీ సున్నితత్వం</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">ఈ ఫీచర్‌ను ఉపయోగించడానికి కాంటాక్ట్‌ల అనుమతిని ఇవ్వండి</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">కాంటాక్ట్ పేర్లు సరైన పదాలుగా గుర్తించబడతాయి</string>
     <string name="settings_spellcheck_use_contacts_title">అక్షరక్రమ తనిఖీ కోసం కాంటాక్ట్‌లను ఉపయోగించు</string>

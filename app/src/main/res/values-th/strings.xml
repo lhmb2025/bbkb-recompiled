@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">สเกลแนวตั้งเมื่อภาพเคลื่อนไหวเริ่มต้น</string>
     <string name="settings_anim_show_start_y_title">สเกล Y ตอนเริ่มการแสดง</string>
     <string name="settings_animation_params_title">พารามิเตอร์ภาพเคลื่อนไหว</string>
-    <string name="settings_spellcheck_sensitivity_balanced">สมดุล - แนะนำสำหรับผู้ใช้ส่วนใหญ่</string>
-    <string name="settings_spellcheck_sensitivity_lenient">ผ่อนปรน - ทำเครื่องหมายคำสะกดผิดน้อยลง</string>
-    <string name="settings_spellcheck_sensitivity_strict">เข้มงวด - ทำเครื่องหมายคำสะกดผิดมากขึ้น</string>
-    <string name="settings_spellcheck_sensitivity_title">ความไวของการตรวจการสะกด</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">ให้สิทธิ์เข้าถึงรายชื่อเพื่อใช้คุณสมบัตินี้</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">ชื่อผู้ติดต่อจะถูกถือว่าเป็นคำที่ถูกต้อง</string>
     <string name="settings_spellcheck_use_contacts_title">ใช้รายชื่อสำหรับการตรวจการสะกด</string>

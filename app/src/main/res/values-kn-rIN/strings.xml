@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">ಅನಿಮೇಶನ್ ಪ್ರಾರಂಭದಲ್ಲಿ ಲಂಬ ಪ್ರಮಾಣ</string>
     <string name="settings_anim_show_start_y_title">ಕಾಣಿಸಿಕೊಳ್ಳುವ ಪ್ರಾರಂಭದ Y ಪ್ರಮಾಣ</string>
     <string name="settings_animation_params_title">ಅನಿಮೇಶನ್ ನಿಯತಾಂಕಗಳು</string>
-    <string name="settings_spellcheck_sensitivity_balanced">ಸಮತೋಲಿತ - ಹೆಚ್ಚಿನ ಬಳಕೆದಾರರಿಗೆ ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ</string>
-    <string name="settings_spellcheck_sensitivity_lenient">ಸಡಿಲ - ಕಡಿಮೆ ಪದಗಳನ್ನು ಕಾಗುಣಿತ ತಪ್ಪೆಂದು ಗುರುತಿಸಲಾಗುತ್ತದೆ</string>
-    <string name="settings_spellcheck_sensitivity_strict">ಕಟ್ಟುನಿಟ್ಟು - ಹೆಚ್ಚು ಪದಗಳನ್ನು ಕಾಗುಣಿತ ತಪ್ಪೆಂದು ಗುರುತಿಸಲಾಗುತ್ತದೆ</string>
-    <string name="settings_spellcheck_sensitivity_title">ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಯ ಸಂವೇದನಾಶೀಲತೆ</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">ಈ ವೈಶಿಷ್ಟ್ಯ ಬಳಸಲು ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ನೀಡಿ</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಸರಿಯಾದ ಪದಗಳೆಂದು ಗುರುತಿಸಲಾಗುತ್ತದೆ</string>
     <string name="settings_spellcheck_use_contacts_title">ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಗೆ ಸಂಪರ್ಕಗಳನ್ನು ಬಳಸಿ</string>

@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Loddrett skalering ved starten av animasjonen</string>
     <string name="settings_anim_show_start_y_title">Y-skalering ved start av visning</string>
     <string name="settings_animation_params_title">Animasjonsparametere</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Balansert – anbefales for de fleste</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Mild – færre ord merkes som feilstavet</string>
-    <string name="settings_spellcheck_sensitivity_strict">Streng – flere ord merkes som feilstavet</string>
-    <string name="settings_spellcheck_sensitivity_title">Følsomhet for stavekontroll</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Gi tilgang til kontakter for å bruke denne funksjonen</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktnavn godtas som gyldige ord</string>
     <string name="settings_spellcheck_use_contacts_title">Bruk kontakter i stavekontrollen</string>

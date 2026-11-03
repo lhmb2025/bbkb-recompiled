@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Patayong scale sa simula ng animation</string>
     <string name="settings_anim_show_start_y_title">Y scale sa simula ng paglabas</string>
     <string name="settings_animation_params_title">Mga parameter ng animation</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Balanse - Inirerekomenda para sa karamihan ng user</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Maluwag - Mas kaunting salita ang mamarkahang maling baybay</string>
-    <string name="settings_spellcheck_sensitivity_strict">Mahigpit - Mas maraming salita ang mamarkahang maling baybay</string>
-    <string name="settings_spellcheck_sensitivity_title">Sensitivity ng spell check</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Magbigay ng pahintulot sa mga contact para magamit ang feature na ito</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kikilalanin ang mga pangalan ng contact bilang wastong salita</string>
     <string name="settings_spellcheck_use_contacts_title">Gamitin ang mga contact sa spellchecking</string>

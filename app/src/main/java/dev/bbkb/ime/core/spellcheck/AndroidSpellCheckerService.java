@@ -44,8 +44,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
 
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
-    private float mSensitivityThreshold;
-
     private boolean mUseContacts;
 
     private ContactsLearningManager mContactsManager;
@@ -80,12 +78,10 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
             if (BuildConfig.DEBUG) Log.d("PIPELINE", "SC:service:onCreate");
         SubtypeManager.ensureInitialized(getApplicationContext());
         SharedPreferences defaultSharedPreferences = PrefsManager.INSTANCE.getPrefs(this);
-        this.mSensitivityThreshold = parseSensitivity(defaultSharedPreferences);
         this.mContactsManager = new ContactsLearningManager(this);
         this.mPreferenceChanged = false;
         defaultSharedPreferences.registerOnSharedPreferenceChangeListener(this);
         onSharedPreferenceChanged(defaultSharedPreferences, "pref_spellcheck_use_contacts");
-        onSharedPreferenceChanged(defaultSharedPreferences, "pref_spellcheck_sensitivity");
     }
 
     /**
@@ -100,23 +96,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     public void onDestroy() {
         PrefsManager.INSTANCE.getPrefs(this).unregisterOnSharedPreferenceChangeListener(this);
         super.onDestroy();
-    }
-
-    public float getSensitivityThreshold() {
-        return this.mSensitivityThreshold;
-    }
-
-    private float parseSensitivity(SharedPreferences sharedPreferences) {
-        String sensitivity = sharedPreferences.getString("pref_spellcheck_sensitivity", "balanced");
-        switch (sensitivity) {
-            case "lenient":
-                return 0.15f;
-            case "strict":
-                return 0.07f;
-            case "balanced":
-            default:
-                return 0.11f;
-        }
     }
 
     /**
@@ -171,12 +150,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
                 this.mPreferenceChanged = true;
             } finally {
                 this.mDictSemaphore.release(2);
-            }
-        } else if ("pref_spellcheck_sensitivity".equals(key)) {
-            float newThreshold = parseSensitivity(sharedPreferences);
-            if (newThreshold != this.mSensitivityThreshold) {
-                this.mSensitivityThreshold = newThreshold;
-                this.mPreferenceChanged = true;
             }
         }
     }

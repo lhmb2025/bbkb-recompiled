@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Shkalla vertikale në fillim të animimit</string>
     <string name="settings_anim_show_start_y_title">Shkalla Y në fillim të shfaqjes</string>
     <string name="settings_animation_params_title">Parametrat e animimit</string>
-    <string name="settings_spellcheck_sensitivity_balanced">E baraspeshuar - e rekomanduar për shumicën e përdoruesve</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Tolerante - më pak fjalë shënohen si të gabuara</string>
-    <string name="settings_spellcheck_sensitivity_strict">Rigoroze - më shumë fjalë shënohen si të gabuara</string>
-    <string name="settings_spellcheck_sensitivity_title">Ndjeshmëria e kontrollit drejtshkrimor</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Jep lejen e kontakteve për ta përdorur këtë veçori</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Emrat e kontakteve do të njihen si fjalë të sakta</string>
     <string name="settings_spellcheck_use_contacts_title">Përdor kontaktet në kontrollin drejtshkrimor</string>

@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Skala vertikal dina awal animasi</string>
     <string name="settings_anim_show_start_y_title">Skala Y awal pamunculan</string>
     <string name="settings_animation_params_title">Paraméter animasi</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Saimbang - disarankeun pikeun lolobana pamaké</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Longgar - leuwih saeutik kecap nu ditandaan salah</string>
-    <string name="settings_spellcheck_sensitivity_strict">Ketat - leuwih loba kecap nu ditandaan salah</string>
-    <string name="settings_spellcheck_sensitivity_title">Sénsitivitas pamariksa éjahan</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Pasihan idin kontak pikeun maké fitur ieu</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Ngaran kontak bakal dianggap kecap nu bener</string>
     <string name="settings_spellcheck_use_contacts_title">Paké kontak pikeun mariksa éjahan</string>

@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">ອັດຕາສ່ວນແນວຕັ້ງເມື່ອພາບເຄື່ອນໄຫວເລີ່ມ</string>
     <string name="settings_anim_show_start_y_title">ອັດຕາສ່ວນ Y ຕອນເລີ່ມປາກົດ</string>
     <string name="settings_animation_params_title">ພາລາມິເຕີພາບເຄື່ອນໄຫວ</string>
-    <string name="settings_spellcheck_sensitivity_balanced">ສົມດຸນ - ແນະນຳສຳລັບຜູ້ໃຊ້ສ່ວນໃຫຍ່</string>
-    <string name="settings_spellcheck_sensitivity_lenient">ຜ່ອນຜັນ - ມີຄຳທີ່ຖືກໝາຍວ່າສະກົດຜິດໜ້ອຍລົງ</string>
-    <string name="settings_spellcheck_sensitivity_strict">ເຂັ້ມງວດ - ມີຄຳທີ່ຖືກໝາຍວ່າສະກົດຜິດຫຼາຍຂຶ້ນ</string>
-    <string name="settings_spellcheck_sensitivity_title">ຄວາມອ່ອນໄຫວຂອງການກວດການສະກົດຄຳ</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">ໃຫ້ສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່ເພື່ອໃຊ້ຄຸນສົມບັດນີ້</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">ຊື່ຜູ້ຕິດຕໍ່ຈະຖືກຮັບຮູ້ວ່າເປັນຄຳທີ່ຖືກຕ້ອງ</string>
     <string name="settings_spellcheck_use_contacts_title">ໃຊ້ລາຍຊື່ຜູ້ຕິດຕໍ່ໃນການກວດການສະກົດຄຳ</string>

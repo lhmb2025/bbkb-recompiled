@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Scara verticală la începutul animației</string>
     <string name="settings_anim_show_start_y_title">Scară Y inițială la apariție</string>
     <string name="settings_animation_params_title">Parametri de animație</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Echilibrată - Recomandată pentru majoritatea utilizatorilor</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Permisivă - Mai puține cuvinte semnalate ca greșite</string>
-    <string name="settings_spellcheck_sensitivity_strict">Strictă - Mai multe cuvinte semnalate ca greșite</string>
-    <string name="settings_spellcheck_sensitivity_title">Sensibilitatea verificării ortografice</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Acordați permisiunea pentru contacte, pentru a folosi această funcție</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Numele contactelor vor fi recunoscute drept cuvinte valide</string>
     <string name="settings_spellcheck_use_contacts_title">Folosiți contactele la verificarea ortografică</string>

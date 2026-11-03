@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Вертикален размер на почетокот од анимацијата</string>
     <string name="settings_anim_show_start_y_title">Вертикален размер на почетокот од појавувањето</string>
     <string name="settings_animation_params_title">Параметри на анимацијата</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Избалансирана – препорачливо за повеќето корисници</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Попустлива – помалку зборови се означуваат како погрешни</string>
-    <string name="settings_spellcheck_sensitivity_strict">Строга – повеќе зборови се означуваат како погрешни</string>
-    <string name="settings_spellcheck_sensitivity_title">Чувствителност на проверката на правопис</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Дајте дозвола за контакти за да ја користите функцијава</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Имињата на контактите ќе се препознаваат како валидни зборови</string>
     <string name="settings_spellcheck_use_contacts_title">Користење на контактите за проверка на правопис</string>

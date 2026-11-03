@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">קנה מידה אנכי בתחילת האנימציה</string>
     <string name="settings_anim_show_start_y_title">קנה מידה Y בתחילת ההופעה</string>
     <string name="settings_animation_params_title">פרמטרים של אנימציה</string>
-    <string name="settings_spellcheck_sensitivity_balanced">מאוזן - מומלץ לרוב המשתמשים</string>
-    <string name="settings_spellcheck_sensitivity_lenient">מקל - פחות מילים מסומנות כשגויות</string>
-    <string name="settings_spellcheck_sensitivity_strict">קפדני - יותר מילים מסומנות כשגויות</string>
-    <string name="settings_spellcheck_sensitivity_title">רגישות בדיקת האיות</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">הענק הרשאת אנשי קשר כדי להשתמש בתכונה זו</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">שמות אנשי קשר יזוהו כמילים תקינות</string>
     <string name="settings_spellcheck_use_contacts_title">השתמש באנשי קשר לבדיקת איות</string>

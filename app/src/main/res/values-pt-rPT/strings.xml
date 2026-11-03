@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Escala vertical no início da animação</string>
     <string name="settings_anim_show_start_y_title">Escala Y inicial da entrada</string>
     <string name="settings_animation_params_title">Parâmetros de animação</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Equilibrada - recomendada para a maioria dos utilizadores</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Tolerante - menos palavras assinaladas como incorretas</string>
-    <string name="settings_spellcheck_sensitivity_strict">Rigorosa - mais palavras assinaladas como incorretas</string>
-    <string name="settings_spellcheck_sensitivity_title">Sensibilidade da verificação ortográfica</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Conceda a permissão de contactos para usar esta funcionalidade</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Os nomes dos contactos serão reconhecidos como palavras válidas</string>
     <string name="settings_spellcheck_use_contacts_title">Usar contactos na verificação ortográfica</string>

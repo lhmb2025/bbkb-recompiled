@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">அனிமேஷன் தொடக்கத்தில் செங்குத்து அளவு</string>
     <string name="settings_anim_show_start_y_title">தோற்றத் தொடக்க Y அளவு</string>
     <string name="settings_animation_params_title">அனிமேஷன் அளவுருக்கள்</string>
-    <string name="settings_spellcheck_sensitivity_balanced">சமநிலை - பெரும்பாலான பயனர்களுக்குப் பரிந்துரைக்கப்படுகிறது</string>
-    <string name="settings_spellcheck_sensitivity_lenient">தளர்வானது - குறைவான சொற்கள் எழுத்துப்பிழையாகக் குறிக்கப்படும்</string>
-    <string name="settings_spellcheck_sensitivity_strict">கடுமையானது - அதிக சொற்கள் எழுத்துப்பிழையாகக் குறிக்கப்படும்</string>
-    <string name="settings_spellcheck_sensitivity_title">எழுத்துப்பிழை சரிபார்ப்பு உணர்திறன்</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">இந்த அம்சத்தைப் பயன்படுத்த தொடர்புகள் அனுமதியை வழங்கவும்</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">தொடர்புப் பெயர்கள் செல்லுபடியாகும் சொற்களாக அங்கீகரிக்கப்படும்</string>
     <string name="settings_spellcheck_use_contacts_title">எழுத்துப்பிழை சரிபார்ப்பிற்கு தொடர்புகளைப் பயன்படுத்து</string>

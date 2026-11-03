@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Escala vertical a l\'inici de l\'animació</string>
     <string name="settings_anim_show_start_y_title">Escala Y inicial de l\'aparició</string>
     <string name="settings_animation_params_title">Paràmetres d\'animació</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Equilibrada: recomanada per a la majoria d\'usuaris</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Permissiva: menys paraules marcades com a incorrectes</string>
-    <string name="settings_spellcheck_sensitivity_strict">Estricta: més paraules marcades com a incorrectes</string>
-    <string name="settings_spellcheck_sensitivity_title">Sensibilitat de la correcció ortogràfica</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Concediu el permís de contactes per utilitzar aquesta funció</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Els noms dels contactes es reconeixeran com a paraules vàlides</string>
     <string name="settings_spellcheck_use_contacts_title">Usa els contactes en la correcció ortogràfica</string>

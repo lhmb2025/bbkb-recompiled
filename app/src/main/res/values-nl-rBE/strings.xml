@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Verticale schaal aan het begin van de animatie</string>
     <string name="settings_anim_show_start_y_title">Y-schaal bij begin verschijnen</string>
     <string name="settings_animation_params_title">Animatieparameters</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Evenwichtig - aanbevolen voor de meeste gebruikers</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Soepel - minder woorden als fout gemarkeerd</string>
-    <string name="settings_spellcheck_sensitivity_strict">Streng - meer woorden als fout gemarkeerd</string>
-    <string name="settings_spellcheck_sensitivity_title">Gevoeligheid van spellingcontrole</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Verleen toegang tot contactpersonen om deze functie te gebruiken</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Namen van contactpersonen worden herkend als geldige woorden</string>
     <string name="settings_spellcheck_use_contacts_title">Contactpersonen gebruiken bij spellingcontrole</string>

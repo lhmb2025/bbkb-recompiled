@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Animasyon başındaki dikey ölçek</string>
     <string name="settings_anim_show_start_y_title">Görünme başlangıç Y ölçeği</string>
     <string name="settings_animation_params_title">Animasyon parametreleri</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Dengeli - Çoğu kullanıcı için önerilir</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Hoşgörülü - Daha az kelime yanlış yazılmış olarak işaretlenir</string>
-    <string name="settings_spellcheck_sensitivity_strict">Katı - Daha çok kelime yanlış yazılmış olarak işaretlenir</string>
-    <string name="settings_spellcheck_sensitivity_title">Yazım denetimi hassasiyeti</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Bu özelliği kullanmak için kişiler iznini verin</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kişi adları geçerli kelime olarak tanınır</string>
     <string name="settings_spellcheck_use_contacts_title">Yazım denetiminde kişileri kullan</string>

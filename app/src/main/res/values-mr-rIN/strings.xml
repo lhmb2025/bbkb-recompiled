@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">अ‍ॅनिमेशनच्या सुरुवातीला अनुलंब स्केल</string>
     <string name="settings_anim_show_start_y_title">दिसण्याच्या सुरुवातीचा Y स्केल</string>
     <string name="settings_animation_params_title">अ‍ॅनिमेशन पॅरामीटर</string>
-    <string name="settings_spellcheck_sensitivity_balanced">संतुलित - बहुतेक वापरकर्त्यांसाठी शिफारस केलेले</string>
-    <string name="settings_spellcheck_sensitivity_lenient">सौम्य - कमी शब्द चुकीचे शब्दलेखन म्हणून चिन्हांकित</string>
-    <string name="settings_spellcheck_sensitivity_strict">कडक - अधिक शब्द चुकीचे शब्दलेखन म्हणून चिन्हांकित</string>
-    <string name="settings_spellcheck_sensitivity_title">शब्दलेखन तपासणी संवेदनशीलता</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">हे वैशिष्ट्य वापरण्यासाठी संपर्क परवानगी द्या</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">संपर्क नावे वैध शब्द म्हणून ओळखली जातील</string>
     <string name="settings_spellcheck_use_contacts_title">शब्दलेखन तपासणीसाठी संपर्क वापरा</string>

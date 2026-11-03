@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">مقیاس عمودی در آغاز پویانمایی</string>
     <string name="settings_anim_show_start_y_title">مقیاس Y در آغاز ظاهر شدن</string>
     <string name="settings_animation_params_title">پارامترهای پویانمایی</string>
-    <string name="settings_spellcheck_sensitivity_balanced">متعادل - توصیه‌شده برای بیشتر کاربران</string>
-    <string name="settings_spellcheck_sensitivity_lenient">آسان‌گیر - کلمه‌های کمتری غلط املایی شناخته می‌شوند</string>
-    <string name="settings_spellcheck_sensitivity_strict">سخت‌گیر - کلمه‌های بیشتری غلط املایی شناخته می‌شوند</string>
-    <string name="settings_spellcheck_sensitivity_title">حساسیت غلط‌گیری املایی</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">برای استفاده از این ویژگی، مجوز مخاطبین را بدهید</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">نام مخاطبین به‌عنوان کلمه‌های درست شناخته می‌شوند</string>
     <string name="settings_spellcheck_use_contacts_title">استفاده از مخاطبین برای غلط‌گیری املایی</string>

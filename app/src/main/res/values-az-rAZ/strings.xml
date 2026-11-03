@@ -510,10 +510,6 @@
     <string name="settings_anim_show_start_y_summary">Animasiyanın əvvəlində şaquli miqyas</string>
     <string name="settings_anim_show_start_y_title">Görünmənin başlanğıc Y miqyası</string>
     <string name="settings_animation_params_title">Animasiya parametrləri</string>
-    <string name="settings_spellcheck_sensitivity_balanced">Balanslı — əksər istifadəçilər üçün tövsiyə olunur</string>
-    <string name="settings_spellcheck_sensitivity_lenient">Yumşaq — daha az söz səhv kimi qeyd olunur</string>
-    <string name="settings_spellcheck_sensitivity_strict">Sərt — daha çox söz səhv kimi qeyd olunur</string>
-    <string name="settings_spellcheck_sensitivity_title">Orfoqrafik yoxlanışın həssaslığı</string>
     <string name="settings_spellcheck_use_contacts_summary_disabled">Bu funksiyadan istifadə etmək üçün kontaktlara icazə verin</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontakt adları düzgün söz kimi tanınacaq</string>
     <string name="settings_spellcheck_use_contacts_title">Orfoqrafik yoxlanış üçün kontaktlardan istifadə edin</string>
