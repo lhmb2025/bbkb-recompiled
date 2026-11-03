@@ -29,13 +29,13 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.CheckBox
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -69,11 +69,16 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.appendInlineContent
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import dev.bbkb.ime.core.engine.NuanceSDKManager
 import dev.bbkb.ime.core.engine.dlm.EngineLanguages
 import dev.bbkb.ime.core.engine.dlm.LearnedModelStream
@@ -123,6 +128,12 @@ private class WordDetail(val count: Int, val quality: Int, val language: Int) {
 /** The qualities of a word the engine has not kept yet: see [WordDetail.expiring]. */
 private val EXPIRING_RANGE = -11..-1
 
+/** The inline-content key of the auto-delete icon after the word count's "N expiring". */
+private const val EXPIRING_ICON_ID = "expiringIcon"
+
+/** The orders the sort menu offers, in menu order. */
+private enum class WordSort(val label: String) { ALPHABETICAL("A to Z"), MOST_USED("Most used"), EXPIRING("Expiring") }
+
 /** A run of rows under one header, or the whole list when [title] is null. */
 private class WordSection(val title: String?, val words: List<String>)
 
@@ -162,54 +173,10 @@ private fun readLimited(input: InputStream, limit: Int): ByteArray {
 }
 
 /**
- * A connected button group in the Material 3 (Expressive) shape, drawn here because the Material
- * library this app compiles against (1.4.0) does not expose `ToggleButton` and `ButtonGroupDefaults`.
- * The
- * standard small size: 40 dp tall, 14 sp labels, the two outer sides fully round, 8 dp inner
- * corners, the chosen button fully round, 2 dp between the buttons. Colours follow the theme: the
- * chosen button is filled with the primary colour, the others are tonal.
- */
-@Composable
-private fun ConnectedButtonGroup(
-    options: List<String>,
-    selectedIndex: Int,
-    onSelect: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val innerCorner = CornerSize(8.dp)
-    val round = CornerSize(50)
-    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-        options.forEachIndexed { index, label ->
-            val selected = index == selectedIndex
-            val shape = when {
-                selected -> CircleShape
-                index == 0 -> RoundedCornerShape(topStart = round, bottomStart = round, topEnd = innerCorner, bottomEnd = innerCorner)
-                index == options.lastIndex -> RoundedCornerShape(topStart = innerCorner, bottomStart = innerCorner, topEnd = round, bottomEnd = round)
-                else -> RoundedCornerShape(innerCorner)
-            }
-            Surface(
-                onClick = { onSelect(index) },
-                selected = selected,
-                shape = shape,
-                color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondaryContainer,
-            ) {
-                Box(
-                    modifier = Modifier.heightIn(min = 40.dp).padding(horizontal = 16.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(label, style = MaterialTheme.typography.labelLarge, maxLines = 1, softWrap = false)
-                }
-            }
-        }
-    }
-}
-
-/**
  * One learned word, laid out like [PreferenceItem] (same height, padding, card and corners) with
  * what that row cannot hold: the use count on the right as plain text in the accent colour, the
  * way Android's own Settings lists put a size or a percentage, and, for a word the keyboard will
- * forget unless it is typed again, the error container with an hourglass. A tap opens the word's sheet; a long press starts selecting.
+ * forget unless it is typed again, the error container with the auto-delete icon. A tap opens the word's sheet; a long press starts selecting.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -277,7 +244,7 @@ private fun LearnedWordRow(
                 if (expiring) {
                     Spacer(modifier = Modifier.size(8.dp))
                     Icon(
-                        painter = painterResource(R.drawable.ic_settings_hourglass),
+                        painter = painterResource(R.drawable.ic_settings_auto_delete),
                         contentDescription = "Expiring",
                         tint = content,
                         modifier = Modifier.size(18.dp),
@@ -396,7 +363,8 @@ fun WordListEditorScreen(
     // when the export cannot be reached on this phone (the rows then show no counts and the model
     // rows are hidden).
     var details by remember { mutableStateOf<Map<String, WordDetail>?>(null) }
-    var sortByUse by remember { mutableStateOf(false) }
+    var sortOrder by remember { mutableStateOf(WordSort.ALPHABETICAL) }
+    var showSortMenu by remember { mutableStateOf(false) }
     var showOverflow by remember { mutableStateOf(false) }
     // A model read from a file, waiting for the user to confirm that it replaces this phone's.
     var pendingImport by remember { mutableStateOf<LearnedModelStream.Model?>(null) }
@@ -826,12 +794,21 @@ fun WordListEditorScreen(
                     // themselves as cards, the first and last carry the group's outer corners, and
                     // the rows take the group inset themselves so the header and the count above
                     // them keep their page-level alignment.
-                    val sections = remember(words, details, sortByUse) {
+                    val expiringCount = remember(words, details) { words.count { details?.get(it)?.expiring == true } }
+                    val sections = remember(words, details, sortOrder) {
                         val d = details
-                        val ordered = if (sortByUse && d != null) words.sortedWith(compareByDescending<String> { d[it]?.count ?: 0 }.thenBy { it }) else words
+                        val ordered = when {
+                            d == null -> words
+                            sortOrder == WordSort.MOST_USED -> words.sortedWith(compareByDescending<String> { d[it]?.count ?: 0 }.thenBy { it })
+                            // Expiring words first, the lowest quality (the nearest to the engine
+                            // dropping the word) first; the kept words follow A to Z
+                            sortOrder == WordSort.EXPIRING -> words.sortedWith(
+                                compareBy<String> { d[it]?.takeIf { w -> w.expiring }?.quality ?: Int.MAX_VALUE }.thenBy { it }
+                            )
+                            else -> words
+                        }
                         sectionsOf(ordered, d)
                     }
-                    val expiringCount = remember(words, details) { words.count { details?.get(it)?.expiring == true } }
                     CompositionLocalProvider(LocalInGroup provides true) {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
@@ -850,19 +827,44 @@ fun WordListEditorScreen(
                                             append("${words.size} ${if (words.size == 1) "word" else "words"}")
                                             if (expiringCount > 0) {
                                                 append(" · ")
-                                                withStyle(SpanStyle(color = MaterialTheme.colorScheme.error)) { append("$expiringCount expiring") }
+                                                withStyle(SpanStyle(color = MaterialTheme.colorScheme.error)) { append("$expiringCount expiring ") }
+                                                appendInlineContent(EXPIRING_ICON_ID, "[expiring]")
                                             }
                                         },
+                                        inlineContent = mapOf(
+                                            EXPIRING_ICON_ID to InlineTextContent(
+                                                Placeholder(1.2.em, 1.2.em, PlaceholderVerticalAlign.TextCenter)
+                                            ) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.ic_settings_auto_delete),
+                                                    contentDescription = null,
+                                                    tint = MaterialTheme.colorScheme.error,
+                                                    modifier = Modifier.fillMaxSize(),
+                                                )
+                                            }
+                                        ),
                                         style = MaterialTheme.typography.titleSmall,
                                         color = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier.weight(1f)
                                     )
                                     if (details != null && words.size > 1) {
-                                        ConnectedButtonGroup(
-                                            options = listOf("A to Z", "Most used"),
-                                            selectedIndex = if (sortByUse) 1 else 0,
-                                            onSelect = { sortByUse = it == 1 },
-                                        )
+                                        Box {
+                                            TextButton(onClick = { showSortMenu = true }) {
+                                                Text(sortOrder.label)
+                                                Icon(Icons.Filled.ArrowDropDown, contentDescription = "Sort order")
+                                            }
+                                            DropdownMenu(expanded = showSortMenu, onDismissRequest = { showSortMenu = false }) {
+                                                WordSort.entries.forEach { order ->
+                                                    DropdownMenuItem(
+                                                        text = { Text(order.label) },
+                                                        trailingIcon = if (sortOrder == order) {
+                                                            { Icon(Icons.Filled.Check, contentDescription = "Selected") }
+                                                        } else null,
+                                                        onClick = { sortOrder = order; showSortMenu = false },
+                                                    )
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }

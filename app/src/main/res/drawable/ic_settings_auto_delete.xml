@@ -1,0 +1,16 @@
+<!-- A learned word the keyboard will forget unless it is typed again: the owner's auto-delete icon (clock with a bin), 24-unit grid; tinted by the row. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M17.5,21.5h2c0.42,0 0.77333,-0.14667 1.06,-0.44 0.28667,-0.29333 0.43333,-0.64667 0.44,-1.06v-4h1v-1.5h-2.5v-1h-2v1h-2.5v1.5h1v4c0,0.42 0.14667,0.77333 0.44,1.06s0.64667,0.43333 1.06,0.44ZM17.5,16h2v4h-2v-4Z" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M13.35,14.75l-2.35,-2.35v-5.4h2v4.6l1.4,1.4s-1.05,1.75 -1.05,1.75Z" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M5.00159,12c0,-3.86511 3.1333,-6.99841 6.99841,-6.99841 3.69629,0 6.71582,2.86761 6.97314,6.49841h1.99994c-0.26178,-4.7287 -4.18011,-8.49841 -8.97308,-8.49841C7.03827,3.00159 3.00159,7.03827 3.00159,12s4.03668,8.99841 8.99841,8.99841c0.68817,0 1.35571,-0.08484 2,-0.23181v-2.06195c-0.63409,0.1889 -1.3045,0.29376 -2,0.29376 -3.86511,0 -6.99841,-3.1333 -6.99841,-6.99841Z" />
+</vector>
