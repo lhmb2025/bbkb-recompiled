@@ -204,30 +204,23 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         return letterCount * 4 < length * 3 ? 1 : 0; // 1=MOSTLY_NON_LETTERS, 0=NORMAL_WORD
     }
 
-    /**
-     * Whether {@code word} is spelled correctly, trying the lower-case form for a capitalised word
-     * and the capitalised form for an all-caps one. With learned words not accepted, a word whose
-     * own spelling, or one of those forms, is a learned-only word is misspelled outright: the
-     * lower-case retry would otherwise let "Beezone" through as "beezone".
-     */
     private boolean isWordInDictionary(String word, int capMode) {
-        String lowerCase = capMode == 0 ? null : word.toLowerCase(this.mSessionLocale);
-        String capFirst = capMode == 0 || capMode == 1 ? null : capitalizeFirstAndLowercaseRest(lowerCase, this.mSessionLocale);
-        if (this.mService.isRejectedLearnedWord(word)
-                || (lowerCase != null && this.mService.isRejectedLearnedWord(lowerCase))
-                || (capFirst != null && this.mService.isRejectedLearnedWord(capFirst))) {
-            return false;
-        }
         if (this.mService.isValidWord(word)) {
             return true;
         }
-        if (lowerCase == null) {
+        if (capMode == 0) {
             return false;
         }
+        String lowerCase = word.toLowerCase(this.mSessionLocale);
         if (this.mService.isValidWord(lowerCase)) {
             return true;
         }
-        return capFirst != null && this.mService.isValidWord(capFirst);
+        if (1 == capMode) {
+            return false;
+        }
+        String capFirst = capitalizeFirstAndLowercaseRest(lowerCase, this.mSessionLocale);
+        boolean result = this.mService.isValidWord(capFirst);
+        return result;
     }
 
     private SuggestionsInfo spellCheckWord(TextInfo textInfo, PrevWordsInfo prevWordsInfo, int sugLimit) {

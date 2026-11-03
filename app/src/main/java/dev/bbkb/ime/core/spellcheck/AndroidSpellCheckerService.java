@@ -13,10 +13,10 @@ import com.blackberry.nuanceshim.languagepack.LanguagePackManager;
 
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker;
 import dev.bbkb.ime.core.engine.DictionaryLoader;
-import dev.bbkb.ime.core.engine.dlm.LearnedOnlyWords;
 import dev.bbkb.ime.core.suggestion.PrevWordsInfo;
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils;
 import dev.bbkb.ime.core.locale.SubtypeManager;
+import dev.bbkb.ime.personaldictionary.PersonalDictionaryUtil;
 import dev.bbkb.ime.core.contacts.ContactsLearningManager;
 import dev.bbkb.ime.core.settings.util.SuggestionStripSettings;
 import dev.bbkb.ime.core.subtypeswitcher.SubtypeFactory;
@@ -173,23 +173,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
         }
     }
 
-    /**
-     * Whether {@code word} is known only because the keyboard learned it, and learned words are
-     * not to count: the session then judges it misspelled even though the engine knows it.
-     * Always false while learned words are accepted (the default). Read from this service's own
-     * engine when it can export the model, else from the keyboard's ({@link LearnedOnlyWords}).
-     */
-    public boolean isRejectedLearnedWord(String word) {
-        if (this.mAcceptLearnedWords) {
-            return false;
-        }
-        NuanceSDK engine = NuanceSDKManager.peekSecondary();
-        if (engine == null || !engine.isDLMTransferAvailable()) {
-            engine = NuanceSDKManager.peekInstance();
-        }
-        return engine != null && LearnedOnlyWords.contains(engine, word);
-    }
-
     @Override // android.service.textservice.SpellCheckerService
     public SpellCheckerService.Session createSession() {
         return new AndroidSpellCheckerSession(this);
@@ -215,7 +198,10 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     /**
      * Whether the loaded dictionary knows {@code word}. The session asks only after
      * {@link #initDictionaryForLocale} has succeeded; with no dictionary the answer is true, so
-     * a stray call never underlines a word.
+     * a stray call never underlines a word. With learned words not accepted, the engine answers
+     * from its language dictionaries alone, and the personal dictionary's words and (when used)
+     * the contact names are added back from the lists the keyboard already keeps: the engine
+     * holds those in its learned model too.
      */
     public boolean isValidWord(String word) {
         this.mDictSemaphore.acquireUninterruptibly();
@@ -224,7 +210,12 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
                 Logger.info("BlackBerrySpellChecker", "No dictionary loaded, can't check if word is valid");
                 return true;
             }
-            return this.mDictionaryLoader.isWordValid(word, false);
+            if (this.mAcceptLearnedWords) {
+                return this.mDictionaryLoader.isWordValid(word, false);
+            }
+            return this.mDictionaryLoader.isDictionaryWord(word)
+                    || PersonalDictionaryUtil.isPersonalWord(word)
+                    || (this.mUseContacts && this.mContactsManager.isContactWord(word));
         } finally {
             this.mDictSemaphore.release();
         }

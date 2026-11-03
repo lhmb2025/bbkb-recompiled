@@ -61,6 +61,14 @@ public abstract class Dictionary {
         return isWordValid(str);
     }
 
+    /**
+     * Whether the language dictionaries alone know the word, leaving out the learned model.
+     * Dictionaries without a learned model answer as {@link #isValidWord}.
+     */
+    public boolean isDictionaryWord(String str) {
+        return isWordValid(str);
+    }
+
     
     private static final class PhonyDictionary extends Dictionary {
         @Override // dev.bbkb.ime.core.engine.Dictionary

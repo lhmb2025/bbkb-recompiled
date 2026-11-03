@@ -1,5 +1,6 @@
 package dev.bbkb.ime.core.suggestion
 
+import com.blackberry.nuanceshim.WordInfo
 import dev.bbkb.ime.core.engine.DictionaryLoader
 import dev.bbkb.ime.core.engine.NuanceSDKDictionaryBridge
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker
@@ -11,8 +12,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.never
-import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -20,9 +19,9 @@ import java.util.ArrayList
 import java.util.Locale
 
 /**
- * "Suggest learned words" (2026-11-03): off, the words the engine knows only because the keyboard
- * learned them are left out of corrections and predictions. The setting had no effect at all
- * before: the preference was read into SettingsValues and consumed nowhere.
+ * "Suggest learned words" (2026-11-03): off, the candidates the engine took from its learned model
+ * are left out of corrections and predictions, except the personal dictionary's words. The source
+ * comes with the engine's list (WordInfo.fromLearnedModel), so nothing is read per request.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -31,6 +30,9 @@ class SuggestionEngineLearnedWordsTest {
     private lateinit var loader: DictionaryLoader
     private lateinit var bridge: NuanceSDKDictionaryBridge
     private lateinit var engine: SuggestionEngine
+
+    /** Words the engine reports from its learned model: learned, and one added on purpose. */
+    private val LEARNED_MODEL = setOf("beezone", "quintel", "frobnicate")
 
     private val KIND_TYPED = 0
     private val KIND_COMPLETION = 1
@@ -43,8 +45,8 @@ class SuggestionEngineLearnedWordsTest {
         `when`(loader.isDictionaryReady()).thenReturn(true)
         `when`(loader.getMainDictionary()).thenReturn(bridge)
         `when`(bridge.shouldAutoCorrect(any(), any(), any())).thenReturn(false)
-        `when`(bridge.learnedOnlyWords()).thenReturn(setOf("beezone", "Quintel"))
         engine = SuggestionEngine(loader)
+        engine.setPersonalWordLookupForTest { it == "frobnicate" }
         engine.setAutoCorrectMode(0)
         engine.setAutoCorrectThreshold(3)
     }
@@ -69,7 +71,8 @@ class SuggestionEngineLearnedWordsTest {
         val result = SuggestionResult(Locale.US, 18, false)
         val list = ArrayList<SuggestedWords.SuggestedWordInfo>()
         for ((i, c) in candidates.withIndex()) {
-            list.add(SuggestedWords.SuggestedWordInfo(c.first, 100 - i, c.second, null, -1, -1, null))
+            val info = WordInfo().apply { word = c.first; fromLearnedModel = c.first.lowercase() in LEARNED_MODEL }
+            list.add(SuggestedWords.SuggestedWordInfo(c.first, 100 - i, c.second, null, -1, -1, info))
         }
         result.addSuggestions(list)
         `when`(loader.generateSuggestions(any(), any(), any(), any(), anyInt())).thenReturn(result)
@@ -95,7 +98,6 @@ class SuggestionEngineLearnedWordsTest {
         engineReturns("beez" to KIND_TYPED, "beezone" to KIND_COMPLETION, "bees" to KIND_CORRECTION)
 
         assertEquals(listOf("beez", "beezone", "bees"), run("beez"))
-        verify(bridge, never()).learnedOnlyWords()
     }
 
     @Test
@@ -133,10 +135,23 @@ class SuggestionEngineLearnedWordsTest {
     }
 
     @Test
-    fun off_nothingChangesWhenTheModelCannotBeRead() {
+    fun off_personalDictionaryWordsStay() {
         engine.setSuggestLearnedWords(false)
-        `when`(bridge.learnedOnlyWords()).thenReturn(null)
-        engineReturns("beez" to KIND_TYPED, "beezone" to KIND_COMPLETION)
+        engineReturns("frob" to KIND_TYPED, "frobnicate" to KIND_COMPLETION, "Frobnicate" to KIND_COMPLETION)
+
+        assertEquals(listOf("frob", "frobnicate", "Frobnicate"), run("frob"))
+    }
+
+    @Test
+    fun off_wordsWithoutASourceAreKept() {
+        engine.setSuggestLearnedWords(false)
+        // Candidates the bridge made itself (no engine word behind them) cannot be from the model.
+        val result = SuggestionResult(Locale.US, 18, false)
+        result.addSuggestions(arrayListOf(
+            SuggestedWords.SuggestedWordInfo("beez", 100, KIND_TYPED, null, -1, -1, null),
+            SuggestedWords.SuggestedWordInfo("beezone", 99, KIND_COMPLETION, null, -1, -1, null),
+        ))
+        `when`(loader.generateSuggestions(any(), any(), any(), any(), anyInt())).thenReturn(result)
 
         assertEquals(listOf("beez", "beezone"), run("beez"))
     }

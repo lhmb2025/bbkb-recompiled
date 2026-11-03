@@ -11,10 +11,11 @@ import dev.bbkb.ime.core.engine.DictionaryLoader;
 import dev.bbkb.ime.core.engine.NuanceSDKDictionaryBridge;
 import dev.bbkb.ime.core.settings.util.SuggestionStripSettings;
 import dev.bbkb.ime.keyboard.ProximityGrid;
+import dev.bbkb.ime.personaldictionary.PersonalDictionaryUtil;
 
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Set;
+import java.util.function.Predicate;
 import dev.bbkb.ime.BuildConfig;
 
 /**
@@ -47,6 +48,9 @@ public final class SuggestionEngine {
     private volatile boolean mSkipNuanceCheck = false;
 
     private volatile boolean mSuggestLearnedWords = true;
+
+    /** Whether a word was added on purpose (the personal dictionary); replaced in tests. */
+    private Predicate<String> mIsPersonalWord = PersonalDictionaryUtil::isPersonalWord;
 
     
     public interface SuggestionCallback {
@@ -82,33 +86,32 @@ public final class SuggestionEngine {
         this.mSuggestLearnedWords = suggest;
     }
 
+    void setPersonalWordLookupForTest(Predicate<String> isPersonalWord) {
+        this.mIsPersonalWord = isPersonalWord;
+    }
+
     /**
-     * "Suggest learned words" off: drops the candidates the engine knows only because the
-     * keyboard learned them ({@link NuanceSDKDictionaryBridge#learnedOnlyWords}). Before the case
-     * transform, since the model holds exact spellings; a candidate the engine capitalised for the
-     * shift state is tried in lower case too. The typed word itself stays whatever it is, at index
-     * 0 and as the bridge's duplicate of it at index 1: the setting is about what is offered, not
-     * about what the user wrote, and the heuristic needs the duplicate to stand down.
+     * "Suggest learned words" off: drops the candidates the engine took from its learned model
+     * (the source the bridge read with the list, {@link com.blackberry.nuanceshim.WordInfo#fromLearnedModel}), except the
+     * words of the personal dictionary, which the model holds too but which were added on
+     * purpose. Before the case transform; a candidate the engine capitalised for the shift state
+     * is matched against the personal dictionary in lower case too. The typed word itself stays,
+     * at index 0 and as the bridge's duplicate of it at index 1: the setting is about what is
+     * offered, not about what the user wrote, and the heuristic needs the duplicate to stand down.
      */
     private void dropLearnedOnlyWords(ArrayList<SuggestedWords.SuggestedWordInfo> suggestions, String typedWord, Locale locale) {
         if (this.mSuggestLearnedWords || suggestions.isEmpty()) {
             return;
         }
-        Dictionary mainDict = this.mDictionaryLoader.getMainDictionary();
-        if (!(mainDict instanceof NuanceSDKDictionaryBridge)) {
-            return;
-        }
-        Set<String> learned = ((NuanceSDKDictionaryBridge) mainDict).learnedOnlyWords();
-        if (learned == null || learned.isEmpty()) {
-            return;
-        }
         Locale lower = locale != null ? locale : Locale.ROOT;
         for (int i = suggestions.size() - 1; i >= 0; i--) {
-            String word = suggestions.get(i).word;
-            if (word == null || word.equals(typedWord)) {
+            SuggestedWords.SuggestedWordInfo info = suggestions.get(i);
+            String word = info.word;
+            if (word == null || word.equals(typedWord) || info.nuanceWordInfo == null
+                    || !info.nuanceWordInfo.fromLearnedModel) {
                 continue;
             }
-            if (learned.contains(word) || learned.contains(word.toLowerCase(lower))) {
+            if (!this.mIsPersonalWord.test(word) && !this.mIsPersonalWord.test(word.toLowerCase(lower))) {
                 suggestions.remove(i);
             }
         }

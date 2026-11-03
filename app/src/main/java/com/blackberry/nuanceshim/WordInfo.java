@@ -15,6 +15,13 @@ public class WordInfo {
     public boolean shouldAutoAccept = false;
 
     /**
+     * The engine found this word in its learned model (learned, typed-once or added on purpose),
+     * not in a language dictionary: "Suggest learned words" off leaves such words out unless they
+     * are in the personal dictionary. Set by NuanceSDKDictionaryBridge from the list's sources.
+     */
+    public boolean fromLearnedModel = false;
+
+    /**
      * Audit EB-3: the {@link NuanceSDK#getSelectionListGeneration() selection-list generation}
      * this word's {@link #selectionListIndex} refers to. -1 means "not stamped", which the
      * learner treats as unusable for index-based selection.

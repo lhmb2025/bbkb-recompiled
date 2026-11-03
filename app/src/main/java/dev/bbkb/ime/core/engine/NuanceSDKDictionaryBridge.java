@@ -18,7 +18,6 @@ import dev.bbkb.ime.core.settings.util.SettingsValues;
 import dev.bbkb.ime.core.settings.util.SuggestionStripSettings;
 import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.core.engine.NuanceSDKManager;
-import dev.bbkb.ime.core.engine.dlm.LearnedOnlyWords;
 import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.core.shared.SystemProps;
 import dev.bbkb.ime.core.suggestion.SuggestionResult;
@@ -348,6 +347,9 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         final long listGeneration = NuanceSDK.getSelectionListGeneration();
 
         selectionListSize = this.nuanceSdk.getSelectionListSize();
+        // Where each word came from, read with the list rather than looked up per word; only
+        // "Suggest learned words" uses it (SuggestionEngine).
+        final byte[] sources = this.nuanceSdk.getSelectionListSources(selectionListSize);
         if (BuildConfig.DEBUG) {
             Log.d("PIPELINE", "IME:nuanceDict:defaultIndex typed=\"" + strM4360m + "\""
                     + " engineDefaultWordIndex=" + engineDefaultWordIndex
@@ -377,6 +379,8 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
             WordInfo selectionListWord = this.nuanceSdk.getSelectionListWord(i4);
             if (selectionListWord != null) {
                 selectionListWord.selectionListGeneration = listGeneration;   // audit EB-3
+                selectionListWord.fromLearnedModel = sources != null && i4 < sources.length
+                        && sources[i4] == NuanceSDK.WORD_SOURCE_LEARNED_MODEL;
             }
             // Diacritics fix (2026-08-27): the engine resolves accented symbols to their host key
             // (KDB char lists: ď->d-key) and builds its exact-word candidate from BASE letters, so
@@ -678,12 +682,9 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         return this.nuanceSdk.isSpellingCorrect(str);
     }
 
-    /**
-     * The words the engine knows only because the keyboard learned them, exact spellings; null
-     * when the model cannot be read. "Suggest learned words" off leaves them out of the strip.
-     */
-    public Set<String> learnedOnlyWords() {
-        return LearnedOnlyWords.of(this.nuanceSdk);
+    @Override // dev.bbkb.ime.core.engine.Dictionary
+    public boolean isDictionaryWord(String str) {
+        return this.nuanceSdk.isSpellingCorrectWithoutLearnedWords(str);
     }
 
     /**

@@ -318,4 +318,16 @@ public class DictionaryLoader {
         return false;
     }
 
+    /**
+     * Whether the language dictionaries alone know {@code word}, exactly as written: the learned
+     * model (learned words, words added on purpose, contact names) is left out.
+     */
+    public boolean isDictionaryWord(String word) {
+        if (TextUtils.isEmpty(word)) {
+            return false;
+        }
+        DictionaryGroup group = this.mDictionaryGroup;
+        Dictionary dict = group.mMainDictionary;
+        return group.mLocale != null && dict != null && dict.isDictionaryWord(word);
+    }
 }

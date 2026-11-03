@@ -50,4 +50,16 @@ final class Et9Dlm {
 
     /** Replaces the model; the engine's status, or a negative ERR_* code. */
     static native int nativeImport(long handle, byte[] data);
+
+    /**
+     * Switches the learned model off or back on for this engine instance only; the engine's
+     * status (0 = done), or a negative ERR_* code.
+     */
+    static native int nativeSetLearnedModelEnabled(long handle, boolean enabled);
+
+    /**
+     * The source of each of the first {@code count} words of the built selection list
+     * ({@link NuanceSDK#WORD_SOURCE_LEARNED_MODEL} and the others), or null.
+     */
+    static native byte[] nativeSelectionListSources(long handle, int count);
 }

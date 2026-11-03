@@ -27,6 +27,15 @@
  *             checksum is accepted
  *   The caller (NuanceSDK, under sMutex) validates the stream and keeps an export of the current
  *   model before importing, so a refused import can be undone.
+ *   ET9STATUS ET9AWDisableDBs(ling, ET9U32 mask) / ET9AWEnableDBs(ling, ET9U32 mask)
+ *             switch whole word databases off and on for this engine instance only; bit 0x2 is
+ *             the learned model. With it off, isSpellingCorrect answers from the language
+ *             dictionaries alone (verified on the emulator: learned and added words fail, the
+ *             other instance keeps accepting them). Status 0 = done, 62 = busy.
+ *   ET9STATUS ET9AWSelLstGetWord(ling, ET9AWWordInfo **word, ET9U8 index)
+ *             the built selection list's word at `index`; byte +0x11 of the word is its source:
+ *             9 the typed word, 2 a language dictionary (contact names too), 1 the learned model
+ *             (learned, typed-once and added words alike). The blob's JNI never passes it on.
  */
 
 #include <jni.h>
@@ -49,12 +58,31 @@ static const uint32_t FP_GET_EXPORT_MAX_SIZE[4] = {0xaa0003e1u, 0xb4000a40u, 0x7
 static const uint32_t FP_EXPORT[4]              = {0xd10103ffu, 0xa90053f3u, 0xa9015bf5u, 0xa90263f7u};
 static const uint32_t FP_IMPORT[4]              = {0xd11843ffu, 0xd10203ffu, 0x6d05a7e8u, 0x6d06afeau};
 
+/* The two database switches share their first instructions, so each is also told apart by the
+ * word at +0x74. */
+#define BLOB_DISABLE_DBS 0xd42b8u
+#define BLOB_ENABLE_DBS  0xd3fd8u
+#define DBS_TELL_OFFSET  0x74u
+#define DB_MASK_LEARNED_MODEL 0x2u
+
+static const uint32_t FP_DBS[4]       = {0xaa0003e3u, 0xb4000a80u, 0x79407000u, 0x52828504u};
+static const uint32_t TELL_DISABLE_DBS = 0x12000022u;
+static const uint32_t TELL_ENABLE_DBS  = 0x52800027u;
+
+#define BLOB_SELLST_GET_WORD 0xef7e4u
+static const uint32_t FP_SELLST_GET_WORD[4] = {0xaa0003e4u, 0x53001c42u, 0xb40005a0u, 0x79407000u};
+#define WORD_SOURCE_OFFSET 0x11u
+/* The engine's selection list holds at most this many words. */
+#define MAX_SELECTION_LIST 255
+
 /* A plausible upper bound for one model: the file itself is 2 MiB. */
 #define MAX_EXPORT_BYTES (8u << 20)
 
 typedef uint32_t (*fn_dlm_get_max)(void *ling);
 typedef int (*fn_dlm_export)(void *ling, uint8_t *buf, uint32_t size, uint32_t *written);
 typedef int (*fn_dlm_import)(void *ling, const uint8_t *buf, uint32_t size);
+typedef int (*fn_dbs)(void *ling, uint32_t mask);
+typedef int (*fn_sellst_get_word)(void *ling, const uint8_t **word, uint32_t index);
 
 /* Negative results of the Java entry points: this side could not reach the engine at all.
  * Non-negative results are the engine's own status codes (0 = success). */
@@ -170,4 +198,49 @@ Java_com_blackberry_nuanceshim_Et9Dlm_nativeImport(JNIEnv *env, jclass cls, jlon
     free(buf);
     LOGI("import: %d bytes -> status %d", (int)n, status);
     return status;
+}
+
+/* Switches the learned model off (enabled = false) or back on for this engine instance, so a
+ * spelling check can answer from the dictionaries alone. Returns the engine's status (0 =
+ * success) or a negative ET9DLM_ERR_* code. */
+JNIEXPORT jint JNICALL
+Java_com_blackberry_nuanceshim_Et9Dlm_nativeSetLearnedModelEnabled(JNIEnv *env, jclass cls, jlong handle,
+                                                                   jboolean enabled) {
+    (void)env; (void)cls;
+    et9_ctx c = et9_resolve(handle);
+    if (!c.ling) {
+        LOGW("engine context: %s", c.error ? c.error : "ling not located");
+        return ET9DLM_ERR_CONTEXT;
+    }
+    uintptr_t base = et9_blob_base();
+    if (!base) return ET9DLM_ERR_BLOB;
+    unsigned vaddr = enabled ? BLOB_ENABLE_DBS : BLOB_DISABLE_DBS;
+    uint32_t tell = enabled ? TELL_ENABLE_DBS : TELL_DISABLE_DBS;
+    if (!fingerprint_ok(base, vaddr, FP_DBS, enabled ? "EnableDBs" : "DisableDBs")) return ET9DLM_ERR_BLOB;
+    if (*(const uint32_t *)(base + vaddr + DBS_TELL_OFFSET) != tell) {
+        LOGW("%s: word at +0x%x does not match this build", enabled ? "EnableDBs" : "DisableDBs", DBS_TELL_OFFSET);
+        return ET9DLM_ERR_BLOB;
+    }
+    return ((fn_dbs)(base + vaddr))(c.ling, DB_MASK_LEARNED_MODEL);
+}
+
+/* The source byte of each of the first `count` words of the built selection list (0 where a word
+ * cannot be read), or null when the engine cannot be reached. */
+JNIEXPORT jbyteArray JNICALL
+Java_com_blackberry_nuanceshim_Et9Dlm_nativeSelectionListSources(JNIEnv *env, jclass cls, jlong handle, jint count) {
+    (void)cls;
+    if (count <= 0 || count > MAX_SELECTION_LIST) return NULL;
+    et9_ctx c = et9_resolve(handle);
+    if (!c.ling) return NULL;
+    uintptr_t base = et9_blob_base();
+    if (!base || !fingerprint_ok(base, BLOB_SELLST_GET_WORD, FP_SELLST_GET_WORD, "SelLstGetWord")) return NULL;
+    fn_sellst_get_word get_word = (fn_sellst_get_word)(base + BLOB_SELLST_GET_WORD);
+    jbyte sources[MAX_SELECTION_LIST];
+    for (int i = 0; i < count; i++) {
+        const uint8_t *word = NULL;
+        sources[i] = get_word(c.ling, &word, (uint32_t)i) == 0 && word ? (jbyte)word[WORD_SOURCE_OFFSET] : 0;
+    }
+    jbyteArray out = (*env)->NewByteArray(env, count);
+    if (out) (*env)->SetByteArrayRegion(env, out, 0, count, sources);
+    return out;
 }
