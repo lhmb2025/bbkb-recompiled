@@ -72,6 +72,12 @@ class EmojiBoardQueryTest {
     private fun EmojiPalettesView.clearButton(): ImageButton = findViewById(R.id.emoji_search_clear)
     private fun EmojiPalettesView.dots(): View = findViewById(R.id.emoji_category_page_id_view)
 
+    /** The dots row always stays (background and height); this is how many dots it draws. */
+    private fun EmojiPalettesView.dotCount(): Int {
+        assertEquals(View.VISIBLE, dots().visibility)
+        return read(dots(), "pageCount") as Int
+    }
+
     private fun EmojiSearchOverlayView.keyboards(): List<EmojiKeyboard> =
         (read(this, "currentKeyboards") as List<*>).map { it as EmojiKeyboard }
 
@@ -88,11 +94,13 @@ class EmojiBoardQueryTest {
         assertEquals("", queryText)
     }
 
+    /** Smileys (category 1) has two pages, so its tab draws two dots. */
+    private fun EmojiPalettesView.assertTabDotsRestored() = assertEquals(2, dotCount())
+
     private fun EmojiPalettesView.assertSearching(query: String) {
         assertTrue(isSearchFieldShowing)
         assertEquals(View.GONE, tabRow().visibility)
         assertEquals(View.VISIBLE, field().visibility)
-        assertEquals(View.INVISIBLE, dots().visibility)
         assertEquals(query, queryText)
         assertEquals(query, fieldText().text.toString())
     }
@@ -113,8 +121,10 @@ class EmojiBoardQueryTest {
         assertTrue(v.appendToQuery("s"))
         v.assertSearching("s")
         assertEquals("the category is untouched", 1, v.pager().currentItem)
+        assertEquals("no results yet, so no dots over the kept row", 1, v.dotCount())
         EmojiTestEnv.settle()
         assertFalse("one letter searches nothing", v.overlay().isOverlayVisible)
+        assertEquals(1, v.dotCount())
     }
 
     @Test
@@ -129,6 +139,16 @@ class EmojiBoardQueryTest {
         assertEquals(2, pages.size)
         assertEquals((0 until 40).map { "s$it" }, emojiOutputs(pages[0]))
         assertEquals("the tab behind the field is still Food", 4, v.pager().currentItem)
+        assertEquals("two pages of results draw two dots", 2, v.dotCount())
+    }
+
+    @Test
+    fun aSinglePageOfResultsHidesTheDots() {
+        val v = open()
+        v.type("cat")
+        assertTrue(EmojiTestEnv.waitUntil { v.resultsShow("a0") })
+        assertEquals(1, v.overlay().keyboards().size)
+        assertEquals(1, v.dotCount())
     }
 
     @Test
@@ -148,6 +168,7 @@ class EmojiBoardQueryTest {
         assertTrue(emojiOutputs(page).isEmpty())
         assertEquals(40, page.keys.size)
         v.assertSearching("zz")
+        assertEquals(1, v.dotCount())
     }
 
     // ------------------------------------------------------------------ backspace and clear
@@ -161,10 +182,12 @@ class EmojiBoardQueryTest {
         assertTrue(v.backspaceQuery())
         v.assertSearching("s")
         assertTrue(EmojiTestEnv.waitUntil { !v.overlay().isOverlayVisible })
+        assertEquals("back to one letter, the dots go again", 1, v.dotCount())
 
         assertTrue(v.backspaceQuery())
         v.assertNormal()
         assertEquals(1, v.pager().currentItem)
+        v.assertTabDotsRestored()
 
         assertFalse("with no query the key passes through to the editor", v.backspaceQuery())
     }
@@ -177,6 +200,7 @@ class EmojiBoardQueryTest {
         v.clearButton().performClick()
         idle()
         v.assertNormal()
+        v.assertTabDotsRestored()
         assertFalse(v.overlay().isOverlayVisible)
     }
 

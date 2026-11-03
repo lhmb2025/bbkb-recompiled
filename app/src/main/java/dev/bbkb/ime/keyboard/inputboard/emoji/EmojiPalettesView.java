@@ -54,8 +54,9 @@ import dev.bbkb.ime.keyboard.inputboard.BoardKeyboardFactory;
  * user types into the open board: {@code KeyEventProcessor} routes each printable key to
  * {@link #appendToQuery} and Backspace to {@link #backspaceQuery}. The first character turns the
  * tab row into the search field (search icon, the query, a clear button where the delete key was)
- * and hides the page dots; from the second character the results overlay shows the matches
- * whatever tab was current; a pick inserts the emoji and leaves the query alone; Backspace on the
+ * and the page dots show only while the results span more than one page; from the second
+ * character the results overlay shows the matches whatever tab was current; a pick inserts the
+ * emoji and leaves the query alone; Backspace on the
  * last character, the clear button, or closing the board ends it and the tab row returns. On an
  * on-screen keyboard, with Dynamic Search on, {@link #onEmojiOpened} seeds the query from the word
  * being composed and today's behaviour stands: results on the Recents tab only, and a pick replaces
@@ -404,6 +405,26 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         } else {
             searchOverlay.showKeyboards(factory.createSearchResultsKeyboards(results));
         }
+        updateDotsForTypedQuery();
+    }
+
+    /**
+     * While the search field is up the page dots are for the results only: drawn when they span
+     * more than one page (owner decision 2026-11-03), blank for a single page, an empty page or no
+     * results yet. The indicator row itself stays, background and all, so the board keeps its
+     * height and colour; the tab row's own dots return with the tab row ({@link #updatePageIndicator}).
+     */
+    private void updateDotsForTypedQuery() {
+        if (pageIndicatorView == null || !query.isTypedInBoard()) {
+            return;
+        }
+        pageIndicatorView.setVisibility(VISIBLE);
+        boolean multiPage = searchOverlay != null && searchOverlay.isOverlayVisible()
+                && searchOverlay.getPageCount() > 1;
+        if (!multiPage) {
+            // One page draws no dots (the overlay sets the real count itself when it has pages).
+            pageIndicatorView.setPageInfo(1, 0, 0.0f);
+        }
     }
 
     /**
@@ -507,6 +528,7 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         } else if (searchOverlay != null) {
             searchOverlay.hide();
         }
+        updateDotsForTypedQuery();
     }
 
     private void showSearchField() {
@@ -515,8 +537,10 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         }
         tabRow.setVisibility(GONE);
         searchFieldRow.setVisibility(VISIBLE);
+        // No results yet: blank dots over the same background until a multi-page result set.
         if (pageIndicatorView != null) {
-            pageIndicatorView.setVisibility(INVISIBLE);
+            pageIndicatorView.setVisibility(VISIBLE);
+            pageIndicatorView.setPageInfo(1, 0, 0.0f);
         }
     }
 
@@ -527,9 +551,6 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         searchQueryText.setText("");
         searchFieldRow.setVisibility(GONE);
         tabRow.setVisibility(VISIBLE);
-        if (pageIndicatorView != null) {
-            pageIndicatorView.setVisibility(VISIBLE);
-        }
     }
 
     // ==================== Query from the editor (on-screen dynamic search) ====================
