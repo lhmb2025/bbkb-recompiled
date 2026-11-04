@@ -29,7 +29,19 @@ object PackListing {
      * the ordering a list of language names wants: "Åland" next to "Albanian", not after "Zulu".
      */
     fun collator(locale: Locale = Locale.getDefault()): Collator =
-        Collator.getInstance(locale).apply { strength = Collator.SECONDARY }
+        // A clone per call: a Collator is not thread-safe, and the cached one must never be
+        // handed out to be mutated or shared across threads.
+        prototypes.getOrPut(locale) {
+            Collator.getInstance(locale).apply { strength = Collator.SECONDARY }
+        }.clone() as Collator
+
+    /**
+     * One configured Collator per locale. The Language packs screen re-sorts on every state
+     * change, and `Collator.getInstance` (a service lookup and rule-table load in ICU) cost far
+     * more than cloning a ready one. Only ever cloned, never used directly; a race in
+     * [getOrPut] at worst builds an equal instance twice.
+     */
+    private val prototypes = java.util.concurrent.ConcurrentHashMap<Locale, Collator>()
 
     /**
      * [items] by the name [name] puts on the row.

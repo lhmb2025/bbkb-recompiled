@@ -486,11 +486,31 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
      * stayed sized for whichever orientation it had at the switch until a reboot (beta.26 report,
      * 2026-10-26). So it is rebuilt for each new service.
      */
+    /** What the cached keyboards were built against; see {@link #ensureThemeContext}. */
+    private String keyboardCacheFingerprint;
+
     private void ensureThemeContext(Context context) {
         if (this.themeContext == null || this.themeContextIme != context) {
             this.themeContext = new ContextThemeWrapper(new ImeResourcesContext(context), R.style.KeyboardTheme_LXX);
             this.themeContextIme = context;
-            KeyboardBuilder.onSystemLocaleChanged();
+            // Cached keyboards survive a new service instance (audit D-10: the first show and
+            // the first auto-shift after an IME switch used to rebuild them from XML on main)
+            // as long as everything they were built from is the same: their geometry, labels
+            // and dimensions come from the configuration below and the keyboard height setting
+            // (width and height are part of the cache key too), and their icon set rebinds to
+            // the live service's Resources on every match (KeyboardIconSet.SharedIcons). Any
+            // change in that fingerprint drops the cache as before.
+            final Resources resources = this.themeContext.getResources();
+            final android.content.res.Configuration config = resources.getConfiguration();
+            final String fingerprint = config.densityDpi + "/" + config.fontScale + "/" + config.uiMode + "/"
+                    + config.orientation + "/" + config.screenWidthDp + "x" + config.screenHeightDp + "/"
+                    + (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N
+                            ? config.getLocales().toLanguageTags() : String.valueOf(config.locale))
+                    + "/" + ResourceConfigManager.getKeyboardHeight(resources);
+            if (!fingerprint.equals(this.keyboardCacheFingerprint)) {
+                this.keyboardCacheFingerprint = fingerprint;
+                KeyboardBuilder.onSystemLocaleChanged();
+            }
         }
     }
 

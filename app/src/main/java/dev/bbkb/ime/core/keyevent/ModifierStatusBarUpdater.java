@@ -22,6 +22,29 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
      */
     private int mLastMetaState = 0;
 
+    /**
+     * The icon last handed to the system: a drawable id, {@code 0} for hidden, or
+     * {@link #ICON_UNKNOWN} before the first post. Each show or hide is a binder transaction
+     * ({@code updateStatusIconAsync}), and a keyboard show or hide used to make about five of
+     * them for an icon that had not moved.
+     *
+     * <p>The invariant: a post goes out only when the icon differs from this record, with one
+     * exception — the first re-assert of a visible icon after an input session ended (see
+     * {@link #mReassertedThisSession}). That exception exists because the record says what we
+     * SENT, not what the slot shows: the system clears the IME slot on unbind and drops a post
+     * made before the privileged operations are attached. A hidden icon needs no such
+     * exception: a cleared or dropped slot is hidden too, so re-sending "hidden" changes nothing.
+     */
+    private int mSentIconResId = ICON_UNKNOWN;
+
+    /**
+     * Whether a visible icon has been re-asserted since the last input-session boundary, so the
+     * window-shown and input-view-started re-asserts of one show post it once, not twice.
+     */
+    private boolean mReassertedThisSession = false;
+
+    private static final int ICON_UNKNOWN = -1;
+
     /** Unused by both meta encodings (KeyEvent's and the span tracker's); see {@link #withCtrl}. */
     private static final int CTRL_ACTIVE_BIT = 1 << 30;
     private static final int CTRL_LOCKED_BIT = 1 << 29;
@@ -102,6 +125,9 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
      * {@code InputMethodManagerService} clears the IME slot on every unbind. {@link
      * #mLastMetaState} is only a record of what we last *sent*, so after any of those the cache
      * says "already showing" for an icon that is not there.
+     *
+     * <p>"Whether or not" is bounded by {@link #postIcon}: a visible icon is re-posted once per
+     * input session, and a hidden one is not re-posted at all (a cleared slot is hidden already).
      */
     public void refreshModifierStatus(int metaState) {
         updateModifierStatus(metaState, true);
@@ -121,13 +147,23 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
                 : withCtrl(state.getInterpretedMetaState(), state.isCtrlActive(), state.isCtrlLocked()), force);
     }
 
+    /**
+     * The input session ended (window hidden, input finished, editor switched, screen off): the
+     * system may clear the status-bar slot before the next show, so the next re-assert of a
+     * visible icon has to post it even though {@link #mSentIconResId} already holds it.
+     */
+    @Override
+    public void onInputSessionEnded() {
+        this.mReassertedThisSession = false;
+    }
+
     public void updateModifierStatus(int metaState, boolean forceUpdate) {
         // Check if status bar icon display is enabled
         SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
         if (settings != null && !settings.showPkbModifierStatusIcon) {
             // Setting is disabled, hide icon if it's currently showing
             if (this.mLastMetaState != 0 || forceUpdate) {
-                setStatusBarIconVisibility(false, 0);
+                postIcon(0, forceUpdate);
                 this.mLastMetaState = 0;
             }
             return;
@@ -144,13 +180,22 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
         if (!forceUpdate && !DeviceProfile.isPhysicalKeyboardAvailable(this.mBlackberryIme)) {
             return;
         }
-        int iconResId = getStatusIconDrawable(metaState);
-        if (iconResId != 0) {
-            setStatusBarIconVisibility(true, iconResId);
-        } else {
-            setStatusBarIconVisibility(false, 0);
-        }
+        postIcon(getStatusIconDrawable(metaState), forceUpdate);
         this.mLastMetaState = metaState;
+    }
+
+    /** Hands {@code iconResId} (0 = hidden) to the system unless it is already there; see {@link #mSentIconResId}. */
+    private void postIcon(int iconResId, boolean reassert) {
+        if (iconResId == this.mSentIconResId) {
+            if (iconResId == 0 || !reassert || this.mReassertedThisSession) {
+                return;
+            }
+        }
+        setStatusBarIconVisibility(iconResId != 0, iconResId);
+        this.mSentIconResId = iconResId;
+        if (iconResId != 0 && reassert) {
+            this.mReassertedThisSession = true;
+        }
     }
 
     /**

@@ -159,6 +159,13 @@ class BlackBerryIME : InputMethodService(),
     companion object {
         /** How long the keyboard stays hidden before the emoji dataset is dropped (onTrimMemory). */
         private const val EMOJI_RELEASE_AFTER_HIDDEN_MS = 15L * 60L * 1000L
+
+        /**
+         * How long after a hide the allocator's free pages go back to the kernel. Short enough to
+         * matter between two fields, long enough that a hide-and-show while switching apps does
+         * not pay the page faults for nothing.
+         */
+        private const val HEAP_PURGE_AFTER_HIDDEN_MS = 3_000L
         @JvmField
         val ASSERTIONS_DISABLED: Boolean = !BlackBerryIME::class.java.desiredAssertionStatus()
 
@@ -444,6 +451,9 @@ class BlackBerryIME : InputMethodService(),
 
     /** Token of the delayed emoji-dataset release that a keyboard hide schedules (onTrimMemory). */
     private val emojiReleaseToken = Any()
+
+    /** Token of the native-heap purge a keyboard hide schedules (onWindowHidden). */
+    private val heapPurgeToken = Any()
 
     /** True once [registerNonCriticalReceivers] has actually registered the three receivers. */
     private var nonCriticalReceiversRegistered = false
@@ -787,7 +797,10 @@ class BlackBerryIME : InputMethodService(),
         uiUpdateHandler.removeCallbacksAndMessages(emojiReleaseToken)
         when {
             level == TRIM_MEMORY_RUNNING_LOW || level == TRIM_MEMORY_RUNNING_CRITICAL
-                || level >= TRIM_MEMORY_BACKGROUND -> EmojibaseDataProvider.releaseShared()
+                || level >= TRIM_MEMORY_BACKGROUND -> {
+                EmojibaseDataProvider.releaseShared()
+                com.blackberry.nuanceshim.Xt9KdbVariant.purgeHeap()
+            }
             level == TRIM_MEMORY_UI_HIDDEN -> uiUpdateHandler.postTokenized(
                 emojiReleaseToken, EMOJI_RELEASE_AFTER_HIDDEN_MS) { EmojibaseDataProvider.releaseShared() }
         }
@@ -824,6 +837,7 @@ class BlackBerryIME : InputMethodService(),
         // construction they force) from running for a registration that never happened.
         uiUpdateHandler.removeCallbacksAndMessages(deferredInitToken)
         uiUpdateHandler.removeCallbacksAndMessages(emojiReleaseToken)
+        uiUpdateHandler.removeCallbacksAndMessages(heapPurgeToken)
         // Audit CT-27: stop accepting new warmup work; in-flight tasks are allowed to finish.
         startupExecutor.shutdown()
         ckbGestures.release()
@@ -1176,8 +1190,9 @@ class BlackBerryIME : InputMethodService(),
 
     override fun onWindowShown() {
         super.onWindowShown()
-        // The keyboard is back: keep the emoji dataset (see onTrimMemory).
+        // The keyboard is back: keep the emoji dataset (see onTrimMemory) and the heap pages.
         uiUpdateHandler.removeCallbacksAndMessages(emojiReleaseToken)
+        uiUpdateHandler.removeCallbacksAndMessages(heapPurgeToken)
         // Re-request inset application on every show so the keyboard is positioned above the
         // nav bar deterministically, including after an IME switch-away-and-back (§0/§1).
         rootInputView?.let { androidx.core.view.ViewCompat.requestApplyInsets(it) }
@@ -1199,6 +1214,14 @@ class BlackBerryIME : InputMethodService(),
 
     override fun onWindowHidden() {
         super.onWindowHidden()
+        // The native heap keeps the pages freed by closed boards, popups and language switches
+        // (42 to 60 MB after a session, none of it returned on its own). Give them back once the
+        // keyboard has been down for a moment; onWindowShown cancels this.
+        uiUpdateHandler.removeCallbacksAndMessages(heapPurgeToken)
+        uiUpdateHandler.postTokenized(heapPurgeToken, HEAP_PURGE_AFTER_HIDDEN_MS) {
+            val purged = com.blackberry.nuanceshim.Xt9KdbVariant.purgeHeap()
+            if (BuildConfig.DEBUG) Logger.debug(LOG_TAG, "native heap purge after hide -> $purged")
+        }
         nativeTouch.detach()
         shizukuTouch.onWindowHidden()
         resetUiState()
@@ -1426,6 +1449,9 @@ class BlackBerryIME : InputMethodService(),
     fun cleanupKeyboard() {
         keyboardSwitcher.cleanup()
         uiUpdateHandler.cancelPendingSuggestionUpdates()
+        // Teardown is the one place a queued commit or batch result must go too (a per-update
+        // cancel no longer drops them).
+        uiUpdateHandler.cancelPendingTextCommits()
         inputLogic.cancelInput()
         // Audit DW-4: multitap state and MSG_MULTITAP_TIMEOUT had no lifecycle reset at all —
         // removeMultitapTimeout's only callers were the two commitMultitap methods. This is the
@@ -2774,6 +2800,14 @@ class BlackBerryIME : InputMethodService(),
     }
 
     fun runSuggestionRequest(i: Int, aVar: SuggestionEngine.SuggestionCallback) {
+        // A request sent from the main thread carries its keyboard's proximity grid in its
+        // snapshot, so the worker reads no keyboard state here; the symbol page order is unused
+        // with a snapshot (the shift state was captured with it).
+        val snapshotGrid = InputLogic.snapshotProximityGrid(aVar)
+        if (snapshotGrid != null) {
+            inputLogic.requestSuggestionsWithContext(this, settingsManager.getSettingsValues(), snapshotGrid, 0, i, aVar)
+            return
+        }
         val c0965eM6834l = keyboardSwitcher.getCurrentKeyboard()
         if (BuildConfig.DEBUG) Log.d("SUGG", "runSuggestionRequest: keyboard=${c0965eM6834l != null} thread=${Thread.currentThread().name}")
         if (c0965eM6834l == null) {

@@ -37,7 +37,7 @@ if(XT9KDB_CUTOVER)
                 ${XT9KDB_DIR}/src/ldb_reader.c ${XT9KDB_DIR}/src/ldb_reader_android.c)
     target_compile_definitions(xt9kdb PRIVATE XT9KDB_CUTOVER=1)
     find_library(android-lib android)   # AAsset_openFileDescriptor64 for ldb_reader_android.c
-    target_link_libraries(xt9kdb ${android-lib})
+    target_link_libraries(xt9kdb ${android-lib} ${dl-lib})   # dlsym(mallopt) in nativePurgeHeap
     # Output libkb.so + SONAME libkb.so so the patched blob's repurposed DT_NEEDED resolves it.
     set_target_properties(xt9kdb PROPERTIES OUTPUT_NAME kb LINK_FLAGS "-Wl,-soname,libkb.so")
 else()
@@ -51,7 +51,7 @@ endif()
 target_include_directories(xt9kdb PRIVATE ${XT9KDB_DIR}/include)
 target_compile_options(xt9kdb PRIVATE -Wall)
 find_library(m-lib m)   # sqrtf for the NKL diagonals (+0x50/+0x60)
-target_link_libraries(xt9kdb ${log-lib} ${m-lib})
+target_link_libraries(xt9kdb ${log-lib} ${m-lib} ${dl-lib})
 
 # --- Shizuku evdev reader (libbbkbevdev.so) ---------------------------------------------------
 # Raw /dev/input access for dev.bbkb.ime.core.device.touch.shizuku.EvdevUserService, which

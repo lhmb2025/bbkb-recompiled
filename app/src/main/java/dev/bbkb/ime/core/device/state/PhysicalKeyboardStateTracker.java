@@ -383,6 +383,13 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
                 // Force: the resulting state is "nothing set", and the system may have dropped
                 // the last post, so the slot has to be cleared whether or not we think it moved.
                 publishModifierState(true);
+                // A reload happens inside a show; every other full reset is a session boundary,
+                // after which the system may clear the status-bar slot. After the publish, so
+                // the reset's own post does not use up the next show's re-assert.
+                ModifierStateListener listener = this.mModifierStateListener;
+                if (listener != null && reason != ModifierResetReason.KEYBOARD_RELOADED) {
+                    listener.onInputSessionEnded();
+                }
                 return;
         }
         publishModifierState(false);

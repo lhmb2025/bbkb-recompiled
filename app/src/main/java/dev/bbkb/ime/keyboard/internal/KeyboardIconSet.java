@@ -163,6 +163,7 @@ public final class KeyboardIconSet {
             for (int i = 0; i < sSharedIcons.size(); i++) {
                 SharedIcons candidate = sSharedIcons.get(i);
                 if (candidate.matches(resources, theme, resourceIds)) {
+                    candidate.rebind(resources, theme);
                     if (i != 0) {
                         sSharedIcons.remove(i);
                         sSharedIcons.add(0, candidate);
@@ -238,7 +239,7 @@ public final class KeyboardIconSet {
         if (prototype != null) {
             Drawable.ConstantState state = prototype.getConstantState();
             Drawable copy = state != null
-                    ? state.newDrawable(this.mShared.resources)
+                    ? state.newDrawable(this.mShared.resources())
                     : this.mShared.inflate(i);
             if (copy != null) {
                 // Our own copy for tinting, so a tint never reaches another keyboard's icon.
@@ -299,9 +300,16 @@ public final class KeyboardIconSet {
      */
     private static final class SharedIcons {
 
-        final Resources resources;
+        /**
+         * The live service's Resources and Theme. Rebound on every match (see {@link #rebind}):
+         * a cached Keyboard outlives the service it was built for, and an icon it has not copied
+         * yet must come from the current service's Resources, never from a dead service's frozen
+         * ones (the beta.26 orientation bug) or from a collected Theme (the ?attr colours of the
+         * globe and hide-keyboard icons would not resolve). Guarded by this object's monitor.
+         */
+        Resources resources;
 
-        final WeakReference<Resources.Theme> theme;
+        WeakReference<Resources.Theme> theme;
 
         final int densityDpi;
 
@@ -322,11 +330,27 @@ public final class KeyboardIconSet {
         }
 
         boolean matches(Resources resources, Resources.Theme theme, int[] resourceIds) {
-            // Keyed on the Theme instance too: the icons resolve ?attr colours against it.
-            return this.resources == resources && this.theme.get() == theme
-                    && this.densityDpi == resources.getConfiguration().densityDpi
+            // Not keyed on the Resources or Theme instances: every service instance has its own,
+            // and the prototypes they inflate are the same for the same density, uiMode and ids.
+            // The ?attr colours the icons resolve come from the keyboard style, which uiMode
+            // covers. A match rebinds the live instances (rebind).
+            return this.densityDpi == resources.getConfiguration().densityDpi
                     && this.uiMode == resources.getConfiguration().uiMode
                     && Arrays.equals(this.resourceIds, resourceIds);
+        }
+
+        /** Points this set at the current service's Resources and Theme. */
+        synchronized void rebind(Resources resources, Resources.Theme theme) {
+            if (this.resources != resources) {
+                this.resources = resources;
+            }
+            if (this.theme.get() != theme) {
+                this.theme = new WeakReference<>(theme);
+            }
+        }
+
+        synchronized Resources resources() {
+            return this.resources;
         }
 
         synchronized Drawable prototype(int iconId) {

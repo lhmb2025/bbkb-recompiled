@@ -165,6 +165,19 @@ public class NuanceSDK {
      * (re)attached; null until the first call leaves the engine's own default alone.
      */
     private Boolean mContactsCategoryEnabled = null;
+    /**
+     * Bumped by every call that changes the learned model (a word learned, added, deleted,
+     * changed, the contacts batch, an import, a re-attach), so {@link #getDLMWords} can tell
+     * that a walk it released the lock during was raced, and restart it.
+     */
+    private volatile int mDlmMutations;
+
+    /** Only one enumeration at a time: the engine's word cursor is engine state. */
+    private static final Object sDlmEnumerationLock = new Object();
+
+    /** Words read per hold of sMutex in {@link #getDLMWords}. */
+    private static final int DLM_ENUMERATION_CHUNK = 512;
+
     /** The contacts-category value the attached model last accepted; null = must be applied. */
     private volatile Boolean mContactsCategoryApplied = null;
     /** The value the engine last accepted from {@link #setEmojiPredictionEnabled}; null = unknown. */
@@ -709,7 +722,7 @@ public class NuanceSDK {
                         // missing from the dictionary" without relying on a focused text field.
                         if (BuildConfig.DEBUG) {
                             String[] probe = {"hello", "hell", "help", "the", "jello", "he'll", "hero", "teh", "vey", "adn"};
-                            StringBuilder sb = new StringBuilder("DICTPROBE lang=").append(localeToString(localeArr)).append(" ->");
+                            StringBuilder sb = new StringBuilder("DICTPROBE lang=").append(java.util.Arrays.toString(localeToString(localeArr))).append(" ->");
                             for (String w : probe) sb.append(' ').append(w).append('=').append(isSpellingCorrect(this.mNativeHandle, w));
                             Log.i(TAG, sb.toString());
                         }
@@ -870,6 +883,7 @@ public class NuanceSDK {
     public boolean selectionListSelectWord(int i, boolean z, String str) {
         boolean zSelectionListSelectWord;
         synchronized (sMutex) {
+            this.mDlmMutations++;
             zSelectionListSelectWord = selectionListSelectWord(this.mNativeHandle, i, z, toEngineForm(str));
         }
         return zSelectionListSelectWord;
@@ -929,6 +943,7 @@ public class NuanceSDK {
             if (!mIsLanguageInit) {
                 return false;
             }
+            this.mDlmMutations++;
             str = toEngineForm(str);
             // DLM doesn't support phrases with spaces - split and add each word
             if (str.contains(" ")) {
@@ -949,6 +964,7 @@ public class NuanceSDK {
 
     public boolean wordChanged(String str, int i, String str2, String str3) {
         synchronized (sMutex) {
+            this.mDlmMutations++;
             return wordChanged(this.mNativeHandle, toEngineForm(str), toEnginePosition(str, i), toEngineForm(str2), toEngineForm(str3));
         }
     }
@@ -963,6 +979,7 @@ public class NuanceSDK {
                     if (BuildConfig.DEBUG) Log.d(TAG, "DLM not ready, skipping addContactsWords (" + strArr.length + " words)");
                     return;
                 }
+                this.mDlmMutations++;
                 addCategoryWords(this.mNativeHandle, CATEGORY_CONTACTS, toEngineForm(strArr));
             }
         } finally {
@@ -1409,6 +1426,7 @@ public class NuanceSDK {
     public boolean deleteDLMWord(String str) {
         boolean zDeleteDLMWord;
         synchronized (sMutex) {
+            this.mDlmMutations++;
             zDeleteDLMWord = deleteDLMWord(this.mNativeHandle, str);
         }
         return zDeleteDLMWord;
@@ -1428,18 +1446,61 @@ public class NuanceSDK {
      * then step.
      */
     public ArrayList<String> getDLMWords() {
-        ArrayList<String> arrayList;
+        // The Learned words screen and the daily backup read up to 12,882 words, one JNI call
+        // each. Holding sMutex across the whole walk (65 to 250 ms) made the main thread's next
+        // key wait for it, so the walk releases the lock between chunks. The engine's word cursor
+        // is engine state (rewind with 0, then step with 1), so one enumeration runs at a time,
+        // and a change to the model in between (a word learned, deleted, imported) restarts the
+        // walk: the cursor would be off by the change.
+        synchronized (sDlmEnumerationLock) {
+            for (int attempt = 0; attempt < 3; attempt++) {
+                ArrayList<String> words = enumerateDLMWords();
+                if (words != null) {
+                    return words;
+                }
+            }
+            // Raced three times running: fall back to one locked walk, which cannot be raced.
+            ArrayList<String> arrayList = new ArrayList<>();
+            synchronized (sMutex) {
+                int dLMWordCount = getDLMWordCount(false);
+                for (int i = 0; i < dLMWordCount; i++) {
+                    String dLMWord = getDLMWord(i == 0 ? 0 : 1);
+                    if (dLMWord != null) {
+                        arrayList.add(dLMWord);
+                    }
+                }
+            }
+            return arrayList;
+        }
+    }
+
+    /** One chunked walk; null when the model changed under it. */
+    private ArrayList<String> enumerateDLMWords() {
+        final int started = this.mDlmMutations;
+        final ArrayList<String> arrayList = new ArrayList<>();
+        final int count;
         synchronized (sMutex) {
-            arrayList = new ArrayList<>();
-            int dLMWordCount = getDLMWordCount(false);
-            for (int i = 0; i < dLMWordCount; i++) {
-                String dLMWord = getDLMWord(i == 0 ? 0 : 1);
-                if (dLMWord != null) {
-                    arrayList.add(dLMWord);
+            if (this.mNativeHandle == 0L) {
+                return arrayList;
+            }
+            count = getDLMWordCount(false);
+        }
+        int i = 0;
+        while (i < count) {
+            synchronized (sMutex) {
+                if (this.mDlmMutations != started || this.mNativeHandle == 0L) {
+                    return null;
+                }
+                final int end = Math.min(count, i + DLM_ENUMERATION_CHUNK);
+                for (; i < end; i++) {
+                    String dLMWord = getDLMWord(i == 0 ? 0 : 1);
+                    if (dLMWord != null) {
+                        arrayList.add(dLMWord);
+                    }
                 }
             }
         }
-        return arrayList;
+        return this.mDlmMutations == started ? arrayList : null;
     }
 
     /** {@link #importDLM} succeeded. */
@@ -1505,6 +1566,7 @@ public class NuanceSDK {
             if (this.mNativeHandle == 0 || !this.mDlmAttached || !Et9Dlm.isLoaded() || data == null) {
                 return DLM_IMPORT_NOT_AVAILABLE;
             }
+            this.mDlmMutations++;
             int status;
             try {
                 status = Et9Dlm.nativeImport(this.mNativeHandle, data);
@@ -1614,6 +1676,7 @@ public class NuanceSDK {
         boolean z;
         synchronized (sMutex) {
             this.mContactsCategoryApplied = null;   // the state lives in the copy being replaced
+            this.mDlmMutations++;
             z = detachDLMFile(this.mNativeHandle) && attachDLMFile(this.mNativeHandle, getDLMFilePath());
             if (z) {
                 // The category states live in the attached copy of the model.

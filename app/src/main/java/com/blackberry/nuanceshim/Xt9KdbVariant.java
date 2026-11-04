@@ -327,6 +327,23 @@ public final class Xt9KdbVariant {
 
     private static native int nativeWordZipf10(String word);
 
+    private static native boolean nativePurgeHeap();
+
+    /**
+     * Hands the allocator's cached free pages back to the kernel (mallopt M_PURGE, Android 9 and
+     * later; false elsewhere). The native heap grows by tens of MB over board openings, popups
+     * and language switches and the allocator keeps the freed pages; this is called a few seconds
+     * after the keyboard window hides, and under memory pressure.
+     */
+    public static boolean purgeHeap() {
+        if (!sLoaded) return false;
+        try {
+            return nativePurgeHeap();
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
     /**
      * AUDIT L10: how many times the owned module could not reach a gesture recognizer at all
      * this process — a null engine handle, or the blob's {@code ET9KDB_ProcessTrace} failing to

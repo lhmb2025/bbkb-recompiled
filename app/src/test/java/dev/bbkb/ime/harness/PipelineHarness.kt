@@ -281,14 +281,21 @@ class PipelineHarness {
         const val COMMIT_TEXT = 17
         const val SHOW_SUGGESTIONS = 3
 
-        /** Everything `cancelPendingSuggestionUpdates()` is meant to clear. */
-        val CANCEL_SET = mapOf(
+        /** What `cancelPendingSuggestionUpdates()` clears: the update requests, nothing else. */
+        val SUGGESTION_UPDATE_SET = mapOf(
             UPDATE_SUGGESTIONS to "MSG_UPDATE_SUGGESTIONS",
-            BATCH_INPUT_SUGGESTIONS to "MSG_BATCH_INPUT_SUGGESTIONS",
             UPDATE_GESTURE_SUGGESTIONS to "MSG_UPDATE_GESTURE_SUGGESTIONS",
             UPDATE_JAPANESE_SUGGESTIONS to "MSG_UPDATE_JAPANESE_SUGGESTIONS",
+        )
+
+        /** What `cancelPendingTextCommits()` clears at teardown: the messages that type text. */
+        val TEXT_COMMIT_SET = mapOf(
+            BATCH_INPUT_SUGGESTIONS to "MSG_BATCH_INPUT_SUGGESTIONS",
             COMMIT_TEXT to "MSG_COMMIT_TEXT",
         )
+
+        /** Everything a session teardown is meant to clear. */
+        val CANCEL_SET = SUGGESTION_UPDATE_SET + TEXT_COMMIT_SET
     }
 
     /**

@@ -215,7 +215,7 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
                 () -> this.mIme.isCurrentLanguageRtl()
         );
         this.mBackspaceController = new BackspaceController(this);
-        this.mSuggestionRequestQueue = new SuggestionRequestQueue(blackBerryIME, this);
+        this.mSuggestionRequestQueue = new ContextCapturingRequestQueue(blackBerryIME);
         this.mSuggestionEngine = new SuggestionEngine(c0691g);
         this.mDictionaryLoader = c0691g;
         this.mSmartPunctuationAnalyzer = null;
@@ -257,7 +257,7 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         SuggestionRequestQueue c0675b = SuggestionRequestQueue.DISABLED_INSTANCE;
         SuggestionRequestQueue c0675b2 = this.mSuggestionRequestQueue;
         if (c0675b == c0675b2) {
-            this.mSuggestionRequestQueue = new SuggestionRequestQueue(this.mIme, this);
+            this.mSuggestionRequestQueue = new ContextCapturingRequestQueue(this.mIme);
         } else {
             c0675b2.cancelAll();
         }
@@ -2256,7 +2256,15 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
      * @param aVar     callback to receive suggestions when ready
      */
     public void requestSuggestionsWithContext(Context context, SettingsValues c0804d, ProximityGrid c1073o, int i, int i2, SuggestionEngine.SuggestionCallback aVar) {
-        this.mComposingTracker.setShiftStateIfNotComposing(getShiftState(c0804d, i));
+        // Runs on the worker: the editor-derived inputs come from the snapshot the request took
+        // on the main thread. A request sent without one (off the main thread, or through a
+        // plain SuggestionRequestQueue in a test) reads them here, as it always did.
+        RequestContext snapshot = aVar instanceof ContextCarryingCallback
+                ? ((ContextCarryingCallback) aVar).context : null;
+        if (snapshot == null) {
+            snapshot = captureRequestContext(c0804d, i);
+        }
+        this.mComposingTracker.setShiftStateIfNotComposing(snapshot.shiftState);
         // FIX 2025-03-29: Wire autoCorrectionMode setting into SuggestionEngine so that
         // mAutoCorrectMode is not always 0 (Java default). Previously setAutoCorrectMode()
         // and setAutoCorrectThreshold() existed but were never called from the settings path.
@@ -2267,7 +2275,104 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
             + " composing='" + this.mComposingTracker.getComposingText() + "'"
             + " isPredMode=" + this.mComposingTracker.isPredictionMode());
         }
-        this.mSuggestionEngine.getSuggestedWords(context, this.mComposingTracker, getPrevWordsInfo(c0804d.spacingAndPunctuation, this.mComposingTracker.isComposing() ? 2 : 1), c1073o, new SuggestionStripSettings(c0804d.blockPotentiallyOffensiveWords, c0804d.additionalFeaturesSettings, this.mIme.getCurrentInputBinding() == null ? false : ProfileDetector.isInputFromWorkProfile(this.mIme.getCurrentInputBinding())), c0804d.isAutoCorrectionEnabledPerUserSettings, i2, aVar);
+        this.mSuggestionEngine.getSuggestedWords(context, this.mComposingTracker, snapshot.prevWordsInfo, c1073o, new SuggestionStripSettings(c0804d.blockPotentiallyOffensiveWords, c0804d.additionalFeaturesSettings, snapshot.fromWorkProfile), c0804d.isAutoCorrectionEnabledPerUserSettings, i2, aVar);
+    }
+
+    /**
+     * What a suggestion request reads from the editor state, taken on the main thread when the
+     * request is sent. The worker used to read it at run time, while the main thread was editing
+     * the same state: RichInputConnection's before-cursor StringBuilder (a torn copy, or an
+     * IndexOutOfBounds mid-delete), the caps-mode cache that getCapsMode rewrites, and
+     * KeyboardSwitcher. Cheap by construction: the engine only ever takes the last 146 characters
+     * as context ({@link RichInputConnection#getTextContextBefore}), not MAX_CONTEXT_LENGTH, so
+     * that is all that is copied. The composing word is not copied: the tracker's reads are
+     * synchronized, and the bridge deliberately re-reads it when the engine buffer moves (EB-2).
+     */
+    static final class RequestContext {
+        final PrevWordsInfo prevWordsInfo;
+        final int shiftState;
+        final boolean fromWorkProfile;
+        /** The current keyboard's grid, read on the main thread; null when no keyboard is up. */
+        final ProximityGrid proximityGrid;
+
+        RequestContext(PrevWordsInfo prevWordsInfo, int shiftState, boolean fromWorkProfile) {
+            this(prevWordsInfo, shiftState, fromWorkProfile, null);
+        }
+
+        RequestContext(PrevWordsInfo prevWordsInfo, int shiftState, boolean fromWorkProfile, ProximityGrid proximityGrid) {
+            this.prevWordsInfo = prevWordsInfo;
+            this.shiftState = shiftState;
+            this.fromWorkProfile = fromWorkProfile;
+            this.proximityGrid = proximityGrid;
+        }
+    }
+
+    /**
+     * The proximity grid a request's snapshot carries, or null when the request has no snapshot
+     * (sent off the main thread) or no keyboard was up: the IME's worker-side entry point uses
+     * it instead of reading the current keyboard from the worker.
+     */
+    public static ProximityGrid snapshotProximityGrid(SuggestionEngine.SuggestionCallback callback) {
+        return callback instanceof ContextCarryingCallback ? ((ContextCarryingCallback) callback).context.proximityGrid : null;
+    }
+
+    /** A request's callback with the snapshot it was sent with; the reply passes straight through. */
+    static final class ContextCarryingCallback implements SuggestionEngine.SuggestionCallback {
+        final RequestContext context;
+        final SuggestionEngine.SuggestionCallback delegate;
+
+        ContextCarryingCallback(RequestContext context, SuggestionEngine.SuggestionCallback delegate) {
+            this.context = context;
+            this.delegate = delegate;
+        }
+
+        @Override
+        public void onSuggestionsReady(SuggestedWords suggestedWords) {
+            this.delegate.onSuggestionsReady(suggestedWords);
+        }
+    }
+
+    RequestContext captureRequestContext(SettingsValues settings, int symbolPageOrder) {
+        android.view.inputmethod.InputBinding binding = this.mIme.getCurrentInputBinding();
+        KeyboardSwitcher switcher = this.mIme.getKeyboardSwitcher();
+        dev.bbkb.ime.keyboard.Keyboard keyboard = switcher != null ? switcher.getCurrentKeyboard() : null;
+        return new RequestContext(
+                getPrevWordsInfo(settings.spacingAndPunctuation, this.mComposingTracker.isComposing() ? 2 : 1),
+                getShiftState(settings, symbolPageOrder),
+                binding != null && ProfileDetector.isInputFromWorkProfile(binding),
+                keyboard != null ? keyboard.getProximityGrid() : null);
+    }
+
+    /**
+     * Every producer reaches the worker through {@code sendToWorkerThread}, including the
+     * queue's own suggestion/prediction dispatch and RecorrectionController's request, so this is
+     * the one place a request can take its snapshot while still on the main thread.
+     */
+    private final class ContextCapturingRequestQueue extends SuggestionRequestQueue {
+        ContextCapturingRequestQueue(BlackBerryIME ime) {
+            super(ime, InputLogic.this);
+        }
+
+        @Override
+        public void sendToWorkerThread(int what, boolean keep, SuggestionEngine.SuggestionCallback callback) {
+            super.sendToWorkerThread(what, keep, withRequestContext(callback));
+        }
+    }
+
+    SuggestionEngine.SuggestionCallback withRequestContext(SuggestionEngine.SuggestionCallback callback) {
+        // Off the main thread the capture would race exactly like the worker-side read it
+        // replaces; leave such a request to read at run time.
+        if (callback == null || callback instanceof ContextCarryingCallback
+                || Looper.myLooper() != Looper.getMainLooper()) {
+            return callback;
+        }
+        SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
+        if (settings == null) {
+            return callback;
+        }
+        SymbolPageProvider symbolPages = this.mIme.getSymbolPageProvider();
+        int symbolPageOrder = symbolPages == null ? 0 : symbolPages.getSymbolPageOrder();
+        return new ContextCarryingCallback(captureRequestContext(settings, symbolPageOrder), callback);
     }
 
     void setComposingTextInternal(CharSequence charSequence, int i) {

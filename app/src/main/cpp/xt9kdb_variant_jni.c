@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/system_properties.h>
+#include <dlfcn.h>
 #include "et9kdb.h"
 #include "kdb_internal.h"
 
@@ -164,4 +165,22 @@ Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeWordZipf10(JNIEnv* env, jclas
     int z = xt9kdb_word_zipf10(w);
     (*env)->ReleaseStringUTFChars(env, word, w);
     return (jint)z;
+}
+
+/* mallopt(M_PURGE, 0) returns the allocator's cached free pages to the kernel (bionic, API 28+).
+ * Resolved at run time: the app's minSdk predates the symbol, and an older libc simply has no
+ * such knob, in which case this is a no-op that reports false. -101 is bionic's M_PURGE. */
+#define BBKB_M_PURGE (-101)
+
+JNIEXPORT jboolean JNICALL
+Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativePurgeHeap(JNIEnv *env, jclass cls) {
+    (void)env; (void)cls;
+    typedef int (*mallopt_fn)(int, int);
+    static mallopt_fn fn;
+    static int resolved;
+    if (!resolved) {
+        fn = (mallopt_fn)dlsym(RTLD_DEFAULT, "mallopt");
+        resolved = 1;
+    }
+    return (fn && fn(BBKB_M_PURGE, 0) != 0) ? JNI_TRUE : JNI_FALSE;
 }

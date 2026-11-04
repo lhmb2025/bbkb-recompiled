@@ -84,6 +84,23 @@ class PackListingTest {
         assertTrue("fr_CH is not", "fr_CH" in locales)
     }
 
+    // ── Collator cache ───────────────────────────────────────────────────────────────────────
+
+    @Test
+    fun theCachedCollatorIsHandedOutAsAFreshSecondaryStrengthCopy() {
+        val first = PackListing.collator(Locale.GERMAN)
+        assertEquals(java.text.Collator.SECONDARY, first.strength)
+        first.strength = java.text.Collator.IDENTICAL
+
+        val second = PackListing.collator(Locale.GERMAN)
+        assertFalse("one instance per call", first === second)
+        assertEquals("a caller's change does not reach the cache", java.text.Collator.SECONDARY, second.strength)
+        val fresh = java.text.Collator.getInstance(Locale.GERMAN).apply { strength = java.text.Collator.SECONDARY }
+        for ((a, b) in listOf("Äpfel" to "Apfel", "apfel" to "Apfel", "Zulu" to "Åland", "Ärzte" to "Arzt")) {
+            assertEquals("$a vs $b", Integer.signum(fresh.compare(a, b)), Integer.signum(second.compare(a, b)))
+        }
+    }
+
     // ── Alphabetical ──────────────────────────────────────────────────────────────────────────
 
     @Test

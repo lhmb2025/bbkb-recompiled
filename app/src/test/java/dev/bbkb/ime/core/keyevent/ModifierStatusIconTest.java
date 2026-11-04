@@ -261,6 +261,76 @@ public class ModifierStatusIconTest {
         verify(ime, never()).showStatusIcon(Mockito.anyInt());
     }
 
+    // ==================== binder traffic: post only on a change ====================
+
+    /** One keyboard show (two re-asserts) and one hide (three full resets), as the IME runs them. */
+    private void showHideCycle() {
+        tracker.refreshModifierStatus();   // onStartInputView
+        tracker.refreshModifierStatus();   // onWindowShown
+        tracker.resetModifiers(ModifierResetReason.FINISH_INPUT);
+        tracker.resetModifiers(ModifierResetReason.WINDOW_HIDDEN);
+        tracker.resetModifiers(ModifierResetReason.WINDOW_HIDDEN);
+    }
+
+    /**
+     * Each post is an {@code updateStatusIconAsync} binder call; five show/hide cycles with no
+     * modifier used to make 25 of them. A hidden icon is posted once, then never again.
+     */
+    @Test
+    public void showHideCyclesWithNoModifierPostTheHiddenIconOnce() {
+        for (int i = 0; i < 5; i++) {
+            showHideCycle();
+        }
+
+        verify(ime, Mockito.times(1)).hideStatusIcon();
+        verify(ime, never()).showStatusIcon(Mockito.anyInt());
+    }
+
+    /** The two re-asserts of one show post a visible icon once. */
+    @Test
+    public void theReassertsOfOneShowPostAVisibleIconOnce() {
+        installCtrlSource();
+        setCtrl(true, true);
+        tracker.refreshModifierStatus();
+        tracker.refreshModifierStatus();
+
+        // The change itself, then one re-assert.
+        verify(ime, Mockito.times(2)).showStatusIcon(R.drawable.ic_status_ctrl_locked);
+    }
+
+    /**
+     * The system clears the slot between sessions, so after a session boundary the re-assert of
+     * an icon that never changed (a locked Ctrl outlives the reset) still has to go out.
+     */
+    @Test
+    public void aReassertAfterASessionBoundaryPostsAgain() {
+        installCtrlSource();
+        setCtrl(true, true);
+        tracker.refreshModifierStatus();
+        tracker.resetModifiers(ModifierResetReason.WINDOW_HIDDEN);
+        Mockito.clearInvocations(ime);
+
+        tracker.refreshModifierStatus();
+        tracker.refreshModifierStatus();
+
+        verify(ime, Mockito.times(1)).showStatusIcon(R.drawable.ic_status_ctrl_locked);
+        verify(ime, never()).hideStatusIcon();
+    }
+
+    /** A reload inside a show is not a session boundary. */
+    @Test
+    public void aKeyboardReloadDoesNotReopenTheReassert() {
+        installCtrlSource();
+        setCtrl(true, true);
+        tracker.refreshModifierStatus();
+        tracker.resetModifiers(ModifierResetReason.KEYBOARD_RELOADED);
+        Mockito.clearInvocations(ime);
+
+        tracker.refreshModifierStatus();
+
+        verify(ime, never()).showStatusIcon(Mockito.anyInt());
+    }
+
     // ==================== the preference still turns it off ====================
 
     @Test

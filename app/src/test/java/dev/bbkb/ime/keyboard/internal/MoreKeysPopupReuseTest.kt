@@ -153,12 +153,14 @@ class MoreKeysPopupReuseTest {
         assertEquals(alphabet.mIconsSet.getIconResourceId("delete_key"), symbols.mIconsSet.getIconResourceId("delete_key"))
         assertEquals(mine.intrinsicWidth, theirs.intrinsicWidth)
 
+        // A second themed context of the same style (a new service instance) shares the same
+        // prototypes, rebound to its Resources, so cached keyboards survive an IME switch; the
+        // icons it has not copied yet still resolve.
         val otherTheme = BoardKeyboardFactory.themedContext(app)
-        if (otherTheme.theme !== themed.theme) {
-            KeyboardBuilder.clearKeyboardCache()
-            val other = keyboard(otherTheme, 0)
-            assertNotSame("another theme gets its own prototypes", shared(alphabet.mIconsSet), shared(other.mIconsSet))
-        }
+        KeyboardBuilder.clearKeyboardCache()
+        val other = keyboard(otherTheme, 0)
+        assertSame("same style shares prototypes across theme instances", shared(alphabet.mIconsSet), shared(other.mIconsSet))
+        assertNotNull(other.mIconsSet.getIconDrawable(numberPadIcon))
     }
 
     @Test

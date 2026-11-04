@@ -16,12 +16,13 @@ import org.robolectric.annotation.Config
  *
  * All three were the same defect — a message that writes text or hides the keyboard, with no
  * `removeMessages` site anywhere, so it landed in whatever field was current when it finally
- * ran. All three were fixed by adding a line to `cancelPendingSuggestionUpdates()`. Until now
- * that fix was code-verified only: nothing failed if the line were deleted again.
+ * ran. They were fixed by adding a line to `cancelPendingSuggestionUpdates()`, which every
+ * suggestion update also runs, so an unrelated update could then drop a queued swipe word or
+ * dictation result (2026-11 performance audit). The two text commits now have their own
+ * teardown cancel, `cancelPendingTextCommits()`, run where the view finishes and starts.
  *
- * These tests close that gap. Each asserts the queue directly, so deleting any single
- * `removeMessages` line from `cancelPendingSuggestionUpdates()` fails exactly one test and
- * names the message that regressed.
+ * Each test asserts the queue directly, so deleting any single `removeMessages` line fails
+ * exactly one test and names the message that regressed.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -42,14 +43,79 @@ class DeferredWorkCancellationTest {
     }
 
     @Test
-    fun cancelPendingSuggestionUpdates_clearsEveryDeferredWriter() {
+    fun teardownCancels_clearEveryDeferredWriter() {
         h.queueAllCancelSetMessages()
         h.uiHandler.cancelPendingSuggestionUpdates()
+        h.uiHandler.cancelPendingTextCommits()
         assertEquals(
-            "cancelPendingSuggestionUpdates left deferred work queued: " + h.pendingMessages(),
+            "teardown left deferred work queued: " + h.pendingMessages(),
             emptySet<String>(),
             h.pendingMessages(),
         )
+    }
+
+    @Test
+    fun aSuggestionUpdateLeavesQueuedTextCommitsAlone() {
+        // The audit finding: cancelPendingSuggestionUpdates runs at the start of every
+        // MSG_UPDATE_SUGGESTIONS, so a dictation result or a swipe's word queued just before an
+        // unrelated update was dropped and never typed.
+        h.queueAllCancelSetMessages()
+        h.uiHandler.cancelPendingSuggestionUpdates()
+        assertEquals(
+            PipelineHarness.Msg.TEXT_COMMIT_SET.values.toSet(),
+            h.pendingMessages(),
+        )
+    }
+
+    @Test
+    fun aQueuedCommitSurvivesASuggestionUpdateAndIsDelivered() {
+        h.uiHandler.postCommitText("dictated")
+        h.uiHandler.postUpdateSuggestions(1)
+        // What the MSG_UPDATE_SUGGESTIONS branch does first.
+        h.uiHandler.cancelPendingSuggestionUpdates()
+        assertTrue(
+            "MSG_COMMIT_TEXT was dropped by a suggestion update",
+            h.uiHandler.hasMessages(PipelineHarness.Msg.COMMIT_TEXT),
+        )
+        assertFalse(h.uiHandler.hasMessages(PipelineHarness.Msg.UPDATE_SUGGESTIONS))
+    }
+
+    @Test
+    fun finishingTheInputViewDropsQueuedTextCommits() {
+        h.queueAllCancelSetMessages()
+        h.uiHandler.handleFinishInputView(false)
+        assertTrue(
+            "a text commit survived the view finishing: " + h.pendingMessages(),
+            h.pendingMessages().intersect(PipelineHarness.Msg.TEXT_COMMIT_SET.values.toSet()).isEmpty(),
+        )
+    }
+
+    @Test
+    fun showingASuggestionReplyDoesNotCancelTheNextKeystrokesUpdate() {
+        // showAndRefreshForSlideboard re-shows the input menu bar while a reply is being shown,
+        // and that runs cancelPendingSuggestionUpdates. An update queued by then is for text
+        // typed after the reply was requested; dropping it left the strip a word behind.
+        org.mockito.Mockito.doAnswer {
+            h.uiHandler.cancelPendingSuggestionUpdates()
+            null
+        }.`when`(h.ime).showSuggestionStrip(anyWords())
+        h.uiHandler.postUpdateSuggestions(1)
+
+        h.uiHandler.handleMessage(
+            h.uiHandler.obtainMessage(
+                PipelineHarness.Msg.SHOW_SUGGESTIONS, 0, h.inputLogic.getSessionGeneration(),
+                dev.bbkb.ime.core.suggestion.SuggestedWords.EMPTY,
+            ),
+        )
+
+        org.mockito.Mockito.verify(h.ime).showSuggestionStrip(anyWords())
+        assertTrue(
+            "the delivery cancelled a newer update request",
+            h.uiHandler.hasMessages(PipelineHarness.Msg.UPDATE_SUGGESTIONS),
+        )
+        // Outside a delivery the cancel works as before.
+        h.uiHandler.cancelPendingSuggestionUpdates()
+        assertFalse(h.uiHandler.hasMessages(PipelineHarness.Msg.UPDATE_SUGGESTIONS))
     }
 
     @Test
@@ -57,13 +123,13 @@ class DeferredWorkCancellationTest {
         // DW-2: MSG_BATCH_INPUT_SUGGESTIONS is the only message that COMMITS TEXT, and it had
         // no removeMessages site anywhere — a gesture committed into the field the user had
         // already left.
-        assertCancelled(PipelineHarness.Msg.BATCH_INPUT_SUGGESTIONS, "MSG_BATCH_INPUT_SUGGESTIONS")
+        assertCommitCancelled(PipelineHarness.Msg.BATCH_INPUT_SUGGESTIONS, "MSG_BATCH_INPUT_SUGGESTIONS")
     }
 
     @Test
     fun dw5_voiceCommitMessageIsCancellable() {
         // DW-5: MSG_COMMIT_TEXT writes text into whatever editor is current at delivery.
-        assertCancelled(PipelineHarness.Msg.COMMIT_TEXT, "MSG_COMMIT_TEXT")
+        assertCommitCancelled(PipelineHarness.Msg.COMMIT_TEXT, "MSG_COMMIT_TEXT")
     }
 
     // ── DW-4: multitap state and its timer surviving session teardown ────────────
@@ -138,13 +204,18 @@ class DeferredWorkCancellationTest {
         }
     }
 
+    /** Mockito's any() is null, which a Kotlin non-null parameter rejects; the matcher still records. */
+    private fun anyWords(): dev.bbkb.ime.core.suggestion.SuggestedWords =
+        org.mockito.ArgumentMatchers.any(dev.bbkb.ime.core.suggestion.SuggestedWords::class.java)
+            ?: dev.bbkb.ime.core.suggestion.SuggestedWords.EMPTY
+
     /** Queue one message, cancel, and require that this specific message is what went away. */
-    private fun assertCancelled(what: Int, name: String) {
+    private fun assertCommitCancelled(what: Int, name: String) {
         h.uiHandler.sendMessage(h.uiHandler.obtainMessage(what))
         assertTrue("$name was not queued — the test proves nothing", h.uiHandler.hasMessages(what))
-        h.uiHandler.cancelPendingSuggestionUpdates()
+        h.uiHandler.cancelPendingTextCommits()
         assertFalse(
-            "$name survived cancelPendingSuggestionUpdates() — it is missing from the cancel set",
+            "$name survived cancelPendingTextCommits() — it is missing from the cancel set",
             h.uiHandler.hasMessages(what),
         )
     }

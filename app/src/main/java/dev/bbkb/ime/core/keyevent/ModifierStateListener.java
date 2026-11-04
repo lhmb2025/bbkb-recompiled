@@ -20,4 +20,12 @@ public interface ModifierStateListener {
      *              way to re-assert an unchanged state (window shown, input view started).
      */
     void onModifierStateChanged(ModifierState state, boolean force);
+
+    /**
+     * An input session ended (a lifecycle reset: window hidden, input finished, editor switched,
+     * screen off). Called after the reset's own notification. The system may clear the
+     * status-bar slot before the next session, so a consumer that skips unchanged posts must
+     * honour the next {@code force} once.
+     */
+    default void onInputSessionEnded() {}
 }

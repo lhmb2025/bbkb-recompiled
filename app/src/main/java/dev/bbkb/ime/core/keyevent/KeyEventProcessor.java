@@ -46,6 +46,14 @@ public class KeyEventProcessor {
      */
     private final java.util.Set<Integer> emojiQueryKeysDown = new java.util.HashSet<>();
 
+    /**
+     * Whether the IME answered the last hardware ENTER key-down itself (the newline it commits on
+     * a physical keyboard, a CJK commit) instead of passing it to the app. Its key-up is then
+     * consumed too, as for the other keys whose press the IME consumes: delegating it alone
+     * handed the app a release whose press it never saw.
+     */
+    private boolean enterDownConsumed;
+
     private final BlackBerryIME ime;
 
     public KeyEventProcessor(BlackBerryIME ime) {
@@ -296,6 +304,10 @@ public class KeyEventProcessor {
         // onSymbolKeyLongPress() on top of the board toggle the key already performed.
         final ResolvedKey key = ResolvedKey.of(keyEventRemapped);
         final int keyCode = key.keyCode();
+        if (key.isEnterKey()) {
+            // Set again below only on the branch that answers the press itself.
+            enterDownConsumed = false;
+        }
 
         // === Alt+Sym, on the ordinary hardware key path ===
         //
@@ -506,6 +518,9 @@ public class KeyEventProcessor {
         if (z2) {
             ime.getInputLogic().trackKeyEvent(keyEventRemapped);
             if (!zM5997a) {
+                if (key.isEnterKey()) {
+                    enterDownConsumed = true;
+                }
                 return true;
             }
             if (key.isEnterKey()) {
@@ -775,7 +790,11 @@ public class KeyEventProcessor {
                 }
             }
             ime.getInputLogic().untrackKeyEvent(keyEventRemapped);
-            if (shouldDelegateEnterKeyUp(keyCode)) {
+            final boolean enterPressWasConsumed = key.isEnterKey() && enterDownConsumed;
+            if (key.isEnterKey()) {
+                enterDownConsumed = false;
+            }
+            if (!enterPressWasConsumed && shouldDelegateEnterKeyUp(keyCode)) {
                 // Parity with the original, and the other half of the 2026-08-27 WhatsApp fix.
                 // That change made the key-DOWN return superOnKeyDown so the APP receives the
                 // raw ENTER and applies its own convention, and its comment states that "the

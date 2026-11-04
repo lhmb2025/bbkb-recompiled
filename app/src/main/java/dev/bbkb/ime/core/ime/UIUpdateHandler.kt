@@ -64,6 +64,14 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
     private var pendingFinishInput: Boolean = false
     private var lastEditorInfo: EditorInfo? = null
 
+    /**
+     * Non-zero while a suggestion reply is being shown. Showing one can re-show the input menu bar
+     * (`showAndRefreshForSlideboard`), which cancels pending suggestion updates; any update queued
+     * then is for text typed AFTER the reply was requested, so dropping it would leave the strip
+     * stale. [cancelPendingSuggestionUpdates] is a no-op while this is set.
+     */
+    private var suggestionDeliveryDepth: Int = 0
+
     fun initializeDelays() {
         val blackBerryIMEV = getOwner() ?: return
         val resources = blackBerryIMEV.getResources()
@@ -106,10 +114,12 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
                                 " now $currentGeneration (DW-3)")
                         return
                     }
-                    if (message.arg1 != 0) {
-                        blackBerryIMEV.displaySuggestions(words, false)
-                    } else {
-                        blackBerryIMEV.showSuggestionStrip(words)
+                    deliveringSuggestions {
+                        if (message.arg1 != 0) {
+                            blackBerryIMEV.displaySuggestions(words, false)
+                        } else {
+                            blackBerryIMEV.showSuggestionStrip(words)
+                        }
                     }
                     return
                 }
@@ -125,7 +135,8 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
                 MSG_BATCH_INPUT_SUGGESTIONS -> {
                     val source = InputSource.fromId(message.arg1)
                     val words = message.obj as SuggestedWords
-                    blackBerryIMEV.displaySuggestions(words, true)
+                    // Only the display is a delivery; the commit below may cancel and re-request.
+                    deliveringSuggestions { blackBerryIMEV.displaySuggestions(words, true) }
                     // Audit CT-6: the word list used to be built unconditionally here, on the
                     // main thread once per swipe, even though its only consumers are inside
                     // InputPathDebug.on() guards below — which fold to false in release.
@@ -348,18 +359,38 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         removeMessages(MSG_MULTITAP_TIMEOUT)
     }
 
+    /**
+     * Drops queued suggestion-update requests. Runs on every suggestion update, so it must never
+     * drop text on its way into the editor: the gesture and dictation commits are cancelled only
+     * at teardown, by [cancelPendingTextCommits]. A no-op while a reply is being shown (see
+     * [suggestionDeliveryDepth]).
+     */
     fun cancelPendingSuggestionUpdates() {
+        if (suggestionDeliveryDepth > 0) return
         removeMessages(MSG_UPDATE_SUGGESTIONS)
         removeMessages(MSG_UPDATE_GESTURE_SUGGESTIONS)
         removeMessages(MSG_UPDATE_JAPANESE_SUGGESTIONS)
-        // Audit DW-2: this is the only message that COMMITS TEXT, and it had no
-        // removeMessages site anywhere — a queued gesture commit outlived the field it was
-        // typed in. It belongs in the same cancel set as the updates that produce it.
+    }
+
+    /**
+     * Teardown only: drops the queued messages that write text into the editor. They used to be in
+     * [cancelPendingSuggestionUpdates], which every suggestion update runs, so an unrelated update
+     * could drop a swipe's word or a dictation result before it was typed.
+     */
+    fun cancelPendingTextCommits() {
+        // Audit DW-2: a queued gesture commit must not outlive the field it was typed in.
         removeMessages(MSG_BATCH_INPUT_SUGGESTIONS)
-        // Audit DW-5/DW-8: neither of these had a removeMessages site anywhere.
-        // MSG_COMMIT_TEXT writes text into whatever editor is current at delivery (voice
-        // by the time it lands. Both belong in the teardown cancel set.
+        // Audit DW-5: MSG_COMMIT_TEXT writes into whatever editor is current at delivery.
         removeMessages(MSG_COMMIT_TEXT)
+    }
+
+    private inline fun deliveringSuggestions(block: () -> Unit) {
+        suggestionDeliveryDepth++
+        try {
+            block()
+        } finally {
+            suggestionDeliveryDepth--
+        }
     }
 
     fun hasPendingSuggestionUpdate(): Boolean = hasMessages(MSG_UPDATE_SUGGESTIONS)
@@ -433,9 +464,24 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         pendingStartInput = false
     }
 
+    /**
+     * The view finishing and the view starting are where the text commits used to be cancelled
+     * (cleanupKeyboard and onStartInputView both ran [cancelPendingSuggestionUpdates] when it still
+     * held them), so they are cancelled here, next to each call.
+     */
+    private fun finishInputView(blackBerryIME: BlackBerryIME, finishingInput: Boolean) {
+        cancelPendingTextCommits()
+        blackBerryIME.finishInputViewInternal(finishingInput)
+    }
+
+    private fun startInputView(blackBerryIME: BlackBerryIME, editorInfo: EditorInfo?, restarting: Boolean) {
+        cancelPendingTextCommits()
+        blackBerryIME.startInputViewInternal(editorInfo, restarting)
+    }
+
     private fun drainPendingInputEvents(blackBerryIME: BlackBerryIME, editorInfo: EditorInfo?, z: Boolean) {
         if (pendingFinishInputView) {
-            blackBerryIME.finishInputViewInternal(pendingFinishInput)
+            finishInputView(blackBerryIME, pendingFinishInput)
         }
         if (pendingFinishInput) {
             blackBerryIME.finishInputInternal()
@@ -498,7 +544,7 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         val blackBerryIMEV = getOwner()
         if (blackBerryIMEV != null) {
             drainPendingInputEvents(blackBerryIMEV, editorInfo, z)
-            blackBerryIMEV.startInputViewInternal(editorInfo, z)
+            startInputView(blackBerryIMEV, editorInfo, z)
             lastEditorInfo = editorInfo
         }
     }
@@ -511,7 +557,7 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         }
         val blackBerryIMEV = getOwner()
         if (blackBerryIMEV != null) {
-            blackBerryIMEV.finishInputViewInternal(z)
+            finishInputView(blackBerryIMEV, z)
             lastEditorInfo = null
         }
     }
@@ -546,7 +592,7 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         val blackBerryIMEV = getOwner()
         if (blackBerryIMEV != null) {
             if (pendingFinishInputView) {
-                blackBerryIMEV.finishInputViewInternal(pendingFinishInput)
+                finishInputView(blackBerryIMEV, pendingFinishInput)
             }
             if (pendingFinishInput) {
                 blackBerryIMEV.finishInputInternal()

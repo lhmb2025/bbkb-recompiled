@@ -62,6 +62,22 @@ public class KeyPreviewView extends AppCompatTextView {
         setPadding(horizontalPadding, topPadding, horizontalPadding, bottomPadding);
     }
 
+    /**
+     * Shows or hides the bubble without touching its visibility: an alpha change is a RenderNode
+     * property, so it damages only this view, where a visibility change makes the placer
+     * re-record. A hidden bubble is also kept out of the accessibility tree, as an INVISIBLE one
+     * was.
+     */
+    public void setPreviewShown(boolean shown) {
+        setAlpha(shown ? 1.0f : 0.0f);
+        setImportantForAccessibility(shown ? View.IMPORTANT_FOR_ACCESSIBILITY_AUTO
+                : View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+    }
+
+    public boolean isPreviewShown() {
+        return getAlpha() > 0.0f;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] onMeasure called");
@@ -97,13 +113,13 @@ public class KeyPreviewView extends AppCompatTextView {
         if (key.getIconId() != 0) {
             Drawable iconDrawable = key.getPreviewIcon(c1024ag);
             if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] Using icon drawable: " + iconDrawable);
-            setCompoundDrawables(null, null, null, iconDrawable);
+            setBottomDrawableIfChanged(iconDrawable);
             setText((CharSequence) null);
             if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] Set icon, cleared text");
             return;
         }
         
-        setCompoundDrawables(null, null, null, null);
+        setBottomDrawableIfChanged(null);
         // Use themed text color instead of formatter color
         setTextColor(KeyboardColorManager.INSTANCE.getTextColor());
         setTextSize(0, key.getLetterSize(c1061t));
@@ -117,6 +133,18 @@ public class KeyPreviewView extends AppCompatTextView {
         setTextAndScaleX(keyLabel);
     }
     
+    /**
+     * setCompoundDrawables always requests a layout, which is a whole-window traversal per press;
+     * the common case (letter after letter, no icon) changes nothing.
+     */
+    private void setBottomDrawableIfChanged(Drawable bottom) {
+        Drawable[] current = getCompoundDrawables();
+        if (current[0] == null && current[1] == null && current[2] == null && current[3] == bottom) {
+            return;
+        }
+        setCompoundDrawables(null, null, null, bottom);
+    }
+
     private void applyThemedBackground() {
         int color = KeyboardColorManager.INSTANCE.getKeyColorPressed();
         dev.bbkb.ime.keyboard.StyleSpec spec = KeyboardColorManager.styleSpec();
