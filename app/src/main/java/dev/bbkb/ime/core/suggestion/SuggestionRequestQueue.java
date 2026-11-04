@@ -2,6 +2,7 @@ package dev.bbkb.ime.core.suggestion;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import dev.bbkb.ime.core.BlackBerryIME;
 import dev.bbkb.ime.core.textinput.InputLogic;
@@ -41,13 +42,39 @@ public class SuggestionRequestQueue implements Handler.Callback {
         this.mInputLogic = null;
     }
 
+    /**
+     * The one worker thread of the process. Each service instance used to start its own and,
+     * until 2026-11-04, never quit it (one leaked per IME switch). Quitting it instead crashed the
+     * KEY2: the engine keeps pointers into the thread that last ran a selection-list build (a
+     * stale read that was harmless while every old worker's stack stayed mapped) and the next
+     * instance's first build dereferenced them after the old thread's stack was gone (SIGSEGV in
+     * libnative-lib at 0xaf488, twice on 2026-11-04). So the thread is shared and lives as long
+     * as the process; an instance's {@link #shutdown()} only drops its own pending requests.
+     * The literal name keeps release thread dumps readable (R8 renamed the class to "tt3").
+     */
+    private static volatile Looper sWorkerLooper;
+
+    private static Looper workerLooper() {
+        Looper looper = sWorkerLooper;
+        if (looper == null) {
+            synchronized (SuggestionRequestQueue.class) {
+                looper = sWorkerLooper;
+                if (looper == null) {
+                    // Use THREAD_PRIORITY_BACKGROUND for better battery/performance balance
+                    HandlerThread handlerThread = new HandlerThread("SuggestionWorker",
+                            android.os.Process.THREAD_PRIORITY_BACKGROUND);
+                    handlerThread.start();
+                    looper = handlerThread.getLooper();
+                    sWorkerLooper = looper;
+                }
+            }
+        }
+        return looper;
+    }
+
     public SuggestionRequestQueue(BlackBerryIME ime, InputLogic inputLogic) {
         this.mLock = new Object();
-        // Use THREAD_PRIORITY_BACKGROUND for better battery/performance balance
-        HandlerThread handlerThread = new HandlerThread(SuggestionRequestQueue.class.getSimpleName(),
-                android.os.Process.THREAD_PRIORITY_BACKGROUND);
-        handlerThread.start();
-        this.mHandler = new Handler(handlerThread.getLooper(), this);
+        this.mHandler = new Handler(workerLooper(), this);
         this.mIme = ime;
         this.mInputLogic = inputLogic;
     }
@@ -64,11 +91,12 @@ public class SuggestionRequestQueue implements Handler.Callback {
         this.mHandler.removeCallbacksAndMessages(null);
     }
 
+    /** Drops this instance's pending requests; the shared worker thread stays (see workerLooper). */
     public void shutdown() {
         if (!live()) {
             return;
         }
-        this.mHandler.getLooper().quitSafely();
+        this.mHandler.removeCallbacksAndMessages(null);
     }
 
     @Override // android.os.Handler.Callback

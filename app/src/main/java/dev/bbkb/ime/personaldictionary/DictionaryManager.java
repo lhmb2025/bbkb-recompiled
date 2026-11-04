@@ -376,6 +376,17 @@ public final class DictionaryManager {
      * {@link #FINAL_SAVE_WAIT_MS}. The save itself is plain blocking code, so a cancelled
      * dictionary scope does not stop it.
      */
+    /**
+     * One thread for the life of the process for the final save, not a thread per shutdown: the
+     * save can reach the engine, and the engine keeps pointers into the stack of the thread that
+     * last called it (see SuggestionRequestQueue.workerLooper), so that stack must stay mapped.
+     */
+    private static final ExecutorService FINAL_SAVE_EXECUTOR = Executors.newSingleThreadExecutor(r -> {
+        Thread t = new Thread(r, "DictionaryFinalSave");
+        t.setDaemon(true);
+        return t;
+    });
+
     private static void flushUnsaved(final PersonalDictionaryUtil pdu) {
         if (pdu == null || !pdu.getAreDataDirty()) {
             return;
@@ -384,7 +395,7 @@ public final class DictionaryManager {
             pdu.doSave();
             return null;
         });
-        new Thread(task, "DictionaryFinalSave").start();
+        FINAL_SAVE_EXECUTOR.execute(task);
         try {
             task.get(FINAL_SAVE_WAIT_MS, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
