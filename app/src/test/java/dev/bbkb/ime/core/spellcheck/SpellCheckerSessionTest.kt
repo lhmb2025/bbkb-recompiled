@@ -367,6 +367,44 @@ class SpellCheckerSessionTest {
         assertSame(SentenceTokenizer.getEmptyResult(), SentenceTokenizer.getEmptyResult())
     }
 
+    // ---- dictionary answer cache (P-20) ---------------------------------------------------
+
+    @Test
+    fun recheckOfAKnownWordSkipsTheEngine() {
+        valid += "hello"
+        assertEquals("a=1 n=-1 []", describe(single("hello")))
+        assertEquals("a=1 n=-1 []", describe(single("hello")))
+        assertEquals(listOf("hello"), validWordCalls())
+    }
+
+    @Test
+    fun aSentenceLoadsTheDictionaryOncePerRequest() {
+        valid += listOf("hello", "big", "world")
+        multiple(true, "hello", "big", "world")
+        val loads = Mockito.mockingDetails(service).invocations.count { it.method.name == "initDictionaryForLocale" }
+        assertEquals(1, loads)
+    }
+
+    @Test
+    fun userDictionaryChangeDropsTheCachedAnswers() {
+        valid += "hello"
+        single("hello")
+        observer().onChange(false)
+        // The latch closes on a change; open it so the check does not wait.
+        (field("mUserDictLatch").get(session) as android.os.ConditionVariable).open()
+        assertEquals("a=1 n=-1 []", describe(single("hello")))
+        assertEquals(listOf("hello", "hello"), validWordCalls())
+    }
+
+    @Test
+    fun preferenceChangeDropsTheCachedAnswers() {
+        valid += "hello"
+        single("hello")
+        Mockito.doReturn(true).`when`(service).hasPreferenceChanged()
+        single("hello")
+        assertEquals(listOf("hello", "hello"), validWordCalls())
+    }
+
     @Test
     fun withoutADictionaryForTheLanguage_aWordIsNeitherRightNorWrong() {
         dictionaryLoaded = false

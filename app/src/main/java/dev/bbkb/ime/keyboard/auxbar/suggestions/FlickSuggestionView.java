@@ -49,9 +49,9 @@ public final class FlickSuggestionView extends RelativeLayout {
 
     private float mMinVerticalWordDistance;
 
-    private final int mSuggestedTextColor;
+    private int mSuggestedTextColor;
 
-    private final int mTypedTextColor;
+    private int mTypedTextColor;
 
     private final int mShadowColor;
 
@@ -67,14 +67,14 @@ public final class FlickSuggestionView extends RelativeLayout {
 
     private final float mShadowRadius;
 
-    private final ForegroundColorSpan mSuggestedColorSpan;
+    private ForegroundColorSpan mSuggestedColorSpan;
 
     /** De-emphasized variants for non-default candidates (see [deEmphasized]). */
-    private final ForegroundColorSpan mSuggestedColorSpanDim;
+    private ForegroundColorSpan mSuggestedColorSpanDim;
 
-    private final ForegroundColorSpan mTypedColorSpanDim;
+    private ForegroundColorSpan mTypedColorSpanDim;
 
-    private final ForegroundColorSpan mTypedColorSpan;
+    private ForegroundColorSpan mTypedColorSpan;
 
     private ArrayList<PredictionView> mPredictionViews;
 
@@ -91,6 +91,28 @@ public final class FlickSuggestionView extends RelativeLayout {
     private FlickSuggestionAnimationView mAnimationView;
 
     private Listener mListener;
+
+    /**
+     * What the last full render drew from, so an identical update can return before clear()
+     * tears it down. Valid only while nothing has hidden or re-laid-out the predictions since
+     * ({@link #hide}, {@link #updateKeyMetrics} and a flick pick drop it).
+     */
+    private boolean mShownValid;
+    private SuggestedWords mShownWords;
+    private Keyboard mShownKeyboard;
+    private MainKeyboardView mShownKeyboardView;
+    private boolean mShownRtl;
+    private int mShownVisibility;
+    private boolean mShownSupported;
+    private boolean mShownOnKey;
+    private boolean mShownEmojiBoard;
+    private boolean mShownGesture;
+    private boolean mShownEmojiPredictions;
+    private Object mShownStyleSpec;
+    private final int[] mShownKeyboardLocation = new int[2];
+
+    /** While true, {@link #hide} leaves the spacebar word for the render in progress to set. */
+    private boolean mSpacebarTextDeferred;
 
     
     public interface Listener {
@@ -130,16 +152,41 @@ public final class FlickSuggestionView extends RelativeLayout {
         this.mShadowRadius = resources.getDimension(R.dimen.config_flick_prediction_shadow_radius);
         this.mMinHorizontalWordDistance = resources.getDimension(R.dimen.config_flick_prediction_minimum_horizontal_word_distance);
         this.mMinVerticalWordDistance = resources.getDimension(R.dimen.config_flick_prediction_minimum_vertical_word_distance);
-        this.mSuggestedColorSpan = new ForegroundColorSpan(this.mSuggestedTextColor);
-        this.mTypedColorSpan = new ForegroundColorSpan(this.mTypedTextColor);
-        this.mSuggestedColorSpanDim = new ForegroundColorSpan(dimColor(this.mSuggestedTextColor));
-        this.mTypedColorSpanDim = new ForegroundColorSpan(dimColor(this.mTypedTextColor));
+        setTextColors(this.mSuggestedTextColor, this.mTypedTextColor);
         for (int i = 0; i < 7; i++) {
             PredictionView c0826b = new PredictionView(themedContext);
             this.mPredictionViews.add(c0826b);
             addView(c0826b);
         }
         this.mAnimationView = new FlickSuggestionAnimationView(themedContext, attributeSet);
+    }
+
+    private void setTextColors(int suggested, int typed) {
+        this.mSuggestedTextColor = suggested;
+        this.mTypedTextColor = typed;
+        this.mSuggestedColorSpan = new ForegroundColorSpan(suggested);
+        this.mTypedColorSpan = new ForegroundColorSpan(typed);
+        this.mSuggestedColorSpanDim = new ForegroundColorSpan(dimColor(suggested));
+        this.mTypedColorSpanDim = new ForegroundColorSpan(dimColor(typed));
+    }
+
+    /**
+     * Follows the palette's icon color. These colors used to be read once in the constructor,
+     * which was enough while every theme change re-inflated the input view; a system dark/light
+     * switch no longer does (method.xml declares uiMode), so they are checked per render.
+     *
+     * @return whether the colors changed (what is drawn is then stale)
+     */
+    private boolean refreshTextColors() {
+        if (!KeyboardColorManager.INSTANCE.isInitialized()) {
+            return false;
+        }
+        int iconColor = KeyboardColorManager.INSTANCE.getIconColor();
+        if (iconColor == this.mSuggestedTextColor && iconColor == this.mTypedTextColor) {
+            return false;
+        }
+        setTextColors(iconColor, iconColor);
+        return true;
     }
 
     public void init(Listener interfaceC0825a, MainKeyboardView mainKeyboardView) {
@@ -206,6 +253,8 @@ public final class FlickSuggestionView extends RelativeLayout {
         if (z) {
             return;
         }
+        // The metrics changed: lay the same words out again.
+        this.mShownValid = false;
         setSuggestions(this.mSuggestedWords, this.mIsRtl);
     }
 
@@ -215,48 +264,149 @@ public final class FlickSuggestionView extends RelativeLayout {
     }
 
     public void hide() {
+        this.mShownValid = false;
         if (this.mKeyboardView == null) {
             return;
         }
-        setVisibility(View.GONE);
+        // INVISIBLE, not GONE: the next update shows them again, and a GONE->VISIBLE flip of
+        // the overlay and its predictions requests a layout of the whole keyboard frame where
+        // INVISIBLE->VISIBLE only redraws. Neither the overlay (match_parent, not clickable)
+        // nor a prediction draws or takes touches while INVISIBLE.
+        setVisibility(View.INVISIBLE);
         for (int i = 0; i < this.mVisibleCount; i++) {
-            this.mPredictionViews.get(i).setVisibility(View.GONE);
+            this.mPredictionViews.get(i).setVisibility(View.INVISIBLE);
         }
         this.mVisibleCount = 0;
-        this.mKeyboardView.setAutoCorrectionText("");
+        if (!this.mSpacebarTextDeferred) {
+            this.mKeyboardView.setAutoCorrectionText("");
+        }
+    }
+
+    /**
+     * The suggestion presenter's entry point. It used to clear() a visible overlay and then call
+     * {@link #setSuggestions}, which clears again; that pre-clear flipped the container and every
+     * prediction GONE and set the spacebar word to "" on each update, so an unchanged result
+     * still relaid out the keyboard frame and re-recorded the keyboard. The pre-clear is kept
+     * only where setSuggestions would not clear (the keyboard view slid sideways).
+     */
+    public void showSuggestions(SuggestedWords words, boolean rtl) {
+        MainKeyboardView mainKeyboardView = this.mKeyboardView;
+        if (mainKeyboardView == null || mainKeyboardView.getX() != 0.0f) {
+            if (getVisibility() == View.VISIBLE) {
+                clear();
+            }
+            return;
+        }
+        setSuggestions(words, rtl);
     }
 
     public void setSuggestions(SuggestedWords c0666ac, boolean z) {
         MainKeyboardView mainKeyboardView = this.mKeyboardView;
         if (mainKeyboardView != null && mainKeyboardView.getX() == 0.0f) {
-            clear();
-            this.mIsRtl = z;
-            Keyboard keyboard = this.mKeyboardView.getKeyboard();
-            if (keyboard == null) {
+            boolean colorsChanged = refreshTextColors();
+            if (!colorsChanged && c0666ac != null && c0666ac.size() > 0 && isShowing(c0666ac, z)) {
+                // Same words on the same keyboard: what is drawn is already right. Keep the new
+                // object so a flick picks the newest word info.
+                this.mSuggestedWords = c0666ac;
+                this.mShownWords = c0666ac;
                 return;
             }
-            if (c0666ac == null || c0666ac.size() > 0) {
-                this.mSuggestedWords = c0666ac;
-                boolean isVkb = isSupportedKeyboard();
-                boolean onKeyEnabled = isOnKeyPredictionEnabled();
-                boolean notShowingEmoji = !isEmojiKeyboardShowing();
-                if (isVkb && onKeyEnabled && notShowingEmoji) {
-                    showOnKeyPredictions(this.mSuggestedWords, keyboard);
-                } else {
-                    if (isEmojiKeyboardShowing()) {
-                        return;
+            // hide() would set the spacebar word to "" and the render below set it again in the
+            // same pass, which defeats MainKeyboardView's equality guard and re-records the
+            // keyboard. Set it once, to its final value.
+            this.mSpacebarTextDeferred = true;
+            try {
+                clear();
+                this.mIsRtl = z;
+                Keyboard keyboard = this.mKeyboardView.getKeyboard();
+                if (keyboard == null) {
+                    return;
+                }
+                if (c0666ac == null || c0666ac.size() > 0) {
+                    this.mSuggestedWords = c0666ac;
+                    boolean isVkb = isSupportedKeyboard();
+                    boolean onKeyEnabled = isOnKeyPredictionEnabled();
+                    boolean notShowingEmoji = !isEmojiKeyboardShowing();
+                    if (isVkb && onKeyEnabled && notShowingEmoji) {
+                        showOnKeyPredictions(this.mSuggestedWords, keyboard);
+                    } else {
+                        if (isEmojiKeyboardShowing()) {
+                            return;
+                        }
+                        showAutoCorrectPrediction(this.mSuggestedWords, keyboard);
                     }
-                    showAutoCorrectPrediction(this.mSuggestedWords, keyboard);
+                    if (c0666ac != null) {
+                        rememberShown(c0666ac, keyboard, z);
+                    }
+                }
+            } finally {
+                if (this.mSpacebarTextDeferred) {
+                    // Nothing on the render path set it: it ends up empty, as hide() left it.
+                    this.mSpacebarTextDeferred = false;
+                    this.mKeyboardView.setAutoCorrectionText("");
                 }
             }
         }
+    }
+
+    /** The spacebar word, set once per render (see {@link #mSpacebarTextDeferred}). */
+    private void setSpacebarText(String text) {
+        this.mSpacebarTextDeferred = false;
+        this.mKeyboardView.setAutoCorrectionText(text);
+    }
+
+    /**
+     * Whether {@code words} on the current keyboard would draw exactly what the last render left
+     * on screen: the same words and flags, keyboard, view position, direction and every setting
+     * the render reads, and nothing hid or moved the predictions since.
+     */
+    private boolean isShowing(SuggestedWords words, boolean rtl) {
+        if (!this.mShownValid) {
+            return false;
+        }
+        MainKeyboardView view = this.mKeyboardView;
+        if (view != this.mShownKeyboardView || view.getKeyboard() != this.mShownKeyboard
+                || rtl != this.mShownRtl || getVisibility() != this.mShownVisibility) {
+            return false;
+        }
+        if (isSupportedKeyboard() != this.mShownSupported
+                || isOnKeyPredictionEnabled() != this.mShownOnKey
+                || isEmojiKeyboardShowing() != this.mShownEmojiBoard
+                || isGestureInputEnabled() != this.mShownGesture
+                || isEmojiPredictionsEnabled() != this.mShownEmojiPredictions
+                || KeyboardColorManager.styleSpec() != this.mShownStyleSpec) {
+            return false;
+        }
+        int[] location = keyboardLocationInWindow();
+        if (location[0] != this.mShownKeyboardLocation[0] || location[1] != this.mShownKeyboardLocation[1]) {
+            return false;
+        }
+        return dev.bbkb.ime.keyboard.auxbar.UnifiedSuggestionView.rendersSame(this.mShownWords, words);
+    }
+
+    private void rememberShown(SuggestedWords words, Keyboard keyboard, boolean rtl) {
+        this.mShownWords = words;
+        this.mShownKeyboard = keyboard;
+        this.mShownKeyboardView = this.mKeyboardView;
+        this.mShownRtl = rtl;
+        this.mShownVisibility = getVisibility();
+        this.mShownSupported = isSupportedKeyboard();
+        this.mShownOnKey = isOnKeyPredictionEnabled();
+        this.mShownEmojiBoard = isEmojiKeyboardShowing();
+        this.mShownGesture = isGestureInputEnabled();
+        this.mShownEmojiPredictions = isEmojiPredictionsEnabled();
+        this.mShownStyleSpec = KeyboardColorManager.styleSpec();
+        int[] location = keyboardLocationInWindow();
+        this.mShownKeyboardLocation[0] = location[0];
+        this.mShownKeyboardLocation[1] = location[1];
+        this.mShownValid = true;
     }
 
     private void showAutoCorrectPrediction(SuggestedWords c0666ac, Keyboard c0965e) {
         if (c0666ac.mAutoCorrectWord != null && c0666ac.mWillAutoCorrect) {
             Key keyM6604b = c0965e.getKeyByCode(32);
             if (keyM6604b != null) {
-                this.mKeyboardView.setAutoCorrectionText(c0666ac.getWord(1));
+                setSpacebarText(c0666ac.getWord(1));
                 if (isGestureInputEnabled()) {
                     return;
                 }
@@ -269,7 +419,7 @@ public final class FlickSuggestionView extends RelativeLayout {
             }
             return;
         }
-        this.mKeyboardView.setAutoCorrectionText("");
+        setSpacebarText("");
     }
 
     /** The candidate-hierarchy brightness step: #ffffff -> #d8d8d8 (~85%). */
@@ -333,10 +483,10 @@ public final class FlickSuggestionView extends RelativeLayout {
         int length = iArrM5278b.length;
         
         if (c0666ac.mWillAutoCorrect) {
-            this.mKeyboardView.setAutoCorrectionText(c0666ac.getWord(1).toString());
+            setSpacebarText(c0666ac.getWord(1).toString());
             i2 = 1;
         } else {
-            this.mKeyboardView.setAutoCorrectionText("");
+            setSpacebarText("");
             i2 = -1;
         }
         
@@ -598,6 +748,8 @@ public final class FlickSuggestionView extends RelativeLayout {
         this.mLastSelectionTime = jUptimeMillis;
         this.mListener.onSuggestionPicked(this.mSuggestedWords.getWordInfo(iM5302a), InputSource.SOFTWARE);
         this.mPredictionViews.get(iM5275b).setVisibility(View.INVISIBLE);
+        // The picked word is now hidden: the next update must redraw even if its list is equal.
+        this.mShownValid = false;
         this.mAnimationView.animateSelection(this.mPredictionViews.get(iM5275b), this.mTypedTextColor, getParent());
         return true;
     }

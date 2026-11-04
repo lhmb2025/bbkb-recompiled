@@ -990,9 +990,6 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         if (!this.mComposingTracker.isComposing() || this.mBackspaceController.mIsBackspaceActive) {
             return;
         }
-        if (this.mIsAutoCorrectActive == z && (SuggestedWords.EMPTY == c0666ac)) {
-            return;
-        }
         if (isCjkLocale()) {
             if (!LocaleUtils.isCurrentSubtypePinyin()) {
                 return;
@@ -1001,10 +998,17 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         if (LocaleUtils.isCurrentSubtypeJapanese()) {
             return;
         }
-        this.mIsAutoCorrectActive = z;
-        if (this.mRichInputConnection.hasWordAfterCursor(c0804d.spacingAndPunctuation)) {
-            this.mIsAutoCorrectActive = false;
+        // The only thing the resend below changes in the editor is the auto-correct indicator
+        // (getComposingTextWithIndicator), and the typing path already sent the text with the
+        // indicator in its current state. So compare against the state the indicator takes (off
+        // when a word follows the cursor, whatever the engine said) and resend only on a change.
+        // The earlier guard returned only for an EMPTY list, which never reaches this method, so
+        // every reply repeated the setComposingText IPC outside any batch edit.
+        boolean effectiveAutoCorrect = z && !this.mRichInputConnection.hasWordAfterCursor(c0804d.spacingAndPunctuation);
+        if (this.mIsAutoCorrectActive == effectiveAutoCorrect) {
+            return;
         }
+        this.mIsAutoCorrectActive = effectiveAutoCorrect;
         if (!this.mComposingTracker.isCursorMoved()) {
             // Defense in depth: never re-send composing text after the connection was
             // invalidated (cursor position unknown — the Enter editor-action path). The

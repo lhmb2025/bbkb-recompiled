@@ -544,6 +544,9 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         if (this.blackberryIme == null) {
             return;
         }
+        // destroy() drops the themed context; a start before the next createInputView must not
+        // build against a null context.
+        ensureThemeContext(this.blackberryIme);
         KeyboardBuilder.Builder aVar = new KeyboardBuilder.Builder(this.themeContext, editorInfo);
         Resources resources = this.themeContext.getResources();
         aVar.setKeyboardGeometry(ResourceConfigManager.getScreenWidthPixels(resources), ResourceConfigManager.getKeyboardHeight(resources));
@@ -610,11 +613,13 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         transitions().apply(KeyboardTransition.boardLowered(CrossAxisRules.EMOJI_KEY_CODE));
         MainKeyboardView mainKeyboardView = this.mainKeyboardView;
         if (mainKeyboardView != null) {
-            mainKeyboardView.setKeyboard(c0965e);
-            // Apply color tint to keyboard icons (shift, delete, etc.)
+            // Tint before the view takes the keyboard: MainKeyboardView.setKeyboard captures the
+            // shift/alt icons, and they must be the tinted instances. (A no-op unless the palette
+            // changed since this icon set was last tinted.)
             if (c0965e != null && c0965e.mIconsSet != null) {
                 c0965e.mIconsSet.applyColorTint();
             }
+            mainKeyboardView.setKeyboard(c0965e);
             mainKeyboardView.setKeyPreviewPopupEnabled(c0804dM5050c.isKeyPreviewPopupEnabled, c0804dM5050c.keyPreviewPopupDismissDelay);
             mainKeyboardView.setKeyPreviewAnimationParams(c0804dM5050c.hasCustomKeyPreviewAnimationParams, c0804dM5050c.keyPreviewShowUpStartScaleX, c0804dM5050c.keyPreviewShowUpStartScaleY, c0804dM5050c.keyPreviewShowUpDuration, c0804dM5050c.keyPreviewDismissEndScaleX, c0804dM5050c.keyPreviewDismissEndScaleY, c0804dM5050c.keyPreviewDismissDuration);
             mainKeyboardView.setFunctionalKeyEnabled(this.subtypeManager.isShortcutImeReady());
@@ -1379,8 +1384,11 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         this.keyboardBuilder = null;
         this.switcherCallbacks = null;
         this.blackberryIme = null;
-        // The themed context wraps the service being destroyed: make the next input view build a
-        // new one. It is left non-null so nothing that reads it before then can crash.
+        // The themed context wraps the service being destroyed. Dropping it lets the dead service
+        // (and its window) be collected after an IME switch instead of staying reachable from this
+        // process-lifetime singleton until the user switches back. Every reader either runs inside
+        // createInputView after ensureThemeContext, or (startInput) re-creates it when missing.
+        this.themeContext = null;
         this.themeContextIme = null;
         this.sharedPreferences = null;
     }

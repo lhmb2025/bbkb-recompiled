@@ -114,7 +114,7 @@ import java.util.Locale
 private const val BOOST_USES = 10
 
 /** What the engine's export says about one word: its use count, its status (quality) and its language. */
-private class WordDetail(val count: Int, val quality: Int, val language: Int) {
+internal class WordDetail(val count: Int, val quality: Int, val language: Int) {
     /**
      * Whether the keyboard will forget the word unless it is typed again. A word typed once gets
      * a negative quality and stays out of the engine's own word list; each time it is offered and
@@ -139,14 +139,14 @@ private enum class WordSort(@StringRes val label: Int) {
 }
 
 /** A run of rows under one header, or the whole list when [title] is null. */
-private class WordSection(val title: String?, val words: List<String>)
+internal class WordSection(val title: String?, val words: List<String>)
 
 /**
  * [words] in list order, cut into one section per language when the words span more than one.
  * A word that belongs to no language (added on purpose) joins the largest language's section, so
  * a phone with one language never sees headers; the languages come largest first.
  */
-private fun sectionsOf(words: List<String>, details: Map<String, WordDetail>?, other: String): List<WordSection> {
+internal fun sectionsOf(words: List<String>, details: Map<String, WordDetail>?, other: String): List<WordSection> {
     if (details == null) return listOf(WordSection(null, words))
     val byLanguage = words.groupBy { details[it]?.language ?: EngineLanguages.ANY }
     val languages = byLanguage.keys.filter { it != EngineLanguages.ANY }
@@ -156,7 +156,11 @@ private fun sectionsOf(words: List<String>, details: Map<String, WordDetail>?, o
         .sortedWith(compareByDescending<Int> { byLanguage.getValue(it).size }.thenBy { EngineLanguages.displayName(it) ?: "" })
         .map { language ->
             val own = byLanguage.getValue(language)
-            val list = if (language == largest) words.filter { it in own || (details[it]?.language ?: EngineLanguages.ANY) == EngineLanguages.ANY } else own
+            // One pass on each word's language: a membership test against [own] (a List) made
+            // this N x L String.equals on the main thread (P-19).
+            val list = if (language == largest) {
+                words.filter { val l = details[it]?.language ?: EngineLanguages.ANY; l == largest || l == EngineLanguages.ANY }
+            } else own
             WordSection(EngineLanguages.displayName(language) ?: other, list)
         }
 }
@@ -408,24 +412,31 @@ fun WordListEditorScreen(
                     null
                 }
             }
-            val expiringWords = if (model == null) emptyList() else {
-                val listed = loadedWords.toHashSet()
-                val languages = model.words.filter { it.text in listed }.mapTo(HashSet()) { it.language }
-                model.words.filter {
-                    it.quality in EXPIRING_RANGE && it.category <= 1 && it.text !in listed &&
-                        (languages.isEmpty() || it.language in languages || it.language == 0xffff)
-                }.map { it.text }.distinct()
-            }
-            words = (loadedWords + expiringWords).sorted()
-            // Join by text; a word that appears twice (case variants) shows its larger count.
-            details = model?.let { m ->
-                HashMap<String, WordDetail>().also { map ->
-                    m.words.forEach { w ->
-                        val old = map[w.text]
-                        if (old == null || w.count > old.count) map[w.text] = WordDetail(w.count, w.quality, w.language)
+            // A full model is about 13k records: the passes, the sort and the map below took
+            // tens of ms on the main thread after every delete, undo and import (P-19), so they
+            // run off it and only the result comes back.
+            val (loaded, loadedDetails) = withContext(Dispatchers.Default) {
+                val expiringWords = if (model == null) emptyList() else {
+                    val listed = loadedWords.toHashSet()
+                    val languages = model.words.filter { it.text in listed }.mapTo(HashSet()) { it.language }
+                    model.words.filter {
+                        it.quality in EXPIRING_RANGE && it.category <= 1 && it.text !in listed &&
+                            (languages.isEmpty() || it.language in languages || it.language == 0xffff)
+                    }.map { it.text }.distinct()
+                }
+                // Join by text; a word that appears twice (case variants) shows its larger count.
+                val joined = model?.let { m ->
+                    HashMap<String, WordDetail>().also { map ->
+                        m.words.forEach { w ->
+                            val old = map[w.text]
+                            if (old == null || w.count > old.count) map[w.text] = WordDetail(w.count, w.quality, w.language)
+                        }
                     }
                 }
+                (loadedWords + expiringWords).sorted() to joined
             }
+            words = loaded
+            details = loadedDetails
             isLoading = false
         }
     }

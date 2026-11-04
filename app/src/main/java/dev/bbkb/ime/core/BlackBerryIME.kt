@@ -157,6 +157,8 @@ class BlackBerryIME : InputMethodService(),
     dev.bbkb.ime.keyboard.auxbar.AuxBarManager.AuxBarEventListener {
 
     companion object {
+        /** How long the keyboard stays hidden before the emoji dataset is dropped (onTrimMemory). */
+        private const val EMOJI_RELEASE_AFTER_HIDDEN_MS = 15L * 60L * 1000L
         @JvmField
         val ASSERTIONS_DISABLED: Boolean = !BlackBerryIME::class.java.desiredAssertionStatus()
 
@@ -419,6 +421,9 @@ class BlackBerryIME : InputMethodService(),
     /** Token for [uiUpdateHandler]-posted deferred startup work, so onDestroy can cancel it. */
     private val deferredInitToken = Any()
 
+    /** Token of the delayed emoji-dataset release that a keyboard hide schedules (onTrimMemory). */
+    private val emojiReleaseToken = Any()
+
     /** True once [registerNonCriticalReceivers] has actually registered the three receivers. */
     private var nonCriticalReceiversRegistered = false
 
@@ -548,7 +553,6 @@ class BlackBerryIME : InputMethodService(),
         // the 150 ms window ran registerNonCriticalReceivers() AFTER releaseResources() had
         // already unregistered, leaving three process-scoped receivers holding the dead service.
         uiUpdateHandler.postTokenized(deferredInitToken, 150L) { registerNonCriticalReceivers() }
-        uiUpdateHandler.postTokenized(deferredInitToken, 0L) { hardwareKeys.registerInterceptorCallbacks() }
         // Build every enabled keyboard's engine KDBs ahead of its first use (kept on storage).
         uiUpdateHandler.postTokenized(deferredInitToken, dev.bbkb.ime.keyboard.KdbPrebuilder.START_DELAY_MS) {
             dev.bbkb.ime.keyboard.KdbPrebuilder.start(applicationContext)
@@ -699,52 +703,11 @@ class BlackBerryIME : InputMethodService(),
                 Logger.warn(LOG_TAG, "Language-pack registry prewarm failed: ${e.message}")
             }
         }
-
-        // Phase 1 Optimization: Pre-build unified input bar keyboard in background
-        startupExecutor.execute {
-            try {
-                val themedContext = android.view.ContextThemeWrapper(
-                    applicationContext, R.style.KeyboardTheme_LXX)
-
-                val builder = dev.bbkb.ime.keyboard.KeyboardBuilder.Builder(themedContext, null)
-
-                builder.setSubtype(dev.bbkb.ime.core.subtypeswitcher.SubtypeFactory.createSubtype(
-                    Locale.ENGLISH.toString(), "unified_input_menu"))
-
-                val resources = themedContext.resources
-                builder.setKeyboardGeometry(
-                    ResourceConfigManager.getScreenWidthPixels(resources),
-                    ResourceConfigManager.getSuggestionsStripHeight(resources)
-                )
-
-                val keyboardBuilder = builder.build()
-
-                // Pre-build layout 138 (unified input menu bar keyboard)
-                keyboardBuilder.getKeyboardForShift(138, true)
-
-                Logger.info(LOG_TAG, "Successfully pre-built unified input bar keyboard in background")
-            } catch (e: Exception) {
-                Logger.warn(LOG_TAG, "Failed to pre-build unified input bar keyboard: ${e.message}")
-                // Non-fatal: keyboard will be built on-demand if pre-building fails
-            }
-        }
-
-        // PKB Optimization: Pre-warm NuanceSDK in background for faster first suggestion
-        if (DeviceProfile.current().isPkbDevice()) {
-            startupExecutor.execute {
-                try {
-                    val startTime = System.currentTimeMillis()
-                    val sdk = NuanceSDKManager.getInstance()
-                    if (sdk != null) {
-                        sdk.clear()
-                        val elapsed = System.currentTimeMillis() - startTime
-                        Logger.info(LOG_TAG, "PKB: NuanceSDK pre-warmed in ${elapsed}ms")
-                    }
-                } catch (e: Exception) {
-                    Logger.warn(LOG_TAG, "PKB: Failed to pre-warm NuanceSDK: ${e.message}")
-                }
-            }
-        }
+        // No keyboard prebuild and no engine "prewarm" here any more: the unified-input-menu
+        // keyboard built ahead of time was never cached (KeyboardId.isTypingKeyboard() is false
+        // for it, so the bar built its own), and the prewarm only called clear() on an engine
+        // that the InputLogic field initialiser had already created. Both just competed with the
+        // main thread's own startup work.
     }
 
     /**
@@ -780,13 +743,23 @@ class BlackBerryIME : InputMethodService(),
     /**
      * IB-26: the emojibase dataset (a 735 KB asset parsed into ~3700 EmojiData objects plus its
      * category and skin-tone indexes) lives in a process-lifetime static with no eviction hook.
-     * Drop it once the IME UI is hidden or the system is under pressure; it is re-parsed lazily
-     * the next time the emoji board or the custom symbol page asks for it.
+     * Drop it under memory pressure, in the background, or after the keyboard has been hidden
+     * for a long while; it is re-parsed lazily the next time the strip, the emoji board or the
+     * custom symbol page asks for it.
      */
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
-        if (level >= TRIM_MEMORY_UI_HIDDEN) {
-            EmojibaseDataProvider.releaseShared()
+        // TRIM_MEMORY_UI_HIDDEN arrives on every keyboard hide (Android 13 delivers it each
+        // time), and releasing on it meant the 735 KB parse ran again on every show: 38% of
+        // all allocation across show/hide cycles on the emulator. Release at once only under
+        // real memory pressure or once the process is backgrounded; a plain hide starts a timer
+        // that releases the dataset after a long idle instead, and every show cancels it.
+        uiUpdateHandler.removeCallbacksAndMessages(emojiReleaseToken)
+        when {
+            level == TRIM_MEMORY_RUNNING_LOW || level == TRIM_MEMORY_RUNNING_CRITICAL
+                || level >= TRIM_MEMORY_BACKGROUND -> EmojibaseDataProvider.releaseShared()
+            level == TRIM_MEMORY_UI_HIDDEN -> uiUpdateHandler.postTokenized(
+                emojiReleaseToken, EMOJI_RELEASE_AFTER_HIDDEN_MS) { EmojibaseDataProvider.releaseShared() }
         }
     }
 
@@ -800,6 +773,11 @@ class BlackBerryIME : InputMethodService(),
 
         gestureReplay?.unregister()
         gestureReplay = null
+        // Quits the suggestion worker's HandlerThread. Each service instance starts one in the
+        // InputLogic constructor, and until now nothing quit it: 21 were alive after 20 IME
+        // switches on the emulator. Before releaseResources() so no new request reaches an
+        // engine that is being disposed.
+        inputLogic.shutdown()
         releaseResources()
         DictionaryManager.getInstance().shutdown()
         enableCursorMode(false)
@@ -815,6 +793,7 @@ class BlackBerryIME : InputMethodService(),
         // registered flag then keeps the unregister calls (and the `by lazy` receiver
         // construction they force) from running for a registration that never happened.
         uiUpdateHandler.removeCallbacksAndMessages(deferredInitToken)
+        uiUpdateHandler.removeCallbacksAndMessages(emojiReleaseToken)
         // Audit CT-27: stop accepting new warmup work; in-flight tasks are allowed to finish.
         startupExecutor.shutdown()
         ckbGestures.release()
@@ -858,12 +837,6 @@ class BlackBerryIME : InputMethodService(),
         NuanceSDKManager.disposePrimary()
     }
 
-    fun recycle() {
-        releaseResources()
-        inputLogic.shutdown()
-        super.onDestroy()
-    }
-
     override fun onConfigurationChanged(configuration: Configuration) {
         // UIM-07 fix: Deterministically close all boards before any config change handling.
         uiCoordinator.hideAllInputUi()
@@ -885,10 +858,17 @@ class BlackBerryIME : InputMethodService(),
                 Logger.debug(LOG_TAG, "System theme changed (night mode: $newNightMode), reloading keyboard theme")
                 loadSettings()
 
-                keyboardSwitcher.getUnifiedInputBoardManager()?.updateTheme(this)
-                // The keyboard view repaints through KeyboardColorManager's observer
-                // chain (onConfigurationChanged below reloads the palette); there is
-                // no themed context to swap and no input view to recreate.
+                // method.xml declares android:configChanges="uiMode", so on Android 13 and later
+                // the system no longer resets and re-inflates the input view for this change
+                // (and no longer throws away the work done here first). The keyboard view, the
+                // aux bar and the strip repaint through KeyboardColorManager's observers, but the
+                // boards (voice, cursor, clipboard, emoji search, slideboard divider) take their
+                // colours once at inflate time, so the palette is reloaded and the input view
+                // recreated the way a theme change in Settings does (ThemePrefsListener). Only
+                // the "auto" theme pays for a night flip; a fixed theme keeps its views as they
+                // are. Rotation is not declared and still goes through the system's reset.
+                KeyboardColorManager.onConfigurationChanged()
+                keyboardSwitcher.forceRecreateInputView()
             }
         }
         mCurrentNightMode = newNightMode
@@ -1166,6 +1146,8 @@ class BlackBerryIME : InputMethodService(),
 
     override fun onWindowShown() {
         super.onWindowShown()
+        // The keyboard is back: keep the emoji dataset (see onTrimMemory).
+        uiUpdateHandler.removeCallbacksAndMessages(emojiReleaseToken)
         // Re-request inset application on every show so the keyboard is positioned above the
         // nav bar deterministically, including after an IME switch-away-and-back (§0/§1).
         rootInputView?.let { androidx.core.view.ViewCompat.requestApplyInsets(it) }
@@ -1663,8 +1645,10 @@ class BlackBerryIME : InputMethodService(),
         }
         if (settingsValues.isEmojiPredictionsEnabled) {
             // Parse the emojibase dataset off the UI thread now, so the first word typed already
-            // has its emoji instead of the first strip update paying for the 735 KB parse.
-            EmojibaseDataProvider.preloadAsync(this)
+            // has its emoji instead of the first strip update paying for the 735 KB parse. On the
+            // startup executor: loadSettings runs on every field focus, and this used to start a
+            // thread each time even though the parse is a no-op once the data is loaded.
+            EmojibaseDataProvider.preloadAsync(this, startupExecutor)
         }
     }
 
@@ -2225,6 +2209,11 @@ class BlackBerryIME : InputMethodService(),
         // writes multiply the engine's adaptive-language learning, which is how the
         // DLM got poisoned into ranking recent commits above trace shape. Stock
         // throttles gesture-preview updates to ~100ms; match that.
+        // With the owned decoder the gesture is decoded at lift-off (touchEnd) and the engine's
+        // mid-swipe selection list is just next-word predictions for an empty composing text:
+        // each of these lookups rewrote the context buffer and rebuilt the list under the engine
+        // lock in competition with every touchMove sample, for nothing anyone could see.
+        if (dev.bbkb.ime.core.engine.NuanceSDKDictionaryBridge.isOwnedDecodeLive()) return
         val now = android.os.SystemClock.uptimeMillis()
         if (now - lastBatchUpdateRequestTime < 120) return
         lastBatchUpdateRequestTime = now
@@ -2605,7 +2594,7 @@ class BlackBerryIME : InputMethodService(),
     }
 
     fun applyCursorModeState(z: Boolean, z2: Boolean, z3: Boolean) {
-        Logger.debug("ARROW_BAR_DIAG", "applyCursorModeState: enable=$z z3=$z3 isUnifiedInputBoardShowing()=${isUnifiedInputBoardShowing()} → will proceed=${z3 || !isUnifiedInputBoardShowing()}")
+        if (BuildConfig.DEBUG) Logger.debug("ARROW_BAR_DIAG", "applyCursorModeState: enable=$z z3=$z3 isUnifiedInputBoardShowing()=${isUnifiedInputBoardShowing()} → will proceed=${z3 || !isUnifiedInputBoardShowing()}")
         if (z3 || !isUnifiedInputBoardShowing()) {
             if (z) {
                 if (isCursorModeEnabled) return

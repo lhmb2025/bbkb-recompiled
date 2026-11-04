@@ -231,10 +231,9 @@ class CustomSymbolRepository(private val context: Context) {
     }
 
     private fun loadEmojisFromEmojibase(): List<String> {
-        // Use modern Emojibase data provider instead of legacy emoji array
-        val emojiProvider = EmojibaseDataProvider(context)
-        emojiProvider.loadEmojiData()
-        val allEmojis = emojiProvider.getAllEmojis()
+        // The shared, already-parsed dataset: a private provider here parsed a second copy of
+        // the whole dataset every time the custom symbol page was built.
+        val allEmojis = EmojibaseDataProvider.getSharedLoaded(context).getAllEmojis()
         
         Timber.d("Loaded ${allEmojis.size} emojis from Emojibase for Compose custom symbol page")
         

@@ -56,7 +56,17 @@ public class MultiPointerGestureDetector {
 
     private OnDoubleTapListener doubleTapListener;
 
-    private MotionEvent previousMoveEvent;
+    /*
+     * The previous ACTION_MOVE's pointer positions, indexed by pointer id. This used to be a full
+     * MotionEvent.obtain() copy (history included) per move; only these coordinates and the
+     * pointer count were ever read off it.
+     */
+    private static final int MAX_POINTER_ID = 32;
+    private final float[] previousMoveX = new float[MAX_POINTER_ID];
+    private final float[] previousMoveY = new float[MAX_POINTER_ID];
+    /** Bit n set: pointer id n was in the previous move. 0 when there is no previous move. */
+    private int previousMovePointerIds;
+    private int previousMovePointerCount;
 
     private boolean inLongPress;
 
@@ -430,22 +440,24 @@ public class MultiPointerGestureDetector {
                         // DECOMPILATION FIX: Original Smali checks if BlackBerryIME gesture filter returns true
                         // Decompiler incorrectly changed this to check if Rect doubleTapRegion is not null
                         // Lines 1692-1723 in ClipboardItem.smali show the correct logic
-                        if (this.ime != null && this.ime.shouldHandleGestureEvent(motionEvent) && this.previousMoveEvent != null) {
-                            if (i4 < this.previousMoveEvent.getPointerCount()) {
-                                int findPointerIndex = this.previousMoveEvent.findPointerIndex(pointerId2);
-                                if (findPointerIndex >= 0) {
-                                    updateConfirmSingleTapEligibility(pointerId2, motionEvent, i4);
-                                }
-                            }
+                        // The cheap previous-move checks first: shouldHandleGestureEvent reads
+                        // the device profile and settings, per pointer per move.
+                        if (this.previousMovePointerIds != 0 && i4 < this.previousMovePointerCount
+                                && hadPreviousMovePointer(pointerId2)
+                                && this.ime != null && this.ime.shouldHandleGestureEvent(motionEvent)) {
+                            updateConfirmSingleTapEligibility(pointerId2, motionEvent, i4);
                         }
                     }
                 }
                 if (this.doubleTapListener != null) {
                     if (this.activeDoubleTapPointerId != -1 && this.alwaysInBiggerTapRegionByPointer.get(this.activeDoubleTapPointerId)) {
                         zMo4683f = this.doubleTapListener.onDoubleTapEvent(motionEvent) | false;
-                    } else {
+                    } else if (this.activeDoubleTapPointerId != -1) {
                         zMo4683f = cancelDoubleTapTracking(motionEvent) | false;
                     }
+                    // else: no double tap is being tracked, so there is nothing to cancel. This
+                    // used to send a synthetic ACTION_CANCEL (a native MotionEvent copy) on every
+                    // move of every drag; AOSP forwards moves only during a double tap.
                 }
                 if (this.inLongPress) {
                     MotionEvent motionEvent8 = this.downEventByPointer.get(pointerId);
@@ -458,10 +470,7 @@ public class MultiPointerGestureDetector {
                 // Store previous motion event for gesture direction detection without overwriting start event
                 MotionEvent previousEvent = this.downEventByPointer.get(pointerId);
                 if (previousEvent != null) {
-                    if (this.previousMoveEvent != null) {
-                        this.previousMoveEvent.recycle();
-                    }
-                    this.previousMoveEvent = MotionEvent.obtain(motionEvent); // Store CURRENT event, not previous
+                    rememberMovePositions(motionEvent); // Store CURRENT event, not previous
                 }
                 return zMo4683f;
             case 3:
@@ -514,13 +523,32 @@ public class MultiPointerGestureDetector {
         return (dx * dx) + (dy * dy);
     }
 
+    private void rememberMovePositions(MotionEvent motionEvent) {
+        int ids = 0;
+        int count = motionEvent.getPointerCount();
+        for (int index = 0; index < count; index++) {
+            int id = motionEvent.getPointerId(index);
+            if (id >= 0 && id < MAX_POINTER_ID) {
+                ids |= 1 << id;
+                this.previousMoveX[id] = motionEvent.getX(index);
+                this.previousMoveY[id] = motionEvent.getY(index);
+            }
+        }
+        this.previousMovePointerIds = ids;
+        this.previousMovePointerCount = count;
+    }
+
+    private boolean hadPreviousMovePointer(int pointerId) {
+        return pointerId >= 0 && pointerId < MAX_POINTER_ID
+                && (this.previousMovePointerIds & (1 << pointerId)) != 0;
+    }
+
     private void updateConfirmSingleTapEligibility(int i, MotionEvent motionEvent, int i2) {
         MotionEvent motionEvent2 = this.downEventByPointer.get(i);
         if (motionEvent2 == null || !this.confirmSingleTapOnUpByPointer.get(i) || this.alwaysInTapRegionByPointer.get(i)) {
             return;
         }
-        // Fix: Add null check for previousMoveEvent to prevent crash
-        if (this.previousMoveEvent == null) {
+        if (!hadPreviousMovePointer(i)) {
             return;
         }
         int actionIndex = motionEvent2.getActionIndex();
@@ -528,14 +556,8 @@ public class MultiPointerGestureDetector {
         float y = motionEvent2.getY(actionIndex);
         float x2 = motionEvent.getX(i2);
         float y2 = motionEvent.getY(i2);
-        MotionEvent motionEvent3 = this.previousMoveEvent;
-        int pointerIndex = motionEvent3.findPointerIndex(i);
-        if (pointerIndex < 0) {
-            return;
-        }
-        float x3 = motionEvent3.getX(pointerIndex);
-        MotionEvent motionEvent4 = this.previousMoveEvent;
-        float y3 = motionEvent4.getY(pointerIndex);
+        float x3 = this.previousMoveX[i];
+        float y3 = this.previousMoveY[i];
         float fM6009a = distanceSquared(x2, y2, x, y);
         float fM6009a2 = distanceSquared(x3, y3, x, y);
         float f = ((x2 - x) * (x3 - x2)) + ((y2 - y) * (y3 - y2));
@@ -591,19 +613,20 @@ public class MultiPointerGestureDetector {
             float x = ((motionEvent.getX() - motionEvent2.getX()) * 1000.0f) / f;
             float y = ((motionEvent.getY() - motionEvent2.getY()) * 1000.0f) / f;
             if (Math.abs(x) > Math.abs(xVelocity)) {
-                Logger.verbose("IMEGestureDetector", "checkFling using simple X velocity " + x + " instead of " + xVelocity);
+                if (BuildConfig.DEBUG) Logger.verbose("IMEGestureDetector", "checkFling using simple X velocity " + x + " instead of " + xVelocity);
                 xVelocity = x;
             }
             if (Math.abs(y) > Math.abs(yVelocity)) {
-                Logger.verbose("IMEGestureDetector", "checkFling using simple Y velocity " + y + " instead of " + yVelocity);
+                if (BuildConfig.DEBUG) Logger.verbose("IMEGestureDetector", "checkFling using simple Y velocity " + y + " instead of " + yVelocity);
                 yVelocity = y;
             }
         }
         if (Math.abs(yVelocity) <= this.minimumFlingVelocity && Math.abs(xVelocity) <= this.minimumFlingVelocity) {
             return false;
         }
-        Logger.isLoggable("IMEGestureDetector", Log.DEBUG);
-        Logger.info("IMEGestureDetector", "Fling vxy=" + xVelocity + "," + yVelocity);
+        if (BuildConfig.DEBUG) {
+            Logger.info("IMEGestureDetector", "Fling vxy=" + xVelocity + "," + yVelocity);
+        }
         return this.gestureListener.onFling(this.downEventByPointer.get(pointerId), motionEvent, xVelocity, yVelocity);
     }
 
@@ -614,11 +637,8 @@ public class MultiPointerGestureDetector {
             velocityTracker.recycle();
             this.velocityTracker = null;
         }
-        // Fix: Clean up previousMoveEvent to prevent memory leaks
-        if (this.previousMoveEvent != null) {
-            this.previousMoveEvent.recycle();
-            this.previousMoveEvent = null;
-        }
+        this.previousMovePointerIds = 0;
+        this.previousMovePointerCount = 0;
         this.stillDownByPointer.clear();
         for (SparseArray sparseArray : Arrays.asList(this.downEventByPointer, this.upEventByPointer)) {
             for (int size = sparseArray.size() - 1; size >= 0; size--) {
@@ -663,7 +683,7 @@ public class MultiPointerGestureDetector {
         int i3 = point.y - point2.y;
         boolean z = (i2 * i2) + (i3 * i3) < this.doubleTapSlopSquare;
         if (z) {
-            Logger.info("IMEGestureDetector", "DoubleTap " + i + " t=" + motionEvent.getEventTime() + "," + motionEvent2.getEventTime() + "," + motionEvent3.getEventTime() + " p1d=" + point.x + "," + point.y + " p2d=" + point2.x + "," + point2.y);
+            if (BuildConfig.DEBUG) Logger.info("IMEGestureDetector", "DoubleTap " + i + " t=" + motionEvent.getEventTime() + "," + motionEvent2.getEventTime() + "," + motionEvent3.getEventTime() + " p1d=" + point.x + "," + point.y + " p2d=" + point2.x + "," + point2.y);
         }
         return z;
     }

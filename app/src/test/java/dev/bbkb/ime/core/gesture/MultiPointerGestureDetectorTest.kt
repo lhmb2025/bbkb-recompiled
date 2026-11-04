@@ -471,8 +471,8 @@ class MultiPointerGestureDetectorTest {
     @Test
     fun noMoveOrUpEverTakesTheDoubleTapTrackingBranch() {
         // activeDoubleTapPointerId is only assigned inside the (unreachable) double-tap branch, so
-        // it is permanently -1: every move falls into the cancel branch and no up ever forwards
-        // an ACTION_UP to the double-tap listener.
+        // it is permanently -1: no move has a double tap to cancel and no up ever forwards an
+        // ACTION_UP to the double-tap listener.
         down(t0, 100f, 100f)
         up(t0 + 5, P(0, 100f, 100f))
         down(t0 + 55, 100f, 100f)
@@ -483,8 +483,6 @@ class MultiPointerGestureDetectorTest {
         up(t0 + 70, P(0, 100f + touchSlop + 1, 100f))
 
         assertCalls(
-            "onDoubleTapEvent:CANCEL",
-            "onDoubleTapEvent:CANCEL",
             "onSingleTapUp",
             "onSingleTapConfirmed",
             // 17 px in 15 ms is well over the minimum fling velocity.
@@ -493,18 +491,18 @@ class MultiPointerGestureDetectorTest {
     }
 
     @Test
-    fun everyPlainMoveDispatchesASyntheticCancelToTheDoubleTapListener() {
-        // CHARACTERISED BUG: AOSP only forwards moves while a double tap is actually being
-        // tracked. Here the `else` branch fires cancelDoubleTapTracking() on EVERY ACTION_MOVE of
-        // every ordinary drag, so the listener sees a stream of ACTION_CANCEL events — one
-        // obtainNoHistory()/recycle() pair per move, for a gesture that is not a double tap.
+    fun aPlainMoveDispatchesNoSyntheticCancelToTheDoubleTapListener() {
+        // AOSP only forwards moves while a double tap is actually being tracked. This used to fire
+        // cancelDoubleTapTracking() on EVERY ACTION_MOVE of every ordinary drag, so the listener
+        // saw a stream of ACTION_CANCEL events — one obtainNoHistory()/recycle() pair per move,
+        // for a gesture that is not a double tap. With nothing tracked, nothing is cancelled.
         down(t0, 100f, 100f)
         recorder.calls.clear()
 
         move(t0 + 5, P(0, 101f, 100f))
         move(t0 + 10, P(0, 102f, 100f))
 
-        assertCalls("onDoubleTapEvent:CANCEL", "onDoubleTapEvent:CANCEL")
+        assertCalls()
     }
 
     @Test

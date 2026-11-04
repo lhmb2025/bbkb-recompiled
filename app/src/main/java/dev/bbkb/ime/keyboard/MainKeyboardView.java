@@ -241,12 +241,38 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
 
     @Override // dev.bbkb.ime.keyboard.internal.TimerHandler
     public void startWhileTypingFadeinAnimation() {
+        if (skipAltCodeWhileTypingAnimation()) {
+            return;
+        }
         cancelAndStartAnimators(this.mAltCodeKeyWhileTypingFadeoutAnimator, this.mAltCodeKeyWhileTypingFadeinAnimator);
     }
 
     @Override // dev.bbkb.ime.keyboard.internal.TimerHandler
     public void startWhileTypingFadeoutAnimation() {
+        if (skipAltCodeWhileTypingAnimation()) {
+            return;
+        }
         cancelAndStartAnimators(this.mAltCodeKeyWhileTypingFadeinAnimator, this.mAltCodeKeyWhileTypingFadeoutAnimator);
+    }
+
+    /**
+     * Only the PC-QWERTY layout has alt-code-while-typing keys. Everywhere else the 3 s fade-out
+     * and 1 s fade-in ticked every frame per typing burst and repainted nothing, so skip them
+     * there, and leave the alpha at rest so a later PC-QWERTY keyboard starts from full.
+     */
+    private boolean skipAltCodeWhileTypingAnimation() {
+        Keyboard keyboard = getKeyboard();
+        if (keyboard != null && !keyboard.mAltCodeKeysWhileTyping.isEmpty()) {
+            return false;
+        }
+        if (this.mAltCodeKeyWhileTypingFadeinAnimator != null) {
+            this.mAltCodeKeyWhileTypingFadeinAnimator.cancel();
+        }
+        if (this.mAltCodeKeyWhileTypingFadeoutAnimator != null) {
+            this.mAltCodeKeyWhileTypingFadeoutAnimator.cancel();
+        }
+        this.mAltCodeKeyWhileTypingAnimAlpha = 255;
+        return true;
     }
 
     /**
@@ -444,6 +470,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         // PointerTracker.release(); the constructor's init() only runs once per view.
         PointerTracker.setViewProxies(this.mKeyTimerHandler, this.mBatchUpdateTimerHandler, this, this, this);
         PointerTracker.setKeyboardActionListener(this.mKeyboardActionListener);
+        GestureEventProcessor.setGestureKeyboardChecker(this);
         installPreviewPlacerView();
     }
 
@@ -458,6 +485,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         // KI2-17/KT-11: PointerTracker holds this view in static fields; drop them so a detached
         // input view (and its themed Context) is not retained for the process lifetime.
         PointerTracker.release();
+        GestureEventProcessor.releaseGestureKeyboardChecker(this);
     }
 
     /**
@@ -866,6 +894,12 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
     private void drawShiftKeyIcon(Key key, Canvas canvas) {
         Drawable drawable = this.mShiftKeyState ? this.mShiftKeyIcons[3] : this.mShiftKeyIcons[1];
         if (drawable != null) {
+            // Tint at draw like every other key icon (KeyboardView.drawKeyContent): this overlay
+            // is drawn before the base class re-tints the shared drawable, so it used to paint
+            // with whatever tint the previous frame or palette left on it.
+            if (KeyboardColorManager.INSTANCE.isInitialized()) {
+                applyIconTint(key, drawable);
+            }
             drawDrawable(canvas, drawable, (key.getWidth() - drawable.getIntrinsicWidth()) / 2, (key.getHeight() - drawable.getIntrinsicHeight()) / 2, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         }
     }
@@ -873,6 +907,9 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
     private void drawAltCodeKeyIcon(Key key, Canvas canvas) {
         Drawable drawable = this.mAltKeyIcons[4];
         if (drawable != null) {
+            if (KeyboardColorManager.INSTANCE.isInitialized()) {
+                applyIconTint(key, drawable);
+            }
             drawDrawable(canvas, drawable, (key.getWidth() - drawable.getIntrinsicWidth()) / 2, (key.getHeight() / 3) - (drawable.getIntrinsicHeight() / 2), drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         }
     }
@@ -889,6 +926,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         setKeyboardActionListener(KeyboardActionListenerInterface.EMPTY);
         this.mGestureDetector = null;
         PointerTracker.release();
+        GestureEventProcessor.releaseGestureKeyboardChecker(this);
     }
 
     public void setKeyPressed(Key key, boolean z) {

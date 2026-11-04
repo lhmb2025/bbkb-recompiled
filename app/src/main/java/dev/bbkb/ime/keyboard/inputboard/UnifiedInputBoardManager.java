@@ -1,5 +1,6 @@
 package dev.bbkb.ime.keyboard.inputboard;
 
+import dev.bbkb.ime.BuildConfig;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
@@ -288,9 +289,11 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                 UnifiedInputBoardComponent activeForRestore =
                         UnifiedInputBoardManager.this.getActiveComponent();
                 if (activeForRestore != null) {
-                    Logger.debug(TAG, "restoreKeyStates: activeComponent="
-                        + activeForRestore.getKeyCode()
-                        + " — re-deriving key states from current board state");
+                    if (BuildConfig.DEBUG) {
+                        Logger.debug(TAG, "restoreKeyStates: activeComponent="
+                            + activeForRestore.getKeyCode()
+                            + " — re-deriving key states from current board state");
+                    }
                     UnifiedInputBoardManager.this.updateKeyHighlightedStates(keyboard);
                 }
                 UnifiedInputBoardManager.this.scheduleInvalidation();
@@ -517,6 +520,11 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         // suggestion strip replacing it, cursor mode, a settings change) ends a menu the "Show or
         // hide the input menu" key asked for: the settings decide again.
         SettingsValues.setInputMenuRequestedByKey(false);
+        // The suggestion strip calls this once or twice per update. When nothing is up there is
+        // nothing to take down, and the full pass walked every board and posted a redraw.
+        if (isFullyHidden()) {
+            return;
+        }
         // UIM-05: Cancel any running animation and its safety timeout on hide
         this.keyboardView.animate().cancel();
         this.invalidationHandler.removeCallbacks(animationSafetyReset);
@@ -530,6 +538,16 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         hideAllComponents();  // This will clear active component via setActiveComponent(null)
         dumpUimState("hide.EXIT");
         assertVisibilityConsistency("hide");
+    }
+
+    /** No bar, no animation, no displayed keyboard and no panel board open: hide() is a no-op. */
+    private boolean isFullyHidden() {
+        if (isAnimating() || isShowing() || this.displayedKeyboard != null
+                || this.boardCoordinator.activeBoard() != UnifiedBoardCoordinator.NO_BOARD) {
+            return false;
+        }
+        // The boards hideAllComponents() would take down: the panel ones.
+        return !isPanelBoardShowing();
     }
 
     public void hideView() {
@@ -921,8 +939,11 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
             if (value != null && CrossAxisRules.isPanelBoard(entry.getKey().intValue())
                     && !isExempt(exceptKeyCodes, entry.getKey().intValue())
                     && value.isShowing()) {
-                Logger.debug(TAG, "hideComponentsExcept(" + java.util.Arrays.toString(exceptKeyCodes)
-                        + "): hiding keycode=" + entry.getKey());
+                // Guarded here: Logger gates inside the callee, after the string is built.
+                if (BuildConfig.DEBUG) {
+                    Logger.debug(TAG, "hideComponentsExcept(" + java.util.Arrays.toString(exceptKeyCodes)
+                            + "): hiding keycode=" + entry.getKey());
+                }
                 value.hide();
                 sweptTheActiveBoard |= entry.getKey().intValue() == activeKeyCode;
             }
@@ -1138,9 +1159,11 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                 boolean shouldHighlight = false;
                 boolean isShowing = value.isShowing();
                 boolean isEnabled = value.isEnabled();
-                Logger.debug(TAG, "updateKeyHighlightedStates: keycode=" + iIntValue
-                        + " isShowing=" + isShowing + " isEnabled=" + isEnabled
-                        + " onBar=" + (keyM6604b != null) + " -> setActive=" + isEnabled);
+                if (BuildConfig.DEBUG) {
+                    Logger.debug(TAG, "updateKeyHighlightedStates: keycode=" + iIntValue
+                            + " isShowing=" + isShowing + " isEnabled=" + isEnabled
+                            + " onBar=" + (keyM6604b != null) + " -> setActive=" + isEnabled);
+                }
 
                 if (isShowing && isEnabled) {
                     if (foundActiveBoard) {
@@ -1160,7 +1183,9 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                     keyM6604b.setHighlighted(shouldHighlight);
                     keyM6604b.setActive(isEnabled);
                 } else {
-                    Logger.debug(TAG, String.format(Locale.getDefault(), "Key with code %d is not on the UIM bar (menu order); nothing to paint", Integer.valueOf(iIntValue)));
+                    if (BuildConfig.DEBUG) {
+                        Logger.debug(TAG, String.format(Locale.getDefault(), "Key with code %d is not on the UIM bar (menu order); nothing to paint", Integer.valueOf(iIntValue)));
+                    }
                 }
             }
         }

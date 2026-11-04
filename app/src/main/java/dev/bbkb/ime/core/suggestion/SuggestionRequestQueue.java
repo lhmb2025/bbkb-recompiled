@@ -18,6 +18,11 @@ public class SuggestionRequestQueue implements Handler.Callback {
      */
     public static final SuggestionRequestQueue DISABLED_INSTANCE = new SuggestionRequestQueue();
 
+    /** A queued request a later request makes pointless: dropped when the later one arrives. */
+    private static final int MSG_RUN = 1;
+    /** A request whose reply someone waits for (a sync update, a gesture commit): never dropped. */
+    private static final int MSG_RUN_KEEP = 2;
+
     final Handler mHandler;
 
     final BlackBerryIME mIme;
@@ -72,7 +77,7 @@ public class SuggestionRequestQueue implements Handler.Callback {
             return true;
         }
         if (BuildConfig.DEBUG) android.util.Log.d("SUGG", "SuggestionWorker.handleMessage: what=" + message.what + " thread=" + Thread.currentThread().getName());
-        if (message.what == 1) {
+        if (message.what == MSG_RUN || message.what == MSG_RUN_KEEP) {
             try {
                 this.mIme.runSuggestionRequest(message.arg1, (SuggestionEngine.SuggestionCallback) message.obj);
             } catch (Exception e) {
@@ -106,7 +111,9 @@ public class SuggestionRequestQueue implements Handler.Callback {
                 // Audit DW-3: captured HERE, before dispatch, so the reply carries the session it
                 // was requested under rather than whatever session it lands in.
                 final int requestGeneration = this.mInputLogic.getSessionGeneration();
-                sendToWorkerThread(isPrediction ? 3 : 2, c0666ac -> {
+                // A prediction request is also the gesture-commit channel (see C4 below), so it
+                // must run even when typing resumes before the worker gets to it.
+                sendToWorkerThread(isPrediction ? 3 : 2, isPrediction, c0666ac -> {
                     if (c0666ac.isEmpty()) {
                         // C4: this fallback doubles as the gesture-commit channel — the
                         // gesture word arrives via mCurrentSuggestions when the engine
@@ -167,9 +174,23 @@ public class SuggestionRequestQueue implements Handler.Callback {
     }
 
     public void sendToWorkerThread(int what, SuggestionEngine.SuggestionCallback callback) {
+        sendToWorkerThread(what, false, callback);
+    }
+
+    /**
+     * @param keep true for a request whose reply a caller waits on; false for one that the next
+     *             request supersedes and that is dropped from the queue when a newer one arrives
+     */
+    public void sendToWorkerThread(int what, boolean keep, SuggestionEngine.SuggestionCallback callback) {
         if (!live()) {
             return;
         }
-        this.mHandler.obtainMessage(1, what, 0, callback).sendToTarget();
+        // Nothing used to drop queued requests, so a worker that fell behind ran a backlog of
+        // whole-word engine replays (every request clears and refeeds the composing text) for
+        // strings nobody would see: the delivery guards discard the stale replies anyway. The
+        // newest request makes every queued superseding request pointless, so drop those here;
+        // the one already running finishes on its own.
+        this.mHandler.removeMessages(MSG_RUN);
+        this.mHandler.obtainMessage(keep ? MSG_RUN_KEEP : MSG_RUN, what, 0, callback).sendToTarget();
     }
 }

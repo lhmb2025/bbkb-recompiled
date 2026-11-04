@@ -36,10 +36,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <android/log.h>
+#include <pthread.h>
 #include <sys/system_properties.h>
 
 #define TAG "ET9PROBE"
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, TAG, __VA_ARGS__)
+/* Every line here is a diagnostic; et9_resolve runs on each suggestion request (P-5). */
+#define LOGI(...) ET9_DIAG(ANDROID_LOG_INFO, TAG, __VA_ARGS__)
 
 #define ET9_MAGIC 0x1428
 
@@ -73,7 +75,21 @@
  */
 #define SCAN_LIMIT 0xAE1D0   /* strictly inside the range the blob itself dereferences */
 
-static int chain_ok(unsigned char *ling) {
+int et9_diag_enabled(void) {
+#ifdef NDEBUG
+    static int cached = -1;
+    if (cached < 0) {
+        char v[PROP_VALUE_MAX] = {0};
+        cached = __system_property_get("debug.et9.probe", v) > 0 && v[0] && v[0] != '0';
+    }
+    return cached;
+#else
+    return 1;
+#endif
+}
+
+/* Unused since et9_resolve walks the chain itself; kept as the statement of what a valid chain is. */
+__attribute__((unused)) static int chain_ok(unsigned char *ling) {
     if (*(uint16_t *)(ling + OFF_LING_MAGIC) != ET9_MAGIC) return 0;
     unsigned char *info = *(unsigned char **)(ling + OFF_LING_INFO);
     if (!info) return 0;
@@ -87,12 +103,21 @@ static int chain_ok(unsigned char *ling) {
     return 1;
 }
 
+/* The C++ objects the JNI itself loads as candidate ctx values: ling = *(*(block + off)) + 8. */
+static const size_t CAND_OFFSETS[] = {0xAE210, 0xAE228, 0xAE230};
+
 /* CONFIRMED ON-DEVICE: handle + 0x18750 is the engine "core" struct — the blob's own JNI
  * passes it to ET9ClearAllSymbs, and its magic sits at offset 0, matching the third level of
  * the chain every ET9AW entry validates. From there we walk BACKWARDS to the structs that
- * point at it, because those (info, ling) are separate allocations, not inline in the block. */
-et9_ctx et9_resolve(jlong handle) {
+ * point at it, because those (info, ling) are separate allocations, not inline in the block.
+ *
+ * This is the full signature scan. Also reports how it got there (the recipe et9_resolve caches):
+ * info's offset in the block or the candidate index that led to it, and ling's offset in the
+ * block (*has_ling_off) when the second scan found it there. */
+static et9_ctx et9_resolve_scan(jlong handle, size_t *info_off, size_t *ling_off,
+                                int *has_ling_off, int *cand_idx) {
     et9_ctx c = {0, 0, 0, 0};
+    *info_off = 0; *ling_off = 0; *has_ling_off = 0; *cand_idx = -1;
     if (!handle) { c.error = "handle is 0"; return c; }
     unsigned char *block = (unsigned char *)(intptr_t)handle;
 
@@ -107,13 +132,14 @@ et9_ctx et9_resolve(jlong handle) {
         unsigned char *info = block + off - OFF_INFO_CORE;
         if (*(uint16_t *)(info + OFF_INFO_MAGIC) != ET9_MAGIC) continue;
         c.info = info;
+        *info_off = off - OFF_INFO_CORE;
         LOGI("layout: info at handle+0x%zx", off - OFF_INFO_CORE);
         break;
     }
     /* alphaBuildSelectionList computes pLingInfo = *(void**)ctx + 8. Try the C++ objects the
      * JNI itself loads as candidate ctx values before falling back to scanning. */
     if (!c.info) {
-        const size_t cand[] = {0xAE210, 0xAE228, 0xAE230};
+        const size_t *cand = CAND_OFFSETS;
         for (unsigned i = 0; i < 3 && !c.ling; i++) {
             unsigned char *pobj = *(unsigned char **)(block + cand[i]);
             if (!pobj || ((uintptr_t)pobj & 7)) continue;
@@ -126,6 +152,7 @@ et9_ctx et9_resolve(jlong handle) {
                 unsigned char *info = *(unsigned char **)(ling + OFF_LING_INFO);
                 if (info && !((uintptr_t)info & 7) && *(uint16_t *)(info + OFF_INFO_MAGIC) == ET9_MAGIC) {
                     c.ling = ling; c.info = info;
+                    *cand_idx = (int)i;
                     LOGI("resolved via alpha ctx at handle+0x%zx", cand[i]);
                 }
             }
@@ -133,17 +160,94 @@ et9_ctx et9_resolve(jlong handle) {
     }
     if (!c.info) { c.error = "info not located (STM data still valid)"; return c; }
 
-    /* ling: the struct holding info at +0x20, with its own magic at +0x38. */
+    /* ling: the struct holding info at +0x20, with its own magic at +0x38. Searched even when the
+     * candidate path already found one: an in-block ling, when there is one, wins as it always has. */
     for (size_t off = 0; off + 8 < SCAN_LIMIT; off += 8) {
         if (*(unsigned char **)(block + off) != c.info) continue;
         if (off < OFF_LING_INFO) continue;
         unsigned char *ling = block + off - OFF_LING_INFO;
         if (*(uint16_t *)(ling + OFF_LING_MAGIC) != ET9_MAGIC) continue;
         c.ling = ling;
+        *ling_off = off - OFF_LING_INFO;
+        *has_ling_off = 1;
         LOGI("layout: ling at handle+0x%zx", off - OFF_LING_INFO);
         break;
     }
     if (!c.ling) c.error = "ling not located (STM + fence data still valid)";
+    return c;
+}
+
+/* ---- the per-handle cache (P-5) -------------------------------------------------------------
+ * et9_resolve runs on every suggestion request (Et9Dlm.nativeSelectionListSources), and the scan
+ * reads up to 2 x 0.7 MB of the engine block each time. The layout only changes when the engine is
+ * re-created, so the RECIPE is cached — where in the block info and ling were found, as offsets
+ * from the handle, or which candidate object led to them — never the resolved pointers: after a
+ * dispose those can point into freed (even unmapped) memory. Each call re-derives the pointers
+ * from the live block and re-checks the same magic chain the scan accepted (core magic, info magic
+ * + info->core == core, ling magic + ling->info == info): a few loads. A new handle, or the same
+ * address reused by an engine with a different layout, fails the check and rescans. Only a full
+ * resolution (ling found) is cached; a partial one rescans next time, as before. */
+typedef struct {
+    jlong  handle;          /* 0 = empty */
+    size_t info_off;        /* info = block + info_off, when cand_idx < 0 */
+    size_t ling_off;        /* ling = block + ling_off, when has_ling_off */
+    int    has_ling_off;
+    int    cand_idx;        /* >= 0: info (and ling, unless has_ling_off) came via CAND_OFFSETS[i] */
+} et9_recipe;
+static et9_recipe g_recipe;
+static pthread_mutex_t g_recipe_mu = PTHREAD_MUTEX_INITIALIZER;
+
+static int aligned_ptr(const void *p) { return p && (uintptr_t)p >= 0x1000 && !((uintptr_t)p & 7); }
+
+/* Re-derive the context from the block by `r`; 1 and *out filled when every check passes. */
+static int recipe_apply(jlong handle, const et9_recipe *r, et9_ctx *out) {
+    unsigned char *block = (unsigned char *)(intptr_t)handle;
+    unsigned char *core = block + 0x18750;
+    if (*(uint16_t *)core != ET9_MAGIC) return 0;
+    unsigned char *info = NULL, *ling = NULL;
+    if (r->cand_idx >= 0) {
+        unsigned char *pobj = *(unsigned char **)(block + CAND_OFFSETS[r->cand_idx]);
+        if (!aligned_ptr(pobj)) return 0;
+        unsigned char *d = *(unsigned char **)pobj;
+        if (!aligned_ptr(d)) return 0;
+        unsigned char *cl = d + 8;
+        if (*(uint16_t *)(cl + OFF_LING_MAGIC) != ET9_MAGIC) return 0;
+        info = *(unsigned char **)(cl + OFF_LING_INFO);
+        if (!aligned_ptr(info) || *(uint16_t *)(info + OFF_INFO_MAGIC) != ET9_MAGIC) return 0;
+        ling = cl;
+    } else {
+        info = block + r->info_off;
+        if (*(uint16_t *)(info + OFF_INFO_MAGIC) != ET9_MAGIC) return 0;
+        if (*(unsigned char **)(info + OFF_INFO_CORE) != core) return 0;
+    }
+    if (r->has_ling_off) {
+        unsigned char *bl = block + r->ling_off;
+        if (*(uint16_t *)(bl + OFF_LING_MAGIC) != ET9_MAGIC) return 0;
+        if (*(unsigned char **)(bl + OFF_LING_INFO) != info) return 0;
+        ling = bl;
+    }
+    if (!ling) return 0;
+    out->core = core; out->info = info; out->ling = ling; out->error = NULL;
+    return 1;
+}
+
+et9_ctx et9_resolve(jlong handle) {
+    et9_ctx c = {0, 0, 0, 0};
+    if (!handle) { c.error = "handle is 0"; return c; }
+    pthread_mutex_lock(&g_recipe_mu);
+    if (g_recipe.handle == handle && recipe_apply(handle, &g_recipe, &c)) {
+        pthread_mutex_unlock(&g_recipe_mu);
+        return c;
+    }
+    et9_recipe r = {0, 0, 0, 0, -1};
+    c = et9_resolve_scan(handle, &r.info_off, &r.ling_off, &r.has_ling_off, &r.cand_idx);
+    if (c.ling) {
+        r.handle = handle;
+        g_recipe = r;
+    } else {
+        g_recipe.handle = 0;   /* nothing valid to keep */
+    }
+    pthread_mutex_unlock(&g_recipe_mu);
     return c;
 }
 
@@ -158,7 +262,8 @@ et9_ctx et9_resolve(jlong handle) {
  * Without this a raw field store is invisible to the engine for the rest of the session — it
  * keeps scoring against cached state. All plain field writes; no engine calls involved.
  */
-static void invalidate_caches(unsigned char *core) {
+/* Unused since the setters are called directly (they run this sweep themselves). */
+__attribute__((unused)) static void invalidate_caches(unsigned char *core) {
     static const unsigned int slots[] = {0xca8, 0xcb0, 0xcb8, 0xcc0, 0xcc8, 0xcd0};
     unsigned char *tbl = core + 0x2a000;
     for (unsigned i = 0; i < sizeof(slots) / sizeof(slots[0]); i++) {

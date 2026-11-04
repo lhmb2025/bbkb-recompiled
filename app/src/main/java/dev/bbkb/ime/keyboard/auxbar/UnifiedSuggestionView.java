@@ -153,6 +153,14 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         layoutManager = new NonScrollableLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
+        // The adapter now notifies item ranges rather than the whole data set. Nothing here ever
+        // animated (notifyDataSetChanged runs no item animations), and ranged changes would start
+        // the default cross-fade with a second holder per word, so keep the strip unanimated.
+        recyclerView.setItemAnimator(null);
+        // CJK mode binds every candidate (20-30 in a row); with the default pool of 5 per view
+        // type, holders beyond that were discarded and re-inflated on the next update.
+        recyclerView.getRecycledViewPool().setMaxRecycledViews(
+                UnifiedSuggestionAdapter.VIEW_TYPE_WORD, CJK_RECYCLED_WORD_VIEWS);
         
         // Update adapter dimensions when RecyclerView layout changes
         recyclerView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
@@ -316,6 +324,11 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
 
     public void setSuggestions(SuggestedWords words) {
         hideOverlays();
+        // Most deliveries repeat what is already on screen (shift, cursor and modifier
+        // re-requests, a re-delivered result for unchanged text). Skip the rebind then, but still
+        // take the new objects: clicks, the emoji slot and getCurrentSuggestions() must see the
+        // latest result (its request edit count, its word metadata).
+        boolean unchanged = currentWords != null && rendersSame(currentWords, words);
         currentWords = words;
         // The strip's emoji (kind 11) goes to its own slot at the right end, not into a word slot.
         SuggestedWords.SuggestedWordInfo emoji = null;
@@ -346,9 +359,48 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             filtered.mRequestEditCount = words.mRequestEditCount;
             currentSuggestions = filtered;
         }
-        adapter.setSuggestions(currentSuggestions);
         emojiSuggestion = emoji;
+        if (unchanged) {
+            adapter.replaceSuggestionsWithoutRebind(currentSuggestions);
+            return;
+        }
+        adapter.setSuggestions(currentSuggestions);
         updateEmojiSlot();
+    }
+
+    /** Pool size for word holders: covers the CJK row's candidates without re-inflating. */
+    private static final int CJK_RECYCLED_WORD_VIEWS = 32;
+
+    /**
+     * Whether two results draw the same: the same words in the same order, each of the same
+     * kind (the emoji entry and its slot), and the same auto-correct / typed-word flags (the
+     * candidate emphasis on the strip, the spacebar word on the on-screen keyboard). These are
+     * the only fields the strip and the flick overlay render.
+     */
+    public static boolean rendersSame(SuggestedWords a, SuggestedWords b) {
+        if (a == b) {
+            return true;
+        }
+        if (a == null || b == null) {
+            return false;
+        }
+        if (a.size() != b.size() || a.mWillAutoCorrect != b.mWillAutoCorrect
+                || a.mTypedWordValid != b.mTypedWordValid
+                || (a.mAutoCorrectWord == null) != (b.mAutoCorrectWord == null)) {
+            return false;
+        }
+        for (int i = 0; i < a.size(); i++) {
+            SuggestedWords.SuggestedWordInfo x = a.getWordInfo(i);
+            SuggestedWords.SuggestedWordInfo y = b.getWordInfo(i);
+            if (x == y) {
+                continue;
+            }
+            if (x == null || y == null || x.getKind() != y.getKind()
+                    || !android.text.TextUtils.equals(x.word, y.word)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /** Shows the emoji slot while there is an emoji and the strip is in its Latin mode. */

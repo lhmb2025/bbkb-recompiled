@@ -3,6 +3,7 @@ package dev.bbkb.ime.core.spellcheck;
 import static dev.bbkb.ime.core.shared.StringHelper.*;
 
 import android.content.ContentResolver;
+import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.os.Binder;
 import android.os.ConditionVariable;
@@ -18,6 +19,8 @@ import dev.bbkb.ime.core.engine.NuanceSDKManager;
 import dev.bbkb.ime.core.inputmethod.HangulInputProcessor;
 import dev.bbkb.ime.core.inputmethod.InputMethodCallback;
 import dev.bbkb.ime.core.locale.LocaleUtils;
+import dev.bbkb.ime.core.locale.SubtypeManager;
+import dev.bbkb.ime.core.settings.PrefsManager;
 import dev.bbkb.ime.core.shared.CoordinateUtils;
 import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.core.shared.ScriptUtils;
@@ -71,6 +74,9 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
     private final ScheduledExecutorService mLatchExec = Executors.newSingleThreadScheduledExecutor();
 
     private final SuggestionCache mSuggestionCache = new SuggestionCache();
+
+    /** Dictionary answers for words already checked, so a recheck skips the engine (P-20). */
+    private final SpellVerdictCache mVerdictCache = new SpellVerdictCache();
 
     private SentenceTokenizer mSentenceTokenizer;
 
@@ -126,6 +132,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
             public void onChange(boolean selfChange) {
                 mUserDictLatch.close();
                 mSuggestionCache.clearCache();
+                mVerdictCache.clear();
                 try {
                     mLatchExec.schedule(mUserDictLatch::open, USER_DICT_LATCH_MS, TimeUnit.MILLISECONDS);
                 } catch (RejectedExecutionException e) {
@@ -177,6 +184,32 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         return this.mService.initDictionaryForLocale(this.mSessionLocale);
     }
 
+    /**
+     * Once per request: loads the session's languages and drops the cached dictionary answers
+     * when what they were computed against has changed. False as {@link #ensureDictionaryLoaded}.
+     */
+    private boolean prepareRequest() {
+        if (!ensureDictionaryLoaded()) {
+            return false;
+        }
+        // The loaded languages follow the keyboard's subtype (languagesForSession).
+        this.mVerdictCache.syncDictionaryState(SubtypeManager.getInstance().getCurrentSubtype());
+        return true;
+    }
+
+    /**
+     * The settings that change what the service accepts as a word, folded into the verdict key so
+     * every session sees a change (only one session consumes the service's changed flag).
+     */
+    private static int verdictSettings() {
+        if (!PrefsManager.INSTANCE.isInitialized()) {
+            return 0;
+        }
+        final SharedPreferences prefs = PrefsManager.INSTANCE.getPrefs();
+        return (prefs.getBoolean(AndroidSpellCheckerService.PREF_ACCEPT_LEARNED_WORDS, true) ? 1 : 0)
+                | (prefs.getBoolean("pref_spellcheck_use_contacts", true) ? 2 : 0);
+    }
+
     private static int classifyWord(String str, int scriptCode) {
         if (TextUtils.isEmpty(str) || str.length() <= 1) {
             return 5; // TOO_SHORT
@@ -223,14 +256,19 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         return result;
     }
 
-    private SuggestionsInfo spellCheckWord(TextInfo textInfo, PrevWordsInfo prevWordsInfo, int sugLimit) {
+    /**
+     * Checks one word. The caller has run {@link #prepareRequest} once for the whole request
+     * (it used to run per word) and passes its answer as {@code dictionaryLoaded}.
+     */
+    private SuggestionsInfo spellCheckWord(TextInfo textInfo, PrevWordsInfo prevWordsInfo, int sugLimit,
+            boolean dictionaryLoaded, int verdictSettings) {
         // Bounded: an unbounded block() parks the spell-check binder thread forever if
         // the reopen task is ever lost (audit GD-7).
         this.mUserDictLatch.block(USER_DICT_LATCH_MS);
-        // The single-word entry points reach here without the sentence path's load, and used to
-        // check against no dictionary at all (every word passed). Load first; with no dictionary
-        // for this language, say nothing rather than mark the word right or wrong.
-        if (!ensureDictionaryLoaded()) {
+        // The single-word entry points used to check against no dictionary at all (every word
+        // passed). With no dictionary for this language, say nothing rather than mark the word
+        // right or wrong.
+        if (!dictionaryLoaded) {
             return AndroidSpellCheckerService.createUnknownResult();
         }
         try {
@@ -241,10 +279,20 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
             // every call (audit GD-10).
             String normalizedWord = text.replace('’', '\'');
             int capMode = getCapitalizationMode(normalizedWord);
-            boolean isInDict = isWordInDictionary(normalizedWord, capMode);
             if (this.mService.hasPreferenceChanged()) {
                 this.mSuggestionCache.clearCache();
+                this.mVerdictCache.clear();
                 this.mService.clearPreferenceChanged();
+            }
+            // The cached answer first: the engine check is 1 to 3 locked native calls (more with
+            // learned words not accepted), and correct words were never cached (P-20).
+            Boolean cachedVerdict = this.mVerdictCache.get(normalizedWord, verdictSettings);
+            boolean isInDict;
+            if (cachedVerdict != null) {
+                isInDict = cachedVerdict;
+            } else {
+                isInDict = isWordInDictionary(normalizedWord, capMode);
+                this.mVerdictCache.put(normalizedWord, verdictSettings, isInDict);
             }
             // Audit GD-11: the cache is written under the normalized key (see
             // putCached below), so reading with the raw text meant every word carrying
@@ -275,6 +323,11 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
                     return AndroidSpellCheckerService.createInDictionaryResult();
                 }
                 return AndroidSpellCheckerService.createNotInDictionaryResult(2 == wordClass);
+            }
+            if (isInDict) {
+                // What the path below gives a known word (no suggestions are generated for it),
+                // without building a composing tracker for nothing.
+                return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY, null);
             }
             Keyboard keyboard = this.mService.getKeyboardForLocale(this.mSessionLocale);
             ComposingTextTracker composingTracker = new ComposingTextTracker(NuanceSDKManager.getSecondary());
@@ -341,7 +394,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
     public SuggestionsInfo onGetSuggestions(TextInfo textInfo, int sugLimit) {
         long savedIdentity = Binder.clearCallingIdentity();
         try {
-            return spellCheckWord(textInfo, null, sugLimit);
+            return spellCheckWord(textInfo, null, sugLimit, prepareRequest(), verdictSettings());
         } finally {
             Binder.restoreCallingIdentity(savedIdentity);
         }
@@ -432,7 +485,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
             i = 5;
         }
         int length = textInfoArr.length;
-        if (!ensureDictionaryLoaded()) {
+        if (!prepareRequest()) {
             return new SentenceSuggestionsInfo[length];
         }
         SentenceSuggestionsInfo[] sentenceResults = getSentenceSuggestions(textInfoArr, i);
@@ -472,6 +525,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         }
         int length = textInfoArr.length;
         SentenceSuggestionsInfo[] results = new SentenceSuggestionsInfo[length];
+        final int verdictSettings = verdictSettings();
         for (int i2 = 0; i2 < length; i2++) {
             SentenceTextInfoParams tokenizedParams = tokenizer.tokenize(textInfoArr[i2]);
             if (tokenizedParams == null) {
@@ -483,13 +537,24 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
             for (int i3 = 0; i3 < wordCount; i3++) {
                 wordTextInfos[i3] = wordItems.get(i3).textInfo;
             }
-            results[i2] = SentenceTokenizer.reconstructSentenceSuggestions(tokenizedParams, onGetSuggestionsMultiple(wordTextInfos, sugLimit, true));
+            results[i2] = SentenceTokenizer.reconstructSentenceSuggestions(tokenizedParams, checkWords(wordTextInfos, sugLimit, true, true, verdictSettings));
         }
         return results;
     }
 
     @Override // android.service.textservice.SpellCheckerService.Session
     public SuggestionsInfo[] onGetSuggestionsMultiple(TextInfo[] textInfoArr, int sugLimit, boolean sequentialWords) {
+        long savedIdentity = Binder.clearCallingIdentity();
+        try {
+            return checkWords(textInfoArr, sugLimit, sequentialWords, prepareRequest(), verdictSettings());
+        } finally {
+            Binder.restoreCallingIdentity(savedIdentity);
+        }
+    }
+
+    /** Checks each word; the request's dictionary load and settings were read once by the caller. */
+    private SuggestionsInfo[] checkWords(TextInfo[] textInfoArr, int sugLimit, boolean sequentialWords,
+            boolean dictionaryLoaded, int verdictSettings) {
         long savedIdentity = Binder.clearCallingIdentity();
         try {
             int length = textInfoArr.length;
@@ -504,7 +569,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
                 }
                 PrevWordsInfo prevWordsInfo = new PrevWordsInfo(new PrevWordsInfo.WordInfo(prevWord));
                 TextInfo textInfo = textInfoArr[i2];
-                results[i2] = spellCheckWord(textInfo, prevWordsInfo, sugLimit);
+                results[i2] = spellCheckWord(textInfo, prevWordsInfo, sugLimit, dictionaryLoaded, verdictSettings);
                 results[i2].setCookieAndSequence(textInfo.getCookie(), textInfo.getSequence());
             }
             return results;

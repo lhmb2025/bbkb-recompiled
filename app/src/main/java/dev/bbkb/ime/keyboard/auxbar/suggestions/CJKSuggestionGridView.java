@@ -44,22 +44,37 @@ public final class CJKSuggestionGridView extends RelativeLayout {
             super(c0666ac);
         }
 
+        // One listener for every word view, reading the list and the position at click time:
+        // a listener per bind allocated one object for each of the 20 to 30 words bound on
+        // every keystroke.
+        private final View.OnClickListener mWordClick = new View.OnClickListener() {
+            @Override // android.view.View.OnClickListener
+            public void onClick(View view2) {
+                SuggestedWords words = getSuggestedWords();
+                Object tag = view2.getTag();
+                if (words == null || !(tag instanceof Integer)) {
+                    return;
+                }
+                int index = (Integer) tag;
+                if (index < 0 || index >= words.size()) {
+                    return;
+                }
+                CJKSuggestionGridView.this.mListener.onCjkSuggestionSelected(words.getWordInfo(index));
+                CJKSuggestionGridView.this.setVisible(false);
+            }
+        };
+
         @Override
         public void onBindViewHolder(CJKSuggestionsAdapter.ViewHolder bVar, int i) {
             final SuggestedWords c0666acD = getSuggestedWords();
             TextView textView = bVar.mWordView;
             View view = bVar.itemView;
-            if (LocaleUtils.isCurrentSubtypeJapanese()) {
+            // setTextLocale forces a relayout of the view even when the locale is the one it has.
+            if (LocaleUtils.isCurrentSubtypeJapanese() && !Locale.JAPANESE.equals(textView.getTextLocale())) {
                 textView.setTextLocale(Locale.JAPANESE);
             }
             textView.setTag(Integer.valueOf(i));
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override // android.view.View.OnClickListener
-                public void onClick(View view2) {
-                    CJKSuggestionGridView.this.mListener.onCjkSuggestionSelected(c0666acD.getWordInfo(((Integer) view2.getTag()).intValue()));
-                    CJKSuggestionGridView.this.setVisible(false);
-                }
-            });
+            textView.setOnClickListener(mWordClick);
             // Sizes are applied to each view's OWN params (they used to share one freshly
             // allocated LinearLayout.LayoutParams instance, which also replaced the item's
             // RecyclerView.LayoutParams) and only when they actually differ.
@@ -138,6 +153,10 @@ public final class CJKSuggestionGridView extends RelativeLayout {
         final GridAdapter c0816a = new GridAdapter(SuggestedWords.EMPTY);
         this.mRecyclerView.addItemDecoration(new SpacingItemDecoration(getResources().getDimensionPixelSize(R.dimen.config_cjk_grid_vertical_margin)));
         this.mRecyclerView.setAdapter(c0816a);
+        // A page of the 5-column grid binds 20 to 30 words; the default pool of 5 meant 15 to 25
+        // inflations per keystroke. No animator: ranged updates would otherwise cross-fade.
+        this.mRecyclerView.getRecycledViewPool().setMaxRecycledViews(0, 32);
+        this.mRecyclerView.setItemAnimator(null);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 5);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override // androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
@@ -159,8 +178,20 @@ public final class CJKSuggestionGridView extends RelativeLayout {
 
     public void setSuggestions(SuggestedWords c0666ac) {
         GridAdapter c0816a = (GridAdapter) this.mRecyclerView.getAdapter();
+        int oldCount = c0816a.getItemCount();
         c0816a.setSuggestedWords(c0666ac);
-        c0816a.notifyDataSetChanged();
+        int newCount = c0816a.getItemCount();
+        // Ranged notifications rebind the views in place; notifyDataSetChanged detached and
+        // re-attached every one of them.
+        int common = Math.min(oldCount, newCount);
+        if (common > 0) {
+            c0816a.notifyItemRangeChanged(0, common);
+        }
+        if (newCount > oldCount) {
+            c0816a.notifyItemRangeInserted(common, newCount - oldCount);
+        } else if (oldCount > newCount) {
+            c0816a.notifyItemRangeRemoved(common, oldCount - newCount);
+        }
         this.mRecyclerView.scrollToPosition(0);
     }
 

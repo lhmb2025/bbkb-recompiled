@@ -21,6 +21,14 @@ int xt9kdb_trace_dump_enabled(void);
 #define XT9KDB_LOGI(fmt, ...) fprintf(stderr, "XT9KDB: " fmt "\n", __VA_ARGS__)
 #endif
 
+/* Diagnostics that fire per tap, per swipe or per layout sync (P-27): about 8 lines and 2 KB of
+ * logd traffic per swipe, the pool line alone up to 1.5 KB of snprintf. On in debug builds and on
+ * the host; in a release build (NDEBUG, which AGP's RelWithDebInfo passes) only while
+ * log.tag.XT9Trace is set, the same switch as the TRACEPT dump. Read once per process. Use
+ * xt9kdb_diag_enabled() to skip BUILDING a long line, not just printing it. */
+int xt9kdb_diag_enabled(void);
+#define XT9KDB_LOGD(fmt, ...) do { if (xt9kdb_diag_enabled()) XT9KDB_LOGI(fmt, __VA_ARGS__); } while (0)
+
 /* Debug-property sense (L11): a set property is ON unless its first byte is this marker, so
  * `setprop <flag> 0` is OFF and `setprop <flag> 1` is ON for every flag. Host-testable. */
 #define XT9_PROP_OFF_CHAR '0'
@@ -301,10 +309,35 @@ float xt9kdb_rank_score(const ET9KdbLoaded* m, const Xt9DecParams* p,
                         const Xt9DecPt* path, ET9U32 pathN,
                         const char* word, int listIndex);
 
+/* The word-independent half of a score, computed once per gesture and then shared by every
+ * candidate of that gesture (xt9kdb_rank_score is prepare + score_prepared). Lives on the
+ * caller's stack for one gesture; it points at `m` and `p`, which must outlive it, and is never
+ * cached across gestures — the path buffer it was built from is reused. Scores are bit-identical
+ * to the one-shot form. */
+#define XT9_RANK_N 32
+#define XT9_RANK_PREPARED 1
+typedef struct { float x, y; } Xt9RankPt;
+typedef struct {
+    const ET9KdbLoaded* m;
+    const Xt9DecParams* p;
+    Xt9RankPt rp[XT9_RANK_N];   /* the path resampled to XT9_RANK_N points */
+    Xt9RankPt first, last;      /* path endpoints, for the anchor term */
+    float     plen;             /* path arc length in key units */
+    ET9S16    letterKey[26];    /* a..z -> first key index carrying that keyCode, -1 = none */
+    int       ok;               /* 0: unscorable (every score returns 1e9) */
+} Xt9RankPath;
+void  xt9kdb_rank_prepare(Xt9RankPath* rp, const ET9KdbLoaded* m, const Xt9DecParams* p,
+                          const Xt9DecPt* path, ET9U32 pathN);
+float xt9kdb_rank_score_prepared(const Xt9RankPath* rp, const char* word, int listIndex);
+
 /* ---- owned recall index selfcheck (kdb_trace.c): the live O(N) (first,last)-letter bucket
  * builder must reproduce the reference O(26*26*N) builder byte for byte. corrupt != 0 flips one
  * reference entry (negative control). Returns 0 on match; 1 count, 2 offsets, 3 list; -1 oom.
  * Host tests + debug builds only in practice; costs two 128 KB heap scratch buffers. */
 int xt9kdb_recall_index_selfcheck(int corrupt, unsigned* out_words);
+
+/* W6 locale gate (kdb_trace.c): 1 when the English-lexicon refinements (owned recall, echo and
+ * double heuristics) apply to a gesture in language `langid` (-1 = engine could not say). */
+int xt9kdb_lang_is_english(int langgate, int langid);
 
 #endif

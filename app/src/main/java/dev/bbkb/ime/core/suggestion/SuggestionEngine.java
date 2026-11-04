@@ -84,6 +84,8 @@ public final class SuggestionEngine {
     /** "Suggest learned words": off leaves the words the keyboard learned out of the strip. */
     public void setSuggestLearnedWords(boolean suggest) {
         this.mSuggestLearnedWords = suggest;
+        // The bridge reads each candidate's source on every request only while this is off.
+        dev.bbkb.ime.core.engine.NuanceSDKDictionaryBridge.setWordSourcesNeeded(!suggest);
     }
 
     void setPersonalWordLookupForTest(Predicate<String> isPersonalWord) {

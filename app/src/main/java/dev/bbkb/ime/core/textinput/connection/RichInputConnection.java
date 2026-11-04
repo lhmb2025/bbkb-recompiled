@@ -215,7 +215,9 @@ public class RichInputConnection {
         this.mTextBeforeCursor.setLength(0);
         this.mInputConnection = this.mImeService.getCurrentInputConnection();
         InputConnection inputConnection = this.mInputConnection;
-        CharSequence textBeforeCursor = inputConnection == null ? null : inputConnection.getTextBeforeCursor(NuanceSDK.MAX_CONTEXT_LENGTH, 1);
+        // Flags 0, not GET_TEXT_WITH_STYLES: the text lands in a plain StringBuilder, so the
+        // spans the editor would otherwise collect and parcel are thrown away.
+        CharSequence textBeforeCursor = inputConnection == null ? null : inputConnection.getTextBeforeCursor(NuanceSDK.MAX_CONTEXT_LENGTH, 0);
         if (textBeforeCursor == null) {
             this.mCursorStart = -1;
             this.mCursorEnd = -1;
@@ -246,7 +248,7 @@ public class RichInputConnection {
     private boolean loadTextAfterCursor() {
         this.mTextAfterCursor.setLength(0);
         InputConnection inputConnection = this.mInputConnection;
-        CharSequence textAfterCursor = inputConnection == null ? null : inputConnection.getTextAfterCursor(NuanceSDK.MAX_CONTEXT_LENGTH, 1);
+        CharSequence textAfterCursor = inputConnection == null ? null : inputConnection.getTextAfterCursor(NuanceSDK.MAX_CONTEXT_LENGTH, 0);
         if (textAfterCursor == null) {
             this.mCursorStart = -1;
             this.mCursorEnd = -1;

@@ -36,7 +36,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -337,7 +341,24 @@ public final class DictionaryManager {
         }
     }
 
+    /**
+     * How long {@link #shutdown} waits for the final save of unsaved dictionary changes. Writing
+     * the three JSON files takes a few ms for a typical dictionary; the bound only matters when
+     * the save is stuck behind the AUD sync lock, and a save that outlives it still finishes on
+     * its own thread.
+     */
+    static final long FINAL_SAVE_WAIT_MS = 500L;
+
     public void shutdown() {
+        // The keyboard's onDestroy queues a save on the learning executor and then calls this
+        // straight away: the queued save launched a coroutine on the dictionary's scope, which
+        // the teardown below cancels, so a save not yet dispatched was lost (or, run after this,
+        // it found a fresh unloaded manager). Unsaved changes are written here first.
+        final PersonalDictionaryUtil pdu;
+        synchronized (this.lock) {
+            pdu = this.loaded ? this.personalDictionaryUtil : null;
+        }
+        flushUnsaved(pdu);
         synchronized (this.lock) {
             this.loaded = false;
             this.executor.shutdown();
@@ -349,6 +370,31 @@ public final class DictionaryManager {
         }
     }
 
+
+    /**
+     * Writes {@code pdu}'s unsaved changes on a thread of its own, waiting at most
+     * {@link #FINAL_SAVE_WAIT_MS}. The save itself is plain blocking code, so a cancelled
+     * dictionary scope does not stop it.
+     */
+    private static void flushUnsaved(final PersonalDictionaryUtil pdu) {
+        if (pdu == null || !pdu.getAreDataDirty()) {
+            return;
+        }
+        final FutureTask<Void> task = new FutureTask<>(() -> {
+            pdu.doSave();
+            return null;
+        });
+        new Thread(task, "DictionaryFinalSave").start();
+        try {
+            task.get(FINAL_SAVE_WAIT_MS, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            Logger.warn(TAG, "Final save still running after " + FINAL_SAVE_WAIT_MS + " ms; not waiting");
+        } catch (ExecutionException e) {
+            Logger.errorWithException(TAG, e.getCause() != null ? e.getCause() : e, "Final save failed");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
 
     PersonalDictionaryManager getBasl() {
         return this.personalDictionaryManager;

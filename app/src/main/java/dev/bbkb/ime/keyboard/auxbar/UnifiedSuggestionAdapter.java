@@ -31,14 +31,16 @@ import dev.bbkb.ime.BuildConfig;
 /**
  * Unified adapter for all suggestion types: Latin, CJK, and Autofill.
  *
- * <p>Updates go through {@code notifyDataSetChanged()}: the Latin strip is three slots and the
- * CJK grid is repopulated wholesale, so a diff would not pay for itself, and item-change
- * animations are not wanted on a strip that changes on every keystroke.
+ * <p>Word updates ({@link #setSuggestions}) notify item ranges, so the bound holders are rebound
+ * in place instead of being detached, recycled (and, past the pool size, re-inflated) and
+ * re-added on every keystroke. Mode, palette and width changes still rebind wholesale. The
+ * RecyclerView runs no item animator (see UnifiedSuggestionView), so ranged notifications do not
+ * animate.
  */
 public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String DIAG = "INLINE_AUTOFILL_DEBUG";
-    private static final int VIEW_TYPE_WORD = 0;
+    static final int VIEW_TYPE_WORD = 0;
     private static final int VIEW_TYPE_AUTOFILL = 1;
     
     // Latin mode shows only 3 suggestions with equal width
@@ -115,11 +117,33 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     public void setSuggestions(SuggestedWords words) {
+        int oldCount = getItemCount();
         this.suggestedWords = words;
         if (currentMode == SuggestionMode.AUTOFILL) {
             return;
         }
-        notifyDataSetChanged();
+        if (currentMode == SuggestionMode.LANGUAGES) {
+            // The chips are on screen, not the words: nothing visible changed.
+            return;
+        }
+        int newCount = getItemCount();
+        int common = Math.min(oldCount, newCount);
+        if (common > 0) {
+            notifyItemRangeChanged(0, common);
+        }
+        if (newCount > oldCount) {
+            notifyItemRangeInserted(oldCount, newCount - oldCount);
+        } else if (oldCount > newCount) {
+            notifyItemRangeRemoved(newCount, oldCount - newCount);
+        }
+    }
+
+    /**
+     * Takes a result that draws exactly like the bound one (UnifiedSuggestionView checked), so
+     * clicks report the newest word objects without rebinding a single holder.
+     */
+    void replaceSuggestionsWithoutRebind(SuggestedWords words) {
+        this.suggestedWords = words;
     }
 
     /**
@@ -177,7 +201,18 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
         
         if (viewType == VIEW_TYPE_AUTOFILL) {
             View view = inflater.inflate(R.layout.autofill_suggestion_item, parent, false);
-            return new AutofillViewHolder(view);
+            final AutofillViewHolder holder = new AutofillViewHolder(view);
+            // Once per holder, like the word holders: the position is read at click time.
+            view.setOnClickListener(v -> {
+                int position = holder.getBindingAdapterPosition();
+                if (BuildConfig.DEBUG) {
+                android.util.Log.d(DIAG, "[INTERACTION] autofill suggestion tapped at position " + position);
+                }
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onAutofillClick(position);
+                }
+            });
+            return holder;
         }
         View view = inflater.inflate(R.layout.suggestion_word_item, parent, false);
         final WordViewHolder holder = new WordViewHolder(view);
@@ -442,15 +477,7 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
                             if (BuildConfig.DEBUG) android.util.Log.d(DIAG, "[ADAPTER] inflate() callback: contentView is NULL - inflation failed!");
                         }
                     });
-                
-                holder.itemView.setOnClickListener(v -> {
-                    if (BuildConfig.DEBUG) {
-                    android.util.Log.d(DIAG, "[INTERACTION] autofill suggestion tapped at position " + position);
-                    }
-                    if (listener != null) {
-                        listener.onAutofillClick(position);
-                    }
-                });
+
             } catch (Exception e) {
                 if (BuildConfig.DEBUG) android.util.Log.e("UnifiedSuggestionAdapter", "Failed to inflate autofill suggestion", e);
                 if (BuildConfig.DEBUG) android.util.Log.e(DIAG, "[ADAPTER] EXCEPTION inflating autofill suggestion at pos=" + position + ": " + e.getMessage());

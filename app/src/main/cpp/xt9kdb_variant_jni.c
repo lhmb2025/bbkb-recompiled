@@ -76,14 +76,17 @@ Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeRankGesture(JNIEnv* env, jcla
 
     int best = -1;
     float bestScore = 1e9f;
-    char dbg[256]; int dn = 0;
+    char dbg[256] = ""; int dn = 0;
+    const int diag = xt9kdb_diag_enabled();   /* the score list is built only to be logged */
+    Xt9RankPath rp;                            /* the path half of every score, once */
+    xt9kdb_rank_prepare(&rp, g_kdb_model, &p, path, pn);
     for (jsize i = 0; i < n && i < 32; i++) {
         jstring jw = (jstring)(*env)->GetObjectArrayElement(env, words, i);
         if (!jw) continue;
         const char* w = (*env)->GetStringUTFChars(env, jw, 0);
         if (w) {
-            float s = xt9kdb_rank_score(g_kdb_model, &p, path, pn, w, (int)i);
-            if (dn < 200) dn += snprintf(dbg + dn, sizeof(dbg) - dn, "%s=%.2f ", w, (double)s);
+            float s = xt9kdb_rank_score_prepared(&rp, w, (int)i);
+            if (diag && dn < 200) dn += snprintf(dbg + dn, sizeof(dbg) - dn, "%s=%.2f ", w, (double)s);
             if (s < bestScore) { bestScore = s; best = (int)i; }
             (*env)->ReleaseStringUTFChars(env, jw, w);
         }
@@ -104,7 +107,7 @@ Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeRankGesture(JNIEnv* env, jcla
             ceil_centi = atoi(v);
     }
     int declined = (ceil_centi > 0 && best >= 0 && bestScore * 100.0f > (float)ceil_centi);
-    LOGI("OWNRANK n=%d path=%u best=%d score=%.2f ceil=%d%s | %s",
+    if (diag) LOGI("OWNRANK n=%d path=%u best=%d score=%.2f ceil=%d%s | %s",
          (int)n, pn, best, (double)bestScore, ceil_centi, declined ? " DECLINED" : "", dbg);
     return declined ? -1 : best;
 }

@@ -230,7 +230,12 @@ object KeyboardColorManager {
         if (!isInitialized) return
         // AUTO tracks system dark mode; system colors track the wallpaper palette
         if (currentScheme == Scheme.AUTO || systemColorsActive()) {
-            reload()
+            // Most configuration changes (rotation, keyboard, locale) leave the palette as it
+            // was; repainting every observer for them was wasted work.
+            val next = currentPalette()
+            if (next == palette) return
+            palette = next
+            notifyObservers()
             Timber.d("Configuration changed, colors reloaded")
         }
     }
@@ -241,6 +246,10 @@ object KeyboardColorManager {
 
     private fun reload() {
         palette = currentPalette()
+        notifyObservers()
+    }
+
+    private fun notifyObservers() {
         // Snapshot: an observer is allowed to detach its view (and therefore call
         // removeObserver) from inside its own callback.
         observers.toList().forEach { it() }

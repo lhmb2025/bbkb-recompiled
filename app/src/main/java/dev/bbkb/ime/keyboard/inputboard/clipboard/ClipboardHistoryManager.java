@@ -5,6 +5,8 @@ import android.content.ClipDescription;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PersistableBundle;
 import android.os.UserManager;
 
@@ -20,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * The clipboard board's model: every clip the user copies, newest first, split into a pinned
@@ -52,11 +56,12 @@ import java.util.WeakHashMap;
  *
  * <h3>Persistence</h3>
  * Through {@link ClipboardHistoryStore}, which lives in credential-protected storage. It is read
- * lazily, the first time the history is needed once the user has unlocked; clips copied before
- * that are held in memory and merged into what was stored.
+ * lazily, the first time the history is needed once the user has unlocked, on a background
+ * thread; clips copied before the read lands are held in memory and merged into what was stored.
  *
- * <p>Not thread-safe: everything here runs on the main thread. The store does its writing on its
- * own thread from immutable snapshots.
+ * <p>Not thread-safe: everything here runs on the main thread, except the one background read,
+ * whose result is merged back on the main thread. The store does its writing on its own thread
+ * from immutable snapshots.
  */
 public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipChangedListener {
 
@@ -64,8 +69,8 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     static final int MAX_UNPINNED = 25;
 
     /**
-     * Clips longer than this are kept for the session but not written to disk: the file is read
-     * on the main thread, and one pasted book should not make that slow.
+     * Clips longer than this are kept for the session but not written to disk: the whole file is
+     * read and decoded at every process start, and one pasted book should not make that slow.
      */
     static final int MAX_PERSISTED_CHARS = 100_000;
 
@@ -122,6 +127,31 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     /** The store has been read (or deliberately skipped); from here on every change is written. */
     private boolean mLoaded = false;
 
+    /**
+     * Where the stored history is read, and where the result is handed back; both null to read
+     * inline (the test constructor). The first input start after every process start used to
+     * read and decode the file on the main thread (up to MBs: 25 clips of up to 100k chars plus
+     * the pinned ones).
+     */
+    @Nullable
+    private final Executor mLoadExecutor;
+
+    @Nullable
+    private final Executor mMainExecutor;
+
+    /** A background read is in flight; see {@link #startLoad}. */
+    private boolean mLoading = false;
+
+    /** Bumped when a pending read must be discarded (the history was cleared or deleted). */
+    private int mLoadGeneration = 0;
+
+    /** One background thread for the one read per process; daemon so it never holds the process. */
+    private static final Executor LOAD_EXECUTOR = Executors.newSingleThreadExecutor(runnable -> {
+        Thread thread = new Thread(runnable, "clipboard-history-load");
+        thread.setDaemon(true);
+        return thread;
+    });
+
     private long mNextId = 1;
 
     /**
@@ -140,11 +170,25 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
 
     public ClipboardHistoryManager(Context context) {
         this(context, ClipboardHistoryStore.forContext(context), System::currentTimeMillis,
-                () -> isUserUnlocked(context));
+                () -> isUserUnlocked(context), LOAD_EXECUTOR,
+                new Handler(Looper.getMainLooper())::post);
     }
 
+    /** Reads the stored history inline: a load has landed by the time the call returns. */
     ClipboardHistoryManager(Context context, ClipboardHistoryStore store, Clock clock,
             UnlockState unlockState) {
+        this(context, store, clock, unlockState, null, null);
+    }
+
+    /**
+     * @param loadExecutor where the stored history is read, or null to read it inline
+     * @param mainExecutor where the read result is merged (the thread every other call is on)
+     */
+    ClipboardHistoryManager(Context context, ClipboardHistoryStore store, Clock clock,
+            UnlockState unlockState, @Nullable Executor loadExecutor,
+            @Nullable Executor mainExecutor) {
+        this.mLoadExecutor = loadExecutor;
+        this.mMainExecutor = mainExecutor;
         this.mContext = context;
         this.mClipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         this.mStore = store;
@@ -303,6 +347,7 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
             this.mPinned.clear();
             this.mRecent.clear();
             if ((changed || !this.mLoaded) && this.mUnlockState.isUserUnlocked()) {
+                discardPendingLoad();
                 this.mLoaded = true;
                 this.mStore.delete();
             }
@@ -310,12 +355,66 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         }
         boolean changed = false;
         if (!this.mLoaded && this.mUnlockState.isUserUnlocked()) {
-            this.mLoaded = true;
-            changed = mergeStored(this.mStore.load());
+            if (this.mLoadExecutor == null || this.mMainExecutor == null) {
+                this.mLoaded = true;
+                changed = mergeStored(this.mStore.load());
+            } else {
+                startLoad();
+            }
         }
         changed |= removeExpired(now);
         changed |= evictOverCap();
         return changed;
+    }
+
+    /**
+     * Read the stored history off the main thread, then merge it on the main thread. Until it
+     * lands the history holds only what was captured since the process started (it may be
+     * briefly empty); nothing is written meanwhile ({@link #persist} waits for {@link #mLoaded}),
+     * and the merge replays those captures over the stored rows exactly as it does for clips
+     * copied while the user was locked.
+     */
+    private void startLoad() {
+        if (this.mLoading) {
+            return;
+        }
+        this.mLoading = true;
+        final int generation = this.mLoadGeneration;
+        final Executor main = this.mMainExecutor;
+        this.mLoadExecutor.execute(() -> {
+            List<ClipEntry> stored = this.mStore.load();
+            main.execute(() -> onStoredLoaded(generation, stored));
+        });
+    }
+
+    private void onStoredLoaded(int generation, List<ClipEntry> stored) {
+        if (generation != this.mLoadGeneration) {
+            // Cleared or deleted while the read was in flight: what was read is gone. A newer
+            // read, if any, is the one that counts.
+            return;
+        }
+        this.mLoading = false;
+        if (this.mLoaded || !ClipboardPrefs.isHistoryEnabled(this.mContext)) {
+            // Settled another way meanwhile (history turned off: the next refresh deletes).
+            return;
+        }
+        this.mLoaded = true;
+        boolean changed = mergeStored(stored);
+        long now = this.mClock.nowMs();
+        changed |= removeExpired(now);
+        changed |= evictOverCap();
+        if (changed) {
+            persist();
+            notifyHistoryChanged();
+        }
+    }
+
+    /** Drops a read in flight: its result must not be merged over a history that was emptied. */
+    private void discardPendingLoad() {
+        if (this.mLoading) {
+            this.mLoading = false;
+            this.mLoadGeneration++;
+        }
     }
 
     /**
@@ -496,7 +595,8 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         this.mRecent.clear();
         this.mStore.delete();
         if (this.mUnlockState.isUserUnlocked()) {
-            // Nothing is left to load: the file is gone.
+            // Nothing is left to load: the file is gone, and a read in flight read the old one.
+            discardPendingLoad();
             this.mLoaded = true;
         }
         if (changed) {

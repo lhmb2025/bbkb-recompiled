@@ -593,18 +593,23 @@ public final class ComposingTextTracker {
             } else if (getConverterType() == InputMethodCallback.ConverterType.VIETNAMESE_TELEX && (interfaceC0673c = this.mInputMethodConverter) != null) {
                 interfaceC0673c.processSymbols(charSequenceM5933n, this.mNuanceSDK);
             } else {
-                int iM5599a = ScriptUtils.getScriptFromLocale(this.mNuanceSDK.getPrimaryLanguage());
+                // B-5: the script lookup allocates (String[] + Locales) and takes the engine
+                // lock, so resolve it only when a character actually reaches that branch.
+                int iM5599a = Integer.MIN_VALUE;
                 for (int i2 = 0; i2 < charSequenceM5933n.length(); i2++) {
                     char cCharAt = charSequenceM5933n.charAt(i2);
                     // TI-37: single map lookup each instead of containsKey()+get(), and one
                     // Character box per lookup instead of two.
                     Character strokeKey = STROKE_TO_NUMBER_MAP.get(cCharAt);
                     Character cangjieKey = CANGJIE_RADICAL_TO_KEY_MAP.get(cCharAt);
-                    if (this.mNuanceSDK.isChineseStrokeMode() && strokeKey != null) {
+                    // Cheap null test first: isChineseStrokeMode() is a locked engine call.
+                    if (strokeKey != null && this.mNuanceSDK.isChineseStrokeMode()) {
                         this.mNuanceSDK.processKeyBySymbol(strokeKey.charValue());
                     } else if (cangjieKey != null) {
                         this.mNuanceSDK.processKeyBySymbol(cangjieKey.charValue());
-                    } else if (iM5599a == 14 && cCharAt > 127 && cCharAt != 305) {
+                    } else if (cCharAt > 127 && cCharAt != 305
+                            && (iM5599a != Integer.MIN_VALUE ? iM5599a
+                                : (iM5599a = ScriptUtils.getScriptFromLocale(this.mNuanceSDK.getPrimaryLanguage()))) == 14) {
                         this.mNuanceSDK.addExplicitSymb(cCharAt);
                     } else {
                         this.mNuanceSDK.processKeyBySymbol(cCharAt);

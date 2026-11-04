@@ -72,21 +72,31 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
 
     // Owned gesture ranking is live unless debug.et9.owndecode=0 (the owned decoder fed the engine,
     // so the selection list is a candidate pool to be re-ranked against the path — §8.7.6). Cached
-    // per instance; the prop is set-then-force-stop like the native levers. In every build type:
+    // per process; the prop is set-then-force-stop like the native levers. In every build type:
     // this used to return false outside debug builds, which left release builds committing the
     // blob's inline word (hello->help) until 2026-10-09.
-    private int mOwnedDecodeCached = -1;
-    private boolean isOwnedDecodeLive() {
-        if (mOwnedDecodeCached < 0) {
+    private static volatile int sOwnedDecodeCached = -1;
+    public static boolean isOwnedDecodeLive() {
+        int cached = sOwnedDecodeCached;
+        if (cached < 0) {
             // Must match the C default (kdb_trace.c OWNED_DEFAULT): the owned decoder is on when
             // the prop is UNSET (survives reboot, setprops don't). If the Java gate defaulted OFF
             // on an empty prop while C decoded owned, the ranked word would never be taken and the
             // raw skeleton would commit (togeteer/togetheer junk — 2026-08-19).
-            mOwnedDecodeCached = 1;   // empty/unset -> ON
+            cached = 1;   // empty/unset -> ON
             String v = SystemProps.get("debug.et9.owndecode");
-            if (v != null && !v.isEmpty()) mOwnedDecodeCached = (v.charAt(0) == '1') ? 1 : 0;
+            if (v != null && !v.isEmpty()) cached = (v.charAt(0) == '1') ? 1 : 0;
+            sOwnedDecodeCached = cached;
         }
-        return mOwnedDecodeCached == 1;
+        return cached == 1;
+    }
+
+    // Only "Suggest learned words" OFF reads where each candidate came from (SuggestionEngine
+    // drops the learned-only ones); the read walks the engine's list through libxt9trace on every
+    // request, so it is skipped entirely while nothing consumes it.
+    private static volatile boolean sWordSourcesNeeded = false;
+    public static void setWordSourcesNeeded(boolean needed) {
+        sWordSourcesNeeded = needed;
     }
 
     /**
@@ -182,6 +192,9 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         // empty -- that is what froze the strip last time.
         int iBuildSelectionList;
         int selectionListSize;
+        // The epoch after this request's own replay (set inside the loop); compared again after
+        // the read to decide whether the engine buffer still holds exactly what we fed it.
+        long epochAfterOwnReplay = -1L;
         for (int attempt = 0; ; attempt++) {
         arrayList.clear();
         if (attempt > 0) {
@@ -331,6 +344,7 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         // Sampled AFTER our own clear+replay above, so the worker never trips on its own writes.
         // buildSelectionList/getSelectionListWord are reads and do not bump the epoch.
         final long epochAtReadStart = NuanceSDK.getInputBufferEpoch();
+        epochAfterOwnReplay = epochAtReadStart;
 
         // NOT a candidate count: ET9AWSelLstBuild's DEFAULT-WORD INDEX. Proven in the original
         // APK's bytecode -- Java_..._buildSelectionList @0x20424 calls vtable+0x38
@@ -349,7 +363,7 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         selectionListSize = this.nuanceSdk.getSelectionListSize();
         // Where each word came from, read with the list rather than looked up per word; only
         // "Suggest learned words" uses it (SuggestionEngine).
-        final byte[] sources = this.nuanceSdk.getSelectionListSources(selectionListSize);
+        final byte[] sources = sWordSourcesNeeded ? this.nuanceSdk.getSelectionListSources(selectionListSize) : null;
         if (BuildConfig.DEBUG) {
             Log.d("PIPELINE", "IME:nuanceDict:defaultIndex typed=\"" + strM4360m + "\""
                     + " engineDefaultWordIndex=" + engineDefaultWordIndex
@@ -528,9 +542,20 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
 
         if (!TextUtils.isEmpty(composingNow)) {
             if (!engineOwnsComposingState(c0670ag, this.nuanceSdk)) {
-                this.nuanceSdk.clear();
-                for (int ci = 0; ci < composingNow.length(); ci++) {
-                    this.nuanceSdk.processKeyBySymbol(composingNow.charAt(ci));
+                // Replay only when something changed. When the tracker still holds the text we
+                // fed and nothing wrote the engine buffer since (same epoch), the buffer already
+                // IS composingNow; rewriting it would cost a whole-word refeed per request (so
+                // engine work per word grew with the square of its length) and, worse, would
+                // invalidate the selection list this list was read from, so the commit path's
+                // selectionListSelectWord was refused on most commits and the main thread rebuilt
+                // the list to learn the word (BaseLearningModel.learnWord).
+                boolean unchanged = composingNow.equals(strM4360m)
+                        && NuanceSDK.getInputBufferEpoch() == epochAfterOwnReplay;
+                if (!unchanged) {
+                    this.nuanceSdk.clear();
+                    for (int ci = 0; ci < composingNow.length(); ci++) {
+                        this.nuanceSdk.processKeyBySymbol(composingNow.charAt(ci));
+                    }
                 }
             }
         } else if (!TextUtils.isEmpty(strM4360m)) {

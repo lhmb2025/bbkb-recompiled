@@ -107,6 +107,22 @@ class DownloaderTest {
     }
 
     @Test
+    fun progressIsThrottledButTheFinalCountIsAlwaysReported() = runBlocking {
+        // 60 network chunks over roughly 300 ms: one report per chunk would be 60.
+        val total = 60 * 4_096
+        server.respondWith { it.replySlowly(total = total, chunkSize = 4_096, pauseMs = 5L) }
+        val seen = mutableListOf<Long>()
+
+        downloader.download(server.url("/a"), null, total.toLong(), destination) { bytes, _ ->
+            seen.add(bytes)
+        }.getOrThrow()
+
+        assertTrue("reports: ${seen.size}", seen.size in 1..20)
+        assertEquals(total.toLong(), seen.last())
+        assertTrue(seen.zipWithNext().all { it.first < it.second })
+    }
+
+    @Test
     fun fallsBackToContentLengthForTheProgressTotal() = runBlocking {
         server.respondWith { it.reply(200, payload) }
         var lastTotal = Long.MIN_VALUE

@@ -45,7 +45,7 @@ static const ET9KdbKey kQwertyPkbEn[30] = {
 const ET9KdbLoaded XT9_QWERTY_PKB_EN = {
     /*primaryId*/9, /*secondaryId*/6,
     ET9_KDB_AUTHORED_W, ET9_KDB_AUTHORED_H, /*active*/0,0,
-    30, /*authoredRadiusY*/0, (ET9KdbKey*)kQwertyPkbEn
+    30, /*authoredRadiusY*/0, (ET9KdbKey*)kQwertyPkbEn, /*generation*/0
 };
 
 const ET9KdbLoaded* g_kdb_model = &XT9_QWERTY_PKB_EN;   /* bring-up default */
@@ -319,7 +319,7 @@ ET9STATUS XT9KDB(GetKeyboardSize)(ET9KDBInfoPtr ctx, ET9U16* w, ET9U16* h) {
  * blob in either config. (Blob also validates that w==0 iff h==0, else returns BAD_PARAM 1.) */
 ET9STATUS XT9KDB(SetKeyboardSize)(ET9KDBInfoPtr ctx, ET9U16 w, ET9U16 h) {
     if ((w == 0) != (h == 0)) return ET9STATUS_ERROR;   /* mismatched: blob returns 1 */
-    XT9KDB_LOGI("SetKeyboardSize ctx=%p w=%u h=%u", (void*)ctx, (unsigned)w, (unsigned)h);
+    XT9KDB_LOGD("SetKeyboardSize ctx=%p w=%u h=%u", (void*)ctx, (unsigned)w, (unsigned)h);
     /* L2/L3 (2026-09-20): store it where the blob stores it — WITH THE CONTEXT. Two engine
      * contexts exist (primary IME + spellchecker, NuanceSDKManager) and each runs its own
      * syncKeyboardLayout -> setKeyboardSize, so a process-global made the last sync win

@@ -103,7 +103,6 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
     // The search query and its machinery (no on-screen text field: a physical keyboard types into
     // the board, the on-screen keyboard seeds it from the composing word).
     private final EmojiSearchQuery query = new EmojiSearchQuery();
-    private EmojibaseDataProvider emojiDataProvider;
     private android.os.Handler searchHandler;
     private Runnable pendingSearchRunnable;
     private ExecutorService searchExecutor;
@@ -259,11 +258,9 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         searchHandler = new android.os.Handler(android.os.Looper.getMainLooper());
 
         // Warm the process-wide provider off the UI thread. getSharedLoaded()
-        // double-checked-locks its own parse, so this neither duplicates the
-        // 735 KB emojibase parse nor retains a second copy of the dataset
-        // (audit IB-3).
-        searchExecutor().execute(
-                () -> emojiDataProvider = EmojibaseDataProvider.getSharedLoaded(getContext()));
+        // double-checked-locks its own parse, so this does not duplicate it (audit IB-3); the
+        // result is not kept in a field, which would pin a released dataset (audit P-2).
+        searchExecutor().execute(() -> EmojibaseDataProvider.getSharedLoaded(getContext()));
 
         // Show recents in the overlay if we start on the recents/search category
         updateRecentsForCategory(categoryManager.getCurrentCategoryId());
@@ -347,12 +344,9 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
                 return;
             }
 
-            if (emojiDataProvider == null) {
-                emojiDataProvider = EmojibaseDataProvider.getSharedLoaded(getContext());
-            }
-
             // Perform search on background thread
-            List<EmojiData> results = emojiDataProvider.searchEmojis(queryText);
+            List<EmojiData> results =
+                    EmojibaseDataProvider.getSharedLoaded(getContext()).searchEmojis(queryText);
 
             // Post results to main thread
             postToMainThread(() -> {

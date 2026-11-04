@@ -772,14 +772,100 @@ static void test_key_table_ceiling(void) {
     CHECK(xt9kdb_GetKeyPositions(ctx2, 0, 0, &count) == ET9STATUS_NONE && count == 80,
           "80-key layout must report 80 keys (got %u)", (unsigned)count);
 
-    /* a failed load leaves the slot empty, not half-filled */
+    /* A failed load is never half-filled: it leaves the previous model whole (R2-10). That is
+     * what SetKdbNum's rollback of the selector assumes — it keeps the previous layout active and
+     * never reloads it — so an emptied slot left the selection pointing at no keys at all. */
     len = build_grid_xml(xml, 32768, 81);
     (void)xt9kdb_Load_XmlKDB(ctx2, (const ET9U8*)xml, (ET9U32)len);
+    count = 0;
     st = xt9kdb_GetKeyPositions(ctx2, 0, 0, &count);
-    CHECK(st != ET9STATUS_NONE || count == 0, "a failed load must not leave keys behind (got %u)", (unsigned)count);
+    CHECK(st == ET9STATUS_NONE && count == 80,
+          "a failed load must leave the previous 80-key model in place (st=0x%x count=%u)",
+          (unsigned)st, (unsigned)count);
+
+    /* and on a context that never loaded, a failed load leaves no model at all */
+    unsigned char* ctx3 = calloc(1, CTX_SZ + 0x8000);
+    if (ctx3) {
+        *(void**)(ctx3 + ET9_OFF_ARENA) = ctx3 + CTX_SZ;
+        *(ET9U16*)(ctx3 + ET9_OFF_MAGIC) = ET9KDB_MAGIC;
+        len = build_grid_xml(xml, 32768, 81);
+        (void)xt9kdb_Load_XmlKDB(ctx3, (const ET9U8*)xml, (ET9U32)len);
+        CHECK(xt9kdb_model_for_ctx(ctx3) == 0, "a first load that fails must publish no model");
+        free(ctx3);
+    }
 
     xt9kdb_set_model(&XT9_QWERTY_PKB_EN);
     free(ctx2); free(xml);
+}
+
+/* ---- 9. truncated documents and model generations (R2-10, C-8) ----------------------------- */
+/* A KDB cut anywhere before its closing </keyboard> must fail, not load the keys that preceded the
+ * cut; the previous model must survive it; and every successful (re)load must change the model's
+ * generation even though a context's model lives at one address for its whole life. */
+static void test_truncation_and_generation(void) {
+    printf("[9] truncated KDB fails and keeps the previous model; reloads bump the generation\n");
+    FILE* fp = fopen("test/qwerty_pkb_even.xml", "rb");
+    if (!fp) { CHECK(0, "cannot open test/qwerty_pkb_even.xml (run from cpp/)"); return; }
+    static char doc[65536];
+    size_t n = fread(doc, 1, sizeof doc, fp);
+    fclose(fp);
+    unsigned char* ctx2 = calloc(1, CTX_SZ + 0x8000);
+    if (!ctx2 || n == 0) { CHECK(0, "OOM/empty fixture"); free(ctx2); return; }
+    *(void**)(ctx2 + ET9_OFF_ARENA) = ctx2 + CTX_SZ;
+    *(ET9U16*)(ctx2 + ET9_OFF_MAGIC) = ET9KDB_MAGIC;
+
+    ET9STATUS st = xt9kdb_Load_XmlKDB(ctx2, (const ET9U8*)doc, (ET9U32)n);
+    CHECK(st == ET9STATUS_NONE, "the full fixture must load (got 0x%x)", (unsigned)st);
+    const ET9KdbLoaded* m = xt9kdb_model_for_ctx(ctx2);
+    CHECK(m != 0, "the full fixture must publish a model");
+    if (!m) { free(ctx2); return; }
+    const ET9U16 keys = m->keyCount;
+    const ET9U32 gen0 = m->generation;
+    ET9KdbKey first = m->keys[0], last = m->keys[keys - 1];
+
+    /* Every cut strictly before the end of </keyboard>: the old loader accepted 474 of ~555. */
+    const char* close = strstr(doc, "</keyboard");
+    const char* gt = close ? strchr(close, '>') : 0;
+    CHECK(gt != 0, "fixture must close its root element");
+    size_t cutmax = gt ? (size_t)(gt - doc) : 0;   /* cutting here drops the final '>' */
+    int accepted = 0, survived = 1;
+    for (size_t cut = 1; cut <= cutmax; cut++) {
+        if (xt9kdb_Load_XmlKDB(ctx2, (const ET9U8*)doc, (ET9U32)cut) == ET9STATUS_NONE) accepted++;
+        const ET9KdbLoaded* mm = xt9kdb_model_for_ctx(ctx2);
+        if (!mm || mm != m || mm->keyCount != keys || mm->generation != gen0
+            || memcmp(&mm->keys[0], &first, sizeof first) || memcmp(&mm->keys[keys - 1], &last, sizeof last))
+            survived = 0;
+    }
+    CHECK(accepted == 0, "%d of %zu truncated documents loaded as success", accepted, cutmax);
+    CHECK(survived, "a failed (truncated) load disturbed the previous model");
+
+    /* trailing bytes after the root closes are fine */
+    st = xt9kdb_Load_XmlKDB(ctx2, (const ET9U8*)doc, (ET9U32)(cutmax + 1));
+    CHECK(st == ET9STATUS_NONE, "a document cut right after </keyboard> must load (got 0x%x)", (unsigned)st);
+
+    /* Same context, same address, new contents: the generation must move each time (C-8). */
+    m = xt9kdb_model_for_ctx(ctx2);
+    const ET9U32 gen1 = m ? m->generation : 0;
+    CHECK(m && gen1 != gen0, "a reload into the same slot must bump the generation (%u -> %u)", gen0, gen1);
+    st = xt9kdb_Load_XmlKDB(ctx2, (const ET9U8*)doc, (ET9U32)n);
+    const ET9KdbLoaded* m2 = xt9kdb_model_for_ctx(ctx2);
+    CHECK(st == ET9STATUS_NONE && m2 == m && m2->generation != gen1,
+          "reloading the same KDB in place still bumps the generation (same pointer, %u -> %u)",
+          gen1, m2 ? m2->generation : 0);
+
+    xt9kdb_set_model(&XT9_QWERTY_PKB_EN);
+    free(ctx2);
+}
+
+/* ---- 10. W6 locale gate (the per-gesture English decision) ---------------------------------- */
+static void test_lang_gate(void) {
+    printf("[10] locale gate: English variants, other languages, engine not ready, gate forced off\n");
+    CHECK(xt9kdb_lang_is_english(1, 0x109) == 1, "English (US 0x109) must enable the English refinements");
+    CHECK(xt9kdb_lang_is_english(1, 0x809) == 1, "English (UK 0x809) must enable them");
+    CHECK(xt9kdb_lang_is_english(1, 0x10c) == 0, "French (0x10c) must disable them");
+    CHECK(xt9kdb_lang_is_english(1, 0x107) == 0, "German (0x107) must disable them");
+    CHECK(xt9kdb_lang_is_english(1, -1) == 1, "engine not ready (-1): English for that gesture only");
+    CHECK(xt9kdb_lang_is_english(0, 0x10c) == 1, "debug.et9.langgate=0 forces English treatment");
 }
 
 int main(void) {
@@ -798,6 +884,8 @@ int main(void) {
     test_ordering();
     test_prop_flag_sense();
     test_key_table_ceiling();
+    test_truncation_and_generation();
+    test_lang_gate();
     printf("---- %d passed, %d failed ----\n", g_pass, g_fail);
     free(g_ctx);
     return g_fail ? 1 : 0;

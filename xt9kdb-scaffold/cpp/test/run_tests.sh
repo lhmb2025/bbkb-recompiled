@@ -39,6 +39,9 @@ build touchabicut -DXT9KDB_CUTOVER test/touch_abi_selftest.c
 # CUTOVER-mode build: the ctx+0x04/+0x08 selection contract. The other tests build in DIFF mode,
 # where the context accessors are no-ops, so this is the only coverage of the blob-facing state.
 build cutsel   -DXT9KDB_CUTOVER test/cutover_selection_selftest.c
+# The shipped ranker (kdb_rank.c + the decoder's params, kdb_decode.c) against the original
+# per-candidate scorer kept in the test as the oracle (P-11 path precompute).
+build rankprep src/kdb_decode.c src/kdb_rank.c test/rank_prepare_selftest.c
 
 RESULTS=(); FAILED=0
 stage() {  # stage <label> <command...>: run it, record PASS/FAIL, never abort the suite
@@ -91,6 +94,9 @@ stage "multi-code keyCodes (L13): Greek/Arabic NKL == committed dumps" multicode
 stage "athena uneven row bands (90/180/180)"                      "$OUT/band" ../../app/src/main/assets/kdb/keypad_pkb_athena_test.xml
 stage "owned-recall index (O(N) builder == reference; negative control)" "$OUT/recall"
 stage "gesture decoder (synthetic curved paths; shallow corners must resolve)" "$OUT/decode"
+# Every corpus gesture x a slice of the recall table: prepared == one-shot == original, as bits.
+rank_prepare_stage() { "$OUT/rankprep" 2>/dev/null | tail -4; }
+stage "ranker path precompute (scores bit-identical to the original scorer)" rank_prepare_stage
 # The touch/gesture ABI contracts (the 2026-09 KDB touch-ABI audit, now in the local attic). Noisy on
 # stdout (every TouchStart logs), so only the tail matters when it passes.
 touch_abi_stage() { "$OUT/touchabi" | tail -8; }

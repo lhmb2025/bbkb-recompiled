@@ -1,5 +1,6 @@
 package dev.bbkb.ime.keyboard.inputboard.clipboard;
 
+import android.content.Context;
 import android.view.View;
 
 import dev.bbkb.ime.R;
@@ -30,7 +31,12 @@ public class ClipboardController extends AbstractBoardController<ClipboardContro
 
     public ClipboardController(BlackBerryIME blackBerryIME, Listener aVar) {
         super(KEY_CODE, blackBerryIME, aVar);
-        this.mHistoryManager = new ClipboardHistoryManager(blackBerryIME);
+        // The application context, not the service: the manager registers a primary-clip
+        // listener whose binder stub the system holds until its own GC, and through
+        // ClipboardManager.mContext that pinned every destroyed IME instance (and its view tree)
+        // after an IME switch. The manager only needs system services, prefs and strings.
+        Context appContext = blackBerryIME.getApplicationContext();
+        this.mHistoryManager = new ClipboardHistoryManager(appContext != null ? appContext : blackBerryIME);
     }
 
     public void bindView(View view) {

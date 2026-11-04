@@ -70,7 +70,8 @@ class Downloader @JvmOverloads constructor(
      *   needed. Anything already there is replaced only on success.
      * @param onProgress called on the IO dispatcher as bytes arrive, with the running byte count
      *   and the total (`-1` when neither [expectedSize] nor `Content-Length` gave one). Called
-     *   often; keep it cheap and marshal to the main thread yourself.
+     *   at most every 100 ms, and once more with the final count; keep it cheap and marshal to
+     *   the main thread yourself.
      *
      * @return the verified [destination] on success. On failure a [DistributionException]:
      *   [InsecureUrlException], [TooManyRedirectsException], [HttpStatusException],
@@ -184,6 +185,11 @@ class Downloader @JvmOverloads constructor(
             val total = if (expectedSize > 0L) expectedSize else declared
             val digest = MessageDigest.getInstance("SHA-256")
             var written = 0L
+            // A network read returns a few KB, so reporting each one meant hundreds to thousands
+            // of callbacks per pack, each a new state map and a recomposition of the Language
+            // packs screen (P-23). At most one per PROGRESS_INTERVAL_NANOS, plus the final count.
+            var reported = -1L
+            var reportedAt = System.nanoTime() - PROGRESS_INTERVAL_NANOS
             connection.inputStream.use { input ->
                 temp.outputStream().use { output ->
                     val buffer = ByteArray(BUFFER_BYTES)
@@ -196,11 +202,17 @@ class Downloader @JvmOverloads constructor(
                         output.write(buffer, 0, read)
                         digest.update(buffer, 0, read)
                         written += read
-                        onProgress(written, total)
+                        val now = System.nanoTime()
+                        if (now - reportedAt >= PROGRESS_INTERVAL_NANOS || written == total) {
+                            reported = written
+                            reportedAt = now
+                            onProgress(written, total)
+                        }
                     }
                     output.flush()
                 }
             }
+            if (written > 0L && reported != written) onProgress(written, total)
             return Sha256.hex(digest.digest())
         } finally {
             connection.disconnect()
@@ -243,6 +255,9 @@ class Downloader @JvmOverloads constructor(
         private val BACKOFF_MS = longArrayOf(500L, 1500L)
 
         private const val BUFFER_BYTES = 64 * 1024
+
+        /** The shortest gap between two progress reports: 100 ms. */
+        private const val PROGRESS_INTERVAL_NANOS = 100_000_000L
 
         /**
          * Whether a redirect from [from] to [to] may be followed.

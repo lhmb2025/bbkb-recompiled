@@ -3,6 +3,9 @@ package dev.bbkb.ime.core.settings.backup
 import android.app.backup.BackupManager
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Handler
+import android.os.Looper
+import android.os.SystemClock
 import dev.bbkb.ime.core.engine.NuanceSDKManager
 import dev.bbkb.ime.core.shared.Logger
 import kotlinx.coroutines.CoroutineScope
@@ -63,8 +66,35 @@ object AutoBackup {
     /** How old it may be before the agent rewrites it itself, without the learned words. */
     private const val AGENT_REWRITE_AFTER_MILLIS = 3L * 24 * 60 * 60 * 1000
 
+    /**
+     * How long a routine refresh waits after the last input session ends. Capturing the learned
+     * words enumerates the whole model under the engine lock (65 to 250 ms), and doing that the
+     * moment a field closes made the next field's start and first keys wait for it (P-21).
+     */
+    private const val DEFER_MILLIS = 10_000L
+    /** Field after field keeps pushing the refresh back, but never by more than this. */
+    private const val MAX_DEFER_MILLIS = 60_000L
+
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val refreshing = AtomicBoolean(false)
+
+    private val mainHandler by lazy { Handler(Looper.getMainLooper()) }
+    private val deferLock = Any()
+    /** The application context of the waiting refresh (never a service), or null when none waits. */
+    private var deferredContext: Context? = null
+    /** Uptime of the first request the waiting refresh stands for. */
+    private var deferredSince = 0L
+
+    /** Runs on the main thread when the wait is over, then once more when the thread is idle. */
+    private val deferredRefresh = Runnable {
+        Looper.myQueue().addIdleHandler {
+            val app = synchronized(deferLock) {
+                deferredContext.also { deferredContext = null; deferredSince = 0L }
+            }
+            if (app != null) startRefresh(app, force = false)
+            false
+        }
+    }
 
     private fun state(context: Context): SharedPreferences =
         context.applicationContext.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE)
@@ -101,10 +131,30 @@ object AutoBackup {
     /**
      * Rewrites the bundle in the background when it is older than a day (or [force]), and tells
      * the backup service. Cheap to call often: it returns at once when there is nothing to do.
+     *
+     * The routine call (the keyboard's, after every input session) waits [DEFER_MILLIS] after the
+     * last such call, at most [MAX_DEFER_MILLIS] after the first, and then for the main thread
+     * to go idle, so the capture does not land on the start of the next field. A [force]d
+     * refresh (a settings change, a restore or reset) starts at once.
      */
     @JvmStatic
     fun refreshIfStale(context: Context, force: Boolean = false) {
         val app = context.applicationContext
+        if (force) {
+            startRefresh(app, force = true)
+            return
+        }
+        val delay = synchronized(deferLock) {
+            val now = SystemClock.uptimeMillis()
+            if (deferredContext == null) deferredSince = now
+            deferredContext = app
+            (deferredSince + MAX_DEFER_MILLIS - now).coerceIn(0L, DEFER_MILLIS)
+        }
+        mainHandler.removeCallbacks(deferredRefresh)
+        mainHandler.postDelayed(deferredRefresh, delay)
+    }
+
+    private fun startRefresh(app: Context, force: Boolean) {
         if (!refreshing.compareAndSet(false, true)) return
         // The checks read a preference file and stat the bundle: off the main thread, which is
         // where the keyboard calls this from after every input session.

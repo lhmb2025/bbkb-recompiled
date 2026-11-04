@@ -157,7 +157,7 @@ static ET9STATUS set_kdb_num_locked(ET9KDBInfoPtr ctx, ET9U32 selector, ET9U32 f
     Xt9VariantNode* vn = (is_pkb || is_letter_layout_variant(g_req_variant)) ? pick_variant(pid, sid) : 0;
     ET9KdbNode*     n  = vn ? 0 : pick_node(et9_ctx_kdb_index(ctx), pid, sid);
     if (!vn && !n) return ET9STATUS_KDB_NOT_LOADED; /* 0x15, mirrors original */
-    XT9KDB_LOGI("SetKdbNum sel=0x%x pid=%u sid=%u pkb=%d req_variant='%s' variantApplied=%d",
+    XT9KDB_LOGD("SetKdbNum sel=0x%x pid=%u sid=%u pkb=%d req_variant='%s' variantApplied=%d",
                 (unsigned)selector, (unsigned)pid, (unsigned)sid, is_pkb, g_req_variant, vn != 0);
     /* Gate the touch offset to the physical keyboard only (VKB gets zero offset). */
     xt9kdb_set_active_pkb(is_pkb);

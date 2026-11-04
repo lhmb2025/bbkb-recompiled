@@ -88,7 +88,6 @@ class SuggestionStripPresenter(private val ime: BlackBerryIME) {
         val keyboardSwitcher = ime.getKeyboardSwitcher()
         val subtype = ime.getSubtypeManager().getCurrentSubtype()
         val showLatin = uiCoordinator.shouldShowLatinSuggestionStrip(sv, ime.isOnScreenKeyboardVisible(), subtype)
-        ime.flickSuggestionView?.let { if (it.visibility == View.VISIBLE) it.clear() }
         val showCjk = uiCoordinator.shouldShowCjkSuggestionStrip(sv, ime.isOnScreenKeyboardVisible(), subtype)
         if (words.isEmpty()) ime.cjkSuggestionGridView?.setVisible(false)
         if (!ime.shouldShowUim() && !keyboardSwitcher.isInSymbolMode() && ime.fccController?.consumeClosingFlag() == false) {
@@ -118,13 +117,24 @@ class SuggestionStripPresenter(private val ime: BlackBerryIME) {
      */
     private fun updateFlickSuggestions(words: SuggestedWords, sv: SettingsValues) {
         val flick = ime.flickSuggestionView ?: return
-        if (!ime.hasAuxBarView()) return
+        if (!flickShowsWords(sv)) {
+            // Not refreshed this time: take down what the overlay showed for the previous result.
+            if (flick.visibility == View.VISIBLE) flick.clear()
+            return
+        }
+        // No clear() first: showSuggestions clears only when the words or the keyboard changed,
+        // so an unchanged result no longer relays out the keyboard frame and re-records the
+        // keyboard (the GONE/VISIBLE flips and the "" -> word spacebar text).
+        flick.showSuggestions(words, ResourceLocaleUtils.isRtlLanguage(ime.getSubtypeManager().getCurrentSubtype()))
+    }
+
+    private fun flickShowsWords(sv: SettingsValues): Boolean {
+        if (!ime.hasAuxBarView()) return false
         val auxBarHidden = ime.auxBarManager?.getAuxBarView()?.visibility != View.VISIBLE
-        if (!(auxBarHidden || DeviceProfile.isOnScreenKeyboardVisible())) return
-        if (sv.isVkbGestureInputEnabledForLocale() || !sv.isPredictionsEnabled) return
-        if (LocaleUtils.isCurrentSubtypeChinese() || LocaleUtils.isCurrentSubtypeJapanese()) return
-        if (!ime.isOnScreenKeyboardVisible()) return
-        flick.setSuggestions(words, ResourceLocaleUtils.isRtlLanguage(ime.getSubtypeManager().getCurrentSubtype()))
+        if (!(auxBarHidden || DeviceProfile.isOnScreenKeyboardVisible())) return false
+        if (sv.isVkbGestureInputEnabledForLocale() || !sv.isPredictionsEnabled) return false
+        if (LocaleUtils.isCurrentSubtypeChinese() || LocaleUtils.isCurrentSubtypeJapanese()) return false
+        return ime.isOnScreenKeyboardVisible()
     }
 
     private fun isAutoCorrectOrEmpty(sv: SettingsValues, words: SuggestedWords): Boolean =

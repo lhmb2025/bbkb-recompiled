@@ -46,7 +46,9 @@
 #include "et9probe.h"
 
 #define TAG "ET9DLM"
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, TAG, __VA_ARGS__)
+/* Informational lines are diagnostics (silent in release unless debug.et9.probe is set); LOGW is
+ * kept for the genuine failures: a build mismatch or an engine that cannot be reached. */
+#define LOGI(...) ET9_DIAG(ANDROID_LOG_INFO, TAG, __VA_ARGS__)
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN, TAG, __VA_ARGS__)
 
 /* Virtual addresses in the pristine blob, and the first four instruction words at each. */

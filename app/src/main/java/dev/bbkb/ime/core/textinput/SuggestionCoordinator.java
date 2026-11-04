@@ -82,7 +82,8 @@ class SuggestionCoordinator {
             final AsyncResultHolder c0883c = new AsyncResultHolder();
             // The main thread is parked until the reply, so no edit can land in between.
             final int requestEditCount = mInputLogic.mComposingTracker.getEditCount();
-            mInputLogic.mSuggestionRequestQueue.sendToWorkerThread(i, new SuggestionEngine.SuggestionCallback() {
+            // keep=true: the main thread is parked on this reply, so it must never be dropped.
+            mInputLogic.mSuggestionRequestQueue.sendToWorkerThread(i, true, new SuggestionEngine.SuggestionCallback() {
                 @Override
                 public void onSuggestionsReady(SuggestedWords c0666ac) {
                     String strM4360m = mInputLogic.mComposingTracker.getComposingText();

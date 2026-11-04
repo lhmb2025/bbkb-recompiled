@@ -117,8 +117,9 @@ public final class SubtypeManager {
         // broadcast that feeds it is deprecated and unreliable, but replacing it with a
         // NetworkCallback needs ACCESS_NETWORK_STATE, which this app deliberately does not hold.)
         this.isNetworkConnected = true;
+        // onSubtypeChanged already refreshed the shortcut IME (one getShortcutInputMethodsAndSubtypes
+        // binder call); the updateParametersOnStartInputView() that followed repeated it.
         onSubtypeChanged(this.richImm.getCurrentInputMethodSubtype(getNoLanguageSubtype()));
-        updateParametersOnStartInputView();
         this.initialized = true;
     }
 

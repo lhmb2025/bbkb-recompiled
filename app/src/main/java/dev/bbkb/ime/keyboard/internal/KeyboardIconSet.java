@@ -33,6 +33,11 @@ public final class KeyboardIconSet {
 
     private final int[] mIconResourceIds;
 
+    /** The icon color {@link #applyColorTint} last applied; valid while {@link #mTinted}. */
+    private int mTintedIconColor;
+
+    private boolean mTinted;
+
     public KeyboardIconSet() {
         int i = sIconsCount;
         this.mIcons = new Drawable[i];
@@ -60,6 +65,8 @@ public final class KeyboardIconSet {
     }
 
     public void loadIcons(TypedArray typedArray) {
+        // Fresh drawables carry no tint yet.
+        mTinted = false;
         int size = sStyleableIdToIconId.size();
         for (int i = 0; i < size; i++) {
             int iKeyAt = sStyleableIdToIconId.keyAt(i);
@@ -126,25 +133,29 @@ public final class KeyboardIconSet {
     /**
      * Apply color tint from KeyboardColorManager to all loaded icons.
      * This should be called after icons are loaded and when theme changes.
+     *
+     * <p>Tints in place and only when the icon color changed since the last call. The icons are
+     * already this set's own copies ({@link #loadIcons} mutates each one), so a fresh
+     * {@code newDrawable().mutate()} per call bought nothing: it deep-copied every vector tree on
+     * each keyboard swap (every shift change), and swapped the instances out from under anything
+     * that had captured them (MainKeyboardView's shift/alt overlay icons). The key draw path
+     * re-tints each icon before drawing it (KeyboardView.applyIconTint), so this is only the
+     * baseline color for consumers that draw an icon without tinting it (key previews).
      */
     public void applyColorTint() {
         if (!KeyboardColorManager.INSTANCE.isInitialized()) {
             return;
         }
-        
-        // Apply base icon color to all loaded drawables
-        for (int i = 0; i < mIcons.length; i++) {
-            Drawable drawable = mIcons[i];
+        int color = KeyboardColorManager.INSTANCE.getPalette().getIcon();
+        if (mTinted && color == mTintedIconColor) {
+            return;
+        }
+        for (Drawable drawable : mIcons) {
             if (drawable != null) {
-                // Create ClipboardItem new drawable to avoid shared state issues
-                Drawable.ConstantState state = drawable.getConstantState();
-                if (state != null) {
-                    drawable = state.newDrawable().mutate();
-                    mIcons[i] = drawable;
-                }
-                // Apply default icon color (will be overridden for inactive keys)
-                KeyboardColorManager.INSTANCE.tint(drawable);
+                KeyboardColorManager.INSTANCE.tint(drawable, color);
             }
         }
+        mTintedIconColor = color;
+        mTinted = true;
     }
 }

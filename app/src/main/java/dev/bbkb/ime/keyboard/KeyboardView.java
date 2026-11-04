@@ -28,6 +28,7 @@ import androidx.core.graphics.ColorUtils;
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.core.shared.TypefaceUtils;
+import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiKeyboard;
 import dev.bbkb.ime.keyboard.internal.KeyVisualAttributes;
 import dev.bbkb.ime.keyboard.internal.KeyHintPosition;
 import dev.bbkb.ime.keyboard.internal.KeyDrawParams;
@@ -232,6 +233,7 @@ public class KeyboardView extends View {
     }
 
     public void setKeyboard(Keyboard keyboard) {
+        Keyboard previous = this.keyboard;
         this.keyboard = keyboard;
         if (this.keyboard.mId != null && LocaleUtils.isChinese(this.keyboard.mId.mLocale)) {
             this.maxVkbSymbolPage = 7;
@@ -250,7 +252,14 @@ public class KeyboardView extends View {
         this.textFormatter.applyKeyStyleData(keyboardHeight, this.defaultKeyStyleData);
         this.textFormatter.applyKeyStyleData(keyboardHeight, keyboard.mMoreKeySpec);
         invalidateAllKeys();
-        requestLayout();
+        // A shift or symbol-page swap keeps the keyboard's size, and onMeasure reads nothing else,
+        // so a layout pass would re-measure the whole input-view chain for nothing. Emoji pages
+        // measure from their key rows, so they always relayout.
+        if (previous == null || previous.mOccupiedWidth != keyboard.mOccupiedWidth
+                || previous.mOccupiedHeight != keyboard.mOccupiedHeight
+                || keyboard instanceof EmojiKeyboard || previous instanceof EmojiKeyboard) {
+            requestLayout();
+        }
         rebuildPerKeyDrawState();
     }
 

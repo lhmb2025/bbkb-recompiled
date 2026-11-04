@@ -171,7 +171,13 @@ fun LanguagePacksScreen(
 
     // A download that finished has written to disk, so re-read both halves of the screen. This
     // also covers the picker, which posts through the same manager-independent path below.
-    LaunchedEffect(downloadStates) {
+    // Keyed on the finished (installed or failed) entries only: keyed on every state, a progress
+    // tick restarted it, and each restart re-read every pack and queried the input method
+    // manager again while the superseded reads kept running on the IO pool (P-23).
+    val finishedDownloads = remember(downloadStates) {
+        downloadStates.filterValues { it is PackState.Installed || it is PackState.Failed }
+    }
+    LaunchedEffect(finishedDownloads) {
         installedPacks = readInstalledPacks(context, manifest)
         loadLanguagePacks(context) { packs -> languagePacks = packs }
         variantGroups = withContext(Dispatchers.IO) { LanguageVariantStore.read(context) }

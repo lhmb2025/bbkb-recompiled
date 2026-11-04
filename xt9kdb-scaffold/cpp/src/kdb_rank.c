@@ -43,9 +43,10 @@
 #ifndef XT9_RANK_W_LEN
 #define XT9_RANK_W_LEN 0.6f
 #endif
-#define RANK_N 32                     /* resample points */
+#define RANK_N XT9_RANK_N           /* resample points */
+#define RANK_PATH_CAP 2503            /* path points the score has always read (praw[] cap) */
 
-typedef struct { float x, y; } RPt;
+typedef Xt9RankPt RPt;
 
 static float row_h_at(const Xt9DecParams* p, float y) {
     if (p->nrows == 0) return p->rady > 0 ? p->rady : 108.0f;
@@ -62,83 +63,114 @@ static float kdist(const Xt9DecParams* p, float ax, float ay, float bx, float by
     return sqrtf(dx * dx + dy * dy);
 }
 
+/* Point i of a polyline whose elements start with {float x, y} — both RPt and Xt9DecPt do — so
+ * the raw path is resampled in place instead of being copied into a scratch buffer first. */
+#define PT_X(b, st, i) (((const float*)((const char*)(b) + (size_t)(i) * (st)))[0])
+#define PT_Y(b, st, i) (((const float*)((const char*)(b) + (size_t)(i) * (st)))[1])
+
 /* resample a polyline to RANK_N points at uniform arc length */
-static int resample(const RPt* in, int n, RPt* out) {
+static int resample(const void* in, size_t stride, int n, RPt* out) {
     if (n <= 0) return 0;
-    if (n == 1) { for (int i = 0; i < RANK_N; i++) out[i] = in[0]; return RANK_N; }
+    RPt in0 = { PT_X(in, stride, 0), PT_Y(in, stride, 0) };
+    if (n == 1) { for (int i = 0; i < RANK_N; i++) out[i] = in0; return RANK_N; }
     float total = 0;
     for (int i = 1; i < n; i++) {
-        float dx = in[i].x - in[i-1].x, dy = in[i].y - in[i-1].y;
+        float dx = PT_X(in, stride, i) - PT_X(in, stride, i-1), dy = PT_Y(in, stride, i) - PT_Y(in, stride, i-1);
         total += sqrtf(dx*dx + dy*dy);
     }
-    if (total <= 0.0f) { for (int i = 0; i < RANK_N; i++) out[i] = in[0]; return RANK_N; }
-    float step = total / (RANK_N - 1), acc = 0.0f;
+    if (total <= 0.0f) { for (int i = 0; i < RANK_N; i++) out[i] = in0; return RANK_N; }
+    float step = total / (RANK_N - 1);
     int seg = 1;
-    RPt cur = in[0];
-    out[0] = in[0];
+    RPt cur = in0;
+    out[0] = in0;
     for (int k = 1; k < RANK_N; k++) {
         float need = step;
         while (seg < n) {
-            float dx = in[seg].x - cur.x, dy = in[seg].y - cur.y;
+            float dx = PT_X(in, stride, seg) - cur.x, dy = PT_Y(in, stride, seg) - cur.y;
             float len = sqrtf(dx*dx + dy*dy);
             if (len >= need && len > 0.0f) {
                 float f = need / len;
                 cur.x += dx * f; cur.y += dy * f;
                 break;
             }
-            need -= len; cur = in[seg]; seg++;
+            need -= len; cur.x = PT_X(in, stride, seg); cur.y = PT_Y(in, stride, seg); seg++;
         }
         out[k] = cur;
-        (void)acc;
     }
     return RANK_N;
 }
 
-/* the ideal polyline for a word: its letters' key centres over the LOADED model (case-folded;
+/* the ideal polyline for a word: its letters' key centres over the prepared model (case-folded;
  * non-letter chars — apostrophes etc. — are skipped, matching how one swipes "he'll") */
-static int word_ideal(const ET9KdbLoaded* m, const char* word, RPt* out, int max) {
+static int word_ideal(const Xt9RankPath* rp, const char* word, RPt* out, int max) {
     int n = 0;
     for (const char* c = word; *c && n < max; c++) {
         char lc = (char)tolower((unsigned char)*c);
         if (lc < 'a' || lc > 'z') continue;
-        for (ET9U16 i = 0; i < m->keyCount; i++) {
-            if (m->keys[i].keyCode == (ET9U16)lc) {
-                out[n].x = (float)m->keys[i].cx; out[n].y = (float)m->keys[i].cy;
-                n++;
-                break;
-            }
-        }
+        int k = rp->letterKey[lc - 'a'];
+        if (k < 0) continue;
+        out[n].x = (float)rp->m->keys[k].cx; out[n].y = (float)rp->m->keys[k].cy;
+        n++;
     }
     return n;
 }
 
-/* Score one candidate word against the raw path. Lower = better; HUGE if unscorable. */
-float xt9kdb_rank_score(const ET9KdbLoaded* m, const Xt9DecParams* p,
-                        const Xt9DecPt* path, ET9U32 pathN,
-                        const char* word, int listIndex) {
-    static RPt ideal[64], rp[RANK_N], ri[RANK_N];
-    static RPt praw[2503];
-    if (!m || !p || !path || !pathN || !word || !word[0]) return 1e9f;
-    int in = word_ideal(m, word, ideal, 64);
+/* Everything in a score that depends on the gesture and not on the word, computed once: one
+ * swipe is scored against up to ~1,560 candidates (64 pool + 1,500 recall), and the copy,
+ * resample and arc length used to be redone for each (about 58% of a call at 182 points).
+ * The letter->key table replaces word_ideal's per-letter key scan; it is rebuilt here, from the
+ * model passed in, so it can never outlive an in-place KDB reload. */
+void xt9kdb_rank_prepare(Xt9RankPath* rp, const ET9KdbLoaded* m, const Xt9DecParams* p,
+                         const Xt9DecPt* path, ET9U32 pathN) {
+    memset(rp, 0, sizeof *rp);
+    if (!m || !p || !path || !pathN) return;
+    rp->m = m; rp->p = p;
+    for (int c = 0; c < 26; c++) rp->letterKey[c] = -1;
+    for (ET9U16 i = 0; i < m->keyCount; i++) {   /* FIRST key per letter, as the old scan found */
+        ET9U16 kc = m->keys[i].keyCode;
+        if (kc >= 'a' && kc <= 'z' && rp->letterKey[kc - 'a'] < 0) rp->letterKey[kc - 'a'] = (ET9S16)i;
+    }
+    ET9U32 pn = pathN > RANK_PATH_CAP ? RANK_PATH_CAP : pathN;
+    resample(path, sizeof *path, (int)pn, rp->rp);
+    rp->first.x = path[0].x;    rp->first.y = path[0].y;
+    rp->last.x  = path[pn-1].x; rp->last.y  = path[pn-1].y;
+    float plen = 0.0f;
+    for (ET9U32 i = 1; i < pn; i++)
+        plen += kdist(p, path[i].x, path[i].y, path[i-1].x, path[i-1].y);
+    rp->plen = plen;
+    rp->ok = 1;
+}
+
+/* Score one candidate against a prepared gesture. Lower = better; HUGE if unscorable. */
+float xt9kdb_rank_score_prepared(const Xt9RankPath* rp, const char* word, int listIndex) {
+    RPt ideal[64], ri[RANK_N];
+    if (!rp || !rp->ok || !word || !word[0]) return 1e9f;
+    const Xt9DecParams* p = rp->p;
+    int in = word_ideal(rp, word, ideal, 64);
     if (in == 0) return 1e9f;
-    ET9U32 pn = pathN > 2503 ? 2503 : pathN;
-    for (ET9U32 i = 0; i < pn; i++) { praw[i].x = path[i].x; praw[i].y = path[i].y; }
-    resample(praw, (int)pn, rp);
-    resample(ideal, in, ri);
+    resample(ideal, sizeof *ideal, in, ri);
     float shape = 0.0f;
     for (int i = 0; i < RANK_N; i++)
-        shape += kdist(p, rp[i].x, rp[i].y, ri[i].x, ri[i].y);
+        shape += kdist(p, rp->rp[i].x, rp->rp[i].y, ri[i].x, ri[i].y);
     shape /= RANK_N;
-    float anchors = kdist(p, praw[0].x, praw[0].y, ideal[0].x, ideal[0].y)
-                  + kdist(p, praw[pn-1].x, praw[pn-1].y, ideal[in-1].x, ideal[in-1].y);
+    float anchors = kdist(p, rp->first.x, rp->first.y, ideal[0].x, ideal[0].y)
+                  + kdist(p, rp->last.x, rp->last.y, ideal[in-1].x, ideal[in-1].y);
     /* arc lengths in key units for the length-mismatch term */
-    float plen = 0.0f, ilen = 0.0f;
-    for (ET9U32 i = 1; i < pn; i++)
-        plen += kdist(p, praw[i].x, praw[i].y, praw[i-1].x, praw[i-1].y);
+    float plen = rp->plen, ilen = 0.0f;
     for (int i = 1; i < in; i++)
         ilen += kdist(p, ideal[i].x, ideal[i].y, ideal[i-1].x, ideal[i-1].y);
     float lenMis = (ilen > 0.25f) ? fabsf(plen - ilen) / ilen
                                   : fabsf(plen - ilen);   /* near-zero ideal (single key): absolute */
     return shape + XT9_RANK_W_ANCHOR * anchors + XT9_RANK_W_LEN * lenMis
                  + XT9_RANK_W_LIST * (float)listIndex;
+}
+
+/* One-shot form for callers that score a single word (or a handful) per gesture. */
+float xt9kdb_rank_score(const ET9KdbLoaded* m, const Xt9DecParams* p,
+                        const Xt9DecPt* path, ET9U32 pathN,
+                        const char* word, int listIndex) {
+    if (!m || !p || !path || !pathN || !word || !word[0]) return 1e9f;
+    Xt9RankPath rp;
+    xt9kdb_rank_prepare(&rp, m, p, path, pathN);
+    return xt9kdb_rank_score_prepared(&rp, word, listIndex);
 }

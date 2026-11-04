@@ -38,10 +38,13 @@ class EmojiKeyboardFactory(
         private const val RECENTS_DISPLAY_CATEGORY_ID = -2
     }
 
-    // Process-wide, already-parsed provider. A private instance here re-parsed the
-    // 735 KB emojibase JSON on the main thread on every input-view creation, in
-    // parallel with EmojiPalettesView's own copy (audit IB-3).
-    private val emojiProvider: EmojibaseDataProvider = EmojibaseDataProvider.getSharedLoaded(context)
+    private val appContext: Context = context.applicationContext
+
+    // The process-wide provider, read on every use rather than kept in a field. A private instance
+    // here re-parsed the emojibase data on the main thread on every input-view creation (audit
+    // IB-3), and a field kept a released dataset alive next to its re-parsed successor (audit P-2).
+    private val emojiProvider: EmojibaseDataProvider
+        get() = EmojibaseDataProvider.getSharedLoaded(appContext)
 
     // Locale from context resources (LocaleList on API 24+, the deprecated field below that).
     private val locale: Locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

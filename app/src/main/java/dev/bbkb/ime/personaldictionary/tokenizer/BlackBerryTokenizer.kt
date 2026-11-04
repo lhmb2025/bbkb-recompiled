@@ -24,8 +24,8 @@ class BlackBerryTokenizer(locale: Locale) {
         }
     }
 
-    private fun getWordItem(textInfo: TextInfo, start: Int, end: Int, includeWhitespace: Boolean): SentenceWordItem? {
-        val substring = textInfo.text.substring(start, end)
+    private fun getWordItem(textInfo: TextInfo, text: String, start: Int, end: Int, includeWhitespace: Boolean): SentenceWordItem? {
+        val substring = text.substring(start, end)
         return if (includeWhitespace || substring.trim().isNotEmpty()) {
             SentenceWordItem(
                 TextInfo(substring, 0, substring.length, textInfo.cookie, substring.hashCode()),
@@ -40,25 +40,28 @@ class BlackBerryTokenizer(locale: Locale) {
         val hasNext: Boolean
         var current: Int
         var previous = 0
+        // TextInfo.getText() copies the whole text out of a SpannableStringBuilder on every
+        // call, so reading it per token made split quadratic in the text length (P-18).
+        val text = textInfo.text
         
         if (Build.VERSION.SDK_INT >= 24) {
-            breakIterator!!.setText(textInfo.text)
+            breakIterator!!.setText(text)
             current = breakIterator!!.next()
             hasNext = current != -1
         } else {
-            textBreakIterator!!.setText(textInfo.text)
+            textBreakIterator!!.setText(text)
             current = textBreakIterator!!.next()
             hasNext = current != -1
         }
 
         val items = ArrayList<SentenceWordItem>()
-        val length = textInfo.text.length
+        val length = text.length
         
         var nextCurrent = current
         var isRunning = hasNext
 
         while (isRunning) {
-            val wordItem = getWordItem(textInfo, previous, nextCurrent, includeWhitespace)
+            val wordItem = getWordItem(textInfo, text, previous, nextCurrent, includeWhitespace)
             if (wordItem != null) {
                 items.add(wordItem)
             }
@@ -77,7 +80,7 @@ class BlackBerryTokenizer(locale: Locale) {
         }
 
         if (previous < length) {
-            val wordItem = getWordItem(textInfo, previous, length, includeWhitespace)
+            val wordItem = getWordItem(textInfo, text, previous, length, includeWhitespace)
             if (wordItem != null) {
                 items.add(wordItem)
             }

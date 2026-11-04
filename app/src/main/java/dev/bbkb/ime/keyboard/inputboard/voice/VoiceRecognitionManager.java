@@ -1,5 +1,6 @@
 package dev.bbkb.ime.keyboard.inputboard.voice;
 
+import dev.bbkb.ime.BuildConfig;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -664,7 +665,11 @@ public class VoiceRecognitionManager {
 
         @Override // android.speech.RecognitionListener
         public void onRmsChanged(float f) {
-            Logger.debug(VoiceRecognitionManager.TAG, "onRmsChanged:" + f);
+            // 10-50 times a second while listening: build the string only in debug builds
+            // (Logger gates inside the callee, after the concatenation has run).
+            if (BuildConfig.DEBUG) {
+                Logger.debug(VoiceRecognitionManager.TAG, "onRmsChanged:" + f);
+            }
             // Drives the Material waveform; no-op under Classic/Modern.
             VoiceRecognitionManager.this.mController.onAudioLevel(f);
         }

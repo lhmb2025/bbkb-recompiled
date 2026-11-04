@@ -149,6 +149,10 @@ public class NuanceSDK {
      * (re)attached; null until the first call leaves the engine's own default alone.
      */
     private Boolean mContactsCategoryEnabled = null;
+    /** The contacts-category value the attached model last accepted; null = must be applied. */
+    private volatile Boolean mContactsCategoryApplied = null;
+    /** The value the engine last accepted from {@link #setEmojiPredictionEnabled}; null = unknown. */
+    private volatile Boolean mEmojiPredictionApplied = null;
 
     /** Whether the learned model is attached, i.e. a language has been set up on this engine. */
     public boolean isDLMAttached() {
@@ -295,6 +299,8 @@ public class NuanceSDK {
             this.mCallbackHandler = null;
             this.mAutoCommitHandler = null;
             this.mNativeHandle = 0L;
+            this.mContactsCategoryApplied = null;
+            this.mEmojiPredictionApplied = null;
             if (BuildConfig.DEBUG) Log.i(TAG, "dispose(): " + this);
         }
     }
@@ -622,6 +628,9 @@ public class NuanceSDK {
                     this.mPrevPrimaryLocale = getPrimaryLanguage();
                     if (setLanguage(this.mNativeHandle, localeToString(localeArr))) {
                         this.mEthiopicTranslation = EthiopicSyllables.appliesTo(localeArr[0]);
+                        // Re-apply the per-engine options once after a language change; whether
+                        // activation resets them inside the blob is not documented.
+                        this.mEmojiPredictionApplied = null;
                         // Dictionary probe (debug): after the language activates, ask the engine
                         // directly whether common words are in the active LDB. Settles "is 'hello'
                         // missing from the dictionary" without relying on a focused text field.
@@ -889,6 +898,13 @@ public class NuanceSDK {
      * no contacts category yet answers status 93, and then there is nothing to switch off.
      */
     public boolean setContactsCategoryState(boolean enabled) {
+        // loadSettings calls this on every field focus with the same value. Skip the lock when
+        // the attached model already holds it: on a cold start the main thread otherwise waits
+        // here for the dictionary load that holds sMutex.
+        Boolean applied = this.mContactsCategoryApplied;
+        if (applied != null && applied == enabled) {
+            return true;
+        }
         synchronized (sMutex) {
             this.mContactsCategoryEnabled = enabled;
             if (this.mNativeHandle == 0 || !this.mDlmAttached) {
@@ -905,6 +921,9 @@ public class NuanceSDK {
         }
         boolean enabled = this.mContactsCategoryEnabled;
         boolean ok = setCategoryState(this.mNativeHandle, CATEGORY_CONTACTS, enabled);
+        // Remembered only when the engine accepted it: a refusal (no contacts category in the
+        // model yet) has to be retried on the next call.
+        this.mContactsCategoryApplied = ok ? enabled : null;
         if (BuildConfig.DEBUG) Log.d(TAG, "contacts category " + (enabled ? "on" : "off") + " -> " + ok);
         return ok;
     }
@@ -1151,9 +1170,16 @@ public class NuanceSDK {
     }
 
     public boolean setEmojiPredictionEnabled(boolean z) {
+        // Same per-field caller and same reason as setContactsCategoryState: no lock when the
+        // engine already holds the value.
+        Boolean applied = this.mEmojiPredictionApplied;
+        if (applied != null && applied == z) {
+            return true;
+        }
         boolean emojiPredictionEnabled;
         synchronized (sMutex) {
             emojiPredictionEnabled = setEmojiPredictionEnabled(this.mNativeHandle, z);
+            this.mEmojiPredictionApplied = emojiPredictionEnabled ? z : null;
         }
         return emojiPredictionEnabled;
     }
@@ -1438,6 +1464,7 @@ public class NuanceSDK {
     private boolean reattachDLM() {
         boolean z;
         synchronized (sMutex) {
+            this.mContactsCategoryApplied = null;   // the state lives in the copy being replaced
             z = detachDLMFile(this.mNativeHandle) && attachDLMFile(this.mNativeHandle, getDLMFilePath());
             if (z) {
                 // The category states live in the attached copy of the model.

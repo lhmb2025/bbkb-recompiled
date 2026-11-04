@@ -30,8 +30,9 @@ import java.util.concurrent.Executors
  *
  * ## Threads
  *
- * [load] is synchronous: it runs once per process, on the main thread, the first time the history
- * is needed after unlock, and the file is a few kilobytes. [save] and [delete] are queued on one
+ * [load] is a plain synchronous read; [ClipboardHistoryManager] runs it once per process, on a
+ * background thread, the first time the history is needed after unlock, and merges the result on
+ * the main thread. The file is a few kilobytes. [save] and [delete] are queued on one
  * process-wide serial executor, so writes land in order and a delete is never overtaken by a save
  * queued before it — including a delete issued from the settings screen while the keyboard has a
  * save in flight.

@@ -90,6 +90,29 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         sGestureKeyboardChecker = aVar;
     }
 
+    /** Re-installs the checker after {@link #releaseGestureKeyboardChecker} (view re-attached). */
+    public static void setGestureKeyboardChecker(GestureKeyboardChecker checker) {
+        sGestureKeyboardChecker = checker;
+    }
+
+    /**
+     * Drops the checker if it is still {@code checker}. The checker is the MainKeyboardView, so
+     * keeping it in this static after the view detaches kept the destroyed IME service, its
+     * window and its view tree reachable until the next service inflated a keyboard view. A newer
+     * view that has already installed itself is left alone.
+     */
+    public static void releaseGestureKeyboardChecker(GestureKeyboardChecker checker) {
+        if (sGestureKeyboardChecker == checker) {
+            sGestureKeyboardChecker = null;
+        }
+    }
+
+    /** No keyboard view attached means no gesture keyboard. */
+    private static boolean isGestureKeyboard() {
+        GestureKeyboardChecker checker = sGestureKeyboardChecker;
+        return checker != null && checker.isGestureKeyboard();
+    }
+
     @Override // dev.bbkb.ime.keyboard.AbstractDrawingHandler
     public void updateBatchInputTimer(long j) {
         this.gesturePathTracker.onUpdateBatchInputTimer(j, this);
@@ -359,7 +382,7 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
             return;
         }
         sPointerTrackerQueue.add(this);
-        boolean mkvC = sGestureKeyboardChecker.isGestureKeyboard();
+        boolean mkvC = isGestureKeyboard();
         boolean shouldSupport = SettingsManager.getInstance().getSettingsValues().editorCapabilities.shouldSupportGestureInput;
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: mkv.isGestureKeyboard=" + mkvC + " shouldSupportGestureInput=" + shouldSupport);
         if (mkvC) {
@@ -406,7 +429,7 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onMoveEvent (onMoveEvent): BLOCKED — mIsTrackingCanceled=true for pointer=" + this.mPointerId);
             return;
         }
-        if (!sGestureKeyboardChecker.isGestureKeyboard() || motionEvent == null) {
+        if (!isGestureKeyboard() || motionEvent == null) {
             // Non-gesture keyboard (symbol pages, number pad, UIM): onDownEvent dispatched no
             // touchStart, so a touchMove here is a stray sample with no stroke behind it. That is
             // the same engine-buffer pollution route already closed for touchEnd in onUpEvent.

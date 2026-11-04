@@ -4,7 +4,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 
-import androidx.collection.MutableIntFloatMap;
+import androidx.collection.MutableLongFloatMap;
+
+import java.util.IdentityHashMap;
 
 
 
@@ -17,11 +19,11 @@ public final class TypefaceUtils {
     /** Sentinel for "not cached"; a measured height/width is never NaN. */
     private static final float NOT_CACHED = Float.NaN;
 
-    private static final MutableIntFloatMap sTextHeightCache = new MutableIntFloatMap();
+    private static final MutableLongFloatMap sTextHeightCache = new MutableLongFloatMap();
 
     private static final Rect sTextHeightBounds = new Rect();
 
-    private static final MutableIntFloatMap sTextWidthCache = new MutableIntFloatMap();
+    private static final MutableLongFloatMap sTextWidthCache = new MutableLongFloatMap();
 
     private static final Rect sTextWidthBounds = new Rect();
 
@@ -37,7 +39,7 @@ public final class TypefaceUtils {
     };
 
     private static float getCharHeight(char[] cArr, Paint paint) {
-        int cacheKey = getCharGeometryCacheKey(cArr[0], paint);
+        long cacheKey = getCharGeometryCacheKey(cArr[0], paint);
         synchronized (sTextHeightCache) {
             float cached = sTextHeightCache.getOrDefault(cacheKey, NOT_CACHED);
             if (!Float.isNaN(cached)) {
@@ -51,7 +53,7 @@ public final class TypefaceUtils {
     }
 
     private static float getCharWidth(char[] cArr, Paint paint) {
-        int cacheKey = getCharGeometryCacheKey(cArr[0], paint);
+        long cacheKey = getCharGeometryCacheKey(cArr[0], paint);
         synchronized (sTextWidthCache) {
             float cached = sTextWidthCache.getOrDefault(cacheKey, NOT_CACHED);
             if (!Float.isNaN(cached)) {
@@ -64,11 +66,34 @@ public final class TypefaceUtils {
         }
     }
 
-    private static int getCharGeometryCacheKey(char c, Paint paint) {
-        int textSize = (int) paint.getTextSize();
-        Typeface typeface = paint.getTypeface();
-        int i = c << 15;
-        return typeface == Typeface.DEFAULT ? i + textSize : typeface == Typeface.DEFAULT_BOLD ? i + textSize + 4096 : typeface == Typeface.MONOSPACE ? i + textSize + 8192 : i + textSize;
+    /**
+     * A small id per typeface instance, for the geometry cache key. Typeface instances are
+     * cached by the framework (Typeface.create returns the same object for the same family and
+     * weight), so identity is the right equality, and the set stays a handful of entries.
+     */
+    private static final IdentityHashMap<Typeface, Integer> sTypefaceIds = new IdentityHashMap<>();
+
+    private static int typefaceId(Typeface typeface) {
+        // A null typeface draws as the default one.
+        Typeface key = typeface != null ? typeface : Typeface.DEFAULT;
+        synchronized (sTypefaceIds) {
+            Integer id = sTypefaceIds.get(key);
+            if (id == null) {
+                id = sTypefaceIds.size();
+                sTypefaceIds.put(key, id);
+            }
+            return id;
+        }
+    }
+
+    /**
+     * (typeface, char, text size). Every typeface other than DEFAULT, DEFAULT_BOLD and MONOSPACE
+     * used to share DEFAULT's key, so the medium-weight key-label face was centred with the
+     * regular face's cached 'M' metrics.
+     */
+    private static long getCharGeometryCacheKey(char c, Paint paint) {
+        long textSize = ((long) (int) paint.getTextSize()) & 0xFFFFFFL;
+        return ((long) typefaceId(paint.getTypeface()) << 40) | ((long) c << 24) | textSize;
     }
 
     public static float getReferenceCharHeight(Paint paint) {

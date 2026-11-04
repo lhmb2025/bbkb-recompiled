@@ -66,6 +66,14 @@ const ET9KdbLoaded* xt9kdb_model_for_ctx(ET9KDBInfoPtr ctx) {
     return m;
 }
 
+/* Model generation (C-8): stamped on a slot's model whenever its contents change, from one
+ * process-wide counter, so a cache keyed on (model pointer, generation) can tell an in-place
+ * reload — same slot, same address, new keys — from the model it was built for. */
+static ET9U32 g_model_gen;
+static void model_touched(ET9KdbLoaded* m) {
+    m->generation = __atomic_add_fetch(&g_model_gen, 1, __ATOMIC_RELAXED);
+}
+
 /* Builder header props passed to Load_SetProperties. */
 typedef struct { ET9U32 pid, sid; ET9U16 w, h, radiusY; } Xt9KdbProps;
 
@@ -76,6 +84,7 @@ ET9STATUS XT9KDB(Load_Reset)(ET9KDBInfoPtr ctx) {
     s->model.authoredWidth  = ET9_KDB_AUTHORED_W;   /* fallbacks; overwritten by SetProperties */
     s->model.authoredHeight = ET9_KDB_AUTHORED_H;
     s->model.keys = s->keys;
+    model_touched(&s->model);
     return ET9STATUS_NONE;
 }
 
@@ -88,6 +97,7 @@ ET9STATUS XT9KDB(Load_SetProperties)(ET9KDBInfoPtr ctx, void* p) {
     if (pr->w) s->model.authoredWidth  = pr->w;
     if (pr->h) s->model.authoredHeight = pr->h;
     s->model.authoredRadiusY = pr->radiusY;   /* 0 = unset -> NKL RADY = home-row height */
+    model_touched(&s->model);
     return ET9STATUS_NONE;
 }
 
@@ -96,6 +106,7 @@ ET9STATUS XT9KDB(Load_AddKey)(ET9KDBInfoPtr ctx, void* k) {
     Xt9ModelSlot* s = slot_for(ctx);
     if (s->count >= XT9_MAX_KEYS) return ET9STATUS_KDB_TOO_MANY_KEYS;   /* table full: 0x38 like the blob */
     s->keys[s->count++] = *(ET9KdbKey*)k;
+    model_touched(&s->model);
     return ET9STATUS_NONE;
 }
 
@@ -238,27 +249,39 @@ int xt9kdb_scan_kdb_ids(const ET9U8* xml, ET9U32 len, ET9U32* pid, ET9U32* sid) 
     return 0;
 }
 
-/* Top-level: parse the XML bytes and publish the model. */
+/* Top-level: parse the XML bytes and publish the model.
+ *
+ * The document is parsed into a private builder and published only once it parsed completely,
+ * so a failed load leaves this context's previous model (and the NKL built from it) in place.
+ * That is what the caller's rollback assumes: SetKdbNum restores the previous selector on a
+ * failed load, exactly as the blob does at 0xba77c, and never reloads that selector because it
+ * is still the active source — so emptying the slot here left a context whose selection said
+ * "previous layout" with no keys behind it (R2-10). A document is complete only when its root
+ * element closes: a truncated one used to load whatever keys preceded the cut. */
 ET9STATUS XT9KDB(Load_XmlKDB)(ET9KDBInfoPtr ctx, const ET9U8* xml, ET9U32 len) {
     if (!ctx || !xml || !len) return ET9STATUS_INVALID_MEMORY;
     const char* p   = (const char*)xml;
     const char* end = p + len;
 
-    XT9KDB(Load_Reset)(ctx);
+    ET9KdbKey    keys[XT9_MAX_KEYS];
+    ET9U16       count = 0;
+    ET9KdbLoaded b;                                 /* Load_Reset's defaults */
+    memset(&b, 0, sizeof b);
+    b.authoredWidth  = ET9_KDB_AUTHORED_W;          /* fallbacks; overwritten by the header */
+    b.authoredHeight = ET9_KDB_AUTHORED_H;
+    b.keys = keys;
 
-    /* <keyboard ...> header */
+    /* <keyboard ...> header (the same fields Load_SetProperties stores) */
     const char* kb = find_sub(p, end, "<keyboard");
     if (kb) {
         const char* kbend = find_sub(kb, end, ">");
-        if (!kbend) kbend = end;
-        Xt9KdbProps pr; memset(&pr, 0, sizeof(pr));
+        if (!kbend) return ET9STATUS_KDB_NOT_LOADED;   /* cut inside the header */
         int vl; const char* a;
-        a = attr_val(kb, kbend, "primaryId", &vl);           if (a) pr.pid = (ET9U32)parse_int(a, vl);
-        a = attr_val(kb, kbend, "secondaryId", &vl);         if (a) pr.sid = (ET9U32)parse_int(a, vl);
-        a = attr_val(kb, kbend, "defaultLayoutWidth", &vl);  if (a) pr.w   = (ET9U16)parse_int(a, vl);
-        a = attr_val(kb, kbend, "defaultLayoutHeight", &vl); if (a) pr.h   = (ET9U16)parse_int(a, vl);
-        a = attr_val(kb, kbend, "radiusY", &vl);             if (a) pr.radiusY = (ET9U16)parse_int(a, vl);
-        XT9KDB(Load_SetProperties)(ctx, &pr);
+        a = attr_val(kb, kbend, "primaryId", &vl);           if (a) b.primaryId   = (ET9U32)parse_int(a, vl);
+        a = attr_val(kb, kbend, "secondaryId", &vl);         if (a) b.secondaryId = (ET9U32)parse_int(a, vl);
+        a = attr_val(kb, kbend, "defaultLayoutWidth", &vl);  if (a) { ET9U16 w = (ET9U16)parse_int(a, vl); if (w) b.authoredWidth = w; }
+        a = attr_val(kb, kbend, "defaultLayoutHeight", &vl); if (a) { ET9U16 h = (ET9U16)parse_int(a, vl); if (h) b.authoredHeight = h; }
+        a = attr_val(kb, kbend, "radiusY", &vl);             if (a) b.authoredRadiusY = (ET9U16)parse_int(a, vl);
         p = kbend;
     }
 
@@ -267,15 +290,16 @@ ET9STATUS XT9KDB(Load_XmlKDB)(ET9KDBInfoPtr ctx, const ET9U8* xml, ET9U32 len) {
         const char* ks = find_sub(p, end, "<key");
         if (!ks) break;
         const char* ke = find_sub(ks, end, ">");
-        if (!ke) break;
+        if (!ke) break;                              /* cut inside a key: the close check fails */
         int vl; const char* a;
-        int left = 0, top = 0, w = 0, h = 0, bx = 0, by = 0, hasb = 0;
+        int left = 0, top = 0, w = 0, h = 0;
         a = attr_val(ks, ke, "keyLeft", &vl);   if (a) left = parse_int(a, vl);
         a = attr_val(ks, ke, "keyTop", &vl);    if (a) top  = parse_int(a, vl);
         a = attr_val(ks, ke, "keyWidth", &vl);  if (a) w    = parse_int(a, vl);
         a = attr_val(ks, ke, "keyHeight", &vl); if (a) h    = parse_int(a, vl);
-        a = attr_val(ks, ke, "biasX", &vl);     if (a) { bx = parse_int(a, vl); hasb = 1; }
-        a = attr_val(ks, ke, "biasY", &vl);     if (a) { by = parse_int(a, vl); hasb = 1; }
+        /* biasX/biasY are read by nothing: the old loader handed them to xt9kdb_attach_bias
+         * while the model's keyCount was still 0, which rejects every index, so no layout has
+         * ever had a bias applied (and none of ours carries one). Kept that way on purpose. */
 
         ET9KdbKey key;
         memset(&key, 0, sizeof key);
@@ -297,43 +321,45 @@ ET9STATUS XT9KDB(Load_XmlKDB)(ET9KDBInfoPtr ctx, const ET9U8* xml, ET9U32 len) {
         key.right = (ET9S16)(left + w - 1);       key.bottom = (ET9S16)(top + h - 1);   /* inclusive */
         key.cx = (ET9S16)(left + (w - 1) / 2);    key.cy = (ET9S16)(top + (h - 1) / 2);
         key.biasX = 0; key.biasY = 0;
-        {
-            ET9STATUS ast = XT9KDB(Load_AddKey)(ctx, &key);
-            if (ast != ET9STATUS_NONE) {
-                /* L12: the overflow used to be discarded here and the layout shipped truncated.
-                 * Fail the load the way the blob does (status 0x38) so the caller sees it. */
-                XT9KDB_LOGF("Load_XmlKDB: key %u rejected (status 0x%x) — layout has more than %d keys; load FAILED",
-                            (unsigned)slot_for(ctx)->count, (unsigned)ast, XT9_MAX_KEYS);
-                slot_for(ctx)->count = 0;
-                return ast;
-            }
-            if (hasb) {
-                Xt9ModelSlot* s = slot_for(ctx);
-                xt9kdb_attach_bias(&s->model, (ET9U16)(s->count - 1), (ET9S16)bx, (ET9S16)by);
-            }
+        if (count >= XT9_MAX_KEYS) {
+            /* L12: the overflow used to be discarded and the layout shipped truncated. Fail the
+             * load the way the blob does (status 0x38) so the caller sees it. */
+            XT9KDB_LOGF("Load_XmlKDB: key %u rejected (status 0x%x) — layout has more than %d keys; load FAILED",
+                        (unsigned)count, (unsigned)ET9STATUS_KDB_TOO_MANY_KEYS, XT9_MAX_KEYS);
+            return ET9STATUS_KDB_TOO_MANY_KEYS;
         }
+        keys[count++] = key;
 
         p = ke + 1;
     }
+
+    /* The root element must close after the last key (`</keyboard>`, `</keyboard >`). */
+    {
+        const char* close = find_sub(p, end, "</keyboard");
+        if (!close || !find_sub(close, end, ">")) {
+            XT9KDB_LOGF("Load_XmlKDB: document ends before </keyboard> (%u keys read) — truncated, load FAILED",
+                        (unsigned)count);
+            return ET9STATUS_KDB_NOT_LOADED;
+        }
+    }
+    if (count == 0) return ET9STATUS_KDB_NOT_LOADED;
 
     /* Match the blob's key ordering: all regional/nonRegional keys FIRST (in document order), then the
      * function (type 5) keys appended (in document order). VERIFIED on-device — this stable partition
      * reproduces the blob's exact 30-key getKeys/NKL index sequence for qwerty_pkb (backspace/alt/enter
      * land at 27/28/29). Key indices are load-bearing: the trace records and the recognizer's candidate
-     * lookup are index-based, so ours MUST line up with the blob's or recognition maps to the wrong keys.
-     * (No bias remap needed — our layouts carry no per-key bias; attach any future bias AFTER this.) */
+     * lookup are index-based, so ours MUST line up with the blob's or recognition maps to the wrong keys. */
     Xt9ModelSlot* s = slot_for(ctx);
     {
-        ET9KdbKey tmp[XT9_MAX_KEYS];
         ET9U16 w = 0;
-        for (ET9U16 i = 0; i < s->count; i++) if (s->keys[i].type != 5) tmp[w++] = s->keys[i];
-        for (ET9U16 i = 0; i < s->count; i++) if (s->keys[i].type == 5) tmp[w++] = s->keys[i];
-        memcpy(s->keys, tmp, (size_t)s->count * sizeof(ET9KdbKey));
+        for (ET9U16 i = 0; i < count; i++) if (keys[i].type != 5) s->keys[w++] = keys[i];
+        for (ET9U16 i = 0; i < count; i++) if (keys[i].type == 5) s->keys[w++] = keys[i];
     }
-
-    s->model.keyCount = s->count;
-    s->model.keys = s->keys;
-    if (s->count == 0) return ET9STATUS_KDB_NOT_LOADED;
+    s->count = count;
+    b.keyCount = count;
+    b.keys = s->keys;
+    s->model = b;
+    model_touched(&s->model);
     /* Adopt into the legacy global ONLY when it isn't owned by another live ctx (bring-up
      * default, or a re-load of the same slot). The gesture path re-publishes its own ctx's
      * model at every TouchStart, so a foreign context's load can never affect a decode. */

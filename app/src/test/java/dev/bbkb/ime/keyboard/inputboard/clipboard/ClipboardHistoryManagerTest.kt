@@ -910,4 +910,64 @@ class ClipboardHistoryManagerTest {
         const val START = 1_700_000_000_000L
         const val HOUR = 60L * 60L * 1000L
     }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // Background load (H-13): the stored history is read off the main thread
+    // ═══════════════════════════════════════════════════════════════════════
+
+    private class QueuedExecutor : Executor {
+        val queue = ArrayDeque<Runnable>()
+        override fun execute(command: Runnable) { queue.addLast(command) }
+        fun runAll() { while (queue.isNotEmpty()) queue.removeFirst().run() }
+    }
+
+    /** A manager reading through [load] and merging through [main], with "old" already stored. */
+    private fun asyncManagerOverStoredClip(load: QueuedExecutor, main: QueuedExecutor): ClipboardHistoryManager {
+        copy("old")
+        assertEquals(listOf("old"), stored().map { it.text })
+        history.release()
+        return ClipboardHistoryManager(
+            context, ClipboardHistoryStore.forFile(file, direct), { now }, { unlocked }, load, main,
+        ).also { it.addHistoryChangedListener(changeListener) }
+    }
+
+    @Test
+    fun theStoredHistoryArrivesAfterABackgroundReadAndMergesWithNewCopies() {
+        val load = QueuedExecutor()
+        val main = QueuedExecutor()
+        val async = asyncManagerOverStoredClip(load, main)
+
+        async.prune()
+        assertEquals("nothing is read on the calling thread", emptyList<String>(), texts(async))
+        now += 1_000
+        copy("new")
+        assertEquals(listOf("new"), texts(async))
+        assertEquals("nothing is written before the read lands", listOf("old"), stored().map { it.text })
+
+        load.runAll()
+        assertEquals("the result is merged on the main thread, not the reader's", listOf("new"), texts(async))
+        val changesBefore = historyChanges
+        main.runAll()
+
+        assertEquals(listOf("new", "old"), texts(async))
+        assertEquals(listOf("new", "old"), stored().map { it.text })
+        assertTrue(historyChanges > changesBefore)
+        async.release()
+    }
+
+    @Test
+    fun aReadInFlightIsDiscardedWhenTheHistoryIsCleared() {
+        val load = QueuedExecutor()
+        val main = QueuedExecutor()
+        val async = asyncManagerOverStoredClip(load, main)
+
+        async.prune()
+        load.runAll()
+        async.clearHistory()
+        main.runAll()
+
+        assertEquals(emptyList<String>(), texts(async))
+        async.release()
+    }
 }
+

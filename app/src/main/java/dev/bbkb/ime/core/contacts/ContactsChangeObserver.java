@@ -5,6 +5,8 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -35,6 +37,22 @@ public class ContactsChangeObserver implements Runnable {
 
     private int savedNamesHashCode;
 
+    /**
+     * How long the address book must stay quiet before it is queried. The provider notifies once
+     * per row it touches, so a sync from an account or an import sent a burst of notifications,
+     * each of which queried the whole address book (P-21).
+     */
+    static final long CHANGE_DEBOUNCE_MS = 3000L;
+
+    private final Handler debounceHandler = new Handler(Looper.getMainLooper());
+
+    private final Runnable checkAfterQuiet = new Runnable() {
+        @Override
+        public void run() {
+            ThreadUtils.getBackgroundExecutor("Sync Contacts").execute(ContactsChangeObserver.this);
+        }
+    };
+
     public ContactsChangeObserver(Context context) {
         this.context = context;
     }
@@ -53,7 +71,9 @@ public class ContactsChangeObserver implements Runnable {
         this.contentObserver = new ContentObserver(null) {
             @Override // android.database.ContentObserver
             public void onChange(boolean z) {
-                ThreadUtils.getBackgroundExecutor("Sync Contacts").execute(ContactsChangeObserver.this);
+                // Trailing edge: each notification pushes the check back.
+                debounceHandler.removeCallbacks(checkAfterQuiet);
+                debounceHandler.postDelayed(checkAfterQuiet, CHANGE_DEBOUNCE_MS);
             }
         };
         this.context.getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, this.contentObserver);
@@ -121,6 +141,7 @@ public class ContactsChangeObserver implements Runnable {
     }
 
     public void unregisterObserver() {
+        this.debounceHandler.removeCallbacks(this.checkAfterQuiet);
         if (this.contentObserver == null) {
             return;
         }

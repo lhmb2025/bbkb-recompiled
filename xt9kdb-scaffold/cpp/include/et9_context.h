@@ -118,6 +118,9 @@ typedef struct ET9KdbLoaded {
     ET9U16     authoredRadiusY;        /* optional radiusY= from the layout XML; 0 = unset
                                           (NKL RADY then defaults to home-row height, blob-parity) */
     ET9KdbKey* keys;                   /* keyCount entries                      */
+    ET9U32     generation;             /* bumped by every change to a loaded model (kdb_load_xml.c);
+                                          0 for the static fixtures. Caches key on it, not on the
+                                          pointer: a context's model is reloaded IN PLACE. */
     /* TODO: smart-touch model, regionality, page/shift, multitap state */
 } ET9KdbLoaded;
 

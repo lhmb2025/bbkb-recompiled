@@ -6,7 +6,9 @@ import com.google.gson.annotations.SerializedName
  * Data class representing an emoji with all its metadata.
  * Directly compatible with Emojibase JSON format.
  *
- * Field names are gson-bound and kept by proguard (`-keepclassmembers ... EmojiData { <fields>; }`).
+ * The app builds it from the compact asset ([EmojibaseCompactFormat]), never by reflection. The
+ * @SerializedName names stay only for EmojibaseCompactAssetTest, whose reference Gson parse of the
+ * emojibase JSON must keep producing exactly what the app used to load.
  */
 data class EmojiData(
     @SerializedName("emoji")

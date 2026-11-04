@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Handler;
+import android.os.Looper;
 import dev.bbkb.ime.core.settings.PrefsManager;
 import android.provider.Settings;
 import android.util.Log;
@@ -62,6 +64,21 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
 
     private final ReentrantLock lock = new ReentrantLock();
 
+    /**
+     * A preference changed since {@link #settingsValues} was built. Restore and reset write many
+     * keys in one apply(), and the framework then calls the listener once per changed key, back
+     * to back on the main thread; each call used to rebuild the whole settings object (about 150
+     * preference reads and a PackageManager query). Now a change only marks it stale, one
+     * rebuild is posted for the burst, and a main-thread read before that rebuild runs builds it
+     * on the spot, so code that writes a preference and reads the settings straight after still
+     * sees its write (P-22).
+     */
+    private volatile boolean rebuildPending;
+
+    private Handler mainHandler;
+
+    private final Runnable coalescedRebuild = this::runCoalescedRebuild;
+
     
     public interface OnSettingsChangeListener {
         void onSettingsValuesChanged(SettingsValues c0804d);
@@ -117,23 +134,86 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     private static final java.util.Set<String> KEYS_NOT_IN_SETTINGS_VALUES =
             new java.util.HashSet<>(Arrays.asList("emoji_recent_keys", "last_shown_emoji_category_id", "emoji_tone_memory"));
 
+    /**
+     * Key families no {@link SettingsValues} field reads, checked by where the keys are read:
+     * the update checker's state (only UpdateChecker, UpdateJobService, the Updates screen and the
+     * settings backup touch it), which the daily check rewrites in the background.
+     */
+    private static final String[] KEY_PREFIXES_NOT_IN_SETTINGS_VALUES = {"pref_update_"};
+
+    static boolean isReadBySettingsValues(String key) {
+        if (key == null) {
+            return true; // clear(): everything changed
+        }
+        if (KEYS_NOT_IN_SETTINGS_VALUES.contains(key)) {
+            return false;
+        }
+        for (String prefix : KEY_PREFIXES_NOT_IN_SETTINGS_VALUES) {
+            if (key.startsWith(prefix)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override // android.content.SharedPreferences.OnSharedPreferenceChangeListener
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
-        if (str != null && KEYS_NOT_IN_SETTINGS_VALUES.contains(str)) {
+        if (!isReadBySettingsValues(str) || this.settingsValues == null) {
             return;
         }
+        this.rebuildPending = true;
+        final Handler handler = mainHandler();
+        handler.removeCallbacks(this.coalescedRebuild);
+        handler.post(this.coalescedRebuild);
+    }
+
+    private synchronized Handler mainHandler() {
+        if (this.mainHandler == null) {
+            this.mainHandler = new Handler(Looper.getMainLooper());
+        }
+        return this.mainHandler;
+    }
+
+    /** The posted half of a burst: rebuilds unless a read already did, then tells the listeners once. */
+    private void runCoalescedRebuild() {
         this.lock.lock();
         try {
             if (this.settingsValues == null) {
                 return;
             }
-            loadSettings(this.context, this.settingsValues.locale, this.settingsValues.editorCapabilities);
+            reload();
             Iterator<OnSettingsChangeListener> it = this.listeners.iterator();
             while (it.hasNext()) {
-                it.next().onSettingsValuesChanged(getSettingsValues());
+                it.next().onSettingsValuesChanged(this.settingsValues);
             }
         } finally {
             this.lock.unlock();
+        }
+    }
+
+    /**
+     * Rebuilds the settings now if a preference changed since the last build. Reads on the main
+     * thread do this themselves; a reader on another thread that must see a write it just made
+     * can call it.
+     */
+    public void reload() {
+        if (!this.rebuildPending) {
+            return;
+        }
+        this.lock.lock();
+        try {
+            final SettingsValues current = this.settingsValues;
+            if (this.rebuildPending && current != null) {
+                loadSettings(this.context, current.locale, current.editorCapabilities);
+            }
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    private void reloadIfStaleOnMainThread() {
+        if (this.rebuildPending && Looper.myLooper() == Looper.getMainLooper()) {
+            reload();
         }
     }
 
@@ -161,6 +241,8 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         // Use applicationContext to prevent memory leaks in static singleton
         this.context = context.getApplicationContext();
         try {
+            // Cleared before the build, so a write made while building marks it stale again.
+            this.rebuildPending = false;
             final SharedPreferences sharedPreferences = this.sharedPreferences;
             this.settingsValues = new RunInLocale<SettingsValues>() {
                 @Override
@@ -217,6 +299,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     public SettingsValues getSettingsValues() {
+        reloadIfStaleOnMainThread();
         return this.settingsValues;
     }
 
@@ -227,6 +310,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
      * @return The current DeviceProfile, or null if not yet initialized
      */
     public DeviceProfile getDeviceProfile() {
+        reloadIfStaleOnMainThread();
         return this.deviceProfile;
     }
 

@@ -114,7 +114,10 @@ android {
         }
     }
     androidResources {
-        noCompress 'arsc'
+        // 'ldb': the engine opens each dictionary with AAsset_getBuffer, which inflates a
+        // Deflated asset in full (5 to 6 MB per language, one more private copy and 25 to 80 ms
+        // under the engine lock on first use). Stored, the asset is mapped clean from the APK.
+        noCompress 'arsc', 'ldb'
     }
     lint {
         // The historical backlog is large, so lint still cannot fail the build; but it
@@ -235,24 +238,122 @@ dependencies {
 // Emojibase NPM Integration
 // ============================================================================
 
-// Generated assets live under build/, never in the source tree: the Copy task and a
-// git-tracked copy of its output cannot silently disagree that way. Only
-// emojibase-en-full.json is read (EmojibaseDataProvider.kt); compact.json (541 KB) and
-// groups.json (3.8 KB) had no reader and used to ship in the APK for nothing.
+// Generated assets live under build/, never in the source tree: the generator and a
+// git-tracked copy of its output cannot silently disagree that way. The app reads only
+// emoji/emojibase-en.tsv, a compact form of emojibase-data's en/data.json written by the task
+// below (format: EmojibaseCompactFormat.kt). The 735 KB JSON itself no longer ships, nor do
+// compact.json (541 KB) and groups.json (3.8 KB), which never had a reader.
 def emojibaseGeneratedDir = layout.buildDirectory.dir('generated/emojibaseAssets')
 
-// Note: npmInstall task is created automatically by the node-gradle plugin
-tasks.register('copyEmojibaseData', Copy) {
-    dependsOn npmInstall  // Use auto-created task from plugin
+/**
+ * Writes the compact emojibase asset: line 1 is "EBC1<TAB>emojibase-data <version> en/data.json
+ * sha256=<hex of data.json>", then one line per data.json entry, in order, with 13 TAB-separated
+ * fields: emoji, hexcode, label, tags, shortcodes, group, subgroup, version, order, type, gender,
+ * tone, skins (their emoji only). List items are joined with U+001F; an empty field is a missing
+ * list or a missing nullable int. Missing group, subgroup and order are written as 0 because that
+ * is what the old Gson parse produced (EmojiData has no no-arg constructor, so Gson skipped the
+ * Kotlin defaults). Anything the format cannot carry (a separator inside a string, an empty list)
+ * fails the build rather than producing a file that reads back differently. Deterministic: the
+ * same data.json gives the same bytes.
+ */
+@CacheableTask
+abstract class EmojibaseCompactTask extends DefaultTask {
+    @InputFile @PathSensitive(PathSensitivity.NONE)
+    abstract RegularFileProperty getDataJson()
 
-    from('node_modules/emojibase-data/en') {
-        include 'data.json'
+    @InputFile @PathSensitive(PathSensitivity.NONE)
+    abstract RegularFileProperty getPackageJson()
+
+    /** The whole generated assets dir, emptied first so nothing stale (an old JSON) merges into the APK. */
+    @OutputDirectory
+    abstract DirectoryProperty getOutputDir()
+
+    static final String SEP = '\u001f'
+
+    static String text(Object value, String what) {
+        if (!(value instanceof String)) throw new GradleException("$what: expected a string, got $value")
+        String s = (String) value
+        if (s.isEmpty() || ['\t', '\n', '\r', SEP].any { s.contains(it) }) {
+            throw new GradleException("$what: empty or contains a separator: $s")
+        }
+        return s
     }
 
-    into(emojibaseGeneratedDir.map { it.dir('emojibase') })
+    static String textList(Object values, String what) {
+        if (values == null) return ''
+        if (!(values instanceof List) || values.isEmpty()) {
+            // An empty list could not be told apart from a missing one.
+            throw new GradleException("$what: expected a non-empty list, got $values")
+        }
+        return values.collect { text(it, what) }.join(SEP)
+    }
 
-    // Rename for clarity
-    rename('data.json', 'emojibase-en-full.json')
+    static String intField(Map entry, String key, boolean nullable, String what) {
+        def value = entry.get(key)
+        if (value == null) return nullable ? '' : '0'
+        if (!(value instanceof Integer || value instanceof Long || value instanceof BigInteger)) {
+            throw new GradleException("${what}.${key}: expected an int, got $value")
+        }
+        return value.toString()
+    }
+
+    /** The shortest round-trip form, which Double.parseDouble reads back to the double Gson produced. */
+    static String version(Object value, String what) {
+        if (!(value instanceof Number)) throw new GradleException("${what}.version: expected a number, got $value")
+        double d = ((Number) value).doubleValue()
+        // Double.toString switches to exponent notation outside [1e-3, 1e7); keep to the plain form.
+        if (d != 0d && (Math.abs(d) < 1e-3d || Math.abs(d) >= 1e7d)) {
+            throw new GradleException("${what}.version: out of range: $value")
+        }
+        return Double.toString(d)
+    }
+
+    @TaskAction
+    void generate() {
+        byte[] source = getDataJson().get().asFile.bytes
+        String sha = java.security.MessageDigest.getInstance('SHA-256').digest(source)
+                .collect { String.format('%02x', it & 0xff) }.join('')
+        String pkgVersion = new groovy.json.JsonSlurper().parse(getPackageJson().get().asFile, 'UTF-8').version
+        List entries = (List) new groovy.json.JsonSlurper().parse(new ByteArrayInputStream(source), 'UTF-8')
+
+        StringBuilder out = new StringBuilder(256 * 1024)
+        out.append("EBC1\temojibase-data ${pkgVersion} en/data.json sha256=${sha}")
+        entries.eachWithIndex { Object raw, int i ->
+            Map e = (Map) raw
+            String what = "entry $i (${e.get('hexcode')})"
+            List skins = (List) e.get('skins')
+            List<String> fields = [
+                text(e.get('emoji'), "${what}.emoji"),
+                text(e.get('hexcode'), "${what}.hexcode"),
+                text(e.get('label'), "${what}.label"),
+                textList(e.get('tags'), "${what}.tags"),
+                textList(e.get('shortcodes'), "${what}.shortcodes"),
+                intField(e, 'group', false, what),
+                intField(e, 'subgroup', false, what),
+                version(e.get('version'), what),
+                intField(e, 'order', false, what),
+                intField(e, 'type', true, what),
+                intField(e, 'gender', true, what),
+                intField(e, 'tone', true, what),
+                textList(skins == null ? null : skins.collect { ((Map) it).get('emoji') }, "${what}.skins"),
+            ]
+            out.append('\n').append(fields.join('\t'))
+        }
+        out.append('\n')
+        File dir = getOutputDir().get().asFile
+        dir.deleteDir()
+        File target = new File(dir, 'emoji/emojibase-en.tsv')
+        target.parentFile.mkdirs()
+        target.setBytes(out.toString().getBytes('UTF-8'))
+    }
+}
+
+// Note: npmInstall task is created automatically by the node-gradle plugin
+tasks.register('generateEmojibaseCompact', EmojibaseCompactTask) {
+    dependsOn npmInstall  // Use auto-created task from plugin
+    dataJson = file('node_modules/emojibase-data/en/data.json')
+    packageJson = file('node_modules/emojibase-data/package.json')
+    outputDir = emojibaseGeneratedDir
 }
 
 // The Android SourceSet API rejects Provider instances, and a FileCollection's builtBy
@@ -261,9 +362,9 @@ tasks.register('copyEmojibaseData', Copy) {
 android.sourceSets.main.assets.srcDir(emojibaseGeneratedDir.get().asFile)
 
 tasks.matching { it.name ==~ /merge.*Assets/ }.configureEach {
-    dependsOn tasks.named('copyEmojibaseData')
+    dependsOn tasks.named('generateEmojibaseCompact')
 }
-preBuild.dependsOn copyEmojibaseData
+preBuild.dependsOn generateEmojibaseCompact
 
 // ============================================================================
 // Debug keystore
