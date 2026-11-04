@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">اعلان‌های کوتاه رویداد تکمیل خودکار</string>
     <string name="pref_accessibility_service_disabled">سرویس دسترس‌پذیری غیرفعال است</string>
     <string name="pref_accessibility_service_enabled">سرویس دسترس‌پذیری فعال است</string>
-    <string name="pref_emoji_dynamic_search_summary_off">هنگام تایپ، Emoji جستجو نمی‌شود.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">هنگام تایپ، Emoji متناسب در پنل Emoji پیشنهاد می‌شود.</string>
-    <string name="pref_emoji_dynamic_search_title">فعال کردن جستجوی پویای Emoji</string>
+    <string name="pref_emoji_search_pkb_summary">وقتی صفحه Emoji باز است، برای جستجو از صفحه‌کلید استفاده کنید.</string>
+    <string name="pref_emoji_search_title">فعال‌کردن جستجوی Emoji</string>
+    <string name="pref_emoji_search_vkb_summary">فیلتر Emoji با متن فعلیِ تأییدنشده (زیرخط‌دار).</string>
     <string name="pref_emoji_search_replace_text_summary_off">انتخاب یک Emoji آن را پس از متن تایپ‌شده درج می‌کند.</string>
     <string name="pref_emoji_search_replace_text_summary_on">انتخاب یک Emoji جایگزین متن تایپ‌شده می‌شود.</string>
     <string name="pref_emoji_search_replace_text_title">جایگزینی متن با Emoji</string>

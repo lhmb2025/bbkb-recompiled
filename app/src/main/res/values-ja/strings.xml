@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">自動入力イベントのトースト</string>
     <string name="pref_accessibility_service_disabled">ユーザー補助サービスは無効です</string>
     <string name="pref_accessibility_service_enabled">ユーザー補助サービスは有効です</string>
-    <string name="pref_emoji_dynamic_search_summary_off">入力中に絵文字は検索されません。</string>
-    <string name="pref_emoji_dynamic_search_summary_on">入力中に、一致する絵文字が絵文字パネルに候補として表示されます。</string>
-    <string name="pref_emoji_dynamic_search_title">絵文字の動的検索を有効にする</string>
+    <string name="pref_emoji_search_pkb_summary">絵文字ボードが開いているときは、キーボードで検索します。</string>
+    <string name="pref_emoji_search_title">絵文字検索を有効にする</string>
+    <string name="pref_emoji_search_vkb_summary">現在の未確定（下線付き）のテキストで絵文字を絞り込みます。</string>
     <string name="pref_emoji_search_replace_text_summary_off">絵文字を選択すると、入力したテキストの後ろに挿入されます。</string>
     <string name="pref_emoji_search_replace_text_summary_on">絵文字を選択すると、入力したテキストが置き換えられます。</string>
     <string name="pref_emoji_search_replace_text_title">テキストを絵文字に置き換える</string>

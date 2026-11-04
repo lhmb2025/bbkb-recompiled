@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Thông báo nhanh sự kiện tự động điền</string>
     <string name="pref_accessibility_service_disabled">Dịch vụ trợ năng đã tắt</string>
     <string name="pref_accessibility_service_enabled">Dịch vụ trợ năng đã bật</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Không tìm kiếm biểu tượng cảm xúc khi bạn nhập.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Khi bạn nhập, bảng biểu tượng cảm xúc sẽ gợi ý các biểu tượng phù hợp.</string>
-    <string name="pref_emoji_dynamic_search_title">Bật tìm kiếm biểu tượng cảm xúc động</string>
+    <string name="pref_emoji_search_pkb_summary">Khi bảng biểu tượng cảm xúc đang mở, hãy dùng bàn phím để tìm kiếm.</string>
+    <string name="pref_emoji_search_title">Bật tìm kiếm biểu tượng cảm xúc</string>
+    <string name="pref_emoji_search_vkb_summary">Lọc biểu tượng cảm xúc theo văn bản hiện tại chưa xác nhận (được gạch chân).</string>
     <string name="pref_emoji_search_replace_text_summary_off">Khi bạn chọn một biểu tượng cảm xúc, biểu tượng đó được chèn sau văn bản đã nhập.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Khi bạn chọn một biểu tượng cảm xúc, biểu tượng đó sẽ thay thế văn bản đã nhập.</string>
     <string name="pref_emoji_search_replace_text_title">Thay văn bản bằng biểu tượng cảm xúc</string>

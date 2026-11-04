@@ -81,6 +81,15 @@ fun PhysicalKeyboardScreen(
             ),
             modifier = Modifier.settingsSearchAnchor("pref_voice_input_key"),
         ),
+        // Typing while the emoji board is open filters it (KeyEventProcessor routes the keys into
+        // the board's search field). Off, the keys type into the editor as before (2026-11-03).
+        Toggle(
+            store = boolPref("pref_pkb_emoji_search", true),
+            title = R.string.pref_emoji_search_title,
+            icon = drawableIcon(R.drawable.ic_settings_emoji_search),
+            summary = RowSummary.Res(R.string.pref_emoji_search_pkb_summary),
+            modifier = Modifier.settingsSearchAnchor("pref_pkb_emoji_search"),
+        ),
         Choice(
             store = multifunctionStore(multifunctionDefault),
             title = R.string.settings_pkb_multifunction_key_title,

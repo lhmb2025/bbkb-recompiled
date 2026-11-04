@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">إشعارات أحداث الملء التلقائي</string>
     <string name="pref_accessibility_service_disabled">خدمة إمكانية الوصول معطّلة</string>
     <string name="pref_accessibility_service_enabled">خدمة إمكانية الوصول ممكّنة</string>
-    <string name="pref_emoji_dynamic_search_summary_off">لا يتم البحث عن الرموز التعبيرية أثناء الكتابة.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">أثناء الكتابة، تُقترح الرموز التعبيرية المطابقة في لوحة الرموز التعبيرية.</string>
-    <string name="pref_emoji_dynamic_search_title">تمكين البحث الديناميكي عن الرموز التعبيرية</string>
+    <string name="pref_emoji_search_pkb_summary">عندما تكون لوحة الرموز التعبيرية مفتوحة، استخدم لوحة المفاتيح للبحث.</string>
+    <string name="pref_emoji_search_title">تفعيل البحث عن الرموز التعبيرية</string>
+    <string name="pref_emoji_search_vkb_summary">تصفية الرموز التعبيرية حسب النص الحالي غير المُثبت (المسطَّر).</string>
     <string name="pref_emoji_search_replace_text_summary_off">تحديد رمز تعبيري يُدرجه بعد النص المكتوب.</string>
     <string name="pref_emoji_search_replace_text_summary_on">تحديد رمز تعبيري يستبدل النص المكتوب.</string>
     <string name="pref_emoji_search_replace_text_title">استبدال النص برمز تعبيري</string>

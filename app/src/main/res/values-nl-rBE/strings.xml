@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Meldingen bij automatisch invullen</string>
     <string name="pref_accessibility_service_disabled">Toegankelijkheidsservice uitgeschakeld</string>
     <string name="pref_accessibility_service_enabled">Toegankelijkheidsservice ingeschakeld</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Er wordt niet naar emoji gezocht terwijl u typt.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Terwijl u typt, worden passende emoji voorgesteld in het emoji-paneel.</string>
-    <string name="pref_emoji_dynamic_search_title">Dynamisch zoeken naar emoji inschakelen</string>
+    <string name="pref_emoji_search_pkb_summary">Zoek met het toetsenbord wanneer het emoji-bord open is.</string>
+    <string name="pref_emoji_search_title">Emoji zoeken inschakelen</string>
+    <string name="pref_emoji_search_vkb_summary">Filter emoji op de huidige nog niet bevestigde (onderstreepte) tekst.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Een gekozen emoji wordt na de getypte tekst ingevoegd.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Een gekozen emoji vervangt de getypte tekst.</string>
     <string name="pref_emoji_search_replace_text_title">Tekst vervangen door emoji</string>

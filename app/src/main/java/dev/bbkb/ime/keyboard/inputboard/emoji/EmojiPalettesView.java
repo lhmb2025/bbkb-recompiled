@@ -29,6 +29,7 @@ import dev.bbkb.ime.keyboard.Key;
 import dev.bbkb.ime.keyboard.KeyboardActionListenerInterface;
 import dev.bbkb.ime.keyboard.KeyboardBuilder;
 import dev.bbkb.ime.keyboard.KeyboardColorManager;
+import dev.bbkb.ime.core.device.profile.DeviceProfile;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
@@ -608,8 +609,11 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         AudioAndHapticFeedbackManager.getInstance().performAudioAndHapticFeedback(-21, this);
         int iM6661a = this.categoryManager.getCategoryIdFromTag(str);
 
+        // The on-screen switch only (owner decision 2026-11-03): with a physical keyboard the
+        // query is what the user types into the board, never the word being composed.
         SettingsValues sv = SettingsManager.getInstance().getSettingsValues();
-        boolean dynamicSearch = sv != null && sv.isEmojiDynamicSearchEnabled;
+        boolean dynamicSearch = sv != null && sv.isEmojiDynamicSearchEnabled
+                && DeviceProfile.isOnScreenKeyboardVisible();
         boolean isSearchCategory = iM6661a == 0;
 
         if (!isSearchCategory) {

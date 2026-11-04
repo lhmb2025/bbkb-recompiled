@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Kitskennisgewings vir outovul-gebeurtenisse</string>
     <string name="pref_accessibility_service_disabled">Toeganklikheidsdiens is gesper</string>
     <string name="pref_accessibility_service_enabled">Toeganklikheidsdiens is ontsper</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Daar word nie na emoji\'s gesoek terwyl jy tik nie.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Terwyl jy tik, word passende emoji\'s in die emojipaneel voorgestel.</string>
-    <string name="pref_emoji_dynamic_search_title">Ontsper dinamiese emojisoektog</string>
+    <string name="pref_emoji_search_pkb_summary">Gebruik die sleutelbord om te soek wanneer die emojibord oop is.</string>
+    <string name="pref_emoji_search_title">Aktiveer emoji-soektog</string>
+    <string name="pref_emoji_search_vkb_summary">Filtreer emoji\'s met die huidige onvoltooide (onderstreepte) teks.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Wanneer jy ’n emoji kies, word dit ná die getikte teks ingevoeg.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Wanneer jy ’n emoji kies, vervang dit die getikte teks.</string>
     <string name="pref_emoji_search_replace_text_title">Vervang teks met emoji</string>

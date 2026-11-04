@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Pop op-meddelelser om autofyldhændelser</string>
     <string name="pref_accessibility_service_disabled">Tilgængelighedstjenesten er deaktiveret</string>
     <string name="pref_accessibility_service_enabled">Tilgængelighedstjenesten er aktiveret</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Der søges ikke efter emojis, mens du skriver.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Mens du skriver, foreslås matchende emojis i emoji-panelet.</string>
-    <string name="pref_emoji_dynamic_search_title">Aktiver dynamisk emoji-søgning</string>
+    <string name="pref_emoji_search_pkb_summary">Brug tastaturet til at søge, når emoji-panelet er åbent.</string>
+    <string name="pref_emoji_search_title">Slå emoji-søgning til</string>
+    <string name="pref_emoji_search_vkb_summary">Filtrér emojis med den aktuelle ubekræftede (understregede) tekst.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Når du vælger en emoji, indsættes den efter den skrevne tekst.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Når du vælger en emoji, erstatter den den skrevne tekst.</string>
     <string name="pref_emoji_search_replace_text_title">Erstat tekst med emoji</string>

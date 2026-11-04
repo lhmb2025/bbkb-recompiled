@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">ऑटोफिल इव्हेंट टोस्ट</string>
     <string name="pref_accessibility_service_disabled">अ‍ॅक्सेसिबिलिटी सेवा अक्षम आहे</string>
     <string name="pref_accessibility_service_enabled">अ‍ॅक्सेसिबिलिटी सेवा सक्षम आहे</string>
-    <string name="pref_emoji_dynamic_search_summary_off">तुम्ही टाइप करताना इमोजी शोधले जात नाहीत.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">तुम्ही टाइप करता तसे जुळणारे इमोजी इमोजी पॅनलमध्ये सुचवले जातात.</string>
-    <string name="pref_emoji_dynamic_search_title">इमोजी डायनॅमिक शोध सक्षम करा</string>
+    <string name="pref_emoji_search_pkb_summary">इमोजी बोर्ड उघडलेला असताना शोधण्यासाठी कीबोर्ड वापरा.</string>
+    <string name="pref_emoji_search_title">इमोजी शोध सुरू करा</string>
+    <string name="pref_emoji_search_vkb_summary">सध्याच्या अपुष्ट (अधोरेखित) मजकुराने इमोजी फिल्टर करा.</string>
     <string name="pref_emoji_search_replace_text_summary_off">इमोजी निवडल्यावर तो टाइप केलेल्या मजकुरानंतर घातला जातो.</string>
     <string name="pref_emoji_search_replace_text_summary_on">इमोजी निवडल्यावर तो टाइप केलेल्या मजकुराची जागा घेतो.</string>
     <string name="pref_emoji_search_replace_text_title">मजकुराच्या जागी इमोजी वापरा</string>

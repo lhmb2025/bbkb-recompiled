@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Automatinio pildymo įvykių pranešimai</string>
     <string name="pref_accessibility_service_disabled">Pritaikymo neįgaliesiems paslauga išjungta</string>
     <string name="pref_accessibility_service_enabled">Pritaikymo neįgaliesiems paslauga įjungta</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Jaustukai rašant neieškomi.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Rašant jaustukų skydelyje siūlomi atitinkantys jaustukai.</string>
-    <string name="pref_emoji_dynamic_search_title">Įjungti dinaminę jaustukų paiešką</string>
+    <string name="pref_emoji_search_pkb_summary">Kai jaustukų lenta atidaryta, ieškokite klaviatūra.</string>
+    <string name="pref_emoji_search_title">Įjungti jaustukų paiešką</string>
+    <string name="pref_emoji_search_vkb_summary">Filtruoti jaustukus pagal dabartinį nepatvirtintą (pabrauktą) tekstą.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Pasirinktas jaustukas įterpiamas po įvesto teksto.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Pasirinktas jaustukas pakeičia įvestą tekstą.</string>
     <string name="pref_emoji_search_replace_text_title">Pakeisti tekstą jaustuku</string>

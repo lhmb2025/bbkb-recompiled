@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Obvestila o dogodkih izpolnjevanja</string>
     <string name="pref_accessibility_service_disabled">Storitev za dostopnost je onemogočena</string>
     <string name="pref_accessibility_service_enabled">Storitev za dostopnost je omogočena</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Emoji se med tipkanjem ne iščejo.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Med tipkanjem so na plošči emoji predlagani ustrezni emoji.</string>
-    <string name="pref_emoji_dynamic_search_title">Omogoči dinamično iskanje emoji</string>
+    <string name="pref_emoji_search_pkb_summary">Ko je plošča emoji odprta, iščite s tipkovnico.</string>
+    <string name="pref_emoji_search_title">Omogoči iskanje emojijev</string>
+    <string name="pref_emoji_search_vkb_summary">Filtriraj emojije glede na trenutno nepotrjeno (podčrtano) besedilo.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Izbrani emoji se vstavi za vtipkano besedilo.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Izbrani emoji zamenja vtipkano besedilo.</string>
     <string name="pref_emoji_search_replace_text_title">Zamenjaj besedilo z emoji</string>

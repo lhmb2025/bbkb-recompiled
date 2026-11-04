@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Mga toast ng autofill event</string>
     <string name="pref_accessibility_service_disabled">Naka-disable ang serbisyo sa accessibility</string>
     <string name="pref_accessibility_service_enabled">Naka-enable ang serbisyo sa accessibility</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Hindi hinahanap ang mga emoji habang nagta-type ka.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Habang nagta-type ka, imumungkahi sa emoji panel ang mga tumutugmang emoji.</string>
-    <string name="pref_emoji_dynamic_search_title">I-enable ang Dynamic na Paghahanap ng Emoji</string>
+    <string name="pref_emoji_search_pkb_summary">Kapag bukas ang emoji board, gamitin ang keyboard para maghanap.</string>
+    <string name="pref_emoji_search_title">I-enable ang paghahanap ng emoji</string>
+    <string name="pref_emoji_search_vkb_summary">I-filter ang mga emoji gamit ang kasalukuyang hindi pa nakumpirmang (naka-underline) teksto.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Kapag pumili ka ng emoji, ipapasok ito pagkatapos ng na-type na text.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Kapag pumili ka ng emoji, papalitan nito ang na-type na text.</string>
     <string name="pref_emoji_search_replace_text_title">Palitan ng emoji ang text</string>

@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Sprettitilkynningar sjálfvirkrar útfyllingar</string>
     <string name="pref_accessibility_service_disabled">Slökkt á aðgengisþjónustu</string>
     <string name="pref_accessibility_service_enabled">Kveikt á aðgengisþjónustu</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Ekki er leitað að emoji-táknum meðan þú skrifar.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Meðan þú skrifar er stungið upp á emoji-táknum sem passa í emoji-spjaldinu.</string>
-    <string name="pref_emoji_dynamic_search_title">Virkja kvika emoji-leit</string>
+    <string name="pref_emoji_search_pkb_summary">Þegar emoji-spjaldið er opið er leitað með lyklaborðinu.</string>
+    <string name="pref_emoji_search_title">Kveikja á emoji-leit</string>
+    <string name="pref_emoji_search_vkb_summary">Sía emoji-tákn eftir núverandi óstaðfestum (undirstrikuðum) texta.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Þegar emoji-tákn er valið bætist það við á eftir rituðum texta.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Þegar emoji-tákn er valið kemur það í stað ritaðs texta.</string>
     <string name="pref_emoji_search_replace_text_title">Skipta texta út fyrir emoji-tákn</string>

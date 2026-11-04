@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Hysbysiadau digwyddiadau awtolenwi</string>
     <string name="pref_accessibility_service_disabled">Gwasanaeth hygyrchedd wedi\'i analluogi</string>
     <string name="pref_accessibility_service_enabled">Gwasanaeth hygyrchedd wedi\'i alluogi</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Nid yw emojis yn cael eu chwilio wrth i chi deipio.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Wrth i chi deipio, awgrymir emojis sy\'n cyfateb ym mhanel yr emoji.</string>
-    <string name="pref_emoji_dynamic_search_title">Galluogi Chwilio Emoji Deinamig</string>
+    <string name="pref_emoji_search_pkb_summary">Pan fo\'r bwrdd emoji ar agor, defnyddiwch y bysellfwrdd i chwilio.</string>
+    <string name="pref_emoji_search_title">Galluogi chwilio emoji</string>
+    <string name="pref_emoji_search_vkb_summary">Hidlo emojis gyda\'r testun cyfredol heb ei gadarnhau (wedi\'i danlinellu).</string>
     <string name="pref_emoji_search_replace_text_summary_off">Mae dewis emoji yn ei fewnosod ar ôl y testun a deipiwyd.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Mae dewis emoji yn disodli\'r testun a deipiwyd.</string>
     <string name="pref_emoji_search_replace_text_title">Disodli testun ag emoji</string>

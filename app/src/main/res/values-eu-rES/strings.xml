@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Betetze automatikoaren gertaeren abisuak</string>
     <string name="pref_accessibility_service_disabled">Erabilerraztasun-zerbitzua desgaituta</string>
     <string name="pref_accessibility_service_enabled">Erabilerraztasun-zerbitzua gaituta</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Emotikonoak ez dira bilatzen idatzi ahala.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Idatzi ahala, bat datozen emotikonoak iradokitzen dira emotikonoen panelean.</string>
-    <string name="pref_emoji_dynamic_search_title">Gaitu emotikonoen bilaketa dinamikoa</string>
+    <string name="pref_emoji_search_pkb_summary">Emotikono-taula irekita dagoenean, erabili teklatua bilatzeko.</string>
+    <string name="pref_emoji_search_title">Gaitu emotikonoen bilaketa</string>
+    <string name="pref_emoji_search_vkb_summary">Iragazi emotikonoak uneko berretsi gabeko (azpimarratutako) testuarekin.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Emotikono bat hautatzean, idatzitako testuaren ondoren txertatzen da.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Emotikono bat hautatzean, idatzitako testua ordezten du.</string>
     <string name="pref_emoji_search_replace_text_title">Ordeztu testua emotikonoarekin</string>

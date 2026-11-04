@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">ការជូនដំណឹងព្រឹត្តិការណ៍បំពេញស្វ័យប្រវត្តិ</string>
     <string name="pref_accessibility_service_disabled">សេវាកម្មភាពងាយស្រួលត្រូវបានបិទ</string>
     <string name="pref_accessibility_service_enabled">សេវាកម្មភាពងាយស្រួលត្រូវបានបើក</string>
-    <string name="pref_emoji_dynamic_search_summary_off">សញ្ញាអារម្មណ៍មិនត្រូវបានស្វែងរកពេលអ្នកវាយបញ្ចូលទេ។</string>
-    <string name="pref_emoji_dynamic_search_summary_on">ពេលអ្នកវាយបញ្ចូល សញ្ញាអារម្មណ៍ដែលត្រូវគ្នានឹងត្រូវបានណែនាំក្នុងផ្ទាំងសញ្ញាអារម្មណ៍។</string>
-    <string name="pref_emoji_dynamic_search_title">បើកការស្វែងរកសញ្ញាអារម្មណ៍ដោយថាមវន្ត</string>
+    <string name="pref_emoji_search_pkb_summary">នៅពេលក្ដារសញ្ញាអារម្មណ៍បើក សូមប្រើក្ដារចុចដើម្បីស្វែងរក។</string>
+    <string name="pref_emoji_search_title">បើកការស្វែងរកសញ្ញាអារម្មណ៍</string>
+    <string name="pref_emoji_search_vkb_summary">ត្រងសញ្ញាអារម្មណ៍តាមអត្ថបទបច្ចុប្បន្នដែលមិនទាន់បញ្ជាក់ (គូសបន្ទាត់ក្រោម)។</string>
     <string name="pref_emoji_search_replace_text_summary_off">ការជ្រើសរើសសញ្ញាអារម្មណ៍នឹងបញ្ចូលវានៅក្រោយអត្ថបទដែលបានវាយ។</string>
     <string name="pref_emoji_search_replace_text_summary_on">ការជ្រើសរើសសញ្ញាអារម្មណ៍នឹងជំនួសអត្ថបទដែលបានវាយ។</string>
     <string name="pref_emoji_search_replace_text_title">ជំនួសអត្ថបទដោយសញ្ញាអារម្មណ៍</string>

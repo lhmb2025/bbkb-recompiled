@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Popupmeddelanden för autofyllhändelser</string>
     <string name="pref_accessibility_service_disabled">Tillgänglighetstjänsten är inaktiverad</string>
     <string name="pref_accessibility_service_enabled">Tillgänglighetstjänsten är aktiverad</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Emojier söks inte fram medan du skriver.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Medan du skriver föreslås matchande emojier i emojipanelen.</string>
-    <string name="pref_emoji_dynamic_search_title">Aktivera dynamisk emojisökning</string>
+    <string name="pref_emoji_search_pkb_summary">Använd tangentbordet för att söka när emojipanelen är öppen.</string>
+    <string name="pref_emoji_search_title">Aktivera emojisökning</string>
+    <string name="pref_emoji_search_vkb_summary">Filtrera emojier med den aktuella obekräftade (understrukna) texten.</string>
     <string name="pref_emoji_search_replace_text_summary_off">När du väljer en emoji infogas den efter den skrivna texten.</string>
     <string name="pref_emoji_search_replace_text_summary_on">När du väljer en emoji ersätts den skrivna texten.</string>
     <string name="pref_emoji_search_replace_text_title">Ersätt text med emoji</string>

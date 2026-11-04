@@ -64,29 +64,8 @@ fun AuxiliaryInputScreen(
             onClick = { onNavigateToVoiceInput() },
         ),
 
-        Category(R.string.settings_category_emoji),
-        Toggle(
-            store = boolPref("pref_emoji_dynamic_search", false),
-            title = R.string.pref_emoji_dynamic_search_title,
-            icon = drawableIcon(R.drawable.ic_settings_emoji_search),
-            summary = RowSummary.OnOff(
-                R.string.pref_emoji_dynamic_search_summary_on,
-                R.string.pref_emoji_dynamic_search_summary_off,
-            ),
-            modifier = Modifier.settingsSearchAnchor("pref_emoji_dynamic_search"),
-        ),
-        Toggle(
-            store = boolPref("pref_emoji_search_replace_text", true),
-            title = R.string.pref_emoji_search_replace_text_title,
-            icon = drawableIcon(R.drawable.ic_settings_emoji_replace_text),
-            summary = RowSummary.OnOff(
-                R.string.pref_emoji_search_replace_text_summary_on,
-                R.string.pref_emoji_search_replace_text_summary_off,
-            ),
-            enabled = { it.bool("pref_emoji_dynamic_search") },
-            modifier = Modifier.settingsSearchAnchor("pref_emoji_search_replace_text"),
-        ),
-
+        // The emoji search switches moved to the two keyboard screens (2026-11-03): the
+        // on-screen one filters by the word being composed, the physical one types into the board.
         Category(R.string.settings_uim_toggle_clipboard),
         // Off stops capturing and deletes what was kept, pinned clips included: a history the
         // user switched off must not stay on the device.

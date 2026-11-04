@@ -638,14 +638,12 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_uim_enable_summary_on", "settings_uim_enable_title",
                 "settings_customize_menu_summary", "settings_customize_menu_title",
                 "settings_category_voice", "settings_uim_toggle_voice", "settings_voice_input_summary",
-                 "pref_emoji_dynamic_search_summary_off",
-                "pref_emoji_dynamic_search_title", "pref_emoji_search_replace_text_summary_on",
-                "pref_emoji_search_replace_text_title",
+                // The emoji search rows moved to the two keyboard screens (2026-11-03).
                 // (The clipboard group's "Clipboard" header is a category, which the recorder
                 // does not count.)
                 "clipboard_history_title", "clipboard_history_summary",
                 "clipboard_retention_title", "clipboard_retention_1h",
-                "clipboard_link_previews_title", "clipboard_link_previews_summary", "ckb_action_emoji", "settings_pkb_multifunction_action_clipboard"
+                "clipboard_link_previews_title", "clipboard_link_previews_summary", "settings_pkb_multifunction_action_clipboard"
             ),
             literals = emptySet(),
             // The clipboard group's header reuses the "Clipboard" string upper-cased, which the
@@ -1114,7 +1112,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_pkb_alt_sym_shortcut_disabled", "settings_pkb_alt_sym_shortcut_title",
                 "settings_pkb_ctrl_key_behavior_title", "settings_pkb_dictation_key_summary_on",
                 "settings_pkb_dictation_key_title", "settings_pkb_hold_action_off_summary",
-                "settings_pkb_hold_action_title", "settings_category_physical_keyboard"
+                "settings_pkb_hold_action_title", "settings_category_physical_keyboard",
+                // "Enable emoji search" for the physical keyboard (2026-11-03).
+                "pref_emoji_search_title", "pref_emoji_search_pkb_summary"
             ),
             literals = emptySet(),
             // The multifunction-key row sits inside `if (multifunctionKeyMapping != null)`
@@ -1297,7 +1297,11 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 // The flick commit animation moved here from Suggestions (2026-10-20), and the
                 // key long-press delay from Debug.
                 "settings_pred_flick_animation_summary", "settings_pred_flick_animation_title",
-                "prefs_key_longpress_delay_summary", "prefs_key_longpress_delay_title", "settings_category_on_screen_keyboard"
+                "prefs_key_longpress_delay_summary", "prefs_key_longpress_delay_title", "settings_category_on_screen_keyboard",
+                // The emoji search pair moved here from Auxiliary input (2026-11-03); the "Emoji"
+                // header's text is also ckb_action_emoji's.
+                "ckb_action_emoji", "pref_emoji_search_title", "pref_emoji_search_vkb_summary",
+                "pref_emoji_search_replace_text_summary_on", "pref_emoji_search_replace_text_title"
             ),
             literals = emptySet(),
         ),

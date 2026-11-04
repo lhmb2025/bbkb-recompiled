@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Fógraí teagmhas uathlíonta</string>
     <string name="pref_accessibility_service_disabled">Seirbhís inrochtaineachta díchumasaithe</string>
     <string name="pref_accessibility_service_enabled">Seirbhís inrochtaineachta cumasaithe</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Ní chuardaítear emoji agus tú ag clóscríobh.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Agus tú ag clóscríobh, moltar emoji a mheaitseálann i bpainéal na n-emoji.</string>
-    <string name="pref_emoji_dynamic_search_title">Cumasaigh Cuardach Dinimiciúil Emoji</string>
+    <string name="pref_emoji_search_pkb_summary">Nuair a bhíonn an clár emoji ar oscailt, úsáid an méarchlár le cuardach a dhéanamh.</string>
+    <string name="pref_emoji_search_title">Cumasaigh cuardach emoji</string>
+    <string name="pref_emoji_search_vkb_summary">Scag emoji leis an téacs reatha neamhdhearbhaithe (líne faoi).</string>
     <string name="pref_emoji_search_replace_text_summary_off">Nuair a roghnaítear emoji cuirtear isteach é i ndiaidh an téacs chlóscríofa.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Nuair a roghnaítear emoji cuirtear in ionad an téacs chlóscríofa é.</string>
     <string name="pref_emoji_search_replace_text_title">Cuir emoji in ionad an téacs</string>

@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Oznámenia o udalostiach dopĺňania</string>
     <string name="pref_accessibility_service_disabled">Služba dostupnosti je vypnutá</string>
     <string name="pref_accessibility_service_enabled">Služba dostupnosti je zapnutá</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Emoji sa počas písania nevyhľadávajú.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Počas písania sa v paneli emoji navrhujú zodpovedajúce emoji.</string>
-    <string name="pref_emoji_dynamic_search_title">Zapnúť dynamické vyhľadávanie emoji</string>
+    <string name="pref_emoji_search_pkb_summary">Keď je panel emoji otvorený, vyhľadávajte pomocou klávesnice.</string>
+    <string name="pref_emoji_search_title">Zapnúť vyhľadávanie emoji</string>
+    <string name="pref_emoji_search_vkb_summary">Filtrovať emoji podľa aktuálneho nepotvrdeného (podčiarknutého) textu.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Vybraté emoji sa vloží za napísaný text.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Vybraté emoji nahradí napísaný text.</string>
     <string name="pref_emoji_search_replace_text_title">Nahradiť text emoji</string>

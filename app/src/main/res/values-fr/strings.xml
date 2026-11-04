@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Toasts des événements de saisie automatique</string>
     <string name="pref_accessibility_service_disabled">Service d\'accessibilité désactivé</string>
     <string name="pref_accessibility_service_enabled">Service d\'accessibilité activé</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Les emojis ne sont pas recherchés pendant la saisie.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Pendant la saisie, les emojis correspondants sont suggérés dans le panneau des emojis.</string>
-    <string name="pref_emoji_dynamic_search_title">Activer la recherche dynamique d\'emojis</string>
+    <string name="pref_emoji_search_pkb_summary">Quand le clavier d\'emojis est ouvert, utilisez les touches du clavier pour rechercher.</string>
+    <string name="pref_emoji_search_title">Activer la recherche d\'emojis</string>
+    <string name="pref_emoji_search_vkb_summary">Filtrer les emojis avec le texte actuel non validé (souligné).</string>
     <string name="pref_emoji_search_replace_text_summary_off">La sélection d\'un emoji l\'insère après le texte saisi.</string>
     <string name="pref_emoji_search_replace_text_summary_on">La sélection d\'un emoji remplace le texte saisi.</string>
     <string name="pref_emoji_search_replace_text_title">Remplacer le texte par l\'emoji</string>

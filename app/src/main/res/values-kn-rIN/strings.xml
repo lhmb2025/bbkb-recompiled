@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">ಸ್ವಯಂಭರ್ತಿ ಈವೆಂಟ್ ಟೋಸ್ಟ್‌ಗಳು</string>
     <string name="pref_accessibility_service_disabled">ಪ್ರವೇಶಿಸುವಿಕೆ ಸೇವೆ ನಿಷ್ಕ್ರಿಯಗೊಂಡಿದೆ</string>
     <string name="pref_accessibility_service_enabled">ಪ್ರವೇಶಿಸುವಿಕೆ ಸೇವೆ ಸಕ್ರಿಯಗೊಂಡಿದೆ</string>
-    <string name="pref_emoji_dynamic_search_summary_off">ನೀವು ಟೈಪ್ ಮಾಡುವಾಗ ಎಮೋಜಿಗಳನ್ನು ಹುಡುಕಲಾಗುವುದಿಲ್ಲ.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">ನೀವು ಟೈಪ್ ಮಾಡುವಾಗ, ಹೊಂದಿಕೆಯಾಗುವ ಎಮೋಜಿಗಳನ್ನು ಎಮೋಜಿ ಫಲಕದಲ್ಲಿ ಸೂಚಿಸಲಾಗುತ್ತದೆ.</string>
-    <string name="pref_emoji_dynamic_search_title">ಎಮೋಜಿ ಕ್ರಿಯಾಶೀಲ ಹುಡುಕಾಟವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
+    <string name="pref_emoji_search_pkb_summary">ಎಮೋಜಿ ಬೋರ್ಡ್ ತೆರೆದಿರುವಾಗ, ಹುಡುಕಲು ಕೀಬೋರ್ಡ್ ಬಳಸಿ.</string>
+    <string name="pref_emoji_search_title">ಎಮೋಜಿ ಹುಡುಕಾಟವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
+    <string name="pref_emoji_search_vkb_summary">ಪ್ರಸ್ತುತ ದೃಢೀಕರಿಸದ (ಅಡಿಗೆರೆ ಹಾಕಿದ) ಪಠ್ಯದಿಂದ ಎಮೋಜಿಗಳನ್ನು ಫಿಲ್ಟರ್ ಮಾಡಿ.</string>
     <string name="pref_emoji_search_replace_text_summary_off">ಎಮೋಜಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿದರೆ ಅದು ಟೈಪ್ ಮಾಡಿದ ಪಠ್ಯದ ನಂತರ ಸೇರ್ಪಡೆಯಾಗುತ್ತದೆ.</string>
     <string name="pref_emoji_search_replace_text_summary_on">ಎಮೋಜಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿದರೆ ಅದು ಟೈಪ್ ಮಾಡಿದ ಪಠ್ಯವನ್ನು ಬದಲಾಯಿಸುತ್ತದೆ.</string>
     <string name="pref_emoji_search_replace_text_title">ಪಠ್ಯವನ್ನು ಎಮೋಜಿಯಿಂದ ಬದಲಾಯಿಸು</string>

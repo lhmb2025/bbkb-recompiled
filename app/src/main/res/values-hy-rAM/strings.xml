@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Ավտոլրացման իրադարձությունների ծանուցումներ</string>
     <string name="pref_accessibility_service_disabled">Հատուկ հնարավորությունների ծառայությունն անջատված է</string>
     <string name="pref_accessibility_service_enabled">Հատուկ հնարավորությունների ծառայությունը միացված է</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Զմայլիկները չեն որոնվում մուտքագրելիս։</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Մուտքագրելիս համապատասխան զմայլիկներն առաջարկվում են զմայլիկների վահանակում։</string>
-    <string name="pref_emoji_dynamic_search_title">Միացնել զմայլիկների դինամիկ որոնումը</string>
+    <string name="pref_emoji_search_pkb_summary">Երբ զմայլիկների վահանակը բաց է, որոնելու համար օգտագործեք ստեղնաշարը։</string>
+    <string name="pref_emoji_search_title">Միացնել զմայլիկների որոնումը</string>
+    <string name="pref_emoji_search_vkb_summary">Զտել զմայլիկները ընթացիկ չհաստատված (ընդգծված) տեքստով։</string>
     <string name="pref_emoji_search_replace_text_summary_off">Զմայլիկ ընտրելը այն տեղադրում է մուտքագրված տեքստից հետո։</string>
     <string name="pref_emoji_search_replace_text_summary_on">Զմայլիկ ընտրելը փոխարինում է մուտքագրված տեքստը։</string>
     <string name="pref_emoji_search_replace_text_title">Փոխարինել տեքստը զմայլիկով</string>

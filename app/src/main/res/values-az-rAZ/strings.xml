@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Avtodoldurma hadisə bildirişləri</string>
     <string name="pref_accessibility_service_disabled">Əlçatanlıq xidməti deaktivdir</string>
     <string name="pref_accessibility_service_enabled">Əlçatanlıq xidməti aktivdir</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Siz yazarkən emoji axtarılmır.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Siz yazarkən uyğun emojilər emoji panelində təklif olunur.</string>
-    <string name="pref_emoji_dynamic_search_title">Emoji dinamik axtarışını aktivləşdirin</string>
+    <string name="pref_emoji_search_pkb_summary">Emoji paneli açıq olduqda axtarış üçün klaviaturadan istifadə edin.</string>
+    <string name="pref_emoji_search_title">Emoji axtarışını aktiv et</string>
+    <string name="pref_emoji_search_vkb_summary">Emojiləri cari təsdiqlənməmiş (altı xətli) mətnə görə filtrləyin.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Emoji seçildikdə o, yazılmış mətndən sonra əlavə olunur.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Emoji seçildikdə o, yazılmış mətni əvəz edir.</string>
     <string name="pref_emoji_search_replace_text_title">Mətni emoji ilə əvəz edin</string>

@@ -892,6 +892,11 @@ public class KeyEventProcessor {
                 || !EmojiQueryKeyRouting.mayFeedQuery(key)) {
             return false;
         }
+        // "Enable emoji search" under Physical keyboard (owner decision 2026-11-03): off, the
+        // board takes no keys and typing goes to the editor as it always did.
+        if (!ime.getSettingsManager().getSettingsValues().isPkbEmojiSearchEnabled) {
+            return false;
+        }
         EmojiPalettesView board = ime.getKeyboardSwitcher().peekEmojiPalettesView();
         if (board == null) {
             return false;

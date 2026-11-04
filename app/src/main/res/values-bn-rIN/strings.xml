@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">অটোফিল ইভেন্ট টোস্ট</string>
     <string name="pref_accessibility_service_disabled">অ্যাক্সেসিবিলিটি পরিষেবা নিষ্ক্রিয়</string>
     <string name="pref_accessibility_service_enabled">অ্যাক্সেসিবিলিটি পরিষেবা সক্রিয়</string>
-    <string name="pref_emoji_dynamic_search_summary_off">টাইপ করার সময় ইমোজি খোঁজা হয় না।</string>
-    <string name="pref_emoji_dynamic_search_summary_on">টাইপ করার সময় মিলে যাওয়া ইমোজি ইমোজি প্যানেলে প্রস্তাব করা হয়।</string>
-    <string name="pref_emoji_dynamic_search_title">ইমোজি ডায়নামিক সন্ধান সক্রিয় করুন</string>
+    <string name="pref_emoji_search_pkb_summary">ইমোজি বোর্ড খোলা থাকলে অনুসন্ধানের জন্য কীবোর্ড ব্যবহার করুন।</string>
+    <string name="pref_emoji_search_title">ইমোজি অনুসন্ধান চালু করুন</string>
+    <string name="pref_emoji_search_vkb_summary">বর্তমান অনিশ্চিত (আন্ডারলাইন করা) টেক্সট দিয়ে ইমোজি ফিল্টার করুন।</string>
     <string name="pref_emoji_search_replace_text_summary_off">ইমোজি নির্বাচন করলে সেটি লেখা টেক্সটের পরে বসে।</string>
     <string name="pref_emoji_search_replace_text_summary_on">ইমোজি নির্বাচন করলে সেটি লেখা টেক্সটের জায়গা নেয়।</string>
     <string name="pref_emoji_search_replace_text_title">টেক্সটের বদলে ইমোজি বসান</string>

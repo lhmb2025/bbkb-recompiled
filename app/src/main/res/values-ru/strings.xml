@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Уведомления о событиях автозаполнения</string>
     <string name="pref_accessibility_service_disabled">Служба специальных возможностей отключена</string>
     <string name="pref_accessibility_service_enabled">Служба специальных возможностей включена</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Поиск эмодзи при вводе не выполняется.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">При вводе подходящие эмодзи предлагаются на панели эмодзи.</string>
-    <string name="pref_emoji_dynamic_search_title">Включить динамический поиск эмодзи</string>
+    <string name="pref_emoji_search_pkb_summary">Когда панель эмодзи открыта, используйте клавиатуру для поиска.</string>
+    <string name="pref_emoji_search_title">Включить поиск эмодзи</string>
+    <string name="pref_emoji_search_vkb_summary">Фильтровать эмодзи по текущему неподтверждённому (подчёркнутому) тексту.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Выбранный эмодзи вставляется после введенного текста.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Выбранный эмодзи заменяет введенный текст.</string>
     <string name="pref_emoji_search_replace_text_title">Заменять текст эмодзи</string>

@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Автотолтуруу окуяларынын билдирүүлөрү</string>
     <string name="pref_accessibility_service_disabled">Атайын мүмкүнчүлүктөр кызматы өчүрүлгөн</string>
     <string name="pref_accessibility_service_enabled">Атайын мүмкүнчүлүктөр кызматы иштетилген</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Сиз терип жатканда эмодзи изделбейт.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Сиз терип жатканда дал келген эмодзилер эмодзи панелинде сунушталат.</string>
-    <string name="pref_emoji_dynamic_search_title">Эмодзини динамикалык издөөнү иштетүү</string>
+    <string name="pref_emoji_search_pkb_summary">Эмодзи панели ачык болгондо издөө үчүн баскычтопту колдонуңуз.</string>
+    <string name="pref_emoji_search_title">Эмодзи издөөнү күйгүзүү</string>
+    <string name="pref_emoji_search_vkb_summary">Эмодзилерди учурдагы бекитилбеген (астын сызылган) текст боюнча чыпкалоо.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Эмодзи тандалганда ал терилген тексттен кийин коюлат.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Эмодзи тандалганда ал терилген тексттин ордуна коюлат.</string>
     <string name="pref_emoji_search_replace_text_title">Текстти эмодзи менен алмаштыруу</string>

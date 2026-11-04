@@ -84,7 +84,12 @@ internal object EmojiTestEnv {
         .setIsAsciiCapable(false)
         .build()
 
-    fun settings(dynamicSearch: Boolean = false, replaceText: Boolean = false, emojiPredictions: Boolean = false): SettingsValues {
+    fun settings(
+        dynamicSearch: Boolean = false,
+        replaceText: Boolean = false,
+        emojiPredictions: Boolean = false,
+        pkbEmojiSearch: Boolean = true,
+    ): SettingsValues {
         val unsafeClass = Class.forName("sun.misc.Unsafe")
         val unsafe = field(unsafeClass, "theUnsafe").get(null)
         val sv = unsafeClass.getMethod("allocateInstance", Class::class.java)
@@ -92,6 +97,7 @@ internal object EmojiTestEnv {
         field(SettingsValues::class.java, "isEmojiDynamicSearchEnabled").setBoolean(sv, dynamicSearch)
         field(SettingsValues::class.java, "isEmojiSearchReplaceText").setBoolean(sv, replaceText)
         field(SettingsValues::class.java, "isEmojiPredictionsEnabled").setBoolean(sv, emojiPredictions)
+        field(SettingsValues::class.java, "isPkbEmojiSearchEnabled").setBoolean(sv, pkbEmojiSearch)
         return sv
     }
 

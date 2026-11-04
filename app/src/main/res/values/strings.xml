@@ -660,9 +660,9 @@
     <!-- ===================================================== -->
     <string name="pref_accessibility_service_disabled">Accessibility service disabled</string>
     <string name="pref_accessibility_service_enabled">Accessibility service enabled</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Emoji are not searched while you type.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">As you type, matching emoji are suggested in the emoji panel.</string>
-    <string name="pref_emoji_dynamic_search_title">Enable Emoji Dynamic Search</string>
+    <string name="pref_emoji_search_pkb_summary">When the emoji board is open, use the keyboard to search.</string>
+    <string name="pref_emoji_search_title">Enable emoji search</string>
+    <string name="pref_emoji_search_vkb_summary">Filter emojis with the current uncommitted (underlined) text.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Selecting an emoji inserts it after the typed text.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Selecting an emoji replaces the typed text.</string>
     <string name="pref_emoji_search_replace_text_title">Replace text with emoji</string>

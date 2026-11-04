@@ -99,5 +99,27 @@ fun TouchScreenKeyboardScreen(
             modifier = Modifier.settingsSearchAnchor("swipe_down_vkb"),
         ),
 
+        // On-screen only (2026-11-03): the emoji board opens filtered by the word being composed,
+        // and a pick can replace that word. A physical keyboard has its own "Enable emoji search"
+        // on the Physical keyboard screen, which types into the open board instead.
+        Category(R.string.settings_category_emoji),
+        Toggle(
+            store = boolPref("pref_emoji_dynamic_search", false),
+            title = R.string.pref_emoji_search_title,
+            icon = drawableIcon(R.drawable.ic_settings_emoji_search),
+            summary = RowSummary.Res(R.string.pref_emoji_search_vkb_summary),
+            modifier = Modifier.settingsSearchAnchor("pref_emoji_dynamic_search"),
+        ),
+        Toggle(
+            store = boolPref("pref_emoji_search_replace_text", true),
+            title = R.string.pref_emoji_search_replace_text_title,
+            icon = drawableIcon(R.drawable.ic_settings_emoji_replace_text),
+            summary = RowSummary.OnOff(
+                R.string.pref_emoji_search_replace_text_summary_on,
+                R.string.pref_emoji_search_replace_text_summary_off,
+            ),
+            enabled = { it.bool("pref_emoji_dynamic_search") },
+            modifier = Modifier.settingsSearchAnchor("pref_emoji_search_replace_text"),
+        ),
     ))
 }

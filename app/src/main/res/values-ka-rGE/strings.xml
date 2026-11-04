@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">ავტომატური შევსების მოვლენების შეტყობინებები</string>
     <string name="pref_accessibility_service_disabled">მარტივი წვდომის სერვისი გამორთულია</string>
     <string name="pref_accessibility_service_enabled">მარტივი წვდომის სერვისი ჩართულია</string>
-    <string name="pref_emoji_dynamic_search_summary_off">აკრეფისას სიცილაკები არ იძებნება.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">აკრეფისას შესაბამისი სიცილაკები სიცილაკების პანელში შემოგთავაზებათ.</string>
-    <string name="pref_emoji_dynamic_search_title">სიცილაკების დინამიკური ძიების ჩართვა</string>
+    <string name="pref_emoji_search_pkb_summary">როდესაც სიცილაკების დაფა ღიაა, ძიებისთვის გამოიყენეთ კლავიატურა.</string>
+    <string name="pref_emoji_search_title">სიცილაკების ძიების ჩართვა</string>
+    <string name="pref_emoji_search_vkb_summary">სიცილაკების გაფილტვრა მიმდინარე დაუდასტურებელი (ხაზგასმული) ტექსტით.</string>
     <string name="pref_emoji_search_replace_text_summary_off">სიცილაკის არჩევა მას აკრეფილი ტექსტის შემდეგ ჩასვამს.</string>
     <string name="pref_emoji_search_replace_text_summary_on">სიცილაკის არჩევა აკრეფილ ტექსტს ჩაანაცვლებს.</string>
     <string name="pref_emoji_search_replace_text_title">ტექსტის ჩანაცვლება სიცილაკით</string>

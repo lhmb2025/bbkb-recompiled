@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Otomatik doldurma olay bildirimleri</string>
     <string name="pref_accessibility_service_disabled">Erişilebilirlik hizmeti devre dışı</string>
     <string name="pref_accessibility_service_enabled">Erişilebilirlik hizmeti etkin</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Siz yazarken emoji araması yapılmaz.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Siz yazdıkça eşleşen emojiler emoji panelinde önerilir.</string>
-    <string name="pref_emoji_dynamic_search_title">Dinamik Emoji Aramasını Etkinleştir</string>
+    <string name="pref_emoji_search_pkb_summary">Emoji klavyesi açıkken aramak için klavyeyi kullanın.</string>
+    <string name="pref_emoji_search_title">Emoji aramayı etkinleştir</string>
+    <string name="pref_emoji_search_vkb_summary">Emojileri geçerli onaylanmamış (altı çizili) metne göre filtrele.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Bir emoji seçildiğinde yazılan metnin sonuna eklenir.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Bir emoji seçildiğinde yazılan metnin yerini alır.</string>
     <string name="pref_emoji_search_replace_text_title">Metni emoji ile değiştir</string>

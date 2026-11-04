@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Automaattisen täytön toast-ilmoitukset</string>
     <string name="pref_accessibility_service_disabled">Esteettömyyspalvelu ei ole käytössä</string>
     <string name="pref_accessibility_service_enabled">Esteettömyyspalvelu on käytössä</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Emojeja ei haeta kirjoittaessasi.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Kirjoittaessasi emojipaneelissa ehdotetaan sopivia emojeja.</string>
-    <string name="pref_emoji_dynamic_search_title">Ota emojien dynaaminen haku käyttöön</string>
+    <string name="pref_emoji_search_pkb_summary">Kun emojipaneeli on auki, hae näppäimistöllä.</string>
+    <string name="pref_emoji_search_title">Ota emojihaku käyttöön</string>
+    <string name="pref_emoji_search_vkb_summary">Suodata emojit nykyisen vahvistamattoman (alleviivatun) tekstin perusteella.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Emojin valitseminen lisää sen kirjoitetun tekstin perään.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Emojin valitseminen korvaa kirjoitetun tekstin.</string>
     <string name="pref_emoji_search_replace_text_title">Korvaa teksti emojilla</string>

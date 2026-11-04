@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">தானியங்கு நிரப்பு நிகழ்வு டோஸ்ட்கள்</string>
     <string name="pref_accessibility_service_disabled">அணுகல்தன்மை சேவை முடக்கப்பட்டுள்ளது</string>
     <string name="pref_accessibility_service_enabled">அணுகல்தன்மை சேவை இயக்கப்பட்டுள்ளது</string>
-    <string name="pref_emoji_dynamic_search_summary_off">நீங்கள் தட்டச்சு செய்யும்போது எமோஜி தேடப்படுவதில்லை.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">நீங்கள் தட்டச்சு செய்யும்போது, பொருந்தும் எமோஜிகள் எமோஜி பேனலில் பரிந்துரைக்கப்படும்.</string>
-    <string name="pref_emoji_dynamic_search_title">எமோஜி இயங்குநிலைத் தேடலை இயக்கு</string>
+    <string name="pref_emoji_search_pkb_summary">எமோஜி பலகை திறந்திருக்கும்போது தேட விசைப்பலகையைப் பயன்படுத்தவும்.</string>
+    <string name="pref_emoji_search_title">எமோஜி தேடலை இயக்கு</string>
+    <string name="pref_emoji_search_vkb_summary">தற்போதைய உறுதிப்படுத்தப்படாத (அடிக்கோடிட்ட) உரையால் எமோஜிகளை வடிகட்டு.</string>
     <string name="pref_emoji_search_replace_text_summary_off">ஒரு எமோஜியைத் தேர்ந்தெடுத்தால் அது தட்டச்சு செய்த உரைக்குப் பிறகு சேர்க்கப்படும்.</string>
     <string name="pref_emoji_search_replace_text_summary_on">ஒரு எமோஜியைத் தேர்ந்தெடுத்தால் அது தட்டச்சு செய்த உரையை மாற்றும்.</string>
     <string name="pref_emoji_search_replace_text_title">உரையை எமோஜியால் மாற்று</string>

@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Poruke o događajima automatskog popunjavanja</string>
     <string name="pref_accessibility_service_disabled">Usluga pristupačnosti je onemogućena</string>
     <string name="pref_accessibility_service_enabled">Usluga pristupačnosti je omogućena</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Emojiji se ne pretražuju dok pišete.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Dok pišete, odgovarajući emojiji predlažu se na ploči s emojijima.</string>
-    <string name="pref_emoji_dynamic_search_title">Omogući dinamičku pretragu emojija</string>
+    <string name="pref_emoji_search_pkb_summary">Kada je ploča s emojijima otvorena, koristite tastaturu za pretragu.</string>
+    <string name="pref_emoji_search_title">Omogući pretragu emojija</string>
+    <string name="pref_emoji_search_vkb_summary">Filtrirajte emojije prema trenutnom nepotvrđenom (podvučenom) tekstu.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Odabir emojija umeće ga nakon upisanog teksta.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Odabir emojija zamjenjuje upisani tekst.</string>
     <string name="pref_emoji_search_replace_text_title">Zamijeni tekst emojijem</string>

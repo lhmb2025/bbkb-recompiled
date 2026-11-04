@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Паведамленні пра падзеі аўтазапаўнення</string>
     <string name="pref_accessibility_service_disabled">Служба спецыяльных магчымасцей адключана</string>
     <string name="pref_accessibility_service_enabled">Служба спецыяльных магчымасцей уключана</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Эмодзі не шукаюцца падчас набору.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Падчас набору адпаведныя эмодзі прапануюцца на панэлі эмодзі.</string>
-    <string name="pref_emoji_dynamic_search_title">Уключыць дынамічны пошук эмодзі</string>
+    <string name="pref_emoji_search_pkb_summary">Калі панэль эмодзі адкрыта, выкарыстоўвайце клавіятуру для пошуку.</string>
+    <string name="pref_emoji_search_title">Уключыць пошук эмодзі</string>
+    <string name="pref_emoji_search_vkb_summary">Фільтраваць эмодзі па бягучым непадцверджаным (падкрэсленым) тэксце.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Выбраны эмодзі ўстаўляецца пасля набранага тэксту.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Выбраны эмодзі замяняе набраны тэкст.</string>
     <string name="pref_emoji_search_replace_text_title">Замяняць тэкст на эмодзі</string>

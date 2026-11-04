@@ -103,6 +103,7 @@ class SettingsValuesSnapshotTest {
         assertEquals(true, sv.shiftDoubleTapLock)
         assertEquals(true, sv.altDoubleTapLock)
         assertEquals(true, sv.showPkbModifierStatusIcon)
+        assertEquals(true, sv.isPkbEmojiSearchEnabled)
         assertEquals("en-US", sv.voiceInputLanguageList)
         assertEquals(true, sv.voiceInputShowPartialResults)
         assertEquals(Locale.US, sv.locale)
@@ -121,6 +122,7 @@ class SettingsValuesSnapshotTest {
             .putBoolean("pref_slideboard_still_boards", false)
             .putString("quick_phrase_1", "hello there")
             .putBoolean("voice_input_show_partial_results", false)
+            .putBoolean("pref_pkb_emoji_search", false)
             .commit()
 
         val sv = load()
@@ -135,6 +137,7 @@ class SettingsValuesSnapshotTest {
         assertEquals(false, sv.slideboardStillBoardsEnabled)
         assertEquals("hello there", sv.quickPhrase1)
         assertEquals(false, sv.voiceInputShowPartialResults)
+        assertEquals(false, sv.isPkbEmojiSearchEnabled)
     }
 
     /**

@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">自动填充事件提示</string>
     <string name="pref_accessibility_service_disabled">无障碍服务已禁用</string>
     <string name="pref_accessibility_service_enabled">无障碍服务已启用</string>
-    <string name="pref_emoji_dynamic_search_summary_off">键入时不搜索表情符号。</string>
-    <string name="pref_emoji_dynamic_search_summary_on">键入时，表情符号面板中会建议匹配的表情符号。</string>
-    <string name="pref_emoji_dynamic_search_title">启用表情符号动态搜索</string>
+    <string name="pref_emoji_search_pkb_summary">表情符号面板打开时，使用键盘进行搜索。</string>
+    <string name="pref_emoji_search_title">启用表情符号搜索</string>
+    <string name="pref_emoji_search_vkb_summary">按当前未确认（带下划线）的文本筛选表情符号。</string>
     <string name="pref_emoji_search_replace_text_summary_off">选择表情符号后，会将其插入到已键入文本之后。</string>
     <string name="pref_emoji_search_replace_text_summary_on">选择表情符号后，会替换已键入的文本。</string>
     <string name="pref_emoji_search_replace_text_title">用表情符号替换文本</string>

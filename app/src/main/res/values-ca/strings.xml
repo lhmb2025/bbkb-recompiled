@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Notificacions d\'esdeveniments d\'emplenament automàtic</string>
     <string name="pref_accessibility_service_disabled">Servei d\'accessibilitat desactivat</string>
     <string name="pref_accessibility_service_enabled">Servei d\'accessibilitat activat</string>
-    <string name="pref_emoji_dynamic_search_summary_off">No es cerquen emojis mentre escriviu.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Mentre escriviu, es suggereixen emojis coincidents al tauler d\'emojis.</string>
-    <string name="pref_emoji_dynamic_search_title">Activa la cerca dinàmica d\'emojis</string>
+    <string name="pref_emoji_search_pkb_summary">Quan el tauler d\'emojis és obert, fes servir el teclat per cercar.</string>
+    <string name="pref_emoji_search_title">Activa la cerca d\'emojis</string>
+    <string name="pref_emoji_search_vkb_summary">Filtra els emojis amb el text actual no confirmat (subratllat).</string>
     <string name="pref_emoji_search_replace_text_summary_off">En seleccionar un emoji, s\'insereix després del text escrit.</string>
     <string name="pref_emoji_search_replace_text_summary_on">En seleccionar un emoji, substitueix el text escrit.</string>
     <string name="pref_emoji_search_replace_text_title">Substitueix el text per l\'emoji</string>

@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Automātiskās aizpildes notikumu paziņojumi</string>
     <string name="pref_accessibility_service_disabled">Pieejamības pakalpojums atspējots</string>
     <string name="pref_accessibility_service_enabled">Pieejamības pakalpojums iespējots</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Emocijzīmes rakstīšanas laikā netiek meklētas.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Rakstīšanas laikā emocijzīmju panelī tiek ieteiktas atbilstošas emocijzīmes.</string>
-    <string name="pref_emoji_dynamic_search_title">Iespējot dinamisko emocijzīmju meklēšanu</string>
+    <string name="pref_emoji_search_pkb_summary">Kad emocijzīmju panelis ir atvērts, meklējiet ar tastatūru.</string>
+    <string name="pref_emoji_search_title">Ieslēgt emocijzīmju meklēšanu</string>
+    <string name="pref_emoji_search_vkb_summary">Filtrēt emocijzīmes pēc pašreizējā neapstiprinātā (pasvītrotā) teksta.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Atlasītā emocijzīme tiek ievietota aiz ierakstītā teksta.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Atlasītā emocijzīme aizstāj ierakstīto tekstu.</string>
     <string name="pref_emoji_search_replace_text_title">Aizstāt tekstu ar emocijzīmi</string>

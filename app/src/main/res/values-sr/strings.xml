@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Обавештења о догађајима аутоматског попуњавања</string>
     <string name="pref_accessibility_service_disabled">Услуга приступачности је онемогућена</string>
     <string name="pref_accessibility_service_enabled">Услуга приступачности је омогућена</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Емоџији се не претражују док куцате.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Док куцате, одговарајући емоџији се предлажу на табли са емоџијима.</string>
-    <string name="pref_emoji_dynamic_search_title">Омогући динамичко претраживање емоџија</string>
+    <string name="pref_emoji_search_pkb_summary">Када је табла са емоџијима отворена, користите тастатуру за претрагу.</string>
+    <string name="pref_emoji_search_title">Омогући претрагу емоџија</string>
+    <string name="pref_emoji_search_vkb_summary">Филтрирај емоџије према тренутном непотврђеном (подвученом) тексту.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Избор емоџија га умеће после откуцаног текста.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Избор емоџија замењује откуцани текст.</string>
     <string name="pref_emoji_search_replace_text_title">Zамени текст емоџијем</string>

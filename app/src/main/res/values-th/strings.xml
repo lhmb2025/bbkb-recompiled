@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">การแจ้งเตือน toast ของการป้อนอัตโนมัติ</string>
     <string name="pref_accessibility_service_disabled">ปิดใช้งานบริการการเข้าถึงแล้ว</string>
     <string name="pref_accessibility_service_enabled">เปิดใช้งานบริการการเข้าถึงแล้ว</string>
-    <string name="pref_emoji_dynamic_search_summary_off">ไม่ค้นหาอีโมจิขณะที่คุณพิมพ์</string>
-    <string name="pref_emoji_dynamic_search_summary_on">ขณะที่คุณพิมพ์ อีโมจิที่ตรงกันจะถูกแนะนำในแผงอีโมจิ</string>
-    <string name="pref_emoji_dynamic_search_title">เปิดใช้งานการค้นหาอีโมจิแบบไดนามิก</string>
+    <string name="pref_emoji_search_pkb_summary">เมื่อบอร์ดอีโมจิเปิดอยู่ ให้ใช้แป้นพิมพ์เพื่อค้นหา</string>
+    <string name="pref_emoji_search_title">เปิดการค้นหาอีโมจิ</string>
+    <string name="pref_emoji_search_vkb_summary">กรองอีโมจิด้วยข้อความปัจจุบันที่ยังไม่ยืนยัน (ขีดเส้นใต้)</string>
     <string name="pref_emoji_search_replace_text_summary_off">การเลือกอีโมจิจะแทรกไว้หลังข้อความที่พิมพ์</string>
     <string name="pref_emoji_search_replace_text_summary_on">การเลือกอีโมจิจะแทนที่ข้อความที่พิมพ์</string>
     <string name="pref_emoji_search_replace_text_title">แทนที่ข้อความด้วยอีโมจิ</string>

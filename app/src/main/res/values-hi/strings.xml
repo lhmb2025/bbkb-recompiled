@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">स्वतः भरण इवेंट टोस्ट</string>
     <string name="pref_accessibility_service_disabled">सुलभता सेवा अक्षम है</string>
     <string name="pref_accessibility_service_enabled">सुलभता सेवा सक्षम है</string>
-    <string name="pref_emoji_dynamic_search_summary_off">टाइप करते समय ईमोजी नहीं खोजे जाते.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">जैसे-जैसे आप टाइप करते हैं, ईमोजी पैनल में मेल खाते ईमोजी सुझाए जाते हैं.</string>
-    <string name="pref_emoji_dynamic_search_title">ईमोजी डायनामिक खोज सक्षम करें</string>
+    <string name="pref_emoji_search_pkb_summary">जब ईमोजी बोर्ड खुला हो, खोजने के लिए कीबोर्ड का उपयोग करें।</string>
+    <string name="pref_emoji_search_title">ईमोजी खोज चालू करें</string>
+    <string name="pref_emoji_search_vkb_summary">मौजूदा अपुष्ट (रेखांकित) टेक्स्ट से ईमोजी फ़िल्टर करें।</string>
     <string name="pref_emoji_search_replace_text_summary_off">ईमोजी चुनने पर वह टाइप किए गए टेक्स्ट के बाद डाला जाता है.</string>
     <string name="pref_emoji_search_replace_text_summary_on">ईमोजी चुनने पर वह टाइप किए गए टेक्स्ट की जगह ले लेता है.</string>
     <string name="pref_emoji_search_replace_text_title">टेक्स्ट को ईमोजी से बदलें</string>

@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Ειδοποιήσεις συμβάντων αυτόματης συμπλήρωσης</string>
     <string name="pref_accessibility_service_disabled">Η υπηρεσία προσβασιμότητας είναι απενεργοποιημένη</string>
     <string name="pref_accessibility_service_enabled">Η υπηρεσία προσβασιμότητας είναι ενεργοποιημένη</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Δεν γίνεται αναζήτηση emoji καθώς πληκτρολογείτε.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Καθώς πληκτρολογείτε, τα emoji που ταιριάζουν προτείνονται στον πίνακα emoji.</string>
-    <string name="pref_emoji_dynamic_search_title">Ενεργοποίηση δυναμικής αναζήτησης emoji</string>
+    <string name="pref_emoji_search_pkb_summary">Όταν ο πίνακας emoji είναι ανοιχτός, χρησιμοποιήστε το πληκτρολόγιο για αναζήτηση.</string>
+    <string name="pref_emoji_search_title">Ενεργοποίηση αναζήτησης emoji</string>
+    <string name="pref_emoji_search_vkb_summary">Φιλτράρισμα emoji με το τρέχον μη επιβεβαιωμένο (υπογραμμισμένο) κείμενο.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Η επιλογή ενός emoji το εισάγει μετά το κείμενο που πληκτρολογήσατε.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Η επιλογή ενός emoji αντικαθιστά το κείμενο που πληκτρολογήσατε.</string>
     <string name="pref_emoji_search_replace_text_title">Αντικατάσταση κειμένου με emoji</string>

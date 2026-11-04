@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Автомат бөглөлтийн үйл явдлын мэдэгдэл</string>
     <string name="pref_accessibility_service_disabled">Хандалтын үйлчилгээ идэвхгүй</string>
     <string name="pref_accessibility_service_enabled">Хандалтын үйлчилгээ идэвхтэй</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Бичих үед инээмсэглэл хайхгүй.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Бичих үед тохирох инээмсэглэлийг инээмсэглэлийн самбарт санал болгоно.</string>
-    <string name="pref_emoji_dynamic_search_title">Инээмсэглэлийн динамик хайлтыг идэвхжүүлэх</string>
+    <string name="pref_emoji_search_pkb_summary">Инээмсэглэлийн самбар нээлттэй үед хайхдаа гарыг ашиглана.</string>
+    <string name="pref_emoji_search_title">Инээмсэглэл хайлтыг идэвхжүүлэх</string>
+    <string name="pref_emoji_search_vkb_summary">Инээмсэглэлийг одоогийн баталгаажаагүй (доогуур зураастай) текстээр шүүх.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Инээмсэглэл сонгоход бичсэн текстийн ард нэмэгдэнэ.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Инээмсэглэл сонгоход бичсэн текстийг орлуулна.</string>
     <string name="pref_emoji_search_replace_text_title">Текстийг инээмсэглэлээр солих</string>

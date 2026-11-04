@@ -753,4 +753,13 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     public static boolean isEmojiSearchReplaceTextEnabled(SharedPreferences sharedPreferences) {
         return sharedPreferences.getBoolean("pref_emoji_search_replace_text", true);
     }
+
+    /**
+     * "Enable emoji search" under Physical keyboard: while the emoji board is open, the keys type
+     * into its search field. Off, they type into the editor as they always did (and a text key
+     * closes the board, as any other board). The on-screen switch above is a different setting.
+     */
+    public static boolean isPkbEmojiSearchEnabled(SharedPreferences sharedPreferences) {
+        return sharedPreferences.getBoolean("pref_pkb_emoji_search", true);
+    }
 }

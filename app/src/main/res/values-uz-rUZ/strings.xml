@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Avtomatik to‘ldirish bildirishnomalari</string>
     <string name="pref_accessibility_service_disabled">Maxsus imkoniyatlar xizmati o‘chirilgan</string>
     <string name="pref_accessibility_service_enabled">Maxsus imkoniyatlar xizmati yoqilgan</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Yozayotganingizda kulgichlar qidirilmaydi.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Yozayotganingizda mos kulgichlar kulgichlar panelida taklif qilinadi.</string>
-    <string name="pref_emoji_dynamic_search_title">Kulgichlarni dinamik qidirishni yoqish</string>
+    <string name="pref_emoji_search_pkb_summary">Kulgichlar paneli ochiq boʻlganda qidirish uchun klaviaturadan foydalaning.</string>
+    <string name="pref_emoji_search_title">Kulgichlar qidiruvini yoqish</string>
+    <string name="pref_emoji_search_vkb_summary">Kulgichlarni joriy tasdiqlanmagan (tagiga chizilgan) matn boʻyicha filtrlash.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Kulgich tanlanganda u yozilgan matndan keyin qo‘yiladi.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Kulgich tanlanganda u yozilgan matn o‘rniga qo‘yiladi.</string>
     <string name="pref_emoji_search_replace_text_title">Matnni kulgich bilan almashtirish</string>

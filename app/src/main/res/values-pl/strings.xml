@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Powiadomienia o zdarzeniach autouzupełniania</string>
     <string name="pref_accessibility_service_disabled">Usługa ułatwień dostępu wyłączona</string>
     <string name="pref_accessibility_service_enabled">Usługa ułatwień dostępu włączona</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Emotikony nie są wyszukiwane podczas pisania.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Podczas pisania w panelu emotikonów pojawiają się pasujące emotikony.</string>
-    <string name="pref_emoji_dynamic_search_title">Włącz dynamiczne wyszukiwanie emotikonów</string>
+    <string name="pref_emoji_search_pkb_summary">Gdy panel emotikonów jest otwarty, szukaj za pomocą klawiatury.</string>
+    <string name="pref_emoji_search_title">Włącz wyszukiwanie emotikonów</string>
+    <string name="pref_emoji_search_vkb_summary">Filtruj emotikony według bieżącego niezatwierdzonego (podkreślonego) tekstu.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Wybranie emotikonu wstawia go po wpisanym tekście.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Wybranie emotikonu zastępuje wpisany tekst.</string>
     <string name="pref_emoji_search_replace_text_title">Zastępuj tekst emotikonem</string>

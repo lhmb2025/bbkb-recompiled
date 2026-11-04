@@ -268,6 +268,9 @@ public final class SettingsValues {
 
     public final boolean isEmojiSearchReplaceText;
 
+    /** Physical keyboard: typing while the emoji board is open searches it (default on). */
+    public final boolean isPkbEmojiSearchEnabled;
+
     public final boolean isCkbGestureInputEnabled;
 
     private final boolean isAutoCorrectEnabled;
@@ -462,6 +465,7 @@ public final class SettingsValues {
         this.altSymShortcutAction = sharedPreferences.getString("pref_alt_sym_shortcut_action", "disabled");
         this.multifunctionKeyAction = sharedPreferences.getString("pref_multifunction_key_action", "");
         this.isEmojiSearchReplaceText = SettingsManager.isEmojiSearchReplaceTextEnabled(sharedPreferences);
+        this.isPkbEmojiSearchEnabled = SettingsManager.isPkbEmojiSearchEnabled(sharedPreferences);
         this.keyboardHeightMode = sharedPreferences.getString("pref_keyboard_height_mode", "regular");
         this.isSlideboardEnabled = SettingsManager.isSlideboardActive(sharedPreferences, resources);
         this.slideboardNumericLocation = SettingsManager.getStringAsInt(sharedPreferences, resources, "slideboard_numeric_location", R.string.config_default_numeric_location);

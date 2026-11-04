@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">സ്വയംപൂരണ ഇവന്റ് ടോസ്റ്റുകൾ</string>
     <string name="pref_accessibility_service_disabled">ഉപയോഗസഹായി സേവനം പ്രവർത്തനരഹിതമാണ്</string>
     <string name="pref_accessibility_service_enabled">ഉപയോഗസഹായി സേവനം പ്രവർത്തനക്ഷമമാണ്</string>
-    <string name="pref_emoji_dynamic_search_summary_off">നിങ്ങൾ ടൈപ്പ് ചെയ്യുമ്പോൾ ഇമോജികൾ തിരയുന്നില്ല.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">നിങ്ങൾ ടൈപ്പ് ചെയ്യുമ്പോൾ, ചേരുന്ന ഇമോജികൾ ഇമോജി പാനലിൽ നിർദ്ദേശിക്കും.</string>
-    <string name="pref_emoji_dynamic_search_title">ഇമോജി ചലനാത്മക തിരയൽ പ്രവർത്തനക്ഷമമാക്കുക</string>
+    <string name="pref_emoji_search_pkb_summary">ഇമോജി ബോർഡ് തുറന്നിരിക്കുമ്പോൾ തിരയാൻ കീബോർഡ് ഉപയോഗിക്കുക.</string>
+    <string name="pref_emoji_search_title">ഇമോജി തിരയൽ പ്രവർത്തനക്ഷമമാക്കുക</string>
+    <string name="pref_emoji_search_vkb_summary">നിലവിലെ സ്ഥിരീകരിക്കാത്ത (അടിവരയിട്ട) ടെക്‌സ്‌റ്റ് ഉപയോഗിച്ച് ഇമോജികൾ ഫിൽറ്റർ ചെയ്യുക.</string>
     <string name="pref_emoji_search_replace_text_summary_off">ഒരു ഇമോജി തിരഞ്ഞെടുത്താൽ അത് ടൈപ്പ് ചെയ്ത ടെക്‌സ്റ്റിനു ശേഷം ചേർക്കും.</string>
     <string name="pref_emoji_search_replace_text_summary_on">ഒരു ഇമോജി തിരഞ്ഞെടുത്താൽ അത് ടൈപ്പ് ചെയ്ത ടെക്‌സ്റ്റിനു പകരം വരും.</string>
     <string name="pref_emoji_search_replace_text_title">ടെക്‌സ്റ്റിനു പകരം ഇമോജി നൽകുക</string>

@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Toast kedadeyan isi otomatis</string>
     <string name="pref_accessibility_service_disabled">Layanan aksesibilitas dipateni</string>
     <string name="pref_accessibility_service_enabled">Layanan aksesibilitas diaktifake</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Emoji ora digoleki nalika kowe ngetik.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Nalika kowe ngetik, emoji sing cocog disaranake ing panel emoji.</string>
-    <string name="pref_emoji_dynamic_search_title">Aktifake Panggolekan Emoji Dinamis</string>
+    <string name="pref_emoji_search_pkb_summary">Nalika papan emoji mbukak, gunakake keyboard kanggo nggoleki.</string>
+    <string name="pref_emoji_search_title">Aktifake panelusuran emoji</string>
+    <string name="pref_emoji_search_vkb_summary">Saring emoji nganggo teks saiki sing durung dikonfirmasi (digaris ngisor).</string>
     <string name="pref_emoji_search_replace_text_summary_off">Milih emoji bakal nyisipake emoji sawise teks sing diketik.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Milih emoji bakal nggenteni teks sing diketik.</string>
     <string name="pref_emoji_search_replace_text_title">Genteni teks nganggo emoji</string>

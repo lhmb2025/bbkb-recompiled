@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Oznámení o událostech automatického vyplňování</string>
     <string name="pref_accessibility_service_disabled">Služba přístupnosti je vypnutá</string>
     <string name="pref_accessibility_service_enabled">Služba přístupnosti je zapnutá</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Emodži se při psaní nevyhledávají.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Při psaní se v panelu emodži navrhují odpovídající emodži.</string>
-    <string name="pref_emoji_dynamic_search_title">Zapnout dynamické vyhledávání emodži</string>
+    <string name="pref_emoji_search_pkb_summary">Když je panel emodži otevřený, hledejte pomocí klávesnice.</string>
+    <string name="pref_emoji_search_title">Zapnout hledání emodži</string>
+    <string name="pref_emoji_search_vkb_summary">Filtrovat emodži podle aktuálního nepotvrzeného (podtrženého) textu.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Výběr emodži jej vloží za napsaný text.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Výběr emodži nahradí napsaný text.</string>
     <string name="pref_emoji_search_replace_text_title">Nahradit text emodži</string>

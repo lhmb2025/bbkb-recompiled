@@ -186,9 +186,11 @@ object SettingsSearchIndex {
         // Unified input menu moved to Input → On-Screen Keyboard
         SearchableSetting(R.string.settings_uim_enable_title, "unified input menu hamburger", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_uim_enabled"),
 
-        // Emoji dynamic search moved to Assistance → Suggestions
-        SearchableSetting(R.string.pref_emoji_dynamic_search_title, "emoji search", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_emoji_dynamic_search"),
-        SearchableSetting(R.string.pref_emoji_search_replace_text_title, "emoji replace typed text insert", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_emoji_search_replace_text"),
+        // Emoji search (2026-11-03): the on-screen pair on the On-screen keyboard screen, the
+        // physical switch on the Physical keyboard screen.
+        SearchableSetting(R.string.pref_emoji_search_title, "emoji search dynamic filter composing underlined uncommitted word on-screen", SettingsRoute.OnScreenKeyboard.route, TYPING, "pref_emoji_dynamic_search"),
+        SearchableSetting(R.string.pref_emoji_search_replace_text_title, "emoji replace typed text insert", SettingsRoute.OnScreenKeyboard.route, TYPING, "pref_emoji_search_replace_text"),
+        SearchableSetting(R.string.pref_emoji_search_title, "emoji search board type physical keyboard filter", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_pkb_emoji_search"),
 
         // ── Typing & input: Slideboard (entry row lives on On-Screen Keyboard) ──
         SearchableSetting(R.string.settings_vkb_slideboard_enable_title, "slideboard number pad", SettingsRoute.SlideboardSettings.route, TYPING, "slideboard_active"),

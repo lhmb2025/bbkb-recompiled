@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">自動填入事件通知</string>
     <string name="pref_accessibility_service_disabled">無障礙服務已停用</string>
     <string name="pref_accessibility_service_enabled">無障礙服務已啟用</string>
-    <string name="pref_emoji_dynamic_search_summary_off">輸入時不會搜尋表情符號。</string>
-    <string name="pref_emoji_dynamic_search_summary_on">輸入時，表情符號面板會建議相符的表情符號。</string>
-    <string name="pref_emoji_dynamic_search_title">啟用表情符號動態搜尋</string>
+    <string name="pref_emoji_search_pkb_summary">表情符號面板開啟時，使用鍵盤進行搜尋。</string>
+    <string name="pref_emoji_search_title">啟用表情符號搜尋</string>
+    <string name="pref_emoji_search_vkb_summary">依目前未確認（加底線）的文字篩選表情符號。</string>
     <string name="pref_emoji_search_replace_text_summary_off">選取表情符號後，會將其插入已輸入文字的後方。</string>
     <string name="pref_emoji_search_replace_text_summary_on">選取表情符號後，會取代已輸入的文字。</string>
     <string name="pref_emoji_search_replace_text_title">以表情符號取代文字</string>

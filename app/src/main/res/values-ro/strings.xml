@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Notificări toast pentru completarea automată</string>
     <string name="pref_accessibility_service_disabled">Serviciu de accesibilitate dezactivat</string>
     <string name="pref_accessibility_service_enabled">Serviciu de accesibilitate activat</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Emoji nu sunt căutate în timp ce tastați.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">În timp ce tastați, emoji corespunzătoare sunt sugerate în panoul de emoji.</string>
-    <string name="pref_emoji_dynamic_search_title">Activați căutarea dinamică de emoji</string>
+    <string name="pref_emoji_search_pkb_summary">Când tastatura emoji este deschisă, folosește tastele pentru a căuta.</string>
+    <string name="pref_emoji_search_title">Activează căutarea de emoji</string>
+    <string name="pref_emoji_search_vkb_summary">Filtrează emoji după textul curent neconfirmat (subliniat).</string>
     <string name="pref_emoji_search_replace_text_summary_off">Când selectați un emoji, acesta este inserat după textul tastat.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Când selectați un emoji, acesta înlocuiește textul tastat.</string>
     <string name="pref_emoji_search_replace_text_title">Înlocuiți textul cu emoji</string>

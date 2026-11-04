@@ -535,9 +535,9 @@
     <string name="prefs_autofill_event_toasts_title">Известувања за автоматското пополнување</string>
     <string name="pref_accessibility_service_disabled">Услугата за пристапност е оневозможена</string>
     <string name="pref_accessibility_service_enabled">Услугата за пристапност е овозможена</string>
-    <string name="pref_emoji_dynamic_search_summary_off">Емотиконите не се пребаруваат додека пишувате.</string>
-    <string name="pref_emoji_dynamic_search_summary_on">Додека пишувате, соодветните емотикони се предлагаат во таблата со емотикони.</string>
-    <string name="pref_emoji_dynamic_search_title">Овозможување динамично пребарување емотикони</string>
+    <string name="pref_emoji_search_pkb_summary">Кога таблата со емотикони е отворена, користете ја тастатурата за пребарување.</string>
+    <string name="pref_emoji_search_title">Вклучи пребарување на емотикони</string>
+    <string name="pref_emoji_search_vkb_summary">Филтрирај емотикони според тековниот непотврден (подвлечен) текст.</string>
     <string name="pref_emoji_search_replace_text_summary_off">Изборот на емотикон го вметнува по напишаниот текст.</string>
     <string name="pref_emoji_search_replace_text_summary_on">Изборот на емотикон го заменува напишаниот текст.</string>
     <string name="pref_emoji_search_replace_text_title">Замена на текстот со емотикон</string>
