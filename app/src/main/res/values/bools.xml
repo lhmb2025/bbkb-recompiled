@@ -7,7 +7,7 @@
     <bool name="config_default_allow_batched_cursor_move">true</bool>
     <bool name="config_default_apply_swipe_suppression_timeout_to_swipe_end">true</bool>
     <bool name="config_default_dynamic_learning_enabled">true</bool>
-    <bool name="config_default_emoji_predictions">false</bool>
+    <bool name="config_default_emoji_predictions">true</bool>
     <bool name="config_default_flick_commit_animation">true</bool>
     <bool name="config_default_horizontal_cursor_move_can_change_fields">false</bool>
     <bool name="config_default_key_preview_popup">false</bool>
