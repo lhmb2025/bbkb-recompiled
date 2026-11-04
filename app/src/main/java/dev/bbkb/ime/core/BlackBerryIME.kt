@@ -2231,11 +2231,10 @@ class BlackBerryIME : InputMethodService(),
         // writes multiply the engine's adaptive-language learning, which is how the
         // DLM got poisoned into ranking recent commits above trace shape. Stock
         // throttles gesture-preview updates to ~100ms; match that.
-        // With the owned decoder the gesture is decoded at lift-off (touchEnd) and the engine's
-        // mid-swipe selection list is just next-word predictions for an empty composing text:
-        // each of these lookups rewrote the context buffer and rebuilt the list under the engine
-        // lock in competition with every touchMove sample, for nothing anyone could see.
-        if (dev.bbkb.ime.core.engine.NuanceSDKDictionaryBridge.isOwnedDecodeLive()) return
+        // These mid-swipe lookups are what shows the word the engine is converging on while the
+        // finger is still down (the strip updates live on the KEY2 keypad). Skipping them with
+        // the owned decoder (2026-11-04) made the strip go blank during a swipe, so they stay,
+        // under the throttle below.
         val now = android.os.SystemClock.uptimeMillis()
         if (now - lastBatchUpdateRequestTime < 120) return
         lastBatchUpdateRequestTime = now
