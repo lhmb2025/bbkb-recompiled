@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Kirjutab salvestatud klahviruudustiku &lt;ckb-key-grid&gt; katkendina rakenduse failidesse, et seda seadme konfiguratsiooni kleepida. Avage esmalt klaviatuur, et see saaks ruudustiku salvestada.</string>
     <string name="ckb_gestures_export_title">Ekspordi CKB geomeetria</string>
     <string name="ckb_gestures_export_written">Kirjutatud %s</string>
-    <string name="ckb_gestures_reserved_note">Üles libistamine (sõrme all oleva soovituse kinnitamine) on reserveeritud.</string>
+    <string name="ckb_gestures_reserved_note">Üles libistamine (sõrme all oleva soovituse kinnitamine) on reserveeritud</string>
     <string name="ckb_gestures_screen_title">CKB žestid</string>
     <string name="settings_gesture_accent_max_speed_summary">Maksimaalne kiiruskordaja rõhumärkide vahetamisel</string>
     <string name="settings_gesture_accent_max_speed_title">Rõhumärkide kerimise maks. kiiruskordaja</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Luba dünaamiline õppimine</string>
     <string name="settings_dict_learned_words_summary">Halda kirjutamisel õpitud sõnu</string>
     <string name="settings_dict_learned_words_title">Õpitud sõnad</string>
+    <string name="settings_dict_add_to_dictionary_note">Sõnastikku lisatud sõnu soovitatakse kirjutamise ajal ja neid ei märgita valesti kirjutatuks</string>
     <string name="settings_dict_text_shortcuts_summary">Loo otseteid, mis avanevad fraasideks</string>
     <string name="settings_dict_text_shortcuts_title">Tekstiotseteed</string>
     <string name="settings_dict_user_dictionary_summary">Lisa ja muuda isiklikke sõnu</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Valige või importige seadme sisestuskonfiguratsioone</string>
     <string name="settings_device_configuration_title">Seadme konfiguratsioon</string>
     <string name="touch_surface_builtin_category">Sisseehitatud</string>
-    <string name="touch_surface_builtin_intro">Telefon edastab klaviatuuri puutepinna BBKB-le, kui funktsioon Scroll assistant on sisse lülitatud.</string>
+    <string name="touch_surface_builtin_intro">Telefon edastab klaviatuuri puutepinna BBKB-le, kui funktsioon Scroll assistant on sisse lülitatud</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant võtab klahvide topeltkoputuse endale, nii et BBKB ei saa seda kunagi kätte</string>
     <string name="touch_surface_cursor_assistant_title">Lülita Cursor assistant välja</string>
     <string name="touch_surface_grant_access">Anna juurdepääs</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku seadistamine</string>
     <string name="touch_surface_shizuku_guide_steps">1. Lülitage sisse Arendaja valikud, seejärel Juhtmevaba silumine.\n2. Käivitage Shizuku selle rakendusest või root-õigustega.\n3. Tulge siia tagasi ja puudutage valikut Anna juurdepääs.</string>
     <string name="touch_surface_shizuku_intro">Shizuku on tasuta rakendus, mis võimaldab BBKB-l puutepinda otse lugeda. BBKB võtab selle üle ainult siis, kui klaviatuur on avatud; ülejäänud ajal töötab see nagu telefonis tavaliselt.</string>
-    <string name="touch_surface_shizuku_mediatek">Kasutage selles telefonis Shizuku versiooni 13.5.4: versioon 13.6.0 ei tööta MediaTeki telefonides täielikult.</string>
+    <string name="touch_surface_shizuku_mediatek">Kasutage selles telefonis Shizuku versiooni 13.5.4: versioon 13.6.0 ei tööta MediaTeki telefonides täielikult</string>
     <string name="touch_surface_shizuku_reboot">Shizuku peatub iga kord, kui telefon taaskäivitub. Käivitage see pärast iga taaskäivitust uuesti; ülalolev olek näitab, kui see pole käivitatud.</string>
     <string name="touch_surface_shizuku_state_denied">Käivitatud, kuid BBKB juurdepääs keelati</string>
     <string name="touch_surface_shizuku_state_granted">Käivitatud ja BBKB-l on juurdepääs</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Pole selles telefonis saadaval</string>
     <string name="pref_show_pkb_modifier_status_icon">Kuva muuteklahvi olekuikoon</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Kuva füüsilise klaviatuuri kasutamisel olekuribal Shift/Alt muuteklahvi näidik</string>
-    <string name="settings_pred_accounts_permission_summary">Andke kontode luba, et kirjutamise ajal e-posti aadresse soovitada.</string>
+    <string name="settings_pred_accounts_permission_summary">Andke kontode luba, et kirjutamise ajal e-posti aadresse soovitada</string>
     <string name="settings_pred_accounts_permission_title">Vajalik on kontode luba</string>
     <string name="settings_pred_block_offensive_summary">Peida häälega dikteerimisel võimalikud solvavad sõnad</string>
     <string name="settings_pred_block_offensive_title">Blokeeri solvavad sõnad</string>
-    <string name="settings_pred_contacts_permission_summary">Andke kontaktide luba, et kirjutamise ajal kontaktide nimesid ja e-posti aadresse soovitada.</string>
+    <string name="settings_pred_contacts_permission_summary">Andke kontaktide luba, et kirjutamise ajal kontaktide nimesid ja e-posti aadresse soovitada</string>
     <string name="settings_pred_contacts_permission_title">Vajalik on kontaktide luba</string>
     <string name="settings_pred_contacts_summary_disabled">Vajalik on kontaktide luba</string>
     <string name="settings_pred_contacts_summary_enabled">Kaasa soovitustesse kontaktide nimed</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Selle funktsiooni kasutamiseks andke kontaktide luba</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktide nimesid tunnustatakse õigete sõnadena</string>
     <string name="settings_spellcheck_use_contacts_title">Kasuta õigekirjakontrollis kontakte</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Andke kontaktide luba, et õigekirjakontroll tunneks kontaktide nimed ära õigete sõnadena</string>
     <string name="settings_spellcheck_accept_learned_title">Aktsepteeri õpitud sõnu</string>
     <string name="settings_spellcheck_accept_learned_summary">Teie trükkimisest õpitud sõnu loetakse õigesti kirjutatuks</string>
     <string name="pref_alt_double_tap_lock">Luba Alt-klahvi topeltklõpsuga lukustus</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Luba Ctrl-klahvi topeltklõpsuga lukustus</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl-klahvi topeltklõps lukustab selle sisse. Uus klõps Ctrl-klahvil lülitab selle välja.</string>
     <string name="pref_override_device_meta_state">Alista seadme metaolek</string>
-    <string name="pref_override_device_meta_state_summary">Luba füüsilistel klaviatuuridel kleepuvad muuteklahvid (shift/alt lukk) sõltumata seadme KCM-i konfiguratsioonist.</string>
+    <string name="pref_override_device_meta_state_summary">Luba füüsilistel klaviatuuridel kleepuvad muuteklahvid (shift/alt lukk) sõltumata seadme KCM-i konfiguratsioonist</string>
     <string name="pref_shift_double_tap_lock">Luba Shift-klahvi topeltklõpsuga lukustus</string>
     <string name="pref_shift_double_tap_lock_summary">Shift-klahvi topeltklõps lukustab selle sisse. Uus klõps Shift-klahvil lülitab selle välja.</string>
     <string name="prefs_key_longpress_delay_summary">Aeg, mille jooksul klahvi hoida, enne kui ilmuvad lisamärgid</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Automaatse täitmise hüpikteated</string>
     <string name="pref_accessibility_service_disabled">Juurdepääsetavuse teenus on välja lülitatud</string>
     <string name="pref_accessibility_service_enabled">Juurdepääsetavuse teenus on sisse lülitatud</string>
-    <string name="pref_emoji_search_pkb_summary">Kui emotikonide paneel on avatud, kasuta otsimiseks klaviatuuri.</string>
+    <string name="pref_emoji_search_pkb_summary">Kui emotikonide paneel on avatud, kasuta otsimiseks klaviatuuri</string>
     <string name="pref_emoji_search_title">Luba emotikonide otsing</string>
-    <string name="pref_emoji_search_vkb_summary">Filtreeri emotikone praeguse kinnitamata (allajoonitud) teksti järgi.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Emotikoni valimine lisab selle kirjutatud teksti järele.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Emotikoni valimine asendab kirjutatud teksti.</string>
+    <string name="pref_emoji_search_vkb_summary">Filtreeri emotikone praeguse kinnitamata (allajoonitud) teksti järgi</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Emotikoni valimine lisab selle kirjutatud teksti järele</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Emotikoni valimine asendab kirjutatud teksti</string>
     <string name="pref_emoji_search_replace_text_title">Asenda tekst emotikoniga</string>
     <string name="pref_key_interceptor_enabled">Luba eriklahvide tugi</string>
     <string name="pref_key_interceptor_enabled_summary">Kasuta juurdepääsetavuse teenust emotikoni-, SYM- ja hääleklahvi püüdmiseks</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Andmete haldus</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Kohandatud makrod</string>
+    <string name="settings_custom_macros_intro" formatted="false">Määrake oma %x-kohatäited tekstiotseteedes kasutamiseks</string>
     <string name="settings_customize_menu_hidden_header">Klaviatuuril ei kuvata</string>
     <string name="settings_customize_menu_instructions">Puudutage otseteed ja hoidke seda all, seejärel lohistage järjekorra muutmiseks. Esimesed neli kuvatakse klaviatuuri sisestusmenüüs.</string>
     <string name="settings_customize_menu_summary">Valige sisestusmenüü otseteed ja muutke nende järjekorda</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Kiirfraasid</string>
     <string name="settings_screen_type_by_swiping">Kirjutamine libistades</string>
     <string name="settings_screen_type_by_swiping_summary">Kirjutage kiiresti, tõstmata sõrme klaviatuurilt</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Libistades kirjutamine pole teie keeles saadaval.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Libistades kirjutamine pole teie keeles saadaval</string>
     <string name="settings_search_hint">Otsi seadetest</string>
     <string name="settings_search_no_results">Seadeid ei leitud</string>
     <string name="settings_shake_fallback_title">Varutoiming</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Klaviatuuriseade: %1$s</string>
     <string name="device_config_import_matches_build">Järgu seade: %1$s</string>
     <string name="device_config_import_matches_brand">Kaubamärk: %1$s</string>
-    <string name="device_config_import_matches_nothing">See fail ei nimeta ühtegi sobitatavat seadet, seega ei rakenduks see kunagi.</string>
+    <string name="device_config_import_matches_nothing">See fail ei nimeta ühtegi sobitatavat seadet, seega ei rakenduks see kunagi</string>
     <string name="device_config_import_type">Seadme tüüp: %1$s</string>
     <string name="device_config_import_keys">%1$d klahviseost</string>
     <string name="device_config_import_keypad_layout">Klahvistiku paigutus: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">See versioon on värskenduste loendi lugemiseks liiga vana. Palun värskenda käsitsi.</string>
     <string name="settings_update_from_cache">Kuvatud viimasest salvestatud kontrollist</string>
     <string name="settings_update_background_check_title">Kontrolli värskendusi automaatselt</string>
-    <string name="settings_update_background_check_summary">Saad teate, kui allalaadimiseks on saadaval uus versioon.</string>
+    <string name="settings_update_background_check_summary">Saad teate, kui allalaadimiseks on saadaval uus versioon</string>
     <string name="settings_update_notification_text">Versioon %1$s on allalaadimiseks valmis</string>
     <string name="settings_update_unknown_sources_message">Android peab lubama BBKB-l rakendusi paigaldada. Luba paigaldamine sellest allikast ja vajuta uuesti Paigalda.</string>
     <string name="settings_update_open_settings">Ava seaded</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Otsi sõnastikke</string>
     <string name="language_packs_load_ldb">Laadi LDB-fail</string>
     <string name="language_packs_variant_summary">Laaditakse %1$s asemel</string>
-    <string name="language_packs_not_on_summary">Puudutage, et luua uus klaviatuur: %1$s.</string>
+    <string name="language_packs_not_on_summary">Puudutage, et luua uus klaviatuur: %1$s</string>
     <string name="language_packs_turned_on">%1$s on sisse lülitatud. Vahetage sellele keelevahetajast.</string>
-    <string name="language_packs_turn_on_in_settings">Lülitage %1$s loendis sisse ja tulge siis tagasi.</string>
+    <string name="language_packs_turn_on_in_settings">Lülitage %1$s loendis sisse ja tulge siis tagasi</string>
     <string name="language_packs_installed_and_on">%1$s on paigaldatud. See on sisse lülitatud: vahetage sellele keelevahetajast.</string>
     <string name="language_packs_installed_turn_on">%1$s on paigaldatud. Selle sisselülitamiseks klaviatuuris puudutage selle rida.</string>
+    <string name="language_packs_installed_no_layout">%1$s on paigaldatud, kuid sellel klaviatuuril pole veel selle kirja jaoks paigutust, seega ei saa seda valida</string>
     <string name="language_packs_error_offline">Ühendus puudub</string>
     <string name="language_packs_error_network">See ei õnnestunud. Proovi uuesti.</string>
     <string name="language_packs_error_verification">Fail ei vastanud kataloogile, seega ei paigaldatud midagi</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Salvestatud: %1$s</string>
     <string name="backup_restore_dialog_device">Seade: %1$s</string>
     <string name="backup_restore_not_in_file">Pole selles failis</string>
-    <string name="backup_restore_dialog_note">Seaded, paigutused ja makrod asendatakse; sõnad lisatakse selles telefonis olemasolevatele.</string>
+    <string name="backup_restore_dialog_note">Seaded, paigutused ja makrod asendatakse; sõnad lisatakse selles telefonis olemasolevatele</string>
     <string name="backup_restore_dialog_confirm">Taasta</string>
     <string name="backup_restored">Varukoopia taastati</string>
     <string name="backup_restored_words_pending">Õpitud sõnad lisatakse, kui klaviatuur on kasutusel</string>

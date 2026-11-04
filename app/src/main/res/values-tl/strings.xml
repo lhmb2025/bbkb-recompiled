@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Isulat ang na-capture na key grid bilang &lt;ckb-key-grid&gt; snippet sa mga file ng app, para i-paste sa config ng device. Buksan muna ang keyboard nang isang beses para makapag-capture ito.</string>
     <string name="ckb_gestures_export_title">I-export ang geometry ng CKB</string>
     <string name="ckb_gestures_export_written">Isinulat ang %s</string>
-    <string name="ckb_gestures_reserved_note">Nakalaan ang pag-swipe pataas (pag-commit ng suhestyon sa ilalim ng iyong daliri).</string>
+    <string name="ckb_gestures_reserved_note">Nakalaan ang pag-swipe pataas (pag-commit ng suhestyon sa ilalim ng iyong daliri)</string>
     <string name="ckb_gestures_screen_title">Mga Galaw sa CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">Maximum na speed multiplier para sa pagpapalit ng accent</string>
     <string name="settings_gesture_accent_max_speed_title">Max speed multiplier ng pag-scroll para sa pagpapalit ng accent</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">I-enable ang dynamic na pag-aaral</string>
     <string name="settings_dict_learned_words_summary">Pamahalaan ang mga salitang natutunan mula sa iyong pagta-type</string>
     <string name="settings_dict_learned_words_title">Mga natutunang salita</string>
+    <string name="settings_dict_add_to_dictionary_note">Imumungkahi habang nagta-type ang mga salitang idinagdag sa iyong diksyunaryo at hindi mamarkahan bilang mali ang baybay</string>
     <string name="settings_dict_text_shortcuts_summary">Gumawa ng mga shortcut na nagiging parirala</string>
     <string name="settings_dict_text_shortcuts_title">Mga text shortcut</string>
     <string name="settings_dict_user_dictionary_summary">Magdagdag at mag-edit ng mga personal na salita</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Pumili o mag-import ng mga input configuration ng device</string>
     <string name="settings_device_configuration_title">Configuration ng device</string>
     <string name="touch_surface_builtin_category">Built-in</string>
-    <string name="touch_surface_builtin_intro">Ipinapasa ng telepono sa BBKB ang touch surface ng keyboard habang naka-on ang Scroll assistant nito.</string>
+    <string name="touch_surface_builtin_intro">Ipinapasa ng telepono sa BBKB ang touch surface ng keyboard habang naka-on ang Scroll assistant nito</string>
     <string name="touch_surface_cursor_assistant_summary">Kinukuha ng Cursor assistant ang double-tap sa mga key, kaya hindi ito kailanman natatanggap ng BBKB</string>
     <string name="touch_surface_cursor_assistant_title">I-off ang Cursor assistant</string>
     <string name="touch_surface_grant_access">Magbigay ng access</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">I-set up ang Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. I-on ang Mga opsyon ng developer, pagkatapos ay ang Wireless debugging.\n2. Simulan ang Shizuku mula sa app nito, o gamit ang root.\n3. Bumalik dito at i-tap ang Magbigay ng access.</string>
     <string name="touch_surface_shizuku_intro">Ang Shizuku ay isang libreng app na nagbibigay-daan sa BBKB na direktang basahin ang touch surface. Kinukuha lang ito ng BBKB habang nakabukas ang keyboard; sa ibang pagkakataon, gumagana ito gaya ng karaniwan sa telepono.</string>
-    <string name="touch_surface_shizuku_mediatek">Gamitin ang Shizuku 13.5.4 sa teleponong ito: hindi lubos na gumagana ang bersyon 13.6.0 sa mga MediaTek na telepono.</string>
+    <string name="touch_surface_shizuku_mediatek">Gamitin ang Shizuku 13.5.4 sa teleponong ito: hindi lubos na gumagana ang bersyon 13.6.0 sa mga MediaTek na telepono</string>
     <string name="touch_surface_shizuku_reboot">Humihinto ang Shizuku tuwing magre-restart ang telepono. Simulan itong muli pagkatapos ng bawat restart; makikita sa status sa itaas kapag hindi ito tumatakbo.</string>
     <string name="touch_surface_shizuku_state_denied">Tumatakbo, pero tinanggihan ang access ng BBKB</string>
     <string name="touch_surface_shizuku_state_granted">Tumatakbo, at may access ang BBKB</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Hindi available sa teleponong ito</string>
     <string name="pref_show_pkb_modifier_status_icon">Ipakita ang status icon ng modifier</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Ipakita ang indicator ng Shift/Alt modifier sa status bar kapag gumagamit ng pisikal na keyboard</string>
-    <string name="settings_pred_accounts_permission_summary">Magbigay ng pahintulot sa mga account para magmungkahi ng mga email address habang nagta-type.</string>
+    <string name="settings_pred_accounts_permission_summary">Magbigay ng pahintulot sa mga account para magmungkahi ng mga email address habang nagta-type</string>
     <string name="settings_pred_accounts_permission_title">Kailangan ng Pahintulot sa Mga Account</string>
     <string name="settings_pred_block_offensive_summary">Itago ang mga salitang posibleng nakakasakit kapag nagdidikta gamit ang boses</string>
     <string name="settings_pred_block_offensive_title">I-block ang mga nakakasakit na salita</string>
-    <string name="settings_pred_contacts_permission_summary">Magbigay ng pahintulot sa mga contact para magmungkahi ng mga pangalan ng contact at email address habang nagta-type.</string>
+    <string name="settings_pred_contacts_permission_summary">Magbigay ng pahintulot sa mga contact para magmungkahi ng mga pangalan ng contact at email address habang nagta-type</string>
     <string name="settings_pred_contacts_permission_title">Kailangan ng Pahintulot sa Mga Contact</string>
     <string name="settings_pred_contacts_summary_disabled">Kailangan ng pahintulot sa mga contact</string>
     <string name="settings_pred_contacts_summary_enabled">Isama ang mga pangalan ng contact sa mga suhestyon</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Magbigay ng pahintulot sa mga contact para magamit ang feature na ito</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kikilalanin ang mga pangalan ng contact bilang wastong salita</string>
     <string name="settings_spellcheck_use_contacts_title">Gamitin ang mga contact sa spellchecking</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Magbigay ng pahintulot sa mga contact para makilala ang mga pangalan ng contact bilang mga wastong salita sa spellchecking</string>
     <string name="settings_spellcheck_accept_learned_title">Tanggapin ang mga natutunang salita</string>
     <string name="settings_spellcheck_accept_learned_summary">Itinuturing na tama ang baybay ng mga salitang natutunan mula sa iyong pagta-type</string>
     <string name="pref_alt_double_tap_lock">I-enable ang Alt double-click lock</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">I-enable ang Ctrl double-click lock</string>
     <string name="pref_ctrl_double_tap_lock_summary">Kapag dalawang beses na-click ang Ctrl, mala-lock ito. I-click ulit ang Ctrl para i-off.</string>
     <string name="pref_override_device_meta_state">I-override ang meta state ng device</string>
-    <string name="pref_override_device_meta_state_summary">I-enable ang mga sticky modifier (shift/alt lock) sa mga pisikal na keyboard kahit ano pa ang KCM configuration ng device.</string>
+    <string name="pref_override_device_meta_state_summary">I-enable ang mga sticky modifier (shift/alt lock) sa mga pisikal na keyboard kahit ano pa ang KCM configuration ng device</string>
     <string name="pref_shift_double_tap_lock">I-enable ang Shift double-click lock</string>
     <string name="pref_shift_double_tap_lock_summary">Kapag dalawang beses na-click ang Shift, mala-lock ito. I-click ulit ang Shift para i-off.</string>
     <string name="prefs_key_longpress_delay_summary">Tagal ng pagpindot sa key bago lumabas ang mga pangalawang character</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Mga toast ng autofill event</string>
     <string name="pref_accessibility_service_disabled">Naka-disable ang serbisyo sa accessibility</string>
     <string name="pref_accessibility_service_enabled">Naka-enable ang serbisyo sa accessibility</string>
-    <string name="pref_emoji_search_pkb_summary">Kapag bukas ang emoji board, gamitin ang keyboard para maghanap.</string>
+    <string name="pref_emoji_search_pkb_summary">Kapag bukas ang emoji board, gamitin ang keyboard para maghanap</string>
     <string name="pref_emoji_search_title">I-enable ang paghahanap ng emoji</string>
-    <string name="pref_emoji_search_vkb_summary">I-filter ang mga emoji gamit ang kasalukuyang hindi pa nakumpirmang (naka-underline) teksto.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Kapag pumili ka ng emoji, ipapasok ito pagkatapos ng na-type na text.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Kapag pumili ka ng emoji, papalitan nito ang na-type na text.</string>
+    <string name="pref_emoji_search_vkb_summary">I-filter ang mga emoji gamit ang kasalukuyang hindi pa nakumpirmang (naka-underline) teksto</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Kapag pumili ka ng emoji, ipapasok ito pagkatapos ng na-type na text</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Kapag pumili ka ng emoji, papalitan nito ang na-type na text</string>
     <string name="pref_emoji_search_replace_text_title">Palitan ng emoji ang text</string>
     <string name="pref_key_interceptor_enabled">I-enable ang suporta sa espesyal na key</string>
     <string name="pref_key_interceptor_enabled_summary">Gamitin ang serbisyo sa accessibility para makuha ang mga Emoji, SYM at Voice key</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Pamahalaan ang data</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Mga custom na macro</string>
+    <string name="settings_custom_macros_intro" formatted="false">Tukuyin ang sarili mong mga %x placeholder na gagamitin sa mga text shortcut</string>
     <string name="settings_customize_menu_hidden_header">Hindi ipinapakita sa keyboard</string>
     <string name="settings_customize_menu_instructions">Pindutin nang matagal ang shortcut, pagkatapos ay i-drag para baguhin ang pagkakasunod-sunod. Lumalabas sa input menu ng keyboard ang unang apat.</string>
     <string name="settings_customize_menu_summary">Piliin at ayusin ang pagkakasunod-sunod ng mga shortcut sa input menu</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Mga mabilisang parirala</string>
     <string name="settings_screen_type_by_swiping">Mag-type sa pamamagitan ng swipe</string>
     <string name="settings_screen_type_by_swiping_summary">Mag-type nang mabilis nang hindi inaalis ang daliri sa keyboard</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Hindi available sa iyong wika ang pag-type sa pamamagitan ng swipe.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Hindi available sa iyong wika ang pag-type sa pamamagitan ng swipe</string>
     <string name="settings_search_hint">Maghanap ng mga setting</string>
     <string name="settings_search_no_results">Walang nakitang setting</string>
     <string name="settings_shake_fallback_title">Fallback na aksyon</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Keyboard device: %1$s</string>
     <string name="device_config_import_matches_build">Device ng build: %1$s</string>
     <string name="device_config_import_matches_brand">Brand: %1$s</string>
-    <string name="device_config_import_matches_nothing">Walang tinutukoy na device na tutugma ang file na ito, kaya hindi ito kailanman magagamit.</string>
+    <string name="device_config_import_matches_nothing">Walang tinutukoy na device na tutugma ang file na ito, kaya hindi ito kailanman magagamit</string>
     <string name="device_config_import_type">Uri ng device: %1$s</string>
     <string name="device_config_import_keys">%1$d key mapping</string>
     <string name="device_config_import_keypad_layout">Layout ng keypad: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Masyadong luma ang bersyong ito para mabasa ang listahan ng mga update. Mag-update nang manu-mano.</string>
     <string name="settings_update_from_cache">Ipinapakita mula sa huling nakasaveng pagsusuri</string>
     <string name="settings_update_background_check_title">Awtomatikong maghanap ng mga update</string>
-    <string name="settings_update_background_check_summary">Makakatanggap ka ng notification kapag may bagong bersyong puwedeng i-download.</string>
+    <string name="settings_update_background_check_summary">Makakatanggap ka ng notification kapag may bagong bersyong puwedeng i-download</string>
     <string name="settings_update_notification_text">Handa nang i-download ang bersyon %1$s</string>
     <string name="settings_update_unknown_sources_message">Kailangang payagan ng Android ang BBKB na mag-install ng mga app. I-enable ang pag-install mula sa pinagmulang ito, pagkatapos pindutin muli ang I-install.</string>
     <string name="settings_update_open_settings">Buksan ang mga setting</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Maghanap ng diksyunaryo</string>
     <string name="language_packs_load_ldb">I-load ang LDB file</string>
     <string name="language_packs_variant_summary">Nag-lo-load kapalit ng %1$s</string>
-    <string name="language_packs_not_on_summary">I-tap para gumawa ng bagong %1$s keyboard.</string>
+    <string name="language_packs_not_on_summary">I-tap para gumawa ng bagong %1$s keyboard</string>
     <string name="language_packs_turned_on">Naka-on na ang %1$s. Lumipat dito gamit ang language switcher.</string>
-    <string name="language_packs_turn_on_in_settings">I-on ang %1$s sa listahan, pagkatapos ay bumalik dito.</string>
+    <string name="language_packs_turn_on_in_settings">I-on ang %1$s sa listahan, pagkatapos ay bumalik dito</string>
     <string name="language_packs_installed_and_on">Na-install ang %1$s. Naka-on ito: lumipat dito gamit ang language switcher.</string>
     <string name="language_packs_installed_turn_on">Na-install ang %1$s. I-tap ang row nito para i-on sa keyboard.</string>
+    <string name="language_packs_installed_no_layout">Na-install ang %1$s, pero wala pang layout ang keyboard na ito para sa script nito, kaya hindi ito mapipili</string>
     <string name="language_packs_error_offline">Walang koneksyon</string>
     <string name="language_packs_error_network">Hindi gumana. Subukang muli.</string>
     <string name="language_packs_error_verification">Hindi tumugma ang file sa katalogo, kaya walang na-install</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Na-save noong %1$s</string>
     <string name="backup_restore_dialog_device">Mula sa %1$s</string>
     <string name="backup_restore_not_in_file">Wala sa file na ito</string>
-    <string name="backup_restore_dialog_note">Pinapalitan ang mga setting, layout at macro; idinaragdag ang mga salita sa kung ano ang nasa teleponong ito.</string>
+    <string name="backup_restore_dialog_note">Pinapalitan ang mga setting, layout at macro; idinaragdag ang mga salita sa kung ano ang nasa teleponong ito</string>
     <string name="backup_restore_dialog_confirm">I-restore</string>
     <string name="backup_restored">Na-restore ang backup</string>
     <string name="backup_restored_words_pending">Idaragdag ang mga natutunang salita kapag ginagamit na ang keyboard</string>

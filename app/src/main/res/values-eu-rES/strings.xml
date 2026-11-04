@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Idatzi atzemandako tekla-sareta &lt;ckb-key-grid&gt; zati gisa aplikazioaren fitxategietan, gailuaren konfigurazioan itsasteko. Ireki teklatua behin lehenik, atzeman ahal izateko.</string>
     <string name="ckb_gestures_export_title">Esportatu CKB geometria</string>
     <string name="ckb_gestures_export_written">%s idatzi da</string>
-    <string name="ckb_gestures_reserved_note">Gorantz lerratzea (hatzaren azpiko iradokizuna berrestea) erreserbatuta dago.</string>
+    <string name="ckb_gestures_reserved_note">Gorantz lerratzea (hatzaren azpiko iradokizuna berrestea) erreserbatuta dago</string>
     <string name="ckb_gestures_screen_title">CKB keinuak</string>
     <string name="settings_gesture_accent_max_speed_summary">Azentuak aldatzeko gehieneko abiadura-biderkatzailea</string>
     <string name="settings_gesture_accent_max_speed_title">Azentuen korritze-abiaduraren gehieneko biderkatzailea</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Gaitu ikaskuntza dinamikoa</string>
     <string name="settings_dict_learned_words_summary">Kudeatu zure idazketatik ikasitako hitzak</string>
     <string name="settings_dict_learned_words_title">Ikasitako hitzak</string>
+    <string name="settings_dict_add_to_dictionary_note">Hiztegira gehitutako hitzak idatzi ahala iradokiko dira, eta ez dira akats ortografiko gisa markatuko</string>
     <string name="settings_dict_text_shortcuts_summary">Sortu esaldi bihurtzen diren lasterbideak</string>
     <string name="settings_dict_text_shortcuts_title">Testu-lasterbideak</string>
     <string name="settings_dict_user_dictionary_summary">Gehitu eta editatu hitz pertsonalak</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Hautatu edo inportatu gailuaren idazketa-konfigurazioak</string>
     <string name="settings_device_configuration_title">Gailuaren konfigurazioa</string>
     <string name="touch_surface_builtin_category">Integratua</string>
-    <string name="touch_surface_builtin_intro">Telefonoak teklatuaren ukipen-gainazala BBKB-ri ematen dio, Scroll assistant aktibatuta dagoen bitartean.</string>
+    <string name="touch_surface_builtin_intro">Telefonoak teklatuaren ukipen-gainazala BBKB-ri ematen dio, Scroll assistant aktibatuta dagoen bitartean</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant eginbideak bereganatzen du teklen gaineko sakatze bikoitza; beraz, BBKB-k ez du inoiz jasotzen</string>
     <string name="touch_surface_cursor_assistant_title">Desaktibatu Cursor assistant</string>
     <string name="touch_surface_grant_access">Eman sarbidea</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Konfiguratu Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Aktibatu Garatzaileentzako aukerak eta, ondoren, Hari gabeko arazketa.\n2. Abiarazi Shizuku bere aplikaziotik edo root bidez.\n3. Itzuli hona eta sakatu Eman sarbidea.</string>
     <string name="touch_surface_shizuku_intro">Shizuku doako aplikazio bat da, eta BBKB-ri ukipen-gainazala zuzenean irakurtzeko aukera ematen dio. Teklatua irekita dagoen bitartean soilik hartzen du BBKB-k bere gain; gainerako denboran, telefonoak ohi bezala funtzionatzen du.</string>
-    <string name="touch_surface_shizuku_mediatek">Erabili Shizuku 13.5.4 telefono honetan: 13.6.0 bertsioak ez du guztiz funtzionatzen MediaTek telefonoetan.</string>
+    <string name="touch_surface_shizuku_mediatek">Erabili Shizuku 13.5.4 telefono honetan: 13.6.0 bertsioak ez du guztiz funtzionatzen MediaTek telefonoetan</string>
     <string name="touch_surface_shizuku_reboot">Shizuku gelditu egiten da telefonoa berrabiarazten den bakoitzean. Abiarazi berriro berrabiarazte bakoitzaren ondoren; goiko egoerak adierazten du abian ez dagoenean.</string>
     <string name="touch_surface_shizuku_state_denied">Abian dago, baina BBKB-ri sarbidea ukatu zaio</string>
     <string name="touch_surface_shizuku_state_granted">Abian dago, eta BBKB-k sarbidea du</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Ez dago erabilgarri telefono honetan</string>
     <string name="pref_show_pkb_modifier_status_icon">Erakutsi tekla aldatzaileen egoera-ikonoa</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Erakutsi Shift/Alt adierazlea egoera-barran teklatu fisikoa erabiltzean</string>
-    <string name="settings_pred_accounts_permission_summary">Eman kontuetarako baimena idatzi ahala helbide elektronikoak iradokitzeko.</string>
+    <string name="settings_pred_accounts_permission_summary">Eman kontuetarako baimena idatzi ahala helbide elektronikoak iradokitzeko</string>
     <string name="settings_pred_accounts_permission_title">Kontuetarako baimena behar da</string>
     <string name="settings_pred_block_offensive_summary">Ezkutatu iraingarriak izan daitezkeen hitzak ahots bidezko diktaketan</string>
     <string name="settings_pred_block_offensive_title">Blokeatu hitz iraingarriak</string>
-    <string name="settings_pred_contacts_permission_summary">Eman kontaktuetarako baimena idatzi ahala kontaktuen izenak eta helbide elektronikoak iradokitzeko.</string>
+    <string name="settings_pred_contacts_permission_summary">Eman kontaktuetarako baimena idatzi ahala kontaktuen izenak eta helbide elektronikoak iradokitzeko</string>
     <string name="settings_pred_contacts_permission_title">Kontaktuetarako baimena behar da</string>
     <string name="settings_pred_contacts_summary_disabled">Kontaktuetarako baimena behar da</string>
     <string name="settings_pred_contacts_summary_enabled">Sartu kontaktuen izenak iradokizunetan</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Eman kontaktuetarako baimena eginbide hau erabiltzeko</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktuen izenak hitz baliodun gisa onartuko dira</string>
     <string name="settings_spellcheck_use_contacts_title">Erabili kontaktuak zuzenketa ortografikorako</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Eman kontaktuetarako baimena, zuzenketa ortografikoan kontaktuen izenak hitz baliozko gisa ezagutzeko</string>
     <string name="settings_spellcheck_accept_learned_title">Onartu ikasitako hitzak</string>
     <string name="settings_spellcheck_accept_learned_summary">Idazten duzunetik ikasitako hitzak ondo idatzitzat hartzen dira</string>
     <string name="pref_alt_double_tap_lock">Gaitu Alt teklaren klik bikoitzeko blokeoa</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Gaitu Ctrl teklaren klik bikoitzeko blokeoa</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl tekla birritan sakatuz gero, blokeatuta geratuko da. Ctrl berriro sakatzean, desaktibatuko da.</string>
     <string name="pref_override_device_meta_state">Gainidatzi gailuaren meta-egoera</string>
-    <string name="pref_override_device_meta_state_summary">Gaitu tekla aldatzaile itsaskorrak (shift/alt blokeoa) teklatu fisikoetan, gailuaren KCM konfigurazioa edozein dela ere.</string>
+    <string name="pref_override_device_meta_state_summary">Gaitu tekla aldatzaile itsaskorrak (shift/alt blokeoa) teklatu fisikoetan, gailuaren KCM konfigurazioa edozein dela ere</string>
     <string name="pref_shift_double_tap_lock">Gaitu Shift teklaren klik bikoitzeko blokeoa</string>
     <string name="pref_shift_double_tap_lock_summary">Shift tekla birritan sakatuz gero, blokeatuta geratuko da. Shift berriro sakatzean, desaktibatuko da.</string>
     <string name="prefs_key_longpress_delay_summary">Tekla bati eusteko denbora karaktere sekundarioak agertu aurretik</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Betetze automatikoaren gertaeren abisuak</string>
     <string name="pref_accessibility_service_disabled">Erabilerraztasun-zerbitzua desgaituta</string>
     <string name="pref_accessibility_service_enabled">Erabilerraztasun-zerbitzua gaituta</string>
-    <string name="pref_emoji_search_pkb_summary">Emotikono-taula irekita dagoenean, erabili teklatua bilatzeko.</string>
+    <string name="pref_emoji_search_pkb_summary">Emotikono-taula irekita dagoenean, erabili teklatua bilatzeko</string>
     <string name="pref_emoji_search_title">Gaitu emotikonoen bilaketa</string>
-    <string name="pref_emoji_search_vkb_summary">Iragazi emotikonoak uneko berretsi gabeko (azpimarratutako) testuarekin.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Emotikono bat hautatzean, idatzitako testuaren ondoren txertatzen da.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Emotikono bat hautatzean, idatzitako testua ordezten du.</string>
+    <string name="pref_emoji_search_vkb_summary">Iragazi emotikonoak uneko berretsi gabeko (azpimarratutako) testuarekin</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Emotikono bat hautatzean, idatzitako testuaren ondoren txertatzen da</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Emotikono bat hautatzean, idatzitako testua ordezten du</string>
     <string name="pref_emoji_search_replace_text_title">Ordeztu testua emotikonoarekin</string>
     <string name="pref_key_interceptor_enabled">Gaitu tekla berezien euskarria</string>
     <string name="pref_key_interceptor_enabled_summary">Erabili erabilerraztasun-zerbitzua Emoji, SYM eta Ahotsa teklak atzemateko</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Datuen kudeaketa</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Makro pertsonalizatuak</string>
+    <string name="settings_custom_macros_intro" formatted="false">Definitu zure %x leku-markak testu-lasterbideetan erabiltzeko</string>
     <string name="settings_customize_menu_hidden_header">Ez da teklatuan erakusten</string>
     <string name="settings_customize_menu_instructions">Ukitu eta eutsi lasterbide bati, eta arrastatu ordena aldatzeko. Lehen lauak teklatuaren idazketa-menuan agertzen dira.</string>
     <string name="settings_customize_menu_summary">Hautatu eta berrantolatu idazketa-menuko lasterbideak</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Esaldi azkarrak</string>
     <string name="settings_screen_type_by_swiping">Idatzi hatza lerratuz</string>
     <string name="settings_screen_type_by_swiping_summary">Idatzi azkar hatza teklatutik altxatu gabe</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Hatza lerratuz idaztea ez dago erabilgarri zure hizkuntzan.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Hatza lerratuz idaztea ez dago erabilgarri zure hizkuntzan</string>
     <string name="settings_search_hint">Bilatu ezarpenetan</string>
     <string name="settings_search_no_results">Ez da ezarpenik aurkitu</string>
     <string name="settings_shake_fallback_title">Ordezko ekintza</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Teklatu-gailua: %1$s</string>
     <string name="device_config_import_matches_build">Konpilazioaren gailua: %1$s</string>
     <string name="device_config_import_matches_brand">Marka: %1$s</string>
-    <string name="device_config_import_matches_nothing">Fitxategi honek ez du bat etortzeko gailurik aipatzen, beraz ez litzateke inoiz aplikatuko.</string>
+    <string name="device_config_import_matches_nothing">Fitxategi honek ez du bat etortzeko gailurik aipatzen, beraz ez litzateke inoiz aplikatuko</string>
     <string name="device_config_import_type">Gailu mota: %1$s</string>
     <string name="device_config_import_keys">%1$d tekla-esleipen</string>
     <string name="device_config_import_keypad_layout">Teklatuaren diseinua: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Bertsio hau zaharregia da eguneraketa-zerrenda irakurtzeko. Eguneratu eskuz.</string>
     <string name="settings_update_from_cache">Gordetako azken egiaztapenetik erakutsita</string>
     <string name="settings_update_background_check_title">Bilatu eguneratzeak automatikoki</string>
-    <string name="settings_update_background_check_summary">Jakinarazpen bat jasoko duzu bertsio berri bat deskargatzeko erabilgarri dagoenean.</string>
+    <string name="settings_update_background_check_summary">Jakinarazpen bat jasoko duzu bertsio berri bat deskargatzeko erabilgarri dagoenean</string>
     <string name="settings_update_notification_text">%1$s bertsioa deskargatzeko prest dago</string>
     <string name="settings_update_unknown_sources_message">Androidek BBKBri aplikazioak instalatzen uzteko baimena eman behar dio. Gaitu iturburu honetatik instalatzea eta sakatu Instalatu berriro.</string>
     <string name="settings_update_open_settings">Ireki ezarpenak</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Bilatu hiztegiak</string>
     <string name="language_packs_load_ldb">Kargatu LDB fitxategia</string>
     <string name="language_packs_variant_summary">%1$s-en ordez kargatzen da</string>
-    <string name="language_packs_not_on_summary">Sakatu %1$s hizkuntzarako teklatu berri bat sortzeko.</string>
+    <string name="language_packs_not_on_summary">Sakatu %1$s hizkuntzarako teklatu berri bat sortzeko</string>
     <string name="language_packs_turned_on">%1$s gaituta dago. Aldatu bertara hizkuntza-aldatzailetik.</string>
-    <string name="language_packs_turn_on_in_settings">Gaitu %1$s zerrendan, gero itzuli.</string>
+    <string name="language_packs_turn_on_in_settings">Gaitu %1$s zerrendan, gero itzuli</string>
     <string name="language_packs_installed_and_on">%1$s instalatu da. Gaituta dago: aldatu bertara hizkuntza-aldatzailetik.</string>
     <string name="language_packs_installed_turn_on">%1$s instalatu da. Sakatu bere errenkada teklatuan gaitzeko.</string>
+    <string name="language_packs_installed_no_layout">%1$s instalatu da, baina teklatu honek ez du oraindik bere idazkerarako diseinurik; beraz, ezin da hautatu</string>
     <string name="language_packs_error_offline">Konexiorik ez</string>
     <string name="language_packs_error_network">Ez du funtzionatu. Saiatu berriro.</string>
     <string name="language_packs_error_verification">Fitxategia ez zegokion katalogoari, beraz ez da ezer instalatu</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Gordeta: %1$s</string>
     <string name="backup_restore_dialog_device">Gailua: %1$s</string>
     <string name="backup_restore_not_in_file">Ez dago fitxategi honetan</string>
-    <string name="backup_restore_dialog_note">Ezarpenak, diseinuak eta makroak ordeztu egiten dira; hitzak telefono honetan daudenei gehitzen zaizkie.</string>
+    <string name="backup_restore_dialog_note">Ezarpenak, diseinuak eta makroak ordeztu egiten dira; hitzak telefono honetan daudenei gehitzen zaizkie</string>
     <string name="backup_restore_dialog_confirm">Leheneratu</string>
     <string name="backup_restored">Leheneratu da babeskopia</string>
     <string name="backup_restored_words_pending">Ikasitako hitzak teklatua erabiltzen denean gehituko dira</string>

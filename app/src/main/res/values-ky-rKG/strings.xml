@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Тартылган баскыч торун &lt;ckb-key-grid&gt; үзүндүсү катары колдонмонун файлдарына жазып, түзмөктүн конфигурациясына коюңуз. Адегенде баскычтопту бир жолу ачыңыз, ошондо ал торду тарта алат.</string>
     <string name="ckb_gestures_export_title">CKB геометриясын экспорттоо</string>
     <string name="ckb_gestures_export_written">%s жазылды</string>
-    <string name="ckb_gestures_reserved_note">Жогору сүрүү (манжаңыздын астындагы сунушту колдонуу) ээленген.</string>
+    <string name="ckb_gestures_reserved_note">Жогору сүрүү (манжаңыздын астындагы сунушту колдонуу) ээленген</string>
     <string name="ckb_gestures_screen_title">CKB жаңсоолору</string>
     <string name="settings_gesture_accent_max_speed_summary">Акцентти алмаштыруу үчүн максималдуу ылдамдык көбөйткүчү</string>
     <string name="settings_gesture_accent_max_speed_title">Акцент алмашууда жылдыруунун макс. ылдамдык көбөйткүчү</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Динамикалык үйрөнүүнү күйгүзүү</string>
     <string name="settings_dict_learned_words_summary">Терген сөздөрүңүздөн үйрөнүлгөн сөздөрдү башкаруу</string>
     <string name="settings_dict_learned_words_title">Үйрөнүлгөн сөздөр</string>
+    <string name="settings_dict_add_to_dictionary_note">Сөздүгүңүзгө кошулган сөздөр терип жатканда сунушталат жана ката жазылган деп белгиленбейт</string>
     <string name="settings_dict_text_shortcuts_summary">Сөз айкаштарына айланган кыска жолдорду түзүү</string>
     <string name="settings_dict_text_shortcuts_title">Текст кыска жолдору</string>
     <string name="settings_dict_user_dictionary_summary">Жеке сөздөрдү кошуу жана түзөтүү</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Түзмөктүн киргизүү конфигурацияларын тандоо же импорттоо</string>
     <string name="settings_device_configuration_title">Түзмөктүн конфигурациясы</string>
     <string name="touch_surface_builtin_category">Камтылган колдоо</string>
-    <string name="touch_surface_builtin_intro">Scroll assistant күйүк турганда, телефон баскычтоптун сенсордук бетиндеги тийүүлөрдү BBKB\'ге өткөрүп берет.</string>
+    <string name="touch_surface_builtin_intro">Scroll assistant күйүк турганда, телефон баскычтоптун сенсордук бетиндеги тийүүлөрдү BBKB\'ге өткөрүп берет</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant баскычтардагы эки жолу басууну өзүнө алат, ошондуктан BBKB аны эч качан албайт</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant\'ты өчүрүү</string>
     <string name="touch_surface_grant_access">Уруксат берүү</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku\'ну жөндөө</string>
     <string name="touch_surface_shizuku_guide_steps">1. Иштеп чыгуучунун параметрлерин, андан соң мүчүлүштүктөрдү зымсыз оңдоону күйгүзүңүз.\n2. Shizuku\'ну анын колдонмосунан же root аркылуу иштетиңиз.\n3. Бул жерге кайтып келип, «Уруксат берүү» баскычын басыңыз.</string>
     <string name="touch_surface_shizuku_intro">Shizuku — BBKB\'ге сенсордук бетти түздөн-түз окууга мүмкүндүк берген акысыз колдонмо. BBKB аны баскычтоп ачык турганда гана өзүнө алат; калган убакта ал адаттагыдай иштейт.</string>
-    <string name="touch_surface_shizuku_mediatek">Бул телефондо Shizuku 13.5.4 версиясын колдонуңуз: 13.6.0 версиясы MediaTek телефондорунда толук иштебейт.</string>
+    <string name="touch_surface_shizuku_mediatek">Бул телефондо Shizuku 13.5.4 версиясын колдонуңуз: 13.6.0 версиясы MediaTek телефондорунда толук иштебейт</string>
     <string name="touch_surface_shizuku_reboot">Телефон кайра күйгүзүлгөн сайын Shizuku токтоп калат. Ар бир жолу аны кайра иштетиңиз; ал иштебей турса, жогорудагы абал аны көрсөтөт.</string>
     <string name="touch_surface_shizuku_state_denied">Иштеп жатат, бирок BBKB\'нин суроосу четке кагылды</string>
     <string name="touch_surface_shizuku_state_granted">Иштеп жатат жана BBKB\'де уруксат бар</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Бул телефондо жеткиликсиз</string>
     <string name="pref_show_pkb_modifier_status_icon">Модификатордун абал белгисин көрсөтүү</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Физикалык баскычтоп колдонулганда абал тилкесинде Shift/Alt модификаторунун индикаторун көрсөтүү</string>
-    <string name="settings_pred_accounts_permission_summary">Терип жатканда электрондук почта даректерин сунуштоо үчүн аккаунттарга уруксат бериңиз.</string>
+    <string name="settings_pred_accounts_permission_summary">Терип жатканда электрондук почта даректерин сунуштоо үчүн аккаунттарга уруксат бериңиз</string>
     <string name="settings_pred_accounts_permission_title">Аккаунттарга уруксат керек</string>
     <string name="settings_pred_block_offensive_summary">Үн менен жазганда орой болушу мүмкүн болгон сөздөрдү жашыруу</string>
     <string name="settings_pred_block_offensive_title">Орой сөздөрдү бөгөттөө</string>
-    <string name="settings_pred_contacts_permission_summary">Терип жатканда байланыштардын ысымдарын жана электрондук почта даректерин сунуштоо үчүн байланыштарга уруксат бериңиз.</string>
+    <string name="settings_pred_contacts_permission_summary">Терип жатканда байланыштардын ысымдарын жана электрондук почта даректерин сунуштоо үчүн байланыштарга уруксат бериңиз</string>
     <string name="settings_pred_contacts_permission_title">Байланыштарга уруксат керек</string>
     <string name="settings_pred_contacts_summary_disabled">Байланыштарга уруксат керек</string>
     <string name="settings_pred_contacts_summary_enabled">Байланыштардын ысымдарын сунуштарга кошуу</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Бул функцияны колдонуу үчүн байланыштарга уруксат бериңиз</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Байланыштардын ысымдары туура сөз катары таанылат</string>
     <string name="settings_spellcheck_use_contacts_title">Орфографияны текшерүүдө байланыштарды колдонуу</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Орфографияны текшерүүдө байланыштардын ысымдары туура сөз катары таанылышы үчүн байланыштарга уруксат бериңиз</string>
     <string name="settings_spellcheck_accept_learned_title">Үйрөнүлгөн сөздөрдү кабыл алуу</string>
     <string name="settings_spellcheck_accept_learned_summary">Терүүңүздөн үйрөнүлгөн сөздөр туура жазылган деп эсептелет</string>
     <string name="pref_alt_double_tap_lock">Alt эки жолу басылганда бекитилишин иштетүү</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrl эки жолу басылганда бекитилишин иштетүү</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl эки жолу басылса, ал күйүк бойдон бекитилет. Ctrl кайра басылса, өчөт.</string>
     <string name="pref_override_device_meta_state">Түзмөктүн мета абалын алмаштыруу</string>
-    <string name="pref_override_device_meta_state_summary">Түзмөктүн KCM конфигурациясына карабастан, физикалык баскычтоптордо жабышкак модификаторлорду (shift/alt бекитүү) иштетүү.</string>
+    <string name="pref_override_device_meta_state_summary">Түзмөктүн KCM конфигурациясына карабастан, физикалык баскычтоптордо жабышкак модификаторлорду (shift/alt бекитүү) иштетүү</string>
     <string name="pref_shift_double_tap_lock">Shift эки жолу басылганда бекитилишин иштетүү</string>
     <string name="pref_shift_double_tap_lock_summary">Shift эки жолу басылса, ал күйүк бойдон бекитилет. Shift кайра басылса, өчөт.</string>
     <string name="prefs_key_longpress_delay_summary">Кошумча белгилер чыкканга чейин баскычты басып туруу убактысы</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Автотолтуруу окуяларынын билдирүүлөрү</string>
     <string name="pref_accessibility_service_disabled">Атайын мүмкүнчүлүктөр кызматы өчүрүлгөн</string>
     <string name="pref_accessibility_service_enabled">Атайын мүмкүнчүлүктөр кызматы иштетилген</string>
-    <string name="pref_emoji_search_pkb_summary">Эмодзи панели ачык болгондо издөө үчүн баскычтопту колдонуңуз.</string>
+    <string name="pref_emoji_search_pkb_summary">Эмодзи панели ачык болгондо издөө үчүн баскычтопту колдонуңуз</string>
     <string name="pref_emoji_search_title">Эмодзи издөөнү күйгүзүү</string>
-    <string name="pref_emoji_search_vkb_summary">Эмодзилерди учурдагы бекитилбеген (астын сызылган) текст боюнча чыпкалоо.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Эмодзи тандалганда ал терилген тексттен кийин коюлат.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Эмодзи тандалганда ал терилген тексттин ордуна коюлат.</string>
+    <string name="pref_emoji_search_vkb_summary">Эмодзилерди учурдагы бекитилбеген (астын сызылган) текст боюнча чыпкалоо</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Эмодзи тандалганда ал терилген тексттен кийин коюлат</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Эмодзи тандалганда ал терилген тексттин ордуна коюлат</string>
     <string name="pref_emoji_search_replace_text_title">Текстти эмодзи менен алмаштыруу</string>
     <string name="pref_key_interceptor_enabled">Атайын баскычтарды колдоону иштетүү</string>
     <string name="pref_key_interceptor_enabled_summary">Эмодзи, SYM жана Үн баскычтарын кармоо үчүн атайын мүмкүнчүлүктөр кызматын колдонуу</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Маалыматтарды башкаруу</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Ыңгайлаштырылган макростор</string>
+    <string name="settings_custom_macros_intro" formatted="false">Текст кыска жолдорунда колдонуу үчүн өзүңүздүн %x толтургучтарыңызды аныктаңыз</string>
     <string name="settings_customize_menu_hidden_header">Баскычтопто көрсөтүлбөйт</string>
     <string name="settings_customize_menu_instructions">Кыска жолду басып туруп, тартибин өзгөртүү үчүн сүйрөңүз. Алгачкы төртөө баскычтоптун киргизүү менюсунда көрүнөт.</string>
     <string name="settings_customize_menu_summary">Киргизүү менюсунун кыска жолдорун тандоо жана иреттөө</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Ыкчам сөз айкаштары</string>
     <string name="settings_screen_type_by_swiping">Сүрүп терүү</string>
     <string name="settings_screen_type_by_swiping_summary">Манжаңызды баскычтоптон албай туруп тез териңиз</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Сүрүп терүү сиздин тилиңизде жеткиликсиз.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Сүрүп терүү сиздин тилиңизде жеткиликсиз</string>
     <string name="settings_search_hint">Жөндөөлөрдү издөө</string>
     <string name="settings_search_no_results">Жөндөөлөр табылган жок</string>
     <string name="settings_shake_fallback_title">Кошумча аракет</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Баскычтоп түзмөгү: %1$s</string>
     <string name="device_config_import_matches_build">Курулма түзмөгү: %1$s</string>
     <string name="device_config_import_matches_brand">Бренд: %1$s</string>
-    <string name="device_config_import_matches_nothing">Бул файлда дал келтире турган түзмөк көрсөтүлгөн эмес, ошондуктан ал эч качан колдонулбайт.</string>
+    <string name="device_config_import_matches_nothing">Бул файлда дал келтире турган түзмөк көрсөтүлгөн эмес, ошондуктан ал эч качан колдонулбайт</string>
     <string name="device_config_import_type">Түзмөктүн түрү: %1$s</string>
     <string name="device_config_import_keys">%1$d баскыч дал келтирүүсү</string>
     <string name="device_config_import_keypad_layout">Баскычтоптун жайгашуусу: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Бул версия жаңыртуулар тизмесин окуу үчүн өтө эски. Колмо-кол жаңыртыңыз.</string>
     <string name="settings_update_from_cache">Акыркы сакталган текшерүүдөн көрсөтүлдү</string>
     <string name="settings_update_background_check_title">Жаңыртууларды автоматтык түрдө текшерүү</string>
-    <string name="settings_update_background_check_summary">Жаңы версия жүктөөгө жеткиликтүү болгондо билдирме аласыз.</string>
+    <string name="settings_update_background_check_summary">Жаңы версия жүктөөгө жеткиликтүү болгондо билдирме аласыз</string>
     <string name="settings_update_notification_text">Версия %1$s жүктөөгө даяр</string>
     <string name="settings_update_unknown_sources_message">Android BBKB\'ге колдонмолорду орнотууга уруксат бериши керек. Бул булактан орнотууну иштетип, андан кийин Орнотуу баскычын кайра басыңыз.</string>
     <string name="settings_update_open_settings">Жөндөөлөрдү ачуу</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Сөздүктөрдү текшерүү</string>
     <string name="language_packs_load_ldb">LDB файлын жүктөө</string>
     <string name="language_packs_variant_summary">%1$s ордуна жүктөлөт</string>
-    <string name="language_packs_not_on_summary">Жаңы %1$s баскычтобун түзүү үчүн таптап коюңуз.</string>
+    <string name="language_packs_not_on_summary">Жаңы %1$s баскычтобун түзүү үчүн таптап коюңуз</string>
     <string name="language_packs_turned_on">%1$s күйгүзүлдү. Тил алмаштыргычтан ага өтүңүз.</string>
-    <string name="language_packs_turn_on_in_settings">Тизмеден %1$s тилин күйгүзүп, кайра келиңиз.</string>
+    <string name="language_packs_turn_on_in_settings">Тизмеден %1$s тилин күйгүзүп, кайра келиңиз</string>
     <string name="language_packs_installed_and_on">%1$s орнотулду. Ал күйүк: тил алмаштыргычтан ага өтүңүз.</string>
     <string name="language_packs_installed_turn_on">%1$s орнотулду. Аны баскычтопто күйгүзүү үчүн саптын үстүнө таптап коюңуз.</string>
+    <string name="language_packs_installed_no_layout">%1$s орнотулду, бирок бул баскычтопто анын жазуусу үчүн азырынча калып жок, ошондуктан аны тандоого болбойт</string>
     <string name="language_packs_error_offline">Байланыш жок</string>
     <string name="language_packs_error_network">Болбоду. Кайра аракет кылыңыз.</string>
     <string name="language_packs_error_verification">Файл каталогго туура келбеди, эч нерсе орнотулган жок</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Сакталган: %1$s</string>
     <string name="backup_restore_dialog_device">Түзмөк: %1$s</string>
     <string name="backup_restore_not_in_file">Бул файлда жок</string>
-    <string name="backup_restore_dialog_note">Жөндөөлөр, жайгашуулар жана макростор алмаштырылат; сөздөр бул телефондогуларга кошулат.</string>
+    <string name="backup_restore_dialog_note">Жөндөөлөр, жайгашуулар жана макростор алмаштырылат; сөздөр бул телефондогуларга кошулат</string>
     <string name="backup_restore_dialog_confirm">Калыбына келтирүү</string>
     <string name="backup_restored">Камдык көчүрмө калыбына келтирилди</string>
     <string name="backup_restored_words_pending">Үйрөнүлгөн сөздөр баскычтоп колдонула баштаганда кошулат</string>

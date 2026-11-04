@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">പിടിച്ചെടുത്ത കീ ഗ്രിഡ് &lt;ckb-key-grid&gt; സ്‌നിപ്പെറ്റായി ആപ്പ് ഫയലുകളിലേക്ക് എഴുതുക, ഉപകരണ കോൺഫിഗിൽ ഒട്ടിക്കാൻ. പിടിച്ചെടുക്കാനാകുംവിധം ആദ്യം കീബോർഡ് ഒരിക്കൽ തുറക്കുക.</string>
     <string name="ckb_gestures_export_title">CKB ജ്യാമിതി എക്‌സ്‌പോർട്ട് ചെയ്യുക</string>
     <string name="ckb_gestures_export_written">%s എഴുതി</string>
-    <string name="ckb_gestures_reserved_note">മുകളിലേക്ക് സ്വൈപ്പ് ചെയ്യുന്നത് (വിരലിനു താഴെയുള്ള നിർദ്ദേശം സ്വീകരിക്കൽ) നീക്കിവച്ചിരിക്കുന്നു.</string>
+    <string name="ckb_gestures_reserved_note">മുകളിലേക്ക് സ്വൈപ്പ് ചെയ്യുന്നത് (വിരലിനു താഴെയുള്ള നിർദ്ദേശം സ്വീകരിക്കൽ) നീക്കിവച്ചിരിക്കുന്നു</string>
     <string name="ckb_gestures_screen_title">CKB ജെസ്ചറുകൾ</string>
     <string name="settings_gesture_accent_max_speed_summary">ഉച്ചാരണചിഹ്ന മാറ്റങ്ങൾക്കുള്ള പരമാവധി വേഗ ഗുണിതം</string>
     <string name="settings_gesture_accent_max_speed_title">സ്ക്രോൾ ഉച്ചാരണചിഹ്ന മാറ്റത്തിന്റെ പരമാവധി വേഗ ഗുണിതം</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">ഡൈനാമിക് പഠനം പ്രവർത്തനക്ഷമമാക്കുക</string>
     <string name="settings_dict_learned_words_summary">നിങ്ങളുടെ ടൈപ്പിംഗിൽ നിന്ന് പഠിച്ച വാക്കുകൾ നിയന്ത്രിക്കുക</string>
     <string name="settings_dict_learned_words_title">പഠിച്ച വാക്കുകൾ</string>
+    <string name="settings_dict_add_to_dictionary_note">നിങ്ങളുടെ നിഘണ്ടുവിൽ ചേർത്ത വാക്കുകൾ ടൈപ്പ് ചെയ്യുമ്പോൾ നിർദ്ദേശിക്കപ്പെടും, അവ അക്ഷരത്തെറ്റായി അടയാളപ്പെടുത്തില്ല</string>
     <string name="settings_dict_text_shortcuts_summary">വാക്യങ്ങളായി വികസിക്കുന്ന കുറുക്കുവഴികൾ സൃഷ്ടിക്കുക</string>
     <string name="settings_dict_text_shortcuts_title">ടെക്‌സ്റ്റ് കുറുക്കുവഴികൾ</string>
     <string name="settings_dict_user_dictionary_summary">വ്യക്തിഗത വാക്കുകൾ ചേർക്കുകയും തിരുത്തുകയും ചെയ്യുക</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">ഉപകരണ ഇൻപുട്ട് കോൺഫിഗറേഷനുകൾ തിരഞ്ഞെടുക്കുകയോ ഇറക്കുമതി ചെയ്യുകയോ ചെയ്യുക</string>
     <string name="settings_device_configuration_title">ഉപകരണ കോൺഫിഗറേഷൻ</string>
     <string name="touch_surface_builtin_category">ബിൽറ്റ്-ഇൻ</string>
-    <string name="touch_surface_builtin_intro">ഫോണിലെ Scroll assistant ഓണായിരിക്കുമ്പോൾ, ഫോൺ കീബോർഡിന്റെ സ്പർശന പ്രതലം BBKB-ന് കൈമാറുന്നു.</string>
+    <string name="touch_surface_builtin_intro">ഫോണിലെ Scroll assistant ഓണായിരിക്കുമ്പോൾ, ഫോൺ കീബോർഡിന്റെ സ്പർശന പ്രതലം BBKB-ന് കൈമാറുന്നു</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant കീകളിലെ ഡബിൾ-ടാപ്പ് സ്വയം കൈക്കലാക്കുന്നു, അതിനാൽ അത് ഒരിക്കലും BBKB-ന് ലഭിക്കുന്നില്ല</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant ഓഫാക്കുക</string>
     <string name="touch_surface_grant_access">ആക്‌സസ് നൽകുക</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku സജ്ജീകരിക്കുക</string>
     <string name="touch_surface_shizuku_guide_steps">1. ഡെവലപ്പർ ഓപ്‌ഷനുകളും തുടർന്ന് വയർലെസ് ഡീബഗ്ഗിംഗും ഓണാക്കുക.\n2. Shizuku അതിന്റെ ആപ്പിൽ നിന്നോ റൂട്ട് ഉപയോഗിച്ചോ ആരംഭിക്കുക.\n3. ഇവിടേക്ക് തിരിച്ചുവന്ന് “ആക്‌സസ് നൽകുക” ടാപ്പ് ചെയ്യുക.</string>
     <string name="touch_surface_shizuku_intro">BBKB-ന് സ്പർശന പ്രതലം നേരിട്ട് വായിക്കാൻ അനുവദിക്കുന്ന സൗജന്യ ആപ്പാണ് Shizuku. കീബോർഡ് തുറന്നിരിക്കുമ്പോൾ മാത്രമേ BBKB സ്പർശന പ്രതലം ഏറ്റെടുക്കൂ; ബാക്കി സമയം അത് ഫോണിൽ സാധാരണ പോലെ പ്രവർത്തിക്കുന്നു.</string>
-    <string name="touch_surface_shizuku_mediatek">ഈ ഫോണിൽ Shizuku 13.5.4 ഉപയോഗിക്കുക: 13.6.0 പതിപ്പ് MediaTek ഫോണുകളിൽ പൂർണ്ണമായി പ്രവർത്തിക്കില്ല.</string>
+    <string name="touch_surface_shizuku_mediatek">ഈ ഫോണിൽ Shizuku 13.5.4 ഉപയോഗിക്കുക: 13.6.0 പതിപ്പ് MediaTek ഫോണുകളിൽ പൂർണ്ണമായി പ്രവർത്തിക്കില്ല</string>
     <string name="touch_surface_shizuku_reboot">ഫോൺ റീസ്റ്റാർട്ട് ചെയ്യുമ്പോഴെല്ലാം Shizuku നിലയ്ക്കും. ഓരോ റീസ്റ്റാർട്ടിനു ശേഷവും അത് വീണ്ടും ആരംഭിക്കുക; അത് പ്രവർത്തിക്കാത്തപ്പോൾ മുകളിലെ നില അത് കാണിക്കും.</string>
     <string name="touch_surface_shizuku_state_denied">പ്രവർത്തിക്കുന്നു, പക്ഷേ BBKB-ന് ആക്‌സസ് നിരസിച്ചു</string>
     <string name="touch_surface_shizuku_state_granted">പ്രവർത്തിക്കുന്നു, BBKB-ന് ആക്‌സസ് ഉണ്ട്</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">ഈ ഫോണിൽ ലഭ്യമല്ല</string>
     <string name="pref_show_pkb_modifier_status_icon">മോഡിഫയർ സ്റ്റാറ്റസ് ഐക്കൺ കാണിക്കുക</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">ഫിസിക്കൽ കീബോർഡ് ഉപയോഗിക്കുമ്പോൾ സ്റ്റാറ്റസ് ബാറിൽ Shift/Alt സൂചകം കാണിക്കുക</string>
-    <string name="settings_pred_accounts_permission_summary">ടൈപ്പ് ചെയ്യുമ്പോൾ ഇമെയിൽ വിലാസങ്ങൾ നിർദ്ദേശിക്കാൻ അക്കൗണ്ട് അനുമതി നൽകുക.</string>
+    <string name="settings_pred_accounts_permission_summary">ടൈപ്പ് ചെയ്യുമ്പോൾ ഇമെയിൽ വിലാസങ്ങൾ നിർദ്ദേശിക്കാൻ അക്കൗണ്ട് അനുമതി നൽകുക</string>
     <string name="settings_pred_accounts_permission_title">അക്കൗണ്ട് അനുമതി ആവശ്യമാണ്</string>
     <string name="settings_pred_block_offensive_summary">വോയ്‌സ് ഡിക്‌ടേഷനിൽ അധിക്ഷേപകരമായേക്കാവുന്ന വാക്കുകൾ മറയ്‌ക്കുക</string>
     <string name="settings_pred_block_offensive_title">അധിക്ഷേപകരമായ വാക്കുകൾ തടയുക</string>
-    <string name="settings_pred_contacts_permission_summary">ടൈപ്പ് ചെയ്യുമ്പോൾ കോൺടാക്റ്റ് പേരുകളും ഇമെയിൽ വിലാസങ്ങളും നിർദ്ദേശിക്കാൻ കോൺടാക്റ്റ് അനുമതി നൽകുക.</string>
+    <string name="settings_pred_contacts_permission_summary">ടൈപ്പ് ചെയ്യുമ്പോൾ കോൺടാക്റ്റ് പേരുകളും ഇമെയിൽ വിലാസങ്ങളും നിർദ്ദേശിക്കാൻ കോൺടാക്റ്റ് അനുമതി നൽകുക</string>
     <string name="settings_pred_contacts_permission_title">കോൺടാക്റ്റ് അനുമതി ആവശ്യമാണ്</string>
     <string name="settings_pred_contacts_summary_disabled">കോൺടാക്റ്റ് അനുമതി ആവശ്യമാണ്</string>
     <string name="settings_pred_contacts_summary_enabled">നിർദ്ദേശങ്ങളിൽ കോൺടാക്റ്റ് പേരുകൾ ഉൾപ്പെടുത്തുക</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">ഈ സവിശേഷത ഉപയോഗിക്കാൻ കോൺടാക്റ്റ് അനുമതി നൽകുക</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">കോൺടാക്റ്റ് പേരുകൾ ശരിയായ വാക്കുകളായി കണക്കാക്കും</string>
     <string name="settings_spellcheck_use_contacts_title">അക്ഷരത്തെറ്റ് പരിശോധനയ്ക്ക് കോൺടാക്റ്റുകൾ ഉപയോഗിക്കുക</string>
+    <string name="settings_spellcheck_contacts_permission_summary">അക്ഷരത്തെറ്റ് പരിശോധനയിൽ കോൺടാക്റ്റ് പേരുകൾ ശരിയായ വാക്കുകളായി തിരിച്ചറിയാൻ കോൺടാക്റ്റ് അനുമതി നൽകുക</string>
     <string name="settings_spellcheck_accept_learned_title">പഠിച്ച വാക്കുകൾ സ്വീകരിക്കുക</string>
     <string name="settings_spellcheck_accept_learned_summary">നിങ്ങളുടെ ടൈപ്പിംഗിൽ നിന്ന് പഠിച്ച വാക്കുകൾ ശരിയായ അക്ഷരവിന്യാസമായി കണക്കാക്കും</string>
     <string name="pref_alt_double_tap_lock">Alt ഡബിൾ-ക്ലിക്ക് ലോക്ക് പ്രവർത്തനക്ഷമമാക്കുക</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrl ഡബിൾ-ക്ലിക്ക് ലോക്ക് പ്രവർത്തനക്ഷമമാക്കുക</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl ഡബിൾ-ക്ലിക്ക് ചെയ്താൽ അത് ലോക്ക് ആകും. Ctrl വീണ്ടും ക്ലിക്ക് ചെയ്താൽ അത് ഓഫാകും.</string>
     <string name="pref_override_device_meta_state">ഉപകരണത്തിന്റെ മെറ്റാ അവസ്ഥ അസാധുവാക്കുക</string>
-    <string name="pref_override_device_meta_state_summary">ഉപകരണത്തിന്റെ KCM കോൺഫിഗറേഷൻ എന്തായാലും, ഫിസിക്കൽ കീബോർഡുകളിൽ സ്റ്റിക്കി മോഡിഫയറുകൾ (shift/alt ലോക്ക്) പ്രവർത്തനക്ഷമമാക്കുക.</string>
+    <string name="pref_override_device_meta_state_summary">ഉപകരണത്തിന്റെ KCM കോൺഫിഗറേഷൻ എന്തായാലും, ഫിസിക്കൽ കീബോർഡുകളിൽ സ്റ്റിക്കി മോഡിഫയറുകൾ (shift/alt ലോക്ക്) പ്രവർത്തനക്ഷമമാക്കുക</string>
     <string name="pref_shift_double_tap_lock">Shift ഡബിൾ-ക്ലിക്ക് ലോക്ക് പ്രവർത്തനക്ഷമമാക്കുക</string>
     <string name="pref_shift_double_tap_lock_summary">Shift ഡബിൾ-ക്ലിക്ക് ചെയ്താൽ അത് ലോക്ക് ആകും. Shift വീണ്ടും ക്ലിക്ക് ചെയ്താൽ അത് ഓഫാകും.</string>
     <string name="prefs_key_longpress_delay_summary">ദ്വിതീയ അക്ഷരങ്ങൾ വരുന്നതിനു മുമ്പ് കീ അമർത്തിപ്പിടിക്കേണ്ട സമയം</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">സ്വയംപൂരണ ഇവന്റ് ടോസ്റ്റുകൾ</string>
     <string name="pref_accessibility_service_disabled">ഉപയോഗസഹായി സേവനം പ്രവർത്തനരഹിതമാണ്</string>
     <string name="pref_accessibility_service_enabled">ഉപയോഗസഹായി സേവനം പ്രവർത്തനക്ഷമമാണ്</string>
-    <string name="pref_emoji_search_pkb_summary">ഇമോജി ബോർഡ് തുറന്നിരിക്കുമ്പോൾ തിരയാൻ കീബോർഡ് ഉപയോഗിക്കുക.</string>
+    <string name="pref_emoji_search_pkb_summary">ഇമോജി ബോർഡ് തുറന്നിരിക്കുമ്പോൾ തിരയാൻ കീബോർഡ് ഉപയോഗിക്കുക</string>
     <string name="pref_emoji_search_title">ഇമോജി തിരയൽ പ്രവർത്തനക്ഷമമാക്കുക</string>
-    <string name="pref_emoji_search_vkb_summary">നിലവിലെ സ്ഥിരീകരിക്കാത്ത (അടിവരയിട്ട) ടെക്‌സ്‌റ്റ് ഉപയോഗിച്ച് ഇമോജികൾ ഫിൽറ്റർ ചെയ്യുക.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">ഒരു ഇമോജി തിരഞ്ഞെടുത്താൽ അത് ടൈപ്പ് ചെയ്ത ടെക്‌സ്റ്റിനു ശേഷം ചേർക്കും.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">ഒരു ഇമോജി തിരഞ്ഞെടുത്താൽ അത് ടൈപ്പ് ചെയ്ത ടെക്‌സ്റ്റിനു പകരം വരും.</string>
+    <string name="pref_emoji_search_vkb_summary">നിലവിലെ സ്ഥിരീകരിക്കാത്ത (അടിവരയിട്ട) ടെക്‌സ്‌റ്റ് ഉപയോഗിച്ച് ഇമോജികൾ ഫിൽറ്റർ ചെയ്യുക</string>
+    <string name="pref_emoji_search_replace_text_summary_off">ഒരു ഇമോജി തിരഞ്ഞെടുത്താൽ അത് ടൈപ്പ് ചെയ്ത ടെക്‌സ്റ്റിനു ശേഷം ചേർക്കും</string>
+    <string name="pref_emoji_search_replace_text_summary_on">ഒരു ഇമോജി തിരഞ്ഞെടുത്താൽ അത് ടൈപ്പ് ചെയ്ത ടെക്‌സ്റ്റിനു പകരം വരും</string>
     <string name="pref_emoji_search_replace_text_title">ടെക്‌സ്റ്റിനു പകരം ഇമോജി നൽകുക</string>
     <string name="pref_key_interceptor_enabled">പ്രത്യേക കീ പിന്തുണ പ്രവർത്തനക്ഷമമാക്കുക</string>
     <string name="pref_key_interceptor_enabled_summary">ഇമോജി, SYM, വോയ്‌സ് കീകൾ പിടിച്ചെടുക്കാൻ ഉപയോഗസഹായി സേവനം ഉപയോഗിക്കുക</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">ഡാറ്റ കൈകാര്യം ചെയ്യുക</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">ഇഷ്ടാനുസൃത മാക്രോകൾ</string>
+    <string name="settings_custom_macros_intro" formatted="false">ടെക്‌സ്റ്റ് കുറുക്കുവഴികളിൽ ഉപയോഗിക്കാൻ നിങ്ങളുടെ സ്വന്തം %x പ്ലേസ്‌ഹോൾഡറുകൾ നിർവചിക്കുക</string>
     <string name="settings_customize_menu_hidden_header">കീബോർഡിൽ കാണിക്കുന്നില്ല</string>
     <string name="settings_customize_menu_instructions">ഒരു കുറുക്കുവഴി സ്പർശിച്ചു പിടിച്ച ശേഷം വലിച്ചിട്ട് ക്രമം മാറ്റുക. ആദ്യത്തെ നാലെണ്ണം കീബോർഡിന്റെ ഇൻപുട്ട് മെനുവിൽ കാണാം.</string>
     <string name="settings_customize_menu_summary">ഇൻപുട്ട് മെനു കുറുക്കുവഴികൾ തിരഞ്ഞെടുക്കുകയും ക്രമം മാറ്റുകയും ചെയ്യുക</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">ദ്രുത വാക്യങ്ങൾ</string>
     <string name="settings_screen_type_by_swiping">സ്വൈപ്പ് ചെയ്ത് ടൈപ്പ് ചെയ്യുക</string>
     <string name="settings_screen_type_by_swiping_summary">കീബോർഡിൽ നിന്ന് വിരൽ എടുക്കാതെ വേഗത്തിൽ ടൈപ്പ് ചെയ്യുക</string>
-    <string name="settings_screen_type_by_swiping_unavailable">നിങ്ങളുടെ ഭാഷയിൽ സ്വൈപ്പ് ചെയ്ത് ടൈപ്പ് ചെയ്യൽ ലഭ്യമല്ല.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">നിങ്ങളുടെ ഭാഷയിൽ സ്വൈപ്പ് ചെയ്ത് ടൈപ്പ് ചെയ്യൽ ലഭ്യമല്ല</string>
     <string name="settings_search_hint">ക്രമീകരണങ്ങൾ തിരയുക</string>
     <string name="settings_search_no_results">ക്രമീകരണങ്ങളൊന്നും കണ്ടെത്തിയില്ല</string>
     <string name="settings_shake_fallback_title">ബദൽ പ്രവർത്തനം</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">കീബോർഡ് ഉപകരണം: %1$s</string>
     <string name="device_config_import_matches_build">ബിൽഡ് ഉപകരണം: %1$s</string>
     <string name="device_config_import_matches_brand">ബ്രാൻഡ്: %1$s</string>
-    <string name="device_config_import_matches_nothing">ഈ ഫയലിൽ ചേരാനുള്ള ഒരു ഉപകരണവും പറഞ്ഞിട്ടില്ല, അതിനാൽ ഇത് ഒരിക്കലും ബാധകമാകില്ല.</string>
+    <string name="device_config_import_matches_nothing">ഈ ഫയലിൽ ചേരാനുള്ള ഒരു ഉപകരണവും പറഞ്ഞിട്ടില്ല, അതിനാൽ ഇത് ഒരിക്കലും ബാധകമാകില്ല</string>
     <string name="device_config_import_type">ഉപകരണ തരം: %1$s</string>
     <string name="device_config_import_keys">%1$d കീ മാപ്പിംഗുകൾ</string>
     <string name="device_config_import_keypad_layout">കീപാഡ് ലേഔട്ട്: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">ഈ പതിപ്പ് അപ്‌ഡേറ്റ് പട്ടിക വായിക്കാൻ കഴിയാത്തവിധം പഴയതാണ്. സ്വയം അപ്‌ഡേറ്റ് ചെയ്യുക.</string>
     <string name="settings_update_from_cache">അവസാനം സംരക്ഷിച്ച പരിശോധനയിൽ നിന്ന് കാണിക്കുന്നു</string>
     <string name="settings_update_background_check_title">അപ്‌ഡേറ്റുകൾ സ്വയമേവ പരിശോധിക്കുക</string>
-    <string name="settings_update_background_check_summary">പുതിയ പതിപ്പ് ഡൗൺലോഡിന് ലഭ്യമാകുമ്പോൾ അറിയിപ്പ് ലഭിക്കും.</string>
+    <string name="settings_update_background_check_summary">പുതിയ പതിപ്പ് ഡൗൺലോഡിന് ലഭ്യമാകുമ്പോൾ അറിയിപ്പ് ലഭിക്കും</string>
     <string name="settings_update_notification_text">പതിപ്പ് %1$s ഡൗൺലോഡ് ചെയ്യാൻ തയ്യാറാണ്</string>
     <string name="settings_update_unknown_sources_message">ആപ്പുകൾ ഇൻസ്റ്റാൾ ചെയ്യാൻ Android BBKB-ക്ക് അനുമതി നൽകണം. ഈ ഉറവിടത്തിൽ നിന്ന് ഇൻസ്റ്റാൾ പ്രവർത്തനക്ഷമമാക്കി വീണ്ടും ഇൻസ്റ്റാൾ അമർത്തുക.</string>
     <string name="settings_update_open_settings">സെറ്റിംഗ്സ് തുറക്കുക</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">നിഘണ്ടുക്കൾ പരിശോധിക്കുക</string>
     <string name="language_packs_load_ldb">LDB ഫയൽ ലോഡ് ചെയ്യുക</string>
     <string name="language_packs_variant_summary">%1$s-ന് പകരം ലോഡ് ചെയ്യുന്നു</string>
-    <string name="language_packs_not_on_summary">പുതിയ %1$s കീബോർഡ് സൃഷ്ടിക്കാൻ ടാപ്പ് ചെയ്യുക.</string>
+    <string name="language_packs_not_on_summary">പുതിയ %1$s കീബോർഡ് സൃഷ്ടിക്കാൻ ടാപ്പ് ചെയ്യുക</string>
     <string name="language_packs_turned_on">%1$s ഓണാണ്. ഭാഷാ സ്വിച്ചറിൽ നിന്ന് ഇതിലേക്ക് മാറുക.</string>
-    <string name="language_packs_turn_on_in_settings">ലിസ്റ്റിൽ %1$s ഓണാക്കി തിരികെ വരിക.</string>
+    <string name="language_packs_turn_on_in_settings">ലിസ്റ്റിൽ %1$s ഓണാക്കി തിരികെ വരിക</string>
     <string name="language_packs_installed_and_on">%1$s ഇൻസ്റ്റാൾ ചെയ്തു. ഇത് ഓണാണ്: ഭാഷാ സ്വിച്ചറിൽ നിന്ന് ഇതിലേക്ക് മാറുക.</string>
     <string name="language_packs_installed_turn_on">%1$s ഇൻസ്റ്റാൾ ചെയ്തു. കീബോർഡിൽ ഓണാക്കാൻ അതിന്റെ വരിയിൽ ടാപ്പ് ചെയ്യുക.</string>
+    <string name="language_packs_installed_no_layout">%1$s ഇൻസ്റ്റാൾ ചെയ്തു, എന്നാൽ ഈ കീബോർഡിൽ ഇതുവരെ അതിന്റെ ലിപിക്കുള്ള ലേഔട്ട് ഇല്ല, അതിനാൽ അത് തിരഞ്ഞെടുക്കാനാകില്ല</string>
     <string name="language_packs_error_offline">കണക്ഷനില്ല</string>
     <string name="language_packs_error_network">അത് നടന്നില്ല. വീണ്ടും ശ്രമിക്കുക.</string>
     <string name="language_packs_error_verification">ഫയൽ കാറ്റലോഗുമായി പൊരുത്തപ്പെട്ടില്ല, അതിനാൽ ഒന്നും ഇൻസ്റ്റാൾ ചെയ്തില്ല</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">സംരക്ഷിച്ചത്: %1$s</string>
     <string name="backup_restore_dialog_device">ഉപകരണം: %1$s</string>
     <string name="backup_restore_not_in_file">ഈ ഫയലിൽ ഇല്ല</string>
-    <string name="backup_restore_dialog_note">ക്രമീകരണങ്ങളും ലേഔട്ടുകളും മാക്രോകളും മാറ്റിസ്ഥാപിക്കും; വാക്കുകൾ ഈ ഫോണിൽ ഉള്ളവയിലേക്ക് ചേർക്കും.</string>
+    <string name="backup_restore_dialog_note">ക്രമീകരണങ്ങളും ലേഔട്ടുകളും മാക്രോകളും മാറ്റിസ്ഥാപിക്കും; വാക്കുകൾ ഈ ഫോണിൽ ഉള്ളവയിലേക്ക് ചേർക്കും</string>
     <string name="backup_restore_dialog_confirm">പുനഃസ്ഥാപിക്കുക</string>
     <string name="backup_restored">ബാക്കപ്പ് പുനഃസ്ഥാപിച്ചു</string>
     <string name="backup_restored_words_pending">കീബോർഡ് ഉപയോഗിച്ചു തുടങ്ങുമ്പോൾ പഠിച്ച വാക്കുകൾ ചേർക്കും</string>

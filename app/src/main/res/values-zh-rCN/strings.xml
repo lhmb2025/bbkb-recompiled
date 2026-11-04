@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">将捕获的按键网格以 &lt;ckb-key-grid&gt; 代码段形式写入应用文件，以便粘贴到设备配置中。请先打开一次键盘，以便进行捕获。</string>
     <string name="ckb_gestures_export_title">导出 CKB 几何信息</string>
     <string name="ckb_gestures_export_written">已写入 %s</string>
-    <string name="ckb_gestures_reserved_note">向上滑动（采用手指下方的建议）为保留手势。</string>
+    <string name="ckb_gestures_reserved_note">向上滑动（采用手指下方的建议）为保留手势</string>
     <string name="ckb_gestures_screen_title">CKB 手势</string>
     <string name="settings_gesture_accent_max_speed_summary">切换重音符时的最大速度倍数</string>
     <string name="settings_gesture_accent_max_speed_title">滚动切换重音符的最大速度倍数</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">启用动态学习</string>
     <string name="settings_dict_learned_words_summary">管理从您的输入中学到的字词</string>
     <string name="settings_dict_learned_words_title">已学字词</string>
+    <string name="settings_dict_add_to_dictionary_note">添加到字典中的字词会在键入时作为建议显示，且不会被标记为拼写错误</string>
     <string name="settings_dict_text_shortcuts_summary">创建可展开为短语的快捷方式</string>
     <string name="settings_dict_text_shortcuts_title">文本快捷方式</string>
     <string name="settings_dict_user_dictionary_summary">添加和编辑个人字词</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">选择或导入设备输入配置</string>
     <string name="settings_device_configuration_title">设备配置</string>
     <string name="touch_surface_builtin_category">手机内置</string>
-    <string name="touch_surface_builtin_intro">在 Scroll assistant 开启期间，手机会将键盘触控层的输入传递给 BBKB。</string>
+    <string name="touch_surface_builtin_intro">在 Scroll assistant 开启期间，手机会将键盘触控层的输入传递给 BBKB</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant 会占用按键上的双击手势，导致 BBKB 始终收不到</string>
     <string name="touch_surface_cursor_assistant_title">关闭 Cursor assistant</string>
     <string name="touch_surface_grant_access">授予访问权限</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">设置 Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. 开启开发者选项，然后开启无线调试。\n2. 通过 Shizuku 应用或使用 root 启动 Shizuku。\n3. 返回此处，点按“授予访问权限”。</string>
     <string name="touch_surface_shizuku_intro">Shizuku 是一款免费应用，可让 BBKB 直接读取触控层。BBKB 仅在键盘打开时接管触控层，其余时间触控层会像平常一样工作。</string>
-    <string name="touch_surface_shizuku_mediatek">请在此手机上使用 Shizuku 13.5.4：13.6.0 版在搭载 MediaTek 芯片的手机上无法完全正常工作。</string>
+    <string name="touch_surface_shizuku_mediatek">请在此手机上使用 Shizuku 13.5.4：13.6.0 版在搭载 MediaTek 芯片的手机上无法完全正常工作</string>
     <string name="touch_surface_shizuku_reboot">每次手机重启后，Shizuku 都会停止。请在每次重启后重新启动 Shizuku；如果 Shizuku 未运行，上方的状态会显示出来。</string>
     <string name="touch_surface_shizuku_state_denied">正在运行，但 BBKB 的访问请求已被拒绝</string>
     <string name="touch_surface_shizuku_state_granted">正在运行，BBKB 已获得访问权限</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">在此手机上不可用</string>
     <string name="pref_show_pkb_modifier_status_icon">显示修饰键状态图标</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">使用实体键盘时在状态栏中显示 Shift/Alt 修饰键指示标志</string>
-    <string name="settings_pred_accounts_permission_summary">授予帐号权限，以便在键入时建议电子邮件地址。</string>
+    <string name="settings_pred_accounts_permission_summary">授予帐号权限，以便在键入时建议电子邮件地址</string>
     <string name="settings_pred_accounts_permission_title">需要帐号权限</string>
     <string name="settings_pred_block_offensive_summary">在语音输入时隐藏可能令人反感的字词</string>
     <string name="settings_pred_block_offensive_title">屏蔽冒犯性字词</string>
-    <string name="settings_pred_contacts_permission_summary">授予联系人权限，以便在键入时建议联系人姓名和电子邮件地址。</string>
+    <string name="settings_pred_contacts_permission_summary">授予联系人权限，以便在键入时建议联系人姓名和电子邮件地址</string>
     <string name="settings_pred_contacts_permission_title">需要联系人权限</string>
     <string name="settings_pred_contacts_summary_disabled">需要联系人权限</string>
     <string name="settings_pred_contacts_summary_enabled">在建议中包含联系人姓名</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">授予联系人权限即可使用此功能</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">联系人姓名将被识别为有效字词</string>
     <string name="settings_spellcheck_use_contacts_title">使用联系人进行拼写检查</string>
+    <string name="settings_spellcheck_contacts_permission_summary">授予联系人权限，以便在拼写检查时将联系人姓名识别为有效字词</string>
     <string name="settings_spellcheck_accept_learned_title">接受已学习的字词</string>
     <string name="settings_spellcheck_accept_learned_summary">从您的输入中学习的字词将视为拼写正确</string>
     <string name="pref_alt_double_tap_lock">启用 Alt 双击锁定</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">启用 Ctrl 双击锁定</string>
     <string name="pref_ctrl_double_tap_lock_summary">双击 Ctrl 键可将其锁定。再次按 Ctrl 键即可关闭。</string>
     <string name="pref_override_device_meta_state">覆盖设备元状态</string>
-    <string name="pref_override_device_meta_state_summary">无论设备的 KCM 配置如何，都在实体键盘上启用粘滞修饰键（shift/alt 锁定）。</string>
+    <string name="pref_override_device_meta_state_summary">无论设备的 KCM 配置如何，都在实体键盘上启用粘滞修饰键（shift/alt 锁定）</string>
     <string name="pref_shift_double_tap_lock">启用 Shift 双击锁定</string>
     <string name="pref_shift_double_tap_lock_summary">双击 Shift 键可将其锁定。再次按 Shift 键即可关闭。</string>
     <string name="prefs_key_longpress_delay_summary">按住按键多久后显示次要字符</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">自动填充事件提示</string>
     <string name="pref_accessibility_service_disabled">无障碍服务已禁用</string>
     <string name="pref_accessibility_service_enabled">无障碍服务已启用</string>
-    <string name="pref_emoji_search_pkb_summary">表情符号面板打开时，使用键盘进行搜索。</string>
+    <string name="pref_emoji_search_pkb_summary">表情符号面板打开时，使用键盘进行搜索</string>
     <string name="pref_emoji_search_title">启用表情符号搜索</string>
-    <string name="pref_emoji_search_vkb_summary">按当前未确认（带下划线）的文本筛选表情符号。</string>
-    <string name="pref_emoji_search_replace_text_summary_off">选择表情符号后，会将其插入到已键入文本之后。</string>
-    <string name="pref_emoji_search_replace_text_summary_on">选择表情符号后，会替换已键入的文本。</string>
+    <string name="pref_emoji_search_vkb_summary">按当前未确认（带下划线）的文本筛选表情符号</string>
+    <string name="pref_emoji_search_replace_text_summary_off">选择表情符号后，会将其插入到已键入文本之后</string>
+    <string name="pref_emoji_search_replace_text_summary_on">选择表情符号后，会替换已键入的文本</string>
     <string name="pref_emoji_search_replace_text_title">用表情符号替换文本</string>
     <string name="pref_key_interceptor_enabled">启用特殊按键支持</string>
     <string name="pref_key_interceptor_enabled_summary">使用无障碍服务捕获 Emoji、SYM 和语音按键</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">管理数据</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">自定义宏</string>
+    <string name="settings_custom_macros_intro" formatted="false">定义您自己的 %x 占位符，以便在文本快捷方式中使用</string>
     <string name="settings_customize_menu_hidden_header">不在键盘上显示</string>
     <string name="settings_customize_menu_instructions">触摸并按住某个快捷方式，然后拖动以重新排序。前四个会显示在键盘的输入菜单中。</string>
     <string name="settings_customize_menu_summary">选择输入菜单快捷方式并重新排序</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">快捷短语</string>
     <string name="settings_screen_type_by_swiping">滑动键入</string>
     <string name="settings_screen_type_by_swiping_summary">手指不用离开键盘就能快速键入</string>
-    <string name="settings_screen_type_by_swiping_unavailable">您的语言不支持滑动打字。</string>
+    <string name="settings_screen_type_by_swiping_unavailable">您的语言不支持滑动打字</string>
     <string name="settings_search_hint">搜索设置</string>
     <string name="settings_search_no_results">未找到设置</string>
     <string name="settings_shake_fallback_title">后备操作</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">键盘设备：%1$s</string>
     <string name="device_config_import_matches_build">版本设备名：%1$s</string>
     <string name="device_config_import_matches_brand">品牌：%1$s</string>
-    <string name="device_config_import_matches_nothing">此文件未指定要匹配的设备，因此永远不会生效。</string>
+    <string name="device_config_import_matches_nothing">此文件未指定要匹配的设备，因此永远不会生效</string>
     <string name="device_config_import_type">设备类型：%1$s</string>
     <string name="device_config_import_keys">%1$d 项按键映射</string>
     <string name="device_config_import_keypad_layout">键区布局：%1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">此版本过旧，无法读取更新列表。请手动更新。</string>
     <string name="settings_update_from_cache">显示的是上次保存的检查结果</string>
     <string name="settings_update_background_check_title">自动检查更新</string>
-    <string name="settings_update_background_check_summary">有新版本可供下载时通知你。</string>
+    <string name="settings_update_background_check_summary">有新版本可供下载时通知你</string>
     <string name="settings_update_notification_text">版本 %1$s 已可下载</string>
     <string name="settings_update_unknown_sources_message">Android 必须允许 BBKB 安装应用。请开启来自此来源的安装，然后再次点按安装。</string>
     <string name="settings_update_open_settings">打开设置</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">检查词典</string>
     <string name="language_packs_load_ldb">加载 LDB 文件</string>
     <string name="language_packs_variant_summary">将代替%1$s加载</string>
-    <string name="language_packs_not_on_summary">点按以创建新的%1$s键盘。</string>
+    <string name="language_packs_not_on_summary">点按以创建新的%1$s键盘</string>
     <string name="language_packs_turned_on">已启用%1$s。可从语言切换器切换到它。</string>
-    <string name="language_packs_turn_on_in_settings">请在列表中启用%1$s，然后返回。</string>
+    <string name="language_packs_turn_on_in_settings">请在列表中启用%1$s，然后返回</string>
     <string name="language_packs_installed_and_on">已安装%1$s。已启用：可从语言切换器切换到它。</string>
     <string name="language_packs_installed_turn_on">已安装%1$s。点按该行以在键盘中启用它。</string>
+    <string name="language_packs_installed_no_layout">已安装%1$s，但此键盘尚无适用于其文字的布局，因此无法选择</string>
     <string name="language_packs_error_offline">无网络连接</string>
     <string name="language_packs_error_network">操作失败，请重试。</string>
     <string name="language_packs_error_verification">文件与目录不匹配，因此未安装任何内容</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">保存于 %1$s</string>
     <string name="backup_restore_dialog_device">来自 %1$s</string>
     <string name="backup_restore_not_in_file">此文件中没有</string>
-    <string name="backup_restore_dialog_note">设置、布局和宏将被替换；字词将添加到此手机上的现有内容中。</string>
+    <string name="backup_restore_dialog_note">设置、布局和宏将被替换；字词将添加到此手机上的现有内容中</string>
     <string name="backup_restore_dialog_confirm">恢复</string>
     <string name="backup_restored">备份已恢复</string>
     <string name="backup_restored_words_pending">开始使用键盘后，将添加已学字词</string>

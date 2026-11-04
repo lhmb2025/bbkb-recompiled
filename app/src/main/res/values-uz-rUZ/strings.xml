@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Qayd etilgan tugmalar to‘rini &lt;ckb-key-grid&gt; parchasi sifatida ilova fayllariga yozing, so‘ng qurilma konfiguratsiyasiga joylashtiring. Avval klaviaturani bir marta oching, shunda u qayd eta oladi.</string>
     <string name="ckb_gestures_export_title">CKB geometriyasini eksport qilish</string>
     <string name="ckb_gestures_export_written">%s yozildi</string>
-    <string name="ckb_gestures_reserved_note">Yuqoriga surish (barmog‘ingiz ostidagi taklifni qo‘llash) band qilingan.</string>
+    <string name="ckb_gestures_reserved_note">Yuqoriga surish (barmog‘ingiz ostidagi taklifni qo‘llash) band qilingan</string>
     <string name="ckb_gestures_screen_title">CKB ishoralari</string>
     <string name="settings_gesture_accent_max_speed_summary">Aksent almashuvi uchun maksimal tezlik koeffitsiyenti</string>
     <string name="settings_gesture_accent_max_speed_title">Aksent almashuvida aylantirishning maks. tezlik koeffitsiyenti</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Dinamik o\'rganishni yoqish</string>
     <string name="settings_dict_learned_words_summary">Yozganlaringizdan o‘rganilgan so‘zlarni boshqarish</string>
     <string name="settings_dict_learned_words_title">O‘rganilgan so‘zlar</string>
+    <string name="settings_dict_add_to_dictionary_note">Lug‘atingizga qo‘shilgan so‘zlar yozayotganda taklif qilinadi va xato yozilgan deb belgilanmaydi</string>
     <string name="settings_dict_text_shortcuts_summary">Iboralarga aylanadigan yorliqlar yaratish</string>
     <string name="settings_dict_text_shortcuts_title">Matn yorliqlari</string>
     <string name="settings_dict_user_dictionary_summary">Shaxsiy so‘zlarni qo‘shish va tahrirlash</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Qurilmaning kiritish konfiguratsiyalarini tanlash yoki import qilish</string>
     <string name="settings_device_configuration_title">Qurilma konfiguratsiyasi</string>
     <string name="touch_surface_builtin_category">Ichki</string>
-    <string name="touch_surface_builtin_intro">Telefonning Scroll assistant funksiyasi yoniq bo‘lganda, telefon klaviaturaning sensorli yuzasini BBKB ga uzatadi.</string>
+    <string name="touch_surface_builtin_intro">Telefonning Scroll assistant funksiyasi yoniq bo‘lganda, telefon klaviaturaning sensorli yuzasini BBKB ga uzatadi</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant tugmalardagi ikki marta bosishni o‘ziga oladi, shuning uchun BBKB uni hech qachon qabul qilmaydi</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant funksiyasini o‘chirish</string>
     <string name="touch_surface_grant_access">Ruxsat berish</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku ilovasini sozlash</string>
     <string name="touch_surface_shizuku_guide_steps">1. Dasturchi sozlamalarini, so‘ng Wi-Fi orqali nosozliklarni aniqlash funksiyasini yoqing.\n2. Shizuku xizmatini ilovaning o‘zidan yoki root orqali ishga tushiring.\n3. Bu yerga qayting va “Ruxsat berish” tugmasini bosing.</string>
     <string name="touch_surface_shizuku_intro">Shizuku – BBKB ga sensorli yuzani to‘g‘ridan-to‘g‘ri o‘qish imkonini beruvchi bepul ilova. BBKB uni faqat klaviatura ochiq bo‘lganda egallaydi; qolgan vaqtda sensorli yuza telefonda odatdagidek ishlaydi.</string>
-    <string name="touch_surface_shizuku_mediatek">Bu telefonda Shizuku 13.5.4 versiyasidan foydalaning: 13.6.0 versiyasi MediaTek protsessorli telefonlarda to‘liq ishlamaydi.</string>
+    <string name="touch_surface_shizuku_mediatek">Bu telefonda Shizuku 13.5.4 versiyasidan foydalaning: 13.6.0 versiyasi MediaTek protsessorli telefonlarda to‘liq ishlamaydi</string>
     <string name="touch_surface_shizuku_reboot">Shizuku telefon har safar qayta ishga tushganda to‘xtaydi. Har bir qayta ishga tushirishdan keyin uni yana ishga tushiring; yuqoridagi holat u qachon ishlamayotganini ko‘rsatadi.</string>
     <string name="touch_surface_shizuku_state_denied">Ishlamoqda, lekin BBKB ga ruxsat rad etilgan</string>
     <string name="touch_surface_shizuku_state_granted">Ishlamoqda va BBKB ruxsatga ega</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Bu telefonda mavjud emas</string>
     <string name="pref_show_pkb_modifier_status_icon">Modifikator holati belgisini ko‘rsatish</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Jismoniy klaviaturadan foydalanilganda holat panelida Shift/Alt modifikatori indikatorini ko‘rsatish</string>
-    <string name="settings_pred_accounts_permission_summary">Yozayotganda e-pochta manzillarini taklif qilish uchun hisoblarga ruxsat bering.</string>
+    <string name="settings_pred_accounts_permission_summary">Yozayotganda e-pochta manzillarini taklif qilish uchun hisoblarga ruxsat bering</string>
     <string name="settings_pred_accounts_permission_title">Hisoblarga ruxsat kerak</string>
     <string name="settings_pred_block_offensive_summary">Ovozli diktovkada haqoratli bo‘lishi mumkin bo‘lgan so‘zlarni yashirish</string>
     <string name="settings_pred_block_offensive_title">Haqoratli so‘zlarni bloklash</string>
-    <string name="settings_pred_contacts_permission_summary">Yozayotganda kontakt ismlari va e-pochta manzillarini taklif qilish uchun kontaktlarga ruxsat bering.</string>
+    <string name="settings_pred_contacts_permission_summary">Yozayotganda kontakt ismlari va e-pochta manzillarini taklif qilish uchun kontaktlarga ruxsat bering</string>
     <string name="settings_pred_contacts_permission_title">Kontaktlarga ruxsat kerak</string>
     <string name="settings_pred_contacts_summary_disabled">Kontaktlarga ruxsat kerak</string>
     <string name="settings_pred_contacts_summary_enabled">Kontakt ismlarini takliflarga kiritish</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Bu funksiyadan foydalanish uchun kontaktlarga ruxsat bering</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontakt ismlari to‘g‘ri so‘z sifatida qabul qilinadi</string>
     <string name="settings_spellcheck_use_contacts_title">Imlo tekshiruvida kontaktlardan foydalanish</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Imlo tekshiruvida kontakt ismlari to‘g‘ri so‘z sifatida tanilishi uchun kontaktlarga ruxsat bering</string>
     <string name="settings_spellcheck_accept_learned_title">Oʻrganilgan soʻzlarni qabul qilish</string>
     <string name="settings_spellcheck_accept_learned_summary">Yozganlaringizdan oʻrganilgan soʻzlar toʻgʻri yozilgan deb hisoblanadi</string>
     <string name="pref_alt_double_tap_lock">Alt ikki marta bosilganda qulflanishini yoqish</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrl ikki marta bosilganda qulflanishini yoqish</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl ikki marta bosilsa, u yoqilgan holda qulflanadi. Ctrl yana bosilsa, o‘chadi.</string>
     <string name="pref_override_device_meta_state">Qurilmaning meta holatini almashtirish</string>
-    <string name="pref_override_device_meta_state_summary">Qurilmaning KCM konfiguratsiyasidan qat’i nazar, jismoniy klaviaturalarda yopishqoq modifikatorlarni (shift/alt qulfi) yoqish.</string>
+    <string name="pref_override_device_meta_state_summary">Qurilmaning KCM konfiguratsiyasidan qat’i nazar, jismoniy klaviaturalarda yopishqoq modifikatorlarni (shift/alt qulfi) yoqish</string>
     <string name="pref_shift_double_tap_lock">Shift ikki marta bosilganda qulflanishini yoqish</string>
     <string name="pref_shift_double_tap_lock_summary">Shift ikki marta bosilsa, u yoqilgan holda qulflanadi. Shift yana bosilsa, o‘chadi.</string>
     <string name="prefs_key_longpress_delay_summary">Qo‘shimcha belgilar chiqishidan oldin tugmani bosib turish vaqti</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Avtomatik to‘ldirish bildirishnomalari</string>
     <string name="pref_accessibility_service_disabled">Maxsus imkoniyatlar xizmati o‘chirilgan</string>
     <string name="pref_accessibility_service_enabled">Maxsus imkoniyatlar xizmati yoqilgan</string>
-    <string name="pref_emoji_search_pkb_summary">Kulgichlar paneli ochiq boʻlganda qidirish uchun klaviaturadan foydalaning.</string>
+    <string name="pref_emoji_search_pkb_summary">Kulgichlar paneli ochiq boʻlganda qidirish uchun klaviaturadan foydalaning</string>
     <string name="pref_emoji_search_title">Kulgichlar qidiruvini yoqish</string>
-    <string name="pref_emoji_search_vkb_summary">Kulgichlarni joriy tasdiqlanmagan (tagiga chizilgan) matn boʻyicha filtrlash.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Kulgich tanlanganda u yozilgan matndan keyin qo‘yiladi.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Kulgich tanlanganda u yozilgan matn o‘rniga qo‘yiladi.</string>
+    <string name="pref_emoji_search_vkb_summary">Kulgichlarni joriy tasdiqlanmagan (tagiga chizilgan) matn boʻyicha filtrlash</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Kulgich tanlanganda u yozilgan matndan keyin qo‘yiladi</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Kulgich tanlanganda u yozilgan matn o‘rniga qo‘yiladi</string>
     <string name="pref_emoji_search_replace_text_title">Matnni kulgich bilan almashtirish</string>
     <string name="pref_key_interceptor_enabled">Maxsus tugmalarni qo‘llab-quvvatlashni yoqish</string>
     <string name="pref_key_interceptor_enabled_summary">Emoji, SYM va Ovoz tugmalarini ushlash uchun maxsus imkoniyatlar xizmatidan foydalanish</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Ma’lumotlarni boshqarish</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Moslangan makroslar</string>
+    <string name="settings_custom_macros_intro" formatted="false">Matn yorliqlarida foydalanish uchun o‘z %x o‘rinbosarlaringizni belgilang</string>
     <string name="settings_customize_menu_hidden_header">Klaviaturada ko‘rsatilmaydi</string>
     <string name="settings_customize_menu_instructions">Yorliqni bosib turing, so‘ng tartibni o‘zgartirish uchun torting. Dastlabki to‘rttasi klaviaturaning kiritish menyusida ko‘rinadi.</string>
     <string name="settings_customize_menu_summary">Kiritish menyusi yorliqlarini tanlash va tartiblash</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Tezkor iboralar</string>
     <string name="settings_screen_type_by_swiping">Surib yozish</string>
     <string name="settings_screen_type_by_swiping_summary">Barmog‘ingizni klaviaturadan uzmasdan tez yozing</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Surib yozish sizning tilingizda mavjud emas.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Surib yozish sizning tilingizda mavjud emas</string>
     <string name="settings_search_hint">Sozlamalarni qidirish</string>
     <string name="settings_search_no_results">Sozlamalar topilmadi</string>
     <string name="settings_shake_fallback_title">Zaxira amal</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Klaviatura qurilmasi: %1$s</string>
     <string name="device_config_import_matches_build">Build qurilmasi: %1$s</string>
     <string name="device_config_import_matches_brand">Brend: %1$s</string>
-    <string name="device_config_import_matches_nothing">Bu faylda moslashtiriladigan qurilma ko‘rsatilmagan, shuning uchun u hech qachon qo‘llanilmaydi.</string>
+    <string name="device_config_import_matches_nothing">Bu faylda moslashtiriladigan qurilma ko‘rsatilmagan, shuning uchun u hech qachon qo‘llanilmaydi</string>
     <string name="device_config_import_type">Qurilma turi: %1$s</string>
     <string name="device_config_import_keys">%1$d ta tugma moslamasi</string>
     <string name="device_config_import_keypad_layout">Klaviatura joylashuvi: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Bu versiya yangilanishlar roʻyxatini oʻqish uchun juda eski. Iltimos, qoʻlda yangilang.</string>
     <string name="settings_update_from_cache">Oxirgi saqlangan tekshiruvdan koʻrsatilgan</string>
     <string name="settings_update_background_check_title">Yangilanishlarni avtomatik tekshirish</string>
-    <string name="settings_update_background_check_summary">Yangi versiya yuklab olish uchun mavjud boʻlganda bildirishnoma olasiz.</string>
+    <string name="settings_update_background_check_summary">Yangi versiya yuklab olish uchun mavjud boʻlganda bildirishnoma olasiz</string>
     <string name="settings_update_notification_text">Versiya %1$s yuklab olishga tayyor</string>
     <string name="settings_update_unknown_sources_message">Android BBKB ga ilovalar oʻrnatishga ruxsat berishi kerak. Bu manbadan oʻrnatishni yoqing, soʻng Oʻrnatish tugmasini qayta bosing.</string>
     <string name="settings_update_open_settings">Sozlamalarni ochish</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Lug‘atlarni tekshirish</string>
     <string name="language_packs_load_ldb">LDB faylini yuklash</string>
     <string name="language_packs_variant_summary">%1$s o‘rniga yuklanadi</string>
-    <string name="language_packs_not_on_summary">Yangi %1$s klaviaturasini yaratish uchun bosing.</string>
+    <string name="language_packs_not_on_summary">Yangi %1$s klaviaturasini yaratish uchun bosing</string>
     <string name="language_packs_turned_on">%1$s yoqildi. Til almashtirgichda unga o‘ting.</string>
-    <string name="language_packs_turn_on_in_settings">Ro‘yxatda %1$s ni yoqing, so‘ng qaytib keling.</string>
+    <string name="language_packs_turn_on_in_settings">Ro‘yxatda %1$s ni yoqing, so‘ng qaytib keling</string>
     <string name="language_packs_installed_and_on">%1$s o‘rnatildi. Yoqilgan: til almashtirgichda unga o‘ting.</string>
     <string name="language_packs_installed_turn_on">%1$s o‘rnatildi. Klaviaturada yoqish uchun qatorga bosing.</string>
+    <string name="language_packs_installed_no_layout">%1$s o‘rnatildi, lekin bu klaviaturada hali uning yozuvi uchun tartib yo‘q, shuning uchun uni tanlab bo‘lmaydi</string>
     <string name="language_packs_error_offline">Aloqa yo‘q</string>
     <string name="language_packs_error_network">Bo‘lmadi. Qayta urinib ko‘ring.</string>
     <string name="language_packs_error_verification">Fayl katalogga mos kelmadi, shuning uchun hech narsa o‘rnatilmadi</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Saqlangan: %1$s</string>
     <string name="backup_restore_dialog_device">Qurilma: %1$s</string>
     <string name="backup_restore_not_in_file">Bu faylda yo‘q</string>
-    <string name="backup_restore_dialog_note">Sozlamalar, joylashuvlar va makroslar almashtiriladi; so‘zlar bu telefondagilarga qo‘shiladi.</string>
+    <string name="backup_restore_dialog_note">Sozlamalar, joylashuvlar va makroslar almashtiriladi; so‘zlar bu telefondagilarga qo‘shiladi</string>
     <string name="backup_restore_dialog_confirm">Tiklash</string>
     <string name="backup_restored">Zaxira tiklandi</string>
     <string name="backup_restored_words_pending">O‘rganilgan so‘zlar klaviatura ishlatila boshlaganda qo‘shiladi</string>

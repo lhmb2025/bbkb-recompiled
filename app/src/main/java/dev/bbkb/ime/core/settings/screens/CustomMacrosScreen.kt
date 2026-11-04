@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import dev.bbkb.ime.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.bbkb.ime.core.settings.ui.LocalInGroup
 import dev.bbkb.ime.core.settings.ui.GroupEdge
@@ -66,7 +67,7 @@ fun CustomMacrosScreen(
             // What the screen is for. Was a tinted card with an Info glyph — decoration around a
             // sentence, and a tint that made an explanation look like a warning.
             PreferenceInfo(
-                text = "Define your own %x placeholders for use in text shortcuts.",
+                text = stringResource(R.string.settings_custom_macros_intro),
                 detail = "Reserved tags: %D %T %d %t %n %w %y %b",
                 // The characters ARE the content here: %D and %d are different macros.
                 monospaceDetail = true,

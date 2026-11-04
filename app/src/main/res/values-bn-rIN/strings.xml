@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">ডিভাইস কনফিগে পেস্ট করার জন্য ধরা পড়া কী গ্রিডটি একটি &lt;ckb-key-grid&gt; স্নিপেট হিসেবে অ্যাপ ফাইলে লিখুন। ধরার সুযোগ দিতে আগে একবার কীবোর্ড খুলুন।</string>
     <string name="ckb_gestures_export_title">CKB জ্যামিতি এক্সপোর্ট করুন</string>
     <string name="ckb_gestures_export_written">%s লেখা হয়েছে</string>
-    <string name="ckb_gestures_reserved_note">উপরে সোয়াইপ (আঙুলের নিচের পরামর্শটি প্রয়োগ করা) সংরক্ষিত।</string>
+    <string name="ckb_gestures_reserved_note">উপরে সোয়াইপ (আঙুলের নিচের পরামর্শটি প্রয়োগ করা) সংরক্ষিত</string>
     <string name="ckb_gestures_screen_title">CKB অঙ্গভঙ্গি</string>
     <string name="settings_gesture_accent_max_speed_summary">অ্যাকসেন্ট পরিবর্তনের সর্বোচ্চ গতি গুণক</string>
     <string name="settings_gesture_accent_max_speed_title">স্ক্রলে অ্যাকসেন্ট পরিবর্তনের সর্বোচ্চ গতি গুণক</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">ডায়নামিক লার্নিং চালু করুন</string>
     <string name="settings_dict_learned_words_summary">আপনার টাইপিং থেকে শেখা শব্দ পরিচালনা করুন</string>
     <string name="settings_dict_learned_words_title">শেখা শব্দ</string>
+    <string name="settings_dict_add_to_dictionary_note">আপনার অভিধানে যোগ করা শব্দগুলি টাইপ করার সময় প্রস্তাব করা হবে এবং ভুল বানান হিসেবে চিহ্নিত করা হবে না</string>
     <string name="settings_dict_text_shortcuts_summary">বাক্যাংশে পরিণত হয় এমন শর্টকাট তৈরি করুন</string>
     <string name="settings_dict_text_shortcuts_title">টেক্সট শর্টকাট</string>
     <string name="settings_dict_user_dictionary_summary">ব্যক্তিগত শব্দ জুড়ুন ও সম্পাদনা করুন</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">ডিভাইস ইনপুট কনফিগারেশন নির্বাচন বা ইমপোর্ট করুন</string>
     <string name="settings_device_configuration_title">ডিভাইস কনফিগারেশন</string>
     <string name="touch_surface_builtin_category">বিল্ট-ইন</string>
-    <string name="touch_surface_builtin_intro">ফোনের Scroll assistant চালু থাকলে ফোনটি কীবোর্ডের স্পর্শতল BBKB-এর কাছে পৌঁছে দেয়।</string>
+    <string name="touch_surface_builtin_intro">ফোনের Scroll assistant চালু থাকলে ফোনটি কীবোর্ডের স্পর্শতল BBKB-এর কাছে পৌঁছে দেয়</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant কীগুলোর ওপর ডাবল-ট্যাপ নিজের জন্য নিয়ে নেয়, তাই BBKB কখনও তা পায় না</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant বন্ধ করুন</string>
     <string name="touch_surface_grant_access">অ্যাক্সেস দিন</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku সেট আপ করুন</string>
     <string name="touch_surface_shizuku_guide_steps">1. ডেভেলপার বিকল্প চালু করুন, তারপর ওয়্যারলেস ডিবাগিং।\n2. Shizuku-কে তার অ্যাপ থেকে বা রুট দিয়ে চালু করুন।\n3. এখানে ফিরে এসে “অ্যাক্সেস দিন” এ আলতো চাপুন।</string>
     <string name="touch_surface_shizuku_intro">Shizuku একটি বিনামূল্যের অ্যাপ, যার মাধ্যমে BBKB সরাসরি স্পর্শতল পড়তে পারে। কেবল কীবোর্ড খোলা থাকলেই BBKB স্পর্শতলের নিয়ন্ত্রণ নেয়; বাকি সময় এটি ফোনে স্বাভাবিক নিয়মেই কাজ করে।</string>
-    <string name="touch_surface_shizuku_mediatek">এই ফোনে Shizuku 13.5.4 ব্যবহার করুন: 13.6.0 সংস্করণটি MediaTek ফোনে পুরোপুরি কাজ করে না।</string>
+    <string name="touch_surface_shizuku_mediatek">এই ফোনে Shizuku 13.5.4 ব্যবহার করুন: 13.6.0 সংস্করণটি MediaTek ফোনে পুরোপুরি কাজ করে না</string>
     <string name="touch_surface_shizuku_reboot">ফোন রিস্টার্ট হলেই প্রতিবার Shizuku বন্ধ হয়ে যায়। প্রতিবার রিস্টার্টের পর এটি আবার চালু করুন; এটি না চললে উপরের অবস্থা তা জানিয়ে দেয়।</string>
     <string name="touch_surface_shizuku_state_denied">চলছে, কিন্তু BBKB-এর অ্যাক্সেস প্রত্যাখ্যান করা হয়েছে</string>
     <string name="touch_surface_shizuku_state_granted">চলছে, এবং BBKB-এর অ্যাক্সেস আছে</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">এই ফোনে উপলব্ধ নয়</string>
     <string name="pref_show_pkb_modifier_status_icon">মডিফায়ার স্ট্যাটাস আইকন দেখান</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">ফিজিক্যাল কীবোর্ড ব্যবহারের সময় স্ট্যাটাস বারে Shift/Alt মডিফায়ারের নির্দেশক দেখান</string>
-    <string name="settings_pred_accounts_permission_summary">টাইপ করার সময় ইমেল ঠিকানা প্রস্তাব করতে অ্যাকাউন্টের অনুমতি দিন।</string>
+    <string name="settings_pred_accounts_permission_summary">টাইপ করার সময় ইমেল ঠিকানা প্রস্তাব করতে অ্যাকাউন্টের অনুমতি দিন</string>
     <string name="settings_pred_accounts_permission_title">অ্যাকাউন্টের অনুমতি প্রয়োজন</string>
     <string name="settings_pred_block_offensive_summary">ভয়েস ডিকটেশনে আপত্তিকর হতে পারে এমন শব্দ লুকান</string>
     <string name="settings_pred_block_offensive_title">আপত্তিকর শব্দ আটকান</string>
-    <string name="settings_pred_contacts_permission_summary">টাইপ করার সময় পরিচিতির নাম ও ইমেল ঠিকানা প্রস্তাব করতে পরিচিতির অনুমতি দিন।</string>
+    <string name="settings_pred_contacts_permission_summary">টাইপ করার সময় পরিচিতির নাম ও ইমেল ঠিকানা প্রস্তাব করতে পরিচিতির অনুমতি দিন</string>
     <string name="settings_pred_contacts_permission_title">পরিচিতির অনুমতি প্রয়োজন</string>
     <string name="settings_pred_contacts_summary_disabled">পরিচিতির অনুমতি প্রয়োজন</string>
     <string name="settings_pred_contacts_summary_enabled">পরামর্শে পরিচিতির নাম অন্তর্ভুক্ত করুন</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">এই সুবিধাটি ব্যবহার করতে পরিচিতির অনুমতি দিন</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">পরিচিতির নাম বৈধ শব্দ হিসেবে গণ্য হবে</string>
     <string name="settings_spellcheck_use_contacts_title">বানান পরীক্ষায় পরিচিতি ব্যবহার করুন</string>
+    <string name="settings_spellcheck_contacts_permission_summary">বানান পরীক্ষার সময় পরিচিতির নামগুলিকে সঠিক শব্দ হিসেবে চিনতে পরিচিতির অনুমতি দিন</string>
     <string name="settings_spellcheck_accept_learned_title">শেখা শব্দ গ্রহণ করুন</string>
     <string name="settings_spellcheck_accept_learned_summary">আপনার টাইপিং থেকে শেখা শব্দগুলো সঠিক বানান হিসেবে গণ্য হবে</string>
     <string name="pref_alt_double_tap_lock">Alt ডাবল-ক্লিক লক সক্রিয় করুন</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrl ডাবল-ক্লিক লক সক্রিয় করুন</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl দুবার ক্লিক করলে তা লক হয়ে থাকবে। আবার Ctrl চাপলে বন্ধ হয়ে যাবে।</string>
     <string name="pref_override_device_meta_state">ডিভাইসের মেটা স্টেট উপেক্ষা করুন</string>
-    <string name="pref_override_device_meta_state_summary">ডিভাইসের KCM কনফিগারেশন যাই হোক না কেন, ফিজিক্যাল কীবোর্ডে স্টিকি মডিফায়ার (শিফট/অল্ট লক) সক্রিয় করুন।</string>
+    <string name="pref_override_device_meta_state_summary">ডিভাইসের KCM কনফিগারেশন যাই হোক না কেন, ফিজিক্যাল কীবোর্ডে স্টিকি মডিফায়ার (শিফট/অল্ট লক) সক্রিয় করুন</string>
     <string name="pref_shift_double_tap_lock">Shift ডাবল-ক্লিক লক সক্রিয় করুন</string>
     <string name="pref_shift_double_tap_lock_summary">Shift দুবার ক্লিক করলে তা লক হয়ে থাকবে। আবার Shift চাপলে বন্ধ হয়ে যাবে।</string>
     <string name="prefs_key_longpress_delay_summary">গৌণ অক্ষর দেখানোর আগে কী চেপে ধরে রাখার সময়</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">অটোফিল ইভেন্ট টোস্ট</string>
     <string name="pref_accessibility_service_disabled">অ্যাক্সেসিবিলিটি পরিষেবা নিষ্ক্রিয়</string>
     <string name="pref_accessibility_service_enabled">অ্যাক্সেসিবিলিটি পরিষেবা সক্রিয়</string>
-    <string name="pref_emoji_search_pkb_summary">ইমোজি বোর্ড খোলা থাকলে অনুসন্ধানের জন্য কীবোর্ড ব্যবহার করুন।</string>
+    <string name="pref_emoji_search_pkb_summary">ইমোজি বোর্ড খোলা থাকলে অনুসন্ধানের জন্য কীবোর্ড ব্যবহার করুন</string>
     <string name="pref_emoji_search_title">ইমোজি অনুসন্ধান চালু করুন</string>
-    <string name="pref_emoji_search_vkb_summary">বর্তমান অনিশ্চিত (আন্ডারলাইন করা) টেক্সট দিয়ে ইমোজি ফিল্টার করুন।</string>
-    <string name="pref_emoji_search_replace_text_summary_off">ইমোজি নির্বাচন করলে সেটি লেখা টেক্সটের পরে বসে।</string>
-    <string name="pref_emoji_search_replace_text_summary_on">ইমোজি নির্বাচন করলে সেটি লেখা টেক্সটের জায়গা নেয়।</string>
+    <string name="pref_emoji_search_vkb_summary">বর্তমান অনিশ্চিত (আন্ডারলাইন করা) টেক্সট দিয়ে ইমোজি ফিল্টার করুন</string>
+    <string name="pref_emoji_search_replace_text_summary_off">ইমোজি নির্বাচন করলে সেটি লেখা টেক্সটের পরে বসে</string>
+    <string name="pref_emoji_search_replace_text_summary_on">ইমোজি নির্বাচন করলে সেটি লেখা টেক্সটের জায়গা নেয়</string>
     <string name="pref_emoji_search_replace_text_title">টেক্সটের বদলে ইমোজি বসান</string>
     <string name="pref_key_interceptor_enabled">বিশেষ কী সমর্থন সক্রিয় করুন</string>
     <string name="pref_key_interceptor_enabled_summary">ইমোজি, SYM ও ভয়েস কী ধরতে অ্যাক্সেসিবিলিটি পরিষেবা ব্যবহার করুন</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">ডেটা পরিচালনা</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">কাস্টম ম্যাক্রো</string>
+    <string name="settings_custom_macros_intro" formatted="false">টেক্সট শর্টকাটে ব্যবহারের জন্য নিজের %x প্লেসহোল্ডার নির্ধারণ করুন</string>
     <string name="settings_customize_menu_hidden_header">কীবোর্ডে দেখানো হয় না</string>
     <string name="settings_customize_menu_instructions">একটি শর্টকাট চেপে ধরে রেখে টেনে ক্রম বদলান। প্রথম চারটি কীবোর্ডের ইনপুট মেনুতে দেখা যাবে।</string>
     <string name="settings_customize_menu_summary">ইনপুট মেনুর শর্টকাট বেছে নিন ও ক্রম বদলান</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">দ্রুত বাক্যাংশ</string>
     <string name="settings_screen_type_by_swiping">সোয়াইপ করে লিখুন</string>
     <string name="settings_screen_type_by_swiping_summary">কীবোর্ড থেকে আঙুল না তুলেই দ্রুত লিখুন</string>
-    <string name="settings_screen_type_by_swiping_unavailable">আপনার ভাষায় সোয়াইপ করে লেখা উপলব্ধ নয়।</string>
+    <string name="settings_screen_type_by_swiping_unavailable">আপনার ভাষায় সোয়াইপ করে লেখা উপলব্ধ নয়</string>
     <string name="settings_search_hint">সেটিংস খুঁজুন</string>
     <string name="settings_search_no_results">কোনো সেটিংস পাওয়া যায়নি</string>
     <string name="settings_shake_fallback_title">বিকল্প ক্রিয়া</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">কীবোর্ড ডিভাইস: %1$s</string>
     <string name="device_config_import_matches_build">বিল্ড ডিভাইস: %1$s</string>
     <string name="device_config_import_matches_brand">ব্র্যান্ড: %1$s</string>
-    <string name="device_config_import_matches_nothing">এই ফাইলে মেলানোর মতো কোনো ডিভাইসের নাম নেই, তাই এটি কখনও প্রয়োগ হবে না।</string>
+    <string name="device_config_import_matches_nothing">এই ফাইলে মেলানোর মতো কোনো ডিভাইসের নাম নেই, তাই এটি কখনও প্রয়োগ হবে না</string>
     <string name="device_config_import_type">ডিভাইসের ধরন: %1$s</string>
     <string name="device_config_import_keys">%1$d টি কী ম্যাপিং</string>
     <string name="device_config_import_keypad_layout">কীপ্যাড লেআউট: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">এই সংস্করণটি আপডেট তালিকা পড়ার জন্য অত্যন্ত পুরনো। অনুগ্রহ করে নিজে আপডেট করুন।</string>
     <string name="settings_update_from_cache">সর্বশেষ সংরক্ষিত পরীক্ষা থেকে দেখানো হয়েছে</string>
     <string name="settings_update_background_check_title">স্বয়ংক্রিয়ভাবে আপডেট পরীক্ষা করুন</string>
-    <string name="settings_update_background_check_summary">নতুন সংস্করণ ডাউনলোডের জন্য উপলব্ধ হলে বিজ্ঞপ্তি পান।</string>
+    <string name="settings_update_background_check_summary">নতুন সংস্করণ ডাউনলোডের জন্য উপলব্ধ হলে বিজ্ঞপ্তি পান</string>
     <string name="settings_update_notification_text">সংস্করণ %1$s ডাউনলোডের জন্য প্রস্তুত</string>
     <string name="settings_update_unknown_sources_message">অ্যাপ ইনস্টল করতে BBKB-কে Android-এর অনুমতি দিতে হবে। এই সূত্র থেকে ইনস্টল চালু করুন, তারপর আবার ইনস্টল চাপুন।</string>
     <string name="settings_update_open_settings">সেটিংস খুলুন</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">অভিধান খুঁজুন</string>
     <string name="language_packs_load_ldb">LDB ফাইল লোড করুন</string>
     <string name="language_packs_variant_summary">%1$s-এর জায়গায় লোড হয়</string>
-    <string name="language_packs_not_on_summary">নতুন %1$s কীবোর্ড তৈরি করতে আলতো চাপুন।</string>
+    <string name="language_packs_not_on_summary">নতুন %1$s কীবোর্ড তৈরি করতে আলতো চাপুন</string>
     <string name="language_packs_turned_on">%1$s সক্রিয় আছে। ভাষা পরিবর্তনকারী থেকে এতে পরিবর্তন করুন।</string>
-    <string name="language_packs_turn_on_in_settings">তালিকায় %1$s সক্রিয় করুন, তারপর ফিরে আসুন।</string>
+    <string name="language_packs_turn_on_in_settings">তালিকায় %1$s সক্রিয় করুন, তারপর ফিরে আসুন</string>
     <string name="language_packs_installed_and_on">%1$s ইনস্টল করা হয়েছে। এটি সক্রিয়: ভাষা পরিবর্তনকারী থেকে এতে পরিবর্তন করুন।</string>
     <string name="language_packs_installed_turn_on">%1$s ইনস্টল করা হয়েছে। কীবোর্ডে সক্রিয় করতে এর সারিতে আলতো চাপুন।</string>
+    <string name="language_packs_installed_no_layout">%1$s ইনস্টল করা হয়েছে, কিন্তু এই কীবোর্ডে এখনও এর লিপির জন্য কোনো লেআউট নেই, তাই এটি নির্বাচন করা যাবে না</string>
     <string name="language_packs_error_offline">সংযোগ নেই</string>
     <string name="language_packs_error_network">কাজ হয়নি। আবার চেষ্টা করুন।</string>
     <string name="language_packs_error_verification">ফাইলটি ক্যাটালগের সঙ্গে মেলেনি, তাই কিছুই ইনস্টল হয়নি</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">সংরক্ষিত: %1$s</string>
     <string name="backup_restore_dialog_device">উৎস: %1$s</string>
     <string name="backup_restore_not_in_file">এই ফাইলে নেই</string>
-    <string name="backup_restore_dialog_note">সেটিংস, লেআউট ও ম্যাক্রো প্রতিস্থাপিত হয়; শব্দ এই ফোনে যা আছে তার সঙ্গে যোগ করা হয়।</string>
+    <string name="backup_restore_dialog_note">সেটিংস, লেআউট ও ম্যাক্রো প্রতিস্থাপিত হয়; শব্দ এই ফোনে যা আছে তার সঙ্গে যোগ করা হয়</string>
     <string name="backup_restore_dialog_confirm">পুনরুদ্ধার</string>
     <string name="backup_restored">ব্যাকআপ পুনরুদ্ধার করা হয়েছে</string>
     <string name="backup_restored_words_pending">কীবোর্ড ব্যবহার শুরু হলে শেখা শব্দ যোগ করা হবে</string>

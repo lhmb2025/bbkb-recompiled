@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">రికార్డ్ అయిన కీ గ్రిడ్‌ను &lt;ckb-key-grid&gt; స్నిప్పెట్‌గా యాప్ ఫైల్‌లలో రాస్తుంది; దాన్ని పరికర కాన్ఫిగ్‌లో అతికించవచ్చు. రికార్డ్ కావడానికి ముందుగా కీబోర్డ్‌ను ఒకసారి తెరువు.</string>
     <string name="ckb_gestures_export_title">CKB జ్యామితిని ఎగుమతి చేయి</string>
     <string name="ckb_gestures_export_written">%s రాయబడింది</string>
-    <string name="ckb_gestures_reserved_note">పైకి స్వైప్ చేయడం (మీ వేలి కింద ఉన్న సూచనను ఖరారు చేయడం) రిజర్వ్ చేయబడింది.</string>
+    <string name="ckb_gestures_reserved_note">పైకి స్వైప్ చేయడం (మీ వేలి కింద ఉన్న సూచనను ఖరారు చేయడం) రిజర్వ్ చేయబడింది</string>
     <string name="ckb_gestures_screen_title">CKB సంజ్ఞలు</string>
     <string name="settings_gesture_accent_max_speed_summary">ఉచ్చారణ గుర్తుల మార్పుల కోసం గరిష్ట వేగ గుణకం</string>
     <string name="settings_gesture_accent_max_speed_title">ఉచ్చారణ గుర్తు మార్పు స్క్రోల్ గరిష్ట వేగ గుణకం</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">డైనమిక్ లెర్నింగ్‌ను ప్రారంభించు</string>
     <string name="settings_dict_learned_words_summary">మీ టైపింగ్ నుండి నేర్చుకున్న పదాలను నిర్వహించు</string>
     <string name="settings_dict_learned_words_title">నేర్చుకున్న పదాలు</string>
+    <string name="settings_dict_add_to_dictionary_note">మీ నిఘంటువుకు జోడించిన పదాలు టైప్ చేస్తున్నప్పుడు సూచించబడతాయి, అక్షరదోషాలుగా గుర్తించబడవు</string>
     <string name="settings_dict_text_shortcuts_summary">పదబంధాలుగా విస్తరించే షార్ట్‌కట్‌లను సృష్టించు</string>
     <string name="settings_dict_text_shortcuts_title">టెక్స్ట్ షార్ట్‌కట్‌లు</string>
     <string name="settings_dict_user_dictionary_summary">వ్యక్తిగత పదాలను జోడించు, సవరించు</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">పరికర ఇన్‌పుట్ కాన్ఫిగరేషన్‌లను ఎంచుకో లేదా దిగుమతి చేయి</string>
     <string name="settings_device_configuration_title">పరికర కాన్ఫిగరేషన్</string>
     <string name="touch_surface_builtin_category">అంతర్నిర్మితం</string>
-    <string name="touch_surface_builtin_intro">ఫోన్‌లోని Scroll assistant ఆన్‌లో ఉన్నప్పుడు, ఫోన్ కీబోర్డ్ టచ్ ఉపరితలాన్ని BBKB కు అందిస్తుంది.</string>
+    <string name="touch_surface_builtin_intro">ఫోన్‌లోని Scroll assistant ఆన్‌లో ఉన్నప్పుడు, ఫోన్ కీబోర్డ్ టచ్ ఉపరితలాన్ని BBKB కు అందిస్తుంది</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant కీలపై డబుల్ ట్యాప్‌ను తానే తీసుకుంటుంది, కాబట్టి అది BBKB కు ఎప్పటికీ చేరదు</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant ను ఆఫ్ చేయి</string>
     <string name="touch_surface_grant_access">యాక్సెస్ ఇవ్వు</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku ను సెటప్ చేయి</string>
     <string name="touch_surface_shizuku_guide_steps">1. డెవలపర్ ఎంపికలను, ఆపై వైర్‌లెస్ డీబగ్గింగ్‌ను ఆన్ చేయండి.\n2. Shizuku ను దాని యాప్ నుండి లేదా రూట్‌తో ప్రారంభించండి.\n3. ఇక్కడికి తిరిగి వచ్చి “యాక్సెస్ ఇవ్వు” నొక్కండి.</string>
     <string name="touch_surface_shizuku_intro">Shizuku అనేది BBKB టచ్ ఉపరితలాన్ని నేరుగా చదవడానికి వీలు కల్పించే ఉచిత యాప్. కీబోర్డ్ తెరిచి ఉన్నప్పుడు మాత్రమే BBKB టచ్ ఉపరితలాన్ని తన నియంత్రణలోకి తీసుకుంటుంది; మిగతా సమయంలో అది ఫోన్‌లో ఎప్పటిలాగే పని చేస్తుంది.</string>
-    <string name="touch_surface_shizuku_mediatek">ఈ ఫోన్‌లో Shizuku 13.5.4 ను ఉపయోగించండి: 13.6.0 వెర్షన్ MediaTek ఫోన్‌లలో పూర్తిగా పని చేయదు.</string>
+    <string name="touch_surface_shizuku_mediatek">ఈ ఫోన్‌లో Shizuku 13.5.4 ను ఉపయోగించండి: 13.6.0 వెర్షన్ MediaTek ఫోన్‌లలో పూర్తిగా పని చేయదు</string>
     <string name="touch_surface_shizuku_reboot">ఫోన్ రీస్టార్ట్ అయిన ప్రతిసారీ Shizuku ఆగిపోతుంది. ప్రతి రీస్టార్ట్ తర్వాత దాన్ని మళ్లీ ప్రారంభించండి; అది రన్ అవ్వనప్పుడు పైన ఉన్న స్థితి ఆ విషయాన్ని తెలియజేస్తుంది.</string>
     <string name="touch_surface_shizuku_state_denied">రన్ అవుతోంది, కానీ BBKB కు యాక్సెస్ నిరాకరించబడింది</string>
     <string name="touch_surface_shizuku_state_granted">రన్ అవుతోంది, BBKB కు యాక్సెస్ ఉంది</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">ఈ ఫోన్‌లో అందుబాటులో లేదు</string>
     <string name="pref_show_pkb_modifier_status_icon">మాడిఫైయర్ స్థితి చిహ్నాన్ని చూపు</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">ఫిజికల్ కీబోర్డ్‌ను ఉపయోగిస్తున్నప్పుడు Shift/Alt మాడిఫైయర్ సూచికను స్టేటస్ బార్‌లో చూపు</string>
-    <string name="settings_pred_accounts_permission_summary">టైప్ చేస్తున్నప్పుడు ఇమెయిల్ చిరునామాలను సూచించడానికి ఖాతాల అనుమతిని ఇవ్వండి.</string>
+    <string name="settings_pred_accounts_permission_summary">టైప్ చేస్తున్నప్పుడు ఇమెయిల్ చిరునామాలను సూచించడానికి ఖాతాల అనుమతిని ఇవ్వండి</string>
     <string name="settings_pred_accounts_permission_title">ఖాతాల అనుమతి అవసరం</string>
     <string name="settings_pred_block_offensive_summary">వాయిస్ డిక్టేషన్‌లో అభ్యంతరకరంగా ఉండగల పదాలను దాచు</string>
     <string name="settings_pred_block_offensive_title">అభ్యంతరకర పదాలను నిరోధించు</string>
-    <string name="settings_pred_contacts_permission_summary">టైప్ చేస్తున్నప్పుడు కాంటాక్ట్ పేర్లను, ఇమెయిల్ చిరునామాలను సూచించడానికి కాంటాక్ట్‌ల అనుమతిని ఇవ్వండి.</string>
+    <string name="settings_pred_contacts_permission_summary">టైప్ చేస్తున్నప్పుడు కాంటాక్ట్ పేర్లను, ఇమెయిల్ చిరునామాలను సూచించడానికి కాంటాక్ట్‌ల అనుమతిని ఇవ్వండి</string>
     <string name="settings_pred_contacts_permission_title">కాంటాక్ట్‌ల అనుమతి అవసరం</string>
     <string name="settings_pred_contacts_summary_disabled">కాంటాక్ట్‌ల అనుమతి అవసరం</string>
     <string name="settings_pred_contacts_summary_enabled">సూచనల్లో కాంటాక్ట్ పేర్లను చేర్చు</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">ఈ ఫీచర్‌ను ఉపయోగించడానికి కాంటాక్ట్‌ల అనుమతిని ఇవ్వండి</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">కాంటాక్ట్ పేర్లు సరైన పదాలుగా గుర్తించబడతాయి</string>
     <string name="settings_spellcheck_use_contacts_title">అక్షరక్రమ తనిఖీ కోసం కాంటాక్ట్‌లను ఉపయోగించు</string>
+    <string name="settings_spellcheck_contacts_permission_summary">అక్షరక్రమ తనిఖీలో కాంటాక్ట్ పేర్లను సరైన పదాలుగా గుర్తించడానికి కాంటాక్ట్‌ల అనుమతిని ఇవ్వండి</string>
     <string name="settings_spellcheck_accept_learned_title">నేర్చుకున్న పదాలను అంగీకరించు</string>
     <string name="settings_spellcheck_accept_learned_summary">మీ టైపింగ్ నుండి నేర్చుకున్న పదాలు సరైన అక్షరక్రమంగా పరిగణించబడతాయి</string>
     <string name="pref_alt_double_tap_lock">Alt డబుల్-క్లిక్ లాక్‌ను ప్రారంభించు</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrl డబుల్-క్లిక్ లాక్‌ను ప్రారంభించు</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl ను డబుల్-క్లిక్ చేస్తే అది లాక్ అవుతుంది. మళ్లీ Ctrl ను క్లిక్ చేస్తే ఆఫ్ అవుతుంది.</string>
     <string name="pref_override_device_meta_state">పరికర మెటా స్థితిని భర్తీ చేయి</string>
-    <string name="pref_override_device_meta_state_summary">పరికరం KCM కాన్ఫిగరేషన్‌తో సంబంధం లేకుండా, ఫిజికల్ కీబోర్డ్‌లలో స్టికీ మాడిఫైయర్‌లను (shift/alt లాక్) ప్రారంభించు.</string>
+    <string name="pref_override_device_meta_state_summary">పరికరం KCM కాన్ఫిగరేషన్‌తో సంబంధం లేకుండా, ఫిజికల్ కీబోర్డ్‌లలో స్టికీ మాడిఫైయర్‌లను (shift/alt లాక్) ప్రారంభించు</string>
     <string name="pref_shift_double_tap_lock">Shift డబుల్-క్లిక్ లాక్‌ను ప్రారంభించు</string>
     <string name="pref_shift_double_tap_lock_summary">Shift ను డబుల్-క్లిక్ చేస్తే అది లాక్ అవుతుంది. మళ్లీ Shift ను క్లిక్ చేస్తే ఆఫ్ అవుతుంది.</string>
     <string name="prefs_key_longpress_delay_summary">ద్వితీయ అక్షరాలు కనిపించే ముందు కీని నొక్కి పట్టాల్సిన సమయం</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">ఆటోఫిల్ ఈవెంట్ టోస్ట్‌లు</string>
     <string name="pref_accessibility_service_disabled">యాక్సెసిబిలిటీ సేవ నిలిపివేయబడింది</string>
     <string name="pref_accessibility_service_enabled">యాక్సెసిబిలిటీ సేవ ప్రారంభించబడింది</string>
-    <string name="pref_emoji_search_pkb_summary">ఎమోజి బోర్డ్ తెరిచి ఉన్నప్పుడు శోధించడానికి కీబోర్డ్ ఉపయోగించండి.</string>
+    <string name="pref_emoji_search_pkb_summary">ఎమోజి బోర్డ్ తెరిచి ఉన్నప్పుడు శోధించడానికి కీబోర్డ్ ఉపయోగించండి</string>
     <string name="pref_emoji_search_title">ఎమోజి శోధనను ప్రారంభించు</string>
-    <string name="pref_emoji_search_vkb_summary">ప్రస్తుత నిర్ధారించని (అండర్‌లైన్ చేసిన) టెక్స్ట్‌తో ఎమోజిలను ఫిల్టర్ చేయండి.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">ఎమోజిని ఎంచుకుంటే అది టైప్ చేసిన టెక్స్ట్ తర్వాత చేర్చబడుతుంది.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">ఎమోజిని ఎంచుకుంటే అది టైప్ చేసిన టెక్స్ట్‌ను భర్తీ చేస్తుంది.</string>
+    <string name="pref_emoji_search_vkb_summary">ప్రస్తుత నిర్ధారించని (అండర్‌లైన్ చేసిన) టెక్స్ట్‌తో ఎమోజిలను ఫిల్టర్ చేయండి</string>
+    <string name="pref_emoji_search_replace_text_summary_off">ఎమోజిని ఎంచుకుంటే అది టైప్ చేసిన టెక్స్ట్ తర్వాత చేర్చబడుతుంది</string>
+    <string name="pref_emoji_search_replace_text_summary_on">ఎమోజిని ఎంచుకుంటే అది టైప్ చేసిన టెక్స్ట్‌ను భర్తీ చేస్తుంది</string>
     <string name="pref_emoji_search_replace_text_title">టెక్స్ట్‌ను ఎమోజితో భర్తీ చేయి</string>
     <string name="pref_key_interceptor_enabled">ప్రత్యేక కీ మద్దతును ప్రారంభించు</string>
     <string name="pref_key_interceptor_enabled_summary">Emoji, SYM మరియు Voice కీలను అందుకోవడానికి యాక్సెసిబిలిటీ సేవను ఉపయోగించు</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">డేటా నిర్వహణ</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">అనుకూల మ్యాక్రోలు</string>
+    <string name="settings_custom_macros_intro" formatted="false">టెక్స్ట్ షార్ట్‌కట్‌లలో ఉపయోగించడానికి మీ స్వంత %x ప్లేస్‌హోల్డర్‌లను నిర్వచించండి</string>
     <string name="settings_customize_menu_hidden_header">కీబోర్డ్‌పై చూపబడలేదు</string>
     <string name="settings_customize_menu_instructions">ఒక షార్ట్‌కట్‌ను తాకి పట్టుకుని, ఆపై లాగి క్రమాన్ని మార్చండి. మొదటి నాలుగు కీబోర్డ్ ఇన్‌పుట్ మెనూలో కనిపిస్తాయి.</string>
     <string name="settings_customize_menu_summary">ఇన్‌పుట్ మెనూ షార్ట్‌కట్‌లను ఎంచుకుని క్రమాన్ని మార్చు</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">త్వరిత పదబంధాలు</string>
     <string name="settings_screen_type_by_swiping">స్వైప్ చేస్తూ టైప్ చేయి</string>
     <string name="settings_screen_type_by_swiping_summary">కీబోర్డ్‌పై నుండి వేలిని ఎత్తకుండా త్వరగా టైప్ చేయండి</string>
-    <string name="settings_screen_type_by_swiping_unavailable">మీ భాషలో స్వైప్ చేస్తూ టైప్ చేసే సౌలభ్యం అందుబాటులో లేదు.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">మీ భాషలో స్వైప్ చేస్తూ టైప్ చేసే సౌలభ్యం అందుబాటులో లేదు</string>
     <string name="settings_search_hint">సెట్టింగ్‌లను శోధించు</string>
     <string name="settings_search_no_results">సెట్టింగ్‌లు ఏవీ కనుగొనబడలేదు</string>
     <string name="settings_shake_fallback_title">ప్రత్యామ్నాయ చర్య</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">కీబోర్డ్ పరికరం: %1$s</string>
     <string name="device_config_import_matches_build">బిల్డ్ పరికరం: %1$s</string>
     <string name="device_config_import_matches_brand">బ్రాండ్: %1$s</string>
-    <string name="device_config_import_matches_nothing">ఈ ఫైల్ సరిపోల్చడానికి ఏ పరికరాన్నీ పేర్కొనలేదు, కాబట్టి ఇది ఎప్పటికీ వర్తించదు.</string>
+    <string name="device_config_import_matches_nothing">ఈ ఫైల్ సరిపోల్చడానికి ఏ పరికరాన్నీ పేర్కొనలేదు, కాబట్టి ఇది ఎప్పటికీ వర్తించదు</string>
     <string name="device_config_import_type">పరికర రకం: %1$s</string>
     <string name="device_config_import_keys">%1$d కీ మ్యాపింగ్‌లు</string>
     <string name="device_config_import_keypad_layout">కీప్యాడ్ లేఅవుట్: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">ఈ వెర్షన్ నవీకరణ జాబితాను చదవడానికి చాలా పాతది. దయచేసి మీరే నవీకరించండి.</string>
     <string name="settings_update_from_cache">చివరిగా సేవ్ చేసిన తనిఖీ నుండి చూపబడింది</string>
     <string name="settings_update_background_check_title">అప్‌డేట్‌లను స్వయంచాలకంగా తనిఖీ చేయి</string>
-    <string name="settings_update_background_check_summary">కొత్త వెర్షన్ డౌన్‌లోడ్‌కు అందుబాటులోకి వచ్చినప్పుడు నోటిఫికేషన్ అందుకోండి.</string>
+    <string name="settings_update_background_check_summary">కొత్త వెర్షన్ డౌన్‌లోడ్‌కు అందుబాటులోకి వచ్చినప్పుడు నోటిఫికేషన్ అందుకోండి</string>
     <string name="settings_update_notification_text">వెర్షన్ %1$s డౌన్‌లోడ్‌కు సిద్ధంగా ఉంది</string>
     <string name="settings_update_unknown_sources_message">యాప్‌లను ఇన్‌స్టాల్ చేయడానికి Android BBKBకి అనుమతి ఇవ్వాలి. ఈ మూలం నుండి ఇన్‌స్టాల్‌ను ప్రారంభించి, మళ్లీ ఇన్‌స్టాల్ నొక్కండి.</string>
     <string name="settings_update_open_settings">సెట్టింగ్‌లను తెరవండి</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">నిఘంటువులను తనిఖీ చేయండి</string>
     <string name="language_packs_load_ldb">LDB ఫైల్‌ను లోడ్ చేయండి</string>
     <string name="language_packs_variant_summary">%1$s స్థానంలో లోడ్ అవుతుంది</string>
-    <string name="language_packs_not_on_summary">కొత్త %1$s కీబోర్డ్‌ను సృష్టించడానికి నొక్కండి.</string>
+    <string name="language_packs_not_on_summary">కొత్త %1$s కీబోర్డ్‌ను సృష్టించడానికి నొక్కండి</string>
     <string name="language_packs_turned_on">%1$s ఆన్ చేయబడింది. భాషా స్విచర్‌లో దానికి మారండి.</string>
-    <string name="language_packs_turn_on_in_settings">జాబితాలో %1$s ఆన్ చేసి, తర్వాత తిరిగి రండి.</string>
+    <string name="language_packs_turn_on_in_settings">జాబితాలో %1$s ఆన్ చేసి, తర్వాత తిరిగి రండి</string>
     <string name="language_packs_installed_and_on">%1$s ఇన్‌స్టాల్ చేయబడింది. ఇది ఆన్‌లో ఉంది: భాషా స్విచర్‌లో దానికి మారండి.</string>
     <string name="language_packs_installed_turn_on">%1$s ఇన్‌స్టాల్ చేయబడింది. కీబోర్డ్‌లో దాన్ని ఆన్ చేయడానికి వరుసను నొక్కండి.</string>
+    <string name="language_packs_installed_no_layout">%1$s ఇన్‌స్టాల్ చేయబడింది, కానీ ఈ కీబోర్డ్‌లో దాని లిపికి ఇంకా లేఅవుట్ లేదు, కాబట్టి దాన్ని ఎంచుకోలేరు</string>
     <string name="language_packs_error_offline">కనెక్షన్ లేదు</string>
     <string name="language_packs_error_network">అది పని చేయలేదు. మళ్లీ ప్రయత్నించండి.</string>
     <string name="language_packs_error_verification">ఫైల్ కేటలాగ్‌తో సరిపోలలేదు, కాబట్టి ఏదీ ఇన్‌స్టాల్ కాలేదు</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">సేవ్ చేసినది: %1$s</string>
     <string name="backup_restore_dialog_device">%1$s నుండి</string>
     <string name="backup_restore_not_in_file">ఈ ఫైల్‌లో లేదు</string>
-    <string name="backup_restore_dialog_note">సెట్టింగ్‌లు, లేఅవుట్‌లు, మ్యాక్రోలు భర్తీ చేయబడతాయి; పదాలు ఈ ఫోన్‌లో ఉన్నవాటికి జోడించబడతాయి.</string>
+    <string name="backup_restore_dialog_note">సెట్టింగ్‌లు, లేఅవుట్‌లు, మ్యాక్రోలు భర్తీ చేయబడతాయి; పదాలు ఈ ఫోన్‌లో ఉన్నవాటికి జోడించబడతాయి</string>
     <string name="backup_restore_dialog_confirm">పునరుద్ధరించు</string>
     <string name="backup_restored">బ్యాకప్ పునరుద్ధరించబడింది</string>
     <string name="backup_restored_words_pending">కీబోర్డ్ ఉపయోగంలోకి వచ్చిన తర్వాత నేర్చుకున్న పదాలు జోడించబడతాయి</string>

@@ -961,8 +961,7 @@ private suspend fun installLanguagePack(
                 installed.selectable ->
                     context.getString(R.string.language_packs_installed_turn_on, locale.displayName)
                 else ->
-                    "Installed ${locale.displayName}, but this keyboard has no layout for its " +
-                        "script yet, so it cannot be selected."
+                    context.getString(R.string.language_packs_installed_no_layout, locale.displayName)
             }
             withContext(Dispatchers.Main) {
                 onResult(true, message)

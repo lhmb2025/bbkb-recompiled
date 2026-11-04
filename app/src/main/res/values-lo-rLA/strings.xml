@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">ບັນທຶກຕາຕະລາງປຸ່ມທີ່ຈັບໄດ້ເປັນສ່ວນ &lt;ckb-key-grid&gt; ລົງໃນໄຟລ໌ແອັບ ເພື່ອວາງໃສ່ໃນການຕັ້ງຄ່າອຸປະກອນ. ໃຫ້ເປີດແປ້ນພິມເທື່ອໜຶ່ງກ່ອນ ເພື່ອໃຫ້ມັນຈັບໄດ້.</string>
     <string name="ckb_gestures_export_title">ສົ່ງອອກເລຂາຄະນິດ CKB</string>
     <string name="ckb_gestures_export_written">ບັນທຶກ %s ແລ້ວ</string>
-    <string name="ckb_gestures_reserved_note">ການປັດຂຶ້ນ (ຢືນຢັນຄຳແນະນຳທີ່ຢູ່ໃຕ້ນິ້ວຂອງທ່ານ) ຖືກສະຫງວນໄວ້.</string>
+    <string name="ckb_gestures_reserved_note">ການປັດຂຶ້ນ (ຢືນຢັນຄຳແນະນຳທີ່ຢູ່ໃຕ້ນິ້ວຂອງທ່ານ) ຖືກສະຫງວນໄວ້</string>
     <string name="ckb_gestures_screen_title">ທ່າທາງ CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">ຕົວຄູນຄວາມໄວສູງສຸດສຳລັບການປ່ຽນເຄື່ອງໝາຍກຳກັບສຽງ</string>
     <string name="settings_gesture_accent_max_speed_title">ຕົວຄູນຄວາມໄວສູງສຸດຂອງການເລື່ອນປ່ຽນເຄື່ອງໝາຍກຳກັບສຽງ</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">ເປີດການຮຽນຮູ້ແບບໄດນາມິກ</string>
     <string name="settings_dict_learned_words_summary">ຈັດການຄຳສັບທີ່ຮຽນຮູ້ຈາກການພິມຂອງທ່ານ</string>
     <string name="settings_dict_learned_words_title">ຄຳສັບທີ່ຮຽນຮູ້ແລ້ວ</string>
+    <string name="settings_dict_add_to_dictionary_note">ຄຳທີ່ເພີ່ມໃສ່ວັດຈະນານຸກົມຂອງທ່ານຈະຖືກແນະນຳໃນຂະນະທີ່ພິມ ແລະ ຈະບໍ່ຖືກໝາຍວ່າສະກົດຜິດ</string>
     <string name="settings_dict_text_shortcuts_summary">ສ້າງທາງລັດທີ່ຂະຫຍາຍເປັນວະລີ</string>
     <string name="settings_dict_text_shortcuts_title">ທາງລັດຂໍ້ຄວາມ</string>
     <string name="settings_dict_user_dictionary_summary">ເພີ່ມ ແລະ ແກ້ໄຂຄຳສັບສ່ວນຕົວ</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">ເລືອກ ຫຼື ນຳເຂົ້າການກຳນົດຄ່າການປ້ອນຂອງອຸປະກອນ</string>
     <string name="settings_device_configuration_title">ການກຳນົດຄ່າອຸປະກອນ</string>
     <string name="touch_surface_builtin_category">ໃນຕົວເຄື່ອງ</string>
-    <string name="touch_surface_builtin_intro">ໂທລະສັບຈະສົ່ງຂໍ້ມູນຈາກພື້ນຜິວສຳຜັດຂອງແປ້ນພິມໃຫ້ BBKB ໃນຂະນະທີ່ເປີດ Scroll assistant ຢູ່.</string>
+    <string name="touch_surface_builtin_intro">ໂທລະສັບຈະສົ່ງຂໍ້ມູນຈາກພື້ນຜິວສຳຜັດຂອງແປ້ນພິມໃຫ້ BBKB ໃນຂະນະທີ່ເປີດ Scroll assistant ຢູ່</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant ຍຶດການແຕະສອງເທື່ອເທິງປຸ່ມໄວ້ເອງ, BBKB ຈຶ່ງບໍ່ເຄີຍໄດ້ຮັບ</string>
     <string name="touch_surface_cursor_assistant_title">ປິດ Cursor assistant</string>
     <string name="touch_surface_grant_access">ໃຫ້ສິດເຂົ້າເຖິງ</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">ຕັ້ງຄ່າ Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. ເປີດຕົວເລືອກນັກພັດທະນາ, ຈາກນັ້ນເປີດການດີບັກໄຮ້ສາຍ.\n2. ເລີ່ມ Shizuku ຈາກແອັບຂອງມັນ ຫຼື ດ້ວຍສິດ root.\n3. ກັບມາທີ່ນີ້ ແລ້ວແຕະ ໃຫ້ສິດເຂົ້າເຖິງ.</string>
     <string name="touch_surface_shizuku_intro">Shizuku ເປັນແອັບຟຣີທີ່ຊ່ວຍໃຫ້ BBKB ອ່ານພື້ນຜິວສຳຜັດໄດ້ໂດຍກົງ. BBKB ຈະຄວບຄຸມພື້ນຜິວສຳຜັດສະເພາະໃນຂະນະທີ່ແປ້ນພິມເປີດຢູ່ເທົ່ານັ້ນ; ເວລາອື່ນ ພື້ນຜິວສຳຜັດຈະເຮັດວຽກຕາມປົກກະຕິຂອງໂທລະສັບ.</string>
-    <string name="touch_surface_shizuku_mediatek">ໃຊ້ Shizuku 13.5.4 ໃນໂທລະສັບນີ້: ເວີຊັນ 13.6.0 ເຮັດວຽກໄດ້ບໍ່ສົມບູນໃນໂທລະສັບທີ່ໃຊ້ຊິບ MediaTek.</string>
+    <string name="touch_surface_shizuku_mediatek">ໃຊ້ Shizuku 13.5.4 ໃນໂທລະສັບນີ້: ເວີຊັນ 13.6.0 ເຮັດວຽກໄດ້ບໍ່ສົມບູນໃນໂທລະສັບທີ່ໃຊ້ຊິບ MediaTek</string>
     <string name="touch_surface_shizuku_reboot">Shizuku ຈະຢຸດເຮັດວຽກທຸກຄັ້ງທີ່ໂທລະສັບເລີ່ມໃໝ່. ໃຫ້ເລີ່ມ Shizuku ອີກຄັ້ງຫຼັງຈາກເລີ່ມໃໝ່ທຸກຄັ້ງ; ສະຖານະດ້ານເທິງຈະບອກເມື່ອ Shizuku ບໍ່ໄດ້ເຮັດວຽກຢູ່.</string>
     <string name="touch_surface_shizuku_state_denied">ກຳລັງເຮັດວຽກ ແຕ່ BBKB ຖືກປະຕິເສດສິດເຂົ້າເຖິງ</string>
     <string name="touch_surface_shizuku_state_granted">ກຳລັງເຮັດວຽກ ແລະ BBKB ມີສິດເຂົ້າເຖິງແລ້ວ</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">ໃຊ້ບໍ່ໄດ້ໃນໂທລະສັບນີ້</string>
     <string name="pref_show_pkb_modifier_status_icon">ສະແດງໄອຄອນສະຖານະປຸ່ມດັດແປງ</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">ສະແດງຕົວບອກສະຖານະ Shift/Alt ໃນແຖບສະຖານະເມື່ອໃຊ້ແປ້ນພິມແທ້</string>
-    <string name="settings_pred_accounts_permission_summary">ໃຫ້ສິດເຂົ້າເຖິງບັນຊີເພື່ອແນະນຳທີ່ຢູ່ອີເມວໃນຂະນະທີ່ພິມ.</string>
+    <string name="settings_pred_accounts_permission_summary">ໃຫ້ສິດເຂົ້າເຖິງບັນຊີເພື່ອແນະນຳທີ່ຢູ່ອີເມວໃນຂະນະທີ່ພິມ</string>
     <string name="settings_pred_accounts_permission_title">ຕ້ອງການສິດເຂົ້າເຖິງບັນຊີ</string>
     <string name="settings_pred_block_offensive_summary">ເຊື່ອງຄຳທີ່ອາດບໍ່ສຸພາບເມື່ອປ້ອນດ້ວຍສຽງ</string>
     <string name="settings_pred_block_offensive_title">ບລັອກຄຳທີ່ບໍ່ສຸພາບ</string>
-    <string name="settings_pred_contacts_permission_summary">ໃຫ້ສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່ເພື່ອແນະນຳຊື່ ແລະ ທີ່ຢູ່ອີເມວໃນຂະນະທີ່ພິມ.</string>
+    <string name="settings_pred_contacts_permission_summary">ໃຫ້ສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່ເພື່ອແນະນຳຊື່ ແລະ ທີ່ຢູ່ອີເມວໃນຂະນະທີ່ພິມ</string>
     <string name="settings_pred_contacts_permission_title">ຕ້ອງການສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່</string>
     <string name="settings_pred_contacts_summary_disabled">ຕ້ອງການສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່</string>
     <string name="settings_pred_contacts_summary_enabled">ລວມຊື່ຜູ້ຕິດຕໍ່ເຂົ້າໃນຄຳແນະນຳ</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">ໃຫ້ສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່ເພື່ອໃຊ້ຄຸນສົມບັດນີ້</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">ຊື່ຜູ້ຕິດຕໍ່ຈະຖືກຮັບຮູ້ວ່າເປັນຄຳທີ່ຖືກຕ້ອງ</string>
     <string name="settings_spellcheck_use_contacts_title">ໃຊ້ລາຍຊື່ຜູ້ຕິດຕໍ່ໃນການກວດການສະກົດຄຳ</string>
+    <string name="settings_spellcheck_contacts_permission_summary">ໃຫ້ສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່ເພື່ອໃຫ້ຮູ້ຈັກຊື່ຜູ້ຕິດຕໍ່ເປັນຄຳທີ່ຖືກຕ້ອງໃນເວລາກວດການສະກົດຄຳ</string>
     <string name="settings_spellcheck_accept_learned_title">ຍອມຮັບຄຳທີ່ຮຽນຮູ້</string>
     <string name="settings_spellcheck_accept_learned_summary">ຄຳທີ່ຮຽນຮູ້ຈາກການພິມຂອງທ່ານຖືວ່າສະກົດຖືກຕ້ອງ</string>
     <string name="pref_alt_double_tap_lock">ເປີດໃຊ້ການລັອກ Alt ດ້ວຍການກົດສອງເທື່ອ</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">ເປີດໃຊ້ການລັອກ Ctrl ດ້ວຍການກົດສອງເທື່ອ</string>
     <string name="pref_ctrl_double_tap_lock_summary">ການກົດ Ctrl ສອງເທື່ອຈະລັອກມັນໄວ້. ກົດ Ctrl ອີກເທື່ອໜຶ່ງເພື່ອປິດ.</string>
     <string name="pref_override_device_meta_state">ແທນທີ່ສະຖານະ meta ຂອງອຸປະກອນ</string>
-    <string name="pref_override_device_meta_state_summary">ເປີດໃຊ້ປຸ່ມດັດແປງແບບຄ້າງ (ລັອກ shift/alt) ເທິງແປ້ນພິມແທ້ ໂດຍບໍ່ຄຳນຶງເຖິງການກຳນົດຄ່າ KCM ຂອງອຸປະກອນ.</string>
+    <string name="pref_override_device_meta_state_summary">ເປີດໃຊ້ປຸ່ມດັດແປງແບບຄ້າງ (ລັອກ shift/alt) ເທິງແປ້ນພິມແທ້ ໂດຍບໍ່ຄຳນຶງເຖິງການກຳນົດຄ່າ KCM ຂອງອຸປະກອນ</string>
     <string name="pref_shift_double_tap_lock">ເປີດໃຊ້ການລັອກ Shift ດ້ວຍການກົດສອງເທື່ອ</string>
     <string name="pref_shift_double_tap_lock_summary">ການກົດ Shift ສອງເທື່ອຈະລັອກມັນໄວ້. ກົດ Shift ອີກເທື່ອໜຶ່ງເພື່ອປິດ.</string>
     <string name="prefs_key_longpress_delay_summary">ເວລາກົດປຸ່ມຄ້າງກ່ອນທີ່ໂຕອັກສອນສຳຮອງຈະປາກົດ</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">ການແຈ້ງເຕືອນເຫດການຕື່ມຂໍ້ມູນອັດຕະໂນມັດ</string>
     <string name="pref_accessibility_service_disabled">ບໍລິການການເຂົ້າເຖິງຖືກປິດໄວ້</string>
     <string name="pref_accessibility_service_enabled">ບໍລິການການເຂົ້າເຖິງຖືກເປີດໄວ້</string>
-    <string name="pref_emoji_search_pkb_summary">ເມື່ອກະດານອີໂມຈິເປີດຢູ່, ໃຊ້ແປ້ນພິມເພື່ອຊອກຫາ.</string>
+    <string name="pref_emoji_search_pkb_summary">ເມື່ອກະດານອີໂມຈິເປີດຢູ່, ໃຊ້ແປ້ນພິມເພື່ອຊອກຫາ</string>
     <string name="pref_emoji_search_title">ເປີດການຊອກຫາອີໂມຈິ</string>
-    <string name="pref_emoji_search_vkb_summary">ກັ່ນຕອງອີໂມຈິດ້ວຍຂໍ້ຄວາມປັດຈຸບັນທີ່ຍັງບໍ່ໄດ້ຢືນຢັນ (ຂີດກ້ອງ).</string>
-    <string name="pref_emoji_search_replace_text_summary_off">ການເລືອກອີໂມຈິຈະແຊກມັນໄວ້ຫຼັງຈາກຂໍ້ຄວາມທີ່ພິມ.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">ການເລືອກອີໂມຈິຈະແທນທີ່ຂໍ້ຄວາມທີ່ພິມ.</string>
+    <string name="pref_emoji_search_vkb_summary">ກັ່ນຕອງອີໂມຈິດ້ວຍຂໍ້ຄວາມປັດຈຸບັນທີ່ຍັງບໍ່ໄດ້ຢືນຢັນ (ຂີດກ້ອງ)</string>
+    <string name="pref_emoji_search_replace_text_summary_off">ການເລືອກອີໂມຈິຈະແຊກມັນໄວ້ຫຼັງຈາກຂໍ້ຄວາມທີ່ພິມ</string>
+    <string name="pref_emoji_search_replace_text_summary_on">ການເລືອກອີໂມຈິຈະແທນທີ່ຂໍ້ຄວາມທີ່ພິມ</string>
     <string name="pref_emoji_search_replace_text_title">ແທນທີ່ຂໍ້ຄວາມດ້ວຍອີໂມຈິ</string>
     <string name="pref_key_interceptor_enabled">ເປີດໃຊ້ການຮອງຮັບປຸ່ມພິເສດ</string>
     <string name="pref_key_interceptor_enabled_summary">ໃຊ້ບໍລິການການເຂົ້າເຖິງເພື່ອຈັບປຸ່ມ Emoji, SYM ແລະ Voice</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">ຈັດການຂໍ້ມູນ</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">ມາໂຄຣແບບກຳນົດເອງ</string>
+    <string name="settings_custom_macros_intro" formatted="false">ກຳນົດຕົວແທນ %x ຂອງທ່ານເອງເພື່ອໃຊ້ໃນທາງລັດຂໍ້ຄວາມ</string>
     <string name="settings_customize_menu_hidden_header">ບໍ່ສະແດງເທິງແປ້ນພິມ</string>
     <string name="settings_customize_menu_instructions">ແຕະທາງລັດຄ້າງໄວ້ ແລ້ວລາກເພື່ອຈັດລຳດັບໃໝ່. ສີ່ອັນທຳອິດຈະປາກົດໃນເມນູການປ້ອນຂອງແປ້ນພິມ.</string>
     <string name="settings_customize_menu_summary">ເລືອກ ແລະ ຈັດລຳດັບທາງລັດໃນເມນູການປ້ອນ</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">ວະລີດ່ວນ</string>
     <string name="settings_screen_type_by_swiping">ພິມດ້ວຍການປັດ</string>
     <string name="settings_screen_type_by_swiping_summary">ພິມໄດ້ໄວໂດຍບໍ່ຕ້ອງຍົກນິ້ວອອກຈາກແປ້ນພິມ</string>
-    <string name="settings_screen_type_by_swiping_unavailable">ການພິມດ້ວຍການປັດບໍ່ມີໃຫ້ໃຊ້ໃນພາສາຂອງທ່ານ.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">ການພິມດ້ວຍການປັດບໍ່ມີໃຫ້ໃຊ້ໃນພາສາຂອງທ່ານ</string>
     <string name="settings_search_hint">ຊອກຫາການຕັ້ງຄ່າ</string>
     <string name="settings_search_no_results">ບໍ່ພົບການຕັ້ງຄ່າ</string>
     <string name="settings_shake_fallback_title">ການເຮັດວຽກສຳຮອງ</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">ອຸປະກອນແປ້ນພິມ: %1$s</string>
     <string name="device_config_import_matches_build">ອຸປະກອນຂອງບິວ: %1$s</string>
     <string name="device_config_import_matches_brand">ຍີ່ຫໍ້: %1$s</string>
-    <string name="device_config_import_matches_nothing">ໄຟລ໌ນີ້ບໍ່ໄດ້ລະບຸອຸປະກອນໃດໃຫ້ກົງກັນ, ດັ່ງນັ້ນມັນຈະບໍ່ຖືກນຳໃຊ້ເລີຍ.</string>
+    <string name="device_config_import_matches_nothing">ໄຟລ໌ນີ້ບໍ່ໄດ້ລະບຸອຸປະກອນໃດໃຫ້ກົງກັນ, ດັ່ງນັ້ນມັນຈະບໍ່ຖືກນຳໃຊ້ເລີຍ</string>
     <string name="device_config_import_type">ປະເພດອຸປະກອນ: %1$s</string>
     <string name="device_config_import_keys">ການແມັບປຸ່ມ %1$d ລາຍການ</string>
     <string name="device_config_import_keypad_layout">ຮູບແບບແປ້ນພິມ: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">ເວີຊັນນີ້ເກົ່າເກີນໄປທີ່ຈະອ່ານລາຍການອັບເດດ. ກະລຸນາອັບເດດດ້ວຍຕົນເອງ.</string>
     <string name="settings_update_from_cache">ສະແດງຈາກການກວດທີ່ບັນທຶກໄວ້ຄັ້ງລ່າສຸດ</string>
     <string name="settings_update_background_check_title">ກວດຫາການອັບເດດອັດຕະໂນມັດ</string>
-    <string name="settings_update_background_check_summary">ຮັບການແຈ້ງເຕືອນເມື່ອມີເວີຊັນໃໝ່ໃຫ້ດາວໂຫຼດ.</string>
+    <string name="settings_update_background_check_summary">ຮັບການແຈ້ງເຕືອນເມື່ອມີເວີຊັນໃໝ່ໃຫ້ດາວໂຫຼດ</string>
     <string name="settings_update_notification_text">ເວີຊັນ %1$s ພ້ອມດາວໂຫຼດແລ້ວ</string>
     <string name="settings_update_unknown_sources_message">Android ຕ້ອງອະນຸຍາດໃຫ້ BBKB ຕິດຕັ້ງແອັບ. ເປີດການຕິດຕັ້ງຈາກແຫຼ່ງນີ້ ແລ້ວກົດຕິດຕັ້ງອີກຄັ້ງ.</string>
     <string name="settings_update_open_settings">ເປີດການຕັ້ງຄ່າ</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">ກວດຫາວັດຈະນານຸກົມ</string>
     <string name="language_packs_load_ldb">ໂຫລ່ດໄຟລ໌ LDB</string>
     <string name="language_packs_variant_summary">ໂຫຼດແທນ %1$s</string>
-    <string name="language_packs_not_on_summary">ແຕະເພື່ອສ້າງແປ້ນພິມ %1$s ໃໝ່.</string>
+    <string name="language_packs_not_on_summary">ແຕະເພື່ອສ້າງແປ້ນພິມ %1$s ໃໝ່</string>
     <string name="language_packs_turned_on">%1$s ເປີດໃຊ້ແລ້ວ. ສະຫຼັບໄປໃຊ້ຈາກຕົວສະຫຼັບພາສາ.</string>
-    <string name="language_packs_turn_on_in_settings">ເປີດໃຊ້ %1$s ໃນລາຍການ ແລ້ວກັບມາ.</string>
+    <string name="language_packs_turn_on_in_settings">ເປີດໃຊ້ %1$s ໃນລາຍການ ແລ້ວກັບມາ</string>
     <string name="language_packs_installed_and_on">ຕິດຕັ້ງ %1$s ແລ້ວ. ມັນເປີດໃຊ້ຢູ່: ສະຫຼັບໄປໃຊ້ຈາກຕົວສະຫຼັບພາສາ.</string>
     <string name="language_packs_installed_turn_on">ຕິດຕັ້ງ %1$s ແລ້ວ. ແຕະແຖວເພື່ອເປີດໃຊ້ໃນແປ້ນພິມ.</string>
+    <string name="language_packs_installed_no_layout">ຕິດຕັ້ງ %1$s ແລ້ວ ແຕ່ແປ້ນພິມນີ້ຍັງບໍ່ມີໂຄງຮ່າງສຳລັບຕົວອັກສອນຂອງມັນ ຈຶ່ງບໍ່ສາມາດເລືອກໄດ້</string>
     <string name="language_packs_error_offline">ບໍ່ມີການເຊື່ອມຕໍ່</string>
     <string name="language_packs_error_network">ບໍ່ສຳເລັດ. ລອງອີກຄັ້ງ.</string>
     <string name="language_packs_error_verification">ໄຟລ໌ບໍ່ຕົງກັບລາຍການ ຈຶ່ງບໍ່ໄດ້ຕິດຕັ້ງຫຍັງ</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">ບັນທຶກເມື່ອ %1$s</string>
     <string name="backup_restore_dialog_device">ຈາກ %1$s</string>
     <string name="backup_restore_not_in_file">ບໍ່ມີໃນໄຟລ໌ນີ້</string>
-    <string name="backup_restore_dialog_note">ການຕັ້ງຄ່າ, ຮູບແບບ ແລະ ມາໂຄຣຈະຖືກແທນທີ່; ຄຳສັບຈະຖືກເພີ່ມເຂົ້າໃນສິ່ງທີ່ມີຢູ່ໃນໂທລະສັບນີ້.</string>
+    <string name="backup_restore_dialog_note">ການຕັ້ງຄ່າ, ຮູບແບບ ແລະ ມາໂຄຣຈະຖືກແທນທີ່; ຄຳສັບຈະຖືກເພີ່ມເຂົ້າໃນສິ່ງທີ່ມີຢູ່ໃນໂທລະສັບນີ້</string>
     <string name="backup_restore_dialog_confirm">ກູ້ຄືນ</string>
     <string name="backup_restored">ກູ້ຄືນການສຳຮອງແລ້ວ</string>
     <string name="backup_restored_words_pending">ຄຳສັບທີ່ຮຽນຮູ້ແລ້ວຈະຖືກເພີ່ມເມື່ອເລີ່ມໃຊ້ແປ້ນພິມ</string>

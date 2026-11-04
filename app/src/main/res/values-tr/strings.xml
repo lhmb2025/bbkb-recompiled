@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Yakalanan tuş ızgarasını, cihaz yapılandırmasına yapıştırmak üzere &lt;ckb-key-grid&gt; parçası olarak uygulama dosyalarına yaz. Yakalama yapılabilmesi için önce klavyeyi bir kez açın.</string>
     <string name="ckb_gestures_export_title">CKB geometrisini dışa aktar</string>
     <string name="ckb_gestures_export_written">%s yazıldı</string>
-    <string name="ckb_gestures_reserved_note">Yukarı kaydırma (parmağınızın altındaki öneriyi onaylama) ayrılmıştır.</string>
+    <string name="ckb_gestures_reserved_note">Yukarı kaydırma (parmağınızın altındaki öneriyi onaylama) ayrılmıştır</string>
     <string name="ckb_gestures_screen_title">CKB hareketleri</string>
     <string name="settings_gesture_accent_max_speed_summary">Vurgu değişimleri için maksimum hız çarpanı</string>
     <string name="settings_gesture_accent_max_speed_title">Vurgu değişimi maksimum hız çarpanı</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Dinamik öğrenmeyi etkinleştir</string>
     <string name="settings_dict_learned_words_summary">Yazdıklarınızdan öğrenilen kelimeleri yönet</string>
     <string name="settings_dict_learned_words_title">Öğrenilen kelimeler</string>
+    <string name="settings_dict_add_to_dictionary_note">Sözlüğünüze eklenen kelimeler yazarken önerilir ve yazım hatası olarak işaretlenmez</string>
     <string name="settings_dict_text_shortcuts_summary">İfadelere dönüşen kısayollar oluştur</string>
     <string name="settings_dict_text_shortcuts_title">Metin kısayolları</string>
     <string name="settings_dict_user_dictionary_summary">Kişisel kelimeler ekle ve düzenle</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Cihaz giriş yapılandırmalarını seç veya içe aktar</string>
     <string name="settings_device_configuration_title">Cihaz yapılandırması</string>
     <string name="touch_surface_builtin_category">Yerleşik</string>
-    <string name="touch_surface_builtin_intro">Telefon, Scroll assistant özelliği açıkken klavyenin dokunmatik yüzeyini BBKB\'ye iletir.</string>
+    <string name="touch_surface_builtin_intro">Telefon, Scroll assistant özelliği açıkken klavyenin dokunmatik yüzeyini BBKB\'ye iletir</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant tuşlardaki çift dokunmayı kendisi kullanır, bu yüzden çift dokunma BBKB\'ye hiç ulaşmaz</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant\'ı kapat</string>
     <string name="touch_surface_grant_access">Erişim izni ver</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku kurulumu</string>
     <string name="touch_surface_shizuku_guide_steps">1. Geliştirici seçeneklerini, ardından Kablosuz hata ayıklamayı açın.\n2. Shizuku\'yu kendi uygulamasından veya root ile başlatın.\n3. Buraya dönün ve “Erişim izni ver” öğesine dokunun.</string>
     <string name="touch_surface_shizuku_intro">Shizuku, BBKB\'nin dokunmatik yüzeyi doğrudan okumasını sağlayan ücretsiz bir uygulamadır. BBKB yüzeyi yalnızca klavye açıkken devralır; geri kalan zamanda yüzey, telefonda normalde olduğu gibi çalışır.</string>
-    <string name="touch_surface_shizuku_mediatek">Bu telefonda Shizuku 13.5.4 sürümünü kullanın: 13.6.0 sürümü MediaTek işlemcili telefonlarda tam olarak çalışmıyor.</string>
+    <string name="touch_surface_shizuku_mediatek">Bu telefonda Shizuku 13.5.4 sürümünü kullanın: 13.6.0 sürümü MediaTek işlemcili telefonlarda tam olarak çalışmıyor</string>
     <string name="touch_surface_shizuku_reboot">Shizuku, telefon her yeniden başlatıldığında durur. Her yeniden başlatmadan sonra onu tekrar başlatın; yukarıdaki durum, çalışmadığında bunu gösterir.</string>
     <string name="touch_surface_shizuku_state_denied">Çalışıyor ama BBKB\'nin erişimi reddedildi</string>
     <string name="touch_surface_shizuku_state_granted">Çalışıyor ve BBKB\'nin erişimi var</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Bu telefonda kullanılamıyor</string>
     <string name="pref_show_pkb_modifier_status_icon">Değiştirici durum simgesini göster</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Fiziksel klavye kullanırken durum çubuğunda Shift/Alt değiştirici göstergesini görüntüle</string>
-    <string name="settings_pred_accounts_permission_summary">Yazarken e-posta adresi önerilebilmesi için hesaplar iznini verin.</string>
+    <string name="settings_pred_accounts_permission_summary">Yazarken e-posta adresi önerilebilmesi için hesaplar iznini verin</string>
     <string name="settings_pred_accounts_permission_title">Hesaplar İzni Gerekli</string>
     <string name="settings_pred_block_offensive_summary">Sesli dikte sırasında rahatsız edici olabilecek kelimeleri gizle</string>
     <string name="settings_pred_block_offensive_title">Rahatsız edici kelimeleri engelle</string>
-    <string name="settings_pred_contacts_permission_summary">Yazarken kişi adları ve e-posta adresleri önerilebilmesi için kişiler iznini verin.</string>
+    <string name="settings_pred_contacts_permission_summary">Yazarken kişi adları ve e-posta adresleri önerilebilmesi için kişiler iznini verin</string>
     <string name="settings_pred_contacts_permission_title">Kişiler İzni Gerekli</string>
     <string name="settings_pred_contacts_summary_disabled">Kişiler izni gerekli</string>
     <string name="settings_pred_contacts_summary_enabled">Kişi adlarını önerilere dahil et</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Bu özelliği kullanmak için kişiler iznini verin</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kişi adları geçerli kelime olarak tanınır</string>
     <string name="settings_spellcheck_use_contacts_title">Yazım denetiminde kişileri kullan</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Yazım denetiminde kişi adlarının geçerli kelime olarak tanınması için kişiler iznini verin</string>
     <string name="settings_spellcheck_accept_learned_title">Öğrenilen sözcükleri kabul et</string>
     <string name="settings_spellcheck_accept_learned_summary">Yazdıklarınızdan öğrenilen sözcükler doğru yazılmış sayılır</string>
     <string name="pref_alt_double_tap_lock">Alt çift tıklama kilidini etkinleştir</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrl çift tıklama kilidini etkinleştir</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl tuşuna çift tıklamak onu açık konumda kilitler. Ctrl tuşuna tekrar tıklamak kilidi kaldırır.</string>
     <string name="pref_override_device_meta_state">Cihazın meta durumunu geçersiz kıl</string>
-    <string name="pref_override_device_meta_state_summary">Cihazın KCM yapılandırmasından bağımsız olarak fiziksel klavyelerde yapışkan değiştiricileri (shift/alt kilidi) etkinleştirin.</string>
+    <string name="pref_override_device_meta_state_summary">Cihazın KCM yapılandırmasından bağımsız olarak fiziksel klavyelerde yapışkan değiştiricileri (shift/alt kilidi) etkinleştirin</string>
     <string name="pref_shift_double_tap_lock">Shift çift tıklama kilidini etkinleştir</string>
     <string name="pref_shift_double_tap_lock_summary">Shift tuşuna çift tıklamak onu açık konumda kilitler. Shift\'e tekrar tıklamak kilidi kaldırır.</string>
     <string name="prefs_key_longpress_delay_summary">İkincil karakterler görünmeden önce tuşun basılı tutulma süresi</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Otomatik doldurma olay bildirimleri</string>
     <string name="pref_accessibility_service_disabled">Erişilebilirlik hizmeti devre dışı</string>
     <string name="pref_accessibility_service_enabled">Erişilebilirlik hizmeti etkin</string>
-    <string name="pref_emoji_search_pkb_summary">Emoji klavyesi açıkken aramak için klavyeyi kullanın.</string>
+    <string name="pref_emoji_search_pkb_summary">Emoji klavyesi açıkken aramak için klavyeyi kullanın</string>
     <string name="pref_emoji_search_title">Emoji aramayı etkinleştir</string>
-    <string name="pref_emoji_search_vkb_summary">Emojileri geçerli onaylanmamış (altı çizili) metne göre filtrele.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Bir emoji seçildiğinde yazılan metnin sonuna eklenir.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Bir emoji seçildiğinde yazılan metnin yerini alır.</string>
+    <string name="pref_emoji_search_vkb_summary">Emojileri geçerli onaylanmamış (altı çizili) metne göre filtrele</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Bir emoji seçildiğinde yazılan metnin sonuna eklenir</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Bir emoji seçildiğinde yazılan metnin yerini alır</string>
     <string name="pref_emoji_search_replace_text_title">Metni emoji ile değiştir</string>
     <string name="pref_key_interceptor_enabled">Özel tuş desteğini etkinleştir</string>
     <string name="pref_key_interceptor_enabled_summary">Emoji, SYM ve Ses tuşlarını yakalamak için erişilebilirlik hizmetini kullan</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Veri yönetimi</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Özel makrolar</string>
+    <string name="settings_custom_macros_intro" formatted="false">Metin kısayollarında kullanmak için kendi %x yer tutucularınızı tanımlayın</string>
     <string name="settings_customize_menu_hidden_header">Klavyede gösterilmeyenler</string>
     <string name="settings_customize_menu_instructions">Bir kısayola dokunup basılı tutun, sonra sürükleyerek sırasını değiştirin. İlk dördü klavyenin giriş menüsünde görünür.</string>
     <string name="settings_customize_menu_summary">Giriş menüsü kısayollarını seç ve sırala</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Hızlı ifadeler</string>
     <string name="settings_screen_type_by_swiping">Kaydırarak yazma</string>
     <string name="settings_screen_type_by_swiping_summary">Parmağınızı klavyeden kaldırmadan hızlıca yazın</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Kaydırarak yazdırma özelliği dilinizde kullanılamıyor.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Kaydırarak yazdırma özelliği dilinizde kullanılamıyor</string>
     <string name="settings_search_hint">Ayarlarda ara</string>
     <string name="settings_search_no_results">Ayar bulunamadı</string>
     <string name="settings_shake_fallback_title">Yedek eylem</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Klavye cihazı: %1$s</string>
     <string name="device_config_import_matches_build">Derleme cihazı: %1$s</string>
     <string name="device_config_import_matches_brand">Marka: %1$s</string>
-    <string name="device_config_import_matches_nothing">Bu dosya eşleştirilecek bir cihaz belirtmiyor, bu yüzden hiçbir zaman uygulanmaz.</string>
+    <string name="device_config_import_matches_nothing">Bu dosya eşleştirilecek bir cihaz belirtmiyor, bu yüzden hiçbir zaman uygulanmaz</string>
     <string name="device_config_import_type">Cihaz türü: %1$s</string>
     <string name="device_config_import_keys">%1$d tuş eşlemesi</string>
     <string name="device_config_import_keypad_layout">Tuş takımı düzeni: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Bu sürüm güncelleme listesini okumak için çok eski. Lütfen elle güncelleyin.</string>
     <string name="settings_update_from_cache">Son kaydedilen denetimden gösteriliyor</string>
     <string name="settings_update_background_check_title">Güncellemeleri otomatik olarak denetle</string>
-    <string name="settings_update_background_check_summary">Yeni bir sürüm indirilmeye hazır olduğunda bildirim alırsınız.</string>
+    <string name="settings_update_background_check_summary">Yeni bir sürüm indirilmeye hazır olduğunda bildirim alırsınız</string>
     <string name="settings_update_notification_text">Sürüm %1$s indirmeye hazır</string>
     <string name="settings_update_unknown_sources_message">Android\'in BBKB\'ye uygulama kurma izni vermesi gerekir. Bu kaynaktan kurulumu etkinleştirin, sonra Kur düğmesine yeniden basın.</string>
     <string name="settings_update_open_settings">Ayarları aç</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Sözlükleri denetle</string>
     <string name="language_packs_load_ldb">LDB dosyası yükle</string>
     <string name="language_packs_variant_summary">%1$s yerine yüklenir</string>
-    <string name="language_packs_not_on_summary">Yeni bir %1$s klavye oluşturmak için dokunun.</string>
+    <string name="language_packs_not_on_summary">Yeni bir %1$s klavye oluşturmak için dokunun</string>
     <string name="language_packs_turned_on">%1$s açık. Dil değiştiriciden ona geçin.</string>
-    <string name="language_packs_turn_on_in_settings">Listede %1$s öğesini açın, sonra geri dönün.</string>
+    <string name="language_packs_turn_on_in_settings">Listede %1$s öğesini açın, sonra geri dönün</string>
     <string name="language_packs_installed_and_on">%1$s yüklendi. Açık: dil değiştiriciden ona geçin.</string>
     <string name="language_packs_installed_turn_on">%1$s yüklendi. Klavyede açmak için satıra dokunun.</string>
+    <string name="language_packs_installed_no_layout">%1$s yüklendi ancak bu klavyede henüz yazı sistemi için bir düzen yok, bu yüzden seçilemiyor</string>
     <string name="language_packs_error_offline">Bağlantı yok</string>
     <string name="language_packs_error_network">İşe yaramadı. Yeniden deneyin.</string>
     <string name="language_packs_error_verification">Dosya katalogla eşleşmedi, bu yüzden hiçbir şey yüklenmedi</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Kaydedildi: %1$s</string>
     <string name="backup_restore_dialog_device">Kaynak: %1$s</string>
     <string name="backup_restore_not_in_file">Bu dosyada yok</string>
-    <string name="backup_restore_dialog_note">Ayarlar, düzenler ve makrolar değiştirilir; kelimeler bu telefondakilere eklenir.</string>
+    <string name="backup_restore_dialog_note">Ayarlar, düzenler ve makrolar değiştirilir; kelimeler bu telefondakilere eklenir</string>
     <string name="backup_restore_dialog_confirm">Geri yükle</string>
     <string name="backup_restored">Yedek geri yüklendi</string>
     <string name="backup_restored_words_pending">Öğrenilen kelimeler, klavye kullanılmaya başlandığında eklenecek</string>

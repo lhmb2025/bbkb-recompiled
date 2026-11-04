@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">សរសេរក្រឡាចត្រង្គគ្រាប់ចុចដែលបានថតជាកូដ &lt;ckb-key-grid&gt; ទៅក្នុងឯកសារកម្មវិធី ដើម្បីបិទភ្ជាប់ទៅក្នុងការកំណត់ឧបករណ៍។ សូមបើកក្ដារចុចម្ដងជាមុនសិន ដើម្បីឱ្យវាអាចថតបាន។</string>
     <string name="ckb_gestures_export_title">នាំចេញធរណីមាត្រ CKB</string>
     <string name="ckb_gestures_export_written">បានសរសេរ %s</string>
-    <string name="ckb_gestures_reserved_note">ការអូសឡើងលើ (បញ្ចូលពាក្យណែនាំនៅក្រោមម្រាមដៃ) ត្រូវបានបម្រុងទុក។</string>
+    <string name="ckb_gestures_reserved_note">ការអូសឡើងលើ (បញ្ចូលពាក្យណែនាំនៅក្រោមម្រាមដៃ) ត្រូវបានបម្រុងទុក</string>
     <string name="ckb_gestures_screen_title">កាយវិការ CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">មេគុណល្បឿនអតិបរមាសម្រាប់ការប្ដូរសញ្ញាសង្កត់</string>
     <string name="settings_gesture_accent_max_speed_title">មេគុណល្បឿនអតិបរមានៃការរមូរប្ដូរសញ្ញាសង្កត់</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">បើកការរៀនឌីណាមិក</string>
     <string name="settings_dict_learned_words_summary">គ្រប់គ្រងពាក្យដែលបានរៀនពីការវាយបញ្ចូលរបស់អ្នក</string>
     <string name="settings_dict_learned_words_title">ពាក្យដែលបានរៀន</string>
+    <string name="settings_dict_add_to_dictionary_note">ពាក្យដែលបានបន្ថែមទៅវចនានុក្រមរបស់អ្នក នឹងត្រូវបានណែនាំពេលវាយបញ្ចូល ហើយនឹងមិនត្រូវបានសម្គាល់ថាសរសេរខុសទេ</string>
     <string name="settings_dict_text_shortcuts_summary">បង្កើតផ្លូវកាត់ដែលពង្រីកទៅជាឃ្លា</string>
     <string name="settings_dict_text_shortcuts_title">ផ្លូវកាត់អត្ថបទ</string>
     <string name="settings_dict_user_dictionary_summary">បន្ថែម និងកែពាក្យផ្ទាល់ខ្លួន</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">ជ្រើសរើស ឬនាំចូលការកំណត់រចនាសម្ព័ន្ធការបញ្ចូលរបស់ឧបករណ៍</string>
     <string name="settings_device_configuration_title">ការកំណត់រចនាសម្ព័ន្ធឧបករណ៍</string>
     <string name="touch_surface_builtin_category">មានស្រាប់</string>
-    <string name="touch_surface_builtin_intro">ទូរសព្ទបញ្ជូនការប៉ះលើផ្ទៃប៉ះរបស់ក្ដារចុចទៅ BBKB ខណៈពេលដែល Scroll assistant កំពុងបើក។</string>
+    <string name="touch_surface_builtin_intro">ទូរសព្ទបញ្ជូនការប៉ះលើផ្ទៃប៉ះរបស់ក្ដារចុចទៅ BBKB ខណៈពេលដែល Scroll assistant កំពុងបើក</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant យកការប៉ះពីរដងលើគ្រាប់ចុចទៅប្រើខ្លួនឯង ដូច្នេះ BBKB មិនដែលទទួលបានទេ</string>
     <string name="touch_surface_cursor_assistant_title">បិទ Cursor assistant</string>
     <string name="touch_surface_grant_access">ផ្ដល់សិទ្ធិចូលប្រើ</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">រៀបចំ Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. បើកជម្រើសសម្រាប់អ្នកអភិវឌ្ឍន៍ បន្ទាប់មកបើកការបំបាត់កំហុសឥតខ្សែ។\n2. ចាប់ផ្ដើម Shizuku ពីកម្មវិធីរបស់វា ឬដោយប្រើ root។\n3. ត្រឡប់មកទីនេះវិញ ហើយប៉ះ ផ្ដល់សិទ្ធិចូលប្រើ។</string>
     <string name="touch_surface_shizuku_intro">Shizuku គឺជាកម្មវិធីឥតគិតថ្លៃដែលអនុញ្ញាតឱ្យ BBKB អានផ្ទៃប៉ះដោយផ្ទាល់។ BBKB គ្រប់គ្រងផ្ទៃប៉ះតែពេលក្ដារចុចកំពុងបើកប៉ុណ្ណោះ ពេលផ្សេងទៀត ផ្ទៃប៉ះដំណើរការដូចធម្មតា។</string>
-    <string name="touch_surface_shizuku_mediatek">សូមប្រើ Shizuku 13.5.4 នៅលើទូរសព្ទនេះ៖ កំណែ 13.6.0 មិនដំណើរការពេញលេញនៅលើទូរសព្ទ MediaTek ទេ។</string>
+    <string name="touch_surface_shizuku_mediatek">សូមប្រើ Shizuku 13.5.4 នៅលើទូរសព្ទនេះ៖ កំណែ 13.6.0 មិនដំណើរការពេញលេញនៅលើទូរសព្ទ MediaTek ទេ</string>
     <string name="touch_surface_shizuku_reboot">Shizuku ឈប់ដំណើរការរាល់ពេលទូរសព្ទចាប់ផ្ដើមឡើងវិញ។ សូមចាប់ផ្ដើម Shizuku ម្ដងទៀតបន្ទាប់ពីចាប់ផ្ដើមឡើងវិញរាល់ដង ស្ថានភាពខាងលើនឹងប្រាប់នៅពេល Shizuku មិនកំពុងដំណើរការ។</string>
     <string name="touch_surface_shizuku_state_denied">កំពុងដំណើរការ ប៉ុន្តែ BBKB ត្រូវបានបដិសេធសិទ្ធិចូលប្រើ</string>
     <string name="touch_surface_shizuku_state_granted">កំពុងដំណើរការ ហើយ BBKB មានសិទ្ធិចូលប្រើ</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">មិនអាចប្រើបាននៅលើទូរសព្ទនេះទេ</string>
     <string name="pref_show_pkb_modifier_status_icon">បង្ហាញរូបតំណាងស្ថានភាពគ្រាប់ចុចកែប្រែ</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">បង្ហាញសូចនាករគ្រាប់ចុចកែប្រែ Shift/Alt នៅលើរបារស្ថានភាព នៅពេលប្រើក្ដារចុចរូបវន្ត</string>
-    <string name="settings_pred_accounts_permission_summary">ផ្ដល់ការអនុញ្ញាតគណនី ដើម្បីណែនាំអាសយដ្ឋានអ៊ីមែលពេលវាយបញ្ចូល។</string>
+    <string name="settings_pred_accounts_permission_summary">ផ្ដល់ការអនុញ្ញាតគណនី ដើម្បីណែនាំអាសយដ្ឋានអ៊ីមែលពេលវាយបញ្ចូល</string>
     <string name="settings_pred_accounts_permission_title">ត្រូវការការអនុញ្ញាតគណនី</string>
     <string name="settings_pred_block_offensive_summary">លាក់ពាក្យដែលអាចប្រមាថ នៅពេលបញ្ចូលដោយសំឡេង</string>
     <string name="settings_pred_block_offensive_title">ទប់ស្កាត់ពាក្យប្រមាថ</string>
-    <string name="settings_pred_contacts_permission_summary">ផ្ដល់ការអនុញ្ញាតទំនាក់ទំនង ដើម្បីណែនាំឈ្មោះទំនាក់ទំនង និងអាសយដ្ឋានអ៊ីមែលពេលវាយបញ្ចូល។</string>
+    <string name="settings_pred_contacts_permission_summary">ផ្ដល់ការអនុញ្ញាតទំនាក់ទំនង ដើម្បីណែនាំឈ្មោះទំនាក់ទំនង និងអាសយដ្ឋានអ៊ីមែលពេលវាយបញ្ចូល</string>
     <string name="settings_pred_contacts_permission_title">ត្រូវការការអនុញ្ញាតទំនាក់ទំនង</string>
     <string name="settings_pred_contacts_summary_disabled">ត្រូវការការអនុញ្ញាតទំនាក់ទំនង</string>
     <string name="settings_pred_contacts_summary_enabled">បញ្ចូលឈ្មោះទំនាក់ទំនងក្នុងពាក្យណែនាំ</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">ផ្ដល់ការអនុញ្ញាតទំនាក់ទំនងដើម្បីប្រើមុខងារនេះ</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">ឈ្មោះទំនាក់ទំនងនឹងត្រូវបានទទួលស្គាល់ថាជាពាក្យត្រឹមត្រូវ</string>
     <string name="settings_spellcheck_use_contacts_title">ប្រើទំនាក់ទំនងសម្រាប់ការពិនិត្យអក្ខរាវិរុទ្ធ</string>
+    <string name="settings_spellcheck_contacts_permission_summary">ផ្ដល់ការអនុញ្ញាតទំនាក់ទំនង ដើម្បីស្គាល់ឈ្មោះទំនាក់ទំនងជាពាក្យត្រឹមត្រូវ ពេលពិនិត្យអក្ខរាវិរុទ្ធ</string>
     <string name="settings_spellcheck_accept_learned_title">ទទួលយកពាក្យដែលបានរៀន</string>
     <string name="settings_spellcheck_accept_learned_summary">ពាក្យដែលបានរៀនពីការវាយរបស់អ្នក ត្រូវបានចាត់ទុកថាសរសេរត្រឹមត្រូវ</string>
     <string name="pref_alt_double_tap_lock">បើកការចាក់សោដោយចុច Alt ពីរដង</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">បើកការចាក់សោដោយចុច Ctrl ពីរដង</string>
     <string name="pref_ctrl_double_tap_lock_summary">ការចុច Ctrl ពីរដងនឹងចាក់សោវា។ ការចុច Ctrl ម្ដងទៀតនឹងបិទវា។</string>
     <string name="pref_override_device_meta_state">បដិសេធស្ថានភាពមេតារបស់ឧបករណ៍</string>
-    <string name="pref_override_device_meta_state_summary">បើកគ្រាប់ចុចកែប្រែជាប់ (ការចាក់សោ shift/alt) នៅលើក្ដារចុចរូបវន្ត ដោយមិនគិតពីការកំណត់រចនាសម្ព័ន្ធ KCM របស់ឧបករណ៍។</string>
+    <string name="pref_override_device_meta_state_summary">បើកគ្រាប់ចុចកែប្រែជាប់ (ការចាក់សោ shift/alt) នៅលើក្ដារចុចរូបវន្ត ដោយមិនគិតពីការកំណត់រចនាសម្ព័ន្ធ KCM របស់ឧបករណ៍</string>
     <string name="pref_shift_double_tap_lock">បើកការចាក់សោដោយចុច Shift ពីរដង</string>
     <string name="pref_shift_double_tap_lock_summary">ការចុច Shift ពីរដងនឹងចាក់សោវា។ ការចុច Shift ម្ដងទៀតនឹងបិទវា។</string>
     <string name="prefs_key_longpress_delay_summary">រយៈពេលចុចគ្រាប់ចុចឱ្យជាប់ មុនពេលតួអក្សរបន្ទាប់បន្សំលេចឡើង</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">ការជូនដំណឹងព្រឹត្តិការណ៍បំពេញស្វ័យប្រវត្តិ</string>
     <string name="pref_accessibility_service_disabled">សេវាកម្មភាពងាយស្រួលត្រូវបានបិទ</string>
     <string name="pref_accessibility_service_enabled">សេវាកម្មភាពងាយស្រួលត្រូវបានបើក</string>
-    <string name="pref_emoji_search_pkb_summary">នៅពេលក្ដារសញ្ញាអារម្មណ៍បើក សូមប្រើក្ដារចុចដើម្បីស្វែងរក។</string>
+    <string name="pref_emoji_search_pkb_summary">នៅពេលក្ដារសញ្ញាអារម្មណ៍បើក សូមប្រើក្ដារចុចដើម្បីស្វែងរក</string>
     <string name="pref_emoji_search_title">បើកការស្វែងរកសញ្ញាអារម្មណ៍</string>
-    <string name="pref_emoji_search_vkb_summary">ត្រងសញ្ញាអារម្មណ៍តាមអត្ថបទបច្ចុប្បន្នដែលមិនទាន់បញ្ជាក់ (គូសបន្ទាត់ក្រោម)។</string>
-    <string name="pref_emoji_search_replace_text_summary_off">ការជ្រើសរើសសញ្ញាអារម្មណ៍នឹងបញ្ចូលវានៅក្រោយអត្ថបទដែលបានវាយ។</string>
-    <string name="pref_emoji_search_replace_text_summary_on">ការជ្រើសរើសសញ្ញាអារម្មណ៍នឹងជំនួសអត្ថបទដែលបានវាយ។</string>
+    <string name="pref_emoji_search_vkb_summary">ត្រងសញ្ញាអារម្មណ៍តាមអត្ថបទបច្ចុប្បន្នដែលមិនទាន់បញ្ជាក់ (គូសបន្ទាត់ក្រោម)</string>
+    <string name="pref_emoji_search_replace_text_summary_off">ការជ្រើសរើសសញ្ញាអារម្មណ៍នឹងបញ្ចូលវានៅក្រោយអត្ថបទដែលបានវាយ</string>
+    <string name="pref_emoji_search_replace_text_summary_on">ការជ្រើសរើសសញ្ញាអារម្មណ៍នឹងជំនួសអត្ថបទដែលបានវាយ</string>
     <string name="pref_emoji_search_replace_text_title">ជំនួសអត្ថបទដោយសញ្ញាអារម្មណ៍</string>
     <string name="pref_key_interceptor_enabled">បើកការគាំទ្រគ្រាប់ចុចពិសេស</string>
     <string name="pref_key_interceptor_enabled_summary">ប្រើសេវាកម្មភាពងាយស្រួលដើម្បីចាប់យកគ្រាប់ចុចសញ្ញាអារម្មណ៍ SYM និងសំឡេង</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">គ្រប់គ្រងទិន្នន័យ</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">ម៉ាក្រូផ្ទាល់ខ្លួន</string>
+    <string name="settings_custom_macros_intro" formatted="false">កំណត់កន្លែងដាក់ %x ផ្ទាល់ខ្លួនរបស់អ្នក សម្រាប់ប្រើក្នុងផ្លូវកាត់អត្ថបទ</string>
     <string name="settings_customize_menu_hidden_header">មិនបង្ហាញនៅលើក្ដារចុច</string>
     <string name="settings_customize_menu_instructions">ប៉ះផ្លូវកាត់ឱ្យជាប់ រួចអូសដើម្បីរៀបលំដាប់ឡើងវិញ។ បួនដំបូងនឹងបង្ហាញនៅលើម៉ឺនុយបញ្ចូលរបស់ក្ដារចុច។</string>
     <string name="settings_customize_menu_summary">ជ្រើសរើស និងរៀបលំដាប់ផ្លូវកាត់ម៉ឺនុយបញ្ចូល</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">ឃ្លារហ័ស</string>
     <string name="settings_screen_type_by_swiping">វាយបញ្ចូលដោយការអូស</string>
     <string name="settings_screen_type_by_swiping_summary">វាយបញ្ចូលបានរហ័សដោយមិនចាំបាច់លើកម្រាមដៃចេញពីក្ដារចុច</string>
-    <string name="settings_screen_type_by_swiping_unavailable">ការវាយបញ្ចូលដោយការអូសមិនមាននៅក្នុងភាសារបស់អ្នកទេ។</string>
+    <string name="settings_screen_type_by_swiping_unavailable">ការវាយបញ្ចូលដោយការអូសមិនមាននៅក្នុងភាសារបស់អ្នកទេ</string>
     <string name="settings_search_hint">ស្វែងរកការកំណត់</string>
     <string name="settings_search_no_results">រកមិនឃើញការកំណត់ទេ</string>
     <string name="settings_shake_fallback_title">សកម្មភាពបម្រុង</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">ឧបករណ៍ក្ដារចុច៖ %1$s</string>
     <string name="device_config_import_matches_build">ឧបករណ៍នៃកំណែបង្កើត៖ %1$s</string>
     <string name="device_config_import_matches_brand">ម៉ាក៖ %1$s</string>
-    <string name="device_config_import_matches_nothing">ឯកសារនេះមិនបញ្ជាក់ឧបករណ៍ណាសម្រាប់ផ្គូផ្គងទេ ដូច្នេះវានឹងមិនដំណើរការឡើយ។</string>
+    <string name="device_config_import_matches_nothing">ឯកសារនេះមិនបញ្ជាក់ឧបករណ៍ណាសម្រាប់ផ្គូផ្គងទេ ដូច្នេះវានឹងមិនដំណើរការឡើយ</string>
     <string name="device_config_import_type">ប្រភេទឧបករណ៍៖ %1$s</string>
     <string name="device_config_import_keys">ការភ្ជាប់គ្រាប់ចុច %1$d</string>
     <string name="device_config_import_keypad_layout">ប្លង់ក្ដារចុច៖ %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">កំណែនេះចាស់ពេកមិនអាចអានបញ្ជីបច្ចុប្បន្នភាពបានទេ។ សូមធ្វើបច្ចុប្បន្នភាពដោយដៃ។</string>
     <string name="settings_update_from_cache">បង្ហាញពីការពិនិត្យដែលបានរក្សាទុកចុងក្រោយ</string>
     <string name="settings_update_background_check_title">ពិនិត្យរកបច្ចុប្បន្នភាពដោយស្វ័យប្រវត្តិ</string>
-    <string name="settings_update_background_check_summary">ទទួលការជូនដំណឹងនៅពេលកំណែថ្មីអាចទាញយកបាន។</string>
+    <string name="settings_update_background_check_summary">ទទួលការជូនដំណឹងនៅពេលកំណែថ្មីអាចទាញយកបាន</string>
     <string name="settings_update_notification_text">កំណែ %1$s រួចរាល់សម្រាប់ទាញយក</string>
     <string name="settings_update_unknown_sources_message">Android ត្រូវអនុញ្ញាតឱ្យ BBKB ដំឡើងកម្មវិធី។ បើកការដំឡើងពីប្រភពនេះ បន្ទាប់មកចុចដំឡើងម្ដងទៀត។</string>
     <string name="settings_update_open_settings">បើកការកំណត់</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">ពិនិត្យរកវចនានុក្រម</string>
     <string name="language_packs_load_ldb">ផ្ទុកឯកសារ LDB</string>
     <string name="language_packs_variant_summary">ដំណើរការជំនួស %1$s</string>
-    <string name="language_packs_not_on_summary">ចុចដើម្បីបង្កើតក្តារចុច %1$s ថ្មី។</string>
+    <string name="language_packs_not_on_summary">ចុចដើម្បីបង្កើតក្តារចុច %1$s ថ្មី</string>
     <string name="language_packs_turned_on">%1$s បានបើក។ ប្ដូរទៅភាសានេះពីកម្មវិធីប្ដូរភាសា។</string>
-    <string name="language_packs_turn_on_in_settings">បើក %1$s ក្នុងបញ្ជី រួចត្រឡប់មកវិញ។</string>
+    <string name="language_packs_turn_on_in_settings">បើក %1$s ក្នុងបញ្ជី រួចត្រឡប់មកវិញ</string>
     <string name="language_packs_installed_and_on">បានដំឡើង %1$s។ វាបានបើក៖ ប្ដូរទៅភាសានេះពីកម្មវិធីប្ដូរភាសា។</string>
     <string name="language_packs_installed_turn_on">បានដំឡើង %1$s។ ចុចជួរដេកដើម្បីបើកវានៅក្នុងក្តារចុច។</string>
+    <string name="language_packs_installed_no_layout">បានដំឡើង %1$s ប៉ុន្តែក្តារចុចនេះមិនទាន់មានប្លង់សម្រាប់អក្សររបស់វានៅឡើយទេ ដូច្នេះមិនអាចជ្រើសរើសបានទេ</string>
     <string name="language_packs_error_offline">គ្មានការតភ្ជាប់</string>
     <string name="language_packs_error_network">មិនបានសម្រេច។ ព្យាយាមម្ដងទៀត។</string>
     <string name="language_packs_error_verification">ឯកសារមិនត្រូវនឹងកាតាឡុក ដូច្នេះមិនបានដំឡើងអ្វីទេ</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">បានរក្សាទុក %1$s</string>
     <string name="backup_restore_dialog_device">ពី %1$s</string>
     <string name="backup_restore_not_in_file">មិនមានក្នុងឯកសារនេះទេ</string>
-    <string name="backup_restore_dialog_note">ការកំណត់ ប្លង់ និងម៉ាក្រូនឹងត្រូវបានជំនួស ចំណែកពាក្យនឹងត្រូវបានបន្ថែមទៅលើអ្វីដែលមាននៅលើទូរសព្ទនេះ។</string>
+    <string name="backup_restore_dialog_note">ការកំណត់ ប្លង់ និងម៉ាក្រូនឹងត្រូវបានជំនួស ចំណែកពាក្យនឹងត្រូវបានបន្ថែមទៅលើអ្វីដែលមាននៅលើទូរសព្ទនេះ</string>
     <string name="backup_restore_dialog_confirm">ស្ដារ</string>
     <string name="backup_restored">បានស្ដារការបម្រុងទុក</string>
     <string name="backup_restored_words_pending">ពាក្យដែលបានរៀននឹងត្រូវបានបន្ថែម នៅពេលចាប់ផ្ដើមប្រើក្ដារចុច</string>

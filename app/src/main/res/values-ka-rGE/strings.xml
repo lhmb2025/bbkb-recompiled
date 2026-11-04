@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">ჩაწერს ჩაჭერილ კლავიშების ბადეს აპის ფაილებში, როგორც &lt;ckb-key-grid&gt; ფრაგმენტს, მოწყობილობის კონფიგურაციაში ჩასასმელად. ჯერ ერთხელ გახსენით კლავიატურა, რომ ბადის ჩაჭერა შეძლოს.</string>
     <string name="ckb_gestures_export_title">CKB გეომეტრიის ექსპორტი</string>
     <string name="ckb_gestures_export_written">ჩაიწერა %s</string>
-    <string name="ckb_gestures_reserved_note">ზემოთ გადასრიალება (თითის ქვეშ არსებული შემოთავაზების დადასტურება) დაცულია.</string>
+    <string name="ckb_gestures_reserved_note">ზემოთ გადასრიალება (თითის ქვეშ არსებული შემოთავაზების დადასტურება) დაცულია</string>
     <string name="ckb_gestures_screen_title">CKB ჟესტები</string>
     <string name="settings_gesture_accent_max_speed_summary">მახვილების შეცვლის სიჩქარის მაქსიმალური მამრავლი</string>
     <string name="settings_gesture_accent_max_speed_title">გადაადგილებით მახვილების შეცვლის მაქს. მამრავლი</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">დინამიკური სწავლის ჩართვა</string>
     <string name="settings_dict_learned_words_summary">თქვენი აკრეფიდან ნასწავლი სიტყვების მართვა</string>
     <string name="settings_dict_learned_words_title">ნასწავლი სიტყვები</string>
+    <string name="settings_dict_add_to_dictionary_note">სიტყვები, რომლებსაც ლექსიკონს დაამატებთ, აკრეფისას შემოგთავაზებათ და არ მოინიშნება შეცდომად</string>
     <string name="settings_dict_text_shortcuts_summary">შექმენით მალსახმობები, რომლებიც ფრაზებად იშლება</string>
     <string name="settings_dict_text_shortcuts_title">ტექსტური მალსახმობები</string>
     <string name="settings_dict_user_dictionary_summary">დაამატეთ და დაარედაქტირეთ პირადი სიტყვები</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">აირჩიეთ ან დააიმპორტეთ მოწყობილობის შეყვანის კონფიგურაციები</string>
     <string name="settings_device_configuration_title">მოწყობილობის კონფიგურაცია</string>
     <string name="touch_surface_builtin_category">ჩაშენებული მხარდაჭერა</string>
-    <string name="touch_surface_builtin_intro">სანამ Scroll assistant ჩართულია, ტელეფონი კლავიატურის სენსორული ზედაპირის შეხებებს BBKB-ს გადასცემს.</string>
+    <string name="touch_surface_builtin_intro">სანამ Scroll assistant ჩართულია, ტელეფონი კლავიატურის სენსორული ზედაპირის შეხებებს BBKB-ს გადასცემს</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant კლავიშებზე ორმაგ შეხებას თავისთვის იტოვებს, ამიტომ BBKB მას ვერასოდეს იღებს</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant-ის გამორთვა</string>
     <string name="touch_surface_grant_access">წვდომის მიცემა</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku-ის დაყენება</string>
     <string name="touch_surface_shizuku_guide_steps">1. ჩართეთ დეველოპერთა პარამეტრები, შემდეგ კი უსადენო გამართვა.\n2. გაუშვით Shizuku თავისივე აპიდან ან root-ით.\n3. დაბრუნდით აქ და შეეხეთ პუნქტს „წვდომის მიცემა“.</string>
     <string name="touch_surface_shizuku_intro">Shizuku არის უფასო აპი, რომელიც BBKB-ს საშუალებას აძლევს, სენსორული ზედაპირი პირდაპირ წაიკითხოს. BBKB მას მხოლოდ მაშინ იკავებს, როცა კლავიატურა გახსნილია; დანარჩენ დროს ის ჩვეულებრივად მუშაობს.</string>
-    <string name="touch_surface_shizuku_mediatek">ამ ტელეფონზე გამოიყენეთ Shizuku 13.5.4: ვერსია 13.6.0 MediaTek-ის ტელეფონებზე ბოლომდე არ მუშაობს.</string>
+    <string name="touch_surface_shizuku_mediatek">ამ ტელეფონზე გამოიყენეთ Shizuku 13.5.4: ვერსია 13.6.0 MediaTek-ის ტელეფონებზე ბოლომდე არ მუშაობს</string>
     <string name="touch_surface_shizuku_reboot">Shizuku ჩერდება ტელეფონის ყოველი გადატვირთვისას. ყოველი გადატვირთვის შემდეგ ხელახლა გაუშვით ის; ზემოთ მოცემული სტატუსი გიჩვენებთ, როცა ის გაშვებული არ არის.</string>
     <string name="touch_surface_shizuku_state_denied">გაშვებულია, მაგრამ BBKB-ს წვდომაზე უარი ეთქვა</string>
     <string name="touch_surface_shizuku_state_granted">გაშვებულია და BBKB-ს აქვს წვდომა</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">მიუწვდომელია ამ ტელეფონზე</string>
     <string name="pref_show_pkb_modifier_status_icon">მოდიფიკატორის სტატუსის ხატულის ჩვენება</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Shift/Alt მოდიფიკატორის ინდიკატორის ჩვენება სტატუსის ზოლში ფიზიკური კლავიატურის გამოყენებისას</string>
-    <string name="settings_pred_accounts_permission_summary">მიეცით ანგარიშების ნებართვა, რომ აკრეფისას ელფოსტის მისამართები შემოგთავაზოთ.</string>
+    <string name="settings_pred_accounts_permission_summary">მიეცით ანგარიშების ნებართვა, რომ აკრეფისას ელფოსტის მისამართები შემოგთავაზოთ</string>
     <string name="settings_pred_accounts_permission_title">საჭიროა ანგარიშების ნებართვა</string>
     <string name="settings_pred_block_offensive_summary">პოტენციურად შეურაცხმყოფელი სიტყვების დამალვა ხმოვანი კარნახისას</string>
     <string name="settings_pred_block_offensive_title">შეურაცხმყოფელი სიტყვების დაბლოკვა</string>
-    <string name="settings_pred_contacts_permission_summary">მიეცით კონტაქტების ნებართვა, რომ აკრეფისას კონტაქტების სახელები და ელფოსტის მისამართები შემოგთავაზოთ.</string>
+    <string name="settings_pred_contacts_permission_summary">მიეცით კონტაქტების ნებართვა, რომ აკრეფისას კონტაქტების სახელები და ელფოსტის მისამართები შემოგთავაზოთ</string>
     <string name="settings_pred_contacts_permission_title">საჭიროა კონტაქტების ნებართვა</string>
     <string name="settings_pred_contacts_summary_disabled">საჭიროა კონტაქტების ნებართვა</string>
     <string name="settings_pred_contacts_summary_enabled">კონტაქტების სახელების ჩართვა შემოთავაზებებში</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">ამ ფუნქციის გამოსაყენებლად მიეცით კონტაქტების ნებართვა</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">კონტაქტების სახელები სწორ სიტყვებად ჩაითვლება</string>
     <string name="settings_spellcheck_use_contacts_title">კონტაქტების გამოყენება მართლწერის შემოწმებისას</string>
+    <string name="settings_spellcheck_contacts_permission_summary">მიეცით კონტაქტების ნებართვა, რომ მართლწერის შემოწმებისას კონტაქტების სახელები სწორ სიტყვებად იყოს ამოცნობილი</string>
     <string name="settings_spellcheck_accept_learned_title">ნასწავლი სიტყვების მიღება</string>
     <string name="settings_spellcheck_accept_learned_summary">თქვენი აკრეფიდან ნასწავლი სიტყვები სწორად დაწერილად ითვლება</string>
     <string name="pref_alt_double_tap_lock">Alt-ის ორმაგი დაჭერით ჩაკეტვის ჩართვა</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrl-ის ორმაგი დაჭერით ჩაკეტვის ჩართვა</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl-ზე ორჯერ დაჭერა მას ჩაკეტავს. Ctrl-ზე ხელახლა დაჭერა გამორთავს.</string>
     <string name="pref_override_device_meta_state">მოწყობილობის მეტა-მდგომარეობის გადაფარვა</string>
-    <string name="pref_override_device_meta_state_summary">წებოვანი მოდიფიკატორების (Shift/Alt ჩაკეტვა) ჩართვა ფიზიკურ კლავიატურებზე მოწყობილობის KCM კონფიგურაციის მიუხედავად.</string>
+    <string name="pref_override_device_meta_state_summary">წებოვანი მოდიფიკატორების (Shift/Alt ჩაკეტვა) ჩართვა ფიზიკურ კლავიატურებზე მოწყობილობის KCM კონფიგურაციის მიუხედავად</string>
     <string name="pref_shift_double_tap_lock">Shift-ის ორმაგი დაჭერით ჩაკეტვის ჩართვა</string>
     <string name="pref_shift_double_tap_lock_summary">Shift-ზე ორჯერ დაჭერა მას ჩაკეტავს. Shift-ზე ხელახლა დაჭერა გამორთავს.</string>
     <string name="prefs_key_longpress_delay_summary">კლავიშის დაკავების დრო დამატებითი სიმბოლოების გამოჩენამდე</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">ავტომატური შევსების მოვლენების შეტყობინებები</string>
     <string name="pref_accessibility_service_disabled">მარტივი წვდომის სერვისი გამორთულია</string>
     <string name="pref_accessibility_service_enabled">მარტივი წვდომის სერვისი ჩართულია</string>
-    <string name="pref_emoji_search_pkb_summary">როდესაც სიცილაკების დაფა ღიაა, ძიებისთვის გამოიყენეთ კლავიატურა.</string>
+    <string name="pref_emoji_search_pkb_summary">როდესაც სიცილაკების დაფა ღიაა, ძიებისთვის გამოიყენეთ კლავიატურა</string>
     <string name="pref_emoji_search_title">სიცილაკების ძიების ჩართვა</string>
-    <string name="pref_emoji_search_vkb_summary">სიცილაკების გაფილტვრა მიმდინარე დაუდასტურებელი (ხაზგასმული) ტექსტით.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">სიცილაკის არჩევა მას აკრეფილი ტექსტის შემდეგ ჩასვამს.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">სიცილაკის არჩევა აკრეფილ ტექსტს ჩაანაცვლებს.</string>
+    <string name="pref_emoji_search_vkb_summary">სიცილაკების გაფილტვრა მიმდინარე დაუდასტურებელი (ხაზგასმული) ტექსტით</string>
+    <string name="pref_emoji_search_replace_text_summary_off">სიცილაკის არჩევა მას აკრეფილი ტექსტის შემდეგ ჩასვამს</string>
+    <string name="pref_emoji_search_replace_text_summary_on">სიცილაკის არჩევა აკრეფილ ტექსტს ჩაანაცვლებს</string>
     <string name="pref_emoji_search_replace_text_title">ტექსტის ჩანაცვლება სიცილაკით</string>
     <string name="pref_key_interceptor_enabled">სპეციალური კლავიშების მხარდაჭერის ჩართვა</string>
     <string name="pref_key_interceptor_enabled_summary">მარტივი წვდომის სერვისის გამოყენება Emoji, SYM და Voice კლავიშების დასაჭერად</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">მონაცემების მართვა</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">მორგებული მაკროსები</string>
+    <string name="settings_custom_macros_intro" formatted="false">განსაზღვრეთ საკუთარი %x ჩანაცვლების ველები ტექსტურ მალსახმობებში გამოსაყენებლად</string>
     <string name="settings_customize_menu_hidden_header">კლავიატურაზე არ ჩანს</string>
     <string name="settings_customize_menu_instructions">შეეხეთ და დაიკავეთ მალსახმობი, შემდეგ გადაათრიეთ თანმიმდევრობის შესაცვლელად. პირველი ოთხი კლავიატურის შეყვანის მენიუში გამოჩნდება.</string>
     <string name="settings_customize_menu_summary">აირჩიეთ შეყვანის მენიუს მალსახმობები და მათი თანმიმდევრობა</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">სწრაფი ფრაზები</string>
     <string name="settings_screen_type_by_swiping">აკრეფა გადასრიალებით</string>
     <string name="settings_screen_type_by_swiping_summary">აკრიფეთ სწრაფად, კლავიატურიდან თითის აუღებლად</string>
-    <string name="settings_screen_type_by_swiping_unavailable">აკრეფა გადასრიალებით თქვენს ენაზე მიუწვდომელია.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">აკრეფა გადასრიალებით თქვენს ენაზე მიუწვდომელია</string>
     <string name="settings_search_hint">პარამეტრების ძიება</string>
     <string name="settings_search_no_results">პარამეტრები ვერ მოიძებნა</string>
     <string name="settings_shake_fallback_title">სარეზერვო მოქმედება</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">კლავიატურის მოწყობილობა: %1$s</string>
     <string name="device_config_import_matches_build">ბილდის მოწყობილობა: %1$s</string>
     <string name="device_config_import_matches_brand">ბრენდი: %1$s</string>
-    <string name="device_config_import_matches_nothing">ეს ფაილი არ ასახელებს მოწყობილობას შესატყვისად, ამიტომ ის არასოდეს გამოიყენება.</string>
+    <string name="device_config_import_matches_nothing">ეს ფაილი არ ასახელებს მოწყობილობას შესატყვისად, ამიტომ ის არასოდეს გამოიყენება</string>
     <string name="device_config_import_type">მოწყობილობის ტიპი: %1$s</string>
     <string name="device_config_import_keys">%1$d კლავიშის მიბმა</string>
     <string name="device_config_import_keypad_layout">კლავიატურის განლაგება: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">ეს ვერსია ძალიან ძველია განახლებების სიის წასაკითხად. გთხოვთ, განაახლოთ ხელით.</string>
     <string name="settings_update_from_cache">ნაჩვენებია ბოლო შენახული შემოწმებიდან</string>
     <string name="settings_update_background_check_title">განახლებების ავტომატური შემოწმება</string>
-    <string name="settings_update_background_check_summary">მიიღებთ შეტყობინებას, როცა ახალი ვერსია ჩამოსატვირთად ხელმისაწვდომი იქნება.</string>
+    <string name="settings_update_background_check_summary">მიიღებთ შეტყობინებას, როცა ახალი ვერსია ჩამოსატვირთად ხელმისაწვდომი იქნება</string>
     <string name="settings_update_notification_text">ვერსია %1$s მზადაა ჩამოსატვირთად</string>
     <string name="settings_update_unknown_sources_message">Android-მა უნდა მისცეს BBKB-ს აპების დაყენების ნებართვა. დართეთ ნება ამ წყაროდან დაყენებას და ხელახლა დააჭირეთ დაყენებას.</string>
     <string name="settings_update_open_settings">პარამეტრების გახსნა</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">ლექსიკონების შემოწმება</string>
     <string name="language_packs_load_ldb">LDB ფაილის ჩატვირთვა</string>
     <string name="language_packs_variant_summary">იტვირთება %1$s-ის ნაცვლად</string>
-    <string name="language_packs_not_on_summary">შეეხეთ ახალი %1$s კლავიატურის შესაქმნელად.</string>
+    <string name="language_packs_not_on_summary">შეეხეთ ახალი %1$s კლავიატურის შესაქმნელად</string>
     <string name="language_packs_turned_on">%1$s ჩართულია. გადადით მასზე ენის გადამრთველიდან.</string>
-    <string name="language_packs_turn_on_in_settings">ჩართეთ %1$s სიაში და შემდეგ დაბრუნდით.</string>
+    <string name="language_packs_turn_on_in_settings">ჩართეთ %1$s სიაში და შემდეგ დაბრუნდით</string>
     <string name="language_packs_installed_and_on">დაინსტალირდა %1$s. ჩართულია: გადადით მასზე ენის გადამრთველიდან.</string>
     <string name="language_packs_installed_turn_on">დაინსტალირდა %1$s. შეეხეთ მწკრივს კლავიატურაზე ჩასართავად.</string>
+    <string name="language_packs_installed_no_layout">დაინსტალირდა %1$s, მაგრამ ამ კლავიატურას ჯერ არ აქვს განლაგება მისი დამწერლობისთვის, ამიტომ მისი არჩევა შეუძლებელია</string>
     <string name="language_packs_error_offline">კავშირი არ არის</string>
     <string name="language_packs_error_network">არ გამოვიდა. სცადეთ ხელახლა.</string>
     <string name="language_packs_error_verification">ფაილი კატალოგს არ ემთხვევა, ამიტომ არაფერი დაინსტალირდა</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">შენახულია: %1$s</string>
     <string name="backup_restore_dialog_device">მოწყობილობა: %1$s</string>
     <string name="backup_restore_not_in_file">ამ ფაილში არ არის</string>
-    <string name="backup_restore_dialog_note">პარამეტრები, განლაგებები და მაკროსები ჩანაცვლდება; სიტყვები დაემატება ამ ტელეფონზე არსებულს.</string>
+    <string name="backup_restore_dialog_note">პარამეტრები, განლაგებები და მაკროსები ჩანაცვლდება; სიტყვები დაემატება ამ ტელეფონზე არსებულს</string>
     <string name="backup_restore_dialog_confirm">აღდგენა</string>
     <string name="backup_restored">სარეზერვო ასლი აღდგენილია</string>
     <string name="backup_restored_words_pending">ნასწავლი სიტყვები დაემატება, როგორც კი კლავიატურის გამოყენებას დაიწყებთ</string>

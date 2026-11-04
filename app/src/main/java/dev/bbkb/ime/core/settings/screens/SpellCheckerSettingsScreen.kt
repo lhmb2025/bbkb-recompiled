@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.R
+import androidx.compose.ui.res.stringResource
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceActionItem
 import dev.bbkb.ime.core.settings.ui.PreferenceGroup
@@ -105,7 +106,7 @@ fun SpellCheckerSettingsScreen(
                 if (!hasContactsPermission) {
                     PreferenceActionItem(
                         title = "Contacts Permission Required",
-                        summary = "Grant contacts permission to recognize contact names as valid words during spell checking.",
+                        summary = stringResource(R.string.settings_spellcheck_contacts_permission_summary),
                         actionLabel = "Grant Permission",
                         onAction = {
                             permissionLauncher.launch(Manifest.permission.READ_CONTACTS)

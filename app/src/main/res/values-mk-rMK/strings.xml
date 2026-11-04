@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Ја запишува снимената мрежа од копчиња како фрагмент &lt;ckb-key-grid&gt; во датотеките на апликацијата, за да го вметнете во конфигурацијата на уредот. Прво отворете ја тастатурата еднаш за да може да ја сними.</string>
     <string name="ckb_gestures_export_title">Извезување на геометријата на CKB</string>
     <string name="ckb_gestures_export_written">Запишано е %s</string>
-    <string name="ckb_gestures_reserved_note">Повлекувањето нагоре (потврдување на предлогот под прстот) е резервирано.</string>
+    <string name="ckb_gestures_reserved_note">Повлекувањето нагоре (потврдување на предлогот под прстот) е резервирано</string>
     <string name="ckb_gestures_screen_title">Гестови за CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">Максимален множител на брзината при менување акценти</string>
     <string name="settings_gesture_accent_max_speed_title">Макс. множител на брзината при лизгање за менување акценти</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Вклучи динамично учење</string>
     <string name="settings_dict_learned_words_summary">Управување со зборовите научени од вашето пишување</string>
     <string name="settings_dict_learned_words_title">Научени зборови</string>
+    <string name="settings_dict_add_to_dictionary_note">Зборовите додадени во вашиот речник ќе се предлагаат додека пишувате и нема да се означуваат како погрешно напишани</string>
     <string name="settings_dict_text_shortcuts_summary">Создавање кратенки што се прошируваат во фрази</string>
     <string name="settings_dict_text_shortcuts_title">Текстуални кратенки</string>
     <string name="settings_dict_user_dictionary_summary">Додавање и уредување лични зборови</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Изберете или увезете конфигурации за внесување за уредот</string>
     <string name="settings_device_configuration_title">Конфигурација на уредот</string>
     <string name="touch_surface_builtin_category">Вградена поддршка</string>
-    <string name="touch_surface_builtin_intro">Додека е вклучен Scroll assistant, телефонот ги проследува допирите од сензорната површина на тастатурата до BBKB.</string>
+    <string name="touch_surface_builtin_intro">Додека е вклучен Scroll assistant, телефонот ги проследува допирите од сензорната површина на тастатурата до BBKB</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant го презема двојниот допир на копчињата, па BBKB никогаш не го добива</string>
     <string name="touch_surface_cursor_assistant_title">Исклучи Cursor assistant</string>
     <string name="touch_surface_grant_access">Дај пристап</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Поставување на Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Вклучете „Програмерски опции“, а потоа „Безжично отстранување грешки“.\n2. Стартувајте го Shizuku од неговата апликација или со root.\n3. Вратете се тука и допрете „Дај пристап“.</string>
     <string name="touch_surface_shizuku_intro">Shizuku е бесплатна апликација што му овозможува на BBKB директно да ја чита сензорната површина. BBKB ја презема само додека е отворена тастатурата; во останатото време таа работи како и обично.</string>
-    <string name="touch_surface_shizuku_mediatek">Користете Shizuku 13.5.4 на овој телефон: верзијата 13.6.0 не работи целосно на телефони со MediaTek.</string>
+    <string name="touch_surface_shizuku_mediatek">Користете Shizuku 13.5.4 на овој телефон: верзијата 13.6.0 не работи целосно на телефони со MediaTek</string>
     <string name="touch_surface_shizuku_reboot">Shizuku запира секогаш кога телефонот ќе се рестартира. Стартувајте го повторно по секое рестартирање; статусот погоре покажува кога не е стартуван.</string>
     <string name="touch_surface_shizuku_state_denied">Стартуван, но на BBKB му е одбиен пристапот</string>
     <string name="touch_surface_shizuku_state_granted">Стартуван и BBKB има пристап</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Не е достапно на овој телефон</string>
     <string name="pref_show_pkb_modifier_status_icon">Икона за состојбата на модификаторите</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Прикажување показател за Shift/Alt во статусната лента при користење физичка тастатура</string>
-    <string name="settings_pred_accounts_permission_summary">Дајте дозвола за сметки за да се предлагаат адреси на е-пошта додека пишувате.</string>
+    <string name="settings_pred_accounts_permission_summary">Дајте дозвола за сметки за да се предлагаат адреси на е-пошта додека пишувате</string>
     <string name="settings_pred_accounts_permission_title">Потребна е дозвола за сметки</string>
     <string name="settings_pred_block_offensive_summary">Криење потенцијално навредливи зборови при гласовно диктирање</string>
     <string name="settings_pred_block_offensive_title">Блокирање навредливи зборови</string>
-    <string name="settings_pred_contacts_permission_summary">Дајте дозвола за контакти за да се предлагаат имиња на контакти и адреси на е-пошта додека пишувате.</string>
+    <string name="settings_pred_contacts_permission_summary">Дајте дозвола за контакти за да се предлагаат имиња на контакти и адреси на е-пошта додека пишувате</string>
     <string name="settings_pred_contacts_permission_title">Потребна е дозвола за контакти</string>
     <string name="settings_pred_contacts_summary_disabled">Потребна е дозвола за контакти</string>
     <string name="settings_pred_contacts_summary_enabled">Вклучување имиња на контакти во предлозите</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Дајте дозвола за контакти за да ја користите функцијава</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Имињата на контактите ќе се препознаваат како валидни зборови</string>
     <string name="settings_spellcheck_use_contacts_title">Користење на контактите за проверка на правопис</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Дајте дозвола за контакти за имињата на контактите да се препознаваат како валидни зборови при проверка на правопис</string>
     <string name="settings_spellcheck_accept_learned_title">Прифаќање на научените зборови</string>
     <string name="settings_spellcheck_accept_learned_summary">Зборовите научени од вашето пишување се сметаат за правилно напишани</string>
     <string name="pref_alt_double_tap_lock">Овозможување заклучување со двоен клик на Alt</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Овозможување заклучување со двоен клик на Ctrl</string>
     <string name="pref_ctrl_double_tap_lock_summary">Двојниот клик на Ctrl го заклучува. Повторниот клик на Ctrl го исклучува.</string>
     <string name="pref_override_device_meta_state">Пребришување на мета-состојбата на уредот</string>
-    <string name="pref_override_device_meta_state_summary">Овозможува лепливи модификатори (заклучување на Shift/Alt) на физички тастатури без оглед на конфигурацијата KCM на уредот.</string>
+    <string name="pref_override_device_meta_state_summary">Овозможува лепливи модификатори (заклучување на Shift/Alt) на физички тастатури без оглед на конфигурацијата KCM на уредот</string>
     <string name="pref_shift_double_tap_lock">Овозможување заклучување со двоен клик на Shift</string>
     <string name="pref_shift_double_tap_lock_summary">Двојниот клик на Shift го заклучува. Повторниот клик на Shift го исклучува.</string>
     <string name="prefs_key_longpress_delay_summary">Време на задржување копче пред да се појават секундарните знаци</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Известувања за автоматското пополнување</string>
     <string name="pref_accessibility_service_disabled">Услугата за пристапност е оневозможена</string>
     <string name="pref_accessibility_service_enabled">Услугата за пристапност е овозможена</string>
-    <string name="pref_emoji_search_pkb_summary">Кога таблата со емотикони е отворена, користете ја тастатурата за пребарување.</string>
+    <string name="pref_emoji_search_pkb_summary">Кога таблата со емотикони е отворена, користете ја тастатурата за пребарување</string>
     <string name="pref_emoji_search_title">Вклучи пребарување на емотикони</string>
-    <string name="pref_emoji_search_vkb_summary">Филтрирај емотикони според тековниот непотврден (подвлечен) текст.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Изборот на емотикон го вметнува по напишаниот текст.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Изборот на емотикон го заменува напишаниот текст.</string>
+    <string name="pref_emoji_search_vkb_summary">Филтрирај емотикони според тековниот непотврден (подвлечен) текст</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Изборот на емотикон го вметнува по напишаниот текст</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Изборот на емотикон го заменува напишаниот текст</string>
     <string name="pref_emoji_search_replace_text_title">Замена на текстот со емотикон</string>
     <string name="pref_key_interceptor_enabled">Овозможување поддршка за специјални копчиња</string>
     <string name="pref_key_interceptor_enabled_summary">Користење на услугата за пристапност за фаќање на копчињата за емотикони, SYM и глас</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Управување со податоци</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Приспособени макроа</string>
+    <string name="settings_custom_macros_intro" formatted="false">Дефинирајте свои ознаки за место %x за употреба во текстуалните кратенки</string>
     <string name="settings_customize_menu_hidden_header">Не се прикажува на тастатурата</string>
     <string name="settings_customize_menu_instructions">Допрете и задржете кратенка, па влечете за да го промените редоследот. Првите четири се прикажуваат во менито за внесување на тастатурата.</string>
     <string name="settings_customize_menu_summary">Изберете и подредете ги кратенките во менито за внесување</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Брзи фрази</string>
     <string name="settings_screen_type_by_swiping">Пишување со повлекување</string>
     <string name="settings_screen_type_by_swiping_summary">Пишувајте брзо без да го кревате прстот од тастатурата</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Пишувањето со повлекување не е достапно на вашиот јазик.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Пишувањето со повлекување не е достапно на вашиот јазик</string>
     <string name="settings_search_hint">Пребарајте ги поставките</string>
     <string name="settings_search_no_results">Не се најдени поставки</string>
     <string name="settings_shake_fallback_title">Резервно дејство</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Уред на тастатурата: %1$s</string>
     <string name="device_config_import_matches_build">Уред на верзијата: %1$s</string>
     <string name="device_config_import_matches_brand">Марка: %1$s</string>
-    <string name="device_config_import_matches_nothing">Оваа датотека не наведува уред со кој би се совпаднала, па затоа никогаш не би се применила.</string>
+    <string name="device_config_import_matches_nothing">Оваа датотека не наведува уред со кој би се совпаднала, па затоа никогаш не би се применила</string>
     <string name="device_config_import_type">Тип на уред: %1$s</string>
     <string name="device_config_import_keys">%1$d мапирања на копчиња</string>
     <string name="device_config_import_keypad_layout">Распоред на тастатурата: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Оваа верзија е премногу стара за да ја прочита листата на ажурирања. Ажурирајте рачно.</string>
     <string name="settings_update_from_cache">Прикажано од последната зачувана проверка</string>
     <string name="settings_update_background_check_title">Автоматска проверка за ажурирања</string>
-    <string name="settings_update_background_check_summary">Добивајте известување кога ќе биде достапна нова верзија за преземање.</string>
+    <string name="settings_update_background_check_summary">Добивајте известување кога ќе биде достапна нова верзија за преземање</string>
     <string name="settings_update_notification_text">Верзијата %1$s е готова за преземање</string>
     <string name="settings_update_unknown_sources_message">Android мора да дозволи BBKB да инсталира апликации. Овозможете инсталирање од овој извор, па повторно притиснете Инсталирај.</string>
     <string name="settings_update_open_settings">Отвори поставки</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Провери речници</string>
     <string name="language_packs_load_ldb">Вчитај LDB-датотека</string>
     <string name="language_packs_variant_summary">Се вчитува наместо %1$s</string>
-    <string name="language_packs_not_on_summary">Допрете за да создадете нова тастатура за %1$s.</string>
+    <string name="language_packs_not_on_summary">Допрете за да создадете нова тастатура за %1$s</string>
     <string name="language_packs_turned_on">%1$s е вклучен. Префрлете се на него преку менувачот на јазици.</string>
-    <string name="language_packs_turn_on_in_settings">Вклучете го %1$s на списокот, па вратете се.</string>
+    <string name="language_packs_turn_on_in_settings">Вклучете го %1$s на списокот, па вратете се</string>
     <string name="language_packs_installed_and_on">Инсталиран е %1$s. Вклучен е: префрлете се на него преку менувачот на јазици.</string>
     <string name="language_packs_installed_turn_on">Инсталиран е %1$s. Допрете го редот за да го вклучите во тастатурата.</string>
+    <string name="language_packs_installed_no_layout">Инсталиран е %1$s, но оваа тастатура сè уште нема распоред за неговото писмо, па не може да се избере</string>
     <string name="language_packs_error_offline">Нема врска</string>
     <string name="language_packs_error_network">Не успеа. Обиди се повторно.</string>
     <string name="language_packs_error_verification">Датотеката не се совпадна со каталогот, па не е инсталирано ништо</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Зачувано: %1$s</string>
     <string name="backup_restore_dialog_device">Од %1$s</string>
     <string name="backup_restore_not_in_file">Не е во оваа датотека</string>
-    <string name="backup_restore_dialog_note">Поставките, распоредите и макроата се заменуваат; зборовите се додаваат на она што веќе е на овој телефон.</string>
+    <string name="backup_restore_dialog_note">Поставките, распоредите и макроата се заменуваат; зборовите се додаваат на она што веќе е на овој телефон</string>
     <string name="backup_restore_dialog_confirm">Врати</string>
     <string name="backup_restored">Резервната копија е вратена</string>
     <string name="backup_restored_words_pending">Научените зборови ќе се додадат откако ќе почнете да ја користите тастатурата</string>

@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">ಸೆರೆಹಿಡಿದ ಕೀ ಗ್ರಿಡ್ ಅನ್ನು &lt;ckb-key-grid&gt; ಸ್ನಿಪ್ಪೆಟ್ ಆಗಿ ಅಪ್ಲಿಕೇಶನ್ ಫೈಲ್‌ಗಳಿಗೆ ಬರೆಯಿರಿ, ಸಾಧನ ಕಾನ್ಫಿಗ್‌ಗೆ ಅಂಟಿಸಲು. ಅದು ಸೆರೆಹಿಡಿಯುವಂತಾಗಲು ಮೊದಲು ಕೀಬೋರ್ಡ್ ಅನ್ನು ಒಮ್ಮೆ ತೆರೆಯಿರಿ.</string>
     <string name="ckb_gestures_export_title">CKB ಜ್ಯಾಮಿತಿಯನ್ನು ರಫ್ತು ಮಾಡಿ</string>
     <string name="ckb_gestures_export_written">%s ಬರೆಯಲಾಗಿದೆ</string>
-    <string name="ckb_gestures_reserved_note">ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡುವುದನ್ನು (ನಿಮ್ಮ ಬೆರಳಿನ ಕೆಳಗಿನ ಸಲಹೆಯನ್ನು ಸ್ವೀಕರಿಸುವುದು) ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.</string>
+    <string name="ckb_gestures_reserved_note">ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡುವುದನ್ನು (ನಿಮ್ಮ ಬೆರಳಿನ ಕೆಳಗಿನ ಸಲಹೆಯನ್ನು ಸ್ವೀಕರಿಸುವುದು) ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ</string>
     <string name="ckb_gestures_screen_title">CKB ಗೆಸ್ಚರ್‌ಗಳು</string>
     <string name="settings_gesture_accent_max_speed_summary">ಉಚ್ಚಾರಣಾ ಚಿಹ್ನೆ ಬದಲಾವಣೆಗಳಿಗೆ ಗರಿಷ್ಠ ವೇಗ ಗುಣಕ</string>
     <string name="settings_gesture_accent_max_speed_title">ಸ್ಕ್ರಾಲ್ ಉಚ್ಚಾರಣಾ ಚಿಹ್ನೆ ಬದಲಾವಣೆಯ ಗರಿಷ್ಠ ವೇಗ ಗುಣಕ</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">ಡೈನಾಮಿಕ್ ಕಲಿಕೆ ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
     <string name="settings_dict_learned_words_summary">ನಿಮ್ಮ ಟೈಪಿಂಗ್‌ನಿಂದ ಕಲಿತ ಪದಗಳನ್ನು ನಿರ್ವಹಿಸಿ</string>
     <string name="settings_dict_learned_words_title">ಕಲಿತ ಪದಗಳು</string>
+    <string name="settings_dict_add_to_dictionary_note">ನಿಮ್ಮ ನಿಘಂಟಿಗೆ ಸೇರಿಸಿದ ಪದಗಳನ್ನು ಟೈಪ್ ಮಾಡುವಾಗ ಸೂಚಿಸಲಾಗುತ್ತದೆ ಮತ್ತು ತಪ್ಪು ಕಾಗುಣಿತ ಎಂದು ಗುರುತಿಸಲಾಗುವುದಿಲ್ಲ</string>
     <string name="settings_dict_text_shortcuts_summary">ನುಡಿಗಟ್ಟುಗಳಾಗಿ ವಿಸ್ತರಿಸುವ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ರಚಿಸಿ</string>
     <string name="settings_dict_text_shortcuts_title">ಪಠ್ಯ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು</string>
     <string name="settings_dict_user_dictionary_summary">ವೈಯಕ್ತಿಕ ಪದಗಳನ್ನು ಸೇರಿಸಿ ಮತ್ತು ಸಂಪಾದಿಸಿ</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">ಸಾಧನ ಇನ್‌ಪುಟ್ ಕಾನ್ಫಿಗರೇಶನ್‌ಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ ಅಥವಾ ಆಮದು ಮಾಡಿ</string>
     <string name="settings_device_configuration_title">ಸಾಧನ ಕಾನ್ಫಿಗರೇಶನ್</string>
     <string name="touch_surface_builtin_category">ಅಂತರ್ನಿರ್ಮಿತ</string>
-    <string name="touch_surface_builtin_intro">ಫೋನ್‌ನ Scroll assistant ಆನ್ ಆಗಿರುವಾಗ, ಫೋನ್ ಕೀಬೋರ್ಡ್‌ನ ಸ್ಪರ್ಶ ಮೇಲ್ಮೈಯನ್ನು BBKB ಗೆ ಒದಗಿಸುತ್ತದೆ.</string>
+    <string name="touch_surface_builtin_intro">ಫೋನ್‌ನ Scroll assistant ಆನ್ ಆಗಿರುವಾಗ, ಫೋನ್ ಕೀಬೋರ್ಡ್‌ನ ಸ್ಪರ್ಶ ಮೇಲ್ಮೈಯನ್ನು BBKB ಗೆ ಒದಗಿಸುತ್ತದೆ</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant ಕೀಗಳ ಮೇಲಿನ ಡಬಲ್-ಟ್ಯಾಪ್ ಅನ್ನು ತಾನೇ ಪಡೆದುಕೊಳ್ಳುತ್ತದೆ, ಹಾಗಾಗಿ ಅದು BBKB ಗೆ ಎಂದಿಗೂ ತಲುಪುವುದಿಲ್ಲ</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant ಆಫ್ ಮಾಡಿ</string>
     <string name="touch_surface_grant_access">ಪ್ರವೇಶ ನೀಡಿ</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku ಸೆಟಪ್ ಮಾಡಿ</string>
     <string name="touch_surface_shizuku_guide_steps">1. ಡೆವಲಪರ್ ಆಯ್ಕೆಗಳನ್ನು, ನಂತರ ವೈರ್‌ಲೆಸ್ ಡೀಬಗ್ ಮಾಡುವಿಕೆಯನ್ನು ಆನ್ ಮಾಡಿ.\n2. Shizuku ಅನ್ನು ಅದರ ಆ್ಯಪ್‌ನಿಂದ ಅಥವಾ ರೂಟ್ ಮೂಲಕ ಪ್ರಾರಂಭಿಸಿ.\n3. ಇಲ್ಲಿಗೆ ಹಿಂತಿರುಗಿ “ಪ್ರವೇಶ ನೀಡಿ” ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
     <string name="touch_surface_shizuku_intro">Shizuku ಎಂಬುದು BBKB ಸ್ಪರ್ಶ ಮೇಲ್ಮೈಯನ್ನು ನೇರವಾಗಿ ಓದಲು ಅನುಮತಿಸುವ ಉಚಿತ ಆ್ಯಪ್ ಆಗಿದೆ. ಕೀಬೋರ್ಡ್ ತೆರೆದಿರುವಾಗ ಮಾತ್ರ BBKB ಸ್ಪರ್ಶ ಮೇಲ್ಮೈಯನ್ನು ತನ್ನ ನಿಯಂತ್ರಣಕ್ಕೆ ತೆಗೆದುಕೊಳ್ಳುತ್ತದೆ; ಉಳಿದ ಸಮಯದಲ್ಲಿ ಅದು ಫೋನ್‌ನಲ್ಲಿ ಎಂದಿನಂತೆ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತದೆ.</string>
-    <string name="touch_surface_shizuku_mediatek">ಈ ಫೋನ್‌ನಲ್ಲಿ Shizuku 13.5.4 ಬಳಸಿ: 13.6.0 ಆವೃತ್ತಿಯು MediaTek ಫೋನ್‌ಗಳಲ್ಲಿ ಪೂರ್ಣವಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುವುದಿಲ್ಲ.</string>
+    <string name="touch_surface_shizuku_mediatek">ಈ ಫೋನ್‌ನಲ್ಲಿ Shizuku 13.5.4 ಬಳಸಿ: 13.6.0 ಆವೃತ್ತಿಯು MediaTek ಫೋನ್‌ಗಳಲ್ಲಿ ಪೂರ್ಣವಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುವುದಿಲ್ಲ</string>
     <string name="touch_surface_shizuku_reboot">ಫೋನ್ ಮರುಪ್ರಾರಂಭವಾದ ಪ್ರತಿ ಬಾರಿಯೂ Shizuku ನಿಲ್ಲುತ್ತದೆ. ಪ್ರತಿ ಮರುಪ್ರಾರಂಭದ ನಂತರ ಅದನ್ನು ಮತ್ತೆ ಪ್ರಾರಂಭಿಸಿ; ಅದು ರನ್ ಆಗದಿದ್ದಾಗ ಮೇಲಿನ ಸ್ಥಿತಿ ಅದನ್ನು ತಿಳಿಸುತ್ತದೆ.</string>
     <string name="touch_surface_shizuku_state_denied">ರನ್ ಆಗುತ್ತಿದೆ, ಆದರೆ BBKB ಗೆ ಪ್ರವೇಶ ನಿರಾಕರಿಸಲಾಗಿದೆ</string>
     <string name="touch_surface_shizuku_state_granted">ರನ್ ಆಗುತ್ತಿದೆ, ಮತ್ತು BBKB ಗೆ ಪ್ರವೇಶವಿದೆ</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">ಈ ಫೋನ್‌ನಲ್ಲಿ ಲಭ್ಯವಿಲ್ಲ</string>
     <string name="pref_show_pkb_modifier_status_icon">ಮಾರ್ಪಡಿಸುವ ಕೀ ಸ್ಥಿತಿ ಐಕಾನ್ ತೋರಿಸು</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">ಭೌತಿಕ ಕೀಬೋರ್ಡ್ ಬಳಸುವಾಗ ಸ್ಥಿತಿ ಪಟ್ಟಿಯಲ್ಲಿ Shift/Alt ಸೂಚಕವನ್ನು ತೋರಿಸು</string>
-    <string name="settings_pred_accounts_permission_summary">ಟೈಪ್ ಮಾಡುವಾಗ ಇಮೇಲ್ ವಿಳಾಸಗಳನ್ನು ಸೂಚಿಸಲು ಖಾತೆಗಳ ಅನುಮತಿ ನೀಡಿ.</string>
+    <string name="settings_pred_accounts_permission_summary">ಟೈಪ್ ಮಾಡುವಾಗ ಇಮೇಲ್ ವಿಳಾಸಗಳನ್ನು ಸೂಚಿಸಲು ಖಾತೆಗಳ ಅನುಮತಿ ನೀಡಿ</string>
     <string name="settings_pred_accounts_permission_title">ಖಾತೆಗಳ ಅನುಮತಿ ಅಗತ್ಯವಿದೆ</string>
     <string name="settings_pred_block_offensive_summary">ಧ್ವನಿ ಮೂಲಕ ಬರೆಯುವಾಗ ಅಸಭ್ಯವಾಗಬಹುದಾದ ಪದಗಳನ್ನು ಮರೆಮಾಡು</string>
     <string name="settings_pred_block_offensive_title">ಅಸಭ್ಯ ಪದಗಳನ್ನು ನಿರ್ಬಂಧಿಸಿ</string>
-    <string name="settings_pred_contacts_permission_summary">ಟೈಪ್ ಮಾಡುವಾಗ ಸಂಪರ್ಕ ಹೆಸರುಗಳು ಮತ್ತು ಇಮೇಲ್ ವಿಳಾಸಗಳನ್ನು ಸೂಚಿಸಲು ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ನೀಡಿ.</string>
+    <string name="settings_pred_contacts_permission_summary">ಟೈಪ್ ಮಾಡುವಾಗ ಸಂಪರ್ಕ ಹೆಸರುಗಳು ಮತ್ತು ಇಮೇಲ್ ವಿಳಾಸಗಳನ್ನು ಸೂಚಿಸಲು ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ನೀಡಿ</string>
     <string name="settings_pred_contacts_permission_title">ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ಅಗತ್ಯವಿದೆ</string>
     <string name="settings_pred_contacts_summary_disabled">ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ಅಗತ್ಯವಿದೆ</string>
     <string name="settings_pred_contacts_summary_enabled">ಸಲಹೆಗಳಲ್ಲಿ ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಸೇರಿಸು</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">ಈ ವೈಶಿಷ್ಟ್ಯ ಬಳಸಲು ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ನೀಡಿ</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಸರಿಯಾದ ಪದಗಳೆಂದು ಗುರುತಿಸಲಾಗುತ್ತದೆ</string>
     <string name="settings_spellcheck_use_contacts_title">ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಗೆ ಸಂಪರ್ಕಗಳನ್ನು ಬಳಸಿ</string>
+    <string name="settings_spellcheck_contacts_permission_summary">ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಯ ವೇಳೆ ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಸರಿಯಾದ ಪದಗಳೆಂದು ಗುರುತಿಸಲು ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ನೀಡಿ</string>
     <string name="settings_spellcheck_accept_learned_title">ಕಲಿತ ಪದಗಳನ್ನು ಸ್ವೀಕರಿಸಿ</string>
     <string name="settings_spellcheck_accept_learned_summary">ನಿಮ್ಮ ಟೈಪಿಂಗ್‌ನಿಂದ ಕಲಿತ ಪದಗಳನ್ನು ಸರಿಯಾದ ಕಾಗುಣಿತವೆಂದು ಪರಿಗಣಿಸಲಾಗುತ್ತದೆ</string>
     <string name="pref_alt_double_tap_lock">Alt ಡಬಲ್-ಕ್ಲಿಕ್ ಲಾಕ್ ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrl ಡಬಲ್-ಕ್ಲಿಕ್ ಲಾಕ್ ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl ಅನ್ನು ಡಬಲ್-ಕ್ಲಿಕ್ ಮಾಡಿದರೆ ಅದು ಲಾಕ್ ಆಗುತ್ತದೆ. Ctrl ಅನ್ನು ಮತ್ತೆ ಕ್ಲಿಕ್ ಮಾಡಿದರೆ ಅದು ಆಫ್ ಆಗುತ್ತದೆ.</string>
     <string name="pref_override_device_meta_state">ಸಾಧನದ ಮೆಟಾ ಸ್ಥಿತಿಯನ್ನು ಅತಿಕ್ರಮಿಸಿ</string>
-    <string name="pref_override_device_meta_state_summary">ಸಾಧನದ KCM ಕಾನ್ಫಿಗರೇಶನ್ ಏನೇ ಇರಲಿ, ಭೌತಿಕ ಕೀಬೋರ್ಡ್‌ಗಳಲ್ಲಿ ಸ್ಟಿಕಿ ಮಾರ್ಪಡಿಸುವ ಕೀಗಳನ್ನು (shift/alt ಲಾಕ್) ಸಕ್ರಿಯಗೊಳಿಸಿ.</string>
+    <string name="pref_override_device_meta_state_summary">ಸಾಧನದ KCM ಕಾನ್ಫಿಗರೇಶನ್ ಏನೇ ಇರಲಿ, ಭೌತಿಕ ಕೀಬೋರ್ಡ್‌ಗಳಲ್ಲಿ ಸ್ಟಿಕಿ ಮಾರ್ಪಡಿಸುವ ಕೀಗಳನ್ನು (shift/alt ಲಾಕ್) ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
     <string name="pref_shift_double_tap_lock">Shift ಡಬಲ್-ಕ್ಲಿಕ್ ಲಾಕ್ ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
     <string name="pref_shift_double_tap_lock_summary">Shift ಅನ್ನು ಡಬಲ್-ಕ್ಲಿಕ್ ಮಾಡಿದರೆ ಅದು ಲಾಕ್ ಆಗುತ್ತದೆ. Shift ಅನ್ನು ಮತ್ತೆ ಕ್ಲಿಕ್ ಮಾಡಿದರೆ ಅದು ಆಫ್ ಆಗುತ್ತದೆ.</string>
     <string name="prefs_key_longpress_delay_summary">ದ್ವಿತೀಯ ಅಕ್ಷರಗಳು ಕಾಣಿಸಿಕೊಳ್ಳುವ ಮೊದಲು ಕೀಯನ್ನು ಹಿಡಿದಿಡುವ ಸಮಯ</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">ಸ್ವಯಂಭರ್ತಿ ಈವೆಂಟ್ ಟೋಸ್ಟ್‌ಗಳು</string>
     <string name="pref_accessibility_service_disabled">ಪ್ರವೇಶಿಸುವಿಕೆ ಸೇವೆ ನಿಷ್ಕ್ರಿಯಗೊಂಡಿದೆ</string>
     <string name="pref_accessibility_service_enabled">ಪ್ರವೇಶಿಸುವಿಕೆ ಸೇವೆ ಸಕ್ರಿಯಗೊಂಡಿದೆ</string>
-    <string name="pref_emoji_search_pkb_summary">ಎಮೋಜಿ ಬೋರ್ಡ್ ತೆರೆದಿರುವಾಗ, ಹುಡುಕಲು ಕೀಬೋರ್ಡ್ ಬಳಸಿ.</string>
+    <string name="pref_emoji_search_pkb_summary">ಎಮೋಜಿ ಬೋರ್ಡ್ ತೆರೆದಿರುವಾಗ, ಹುಡುಕಲು ಕೀಬೋರ್ಡ್ ಬಳಸಿ</string>
     <string name="pref_emoji_search_title">ಎಮೋಜಿ ಹುಡುಕಾಟವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
-    <string name="pref_emoji_search_vkb_summary">ಪ್ರಸ್ತುತ ದೃಢೀಕರಿಸದ (ಅಡಿಗೆರೆ ಹಾಕಿದ) ಪಠ್ಯದಿಂದ ಎಮೋಜಿಗಳನ್ನು ಫಿಲ್ಟರ್ ಮಾಡಿ.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">ಎಮೋಜಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿದರೆ ಅದು ಟೈಪ್ ಮಾಡಿದ ಪಠ್ಯದ ನಂತರ ಸೇರ್ಪಡೆಯಾಗುತ್ತದೆ.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">ಎಮೋಜಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿದರೆ ಅದು ಟೈಪ್ ಮಾಡಿದ ಪಠ್ಯವನ್ನು ಬದಲಾಯಿಸುತ್ತದೆ.</string>
+    <string name="pref_emoji_search_vkb_summary">ಪ್ರಸ್ತುತ ದೃಢೀಕರಿಸದ (ಅಡಿಗೆರೆ ಹಾಕಿದ) ಪಠ್ಯದಿಂದ ಎಮೋಜಿಗಳನ್ನು ಫಿಲ್ಟರ್ ಮಾಡಿ</string>
+    <string name="pref_emoji_search_replace_text_summary_off">ಎಮೋಜಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿದರೆ ಅದು ಟೈಪ್ ಮಾಡಿದ ಪಠ್ಯದ ನಂತರ ಸೇರ್ಪಡೆಯಾಗುತ್ತದೆ</string>
+    <string name="pref_emoji_search_replace_text_summary_on">ಎಮೋಜಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿದರೆ ಅದು ಟೈಪ್ ಮಾಡಿದ ಪಠ್ಯವನ್ನು ಬದಲಾಯಿಸುತ್ತದೆ</string>
     <string name="pref_emoji_search_replace_text_title">ಪಠ್ಯವನ್ನು ಎಮೋಜಿಯಿಂದ ಬದಲಾಯಿಸು</string>
     <string name="pref_key_interceptor_enabled">ವಿಶೇಷ ಕೀ ಬೆಂಬಲವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
     <string name="pref_key_interceptor_enabled_summary">ಎಮೋಜಿ, SYM ಮತ್ತು ಧ್ವನಿ ಕೀಗಳನ್ನು ಸೆರೆಹಿಡಿಯಲು ಪ್ರವೇಶಿಸುವಿಕೆ ಸೇವೆಯನ್ನು ಬಳಸಿ</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">ಡೇಟಾ ನಿರ್ವಹಣೆ</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">ಕಸ್ಟಮ್ ಮ್ಯಾಕ್ರೋಗಳು</string>
+    <string name="settings_custom_macros_intro" formatted="false">ಪಠ್ಯ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳಲ್ಲಿ ಬಳಸಲು ನಿಮ್ಮದೇ ಆದ %x ಪ್ಲೇಸ್‌ಹೋಲ್ಡರ್‌ಗಳನ್ನು ವ್ಯಾಖ್ಯಾನಿಸಿ</string>
     <string name="settings_customize_menu_hidden_header">ಕೀಬೋರ್ಡ್‌ನಲ್ಲಿ ತೋರಿಸಲಾಗಿಲ್ಲ</string>
     <string name="settings_customize_menu_instructions">ಶಾರ್ಟ್‌ಕಟ್ ಅನ್ನು ಸ್ಪರ್ಶಿಸಿ ಹಿಡಿದು, ನಂತರ ಎಳೆದು ಮರುಕ್ರಮಗೊಳಿಸಿ. ಮೊದಲ ನಾಲ್ಕು ಕೀಬೋರ್ಡ್‌ನ ಇನ್‌ಪುಟ್ ಮೆನುವಿನಲ್ಲಿ ಕಾಣಿಸುತ್ತವೆ.</string>
     <string name="settings_customize_menu_summary">ಇನ್‌ಪುಟ್ ಮೆನು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಆರಿಸಿ ಮತ್ತು ಮರುಕ್ರಮಗೊಳಿಸಿ</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">ತ್ವರಿತ ನುಡಿಗಟ್ಟುಗಳು</string>
     <string name="settings_screen_type_by_swiping">ಸ್ವೈಪ್ ಮಾಡಿ ಟೈಪ್ ಮಾಡಿ</string>
     <string name="settings_screen_type_by_swiping_summary">ಕೀಬೋರ್ಡ್‌ನಿಂದ ಬೆರಳು ಎತ್ತದೆ ವೇಗವಾಗಿ ಟೈಪ್ ಮಾಡಿ</string>
-    <string name="settings_screen_type_by_swiping_unavailable">ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಸ್ವೈಪ್ ಮಾಡಿ ಟೈಪ್ ಮಾಡುವುದು ಲಭ್ಯವಿಲ್ಲ.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಸ್ವೈಪ್ ಮಾಡಿ ಟೈಪ್ ಮಾಡುವುದು ಲಭ್ಯವಿಲ್ಲ</string>
     <string name="settings_search_hint">ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಹುಡುಕಿ</string>
     <string name="settings_search_no_results">ಯಾವುದೇ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ</string>
     <string name="settings_shake_fallback_title">ಪರ್ಯಾಯ ಕ್ರಿಯೆ</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">ಕೀಬೋರ್ಡ್ ಸಾಧನ: %1$s</string>
     <string name="device_config_import_matches_build">ಬಿಲ್ಡ್ ಸಾಧನ: %1$s</string>
     <string name="device_config_import_matches_brand">ಬ್ರ್ಯಾಂಡ್: %1$s</string>
-    <string name="device_config_import_matches_nothing">ಈ ಫೈಲ್ ಹೊಂದಿಸಲು ಯಾವುದೇ ಸಾಧನವನ್ನು ಸೂಚಿಸುವುದಿಲ್ಲ, ಆದ್ದರಿಂದ ಅದು ಎಂದಿಗೂ ಅನ್ವಯವಾಗುವುದಿಲ್ಲ.</string>
+    <string name="device_config_import_matches_nothing">ಈ ಫೈಲ್ ಹೊಂದಿಸಲು ಯಾವುದೇ ಸಾಧನವನ್ನು ಸೂಚಿಸುವುದಿಲ್ಲ, ಆದ್ದರಿಂದ ಅದು ಎಂದಿಗೂ ಅನ್ವಯವಾಗುವುದಿಲ್ಲ</string>
     <string name="device_config_import_type">ಸಾಧನ ಪ್ರಕಾರ: %1$s</string>
     <string name="device_config_import_keys">%1$d ಕೀ ಮ್ಯಾಪಿಂಗ್‌ಗಳು</string>
     <string name="device_config_import_keypad_layout">ಕೀಪ್ಯಾಡ್ ವಿನ್ಯಾಸ: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">ಈ ಆವೃತ್ತಿ ನವೀಕರಣ ಪಟ್ಟಿಯನ್ನು ಓದಲು ತುಂಬಾ ಹಳೆಯದು. ದಯವಿಟ್ಟು ಕೈಯಿಂದ ನವೀಕರಿಸಿ.</string>
     <string name="settings_update_from_cache">ಕೊನೆಯ ಉಳಿಸಿದ ಪರಿಶೀಲನೆಯಿಂದ ತೋರಿಸಲಾಗಿದೆ</string>
     <string name="settings_update_background_check_title">ನವೀಕರಣಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪರಿಶೀಲಿಸಿ</string>
-    <string name="settings_update_background_check_summary">ಹೊಸ ಆವೃತ್ತಿ ಡೌನ್‌ಲೋಡ್‌ಗೆ ಲಭ್ಯವಾದಾಗ ಅಧಿಸೂಚನೆ ಪಡೆಯಿರಿ.</string>
+    <string name="settings_update_background_check_summary">ಹೊಸ ಆವೃತ್ತಿ ಡೌನ್‌ಲೋಡ್‌ಗೆ ಲಭ್ಯವಾದಾಗ ಅಧಿಸೂಚನೆ ಪಡೆಯಿರಿ</string>
     <string name="settings_update_notification_text">ಆವೃತ್ತಿ %1$s ಡೌನ್‌ಲೋಡ್‌ಗೆ ಸಿದ್ಧವಾಗಿದೆ</string>
     <string name="settings_update_unknown_sources_message">ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಸ್ಥಾಪಿಸಲು Android BBKB ಗೆ ಅನುಮತಿ ನೀಡಬೇಕು. ಈ ಮೂಲದಿಂದ ಸ್ಥಾಪನೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ, ನಂತರ ಮತ್ತೆ ಸ್ಥಾಪಿಸಿ ಒತ್ತಿರಿ.</string>
     <string name="settings_update_open_settings">ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">ನಿಘಂಟುಗಳನ್ನು ಪರಿಶೀಲಿಸಿ</string>
     <string name="language_packs_load_ldb">LDB ಫೈಲ್ ಲೋಡ್ ಮಾಡಿ</string>
     <string name="language_packs_variant_summary">%1$s ಬದಲಿಗೆ ಲೋಡ್ ಆಗುತ್ತದೆ</string>
-    <string name="language_packs_not_on_summary">ಹೊಸ %1$s ಕೀಬೋರ್ಡ್ ರಚಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
+    <string name="language_packs_not_on_summary">ಹೊಸ %1$s ಕೀಬೋರ್ಡ್ ರಚಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ</string>
     <string name="language_packs_turned_on">%1$s ಆನ್ ಆಗಿದೆ. ಭಾಷಾ ಬದಲಾವಣೆಯಿಂದ ಅದಕ್ಕೆ ಬದಲಿಸಿ.</string>
-    <string name="language_packs_turn_on_in_settings">ಪಟ್ಟಿಯಲ್ಲಿ %1$s ಅನ್ನು ಆನ್ ಮಾಡಿ, ನಂತರ ಹಿಂತಿರುಗಿ.</string>
+    <string name="language_packs_turn_on_in_settings">ಪಟ್ಟಿಯಲ್ಲಿ %1$s ಅನ್ನು ಆನ್ ಮಾಡಿ, ನಂತರ ಹಿಂತಿರುಗಿ</string>
     <string name="language_packs_installed_and_on">%1$s ಸ್ಥಾಪಿಸಲಾಗಿದೆ. ಅದು ಆನ್ ಆಗಿದೆ: ಭಾಷಾ ಬದಲಾವಣೆಯಿಂದ ಅದಕ್ಕೆ ಬದಲಿಸಿ.</string>
     <string name="language_packs_installed_turn_on">%1$s ಸ್ಥಾಪಿಸಲಾಗಿದೆ. ಕೀಬೋರ್ಡ್‌ನಲ್ಲಿ ಆನ್ ಮಾಡಲು ಅದರ ಸಾಲನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
+    <string name="language_packs_installed_no_layout">%1$s ಸ್ಥಾಪಿಸಲಾಗಿದೆ, ಆದರೆ ಈ ಕೀಬೋರ್ಡ್‌ನಲ್ಲಿ ಇನ್ನೂ ಅದರ ಲಿಪಿಗೆ ಲೇಔಟ್ ಇಲ್ಲ, ಆದ್ದರಿಂದ ಅದನ್ನು ಆಯ್ಕೆ ಮಾಡಲಾಗುವುದಿಲ್ಲ</string>
     <string name="language_packs_error_offline">ಸಂಪರ್ಕವಿಲ್ಲ</string>
     <string name="language_packs_error_network">ಅದು ಕೆಲಸ ಮಾಡಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="language_packs_error_verification">ಫೈಲ್ ಕ್ಯಾಟಲಾಗ್‌ಗೆ ಹೊಂದಿಕೆಯಾಗಲಿಲ್ಲ, ಆದ್ದರಿಂದ ಏನೂ ಸ್ಥಾಪನೆಯಾಗಿಲ್ಲ</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">ಉಳಿಸಿದ್ದು: %1$s</string>
     <string name="backup_restore_dialog_device">ಸಾಧನ: %1$s</string>
     <string name="backup_restore_not_in_file">ಈ ಫೈಲ್‌ನಲ್ಲಿ ಇಲ್ಲ</string>
-    <string name="backup_restore_dialog_note">ಸೆಟ್ಟಿಂಗ್‌ಗಳು, ವಿನ್ಯಾಸಗಳು ಮತ್ತು ಮ್ಯಾಕ್ರೋಗಳನ್ನು ಬದಲಾಯಿಸಲಾಗುತ್ತದೆ; ಪದಗಳನ್ನು ಈ ಫೋನ್‌ನಲ್ಲಿ ಈಗಾಗಲೇ ಇರುವುದಕ್ಕೆ ಸೇರಿಸಲಾಗುತ್ತದೆ.</string>
+    <string name="backup_restore_dialog_note">ಸೆಟ್ಟಿಂಗ್‌ಗಳು, ವಿನ್ಯಾಸಗಳು ಮತ್ತು ಮ್ಯಾಕ್ರೋಗಳನ್ನು ಬದಲಾಯಿಸಲಾಗುತ್ತದೆ; ಪದಗಳನ್ನು ಈ ಫೋನ್‌ನಲ್ಲಿ ಈಗಾಗಲೇ ಇರುವುದಕ್ಕೆ ಸೇರಿಸಲಾಗುತ್ತದೆ</string>
     <string name="backup_restore_dialog_confirm">ಮರುಸ್ಥಾಪಿಸಿ</string>
     <string name="backup_restored">ಬ್ಯಾಕಪ್ ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ</string>
     <string name="backup_restored_words_pending">ಕೀಬೋರ್ಡ್ ಬಳಕೆಗೆ ಬಂದ ನಂತರ ಕಲಿತ ಪದಗಳನ್ನು ಸೇರಿಸಲಾಗುತ್ತದೆ</string>

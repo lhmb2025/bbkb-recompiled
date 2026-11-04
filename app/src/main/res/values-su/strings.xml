@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Nuliskeun kisi tombol nu geus kacokot salaku cuplikan &lt;ckb-key-grid&gt; kana berkas aplikasi, pikeun ditémpélkeun kana konfigurasi parangkat. Buka heula papan tombol sakali sangkan bisa nyokot kisina.</string>
     <string name="ckb_gestures_export_title">Ékspor géométri CKB</string>
     <string name="ckb_gestures_export_written">Ditulis %s</string>
-    <string name="ckb_gestures_reserved_note">Usap ka luhur (narima saran nu aya di handapeun ramo) geus dicadangkeun.</string>
+    <string name="ckb_gestures_reserved_note">Usap ka luhur (narima saran nu aya di handapeun ramo) geus dicadangkeun</string>
     <string name="ckb_gestures_screen_title">Gerak CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">Pangali kagancangan pangluhurna pikeun ngaganti aksen</string>
     <string name="settings_gesture_accent_max_speed_title">Pangali kagancangan pangluhurna waktu ngagulung aksen</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Aktipkeun diajar dinamis</string>
     <string name="settings_dict_learned_words_summary">Atur kecap nu diajar tina ketikan anjeun</string>
     <string name="settings_dict_learned_words_title">Kecap nu diajar</string>
+    <string name="settings_dict_add_to_dictionary_note">Kecap anu ditambahkeun kana kamus anjeun bakal disarankeun sabot ngetik sarta moal ditandaan salah éjahan</string>
     <string name="settings_dict_text_shortcuts_summary">Jieun pintonan singget nu ngajanggélék jadi frasa</string>
     <string name="settings_dict_text_shortcuts_title">Pintonan singget téks</string>
     <string name="settings_dict_user_dictionary_summary">Tambahkeun jeung ropéa kecap pribadi</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Pilih atawa impor konfigurasi asupan parangkat</string>
     <string name="settings_device_configuration_title">Konfigurasi parangkat</string>
     <string name="touch_surface_builtin_category">Bawaan</string>
-    <string name="touch_surface_builtin_intro">Telepon neruskeun asupan permukaan toél papan tombol ka BBKB salila Scroll assistant hurung.</string>
+    <string name="touch_surface_builtin_intro">Telepon neruskeun asupan permukaan toél papan tombol ka BBKB salila Scroll assistant hurung</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant ngarebut toél dua kali dina tombol, jadi BBKB teu kungsi nampi</string>
     <string name="touch_surface_cursor_assistant_title">Pareuman Cursor assistant</string>
     <string name="touch_surface_grant_access">Pasihan aksés</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Atur Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Hurungkeun Pilihan pangembang, teras Debug nirkabel.\n2. Mimitian Shizuku tina aplikasina, atawa ku root.\n3. Balik deui ka dieu teras toél Pasihan aksés.</string>
     <string name="touch_surface_shizuku_intro">Shizuku nyaéta aplikasi gratis anu ngamungkinkeun BBKB maca permukaan toél sacara langsung. BBKB ngan ngambil alih permukaan toél salila papan tombol dibuka; di waktu séjén, permukaan toél jalan saperti biasa.</string>
-    <string name="touch_surface_shizuku_mediatek">Paké Shizuku 13.5.4 dina telepon ieu: versi 13.6.0 teu jalan sapinuhna dina telepon MediaTek.</string>
+    <string name="touch_surface_shizuku_mediatek">Paké Shizuku 13.5.4 dina telepon ieu: versi 13.6.0 teu jalan sapinuhna dina telepon MediaTek</string>
     <string name="touch_surface_shizuku_reboot">Shizuku eureun unggal waktu telepon dimimitian deui. Hurungkeun deui Shizuku saban beres dimimitian deui; status di luhur bakal nuduhkeun lamun Shizuku teu jalan.</string>
     <string name="touch_surface_shizuku_state_denied">Jalan, tapi aksés BBKB ditolak</string>
     <string name="touch_surface_shizuku_state_granted">Jalan, sarta BBKB geus boga aksés</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Teu sadia dina telepon ieu</string>
     <string name="pref_show_pkb_modifier_status_icon">Témbongkeun ikon status modifier</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Némbongkeun tanda Shift/Alt dina bar status waktu maké papan tombol fisik</string>
-    <string name="settings_pred_accounts_permission_summary">Pasihan idin akun sangkan alamat surélék bisa disarankeun sabot ngetik.</string>
+    <string name="settings_pred_accounts_permission_summary">Pasihan idin akun sangkan alamat surélék bisa disarankeun sabot ngetik</string>
     <string name="settings_pred_accounts_permission_title">Butuh Idin Akun</string>
     <string name="settings_pred_block_offensive_summary">Tutupan kecap nu bisa matak nyigeung waktu diktasi ku sora</string>
     <string name="settings_pred_block_offensive_title">Halangan kecap nu nyigeung</string>
-    <string name="settings_pred_contacts_permission_summary">Pasihan idin kontak sangkan ngaran kontak jeung alamat surélék bisa disarankeun sabot ngetik.</string>
+    <string name="settings_pred_contacts_permission_summary">Pasihan idin kontak sangkan ngaran kontak jeung alamat surélék bisa disarankeun sabot ngetik</string>
     <string name="settings_pred_contacts_permission_title">Butuh Idin Kontak</string>
     <string name="settings_pred_contacts_summary_disabled">Butuh idin kontak</string>
     <string name="settings_pred_contacts_summary_enabled">Asupkeun ngaran kontak kana saran</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Pasihan idin kontak pikeun maké fitur ieu</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Ngaran kontak bakal dianggap kecap nu bener</string>
     <string name="settings_spellcheck_use_contacts_title">Paké kontak pikeun mariksa éjahan</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Pasihan idin kontak sangkan ngaran kontak dipikawanoh minangka kecap anu sah nalika mariksa éjahan</string>
     <string name="settings_spellcheck_accept_learned_title">Tampa kecap anu diajar</string>
     <string name="settings_spellcheck_accept_learned_summary">Kecap anu diajar tina ketikan anjeun dianggap éjahanana bener</string>
     <string name="pref_alt_double_tap_lock">Aktipkeun konci Alt ku klik dua kali</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Aktipkeun konci Ctrl ku klik dua kali</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ngaklik Ctrl dua kali bakal nguncina. Ngaklik Ctrl deui bakal mareuman.</string>
     <string name="pref_override_device_meta_state">Tumpangan meta state parangkat</string>
-    <string name="pref_override_device_meta_state_summary">Aktipkeun modifier lengket (konci shift/alt) dina papan tombol fisik sanajan konfigurasi KCM parangkat béda.</string>
+    <string name="pref_override_device_meta_state_summary">Aktipkeun modifier lengket (konci shift/alt) dina papan tombol fisik sanajan konfigurasi KCM parangkat béda</string>
     <string name="pref_shift_double_tap_lock">Aktipkeun konci Shift ku klik dua kali</string>
     <string name="pref_shift_double_tap_lock_summary">Ngaklik Shift dua kali bakal nguncina. Ngaklik Shift deui bakal mareuman.</string>
     <string name="prefs_key_longpress_delay_summary">Lilana nahan tombol saméméh aksara sekunder muncul</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Toast kajadian eusi otomatis</string>
     <string name="pref_accessibility_service_disabled">Layanan aksesibilitas dipareuman</string>
     <string name="pref_accessibility_service_enabled">Layanan aksesibilitas diaktipkeun</string>
-    <string name="pref_emoji_search_pkb_summary">Nalika papan emoji dibuka, paké kibor pikeun néangan.</string>
+    <string name="pref_emoji_search_pkb_summary">Nalika papan emoji dibuka, paké kibor pikeun néangan</string>
     <string name="pref_emoji_search_title">Aktipkeun pamaluruhan emoji</string>
-    <string name="pref_emoji_search_vkb_summary">Saring emoji nganggo téks ayeuna anu can dikonfirmasi (digurat handap).</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Milih emoji bakal nyelapkeunana sanggeus téks nu diketik.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Milih emoji bakal ngaganti téks nu diketik.</string>
+    <string name="pref_emoji_search_vkb_summary">Saring emoji nganggo téks ayeuna anu can dikonfirmasi (digurat handap)</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Milih emoji bakal nyelapkeunana sanggeus téks nu diketik</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Milih emoji bakal ngaganti téks nu diketik</string>
     <string name="pref_emoji_search_replace_text_title">Ganti téks ku emoji</string>
     <string name="pref_key_interceptor_enabled">Aktipkeun dukungan tombol husus</string>
     <string name="pref_key_interceptor_enabled_summary">Paké layanan aksesibilitas pikeun nyokot tombol Emoji, SYM, jeung Sora</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Ngokolakeun data</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Makro pribadi</string>
+    <string name="settings_custom_macros_intro" formatted="false">Tangtukeun pananda tempat %x anjeun sorangan pikeun dipaké dina pintonan singget téks</string>
     <string name="settings_customize_menu_hidden_header">Teu ditémbongkeun dina papan tombol</string>
     <string name="settings_customize_menu_instructions">Toél terus tahan hiji pintonan singget, tuluy séréd pikeun ngatur urutanana. Opat nu panghareupna némbongan dina ménu asupan papan tombol.</string>
     <string name="settings_customize_menu_summary">Pilih jeung atur urutan pintonan singget dina ménu asupan</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Frasa gancang</string>
     <string name="settings_screen_type_by_swiping">Ngetik ku usapan</string>
     <string name="settings_screen_type_by_swiping_summary">Ngetik gancang tanpa ngangkat ramo tina papan tombol</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Ngetik ku usapan teu sadia dina basa anjeun.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Ngetik ku usapan teu sadia dina basa anjeun</string>
     <string name="settings_search_hint">Sungsi setélan</string>
     <string name="settings_search_no_results">Teu aya setélan nu kapanggih</string>
     <string name="settings_shake_fallback_title">Lampah cadangan</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Parangkat papan tombol: %1$s</string>
     <string name="device_config_import_matches_build">Parangkat build: %1$s</string>
     <string name="device_config_import_matches_brand">Mérek: %1$s</string>
-    <string name="device_config_import_matches_nothing">Berkas ieu teu nyebutkeun parangkat naon waé nu kudu cocog, jadi moal pernah lumaku.</string>
+    <string name="device_config_import_matches_nothing">Berkas ieu teu nyebutkeun parangkat naon waé nu kudu cocog, jadi moal pernah lumaku</string>
     <string name="device_config_import_type">Jinis parangkat: %1$s</string>
     <string name="device_config_import_keys">%1$d pemetaan tombol</string>
     <string name="device_config_import_keypad_layout">Tata perenah papan tombol: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Versi ieu kolot teuing pikeun maca daptar apdet. Mangga apdet sorangan.</string>
     <string name="settings_update_from_cache">Ditembongkeun tina pamariksaan pamungkas nu disimpen</string>
     <string name="settings_update_background_check_title">Pariksa pembaruan sacara otomatis</string>
-    <string name="settings_update_background_check_summary">Nampi béwara nalika vérsi anyar sayaga diundeur.</string>
+    <string name="settings_update_background_check_summary">Nampi béwara nalika vérsi anyar sayaga diundeur</string>
     <string name="settings_update_notification_text">Versi %1$s siap diundeur</string>
     <string name="settings_update_unknown_sources_message">Android kedah ngawenangkeun BBKB masang aplikasi. Hurungkeun pamasangan tina sumber ieu, teras pencét Pasang deui.</string>
     <string name="settings_update_open_settings">Buka setélan</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Pariksa kamus</string>
     <string name="language_packs_load_ldb">Muat berkas LDB</string>
     <string name="language_packs_variant_summary">Dimuat ngaganti %1$s</string>
-    <string name="language_packs_not_on_summary">Toél pikeun nyieun papan tombol %1$s anyar.</string>
+    <string name="language_packs_not_on_summary">Toél pikeun nyieun papan tombol %1$s anyar</string>
     <string name="language_packs_turned_on">%1$s aktip. Ganti ka éta tina pamilih basa.</string>
-    <string name="language_packs_turn_on_in_settings">Aktipkeun %1$s dina daptar, tuluy balik deui.</string>
+    <string name="language_packs_turn_on_in_settings">Aktipkeun %1$s dina daptar, tuluy balik deui</string>
     <string name="language_packs_installed_and_on">%1$s parantos diinstal. Aktip: ganti ka éta tina pamilih basa.</string>
     <string name="language_packs_installed_turn_on">%1$s parantos diinstal. Toél baris pikeun ngaktipkeunana dina papan tombol.</string>
+    <string name="language_packs_installed_no_layout">%1$s parantos diinstal, tapi papan tombol ieu can boga tata perenah pikeun aksarana, jadi teu bisa dipilih</string>
     <string name="language_packs_error_offline">Teu aya sambungan</string>
     <string name="language_packs_error_network">Teu hasil. Cobi deui.</string>
     <string name="language_packs_error_verification">Koropak teu cocog jeung katalog, jadi teu aya nu diinstal</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Disimpen %1$s</string>
     <string name="backup_restore_dialog_device">Ti %1$s</string>
     <string name="backup_restore_not_in_file">Teu aya dina berkas ieu</string>
-    <string name="backup_restore_dialog_note">Setélan, tata perenah jeung makro diganti; kecap ditambahkeun kana nu geus aya dina telepon ieu.</string>
+    <string name="backup_restore_dialog_note">Setélan, tata perenah jeung makro diganti; kecap ditambahkeun kana nu geus aya dina telepon ieu</string>
     <string name="backup_restore_dialog_confirm">Pulihkeun</string>
     <string name="backup_restored">Cadangan geus dipulihkeun</string>
     <string name="backup_restored_words_pending">Kecap nu diajar bakal ditambahkeun sanggeus papan tombol dipaké</string>

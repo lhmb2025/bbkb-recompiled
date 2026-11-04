@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Запісаць зафіксаваную сетку клавіш у файлы праграмы як фрагмент &lt;ckb-key-grid&gt;, каб уставіць яго ў канфігурацыю прылады. Спачатку адкрыйце клавіятуру, каб яна змагла зафіксаваць сетку.</string>
     <string name="ckb_gestures_export_title">Экспарт геаметрыі CKB</string>
     <string name="ckb_gestures_export_written">Запісана %s</string>
-    <string name="ckb_gestures_reserved_note">Правядзенне ўверх (пацвярджэнне прапановы пад пальцам) зарэзервавана.</string>
+    <string name="ckb_gestures_reserved_note">Правядзенне ўверх (пацвярджэнне прапановы пад пальцам) зарэзервавана</string>
     <string name="ckb_gestures_screen_title">Жэсты CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">Максімальны множнік хуткасці пры змене акцэнтаў</string>
     <string name="settings_gesture_accent_max_speed_title">Макс. множнік хуткасці змены акцэнтаў пры пракрутцы</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Уключыць дынамічнае навучанне</string>
     <string name="settings_dict_learned_words_summary">Кіраванне словамі, вывучанымі з вашага набору</string>
     <string name="settings_dict_learned_words_title">Вывучаныя словы</string>
+    <string name="settings_dict_add_to_dictionary_note">Словы, дададзеныя ў ваш слоўнік, будуць прапаноўвацца падчас набору і не будуць пазначацца як памылковыя</string>
     <string name="settings_dict_text_shortcuts_summary">Стварайце скарачэнні, якія разгортваюцца ў фразы</string>
     <string name="settings_dict_text_shortcuts_title">Тэкставыя скарачэнні</string>
     <string name="settings_dict_user_dictionary_summary">Дадавайце і рэдагуйце асабістыя словы</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Выберыце або імпартуйце канфігурацыі ўводу прылады</string>
     <string name="settings_device_configuration_title">Канфігурацыя прылады</string>
     <string name="touch_surface_builtin_category">Убудаваная падтрымка</string>
-    <string name="touch_surface_builtin_intro">Тэлефон перадае ў BBKB дотыкі да сэнсарнай паверхні клавіятуры, пакуль уключаны Scroll assistant.</string>
+    <string name="touch_surface_builtin_intro">Тэлефон перадае ў BBKB дотыкі да сэнсарнай паверхні клавіятуры, пакуль уключаны Scroll assistant</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant перахоплівае падвойнае націсканне на клавішы, таму BBKB ніколі яго не атрымлівае</string>
     <string name="touch_surface_cursor_assistant_title">Выключыць Cursor assistant</string>
     <string name="touch_surface_grant_access">Даць доступ</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Наладжванне Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Уключыце параметры распрацоўшчыка, а потым адладку па Wi-Fi.\n2. Запусціце Shizuku ў самой праграме або праз root.\n3. Вярніцеся сюды і націсніце «Даць доступ».</string>
     <string name="touch_surface_shizuku_intro">Shizuku — бясплатная праграма, якая дазваляе BBKB чытаць сэнсарную паверхню напрамую. BBKB перахоплівае яе, толькі пакуль адкрыта клавіятура; астатні час яна працуе як звычайна.</string>
-    <string name="touch_surface_shizuku_mediatek">Выкарыстоўвайце на гэтым тэлефоне Shizuku 13.5.4: версія 13.6.0 не цалкам працуе на тэлефонах з MediaTek.</string>
+    <string name="touch_surface_shizuku_mediatek">Выкарыстоўвайце на гэтым тэлефоне Shizuku 13.5.4: версія 13.6.0 не цалкам працуе на тэлефонах з MediaTek</string>
     <string name="touch_surface_shizuku_reboot">Shizuku спыняецца пры кожным перазапуску тэлефона. Запускайце праграму зноў пасля кожнага перазапуску; стан вышэй пакажа, калі яна не запушчана.</string>
     <string name="touch_surface_shizuku_state_denied">Запушчана, але BBKB адмоўлена ў доступе</string>
     <string name="touch_surface_shizuku_state_granted">Запушчана, і BBKB мае доступ</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Недаступна на гэтым тэлефоне</string>
     <string name="pref_show_pkb_modifier_status_icon">Паказваць значок мадыфікатараў</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Паказваць індыкатар Shift/Alt у радку стану пры працы з фізічнай клавіятурай</string>
-    <string name="settings_pred_accounts_permission_summary">Дайце дазвол на ўліковыя запісы, каб прапаноўваць адрасы электроннай пошты падчас набору.</string>
+    <string name="settings_pred_accounts_permission_summary">Дайце дазвол на ўліковыя запісы, каб прапаноўваць адрасы электроннай пошты падчас набору</string>
     <string name="settings_pred_accounts_permission_title">Патрэбны дазвол на ўліковыя запісы</string>
     <string name="settings_pred_block_offensive_summary">Хаваць магчыма абразлівыя словы пры галасавой дыктоўцы</string>
     <string name="settings_pred_block_offensive_title">Блакіраваць абразлівыя словы</string>
-    <string name="settings_pred_contacts_permission_summary">Дайце дазвол на кантакты, каб прапаноўваць імёны кантактаў і адрасы электроннай пошты падчас набору.</string>
+    <string name="settings_pred_contacts_permission_summary">Дайце дазвол на кантакты, каб прапаноўваць імёны кантактаў і адрасы электроннай пошты падчас набору</string>
     <string name="settings_pred_contacts_permission_title">Патрэбны дазвол на кантакты</string>
     <string name="settings_pred_contacts_summary_disabled">Патрэбны дазвол на кантакты</string>
     <string name="settings_pred_contacts_summary_enabled">Уключаць імёны кантактаў у прапановы</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Дайце дазвол на кантакты, каб карыстацца гэтай функцыяй</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Імёны кантактаў будуць лічыцца правільнымі словамі</string>
     <string name="settings_spellcheck_use_contacts_title">Выкарыстоўваць кантакты пры праверцы правапісу</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Дайце дазвол на кантакты, каб імёны кантактаў лічыліся правільнымі словамі пры праверцы правапісу</string>
     <string name="settings_spellcheck_accept_learned_title">Прымаць вывучаныя словы</string>
     <string name="settings_spellcheck_accept_learned_summary">Словы, вывучаныя з вашага набору, лічацца напісанымі правільна</string>
     <string name="pref_alt_double_tap_lock">Уключыць фіксацыю Alt падвойным націсканнем</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Уключыць фіксацыю Ctrl падвойным націсканнем</string>
     <string name="pref_ctrl_double_tap_lock_summary">Падвойнае націсканне Ctrl фіксуе яго. Наступнае націсканне Ctrl выключае фіксацыю.</string>
     <string name="pref_override_device_meta_state">Перавызначыць мета-стан прылады</string>
-    <string name="pref_override_device_meta_state_summary">Уключыць фіксаваныя мадыфікатары (фіксацыю Shift/Alt) на фізічных клавіятурах незалежна ад канфігурацыі KCM прылады.</string>
+    <string name="pref_override_device_meta_state_summary">Уключыць фіксаваныя мадыфікатары (фіксацыю Shift/Alt) на фізічных клавіятурах незалежна ад канфігурацыі KCM прылады</string>
     <string name="pref_shift_double_tap_lock">Уключыць фіксацыю Shift падвойным націсканнем</string>
     <string name="pref_shift_double_tap_lock_summary">Падвойнае націсканне Shift фіксуе яго. Наступнае націсканне Shift выключае фіксацыю.</string>
     <string name="prefs_key_longpress_delay_summary">Час утрымання клавішы да з\'яўлення дадатковых сімвалаў</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Паведамленні пра падзеі аўтазапаўнення</string>
     <string name="pref_accessibility_service_disabled">Служба спецыяльных магчымасцей адключана</string>
     <string name="pref_accessibility_service_enabled">Служба спецыяльных магчымасцей уключана</string>
-    <string name="pref_emoji_search_pkb_summary">Калі панэль эмодзі адкрыта, выкарыстоўвайце клавіятуру для пошуку.</string>
+    <string name="pref_emoji_search_pkb_summary">Калі панэль эмодзі адкрыта, выкарыстоўвайце клавіятуру для пошуку</string>
     <string name="pref_emoji_search_title">Уключыць пошук эмодзі</string>
-    <string name="pref_emoji_search_vkb_summary">Фільтраваць эмодзі па бягучым непадцверджаным (падкрэсленым) тэксце.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Выбраны эмодзі ўстаўляецца пасля набранага тэксту.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Выбраны эмодзі замяняе набраны тэкст.</string>
+    <string name="pref_emoji_search_vkb_summary">Фільтраваць эмодзі па бягучым непадцверджаным (падкрэсленым) тэксце</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Выбраны эмодзі ўстаўляецца пасля набранага тэксту</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Выбраны эмодзі замяняе набраны тэкст</string>
     <string name="pref_emoji_search_replace_text_title">Замяняць тэкст на эмодзі</string>
     <string name="pref_key_interceptor_enabled">Уключыць падтрымку спецыяльных клавіш</string>
     <string name="pref_key_interceptor_enabled_summary">Выкарыстоўваць службу спецыяльных магчымасцей для перахопу клавіш Emoji, SYM і Voice</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Кіраванне данымі</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Уласныя макрасы</string>
+    <string name="settings_custom_macros_intro" formatted="false">Вызначце ўласныя запаўняльнікі %x для выкарыстання ў тэкставых скарачэннях</string>
     <string name="settings_customize_menu_hidden_header">Не паказваецца на клавіятуры</string>
     <string name="settings_customize_menu_instructions">Націсніце і ўтрымлівайце ярлык, потым перацягніце яго, каб змяніць парадак. Першыя чатыры з\'яўляюцца ў меню ўводу клавіятуры.</string>
     <string name="settings_customize_menu_summary">Выберыце ярлыкі меню ўводу і іх парадак</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Хуткія фразы</string>
     <string name="settings_screen_type_by_swiping">Набор тэксту жэстамі</string>
     <string name="settings_screen_type_by_swiping_summary">Набірайце хутка, не адрываючы палец ад клавіятуры</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Набор тэксту жэстамі недаступны для вашай мовы.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Набор тэксту жэстамі недаступны для вашай мовы</string>
     <string name="settings_search_hint">Пошук у наладах</string>
     <string name="settings_search_no_results">Налады не знойдзены</string>
     <string name="settings_shake_fallback_title">Рэзервовае дзеянне</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Прылада клавіятуры: %1$s</string>
     <string name="device_config_import_matches_build">Прылада зборкі: %1$s</string>
     <string name="device_config_import_matches_brand">Брэнд: %1$s</string>
-    <string name="device_config_import_matches_nothing">Гэты файл не называе ніводнай прылады для супастаўлення, таму ён ніколі не спрацуе.</string>
+    <string name="device_config_import_matches_nothing">Гэты файл не называе ніводнай прылады для супастаўлення, таму ён ніколі не спрацуе</string>
     <string name="device_config_import_type">Тып прылады: %1$s</string>
     <string name="device_config_import_keys">%1$d супастаўленняў клавіш</string>
     <string name="device_config_import_keypad_layout">Раскладка клавіятуры: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Гэта версія занадта старая, каб прачытаць спіс абнаўленняў. Абнавіце ўручную.</string>
     <string name="settings_update_from_cache">Паказана з апошняй зберажонай праверкі</string>
     <string name="settings_update_background_check_title">Аўтаматычна правяраць абнаўленні</string>
-    <string name="settings_update_background_check_summary">Атрымлівайце апавяшчэнне, калі новая версія будзе даступная для спампоўкі.</string>
+    <string name="settings_update_background_check_summary">Атрымлівайце апавяшчэнне, калі новая версія будзе даступная для спампоўкі</string>
     <string name="settings_update_notification_text">Версія %1$s гатова да спампоўкі</string>
     <string name="settings_update_unknown_sources_message">Android павінен дазволіць BBKB устанаўліваць праграмы. Дазвольце ўстаноўку з гэтай крыніцы і яшчэ раз натысніце Устанавіць.</string>
     <string name="settings_update_open_settings">Адкрыць налады</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Праверыць слоўнікі</string>
     <string name="language_packs_load_ldb">Загрузіць файл LDB</string>
     <string name="language_packs_variant_summary">Загружаецца замест %1$s</string>
-    <string name="language_packs_not_on_summary">Націсніце, каб стварыць новую клавіятуру: %1$s.</string>
+    <string name="language_packs_not_on_summary">Націсніце, каб стварыць новую клавіятуру: %1$s</string>
     <string name="language_packs_turned_on">%1$s уключана. Пераключыцеся на яе праз пераключальнік моў.</string>
-    <string name="language_packs_turn_on_in_settings">Уключыце %1$s у спісе, а потым вярніцеся.</string>
+    <string name="language_packs_turn_on_in_settings">Уключыце %1$s у спісе, а потым вярніцеся</string>
     <string name="language_packs_installed_and_on">%1$s усталявана. Яна ўключана: пераключыцеся на яе праз пераключальнік моў.</string>
     <string name="language_packs_installed_turn_on">%1$s усталявана. Націсніце на яе радок, каб уключыць у клавіятуры.</string>
+    <string name="language_packs_installed_no_layout">%1$s усталявана, але ў гэтай клавіятуры пакуль няма раскладкі для яе пісьменства, таму яе нельга выбраць</string>
     <string name="language_packs_error_offline">Няма злучэння</string>
     <string name="language_packs_error_network">Не атрымалася. Паўтарыце.</string>
     <string name="language_packs_error_verification">Файл не адпавядае каталогу, таму нічога не ўстаноўлена</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Захавана: %1$s</string>
     <string name="backup_restore_dialog_device">Прылада: %1$s</string>
     <string name="backup_restore_not_in_file">Няма ў гэтым файле</string>
-    <string name="backup_restore_dialog_note">Налады, раскладкі і макрасы замяняюцца; словы дадаюцца да таго, што ўжо ёсць на гэтым тэлефоне.</string>
+    <string name="backup_restore_dialog_note">Налады, раскладкі і макрасы замяняюцца; словы дадаюцца да таго, што ўжо ёсць на гэтым тэлефоне</string>
     <string name="backup_restore_dialog_confirm">Аднавіць</string>
     <string name="backup_restored">Рэзервовая копія адноўлена</string>
     <string name="backup_restored_words_pending">Вывучаныя словы будуць дададзены, калі клавіятура пачне выкарыстоўвацца</string>

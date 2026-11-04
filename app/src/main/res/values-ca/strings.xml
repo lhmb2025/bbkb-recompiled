@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Escriu la graella de tecles capturada com a fragment &lt;ckb-key-grid&gt; als fitxers de l\'aplicació, per enganxar-lo a la configuració del dispositiu. Obriu el teclat un cop perquè la pugui capturar.</string>
     <string name="ckb_gestures_export_title">Exporta la geometria del CKB</string>
     <string name="ckb_gestures_export_written">S\'ha escrit %s</string>
-    <string name="ckb_gestures_reserved_note">Lliscar cap amunt (confirmar el suggeriment que hi ha sota el dit) està reservat.</string>
+    <string name="ckb_gestures_reserved_note">Lliscar cap amunt (confirmar el suggeriment que hi ha sota el dit) està reservat</string>
     <string name="ckb_gestures_screen_title">Gestos del CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">Multiplicador de velocitat màxim per al canvi d\'accents</string>
     <string name="settings_gesture_accent_max_speed_title">Multiplicador de velocitat màxim en desplaçar els accents</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Activa l\'aprenentatge dinàmic</string>
     <string name="settings_dict_learned_words_summary">Gestiona les paraules apreses del que escriviu</string>
     <string name="settings_dict_learned_words_title">Paraules apreses</string>
+    <string name="settings_dict_add_to_dictionary_note">Les paraules afegides al diccionari se suggeriran mentre escriviu i no es marcaran com a errors ortogràfics</string>
     <string name="settings_dict_text_shortcuts_summary">Crea dreceres que s\'expandeixen en frases</string>
     <string name="settings_dict_text_shortcuts_title">Dreceres de text</string>
     <string name="settings_dict_user_dictionary_summary">Afegeix i edita paraules personals</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Selecciona o importa configuracions d\'entrada del dispositiu</string>
     <string name="settings_device_configuration_title">Configuració del dispositiu</string>
     <string name="touch_surface_builtin_category">Integrat</string>
-    <string name="touch_surface_builtin_intro">El telèfon transmet la superfície tàctil del teclat a BBKB mentre la funció Scroll assistant està activada.</string>
+    <string name="touch_surface_builtin_intro">El telèfon transmet la superfície tàctil del teclat a BBKB mentre la funció Scroll assistant està activada</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant s\'apropia del doble toc a les tecles, de manera que BBKB no el rep mai</string>
     <string name="touch_surface_cursor_assistant_title">Desactiva Cursor assistant</string>
     <string name="touch_surface_grant_access">Concedeix l\'accés</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Configura Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Activeu les Opcions per a desenvolupadors i, després, la Depuració sense fil.\n2. Inicieu Shizuku des de la seva aplicació o amb permisos de root.\n3. Torneu aquí i toqueu Concedeix l\'accés.</string>
     <string name="touch_surface_shizuku_intro">Shizuku és una aplicació gratuïta que permet que BBKB llegeixi directament la superfície tàctil. BBKB només en pren el control mentre el teclat està obert; la resta del temps funciona com sempre.</string>
-    <string name="touch_surface_shizuku_mediatek">Utilitzeu Shizuku 13.5.4 en aquest telèfon: la versió 13.6.0 no funciona del tot en els telèfons MediaTek.</string>
+    <string name="touch_surface_shizuku_mediatek">Utilitzeu Shizuku 13.5.4 en aquest telèfon: la versió 13.6.0 no funciona del tot en els telèfons MediaTek</string>
     <string name="touch_surface_shizuku_reboot">Shizuku s\'atura cada vegada que es reinicia el telèfon. Torneu-lo a iniciar després de cada reinici; l\'estat de més amunt indica quan no s\'està executant.</string>
     <string name="touch_surface_shizuku_state_denied">En execució, però s\'ha denegat l\'accés a BBKB</string>
     <string name="touch_surface_shizuku_state_granted">En execució i BBKB hi té accés</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">No disponible en aquest telèfon</string>
     <string name="pref_show_pkb_modifier_status_icon">Mostra la icona d\'estat dels modificadors</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Mostra l\'indicador de Maj/Alt a la barra d\'estat quan feu servir el teclat físic</string>
-    <string name="settings_pred_accounts_permission_summary">Concediu el permís de comptes per suggerir adreces electròniques mentre escriviu.</string>
+    <string name="settings_pred_accounts_permission_summary">Concediu el permís de comptes per suggerir adreces electròniques mentre escriviu</string>
     <string name="settings_pred_accounts_permission_title">Cal el permís de comptes</string>
     <string name="settings_pred_block_offensive_summary">Emmascara les paraules potencialment ofensives en el dictat per veu</string>
     <string name="settings_pred_block_offensive_title">Bloqueja les paraules ofensives</string>
-    <string name="settings_pred_contacts_permission_summary">Concediu el permís de contactes per suggerir noms de contacte i adreces electròniques mentre escriviu.</string>
+    <string name="settings_pred_contacts_permission_summary">Concediu el permís de contactes per suggerir noms de contacte i adreces electròniques mentre escriviu</string>
     <string name="settings_pred_contacts_permission_title">Cal el permís de contactes</string>
     <string name="settings_pred_contacts_summary_disabled">Cal el permís de contactes</string>
     <string name="settings_pred_contacts_summary_enabled">Inclou els noms dels contactes als suggeriments</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Concediu el permís de contactes per utilitzar aquesta funció</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Els noms dels contactes es reconeixeran com a paraules vàlides</string>
     <string name="settings_spellcheck_use_contacts_title">Usa els contactes en la correcció ortogràfica</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Concediu el permís de contactes perquè els noms de contacte es reconeguin com a paraules vàlides en la correcció ortogràfica</string>
     <string name="settings_spellcheck_accept_learned_title">Accepta les paraules apreses</string>
     <string name="settings_spellcheck_accept_learned_summary">Les paraules apreses del que escriviu compten com a ben escrites</string>
     <string name="pref_alt_double_tap_lock">Activa el bloqueig d\'Alt amb doble toc</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Activa el bloqueig d\'Ctrl amb doble toc</string>
     <string name="pref_ctrl_double_tap_lock_summary">En prémer Ctrl dues vegades quedarà bloquejada. Torneu a prémer Ctrl per desbloquejar-la.</string>
     <string name="pref_override_device_meta_state">Ignora l\'estat meta del dispositiu</string>
-    <string name="pref_override_device_meta_state_summary">Activa els modificadors persistents (bloqueig de Maj/Alt) als teclats físics independentment de la configuració KCM del dispositiu.</string>
+    <string name="pref_override_device_meta_state_summary">Activa els modificadors persistents (bloqueig de Maj/Alt) als teclats físics independentment de la configuració KCM del dispositiu</string>
     <string name="pref_shift_double_tap_lock">Activa el bloqueig de Maj amb doble toc</string>
     <string name="pref_shift_double_tap_lock_summary">En prémer Maj dues vegades quedarà bloquejada. Torneu a prémer Maj per desbloquejar-la.</string>
     <string name="prefs_key_longpress_delay_summary">Temps que cal mantenir premuda una tecla perquè apareguin els caràcters secundaris</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Notificacions d\'esdeveniments d\'emplenament automàtic</string>
     <string name="pref_accessibility_service_disabled">Servei d\'accessibilitat desactivat</string>
     <string name="pref_accessibility_service_enabled">Servei d\'accessibilitat activat</string>
-    <string name="pref_emoji_search_pkb_summary">Quan el tauler d\'emojis és obert, fes servir el teclat per cercar.</string>
+    <string name="pref_emoji_search_pkb_summary">Quan el tauler d\'emojis és obert, fes servir el teclat per cercar</string>
     <string name="pref_emoji_search_title">Activa la cerca d\'emojis</string>
-    <string name="pref_emoji_search_vkb_summary">Filtra els emojis amb el text actual no confirmat (subratllat).</string>
-    <string name="pref_emoji_search_replace_text_summary_off">En seleccionar un emoji, s\'insereix després del text escrit.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">En seleccionar un emoji, substitueix el text escrit.</string>
+    <string name="pref_emoji_search_vkb_summary">Filtra els emojis amb el text actual no confirmat (subratllat)</string>
+    <string name="pref_emoji_search_replace_text_summary_off">En seleccionar un emoji, s\'insereix després del text escrit</string>
+    <string name="pref_emoji_search_replace_text_summary_on">En seleccionar un emoji, substitueix el text escrit</string>
     <string name="pref_emoji_search_replace_text_title">Substitueix el text per l\'emoji</string>
     <string name="pref_key_interceptor_enabled">Activa la compatibilitat amb tecles especials</string>
     <string name="pref_key_interceptor_enabled_summary">Utilitza el servei d\'accessibilitat per capturar les tecles Emoji, SYM i Veu</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Gestió de dades</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Macros personalitzades</string>
+    <string name="settings_custom_macros_intro" formatted="false">Definiu els vostres marcadors %x per utilitzar-los a les dreceres de text</string>
     <string name="settings_customize_menu_hidden_header">No es mostra al teclat</string>
     <string name="settings_customize_menu_instructions">Toqueu una drecera i mantingueu-la premuda, i després arrossegueu-la per reordenar-la. Les quatre primeres apareixen al menú d\'entrada del teclat.</string>
     <string name="settings_customize_menu_summary">Trieu i reordeneu les dreceres del menú d\'entrada</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Frases ràpides</string>
     <string name="settings_screen_type_by_swiping">Escriptura lliscant</string>
     <string name="settings_screen_type_by_swiping_summary">Escriviu de pressa sense aixecar el dit del teclat</string>
-    <string name="settings_screen_type_by_swiping_unavailable">L\'escriptura lliscant no està disponible en la vostra llengua.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">L\'escriptura lliscant no està disponible en la vostra llengua</string>
     <string name="settings_search_hint">Cerca a la configuració</string>
     <string name="settings_search_no_results">No s\'ha trobat cap opció</string>
     <string name="settings_shake_fallback_title">Acció alternativa</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Dispositiu de teclat: %1$s</string>
     <string name="device_config_import_matches_build">Dispositiu de la compilació: %1$s</string>
     <string name="device_config_import_matches_brand">Marca: %1$s</string>
-    <string name="device_config_import_matches_nothing">Aquest fitxer no indica cap dispositiu amb què coincidir, de manera que no s\'aplicaria mai.</string>
+    <string name="device_config_import_matches_nothing">Aquest fitxer no indica cap dispositiu amb què coincidir, de manera que no s\'aplicaria mai</string>
     <string name="device_config_import_type">Tipus de dispositiu: %1$s</string>
     <string name="device_config_import_keys">%1$d assignacions de tecla</string>
     <string name="device_config_import_keypad_layout">Disposició del teclat: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Aquesta versió és massa antiga per llegir la llista d\'actualitzacions. Actualitza-la manualment.</string>
     <string name="settings_update_from_cache">Mostrat a partir de l\'última comprovació guardada</string>
     <string name="settings_update_background_check_title">Comprova les actualitzacions automàticament</string>
-    <string name="settings_update_background_check_summary">Rep una notificació quan hi hagi una versió nova disponible per baixar.</string>
+    <string name="settings_update_background_check_summary">Rep una notificació quan hi hagi una versió nova disponible per baixar</string>
     <string name="settings_update_notification_text">La versió %1$s està a punt per baixar</string>
     <string name="settings_update_unknown_sources_message">Android ha de permetre que BBKB instal·li aplicacions. Activa la instal·lació des d\'aquesta font i torna a prémer Instal·la.</string>
     <string name="settings_update_open_settings">Obre la configuració</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Cerca diccionaris</string>
     <string name="language_packs_load_ldb">Carrega un fitxer LDB</string>
     <string name="language_packs_variant_summary">Es carrega en lloc de %1$s</string>
-    <string name="language_packs_not_on_summary">Toca per crear un teclat nou per a %1$s.</string>
+    <string name="language_packs_not_on_summary">Toca per crear un teclat nou per a %1$s</string>
     <string name="language_packs_turned_on">%1$s està activada. Canvia-hi des del selector de llengua.</string>
-    <string name="language_packs_turn_on_in_settings">Activa %1$s a la llista i després torna.</string>
+    <string name="language_packs_turn_on_in_settings">Activa %1$s a la llista i després torna</string>
     <string name="language_packs_installed_and_on">S\'ha instal·lat %1$s. Està activada: canvia-hi des del selector de llengua.</string>
     <string name="language_packs_installed_turn_on">S\'ha instal·lat %1$s. Toca la fila per activar-la al teclat.</string>
+    <string name="language_packs_installed_no_layout">S\'ha instal·lat %1$s, però aquest teclat encara no té cap disposició per al seu sistema d\'escriptura, de manera que no es pot seleccionar</string>
     <string name="language_packs_error_offline">Sense connexió</string>
     <string name="language_packs_error_network">No ha funcionat. Torna-ho a provar.</string>
     <string name="language_packs_error_verification">El fitxer no coincideix amb el catàleg, així que no s\'ha instal·lat res</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Desada: %1$s</string>
     <string name="backup_restore_dialog_device">Dispositiu: %1$s</string>
     <string name="backup_restore_not_in_file">No és en aquest fitxer</string>
-    <string name="backup_restore_dialog_note">La configuració, les disposicions i les macros se substitueixen; les paraules s\'afegeixen a les que ja hi ha en aquest telèfon.</string>
+    <string name="backup_restore_dialog_note">La configuració, les disposicions i les macros se substitueixen; les paraules s\'afegeixen a les que ja hi ha en aquest telèfon</string>
     <string name="backup_restore_dialog_confirm">Restaura</string>
     <string name="backup_restored">S\'ha restaurat la còpia de seguretat</string>
     <string name="backup_restored_words_pending">Les paraules apreses s\'afegiran quan es comenci a utilitzar el teclat</string>

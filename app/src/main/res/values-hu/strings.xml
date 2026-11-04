@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">A rögzített billentyűrács kiírása &lt;ckb-key-grid&gt; kódrészletként az alkalmazás fájljaiba, hogy beilleszthesse a készülék konfigurációjába. Előbb nyissa meg egyszer a billentyűzetet, hogy rögzíthesse.</string>
     <string name="ckb_gestures_export_title">CKB-geometria exportálása</string>
     <string name="ckb_gestures_export_written">Kiírva: %s</string>
-    <string name="ckb_gestures_reserved_note">A felfelé csúsztatás (az ujj alatti javaslat elfogadása) foglalt.</string>
+    <string name="ckb_gestures_reserved_note">A felfelé csúsztatás (az ujj alatti javaslat elfogadása) foglalt</string>
     <string name="ckb_gestures_screen_title">CKB-kézmozdulatok</string>
     <string name="settings_gesture_accent_max_speed_summary">Az ékezetváltás legnagyobb sebességszorzója</string>
     <string name="settings_gesture_accent_max_speed_title">Ékezetváltás max. sebességszorzója görgetésnél</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Dinamikus tanulás bekapcsolása</string>
     <string name="settings_dict_learned_words_summary">A gépelésből megtanult szavak kezelése</string>
     <string name="settings_dict_learned_words_title">Megtanult szavak</string>
+    <string name="settings_dict_add_to_dictionary_note">A szótárához hozzáadott szavakat a billentyűzet gépelés közben javasolja, és nem jelöli elírásként</string>
     <string name="settings_dict_text_shortcuts_summary">Kifejezésekké bővülő rövidítések létrehozása</string>
     <string name="settings_dict_text_shortcuts_title">Szöveges rövidítések</string>
     <string name="settings_dict_user_dictionary_summary">Egyéni szavak hozzáadása és szerkesztése</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Eszköz beviteli konfigurációinak kiválasztása vagy importálása</string>
     <string name="settings_device_configuration_title">Eszközkonfiguráció</string>
     <string name="touch_surface_builtin_category">Beépített</string>
-    <string name="touch_surface_builtin_intro">A telefon akkor továbbítja a billentyűzet érintőfelületét a BBKB-nek, amikor be van kapcsolva a Scroll assistant funkciója.</string>
+    <string name="touch_surface_builtin_intro">A telefon akkor továbbítja a billentyűzet érintőfelületét a BBKB-nek, amikor be van kapcsolva a Scroll assistant funkciója</string>
     <string name="touch_surface_cursor_assistant_summary">A Cursor assistant magának foglalja le a billentyűkön végzett dupla koppintást, így az sosem jut el a BBKB-hez</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant kikapcsolása</string>
     <string name="touch_surface_grant_access">Hozzáférés megadása</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku beállítása</string>
     <string name="touch_surface_shizuku_guide_steps">1. Kapcsolja be a fejlesztői beállításokat, majd a vezeték nélküli hibakeresést.\n2. Indítsa el a Shizuku szolgáltatást magából az alkalmazásból vagy root jogosultsággal.\n3. Térjen vissza ide, és koppintson a „Hozzáférés megadása” lehetőségre.</string>
     <string name="touch_surface_shizuku_intro">A Shizuku egy ingyenes alkalmazás, amellyel a BBKB közvetlenül olvashatja az érintőfelületet. A BBKB csak addig veszi át, amíg a billentyűzet nyitva van; a többi időben a megszokott módon működik.</string>
-    <string name="touch_surface_shizuku_mediatek">Ezen a telefonon a Shizuku 13.5.4-es verzióját használja: a 13.6.0-s verzió nem működik teljesen a MediaTek-alapú telefonokon.</string>
+    <string name="touch_surface_shizuku_mediatek">Ezen a telefonon a Shizuku 13.5.4-es verzióját használja: a 13.6.0-s verzió nem működik teljesen a MediaTek-alapú telefonokon</string>
     <string name="touch_surface_shizuku_reboot">A Shizuku a telefon minden újraindításakor leáll. Minden újraindítás után indítsa el újra; a fenti állapot jelzi, ha nem fut.</string>
     <string name="touch_surface_shizuku_state_denied">Fut, de a BBKB hozzáférését elutasították</string>
     <string name="touch_surface_shizuku_state_granted">Fut, és a BBKB hozzáfér</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Nem érhető el ezen a telefonon</string>
     <string name="pref_show_pkb_modifier_status_icon">Módosítóbillentyű állapotikonjának megjelenítése</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">A Shift/Alt módosítójelző megjelenítése az állapotsorban fizikai billentyűzet használatakor</string>
-    <string name="settings_pred_accounts_permission_summary">Adjon fiókengedélyt, hogy a billentyűzet gépelés közben e-mail-címeket javasolhasson.</string>
+    <string name="settings_pred_accounts_permission_summary">Adjon fiókengedélyt, hogy a billentyűzet gépelés közben e-mail-címeket javasolhasson</string>
     <string name="settings_pred_accounts_permission_title">Fiókengedély szükséges</string>
     <string name="settings_pred_block_offensive_summary">Az esetlegesen sértő szavak elrejtése hangdiktáláskor</string>
     <string name="settings_pred_block_offensive_title">Sértő szavak blokkolása</string>
-    <string name="settings_pred_contacts_permission_summary">Adjon partnerengedélyt, hogy a billentyűzet gépelés közben partnerneveket és e-mail-címeket javasolhasson.</string>
+    <string name="settings_pred_contacts_permission_summary">Adjon partnerengedélyt, hogy a billentyűzet gépelés közben partnerneveket és e-mail-címeket javasolhasson</string>
     <string name="settings_pred_contacts_permission_title">Partnerengedély szükséges</string>
     <string name="settings_pred_contacts_summary_disabled">Partnerengedély szükséges</string>
     <string name="settings_pred_contacts_summary_enabled">Partnernevek megjelenítése a javaslatok között</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">A funkció használatához adjon partnerengedélyt</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">A partnerneveket a rendszer érvényes szavaknak tekinti</string>
     <string name="settings_spellcheck_use_contacts_title">Partnerek használata a helyesírás-ellenőrzéshez</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Adjon partnerengedélyt, hogy a helyesírás-ellenőrzés érvényes szavakként ismerje fel a partnerneveket</string>
     <string name="settings_spellcheck_accept_learned_title">Tanult szavak elfogadása</string>
     <string name="settings_spellcheck_accept_learned_summary">A gépelésedből tanult szavak helyesen írtnak számítanak</string>
     <string name="pref_alt_double_tap_lock">Alt dupla kattintásos rögzítésének engedélyezése</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrl dupla kattintásos rögzítésének engedélyezése</string>
     <string name="pref_ctrl_double_tap_lock_summary">Az Ctrl dupla lenyomása bekapcsolva rögzíti. Az Ctrl újbóli lenyomása kikapcsolja.</string>
     <string name="pref_override_device_meta_state">A készülék metaállapotának felülbírálása</string>
-    <string name="pref_override_device_meta_state_summary">Ragadós módosítóbillentyűk (shift/alt rögzítése) engedélyezése fizikai billentyűzeteken a készülék KCM-konfigurációjától függetlenül.</string>
+    <string name="pref_override_device_meta_state_summary">Ragadós módosítóbillentyűk (shift/alt rögzítése) engedélyezése fizikai billentyűzeteken a készülék KCM-konfigurációjától függetlenül</string>
     <string name="pref_shift_double_tap_lock">Shift dupla kattintásos rögzítésének engedélyezése</string>
     <string name="pref_shift_double_tap_lock_summary">A Shift dupla lenyomása bekapcsolva rögzíti. A Shift újbóli lenyomása kikapcsolja.</string>
     <string name="prefs_key_longpress_delay_summary">A billentyű nyomva tartásának ideje a másodlagos karakterek megjelenéséig</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Automatikus kitöltési események értesítései</string>
     <string name="pref_accessibility_service_disabled">A kisegítő szolgáltatás letiltva</string>
     <string name="pref_accessibility_service_enabled">A kisegítő szolgáltatás engedélyezve</string>
-    <string name="pref_emoji_search_pkb_summary">Ha a hangulatjel-tábla nyitva van, a billentyűzettel kereshet.</string>
+    <string name="pref_emoji_search_pkb_summary">Ha a hangulatjel-tábla nyitva van, a billentyűzettel kereshet</string>
     <string name="pref_emoji_search_title">Hangulatjel-keresés bekapcsolása</string>
-    <string name="pref_emoji_search_vkb_summary">Hangulatjelek szűrése az aktuális, még nem véglegesített (aláhúzott) szöveg alapján.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">A hangulatjel kiválasztása a beírt szöveg után szúrja be azt.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">A hangulatjel kiválasztása lecseréli a beírt szöveget.</string>
+    <string name="pref_emoji_search_vkb_summary">Hangulatjelek szűrése az aktuális, még nem véglegesített (aláhúzott) szöveg alapján</string>
+    <string name="pref_emoji_search_replace_text_summary_off">A hangulatjel kiválasztása a beírt szöveg után szúrja be azt</string>
+    <string name="pref_emoji_search_replace_text_summary_on">A hangulatjel kiválasztása lecseréli a beírt szöveget</string>
     <string name="pref_emoji_search_replace_text_title">Szöveg cseréje hangulatjelre</string>
     <string name="pref_key_interceptor_enabled">Speciális billentyűk támogatásának engedélyezése</string>
     <string name="pref_key_interceptor_enabled_summary">A kisegítő szolgáltatás használata az Emoji, SYM és Voice billentyűk elfogásához</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Adatok kezelése</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Egyéni makrók</string>
+    <string name="settings_custom_macros_intro" formatted="false">Saját %x helyőrzők megadása a szöveges rövidítésekhez</string>
     <string name="settings_customize_menu_hidden_header">Nem jelenik meg a billentyűzeten</string>
     <string name="settings_customize_menu_instructions">Érintse meg és tartsa nyomva a parancsikont, majd húzással rendezze át. Az első négy jelenik meg a billentyűzet beviteli menüjében.</string>
     <string name="settings_customize_menu_summary">A beviteli menü parancsikonjainak kiválasztása és átrendezése</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Gyors kifejezések</string>
     <string name="settings_screen_type_by_swiping">Gépelés az ujj csúsztatásával</string>
     <string name="settings_screen_type_by_swiping_summary">Gépeljen gyorsan ujja felemelése nélkül</string>
-    <string name="settings_screen_type_by_swiping_unavailable">A csúsztatással történő gépelés nem érhető el az Ön nyelvén.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">A csúsztatással történő gépelés nem érhető el az Ön nyelvén</string>
     <string name="settings_search_hint">Keresés a beállításokban</string>
     <string name="settings_search_no_results">Nincs találat a beállítások között</string>
     <string name="settings_shake_fallback_title">Tartalék művelet</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Billentyűzeteszköz: %1$s</string>
     <string name="device_config_import_matches_build">Build eszköze: %1$s</string>
     <string name="device_config_import_matches_brand">Márka: %1$s</string>
-    <string name="device_config_import_matches_nothing">Ez a fájl nem nevez meg egyeztetendő eszközt, így soha nem lépne életbe.</string>
+    <string name="device_config_import_matches_nothing">Ez a fájl nem nevez meg egyeztetendő eszközt, így soha nem lépne életbe</string>
     <string name="device_config_import_type">Eszköztípus: %1$s</string>
     <string name="device_config_import_keys">%1$d billentyű-hozzárendelés</string>
     <string name="device_config_import_keypad_layout">Billentyűzetkiosztás: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Ez a verzió túl régi a frissítési lista beolvasásához. Frissítsen kézzel.</string>
     <string name="settings_update_from_cache">Az utolsó mentett ellenőrzés alapján</string>
     <string name="settings_update_background_check_title">Frissítések automatikus keresése</string>
-    <string name="settings_update_background_check_summary">Értesítést kap, amint új verzió érhető el letöltésre.</string>
+    <string name="settings_update_background_check_summary">Értesítést kap, amint új verzió érhető el letöltésre</string>
     <string name="settings_update_notification_text">A %1$s verzió letölthető</string>
     <string name="settings_update_unknown_sources_message">Az Androidnak engedélyeznie kell, hogy a BBKB alkalmazásokat telepítsen. Engedélyezze a telepítést erről a forrásról, majd nyomja meg újra a Telepítés gombot.</string>
     <string name="settings_update_open_settings">Beállítások megnyitása</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Szótárak keresése</string>
     <string name="language_packs_load_ldb">LDB-fájl betöltése</string>
     <string name="language_packs_variant_summary">A(z) %1$s helyett töltődik be</string>
-    <string name="language_packs_not_on_summary">Koppintson új %1$s billentyűzet létrehozásához.</string>
+    <string name="language_packs_not_on_summary">Koppintson új %1$s billentyűzet létrehozásához</string>
     <string name="language_packs_turned_on">%1$s bekapcsolva. Váltson rá a nyelvváltóval.</string>
-    <string name="language_packs_turn_on_in_settings">Kapcsolja be a(z) %1$s nyelvet a listán, majd térjen vissza.</string>
+    <string name="language_packs_turn_on_in_settings">Kapcsolja be a(z) %1$s nyelvet a listán, majd térjen vissza</string>
     <string name="language_packs_installed_and_on">Telepítve: %1$s. Be van kapcsolva: váltson rá a nyelvváltóval.</string>
     <string name="language_packs_installed_turn_on">Telepítve: %1$s. Koppintson a sorra, hogy bekapcsolja a billentyűzeten.</string>
+    <string name="language_packs_installed_no_layout">Telepítve: %1$s, de ehhez a billentyűzethez még nincs kiosztás az írásrendszeréhez, ezért nem választható ki</string>
     <string name="language_packs_error_offline">Nincs kapcsolat</string>
     <string name="language_packs_error_network">Nem sikerült. Próbálja újra.</string>
     <string name="language_packs_error_verification">A fájl nem egyezett a katalógussal, ezért semmi sem lett telepítve</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Mentve: %1$s</string>
     <string name="backup_restore_dialog_device">Eszköz: %1$s</string>
     <string name="backup_restore_not_in_file">Nincs ebben a fájlban</string>
-    <string name="backup_restore_dialog_note">A beállítások, az elrendezések és a makrók lecserélődnek; a szavak hozzáadódnak a telefonon lévőkhöz.</string>
+    <string name="backup_restore_dialog_note">A beállítások, az elrendezések és a makrók lecserélődnek; a szavak hozzáadódnak a telefonon lévőkhöz</string>
     <string name="backup_restore_dialog_confirm">Visszaállítás</string>
     <string name="backup_restored">Biztonsági mentés visszaállítva</string>
     <string name="backup_restored_words_pending">A megtanult szavak akkor adódnak hozzá, amikor a billentyűzet használatba kerül</string>

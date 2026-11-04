@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Tulis kisi tombol yang terekam sebagai cuplikan &lt;ckb-key-grid&gt; ke file aplikasi, untuk ditempel ke konfigurasi perangkat. Buka keyboard sekali terlebih dahulu agar dapat merekam.</string>
     <string name="ckb_gestures_export_title">Ekspor geometri CKB</string>
     <string name="ckb_gestures_export_written">Menulis %s</string>
-    <string name="ckb_gestures_reserved_note">Gesek ke atas (menerapkan saran di bawah jari Anda) telah dicadangkan.</string>
+    <string name="ckb_gestures_reserved_note">Gesek ke atas (menerapkan saran di bawah jari Anda) telah dicadangkan</string>
     <string name="ckb_gestures_screen_title">Gestur CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">Pengali kecepatan maksimum untuk perubahan aksen</string>
     <string name="settings_gesture_accent_max_speed_title">Pengali kecepatan maksimum gulir ganti aksen</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Aktifkan pembelajaran dinamis</string>
     <string name="settings_dict_learned_words_summary">Kelola kata yang dipelajari dari ketikan Anda</string>
     <string name="settings_dict_learned_words_title">Kata yang dipelajari</string>
+    <string name="settings_dict_add_to_dictionary_note">Kata yang ditambahkan ke kamus Anda akan disarankan saat mengetik dan tidak akan ditandai sebagai salah eja</string>
     <string name="settings_dict_text_shortcuts_summary">Buat pintasan yang berkembang menjadi frasa</string>
     <string name="settings_dict_text_shortcuts_title">Pintasan teks</string>
     <string name="settings_dict_user_dictionary_summary">Tambahkan dan edit kata pribadi</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Pilih atau impor konfigurasi masukan perangkat</string>
     <string name="settings_device_configuration_title">Konfigurasi perangkat</string>
     <string name="touch_surface_builtin_category">Bawaan</string>
-    <string name="touch_surface_builtin_intro">Ponsel meneruskan input permukaan sentuh keyboard ke BBKB selama Scroll assistant aktif.</string>
+    <string name="touch_surface_builtin_intro">Ponsel meneruskan input permukaan sentuh keyboard ke BBKB selama Scroll assistant aktif</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant mengambil alih ketuk dua kali pada tombol, sehingga BBKB tidak pernah menerimanya</string>
     <string name="touch_surface_cursor_assistant_title">Nonaktifkan Cursor assistant</string>
     <string name="touch_surface_grant_access">Berikan akses</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Siapkan Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Aktifkan Opsi developer, lalu Proses debug nirkabel.\n2. Mulai Shizuku dari aplikasinya, atau dengan root.\n3. Kembali ke sini dan ketuk Berikan akses.</string>
     <string name="touch_surface_shizuku_intro">Shizuku adalah aplikasi gratis yang memungkinkan BBKB membaca permukaan sentuh secara langsung. BBKB hanya mengambil alih permukaan sentuh selama keyboard terbuka; di luar itu, permukaan sentuh berfungsi seperti biasa.</string>
-    <string name="touch_surface_shizuku_mediatek">Gunakan Shizuku 13.5.4 di ponsel ini: versi 13.6.0 tidak berfungsi sepenuhnya di ponsel MediaTek.</string>
+    <string name="touch_surface_shizuku_mediatek">Gunakan Shizuku 13.5.4 di ponsel ini: versi 13.6.0 tidak berfungsi sepenuhnya di ponsel MediaTek</string>
     <string name="touch_surface_shizuku_reboot">Shizuku berhenti setiap kali ponsel dimulai ulang. Jalankan lagi Shizuku setelah setiap mulai ulang; status di atas akan menunjukkan saat Shizuku tidak berjalan.</string>
     <string name="touch_surface_shizuku_state_denied">Berjalan, tetapi akses BBKB ditolak</string>
     <string name="touch_surface_shizuku_state_granted">Berjalan, dan BBKB memiliki akses</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Tidak tersedia di ponsel ini</string>
     <string name="pref_show_pkb_modifier_status_icon">Tampilkan ikon status pengubah</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Tampilkan indikator pengubah Shift/Alt di bilah status saat menggunakan keyboard fisik</string>
-    <string name="settings_pred_accounts_permission_summary">Berikan izin akun untuk menyarankan alamat email saat mengetik.</string>
+    <string name="settings_pred_accounts_permission_summary">Berikan izin akun untuk menyarankan alamat email saat mengetik</string>
     <string name="settings_pred_accounts_permission_title">Izin Akun Diperlukan</string>
     <string name="settings_pred_block_offensive_summary">Sembunyikan kata yang berpotensi menyinggung saat dikte suara</string>
     <string name="settings_pred_block_offensive_title">Blokir kata yang menyinggung</string>
-    <string name="settings_pred_contacts_permission_summary">Berikan izin kontak untuk menyarankan nama kontak dan alamat email saat mengetik.</string>
+    <string name="settings_pred_contacts_permission_summary">Berikan izin kontak untuk menyarankan nama kontak dan alamat email saat mengetik</string>
     <string name="settings_pred_contacts_permission_title">Izin Kontak Diperlukan</string>
     <string name="settings_pred_contacts_summary_disabled">Izin kontak diperlukan</string>
     <string name="settings_pred_contacts_summary_enabled">Sertakan nama kontak dalam saran</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Berikan izin kontak untuk menggunakan fitur ini</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Nama kontak akan dikenali sebagai kata yang valid</string>
     <string name="settings_spellcheck_use_contacts_title">Gunakan kontak untuk pemeriksaan ejaan</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Berikan izin kontak agar nama kontak dikenali sebagai kata yang valid saat pemeriksaan ejaan</string>
     <string name="settings_spellcheck_accept_learned_title">Terima kata yang dipelajari</string>
     <string name="settings_spellcheck_accept_learned_summary">Kata yang dipelajari dari ketikan Anda dianggap ejaannya benar</string>
     <string name="pref_alt_double_tap_lock">Aktifkan kunci klik ganda Alt</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Aktifkan kunci klik ganda Ctrl</string>
     <string name="pref_ctrl_double_tap_lock_summary">Mengeklik Ctrl dua kali akan menguncinya tetap aktif. Klik Ctrl lagi untuk menonaktifkannya.</string>
     <string name="pref_override_device_meta_state">Timpa status meta perangkat</string>
-    <string name="pref_override_device_meta_state_summary">Aktifkan pengubah lengket (kunci shift/alt) pada keyboard fisik terlepas dari konfigurasi KCM perangkat.</string>
+    <string name="pref_override_device_meta_state_summary">Aktifkan pengubah lengket (kunci shift/alt) pada keyboard fisik terlepas dari konfigurasi KCM perangkat</string>
     <string name="pref_shift_double_tap_lock">Aktifkan kunci klik ganda Shift</string>
     <string name="pref_shift_double_tap_lock_summary">Mengeklik Shift dua kali akan menguncinya tetap aktif. Klik Shift lagi untuk menonaktifkannya.</string>
     <string name="prefs_key_longpress_delay_summary">Waktu menahan tombol sebelum karakter sekunder muncul</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Toast peristiwa isi otomatis</string>
     <string name="pref_accessibility_service_disabled">Layanan aksesibilitas nonaktif</string>
     <string name="pref_accessibility_service_enabled">Layanan aksesibilitas aktif</string>
-    <string name="pref_emoji_search_pkb_summary">Saat papan emoji terbuka, gunakan keyboard untuk mencari.</string>
+    <string name="pref_emoji_search_pkb_summary">Saat papan emoji terbuka, gunakan keyboard untuk mencari</string>
     <string name="pref_emoji_search_title">Aktifkan pencarian emoji</string>
-    <string name="pref_emoji_search_vkb_summary">Filter emoji dengan teks saat ini yang belum dikonfirmasi (bergaris bawah).</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Memilih emoji akan menyisipkannya setelah teks yang diketik.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Memilih emoji akan menggantikan teks yang diketik.</string>
+    <string name="pref_emoji_search_vkb_summary">Filter emoji dengan teks saat ini yang belum dikonfirmasi (bergaris bawah)</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Memilih emoji akan menyisipkannya setelah teks yang diketik</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Memilih emoji akan menggantikan teks yang diketik</string>
     <string name="pref_emoji_search_replace_text_title">Ganti teks dengan emoji</string>
     <string name="pref_key_interceptor_enabled">Aktifkan dukungan tombol khusus</string>
     <string name="pref_key_interceptor_enabled_summary">Gunakan layanan aksesibilitas untuk menangkap tombol Emoji, SYM, dan Voice</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Kelola data</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Makro khusus</string>
+    <string name="settings_custom_macros_intro" formatted="false">Tentukan placeholder %x Anda sendiri untuk digunakan dalam pintasan teks</string>
     <string name="settings_customize_menu_hidden_header">Tidak ditampilkan pada keyboard</string>
     <string name="settings_customize_menu_instructions">Sentuh dan tahan pintasan, lalu seret untuk mengubah urutan. Empat teratas muncul di menu masukan keyboard.</string>
     <string name="settings_customize_menu_summary">Pilih dan atur ulang urutan pintasan menu masukan</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Frasa cepat</string>
     <string name="settings_screen_type_by_swiping">Mengetik dengan menggesek</string>
     <string name="settings_screen_type_by_swiping_summary">Ketik dengan cepat tanpa mengangkat jari dari keyboard</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Mengetik dengan menggeser jari tidak tersedia untuk bahasa Anda.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Mengetik dengan menggeser jari tidak tersedia untuk bahasa Anda</string>
     <string name="settings_search_hint">Telusuri setelan</string>
     <string name="settings_search_no_results">Setelan tidak ditemukan</string>
     <string name="settings_shake_fallback_title">Tindakan cadangan</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Perangkat keyboard: %1$s</string>
     <string name="device_config_import_matches_build">Perangkat build: %1$s</string>
     <string name="device_config_import_matches_brand">Merek: %1$s</string>
-    <string name="device_config_import_matches_nothing">File ini tidak menyebutkan perangkat apa pun untuk dicocokkan, jadi tidak akan pernah diterapkan.</string>
+    <string name="device_config_import_matches_nothing">File ini tidak menyebutkan perangkat apa pun untuk dicocokkan, jadi tidak akan pernah diterapkan</string>
     <string name="device_config_import_type">Jenis perangkat: %1$s</string>
     <string name="device_config_import_keys">%1$d pemetaan tombol</string>
     <string name="device_config_import_keypad_layout">Tata letak keypad: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Versi ini terlalu lama untuk membaca daftar pembaruan. Silakan perbarui secara manual.</string>
     <string name="settings_update_from_cache">Ditampilkan dari pemeriksaan terakhir yang disimpan</string>
     <string name="settings_update_background_check_title">Periksa pembaruan secara otomatis</string>
-    <string name="settings_update_background_check_summary">Terima notifikasi saat versi baru tersedia untuk diunduh.</string>
+    <string name="settings_update_background_check_summary">Terima notifikasi saat versi baru tersedia untuk diunduh</string>
     <string name="settings_update_notification_text">Versi %1$s siap diunduh</string>
     <string name="settings_update_unknown_sources_message">Android harus mengizinkan BBKB memasang aplikasi. Aktifkan pemasangan dari sumber ini, lalu tekan Pasang lagi.</string>
     <string name="settings_update_open_settings">Buka setelan</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Periksa kamus</string>
     <string name="language_packs_load_ldb">Muat file LDB</string>
     <string name="language_packs_variant_summary">Dimuat sebagai ganti %1$s</string>
-    <string name="language_packs_not_on_summary">Ketuk untuk membuat keyboard %1$s baru.</string>
+    <string name="language_packs_not_on_summary">Ketuk untuk membuat keyboard %1$s baru</string>
     <string name="language_packs_turned_on">%1$s aktif. Beralih ke bahasa ini dari pengalih bahasa.</string>
-    <string name="language_packs_turn_on_in_settings">Aktifkan %1$s di daftar, lalu kembali ke sini.</string>
+    <string name="language_packs_turn_on_in_settings">Aktifkan %1$s di daftar, lalu kembali ke sini</string>
     <string name="language_packs_installed_and_on">%1$s terpasang. Sudah aktif: beralih ke bahasa ini dari pengalih bahasa.</string>
     <string name="language_packs_installed_turn_on">%1$s terpasang. Ketuk barisnya untuk mengaktifkannya di keyboard.</string>
+    <string name="language_packs_installed_no_layout">%1$s terpasang, tetapi keyboard ini belum memiliki tata letak untuk aksaranya, jadi tidak dapat dipilih</string>
     <string name="language_packs_error_offline">Tidak ada koneksi</string>
     <string name="language_packs_error_network">Tidak berhasil. Coba lagi.</string>
     <string name="language_packs_error_verification">Berkas tidak cocok dengan katalog, jadi tidak ada yang dipasang</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Disimpan %1$s</string>
     <string name="backup_restore_dialog_device">Dari %1$s</string>
     <string name="backup_restore_not_in_file">Tidak ada di file ini</string>
-    <string name="backup_restore_dialog_note">Setelan, tata letak, dan makro diganti; kata ditambahkan ke yang sudah ada di ponsel ini.</string>
+    <string name="backup_restore_dialog_note">Setelan, tata letak, dan makro diganti; kata ditambahkan ke yang sudah ada di ponsel ini</string>
     <string name="backup_restore_dialog_confirm">Pulihkan</string>
     <string name="backup_restored">Cadangan dipulihkan</string>
     <string name="backup_restored_words_pending">Kata yang dipelajari akan ditambahkan setelah keyboard digunakan</string>

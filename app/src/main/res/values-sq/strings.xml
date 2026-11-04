@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Shkruan rrjetën e regjistruar të tastave si një fragment &lt;ckb-key-grid&gt; te skedarët e aplikacionit, për ta ngjitur te konfigurimi i pajisjes. Hap një herë tastierën që ajo të mund ta regjistrojë.</string>
     <string name="ckb_gestures_export_title">Eksporto gjeometrinë e CKB-së</string>
     <string name="ckb_gestures_export_written">U shkrua %s</string>
-    <string name="ckb_gestures_reserved_note">Rrëshqitja lart (pranimi i sugjerimit nën gisht) është e rezervuar.</string>
+    <string name="ckb_gestures_reserved_note">Rrëshqitja lart (pranimi i sugjerimit nën gisht) është e rezervuar</string>
     <string name="ckb_gestures_screen_title">Gjestet e CKB-së</string>
     <string name="settings_gesture_accent_max_speed_summary">Shumëzuesi maksimal i shpejtësisë për ndryshimin e theksave</string>
     <string name="settings_gesture_accent_max_speed_title">Shumëzuesi maksimal i shpejtësisë gjatë kalimit të theksave</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Aktivizo mësimin dinamik</string>
     <string name="settings_dict_learned_words_summary">Menaxho fjalët e mësuara nga mënyra si shkruan</string>
     <string name="settings_dict_learned_words_title">Fjalët e mësuara</string>
+    <string name="settings_dict_add_to_dictionary_note">Fjalët e shtuara në fjalorin tënd do të sugjerohen ndërsa shkruan dhe nuk do të shënohen si gabime drejtshkrimore</string>
     <string name="settings_dict_text_shortcuts_summary">Krijo shkurtore që zgjerohen në fraza</string>
     <string name="settings_dict_text_shortcuts_title">Shkurtoret e tekstit</string>
     <string name="settings_dict_user_dictionary_summary">Shto dhe redakto fjalë personale</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Zgjidh ose importo konfigurime shkrimi për pajisjen</string>
     <string name="settings_device_configuration_title">Konfigurimi i pajisjes</string>
     <string name="touch_surface_builtin_category">E integruar</string>
-    <string name="touch_surface_builtin_intro">Telefoni ia përcjell BBKB-së sipërfaqen prekëse të tastierës, për sa kohë që Scroll assistant është aktiv.</string>
+    <string name="touch_surface_builtin_intro">Telefoni ia përcjell BBKB-së sipërfaqen prekëse të tastierës, për sa kohë që Scroll assistant është aktiv</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant e merr për vete prekjen e dyfishtë në tasta, ndaj BBKB nuk e merr kurrë</string>
     <string name="touch_surface_cursor_assistant_title">Çaktivizo Cursor assistant</string>
     <string name="touch_surface_grant_access">Jep qasje</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Konfiguro Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Aktivizo Opsionet e zhvilluesit, pastaj Korrigjimin pa tel.\n2. Nis Shizuku nga aplikacioni i tij ose me root.\n3. Kthehu këtu dhe prek Jep qasje.</string>
     <string name="touch_surface_shizuku_intro">Shizuku është një aplikacion falas që i lejon BBKB-së ta lexojë sipërfaqen prekëse drejtpërdrejt. BBKB e merr nën kontroll vetëm kur tastiera është e hapur; pjesën tjetër të kohës ajo funksionon si zakonisht në telefon.</string>
-    <string name="touch_surface_shizuku_mediatek">Përdor Shizuku 13.5.4 në këtë telefon: versioni 13.6.0 nuk funksionon plotësisht në telefonat MediaTek.</string>
+    <string name="touch_surface_shizuku_mediatek">Përdor Shizuku 13.5.4 në këtë telefon: versioni 13.6.0 nuk funksionon plotësisht në telefonat MediaTek</string>
     <string name="touch_surface_shizuku_reboot">Shizuku ndalon sa herë që telefoni riniset. Nise përsëri pas çdo rinisjeje; statusi më sipër tregon kur nuk po ekzekutohet.</string>
     <string name="touch_surface_shizuku_state_denied">Po ekzekutohet, por BBKB-së iu refuzua qasja</string>
     <string name="touch_surface_shizuku_state_granted">Po ekzekutohet dhe BBKB ka qasje</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Nuk ofrohet në këtë telefon</string>
     <string name="pref_show_pkb_modifier_status_icon">Shfaq ikonën e gjendjes së modifikuesve</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Shfaq treguesin Shift/Alt te shiriti i gjendjes kur përdoret tastiera fizike</string>
-    <string name="settings_pred_accounts_permission_summary">Jep lejen e llogarive që të sugjerohen adresa e-mail ndërsa shkruan.</string>
+    <string name="settings_pred_accounts_permission_summary">Jep lejen e llogarive që të sugjerohen adresa e-mail ndërsa shkruan</string>
     <string name="settings_pred_accounts_permission_title">Kërkohet leja e llogarive</string>
     <string name="settings_pred_block_offensive_summary">Maskon fjalët që mund të jenë fyese gjatë diktimit me zë</string>
     <string name="settings_pred_block_offensive_title">Blloko fjalët fyese</string>
-    <string name="settings_pred_contacts_permission_summary">Jep lejen e kontakteve që të sugjerohen emra kontaktesh dhe adresa e-mail ndërsa shkruan.</string>
+    <string name="settings_pred_contacts_permission_summary">Jep lejen e kontakteve që të sugjerohen emra kontaktesh dhe adresa e-mail ndërsa shkruan</string>
     <string name="settings_pred_contacts_permission_title">Kërkohet leja e kontakteve</string>
     <string name="settings_pred_contacts_summary_disabled">Kërkohet leja e kontakteve</string>
     <string name="settings_pred_contacts_summary_enabled">Përfshi emrat e kontakteve në sugjerime</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Jep lejen e kontakteve për ta përdorur këtë veçori</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Emrat e kontakteve do të njihen si fjalë të sakta</string>
     <string name="settings_spellcheck_use_contacts_title">Përdor kontaktet në kontrollin drejtshkrimor</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Jep lejen e kontakteve që emrat e kontakteve të njihen si fjalë të vlefshme gjatë kontrollit drejtshkrimor</string>
     <string name="settings_spellcheck_accept_learned_title">Prano fjalët e mësuara</string>
     <string name="settings_spellcheck_accept_learned_summary">Fjalët e mësuara nga shkrimi juaj konsiderohen të shkruara saktë</string>
     <string name="pref_alt_double_tap_lock">Aktivizo kyçjen e Alt me klikim të dyfishtë</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Aktivizo kyçjen e Ctrl me klikim të dyfishtë</string>
     <string name="pref_ctrl_double_tap_lock_summary">Klikimi i dyfishtë i Ctrl e kyç atë. Klikimi i Ctrl përsëri e çkyç.</string>
     <string name="pref_override_device_meta_state">Anashkalo gjendjen meta të pajisjes</string>
-    <string name="pref_override_device_meta_state_summary">Aktivizo modifikuesit e qëndrueshëm (kyçje Shift/Alt) në tastierat fizike pavarësisht konfigurimit KCM të pajisjes.</string>
+    <string name="pref_override_device_meta_state_summary">Aktivizo modifikuesit e qëndrueshëm (kyçje Shift/Alt) në tastierat fizike pavarësisht konfigurimit KCM të pajisjes</string>
     <string name="pref_shift_double_tap_lock">Aktivizo kyçjen e Shift me klikim të dyfishtë</string>
     <string name="pref_shift_double_tap_lock_summary">Klikimi i dyfishtë i Shift e kyç atë. Klikimi i Shift përsëri e çkyç.</string>
     <string name="prefs_key_longpress_delay_summary">Sa kohë duhet mbajtur shtypur një tast që të shfaqen shenjat dytësore</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Njoftimet e ngjarjeve të vetëplotësimit</string>
     <string name="pref_accessibility_service_disabled">Shërbimi i qasshmërisë është joaktiv</string>
     <string name="pref_accessibility_service_enabled">Shërbimi i qasshmërisë është aktiv</string>
-    <string name="pref_emoji_search_pkb_summary">Kur tabela e emoji-ve është e hapur, përdor tastierën për të kërkuar.</string>
+    <string name="pref_emoji_search_pkb_summary">Kur tabela e emoji-ve është e hapur, përdor tastierën për të kërkuar</string>
     <string name="pref_emoji_search_title">Aktivizo kërkimin e emoji-ve</string>
-    <string name="pref_emoji_search_vkb_summary">Filtro emoji-t me tekstin aktual të pakonfirmuar (të nënvizuar).</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Zgjedhja e një emoji-t e fut atë pas tekstit të shkruar.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Zgjedhja e një emoji-t e zëvendëson tekstin e shkruar.</string>
+    <string name="pref_emoji_search_vkb_summary">Filtro emoji-t me tekstin aktual të pakonfirmuar (të nënvizuar)</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Zgjedhja e një emoji-t e fut atë pas tekstit të shkruar</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Zgjedhja e një emoji-t e zëvendëson tekstin e shkruar</string>
     <string name="pref_emoji_search_replace_text_title">Zëvendëso tekstin me emoji</string>
     <string name="pref_key_interceptor_enabled">Aktivizo mbështetjen për tastat speciale</string>
     <string name="pref_key_interceptor_enabled_summary">Përdor shërbimin e qasshmërisë për të kapur tastat Emoji, SYM dhe Zë</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Menaxhimi i të dhënave</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Makro të personalizuara</string>
+    <string name="settings_custom_macros_intro" formatted="false">Përcakto vendmbajtësit e tu %x për t\'i përdorur në shkurtoret e tekstit</string>
     <string name="settings_customize_menu_hidden_header">Nuk shfaqet në tastierë</string>
     <string name="settings_customize_menu_instructions">Prek dhe mbaj shtypur një shkurtore, pastaj zvarrite për ta risistemuar. Katër të parat shfaqen te menyja e shkrimit e tastierës.</string>
     <string name="settings_customize_menu_summary">Zgjidh dhe risistemo shkurtoret e menysë së shkrimit</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Frazat e shpejta</string>
     <string name="settings_screen_type_by_swiping">Shkrim me rrëshqitje</string>
     <string name="settings_screen_type_by_swiping_summary">Shkruaj shpejt pa e ngritur gishtin nga tastiera</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Shkrimi me rrëshqitje nuk ofrohet në gjuhën tënde.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Shkrimi me rrëshqitje nuk ofrohet në gjuhën tënde</string>
     <string name="settings_search_hint">Kërko te cilësimet</string>
     <string name="settings_search_no_results">Nuk u gjet asnjë cilësim</string>
     <string name="settings_shake_fallback_title">Veprimi rezervë</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Pajisja e tastierës: %1$s</string>
     <string name="device_config_import_matches_build">Pajisja e ndërtimit: %1$s</string>
     <string name="device_config_import_matches_brand">Marka: %1$s</string>
-    <string name="device_config_import_matches_nothing">Ky skedar nuk përmend asnjë pajisje për t\'u përputhur, ndaj nuk do të zbatohej kurrë.</string>
+    <string name="device_config_import_matches_nothing">Ky skedar nuk përmend asnjë pajisje për t\'u përputhur, ndaj nuk do të zbatohej kurrë</string>
     <string name="device_config_import_type">Lloji i pajisjes: %1$s</string>
     <string name="device_config_import_keys">%1$d lidhje tastash</string>
     <string name="device_config_import_keypad_layout">Paraqitja e tastierës: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Ky version është shumë i vjetër për të lexuar listën e përditësimeve. Përditësoni me dorë.</string>
     <string name="settings_update_from_cache">Shfaqur nga kontrolli i fundit i ruajtur</string>
     <string name="settings_update_background_check_title">Kontrollo automatikisht për përditësime</string>
-    <string name="settings_update_background_check_summary">Merrni një njoftim kur një version i ri është i disponueshëm për shkarkim.</string>
+    <string name="settings_update_background_check_summary">Merrni një njoftim kur një version i ri është i disponueshëm për shkarkim</string>
     <string name="settings_update_notification_text">Versioni %1$s është gati për shkarkim</string>
     <string name="settings_update_unknown_sources_message">Android duhet të lejojë BBKB të instalojë aplikacione. Aktivizoni instalimin nga ky burim, pastaj shtypni përsëri Instalo.</string>
     <string name="settings_update_open_settings">Hap cilësimet</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Kontrollo fjalorët</string>
     <string name="language_packs_load_ldb">Ngarko skedarin LDB</string>
     <string name="language_packs_variant_summary">Ngarkohet në vend të %1$s</string>
-    <string name="language_packs_not_on_summary">Prek për të krijuar një tastierë të re për %1$s.</string>
+    <string name="language_packs_not_on_summary">Prek për të krijuar një tastierë të re për %1$s</string>
     <string name="language_packs_turned_on">%1$s është aktivizuar. Kalo tek ai nga ndërruesi i gjuhëve.</string>
-    <string name="language_packs_turn_on_in_settings">Aktivizo %1$s në listë, pastaj kthehu.</string>
+    <string name="language_packs_turn_on_in_settings">Aktivizo %1$s në listë, pastaj kthehu</string>
     <string name="language_packs_installed_and_on">U instalua %1$s. Është aktivizuar: kalo tek ai nga ndërruesi i gjuhëve.</string>
     <string name="language_packs_installed_turn_on">U instalua %1$s. Prek rreshtin për ta aktivizuar në tastierë.</string>
+    <string name="language_packs_installed_no_layout">U instalua %1$s, por kjo tastierë nuk ka ende një paraqitje për shkrimin e saj, prandaj nuk mund të zgjidhet</string>
     <string name="language_packs_error_offline">Nuk ka lidhje</string>
     <string name="language_packs_error_network">Nuk funksionoi. Provo përsëri.</string>
     <string name="language_packs_error_verification">Skedari nuk përputhej me katalogun, kështu që nuk u instalua asgjë</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Ruajtur më %1$s</string>
     <string name="backup_restore_dialog_device">Nga %1$s</string>
     <string name="backup_restore_not_in_file">Nuk gjendet në këtë skedar</string>
-    <string name="backup_restore_dialog_note">Cilësimet, paraqitjet dhe makrot zëvendësohen; fjalët u shtohen atyre që janë në këtë telefon.</string>
+    <string name="backup_restore_dialog_note">Cilësimet, paraqitjet dhe makrot zëvendësohen; fjalët u shtohen atyre që janë në këtë telefon</string>
     <string name="backup_restore_dialog_confirm">Restauro</string>
     <string name="backup_restored">Rezervimi u restaurua</string>
     <string name="backup_restored_words_pending">Fjalët e mësuara do të shtohen sapo të fillosh të përdorësh tastierën</string>

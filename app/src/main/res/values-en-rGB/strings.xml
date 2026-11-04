@@ -53,7 +53,7 @@
     <string name="send_to">Share text to…</string>
     <string name="settings_screen_type_by_swiping">Type by swiping</string>
     <string name="settings_screen_type_by_swiping_summary">Type quickly without lifting your finger off the keyboard</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Type by swiping is not available in your language.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Type by swiping is not available in your language</string>
     <string name="sound_on_keypress">Sound</string>
     <string name="spell_checker_service_name">BBKB Spell Checker</string>
     <string name="sticky_control_mode_notification_message">Ctrl is on. Tap here to turn off.</string>

@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">பதிவான விசைக் கட்டத்தை &lt;ckb-key-grid&gt; துணுக்காக ஆப்ஸ் கோப்புகளில் எழுதுகிறது; சாதன உள்ளமைவில் ஒட்டிக்கொள்ளலாம். பதிவு செய்ய முதலில் விசைப்பலகையை ஒருமுறை திற.</string>
     <string name="ckb_gestures_export_title">CKB வடிவவியலை ஏற்றுமதி செய்</string>
     <string name="ckb_gestures_export_written">%s எழுதப்பட்டது</string>
-    <string name="ckb_gestures_reserved_note">மேல்நோக்கி ஸ்வைப் செய்தல் (விரலின் கீழுள்ள பரிந்துரையை உறுதிசெய்தல்) ஒதுக்கப்பட்டுள்ளது.</string>
+    <string name="ckb_gestures_reserved_note">மேல்நோக்கி ஸ்வைப் செய்தல் (விரலின் கீழுள்ள பரிந்துரையை உறுதிசெய்தல்) ஒதுக்கப்பட்டுள்ளது</string>
     <string name="ckb_gestures_screen_title">CKB சைகைகள்</string>
     <string name="settings_gesture_accent_max_speed_summary">உச்சரிப்புக் குறி மாற்றங்களுக்கான அதிகபட்ச வேகப் பெருக்கி</string>
     <string name="settings_gesture_accent_max_speed_title">உச்சரிப்புக் குறி மாற்ற ஸ்க்ரோலின் அதிகபட்ச வேகப் பெருக்கி</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">மாறும் கற்றலை இயக்கு</string>
     <string name="settings_dict_learned_words_summary">உங்கள் தட்டச்சிலிருந்து கற்ற சொற்களை நிர்வகி</string>
     <string name="settings_dict_learned_words_title">கற்ற சொற்கள்</string>
+    <string name="settings_dict_add_to_dictionary_note">உங்கள் அகராதியில் சேர்க்கப்படும் சொற்கள் தட்டச்சு செய்யும்போது பரிந்துரைக்கப்படும், எழுத்துப்பிழையாகக் குறிக்கப்படாது</string>
     <string name="settings_dict_text_shortcuts_summary">சொற்றொடர்களாக விரியும் குறுக்குவழிகளை உருவாக்கு</string>
     <string name="settings_dict_text_shortcuts_title">உரைக் குறுக்குவழிகள்</string>
     <string name="settings_dict_user_dictionary_summary">தனிப்பட்ட சொற்களைச் சேர்த்துத் திருத்து</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">சாதன உள்ளீட்டு உள்ளமைவுகளைத் தேர்ந்தெடு அல்லது இறக்குமதி செய்</string>
     <string name="settings_device_configuration_title">சாதன உள்ளமைவு</string>
     <string name="touch_surface_builtin_category">உள்ளமைந்தது</string>
-    <string name="touch_surface_builtin_intro">ஃபோனின் Scroll assistant இயக்கத்தில் இருக்கும்போது, விசைப்பலகையின் தொடுபரப்பை ஃபோன் BBKB க்கு வழங்குகிறது.</string>
+    <string name="touch_surface_builtin_intro">ஃபோனின் Scroll assistant இயக்கத்தில் இருக்கும்போது, விசைப்பலகையின் தொடுபரப்பை ஃபோன் BBKB க்கு வழங்குகிறது</string>
     <string name="touch_surface_cursor_assistant_summary">விசைகளின் மீதான இரட்டைத் தட்டை Cursor assistant தானே எடுத்துக்கொள்வதால், அது BBKB க்கு ஒருபோதும் வந்து சேர்வதில்லை</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant ஐ முடக்கு</string>
     <string name="touch_surface_grant_access">அணுகல் வழங்கு</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku ஐ அமை</string>
     <string name="touch_surface_shizuku_guide_steps">1. டெவலப்பர் விருப்பங்களை இயக்கி, பிறகு வயர்லெஸ் பிழைதிருத்தத்தை இயக்கவும்.\n2. Shizuku ஐ அதன் ஆப்ஸிலிருந்தோ ரூட் மூலமோ தொடங்கவும்.\n3. இங்கே திரும்பி வந்து “அணுகல் வழங்கு” என்பதைத் தட்டவும்.</string>
     <string name="touch_surface_shizuku_intro">Shizuku என்பது BBKB தொடுபரப்பை நேரடியாகப் படிக்க உதவும் இலவச ஆப்ஸ் ஆகும். விசைப்பலகை திறந்திருக்கும்போது மட்டுமே BBKB தொடுபரப்பைக் கட்டுப்படுத்தும்; மற்ற நேரங்களில் அது ஃபோனில் வழக்கம்போல் செயல்படும்.</string>
-    <string name="touch_surface_shizuku_mediatek">இந்த ஃபோனில் Shizuku 13.5.4 ஐப் பயன்படுத்தவும்: 13.6.0 பதிப்பு MediaTek ஃபோன்களில் முழுமையாக இயங்காது.</string>
+    <string name="touch_surface_shizuku_mediatek">இந்த ஃபோனில் Shizuku 13.5.4 ஐப் பயன்படுத்தவும்: 13.6.0 பதிப்பு MediaTek ஃபோன்களில் முழுமையாக இயங்காது</string>
     <string name="touch_surface_shizuku_reboot">ஃபோன் மறுதொடக்கம் செய்யப்படும் ஒவ்வொரு முறையும் Shizuku நின்றுவிடும். ஒவ்வொரு மறுதொடக்கத்திற்குப் பிறகும் அதை மீண்டும் தொடங்கவும்; அது இயங்காதபோது மேலே உள்ள நிலை அதைக் காட்டும்.</string>
     <string name="touch_surface_shizuku_state_denied">இயங்குகிறது, ஆனால் BBKB க்கு அணுகல் மறுக்கப்பட்டது</string>
     <string name="touch_surface_shizuku_state_granted">இயங்குகிறது, BBKB க்கு அணுகல் உள்ளது</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">இந்த ஃபோனில் கிடைக்கவில்லை</string>
     <string name="pref_show_pkb_modifier_status_icon">மாற்றி நிலை ஐகானைக் காட்டு</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">இயற்பியல் விசைப்பலகையைப் பயன்படுத்தும்போது Shift/Alt மாற்றி குறியீட்டை நிலைப் பட்டியில் காட்டு</string>
-    <string name="settings_pred_accounts_permission_summary">தட்டச்சு செய்யும்போது மின்னஞ்சல் முகவரிகளைப் பரிந்துரைக்க கணக்குகள் அனுமதியை வழங்கவும்.</string>
+    <string name="settings_pred_accounts_permission_summary">தட்டச்சு செய்யும்போது மின்னஞ்சல் முகவரிகளைப் பரிந்துரைக்க கணக்குகள் அனுமதியை வழங்கவும்</string>
     <string name="settings_pred_accounts_permission_title">கணக்குகள் அனுமதி தேவை</string>
     <string name="settings_pred_block_offensive_summary">குரல் மூலம் எழுதும்போது புண்படுத்தக்கூடிய சொற்களை மறை</string>
     <string name="settings_pred_block_offensive_title">புண்படுத்தும் சொற்களைத் தடு</string>
-    <string name="settings_pred_contacts_permission_summary">தட்டச்சு செய்யும்போது தொடர்புப் பெயர்களையும் மின்னஞ்சல் முகவரிகளையும் பரிந்துரைக்க தொடர்புகள் அனுமதியை வழங்கவும்.</string>
+    <string name="settings_pred_contacts_permission_summary">தட்டச்சு செய்யும்போது தொடர்புப் பெயர்களையும் மின்னஞ்சல் முகவரிகளையும் பரிந்துரைக்க தொடர்புகள் அனுமதியை வழங்கவும்</string>
     <string name="settings_pred_contacts_permission_title">தொடர்புகள் அனுமதி தேவை</string>
     <string name="settings_pred_contacts_summary_disabled">தொடர்புகள் அனுமதி தேவை</string>
     <string name="settings_pred_contacts_summary_enabled">பரிந்துரைகளில் தொடர்புப் பெயர்களைச் சேர்</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">இந்த அம்சத்தைப் பயன்படுத்த தொடர்புகள் அனுமதியை வழங்கவும்</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">தொடர்புப் பெயர்கள் செல்லுபடியாகும் சொற்களாக அங்கீகரிக்கப்படும்</string>
     <string name="settings_spellcheck_use_contacts_title">எழுத்துப்பிழை சரிபார்ப்பிற்கு தொடர்புகளைப் பயன்படுத்து</string>
+    <string name="settings_spellcheck_contacts_permission_summary">எழுத்துப்பிழை சரிபார்ப்பின்போது தொடர்புப் பெயர்களைச் சரியான சொற்களாக அடையாளம் காண தொடர்புகள் அனுமதியை வழங்கவும்</string>
     <string name="settings_spellcheck_accept_learned_title">கற்ற சொற்களை ஏற்கவும்</string>
     <string name="settings_spellcheck_accept_learned_summary">உங்கள் தட்டச்சிலிருந்து கற்ற சொற்கள் சரியான எழுத்துப்பிழையற்றவையாகக் கருதப்படும்</string>
     <string name="pref_alt_double_tap_lock">Alt இரட்டைக் கிளிக் பூட்டை இயக்கு</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrl இரட்டைக் கிளிக் பூட்டை இயக்கு</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl ஐ இரட்டைக் கிளிக் செய்தால் அது பூட்டப்படும். மீண்டும் Ctrl ஐக் கிளிக் செய்தால் அணைக்கப்படும்.</string>
     <string name="pref_override_device_meta_state">சாதன மெட்டா நிலையை மேலெழுது</string>
-    <string name="pref_override_device_meta_state_summary">சாதனத்தின் KCM உள்ளமைவைப் பொருட்படுத்தாமல், இயற்பியல் விசைப்பலகைகளில் ஒட்டும் மாற்றிகளை (shift/alt பூட்டு) இயக்கு.</string>
+    <string name="pref_override_device_meta_state_summary">சாதனத்தின் KCM உள்ளமைவைப் பொருட்படுத்தாமல், இயற்பியல் விசைப்பலகைகளில் ஒட்டும் மாற்றிகளை (shift/alt பூட்டு) இயக்கு</string>
     <string name="pref_shift_double_tap_lock">Shift இரட்டைக் கிளிக் பூட்டை இயக்கு</string>
     <string name="pref_shift_double_tap_lock_summary">Shift ஐ இரட்டைக் கிளிக் செய்தால் அது பூட்டப்படும். மீண்டும் Shift ஐக் கிளிக் செய்தால் அணைக்கப்படும்.</string>
     <string name="prefs_key_longpress_delay_summary">இரண்டாம் நிலை எழுத்துகள் தோன்றும் முன் விசையைப் பிடிக்க வேண்டிய நேரம்</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">தானியங்கு நிரப்பு நிகழ்வு டோஸ்ட்கள்</string>
     <string name="pref_accessibility_service_disabled">அணுகல்தன்மை சேவை முடக்கப்பட்டுள்ளது</string>
     <string name="pref_accessibility_service_enabled">அணுகல்தன்மை சேவை இயக்கப்பட்டுள்ளது</string>
-    <string name="pref_emoji_search_pkb_summary">எமோஜி பலகை திறந்திருக்கும்போது தேட விசைப்பலகையைப் பயன்படுத்தவும்.</string>
+    <string name="pref_emoji_search_pkb_summary">எமோஜி பலகை திறந்திருக்கும்போது தேட விசைப்பலகையைப் பயன்படுத்தவும்</string>
     <string name="pref_emoji_search_title">எமோஜி தேடலை இயக்கு</string>
-    <string name="pref_emoji_search_vkb_summary">தற்போதைய உறுதிப்படுத்தப்படாத (அடிக்கோடிட்ட) உரையால் எமோஜிகளை வடிகட்டு.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">ஒரு எமோஜியைத் தேர்ந்தெடுத்தால் அது தட்டச்சு செய்த உரைக்குப் பிறகு சேர்க்கப்படும்.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">ஒரு எமோஜியைத் தேர்ந்தெடுத்தால் அது தட்டச்சு செய்த உரையை மாற்றும்.</string>
+    <string name="pref_emoji_search_vkb_summary">தற்போதைய உறுதிப்படுத்தப்படாத (அடிக்கோடிட்ட) உரையால் எமோஜிகளை வடிகட்டு</string>
+    <string name="pref_emoji_search_replace_text_summary_off">ஒரு எமோஜியைத் தேர்ந்தெடுத்தால் அது தட்டச்சு செய்த உரைக்குப் பிறகு சேர்க்கப்படும்</string>
+    <string name="pref_emoji_search_replace_text_summary_on">ஒரு எமோஜியைத் தேர்ந்தெடுத்தால் அது தட்டச்சு செய்த உரையை மாற்றும்</string>
     <string name="pref_emoji_search_replace_text_title">உரையை எமோஜியால் மாற்று</string>
     <string name="pref_key_interceptor_enabled">சிறப்பு விசை ஆதரவை இயக்கு</string>
     <string name="pref_key_interceptor_enabled_summary">Emoji, SYM மற்றும் Voice விசைகளைப் பிடிக்க அணுகல்தன்மை சேவையைப் பயன்படுத்து</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">தரவை நிர்வகித்தல்</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">தனிப்பயன் மேக்ரோக்கள்</string>
+    <string name="settings_custom_macros_intro" formatted="false">உரைக் குறுக்குவழிகளில் பயன்படுத்த உங்கள் சொந்த %x இடஒதுக்கீடுகளை வரையறுக்கவும்</string>
     <string name="settings_customize_menu_hidden_header">விசைப்பலகையில் காட்டப்படவில்லை</string>
     <string name="settings_customize_menu_instructions">ஒரு குறுக்குவழியைத் தொட்டுப் பிடித்து, பிறகு இழுத்து வரிசைமாற்றவும். முதல் நான்கு விசைப்பலகையின் உள்ளீட்டு மெனுவில் தோன்றும்.</string>
     <string name="settings_customize_menu_summary">உள்ளீட்டு மெனு குறுக்குவழிகளைத் தேர்ந்தெடுத்து வரிசைமாற்று</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">விரைவு சொற்றொடர்கள்</string>
     <string name="settings_screen_type_by_swiping">ஸ்வைப் செய்து தட்டச்சு செய்</string>
     <string name="settings_screen_type_by_swiping_summary">விசைப்பலகையிலிருந்து விரலை எடுக்காமல் விரைவாகத் தட்டச்சு செய்யவும்</string>
-    <string name="settings_screen_type_by_swiping_unavailable">உங்கள் மொழியில் ஸ்வைப் செய்து தட்டச்சு செய்யும் வசதி கிடைக்கவில்லை.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">உங்கள் மொழியில் ஸ்வைப் செய்து தட்டச்சு செய்யும் வசதி கிடைக்கவில்லை</string>
     <string name="settings_search_hint">அமைப்புகளைத் தேடு</string>
     <string name="settings_search_no_results">அமைப்புகள் எதுவும் இல்லை</string>
     <string name="settings_shake_fallback_title">மாற்றுச் செயல்</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">விசைப்பலகைச் சாதனம்: %1$s</string>
     <string name="device_config_import_matches_build">பதிப்புச் சாதனம்: %1$s</string>
     <string name="device_config_import_matches_brand">பிராண்ட்: %1$s</string>
-    <string name="device_config_import_matches_nothing">இந்தக் கோப்பில் பொருந்துவதற்கான சாதனம் எதுவும் குறிப்பிடப்படவில்லை, எனவே இது ஒருபோதும் பொருந்தாது.</string>
+    <string name="device_config_import_matches_nothing">இந்தக் கோப்பில் பொருந்துவதற்கான சாதனம் எதுவும் குறிப்பிடப்படவில்லை, எனவே இது ஒருபோதும் பொருந்தாது</string>
     <string name="device_config_import_type">சாதன வகை: %1$s</string>
     <string name="device_config_import_keys">%1$d விசை இணைப்புகள்</string>
     <string name="device_config_import_keypad_layout">விசைப்பலகைத் தளவமைப்பு: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">இந்தப் பதிப்பு புதுப்பிப்புப் பட்டியலைப் படிக்க மிகவும் பழையது. கைமுறையாகப் புதுப்பிக்கவும்.</string>
     <string name="settings_update_from_cache">கடைசியாகச் சேமித்த சரிபார்ப்பில் இருந்து காட்டப்படுகிறது</string>
     <string name="settings_update_background_check_title">புதுப்பிப்புகளைத் தானாகவே சரிபார்</string>
-    <string name="settings_update_background_check_summary">புதிய பதிப்பு பதிவிறக்கத்திற்குக் கிடைக்கும்போது அறிவிப்பு பெறுங்கள்.</string>
+    <string name="settings_update_background_check_summary">புதிய பதிப்பு பதிவிறக்கத்திற்குக் கிடைக்கும்போது அறிவிப்பு பெறுங்கள்</string>
     <string name="settings_update_notification_text">பதிப்பு %1$s பதிவிறக்கத் தயாராக உள்ளது</string>
     <string name="settings_update_unknown_sources_message">ஆப்ஸ் நிறுவ Android, BBKB க்கு அனுமதி அளிக்க வேண்டும். இந்த மூலத்திலிருந்து நிறுவலை இயக்கி, மீண்டும் நிறுவு என்பதை அழுத்தவும்.</string>
     <string name="settings_update_open_settings">அமைப்புகளைத் திற</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">அகராதிகளைச் சரிபார்க்கவும்</string>
     <string name="language_packs_load_ldb">LDB கோப்பை ஏற்றவும்</string>
     <string name="language_packs_variant_summary">%1$s க்குப் பதிலாக ஏற்றப்படும்</string>
-    <string name="language_packs_not_on_summary">புதிய %1$s விசைப்பலகையை உருவாக்க தட்டவும்.</string>
+    <string name="language_packs_not_on_summary">புதிய %1$s விசைப்பலகையை உருவாக்க தட்டவும்</string>
     <string name="language_packs_turned_on">%1$s இயக்கப்பட்டது. மொழி மாற்றியில் அதற்கு மாறவும்.</string>
-    <string name="language_packs_turn_on_in_settings">பட்டியலில் %1$s ஐ இயக்கி, பிறகு திரும்பி வாருங்கள்.</string>
+    <string name="language_packs_turn_on_in_settings">பட்டியலில் %1$s ஐ இயக்கி, பிறகு திரும்பி வாருங்கள்</string>
     <string name="language_packs_installed_and_on">%1$s நிறுவப்பட்டது. இது இயக்கப்பட்டுள்ளது: மொழி மாற்றியில் அதற்கு மாறவும்.</string>
     <string name="language_packs_installed_turn_on">%1$s நிறுவப்பட்டது. விசைப்பலகையில் இயக்க வரிசையைத் தட்டவும்.</string>
+    <string name="language_packs_installed_no_layout">%1$s நிறுவப்பட்டது, ஆனால் இந்த விசைப்பலகையில் இதன் எழுத்துமுறைக்கான தளவமைப்பு இன்னும் இல்லை, எனவே இதைத் தேர்ந்தெடுக்க முடியாது</string>
     <string name="language_packs_error_offline">இணைப்பு இல்லை</string>
     <string name="language_packs_error_network">அது வேலை செய்யவில்லை. மீண்டும் முயலுங்கள்.</string>
     <string name="language_packs_error_verification">கோப்பு பட்டியலுடன் பொருந்தவில்லை, எனவே எதுவும் நிறுவப்படவில்லை</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">சேமித்தது: %1$s</string>
     <string name="backup_restore_dialog_device">%1$s இலிருந்து</string>
     <string name="backup_restore_not_in_file">இந்தக் கோப்பில் இல்லை</string>
-    <string name="backup_restore_dialog_note">அமைப்புகளும் தளவமைப்புகளும் மேக்ரோக்களும் மாற்றியமைக்கப்படும்; சொற்கள் இந்த ஃபோனில் உள்ளவற்றுடன் சேர்க்கப்படும்.</string>
+    <string name="backup_restore_dialog_note">அமைப்புகளும் தளவமைப்புகளும் மேக்ரோக்களும் மாற்றியமைக்கப்படும்; சொற்கள் இந்த ஃபோனில் உள்ளவற்றுடன் சேர்க்கப்படும்</string>
     <string name="backup_restore_dialog_confirm">மீட்டெடு</string>
     <string name="backup_restored">காப்புப் பிரதி மீட்டெடுக்கப்பட்டது</string>
     <string name="backup_restored_words_pending">விசைப்பலகையைப் பயன்படுத்தத் தொடங்கியதும் கற்ற சொற்கள் சேர்க்கப்படும்</string>

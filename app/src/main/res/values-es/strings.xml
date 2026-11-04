@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Guarda la cuadrícula de teclas capturada como un fragmento &lt;ckb-key-grid&gt; en los archivos de la aplicación para pegarlo en la configuración del dispositivo. Abre antes el teclado una vez para que pueda capturarla.</string>
     <string name="ckb_gestures_export_title">Exportar la geometría del CKB</string>
     <string name="ckb_gestures_export_written">Se ha escrito %s</string>
-    <string name="ckb_gestures_reserved_note">Deslizar hacia arriba (confirmar la sugerencia que hay bajo tu dedo) está reservado.</string>
+    <string name="ckb_gestures_reserved_note">Deslizar hacia arriba (confirmar la sugerencia que hay bajo tu dedo) está reservado</string>
     <string name="ckb_gestures_screen_title">Gestos del CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">Multiplicador de velocidad máximo para cambiar de acento</string>
     <string name="settings_gesture_accent_max_speed_title">Multiplicador de velocidad máximo al desplazar acentos</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Activar aprendizaje dinámico</string>
     <string name="settings_dict_learned_words_summary">Gestiona las palabras aprendidas de lo que escribes</string>
     <string name="settings_dict_learned_words_title">Palabras aprendidas</string>
+    <string name="settings_dict_add_to_dictionary_note">Las palabras que añadas a tu diccionario se sugerirán mientras escribes y no se marcarán como errores ortográficos</string>
     <string name="settings_dict_text_shortcuts_summary">Crea atajos que se convierten en frases</string>
     <string name="settings_dict_text_shortcuts_title">Atajos de texto</string>
     <string name="settings_dict_user_dictionary_summary">Añade y edita palabras personales</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Selecciona o importa configuraciones de entrada del dispositivo</string>
     <string name="settings_device_configuration_title">Configuración del dispositivo</string>
     <string name="touch_surface_builtin_category">Integrado</string>
-    <string name="touch_surface_builtin_intro">El teléfono transmite la superficie táctil del teclado a BBKB mientras Scroll assistant está activado.</string>
+    <string name="touch_surface_builtin_intro">El teléfono transmite la superficie táctil del teclado a BBKB mientras Scroll assistant está activado</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant acapara el gesto de tocar dos veces en las teclas, así que BBKB nunca lo recibe</string>
     <string name="touch_surface_cursor_assistant_title">Desactivar Cursor assistant</string>
     <string name="touch_surface_grant_access">Conceder acceso</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Configurar Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Activa las Opciones para desarrolladores y, después, la Depuración inalámbrica.\n2. Inicia Shizuku desde su aplicación o con permisos de root.\n3. Vuelve aquí y toca Conceder acceso.</string>
     <string name="touch_surface_shizuku_intro">Shizuku es una aplicación gratuita que permite a BBKB leer directamente la superficie táctil. BBKB solo toma el control mientras el teclado está abierto; el resto del tiempo funciona como siempre.</string>
-    <string name="touch_surface_shizuku_mediatek">Usa Shizuku 13.5.4 en este teléfono: la versión 13.6.0 no funciona del todo en los teléfonos MediaTek.</string>
+    <string name="touch_surface_shizuku_mediatek">Usa Shizuku 13.5.4 en este teléfono: la versión 13.6.0 no funciona del todo en los teléfonos MediaTek</string>
     <string name="touch_surface_shizuku_reboot">Shizuku se detiene cada vez que el teléfono se reinicia. Vuelve a iniciarlo después de cada reinicio; el estado de arriba indica cuándo no se está ejecutando.</string>
     <string name="touch_surface_shizuku_state_denied">En ejecución, pero se ha denegado el acceso a BBKB</string>
     <string name="touch_surface_shizuku_state_granted">En ejecución y BBKB tiene acceso</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">No disponible en este teléfono</string>
     <string name="pref_show_pkb_modifier_status_icon">Mostrar el icono de estado de los modificadores</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Muestra el indicador de Mayús/Alt en la barra de estado al usar el teclado físico</string>
-    <string name="settings_pred_accounts_permission_summary">Concede el permiso de cuentas para sugerir direcciones de correo mientras escribes.</string>
+    <string name="settings_pred_accounts_permission_summary">Concede el permiso de cuentas para sugerir direcciones de correo mientras escribes</string>
     <string name="settings_pred_accounts_permission_title">Permiso de cuentas necesario</string>
     <string name="settings_pred_block_offensive_summary">Oculta las palabras potencialmente ofensivas en el dictado por voz</string>
     <string name="settings_pred_block_offensive_title">Bloquear palabras ofensivas</string>
-    <string name="settings_pred_contacts_permission_summary">Concede el permiso de contactos para sugerir nombres de contactos y direcciones de correo mientras escribes.</string>
+    <string name="settings_pred_contacts_permission_summary">Concede el permiso de contactos para sugerir nombres de contactos y direcciones de correo mientras escribes</string>
     <string name="settings_pred_contacts_permission_title">Permiso de contactos necesario</string>
     <string name="settings_pred_contacts_summary_disabled">Se necesita el permiso de contactos</string>
     <string name="settings_pred_contacts_summary_enabled">Incluye los nombres de tus contactos en las sugerencias</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Concede el permiso de contactos para usar esta función</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Los nombres de tus contactos se reconocerán como palabras válidas</string>
     <string name="settings_spellcheck_use_contacts_title">Usar los contactos para la corrección ortográfica</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Concede el permiso de contactos para reconocer los nombres de contactos como palabras válidas en la corrección ortográfica</string>
     <string name="settings_spellcheck_accept_learned_title">Aceptar palabras aprendidas</string>
     <string name="settings_spellcheck_accept_learned_summary">Las palabras aprendidas de lo que escribes se consideran bien escritas</string>
     <string name="pref_alt_double_tap_lock">Activar el bloqueo de Alt con doble pulsación</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Activar el bloqueo de Ctrl con doble pulsación</string>
     <string name="pref_ctrl_double_tap_lock_summary">Al pulsar Ctrl dos veces, quedará bloqueada. Púlsala de nuevo para desactivarla.</string>
     <string name="pref_override_device_meta_state">Anular el estado meta del dispositivo</string>
-    <string name="pref_override_device_meta_state_summary">Activa los modificadores persistentes (bloqueo de Mayús/Alt) en los teclados físicos, independientemente de la configuración KCM del dispositivo.</string>
+    <string name="pref_override_device_meta_state_summary">Activa los modificadores persistentes (bloqueo de Mayús/Alt) en los teclados físicos, independientemente de la configuración KCM del dispositivo</string>
     <string name="pref_shift_double_tap_lock">Activar el bloqueo de Mayús con doble pulsación</string>
     <string name="pref_shift_double_tap_lock_summary">Al pulsar Mayús dos veces, quedará bloqueada. Púlsala de nuevo para desactivarla.</string>
     <string name="prefs_key_longpress_delay_summary">Tiempo que debes mantener pulsada una tecla antes de que aparezcan los caracteres secundarios</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Notificaciones de eventos de autorrelleno</string>
     <string name="pref_accessibility_service_disabled">Servicio de accesibilidad desactivado</string>
     <string name="pref_accessibility_service_enabled">Servicio de accesibilidad activado</string>
-    <string name="pref_emoji_search_pkb_summary">Cuando el panel de emojis está abierto, usa el teclado para buscar.</string>
+    <string name="pref_emoji_search_pkb_summary">Cuando el panel de emojis está abierto, usa el teclado para buscar</string>
     <string name="pref_emoji_search_title">Activar búsqueda de emojis</string>
-    <string name="pref_emoji_search_vkb_summary">Filtra los emojis con el texto actual sin confirmar (subrayado).</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Al seleccionar un emoji, se inserta después del texto escrito.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Al seleccionar un emoji, se sustituye el texto escrito.</string>
+    <string name="pref_emoji_search_vkb_summary">Filtra los emojis con el texto actual sin confirmar (subrayado)</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Al seleccionar un emoji, se inserta después del texto escrito</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Al seleccionar un emoji, se sustituye el texto escrito</string>
     <string name="pref_emoji_search_replace_text_title">Sustituir el texto por el emoji</string>
     <string name="pref_key_interceptor_enabled">Activar la compatibilidad con teclas especiales</string>
     <string name="pref_key_interceptor_enabled_summary">Usa el servicio de accesibilidad para capturar las teclas Emoji, SYM y Voz</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Gestionar datos</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Macros personalizadas</string>
+    <string name="settings_custom_macros_intro" formatted="false">Define tus propios marcadores %x para usarlos en los atajos de texto</string>
     <string name="settings_customize_menu_hidden_header">No se muestra en el teclado</string>
     <string name="settings_customize_menu_instructions">Mantén pulsado un atajo y arrástralo para reordenarlo. Los cuatro primeros aparecen en el menú de entrada del teclado.</string>
     <string name="settings_customize_menu_summary">Elige y reordena los atajos del menú de entrada</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Frases rápidas</string>
     <string name="settings_screen_type_by_swiping">Escribe deslizando el dedo</string>
     <string name="settings_screen_type_by_swiping_summary">Escribe rápidamente sin levantar el dedo del teclado</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Escribir deslizando no está disponible en tu idioma.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Escribir deslizando no está disponible en tu idioma</string>
     <string name="settings_search_hint">Buscar en los ajustes</string>
     <string name="settings_search_no_results">No se han encontrado ajustes</string>
     <string name="settings_shake_fallback_title">Acción alternativa</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Dispositivo de teclado: %1$s</string>
     <string name="device_config_import_matches_build">Dispositivo de compilación: %1$s</string>
     <string name="device_config_import_matches_brand">Marca: %1$s</string>
-    <string name="device_config_import_matches_nothing">Este archivo no indica ningún dispositivo con el que coincidir, así que nunca se aplicaría.</string>
+    <string name="device_config_import_matches_nothing">Este archivo no indica ningún dispositivo con el que coincidir, así que nunca se aplicaría</string>
     <string name="device_config_import_type">Tipo de dispositivo: %1$s</string>
     <string name="device_config_import_keys">%1$d asignaciones de teclas</string>
     <string name="device_config_import_keypad_layout">Distribución del teclado: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Esta versión es demasiado antigua para leer la lista de actualizaciones. Actualiza manualmente.</string>
     <string name="settings_update_from_cache">Mostrado a partir de la última comprobación guardada</string>
     <string name="settings_update_background_check_title">Buscar actualizaciones automáticamente</string>
-    <string name="settings_update_background_check_summary">Recibe una notificación cuando haya una versión nueva disponible para descargar.</string>
+    <string name="settings_update_background_check_summary">Recibe una notificación cuando haya una versión nueva disponible para descargar</string>
     <string name="settings_update_notification_text">La versión %1$s está lista para descargar</string>
     <string name="settings_update_unknown_sources_message">Android debe permitir que BBKB instale aplicaciones. Activa la instalación desde esta fuente y vuelve a pulsar Instalar.</string>
     <string name="settings_update_open_settings">Abrir ajustes</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Buscar diccionarios</string>
     <string name="language_packs_load_ldb">Cargar archivo LDB</string>
     <string name="language_packs_variant_summary">Se carga en lugar de %1$s</string>
-    <string name="language_packs_not_on_summary">Toca para crear un teclado nuevo para %1$s.</string>
+    <string name="language_packs_not_on_summary">Toca para crear un teclado nuevo para %1$s</string>
     <string name="language_packs_turned_on">%1$s está activado. Cambia a él desde el selector de idioma.</string>
-    <string name="language_packs_turn_on_in_settings">Activa %1$s en la lista y luego vuelve.</string>
+    <string name="language_packs_turn_on_in_settings">Activa %1$s en la lista y luego vuelve</string>
     <string name="language_packs_installed_and_on">Se ha instalado %1$s. Está activado: cambia a él desde el selector de idioma.</string>
     <string name="language_packs_installed_turn_on">Se ha instalado %1$s. Toca su fila para activarlo en el teclado.</string>
+    <string name="language_packs_installed_no_layout">Se ha instalado %1$s, pero este teclado aún no tiene una distribución para su escritura, así que no se puede seleccionar</string>
     <string name="language_packs_error_offline">Sin conexión</string>
     <string name="language_packs_error_network">No funcionó. Inténtalo de nuevo.</string>
     <string name="language_packs_error_verification">El archivo no coincide con el catálogo, así que no se instaló nada</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Guardada: %1$s</string>
     <string name="backup_restore_dialog_device">Dispositivo: %1$s</string>
     <string name="backup_restore_not_in_file">No está en este archivo</string>
-    <string name="backup_restore_dialog_note">Los ajustes, los diseños y las macros se sustituyen; las palabras se añaden a las que ya hay en este teléfono.</string>
+    <string name="backup_restore_dialog_note">Los ajustes, los diseños y las macros se sustituyen; las palabras se añaden a las que ya hay en este teléfono</string>
     <string name="backup_restore_dialog_confirm">Restaurar</string>
     <string name="backup_restored">Copia de seguridad restaurada</string>
     <string name="backup_restored_words_pending">Las palabras aprendidas se añadirán cuando se empiece a usar el teclado</string>

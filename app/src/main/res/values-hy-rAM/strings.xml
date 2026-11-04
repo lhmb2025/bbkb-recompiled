@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Գրանցված ստեղների ցանցը գրել հավելվածի ֆայլերում որպես &lt;ckb-key-grid&gt; հատված՝ սարքի կազմաձևում տեղադրելու համար։ Սկզբում մեկ անգամ բացեք ստեղնաշարը, որպեսզի այն կարողանա գրանցել։</string>
     <string name="ckb_gestures_export_title">Արտահանել CKB երկրաչափությունը</string>
     <string name="ckb_gestures_export_written">Գրվեց %s</string>
-    <string name="ckb_gestures_reserved_note">Վերև սահեցումը (մատի տակ եղած առաջարկը հաստատելը) վերապահված է։</string>
+    <string name="ckb_gestures_reserved_note">Վերև սահեցումը (մատի տակ եղած առաջարկը հաստատելը) վերապահված է</string>
     <string name="ckb_gestures_screen_title">CKB ժեստեր</string>
     <string name="settings_gesture_accent_max_speed_summary">Շեշտերի փոփոխման արագության առավելագույն գործակիցը</string>
     <string name="settings_gesture_accent_max_speed_title">Շեշտերի ոլորման արագության առավելագույն գործակից</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Միացնել դինամիկ ուսուցումը</string>
     <string name="settings_dict_learned_words_summary">Կառավարել ձեր մուտքագրածից սովորած բառերը</string>
     <string name="settings_dict_learned_words_title">Սովորած բառեր</string>
+    <string name="settings_dict_add_to_dictionary_note">Ձեր բառարանում ավելացված բառերը կառաջարկվեն մուտքագրելիս և չեն նշվի որպես սխալ գրված</string>
     <string name="settings_dict_text_shortcuts_summary">Ստեղծել դյուրանցումներ, որոնք վերածվում են արտահայտությունների</string>
     <string name="settings_dict_text_shortcuts_title">Տեքստային դյուրանցումներ</string>
     <string name="settings_dict_user_dictionary_summary">Ավելացնել և խմբագրել անձնական բառերը</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Ընտրել կամ ներմուծել սարքի ներածման կազմաձևեր</string>
     <string name="settings_device_configuration_title">Սարքի կազմաձևում</string>
     <string name="touch_surface_builtin_category">Ներկառուցված աջակցություն</string>
-    <string name="touch_surface_builtin_intro">Քանի դեռ Scroll assistant-ը միացված է, հեռախոսը ստեղնաշարի հպազգայուն մակերեսի հպումները փոխանցում է BBKB-ին։</string>
+    <string name="touch_surface_builtin_intro">Քանի դեռ Scroll assistant-ը միացված է, հեռախոսը ստեղնաշարի հպազգայուն մակերեսի հպումները փոխանցում է BBKB-ին</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant-ը ստեղների վրա կրկնակի հպումը վերապահում է իրեն, ուստի BBKB-ն այն երբեք չի ստանում</string>
     <string name="touch_surface_cursor_assistant_title">Անջատել Cursor assistant-ը</string>
     <string name="touch_surface_grant_access">Տրամադրել հասանելիություն</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku-ի կարգավորում</string>
     <string name="touch_surface_shizuku_guide_steps">1. Միացրեք մշակողի ընտրանքները, ապա՝ անլար վրիպազերծումը։\n2. Գործարկեք Shizuku-ն իր հավելվածից կամ root-ի միջոցով։\n3. Վերադարձեք այստեղ և հպեք «Տրամադրել հասանելիություն»։</string>
     <string name="touch_surface_shizuku_intro">Shizuku-ն անվճար հավելված է, որը BBKB-ին թույլ է տալիս ուղղակիորեն կարդալ հպազգայուն մակերեսը։ BBKB-ն այն վերցնում է իր վերահսկողության տակ միայն այն ժամանակ, երբ ստեղնաշարը բաց է, իսկ մնացած ժամանակ այն աշխատում է սովորականի պես։</string>
-    <string name="touch_surface_shizuku_mediatek">Այս հեռախոսում օգտագործեք Shizuku-ի 13.5.4 տարբերակը, քանի որ 13.6.0 տարբերակը MediaTek-ով հեռախոսներում ամբողջությամբ չի աշխատում։</string>
+    <string name="touch_surface_shizuku_mediatek">Այս հեռախոսում օգտագործեք Shizuku-ի 13.5.4 տարբերակը, քանի որ 13.6.0 տարբերակը MediaTek-ով հեռախոսներում ամբողջությամբ չի աշխատում</string>
     <string name="touch_surface_shizuku_reboot">Shizuku-ն դադարում է աշխատել ամեն անգամ, երբ հեռախոսը վերագործարկվում է։ Ամեն վերագործարկումից հետո նորից գործարկեք այն։ Վերևի կարգավիճակը ցույց է տալիս, երբ այն գործարկված չէ։</string>
     <string name="touch_surface_shizuku_state_denied">Գործարկված է, բայց BBKB-ի հասանելիությունը մերժվել է</string>
     <string name="touch_surface_shizuku_state_granted">Գործարկված է, և BBKB-ն հասանելիություն ունի</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Հասանելի չէ այս հեռախոսում</string>
     <string name="pref_show_pkb_modifier_status_icon">Ցույց տալ ձևափոխիչի վիճակի պատկերակը</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Ցուցադրել Shift/Alt ձևափոխիչի ցուցիչը կարգավիճակի գոտում՝ ֆիզիկական ստեղնաշարն օգտագործելիս</string>
-    <string name="settings_pred_accounts_permission_summary">Տվեք հաշիվների թույլտվությունը՝ մուտքագրելիս էլ. հասցեներ առաջարկելու համար։</string>
+    <string name="settings_pred_accounts_permission_summary">Տվեք հաշիվների թույլտվությունը՝ մուտքագրելիս էլ. հասցեներ առաջարկելու համար</string>
     <string name="settings_pred_accounts_permission_title">Պահանջվում է հաշիվների թույլտվություն</string>
     <string name="settings_pred_block_offensive_summary">Թաքցնել հնարավոր վիրավորական բառերը ձայնային թելադրության ժամանակ</string>
     <string name="settings_pred_block_offensive_title">Արգելափակել վիրավորական բառերը</string>
-    <string name="settings_pred_contacts_permission_summary">Տվեք կոնտակտների թույլտվությունը՝ մուտքագրելիս կոնտակտների անուններ և էլ. հասցեներ առաջարկելու համար։</string>
+    <string name="settings_pred_contacts_permission_summary">Տվեք կոնտակտների թույլտվությունը՝ մուտքագրելիս կոնտակտների անուններ և էլ. հասցեներ առաջարկելու համար</string>
     <string name="settings_pred_contacts_permission_title">Պահանջվում է կոնտակտների թույլտվություն</string>
     <string name="settings_pred_contacts_summary_disabled">Պահանջվում է կոնտակտների թույլտվություն</string>
     <string name="settings_pred_contacts_summary_enabled">Ներառել կոնտակտների անունները առաջարկներում</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Տվեք կոնտակտների թույլտվությունը՝ այս գործառույթն օգտագործելու համար</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Կոնտակտների անունները կճանաչվեն որպես ճիշտ բառեր</string>
     <string name="settings_spellcheck_use_contacts_title">Օգտագործել կոնտակտները տառասխալների ստուգման համար</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Տվեք կոնտակտների թույլտվությունը, որպեսզի ուղղագրության ստուգման ժամանակ կոնտակտների անունները ճանաչվեն որպես ճիշտ բառեր</string>
     <string name="settings_spellcheck_accept_learned_title">Ընդունել սովորած բառերը</string>
     <string name="settings_spellcheck_accept_learned_summary">Ձեր մուտքագրումից սովորած բառերը համարվում են ճիշտ գրված</string>
     <string name="pref_alt_double_tap_lock">Միացնել Alt-ի կրկնակի սեղմման կողպումը</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Միացնել Ctrl-ի կրկնակի սեղմման կողպումը</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl-ի կրկնակի սեղմումը կկողպի այն։ Ctrl-ի հաջորդ սեղմումը կանջատի այն։</string>
     <string name="pref_override_device_meta_state">Վերասահմանել սարքի մետավիճակը</string>
-    <string name="pref_override_device_meta_state_summary">Միացնել կպչուն ձևափոխիչները (shift/alt կողպում) ֆիզիկական ստեղնաշարերում՝ անկախ սարքի KCM կազմաձևից։</string>
+    <string name="pref_override_device_meta_state_summary">Միացնել կպչուն ձևափոխիչները (shift/alt կողպում) ֆիզիկական ստեղնաշարերում՝ անկախ սարքի KCM կազմաձևից</string>
     <string name="pref_shift_double_tap_lock">Միացնել Shift-ի կրկնակի սեղմման կողպումը</string>
     <string name="pref_shift_double_tap_lock_summary">Shift-ի կրկնակի սեղմումը կկողպի այն։ Shift-ի հաջորդ սեղմումը կանջատի այն։</string>
     <string name="prefs_key_longpress_delay_summary">Ստեղնը պահելու ժամանակը՝ մինչև երկրորդական նիշերի հայտնվելը</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Ավտոլրացման իրադարձությունների ծանուցումներ</string>
     <string name="pref_accessibility_service_disabled">Հատուկ հնարավորությունների ծառայությունն անջատված է</string>
     <string name="pref_accessibility_service_enabled">Հատուկ հնարավորությունների ծառայությունը միացված է</string>
-    <string name="pref_emoji_search_pkb_summary">Երբ զմայլիկների վահանակը բաց է, որոնելու համար օգտագործեք ստեղնաշարը։</string>
+    <string name="pref_emoji_search_pkb_summary">Երբ զմայլիկների վահանակը բաց է, որոնելու համար օգտագործեք ստեղնաշարը</string>
     <string name="pref_emoji_search_title">Միացնել զմայլիկների որոնումը</string>
-    <string name="pref_emoji_search_vkb_summary">Զտել զմայլիկները ընթացիկ չհաստատված (ընդգծված) տեքստով։</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Զմայլիկ ընտրելը այն տեղադրում է մուտքագրված տեքստից հետո։</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Զմայլիկ ընտրելը փոխարինում է մուտքագրված տեքստը։</string>
+    <string name="pref_emoji_search_vkb_summary">Զտել զմայլիկները ընթացիկ չհաստատված (ընդգծված) տեքստով</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Զմայլիկ ընտրելը այն տեղադրում է մուտքագրված տեքստից հետո</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Զմայլիկ ընտրելը փոխարինում է մուտքագրված տեքստը</string>
     <string name="pref_emoji_search_replace_text_title">Փոխարինել տեքստը զմայլիկով</string>
     <string name="pref_key_interceptor_enabled">Միացնել հատուկ ստեղների աջակցությունը</string>
     <string name="pref_key_interceptor_enabled_summary">Օգտագործել հատուկ հնարավորությունների ծառայությունը՝ զմայլիկների, SYM և ձայնի ստեղները գրանցելու համար</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Տվյալների կառավարում</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Հարմարեցված մակրոներ</string>
+    <string name="settings_custom_macros_intro" formatted="false">Սահմանեք ձեր սեփական %x տեղապահերը՝ տեքստային դյուրանցումներում օգտագործելու համար</string>
     <string name="settings_customize_menu_hidden_header">Չեն ցուցադրվում ստեղնաշարին</string>
     <string name="settings_customize_menu_instructions">Հպեք և պահեք դյուրանցումը, ապա քաշեք՝ հերթականությունը փոխելու համար։ Առաջին չորսը հայտնվում են ստեղնաշարի ներածման ընտրացանկում։</string>
     <string name="settings_customize_menu_summary">Ընտրել և վերադասավորել ներածման ընտրացանկի դյուրանցումները</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Արագ արտահայտություններ</string>
     <string name="settings_screen_type_by_swiping">Մուտքագրում սահեցումով</string>
     <string name="settings_screen_type_by_swiping_summary">Մուտքագրեք արագ՝ առանց մատը ստեղնաշարից բարձրացնելու</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Սահեցումով մուտքագրումը հասանելի չէ ձեր լեզվով։</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Սահեցումով մուտքագրումը հասանելի չէ ձեր լեզվով</string>
     <string name="settings_search_hint">Որոնել կարգավորումներում</string>
     <string name="settings_search_no_results">Կարգավորումներ չեն գտնվել</string>
     <string name="settings_shake_fallback_title">Պահեստային գործողություն</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Ստեղնաշարի սարք՝ %1$s</string>
     <string name="device_config_import_matches_build">Կառուցման սարք՝ %1$s</string>
     <string name="device_config_import_matches_brand">Ապրանքանիշ՝ %1$s</string>
-    <string name="device_config_import_matches_nothing">Այս ֆայլը որևէ սարք չի նշում համապատասխանեցման համար, ուստի երբեք չի կիրառվի։</string>
+    <string name="device_config_import_matches_nothing">Այս ֆայլը որևէ սարք չի նշում համապատասխանեցման համար, ուստի երբեք չի կիրառվի</string>
     <string name="device_config_import_type">Սարքի տեսակ՝ %1$s</string>
     <string name="device_config_import_keys">%1$d ստեղնի համապատասխանեցում</string>
     <string name="device_config_import_keypad_layout">Ստեղնաշարի դասավորություն՝ %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Այս տարբերակը շատ հին է թարմացումների ցանկը կարդալու համար։ Թարմացրեք ձեռքով։</string>
     <string name="settings_update_from_cache">Ցուցադրված է վերջին պահված ստուգումից</string>
     <string name="settings_update_background_check_title">Ավտոմատ ստուգել թարմացումները</string>
-    <string name="settings_update_background_check_summary">Ծանուցում կստանաք, երբ նոր տարբերակը հասանելի լինի ներբեռնման համար։</string>
+    <string name="settings_update_background_check_summary">Ծանուցում կստանաք, երբ նոր տարբերակը հասանելի լինի ներբեռնման համար</string>
     <string name="settings_update_notification_text">Տարբերակ %1$s-ը պատրաստ է ներբեռնման</string>
     <string name="settings_update_unknown_sources_message">Android-ը պետք է թույլ տա BBKB-ին տեղադրել հավելվածներ։ Միացրեք տեղադրումն այս աղբյուրից, ապա նորից սեղմեք Տեղադրել։</string>
     <string name="settings_update_open_settings">Բացել կարգավորումները</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Ստուգել բառարանները</string>
     <string name="language_packs_load_ldb">Բեռնել LDB ֆայլը</string>
     <string name="language_packs_variant_summary">Բեռնվում է %1$s-ի փոխարեն</string>
-    <string name="language_packs_not_on_summary">Հպեք՝ նոր %1$s ստեղնաշար ստեղծելու համար։</string>
+    <string name="language_packs_not_on_summary">Հպեք՝ նոր %1$s ստեղնաշար ստեղծելու համար</string>
     <string name="language_packs_turned_on">%1$s-ը միացված է։ Անցեք դրան լեզվի փոխարկիչից։</string>
-    <string name="language_packs_turn_on_in_settings">Միացրեք %1$s-ը ցանկում, ապա վերադարձեք։</string>
+    <string name="language_packs_turn_on_in_settings">Միացրեք %1$s-ը ցանկում, ապա վերադարձեք</string>
     <string name="language_packs_installed_and_on">Տեղադրված է %1$s-ը։ Այն միացված է՝ անցեք դրան լեզվի փոխարկիչից։</string>
     <string name="language_packs_installed_turn_on">Տեղադրված է %1$s-ը։ Հպեք տողին՝ այն ստեղնաշարում միացնելու համար։</string>
+    <string name="language_packs_installed_no_layout">Տեղադրված է %1$s-ը, սակայն այս ստեղնաշարը դեռ չունի դասավորություն դրա գրի համար, ուստի այն հնարավոր չէ ընտրել</string>
     <string name="language_packs_error_offline">Կապ չկա</string>
     <string name="language_packs_error_network">Չստացվեց։ Կրկին փորձեք։</string>
     <string name="language_packs_error_verification">Ֆայլը չհամապատասխանեց կատալոգին, ոչինչ չտեղադրվեց</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Պահված՝ %1$s</string>
     <string name="backup_restore_dialog_device">Սարք՝ %1$s</string>
     <string name="backup_restore_not_in_file">Այս ֆայլում չկա</string>
-    <string name="backup_restore_dialog_note">Կարգավորումները, դասավորություններն ու մակրոները փոխարինվում են, իսկ բառերն ավելացվում են այս հեռախոսում եղածին։</string>
+    <string name="backup_restore_dialog_note">Կարգավորումները, դասավորություններն ու մակրոները փոխարինվում են, իսկ բառերն ավելացվում են այս հեռախոսում եղածին</string>
     <string name="backup_restore_dialog_confirm">Վերականգնել</string>
     <string name="backup_restored">Պահուստը վերականգնվեց</string>
     <string name="backup_restored_words_pending">Սովորած բառերը կավելացվեն, երբ ստեղնաշարը սկսի օգտագործվել</string>

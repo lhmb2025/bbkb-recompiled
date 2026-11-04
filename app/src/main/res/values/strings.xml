@@ -133,7 +133,7 @@
     <string name="ckb_gestures_export_summary">Write the captured key grid as a &lt;ckb-key-grid&gt; snippet to app files, to paste into the device config. Open the keyboard once first so it can capture.</string>
     <string name="ckb_gestures_export_title">Export CKB geometry</string>
     <string name="ckb_gestures_export_written">Wrote %s</string>
-    <string name="ckb_gestures_reserved_note">Swiping up (commit the suggestion under your finger) is reserved.</string>
+    <string name="ckb_gestures_reserved_note">Swiping up (commit the suggestion under your finger) is reserved</string>
     <string name="ckb_gestures_screen_title">CKB Gestures</string>
     <string name="settings_gesture_accent_max_speed_summary">Maximum speed multiplier for accent changes</string>
     <string name="settings_gesture_accent_max_speed_title">Scroll accents change max speed multiplier</string>
@@ -228,6 +228,7 @@
     <string name="settings_dict_dynamic_learning_title">Enable dynamic learning</string>
     <string name="settings_dict_learned_words_summary">Manage words learned from your typing</string>
     <string name="settings_dict_learned_words_title">Learned words</string>
+    <string name="settings_dict_add_to_dictionary_note">Words added to your dictionary will be suggested during typing and won\'t be marked as misspelled</string>
     <string name="settings_dict_text_shortcuts_summary">Create shortcuts that expand to phrases</string>
     <string name="settings_dict_text_shortcuts_title">Text shortcuts</string>
     <string name="settings_dict_user_dictionary_summary">Add and edit personal words</string>
@@ -519,7 +520,7 @@
     <!-- Touch surface helper (Unihertz Titans). "Shizuku", "Scroll assistant" and "Cursor
          assistant" are product and OEM page names: left as they are. -->
     <string name="touch_surface_builtin_category">Built-in</string>
-    <string name="touch_surface_builtin_intro">The phone delivers the keyboard\'s touch surface to BBKB while its Scroll assistant is on.</string>
+    <string name="touch_surface_builtin_intro">The phone delivers the keyboard\'s touch surface to BBKB while its Scroll assistant is on</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant claims double-tap on the keys, so BBKB never receives it</string>
     <string name="touch_surface_cursor_assistant_title">Turn off Cursor assistant</string>
     <string name="touch_surface_grant_access">Grant access</string>
@@ -537,7 +538,7 @@
     <string name="touch_surface_shizuku_guide_category">Set up Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Turn on Developer options, then Wireless debugging.\n2. Start Shizuku from its app, or with root.\n3. Come back here and tap Grant access.</string>
     <string name="touch_surface_shizuku_intro">Shizuku is a free app that lets BBKB read the touch surface directly. BBKB takes it over only while the keyboard is open; the rest of the time it works as the phone normally does.</string>
-    <string name="touch_surface_shizuku_mediatek">Use Shizuku 13.5.4 on this phone: version 13.6.0 does not work fully on MediaTek phones.</string>
+    <string name="touch_surface_shizuku_mediatek">Use Shizuku 13.5.4 on this phone: version 13.6.0 does not work fully on MediaTek phones</string>
     <string name="touch_surface_shizuku_reboot">Shizuku stops every time the phone restarts. Start it again after each restart; the status above says when it is not running.</string>
     <string name="touch_surface_shizuku_state_denied">Running, but BBKB was refused access</string>
     <string name="touch_surface_shizuku_state_granted">Running, and BBKB has access</string>
@@ -565,11 +566,11 @@
     <string name="pref_show_pkb_modifier_status_icon">Show modifier status icon</string>
     <string name="pref_show_pkb_modifier_status_icon_key" translatable="false">pref_show_pkb_modifier_status_icon</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Display Shift/Alt modifier indicator in status bar when using physical keyboard</string>
-    <string name="settings_pred_accounts_permission_summary">Grant accounts permission to suggest email addresses while typing.</string>
+    <string name="settings_pred_accounts_permission_summary">Grant accounts permission to suggest email addresses while typing</string>
     <string name="settings_pred_accounts_permission_title">Accounts Permission Required</string>
     <string name="settings_pred_block_offensive_summary">Mask potentially offensive words in voice dictation</string>
     <string name="settings_pred_block_offensive_title">Block offensive words</string>
-    <string name="settings_pred_contacts_permission_summary">Grant contacts permission to suggest contact names and email addresses while typing.</string>
+    <string name="settings_pred_contacts_permission_summary">Grant contacts permission to suggest contact names and email addresses while typing</string>
     <string name="settings_pred_contacts_permission_title">Contacts Permission Required</string>
     <string name="settings_pred_contacts_summary_disabled">Contacts permission required</string>
     <string name="settings_pred_contacts_summary_enabled">Include contact names in suggestions</string>
@@ -622,6 +623,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Grant contacts permission to use this feature</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Contact names will be recognized as valid words</string>
     <string name="settings_spellcheck_use_contacts_title">Use contacts for spellchecking</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Grant contacts permission to recognize contact names as valid words during spell checking</string>
     <string name="settings_spellcheck_accept_learned_title">Accept learned words</string>
     <string name="settings_spellcheck_accept_learned_summary">Words learned from your typing count as spelled correctly</string>
 
@@ -636,7 +638,7 @@
     <string name="pref_ctrl_double_tap_lock_summary">Double-clicking Ctrl will lock it on. Clicking Ctrl again will turn it off.</string>
     <string name="pref_override_device_meta_state">Override device meta state</string>
     <string name="pref_override_device_meta_state_key" translatable="false">pref_override_device_meta_state</string>
-    <string name="pref_override_device_meta_state_summary">Enable sticky modifiers (shift/alt lock) on physical keyboards regardless of device KCM configuration.</string>
+    <string name="pref_override_device_meta_state_summary">Enable sticky modifiers (shift/alt lock) on physical keyboards regardless of device KCM configuration</string>
     <string name="pref_shift_double_tap_lock">Enable Shift double-click lock</string>
     <string name="pref_shift_double_tap_lock_key" translatable="false">pref_shift_double_tap_lock</string>
     <string name="pref_shift_double_tap_lock_summary">Double-clicking Shift will lock it on. Clicking Shift again will turn it off.</string>
@@ -660,11 +662,11 @@
     <!-- ===================================================== -->
     <string name="pref_accessibility_service_disabled">Accessibility service disabled</string>
     <string name="pref_accessibility_service_enabled">Accessibility service enabled</string>
-    <string name="pref_emoji_search_pkb_summary">When the emoji board is open, use the keyboard to search.</string>
+    <string name="pref_emoji_search_pkb_summary">When the emoji board is open, use the keyboard to search</string>
     <string name="pref_emoji_search_title">Enable emoji search</string>
-    <string name="pref_emoji_search_vkb_summary">Filter emojis with the current uncommitted (underlined) text.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Selecting an emoji inserts it after the typed text.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Selecting an emoji replaces the typed text.</string>
+    <string name="pref_emoji_search_vkb_summary">Filter emojis with the current uncommitted (underlined) text</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Selecting an emoji inserts it after the typed text</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Selecting an emoji replaces the typed text</string>
     <string name="pref_emoji_search_replace_text_title">Replace text with emoji</string>
     <string name="pref_key_interceptor_enabled">Enable special key support</string>
     <string name="pref_key_interceptor_enabled_summary">Use accessibility service to capture Emoji, SYM, and Voice keys</string>
@@ -732,7 +734,7 @@
     <string name="backup_restore_dialog_saved">Saved %1$s</string>
     <string name="backup_restore_dialog_device">From %1$s</string>
     <string name="backup_restore_not_in_file">Not in this file</string>
-    <string name="backup_restore_dialog_note">Settings, layouts and macros are replaced; words are added to what is on this phone.</string>
+    <string name="backup_restore_dialog_note">Settings, layouts and macros are replaced; words are added to what is on this phone</string>
     <string name="backup_restore_dialog_confirm">Restore</string>
     <string name="backup_restored">Backup restored</string>
     <string name="backup_restored_words_pending">Learned words will be added once the keyboard is in use</string>
@@ -752,6 +754,7 @@
     <string name="reset_done">Reset complete</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Custom macros</string>
+    <string name="settings_custom_macros_intro" formatted="false">Define your own %x placeholders for use in text shortcuts</string>
     <string name="settings_customize_menu_hidden_header">Not shown on keyboard</string>
     <string name="settings_customize_menu_instructions">Touch and hold a shortcut, then drag to reorder. The first four appear on the keyboard\u2019s input menu.</string>
     <string name="settings_customize_menu_summary">Choose and reorder the input menu shortcuts</string>
@@ -776,7 +779,7 @@
     <string name="settings_quick_phrases_screen_title">Quick phrases</string>
     <string name="settings_screen_type_by_swiping">Type by swiping</string>
     <string name="settings_screen_type_by_swiping_summary">Type quickly without lifting your finger off the keyboard</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Type by swiping is not available in your language.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Type by swiping is not available in your language</string>
     <string name="settings_search_hint">Search settings</string>
     <string name="settings_search_no_results">No settings found</string>
     <string name="settings_shake_fallback_title">Fallback action</string>
@@ -898,7 +901,7 @@
     <string name="device_config_import_matches_device">Keyboard device: %1$s</string>
     <string name="device_config_import_matches_build">Build device: %1$s</string>
     <string name="device_config_import_matches_brand">Brand: %1$s</string>
-    <string name="device_config_import_matches_nothing">This file names no device to match, so it would never apply.</string>
+    <string name="device_config_import_matches_nothing">This file names no device to match, so it would never apply</string>
     <string name="device_config_import_type">Device type: %1$s</string>
     <string name="device_config_import_keys">%1$d key mappings</string>
     <string name="device_config_import_keypad_layout">Keypad layout: %1$s</string>
@@ -938,7 +941,7 @@
     <string name="settings_update_error_too_old">This version is too old to read the update list. Please update by hand.</string>
     <string name="settings_update_from_cache">Shown from the last saved check</string>
     <string name="settings_update_background_check_title">Automatically check for updates</string>
-    <string name="settings_update_background_check_summary">Receive a notification when a new version is available to download.</string>
+    <string name="settings_update_background_check_summary">Receive a notification when a new version is available to download</string>
     <string name="settings_update_notification_text">Version %1$s is ready to download</string>
     <string name="settings_update_unknown_sources_message">Android must allow BBKB to install apps. Turn on \"Allow from this source\", then press Install again.</string>
     <string name="settings_update_open_settings">Open settings</string>
@@ -950,11 +953,12 @@
     <string name="language_packs_refresh">Check for dictionaries</string>
     <string name="language_packs_load_ldb">Load LDB file</string>
     <string name="language_packs_variant_summary">Loads in place of %1$s</string>
-    <string name="language_packs_not_on_summary">Tap to create new %1$s keyboard.</string>
+    <string name="language_packs_not_on_summary">Tap to create new %1$s keyboard</string>
     <string name="language_packs_turned_on">%1$s is on. Switch to it from the language switcher.</string>
-    <string name="language_packs_turn_on_in_settings">Turn on %1$s in the list, then come back.</string>
+    <string name="language_packs_turn_on_in_settings">Turn on %1$s in the list, then come back</string>
     <string name="language_packs_installed_and_on">Installed %1$s. It is on: switch to it from the language switcher.</string>
     <string name="language_packs_installed_turn_on">Installed %1$s. Tap its row to turn it on in the keyboard.</string>
+    <string name="language_packs_installed_no_layout">Installed %1$s, but this keyboard has no layout for its script yet, so it cannot be selected</string>
     <string name="language_packs_error_offline">No connection</string>
     <string name="language_packs_error_network">That did not work. Try again.</string>
     <string name="language_packs_error_verification">The file did not match the catalogue, so nothing was installed</string>

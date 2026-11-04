@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Skrifar vistaða lyklanetið sem &lt;ckb-key-grid&gt;-búta í skrár forritsins, til að líma inn í tækjastillinguna. Opnaðu lyklaborðið fyrst svo það geti vistað netið.</string>
     <string name="ckb_gestures_export_title">Flytja út CKB-rúmfræði</string>
     <string name="ckb_gestures_export_written">Skrifaði %s</string>
-    <string name="ckb_gestures_reserved_note">Að strjúka upp (staðfesta tillöguna undir fingrinum) er frátekið.</string>
+    <string name="ckb_gestures_reserved_note">Að strjúka upp (staðfesta tillöguna undir fingrinum) er frátekið</string>
     <string name="ckb_gestures_screen_title">CKB-bendingar</string>
     <string name="settings_gesture_accent_max_speed_summary">Hámarkshraðamargfaldari fyrir breytingu á broddstöfum</string>
     <string name="settings_gesture_accent_max_speed_title">Hámarkshraðamargfaldari við flettingu broddstafa</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Kveikja á virku námi</string>
     <string name="settings_dict_learned_words_summary">Sýsla með orð sem lærð eru af innslætti</string>
     <string name="settings_dict_learned_words_title">Lærð orð</string>
+    <string name="settings_dict_add_to_dictionary_note">Stungið verður upp á orðum sem bætt er við orðabókina þína meðan þú skrifar og þau verða ekki merkt sem stafsetningarvillur</string>
     <string name="settings_dict_text_shortcuts_summary">Búa til flýtileiðir sem verða að setningum</string>
     <string name="settings_dict_text_shortcuts_title">Textaflýtileiðir</string>
     <string name="settings_dict_user_dictionary_summary">Bæta við og breyta persónulegum orðum</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Veldu eða flyttu inn innsláttarstillingar tækis</string>
     <string name="settings_device_configuration_title">Stilling tækis</string>
     <string name="touch_surface_builtin_category">Innbyggt</string>
-    <string name="touch_surface_builtin_intro">Síminn sendir snertiflöt lyklaborðsins til BBKB á meðan kveikt er á Scroll assistant.</string>
+    <string name="touch_surface_builtin_intro">Síminn sendir snertiflöt lyklaborðsins til BBKB á meðan kveikt er á Scroll assistant</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant tekur til sín tvísmelli á lyklunum, svo BBKB fær þá aldrei</string>
     <string name="touch_surface_cursor_assistant_title">Slökkva á Cursor assistant</string>
     <string name="touch_surface_grant_access">Veita aðgang</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Stilla Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Kveiktu á Forritunarkostum og síðan á Þráðlausri villuleit.\n2. Ræstu Shizuku úr forritinu sjálfu eða með root-aðgangi.\n3. Komdu aftur hingað og ýttu á Veita aðgang.</string>
     <string name="touch_surface_shizuku_intro">Shizuku er ókeypis forrit sem gerir BBKB kleift að lesa snertiflötinn beint. BBKB tekur hann aðeins yfir á meðan lyklaborðið er opið; þess á milli virkar hann eins og síminn gerir venjulega.</string>
-    <string name="touch_surface_shizuku_mediatek">Notaðu Shizuku 13.5.4 í þessum síma: útgáfa 13.6.0 virkar ekki að fullu í MediaTek-símum.</string>
+    <string name="touch_surface_shizuku_mediatek">Notaðu Shizuku 13.5.4 í þessum síma: útgáfa 13.6.0 virkar ekki að fullu í MediaTek-símum</string>
     <string name="touch_surface_shizuku_reboot">Shizuku stöðvast í hvert sinn sem síminn er endurræstur. Ræstu það aftur eftir hverja endurræsingu; staðan hér fyrir ofan sýnir þegar það er ekki í gangi.</string>
     <string name="touch_surface_shizuku_state_denied">Í gangi en BBKB var synjað um aðgang</string>
     <string name="touch_surface_shizuku_state_granted">Í gangi og BBKB hefur aðgang</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Ekki í boði í þessum síma</string>
     <string name="pref_show_pkb_modifier_status_icon">Sýna stöðutákn breytilykla</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Sýna Shift/Alt-breytilykilvísi á stöðustiku þegar vélbúnaðarlyklaborð er notað</string>
-    <string name="settings_pred_accounts_permission_summary">Veittu heimild fyrir reikninga til að stinga upp á netföngum meðan þú skrifar.</string>
+    <string name="settings_pred_accounts_permission_summary">Veittu heimild fyrir reikninga til að stinga upp á netföngum meðan þú skrifar</string>
     <string name="settings_pred_accounts_permission_title">Heimild fyrir reikninga nauðsynleg</string>
     <string name="settings_pred_block_offensive_summary">Fela orð sem gætu verið móðgandi við raddupplestur</string>
     <string name="settings_pred_block_offensive_title">Loka á móðgandi orð</string>
-    <string name="settings_pred_contacts_permission_summary">Veittu heimild fyrir tengiliði til að stinga upp á nöfnum tengiliða og netföngum meðan þú skrifar.</string>
+    <string name="settings_pred_contacts_permission_summary">Veittu heimild fyrir tengiliði til að stinga upp á nöfnum tengiliða og netföngum meðan þú skrifar</string>
     <string name="settings_pred_contacts_permission_title">Heimild fyrir tengiliði nauðsynleg</string>
     <string name="settings_pred_contacts_summary_disabled">Heimild fyrir tengiliði nauðsynleg</string>
     <string name="settings_pred_contacts_summary_enabled">Hafa nöfn tengiliða með í tillögum</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Veittu heimild fyrir tengiliði til að nota þennan eiginleika</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Nöfn tengiliða verða talin gild orð</string>
     <string name="settings_spellcheck_use_contacts_title">Nota tengiliði við ritvilluleit</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Veittu heimild fyrir tengiliði svo að nöfn tengiliða séu þekkt sem gild orð við ritvilluleit</string>
     <string name="settings_spellcheck_accept_learned_title">Samþykkja lærð orð</string>
     <string name="settings_spellcheck_accept_learned_summary">Orð sem lærð eru af innslætti þínum teljast rétt stafsett</string>
     <string name="pref_alt_double_tap_lock">Virkja læsingu Alt með tvísmelli</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Virkja læsingu Ctrl með tvísmelli</string>
     <string name="pref_ctrl_double_tap_lock_summary">Tvísmellur á Ctrl læsir honum á. Smelltu aftur á Ctrl til að slökkva á honum.</string>
     <string name="pref_override_device_meta_state">Hnekkja metastöðu tækis</string>
-    <string name="pref_override_device_meta_state_summary">Virkja klístraða breytilykla (shift/alt-læsingu) á vélbúnaðarlyklaborðum óháð KCM-stillingu tækisins.</string>
+    <string name="pref_override_device_meta_state_summary">Virkja klístraða breytilykla (shift/alt-læsingu) á vélbúnaðarlyklaborðum óháð KCM-stillingu tækisins</string>
     <string name="pref_shift_double_tap_lock">Virkja læsingu Shift með tvísmelli</string>
     <string name="pref_shift_double_tap_lock_summary">Tvísmellur á Shift læsir honum á. Smelltu aftur á Shift til að slökkva á honum.</string>
     <string name="prefs_key_longpress_delay_summary">Tími sem halda þarf lykli inni áður en aukastafir birtast</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Sprettitilkynningar sjálfvirkrar útfyllingar</string>
     <string name="pref_accessibility_service_disabled">Slökkt á aðgengisþjónustu</string>
     <string name="pref_accessibility_service_enabled">Kveikt á aðgengisþjónustu</string>
-    <string name="pref_emoji_search_pkb_summary">Þegar emoji-spjaldið er opið er leitað með lyklaborðinu.</string>
+    <string name="pref_emoji_search_pkb_summary">Þegar emoji-spjaldið er opið er leitað með lyklaborðinu</string>
     <string name="pref_emoji_search_title">Kveikja á emoji-leit</string>
-    <string name="pref_emoji_search_vkb_summary">Sía emoji-tákn eftir núverandi óstaðfestum (undirstrikuðum) texta.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Þegar emoji-tákn er valið bætist það við á eftir rituðum texta.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Þegar emoji-tákn er valið kemur það í stað ritaðs texta.</string>
+    <string name="pref_emoji_search_vkb_summary">Sía emoji-tákn eftir núverandi óstaðfestum (undirstrikuðum) texta</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Þegar emoji-tákn er valið bætist það við á eftir rituðum texta</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Þegar emoji-tákn er valið kemur það í stað ritaðs texta</string>
     <string name="pref_emoji_search_replace_text_title">Skipta texta út fyrir emoji-tákn</string>
     <string name="pref_key_interceptor_enabled">Virkja stuðning við sérlykla</string>
     <string name="pref_key_interceptor_enabled_summary">Nota aðgengisþjónustu til að grípa Emoji-, SYM- og raddlykla</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Sýsla með gögn</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Sérsniðnir fjölvar</string>
+    <string name="settings_custom_macros_intro" formatted="false">Skilgreindu eigin %x-staðgengla til að nota í textaflýtileiðum</string>
     <string name="settings_customize_menu_hidden_header">Ekki sýnt á lyklaborðinu</string>
     <string name="settings_customize_menu_instructions">Haltu fingri á flýtileið og dragðu hana til að breyta röðinni. Fyrstu fjórar birtast í innsláttarvalmynd lyklaborðsins.</string>
     <string name="settings_customize_menu_summary">Veldu flýtileiðir innsláttarvalmyndar og raðaðu þeim</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Skyndisetningar</string>
     <string name="settings_screen_type_by_swiping">Skrifa með stroki</string>
     <string name="settings_screen_type_by_swiping_summary">Skrifaðu hratt án þess að lyfta fingri af lyklaborðinu</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Að skrifa með stroki er ekki í boði á tungumálinu þínu.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Að skrifa með stroki er ekki í boði á tungumálinu þínu</string>
     <string name="settings_search_hint">Leita í stillingum</string>
     <string name="settings_search_no_results">Engar stillingar fundust</string>
     <string name="settings_shake_fallback_title">Varaaðgerð</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Lyklaborðstæki: %1$s</string>
     <string name="device_config_import_matches_build">Tæki útgáfu: %1$s</string>
     <string name="device_config_import_matches_brand">Vörumerki: %1$s</string>
-    <string name="device_config_import_matches_nothing">Þessi skrá tilgreinir ekkert tæki til að passa við og myndi því aldrei taka gildi.</string>
+    <string name="device_config_import_matches_nothing">Þessi skrá tilgreinir ekkert tæki til að passa við og myndi því aldrei taka gildi</string>
     <string name="device_config_import_type">Tegund tækis: %1$s</string>
     <string name="device_config_import_keys">%1$d lyklavörpun</string>
     <string name="device_config_import_keypad_layout">Uppsetning lyklaborðs: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Þessi útgáfa er of gömul til að lesa uppfærslulistann. Uppfærðu handvirkt.</string>
     <string name="settings_update_from_cache">Sýnt út frá síðustu vistuðu athugun</string>
     <string name="settings_update_background_check_title">Leita sjálfkrafa að uppfærslum</string>
-    <string name="settings_update_background_check_summary">Þú færð tilkynningu þegar ný útgáfa er tiltæk til niðurhals.</string>
+    <string name="settings_update_background_check_summary">Þú færð tilkynningu þegar ný útgáfa er tiltæk til niðurhals</string>
     <string name="settings_update_notification_text">Útgáfa %1$s er tilbúin til niðurhals</string>
     <string name="settings_update_unknown_sources_message">Android verður að leyfa BBKB að setja upp forrit. Leyfðu uppsetningu frá þessari heimild og ýttu svo aftur á Setja upp.</string>
     <string name="settings_update_open_settings">Opna stillingar</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Leita að orðabókum</string>
     <string name="language_packs_load_ldb">Hlaða LDB-skrá</string>
     <string name="language_packs_variant_summary">Hleðst í stað %1$s</string>
-    <string name="language_packs_not_on_summary">Ýttu til að búa til nýtt lyklaborð: %1$s.</string>
+    <string name="language_packs_not_on_summary">Ýttu til að búa til nýtt lyklaborð: %1$s</string>
     <string name="language_packs_turned_on">%1$s er virkt. Skiptu yfir í það í tungumálaskiptaranum.</string>
-    <string name="language_packs_turn_on_in_settings">Virkjaðu %1$s á listanum og komdu svo til baka.</string>
+    <string name="language_packs_turn_on_in_settings">Virkjaðu %1$s á listanum og komdu svo til baka</string>
     <string name="language_packs_installed_and_on">%1$s uppsett. Það er virkt: skiptu yfir í það í tungumálaskiptaranum.</string>
     <string name="language_packs_installed_turn_on">%1$s uppsett. Ýttu á línuna til að virkja það á lyklaborðinu.</string>
+    <string name="language_packs_installed_no_layout">%1$s uppsett, en þetta lyklaborð er ekki enn með útlit fyrir ritkerfi þess, svo ekki er hægt að velja það</string>
     <string name="language_packs_error_offline">Engin tenging</string>
     <string name="language_packs_error_network">Það gekk ekki. Reyndu aftur.</string>
     <string name="language_packs_error_verification">Skráin passaði ekki við skrárlistann, svo ekkert var sett upp</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Vistað: %1$s</string>
     <string name="backup_restore_dialog_device">Tæki: %1$s</string>
     <string name="backup_restore_not_in_file">Ekki í þessari skrá</string>
-    <string name="backup_restore_dialog_note">Stillingum, uppsetningum og fjölvum er skipt út; orðum er bætt við það sem er í þessum síma.</string>
+    <string name="backup_restore_dialog_note">Stillingum, uppsetningum og fjölvum er skipt út; orðum er bætt við það sem er í þessum síma</string>
     <string name="backup_restore_dialog_confirm">Endurheimta</string>
     <string name="backup_restored">Öryggisafrit endurheimt</string>
     <string name="backup_restored_words_pending">Lærðum orðum verður bætt við þegar lyklaborðið er tekið í notkun</string>

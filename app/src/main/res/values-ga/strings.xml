@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Scríobhann sé an ghreille eochracha a gabhadh mar mhír &lt;ckb-key-grid&gt; i gcomhaid na haipe, le greamú i gcumraíocht an ghléis. Oscail an méarchlár uair amháin ar dtús chun go bhféadfaidh sé í a ghabháil.</string>
     <string name="ckb_gestures_export_title">Easpórtáil céimseata an CKB</string>
     <string name="ckb_gestures_export_written">Scríobhadh %s</string>
-    <string name="ckb_gestures_reserved_note">Tá svaidhpeáil suas (glacadh leis an moladh faoi do mhéar) in áirithe.</string>
+    <string name="ckb_gestures_reserved_note">Tá svaidhpeáil suas (glacadh leis an moladh faoi do mhéar) in áirithe</string>
     <string name="ckb_gestures_screen_title">Gothaí CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">An t-iolraitheoir luais is airde d\'athruithe aicinn</string>
     <string name="settings_gesture_accent_max_speed_title">Iolraitheoir luais is airde agus na haicinn á scrollú</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Cumasaigh foghlaim dhinimiciúil</string>
     <string name="settings_dict_learned_words_summary">Bainistigh na focail a foghlaimíodh ó do chuid clóscríbhneoireachta</string>
     <string name="settings_dict_learned_words_title">Focail fhoghlamtha</string>
+    <string name="settings_dict_add_to_dictionary_note">Molfar focail a chuirtear le d\'fhoclóir agus tú ag clóscríobh agus ní mharcálfar iad mar fhocail mhílitrithe</string>
     <string name="settings_dict_text_shortcuts_summary">Cruthaigh aicearraí a leathnaíonn ina bhfrásaí</string>
     <string name="settings_dict_text_shortcuts_title">Aicearraí téacs</string>
     <string name="settings_dict_user_dictionary_summary">Cuir focail phearsanta leis agus cuir in eagar iad</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Roghnaigh nó iompórtáil cumraíochtaí ionchuir do ghléasanna</string>
     <string name="settings_device_configuration_title">Cumraíocht an ghléis</string>
     <string name="touch_surface_builtin_category">Ionsuite</string>
-    <string name="touch_surface_builtin_intro">Seolann an fón dromchla tadhaill an mhéarchláir chuig BBKB fad is atá Scroll assistant ar siúl.</string>
+    <string name="touch_surface_builtin_intro">Seolann an fón dromchla tadhaill an mhéarchláir chuig BBKB fad is atá Scroll assistant ar siúl</string>
     <string name="touch_surface_cursor_assistant_summary">Glacann Cursor assistant chuige féin an tapáil faoi dhó ar na heochracha, mar sin ní fhaigheann BBKB riamh í</string>
     <string name="touch_surface_cursor_assistant_title">Cuir Cursor assistant as</string>
     <string name="touch_surface_grant_access">Tabhair rochtain</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Socraigh Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Cuir Roghanna forbróra ar siúl, agus ansin Dífhabhtú gan sreang.\n2. Tosaigh Shizuku óna aip, nó le root.\n3. Fill ar ais anseo agus tapáil Tabhair rochtain.</string>
     <string name="touch_surface_shizuku_intro">Is aip saor in aisce é Shizuku a ligeann do BBKB an dromchla tadhaill a léamh go díreach. Ní ghlacann BBKB seilbh air ach nuair a bhíonn an méarchlár oscailte; an chuid eile den am, oibríonn sé mar a oibríonn an fón de ghnáth.</string>
-    <string name="touch_surface_shizuku_mediatek">Úsáid Shizuku 13.5.4 ar an bhfón seo: ní oibríonn leagan 13.6.0 go hiomlán ar fhóin MediaTek.</string>
+    <string name="touch_surface_shizuku_mediatek">Úsáid Shizuku 13.5.4 ar an bhfón seo: ní oibríonn leagan 13.6.0 go hiomlán ar fhóin MediaTek</string>
     <string name="touch_surface_shizuku_reboot">Stopann Shizuku gach uair a atosaíonn an fón. Tosaigh arís é tar éis gach atosaithe; insíonn an stádas thuas nuair nach bhfuil sé ag rith.</string>
     <string name="touch_surface_shizuku_state_denied">Ag rith, ach diúltaíodh rochtain do BBKB</string>
     <string name="touch_surface_shizuku_state_granted">Ag rith, agus tá rochtain ag BBKB</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Níl sé ar fáil ar an bhfón seo</string>
     <string name="pref_show_pkb_modifier_status_icon">Taispeáin deilbhín stádais na mionathraitheoirí</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Taispeáin táscaire Shift/Alt sa bharra stádais agus méarchlár fisiciúil in úsáid</string>
-    <string name="settings_pred_accounts_permission_summary">Tabhair cead cuntas chun seoltaí ríomhphoist a mholadh agus tú ag clóscríobh.</string>
+    <string name="settings_pred_accounts_permission_summary">Tabhair cead cuntas chun seoltaí ríomhphoist a mholadh agus tú ag clóscríobh</string>
     <string name="settings_pred_accounts_permission_title">Cead Cuntas de Dhíth</string>
     <string name="settings_pred_block_offensive_summary">Folaigh focail a d\'fhéadfadh a bheith maslach agus tú ag deachtú le do ghuth</string>
     <string name="settings_pred_block_offensive_title">Coisc focail mhaslacha</string>
-    <string name="settings_pred_contacts_permission_summary">Tabhair cead teagmhálacha chun ainmneacha teagmhálacha agus seoltaí ríomhphoist a mholadh agus tú ag clóscríobh.</string>
+    <string name="settings_pred_contacts_permission_summary">Tabhair cead teagmhálacha chun ainmneacha teagmhálacha agus seoltaí ríomhphoist a mholadh agus tú ag clóscríobh</string>
     <string name="settings_pred_contacts_permission_title">Cead Teagmhálacha de Dhíth</string>
     <string name="settings_pred_contacts_summary_disabled">Cead teagmhálacha de dhíth</string>
     <string name="settings_pred_contacts_summary_enabled">Cuir ainmneacha teagmhálacha san áireamh sna moltaí</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Tabhair cead teagmhálacha chun an ghné seo a úsáid</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Aithneofar ainmneacha teagmhálacha mar fhocail bhailí</string>
     <string name="settings_spellcheck_use_contacts_title">Úsáid teagmhálacha don litreoir</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Tabhair cead teagmhálacha ionas go n-aithneofar ainmneacha teagmhálacha mar fhocail bhailí agus an litriú á sheiceáil</string>
     <string name="settings_spellcheck_accept_learned_title">Glac le focail foghlamtha</string>
     <string name="settings_spellcheck_accept_learned_summary">Meastar focail a foghlaimíodh ó do chlóscríobh a bheith litrithe i gceart</string>
     <string name="pref_alt_double_tap_lock">Cumasaigh glasáil Alt le cliceáil dhúbailte</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Cumasaigh glasáil Ctrl le cliceáil dhúbailte</string>
     <string name="pref_ctrl_double_tap_lock_summary">Glasálann cliceáil dhúbailte ar Ctrl é. Múchann cliceáil ar Ctrl arís é.</string>
     <string name="pref_override_device_meta_state">Sáraigh meitea-staid an ghléis</string>
-    <string name="pref_override_device_meta_state_summary">Cumasaigh mionathraitheoirí greamaitheacha (glas shift/alt) ar mhéarchláir fhisiciúla beag beann ar chumraíocht KCM an ghléis.</string>
+    <string name="pref_override_device_meta_state_summary">Cumasaigh mionathraitheoirí greamaitheacha (glas shift/alt) ar mhéarchláir fhisiciúla beag beann ar chumraíocht KCM an ghléis</string>
     <string name="pref_shift_double_tap_lock">Cumasaigh glasáil Shift le cliceáil dhúbailte</string>
     <string name="pref_shift_double_tap_lock_summary">Glasálann cliceáil dhúbailte ar Shift é. Múchann cliceáil ar Shift arís é.</string>
     <string name="prefs_key_longpress_delay_summary">An t-am le heochair a choinneáil síos sula dtagann na carachtair thánaisteacha aníos</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Fógraí teagmhas uathlíonta</string>
     <string name="pref_accessibility_service_disabled">Seirbhís inrochtaineachta díchumasaithe</string>
     <string name="pref_accessibility_service_enabled">Seirbhís inrochtaineachta cumasaithe</string>
-    <string name="pref_emoji_search_pkb_summary">Nuair a bhíonn an clár emoji ar oscailt, úsáid an méarchlár le cuardach a dhéanamh.</string>
+    <string name="pref_emoji_search_pkb_summary">Nuair a bhíonn an clár emoji ar oscailt, úsáid an méarchlár le cuardach a dhéanamh</string>
     <string name="pref_emoji_search_title">Cumasaigh cuardach emoji</string>
-    <string name="pref_emoji_search_vkb_summary">Scag emoji leis an téacs reatha neamhdhearbhaithe (líne faoi).</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Nuair a roghnaítear emoji cuirtear isteach é i ndiaidh an téacs chlóscríofa.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Nuair a roghnaítear emoji cuirtear in ionad an téacs chlóscríofa é.</string>
+    <string name="pref_emoji_search_vkb_summary">Scag emoji leis an téacs reatha neamhdhearbhaithe (líne faoi)</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Nuair a roghnaítear emoji cuirtear isteach é i ndiaidh an téacs chlóscríofa</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Nuair a roghnaítear emoji cuirtear in ionad an téacs chlóscríofa é</string>
     <string name="pref_emoji_search_replace_text_title">Cuir emoji in ionad an téacs</string>
     <string name="pref_key_interceptor_enabled">Cumasaigh tacaíocht d\'eochracha speisialta</string>
     <string name="pref_key_interceptor_enabled_summary">Úsáid an tseirbhís inrochtaineachta chun na heochracha Emoji, SYM agus Guth a ghabháil</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Bainistigh sonraí</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Macraí saincheaptha</string>
+    <string name="settings_custom_macros_intro" formatted="false">Sainigh do chuid sealbhóirí áite %x féin le húsáid in aicearraí téacs</string>
     <string name="settings_customize_menu_hidden_header">Gan a thaispeáint ar an méarchlár</string>
     <string name="settings_customize_menu_instructions">Coinnigh do mhéar ar aicearra, ansin tarraing é chun an t-ord a athrú. Taispeántar an chéad cheithre cinn ar roghchlár ionchuir an mhéarchláir.</string>
     <string name="settings_customize_menu_summary">Roghnaigh agus athordaigh aicearraí an roghchláir ionchuir</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Frásaí tapa</string>
     <string name="settings_screen_type_by_swiping">Clóscríobh le svaidhpeáil</string>
     <string name="settings_screen_type_by_swiping_summary">Clóscríobh go tapa gan do mhéar a ardú den mhéarchlár</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Níl clóscríobh le svaidhpeáil ar fáil i do theanga.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Níl clóscríobh le svaidhpeáil ar fáil i do theanga</string>
     <string name="settings_search_hint">Cuardaigh na socruithe</string>
     <string name="settings_search_no_results">Níor aimsíodh aon socrú</string>
     <string name="settings_shake_fallback_title">Gníomh cúltaca</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Gléas an mhéarchláir: %1$s</string>
     <string name="device_config_import_matches_build">Gléas an bhuild: %1$s</string>
     <string name="device_config_import_matches_brand">Branda: %1$s</string>
-    <string name="device_config_import_matches_nothing">Ní ainmníonn an comhad seo aon ghléas le meaitseáil, mar sin ní bheadh feidhm leis riamh.</string>
+    <string name="device_config_import_matches_nothing">Ní ainmníonn an comhad seo aon ghléas le meaitseáil, mar sin ní bheadh feidhm leis riamh</string>
     <string name="device_config_import_type">Cineál gléis: %1$s</string>
     <string name="device_config_import_keys">%1$d mapáil eochrach</string>
     <string name="device_config_import_keypad_layout">Leagan amach an eochaircheap: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Tá an leagan seo ró-sean chun an liosta nuashonruithe a léamh. Nuashonraigh de láimh.</string>
     <string name="settings_update_from_cache">Á thaispeáint ón seiceáil shábháilte dheireanach</string>
     <string name="settings_update_background_check_title">Seiceáil le haghaidh nuashonruithe go huathoibríoch</string>
-    <string name="settings_update_background_check_summary">Gheobhaidh tú fógra nuair a bheidh leagan nua ar fáil le híoslódáil.</string>
+    <string name="settings_update_background_check_summary">Gheobhaidh tú fógra nuair a bheidh leagan nua ar fáil le híoslódáil</string>
     <string name="settings_update_notification_text">Tá leagan %1$s réidh le híoslódáil</string>
     <string name="settings_update_unknown_sources_message">Caithfidh Android cead a thabhairt do BBKB aipeanna a shuiteáil. Cumasaigh suiteáil ón bhfoinse seo, ansin brúigh Suiteáil arís.</string>
     <string name="settings_update_open_settings">Oscail socruithe</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Seiceáil le haghaidh foclóirí</string>
     <string name="language_packs_load_ldb">Luchtaigh comhad LDB</string>
     <string name="language_packs_variant_summary">Lódáiltear in ionad %1$s</string>
-    <string name="language_packs_not_on_summary">Tapáil chun méarchlár nua %1$s a chruthú.</string>
+    <string name="language_packs_not_on_summary">Tapáil chun méarchlár nua %1$s a chruthú</string>
     <string name="language_packs_turned_on">Tá %1$s cumasaithe. Athraigh chuige ón malartóir teanga.</string>
-    <string name="language_packs_turn_on_in_settings">Cumasaigh %1$s sa liosta, ansin tar ar ais.</string>
+    <string name="language_packs_turn_on_in_settings">Cumasaigh %1$s sa liosta, ansin tar ar ais</string>
     <string name="language_packs_installed_and_on">Suiteáladh %1$s. Tá sé cumasaithe: athraigh chuige ón malartóir teanga.</string>
     <string name="language_packs_installed_turn_on">Suiteáladh %1$s. Tapáil a ró chun é a chumasú sa mhéarchlár.</string>
+    <string name="language_packs_installed_no_layout">Suiteáladh %1$s, ach níl leagan amach ag an méarchlár seo dá script fós, mar sin ní féidir é a roghnú</string>
     <string name="language_packs_error_offline">Gan ceangal</string>
     <string name="language_packs_error_network">Níor éirigh leis. Bain triail eile as.</string>
     <string name="language_packs_error_verification">Níor mheaitseáil an comhad an chatalóg, mar sin níor suiteáladh aon rud</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Sábháilte: %1$s</string>
     <string name="backup_restore_dialog_device">Ó %1$s</string>
     <string name="backup_restore_not_in_file">Níl sé sa chomhad seo</string>
-    <string name="backup_restore_dialog_note">Athsholáthraítear socruithe, leaganacha amach agus macraí; cuirtear focail leis an méid atá ar an bhfón seo.</string>
+    <string name="backup_restore_dialog_note">Athsholáthraítear socruithe, leaganacha amach agus macraí; cuirtear focail leis an méid atá ar an bhfón seo</string>
     <string name="backup_restore_dialog_confirm">Athchóirigh</string>
     <string name="backup_restored">Athchóiríodh an cúltaca</string>
     <string name="backup_restored_words_pending">Cuirfear focail fhoghlamtha leis nuair a bheidh an méarchlár in úsáid</string>

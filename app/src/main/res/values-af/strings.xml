@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Skryf die vasgelegde toetsrooster as ’n &lt;ckb-key-grid&gt;-brokkie na die programlêers, om in die toestelkonfigurasie te plak. Maak eers die toetsbord een keer oop sodat dit vasgelê kan word.</string>
     <string name="ckb_gestures_export_title">Voer CKB-meetkunde uit</string>
     <string name="ckb_gestures_export_written">%s geskryf</string>
-    <string name="ckb_gestures_reserved_note">Opwaarts vee (aanvaar die voorstel onder jou vinger) is gereserveer.</string>
+    <string name="ckb_gestures_reserved_note">Opwaarts vee (aanvaar die voorstel onder jou vinger) is gereserveer</string>
     <string name="ckb_gestures_screen_title">CKB-gebare</string>
     <string name="settings_gesture_accent_max_speed_summary">Maksimum spoedvermenigvuldiger vir aksentveranderinge</string>
     <string name="settings_gesture_accent_max_speed_title">Maks. spoedvermenigvuldiger vir aksentverandering met rol</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Aktiveer dinamiese leer</string>
     <string name="settings_dict_learned_words_summary">Bestuur woorde wat uit jou tikwerk geleer is</string>
     <string name="settings_dict_learned_words_title">Geleerde woorde</string>
+    <string name="settings_dict_add_to_dictionary_note">Woorde wat by jou woordeboek gevoeg word, sal voorgestel word terwyl jy tik en sal nie as verkeerd gespel gemerk word nie</string>
     <string name="settings_dict_text_shortcuts_summary">Skep kortpaaie wat na frases uitbrei</string>
     <string name="settings_dict_text_shortcuts_title">Tekskortpaaie</string>
     <string name="settings_dict_user_dictionary_summary">Voeg persoonlike woorde by en redigeer hulle</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Kies of voer invoerkonfigurasies vir toestelle in</string>
     <string name="settings_device_configuration_title">Toestelkonfigurasie</string>
     <string name="touch_surface_builtin_category">Ingebou</string>
-    <string name="touch_surface_builtin_intro">Die foon stuur die toetsbord se aanraakoppervlak na BBKB solank Scroll assistant aangeskakel is.</string>
+    <string name="touch_surface_builtin_intro">Die foon stuur die toetsbord se aanraakoppervlak na BBKB solank Scroll assistant aangeskakel is</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant onderskep dubbeltik op die toetse, so BBKB ontvang dit nooit nie</string>
     <string name="touch_surface_cursor_assistant_title">Skakel Cursor assistant af</string>
     <string name="touch_surface_grant_access">Verleen toegang</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Stel Shizuku op</string>
     <string name="touch_surface_shizuku_guide_steps">1. Skakel Ontwikkelaaropsies aan, en dan Draadlose ontfouting.\n2. Begin Shizuku vanuit sy program, of met root.\n3. Kom terug hierheen en tik op Verleen toegang.</string>
     <string name="touch_surface_shizuku_intro">Shizuku is ’n gratis program waarmee BBKB die aanraakoppervlak direk kan lees. BBKB neem dit net oor terwyl die toetsbord oop is; die res van die tyd werk dit soos die foon gewoonlik doen.</string>
-    <string name="touch_surface_shizuku_mediatek">Gebruik Shizuku 13.5.4 op hierdie foon: weergawe 13.6.0 werk nie ten volle op MediaTek-fone nie.</string>
+    <string name="touch_surface_shizuku_mediatek">Gebruik Shizuku 13.5.4 op hierdie foon: weergawe 13.6.0 werk nie ten volle op MediaTek-fone nie</string>
     <string name="touch_surface_shizuku_reboot">Shizuku stop elke keer as die foon herbegin. Begin dit weer ná elke herbegin; die status hierbo wys wanneer dit nie loop nie.</string>
     <string name="touch_surface_shizuku_state_denied">Loop, maar BBKB is toegang geweier</string>
     <string name="touch_surface_shizuku_state_granted">Loop, en BBKB het toegang</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Nie beskikbaar op hierdie foon nie</string>
     <string name="pref_show_pkb_modifier_status_icon">Wys ikoon vir wysigerstatus</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Wys die Shift/Alt-wyseraanduier in die statusbalk wanneer die fisiese toetsbord gebruik word</string>
-    <string name="settings_pred_accounts_permission_summary">Verleen rekeningtoestemming sodat e-posadresse voorgestel kan word terwyl jy tik.</string>
+    <string name="settings_pred_accounts_permission_summary">Verleen rekeningtoestemming sodat e-posadresse voorgestel kan word terwyl jy tik</string>
     <string name="settings_pred_accounts_permission_title">Rekeningtoestemming vereis</string>
     <string name="settings_pred_block_offensive_summary">Maskeer moontlik aanstootlike woorde in stemdiktering</string>
     <string name="settings_pred_block_offensive_title">Blokkeer aanstootlike woorde</string>
-    <string name="settings_pred_contacts_permission_summary">Verleen kontaktoestemming sodat kontakname en e-posadresse voorgestel kan word terwyl jy tik.</string>
+    <string name="settings_pred_contacts_permission_summary">Verleen kontaktoestemming sodat kontakname en e-posadresse voorgestel kan word terwyl jy tik</string>
     <string name="settings_pred_contacts_permission_title">Kontaktoestemming vereis</string>
     <string name="settings_pred_contacts_summary_disabled">Kontaktoestemming vereis</string>
     <string name="settings_pred_contacts_summary_enabled">Sluit kontakname by voorstelle in</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Verleen kontaktoestemming om hierdie kenmerk te gebruik</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontakname sal as geldige woorde herken word</string>
     <string name="settings_spellcheck_use_contacts_title">Gebruik kontakte vir speltoetsing</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Verleen kontaktoestemming sodat kontakname tydens speltoetsing as geldige woorde herken word</string>
     <string name="settings_spellcheck_accept_learned_title">Aanvaar geleerde woorde</string>
     <string name="settings_spellcheck_accept_learned_summary">Woorde wat uit jou tikwerk geleer is, tel as korrek gespel</string>
     <string name="pref_alt_double_tap_lock">Ontsper Alt-dubbelklikslot</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ontsper Ctrl-dubbelklikslot</string>
     <string name="pref_ctrl_double_tap_lock_summary">’n Dubbelklik op Ctrl sluit dit aan. Klik weer op Ctrl om dit af te skakel.</string>
     <string name="pref_override_device_meta_state">Oorheers die toestel se metatoestand</string>
-    <string name="pref_override_device_meta_state_summary">Ontsper taai wysigertoetse (Shift-/Alt-slot) op fisiese toetsborde ongeag die toestel se KCM-konfigurasie.</string>
+    <string name="pref_override_device_meta_state_summary">Ontsper taai wysigertoetse (Shift-/Alt-slot) op fisiese toetsborde ongeag die toestel se KCM-konfigurasie</string>
     <string name="pref_shift_double_tap_lock">Ontsper Shift-dubbelklikslot</string>
     <string name="pref_shift_double_tap_lock_summary">’n Dubbelklik op Shift sluit dit aan. Klik weer op Shift om dit af te skakel.</string>
     <string name="prefs_key_longpress_delay_summary">Hoe lank ’n toets gehou moet word voordat sekondêre karakters verskyn</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Kitskennisgewings vir outovul-gebeurtenisse</string>
     <string name="pref_accessibility_service_disabled">Toeganklikheidsdiens is gesper</string>
     <string name="pref_accessibility_service_enabled">Toeganklikheidsdiens is ontsper</string>
-    <string name="pref_emoji_search_pkb_summary">Gebruik die sleutelbord om te soek wanneer die emojibord oop is.</string>
+    <string name="pref_emoji_search_pkb_summary">Gebruik die sleutelbord om te soek wanneer die emojibord oop is</string>
     <string name="pref_emoji_search_title">Aktiveer emoji-soektog</string>
-    <string name="pref_emoji_search_vkb_summary">Filtreer emoji\'s met die huidige onvoltooide (onderstreepte) teks.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Wanneer jy ’n emoji kies, word dit ná die getikte teks ingevoeg.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Wanneer jy ’n emoji kies, vervang dit die getikte teks.</string>
+    <string name="pref_emoji_search_vkb_summary">Filtreer emoji\'s met die huidige onvoltooide (onderstreepte) teks</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Wanneer jy ’n emoji kies, word dit ná die getikte teks ingevoeg</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Wanneer jy ’n emoji kies, vervang dit die getikte teks</string>
     <string name="pref_emoji_search_replace_text_title">Vervang teks met emoji</string>
     <string name="pref_key_interceptor_enabled">Ontsper steun vir spesiale toetse</string>
     <string name="pref_key_interceptor_enabled_summary">Gebruik die toeganklikheidsdiens om die Emoji-, SYM- en Voice-toetse vas te lê</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Bestuur data</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Pasgemaakte makro\'s</string>
+    <string name="settings_custom_macros_intro" formatted="false">Definieer jou eie %x-plekhouers vir gebruik in tekskortpaaie</string>
     <string name="settings_customize_menu_hidden_header">Nie op die toetsbord gewys nie</string>
     <string name="settings_customize_menu_instructions">Raak en hou ’n kortpad en sleep dit dan om die volgorde te verander. Die eerste vier verskyn op die toetsbord se invoerkieslys.</string>
     <string name="settings_customize_menu_summary">Kies en herrangskik die kortpaaie in die invoerkieslys</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Kitsfrases</string>
     <string name="settings_screen_type_by_swiping">Tik deur te vee</string>
     <string name="settings_screen_type_by_swiping_summary">Tik vinnig sonder om jou vinger van die toetsbord te lig</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Tik-deur-te-vee is nie in jou taal beskikbaar nie.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Tik-deur-te-vee is nie in jou taal beskikbaar nie</string>
     <string name="settings_search_hint">Deursoek instellings</string>
     <string name="settings_search_no_results">Geen instellings gevind nie</string>
     <string name="settings_shake_fallback_title">Terugvalaksie</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Toetsbordtoestel: %1$s</string>
     <string name="device_config_import_matches_build">Boutoestel: %1$s</string>
     <string name="device_config_import_matches_brand">Handelsmerk: %1$s</string>
-    <string name="device_config_import_matches_nothing">Hierdie lêer noem geen toestel om by te pas nie, en sal dus nooit geld nie.</string>
+    <string name="device_config_import_matches_nothing">Hierdie lêer noem geen toestel om by te pas nie, en sal dus nooit geld nie</string>
     <string name="device_config_import_type">Toesteltipe: %1$s</string>
     <string name="device_config_import_keys">%1$d toetstoewysings</string>
     <string name="device_config_import_keypad_layout">Sleutelborduitleg: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Hierdie weergawe is te oud om die opdateringslys te lees. Werk asseblief self op.</string>
     <string name="settings_update_from_cache">Van die laas gestoorde kontrole gewys</string>
     <string name="settings_update_background_check_title">Kontroleer outomaties vir opdaterings</string>
-    <string name="settings_update_background_check_summary">Kry \'n kennisgewing wanneer \'n nuwe weergawe beskikbaar is om af te laai.</string>
+    <string name="settings_update_background_check_summary">Kry \'n kennisgewing wanneer \'n nuwe weergawe beskikbaar is om af te laai</string>
     <string name="settings_update_notification_text">Weergawe %1$s is gereed om af te laai</string>
     <string name="settings_update_unknown_sources_message">Android moet BBKB toelaat om programme te installeer. Skakel installasie vanaf hierdie bron aan en druk dan weer Installeer.</string>
     <string name="settings_update_open_settings">Open instellings</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Kyk vir woordeboeke</string>
     <string name="language_packs_load_ldb">Laai LDB-lêer</string>
     <string name="language_packs_variant_summary">Laai in plek van %1$s</string>
-    <string name="language_packs_not_on_summary">Tik om \'n nuwe sleutelbord vir %1$s te skep.</string>
+    <string name="language_packs_not_on_summary">Tik om \'n nuwe sleutelbord vir %1$s te skep</string>
     <string name="language_packs_turned_on">%1$s is aan. Wissel daarna via die taalwisselaar.</string>
-    <string name="language_packs_turn_on_in_settings">Skakel %1$s aan in die lys, en kom dan terug.</string>
+    <string name="language_packs_turn_on_in_settings">Skakel %1$s aan in die lys, en kom dan terug</string>
     <string name="language_packs_installed_and_on">%1$s is geïnstalleer. Dit is aan: wissel daarna via die taalwisselaar.</string>
     <string name="language_packs_installed_turn_on">%1$s is geïnstalleer. Tik op die ry om dit in die toetsbord aan te skakel.</string>
+    <string name="language_packs_installed_no_layout">%1$s is geïnstalleer, maar hierdie toetsbord het nog nie \'n uitleg vir sy skrif nie, so dit kan nie gekies word nie</string>
     <string name="language_packs_error_offline">Geen verbinding</string>
     <string name="language_packs_error_network">Dit het nie gewerk nie. Probeer weer.</string>
     <string name="language_packs_error_verification">Die lêer stem nie met die katalogus ooreen nie, dus is niks geïnstalleer nie</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Gestoor op %1$s</string>
     <string name="backup_restore_dialog_device">Van %1$s</string>
     <string name="backup_restore_not_in_file">Nie in hierdie lêer nie</string>
-    <string name="backup_restore_dialog_note">Instellings, uitlegte en makro\'s word vervang; woorde word bygevoeg by wat reeds op hierdie foon is.</string>
+    <string name="backup_restore_dialog_note">Instellings, uitlegte en makro\'s word vervang; woorde word bygevoeg by wat reeds op hierdie foon is</string>
     <string name="backup_restore_dialog_confirm">Herstel</string>
     <string name="backup_restored">Rugsteun herstel</string>
     <string name="backup_restored_words_pending">Geleerde woorde sal bygevoeg word sodra die toetsbord gebruik word</string>

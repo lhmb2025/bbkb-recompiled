@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">نوشتن شبکه کلید ثبت‌شده به‌صورت قطعه &lt;ckb-key-grid&gt; در فایل‌های برنامه، برای چسباندن در پیکربندی دستگاه. ابتدا یک‌بار صفحه کلید را باز کنید تا ثبت انجام شود.</string>
     <string name="ckb_gestures_export_title">صدور هندسه CKB</string>
     <string name="ckb_gestures_export_written">%s نوشته شد</string>
-    <string name="ckb_gestures_reserved_note">کشیدن به بالا (تأیید پیشنهاد زیر انگشت شما) رزرو شده است.</string>
+    <string name="ckb_gestures_reserved_note">کشیدن به بالا (تأیید پیشنهاد زیر انگشت شما) رزرو شده است</string>
     <string name="ckb_gestures_screen_title">اشاره‌های CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">بیشینه ضریب سرعت برای تغییر اعراب</string>
     <string name="settings_gesture_accent_max_speed_title">بیشینه ضریب سرعت تغییر اعراب با پیمایش</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">فعال‌کردن یادگیری پویا</string>
     <string name="settings_dict_learned_words_summary">مدیریت کلمه‌های یادگرفته‌شده از تایپ شما</string>
     <string name="settings_dict_learned_words_title">کلمه‌های یادگرفته‌شده</string>
+    <string name="settings_dict_add_to_dictionary_note">واژه‌هایی که به فرهنگ لغت شما افزوده می‌شوند هنگام تایپ پیشنهاد داده می‌شوند و غلط املایی علامت‌گذاری نمی‌شوند</string>
     <string name="settings_dict_text_shortcuts_summary">ساخت میانبرهایی که به عبارت گسترش می‌یابند</string>
     <string name="settings_dict_text_shortcuts_title">میانبرهای متنی</string>
     <string name="settings_dict_user_dictionary_summary">افزودن و ویرایش کلمه‌های شخصی</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">انتخاب یا وارد کردن پیکربندی‌های ورودی دستگاه</string>
     <string name="settings_device_configuration_title">پیکربندی دستگاه</string>
     <string name="touch_surface_builtin_category">داخلی</string>
-    <string name="touch_surface_builtin_intro">تلفن تا وقتی Scroll assistant آن روشن باشد، سطح لمسی صفحه کلید را به BBKB می‌رساند.</string>
+    <string name="touch_surface_builtin_intro">تلفن تا وقتی Scroll assistant آن روشن باشد، سطح لمسی صفحه کلید را به BBKB می‌رساند</string>
     <string name="touch_surface_cursor_assistant_summary">ویژگی Cursor assistant دوضربه روی کلیدها را تصاحب می‌کند، بنابراین هرگز به BBKB نمی‌رسد</string>
     <string name="touch_surface_cursor_assistant_title">خاموش کردن Cursor assistant</string>
     <string name="touch_surface_grant_access">دادن دسترسی</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">راه‌اندازی Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. گزینه‌های برنامه‌نویسان و سپس اشکال‌زدایی بی‌سیم را روشن کنید.\n2. با برنامهٔ Shizuku یا با روت، آن را اجرا کنید.\n3. به اینجا برگردید و روی “دادن دسترسی” ضربه بزنید.</string>
     <string name="touch_surface_shizuku_intro">برنامهٔ رایگان Shizuku به BBKB اجازه می‌دهد سطح لمسی را مستقیماً بخواند. BBKB فقط وقتی صفحه کلید باز است کنترل آن را به دست می‌گیرد؛ در بقیهٔ اوقات، سطح لمسی مثل حالت عادی تلفن کار می‌کند.</string>
-    <string name="touch_surface_shizuku_mediatek">روی این تلفن از Shizuku 13.5.4 استفاده کنید؛ نسخهٔ 13.6.0 روی تلفن‌های MediaTek به‌طور کامل کار نمی‌کند.</string>
+    <string name="touch_surface_shizuku_mediatek">روی این تلفن از Shizuku 13.5.4 استفاده کنید؛ نسخهٔ 13.6.0 روی تلفن‌های MediaTek به‌طور کامل کار نمی‌کند</string>
     <string name="touch_surface_shizuku_reboot">برنامهٔ Shizuku با هر بار راه‌اندازی دوبارهٔ تلفن متوقف می‌شود. پس از هر راه‌اندازی دوباره، آن را از نو اجرا کنید؛ وضعیت بالا نشان می‌دهد چه زمانی در حال اجرا نیست.</string>
     <string name="touch_surface_shizuku_state_denied">در حال اجرا، اما دسترسی BBKB رد شد</string>
     <string name="touch_surface_shizuku_state_granted">در حال اجرا و BBKB دسترسی دارد</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">در این تلفن در دسترس نیست</string>
     <string name="pref_show_pkb_modifier_status_icon">نمایش نماد وضعیت کلیدهای تغییردهنده</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">نمایش نشانگر Shift/Alt در نوار وضعیت هنگام استفاده از صفحه کلید فیزیکی</string>
-    <string name="settings_pred_accounts_permission_summary">برای پیشنهاد نشانی‌های ایمیل هنگام تایپ، مجوز حساب‌ها را بدهید.</string>
+    <string name="settings_pred_accounts_permission_summary">برای پیشنهاد نشانی‌های ایمیل هنگام تایپ، مجوز حساب‌ها را بدهید</string>
     <string name="settings_pred_accounts_permission_title">مجوز حساب‌ها لازم است</string>
     <string name="settings_pred_block_offensive_summary">پنهان کردن کلمات احتمالاً توهین‌آمیز در دیکته صوتی</string>
     <string name="settings_pred_block_offensive_title">مسدود کردن کلمه‌های توهین‌آمیز</string>
-    <string name="settings_pred_contacts_permission_summary">برای پیشنهاد نام مخاطبین و نشانی‌های ایمیل هنگام تایپ، مجوز مخاطبین را بدهید.</string>
+    <string name="settings_pred_contacts_permission_summary">برای پیشنهاد نام مخاطبین و نشانی‌های ایمیل هنگام تایپ، مجوز مخاطبین را بدهید</string>
     <string name="settings_pred_contacts_permission_title">مجوز مخاطبین لازم است</string>
     <string name="settings_pred_contacts_summary_disabled">مجوز مخاطبین لازم است</string>
     <string name="settings_pred_contacts_summary_enabled">گنجاندن نام مخاطبین در پیشنهادها</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">برای استفاده از این ویژگی، مجوز مخاطبین را بدهید</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">نام مخاطبین به‌عنوان کلمه‌های درست شناخته می‌شوند</string>
     <string name="settings_spellcheck_use_contacts_title">استفاده از مخاطبین برای غلط‌گیری املایی</string>
+    <string name="settings_spellcheck_contacts_permission_summary">مجوز مخاطبین را بدهید تا نام مخاطبین هنگام غلط‌گیری املایی واژه‌های درست شناخته شوند</string>
     <string name="settings_spellcheck_accept_learned_title">پذیرش واژه‌های آموخته‌شده</string>
     <string name="settings_spellcheck_accept_learned_summary">واژه‌هایی که از تایپ شما آموخته شده‌اند درست‌نویسی‌شده به حساب می‌آیند</string>
     <string name="pref_alt_double_tap_lock">فعال کردن قفل Alt با دوبار کلیک</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">فعال کردن قفل Ctrl با دوبار کلیک</string>
     <string name="pref_ctrl_double_tap_lock_summary">دوبار کلیک روی Ctrl آن را قفل می‌کند. کلیک دوباره روی Ctrl آن را خاموش می‌کند.</string>
     <string name="pref_override_device_meta_state">نادیده گرفتن وضعیت meta دستگاه</string>
-    <string name="pref_override_device_meta_state_summary">فعال کردن کلیدهای تغییردهنده چسبان (قفل shift/alt) روی صفحه کلیدهای فیزیکی، صرف‌نظر از پیکربندی KCM دستگاه.</string>
+    <string name="pref_override_device_meta_state_summary">فعال کردن کلیدهای تغییردهنده چسبان (قفل shift/alt) روی صفحه کلیدهای فیزیکی، صرف‌نظر از پیکربندی KCM دستگاه</string>
     <string name="pref_shift_double_tap_lock">فعال کردن قفل Shift با دوبار کلیک</string>
     <string name="pref_shift_double_tap_lock_summary">دوبار کلیک روی Shift آن را قفل می‌کند. کلیک دوباره روی Shift آن را خاموش می‌کند.</string>
     <string name="prefs_key_longpress_delay_summary">مدت نگه داشتن کلید پیش از ظاهر شدن نویسه‌های ثانویه</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">اعلان‌های کوتاه رویداد تکمیل خودکار</string>
     <string name="pref_accessibility_service_disabled">سرویس دسترس‌پذیری غیرفعال است</string>
     <string name="pref_accessibility_service_enabled">سرویس دسترس‌پذیری فعال است</string>
-    <string name="pref_emoji_search_pkb_summary">وقتی صفحه Emoji باز است، برای جستجو از صفحه‌کلید استفاده کنید.</string>
+    <string name="pref_emoji_search_pkb_summary">وقتی صفحه Emoji باز است، برای جستجو از صفحه‌کلید استفاده کنید</string>
     <string name="pref_emoji_search_title">فعال‌کردن جستجوی Emoji</string>
-    <string name="pref_emoji_search_vkb_summary">فیلتر Emoji با متن فعلیِ تأییدنشده (زیرخط‌دار).</string>
-    <string name="pref_emoji_search_replace_text_summary_off">انتخاب یک Emoji آن را پس از متن تایپ‌شده درج می‌کند.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">انتخاب یک Emoji جایگزین متن تایپ‌شده می‌شود.</string>
+    <string name="pref_emoji_search_vkb_summary">فیلتر Emoji با متن فعلیِ تأییدنشده (زیرخط‌دار)</string>
+    <string name="pref_emoji_search_replace_text_summary_off">انتخاب یک Emoji آن را پس از متن تایپ‌شده درج می‌کند</string>
+    <string name="pref_emoji_search_replace_text_summary_on">انتخاب یک Emoji جایگزین متن تایپ‌شده می‌شود</string>
     <string name="pref_emoji_search_replace_text_title">جایگزینی متن با Emoji</string>
     <string name="pref_key_interceptor_enabled">فعال کردن پشتیبانی از کلیدهای ویژه</string>
     <string name="pref_key_interceptor_enabled_summary">استفاده از سرویس دسترس‌پذیری برای دریافت کلیدهای Emoji، SYM و صدا</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">مدیریت داده‌ها</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">ماکروهای سفارشی</string>
+    <string name="settings_custom_macros_intro" formatted="false">جایگزین‌های %x خودتان را برای استفاده در میانبرهای متنی تعریف کنید</string>
     <string name="settings_customize_menu_hidden_header">روی صفحه کلید نمایش داده نمی‌شود</string>
     <string name="settings_customize_menu_instructions">یک میانبر را لمس کنید و نگه دارید، سپس برای تغییر ترتیب بکشید. چهار میانبر نخست در منوی ورودی صفحه کلید نمایش داده می‌شوند.</string>
     <string name="settings_customize_menu_summary">انتخاب و تغییر ترتیب میانبرهای منوی ورودی</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">عبارت‌های سریع</string>
     <string name="settings_screen_type_by_swiping">تایپ با کشیدن انگشت</string>
     <string name="settings_screen_type_by_swiping_summary">بدون برداشتن انگشت از صفحه کلید، سریع تایپ کنید</string>
-    <string name="settings_screen_type_by_swiping_unavailable">تایپ با کشیدن انگشت در زبان شما در دسترس نیست.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">تایپ با کشیدن انگشت در زبان شما در دسترس نیست</string>
     <string name="settings_search_hint">جستجو در تنظیمات</string>
     <string name="settings_search_no_results">تنظیماتی یافت نشد</string>
     <string name="settings_shake_fallback_title">کنش جایگزین</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">دستگاه صفحه کلید: %1$s</string>
     <string name="device_config_import_matches_build">دستگاه ساخت: %1$s</string>
     <string name="device_config_import_matches_brand">برند: %1$s</string>
-    <string name="device_config_import_matches_nothing">این فایل هیچ دستگاهی برای تطبیق نام نمی‌برد، بنابراین هرگز اعمال نخواهد شد.</string>
+    <string name="device_config_import_matches_nothing">این فایل هیچ دستگاهی برای تطبیق نام نمی‌برد، بنابراین هرگز اعمال نخواهد شد</string>
     <string name="device_config_import_type">نوع دستگاه: %1$s</string>
     <string name="device_config_import_keys">%1$d نگاشت کلید</string>
     <string name="device_config_import_keypad_layout">چیدمان صفحه کلید: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">این نسخه برای خواندن فهرست به‌روزرسانی‌ها بسیار قدیمی است. لطفاً دستی به‌روزرسانی کنید.</string>
     <string name="settings_update_from_cache">از آخرین بررسی ذخیره‌شده نشان داده شده است</string>
     <string name="settings_update_background_check_title">بررسی خودکار به‌روزرسانی‌ها</string>
-    <string name="settings_update_background_check_summary">وقتی نسخه‌ای جدید برای دانلود در دسترس باشد، اعلان دریافت می‌کنید.</string>
+    <string name="settings_update_background_check_summary">وقتی نسخه‌ای جدید برای دانلود در دسترس باشد، اعلان دریافت می‌کنید</string>
     <string name="settings_update_notification_text">نسخه %1$s آماده دانلود است</string>
     <string name="settings_update_unknown_sources_message">اندروید باید به BBKB اجازه نصب برنامه بدهد. نصب از این منبع را فعال کنید و سپس دوباره نصب را بزنید.</string>
     <string name="settings_update_open_settings">باز کردن تنظیمات</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">بررسی واژه‌نامه‌ها</string>
     <string name="language_packs_load_ldb">بارگذاری فایل LDB</string>
     <string name="language_packs_variant_summary">به‌جای %1$s بارگذاری می‌شود</string>
-    <string name="language_packs_not_on_summary">برای ایجاد صفحه‌کلید جدید %1$s ضربه بزنید.</string>
+    <string name="language_packs_not_on_summary">برای ایجاد صفحه‌کلید جدید %1$s ضربه بزنید</string>
     <string name="language_packs_turned_on">%1$s فعال است. از تعویض‌کننده زبان به آن تغییر دهید.</string>
-    <string name="language_packs_turn_on_in_settings">%1$s را در فهرست فعال کنید، سپس بازگردید.</string>
+    <string name="language_packs_turn_on_in_settings">%1$s را در فهرست فعال کنید، سپس بازگردید</string>
     <string name="language_packs_installed_and_on">%1$s نصب شد. فعال است: از تعویض‌کننده زبان به آن تغییر دهید.</string>
     <string name="language_packs_installed_turn_on">%1$s نصب شد. برای فعال‌سازی در صفحه‌کلید، روی ردیف آن ضربه بزنید.</string>
+    <string name="language_packs_installed_no_layout">%1$s نصب شد، اما این صفحه‌کلید هنوز طرح‌بندی‌ای برای خط آن ندارد، بنابراین نمی‌توان آن را انتخاب کرد</string>
     <string name="language_packs_error_offline">اتصال وجود ندارد</string>
     <string name="language_packs_error_network">انجام نشد. دوباره تلاش کنید.</string>
     <string name="language_packs_error_verification">فایل با فهرست مطابقت نداشت، بنابراین چیزی نصب نشد</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">ذخیره‌شده در %1$s</string>
     <string name="backup_restore_dialog_device">از %1$s</string>
     <string name="backup_restore_not_in_file">در این فایل نیست</string>
-    <string name="backup_restore_dialog_note">تنظیمات، چیدمان‌ها و ماکروها جایگزین می‌شوند؛ کلمه‌ها به موارد موجود در این تلفن اضافه می‌شوند.</string>
+    <string name="backup_restore_dialog_note">تنظیمات، چیدمان‌ها و ماکروها جایگزین می‌شوند؛ کلمه‌ها به موارد موجود در این تلفن اضافه می‌شوند</string>
     <string name="backup_restore_dialog_confirm">بازیابی</string>
     <string name="backup_restored">نسخه پشتیبان بازیابی شد</string>
     <string name="backup_restored_words_pending">کلمه‌های یادگرفته‌شده به محض استفاده از صفحه کلید اضافه می‌شوند</string>

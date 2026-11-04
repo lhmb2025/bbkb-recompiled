@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Zajeto mrežo tipk zapiše kot izsek &lt;ckb-key-grid&gt; med datoteke aplikacije, da ga prilepite v konfiguracijo naprave. Najprej enkrat odprite tipkovnico, da jo lahko zajame.</string>
     <string name="ckb_gestures_export_title">Izvozi geometrijo CKB</string>
     <string name="ckb_gestures_export_written">Zapisano v %s</string>
-    <string name="ckb_gestures_reserved_note">Podrsanje navzgor (potrditev predloga pod prstom) je rezervirano.</string>
+    <string name="ckb_gestures_reserved_note">Podrsanje navzgor (potrditev predloga pod prstom) je rezervirano</string>
     <string name="ckb_gestures_screen_title">Poteze CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">Največji množitelj hitrosti pri spreminjanju naglasov</string>
     <string name="settings_gesture_accent_max_speed_title">Najv. množitelj hitrosti drsenja med naglasi</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Omogoči dinamično učenje</string>
     <string name="settings_dict_learned_words_summary">Upravljanje besed, naučenih iz vašega tipkanja</string>
     <string name="settings_dict_learned_words_title">Naučene besede</string>
+    <string name="settings_dict_add_to_dictionary_note">Besede, dodane v slovar, bodo predlagane med tipkanjem in ne bodo označene kot napačno črkovane</string>
     <string name="settings_dict_text_shortcuts_summary">Ustvarite bližnjice, ki se razširijo v fraze</string>
     <string name="settings_dict_text_shortcuts_title">Besedilne bližnjice</string>
     <string name="settings_dict_user_dictionary_summary">Dodajanje in urejanje lastnih besed</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Izberite ali uvozite konfiguracije vnosa za napravo</string>
     <string name="settings_device_configuration_title">Konfiguracija naprave</string>
     <string name="touch_surface_builtin_category">Vgrajeno</string>
-    <string name="touch_surface_builtin_intro">Telefon posreduje dotikalno površino tipkovnice aplikaciji BBKB, ko je vklopljena njegova funkcija Scroll assistant.</string>
+    <string name="touch_surface_builtin_intro">Telefon posreduje dotikalno površino tipkovnice aplikaciji BBKB, ko je vklopljena njegova funkcija Scroll assistant</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant si prilasti dvojni dotik na tipkah, zato ga BBKB nikoli ne prejme</string>
     <string name="touch_surface_cursor_assistant_title">Izklopi Cursor assistant</string>
     <string name="touch_surface_grant_access">Dodeli dostop</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Nastavitev aplikacije Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Vklopite Možnosti za razvijalce in nato Brezžično odpravljanje napak.\n2. Zaženite Shizuku v sami aplikaciji ali s pravicami root.\n3. Vrnite se sem in se dotaknite »Dodeli dostop«.</string>
     <string name="touch_surface_shizuku_intro">Shizuku je brezplačna aplikacija, ki aplikaciji BBKB omogoča neposredno branje dotikalne površine. BBKB jo prevzame samo, ko je tipkovnica odprta; v preostalem času deluje kot običajno.</string>
-    <string name="touch_surface_shizuku_mediatek">V tem telefonu uporabljajte Shizuku 13.5.4: različica 13.6.0 v telefonih s čipi MediaTek ne deluje v celoti.</string>
+    <string name="touch_surface_shizuku_mediatek">V tem telefonu uporabljajte Shizuku 13.5.4: različica 13.6.0 v telefonih s čipi MediaTek ne deluje v celoti</string>
     <string name="touch_surface_shizuku_reboot">Shizuku se ustavi ob vsakem vnovičnem zagonu telefona. Po vsakem vnovičnem zagonu ga znova zaženite; stanje zgoraj pokaže, kdaj se ne izvaja.</string>
     <string name="touch_surface_shizuku_state_denied">Izvaja se, vendar je bil dostop za BBKB zavrnjen</string>
     <string name="touch_surface_shizuku_state_granted">Izvaja se in BBKB ima dostop</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Ni na voljo v tem telefonu</string>
     <string name="pref_show_pkb_modifier_status_icon">Prikaži ikono stanja spremenilnih tipk</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Pri uporabi fizične tipkovnice prikaži oznako Shift/Alt v vrstici stanja</string>
-    <string name="settings_pred_accounts_permission_summary">Dodelite dovoljenje za račune, da bodo med tipkanjem predlagani e-poštni naslovi.</string>
+    <string name="settings_pred_accounts_permission_summary">Dodelite dovoljenje za račune, da bodo med tipkanjem predlagani e-poštni naslovi</string>
     <string name="settings_pred_accounts_permission_title">Potrebno je dovoljenje za račune</string>
     <string name="settings_pred_block_offensive_summary">Skrij morebitno žaljive besede pri glasovnem narekovanju</string>
     <string name="settings_pred_block_offensive_title">Blokiraj žaljive besede</string>
-    <string name="settings_pred_contacts_permission_summary">Dodelite dovoljenje za stike, da bodo med tipkanjem predlagana imena stikov in e-poštni naslovi.</string>
+    <string name="settings_pred_contacts_permission_summary">Dodelite dovoljenje za stike, da bodo med tipkanjem predlagana imena stikov in e-poštni naslovi</string>
     <string name="settings_pred_contacts_permission_title">Potrebno je dovoljenje za stike</string>
     <string name="settings_pred_contacts_summary_disabled">Potrebno je dovoljenje za stike</string>
     <string name="settings_pred_contacts_summary_enabled">Vključi imena stikov med predloge</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Za uporabo te funkcije dodelite dovoljenje za stike</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Imena stikov bodo prepoznana kot veljavne besede</string>
     <string name="settings_spellcheck_use_contacts_title">Uporabi stike pri preverjanju črkovanja</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Dodelite dovoljenje za stike, da bodo imena stikov pri preverjanju črkovanja prepoznana kot veljavne besede</string>
     <string name="settings_spellcheck_accept_learned_title">Sprejmi naučene besede</string>
     <string name="settings_spellcheck_accept_learned_summary">Besede, naučene iz vašega tipkanja, veljajo za pravilno črkovane</string>
     <string name="pref_alt_double_tap_lock">Omogoči zaklep tipke Alt z dvojnim pritiskom</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Omogoči zaklep tipke Ctrl z dvojnim pritiskom</string>
     <string name="pref_ctrl_double_tap_lock_summary">Z dvojnim pritiskom tipke Ctrl jo zaklenete. Z naslednjim pritiskom jo izklopite.</string>
     <string name="pref_override_device_meta_state">Preglasi meta stanje naprave</string>
-    <string name="pref_override_device_meta_state_summary">Omogoči lepljive spremenilne tipke (zaklep Shift/Alt) na fizičnih tipkovnicah ne glede na konfiguracijo KCM naprave.</string>
+    <string name="pref_override_device_meta_state_summary">Omogoči lepljive spremenilne tipke (zaklep Shift/Alt) na fizičnih tipkovnicah ne glede na konfiguracijo KCM naprave</string>
     <string name="pref_shift_double_tap_lock">Omogoči zaklep tipke Shift z dvojnim pritiskom</string>
     <string name="pref_shift_double_tap_lock_summary">Z dvojnim pritiskom tipke Shift jo zaklenete. Z naslednjim pritiskom jo izklopite.</string>
     <string name="prefs_key_longpress_delay_summary">Kako dolgo pridržati tipko, preden se prikažejo dodatni znaki</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Obvestila o dogodkih izpolnjevanja</string>
     <string name="pref_accessibility_service_disabled">Storitev za dostopnost je onemogočena</string>
     <string name="pref_accessibility_service_enabled">Storitev za dostopnost je omogočena</string>
-    <string name="pref_emoji_search_pkb_summary">Ko je plošča emoji odprta, iščite s tipkovnico.</string>
+    <string name="pref_emoji_search_pkb_summary">Ko je plošča emoji odprta, iščite s tipkovnico</string>
     <string name="pref_emoji_search_title">Omogoči iskanje emojijev</string>
-    <string name="pref_emoji_search_vkb_summary">Filtriraj emojije glede na trenutno nepotrjeno (podčrtano) besedilo.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Izbrani emoji se vstavi za vtipkano besedilo.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Izbrani emoji zamenja vtipkano besedilo.</string>
+    <string name="pref_emoji_search_vkb_summary">Filtriraj emojije glede na trenutno nepotrjeno (podčrtano) besedilo</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Izbrani emoji se vstavi za vtipkano besedilo</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Izbrani emoji zamenja vtipkano besedilo</string>
     <string name="pref_emoji_search_replace_text_title">Zamenjaj besedilo z emoji</string>
     <string name="pref_key_interceptor_enabled">Omogoči podporo za posebne tipke</string>
     <string name="pref_key_interceptor_enabled_summary">Uporabi storitev za dostopnost za zajem tipk Emoji, SYM in glas</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Upravljanje podatkov</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Makri po meri</string>
+    <string name="settings_custom_macros_intro" formatted="false">Določite svoje nadomestne oznake %x za uporabo v besedilnih bližnjicah</string>
     <string name="settings_customize_menu_hidden_header">Ni prikazano na tipkovnici</string>
     <string name="settings_customize_menu_instructions">Pridržite bližnjico in jo povlecite, da spremenite vrstni red. Prve štiri se prikažejo v meniju za vnos na tipkovnici.</string>
     <string name="settings_customize_menu_summary">Izberite in razvrstite bližnjice v meniju za vnos</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Hitre fraze</string>
     <string name="settings_screen_type_by_swiping">Tipkanje s podrsanjem</string>
     <string name="settings_screen_type_by_swiping_summary">Tipkajte hitro, ne da bi dvignili prst s tipkovnice</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Tipkanje s podrsanjem v vašem jeziku ni na voljo.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Tipkanje s podrsanjem v vašem jeziku ni na voljo</string>
     <string name="settings_search_hint">Iskanje po nastavitvah</string>
     <string name="settings_search_no_results">Ni najdenih nastavitev</string>
     <string name="settings_shake_fallback_title">Nadomestno dejanje</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Naprava tipkovnice: %1$s</string>
     <string name="device_config_import_matches_build">Naprava različice: %1$s</string>
     <string name="device_config_import_matches_brand">Znamka: %1$s</string>
-    <string name="device_config_import_matches_nothing">Ta datoteka ne navaja nobene naprave za ujemanje, zato ne bi nikoli veljala.</string>
+    <string name="device_config_import_matches_nothing">Ta datoteka ne navaja nobene naprave za ujemanje, zato ne bi nikoli veljala</string>
     <string name="device_config_import_type">Vrsta naprave: %1$s</string>
     <string name="device_config_import_keys">%1$d preslikav tipk</string>
     <string name="device_config_import_keypad_layout">Razporeditev tipkovnice: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Ta različica je preveč zastarela, da bi prebrala seznam posodobitev. Posodobite ročno.</string>
     <string name="settings_update_from_cache">Prikazano iz zadnjega shranjenega preverjanja</string>
     <string name="settings_update_background_check_title">Samodejno preverjaj posodobitve</string>
-    <string name="settings_update_background_check_summary">Prejeli boste obvestilo, ko bo na voljo nova različica za prenos.</string>
+    <string name="settings_update_background_check_summary">Prejeli boste obvestilo, ko bo na voljo nova različica za prenos</string>
     <string name="settings_update_notification_text">Različica %1$s je pripravljena za prenos</string>
     <string name="settings_update_unknown_sources_message">Android mora aplikaciji BBKB dovoliti namestitev aplikacij. Omogočite namestitev iz tega vira in znova pritisnite Namesti.</string>
     <string name="settings_update_open_settings">Odpri nastavitve</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Preveri slovarje</string>
     <string name="language_packs_load_ldb">Naloži datoteko LDB</string>
     <string name="language_packs_variant_summary">Naloži se namesto %1$s</string>
-    <string name="language_packs_not_on_summary">Dotaknite se, da ustvarite novo tipkovnico: %1$s.</string>
+    <string name="language_packs_not_on_summary">Dotaknite se, da ustvarite novo tipkovnico: %1$s</string>
     <string name="language_packs_turned_on">%1$s je vklopljen. Preklopite nanj v preklopniku jezikov.</string>
-    <string name="language_packs_turn_on_in_settings">Vklopite %1$s na seznamu in se nato vrnite.</string>
+    <string name="language_packs_turn_on_in_settings">Vklopite %1$s na seznamu in se nato vrnite</string>
     <string name="language_packs_installed_and_on">%1$s nameščen. Vklopljen je: preklopite nanj v preklopniku jezikov.</string>
     <string name="language_packs_installed_turn_on">%1$s nameščen. Dotaknite se vrstice, da ga vklopite v tipkovnici.</string>
+    <string name="language_packs_installed_no_layout">%1$s nameščen, vendar ta tipkovnica še nima razporeditve za njegovo pisavo, zato ga ni mogoče izbrati</string>
     <string name="language_packs_error_offline">Ni povezave</string>
     <string name="language_packs_error_network">Ni uspelo. Poskusite znova.</string>
     <string name="language_packs_error_verification">Datoteka se ni ujemala s katalogom, zato ni bilo nič nameščeno</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Shranjeno: %1$s</string>
     <string name="backup_restore_dialog_device">Iz naprave %1$s</string>
     <string name="backup_restore_not_in_file">Ni v tej datoteki</string>
-    <string name="backup_restore_dialog_note">Nastavitve, razporeditve in makri se zamenjajo; besede se dodajo k obstoječim v tem telefonu.</string>
+    <string name="backup_restore_dialog_note">Nastavitve, razporeditve in makri se zamenjajo; besede se dodajo k obstoječim v tem telefonu</string>
     <string name="backup_restore_dialog_confirm">Obnovi</string>
     <string name="backup_restored">Varnostna kopija je obnovljena</string>
     <string name="backup_restored_words_pending">Naučene besede bodo dodane, ko boste začeli uporabljati tipkovnico</string>

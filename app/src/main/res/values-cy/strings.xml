@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Yn ysgrifennu\'r grid bysellau a gipiwyd fel pwt &lt;ckb-key-grid&gt; i ffeiliau\'r ap, i\'w gludo i ffurfweddiad y ddyfais. Agorwch y bysellfwrdd unwaith yn gyntaf er mwyn iddo allu cipio.</string>
     <string name="ckb_gestures_export_title">Allforio geometreg y CKB</string>
     <string name="ckb_gestures_export_written">Ysgrifennwyd %s</string>
-    <string name="ckb_gestures_reserved_note">Mae sweipio i fyny (derbyn yr awgrym o dan eich bys) wedi\'i gadw.</string>
+    <string name="ckb_gestures_reserved_note">Mae sweipio i fyny (derbyn yr awgrym o dan eich bys) wedi\'i gadw</string>
     <string name="ckb_gestures_screen_title">Ystumiau CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">Y lluosydd cyflymder mwyaf ar gyfer newid acenion</string>
     <string name="settings_gesture_accent_max_speed_title">Lluosydd cyflymder mwyaf wrth sgrolio drwy acenion</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Galluogi dysgu deinamig</string>
     <string name="settings_dict_learned_words_summary">Rheoli\'r geiriau a ddysgwyd o\'ch teipio</string>
     <string name="settings_dict_learned_words_title">Geiriau a ddysgwyd</string>
+    <string name="settings_dict_add_to_dictionary_note">Bydd geiriau a ychwanegir at eich geiriadur yn cael eu hawgrymu wrth i chi deipio ac ni fyddant yn cael eu marcio fel camsillafiadau</string>
     <string name="settings_dict_text_shortcuts_summary">Creu llwybrau byr sy\'n ehangu\'n ymadroddion</string>
     <string name="settings_dict_text_shortcuts_title">Llwybrau byr testun</string>
     <string name="settings_dict_user_dictionary_summary">Ychwanegu a golygu geiriau personol</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Dewis neu fewnforio ffurfweddiadau mewnbwn ar gyfer dyfeisiau</string>
     <string name="settings_device_configuration_title">Ffurfweddiad y ddyfais</string>
     <string name="touch_surface_builtin_category">Adeiledig</string>
-    <string name="touch_surface_builtin_intro">Mae\'r ffôn yn trosglwyddo arwyneb cyffwrdd y bysellfwrdd i BBKB tra bo Scroll assistant ymlaen.</string>
+    <string name="touch_surface_builtin_intro">Mae\'r ffôn yn trosglwyddo arwyneb cyffwrdd y bysellfwrdd i BBKB tra bo Scroll assistant ymlaen</string>
     <string name="touch_surface_cursor_assistant_summary">Mae Cursor assistant yn cipio\'r tapio ddwywaith ar y bysellau, felly nid yw BBKB byth yn ei dderbyn</string>
     <string name="touch_surface_cursor_assistant_title">Diffodd Cursor assistant</string>
     <string name="touch_surface_grant_access">Rhoi mynediad</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Sefydlu Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Trowch Dewisiadau datblygwr ymlaen, ac yna Dadfygio diwifr.\n2. Dechreuwch Shizuku o\'i ap, neu gyda root.\n3. Dewch yn ôl yma a thapiwch Rhoi mynediad.</string>
     <string name="touch_surface_shizuku_intro">Ap am ddim yw Shizuku sy\'n gadael i BBKB ddarllen yr arwyneb cyffwrdd yn uniongyrchol. Dim ond tra bo\'r bysellfwrdd ar agor y bydd BBKB yn ei gymryd drosodd; weddill yr amser mae\'n gweithio fel arfer ar y ffôn.</string>
-    <string name="touch_surface_shizuku_mediatek">Defnyddiwch Shizuku 13.5.4 ar y ffôn hwn: nid yw fersiwn 13.6.0 yn gweithio\'n llawn ar ffonau MediaTek.</string>
+    <string name="touch_surface_shizuku_mediatek">Defnyddiwch Shizuku 13.5.4 ar y ffôn hwn: nid yw fersiwn 13.6.0 yn gweithio\'n llawn ar ffonau MediaTek</string>
     <string name="touch_surface_shizuku_reboot">Mae Shizuku yn stopio bob tro mae\'r ffôn yn ailgychwyn. Dechreuwch ef eto ar ôl pob ailgychwyn; mae\'r statws uchod yn dangos pan nad yw\'n rhedeg.</string>
     <string name="touch_surface_shizuku_state_denied">Yn rhedeg, ond gwrthodwyd mynediad i BBKB</string>
     <string name="touch_surface_shizuku_state_granted">Yn rhedeg, ac mae gan BBKB fynediad</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Ddim ar gael ar y ffôn hwn</string>
     <string name="pref_show_pkb_modifier_status_icon">Dangos eicon statws yr addaswyr</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Dangos dynodydd Shift/Alt yn y bar statws wrth ddefnyddio bysellfwrdd ffisegol</string>
-    <string name="settings_pred_accounts_permission_summary">Rhowch ganiatâd cyfrifon er mwyn awgrymu cyfeiriadau e-bost wrth i chi deipio.</string>
+    <string name="settings_pred_accounts_permission_summary">Rhowch ganiatâd cyfrifon er mwyn awgrymu cyfeiriadau e-bost wrth i chi deipio</string>
     <string name="settings_pred_accounts_permission_title">Angen Caniatâd Cyfrifon</string>
     <string name="settings_pred_block_offensive_summary">Cuddio geiriau a allai fod yn sarhaus wrth arddweud â llais</string>
     <string name="settings_pred_block_offensive_title">Rhwystro geiriau sarhaus</string>
-    <string name="settings_pred_contacts_permission_summary">Rhowch ganiatâd cysylltiadau er mwyn awgrymu enwau cysylltiadau a chyfeiriadau e-bost wrth i chi deipio.</string>
+    <string name="settings_pred_contacts_permission_summary">Rhowch ganiatâd cysylltiadau er mwyn awgrymu enwau cysylltiadau a chyfeiriadau e-bost wrth i chi deipio</string>
     <string name="settings_pred_contacts_permission_title">Angen Caniatâd Cysylltiadau</string>
     <string name="settings_pred_contacts_summary_disabled">Angen caniatâd cysylltiadau</string>
     <string name="settings_pred_contacts_summary_enabled">Cynnwys enwau cysylltiadau yn yr awgrymiadau</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Rhowch ganiatâd cysylltiadau i ddefnyddio\'r nodwedd hon</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Bydd enwau cysylltiadau\'n cael eu cydnabod fel geiriau dilys</string>
     <string name="settings_spellcheck_use_contacts_title">Defnyddio cysylltiadau wrth wirio sillafu</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Rhowch ganiatâd cysylltiadau er mwyn i enwau cysylltiadau gael eu hadnabod fel geiriau dilys wrth wirio sillafu</string>
     <string name="settings_spellcheck_accept_learned_title">Derbyn geiriau a ddysgwyd</string>
     <string name="settings_spellcheck_accept_learned_summary">Mae geiriau a ddysgwyd o\'ch teipio yn cyfrif fel rhai wedi\'u sillafu\'n gywir</string>
     <string name="pref_alt_double_tap_lock">Galluogi clo Alt drwy glicio ddwywaith</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Galluogi clo Ctrl drwy glicio ddwywaith</string>
     <string name="pref_ctrl_double_tap_lock_summary">Bydd clicio Ctrl ddwywaith yn ei gloi. Bydd clicio Ctrl eto yn ei ddiffodd.</string>
     <string name="pref_override_device_meta_state">Diystyru cyflwr meta\'r ddyfais</string>
-    <string name="pref_override_device_meta_state_summary">Galluogi addaswyr gludiog (clo shift/alt) ar fysellfyrddau ffisegol waeth beth fo ffurfweddiad KCM y ddyfais.</string>
+    <string name="pref_override_device_meta_state_summary">Galluogi addaswyr gludiog (clo shift/alt) ar fysellfyrddau ffisegol waeth beth fo ffurfweddiad KCM y ddyfais</string>
     <string name="pref_shift_double_tap_lock">Galluogi clo Shift drwy glicio ddwywaith</string>
     <string name="pref_shift_double_tap_lock_summary">Bydd clicio Shift ddwywaith yn ei gloi. Bydd clicio Shift eto yn ei ddiffodd.</string>
     <string name="prefs_key_longpress_delay_summary">Faint o amser i ddal bysell cyn i\'r nodau eilaidd ymddangos</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Hysbysiadau digwyddiadau awtolenwi</string>
     <string name="pref_accessibility_service_disabled">Gwasanaeth hygyrchedd wedi\'i analluogi</string>
     <string name="pref_accessibility_service_enabled">Gwasanaeth hygyrchedd wedi\'i alluogi</string>
-    <string name="pref_emoji_search_pkb_summary">Pan fo\'r bwrdd emoji ar agor, defnyddiwch y bysellfwrdd i chwilio.</string>
+    <string name="pref_emoji_search_pkb_summary">Pan fo\'r bwrdd emoji ar agor, defnyddiwch y bysellfwrdd i chwilio</string>
     <string name="pref_emoji_search_title">Galluogi chwilio emoji</string>
-    <string name="pref_emoji_search_vkb_summary">Hidlo emojis gyda\'r testun cyfredol heb ei gadarnhau (wedi\'i danlinellu).</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Mae dewis emoji yn ei fewnosod ar ôl y testun a deipiwyd.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Mae dewis emoji yn disodli\'r testun a deipiwyd.</string>
+    <string name="pref_emoji_search_vkb_summary">Hidlo emojis gyda\'r testun cyfredol heb ei gadarnhau (wedi\'i danlinellu)</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Mae dewis emoji yn ei fewnosod ar ôl y testun a deipiwyd</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Mae dewis emoji yn disodli\'r testun a deipiwyd</string>
     <string name="pref_emoji_search_replace_text_title">Disodli testun ag emoji</string>
     <string name="pref_key_interceptor_enabled">Galluogi cefnogaeth i fysellau arbennig</string>
     <string name="pref_key_interceptor_enabled_summary">Defnyddio\'r gwasanaeth hygyrchedd i ddal y bysellau Emoji, SYM a Llais</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Rheoli data</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Macros personol</string>
+    <string name="settings_custom_macros_intro" formatted="false">Diffiniwch eich dalfannau %x eich hun i\'w defnyddio mewn llwybrau byr testun</string>
     <string name="settings_customize_menu_hidden_header">Heb ei ddangos ar y bysellfwrdd</string>
     <string name="settings_customize_menu_instructions">Cyffyrddwch â llwybr byr a dal, yna llusgwch i aildrefnu. Mae\'r pedwar cyntaf yn ymddangos ar ddewislen fewnbwn y bysellfwrdd.</string>
     <string name="settings_customize_menu_summary">Dewis ac aildrefnu llwybrau byr y ddewislen fewnbwn</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Ymadroddion cyflym</string>
     <string name="settings_screen_type_by_swiping">Teipio drwy sweipio</string>
     <string name="settings_screen_type_by_swiping_summary">Teipiwch yn gyflym heb godi\'ch bys oddi ar y bysellfwrdd</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Nid yw teipio drwy sweipio ar gael yn eich iaith chi.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Nid yw teipio drwy sweipio ar gael yn eich iaith chi</string>
     <string name="settings_search_hint">Chwilio\'r gosodiadau</string>
     <string name="settings_search_no_results">Heb ddod o hyd i unrhyw osodiad</string>
     <string name="settings_shake_fallback_title">Gweithred wrth gefn</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Dyfais y bysellfwrdd: %1$s</string>
     <string name="device_config_import_matches_build">Dyfais y build: %1$s</string>
     <string name="device_config_import_matches_brand">Brand: %1$s</string>
-    <string name="device_config_import_matches_nothing">Nid yw\'r ffeil hon yn enwi unrhyw ddyfais i gyfateb iddi, felly ni fyddai byth yn berthnasol.</string>
+    <string name="device_config_import_matches_nothing">Nid yw\'r ffeil hon yn enwi unrhyw ddyfais i gyfateb iddi, felly ni fyddai byth yn berthnasol</string>
     <string name="device_config_import_type">Math o ddyfais: %1$s</string>
     <string name="device_config_import_keys">%1$d mapiad bysell</string>
     <string name="device_config_import_keypad_layout">Cynllun y pad bysellau: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Mae\'r fersiwn hon yn rhy hen i ddarllen y rhestr ddiweddaru. Diweddarwch â llaw.</string>
     <string name="settings_update_from_cache">Wedi\'i ddangos o\'r gwiriad diwethaf a gadwyd</string>
     <string name="settings_update_background_check_title">Gwirio am ddiweddariadau yn awtomatig</string>
-    <string name="settings_update_background_check_summary">Cewch hysbysiad pan fydd fersiwn newydd ar gael i\'w lawrlwytho.</string>
+    <string name="settings_update_background_check_summary">Cewch hysbysiad pan fydd fersiwn newydd ar gael i\'w lawrlwytho</string>
     <string name="settings_update_notification_text">Mae fersiwn %1$s yn barod i\'w lawrlwytho</string>
     <string name="settings_update_unknown_sources_message">Rhaid i Android ganiatáu i BBKB osod apiau. Galluogwch osod o\'r ffynhonnell hon, wedyn pwyswch Gosod eto.</string>
     <string name="settings_update_open_settings">Agor gosodiadau</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Chwilio am eiriaduron</string>
     <string name="language_packs_load_ldb">Llwytho ffeil LDB</string>
     <string name="language_packs_variant_summary">Yn llwytho yn lle %1$s</string>
-    <string name="language_packs_not_on_summary">Tapiwch i greu bysellfwrdd %1$s newydd.</string>
+    <string name="language_packs_not_on_summary">Tapiwch i greu bysellfwrdd %1$s newydd</string>
     <string name="language_packs_turned_on">Mae %1$s ymlaen. Newidiwch iddo o\'r newidydd iaith.</string>
-    <string name="language_packs_turn_on_in_settings">Galluogwch %1$s yn y rhestr, yna dewch yn ôl.</string>
+    <string name="language_packs_turn_on_in_settings">Galluogwch %1$s yn y rhestr, yna dewch yn ôl</string>
     <string name="language_packs_installed_and_on">Gosodwyd %1$s. Mae wedi\'i alluogi: newidiwch iddo o\'r newidydd iaith.</string>
     <string name="language_packs_installed_turn_on">Gosodwyd %1$s. Tapiwch ei res i\'w alluogi ar y bysellfwrdd.</string>
+    <string name="language_packs_installed_no_layout">Gosodwyd %1$s, ond nid oes gan y bysellfwrdd hwn gynllun ar gyfer ei sgript eto, felly ni ellir ei ddewis</string>
     <string name="language_packs_error_offline">Dim cysylltiad</string>
     <string name="language_packs_error_network">Ni weithiodd hynny. Ceisiwch eto.</string>
     <string name="language_packs_error_verification">Nid oedd y ffeil yn cyfateb i\'r catalog, felly ni osodwyd dim</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Cadwyd %1$s</string>
     <string name="backup_restore_dialog_device">O %1$s</string>
     <string name="backup_restore_not_in_file">Ddim yn y ffeil hon</string>
-    <string name="backup_restore_dialog_note">Mae gosodiadau, cynlluniau a macros yn cael eu disodli; mae geiriau\'n cael eu hychwanegu at yr hyn sydd ar y ffôn hwn.</string>
+    <string name="backup_restore_dialog_note">Mae gosodiadau, cynlluniau a macros yn cael eu disodli; mae geiriau\'n cael eu hychwanegu at yr hyn sydd ar y ffôn hwn</string>
     <string name="backup_restore_dialog_confirm">Adfer</string>
     <string name="backup_restored">Adferwyd y copi wrth gefn</string>
     <string name="backup_restored_words_pending">Bydd geiriau a ddysgwyd yn cael eu hychwanegu unwaith y bydd y bysellfwrdd yn cael ei ddefnyddio</string>

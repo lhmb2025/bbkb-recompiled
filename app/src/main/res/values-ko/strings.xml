@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">수집된 키 배열을 &lt;ckb-key-grid&gt; 스니펫으로 앱 파일에 기록하여 기기 구성에 붙여넣을 수 있게 합니다. 수집할 수 있도록 먼저 키보드를 한 번 여세요.</string>
     <string name="ckb_gestures_export_title">CKB 배열 내보내기</string>
     <string name="ckb_gestures_export_written">%s에 기록함</string>
-    <string name="ckb_gestures_reserved_note">위로 스와이프(손가락 아래의 추천 항목 확정)는 예약되어 있습니다.</string>
+    <string name="ckb_gestures_reserved_note">위로 스와이프(손가락 아래의 추천 항목 확정)는 예약되어 있습니다</string>
     <string name="ckb_gestures_screen_title">CKB 제스처</string>
     <string name="settings_gesture_accent_max_speed_summary">악센트 변경의 최대 속도 배율</string>
     <string name="settings_gesture_accent_max_speed_title">스크롤 악센트 변경 최대 속도 배율</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">동적 학습 사용</string>
     <string name="settings_dict_learned_words_summary">입력에서 학습한 단어를 관리합니다</string>
     <string name="settings_dict_learned_words_title">학습한 단어</string>
+    <string name="settings_dict_add_to_dictionary_note">사전에 추가한 단어는 입력 중에 추천되며 맞춤법 오류로 표시되지 않습니다</string>
     <string name="settings_dict_text_shortcuts_summary">문구로 확장되는 바로가기를 만듭니다</string>
     <string name="settings_dict_text_shortcuts_title">텍스트 바로가기</string>
     <string name="settings_dict_user_dictionary_summary">개인 단어를 추가하고 편집합니다</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">기기 입력 구성을 선택하거나 가져옵니다</string>
     <string name="settings_device_configuration_title">기기 구성</string>
     <string name="touch_surface_builtin_category">기기 내장</string>
-    <string name="touch_surface_builtin_intro">Scroll assistant가 켜져 있는 동안 기기가 키보드의 터치 센서 입력을 BBKB에 전달합니다.</string>
+    <string name="touch_surface_builtin_intro">Scroll assistant가 켜져 있는 동안 기기가 키보드의 터치 센서 입력을 BBKB에 전달합니다</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant가 키의 두 번 탭을 가로채므로 BBKB가 받을 수 없습니다</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant 끄기</string>
     <string name="touch_surface_grant_access">액세스 허용</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku 설정</string>
     <string name="touch_surface_shizuku_guide_steps">1. 개발자 옵션을 켠 다음 무선 디버깅을 켭니다.\n2. Shizuku 앱에서 또는 루트 권한으로 Shizuku를 시작합니다.\n3. 이 화면으로 돌아와 액세스 허용을 탭합니다.</string>
     <string name="touch_surface_shizuku_intro">Shizuku는 BBKB가 터치 센서를 직접 읽을 수 있게 해 주는 무료 앱입니다. BBKB는 키보드가 열려 있는 동안에만 터치 센서를 넘겨받으며, 그 외에는 터치 센서가 평소처럼 작동합니다.</string>
-    <string name="touch_surface_shizuku_mediatek">이 기기에서는 Shizuku 13.5.4를 사용하세요. 13.6.0 버전은 MediaTek 기기에서 완전히 작동하지 않습니다.</string>
+    <string name="touch_surface_shizuku_mediatek">이 기기에서는 Shizuku 13.5.4를 사용하세요. 13.6.0 버전은 MediaTek 기기에서 완전히 작동하지 않습니다</string>
     <string name="touch_surface_shizuku_reboot">Shizuku는 기기를 다시 시작할 때마다 중지됩니다. 다시 시작할 때마다 Shizuku를 다시 실행하세요. Shizuku가 실행 중이 아니면 위의 상태에 표시됩니다.</string>
     <string name="touch_surface_shizuku_state_denied">실행 중이지만 BBKB의 액세스가 거부됨</string>
     <string name="touch_surface_shizuku_state_granted">실행 중이며 BBKB에 액세스 권한이 있음</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">이 기기에서는 사용할 수 없습니다</string>
     <string name="pref_show_pkb_modifier_status_icon">조합 키 상태 아이콘 표시</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">물리 키보드 사용 시 상태 표시줄에 Shift/Alt 조합 키 상태를 표시합니다</string>
-    <string name="settings_pred_accounts_permission_summary">입력 중에 이메일 주소를 추천하려면 계정 권한을 허용하세요.</string>
+    <string name="settings_pred_accounts_permission_summary">입력 중에 이메일 주소를 추천하려면 계정 권한을 허용하세요</string>
     <string name="settings_pred_accounts_permission_title">계정 권한 필요</string>
     <string name="settings_pred_block_offensive_summary">음성 입력 시 불쾌감을 줄 수 있는 단어를 가립니다</string>
     <string name="settings_pred_block_offensive_title">불쾌한 단어 차단</string>
-    <string name="settings_pred_contacts_permission_summary">입력 중에 연락처 이름과 이메일 주소를 추천하려면 연락처 권한을 허용하세요.</string>
+    <string name="settings_pred_contacts_permission_summary">입력 중에 연락처 이름과 이메일 주소를 추천하려면 연락처 권한을 허용하세요</string>
     <string name="settings_pred_contacts_permission_title">연락처 권한 필요</string>
     <string name="settings_pred_contacts_summary_disabled">연락처 권한 필요</string>
     <string name="settings_pred_contacts_summary_enabled">추천 항목에 연락처 이름을 포함합니다</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">이 기능을 사용하려면 연락처 권한을 허용하세요</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">연락처 이름이 올바른 단어로 인식됩니다</string>
     <string name="settings_spellcheck_use_contacts_title">맞춤법 검사에 연락처 사용</string>
+    <string name="settings_spellcheck_contacts_permission_summary">맞춤법 검사에서 연락처 이름을 올바른 단어로 인식하려면 연락처 권한을 허용하세요</string>
     <string name="settings_spellcheck_accept_learned_title">학습한 단어 허용</string>
     <string name="settings_spellcheck_accept_learned_summary">입력에서 학습한 단어를 맞춤법이 올바른 단어로 처리합니다</string>
     <string name="pref_alt_double_tap_lock">Alt 두 번 클릭 잠금 사용</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrl 두 번 클릭 잠금 사용</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl 키를 두 번 클릭하면 켜진 상태로 잠깁니다. Ctrl 키를 다시 클릭하면 해제됩니다.</string>
     <string name="pref_override_device_meta_state">기기 메타 상태 재정의</string>
-    <string name="pref_override_device_meta_state_summary">기기의 KCM 구성과 관계없이 물리 키보드에서 고정 조합 키(Shift/Alt 잠금)를 사용합니다.</string>
+    <string name="pref_override_device_meta_state_summary">기기의 KCM 구성과 관계없이 물리 키보드에서 고정 조합 키(Shift/Alt 잠금)를 사용합니다</string>
     <string name="pref_shift_double_tap_lock">Shift 두 번 클릭 잠금 사용</string>
     <string name="pref_shift_double_tap_lock_summary">Shift를 두 번 클릭하면 켜진 상태로 잠깁니다. Shift를 다시 클릭하면 해제됩니다.</string>
     <string name="prefs_key_longpress_delay_summary">보조 문자가 나타나기 전까지 키를 누르고 있는 시간</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">자동 완성 이벤트 토스트</string>
     <string name="pref_accessibility_service_disabled">접근성 서비스 사용 안 함</string>
     <string name="pref_accessibility_service_enabled">접근성 서비스 사용 중</string>
-    <string name="pref_emoji_search_pkb_summary">이모티콘 보드가 열려 있을 때 키보드로 검색합니다.</string>
+    <string name="pref_emoji_search_pkb_summary">이모티콘 보드가 열려 있을 때 키보드로 검색합니다</string>
     <string name="pref_emoji_search_title">이모티콘 검색 사용</string>
-    <string name="pref_emoji_search_vkb_summary">현재 확정되지 않은(밑줄 표시된) 텍스트로 이모티콘을 필터링합니다.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">이모티콘을 선택하면 입력한 텍스트 뒤에 삽입됩니다.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">이모티콘을 선택하면 입력한 텍스트가 대체됩니다.</string>
+    <string name="pref_emoji_search_vkb_summary">현재 확정되지 않은(밑줄 표시된) 텍스트로 이모티콘을 필터링합니다</string>
+    <string name="pref_emoji_search_replace_text_summary_off">이모티콘을 선택하면 입력한 텍스트 뒤에 삽입됩니다</string>
+    <string name="pref_emoji_search_replace_text_summary_on">이모티콘을 선택하면 입력한 텍스트가 대체됩니다</string>
     <string name="pref_emoji_search_replace_text_title">텍스트를 이모티콘으로 대체</string>
     <string name="pref_key_interceptor_enabled">특수 키 지원 사용</string>
     <string name="pref_key_interceptor_enabled_summary">접근성 서비스를 사용하여 이모티콘, SYM, 음성 키를 가로챕니다</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">데이터 관리</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">사용자 지정 매크로</string>
+    <string name="settings_custom_macros_intro" formatted="false">텍스트 바로가기에 사용할 나만의 %x 자리표시자를 정의하세요</string>
     <string name="settings_customize_menu_hidden_header">키보드에 표시 안 함</string>
     <string name="settings_customize_menu_instructions">바로가기를 길게 누른 후 드래그하여 순서를 변경하세요. 처음 네 개가 키보드의 입력 메뉴에 표시됩니다.</string>
     <string name="settings_customize_menu_summary">입력 메뉴 바로가기를 선택하고 순서를 변경합니다</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">빠른 문구</string>
     <string name="settings_screen_type_by_swiping">밀어서 입력</string>
     <string name="settings_screen_type_by_swiping_summary">키보드에서 손가락을 떼지 않고도 빠르게 입력 가능</string>
-    <string name="settings_screen_type_by_swiping_unavailable">밀어서 입력은 사용자의 언어로 지원되지 않습니다.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">밀어서 입력은 사용자의 언어로 지원되지 않습니다</string>
     <string name="settings_search_hint">설정 검색</string>
     <string name="settings_search_no_results">설정을 찾을 수 없습니다</string>
     <string name="settings_shake_fallback_title">대체 동작</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">키보드 기기: %1$s</string>
     <string name="device_config_import_matches_build">빌드 기기: %1$s</string>
     <string name="device_config_import_matches_brand">브랜드: %1$s</string>
-    <string name="device_config_import_matches_nothing">이 파일에는 일치시킬 기기가 지정되어 있지 않아 적용되지 않습니다.</string>
+    <string name="device_config_import_matches_nothing">이 파일에는 일치시킬 기기가 지정되어 있지 않아 적용되지 않습니다</string>
     <string name="device_config_import_type">기기 유형: %1$s</string>
     <string name="device_config_import_keys">키 매핑 %1$d개</string>
     <string name="device_config_import_keypad_layout">키패드 레이아웃: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">이 버전은 너무 오래되어 업데이트 목록을 읽을 수 없습니다. 직접 업데이트해 주세요.</string>
     <string name="settings_update_from_cache">마지막으로 저장된 확인 결과입니다</string>
     <string name="settings_update_background_check_title">업데이트 자동 확인</string>
-    <string name="settings_update_background_check_summary">새 버전을 다운로드할 수 있게 되면 알려 드립니다.</string>
+    <string name="settings_update_background_check_summary">새 버전을 다운로드할 수 있게 되면 알려 드립니다</string>
     <string name="settings_update_notification_text">버전 %1$s을 다운로드할 수 있습니다</string>
     <string name="settings_update_unknown_sources_message">앱을 설치하려면 Android의 허용이 필요합니다. 이 소스에서의 설치를 허용한 뒤 설치를 다시 누르세요.</string>
     <string name="settings_update_open_settings">설정 열기</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">사전 확인</string>
     <string name="language_packs_load_ldb">LDB 파일 불러오기</string>
     <string name="language_packs_variant_summary">%1$s 대신 로드됨</string>
-    <string name="language_packs_not_on_summary">탭하여 새 %1$s 키보드를 만드세요.</string>
+    <string name="language_packs_not_on_summary">탭하여 새 %1$s 키보드를 만드세요</string>
     <string name="language_packs_turned_on">%1$s이(가) 켜졌습니다. 언어 전환기에서 전환하세요.</string>
-    <string name="language_packs_turn_on_in_settings">목록에서 %1$s을(를) 켠 후 돌아오세요.</string>
+    <string name="language_packs_turn_on_in_settings">목록에서 %1$s을(를) 켠 후 돌아오세요</string>
     <string name="language_packs_installed_and_on">%1$s 설치됨. 켜져 있습니다: 언어 전환기에서 전환하세요.</string>
     <string name="language_packs_installed_turn_on">%1$s 설치됨. 키보드에서 켜려면 항목을 탭하세요.</string>
+    <string name="language_packs_installed_no_layout">%1$s을(를) 설치했지만 이 키보드에는 아직 해당 문자 체계의 레이아웃이 없어 선택할 수 없습니다</string>
     <string name="language_packs_error_offline">연결 없음</string>
     <string name="language_packs_error_network">실패했습니다. 다시 시도하세요.</string>
     <string name="language_packs_error_verification">파일이 카탈로그와 일치하지 않아 아무것도 설치되지 않았습니다</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">저장 일시: %1$s</string>
     <string name="backup_restore_dialog_device">기기: %1$s</string>
     <string name="backup_restore_not_in_file">이 파일에 없음</string>
-    <string name="backup_restore_dialog_note">설정, 레이아웃, 매크로는 대체되고, 단어는 이 기기에 있는 항목에 추가됩니다.</string>
+    <string name="backup_restore_dialog_note">설정, 레이아웃, 매크로는 대체되고, 단어는 이 기기에 있는 항목에 추가됩니다</string>
     <string name="backup_restore_dialog_confirm">복원</string>
     <string name="backup_restored">백업을 복원했습니다</string>
     <string name="backup_restored_words_pending">학습한 단어는 키보드를 사용하기 시작하면 추가됩니다</string>

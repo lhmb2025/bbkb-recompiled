@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Schrijf het vastgelegde toetsenraster als een &lt;ckb-key-grid&gt;-fragment naar de app-bestanden, om in de apparaatconfiguratie te plakken. Open eerst één keer het toetsenbord zodat het kan worden vastgelegd.</string>
     <string name="ckb_gestures_export_title">CKB-geometrie exporteren</string>
     <string name="ckb_gestures_export_written">%s geschreven</string>
-    <string name="ckb_gestures_reserved_note">Omhoog vegen (de suggestie onder uw vinger bevestigen) is gereserveerd.</string>
+    <string name="ckb_gestures_reserved_note">Omhoog vegen (de suggestie onder uw vinger bevestigen) is gereserveerd</string>
     <string name="ckb_gestures_screen_title">CKB-gebaren</string>
     <string name="settings_gesture_accent_max_speed_summary">Maximale snelheidsfactor voor accentwijzigingen</string>
     <string name="settings_gesture_accent_max_speed_title">Max. snelheidsfactor voor accentwijziging bij scrollen</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Dynamisch leren inschakelen</string>
     <string name="settings_dict_learned_words_summary">Woorden beheren die zijn geleerd van wat u typt</string>
     <string name="settings_dict_learned_words_title">Geleerde woorden</string>
+    <string name="settings_dict_add_to_dictionary_note">Woorden die je aan je woordenboek toevoegt, worden tijdens het typen voorgesteld en niet als spelfout gemarkeerd</string>
     <string name="settings_dict_text_shortcuts_summary">Snelkoppelingen maken die worden uitgebreid tot zinnen</string>
     <string name="settings_dict_text_shortcuts_title">Tekstsnelkoppelingen</string>
     <string name="settings_dict_user_dictionary_summary">Persoonlijke woorden toevoegen en bewerken</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Invoerconfiguraties voor apparaten selecteren of importeren</string>
     <string name="settings_device_configuration_title">Apparaatconfiguratie</string>
     <string name="touch_surface_builtin_category">Ingebouwd</string>
-    <string name="touch_surface_builtin_intro">De telefoon geeft het aanraakoppervlak van het toetsenbord door aan BBKB zolang Scroll assistant is ingeschakeld.</string>
+    <string name="touch_surface_builtin_intro">De telefoon geeft het aanraakoppervlak van het toetsenbord door aan BBKB zolang Scroll assistant is ingeschakeld</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant onderschept dubbeltikken op de toetsen, waardoor BBKB het nooit ontvangt</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant uitschakelen</string>
     <string name="touch_surface_grant_access">Toegang verlenen</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku instellen</string>
     <string name="touch_surface_shizuku_guide_steps">1. Schakel Ontwikkelaarsopties in en daarna Draadloze foutopsporing.\n2. Start Shizuku vanuit de app of met roottoegang.\n3. Kom hier terug en tik op Toegang verlenen.</string>
     <string name="touch_surface_shizuku_intro">Shizuku is een gratis app waarmee BBKB het aanraakoppervlak rechtstreeks kan lezen. BBKB neemt het alleen over zolang het toetsenbord open is; de rest van de tijd werkt het gewoon zoals altijd.</string>
-    <string name="touch_surface_shizuku_mediatek">Gebruik Shizuku 13.5.4 op deze telefoon: versie 13.6.0 werkt niet volledig op MediaTek-telefoons.</string>
+    <string name="touch_surface_shizuku_mediatek">Gebruik Shizuku 13.5.4 op deze telefoon: versie 13.6.0 werkt niet volledig op MediaTek-telefoons</string>
     <string name="touch_surface_shizuku_reboot">Shizuku stopt telkens wanneer de telefoon opnieuw opstart. Start het na elke herstart opnieuw; de status hierboven geeft aan wanneer het niet actief is.</string>
     <string name="touch_surface_shizuku_state_denied">Actief, maar BBKB is de toegang geweigerd</string>
     <string name="touch_surface_shizuku_state_granted">Actief en BBKB heeft toegang</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Niet beschikbaar op deze telefoon</string>
     <string name="pref_show_pkb_modifier_status_icon">Statuspictogram voor modificatietoetsen tonen</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">De Shift/Alt-indicator in de statusbalk weergeven bij gebruik van het fysieke toetsenbord</string>
-    <string name="settings_pred_accounts_permission_summary">Verleen toegang tot accounts om tijdens het typen e-mailadressen te suggereren.</string>
+    <string name="settings_pred_accounts_permission_summary">Verleen toegang tot accounts om tijdens het typen e-mailadressen te suggereren</string>
     <string name="settings_pred_accounts_permission_title">Accounttoestemming vereist</string>
     <string name="settings_pred_block_offensive_summary">Mogelijk aanstootgevende woorden verbergen tijdens het dicteren</string>
     <string name="settings_pred_block_offensive_title">Aanstootgevende woorden blokkeren</string>
-    <string name="settings_pred_contacts_permission_summary">Verleen toegang tot contactpersonen om tijdens het typen namen en e-mailadressen te suggereren.</string>
+    <string name="settings_pred_contacts_permission_summary">Verleen toegang tot contactpersonen om tijdens het typen namen en e-mailadressen te suggereren</string>
     <string name="settings_pred_contacts_permission_title">Toestemming voor contactpersonen vereist</string>
     <string name="settings_pred_contacts_summary_disabled">Toestemming voor contactpersonen vereist</string>
     <string name="settings_pred_contacts_summary_enabled">Namen van contactpersonen opnemen in suggesties</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Verleen toegang tot contactpersonen om deze functie te gebruiken</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Namen van contactpersonen worden herkend als geldige woorden</string>
     <string name="settings_spellcheck_use_contacts_title">Contactpersonen gebruiken bij spellingcontrole</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Verleen toegang tot contactpersonen zodat namen van contactpersonen bij de spellingcontrole als geldige woorden worden herkend</string>
     <string name="settings_spellcheck_accept_learned_title">Geleerde woorden accepteren</string>
     <string name="settings_spellcheck_accept_learned_summary">Woorden die zijn geleerd van wat je typt, gelden als correct gespeld</string>
     <string name="pref_alt_double_tap_lock">Alt-vergrendeling met dubbelklik inschakelen</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrl-vergrendeling met dubbelklik inschakelen</string>
     <string name="pref_ctrl_double_tap_lock_summary">Dubbelklikken op Ctrl vergrendelt de toets. Nogmaals op Ctrl klikken schakelt deze uit.</string>
     <string name="pref_override_device_meta_state">Metastatus van apparaat overschrijven</string>
-    <string name="pref_override_device_meta_state_summary">Plakkende modificatietoetsen (shift-/alt-vergrendeling) inschakelen op fysieke toetsenborden, ongeacht de KCM-configuratie van het apparaat.</string>
+    <string name="pref_override_device_meta_state_summary">Plakkende modificatietoetsen (shift-/alt-vergrendeling) inschakelen op fysieke toetsenborden, ongeacht de KCM-configuratie van het apparaat</string>
     <string name="pref_shift_double_tap_lock">Shift-vergrendeling met dubbelklik inschakelen</string>
     <string name="pref_shift_double_tap_lock_summary">Dubbelklikken op Shift vergrendelt de toets. Nogmaals op Shift klikken schakelt deze uit.</string>
     <string name="prefs_key_longpress_delay_summary">Tijd dat een toets moet worden vastgehouden voordat secundaire tekens verschijnen</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Meldingen bij automatisch invullen</string>
     <string name="pref_accessibility_service_disabled">Toegankelijkheidsservice uitgeschakeld</string>
     <string name="pref_accessibility_service_enabled">Toegankelijkheidsservice ingeschakeld</string>
-    <string name="pref_emoji_search_pkb_summary">Zoek met het toetsenbord wanneer het emoji-bord open is.</string>
+    <string name="pref_emoji_search_pkb_summary">Zoek met het toetsenbord wanneer het emoji-bord open is</string>
     <string name="pref_emoji_search_title">Emoji zoeken inschakelen</string>
-    <string name="pref_emoji_search_vkb_summary">Filter emoji op de huidige nog niet bevestigde (onderstreepte) tekst.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Een gekozen emoji wordt na de getypte tekst ingevoegd.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Een gekozen emoji vervangt de getypte tekst.</string>
+    <string name="pref_emoji_search_vkb_summary">Filter emoji op de huidige nog niet bevestigde (onderstreepte) tekst</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Een gekozen emoji wordt na de getypte tekst ingevoegd</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Een gekozen emoji vervangt de getypte tekst</string>
     <string name="pref_emoji_search_replace_text_title">Tekst vervangen door emoji</string>
     <string name="pref_key_interceptor_enabled">Ondersteuning voor speciale toetsen inschakelen</string>
     <string name="pref_key_interceptor_enabled_summary">De toegankelijkheidsservice gebruiken om de toetsen Emoji, SYM en Voice te onderscheppen</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Gegevens beheren</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Aangepaste macro\'s</string>
+    <string name="settings_custom_macros_intro" formatted="false">Definieer je eigen %x-plaatsaanduidingen voor gebruik in tekstsnelkoppelingen</string>
     <string name="settings_customize_menu_hidden_header">Niet op het toetsenbord getoond</string>
     <string name="settings_customize_menu_instructions">Houd een snelkoppeling ingedrukt en sleep om de volgorde te wijzigen. De eerste vier verschijnen in het invoermenu van het toetsenbord.</string>
     <string name="settings_customize_menu_summary">Kies de snelkoppelingen in het invoermenu en wijzig hun volgorde</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Snelle zinnen</string>
     <string name="settings_screen_type_by_swiping">Typen door te vegen</string>
     <string name="settings_screen_type_by_swiping_summary">Snel typen zonder uw vinger van het toetsenbord te halen</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Typen door te vegen is niet beschikbaar in uw taal.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Typen door te vegen is niet beschikbaar in uw taal</string>
     <string name="settings_search_hint">Instellingen doorzoeken</string>
     <string name="settings_search_no_results">Geen instellingen gevonden</string>
     <string name="settings_shake_fallback_title">Terugvalactie</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Toetsenbordapparaat: %1$s</string>
     <string name="device_config_import_matches_build">Build-apparaat: %1$s</string>
     <string name="device_config_import_matches_brand">Merk: %1$s</string>
-    <string name="device_config_import_matches_nothing">Dit bestand noemt geen apparaat om mee overeen te komen, dus het zou nooit worden toegepast.</string>
+    <string name="device_config_import_matches_nothing">Dit bestand noemt geen apparaat om mee overeen te komen, dus het zou nooit worden toegepast</string>
     <string name="device_config_import_type">Apparaattype: %1$s</string>
     <string name="device_config_import_keys">%1$d toetstoewijzingen</string>
     <string name="device_config_import_keypad_layout">Toetsenblokindeling: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Deze versie is te oud om de updatelijst te lezen. Werk de app handmatig bij.</string>
     <string name="settings_update_from_cache">Weergegeven op basis van de laatst opgeslagen controle</string>
     <string name="settings_update_background_check_title">Automatisch op updates controleren</string>
-    <string name="settings_update_background_check_summary">Je krijgt een melding zodra er een nieuwe versie klaarstaat om te downloaden.</string>
+    <string name="settings_update_background_check_summary">Je krijgt een melding zodra er een nieuwe versie klaarstaat om te downloaden</string>
     <string name="settings_update_notification_text">Versie %1$s kan worden gedownload</string>
     <string name="settings_update_unknown_sources_message">Android moet BBKB toestaan apps te installeren. Sta installatie vanuit deze bron toe en druk daarna opnieuw op Installeren.</string>
     <string name="settings_update_open_settings">Instellingen openen</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Zoeken naar woordenboeken</string>
     <string name="language_packs_load_ldb">LDB-bestand laden</string>
     <string name="language_packs_variant_summary">Wordt geladen in plaats van %1$s</string>
-    <string name="language_packs_not_on_summary">Tik om een nieuw toetsenbord voor %1$s te maken.</string>
+    <string name="language_packs_not_on_summary">Tik om een nieuw toetsenbord voor %1$s te maken</string>
     <string name="language_packs_turned_on">%1$s is ingeschakeld. Wissel ernaartoe via de taalwisselaar.</string>
-    <string name="language_packs_turn_on_in_settings">Schakel %1$s in de lijst in en kom dan terug.</string>
+    <string name="language_packs_turn_on_in_settings">Schakel %1$s in de lijst in en kom dan terug</string>
     <string name="language_packs_installed_and_on">%1$s geïnstalleerd. Het is ingeschakeld: wissel ernaartoe via de taalwisselaar.</string>
     <string name="language_packs_installed_turn_on">%1$s geïnstalleerd. Tik op de rij om het in het toetsenbord in te schakelen.</string>
+    <string name="language_packs_installed_no_layout">%1$s geïnstalleerd, maar dit toetsenbord heeft nog geen indeling voor het schrift ervan, dus het kan niet worden geselecteerd</string>
     <string name="language_packs_error_offline">Geen verbinding</string>
     <string name="language_packs_error_network">Dat werkte niet. Probeer het opnieuw.</string>
     <string name="language_packs_error_verification">Het bestand kwam niet overeen met de catalogus, dus er is niets geïnstalleerd</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Opgeslagen op %1$s</string>
     <string name="backup_restore_dialog_device">Van %1$s</string>
     <string name="backup_restore_not_in_file">Niet in dit bestand</string>
-    <string name="backup_restore_dialog_note">Instellingen, lay-outs en macro\'s worden vervangen; woorden worden toegevoegd aan wat al op deze telefoon staat.</string>
+    <string name="backup_restore_dialog_note">Instellingen, lay-outs en macro\'s worden vervangen; woorden worden toegevoegd aan wat al op deze telefoon staat</string>
     <string name="backup_restore_dialog_confirm">Herstellen</string>
     <string name="backup_restored">Back-up hersteld</string>
     <string name="backup_restored_words_pending">Geleerde woorden worden toegevoegd zodra het toetsenbord in gebruik is</string>

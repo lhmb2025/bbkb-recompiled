@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Skriv det registrerade tangentrutnätet som ett &lt;ckb-key-grid&gt;-utdrag till appens filer, så att det kan klistras in i enhetskonfigurationen. Öppna tangentbordet en gång först så att det hinner registreras.</string>
     <string name="ckb_gestures_export_title">Exportera CKB-geometri</string>
     <string name="ckb_gestures_export_written">Skrev %s</string>
-    <string name="ckb_gestures_reserved_note">Svep uppåt (bekräfta förslaget under fingret) är reserverat.</string>
+    <string name="ckb_gestures_reserved_note">Svep uppåt (bekräfta förslaget under fingret) är reserverat</string>
     <string name="ckb_gestures_screen_title">CKB-gester</string>
     <string name="settings_gesture_accent_max_speed_summary">Högsta hastighetsmultiplikator för accentbyten</string>
     <string name="settings_gesture_accent_max_speed_title">Max hastighetsmultiplikator för accentbyte vid rullning</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Aktivera dynamisk inlärning</string>
     <string name="settings_dict_learned_words_summary">Hantera ord som lärts in från det du skriver</string>
     <string name="settings_dict_learned_words_title">Inlärda ord</string>
+    <string name="settings_dict_add_to_dictionary_note">Ord som läggs till i ordlistan föreslås medan du skriver och markeras inte som felstavade</string>
     <string name="settings_dict_text_shortcuts_summary">Skapa genvägar som expanderas till fraser</string>
     <string name="settings_dict_text_shortcuts_title">Textgenvägar</string>
     <string name="settings_dict_user_dictionary_summary">Lägg till och redigera egna ord</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Välj eller importera inmatningskonfigurationer för enheter</string>
     <string name="settings_device_configuration_title">Enhetskonfiguration</string>
     <string name="touch_surface_builtin_category">Inbyggt</string>
-    <string name="touch_surface_builtin_intro">Telefonen ger BBKB åtkomst till tangentbordets pekyta så länge Scroll assistant är på.</string>
+    <string name="touch_surface_builtin_intro">Telefonen ger BBKB åtkomst till tangentbordets pekyta så länge Scroll assistant är på</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant fångar upp dubbeltryck på tangenterna, så att BBKB aldrig tar emot dem</string>
     <string name="touch_surface_cursor_assistant_title">Stäng av Cursor assistant</string>
     <string name="touch_surface_grant_access">Ge åtkomst</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Konfigurera Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Aktivera Utvecklaralternativ och sedan Trådlös felsökning.\n2. Starta Shizuku från appen eller med root.\n3. Kom tillbaka hit och tryck på Ge åtkomst.</string>
     <string name="touch_surface_shizuku_intro">Shizuku är en gratisapp som låter BBKB läsa pekytan direkt. BBKB tar bara över den medan tangentbordet är öppet; resten av tiden fungerar den som vanligt.</string>
-    <string name="touch_surface_shizuku_mediatek">Använd Shizuku 13.5.4 på den här telefonen: version 13.6.0 fungerar inte fullt ut på MediaTek-telefoner.</string>
+    <string name="touch_surface_shizuku_mediatek">Använd Shizuku 13.5.4 på den här telefonen: version 13.6.0 fungerar inte fullt ut på MediaTek-telefoner</string>
     <string name="touch_surface_shizuku_reboot">Shizuku stoppas varje gång telefonen startas om. Starta den igen efter varje omstart; statusen ovan visar när den inte körs.</string>
     <string name="touch_surface_shizuku_state_denied">Körs, men BBKB nekades åtkomst</string>
     <string name="touch_surface_shizuku_state_granted">Körs, och BBKB har åtkomst</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Inte tillgängligt på den här telefonen</string>
     <string name="pref_show_pkb_modifier_status_icon">Visa statusikon för modifierare</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Visa indikator för Shift/Alt i statusfältet när du använder ett fysiskt tangentbord</string>
-    <string name="settings_pred_accounts_permission_summary">Ge behörighet till konton så att e-postadresser kan föreslås medan du skriver.</string>
+    <string name="settings_pred_accounts_permission_summary">Ge behörighet till konton så att e-postadresser kan föreslås medan du skriver</string>
     <string name="settings_pred_accounts_permission_title">Behörighet till konton krävs</string>
     <string name="settings_pred_block_offensive_summary">Dölj ord som kan uppfattas som stötande vid diktering</string>
     <string name="settings_pred_block_offensive_title">Blockera stötande ord</string>
-    <string name="settings_pred_contacts_permission_summary">Ge behörighet till kontakter så att kontaktnamn och e-postadresser kan föreslås medan du skriver.</string>
+    <string name="settings_pred_contacts_permission_summary">Ge behörighet till kontakter så att kontaktnamn och e-postadresser kan föreslås medan du skriver</string>
     <string name="settings_pred_contacts_permission_title">Behörighet till kontakter krävs</string>
     <string name="settings_pred_contacts_summary_disabled">Behörighet till kontakter krävs</string>
     <string name="settings_pred_contacts_summary_enabled">Ta med kontaktnamn i förslagen</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Ge behörighet till kontakter för att kunna använda funktionen</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktnamn godkänns som korrekta ord</string>
     <string name="settings_spellcheck_use_contacts_title">Använd kontakter vid stavningskontroll</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Ge behörighet till kontakter så att kontaktnamn godkänns som giltiga ord vid stavningskontroll</string>
     <string name="settings_spellcheck_accept_learned_title">Godkänn inlärda ord</string>
     <string name="settings_spellcheck_accept_learned_summary">Ord som lärts in från det du skriver räknas som rättstavade</string>
     <string name="pref_alt_double_tap_lock">Aktivera Alt-lås vid dubbeltryck</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Aktivera Ctrl-lås vid dubbeltryck</string>
     <string name="pref_ctrl_double_tap_lock_summary">Om du trycker två gånger på Ctrl låses den på. Tryck på Ctrl igen för att stänga av.</string>
     <string name="pref_override_device_meta_state">Åsidosätt enhetens metatillstånd</string>
-    <string name="pref_override_device_meta_state_summary">Aktivera låsta modifierare (skift-/alt-lås) på fysiska tangentbord oavsett enhetens KCM-konfiguration.</string>
+    <string name="pref_override_device_meta_state_summary">Aktivera låsta modifierare (skift-/alt-lås) på fysiska tangentbord oavsett enhetens KCM-konfiguration</string>
     <string name="pref_shift_double_tap_lock">Aktivera Shift-lås vid dubbeltryck</string>
     <string name="pref_shift_double_tap_lock_summary">Om du trycker två gånger på Shift låses den på. Tryck på Shift igen för att stänga av.</string>
     <string name="prefs_key_longpress_delay_summary">Tid att hålla ned en tangent innan sekundära tecken visas</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Popupmeddelanden för autofyllhändelser</string>
     <string name="pref_accessibility_service_disabled">Tillgänglighetstjänsten är inaktiverad</string>
     <string name="pref_accessibility_service_enabled">Tillgänglighetstjänsten är aktiverad</string>
-    <string name="pref_emoji_search_pkb_summary">Använd tangentbordet för att söka när emojipanelen är öppen.</string>
+    <string name="pref_emoji_search_pkb_summary">Använd tangentbordet för att söka när emojipanelen är öppen</string>
     <string name="pref_emoji_search_title">Aktivera emojisökning</string>
-    <string name="pref_emoji_search_vkb_summary">Filtrera emojier med den aktuella obekräftade (understrukna) texten.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">När du väljer en emoji infogas den efter den skrivna texten.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">När du väljer en emoji ersätts den skrivna texten.</string>
+    <string name="pref_emoji_search_vkb_summary">Filtrera emojier med den aktuella obekräftade (understrukna) texten</string>
+    <string name="pref_emoji_search_replace_text_summary_off">När du väljer en emoji infogas den efter den skrivna texten</string>
+    <string name="pref_emoji_search_replace_text_summary_on">När du väljer en emoji ersätts den skrivna texten</string>
     <string name="pref_emoji_search_replace_text_title">Ersätt text med emoji</string>
     <string name="pref_key_interceptor_enabled">Aktivera stöd för specialtangenter</string>
     <string name="pref_key_interceptor_enabled_summary">Använd tillgänglighetstjänsten för att fånga upp tangenterna Emoji, SYM och Voice</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Hantera data</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Egna makron</string>
+    <string name="settings_custom_macros_intro" formatted="false">Definiera egna %x-platshållare att använda i textgenvägar</string>
     <string name="settings_customize_menu_hidden_header">Visas inte på tangentbordet</string>
     <string name="settings_customize_menu_instructions">Tryck och håll på en genväg och dra för att ändra ordning. De fyra första visas i tangentbordets inmatningsmeny.</string>
     <string name="settings_customize_menu_summary">Välj och ordna genvägarna i inmatningsmenyn</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Snabbfraser</string>
     <string name="settings_screen_type_by_swiping">Dra för att skriva</string>
     <string name="settings_screen_type_by_swiping_summary">Skriv snabbt utan att lyfta fingret från tangentbordet</string>
-    <string name="settings_screen_type_by_swiping_unavailable">På svenska kan du inte skriva genom att svepa.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">På svenska kan du inte skriva genom att svepa</string>
     <string name="settings_search_hint">Sök i inställningar</string>
     <string name="settings_search_no_results">Inga inställningar hittades</string>
     <string name="settings_shake_fallback_title">Reservåtgärd</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Tangentbordsenhet: %1$s</string>
     <string name="device_config_import_matches_build">Byggets enhet: %1$s</string>
     <string name="device_config_import_matches_brand">Märke: %1$s</string>
-    <string name="device_config_import_matches_nothing">Den här filen anger ingen enhet att matcha, så den skulle aldrig användas.</string>
+    <string name="device_config_import_matches_nothing">Den här filen anger ingen enhet att matcha, så den skulle aldrig användas</string>
     <string name="device_config_import_type">Enhetstyp: %1$s</string>
     <string name="device_config_import_keys">%1$d tangentkopplingar</string>
     <string name="device_config_import_keypad_layout">Tangentbordslayout: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Den här versionen är för gammal för att läsa uppdateringslistan. Uppdatera manuellt.</string>
     <string name="settings_update_from_cache">Visas från den senast sparade kontrollen</string>
     <string name="settings_update_background_check_title">Sök efter uppdateringar automatiskt</string>
-    <string name="settings_update_background_check_summary">Du får en avisering när en ny version finns att ladda ned.</string>
+    <string name="settings_update_background_check_summary">Du får en avisering när en ny version finns att ladda ned</string>
     <string name="settings_update_notification_text">Version %1$s är klar att laddas ner</string>
     <string name="settings_update_unknown_sources_message">Android måste tillåta att BBKB installerar appar. Tillåt installation från den här källan och tryck sedan på Installera igen.</string>
     <string name="settings_update_open_settings">Öppna inställningar</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Sök efter ordlistor</string>
     <string name="language_packs_load_ldb">Läs in LDB-fil</string>
     <string name="language_packs_variant_summary">Läses in i stället för %1$s</string>
-    <string name="language_packs_not_on_summary">Tryck för att skapa ett nytt tangentbord för %1$s.</string>
+    <string name="language_packs_not_on_summary">Tryck för att skapa ett nytt tangentbord för %1$s</string>
     <string name="language_packs_turned_on">%1$s är aktiverat. Byt till det via språkväxlaren.</string>
-    <string name="language_packs_turn_on_in_settings">Aktivera %1$s i listan och kom sedan tillbaka.</string>
+    <string name="language_packs_turn_on_in_settings">Aktivera %1$s i listan och kom sedan tillbaka</string>
     <string name="language_packs_installed_and_on">%1$s installerat. Det är aktiverat: byt till det via språkväxlaren.</string>
     <string name="language_packs_installed_turn_on">%1$s installerat. Tryck på raden för att aktivera det i tangentbordet.</string>
+    <string name="language_packs_installed_no_layout">%1$s installerat, men det här tangentbordet har ännu ingen layout för dess skriftsystem, så det kan inte väljas</string>
     <string name="language_packs_error_offline">Ingen anslutning</string>
     <string name="language_packs_error_network">Det fungerade inte. Försök igen.</string>
     <string name="language_packs_error_verification">Filen matchade inte katalogen, så inget installerades</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Sparad %1$s</string>
     <string name="backup_restore_dialog_device">Från %1$s</string>
     <string name="backup_restore_not_in_file">Finns inte i den här filen</string>
-    <string name="backup_restore_dialog_note">Inställningar, layouter och makron ersätts; ord läggs till det som finns på den här telefonen.</string>
+    <string name="backup_restore_dialog_note">Inställningar, layouter och makron ersätts; ord läggs till det som finns på den här telefonen</string>
     <string name="backup_restore_dialog_confirm">Återställ</string>
     <string name="backup_restored">Säkerhetskopian har återställts</string>
     <string name="backup_restored_words_pending">Inlärda ord läggs till när tangentbordet används</string>

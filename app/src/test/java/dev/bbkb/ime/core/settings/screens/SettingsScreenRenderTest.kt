@@ -736,10 +736,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.CustomMacros.route,
             title = "Custom macros",
             resources = setOf(
-                "settings_custom_macros_title"
+                "settings_custom_macros_title", "settings_custom_macros_intro"
             ),
             literals = setOf(
-                "Define your own %x placeholders for use in text shortcuts.",
                 "Reserved tags: %D %T %d %t %n %w %y %b",
                 "No custom macros",
                 // The extended FAB names the action, so the hint can name the button rather than
@@ -1233,14 +1232,13 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_pred_contacts_permission_title", "settings_pred_grant_permission",
                 "settings_spell_checker_screen_title", "settings_spellcheck_use_contacts_summary_disabled",
                 "settings_spellcheck_use_contacts_title", "settings_spellcheck_accept_learned_title",
-                "settings_spellcheck_accept_learned_summary"
+                "settings_spellcheck_accept_learned_summary", "settings_spellcheck_contacts_permission_summary"
             ),
             literals = setOf(
                 // "About Spell Checker" is gone: it was the heading of an info card, one line
                 // under an app bar already reading "Spell checker settings". The sentence it
                 // introduced is still here, now as a plain PreferenceInfo paragraph.
                 "The BBKB spell checker provides intelligent spell checking across all apps that support spell checking. It uses advanced language models to detect typos and suggest corrections.",
-                "Grant contacts permission to recognize contact names as valid words during spell checking.",
             ),
         ),
         Case(

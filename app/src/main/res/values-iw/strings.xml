@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">כתוב את רשת המקשים שנלכדה כקטע &lt;ckb-key-grid&gt; לקבצי האפליקציה, להדבקה בתצורת המכשיר. פתח תחילה את המקלדת פעם אחת כדי לאפשר לכידה.</string>
     <string name="ckb_gestures_export_title">ייצא את גאומטריית ה-CKB</string>
     <string name="ckb_gestures_export_written">נכתב %s</string>
-    <string name="ckb_gestures_reserved_note">החלקה למעלה (אישור ההצעה שמתחת לאצבע) שמורה.</string>
+    <string name="ckb_gestures_reserved_note">החלקה למעלה (אישור ההצעה שמתחת לאצבע) שמורה</string>
     <string name="ckb_gestures_screen_title">מחוות CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">מכפיל המהירות המרבי לשינוי סימני טעמה</string>
     <string name="settings_gesture_accent_max_speed_title">מכפיל מהירות מרבי לשינוי סימני טעמה בגלילה</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">הפעלת למידה דינמית</string>
     <string name="settings_dict_learned_words_summary">נהל מילים שנלמדו מההקלדה שלך</string>
     <string name="settings_dict_learned_words_title">מילים שנלמדו</string>
+    <string name="settings_dict_add_to_dictionary_note">מילים שתוסיף למילון שלך יוצעו בזמן ההקלדה ולא יסומנו כשגיאות כתיב</string>
     <string name="settings_dict_text_shortcuts_summary">צור קיצורי דרך שמתרחבים לביטויים</string>
     <string name="settings_dict_text_shortcuts_title">קיצורי טקסט</string>
     <string name="settings_dict_user_dictionary_summary">הוסף וערוך מילים אישיות</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">בחר או ייבא תצורות קלט של מכשיר</string>
     <string name="settings_device_configuration_title">תצורת המכשיר</string>
     <string name="touch_surface_builtin_category">מובנה</string>
-    <string name="touch_surface_builtin_intro">הטלפון מעביר את משטח המגע של המקלדת אל BBKB כל עוד Scroll assistant שלו מופעל.</string>
+    <string name="touch_surface_builtin_intro">הטלפון מעביר את משטח המגע של המקלדת אל BBKB כל עוד Scroll assistant שלו מופעל</string>
     <string name="touch_surface_cursor_assistant_summary">התכונה Cursor assistant תופסת לעצמה את ההקשה הכפולה על המקשים, ולכן היא לעולם לא מגיעה ל-BBKB</string>
     <string name="touch_surface_cursor_assistant_title">כבה את Cursor assistant</string>
     <string name="touch_surface_grant_access">הענק גישה</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">הגדרת Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. הפעל את \"אפשרויות למפתחים\" ואחר כך את \"ניפוי באגים אלחוטי\".\n2. הפעל את Shizuku מהאפליקציה שלו, או עם הרשאות root.\n3. חזור לכאן והקש על \"הענק גישה\".</string>
     <string name="touch_surface_shizuku_intro">אפליקציית Shizuku החינמית מאפשרת ל-BBKB לקרוא את משטח המגע ישירות. BBKB משתלט עליו רק כשהמקלדת פתוחה; בשאר הזמן הוא פועל כרגיל בטלפון.</string>
-    <string name="touch_surface_shizuku_mediatek">בטלפון זה השתמש ב-Shizuku 13.5.4: גרסה 13.6.0 לא פועלת באופן מלא בטלפונים עם MediaTek.</string>
+    <string name="touch_surface_shizuku_mediatek">בטלפון זה השתמש ב-Shizuku 13.5.4: גרסה 13.6.0 לא פועלת באופן מלא בטלפונים עם MediaTek</string>
     <string name="touch_surface_shizuku_reboot">בכל הפעלה מחדש של הטלפון, Shizuku נעצר. הפעל אותו שוב אחרי כל הפעלה מחדש; המצב שלמעלה מראה מתי הוא לא פועל.</string>
     <string name="touch_surface_shizuku_state_denied">פועל, אבל הגישה של BBKB נדחתה</string>
     <string name="touch_surface_shizuku_state_granted">פועל, ול-BBKB יש גישה</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">לא זמין בטלפון זה</string>
     <string name="pref_show_pkb_modifier_status_icon">הצג סמל מצב של מקשי החלפה</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">הצג מחוון Shift/Alt בשורת המצב בעת שימוש במקלדת פיזית</string>
-    <string name="settings_pred_accounts_permission_summary">הענק הרשאת חשבונות כדי להציע כתובות אימייל בזמן ההקלדה.</string>
+    <string name="settings_pred_accounts_permission_summary">הענק הרשאת חשבונות כדי להציע כתובות אימייל בזמן ההקלדה</string>
     <string name="settings_pred_accounts_permission_title">נדרשת הרשאת חשבונות</string>
     <string name="settings_pred_block_offensive_summary">הסתר מילים שעלולות להיות פוגעניות בהכתבה קולית</string>
     <string name="settings_pred_block_offensive_title">חסום מילים פוגעניות</string>
-    <string name="settings_pred_contacts_permission_summary">הענק הרשאת אנשי קשר כדי להציע שמות אנשי קשר וכתובות אימייל בזמן ההקלדה.</string>
+    <string name="settings_pred_contacts_permission_summary">הענק הרשאת אנשי קשר כדי להציע שמות אנשי קשר וכתובות אימייל בזמן ההקלדה</string>
     <string name="settings_pred_contacts_permission_title">נדרשת הרשאת אנשי קשר</string>
     <string name="settings_pred_contacts_summary_disabled">נדרשת הרשאת אנשי קשר</string>
     <string name="settings_pred_contacts_summary_enabled">כלול שמות אנשי קשר בהצעות</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">הענק הרשאת אנשי קשר כדי להשתמש בתכונה זו</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">שמות אנשי קשר יזוהו כמילים תקינות</string>
     <string name="settings_spellcheck_use_contacts_title">השתמש באנשי קשר לבדיקת איות</string>
+    <string name="settings_spellcheck_contacts_permission_summary">הענק הרשאת אנשי קשר כדי ששמות אנשי קשר יזוהו כמילים תקינות בבדיקת האיות</string>
     <string name="settings_spellcheck_accept_learned_title">קבלת מילים שנלמדו</string>
     <string name="settings_spellcheck_accept_learned_summary">מילים שנלמדו מההקלדה שלך נחשבות לכתובות נכון</string>
     <string name="pref_alt_double_tap_lock">הפעל נעילת Alt בלחיצה כפולה</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">הפעל נעילת Ctrl בלחיצה כפולה</string>
     <string name="pref_ctrl_double_tap_lock_summary">לחיצה כפולה על Ctrl תנעל אותו במצב פעיל. לחיצה נוספת על Ctrl תכבה אותו.</string>
     <string name="pref_override_device_meta_state">עקוף את מצב המטא של המכשיר</string>
-    <string name="pref_override_device_meta_state_summary">הפעל מקשי החלפה דביקים (נעילת shift/alt) במקלדות פיזיות ללא תלות בתצורת ה-KCM של המכשיר.</string>
+    <string name="pref_override_device_meta_state_summary">הפעל מקשי החלפה דביקים (נעילת shift/alt) במקלדות פיזיות ללא תלות בתצורת ה-KCM של המכשיר</string>
     <string name="pref_shift_double_tap_lock">הפעל נעילת Shift בלחיצה כפולה</string>
     <string name="pref_shift_double_tap_lock_summary">לחיצה כפולה על Shift תנעל אותו במצב פעיל. לחיצה נוספת על Shift תכבה אותו.</string>
     <string name="prefs_key_longpress_delay_summary">משך ההחזקה של מקש עד להופעת תווים משניים</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">הודעות על אירועי מילוי אוטומטי</string>
     <string name="pref_accessibility_service_disabled">שירות הנגישות מושבת</string>
     <string name="pref_accessibility_service_enabled">שירות הנגישות מופעל</string>
-    <string name="pref_emoji_search_pkb_summary">כשלוח האמוג\'י פתוח, השתמשו במקלדת כדי לחפש.</string>
+    <string name="pref_emoji_search_pkb_summary">כשלוח האמוג\'י פתוח, השתמשו במקלדת כדי לחפש</string>
     <string name="pref_emoji_search_title">הפעלת חיפוש אמוג\'י</string>
-    <string name="pref_emoji_search_vkb_summary">סינון אמוג\'ים לפי הטקסט הנוכחי שטרם אושר (עם קו תחתון).</string>
-    <string name="pref_emoji_search_replace_text_summary_off">בחירת אמוג\'י מוסיפה אותו אחרי הטקסט שהוקלד.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">בחירת אמוג\'י מחליפה את הטקסט שהוקלד.</string>
+    <string name="pref_emoji_search_vkb_summary">סינון אמוג\'ים לפי הטקסט הנוכחי שטרם אושר (עם קו תחתון)</string>
+    <string name="pref_emoji_search_replace_text_summary_off">בחירת אמוג\'י מוסיפה אותו אחרי הטקסט שהוקלד</string>
+    <string name="pref_emoji_search_replace_text_summary_on">בחירת אמוג\'י מחליפה את הטקסט שהוקלד</string>
     <string name="pref_emoji_search_replace_text_title">החלף טקסט באמוג\'י</string>
     <string name="pref_key_interceptor_enabled">הפעל תמיכה במקשים מיוחדים</string>
     <string name="pref_key_interceptor_enabled_summary">השתמש בשירות הנגישות כדי לתפוס את המקשים Emoji, SYM ו-Voice</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">ניהול נתונים</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">פקודות מאקרו מותאמות אישית</string>
+    <string name="settings_custom_macros_intro" formatted="false">הגדר מצייני מיקום %x משלך לשימוש בקיצורי טקסט</string>
     <string name="settings_customize_menu_hidden_header">לא מוצג במקלדת</string>
     <string name="settings_customize_menu_instructions">הקש והחזק קיצור דרך, ולאחר מכן גרור כדי לשנות את הסדר. ארבעת הראשונים מופיעים בתפריט הקלט של המקלדת.</string>
     <string name="settings_customize_menu_summary">בחר וסדר מחדש את קיצורי הדרך בתפריט הקלט</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">ביטויים מהירים</string>
     <string name="settings_screen_type_by_swiping">הקלד על-ידי החלקה</string>
     <string name="settings_screen_type_by_swiping_summary">הקלד במהירות מבלי להרים את האצבע מהמקלדת</string>
-    <string name="settings_screen_type_by_swiping_unavailable">הקלדה באמצעות החלקה אינה זמינה בשפתך.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">הקלדה באמצעות החלקה אינה זמינה בשפתך</string>
     <string name="settings_search_hint">חפש בהגדרות</string>
     <string name="settings_search_no_results">לא נמצאו הגדרות</string>
     <string name="settings_shake_fallback_title">פעולת ברירת מחדל</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">מכשיר המקלדת: %1$s</string>
     <string name="device_config_import_matches_build">מכשיר ה-build: %1$s</string>
     <string name="device_config_import_matches_brand">מותג: %1$s</string>
-    <string name="device_config_import_matches_nothing">קובץ זה אינו מציין מכשיר להתאמה, ולכן לעולם לא יחול.</string>
+    <string name="device_config_import_matches_nothing">קובץ זה אינו מציין מכשיר להתאמה, ולכן לעולם לא יחול</string>
     <string name="device_config_import_type">סוג המכשיר: %1$s</string>
     <string name="device_config_import_keys">%1$d מיפויי מקשים</string>
     <string name="device_config_import_keypad_layout">פריסת המקלדת: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">גרסה זו ישנה מדי כדי לקרוא את רשימת העדכונים. עדכן ידנית.</string>
     <string name="settings_update_from_cache">מוצג מהבדיקה השמורה האחרונה</string>
     <string name="settings_update_background_check_title">בדיקה אוטומטית של עדכונים</string>
-    <string name="settings_update_background_check_summary">קבל התראה כשגרסה חדשה זמינה להורדה.</string>
+    <string name="settings_update_background_check_summary">קבל התראה כשגרסה חדשה זמינה להורדה</string>
     <string name="settings_update_notification_text">גרסה %1$s מוכנה להורדה</string>
     <string name="settings_update_unknown_sources_message">על Android להרשות ל-BBKB להתקין אפליקציות. אפשר התקנה ממקור זה ולאחר מכן לחץ שוב על התקנה.</string>
     <string name="settings_update_open_settings">פתח הגדרות</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">בדיקת מילונים</string>
     <string name="language_packs_load_ldb">טעינת קובץ LDB</string>
     <string name="language_packs_variant_summary">נטען במקום %1$s</string>
-    <string name="language_packs_not_on_summary">הקש כדי ליצור מקלדת %1$s חדשה.</string>
+    <string name="language_packs_not_on_summary">הקש כדי ליצור מקלדת %1$s חדשה</string>
     <string name="language_packs_turned_on">%1$s פועלת. עבור אליה מבורר השפות.</string>
-    <string name="language_packs_turn_on_in_settings">הפעל את %1$s ברשימה ולאחר מכן חזור לכאן.</string>
+    <string name="language_packs_turn_on_in_settings">הפעל את %1$s ברשימה ולאחר מכן חזור לכאן</string>
     <string name="language_packs_installed_and_on">%1$s הותקנה. היא פעילה: עבור אליה מבורר השפות.</string>
     <string name="language_packs_installed_turn_on">%1$s הותקנה. הקש על השורה כדי להפעיל אותה במקלדת.</string>
+    <string name="language_packs_installed_no_layout">%1$s הותקנה, אבל למקלדת הזו עדיין אין פריסה לכתב שלה, ולכן לא ניתן לבחור בה</string>
     <string name="language_packs_error_offline">אין חיבור</string>
     <string name="language_packs_error_network">זה לא עבד. נסה שוב.</string>
     <string name="language_packs_error_verification">הקובץ לא התאים לקטלוג, ולכן לא הותקן דבר</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">נשמר: %1$s</string>
     <string name="backup_restore_dialog_device">מהמכשיר %1$s</string>
     <string name="backup_restore_not_in_file">לא קיים בקובץ זה</string>
-    <string name="backup_restore_dialog_note">ההגדרות, הפריסות ופקודות המאקרו מוחלפות; המילים מתווספות לאלה שכבר נמצאות בטלפון זה.</string>
+    <string name="backup_restore_dialog_note">ההגדרות, הפריסות ופקודות המאקרו מוחלפות; המילים מתווספות לאלה שכבר נמצאות בטלפון זה</string>
     <string name="backup_restore_dialog_confirm">שחזור</string>
     <string name="backup_restored">הגיבוי שוחזר</string>
     <string name="backup_restored_words_pending">המילים שנלמדו יתווספו כשהמקלדת תהיה בשימוש</string>

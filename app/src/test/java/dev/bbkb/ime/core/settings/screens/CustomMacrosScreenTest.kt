@@ -141,7 +141,7 @@ class CustomMacrosScreenTest {
             .map { node -> node.config[SemanticsProperties.Text].joinToString("") { it.text } }
         assertEquals(
             listOf(
-                "Define your own %x placeholders for use in text shortcuts.",
+                "Define your own %x placeholders for use in text shortcuts",
                 "Reserved tags: %D %T %d %t %n %w %y %b",
                 "%PPhone Number+1-555-123-4567",
                 "%AAddress1 Main Street",
@@ -164,7 +164,7 @@ class CustomMacrosScreenTest {
         render()
 
         composeRule
-            .onNodeWithText("Define your own %x placeholders for use in text shortcuts.")
+            .onNodeWithText("Define your own %x placeholders for use in text shortcuts")
             .assertIsDisplayed()
         composeRule.onNodeWithText("Reserved tags: %D %T %d %t %n %w %y %b").assertIsDisplayed()
     }

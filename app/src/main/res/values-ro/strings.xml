@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Scrie grila de taste captată ca fragment &lt;ckb-key-grid&gt; în fișierele aplicației, pentru a fi lipit în configurația dispozitivului. Deschideți mai întâi tastatura o dată, pentru a permite captarea.</string>
     <string name="ckb_gestures_export_title">Exportați geometria CKB</string>
     <string name="ckb_gestures_export_written">S-a scris %s</string>
-    <string name="ckb_gestures_reserved_note">Glisarea în sus (confirmă sugestia de sub deget) este rezervată.</string>
+    <string name="ckb_gestures_reserved_note">Glisarea în sus (confirmă sugestia de sub deget) este rezervată</string>
     <string name="ckb_gestures_screen_title">Gesturi CKB</string>
     <string name="settings_gesture_accent_max_speed_summary">Multiplicatorul maxim de viteză pentru schimbarea accentelor</string>
     <string name="settings_gesture_accent_max_speed_title">Multiplicator max. viteză schimbare accente</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Activează învățarea dinamică</string>
     <string name="settings_dict_learned_words_summary">Gestionați cuvintele învățate din ceea ce tastați</string>
     <string name="settings_dict_learned_words_title">Cuvinte învățate</string>
+    <string name="settings_dict_add_to_dictionary_note">Cuvintele adăugate în dicționar vor fi sugerate în timp ce tastați și nu vor fi marcate ca greșite</string>
     <string name="settings_dict_text_shortcuts_summary">Creați comenzi rapide care se extind în expresii</string>
     <string name="settings_dict_text_shortcuts_title">Comenzi rapide de text</string>
     <string name="settings_dict_user_dictionary_summary">Adăugați și editați cuvinte personale</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Selectați sau importați configurații de introducere pentru dispozitiv</string>
     <string name="settings_device_configuration_title">Configurația dispozitivului</string>
     <string name="touch_surface_builtin_category">Integrat</string>
-    <string name="touch_surface_builtin_intro">Telefonul transmite suprafața tactilă a tastaturii către BBKB cât timp Scroll assistant este activat.</string>
+    <string name="touch_surface_builtin_intro">Telefonul transmite suprafața tactilă a tastaturii către BBKB cât timp Scroll assistant este activat</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant preia atingerea dublă pe taste, așa că BBKB nu o primește niciodată</string>
     <string name="touch_surface_cursor_assistant_title">Dezactivați Cursor assistant</string>
     <string name="touch_surface_grant_access">Acordați acces</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Configurarea Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Activați Opțiuni pentru dezvoltatori, apoi Remedierea erorilor wireless.\n2. Porniți Shizuku din aplicația sa sau cu acces root.\n3. Reveniți aici și atingeți Acordați acces.</string>
     <string name="touch_surface_shizuku_intro">Shizuku este o aplicație gratuită care îi permite aplicației BBKB să citească direct suprafața tactilă. BBKB preia controlul asupra ei doar cât timp tastatura este deschisă; în rest, funcționează ca de obicei.</string>
-    <string name="touch_surface_shizuku_mediatek">Folosiți Shizuku 13.5.4 pe acest telefon: versiunea 13.6.0 nu funcționează complet pe telefoanele MediaTek.</string>
+    <string name="touch_surface_shizuku_mediatek">Folosiți Shizuku 13.5.4 pe acest telefon: versiunea 13.6.0 nu funcționează complet pe telefoanele MediaTek</string>
     <string name="touch_surface_shizuku_reboot">Shizuku se oprește de fiecare dată când telefonul repornește. Porniți-l din nou după fiecare repornire; starea de mai sus arată când nu rulează.</string>
     <string name="touch_surface_shizuku_state_denied">Rulează, dar accesul pentru BBKB a fost refuzat</string>
     <string name="touch_surface_shizuku_state_granted">Rulează, iar BBKB are acces</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Indisponibil pe acest telefon</string>
     <string name="pref_show_pkb_modifier_status_icon">Afișați pictograma de stare a modificatorilor</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Afișează indicatorul modificatorilor Shift/Alt în bara de stare când folosiți tastatura fizică</string>
-    <string name="settings_pred_accounts_permission_summary">Acordați permisiunea pentru conturi, pentru a sugera adrese de e-mail în timp ce tastați.</string>
+    <string name="settings_pred_accounts_permission_summary">Acordați permisiunea pentru conturi, pentru a sugera adrese de e-mail în timp ce tastați</string>
     <string name="settings_pred_accounts_permission_title">Este necesară permisiunea pentru conturi</string>
     <string name="settings_pred_block_offensive_summary">Ascunde cuvintele potențial ofensatoare în dictarea vocală</string>
     <string name="settings_pred_block_offensive_title">Blocați cuvintele ofensatoare</string>
-    <string name="settings_pred_contacts_permission_summary">Acordați permisiunea pentru contacte, pentru a sugera nume de contacte și adrese de e-mail în timp ce tastați.</string>
+    <string name="settings_pred_contacts_permission_summary">Acordați permisiunea pentru contacte, pentru a sugera nume de contacte și adrese de e-mail în timp ce tastați</string>
     <string name="settings_pred_contacts_permission_title">Este necesară permisiunea pentru contacte</string>
     <string name="settings_pred_contacts_summary_disabled">Este necesară permisiunea pentru contacte</string>
     <string name="settings_pred_contacts_summary_enabled">Includeți numele contactelor în sugestii</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Acordați permisiunea pentru contacte, pentru a folosi această funcție</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Numele contactelor vor fi recunoscute drept cuvinte valide</string>
     <string name="settings_spellcheck_use_contacts_title">Folosiți contactele la verificarea ortografică</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Acordați permisiunea pentru contacte, pentru ca numele contactelor să fie recunoscute drept cuvinte valide la verificarea ortografică</string>
     <string name="settings_spellcheck_accept_learned_title">Acceptați cuvintele învățate</string>
     <string name="settings_spellcheck_accept_learned_summary">Cuvintele învățate din ce tastați sunt considerate scrise corect</string>
     <string name="pref_alt_double_tap_lock">Activați blocarea Alt prin dublu clic</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Activați blocarea Ctrl prin dublu clic</string>
     <string name="pref_ctrl_double_tap_lock_summary">Dublul clic pe Ctrl îl blochează în poziția activă. Un nou clic pe Ctrl îl dezactivează.</string>
     <string name="pref_override_device_meta_state">Ignorați meta-starea dispozitivului</string>
-    <string name="pref_override_device_meta_state_summary">Activează modificatorii persistenți (blocare Shift/Alt) pe tastaturile fizice, indiferent de configurația KCM a dispozitivului.</string>
+    <string name="pref_override_device_meta_state_summary">Activează modificatorii persistenți (blocare Shift/Alt) pe tastaturile fizice, indiferent de configurația KCM a dispozitivului</string>
     <string name="pref_shift_double_tap_lock">Activați blocarea Shift prin dublu clic</string>
     <string name="pref_shift_double_tap_lock_summary">Dublul clic pe Shift îl blochează în poziția activă. Un nou clic pe Shift îl dezactivează.</string>
     <string name="prefs_key_longpress_delay_summary">Timpul de apăsare a unei taste până la apariția caracterelor secundare</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Notificări toast pentru completarea automată</string>
     <string name="pref_accessibility_service_disabled">Serviciu de accesibilitate dezactivat</string>
     <string name="pref_accessibility_service_enabled">Serviciu de accesibilitate activat</string>
-    <string name="pref_emoji_search_pkb_summary">Când tastatura emoji este deschisă, folosește tastele pentru a căuta.</string>
+    <string name="pref_emoji_search_pkb_summary">Când tastatura emoji este deschisă, folosește tastele pentru a căuta</string>
     <string name="pref_emoji_search_title">Activează căutarea de emoji</string>
-    <string name="pref_emoji_search_vkb_summary">Filtrează emoji după textul curent neconfirmat (subliniat).</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Când selectați un emoji, acesta este inserat după textul tastat.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Când selectați un emoji, acesta înlocuiește textul tastat.</string>
+    <string name="pref_emoji_search_vkb_summary">Filtrează emoji după textul curent neconfirmat (subliniat)</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Când selectați un emoji, acesta este inserat după textul tastat</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Când selectați un emoji, acesta înlocuiește textul tastat</string>
     <string name="pref_emoji_search_replace_text_title">Înlocuiți textul cu emoji</string>
     <string name="pref_key_interceptor_enabled">Activați asistența pentru tastele speciale</string>
     <string name="pref_key_interceptor_enabled_summary">Folosiți serviciul de accesibilitate pentru a capta tastele Emoji, SYM și Voce</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Gestionarea datelor</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Macrocomenzi personalizate</string>
+    <string name="settings_custom_macros_intro" formatted="false">Definiți-vă propriii substituenți %x pentru comenzile rapide de text</string>
     <string name="settings_customize_menu_hidden_header">Neafișate pe tastatură</string>
     <string name="settings_customize_menu_instructions">Atingeți și țineți apăsată o comandă rapidă, apoi trageți-o pentru a o reordona. Primele patru apar în meniul de introducere al tastaturii.</string>
     <string name="settings_customize_menu_summary">Alegeți și reordonați comenzile rapide din meniul de introducere</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Expresii rapide</string>
     <string name="settings_screen_type_by_swiping">Tastaţi trăgând cu degetul</string>
     <string name="settings_screen_type_by_swiping_summary">Tastaţi rapid, fără a ridica degetul de pe tastatură</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Tastarea prin glisare nu este disponibilă în limba dvs.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Tastarea prin glisare nu este disponibilă în limba dvs</string>
     <string name="settings_search_hint">Căutați în setări</string>
     <string name="settings_search_no_results">Nu s-au găsit setări</string>
     <string name="settings_shake_fallback_title">Acțiune de rezervă</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Dispozitivul tastaturii: %1$s</string>
     <string name="device_config_import_matches_build">Dispozitivul versiunii: %1$s</string>
     <string name="device_config_import_matches_brand">Marcă: %1$s</string>
-    <string name="device_config_import_matches_nothing">Acest fișier nu indică niciun dispozitiv cu care să se potrivească, deci nu s-ar aplica niciodată.</string>
+    <string name="device_config_import_matches_nothing">Acest fișier nu indică niciun dispozitiv cu care să se potrivească, deci nu s-ar aplica niciodată</string>
     <string name="device_config_import_type">Tipul dispozitivului: %1$s</string>
     <string name="device_config_import_keys">%1$d mapări de taste</string>
     <string name="device_config_import_keypad_layout">Aspectul tastaturii: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Această versiune este prea veche pentru a citi lista de actualizări. Actualizează manual.</string>
     <string name="settings_update_from_cache">Afișat din ultima verificare salvată</string>
     <string name="settings_update_background_check_title">Verificați automat actualizările</string>
-    <string name="settings_update_background_check_summary">Primiți o notificare când o versiune nouă este disponibilă pentru descărcare.</string>
+    <string name="settings_update_background_check_summary">Primiți o notificare când o versiune nouă este disponibilă pentru descărcare</string>
     <string name="settings_update_notification_text">Versiunea %1$s este pregătită pentru descărcare</string>
     <string name="settings_update_unknown_sources_message">Android trebuie să permită BBKB să instaleze aplicații. Activează instalarea din această sursă, apoi apasă din nou Instalează.</string>
     <string name="settings_update_open_settings">Deschide setările</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Caută dicționare</string>
     <string name="language_packs_load_ldb">Încarcă fișier LDB</string>
     <string name="language_packs_variant_summary">Se încarcă în locul %1$s</string>
-    <string name="language_packs_not_on_summary">Atingeți pentru a crea o tastatură nouă pentru %1$s.</string>
+    <string name="language_packs_not_on_summary">Atingeți pentru a crea o tastatură nouă pentru %1$s</string>
     <string name="language_packs_turned_on">%1$s este activată. Comutați la ea din comutatorul de limbi.</string>
-    <string name="language_packs_turn_on_in_settings">Activați %1$s din listă, apoi reveniți.</string>
+    <string name="language_packs_turn_on_in_settings">Activați %1$s din listă, apoi reveniți</string>
     <string name="language_packs_installed_and_on">%1$s instalată. Este activată: comutați la ea din comutatorul de limbi.</string>
     <string name="language_packs_installed_turn_on">%1$s instalată. Atingeți rândul pentru a o activa în tastatură.</string>
+    <string name="language_packs_installed_no_layout">%1$s instalată, dar această tastatură nu are încă un aspect pentru scrierea sa, așa că nu poate fi selectată</string>
     <string name="language_packs_error_offline">Fără conexiune</string>
     <string name="language_packs_error_network">Nu a funcționat. Încearcă din nou.</string>
     <string name="language_packs_error_verification">Fișierul nu a corespuns catalogului, așa că nu s-a instalat nimic</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Salvat pe %1$s</string>
     <string name="backup_restore_dialog_device">De pe %1$s</string>
     <string name="backup_restore_not_in_file">Nu se află în acest fișier</string>
-    <string name="backup_restore_dialog_note">Setările, aspectele și macrocomenzile sunt înlocuite; cuvintele se adaugă la cele existente pe acest telefon.</string>
+    <string name="backup_restore_dialog_note">Setările, aspectele și macrocomenzile sunt înlocuite; cuvintele se adaugă la cele existente pe acest telefon</string>
     <string name="backup_restore_dialog_confirm">Restabiliți</string>
     <string name="backup_restored">Backup restabilit</string>
     <string name="backup_restored_words_pending">Cuvintele învățate vor fi adăugate după ce începeți să folosiți tastatura</string>

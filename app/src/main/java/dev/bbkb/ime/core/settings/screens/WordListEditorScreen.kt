@@ -994,7 +994,7 @@ fun WordListEditorScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        "Words added to your dictionary will be suggested during typing and won't be marked as misspelled.",
+                        stringResource(R.string.settings_dict_add_to_dictionary_note),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

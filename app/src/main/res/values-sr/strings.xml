@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Уписује забележену мрежу тастера као исечак &lt;цкб-кеy-грид&gt; у датотеке апликације да бисте га налепили у конфигурацију уређаја. Прво једном отворите тастатуру да би могла да је забележи.</string>
     <string name="ckb_gestures_export_title">Извези CKB геометрију</string>
     <string name="ckb_gestures_export_written">Уписано: %s</string>
-    <string name="ckb_gestures_reserved_note">Превлачење нагоре (потврда предлога испод прста) је резервисано.</string>
+    <string name="ckb_gestures_reserved_note">Превлачење нагоре (потврда предлога испод прста) је резервисано</string>
     <string name="ckb_gestures_screen_title">CKB покрети</string>
     <string name="settings_gesture_accent_max_speed_summary">Максимални множилац брзине за промену акцената</string>
     <string name="settings_gesture_accent_max_speed_title">Макс. множилац брзине промене акцената скроловањем</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Омогући динамичко учење</string>
     <string name="settings_dict_learned_words_summary">Управљајте речима наученим из вашег куцања</string>
     <string name="settings_dict_learned_words_title">Научене речи</string>
+    <string name="settings_dict_add_to_dictionary_note">Речи додате у ваш речник предлагаће се током куцања и неће бити означене као погрешно написане</string>
     <string name="settings_dict_text_shortcuts_summary">Направите пречице које се шире у фразе</string>
     <string name="settings_dict_text_shortcuts_title">Текстуалне пречице</string>
     <string name="settings_dict_user_dictionary_summary">Додајте и уредите личне речи</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Изаберите или увезите конфигурације уноса за уређај</string>
     <string name="settings_device_configuration_title">Конфигурација уређаја</string>
     <string name="touch_surface_builtin_category">Уграђена подршка</string>
-    <string name="touch_surface_builtin_intro">Док је Scroll assistant укључен, телефон прослеђује BBKB-у додире на додирној површини тастатуре.</string>
+    <string name="touch_surface_builtin_intro">Док је Scroll assistant укључен, телефон прослеђује BBKB-у додире на додирној површини тастатуре</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant преузима двоструки додир на тастерима, па га BBKB никада не добија</string>
     <string name="touch_surface_cursor_assistant_title">Искључи Cursor assistant</string>
     <string name="touch_surface_grant_access">Одобри приступ</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Подешавање апликације Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Укључите „Опције за програмере“, а затим „Бежично отклањање грешака“.\n2. Покрените Shizuku из саме апликације или помоћу root приступа.\n3. Вратите се овде и додирните „Одобри приступ“.</string>
     <string name="touch_surface_shizuku_intro">Shizuku је бесплатна апликација која омогућава BBKB-у да директно очитава додирну површину. BBKB је преузима само док је тастатура отворена; остатак времена она ради као и обично.</string>
-    <string name="touch_surface_shizuku_mediatek">Користите Shizuku 13.5.4 на овом телефону: верзија 13.6.0 не ради у потпуности на телефонима са MediaTek чипом.</string>
+    <string name="touch_surface_shizuku_mediatek">Користите Shizuku 13.5.4 на овом телефону: верзија 13.6.0 не ради у потпуности на телефонима са MediaTek чипом</string>
     <string name="touch_surface_shizuku_reboot">Апликација Shizuku се зауставља при сваком поновном покретању телефона. Покрените је поново после сваког поновног покретања; статус изнад показује када није покренута.</string>
     <string name="touch_surface_shizuku_state_denied">Покренута, али је приступ за BBKB одбијен</string>
     <string name="touch_surface_shizuku_state_granted">Покренута и BBKB има приступ</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Није доступно на овом телефону</string>
     <string name="pref_show_pkb_modifier_status_icon">Прикажи икону статуса модификатора</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Прикажи индикатор модификатора Shift/Alt на статусној траци при коришћењу физичке тастатуре</string>
-    <string name="settings_pred_accounts_permission_summary">Дозволите приступ налозима да би се током куцања предлагале имејл адресе.</string>
+    <string name="settings_pred_accounts_permission_summary">Дозволите приступ налозима да би се током куцања предлагале имејл адресе</string>
     <string name="settings_pred_accounts_permission_title">Потребна је дозвола за налоге</string>
     <string name="settings_pred_block_offensive_summary">Сакриј потенцијално увредљиве речи при гласовном диктирању</string>
     <string name="settings_pred_block_offensive_title">Блокирај увредљиве речи</string>
-    <string name="settings_pred_contacts_permission_summary">Дозволите приступ контактима да би се током куцања предлагала имена контаката и имејл адресе.</string>
+    <string name="settings_pred_contacts_permission_summary">Дозволите приступ контактима да би се током куцања предлагала имена контаката и имејл адресе</string>
     <string name="settings_pred_contacts_permission_title">Потребна је дозвола за контакте</string>
     <string name="settings_pred_contacts_summary_disabled">Потребна је дозвола за контакте</string>
     <string name="settings_pred_contacts_summary_enabled">Укључи имена контаката у предлоге</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Дозволите приступ контактима да бисте користили ову функцију</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Имена контаката ће се препознавати као исправне речи</string>
     <string name="settings_spellcheck_use_contacts_title">Користи контакте за проверу правописа</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Дозволите приступ контактима да би се имена контаката при провери правописа препознавала као исправне речи</string>
     <string name="settings_spellcheck_accept_learned_title">Прихвати научене речи</string>
     <string name="settings_spellcheck_accept_learned_summary">Речи научене из вашег куцања сматрају се исправно написаним</string>
     <string name="pref_alt_double_tap_lock">Омогући закључавање двоструким кликом на Alt</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Омогући закључавање двоструким кликом на Ctrl</string>
     <string name="pref_ctrl_double_tap_lock_summary">Двоструки клик на Ctrl ће га закључати. Поновни клик на Ctrl ће га искључити.</string>
     <string name="pref_override_device_meta_state">Zанемари мета стање уређаја</string>
-    <string name="pref_override_device_meta_state_summary">Омогући лепљиве модификаторе (закључавање тастера схифт/алт) на физичким тастатурама без обзира на КЦМ конфигурацију уређаја.</string>
+    <string name="pref_override_device_meta_state_summary">Омогући лепљиве модификаторе (закључавање тастера схифт/алт) на физичким тастатурама без обзира на КЦМ конфигурацију уређаја</string>
     <string name="pref_shift_double_tap_lock">Омогући закључавање двоструким кликом на Shift</string>
     <string name="pref_shift_double_tap_lock_summary">Двоструки клик на Shift ће га закључати. Поновни клик на Shift ће га искључити.</string>
     <string name="prefs_key_longpress_delay_summary">Време задржавања тастера пре приказа секундарних знакова</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Обавештења о догађајима аутоматског попуњавања</string>
     <string name="pref_accessibility_service_disabled">Услуга приступачности је онемогућена</string>
     <string name="pref_accessibility_service_enabled">Услуга приступачности је омогућена</string>
-    <string name="pref_emoji_search_pkb_summary">Када је табла са емоџијима отворена, користите тастатуру за претрагу.</string>
+    <string name="pref_emoji_search_pkb_summary">Када је табла са емоџијима отворена, користите тастатуру за претрагу</string>
     <string name="pref_emoji_search_title">Омогући претрагу емоџија</string>
-    <string name="pref_emoji_search_vkb_summary">Филтрирај емоџије према тренутном непотврђеном (подвученом) тексту.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Избор емоџија га умеће после откуцаног текста.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Избор емоџија замењује откуцани текст.</string>
+    <string name="pref_emoji_search_vkb_summary">Филтрирај емоџије према тренутном непотврђеном (подвученом) тексту</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Избор емоџија га умеће после откуцаног текста</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Избор емоџија замењује откуцани текст</string>
     <string name="pref_emoji_search_replace_text_title">Zамени текст емоџијем</string>
     <string name="pref_key_interceptor_enabled">Омогући подршку за посебне тастере</string>
     <string name="pref_key_interceptor_enabled_summary">Користи услугу приступачности за хватање тастера Emoji, SYM и Voice</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Управљање подацима</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Прилагођени макрои</string>
+    <string name="settings_custom_macros_intro" formatted="false">Дефинишите сопствене чуваре места %x за употребу у текстуалним пречицама</string>
     <string name="settings_customize_menu_hidden_header">Не приказује се на тастатури</string>
     <string name="settings_customize_menu_instructions">Додирните и задржите пречицу, па је превуците да бисте променили редослед. Прве четири се приказују у менију за унос на тастатури.</string>
     <string name="settings_customize_menu_summary">Изаберите пречице менија за унос и промените им редослед</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Брзе фразе</string>
     <string name="settings_screen_type_by_swiping">Куцање превлачењем</string>
     <string name="settings_screen_type_by_swiping_summary">Куцајте брзо без подизања прста са тастатуре</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Куцање превлачењем није доступно на вашем језику.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Куцање превлачењем није доступно на вашем језику</string>
     <string name="settings_search_hint">Претражите поставке</string>
     <string name="settings_search_no_results">Није пронађена ниједна поставка</string>
     <string name="settings_shake_fallback_title">Резервна радња</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Уређај тастатуре: %1$s</string>
     <string name="device_config_import_matches_build">Уређај верзије: %1$s</string>
     <string name="device_config_import_matches_brand">Марка: %1$s</string>
-    <string name="device_config_import_matches_nothing">Ова датотека не наводи ниједан уређај за подударање, па се никада не би применила.</string>
+    <string name="device_config_import_matches_nothing">Ова датотека не наводи ниједан уређај за подударање, па се никада не би применила</string>
     <string name="device_config_import_type">Тип уређаја: %1$s</string>
     <string name="device_config_import_keys">%1$d мапирања тастера</string>
     <string name="device_config_import_keypad_layout">Распоред тастатуре: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Ова верзија је превише стара да прочита листу ажурирања. Ажурирајте ручно.</string>
     <string name="settings_update_from_cache">Приказано из последње сачуване провере</string>
     <string name="settings_update_background_check_title">Аутоматски проверавај ажурирања</string>
-    <string name="settings_update_background_check_summary">Добићете обавештење када нова верзија буде доступна за преузимање.</string>
+    <string name="settings_update_background_check_summary">Добићете обавештење када нова верзија буде доступна за преузимање</string>
     <string name="settings_update_notification_text">Верзија %1$s је спремна за преузимање</string>
     <string name="settings_update_unknown_sources_message">Android мора да дозволи BBKB-у да инсталира апликације. Омогућите инсталацију из овог извора, па поново притисните Инсталирај.</string>
     <string name="settings_update_open_settings">Отвори подешавања</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Провери речнике</string>
     <string name="language_packs_load_ldb">Учитај LDB датотеку</string>
     <string name="language_packs_variant_summary">Учитава се уместо %1$s</string>
-    <string name="language_packs_not_on_summary">Додирните да направите нову тастатуру за %1$s.</string>
+    <string name="language_packs_not_on_summary">Додирните да направите нову тастатуру за %1$s</string>
     <string name="language_packs_turned_on">%1$s је укључен. Пребаците се на њега преко бирача језика.</string>
-    <string name="language_packs_turn_on_in_settings">Укључите %1$s на листи, па се вратите.</string>
+    <string name="language_packs_turn_on_in_settings">Укључите %1$s на листи, па се вратите</string>
     <string name="language_packs_installed_and_on">Инсталиран је %1$s. Укључен је: пребаците се на њега преко бирача језика.</string>
     <string name="language_packs_installed_turn_on">Инсталиран је %1$s. Додирните ред да га укључите на тастатури.</string>
+    <string name="language_packs_installed_no_layout">Инсталиран је %1$s, али ова тастатура још нема распоред за његово писмо, па не може да се изабере</string>
     <string name="language_packs_error_offline">Нема везе</string>
     <string name="language_packs_error_network">Није успело. Пробај поново.</string>
     <string name="language_packs_error_verification">Датотека се не поклапа са каталогом, па ништа није инсталирано</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Сачувано: %1$s</string>
     <string name="backup_restore_dialog_device">Са уређаја %1$s</string>
     <string name="backup_restore_not_in_file">Није у овој датотеци</string>
-    <string name="backup_restore_dialog_note">Поставке, распореди и макрои се замењују; речи се додају на оно што већ постоји на овом телефону.</string>
+    <string name="backup_restore_dialog_note">Поставке, распореди и макрои се замењују; речи се додају на оно што већ постоји на овом телефону</string>
     <string name="backup_restore_dialog_confirm">Врати</string>
     <string name="backup_restored">Резервна копија је враћена</string>
     <string name="backup_restored_words_pending">Научене речи ће бити додате када почнете да користите тастатуру</string>

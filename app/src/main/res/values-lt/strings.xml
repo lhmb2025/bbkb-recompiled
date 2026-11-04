@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Įrašyti užfiksuotą klavišų tinklelį kaip &lt;ckb-key-grid&gt; fragmentą į programos failus, kad galėtumėte jį įklijuoti į įrenginio konfigūraciją. Pirmiausia kartą atidarykite klaviatūrą, kad ji galėtų užfiksuoti.</string>
     <string name="ckb_gestures_export_title">Eksportuoti CKB geometriją</string>
     <string name="ckb_gestures_export_written">Įrašyta: %s</string>
-    <string name="ckb_gestures_reserved_note">Perbraukimas aukštyn (patvirtinti po pirštu esantį pasiūlymą) yra rezervuotas.</string>
+    <string name="ckb_gestures_reserved_note">Perbraukimas aukštyn (patvirtinti po pirštu esantį pasiūlymą) yra rezervuotas</string>
     <string name="ckb_gestures_screen_title">CKB gestai</string>
     <string name="settings_gesture_accent_max_speed_summary">Didžiausias diakritinių ženklų keitimo greičio daugiklis</string>
     <string name="settings_gesture_accent_max_speed_title">Diakritinių ženklų slinkimo maks. greičio daugiklis</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Įjungti dinaminį mokymąsi</string>
     <string name="settings_dict_learned_words_summary">Tvarkyti iš jūsų rašymo išmoktus žodžius</string>
     <string name="settings_dict_learned_words_title">Išmokti žodžiai</string>
+    <string name="settings_dict_add_to_dictionary_note">Į žodyną įtraukti žodžiai bus siūlomi rašant ir nebus žymimi kaip parašyti su klaidomis</string>
     <string name="settings_dict_text_shortcuts_summary">Kurti trumpinius, kurie išskleidžiami į frazes</string>
     <string name="settings_dict_text_shortcuts_title">Teksto trumpiniai</string>
     <string name="settings_dict_user_dictionary_summary">Pridėti ir redaguoti asmeninius žodžius</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Pasirinkti arba importuoti įrenginio įvesties konfigūracijas</string>
     <string name="settings_device_configuration_title">Įrenginio konfigūracija</string>
     <string name="touch_surface_builtin_category">Integruota</string>
-    <string name="touch_surface_builtin_intro">Kai įjungta telefono funkcija „Scroll assistant“, telefonas perduoda klaviatūros jutiklinį paviršių „BBKB“.</string>
+    <string name="touch_surface_builtin_intro">Kai įjungta telefono funkcija „Scroll assistant“, telefonas perduoda klaviatūros jutiklinį paviršių „BBKB“</string>
     <string name="touch_surface_cursor_assistant_summary">„Cursor assistant“ perima dukart bakstelėjimą ant klavišų, todėl „BBKB“ jo niekada negauna</string>
     <string name="touch_surface_cursor_assistant_title">Išjungti „Cursor assistant“</string>
     <string name="touch_surface_grant_access">Suteikti prieigą</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">„Shizuku“ nustatymas</string>
     <string name="touch_surface_shizuku_guide_steps">1. Įjunkite „Kūrėjo parinktys“, tada „Belaidžio ryšio derinimas“.\n2. Paleiskite „Shizuku“ pačioje programoje arba su root teisėmis.\n3. Grįžkite čia ir bakstelėkite „Suteikti prieigą“.</string>
     <string name="touch_surface_shizuku_intro">„Shizuku“ – nemokama programa, leidžianti „BBKB“ tiesiogiai nuskaityti jutiklinį paviršių. „BBKB“ jį perima tik tada, kai atidaryta klaviatūra; likusiu laiku jis veikia kaip įprastai.</string>
-    <string name="touch_surface_shizuku_mediatek">Šiame telefone naudokite „Shizuku“ 13.5.4: 13.6.0 versija ne visiškai veikia telefonuose su „MediaTek“ lustais.</string>
+    <string name="touch_surface_shizuku_mediatek">Šiame telefone naudokite „Shizuku“ 13.5.4: 13.6.0 versija ne visiškai veikia telefonuose su „MediaTek“ lustais</string>
     <string name="touch_surface_shizuku_reboot">„Shizuku“ sustoja kaskart, kai telefonas paleidžiamas iš naujo. Po kiekvieno paleidimo iš naujo vėl ją paleiskite; aukščiau esanti būsena rodo, kada ji neveikia.</string>
     <string name="touch_surface_shizuku_state_denied">Veikia, bet „BBKB“ prieiga buvo atmesta</string>
     <string name="touch_surface_shizuku_state_granted">Veikia ir „BBKB“ turi prieigą</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Nepasiekiama šiame telefone</string>
     <string name="pref_show_pkb_modifier_status_icon">Rodyti modifikavimo klavišų būsenos piktogramą</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Naudojant fizinę klaviatūrą rodyti „Shift“ / „Alt“ indikatorių būsenos juostoje</string>
-    <string name="settings_pred_accounts_permission_summary">Suteikite paskyrų leidimą, kad rašant būtų siūlomi el. pašto adresai.</string>
+    <string name="settings_pred_accounts_permission_summary">Suteikite paskyrų leidimą, kad rašant būtų siūlomi el. pašto adresai</string>
     <string name="settings_pred_accounts_permission_title">Reikia paskyrų leidimo</string>
     <string name="settings_pred_block_offensive_summary">Slėpti galimai įžeidžiančius žodžius diktuojant balsu</string>
     <string name="settings_pred_block_offensive_title">Blokuoti įžeidžiančius žodžius</string>
-    <string name="settings_pred_contacts_permission_summary">Suteikite kontaktų leidimą, kad rašant būtų siūlomi kontaktų vardai ir el. pašto adresai.</string>
+    <string name="settings_pred_contacts_permission_summary">Suteikite kontaktų leidimą, kad rašant būtų siūlomi kontaktų vardai ir el. pašto adresai</string>
     <string name="settings_pred_contacts_permission_title">Reikia kontaktų leidimo</string>
     <string name="settings_pred_contacts_summary_disabled">Reikia kontaktų leidimo</string>
     <string name="settings_pred_contacts_summary_enabled">Įtraukti kontaktų vardus į pasiūlymus</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Suteikite kontaktų leidimą, kad galėtumėte naudoti šią funkciją</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktų vardai bus atpažįstami kaip taisyklingi žodžiai</string>
     <string name="settings_spellcheck_use_contacts_title">Naudoti kontaktus rašybai tikrinti</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Suteikite kontaktų leidimą, kad tikrinant rašybą kontaktų vardai būtų atpažįstami kaip tinkami žodžiai</string>
     <string name="settings_spellcheck_accept_learned_title">Priimti išmoktus žodžius</string>
     <string name="settings_spellcheck_accept_learned_summary">Iš jūsų rašymo išmokti žodžiai laikomi parašytais teisingai</string>
     <string name="pref_alt_double_tap_lock">Įjungti „Alt“ fiksavimą dukart spustelėjus</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Įjungti „Ctrl“ fiksavimą dukart spustelėjus</string>
     <string name="pref_ctrl_double_tap_lock_summary">Dukart spustelėjus „Ctrl“ jis bus užfiksuotas. Dar kartą spustelėjus „Ctrl“ jis bus išjungtas.</string>
     <string name="pref_override_device_meta_state">Nepaisyti įrenginio meta būsenos</string>
-    <string name="pref_override_device_meta_state_summary">Įjungti fiksuojamus modifikavimo klavišus („Shift“ / „Alt“ fiksavimą) fizinėse klaviatūrose, nepaisant įrenginio KCM konfigūracijos.</string>
+    <string name="pref_override_device_meta_state_summary">Įjungti fiksuojamus modifikavimo klavišus („Shift“ / „Alt“ fiksavimą) fizinėse klaviatūrose, nepaisant įrenginio KCM konfigūracijos</string>
     <string name="pref_shift_double_tap_lock">Įjungti „Shift“ fiksavimą dukart spustelėjus</string>
     <string name="pref_shift_double_tap_lock_summary">Dukart spustelėjus „Shift“ jis bus užfiksuotas. Dar kartą spustelėjus „Shift“ jis bus išjungtas.</string>
     <string name="prefs_key_longpress_delay_summary">Kiek laiko laikyti klavišą, kol pasirodys antriniai ženklai</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Automatinio pildymo įvykių pranešimai</string>
     <string name="pref_accessibility_service_disabled">Pritaikymo neįgaliesiems paslauga išjungta</string>
     <string name="pref_accessibility_service_enabled">Pritaikymo neįgaliesiems paslauga įjungta</string>
-    <string name="pref_emoji_search_pkb_summary">Kai jaustukų lenta atidaryta, ieškokite klaviatūra.</string>
+    <string name="pref_emoji_search_pkb_summary">Kai jaustukų lenta atidaryta, ieškokite klaviatūra</string>
     <string name="pref_emoji_search_title">Įjungti jaustukų paiešką</string>
-    <string name="pref_emoji_search_vkb_summary">Filtruoti jaustukus pagal dabartinį nepatvirtintą (pabrauktą) tekstą.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Pasirinktas jaustukas įterpiamas po įvesto teksto.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Pasirinktas jaustukas pakeičia įvestą tekstą.</string>
+    <string name="pref_emoji_search_vkb_summary">Filtruoti jaustukus pagal dabartinį nepatvirtintą (pabrauktą) tekstą</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Pasirinktas jaustukas įterpiamas po įvesto teksto</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Pasirinktas jaustukas pakeičia įvestą tekstą</string>
     <string name="pref_emoji_search_replace_text_title">Pakeisti tekstą jaustuku</string>
     <string name="pref_key_interceptor_enabled">Įjungti specialiųjų klavišų palaikymą</string>
     <string name="pref_key_interceptor_enabled_summary">Naudoti pritaikymo neįgaliesiems paslaugą jaustukų, SYM ir balso klavišams perimti</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Duomenų tvarkymas</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Tinkintos makrokomandos</string>
+    <string name="settings_custom_macros_intro" formatted="false">Apibrėžkite savo %x vietos rezervavimo ženklus, kuriuos naudosite teksto trumpiniuose</string>
     <string name="settings_customize_menu_hidden_header">Nerodoma klaviatūroje</string>
     <string name="settings_customize_menu_instructions">Palieskite ir palaikykite sparčiąją nuorodą, tada vilkite, kad pertvarkytumėte. Pirmosios keturios rodomos klaviatūros įvesties meniu.</string>
     <string name="settings_customize_menu_summary">Pasirinkti ir pertvarkyti įvesties meniu sparčiąsias nuorodas</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Greitosios frazės</string>
     <string name="settings_screen_type_by_swiping">Rašymas braukiant</string>
     <string name="settings_screen_type_by_swiping_summary">Rašykite greitai nekeldami piršto nuo klaviatūros</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Rašymas braukiant jūsų kalba negalimas.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Rašymas braukiant jūsų kalba negalimas</string>
     <string name="settings_search_hint">Ieškoti nustatymų</string>
     <string name="settings_search_no_results">Nustatymų nerasta</string>
     <string name="settings_shake_fallback_title">Atsarginis veiksmas</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Klaviatūros įrenginys: %1$s</string>
     <string name="device_config_import_matches_build">Versijos įrenginys: %1$s</string>
     <string name="device_config_import_matches_brand">Prekės ženklas: %1$s</string>
-    <string name="device_config_import_matches_nothing">Šiame faile nenurodytas joks atitinkamas įrenginys, todėl jis niekada nebūtų pritaikytas.</string>
+    <string name="device_config_import_matches_nothing">Šiame faile nenurodytas joks atitinkamas įrenginys, todėl jis niekada nebūtų pritaikytas</string>
     <string name="device_config_import_type">Įrenginio tipas: %1$s</string>
     <string name="device_config_import_keys">%1$d klavišų susiejimų</string>
     <string name="device_config_import_keypad_layout">Klaviatūros išdėstymas: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Ši versija per sena, kad perskaitytų naujinimų sąrašą. Atnaujinkite rankiniu būdu.</string>
     <string name="settings_update_from_cache">Parodyta iš paskutinio išsaugoto tikrinimo</string>
     <string name="settings_update_background_check_title">Automatiškai tikrinti naujinius</string>
-    <string name="settings_update_background_check_summary">Gausite pranešimą, kai bus galima atsisiųsti naują versiją.</string>
+    <string name="settings_update_background_check_summary">Gausite pranešimą, kai bus galima atsisiųsti naują versiją</string>
     <string name="settings_update_notification_text">Versija %1$s paruošta atsisiųsti</string>
     <string name="settings_update_unknown_sources_message">Android turi leisti BBKB įdiegti programas. Įjunkite įdiegimą iš šio šaltinio ir vėl paspauskite Įdiegti.</string>
     <string name="settings_update_open_settings">Atidaryti nustatymus</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Tikrinti žodynus</string>
     <string name="language_packs_load_ldb">Įkelti LDB failą</string>
     <string name="language_packs_variant_summary">Įkeliama vietoje %1$s</string>
-    <string name="language_packs_not_on_summary">Bakstelėkite, kad sukurtumėte naują %1$s klaviatūrą.</string>
+    <string name="language_packs_not_on_summary">Bakstelėkite, kad sukurtumėte naują %1$s klaviatūrą</string>
     <string name="language_packs_turned_on">%1$s įjungta. Perjunkite į ją kalbų perjungiklyje.</string>
-    <string name="language_packs_turn_on_in_settings">Įjunkite %1$s sąraše, tada grįžkite.</string>
+    <string name="language_packs_turn_on_in_settings">Įjunkite %1$s sąraše, tada grįžkite</string>
     <string name="language_packs_installed_and_on">Įdiegta %1$s. Ji įjungta: perjunkite į ją kalbų perjungiklyje.</string>
     <string name="language_packs_installed_turn_on">Įdiegta %1$s. Bakstelėkite eilutę, kad įjungtumėte ją klaviatūroje.</string>
+    <string name="language_packs_installed_no_layout">Įdiegta %1$s, bet ši klaviatūra dar neturi išdėstymo jos rašto sistemai, todėl jos pasirinkti negalima</string>
     <string name="language_packs_error_offline">Nėra ryšio</string>
     <string name="language_packs_error_network">Nepavyko. Bandykite dar kartą.</string>
     <string name="language_packs_error_verification">Failas neatitiko katalogo, todėl nieko neįdiegta</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Įrašyta: %1$s</string>
     <string name="backup_restore_dialog_device">Įrenginys: %1$s</string>
     <string name="backup_restore_not_in_file">Šiame faile nėra</string>
-    <string name="backup_restore_dialog_note">Nustatymai, išdėstymai ir makrokomandos pakeičiami; žodžiai pridedami prie esančių šiame telefone.</string>
+    <string name="backup_restore_dialog_note">Nustatymai, išdėstymai ir makrokomandos pakeičiami; žodžiai pridedami prie esančių šiame telefone</string>
     <string name="backup_restore_dialog_confirm">Atkurti</string>
     <string name="backup_restored">Atsarginė kopija atkurta</string>
     <string name="backup_restored_words_pending">Išmokti žodžiai bus pridėti, kai pradėsite naudoti klaviatūrą</string>

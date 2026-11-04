@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Skriv det registrerte tasterutenettet som en &lt;ckb-key-grid&gt;-kodebit til appfilene, klar til å limes inn i enhetskonfigurasjonen. Åpne tastaturet én gang først, slik at det kan registreres.</string>
     <string name="ckb_gestures_export_title">Eksporter CKB-geometri</string>
     <string name="ckb_gestures_export_written">Skrev %s</string>
-    <string name="ckb_gestures_reserved_note">Sveip opp (godta forslaget under fingeren) er reservert.</string>
+    <string name="ckb_gestures_reserved_note">Sveip opp (godta forslaget under fingeren) er reservert</string>
     <string name="ckb_gestures_screen_title">CKB-bevegelser</string>
     <string name="settings_gesture_accent_max_speed_summary">Maksimal hastighetsfaktor for aksentendringer</string>
     <string name="settings_gesture_accent_max_speed_title">Maks. hastighetsfaktor for aksentbytte ved rulling</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Slå på dynamisk læring</string>
     <string name="settings_dict_learned_words_summary">Administrer ord som er lært fra det du skriver</string>
     <string name="settings_dict_learned_words_title">Lærte ord</string>
+    <string name="settings_dict_add_to_dictionary_note">Ord som legges til i ordlisten din, foreslås mens du skriver, og markeres ikke som feilstavet</string>
     <string name="settings_dict_text_shortcuts_summary">Lag snarveier som utvides til fraser</string>
     <string name="settings_dict_text_shortcuts_title">Tekstsnarveier</string>
     <string name="settings_dict_user_dictionary_summary">Legg til og rediger egne ord</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Velg eller importer inndatakonfigurasjoner for enheten</string>
     <string name="settings_device_configuration_title">Enhetskonfigurasjon</string>
     <string name="touch_surface_builtin_category">Innebygd</string>
-    <string name="touch_surface_builtin_intro">Telefonen gir BBKB tilgang til tastaturets berøringsflate så lenge Scroll assistant er slått på.</string>
+    <string name="touch_surface_builtin_intro">Telefonen gir BBKB tilgang til tastaturets berøringsflate så lenge Scroll assistant er slått på</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant fanger opp dobbelttrykk på tastene, så BBKB mottar dem aldri</string>
     <string name="touch_surface_cursor_assistant_title">Slå av Cursor assistant</string>
     <string name="touch_surface_grant_access">Gi tilgang</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Konfigurer Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. Slå på Utvikleralternativer og deretter Trådløs feilsøking.\n2. Start Shizuku fra appen eller med root.\n3. Kom tilbake hit og trykk på Gi tilgang.</string>
     <string name="touch_surface_shizuku_intro">Shizuku er en gratis app som lar BBKB lese berøringsflaten direkte. BBKB tar den bare over mens tastaturet er åpent; resten av tiden fungerer den som vanlig.</string>
-    <string name="touch_surface_shizuku_mediatek">Bruk Shizuku 13.5.4 på denne telefonen: versjon 13.6.0 fungerer ikke fullt ut på MediaTek-telefoner.</string>
+    <string name="touch_surface_shizuku_mediatek">Bruk Shizuku 13.5.4 på denne telefonen: versjon 13.6.0 fungerer ikke fullt ut på MediaTek-telefoner</string>
     <string name="touch_surface_shizuku_reboot">Shizuku stopper hver gang telefonen startes på nytt. Start den igjen etter hver omstart; statusen ovenfor viser når den ikke kjører.</string>
     <string name="touch_surface_shizuku_state_denied">Kjører, men BBKB ble nektet tilgang</string>
     <string name="touch_surface_shizuku_state_granted">Kjører, og BBKB har tilgang</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Ikke tilgjengelig på denne telefonen</string>
     <string name="pref_show_pkb_modifier_status_icon">Vis statusikon for modifikatortaster</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Vis Skift-/Alt-indikator i statusfeltet når du bruker fysisk tastatur</string>
-    <string name="settings_pred_accounts_permission_summary">Gi tilgang til kontoer for å foreslå e-postadresser mens du skriver.</string>
+    <string name="settings_pred_accounts_permission_summary">Gi tilgang til kontoer for å foreslå e-postadresser mens du skriver</string>
     <string name="settings_pred_accounts_permission_title">Krever tillatelse til kontoer</string>
     <string name="settings_pred_block_offensive_summary">Skjul ord som kan virke støtende, ved talediktering</string>
     <string name="settings_pred_block_offensive_title">Blokker støtende ord</string>
-    <string name="settings_pred_contacts_permission_summary">Gi tilgang til kontakter for å foreslå kontaktnavn og e-postadresser mens du skriver.</string>
+    <string name="settings_pred_contacts_permission_summary">Gi tilgang til kontakter for å foreslå kontaktnavn og e-postadresser mens du skriver</string>
     <string name="settings_pred_contacts_permission_title">Krever tillatelse til kontakter</string>
     <string name="settings_pred_contacts_summary_disabled">Krever tillatelse til kontakter</string>
     <string name="settings_pred_contacts_summary_enabled">Inkluder kontaktnavn i forslagene</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Gi tilgang til kontakter for å bruke denne funksjonen</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktnavn godtas som gyldige ord</string>
     <string name="settings_spellcheck_use_contacts_title">Bruk kontakter i stavekontrollen</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Gi tilgang til kontakter slik at kontaktnavn gjenkjennes som gyldige ord i stavekontrollen</string>
     <string name="settings_spellcheck_accept_learned_title">Godta lærte ord</string>
     <string name="settings_spellcheck_accept_learned_summary">Ord som er lært fra det du skriver, regnes som riktig stavet</string>
     <string name="pref_alt_double_tap_lock">Aktiver Alt-lås med dobbeltklikk</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Aktiver Ctrl-lås med dobbeltklikk</string>
     <string name="pref_ctrl_double_tap_lock_summary">Dobbeltklikk på Ctrl låser den på. Klikk på Ctrl igjen for å slå den av.</string>
     <string name="pref_override_device_meta_state">Overstyr enhetens metatilstand</string>
-    <string name="pref_override_device_meta_state_summary">Aktiver faste modifikatortaster (Skift-/Alt-lås) på fysiske tastaturer uavhengig av enhetens KCM-konfigurasjon.</string>
+    <string name="pref_override_device_meta_state_summary">Aktiver faste modifikatortaster (Skift-/Alt-lås) på fysiske tastaturer uavhengig av enhetens KCM-konfigurasjon</string>
     <string name="pref_shift_double_tap_lock">Aktiver Skift-lås med dobbeltklikk</string>
     <string name="pref_shift_double_tap_lock_summary">Dobbeltklikk på Skift låser den på. Klikk på Skift igjen for å slå den av.</string>
     <string name="prefs_key_longpress_delay_summary">Hvor lenge du må holde inne en tast før sekundærtegnene vises</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Toast-varsler for autofyll</string>
     <string name="pref_accessibility_service_disabled">Tilgjengelighetstjenesten er deaktivert</string>
     <string name="pref_accessibility_service_enabled">Tilgjengelighetstjenesten er aktivert</string>
-    <string name="pref_emoji_search_pkb_summary">Bruk tastaturet til å søke når emoji-panelet er åpent.</string>
+    <string name="pref_emoji_search_pkb_summary">Bruk tastaturet til å søke når emoji-panelet er åpent</string>
     <string name="pref_emoji_search_title">Slå på emoji-søk</string>
-    <string name="pref_emoji_search_vkb_summary">Filtrer emojier med den gjeldende ubekreftede (understrekede) teksten.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Når du velger en emoji, settes den inn etter teksten du har skrevet.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Når du velger en emoji, erstatter den teksten du har skrevet.</string>
+    <string name="pref_emoji_search_vkb_summary">Filtrer emojier med den gjeldende ubekreftede (understrekede) teksten</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Når du velger en emoji, settes den inn etter teksten du har skrevet</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Når du velger en emoji, erstatter den teksten du har skrevet</string>
     <string name="pref_emoji_search_replace_text_title">Erstatt tekst med emoji</string>
     <string name="pref_key_interceptor_enabled">Aktiver støtte for spesialtaster</string>
     <string name="pref_key_interceptor_enabled_summary">Bruk tilgjengelighetstjenesten til å fange opp Emoji-, SYM- og Tale-tastene</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Administrer data</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Egendefinerte makroer</string>
+    <string name="settings_custom_macros_intro" formatted="false">Definer dine egne %x-plassholdere til bruk i tekstsnarveier</string>
     <string name="settings_customize_menu_hidden_header">Vises ikke på tastaturet</string>
     <string name="settings_customize_menu_instructions">Trykk på og hold en snarvei, og dra for å endre rekkefølgen. De fire første vises i tastaturets inndatameny.</string>
     <string name="settings_customize_menu_summary">Velg og endre rekkefølgen på snarveiene i inndatamenyen</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Hurtigfraser</string>
     <string name="settings_screen_type_by_swiping">Skriv ved å sveipe</string>
     <string name="settings_screen_type_by_swiping_summary">Skriv raskt uten å løfte fingeren fra tastaturet</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Skriv ved å sveipe er ikke tilgjengelig for språket ditt.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Skriv ved å sveipe er ikke tilgjengelig for språket ditt</string>
     <string name="settings_search_hint">Søk i innstillinger</string>
     <string name="settings_search_no_results">Fant ingen innstillinger</string>
     <string name="settings_shake_fallback_title">Reservehandling</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Tastaturenhet: %1$s</string>
     <string name="device_config_import_matches_build">Build-enhet: %1$s</string>
     <string name="device_config_import_matches_brand">Merke: %1$s</string>
-    <string name="device_config_import_matches_nothing">Denne filen oppgir ingen enhet å matche, så den ville aldri blitt brukt.</string>
+    <string name="device_config_import_matches_nothing">Denne filen oppgir ingen enhet å matche, så den ville aldri blitt brukt</string>
     <string name="device_config_import_type">Enhetstype: %1$s</string>
     <string name="device_config_import_keys">%1$d tastetilordninger</string>
     <string name="device_config_import_keypad_layout">Tastaturoppsett: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Denne versjonen er for gammel til å lese oppdateringslisten. Oppdater manuelt.</string>
     <string name="settings_update_from_cache">Vist fra den sist lagrede sjekken</string>
     <string name="settings_update_background_check_title">Se etter oppdateringer automatisk</string>
-    <string name="settings_update_background_check_summary">Du får et varsel når en ny versjon er klar til nedlasting.</string>
+    <string name="settings_update_background_check_summary">Du får et varsel når en ny versjon er klar til nedlasting</string>
     <string name="settings_update_notification_text">Versjon %1$s er klar for nedlasting</string>
     <string name="settings_update_unknown_sources_message">Android må tillate at BBKB installerer apper. Tillat installering fra denne kilden, og trykk på Installer igjen.</string>
     <string name="settings_update_open_settings">Åpne innstillinger</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Se etter ordbøker</string>
     <string name="language_packs_load_ldb">Last inn LDB-fil</string>
     <string name="language_packs_variant_summary">Lastes i stedet for %1$s</string>
-    <string name="language_packs_not_on_summary">Trykk for å opprette et nytt tastatur for %1$s.</string>
+    <string name="language_packs_not_on_summary">Trykk for å opprette et nytt tastatur for %1$s</string>
     <string name="language_packs_turned_on">%1$s er slått på. Bytt til det fra språkbytteren.</string>
-    <string name="language_packs_turn_on_in_settings">Slå på %1$s i listen, og kom så tilbake.</string>
+    <string name="language_packs_turn_on_in_settings">Slå på %1$s i listen, og kom så tilbake</string>
     <string name="language_packs_installed_and_on">%1$s installert. Det er slått på: bytt til det fra språkbytteren.</string>
     <string name="language_packs_installed_turn_on">%1$s installert. Trykk på raden for å slå det på i tastaturet.</string>
+    <string name="language_packs_installed_no_layout">%1$s er installert, men dette tastaturet har ennå ikke et oppsett for skriftsystemet, så det kan ikke velges</string>
     <string name="language_packs_error_offline">Ingen tilkobling</string>
     <string name="language_packs_error_network">Det fungerte ikke. Prøv igjen.</string>
     <string name="language_packs_error_verification">Filen stemte ikke med katalogen, så ingenting ble installert</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Lagret %1$s</string>
     <string name="backup_restore_dialog_device">Fra %1$s</string>
     <string name="backup_restore_not_in_file">Ikke i denne filen</string>
-    <string name="backup_restore_dialog_note">Innstillinger, layouter og makroer erstattes; ord legges til det som allerede er på denne telefonen.</string>
+    <string name="backup_restore_dialog_note">Innstillinger, layouter og makroer erstattes; ord legges til det som allerede er på denne telefonen</string>
     <string name="backup_restore_dialog_confirm">Gjenopprett</string>
     <string name="backup_restored">Sikkerhetskopien er gjenopprettet</string>
     <string name="backup_restored_words_pending">Lærte ord legges til når tastaturet tas i bruk</string>

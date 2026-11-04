@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Ierakstīt tverto taustiņu režģi kā &lt;ckb-key-grid&gt; fragmentu programmas failos, lai to ielīmētu ierīces konfigurācijā. Vispirms vienreiz atveriet tastatūru, lai tā varētu to tvert.</string>
     <string name="ckb_gestures_export_title">Eksportēt CKB ģeometriju</string>
     <string name="ckb_gestures_export_written">Ierakstīts: %s</string>
-    <string name="ckb_gestures_reserved_note">Vilkšana augšup (apstiprināt zem pirksta esošo ieteikumu) ir rezervēta.</string>
+    <string name="ckb_gestures_reserved_note">Vilkšana augšup (apstiprināt zem pirksta esošo ieteikumu) ir rezervēta</string>
     <string name="ckb_gestures_screen_title">CKB žesti</string>
     <string name="settings_gesture_accent_max_speed_summary">Maksimālais diakritisko zīmju maiņas ātruma reizinātājs</string>
     <string name="settings_gesture_accent_max_speed_title">Diakritisko zīmju ritināšanas maks. ātruma reizinātājs</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Ieslēgt dinamisko mācīšanos</string>
     <string name="settings_dict_learned_words_summary">Pārvaldīt no jūsu rakstītā iemācītos vārdus</string>
     <string name="settings_dict_learned_words_title">Iemācītie vārdi</string>
+    <string name="settings_dict_add_to_dictionary_note">Vārdnīcai pievienotie vārdi tiks ieteikti rakstīšanas laikā un netiks atzīmēti kā kļūdaini</string>
     <string name="settings_dict_text_shortcuts_summary">Izveidot saīsnes, kas izvēršas frāzēs</string>
     <string name="settings_dict_text_shortcuts_title">Teksta saīsnes</string>
     <string name="settings_dict_user_dictionary_summary">Pievienot un rediģēt personiskos vārdus</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Atlasīt vai importēt ierīces ievades konfigurācijas</string>
     <string name="settings_device_configuration_title">Ierīces konfigurācija</string>
     <string name="touch_surface_builtin_category">Iebūvēts</string>
-    <string name="touch_surface_builtin_intro">Kamēr ir ieslēgta tālruņa funkcija Scroll assistant, tālrunis nodod tastatūras skārienvirsmu lietotnei BBKB.</string>
+    <string name="touch_surface_builtin_intro">Kamēr ir ieslēgta tālruņa funkcija Scroll assistant, tālrunis nodod tastatūras skārienvirsmu lietotnei BBKB</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant pārņem dubultskārienu uz taustiņiem, tāpēc BBKB to nekad nesaņem</string>
     <string name="touch_surface_cursor_assistant_title">Izslēgt Cursor assistant</string>
     <string name="touch_surface_grant_access">Piešķirt piekļuvi</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku iestatīšana</string>
     <string name="touch_surface_shizuku_guide_steps">1. Ieslēdziet „Izstrādātājiem paredzētas opcijas“ un pēc tam „Bezvadu atkļūdošana“.\n2. Startējiet Shizuku pašā lietotnē vai ar root tiesībām.\n3. Atgriezieties šeit un pieskarieties „Piešķirt piekļuvi“.</string>
     <string name="touch_surface_shizuku_intro">Shizuku ir bezmaksas lietotne, kas ļauj BBKB tieši nolasīt skārienvirsmu. BBKB to pārņem tikai tad, kad tastatūra ir atvērta; pārējā laikā tā darbojas tāpat kā parasti.</string>
-    <string name="touch_surface_shizuku_mediatek">Šajā tālrunī izmantojiet Shizuku 13.5.4: versija 13.6.0 tālruņos ar MediaTek mikroshēmām nedarbojas pilnvērtīgi.</string>
+    <string name="touch_surface_shizuku_mediatek">Šajā tālrunī izmantojiet Shizuku 13.5.4: versija 13.6.0 tālruņos ar MediaTek mikroshēmām nedarbojas pilnvērtīgi</string>
     <string name="touch_surface_shizuku_reboot">Shizuku apstājas ikreiz, kad tālrunis tiek restartēts. Pēc katras restartēšanas startējiet to vēlreiz; statuss augstāk parāda, kad tā nedarbojas.</string>
     <string name="touch_surface_shizuku_state_denied">Darbojas, bet BBKB piekļuve tika atteikta</string>
     <string name="touch_surface_shizuku_state_granted">Darbojas un BBKB ir piekļuve</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Nav pieejams šajā tālrunī</string>
     <string name="pref_show_pkb_modifier_status_icon">Rādīt modifikatoru statusa ikonu</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Izmantojot fizisko tastatūru, rādīt Shift/Alt modifikatora indikatoru statusa joslā</string>
-    <string name="settings_pred_accounts_permission_summary">Piešķiriet kontu atļauju, lai rakstīšanas laikā tiktu ieteiktas e-pasta adreses.</string>
+    <string name="settings_pred_accounts_permission_summary">Piešķiriet kontu atļauju, lai rakstīšanas laikā tiktu ieteiktas e-pasta adreses</string>
     <string name="settings_pred_accounts_permission_title">Nepieciešama kontu atļauja</string>
     <string name="settings_pred_block_offensive_summary">Slēpt potenciāli aizskarošus vārdus, diktējot ar balsi</string>
     <string name="settings_pred_block_offensive_title">Bloķēt aizskarošus vārdus</string>
-    <string name="settings_pred_contacts_permission_summary">Piešķiriet kontaktpersonu atļauju, lai rakstīšanas laikā tiktu ieteikti kontaktpersonu vārdi un e-pasta adreses.</string>
+    <string name="settings_pred_contacts_permission_summary">Piešķiriet kontaktpersonu atļauju, lai rakstīšanas laikā tiktu ieteikti kontaktpersonu vārdi un e-pasta adreses</string>
     <string name="settings_pred_contacts_permission_title">Nepieciešama kontaktpersonu atļauja</string>
     <string name="settings_pred_contacts_summary_disabled">Nepieciešama kontaktpersonu atļauja</string>
     <string name="settings_pred_contacts_summary_enabled">Iekļaut kontaktpersonu vārdus ieteikumos</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Piešķiriet kontaktpersonu atļauju, lai izmantotu šo funkciju</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktpersonu vārdi tiks atpazīti kā derīgi vārdi</string>
     <string name="settings_spellcheck_use_contacts_title">Izmantot kontaktpersonas pareizrakstības pārbaudei</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Piešķiriet kontaktpersonu atļauju, lai pareizrakstības pārbaudē kontaktpersonu vārdi tiktu atpazīti kā derīgi vārdi</string>
     <string name="settings_spellcheck_accept_learned_title">Pieņemt apgūtos vārdus</string>
     <string name="settings_spellcheck_accept_learned_summary">No jūsu rakstītā apgūtie vārdi tiek uzskatīti par pareizi uzrakstītiem</string>
     <string name="pref_alt_double_tap_lock">Iespējot Alt dubultklikšķa fiksēšanu</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Iespējot Ctrl dubultklikšķa fiksēšanu</string>
     <string name="pref_ctrl_double_tap_lock_summary">Divreiz noklikšķinot uz Ctrl, tas tiks fiksēts. Noklikšķinot uz Ctrl vēlreiz, tas tiks izslēgts.</string>
     <string name="pref_override_device_meta_state">Ignorēt ierīces meta stāvokli</string>
-    <string name="pref_override_device_meta_state_summary">Iespējot fiksējamus modifikatorus (Shift/Alt fiksēšanu) fiziskajās tastatūrās neatkarīgi no ierīces KCM konfigurācijas.</string>
+    <string name="pref_override_device_meta_state_summary">Iespējot fiksējamus modifikatorus (Shift/Alt fiksēšanu) fiziskajās tastatūrās neatkarīgi no ierīces KCM konfigurācijas</string>
     <string name="pref_shift_double_tap_lock">Iespējot Shift dubultklikšķa fiksēšanu</string>
     <string name="pref_shift_double_tap_lock_summary">Divreiz noklikšķinot uz Shift, tas tiks fiksēts. Noklikšķinot uz Shift vēlreiz, tas tiks izslēgts.</string>
     <string name="prefs_key_longpress_delay_summary">Laiks, cik ilgi turēt taustiņu, līdz parādās sekundārās rakstzīmes</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Automātiskās aizpildes notikumu paziņojumi</string>
     <string name="pref_accessibility_service_disabled">Pieejamības pakalpojums atspējots</string>
     <string name="pref_accessibility_service_enabled">Pieejamības pakalpojums iespējots</string>
-    <string name="pref_emoji_search_pkb_summary">Kad emocijzīmju panelis ir atvērts, meklējiet ar tastatūru.</string>
+    <string name="pref_emoji_search_pkb_summary">Kad emocijzīmju panelis ir atvērts, meklējiet ar tastatūru</string>
     <string name="pref_emoji_search_title">Ieslēgt emocijzīmju meklēšanu</string>
-    <string name="pref_emoji_search_vkb_summary">Filtrēt emocijzīmes pēc pašreizējā neapstiprinātā (pasvītrotā) teksta.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Atlasītā emocijzīme tiek ievietota aiz ierakstītā teksta.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Atlasītā emocijzīme aizstāj ierakstīto tekstu.</string>
+    <string name="pref_emoji_search_vkb_summary">Filtrēt emocijzīmes pēc pašreizējā neapstiprinātā (pasvītrotā) teksta</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Atlasītā emocijzīme tiek ievietota aiz ierakstītā teksta</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Atlasītā emocijzīme aizstāj ierakstīto tekstu</string>
     <string name="pref_emoji_search_replace_text_title">Aizstāt tekstu ar emocijzīmi</string>
     <string name="pref_key_interceptor_enabled">Iespējot īpašo taustiņu atbalstu</string>
     <string name="pref_key_interceptor_enabled_summary">Izmantot pieejamības pakalpojumu, lai tvertu emocijzīmju, SYM un balss taustiņus</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Datu pārvaldība</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Pielāgotas makrokomandas</string>
+    <string name="settings_custom_macros_intro" formatted="false">Definējiet savus %x vietturus izmantošanai teksta saīsnēs</string>
     <string name="settings_customize_menu_hidden_header">Netiek rādīts uz tastatūras</string>
     <string name="settings_customize_menu_instructions">Pieskarieties saīsnei un turiet to, pēc tam velciet, lai mainītu secību. Pirmās četras tiek rādītas tastatūras ievades izvēlnē.</string>
     <string name="settings_customize_menu_summary">Izvēlēties un pārkārtot ievades izvēlnes saīsnes</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Ātrās frāzes</string>
     <string name="settings_screen_type_by_swiping">Rakstīšana velkot</string>
     <string name="settings_screen_type_by_swiping_summary">Rakstiet ātri, nepaceļot pirkstu no tastatūras</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Rakstīšana velkot jūsu valodā nav pieejama.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Rakstīšana velkot jūsu valodā nav pieejama</string>
     <string name="settings_search_hint">Meklēt iestatījumos</string>
     <string name="settings_search_no_results">Iestatījumi nav atrasti</string>
     <string name="settings_shake_fallback_title">Rezerves darbība</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Tastatūras ierīce: %1$s</string>
     <string name="device_config_import_matches_build">Būvējuma ierīce: %1$s</string>
     <string name="device_config_import_matches_brand">Zīmols: %1$s</string>
-    <string name="device_config_import_matches_nothing">Šajā failā nav norādīta neviena ierīce, kurai to piemērot, tāpēc tas nekad netiktu lietots.</string>
+    <string name="device_config_import_matches_nothing">Šajā failā nav norādīta neviena ierīce, kurai to piemērot, tāpēc tas nekad netiktu lietots</string>
     <string name="device_config_import_type">Ierīces tips: %1$s</string>
     <string name="device_config_import_keys">%1$d taustiņu kartējumi</string>
     <string name="device_config_import_keypad_layout">Tastatūras izkārtojums: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Šī versija ir pārāk veca, lai izlasītu atjauninājumu sarakstu. Lūdzu, atjauniniet manuāli.</string>
     <string name="settings_update_from_cache">Parādīts no pēdējās saglabātās pārbaudes</string>
     <string name="settings_update_background_check_title">Automātiski pārbaudīt atjauninājumus</string>
-    <string name="settings_update_background_check_summary">Saņemsiet paziņojumu, kad lejupielādei būs pieejama jauna versija.</string>
+    <string name="settings_update_background_check_summary">Saņemsiet paziņojumu, kad lejupielādei būs pieejama jauna versija</string>
     <string name="settings_update_notification_text">Versija %1$s ir gatava lejupielādei</string>
     <string name="settings_update_unknown_sources_message">Android ir jāatļauj BBKB instalēt lietotnes. Iespējojiet instalēšanu no šā avota un pēc tam vēlreiz nospiediet Instalēt.</string>
     <string name="settings_update_open_settings">Atvērt iestatījumus</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Meklēt vārdnīcas</string>
     <string name="language_packs_load_ldb">Ielādēt LDB failu</string>
     <string name="language_packs_variant_summary">Tiek ielādēts %1$s vietā</string>
-    <string name="language_packs_not_on_summary">Pieskarieties, lai izveidotu jaunu tastatūru: %1$s.</string>
+    <string name="language_packs_not_on_summary">Pieskarieties, lai izveidotu jaunu tastatūru: %1$s</string>
     <string name="language_packs_turned_on">%1$s ir ieslēgta. Pārslēdzieties uz to valodu pārslēgā.</string>
-    <string name="language_packs_turn_on_in_settings">Ieslēdziet %1$s sarakstā un atgriezieties.</string>
+    <string name="language_packs_turn_on_in_settings">Ieslēdziet %1$s sarakstā un atgriezieties</string>
     <string name="language_packs_installed_and_on">Instalēta %1$s. Tā ir ieslēgta: pārslēdzieties uz to valodu pārslēgā.</string>
     <string name="language_packs_installed_turn_on">Instalēta %1$s. Pieskarieties rindai, lai ieslēgtu to tastatūrā.</string>
+    <string name="language_packs_installed_no_layout">Instalēta %1$s, bet šai tastatūrai vēl nav izkārtojuma tās rakstībai, tāpēc to nevar atlasīt</string>
     <string name="language_packs_error_offline">Nav savienojuma</string>
     <string name="language_packs_error_network">Neizdevās. Mēģiniet vēlreiz.</string>
     <string name="language_packs_error_verification">Fails neatbilda katalogam, tāpēc nekas netika instalēts</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Saglabāts: %1$s</string>
     <string name="backup_restore_dialog_device">Ierīce: %1$s</string>
     <string name="backup_restore_not_in_file">Nav šajā failā</string>
-    <string name="backup_restore_dialog_note">Iestatījumi, izkārtojumi un makrokomandas tiek aizstāti; vārdi tiek pievienoti šajā tālrunī esošajiem.</string>
+    <string name="backup_restore_dialog_note">Iestatījumi, izkārtojumi un makrokomandas tiek aizstāti; vārdi tiek pievienoti šajā tālrunī esošajiem</string>
     <string name="backup_restore_dialog_confirm">Atjaunot</string>
     <string name="backup_restored">Dublējumkopija atjaunota</string>
     <string name="backup_restored_words_pending">Iemācītie vārdi tiks pievienoti, tiklīdz tastatūra tiks izmantota</string>

@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">取得したキー配置を&lt;ckb-key-grid&gt;スニペットとしてアプリのファイルに書き出し、端末の設定に貼り付けられるようにします。先にキーボードを一度開いて取得させてください。</string>
     <string name="ckb_gestures_export_title">CKBの配置をエクスポート</string>
     <string name="ckb_gestures_export_written">%s に書き込みました</string>
-    <string name="ckb_gestures_reserved_note">上へのスワイプ(指の下にある候補を確定)は予約されています。</string>
+    <string name="ckb_gestures_reserved_note">上へのスワイプ(指の下にある候補を確定)は予約されています</string>
     <string name="ckb_gestures_screen_title">CKBジェスチャー</string>
     <string name="settings_gesture_accent_max_speed_summary">アクセント切り替えの最大速度倍率</string>
     <string name="settings_gesture_accent_max_speed_title">スクロールによるアクセント切り替えの最大速度倍率</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">動的学習を有効にする</string>
     <string name="settings_dict_learned_words_summary">入力から学習した単語を管理します</string>
     <string name="settings_dict_learned_words_title">学習した単語</string>
+    <string name="settings_dict_add_to_dictionary_note">辞書に追加した単語は入力中に候補として表示され、スペルミスとして扱われません</string>
     <string name="settings_dict_text_shortcuts_summary">フレーズに展開されるショートカットを作成します</string>
     <string name="settings_dict_text_shortcuts_title">テキストショートカット</string>
     <string name="settings_dict_user_dictionary_summary">個人用の単語を追加、編集します</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">端末の入力構成を選択またはインポートします</string>
     <string name="settings_device_configuration_title">端末の構成</string>
     <string name="touch_surface_builtin_category">端末内蔵</string>
-    <string name="touch_surface_builtin_intro">Scroll assistant がオンの間、端末はキーボードのタッチセンサーの入力を BBKB に渡します。</string>
+    <string name="touch_surface_builtin_intro">Scroll assistant がオンの間、端末はキーボードのタッチセンサーの入力を BBKB に渡します</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant がキーのダブルタップを横取りするため、BBKB には届きません</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant をオフにする</string>
     <string name="touch_surface_grant_access">アクセスを許可</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku のセットアップ</string>
     <string name="touch_surface_shizuku_guide_steps">1. 開発者向けオプションをオンにしてから、ワイヤレス デバッグをオンにします。\n2. Shizuku アプリから、または root 権限で Shizuku を起動します。\n3. この画面に戻り、「アクセスを許可」をタップします。</string>
     <string name="touch_surface_shizuku_intro">Shizuku は、BBKB がタッチセンサーを直接読み取れるようにする無料アプリです。BBKB がタッチセンサーを引き継ぐのはキーボードが開いている間だけで、それ以外のときは通常どおり動作します。</string>
-    <string name="touch_surface_shizuku_mediatek">この端末では Shizuku 13.5.4 を使用してください。バージョン 13.6.0 は MediaTek 搭載端末では完全には動作しません。</string>
+    <string name="touch_surface_shizuku_mediatek">この端末では Shizuku 13.5.4 を使用してください。バージョン 13.6.0 は MediaTek 搭載端末では完全には動作しません</string>
     <string name="touch_surface_shizuku_reboot">Shizuku は端末を再起動するたびに停止します。再起動のたびに Shizuku を起動し直してください。実行されていないときは上の状態に表示されます。</string>
     <string name="touch_surface_shizuku_state_denied">実行中ですが、BBKB のアクセスが拒否されました</string>
     <string name="touch_surface_shizuku_state_granted">実行中で、BBKB にアクセス権があります</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">この端末では利用できません</string>
     <string name="pref_show_pkb_modifier_status_icon">修飾キーの状態アイコンを表示</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">物理キーボードの使用中にShift/Altの状態をステータスバーに表示します</string>
-    <string name="settings_pred_accounts_permission_summary">入力中にメールアドレスを候補に表示するには、アカウントの権限を許可してください。</string>
+    <string name="settings_pred_accounts_permission_summary">入力中にメールアドレスを候補に表示するには、アカウントの権限を許可してください</string>
     <string name="settings_pred_accounts_permission_title">アカウントの権限が必要です</string>
     <string name="settings_pred_block_offensive_summary">音声入力で不適切な可能性のある単語を伏せ字にします</string>
     <string name="settings_pred_block_offensive_title">不適切な単語をブロック</string>
-    <string name="settings_pred_contacts_permission_summary">入力中に連絡先の名前やメールアドレスを候補に表示するには、連絡先の権限を許可してください。</string>
+    <string name="settings_pred_contacts_permission_summary">入力中に連絡先の名前やメールアドレスを候補に表示するには、連絡先の権限を許可してください</string>
     <string name="settings_pred_contacts_permission_title">連絡先の権限が必要です</string>
     <string name="settings_pred_contacts_summary_disabled">連絡先の権限が必要です</string>
     <string name="settings_pred_contacts_summary_enabled">連絡先の名前を候補に含めます</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">この機能を使用するには連絡先の権限を許可してください</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">連絡先の名前が正しい単語として認識されます</string>
     <string name="settings_spellcheck_use_contacts_title">スペルチェックに連絡先を使用</string>
+    <string name="settings_spellcheck_contacts_permission_summary">スペルチェックで連絡先の名前を正しい単語として認識するには、連絡先の権限を許可してください</string>
     <string name="settings_spellcheck_accept_learned_title">学習した単語を受け入れる</string>
     <string name="settings_spellcheck_accept_learned_summary">入力から学習した単語を正しいスペルとして扱います</string>
     <string name="pref_alt_double_tap_lock">Altのダブルクリックロックを有効にする</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrlのダブルクリックロックを有効にする</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrlをダブルクリックするとオンで固定されます。もう一度Ctrlを押すと解除されます。</string>
     <string name="pref_override_device_meta_state">端末のメタ状態を上書き</string>
-    <string name="pref_override_device_meta_state_summary">端末のKCM設定に関係なく、物理キーボードで固定修飾キー(Shift/Altロック)を有効にします。</string>
+    <string name="pref_override_device_meta_state_summary">端末のKCM設定に関係なく、物理キーボードで固定修飾キー(Shift/Altロック)を有効にします</string>
     <string name="pref_shift_double_tap_lock">Shiftのダブルクリックロックを有効にする</string>
     <string name="pref_shift_double_tap_lock_summary">Shiftをダブルクリックするとオンで固定されます。もう一度Shiftを押すと解除されます。</string>
     <string name="prefs_key_longpress_delay_summary">副次的な文字が表示されるまでのキー長押し時間</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">自動入力イベントのトースト</string>
     <string name="pref_accessibility_service_disabled">ユーザー補助サービスは無効です</string>
     <string name="pref_accessibility_service_enabled">ユーザー補助サービスは有効です</string>
-    <string name="pref_emoji_search_pkb_summary">絵文字ボードが開いているときは、キーボードで検索します。</string>
+    <string name="pref_emoji_search_pkb_summary">絵文字ボードが開いているときは、キーボードで検索します</string>
     <string name="pref_emoji_search_title">絵文字検索を有効にする</string>
-    <string name="pref_emoji_search_vkb_summary">現在の未確定（下線付き）のテキストで絵文字を絞り込みます。</string>
-    <string name="pref_emoji_search_replace_text_summary_off">絵文字を選択すると、入力したテキストの後ろに挿入されます。</string>
-    <string name="pref_emoji_search_replace_text_summary_on">絵文字を選択すると、入力したテキストが置き換えられます。</string>
+    <string name="pref_emoji_search_vkb_summary">現在の未確定（下線付き）のテキストで絵文字を絞り込みます</string>
+    <string name="pref_emoji_search_replace_text_summary_off">絵文字を選択すると、入力したテキストの後ろに挿入されます</string>
+    <string name="pref_emoji_search_replace_text_summary_on">絵文字を選択すると、入力したテキストが置き換えられます</string>
     <string name="pref_emoji_search_replace_text_title">テキストを絵文字に置き換える</string>
     <string name="pref_key_interceptor_enabled">特殊キーのサポートを有効にする</string>
     <string name="pref_key_interceptor_enabled_summary">ユーザー補助サービスを使用して絵文字、SYM、音声の各キーを捕捉します</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">データの管理</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">カスタムマクロ</string>
+    <string name="settings_custom_macros_intro" formatted="false">テキストショートカットで使う独自の%xプレースホルダを定義します</string>
     <string name="settings_customize_menu_hidden_header">キーボードに表示しない</string>
     <string name="settings_customize_menu_instructions">ショートカットを長押ししてドラッグすると並べ替えられます。最初の4つがキーボードの入力メニューに表示されます。</string>
     <string name="settings_customize_menu_summary">入力メニューのショートカットを選んで並べ替えます</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">クイックフレーズ</string>
     <string name="settings_screen_type_by_swiping">スワイプして入力</string>
     <string name="settings_screen_type_by_swiping_summary">キーボードから指を離さずにすばやく入力できます</string>
-    <string name="settings_screen_type_by_swiping_unavailable">この言語では、スワイプによる入力はサポートされていません。</string>
+    <string name="settings_screen_type_by_swiping_unavailable">この言語では、スワイプによる入力はサポートされていません</string>
     <string name="settings_search_hint">設定を検索</string>
     <string name="settings_search_no_results">設定が見つかりません</string>
     <string name="settings_shake_fallback_title">フォールバック動作</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">キーボードデバイス: %1$s</string>
     <string name="device_config_import_matches_build">ビルドの端末名: %1$s</string>
     <string name="device_config_import_matches_brand">ブランド: %1$s</string>
-    <string name="device_config_import_matches_nothing">このファイルには照合する端末が指定されていないため、適用されることはありません。</string>
+    <string name="device_config_import_matches_nothing">このファイルには照合する端末が指定されていないため、適用されることはありません</string>
     <string name="device_config_import_type">端末の種類: %1$s</string>
     <string name="device_config_import_keys">%1$d 件のキー割り当て</string>
     <string name="device_config_import_keypad_layout">キーパッドのレイアウト: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">このバージョンは古すぎてアップデート一覧を読めません。手動で更新してください。</string>
     <string name="settings_update_from_cache">最後に保存した確認結果を表示しています</string>
     <string name="settings_update_background_check_title">更新を自動的に確認</string>
-    <string name="settings_update_background_check_summary">新しいバージョンをダウンロードできるようになると通知します。</string>
+    <string name="settings_update_background_check_summary">新しいバージョンをダウンロードできるようになると通知します</string>
     <string name="settings_update_notification_text">バージョン %1$s をダウンロードできます</string>
     <string name="settings_update_unknown_sources_message">アプリをインストールするには Android の許可が必要です。このソースからのインストールを許可してから、もう一度インストールを押してください。</string>
     <string name="settings_update_open_settings">設定を開く</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">辞書を確認</string>
     <string name="language_packs_load_ldb">LDBファイルを読み込む</string>
     <string name="language_packs_variant_summary">%1$sの代わりに読み込まれます</string>
-    <string name="language_packs_not_on_summary">タップして新しい%1$sキーボードを作成します。</string>
+    <string name="language_packs_not_on_summary">タップして新しい%1$sキーボードを作成します</string>
     <string name="language_packs_turned_on">%1$sが有効になりました。言語切り替えから切り替えられます。</string>
-    <string name="language_packs_turn_on_in_settings">リストで%1$sを有効にしてから、戻ってください。</string>
+    <string name="language_packs_turn_on_in_settings">リストで%1$sを有効にしてから、戻ってください</string>
     <string name="language_packs_installed_and_on">%1$sをインストールしました。有効になっています。言語切り替えから切り替えられます。</string>
     <string name="language_packs_installed_turn_on">%1$sをインストールしました。行をタップしてキーボードで有効にしてください。</string>
+    <string name="language_packs_installed_no_layout">%1$sをインストールしましたが、このキーボードにはまだその文字体系のレイアウトがないため、選択できません</string>
     <string name="language_packs_error_offline">接続がありません</string>
     <string name="language_packs_error_network">うまくいきませんでした。再試行してください。</string>
     <string name="language_packs_error_verification">ファイルがカタログと一致しなかったため、何もインストールされませんでした</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">保存日時: %1$s</string>
     <string name="backup_restore_dialog_device">端末: %1$s</string>
     <string name="backup_restore_not_in_file">このファイルには含まれていません</string>
-    <string name="backup_restore_dialog_note">設定、レイアウト、マクロは置き換えられ、単語はこの端末の既存のデータに追加されます。</string>
+    <string name="backup_restore_dialog_note">設定、レイアウト、マクロは置き換えられ、単語はこの端末の既存のデータに追加されます</string>
     <string name="backup_restore_dialog_confirm">復元</string>
     <string name="backup_restored">バックアップを復元しました</string>
     <string name="backup_restored_words_pending">学習した単語は、キーボードの使用を開始すると追加されます</string>

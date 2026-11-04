@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">Бүртгэсэн товчны торыг &lt;ckb-key-grid&gt; хэсэг болгон аппын файлд бичиж, төхөөрөмжийн тохиргоонд буулгана. Бүртгэж авах боломжтой болгохын тулд эхлээд гараа нэг нээнэ үү.</string>
     <string name="ckb_gestures_export_title">CKB геометрийг гаргах</string>
     <string name="ckb_gestures_export_written">%s бичлээ</string>
-    <string name="ckb_gestures_reserved_note">Дээш шудрах (хуруун доорх саналыг оруулах) үйлдэл нь нөөцлөгдсөн.</string>
+    <string name="ckb_gestures_reserved_note">Дээш шудрах (хуруун доорх саналыг оруулах) үйлдэл нь нөөцлөгдсөн</string>
     <string name="ckb_gestures_screen_title">CKB зангаа</string>
     <string name="settings_gesture_accent_max_speed_summary">Аялгууны тэмдэг солиход хэрэглэх хурдны дээд үржүүлэгч</string>
     <string name="settings_gesture_accent_max_speed_title">Аялгууны тэмдэг гүйлгэх хурдны дээд үржүүлэгч</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">Динамик сургалтыг идэвхжүүлэх</string>
     <string name="settings_dict_learned_words_summary">Таны бичсэнээс сурсан үгсийг удирдах</string>
     <string name="settings_dict_learned_words_title">Сурсан үгс</string>
+    <string name="settings_dict_add_to_dictionary_note">Таны толь бичигт нэмсэн үгсийг бичих үед санал болгох ба алдаатай гэж тэмдэглэхгүй</string>
     <string name="settings_dict_text_shortcuts_summary">Хэллэг болон дэлгэрдэг товчлол үүсгэх</string>
     <string name="settings_dict_text_shortcuts_title">Текстийн товчлол</string>
     <string name="settings_dict_user_dictionary_summary">Хувийн үгээ нэмж, засах</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">Төхөөрөмжийн оролтын тохиргоог сонгох эсвэл импортлох</string>
     <string name="settings_device_configuration_title">Төхөөрөмжийн тохиргоо</string>
     <string name="touch_surface_builtin_category">Суурилуулсан дэмжлэг</string>
-    <string name="touch_surface_builtin_intro">Scroll assistant асаалттай үед утас гарын мэдрэгчит гадаргуугийн хүрэлтийг BBKB-д дамжуулна.</string>
+    <string name="touch_surface_builtin_intro">Scroll assistant асаалттай үед утас гарын мэдрэгчит гадаргуугийн хүрэлтийг BBKB-д дамжуулна</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant товчлуурууд дээрх давхар товшилтыг өөртөө авдаг тул BBKB үүнийг хэзээ ч хүлээж авдаггүй</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant-ыг унтраах</string>
     <string name="touch_surface_grant_access">Хандах эрх олгох</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku тохируулах</string>
     <string name="touch_surface_shizuku_guide_steps">1. Хөгжүүлэгчийн сонголтыг, дараа нь Утасгүй дебагийг асаана уу.\n2. Shizuku-г өөрийнх нь аппаас эсвэл root эрхээр эхлүүлнэ үү.\n3. Энд буцаж ирээд «Хандах эрх олгох» дээр товшино уу.</string>
     <string name="touch_surface_shizuku_intro">Shizuku бол BBKB-д мэдрэгчит гадаргууг шууд унших боломж олгодог үнэгүй апп юм. BBKB үүнийг зөвхөн гар нээлттэй үед өөртөө авна; бусад үед гадаргуу ердийнхөөрөө ажиллана.</string>
-    <string name="touch_surface_shizuku_mediatek">Энэ утсанд Shizuku 13.5.4 хувилбарыг ашиглана уу: 13.6.0 хувилбар MediaTek утсан дээр бүрэн ажилладаггүй.</string>
+    <string name="touch_surface_shizuku_mediatek">Энэ утсанд Shizuku 13.5.4 хувилбарыг ашиглана уу: 13.6.0 хувилбар MediaTek утсан дээр бүрэн ажилладаггүй</string>
     <string name="touch_surface_shizuku_reboot">Утсыг дахин эхлүүлэх бүрт Shizuku зогсдог. Дахин эхлүүлэх бүрийн дараа Shizuku-г дахин асаана уу; ажиллаагүй үед дээрх төлөвт харагдана.</string>
     <string name="touch_surface_shizuku_state_denied">Ажиллаж байгаа ч BBKB-ийн хүсэлтийг татгалзсан</string>
     <string name="touch_surface_shizuku_state_granted">Ажиллаж байгаа бөгөөд BBKB-д хандах эрх бий</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">Энэ утсанд боломжгүй</string>
     <string name="pref_show_pkb_modifier_status_icon">Өөрчлөгч товчны төлөвийн дүрс харуулах</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Биет гар ашиглах үед Shift/Alt товчны заагчийг төлөвийн мөрөнд харуулах</string>
-    <string name="settings_pred_accounts_permission_summary">Бичих үед имэйл хаяг санал болгохын тулд бүртгэлийн зөвшөөрөл олгоно уу.</string>
+    <string name="settings_pred_accounts_permission_summary">Бичих үед имэйл хаяг санал болгохын тулд бүртгэлийн зөвшөөрөл олгоно уу</string>
     <string name="settings_pred_accounts_permission_title">Бүртгэлийн зөвшөөрөл шаардлагатай</string>
     <string name="settings_pred_block_offensive_summary">Дуугаар бичүүлэхэд доромжлол агуулж болзошгүй үгсийг нуух</string>
     <string name="settings_pred_block_offensive_title">Доромжилсон үг хориглох</string>
-    <string name="settings_pred_contacts_permission_summary">Бичих үед харилцагчийн нэр, имэйл хаяг санал болгохын тулд харилцагчийн зөвшөөрөл олгоно уу.</string>
+    <string name="settings_pred_contacts_permission_summary">Бичих үед харилцагчийн нэр, имэйл хаяг санал болгохын тулд харилцагчийн зөвшөөрөл олгоно уу</string>
     <string name="settings_pred_contacts_permission_title">Харилцагчийн зөвшөөрөл шаардлагатай</string>
     <string name="settings_pred_contacts_summary_disabled">Харилцагчийн зөвшөөрөл шаардлагатай</string>
     <string name="settings_pred_contacts_summary_enabled">Харилцагчийн нэрийг саналд оруулах</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">Энэ боломжийг ашиглахын тулд харилцагчийн зөвшөөрөл олгоно уу</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">Харилцагчийн нэрийг зөв үг гэж тооцно</string>
     <string name="settings_spellcheck_use_contacts_title">Алдаа шалгахад харилцагчдыг ашиглах</string>
+    <string name="settings_spellcheck_contacts_permission_summary">Алдаа шалгахад харилцагчийн нэрийг зөв үг гэж танихын тулд харилцагчийн зөвшөөрөл олгоно уу</string>
     <string name="settings_spellcheck_accept_learned_title">Сурсан үгсийг хүлээн авах</string>
     <string name="settings_spellcheck_accept_learned_summary">Таны бичвэрээс сурсан үгсийг зөв бичсэн гэж тооцно</string>
     <string name="pref_alt_double_tap_lock">Alt давхар товшилтын түгжээг идэвхжүүлэх</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrl давхар товшилтын түгжээг идэвхжүүлэх</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl-г давхар товшвол түгжигдэнэ. Ctrl-г дахин товшвол унтарна.</string>
     <string name="pref_override_device_meta_state">Төхөөрөмжийн мета төлөвийг дарж бичих</string>
-    <string name="pref_override_device_meta_state_summary">Төхөөрөмжийн KCM тохиргооноос үл хамааран биет гар дээр наалдамхай өөрчлөгч товч (shift/alt түгжээ)-ийг идэвхжүүлэх.</string>
+    <string name="pref_override_device_meta_state_summary">Төхөөрөмжийн KCM тохиргооноос үл хамааран биет гар дээр наалдамхай өөрчлөгч товч (shift/alt түгжээ)-ийг идэвхжүүлэх</string>
     <string name="pref_shift_double_tap_lock">Shift давхар товшилтын түгжээг идэвхжүүлэх</string>
     <string name="pref_shift_double_tap_lock_summary">Shift-г давхар товшвол түгжигдэнэ. Shift-г дахин товшвол унтарна.</string>
     <string name="prefs_key_longpress_delay_summary">Нэмэлт тэмдэгт гарч ирэхээс өмнө товчийг барих хугацаа</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">Автомат бөглөлтийн үйл явдлын мэдэгдэл</string>
     <string name="pref_accessibility_service_disabled">Хандалтын үйлчилгээ идэвхгүй</string>
     <string name="pref_accessibility_service_enabled">Хандалтын үйлчилгээ идэвхтэй</string>
-    <string name="pref_emoji_search_pkb_summary">Инээмсэглэлийн самбар нээлттэй үед хайхдаа гарыг ашиглана.</string>
+    <string name="pref_emoji_search_pkb_summary">Инээмсэглэлийн самбар нээлттэй үед хайхдаа гарыг ашиглана</string>
     <string name="pref_emoji_search_title">Инээмсэглэл хайлтыг идэвхжүүлэх</string>
-    <string name="pref_emoji_search_vkb_summary">Инээмсэглэлийг одоогийн баталгаажаагүй (доогуур зураастай) текстээр шүүх.</string>
-    <string name="pref_emoji_search_replace_text_summary_off">Инээмсэглэл сонгоход бичсэн текстийн ард нэмэгдэнэ.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">Инээмсэглэл сонгоход бичсэн текстийг орлуулна.</string>
+    <string name="pref_emoji_search_vkb_summary">Инээмсэглэлийг одоогийн баталгаажаагүй (доогуур зураастай) текстээр шүүх</string>
+    <string name="pref_emoji_search_replace_text_summary_off">Инээмсэглэл сонгоход бичсэн текстийн ард нэмэгдэнэ</string>
+    <string name="pref_emoji_search_replace_text_summary_on">Инээмсэглэл сонгоход бичсэн текстийг орлуулна</string>
     <string name="pref_emoji_search_replace_text_title">Текстийг инээмсэглэлээр солих</string>
     <string name="pref_key_interceptor_enabled">Тусгай товчны дэмжлэгийг идэвхжүүлэх</string>
     <string name="pref_key_interceptor_enabled_summary">Инээмсэглэл, SYM, Дуу хоолойн товчийг барихад хандалтын үйлчилгээг ашиглах</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">Өгөгдөл удирдах</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">Захиалгат макро</string>
+    <string name="settings_custom_macros_intro" formatted="false">Текстийн товчлолд ашиглах өөрийн %x орлуулагчийг тодорхойлно уу</string>
     <string name="settings_customize_menu_hidden_header">Гар дээр харагдахгүй</string>
     <string name="settings_customize_menu_instructions">Товчлол дээр дараад барьж, чирч дарааллыг нь өөрчилнө. Эхний дөрөв нь гарын оролтын цэсэнд харагдана.</string>
     <string name="settings_customize_menu_summary">Оролтын цэсний товчлолыг сонгож, дараалуулах</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">Түргэн хэллэг</string>
     <string name="settings_screen_type_by_swiping">Шударч бичих</string>
     <string name="settings_screen_type_by_swiping_summary">Хуруугаа гараас салгалгүй хурдан бичих</string>
-    <string name="settings_screen_type_by_swiping_unavailable">Шударч бичих боломж таны хэлэнд байхгүй.</string>
+    <string name="settings_screen_type_by_swiping_unavailable">Шударч бичих боломж таны хэлэнд байхгүй</string>
     <string name="settings_search_hint">Тохиргоо хайх</string>
     <string name="settings_search_no_results">Тохиргоо олдсонгүй</string>
     <string name="settings_shake_fallback_title">Нөөц үйлдэл</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">Гарын төхөөрөмж: %1$s</string>
     <string name="device_config_import_matches_build">Хувилбарын төхөөрөмж: %1$s</string>
     <string name="device_config_import_matches_brand">Брэнд: %1$s</string>
-    <string name="device_config_import_matches_nothing">Энэ файлд тааруулах төхөөрөмж заагаагүй тул хэзээ ч хэрэглэгдэхгүй.</string>
+    <string name="device_config_import_matches_nothing">Энэ файлд тааруулах төхөөрөмж заагаагүй тул хэзээ ч хэрэглэгдэхгүй</string>
     <string name="device_config_import_type">Төхөөрөмжийн төрөл: %1$s</string>
     <string name="device_config_import_keys">%1$d товчны харгалзуулалт</string>
     <string name="device_config_import_keypad_layout">Гарын байрлал: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">Энэ хувилбар шинэчлэлийн жагсаалтыг уншихад хэт хуучин. Гараар шинэчилнэ үү.</string>
     <string name="settings_update_from_cache">Сүүлд хадгалсан шалгалтаас харуулж байна</string>
     <string name="settings_update_background_check_title">Шинэчлэлтийг автоматаар шалгах</string>
-    <string name="settings_update_background_check_summary">Шинэ хувилбар татахад бэлэн болоход мэдэгдэл авна.</string>
+    <string name="settings_update_background_check_summary">Шинэ хувилбар татахад бэлэн болоход мэдэгдэл авна</string>
     <string name="settings_update_notification_text">Хувилбар %1$s татахад бэлэн</string>
     <string name="settings_update_unknown_sources_message">Аппликейшн суулгахад Android нь BBKB-д зөвшөөрөл өгөх шаардлагатай. Энэ эх сурвалжаас суулгахыг зөвшөөрөөд Суулгах товчийг дахин дарна уу.</string>
     <string name="settings_update_open_settings">Тохиргоог нээх</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">Толь бичиг шалгах</string>
     <string name="language_packs_load_ldb">LDB файл ачаалах</string>
     <string name="language_packs_variant_summary">%1$s-ын оронд ачаалагдана</string>
-    <string name="language_packs_not_on_summary">Шинэ %1$s гар үүсгэхийн тулд товшино уу.</string>
+    <string name="language_packs_not_on_summary">Шинэ %1$s гар үүсгэхийн тулд товшино уу</string>
     <string name="language_packs_turned_on">%1$s асаалттай боллоо. Хэл сэлгэгчээс энэ рүү шилжинэ үү.</string>
-    <string name="language_packs_turn_on_in_settings">Жагсаалт дахь %1$s-ыг асааж, дараа нь буцаж ирнэ үү.</string>
+    <string name="language_packs_turn_on_in_settings">Жагсаалт дахь %1$s-ыг асааж, дараа нь буцаж ирнэ үү</string>
     <string name="language_packs_installed_and_on">%1$s суулгасан. Асаалттай байна: хэл сэлгэгчээс энэ рүү шилжинэ үү.</string>
     <string name="language_packs_installed_turn_on">%1$s суулгасан. Гар дээр асаахын тулд мөрийг товшино уу.</string>
+    <string name="language_packs_installed_no_layout">%1$s суулгасан ч энэ гарт түүний бичгийн загвар одоогоор алга тул сонгох боломжгүй</string>
     <string name="language_packs_error_offline">Холболт байхгүй</string>
     <string name="language_packs_error_network">Болсонгүй. Дахин оролдоно уу.</string>
     <string name="language_packs_error_verification">Файл каталогтой таарсангүй тул юу ч суугаагүй</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">Хадгалсан: %1$s</string>
     <string name="backup_restore_dialog_device">Төхөөрөмж: %1$s</string>
     <string name="backup_restore_not_in_file">Энэ файлд байхгүй</string>
-    <string name="backup_restore_dialog_note">Тохиргоо, байрлал болон макро солигдоно; үгс энэ утсанд байгаа өгөгдөл дээр нэмэгдэнэ.</string>
+    <string name="backup_restore_dialog_note">Тохиргоо, байрлал болон макро солигдоно; үгс энэ утсанд байгаа өгөгдөл дээр нэмэгдэнэ</string>
     <string name="backup_restore_dialog_confirm">Сэргээх</string>
     <string name="backup_restored">Нөөц хуулбарыг сэргээлээ</string>
     <string name="backup_restored_words_pending">Гарыг ашиглаж эхлэхэд сурсан үгс нэмэгдэнэ</string>

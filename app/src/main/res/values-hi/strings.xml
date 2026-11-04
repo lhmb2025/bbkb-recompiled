@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">कैप्चर किए गए कुंजी ग्रिड को &lt;ckb-key-grid&gt; स्निपेट के रूप में ऐप फ़ाइलों में लिखें, ताकि उसे डिवाइस कॉन्फ़िगरेशन में पेस्ट किया जा सके. पहले कीबोर्ड एक बार खोलें ताकि वह कैप्चर कर सके.</string>
     <string name="ckb_gestures_export_title">CKB ज्यामिति निर्यात करें</string>
     <string name="ckb_gestures_export_written">%s लिखा गया</string>
-    <string name="ckb_gestures_reserved_note">ऊपर स्वाइप करना (अपनी उंगली के नीचे वाला सुझाव लागू करना) आरक्षित है.</string>
+    <string name="ckb_gestures_reserved_note">ऊपर स्वाइप करना (अपनी उंगली के नीचे वाला सुझाव लागू करना) आरक्षित है</string>
     <string name="ckb_gestures_screen_title">CKB जेस्चर</string>
     <string name="settings_gesture_accent_max_speed_summary">उच्चारण चिह्न बदलने के लिए अधिकतम गति गुणक</string>
     <string name="settings_gesture_accent_max_speed_title">स्क्रॉल से उच्चारण बदलने का अधिकतम गति गुणक</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">डायनामिक लर्निंग चालू करें</string>
     <string name="settings_dict_learned_words_summary">आपकी टाइपिंग से सीखे गए शब्द प्रबंधित करें</string>
     <string name="settings_dict_learned_words_title">सीखे गए शब्द</string>
+    <string name="settings_dict_add_to_dictionary_note">आपकी डिक्शनरी में जोड़े गए शब्द टाइप करते समय सुझाए जाएंगे और उन्हें गलत वर्तनी के रूप में चिह्नित नहीं किया जाएगा</string>
     <string name="settings_dict_text_shortcuts_summary">ऐसे शॉर्टकट बनाएं जो वाक्यांशों में बदल जाएं</string>
     <string name="settings_dict_text_shortcuts_title">टेक्स्ट शॉर्टकट</string>
     <string name="settings_dict_user_dictionary_summary">निजी शब्द जोड़ें और संपादित करें</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">डिवाइस इनपुट कॉन्फ़िगरेशन चुनें या आयात करें</string>
     <string name="settings_device_configuration_title">डिवाइस कॉन्फ़िगरेशन</string>
     <string name="touch_surface_builtin_category">बिल्ट-इन</string>
-    <string name="touch_surface_builtin_intro">जब तक फ़ोन का Scroll assistant चालू रहता है, तब तक फ़ोन कीबोर्ड की स्पर्श सतह को BBKB तक पहुंचाता है।</string>
+    <string name="touch_surface_builtin_intro">जब तक फ़ोन का Scroll assistant चालू रहता है, तब तक फ़ोन कीबोर्ड की स्पर्श सतह को BBKB तक पहुंचाता है</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant कुंजियों पर डबल-टैप को अपने लिए ले लेता है, इसलिए वह BBKB तक कभी नहीं पहुंचता</string>
     <string name="touch_surface_cursor_assistant_title">Cursor assistant बंद करें</string>
     <string name="touch_surface_grant_access">ऐक्सेस दें</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">Shizuku सेट अप करें</string>
     <string name="touch_surface_shizuku_guide_steps">1. डेवलपर विकल्प चालू करें, फिर वायरलेस डीबगिंग।\n2. Shizuku को उसके ऐप से या रूट के ज़रिए शुरू करें।\n3. यहां वापस आएं और \"ऐक्सेस दें\" पर टैप करें।</string>
     <string name="touch_surface_shizuku_intro">Shizuku एक मुफ़्त ऐप है, जिसकी मदद से BBKB स्पर्श सतह को सीधे पढ़ सकता है। BBKB स्पर्श सतह को सिर्फ़ तब अपने नियंत्रण में लेता है जब कीबोर्ड खुला हो; बाकी समय वह फ़ोन में हमेशा की तरह काम करती है।</string>
-    <string name="touch_surface_shizuku_mediatek">इस फ़ोन पर Shizuku 13.5.4 का उपयोग करें: संस्करण 13.6.0 MediaTek फ़ोन पर पूरी तरह काम नहीं करता।</string>
+    <string name="touch_surface_shizuku_mediatek">इस फ़ोन पर Shizuku 13.5.4 का उपयोग करें: संस्करण 13.6.0 MediaTek फ़ोन पर पूरी तरह काम नहीं करता</string>
     <string name="touch_surface_shizuku_reboot">हर बार फ़ोन पुनरारंभ होने पर Shizuku रुक जाता है। हर पुनरारंभ के बाद इसे फिर से शुरू करें; यह न चल रहा हो तो ऊपर दी गई स्थिति से पता चल जाता है।</string>
     <string name="touch_surface_shizuku_state_denied">चल रहा है, लेकिन BBKB को ऐक्सेस देने से मना कर दिया गया</string>
     <string name="touch_surface_shizuku_state_granted">चल रहा है, और BBKB के पास ऐक्सेस है</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">इस फ़ोन पर उपलब्ध नहीं है</string>
     <string name="pref_show_pkb_modifier_status_icon">मॉडिफ़ायर स्थिति आइकन दिखाएं</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">भौतिक कीबोर्ड का उपयोग करते समय स्टेटस बार में Shift/Alt मॉडिफ़ायर संकेतक दिखाएं</string>
-    <string name="settings_pred_accounts_permission_summary">टाइप करते समय ईमेल पते सुझाने के लिए खाता अनुमति दें.</string>
+    <string name="settings_pred_accounts_permission_summary">टाइप करते समय ईमेल पते सुझाने के लिए खाता अनुमति दें</string>
     <string name="settings_pred_accounts_permission_title">खाता अनुमति आवश्यक</string>
     <string name="settings_pred_block_offensive_summary">बोलकर लिखते समय संभावित आपत्तिजनक शब्द छिपाएं</string>
     <string name="settings_pred_block_offensive_title">आपत्तिजनक शब्द ब्लॉक करें</string>
-    <string name="settings_pred_contacts_permission_summary">टाइप करते समय संपर्क नाम और ईमेल पते सुझाने के लिए संपर्क अनुमति दें.</string>
+    <string name="settings_pred_contacts_permission_summary">टाइप करते समय संपर्क नाम और ईमेल पते सुझाने के लिए संपर्क अनुमति दें</string>
     <string name="settings_pred_contacts_permission_title">संपर्क अनुमति आवश्यक</string>
     <string name="settings_pred_contacts_summary_disabled">संपर्क अनुमति आवश्यक</string>
     <string name="settings_pred_contacts_summary_enabled">सुझावों में संपर्क नाम शामिल करें</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">इस सुविधा का उपयोग करने के लिए संपर्क अनुमति दें</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">संपर्क नामों को मान्य शब्दों के रूप में पहचाना जाएगा</string>
     <string name="settings_spellcheck_use_contacts_title">वर्तनी जांच के लिए संपर्कों का उपयोग करें</string>
+    <string name="settings_spellcheck_contacts_permission_summary">वर्तनी जांच के दौरान संपर्क नामों को मान्य शब्दों के रूप में पहचानने के लिए संपर्क अनुमति दें</string>
     <string name="settings_spellcheck_accept_learned_title">सीखे गए शब्द स्वीकार करें</string>
     <string name="settings_spellcheck_accept_learned_summary">आपकी टाइपिंग से सीखे गए शब्दों को सही वर्तनी माना जाएगा</string>
     <string name="pref_alt_double_tap_lock">Alt डबल-क्लिक लॉक सक्षम करें</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">Ctrl डबल-क्लिक लॉक सक्षम करें</string>
     <string name="pref_ctrl_double_tap_lock_summary">Ctrl पर डबल-क्लिक करने से वह लॉक हो जाएगी. दोबारा Ctrl क्लिक करने पर वह बंद हो जाएगी.</string>
     <string name="pref_override_device_meta_state">डिवाइस मेटा स्थिति ओवरराइड करें</string>
-    <string name="pref_override_device_meta_state_summary">डिवाइस के KCM कॉन्फ़िगरेशन की परवाह किए बिना भौतिक कीबोर्ड पर स्टिकी मॉडिफ़ायर (shift/alt लॉक) सक्षम करें.</string>
+    <string name="pref_override_device_meta_state_summary">डिवाइस के KCM कॉन्फ़िगरेशन की परवाह किए बिना भौतिक कीबोर्ड पर स्टिकी मॉडिफ़ायर (shift/alt लॉक) सक्षम करें</string>
     <string name="pref_shift_double_tap_lock">Shift डबल-क्लिक लॉक सक्षम करें</string>
     <string name="pref_shift_double_tap_lock_summary">Shift पर डबल-क्लिक करने से वह लॉक हो जाएगी. दोबारा Shift क्लिक करने पर वह बंद हो जाएगी.</string>
     <string name="prefs_key_longpress_delay_summary">द्वितीयक वर्ण दिखने से पहले कुंजी दबाए रखने का समय</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">स्वतः भरण इवेंट टोस्ट</string>
     <string name="pref_accessibility_service_disabled">सुलभता सेवा अक्षम है</string>
     <string name="pref_accessibility_service_enabled">सुलभता सेवा सक्षम है</string>
-    <string name="pref_emoji_search_pkb_summary">जब ईमोजी बोर्ड खुला हो, खोजने के लिए कीबोर्ड का उपयोग करें।</string>
+    <string name="pref_emoji_search_pkb_summary">जब ईमोजी बोर्ड खुला हो, खोजने के लिए कीबोर्ड का उपयोग करें</string>
     <string name="pref_emoji_search_title">ईमोजी खोज चालू करें</string>
-    <string name="pref_emoji_search_vkb_summary">मौजूदा अपुष्ट (रेखांकित) टेक्स्ट से ईमोजी फ़िल्टर करें।</string>
-    <string name="pref_emoji_search_replace_text_summary_off">ईमोजी चुनने पर वह टाइप किए गए टेक्स्ट के बाद डाला जाता है.</string>
-    <string name="pref_emoji_search_replace_text_summary_on">ईमोजी चुनने पर वह टाइप किए गए टेक्स्ट की जगह ले लेता है.</string>
+    <string name="pref_emoji_search_vkb_summary">मौजूदा अपुष्ट (रेखांकित) टेक्स्ट से ईमोजी फ़िल्टर करें</string>
+    <string name="pref_emoji_search_replace_text_summary_off">ईमोजी चुनने पर वह टाइप किए गए टेक्स्ट के बाद डाला जाता है</string>
+    <string name="pref_emoji_search_replace_text_summary_on">ईमोजी चुनने पर वह टाइप किए गए टेक्स्ट की जगह ले लेता है</string>
     <string name="pref_emoji_search_replace_text_title">टेक्स्ट को ईमोजी से बदलें</string>
     <string name="pref_key_interceptor_enabled">विशेष कुंजी समर्थन सक्षम करें</string>
     <string name="pref_key_interceptor_enabled_summary">Emoji, SYM और Voice कुंजियों को कैप्चर करने के लिए सुलभता सेवा का उपयोग करें</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">डेटा प्रबंधित करें</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">कस्टम मैक्रो</string>
+    <string name="settings_custom_macros_intro" formatted="false">टेक्स्ट शॉर्टकट में इस्तेमाल के लिए अपने %x प्लेसहोल्डर तय करें</string>
     <string name="settings_customize_menu_hidden_header">कीबोर्ड पर नहीं दिखाया गया</string>
     <string name="settings_customize_menu_instructions">किसी शॉर्टकट को टच करके रखें, फिर क्रम बदलने के लिए खींचें. पहले चार कीबोर्ड के इनपुट मेनू पर दिखाई देते हैं.</string>
     <string name="settings_customize_menu_summary">इनपुट मेनू के शॉर्टकट चुनें और उनका क्रम बदलें</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">त्वरित वाक्यांश</string>
     <string name="settings_screen_type_by_swiping">स्वाइप करके टाइप करें</string>
     <string name="settings_screen_type_by_swiping_summary">कीबोर्ड से अपनी उंगली उठाए बिना तेज़ी से टाइप करें</string>
-    <string name="settings_screen_type_by_swiping_unavailable">स्वाइप करके टाइप करना आपकी भाषा में उपलब्ध नहीं है।</string>
+    <string name="settings_screen_type_by_swiping_unavailable">स्वाइप करके टाइप करना आपकी भाषा में उपलब्ध नहीं है</string>
     <string name="settings_search_hint">सेटिंग्स खोजें</string>
     <string name="settings_search_no_results">कोई सेटिंग नहीं मिली</string>
     <string name="settings_shake_fallback_title">फ़ॉलबैक क्रिया</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">कीबोर्ड डिवाइस: %1$s</string>
     <string name="device_config_import_matches_build">बिल्ड डिवाइस: %1$s</string>
     <string name="device_config_import_matches_brand">ब्रांड: %1$s</string>
-    <string name="device_config_import_matches_nothing">यह फ़ाइल मिलान के लिए किसी डिवाइस का नाम नहीं देती, इसलिए यह कभी लागू नहीं होगी.</string>
+    <string name="device_config_import_matches_nothing">यह फ़ाइल मिलान के लिए किसी डिवाइस का नाम नहीं देती, इसलिए यह कभी लागू नहीं होगी</string>
     <string name="device_config_import_type">डिवाइस प्रकार: %1$s</string>
     <string name="device_config_import_keys">%1$d कुंजी मैपिंग</string>
     <string name="device_config_import_keypad_layout">कीपैड लेआउट: %1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">यह संस्करण अपडेट सूची पढ़ने के लिए बहुत पुराना है। कृपया स्वयं अपडेट करें।</string>
     <string name="settings_update_from_cache">अंतिम सहेजी गई जाँच से दिखाया गया</string>
     <string name="settings_update_background_check_title">अपडेट अपने आप जाँचें</string>
-    <string name="settings_update_background_check_summary">डाउनलोड के लिए नया संस्करण उपलब्ध होने पर सूचना पाएँ।</string>
+    <string name="settings_update_background_check_summary">डाउनलोड के लिए नया संस्करण उपलब्ध होने पर सूचना पाएँ</string>
     <string name="settings_update_notification_text">संस्करण %1$s डाउनलोड के लिए तैयार है</string>
     <string name="settings_update_unknown_sources_message">ऐप इंस्टॉल करने के लिए Android को BBKB को अनुमति देनी होगी। इस स्रोत से इंस्टॉल चालू करें, फिर दोबारा इंस्टॉल दबाएँ।</string>
     <string name="settings_update_open_settings">सेटिंग खोलें</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">शब्दकोश देखें</string>
     <string name="language_packs_load_ldb">LDB फ़ाइल लोड करें</string>
     <string name="language_packs_variant_summary">%1$s की जगह लोड होता है</string>
-    <string name="language_packs_not_on_summary">नया %1$s कीबोर्ड बनाने के लिए टैप करें.</string>
+    <string name="language_packs_not_on_summary">नया %1$s कीबोर्ड बनाने के लिए टैप करें</string>
     <string name="language_packs_turned_on">%1$s चालू है. भाषा स्विचर से इस पर स्विच करें.</string>
-    <string name="language_packs_turn_on_in_settings">सूची में %1$s को चालू करें, फिर वापस आएं.</string>
+    <string name="language_packs_turn_on_in_settings">सूची में %1$s को चालू करें, फिर वापस आएं</string>
     <string name="language_packs_installed_and_on">%1$s इंस्टॉल हो गई है. यह चालू है: भाषा स्विचर से इस पर स्विच करें.</string>
     <string name="language_packs_installed_turn_on">%1$s इंस्टॉल हो गई है. इसे कीबोर्ड में चालू करने के लिए इसकी पंक्ति पर टैप करें.</string>
+    <string name="language_packs_installed_no_layout">%1$s इंस्टॉल हो गई है, लेकिन इस कीबोर्ड में अभी इसकी लिपि के लिए कोई लेआउट नहीं है, इसलिए इसे चुना नहीं जा सकता</string>
     <string name="language_packs_error_offline">कोई कनेक्शन नहीं</string>
     <string name="language_packs_error_network">यह काम नहीं आया। फिर कोशिश करें।</string>
     <string name="language_packs_error_verification">फ़ाइल कैटलॉग से मेल नहीं खाई, इसलिए कुछ भी इंस्टॉल नहीं हुआ</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">सहेजा गया: %1$s</string>
     <string name="backup_restore_dialog_device">डिवाइस: %1$s</string>
     <string name="backup_restore_not_in_file">इस फ़ाइल में नहीं है</string>
-    <string name="backup_restore_dialog_note">सेटिंग्स, लेआउट और मैक्रो बदल दिए जाते हैं; शब्द इस फ़ोन पर पहले से मौजूद चीज़ों में जोड़े जाते हैं.</string>
+    <string name="backup_restore_dialog_note">सेटिंग्स, लेआउट और मैक्रो बदल दिए जाते हैं; शब्द इस फ़ोन पर पहले से मौजूद चीज़ों में जोड़े जाते हैं</string>
     <string name="backup_restore_dialog_confirm">पुनर्स्थापित करें</string>
     <string name="backup_restored">बैकअप पुनर्स्थापित किया गया</string>
     <string name="backup_restored_words_pending">कीबोर्ड का उपयोग शुरू होते ही सीखे गए शब्द जोड़ दिए जाएंगे</string>

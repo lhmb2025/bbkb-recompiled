@@ -103,7 +103,7 @@
     <string name="ckb_gestures_export_summary">將擷取到的按鍵格線以 &lt;ckb-key-grid&gt; 片段寫入應用程式檔案，以便貼入裝置設定。請先開啟鍵盤一次，讓系統完成擷取。</string>
     <string name="ckb_gestures_export_title">匯出 CKB 幾何資料</string>
     <string name="ckb_gestures_export_written">已寫入 %s</string>
-    <string name="ckb_gestures_reserved_note">向上滑動 (確認手指下方的建議字詞) 為保留手勢。</string>
+    <string name="ckb_gestures_reserved_note">向上滑動 (確認手指下方的建議字詞) 為保留手勢</string>
     <string name="ckb_gestures_screen_title">CKB 手勢</string>
     <string name="settings_gesture_accent_max_speed_summary">變更重音符號的最大速度倍數</string>
     <string name="settings_gesture_accent_max_speed_title">捲動變更重音符號的最大速度倍數</string>
@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">啟用動態學習</string>
     <string name="settings_dict_learned_words_summary">管理從你的輸入內容學到的字詞</string>
     <string name="settings_dict_learned_words_title">已學習的字詞</string>
+    <string name="settings_dict_add_to_dictionary_note">加入字典的字詞會在輸入時作為建議顯示，且不會被標示為拼字錯誤</string>
     <string name="settings_dict_text_shortcuts_summary">建立可展開為片語的捷徑</string>
     <string name="settings_dict_text_shortcuts_title">文字捷徑</string>
     <string name="settings_dict_user_dictionary_summary">新增及編輯個人字詞</string>
@@ -424,7 +425,7 @@
     <string name="settings_device_configuration_summary">選取或匯入裝置輸入設定</string>
     <string name="settings_device_configuration_title">裝置設定</string>
     <string name="touch_surface_builtin_category">手機內建</string>
-    <string name="touch_surface_builtin_intro">Scroll assistant 開啟期間，手機會將鍵盤觸控層的輸入傳送給 BBKB。</string>
+    <string name="touch_surface_builtin_intro">Scroll assistant 開啟期間，手機會將鍵盤觸控層的輸入傳送給 BBKB</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant 會搶先接收按鍵上的輕觸兩下手勢，令 BBKB 一直收不到</string>
     <string name="touch_surface_cursor_assistant_title">關閉 Cursor assistant</string>
     <string name="touch_surface_grant_access">授予存取權</string>
@@ -441,7 +442,7 @@
     <string name="touch_surface_shizuku_guide_category">設定 Shizuku</string>
     <string name="touch_surface_shizuku_guide_steps">1. 開啟開發人員選項，然後開啟無線偵錯。\n2. 透過 Shizuku 應用程式或使用 root 權限啟動 Shizuku。\n3. 返回此處，然後輕觸「授予存取權」。</string>
     <string name="touch_surface_shizuku_intro">Shizuku 是一個免費應用程式，可讓 BBKB 直接讀取觸控層。BBKB 只會在鍵盤開啟時接管觸控層，其餘時間觸控層會如常運作。</string>
-    <string name="touch_surface_shizuku_mediatek">請在此手機上使用 Shizuku 13.5.4：13.6.0 版在使用 MediaTek 晶片的手機上未能完全正常運作。</string>
+    <string name="touch_surface_shizuku_mediatek">請在此手機上使用 Shizuku 13.5.4：13.6.0 版在使用 MediaTek 晶片的手機上未能完全正常運作</string>
     <string name="touch_surface_shizuku_reboot">每次手機重新啟動後，Shizuku 都會停止。請在每次重新啟動後再次啟動 Shizuku；如果 Shizuku 未在執行，上方的狀態會顯示出來。</string>
     <string name="touch_surface_shizuku_state_denied">執行中，但 BBKB 的存取要求被拒</string>
     <string name="touch_surface_shizuku_state_granted">執行中，BBKB 已獲得存取權</string>
@@ -464,11 +465,11 @@
     <string name="touch_surface_status_unavailable">此手機無法使用</string>
     <string name="pref_show_pkb_modifier_status_icon">顯示輔助按鍵狀態圖示</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">使用實體鍵盤時，在狀態列顯示 Shift/Alt 輔助按鍵指示</string>
-    <string name="settings_pred_accounts_permission_summary">授予帳戶權限，以便在輸入時建議電郵地址。</string>
+    <string name="settings_pred_accounts_permission_summary">授予帳戶權限，以便在輸入時建議電郵地址</string>
     <string name="settings_pred_accounts_permission_title">需要帳戶權限</string>
     <string name="settings_pred_block_offensive_summary">語音輸入時隱藏可能令人反感的字詞</string>
     <string name="settings_pred_block_offensive_title">封鎖令人反感的字詞</string>
-    <string name="settings_pred_contacts_permission_summary">授予聯絡人權限，以便在輸入時建議聯絡人名稱和電郵地址。</string>
+    <string name="settings_pred_contacts_permission_summary">授予聯絡人權限，以便在輸入時建議聯絡人名稱和電郵地址</string>
     <string name="settings_pred_contacts_permission_title">需要聯絡人權限</string>
     <string name="settings_pred_contacts_summary_disabled">需要聯絡人權限</string>
     <string name="settings_pred_contacts_summary_enabled">將聯絡人名稱納入建議字詞</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">授予聯絡人權限即可使用此功能</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">聯絡人名稱會視為有效字詞</string>
     <string name="settings_spellcheck_use_contacts_title">使用聯絡人進行拼字檢查</string>
+    <string name="settings_spellcheck_contacts_permission_summary">授予聯絡人權限，以便在拼字檢查時將聯絡人名稱視為有效字詞</string>
     <string name="settings_spellcheck_accept_learned_title">接受已學習的字詞</string>
     <string name="settings_spellcheck_accept_learned_summary">從您的輸入中學習的字詞會視為拼字正確</string>
     <string name="pref_alt_double_tap_lock">啟用 Alt 連按兩下鎖定</string>
@@ -520,7 +522,7 @@
     <string name="pref_ctrl_double_tap_lock">啟用 Ctrl 連按兩下鎖定</string>
     <string name="pref_ctrl_double_tap_lock_summary">連按兩下 Ctrl 會將它鎖定，再按一次 Ctrl 即可關閉。</string>
     <string name="pref_override_device_meta_state">覆寫裝置 meta 狀態</string>
-    <string name="pref_override_device_meta_state_summary">無論裝置的 KCM 設定為何，都在實體鍵盤上啟用黏性輔助按鍵 (Shift/Alt 鎖定)。</string>
+    <string name="pref_override_device_meta_state_summary">無論裝置的 KCM 設定為何，都在實體鍵盤上啟用黏性輔助按鍵 (Shift/Alt 鎖定)</string>
     <string name="pref_shift_double_tap_lock">啟用 Shift 連按兩下鎖定</string>
     <string name="pref_shift_double_tap_lock_summary">連按兩下 Shift 會將它鎖定，再按一次 Shift 即可關閉。</string>
     <string name="prefs_key_longpress_delay_summary">顯示次要字元前需按住按鍵的時間</string>
@@ -535,11 +537,11 @@
     <string name="prefs_autofill_event_toasts_title">自動填入事件通知</string>
     <string name="pref_accessibility_service_disabled">無障礙服務已停用</string>
     <string name="pref_accessibility_service_enabled">無障礙服務已啟用</string>
-    <string name="pref_emoji_search_pkb_summary">Emoji 面板開啟時，使用鍵盤進行搜尋。</string>
+    <string name="pref_emoji_search_pkb_summary">Emoji 面板開啟時，使用鍵盤進行搜尋</string>
     <string name="pref_emoji_search_title">啟用 Emoji 搜尋</string>
-    <string name="pref_emoji_search_vkb_summary">按目前未確認（帶底線）的文字篩選 Emoji。</string>
-    <string name="pref_emoji_search_replace_text_summary_off">選取 Emoji 後，會插入在已輸入文字之後。</string>
-    <string name="pref_emoji_search_replace_text_summary_on">選取 Emoji 後，會取代已輸入的文字。</string>
+    <string name="pref_emoji_search_vkb_summary">按目前未確認（帶底線）的文字篩選 Emoji</string>
+    <string name="pref_emoji_search_replace_text_summary_off">選取 Emoji 後，會插入在已輸入文字之後</string>
+    <string name="pref_emoji_search_replace_text_summary_on">選取 Emoji 後，會取代已輸入的文字</string>
     <string name="pref_emoji_search_replace_text_title">以 Emoji 取代文字</string>
     <string name="pref_key_interceptor_enabled">啟用特殊按鍵支援</string>
     <string name="pref_key_interceptor_enabled_summary">使用無障礙服務擷取 Emoji、SYM 和語音鍵</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">管理資料</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">自訂巨集</string>
+    <string name="settings_custom_macros_intro" formatted="false">定義您自己的 %x 預留位置，以便在文字捷徑中使用</string>
     <string name="settings_customize_menu_hidden_header">不會在鍵盤上顯示</string>
     <string name="settings_customize_menu_instructions">輕觸並按住捷徑，然後拖曳即可重新排序。首四個會顯示在鍵盤的輸入選單上。</string>
     <string name="settings_customize_menu_summary">選擇輸入選單捷徑並重新排序</string>
@@ -601,7 +604,7 @@
     <string name="settings_quick_phrases_screen_title">快速短語</string>
     <string name="settings_screen_type_by_swiping">滑動輸入</string>
     <string name="settings_screen_type_by_swiping_summary">手指不用離開鍵盤，即可快速輸入</string>
-    <string name="settings_screen_type_by_swiping_unavailable">你的語言不支援滑動輸入。</string>
+    <string name="settings_screen_type_by_swiping_unavailable">你的語言不支援滑動輸入</string>
     <string name="settings_search_hint">搜尋設定</string>
     <string name="settings_search_no_results">找不到設定</string>
     <string name="settings_shake_fallback_title">後備動作</string>
@@ -707,7 +710,7 @@
     <string name="device_config_import_matches_device">鍵盤裝置：%1$s</string>
     <string name="device_config_import_matches_build">版本裝置名稱：%1$s</string>
     <string name="device_config_import_matches_brand">品牌：%1$s</string>
-    <string name="device_config_import_matches_nothing">此檔案未指定要比對的裝置，因此永遠不會生效。</string>
+    <string name="device_config_import_matches_nothing">此檔案未指定要比對的裝置，因此永遠不會生效</string>
     <string name="device_config_import_type">裝置類型：%1$s</string>
     <string name="device_config_import_keys">%1$d 項按鍵對應</string>
     <string name="device_config_import_keypad_layout">鍵盤配置：%1$s</string>
@@ -746,7 +749,7 @@
     <string name="settings_update_error_too_old">此版本太舊，無法讀取更新清單。請手動更新。</string>
     <string name="settings_update_from_cache">顯示的是上次儲存的檢查結果</string>
     <string name="settings_update_background_check_title">自動檢查更新</string>
-    <string name="settings_update_background_check_summary">有新版本可供下載時通知你。</string>
+    <string name="settings_update_background_check_summary">有新版本可供下載時通知你</string>
     <string name="settings_update_notification_text">版本 %1$s 已可下載</string>
     <string name="settings_update_unknown_sources_message">Android 必須允許 BBKB 安裝應用程式。請開啟來自此來源的安裝，然後再次點按安裝。</string>
     <string name="settings_update_open_settings">開啟設定</string>
@@ -758,11 +761,12 @@
     <string name="language_packs_refresh">檢查詞典</string>
     <string name="language_packs_load_ldb">載入 LDB 檔案</string>
     <string name="language_packs_variant_summary">將代替%1$s載入</string>
-    <string name="language_packs_not_on_summary">輕觸即可建立新的%1$s鍵盤。</string>
+    <string name="language_packs_not_on_summary">輕觸即可建立新的%1$s鍵盤</string>
     <string name="language_packs_turned_on">已啟用%1$s。可在語言切換器中切換至它。</string>
-    <string name="language_packs_turn_on_in_settings">請在清單中啟用%1$s，然後返回。</string>
+    <string name="language_packs_turn_on_in_settings">請在清單中啟用%1$s，然後返回</string>
     <string name="language_packs_installed_and_on">已安裝%1$s。已啟用：可在語言切換器中切換至它。</string>
     <string name="language_packs_installed_turn_on">已安裝%1$s。輕觸該列即可在鍵盤中啟用它。</string>
+    <string name="language_packs_installed_no_layout">已安裝%1$s，但此鍵盤尚未有適用於其文字的版面配置，因此無法選取</string>
     <string name="language_packs_error_offline">沒有連線</string>
     <string name="language_packs_error_network">操作失敗，請重試。</string>
     <string name="language_packs_error_verification">檔案與目錄不符，因此未安裝任何內容</string>
@@ -837,7 +841,7 @@
     <string name="backup_restore_dialog_saved">儲存於 %1$s</string>
     <string name="backup_restore_dialog_device">來自 %1$s</string>
     <string name="backup_restore_not_in_file">不在此檔案中</string>
-    <string name="backup_restore_dialog_note">設定、配置和巨集會被取代；字詞會加入此手機現有的內容。</string>
+    <string name="backup_restore_dialog_note">設定、配置和巨集會被取代；字詞會加入此手機現有的內容</string>
     <string name="backup_restore_dialog_confirm">還原</string>
     <string name="backup_restored">已還原備份</string>
     <string name="backup_restored_words_pending">開始使用鍵盤後，系統便會加入已學習的字詞</string>

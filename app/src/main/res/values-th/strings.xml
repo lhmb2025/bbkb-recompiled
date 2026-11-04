@@ -190,6 +190,7 @@
     <string name="settings_dict_dynamic_learning_title">เปิดการเรียนรู้แบบไดนามิก</string>
     <string name="settings_dict_learned_words_summary">จัดการคำที่เรียนรู้จากการพิมพ์ของคุณ</string>
     <string name="settings_dict_learned_words_title">คำที่เรียนรู้</string>
+    <string name="settings_dict_add_to_dictionary_note">คำที่เพิ่มลงในพจนานุกรมของคุณจะแสดงเป็นคำแนะนำขณะพิมพ์ และจะไม่ถูกทำเครื่องหมายว่าสะกดผิด</string>
     <string name="settings_dict_text_shortcuts_summary">สร้างทางลัดที่ขยายเป็นวลี</string>
     <string name="settings_dict_text_shortcuts_title">ทางลัดข้อความ</string>
     <string name="settings_dict_user_dictionary_summary">เพิ่มและแก้ไขคำส่วนตัว</string>
@@ -513,6 +514,7 @@
     <string name="settings_spellcheck_use_contacts_summary_disabled">ให้สิทธิ์เข้าถึงรายชื่อเพื่อใช้คุณสมบัตินี้</string>
     <string name="settings_spellcheck_use_contacts_summary_enabled">ชื่อผู้ติดต่อจะถูกถือว่าเป็นคำที่ถูกต้อง</string>
     <string name="settings_spellcheck_use_contacts_title">ใช้รายชื่อสำหรับการตรวจการสะกด</string>
+    <string name="settings_spellcheck_contacts_permission_summary">ให้สิทธิ์เข้าถึงรายชื่อเพื่อให้การตรวจการสะกดรู้จักชื่อผู้ติดต่อเป็นคำที่ถูกต้อง</string>
     <string name="settings_spellcheck_accept_learned_title">ยอมรับคำที่เรียนรู้</string>
     <string name="settings_spellcheck_accept_learned_summary">คำที่เรียนรู้จากการพิมพ์ของคุณจะถือว่าสะกดถูกต้อง</string>
     <string name="pref_alt_double_tap_lock">เปิดใช้งานการล็อก Alt ด้วยการกดสองครั้ง</string>
@@ -577,6 +579,7 @@
     <string name="settings_category_manage_data">จัดการข้อมูล</string>
     <string name="settings_credits_app_name">BBKB</string>
     <string name="settings_custom_macros_title">มาโครที่กำหนดเอง</string>
+    <string name="settings_custom_macros_intro" formatted="false">กำหนดตัวยึดตำแหน่ง %x ของคุณเองเพื่อใช้ในทางลัดข้อความ</string>
     <string name="settings_customize_menu_hidden_header">ไม่แสดงบนแป้นพิมพ์</string>
     <string name="settings_customize_menu_instructions">แตะทางลัดค้างไว้ แล้วลากเพื่อจัดลำดับใหม่ สี่รายการแรกจะปรากฏในเมนูการป้อนข้อมูลของแป้นพิมพ์</string>
     <string name="settings_customize_menu_summary">เลือกและจัดลำดับทางลัดในเมนูการป้อนข้อมูล</string>
@@ -763,6 +766,7 @@
     <string name="language_packs_turn_on_in_settings">เปิดใช้งาน %1$s ในรายการ แล้วกลับมาที่นี่</string>
     <string name="language_packs_installed_and_on">ติดตั้ง %1$s แล้ว เปิดใช้งานอยู่ สลับไปใช้ได้จากตัวสลับภาษา</string>
     <string name="language_packs_installed_turn_on">ติดตั้ง %1$s แล้ว แตะแถวนี้เพื่อเปิดใช้งานในแป้นพิมพ์</string>
+    <string name="language_packs_installed_no_layout">ติดตั้ง %1$s แล้ว แต่แป้นพิมพ์นี้ยังไม่มีเลย์เอาต์สำหรับอักษรของภาษานี้ จึงเลือกไม่ได้</string>
     <string name="language_packs_error_offline">ไม่มีการเชื่อมต่อ</string>
     <string name="language_packs_error_network">ไม่สำเร็จ ลองอีกครั้ง</string>
     <string name="language_packs_error_verification">ไฟล์ไม่ตรงกับแคตตาล็อก จึงไม่ได้ติดตั้งอะไรเลย</string>
