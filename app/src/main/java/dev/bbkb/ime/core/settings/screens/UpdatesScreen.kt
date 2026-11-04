@@ -143,8 +143,10 @@ fun UpdatesScreen(
                     title = context.getString(R.string.settings_update_installed_version_title),
                     // Same shape as the About screen's version row, and for the same reason: it is
                     // the one string on the page that legitimately changes every release.
-                    summary = "Version ${BuildConfig.VERSION_NAME} " +
-                        "(Build ${BuildConfig.VERSION_CODE}) · ${BuildConfig.BUILD_TYPE}",
+                    summary = context.getString(
+                        R.string.settings_updates_version,
+                        BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, BuildConfig.BUILD_TYPE,
+                    ),
                     icon = Icons.Outlined.Info,
                     onClick = null
                 )

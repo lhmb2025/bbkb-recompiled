@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -83,23 +84,32 @@ import java.util.Locale
 
 /**
  * Word substitutions, as an [EntryListSpec]. Everything here was previously spelled out inline in
- * a screen that was otherwise identical to `UserDictionaryScreen`. Like `userDictionarySpec` it
- * takes its title, which the screen reads from the string the Learning screen's row uses, so the
- * two agree in every language.
+ * a screen that was otherwise identical to `UserDictionaryScreen`. Its title is the string the
+ * Learning screen's row uses, so the two agree in every language.
  *
  * The no-spaces rule appears twice on purpose: the form strips spaces from the shortcut as it is
  * typed, and [EntryListSpec.validate] refuses the write as well, so an entry that somehow arrives
  * with a space in its shortcut is still turned away with a snackbar.
  */
-internal fun shortcutsSpec(title: String) = EntryListSpec(
-    title = title,
-    noun = "Shortcut",
-    plural = "shortcuts",
-    loadFailurePrefix = "Failed to load shortcuts",
+internal val ShortcutsSpec = EntryListSpec(
+    title = R.string.settings_dict_text_shortcuts_title,
+    count = R.plurals.settings_shortcuts_count,
+    searchCount = R.plurals.settings_shortcuts_search_count,
+    searchHint = R.string.settings_shortcuts_search_hint,
+    add = R.string.settings_shortcuts_add,
+    edit = R.string.settings_shortcuts_edit,
+    added = R.string.settings_shortcuts_added,
+    addFailed = R.string.settings_shortcuts_add_failed,
+    updated = R.string.settings_shortcuts_updated,
+    updateFailed = R.string.settings_shortcuts_update_failed,
+    deleted = R.plurals.settings_shortcuts_deleted,
+    deleteFailed = R.string.settings_shortcuts_delete_failed,
+    restoreFailed = R.string.settings_shortcuts_restore_failed,
+    loadFailed = R.string.settings_shortcuts_load_failed,
     emptyIcon = Icons.Outlined.Edit,
-    emptyTitle = "No text shortcuts",
+    emptyTitle = R.string.settings_shortcuts_empty_title,
     // Names the button, now that the button says what it does.
-    emptyHint = "Tap Add shortcut to create shortcuts that expand to phrases",
+    emptyHint = R.string.settings_shortcuts_empty_hint,
     belongsHere = { it.isSubstitution },
     identity = { "${it.shortcut}_${it.locale}" },
     sortKey = { it.shortcut?.lowercase() },
@@ -109,7 +119,7 @@ internal fun shortcutsSpec(title: String) = EntryListSpec(
     },
     label = { it.shortcut ?: "" },
     validate = { entry ->
-        if (entry.shortcut?.contains(" ") == true) "Shortcut cannot contain spaces" else null
+        if (entry.shortcut?.contains(" ") == true) R.string.settings_shortcuts_no_spaces else null
     },
     logTag = "TextShortcutsScreen",
 )
@@ -120,14 +130,14 @@ internal fun shortcutsSpec(title: String) = EntryListSpec(
  * expansion knows; a test keeps the two the same.
  */
 internal val BuiltInMacros = listOf(
-    "%D" to "Date",
-    "%T" to "Time",
-    "%n" to "New line",
-    "%w" to "Weekday",
-    "%y" to "Year",
-    "%d" to "ISO date",
-    "%t" to "24-hour time",
-    "%b" to "Battery",
+    "%D" to R.string.settings_shortcuts_macro_date,
+    "%T" to R.string.settings_shortcuts_macro_time,
+    "%n" to R.string.settings_shortcuts_macro_new_line,
+    "%w" to R.string.settings_shortcuts_macro_weekday,
+    "%y" to R.string.settings_shortcuts_macro_year,
+    "%d" to R.string.settings_shortcuts_macro_iso_date,
+    "%t" to R.string.settings_shortcuts_macro_time_24h,
+    "%b" to R.string.settings_shortcuts_macro_battery,
 )
 
 /**
@@ -142,33 +152,32 @@ fun TextShortcutsScreen(
 ) {
     val context = LocalContext.current
     val store = remember { storeFactory(context) }
-    val spec = remember(context) { shortcutsSpec(context.getString(R.string.settings_dict_text_shortcuts_title)) }
     // Read once per visit: the macros are edited on their own screen, which this one is left for.
     val customMacros = remember { CustomMacroRepository(context).getAllMacros() }
     val macroTags = remember(customMacros) { BuiltInMacros.map { it.first }.toSet() + customMacros.map { it.fullTag } }
     var showMacroHelp by remember { mutableStateOf(false) }
 
     EntryListEditorScreen(
-        spec = spec,
+        spec = ShortcutsSpec,
         store = store,
         onNavigateBack = onNavigateBack,
         rowContent = { entry -> ShortcutRowContent(entry, macroTags) },
         sheetSummary = { entry, language ->
             buildList {
                 add(language)
-                if (hasMacro(entry.word, macroTags)) add("Changes each time")
-                if (entry.fixedCase) add("Fixed case")
+                if (hasMacro(entry.word, macroTags)) add(stringResource(R.string.settings_shortcuts_changes_each_time))
+                if (entry.fixedCase) add(stringResource(R.string.settings_shortcuts_fixed_case))
             }.joinToString(" · ")
         },
         sheetContent = { entry -> ShortcutPreview(entry, macroTags) },
         // The screen's two rarer places, named. They were a bare </> and a bare ⓘ in the top bar.
         menuItems = { close ->
             DropdownMenuItem(
-                text = { Text("Custom macros") },
+                text = { Text(stringResource(R.string.settings_custom_macros_title)) },
                 onClick = { close(); onNavigateToCustomMacros() }
             )
             DropdownMenuItem(
-                text = { Text("About dynamic content") },
+                text = { Text(stringResource(R.string.settings_shortcuts_about_dynamic)) },
                 onClick = { close(); showMacroHelp = true }
             )
         },
@@ -276,10 +285,10 @@ private fun ShortcutRowContent(entry: DictionaryEntry, macroTags: Set<String>) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(text = entry.shortcut ?: "", style = MaterialTheme.typography.bodyLarge)
             if (hasMacro(entry.word, macroTags)) {
-                Icon(Icons.Outlined.DataObject, contentDescription = "Changes each time", tint = variant, modifier = Modifier.size(18.dp))
+                Icon(Icons.Outlined.DataObject, contentDescription = stringResource(R.string.settings_shortcuts_changes_each_time), tint = variant, modifier = Modifier.size(18.dp))
             }
             if (entry.fixedCase) {
-                Icon(Icons.Outlined.TextFields, contentDescription = "Fixed case", tint = variant, modifier = Modifier.size(18.dp))
+                Icon(Icons.Outlined.TextFields, contentDescription = stringResource(R.string.settings_shortcuts_fixed_case), tint = variant, modifier = Modifier.size(18.dp))
             }
         }
         // The gap PreferenceItem leaves between a title and its summary.
@@ -311,7 +320,7 @@ private fun ShortcutPreview(entry: DictionaryEntry, macroTags: Set<String>) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = if (dynamic) "If you type it now" else "Expands to",
+                text = stringResource(if (dynamic) R.string.settings_shortcuts_preview_now else R.string.settings_shortcuts_expands_to),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary,
             )
@@ -343,7 +352,8 @@ private fun DynamicContentSheet(customMacros: List<CustomMacro>, onDismiss: () -
     val spacing = LocalSpacing.current
     val examples = remember {
         BuiltInMacros.associate { (tag, _) ->
-            tag to if (tag == "%n") "Starts a new line" else expandNow(context, tag, "_", "")
+            tag to if (tag == "%n") context.getString(R.string.settings_shortcuts_macro_new_line_example)
+            else expandNow(context, tag, "_", "")
         }
     }
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
@@ -354,20 +364,20 @@ private fun DynamicContentSheet(customMacros: List<CustomMacro>, onDismiss: () -
                 .padding(bottom = 24.dp)
         ) {
             Text(
-                text = "Dynamic content",
+                text = stringResource(R.string.settings_shortcuts_dynamic_title),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(horizontal = spacing.categoryStartPadding, vertical = 8.dp),
             )
             Text(
-                text = "Put these in a phrase. They are filled in each time the shortcut expands.",
+                text = stringResource(R.string.settings_shortcuts_dynamic_intro),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = spacing.categoryStartPadding),
             )
             Spacer(modifier = Modifier.height(12.dp))
-            BuiltInMacros.forEach { (tag, name) -> MacroLine(tag, name, examples.getValue(tag)) }
+            BuiltInMacros.forEach { (tag, name) -> MacroLine(tag, stringResource(name), examples.getValue(tag)) }
             if (customMacros.isNotEmpty()) {
-                PreferenceCategory(title = "Your macros")
+                PreferenceCategory(title = stringResource(R.string.settings_shortcuts_your_macros))
                 customMacros.forEach { MacroLine(it.fullTag, it.name, it.value) }
             }
         }
@@ -439,7 +449,7 @@ private fun ShortcutForm(
     var fixedCase by remember { mutableStateOf(entry?.fixedCase ?: false) }
     var showMacroHelp by remember { mutableStateOf(false) }
 
-    val chips = remember(customMacros) { BuiltInMacros + customMacros.map { it.fullTag to it.name } }
+    val chips = BuiltInMacros.map { (tag, name) -> tag to stringResource(name) } + customMacros.map { it.fullTag to it.name }
     val macroTags = remember(chips) { chips.map { it.first }.toSet() }
     val highlight = MacroHighlight(macroTags, macroStyle())
     val preview = remember(phrase.text, shortcut) {
@@ -465,10 +475,10 @@ private fun ShortcutForm(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.Outlined.Close, "Close")
+                        Icon(Icons.Outlined.Close, stringResource(R.string.settings_common_close))
                     }
                     Text(
-                        text = if (entry != null) "Edit shortcut" else "New shortcut",
+                        text = stringResource(if (entry != null) R.string.settings_shortcuts_edit else R.string.settings_shortcuts_new),
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.weight(1f).padding(start = 12.dp),
                     )
@@ -485,7 +495,7 @@ private fun ShortcutForm(
                                 )
                             )
                         }
-                    ) { Text("Save") }
+                    ) { Text(stringResource(R.string.settings_common_save)) }
                 }
 
                 Column(
@@ -500,8 +510,8 @@ private fun ShortcutForm(
                     OutlinedTextField(
                         value = shortcut,
                         onValueChange = { shortcut = it.replace(" ", "") },
-                        label = { Text("Shortcut") },
-                        supportingText = { Text("Type this to expand it. No spaces.") },
+                        label = { Text(stringResource(R.string.settings_shortcuts_field_shortcut)) },
+                        supportingText = { Text(stringResource(R.string.settings_shortcuts_field_shortcut_help)) },
                         singleLine = true,
                         modifier = inset.fillMaxWidth(),
                     )
@@ -509,8 +519,8 @@ private fun ShortcutForm(
                     OutlinedTextField(
                         value = phrase,
                         onValueChange = { phrase = it },
-                        label = { Text("Phrase") },
-                        supportingText = { Text("What it expands to") },
+                        label = { Text(stringResource(R.string.settings_shortcuts_field_phrase)) },
+                        supportingText = { Text(stringResource(R.string.settings_shortcuts_field_phrase_help)) },
                         visualTransformation = highlight,
                         minLines = 2,
                         maxLines = 5,
@@ -520,13 +530,13 @@ private fun ShortcutForm(
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(modifier = Modifier.padding(start = 24.dp, end = 12.dp), verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "Insert at the cursor",
+                            text = stringResource(R.string.settings_shortcuts_insert_at_cursor),
                             style = MaterialTheme.typography.titleSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.weight(1f),
                         )
                         IconButton(onClick = { showMacroHelp = true }) {
-                            Icon(Icons.Outlined.Info, "About dynamic content", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Icon(Icons.Outlined.Info, stringResource(R.string.settings_shortcuts_about_dynamic), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                     // One scrolling row rather than a block of rows: on a short screen the fields
@@ -565,7 +575,7 @@ private fun ShortcutForm(
                         ) {
                             Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
                                 Text(
-                                    text = "Preview",
+                                    text = stringResource(R.string.settings_common_preview),
                                     style = MaterialTheme.typography.labelMedium,
                                     color = MaterialTheme.colorScheme.primary,
                                 )
@@ -585,9 +595,9 @@ private fun ShortcutForm(
                         Checkbox(checked = fixedCase, onCheckedChange = null)
                         Spacer(modifier = Modifier.width(spacing.iconTextGap))
                         Column {
-                            Text("Fixed case", style = MaterialTheme.typography.bodyLarge)
+                            Text(stringResource(R.string.settings_shortcuts_fixed_case), style = MaterialTheme.typography.bodyLarge)
                             Text(
-                                "Always type the phrase exactly as written",
+                                stringResource(R.string.settings_shortcuts_fixed_case_summary),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )

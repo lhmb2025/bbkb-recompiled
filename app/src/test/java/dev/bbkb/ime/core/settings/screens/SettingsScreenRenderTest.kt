@@ -736,16 +736,13 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.CustomMacros.route,
             title = "Custom macros",
             resources = setOf(
-                "settings_custom_macros_title", "settings_custom_macros_intro"
-            ),
-            literals = setOf(
-                "Reserved tags: %D %T %d %t %n %w %y %b",
-                "No custom macros",
+                "settings_custom_macros_title", "settings_custom_macros_intro",
                 // The extended FAB names the action, so the hint can name the button rather than
                 // a "+" that is no longer on screen. "Add macro" is that FAB's label.
-                "Add macro",
-                "Tap Add macro to create your first one",
+                "settings_macros_add", "settings_macros_empty_hint", "settings_macros_empty_title",
+                "settings_macros_reserved_tags",
             ),
+            literals = emptySet(),
         ),
         Case(
             name = "CustomSymbolPageScreen_PKB",
@@ -870,10 +867,10 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "symbol_list_category_alphanumeric_title", "symbol_list_category_arrows_title",
                 "symbol_list_category_brackets_title", "symbol_list_category_currency_title",
                 "symbol_list_category_custom_title", "symbol_list_category_emoji_title",
-                "symbol_list_category_math_title", "symbol_list_category_punctuation_title"
+                "symbol_list_category_math_title", "symbol_list_category_punctuation_title",
+                "settings_keyeditor_loading",
             ),
             literals = setOf(
-                "Loading symbols...",
                 "7",
                 "8",
                 "9",
@@ -944,17 +941,16 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 // The profile builder's entry row is NOT here: the builder is unfinished, so the
                 // row and its "THIS DEVICE" subhead only compose when the debug flag
                 // `pref_show_device_profile_builder` is on, and this case renders a fresh install.
-                "settings_device_configuration_title", "settings_device_config_category_preloaded", "settings_device_config_category_standard"
+                "settings_device_configuration_title", "settings_device_config_category_preloaded", "settings_device_config_category_standard",
+                // The importer moved from a bare + in the app bar to an extended FAB, which
+                // renders its label as text rather than only as a content description.
+                "device_config_import_button", "device_config_auto_detect",
             ),
             // The device list is a lazy column; under the 179dp header the last two rows fall
             // below the 891dp test viewport and are not composed, so they are not recorded.
             literals = setOf(
-                // The importer moved from a bare + in the app bar to an extended FAB, which
-                // renders its label as text rather than only as a content description.
-                "Import configuration",
                 // PreferenceCategory uppercases, so a subhead never matches its own resource.
                 "Default (System Auto-detection)",
-                "System auto-detection",
                 "BlackBerry Key2 (Athena)",
                 "BlackBerry PKB Devices",
                 "Minimal Phone (MP01)",
@@ -1024,12 +1020,10 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "key_interceptor_service_label", "pref_accessibility_service_disabled",
                 "pref_key_interceptor_enabled", "pref_key_interceptor_enabled_summary",
                 "pref_manage_accessibility_service",
-                "pref_preprocess_all_keys", "pref_preprocess_all_keys_summary"
+                "pref_preprocess_all_keys", "pref_preprocess_all_keys_summary",
+                "keyboard_helper_unified_mapping_title", "keyboard_helper_unified_mapping_summary",
             ),
-            literals = setOf(
-                "Unified Key Mapping",
-                "Route special keys via XML config instead of hardcoded logic (experimental)",
-            ),
+            literals = emptySet(),
         ),
         Case(
             name = "LanguagePacksScreen",
@@ -1056,7 +1050,6 @@ class SettingsScreenRenderTest(private val screenName: String) {
             lateLiterals = setOf(
                 "Chinese", "English", "French", "German", "Italian", "Russian", "Spanish", "Ukrainian",
                 "ZH", "EN", "FR", "DE", "IT", "RU", "ES", "UK",
-                "Preinstalled",
             ),
             // Whatever the catalogue fetch came back with. Under Robolectric there is no network
             // and no cached manifest, so it is always one of the failure messages plus its Try
@@ -1067,6 +1060,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "language_packs_error_app_too_old", "language_packs_error_network",
                 "language_packs_error_offline", "language_packs_error_verification",
                 "language_packs_retry", "language_packs_variant_summary",
+                // The "Preinstalled" tag on each shipped pack's row, a resource since 2026-11.
+                "language_packs_preinstalled",
             ),
         ),
         Case(
@@ -1232,14 +1227,13 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_pred_contacts_permission_title", "settings_pred_grant_permission",
                 "settings_spell_checker_screen_title", "settings_spellcheck_use_contacts_summary_disabled",
                 "settings_spellcheck_use_contacts_title", "settings_spellcheck_accept_learned_title",
-                "settings_spellcheck_accept_learned_summary", "settings_spellcheck_contacts_permission_summary"
-            ),
-            literals = setOf(
+                "settings_spellcheck_accept_learned_summary", "settings_spellcheck_contacts_permission_summary",
                 // "About Spell Checker" is gone: it was the heading of an info card, one line
                 // under an app bar already reading "Spell checker settings". The sentence it
                 // introduced is still here, now as a plain PreferenceInfo paragraph.
-                "The BBKB spell checker provides intelligent spell checking across all apps that support spell checking. It uses advanced language models to detect typos and suggest corrections.",
+                "settings_spellcheck_intro",
             ),
+            literals = emptySet(),
         ),
         Case(
             name = "SymbolCustomizationScreen",
@@ -1263,18 +1257,19 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.TextShortcuts.route,
             title = "Text shortcuts",
             // The title is the Learning screen row's string now, as User dictionary's is.
-            resources = setOf("settings_dict_text_shortcuts_title"),
-            literals = setOf(
+            resources = setOf(
+                "settings_dict_text_shortcuts_title",
                 // The round FAB became an extended one, so its label is rendered text rather
                 // than only a content description. (The count line is part of the list now, so
                 // the empty state no longer carries a "0 shortcuts" over it.)
-                "Add shortcut",
+                "settings_shortcuts_add",
             ),
+            literals = emptySet(),
             // "Initialization timeout" is the store failing to come up under Robolectric -- an
             // environment artefact, pinned only so a new late string is still caught.
-            lateLiterals = setOf(
+            lateResources = setOf(
                 // The hint names that button now that the button says what it does.
-                "No text shortcuts", "Tap Add shortcut to create shortcuts that expand to phrases", "Initialization timeout",
+                "settings_shortcuts_empty_title", "settings_shortcuts_empty_hint", "settings_dict_init_timeout",
             ),
         ),
         Case(
@@ -1335,14 +1330,13 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.UserDictionary.route,
             title = "User dictionary",
             resources = setOf(
-                "settings_dict_user_dictionary_title"
-            ),
-            literals = setOf(
+                "settings_dict_user_dictionary_title",
                 // As above: the extended FAB renders its label.
-                "Add word",
+                "settings_dict_add_word",
             ),
-            lateLiterals = setOf(
-                "No personal words", "Tap Add word to add custom words to your dictionary", "Initialization timeout",
+            literals = emptySet(),
+            lateResources = setOf(
+                "settings_dict_empty_title", "settings_dict_empty_hint", "settings_dict_init_timeout",
             ),
         ),
         Case(
@@ -1371,11 +1365,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.VoiceLanguageSelection.route,
             title = "Voice input language",
             resources = setOf(
-                "settings_voice_input_lang_title"
+                "settings_voice_input_lang_title", "settings_voice_lang_loading",
             ),
-            literals = setOf(
-                "Loading available languages...",
-            ),
+            literals = emptySet(),
         ),
         Case(
             name = "WordListEditorScreen",
@@ -1383,9 +1375,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
             title = "Learned words",
             resources = setOf("settings_dict_learned_words_title"),
             literals = emptySet(),
-            lateLiterals = setOf(
-                "No learned words",
-                "Words you type will be learned and appear here",
+            lateResources = setOf(
+                "settings_learned_empty_title",
+                "settings_learned_empty_hint",
             ),
         ),
     )

@@ -40,7 +40,7 @@ fun CreditsScreen(
             null
         }
     }
-    val versionName = packageInfo?.versionName ?: "Unknown"
+    val versionName = packageInfo?.versionName ?: context.getString(R.string.settings_common_unknown)
     val versionCode = packageInfo?.let {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
             it.longVersionCode
@@ -64,7 +64,7 @@ fun CreditsScreen(
             PreferenceGroup {
                 PreferenceItem(
                     title = context.getString(R.string.settings_credits_app_name),
-                    summary = "Version $versionName (Build $versionCode)",
+                    summary = context.getString(R.string.settings_credits_version, versionName, versionCode.toString()),
                     enabled = true,
                     onClick = null
                 )

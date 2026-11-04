@@ -137,8 +137,8 @@ fun KeyboardHelperScreen(
             
                 // Unified key mapping pipeline toggle
                 SwitchPreference(
-                    title = "Unified Key Mapping",
-                    summary = "Route special keys via XML config instead of hardcoded logic (experimental)",
+                    title = context.getString(R.string.keyboard_helper_unified_mapping_title),
+                    summary = context.getString(R.string.keyboard_helper_unified_mapping_summary),
                     icon = Icons.Outlined.Settings,
                     checked = unifiedKeyMapping && serviceEnabled,
                     enabled = serviceEnabled && specialKeyEnabled,

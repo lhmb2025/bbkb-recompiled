@@ -34,7 +34,8 @@ class TranslationCompletenessTest {
 
     private fun resDir() = File(mainDir(), "res")
 
-    private val stringNameRegex = Regex("""<string\s+name="([^"]+)"([^>]*?)(?:/>|>)""")
+    // Plurals too, since 2026-11: a count's wording ("1 word", "3 words") is a translation like any other.
+    private val stringNameRegex = Regex("""<(?:string|plurals)\s+name="([^"]+)"([^>]*?)(?:/>|>)""")
     private val subtypeLocaleRegex = Regex("""imeSubtypeLocale="([^"]+)"""")
 
     /**
@@ -59,7 +60,7 @@ class TranslationCompletenessTest {
      */
     private val incompleteLocaleAllowlist = emptySet<String>()
 
-    /** Every `<string name=...>` in the folder that is not marked `translatable="false"`. */
+    /** Every `<string name=...>` and `<plurals name=...>` in the folder not marked `translatable="false"`. */
     private fun stringNames(dir: File, translatableOnly: Boolean): Set<String> {
         if (!dir.isDirectory) return emptySet()
         val names = mutableSetOf<String>()

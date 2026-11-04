@@ -53,8 +53,8 @@ import org.robolectric.shadows.ShadowSpeechRecognizer
  * the list it eventually shows nor anything either screen writes was covered.
  *
  * The picker discovers languages three ways and lays them out two ways, and the layout is what a
- * consolidation touches: with offline languages known it splits the list into an "Offline Ready"
- * section and a "Requires Network" section; without, it shows one flat list with no headers and
+ * consolidation touches: with offline languages known it splits the list into an "Offline ready"
+ * section and a "Requires network" section; without, it shows one flat list with no headers and
  * no offline icons. Both are pinned here — the flat one through the pre-API-33 ordered-broadcast
  * path with no receiver to answer it, which falls back to the built-in language list, and the
  * sectioned one by answering API 33's `checkRecognitionSupport` through Robolectric's shadow.
@@ -126,9 +126,9 @@ class VoiceScreensBehaviourTest {
         setContent { VoiceLanguageSelectionScreen({}) }
 
         val shown = rendered()
-        assertFalse("an unsectioned list must not draw section headers", "Offline Ready" in shown)
-        assertFalse("an unsectioned list must not draw section headers", "Requires Network" in shown)
-        assertFalse("discovery finished, so the spinner is gone", "Loading available languages..." in shown)
+        assertFalse("an unsectioned list must not draw section headers", "Offline ready" in shown)
+        assertFalse("an unsectioned list must not draw section headers", "Requires network" in shown)
+        assertFalse("discovery finished, so the spinner is gone", "Loading available languages…" in shown)
         assertTrue("no offline state is known, so no offline icons", described("Offline ready").isEmpty())
 
         assertEquals(
@@ -181,7 +181,7 @@ class VoiceScreensBehaviourTest {
     /**
      * `checkRecognitionSupport` reports which languages are installed on the device and which are
      * merely supported; the screen unions them for the list and uses the installed set to split it
-     * in two. Installed languages come first under "Offline Ready" and carry an offline icon.
+     * in two. Installed languages come first under "Offline ready" and carry an offline icon.
      *
      * The headers are asserted upper-cased because they are drawn by `PreferenceCategory`, which
      * upper-cases every section subhead in settings; this screen used to style its own.
@@ -195,8 +195,8 @@ class VoiceScreensBehaviourTest {
         val order = renderedInReadingOrder()
         assertEquals(
             "installed languages lead, under their own header, with the rest below",
-            listOf("Offline Ready", "de-DE", "Requires Network", "en-US", "fr-FR"),
-            order.filter { it in setOf("Offline Ready", "Requires Network", "de-DE", "en-US", "fr-FR") },
+            listOf("Offline ready", "de-DE", "Requires network", "en-US", "fr-FR"),
+            order.filter { it in setOf("Offline ready", "Requires network", "de-DE", "en-US", "fr-FR") },
         )
         assertEquals("only the installed language is marked offline", 1, described("Offline ready").size)
     }
@@ -209,8 +209,8 @@ class VoiceScreensBehaviourTest {
         answerRecognitionSupport(installed = emptyList(), supported = listOf("en-US", "fr-FR"))
 
         val shown = rendered()
-        assertFalse("no offline languages means no sections", "Offline Ready" in shown)
-        assertFalse("no offline languages means no sections", "Requires Network" in shown)
+        assertFalse("no offline languages means no sections", "Offline ready" in shown)
+        assertFalse("no offline languages means no sections", "Requires network" in shown)
         assertTrue("en-US missing", "en-US" in shown)
         assertTrue("no offline state is known, so no offline icons", described("Offline ready").isEmpty())
     }
@@ -226,15 +226,15 @@ class VoiceScreensBehaviourTest {
         answerRecognitionSupport(installed = listOf("de-DE", "en-US"), supported = listOf("de-DE"))
 
         val shown = rendered()
-        assertTrue("the installed section is still headed", "Offline Ready" in shown)
-        assertFalse("an empty section must not draw its header", "Requires Network" in shown)
+        assertTrue("the installed section is still headed", "Offline ready" in shown)
+        assertFalse("an empty section must not draw its header", "Requires network" in shown)
         assertEquals("both languages are offline-ready", 2, described("Offline ready").size)
     }
 
     /**
      * The languages the service recognises over the network are listed too. They used to be left
      * out, so a recogniser with few on-device models offered only those. Not installed, so they
-     * sit under "Requires Network" with the other cloud languages.
+     * sit under "Requires network" with the other cloud languages.
      */
     @Test
     @Config(sdk = [34])
@@ -249,8 +249,8 @@ class VoiceScreensBehaviourTest {
         val order = renderedInReadingOrder()
         assertEquals(
             "online languages join the network section, without duplicates",
-            listOf("Offline Ready", "de-DE", "Requires Network", "en-US", "pt-BR"),
-            order.filter { it in setOf("Offline Ready", "Requires Network", "de-DE", "en-US", "pt-BR") },
+            listOf("Offline ready", "de-DE", "Requires network", "en-US", "pt-BR"),
+            order.filter { it in setOf("Offline ready", "Requires network", "de-DE", "en-US", "pt-BR") },
         )
         assertEquals("only the installed language is marked offline", 1, described("Offline ready").size)
     }
@@ -262,7 +262,7 @@ class VoiceScreensBehaviourTest {
         setContent { VoiceLanguageSelectionScreen({}) }
         answerRecognitionSupport(installed = emptyList(), supported = emptyList())
 
-        assertFalse("the fallback list carries no offline information", "Offline Ready" in rendered())
+        assertFalse("the fallback list carries no offline information", "Offline ready" in rendered())
         scrollTo("en-US")
         scrollTo("zh-TW")
     }
@@ -288,7 +288,7 @@ class VoiceScreensBehaviourTest {
             .build()
         shadowOf(recognizer as SpeechRecognizer).triggerSupportResult(support)
         composeRule.waitUntil(timeoutMillis = 5_000) {
-            "Loading available languages..." !in rendered()
+            "Loading available languages…" !in rendered()
         }
     }
 
@@ -534,7 +534,7 @@ class VoiceScreensBehaviourTest {
         setContent { VoiceLanguageSelectionScreen({}) }
 
         shadowOf(ShadowSpeechRecognizer.getLatestSpeechRecognizer()!!).triggerSupportError(SpeechRecognizer.ERROR_SERVER)
-        composeRule.waitUntil(timeoutMillis = 5_000) { "Loading available languages..." !in rendered() }
+        composeRule.waitUntil(timeoutMillis = 5_000) { "Loading available languages…" !in rendered() }
 
         assertFalse("xx-XX" in rendered())
         scrollTo("en-US")

@@ -2,6 +2,8 @@ package dev.bbkb.ime.core.settings.editor
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.annotation.PluralsRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
@@ -66,6 +68,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -85,6 +89,7 @@ import dev.bbkb.ime.core.settings.ui.RoundCheck
 import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.personaldictionary.util.LocaleUtil
 import dev.bbkb.ime.BuildConfig
+import dev.bbkb.ime.R
 import kotlinx.coroutines.launch
 
 /**
@@ -96,26 +101,37 @@ import kotlinx.coroutines.launch
  * header, the same loading spinner and empty state. Everything that genuinely differed between them
  * is in this class, and there turns out not to be much of it.
  *
- * Most of the user-facing wording is derived rather than listed, because in both editors it is the
- * same sentence about a different noun: [noun] "Shortcut" gives "Shortcut added", "Failed to add
- * shortcut" and "Add shortcut", and [plural] "shortcuts" gives "3 shortcuts" and
- * "Search shortcuts". The one phrase that does not follow — the shortcuts editor says "Failed to
- * load shortcuts" while the dictionary editor says "Failed to load dictionary" — is spelled out in
- * [loadFailurePrefix]. `EntryListSpecTest` pins every derived string.
+ * The wording is resources, one set per editor. It used to be derived from a noun ("Shortcut" gave
+ * "Shortcut added", "Add shortcut", "3 shortcuts"), which only ever worked in English: other
+ * languages inflect the noun, agree the participle with it, and count in more than two forms, so
+ * each sentence is its own string, and every count a plural. `EntryListSpecTest` pins the English.
  */
 @Immutable
 internal class EntryListSpec(
     /** Top-app-bar title. */
-    val title: String,
-    /** Capitalised singular, as it appears at the start of a sentence: "Shortcut", "Word". */
-    val noun: String,
-    /** Lower-case plural, as it appears mid-sentence: "shortcuts", "words". */
-    val plural: String,
-    /** The one message that is not derived from [noun]; see the class comment. */
-    val loadFailurePrefix: String,
+    @StringRes val title: Int,
+    /** "3 words": the line over the list. */
+    @PluralsRes val count: Int,
+    /** "2 of 6 words" while searching; the quantity is the total, the first argument the matches. */
+    @PluralsRes val searchCount: Int,
+    @StringRes val searchHint: Int,
+    /** The add button's label: "Add word". */
+    @StringRes val add: Int,
+    /** The sheet's edit action: "Edit word". */
+    @StringRes val edit: Int,
+    @StringRes val added: Int,
+    @StringRes val addFailed: Int,
+    @StringRes val updated: Int,
+    @StringRes val updateFailed: Int,
+    /** "Deleted 2 words", over the Undo action. */
+    @PluralsRes val deleted: Int,
+    @StringRes val deleteFailed: Int,
+    @StringRes val restoreFailed: Int,
+    /** "Failed to load dictionary: %1$s", given the exception's message. */
+    @StringRes val loadFailed: Int,
     val emptyIcon: ImageVector,
-    val emptyTitle: String,
-    val emptyHint: String,
+    @StringRes val emptyTitle: Int,
+    @StringRes val emptyHint: Int,
     /** Which of the repository's entries this editor owns. The two editors partition the store. */
     val belongsHere: (DictionaryEntry) -> Boolean,
     /** De-duplication, list and selection key. Two entries with the same identity are one row. */
@@ -127,29 +143,10 @@ internal class EntryListSpec(
     /** What an entry is called at the head of its sheet: the word, or the shortcut. */
     val label: (DictionaryEntry) -> String,
     /** Refused before the store is touched, reported as a snackbar. Null means "no objection". */
-    val validate: (DictionaryEntry) -> String? = { null },
+    /** The string resource of the objection, if any. */
+    val validate: (DictionaryEntry) -> Int? = { null },
     val logTag: String,
-) {
-    private val lowerNoun get() = noun.lowercase()
-
-    /** "1 word", "3 words": the line over the list, and the subject of the delete snackbar. */
-    fun counter(size: Int) = if (size == 1) "1 $lowerNoun" else "$size $plural"
-    /** The same line while searching: how many of the whole list the query kept. */
-    fun searchCounter(matching: Int, total: Int) = "$matching of ${counter(total)}"
-    val searchHint get() = "Search $plural"
-    val addDescription get() = "Add $lowerNoun"
-    val editDescription get() = "Edit $lowerNoun"
-
-    val added get() = "$noun added"
-    val addFailed get() = "Failed to add $lowerNoun"
-    val updated get() = "$noun updated"
-    val updateFailed get() = "Failed to update $lowerNoun"
-    fun deleted(count: Int) = "Deleted ${counter(count)}"
-    val deleteFailed get() = "Failed to delete $lowerNoun"
-    val restoreFailed get() = "Couldn't bring back every $lowerNoun"
-
-    fun loadFailure(message: String?) = "$loadFailurePrefix: $message"
-}
+)
 
 /**
  * What [EntryListEditorScreen] hands to its `dialogs` slot: which dialog should be open, the
@@ -191,7 +188,7 @@ internal fun EntryListEditorScreen(
     store: DictionaryEntryStore,
     onNavigateBack: () -> Unit,
     rowContent: @Composable (DictionaryEntry) -> Unit,
-    sheetSummary: (DictionaryEntry, String) -> String = { _, language -> language },
+    sheetSummary: @Composable (DictionaryEntry, String) -> String = { _, language -> language },
     sheetContent: @Composable (DictionaryEntry) -> Unit = {},
     menuItems: (@Composable (close: () -> Unit) -> Unit)? = null,
     dialogs: @Composable (EntryEditorHost) -> Unit = {},
@@ -234,7 +231,7 @@ internal fun EntryListEditorScreen(
                             // whether their entries survived.
                             launch {
                                 snackbarHostState.showSnackbar(
-                                    message = "Dictionary was recovered from corrupted state",
+                                    message = context.getString(R.string.settings_dict_recovered),
                                     duration = SnackbarDuration.Long
                                 )
                             }
@@ -259,7 +256,7 @@ internal fun EntryListEditorScreen(
 
             } catch (e: Exception) {
                 if (BuildConfig.DEBUG) Log.e(spec.logTag, "Error loading data", e)
-                error = spec.loadFailure(e.message)
+                error = context.getString(spec.loadFailed, e.message)
             }
             isLoading = false
         }
@@ -270,27 +267,27 @@ internal fun EntryListEditorScreen(
      */
     fun mutate(
         entry: DictionaryEntry,
-        done: String,
-        failed: String,
+        @StringRes done: Int,
+        @StringRes failed: Int,
         verb: String,
         write: suspend () -> Result<Unit>
     ) {
         scope.launch {
             try {
                 spec.validate(entry)?.let {
-                    snackbarHostState.showSnackbar(it)
+                    snackbarHostState.showSnackbar(context.getString(it))
                     return@launch
                 }
 
                 if (write().isSuccess) {
                     loadData()
-                    snackbarHostState.showSnackbar(done)
+                    snackbarHostState.showSnackbar(context.getString(done))
                 } else {
-                    snackbarHostState.showSnackbar(failed)
+                    snackbarHostState.showSnackbar(context.getString(failed))
                 }
             } catch (e: Exception) {
-                if (BuildConfig.DEBUG) Log.e(spec.logTag, "Error $verb ${spec.noun.lowercase()}", e)
-                snackbarHostState.showSnackbar("Error: ${e.message}")
+                if (BuildConfig.DEBUG) Log.e(spec.logTag, "Error $verb", e)
+                snackbarHostState.showSnackbar(context.getString(R.string.settings_common_error, e.message))
             }
         }
     }
@@ -311,18 +308,18 @@ internal fun EntryListEditorScreen(
                 try {
                     store.deleteEntry(entry).isSuccess
                 } catch (e: Exception) {
-                    if (BuildConfig.DEBUG) Log.e(spec.logTag, "Error deleting ${spec.noun.lowercase()}", e)
+                    if (BuildConfig.DEBUG) Log.e(spec.logTag, "Error deleting", e)
                     false
                 }
             }
             loadData()
             if (gone.isEmpty()) {
-                snackbarHostState.showSnackbar(spec.deleteFailed)
+                snackbarHostState.showSnackbar(context.getString(spec.deleteFailed))
                 return@launch
             }
             val result = snackbarHostState.showSnackbar(
-                message = spec.deleted(gone.size),
-                actionLabel = "Undo",
+                message = context.resources.getQuantityString(spec.deleted, gone.size, gone.size),
+                actionLabel = context.getString(R.string.ckb_action_undo),
                 duration = SnackbarDuration.Long
             )
             if (result == SnackbarResult.ActionPerformed) {
@@ -330,12 +327,12 @@ internal fun EntryListEditorScreen(
                     try {
                         store.addEntry(entry).isSuccess
                     } catch (e: Exception) {
-                        if (BuildConfig.DEBUG) Log.e(spec.logTag, "Error restoring ${spec.noun.lowercase()}", e)
+                        if (BuildConfig.DEBUG) Log.e(spec.logTag, "Error restoring", e)
                         false
                     }
                 }
                 loadData()
-                if (back < gone.size) snackbarHostState.showSnackbar(spec.restoreFailed)
+                if (back < gone.size) snackbarHostState.showSnackbar(context.getString(spec.restoreFailed))
             }
         }
     }
@@ -371,14 +368,15 @@ internal fun EntryListEditorScreen(
     }
 
     SettingsScaffold(
-        title = if (selecting) "${selected.size} selected" else spec.title,
+        title = if (selecting) pluralStringResource(R.plurals.settings_common_selected_count, selected.size, selected.size)
+        else stringResource(spec.title),
         // Selection is a contextual bar: a close cross cancels it, as on Learned words. Search
         // keeps the arrow, which leaves the search rather than the screen.
         navigationIcon = if (selecting) Icons.Outlined.Close else Icons.AutoMirrored.Outlined.ArrowBack,
         navigationContentDescription = when {
-            selecting -> "Cancel selection"
-            searching -> "Close search"
-            else -> "Back"
+            selecting -> stringResource(R.string.settings_common_cancel_selection)
+            searching -> stringResource(R.string.settings_common_close_search)
+            else -> stringResource(R.string.settings_common_back)
         },
         onNavigateBack = {
             when {
@@ -391,23 +389,23 @@ internal fun EntryListEditorScreen(
             }
         },
         searchField = if (searching && !selecting) {
-            { EntrySearchField(query = searchQuery, onQueryChange = { searchQuery = it }, hint = spec.searchHint) }
+            { EntrySearchField(query = searchQuery, onQueryChange = { searchQuery = it }, hint = stringResource(spec.searchHint)) }
         } else null,
         actions = {
             if (selecting) {
                 if (selected.isNotEmpty()) {
                     IconButton(onClick = { delete(entries.filter { spec.identity(it) in selected }) }) {
-                        Icon(Icons.Outlined.DeleteOutline, "Delete selected")
+                        Icon(Icons.Outlined.DeleteOutline, stringResource(R.string.settings_common_delete_selected))
                     }
                 }
             } else {
                 IconButton(onClick = { searching = true }) {
-                    Icon(Icons.Outlined.Search, "Search")
+                    Icon(Icons.Outlined.Search, stringResource(R.string.settings_common_search))
                 }
                 if (menuItems != null) {
                     Box {
                         IconButton(onClick = { showMenu = true }) {
-                            Icon(Icons.Outlined.MoreVert, "More options")
+                            Icon(Icons.Outlined.MoreVert, stringResource(R.string.clipboard_more_options))
                         }
                         DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
                             menuItems { showMenu = false }
@@ -424,7 +422,7 @@ internal fun EntryListEditorScreen(
                 ExtendedFloatingActionButton(
                     onClick = { showAddDialog = true },
                     icon = { Icon(Icons.Outlined.Add, contentDescription = null) },
-                    text = { Text(spec.addDescription.replaceFirstChar { it.uppercase() }) }
+                    text = { Text(stringResource(spec.add)) }
                 )
             }
         }
@@ -460,8 +458,11 @@ internal fun EntryListEditorScreen(
                             item(key = "count") {
                                 Text(
                                     // While searching, count what is listed against the whole.
-                                    text = if (searchQuery.isBlank()) spec.counter(entries.size)
-                                    else spec.searchCounter(filteredEntries.size, entries.size),
+                                    text = if (searchQuery.isBlank()) {
+                                        pluralStringResource(spec.count, entries.size, entries.size)
+                                    } else {
+                                        pluralStringResource(spec.searchCount, entries.size, filteredEntries.size, entries.size)
+                                    },
                                     style = MaterialTheme.typography.titleSmall,
                                     color = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.padding(
@@ -530,7 +531,7 @@ internal fun EntryListEditorScreen(
         EntrySheet(
             title = spec.label(entry),
             summary = sheetSummary(entry, LocaleUtil.getDisplayNameForDictionary(context, entry.locale)),
-            editLabel = spec.editDescription.replaceFirstChar { it.uppercase() },
+            editLabel = stringResource(spec.edit),
             onEdit = {
                 sheetEntry = null
                 editingEntry = entry
@@ -644,7 +645,7 @@ private fun EntrySheet(
             Spacer(modifier = Modifier.height(16.dp))
             content()
             PreferenceItem(title = editLabel, icon = Icons.Outlined.Edit, onClick = onEdit)
-            PreferenceItem(title = "Delete", icon = Icons.Outlined.DeleteOutline, onClick = onDelete)
+            PreferenceItem(title = stringResource(R.string.clipboard_menu_delete), icon = Icons.Outlined.DeleteOutline, onClick = onDelete)
         }
     }
 }
@@ -689,7 +690,7 @@ private fun RowScope.EntrySearchField(
                 }
                 if (query.isNotEmpty()) {
                     IconButton(onClick = { onQueryChange("") }) {
-                        Icon(Icons.Outlined.Close, "Clear search")
+                        Icon(Icons.Outlined.Close, stringResource(R.string.settings_common_clear_search))
                     }
                 }
             }
@@ -717,17 +718,13 @@ private fun EntryListEmptyState(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = if (hasSearchQuery) "No matches found" else spec.emptyTitle,
+            text = stringResource(if (hasSearchQuery) R.string.settings_common_no_matches else spec.emptyTitle),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = if (hasSearchQuery) {
-                "Try a different search term"
-            } else {
-                spec.emptyHint
-            },
+            text = stringResource(if (hasSearchQuery) R.string.settings_common_no_matches_hint else spec.emptyHint),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center

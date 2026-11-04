@@ -98,16 +98,16 @@ fun SpellCheckerSettingsScreen(
             // heading said "About Spell Checker" one line under an app bar reading "Spell
             // checker", so it named the screen twice and told the reader nothing.
             PreferenceInfo(
-                text = "The BBKB spell checker provides intelligent spell checking across all apps that support spell checking. It uses advanced language models to detect typos and suggest corrections."
+                text = stringResource(R.string.settings_spellcheck_intro)
             )
 
             PreferenceGroup {
                 // The contacts permission, as the row it gates rather than as a tinted card above it.
                 if (!hasContactsPermission) {
                     PreferenceActionItem(
-                        title = "Contacts Permission Required",
+                        title = stringResource(R.string.settings_pred_contacts_permission_title),
                         summary = stringResource(R.string.settings_spellcheck_contacts_permission_summary),
-                        actionLabel = "Grant Permission",
+                        actionLabel = stringResource(R.string.settings_pred_grant_permission),
                         onAction = {
                             permissionLauncher.launch(Manifest.permission.READ_CONTACTS)
                         },

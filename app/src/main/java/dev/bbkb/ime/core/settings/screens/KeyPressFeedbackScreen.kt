@@ -42,8 +42,8 @@ fun KeyPressFeedbackScreen(
             store = VIBRATION_DURATION,
             title = R.string.prefs_keypress_vibration_duration_settings,
             icon = drawableIcon(R.drawable.ic_settings_vibration_duration),
-            options = { VIBRATION_DURATIONS },
-            summary = { _, value -> vibrationDurationLabel(value) },
+            options = ::vibrationDurations,
+            summary = ::vibrationDurationLabel,
             enabled = { it.bool("vibrate_on") },
             modifier = Modifier.settingsSearchAnchor("pref_vibration_duration_settings"),
         ),
@@ -60,8 +60,8 @@ fun KeyPressFeedbackScreen(
             store = SOUND_VOLUME,
             title = R.string.prefs_keypress_sound_volume_settings,
             icon = drawableIcon(R.drawable.ic_settings_sound_volume),
-            options = { SOUND_VOLUMES },
-            summary = { _, value -> soundVolumeLabel(value) },
+            options = ::soundVolumes,
+            summary = ::soundVolumeLabel,
             enabled = { it.bool("sound_on") },
             modifier = Modifier.settingsSearchAnchor("pref_keypress_sound_volume"),
         ),
@@ -79,7 +79,7 @@ fun KeyPressFeedbackScreen(
             title = R.string.key_preview_popup_dismiss_delay,
             icon = drawableIcon(R.drawable.ic_settings_popup_dismiss_delay),
             options = ::popupDismissDelays,
-            summary = { _, value -> popupDismissDelayLabel(value) },
+            summary = ::popupDismissDelayLabel,
             enabled = { it.bool("popup_on") },
             modifier = Modifier.settingsSearchAnchor("pref_key_preview_popup_dismiss_delay"),
         ),
@@ -129,17 +129,16 @@ private val SOUND_VOLUME = PrefStore(
 
 private const val SYSTEM_DEFAULT = "system_default"
 
-private val VIBRATION_DURATIONS = listOf(
-    ChoiceOption(SYSTEM_DEFAULT, "System default"),
-    ChoiceOption("5", "5ms"), ChoiceOption("10", "10ms"), ChoiceOption("15", "15ms"),
-    ChoiceOption("20", "20ms"), ChoiceOption("25", "25ms"), ChoiceOption("30", "30ms"),
-    ChoiceOption("40", "40ms"), ChoiceOption("50", "50ms"), ChoiceOption("75", "75ms"),
-    ChoiceOption("100", "100ms"),
-)
+private fun vibrationDurations(context: Context) =
+    listOf(ChoiceOption(SYSTEM_DEFAULT, context.getString(R.string.settings_voice_recognizer_system_default))) +
+        listOf(5, 10, 15, 20, 25, 30, 40, 50, 75, 100).map {
+            ChoiceOption(it.toString(), context.getString(R.string.settings_feedback_milliseconds, it))
+        }
 
 /** Stored as a 0..100 percentage, shown as a 1..10 level. */
-private val SOUND_VOLUMES = listOf(ChoiceOption(SYSTEM_DEFAULT, "System default")) +
-    (1..10).map { ChoiceOption((it * 10).toString(), it.toString()) }
+private fun soundVolumes(context: Context) =
+    listOf(ChoiceOption(SYSTEM_DEFAULT, context.getString(R.string.settings_voice_recognizer_system_default))) +
+        (1..10).map { ChoiceOption((it * 10).toString(), it.toString()) }
 
 private fun defaultLingerTimeout(context: Context): String =
     context.resources.getInteger(R.integer.config_key_preview_linger_timeout).toString()
@@ -148,18 +147,18 @@ private fun popupDismissDelays(context: Context) = listOf(
     ChoiceOption(defaultLingerTimeout(context),
         context.getString(R.string.key_preview_popup_dismiss_default_delay)),
     ChoiceOption("0", context.getString(R.string.key_preview_popup_dismiss_no_delay)),
-    ChoiceOption("70", "Short"),
-    ChoiceOption("150", "Long"),
+    ChoiceOption("70", context.getString(R.string.settings_feedback_short)),
+    ChoiceOption("150", context.getString(R.string.settings_feedback_long)),
 )
 
-private fun vibrationDurationLabel(value: String): String = when (value) {
-    SYSTEM_DEFAULT, "-1" -> "System default"
-    else -> "${value}ms"
+private fun vibrationDurationLabel(context: Context, value: String): String = when (value) {
+    SYSTEM_DEFAULT, "-1" -> context.getString(R.string.settings_voice_recognizer_system_default)
+    else -> value.toIntOrNull()?.let { context.getString(R.string.settings_feedback_milliseconds, it) } ?: value
 }
 
-private fun soundVolumeLabel(value: String): String {
+private fun soundVolumeLabel(context: Context, value: String): String {
     return when (value) {
-        SYSTEM_DEFAULT -> "System default"
+        SYSTEM_DEFAULT -> context.getString(R.string.settings_voice_recognizer_system_default)
         else -> {
             val level = value.toIntOrNull()?.div(10) ?: return value
             level.toString()
@@ -167,9 +166,9 @@ private fun soundVolumeLabel(value: String): String {
     }
 }
 
-private fun popupDismissDelayLabel(value: String): String = when (value) {
-    "0" -> "No delay"
-    "70" -> "Short"
-    "150" -> "Long"
-    else -> "Default"
+private fun popupDismissDelayLabel(context: Context, value: String): String = when (value) {
+    "0" -> context.getString(R.string.key_preview_popup_dismiss_no_delay)
+    "70" -> context.getString(R.string.settings_feedback_short)
+    "150" -> context.getString(R.string.settings_feedback_long)
+    else -> context.getString(R.string.key_preview_popup_dismiss_default_delay)
 }

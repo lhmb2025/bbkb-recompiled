@@ -40,6 +40,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import dev.bbkb.ime.R
 
 /**
  * The header every settings screen draws, in the shape of the Android Settings app's own
@@ -60,7 +62,7 @@ fun SettingsTopBar(
     actions: @Composable RowScope.() -> Unit = {},
     /** The leading icon: the back arrow, or a close cross while a screen is in selection mode. */
     navigationIcon: ImageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-    navigationContentDescription: String = "Back",
+    navigationContentDescription: String = stringResource(R.string.settings_common_back),
     /**
      * While a screen searches, its field: it takes the toolbar row in place of the title and the
      * actions, after the navigation icon, and the title block folds away so the results start
@@ -183,7 +185,7 @@ fun SettingsScaffold(
     snackbarHost: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     navigationIcon: ImageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-    navigationContentDescription: String = "Back",
+    navigationContentDescription: String = stringResource(R.string.settings_common_back),
     /** See [SettingsTopBar]'s parameter of the same name. */
     searchField: (@Composable RowScope.() -> Unit)? = null,
     content: @Composable (PaddingValues) -> Unit,

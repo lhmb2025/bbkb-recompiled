@@ -164,14 +164,14 @@ private fun RowScope.EditorTopBarActions(spec: KeyEditorSpec, viewModel: KeyEdit
     // The trash appears only while a key is selected.
     if (viewModel.selectedKeyIndex != null) {
         IconButton(onClick = { viewModel.clearSelectedKey() }) {
-            Icon(Icons.Outlined.Delete, "Clear selected key")
+            Icon(Icons.Outlined.Delete, stringResource(R.string.settings_keyeditor_clear_key))
         }
     }
     // Boxed with its button so the menu opens at the overflow icon rather than at the start of
     // the whole toolbar row.
     Box {
         IconButton(onClick = { showMenu = true }) {
-            Icon(Icons.Outlined.MoreVert, "Menu")
+            Icon(Icons.Outlined.MoreVert, stringResource(R.string.settings_keyeditor_menu))
         }
         DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
             spec.resets.forEach { reset ->
@@ -199,7 +199,7 @@ private fun SymbolPalette(spec: KeyEditorSpec, viewModel: KeyEditorViewModel, pa
         symbols.isEmpty() && viewModel.currentTabIndex != CUSTOM_TAB
     if (deferredAndStillLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Loading symbols...", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(stringResource(R.string.settings_keyeditor_loading), color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         return
     }
@@ -243,13 +243,13 @@ private fun BoxScope.CustomSymbolBar(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         IconButton(onClick = onAdd) {
-            Icon(Icons.Outlined.Add, "Add")
+            Icon(Icons.Outlined.Add, stringResource(R.string.add))
         }
         IconButton(
             onClick = { viewModel.selectedSymbol?.let { viewModel.deleteCustomSymbol(it) } },
             enabled = viewModel.selectedSymbol != null
         ) {
-            Icon(Icons.Outlined.Delete, "Delete")
+            Icon(Icons.Outlined.Delete, stringResource(R.string.clipboard_menu_delete))
         }
     }
 }
@@ -302,13 +302,13 @@ private fun AddSymbolDialog(onDismiss: () -> Unit, onAdd: (String) -> Boolean) {
                             text = it.uppercase()
                         }
                     },
-                    label = { Text("Hex Code (e.g. 1F600)") },
+                    label = { Text(stringResource(R.string.settings_keyeditor_hex_code)) },
                     isError = isError,
                     singleLine = true
                 )
                 if (isError) {
                     Text(
-                        "Invalid character code",
+                        stringResource(R.string.settings_keyeditor_invalid_code),
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall
                     )

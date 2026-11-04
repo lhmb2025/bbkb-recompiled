@@ -2,6 +2,7 @@ package dev.bbkb.ime.core.settings.screens
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -65,6 +66,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
@@ -130,7 +132,11 @@ private val EXPIRING_RANGE = -11..-1
 private const val EXPIRING_ICON_ID = "expiringIcon"
 
 /** The orders the sort menu offers, in menu order. */
-private enum class WordSort(val label: String) { ALPHABETICAL("A to Z"), MOST_USED("Most used"), EXPIRING("Expiring") }
+private enum class WordSort(@StringRes val label: Int) {
+    ALPHABETICAL(R.string.settings_learned_sort_az),
+    MOST_USED(R.string.settings_learned_sort_most_used),
+    EXPIRING(R.string.settings_learned_expiring),
+}
 
 /** A run of rows under one header, or the whole list when [title] is null. */
 private class WordSection(val title: String?, val words: List<String>)
@@ -140,7 +146,7 @@ private class WordSection(val title: String?, val words: List<String>)
  * A word that belongs to no language (added on purpose) joins the largest language's section, so
  * a phone with one language never sees headers; the languages come largest first.
  */
-private fun sectionsOf(words: List<String>, details: Map<String, WordDetail>?): List<WordSection> {
+private fun sectionsOf(words: List<String>, details: Map<String, WordDetail>?, other: String): List<WordSection> {
     if (details == null) return listOf(WordSection(null, words))
     val byLanguage = words.groupBy { details[it]?.language ?: EngineLanguages.ANY }
     val languages = byLanguage.keys.filter { it != EngineLanguages.ANY }
@@ -151,7 +157,7 @@ private fun sectionsOf(words: List<String>, details: Map<String, WordDetail>?): 
         .map { language ->
             val own = byLanguage.getValue(language)
             val list = if (language == largest) words.filter { it in own || (details[it]?.language ?: EngineLanguages.ANY) == EngineLanguages.ANY } else own
-            WordSection(EngineLanguages.displayName(language) ?: "Other", list)
+            WordSection(EngineLanguages.displayName(language) ?: other, list)
         }
 }
 
@@ -243,7 +249,7 @@ private fun LearnedWordRow(
                     Spacer(modifier = Modifier.size(8.dp))
                     Icon(
                         painter = painterResource(R.drawable.ic_settings_auto_delete),
-                        contentDescription = "Expiring",
+                        contentDescription = stringResource(R.string.settings_learned_expiring),
                         tint = content,
                         modifier = Modifier.size(18.dp),
                     )
@@ -292,30 +298,30 @@ private fun LearnedWordSheet(
             )
             Text(
                 text = when {
-                    detail == null -> "Use count not available"
-                    detail.count == 1 -> "Used once"
-                    else -> "Used ${detail.count} times"
+                    detail == null -> stringResource(R.string.settings_learned_use_count_unavailable)
+                    detail.count == 1 -> stringResource(R.string.settings_learned_used_once)
+                    else -> pluralStringResource(R.plurals.settings_learned_used_times, detail.count, detail.count)
                 },
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = spacing.categoryStartPadding),
             )
             Spacer(modifier = Modifier.height(16.dp))
-            PreferenceItem(title = "Add to dictionary", iconPainter = painterResource(R.drawable.ic_settings_add_to_dictionary), onClick = onAddToDictionary)
+            PreferenceItem(title = stringResource(R.string.add_word_dialog_title), iconPainter = painterResource(R.drawable.ic_settings_add_to_dictionary), onClick = onAddToDictionary)
             if (detail != null) {
                 if (detail.expiring) {
                     PreferenceItem(
-                        title = "Keep this word",
-                        summary = "Stop this learned word from expiring",
+                        title = stringResource(R.string.settings_learned_keep),
+                        summary = stringResource(R.string.settings_learned_keep_summary),
                         icon = Icons.Outlined.CheckBox,
                         onClick = onKeep,
                     )
                 } else {
-                    PreferenceItem(title = "Use more often", iconPainter = painterResource(R.drawable.ic_settings_increase_rank), onClick = onUseMore)
+                    PreferenceItem(title = stringResource(R.string.settings_learned_use_more), iconPainter = painterResource(R.drawable.ic_settings_increase_rank), onClick = onUseMore)
                 }
-                if (detail.count > 1) PreferenceItem(title = "Use less often", iconPainter = painterResource(R.drawable.ic_settings_decrease_rank), onClick = onUseLess)
+                if (detail.count > 1) PreferenceItem(title = stringResource(R.string.settings_learned_use_less), iconPainter = painterResource(R.drawable.ic_settings_decrease_rank), onClick = onUseLess)
             }
-            PreferenceItem(title = "Delete", icon = Icons.Outlined.DeleteOutline, onClick = onDelete)
+            PreferenceItem(title = stringResource(R.string.clipboard_menu_delete), icon = Icons.Outlined.DeleteOutline, onClick = onDelete)
         }
     }
 }
@@ -449,11 +455,11 @@ fun WordListEditorScreen(
             loadWords()
             snackbarHostState.showSnackbar(
                 when {
-                    outcome !is LearnedModelTransfer.Outcome.Imported -> "Couldn't change \"$word\""
-                    delta == 0 -> "\"$word\" is kept"
-                    wasExpiring && delta > 0 -> "\"$word\" is kept and will come up sooner"
-                    delta > 0 -> "\"$word\" will come up sooner"
-                    else -> "\"$word\" will come up less"
+                    outcome !is LearnedModelTransfer.Outcome.Imported -> context.getString(R.string.settings_learned_change_failed, word)
+                    delta == 0 -> context.getString(R.string.settings_learned_kept, word)
+                    wasExpiring && delta > 0 -> context.getString(R.string.settings_learned_kept_sooner, word)
+                    delta > 0 -> context.getString(R.string.settings_learned_sooner, word)
+                    else -> context.getString(R.string.settings_learned_less, word)
                 }
             )
         }
@@ -475,13 +481,15 @@ fun WordListEditorScreen(
             snackbarHostState.showSnackbar(
                 when (outcome) {
                     is LearnedModelTransfer.Outcome.Imported ->
-                        if (outcome.words == 1) "Loaded 1 learned word" else "Loaded ${outcome.words} learned words"
+                        context.resources.getQuantityString(R.plurals.settings_learned_loaded, outcome.words, outcome.words)
                     is LearnedModelTransfer.Outcome.Refused ->
-                        if (outcome.restored) "The keyboard refused that file; your words are unchanged"
-                        else "The keyboard refused that file and had to start a new model"
+                        context.getString(
+                            if (outcome.restored) R.string.settings_learned_import_refused
+                            else R.string.settings_learned_import_refused_reset
+                        )
                     is LearnedModelTransfer.Outcome.Rejected -> outcome.reason
-                    LearnedModelTransfer.Outcome.NotAvailable -> "The keyboard isn't ready; open a text field first"
-                    null -> "Couldn't load the learned model"
+                    LearnedModelTransfer.Outcome.NotAvailable -> context.getString(R.string.settings_learned_not_ready)
+                    null -> context.getString(R.string.settings_learned_load_failed)
                 }
             )
         }
@@ -500,7 +508,9 @@ fun WordListEditorScreen(
                     false
                 }
             }
-            snackbarHostState.showSnackbar(if (ok) "Learned model saved" else "Couldn't save the learned model")
+            snackbarHostState.showSnackbar(
+                context.getString(if (ok) R.string.settings_learned_saved else R.string.settings_learned_save_failed)
+            )
         }
     }
 
@@ -512,21 +522,21 @@ fun WordListEditorScreen(
                 try {
                     val bytes = context.contentResolver.openInputStream(uri)
                         ?.use { readLimited(it, LearnedModelStream.MAX_BYTES + 1) }
-                        ?: return@withContext Result.failure(Exception("Couldn't read that file"))
+                        ?: return@withContext Result.failure(Exception(context.getString(R.string.settings_learned_read_failed)))
                     if (bytes.size > LearnedModelStream.MAX_BYTES) {
-                        Result.failure(Exception("That file is too large to be a learned model"))
+                        Result.failure(Exception(context.getString(R.string.settings_learned_file_too_large)))
                     } else {
                         Result.success(LearnedModelStream.parse(bytes))
                     }
                 } catch (e: LearnedModelStream.InvalidModelException) {
-                    Result.failure(Exception("That file isn't a learned model (${e.message})"))
+                    Result.failure(Exception(context.getString(R.string.settings_learned_not_a_model, e.message)))
                 } catch (e: Exception) {
                     if (BuildConfig.DEBUG) Log.e("WordListEditor", "read model failed", e)
-                    Result.failure(Exception("Couldn't read that file"))
+                    Result.failure(Exception(context.getString(R.string.settings_learned_read_failed)))
                 }
             }
             result.onSuccess { pendingImport = it }
-                .onFailure { snackbarHostState.showSnackbar(it.message ?: "Couldn't read that file") }
+                .onFailure { snackbarHostState.showSnackbar(it.message ?: context.getString(R.string.settings_learned_read_failed)) }
         }
     }
     
@@ -545,7 +555,9 @@ fun WordListEditorScreen(
             }
             
             loadWords()
-            snackbarHostState.showSnackbar("Restored ${wordsToRestore.size} word(s)")
+            snackbarHostState.showSnackbar(
+                context.resources.getQuantityString(R.plurals.settings_learned_restored, wordsToRestore.size, wordsToRestore.size)
+            )
         }
     }
     
@@ -575,11 +587,11 @@ fun WordListEditorScreen(
             
             if (showUndo) {
                 val count = wordsToDelete.size
-                val message = if (count == 1) "Deleted 1 word" else "Deleted $count words"
+                val message = context.resources.getQuantityString(R.plurals.settings_dict_words_deleted, count, count)
                 
                 val result = snackbarHostState.showSnackbar(
                     message = message,
-                    actionLabel = "Undo",
+                    actionLabel = context.getString(R.string.ckb_action_undo),
                     duration = SnackbarDuration.Long
                 )
                 
@@ -608,13 +620,13 @@ fun WordListEditorScreen(
                 
                 val result = dictionaryRepository.addEntry(entry)
                 if (result.isSuccess) {
-                    snackbarHostState.showSnackbar("\"$word\" added to dictionary")
+                    snackbarHostState.showSnackbar(context.getString(R.string.settings_learned_added_to_dictionary, word))
                 } else {
-                    snackbarHostState.showSnackbar("Failed to add word to dictionary")
+                    snackbarHostState.showSnackbar(context.getString(R.string.settings_learned_add_to_dictionary_failed))
                 }
             } catch (e: Exception) {
                 if (BuildConfig.DEBUG) Log.e("WordListEditor", "Error promoting word", e)
-                snackbarHostState.showSnackbar("Error: ${e.message}")
+                snackbarHostState.showSnackbar(context.getString(R.string.settings_common_error, e.message))
             }
         }
     }
@@ -637,12 +649,14 @@ fun WordListEditorScreen(
                     if (result.isSuccess) successCount++
                 }
                 
-                snackbarHostState.showSnackbar("Added $successCount word(s) to dictionary")
+                snackbarHostState.showSnackbar(
+                    context.resources.getQuantityString(R.plurals.settings_learned_added_count, successCount, successCount)
+                )
                 selectedWords = emptySet()
                 isSelectionMode = false
             } catch (e: Exception) {
                 if (BuildConfig.DEBUG) Log.e("WordListEditor", "Error promoting words", e)
-                snackbarHostState.showSnackbar("Error: ${e.message}")
+                snackbarHostState.showSnackbar(context.getString(R.string.settings_common_error, e.message))
             }
         }
     }
@@ -659,14 +673,16 @@ fun WordListEditorScreen(
     }
     
     // The same string the Learning screen's row uses, so the two agree in every language.
-    val title = if (isWorkProfile) "Work learned words" else stringResource(R.string.settings_dict_learned_words_title)
+    val title = stringResource(if (isWorkProfile) R.string.settings_learned_work_title else R.string.settings_dict_learned_words_title)
     
     SettingsScaffold(
         // Selection mode is a contextual bar: a close cross cancels it, as Android's own apps do.
         navigationIcon = if (isSelectionMode) Icons.Outlined.Close else Icons.AutoMirrored.Outlined.ArrowBack,
-        navigationContentDescription = if (isSelectionMode) "Cancel selection" else "Back",
+        navigationContentDescription = stringResource(
+            if (isSelectionMode) R.string.settings_common_cancel_selection else R.string.settings_common_back
+        ),
         title = if (isSelectionMode) {
-            "${selectedWords.size} selected"
+            pluralStringResource(R.plurals.settings_common_selected_count, selectedWords.size, selectedWords.size)
         } else {
             title
         },
@@ -683,10 +699,10 @@ fun WordListEditorScreen(
             if (isSelectionMode && selectedWords.isNotEmpty()) {
                 // No confirmation: the snackbar's Undo puts the words back, as it does for one.
                 IconButton(onClick = { deleteWords(selectedWords.toList()) }) {
-                    Icon(Icons.Outlined.DeleteOutline, "Delete selected")
+                    Icon(Icons.Outlined.DeleteOutline, stringResource(R.string.settings_common_delete_selected))
                 }
                 IconButton(onClick = { showPromoteDialog = true }) {
-                    Icon(painterResource(R.drawable.ic_settings_add_to_dictionary), "Add to dictionary")
+                    Icon(painterResource(R.drawable.ic_settings_add_to_dictionary), stringResource(R.string.add_word_dialog_title))
                 }
             }
             // The screen's rarer actions: the learned model as a whole (moving it in and out as a
@@ -696,12 +712,12 @@ fun WordListEditorScreen(
             if (!isSelectionMode && (modelActions || words.isNotEmpty())) {
                 Box {
                     IconButton(onClick = { showOverflow = true }) {
-                        Icon(Icons.Outlined.MoreVert, "More")
+                        Icon(Icons.Outlined.MoreVert, stringResource(R.string.clipboard_more_options))
                     }
                     DropdownMenu(expanded = showOverflow, onDismissRequest = { showOverflow = false }) {
                         if (modelActions) {
                             DropdownMenuItem(
-                                text = { Text("Export to file") },
+                                text = { Text(stringResource(R.string.settings_learned_export)) },
                                 onClick = {
                                     showOverflow = false
                                     val date = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
@@ -709,13 +725,13 @@ fun WordListEditorScreen(
                                 }
                             )
                             DropdownMenuItem(
-                                text = { Text("Import from file") },
+                                text = { Text(stringResource(R.string.settings_learned_import)) },
                                 onClick = { showOverflow = false; loadLauncher.launch(arrayOf("*/*")) }
                             )
                         }
                         if (words.isNotEmpty()) {
                             DropdownMenuItem(
-                                text = { Text("Clear learned words") },
+                                text = { Text(stringResource(R.string.settings_learned_clear)) },
                                 onClick = { showOverflow = false; showClearAllDialog = true }
                             )
                         }
@@ -752,13 +768,13 @@ fun WordListEditorScreen(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "No learned words",
+                            text = stringResource(R.string.settings_learned_empty_title),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Words you type will be learned and appear here",
+                            text = stringResource(R.string.settings_learned_empty_hint),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
@@ -772,7 +788,8 @@ fun WordListEditorScreen(
                     // the rows take the group inset themselves so the header and the count above
                     // them keep their page-level alignment.
                     val expiringCount = remember(words, details) { words.count { details?.get(it)?.expiring == true } }
-                    val sections = remember(words, details, sortOrder) {
+                    val otherLanguage = stringResource(R.string.settings_learned_language_other)
+                    val sections = remember(words, details, sortOrder, otherLanguage) {
                         val d = details
                         val ordered = when {
                             d == null -> words
@@ -784,7 +801,7 @@ fun WordListEditorScreen(
                             )
                             else -> words
                         }
-                        sectionsOf(ordered, d)
+                        sectionsOf(ordered, d, otherLanguage)
                     }
                     CompositionLocalProvider(LocalInGroup provides true) {
                         LazyColumn(
@@ -799,13 +816,16 @@ fun WordListEditorScreen(
                                         .padding(start = spacing.categoryStartPadding, top = 8.dp, end = 16.dp, bottom = 8.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
+                                    val wordCount = pluralStringResource(R.plurals.settings_dict_word_count, words.size, words.size)
+                                    val expiringText = pluralStringResource(R.plurals.settings_learned_expiring_count, expiringCount, expiringCount)
+                                    val expiringLabel = stringResource(R.string.settings_learned_expiring)
                                     Text(
                                         text = buildAnnotatedString {
-                                            append("${words.size} ${if (words.size == 1) "word" else "words"}")
+                                            append(wordCount)
                                             if (expiringCount > 0) {
                                                 append(" · ")
-                                                withStyle(SpanStyle(color = MaterialTheme.colorScheme.error)) { append("$expiringCount expiring ") }
-                                                appendInlineContent(EXPIRING_ICON_ID, "[expiring]")
+                                                withStyle(SpanStyle(color = MaterialTheme.colorScheme.error)) { append("$expiringText ") }
+                                                appendInlineContent(EXPIRING_ICON_ID, "[$expiringLabel]")
                                             }
                                         },
                                         inlineContent = mapOf(
@@ -827,15 +847,15 @@ fun WordListEditorScreen(
                                     if (details != null && words.size > 1) {
                                         Box {
                                             TextButton(onClick = { showSortMenu = true }) {
-                                                Text(sortOrder.label)
-                                                Icon(Icons.Filled.ArrowDropDown, contentDescription = "Sort order")
+                                                Text(stringResource(sortOrder.label))
+                                                Icon(Icons.Filled.ArrowDropDown, contentDescription = stringResource(R.string.settings_learned_sort_order))
                                             }
                                             DropdownMenu(expanded = showSortMenu, onDismissRequest = { showSortMenu = false }) {
                                                 WordSort.entries.forEach { order ->
                                                     DropdownMenuItem(
-                                                        text = { Text(order.label) },
+                                                        text = { Text(stringResource(order.label)) },
                                                         trailingIcon = if (sortOrder == order) {
-                                                            { Icon(Icons.Filled.Check, contentDescription = "Selected") }
+                                                            { Icon(Icons.Filled.Check, contentDescription = stringResource(R.string.settings_common_selected)) }
                                                         } else null,
                                                         onClick = { sortOrder = order; showSortMenu = false },
                                                     )
@@ -910,18 +930,17 @@ fun WordListEditorScreen(
     pendingImport?.let { model ->
         AlertDialog(
             onDismissRequest = { pendingImport = null },
-            title = { Text("Import learned model") },
+            title = { Text(stringResource(R.string.settings_learned_import_title)) },
             text = {
-                Text(
-                    "This replaces this phone's learned model with the one in the file " +
-                        "(${model.words.size} words, with their use counts and word pairs). This cannot be undone."
-                )
+                Text(pluralStringResource(R.plurals.settings_learned_import_message, model.words.size, model.words.size))
             },
             confirmButton = {
-                TextButton(onClick = { pendingImport = null; importModel(model) }) { Text("Replace") }
+                TextButton(onClick = { pendingImport = null; importModel(model) }) {
+                    Text(stringResource(R.string.settings_common_replace))
+                }
             },
             dismissButton = {
-                TextButton(onClick = { pendingImport = null }) { Text("Cancel") }
+                TextButton(onClick = { pendingImport = null }) { Text(stringResource(R.string.cancel)) }
             }
         )
     }
@@ -930,15 +949,13 @@ fun WordListEditorScreen(
     if (showClearAllDialog) {
         AlertDialog(
             onDismissRequest = { showClearAllDialog = false },
-            title = { Text("Clear All Learned Words") },
+            title = { Text(stringResource(R.string.settings_learned_clear_title)) },
             text = {
                 Text(
                     if (isWorkProfile) {
-                        "This will delete all ${words.size} learned words. " +
-                            "This action cannot be undone. Are you sure?"
+                        pluralStringResource(R.plurals.settings_learned_clear_message_work, words.size, words.size)
                     } else {
-                        "This will erase the entire learned model — words, phrases, " +
-                            "and usage history. This action cannot be undone. Are you sure?"
+                        stringResource(R.string.settings_learned_clear_message)
                     }
                 )
             },
@@ -949,7 +966,7 @@ fun WordListEditorScreen(
                         if (isWorkProfile) {
                             deleteWords(words, showUndo = false)
                             scope.launch {
-                                snackbarHostState.showSnackbar("Cleared all learned words")
+                                snackbarHostState.showSnackbar(context.getString(R.string.settings_learned_cleared))
                             }
                         } else {
                             // Full model reset: per-word deletion only prunes the
@@ -966,17 +983,17 @@ fun WordListEditorScreen(
                                 }
                                 loadWords()
                                 snackbarHostState.showSnackbar(
-                                    if (ok) "Learned model reset" else "Couldn't reset learned model")
+                                    context.getString(if (ok) R.string.settings_learned_reset else R.string.settings_learned_reset_failed))
                             }
                         }
                     }
                 ) {
-                    Text("Clear All")
+                    Text(stringResource(R.string.settings_learned_clear_all))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showClearAllDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -986,12 +1003,10 @@ fun WordListEditorScreen(
     if (showPromoteDialog) {
         AlertDialog(
             onDismissRequest = { showPromoteDialog = false },
-            title = { Text("Add to Dictionary") },
+            title = { Text(stringResource(R.string.add_word_dialog_title)) },
             text = { 
                 Column {
-                    Text(
-                        "Add ${selectedWords.size} selected ${if (selectedWords.size == 1) "word" else "words"} to your personal dictionary?"
-                    )
+                    Text(pluralStringResource(R.plurals.settings_learned_add_selected_message, selectedWords.size, selectedWords.size))
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         stringResource(R.string.settings_dict_add_to_dictionary_note),
@@ -1007,12 +1022,12 @@ fun WordListEditorScreen(
                         promoteSelectedToUserDictionary()
                     }
                 ) {
-                    Text("Add")
+                    Text(stringResource(R.string.add))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showPromoteDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )

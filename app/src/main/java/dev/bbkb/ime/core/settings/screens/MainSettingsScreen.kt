@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.SettingsRoute
 import dev.bbkb.ime.core.settings.search.LocalSettingsHighlight
@@ -112,7 +113,7 @@ fun MainSettingsScreen(
                 trailingIcon = {
                     if (query.isNotEmpty()) {
                         IconButton(onClick = { query = "" }) {
-                            Icon(Icons.Outlined.Clear, contentDescription = "Clear")
+                            Icon(Icons.Outlined.Clear, contentDescription = stringResource(R.string.settings_common_clear_search))
                         }
                     }
                 },

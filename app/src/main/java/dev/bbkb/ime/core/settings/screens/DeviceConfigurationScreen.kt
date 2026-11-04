@@ -122,7 +122,7 @@ fun DeviceConfigurationScreen(
             ExtendedFloatingActionButton(
                 onClick = { filePickerLauncher.launch(arrayOf("text/xml", "application/xml")) },
                 icon = { Icon(Icons.Outlined.Add, contentDescription = null) },
-                text = { Text("Import configuration") }
+                text = { Text(stringResource(R.string.device_config_import_button)) }
             )
         }
     ) { paddingValues ->
@@ -242,8 +242,8 @@ fun DeviceConfigurationScreen(
     deleteTarget?.let { config ->
         AlertDialog(
             onDismissRequest = { deleteTarget = null },
-            title = { Text("Delete Configuration") },
-            text = { Text("Delete \"${config.name}\"? This cannot be undone.") },
+            title = { Text(stringResource(R.string.device_config_delete_title)) },
+            text = { Text(stringResource(R.string.settings_pkb_layouts_delete_message, config.name)) },
             confirmButton = {
                 TextButton(onClick = {
                     manager.deleteCustomConfig(config.id)
@@ -251,12 +251,12 @@ fun DeviceConfigurationScreen(
                     configs = manager.availableConfigs
                     deleteTarget = null
                 }) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.clipboard_menu_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { deleteTarget = null }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -288,7 +288,7 @@ private fun ConfigItem(
         PreferenceItem(
             title = config.name,
             summary = if (config.type == CustomDeviceConfigManager.ConfigType.DEFAULT) {
-                "System auto-detection"
+                stringResource(R.string.device_config_auto_detect)
             } else null,
             leading = {
                 RadioButton(selected = isSelected, onClick = null)
@@ -300,7 +300,7 @@ private fun ConfigItem(
             ),
             groupEdge = edge,
             trailing = onDelete?.let { delete ->
-                { PreferenceDeleteButton(contentDescription = "Delete ${config.name}", onClick = delete) }
+                { PreferenceDeleteButton(contentDescription = stringResource(R.string.settings_pkb_layouts_delete, config.name), onClick = delete) }
             }
         )
     }

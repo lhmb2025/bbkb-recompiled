@@ -437,7 +437,7 @@ private fun saveProfile(
             context,
             context.getString(
                 R.string.device_profile_save_failed,
-                result.failure ?: "unknown error",
+                result.failure ?: context.getString(R.string.settings_common_unknown_error),
             ),
         )
         null

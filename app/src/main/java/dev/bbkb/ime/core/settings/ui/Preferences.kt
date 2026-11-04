@@ -60,6 +60,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import dev.bbkb.ime.R
 
 /**
  * Base preference item composable - Foundation for all preference types
@@ -324,7 +326,7 @@ fun ListPreference(
             },
             confirmButton = {
                 TextButton(onClick = { showDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             },
             shape = shapes.dialog
@@ -501,7 +503,7 @@ fun PreferenceScreen(
 private fun NavigateChevron(enabled: Boolean) {
     Icon(
         imageVector = Icons.Outlined.ChevronRight,
-        contentDescription = "Navigate",
+        contentDescription = stringResource(R.string.settings_common_navigate),
         tint = if (enabled) {
             MaterialTheme.colorScheme.onSurfaceVariant
         } else {
@@ -570,7 +572,7 @@ fun EditTextPreference(
                 TextField(
                     value = textValue,
                     onValueChange = { textValue = it },
-                    label = { Text("Enter text") },
+                    label = { Text(stringResource(R.string.settings_common_enter_text)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -588,7 +590,7 @@ fun EditTextPreference(
                     textValue = value
                     showDialog = false 
                 }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             },
             shape = shapes.dialog
@@ -618,7 +620,7 @@ fun SliderPreference(
     // current setting rather than the one this row first composed with.
     var sliderValue by remember(value) { mutableStateOf(value.toFloat()) }
     
-    val displaySummary = summary ?: "Current: $value$unit"
+    val displaySummary = summary ?: stringResource(R.string.settings_common_current_value, "$value$unit")
     
     PreferenceItem(
         title = title,
@@ -647,7 +649,7 @@ fun SliderPreference(
             text = {
                 Column {
                     Text(
-                        text = "Value: ${sliderValue.toInt()}$unit",
+                        text = stringResource(R.string.settings_common_slider_value, "${sliderValue.toInt()}$unit"),
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Spacer(modifier = Modifier.height(spacing.large))
@@ -680,7 +682,7 @@ fun SliderPreference(
                     sliderValue = value.toFloat()
                     showDialog = false 
                 }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             },
             shape = shapes.dialog
@@ -766,7 +768,7 @@ fun GridPreference(
             },
             confirmButton = {
                 TextButton(onClick = { showDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             },
             shape = shapes.dialog

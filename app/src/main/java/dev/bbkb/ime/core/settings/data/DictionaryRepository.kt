@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.Locale
 import dev.bbkb.ime.BuildConfig
+import dev.bbkb.ime.R
 
 /**
  * Repository for managing both personal dictionary and word substitutions
@@ -73,7 +74,7 @@ class DictionaryRepository(private val context: Context) : DictionaryEntryStore 
                     attempts++
                 }
                 if (BuildConfig.DEBUG) Log.w("DictionaryRepository", "Initialization timeout")
-                InitResult.Failure("Initialization timeout")
+                InitResult.Failure(context.getString(R.string.settings_dict_init_timeout))
             } else {
                 InitResult.Success
             }
@@ -86,10 +87,10 @@ class DictionaryRepository(private val context: Context) : DictionaryEntryStore 
             )
             }
             clearCorruptedData()
-            InitResult.Failure("Data corruption detected. Dictionary has been reset.")
+            InitResult.Failure(context.getString(R.string.settings_dict_reset_after_corruption))
         } catch (e: Exception) {
             if (BuildConfig.DEBUG) Log.e("DictionaryRepository", "Error initializing", e)
-            InitResult.Failure("Failed to initialize dictionary: ${e.message}")
+            InitResult.Failure(context.getString(R.string.settings_dict_init_failed, e.message))
         }
     }
 

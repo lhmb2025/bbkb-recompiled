@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.data.DictionaryEntry
@@ -32,21 +33,28 @@ import dev.bbkb.ime.core.settings.editor.EntryListSpec
 import dev.bbkb.ime.personaldictionary.util.LocaleUtil
 
 /**
- * Personal dictionary words, as an [EntryListSpec] — the same editor as `shortcutsSpec` over the
+ * Personal dictionary words, as an [EntryListSpec] — the same editor as `ShortcutsSpec` over the
  * other half of the store.
- *
- * The title is the one field that has to be built per composition rather than held in a constant,
- * because unlike the shortcuts editor this screen reads its title from a string resource.
  */
-internal fun userDictionarySpec(title: String) = EntryListSpec(
-    title = title,
-    noun = "Word",
-    plural = "words",
-    loadFailurePrefix = "Failed to load dictionary",
+internal val UserDictionarySpec = EntryListSpec(
+    title = R.string.settings_user_dictionary_screen_title,
+    count = R.plurals.settings_dict_word_count,
+    searchCount = R.plurals.settings_dict_word_search_count,
+    searchHint = R.string.settings_dict_search_hint,
+    add = R.string.settings_dict_add_word,
+    edit = R.string.settings_dict_edit_word,
+    added = R.string.settings_dict_word_added,
+    addFailed = R.string.settings_dict_word_add_failed,
+    updated = R.string.settings_dict_word_updated,
+    updateFailed = R.string.settings_dict_word_update_failed,
+    deleted = R.plurals.settings_dict_words_deleted,
+    deleteFailed = R.string.settings_dict_word_delete_failed,
+    restoreFailed = R.string.settings_dict_words_restore_failed,
+    loadFailed = R.string.settings_dict_load_failed,
     emptyIcon = Icons.Outlined.Create,
-    emptyTitle = "No personal words",
+    emptyTitle = R.string.settings_dict_empty_title,
     // Names the button, now that the button says what it does.
-    emptyHint = "Tap Add word to add custom words to your dictionary",
+    emptyHint = R.string.settings_dict_empty_hint,
     belongsHere = { it.isPersonalWord },
     identity = { "${it.word}_${it.locale}" },
     sortKey = { it.word.lowercase() },
@@ -66,12 +74,9 @@ fun UserDictionaryScreen(
 ) {
     val context = LocalContext.current
     val store = remember { storeFactory(context) }
-    val spec = remember(context) {
-        userDictionarySpec(context.getString(R.string.settings_user_dictionary_screen_title))
-    }
 
     EntryListEditorScreen(
-        spec = spec,
+        spec = UserDictionarySpec,
         store = store,
         onNavigateBack = onNavigateBack,
         // The word alone, as Learned words shows its words: a pencil on every row said nothing
@@ -141,7 +146,7 @@ private fun PersonalWordDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (isEditing) "Edit word" else "Add word") },
+        title = { Text(stringResource(if (isEditing) R.string.settings_dict_edit_word else R.string.settings_dict_add_word)) },
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -150,7 +155,7 @@ private fun PersonalWordDialog(
                 OutlinedTextField(
                     value = word,
                     onValueChange = { word = it },
-                    label = { Text("Word") },
+                    label = { Text(stringResource(R.string.settings_dict_word_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
@@ -165,7 +170,7 @@ private fun PersonalWordDialog(
                             onValueChange = {},
                             readOnly = true,
                             singleLine = true,
-                            label = { Text("Language") },
+                            label = { Text(stringResource(R.string.settings_languages_title)) },
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = languagesOpen) },
                             modifier = Modifier
                                 .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
@@ -204,12 +209,12 @@ private fun PersonalWordDialog(
                 },
                 enabled = word.trim().isNotEmpty()
             ) {
-                Text(if (isEditing) "Save" else "Add")
+                Text(stringResource(if (isEditing) R.string.settings_common_save else R.string.add))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         }
     )

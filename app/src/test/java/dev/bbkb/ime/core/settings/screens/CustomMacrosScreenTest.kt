@@ -185,7 +185,7 @@ class CustomMacrosScreenTest {
         composeRule.waitForIdle()
 
         // Nothing is gone until the confirmation is accepted, and the question names the macro.
-        composeRule.onNodeWithText("Delete Macro?").assertIsDisplayed()
+        composeRule.onNodeWithText("Delete macro?").assertIsDisplayed()
         composeRule
             .onNodeWithText("Are you sure you want to delete the macro %P (Phone Number)?")
             .assertIsDisplayed()

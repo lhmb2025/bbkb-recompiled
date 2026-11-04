@@ -382,10 +382,9 @@ fun LanguagePacksScreen(
     showVariantDeleteDialog?.let { (locale, member) ->
         AlertDialog(
             onDismissRequest = { showVariantDeleteDialog = null },
-            title = { Text("Delete dictionary?") },
+            title = { Text(stringResource(R.string.language_packs_delete_dictionary_title)) },
             text = {
-                Text("Remove the ${member.name} dictionary? " +
-                    "The language stays; it goes back to another dictionary for it.")
+                Text(stringResource(R.string.language_packs_delete_dictionary_message, member.name))
             },
             confirmButton = {
                 TextButton(
@@ -401,18 +400,22 @@ fun LanguagePacksScreen(
                             installedPacks = readInstalledPacks(context, manifest)
                             Toast.makeText(
                                 context,
-                                if (ok) "Removed ${member.name}" else "Could not remove ${member.name}",
+                                context.getString(
+                                    if (ok) R.string.language_packs_dictionary_removed
+                                    else R.string.language_packs_dictionary_remove_failed,
+                                    member.name,
+                                ),
                                 Toast.LENGTH_SHORT,
                             ).show()
                         }
                         showVariantDeleteDialog = null
                     }
                 ) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.clipboard_menu_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showVariantDeleteDialog = null }) { Text("Cancel") }
+                TextButton(onClick = { showVariantDeleteDialog = null }) { Text(stringResource(R.string.cancel)) }
             }
         )
     }
@@ -421,9 +424,9 @@ fun LanguagePacksScreen(
     showDeleteDialog?.let { pack ->
         AlertDialog(
             onDismissRequest = { showDeleteDialog = null },
-            title = { Text("Delete Language Pack?") },
+            title = { Text(stringResource(R.string.language_packs_delete_pack_title)) },
             text = { 
-                Text("Are you sure you want to delete the ${pack.displayName} language pack? This action cannot be undone.")
+                Text(stringResource(R.string.language_packs_delete_pack_message, pack.displayName))
             },
             confirmButton = {
                 TextButton(
@@ -449,12 +452,12 @@ fun LanguagePacksScreen(
                         showDeleteDialog = null
                     }
                 ) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.clipboard_menu_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = null }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -499,7 +502,7 @@ private fun LanguagePackItem(
             // one-slot, two-meanings rule the dictionary rows use, at the same right edge.
             trailing = when {
                 onDelete != null -> {
-                    { PreferenceDeleteButton(contentDescription = "Delete ${pack.displayName}", onClick = onDelete) }
+                    { PreferenceDeleteButton(contentDescription = stringResource(R.string.settings_pkb_layouts_delete, pack.displayName), onClick = onDelete) }
                 }
                 pack.isPreinstalled -> {
                     { PreinstalledTag() }
@@ -554,7 +557,7 @@ private fun LanguagePackItem(
                 modifier = Modifier.weight(1f)
             )
             onDelete?.let { delete ->
-                PreferenceDeleteButton(contentDescription = "Delete ${pack.displayName}", onClick = delete)
+                PreferenceDeleteButton(contentDescription = stringResource(R.string.settings_pkb_layouts_delete, pack.displayName), onClick = delete)
             }
         }
 
@@ -595,7 +598,7 @@ private fun LanguagePackItem(
                     PreinstalledTag()
                 } else {
                     PreferenceDeleteButton(
-                        contentDescription = "Delete ${member.name}",
+                        contentDescription = stringResource(R.string.settings_pkb_layouts_delete, member.name),
                         onClick = { onDeleteVariant(member) }
                     )
                 }
@@ -745,7 +748,7 @@ private fun LanguageCodeBadge(code: String) {
 
 /** "Preinstalled", right-aligned with the delete buttons. */
 @Composable
-private fun PreinstalledTag() = PreferenceTrailingLabel("Preinstalled")
+private fun PreinstalledTag() = PreferenceTrailingLabel(stringResource(R.string.language_packs_preinstalled))
 
 /**
  * One installed language pack, as this screen displays it.
@@ -822,7 +825,7 @@ private suspend fun loadLanguagePacks(
                                     languageCode = locale.language,
                                     countryCode = locale.country,
                                     displayName = locale.displayName,
-                                    version = if (isInstalled) getLanguagePackVersion(context, localeString) else "Not installed",
+                                    version = if (isInstalled) getLanguagePackVersion(context, localeString) else context.getString(R.string.language_packs_not_installed),
                                     filePath = getLanguagePackPath(context, localeString),
                                     isPreinstalled = isPreinstalled,
                                     localeId = localeString,
@@ -901,7 +904,7 @@ private suspend fun installLanguagePack(
         try {
             val contentResolver = context.contentResolver
             val inputStream = contentResolver.openInputStream(uri)
-                ?: throw Exception("Cannot open file")
+                ?: throw Exception(context.getString(R.string.language_packs_cannot_open_file))
 
             inputStream.use { input ->
                 FileOutputStream(tempFile).use { output ->
@@ -911,12 +914,12 @@ private suspend fun installLanguagePack(
 
             // Basic validation - check file size and extension
             if (tempFile.length() < PackInstallService.MIN_LDB_BYTES) {
-                throw Exception("File too small to be a valid LDB file")
+                throw Exception(context.getString(R.string.language_packs_file_too_small))
             }
 
             val fileName = getFileName(context, uri) ?: "unknown.ldb"
             if (!fileName.endsWith(".ldb", ignoreCase = true)) {
-                throw Exception("File must have .ldb extension")
+                throw Exception(context.getString(R.string.language_packs_file_needs_ldb))
             }
 
             // Extract language AND country from the filename. The country half used to be
@@ -926,7 +929,7 @@ private suspend fun installLanguagePack(
             // is the naming authority: language, or language_COUNTRY when a country is known.
             val languageCode = extractLanguageFromFileName(fileName)
             if (languageCode.isEmpty()) {
-                throw Exception("Cannot determine language from filename")
+                throw Exception(context.getString(R.string.language_packs_language_unknown))
             }
             val countryCode = extractCountryFromFileName(fileName, languageCode)
             val localeId = if (countryCode != null) "${languageCode}_$countryCode" else languageCode
@@ -954,8 +957,7 @@ private suspend fun installLanguagePack(
 
             val message = when {
                 installed.isVariant ->
-                    "Installed as a variant of ${locale(group!!, null).displayLanguage}, and made " +
-                        "active. Switch between them on that language's row."
+                    context.getString(R.string.language_packs_installed_variant, locale(group!!, null).displayLanguage)
                 installed.selectable && installed.enabled ->
                     context.getString(R.string.language_packs_installed_and_on, locale.displayName)
                 installed.selectable ->
@@ -969,7 +971,7 @@ private suspend fun installLanguagePack(
 
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
-                onResult(false, "Failed to install language pack: ${e.message}")
+                onResult(false, context.getString(R.string.language_packs_install_failed, e.message))
             }
         } finally {
             // The service copies what it installs, so the staging file is ours to remove however
@@ -993,7 +995,7 @@ private suspend fun deleteLanguagePack(
     onResult: (Boolean, String) -> Unit
 ) {
     if (pack.isPreinstalled) {
-        onResult(false, "Cannot delete preinstalled language packs")
+        onResult(false, context.getString(R.string.language_packs_cannot_delete_preinstalled))
         return
     }
     val outcome = PackInstallService(context).uninstall(pack.localeId)
@@ -1003,13 +1005,13 @@ private suspend fun deleteLanguagePack(
                 onResult(
                     true,
                     when (result) {
-                        UninstallOutcome.REMOVED -> "Language pack deleted: ${pack.displayName}"
-                        UninstallOutcome.ALREADY_GONE -> "${pack.displayName} was already removed"
+                        UninstallOutcome.REMOVED -> context.getString(R.string.language_packs_deleted, pack.displayName)
+                        UninstallOutcome.ALREADY_GONE -> context.getString(R.string.language_packs_already_removed, pack.displayName)
                     },
                 )
             },
             onFailure = { failure ->
-                onResult(false, "Failed to delete language pack: ${failure.message}")
+                onResult(false, context.getString(R.string.language_packs_delete_failed, failure.message))
             },
         )
     }
@@ -1301,6 +1303,6 @@ private fun getLanguagePackVersion(context: Context, localeString: String): Stri
             "1902.01" // Default version for preinstalled packs
         }
     } catch (e: Exception) {
-        "Unknown"
+        context.getString(R.string.settings_common_unknown)
     }
 }

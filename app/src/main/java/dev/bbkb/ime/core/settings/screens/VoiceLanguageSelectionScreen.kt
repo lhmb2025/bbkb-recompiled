@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.R
@@ -125,14 +126,16 @@ fun VoiceLanguageSelectionScreen(
     }
 
     /** Section header (null for the unsectioned case) to the languages listed under it. */
+    val offlineReady = stringResource(R.string.settings_voice_lang_offline_ready)
+    val requiresNetwork = stringResource(R.string.settings_voice_lang_requires_network)
     val sections: List<Pair<String?, List<String>>> =
-        remember(availableLanguages, offlineLanguages) {
+        remember(availableLanguages, offlineLanguages, offlineReady, requiresNetwork) {
             if (offlineLanguages.isEmpty()) {
                 listOf(null to availableLanguages)
             } else {
                 listOf(
-                    "Offline Ready" to availableLanguages.filter { isOfflineReady(it) },
-                    "Requires Network" to availableLanguages.filterNot { isOfflineReady(it) },
+                    offlineReady to availableLanguages.filter { isOfflineReady(it) },
+                    requiresNetwork to availableLanguages.filterNot { isOfflineReady(it) },
                 ).filter { it.second.isNotEmpty() }
             }
         }
@@ -146,7 +149,7 @@ fun VoiceLanguageSelectionScreen(
                 CircularProgressIndicator()
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Loading available languages...",
+                    text = stringResource(R.string.settings_voice_lang_loading),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -154,13 +157,13 @@ fun VoiceLanguageSelectionScreen(
 
             availableLanguages.isEmpty() -> CenteredMessage(paddingValues) {
                 Text(
-                    text = "No voice recognition languages available",
+                    text = stringResource(R.string.settings_voice_lang_none),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Make sure Google app is installed and voice recognition is enabled",
+                    text = stringResource(R.string.settings_voice_lang_none_hint),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -261,7 +264,7 @@ private fun LanguageListItem(
                 {
                     Icon(
                         imageVector = Icons.Outlined.Check,
-                        contentDescription = "Selected",
+                        contentDescription = stringResource(R.string.settings_common_selected),
                         tint = MaterialTheme.colorScheme.primary,
                     )
                 }
@@ -277,7 +280,7 @@ private fun LanguageListItem(
                 {
                     Icon(
                         imageVector = Icons.Outlined.CloudOff,
-                        contentDescription = "Offline ready",
+                        contentDescription = stringResource(R.string.settings_voice_lang_offline_ready),
                         tint = MaterialTheme.colorScheme.tertiary,
                     )
                 }

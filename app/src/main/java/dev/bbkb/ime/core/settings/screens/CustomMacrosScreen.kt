@@ -55,7 +55,7 @@ fun CustomMacrosScreen(
             ExtendedFloatingActionButton(
                 onClick = { showAddDialog = true },
                 icon = { Icon(Icons.Outlined.Add, contentDescription = null) },
-                text = { Text("Add macro") }
+                text = { Text(stringResource(R.string.settings_macros_add)) }
             )
         }
     ) { padding ->
@@ -68,7 +68,7 @@ fun CustomMacrosScreen(
             // sentence, and a tint that made an explanation look like a warning.
             PreferenceInfo(
                 text = stringResource(R.string.settings_custom_macros_intro),
-                detail = "Reserved tags: %D %T %d %t %n %w %y %b",
+                detail = stringResource(R.string.settings_macros_reserved_tags),
                 // The characters ARE the content here: %D and %d are different macros.
                 monospaceDetail = true,
             )
@@ -92,14 +92,14 @@ fun CustomMacrosScreen(
                         )
                         Spacer(Modifier.height(16.dp))
                         Text(
-                            "No custom macros",
+                            stringResource(R.string.settings_macros_empty_title),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(Modifier.height(8.dp))
                         Text(
                             // Names the button it means, now that the button says what it does.
-                            "Tap Add macro to create your first one",
+                            stringResource(R.string.settings_macros_empty_hint),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         )
@@ -166,9 +166,9 @@ fun CustomMacrosScreen(
     showDeleteConfirm?.let { macro ->
         AlertDialog(
             onDismissRequest = { showDeleteConfirm = null },
-            title = { Text("Delete Macro?") },
+            title = { Text(stringResource(R.string.settings_macros_delete_title)) },
             text = { 
-                Text("Are you sure you want to delete the macro %${macro.tag} (${macro.name})?") 
+                Text(stringResource(R.string.settings_macros_delete_message, macro.fullTag, macro.name))
             },
             confirmButton = {
                 TextButton(
@@ -181,12 +181,12 @@ fun CustomMacrosScreen(
                         contentColor = MaterialTheme.colorScheme.error
                     )
                 ) {
-                    Text("Delete")
+                    Text(stringResource(R.string.clipboard_menu_delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteConfirm = null }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -221,7 +221,7 @@ private fun MacroListItem(
                 IconButton(onClick = { showMenu = true }) {
                     Icon(
                         Icons.Outlined.MoreVert,
-                        contentDescription = "Options",
+                        contentDescription = stringResource(R.string.settings_common_options),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -231,7 +231,7 @@ private fun MacroListItem(
                     onDismissRequest = { showMenu = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text("Edit") },
+                        text = { Text(stringResource(R.string.settings_common_edit)) },
                         onClick = {
                             showMenu = false
                             onEdit()
@@ -241,7 +241,7 @@ private fun MacroListItem(
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text("Delete") },
+                        text = { Text(stringResource(R.string.clipboard_menu_delete)) },
                         onClick = {
                             showMenu = false
                             onDelete()
@@ -277,11 +277,11 @@ private fun CustomMacroDialog(
     // Validation
     val tagError = when {
         tag.isEmpty() -> null
-        tag.length > 1 -> "Tag must be a single character"
-        !tag[0].isLetterOrDigit() -> "Tag must be a letter or number"
-        tag in CustomMacro.RESERVED_TAGS -> "This tag is reserved for built-in macros"
-        !isEditing && !repository.isTagAvailable(tag) -> "This tag is already in use"
-        isEditing && !repository.isTagAvailableForEdit(tag, macro!!.tag) -> "This tag is already in use"
+        tag.length > 1 -> stringResource(R.string.settings_macros_tag_single)
+        !tag[0].isLetterOrDigit() -> stringResource(R.string.settings_macros_tag_alnum)
+        tag in CustomMacro.RESERVED_TAGS -> stringResource(R.string.settings_macros_tag_reserved)
+        !isEditing && !repository.isTagAvailable(tag) -> stringResource(R.string.settings_macros_tag_in_use)
+        isEditing && !repository.isTagAvailableForEdit(tag, macro!!.tag) -> stringResource(R.string.settings_macros_tag_in_use)
         else -> null
     }
     
@@ -292,7 +292,7 @@ private fun CustomMacroDialog(
     
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (isEditing) "Edit Macro" else "Add Macro") },
+        title = { Text(stringResource(if (isEditing) R.string.settings_macros_edit else R.string.settings_macros_add)) },
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -306,7 +306,7 @@ private fun CustomMacroDialog(
                             tag = it.uppercase()
                         }
                     },
-                    label = { Text("Tag") },
+                    label = { Text(stringResource(R.string.settings_macros_tag)) },
                     prefix = { Text("%", fontFamily = FontFamily.Monospace) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
@@ -318,7 +318,7 @@ private fun CustomMacroDialog(
                                 color = MaterialTheme.colorScheme.error
                             )
                             tag.isNotEmpty() -> Text(
-                                "✓ Tag is available",
+                                "✓ " + stringResource(R.string.settings_macros_tag_available),
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -329,8 +329,8 @@ private fun CustomMacroDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Name") },
-                    placeholder = { Text("e.g., Phone Number") },
+                    label = { Text(stringResource(R.string.settings_macros_name)) },
+                    placeholder = { Text(stringResource(R.string.settings_macros_name_example)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -339,7 +339,7 @@ private fun CustomMacroDialog(
                 OutlinedTextField(
                     value = value,
                     onValueChange = { value = it },
-                    label = { Text("Value") },
+                    label = { Text(stringResource(R.string.settings_macros_value)) },
                     placeholder = { Text("e.g., +1-555-123-4567") },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -359,7 +359,7 @@ private fun CustomMacroDialog(
                             modifier = Modifier.padding(12.dp)
                         ) {
                             Text(
-                                "Preview",
+                                stringResource(R.string.settings_common_preview),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -387,12 +387,12 @@ private fun CustomMacroDialog(
                 },
                 enabled = isValid
             ) {
-                Text(if (isEditing) "Save" else "Add")
+                Text(stringResource(if (isEditing) R.string.settings_common_save else R.string.add))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         }
     )
