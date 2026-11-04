@@ -72,7 +72,14 @@ private val DarkColors = darkColorScheme(
     surfaceContainerLow = Color(0xFF1E1F25),  // m3_surface_container_dark
     surfaceContainer = Color(0xFF22242A),
     surfaceContainerHigh = Color(0xFF2B2D33),
-    surfaceContainerHighest = Color(0xFF33343A) // m3_surface_container_highest_dark
+    surfaceContainerHighest = Color(0xFF33343A), // m3_surface_container_highest_dark
+
+    // The inverse trio is what a snackbar is drawn in (container, text, action). Left unset, the
+    // builder fills them with the Material baseline, which put a lavender "Undo" on every
+    // snackbar in settings. They are the light scheme's surface, text and accent turned round.
+    inverseSurface = Color(0xFFE2E2E9),
+    inverseOnSurface = Color(0xFF2F3036),
+    inversePrimary = Color(0xFF0052CC)         // m3_primary_light
 )
 
 private val LightColors = lightColorScheme(
@@ -106,7 +113,12 @@ private val LightColors = lightColorScheme(
     surfaceContainerLow = Color(0xFFF3F4FA),
     surfaceContainer = Color(0xFFEDEEF4),     // m3_surface_container_light
     surfaceContainerHigh = Color(0xFFE7E8EE),
-    surfaceContainerHighest = Color(0xFFE2E2E9) // m3_surface_container_highest_light
+    surfaceContainerHighest = Color(0xFFE2E2E9), // m3_surface_container_highest_light
+
+    // See DarkColors: the snackbar's colours, here the dark scheme's turned round.
+    inverseSurface = Color(0xFF2F3036),
+    inverseOnSurface = Color(0xFFF0F0F7),
+    inversePrimary = Color(0xFF90CAF9)         // m3_primary_dark
 )
 
 /**
