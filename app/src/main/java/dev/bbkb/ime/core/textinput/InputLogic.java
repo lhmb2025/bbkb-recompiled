@@ -194,12 +194,14 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     public InputLogic(BlackBerryIME blackBerryIME, SuggestionStripListener interfaceC0840e, DictionaryLoader c0691g) {
         this.mSuggestionRequestQueue = SuggestionRequestQueue.DISABLED_INSTANCE;
         this.mIme = blackBerryIME;
-        // FIX-D2: null when the engine failed to load; this runs from BlackBerryIME's field
-        // initialiser, so an unguarded call crashed the service before onCreate.
-        com.blackberry.nuanceshim.NuanceSDK engine = NuanceSDKManager.getInstance();
-        if (engine != null) engine.setAutoCommitCallbackHandler(this);
+        // Audit P-6: this runs from BlackBerryIME's field initialiser, before onCreate, so it must
+        // not touch the engine: NuanceSDKManager.getInstance() loads the native library and runs
+        // the engine's init. onCreate starts that on a worker; the auto-commit handler is handed
+        // to the manager, which installs it on the engine when it exists, and the tracker asks
+        // for the engine at its first use (joining the background start if it is still running).
+        NuanceSDKManager.setPrimaryAutoCommitHandler(this);
         this.mSuggestionStripListener = interfaceC0840e;
-        this.mComposingTracker = new ComposingTextTracker(NuanceSDKManager.getInstance());
+        this.mComposingTracker = new ComposingTextTracker(NuanceSDKManager::getInstance);
         this.mTouchHighlightTracker = new TouchHighlightTracker();
         this.mRichInputConnection = new RichInputConnection(blackBerryIME);
         this.mTextContextTracker = new TextContextTracker(this.mRichInputConnection);

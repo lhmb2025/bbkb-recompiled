@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import dev.bbkb.ime.core.settings.PrefsManager;
 import android.util.Log;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
@@ -36,11 +37,15 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import dev.bbkb.ime.BuildConfig;
 
 
@@ -54,7 +59,37 @@ public final class KeyboardBuilder {
 
     private static boolean sLowerRightCornerIsEnter = false;
 
-    private static final HashMap<KeyboardId, SoftReference<Keyboard>> sKeyboardCache = new HashMap<>();
+    /** Built keyboards kept between fields; see {@link KeyboardCacheKey} for what tells them apart. */
+    private static final int KEYBOARD_CACHE_SIZE = 48;
+
+    /**
+     * Least recently used first, bounded, with soft values: a cleared value's entry is removed
+     * as soon as its reference is queued ({@link #purgeClearedKeyboards}), instead of the key
+     * staying in the map for the life of the process.
+     */
+    private static final LinkedHashMap<KeyboardCacheKey, KeyboardReference> sKeyboardCache =
+            new LinkedHashMap<KeyboardCacheKey, KeyboardReference>(16, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<KeyboardCacheKey, KeyboardReference> eldest) {
+                    return size() > KEYBOARD_CACHE_SIZE;
+                }
+            };
+
+    private static final ReferenceQueue<Keyboard> sClearedKeyboards = new ReferenceQueue<>();
+
+    /** Parsed layout sets, by resolved XML resource id; a handful at most (one per keyboard). */
+    private static final int LAYOUT_SET_CACHE_SIZE = 8;
+
+    private static final LinkedHashMap<Integer, ParsedLayoutSet> sLayoutSetCache =
+            new LinkedHashMap<Integer, ParsedLayoutSet>(LAYOUT_SET_CACHE_SIZE, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<Integer, ParsedLayoutSet> eldest) {
+                    return size() > LAYOUT_SET_CACHE_SIZE;
+                }
+            };
+
+    /** {@code getIdentifier} results for layout-set names; the resource table never changes. */
+    private static final HashMap<String, Integer> sLayoutSetIds = new HashMap<>();
 
     private static final UniqueKeysCache sKeysCache = new UniqueKeysCache();
 
@@ -118,7 +153,8 @@ public final class KeyboardBuilder {
         /** The layout set's {@code supportedScript} attribute (res/values/attrs.xml); latin = 14. */
         int mSupportedScriptId = 14;
 
-        final SparseArray<ElementParams> mMoreKeySpecIdToParamsMap = new SparseArray<>();
+        /** Shared with every builder of the same layout set (sLayoutSetCache); read only. */
+        SparseArray<ElementParams> mMoreKeySpecIdToParamsMap = new SparseArray<>();
     }
 
     
@@ -145,8 +181,146 @@ public final class KeyboardBuilder {
     }
 
     private static void clearKeyboardCacheInternal() {
-        sKeyboardCache.clear();
+        synchronized (sKeyboardCache) {
+            sKeyboardCache.clear();
+            while (sClearedKeyboards.poll() != null) {
+                // drained: their entries are gone with the map
+            }
+        }
         sKeysCache.clear();
+    }
+
+    /** Removes the entries whose keyboards the garbage collector has taken. Call under the lock. */
+    private static void purgeClearedKeyboards() {
+        Reference<? extends Keyboard> cleared;
+        while ((cleared = sClearedKeyboards.poll()) != null) {
+            final KeyboardReference ref = (KeyboardReference) cleared;
+            // Only if the entry still holds this reference: a rebuild may have replaced it.
+            if (sKeyboardCache.get(ref.key) == ref) {
+                sKeyboardCache.remove(ref.key);
+            }
+        }
+    }
+
+    /** Number of cached keyboards, for tests. */
+    static int keyboardCacheSizeForTest() {
+        synchronized (sKeyboardCache) {
+            purgeClearedKeyboards();
+            return sKeyboardCache.size();
+        }
+    }
+
+    /** Number of parsed layout sets kept, for tests. */
+    static int layoutSetCacheSizeForTest() {
+        synchronized (sLayoutSetCache) {
+            return sLayoutSetCache.size();
+        }
+    }
+
+    /** Drops the parsed layout sets, for tests. */
+    static void clearLayoutSetCacheForTest() {
+        synchronized (sLayoutSetCache) {
+            sLayoutSetCache.clear();
+        }
+        synchronized (sLayoutSetIds) {
+            sLayoutSetIds.clear();
+        }
+    }
+
+    private static final class KeyboardReference extends SoftReference<Keyboard> {
+
+        final KeyboardCacheKey key;
+
+        KeyboardReference(KeyboardCacheKey key, Keyboard keyboard) {
+            super(keyboard, sClearedKeyboards);
+            this.key = key;
+        }
+    }
+
+    /**
+     * What {@link KeyboardId#equals} compares, copied out of it, so the cache key does not hold
+     * the {@link EditorInfo} of the field the keyboard was first built for (its extras and
+     * initial surrounding text included) for as long as the process lives.
+     */
+    static final class KeyboardCacheKey {
+
+        private final int elementId;
+        private final int mode;
+        private final int width;
+        private final int height;
+        private final boolean passwordInput;
+        private final boolean clobberSettingsKey;
+        private final boolean voiceKeyEnabled;
+        private final boolean languageSwitchKeyEnabled;
+        private final boolean languageQuickSwitchKeyEnabled;
+        private final boolean inputBoardBarEnabled;
+        private final boolean multiLine;
+        private final int imeAction;
+        private final String customActionLabel;
+        private final boolean navigateNext;
+        private final boolean navigatePrevious;
+        private final InputMethodSubtype subtype;
+        private final String keyboardLayoutSet;
+        private final int hashCode;
+
+        KeyboardCacheKey(KeyboardId id) {
+            this.elementId = id.mElementId;
+            this.mode = id.mMode;
+            this.width = id.mWidth;
+            this.height = id.mHeight;
+            this.passwordInput = id.passwordInput();
+            this.clobberSettingsKey = id.mClobberSettingsKey;
+            this.voiceKeyEnabled = id.mVoiceKeyEnabled;
+            this.languageSwitchKeyEnabled = id.mLanguageSwitchKeyEnabled;
+            this.languageQuickSwitchKeyEnabled = id.mLanguageQuickSwitchKeyEnabled;
+            this.inputBoardBarEnabled = id.mInputBoardBarEnabled;
+            this.multiLine = id.isMultiLine();
+            this.imeAction = id.imeAction();
+            this.customActionLabel = id.mCustomActionLabel;
+            this.navigateNext = id.navigateNext();
+            this.navigatePrevious = id.navigatePrevious();
+            this.subtype = id.mSubtype;
+            this.keyboardLayoutSet = id.mKeyboardLayoutSet;
+            this.hashCode = id.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (!(obj instanceof KeyboardCacheKey)) {
+                return false;
+            }
+            final KeyboardCacheKey o = (KeyboardCacheKey) obj;
+            return o.elementId == elementId && o.mode == mode && o.width == width && o.height == height
+                    && o.passwordInput == passwordInput && o.clobberSettingsKey == clobberSettingsKey
+                    && o.voiceKeyEnabled == voiceKeyEnabled && o.languageSwitchKeyEnabled == languageSwitchKeyEnabled
+                    && o.languageQuickSwitchKeyEnabled == languageQuickSwitchKeyEnabled
+                    && o.inputBoardBarEnabled == inputBoardBarEnabled && o.multiLine == multiLine
+                    && o.imeAction == imeAction && TextUtils.equals(o.customActionLabel, customActionLabel)
+                    && o.navigateNext == navigateNext && o.navigatePrevious == navigatePrevious
+                    && o.subtype.equals(subtype) && TextUtils.equals(o.keyboardLayoutSet, keyboardLayoutSet);
+        }
+
+        @Override
+        public int hashCode() {
+            // KeyboardId hashes exactly the fields compared above.
+            return this.hashCode;
+        }
+    }
+
+    /** One layout set's {@code <Element>}s and {@code <Feature>}, as parsed from its XML. Immutable once built. */
+    private static final class ParsedLayoutSet {
+
+        final SparseArray<ElementParams> elements;
+
+        final int supportedScriptId;
+
+        ParsedLayoutSet(SparseArray<ElementParams> elements, int supportedScriptId) {
+            this.elements = elements;
+            this.supportedScriptId = supportedScriptId;
+        }
     }
 
     KeyboardBuilder(Context context, Params dVar) {
@@ -243,10 +417,17 @@ public final class KeyboardBuilder {
             throw new IllegalStateException("No keyboard layout found for configuration: " + c0977g);
         }
         
-        Keyboard c0965e;
+        Keyboard c0965e = null;
         boolean zM6720l = c0977g.isTypingKeyboard();
-        SoftReference<Keyboard> softReference = zM6720l ? sKeyboardCache.get(c0977g) : null;
-        if (softReference != null && (c0965e = softReference.get()) != null) {
+        final KeyboardCacheKey cacheKey = zM6720l ? new KeyboardCacheKey(c0977g) : null;
+        if (cacheKey != null) {
+            synchronized (sKeyboardCache) {
+                purgeClearedKeyboards();
+                final KeyboardReference softReference = sKeyboardCache.get(cacheKey);
+                c0965e = softReference != null ? softReference.get() : null;
+            }
+        }
+        if (c0965e != null) {
             if ((c0977g.mElementId == 8 || c0977g.mElementId == 108) && this.mCustomSymbolPage != 0) {
                 applySymbolList(c0965e, loadCustomSymbolList(c0977g.mElementId == 108),
                         this.mCustomSymbolPage);
@@ -260,8 +441,10 @@ public final class KeyboardBuilder {
         c1022ae.load(bVar.mKeyboardXmlId, c0977g);
         c1022ae.setAllowRedundantMoreKeys(bVar.mProximityCharsCorrectionEnabled);
         Keyboard c0965eMo5338b = c1022ae.build();
-        if (zM6720l) {
-            sKeyboardCache.put(c0977g, new SoftReference<>(c0965eMo5338b));
+        if (cacheKey != null) {
+            synchronized (sKeyboardCache) {
+                sKeyboardCache.put(cacheKey, new KeyboardReference(cacheKey, c0965eMo5338b));
+            }
         }
         if (c0977g.mElementId == 8 || c0977g.mElementId == 108) {
             applySymbolList(c0965eMo5338b, loadCustomSymbolList(c0977g.mElementId == 108),
@@ -404,11 +587,28 @@ public final class KeyboardBuilder {
             this.mResources = context.getResources();
             Params dVar = this.mParams;
             boolean unused = KeyboardBuilder.sLowerRightCornerIsEnter = this.mResources.getBoolean(R.bool.lower_right_corner_is_enter);
-            editorInfo = editorInfo == null ? EMPTY_EDITOR_INFO : editorInfo;
+            editorInfo = editorInfo == null ? EMPTY_EDITOR_INFO : keyboardFieldsOf(editorInfo);
             dVar.mMode = getKeyboardMode(editorInfo);
             dVar.mEditorInfo = editorInfo;
             dVar.mIsPasswordField = InputTypeUtils.isPasswordInputType(editorInfo.inputType);
             dVar.mClobberSettingsKey = EditorCapabilities.hasPrivateImeOption(this.mPackageName, "noSettingsKey", editorInfo);
+        }
+
+        /**
+         * The fields of {@code editorInfo} a keyboard is built from, in a copy: the keyboard (and,
+         * through its id, the keyboard cache) keeps its EditorInfo, and the app's own one carries
+         * its extras and the text around the cursor.
+         */
+        static EditorInfo keyboardFieldsOf(EditorInfo editorInfo) {
+            final EditorInfo copy = new EditorInfo();
+            copy.inputType = editorInfo.inputType;
+            copy.imeOptions = editorInfo.imeOptions;
+            copy.privateImeOptions = editorInfo.privateImeOptions;
+            copy.actionLabel = editorInfo.actionLabel != null ? editorInfo.actionLabel.toString() : null;
+            copy.actionId = editorInfo.actionId;
+            copy.packageName = editorInfo.packageName;
+            copy.fieldId = editorInfo.fieldId;
+            return copy;
         }
 
         public Builder setKeyboardGeometry(int i, int i2) {
@@ -488,10 +688,24 @@ public final class KeyboardBuilder {
             if (this.mParams.mSubtype == null) {
                 throw new RuntimeException("KeyboardLayoutSet subtype is not specified");
             }
-            String resourcePackageName = this.mResources.getResourcePackageName(R.xml.keyboard_layout_set_qwerty);
             String str = this.mParams.mKeyboardLayoutSetName;
             try {
-                readKeyboardLayoutSet(this.mResources, this.mResources.getIdentifier(str, "xml", resourcePackageName));
+                // The parsed layout set is shared between builders: every field focus used to
+                // resolve the name and parse the XML again for the same keyboard (P-12, D-10).
+                final int resolvedId = DeviceProfile.resolveLayoutResource(this.mResources, layoutSetXmlId(str));
+                ParsedLayoutSet parsed;
+                synchronized (sLayoutSetCache) {
+                    parsed = sLayoutSetCache.get(resolvedId);
+                }
+                if (parsed == null) {
+                    readKeyboardLayoutSet(this.mResources, resolvedId);
+                    parsed = new ParsedLayoutSet(this.mParams.mMoreKeySpecIdToParamsMap, this.mParams.mSupportedScriptId);
+                    synchronized (sLayoutSetCache) {
+                        sLayoutSetCache.put(resolvedId, parsed);
+                    }
+                }
+                this.mParams.mMoreKeySpecIdToParamsMap = parsed.elements;
+                this.mParams.mSupportedScriptId = parsed.supportedScriptId;
                 return new KeyboardBuilder(this.mContext, this.mParams);
             } catch (IOException e) {
                 throw new RuntimeException(e.getMessage() + " in " + str, e);
@@ -500,10 +714,24 @@ public final class KeyboardBuilder {
             }
         }
 
-        private void readKeyboardLayoutSet(Resources resources, int i) throws Resources.NotFoundException, IOException, XmlPullParserException {
-            // Apply device-specific layout overrides if configured
-            int resolvedResourceId = DeviceProfile.resolveLayoutResource(resources, i);
-            
+        /** The XML id of the layout set named {@code name}, 0 when there is none. */
+        private int layoutSetXmlId(String name) {
+            synchronized (sLayoutSetIds) {
+                final Integer known = sLayoutSetIds.get(name);
+                if (known != null) {
+                    return known;
+                }
+            }
+            final String resourcePackageName = this.mResources.getResourcePackageName(R.xml.keyboard_layout_set_qwerty);
+            final int id = this.mResources.getIdentifier(name, "xml", resourcePackageName);
+            synchronized (sLayoutSetIds) {
+                sLayoutSetIds.put(name, id);
+            }
+            return id;
+        }
+
+        /** Parses layout set {@code resolvedResourceId} (device overrides already applied) into mParams. */
+        private void readKeyboardLayoutSet(Resources resources, int resolvedResourceId) throws Resources.NotFoundException, IOException, XmlPullParserException {
             XmlResourceParser xml = resources.getXml(resolvedResourceId);
             try {
                 while (xml.getEventType() != 1) {

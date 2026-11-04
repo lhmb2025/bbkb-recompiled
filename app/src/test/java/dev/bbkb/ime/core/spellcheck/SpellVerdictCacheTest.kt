@@ -20,11 +20,33 @@ class SpellVerdictCacheTest {
     }
 
     @Test
-    fun answersExpire() {
+    fun aNotAWordAnswerExpiresAfterTwoMinutes() {
+        // A word the keyboard learns stops being underlined as soon as it did before.
+        cache.put("bbkb", 1, false)
+        now += SpellVerdictCache.NEGATIVE_MAX_AGE_MS
+        assertEquals(false, cache.get("bbkb", 1))
+        now += 1
+        assertNull(cache.get("bbkb", 1))
+    }
+
+    @Test
+    fun aWordAnswerLastsMuchLonger() {
         cache.put("hello", 1, true)
-        now += SpellVerdictCache.MAX_AGE_MS
+        now += SpellVerdictCache.NEGATIVE_MAX_AGE_MS + 1
+        assertEquals(true, cache.get("hello", 1))
+        now += SpellVerdictCache.POSITIVE_MAX_AGE_MS - SpellVerdictCache.NEGATIVE_MAX_AGE_MS - 1
         assertEquals(true, cache.get("hello", 1))
         now += 1
+        assertNull(cache.get("hello", 1))
+    }
+
+    @Test
+    fun aNewEngineGenerationEmptiesTheCache() {
+        cache.syncDictionaryState(0)
+        cache.put("hello", 1, true)
+        cache.syncDictionaryState(0)
+        assertEquals(true, cache.get("hello", 1))
+        cache.syncDictionaryState(1)
         assertNull(cache.get("hello", 1))
     }
 

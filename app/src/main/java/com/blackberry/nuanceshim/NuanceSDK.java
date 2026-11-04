@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import dev.bbkb.ime.core.locale.LocaleUtils;
@@ -48,11 +49,12 @@ public class NuanceSDK {
     public static final int WORD_SOURCE_LEARNED_MODEL = 1;
     public static final String QUICK_CANGJIE_VARIANT = "quick_cangjie";
     private static final String TAG = "NuanceSDK";
-    private AutoCommitCallback mAutoCommitHandler;
-    private ManagedModeCallback mCallbackHandler;
+    // Volatile, written without sMutex (audit P-7): see setCallbackHandler.
+    private volatile AutoCommitCallback mAutoCommitHandler;
+    private volatile ManagedModeCallback mCallbackHandler;
     private boolean mIsCurrLocaleChinese;
     private boolean mIsLanguageInit;
-    private boolean mIsManaged;
+    private volatile boolean mIsManaged;
     private long mNativeHandle;
     private FileObserver mNuanceFileObserver;
     public static final String DYNAMIC_MODEL_FILE_NAME = "alphadlm.bin";
@@ -89,6 +91,17 @@ public class NuanceSDK {
         return Collections.unmodifiableMap(map);
     }
     private static final Object sMutex = new Object();
+
+    /**
+     * Audit P-7: engine work the main thread hands over instead of waiting for sMutex while a
+     * long operation (a language load, a contacts import) holds it. See {@link DeferredEngineWork}.
+     */
+    private static final DeferredEngineWork sDeferred = new DeferredEngineWork();
+
+    /** Keys of this engine's slots in {@link #sDeferred}; a newer request replaces an older one. */
+    private final Object mLayoutWorkKey = new Object();
+    private final Object mEmojiWorkKey = new Object();
+    private final Object mContactsWorkKey = new Object();
 
     /** Hoisted so addWord does not recompile the pattern per call. */
     private static final java.util.regex.Pattern WHITESPACE =
@@ -141,8 +154,11 @@ public class NuanceSDK {
     // Read and written under sMutex only.
     private boolean mEthiopicTranslation = false;
     private boolean mIsExplicitLearning = false;
-    /** Whether {@link #loadDLMFromFile} has attached the learned model to this engine. */
-    private boolean mDlmAttached = false;
+    /**
+     * Whether {@link #loadDLMFromFile} has attached the learned model to this engine. Written
+     * under sMutex; volatile so {@link #setCallbackHandler} can read it without the lock.
+     */
+    private volatile boolean mDlmAttached = false;
 
     /**
      * The last {@link #setContactsCategoryState} choice, applied again whenever the model is
@@ -299,6 +315,7 @@ public class NuanceSDK {
             this.mCallbackHandler = null;
             this.mAutoCommitHandler = null;
             this.mNativeHandle = 0L;
+            this.mDlmAttached = false;
             this.mContactsCategoryApplied = null;
             this.mEmojiPredictionApplied = null;
             if (BuildConfig.DEBUG) Log.i(TAG, "dispose(): " + this);
@@ -306,11 +323,14 @@ public class NuanceSDK {
     }
 
     public void setCallbackHandler(ManagedModeCallback callback) {
-        boolean replay;
-        synchronized (sMutex) {
-            this.mCallbackHandler = callback;
-            replay = callback != null && this.mDlmAttached;
-        }
+        // Audit P-7: no sMutex. The lock guarded two Java fields here, not native state, and
+        // DynamicLearningManager calls this on the main thread during onCreate, where it waited
+        // out a whole dictionary load (301 ms measured on the emulator). Both fields are volatile:
+        // this writes the handler then reads mDlmAttached, loadDLMFromFile writes mDlmAttached
+        // then reads the handler, so at least one of the two delivers onManagedModeChanged. Both
+        // may, which is harmless: the callback only switches the learner on.
+        this.mCallbackHandler = callback;
+        boolean replay = callback != null && this.mDlmAttached;
         // The learned model may already be attached when the handler arrives: the Personal
         // learned words screen gives this engine a language (and so the model) when it is
         // opened before the keyboard has bound in the process, and the keyboard's later
@@ -323,18 +343,14 @@ public class NuanceSDK {
     }
 
     public void setAutoCommitCallbackHandler(AutoCommitCallback autoCommitCallback) {
-        synchronized (sMutex) {
-            this.mAutoCommitHandler = autoCommitCallback;
-        }
+        // Audit P-7: a volatile write, no sMutex; the lock protected only this field.
+        this.mAutoCommitHandler = autoCommitCallback;
     }
 
     // Called by native code (JNI callback) - DO NOT REMOVE
     public void updateAutoCommittedString(String str) {
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.updateAutoCommittedString: str=" + str + " mAutoCommitHandler=" + this.mAutoCommitHandler);
-        AutoCommitCallback autoCommitCallback;
-        synchronized (sMutex) {
-            autoCommitCallback = this.mAutoCommitHandler;
-        }
+        AutoCommitCallback autoCommitCallback = this.mAutoCommitHandler;
         if (autoCommitCallback == null) {
             if (BuildConfig.DEBUG) Log.w(TAG, "Callback handler is null.");
         } else {
@@ -419,9 +435,44 @@ public class NuanceSDK {
         return z;
     }
 
+    /**
+     * Audit P-7: the first half of the deferred-work barrier, taken BEFORE sMutex. A deferred
+     * layout load needs the KDB registry complete (the same wait syncKeyboardLayout does), and
+     * that wait must not happen while holding the engine lock. Free when nothing is deferred.
+     */
+    private static void awaitDeferredPrereqs() {
+        if (sDeferred.hasPending()) {
+            Xt9KdbVariant.awaitReady(2000);
+        }
+    }
+
+    /**
+     * Runs whatever was deferred while a long operation held sMutex: the layout sync and the
+     * per-engine options. Called with no lock held, by the thread that ends the long operation.
+     */
+    private static void runDeferredWork() {
+        if (!sDeferred.hasPending()) {
+            return;
+        }
+        awaitDeferredPrereqs();
+        synchronized (sMutex) {
+            sDeferred.runPending();
+        }
+    }
+
+    /**
+     * Whether this engine's last layout sync was deferred and has not run yet (see
+     * {@link #syncKeyboardLayout}). Every call that reads the layout runs it first.
+     */
+    public boolean isLayoutSyncPending() {
+        return sDeferred.isPending(this.mLayoutWorkKey);
+    }
+
     public int buildSelectionList() {
         int iBuildSelectionList;
+        awaitDeferredPrereqs();
         synchronized (sMutex) {
+            sDeferred.runPending();
             iBuildSelectionList = buildSelectionList(this.mNativeHandle);
             sSelectionListGeneration++;   // audit EB-3: the list just changed identity
             if (BuildConfig.DEBUG) {
@@ -530,7 +581,9 @@ public class NuanceSDK {
 
     public boolean processKeyBySymbol(char c) {
         boolean zProcessKeyBySymbol;
+        awaitDeferredPrereqs();
         synchronized (sMutex) {
+            sDeferred.runPending();
             sInputBufferEpoch++;   // audit EB-2: input-buffer mutation
             if (BuildConfig.DEBUG) {
                 Log.d("PIPELINE", "IME:nuanceSDK:processKey" +
@@ -622,11 +675,31 @@ public class NuanceSDK {
     }
 
     public boolean setLanguage(Locale[] localeArr) {
+        // Audit P-7: the load holds sMutex for the whole LDB + DLM load. Announce it before
+        // queueing for the lock, so main-thread calls arriving meanwhile hand their work over
+        // (sDeferred) instead of waiting; the work runs right after the load, on this thread.
+        sDeferred.beginLongHold();
+        try {
+            return setLanguageLocked(localeArr);
+        } finally {
+            sDeferred.endLongHold();
+            runDeferredWork();
+        }
+    }
+
+    private boolean setLanguageLocked(Locale[] localeArr) {
         synchronized (sMutex) {
             if (localeArr != null) {
                 if (localeArr.length > 0) {
                     this.mPrevPrimaryLocale = getPrimaryLanguage();
-                    if (setLanguage(this.mNativeHandle, localeToString(localeArr))) {
+                    boolean activated = setLanguage(this.mNativeHandle, localeToString(localeArr));
+                    // The native setLanguage re-creates the engine core with its multithreaded
+                    // selection-list build on, which spawned 3 to 7 short-lived threads per
+                    // keystroke and gave non-deterministic candidate lists; the engine's own
+                    // ClearMultiThreading switches it off, so it is applied after every
+                    // activation, whatever the activation returned.
+                    Et9EngineOptions.setMultiThreading(this.mNativeHandle, false);
+                    if (activated) {
                         this.mEthiopicTranslation = EthiopicSyllables.appliesTo(localeArr[0]);
                         // Re-apply the per-engine options once after a language change; whether
                         // activation resets them inside the blob is not documented.
@@ -730,6 +803,11 @@ public class NuanceSDK {
     public boolean registerLdb(String str) {
         boolean zRegisterLdb;
         synchronized (sMutex) {
+            // The pack installer reaches the spell checker's engine through peekSecondary(),
+            // which can now be disposed between that read and this call.
+            if (this.mNativeHandle == 0L) {
+                return false;
+            }
             zRegisterLdb = registerLdb(this.mNativeHandle, str);
         }
         return zRegisterLdb;
@@ -737,6 +815,9 @@ public class NuanceSDK {
 
     public void deregisterLdb(String str, String str2) {
         synchronized (sMutex) {
+            if (this.mNativeHandle == 0L) {
+                return;
+            }
             String[] strArr = new String[2];
             strArr[0] = str;
             if (str2 == null) {
@@ -804,7 +885,9 @@ public class NuanceSDK {
 
     public KeyInfo[] getKeys() {
         KeyInfo[] keys;
+        awaitDeferredPrereqs();
         synchronized (sMutex) {
+            sDeferred.runPending();
             keys = getKeys(this.mNativeHandle);
         }
         if (BuildConfig.DEBUG && keys != null) {
@@ -871,12 +954,20 @@ public class NuanceSDK {
     }
 
     public void addContactsWords(String[] strArr) {
-        synchronized (sMutex) {
-            if (!mIsLanguageInit) {
-                if (BuildConfig.DEBUG) Log.d(TAG, "DLM not ready, skipping addContactsWords (" + strArr.length + " words)");
-                return;
+        // A long hold like setLanguage (one native call over every contact name), and it runs
+        // right after the first dictionary load, so it gets the same hand-over (audit P-7).
+        sDeferred.beginLongHold();
+        try {
+            synchronized (sMutex) {
+                if (!mIsLanguageInit) {
+                    if (BuildConfig.DEBUG) Log.d(TAG, "DLM not ready, skipping addContactsWords (" + strArr.length + " words)");
+                    return;
+                }
+                addCategoryWords(this.mNativeHandle, CATEGORY_CONTACTS, toEngineForm(strArr));
             }
-            addCategoryWords(this.mNativeHandle, CATEGORY_CONTACTS, toEngineForm(strArr));
+        } finally {
+            sDeferred.endLongHold();
+            runDeferredWork();
         }
     }
 
@@ -905,13 +996,24 @@ public class NuanceSDK {
         if (applied != null && applied == enabled) {
             return true;
         }
-        synchronized (sMutex) {
-            this.mContactsCategoryEnabled = enabled;
-            if (this.mNativeHandle == 0 || !this.mDlmAttached) {
-                return false;
-            }
-            return applyContactsCategoryState();
+        // Audit P-7: as setEmojiPredictionEnabled, handed over while a long operation holds the
+        // lock. Answers false like any choice not applied yet; the deferred run applies it.
+        if (sDeferred.deferIfBusy(this.mContactsWorkKey, () -> setContactsChoiceLocked(enabled))) {
+            return false;
         }
+        synchronized (sMutex) {
+            sDeferred.runPending();
+            return setContactsChoiceLocked(enabled);
+        }
+    }
+
+    /** Records the contacts choice and applies it to an attached model; callers hold sMutex. */
+    private boolean setContactsChoiceLocked(boolean enabled) {
+        this.mContactsCategoryEnabled = enabled;
+        if (this.mNativeHandle == 0 || !this.mDlmAttached) {
+            return false;
+        }
+        return applyContactsCategoryState();
     }
 
     /** Pushes the remembered contacts choice into the attached model; callers hold sMutex. */
@@ -1003,7 +1105,9 @@ public class NuanceSDK {
     public boolean touchStart(long j, float f, float f2, long j2) {
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchStart: pointer=" + j + " x=" + f + " y=" + f2 + " time=" + j2);
         boolean z;
+        awaitDeferredPrereqs();
         synchronized (sMutex) {
+            sDeferred.runPending();
             mGestureMoves.put(Long.valueOf(j), Integer.valueOf(0));
             if (InputPathDebug.perGesture() && mDbgKeys == null) {
                 mDbgKeys = getKeys(this.mNativeHandle);
@@ -1021,7 +1125,9 @@ public class NuanceSDK {
     public boolean touchMove(long j, float f, float f2, long j2) {
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchMove: pointer=" + j + " x=" + f + " y=" + f2 + " time=" + j2);
         boolean z;
+        awaitDeferredPrereqs();
         synchronized (sMutex) {
+            sDeferred.runPending();
             Integer c = mGestureMoves.get(Long.valueOf(j));
             if (c != null) mGestureMoves.put(Long.valueOf(j), Integer.valueOf(c.intValue() + 1));
             z = touchMove(this.mNativeHandle, j, f, f2, j2);
@@ -1044,7 +1150,9 @@ public class NuanceSDK {
     public boolean touchEnd(long j, float f, float f2, long j2) {
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchEnd: pointer=" + j + " x=" + f + " y=" + f2 + " time=" + j2);
         boolean z;
+        awaitDeferredPrereqs();
         synchronized (sMutex) {
+            sDeferred.runPending();
             Integer moves = mGestureMoves.remove(Long.valueOf(j));
             int n = (moves == null) ? 0 : moves.intValue();
             if (n < MIN_GESTURE_MOVES) {
@@ -1083,7 +1191,9 @@ public class NuanceSDK {
     public boolean touchCancel(long j) {
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchCancel: pointer=" + j);
         boolean z;
+        awaitDeferredPrereqs();
         synchronized (sMutex) {
+            sDeferred.runPending();
             mGestureMoves.remove(Long.valueOf(j));
             z = touchCancel(this.mNativeHandle, j);
         }
@@ -1114,36 +1224,60 @@ public class NuanceSDK {
     public boolean syncKeyboardLayout(boolean z, String str, int i, int i2) {
         final boolean isPkb = !z;   // engine wants isPkb; callers hand us isTouchKb
         // A change of keyboard can change whether the active letter layout's KDBs apply; any
-        // switch it queues is on the registration thread awaited just below.
+        // switch it queues is on the registration thread awaited before the load.
         dev.bbkb.ime.core.layout.LetterLayoutEngineSync.beforeEngineLayoutSync(isPkb);
+        sDbgKbZ = z; sDbgKbStr = str;   // remember for the RE re-parse trigger
+        // Audit P-7: on a cold start the first field's sync arrives while the dictionary load
+        // holds sMutex for the whole LDB + DLM load, and the main thread used to wait it out.
+        // Instead the sync is handed to the loading thread, which runs it as soon as the load ends
+        // (runDeferredWork). The barrier that keeps this correct: every call that reads the layout
+        // (touchStart/Move/End/Cancel, processKeyBySymbol, buildSelectionList, getKeys,
+        // loadKeyboardLayout) runs deferred work first, inside the same sMutex hold, so no tap,
+        // swipe or key is ever fed against the previous layout. Such a call would have waited for
+        // the lock anyway; only the main thread's layout sync itself no longer does.
+        if (sDeferred.deferIfBusy(this.mLayoutWorkKey, () -> applyKeyboardLayoutLocked(z, isPkb, str, i, i2))) {
+            if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: deferred (engine busy) isTouchKb=" + z + " locale='" + str + "' width=" + i + " height=" + i2);
+            return true;
+        }
         // Device KDB variants register on a worker; make sure the registry is populated
         // before the engine's first SetKdbNum. No-op once registration has completed.
         Xt9KdbVariant.awaitReady(2000);
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: isTouchKb=" + z + " locale='" + str + "' width=" + i + " height=" + i2 + " kdbVariant='" + Xt9KdbVariant.applied() + "'");
-        sDbgKbZ = z; sDbgKbStr = str;   // remember for the RE re-parse trigger
         synchronized (sMutex) {
-            boolean loadResult = dbgFirstLoad(this.mNativeHandle, isPkb, str);
-            if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: loadKeyboardLayout returned " + loadResult);
-            if (!loadResult) {
-                return false;
-            }
-            boolean sizeResult = setKeyboardSize(isPkb, (short) i, (short) i2);
-            if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: setKeyboardSize returned " + sizeResult);
-            if (InputPathDebug.on()) {
-                android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: isPkb=" + isPkb
-                    + " (isTouchKb=" + z + ")");
-                // Identify the KDB the engine ACTUALLY ended up with, after the load+size calls.
-                // The one-shot dump on first touch fires before this sync and can be stale.
-                Xt9Trace.dumpNkl(this.mNativeHandle);
-            }
-            return sizeResult;
+            // An older deferred sync of this engine is superseded by this one.
+            sDeferred.discard(this.mLayoutWorkKey);
+            sDeferred.runPending();
+            return applyKeyboardLayoutLocked(z, isPkb, str, i, i2);
         }
+    }
+
+    /** The native half of {@link #syncKeyboardLayout}; callers hold sMutex. */
+    private boolean applyKeyboardLayoutLocked(boolean z, boolean isPkb, String str, int i, int i2) {
+        if (this.mNativeHandle == 0) {
+            return false;   // disposed while the sync was deferred
+        }
+        boolean loadResult = dbgFirstLoad(this.mNativeHandle, isPkb, str);
+        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: loadKeyboardLayout returned " + loadResult);
+        if (!loadResult) {
+            return false;
+        }
+        boolean sizeResult = setKeyboardSize(isPkb, (short) i, (short) i2);
+        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: setKeyboardSize returned " + sizeResult);
+        if (InputPathDebug.on()) {
+            android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: isPkb=" + isPkb
+                + " (isTouchKb=" + z + ")");
+            // Identify the KDB the engine ACTUALLY ended up with, after the load+size calls.
+            // The one-shot dump on first touch fires before this sync and can be stale.
+            Xt9Trace.dumpNkl(this.mNativeHandle);
+        }
+        return sizeResult;
     }
 
     public boolean loadKeyboardLayout(boolean z) {
         Xt9KdbVariant.awaitReady(2000);
         boolean zLoadKeyboardLayout;
         synchronized (sMutex) {
+            sDeferred.runPending();
             zLoadKeyboardLayout = dbgFirstLoad(this.mNativeHandle, z, "");
         }
         return zLoadKeyboardLayout;
@@ -1176,11 +1310,25 @@ public class NuanceSDK {
         if (applied != null && applied == z) {
             return true;
         }
-        boolean emojiPredictionEnabled;
-        synchronized (sMutex) {
-            emojiPredictionEnabled = setEmojiPredictionEnabled(this.mNativeHandle, z);
-            this.mEmojiPredictionApplied = emojiPredictionEnabled ? z : null;
+        // Audit P-7: while a long operation holds sMutex, hand the value over instead of waiting
+        // (the language load resets mEmojiPredictionApplied, so the first field's loadSettings
+        // used to land here and wait out the rest of the load). Reported as accepted.
+        if (sDeferred.deferIfBusy(this.mEmojiWorkKey, () -> applyEmojiPredictionLocked(z))) {
+            return true;
         }
+        synchronized (sMutex) {
+            sDeferred.runPending();
+            return applyEmojiPredictionLocked(z);
+        }
+    }
+
+    /** The native half of {@link #setEmojiPredictionEnabled(boolean)}; callers hold sMutex. */
+    private boolean applyEmojiPredictionLocked(boolean z) {
+        if (this.mNativeHandle == 0) {
+            return false;
+        }
+        boolean emojiPredictionEnabled = setEmojiPredictionEnabled(this.mNativeHandle, z);
+        this.mEmojiPredictionApplied = emojiPredictionEnabled ? z : null;
         return emojiPredictionEnabled;
     }
 
@@ -1218,7 +1366,8 @@ public class NuanceSDK {
 
     public boolean loadDLMFromFile() {
         synchronized (sMutex) {
-            if (!reattachDLM()) {
+            // A disposed engine (the spell checker's, released while idle) has no model to attach.
+            if (this.mNativeHandle == 0L || !reattachDLM()) {
                 return false;
             }
             this.mDlmAttached = true;
@@ -1527,6 +1676,97 @@ public class NuanceSDK {
     public void setShiftState(int i) {
         synchronized (sMutex) {
             setShiftState(this.mNativeHandle, i);
+        }
+    }
+
+    /**
+     * Audit P-7: work handed over while a long operation holds sMutex.
+     *
+     * <p>A long operation (setLanguage, addContactsWords) calls {@link #beginLongHold()} before it
+     * queues for the lock and {@link #endLongHold()} when it is done, then runs the pending work.
+     * While one is in progress, {@link #deferIfBusy} stores a caller's work under a key (a newer
+     * entry for the same key replaces the older one) instead of letting the caller block. Every
+     * engine call that depends on that work runs {@link #runPending()} first, inside its own sMutex
+     * hold, so deferred work always lands before any call that reads its result.
+     *
+     * <p>Free of NuanceSDK statics on purpose, so the JVM tests can exercise it without loading
+     * the engine's native library.
+     */
+    static final class DeferredEngineWork {
+        private final Object lock = new Object();
+        private final LinkedHashMap<Object, Runnable> pending = new LinkedHashMap<>();
+        private int longHolds;
+        private volatile boolean hasPending;
+
+        void beginLongHold() {
+            synchronized (this.lock) {
+                this.longHolds++;
+            }
+        }
+
+        void endLongHold() {
+            synchronized (this.lock) {
+                if (this.longHolds > 0) {
+                    this.longHolds--;
+                }
+            }
+        }
+
+        /** Stores {@code work} and answers true while a long operation is in progress; else false. */
+        boolean deferIfBusy(Object key, Runnable work) {
+            synchronized (this.lock) {
+                if (this.longHolds == 0) {
+                    return false;
+                }
+                this.pending.remove(key);   // re-inserted last: keeps request order
+                this.pending.put(key, work);
+                this.hasPending = true;
+                return true;
+            }
+        }
+
+        boolean hasPending() {
+            return this.hasPending;
+        }
+
+        boolean isPending(Object key) {
+            if (!this.hasPending) {
+                return false;
+            }
+            synchronized (this.lock) {
+                return this.pending.containsKey(key);
+            }
+        }
+
+        /** Drops {@code key}'s entry: the caller is about to do newer work for it directly. */
+        void discard(Object key) {
+            if (!this.hasPending) {
+                return;
+            }
+            synchronized (this.lock) {
+                this.pending.remove(key);
+                this.hasPending = !this.pending.isEmpty();
+            }
+        }
+
+        /** Runs and clears the pending work, oldest first. Callers hold the engine lock. */
+        void runPending() {
+            if (!this.hasPending) {
+                return;
+            }
+            final ArrayList<Runnable> work;
+            synchronized (this.lock) {
+                work = new ArrayList<>(this.pending.values());
+                this.pending.clear();
+                this.hasPending = false;
+            }
+            for (Runnable r : work) {
+                try {
+                    r.run();
+                } catch (RuntimeException e) {
+                    Log.w(TAG, "deferred engine work failed", e);
+                }
+            }
         }
     }
 }

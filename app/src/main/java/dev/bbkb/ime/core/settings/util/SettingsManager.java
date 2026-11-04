@@ -77,6 +77,21 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
 
     private Handler mainHandler;
 
+    /**
+     * What {@link #settingsValues}' stored and resource-derived fields were built for: the
+     * keyboard locale and the application's configuration. A load for the same pair, with no
+     * preference change since, reuses them and only redoes the per-editor fields.
+     */
+    private Locale snapshotLocale;
+
+    private Configuration snapshotConfiguration;
+
+    /**
+     * The change listener is registered, so {@link #rebuildPending} reports every write. Without
+     * it a write cannot be seen, and every load reads the preferences again.
+     */
+    private volatile boolean listeningForChanges;
+
     private final Runnable coalescedRebuild = this::runCoalescedRebuild;
 
     
@@ -112,6 +127,9 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         this.listeners = new ArrayList<>();
         this.sharedPreferences = PrefsManager.INSTANCE.getPrefs(context);
         this.sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        this.listeningForChanges = true;
+        // A new preferences instance: nothing built from the old one is reused.
+        this.snapshotConfiguration = null;
         // First-load: contains() blocks until the prefs file finishes its async load,
         // and this runs first thing in onCreate — do the migration (and the blocking
         // wait behind it) off the main thread. The removed keys are legacy-only, so
@@ -120,7 +138,20 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         StartupTiming.end("settings.initializeInternal", token);
     }
 
+    /**
+     * Whether settings built for {@code builtLocale} under {@code builtConfiguration} still hold
+     * for {@code locale} under {@code configuration}. Any configuration difference counts: the
+     * resource defaults, the orientation and the hardware-keyboard state come from it.
+     */
+    static boolean isSnapshotFor(Locale builtLocale, Configuration builtConfiguration,
+            Locale locale, Configuration configuration) {
+        return builtConfiguration != null
+                && java.util.Objects.equals(builtLocale, locale)
+                && builtConfiguration.diff(configuration) == 0;
+    }
+
     public void unregisteredListener() {
+        this.listeningForChanges = false;
         this.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
@@ -242,14 +273,28 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         this.context = context.getApplicationContext();
         try {
             // Cleared before the build, so a write made while building marks it stale again.
+            final boolean preferencesChanged = this.rebuildPending;
             this.rebuildPending = false;
             final SharedPreferences sharedPreferences = this.sharedPreferences;
-            this.settingsValues = new RunInLocale<SettingsValues>() {
-                @Override
-                public SettingsValues job(Resources resources) {
-                    return new SettingsValues(context, sharedPreferences, resources, c0696l);
-                }
-            }.runInLocale(this.context, locale);
+            final Configuration configuration = this.context.getResources().getConfiguration();
+            final SettingsValues previous = this.settingsValues;
+            if (previous != null && !preferencesChanged && this.listeningForChanges
+                    && isSnapshotFor(this.snapshotLocale, this.snapshotConfiguration, locale, configuration)) {
+                // A new field with nothing else changed: only the per-editor fields are worked
+                // out again (P-12). This ran a full rebuild on every field focus: about 120
+                // preference reads, 60 resource reads and, for a keyboard language other than
+                // the system's, a configuration context.
+                this.settingsValues = previous.forEditor(this.context, c0696l);
+            } else {
+                this.settingsValues = new RunInLocale<SettingsValues>() {
+                    @Override
+                    public SettingsValues job(Resources resources) {
+                        return new SettingsValues(context, sharedPreferences, resources, c0696l);
+                    }
+                }.runInLocale(this.context, locale);
+                this.snapshotLocale = locale;
+                this.snapshotConfiguration = new Configuration(configuration);
+            }
             // Create/update device profile based on current configuration
             this.deviceProfile = DeviceProfile.fromSettings(context, this.settingsValues);
         } finally {

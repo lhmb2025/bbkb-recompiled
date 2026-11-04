@@ -3,6 +3,7 @@ package dev.bbkb.ime.core;
 import android.app.Application;
 
 import dev.bbkb.ime.core.settings.backup.AutoBackup;
+import dev.bbkb.ime.core.shared.StartupTiming;
 
 
 public class ImeApplication extends Application {
@@ -15,6 +16,9 @@ public class ImeApplication extends Application {
 
     @Override // android.app.Application
     public void onCreate() {
+        // Debug builds: the fallback process-start reference for the IME's cold-start timing
+        // (StartupTiming.markSinceProcessStart) on API 23. A no-op in release.
+        StartupTiming.applicationCreated();
         super.onCreate();
         sInstance = this;
         // A bundle Android restored with the app's data (same Google account, new phone) is

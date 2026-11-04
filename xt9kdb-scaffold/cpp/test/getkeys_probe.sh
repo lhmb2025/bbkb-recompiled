@@ -22,8 +22,8 @@ CC="${CC:-cc}"
 OUT="$(mktemp -d)"
 trap 'rm -rf "$OUT"' EXIT
 
-# kdb_decode.c + kdb_rank.c are NOT in run_tests.sh's shared SRC list (the other stages exercise
-# the superseded first-cut decoder); this experiment needs the shipped decoder and ranker.
+# The shipped decoder and ranker (kdb_decode.c + kdb_rank.c), without the superseded first-cut
+# decoder that run_tests.sh's shared SRC list also carries.
 SRC="src/kdb_geometry.c src/kdb_load_xml.c src/kdb_state.c src/kdb_tap.c src/kdb_trace.c
      src/kdb_nkl.c src/kdb_decode.c src/kdb_rank.c"
 # shellcheck disable=SC2086  # $SRC is a deliberate word-split list

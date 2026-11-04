@@ -592,6 +592,14 @@ public final class DeviceProfile {
         return deviceMapping != null && deviceMapping.hasQuirk(quirk);
     }
 
+    /**
+     * Whether the device's screen is e-ink ({@code <quirk name="eink-display"/>}, the MP01), so
+     * views should avoid cosmetic repaints. False on every other device and when no profile matched.
+     */
+    public boolean isEinkDisplay() {
+        return hasQuirk(DeviceQuirk.EINK_DISPLAY);
+    }
+
     public int getTouchKeypadDeviceId() {
         if (deviceMapping != null && deviceMapping.forceTouchKeypad) {
             int hwId = capabilities.getTouchKeypadDeviceId();

@@ -4,6 +4,16 @@
 # Every rule below must name a class that actually exists in the APK. Verified
 # against the source tree on 2026-09-06 during the package rearchitecture; if you
 # move or rename a class, move its rule here in the same commit.
+#
+# Wildcards (audit H-10, 2026-11): "*" matches within one path segment, "**" across
+# segments, and "->**(**)**" is every method of the matched classes. AGP expands them
+# against the release dex (through the R8 mapping) when it compiles the binary
+# profile. They cover the packages on the cold-start, first-field and per-keystroke
+# paths, which used to run interpreted until background dexopt had collected a
+# profile of its own (releases are sideloaded, so there are no cloud profiles).
+# Settings screens, backup, language-pack downloads and the personal-dictionary UI
+# stay out on purpose. Check a change with:
+#   profgen validate app/src/main/baseline-prof.txt
 
 # Core IME Service - Critical startup path
 HSPLdev/bbkb/ime/core/BlackBerryIME;->onCreate()V
@@ -85,3 +95,94 @@ Ldev/bbkb/ime/core/device/ResourceConfigManager;
 # Compose Settings (for launcher access)
 Ldev/bbkb/ime/core/settings/ComposeSettingsActivity;
 Ldev/bbkb/ime/core/settings/screens/**;
+
+# ---- Hot paths, whole packages (audit H-10) ----
+
+# Service, Application and the IME's own collaborators (core/ itself, not its subpackages)
+HSPLdev/bbkb/ime/core/*;->**(**)**
+Ldev/bbkb/ime/core/*;
+HSPLdev/bbkb/ime/core/ime/**;->**(**)**
+Ldev/bbkb/ime/core/ime/**;
+
+# Text pipeline: InputLogic, InputSessionCoordinator, composing, RichInputConnection, controllers
+HSPLdev/bbkb/ime/core/textinput/**;->**(**)**
+Ldev/bbkb/ime/core/textinput/**;
+
+# Physical and on-screen key events
+HSPLdev/bbkb/ime/core/keyevent/**;->**(**)**
+Ldev/bbkb/ime/core/keyevent/**;
+
+# Suggestions: engine bridge, request queue, strip assembly
+HSPLdev/bbkb/ime/core/suggestion/**;->**(**)**
+Ldev/bbkb/ime/core/suggestion/**;
+HSPLdev/bbkb/ime/core/engine/**;->**(**)**
+Ldev/bbkb/ime/core/engine/**;
+
+# The engine's Java wrappers (not the language-pack catalogue below them)
+HSPLcom/blackberry/nuanceshim/*;->**(**)**
+Lcom/blackberry/nuanceshim/*;
+HSPLcom/blackberry/nuanceshim/languagepack/LanguagePackManager;->**(**)**
+Lcom/blackberry/nuanceshim/languagepack/LanguagePackManager;
+
+# Settings snapshot (SettingsManager.loadSettings, SettingsValues.<init>) and prefs
+HSPLdev/bbkb/ime/core/settings/util/**;->**(**)**
+Ldev/bbkb/ime/core/settings/util/**;
+HSPLdev/bbkb/ime/core/settings/PrefsManager;->**(**)**
+HSPLdev/bbkb/ime/core/settings/PrefsManager$*;->**(**)**
+Ldev/bbkb/ime/core/settings/PrefsManager$*;
+
+# Locale and subtypes (per field), letter layouts (per layout sync)
+HSPLdev/bbkb/ime/core/locale/**;->**(**)**
+Ldev/bbkb/ime/core/locale/**;
+HSPLdev/bbkb/ime/core/layout/**;->**(**)**
+Ldev/bbkb/ime/core/layout/**;
+
+# Device layer: profile + config parse, keyboard state, key interceptor, touch keypad
+HSPLdev/bbkb/ime/core/device/*;->**(**)**
+HSPLdev/bbkb/ime/core/device/profile/**;->**(**)**
+Ldev/bbkb/ime/core/device/profile/**;
+HSPLdev/bbkb/ime/core/device/config/**;->**(**)**
+Ldev/bbkb/ime/core/device/config/**;
+HSPLdev/bbkb/ime/core/device/detection/**;->**(**)**
+Ldev/bbkb/ime/core/device/detection/**;
+HSPLdev/bbkb/ime/core/device/state/**;->**(**)**
+Ldev/bbkb/ime/core/device/state/**;
+HSPLdev/bbkb/ime/core/device/interceptor/**;->**(**)**
+Ldev/bbkb/ime/core/device/interceptor/**;
+HSPLdev/bbkb/ime/core/device/touch/*;->**(**)**
+Ldev/bbkb/ime/core/device/touch/*;
+
+# Touch-keypad gestures (per touch sample on the KEY2)
+HSPLdev/bbkb/ime/core/gesture/arbiter/**;->**(**)**
+Ldev/bbkb/ime/core/gesture/arbiter/**;
+
+# Shared utilities used on every path
+HSPLdev/bbkb/ime/core/shared/**;->**(**)**
+Ldev/bbkb/ime/core/shared/**;
+
+# Keyboard model, builder, views and switcher (keyboard/ itself)
+HSPLdev/bbkb/ime/keyboard/*;->**(**)**
+Ldev/bbkb/ime/keyboard/*;
+
+# Layout XML parsing, pointer tracking, key detection, gesture processing
+HSPLdev/bbkb/ime/keyboard/internal/**;->**(**)**
+Ldev/bbkb/ime/keyboard/internal/**;
+
+# Aux bar and suggestion strip views
+HSPLdev/bbkb/ime/keyboard/auxbar/**;->**(**)**
+Ldev/bbkb/ime/keyboard/auxbar/**;
+
+# Keyboard state machine and the unified input board (not the individual boards)
+HSPLdev/bbkb/ime/keyboard/state/**;->**(**)**
+Ldev/bbkb/ime/keyboard/state/**;
+HSPLdev/bbkb/ime/keyboard/inputboard/*;->**(**)**
+Ldev/bbkb/ime/keyboard/inputboard/*;
+
+# Emoji strip lookups run per keystroke while emoji suggestions are on
+HSPLdev/bbkb/ime/keyboard/inputboard/emoji/EmojibaseDataProvider;->**(**)**
+HSPLdev/bbkb/ime/keyboard/inputboard/emoji/EmojibaseDataProvider$*;->**(**)**
+Ldev/bbkb/ime/keyboard/inputboard/emoji/EmojibaseDataProvider;
+
+# Personal dictionary lookups from loadSettings and commits
+HSPLdev/bbkb/ime/personaldictionary/DictionaryManager;->**(**)**
+Ldev/bbkb/ime/personaldictionary/DictionaryManager;

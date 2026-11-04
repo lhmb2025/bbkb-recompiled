@@ -53,8 +53,15 @@ final class EmojiRecents {
         return recents;
     }
 
-    /** Stores {@code entries} (strings and integer key codes) as the recents array. */
-    static void write(SharedPreferences prefs, List<Object> entries) {
-        SettingsManager.setEmojiRecentKeys(prefs, GSON.toJson(entries));
+    /** Stores {@code entries} (strings and integer key codes) as the recents array; returns the stored value. */
+    static String write(SharedPreferences prefs, List<Object> entries) {
+        final String json = GSON.toJson(entries);
+        SettingsManager.setEmojiRecentKeys(prefs, json);
+        return json;
+    }
+
+    /** The stored value unparsed, for comparing with what a recents grid last read or wrote. */
+    static String stored(SharedPreferences prefs) {
+        return SettingsManager.getEmojiRecentKeys(prefs);
     }
 }

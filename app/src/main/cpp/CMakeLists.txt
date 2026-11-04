@@ -31,8 +31,13 @@ set(XT9KDB_SRCS
     ${XT9KDB_DIR}/src/kdb_nkl.c)
 if(XT9KDB_CUTOVER)
     # No debug JNI glue — but the variant JNI (device KDB variants) ships in both modes.
-    add_library(xt9kdb SHARED ${XT9KDB_SRCS} xt9kdb_variant_jni.c)
+    # ldb_reader*.c: the blob's LDB read callback + index teardown (elf_cutover.py LDB_CONTRACT),
+    # which maps stored APK assets instead of copying them to the heap (P-9).
+    add_library(xt9kdb SHARED ${XT9KDB_SRCS} xt9kdb_variant_jni.c
+                ${XT9KDB_DIR}/src/ldb_reader.c ${XT9KDB_DIR}/src/ldb_reader_android.c)
     target_compile_definitions(xt9kdb PRIVATE XT9KDB_CUTOVER=1)
+    find_library(android-lib android)   # AAsset_openFileDescriptor64 for ldb_reader_android.c
+    target_link_libraries(xt9kdb ${android-lib})
     # Output libkb.so + SONAME libkb.so so the patched blob's repurposed DT_NEEDED resolves it.
     set_target_properties(xt9kdb PROPERTIES OUTPUT_NAME kb LINK_FLAGS "-Wl,-soname,libkb.so")
 else()

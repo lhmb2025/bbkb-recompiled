@@ -84,7 +84,24 @@ public final class ComposingTextTracker {
 
     private InputMethodCallback mInputMethodConverter;
 
-    private NuanceSDK mNuanceSDK;
+    /**
+     * The engine, once resolved. Volatile: the suggestion worker and the main thread both reach
+     * it, and on a cold start whichever comes first resolves it (see {@link #engine()}).
+     */
+    private volatile NuanceSDK mNuanceSDK;
+
+    /**
+     * Where the engine comes from when it was not handed over at construction. The IME's tracker
+     * is built in the service constructor, before the engine exists (audit P-6: creating it there
+     * loaded the native library on the main thread before onCreate), so it asks for the engine at
+     * its first real use instead. Null for a tracker constructed with an engine.
+     */
+    private final EngineSource mEngineSource;
+
+    /** Supplies the engine on first use; may return null while it is unavailable. */
+    public interface EngineSource {
+        NuanceSDK get();
+    }
 
     private SpannableStringBuilder mComposingText = new SpannableStringBuilder();
 
@@ -150,7 +167,20 @@ public final class ComposingTextTracker {
      * @param nuanceSDK the NuanceSDK instance used to process key symbols and shift state
      */
     public ComposingTextTracker(NuanceSDK nuanceSDK) {
+        this(nuanceSDK, null);
+    }
+
+    /**
+     * A tracker that resolves its engine at the first call that needs it, so constructing it never
+     * creates (or waits for) the engine. A null answer is not remembered: the next use asks again.
+     */
+    public ComposingTextTracker(EngineSource engineSource) {
+        this(null, engineSource);
+    }
+
+    private ComposingTextTracker(NuanceSDK nuanceSDK, EngineSource engineSource) {
         this.mNuanceSDK = nuanceSDK;
+        this.mEngineSource = engineSource;
         this.mComposingText.clear();
         clearAutoCorrection();
         this.mIsGestureInput = false;
@@ -161,6 +191,22 @@ public final class ComposingTextTracker {
         this.wasAutoCorrected = false;
         recalculateTextStats(false);
         this.mInputMethodConverter = null;
+    }
+
+    /**
+     * The engine this tracker drives, resolved on first use when it was not given at construction.
+     * Resolving can wait for the engine's background start (NuanceSDKManager), which is why it is
+     * not done in the constructor.
+     */
+    private NuanceSDK engine() {
+        NuanceSDK sdk = this.mNuanceSDK;
+        if (sdk == null && this.mEngineSource != null) {
+            sdk = this.mEngineSource.get();
+            if (sdk != null) {
+                this.mNuanceSDK = sdk;
+            }
+        }
+        return sdk;
     }
 
     /**
@@ -257,8 +303,9 @@ public final class ComposingTextTracker {
         // Same-value suppression in setShiftState then kept it un-repaired until the tracker's own
         // shift value genuinely changed. IME behaviour is unchanged: InputLogic's tracker wraps
         // getInstance() anyway (InputLogic.java:167).
-        if (this.mNuanceSDK != null) {
-            this.mNuanceSDK.setShiftState(0);
+        NuanceSDK sdk = engine();
+        if (sdk != null) {
+            sdk.setShiftState(0);
         }
         this.mRecorrectionState.reset();
         recalculateTextStats(false);
@@ -338,14 +385,14 @@ public final class ComposingTextTracker {
      * non-CJK locales.
      */
     private void rebuildNuanceFromComposing() {
-        this.mNuanceSDK.clear();
+        engine().clear();
         InputMethodCallback converter = this.mInputMethodConverter;
         InputMethodCallback.ConverterType type = converter != null ? converter.getConverterType() : InputMethodCallback.ConverterType.NOT_DEFINED;
         if (type == InputMethodCallback.ConverterType.HANGUL || type == InputMethodCallback.ConverterType.VIETNAMESE_TELEX) {
             // Same routing as processNuanceAndConverter: these converters feed the engine jamo,
             // or base letters plus explicit accents, never the composed characters. Feeding "한"
             // as one symbol leaves the engine unable to attach the next jamo to it.
-            converter.processSymbols(this.mComposingText, this.mNuanceSDK);
+            converter.processSymbols(this.mComposingText, engine());
             return;
         }
         int len = this.mComposingText.length();
@@ -357,12 +404,12 @@ public final class ComposingTextTracker {
                 // TI-37: see processNuanceAndConverter - one lookup, one box.
                 Character strokeKey = STROKE_TO_NUMBER_MAP.get(c);
                 Character cangjieKey = CANGJIE_RADICAL_TO_KEY_MAP.get(c);
-                if (this.mNuanceSDK.isChineseStrokeMode() && strokeKey != null) {
-                    this.mNuanceSDK.processKeyBySymbol(strokeKey.charValue());
+                if (engine().isChineseStrokeMode() && strokeKey != null) {
+                    engine().processKeyBySymbol(strokeKey.charValue());
                 } else if (cangjieKey != null) {
-                    this.mNuanceSDK.processKeyBySymbol(cangjieKey.charValue());
+                    engine().processKeyBySymbol(cangjieKey.charValue());
                 } else {
-                    this.mNuanceSDK.processKeyBySymbol(c);
+                    engine().processKeyBySymbol(c);
                 }
             }
             i += Character.charCount(cp);
@@ -500,7 +547,7 @@ public final class ComposingTextTracker {
         updateCoordinatesAndCaps(c0914a, iM4319b, length);
         clearAutoCorrection();
         if (length == 0) {
-            this.mNuanceSDK.clear();
+            engine().clear();
             if (iM4319b == 1) {
                 setShiftState(i);
             }
@@ -514,17 +561,17 @@ public final class ComposingTextTracker {
         if (i == 1 && !HangulInputProcessor.isHangulSyllable(iCodePointBefore)) {
             this.mComposingText.clear();
             this.mCoordinateTracker.truncate(0);
-            this.mNuanceSDK.clear();
+            engine().clear();
         } else {
             this.mComposingText.delete(i - Character.charCount(iCodePointBefore), i);
-            this.mNuanceSDK.clearOneSymbol();
+            engine().clearOneSymbol();
             TouchPointerCoordTracker c0697m = this.mCoordinateTracker;
             c0697m.truncate(c0697m.getPointerSize() - 1);
         }
     }
 
     private boolean processConverterBackspace() {
-        InputMethodCallback.ConversionResult aVarMo4304b = this.mInputMethodConverter.revertLastConversion(this.mComposingText, this.mCoordinateTracker, this.mNuanceSDK);
+        InputMethodCallback.ConversionResult aVarMo4304b = this.mInputMethodConverter.revertLastConversion(this.mComposingText, this.mCoordinateTracker, engine());
         if (aVarMo4304b == null) {
             return false;
         }
@@ -589,9 +636,9 @@ public final class ComposingTextTracker {
         CharSequence charSequenceM5933n = c0914a.getOutputText();
         if (i > 0) {
             if (getConverterType() == InputMethodCallback.ConverterType.HANGUL && (interfaceC0673c2 = this.mInputMethodConverter) != null) {
-                interfaceC0673c2.processSymbols(charSequenceM5933n, this.mNuanceSDK);
+                interfaceC0673c2.processSymbols(charSequenceM5933n, engine());
             } else if (getConverterType() == InputMethodCallback.ConverterType.VIETNAMESE_TELEX && (interfaceC0673c = this.mInputMethodConverter) != null) {
-                interfaceC0673c.processSymbols(charSequenceM5933n, this.mNuanceSDK);
+                interfaceC0673c.processSymbols(charSequenceM5933n, engine());
             } else {
                 // B-5: the script lookup allocates (String[] + Locales) and takes the engine
                 // lock, so resolve it only when a character actually reaches that branch.
@@ -603,16 +650,16 @@ public final class ComposingTextTracker {
                     Character strokeKey = STROKE_TO_NUMBER_MAP.get(cCharAt);
                     Character cangjieKey = CANGJIE_RADICAL_TO_KEY_MAP.get(cCharAt);
                     // Cheap null test first: isChineseStrokeMode() is a locked engine call.
-                    if (strokeKey != null && this.mNuanceSDK.isChineseStrokeMode()) {
-                        this.mNuanceSDK.processKeyBySymbol(strokeKey.charValue());
+                    if (strokeKey != null && engine().isChineseStrokeMode()) {
+                        engine().processKeyBySymbol(strokeKey.charValue());
                     } else if (cangjieKey != null) {
-                        this.mNuanceSDK.processKeyBySymbol(cangjieKey.charValue());
+                        engine().processKeyBySymbol(cangjieKey.charValue());
                     } else if (cCharAt > 127 && cCharAt != 305
                             && (iM5599a != Integer.MIN_VALUE ? iM5599a
-                                : (iM5599a = ScriptUtils.getScriptFromLocale(this.mNuanceSDK.getPrimaryLanguage()))) == 14) {
-                        this.mNuanceSDK.addExplicitSymb(cCharAt);
+                                : (iM5599a = ScriptUtils.getScriptFromLocale(engine().getPrimaryLanguage()))) == 14) {
+                        engine().addExplicitSymb(cCharAt);
                     } else {
-                        this.mNuanceSDK.processKeyBySymbol(cCharAt);
+                        engine().processKeyBySymbol(cCharAt);
                     }
                 }
             }
@@ -620,7 +667,7 @@ public final class ComposingTextTracker {
         updateRecorrectionSnapshot();
         InputMethodCallback interfaceC0673c3 = this.mInputMethodConverter;
         if (interfaceC0673c3 != null && z) {
-            this.mComposingText = new SpannableStringBuilder(interfaceC0673c3.convert(this.mComposingText, this.mCoordinateTracker, this.mNuanceSDK).text);
+            this.mComposingText = new SpannableStringBuilder(interfaceC0673c3.convert(this.mComposingText, this.mCoordinateTracker, engine()).text);
             recalculateTextStats(true);
             this.mComposingCursorPos = this.mCodePointCount;
         }
@@ -882,8 +929,9 @@ public final class ComposingTextTracker {
             int nuanceState = getKeyboardShiftState();
             // FIX-D2: null when the engine failed to load (as clearAll already allows). Every
             // suggestion request starts here via setShiftStateIfNotComposing.
-            if (this.mNuanceSDK != null) {
-                this.mNuanceSDK.setShiftState(nuanceState);
+            NuanceSDK sdk = engine();
+            if (sdk != null) {
+                sdk.setShiftState(nuanceState);
             }
         }
     }
@@ -1163,7 +1211,7 @@ public final class ComposingTextTracker {
             string = this.mComposingText.toString();
         }
         if (LocaleUtils.isCurrentSubtypeJapanese()) {
-            String inlineWord = this.mNuanceSDK.getInlineWord();
+            String inlineWord = engine().getInlineWord();
             if (!TextUtils.isEmpty(inlineWord)) {
                 string = this.mComposingText.subSequence(0, this.mComposingText.length() - inlineWord.length()).toString();
             }
@@ -1172,7 +1220,7 @@ public final class ComposingTextTracker {
         boolean z2 = string.length() < this.mComposingText.length();
         if (z2) {
             Locale locale = Locale.getDefault();
-            if (this.mNuanceSDK.isCurrLocaleChinese() && suggestedWordInfoVar2.nuanceWordInfo != null && !TextUtils.isEmpty(suggestedWordInfoVar2.nuanceWordInfo.spell)) {
+            if (engine().isCurrLocaleChinese() && suggestedWordInfoVar2.nuanceWordInfo != null && !TextUtils.isEmpty(suggestedWordInfoVar2.nuanceWordInfo.spell)) {
                 iIndexOf = getChineseSpellLength(string, suggestedWordInfoVar2);
             } else {
                 iIndexOf = this.mComposingText.toString().toLowerCase(locale).indexOf(string.toLowerCase(locale)) + string.length();
@@ -1208,18 +1256,18 @@ public final class ComposingTextTracker {
     }
 
     private synchronized int getChineseSpellLength(String str, SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
-        if (this.mNuanceSDK.isChineseStrokeMode()) {
+        if (engine().isChineseStrokeMode()) {
             suggestedWordInfoVar.nuanceWordInfo.spell = str + this.mComposingText.charAt(str.length());
             return str.length() + 1;
         }
-        if (this.mNuanceSDK.isChineseCangjieMode()) {
+        if (engine().isChineseCangjieMode()) {
             return suggestedWordInfoVar.nuanceWordInfo.spell.length();
         }
-        if (this.mNuanceSDK.isChineseBPMFMode()) {
+        if (engine().isChineseBPMFMode()) {
             StringBuilder sb = new StringBuilder();
             for (char c : suggestedWordInfoVar.nuanceWordInfo.spell.toCharArray()) {
-                if (this.mNuanceSDK.isBpmfUpperCaseSymbol(c)) {
-                    sb.append(this.mNuanceSDK.convertBpmfSymbolToLower(c));
+                if (engine().isBpmfUpperCaseSymbol(c)) {
+                    sb.append(engine().convertBpmfSymbolToLower(c));
                 } else {
                     sb.append(c);
                 }

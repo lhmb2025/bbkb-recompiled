@@ -336,6 +336,13 @@ float xt9kdb_rank_score_prepared(const Xt9RankPath* rp, const char* word, int li
  * Host tests + debug builds only in practice; costs two 128 KB heap scratch buffers. */
 int xt9kdb_recall_index_selfcheck(int corrupt, unsigned* out_words);
 
+/* Owned recall alone (kdb_trace.c): up to 8 word indices into the frequency table and their
+ * geometry scores, best first, for a path already in authored space. Host tests and tools. */
+int xt9kdb_recall_top(const ET9KdbLoaded* m, const Xt9DecParams* p, const Xt9DecPt* sp, ET9U32 n,
+                      int* outIdx, float* outGeo);
+/* Word `i` of the frequency table (kdb_freq_en.h), NULL out of range. */
+const char* xt9kdb_freq_word(int i);
+
 /* W6 locale gate (kdb_trace.c): 1 when the English-lexicon refinements (owned recall, echo and
  * double heuristics) apply to a gesture in language `langid` (-1 = engine could not say). */
 int xt9kdb_lang_is_english(int langgate, int langid);

@@ -73,6 +73,15 @@ public final class EmojiToneMemory {
         return changed;
     }
 
+    /**
+     * The stored value as-is, for telling whether the memory changed since an earlier call: the
+     * emoji board keeps its built pages until this changes. Every writer (both popups, the strip,
+     * a backup restore or reset) goes through the preference, so comparing it catches them all.
+     */
+    static String snapshot(SharedPreferences prefs) {
+        return prefs.getString(PREF_KEY, null);
+    }
+
     public static void clear(SharedPreferences prefs) {
         prefs.edit().remove(PREF_KEY).apply();
     }

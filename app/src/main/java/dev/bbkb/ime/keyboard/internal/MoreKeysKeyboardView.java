@@ -87,6 +87,14 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
 
     @Override // dev.bbkb.ime.keyboard.KeyboardView
     public void setKeyboard(Keyboard keyboard) {
+        // Popups are cached and reused (MoreKeysKeyboardCache): a key left pressed when the last
+        // showing was dismissed mid-drag must not come back highlighted.
+        if (keyboard != null) {
+            for (Key key : keyboard.getKeys()) {
+                key.onReleased();
+            }
+        }
+        this.mCurrentKey = null;
         super.setKeyboard(keyboard);
         this.mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(), (-getPaddingTop()) + getVerticalCorrection());
     }

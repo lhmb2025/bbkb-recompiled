@@ -15,7 +15,15 @@ public enum DeviceQuirk {
      * Ctrl as a one-shot modifier for the next key and never latches its sticky Ctrl mode from the
      * repeats, which on any other device mean "Ctrl held alone".
      */
-    FN_NO_KEY_UP("fn-no-key-up");
+    FN_NO_KEY_UP("fn-no-key-up"),
+
+    /**
+     * The screen is e-ink (Minimal Phone MP01): every repaint is visible and slow. The on-screen
+     * keyboard skips cosmetic repaints there - pressed-key highlights, fade animations, animated
+     * key previews and the gesture trail (MainKeyboardView). Not a key quirk, but a fact about the
+     * device that only its profile knows.
+     */
+    EINK_DISPLAY("eink-display");
 
     private final String tag;
 

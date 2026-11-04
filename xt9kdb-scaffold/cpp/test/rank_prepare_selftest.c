@@ -142,7 +142,7 @@ static void check_path(const ET9KdbLoaded* m, const Xt9DecParams* p, const Xt9De
     Xt9RankPath rp;
     xt9kdb_rank_prepare(&rp, m, p, pts, n);
     for (int w = salt % WORD_STRIDE; w < kFreqCountEn; w += WORD_STRIDE)
-        check_word(m, p, &rp, pts, n, kFreqWordsEn[w], w & 63);
+        check_word(m, p, &rp, pts, n, kFreqWordEn(w), w & 63);
     for (size_t i = 0; i < sizeof kExtra / sizeof kExtra[0]; i++)
         check_word(m, p, &rp, pts, n, kExtra[i], (int)i);
 }
@@ -192,7 +192,7 @@ static int run_corpus(const char* kdb, const char* corpus, int* negHits) {
         if (g_prev_n) {
             Xt9RankPath rp;
             xt9kdb_rank_prepare(&rp, m, &p, g_pts, (ET9U32)n);
-            const char* w = kFreqWordsEn[(traces * 31) % kFreqCountEn];
+            const char* w = kFreqWordEn((traces * 31) % kFreqCountEn);
             if (!same_bits(xt9kdb_rank_score_prepared(&rp, w, 0), ref_rank_score(m, &p, g_prev, g_prev_n, w, 0)))
                 (*negHits)++;
         }

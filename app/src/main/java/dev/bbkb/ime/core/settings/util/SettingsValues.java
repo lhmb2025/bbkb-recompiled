@@ -323,6 +323,18 @@ public final class SettingsValues {
 
     public final String keyboardHeightMode;
 
+    // Stored settings the per-editor fields are derived from (see forEditor).
+
+    private final boolean voiceInputKeySetting;
+
+    private final boolean doubleSpacePeriodSetting;
+
+    private final boolean autoCorrectionSwitchedOn;
+
+    private final int autoCorrectionModePkb;
+
+    private final int autoCorrectionModeVkb;
+
     /**
      * ASCII-only letter-or-digit test. Deliberately narrower than
      * {@link Character#isLetterOrDigit(int)} - callers use it to decide whether a code point is
@@ -339,7 +351,7 @@ public final class SettingsValues {
         if (BuildConfig.DEBUG) Log.i(TAG, "Using density of " + fM5549d);
         this.locale = LocaleUtils.getConfigurationLocale(resources);
         this.delayToUpdateOldSuggestionsMs = resources.getInteger(R.integer.config_delay_in_msec_to_update_old_suggestions);
-        this.spacingAndPunctuation = new SpacingAndPunctuation(resources);
+        this.spacingAndPunctuation = SpacingAndPunctuation.forResources(resources);
         if (c0696l == null) {
             this.editorCapabilities = new EditorCapabilities(null, false, context.getPackageName(), this.locale, false);
         } else {
@@ -350,14 +362,12 @@ public final class SettingsValues {
         this.isSoundEnabled = SettingsManager.isSoundEnabled(sharedPreferences, resources);
         this.isKeyPreviewPopupEnabled = SettingsManager.readKeyPreviewPopupEnabled(sharedPreferences, resources);
         this.isSlidingKeyInputPreviewEnabled = sharedPreferences.getBoolean("pref_sliding_key_input_preview", true);
-        // The mic key drives this app's own recogniser session, so a speech recogniser is what it
-        // needs; a system voice IME is the older alternative route. Gating on the IME alone hid
-        // the key on phones that have a recogniser but no Google voice typing.
-        this.showsVoiceInputKey = loadVoiceInputKeySetting(sharedPreferences, resources) && this.editorCapabilities.isMicrophoneAllowed
-                && (android.speech.SpeechRecognizer.isRecognitionAvailable(context) || SubtypeManager.getInstance().isShortcutImeEnabled());
+        this.voiceInputKeySetting = loadVoiceInputKeySetting(sharedPreferences, resources);
+        this.showsVoiceInputKey = computeShowsVoiceInputKey(context);
         this.useContactsDicts = sharedPreferences.getBoolean("pref_key_use_contacts_dict", true);
         this.usePersonalizedDicts = sharedPreferences.getBoolean("pref_key_use_personalized_dicts", true);
-        this.useDoubleSpacePeriod = sharedPreferences.getBoolean("pref_key_use_double_space_period", true) && c0696l.normalVariation;
+        this.doubleSpacePeriodSetting = sharedPreferences.getBoolean("pref_key_use_double_space_period", true);
+        this.useDoubleSpacePeriod = this.doubleSpacePeriodSetting && this.editorCapabilities.normalVariation;
         this.blockPotentiallyOffensiveWords = SettingsManager.isBlockOffensiveEnabled(sharedPreferences, resources);
         this.isBigramPredictionEnabled = loadBigramPredictionsSetting(sharedPreferences, resources);
         this.doubleSpacePeriodTimeoutMs = resources.getInteger(R.integer.config_double_space_period_timeout);
@@ -370,12 +380,17 @@ public final class SettingsValues {
         this.keypressVibrationDuration = SettingsManager.getVibrationDuration(sharedPreferences, resources);
         this.keypressSoundVolume = SettingsManager.getKeypressSoundVolume(sharedPreferences, resources);
         this.keyPreviewPopupDismissDelay = SettingsManager.getKeyPreviewDismissDelay(sharedPreferences, resources);
-        this.autoCorrectionMode = loadAutoCorrectionMode(context, sharedPreferences, resources);
+        // Both strengths are kept, so the per-editor overlay can follow the device profile
+        // without reading the preferences again.
+        this.autoCorrectionModePkb = sharedPreferences.getInt("auto_correction_mode_PKB", resources.getInteger(R.integer.config_default_PKB_auto_correction_mode));
+        this.autoCorrectionModeVkb = sharedPreferences.getInt("auto_correction_mode_VKB", resources.getInteger(R.integer.config_default_VKB_auto_correction_mode));
+        this.autoCorrectionMode = currentAutoCorrectionMode();
         this.isVkbGestureInputEnabled = SettingsManager.isVkbTypeBySwipingEnabled(sharedPreferences, resources);
         this.isCkbGestureInputEnabled = SettingsManager.isCbkTypeBySwipingEnabled(sharedPreferences, resources);
         this.isVkbSwipeDownEnabled = SettingsManager.isVkbSwipeDownEnabled(sharedPreferences);
         this.isVkbSwipeGesturesEnabled = SettingsManager.isVkbSwipeGesturesEnabled(sharedPreferences, resources);
-        this.isAutoCorrectEnabled = SettingsManager.isAutoCorrectionSwitchedOn(sharedPreferences)
+        this.autoCorrectionSwitchedOn = SettingsManager.isAutoCorrectionSwitchedOn(sharedPreferences);
+        this.isAutoCorrectEnabled = this.autoCorrectionSwitchedOn
                 && SettingsManager.isResourceNonZero(this.autoCorrectionMode, resources);
         this.isAutoCorrectionEnabledPerUserSettings = this.isAutoCorrectEnabled && !this.editorCapabilities.noAutoCorrect;
         this.isPredictionsEnabled = loadPredictionsEnabledSetting(sharedPreferences, resources);
@@ -477,6 +492,178 @@ public final class SettingsValues {
         this.quickPhrase5 = SettingsManager.getStringPref(sharedPreferences, resources, "quick_phrase_5", R.string.pref_quick_phrase_5_default);
         this.slideboardStillBoardsEnabled = sharedPreferences.getBoolean("pref_slideboard_still_boards", true);
         this.customSlideboardSymbols = SettingsManager.getStringListPref(sharedPreferences, "custom_slideboard_symbols");
+    }
+
+    /**
+     * The settings for another editor, without reading the preferences again (P-12). Everything
+     * stored, and everything derived from the resources for this keyboard locale and
+     * configuration, is copied from {@code base}; only the fields that follow the editor
+     * ({@link EditorCapabilities}), the device profile or the recogniser are worked out again.
+     * {@link SettingsManager#loadSettings} uses it while neither the preferences, the keyboard
+     * locale nor the configuration changed since {@code base} was built.
+     */
+    public SettingsValues forEditor(Context context, EditorCapabilities editorCapabilities) {
+        return new SettingsValues(this, context, editorCapabilities);
+    }
+
+    private SettingsValues(SettingsValues base, Context context, EditorCapabilities c0696l) {
+        this.shiftKeyLongPressTimeout = base.shiftKeyLongPressTimeout;
+        this.showUiToAcceptTypedWord = base.showUiToAcceptTypedWord;
+        this.keypressVibrationDuration = base.keypressVibrationDuration;
+        this.keypressSoundVolume = base.keypressSoundVolume;
+        this.keyPreviewPopupDismissDelay = base.keyPreviewPopupDismissDelay;
+        this.isPredictionsEnabled = base.isPredictionsEnabled;
+        this.isOnKeyPredictionsEnabled = base.isOnKeyPredictionsEnabled;
+        this.isEmojiPredictionsEnabled = base.isEmojiPredictionsEnabled;
+        this.isDynamicLearningEnabled = base.isDynamicLearningEnabled;
+        this.isLanguageQuickSwitchEnabled = base.isLanguageQuickSwitchEnabled;
+        this.isSpacebarLanguageSwitchingEnabled = base.isSpacebarLanguageSwitchingEnabled;
+        this.currencySymbol = base.currencySymbol;
+        this.isVoiceInputEnabled = base.isVoiceInputEnabled;
+        this.isSlideboardEnabled = base.isSlideboardEnabled;
+        this.slideboardNumericLocation = base.slideboardNumericLocation;
+        this.slideboardQuickPhrasesLocation = base.slideboardQuickPhrasesLocation;
+        this.quickPhrase1 = base.quickPhrase1;
+        this.quickPhrase2 = base.quickPhrase2;
+        this.quickPhrase3 = base.quickPhrase3;
+        this.quickPhrase4 = base.quickPhrase4;
+        this.quickPhrase5 = base.quickPhrase5;
+        this.slideboardStillBoardsEnabled = base.slideboardStillBoardsEnabled;
+        this.customSlideboardSymbols = base.customSlideboardSymbols;
+        this.spacingAndPunctuation = base.spacingAndPunctuation;
+        this.fastVerticalSwipeMinY = base.fastVerticalSwipeMinY;
+        this.fastVerticalSwipeMinVelocity = base.fastVerticalSwipeMinVelocity;
+        this.slowVerticalSwipeMinY = base.slowVerticalSwipeMinY;
+        this.slowVerticalSwipeMinVelocity = base.slowVerticalSwipeMinVelocity;
+        this.swipeGestureTimeout = base.swipeGestureTimeout;
+        this.flowModeVerticalSwipeMinY = base.flowModeVerticalSwipeMinY;
+        this.flowModeVerticalSwipeMinVelocity = base.flowModeVerticalSwipeMinVelocity;
+        this.horizontalCursorTapRegionHeightScale = base.horizontalCursorTapRegionHeightScale;
+        this.horizontalCursorTapRegionWidthScale = base.horizontalCursorTapRegionWidthScale;
+        this.verticalCursorTapRegionHeightScale = base.verticalCursorTapRegionHeightScale;
+        this.verticalCursorTapRegionWidthScale = base.verticalCursorTapRegionWidthScale;
+        this.horizontalScrollDistanceForCursorMove = base.horizontalScrollDistanceForCursorMove;
+        this.verticalScrollDistanceForCursorMove = base.verticalScrollDistanceForCursorMove;
+        this.singleLineVerticalScrollForCursorMove = base.singleLineVerticalScrollForCursorMove;
+        this.maxCursorMoveSpeedMultiplier = base.maxCursorMoveSpeedMultiplier;
+        this.velocityForMaxCursorMoveSpeed = base.velocityForMaxCursorMoveSpeed;
+        this.allowHorizontalCursorBeyondField = base.allowHorizontalCursorBeyondField;
+        this.allowBatchedCursorMove = base.allowBatchedCursorMove;
+        this.horizontalScrollForAccentsChange = base.horizontalScrollForAccentsChange;
+        this.maxAccentsChangeSpeedMultiplier = base.maxAccentsChangeSpeedMultiplier;
+        this.inLetterMaxSwipeToWordDistance = base.inLetterMaxSwipeToWordDistance;
+        this.uimEnabledSetting = base.uimEnabledSetting;
+        this.pkbSuggestionBarOff = base.pkbSuggestionBarOff;
+        this.flickCommitAnimationEnabled = base.flickCommitAnimationEnabled;
+        this.textHighlightColorForAddToDictionary = base.textHighlightColorForAddToDictionary;
+        this.textHighlightColorForMultiTap = base.textHighlightColorForMultiTap;
+        this.isInternal = base.isInternal;
+        this.hasCustomKeyPreviewAnimationParams = base.hasCustomKeyPreviewAnimationParams;
+        this.keyPreviewShowUpDuration = base.keyPreviewShowUpDuration;
+        this.keyPreviewDismissDuration = base.keyPreviewDismissDuration;
+        this.keyPreviewShowUpStartScaleX = base.keyPreviewShowUpStartScaleX;
+        this.keyPreviewShowUpStartScaleY = base.keyPreviewShowUpStartScaleY;
+        this.keyPreviewDismissEndScaleX = base.keyPreviewDismissEndScaleX;
+        this.keyPreviewDismissEndScaleY = base.keyPreviewDismissEndScaleY;
+        this.ckbGestureSuppressionTimeout = base.ckbGestureSuppressionTimeout;
+        this.vkbGestureSuppressionTimeout = base.vkbGestureSuppressionTimeout;
+        this.accentSelectionSuppressionTimeout = base.accentSelectionSuppressionTimeout;
+        this.doubleTapSuppressionTimeout = base.doubleTapSuppressionTimeout;
+        this.applySwipeSuppressionToEnd = base.applySwipeSuppressionToEnd;
+        this.horizontalSwipeTanTheta = base.horizontalSwipeTanTheta;
+        this.verticalSwipeTanTheta = base.verticalSwipeTanTheta;
+        this.fastHorizontalSwipeMinX = base.fastHorizontalSwipeMinX;
+        this.fastHorizontalSwipeMinVelocity = base.fastHorizontalSwipeMinVelocity;
+        this.slowHorizontalSwipeMinX = base.slowHorizontalSwipeMinX;
+        this.slowHorizontalSwipeMinVelocity = base.slowHorizontalSwipeMinVelocity;
+        this.delayToUpdateOldSuggestionsMs = base.delayToUpdateOldSuggestionsMs;
+        this.uimFocusMoveDelay = base.uimFocusMoveDelay;
+        this.isKoreanDoubleConsonantResolutionEnabled = base.isKoreanDoubleConsonantResolutionEnabled;
+        this.koreanDoubleConsonantResolutionDelayMs = base.koreanDoubleConsonantResolutionDelayMs;
+        this.showOnKeyPressMode = base.showOnKeyPressMode;
+        this.controlMode = base.controlMode;
+        this.isVkbControlModeEnabled = base.isVkbControlModeEnabled;
+        this.cangjieMode = base.cangjieMode;
+        this.shakeActionX = base.shakeActionX;
+        this.shakeActionY = base.shakeActionY;
+        this.shakeActionZ = base.shakeActionZ;
+        this.shakeActionFallback = base.shakeActionFallback;
+        this.shakeOnAxisTriggerCount = base.shakeOnAxisTriggerCount;
+        this.shakeFallbackTriggerCount = base.shakeFallbackTriggerCount;
+        this.shakeAccelerationThreshold = base.shakeAccelerationThreshold;
+        this.shakeSlopTime = base.shakeSlopTime;
+        this.shakeResetTime = base.shakeResetTime;
+        this.unifyLearnedWords = base.unifyLearnedWords;
+        this.overrideDeviceMetaState = base.overrideDeviceMetaState;
+        this.shiftDoubleTapLock = base.shiftDoubleTapLock;
+        this.altDoubleTapLock = base.altDoubleTapLock;
+        this.ctrlDoubleTapLock = base.ctrlDoubleTapLock;
+        this.showPkbModifierStatusIcon = base.showPkbModifierStatusIcon;
+        this.voiceInputUseInputLanguage = base.voiceInputUseInputLanguage;
+        this.voiceInputPreferOffline = base.voiceInputPreferOffline;
+        this.voiceInputShowPartialResults = base.voiceInputShowPartialResults;
+        this.voiceInputStopOnPause = base.voiceInputStopOnPause;
+        this.voiceInputLanguageList = base.voiceInputLanguageList;
+        this.isEmojiDynamicSearchEnabled = base.isEmojiDynamicSearchEnabled;
+        this.altSymShortcutAction = base.altSymShortcutAction;
+        this.multifunctionKeyAction = base.multifunctionKeyAction;
+        this.isEmojiSearchReplaceText = base.isEmojiSearchReplaceText;
+        this.isPkbEmojiSearchEnabled = base.isPkbEmojiSearchEnabled;
+        this.isCkbGestureInputEnabled = base.isCkbGestureInputEnabled;
+        this.doubleSpacePeriodTimeoutMs = base.doubleSpacePeriodTimeoutMs;
+        this.locale = base.locale;
+        this.hasHardwareKeyboard = base.hasHardwareKeyboard;
+        this.displayOrientation = base.displayOrientation;
+        this.isAutoCapsEnabled = base.isAutoCapsEnabled;
+        this.isVibrationEnabled = base.isVibrationEnabled;
+        this.isSoundEnabled = base.isSoundEnabled;
+        this.isKeyPreviewPopupEnabled = base.isKeyPreviewPopupEnabled;
+        this.useContactsDicts = base.useContactsDicts;
+        this.usePersonalizedDicts = base.usePersonalizedDicts;
+        this.blockPotentiallyOffensiveWords = base.blockPotentiallyOffensiveWords;
+        this.isBigramPredictionEnabled = base.isBigramPredictionEnabled;
+        this.isVkbGestureInputEnabled = base.isVkbGestureInputEnabled;
+        this.isVkbSwipeGesturesEnabled = base.isVkbSwipeGesturesEnabled;
+        this.isVkbSwipeDownEnabled = base.isVkbSwipeDownEnabled;
+        this.isSlidingKeyInputPreviewEnabled = base.isSlidingKeyInputPreviewEnabled;
+        this.keyLongpressTimeoutMs = base.keyLongpressTimeoutMs;
+        this.keyboardHeightMode = base.keyboardHeightMode;
+        this.voiceInputKeySetting = base.voiceInputKeySetting;
+        this.doubleSpacePeriodSetting = base.doubleSpacePeriodSetting;
+        this.autoCorrectionSwitchedOn = base.autoCorrectionSwitchedOn;
+        this.autoCorrectionModePkb = base.autoCorrectionModePkb;
+        this.autoCorrectionModeVkb = base.autoCorrectionModeVkb;
+        this.editorCapabilities = c0696l != null ? c0696l
+                : new EditorCapabilities(null, false, context.getPackageName(), this.locale, false);
+        this.showsVoiceInputKey = computeShowsVoiceInputKey(context);
+        this.useDoubleSpacePeriod = this.doubleSpacePeriodSetting && this.editorCapabilities.normalVariation;
+        this.autoCorrectionMode = currentAutoCorrectionMode();
+        this.isAutoCorrectEnabled = this.autoCorrectionSwitchedOn
+                && SettingsManager.isResourceNonZero(this.autoCorrectionMode, null);
+        this.isAutoCorrectionEnabledPerUserSettings = this.isAutoCorrectEnabled && !this.editorCapabilities.noAutoCorrect;
+        this.shouldShowLxxButton = shouldShowLxxButton(context);
+    }
+
+    /**
+     * The mic key drives this app's own recogniser session, so a speech recogniser is what it
+     * needs; a system voice IME is the older alternative route. Gating on the IME alone hid the
+     * key on phones that have a recogniser but no Google voice typing.
+     */
+    private boolean computeShowsVoiceInputKey(Context context) {
+        return this.voiceInputKeySetting && this.editorCapabilities.isMicrophoneAllowed
+                && (isRecognitionAvailable(context) || SubtypeManager.getInstance().isShortcutImeEnabled());
+    }
+
+    /** The cached recogniser query once the input-method caches exist (P-12). */
+    private static boolean isRecognitionAvailable(Context context) {
+        if (RichInputMethodManager.isInitialized()) {
+            return RichInputMethodManager.getInstance().isRecognitionAvailable(context);
+        }
+        return android.speech.SpeechRecognizer.isRecognitionAvailable(context);
+    }
+
+    private int currentAutoCorrectionMode() {
+        return DeviceProfile.current().hasShiftedSymbolKeyboard() ? this.autoCorrectionModePkb : this.autoCorrectionModeVkb;
     }
 
     /**
@@ -684,13 +871,6 @@ public final class SettingsValues {
 
     private static boolean loadBigramPredictionsSetting(SharedPreferences sharedPreferences, Resources resources) {
         return sharedPreferences.getBoolean("next_word_prediction", resources.getBoolean(R.bool.config_default_next_word_prediction));
-    }
-
-    private static int loadAutoCorrectionMode(Context context, SharedPreferences sharedPreferences, Resources resources) {
-        if (DeviceProfile.current().hasShiftedSymbolKeyboard()) {
-            return sharedPreferences.getInt("auto_correction_mode_PKB", resources.getInteger(R.integer.config_default_PKB_auto_correction_mode));
-        }
-        return sharedPreferences.getInt("auto_correction_mode_VKB", resources.getInteger(R.integer.config_default_VKB_auto_correction_mode));
     }
 
     // NOTE: the "voice_mode" -> "pref_voice_input_key" migration moved to

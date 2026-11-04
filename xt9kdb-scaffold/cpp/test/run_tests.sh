@@ -12,7 +12,8 @@ set -o pipefail            # a stage piped through `tail` must still report the 
 cd "$(dirname "$0")/.."                                   # -> cpp/
 # kdb_decode_legacy.c is NOT in the shipped library (CUTOVER); it is built here and in the
 # DIFF branch only, because decode_drv + owned_selftest still exercise the first-cut decoder.
-SRC="src/kdb_geometry.c src/kdb_load_xml.c src/kdb_state.c src/kdb_tap.c src/kdb_trace.c src/kdb_nkl.c src/kdb_decode_legacy.c"
+# kdb_decode.c + kdb_rank.c: kdb_trace.c's host-visible xt9kdb_recall_top reaches the ranker.
+SRC="src/kdb_geometry.c src/kdb_load_xml.c src/kdb_state.c src/kdb_tap.c src/kdb_trace.c src/kdb_nkl.c src/kdb_decode_legacy.c src/kdb_decode.c src/kdb_rank.c"
 # Unit tests run against a GENERIC even-row layout matching the kQwertyPkbEn fixture; the live athena
 # KDB uses the firmware's UNEVEN sensor bands and is checked separately (kdb_band_selftest).
 XML="${1:-test/qwerty_pkb_even.xml}"
@@ -41,7 +42,10 @@ build touchabicut -DXT9KDB_CUTOVER test/touch_abi_selftest.c
 build cutsel   -DXT9KDB_CUTOVER test/cutover_selection_selftest.c
 # The shipped ranker (kdb_rank.c + the decoder's params, kdb_decode.c) against the original
 # per-candidate scorer kept in the test as the oracle (P-11 path precompute).
-build rankprep src/kdb_decode.c src/kdb_rank.c test/rank_prepare_selftest.c
+build rankprep test/rank_prepare_selftest.c
+build freqtab  test/freq_table_selftest.c
+build recalldump test/recall_dump_drv.c
+build ldbread  src/ldb_reader.c test/ldb_reader_selftest.c
 
 RESULTS=(); FAILED=0
 stage() {  # stage <label> <command...>: run it, record PASS/FAIL, never abort the suite
@@ -97,6 +101,25 @@ stage "gesture decoder (synthetic curved paths; shallow corners must resolve)" "
 # Every corpus gesture x a slice of the recall table: prepared == one-shot == original, as bits.
 rank_prepare_stage() { "$OUT/rankprep" 2>/dev/null | tail -4; }
 stage "ranker path precompute (scores bit-identical to the original scorer)" rank_prepare_stage
+stage "frequency table (blob + offsets == what the generator wrote; C-6)" "$OUT/freqtab"
+# Every corpus gesture's owned-recall top 8 (words and score bits) against the committed golden:
+# pins the frequency table, its index and the recall prune. A deliberate recall or table change
+# regenerates the golden with the same command and reviews the diff.
+recall_top8_stage() {
+    local A=../../app/src/main/assets/kdb
+    "$OUT/recalldump" test/qwerty_pkb_even.xml test/data/corpus_v2.txt \
+        $A/keypad_pkb_athena.xml test/data/parity_corpus.txt $A/keypad_pkb_athena.xml test/data/collection1_corpus.txt \
+        $A/keypad_pkb_athena_test.xml test/data/w6_s1_corpus.txt \
+        $A/qwerty_vkb.xml test/data/vkb_s1_corpus.txt $A/qwerty_vkb.xml test/data/vkb_s2_corpus.txt \
+        > "$OUT/recall_top8.txt" 2>/dev/null || { echo "  FAIL: recall dump exited non-zero"; return 1; }
+    if diff -u test/data/recall_top8_golden.txt "$OUT/recall_top8.txt" > "$OUT/recall_top8.diff"; then
+        echo "  OK: $(wc -l < "$OUT/recall_top8.txt" | tr -d ' ') gestures, recall top 8 identical to the golden"
+    else
+        echo "  FAIL: recall top 8 differs from test/data/recall_top8_golden.txt:"; head -20 "$OUT/recall_top8.diff"; return 1
+    fi
+}
+stage "owned-recall top 8 over every corpus == committed golden"  recall_top8_stage
+stage "owned LDB reader (mapped stored assets; blob-identical heap paths; P-9)" "$OUT/ldbread"
 # The touch/gesture ABI contracts (the 2026-09 KDB touch-ABI audit, now in the local attic). Noisy on
 # stdout (every TouchStart logs), so only the tail matters when it passes.
 touch_abi_stage() { "$OUT/touchabi" | tail -8; }

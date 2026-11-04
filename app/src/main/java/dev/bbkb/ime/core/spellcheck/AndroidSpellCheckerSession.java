@@ -19,7 +19,6 @@ import dev.bbkb.ime.core.engine.NuanceSDKManager;
 import dev.bbkb.ime.core.inputmethod.HangulInputProcessor;
 import dev.bbkb.ime.core.inputmethod.InputMethodCallback;
 import dev.bbkb.ime.core.locale.LocaleUtils;
-import dev.bbkb.ime.core.locale.SubtypeManager;
 import dev.bbkb.ime.core.settings.PrefsManager;
 import dev.bbkb.ime.core.shared.CoordinateUtils;
 import dev.bbkb.ime.core.shared.Logger;
@@ -164,7 +163,12 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         // used to drop the keyboard's other languages behind the service's back (it still
         // recorded them as loaded), and the keyboard layout lookup crashed for a script with no
         // layout. The service loads the languages, and the layout when there is one.
-        ensureDictionaryLoaded();
+        this.mService.beginRequest();
+        try {
+            ensureDictionaryLoaded();
+        } finally {
+            this.mService.endRequest();
+        }
     }
 
     @Override // android.service.textservice.SpellCheckerService.Session
@@ -187,13 +191,17 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
     /**
      * Once per request: loads the session's languages and drops the cached dictionary answers
      * when what they were computed against has changed. False as {@link #ensureDictionaryLoaded}.
+     * Runs inside the request's {@code beginRequest}/{@code endRequest} pair, which keeps the
+     * service from releasing the engine until the request is done with it.
      */
     private boolean prepareRequest() {
         if (!ensureDictionaryLoaded()) {
             return false;
         }
-        // The loaded languages follow the keyboard's subtype (languagesForSession).
-        this.mVerdictCache.syncDictionaryState(SubtypeManager.getInstance().getCurrentSubtype());
+        // The service's generation moves on every language load and engine release: exactly
+        // when the answers could change (it used to be the keyboard's subtype, which can
+        // change without a reload and misses a release).
+        this.mVerdictCache.syncDictionaryState(this.mService.getEngineGeneration());
         return true;
     }
 
@@ -393,9 +401,11 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
     @Override // android.service.textservice.SpellCheckerService.Session
     public SuggestionsInfo onGetSuggestions(TextInfo textInfo, int sugLimit) {
         long savedIdentity = Binder.clearCallingIdentity();
+        this.mService.beginRequest();
         try {
             return spellCheckWord(textInfo, null, sugLimit, prepareRequest(), verdictSettings());
         } finally {
+            this.mService.endRequest();
             Binder.restoreCallingIdentity(savedIdentity);
         }
     }
@@ -485,20 +495,25 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
             i = 5;
         }
         int length = textInfoArr.length;
-        if (!prepareRequest()) {
-            return new SentenceSuggestionsInfo[length];
-        }
-        SentenceSuggestionsInfo[] sentenceResults = getSentenceSuggestions(textInfoArr, i);
-        if (sentenceResults == null || sentenceResults.length != textInfoArr.length) {
-            return new SentenceSuggestionsInfo[length];
-        }
-        for (int i2 = 0; i2 < sentenceResults.length; i2++) {
-            SentenceSuggestionsInfo apostropheFixed = fixApostropheSuggestions(textInfoArr[i2], sentenceResults[i2]);
-            if (apostropheFixed != null) {
-                sentenceResults[i2] = apostropheFixed;
+        this.mService.beginRequest();
+        try {
+            if (!prepareRequest()) {
+                return new SentenceSuggestionsInfo[length];
             }
+            SentenceSuggestionsInfo[] sentenceResults = getSentenceSuggestions(textInfoArr, i);
+            if (sentenceResults == null || sentenceResults.length != textInfoArr.length) {
+                return new SentenceSuggestionsInfo[length];
+            }
+            for (int i2 = 0; i2 < sentenceResults.length; i2++) {
+                SentenceSuggestionsInfo apostropheFixed = fixApostropheSuggestions(textInfoArr[i2], sentenceResults[i2]);
+                if (apostropheFixed != null) {
+                    sentenceResults[i2] = apostropheFixed;
+                }
+            }
+            return sentenceResults;
+        } finally {
+            this.mService.endRequest();
         }
-        return sentenceResults;
     }
 
     private SentenceSuggestionsInfo[] getSentenceSuggestions(TextInfo[] textInfoArr, int sugLimit) {
@@ -545,9 +560,11 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
     @Override // android.service.textservice.SpellCheckerService.Session
     public SuggestionsInfo[] onGetSuggestionsMultiple(TextInfo[] textInfoArr, int sugLimit, boolean sequentialWords) {
         long savedIdentity = Binder.clearCallingIdentity();
+        this.mService.beginRequest();
         try {
             return checkWords(textInfoArr, sugLimit, sequentialWords, prepareRequest(), verdictSettings());
         } finally {
+            this.mService.endRequest();
             Binder.restoreCallingIdentity(savedIdentity);
         }
     }

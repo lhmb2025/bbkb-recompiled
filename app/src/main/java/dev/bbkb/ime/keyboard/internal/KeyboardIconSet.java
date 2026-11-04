@@ -9,6 +9,11 @@ import android.util.SparseIntArray;
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.keyboard.KeyboardColorManager;
 
+import androidx.annotation.VisibleForTesting;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import dev.bbkb.ime.BuildConfig;
 
@@ -29,9 +34,37 @@ public final class KeyboardIconSet {
 
     private static final String[] sIconNames = new String[sIconsCount];
 
+    /**
+     * Prototype icons for the themes seen most recently, newest first. Every Keyboard (and every
+     * long-press popup) used to inflate and mutate all ~52 icons for itself: 164 zip inflations and
+     * about 17 MB of native churn per 20 long-presses, and a private copy of every icon per cached
+     * Keyboard. Now each theme's icons are inflated once, on first use, and a keyboard copies only
+     * the icons it actually draws from those prototypes (no XML, no zip). Bounded: a theme change
+     * leaves the old prototypes to the keyboards still holding them and to the garbage collector.
+     *
+     * <p>Why each keyboard still gets its own instances: a VectorDrawable's tint, alpha and raster
+     * size are per instance, and up to Android 9 HWUI reads them when it renders, not when a view
+     * records. One instance shared by the keyboard, the aux bar and the popups would then paint
+     * with whichever tint or size the last view set (the aux bar dims inactive icons; the main
+     * keyboard draws the mic and the globe as 16dp hints). Per-keyboard copies of the few icons
+     * drawn keep today's behaviour exactly.
+     */
+    private static final ArrayList<SharedIcons> sSharedIcons = new ArrayList<>();
+
+    private static final int MAX_SHARED_ICON_SETS = 4;
+
+    /** This set's icons, materialised on first request when attached to a theme's prototypes. */
     private final Drawable[] mIcons;
 
-    private final int[] mIconResourceIds;
+    private final boolean[] mResolved;
+
+    private int[] mIconResourceIds;
+
+    /** The theme's prototypes, or null for a set that was never loaded (tests, fallbacks). */
+    private SharedIcons mShared;
+
+    /** A popup's set: every call goes to its template's set (see {@link #shareFrom}). */
+    private KeyboardIconSet mDelegate;
 
     /** The icon color {@link #applyColorTint} last applied; valid while {@link #mTinted}. */
     private int mTintedIconColor;
@@ -41,6 +74,7 @@ public final class KeyboardIconSet {
     public KeyboardIconSet() {
         int i = sIconsCount;
         this.mIcons = new Drawable[i];
+        this.mResolved = new boolean[i];
         this.mIconResourceIds = new int[i];
     }
 
@@ -64,29 +98,91 @@ public final class KeyboardIconSet {
         }
     }
 
-    public void loadIcons(TypedArray typedArray) {
-        // Fresh drawables carry no tint yet.
-        mTinted = false;
+    /**
+     * Attaches this set to the theme's prototypes, creating them on first use. Only the resource
+     * ids are read here; an icon is inflated (once per theme) and copied (once per keyboard) the
+     * first time a key asks for it.
+     */
+    public void loadIcons(TypedArray typedArray, Resources.Theme theme) {
+        Resources resources = typedArray.getResources();
+        int[] resourceIds = new int[sIconsCount];
+        Drawable[] literalIcons = null;
         int size = sStyleableIdToIconId.size();
         for (int i = 0; i < size; i++) {
-            int iKeyAt = sStyleableIdToIconId.keyAt(i);
-            try {
-                Drawable drawable = typedArray.getDrawable(iKeyAt);
-                // Mutate drawable so we have our own copy for tinting
-                // This prevents shared drawable state issues when changing icon colors
-                if (drawable != null) {
-                    drawable = drawable.mutate();
+            int attr = sStyleableIdToIconId.keyAt(i);
+            int iconId = sStyleableIdToIconId.valueAt(i);
+            int resourceId = typedArray.getResourceId(attr, 0);
+            resourceIds[iconId] = resourceId;
+            if (resourceId == 0 && typedArray.hasValue(attr)) {
+                // Not a resource reference (an inline value): it cannot be inflated later from
+                // an id, so take it now, as this set's own copy.
+                if (literalIcons == null) {
+                    literalIcons = new Drawable[sIconsCount];
                 }
-                setDefaultBounds(drawable);
-                Integer numValueOf = Integer.valueOf(sStyleableIdToIconId.get(iKeyAt));
-                this.mIcons[numValueOf.intValue()] = drawable;
-                this.mIconResourceIds[numValueOf.intValue()] = typedArray.getResourceId(iKeyAt, 0);
-            } catch (Resources.NotFoundException unused) {
-                // Icon attribute not found - this is normal for optional icons
-                Integer iconIndex = Integer.valueOf(sStyleableIdToIconId.get(iKeyAt));
-                String iconName = getIconName(iconIndex.intValue());
-                if (BuildConfig.DEBUG) Log.w(TAG, "Drawable resource for icon '" + iconName + "' not found");
+                try {
+                    literalIcons[iconId] = typedArray.getDrawable(attr);
+                } catch (Resources.NotFoundException unused) {
+                    if (BuildConfig.DEBUG) Log.w(TAG, "Drawable for icon '" + getIconName(iconId) + "' not found");
+                }
             }
+        }
+        this.mShared = obtainShared(resources, theme, resourceIds);
+        this.mIconResourceIds = this.mShared.resourceIds;
+        this.mTinted = false;
+        if (literalIcons != null) {
+            for (int i = 0; i < sIconsCount; i++) {
+                if (literalIcons[i] != null) {
+                    this.mIcons[i] = prepare(literalIcons[i].mutate());
+                    this.mResolved[i] = true;
+                }
+            }
+        }
+    }
+
+    /**
+     * Makes this set a view of {@code other}: a long-press popup draws from the more-keys
+     * template's set, so popups of one theme share one set of icons. Popups are drawn one at a
+     * time, by one view, which is what makes sharing instances safe here.
+     */
+    public void shareFrom(KeyboardIconSet other) {
+        KeyboardIconSet target = other;
+        while (target.mDelegate != null) {
+            target = target.mDelegate;
+        }
+        this.mDelegate = target;
+        this.mIconResourceIds = target.mIconResourceIds;
+    }
+
+    private static Drawable prepare(Drawable drawable) {
+        setDefaultBounds(drawable);
+        return drawable;
+    }
+
+    private static SharedIcons obtainShared(Resources resources, Resources.Theme theme, int[] resourceIds) {
+        synchronized (sSharedIcons) {
+            for (int i = 0; i < sSharedIcons.size(); i++) {
+                SharedIcons candidate = sSharedIcons.get(i);
+                if (candidate.matches(resources, theme, resourceIds)) {
+                    if (i != 0) {
+                        sSharedIcons.remove(i);
+                        sSharedIcons.add(0, candidate);
+                    }
+                    return candidate;
+                }
+            }
+            SharedIcons created = new SharedIcons(resources, theme, resourceIds);
+            sSharedIcons.add(0, created);
+            while (sSharedIcons.size() > MAX_SHARED_ICON_SETS) {
+                sSharedIcons.remove(sSharedIcons.size() - 1);
+            }
+            return created;
+        }
+    }
+
+    @VisibleForTesting
+    static void clearSharedIconsForTest() {
+        synchronized (sSharedIcons) {
+            sSharedIcons.clear();
         }
     }
 
@@ -110,6 +206,9 @@ public final class KeyboardIconSet {
     }
 
     public int getIconResourceId(String str) {
+        if (this.mDelegate != null) {
+            return this.mDelegate.getIconResourceId(str);
+        }
         int iM7159a = getIconId(str);
         if (isValidIconId(iM7159a)) {
             return this.mIconResourceIds[iM7159a];
@@ -119,9 +218,38 @@ public final class KeyboardIconSet {
 
     public Drawable getIconDrawable(int i) {
         if (isValidIconId(i)) {
+            if (this.mDelegate != null) {
+                return this.mDelegate.getIconDrawable(i);
+            }
+            if (this.mShared != null && !this.mResolved[i]) {
+                materialize(i);
+            }
             return this.mIcons[i];
         }
         throw new RuntimeException("unknown icon id: " + getIconName(i));
+    }
+
+    /** This set's own copy of icon {@code i}, made from the theme's prototype. */
+    private synchronized void materialize(int i) {
+        if (this.mResolved[i]) {
+            return;
+        }
+        Drawable prototype = this.mShared.prototype(i);
+        if (prototype != null) {
+            Drawable.ConstantState state = prototype.getConstantState();
+            Drawable copy = state != null
+                    ? state.newDrawable(this.mShared.resources)
+                    : this.mShared.inflate(i);
+            if (copy != null) {
+                // Our own copy for tinting, so a tint never reaches another keyboard's icon.
+                copy = prepare(copy.mutate());
+                if (this.mTinted) {
+                    KeyboardColorManager.INSTANCE.tint(copy, this.mTintedIconColor);
+                }
+                this.mIcons[i] = copy;
+            }
+        }
+        this.mResolved[i] = true;
     }
 
     private static void setDefaultBounds(Drawable drawable) {
@@ -135,7 +263,8 @@ public final class KeyboardIconSet {
      * This should be called after icons are loaded and when theme changes.
      *
      * <p>Tints in place and only when the icon color changed since the last call. The icons are
-     * already this set's own copies ({@link #loadIcons} mutates each one), so a fresh
+     * already mutated copies (the theme's shared set mutates each one as it inflates it, and the
+     * tint state lives with that set, so the first keyboard of a palette tints for all), so a fresh
      * {@code newDrawable().mutate()} per call bought nothing: it deep-copied every vector tree on
      * each keyboard swap (every shift change), and swapped the instances out from under anything
      * that had captured them (MainKeyboardView's shift/alt overlay icons). The key draw path
@@ -143,6 +272,10 @@ public final class KeyboardIconSet {
      * baseline color for consumers that draw an icon without tinting it (key previews).
      */
     public void applyColorTint() {
+        if (this.mDelegate != null) {
+            this.mDelegate.applyColorTint();
+            return;
+        }
         if (!KeyboardColorManager.INSTANCE.isInitialized()) {
             return;
         }
@@ -150,6 +283,7 @@ public final class KeyboardIconSet {
         if (mTinted && color == mTintedIconColor) {
             return;
         }
+        // Icons not materialised yet take this tint when they are.
         for (Drawable drawable : mIcons) {
             if (drawable != null) {
                 KeyboardColorManager.INSTANCE.tint(drawable, color);
@@ -157,5 +291,64 @@ public final class KeyboardIconSet {
         }
         mTintedIconColor = color;
         mTinted = true;
+    }
+
+    /**
+     * One theme's prototype icons: inflated on first request and never drawn, tinted or mutated,
+     * so their constant state is a clean template for every keyboard's copies.
+     */
+    private static final class SharedIcons {
+
+        final Resources resources;
+
+        final WeakReference<Resources.Theme> theme;
+
+        final int densityDpi;
+
+        final int uiMode;
+
+        final int[] resourceIds;
+
+        private final Drawable[] prototypes = new Drawable[sIconsCount];
+
+        private final boolean[] resolved = new boolean[sIconsCount];
+
+        SharedIcons(Resources resources, Resources.Theme theme, int[] resourceIds) {
+            this.resources = resources;
+            this.theme = new WeakReference<>(theme);
+            this.densityDpi = resources.getConfiguration().densityDpi;
+            this.uiMode = resources.getConfiguration().uiMode;
+            this.resourceIds = resourceIds;
+        }
+
+        boolean matches(Resources resources, Resources.Theme theme, int[] resourceIds) {
+            // Keyed on the Theme instance too: the icons resolve ?attr colours against it.
+            return this.resources == resources && this.theme.get() == theme
+                    && this.densityDpi == resources.getConfiguration().densityDpi
+                    && this.uiMode == resources.getConfiguration().uiMode
+                    && Arrays.equals(this.resourceIds, resourceIds);
+        }
+
+        synchronized Drawable prototype(int iconId) {
+            if (!resolved[iconId]) {
+                resolved[iconId] = true;
+                prototypes[iconId] = inflate(iconId);
+            }
+            return prototypes[iconId];
+        }
+
+        Drawable inflate(int iconId) {
+            int resourceId = resourceIds[iconId];
+            if (resourceId == 0) {
+                return null;
+            }
+            try {
+                return resources.getDrawable(resourceId, theme.get());
+            } catch (Resources.NotFoundException unused) {
+                // Icon attribute not found - this is normal for optional icons
+                if (BuildConfig.DEBUG) Log.w(TAG, "Drawable resource for icon '" + getIconName(iconId) + "' not found");
+                return null;
+            }
+        }
     }
 }

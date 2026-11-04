@@ -11,18 +11,25 @@ import java.util.function.LongSupplier;
  * <p>The framework re-sends the whole sentence on every edit, and most of its words are spelled
  * right, so without this every recheck asked the engine again for each of them (P-20). The
  * answers depend on the settings that change what counts as a word (accepting learned words,
- * using contacts), so those are part of the key; they also depend on which languages are loaded,
- * so the cache empties when the keyboard's subtype changes. Learned words and contact names can
- * change underneath without any signal reaching the session, so an answer also expires after
- * {@link #MAX_AGE_MS}: a word the engine has just forgotten keeps passing for at most that long.
+ * using contacts), so those are part of the key; they also depend on which languages the engine
+ * has loaded, so the cache empties when the service's engine generation moves (a language load or
+ * the engine's release). Learned words and contact names can still change underneath without any
+ * signal reaching the session, so answers also expire: "not a word" after
+ * {@link #NEGATIVE_MAX_AGE_MS}, the same two minutes as before, so a word the keyboard has just
+ * learned stops being underlined as soon as it used to; "a word" only after
+ * {@link #POSITIVE_MAX_AGE_MS}, since the only change that turns it false is a learned word or
+ * contact being removed, and those are nearly all of the answers a recheck asks for.
  */
 final class SpellVerdictCache {
 
     /** Enough for a few paragraphs of distinct words. */
     static final int MAX_ENTRIES = 300;
 
-    /** How long one answer is trusted. */
-    static final long MAX_AGE_MS = 2 * 60 * 1000L;
+    /** How long a "not in the dictionary" answer is trusted. */
+    static final long NEGATIVE_MAX_AGE_MS = 2 * 60 * 1000L;
+
+    /** How long an "in the dictionary" answer is trusted. */
+    static final long POSITIVE_MAX_AGE_MS = 30 * 60 * 1000L;
 
     private static final class Verdict {
         final boolean inDictionary;
@@ -43,7 +50,7 @@ final class SpellVerdictCache {
 
     private final LongSupplier mClockMs;
 
-    /** What the answers were computed against (the keyboard's subtype); a change empties the cache. */
+    /** What the answers were computed against (the engine generation); a change empties the cache. */
     private Object mDictionaryState;
 
     SpellVerdictCache() {
@@ -65,7 +72,8 @@ final class SpellVerdictCache {
         if (entry == null) {
             return null;
         }
-        if (mClockMs.getAsLong() - entry.timeMs > MAX_AGE_MS) {
+        final long maxAgeMs = entry.inDictionary ? POSITIVE_MAX_AGE_MS : NEGATIVE_MAX_AGE_MS;
+        if (mClockMs.getAsLong() - entry.timeMs > maxAgeMs) {
             mEntries.remove(key);
             return null;
         }

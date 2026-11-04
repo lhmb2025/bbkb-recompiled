@@ -68,6 +68,7 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
 
     private static final String TAG = "EmojiPalettesView";
 
+
     private final boolean categoryIndicatorEnabled;
 
     private final int categoryIndicatorDrawable;
@@ -81,6 +82,19 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
     private final DeleteKeyTouchListener deleteKeyTouchListener;
 
     private EmojiPagerAdapter pagerAdapter;
+
+    /** Set between the real adapter and null on close; see {@link #detachPagerAdapter()}. */
+    private final androidx.viewpager.widget.PagerAdapter noPages = new androidx.viewpager.widget.PagerAdapter() {
+        @Override
+        public int getCount() {
+            return 0;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return false;
+        }
+    };
 
     private final EmojiPalettesLayoutParams layoutParams;
 
@@ -99,6 +113,9 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
     private KeyboardActionListenerInterface keyboardActionListener;
 
     private final EmojiCategoryManager categoryManager;
+
+    /** One skin-tone popup view for the whole board (pager and overlay), inflated on the first long-press. */
+    private final EmojiPageKeyboardView.SharedMoreKeysPanel moreKeysPanel = new EmojiPageKeyboardView.SharedMoreKeysPanel();
 
     // The search query and its machinery (no on-screen text field: a physical keyboard types into
     // the board, the on-screen keyboard seeds it from the composing word).
@@ -203,7 +220,7 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         this.pagerContainer = findViewById(R.id.emoji_pager_container);
         this.searchOverlay = findViewById(R.id.emoji_search_overlay);
 
-        this.pagerAdapter = new EmojiPagerAdapter(this.categoryManager, this);
+        this.pagerAdapter = new EmojiPagerAdapter(this.categoryManager, this, this.moreKeysPanel);
         this.viewPager = (ViewPager) findViewById(R.id.emoji_keyboard_pager);
         this.viewPager.setAdapter(this.pagerAdapter);
         // addOnPageChangeListener, not the deprecated single-slot setter: a second
@@ -225,6 +242,7 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         if (this.searchOverlay != null) {
             this.searchOverlay.setOnKeyEventListener(this);
             this.searchOverlay.setPageIndicator(this.pageIndicatorView);
+            this.searchOverlay.setSharedMoreKeysPanel(this.moreKeysPanel);
         }
 
         setCategory(this.categoryManager.getCurrentCategoryId(), true);
@@ -731,15 +749,35 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
      * The open path calls it on every open; it used to hide inside the delete-icon update.
      */
     public void attachPagerAdapter() {
+        // The built pages are kept across closes; drop only what went stale meanwhile (a skin tone
+        // remembered since they were built, recents rewritten from outside) before rebinding.
+        this.categoryManager.prepareForOpen();
         this.viewPager.setAdapter(this.pagerAdapter);
         this.viewPager.setCurrentItem(this.currentPagePosition);
+        // The Recents overlay keeps the grid it was last built with, and picks made on Recents
+        // only reach the preference when the board leaves it (here: on the last close), so
+        // reopening on Recents showed the recents from before them.
+        updateRecentsForCategory(this.categoryManager.getCurrentCategoryId());
     }
 
     public void detachPagerAdapter() {
+        // Already detached: KeyboardSwitcher.leaveEmojiModeInternal() calls this on every
+        // main-keyboard setKeyboard once the board has been inflated, open or not.
+        if (this.viewPager.getAdapter() == null) {
+            return;
+        }
         this.pagerAdapter.commitPendingRecents();
+        final int position = this.viewPager.getCurrentItem();
+        // Through an empty adapter first. ViewPager.setAdapter(non-null) re-arms its first-layout
+        // flag and setAdapter(null) leaves it alone, so the next attach then waits for layout and
+        // populates at the remembered page only. Straight to null, attachPagerAdapter populated
+        // page 0 and its neighbour on the spot (building that category's pages) only for
+        // setCurrentItem to destroy them again.
+        this.viewPager.setAdapter(this.noPages);
         this.viewPager.setAdapter(null);
-        // Pages are rebuilt on the next open, so a skin tone remembered meanwhile shows on the keys.
-        this.categoryManager.clearKeyboardCache();
+        // Pages are no longer rebuilt on every open (audit P-16): keep what the next open binds
+        // first; prepareForOpen() drops them if a skin tone was remembered meanwhile.
+        this.categoryManager.retainPagesAround(position);
     }
 
     public void setKeyboardActionListener(KeyboardActionListenerInterface interfaceC0976f) {

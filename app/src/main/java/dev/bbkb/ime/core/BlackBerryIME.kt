@@ -174,6 +174,27 @@ class BlackBerryIME : InputMethodService(),
         const val SYMBOL_PAGE_ORDER_SECOND = 3
     }
 
+    // ==================== Startup timing (debug builds) ====================
+    //
+    // Audit P-6: the cold-start anchor sits here, the first thing the service constructor runs,
+    // so the logged cold start covers the property initialisers below (the engine used to be
+    // built among them, before onCreate, and no timing ever saw it). The phases, all in
+    // STARTUP_TIMING:
+    //   ime.constructor.start @ N ms  - since the process started (fork, content providers,
+    //                                   ImeApplication.onCreate)
+    //   --- anchor: ime.service ---   - the reference point for every later mark
+    //   ime.constructor = N ms        - property initialisers plus the framework's attach,
+    //                                   up to the first line of onCreate
+    //   ime.onCreate.* = N ms         - onCreate's own steps, unchanged
+    //   engine.primaryInit = N ms     - native library load + engine init, now on ImeStartup
+    //   ime.engine.join = N ms        - how long onCreate's first engine user waited for it
+    //                                   (logged only when it waited 1 ms or more)
+    // Must stay the first instance initialiser in this class.
+    private val constructorTiming: Long = StartupTiming.begin().also {
+        StartupTiming.markSinceProcessStart("ime.constructor.start")
+        StartupTiming.anchor("ime.service")
+    }
+
     // ==================== Fields: framework / window ====================
 
     private var mThemedContext: Context? = null
@@ -460,7 +481,12 @@ class BlackBerryIME : InputMethodService(),
 
     @Throws(Resources.NotFoundException::class)
     override fun onCreate() {
-        StartupTiming.anchor("ime.onCreate")
+        // Audit P-6: first, before super.onCreate(): start the engine (native library load,
+        // nativeInit, the engine's own init) on a startup worker so it overlaps everything below.
+        // It needs only the Application context. The first engine user joins it, bounded, in
+        // NuanceSDKManager.getInstance(); if the executor cannot take it, that user creates it.
+        NuanceSDKManager.startPrimaryAsync(startupExecutor)
+        StartupTiming.end("ime.constructor", constructorTiming)
         val onCreateToken = StartupTiming.begin()
         initializeStrictMode()
         InAppEventBus.getInstance().subscribe(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED, languagePackChangedListener)
@@ -640,7 +666,12 @@ class BlackBerryIME : InputMethodService(),
     }
 
     private fun initializeLearningManagers() {
+        // The first engine user on the main thread (its constructor registers the learner with
+        // the engine): this is where onCreate joins the background engine start, if it is still
+        // running. Timed so the wait shows up next to engine.primaryInit.
+        val joinToken = StartupTiming.begin()
         dynamicLearningManager = DynamicLearningManager(applicationContext)
+        StartupTiming.endIfOver("ime.engine.join", joinToken, 1L)
         languagePackLocaleMonitor = LanguagePackLocaleMonitor(applicationContext, uiUpdateHandler)
         contactsLearningManager = ContactsLearningManager(this)
         // loadSettings() must stay on the critical path — settingsManager.getSettingsValues()
@@ -706,8 +737,7 @@ class BlackBerryIME : InputMethodService(),
         // No keyboard prebuild and no engine "prewarm" here any more: the unified-input-menu
         // keyboard built ahead of time was never cached (KeyboardId.isTypingKeyboard() is false
         // for it, so the bar built its own), and the prewarm only called clear() on an engine
-        // that the InputLogic field initialiser had already created. Both just competed with the
-        // main thread's own startup work.
+        // that already existed. The engine itself is started at the top of onCreate (audit P-6).
     }
 
     /**
@@ -1565,7 +1595,9 @@ class BlackBerryIME : InputMethodService(),
     fun refreshSubtypeSwitcher() {
         val c0664aaM4239a = SubtypeManager.getInstance()
         if (!c0664aaM4239a.isInitialized()) return
-        val listM4860a = RichInputMethodManager.getInstance().getEnabledSubtypesOfThisIme()
+        // The cached list: the uncached form made a binder call on every onStartInput, and the
+        // cache is now invalidated by subtype, locale, package and system-settings changes.
+        val listM4860a = RichInputMethodManager.getInstance().getMyEnabledInputMethodSubtypeList(true)
         if (listM4860a == null || listM4860a.size <= 0) return
         val localeM4259h = c0664aaM4239a.getCurrentSubtypeLocale()
         val setM4260i = c0664aaM4239a.getCurrentSubtypeAdditionalLocales()
@@ -1623,12 +1655,9 @@ class BlackBerryIME : InputMethodService(),
         // clears the callbacks when the toggle is off.
         hardwareKeys.registerInterceptorCallbacks()
         fccController?.hideIfDisabled()
-        // Timed at the call site, not inside NuanceSDKManager: this is where the engine's
-        // native init actually lands. getInstance() creates the SDK lazily, the first caller on
-        // the IME path is this line, and the first loadSettings() runs on the onCreate main
-        // thread -- so the engine init is *inside* the phase the tracker records as
-        // "SettingsManager.initialize ~191 ms". The PKB prewarm in initializeBackgroundPreloading()
-        // is submitted after this point, so it never gets there first.
+        // The engine is started on a worker at the top of onCreate (audit P-6) and the
+        // DynamicLearningManager constructor has normally joined it already; this records any
+        // wait that is left (only waits of 5 ms or more are logged).
         val sdkToken = StartupTiming.begin()
         val sdkM4875a2 = NuanceSDKManager.getInstance()
         StartupTiming.endIfOver("ime.loadSettings.nuanceSdkGet", sdkToken, 5L)
@@ -1869,19 +1898,12 @@ class BlackBerryIME : InputMethodService(),
         TextUtils.getLayoutDirectionFromLocale(subtypeManager.getCurrentSubtypeLocale()) ==
             View.LAYOUT_DIRECTION_RTL
 
-    fun shouldShowLanguageSwitchKey(): Boolean {
-        val zM5179d = settingsManager.getSettingsValues().hasMultipleEnabledInputMethodsOrSubtypes()
-        // Audit CT-16: this service IS an InputMethodService, which offers the token-free form of
-        // the query (API 28+). The IMM IBinder-token variant is deprecated and has been
-        // progressively restricted; it also silently no-ops when the window token is unavailable,
-        // which is why the fallback below still exists for pre-P.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            return shouldOfferSwitchingToNextInputMethod()
-        }
-        val iBinder = window.window?.attributes?.token ?: return zM5179d
-        @Suppress("DEPRECATION")
-        return richInputMethodManager!!.shouldOfferSwitchingToNextInputMethod(iBinder)
-    }
+    // One cached answer per input-method generation (RichInputMethodManager): this used to make
+    // a binder call per field, after first computing hasMultipleEnabledInputMethodsOrSubtypes()
+    // and throwing it away on API 28+. The manager keeps the token-free API 28+ form, the pre-P
+    // token form and the no-window fallback.
+    fun shouldShowLanguageSwitchKey(): Boolean =
+        richInputMethodManager!!.shouldOfferSwitchingToNextInputMethod(this)
 
     // ==================== Hardware key entry (KeyEventProcessor does the work) ====================
 
@@ -2360,8 +2382,10 @@ class BlackBerryIME : InputMethodService(),
             if (isCursorModeEnabled) {
                 // Cursor (FCC) mode active: drag moves the cursor continuously; a tap exits.
                 // Always consume (no typing/flow while in cursor mode).
-                NuanceSDKManager.withSdk("fccCursor.touchCancel") { it.touchCancel(pointerId.toLong()) }
-                gestureProcessor.cancelTracking()
+                // Once per contact: nothing feeds the engine or the trackers in cursor mode, so
+                // only the contact's first cursor-mode sample has tracking to cancel (every
+                // sample used to take the engine lock for a touchCancel).
+                if (ckbGestures.cancelEngineTrackingOncePerContact(motionEvent)) gestureProcessor.cancelTracking()
                 ckbGestures.handleCursorModeDrag(motionEvent)
                 return true
             }

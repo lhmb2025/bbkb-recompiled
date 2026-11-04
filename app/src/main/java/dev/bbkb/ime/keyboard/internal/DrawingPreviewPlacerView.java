@@ -21,6 +21,9 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
 
     private final ArrayList<AbstractDrawingPreview> previews;
 
+    /** See {@link #requestFrameWithoutDamage}. */
+    private View frameTrigger;
+
     public DrawingPreviewPlacerView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         this.keyboardViewOrigin = CoordinateUtils.newCoordinateArray();
@@ -35,6 +38,42 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
             setLayerType(View.LAYER_TYPE_HARDWARE, paint);
         }
+    }
+
+    /**
+     * Requests a frame that damages (almost) nothing: invalidates a 1x1 child that draws nothing.
+     * The keyboard view uses it to show a re-recorded per-key layer (KeyboardView.keyLayers)
+     * without invalidating itself, which would re-record and damage the whole keyboard. A view
+     * with an empty display list adds no damage; the frame still syncs every RenderNode in the
+     * window, so the only damage is the changed layer's rectangle.
+     *
+     * @return false when no frame was requested (not attached); the caller must invalidate
+     */
+    public boolean requestFrameWithoutDamage() {
+        if (!isAttachedToWindow()) {
+            return false;
+        }
+        View trigger = this.frameTrigger;
+        if (trigger == null) {
+            trigger = new View(getContext());
+            trigger.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+            this.frameTrigger = trigger;
+        }
+        if (trigger.getParent() != this) {
+            // First use, or removeAllViews() dropped it with the previews. Adding it re-records
+            // this view once.
+            if (trigger.getParent() instanceof android.view.ViewGroup) {
+                ((android.view.ViewGroup) trigger.getParent()).removeView(trigger);
+            }
+            // Over the keyboard's corner, so that even if a platform counted it as damage, the
+            // frame's (single, bounding) damage rectangle would stay inside the keyboard.
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(1, 1);
+            params.leftMargin = Math.max(0, CoordinateUtils.x(this.keyboardViewOrigin));
+            params.topMargin = Math.max(0, CoordinateUtils.y(this.keyboardViewOrigin));
+            addView(trigger, 0, params);
+        }
+        trigger.invalidate();
+        return true;
     }
 
     public void setDrawingPreview(AbstractDrawingPreview preview) {

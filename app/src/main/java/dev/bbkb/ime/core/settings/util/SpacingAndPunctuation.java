@@ -2,6 +2,7 @@ package dev.bbkb.ime.core.settings.util;
 
 import static dev.bbkb.ime.core.shared.StringHelper.*;
 
+import android.content.res.Configuration;
 import android.content.res.Resources;
 
 import dev.bbkb.ime.R;
@@ -10,7 +11,9 @@ import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.keyboard.internal.KeySpecParser;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Defines the spacing and punctuation rules for the current input language. It holds arrays of
@@ -59,6 +62,44 @@ public final class SpacingAndPunctuation {
 
     /** U+0964 DEVANAGARI DANDA - the sentence separator Hindi uses in place of '.'. */
     private static final int DEVANAGARI_DANDA = 0x0964;
+
+    /** Parsed sets per resources configuration (which carries the keyboard locale); a few at most. */
+    private static final int CACHE_SIZE = 4;
+
+    private static final LinkedHashMap<Configuration, SpacingAndPunctuation> sCache =
+            new LinkedHashMap<Configuration, SpacingAndPunctuation>(CACHE_SIZE, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<Configuration, SpacingAndPunctuation> eldest) {
+                    return size() > CACHE_SIZE;
+                }
+            };
+
+    /**
+     * The rules for {@code resources}, parsed once per configuration: everything here comes from
+     * resource strings, so the same locale and configuration always give the same sets, and the
+     * parse (10 strings sorted into arrays) ran on every settings load. Instances are immutable.
+     */
+    public static SpacingAndPunctuation forResources(Resources resources) {
+        final Configuration key = new Configuration(resources.getConfiguration());
+        synchronized (sCache) {
+            final SpacingAndPunctuation cached = sCache.get(key);
+            if (cached != null) {
+                return cached;
+            }
+        }
+        final SpacingAndPunctuation parsed = new SpacingAndPunctuation(resources);
+        synchronized (sCache) {
+            sCache.put(key, parsed);
+        }
+        return parsed;
+    }
+
+    /** For tests. */
+    static void clearCache() {
+        synchronized (sCache) {
+            sCache.clear();
+        }
+    }
 
     public SpacingAndPunctuation(Resources resources) {
         this.symbolsPrecededBySpace = toSortedCodePointArray(resources.getString(R.string.symbols_preceded_by_space));

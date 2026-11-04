@@ -406,7 +406,7 @@ Java_com_blackberry_nuanceshim_Et9Probe_nativeProbe(JNIEnv *env, jclass cls, jlo
         "\"newWordCleaning\":%u,\"contextBasedPrediction\":%u,\"nextWordPrediction\":%u,"
         "\"incrementalBuilds\":%u,\"dbStems\":%u,\"dbCompletion\":%u,\"spaceSegmentation\":%u,"
         "\"autoSpace\":%u,\"selectionListMode\":%u,\"spellCorrectionMode\":%u,"
-        "\"wordStemsPoint\":%u,\"wordCompletionPoint\":%u}",
+        "\"wordStemsPoint\":%u,\"wordCompletionPoint\":%u,\"multiThreading\":%u}",
         c.core?1:0, c.info?1:0, c.ling?1:0,
         stm_mode, stm_model ? 1 : 0,
         fenceP, fenceS,
@@ -426,7 +426,8 @@ Java_com_blackberry_nuanceshim_Et9Probe_nativeProbe(JNIEnv *env, jclass cls, jlo
         *(uint32_t *)(k + K_SELLISTMODE),
         *(uint32_t *)(k + K_SPELLCORR),
         *(uint16_t *)(k + K_WORDSTEMPT),
-        *(uint16_t *)(k + K_WORDCOMPPT));
+        *(uint16_t *)(k + K_WORDCOMPPT),
+        *(unsigned char *)(c.core + 0x492d8));   /* OFF_CORE_MULTITHREADING, below */
     /* Experiment hook: `adb shell setprop debug.et9.fence N` applies N to both fences on the
      * next input session, so the fence semantics can be swept without a UI. Unset/empty =
      * leave the engine's own value alone. */
@@ -489,5 +490,52 @@ Java_com_blackberry_nuanceshim_Et9Probe_nativeSetQuarantine(JNIEnv *env, jclass 
         LOGI("SetDLMQuarantineLevel(%u,%u,%u) -> status=%d readback=%u/%u/%u", v1, v2, v3, st, q[0], q[1], q[2]);
     else
         LOGI("SetDLMQuarantineLevel(%u,%u,%u) -> status=%d", v1, v2, v3, st);
+    return st;
+}
+
+/* ---- the engine's multithreading switch (P-1) ---------------------------------------------------
+ * The "MT" variants of the alphabetic selection-list and spell paths split one search over up to
+ * five pthreads with a 64 KB stack each (spawner at 0x54014, the blob's only pthread_create), and
+ * join them before returning: 6 to 10 thread births per keystroke, measured. Every one of the nine
+ * spawn sites (sub_9dc48, ET9GetExactWord+0x1640/+0x176c, ET9_CP_Trie_Resegmentation_MT,
+ * ET9_CP_SBIFillSelList x4, ET9_C_ApplyALM2Spell) first reads ONE byte, core + 0x492d8, and calls
+ * the same worker inline, once, when it is 0. The engine's public ET9ClearMultiThreading clears it
+ * (ET9SetMultiThreading / ET9GetMultiThreading are its pair); the blob's JNI never calls either,
+ * and ET9WordSymbInit sets the byte to 1, so MT is the default.
+ *
+ * NuanceSDK.setLanguage zeroes the whole core and re-runs ET9WordSymbInit, which turns MT back on,
+ * so the switch has to be applied after EVERY native setLanguage, not once per engine.
+ *
+ * Signatures (0xb8160 / 0xb81bc, 92 and 88 bytes): ET9STATUS f(ET9WordSymbInfo *core); status 9 on
+ * NULL, 2 on a bad magic, 62 while a selection list is built over a non-empty input (core+0x150cb
+ * and the symbol count at core+2 both non-zero), else 0 after storing the byte. The core is the
+ * struct at handle + 0x18750 (magic 0x1428 at +0), the same one et9_resolve validates. */
+#define BLOB_SET_MULTITHREADING   0xb8160u
+#define BLOB_CLEAR_MULTITHREADING 0xb81bcu
+#define OFF_CORE_MULTITHREADING   0x492d8u
+/* The pair differs only in its first word (the cbz offset); the store at +0x48 tells them apart. */
+static const uint32_t FP_SET_MT[4]   = {0xb4000280u, 0x79400003u, 0x52828502u, 0x52800041u};
+static const uint32_t FP_CLEAR_MT[4] = {0xb4000260u, 0x79400003u, 0x52828502u, 0x52800041u};
+
+typedef int (*fn_core_switch)(void *core);
+
+/* 0 = done; otherwise the engine's status (62 = busy, retry with an empty input), or -1 when the
+ * engine context is not reachable, -2 when the blob is not the build these addresses belong to. */
+JNIEXPORT jint JNICALL
+Java_com_blackberry_nuanceshim_Et9EngineOptions_nativeSetMultiThreading(JNIEnv *env, jclass cls,
+                                                                       jlong handle, jboolean enabled) {
+    (void)env; (void)cls;
+    et9_ctx c = et9_resolve(handle);
+    if (!c.core) { LOGI("setMultiThreading: %s", c.error ? c.error : "core unavailable"); return -1; }
+    uintptr_t b = et9_blob_base();
+    if (!b) return -2;
+    unsigned vaddr = enabled ? BLOB_SET_MULTITHREADING : BLOB_CLEAR_MULTITHREADING;
+    if (memcmp((const void *)(b + vaddr), enabled ? FP_SET_MT : FP_CLEAR_MT, 16) != 0) {
+        __android_log_print(ANDROID_LOG_WARN, TAG, "setMultiThreading: code at 0x%x does not match this build", vaddr);
+        return -2;
+    }
+    int st = ((fn_core_switch)(b + vaddr))(c.core);
+    LOGI("%sMultiThreading -> status=%d readback=%u", enabled ? "Set" : "Clear", st,
+         *(unsigned char *)(c.core + OFF_CORE_MULTITHREADING));
     return st;
 }

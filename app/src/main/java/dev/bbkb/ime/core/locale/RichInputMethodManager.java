@@ -1,17 +1,30 @@
 package dev.bbkb.ime.core.locale;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.app.Dialog;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.SystemClock;
+import android.provider.Settings;
+import android.speech.SpeechRecognizer;
 import android.view.Window;
 import dev.bbkb.ime.core.settings.PrefsManager;
 import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
+
+import androidx.core.content.ContextCompat;
+import androidx.core.os.ConfigurationCompat;
 
 import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageUtils;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
@@ -44,6 +57,60 @@ public class RichInputMethodManager {
     private InputMethodManager imm;
 
     private ImeInfoCache imeInfoCache;
+
+    /*
+     * Invalidation matrix (P-12). Every field focus used to clear these caches, which cost about
+     * a dozen binder calls to system_server per focus. They are now dropped together, by
+     * clearSubtypeCaches(), only when something that feeds them can have changed:
+     *
+     *   event                                       | source
+     *   --------------------------------------------+--------------------------------------------
+     *   current subtype changed                     | SubtypeManager.onSubtypeChanged (from the
+     *                                               |   IME's onCurrentInputMethodSubtypeChanged)
+     *   enabled IMEs or subtypes changed elsewhere  | ContentObserver on enabled_input_methods
+     *   package added/removed/changed/replaced      | package receiver (recogniser, shortcut and
+     *                                               |   other IMEs come and go)
+     *   Language screen saved / pack registered     | SubtypeEnabler, KeyboardLanguages,
+     *                                               |   setAdditionalInputMethodSubtypes
+     *   system locale changed                       | LocaleChangeReceiver; onInputViewStarted
+     *                                               |   compares the system locale list
+     *   safety net                                  | onInputViewStarted, after MAX_CACHE_AGE_MS
+     *
+     *   cache                                       | readers
+     *   --------------------------------------------+--------------------------------------------
+     *   imeInfoCache (this IME's InputMethodInfo)   | getInputMethodInfoOfThisIme and its users
+     *   subtypeListCacheWith/WithoutImplicit        | getMyEnabledInputMethodSubtypeList,
+     *                                               |   hasMultipleEnabledSubtypesInThisIme,
+     *                                               |   checkIfSubtypeBelongsTo*, isShortcutImeEnabled
+     *   recognitionAvailable                        | isRecognitionAvailable (SettingsValues mic
+     *                                               |   key, InputMethodHelper)
+     *   offerSwitchingToNextIme                     | shouldOfferSwitchingToNextInputMethod(ims)
+     *   generation                                  | SubtypeManager's shortcut IME and system-
+     *                                               |   languages memos, moveToEnabledSubtype...
+     *
+     * getEnabledSubtypesOfThisIme() stays uncached on purpose: the switch-language paths and the
+     * dialogs must see the framework's list even if an event above was missed.
+     */
+
+    /** The caches are refreshed at least this often while fields keep starting. */
+    static final long MAX_CACHE_AGE_MS = 60_000L;
+
+    /** Bumped by every {@link #clearSubtypeCaches()}; memos elsewhere compare it. */
+    private volatile int generation;
+
+    private volatile long cachesClearedAtMs = SystemClock.elapsedRealtime();
+
+    private volatile Boolean recognitionAvailable;
+
+    private volatile Context recognitionAvailableFor;
+
+    private volatile Boolean offerSwitchingToNextIme;
+
+    /** The system locale list the caches were last valid for, as language tags. */
+    private String lastSystemLocales;
+
+    /** Generation for which moveToEnabledSubtypeIfCurrentIsNot found nothing to do. */
+    private int enabledSubtypeCheckedGeneration = -1;
 
     private RichInputMethodManager() {
     }
@@ -79,9 +146,132 @@ public class RichInputMethodManager {
         this.imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         this.imeInfoCache = new ImeInfoCache(context.getPackageName());
         ResourceLocaleUtils.init(context);
+        registerInvalidationSources(context.getApplicationContext());
         if (HardwareProbe.isDalvikVM()) {
             setAdditionalInputMethodSubtypes(getAdditionalSubtypes(context));
         }
+    }
+
+    /**
+     * The events from outside this process that change what the caches hold. Registered once on
+     * the application context, so they live as long as the caches do (the process).
+     */
+    private void registerInvalidationSources(Context appContext) {
+        if (appContext == null) {
+            return;
+        }
+        final Handler main = new Handler(Looper.getMainLooper());
+        try {
+            final IntentFilter packages = new IntentFilter();
+            packages.addAction(Intent.ACTION_PACKAGE_ADDED);
+            packages.addAction(Intent.ACTION_PACKAGE_REMOVED);
+            packages.addAction(Intent.ACTION_PACKAGE_CHANGED);
+            packages.addAction(Intent.ACTION_PACKAGE_REPLACED);
+            packages.addDataScheme("package");
+            ContextCompat.registerReceiver(appContext, new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    clearSubtypeCaches();
+                }
+            }, packages, null, main, ContextCompat.RECEIVER_NOT_EXPORTED);
+        } catch (RuntimeException e) {
+            Logger.warn(TAG, "Package receiver not registered: " + e);
+        }
+        try {
+            // Enabling another keyboard, or a language of ours, in the system settings writes
+            // this setting and tells this IME nothing else.
+            appContext.getContentResolver().registerContentObserver(
+                    Settings.Secure.getUriFor(ENABLED_INPUT_METHODS), false,
+                    new ContentObserver(main) {
+                        @Override
+                        public void onChange(boolean selfChange) {
+                            clearSubtypeCaches();
+                        }
+                    });
+        } catch (RuntimeException e) {
+            Logger.warn(TAG, "enabled_input_methods observer not registered: " + e);
+        }
+    }
+
+    /** {@code Settings.Secure.ENABLED_INPUT_METHODS}, which is hidden API. */
+    private static final String ENABLED_INPUT_METHODS = "enabled_input_methods";
+
+    /**
+     * Called as an input view starts, in place of the old unconditional cache clear: drops the
+     * caches only when the system locales changed since they were filled, or when they are older
+     * than {@link #MAX_CACHE_AGE_MS} (in case an invalidation event was missed).
+     */
+    public void onInputViewStarted() {
+        final String locales = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).toLanguageTags();
+        final boolean localesChanged = this.lastSystemLocales != null && !this.lastSystemLocales.equals(locales);
+        this.lastSystemLocales = locales;
+        if (localesChanged || SystemClock.elapsedRealtime() - this.cachesClearedAtMs >= MAX_CACHE_AGE_MS) {
+            clearSubtypeCaches();
+        }
+    }
+
+    /**
+     * For tests: forget the framework handle, so the next {@link #init} registers its event
+     * sources on that test's application.
+     */
+    static synchronized void resetForTest() {
+        sInstance.imm = null;
+        sInstance.lastSystemLocales = null;
+        sInstance.enabledSubtypeCheckedGeneration = -1;
+        sInstance.subtypeListCacheWithImplicit.clear();
+        sInstance.subtypeListCacheWithoutImplicit.clear();
+        sInstance.recognitionAvailable = null;
+        sInstance.offerSwitchingToNextIme = null;
+        sInstance.generation++;
+    }
+
+    /** Changes whenever the caches are dropped; for memos kept outside this class. */
+    public int getCacheGeneration() {
+        return this.generation;
+    }
+
+    /**
+     * {@link SpeechRecognizer#isRecognitionAvailable(Context)}, a PackageManager query, asked once
+     * per cache generation instead of twice per field focus. A recogniser appears or goes with a
+     * package change, which drops the caches.
+     */
+    public boolean isRecognitionAvailable(Context context) {
+        if (context == null) {
+            return false;
+        }
+        // Kept per application: one in a real process, a fresh one per Robolectric test.
+        final Context app = context.getApplicationContext() != null ? context.getApplicationContext() : context;
+        Boolean available = this.recognitionAvailable;
+        if (available == null || this.recognitionAvailableFor != app) {
+            available = SpeechRecognizer.isRecognitionAvailable(context);
+            this.recognitionAvailable = available;
+            this.recognitionAvailableFor = app;
+        }
+        return available;
+    }
+
+    /**
+     * Whether the switcher key should offer the next input method, asked once per cache
+     * generation. It depends on the enabled IMEs and subtypes, whose changes drop the caches.
+     */
+    @SuppressWarnings("deprecation")
+    public boolean shouldOfferSwitchingToNextInputMethod(InputMethodService ims) {
+        Boolean offer = this.offerSwitchingToNextIme;
+        if (offer != null) {
+            return offer;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            offer = ims.shouldOfferSwitchingToNextInputMethod();
+        } else {
+            final IBinder token = windowToken(ims);
+            if (token == null) {
+                // No window yet: answer without caching, the next field asks again.
+                return hasMultipleEnabledSubtypesInThisIme(false);
+            }
+            offer = this.imm.shouldOfferSwitchingToNextInputMethod(token);
+        }
+        this.offerSwitchingToNextIme = offer;
+        return offer;
     }
 
     public InputMethodSubtype[] getAdditionalSubtypes(Context context) {
@@ -214,12 +404,20 @@ public class RichInputMethodManager {
      * @return true when it switched
      */
     public boolean moveToEnabledSubtypeIfCurrentIsNot(InputMethodService ims) {
+        // Both inputs (the current subtype and the enabled list) only change through events that
+        // drop the caches, so a generation already checked has nothing new to find: three binder
+        // calls per field focus otherwise.
+        final int checking = this.generation;
+        if (checking == this.enabledSubtypeCheckedGeneration) {
+            return false;
+        }
         final InputMethodSubtype current = this.imm.getCurrentInputMethodSubtype();
         if (current == null) {
             return false;
         }
         final List<InputMethodSubtype> enabled = getEnabledSubtypesOfThisIme();
         if (!mustRotateWithinIme(current, enabled)) {
+            this.enabledSubtypeCheckedGeneration = checking;
             return false;
         }
         setInputMethodAndSubtype(ims, enabled.get(0));
@@ -593,10 +791,18 @@ public class RichInputMethodManager {
         return this.subtypeSwitchHistory;
     }
 
+    /**
+     * Drops every cache this class keeps (see the invalidation matrix at the top). Cheap: the
+     * framework is asked again only by the next reader.
+     */
     public void clearSubtypeCaches() {
         this.subtypeListCacheWithImplicit.clear();
         this.subtypeListCacheWithoutImplicit.clear();
         this.imeInfoCache.clear();
+        this.recognitionAvailable = null;
+        this.offerSwitchingToNextIme = null;
+        this.cachesClearedAtMs = SystemClock.elapsedRealtime();
+        this.generation++;
     }
 
     public boolean shouldOfferSwitchingToNextInputMethod(IBinder iBinder) {

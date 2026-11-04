@@ -37,8 +37,16 @@ public class EmojiSearchOverlayView extends FrameLayout {
     private SearchOverlayAdapter adapter;
     private EmojiPageKeyboardView.OnEmojiKeyListener keyListener;
     private EmojiCategoryPageIndicatorView pageIndicator;
-    
+    private EmojiPageKeyboardView.SharedMoreKeysPanel moreKeysPanel;
+
     private List<EmojiKeyboard> currentKeyboards = new ArrayList<>();
+
+    /**
+     * Page views the adapter destroyed, rebound by the next instantiation instead of building new
+     * ones: every showKeyboards (each recents refresh and each search result) recreates all pages.
+     */
+    private static final int FREE_VIEW_LIMIT = 3;
+    private final List<EmojiPageKeyboardView> freeViews = new ArrayList<>();
     
     public EmojiSearchOverlayView(Context context) {
         super(context);
@@ -91,6 +99,11 @@ public class EmojiSearchOverlayView extends FrameLayout {
         this.keyListener = listener;
     }
     
+    /** The board's skin-tone popup, shared with its category pages. */
+    void setSharedMoreKeysPanel(EmojiPageKeyboardView.SharedMoreKeysPanel panel) {
+        this.moreKeysPanel = panel;
+    }
+
     /**
      * Set the page indicator view to update when pages change.
      */
@@ -182,14 +195,21 @@ public class EmojiSearchOverlayView extends FrameLayout {
         public Object instantiateItem(ViewGroup container, int position) {
             
             Context context = container.getContext();
-            
-            // Create EmojiPageKeyboardView
-            EmojiPageKeyboardView keyboardView = new EmojiPageKeyboardView(context, null);
-            keyboardView.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            ));
-            
+
+            // Reuse a destroyed page when there is a keyboard to rebind it to (a recycled view
+            // without one would keep showing its old page).
+            EmojiPageKeyboardView keyboardView;
+            if (!freeViews.isEmpty() && position < currentKeyboards.size()) {
+                keyboardView = freeViews.remove(freeViews.size() - 1);
+            } else {
+                keyboardView = new EmojiPageKeyboardView(context, null);
+                keyboardView.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                ));
+            }
+            keyboardView.setSharedMoreKeysPanel(moreKeysPanel);
+
             // Set keyboard if available
             if (position < currentKeyboards.size()) {
                 EmojiKeyboard keyboard = currentKeyboards.get(position);
@@ -211,6 +231,9 @@ public class EmojiSearchOverlayView extends FrameLayout {
                 EmojiPageKeyboardView view = (EmojiPageKeyboardView) object;
                 view.cleanup();
                 container.removeView(view);
+                if (freeViews.size() < FREE_VIEW_LIMIT) {
+                    freeViews.add(view);
+                }
             }
         }
         

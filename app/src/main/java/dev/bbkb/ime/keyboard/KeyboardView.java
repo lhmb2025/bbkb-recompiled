@@ -8,13 +8,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.RenderNode;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
+import android.os.Build;
 import dev.bbkb.ime.core.settings.PrefsManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -22,6 +25,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import androidx.annotation.RequiresApi;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 
@@ -36,6 +41,7 @@ import dev.bbkb.ime.keyboard.internal.KeyDrawParams;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.TreeMap;
 import dev.bbkb.ime.BuildConfig;
@@ -137,6 +143,35 @@ public class KeyboardView extends View {
 
     private boolean needsFullRedraw;
 
+    /** The current keyboard's keys, for a cheap "is this key drawn here" check. */
+    private final HashSet<Key> keyboardKeys = new HashSet<>();
+
+    /**
+     * Per-key layers for keys whose look changes on every tap (pressed keys, the spacebar's
+     * word), API 29+ on a hardware canvas, for views that opt in ({@link #usesKeyLayers}).
+     *
+     * <p>A hardware-accelerated View re-records its whole display list on any invalidate, and
+     * HWUI damages the whole view whenever its display list changes: every press, release and
+     * suggestion re-recorded every key and repainted the full keyboard rectangle, which on an
+     * e-ink panel is a full-keyboard refresh several times per tap. Instead the view's own display
+     * list draws the keys at rest and then one RenderNode per changing key. A press re-records
+     * only that small node, so only the key's rectangle is damaged. Each node repaints the
+     * background and frets under its key before the key itself, so the result is the pixels a full
+     * redraw would give (that needs an opaque background; otherwise the layers stay off).
+     */
+    private KeyLayers keyLayers;
+
+    /** The display list last recorded references the key layers; see {@link #onDraw}. */
+    private boolean keyLayersInDisplayList;
+
+    /** Recording the at-rest keyboard: no pressed states, no per-tap content. */
+    private boolean drawingRestingKeys;
+
+    /** {@link #drawHintLabelOrIcon} scratch; it ran a {@code new Rect()} per hinted key per draw. */
+    private final Rect hintBounds = new Rect();
+
+    private final int hintIconSize;
+
     // Color observer for runtime theme changes
     private final kotlin.jvm.functions.Function0<kotlin.Unit> colorObserver = new kotlin.jvm.functions.Function0<kotlin.Unit>() {
         @Override
@@ -193,6 +228,7 @@ public class KeyboardView extends View {
         }
         this.paint.setAntiAlias(true);
         this.density = context.getResources().getDisplayMetrics().density;
+        this.hintIconSize = context.getResources().getDimensionPixelSize(R.dimen.config_key_hint_icon_size);
         this.backgroundPaint.setStyle(Paint.Style.FILL);
         this.dividerPaint.setStyle(Paint.Style.FILL);
         this.capStrokePaint.setStyle(Paint.Style.STROKE);
@@ -272,6 +308,7 @@ public class KeyboardView extends View {
         this.keyFormatters.clear();
         this.multilineHintLines.clear();
         this.drawList.clear();
+        this.keyboardKeys.clear();
         if (this.keyboard == null) {
             this.rowTops = EMPTY_ROW_EXTENTS;
             this.rowBottoms = EMPTY_ROW_EXTENTS;
@@ -290,6 +327,7 @@ public class KeyboardView extends View {
         int keyboardHeight = this.keyboard.mMostCommonKeyHeight - this.keyboard.mVerticalGap;
         TreeMap<Integer, Integer> rowExtents = new TreeMap<>();
         for (Key key : this.keyboard.getKeys()) {
+            this.keyboardKeys.add(key);
             if (!styleByIdentifier.isEmpty()) {
                 KeyVisualAttributes styleData = styleByIdentifier.get(getKeyIdentifier(key));
                 if (styleData != null) {
@@ -324,6 +362,11 @@ public class KeyboardView extends View {
         return this.keyboard;
     }
 
+    /** Display density; fixed for the view's life. */
+    protected final float getDensity() {
+        return this.density;
+    }
+
     protected float getVerticalCorrection() {
         return this.verticalCorrection;
     }
@@ -347,9 +390,24 @@ public class KeyboardView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (canvas.isHardwareAccelerated()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && canUseKeyLayers()) {
+                // The at-rest keys, then the per-key layers on top. A press or release after this
+                // re-records only its layer (invalidateKeyState), not this display list.
+                this.drawingRestingKeys = true;
+                try {
+                    drawKeyboard(canvas);
+                } finally {
+                    this.drawingRestingKeys = false;
+                }
+                drawKeyLayers(canvas);
+                this.keyLayersInDisplayList = true;
+                return;
+            }
+            releaseKeyLayers();
             drawKeyboard(canvas);
             return;
         }
+        releaseKeyLayers();
         if ((this.needsFullRedraw || !this.invalidatedKeys.isEmpty()) || this.cachedKeyboardBitmap == null) {
             if (allocateBitmapIfNeeded()) {
                 this.needsFullRedraw = true;
@@ -599,11 +657,22 @@ public class KeyboardView extends View {
      */
     public static Typeface mediumWeightTypeface(Typeface base) {
         Typeface resolved = base != null ? base : Typeface.DEFAULT;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-            return Typeface.create(resolved, 500, false);
+        // Memoised: this ran a synchronized Typeface.create per labelled key per frame. Only a
+        // handful of base faces ever reach it, and a Typeface is immutable.
+        synchronized (MEDIUM_WEIGHT_TYPEFACES) {
+            Typeface medium = MEDIUM_WEIGHT_TYPEFACES.get(resolved);
+            if (medium == null) {
+                medium = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P
+                        ? Typeface.create(resolved, 500, false)
+                        : Typeface.create(resolved, Typeface.BOLD);
+                MEDIUM_WEIGHT_TYPEFACES.put(resolved, medium);
+            }
+            return medium;
         }
-        return Typeface.create(resolved, Typeface.BOLD);
     }
+
+    /** Base face to its medium-weight face, by identity; see {@link #mediumWeightTypeface}. */
+    private static final IdentityHashMap<Typeface, Typeface> MEDIUM_WEIGHT_TYPEFACES = new IdentityHashMap<>();
 
     /** The key-surface color for a key's backgroundType (shared by both render paths). */
     private static int keyBackgroundColorFor(Key key) {
@@ -654,7 +723,7 @@ public class KeyboardView extends View {
         }
 
         // Draw pressed state overlay if key is pressed
-        if (key.isPressed()) {
+        if (isKeyDrawnPressed(key)) {
             this.backgroundPaint.setColor(KeyboardColorManager.INSTANCE.getKeyColorPressed());
 
             // Draw pressed overlay
@@ -723,7 +792,7 @@ public class KeyboardView extends View {
                     : keyBackgroundColorFor(key));
             canvas.drawRoundRect(cap, radius, radius, paint);
         }
-        if (key.isPressed()) {
+        if (isKeyDrawnPressed(key)) {
             paint.setColor(KeyboardColorManager.INSTANCE.getPressedStateLayer());
             canvas.drawRoundRect(cap, radius, radius, paint);
         }
@@ -903,14 +972,14 @@ public class KeyboardView extends View {
         float radius = spec.getKeyRadiusDp() * density;
         if (key.backgroundType == 0 && !capPainterDrawsEmptyKeys()) {
             // Surfaceless keys (aux bars, arrow bar) still show press feedback.
-            if (key.isPressed()) {
+            if (isKeyDrawnPressed(key)) {
                 final Paint pressed = this.backgroundPaint;
                 pressed.setColor(KeyboardColorManager.INSTANCE.getPressedStateLayer());
                 canvas.drawRoundRect(cap, radius, radius, pressed);
             }
             return;
         }
-        int base = key.isPressed()
+        int base = isKeyDrawnPressed(key)
                 ? KeyboardColorManager.INSTANCE.getKeyColorPressed()
                 : keyBackgroundColorFor(key);
         canvas.drawRoundRect(cap, radius, radius, sculptedFillPaint(base, cap));
@@ -1148,7 +1217,8 @@ public class KeyboardView extends View {
         if (mode != KeyHintPosition.HIDDEN) {
             int keyWidth = key.getDrawWidth();
             int keyHeight = key.getHeight();
-            Rect rect = new Rect();
+            Rect rect = this.hintBounds;
+            rect.setEmpty();
             boolean hasLabel = !TextUtils.isEmpty(str);
             boolean hasIcon = drawable != null;
             paint.setColor(source.getHintLabelColor());
@@ -1160,7 +1230,7 @@ public class KeyboardView extends View {
             } else if (hasIcon) {
                 // Every hint icon at the one hint size, so the globe on the space bar (the
                 // language key's 24dp icon) sits like the 16dp mic on the comma key.
-                int hintSize = getResources().getDimensionPixelSize(R.dimen.config_key_hint_icon_size);
+                int hintSize = this.hintIconSize;
                 int iconW = drawable.getIntrinsicWidth();
                 int iconH = drawable.getIntrinsicHeight();
                 if (iconW > 0 && iconH > 0 && Math.max(iconW, iconH) != hintSize) {
@@ -1287,6 +1357,300 @@ public class KeyboardView extends View {
         invalidate(keyX, keyY, key.getWidth() + keyX, key.getHeight() + keyY);
     }
 
+    /**
+     * Repaints a key whose per-tap state changed ({@link #hasPerTapContent}: pressed, or a
+     * subclass's per-tap content) and nothing else about it. With key layers in the display list
+     * only that key's layer is re-recorded; otherwise this is {@link #invalidateKey}.
+     */
+    protected void invalidateKeyState(Key key) {
+        if (key == null) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || !this.keyLayersInDisplayList) {
+            invalidateKey(key);
+            return;
+        }
+        if (this.needsFullRedraw) {
+            // A full re-record is already on its way and brings every layer up to date.
+            return;
+        }
+        if (!this.keyboardKeys.contains(key)) {
+            // Not this keyboard's key (PointerTracker routes input-board keys through the main
+            // view); a full redraw would not have drawn it either.
+            return;
+        }
+        if (!updateKeyLayer(key)) {
+            // Out of layers: the new one has to be referenced from this view's display list.
+            invalidate();
+            return;
+        }
+        requestKeyLayerFrame();
+    }
+
+    /**
+     * Gets the changed key layers onto the screen. A frame picks up a re-recorded RenderNode
+     * wherever it sits in the tree, so all that is needed is a frame that does not re-record (and
+     * so damage) this whole view. This default does re-record it; MainKeyboardView asks its
+     * preview placer for a damage-free frame instead.
+     */
+    protected void requestKeyLayerFrame() {
+        invalidate();
+    }
+
+    /**
+     * Whether {@code key} currently shows something the at-rest keyboard does not: its pressed
+     * state, by default. Such keys are drawn in their own layer. Subclasses add per-tap content.
+     */
+    protected boolean hasPerTapContent(Key key) {
+        return key.isPressed() && !suppressesPressedState();
+    }
+
+    /** True where pressed keys are never drawn pressed (an e-ink panel cannot show it in time). */
+    protected boolean suppressesPressedState() {
+        return false;
+    }
+
+    /** Whether a key is drawn in its pressed state in the pass being recorded. */
+    protected final boolean isKeyDrawnPressed(Key key) {
+        return !this.drawingRestingKeys && key.isPressed() && !suppressesPressedState();
+    }
+
+    /** True while recording the at-rest keyboard under the key layers: draw no per-tap content. */
+    protected final boolean isDrawingRestingKeys() {
+        return this.drawingRestingKeys;
+    }
+
+    /** Opt-in for the per-key layers; see {@link #keyLayers}. */
+    protected boolean usesKeyLayers() {
+        return false;
+    }
+
+    private boolean canUseKeyLayers() {
+        if (!usesKeyLayers() || this.keyboard == null) {
+            return false;
+        }
+        // A layer repaints the background under its key; over a translucent background that
+        // would double it, so the layers need an opaque one.
+        Drawable background = getBackground();
+        return background != null && background.getOpacity() == PixelFormat.OPAQUE;
+    }
+
+    /** Paints {@code key} with the background and frets under it, clipped to its rectangle. */
+    private void drawKeyRegion(Key key, Canvas canvas) {
+        int left = key.getX() + getPaddingLeft();
+        int top = key.getY() + getPaddingTop();
+        canvas.save();
+        canvas.clipRect(left, top, left + key.getWidth(), top + key.getHeight());
+        Drawable background = getBackground();
+        if (background != null) {
+            background.draw(canvas);
+        }
+        if (drawsFrets() && KeyboardColorManager.styleSpec().getFretHeightDp() > 0f) {
+            drawFrets(canvas);
+        }
+        drawKey(key, canvas, this.paint);
+        canvas.restore();
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private void drawKeyLayers(Canvas canvas) {
+        KeyLayers layers = this.keyLayers;
+        if (layers == null) {
+            layers = new KeyLayers();
+            this.keyLayers = layers;
+        }
+        // Bring every layer up to date: the palette or the keyboard may have changed, and keys
+        // may have been pressed or released while this view was waiting for this re-record.
+        layers.beginSync();
+        for (Key key : this.keyboard.getKeys()) {
+            if (hasPerTapContent(key)) {
+                recordKeyLayer(layers.acquire(key), key);
+            }
+        }
+        layers.endSync();
+        layers.drawAll(canvas);
+    }
+
+    /** @return false when the key needs a layer and every layer in the display list is taken */
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private boolean updateKeyLayer(Key key) {
+        KeyLayers layers = this.keyLayers;
+        if (layers == null) {
+            return false;
+        }
+        int index = layers.indexOf(key);
+        if (!hasPerTapContent(key)) {
+            if (index >= 0) {
+                layers.release(index);
+            }
+            return true;
+        }
+        if (index < 0) {
+            index = layers.acquireFree(key);
+            if (index < 0) {
+                return false;
+            }
+        }
+        recordKeyLayer(index, key);
+        return true;
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private void recordKeyLayer(int index, Key key) {
+        int left = key.getX() + getPaddingLeft();
+        int top = key.getY() + getPaddingTop();
+        Canvas layerCanvas = this.keyLayers.beginRecording(index, left, top, key.getWidth(), key.getHeight());
+        try {
+            layerCanvas.translate(-left, -top);
+            drawKeyRegion(key, layerCanvas);
+        } finally {
+            this.keyLayers.endRecording(index);
+        }
+    }
+
+    private void releaseKeyLayers() {
+        this.keyLayersInDisplayList = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && this.keyLayers != null) {
+            this.keyLayers.releaseAll();
+        }
+    }
+
+    /**
+     * Software rendering of what the layered hardware path composites: the at-rest keyboard, then
+     * each key with per-tap content repainted in its own region. For the pixel-identity tests.
+     */
+    @VisibleForTesting
+    void drawLayeredForTest(Canvas canvas) {
+        invalidateAllKeys();
+        this.drawingRestingKeys = true;
+        try {
+            drawKeyboard(canvas);
+        } finally {
+            this.drawingRestingKeys = false;
+        }
+        for (Key key : this.keyboard.getKeys()) {
+            if (hasPerTapContent(key)) {
+                drawKeyRegion(key, canvas);
+            }
+        }
+    }
+
+    /** The software full redraw (background, frets, every key as it is now). For the same tests. */
+    @VisibleForTesting
+    void drawFullForTest(Canvas canvas) {
+        invalidateAllKeys();
+        drawKeyboard(canvas);
+    }
+
+    /**
+     * The per-key RenderNodes and the key each one shows (null when free). Every RenderNode call
+     * lives in here, so the view's own methods verify on releases before API 29.
+     */
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private static final class KeyLayers {
+
+        /** Enough for two pointers, the shift keys they press, and the spacebar's word. */
+        private static final int INITIAL_LAYERS = 4;
+
+        private final ArrayList<RenderNode> nodes = new ArrayList<>();
+
+        private final ArrayList<Key> keys = new ArrayList<>();
+
+        private final IdentityHashMap<Key, Boolean> synced = new IdentityHashMap<>();
+
+        KeyLayers() {
+            for (int i = 0; i < INITIAL_LAYERS; i++) {
+                addNode();
+            }
+        }
+
+        private int addNode() {
+            this.nodes.add(new RenderNode("KeyLayer"));
+            this.keys.add(null);
+            return this.nodes.size() - 1;
+        }
+
+        int indexOf(Key key) {
+            for (int i = 0; i < this.keys.size(); i++) {
+                if (this.keys.get(i) == key) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        /** A free layer for {@code key} without growing (growing needs a re-record), or -1. */
+        int acquireFree(Key key) {
+            int free = indexOf(null);
+            if (free >= 0) {
+                this.keys.set(free, key);
+            }
+            return free;
+        }
+
+        Canvas beginRecording(int index, int left, int top, int width, int height) {
+            RenderNode node = this.nodes.get(index);
+            node.setPosition(left, top, left + width, top + height);
+            return node.beginRecording(width, height);
+        }
+
+        void endRecording(int index) {
+            this.nodes.get(index).endRecording();
+        }
+
+        void drawAll(Canvas canvas) {
+            for (int i = 0; i < this.nodes.size(); i++) {
+                canvas.drawRenderNode(this.nodes.get(i));
+            }
+        }
+
+        void beginSync() {
+            this.synced.clear();
+        }
+
+        /** During a re-record: the key's layer, growing the pool if needed. */
+        int acquire(Key key) {
+            this.synced.put(key, Boolean.TRUE);
+            int index = indexOf(key);
+            if (index >= 0) {
+                return index;
+            }
+            index = acquireFree(key);
+            if (index >= 0) {
+                return index;
+            }
+            index = addNode();
+            this.keys.set(index, key);
+            return index;
+        }
+
+        /** Frees every layer whose key was not acquired since {@link #beginSync}. */
+        void endSync() {
+            for (int i = 0; i < this.keys.size(); i++) {
+                Key key = this.keys.get(i);
+                if (key != null && !this.synced.containsKey(key)) {
+                    release(i);
+                }
+            }
+            this.synced.clear();
+        }
+
+        void release(int index) {
+            this.keys.set(index, null);
+            // Dropping the content damages the layer's last rectangle, which uncovers the
+            // at-rest key underneath.
+            this.nodes.get(index).discardDisplayList();
+        }
+
+        void releaseAll() {
+            for (int i = 0; i < this.keys.size(); i++) {
+                if (this.keys.get(i) != null || this.nodes.get(i).hasDisplayList()) {
+                    release(i);
+                }
+            }
+        }
+    }
+
     @Override // android.view.View
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -1300,6 +1664,7 @@ public class KeyboardView extends View {
         KeyboardColorManager.INSTANCE.removeObserver(colorObserver);
         super.onDetachedFromWindow();
         releaseBitmap();
+        releaseKeyLayers();
     }
 
     // ---------------------------------------------------------------------------------------
@@ -1349,6 +1714,7 @@ public class KeyboardView extends View {
 
     public void cleanup() {
         releaseBitmap();
+        releaseKeyLayers();
     }
 
     public void setHintsEnabled(boolean enabled) {

@@ -71,7 +71,12 @@ public class InputSessionCoordinator {
         boolean z2 = false;
         ime.setNeedsKeyboardReload(false);
         ime.superOnStartInputView(editorInfo, restarting);
-        ime.getRichInputMethodManager().clearSubtypeCaches();
+        // The input-method caches used to be cleared here, so every field focus asked
+        // system_server for the same lists again (about a dozen binder calls). They are dropped
+        // on the events that change them now (see RichInputMethodManager's invalidation matrix);
+        // this only catches a system locale change and ages them out.
+        ime.getRichInputMethodManager().onInputViewStarted();
+        InputMethodHelper.onEditorStarted(editorInfo);
         KeyboardSwitcher ks = ime.getKeyboardSwitcher();
         MainKeyboardView mainKeyboardView = ks.getMainKeyboardView();
         SettingsValues settings = ime.getSettingsManager().getSettingsValues();

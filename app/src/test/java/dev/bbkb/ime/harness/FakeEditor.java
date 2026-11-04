@@ -76,6 +76,12 @@ public class FakeEditor implements InputConnection {
     public final List<Integer> editorActions = new ArrayList<>();
     /** Raw key events received via sendKeyEvent. */
     public final List<KeyEvent> sentKeyEvents = new ArrayList<>();
+    /**
+     * Text reads (synchronous round-trips on a real device), counted apart from {@link #callLog}
+     * so the order-sensitive assertions on edits stay as they are.
+     */
+    public int getTextBeforeCursorCalls = 0;
+    public int getTextAfterCursorCalls = 0;
 
     private EditorActionBehavior mActionBehavior = null;
     private boolean mConnectionValid = true;
@@ -293,6 +299,7 @@ public class FakeEditor implements InputConnection {
 
     @Override
     public CharSequence getTextBeforeCursor(int n, int flags) {
+        getTextBeforeCursorCalls++;
         if (!mConnectionValid) return null;
         int lo = Math.min(mSelStart, mSelEnd);
         return mText.substring(Math.max(0, lo - n), lo);
@@ -300,6 +307,7 @@ public class FakeEditor implements InputConnection {
 
     @Override
     public CharSequence getTextAfterCursor(int n, int flags) {
+        getTextAfterCursorCalls++;
         if (!mConnectionValid) return null;
         int hi = Math.max(mSelStart, mSelEnd);
         return mText.substring(hi, Math.min(mText.length(), hi + n));

@@ -1,12 +1,18 @@
 package dev.bbkb.ime.keyboard.internal;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Paint;
+
+import androidx.annotation.VisibleForTesting;
 
 import dev.bbkb.ime.keyboard.Key;
 import dev.bbkb.ime.keyboard.Keyboard;
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.shared.TypefaceUtils;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 
 public final class MoreKeysKeyboard extends Keyboard {
@@ -215,16 +221,168 @@ public final class MoreKeysKeyboard extends Keyboard {
         }
     }
 
-    
-    public static class Builder extends KeyboardXMLParser<MoreKeysKeyboardParams> {
+    /**
+     * The more-keys template's parsed {@code <Keyboard>} attributes. The template is an empty
+     * keyboard whose attributes depend only on the theme and the parent's size, yet every popup
+     * used to re-parse it: a full KeyboardXMLParser (which enumerates the enabled subtypes in its
+     * constructor), two TypedArrays, every icon re-inflated and the keyboard texts reloaded under a
+     * temporary locale. Parsed once per (theme, template, size) now and copied into each popup.
+     */
+    static final class TemplateAttributes {
+
+        private static final int MAX_ENTRIES = 4;
+
+        /** Newest first. */
+        private static final ArrayList<TemplateAttributes> sCache = new ArrayList<>();
+
+        final WeakReference<Resources.Theme> theme;
+
+        final int templateId;
+
+        final int width;
+
+        final int height;
+
+        final int topPadding;
+
+        final int bottomPadding;
+
+        final int leftPadding;
+
+        final int rightPadding;
+
+        final int baseWidth;
+
+        final int baseHeight;
+
+        final int defaultKeyWidth;
+
+        final int defaultSpacerWidth;
+
+        final int horizontalGap;
+
+        final int verticalGap;
+
+        final int defaultRowHeight;
+
+        final int occupiedWidth;
+
+        final int occupiedHeight;
+
+        final KeyVisualAttributes moreKeySpec;
+
+        final int moreKeysTemplate;
+
+        final int maxMoreKeysKeyboardColumn;
+
+        final int gridWidth;
+
+        final int gridHeight;
+
+        final KeyboardIconSet iconsSet;
+
+        private TemplateAttributes(Resources.Theme theme, int templateId, KeyboardId id, KeyboardParams parsed) {
+            this.theme = new WeakReference<>(theme);
+            this.templateId = templateId;
+            this.width = id.mWidth;
+            this.height = id.mHeight;
+            this.topPadding = parsed.mTopPadding;
+            this.bottomPadding = parsed.mBottomPadding;
+            this.leftPadding = parsed.mLeftPadding;
+            this.rightPadding = parsed.mRightPadding;
+            this.baseWidth = parsed.mBaseWidth;
+            this.baseHeight = parsed.mBaseHeight;
+            this.defaultKeyWidth = parsed.mDefaultKeyWidth;
+            this.defaultSpacerWidth = parsed.mDefaultSpacerWidth;
+            this.horizontalGap = parsed.mHorizontalGap;
+            this.verticalGap = parsed.mVerticalGap;
+            this.defaultRowHeight = parsed.mDefaultRowHeight;
+            this.occupiedWidth = parsed.mOccupiedWidth;
+            this.occupiedHeight = parsed.mOccupiedHeight;
+            this.moreKeySpec = parsed.mMoreKeySpec;
+            this.moreKeysTemplate = parsed.mMoreKeysTemplate;
+            this.maxMoreKeysKeyboardColumn = parsed.mMaxMoreKeysKeyboardColumn;
+            this.gridWidth = parsed.mGridWidth;
+            this.gridHeight = parsed.mGridHeight;
+            this.iconsSet = parsed.mIconsSet;
+        }
+
+        private boolean matches(Resources.Theme theme, int templateId, KeyboardId id) {
+            return this.theme.get() == theme && this.templateId == templateId
+                    && this.width == id.mWidth && this.height == id.mHeight;
+        }
+
+        static TemplateAttributes obtain(Context context, Keyboard parent) {
+            Resources.Theme theme = context.getTheme();
+            int templateId = parent.mMoreKeysTemplate;
+            KeyboardId id = parent.mId;
+            synchronized (sCache) {
+                for (int i = 0; i < sCache.size(); i++) {
+                    TemplateAttributes candidate = sCache.get(i);
+                    if (candidate.matches(theme, templateId, id)) {
+                        if (i != 0) {
+                            sCache.remove(i);
+                            sCache.add(0, candidate);
+                        }
+                        return candidate;
+                    }
+                }
+            }
+            MoreKeysKeyboardParams parsed = new MoreKeysKeyboardParams();
+            new KeyboardXMLParser<>(context, parsed).load(templateId, id);
+            TemplateAttributes created = new TemplateAttributes(theme, templateId, id, parsed);
+            synchronized (sCache) {
+                sCache.add(0, created);
+                while (sCache.size() > MAX_ENTRIES) {
+                    sCache.remove(sCache.size() - 1);
+                }
+            }
+            return created;
+        }
+
+        /** What {@code load(template, parent.mId)} left in a fresh params object. */
+        void applyTo(MoreKeysKeyboardParams params, KeyboardId id) {
+            params.mId = id;
+            params.mTopPadding = this.topPadding;
+            params.mBottomPadding = this.bottomPadding;
+            params.mLeftPadding = this.leftPadding;
+            params.mRightPadding = this.rightPadding;
+            params.mBaseWidth = this.baseWidth;
+            params.mBaseHeight = this.baseHeight;
+            params.mDefaultKeyWidth = this.defaultKeyWidth;
+            params.mDefaultSpacerWidth = this.defaultSpacerWidth;
+            params.mHorizontalGap = this.horizontalGap;
+            params.mVerticalGap = this.verticalGap;
+            params.mDefaultRowHeight = this.defaultRowHeight;
+            params.mOccupiedWidth = this.occupiedWidth;
+            params.mOccupiedHeight = this.occupiedHeight;
+            params.mMoreKeySpec = this.moreKeySpec;
+            params.mMoreKeysTemplate = this.moreKeysTemplate;
+            params.mMaxMoreKeysKeyboardColumn = this.maxMoreKeysKeyboardColumn;
+            params.mGridWidth = this.gridWidth;
+            params.mGridHeight = this.gridHeight;
+            params.mIconsSet.shareFrom(this.iconsSet);
+        }
+
+        @VisibleForTesting
+        static void clearForTest() {
+            synchronized (sCache) {
+                sCache.clear();
+            }
+        }
+    }
+
+    public static class Builder {
+
+        private final MoreKeysKeyboardParams mParams;
 
         private final Key mParentKey;
 
         public Builder(Context context, Key key, Keyboard c0965e, boolean z, int i, int i2, Paint paint) {
-            super(context, new MoreKeysKeyboardParams());
+            this.mParams = new MoreKeysKeyboardParams();
             int iM6354a;
             int i3;
-            load(c0965e.mMoreKeysTemplate, c0965e.mId);
+            TemplateAttributes.obtain(context, c0965e).applyTo(this.mParams, c0965e.mId);
             this.mParams.mVerticalGap = c0965e.mVerticalGap / 2;
             this.mParentKey = key;
             if (z) {
@@ -247,7 +405,6 @@ public final class MoreKeysKeyboard extends Keyboard {
             return i;
         }
 
-        @Override // dev.bbkb.ime.keyboard.internal.KeyboardXMLParser
         public MoreKeysKeyboard build() {
             MoreKeysKeyboardParams moreKeysKeyboardParams = (MoreKeysKeyboardParams) this.mParams;
             int iM6194P = this.mParentKey.getMoreKeyLabelFlags();

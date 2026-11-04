@@ -61,6 +61,13 @@ public final class EmojiKeyboard extends Keyboard {
 
     private final int keyHeight;
 
+    /**
+     * The recents preference as this grid last read or wrote it, or null for a page that is not the
+     * Recents grid. The board keeps the Recents grid across closes, and this tells it whether
+     * something else (a backup restore, a reset) has rewritten the preference meanwhile.
+     */
+    private String syncedRecentsJson;
+
     public EmojiKeyboard(SharedPreferences sharedPreferences, Keyboard c0965e, int i, int i2, Locale locale) {
         super(c0965e);
         this.lock = new Object();
@@ -118,7 +125,7 @@ public final class EmojiKeyboard extends Keyboard {
             }
             final List<Object> after = recentsEntries();
             if (!after.equals(before)) {
-                EmojiRecents.write(this.sharedPreferences, after);
+                this.syncedRecentsJson = EmojiRecents.write(this.sharedPreferences, after);
             }
         }
     }
@@ -179,7 +186,17 @@ public final class EmojiKeyboard extends Keyboard {
 
     /** The whole grid, blank filler keys included (they store {@code ""}); a key with no output text stores its code. */
     private void saveRecentsToPreferences() {
-        EmojiRecents.write(this.sharedPreferences, recentsEntries());
+        this.syncedRecentsJson = EmojiRecents.write(this.sharedPreferences, recentsEntries());
+    }
+
+    /**
+     * Whether the stored recents are still the ones this grid last read or wrote. False means the
+     * grid must be rebuilt from the preference to show what is stored.
+     */
+    public boolean matchesStoredRecents() {
+        synchronized (this.lock) {
+            return TextUtils.equals(this.syncedRecentsJson, EmojiRecents.stored(this.sharedPreferences));
+        }
     }
 
     private List<Object> recentsEntries() {
@@ -198,6 +215,7 @@ public final class EmojiKeyboard extends Keyboard {
      * Pinned by EmojiRecentsPersistenceTest.
      */
     public void loadRecentsFromPreferences() {
+        this.syncedRecentsJson = EmojiRecents.stored(this.sharedPreferences);
         List<String> stored;
         try {
             stored = EmojiRecents.read(this.sharedPreferences, Integer.MAX_VALUE);

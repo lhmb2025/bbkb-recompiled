@@ -1,9 +1,11 @@
 package dev.bbkb.ime.core.ime
 import android.content.SharedPreferences
+import android.view.Choreographer
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+import dev.bbkb.ime.core.engine.NuanceSDKManager
 import dev.bbkb.ime.core.gesture.arbiter.FirmwareGestureKeys
 import dev.bbkb.ime.core.gesture.arbiter.GestureAction
 import dev.bbkb.ime.core.gesture.arbiter.GestureAssignments
@@ -141,6 +143,9 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
      * before this contact's events can disturb the flow pipeline.
      */
     fun onContactStart(eventTime: Long) {
+        // Steps the last contact queued land before anything this one does.
+        flushCursorSteps()
+        engineTrackingCancelled = false
         contactConsumed = false
         keyGuard.onContactStart(eventTime)
         startSuggestions = ime.getInputLogic().mCurrentSuggestions
@@ -151,7 +156,11 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
      * guard sees typing whether or not the input view or gesture input is ready — the original's
      * windows were keyed the same way.
      */
-    fun onHardwareKey(eventTime: Long) = keyGuard.onKeyEvent(eventTime)
+    fun onHardwareKey(eventTime: Long) {
+        // A key typed mid-drag must land where the drag has already put the cursor.
+        flushCursorSteps()
+        keyGuard.onKeyEvent(eventTime)
+    }
 
     /**
      * Feed the recorder; its listener acts synchronously. Returns true when the contact has been
@@ -200,6 +209,37 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
     private var dragMoved = false
     private var dragInitialized = false
 
+    /** Set once this contact's first cursor-mode sample has cancelled the engine's tracking. */
+    private var engineTrackingCancelled = false
+
+    /**
+     * Cursor steps queued since the last frame (positive: left / up, as the scroll distances
+     * read). One axis and one direction at a time: a change of either flushes first, so
+     * clamping at either end of the text works out as it did step by step.
+     */
+    private var pendingHorizontalSteps = 0
+    private var pendingVerticalSteps = 0
+    private var flushPosted = false
+    private val flushCallback = Choreographer.FrameCallback {
+        flushPosted = false
+        flushCursorSteps()
+    }
+
+    /**
+     * Cancels the engine's gesture tracking for this contact on its first cursor-mode sample
+     * only, and says whether it did (the caller then cancels its own tracking too). It used to
+     * run on every sample: a JNI call under the engine lock, while nothing in cursor mode feeds
+     * the engine to begin with. Every pointer is cancelled, for cursor mode entered mid-contact.
+     */
+    fun cancelEngineTrackingOncePerContact(event: MotionEvent): Boolean {
+        if (engineTrackingCancelled) return false
+        engineTrackingCancelled = true
+        NuanceSDKManager.withSdk("fccCursor.touchCancel") { sdk ->
+            for (i in 0 until event.pointerCount) sdk.touchCancel(event.getPointerId(i).toLong())
+        }
+        return true
+    }
+
     /**
      * Continuous drag-to-move-cursor while cursor (FCC) mode is active, replicating the legacy
      * onScroll feel (velocity-scaled accumulation → CursorMovementListener). A stationary tap
@@ -223,11 +263,15 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
                 }
             }
             MotionEvent.ACTION_UP -> {
+                flushCursorSteps()
                 // A tap (no real movement) in cursor mode exits it.
                 if (dragInitialized && !dragMoved) ime.toggleCursorMode()
                 dragInitialized = false
             }
-            MotionEvent.ACTION_CANCEL -> dragInitialized = false
+            MotionEvent.ACTION_CANCEL -> {
+                flushCursorSteps()
+                dragInitialized = false
+            }
         }
     }
 
@@ -255,7 +299,7 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
             accumX -= steps * threshold
             if (steps != 0) {
                 accumY = 0f
-                if (steps > 0) ime.moveLeft(steps) else ime.moveRight(-steps)
+                queueCursorSteps(steps, horizontal = true)
                 dragMoved = true
             }
         } else {
@@ -271,10 +315,40 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
             accumY -= steps * threshold
             if (steps != 0) {
                 accumX = 0f
-                if (steps > 0) ime.moveUp(steps) else ime.moveDown(-steps)
+                queueCursorSteps(steps, horizontal = false)
                 dragMoved = true
             }
         }
+    }
+
+    /**
+     * Queues [steps] for the next frame instead of moving now (P-17): each move is an editor
+     * round-trip, and the pad can deliver several samples a frame. Same-direction steps add up,
+     * which lands where the separate moves would have.
+     */
+    private fun queueCursorSteps(steps: Int, horizontal: Boolean) {
+        val pending = if (horizontal) pendingHorizontalSteps else pendingVerticalSteps
+        val otherAxisPending = if (horizontal) pendingVerticalSteps else pendingHorizontalSteps
+        if (otherAxisPending != 0 || (pending != 0 && (pending > 0) != (steps > 0))) flushCursorSteps()
+        if (horizontal) pendingHorizontalSteps += steps else pendingVerticalSteps += steps
+        if (!flushPosted) {
+            flushPosted = true
+            Choreographer.getInstance().postFrameCallback(flushCallback)
+        }
+    }
+
+    /** Issues the queued steps as one move; a no-op with nothing queued. */
+    private fun flushCursorSteps() {
+        if (flushPosted) {
+            flushPosted = false
+            Choreographer.getInstance().removeFrameCallback(flushCallback)
+        }
+        val h = pendingHorizontalSteps
+        val v = pendingVerticalSteps
+        pendingHorizontalSteps = 0
+        pendingVerticalSteps = 0
+        if (h > 0) ime.moveLeft(h) else if (h < 0) ime.moveRight(-h)
+        if (v > 0) ime.moveUp(v) else if (v < 0) ime.moveDown(-v)
     }
 
     // ------------------------------------------------------------------ policy inputs
@@ -315,6 +389,12 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
 
     /** Drop the preference listener and cached snapshots; called from the IME's teardown. */
     fun release() {
+        if (flushPosted) {
+            flushPosted = false
+            Choreographer.getInstance().removeFrameCallback(flushCallback)
+        }
+        pendingHorizontalSteps = 0
+        pendingVerticalSteps = 0
         if (prefsListenerRegistered) {
             PrefsManager.getPrefs(ime).unregisterOnSharedPreferenceChangeListener(prefsListener)
             prefsListenerRegistered = false

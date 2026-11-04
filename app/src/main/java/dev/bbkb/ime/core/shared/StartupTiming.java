@@ -47,6 +47,13 @@ public final class StartupTiming {
     /** Reference point for {@link #mark(String)}; re-armed by {@link #anchor(String)}. */
     private static volatile long sAnchor = ENABLED ? SystemClock.elapsedRealtime() : 0L;
 
+    /**
+     * When {@code Application.onCreate} ran, the fallback reference for
+     * {@link #markSinceProcessStart(String)} where the platform cannot report the process start
+     * (API 23). 0 until {@link #applicationCreated()}.
+     */
+    private static volatile long sApplicationCreated = 0L;
+
     private StartupTiming() {
     }
 
@@ -108,6 +115,33 @@ public final class StartupTiming {
         }
         sAnchor = SystemClock.elapsedRealtime();
         Logger.info(TAG, "--- anchor: " + name + " ---");
+    }
+
+    /** Records that {@code Application.onCreate} is running; see {@link #markSinceProcessStart}. */
+    public static void applicationCreated() {
+        if (!ENABLED) {
+            return;
+        }
+        sApplicationCreated = SystemClock.elapsedRealtime();
+    }
+
+    /**
+     * Logs a point in time relative to the start of this process (the platform's record on
+     * API 24+, else {@link #applicationCreated()}), independent of the current anchor. Used for
+     * the IME service constructor, so the time spent before the service exists (process fork,
+     * content providers, Application) is visible on a cold start.
+     */
+    public static void markSinceProcessStart(String phase) {
+        if (!ENABLED) {
+            return;
+        }
+        final long start = android.os.Build.VERSION.SDK_INT >= 24
+                ? android.os.Process.getStartElapsedRealtime() : sApplicationCreated;
+        if (start <= 0L) {
+            return;
+        }
+        Logger.info(TAG, phase + " @ " + (SystemClock.elapsedRealtime() - start)
+                + " ms after process start (#" + bump(phase) + ")");
     }
 
     /** How many times {@code phase} has been closed in this process. Test seam. */

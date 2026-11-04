@@ -68,6 +68,35 @@ public class RichInputConnection {
 
     private int mBatchedEditNestLevel = 0;
 
+    /**
+     * How short the window on the shrinking side may get before a cursor move re-reads the
+     * editor instead of shifting the cached text. The readers that do not fall back to the
+     * editor when the cache is short (engine context, 146 chars; caps mode; a grapheme scan of
+     * up to 10 steps, 48 chars each) then see the same text a reload would give them.
+     */
+    static final int MIN_LOCAL_SHIFT_WINDOW = 512;
+
+    /** Bound on the moves whose selection reports have not arrived yet. */
+    private static final int MAX_PENDING_ECHOES = 16;
+
+    /**
+     * True while both text caches come from the last successful load plus this class's own
+     * edits since. False after a failed load, invalidateConnection, or a key that can move the
+     * editor's cursor unseen. A cursor move shifts the caches instead of reloading only while true.
+     */
+    private boolean mTextCacheLoaded = false;
+
+    /** The last after-cursor load returned less than asked for: the cache runs to the end of the text. */
+    private boolean mTextAfterReachesEnd = false;
+
+    /**
+     * Collapsed cursor moves sent by {@link #setSelection} whose onUpdateSelection has not come
+     * back yet, as {from, to} pairs in send order. A keypad drag sends one per frame, so reports
+     * trail the cache; on a direction reversal the trailing report points the "wrong" way and
+     * used to read as an external move (a reload plus an engine reset per reversal).
+     */
+    private final java.util.ArrayDeque<int[]> mPendingEchoes = new java.util.ArrayDeque<>();
+
     
     public interface TextChangeListener {
         void onCursorPositionChanged(int position);
@@ -193,6 +222,8 @@ public class RichInputConnection {
         this.mCursorEnd = i2;
         this.mComposingText.setLength(0);
         this.mComposingRegionLength = 0;
+        // The editor's report wins: earlier moves that have not echoed yet no longer describe it.
+        this.mPendingEchoes.clear();
         if (!loadTextBeforeCursor()) {
             if (BuildConfig.DEBUG) Log.d(TAG, "Will try to retrieve text later.");
             return false;
@@ -212,6 +243,7 @@ public class RichInputConnection {
     }
 
     private boolean loadTextBeforeCursor() {
+        this.mTextCacheLoaded = false;
         this.mTextBeforeCursor.setLength(0);
         this.mInputConnection = this.mImeService.getCurrentInputConnection();
         InputConnection inputConnection = this.mInputConnection;
@@ -225,7 +257,8 @@ public class RichInputConnection {
             return false;
         }
         this.mTextBeforeCursor.append(textBeforeCursor);
-        return loadTextAfterCursor();
+        this.mTextCacheLoaded = loadTextAfterCursor();
+        return this.mTextCacheLoaded;
     }
 
     /**
@@ -243,19 +276,25 @@ public class RichInputConnection {
         this.mCachedCapsFlags = 0;
         this.mCachedCapsLocaleFlag = false;
         this.mCachedCapsResult = 0;
+        this.mTextCacheLoaded = false;
+        this.mTextAfterReachesEnd = false;
+        this.mPendingEchoes.clear();
     }
 
     private boolean loadTextAfterCursor() {
         this.mTextAfterCursor.setLength(0);
+        this.mTextAfterReachesEnd = false;
         InputConnection inputConnection = this.mInputConnection;
         CharSequence textAfterCursor = inputConnection == null ? null : inputConnection.getTextAfterCursor(NuanceSDK.MAX_CONTEXT_LENGTH, 0);
         if (textAfterCursor == null) {
+            this.mTextCacheLoaded = false;
             this.mCursorStart = -1;
             this.mCursorEnd = -1;
             if (BuildConfig.DEBUG) Log.d(TAG, "Unable to connect to the editor to retrieve text after cursor.");
             return false;
         }
         this.mTextAfterCursor.append(textAfterCursor);
+        this.mTextAfterReachesEnd = textAfterCursor.length() < NuanceSDK.MAX_CONTEXT_LENGTH;
         return true;
     }
 
@@ -637,6 +676,9 @@ public class RichInputConnection {
                             this.mCursorEnd = this.mCursorStart;
                             break;
                         }
+                        // A key that types nothing (a DPAD arrow) can move the editor's cursor
+                        // under the cache; only a reload may say where, not a local shift.
+                        this.mTextCacheLoaded = false;
                         break;
                 }
             } else if (keyEvent.getCharacters() != null) {
@@ -704,23 +746,132 @@ public class RichInputConnection {
     }
 
     /**
-     * Moves the editor selection to {@code [i, i2)}, reloads the before-cursor text buffer,
-     * and updates the internal cursor position. Both positions must be non-negative.
+     * Moves the editor selection to {@code [i, i2)}, brings the text buffers to the new
+     * position, and updates the internal cursor position. Both positions must be non-negative.
+     *
+     * <p>A collapsed move with no composing text, inside the cached window, shifts the cached
+     * text across the cursor instead of re-reading it (see {@link #shiftCachedText}); anything
+     * else reloads from the editor.
      *
      * @param i  the new selection start
      * @param i2 the new selection end
-     * @return {@code true} if the text context was reloaded successfully
+     * @return {@code true} if the text context is in place for the new position
      */
     public boolean setSelection(int i, int i2) {
         if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "RIC.setSelection: [" + i + "," + i2 + "] prevCursor=[" + mCursorStart + "," + mCursorEnd + "] composing='" + mComposingText + "'");
         if (i < 0 || i2 < 0) {
             return false;
         }
+        final int fromStart = this.mCursorStart;
+        final int fromEnd = this.mCursorEnd;
+        final boolean canShift = canShiftCachedText(i, i2);
+        // Only a plain caret move is matched against its echo; anything else keeps the
+        // editor-report heuristics it always had.
+        final boolean caretMove = fromStart >= 0 && fromStart == fromEnd && i == i2
+                && this.mComposingText.length() == 0 && this.mComposingRegionLength == 0;
         this.mCursorStart = i;
         this.mCursorEnd = i2;
         InputConnection inputConnection = this.mInputConnection;
         if (inputConnection == null || inputConnection.setSelection(i, i2)) {
+            if (inputConnection != null && caretMove) {
+                recordPendingEcho(fromStart, i);
+            }
+            if (canShift && inputConnection != null) {
+                shiftCachedText(i - fromStart);
+                return true;
+            }
             return loadTextBeforeCursor();
+        }
+        return false;
+    }
+
+    /**
+     * Whether a move from the cached cursor to {@code [i, i2]} can shift the cached text
+     * instead of reloading it (P-17: a keypad cursor drag used to make two 1024-char
+     * synchronous reads per step). Requires a collapsed cursor before and after, no composing
+     * text (whose cache layout {@link #setSelectionWithinComposing} adjusts after a reload), a
+     * cache that came from a successful load, and a target inside the window that leaves the
+     * shrinking side at least {@link #MIN_LOCAL_SHIFT_WINDOW} chars, or all of it when the
+     * window already runs to that end of the text. A move of zero reloads: it is what a drag
+     * pressing against either end sends, and the reload picks up text the app added there.
+     */
+    private boolean canShiftCachedText(int i, int i2) {
+        final int from = this.mCursorStart;
+        if (!this.mTextCacheLoaded || from < 0 || from != this.mCursorEnd || i != i2 || i == from
+                || this.mComposingText.length() != 0 || this.mComposingRegionLength != 0) {
+            return false;
+        }
+        final int delta = i - from;
+        if (delta < 0) {
+            final int before = this.mTextBeforeCursor.length();
+            if (-delta > before) {
+                return false;
+            }
+            // The window holds everything back to the start of the text when its length is
+            // the cursor's offset.
+            return before == from || before + delta >= MIN_LOCAL_SHIFT_WINDOW;
+        }
+        final int after = this.mTextAfterCursor.length();
+        if (delta > after) {
+            return false;
+        }
+        return this.mTextAfterReachesEnd || after - delta >= MIN_LOCAL_SHIFT_WINDOW;
+    }
+
+    /**
+     * Moves {@code delta} chars across the cursor between the two caches (positive: from the
+     * after cache to the before cache) and trims the growing side to what a reload would
+     * return, so the caches match a fresh load at the new position.
+     */
+    private void shiftCachedText(int delta) {
+        final StringBuilder before = this.mTextBeforeCursor;
+        final StringBuilder after = this.mTextAfterCursor;
+        if (delta > 0) {
+            before.append(after, 0, delta);
+            after.delete(0, delta);
+            if (before.length() > NuanceSDK.MAX_CONTEXT_LENGTH) {
+                before.delete(0, before.length() - NuanceSDK.MAX_CONTEXT_LENGTH);
+            }
+        } else {
+            final int split = before.length() + delta;
+            after.insert(0, before, split, before.length());
+            before.setLength(split);
+            if (after.length() > NuanceSDK.MAX_CONTEXT_LENGTH) {
+                after.setLength(NuanceSDK.MAX_CONTEXT_LENGTH);
+                // What was cut is real text past the window.
+                this.mTextAfterReachesEnd = false;
+            }
+        }
+    }
+
+    private void recordPendingEcho(int from, int to) {
+        if (from == to) {
+            return; // An editor reports no change for a move to where it already is.
+        }
+        if (this.mPendingEchoes.size() >= MAX_PENDING_ECHOES) {
+            this.mPendingEchoes.pollFirst();
+        }
+        this.mPendingEchoes.addLast(new int[]{from, to});
+    }
+
+    /**
+     * Whether a selection report is the editor's echo of a caret move this class sent: the
+     * report's old and new carets are a recorded {from, to} pair. Drops that pair and every
+     * earlier one (reports arrive in send order, so their echoes were folded or lost).
+     */
+    private boolean consumePendingEcho(int oldStart, int newStart, int oldEnd, int newEnd) {
+        if (this.mPendingEchoes.isEmpty() || oldStart != oldEnd || newStart != newEnd) {
+            return false;
+        }
+        int index = 0;
+        for (int[] echo : this.mPendingEchoes) {
+            if (echo[0] == oldStart && echo[1] == newStart) {
+                for (int n = 0; n <= index; n++) {
+                    this.mPendingEchoes.pollFirst();
+                }
+                return true;
+            }
+            index++;
         }
         return false;
     }
@@ -1066,7 +1217,14 @@ public class RichInputConnection {
      * @return {@code true} if the selection change can be considered a no-op
      */
     public boolean isSelectionUnchanged(int i, int i2, int i3, int i4) {
+        final boolean echo = consumePendingEcho(i, i2, i3, i4);
         if (this.mCursorStart == i2 && this.mCursorEnd == i4) {
+            return true;
+        }
+        // The report of a move this class sent while later moves have already updated the
+        // cache: nothing the IME does not know. Without this a drag that reversed direction
+        // read the trailing report as an external move and reset to a stale position.
+        if (echo && this.mCursorStart >= 0 && this.mCursorStart == this.mCursorEnd) {
             return true;
         }
         // With the cursor unknown (invalidateConnection, e.g. right after a hardware Enter was

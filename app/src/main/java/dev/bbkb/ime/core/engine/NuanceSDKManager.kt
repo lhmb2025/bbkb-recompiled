@@ -4,6 +4,11 @@ import android.util.Log
 import dev.bbkb.ime.core.ImeApplication
 import com.blackberry.nuanceshim.NuanceSDK
 import dev.bbkb.ime.BuildConfig
+import dev.bbkb.ime.core.shared.StartupTiming
+import java.util.concurrent.Executor
+import java.util.concurrent.RejectedExecutionException
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * Singleton manager for NuanceSDK instances.
@@ -31,9 +36,44 @@ object NuanceSDKManager {
     private var secondaryInstance: NuanceSDK? = null
     
     /**
-     * Lock object for thread-safe initialization.
+     * Guards engine creation and disposal. A [ReentrantLock] rather than a monitor so the main
+     * thread's join on a background start can be bounded ([INIT_JOIN_TIMEOUT_MS]).
      */
-    private val lock = Any()
+    private val initLock = ReentrantLock()
+
+    /**
+     * Audit P-6: how long a caller waits for an engine start already running on another thread
+     * (normally the one [startPrimaryAsync] queued in onCreate) before giving up for this call.
+     * Native init takes tens to a few hundred ms; this only guards against a wedged start turning
+     * into a hang. A caller that times out gets null, the same answer as "the engine failed", and
+     * nothing is recorded, so the next call joins again.
+     */
+    private const val INIT_JOIN_TIMEOUT_MS = 8_000L
+
+    /**
+     * Audit F-7: a failed primary start used to be retried in full on EVERY [getInstance], and the
+     * touch path calls it on each DOWN/MOVE/UP sample, so a broken engine re-ran the native init
+     * on the main thread per sample. After a failure the next attempt waits this long, doubling
+     * up to [RETRY_BACKOFF_MAX_MS]; [getInstance] answers null without trying in between.
+     */
+    private const val RETRY_BACKOFF_MIN_MS = 2_000L
+    private const val RETRY_BACKOFF_MAX_MS = 60_000L
+
+    /** Monotonic time of the last failed primary start; 0 = no failure since the last success. */
+    @Volatile
+    private var primaryFailedAtNanos = 0L
+
+    /** The wait after [primaryFailedAtNanos] before the next attempt; 0 until a failure. */
+    @Volatile
+    private var primaryRetryDelayMs = 0L
+
+    /**
+     * The auto-commit handler for the primary engine. InputLogic hands it over from the service
+     * constructor, where the engine must not be created yet (P-6); it is installed on the engine
+     * as soon as the engine exists, and at once when it already does.
+     */
+    @Volatile
+    private var primaryAutoCommitHandler: NuanceSDK.AutoCommitCallback? = null
 
     /**
      * Set to true after NuanceSDK.touchEnd() returns true (gesture accepted) and cleared
@@ -201,31 +241,136 @@ object NuanceSDKManager {
     }
 
     /**
-     * Get the primary NuanceSDK instance.
-     * Lazily initializes on first access with comprehensive error handling.
+     * Get the primary NuanceSDK instance, creating it on first use.
      *
-     * @return NuanceSDK instance, or null if initialization failed
+     * Audit P-6: the service queues the creation on a worker as the first thing in onCreate
+     * ([startPrimaryAsync]). A caller that arrives while that start is running joins it here (it
+     * waits on [initLock], bounded by [INIT_JOIN_TIMEOUT_MS]); a caller that arrives when no start
+     * was queued, or after the executor was shut down before running it, creates the engine itself.
+     *
+     * @return NuanceSDK instance, or null if initialization failed (or failed recently, see
+     *   [RETRY_BACKOFF_MIN_MS]) or the join timed out
      */
     @JvmStatic
     fun getInstance(): NuanceSDK? {
-        if (primaryInstance == null) {
-            synchronized(lock) {
-                if (primaryInstance == null) {
-                    primaryInstance = initializeNuanceSDK("primary")
-                }
-            }
+        primaryInstance?.let { return it }
+        // No context outside an Android process (JVM tests): nothing to try, nothing to back off.
+        if (ImeApplication.getInstance() == null) return null
+        if (inPrimaryBackoff()) return null
+        val locked = try {
+            initLock.tryLock(INIT_JOIN_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+        } catch (e: InterruptedException) {
+            Thread.currentThread().interrupt()
+            false
         }
-        return primaryInstance
+        if (!locked) {
+            Log.w(TAG, "NuanceSDK start still running after $INIT_JOIN_TIMEOUT_MS ms; " +
+                    "continuing without the engine for this call")
+            return primaryInstance
+        }
+        try {
+            primaryInstance?.let { return it }
+            if (inPrimaryBackoff()) return null
+            val token = StartupTiming.begin()
+            val sdk = primaryFactory()
+            StartupTiming.end("engine.primaryInit", token)
+            if (sdk == null) {
+                notePrimaryFailure()
+                return null
+            }
+            primaryFailedAtNanos = 0L
+            primaryRetryDelayMs = 0L
+            // Installed before the instance is published, so no caller sees an engine without it;
+            // and once more after, for a handler handed over in between (see
+            // setPrimaryAutoCommitHandler, which publishes in the opposite order).
+            val handler = primaryAutoCommitHandler
+            if (handler != null) sdk.setAutoCommitCallbackHandler(handler)
+            primaryInstance = sdk
+            val latest = primaryAutoCommitHandler
+            if (latest !== handler) sdk.setAutoCommitCallbackHandler(latest)
+            return sdk
+        } finally {
+            initLock.unlock()
+        }
     }
-    
+
+    /**
+     * Audit P-6: start creating the primary engine on [executor] so the native library load and
+     * init overlap the rest of the service's onCreate. Returns at once. A start that cannot be
+     * queued (executor shut down) is skipped; the first [getInstance] then creates the engine.
+     */
+    @JvmStatic
+    fun startPrimaryAsync(executor: Executor) {
+        if (primaryInstance != null) return
+        try {
+            executor.execute { getInstance() }
+        } catch (e: RejectedExecutionException) {
+            if (BuildConfig.DEBUG) Log.w(TAG, "background engine start rejected; the first use will create it")
+        }
+    }
+
+    /**
+     * Hands the primary engine its auto-commit handler without creating the engine (P-6): it is
+     * installed now when the engine exists, otherwise when [getInstance] creates it.
+     */
+    @JvmStatic
+    fun setPrimaryAutoCommitHandler(handler: NuanceSDK.AutoCommitCallback?) {
+        primaryAutoCommitHandler = handler
+        primaryInstance?.setAutoCommitCallbackHandler(handler)
+    }
+
+    /** Creates the primary engine. A seam for the start/join/backoff tests; production never sets it. */
+    @androidx.annotation.VisibleForTesting
+    internal var primaryFactory: () -> NuanceSDK? = { initializeNuanceSDK("primary") }
+
+    private fun inPrimaryBackoff(): Boolean {
+        val failedAt = primaryFailedAtNanos
+        if (failedAt == 0L) return false
+        val elapsedMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - failedAt)
+        return elapsedMs < primaryRetryDelayMs
+    }
+
+    private fun notePrimaryFailure() {
+        val previous = primaryRetryDelayMs
+        primaryRetryDelayMs = if (previous == 0L) RETRY_BACKOFF_MIN_MS
+            else minOf(previous * 2, RETRY_BACKOFF_MAX_MS)
+        primaryFailedAtNanos = System.nanoTime().let { if (it == 0L) 1L else it }
+        Log.w(TAG, "NuanceSDK primary start failed; next attempt in ${primaryRetryDelayMs} ms")
+    }
+
     /**
      * Dispose the primary NuanceSDK instance and release resources.
      */
     @JvmStatic
     fun disposePrimary() {
-        synchronized(lock) {
+        initLock.lock()
+        try {
             primaryInstance?.dispose()
             primaryInstance = null
+            primaryFailedAtNanos = 0L
+            primaryRetryDelayMs = 0L
+        } finally {
+            initLock.unlock()
+        }
+    }
+
+    /**
+     * Dispose the secondary (spell-checker) engine; the next [getSecondary] creates a fresh one.
+     * The spell-checker service calls this when it unbinds or has been idle, so the up to four
+     * dictionaries that engine holds (5 to 6 MB of native heap each) do not stay resident for
+     * the life of the IME process.
+     */
+    @JvmStatic
+    fun disposeSecondary() {
+        initLock.lock()
+        try {
+            // Unpublished before it is disposed, so getSecondary/peekSecondary never hand out a
+            // disposed engine.
+            val engine = secondaryInstance
+            secondaryInstance = null
+            engine?.dispose()
+        } finally {
+            initLock.unlock()
         }
     }
 
@@ -246,10 +391,13 @@ object NuanceSDKManager {
     @JvmStatic
     fun getSecondary(): NuanceSDK? {
         if (secondaryInstance == null) {
-            synchronized(lock) {
+            initLock.lock()
+            try {
                 if (secondaryInstance == null) {
                     secondaryInstance = initializeNuanceSDK("secondary")
                 }
+            } finally {
+                initLock.unlock()
             }
         }
         return secondaryInstance

@@ -148,7 +148,7 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
             kp.mMoreKeySpec = KeyVisualAttributes.createIfHasStyleAttributes(typedArrayObtainAttributes);
             kp.mMoreKeysTemplate = typedArrayObtainStyledAttributes.getResourceId(R.styleable.Keyboard_moreKeysTemplate, 0);
             kp.mMaxMoreKeysKeyboardColumn = typedArrayObtainAttributes.getInt(R.styleable.Keyboard_Key_maxMoreKeysColumn, 5);
-            kp.mIconsSet.loadIcons(typedArrayObtainStyledAttributes);
+            kp.mIconsSet.loadIcons(typedArrayObtainStyledAttributes, this.mContext.getTheme());
             kp.mTextsSet.setLocales(kp.mId.mLocale, ResourceLocaleUtils.getAdditionalLocales(kp.mId.mSubtype), this.mContext);
         } finally {
             typedArrayObtainAttributes.recycle();

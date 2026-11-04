@@ -97,6 +97,21 @@ class DictionaryFactoryTest {
     }
 
     @Test
+    fun releasingTheSecondaryEngine_disposesItThroughTheManager() {
+        sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.peekSecondary() }.thenReturn(secondary)
+        DictionaryFactory.releaseSecondaryEngine()
+        sdkStatic.verify { NuanceSDKManager.disposeSecondary() }
+    }
+
+    @Test
+    fun releasingWithNoSecondaryEngine_doesNothing() {
+        sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.peekSecondary() }.thenReturn(null)
+        DictionaryFactory.releaseSecondaryEngine()
+        sdkStatic.verify({ NuanceSDKManager.disposeSecondary() }, never())
+        sdkStatic.verify({ NuanceSDKManager.getSecondary() }, never())
+    }
+
+    @Test
     fun engineFailedToLoad_isTheFallback_notABridgeOverNull() {
         // Audit §6 defect 9: NuanceSDKManager reports a failed engine load as null; the factory now
         // falls back instead of wrapping null (which NPE'd once a supported language pack was found).

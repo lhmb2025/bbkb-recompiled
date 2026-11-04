@@ -74,7 +74,13 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
 
     private KeyPreviewDrawParams keyboardStyleSet;
 
+    /** The skin-tone popup's layout, inflated on the first long-press (see {@link #moreKeysLayoutView()}). */
+    private final int moreKeysLayoutResId;
+
+    /** This page's own popup view, when no {@link SharedMoreKeysPanel} was given. */
     private View moreKeysLayoutView;
+
+    private SharedMoreKeysPanel sharedMoreKeysPanel;
 
     private boolean isDimmed;
 
@@ -228,7 +234,6 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
     public EmojiPageKeyboardView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
         this.keyboardStyleSet = null;
-        this.moreKeysLayoutView = null;
         this.dimPaint = new Paint();
         this.windowLocationArray = CoordinateUtils.newCoordinateArray();
         this.keyEventListener = EMPTY_LISTENER;
@@ -237,7 +242,9 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         this.gestureDetector.setIsLongpressEnabled(true);
         TypedArray typedArrayObtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.MainKeyboardView, i, R.style.MainKeyboardView);
         this.keyboardStyleSet = new KeyPreviewDrawParams(typedArrayObtainStyledAttributes);
-        this.moreKeysLayoutView = LayoutInflater.from(getContext()).inflate(typedArrayObtainStyledAttributes.getResourceId(R.styleable.MainKeyboardView_moreKeysKeyboardLayout, 0), (ViewGroup) null);
+        // Not inflated here: most pages are never long-pressed, and every page used to inflate a
+        // whole more-keys KeyboardView up front (audit P-16).
+        this.moreKeysLayoutResId = typedArrayObtainStyledAttributes.getResourceId(R.styleable.MainKeyboardView_moreKeysKeyboardLayout, 0);
         this.moreKeysLayoutParams = new DrawingPreviewPlacerView(context, attributeSet);
         int i2 = typedArrayObtainStyledAttributes.getInt(R.styleable.MainKeyboardView_backgroundDimAlpha, 0);
         this.dimPaint.setColor(-16777216);
@@ -246,6 +253,44 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         this.keyPreviewController = new KeyPreviewChoreographer(this.keyboardStyleSet);
         this.keyPreviewHandler = new BatchInputTimerHandler(typedArrayObtainStyledAttributes.getInt(R.styleable.MainKeyboardView_gestureRecognitionUpdateTime, 0));
         typedArrayObtainStyledAttributes.recycle();
+    }
+
+    /** Shares one popup view among the pages of a board instead of each page inflating its own. */
+    void setSharedMoreKeysPanel(SharedMoreKeysPanel panel) {
+        this.sharedMoreKeysPanel = panel;
+    }
+
+    private View moreKeysLayoutView() {
+        if (this.sharedMoreKeysPanel != null) {
+            return this.sharedMoreKeysPanel.get(getContext(), this.moreKeysLayoutResId);
+        }
+        if (this.moreKeysLayoutView == null) {
+            this.moreKeysLayoutView = LayoutInflater.from(getContext()).inflate(this.moreKeysLayoutResId, (ViewGroup) null);
+        }
+        return this.moreKeysLayoutView;
+    }
+
+    /**
+     * The skin-tone popup's view for every page of one board, inflated on the first long-press.
+     * Only one popup can be up at a time, and showing it detaches it from whichever page's placer
+     * held it last ({@code MoreKeysKeyboardView.showInParent}).
+     */
+    static final class SharedMoreKeysPanel {
+        private View view;
+        private int layoutResId;
+
+        View get(Context context, int resId) {
+            if (this.view == null || this.layoutResId != resId) {
+                this.view = LayoutInflater.from(context).inflate(resId, (ViewGroup) null);
+                this.layoutResId = resId;
+            }
+            return this.view;
+        }
+
+        /** The popup view if a long-press has inflated it, else null. */
+        View peek() {
+            return this.view;
+        }
     }
 
     private void updateMoreKeysPosition() {
@@ -496,7 +541,7 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
             return;
         }
         MoreKeysKeyboard moreKeysKeyboardMo5338b = new MoreKeysKeyboard.Builder(getContext(), keyM6620b, getKeyboard(), false, this.keyboardStyleSet.getVisibleWidth(), this.keyboardStyleSet.getVisibleHeight(), createPaintForKey(keyM6620b)).build();
-        View view = this.moreKeysLayoutView;
+        View view = moreKeysLayoutView();
         MoreKeysKeyboardView moreKeysKeyboardView = (MoreKeysKeyboardView) view.findViewById(R.id.more_keys_keyboard_view);
         moreKeysKeyboardView.setKeyboard(moreKeysKeyboardMo5338b);
         view.measure(-2, -2);

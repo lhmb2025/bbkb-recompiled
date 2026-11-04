@@ -17,6 +17,15 @@ PLT/GOT. To make it call OUR implementation instead, two edits:
 
 Net: no section growth, no offset shifts. Reversible with --restore --orig <original blob>.
 
+The same UNDEF also hands over three non-KDB exports, LDB_CONTRACT below (P-9: the LDB reader,
+proof in ../cpp/src/ldb_reader.c). Reproducible from the pristine blob with cutover_deploy.sh patch:
+  pristine  sha256 2182e601f81358ad576f3c6c6bb50e94d197d28c4ed2612fca81b9911d65efdc
+  28-symbol cutover (before P-9)       4da6c36523406e12601ddadc5e901b6014d8cfc684dadd2ea7099612118985dd
+  31-symbol cutover (with LDB_CONTRACT) 51228ca9b899d7b988c277f8e7274e59925a91a46ce606f688aedfa204575002
+  P-9's bytes: the .dynsym entries of ldbReadDataAW (file 0x55a8: value 0x1e6d0 size 0x24),
+  ldbTerminate (0x2ae8: value 0x1f03c size 0x80) and ldbDeleteIndex (0x2890: value 0x1efb8
+  size 0x4c) get st_shndx 0x0a -> 0, st_value -> 0, st_size -> 0; nothing else changes.
+
 Symbols intentionally NOT in the contract (see CONTRACT / NOT_REDIRECTED / INERT_NO_CALLERS below):
   * ET9KDB_Init            — the blob's own Init sets up state our module reads.
   * ProcessKey, ProcessKeyBySymbol, ProcessStoredTouch, ModifyCurrentKey
@@ -123,7 +132,15 @@ INERT_NO_CALLERS = [
     "GetPageNum", "Validate", "NextDiacritic", "Load_TextKDB",
 ]
 
-CONTRACT_SYMS = {"ET9KDB_" + n for n in CONTRACT}
+# The blob's LDB reader (P-9, 2026-11 performance audit; xt9kdb-scaffold/cpp/src/ldb_reader.c):
+# ldbReadDataAW is reached only through its GLOB_DAT (alphaInit hands it to ET9AWLdbInit as the
+# read callback; ldbReadDataCP branches into the ORIGINAL body internally and keeps it), and
+# ldbTerminate / ldbDeleteIndex only through their PLT slots. Handing these three over lets libkb.so
+# map stored APK assets copy-on-write instead of keeping a malloc'd copy of each 5-6 MB dictionary.
+# The ownership proof (every reader and the only free of a node's data) is in ldb_reader.c.
+LDB_CONTRACT = ["ldbReadDataAW", "ldbTerminate", "ldbDeleteIndex"]
+
+CONTRACT_SYMS = {"ET9KDB_" + n for n in CONTRACT} | set(LDB_CONTRACT)
 
 OLD_NEEDED = b"libdl.so\x00"     # dead DT_NEEDED we repurpose
 NEW_NEEDED = b"libkb.so\x00"     # our owned lib (must fit in OLD_NEEDED's slot)
@@ -255,7 +272,7 @@ def verify(data):
     defined = len(idx) - undef
     print(f"  DT_NEEDED repurposed slot -> {name!r}")
     print(f"  contract symbols: {undef} UNDEF, {defined} still defined")
-    n = len(CONTRACT)
+    n = len(CONTRACT_SYMS)
     state = ("CUTOVER (patched)" if (name == "libkb.so" and undef == n)
              else "ORIGINAL (blob)" if (name == "libdl.so" and defined == n)
              else "MIXED/UNKNOWN")
@@ -286,7 +303,7 @@ def main():
             sys.exit("ERROR: --restore needs --orig <pristine blob> to restore exact symbol defs.")
         out = restore_patch(data, open(args.orig, "rb").read())
         open(args.out, "wb").write(out)
-        print(f"Restored: DT_NEEDED libkb.so -> libdl.so; {len(CONTRACT)} symbols re-defined from {args.orig}")
+        print(f"Restored: DT_NEEDED libkb.so -> libdl.so; {len(CONTRACT_SYMS)} symbols re-defined from {args.orig}")
         verify(out)
         return
 

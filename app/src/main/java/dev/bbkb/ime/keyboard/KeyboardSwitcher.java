@@ -705,6 +705,9 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
             if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "KeyboardSwitcher.syncKeyboardLayout: isTouchKb=" + isTouchKb + " onScreenSurface=" + onScreenSurface + " width=" + width + " height=" + height + " locale=" + localeStr + " keyboardId=" + c0965eM6834l.mId.mElementId);
             // FIX-D2: null when the engine failed to load; there is then no layout to sync and no
             // key grid to capture, but the keyboard itself must still come up.
+            // Audit P-7: while the dictionary load holds the engine lock this returns at once and
+            // the sync runs when the load ends; NuanceSDK.syncKeyboardLayout documents the
+            // barrier that keeps taps and keys from reaching the engine before it.
             com.blackberry.nuanceshim.NuanceSDK engine = NuanceSDKManager.getInstance();
             if (engine != null) engine.syncKeyboardLayout(vkbSync, localeStr, width, height);
             updateCangjieKey();
@@ -715,7 +718,10 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
             // theory that repeated reads perturb ET9's gesture recognition; that is measured and
             // false (audit §4.3 — the blob's shim at 0x20fc0 touches no engine state, and 0/1/20
             // interleaved reads over the 240-swipe W6 replay are byte-identical).
-            if (engine != null && isTouchKb && dev.bbkb.ime.core.gesture.arbiter.CkbKeyGridCapture.INSTANCE.needsCapture(width, height)) {
+            // Not while the sync itself is deferred behind a dictionary load (audit P-7): getKeys()
+            // would run it and wait for the load on this thread. A later sync captures instead.
+            if (engine != null && isTouchKb && !engine.isLayoutSyncPending()
+                    && dev.bbkb.ime.core.gesture.arbiter.CkbKeyGridCapture.INSTANCE.needsCapture(width, height)) {
                 try {
                     dev.bbkb.ime.core.gesture.arbiter.CkbKeyGridCapture.INSTANCE.capture(
                             this.blackberryIme, engine.getKeys(), width, height);

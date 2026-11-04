@@ -406,6 +406,30 @@ class SpellCheckerSessionTest {
     }
 
     @Test
+    fun aNewEngineGenerationDropsTheCachedAnswers() {
+        // The service bumps it on every language load and when it releases the engine.
+        valid += "hello"
+        single("hello")
+        single("hello")
+        Mockito.doReturn(1).`when`(service).engineGeneration
+        single("hello")
+        assertEquals(listOf("hello", "hello"), validWordCalls())
+    }
+
+    @Test
+    fun everyEntryPointCountsItselfAsARunningRequest() {
+        // The service releases its engine only while no request runs.
+        valid += "hello"
+        single("hello")
+        session.onGetSuggestions(ti("hello"), 5)
+        session.onGetSentenceSuggestionsMultiple(emptyArray(), 5)
+        val begins = Mockito.mockingDetails(service).invocations.count { it.method.name == "beginRequest" }
+        val ends = Mockito.mockingDetails(service).invocations.count { it.method.name == "endRequest" }
+        assertEquals(3, begins)
+        assertEquals(begins, ends)
+    }
+
+    @Test
     fun withoutADictionaryForTheLanguage_aWordIsNeitherRightNorWrong() {
         dictionaryLoaded = false
         assertEquals("a=0 n=0 []", describe(single("Xyzzy")))

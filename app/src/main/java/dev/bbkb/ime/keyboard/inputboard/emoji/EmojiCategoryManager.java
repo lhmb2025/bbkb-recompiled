@@ -12,6 +12,7 @@ import dev.bbkb.ime.keyboard.KeyboardBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import dev.bbkb.ime.BuildConfig;
@@ -93,12 +94,19 @@ final class EmojiCategoryManager {
 
     private int defaultCategoryId = EmojiCategory.SMILEYS_EMOTION.getId();
 
+    /**
+     * The skin-tone memory as it stood when the cached category pages were (or could have been)
+     * built. Keys show the remembered tone, so a change since then makes every page stale.
+     */
+    private String toneMemorySnapshot;
+
     public EmojiCategoryManager(SharedPreferences sharedPreferences, Context context, KeyboardBuilder c0978h, TypedArray typedArray) {
         this.currentCategoryId = -1;
         this.sharedPreferences = sharedPreferences;
         this.resources = context.getResources();
         this.maxPageKeyCount = this.resources.getInteger(R.integer.config_emoji_keyboard_max_page_key_count);
         this.keyboardBuilder = c0978h;
+        this.toneMemorySnapshot = EmojiToneMemory.snapshot(sharedPreferences);
         for (int i = 0; i < CATEGORY_COUNT; i++) {
             this.categoryIconIds[i] = typedArray.getResourceId(CATEGORY_ICON_ATTR_IDS[i], 0);
         }
@@ -312,15 +320,69 @@ final class EmojiCategoryManager {
         }
     }
 
+    /** The one Recents grid. Callers ask every time rather than keep it: {@link #prepareForOpen} may replace it. */
+    public EmojiKeyboard getRecentsKeyboard() {
+        return getOrCreateKeyboard(0, 0);
+    }
+
     /**
-     * Drops every built page so the next open rebuilds them: after a skin-tone pick the keys must
-     * show the remembered tone (EmojiKeyboardFactory reads EmojiToneMemory when it builds a key).
-     * Called from EmojiPalettesView.detachPagerAdapter(), after the pending recents are committed.
+     * Drops only the pages that went stale while the board was closed, before it binds them again.
+     *
+     * <p>Every close used to drop every page, so each open rebuilt the whole current category on
+     * the main thread, a Key and its skin-tone specs per emoji (audit P-16). The pages only go stale
+     * in two ways: a skin tone remembered since they were built (EmojiKeyboardFactory reads
+     * EmojiToneMemory when it builds a key), which drops every category page; and recents written
+     * by something other than the Recents grid (a backup restore, a reset), which drops the grid so
+     * it reloads from the preference. The Recents grid is otherwise kept as the single instance
+     * that picks are added to, so it always shows them.
+     *
+     * <p>A reload of the emojibase dataset does not drop pages: the asset is the same, and the
+     * page counts this manager laid the pager out with are fixed at construction anyway.
      */
-    public void clearKeyboardCache() {
+    public void prepareForOpen() {
         synchronized (this.keyboardCache) {
-            this.keyboardCache.clear();
+            final String tones = EmojiToneMemory.snapshot(this.sharedPreferences);
+            if (!android.text.TextUtils.equals(tones, this.toneMemorySnapshot)) {
+                this.toneMemorySnapshot = tones;
+                // An iterator, not Collection.removeIf: that is API 24 and minSdk is 23.
+                for (Iterator<Long> it = this.keyboardCache.keySet().iterator(); it.hasNext(); ) {
+                    if (categoryOf(it.next()) != 0) {
+                        it.remove();
+                    }
+                }
+            }
+            final EmojiKeyboard recents = this.keyboardCache.get(makeCacheKey(0, 0));
+            if (recents != null && !recents.matchesStoredRecents()) {
+                this.keyboardCache.remove(makeCacheKey(0, 0));
+            }
         }
+    }
+
+    /**
+     * On close: keeps the Recents grid and the pages of the categories at and next to pager
+     * {@code position} (what the next open binds first), and drops the rest, so a closed board does
+     * not hold every category the user browsed.
+     */
+    public void retainPagesAround(int position) {
+        final int last = getTotalPageCount() - 1;
+        if (last < 0) {
+            return;
+        }
+        final int keepA = getCategoryAt(Math.max(0, Math.min(last, position - 1)));
+        final int keepB = getCategoryAt(Math.max(0, Math.min(last, position)));
+        final int keepC = getCategoryAt(Math.max(0, Math.min(last, position + 1)));
+        synchronized (this.keyboardCache) {
+            for (Iterator<Long> it = this.keyboardCache.keySet().iterator(); it.hasNext(); ) {
+                final int id = categoryOf(it.next());
+                if (id != 0 && id != keepA && id != keepB && id != keepC) {
+                    it.remove();
+                }
+            }
+        }
+    }
+
+    private static int categoryOf(Long cacheKey) {
+        return (int) (cacheKey >>> 32);
     }
 
     public int getTotalPageCount() {

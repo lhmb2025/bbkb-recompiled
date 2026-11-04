@@ -2,6 +2,9 @@ package dev.bbkb.ime.core.spellcheck;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.SystemClock;
 import dev.bbkb.ime.core.settings.PrefsManager;
 import android.service.textservice.SpellCheckerService;
 import android.view.inputmethod.EditorInfo;
@@ -12,6 +15,7 @@ import com.blackberry.nuanceshim.NuanceSDK;
 import com.blackberry.nuanceshim.languagepack.LanguagePackManager;
 
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker;
+import dev.bbkb.ime.core.engine.DictionaryFactory;
 import dev.bbkb.ime.core.engine.DictionaryLoader;
 import dev.bbkb.ime.core.suggestion.PrevWordsInfo;
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils;
@@ -36,6 +40,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 import dev.bbkb.ime.core.engine.NuanceSDKManager;
@@ -51,6 +57,13 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
      * languages do not reload the engine on every check; past this many, the oldest are dropped.
      */
     static final int MAX_LOADED_LANGUAGES = 4;
+
+    /**
+     * How long the engine stays loaded with no request before it is disposed (P-9): it holds a
+     * private copy of each loaded language's dictionary, 5 to 6 MB of native heap apiece, in the
+     * keyboard's own process. The next request loads it again.
+     */
+    static final long ENGINE_IDLE_RELEASE_MS = 3 * 60 * 1000L;
 
     /** Preference: whether words the keyboard learned from typing count as spelled correctly. */
     static final String PREF_ACCEPT_LEARNED_WORDS = "pref_spellcheck_accept_learned_words";
@@ -79,6 +92,35 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
 
     private final SuggestionStripSettings mSuggestionStripSettings = new SuggestionStripSettings(true, null, false);
 
+    /**
+     * Bumped whenever what the engine answers from may have changed under the sessions: a load of
+     * languages, or the engine's release. Sessions drop their cached verdicts when it moves.
+     */
+    private final AtomicInteger mEngineGeneration = new AtomicInteger();
+
+    /**
+     * Session requests running now. The engine is released only while this is zero, read with
+     * both dictionary permits held: a request counts itself before its first engine call, and
+     * that call (the dictionary load) needs a permit, so it either stops the release or runs
+     * after it and loads a fresh engine. Nothing in a request touches a disposed engine.
+     */
+    private final AtomicInteger mActiveRequests = new AtomicInteger();
+
+    private volatile long mLastRequestEndMs;
+
+    /** Main-thread handler for the idle release; null before onCreate and after onDestroy. */
+    private volatile Handler mIdleHandler;
+
+    private final AtomicBoolean mIdleReleasePosted = new AtomicBoolean();
+
+    private final Runnable mIdleReleaseTask = () -> {
+        this.mIdleReleasePosted.set(false);
+        final long remaining = releaseEngineIfIdle(SystemClock.uptimeMillis());
+        if (remaining > 0) {
+            scheduleIdleRelease(remaining);
+        }
+    };
+
     public AndroidSpellCheckerService() {
         for (int i = 0; i < 2; i++) {
             this.mSessionIdPool.add(Integer.valueOf(i));
@@ -88,6 +130,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     @Override // android.app.Service
     public void onCreate() {
         super.onCreate();
+        this.mIdleHandler = new Handler(Looper.getMainLooper());
         SubtypeManager.ensureInitialized(getApplicationContext());
         SharedPreferences defaultSharedPreferences = PrefsManager.INSTANCE.getPrefs(this);
         this.mContactsManager = new ContactsLearningManager(this);
@@ -108,7 +151,92 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     @Override
     public void onDestroy() {
         PrefsManager.INSTANCE.getPrefs(this).unregisterOnSharedPreferenceChangeListener(this);
+        final Handler handler = this.mIdleHandler;
+        this.mIdleHandler = null;
+        if (handler != null) {
+            handler.removeCallbacks(this.mIdleReleaseTask);
+        }
+        // Normally already done by onUnbind; this catches a destroy without one.
+        this.mDictSemaphore.acquireUninterruptibly(2);
+        try {
+            if (this.mActiveRequests.get() == 0) {
+                releaseEngineLocked();
+            }
+        } finally {
+            this.mDictSemaphore.release(2);
+        }
         super.onDestroy();
+    }
+
+    /** The current {@link #mEngineGeneration}. */
+    int getEngineGeneration() {
+        return this.mEngineGeneration.get();
+    }
+
+    /** A session request starts; pair with {@link #endRequest}. */
+    void beginRequest() {
+        this.mActiveRequests.incrementAndGet();
+    }
+
+    /** A session request ended; the last one to end starts the idle countdown. */
+    void endRequest() {
+        if (this.mActiveRequests.decrementAndGet() == 0) {
+            this.mLastRequestEndMs = SystemClock.uptimeMillis();
+            scheduleIdleRelease(ENGINE_IDLE_RELEASE_MS);
+        }
+    }
+
+    /**
+     * At most one countdown is posted; when it fires early (requests came and went since), it
+     * re-posts for the rest rather than every request moving it.
+     */
+    private void scheduleIdleRelease(long delayMs) {
+        final Handler handler = this.mIdleHandler;
+        if (handler != null && this.mIdleReleasePosted.compareAndSet(false, true)) {
+            handler.postDelayed(this.mIdleReleaseTask, delayMs);
+        }
+    }
+
+    /**
+     * Releases the engine when no request has run for {@link #ENGINE_IDLE_RELEASE_MS}. Returns
+     * how long to wait before asking again, or 0 when there is nothing to wait for (released,
+     * or a request is running and its end restarts the countdown). Never blocks: it runs on the
+     * main thread, so a busy dictionary just means another try later.
+     */
+    long releaseEngineIfIdle(long nowMs) {
+        if (this.mActiveRequests.get() > 0) {
+            return 0;
+        }
+        final long idleMs = nowMs - this.mLastRequestEndMs;
+        if (idleMs < ENGINE_IDLE_RELEASE_MS) {
+            return ENGINE_IDLE_RELEASE_MS - idleMs;
+        }
+        if (!this.mDictSemaphore.tryAcquire(2)) {
+            return ENGINE_IDLE_RELEASE_MS;
+        }
+        try {
+            if (this.mActiveRequests.get() == 0) {
+                releaseEngineLocked();
+            }
+        } finally {
+            this.mDictSemaphore.release(2);
+        }
+        return 0;
+    }
+
+    /**
+     * Closes the dictionary and disposes the engine, freeing every loaded language; the next
+     * request's {@link #initDictionaryForLocale} creates a new one. Callers hold both permits
+     * and have seen no request running.
+     */
+    private void releaseEngineLocked() {
+        this.mLoadedLocales = null;
+        if (this.mDictionaryLoader != null) {
+            this.mDictionaryLoader.closeAndReset();
+            this.mDictionaryLoader = null;
+        }
+        DictionaryFactory.releaseSecondaryEngine();
+        this.mEngineGeneration.incrementAndGet();
     }
 
     /**
@@ -291,6 +419,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
      * keyboard layout of that first language for key positions. Callers hold both permits.
      */
     private void loadLanguages(List<Locale> languages) {
+        this.mEngineGeneration.incrementAndGet();
         this.mLoadedLocales = null;
         DictionaryLoader oldLoader = this.mDictionaryLoader;
         if (oldLoader != null) {
@@ -377,10 +506,10 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     public boolean onUnbind(Intent intent) {
         this.mDictSemaphore.acquireUninterruptibly(2);
         try {
-            this.mLoadedLocales = null;
-            if (this.mDictionaryLoader != null) {
-                this.mDictionaryLoader.closeAndReset();
-                this.mDictionaryLoader = null;
+            // A call still running on a binder thread keeps the engine; its end starts the idle
+            // countdown, which releases it then.
+            if (this.mActiveRequests.get() == 0) {
+                releaseEngineLocked();
             }
             this.mContactsManager.unregister();
             this.mKeyboardCache.clear();

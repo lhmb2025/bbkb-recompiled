@@ -69,6 +69,13 @@ public final class SubtypeManager {
 
     private boolean isNetworkConnected;
 
+    /** Cache generation the shortcut IME was read at; see updateParametersOnStartInputView. */
+    private int shortcutImeGeneration = -1;
+
+    private boolean usingSystemLanguages;
+
+    private int usingSystemLanguagesGeneration = -1;
+
 
     private boolean initialized = false;
 
@@ -127,11 +134,19 @@ public final class SubtypeManager {
         return this.initialized;
     }
 
+    /**
+     * Refreshes the shortcut (voice) IME when the input-method caches were dropped since the last
+     * look: which shortcut IMEs exist only changes with packages and the enabled list, and this
+     * used to be a binder call on every field focus.
+     */
     public void updateParametersOnStartInputView() {
-        updateShortcutIme();
+        if (this.shortcutImeGeneration != this.richImm.getCacheGeneration()) {
+            updateShortcutIme();
+        }
     }
 
     private void updateShortcutIme() {
+        this.shortcutImeGeneration = this.richImm.getCacheGeneration();
         Map<InputMethodInfo, List<InputMethodSubtype>> shortcutInputMethodsAndSubtypes;
         try {
             shortcutInputMethodsAndSubtypes = this.richImm.getInputMethodManager().getShortcutInputMethodsAndSubtypes();
@@ -153,6 +168,10 @@ public final class SubtypeManager {
 
     public void onSubtypeChanged(InputMethodSubtype inputMethodSubtype) {
         this.currentSubtype = inputMethodSubtype;
+        // A subtype change is one of the events that feed the input-method caches (the framework
+        // also moves the keyboard this way when its language was turned off); field focus no
+        // longer clears them.
+        this.richImm.clearSubtypeCaches();
         updateShortcutIme();
     }
 
@@ -258,7 +277,7 @@ public final class SubtypeManager {
     }
 
     public boolean shouldRemoveActiveKeyboardLocale(Context context, LocaleList localeList) {
-        if (Build.VERSION.SDK_INT < 24 || !MultiLanguageUtils.isUsingSystemLanguages(context)) {
+        if (Build.VERSION.SDK_INT < 24 || !isUsingSystemLanguages(context)) {
             return false;
         }
         Locale localeM4259h = getCurrentSubtypeLocale();
@@ -276,6 +295,20 @@ public final class SubtypeManager {
         return true;
     }
 
+
+    /**
+     * {@link MultiLanguageUtils#isUsingSystemLanguages}, kept until the input-method caches are
+     * dropped: it reads the enabled list (two binder calls on API 34+), which only changes with
+     * the events that drop them, and it was asked on every field focus.
+     */
+    private boolean isUsingSystemLanguages(Context context) {
+        final int generation = this.richImm.getCacheGeneration();
+        if (this.usingSystemLanguagesGeneration != generation) {
+            this.usingSystemLanguages = MultiLanguageUtils.isUsingSystemLanguages(context);
+            this.usingSystemLanguagesGeneration = generation;
+        }
+        return this.usingSystemLanguages;
+    }
 
     /**
      * Audit W1-F: the forcedSubtype override (set only by the zero-caller forceSubtype) used to
