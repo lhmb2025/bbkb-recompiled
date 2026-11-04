@@ -1,0 +1,43 @@
+<!-- ic_settings_slideboard_numpad. Owner's SVG (2026-11-03), 24-unit grid; Customize number pad: a number grid with a pencil; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 7.5 12.75 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 7.5 18.25 L 12.099 18.25 L 12.59 17.762 L 13 17.354 L 13 16.25 L 7.5 16.25 L 7.5 18.25 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 12 22.25 v -2 h -6.5 V 3.75 h 13 v 8.207 c 0.265 -0.198 0.545 -0.369 0.857 -0.48 0.377 -0.134 0.761 -0.21 1.143 -0.224 V 3.75 c 0 -0.547 -0.197 -1.017 -0.59 -1.41 -0.393 -0.393 -0.863 -0.59 -1.41 -0.59 H 5.5 c -0.547 0 -1.017 0.197 -1.41 0.59 -0.393 0.393 -0.59 0.863 -0.59 1.41 v 16.5 c 0 0.547 0.197 1.017 0.59 1.41 0.393 0.393 0.863 0.59 1.41 0.59 h 6.5 v 0 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 16.5 12.75 L 14.5 12.75 L 14.5 14.75 L 15.618 14.75 L 16.5 13.873 L 16.5 12.75 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 7.5 5.75 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 7.5 9.25 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 14.5 5.75 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 11 9.25 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 11 12.75 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 14.5 9.25 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 11 5.75 h 2 v 2 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 22.89 15.13 c -0.073 -0.187 -0.177 -0.353 -0.31 -0.5 l -0.93 -0.93 c -0.153 -0.153 -0.32 -0.267 -0.5 -0.34 -0.18 -0.073 -0.37 -0.11 -0.57 -0.11 -0.18 0.007 -0.363 0.043 -0.55 0.11 s -0.353 0.173 -0.5 0.32 l -5.53 5.5 v 3.07 h 3.08 l 5.5 -5.5 c 0.147 -0.147 0.253 -0.317 0.32 -0.51 0.067 -0.193 0.1 -0.38 0.1 -0.56 s -0.037 -0.363 -0.11 -0.55 Z M 16.45 20.75 h -0.95 v -0.95 l 3.05 -3.02 0.48 0.45 0.45 0.47 -3.03 3.05 Z"/>
+</vector>
