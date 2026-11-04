@@ -1,7 +1,7 @@
 package dev.bbkb.ime.core.settings.editor
 
 import dev.bbkb.ime.core.settings.data.DictionaryEntry
-import dev.bbkb.ime.core.settings.screens.ShortcutsSpec
+import dev.bbkb.ime.core.settings.screens.shortcutsSpec
 import dev.bbkb.ime.core.settings.screens.userDictionarySpec
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -19,12 +19,15 @@ import org.junit.Test
  * driven from a unit test, so `DictionaryEditorScreensTest` cannot reach them. This file reaches
  * them the other way, through the spec.
  *
- * Every expected string below was read off the two screens as they were before Wave 3 collapsed
- * them, and every one is user-visible.
+ * Every expected string below is user-visible. Most were read off the two screens as they were
+ * before Wave 3 collapsed them; the 2026-11 Learned-words alignment changed the ones it had to (a
+ * singular count, sentence case, a placeholder without dots, "Deleted 1 shortcut" with Undo).
  */
 class EntryListSpecTest {
 
     private val dictionarySpec = userDictionarySpec("User dictionary")
+    @Suppress("PrivatePropertyName")
+    private val ShortcutsSpec = shortcutsSpec("Text shortcuts")
 
     private fun entry(word: String, shortcut: String?, locale: String = "en_US") =
         DictionaryEntry(word = word, shortcut = shortcut, locale = locale)
@@ -33,17 +36,21 @@ class EntryListSpecTest {
 
     @Test
     fun theShortcutsEditorWordsItselfAsItAlwaysDid() {
-        assertEquals("Text Shortcuts", ShortcutsSpec.title)
         assertEquals("0 shortcuts", ShortcutsSpec.counter(0))
+        assertEquals("one is singular", "1 shortcut", ShortcutsSpec.counter(1))
         assertEquals("3 shortcuts", ShortcutsSpec.counter(3))
-        assertEquals("Search shortcuts...", ShortcutsSpec.searchHint)
+        assertEquals("1 of 3 shortcuts", ShortcutsSpec.searchCounter(1, 3))
+        assertEquals("Search shortcuts", ShortcutsSpec.searchHint)
         assertEquals("Add shortcut", ShortcutsSpec.addDescription)
+        assertEquals("Edit shortcut", ShortcutsSpec.editDescription)
         assertEquals("Shortcut added", ShortcutsSpec.added)
         assertEquals("Failed to add shortcut", ShortcutsSpec.addFailed)
         assertEquals("Shortcut updated", ShortcutsSpec.updated)
         assertEquals("Failed to update shortcut", ShortcutsSpec.updateFailed)
-        assertEquals("Shortcut deleted", ShortcutsSpec.deleted)
+        assertEquals("Deleted 1 shortcut", ShortcutsSpec.deleted(1))
+        assertEquals("Deleted 2 shortcuts", ShortcutsSpec.deleted(2))
         assertEquals("Failed to delete shortcut", ShortcutsSpec.deleteFailed)
+        assertEquals("Couldn't bring back every shortcut", ShortcutsSpec.restoreFailed)
         assertEquals("No text shortcuts", ShortcutsSpec.emptyTitle)
         assertEquals(
             "Tap Add shortcut to create shortcuts that expand to phrases",
@@ -77,6 +84,7 @@ class EntryListSpecTest {
         assertFalse(ShortcutsSpec.belongsHere(entry("Landrum", "Landrum")))
 
         assertEquals("sig_en_US", ShortcutsSpec.identity(entry("Best regards", "sig")))
+        assertEquals("a sheet is headed by the shortcut", "sig", ShortcutsSpec.label(entry("Best regards", "sig")))
         assertEquals("sig", ShortcutsSpec.sortKey(entry("Best regards", "sig")))
         assertEquals(
             "sorting is case-insensitive",
@@ -97,14 +105,18 @@ class EntryListSpecTest {
     @Test
     fun theDictionaryEditorWordsItselfAsItAlwaysDid() {
         assertEquals("0 words", dictionarySpec.counter(0))
+        assertEquals("1 word", dictionarySpec.counter(1))
         assertEquals("3 words", dictionarySpec.counter(3))
-        assertEquals("Search words...", dictionarySpec.searchHint)
+        assertEquals("2 of 6 words", dictionarySpec.searchCounter(2, 6))
+        assertEquals("Search words", dictionarySpec.searchHint)
         assertEquals("Add word", dictionarySpec.addDescription)
+        assertEquals("Edit word", dictionarySpec.editDescription)
         assertEquals("Word added", dictionarySpec.added)
         assertEquals("Failed to add word", dictionarySpec.addFailed)
         assertEquals("Word updated", dictionarySpec.updated)
         assertEquals("Failed to update word", dictionarySpec.updateFailed)
-        assertEquals("Word deleted", dictionarySpec.deleted)
+        assertEquals("Deleted 1 word", dictionarySpec.deleted(1))
+        assertEquals("Deleted 4 words", dictionarySpec.deleted(4))
         assertEquals("Failed to delete word", dictionarySpec.deleteFailed)
         assertEquals("No personal words", dictionarySpec.emptyTitle)
         assertEquals("Tap Add word to add custom words to your dictionary", dictionarySpec.emptyHint)
@@ -131,6 +143,7 @@ class EntryListSpecTest {
         assertFalse(dictionarySpec.belongsHere(entry("Best regards", "sig")))
 
         assertEquals("Landrum_en_US", dictionarySpec.identity(entry("Landrum", null)))
+        assertEquals("Landrum", dictionarySpec.label(entry("Landrum", null)))
         assertEquals("landrum", dictionarySpec.sortKey(entry("Landrum", null)))
     }
 

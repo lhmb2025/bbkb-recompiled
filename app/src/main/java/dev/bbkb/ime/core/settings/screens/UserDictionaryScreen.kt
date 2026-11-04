@@ -2,18 +2,15 @@ package dev.bbkb.ime.core.settings.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Create
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -27,16 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import dev.bbkb.ime.R
-import dev.bbkb.ime.core.locale.LocaleUtils
 import dev.bbkb.ime.core.settings.data.DictionaryEntry
 import dev.bbkb.ime.core.settings.data.DictionaryEntryStore
 import dev.bbkb.ime.core.settings.data.DictionaryRepository
 import dev.bbkb.ime.core.settings.editor.EntryListEditorScreen
 import dev.bbkb.ime.core.settings.editor.EntryListSpec
-import dev.bbkb.ime.core.settings.ui.PreferenceItem
+import dev.bbkb.ime.personaldictionary.util.LocaleUtil
 
 /**
- * Personal dictionary words, as an [EntryListSpec] — the same editor as `ShortcutsSpec` over the
+ * Personal dictionary words, as an [EntryListSpec] — the same editor as `shortcutsSpec` over the
  * other half of the store.
  *
  * The title is the one field that has to be built per composition rather than held in a constant,
@@ -55,13 +51,13 @@ internal fun userDictionarySpec(title: String) = EntryListSpec(
     identity = { "${it.word}_${it.locale}" },
     sortKey = { it.word.lowercase() },
     matches = { entry, query -> entry.word.contains(query, ignoreCase = true) },
+    label = { it.word },
     logTag = "UserDictionaryScreen",
 )
 
 /**
  * User Dictionary Screen - manages personal words only (no substitutions)
  * Uses BASL pathway for Nuance integration
- * Groups entries by language with sticky headers
  */
 @Composable
 fun UserDictionaryScreen(
@@ -78,13 +74,17 @@ fun UserDictionaryScreen(
         spec = spec,
         store = store,
         onNavigateBack = onNavigateBack,
-        row = { entry, onClick -> WordListItem(entry = entry, onClick = onClick) },
+        // The word alone, as Learned words shows its words: a pencil on every row said nothing
+        // the row being tappable did not.
+        rowContent = { entry -> Text(text = entry.word, style = MaterialTheme.typography.bodyLarge) },
         dialogs = { host ->
             if (host.adding) {
                 PersonalWordDialog(
                     entry = null,
-                    // A new word lands in the first locale; an edited one keeps its own.
-                    locale = host.locales.firstOrNull() ?: "",
+                    locales = host.locales,
+                    // A new word starts in the first locale ("all languages" when there are
+                    // several); the dialog lets it go to another.
+                    initialLocale = host.locales.firstOrNull() ?: "",
                     onDismiss = host.dismissAdd,
                     onSave = { entry ->
                         host.add(entry)
@@ -96,14 +96,11 @@ fun UserDictionaryScreen(
             host.editing?.let { selectedEntry ->
                 PersonalWordDialog(
                     entry = selectedEntry,
-                    locale = selectedEntry.locale,
+                    locales = host.locales,
+                    initialLocale = selectedEntry.locale,
                     onDismiss = host.dismissEdit,
                     onSave = { entry ->
                         host.update(selectedEntry, entry)
-                        host.dismissEdit()
-                    },
-                    onDelete = { entry ->
-                        host.delete(entry)
                         host.dismissEdit()
                     }
                 )
@@ -113,30 +110,11 @@ fun UserDictionaryScreen(
 }
 
 /**
- * One personal word, on the app's own [PreferenceItem] — a Material 3 `ListItem` with a
- * `HorizontalDivider` under it and a secondary-tinted leading glyph before. The glyph is
- * onSurfaceVariant now, like every other leading icon in settings, and the rule is gone: a list of
- * one-line rows does not need a line between each of them to be read as a list.
- */
-@Composable
-private fun WordListItem(
-    entry: DictionaryEntry,
-    onClick: () -> Unit
-) {
-    PreferenceItem(
-        title = entry.word,
-        icon = Icons.Outlined.Create,
-        onClick = onClick,
-    )
-}
-
-/**
- * Add/edit dialog for one personal dictionary word.
+ * Add/edit dialog for one personal dictionary word: the word, and which language it belongs to.
  *
- * This was `core/settings/ui/UnifiedAddEditDialog`, the third of three add/edit dialogs and the
- * only one that tried to serve two screens: it took an `isSubstitution` flag and grew a shortcut
- * field and a fixed-case row when it was true. Nothing ever passed true — the shortcuts editor has
- * always had its own dialog — so half of it had never run. What is left is the half that did.
+ * The language used to be fixed: a new word went into whichever locale came first, with no say,
+ * and the dialog only named it. It is a choice now, offered when there is more than one place to
+ * put the word. Deleting is no longer here either; it is in the word's sheet, with Undo.
  *
  * `fixedCase` has no control here and never did, but it is still carried from the entry being
  * edited to the entry being saved: a word stored with automatic capitalisation disabled must not
@@ -145,60 +123,84 @@ private fun WordListItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PersonalWordDialog(
-    entry: DictionaryEntry? = null,
-    locale: String,
+    entry: DictionaryEntry?,
+    locales: List<String>,
+    initialLocale: String,
     onDismiss: () -> Unit,
     onSave: (DictionaryEntry) -> Unit,
-    onDelete: ((DictionaryEntry) -> Unit)? = null
 ) {
+    val context = LocalContext.current
     var word by remember { mutableStateOf(entry?.word ?: "") }
+    var locale by remember { mutableStateOf(initialLocale) }
+    var languagesOpen by remember { mutableStateOf(false) }
     val fixedCase = entry?.fixedCase ?: false
-    var showDeleteConfirm by remember { mutableStateOf(false) }
+    // A word keeps its own language as a choice even when that keyboard has since been removed.
+    val choices = remember(locales, initialLocale) { (locales + initialLocale).distinct() }
 
     val isEditing = entry != null
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (isEditing) "Edit Word" else "Add Word") },
+        title = { Text(if (isEditing) "Edit word" else "Add word") },
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Word field
                 OutlinedTextField(
                     value = word,
                     onValueChange = { word = it },
                     label = { Text("Word") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    maxLines = 1,
-                    supportingText = {
-                        Text("Add a custom word")
-                    }
                 )
 
-                // Locale info
-                if (locale.isNotEmpty() && locale != "all") {
-                    Text(
-                        text = "Language: ${getLocaleDisplayName(locale)}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                if (choices.size > 1) {
+                    ExposedDropdownMenuBox(
+                        expanded = languagesOpen,
+                        onExpandedChange = { languagesOpen = it }
+                    ) {
+                        OutlinedTextField(
+                            value = LocaleUtil.getDisplayNameForDictionary(context, locale),
+                            onValueChange = {},
+                            readOnly = true,
+                            singleLine = true,
+                            label = { Text("Language") },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = languagesOpen) },
+                            modifier = Modifier
+                                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                                .fillMaxWidth(),
+                        )
+                        ExposedDropdownMenu(
+                            expanded = languagesOpen,
+                            onDismissRequest = { languagesOpen = false }
+                        ) {
+                            choices.forEach { choice ->
+                                DropdownMenuItem(
+                                    text = { Text(LocaleUtil.getDisplayNameForDictionary(context, choice)) },
+                                    onClick = {
+                                        locale = choice
+                                        languagesOpen = false
+                                    }
+                                )
+                            }
+                        }
+                    }
                 }
             }
         },
         confirmButton = {
             TextButton(
                 onClick = {
-                    val newEntry = DictionaryEntry(
-                        id = entry?.id,
-                        word = word.trim(),
-                        shortcut = null,
-                        locale = locale,
-                        fixedCase = fixedCase
+                    onSave(
+                        DictionaryEntry(
+                            id = entry?.id,
+                            word = word.trim(),
+                            shortcut = null,
+                            locale = locale,
+                            fixedCase = fixedCase
+                        )
                     )
-                    onSave(newEntry)
                 },
                 enabled = word.trim().isNotEmpty()
             ) {
@@ -206,69 +208,9 @@ private fun PersonalWordDialog(
             }
         },
         dismissButton = {
-            Row {
-                // Delete button (only when editing)
-                if (isEditing && onDelete != null) {
-                    TextButton(
-                        onClick = { showDeleteConfirm = true },
-                        colors = ButtonDefaults.textButtonColors(
-                            contentColor = MaterialTheme.colorScheme.error
-                        )
-                    ) {
-                        Icon(
-                            Icons.Outlined.Delete,
-                            contentDescription = "Delete",
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(Modifier.width(4.dp))
-                        Text("Delete")
-                    }
-                    Spacer(Modifier.width(8.dp))
-                }
-
-                TextButton(onClick = onDismiss) {
-                    Text("Cancel")
-                }
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
             }
         }
     )
-
-    // Delete confirmation dialog
-    if (showDeleteConfirm && entry != null && onDelete != null) {
-        AlertDialog(
-            onDismissRequest = { showDeleteConfirm = false },
-            title = { Text("Delete Word?") },
-            text = {
-                Text("Delete \"${entry.word}\"?")
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        onDelete(entry)
-                        showDeleteConfirm = false
-                    },
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    )
-                ) {
-                    Text("Delete")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteConfirm = false }) {
-                    Text("Cancel")
-                }
-            }
-        )
-    }
-}
-
-@Composable
-private fun getLocaleDisplayName(locale: String): String {
-    return try {
-        val loc = LocaleUtils.constructLocaleFromString(locale)
-        loc?.displayName ?: locale
-    } catch (e: Exception) {
-        locale
-    }
 }

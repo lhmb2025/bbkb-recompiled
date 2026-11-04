@@ -1263,13 +1263,13 @@ class SettingsScreenRenderTest(private val screenName: String) {
         Case(
             name = "TextShortcutsScreen",
             route = SettingsRoute.TextShortcuts.route,
-            title = "Text Shortcuts",
-            resources = emptySet(),
+            title = "Text shortcuts",
+            // The title is the Learning screen row's string now, as User dictionary's is.
+            resources = setOf("settings_dict_text_shortcuts_title"),
             literals = setOf(
-                "Text Shortcuts",
-                "0 shortcuts",
                 // The round FAB became an extended one, so its label is rendered text rather
-                // than only a content description.
+                // than only a content description. (The count line is part of the list now, so
+                // the empty state no longer carries a "0 shortcuts" over it.)
                 "Add shortcut",
             ),
             // "Initialization timeout" is the store failing to come up under Robolectric -- an
@@ -1340,7 +1340,6 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_dict_user_dictionary_title"
             ),
             literals = setOf(
-                "0 words",
                 // As above: the extended FAB renders its label.
                 "Add word",
             ),

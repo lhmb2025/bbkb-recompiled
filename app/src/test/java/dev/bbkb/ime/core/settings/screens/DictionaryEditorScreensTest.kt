@@ -3,14 +3,20 @@ package dev.bbkb.ime.core.settings.screens
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.longClick
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTouchInput
 import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.core.settings.data.DictionaryEntry
 import dev.bbkb.ime.core.settings.data.DictionaryEntryStore
@@ -18,6 +24,7 @@ import dev.bbkb.ime.core.settings.data.DictionaryRepository
 import dev.bbkb.ime.core.settings.search.LocalSettingsHighlight
 import dev.bbkb.ime.core.settings.search.SettingsHighlightController
 import dev.bbkb.ime.core.settings.ui.BlackBerryTheme
+import dev.bbkb.ime.personaldictionary.macro.DynamicMacroType
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -37,18 +44,20 @@ import org.robolectric.annotation.Config
  *
  * The `storeFactory` seam exists for exactly this: composed against a stand-in store, the screens
  * reach their loaded state and every difference between them becomes assertable — the counter
- * wording, the search placeholder and predicate, the language headers, the row composition, the
- * chips, the de-duplication key, the sort order, and the two empty states. Those are precisely the
- * things a shared body has to keep telling apart, so they are what is pinned here.
+ * wording, the search predicate, the language headers, the row composition, the markers, the
+ * de-duplication key, the sort order, and the two empty states. Those are precisely the things a
+ * shared body has to keep telling apart, so they are what is pinned here. Since the 2026-11
+ * alignment with Learned words it also drives what the shared body does: the sheet a tap opens,
+ * delete with Undo, and selection.
  *
  * The assertions are whole-screen: every laid-out string, top to bottom, in the order the user
  * reads it. A row that appears, disappears, moves or changes its wording fails the case, which is
  * what makes this a safety net for a rewrite rather than a spot check.
  *
- * **Not covered:** the add/edit dialogs, on either screen. Under this Robolectric/Compose
- * combination a Material 3 text field inside an `AlertDialog` never reaches an idle composition —
- * it reproduces with entirely stock components — so no dialog in this codebase can be driven from a
- * unit test. That is why both screens keep their own hand-written dialog.
+ * **Not covered:** the add/edit dialog and form, on either screen. Under this Robolectric/Compose
+ * combination a Material 3 text field inside a dialog never reaches an idle composition — it
+ * reproduces with entirely stock components — so no dialog in this codebase can be driven from a
+ * unit test. That is why both screens keep their own hand-written one.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -122,8 +131,8 @@ class DictionaryEditorScreensTest {
         composeRule.waitForIdle()
     }
 
-    private fun renderShortcuts(store: FakeStore) = render {
-        TextShortcutsScreen(onNavigateToCustomMacros = {}, onNavigateBack = {}, storeFactory = { store })
+    private fun renderShortcuts(store: FakeStore, onNavigateToCustomMacros: () -> Unit = {}) = render {
+        TextShortcutsScreen(onNavigateToCustomMacros = onNavigateToCustomMacros, onNavigateBack = {}, storeFactory = { store })
     }
 
     private fun renderDictionary(store: FakeStore) = render {
@@ -144,10 +153,28 @@ class DictionaryEditorScreensTest {
 
     private val context: Context get() = ApplicationProvider.getApplicationContext()
 
+    private fun search(query: String) {
+        composeRule.onNodeWithContentDescription("Search").performClick()
+        composeRule.waitForIdle()
+        composeRule.onNode(hasSetTextAction()).performTextInput(query)
+        composeRule.waitForIdle()
+    }
+
+    /**
+     * Clicks through the semantics action rather than a touch: a bottom sheet's window is not laid
+     * out where a touch would land under Robolectric, so a touch on its rows hits nothing.
+     */
+    private fun tap(text: String) {
+        composeRule.onNodeWithText(text).performSemanticsAction(SemanticsActions.OnClick)
+        composeRule.waitForIdle()
+    }
+
+    private val dictionaryTitle get() = context.getString(dev.bbkb.ime.R.string.settings_user_dictionary_screen_title)
+
     // ============================================================ text shortcuts
 
     @Test
-    fun shortcutsAreGroupedUnderALanguageHeaderThatCountsThem() {
+    fun shortcutsInOneLanguageAreOneGroupUnderTheirCount() {
         renderShortcuts(
             FakeStore(
                 locales = listOf("en_US"),
@@ -162,10 +189,9 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                "Text Shortcuts",
+                "Text shortcuts",
                 "2 shortcuts",
-                "English (United States) (2)",
-                // Sorted by shortcut, lower-cased: "addr" before "sig".
+                // One language: no header, as on Learned words. Sorted by shortcut, lower-cased.
                 "addr", "1 Main Street",
                 "sig", "Best regards",
                 "Add shortcut",
@@ -175,7 +201,7 @@ class DictionaryEditorScreensTest {
     }
 
     @Test
-    fun aShortcutContainingAMacroIsMarkedDynamicAndAFixedCaseOneIsMarkedTooAndBothCanApply() {
+    fun macrosAndFixedCaseAreMarkedWithIconsAndTheMacrosStandOutInThePhrase() {
         renderShortcuts(
             FakeStore(
                 locales = listOf("en_US"),
@@ -191,19 +217,18 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                "Text Shortcuts",
+                "Text shortcuts",
                 "3 shortcuts",
-                "English (United States) (3)",
-                // A row is a PreferenceItem now, so its texts lay out title / trailing markers /
-                // summary rather than headline / supporting content: the shortcut, then its
-                // markers, then the phrase it expands to.
-                "both", "Dynamic", "Fixed case", "%D",
-                "iph", "Fixed case", "iPhone",
-                "sig", "Dynamic", "Best regards,%n%D",
+                "both", "%D",
+                "iph", "iPhone",
+                // A new line shows as ↵ on the one-line row.
+                "sig", "Best regards,↵%D",
                 "Add shortcut",
             ),
             screen()
         )
+        composeRule.onAllNodesWithContentDescription("Changes each time").assertCountEquals(2)
+        composeRule.onAllNodesWithContentDescription("Fixed case").assertCountEquals(2)
     }
 
     @Test
@@ -224,9 +249,8 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                "Text Shortcuts",
-                "1 shortcuts",
-                "English (United States) (1)",
+                "Text shortcuts",
+                "1 shortcut",
                 "sig", "Best regards",
                 "Add shortcut",
             ),
@@ -235,7 +259,7 @@ class DictionaryEditorScreensTest {
     }
 
     @Test
-    fun eachLocaleGetsItsOwnHeaderAndLocalesSortBeforeShortcuts() {
+    fun eachLocaleGetsItsOwnHeaderWhenThereIsMoreThanOne() {
         renderShortcuts(
             FakeStore(
                 locales = listOf("fr_FR", "en_US"),
@@ -248,11 +272,12 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                "Text Shortcuts",
+                "Text shortcuts",
                 "2 shortcuts",
-                "English (United States) (1)",
+                // Locales sort before shortcuts; the headers no longer count their rows.
+                "English (United States)",
                 "sig", "Best regards",
-                "French (France) (1)",
+                "French (France)",
                 "cdt", "Cordialement",
                 "Add shortcut",
             ),
@@ -277,11 +302,11 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                "Text Shortcuts",
+                "Text shortcuts",
                 "2 shortcuts",
-                "English (United States) (1)",
+                "English (United States)",
                 "sig", "Best regards",
-                "French (France) (1)",
+                "French (France)",
                 "sig", "Cordialement",
                 "Add shortcut",
             ),
@@ -291,30 +316,27 @@ class DictionaryEditorScreensTest {
 
     @Test
     fun theShortcutsSearchMatchesEitherTheShortcutOrThePhrase() {
-        val store = FakeStore(
-            locales = listOf("en_US"),
-            entriesByLocale = mapOf(
-                "en_US" to listOf(
-                    shortcut("sig", "Best regards", "en_US"),
-                    shortcut("addr", "1 Main Street", "en_US"),
+        renderShortcuts(
+            FakeStore(
+                locales = listOf("en_US"),
+                entriesByLocale = mapOf(
+                    "en_US" to listOf(
+                        shortcut("sig", "Best regards", "en_US"),
+                        shortcut("addr", "1 Main Street", "en_US"),
+                    )
                 )
             )
         )
-        renderShortcuts(store)
 
-        composeRule.onNodeWithContentDescription("Search").performClick()
-        composeRule.waitForIdle()
-        composeRule.onNodeWithText("Search shortcuts...").performTextInput("regards")
-        composeRule.waitForIdle()
+        search("regards")
 
         assertEquals(
             listOf(
-                "Text Shortcuts",
-                // While searching, the counter reports the filtered rows it sits above.
-                "1 shortcuts",
-                "English (United States) (1)",
+                // The field takes the top bar and the title folds away; the count line says how
+                // many of the whole list the query kept.
+                "1 of 2 shortcuts",
                 "sig", "Best regards",
-                    "Add shortcut",
+                "Add shortcut",
             ),
             screen()
         )
@@ -329,15 +351,10 @@ class DictionaryEditorScreensTest {
             )
         )
 
-        composeRule.onNodeWithContentDescription("Search").performClick()
-        composeRule.waitForIdle()
-        composeRule.onNodeWithText("Search shortcuts...").performTextInput("zzz")
-        composeRule.waitForIdle()
+        search("zzz")
 
         assertEquals(
             listOf(
-                "Text Shortcuts",
-                "0 shortcuts",
                 "No matches found",
                 "Try a different search term",
                 "Add shortcut",
@@ -355,18 +372,14 @@ class DictionaryEditorScreensTest {
             )
         )
 
-        composeRule.onNodeWithContentDescription("Search").performClick()
-        composeRule.waitForIdle()
-        composeRule.onNodeWithText("Search shortcuts...").performTextInput("zzz")
-        composeRule.waitForIdle()
+        search("zzz")
         composeRule.onNodeWithContentDescription("Close search").performClick()
         composeRule.waitForIdle()
 
         assertEquals(
             listOf(
-                "Text Shortcuts",
-                "1 shortcuts",
-                "English (United States) (1)",
+                "Text shortcuts",
+                "1 shortcut",
                 "sig", "Best regards",
                 "Add shortcut",
             ),
@@ -380,8 +393,7 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                "Text Shortcuts",
-                "0 shortcuts",
+                "Text shortcuts",
                 "No text shortcuts",
                 "Tap Add shortcut to create shortcuts that expand to phrases",
                 "Add shortcut",
@@ -391,18 +403,97 @@ class DictionaryEditorScreensTest {
     }
 
     @Test
-    fun theMacroHelpDialogListsEveryBuiltInMacro() {
+    fun theMoreMenuOpensTheDynamicContentSheetWithEveryBuiltInMacro() {
         renderShortcuts(FakeStore(locales = listOf("en_US")))
 
-        composeRule.onNodeWithContentDescription("Macro help").performClick()
+        composeRule.onNodeWithContentDescription("More options").performClick()
+        composeRule.waitForIdle()
+        tap("About dynamic content")
+
+        composeRule.onNodeWithText("Dynamic content").assertExists()
+        DynamicMacroType.entries.forEach { composeRule.onNodeWithText(it.tag).assertExists() }
+    }
+
+    @Test
+    fun theMoreMenuLeadsToCustomMacros() {
+        var opened = false
+        renderShortcuts(FakeStore(locales = listOf("en_US")), onNavigateToCustomMacros = { opened = true })
+
+        composeRule.onNodeWithContentDescription("More options").performClick()
+        composeRule.waitForIdle()
+        tap("Custom macros")
+
+        assertEquals(true, opened)
+    }
+
+    /** The form's chips and the help sheet name exactly the macros the expansion knows. */
+    @Test
+    fun theNamedMacrosAreTheOnesTheKeyboardExpands() {
+        assertEquals(
+            DynamicMacroType.entries.map { it.tag }.toSet(),
+            BuiltInMacros.map { it.first }.toSet()
+        )
+    }
+
+    @Test
+    fun tappingAShortcutOpensItsSheetWithTheWholePhraseAndItsActions() {
+        renderShortcuts(
+            FakeStore(
+                locales = listOf("en_US"),
+                entriesByLocale = mapOf("en_US" to listOf(shortcut("sig", "Best regards", "en_US", fixedCase = true)))
+            )
+        )
+
+        tap("sig")
+
+        composeRule.onNodeWithText("English (United States) · Fixed case").assertExists()
+        composeRule.onNodeWithText("Expands to").assertExists()
+        composeRule.onNodeWithText("Edit shortcut").assertExists()
+        composeRule.onNodeWithText("Delete").assertExists()
+    }
+
+    @Test
+    fun deletingFromTheSheetDoesNotAskAndUndoPutsTheShortcutBack() {
+        val sig = shortcut("sig", "Best regards", "en_US", fixedCase = true)
+        val store = FakeStore(locales = listOf("en_US"), entriesByLocale = mapOf("en_US" to listOf(sig)))
+        renderShortcuts(store)
+
+        tap("sig")
+        tap("Delete")
+
+        assertEquals(listOf(sig), store.deleted)
+        composeRule.onNodeWithText("Deleted 1 shortcut").assertExists()
+        tap("Undo")
+        // Back exactly as it was, fixed case and all.
+        assertEquals(listOf(sig), store.added)
+    }
+
+    @Test
+    fun aLongPressSelectsAndTheBarDeletesTheSelection() {
+        val sig = shortcut("sig", "Best regards", "en_US")
+        val addr = shortcut("addr", "1 Main Street", "en_US")
+        val store = FakeStore(locales = listOf("en_US"), entriesByLocale = mapOf("en_US" to listOf(sig, addr)))
+        renderShortcuts(store)
+
+        composeRule.onNodeWithText("sig").performTouchInput { longClick() }
+        composeRule.waitForIdle()
+        tap("addr")
+
+        assertEquals(
+            listOf(
+                "2 selected",
+                "2 shortcuts",
+                "addr", "1 Main Street",
+                "sig", "Best regards",
+            ),
+            screen()
+        )
+
+        composeRule.onNodeWithContentDescription("Delete selected").performClick()
         composeRule.waitForIdle()
 
-        // The set of macros this dialog documents is the set DynamicContentHandler expands.
-        listOf("%D", "%T", "%d", "%t", "%n", "%w", "%y", "%b").forEach {
-            composeRule.onNodeWithText(it).assertIsDisplayed()
-        }
-        composeRule.onNodeWithText("Dynamic Macros").assertIsDisplayed()
-        composeRule.onNodeWithText("Got it").assertIsDisplayed()
+        assertEquals(setOf(sig, addr), store.deleted.toSet())
+        composeRule.onNodeWithText("Deleted 2 shortcuts").assertExists()
     }
 
     @Test
@@ -411,8 +502,7 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                "Text Shortcuts",
-                "0 shortcuts",
+                "Text shortcuts",
                 "No text shortcuts",
                 "Tap Add shortcut to create shortcuts that expand to phrases",
                 "Failed to load shortcuts: store unavailable",
@@ -433,8 +523,7 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                "Text Shortcuts",
-                "0 shortcuts",
+                "Text shortcuts",
                 "No text shortcuts",
                 "Tap Add shortcut to create shortcuts that expand to phrases",
                 "Initialization timeout",
@@ -457,9 +546,8 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                "Text Shortcuts",
-                "1 shortcuts",
-                "English (United States) (1)",
+                "Text shortcuts",
+                "1 shortcut",
                 "sig", "Best regards",
                 "Dictionary was recovered from corrupted state",
                 "Add shortcut",
@@ -471,7 +559,7 @@ class DictionaryEditorScreensTest {
     // =========================================================== user dictionary
 
     @Test
-    fun personalWordsAreGroupedUnderALanguageHeaderThatCountsThem() {
+    fun personalWordsInOneLanguageAreOneGroupUnderTheirCount() {
         renderDictionary(
             FakeStore(
                 locales = listOf("en_US"),
@@ -483,9 +571,8 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                context.getString(dev.bbkb.ime.R.string.settings_user_dictionary_screen_title),
+                dictionaryTitle,
                 "2 words",
-                "English (United States) (2)",
                 // Sorted by word, lower-cased.
                 "Kaptur",
                 "Landrum",
@@ -513,9 +600,8 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                context.getString(dev.bbkb.ime.R.string.settings_user_dictionary_screen_title),
+                dictionaryTitle,
                 "2 words",
-                "English (United States) (2)",
                 "Kaptur",
                 "Landrum",
                 "Add word",
@@ -538,11 +624,11 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                context.getString(dev.bbkb.ime.R.string.settings_user_dictionary_screen_title),
+                dictionaryTitle,
                 "2 words",
-                "English (United States) (1)",
+                "English (United States)",
                 "Landrum",
-                "French (France) (1)",
+                "French (France)",
                 "Landrum",
                 "Add word",
             ),
@@ -561,16 +647,11 @@ class DictionaryEditorScreensTest {
             )
         )
 
-        composeRule.onNodeWithContentDescription("Search").performClick()
-        composeRule.waitForIdle()
-        composeRule.onNodeWithText("Search words...").performTextInput("land")
-        composeRule.waitForIdle()
+        search("land")
 
         assertEquals(
             listOf(
-                context.getString(dev.bbkb.ime.R.string.settings_user_dictionary_screen_title),
-                "1 words",
-                "English (United States) (1)",
+                "1 of 2 words",
                 "Landrum",
                 "Add word",
             ),
@@ -584,8 +665,7 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                context.getString(dev.bbkb.ime.R.string.settings_user_dictionary_screen_title),
-                "0 words",
+                dictionaryTitle,
                 "No personal words",
                 "Tap Add word to add custom words to your dictionary",
                 "Add word",
@@ -600,8 +680,7 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                context.getString(dev.bbkb.ime.R.string.settings_user_dictionary_screen_title),
-                "0 words",
+                dictionaryTitle,
                 "No personal words",
                 "Tap Add word to add custom words to your dictionary",
                 "Failed to load dictionary: store unavailable",
@@ -626,16 +705,31 @@ class DictionaryEditorScreensTest {
 
         assertEquals(
             listOf(
-                context.getString(dev.bbkb.ime.R.string.settings_user_dictionary_screen_title),
+                dictionaryTitle,
                 "2 words",
-                // Sentence case like every other subhead: PreferenceCategory draws it now.
-                context.getString(dev.bbkb.ime.R.string.user_dict_settings_all_languages) + " (1)",
+                context.getString(dev.bbkb.ime.R.string.user_dict_settings_all_languages),
                 "Landrum",
-                "English (United States) (1)",
+                "English (United States)",
                 "Kaptur",
                 "Add word",
             ),
             screen()
         )
+    }
+
+    @Test
+    fun tappingAWordOpensItsSheetNamingItsLanguage() {
+        renderDictionary(
+            FakeStore(
+                locales = listOf("", "en_US"),
+                entriesByLocale = mapOf("" to listOf(word("Landrum", "")))
+            )
+        )
+
+        tap("Landrum")
+
+        composeRule.onNodeWithText(context.getString(dev.bbkb.ime.R.string.user_dict_settings_all_languages)).assertExists()
+        composeRule.onNodeWithText("Edit word").assertExists()
+        composeRule.onNodeWithText("Delete").assertExists()
     }
 }

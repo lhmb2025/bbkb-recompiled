@@ -10,8 +10,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,7 +33,6 @@ import androidx.compose.material.icons.outlined.CheckBox
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -95,6 +92,7 @@ import dev.bbkb.ime.core.settings.ui.groupEdge
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
+import dev.bbkb.ime.core.settings.ui.RoundCheck
 import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.personaldictionary.PersonalDictionaryConstants
 import kotlinx.coroutines.Dispatchers
@@ -263,23 +261,6 @@ private fun LearnedWordRow(
 }
 
 /**
- * The mark of Material's list selection pattern: a filled circle with a check on a selected row,
- * and, as these rows have no avatar for the circle to take over, an empty ring on a row that can
- * be selected. The column holding it slides in when selection starts (see [LearnedWordRow]).
- */
-@Composable
-private fun RoundCheck(selected: Boolean, modifier: Modifier = Modifier) {
-    val colors = MaterialTheme.colorScheme
-    if (selected) {
-        Box(modifier = modifier.background(colors.primary, CircleShape), contentAlignment = Alignment.Center) {
-            Icon(Icons.Filled.Check, contentDescription = "Selected", tint = colors.onPrimary, modifier = Modifier.size(16.dp))
-        }
-    } else {
-        Box(modifier = modifier.border(2.dp, colors.outline, CircleShape))
-    }
-}
-
-/**
  * Word List Editor Screen
  * Displays and manages learned words with multi-select, delete, clear all, and promote to dictionary
  * Includes undo functionality for deletions
@@ -353,9 +334,7 @@ fun WordListEditorScreen(
     var selectedWords by remember { mutableStateOf<Set<String>>(emptySet()) }
     var isSelectionMode by remember { mutableStateOf(false) }
     var showClearAllDialog by remember { mutableStateOf(false) }
-    var showDeleteDialog by remember { mutableStateOf(false) }
     var showPromoteDialog by remember { mutableStateOf(false) }
-    var pendingDeleteWords by remember { mutableStateOf<List<String>>(emptyList()) }
     var recentlyDeletedWords by remember { mutableStateOf<List<String>>(emptyList()) }
     // The word whose sheet is open.
     var sheetWord by remember { mutableStateOf<String?>(null) }
@@ -702,10 +681,8 @@ fun WordListEditorScreen(
         },
         actions = {
             if (isSelectionMode && selectedWords.isNotEmpty()) {
-                IconButton(onClick = {
-                    pendingDeleteWords = selectedWords.toList()
-                    showDeleteDialog = true
-                }) {
+                // No confirmation: the snackbar's Undo puts the words back, as it does for one.
+                IconButton(onClick = { deleteWords(selectedWords.toList()) }) {
                     Icon(Icons.Outlined.DeleteOutline, "Delete selected")
                 }
                 IconButton(onClick = { showPromoteDialog = true }) {
@@ -999,34 +976,6 @@ fun WordListEditorScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showClearAllDialog = false }) {
-                    Text("Cancel")
-                }
-            }
-        )
-    }
-    
-    // Delete selected dialog
-    if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete Selected Words") },
-            text = { 
-                Text(
-                    "Delete ${pendingDeleteWords.size} selected ${if (pendingDeleteWords.size == 1) "word" else "words"}?"
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showDeleteDialog = false
-                        deleteWords(pendingDeleteWords)
-                    }
-                ) {
-                    Text("Delete")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
                     Text("Cancel")
                 }
             }

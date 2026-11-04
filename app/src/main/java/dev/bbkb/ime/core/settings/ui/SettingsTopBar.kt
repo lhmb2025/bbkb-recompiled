@@ -1,5 +1,6 @@
 package dev.bbkb.ime.core.settings.ui
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,6 +27,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -59,6 +61,12 @@ fun SettingsTopBar(
     /** The leading icon: the back arrow, or a close cross while a screen is in selection mode. */
     navigationIcon: ImageVector = Icons.AutoMirrored.Outlined.ArrowBack,
     navigationContentDescription: String = "Back",
+    /**
+     * While a screen searches, its field: it takes the toolbar row in place of the title and the
+     * actions, after the navigation icon, and the title block folds away so the results start
+     * right under it. Null the rest of the time.
+     */
+    searchField: (@Composable RowScope.() -> Unit)? = null,
 ) {
     val density = LocalDensity.current
     val collapseRange = with(density) {
@@ -72,7 +80,8 @@ fun SettingsTopBar(
         }
     }
     val fraction = scrollBehavior.state.collapsedFraction // 0 = open, 1 = shut
-    val blockHeight = with(density) { (collapseRange + scrollBehavior.state.heightOffset).toDp() }
+    val blockOpen by animateFloatAsState(if (searchField == null) 1f else 0f, label = "searchFold")
+    val blockHeight = with(density) { ((collapseRange + scrollBehavior.state.heightOffset) * blockOpen).toDp() }
     val expandedTitleAlpha = (1f - fraction * 1.5f).coerceIn(0f, 1f)
     val collapsedTitleAlpha = ((fraction - 0.5f) * 2f).coerceIn(0f, 1f)
 
@@ -95,20 +104,24 @@ fun SettingsTopBar(
                 IconButton(onClick = onNavigateBack) {
                     Icon(navigationIcon, navigationContentDescription)
                 }
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 20.dp, end = 16.dp)
-                        .graphicsLayer { alpha = collapsedTitleAlpha }
-                        // The same words as the block title below; one heading in the tree,
-                        // not two, for accessibility and for tests that find a screen by title.
-                        .clearAndSetSemantics {},
-                )
-                actions()
+                if (searchField != null) {
+                    searchField()
+                } else {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = 20.dp, end = 16.dp)
+                            .graphicsLayer { alpha = collapsedTitleAlpha }
+                            // The same words as the block title below; one heading in the tree,
+                            // not two, for accessibility and for tests that find a screen by title.
+                            .clearAndSetSemantics {},
+                    )
+                    actions()
+                }
             }
             Box(
                 modifier = Modifier
@@ -171,13 +184,15 @@ fun SettingsScaffold(
     floatingActionButton: @Composable () -> Unit = {},
     navigationIcon: ImageVector = Icons.AutoMirrored.Outlined.ArrowBack,
     navigationContentDescription: String = "Back",
+    /** See [SettingsTopBar]'s parameter of the same name. */
+    searchField: (@Composable RowScope.() -> Unit)? = null,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val scrollBehavior = rememberSettingsTopBarScrollBehavior()
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = LocalSettingsColors.current.page,
-        topBar = { SettingsTopBar(title, onNavigateBack, scrollBehavior, actions, navigationIcon, navigationContentDescription) },
+        topBar = { SettingsTopBar(title, onNavigateBack, scrollBehavior, actions, navigationIcon, navigationContentDescription, searchField) },
         snackbarHost = snackbarHost,
         floatingActionButton = floatingActionButton,
         content = content,
