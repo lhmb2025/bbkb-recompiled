@@ -21,9 +21,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.util.PrintWriterPrinter
 import android.util.SparseArray
-import android.view.ContextThemeWrapper
 import android.view.KeyEvent
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -205,10 +203,6 @@ class BlackBerryIME : InputMethodService(),
     }
 
     // ==================== Fields: framework / window ====================
-
-    private var mThemedContext: Context? = null
-
-    private var mInflater: LayoutInflater? = null
 
     /* Track current night mode for real-time theme switching */
     private var mCurrentNightMode: Int = -1
@@ -561,10 +555,10 @@ class BlackBerryIME : InputMethodService(),
         // we want.
         setBackDisposition(InputMethodService.BACK_DISPOSITION_DEFAULT)
 
-        // Step 3: Now that the service exists, set up our themed context and the rest.
+        // Step 3: Now that the service exists, set up night-mode tracking and the rest.
         t = StartupTiming.begin()
-        initializeThemedContext()
-        StartupTiming.end("ime.onCreate.themedContext", t)
+        initializeNightModeTracking()
+        StartupTiming.end("ime.onCreate.nightMode", t)
         t = StartupTiming.begin()
         initializeSingletons()
         StartupTiming.end("ime.onCreate.singletons", t)
@@ -624,10 +618,7 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
-    private fun initializeThemedContext() {
-        // CRITICAL: Use Material 3 IME theme to properly propagate theme-aware colors
-        mThemedContext = ContextThemeWrapper(this, R.style.Theme_BlackberryKeyboard_IME)
-        mInflater = mThemedContext!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    private fun initializeNightModeTracking() {
         if (BuildConfig.DEBUG) Log.i(LOG_TAG, "onCreate()")
 
         // Initialize night mode tracking for real-time theme switching
@@ -962,11 +953,12 @@ class BlackBerryIME : InputMethodService(),
         Logger.info(LOG_TAG, "Done updating keyboard configuration settings")
     }
 
-    override fun getSystemService(name: String): Any? {
-        // Serve the themed inflater once it exists; before that, or for any other service, defer.
-        if (Context.LAYOUT_INFLATER_SERVICE == name) mInflater?.let { return it }
-        return super.getSystemService(name)
-    }
+    // No getSystemService override handing out a themed inflater, deliberately. With gesture
+    // navigation (API 33+) Android builds the keyboard's own navigation bar with
+    // LayoutInflater.from(this), and its Back button, the hide-keyboard chevron, only acts when
+    // its context is this service. A themed inflater here left that button dead. Views that need
+    // a theme wrap their own context (KeyboardSwitcher's themeContext, a ContextThemeWrapper).
+    // Pinned by ImeInflaterContextTest.
 
     // ==================== View lifecycle and window ====================
 
