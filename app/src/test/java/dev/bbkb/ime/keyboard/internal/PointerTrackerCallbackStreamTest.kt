@@ -252,6 +252,8 @@ class PointerTrackerCallbackStreamTest {
         for (name in listOf("sInGesture", "sInMoreKeysPanel", "sSuppressSlideboard")) {
             setField(PointerTracker::class.java, PointerTracker::class.java, name, false)
         }
+        // Every stream starts with no swipe session in the engine (Wave 3 Phase B).
+        EngineTouch.resetForTests()
     }
 
     // ---- event plumbing (mirrors MainKeyboardView.processMotionEvent) --------------------------
@@ -337,10 +339,8 @@ class PointerTrackerCallbackStreamTest {
             draw.dismissTrail
             draw.dismissPreview(97)
             draw.invalidate(97)
-            sdk.touchCancel(0)
             L.onCodeInput(97,50,50,1080,false)
             L.onReleaseKey(97,false)
-            sdk.touchEnd(0,52.0,50.0,1080)
             """
         )
     }
@@ -366,10 +366,8 @@ class PointerTrackerCallbackStreamTest {
             draw.dismissTrail
             draw.dismissPreview(100)
             draw.invalidate(100)
-            sdk.touchCancel(0)
             L.onCodeInput(100,550,50,1080,false)
             L.onReleaseKey(100,false)
-            sdk.touchEnd(0,550.0,50.0,1080)
             """
         )
     }
@@ -390,17 +388,14 @@ class PointerTrackerCallbackStreamTest {
             draw.showPreview(97)
             draw.invalidate(97)
             --- ACTION_MOVE id=0 t=1020
-            sdk.touchMove(0,150.0,50.0,1020)
             --- ACTION_UP id=0 t=1040
             batch.cancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(97)
             draw.invalidate(97)
-            sdk.touchCancel(0)
             L.onCodeInput(97,50,50,1040,false)
             L.onReleaseKey(97,false)
-            sdk.touchEnd(0,150.0,50.0,1040)
             """
         )
     }
@@ -432,7 +427,6 @@ class PointerTrackerCallbackStreamTest {
             timer.cancelLongPressShift
             draw.showPreview(98)
             draw.invalidate(98)
-            sdk.touchMove(0,150.0,50.0,1020)
             --- ACTION_MOVE id=0 t=1040
             draw.dismissPreview(98)
             draw.invalidate(98)
@@ -443,17 +437,14 @@ class PointerTrackerCallbackStreamTest {
             timer.cancelLongPressShift
             draw.showPreview(99)
             draw.invalidate(99)
-            sdk.touchMove(0,250.0,50.0,1040)
             --- ACTION_UP id=0 t=1060
             batch.cancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(99)
             draw.invalidate(99)
-            sdk.touchCancel(0)
             L.onCodeInput(99,250,50,1060,false)
             L.onReleaseKey(99,false)
-            sdk.touchEnd(0,250.0,50.0,1060)
             """
         )
     }
@@ -479,15 +470,12 @@ class PointerTrackerCallbackStreamTest {
             draw.invalidate(97)
             L.onReleaseKey(97,true)
             timer.cancelKeyTimers(0)
-            sdk.touchMove(0,50.0,250.0,1020)
             --- ACTION_UP id=0 t=1040
             batch.cancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(null)
-            sdk.touchCancel(0)
             L.onCancelInput
-            sdk.touchEnd(0,50.0,250.0,1040)
             """
         )
     }
@@ -514,24 +502,20 @@ class PointerTrackerCallbackStreamTest {
             draw.invalidate(97)
             L.onReleaseKey(97,true)
             timer.cancelKeyTimers(0)
-            sdk.touchMove(0,50.0,250.0,1020)
             --- ACTION_MOVE id=0 t=1040
             L.onPressKey(98,0,true)
             timer.startTypingState(98)
             timer.cancelLongPressShift
             draw.showPreview(98)
             draw.invalidate(98)
-            sdk.touchMove(0,150.0,50.0,1040)
             --- ACTION_UP id=0 t=1060
             batch.cancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(98)
             draw.invalidate(98)
-            sdk.touchCancel(0)
             L.onCodeInput(98,150,50,1060,false)
             L.onReleaseKey(98,false)
-            sdk.touchEnd(0,150.0,50.0,1060)
             """
         )
     }
@@ -562,17 +546,14 @@ class PointerTrackerCallbackStreamTest {
             timer.cancelLongPressShift
             draw.showPreview(97)
             draw.invalidate(97)
-            sdk.touchMove(0,50.0,50.0,1020)
             --- ACTION_UP id=0 t=1040
             batch.cancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(97)
             draw.invalidate(97)
-            sdk.touchCancel(0)
             L.onCodeInput(97,50,50,1040,false)
             L.onReleaseKey(97,false)
-            sdk.touchEnd(0,50.0,50.0,1040)
             """
         )
     }
@@ -601,17 +582,14 @@ class PointerTrackerCallbackStreamTest {
             timer.cancelLongPressShift
             draw.showPreview(-1)
             draw.invalidate(-1)
-            sdk.touchMove(0,350.0,50.0,1020)
             --- ACTION_UP id=0 t=1040
             batch.cancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(-1)
             draw.invalidate(-1)
-            sdk.touchCancel(0)
             L.onCodeInput(-1,-1,-1,1040,false)
             L.onReleaseKey(-1,false)
-            sdk.touchEnd(0,350.0,50.0,1040)
             """
         )
     }
@@ -633,17 +611,14 @@ class PointerTrackerCallbackStreamTest {
             draw.showPreview(97)
             draw.invalidate(97)
             --- ACTION_MOVE id=0 t=1020
-            sdk.touchMove(0,60.0,55.0,1020)
             --- ACTION_UP id=0 t=1040
             batch.cancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(97)
             draw.invalidate(97)
-            sdk.touchCancel(0)
             L.onCodeInput(97,50,50,1040,false)
             L.onReleaseKey(97,false)
-            sdk.touchEnd(0,60.0,55.0,1040)
             """
         )
     }
@@ -663,14 +638,11 @@ class PointerTrackerCallbackStreamTest {
             draw.showPreview(97)
             draw.invalidate(97)
             --- ACTION_CANCEL id=0 t=1020
-            sdk.touchCancel(0)
-            sdk.touchCancel(0)
             batch.cancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(97)
             draw.invalidate(97)
-            sdk.touchCancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissPreview(null)
             draw.dismissTrail
@@ -709,7 +681,6 @@ class PointerTrackerCallbackStreamTest {
             draw.dismissTrail
             draw.dismissPreview(-5)
             draw.invalidate(-5)
-            sdk.touchEnd(0,450.0,50.0,1400)
             """
         )
     }
@@ -731,7 +702,6 @@ class PointerTrackerCallbackStreamTest {
             draw.showPreview(100)
             draw.invalidate(100)
             draw.dismissTrail
-            sdk.touchCancel(0)
             draw.dismissPreview(100)
             draw.invalidate(100)
             --- ACTION_UP id=0 t=1500
@@ -740,7 +710,6 @@ class PointerTrackerCallbackStreamTest {
             draw.dismissTrail
             draw.dismissPreview(100)
             draw.invalidate(100)
-            sdk.touchEnd(0,550.0,50.0,1500)
             """
         )
     }
@@ -767,18 +736,14 @@ class PointerTrackerCallbackStreamTest {
             draw.dismissTrail
             draw.dismissPreview(97)
             draw.invalidate(97)
-            sdk.touchCancel(0)
             L.onCodeInput(97,50,50,1010,false)
             L.onReleaseKey(97,false)
-            sdk.touchEnd(0,50.0,50.0,1010)
             --- ACTION_DOWN id=0 t=1015
-            sdk.touchCancel(0)
             --- ACTION_UP id=0 t=1030
             batch.cancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(null)
-            sdk.touchEnd(0,51.0,50.0,1030)
             """
         )
     }
@@ -815,20 +780,16 @@ class PointerTrackerCallbackStreamTest {
             draw.dismissTrail
             draw.dismissPreview(97)
             draw.invalidate(97)
-            sdk.touchCancel(0)
             L.onCodeInput(97,50,50,1060,false)
             L.onReleaseKey(97,false)
-            sdk.touchEnd(0,50.0,50.0,1060)
             --- ACTION_UP id=1 t=1100
             batch.cancel(1)
             timer.cancelKeyTimers(1)
             draw.dismissTrail
             draw.dismissPreview(98)
             draw.invalidate(98)
-            sdk.touchCancel(1)
             L.onCodeInput(98,150,50,1100,false)
             L.onReleaseKey(98,false)
-            sdk.touchEnd(1,150.0,50.0,1100)
             """
         )
     }
@@ -864,24 +825,19 @@ class PointerTrackerCallbackStreamTest {
             draw.dismissTrail
             draw.dismissPreview(97)
             draw.invalidate(97)
-            sdk.touchCancel(0)
             L.onCodeInput(97,50,50,1060,false)
             L.onReleaseKey(97,false)
-            sdk.touchCancel(0)
             timer.cancelKeyTimers(1)
             draw.dismissTrail
             draw.dismissPreview(98)
             draw.invalidate(98)
-            sdk.touchCancel(1)
             L.onCodeInput(98,150,50,1060,false)
             L.onReleaseKey(98,false)
-            sdk.touchEnd(1,150.0,50.0,1060)
             --- ACTION_UP id=0 t=1100
             batch.cancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(null)
-            sdk.touchEnd(0,50.0,50.0,1100)
             """
         )
     }
@@ -908,10 +864,8 @@ class PointerTrackerCallbackStreamTest {
             draw.dismissTrail
             draw.dismissPreview(97)
             draw.invalidate(97)
-            sdk.touchCancel(0)
             L.onCodeInput(97,50,50,1040,false)
             L.onReleaseKey(97,false)
-            sdk.touchCancel(0)
             draw.dismissTrail
             L.onPressKey(-1,0,true)
             timer.startTypingState(-1)
@@ -924,17 +878,14 @@ class PointerTrackerCallbackStreamTest {
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(null)
-            sdk.touchEnd(0,50.0,50.0,1060)
             --- ACTION_UP id=1 t=1100
             batch.cancel(1)
             timer.cancelKeyTimers(1)
             draw.dismissTrail
             draw.dismissPreview(-1)
             draw.invalidate(-1)
-            sdk.touchCancel(1)
             L.onCodeInput(-1,-1,-1,1100,false)
             L.onReleaseKey(-1,false)
-            sdk.touchEnd(1,350.0,50.0,1100)
             """
         )
     }
@@ -969,20 +920,16 @@ class PointerTrackerCallbackStreamTest {
             draw.dismissTrail
             draw.dismissPreview(97)
             draw.invalidate(97)
-            sdk.touchCancel(1)
             L.onCodeInput(97,50,50,1060,false)
             L.onReleaseKey(97,false)
-            sdk.touchEnd(1,50.0,50.0,1060)
             --- ACTION_UP id=0 t=1100
             batch.cancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(-1)
             draw.invalidate(-1)
-            sdk.touchCancel(0)
             L.onCodeInput(-1,-1,-1,1100,false)
             L.onReleaseKey(-1,false)
-            sdk.touchEnd(0,350.0,50.0,1100)
             """
         )
     }
@@ -1012,10 +959,8 @@ class PointerTrackerCallbackStreamTest {
             draw.dismissTrail
             draw.dismissPreview(97)
             draw.invalidate(97)
-            sdk.touchCancel(0)
             L.onCodeInput(97,50,50,1040,false)
             L.onReleaseKey(97,false)
-            sdk.touchCancel(0)
             draw.dismissTrail
             L.onPressKey(-1,0,true)
             timer.startTypingState(-1)
@@ -1033,23 +978,19 @@ class PointerTrackerCallbackStreamTest {
             timer.cancelLongPressShift
             draw.showPreview(99)
             draw.invalidate(99)
-            sdk.touchMove(1,250.0,50.0,1060)
             --- ACTION_POINTER_UP(1) id=1 t=1080
             batch.cancel(1)
             timer.cancelKeyTimers(1)
             draw.dismissTrail
             draw.dismissPreview(99)
             draw.invalidate(99)
-            sdk.touchCancel(1)
             L.onCodeInput(99,250,50,1080,false)
             L.onReleaseKey(99,false)
-            sdk.touchEnd(1,250.0,50.0,1080)
             --- ACTION_UP id=0 t=1100
             batch.cancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(null)
-            sdk.touchEnd(0,150.0,50.0,1100)
             """
         )
     }
@@ -1537,9 +1478,7 @@ class PointerTrackerCallbackStreamTest {
             draw.dismissPreview(null)
             sdk.touchMove(0,590.0,50.0,1230)
             --- ACTION_POINTER_DOWN(1) id=1 t=1250
-            sdk.touchCancel(1)
             --- ACTION_POINTER_UP(1) id=1 t=1270
-            sdk.touchCancel(1)
             --- ACTION_UP id=0 t=1300
             batch.cancel(0)
             sdk.touchEnd(0,590.0,50.0,1300)
@@ -1551,6 +1490,29 @@ class PointerTrackerCallbackStreamTest {
             draw.slidingPreview(0)
             """
         )
+    }
+
+    /**
+     * A held, repeating key whose finger jiggles enough to look like a path. The lift ends no
+     * swipe, so the engine is told to drop the contact; it used to be sent a touchEnd, which
+     * decoded the jiggle as a swipe that no request was waiting for.
+     */
+    @Test
+    fun gestureEnabledHeldRepeatKeyIsCancelledNeverDecoded() {
+        gestureEnabled = true
+        down(1000, 450)
+        tracker().onKeyRepeat(-5, 1)
+        move(1100, P(0, 452, 50))
+        move(1150, P(0, 454, 50))
+        move(1200, P(0, 456, 50))
+        move(1250, P(0, 458, 50))
+        up(1400, 458)
+        val sdk = log.filter { it.startsWith("sdk.") }
+        assertEquals("sdk.touchStart(0,450.0,50.0,1000)", sdk.first())
+        assertEquals("sdk.touchCancel(0)", sdk.last())
+        assertEquals("enough moves that a touchEnd would have decoded them", 4, sdk.count { it.startsWith("sdk.touchMove") })
+        assertTrue("never decoded", sdk.none { it.startsWith("sdk.touchEnd") })
+        assertEquals("one cancel", 1, sdk.count { it.startsWith("sdk.touchCancel") })
     }
 
     @Test
@@ -1578,7 +1540,6 @@ class PointerTrackerCallbackStreamTest {
             sdk.touchCancel(0)
             L.onCodeInput(97,50,50,1080,false)
             L.onReleaseKey(97,false)
-            sdk.touchEnd(0,50.0,50.0,1080)
             """
         )
     }
@@ -1600,21 +1561,16 @@ class PointerTrackerCallbackStreamTest {
             timer.startLockFocus(0,250)
             draw.showPreview(-1)
             draw.invalidate(-1)
-            sdk.touchStart(0,350.0,50.0,1000)
             --- ACTION_MOVE id=0 t=1020
-            sdk.touchMove(0,250.0,50.0,1020)
             --- ACTION_MOVE id=0 t=1040
-            sdk.touchMove(0,150.0,50.0,1040)
             --- ACTION_UP id=0 t=1060
             batch.cancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(-1)
             draw.invalidate(-1)
-            sdk.touchCancel(0)
             L.onCodeInput(-1,-1,-1,1060,false)
             L.onReleaseKey(-1,false)
-            sdk.touchEnd(0,150.0,50.0,1060)
             """
         )
     }

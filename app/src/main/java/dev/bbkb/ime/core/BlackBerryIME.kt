@@ -115,7 +115,6 @@ import dev.bbkb.ime.keyboard.inputboard.fcc.FccController
 import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadController
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputController
 import dev.bbkb.ime.keyboard.internal.GestureEventProcessor
-import dev.bbkb.ime.keyboard.internal.EngineTouch
 import dev.bbkb.ime.core.engine.EngineOps
 import dev.bbkb.ime.core.engine.EngineThreads
 import dev.bbkb.ime.keyboard.slideboard.NumericSubpanelController
@@ -2427,8 +2426,10 @@ class BlackBerryIME : InputMethodService(),
             // in-progress flow and swallow the event; otherwise (Tap / FlowTrace / pre-UP) fall
             // through to the shared key/flow path.
             if (ckbGestures.feed(motionEvent)) {
-                EngineTouch.cancel("newEngineConsumed.touchCancel", pointerId.toLong())
-                gestureProcessor.cancelTracking()
+                // Once per contact, as in cursor mode above: after the first consumed sample
+                // nothing feeds the engine or the trackers, so the later samples of a held or
+                // dragged contact have nothing left to cancel.
+                if (ckbGestures.cancelEngineTrackingOncePerContact(motionEvent)) gestureProcessor.cancelTracking()
                 return true
             }
             val ag = isGestureInputReady()

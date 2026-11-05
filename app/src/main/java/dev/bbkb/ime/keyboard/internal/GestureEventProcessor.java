@@ -390,12 +390,14 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
                 if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: mIsDetectingGesture=true → initializing BatchInputTracker (gesture mode ON)");
                 resetGestureStrokeTime();
                 this.gesturePathTracker.addDownEventPoint(i, i2, j, sLastKeyEventTime, getActivePointerTrackerCount());
+                if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: CALLING NuanceSDK.touchStart pointer=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j + " mIsDetectingGesture=" + this.mIsDetectingGesture + " mInGesture=" + this.mInGesture);
+                // FIX-L8: null when the engine failed to load. The keyboard must still type.
+                EngineTouch.start("GestureEventProcessor.onDownEvent", this.mPointerId, i, scaleEngineY(i2), j);
             } else {
-                if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: mIsDetectingGesture=FALSE → BatchInputTracker NOT initialized (no gesture word will be produced)");
+                // The field takes no swipes, so this contact can never become one: the engine
+                // is given nothing for it (no start, and so no moves and no cancel either).
+                if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: mIsDetectingGesture=FALSE → BatchInputTracker NOT initialized, no NuanceSDK.touchStart (no gesture word will be produced)");
             }
-            if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: CALLING NuanceSDK.touchStart pointer=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j + " mIsDetectingGesture=" + this.mIsDetectingGesture + " mInGesture=" + this.mInGesture);
-            // FIX-L8: null when the engine failed to load. The keyboard must still type.
-            EngineTouch.start("GestureEventProcessor.onDownEvent", this.mPointerId, i, scaleEngineY(i2), j);
         } else {
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: mkv.isGestureKeyboard=false → entire gesture path SKIPPED, no NuanceSDK.touchStart, no batch tracker");
         }

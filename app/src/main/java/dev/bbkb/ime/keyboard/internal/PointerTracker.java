@@ -631,11 +631,15 @@ public final class PointerTracker extends AbstractDrawingHandler {
         sPointerTrackerQueue.add(this);
         onDownEventInternal(i, i2, j);
         if (sGestureEnabledProvider.isGestureInputEnabled()) {
-            if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "PointerTracker.touchStart: pointerId=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j + " isOnKey=" + keyM7645a);
-            EngineTouch.start("PointerTracker.onDownEvent", this.mPointerId, i, i2, j);
             Keyboard c0965e = this.mKeyboard;
             this.mIsDetectingGesture = (c0965e == null || !c0965e.mId.isAlphabetKeyboard() || !SettingsManager.getInstance().getSettingsValues().editorCapabilities.shouldSupportGestureInput || keyM7645a == null || keyM7645a.isModifierKey()) ? false : true;
             if (this.mIsDetectingGesture) {
+                // Only a contact that can become a swipe is given to the engine. One that
+                // cannot (a symbol board, a field without swiping, a touch off the keys or on
+                // a modifier) used to post a start, every move and a cancel for nothing, and
+                // its start took the session from a finger that was swiping.
+                if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "PointerTracker.touchStart: pointerId=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j + " isOnKey=" + keyM7645a);
+                EngineTouch.start("PointerTracker.onDownEvent", this.mPointerId, i, i2, j);
                 resetGestureStrokeTime();
                 this.mGesturePathTracker.addDownEventPoint(i, i2, j, sGestureStrokeParams.getLastLetterTypingTime(), getActivePointerTrackerCount());
                 this.mGestureStrokeRecognizer.onDownEvent(i, i2, this.mGesturePathTracker.getGestureElapsedTime(j));
@@ -848,9 +852,11 @@ public final class PointerTracker extends AbstractDrawingHandler {
         // no commit ran.
         // Wave 3: the request is ordered against the touchEnd op by FIFO on the engine thread,
         // so during a swipe the op is posted BEFORE onUpEventInternal, which ends the batch
-        // input and posts the prediction request that consumes the deposit. Outside a swipe it
-        // stays after: a tap's own touchCancel (in onUpEventInternal) must run first, so a
-        // jiggled tap's samples are never decoded as a gesture.
+        // input and posts the prediction request that consumes the deposit. A lift that does
+        // not end a swipe is never decoded: whatever the contact still has in the engine is
+        // cancelled after onUpEventInternal (a tap has already cancelled it there, and then
+        // nothing more is posted). It used to post a touchEnd, which decoded a held key's
+        // jiggle as a swipe that nothing was waiting for.
         final boolean endsSwipe = sInGesture && !isShowingMoreKeysPanel();
         if (endsSwipe) postTouchEnd(i, i2, j);
         if (!sInGesture) {
@@ -862,7 +868,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
             }
         }
         onUpEventInternal(i, i2, j);
-        if (!endsSwipe) postTouchEnd(i, i2, j);
+        if (!endsSwipe) EngineTouch.cancel("PointerTracker.onUpEvent/notSwipe", this.mPointerId);
         sPointerTrackerQueue.remove(this);
     }
 

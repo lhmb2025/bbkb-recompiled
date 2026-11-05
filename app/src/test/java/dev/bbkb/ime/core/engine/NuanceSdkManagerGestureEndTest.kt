@@ -63,6 +63,7 @@ class NuanceSdkManagerGestureEndTest {
         EngineThreads.setInlineForTests(true)
         NuanceSDKManager.resetForTests()
         resetGestureState()
+        EngineTouch.resetForTests()
     }
 
     @After
@@ -118,6 +119,8 @@ class NuanceSdkManagerGestureEndTest {
             EngineThreads.engineHandler().post { parked.countDown(); release.await(5, TimeUnit.SECONDS) }
             assertTrue(parked.await(5, TimeUnit.SECONDS))
             try {
+                // A lift-off is posted only for the contact that owns the swipe session.
+                EngineTouch.start("test", 0, 10, 20, 10L)
                 EngineTouch.end("test", 0, 10, 20, 30L)
                 queue.sendToWorkerThread(42, true, callback)
                 assertTrue("main sees the swipe as pending as soon as it posts the op",

@@ -5,7 +5,6 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
-import dev.bbkb.ime.core.engine.EngineOps
 import dev.bbkb.ime.core.gesture.arbiter.FirmwareGestureKeys
 import dev.bbkb.ime.core.gesture.arbiter.GestureAction
 import dev.bbkb.ime.core.gesture.arbiter.GestureAssignments
@@ -28,6 +27,7 @@ import dev.bbkb.ime.core.settings.PrefsManager
 import kotlin.math.hypot
 import dev.bbkb.ime.core.BlackBerryIME
 import dev.bbkb.ime.R
+import dev.bbkb.ime.keyboard.internal.EngineTouch
 
 /** Slots on the suggestion strip; the strip shows suggestion i in slot i, left to right. */
 internal const val STRIP_SLOT_COUNT = 3
@@ -209,7 +209,10 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
     private var dragMoved = false
     private var dragInitialized = false
 
-    /** Set once this contact's first cursor-mode sample has cancelled the engine's tracking. */
+    /**
+     * Set once this contact's first cursor-mode or arbiter-consumed sample has cancelled the
+     * engine's tracking; reset on DOWN.
+     */
     private var engineTrackingCancelled = false
 
     /**
@@ -226,19 +229,19 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
     }
 
     /**
-     * Cancels the engine's gesture tracking for this contact on its first cursor-mode sample
-     * only, and says whether it did (the caller then cancels its own tracking too). It used to
-     * run on every sample: a JNI call under the engine lock, while nothing in cursor mode feeds
-     * the engine to begin with. Every pointer is cancelled, for cursor mode entered mid-contact.
+     * Cancels the engine's gesture tracking for this contact once, on its first sample in
+     * cursor mode or after the arbiter has consumed it, and says whether it did (the caller
+     * then cancels its own tracking too). It used to run on every such sample, while nothing
+     * feeds the engine once the contact is in either state. The cancel names every pointer of
+     * the event, for cursor mode entered mid-contact and for a second finger on the keys; the
+     * engine is asked once, for whichever of them owns its swipe session.
      */
     fun cancelEngineTrackingOncePerContact(event: MotionEvent): Boolean {
         if (engineTrackingCancelled) return false
         engineTrackingCancelled = true
         // The ids are read here, on the main thread: the MotionEvent is recycled after dispatch.
         val pointerIds = LongArray(event.pointerCount) { event.getPointerId(it).toLong() }
-        EngineOps.post("fccCursor.touchCancel") { sdk ->
-            for (id in pointerIds) sdk.touchCancel(id)
-        }
+        EngineTouch.cancelAll("ckbContact.touchCancel", pointerIds)
         return true
     }
 
