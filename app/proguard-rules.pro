@@ -8,10 +8,12 @@
 # inlining and class merging wholesale.
 
 # ---------------------------------------------------------------------------
-# Attributes (one consolidated block)
+# Attributes
 # ---------------------------------------------------------------------------
--keepattributes Signature, InnerClasses, EnclosingMethod
--keepattributes *Annotation*, RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
+# Only what AGP's default file (proguard-android-optimize.txt) does not already keep. It
+# keeps Signature, InnerClasses, EnclosingMethod, AnnotationDefault and the RuntimeVisible*
+# annotation attributes; listing them here again, or `*Annotation*`, changes nothing in the
+# output (checked 2026-11-05: byte-identical dex).
 -keepattributes SourceFile, LineNumberTable
 
 # ---------------------------------------------------------------------------
@@ -37,16 +39,21 @@
     void updateAutoCommittedString(java.lang.String);
 }
 
-# Any class declaring native methods keeps its name so the JNI symbol resolves.
--keepclasseswithmembernames class * {
-    native <methods>;
-}
+# Every other class that declares native methods keeps its name, so the JNI symbol
+# resolves, through AGP's default rule (-keepclasseswithmembernames ... native <methods>).
 
 # ---------------------------------------------------------------------------
 # Framework contracts R8 cannot infer
 # ---------------------------------------------------------------------------
 # Views inflated from XML need their (Context, AttributeSet) constructors, and
 # animated properties are set by name.
+# NOT a copy of the build's own rules, although it looks like one. AAPT keeps the
+# constructors of every view named in a layout and AGP's default file keeps one-argument
+# setters and getters, but only on views that are in use; this rule also keeps every
+# public View subclass whole and under its own name, used or not. Measured 2026-11-05:
+# without it the dex is 671 KB smaller (494 fewer classes, mostly unused Material,
+# ConstraintLayout and window-layout code) and R8 optimises the whole app differently,
+# so dropping it needs a full release pass on the KEY2. Left in place on purpose.
 -keep public class * extends android.view.View {
     public <init>(android.content.Context);
     public <init>(android.content.Context, android.util.AttributeSet);
@@ -55,6 +62,10 @@
     public *** get*();
 }
 
+# Same story as the View rule: AGP's default keeps CREATOR on the Parcelables that are in
+# use, this one also pins every Parcelable class and its name. Measured 2026-11-05: without
+# it the dex is 48 KB smaller; the 74 classes it alone holds are all library classes
+# (androidx, Material, Shizuku), none of the app's. Left in place for the same reason.
 -keep class * implements android.os.Parcelable {
     public static final ** CREATOR;
 }
@@ -98,7 +109,7 @@
 -keep class dev.bbkb.ime.core.device.touch.shizuku.EvdevDeviceInfo { *; }
 -keep class dev.bbkb.ime.core.device.touch.shizuku.EvdevOpenResult { *; }
 # libbbkbevdev.so binds Java_dev_bbkb_ime_core_device_touch_shizuku_EvdevNative_*
-# by name (also covered by the generic native-methods rule above; explicit here
+# by name (also covered by AGP's default native-methods rule; explicit here
 # because the class is otherwise only reachable from the reader process).
 -keep class dev.bbkb.ime.core.device.touch.shizuku.EvdevNative {
     native <methods>;
@@ -136,11 +147,8 @@
 # ---------------------------------------------------------------------------
 # Annotations
 # ---------------------------------------------------------------------------
+# @androidx.annotation.Keep needs nothing here: androidx.annotation ships its own rules.
 -keep @interface *
--keep @androidx.annotation.Keep class * { *; }
--keepclassmembers class * {
-    @androidx.annotation.Keep *;
-}
 
 # ---------------------------------------------------------------------------
 # Logging strip-out

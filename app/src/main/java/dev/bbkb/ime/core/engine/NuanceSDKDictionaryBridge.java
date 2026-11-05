@@ -234,8 +234,15 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         if (!gesturePending) {
             setNativeContext(prevWordsInfo, strM4360m);
             if (!TextUtils.isEmpty(strM4360m)) {
-                // The replay of the snapshot text stays for now: under FIFO it equals what the
-                // feeds already put in the buffer (a later phase deletes it).
+                // The replay is load-bearing, not a leftover (measured 2026-11-05 by building
+                // the list with and without it; Wave 3 Phase C was to delete it). By the time
+                // this runs the buffer no longer holds what the typing path fed. The
+                // typed-word guard's dictionary lookup, made just before this call
+                // (SuggestionEngine.getCorrections -> isSpellingCorrect), feeds the word it
+                // checks into this same buffer: a known word leaves it empty, an unknown one
+                // leaves that word there as typed, with no corrections. And a key fed under
+                // shift makes the engine return capitalised candidates, where this replay
+                // gives the lower-case list the case transform expects.
                 if (!engineOwnsComposingState(c0670ag, this.nuanceSdk)) {
                     this.nuanceSdk.clear();
                     for (int ci = 0; ci < strM4360m.length(); ci++) {
@@ -248,6 +255,9 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
                 // next-word predictions against prevWord context, not residual completions
                 // of the previously-typed word. Guards against any commit path that fails to
                 // transition the engine (e.g. addWord-only branches in CommitController).
+                // Measured 2026-11-05: after an ordinary commit, where the word is selected
+                // by index, the predictions differ until this clear has run, so the ordinary
+                // path needs it too.
                 this.nuanceSdk.clear();
             }
         }

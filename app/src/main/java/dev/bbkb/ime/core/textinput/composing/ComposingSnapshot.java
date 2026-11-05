@@ -11,8 +11,11 @@ import dev.bbkb.ime.core.shared.StringHelper;
  * (a converter's composed text); a read from the engine thread there would deadlock until the
  * query timed out.
  *
- * <p>Under FIFO the snapshot also describes the engine's buffer exactly: every feed for this text
- * was posted to the engine thread before the request, and every feed for later text after it.
+ * <p>Under FIFO the snapshot also describes what the typing path has fed the engine: every feed
+ * for this text was posted to the engine thread before the request, and every feed for later text
+ * after it. The engine's buffer itself can differ by the time the request runs (the typed-word
+ * guard's dictionary lookup overwrites it), which is why the bridge still replays this text
+ * before it builds.
  *
  * <p>Immutable. Everything a request reads from the tracker is here: the text and the counts and
  * flags the case transform and the auto-correct decision use.
