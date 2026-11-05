@@ -115,6 +115,9 @@ import dev.bbkb.ime.keyboard.inputboard.fcc.FccController
 import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadController
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputController
 import dev.bbkb.ime.keyboard.internal.GestureEventProcessor
+import dev.bbkb.ime.keyboard.internal.EngineTouch
+import dev.bbkb.ime.core.engine.EngineOps
+import dev.bbkb.ime.core.engine.EngineThreads
 import dev.bbkb.ime.keyboard.slideboard.NumericSubpanelController
 import dev.bbkb.ime.keyboard.slideboard.QuickPhrasesController
 import com.blackberry.nuanceshim.NuanceSDK
@@ -492,10 +495,12 @@ class BlackBerryIME : InputMethodService(),
     @Throws(Resources.NotFoundException::class)
     override fun onCreate() {
         // Audit P-6: first, before super.onCreate(): start the engine (native library load,
-        // nativeInit, the engine's own init) on a startup worker so it overlaps everything below.
-        // It needs only the Application context. The first engine user joins it, bounded, in
-        // NuanceSDKManager.getInstance(); if the executor cannot take it, that user creates it.
-        NuanceSDKManager.startPrimaryAsync(startupExecutor)
+        // nativeInit, the engine's own init) on the engine loader thread so it overlaps
+        // everything below. It needs only the Application context. The first engine user joins
+        // it, bounded, in NuanceSDKManager.getInstance(). Not on startupExecutor: that pool is
+        // shut down with the service, and the engine must only be called from threads that
+        // never exit (EngineThreads).
+        NuanceSDKManager.startPrimaryAsync()
         StartupTiming.end("ime.constructor", constructorTiming)
         val onCreateToken = StartupTiming.begin()
         initializeStrictMode()
@@ -878,7 +883,8 @@ class BlackBerryIME : InputMethodService(),
         quickPhrasesController = null
         numericSubpanelController?.refresh()
         numericSubpanelController = null
-        NuanceSDKManager.disposePrimary()
+        // The engine is not disposed: it lives for the process and the next service instance
+        // reuses it (NuanceSDKManager.resetForTests documents the crash that disposing causes).
     }
 
     override fun onConfigurationChanged(configuration: Configuration) {
@@ -1315,7 +1321,8 @@ class BlackBerryIME : InputMethodService(),
         // sessions never create an input view. Opt-in because it can SIGSEGV on a cold start —
         // see Et9Probe.isProbeEnabled and docs/et9-ranking-documentation.md.
         if (BuildConfig.DEBUG) {
-            com.blackberry.nuanceshim.Et9Probe.probe(NuanceSDKManager.getInstance())
+            // On the engine thread: the probe calls the engine, which the main thread never does.
+            EngineThreads.post { com.blackberry.nuanceshim.Et9Probe.probe(NuanceSDKManager.getInstance()) }
         }
         if (BuildConfig.DEBUG) sensorVizOverlay.syncActiveFromPrefs()
         if (BuildConfig.DEBUG) android.util.Log.d("KBD_LIFECYCLE", "onStartInput(): restarting=$z isInputViewShown=${isInputViewShown()} pkg=${editorInfo?.packageName ?: "null"}")
@@ -1681,22 +1688,17 @@ class BlackBerryIME : InputMethodService(),
         // clears the callbacks when the toggle is off.
         hardwareKeys.registerInterceptorCallbacks()
         fccController?.hideIfDisabled()
-        // The engine is started on a worker at the top of onCreate (audit P-6) and the
-        // DynamicLearningManager constructor has normally joined it already; this records any
-        // wait that is left (only waits of 5 ms or more are logged).
-        val sdkToken = StartupTiming.begin()
-        val sdkM4875a2 = NuanceSDKManager.getInstance()
-        StartupTiming.endIfOver("ime.loadSettings.nuanceSdkGet", sdkToken, 5L)
-        if (sdkM4875a2 != null) {
+        // One op on the engine thread (Wave 3): the main thread neither joins the engine start
+        // nor calls the engine. The value is read here.
+        val useContactsDicts = settingsValues.useContactsDicts
+        EngineOps.post("loadSettings.engineOptions") { sdk ->
             // Off for good: the strip's emoji comes from emojibase now (EmojibaseStripSuggestion),
             // and the Emoji suggestions switch governs that lookup instead of the engine's.
-            sdkM4875a2.setEmojiPredictionEnabled(false)
+            sdk.setEmojiPredictionEnabled(false)
             // The engine half of "Suggest from contacts": the contacts manager above only starts
             // or stops the address-book sync, and the names already learned stayed active in the
             // engine until its contacts category is switched off (as the original app did).
-            sdkM4875a2.setContactsCategoryState(settingsValues.useContactsDicts)
-        } else {
-            Logger.warn(LOG_TAG, "NuanceSDK unavailable; skipping setEmojiPredictionEnabled")
+            sdk.setContactsCategoryState(useContactsDicts)
         }
         if (settingsValues.isEmojiPredictionsEnabled) {
             // Parse the emojibase dataset off the UI thread now, so the first word typed already
@@ -1740,6 +1742,9 @@ class BlackBerryIME : InputMethodService(),
         } else {
             Logger.warn(LOG_TAG, "Current subtype is null; skipping updateLanguagePacksForCurrentSubtype()")
         }
+        // Posted in FIFO order; the load op re-applies the latest layout at the front of the
+        // engine queue when it ends (KeyboardSwitcher.resyncLayoutAfterLanguageLoad), in case
+        // this one reached the engine before the load did.
         KeyboardSwitcher.getInstance().syncKeyboardLayout()
     }
 
@@ -1751,11 +1756,17 @@ class BlackBerryIME : InputMethodService(),
             ResourceLocaleUtils.getSubtypeLocale(inputMethodSubtype),
             ResourceLocaleUtils.getAdditionalLocales(inputMethodSubtype),
         )
-        val sdk = NuanceSDKManager.getInstance()
-        if (sdk != null) {
-            LanguagePackManager.getInstance(applicationContext).setLanguages(sdk, locales.toTypedArray())
-        } else {
-            Logger.warn(LOG_TAG, "NuanceSDK unavailable; skipping language update in updateLanguagePacksForSubtype")
+        // On the loader thread (Wave 3): the full LDB + DLM load is a long hold, and the main
+        // thread never waits for it. Nothing waits on the future either. When the load has ended,
+        // the latest keyboard layout is re-applied ahead of everything queued on the engine
+        // thread, since the load re-creates the engine core and a sync posted meanwhile may have
+        // run before it.
+        val packs = LanguagePackManager.getInstance(applicationContext)
+        val localeArray = locales.toTypedArray()
+        EngineOps.load("updateLanguagePacksForSubtype") { sdk ->
+            val loaded = packs.setLanguages(sdk, localeArray)
+            KeyboardSwitcher.resyncLayoutAfterLanguageLoad()
+            loaded
         }
     }
 
@@ -1842,12 +1853,8 @@ class BlackBerryIME : InputMethodService(),
         if (dictionaryLoader != null) {
             val i = if (SettingsManager.getInstance().getSettingsValues().cangjieMode == 0) 1 else 0
             SettingsManager.setCangjieMode(PrefsManager.getPrefs(), i)
-            val sdkM4875a3 = NuanceSDKManager.getInstance()
-            if (sdkM4875a3 != null) {
-                sdkM4875a3.setInputMethod(if (i == 0) NuanceSDK.CANGJIE_VARIANT else NuanceSDK.QUICK_CANGJIE_VARIANT)
-            } else {
-                Logger.warn(LOG_TAG, "NuanceSDK unavailable; skipping setInputMethod")
-            }
+            val variant = if (i == 0) NuanceSDK.CANGJIE_VARIANT else NuanceSDK.QUICK_CANGJIE_VARIANT
+            EngineOps.post("toggleCangjieMode") { it.setInputMethod(variant) }
         }
     }
 
@@ -2243,7 +2250,9 @@ class BlackBerryIME : InputMethodService(),
         // stray edge-touches and the previous word don't bleed into this gesture. Without
         // this the trace record ring (traceObj+0x49000) and composing-start index (+0x39c)
         // never advance per word, causing "my" -> "how are you" / "good" -> "void".
-        NuanceSDKManager.getInstance()?.clear()
+        // Posted: FIFO keeps it in the same place among this swipe's touch samples as the
+        // direct call had (after the ones already sent, before the rest).
+        EngineOps.post("onStartBatchInput.clear") { it.clear() }
         inputLogic.onSuggestionStripUpdate(settingsManager.getSettingsValues(), getSymbolPageProvider().getSymbolPageOrder(), uiUpdateHandler)
         val c0919fM4047Z = physicalKeyboardStateTracker
         keyboardSwitcher.getMainKeyboardView()!!.setGestureInputStartsBeforeRunningShift(true)
@@ -2418,7 +2427,7 @@ class BlackBerryIME : InputMethodService(),
             // in-progress flow and swallow the event; otherwise (Tap / FlowTrace / pre-UP) fall
             // through to the shared key/flow path.
             if (ckbGestures.feed(motionEvent)) {
-                NuanceSDKManager.withSdk("newEngineConsumed.touchCancel") { it.touchCancel(pointerId.toLong()) }
+                EngineTouch.cancel("newEngineConsumed.touchCancel", pointerId.toLong())
                 gestureProcessor.cancelTracking()
                 return true
             }

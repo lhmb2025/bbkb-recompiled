@@ -4,6 +4,7 @@ import android.content.Context
 import com.blackberry.nuanceshim.languagepack.CustomPackRegistryStore
 import com.blackberry.nuanceshim.languagepack.LanguagePackManager
 import com.blackberry.nuanceshim.languagepack.LanguageVariantStore
+import dev.bbkb.ime.core.engine.EngineThreads
 import dev.bbkb.ime.core.engine.NuanceSDKManager
 import dev.bbkb.ime.core.locale.RichInputMethodManager
 import dev.bbkb.ime.core.locale.SubtypeEnabler
@@ -329,19 +330,36 @@ class PackInstallService @JvmOverloads constructor(
      * The production [EngineRegistry]: the primary (keyboard) and secondary (spell-checker) engines,
      * whichever of them exist. It never creates an engine just to register a pack: one that has not
      * started yet enumerates the directory itself.
+     *
+     * Both calls are one op on the engine's loader thread, with the engines looked up there; the
+     * install coroutine (Dispatchers.IO, whose threads can exit and so must never call the engine)
+     * waits for it, as it waited for the direct calls.
      */
     object NuanceEngineRegistry : EngineRegistry {
         override fun register(directory: File): Boolean {
             val path = directory.absolutePath
-            var accepted = true
-            NuanceSDKManager.peekInstance()?.let { accepted = it.registerLdb(path) && accepted }
-            NuanceSDKManager.peekSecondary()?.let { accepted = it.registerLdb(path) && accepted }
-            return accepted
+            return onLoader {
+                var accepted = true
+                NuanceSDKManager.peekInstance()?.let { accepted = it.registerLdb(path) && accepted }
+                NuanceSDKManager.peekSecondary()?.let { accepted = it.registerLdb(path) && accepted }
+                accepted
+            }
         }
 
         override fun deregister(language: String, country: String?) {
-            NuanceSDKManager.peekInstance()?.deregisterLdb(language, country)
-            NuanceSDKManager.peekSecondary()?.deregisterLdb(language, country)
+            onLoader {
+                NuanceSDKManager.peekInstance()?.deregisterLdb(language, country)
+                NuanceSDKManager.peekSecondary()?.deregisterLdb(language, country)
+            }
+        }
+
+        private fun <T> onLoader(block: () -> T): T {
+            EngineThreads.assertNotMain("PackInstallService.NuanceEngineRegistry")
+            return try {
+                EngineThreads.load(java.util.concurrent.Callable { block() }).get()
+            } catch (e: java.util.concurrent.ExecutionException) {
+                throw e.cause ?: e
+            }
         }
     }
 

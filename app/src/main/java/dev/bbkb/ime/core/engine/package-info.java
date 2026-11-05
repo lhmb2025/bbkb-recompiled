@@ -34,7 +34,7 @@
  * {@code dev.bbkb.ime.personaldictionary} with the store it fronts.
  *
  * <h3>Threading</h3>
- * <p>Dictionary queries are dispatched from {@code SuggestionWorker}'s background thread. Engine
+ * <p>Dictionary queries are dispatched on {@code EngineThreads}' engine thread. Engine
  * callbacks may arrive on a native thread; existing code posts results to the main thread via
  * {@code UIUpdateHandler}. Any new code in this path must keep that contract.
  *

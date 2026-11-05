@@ -3,6 +3,7 @@ package dev.bbkb.ime.core.suggestion
 import com.blackberry.nuanceshim.WordInfo
 import dev.bbkb.ime.core.engine.DictionaryLoader
 import dev.bbkb.ime.core.engine.NuanceSDKDictionaryBridge
+import dev.bbkb.ime.core.textinput.composing.ComposingSnapshot
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -75,7 +76,7 @@ class SuggestionEngineLearnedWordsTest {
             list.add(SuggestedWords.SuggestedWordInfo(c.first, 100 - i, c.second, null, -1, -1, info))
         }
         result.addSuggestions(list)
-        `when`(loader.generateSuggestions(any(), any(), any(), any(), anyInt())).thenReturn(result)
+        `when`(loader.generateSuggestions(any(ComposingSnapshot::class.java), any(), any(), any(), anyInt())).thenReturn(result)
     }
 
     private fun run(typed: String, predicting: Boolean = false): List<String> {
@@ -151,7 +152,7 @@ class SuggestionEngineLearnedWordsTest {
             SuggestedWords.SuggestedWordInfo("beez", 100, KIND_TYPED, null, -1, -1, null),
             SuggestedWords.SuggestedWordInfo("beezone", 99, KIND_COMPLETION, null, -1, -1, null),
         ))
-        `when`(loader.generateSuggestions(any(), any(), any(), any(), anyInt())).thenReturn(result)
+        `when`(loader.generateSuggestions(any(ComposingSnapshot::class.java), any(), any(), any(), anyInt())).thenReturn(result)
 
         assertEquals(listOf("beez", "beezone"), run("beez"))
     }

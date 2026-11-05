@@ -79,6 +79,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import dev.bbkb.ime.core.engine.NuanceSDKManager
+import dev.bbkb.ime.core.engine.engineLoaderDispatcher
 import dev.bbkb.ime.core.engine.dlm.EngineLanguages
 import dev.bbkb.ime.core.engine.dlm.LearnedModelStream
 import dev.bbkb.ime.core.engine.dlm.LearnedModelTransfer
@@ -358,7 +359,9 @@ fun WordListEditorScreen(
     // A model read from a file, waiting for the user to confirm that it replaces this phone's.
     var pendingImport by remember { mutableStateOf<LearnedModelStream.Model?>(null) }
     
-    val nuanceSDK = remember { NuanceSDKManager.getInstance() }
+    // No engine handle here: composition runs on the main thread, which never resolves or calls
+    // the engine. The add, delete and reset below each run as one op on the engine's loader
+    // thread and look the engine up there; the list reloads after the op has finished.
     val dictionaryRepository = remember { DictionaryRepository(context) }
     
     // Load words
@@ -554,8 +557,9 @@ fun WordListEditorScreen(
     // Undo deletion by re-learning words
     fun undoDelete(wordsToRestore: List<String>) {
         scope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(engineLoaderDispatcher) {
                 try {
+                    val nuanceSDK = NuanceSDKManager.getInstance()
                     wordsToRestore.forEach { word ->
                         // Re-learn the word via Nuance addWord
                         nuanceSDK?.addWord(word)
@@ -578,8 +582,9 @@ fun WordListEditorScreen(
             // Store for potential undo
             recentlyDeletedWords = wordsToDelete
             
-            withContext(Dispatchers.IO) {
+            withContext(engineLoaderDispatcher) {
                 try {
+                    val nuanceSDK = NuanceSDKManager.getInstance()
                     if (isWorkProfile) {
                         nuanceSDK?.deleteWorkDLMWordsExplicitly(ArrayList(wordsToDelete))
                     } else {
@@ -983,9 +988,9 @@ fun WordListEditorScreen(
                             // Full model reset: per-word deletion only prunes the
                             // enumerable unigrams; bigrams and usage boosts survive it.
                             scope.launch {
-                                val ok = withContext(Dispatchers.IO) {
+                                val ok = withContext(engineLoaderDispatcher) {
                                     try {
-                                        nuanceSDK?.resetDynamicModel(
+                                        NuanceSDKManager.getInstance()?.resetDynamicModel(
                                             java.io.File(context.filesDir, "nuance")) ?: false
                                     } catch (e: Exception) {
                                         if (BuildConfig.DEBUG) Log.e("WordListEditor", "resetDynamicModel failed", e)

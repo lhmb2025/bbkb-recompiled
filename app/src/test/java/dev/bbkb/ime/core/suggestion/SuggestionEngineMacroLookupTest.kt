@@ -2,6 +2,7 @@ package dev.bbkb.ime.core.suggestion
 
 import dev.bbkb.ime.core.engine.DictionaryLoader
 import dev.bbkb.ime.core.engine.NuanceSDKDictionaryBridge
+import dev.bbkb.ime.core.textinput.composing.ComposingSnapshot
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -95,7 +96,7 @@ class SuggestionEngineMacroLookupTest {
             list.add(SuggestedWords.SuggestedWordInfo(w, 100 - i, 0, null, -1, -1, null))
         }
         result.addSuggestions(list)
-        `when`(loader.generateSuggestions(any(), any(), any(), any(), anyInt())).thenReturn(result)
+        `when`(loader.generateSuggestions(any(ComposingSnapshot::class.java), any(), any(), any(), anyInt())).thenReturn(result)
     }
 
     /** Make the bridge behave like a real macro hit: insert the expansion at index 1, return true. */
@@ -178,7 +179,7 @@ class SuggestionEngineMacroLookupTest {
         list.add(SuggestedWords.SuggestedWordInfo("teh", 100, 0, null, -1, -1, null))
         list.add(SuggestedWords.SuggestedWordInfo("the", 99, 2, null, -1, -1, null))
         result.addSuggestions(list)
-        `when`(loader.generateSuggestions(any(), any(), any(), any(), anyInt())).thenReturn(result)
+        `when`(loader.generateSuggestions(any(ComposingSnapshot::class.java), any(), any(), any(), anyInt())).thenReturn(result)
         `when`(bridge.shouldAutoCorrect(any(), any(), any())).thenReturn(false)
 
         assertFalse(run("teh", autoCorrectEnabled = false).mWillAutoCorrect)

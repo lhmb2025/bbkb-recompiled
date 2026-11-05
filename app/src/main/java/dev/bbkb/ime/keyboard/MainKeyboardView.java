@@ -29,7 +29,6 @@ import dev.bbkb.ime.keyboard.internal.PointerTracker;
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.Constants;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
-import dev.bbkb.ime.core.engine.NuanceSDKManager;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
 import dev.bbkb.ime.core.shared.CoordinateUtils;
 import dev.bbkb.ime.core.gesture.MultiPointerGestureDetector;
@@ -766,7 +765,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         int pointerId = motionEvent.getPointerId(motionEvent.getActionIndex());
         PointerTracker c1084tM7596a = PointerTracker.getPointerTracker(pointerId);
         if ((!this.mGestureInputAvailability.isVkbGestureInputEnabled() || this.mSettings.getSettingsValues().isVkbSwipeGesturesEnabled) && !isShowingMoreKeysPanel() && !c1084tM7596a.isSlideboardDragging() && (c0924a = this.mGestureDetector) != null && c0924a.onTouchEvent(motionEvent)) {
-            NuanceSDKManager.getInstance().touchCancel(pointerId);
+            dev.bbkb.ime.keyboard.internal.EngineTouch.cancel("MainKeyboardView.multiPointer", pointerId);
             c1084tM7596a.cancelTracking();
             return true;
         }

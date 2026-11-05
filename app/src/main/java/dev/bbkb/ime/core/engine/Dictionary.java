@@ -1,5 +1,6 @@
 package dev.bbkb.ime.core.engine;
 
+import dev.bbkb.ime.core.textinput.composing.ComposingSnapshot;
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker;
 import dev.bbkb.ime.core.settings.util.SuggestionStripSettings;
 import dev.bbkb.ime.core.suggestion.PrevWordsInfo;
@@ -23,6 +24,16 @@ public abstract class Dictionary {
     public final String dictType;
 
     public abstract ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingTextTracker c0670ag, PrevWordsInfo prevWordsInfo, SuggestionStripSettings c0805e, int i);
+
+    /**
+     * The suggestions for a composing state taken on the main thread (Wave 3 Phase A: the IME's
+     * requests run on the engine thread and never read its tracker). Named apart from
+     * {@link #generateSuggestions} so a mock's {@code any()} or a {@code null} argument still
+     * picks one method. Dictionaries that build no suggestions answer null.
+     */
+    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestionsForSnapshot(ComposingSnapshot composing, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int i) {
+        return null;
+    }
 
     public void close() {
     }

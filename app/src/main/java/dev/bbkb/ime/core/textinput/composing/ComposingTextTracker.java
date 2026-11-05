@@ -8,7 +8,9 @@ import android.text.TextUtils;
 import dev.bbkb.ime.core.inputmethod.HangulInputProcessor;
 import dev.bbkb.ime.core.textinput.composing.CommitEventRecord;
 import dev.bbkb.ime.core.inputmethod.RomajiInputProcessor;
-import dev.bbkb.ime.core.engine.NuanceSDKManager;
+import dev.bbkb.ime.core.engine.EngineFacts;
+import dev.bbkb.ime.core.engine.EngineThreads;
+import dev.bbkb.ime.core.engine.PrimaryEngineFacts;
 import dev.bbkb.ime.core.inputmethod.AbstractInputProcessor;
 import dev.bbkb.ime.core.inputmethod.InputMethodCallback;
 import dev.bbkb.ime.core.inputmethod.TextComposer;
@@ -20,6 +22,7 @@ import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.core.shared.StringHelper;
 import dev.bbkb.ime.core.shared.ScriptUtils;
 import com.blackberry.nuanceshim.NuanceSDK;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -85,10 +88,60 @@ public final class ComposingTextTracker {
     private InputMethodCallback mInputMethodConverter;
 
     /**
-     * The engine, once resolved. Volatile: the suggestion worker and the main thread both reach
-     * it, and on a cold start whichever comes first resolves it (see {@link #engine()}).
+     * The engine, once resolved. Volatile: it is resolved inside an engine-thread op (see
+     * {@link #engine()}) and read again by later ops.
      */
     private volatile NuanceSDK mNuanceSDK;
+
+    /**
+     * The engine this tracker was built with, or null for the IME's tracker, which resolves the
+     * primary engine inside each op ({@link #mEngineSource}). The spell checker's tracker is built
+     * over the secondary engine and must keep addressing that one.
+     */
+    private final NuanceSDK mFixedSdk;
+
+    /**
+     * Wave 3 Phase A: the tracker never calls the engine on the calling thread. Every engine call a
+     * tracker method makes is recorded here as a step, with its symbols and shift state computed
+     * on the caller and captured as values, and the steps of one tracker call are posted to the
+     * engine thread as ONE op ({@link #flushEngineSteps}), in FIFO order with every other op, so
+     * nothing (a suggestion request, a learn op) can land between a clear and its re-feed. A call
+     * that needs a result from the engine (a converter's composed text) runs the pending steps and
+     * its read in one bounded query instead ({@link #queryEngine}). Guarded by this tracker's
+     * monitor, like the rest of its state.
+     */
+    private final ArrayList<EngineStep> mPendingSteps = new ArrayList<>();
+
+    /** Nesting depth of the tracker calls building the current op; the outermost one posts it. */
+    private int mBatchDepth;
+
+    /**
+     * How long a converter language (Korean, Vietnamese Telex, Japanese Romaji) waits for its
+     * composed text. Steady state is one context switch; this only bounds a wait behind a language
+     * load on the loader thread, after which the unconverted text stays.
+     */
+    private static final long CONVERTER_QUERY_TIMEOUT_MS = 2000L;
+
+    /** {@link #CONVERTER_QUERY_TIMEOUT_MS}; shortened by the timeout test only. */
+    private static volatile long sConverterQueryTimeoutMs = CONVERTER_QUERY_TIMEOUT_MS;
+
+    /** Tests: the converter query's bound; a value of 0 or less restores the default. */
+    static void setConverterQueryTimeoutForTests(long timeoutMs) {
+        sConverterQueryTimeoutMs = timeoutMs > 0 ? timeoutMs : CONVERTER_QUERY_TIMEOUT_MS;
+    }
+
+    /** Debug builds log the first converter fallback only, not one per key. */
+    private static volatile boolean sLoggedConverterFallback;
+
+    /** One engine call of a tracker method, run on the engine thread against this tracker's engine. */
+    private interface EngineStep {
+        void run(NuanceSDK sdk);
+    }
+
+    /** An engine read a tracker method needs the answer to, run after the pending steps. */
+    private interface EngineQuery<T> {
+        T run(NuanceSDK sdk);
+    }
 
     /**
      * Where the engine comes from when it was not handed over at construction. The IME's tracker
@@ -180,6 +233,7 @@ public final class ComposingTextTracker {
 
     private ComposingTextTracker(NuanceSDK nuanceSDK, EngineSource engineSource) {
         this.mNuanceSDK = nuanceSDK;
+        this.mFixedSdk = nuanceSDK;
         this.mEngineSource = engineSource;
         this.mComposingText.clear();
         clearAutoCorrection();
@@ -196,7 +250,7 @@ public final class ComposingTextTracker {
     /**
      * The engine this tracker drives, resolved on first use when it was not given at construction.
      * Resolving can wait for the engine's background start (NuanceSDKManager), which is why it is
-     * not done in the constructor.
+     * not done in the constructor. Only called inside engine-thread ops.
      */
     private NuanceSDK engine() {
         NuanceSDK sdk = this.mNuanceSDK;
@@ -210,13 +264,120 @@ public final class ComposingTextTracker {
     }
 
     /**
+     * What this tracker may know about its engine without calling it (the published facts): the
+     * fixed engine's own for the spell checker's tracker, the primary's otherwise.
+     */
+    private EngineFacts facts() {
+        return this.mFixedSdk != null ? PrimaryEngineFacts.of(this.mFixedSdk) : PrimaryEngineFacts.get();
+    }
+
+    /** Opens a tracker call whose engine steps are posted together when the outermost one ends. */
+    private void beginEngineBatch() {
+        this.mBatchDepth++;
+    }
+
+    /** Closes {@link #beginEngineBatch}; the outermost close posts the op. */
+    private void endEngineBatch() {
+        if (--this.mBatchDepth <= 0) {
+            this.mBatchDepth = 0;
+            flushEngineSteps();
+        }
+    }
+
+    /** Records one engine call; posted at once when no tracker call is building an op. */
+    private void engineStep(EngineStep step) {
+        this.mPendingSteps.add(step);
+        if (this.mBatchDepth == 0) {
+            flushEngineSteps();
+        }
+    }
+
+    private EngineStep[] drainEngineSteps() {
+        if (this.mPendingSteps.isEmpty()) {
+            return null;
+        }
+        EngineStep[] steps = this.mPendingSteps.toArray(new EngineStep[0]);
+        this.mPendingSteps.clear();
+        return steps;
+    }
+
+    /** Posts the pending steps to the engine thread as one op (inline when already there). */
+    private void flushEngineSteps() {
+        final EngineStep[] steps = drainEngineSteps();
+        if (steps == null) {
+            return;
+        }
+        final NuanceSDK fixed = this.mFixedSdk;
+        EngineThreads.post(() -> {
+            NuanceSDK sdk = fixed != null ? fixed : engine();
+            if (sdk == null) {
+                return;
+            }
+            for (EngineStep step : steps) {
+                step.run(sdk);
+            }
+        });
+    }
+
+    /**
+     * Runs the pending steps and then {@code query} in one engine-thread op and waits for the
+     * answer, up to {@link #CONVERTER_QUERY_TIMEOUT_MS}. Returns {@code fallback} on a timeout (the
+     * op still runs later, after everything posted before it, so the feeds are never lost) or when
+     * there is no engine. The op touches nothing of this tracker but the values captured for it:
+     * the caller holds this tracker's monitor while it waits.
+     */
+    private <T> T queryEngine(final T fallback, final EngineQuery<T> query) {
+        final EngineStep[] steps = drainEngineSteps();
+        final NuanceSDK fixed = this.mFixedSdk;
+        return EngineThreads.query(() -> {
+            NuanceSDK sdk = fixed != null ? fixed : engine();
+            if (sdk == null) {
+                return fallback;
+            }
+            if (steps != null) {
+                for (EngineStep step : steps) {
+                    step.run(sdk);
+                }
+            }
+            return query.run(sdk);
+        }, sConverterQueryTimeoutMs, fallback);
+    }
+
+    /** A copy of the coordinates for an engine op, which must not share the live tracker. */
+    private TouchPointerCoordTracker copyCoordinates() {
+        TouchPointerCoordTracker copy = new TouchPointerCoordTracker(48);
+        copy.copyFrom(this.mCoordinateTracker);
+        return copy;
+    }
+
+    /**
+     * Debug builds: the engine thread must never read the IME's tracker. The main thread can hold
+     * this tracker's monitor while it waits for an engine query, so a read from the engine thread
+     * would deadlock until that query timed out; the request path reads a {@link ComposingSnapshot}
+     * instead. The spell checker's tracker (built over a fixed engine) is legitimately read on the
+     * engine thread, inside its own query.
+     */
+    private void assertNotReadOnEngineThread(String what) {
+        if (BuildConfig.DEBUG && this.mFixedSdk == null && EngineThreads.onEngineThread()) {
+            throw new IllegalStateException("ComposingTextTracker." + what + " read on the engine "
+                    + "thread; use the request's ComposingSnapshot");
+        }
+    }
+
+    /**
      * Returns whether a language-specific input method converter (e.g. Hangul, Vietnamese Telex)
      * is currently installed and active.
      *
      * @return {@code true} if an input method converter is set
      */
     public synchronized boolean hasInputMethodConverter() {
+        assertNotReadOnEngineThread("hasInputMethodConverter");
         return this.mInputMethodConverter != null;
+    }
+
+    /** The tracker's shift state (0, 1, 3, 5, 7); see {@link #setShiftState}. */
+    public synchronized int getShiftState() {
+        return this.mShiftState;
     }
 
     /**
@@ -302,11 +463,8 @@ public final class ComposingTextTracker {
         // the IME's primary shift state from an IPC thread while leaving the secondary's untouched.
         // Same-value suppression in setShiftState then kept it un-repaired until the tracker's own
         // shift value genuinely changed. IME behaviour is unchanged: InputLogic's tracker wraps
-        // getInstance() anyway (InputLogic.java:167).
-        NuanceSDK sdk = engine();
-        if (sdk != null) {
-            sdk.setShiftState(0);
-        }
+        // getInstance() anyway (InputLogic.java:167). Posted to this tracker's engine (Phase A).
+        engineStep(sdk -> sdk.setShiftState(0));
         this.mRecorrectionState.reset();
         recalculateTextStats(false);
     }
@@ -385,17 +543,24 @@ public final class ComposingTextTracker {
      * non-CJK locales.
      */
     private void rebuildNuanceFromComposing() {
-        engine().clear();
-        InputMethodCallback converter = this.mInputMethodConverter;
+        // One op: the clear and the whole re-feed, so nothing can run between them (Phase A).
+        final InputMethodCallback converter = this.mInputMethodConverter;
         InputMethodCallback.ConverterType type = converter != null ? converter.getConverterType() : InputMethodCallback.ConverterType.NOT_DEFINED;
         if (type == InputMethodCallback.ConverterType.HANGUL || type == InputMethodCallback.ConverterType.VIETNAMESE_TELEX) {
             // Same routing as processNuanceAndConverter: these converters feed the engine jamo,
             // or base letters plus explicit accents, never the composed characters. Feeding "한"
-            // as one symbol leaves the engine unable to attach the next jamo to it.
-            converter.processSymbols(this.mComposingText, engine());
+            // as one symbol leaves the engine unable to attach the next jamo to it. processSymbols
+            // only feeds; it keeps no converter state, so it may run on the engine thread.
+            final String text = this.mComposingText.toString();
+            engineStep(sdk -> {
+                sdk.clear();
+                converter.processSymbols(text, sdk);
+            });
             return;
         }
+        final boolean strokeMode = facts().isChineseStrokeMode();
         int len = this.mComposingText.length();
+        StringBuilder symbols = new StringBuilder(len);
         int i = 0;
         while (i < len) {
             int cp = Character.codePointAt(this.mComposingText, i);
@@ -404,16 +569,23 @@ public final class ComposingTextTracker {
                 // TI-37: see processNuanceAndConverter - one lookup, one box.
                 Character strokeKey = STROKE_TO_NUMBER_MAP.get(c);
                 Character cangjieKey = CANGJIE_RADICAL_TO_KEY_MAP.get(c);
-                if (engine().isChineseStrokeMode() && strokeKey != null) {
-                    engine().processKeyBySymbol(strokeKey.charValue());
+                if (strokeMode && strokeKey != null) {
+                    symbols.append(strokeKey.charValue());
                 } else if (cangjieKey != null) {
-                    engine().processKeyBySymbol(cangjieKey.charValue());
+                    symbols.append(cangjieKey.charValue());
                 } else {
-                    engine().processKeyBySymbol(c);
+                    symbols.append(c);
                 }
             }
             i += Character.charCount(cp);
         }
+        final String feed = symbols.toString();
+        engineStep(sdk -> {
+            sdk.clear();
+            for (int k = 0; k < feed.length(); k++) {
+                sdk.processKeyBySymbol(feed.charAt(k));
+            }
+        });
     }
 
     private final synchronized void recalculateTextStats(boolean z) {
@@ -464,6 +636,7 @@ public final class ComposingTextTracker {
      * @return {@code true} if composing text is non-empty
      */
     public synchronized boolean isComposing() {
+        assertNotReadOnEngineThread("isComposing");
         return getCodePointCount() > 0;
     }
 
@@ -519,11 +692,21 @@ public final class ComposingTextTracker {
      * @param i      the current keyboard shift state (from {@code InputEventContext.symbolPageOrder})
      */
     public synchronized void processInputEventWithShift(InputEvent c0914a, int i) {
-        int iM4319b;
-        boolean z;
         if (c0914a == null) {
             return;
         }
+        beginEngineBatch();
+        try {
+            processInputEventInBatch(c0914a, i);
+        } finally {
+            endEngineBatch();
+        }
+    }
+
+    /** {@link #processInputEventWithShift}; its engine calls become one op (see {@link #mPendingSteps}). */
+    private void processInputEventInBatch(InputEvent c0914a, int i) {
+        int iM4319b;
+        boolean z;
         int length = this.mComposingText.length();
         if (-5 == c0914a.mKeyCode) {
             boolean zM4314I = this.mInputMethodConverter != null ? processConverterBackspace() : false;
@@ -547,7 +730,7 @@ public final class ComposingTextTracker {
         updateCoordinatesAndCaps(c0914a, iM4319b, length);
         clearAutoCorrection();
         if (length == 0) {
-            engine().clear();
+            engineStep(sdk -> sdk.clear());
             if (iM4319b == 1) {
                 setShiftState(i);
             }
@@ -561,17 +744,25 @@ public final class ComposingTextTracker {
         if (i == 1 && !HangulInputProcessor.isHangulSyllable(iCodePointBefore)) {
             this.mComposingText.clear();
             this.mCoordinateTracker.truncate(0);
-            engine().clear();
+            engineStep(sdk -> sdk.clear());
         } else {
             this.mComposingText.delete(i - Character.charCount(iCodePointBefore), i);
-            engine().clearOneSymbol();
+            engineStep(sdk -> sdk.clearOneSymbol());
             TouchPointerCoordTracker c0697m = this.mCoordinateTracker;
             c0697m.truncate(c0697m.getPointerSize() - 1);
         }
     }
 
     private boolean processConverterBackspace() {
-        InputMethodCallback.ConversionResult aVarMo4304b = this.mInputMethodConverter.revertLastConversion(this.mComposingText, this.mCoordinateTracker, engine());
+        // The Telex converter ends its revert with an engine clearOneSymbol, so the revert runs on
+        // the engine thread (with copies of the text and coordinates) and its result is awaited.
+        // On a timeout it counts as "nothing reverted" and the plain delete below runs; the late
+        // revert then still pops its history, which is the one place a 2 s stall can misstep.
+        final InputMethodCallback converter = this.mInputMethodConverter;
+        final String text = this.mComposingText.toString();
+        final TouchPointerCoordTracker coords = copyCoordinates();
+        InputMethodCallback.ConversionResult aVarMo4304b = queryEngine(null,
+                sdk -> converter.revertLastConversion(text, coords, sdk));
         if (aVarMo4304b == null) {
             return false;
         }
@@ -631,45 +822,80 @@ public final class ComposingTextTracker {
     }
 
     private void processNuanceAndConverter(boolean z, InputEvent c0914a, int i) {
-        InputMethodCallback interfaceC0673c;
-        InputMethodCallback interfaceC0673c2;
+        final InputMethodCallback converter = this.mInputMethodConverter;
         CharSequence charSequenceM5933n = c0914a.getOutputText();
+        EngineStep feed = null;
         if (i > 0) {
-            if (getConverterType() == InputMethodCallback.ConverterType.HANGUL && (interfaceC0673c2 = this.mInputMethodConverter) != null) {
-                interfaceC0673c2.processSymbols(charSequenceM5933n, engine());
-            } else if (getConverterType() == InputMethodCallback.ConverterType.VIETNAMESE_TELEX && (interfaceC0673c = this.mInputMethodConverter) != null) {
-                interfaceC0673c.processSymbols(charSequenceM5933n, engine());
+            InputMethodCallback.ConverterType type = getConverterType();
+            if ((type == InputMethodCallback.ConverterType.HANGUL || type == InputMethodCallback.ConverterType.VIETNAMESE_TELEX) && converter != null) {
+                final String text = charSequenceM5933n.toString();
+                feed = sdk -> converter.processSymbols(text, sdk);
             } else {
-                // B-5: the script lookup allocates (String[] + Locales) and takes the engine
-                // lock, so resolve it only when a character actually reaches that branch.
+                // Which symbol each character feeds is decided here, from the published facts
+                // (no engine call), and the op only replays the decision.
+                // B-5: the script lookup allocates (String[] + Locales), so resolve it only when a
+                // character actually reaches that branch.
                 int iM5599a = Integer.MIN_VALUE;
-                for (int i2 = 0; i2 < charSequenceM5933n.length(); i2++) {
+                Boolean strokeMode = null;
+                final int n = charSequenceM5933n.length();
+                final char[] symbols = new char[n];
+                final boolean[] explicit = new boolean[n];
+                for (int i2 = 0; i2 < n; i2++) {
                     char cCharAt = charSequenceM5933n.charAt(i2);
                     // TI-37: single map lookup each instead of containsKey()+get(), and one
                     // Character box per lookup instead of two.
                     Character strokeKey = STROKE_TO_NUMBER_MAP.get(cCharAt);
                     Character cangjieKey = CANGJIE_RADICAL_TO_KEY_MAP.get(cCharAt);
-                    // Cheap null test first: isChineseStrokeMode() is a locked engine call.
-                    if (strokeKey != null && engine().isChineseStrokeMode()) {
-                        engine().processKeyBySymbol(strokeKey.charValue());
+                    if (strokeKey != null && (strokeMode != null ? strokeMode
+                            : (strokeMode = facts().isChineseStrokeMode()))) {
+                        symbols[i2] = strokeKey.charValue();
                     } else if (cangjieKey != null) {
-                        engine().processKeyBySymbol(cangjieKey.charValue());
+                        symbols[i2] = cangjieKey.charValue();
                     } else if (cCharAt > 127 && cCharAt != 305
                             && (iM5599a != Integer.MIN_VALUE ? iM5599a
-                                : (iM5599a = ScriptUtils.getScriptFromLocale(engine().getPrimaryLanguage()))) == 14) {
-                        engine().addExplicitSymb(cCharAt);
+                                : (iM5599a = ScriptUtils.getScriptFromLocale(PrimaryEngineFacts.primaryLanguage(facts())))) == 14) {
+                        symbols[i2] = cCharAt;
+                        explicit[i2] = true;
                     } else {
-                        engine().processKeyBySymbol(cCharAt);
+                        symbols[i2] = cCharAt;
                     }
                 }
+                feed = sdk -> {
+                    for (int k = 0; k < symbols.length; k++) {
+                        if (explicit[k]) {
+                            sdk.addExplicitSymb(symbols[k]);
+                        } else {
+                            sdk.processKeyBySymbol(symbols[k]);
+                        }
+                    }
+                };
             }
         }
         updateRecorrectionSnapshot();
-        InputMethodCallback interfaceC0673c3 = this.mInputMethodConverter;
-        if (interfaceC0673c3 != null && z) {
-            this.mComposingText = new SpannableStringBuilder(interfaceC0673c3.convert(this.mComposingText, this.mCoordinateTracker, engine()).text);
-            recalculateTextStats(true);
-            this.mComposingCursorPos = this.mCodePointCount;
+        if (converter != null && z) {
+            // A converter language shows the engine's composed text, so the feed and the
+            // conversion run as one bounded query (the converter only ever runs inside it, on
+            // copies of the text and coordinates). On a timeout the unconverted text stays.
+            final EngineStep feedStep = feed;
+            final String composing = this.mComposingText.toString();
+            final TouchPointerCoordTracker coords = copyCoordinates();
+            InputMethodCallback.ConversionResult result = queryEngine(null, sdk -> {
+                if (feedStep != null) {
+                    feedStep.run(sdk);
+                }
+                return converter.convert(composing, coords, sdk);
+            });
+            if (result != null && result.text != null) {
+                this.mComposingText = new SpannableStringBuilder(result.text);
+                recalculateTextStats(true);
+                this.mComposingCursorPos = this.mCodePointCount;
+            } else if (BuildConfig.DEBUG && !sLoggedConverterFallback) {
+                sLoggedConverterFallback = true;
+                android.util.Log.w("ComposingTextTracker", "converter query fell back to the "
+                        + "unconverted text (engine busy or unavailable); logged once");
+            }
+        } else if (feed != null) {
+            engineStep(feed);
         }
     }
 
@@ -788,6 +1014,16 @@ public final class ComposingTextTracker {
      * @param iArr3 per-code-point upper-case override flags (non-zero = force upper case)
      */
     public synchronized void setComposingFromCodePoints(int[] iArr, int[] iArr2, int[] iArr3) {
+        // One engine op for the whole rebuild (the clear and every feed), see mPendingSteps.
+        beginEngineBatch();
+        try {
+            setComposingFromCodePointsInBatch(iArr, iArr2, iArr3);
+        } finally {
+            endEngineBatch();
+        }
+    }
+
+    private void setComposingFromCodePointsInBatch(int[] iArr, int[] iArr2, int[] iArr3) {
         clearAll();
         int length = iArr.length;
         int length2 = iArr3.length;
@@ -833,6 +1069,7 @@ public final class ComposingTextTracker {
      * @return the composing text, or an empty string if not composing
      */
     public synchronized String getComposingText() {
+        assertNotReadOnEngineThread("getComposingText");
         return this.mComposingText.toString();
     }
 
@@ -926,18 +1163,18 @@ public final class ComposingTextTracker {
     public synchronized void setShiftState(int i) {
         if (this.mShiftState != i) {
             this.mShiftState = i;
-            int nuanceState = getKeyboardShiftState();
-            // FIX-D2: null when the engine failed to load (as clearAll already allows). Every
-            // suggestion request starts here via setShiftStateIfNotComposing.
-            NuanceSDK sdk = engine();
-            if (sdk != null) {
-                sdk.setShiftState(nuanceState);
-            }
+            final int nuanceState = getKeyboardShiftState();
+            // Posted to this tracker's engine (Phase A); the op skips a missing engine (FIX-D2).
+            engineStep(sdk -> sdk.setShiftState(nuanceState));
         }
     }
 
     private int getKeyboardShiftState() {
-        int i = this.mShiftState;
+        return toEngineShiftState(this.mShiftState);
+    }
+
+    /** The engine's shift state (0 none, 1 shift, 2 lock) for a tracker shift state. */
+    public static int toEngineShiftState(int i) {
         int nuanceState;
         if (i == 1) {
             nuanceState = 1;  // MANUAL_SHIFTED → SHIFT
@@ -999,6 +1236,7 @@ public final class ComposingTextTracker {
 
     /** Returns the composing-text edit count; record it when making a suggestion request. */
     public synchronized int getEditCount() {
+        assertNotReadOnEngineThread("getEditCount");
         return this.mEditCount;
     }
 
@@ -1082,6 +1320,7 @@ public final class ComposingTextTracker {
      * @return {@code true} if gesture input is active
      */
     public synchronized boolean isGestureInput() {
+        assertNotReadOnEngineThread("isGestureInput");
         return this.mIsGestureInput;
     }
 
@@ -1211,7 +1450,9 @@ public final class ComposingTextTracker {
             string = this.mComposingText.toString();
         }
         if (LocaleUtils.isCurrentSubtypeJapanese()) {
-            String inlineWord = engine().getInlineWord();
+            // The split point needs the engine's inline word now: a bounded query; on a timeout
+            // the whole composing text is taken as the pick, as with no inline word.
+            String inlineWord = queryEngine("", sdk -> sdk.getInlineWord());
             if (!TextUtils.isEmpty(inlineWord)) {
                 string = this.mComposingText.subSequence(0, this.mComposingText.length() - inlineWord.length()).toString();
             }
@@ -1220,7 +1461,7 @@ public final class ComposingTextTracker {
         boolean z2 = string.length() < this.mComposingText.length();
         if (z2) {
             Locale locale = Locale.getDefault();
-            if (engine().isCurrLocaleChinese() && suggestedWordInfoVar2.nuanceWordInfo != null && !TextUtils.isEmpty(suggestedWordInfoVar2.nuanceWordInfo.spell)) {
+            if (facts().isCurrLocaleChinese() && suggestedWordInfoVar2.nuanceWordInfo != null && !TextUtils.isEmpty(suggestedWordInfoVar2.nuanceWordInfo.spell)) {
                 iIndexOf = getChineseSpellLength(string, suggestedWordInfoVar2);
             } else {
                 iIndexOf = this.mComposingText.toString().toLowerCase(locale).indexOf(string.toLowerCase(locale)) + string.length();
@@ -1256,24 +1497,34 @@ public final class ComposingTextTracker {
     }
 
     private synchronized int getChineseSpellLength(String str, SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
-        if (engine().isChineseStrokeMode()) {
+        EngineFacts engineFacts = facts();
+        if (engineFacts.isChineseStrokeMode()) {
             suggestedWordInfoVar.nuanceWordInfo.spell = str + this.mComposingText.charAt(str.length());
             return str.length() + 1;
         }
-        if (engine().isChineseCangjieMode()) {
+        if (engineFacts.isChineseCangjieMode()) {
             return suggestedWordInfoVar.nuanceWordInfo.spell.length();
         }
-        if (engine().isChineseBPMFMode()) {
-            StringBuilder sb = new StringBuilder();
-            for (char c : suggestedWordInfoVar.nuanceWordInfo.spell.toCharArray()) {
-                if (engine().isBpmfUpperCaseSymbol(c)) {
-                    sb.append(engine().convertBpmfSymbolToLower(c));
-                } else {
-                    sb.append(c);
+        if (engineFacts.isChineseBPMFMode()) {
+            // The BPMF case table lives in the engine (both helpers take its lock), so the whole
+            // spell is converted in one bounded query; on a timeout it is left as it was.
+            final String spell = suggestedWordInfoVar.nuanceWordInfo.spell;
+            String lowered = queryEngine(spell, sdk -> {
+                StringBuilder sb = new StringBuilder();
+                for (char c : spell.toCharArray()) {
+                    if (sdk.isBpmfUpperCaseSymbol(c)) {
+                        sb.append(sdk.convertBpmfSymbolToLower(c));
+                    } else {
+                        sb.append(c);
+                    }
                 }
+                return sb.toString();
+            });
+            if (lowered == null) {
+                lowered = spell;
             }
-            suggestedWordInfoVar.nuanceWordInfo.spell = sb.toString();
-            return sb.length();
+            suggestedWordInfoVar.nuanceWordInfo.spell = lowered;
+            return lowered.length();
         }
         return this.mComposingText.toString().toLowerCase(Locale.getDefault()).indexOf(str.toLowerCase(Locale.getDefault())) + str.length();
     }
@@ -1285,6 +1536,7 @@ public final class ComposingTextTracker {
      * @return {@code true} if in prediction mode
      */
     public synchronized boolean isPredictionMode() {
+        assertNotReadOnEngineThread("isPredictionMode");
         return this.mIsPredictionMode;
     }
 

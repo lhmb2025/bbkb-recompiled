@@ -8,8 +8,6 @@ import android.view.MotionEvent;
 
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.Constants;
-import dev.bbkb.ime.core.engine.NuanceSDKManager;
-import com.blackberry.nuanceshim.NuanceSDK;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
 import dev.bbkb.ime.core.shared.CoordinateUtils;
@@ -398,8 +396,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
             return;
         }
         // FIX-L8: null when the engine failed to load. The keyboard must still type.
-        final NuanceSDK sdk = NuanceSDKManager.sdkOrWarn("PointerTracker.cancelTrackingForAction");
-        if (sdk != null) sdk.touchCancel(this.mPointerId);
+        EngineTouch.cancel("PointerTracker.cancelTrackingForAction", this.mPointerId);
         this.mIsTrackingCanceled = true;
     }
 
@@ -635,8 +632,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
         onDownEventInternal(i, i2, j);
         if (sGestureEnabledProvider.isGestureInputEnabled()) {
             if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "PointerTracker.touchStart: pointerId=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j + " isOnKey=" + keyM7645a);
-            final NuanceSDK sdk = NuanceSDKManager.sdkOrWarn("PointerTracker.onDownEvent");
-            if (sdk != null) sdk.touchStart(this.mPointerId, i, i2, j);
+            EngineTouch.start("PointerTracker.onDownEvent", this.mPointerId, i, i2, j);
             Keyboard c0965e = this.mKeyboard;
             this.mIsDetectingGesture = (c0965e == null || !c0965e.mId.isAlphabetKeyboard() || !SettingsManager.getInstance().getSettingsValues().editorCapabilities.shouldSupportGestureInput || keyM7645a == null || keyM7645a.isModifierKey()) ? false : true;
             if (this.mIsDetectingGesture) {
@@ -730,8 +726,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
         }
         onMoveEventInternal(i, i2, j, motionEvent);
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "PointerTracker.touchMove: pointerId=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j);
-        final NuanceSDK sdk = NuanceSDKManager.sdkOrWarn("PointerTracker.onMoveEvent");
-        if (sdk != null) sdk.touchMove(this.mPointerId, i, i2, j);
+        EngineTouch.move("PointerTracker.onMoveEvent", this.mPointerId, i, i2, j);
     }
 
     private void startTrackingNewKey(Key key, int i, int i2, long j) {
@@ -842,10 +837,22 @@ public final class PointerTracker extends AbstractDrawingHandler {
         if (this.mSlideboardActive) {
             sSlidingPanel.onSlidingFinished();
             if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "PointerTracker.touchCancel: pointerId=" + this.mPointerId + " isGesture=" + this.mSlideboardActive);
-            final NuanceSDK slideSdk = NuanceSDKManager.sdkOrWarn("PointerTracker.onUpEvent/slideboard");
-            if (slideSdk != null) slideSdk.touchCancel(this.mPointerId);
+            EngineTouch.cancel("PointerTracker.onUpEvent/slideboard", this.mPointerId);
             cancelTracking();
         }
+        // Same as GestureEventProcessor.touchEnd: the deposit raises the pending seq in the
+        // touchEnd op itself, so the suggestion request's defensive clear() can't wipe the flow
+        // trace before the gesture commit reads it. This path (VKB batch input) was missed by
+        // the original fix, which made VKB swipe words vanish: the trace reached the engine but
+        // gesturePending was never set, so the next prediction request cleared the results and
+        // no commit ran.
+        // Wave 3: the request is ordered against the touchEnd op by FIFO on the engine thread,
+        // so during a swipe the op is posted BEFORE onUpEventInternal, which ends the batch
+        // input and posts the prediction request that consumes the deposit. Outside a swipe it
+        // stays after: a tap's own touchCancel (in onUpEventInternal) must run first, so a
+        // jiggled tap's samples are never decoded as a gesture.
+        final boolean endsSwipe = sInGesture && !isShowingMoreKeysPanel();
+        if (endsSwipe) postTouchEnd(i, i2, j);
         if (!sInGesture) {
             Key key = this.mCurrentKey;
             if (key != null && key.isModifierKey()) {
@@ -855,24 +862,13 @@ public final class PointerTracker extends AbstractDrawingHandler {
             }
         }
         onUpEventInternal(i, i2, j);
-        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "PointerTracker.touchEnd: pointerId=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j);
-        // Same race protection as GestureEventProcessor.touchEnd: deposit + flag under
-        // the gesture lock so the suggestion worker's defensive clear() can't wipe the
-        // flow trace before the gesture commit reads it. This path (VKB batch input)
-        // was missed by the original fix, which made VKB swipe words vanish: the trace
-        // reached the engine but gesturePending was never set, so the next prediction
-        // request cleared the results and no commit ever ran.
-        synchronized (NuanceSDKManager.getGestureLock()) {
-            final NuanceSDK sdk = NuanceSDKManager.sdkOrWarn("PointerTracker.onUpEvent/end");
-            // No engine means no deposit and nothing to commit: gestureAccepted stays false,
-            // which is the same outcome the engine reports for a gesture it did not take.
-            boolean gestureAccepted = sdk != null && sdk.touchEnd(this.mPointerId, i, i2, j);
-            if (gestureAccepted) {
-                NuanceSDKManager.noteGestureDeposit();
-                if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "PointerTracker.touchEnd: gestureAccepted → setGesturePending(true)");
-            }
-        }
+        if (!endsSwipe) postTouchEnd(i, i2, j);
         sPointerTrackerQueue.remove(this);
+    }
+
+    private void postTouchEnd(int i, int i2, long j) {
+        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "PointerTracker.touchEnd: pointerId=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j);
+        EngineTouch.end("PointerTracker.onUpEvent/end", this.mPointerId, i, i2, j);
     }
 
     private void onUpEventInternal(int i, int i2, long j) {
@@ -889,8 +885,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
             if (!this.mIsTrackingCanceled) {
                 int iMo6364c = this.mDrawingProxy.translateX(i);
                 int iMo6367d = this.mDrawingProxy.translateY(i2);
-                final NuanceSDK panelSdk = NuanceSDKManager.sdkOrWarn("PointerTracker.onUpEventInternal/panel");
-                if (panelSdk != null) panelSdk.touchCancel(this.mPointerId);
+                EngineTouch.cancel("PointerTracker.onUpEventInternal/panel", this.mPointerId);
                 this.mDrawingProxy.onUpEvent(iMo6364c, iMo6367d, this.mPointerId, j);
             }
             dismissMoreKeysPanel();
@@ -922,8 +917,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
                     callListenerOnRelease(key, key.getCode(), true);
                 }
             } else {
-                final NuanceSDK tapSdk = NuanceSDKManager.sdkOrWarn("PointerTracker.onUpEventInternal/tap");
-                if (tapSdk != null) tapSdk.touchCancel(this.mPointerId);
+                EngineTouch.cancel("PointerTracker.onUpEventInternal/tap", this.mPointerId);
                 detectAndSendKey(key, this.mKeyX, this.mKeyY, j);
             }
         }

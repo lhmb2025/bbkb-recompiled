@@ -53,17 +53,4 @@ public final class DictionaryFactory {
     public static Dictionary createDictionary(Context context, Locale locale) {
         return createDictionary(context, locale, false);
     }
-
-    /**
-     * Disposes the secondary (spell checker) engine that {@code createDictionary(..., true)}
-     * builds on, freeing every language it holds (P-9: each is a private 5 to 6 MB native copy,
-     * and the engine used to live as long as the process). The next secondary dictionary creates
-     * a fresh engine. The caller must have closed every dictionary built on it and must keep
-     * other threads off it: the spell checker service does both under its dictionary permits.
-     */
-    public static void releaseSecondaryEngine() {
-        if (NuanceSDKManager.peekSecondary() != null) {
-            NuanceSDKManager.disposeSecondary();
-        }
-    }
 }

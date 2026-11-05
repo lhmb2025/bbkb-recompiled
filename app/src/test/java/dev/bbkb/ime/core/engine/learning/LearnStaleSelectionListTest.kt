@@ -36,8 +36,15 @@ class LearnStaleSelectionListTest {
     private lateinit var sdk: NuanceSDK
     private lateinit var model: BaseLearningModel
 
+    @org.junit.After
+    fun tearDown() {
+        dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(false)
+    }
+
     @Before
     fun setUp() {
+        // learnWord is a posted engine op; run it inline on the test thread.
+        dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(true)
         sdk = mock(NuanceSDK::class.java)
         // BaseLearningModel is abstract and its ctor touches Context.getFilesDir(); allocate the
         // shell and inject the one collaborator learnWord uses.

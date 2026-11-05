@@ -10,6 +10,8 @@ import android.util.Log;
 import dev.bbkb.ime.BuildConfig;
 
 import dev.bbkb.ime.core.engine.Dictionary;
+import dev.bbkb.ime.core.engine.DictionaryLoader;
+import dev.bbkb.ime.core.engine.EngineThreads;
 import dev.bbkb.ime.core.keyevent.InputEventContext;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
 import dev.bbkb.ime.core.suggestion.SuggestedWords;
@@ -32,6 +34,12 @@ import dev.bbkb.ime.core.textinput.connection.CursorWordRange;
  * ({@link #revertAutoCorrection}), and the validation helpers used by those flows.</p>
  */
 class RecorrectionController {
+
+    /**
+     * How long the add-word decision after a revert waits for the engine's validity answer
+     * (Phase A); the engine thread is idle in steady state, this only bounds a language load.
+     */
+    private static final long RECORRECTION_VALIDITY_TIMEOUT_MS = 100L;
 
     private static final Pattern PUNCTUATION = Pattern.compile("\\p{Punct}");
 
@@ -302,7 +310,12 @@ class RecorrectionController {
             return false;
         }
         if (mInputLogic.mRichInputConnection.isMonitoringCursorUpdates() && c0804d.showUiToAcceptTypedWord && !TextUtils.isEmpty(c0713o.typedWord) && !TextUtils.equals(c0713o.typedWord, c0713o.committedWord)) {
-            return !mInputLogic.mDictionaryLoader.isWordValid(c0713o.typedWord, true);
+            // A bounded engine query (Phase A). On a timeout the word counts as known: no
+            // add-word highlight or hint, and the revert itself has already happened either way.
+            final String typedWord = c0713o.typedWord;
+            final DictionaryLoader loader = mInputLogic.mDictionaryLoader;
+            return !EngineThreads.query(() -> loader.isWordValid(typedWord, true),
+                    RECORRECTION_VALIDITY_TIMEOUT_MS, Boolean.TRUE);
         }
         return false;
     }

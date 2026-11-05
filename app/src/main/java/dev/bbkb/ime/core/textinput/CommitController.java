@@ -6,7 +6,7 @@ import android.view.inputmethod.CorrectionInfo;
 
 import dev.bbkb.ime.BuildConfig;
 import dev.bbkb.ime.core.ime.UIUpdateHandler;
-import dev.bbkb.ime.core.engine.NuanceSDKManager;
+import dev.bbkb.ime.core.engine.EngineOps;
 import dev.bbkb.ime.core.keyevent.InputEventContext;
 import dev.bbkb.ime.core.keyevent.InputSource;
 import dev.bbkb.ime.core.keyevent.ModifierResetReason;
@@ -222,8 +222,10 @@ class CommitController {
         if (learningAllowed && matched != null && !TextUtils.isEmpty(word)
                 && word.equalsIgnoreCase(matched.word) && !word.equals(matched.word)) {
             // Typed casing differs from the Nuance entry (e.g. auto-capitalized sentence
-            // start): record the user's casing in the dynamic language model.
-            NuanceSDKManager.getInstance().addWord(word);
+            // start): record the user's casing in the dynamic language model. Posted (Phase A),
+            // ahead of the learn op below and the next word's feeds.
+            final String casedWord = word;
+            EngineOps.post("casingAddWord", sdk -> sdk.addWord(casedWord));
         }
         if (request.learn) {
             // Always transition the engine out of the just-typed word. Previously the
@@ -294,9 +296,9 @@ class CommitController {
                             + " word=" + picked.word
                             + " thread=" + Thread.currentThread().getName());
                 }
-                // Audit EB-8: guard the documented-nullable singleton.
-                com.blackberry.nuanceshim.NuanceSDK sdkCT = NuanceSDKManager.getInstance();
-                if (sdkCT != null) sdkCT.clear();
+                // Audit EB-8: tolerate a missing engine. Posted (Phase A), before the tracker's
+                // own clearAll op, as the direct call ran before it.
+                EngineOps.post("japaneseKind7Clear", sdk -> sdk.clear());
                 mInputLogic.mComposingTracker.clearAll();
             }
             mInputLogic.mEventDispatcher =

@@ -19,10 +19,10 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * P-9: the spell checker's engine (one private native copy of each loaded language) is released
- * when the service unbinds or after [AndroidSpellCheckerService.ENGINE_IDLE_RELEASE_MS] without a
- * request, never while a request is running, and every release moves the engine generation the
- * sessions key their cached verdicts on.
+ * The spell checker's dictionary is released when the service unbinds or after
+ * [AndroidSpellCheckerService.ENGINE_IDLE_RELEASE_MS] without a request, never while a request
+ * is running, and every release moves the engine generation the sessions key their cached
+ * verdicts on. The engine itself is never disposed (NuanceSDKManager.resetForTests says why).
  *
  * The service is built with its constructor only (onCreate needs the keyboard's singletons); the
  * idle countdown's handler is then absent, so the release is driven through releaseEngineIfIdle.
@@ -59,15 +59,13 @@ class SpellCheckerEngineReleaseTest {
     fun theEngineStaysWhileRequestsAreRecent() {
         val end = aRequestEnds()
         assertEquals("asks again when the rest of the wait is up", 1L, service.releaseEngineIfIdle(end + idle - 1))
-        sdkStatic.verify({ NuanceSDKManager.disposeSecondary() }, never())
         assertEquals(0, service.engineGeneration)
     }
 
     @Test
-    fun theEngineIsReleasedAfterTheIdleTime() {
+    fun theDictionaryIsReleasedAfterTheIdleTime() {
         val end = aRequestEnds()
         assertEquals(0L, service.releaseEngineIfIdle(end + idle))
-        sdkStatic.verify { NuanceSDKManager.disposeSecondary() }
         assertEquals("the sessions' cached verdicts go with it", 1, service.engineGeneration)
     }
 
@@ -76,24 +74,22 @@ class SpellCheckerEngineReleaseTest {
         aRequestEnds()
         service.beginRequest()
         assertEquals("its end restarts the countdown", 0L, service.releaseEngineIfIdle(Long.MAX_VALUE / 2))
-        sdkStatic.verify({ NuanceSDKManager.disposeSecondary() }, never())
+        assertEquals(0, service.engineGeneration)
         service.endRequest()
     }
 
     @Test
-    fun unbindReleasesTheEngine() {
+    fun unbindReleasesTheDictionary() {
         service.onUnbind(Intent())
-        sdkStatic.verify { NuanceSDKManager.disposeSecondary() }
         assertEquals(1, service.engineGeneration)
     }
 
     @Test
-    fun unbindDuringARunningRequestLeavesTheEngineToTheIdleRelease() {
+    fun unbindDuringARunningRequestLeavesTheDictionaryToTheIdleRelease() {
         service.beginRequest()
         service.onUnbind(Intent())
-        sdkStatic.verify({ NuanceSDKManager.disposeSecondary() }, never())
         service.endRequest()
         assertEquals(0L, service.releaseEngineIfIdle(SystemClock.uptimeMillis() + idle))
-        sdkStatic.verify { NuanceSDKManager.disposeSecondary() }
+        assertEquals(1, service.engineGeneration)
     }
 }

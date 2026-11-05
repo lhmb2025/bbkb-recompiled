@@ -29,6 +29,16 @@ class NuanceSdkManagerNullEngineTest {
     }
 
     @Test
+    fun factsAreNoneWithoutAnEngine() {
+        // The main thread reads these instead of calling into the engine; with no engine it
+        // must get the documented defaults, not a null or a throw.
+        assertNull(NuanceSDKManager.peekInstance())
+        assertEquals(EngineFacts.NONE, NuanceSDKManager.facts())
+        assertEquals(" ", NuanceSDKManager.facts().defaultWordSeparator)
+        assertNull(NuanceSDKManager.facts().primaryLanguage)
+    }
+
+    @Test
     fun withSdkSkipsTheBlockWhenThereIsNoEngine() {
         var ran = false
         NuanceSDKManager.withSdk("test.withSdk") { ran = true }

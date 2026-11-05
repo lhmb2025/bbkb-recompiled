@@ -3,6 +3,7 @@ package dev.bbkb.ime.core.textinput
 import com.blackberry.nuanceshim.NuanceSDK
 import dev.bbkb.ime.core.BlackBerryIME
 import dev.bbkb.ime.core.engine.DictionaryLoader
+import dev.bbkb.ime.core.engine.EngineThreads
 import dev.bbkb.ime.core.engine.NuanceSDKManager
 import dev.bbkb.ime.keyboard.auxbar.suggestions.SuggestionStripListener
 import org.junit.After
@@ -37,10 +38,14 @@ class InputLogicLazyEngineTest {
         engine = mock(NuanceSDK::class.java)
         sdkStatic = mockStatic(NuanceSDKManager::class.java)
         sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.getInstance() }.thenReturn(engine)
+        // The tracker's engine calls are posted ops (Wave 3 Phase A) that resolve the engine
+        // inside the op; run them inline so the resolution is observable here.
+        EngineThreads.setInlineForTests(true)
     }
 
     @After
     fun tearDown() {
+        EngineThreads.setInlineForTests(false)
         sdkStatic.close()
     }
 

@@ -29,6 +29,7 @@ import dev.bbkb.ime.personaldictionary.util.DataUtil
 import dev.bbkb.ime.personaldictionary.util.LocaleUtil
 import dev.bbkb.ime.personaldictionary.util.LogUtil
 import com.blackberry.nuanceshim.NuanceSDK
+import dev.bbkb.ime.core.engine.EngineThreads
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
@@ -265,11 +266,21 @@ class PersonalDictionaryUtil private constructor(
                 throw TermAlreadyDefinedException()
             }
             if (addToSdk) {
-                mNuanceSDK.addWord(personalWord.word)
+                learnInEngine(personalWord.word)
             }
         } finally {
             AudSyncer.AUD_SYNC_LOCK.unlock()
         }
+    }
+
+    /**
+     * The engine's `addWord`, posted to the engine thread (Wave 3): these adds come from the main
+     * thread (one-tap add, the add-word dialog) and from Dispatchers.IO (the AUD sync), neither of
+     * which may call the engine. Fire-and-forget, as before: the result was never used.
+     */
+    private fun learnInEngine(word: String) {
+        val sdk = mNuanceSDK
+        EngineThreads.post { sdk.addWord(word) }
     }
 
     @Throws(AudAddException::class, InitialisationIncompleteException::class, KeyAlreadyDefinedException::class)
@@ -297,7 +308,7 @@ class PersonalDictionaryUtil private constructor(
                 throw KeyAlreadyDefinedException("$key already defined")
             }
             if (ws.type == WordSubstitution.Type.USER) {
-                mNuanceSDK.addWord(ws.word)
+                learnInEngine(ws.word)
             }
             mEnabledWordSubstitutions[key] = ws
             addWsToAllUserMap(ws)

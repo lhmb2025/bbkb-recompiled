@@ -5,6 +5,7 @@ import android.util.Log;
 
 import dev.bbkb.ime.BuildConfig;
 
+import dev.bbkb.ime.core.engine.EngineThreads;
 import dev.bbkb.ime.core.engine.NuanceSDKManager;
 import dev.bbkb.ime.core.suggestion.SuggestedWords;
 import com.blackberry.nuanceshim.NuanceSDK;
@@ -19,7 +20,18 @@ public abstract class BaseLearningModel {
 
     boolean active;
 
-    private NuanceSDK nuanceSdk = NuanceSDKManager.getInstance();
+    /**
+     * The engine to learn into when one was injected (the tests); null in production, where each
+     * learn op resolves the primary engine on the engine thread. Resolving it here, at
+     * construction, joined the engine start on the main thread (Wave 3 Phase A forbids that).
+     */
+    private volatile NuanceSDK nuanceSdk;
+
+    /** The engine for an op, on the engine thread; null when it failed to load (FIX-D2). */
+    private NuanceSDK engineForOp(String site) {
+        NuanceSDK injected = this.nuanceSdk;
+        return injected != null ? injected : NuanceSDKManager.sdkOrWarn(site);
+    }
 
     /** {@code context} is not read. (The files dir it once resolved is created by NuanceSDK's own ctor.) */
     BaseLearningModel(Context context) {
@@ -42,17 +54,27 @@ public abstract class BaseLearningModel {
      *                       session still gets the index select its engine transition needs, but
      *                       never an {@code addWord}.
      */
-    void learnWord(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, boolean learnByContent) {
-        if (this.nuanceSdk == null) {
-            // FIX-D2: the engine had failed to load when this learner was built. Nothing to learn
-            // into and no word to end.
-            return;
-        }
+    void learnWord(final SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, final boolean learnByContent) {
+        // Wave 3 Phase A: the whole learn (select by index, the rebuild-and-retry, the content
+        // fallback, the clear) is ONE op on the engine thread, posted at commit: it runs after
+        // every request posted before the commit and before the next word's first feed, so the
+        // word is ended in the engine before the next prediction, and nothing can build a list
+        // between its steps. Results are only logged, inside the op.
+        EngineThreads.post(() -> {
+            NuanceSDK sdk = engineForOp("learnWord");
+            if (sdk != null) {
+                learnWordOnEngine(sdk, suggestedWordInfoVar, learnByContent);
+            }
+        });
+    }
+
+    /** {@link #learnWord(SuggestedWords.SuggestedWordInfo, boolean)}'s body; engine thread. */
+    private void learnWordOnEngine(NuanceSDK engine, SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, boolean learnByContent) {
         WordInfo wordInfo = suggestedWordInfoVar.nuanceWordInfo;
         if (wordInfo == null) {
             // Audit EB-6: a commit must always end the word in the engine. Without engine word
             // info there is nothing to select or learn, so just clear, as the no-learner path does.
-            this.nuanceSdk.clear();
+            engine.clear();
             return;
         }
         // Audit EB-3: selectionListSelectWord takes a RAW INDEX into whatever selection list the
@@ -63,7 +85,7 @@ public abstract class BaseLearningModel {
         // candidate. Only trust the index while the list still has the identity it was read from.
         long generationNow = NuanceSDK.getSelectionListGeneration();
         if (wordInfo.selectionListGeneration >= 0L && wordInfo.selectionListGeneration == generationNow) {
-            boolean ok = this.nuanceSdk.selectionListSelectWord(wordInfo.selectionListIndex, true, wordInfo.spell);
+            boolean ok = engine.selectionListSelectWord(wordInfo.selectionListIndex, true, wordInfo.spell);
             if (!ok) {
                 // The engine refused the pick (the shim logs "Failed to select word"): its
                 // selection list is no longer current at commit time, because the main thread
@@ -74,11 +96,11 @@ public abstract class BaseLearningModel {
                 // learned: on the emulator (2026-10-17) a novel word typed twelve times was
                 // never predicted. Rebuild and retry when the rebuilt entry is still this word;
                 // otherwise fall through to learning by content below.
-                this.nuanceSdk.buildSelectionList();
-                WordInfo now = this.nuanceSdk.getSelectionListWord(wordInfo.selectionListIndex);
+                engine.buildSelectionList();
+                WordInfo now = engine.getSelectionListWord(wordInfo.selectionListIndex);
                 if (now != null && now.word != null && wordInfo.word != null
                         && now.word.equalsIgnoreCase(wordInfo.word)) {
-                    ok = this.nuanceSdk.selectionListSelectWord(wordInfo.selectionListIndex, true, wordInfo.spell);
+                    ok = engine.selectionListSelectWord(wordInfo.selectionListIndex, true, wordInfo.spell);
                 }
             }
             if (BuildConfig.DEBUG) {
@@ -108,22 +130,28 @@ public abstract class BaseLearningModel {
         // "about". A swiped dictionary word is therefore no longer taught; a swiped word the
         // dictionary lacks still is, and a typed word still learns through the index path above.
         if (learnByContent && wordInfo.word != null && !wordInfo.word.isEmpty()
-                && !this.nuanceSdk.isSpellingCorrect(wordInfo.word)) {
-            boolean added = this.nuanceSdk.addWord(wordInfo.word);
+                && !engine.isSpellingCorrect(wordInfo.word)) {
+            boolean added = engine.addWord(wordInfo.word);
             if (BuildConfig.DEBUG) Log.d("PIPELINE", "IME:learn:addWord word=\"" + wordInfo.word + "\" -> " + added);
         }
     }
 
-    /** Learn {@code word} by content when the engine does not know it, then end the word. */
-    void learnTypedWord(String word) {
-        if (this.nuanceSdk == null) {
-            return;
-        }
-        if (!this.nuanceSdk.isSpellingCorrect(word)) {
-            boolean added = this.nuanceSdk.addWord(word);
-            if (BuildConfig.DEBUG) Log.d("PIPELINE", "IME:learn:typedWord word=\"" + word + "\" -> " + added);
-        }
-        this.nuanceSdk.clear();
+    /**
+     * Learn {@code word} by content when the engine does not know it, then end the word. One
+     * posted engine op, like {@link #learnWord(SuggestedWords.SuggestedWordInfo, boolean)}.
+     */
+    void learnTypedWord(final String word) {
+        EngineThreads.post(() -> {
+            NuanceSDK engine = engineForOp("learnTypedWord");
+            if (engine == null) {
+                return;
+            }
+            if (!engine.isSpellingCorrect(word)) {
+                boolean added = engine.addWord(word);
+                if (BuildConfig.DEBUG) Log.d("PIPELINE", "IME:learn:typedWord word=\"" + word + "\" -> " + added);
+            }
+            engine.clear();
+        });
     }
 
     // There is deliberately no save() here. The engine learner has no store of its own to flush:

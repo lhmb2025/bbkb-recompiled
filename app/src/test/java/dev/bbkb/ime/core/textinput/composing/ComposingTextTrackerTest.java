@@ -44,8 +44,15 @@ public class ComposingTextTrackerTest {
     private NuanceSDK mNuance;
     private ComposingTextTracker mTracker;
 
+    @org.junit.After
+    public void tearDown() {
+        dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(false);
+    }
+
     @Before
     public void setUp() {
+        // The tracker's engine calls are posted ops; run them inline on the test thread.
+        dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(true);
         mNuance = mock(NuanceSDK.class);
         when(mNuance.isChineseStrokeMode()).thenReturn(false);
         // The append path resolves the engine's primary language; without this the mock

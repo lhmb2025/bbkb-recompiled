@@ -60,6 +60,9 @@ class LayoutBoardCharacterisationTest {
 
     @Before
     fun setUp() {
+        // The code under test still calls the engine from the main thread; until those callers
+        // move onto EngineThreads, run engine ops inline so the debug thread assertions pass.
+        dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(true)
         val context = ApplicationProvider.getApplicationContext<Context>()
         val settings = SettingsManager.getInstance()
         ReflectionHelpers.setField(settings, "sharedPreferences", PrefsManager.getPrefs(context))
@@ -99,6 +102,7 @@ class LayoutBoardCharacterisationTest {
         ReflectionHelpers.setField(SettingsManager.getInstance(), "settingsValues", null)
         // requestManualShiftOff() sets this process-wide flag; put it back for the next class.
         DeviceProfile.setForceVkbMode(false)
+        dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(false)
     }
 
     private fun inject(name: String, value: Any?) =

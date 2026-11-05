@@ -15,7 +15,6 @@ import com.blackberry.nuanceshim.NuanceSDK;
 import com.blackberry.nuanceshim.languagepack.LanguagePackManager;
 
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker;
-import dev.bbkb.ime.core.engine.DictionaryFactory;
 import dev.bbkb.ime.core.engine.DictionaryLoader;
 import dev.bbkb.ime.core.suggestion.PrevWordsInfo;
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils;
@@ -45,6 +44,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 import dev.bbkb.ime.core.engine.NuanceSDKManager;
+import dev.bbkb.ime.core.engine.EngineThreads;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
 
 
 public final class AndroidSpellCheckerService extends SpellCheckerService implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -67,6 +72,20 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
 
     /** Preference: whether words the keyboard learned from typing count as spelled correctly. */
     static final String PREF_ACCEPT_LEARNED_WORDS = "pref_spellcheck_accept_learned_words";
+
+    /**
+     * How long a binder thread waits for a language load on the engine loader thread. The load
+     * queues behind the keyboard's own loads there; past this the request has no opinion on its
+     * words and the load still lands for the next one.
+     */
+    static final long LOAD_WAIT_MS = 30_000L;
+
+    /**
+     * How long a binder thread waits for one dictionary answer on the engine thread, where it
+     * queues behind typing. A validity check that times out answers "valid" (a slow engine must
+     * not paint a red squiggle); a suggestion lookup answers none.
+     */
+    static final long QUERY_WAIT_MS = 5_000L;
 
     private boolean mUseContacts;
 
@@ -225,9 +244,11 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     }
 
     /**
-     * Closes the dictionary and disposes the engine, freeing every loaded language; the next
-     * request's {@link #initDictionaryForLocale} creates a new one. Callers hold both permits
-     * and have seen no request running.
+     * Closes the dictionary; the next request's {@link #initDictionaryForLocale} loads the
+     * languages again. The engine itself is kept: disposing it while the typing engine is in
+     * use crashed the typing engine (see NuanceSDKManager.resetForTests), so the memory the
+     * release used to free stays allocated and only the generation the sessions key their
+     * cached verdicts on moves. Callers hold both permits and have seen no request running.
      */
     private void releaseEngineLocked() {
         this.mLoadedLocales = null;
@@ -235,7 +256,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
             this.mDictionaryLoader.closeAndReset();
             this.mDictionaryLoader = null;
         }
-        DictionaryFactory.releaseSecondaryEngine();
         this.mEngineGeneration.incrementAndGet();
     }
 
@@ -280,18 +300,22 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         boolean useContacts;
         if ("pref_spellcheck_use_contacts".equals(key) && (useContacts = sharedPreferences.getBoolean("pref_spellcheck_use_contacts", true)) != this.mUseContacts) {
-            this.mDictSemaphore.acquireUninterruptibly(2);
-            try {
-                this.mUseContacts = useContacts;
-                final List<Locale> loaded = this.mLoadedLocales;
-                if (loaded != null) {
-                    loadLanguages(loaded);
+            // Main thread: the reload runs on the engine loader thread, which takes both
+            // dictionary permits itself; nothing here waits for it.
+            this.mUseContacts = useContacts;
+            this.mContactsManager.setContactsDictEnabled(useContacts);
+            this.mPreferenceChanged = true;
+            EngineThreads.load(() -> {
+                this.mDictSemaphore.acquireUninterruptibly(2);
+                try {
+                    final List<Locale> loaded = this.mLoadedLocales;
+                    if (loaded != null) {
+                        loadLanguages(loaded, useContacts);
+                    }
+                } finally {
+                    this.mDictSemaphore.release(2);
                 }
-                this.mContactsManager.setContactsDictEnabled(this.mUseContacts);
-                this.mPreferenceChanged = true;
-            } finally {
-                this.mDictSemaphore.release(2);
-            }
+            });
         } else if (PREF_ACCEPT_LEARNED_WORDS.equals(key)) {
             final boolean accept = sharedPreferences.getBoolean(PREF_ACCEPT_LEARNED_WORDS, true);
             if (accept != this.mAcceptLearnedWords) {
@@ -338,10 +362,13 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
                 Logger.info("BlackBerrySpellChecker", "No dictionary loaded, can't check if word is valid");
                 return true;
             }
+            // The engine answers on the engine thread, bounded; the permit held here keeps the
+            // dictionary from being released or reloaded under the question.
+            final DictionaryLoader loader = this.mDictionaryLoader;
             if (this.mAcceptLearnedWords) {
-                return this.mDictionaryLoader.isWordValid(word, false);
+                return EngineThreads.query(() -> loader.isWordValid(word, false), QUERY_WAIT_MS, Boolean.TRUE);
             }
-            return this.mDictionaryLoader.isDictionaryWord(word)
+            return EngineThreads.query(() -> loader.isDictionaryWord(word), QUERY_WAIT_MS, Boolean.TRUE)
                     || PersonalDictionaryUtil.isPersonalWord(word)
                     || (this.mUseContacts && this.mContactsManager.isContactWord(word));
         } finally {
@@ -349,7 +376,12 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
         }
     }
 
-    public SuggestionResult getSuggestions(ComposingTextTracker composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid) throws Throwable {
+    /**
+     * Suggestions for the word the tracker {@code trackerFactory} builds. The factory runs on the
+     * engine thread, in the same op as the lookup, so the tracker's feeds and the lookup reach
+     * the engine as one group with nothing of the keyboard's in between. Null on a timeout.
+     */
+    public SuggestionResult getSuggestions(Supplier<ComposingTextTracker> trackerFactory, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid) throws Throwable {
         this.mDictSemaphore.acquireUninterruptibly();
         // Audit GD-12: poll() returns null on an empty queue and sessionId.intValue()
         // dereferenced it unguarded. The pool and the semaphore both hold 2, so this is
@@ -361,8 +393,13 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
             return null;
         }
         try {
-            return this.mDictionaryLoader.generateSuggestions(composingTracker, prevWordsInfo,
-                    proximityGrid, this.mSuggestionStripSettings, sessionId.intValue());
+            final DictionaryLoader loader = this.mDictionaryLoader;
+            final int id = sessionId.intValue();
+            return EngineThreads.query(() -> {
+                final ComposingTextTracker composingTracker = trackerFactory.get();
+                return composingTracker == null ? null : loader.generateSuggestions(composingTracker,
+                        prevWordsInfo, proximityGrid, this.mSuggestionStripSettings, id);
+            }, QUERY_WAIT_MS, null);
         } finally {
             this.mSessionIdPool.add(sessionId);
             this.mDictSemaphore.release();
@@ -397,14 +434,32 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
             this.mDictSemaphore.release();
         }
         // Loading needs the engine to itself: no other session may be reading the dictionary.
-        this.mDictSemaphore.acquireUninterruptibly(2);
-        try {
-            if (!isLoaded(wanted)) {
-                loadLanguages(mergeLanguages(this.mLoadedLocales, wanted, MAX_LOADED_LANGUAGES));
+        // The load runs on the engine loader thread and takes both permits there, so a wait
+        // that times out leaves nothing unguarded; this binder thread only waits, bounded.
+        final boolean useContacts = this.mUseContacts;
+        final Future<Boolean> load = EngineThreads.load(() -> {
+            this.mDictSemaphore.acquireUninterruptibly(2);
+            try {
+                if (!isLoaded(wanted)) {
+                    loadLanguages(mergeLanguages(this.mLoadedLocales, wanted, MAX_LOADED_LANGUAGES),
+                            useContacts);
+                }
+                return isLoaded(wanted);
+            } finally {
+                this.mDictSemaphore.release(2);
             }
-            return isLoaded(wanted);
-        } finally {
-            this.mDictSemaphore.release(2);
+        });
+        try {
+            return Boolean.TRUE.equals(load.get(LOAD_WAIT_MS, TimeUnit.MILLISECONDS));
+        } catch (TimeoutException e) {
+            Logger.warn("BlackBerrySpellChecker", "language load still running after " + LOAD_WAIT_MS + " ms");
+            return false;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        } catch (ExecutionException e) {
+            Logger.warn("BlackBerrySpellChecker", "language load failed: " + e.getCause());
+            return false;
         }
     }
 
@@ -416,9 +471,10 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
 
     /**
      * Loads {@code languages} into a fresh dictionary, the first as its own language, and the
-     * keyboard layout of that first language for key positions. Callers hold both permits.
+     * keyboard layout of that first language for key positions. Callers hold both permits and
+     * run on the engine loader thread (the engine is created and loaded there).
      */
-    private void loadLanguages(List<Locale> languages) {
+    private void loadLanguages(List<Locale> languages, boolean useContacts) {
         this.mEngineGeneration.incrementAndGet();
         this.mLoadedLocales = null;
         DictionaryLoader oldLoader = this.mDictionaryLoader;
@@ -427,7 +483,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
         }
         final Locale primary = languages.get(0);
         this.mDictionaryLoader = new DictionaryLoader();
-        this.mDictionaryLoader.initDictionaryWithPrefix(this, primary, this.mUseContacts, false, null, "spellcheck_");
+        this.mDictionaryLoader.initDictionaryWithPrefix(this, primary, useContacts, false, null, "spellcheck_");
         if (!this.mDictionaryLoader.isDictionaryReady()) {
             return;
         }
@@ -442,7 +498,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
         if (engine != null) {
             // This engine's own copy of the model holds the contact names the keyboard learned;
             // "Use contacts for spellchecking" switches that category off in it.
-            engine.setContactsCategoryState(this.mUseContacts);
+            engine.setContactsCategoryState(useContacts);
         }
         final Keyboard keyboard = getKeyboardForLocale(primary);
         if (engine != null && keyboard != null) {

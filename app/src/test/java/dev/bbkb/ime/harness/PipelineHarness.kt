@@ -5,6 +5,8 @@ import dev.bbkb.ime.core.ime.UIUpdateHandler
 import dev.bbkb.ime.core.engine.NuanceSDKManager
 import dev.bbkb.ime.core.engine.Dictionary
 import dev.bbkb.ime.core.engine.DictionaryLoader
+import dev.bbkb.ime.core.engine.EngineFacts
+import dev.bbkb.ime.core.engine.EngineThreads
 import dev.bbkb.ime.core.engine.learning.DynamicLearningManager
 import dev.bbkb.ime.core.settings.util.SettingsValues
 import dev.bbkb.ime.core.suggestion.SuggestedWords
@@ -33,12 +35,7 @@ class PipelineHarness {
     val scheduler = FakeScheduler()
 
     private val sdkStatic: MockedStatic<NuanceSDKManager> =
-        mockStatic(NuanceSDKManager::class.java).apply {
-            // getGestureLock() is used in a synchronized() block by the bridge; a mockStatic
-            // default of null would NPE there. Hand back a real monitor object.
-            val lock = Any()
-            `when`<Any> { NuanceSDKManager.getGestureLock() }.thenReturn(lock)
-        }
+        mockStatic(NuanceSDKManager::class.java)
 
     val ime: BlackBerryIME = mock(BlackBerryIME::class.java, ContextDelegatingAnswer())
     val inputLogic: InputLogic
@@ -89,11 +86,21 @@ class PipelineHarness {
         // If anything below throws, the static mock must still be released or every later
         // test fails with "static mocking is already registered".
         try {
+            // Engine ops run at once on the test thread instead of being posted to the engine
+            // or loader thread, so the scenarios keep their synchronous expectations as the
+            // callers move onto EngineThreads.
+            EngineThreads.setInlineForTests(true)
             val nuance = mock(NuanceSDK::class.java)
             // The composing tracker resolves script from the engine's primary language while
             // building the buffer; a bare mock returns null and NPEs in ScriptUtils.
             `when`(nuance.primaryLanguage).thenReturn(java.util.Locale.US)
             sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.getInstance() }.thenReturn(nuance)
+            // The engine ops (EngineOps) resolve the engine through sdkOrWarn, and the main
+            // thread reads the published facts instead of calling the engine (Wave 3 Phase A).
+            // A static mock answers null for both unless told otherwise.
+            sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.sdkOrWarn(org.mockito.ArgumentMatchers.anyString()) }
+                .thenReturn(nuance)
+            sdkStatic.`when`<EngineFacts> { NuanceSDKManager.facts() }.thenReturn(FACTS_EN_US)
 
             `when`(ime.currentInputConnection).thenReturn(editor)
 
@@ -130,6 +137,7 @@ class PipelineHarness {
             `when`(ime.dynamicLearningManager).thenReturn(mock(DynamicLearningManager::class.java))
             settings = buildSettings()
         } catch (t: Throwable) {
+            EngineThreads.setInlineForTests(false)
             sdkStatic.close()
             throw t
         }
@@ -325,12 +333,29 @@ class PipelineHarness {
     }
 
     private var closed = false
+    companion object {
+        /** What a loaded US English engine publishes; the harness's engine mock speaks en_US. */
+        @JvmField
+        val FACTS_EN_US = EngineFacts(
+            primaryLanguage = java.util.Locale.US,
+            languages = listOf(java.util.Locale.US),
+            isCurrLocaleChinese = false,
+            isChineseStrokeMode = false,
+            isChineseCangjieMode = false,
+            isChineseBPMFMode = false,
+            defaultWordSeparator = " ",
+            isDLMReady = true,
+            isDLMAttached = true,
+        )
+    }
+
     fun close() {
         if (!closed) {
             closed = true
             // Robolectric shares one main looper across tests in a class; a message left queued
             // here would be observed by the next test's handler.
             uiHandler.removeCallbacksAndMessages(null)
+            EngineThreads.setInlineForTests(false)
             sdkStatic.close()
         }
     }

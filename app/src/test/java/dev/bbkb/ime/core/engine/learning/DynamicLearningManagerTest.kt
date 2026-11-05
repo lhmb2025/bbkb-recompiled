@@ -2,6 +2,7 @@ package dev.bbkb.ime.core.engine.learning
 
 import dev.bbkb.ime.core.contacts.ContactsDataProvider.ContactsType
 import dev.bbkb.ime.core.engine.Dictionary
+import dev.bbkb.ime.core.engine.EngineThreads
 import dev.bbkb.ime.core.engine.NuanceSDKManager
 import dev.bbkb.ime.core.suggestion.SuggestedWords
 import dev.bbkb.ime.personaldictionary.DictionaryManager
@@ -49,14 +50,22 @@ class DynamicLearningManagerTest {
 
     @Before
     fun setUp() {
+        // The engine ops (registration, the learning switch, clear, contacts) run inline on the
+        // test thread, where the static mock below is visible.
+        EngineThreads.setInlineForTests(true)
         engine = mock(NuanceSDK::class.java)
         sdkStatic = mockStatic(NuanceSDKManager::class.java)
         sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.getInstance() }.thenReturn(engine)
+        sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.sdkOrWarn(org.mockito.ArgumentMatchers.anyString()) }.thenReturn(engine)
+        sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.peekInstance() }.thenReturn(engine)
         manager = DynamicLearningManager(RuntimeEnvironment.getApplication())
         manager.backgroundExecutor = Executor { deferred.add(it) }
     }
 
-    @After fun tearDown() = sdkStatic.close()
+    @After fun tearDown() {
+        sdkStatic.close()
+        EngineThreads.setInlineForTests(false)
+    }
 
     private fun freshSuggestion(index: Int = 2) = SuggestedWords.SuggestedWordInfo(
         "hello", 100, 0, Dictionary.DICTIONARY_USER_TYPED, -1, -1,

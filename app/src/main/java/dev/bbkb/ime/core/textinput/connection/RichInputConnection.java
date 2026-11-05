@@ -14,7 +14,7 @@ import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.InputConnection;
 
-import dev.bbkb.ime.core.engine.NuanceSDKManager;
+import dev.bbkb.ime.core.engine.PrimaryEngineFacts;
 import dev.bbkb.ime.core.suggestion.PrevWordsInfo;
 import dev.bbkb.ime.core.shared.StringHelper;
 import dev.bbkb.ime.personaldictionary.tokenizer.BlackBerryTokenizer;
@@ -1006,7 +1006,7 @@ public class RichInputConnection {
         }
         int iM5739a = charSequenceM5815a.length() > 0 ? EmojiTextAnalyzer.findEmoticonShortcodeLength(true, charSequenceM5815a, Character.codePointBefore(charSequenceM5815a, charSequenceM5815a.length())) : 0;
         if (charSequenceM5815a.length() > 0 && !c0806f.currentLanguageHasSpaces && iM5739a == 0) {
-            List<String> sequence = BlackBerryTokenizer.toSequence(new BlackBerryTokenizer(NuanceSDKManager.getInstance().getPrimaryLanguage()).split(charSequenceM5815a.toString()));
+            List<String> sequence = BlackBerryTokenizer.toSequence(new BlackBerryTokenizer(PrimaryEngineFacts.primaryLanguage()).split(charSequenceM5815a.toString()));
             int size = sequence.size();
             if (size <= 0 || (length = sequence.get(size - 1).length()) <= 0) {
                 return null;

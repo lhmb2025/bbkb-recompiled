@@ -62,6 +62,7 @@ class EngineLoadFailureTest {
 
     private lateinit var sdkStatic: MockedStatic<NuanceSDKManager>
     private lateinit var threadStatic: MockedStatic<ThreadUtils>
+    private lateinit var engineThreadsStatic: MockedStatic<EngineThreads>
     private lateinit var subtypeStatic: MockedStatic<SubtypeManager>
     private val executor = QueueExecutor()
     private lateinit var ime: BlackBerryIME
@@ -74,9 +75,11 @@ class EngineLoadFailureTest {
         // The engine failed to load: both accessors answer null (NuanceSDKManager's documented contract).
         sdkStatic.`when`<Any> { NuanceSDKManager.getInstance() }.thenReturn(null)
         sdkStatic.`when`<Any> { NuanceSDKManager.getSecondary() }.thenReturn(null)
-        sdkStatic.`when`<Any> { NuanceSDKManager.getGestureLock() }.thenReturn(Any())
         threadStatic = mockStatic(ThreadUtils::class.java)
         threadStatic.`when`<Any> { ThreadUtils.getBackgroundExecutor(anyString()) }.thenReturn(executor)
+        // The dictionary load runs on the engine loader thread; queue it here like the others.
+        engineThreadsStatic = mockStatic(EngineThreads::class.java, org.mockito.Mockito.CALLS_REAL_METHODS)
+        engineThreadsStatic.`when`<Any> { EngineThreads.loader() }.thenReturn(executor)
         subtypes = mock(SubtypeManager::class.java)
         `when`(subtypes.currentSubtypeLocale).thenReturn(Locale.US)
         `when`(subtypes.currentSubtypeAdditionalLocales).thenReturn(null)
@@ -93,6 +96,7 @@ class EngineLoadFailureTest {
     @After
     fun tearDown() {
         subtypeStatic.close()
+        engineThreadsStatic.close()
         threadStatic.close()
         sdkStatic.close()
     }
@@ -149,7 +153,9 @@ class EngineLoadFailureTest {
         dlm.addContactsWords(arrayOf("alice"), ContactsType.ALL)
         // Over 500 defers to the background executor — the path the contacts sync actually takes.
         dlm.addContactsWords(Array(600) { "w$it" }, ContactsType.WORK)
-        assertEquals(1, executor.tasks.size)
+        // The small batch's engine op is queued on the loader (here the same queue), the large
+        // batch on the background executor, which hands it to the loader when drained.
+        assertEquals(2, executor.tasks.size)
         executor.drain()
     }
 

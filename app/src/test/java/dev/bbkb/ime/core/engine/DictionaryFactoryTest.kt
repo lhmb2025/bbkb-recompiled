@@ -96,20 +96,6 @@ class DictionaryFactoryTest {
         sdkStatic.verify({ NuanceSDKManager.getInstance() }, never())
     }
 
-    @Test
-    fun releasingTheSecondaryEngine_disposesItThroughTheManager() {
-        sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.peekSecondary() }.thenReturn(secondary)
-        DictionaryFactory.releaseSecondaryEngine()
-        sdkStatic.verify { NuanceSDKManager.disposeSecondary() }
-    }
-
-    @Test
-    fun releasingWithNoSecondaryEngine_doesNothing() {
-        sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.peekSecondary() }.thenReturn(null)
-        DictionaryFactory.releaseSecondaryEngine()
-        sdkStatic.verify({ NuanceSDKManager.disposeSecondary() }, never())
-        sdkStatic.verify({ NuanceSDKManager.getSecondary() }, never())
-    }
 
     @Test
     fun engineFailedToLoad_isTheFallback_notABridgeOverNull() {

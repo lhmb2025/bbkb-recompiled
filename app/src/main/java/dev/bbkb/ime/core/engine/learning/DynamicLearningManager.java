@@ -1,7 +1,10 @@
 package dev.bbkb.ime.core.engine.learning;
 
 import android.content.Context;
+import android.os.Looper;
+import android.util.Log;
 
+import dev.bbkb.ime.core.engine.EngineThreads;
 import dev.bbkb.ime.core.engine.NuanceSDKManager;
 import dev.bbkb.ime.personaldictionary.DictionaryManager;
 import dev.bbkb.ime.BuildConfig;
@@ -10,6 +13,7 @@ import dev.bbkb.ime.core.contacts.ContactsDataProvider;
 import dev.bbkb.ime.core.shared.ThreadUtils;
 import com.blackberry.nuanceshim.NuanceSDK;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
 
@@ -44,6 +48,9 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
      * FIX-D2: NuanceSDKManager answers null when the engine failed to load (it swallows the load
      * error). Every engine call here goes through this, so a failed load degrades to "no learning"
      * instead of an NPE in IME onCreate / on every commit. With an engine present nothing changes.
+     *
+     * <p>Wave 3: called only inside ops on the engine or loader thread ({@link EngineThreads}),
+     * where it may join the engine's start; the main thread never resolves the engine here.
      */
     private static NuanceSDK engineOrNull() {
         return NuanceSDKManager.getInstance();
@@ -57,15 +64,22 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
         // and onManagedModeChanged activates the learner. Registering first crashed the keyboard
         // on start with a null learner.
         this.personalLearner = new PersonalLearner(context);
-        NuanceSDK engine = engineOrNull();
-        if (engine != null) engine.setCallbackHandler(this);
+        // Posted: the constructor runs on the main thread in onCreate, possibly before the engine
+        // has started, and only the engine thread may wait for that start. The registration is
+        // lock-free and replays the managed-mode state when the model is already attached.
+        EngineThreads.post(() -> {
+            NuanceSDK engine = engineOrNull();
+            if (engine != null) engine.setCallbackHandler(this);
+        });
     }
 
     public void setDynamicLearningEnabled(boolean z) {
         this.dynamicLearningEnabled = z;
-        NuanceSDK engine = engineOrNull();
-        if (engine != null) engine.setIsExplicitLearning(!z);
-        if (BuildConfig.DEBUG) android.util.Log.d("PIPELINE", "IME:learn:setDynamicLearningEnabled=" + z + " engine=" + (engine != null));
+        EngineThreads.post(() -> {
+            NuanceSDK engine = engineOrNull();
+            if (engine != null) engine.setIsExplicitLearning(!z);
+            if (BuildConfig.DEBUG) android.util.Log.d("PIPELINE", "IME:learn:setDynamicLearningEnabled=" + z + " engine=" + (engine != null));
+        });
     }
 
     /** Whether this session may learn: the preference is on, the field type allows it, and the field is not incognito. */
@@ -88,8 +102,10 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
 
     /** Ends the current word in the engine; nothing to end when the engine failed to load. */
     private static void clearEngine() {
-        NuanceSDK engine = engineOrNull();
-        if (engine != null) engine.clear();
+        EngineThreads.post(() -> {
+            NuanceSDK engine = engineOrNull();
+            if (engine != null) engine.clear();
+        });
     }
 
     private BaseLearningModel getActiveLearner() {
@@ -135,8 +151,12 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
 
     /** Unregisters, queues the personal-dictionary flush, then deactivates the learner (pinned by DynamicLearningManagerTest). */
     public void destroy() {
-        NuanceSDK engine = engineOrNull();
-        if (engine != null) engine.setCallbackHandler(null);
+        // Posted after the constructor's registration (FIFO), and against the engine as it is:
+        // a teardown must not start one.
+        EngineThreads.post(() -> {
+            NuanceSDK engine = NuanceSDKManager.peekInstance();
+            if (engine != null) engine.setCallbackHandler(null);
+        });
         savePersonalDictionary();
         this.personalLearner.deactivate();
     }
@@ -180,10 +200,30 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
         // focused field (password, incognito) has no say in it.
         if (this.learningPreferenceEnabled) {
             if (strArr.length <= 500) {
-                addContactsWordsInternal(strArr, bVar);
+                addContactsWordsOnLoader(strArr, bVar);
             } else {
-                this.backgroundExecutor.execute(() -> addContactsWordsInternal(strArr, bVar));
+                this.backgroundExecutor.execute(() -> addContactsWordsOnLoader(strArr, bVar));
             }
+        }
+    }
+
+    /**
+     * The contacts batch is a long hold, so it runs on the engine's loader thread. The calling
+     * thread (Sync Contacts, or this class's executor for a large batch) waits for it as it waited
+     * for the direct call, so the caller's bookkeeping still follows the add; the main thread
+     * never waits.
+     */
+    private void addContactsWordsOnLoader(String[] strArr, ContactsDataProvider.ContactsType bVar) {
+        java.util.concurrent.Future<?> done = EngineThreads.load(() -> addContactsWordsInternal(strArr, bVar));
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            return;
+        }
+        try {
+            done.get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            Log.w("DynamicLearningManager", "adding contacts to the engine failed", e.getCause());
         }
     }
 
@@ -211,7 +251,8 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
         clearEngine();
     }
 
-        void addContactsWordsInternal(String[] strArr, ContactsDataProvider.ContactsType bVar) {
+    /** Loader thread (see {@link #addContactsWordsOnLoader}). */
+    void addContactsWordsInternal(String[] strArr, ContactsDataProvider.ContactsType bVar) {
         NuanceSDK engine = engineOrNull();
         if (engine == null) {
             return; // FIX-D2: no engine to learn contacts into.

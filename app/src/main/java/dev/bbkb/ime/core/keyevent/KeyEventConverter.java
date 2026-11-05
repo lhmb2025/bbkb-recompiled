@@ -3,7 +3,7 @@ package dev.bbkb.ime.core.keyevent;
 import android.content.Context;
 import android.view.KeyEvent;
 
-import dev.bbkb.ime.core.engine.NuanceSDKManager;
+import dev.bbkb.ime.core.engine.PrimaryEngineFacts;
 import dev.bbkb.ime.core.device.config.model.AltMappingsTable;
 import dev.bbkb.ime.core.device.config.model.KeyRole;
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping;
@@ -250,7 +250,7 @@ public class KeyEventConverter {
                 if (unicodeChar2 == 0) {
                     unicodeChar2 = keyEvent.getUnicodeChar(i);
                 }
-                if (keyEvent.getKeyCode() == 54 && unicodeChar2 == 37325 && NuanceSDKManager.getInstance().isChineseCangjieMode()) {
+                if (keyEvent.getKeyCode() == 54 && unicodeChar2 == 37325 && PrimaryEngineFacts.get().isChineseCangjieMode()) {
                     charSequence = null;
                     isModifierKey = false;
                     isTextEvent = false;

@@ -16,7 +16,8 @@ import dev.bbkb.ime.core.textinput.composing.CommitEventRecord;
 import dev.bbkb.ime.core.textinput.connection.RichInputConnection;
 import dev.bbkb.ime.core.shared.GraphemeUtils;
 import com.blackberry.nuanceshim.NuanceSDK;
-import dev.bbkb.ime.core.engine.NuanceSDKManager;
+import dev.bbkb.ime.core.engine.EngineOps;
+import dev.bbkb.ime.core.engine.PrimaryEngineFacts;
 import dev.bbkb.ime.core.textinput.composing.TouchHighlightTracker;
 
 import java.util.List;
@@ -196,7 +197,7 @@ class BackspaceController {
         if (length <= 0
                 || (size = (sequence = dev.bbkb.ime.personaldictionary.tokenizer.BlackBerryTokenizer.toSequence(
                         new dev.bbkb.ime.personaldictionary.tokenizer.BlackBerryTokenizer(
-                                NuanceSDKManager.getInstance().getPrimaryLanguage()).split(textBefore.toString()))).size()) <= 0
+                                PrimaryEngineFacts.primaryLanguage()).split(textBefore.toString()))).size()) <= 0
                 || (wordLength = sequence.get(size - 1).length()) <= 0) {
             wordLength = length;
         }
@@ -252,12 +253,14 @@ class BackspaceController {
             // stop self-reinforcing — without this, every accepted misrecognition
             // permanently boosts itself and the DLM degenerates (the 'help'-over-'hello'
             // pathology). Deleting from the DLM never touches the static lexicon.
-            String deletedWord = textBefore.subSequence(deletePos, length).toString().trim();
+            final String deletedWord = textBefore.subSequence(deletePos, length).toString().trim();
             if (!deletedWord.isEmpty()) {
-                com.blackberry.nuanceshim.NuanceSDK sdk = NuanceSDKManager.getInstance();
-                if (sdk != null && !sdk.deleteDLMWord(deletedWord)) {
-                    if (BuildConfig.DEBUG) Log.d(TAG, "swipe-delete unlearn: '" + deletedWord + "' not in DLM");
-                }
+                // Posted to the engine thread (Phase A); the outcome is only logged.
+                EngineOps.post("swipeDeleteUnlearn", sdk -> {
+                    if (!sdk.deleteDLMWord(deletedWord)) {
+                        if (BuildConfig.DEBUG) Log.d(TAG, "swipe-delete unlearn: '" + deletedWord + "' not in DLM");
+                    }
+                });
             }
             return true;
         }

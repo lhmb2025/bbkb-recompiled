@@ -5,6 +5,7 @@ import android.util.Log;
 import dev.bbkb.ime.core.BlackBerryIME;
 import dev.bbkb.ime.core.ime.UIUpdateHandler;
 import dev.bbkb.ime.core.engine.NuanceSDKManager;
+import dev.bbkb.ime.core.engine.PrimaryEngineFacts;
 import dev.bbkb.ime.core.suggestion.SuggestedWords;
 import dev.bbkb.ime.core.suggestion.SuggestionEngine;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
@@ -82,15 +83,18 @@ class SuggestionCoordinator {
             final AsyncResultHolder c0883c = new AsyncResultHolder();
             // The main thread is parked until the reply, so no edit can land in between.
             final int requestEditCount = mInputLogic.mComposingTracker.getEditCount();
+            // The callback runs on the engine thread, which never reads the tracker (Phase A); the
+            // main thread is parked until the reply, so the text read here is the text then.
+            final String requestText = mInputLogic.mComposingTracker.getComposingText();
             // keep=true: the main thread is parked on this reply, so it must never be dropped.
             mInputLogic.mSuggestionRequestQueue.sendToWorkerThread(i, true, new SuggestionEngine.SuggestionCallback() {
                 @Override
                 public void onSuggestionsReady(SuggestedWords c0666ac) {
-                    String strM4360m = mInputLogic.mComposingTracker.getComposingText();
+                    String strM4360m = requestText;
                     if (c0666ac.size() > 1 || strM4360m.length() <= 1) {
                         c0883c.set(stampEditCount(c0666ac, requestEditCount));
                     } else {
-                        if (NuanceSDKManager.getInstance().isCurrLocaleChinese()) {
+                        if (PrimaryEngineFacts.get().isCurrLocaleChinese()) {
                             c0883c.set(stampEditCount(c0666ac, requestEditCount));
                             return;
                         }
@@ -146,11 +150,14 @@ class SuggestionCoordinator {
             final AsyncResultHolder<SuggestedWords> inFlight = new AsyncResultHolder<>();
             mInFlightResult = inFlight;
             mInFlightEditCount = requestEditCount;
+            // The text the request is made for: the callback runs on the engine thread, which
+            // never reads the tracker (Phase A). A reply for older text is stale by its edit count.
+            final String requestText = mInputLogic.mComposingTracker.getComposingText();
             mInputLogic.mSuggestionRequestQueue.sendToWorkerThread(i, new SuggestionEngine.SuggestionCallback() {
                 @Override
                 public void onSuggestionsReady(SuggestedWords c0666ac) {
                     if (BuildConfig.DEBUG) android.util.Log.d("SUGG", "updateSuggestionsAsync: onSuggestionsReady size=" + c0666ac.size() + " thread=" + Thread.currentThread().getName());
-                    String strM4360m = mInputLogic.mComposingTracker.getComposingText();
+                    String strM4360m = requestText;
                     SuggestedWords reply = c0666ac.size() > 1 || strM4360m.length() <= 1
                             ? c0666ac
                             : createSuggestionsWithTypedWord(strM4360m, mInputLogic.mCurrentSuggestions);

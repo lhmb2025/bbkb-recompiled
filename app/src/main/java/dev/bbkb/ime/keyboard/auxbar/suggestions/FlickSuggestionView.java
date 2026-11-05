@@ -23,7 +23,7 @@ import dev.bbkb.ime.keyboard.KeyboardColorManager;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
 import dev.bbkb.ime.keyboard.MainKeyboardView;
 import dev.bbkb.ime.R;
-import dev.bbkb.ime.core.engine.NuanceSDKManager;
+import dev.bbkb.ime.core.engine.EngineOps;
 import dev.bbkb.ime.core.suggestion.SuggestedWords;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
@@ -40,6 +40,9 @@ import java.util.ArrayList;
 public final class FlickSuggestionView extends RelativeLayout {
 
     private static final String TAG = "FlickSuggestionView";
+
+    /** How long drawing waits for the engine's Hangul decode before drawing the raw text. */
+    private static final long FLICK_DECODE_TIMEOUT_MS = 50L;
 
     private float mHorizontalWordDistance;
 
@@ -461,7 +464,13 @@ public final class FlickSuggestionView extends RelativeLayout {
 
     private static int[] toCodePoints(String str) {
         if (!TextUtils.isEmpty(str) && ScriptUtils.isLetterPartOfScript(str.charAt(0), 8)) {
-            str = NuanceSDKManager.getInstance().decodeHangul(str, true);
+            // Drawn text needs the engine's decode now: a short bounded query (Phase A), the raw
+            // text on a timeout. Follow-up: a Java port of the decode would take the engine out of
+            // drawing altogether.
+            final String raw = str;
+            String decoded = EngineOps.query("flickDecodeHangul", FLICK_DECODE_TIMEOUT_MS, raw,
+                    sdk -> sdk.decodeHangul(raw, true));
+            str = decoded != null ? decoded : raw;
         }
         return toCodePointArray(str, 0, str.length());
     }

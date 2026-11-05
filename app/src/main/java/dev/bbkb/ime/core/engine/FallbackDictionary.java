@@ -3,6 +3,7 @@ package dev.bbkb.ime.core.engine;
 import android.content.Context;
 import android.util.Log;
 
+import dev.bbkb.ime.core.textinput.composing.ComposingSnapshot;
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker;
 import dev.bbkb.ime.core.settings.util.SuggestionStripSettings;
 import dev.bbkb.ime.core.suggestion.PrevWordsInfo;
@@ -60,13 +61,23 @@ public class FallbackDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingTextTracker c0670ag, PrevWordsInfo prevWordsInfo, SuggestionStripSettings c0805e, int i) {
+        if (c0670ag == null) {
+            return new ArrayList<>();
+        }
+        return suggestionsFor(c0670ag.getComposingText(), i);
+    }
+
+    @Override
+    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestionsForSnapshot(ComposingSnapshot composing, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int i) {
+        if (composing == null) {
+            return new ArrayList<>();
+        }
+        return suggestionsFor(composing.text, i);
+    }
+
+    private ArrayList<SuggestedWords.SuggestedWordInfo> suggestionsFor(String currentWord, int i) {
         ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = new ArrayList<>();
 
-        if (c0670ag == null) {
-            return suggestions;
-        }
-
-        String currentWord = c0670ag.getComposingText();
         if (currentWord == null || currentWord.isEmpty()) {
             // Return some common words for empty input
             addCommonWordSuggestions(suggestions, 3);

@@ -147,7 +147,8 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         // Check if NuanceSDK DLM is ready before syncing contacts. Only the keyboard adds the names
         // to the engine; the spell checker's sync just collects them (contactWords), so it does not
         // wait for the keyboard's engine, which is not running while another keyboard is in use.
-        if (this.context instanceof BlackBerryIME && !NuanceSDKManager.isDLMReady()) {
+        // The published fact, not the engine: this runs on the main thread.
+        if (this.context instanceof BlackBerryIME && !NuanceSDKManager.facts().isDLMReady()) {
             if (retryCount < NUANCE_READY_MAX_RETRIES) {
                 mainHandler.postDelayed(new Runnable() {
                     @Override

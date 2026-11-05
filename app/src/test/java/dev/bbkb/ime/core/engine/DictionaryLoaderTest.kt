@@ -3,7 +3,6 @@ package dev.bbkb.ime.core.engine
 import android.content.Context
 import dev.bbkb.ime.core.locale.SubtypeManager
 import dev.bbkb.ime.core.settings.util.SuggestionStripSettings
-import dev.bbkb.ime.core.shared.ThreadUtils
 import dev.bbkb.ime.core.suggestion.PrevWordsInfo
 import dev.bbkb.ime.core.suggestion.SuggestedWords
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker
@@ -37,7 +36,7 @@ import java.util.concurrent.TimeUnit
 /**
  * CHARACTERISATION of [DictionaryLoader]'s load/reload/threading contract — Wave 3b package G1.
  *
- * The loader runs on `ThreadUtils.getBackgroundExecutor("InitializeBinaryDictionary")` during IME
+ * The loader runs on `EngineThreads.loader()` (the persistent engine loader thread) during IME
  * startup and on every locale change. These tests replace that executor with a manual queue so the
  * window *between* `initDictionary` returning and the background load finishing is observable, and
  * pin what callers see in it:
@@ -72,7 +71,7 @@ class DictionaryLoaderTest {
         override fun awaitTermination(timeout: Long, unit: TimeUnit) = true
     }
 
-    private lateinit var threadStatic: MockedStatic<ThreadUtils>
+    private lateinit var threadStatic: MockedStatic<EngineThreads>
     private lateinit var factoryStatic: MockedStatic<DictionaryFactory>
     private lateinit var subtypeStatic: MockedStatic<SubtypeManager>
     private lateinit var subtypes: SubtypeManager
@@ -89,8 +88,8 @@ class DictionaryLoaderTest {
     fun setUp() {
         ctx = RuntimeEnvironment.getApplication()
         executor = QueueExecutor()
-        threadStatic = mockStatic(ThreadUtils::class.java)
-        threadStatic.`when`<Any> { ThreadUtils.getBackgroundExecutor(anyString()) }.thenReturn(executor)
+        threadStatic = mockStatic(EngineThreads::class.java, org.mockito.Mockito.CALLS_REAL_METHODS)
+        threadStatic.`when`<Any> { EngineThreads.loader() }.thenReturn(executor)
         factoryStatic = mockStatic(DictionaryFactory::class.java)
         subtypes = mock(SubtypeManager::class.java)
         `when`(subtypes.currentSubtypeLocale).thenReturn(en)
@@ -149,7 +148,7 @@ class DictionaryLoaderTest {
         assertNull(loader.mainDictionary)
         assertFalse(loader.isDictionaryReady)
         assertEquals(1, executor.tasks.size)
-        threadStatic.verify { ThreadUtils.getBackgroundExecutor("InitializeBinaryDictionary") }
+        threadStatic.verify { EngineThreads.loader() }
         factoryStatic.verify({ DictionaryFactory.createDictionary(any(), any()) }, never())
         verifyNoInteractions(callback)
 
@@ -397,7 +396,7 @@ class DictionaryLoaderTest {
         assertSame(d, loader.mainDictionary)
         assertTrue(loader.isDictionaryReady)
         assertTrue(executor.tasks.isEmpty())
-        threadStatic.verify({ ThreadUtils.getBackgroundExecutor(anyString()) }, never())
+        threadStatic.verify({ EngineThreads.loader() }, never())
         factoryStatic.verify({ DictionaryFactory.createDictionary(any(), any()) }, never())
         // The synchronous path never calls back.
         verifyNoInteractions(callback)

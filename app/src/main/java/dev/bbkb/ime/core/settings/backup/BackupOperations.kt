@@ -6,6 +6,7 @@ import android.os.Build
 import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser
 import dev.bbkb.ime.core.engine.NuanceSDKManager
+import dev.bbkb.ime.core.engine.engineLoaderDispatcher
 import dev.bbkb.ime.core.layout.LetterLayoutRegistry
 import dev.bbkb.ime.core.layout.LetterLayoutXml
 import dev.bbkb.ime.core.locale.SubtypeManager
@@ -171,11 +172,15 @@ object BackupOperations {
 
     private fun entryKey(entry: DictionaryEntry): String = entry.locale + "\u0000" + entry.displayKey
 
-    /** The engine's learned words, or null when the engine is not running with its model. */
-    private fun learnedWords(): List<String>? {
-        if (!NuanceSDKManager.isDLMReady()) return null
-        val sdk = NuanceSDKManager.getInstance() ?: return null
-        return try {
+    /**
+     * The engine's learned words, or null when the engine is not running with its model. The
+     * enumeration is one op on the engine's loader thread (a Dispatchers.IO thread can exit, so it
+     * must never call the engine).
+     */
+    private suspend fun learnedWords(): List<String>? = withContext(engineLoaderDispatcher) {
+        val sdk = NuanceSDKManager.peekInstance()
+        if (sdk == null || !sdk.isDLMReady()) return@withContext null
+        try {
             sdk.getDLMWords().filter { it.isNotEmpty() && it.length <= WordsBundle.MAX_WORD_LENGTH }
         } catch (e: RuntimeException) {
             Logger.warn(TAG, "learned words unavailable: $e")
@@ -351,10 +356,13 @@ object BackupOperations {
         return added
     }
 
-    /** Teaches the engine each word; null when the engine is not running with its model. */
-    private fun restoreLearnedWords(words: List<String>): Int? {
-        if (!NuanceSDKManager.isDLMReady()) return null
-        val sdk = NuanceSDKManager.getInstance() ?: return null
+    /**
+     * Teaches the engine each word; null when the engine is not running with its model. One op on
+     * the loader thread, as [learnedWords].
+     */
+    private suspend fun restoreLearnedWords(words: List<String>): Int? = withContext(engineLoaderDispatcher) {
+        val sdk = NuanceSDKManager.peekInstance()
+        if (sdk == null || !sdk.isDLMReady()) return@withContext null
         val known = try {
             sdk.getDLMWords().toHashSet()
         } catch (e: RuntimeException) {
@@ -365,7 +373,7 @@ object BackupOperations {
             if (word in known) return@forEach
             if (sdk.addWord(word)) added++
         }
-        return added
+        added
     }
 
     // ── reset ────────────────────────────────────────────────────────────────
@@ -406,6 +414,9 @@ object BackupOperations {
                         repository.getAllEntries(locale).forEach { repository.deleteEntry(it) }
                     }
                 }
+            }
+            // The model reset is a long hold: on the engine's loader thread.
+            withContext(engineLoaderDispatcher) {
                 NuanceSDKManager.getInstance()?.let { sdk ->
                     try {
                         sdk.resetDynamicModel(File(app.filesDir, "nuance"))

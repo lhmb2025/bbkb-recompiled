@@ -5,7 +5,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
-import dev.bbkb.ime.core.engine.NuanceSDKManager
+import dev.bbkb.ime.core.engine.EngineOps
 import dev.bbkb.ime.core.gesture.arbiter.FirmwareGestureKeys
 import dev.bbkb.ime.core.gesture.arbiter.GestureAction
 import dev.bbkb.ime.core.gesture.arbiter.GestureAssignments
@@ -234,8 +234,10 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
     fun cancelEngineTrackingOncePerContact(event: MotionEvent): Boolean {
         if (engineTrackingCancelled) return false
         engineTrackingCancelled = true
-        NuanceSDKManager.withSdk("fccCursor.touchCancel") { sdk ->
-            for (i in 0 until event.pointerCount) sdk.touchCancel(event.getPointerId(i).toLong())
+        // The ids are read here, on the main thread: the MotionEvent is recycled after dispatch.
+        val pointerIds = LongArray(event.pointerCount) { event.getPointerId(it).toLong() }
+        EngineOps.post("fccCursor.touchCancel") { sdk ->
+            for (id in pointerIds) sdk.touchCancel(id)
         }
         return true
     }

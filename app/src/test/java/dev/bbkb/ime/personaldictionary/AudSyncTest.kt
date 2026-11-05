@@ -9,14 +9,21 @@ import dev.bbkb.ime.personaldictionary.storage.DefaultWSLoader
 import dev.bbkb.ime.personaldictionary.sync.AudSyncer
 import dev.bbkb.ime.personaldictionary.util.CompletionListener
 import com.blackberry.nuanceshim.NuanceSDK
+import dev.bbkb.ime.core.engine.EngineThreads
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.never
+import org.mockito.Mockito.timeout
+import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowContentResolver
@@ -41,6 +48,7 @@ class AudSyncTest {
     private lateinit var context: Context
     private lateinit var provider: FakeUserDictionaryProvider
     private lateinit var pdu: PersonalDictionaryUtil
+    private val sdk: NuanceSDK = mock(NuanceSDK::class.java)
 
     @Before
     fun setUp() {
@@ -51,7 +59,7 @@ class AudSyncTest {
         DefaultWSLoader.invalidateCache()
         pduDir().deleteRecursively()
         pdu = PersonalDictionaryUtil.getInstance(
-            context, context.filesDir.absolutePath, "substitution_macros", mock(NuanceSDK::class.java)
+            context, context.filesDir.absolutePath, "substitution_macros", sdk
         )
     }
 
@@ -165,6 +173,32 @@ class AudSyncTest {
         assertEquals("zzqqx", row?.word)
         assertEquals("zzqqx", row?.shortcut)
         assertEquals("en_US", row?.locale)
+    }
+
+    /**
+     * Wave 3: an add from the main thread (one-tap add, the add-word dialog) must not call the
+     * engine there. The `addWord` is posted to the engine thread: with that thread held busy the
+     * engine sees nothing, and once it is released the word arrives, on the engine thread.
+     */
+    @Test
+    fun anAddFromTheMainThread_postsTheEngineAddWordToTheEngineThread() {
+        val loaded = CountDownLatch(1)
+        pdu.load(listOf(Locale.US), CompletionListener { loaded.countDown() }, false, false)
+        assertTrue(loaded.await(15, TimeUnit.SECONDS))
+        val calledOn = java.util.concurrent.atomic.AtomicReference<String?>(null)
+        doAnswer { calledOn.set(Thread.currentThread().name); true }.`when`(sdk).addWord(anyString())
+
+        val hold = CountDownLatch(1)
+        EngineThreads.engineHandler().post { hold.await(15, TimeUnit.SECONDS) }
+        try {
+            pdu.add(WordSubstitution.createUserSubstitution("en_US", "zzqqx", "zzqqx", false))
+            verify(sdk, never()).addWord(anyString())
+            assertNull(calledOn.get())
+        } finally {
+            hold.countDown()
+        }
+        verify(sdk, timeout(5_000)).addWord("zzqqx")
+        assertEquals("EngineThread", calledOn.get())
     }
 
     /**

@@ -188,6 +188,9 @@ class PointerTrackerCallbackStreamTest {
     @Before
     fun setUp() {
         resetStatics()
+        // The touch samples are engine-thread ops now (Wave 3); inline, they reach the mock on
+        // this thread, in the order they were posted, so the golden streams still show them.
+        dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(true)
         val sm = mock(SettingsManager::class.java)
         val sv = settings()
         `when`(sm.settingsValues).thenReturn(sv)
@@ -203,7 +206,6 @@ class PointerTrackerCallbackStreamTest {
             .`when`(nuance).touchEnd(anyLong(), anyFloat(), anyFloat(), anyLong())
         doAnswer { log += "sdk.touchCancel(${it.arguments[0]})"; false }
             .`when`(nuance).touchCancel(anyLong())
-        val lock = Any()
         sdkStatic = mockStatic(NuanceSDKManager::class.java)
         sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.getInstance() }.thenReturn(nuance)
         // The touch call sites go through the null-checked choke point (audit L8), not through
@@ -212,7 +214,6 @@ class PointerTrackerCallbackStreamTest {
         // which is exactly what a real engine-load failure looks like, and why the streams below
         // are the regression test for the null handling as well.
         sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.sdkOrWarn(anyString()) }.thenReturn(nuance)
-        sdkStatic.`when`<Any> { NuanceSDKManager.getGestureLock() }.thenReturn(lock)
 
         val app = ApplicationProvider.getApplicationContext<Context>()
         val themed = ContextThemeWrapper(app, R.style.KeyboardTheme_LXX)
@@ -243,6 +244,7 @@ class PointerTrackerCallbackStreamTest {
             resetStatics()
             sdkStatic.close()
             settingsStatic.close()
+            dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(false)
         }
     }
 
@@ -1235,13 +1237,13 @@ class PointerTrackerCallbackStreamTest {
             sdk.touchMove(0,590.0,50.0,1230)
             --- ACTION_UP id=0 t=1300
             batch.cancel(0)
+            sdk.touchEnd(0,590.0,50.0,1300)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(null)
             batch.cancelAll
             L.onEndBatchInput(SOFTWARE)
             draw.slidingPreview(0)
-            sdk.touchEnd(0,590.0,50.0,1300)
             """
         )
     }
@@ -1352,13 +1354,13 @@ class PointerTrackerCallbackStreamTest {
             sdk.touchMove(0,350.0,50.0,1130)
             --- ACTION_UP id=0 t=1150
             batch.cancel(0)
+            sdk.touchEnd(0,350.0,50.0,1150)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(null)
             batch.cancelAll
             L.onEndBatchInput(SOFTWARE)
             draw.slidingPreview(0)
-            sdk.touchEnd(0,350.0,50.0,1150)
             """
         )
     }
@@ -1540,13 +1542,13 @@ class PointerTrackerCallbackStreamTest {
             sdk.touchCancel(1)
             --- ACTION_UP id=0 t=1300
             batch.cancel(0)
+            sdk.touchEnd(0,590.0,50.0,1300)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
             draw.dismissPreview(null)
             batch.cancelAll
             L.onEndBatchInput(SOFTWARE)
             draw.slidingPreview(0)
-            sdk.touchEnd(0,590.0,50.0,1300)
             """
         )
     }

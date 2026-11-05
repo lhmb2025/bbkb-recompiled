@@ -42,9 +42,12 @@ class CommitTransitionInvariantTest {
 
     @Before
     fun setUp() {
+        // The commit's clear is an engine op: inline on the test thread, where the mock is visible.
+        dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(true)
         engine = mock(NuanceSDK::class.java)
         sdkStatic = mockStatic(NuanceSDKManager::class.java)
         sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.getInstance() }.thenReturn(engine)
+        sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.sdkOrWarn(org.mockito.ArgumentMatchers.anyString()) }.thenReturn(engine)
 
         // The real ctor registers receivers and touches Context; allocate the shell instead.
         val unsafeClass = Class.forName("sun.misc.Unsafe")
@@ -56,7 +59,10 @@ class CommitTransitionInvariantTest {
             .apply { isAccessible = true }.setBoolean(manager, true)
     }
 
-    @After fun tearDown() = sdkStatic.close()
+    @After fun tearDown() {
+        sdkStatic.close()
+        dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(false)
+    }
 
     private fun suggestion() = SuggestedWords.SuggestedWordInfo(
         "hello", 100, 0, Dictionary.DICTIONARY_USER_TYPED, -1, -1,

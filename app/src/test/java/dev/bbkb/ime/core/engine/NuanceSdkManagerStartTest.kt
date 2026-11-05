@@ -7,6 +7,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,13 +16,14 @@ import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicReference
 
 /**
- * Audit P-6 / F-7: the primary engine is started on a worker from onCreate and joined by its first
- * user; a failed start is not retried on every call.
+ * Audit P-6 / F-7: the primary engine is started on the engine loader thread from onCreate and
+ * joined by its first user; a failed start is not retried on every call; creation never runs
+ * anywhere but on the loader thread.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -39,14 +41,19 @@ class NuanceSdkManagerStartTest {
         // the factory below never reads it.
         appField.set(null, mock(ImeApplication::class.java))
         savedFactory = NuanceSDKManager.primaryFactory
-        NuanceSDKManager.disposePrimary()
+        // Inline: dispose (an engine-thread op) and the creation (a loader op) run here, on the
+        // test thread. The tests about threads switch it off.
+        EngineThreads.setInlineForTests(true)
+        NuanceSDKManager.resetForTests()
     }
 
     @After
     fun tearDown() {
+        EngineThreads.setInlineForTests(true)
         NuanceSDKManager.primaryFactory = savedFactory
-        NuanceSDKManager.disposePrimary()
+        NuanceSDKManager.resetForTests()
         NuanceSDKManager.setPrimaryAutoCommitHandler(null)
+        EngineThreads.setInlineForTests(false)
         appField.set(null, savedApp)
     }
 
@@ -59,6 +66,7 @@ class NuanceSdkManagerStartTest {
 
     @Test
     fun theFirstUserJoinsTheBackgroundStart() {
+        EngineThreads.setInlineForTests(false)
         val engine = mock(NuanceSDK::class.java)
         val entered = CountDownLatch(1)
         val release = CountDownLatch(1)
@@ -68,26 +76,51 @@ class NuanceSdkManagerStartTest {
             release.await(5, TimeUnit.SECONDS)
             engine
         }
-        val executor = Executors.newSingleThreadExecutor()
-        try {
-            NuanceSDKManager.startPrimaryAsync(executor)
-            assertTrue(entered.await(5, TimeUnit.SECONDS))
-            Thread { Thread.sleep(100); release.countDown() }.start()
-            assertSame(engine, NuanceSDKManager.getInstance())
-            assertEquals("the joining caller must not start a second engine", 1, created.get())
-        } finally {
-            executor.shutdownNow()
-        }
+        NuanceSDKManager.startPrimaryAsync()
+        assertTrue(entered.await(5, TimeUnit.SECONDS))
+        Thread { Thread.sleep(100); release.countDown() }.start()
+        // Off the main thread: a main-thread join is refused (see the test below).
+        val joined = AtomicReference<NuanceSDK?>()
+        val user = Thread { joined.set(NuanceSDKManager.getInstance()) }
+        user.start()
+        user.join(10_000)
+        assertSame(engine, joined.get())
+        assertEquals("the joining caller must not start a second engine", 1, created.get())
     }
 
     @Test
-    fun aShutDownExecutorLeavesTheStartToTheFirstUser() {
+    fun theEngineIsCreatedOnTheLoaderThreadWhoeverAsks() {
+        EngineThreads.setInlineForTests(false)
         val engine = mock(NuanceSDK::class.java)
-        NuanceSDKManager.primaryFactory = { created.incrementAndGet(); engine }
-        val executor = Executors.newSingleThreadExecutor().apply { shutdown() }
-        NuanceSDKManager.startPrimaryAsync(executor)   // rejected, must not throw
-        assertSame(engine, NuanceSDKManager.getInstance())
-        assertEquals(1, created.get())
+        val creator = AtomicReference<String>()
+        NuanceSDKManager.primaryFactory = { creator.set(Thread.currentThread().name); engine }
+        val got = AtomicReference<NuanceSDK?>()
+        val user = Thread({ got.set(NuanceSDKManager.getInstance()) }, "SomePoolThread")
+        user.start()
+        user.join(10_000)
+        assertSame(engine, got.get())
+        assertEquals("EngineLoader", creator.get())
+    }
+
+    @Test
+    fun aMainThreadJoinIsRefusedInDebugBuilds() {
+        EngineThreads.setInlineForTests(false)
+        NuanceSDKManager.primaryFactory = { created.incrementAndGet(); mock(NuanceSDK::class.java) }
+        try {
+            NuanceSDKManager.getInstance()
+            fail("the main thread must not wait for the engine start")
+        } catch (expected: IllegalStateException) {
+        }
+        assertEquals(0, created.get())
+    }
+
+    @Test
+    fun anAlreadyPublishedEngineIsReturnedOnTheMainThread() {
+        val engine = mock(NuanceSDK::class.java)
+        NuanceSDKManager.primaryFactory = { engine }
+        assertSame(engine, NuanceSDKManager.getInstance())   // inline: created here
+        EngineThreads.setInlineForTests(false)
+        assertSame(engine, NuanceSDKManager.getInstance())   // main thread, no wait: allowed
     }
 
     @Test

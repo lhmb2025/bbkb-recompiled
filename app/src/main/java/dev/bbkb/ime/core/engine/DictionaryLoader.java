@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import dev.bbkb.ime.core.textinput.composing.ComposingSnapshot;
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker;
 import dev.bbkb.ime.core.locale.SubtypeManager;
 import dev.bbkb.ime.core.settings.util.SuggestionStripSettings;
@@ -12,7 +13,6 @@ import dev.bbkb.ime.core.suggestion.SuggestedWords;
 import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.core.suggestion.SuggestionResult;
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils;
-import dev.bbkb.ime.core.shared.ThreadUtils;
 import dev.bbkb.ime.keyboard.ProximityGrid;
 
 import java.util.ArrayList;
@@ -169,7 +169,7 @@ public class DictionaryLoader {
     }
 
     private void loadDictionaryAsync(final Context context, final Locale locale, final DictionaryInitCallback callback, final DictionaryGroup oldGroup) {
-        ThreadUtils.getBackgroundExecutor("InitializeBinaryDictionary").execute(() -> {
+        EngineThreads.loader().execute(() -> {
             oldGroup.closeMainDictionary();
             Logger.info(TAG, "Initializing main dictionary");
             Dictionary newDict = DictionaryFactory.createDictionary(context, locale);
@@ -202,7 +202,7 @@ public class DictionaryLoader {
             return false;
         }
         if (async) {
-            ThreadUtils.getBackgroundExecutor("InitializeBinaryDictionary").execute(
+            EngineThreads.loader().execute(
                 () -> updateAdditionalLocales(locales, false, callback));
         } else {
             Dictionary mainDict = getMainDictionary();
@@ -270,6 +270,42 @@ public class DictionaryLoader {
                 " dictName=main" +
                 " dictNull=" + (dict == null) +
                 " localeBlocked=" + localeBlocked +
+                " locale=" + group.mLocale);
+        }
+        return perfLogger;
+    }
+
+    /**
+     * {@link #generateSuggestions(ComposingTextTracker, PrevWordsInfo, ProximityGrid, SuggestionStripSettings, int)}
+     * for a composing state taken on the main thread: the IME's requests run on the engine thread,
+     * which never reads the tracker (Wave 3 Phase A).
+     */
+    public SuggestionResult generateSuggestions(ComposingSnapshot composing, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, int sessionId) {
+        ArrayList<SuggestedWords.SuggestedWordInfo> suggestions;
+        DictionaryGroup group = this.mDictionaryGroup;
+        SuggestionResult perfLogger = new SuggestionResult(group.mLocale, SuggestedWords.getMaxSuggestionCount(), prevWordsInfo.wordInfos[0].isBeginningOfSentence);
+        Dictionary dict = group.mMainDictionary;
+        if (dict != null && !ResourceLocaleUtils.isNoLanguage(group.mLocale) && (suggestions = dict.generateSuggestionsForSnapshot(composing, prevWordsInfo, stripSettings, sessionId)) != null) {
+            perfLogger.addSuggestions(suggestions);
+            if (BuildConfig.DEBUG) {
+                ArrayList<String> words = new ArrayList<>();
+                for (int j = 0; j < Math.min(suggestions.size(), 5); j++) {
+                    words.add(suggestions.get(j).word);
+                }
+                Log.d("PIPELINE", "dictLoader:suggestionsGenerated" +
+                    " dictName=main" +
+                    " dictType=" + dict.getClass().getSimpleName() +
+                    " locale=" + group.mLocale +
+                    " composing=\"" + (composing.isComposing ? composing.text : "(not composing)") + "\"" +
+                    " resultCount=" + suggestions.size() +
+                    " top5=" + words +
+                    " thread=" + Thread.currentThread().getName());
+            }
+        } else if (BuildConfig.DEBUG) {
+            Log.d("PIPELINE", "dictLoader:suggestionsSkipped" +
+                " dictName=main" +
+                " dictNull=" + (dict == null) +
+                " localeBlocked=" + ResourceLocaleUtils.isNoLanguage(group.mLocale) +
                 " locale=" + group.mLocale);
         }
         return perfLogger;

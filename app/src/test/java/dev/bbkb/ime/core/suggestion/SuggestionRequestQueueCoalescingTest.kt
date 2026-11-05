@@ -15,6 +15,9 @@ import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import dev.bbkb.ime.core.engine.EngineThreads
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 /**
  * The worker queue drops a queued request as soon as a newer one arrives, unless the request was
@@ -26,6 +29,22 @@ import org.robolectric.annotation.Config
 @Config(sdk = [34], manifest = Config.NONE)
 class SuggestionRequestQueueCoalescingTest {
 
+    /**
+     * The queue's Handler is on the engine thread, which Robolectric runs for real. Park that
+     * thread until the requests are all queued, so none can run before the next one arrives.
+     */
+    private fun <T> withEngineThreadParked(block: () -> T): T {
+        val release = CountDownLatch(1)
+        val parked = CountDownLatch(1)
+        EngineThreads.engineHandler().post { parked.countDown(); release.await(5, TimeUnit.SECONDS) }
+        parked.await(5, TimeUnit.SECONDS)
+        try {
+            return block()
+        } finally {
+            release.countDown()
+        }
+    }
+
     /** Mockito's any() returns null, which Kotlin rejects for the non-null callback parameter. */
     private fun <T> anyCallback(): T = Mockito.any()
 
@@ -35,12 +54,14 @@ class SuggestionRequestQueueCoalescingTest {
         val queue = SuggestionRequestQueue(ime, mock(InputLogic::class.java))
         val callback = mock(SuggestionEngine.SuggestionCallback::class.java)
         try {
-            // Nothing runs until the worker looper is idled, so all four are queued together.
-            queue.sendToWorkerThread(10, callback)          // superseded by 11
-            queue.sendToWorkerThread(11, callback)          // superseded by 12
-            queue.sendToWorkerThread(12, true, callback)    // kept: someone waits on its reply
-            queue.sendToWorkerThread(13, callback)          // newest superseding one: runs
-            shadowOf(queue.mHandler.looper).idle()
+            // The engine thread is parked, so all four are queued together.
+            withEngineThreadParked {
+                queue.sendToWorkerThread(10, callback)          // superseded by 11
+                queue.sendToWorkerThread(11, callback)          // superseded by 12
+                queue.sendToWorkerThread(12, true, callback)    // kept: someone waits on its reply
+                queue.sendToWorkerThread(13, callback)          // newest superseding one: runs
+            }
+            shadowOf(EngineThreads.engineLooper()).idle()
 
             val order = inOrder(ime)
             order.verify(ime).runSuggestionRequest(eq(12), anyCallback())
@@ -59,9 +80,11 @@ class SuggestionRequestQueueCoalescingTest {
         val queue = SuggestionRequestQueue(ime, mock(InputLogic::class.java))
         val callback = mock(SuggestionEngine.SuggestionCallback::class.java)
         try {
-            queue.sendToWorkerThread(20, true, callback)
-            queue.sendToWorkerThread(21, true, callback)
-            shadowOf(queue.mHandler.looper).idle()
+            withEngineThreadParked {
+                queue.sendToWorkerThread(20, true, callback)
+                queue.sendToWorkerThread(21, true, callback)
+            }
+            shadowOf(EngineThreads.engineLooper()).idle()
 
             val order = inOrder(ime)
             order.verify(ime).runSuggestionRequest(eq(20), anyCallback())

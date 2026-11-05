@@ -8,8 +8,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import dev.bbkb.ime.R;
-import dev.bbkb.ime.core.engine.NuanceSDKManager;
-import com.blackberry.nuanceshim.NuanceSDK;
 import dev.bbkb.ime.core.device.state.PhysicalKeyboardStateTracker;
 import dev.bbkb.ime.core.device.touch.TouchKeypadGeometry;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
@@ -397,8 +395,7 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
             }
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: CALLING NuanceSDK.touchStart pointer=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j + " mIsDetectingGesture=" + this.mIsDetectingGesture + " mInGesture=" + this.mInGesture);
             // FIX-L8: null when the engine failed to load. The keyboard must still type.
-            final NuanceSDK sdk = NuanceSDKManager.sdkOrWarn("GestureEventProcessor.onDownEvent");
-            if (sdk != null) sdk.touchStart(this.mPointerId, i, scaleEngineY(i2), j);
+            EngineTouch.start("GestureEventProcessor.onDownEvent", this.mPointerId, i, scaleEngineY(i2), j);
         } else {
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: mkv.isGestureKeyboard=false → entire gesture path SKIPPED, no NuanceSDK.touchStart, no batch tracker");
         }
@@ -436,8 +433,7 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
             return;
         }
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onMoveEvent (onMoveEvent): pointer=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j + " calling NuanceSDK.touchMove");
-        final NuanceSDK sdk = NuanceSDKManager.sdkOrWarn("GestureEventProcessor.onMoveEvent");
-        if (sdk != null) sdk.touchMove(this.mPointerId, i, scaleEngineY(i2), j);
+        EngineTouch.move("GestureEventProcessor.onMoveEvent", this.mPointerId, i, scaleEngineY(i2), j);
         int iFindPointerIndex = motionEvent.findPointerIndex(this.mPointerId);
         int historySize = motionEvent.getHistorySize();
         for (int i3 = 0; i3 < historySize; i3++) {
@@ -452,7 +448,6 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         }
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onUpEvent: pointer=" + this.mPointerId + " x=" + i + " y=" + i2 + " mIsDetectingGesture=" + this.mIsDetectingGesture + " gestureActive(sInGesture)=" + sInGesture + " inBatchInput=" + isInGesture());
         sTimerCallback.cancelUpdateBatchInputTimer(this);
-        boolean gestureAccepted = false;
         if (!sInGesture) {
             // Not an active gesture (tap or stray capacitive edge-touch): cancel and do
             // NOT send touchEnd. Sending touchEnd here registered a 1-point "gesture"
@@ -460,22 +455,13 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
             // Tap characters are handled via the normal key path, not the gesture path.
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onUpEvent: sInGesture=false → touchCancel only (skip touchEnd)");
             sPointerTrackerQueue.releaseAllPointersOlderThan(this, j);
-            final NuanceSDK sdk = NuanceSDKManager.sdkOrWarn("GestureEventProcessor.onUpEvent/cancel");
-            if (sdk != null) sdk.touchCancel(this.mPointerId);
+            EngineTouch.cancel("GestureEventProcessor.onUpEvent/cancel", this.mPointerId);
         } else {
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onUpEvent: calling NuanceSDK.touchEnd");
-            // Deposit the gesture's native state and raise the pending flag atomically w.r.t.
-            // the suggestion worker's guarded clear() (NuanceSDKManager.getGestureLock).
-            synchronized (NuanceSDKManager.getGestureLock()) {
-                final NuanceSDK sdk = NuanceSDKManager.sdkOrWarn("GestureEventProcessor.onUpEvent/end");
-                // No engine means no deposit and nothing to commit: gestureAccepted stays false,
-                // which is the same outcome the engine reports for a gesture it did not take.
-                gestureAccepted = sdk != null && sdk.touchEnd(this.mPointerId, i, scaleEngineY(i2), j);
-                if (gestureAccepted) {
-                    NuanceSDKManager.noteGestureDeposit();
-                }
-            }
-            if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onUpEvent: touchEnd returned gestureAccepted=" + gestureAccepted);
+            // Deposit the gesture's native state and raise the pending seq, in one op on the
+            // engine thread. It is posted before finishBatchInput posts the prediction request,
+            // so the request's guarded clear() runs after the deposit by FIFO order.
+            EngineTouch.end("GestureEventProcessor.onUpEvent/end", this.mPointerId, i, scaleEngineY(i2), j);
         }
         finishBatchInput(j);
         sPointerTrackerQueue.remove(this);

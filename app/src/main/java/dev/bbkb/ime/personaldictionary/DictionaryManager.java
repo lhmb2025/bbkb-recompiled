@@ -377,9 +377,11 @@ public final class DictionaryManager {
      * dictionary scope does not stop it.
      */
     /**
-     * One thread for the life of the process for the final save, not a thread per shutdown: the
-     * save can reach the engine, and the engine keeps pointers into the stack of the thread that
-     * last called it (see SuggestionRequestQueue.workerLooper), so that stack must stay mapped.
+     * One thread for the life of the process for the final save, not a thread per shutdown.
+     * Wave 3: the save no longer reaches the engine. {@code PersonalDictionaryUtil.doSave} only
+     * writes the three JSON files under the AUD sync lock, and the one engine call this package
+     * makes ({@code addWord}, from {@code addToBasl}) is posted to the engine thread, so this
+     * thread never enters the engine (see EngineThreads for why only two threads may).
      */
     private static final ExecutorService FINAL_SAVE_EXECUTOR = Executors.newSingleThreadExecutor(r -> {
         Thread t = new Thread(r, "DictionaryFinalSave");

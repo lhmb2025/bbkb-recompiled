@@ -191,7 +191,7 @@ object AutoBackup {
         BackupOperations.writeTo(file(context, AUTO_BUNDLE_PATH), contents)
         state(context).edit().putLong(KEY_AUTO_WRITTEN_AT, System.currentTimeMillis()).apply()
         BackupManager(context).dataChanged()
-        Logger.info(TAG, "phone-backup bundle written (engine ${if (NuanceSDKManager.isDLMReady()) "up" else "down"})")
+        Logger.info(TAG, "phone-backup bundle written (engine ${if (NuanceSDKManager.facts().isDLMReady) "up" else "down"})")
     }
 
     // ── the backup agent's side ──────────────────────────────────────────────
@@ -287,7 +287,8 @@ object AutoBackup {
     fun applyPendingWordsIfReady(context: Context) {
         val app = context.applicationContext
         val words = file(app, PENDING_WORDS_PATH)
-        if (!words.isFile || !NuanceSDKManager.isDLMReady()) return
+        // The published fact: this is called on the main thread.
+        if (!words.isFile || !NuanceSDKManager.facts().isDLMReady) return
         scope.launch {
             try {
                 val bundle = words.inputStream().use { BackupBundle.read(it) }.getOrElse {

@@ -33,8 +33,11 @@ import android.view.inputmethod.CursorAnchorInfo;
 import dev.bbkb.ime.core.BlackBerryIME;
 import dev.bbkb.ime.core.ime.UIUpdateHandler;
 import dev.bbkb.ime.core.SymbolPageProvider;
+import dev.bbkb.ime.core.textinput.composing.ComposingSnapshot;
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker;
 import dev.bbkb.ime.core.engine.DictionaryLoader;
+import dev.bbkb.ime.core.engine.EngineOps;
+import dev.bbkb.ime.core.engine.EngineThreads;
 import dev.bbkb.ime.core.textinput.controller.CursorController;
 import dev.bbkb.ime.core.textinput.controller.PunctuationController;
 import dev.bbkb.ime.core.textinput.controller.SmartPunctuationAnalyzer;
@@ -234,10 +237,12 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
      * @param str    converter name to install (may be empty to remove any active converter)
      * @param c0804d current settings values
      */
-    /** Clear the engine's character buffer, tolerating an unavailable SDK (audit EB-8). */
+    /**
+     * Clear the engine's character buffer, tolerating an unavailable SDK (audit EB-8). Posted to
+     * the engine thread (Phase A), in order with the tracker's feeds.
+     */
     private static void clearEngineBuffer() {
-        com.blackberry.nuanceshim.NuanceSDK sdk = NuanceSDKManager.getInstance();
-        if (sdk != null) sdk.clear();
+        EngineOps.post("clearEngineBuffer", sdk -> sdk.clear());
     }
 
     public void resetInputState(String str, SettingsValues c0804d) {
@@ -439,8 +444,38 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         }
     }
 
-    private boolean isUnknownWord(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
-        return (suggestedWordInfoVar.isKind(0) || suggestedWordInfoVar.isKind(10)) && !this.mDictionaryLoader.isWordValid(suggestedWordInfoVar.word, true);
+    /** Whether the add-word hint may apply: only a typed (or resumed) word can be unknown. */
+    private static boolean mayBeUnknownWord(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
+        return suggestedWordInfoVar.isKind(0) || suggestedWordInfoVar.isKind(10);
+    }
+
+    /**
+     * After a manual pick: the add-word hint when the picked typed word is unknown, else the
+     * post-pick suggestion update when {@code requestUpdate}. The dictionary lookup is an engine
+     * call, so it runs as a posted engine op and the outcome comes back to the main thread
+     * (Phase A); the hint arrives a moment after the pick, with the strip it replaces. A pick in a
+     * session that has since ended shows nothing.
+     */
+    private void showAddWordHintOrUpdate(final String checkWord, final String hintWord, final boolean requestUpdate) {
+        final int generation = getSessionGeneration();
+        EngineThreads.post(() -> {
+            final boolean unknown = !this.mDictionaryLoader.isWordValid(checkWord, true);
+            Runnable deliver = () -> {
+                if (getSessionGeneration() != generation) {
+                    return;
+                }
+                if (unknown) {
+                    this.mSuggestionStripListener.showAddToDictionaryHint(hintWord);
+                } else if (requestUpdate) {
+                    this.mIme.suggestionUpdater.requestDelayed(SuggestionUpdater.Reason.AFTER_MANUAL_PICK);
+                }
+            };
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                deliver.run();   // the tests run engine ops inline on the main thread
+            } else {
+                this.mIme.uiUpdateHandler.post(deliver);
+            }
+        });
     }
 
     /**
@@ -483,7 +518,7 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         } else {
             strMo4204c = " ";
         }
-        boolean zM4407a = isUnknownWord(suggestedWordInfoVar);
+        boolean zM4407a = mayBeUnknownWord(suggestedWordInfoVar);
         this.mShouldAppendSpace = this.mRichInputConnection.isCharAfterCursorInSet(strMo4204c);
         if (LocaleUtils.isChineseOrJapanese(SubtypeManager.getInstance().getCurrentSubtypeLocale())) {
             c0920g = c0920g2;
@@ -499,7 +534,7 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         this.mCommitType = 0;
         c0920g.setUiUpdateMode(1);
         if (zM4407a) {
-            this.mSuggestionStripListener.showAddToDictionaryHint(strM4471b);
+            showAddWordHintOrUpdate(suggestedWordInfoVar.word, strM4471b, zM4410a);
         } else if (zM4410a) {
             this.mIme.suggestionUpdater.requestDelayed(SuggestionUpdater.Reason.AFTER_MANUAL_PICK);
         }
@@ -2264,7 +2299,15 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         if (snapshot == null) {
             snapshot = captureRequestContext(c0804d, i);
         }
-        this.mComposingTracker.setShiftStateIfNotComposing(snapshot.shiftState);
+        // Phase A: this runs on the engine thread and reads only the snapshot, never the tracker.
+        // The tracker took the request's shift state on the main thread when the snapshot was
+        // taken (captureRequestContext); the engine gets it here, where the tracker's
+        // setShiftStateIfNotComposing used to set both on this thread.
+        final ComposingSnapshot composing = snapshot.composing;
+        if (!composing.isComposing) {
+            final int engineShift = composing.engineShiftState();
+            EngineOps.post("requestShiftState", sdk -> sdk.setShiftState(engineShift));
+        }
         // FIX 2025-03-29: Wire autoCorrectionMode setting into SuggestionEngine so that
         // mAutoCorrectMode is not always 0 (Java default). Previously setAutoCorrectMode()
         // and setAutoCorrectThreshold() existed but were never called from the settings path.
@@ -2272,10 +2315,10 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         if (BuildConfig.DEBUG) {
         android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "requestSuggestionsWithContext: acMode=" + c0804d.autoCorrectionMode
             + " acEnabled=" + c0804d.isAutoCorrectionEnabledPerUserSettings
-            + " composing='" + this.mComposingTracker.getComposingText() + "'"
-            + " isPredMode=" + this.mComposingTracker.isPredictionMode());
+            + " composing='" + composing.text + "'"
+            + " isPredMode=" + composing.isPredictionMode);
         }
-        this.mSuggestionEngine.getSuggestedWords(context, this.mComposingTracker, snapshot.prevWordsInfo, c1073o, new SuggestionStripSettings(c0804d.blockPotentiallyOffensiveWords, c0804d.additionalFeaturesSettings, snapshot.fromWorkProfile), c0804d.isAutoCorrectionEnabledPerUserSettings, i2, aVar);
+        this.mSuggestionEngine.getSuggestedWords(context, composing, snapshot.prevWordsInfo, c1073o, new SuggestionStripSettings(c0804d.blockPotentiallyOffensiveWords, c0804d.additionalFeaturesSettings, snapshot.fromWorkProfile), c0804d.isAutoCorrectionEnabledPerUserSettings, i2, aVar);
     }
 
     /**
@@ -2285,8 +2328,9 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
      * IndexOutOfBounds mid-delete), the caps-mode cache that getCapsMode rewrites, and
      * KeyboardSwitcher. Cheap by construction: the engine only ever takes the last 146 characters
      * as context ({@link RichInputConnection#getTextContextBefore}), not MAX_CONTEXT_LENGTH, so
-     * that is all that is copied. The composing word is not copied: the tracker's reads are
-     * synchronized, and the bridge deliberately re-reads it when the engine buffer moves (EB-2).
+     * that is all that is copied. The composing word is copied too (Phase A): the request runs on
+     * the engine thread, which never reads the tracker, and under FIFO the feeds for this text are
+     * exactly what the engine's buffer holds when the request runs.
      */
     static final class RequestContext {
         final PrevWordsInfo prevWordsInfo;
@@ -2294,16 +2338,23 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         final boolean fromWorkProfile;
         /** The current keyboard's grid, read on the main thread; null when no keyboard is up. */
         final ProximityGrid proximityGrid;
+        /** The composing state the request is for; never null. */
+        final ComposingSnapshot composing;
 
         RequestContext(PrevWordsInfo prevWordsInfo, int shiftState, boolean fromWorkProfile) {
-            this(prevWordsInfo, shiftState, fromWorkProfile, null);
+            this(prevWordsInfo, shiftState, fromWorkProfile, null, ComposingSnapshot.EMPTY);
         }
 
         RequestContext(PrevWordsInfo prevWordsInfo, int shiftState, boolean fromWorkProfile, ProximityGrid proximityGrid) {
+            this(prevWordsInfo, shiftState, fromWorkProfile, proximityGrid, ComposingSnapshot.EMPTY);
+        }
+
+        RequestContext(PrevWordsInfo prevWordsInfo, int shiftState, boolean fromWorkProfile, ProximityGrid proximityGrid, ComposingSnapshot composing) {
             this.prevWordsInfo = prevWordsInfo;
             this.shiftState = shiftState;
             this.fromWorkProfile = fromWorkProfile;
             this.proximityGrid = proximityGrid;
+            this.composing = composing != null ? composing : ComposingSnapshot.EMPTY;
         }
     }
 
@@ -2336,11 +2387,18 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         android.view.inputmethod.InputBinding binding = this.mIme.getCurrentInputBinding();
         KeyboardSwitcher switcher = this.mIme.getKeyboardSwitcher();
         dev.bbkb.ime.keyboard.Keyboard keyboard = switcher != null ? switcher.getCurrentKeyboard() : null;
+        int shiftState = getShiftState(settings, symbolPageOrder);
+        // What requestSuggestionsWithContext used to do on the worker before reading the tracker:
+        // a request made while nothing is composed carries the current shift state, which the
+        // case transform of its predictions reads. Done here, on the main thread, so the tracker
+        // is never touched by the engine thread; its engine call is posted ahead of the request.
+        this.mComposingTracker.setShiftStateIfNotComposing(shiftState);
         return new RequestContext(
                 getPrevWordsInfo(settings.spacingAndPunctuation, this.mComposingTracker.isComposing() ? 2 : 1),
-                getShiftState(settings, symbolPageOrder),
+                shiftState,
                 binding != null && ProfileDetector.isInputFromWorkProfile(binding),
-                keyboard != null ? keyboard.getProximityGrid() : null);
+                keyboard != null ? keyboard.getProximityGrid() : null,
+                ComposingSnapshot.of(this.mComposingTracker));
     }
 
     /**

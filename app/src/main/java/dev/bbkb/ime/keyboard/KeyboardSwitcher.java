@@ -26,6 +26,7 @@ import dev.bbkb.ime.core.locale.RichInputMethodManager;
 import dev.bbkb.ime.core.ime.InputView;
 import dev.bbkb.ime.core.KeyboardLayoutCallback;
 import dev.bbkb.ime.core.engine.NuanceSDKManager;
+import dev.bbkb.ime.core.engine.EngineThreads;
 import dev.bbkb.ime.core.locale.SubtypeManager;
 import dev.bbkb.ime.core.layout.PhysicalKeyResolver;
 import dev.bbkb.ime.core.keyevent.KeyCharacterInterpreter;
@@ -723,33 +724,96 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
             // keyboard only.
             boolean vkbSync = onScreenSurface;
             if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "KeyboardSwitcher.syncKeyboardLayout: isTouchKb=" + isTouchKb + " onScreenSurface=" + onScreenSurface + " width=" + width + " height=" + height + " locale=" + localeStr + " keyboardId=" + c0965eM6834l.mId.mElementId);
-            // FIX-D2: null when the engine failed to load; there is then no layout to sync and no
-            // key grid to capture, but the keyboard itself must still come up.
-            // Audit P-7: while the dictionary load holds the engine lock this returns at once and
-            // the sync runs when the load ends; NuanceSDK.syncKeyboardLayout documents the
-            // barrier that keeps taps and keys from reaching the engine before it.
-            com.blackberry.nuanceshim.NuanceSDK engine = NuanceSDKManager.getInstance();
-            if (engine != null) engine.syncKeyboardLayout(vkbSync, localeStr, width, height);
-            updateCangjieKey();
-            // Debug: capture the real ET9 key rectangles for the Gesture Lab's grid overlay.
-            // needsCapture() skips the read when this keypad geometry is already cached — a COST
-            // guard (getKeys() builds 30 KeyInfo objects through JNI for a debug-only overlay),
+            // Wave 3: everything above is read here, on the main thread; the engine calls run in
+            // one op on the engine thread, so every tap, swipe or key posted after this is fed
+            // against the new layout by FIFO order. Behind a language load the op waits for the
+            // engine lock there; the main thread never does.
+            // Debug: capture the real ET9 key rectangles for the Gesture Lab's grid overlay, in the
+            // same op. needsCapture() skips the read when this keypad geometry is already cached — a
+            // COST guard (getKeys() builds 30 KeyInfo objects through JNI for a debug-only overlay),
             // not a safety one. It used to be a read-once-per-process latch, on the never-assessed
             // theory that repeated reads perturb ET9's gesture recognition; that is measured and
             // false (audit §4.3 — the blob's shim at 0x20fc0 touches no engine state, and 0/1/20
             // interleaved reads over the 240-swipe W6 replay are byte-identical).
-            // Not while the sync itself is deferred behind a dictionary load (audit P-7): getKeys()
-            // would run it and wait for the load on this thread. A later sync captures instead.
-            if (engine != null && isTouchKb && !engine.isLayoutSyncPending()
-                    && dev.bbkb.ime.core.gesture.arbiter.CkbKeyGridCapture.INSTANCE.needsCapture(width, height)) {
+            final LayoutSync sync = new LayoutSync(vkbSync, localeStr, width, height,
+                    isTouchKb && dev.bbkb.ime.core.gesture.arbiter.CkbKeyGridCapture.INSTANCE.needsCapture(width, height)
+                            ? this.blackberryIme : null);
+            sLastLayoutSync = sync;
+            EngineThreads.post(sync::apply);
+            updateCangjieKey();
+        } else {
+            if (InputPathDebug.on()) android.util.Log.w("CKB_SWIPE_TYPE_DEBUG", "KeyboardSwitcher.syncKeyboardLayout: getCurrentKeyboard() returned NULL — layout NOT synced to NuanceSDK");
+        }
+    }
+
+    /**
+     * The layout the main thread last asked the engine for. A language load re-creates the
+     * engine's core, and it runs on the loader thread, so a sync posted while it was queued may
+     * have reached the engine before it; {@link #resyncLayoutAfterLanguageLoad} re-applies this
+     * one once the load has ended. Written on the main thread only.
+     */
+    private static volatile LayoutSync sLastLayoutSync;
+
+    /**
+     * Called by the language-load op on the loader thread when the load has ended: re-applies the
+     * last requested layout AHEAD of everything queued on the engine thread, so no tap, key or
+     * swipe queued while the load held the engine reaches the new language before its layout
+     * (Wave 2's barrier). Front of the queue, not inline here: inline, the engine thread's
+     * waiting ops could take the engine lock between the load and the sync.
+     */
+    public static void resyncLayoutAfterLanguageLoad() {
+        final LayoutSync sync = sLastLayoutSync;
+        if (sync == null) return;
+        final LayoutSync noCapture = sync.withoutGridCapture();
+        if (EngineThreads.onLoaderThread()) {
+            EngineThreads.engineHandler().postAtFrontOfQueue(() -> {
+                try {
+                    noCapture.apply();
+                } catch (RuntimeException e) {
+                    Log.e(TAG, "layout re-sync after the language load failed", e);
+                }
+            });
+        } else {
+            EngineThreads.postAtFront(noCapture::apply);
+        }
+    }
+
+    /** One layout sync's values, computed on the main thread; {@link #apply} runs on the engine thread. */
+    private static final class LayoutSync {
+        final boolean vkbSync;
+        final String localeStr;
+        final int width;
+        final int height;
+        /** Non-null when the Gesture Lab key grid should be captured after the sync. */
+        final android.content.Context captureContext;
+
+        LayoutSync(boolean vkbSync, String localeStr, int width, int height,
+                android.content.Context captureContext) {
+            this.vkbSync = vkbSync;
+            this.localeStr = localeStr;
+            this.width = width;
+            this.height = height;
+            this.captureContext = captureContext;
+        }
+
+        LayoutSync withoutGridCapture() {
+            return captureContext == null ? this
+                    : new LayoutSync(vkbSync, localeStr, width, height, null);
+        }
+
+        void apply() {
+            // FIX-D2: null when the engine failed to load; there is then no layout to sync and no
+            // key grid to capture, but the keyboard itself must still come up.
+            com.blackberry.nuanceshim.NuanceSDK engine = NuanceSDKManager.getInstance();
+            if (engine == null) return;
+            engine.syncKeyboardLayout(vkbSync, localeStr, width, height);
+            if (captureContext != null) {
                 try {
                     dev.bbkb.ime.core.gesture.arbiter.CkbKeyGridCapture.INSTANCE.capture(
-                            this.blackberryIme, engine.getKeys(), width, height);
+                            captureContext, engine.getKeys(), width, height);
                 } catch (Throwable ignored) {
                 }
             }
-        } else {
-            if (InputPathDebug.on()) android.util.Log.w("CKB_SWIPE_TYPE_DEBUG", "KeyboardSwitcher.syncKeyboardLayout: getCurrentKeyboard() returned NULL — layout NOT synced to NuanceSDK");
         }
     }
 

@@ -5,9 +5,10 @@ import dev.bbkb.ime.core.ImeApplication
 import com.blackberry.nuanceshim.NuanceSDK
 import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.core.shared.StartupTiming
-import java.util.concurrent.Executor
-import java.util.concurrent.RejectedExecutionException
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import java.util.concurrent.locks.ReentrantLock
 
 /**
@@ -36,19 +37,22 @@ object NuanceSDKManager {
     private var secondaryInstance: NuanceSDK? = null
     
     /**
-     * Guards engine creation and disposal. A [ReentrantLock] rather than a monitor so the main
-     * thread's join on a background start can be bounded ([INIT_JOIN_TIMEOUT_MS]).
+     * Guards engine creation and disposal. Creation runs on the loader thread and disposal on the
+     * engine thread ([EngineThreads]), so this orders the two against each other.
      */
     private val initLock = ReentrantLock()
 
     /**
-     * Audit P-6: how long a caller waits for an engine start already running on another thread
+     * Audit P-6: how long a caller waits for the primary engine's start on the loader thread
      * (normally the one [startPrimaryAsync] queued in onCreate) before giving up for this call.
      * Native init takes tens to a few hundred ms; this only guards against a wedged start turning
      * into a hang. A caller that times out gets null, the same answer as "the engine failed", and
      * nothing is recorded, so the next call joins again.
      */
     private const val INIT_JOIN_TIMEOUT_MS = 8_000L
+
+    /** The same bound for the spell checker's engine, which may queue behind a language load. */
+    private const val SECONDARY_CREATE_TIMEOUT_MS = 15_000L
 
     /**
      * Audit F-7: a failed primary start used to be retried in full on EVERY [getInstance], and the
@@ -91,20 +95,6 @@ object NuanceSDKManager {
     private val gestureDepositSeq = java.util.concurrent.atomic.AtomicInteger(0)
     private val gestureConsumedSeq = java.util.concurrent.atomic.AtomicInteger(0)
 
-    /**
-     * Serializes the main thread's [touchEnd + setGesturePending] against the suggestion
-     * worker's [read isGesturePending + defensive clear()] in NuanceDictionary.getSuggestions.
-     * Without it there is a window where the worker reads pending=false, the gesture then
-     * deposits its native state and sets pending=true, and the worker's clear() wipes that
-     * state before the flag can protect it -- the engine then returns ambient predictions
-     * instead of the swiped word. Both sides take this lock, so a clear either runs before
-     * the deposit (harmless, no state yet) or sees the flag and skips.
-     */
-    private val gestureLock = Any()
-
-    @JvmStatic
-    fun getGestureLock(): Any = gestureLock
-
     /** Record the just-completed deposit (call AFTER the native touchEnd/ProcessTrace). */
     @JvmStatic
     fun noteGestureDeposit() {
@@ -144,8 +134,42 @@ object NuanceSDKManager {
                 "the process restarts — see the XT9KDB log for the reason, and audit L10.")
     }
 
+    /**
+     * Swipes whose `touchEnd` op the main thread has posted but the engine thread has not run yet.
+     * The deposit seq is written by that op, so right after a swipe ends the main thread would
+     * read "nothing pending" and skip the prediction request whenever suggestions are off (that
+     * request is what commits the swiped word). Counted up on main at post time, down on the
+     * engine thread when the op completes, accepted or not.
+     */
+    private val pendingGestureEnds = java.util.concurrent.atomic.AtomicInteger(0)
+
+    /** Main thread, right before posting a `touchEnd` op. */
+    @JvmStatic
+    fun noteGestureEndPosted() {
+        pendingGestureEnds.incrementAndGet()
+    }
+
+    /** Engine thread, at the end of the `touchEnd` op (after [noteGestureDeposit] when accepted). */
+    @JvmStatic
+    fun noteGestureEndResolved() {
+        pendingGestureEnds.updateAndGet { if (it > 0) it - 1 else 0 }
+    }
+
+    /**
+     * Main-thread meaning: a swipe has ended and its word may still be coming, so a prediction
+     * request must be made and the strip must not be replaced by typed-word suggestions.
+     */
     @JvmStatic
     fun isGesturePending(): Boolean {
+        return pendingGestureEnds.get() > 0 || isGestureDepositPending()
+    }
+
+    /**
+     * Engine-thread meaning, for the bridge: a deposit exists that no commit has consumed. The
+     * bridge runs after the `touchEnd` op by FIFO order, so it never needs the posted count.
+     */
+    @JvmStatic
+    fun isGestureDepositPending(): Boolean {
         return gestureDepositSeq.get() != gestureConsumedSeq.get()
     }
 
@@ -191,9 +215,18 @@ object NuanceSDKManager {
      */
     @JvmStatic
     fun isDLMReady(): Boolean {
-        val instance = primaryInstance ?: return false
-        return instance.isDLMReady()
+        // A published fact, not a wrapper call: callers ask from the main thread and from IO
+        // coroutines, neither of which may enter the engine.
+        return facts().isDLMReady
     }
+
+    /**
+     * The primary engine's published facts ([EngineFacts]), read without a lock and without
+     * calling into the engine: safe on the main thread. [EngineFacts.NONE] while there is no
+     * engine.
+     */
+    @JvmStatic
+    fun facts(): EngineFacts = peekInstance()?.facts ?: EngineFacts.NONE
     
     /**
      * Sites that already warned about a null SDK, so a persistent load failure
@@ -243,10 +276,13 @@ object NuanceSDKManager {
     /**
      * Get the primary NuanceSDK instance, creating it on first use.
      *
-     * Audit P-6: the service queues the creation on a worker as the first thing in onCreate
-     * ([startPrimaryAsync]). A caller that arrives while that start is running joins it here (it
-     * waits on [initLock], bounded by [INIT_JOIN_TIMEOUT_MS]); a caller that arrives when no start
-     * was queued, or after the executor was shut down before running it, creates the engine itself.
+     * Audit P-6: the service queues the creation on the loader thread as the first thing in
+     * onCreate ([startPrimaryAsync]). Creation always runs there, because the engine keeps
+     * pointers into the stack of the thread that created it ([EngineThreads]): a caller on any
+     * other thread queues a create-or-join op behind that start and waits for it, bounded by
+     * [INIT_JOIN_TIMEOUT_MS]; the op finds the engine already published and only returns it.
+     * Returning an already-published engine is free on any thread. Waiting is not allowed on the
+     * main thread (debug builds throw), which will read [facts] instead once the callers move.
      *
      * @return NuanceSDK instance, or null if initialization failed (or failed recently, see
      *   [RETRY_BACKOFF_MIN_MS]) or the join timed out
@@ -257,17 +293,27 @@ object NuanceSDKManager {
         // No context outside an Android process (JVM tests): nothing to try, nothing to back off.
         if (ImeApplication.getInstance() == null) return null
         if (inPrimaryBackoff()) return null
-        val locked = try {
-            initLock.tryLock(INIT_JOIN_TIMEOUT_MS, TimeUnit.MILLISECONDS)
-        } catch (e: InterruptedException) {
-            Thread.currentThread().interrupt()
-            false
-        }
-        if (!locked) {
+        EngineThreads.assertNotMain("NuanceSDKManager.getInstance join")
+        val future = EngineThreads.load(Callable { createOrJoinPrimary() })
+        return try {
+            future.get(INIT_JOIN_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+        } catch (e: TimeoutException) {
+            // The op stays queued and publishes the engine when it runs; the next call finds it.
             Log.w(TAG, "NuanceSDK start still running after $INIT_JOIN_TIMEOUT_MS ms; " +
                     "continuing without the engine for this call")
-            return primaryInstance
+            primaryInstance
+        } catch (e: InterruptedException) {
+            Thread.currentThread().interrupt()
+            primaryInstance
+        } catch (e: ExecutionException) {
+            Log.w(TAG, "NuanceSDK start failed", e.cause)
+            primaryInstance
         }
+    }
+
+    /** The create-or-join half of [getInstance]; runs on the loader thread. */
+    private fun createOrJoinPrimary(): NuanceSDK? {
+        initLock.lock()
         try {
             primaryInstance?.let { return it }
             if (inPrimaryBackoff()) return null
@@ -295,18 +341,13 @@ object NuanceSDKManager {
     }
 
     /**
-     * Audit P-6: start creating the primary engine on [executor] so the native library load and
-     * init overlap the rest of the service's onCreate. Returns at once. A start that cannot be
-     * queued (executor shut down) is skipped; the first [getInstance] then creates the engine.
+     * Audit P-6: start creating the primary engine on the loader thread so the native library
+     * load and init overlap the rest of the service's onCreate. Returns at once.
      */
     @JvmStatic
-    fun startPrimaryAsync(executor: Executor) {
+    fun startPrimaryAsync() {
         if (primaryInstance != null) return
-        try {
-            executor.execute { getInstance() }
-        } catch (e: RejectedExecutionException) {
-            if (BuildConfig.DEBUG) Log.w(TAG, "background engine start rejected; the first use will create it")
-        }
+        EngineThreads.load(Runnable { getInstance() })
     }
 
     /**
@@ -339,36 +380,30 @@ object NuanceSDKManager {
     }
 
     /**
-     * Dispose the primary NuanceSDK instance and release resources.
+     * Neither engine is ever disposed while the process lives.
+     *
+     * Disposing the spell checker's engine while the typing engine is in use crashes the typing
+     * engine on its next selection-list build (SIGSEGV in libnative-lib at 0xaf488; reproduced
+     * twice on the emulator on 2026-11-04 by unbinding the spell checker and typing, and the
+     * same address as the KEY2 crashes of §14 of the audit findings, which happened right after
+     * the settings screen took the text field away from the spell checker). The engine keeps
+     * process-global state behind the per-engine handle (the dispose of one handle frees memory
+     * the other handle still dereferences); disposing the typing engine first did not crash the
+     * spell checker's, but nothing says that order is safe either. So the instances are created
+     * once and kept: an IME switch leaves the typing engine (and its loaded dictionaries, which
+     * are clean file-backed pages for the built-in ones) for the next service instance, which
+     * also saves that instance the engine init.
+     *
+     * Tests reset the published instances with [resetForTests]; they never hold a native engine.
      */
     @JvmStatic
-    fun disposePrimary() {
+    fun resetForTests() {
         initLock.lock()
         try {
-            primaryInstance?.dispose()
             primaryInstance = null
+            secondaryInstance = null
             primaryFailedAtNanos = 0L
             primaryRetryDelayMs = 0L
-        } finally {
-            initLock.unlock()
-        }
-    }
-
-    /**
-     * Dispose the secondary (spell-checker) engine; the next [getSecondary] creates a fresh one.
-     * The spell-checker service calls this when it unbinds or has been idle, so the up to four
-     * dictionaries that engine holds (5 to 6 MB of native heap each) do not stay resident for
-     * the life of the IME process.
-     */
-    @JvmStatic
-    fun disposeSecondary() {
-        initLock.lock()
-        try {
-            // Unpublished before it is disposed, so getSecondary/peekSecondary never hand out a
-            // disposed engine.
-            val engine = secondaryInstance
-            secondaryInstance = null
-            engine?.dispose()
         } finally {
             initLock.unlock()
         }
@@ -383,24 +418,43 @@ object NuanceSDKManager {
     fun peekSecondary(): NuanceSDK? = secondaryInstance
     
     /**
-     * Get the secondary NuanceSDK instance.
-     * Lazily initializes on first access with comprehensive error handling.
-     * 
-     * @return NuanceSDK instance, or null if initialization failed
+     * Get the secondary (spell-checker) NuanceSDK instance, creating it on first use.
+     *
+     * Created on the loader thread, like the primary: a caller elsewhere waits for that, bounded
+     * by [SECONDARY_CREATE_TIMEOUT_MS] (not on the main thread; debug builds throw).
+     *
+     * @return NuanceSDK instance, or null if initialization failed or timed out
      */
     @JvmStatic
     fun getSecondary(): NuanceSDK? {
-        if (secondaryInstance == null) {
-            initLock.lock()
-            try {
-                if (secondaryInstance == null) {
-                    secondaryInstance = initializeNuanceSDK("secondary")
-                }
-            } finally {
-                initLock.unlock()
-            }
+        secondaryInstance?.let { return it }
+        EngineThreads.assertNotMain("NuanceSDKManager.getSecondary create")
+        val future = EngineThreads.load(Callable { createSecondary() })
+        return try {
+            future.get(SECONDARY_CREATE_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+        } catch (e: TimeoutException) {
+            Log.w(TAG, "secondary NuanceSDK start still running after $SECONDARY_CREATE_TIMEOUT_MS ms")
+            secondaryInstance
+        } catch (e: InterruptedException) {
+            Thread.currentThread().interrupt()
+            secondaryInstance
+        } catch (e: ExecutionException) {
+            Log.w(TAG, "secondary NuanceSDK start failed", e.cause)
+            secondaryInstance
         }
-        return secondaryInstance
+    }
+
+    /** The create half of [getSecondary]; runs on the loader thread. */
+    private fun createSecondary(): NuanceSDK? {
+        initLock.lock()
+        try {
+            if (secondaryInstance == null) {
+                secondaryInstance = initializeNuanceSDK("secondary")
+            }
+            return secondaryInstance
+        } finally {
+            initLock.unlock()
+        }
     }
     
     /**

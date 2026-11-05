@@ -39,6 +39,9 @@ class CkbCursorDragCoalescingTest {
 
     @Before
     fun setUp() {
+        // The code under test still calls the engine from the main thread; until those callers
+        // move onto EngineThreads, run engine ops inline so the debug thread assertions pass.
+        dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(true)
         val sv = allocate(SettingsValues::class.java)
         // One step per 10 px, no speed multiplier: each 10 px sample below is exactly one step.
         set(sv, "horizontalScrollDistanceForCursorMove", 10)
@@ -58,6 +61,7 @@ class CkbCursorDragCoalescingTest {
     @After
     fun tearDown() {
         events.forEach { it.recycle() }
+        dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(false)
     }
 
     private fun <T> allocate(cls: Class<T>): T {

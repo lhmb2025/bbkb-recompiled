@@ -5,6 +5,7 @@ import static dev.bbkb.ime.core.shared.StringHelper.*;
 import android.content.Context;
 import android.text.TextUtils;
 
+import dev.bbkb.ime.core.textinput.composing.ComposingSnapshot;
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker;
 import dev.bbkb.ime.core.engine.Dictionary;
 import dev.bbkb.ime.core.engine.DictionaryLoader;
@@ -119,17 +120,30 @@ public final class SuggestionEngine {
         }
     }
 
+    /**
+     * The tracker form, for callers on the tracker's own thread (tests); it reads the tracker once
+     * into a {@link ComposingSnapshot} and runs the snapshot form.
+     */
     public void getSuggestedWords(Context context, ComposingTextTracker composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, boolean autoCorrectEnabled, int suggestionType, SuggestionCallback callback) {
-        if (composingTracker.isPredictionMode()) {
+        getSuggestedWords(context, ComposingSnapshot.of(composingTracker), prevWordsInfo, proximityGrid, stripSettings, autoCorrectEnabled, suggestionType, callback);
+    }
+
+    /**
+     * Builds the suggestions for {@code composingTracker}, the composing state the request was
+     * made for (taken on the main thread; this runs on the engine thread and never reads the
+     * tracker itself, Wave 3 Phase A).
+     */
+    public void getSuggestedWords(Context context, ComposingSnapshot composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, boolean autoCorrectEnabled, int suggestionType, SuggestionCallback callback) {
+        if (composingTracker.isPredictionMode) {
             getPredictions(composingTracker, prevWordsInfo, proximityGrid, stripSettings, suggestionType, callback);
         } else {
             getCorrections(context, composingTracker, prevWordsInfo, proximityGrid, stripSettings, suggestionType, autoCorrectEnabled, callback);
         }
     }
 
-    private static ArrayList<SuggestedWords.SuggestedWordInfo> applyCaseTransform(ComposingTextTracker composingTracker, SuggestionResult perfLogger, int trailingApostrophes) {
-        boolean allCaps = composingTracker.isAllCaps();
-        boolean firstCaps = composingTracker.shouldCapitalizeFirstLetter(); // first letter caps (start of sentence)
+    private static ArrayList<SuggestedWords.SuggestedWordInfo> applyCaseTransform(ComposingSnapshot composingTracker, SuggestionResult perfLogger, int trailingApostrophes) {
+        boolean allCaps = composingTracker.isAllCaps;
+        boolean firstCaps = composingTracker.shouldCapitalizeFirstLetter; // first letter caps (start of sentence)
         ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = perfLogger.getSuggestions();
         int size = suggestions.size();
         // Case is only ever raised, never lowered, as in the original (ab.java): a word the
@@ -141,22 +155,22 @@ public final class SuggestionEngine {
         return suggestions;
     }
 
-    private void getCorrections(Context context, ComposingTextTracker composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, int suggestionType, boolean autoCorrectEnabled, SuggestionCallback callback) {
+    private void getCorrections(Context context, ComposingSnapshot composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, int suggestionType, boolean autoCorrectEnabled, SuggestionCallback callback) {
         boolean shouldAutoCorrect;
         int finalSuggestionType;
-        int trailingApostrophes = countTrailingApostrophes((CharSequence) composingTracker.getComposingText());
+        int trailingApostrophes = countTrailingApostrophes((CharSequence) composingTracker.text);
         // Typed-word guard (2026-10-12): is what the user typed a word the dictionary knows? Asked
         // BEFORE the list is built, so whatever the lookup does inside the engine is undone by the
         // bridge's own clear-and-replay of the composing text, and only when the answer can
         // matter: auto-correct on and a word of two or more letters being composed.
-        final String composingText = composingTracker.getComposingText();
-        final boolean typedWordIsValid = autoCorrectEnabled && composingTracker.isComposing()
+        final String composingText = composingTracker.text;
+        final boolean typedWordIsValid = autoCorrectEnabled && composingTracker.isComposing
                 && composingText != null && composingText.length() > 1
                 && this.mDictionaryLoader.isWordValid(composingText, true);
         SuggestionResult perfLogger = this.mDictionaryLoader.generateSuggestions(composingTracker, prevWordsInfo, proximityGrid, stripSettings, 0);
         dropLearnedOnlyWords(perfLogger.getSuggestions(), composingText, perfLogger.locale);
         ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = applyCaseTransform(composingTracker, perfLogger, trailingApostrophes);
-        boolean isPrediction = !composingTracker.isComposing();
+        boolean isPrediction = !composingTracker.isComposing;
         boolean hasGoodCorrection = shouldAutoCorrect(composingTracker, suggestions, typedWordIsValid, perfLogger.locale);
         
         // Corrected control flow logic to match Smali bytecode
@@ -164,13 +178,13 @@ public final class SuggestionEngine {
         boolean cond_hasGood = hasGoodCorrection;
         boolean cond_notPred = !isPrediction;
         boolean cond_notEmpty = !perfLogger.isEmpty();
-        boolean cond_noDigits = !composingTracker.hasDigits();
-        boolean cond_noMultiUpper = !composingTracker.hasMultipleUpperCase();
-        boolean cond_notGesture = !composingTracker.isGestureInput();
+        boolean cond_noDigits = !composingTracker.hasDigits;
+        boolean cond_noMultiUpper = !composingTracker.hasMultipleUpperCase;
+        boolean cond_notGesture = !composingTracker.isGestureInput;
         boolean cond_dictReady = this.mDictionaryLoader.isDictionaryReady();
         boolean cond_notKind7 = cond_notEmpty && !perfLogger.getFirstSuggestion().isKind(7);
         if (BuildConfig.DEBUG) {
-        android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "SuggestionEngine.getCorrections: composing='" + composingTracker.getComposingText() + "'"
+        android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "SuggestionEngine.getCorrections: composing='" + composingTracker.text + "'"
             + " acEnabled=" + cond_acEnabled
             + " hasGood=" + cond_hasGood
             + " notPred=" + cond_notPred
@@ -242,7 +256,7 @@ public final class SuggestionEngine {
         callback.onSuggestionsReady(new SuggestedWords(suggestions, !isPrediction && !hasGoodCorrection, willAutoCorrect, finalSuggestionType));
     }
 
-    private void getPredictions(ComposingTextTracker composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, int suggestionType, SuggestionCallback callback) {
+    private void getPredictions(ComposingSnapshot composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, int suggestionType, SuggestionCallback callback) {
         SuggestionResult perfLogger = this.mDictionaryLoader.generateSuggestions(composingTracker, prevWordsInfo, proximityGrid, stripSettings, 1);
         dropLearnedOnlyWords(perfLogger.getSuggestions(), null, perfLogger.locale);
         ArrayList<SuggestedWords.SuggestedWordInfo> predictions = perfLogger.getSuggestions();
@@ -250,15 +264,15 @@ public final class SuggestionEngine {
         // place in the strip: its emoji is the emojibase hit for the word being composed.
         EmojibaseStripSuggestion.dropEngineEmoji(predictions);
         int size = predictions.size();
-        boolean isStartOfSentence = composingTracker.isStartOfSentence();
-        String composingText = composingTracker.getComposingText();
+        boolean isStartOfSentence = composingTracker.isStartOfSentence;
+        String composingText = composingTracker.text;
         boolean userTypedUppercase = composingText.length() > 0 && Character.isUpperCase(composingText.codePointAt(0));
         boolean shouldCapitalize = isStartOfSentence || userTypedUppercase;
-        boolean allCaps = composingTracker.isAllCaps();
+        boolean allCaps = composingTracker.isAllCaps;
         for (int i = 0; i < size; i++) {
             predictions.set(i, transformCase(predictions.get(i), perfLogger.locale, allCaps, shouldCapitalize, 0));
         }
-        if (predictions.size() > 1 && TextUtils.equals(predictions.get(0).word, composingTracker.getLastCommittedWord())) {
+        if (predictions.size() > 1 && TextUtils.equals(predictions.get(0).word, composingTracker.lastCommittedWord)) {
             predictions.add(1, predictions.remove(0));
         }
         SuggestedWords.SuggestedWordInfo.dedupeSuggestions(null, predictions);
@@ -300,14 +314,14 @@ public final class SuggestionEngine {
      *                         the correction is the same word in different dress
      *                         ({@link TypedWordGuard}); see the comment at the guard below.
      */
-    private boolean shouldAutoCorrect(ComposingTextTracker composingTracker, ArrayList<SuggestedWords.SuggestedWordInfo> suggestions,
+    private boolean shouldAutoCorrect(ComposingSnapshot composingTracker, ArrayList<SuggestedWords.SuggestedWordInfo> suggestions,
             boolean typedWordIsValid, Locale locale) {
         boolean meetsThreshold;
         if (suggestions.size() <= 1 || this.mBlockAutoCorrect) {
             if (BuildConfig.DEBUG) android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "shouldAutoCorrect: EARLY_RETURN size=" + suggestions.size() + " blocked=" + this.mBlockAutoCorrect);
             return false;
         }
-        String typedWord = composingTracker.getComposingText();
+        String typedWord = composingTracker.text;
         int trailingApostrophes = countTrailingApostrophes((CharSequence) typedWord);
         int length = (trailingApostrophes > 0 ? typedWord.substring(0, typedWord.length() - trailingApostrophes) : typedWord).length();
         if (length <= 1) {

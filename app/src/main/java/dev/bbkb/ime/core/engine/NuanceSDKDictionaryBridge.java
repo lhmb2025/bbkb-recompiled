@@ -6,6 +6,7 @@ import android.util.Log;
 
 import dev.bbkb.ime.BuildConfig;
 
+import dev.bbkb.ime.core.textinput.composing.ComposingSnapshot;
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker;
 import dev.bbkb.ime.personaldictionary.DictionaryManager;
 import dev.bbkb.ime.core.locale.SubtypeManager;
@@ -155,19 +156,41 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         return true;
     }
 
+    /**
+     * The tracker form, kept for the spell checker: its tracker is read here, on the calling
+     * thread (inside the spell checker's own engine op), into a {@link ComposingSnapshot}.
+     */
     @Override // dev.bbkb.ime.core.engine.Dictionary
     public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingTextTracker c0670ag, PrevWordsInfo prevWordsInfo, SuggestionStripSettings c0805e, int i) {
+        return generateSuggestions(ComposingSnapshot.of(c0670ag), prevWordsInfo, c0805e, i);
+    }
+
+    @Override // dev.bbkb.ime.core.engine.Dictionary
+    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestionsForSnapshot(ComposingSnapshot composing, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int i) {
+        return generateSuggestions(composing, prevWordsInfo, stripSettings, i);
+    }
+
+    /**
+     * Builds the suggestion list for {@code c0670ag}, the composing state the request was made for.
+     * Runs on the engine thread as one op (Wave 3 Phase A): every feed for this text was posted
+     * before the request and every feed for later text after it, so nothing writes the engine's
+     * buffer while this reads it, and the tracker itself is never read here.
+     */
+    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingSnapshot c0670ag, PrevWordsInfo prevWordsInfo, SuggestionStripSettings c0805e, int i) {
         int i2;
         int i3;
         WordInfo wordInfo;
-        
+        if (c0670ag == null) {
+            c0670ag = ComposingSnapshot.EMPTY;
+        }
+
         // Enhanced logging for suggestion generation
-        
-        String strM4360m = c0670ag.getComposingText();
+
+        String strM4360m = c0670ag.text;
         if (BuildConfig.DEBUG) {
             Log.d("PIPELINE", "IME:nuanceDict:getSuggestions:start" +
                 " composing=\"" + strM4360m + "\"" +
-                " isPredMode=" + c0670ag.isPredictionMode() +
+                " isPredMode=" + c0670ag.isPredictionMode +
                 " thread=" + Thread.currentThread().getName());
         }
         ArrayList<SuggestedWords.SuggestedWordInfo> arrayList = new ArrayList<>();
@@ -190,40 +213,42 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         // writes), re-check it after the list is collected, and on a genuine mid-read mutation
         // redo the read against current tracker text. Bounded to one retry, and it never returns
         // empty -- that is what froze the strip last time.
+        //
+        // Phase A: the request is one engine-thread op now and the main thread's feeds are posted
+        // ops queued behind it, so only the spell checker's engine (which shares the static epoch)
+        // can still move it. The retry is harmless and stays until a later phase removes it; it
+        // re-reads the same snapshot text, which is still what this request was made for.
         int iBuildSelectionList;
         int selectionListSize;
-        // The epoch after this request's own replay (set inside the loop); compared again after
-        // the read to decide whether the engine buffer still holds exactly what we fed it.
-        long epochAfterOwnReplay = -1L;
         for (int attempt = 0; ; attempt++) {
         arrayList.clear();
-        if (attempt > 0) {
-            strM4360m = c0670ag.getComposingText();   // resync: the buffer moved under us
-        }
 
-        // Read the flag and act on it under the gesture lock, so a concurrent touchEnd on the
-        // main thread cannot deposit gesture state (and set the flag) in the gap between our
-        // read and our clear(). See NuanceSDKManager.gestureLock.
-        boolean gesturePending;
-        synchronized (NuanceSDKManager.getGestureLock()) {
-            gesturePending = TextUtils.isEmpty(strM4360m) && NuanceSDKManager.isGesturePending();
-            if (!gesturePending) {
-                setNativeContext(prevWordsInfo, strM4360m);
-                if (!TextUtils.isEmpty(strM4360m)) {
-                    if (!engineOwnsComposingState(c0670ag, this.nuanceSdk)) {
-                        this.nuanceSdk.clear();
-                        for (int ci = 0; ci < strM4360m.length(); ci++) {
-                            this.nuanceSdk.processKeyBySymbol(strM4360m.charAt(ci));
-                        }
-                    }
-                } else {
-                    // FIX: For next-word prediction requests (empty composing), defensively clear
-                    // the native engine's character buffer so buildSelectionList() returns true
-                    // next-word predictions against prevWord context, not residual completions
-                    // of the previously-typed word. Guards against any commit path that fails to
-                    // transition the engine (e.g. addWord-only branches in CommitController).
+        // Read the flag and act on it in one step on the engine thread. The gesture's touchEnd
+        // deposit runs on the same thread, so FIFO order alone decides whether this clear()
+        // runs before the deposit (harmless, no state yet) or sees the flag and skips; no lock
+        // is needed between the two.
+        // Seq-only: the touchEnd op that raises the deposit seq ran before this request (FIFO);
+        // the main-side isGesturePending() also counts touchEnd ops still queued, which a request
+        // on this thread can never see.
+        boolean gesturePending = TextUtils.isEmpty(strM4360m) && NuanceSDKManager.isGestureDepositPending();
+        if (!gesturePending) {
+            setNativeContext(prevWordsInfo, strM4360m);
+            if (!TextUtils.isEmpty(strM4360m)) {
+                // The replay of the snapshot text stays for now: under FIFO it equals what the
+                // feeds already put in the buffer (a later phase deletes it).
+                if (!engineOwnsComposingState(c0670ag, this.nuanceSdk)) {
                     this.nuanceSdk.clear();
+                    for (int ci = 0; ci < strM4360m.length(); ci++) {
+                        this.nuanceSdk.processKeyBySymbol(strM4360m.charAt(ci));
+                    }
                 }
+            } else {
+                // FIX: For next-word prediction requests (empty composing), defensively clear
+                // the native engine's character buffer so buildSelectionList() returns true
+                // next-word predictions against prevWord context, not residual completions
+                // of the previously-typed word. Guards against any commit path that fails to
+                // transition the engine (e.g. addWord-only branches in CommitController).
+                this.nuanceSdk.clear();
             }
         }
         if (gesturePending) {
@@ -235,12 +260,12 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
             // every swipe reconstructed garbage from an empty list. Restore the original: read the
             // inline word and return it as the (single) gesture suggestion.
             //
-            // The ENTIRE branch holds the gesture lock: the owned ranking (§8.7.6) reads the
-            // engine's sets AND the native stored path, and a fast next swipe's touchEnd deposit
-            // must not land in between — unlocked, corpus-A ranked every gesture against the
-            // FOLLOWING swipe's path (§8.7.10: winner == next word, off-by-one down the list).
-            // touchEnd takes this same lock to deposit, so consumption is atomic against it.
-            synchronized (NuanceSDKManager.getGestureLock()) {
+            // The ENTIRE branch must run without a deposit landing in between: the owned ranking
+            // (§8.7.6) reads the engine's sets AND the native stored path, and a fast next
+            // swipe's touchEnd deposit must not land mid-branch (§8.7.10: corpus-A once ranked
+            // every gesture against the FOLLOWING swipe's path, off-by-one down the list). The
+            // deposit and this request both run on the engine thread, so FIFO order keeps the
+            // whole branch atomic against it; the gesture lock that used to do this is gone.
             String inlineGesture = this.nuanceSdk.getInlineWord();
             if (BuildConfig.DEBUG) Log.d("PIPELINE", "IME:nuanceDict:gestureInline inline=\"" + inlineGesture + "\"");
             // OWNED RANKING (remediation log §8.7.6): when the owned decode path fed the engine
@@ -337,14 +362,12 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
                         + " thread=" + Thread.currentThread().getName());
                 return arrayList;
             }
-            }   // gesture lock — held through inline read + ranking + clear (§8.7.10)
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "NuanceDictionary.getSuggestions: gesturePending=true but inline empty — falling through to buildSelectionList");
         }
         
         // Sampled AFTER our own clear+replay above, so the worker never trips on its own writes.
         // buildSelectionList/getSelectionListWord are reads and do not bump the epoch.
         final long epochAtReadStart = NuanceSDK.getInputBufferEpoch();
-        epochAfterOwnReplay = epochAtReadStart;
 
         // NOT a candidate count: ET9AWSelLstBuild's DEFAULT-WORD INDEX. Proven in the original
         // APK's bytecode -- Java_..._buildSelectionList @0x20424 calls vtable+0x38
@@ -525,46 +548,12 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
                     + strM4360m + "' -> " + kinds);
         }
 
-        // Audit EB-7: restore the engine buffer from what the tracker says NOW, not from the
-        // entry snapshot — replaying a stale snapshot leaves copy 4 (the native buffer)
-        // diverged from copy 3 (the tracker) until the next read.
-        //
-        // Deliberately NOT discarding the assembled list when the tracker advanced during the
-        // read (an earlier attempt at audit EB-2 did, and it broke live suggestions — see
-        // below). The tracker advancing between a request starting and finishing is the NORMAL
-        // case at typing speed, not a corruption signal: a list built for "Hel" is valid for
-        // "Hel", merely superseded, and staleness is already handled at delivery by
-        // InputLogic.onSuggestionsReceived's tracker/cursor guards. Discarding here starved the
-        // strip — every keystroke's result was thrown away by the next keystroke — and an empty
-        // return makes SuggestionCoordinator fall back to merging the typed word with the
-        // PREVIOUS suggestions, so the strip showed stale near-duplicates ("Hello hello hello").
-        String composingNow = c0670ag.getComposingText();
-
-        if (!TextUtils.isEmpty(composingNow)) {
-            if (!engineOwnsComposingState(c0670ag, this.nuanceSdk)) {
-                // Replay only when something changed. When the tracker still holds the text we
-                // fed and nothing wrote the engine buffer since (same epoch), the buffer already
-                // IS composingNow; rewriting it would cost a whole-word refeed per request (so
-                // engine work per word grew with the square of its length) and, worse, would
-                // invalidate the selection list this list was read from, so the commit path's
-                // selectionListSelectWord was refused on most commits and the main thread rebuilt
-                // the list to learn the word (BaseLearningModel.learnWord).
-                boolean unchanged = composingNow.equals(strM4360m)
-                        && NuanceSDK.getInputBufferEpoch() == epochAfterOwnReplay;
-                if (!unchanged) {
-                    this.nuanceSdk.clear();
-                    for (int ci = 0; ci < composingNow.length(); ci++) {
-                        this.nuanceSdk.processKeyBySymbol(composingNow.charAt(ci));
-                    }
-                }
-            }
-        } else if (!TextUtils.isEmpty(strM4360m)) {
-            // The word was committed or cleared while we read: leave no residue behind, or the
-            // next next-word-prediction request scores against a dead word (the May 2026
-            // post-commit-predictions bug, arrived at from the other direction).
-            this.nuanceSdk.clear();
-        }
-
+        // Phase A deleted the post-read tail (audit EB-7's replay of the tracker's text as it
+        // stood after the read, and the clear when the word had been committed mid-read). Under
+        // FIFO both were wrong: the feeds for any text typed after this request was posted are
+        // queued behind it, so replaying that text here would have applied them twice, and a
+        // commit's clear is likewise its own op behind this one. The buffer is left exactly as
+        // the feeds made it.
         return arrayList;
     }
 
@@ -582,6 +571,11 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
      */
     static boolean engineOwnsComposingState(ComposingTextTracker tracker, NuanceSDK sdk) {
         return tracker.hasInputMethodConverter() || sdk.isChineseStrokeMode() || sdk.isChineseCangjieMode();
+    }
+
+    /** {@link #engineOwnsComposingState(ComposingTextTracker, NuanceSDK)} for a request's snapshot. */
+    static boolean engineOwnsComposingState(ComposingSnapshot composing, NuanceSDK sdk) {
+        return composing.hasInputMethodConverter || sdk.isChineseStrokeMode() || sdk.isChineseCangjieMode();
     }
 
     private void setNativeContext(PrevWordsInfo prevWordsInfo, String str) {
@@ -641,16 +635,16 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         return false;
     }
 
-    public boolean shouldAutoCorrect(ComposingTextTracker c0670ag, ArrayList<SuggestedWords.SuggestedWordInfo> arrayList, SuggestionResult c0873an) {
+    public boolean shouldAutoCorrect(ComposingSnapshot c0670ag, ArrayList<SuggestedWords.SuggestedWordInfo> arrayList, SuggestionResult c0873an) {
         DictionaryManager.CapsMode bVar;
-        String strM4360m = c0670ag.getComposingText();
+        String strM4360m = c0670ag.text;
         if (TextUtils.isEmpty(strM4360m)) {
             if (BuildConfig.DEBUG) Log.d("AC_DEBUG", "NuanceDict.shouldAutoCorrect: SKIP empty composing");
             return false;
         }
-        if (c0670ag.isAllCaps()) {
+        if (c0670ag.isAllCaps) {
             bVar = DictionaryManager.CapsMode.ALL_CAPS;
-        } else if (c0670ag.shouldCapitalizeFirstLetter()) {
+        } else if (c0670ag.shouldCapitalizeFirstLetter) {
             bVar = DictionaryManager.CapsMode.FIRST_LETTER_CAPS;
         } else {
             bVar = DictionaryManager.CapsMode.NO_CAPS;
@@ -722,17 +716,35 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         if (TextUtils.isEmpty(str)) {
             return false;
         }
-        if (this.nuanceSdk.deleteDLMWord(str)) {
-            return true;
-        }
-        Locale locale = getPrimaryEngineLocale();
-        String lower = str.toLowerCase(locale != null ? locale : Locale.ROOT);
-        return !lower.equals(str) && this.nuanceSdk.deleteDLMWord(lower);
+        // Posted to the engine thread (Phase A): the lower-case retry needs the first answer, so
+        // both deletes are one op. Returns true once queued; the outcome is logged in debug.
+        final NuanceSDK sdk = this.nuanceSdk;
+        final String word = str;
+        EngineThreads.post(() -> {
+            boolean removed = sdk.deleteDLMWord(word);
+            if (!removed) {
+                Locale locale = getPrimaryEngineLocale();
+                String lower = word.toLowerCase(locale != null ? locale : Locale.ROOT);
+                removed = !lower.equals(word) && sdk.deleteDLMWord(lower);
+            }
+            if (BuildConfig.DEBUG) Log.d("PIPELINE", "IME:nuanceDict:unlearn word=\"" + word + "\" -> " + removed);
+        });
+        return true;
     }
 
+    /**
+     * Read from the published facts (Phase A), never the engine: the separator changes only with
+     * the language. This bridge's own engine's facts; the primary's when it has none.
+     */
     @Override // dev.bbkb.ime.core.engine.Dictionary
     public String getWordSeparator(String str) {
-        return this.nuanceSdk.isCurrLocaleChinese() ? "" : String.valueOf(this.nuanceSdk.getDefaultWordSeparator());
+        EngineFacts facts = this.nuanceSdk != null ? this.nuanceSdk.getFacts() : null;
+        return wordSeparatorFor(facts != null ? facts : PrimaryEngineFacts.get());
+    }
+
+    /** The separator a word is committed with under {@code facts}: none for Chinese. */
+    static String wordSeparatorFor(EngineFacts facts) {
+        return PrimaryEngineFacts.wordSeparator(facts);
     }
 
     @Override // dev.bbkb.ime.core.engine.Dictionary
@@ -740,7 +752,10 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         if (str == null || str2 == null || str3 == null || str.isEmpty() || str2.isEmpty() || str3.isEmpty()) {
             return false;
         }
-        return this.nuanceSdk.wordChanged(str, i, str2, str3);
+        // Posted (Phase A): the recorrection note is learning, nothing waits for it.
+        final NuanceSDK sdk = this.nuanceSdk;
+        EngineThreads.post(() -> sdk.wordChanged(str, i, str2, str3));
+        return true;
     }
 
     @Override // dev.bbkb.ime.core.engine.Dictionary

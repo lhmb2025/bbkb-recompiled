@@ -338,16 +338,26 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
                 return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY, null);
             }
             Keyboard keyboard = this.mService.getKeyboardForLocale(this.mSessionLocale);
-            ComposingTextTracker composingTracker = new ComposingTextTracker(NuanceSDKManager.getSecondary());
             int[] codePoints = toCodePointArray((CharSequence) normalizedWord);
             ProximityGrid proximityGrid = keyboard != null ? keyboard.getProximityGrid() : null;
-            if (composingTracker.getConverterType() == InputMethodCallback.ConverterType.NOT_DEFINED && LocaleUtils.isCurrentSubtypeKorean()) {
-                composingTracker.setInputMethodConverter(new HangulInputProcessor());
-            }
-            composingTracker.setComposingFromCodePoints(codePoints, CoordinateUtils.newCoordinateArray(codePoints.length, -1, -1));
+            final boolean korean = LocaleUtils.isCurrentSubtypeKorean();
+            // Built and fed on the engine thread, in the same op as the lookup (see
+            // AndroidSpellCheckerService.getSuggestions). peekSecondary, not getSecondary: the
+            // request has just loaded the engine and holds it against release, and the engine
+            // thread must not wait for a create on the loader.
+            final java.util.function.Supplier<ComposingTextTracker> trackerFactory = () -> {
+                final com.blackberry.nuanceshim.NuanceSDK engine = NuanceSDKManager.peekSecondary();
+                if (engine == null) return null;
+                ComposingTextTracker composingTracker = new ComposingTextTracker(engine);
+                if (composingTracker.getConverterType() == InputMethodCallback.ConverterType.NOT_DEFINED && korean) {
+                    composingTracker.setInputMethodConverter(new HangulInputProcessor());
+                }
+                composingTracker.setComposingFromCodePoints(codePoints, CoordinateUtils.newCoordinateArray(codePoints.length, -1, -1));
+                return composingTracker;
+            };
             SuggestionResult suggestionResult;
             try {
-                suggestionResult = extractSuggestions(capMode, this.mSessionLocale, sugLimit, normalizedWord, isInDict ? null : this.mService.getSuggestions(composingTracker, prevWordsInfo, proximityGrid));
+                suggestionResult = extractSuggestions(capMode, this.mSessionLocale, sugLimit, normalizedWord, isInDict ? null : this.mService.getSuggestions(trackerFactory, prevWordsInfo, proximityGrid));
             } catch (Throwable e) {
                 // Fallback to basic spell checking if advanced features fail
                 suggestionResult = extractSuggestions(capMode, this.mSessionLocale, sugLimit, normalizedWord, null);

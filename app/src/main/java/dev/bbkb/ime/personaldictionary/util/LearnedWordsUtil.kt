@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.blackberry.nuanceshim.NuanceSDK
 import com.blackberry.nuanceshim.languagepack.LanguagePackManager
+import dev.bbkb.ime.core.engine.engineLoaderDispatcher
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils
 import dev.bbkb.ime.core.locale.SubtypeManager
 import kotlinx.coroutines.CoroutineScope
@@ -57,10 +58,13 @@ class LearnedWordsUtil @VisibleForTesting internal constructor(
     /**
      * Audit PD-21: this used to start a raw unnamed Thread per call and deliver the
      * callback on it, with no main-thread hop - and the caller is a settings screen.
+     *
+     * Wave 3: the enumeration (and the language load it may need) is one op on the engine's
+     * loader thread; a Dispatchers.IO thread can exit, so it must never call the engine.
      */
     fun getLearnedWords(listener: LearnedWordsListener, includeShortcuts: Boolean) {
         scope.launch {
-            val words = getLearnedWords(false, includeShortcuts)
+            val words = withContext(engineLoaderDispatcher) { getLearnedWords(false, includeShortcuts) }
             withContext(Dispatchers.Main) { listener.complete(words) }
         }
     }
@@ -96,6 +100,7 @@ class LearnedWordsUtil @VisibleForTesting internal constructor(
         }
     }
 
+    /** Calls the engine: run it on the loader thread (see the listener overload). */
     fun getLearnedWords(toLowerCase: Boolean, explicit: Boolean): List<String> {
         ensureEngineHasLanguage()
         val dlmWords = if (explicit) {

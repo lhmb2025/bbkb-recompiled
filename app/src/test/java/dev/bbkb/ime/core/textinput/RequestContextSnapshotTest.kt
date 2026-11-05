@@ -4,6 +4,7 @@ import dev.bbkb.ime.core.settings.util.SettingsManager
 import dev.bbkb.ime.core.settings.util.SettingsValues
 import dev.bbkb.ime.core.suggestion.PrevWordsInfo
 import dev.bbkb.ime.core.suggestion.SuggestionEngine
+import dev.bbkb.ime.core.textinput.composing.ComposingSnapshot
 import dev.bbkb.ime.harness.PipelineHarness
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -43,7 +44,7 @@ class RequestContextSnapshotTest {
         originalManagerValues = managerValuesField().get(SettingsManager.getInstance()) as SettingsValues?
         `when`(
             h.dictionaryLoader.generateSuggestions(
-                anyArg(), anyArg(), anyArg(), anyArg(), anyInt(),
+                ArgumentMatchers.any(ComposingSnapshot::class.java), anyArg(), anyArg(), anyArg(), anyInt(),
             ),
         ).thenAnswer {
             seenByEngine = it.arguments[1] as PrevWordsInfo

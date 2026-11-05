@@ -2,6 +2,7 @@ package dev.bbkb.ime.core.suggestion
 
 import dev.bbkb.ime.core.engine.DictionaryLoader
 import dev.bbkb.ime.core.engine.NuanceSDKDictionaryBridge
+import dev.bbkb.ime.core.textinput.composing.ComposingSnapshot
 import dev.bbkb.ime.core.textinput.composing.ComposingTextTracker
 import org.junit.After
 import org.junit.Assert.assertFalse
@@ -85,7 +86,7 @@ class SuggestionEngineTypedWordGuardTest {
             list.add(SuggestedWords.SuggestedWordInfo(c.first, 100 - i, c.second, null, -1, -1, null))
         }
         result.addSuggestions(list)
-        `when`(loader.generateSuggestions(any(), any(), any(), any(), anyInt())).thenReturn(result)
+        `when`(loader.generateSuggestions(any(ComposingSnapshot::class.java), any(), any(), any(), anyInt())).thenReturn(result)
     }
 
     private fun dictionaryKnows(word: String) {
@@ -194,6 +195,6 @@ class SuggestionEngineTypedWordGuardTest {
 
         val order = org.mockito.Mockito.inOrder(loader)
         order.verify(loader).isWordValid("about", true)
-        order.verify(loader).generateSuggestions(any(), any(), any(), any(), anyInt())
+        order.verify(loader).generateSuggestions(any(ComposingSnapshot::class.java), any(), any(), any(), anyInt())
     }
 }

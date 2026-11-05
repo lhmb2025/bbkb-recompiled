@@ -40,8 +40,30 @@ public class SentenceTokenizer {
      * engine can hold several sessions' languages, with another session's first.
      */
     public SentenceTextInfoParams tokenize(TextInfo textInfo) {
-        Locale locale = this.mLocale != null ? this.mLocale : NuanceSDKManager.getSecondary().getPrimaryLanguage();
+        Locale locale = this.mLocale != null ? this.mLocale : enginePrimaryLanguage();
         return new BlackBerryTokenizer(locale).split(textInfo);
+    }
+
+    /**
+     * The spell checker engine's first language, from its published facts (no engine call). Only
+     * when there is no engine yet is one created, on the engine loader thread, with this binder
+     * thread waiting for it, bounded; English, as the engine's own fallback, if that fails.
+     */
+    private static Locale enginePrimaryLanguage() {
+        final com.blackberry.nuanceshim.NuanceSDK engine = NuanceSDKManager.peekSecondary();
+        Locale locale = engine != null ? engine.getFacts().getPrimaryLanguage() : null;
+        if (locale == null && engine == null) {
+            try {
+                locale = dev.bbkb.ime.core.engine.EngineOps.loadSecondary("SentenceTokenizer",
+                        sdk -> sdk.getFacts().getPrimaryLanguage())
+                        .get(AndroidSpellCheckerService.LOAD_WAIT_MS, java.util.concurrent.TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (java.util.concurrent.ExecutionException | java.util.concurrent.TimeoutException e) {
+                // Fall through to the default below.
+            }
+        }
+        return locale != null ? locale : Locale.ENGLISH;
     }
 
     /**

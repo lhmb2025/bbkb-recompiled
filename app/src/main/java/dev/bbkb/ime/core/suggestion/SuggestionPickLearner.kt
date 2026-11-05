@@ -1,6 +1,8 @@
 package dev.bbkb.ime.core.suggestion
 
-import dev.bbkb.ime.core.engine.NuanceSDKManager
+import android.util.Log
+import dev.bbkb.ime.BuildConfig
+import dev.bbkb.ime.core.engine.EngineOps
 
 /**
  * Learns from the editor's suggestion popup. When a word is committed with alternatives
@@ -14,12 +16,17 @@ import dev.bbkb.ime.core.engine.NuanceSDKManager
 object SuggestionPickLearner {
     private const val CAPACITY = 32
 
-    /** The sink that teaches the engine; replaceable for tests. Returns true when learned. */
+    /**
+     * The sink that teaches the engine; replaceable for tests. Returns true once the word is
+     * queued: the add is a posted engine op (Wave 3 Phase A), its outcome is logged there.
+     */
     @Volatile
     var sink: (String) -> Boolean = { word ->
-        var learned = false
-        NuanceSDKManager.withSdk("suggestionPick") { learned = it.addWord(word) }
-        learned
+        EngineOps.post("suggestionPick") { sdk ->
+            val added = sdk.addWord(word)
+            if (BuildConfig.DEBUG) Log.d("SuggestionPickLearner", "addWord '$word' -> $added")
+        }
+        true
     }
 
     private val recent = object : LinkedHashMap<String, Set<String>>(CAPACITY, 0.75f, true) {
