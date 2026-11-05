@@ -162,13 +162,8 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         recyclerView.getRecycledViewPool().setMaxRecycledViews(
                 UnifiedSuggestionAdapter.VIEW_TYPE_WORD, CJK_RECYCLED_WORD_VIEWS);
         
-        // Update adapter dimensions when RecyclerView layout changes
-        recyclerView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-            int newWidth = right - left;
-            if (newWidth > 0) {
-                adapter.setAvailableWidth(newWidth);
-            }
-        });
+        // The word slots' width follows the recycler's in onMeasure, not in a layout listener:
+        // see onMeasure for why a listener here left the slots a step behind.
 
         // Setup hamburger button
         hamburgerBtn.setOnClickListener(v -> {
@@ -285,6 +280,27 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         }
     }
     
+    /**
+     * Hand the recycler's new width to the adapter while measuring, so the three word slots are
+     * re-sized in the same pass that gives room to (or takes it back from) the emoji slot.
+     *
+     * <p>This used to happen in the recycler's {@code OnLayoutChangeListener}. Its
+     * {@code notifyDataSetChanged()} asks for a layout from inside layout, and {@code View.layout}
+     * clears the force-layout flag after the listeners run, so {@code ViewRootImpl} dropped the
+     * request: the slots kept a third of the old width until the next suggestion update, and the
+     * rightmost word ran under the emoji (owner report, 2026-11-05). Asked for here, the request
+     * lands before this pass lays the recycler out. {@code setAvailableWidth} is a no-op when the
+     * width has not changed.
+     */
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int width = recyclerView.getMeasuredWidth();
+        if (width > 0) {
+            adapter.setAvailableWidth(width);
+        }
+    }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
