@@ -259,4 +259,51 @@ class LetterLayoutRegistryTest {
         assertEquals("iw", registry.builtIn("iw", "qwerty", null, "hebrew")?.id)
         assertEquals("iw", registry.builtIn("he", "qwerty", null, "hebrew")?.id)
     }
+
+    /**
+     * The first selection for a language used to parse every built-in document to find the one
+     * bound to it. Now only each document's `<bind>` is read, once, and a document is parsed in
+     * full when its binding names the language.
+     */
+    @Test
+    fun selectingForALanguageParsesOnlyTheDocumentsBoundToIt() {
+        val (documents, registry) = registryWith(
+            "en" to document("en", languages = "en"),
+            "fr" to document("fr", languages = "fr"),
+            "de" to document("de", languages = "de"),
+            "plain" to document("plain"),
+        )
+        assertEquals("fr", registry.builtIn("fr", "qwerty", null, null)?.id)
+        // One read each for the binding, one more for the document that was parsed.
+        assertEquals(mapOf("en" to 1, "fr" to 2, "de" to 1, "plain" to 1), documents.opened)
+
+        // Another language: its document is parsed, and no binding is read a second time.
+        assertEquals("de", registry.builtIn("de", "qwerty", null, null)?.id)
+        assertEquals(mapOf("en" to 1, "fr" to 2, "de" to 2, "plain" to 1), documents.opened)
+
+        // The same question again is answered from memory.
+        assertEquals("fr", registry.builtIn("fr", "qwerty", null, null)?.id)
+        assertEquals(2, documents.opened["fr"])
+    }
+
+    /** A document whose binding cannot be read alone is still decided by the full parse. */
+    @Test
+    fun aDocumentWithAnUnreadableBindingIsStillParsedInFull() {
+        val broken = document("ar", languages = "ar").replace("keypad=\"any\"", "keypad=\"nonsense\"")
+        val (documents, registry) = registryWith("ar" to broken, "ru" to document("ru", languages = "ru"))
+        assertNull(registry.builtIn("ar", "qwerty", null, null))
+        assertEquals("the binding, then the full parse that rejects it", 2, documents.opened["ar"])
+        assertEquals("ru", registry.builtIn("ru", "qwerty", null, null)?.id)
+    }
+
+    @Test
+    fun peekBindingReadsTheBindingAlone() {
+        val binding = LetterLayoutXml.peekBinding(
+            document("be-translit", languages = "be", layoutSet = "translit").byteInputStream(),
+        )!!
+        assertEquals(listOf("be"), binding.languages)
+        assertEquals("translit", binding.layoutSet)
+        assertNull(LetterLayoutXml.peekBinding("not xml at all".byteInputStream()))
+        assertNull(LetterLayoutXml.peekBinding("""<letter-layout version="1" id="x" name="x"/>""".byteInputStream()))
+    }
 }

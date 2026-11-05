@@ -71,6 +71,7 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     /**
      * Clips longer than this are kept for the session but not written to disk: the whole file is
      * read and decoded at every process start, and one pasted book should not make that slow.
+     * Of the unpinned ones only the newest is kept in memory ({@link #evictOverCap}).
      */
     static final int MAX_PERSISTED_CHARS = 100_000;
 
@@ -501,12 +502,29 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         return changed;
     }
 
-    /** Evict the oldest unpinned rows beyond {@link #MAX_UNPINNED}. */
+    /**
+     * Evict the oldest unpinned rows beyond {@link #MAX_UNPINNED}, and every unpinned row too
+     * long to be stored ({@link #MAX_PERSISTED_CHARS}) except the newest such row. Those rows
+     * live in memory only, and there was no bound on them: 25 copied logs or documents stayed
+     * whole for the life of the keyboard. The one the user copied last is the one still wanted.
+     */
     private boolean evictOverCap() {
         boolean changed = false;
         while (this.mRecent.size() > MAX_UNPINNED) {
             this.mRecent.remove(this.mRecent.size() - 1);
             changed = true;
+        }
+        boolean keptOne = false;
+        for (int i = 0; i < this.mRecent.size(); i++) {   // newest first
+            if (this.mRecent.get(i).getText().length() <= MAX_PERSISTED_CHARS) {
+                continue;
+            }
+            if (!keptOne) {
+                keptOne = true;
+            } else {
+                this.mRecent.remove(i--);
+                changed = true;
+            }
         }
         return changed;
     }

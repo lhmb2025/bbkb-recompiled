@@ -44,6 +44,9 @@ class GestureTraceRecorder(
     private var capturing = false
     private var activePointerId = MotionEvent.INVALID_POINTER_ID
     private var holdFired = false
+
+    /** The contact has moved past the tap slop and its hold timer is already cancelled. */
+    private var holdCancelled = false
     private var prevTrace: GestureTrace? = null
 
     /**
@@ -84,6 +87,7 @@ class GestureTraceRecorder(
         cancelHoldTimer()
         capturing = true
         holdFired = false
+        holdCancelled = false
         activePointerId = event.getPointerId(event.actionIndex)
         val dev = event.device
         val rx = dev?.getMotionRange(MotionEvent.AXIS_X)?.range ?: 0f
@@ -110,8 +114,9 @@ class GestureTraceRecorder(
         val idx = event.findPointerIndex(activePointerId)
         if (idx < 0) return
         addPoint(event, idx, first = false)
-        if (!holdFired && excursion() > cfg().tapSlop) {
+        if (!holdFired && !holdCancelled && excursion() > cfg().tapSlop) {
             cancelHoldTimer() // moved too far — no longer a hold candidate
+            holdCancelled = true // the excursion only grows: every later sample would cancel again
         }
     }
 

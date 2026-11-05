@@ -344,4 +344,26 @@ class LetterLayoutChoiceTest {
         OnScreenKeyboardChoice.choose(context, "en", false)
         assertFalse("off is the absence of the key", prefs.contains("pref_always_on_screen_en"))
     }
+
+    /**
+     * The chosen id is kept between keystrokes instead of being read from the preferences on
+     * each one. A change made behind the typing path's back, a settings restore writing the
+     * preference directly, must still be seen on the next key, with no call to invalidate.
+     */
+    @Test
+    fun aChoiceWrittenStraightToThePreferencesIsSeenOnTheNextKey() {
+        assertFalse(LetterLayoutChoice.keypadLettersChosen(context, "ru"))
+        assertFalse("and again, from the kept copy", LetterLayoutChoice.keypadLettersChosen(context, "ru"))
+
+        prefs.edit().putString(LetterLayoutChoice.prefKey("ru", Target.PKB), LetterLayoutChoice.KEYPAD_LETTERS).commit()
+        assertTrue(LetterLayoutChoice.keypadLettersChosen(context, "ru"))
+        assertFalse("another language's choice is its own", LetterLayoutChoice.keypadLettersChosen(context, "uk"))
+
+        prefs.edit().remove(LetterLayoutChoice.prefKey("ru", Target.PKB)).commit()
+        assertFalse(LetterLayoutChoice.keypadLettersChosen(context, "ru"))
+
+        prefs.edit().putString(LetterLayoutChoice.prefKey("ru", Target.PKB), LetterLayoutChoice.KEYPAD_LETTERS).commit()
+        prefs.edit().clear().commit()
+        assertFalse("clearing everything is seen too", LetterLayoutChoice.keypadLettersChosen(context, "ru"))
+    }
 }

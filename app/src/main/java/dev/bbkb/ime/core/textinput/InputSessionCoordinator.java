@@ -145,7 +145,7 @@ public class InputSessionCoordinator {
                 ime.getUiUpdateHandler().postUpdateShiftState(true, true);
             }
             // Audit LC-1: updateDynamicLearningState() lived only in the VKB branch, so on a
-            // KEY2 dynamicLearningEnabled and TextContextTracker.enabled went stale across every
+            // KEY2 dynamicLearningEnabled went stale across every
             // field switch — a password or no-suggestions field could leave learning disabled for
             // the next ordinary field, or vice versa. Its internal mLastInputType short-circuit
             // (InputLogic:1761) makes the call cheap when nothing changed.
@@ -231,7 +231,6 @@ public class InputSessionCoordinator {
         }
         ime.setShouldShowOnFirstKeypress(false);
         ime.setWasBackPressed(false);
-        ime.getInputLogic().resetTextContextTracker();
         ime.getCursorTracker().hide();
         ime.clearLastCursorAnchorInfo();
         CJKSuggestionGridView cjkView = ime.getCjkSuggestionGridView();

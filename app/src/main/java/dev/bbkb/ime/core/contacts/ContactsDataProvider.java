@@ -50,8 +50,14 @@ public class ContactsDataProvider {
         return arrayList;
     }
 
+    /** Set by {@link #release}: no observer is registered again. */
+    private boolean released;
+
     void registerListener(Listener aVar) {
         synchronized (this) {
+            if (this.released) {
+                return;
+            }
             this.listener = aVar;
             this.changeObserver.registerObserver(aVar);
         }
@@ -70,6 +76,20 @@ public class ContactsDataProvider {
 
     void unregister() {
         synchronized (this) {
+            if (this.changeObserver != null) {
+                this.changeObserver.unregisterObserver();
+            }
+        }
+    }
+
+    /**
+     * The owner is going away for good: unregisters, and refuses any registration that was
+     * already queued behind this call. {@link #unregister} alone could be followed by a sync
+     * task registering the observer again, on a service that no longer exists.
+     */
+    void release() {
+        synchronized (this) {
+            this.released = true;
             if (this.changeObserver != null) {
                 this.changeObserver.unregisterObserver();
             }

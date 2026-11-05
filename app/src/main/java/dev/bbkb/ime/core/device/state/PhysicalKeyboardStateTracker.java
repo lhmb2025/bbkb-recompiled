@@ -135,6 +135,22 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         return buildModifierState(eventMetaState);
     }
 
+    /**
+     * {@code !isShiftReleased() && isShiftLockedForLayout() && !isAltUsedWithKey()} of
+     * {@link #getModifierState()}, answered without building the snapshot (a builder, the object
+     * and a dozen reads). The capacitive keypad asks on every touch sample, and the usual answer
+     * is known from the first test: no Shift key is down.
+     */
+    public boolean isShiftHeldAndLockedForLayout() {
+        if (!isShiftKeyDown() && !isShiftKeyConsumed()) {
+            return false;
+        }
+        if (this.mAltUsedWithKey) {
+            return false;
+        }
+        return (computeInternalMetaState() & ModifierState.SPAN_SHIFT_LOCKED) != 0;
+    }
+
     private ModifierState buildModifierState(int eventMetaState) {
         int spanMeta = getMetaState((CharSequence) this.mMetaKeyText);
         return ModifierState.builder()

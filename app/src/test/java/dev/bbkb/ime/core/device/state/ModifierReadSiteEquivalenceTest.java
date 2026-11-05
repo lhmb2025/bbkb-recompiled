@@ -124,6 +124,12 @@ public class ModifierReadSiteEquivalenceTest {
                 tracker.hasMetaFlag(META_CAP_LOCKED), modifiers.isShiftLockedForLayout());
         assertEquals(state + ": isAltUsedWithKey",
                 tracker.isAltUsedWithKey(), modifiers.isAltUsedWithKey());
+        // The same three terms together, as isMetaKeyActive() asks them on every touch sample:
+        // the tracker's answer without a snapshot against the snapshot's.
+        assertEquals(state + ": isShiftHeldAndLockedForLayout",
+                !modifiers.isShiftReleased() && modifiers.isShiftLockedForLayout()
+                        && !modifiers.isAltUsedWithKey(),
+                tracker.isShiftHeldAndLockedForLayout());
 
         // InputLogic: isManualShiftAndShiftPressing() -> isManualShiftPending(). Unguarded since 1h:
         // the CONSUMED state agrees too.

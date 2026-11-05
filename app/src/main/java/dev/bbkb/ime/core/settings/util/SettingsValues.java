@@ -263,6 +263,9 @@ public final class SettingsValues {
 
     public final String altSymShortcutAction;
 
+    /** What holding a physical key does: "off", "uppercase" or "symbol". */
+    public final String pkbHoldAction;
+
     /** Multifunction key action id ("" = use the device config's default-action). */
     public final String multifunctionKeyAction;
 
@@ -478,6 +481,7 @@ public final class SettingsValues {
         this.voiceInputLanguageList = SettingsManager.getVoiceInputLanguageList(sharedPreferences);
         this.isEmojiDynamicSearchEnabled = SettingsManager.isEmojiDynamicSearchEnabled(sharedPreferences);
         this.altSymShortcutAction = sharedPreferences.getString("pref_alt_sym_shortcut_action", "disabled");
+        this.pkbHoldAction = sharedPreferences.getString("pref_pkb_hold_auto_commit", "off");
         this.multifunctionKeyAction = sharedPreferences.getString("pref_multifunction_key_action", "");
         this.isEmojiSearchReplaceText = SettingsManager.isEmojiSearchReplaceTextEnabled(sharedPreferences);
         this.isPkbEmojiSearchEnabled = SettingsManager.isPkbEmojiSearchEnabled(sharedPreferences);
@@ -606,6 +610,7 @@ public final class SettingsValues {
         this.voiceInputLanguageList = base.voiceInputLanguageList;
         this.isEmojiDynamicSearchEnabled = base.isEmojiDynamicSearchEnabled;
         this.altSymShortcutAction = base.altSymShortcutAction;
+        this.pkbHoldAction = base.pkbHoldAction;
         this.multifunctionKeyAction = base.multifunctionKeyAction;
         this.isEmojiSearchReplaceText = base.isEmojiSearchReplaceText;
         this.isPkbEmojiSearchEnabled = base.isPkbEmojiSearchEnabled;

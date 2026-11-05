@@ -71,6 +71,14 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
     private static final int NUANCE_READY_MAX_RETRIES = 10;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
+    /**
+     * {@link #unregister} has run: the owning service is being destroyed. A sync that was still
+     * waiting for the engine, or queued on the executor, used to carry on afterwards and
+     * register the contacts observer on the dead service, which then stayed in memory for the
+     * life of the process and learned every later contacts change a second time.
+     */
+    private volatile boolean released;
+
     public ContactsLearningManager(Context context) {
         this.context = context;
         this.dataProvider = new ContactsDataProvider(context);
@@ -102,7 +110,9 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
     }
 
     public void unregister() {
-        this.dataProvider.unregister();
+        this.released = true;
+        this.mainHandler.removeCallbacksAndMessages(null);
+        this.dataProvider.release();
     }
 
     public void setContactsDictEnabled(boolean z) {
@@ -148,6 +158,9 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         // to the engine; the spell checker's sync just collects them (contactWords), so it does not
         // wait for the keyboard's engine, which is not running while another keyboard is in use.
         // The published fact, not the engine: this runs on the main thread.
+        if (this.released) {
+            return;
+        }
         if (this.context instanceof BlackBerryIME && !NuanceSDKManager.facts().isDLMReady()) {
             if (retryCount < NUANCE_READY_MAX_RETRIES) {
                 mainHandler.postDelayed(new Runnable() {
@@ -163,6 +176,9 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         ThreadUtils.getBackgroundExecutor("Sync Contacts").execute(new Runnable() {
             @Override // java.lang.Runnable
             public void run() {
+                if (ContactsLearningManager.this.released) {
+                    return;
+                }
                 ContactsLearningManager.this.dataProvider.registerListener(aVar);
                 ContactsLearningManager.this.learnAllContacts(bVar);
             }

@@ -132,16 +132,35 @@ class ClipboardWebImageProvider internal constructor(
          * leave the device. A bare host ("example.com") counts and is fetched over https.
          */
         @JvmStatic
-        fun previewUrlFor(text: String, masked: Boolean): String? {
-            if (masked) return null
+        fun previewUrlFor(text: String, masked: Boolean): String? =
+            if (masked) null else webUrlOrNull(text)?.let(::previewUrlForLink)
+
+        /** [previewUrlFor] for a row already known to be a link ([webUrlOrNull]). */
+        @JvmStatic
+        fun previewUrlForLink(link: String): String? =
+            if (UrlUtils.httpsUrlOrNull(link) != null) link else null
+
+        /**
+         * No web address is longer than this. A longer clip is plain text and is neither trimmed
+         * nor matched: a row is bound every time it scrolls into view, and the pattern over a
+         * copied document, with a copy of it for the trim, was the cost of each bind.
+         */
+        const val MAX_URL_CHARS = 2048
+
+        /**
+         * [text] without surrounding white space when the whole of it is one web address (what
+         * gets the link icon), else null.
+         */
+        @JvmStatic
+        fun webUrlOrNull(text: String): String? {
+            if (text.length > MAX_URL_CHARS) return null
             val trimmed = text.trim()
-            if (!isWebUrl(trimmed)) return null
-            return if (UrlUtils.httpsUrlOrNull(trimmed) != null) trimmed else null
+            return if (isWebUrl(trimmed)) trimmed else null
         }
 
-        /** Whether the whole of [text] is one web address (what gets the link icon). */
+        /** Whether the whole of [text] is one web address. */
         @JvmStatic
         fun isWebUrl(text: String): Boolean =
-            text.isNotEmpty() && Patterns.WEB_URL.matcher(text).matches()
+            text.isNotEmpty() && text.length <= MAX_URL_CHARS && Patterns.WEB_URL.matcher(text).matches()
     }
 }

@@ -175,6 +175,27 @@ class LetterLayoutRegistry @JvmOverloads constructor(
         /** By "language|keypad|keypadType|layoutSet": the selected layout, or [NONE]. */
         private val selections = ConcurrentHashMap<String, Any>()
 
+        /** By id: the document's `<bind>` read alone, or [NONE] when it could not be. */
+        private val bindings = ConcurrentHashMap<String, Any>()
+
+        /**
+         * Whether the document [id] could be [language]'s. False only when its own `<bind>` rules
+         * it out, read without the rest of the document; when that cannot be read the answer is
+         * true and the full parse decides, as it always did. The first selection used to parse
+         * every built-in document to find the one or two bound to the language.
+         */
+        private fun mayServe(id: String, language: String): Boolean {
+            if (byId.containsKey(id)) return true // parsed already, nothing to save
+            val binding = bindings.getOrPut(id) { peek(id) ?: NONE } as? LetterLayout.Binding ?: return true
+            return binding.isLanguageBound && binding.matchesLanguage(language)
+        }
+
+        private fun peek(id: String): LetterLayout.Binding? = try {
+            if (!LetterLayout.isValidId(id)) null else documents.open(id)?.use { LetterLayoutXml.peekBinding(it) }
+        } catch (e: IOException) {
+            null
+        }
+
         fun get(id: String): LetterLayout? {
             if (!LetterLayout.isValidId(id)) return null
             byId[id]?.let { return it as? LetterLayout }
@@ -202,7 +223,7 @@ class LetterLayoutRegistry @JvmOverloads constructor(
             if (language.isNullOrEmpty()) return null
             val cacheKey = "$language|$keypad|$keypadType|$layoutSet"
             selections[cacheKey]?.let { return it as? LetterLayout }
-            val result = ids.mapNotNull { get(it) }
+            val result = ids.filter { mayServe(it, language) }.mapNotNull { get(it) }
                 .filter { !it.optIn && LetterLayout.Target.PKB in it.targets && selects(it.binding, language, keypad, keypadType, layoutSet) }
                 .sortedWith(SPECIFICITY.thenByDescending { it.id == language }.thenBy { it.id })
                 .firstOrNull()

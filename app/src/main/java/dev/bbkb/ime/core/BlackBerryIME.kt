@@ -801,7 +801,17 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
+    /**
+     * onDestroy has begun. The framework's own onDestroy, which runs last here, still calls
+     * onFinishInputView and onFinishInput when a field was active (an IME switch does not finish
+     * input first), and those ran against controllers and views that were just released: the
+     * inline-autofill singleton destroyed a few lines earlier was built again, and anything
+     * added to the finish path could quietly undo the teardown. They return at once now.
+     */
+    private var teardownStarted = false
+
     override fun onDestroy() {
+        teardownStarted = true
         InAppEventBus.getInstance().unsubscribe(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED, languagePackChangedListener)
         // Unregister theme change listener
         if (themeChangeListener != null) {
@@ -988,9 +998,32 @@ class BlackBerryIME : InputMethodService(),
         if (textView2 === textView) {
             return
         }
-        textView2?.viewTreeObserver?.removeOnPreDrawListener(extractTextPreDrawListener)
+        removeExtractTextPreDrawListener(textView2)
         extractEditText = textView
-        extractEditText?.viewTreeObserver?.addOnPreDrawListener(extractTextPreDrawListener)
+        extractTextObserver = textView?.viewTreeObserver
+        extractTextObserver?.addOnPreDrawListener(extractTextPreDrawListener)
+    }
+
+    /** The observer [extractTextPreDrawListener] was last added to. */
+    private var extractTextObserver: ViewTreeObserver? = null
+
+    /**
+     * Takes [extractTextPreDrawListener] off wherever it is. Removing it through the old view
+     * alone missed it after a configuration change: that view is detached by then and hands out
+     * a new, empty observer, while the listener lives on the window's own, where a view's
+     * listeners are moved when it is attached. The new view then added a second copy, and the
+     * extracted text was recomputed once per copy on every frame of full-screen entry.
+     */
+    private fun removeExtractTextPreDrawListener(previous: TextView?) {
+        fun remove(observer: ViewTreeObserver?) {
+            if (observer != null && observer.isAlive) {
+                observer.removeOnPreDrawListener(extractTextPreDrawListener)
+            }
+        }
+        remove(extractTextObserver)
+        remove(previous?.viewTreeObserver)
+        remove(window?.window?.peekDecorView()?.viewTreeObserver)
+        extractTextObserver = null
     }
 
     fun updateExtractedText() {
@@ -1146,6 +1179,14 @@ class BlackBerryIME : InputMethodService(),
         if (contentTop != null && previousVisibleTop != contentTop) updateFlickMetrics()
     }
 
+    /**
+     * The two layout syncs a show posts. Held as fields so that a repeated showWindow replaces
+     * the pending pair instead of queueing another: the framework calls showWindow twice per
+     * show, and each sync is an op on the engine thread.
+     */
+    private val syncLayoutAfterShow = Runnable { keyboardSwitcher.syncKeyboardLayout() }
+    private val syncLayoutAfterShowSettled = Runnable { keyboardSwitcher.syncKeyboardLayout() }
+
     override fun showWindow(z: Boolean) {
         if (BuildConfig.DEBUG) android.util.Log.d("KBD_LIFECYCLE", "showWindow(): showInput=$z")
         Logger.debug(LOG_TAG, "showWindow(): showInput=$z")
@@ -1157,11 +1198,13 @@ class BlackBerryIME : InputMethodService(),
             // false/0), so an appearing on-screen keyboard was left on the PKB frame until some
             // later sync. Re-sync after this window is up, posted so the view has real layout.
             keyboardSwitcher.getMainKeyboardView()?.let { v ->
-                v.post { keyboardSwitcher.syncKeyboardLayout() }
+                v.removeCallbacks(syncLayoutAfterShow)
+                v.removeCallbacks(syncLayoutAfterShowSettled)
+                v.post(syncLayoutAfterShow)
                 // Second pass after the window settles: the immediate post can still read a
                 // transient view state (e.g. the keyboard view measured before the pad-mode
                 // collapse) and a wrong frame would otherwise stick until the next layout event.
-                v.postDelayed({ keyboardSwitcher.syncKeyboardLayout() }, 600)
+                v.postDelayed(syncLayoutAfterShowSettled, 600)
             }
         }
     }
@@ -1387,12 +1430,20 @@ class BlackBerryIME : InputMethodService(),
     }
 
     override fun onFinishInputView(z: Boolean) {
+        if (teardownStarted) {
+            Logger.info(LOG_TAG, "onFinishInputView() after teardown: ignored")
+            return
+        }
         Logger.info(LOG_TAG, "onFinishInputView(), finishingInput=$z")
         uiUpdateHandler.handleFinishInputView(z)
         controlMode.clearControlState()
     }
 
     override fun onFinishInput() {
+        if (teardownStarted) {
+            Logger.info(LOG_TAG, "onFinishInput() after teardown: ignored")
+            return
+        }
         Logger.info(LOG_TAG, "onFinishInput()")
         uiUpdateHandler.handleFinishInput()
         physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.FINISH_INPUT)
@@ -2058,14 +2109,13 @@ class BlackBerryIME : InputMethodService(),
         keyboardSwitcher.isShiftKeyReleasing() && physicalKeyboardStateTracker.getModifierState().isShiftReleased()
 
     fun isMetaKeyActive(): Boolean {
-        // One snapshot per call, as since Phase 1f; all three terms read it. hasMetaFlag(256 ==
-        // MetaKeyKeyListener.META_CAP_LOCKED) is the span encoding's shift-lock bit run through
-        // the keyboard's meta mask, which is exactly isShiftLockedForLayout() (audit CT-22). The
-        // first term counts a down-but-consumed Shift as not released, as the tracker always did.
-        val modifiers = physicalKeyboardStateTracker.getModifierState()
-        return !modifiers.isShiftReleased() &&
-            modifiers.isShiftLockedForLayout() &&
-            !modifiers.isAltUsedWithKey()
+        // The three terms of the modifier snapshot, !isShiftReleased() && isShiftLockedForLayout()
+        // && !isAltUsedWithKey(), answered by the tracker without building one: the capacitive
+        // keypad asks this on every touch sample. hasMetaFlag(256 == MetaKeyKeyListener
+        // .META_CAP_LOCKED) is the span encoding's shift-lock bit run through the keyboard's meta
+        // mask, which is exactly isShiftLockedForLayout() (audit CT-22). The first term counts a
+        // down-but-consumed Shift as not released, as the tracker always did.
+        return physicalKeyboardStateTracker.isShiftHeldAndLockedForLayout()
     }
 
     fun getSymbolPageProvider(): SymbolPageProvider {
@@ -2573,8 +2623,10 @@ class BlackBerryIME : InputMethodService(),
         val mainKeyboardViewM6790T = keyboardSwitcher.getMainKeyboardView()
         val mkvNonNull = mainKeyboardViewM6790T != null
         val mkvC = mainKeyboardViewM6790T?.isGestureKeyboard() ?: false
-        val notLocaleA = !LocaleUtils.isCurrentSubtypeChinese()
-        val notLocaleD = !LocaleUtils.isCurrentSubtypeJapanese()
+        // One read of the current locale for both tests; this runs on every touch sample.
+        val locale = SubtypeManager.getInstance().getCurrentSubtypeLocale()
+        val notLocaleA = !LocaleUtils.isChinese(locale)
+        val notLocaleD = !LocaleUtils.isJapanese(locale)
         val result = mkvNonNull && mkvC && notLocaleA && notLocaleD
         if (!result) {
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "isGestureInputReady returned FALSE | mkv!=null=$mkvNonNull mkv.isGestureKeyboard=$mkvC !LocaleUtils.a=$notLocaleA !LocaleUtils.d=$notLocaleD")

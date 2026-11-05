@@ -244,4 +244,88 @@ public class RichInputConnectionTest {
         mRic.clearBackgroundSpans();
         verify(mIc, never()).performSpellCheck();
     }
+
+    // ── the cached text before the cursor stays bounded (audit B-10) ─────────
+
+    /**
+     * Commits append to the cached text before the cursor and nothing shortened it, so a long
+     * session with no cursor move made every whole-buffer reader slower by the character. Past
+     * twice the load size the front is dropped; the tail stays exact, and a request for more
+     * than the cache holds goes to the editor, as it does right after a load.
+     */
+    @Test
+    public void aLongRunOfCommitsKeepsTheCachedTextBounded() {
+        mEditorBefore = "";
+        mEditorAfter = "";
+        assertTrue(mRic.resetConnection(0, 0, false));
+        StringBuilder typed = new StringBuilder();
+        for (int n = 0; n < 700; n++) {
+            String word = "word" + n + " ";
+            mRic.commitText(word, 1);
+            typed.append(word);
+        }
+        mEditorBefore = typed.toString();
+        assertTrue(typed.length() > RichInputConnection.MAX_TEXT_BEFORE_CURSOR);
+
+        // The tail is served from the cache and is exact.
+        String tail = typed.substring(typed.length() - 200);
+        assertEquals(tail, mRic.getTextBeforeCursor(200, 0).toString());
+        verify(mIc, never()).getTextBeforeCursor(200, 0);
+
+        // More than the bound cannot come from the cache any more.
+        int wanted = RichInputConnection.MAX_TEXT_BEFORE_CURSOR + 1;
+        assertEquals(typed.substring(typed.length() - wanted), mRic.getTextBeforeCursor(wanted, 0).toString());
+        verify(mIc).getTextBeforeCursor(wanted, 0);
+    }
+
+    @Test
+    public void trimmingNeverLeavesHalfAnEmojiAtTheFront() {
+        mEditorBefore = "";
+        mEditorAfter = "";
+        assertTrue(mRic.resetConnection(0, 0, false));
+        // One char, then two-char emoji: every odd index is a low surrogate, so a cut that lands
+        // on one must move past it.
+        mRic.commitText("a", 1);
+        String emoji = new String(Character.toChars(0x1F600));
+        for (int n = 0; n < RichInputConnection.MAX_TEXT_BEFORE_CURSOR; n++) {
+            mRic.commitText(emoji, 1);
+        }
+        for (int ask = 1000; ask <= 1024; ask++) {
+            CharSequence text = mRic.getTextBeforeCursor(ask, 0);
+            if (text.length() == ask) {
+                continue;   // a request inside the cache may start mid-pair; the cache itself may not
+            }
+            assertFalse("cache starts with half a pair", Character.isLowSurrogate(text.charAt(0)));
+        }
+    }
+
+    /** The word check reads the last one or two code points in place; same answers as before. */
+    @Test
+    public void hasWordBeforeCursorReadsTheEndOfTheCachedText() {
+        dev.bbkb.ime.core.settings.util.SpacingAndPunctuation rules =
+                mock(dev.bbkb.ime.core.settings.util.SpacingAndPunctuation.class);
+        when(rules.isWordSeparator(' ')).thenReturn(true);
+        when(rules.isWordSeparator(-1)).thenReturn(false);
+        when(rules.isWordConnector('\'')).thenReturn(true);
+        mEditorAfter = "";
+
+        mEditorBefore = "";
+        mRic.resetConnection(0, 0, false);
+        assertFalse(mRic.hasWordBeforeCursor(rules));
+
+        mRic.commitText("hello", 1);
+        assertTrue(mRic.hasWordBeforeCursor(rules));
+
+        mRic.commitText(" ", 1);
+        assertFalse(mRic.hasWordBeforeCursor(rules));
+
+        mRic.commitText("don'", 1);          // a connector after a letter: still in a word
+        assertTrue(mRic.hasWordBeforeCursor(rules));
+
+        mRic.commitText(" '", 1);            // a connector after a space: not in a word
+        assertFalse(mRic.hasWordBeforeCursor(rules));
+
+        mRic.commitText(new String(Character.toChars(0x1F600)), 1);   // a two-char code point
+        assertTrue(mRic.hasWordBeforeCursor(rules));
+    }
 }

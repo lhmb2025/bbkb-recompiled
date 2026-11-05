@@ -667,4 +667,58 @@ class VoiceRecognitionSessionTest {
         verify(callback, never()).onRecognizerNeedsPermission(anyString())
         verify(callback, never()).onRecognizerRefused(anyString())
     }
+
+    // ── the recogniser is let go when idle ───────────────────────────────────
+
+    private fun idleFor(millis: Long) =
+        shadowOf(Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(millis))
+
+    /**
+     * A recogniser stays connected to its speech service until it is destroyed, which used to be
+     * when the keyboard itself went. Now it goes a while after the dictation, and the next
+     * dictation builds a new one.
+     */
+    @Test
+    fun `the recogniser is destroyed once a dictation has been over for a while`() {
+        start()
+        val first = latest()
+        recognizer().triggerOnResults(results("one"))
+        verify(callback).onDictationResult("one")
+        assertFalse(shadowOf(first).isDestroyed)
+
+        idleFor(VoiceRecognitionManager.IDLE_RELEASE_MILLIS + 100)
+        assertTrue("released when idle", shadowOf(first).isDestroyed)
+
+        start()
+        val second = latest()
+        assertTrue("the next dictation builds a new one", second !== first)
+        recognizer().triggerOnResults(results("two"))
+        verify(callback).onDictationResult("two")
+    }
+
+    @Test
+    fun `a dictation that is still running keeps its recogniser`() {
+        start()
+        val first = latest()
+
+        idleFor(VoiceRecognitionManager.IDLE_RELEASE_MILLIS * 3)
+        assertFalse("never during a session", shadowOf(first).isDestroyed)
+        assertEquals(VoiceRecognitionManager.Mode.DICTATION, manager.mode)
+
+        recognizer().triggerOnResults(results("late"))
+        verify(callback).onDictationResult("late")
+        idleFor(VoiceRecognitionManager.IDLE_RELEASE_MILLIS + 100)
+        assertTrue(shadowOf(first).isDestroyed)
+    }
+
+    @Test
+    fun `a destroyed manager builds no recogniser again`() {
+        start()
+        recognizer().triggerOnResults(results("one"))
+        manager.destroy()
+        val last = latest()
+
+        start()
+        assertTrue("no new recogniser after destroy", latest() === last)
+    }
 }

@@ -196,7 +196,7 @@ object LetterLayoutChoice {
     fun keypadLettersChosen(context: Context, language: String?): Boolean {
         if (language.isNullOrEmpty()) return false
         migrate(context)
-        return chosenId(PrefsManager.getPrefs(context), language, Target.PKB) == KEYPAD_LETTERS
+        return typingChosenId(context, language, Target.PKB) == KEYPAD_LETTERS
     }
 
     @Volatile
@@ -220,22 +220,73 @@ object LetterLayoutChoice {
     /** A choice's id when last read, and the layout it named (null for none or unreadable). */
     private class Snapshot(val id: String, val layout: LetterLayout?)
 
-    private val snapshots = ConcurrentHashMap<String, Snapshot>()
+    /** By target, then language: no key string is built per keystroke. */
+    private val snapshots = Array(Target.entries.size) { ConcurrentHashMap<String, Snapshot>() }
+
+    /**
+     * The chosen ids as last read from the preferences, by target, then language. A letter key
+     * asks several times over (the resolver, the hold handler, multitap), and each ask used to be
+     * a preference read under its lock plus two string joins. The preferences say when a choice
+     * changes ([prefsWatcher]), and [invalidate] clears as well.
+     */
+    private val chosenIds = Array(Target.entries.size) { ConcurrentHashMap<String, String>() }
+    private val chosenIdsLock = Any()
+    private var chosenIdsGeneration = 0
+
+    /** The preferences [prefsWatcher] is registered on; they hold listeners weakly, we hold it. */
+    @Volatile
+    private var watchedPrefs: SharedPreferences? = null
+
+    private val prefsWatcher = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        // null: clear(), everything changed.
+        if (key == null || isPrefKey(key)) forgetChosenIds()
+    }
+
+    private fun forgetChosenIds() = synchronized(chosenIdsLock) {
+        chosenIdsGeneration++
+        chosenIds.forEach { it.clear() }
+    }
+
+    /** [chosenId] for the typing path: from the cache, else read once and kept until a change. */
+    private fun typingChosenId(context: Context, language: String, target: Target): String {
+        val prefs = PrefsManager.getPrefs(context)
+        if (prefs !== watchedPrefs) {
+            synchronized(chosenIdsLock) {
+                if (prefs !== watchedPrefs) {
+                    watchedPrefs?.unregisterOnSharedPreferenceChangeListener(prefsWatcher)
+                    prefs.registerOnSharedPreferenceChangeListener(prefsWatcher)
+                    watchedPrefs = prefs
+                    chosenIdsGeneration++
+                    chosenIds.forEach { it.clear() }
+                }
+            }
+        }
+        val byLanguage = chosenIds[target.ordinal]
+        byLanguage[language]?.let { return it }
+        val generation = synchronized(chosenIdsLock) { chosenIdsGeneration }
+        val id = chosenId(prefs, language, target)
+        // Kept only if nothing changed while it was read: a value read before a change must not
+        // be stored after the change's clear.
+        synchronized(chosenIdsLock) {
+            if (generation == chosenIdsGeneration) byLanguage[language] = id
+        }
+        return id
+    }
 
     /**
      * The layout chosen for [language]'s [target] keyboard, parsed once per change, so a keystroke
-     * never reads a file: like [LetterLayoutRegistry.activeForTyping], the copy is keyed by the id
-     * read from the preferences on each call, and [LetterLayoutRegistry.invalidate] drops it.
+     * never reads a file or a preference: the copy is keyed by the chosen id ([typingChosenId]),
+     * and [LetterLayoutRegistry.invalidate] drops it.
      */
     @JvmStatic
     fun chosen(context: Context, language: String?, target: Target): LetterLayout? {
         if (language.isNullOrEmpty()) return null
         migrate(context)
-        val id = chosenId(PrefsManager.getPrefs(context), language, target)
-        val key = target.token + ":" + language
-        snapshots[key]?.let { if (it.id == id) return it.layout }
+        val id = typingChosenId(context, language, target)
+        val byLanguage = snapshots[target.ordinal]
+        byLanguage[language]?.let { if (it.id == id) return it.layout }
         val layout = if (id.isEmpty() || id == KEYPAD_LETTERS) null else resolve(LetterLayoutRegistry(context), id)
-        snapshots[key] = Snapshot(id, layout)
+        byLanguage[language] = Snapshot(id, layout)
         return layout
     }
 
@@ -246,7 +297,8 @@ object LetterLayoutChoice {
     /** Forgets the typing path's copies. Called by [LetterLayoutRegistry.invalidate]. */
     @JvmStatic
     fun invalidate() {
-        snapshots.clear()
+        snapshots.forEach { it.clear() }
+        forgetChosenIds()
     }
 
     // ── the on-screen keyboard ───────────────────────────────────────────────

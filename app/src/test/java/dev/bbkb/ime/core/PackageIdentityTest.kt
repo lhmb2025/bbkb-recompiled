@@ -222,14 +222,20 @@ class PackageIdentityTest {
 
         // Every authority we *declare* must be namespaced by the applicationId, or it collides
         // with the original app's FileProvider. "user_dictionary" is the system provider we
-        // <queries> for, not one of ours. Ours are the FileProvider and the provider Shizuku
-        // hands its binder through (core.device.touch.shizuku).
+        // <queries> for, not one of ours. Ours are the FileProvider, the provider Shizuku
+        // hands its binder through (core.device.touch.shizuku), and androidx.startup's own
+        // provider, which is named here only to take one initializer out of it (the form the
+        // merger asks for repeats the library's authority, already under the applicationId).
         val authorities = Regex("""android:authorities="([^"]+)"""").findAll(body)
             .map { it.groupValues[1] }.toList()
         val ours = authorities.filter { it != "user_dictionary" }
         assertEquals(
             "the declared authorities",
-            setOf("\${applicationId}.fileprovider", "\${applicationId}.shizuku"),
+            setOf(
+                "\${applicationId}.fileprovider",
+                "\${applicationId}.shizuku",
+                "\${applicationId}.androidx-startup",
+            ),
             ours.toSet()
         )
         assertTrue(

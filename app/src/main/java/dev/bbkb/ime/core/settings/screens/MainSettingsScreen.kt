@@ -37,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -76,14 +77,20 @@ fun MainSettingsScreen(
     val deviceCapabilities = remember { SearchDeviceCapabilities.current() }
     val searchable = remember(deviceCapabilities) { SettingsSearchIndex.entriesFor(deviceCapabilities) }
 
-    val results = remember(query, searchable) {
+    // The titles in lower case, resolved once per index and language instead of once per entry
+    // on every typed character (about 100 string loads and copies per keystroke).
+    val configuration = LocalConfiguration.current
+    val searchableTitles = remember(searchable, configuration) {
+        searchable.map { context.getString(it.titleRes).lowercase() }
+    }
+
+    val results = remember(query, searchable, searchableTitles) {
         val q = query.trim().lowercase()
         if (q.isEmpty()) {
             emptyList()
         } else {
-            searchable.filter { entry ->
-                context.getString(entry.titleRes).lowercase().contains(q) ||
-                    entry.keywords.contains(q)
+            searchable.filterIndexed { index, entry ->
+                searchableTitles[index].contains(q) || entry.keywords.contains(q)
             }
         }
     }

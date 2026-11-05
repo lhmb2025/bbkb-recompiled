@@ -164,6 +164,40 @@ object LetterLayoutXml {
     }
 
     /**
+     * The `<bind>` of the document in [input] and nothing else: what comes before it is skipped
+     * unchecked and what comes after is not read. For choosing among many documents by language
+     * without parsing every one in full. Null when no `<bind>` can be read; [parse] then says
+     * what is wrong with the document.
+     */
+    @JvmStatic
+    fun peekBinding(input: InputStream): LetterLayout.Binding? = try {
+        val bytes = readCapped(input)
+        if (bytes.size > MAX_BYTES) {
+            null
+        } else {
+            val parser = newParser()
+            parser.setInput(ByteArrayInputStream(bytes), null)
+            var depth = 0
+            var binding: LetterLayout.Binding? = null
+            while (binding == null) {
+                when (parser.nextToken()) {
+                    XmlPullParser.END_DOCUMENT -> break
+                    XmlPullParser.START_TAG -> {
+                        depth++
+                        // A child of the root: readBinding also consumes its end tag.
+                        if (depth == 2 && parser.name == BIND) binding = readBinding(parser)
+                    }
+                    XmlPullParser.END_TAG -> depth--
+                    else -> {}
+                }
+            }
+            binding
+        }
+    } catch (e: Exception) {
+        null
+    }
+
+    /**
      * The platform's pull parser with namespace and DOCTYPE processing off, which the platform
      * turns on by default. The format has no namespaces, so an `xmlns` declaration or a prefixed
      * name is refused like any unknown attribute or element instead of being read past; and a

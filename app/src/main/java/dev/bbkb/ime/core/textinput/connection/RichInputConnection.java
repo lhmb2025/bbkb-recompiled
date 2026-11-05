@@ -25,7 +25,6 @@ import dev.bbkb.ime.core.shared.ScriptUtils;
 import dev.bbkb.ime.core.shared.SpannableStringUtils;
 import com.blackberry.nuanceshim.NuanceSDK;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -47,8 +46,6 @@ public class RichInputConnection {
     private final StringBuilder mComposingText = new StringBuilder();
 
     private int mComposingRegionLength = 0;
-
-    private ArrayList<TextChangeListener> mTextChangeListeners = new ArrayList<>();
 
     private SpannableStringBuilder mTempSpannable = new SpannableStringBuilder();
 
@@ -80,6 +77,14 @@ public class RichInputConnection {
     private static final int MAX_PENDING_ECHOES = 16;
 
     /**
+     * The most text kept before the cursor. A load reads {@code MAX_CONTEXT_LENGTH} characters
+     * and every commit appends, so in a long session with no cursor move the buffer grew
+     * without limit, and the readers that walk or copy all of it (caps mode, the quote check)
+     * grew with it. Past this size the front is dropped back to the load size.
+     */
+    static final int MAX_TEXT_BEFORE_CURSOR = NuanceSDK.MAX_CONTEXT_LENGTH * 2;
+
+    /**
      * True while both text caches come from the last successful load plus this class's own
      * edits since. False after a failed load, invalidateConnection, or a key that can move the
      * editor's cursor unseen. A cursor move shifts the caches instead of reloading only while true.
@@ -97,71 +102,26 @@ public class RichInputConnection {
      */
     private final java.util.ArrayDeque<int[]> mPendingEchoes = new java.util.ArrayDeque<>();
 
-    
-    public interface TextChangeListener {
-        void onCursorPositionChanged(int position);
-
-        void onTextDeleted(int position, int length);
-
-        void onTextChanged(int start, int length, CharSequence text, TextChangeType type);
-
-        void onComposingTextUpdated(CharSequence text);
-    }
-
-    
-    public enum TextChangeType {
-        COMPOSING,
-        COMMIT,
-        FINISH
-    }
-
-    /**
-     * Constructs a RichInputConnection wrapping the given IME service. The connection starts
-     * disconnected (cursor at -1) until {@link #resetConnection} or {@link #beginBatchEdit}
-     * establishes an {@link android.view.inputmethod.InputConnection}.
-     *
-     * @param inputMethodService the host {@link android.inputmethodservice.InputMethodService}
-     */
     public RichInputConnection(InputMethodService inputMethodService) {
         this.mImeService = inputMethodService;
     }
 
     /**
-     * Registers a {@link TextChangeListener} to receive callbacks whenever text is committed,
-     * deleted, composing text changes, or the cursor position changes. Duplicate registrations
-     * are silently ignored.
-     *
-     * @param textChangeListenerVar the listener to add; no-op if {@code null} or already added
+     * Keeps {@link #mTextBeforeCursor} within {@link #MAX_TEXT_BEFORE_CURSOR} after an append.
+     * What is left is what a fresh load would hold, so every reader behaves as it does right
+     * after one: a request for more than the cache holds goes to the editor.
      */
-    public void addTextChangeListener(TextChangeListener textChangeListenerVar) {
-        if (textChangeListenerVar == null || this.mTextChangeListeners.indexOf(textChangeListenerVar) != -1) {
+    private void trimTextBeforeCursor() {
+        final int length = this.mTextBeforeCursor.length();
+        if (length <= MAX_TEXT_BEFORE_CURSOR) {
             return;
         }
-        this.mTextChangeListeners.add(textChangeListenerVar);
-    }
-
-    private void notifyComposingTextUpdated(CharSequence charSequence) {
-        for (int n = 0, size = this.mTextChangeListeners.size(); n < size; n++) {
-            this.mTextChangeListeners.get(n).onComposingTextUpdated(charSequence);
+        int cut = length - NuanceSDK.MAX_CONTEXT_LENGTH;
+        // Never leave half of a surrogate pair at the new front.
+        if (Character.isLowSurrogate(this.mTextBeforeCursor.charAt(cut))) {
+            cut++;
         }
-    }
-
-    private void notifyTextChanged(int i, int i2, CharSequence charSequence, TextChangeType textChangeTypeVar) {
-        for (int n = 0, size = this.mTextChangeListeners.size(); n < size; n++) {
-            this.mTextChangeListeners.get(n).onTextChanged(i, i2, charSequence, textChangeTypeVar);
-        }
-    }
-
-    private void notifyTextDeleted(int i, int i2) {
-        for (int n = 0, size = this.mTextChangeListeners.size(); n < size; n++) {
-            this.mTextChangeListeners.get(n).onTextDeleted(i, i2);
-        }
-    }
-
-    private void notifyCursorPositionChanged(int i) {
-        for (int n = 0, size = this.mTextChangeListeners.size(); n < size; n++) {
-            this.mTextChangeListeners.get(n).onCursorPositionChanged(i);
-        }
+        this.mTextBeforeCursor.delete(0, cut);
     }
 
     /**
@@ -215,9 +175,6 @@ public class RichInputConnection {
      */
     public boolean resetConnection(int i, int i2, boolean z) {
         if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "RIC.resetConnection: newPos=[" + i + "," + i2 + "] finishComposing=" + z + " composingText='" + mComposingText + "' composingLen=" + mComposingRegionLength);
-        if (this.mComposingRegionLength > 0) {
-            notifyTextChanged(this.mCursorStart - this.mComposingText.length(), this.mComposingRegionLength, this.mComposingText, TextChangeType.FINISH);
-        }
         this.mCursorStart = i;
         this.mCursorEnd = i2;
         this.mComposingText.setLength(0);
@@ -235,10 +192,6 @@ public class RichInputConnection {
         if (i == i2) {
             recalibrateCursorPosition();
         }
-        if (this.mInputConnection == null) {
-            return true;
-        }
-        notifyCursorPositionChanged(this.mCursorStart);
         return true;
     }
 
@@ -316,15 +269,11 @@ public class RichInputConnection {
      */
     public void finishComposingText() {
         if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "RIC.finishComposingText: composingText='" + mComposingText + "' composingLen=" + mComposingRegionLength + " cursorStart=" + mCursorStart);
-        int length;
         if (!isComposingRegionSynced()) {
             loadTextAfterCursor();
         }
-        int i = this.mComposingRegionLength;
-        if (i > 0 && (length = i - this.mComposingText.length()) >= 0 && this.mTextAfterCursor.length() >= length) {
-            notifyTextChanged(this.mCursorStart - this.mComposingText.length(), this.mComposingRegionLength, ((Object) this.mComposingText) + this.mTextAfterCursor.substring(0, length), TextChangeType.FINISH);
-        }
         this.mTextBeforeCursor.append((CharSequence) this.mComposingText);
+        trimTextBeforeCursor();
         this.mComposingText.setLength(0);
         this.mComposingRegionLength = 0;
         this.mHasBackgroundSpan = false;
@@ -355,10 +304,8 @@ public class RichInputConnection {
      * @param i3           end index of the highlight span within {@code charSequence}
      */
     public void commitTextWithHighlight(CharSequence charSequence, int i, int i2, int i3) {
-        if (this.mInputConnection != null) {
-            notifyTextChanged(this.mCursorStart - this.mComposingText.length(), this.mComposingRegionLength, charSequence, TextChangeType.COMMIT);
-        }
         this.mTextBeforeCursor.append(charSequence);
+        trimTextBeforeCursor();
         this.mCursorStart += charSequence.length() - this.mComposingText.length();
         // Audit SS-3: the cache advanced as if the cursor always lands immediately after the
         // committed text, ignoring newCursorPosition. The manual-pick path commits with i==2
@@ -580,14 +527,6 @@ public class RichInputConnection {
      */
     public void deleteSurroundingText(int i, int i2) {
         if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "RIC.deleteSurroundingText: before=" + i + " after=" + i2 + " cursorStart=" + mCursorStart + " composing='" + mComposingText + "'");
-        if (this.mInputConnection != null) {
-            if (i > 0) {
-                notifyTextDeleted(this.mCursorStart, i);
-            }
-            if (i2 > 0) {
-                notifyTextChanged(this.mCursorStart, i2, (CharSequence) null, TextChangeType.COMPOSING);
-            }
-        }
         int length = this.mComposingText.length() - i;
         if (length >= 0) {
             this.mComposingText.setLength(length);
@@ -641,6 +580,7 @@ public class RichInputConnection {
                 switch (keyCode) {
                     case 66:
                         this.mTextBeforeCursor.append("\n");
+                        trimTextBeforeCursor();
                         this.mCursorStart++;
                         this.mCursorEnd = this.mCursorStart;
                         break;
@@ -672,6 +612,7 @@ public class RichInputConnection {
                         if (Character.isValidCodePoint(unicodeChar) && unicodeChar != 0) {
                             String strM5463a = new String(Character.toChars(unicodeChar));
                             this.mTextBeforeCursor.append(strM5463a);
+                            trimTextBeforeCursor();
                             this.mCursorStart += strM5463a.length();
                             this.mCursorEnd = this.mCursorStart;
                             break;
@@ -683,6 +624,7 @@ public class RichInputConnection {
                 }
             } else if (keyEvent.getCharacters() != null) {
                 this.mTextBeforeCursor.append(keyEvent.getCharacters());
+                trimTextBeforeCursor();
                 this.mCursorStart += keyEvent.getCharacters().length();
                 this.mCursorEnd = this.mCursorStart;
             }
@@ -707,7 +649,6 @@ public class RichInputConnection {
         if (!TextUtils.isEmpty(charSequenceM5815a)) {
             int iMax = Math.max(charSequenceM5815a.length() - (this.mCursorStart - i), 0);
             this.mComposingText.append(charSequenceM5815a.subSequence(iMax, charSequenceM5815a.length()));
-            notifyComposingTextUpdated(this.mComposingText);
             this.mTextBeforeCursor.append(charSequenceM5815a.subSequence(0, iMax));
         }
         this.mComposingRegionLength = i3;
@@ -731,9 +672,6 @@ public class RichInputConnection {
      */
     public void setComposingText(CharSequence charSequence, int i) {
         if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "RIC.setComposingText: newText='" + charSequence + "' cursorPos=" + i + " cursorStart=" + mCursorStart + " prevComposing='" + mComposingText + "'");
-        if (this.mInputConnection != null) {
-            notifyTextChanged(this.mCursorStart - this.mComposingText.length(), this.mComposingRegionLength, charSequence, TextChangeType.COMPOSING);
-        }
         this.mCursorStart += charSequence.length() - this.mComposingText.length();
         this.mCursorEnd = this.mCursorStart;
         this.mComposingText.setLength(0);
@@ -932,6 +870,7 @@ public class RichInputConnection {
             text = "";
         }
         this.mTextBeforeCursor.append(text);
+        trimTextBeforeCursor();
         this.mCursorStart += text.length() - this.mComposingText.length();
         this.mCursorEnd = this.mCursorStart;
         this.mComposingText.setLength(0);
@@ -1105,12 +1044,14 @@ public class RichInputConnection {
         if (hasWordAfterCursor(c0806f)) {
             return true;
         }
-        String string = this.mTextBeforeCursor.toString();
-        int length = string.length();
-        int iCodePointBefore = length == 0 ? -1 : string.codePointBefore(length);
+        // Read the last one or two code points in place: this runs at the first letter of every
+        // word, and a copy of the whole buffer for two characters was the cost of it.
+        final StringBuilder before = this.mTextBeforeCursor;
+        int length = before.length();
+        int iCodePointBefore = length == 0 ? -1 : Character.codePointBefore(before, length);
         if (c0806f.isWordConnector(iCodePointBefore)) {
             int iCharCount = length - Character.charCount(iCodePointBefore);
-            iCodePointBefore = iCharCount == 0 ? -1 : string.codePointBefore(iCharCount);
+            iCodePointBefore = iCharCount == 0 ? -1 : Character.codePointBefore(before, iCharCount);
         }
         return (-1 == iCodePointBefore || c0806f.isWordSeparator(iCodePointBefore) || c0806f.isWordConnector(iCodePointBefore)) ? false : true;
     }

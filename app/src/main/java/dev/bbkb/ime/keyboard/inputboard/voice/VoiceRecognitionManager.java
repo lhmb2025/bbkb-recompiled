@@ -94,6 +94,23 @@ public class VoiceRecognitionManager {
     /** How long a stop waits for the final result before giving up on it. */
     static final long STOP_GRACE_MILLIS = 2000L;
 
+    /**
+     * How long after a dictation the recogniser is kept before it is let go. A recogniser stays
+     * connected to its speech service from its first session until it is destroyed, and the
+     * system keeps that service's app alive for as long: one dictation used to hold it for the
+     * life of the keyboard. The next dictation builds a new recogniser.
+     */
+    static final long IDLE_RELEASE_MILLIS = 30_000L;
+
+    /**
+     * Started with each session. When it fires with a session still running it waits again, so
+     * however a session ends the recogniser goes within two periods of it and never during one.
+     */
+    private final Runnable mReleaseRunnable;
+
+    /** {@link #destroy} has run: no recogniser is built again. */
+    private boolean mDestroyed;
+
     /** With "stop when you pause" on: the silence the recogniser is asked to allow before ending. A hint; recognisers cap it. */
     static final long PAUSE_SILENCE_MILLIS = 2500L;
 
@@ -174,6 +191,23 @@ public class VoiceRecognitionManager {
                 }
                 Logger.debug(TAG, "No final result after the stop; cancelling");
                 VoiceRecognitionManager.this.stopListening();
+            }
+        };
+        this.mReleaseRunnable = new Runnable() {
+            @Override // java.lang.Runnable
+            public void run() {
+                if (VoiceRecognitionManager.this.mSpeechRecognizer == null) {
+                    return;
+                }
+                if (VoiceRecognitionManager.this.mMode != Mode.NONE) {
+                    VoiceRecognitionManager.this.mHandler.postDelayed(this, IDLE_RELEASE_MILLIS);
+                    return;
+                }
+                Logger.debug(TAG, "Idle: releasing the speech recogniser");
+                // destroy() drops the listener: nothing it still had queued can arrive later.
+                VoiceRecognitionManager.this.mSpeechRecognizer.destroy();
+                VoiceRecognitionManager.this.mSpeechRecognizer = null;
+                VoiceRecognitionManager.this.mCancelRequested = false;
             }
         };
     }
@@ -344,7 +378,9 @@ public class VoiceRecognitionManager {
      * VoiceInputController.destroy() has already run.
      */
     public void destroy() {
+        this.mDestroyed = true;
         this.mHandler.removeCallbacks(this.mTimeoutRunnable);
+        this.mHandler.removeCallbacks(this.mReleaseRunnable);
         SpeechRecognizer speechRecognizer = this.mSpeechRecognizer;
         if (speechRecognizer != null) {
             speechRecognizer.cancel();
@@ -359,20 +395,23 @@ public class VoiceRecognitionManager {
      * Rebuilds the recogniser when the "Speech recognizer" setting no longer resolves to the one it
      * was built for: the setting changed, or the chosen app went away (back to the system default).
      * Runs before each dictation, when no session of ours is live, so a change lands on the next
-     * tap without restarting the keyboard. A destroyed manager stays destroyed.
+     * tap without restarting the keyboard. Also builds one again after the last was let go for
+     * being idle ({@link #mReleaseRunnable}). A destroyed manager stays destroyed.
      */
     private void refreshRecognizer() {
-        if (this.mSpeechRecognizer == null) {
+        if (this.mDestroyed) {
             return;
         }
         final VoiceRecognizerChoice.Selection selection = InstalledVoiceRecognizers.resolve(this.mContext);
-        if (selection.equals(this.mSelection)) {
-            return;
+        if (this.mSpeechRecognizer != null) {
+            if (selection.equals(this.mSelection)) {
+                return;
+            }
+            Logger.debug(TAG, "Speech recognizer changed: " + this.mSelection + " -> " + selection);
+            // destroy() drops the old listener, so nothing the old recogniser still had queued
+            // (the answer to an earlier stop included) can reach this session.
+            this.mSpeechRecognizer.destroy();
         }
-        Logger.debug(TAG, "Speech recognizer changed: " + this.mSelection + " -> " + selection);
-        // destroy() drops the old listener, so nothing the old recogniser still had queued (the
-        // answer to an earlier stop included) can reach this session.
-        this.mSpeechRecognizer.destroy();
         this.mCancelRequested = false;
         this.mSelection = selection;
         this.mSpeechRecognizer = InstalledVoiceRecognizers.create(this.mContext, selection);
@@ -414,6 +453,8 @@ public class VoiceRecognitionManager {
         this.mCancelRequested = false;
         notifyState(STATE_STARTED);
         this.mSpeechRecognizer.startListening(intent);
+        this.mHandler.removeCallbacks(this.mReleaseRunnable);
+        this.mHandler.postDelayed(this.mReleaseRunnable, IDLE_RELEASE_MILLIS);
         this.mHandler.removeCallbacks(this.mTimeoutRunnable);
         // The "nothing heard for 6 s" cut-off is for one-utterance dictation. Continuous mode
         // waits: the recogniser's own no-speech timeout ends a silent session, and the

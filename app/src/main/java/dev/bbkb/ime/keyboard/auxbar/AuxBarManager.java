@@ -990,8 +990,14 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
      * @return "off", "uppercase", or "symbol"
      */
     private String readHoldActionMode() {
-        String mode = PrefsManager.INSTANCE.getPrefs(this.context)
-                .getString("pref_pkb_hold_auto_commit", HOLD_ACTION_OFF);
+        // From the settings snapshot, which is rebuilt when the preference changes; this runs on
+        // every key-down. The preference itself only before the first snapshot exists.
+        SettingsManager manager = SettingsManager.getInstance();
+        SettingsValues settings = manager != null ? manager.getSettingsValues() : null;
+        String mode = settings != null
+                ? settings.pkbHoldAction
+                : PrefsManager.INSTANCE.getPrefs(this.context)
+                        .getString("pref_pkb_hold_auto_commit", HOLD_ACTION_OFF);
         return mode == null ? HOLD_ACTION_OFF : mode;
     }
     

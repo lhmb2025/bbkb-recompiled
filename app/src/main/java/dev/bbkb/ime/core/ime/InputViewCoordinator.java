@@ -654,6 +654,19 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     }
 
     private void initializeFlickSuggestions(View view) {
+        FlickSuggestionView current = (FlickSuggestionView) view.findViewById(R.id.flick_suggestion_view);
+        // The flick view of an input view that has been replaced belongs to a tree that is no
+        // longer attached. It was only ever swapped out when the new view was given one, so
+        // after a turn to landscape and back the service and this coordinator kept the old one,
+        // the whole previous view tree with it, and went on sending suggestions to it. Only a
+        // view from another tree is let go: the same input view wired a second time keeps its
+        // flick view whatever the test below says then, as it always did.
+        FlickSuggestionView previous = this.imeService.getFlickSuggestionView();
+        if (previous != null && previous != current) {
+            previous.init(null, null);
+            this.imeService.setFlickSuggestionView(null);
+            this.flickSuggestionView = null;
+        }
         this.imeService.refreshOnScreenKeyboardShowing();
         if (DeviceProfile.current().isPkbWithoutAlphabeticKeyboard()
                 || DeviceProfile.current().isVkbDevice()
@@ -661,11 +674,9 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
                 || DeviceProfile.isVkbForcedForPackage(this.imeService.getCurrentPackageName())
                 || DeviceProfile.isForceVkbMode()
                 || this.imeService.isLandscapeOrientation()) {
-            FlickSuggestionView flickView =
-                    (FlickSuggestionView) view.findViewById(R.id.flick_suggestion_view);
-            this.imeService.setFlickSuggestionView(flickView);
-            if (flickView != null) {
-                flickView.init(this.imeService, this.imeService.getKeyboardSwitcher().getMainKeyboardView());
+            this.imeService.setFlickSuggestionView(current);
+            if (current != null) {
+                current.init(this.imeService, this.imeService.getKeyboardSwitcher().getMainKeyboardView());
             }
         }
     }

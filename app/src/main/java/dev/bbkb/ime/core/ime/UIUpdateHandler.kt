@@ -452,7 +452,6 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
     fun prepareForOrientationChange() {
         needsOrientationChange = true
         val blackBerryIMEV = getOwner() ?: return
-        blackBerryIMEV.getInputLogic().setDynamicLearningEnabled(false)
         if (blackBerryIMEV.isInputViewShown()) {
             blackBerryIMEV.getKeyboardSwitcher().saveKeyboardState(blackBerryIMEV.getCurrentInputEditorInfo().inputType)
         }
@@ -501,7 +500,6 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         if (needsOrientationChange && z) {
             needsOrientationChange = false
             shouldDelayInputStart = true
-            blackBerryIMEV?.getInputLogic()?.setDynamicLearningEnabled(blackBerryIMEV.getSettingsManager().getSettingsValues().isDynamicLearningEnabled)
         }
         if (blackBerryIMEV != null) {
             drainPendingInputEvents(blackBerryIMEV, editorInfo, z)

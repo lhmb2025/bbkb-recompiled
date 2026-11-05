@@ -297,4 +297,30 @@ class ClipboardRowMenuTest {
         assertEquals(null, ClipboardWebImageProvider.previewUrlFor("https://example.com/a", true))
         assertFalse(ClipboardWebImageProvider.isWebUrl(""))
     }
+
+    /** A copied document is never a link: it is not trimmed or matched, only measured. */
+    @Test
+    fun aVeryLongClipIsNeverTreatedAsALink() {
+        assertEquals("https://example.com/a", ClipboardWebImageProvider.webUrlOrNull("  https://example.com/a\n"))
+        assertEquals(null, ClipboardWebImageProvider.webUrlOrNull("two words"))
+        val long = "https://example.com/" + "a".repeat(ClipboardWebImageProvider.MAX_URL_CHARS)
+        assertEquals(null, ClipboardWebImageProvider.webUrlOrNull(long))
+        assertEquals(null, ClipboardWebImageProvider.previewUrlFor(long, false))
+        assertFalse(ClipboardWebImageProvider.isWebUrl(long))
+    }
+
+    /** A row draws the start of a long clip; what is pasted is the clip itself. */
+    @Test
+    fun aRowShowsOnlyTheStartOfALongClip() {
+        assertEquals("short", ClipboardAdapter.shownText("short", false))
+        val long = "x".repeat(ClipboardAdapter.EXPANDED_MAX_CHARS + 50)
+        val collapsed = ClipboardAdapter.shownText(long, false)
+        assertEquals(ClipboardAdapter.COLLAPSED_MAX_CHARS + 1, collapsed.length)
+        assertTrue(collapsed.endsWith("\u2026"))
+        assertEquals(ClipboardAdapter.EXPANDED_MAX_CHARS + 1, ClipboardAdapter.shownText(long, true).length)
+        // Never half of a two-char character at the cut.
+        val emoji = String(Character.toChars(0x1F600))
+        val cut = ClipboardAdapter.shownText("y" + emoji.repeat(ClipboardAdapter.COLLAPSED_MAX_CHARS), false)
+        assertFalse(Character.isHighSurrogate(cut[cut.length - 2]))
+    }
 }

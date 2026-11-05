@@ -62,6 +62,25 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
 
     private static final int COLLAPSED_MAX_LINES = 3;
 
+    /**
+     * The most of a clip a row is given to draw: collapsed, far more than three lines hold;
+     * expanded, hundreds of lines. A TextView measures the whole first paragraph of what it is
+     * handed, so a copied log or document cost its full length on every bind. Pasting always
+     * uses the whole clip.
+     */
+    static final int COLLAPSED_MAX_CHARS = 1_000;
+    static final int EXPANDED_MAX_CHARS = 20_000;
+
+    /** The start of {@code text} a row shows, ending in an ellipsis when it was cut. */
+    static String shownText(String text, boolean expanded) {
+        int max = expanded ? EXPANDED_MAX_CHARS : COLLAPSED_MAX_CHARS;
+        if (text.length() <= max) {
+            return text;
+        }
+        int end = Character.isHighSurrogate(text.charAt(max - 1)) ? max - 1 : max;
+        return text.substring(0, end) + "\u2026";
+    }
+
     private final ClipboardWebImageProvider imageProvider;
 
     /**
@@ -176,7 +195,7 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
         holder.boundEntry = entry;
         boolean masked = isMasked(entry);
         boolean expanded = !masked && this.expandedIds.contains(entry.getId());
-        String shown = masked ? this.passwordKeeperMaskText : entry.getText();
+        String shown = masked ? this.passwordKeeperMaskText : shownText(entry.getText(), expanded);
 
         TextView text = holder.dataTextView;
         text.setMaxLines(expanded ? Integer.MAX_VALUE : COLLAPSED_MAX_LINES);
@@ -196,7 +215,9 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
      */
     private void bindPreview(ClipboardViewHolder holder, ClipEntry entry) {
         boolean masked = isMasked(entry);
-        String previewUrl = ClipboardWebImageProvider.previewUrlFor(entry.getText(), masked);
+        // One look at the text for both the preview and the icon.
+        String link = masked ? null : ClipboardWebImageProvider.webUrlOrNull(entry.getText());
+        String previewUrl = link != null ? ClipboardWebImageProvider.previewUrlForLink(link) : null;
         OpenGraphMetadata preview = null;
         if (previewUrl != null) {
             // A no-op once the entry has a result (or is being fetched); asked first so a result
@@ -209,8 +230,7 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
         if (thumbnail != null) {
             showThumbnail(holder.clipImageView, thumbnail);
         } else {
-            boolean link = !masked && ClipboardWebImageProvider.isWebUrl(entry.getText().trim());
-            showIcon(holder.clipImageView, link
+            showIcon(holder.clipImageView, link != null
                     ? R.drawable.ic_inputboard_clipboard_link
                     : R.drawable.ic_inputboard_clipboard_text);
         }
@@ -218,7 +238,9 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
         if (preview != null && preview.getTitle() != null) {
             holder.dataTextView.setText(preview.getTitle() + "\n" + preview.getUrl());
         } else {
-            holder.dataTextView.setText(masked ? this.passwordKeeperMaskText : entry.getText());
+            holder.dataTextView.setText(masked
+                    ? this.passwordKeeperMaskText
+                    : shownText(entry.getText(), this.expandedIds.contains(entry.getId())));
         }
     }
 

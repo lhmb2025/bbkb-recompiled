@@ -192,21 +192,32 @@ public class DeviceInputResolver {
     }
     
     /**
-     * Reset cached configuration (for testing).
+     * A device was added, removed or reported as changed: forgets what was resolved and resolves
+     * again at once, so the scancode-role resolver is never left empty.
      */
-    private static synchronized void resetAndResolve() {
-        resetConfig();
+    static synchronized void resetAndResolve() {
+        // Not resetConfig(): a device coming, going or "changing" does not change what an XML
+        // resource holds, so the parsed Alt tables stay. Android reports the built-in keyboard
+        // as changed on every language switch, and dropping the tables there made the next
+        // physical key parse its Alt table again on the main thread (Minimal Phone, Titan).
+        resetResolved();
         if (sAppContext != null) {
             resolveInputMapping(sAppContext, ALL_DEVICES);
         }
     }
 
+    /** Another device configuration was chosen: everything resolved goes, the Alt tables too. */
     public static synchronized void resetConfig() {
+        resetResolved();
+        AltMappingsParser.clearMappingsCache();
+    }
+
+    /** Forgets what was resolved from the configuration and the attached devices. */
+    private static void resetResolved() {
         sConfig = null;
         sMappingByDeviceId.clear();
         sResolvedDeviceIds.clear();
         sScancodeResolverInitialized = false;
-        AltMappingsParser.clearMappingsCache();
         ScancodeMappingResolver.getInstance().reset();
     }
 }

@@ -23,7 +23,6 @@ import dev.bbkb.ime.core.suggestion.SuggestionUpdater;
 import dev.bbkb.ime.core.textinput.composing.CommitEventRecord;
 import dev.bbkb.ime.core.suggestion.SuggestionEngine;
 import dev.bbkb.ime.core.textinput.composing.TouchHighlightTracker;
-import dev.bbkb.ime.core.textinput.connection.TextContextTracker;
 import dev.bbkb.ime.core.textinput.connection.EditorCapabilities;
 import dev.bbkb.ime.core.engine.learning.DynamicLearningManager;
 import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardController;
@@ -146,12 +145,6 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
     private final TreeSet<Long> mTrackedKeyEvents = new TreeSet<>();
 
-    /**
-     * Assigned in the constructor, not here: it now takes {@link #mRichInputConnection}, which a
-     * field initializer would capture as null (field initializers run ahead of the constructor
-     * body, where that connection is built).
-     */
-    private final TextContextTracker mTextContextTracker;
 
     boolean mJustCommitted = false;
 
@@ -207,7 +200,6 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         this.mComposingTracker = new ComposingTextTracker(NuanceSDKManager::getInstance);
         this.mTouchHighlightTracker = new TouchHighlightTracker();
         this.mRichInputConnection = new RichInputConnection(blackBerryIME);
-        this.mTextContextTracker = new TextContextTracker(this.mRichInputConnection);
         this.mPunctuationController = new PunctuationController(
                 this.mRichInputConnection,
                 (settings, codePoint, source) -> commitCharacter(settings, codePoint, source)
@@ -256,7 +248,6 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         this.mBackspaceController.reset();
         this.mCommitType = 0;
         this.mCurrentSuggestions = SuggestedWords.EMPTY;
-        this.mRichInputConnection.addTextChangeListener(this.mTextContextTracker);
         this.mRichInputConnection.recalibrateCursorPosition();
         resetSpaceTimestamp();
         SuggestionRequestQueue c0675b = SuggestionRequestQueue.DISABLED_INSTANCE;
@@ -335,7 +326,6 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         // lets the batch-commit handler recognise a reply that outlived its session.
         NuanceSDKManager.consumeGesturePending();
         this.mCurrentSuggestions = SuggestedWords.EMPTY;
-        resetTextContextTracker();
     }
 
     /**
@@ -2012,12 +2002,9 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
             clipboard.setNoPersonalizedLearning(noPersonalizedLearning);
         }
         if (!z) {
-            this.mTextContextTracker.setEnabled(false);
             learning.setDynamicLearningEnabled(false);
         } else {
-            this.mTextContextTracker.updateLocale(SubtypeManager.getInstance().getCurrentSubtypeLocale(), settingsValues.spacingAndPunctuation);
             boolean zM4428f = editorInfoM4500g != null ? isLearningAllowed(editorInfoM4500g) : false;
-            this.mTextContextTracker.setEnabled(zM4428f);
             learning.setDynamicLearningEnabled(zM4428f);
         }
         this.mLastDynamicLearningEnabled = z;
@@ -2052,24 +2039,6 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     public static boolean isLearningEnabledForInputType(int i) {
         int i2 = i & 4080;
         return (InputTypeUtils.isPasswordInputType(i) || InputTypeUtils.isVisiblePasswordInputType(i) || ((524288 & i) != 0 && i2 == 160) || !InputTypeUtils.isTextClass(i) || InputTypeUtils.isUriVariation(i2) || InputTypeUtils.isFilterVariation(i2) || InputTypeUtils.isPhoneticVariation(i2)) ? false : true;
-    }
-
-    /**
-     * Resets the text context tracker, discarding any accumulated typing history used
-     * for dynamic learning and context-based predictions.
-     */
-    public void resetTextContextTracker() {
-        this.mTextContextTracker.invalidate();
-    }
-
-    /**
-     * Directly enables or disables dynamic learning in the text context tracker.
-     * Called when the user changes the learning preference at runtime.
-     *
-     * @param z {@code true} to enable learning; {@code false} to disable
-     */
-    public void setDynamicLearningEnabled(boolean z) {
-        this.mTextContextTracker.setEnabled(z);
     }
 
     private void appendAutoSpace(SettingsValues c0804d, InputSource enumC0690f) {

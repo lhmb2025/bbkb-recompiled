@@ -289,5 +289,23 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>
         </provider>
+
+        <!--
+            androidx.startup runs every listed initializer at each process start, the keyboard's
+            included. EmojiCompat comes in with AppCompat and nothing here uses it: the emoji
+            board and the settings pages draw with the system font and offer only the emoji it
+            has. Left in, it waited for the first Settings screen and then loaded its emoji font
+            into the keyboard's process for good. The other two initializers stay (the baseline
+            profile installer needs its own).
+        -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+                tools:node="remove"/>
+        </provider>
     </application>
 </manifest>

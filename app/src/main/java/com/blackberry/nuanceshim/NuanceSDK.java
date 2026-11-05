@@ -1114,7 +1114,59 @@ public class NuanceSDK {
     // pollute the engine's gesture buffer. Both gesture paths (PointerTracker and
     // GestureEventProcessor) funnel through these wrappers, so this is the single choke point.
     private static final int MIN_GESTURE_MOVES = 3;
-    private final java.util.HashMap<Long, Integer> mGestureMoves = new java.util.HashMap<>();
+
+    /**
+     * The contacts in flight and their move counts, side by side. There are one or two at a
+     * time, so a scan beats a map, and nothing is boxed per touch sample (a HashMap keyed by
+     * Long allocated a key per lookup and a count per move past 127). Guarded by sMutex.
+     */
+    private long[] mGestureMoveIds = new long[4];
+    private int[] mGestureMoveCounts = new int[4];
+    private int mGestureMoveSize;
+
+    private int gestureMoveIndex(long id) {
+        for (int n = 0; n < this.mGestureMoveSize; n++) {
+            if (this.mGestureMoveIds[n] == id) {
+                return n;
+            }
+        }
+        return -1;
+    }
+
+    /** A contact starts: its count is 0, whatever an earlier contact of the same id left. */
+    private void startGestureMoves(long id) {
+        int n = gestureMoveIndex(id);
+        if (n < 0) {
+            if (this.mGestureMoveSize == this.mGestureMoveIds.length) {
+                this.mGestureMoveIds = java.util.Arrays.copyOf(this.mGestureMoveIds, this.mGestureMoveSize * 2);
+                this.mGestureMoveCounts = java.util.Arrays.copyOf(this.mGestureMoveCounts, this.mGestureMoveSize * 2);
+            }
+            n = this.mGestureMoveSize++;
+            this.mGestureMoveIds[n] = id;
+        }
+        this.mGestureMoveCounts[n] = 0;
+    }
+
+    /** One more move for a contact that started; a move for an unknown contact counts nowhere. */
+    private void countGestureMove(long id) {
+        int n = gestureMoveIndex(id);
+        if (n >= 0) {
+            this.mGestureMoveCounts[n]++;
+        }
+    }
+
+    /** Forgets the contact and returns its move count, 0 for one that never started. */
+    private int endGestureMoves(long id) {
+        int n = gestureMoveIndex(id);
+        if (n < 0) {
+            return 0;
+        }
+        int count = this.mGestureMoveCounts[n];
+        int last = --this.mGestureMoveSize;
+        this.mGestureMoveIds[n] = this.mGestureMoveIds[last];
+        this.mGestureMoveCounts[n] = this.mGestureMoveCounts[last];
+        return count;
+    }
 
     // Debug: log which KDB key a tap lands on, replicating the engine's tap->key mapping —
     // scale sensor coords into the KDB's authored 1080x324 using the active setKeyboardSize
@@ -1175,7 +1227,7 @@ public class NuanceSDK {
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchStart: pointer=" + j + " x=" + f + " y=" + f2 + " time=" + j2);
         boolean z;
         synchronized (sMutex) {
-            mGestureMoves.put(Long.valueOf(j), Integer.valueOf(0));
+            startGestureMoves(j);
             if (InputPathDebug.perGesture() && mDbgKeys == null) {
                 mDbgKeys = getKeys(this.mNativeHandle);
                 if (InputPathDebug.on()) Xt9Trace.dumpNkl(this.mNativeHandle);
@@ -1194,8 +1246,7 @@ public class NuanceSDK {
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchMove: pointer=" + j + " x=" + f + " y=" + f2 + " time=" + j2);
         boolean z;
         synchronized (sMutex) {
-            Integer c = mGestureMoves.get(Long.valueOf(j));
-            if (c != null) mGestureMoves.put(Long.valueOf(j), Integer.valueOf(c.intValue() + 1));
+            countGestureMove(j);
             z = touchMove(this.mNativeHandle, j, f, f2, j2);
         }
         if (InputPathDebug.on()) Xt9Kdb.traceMove(f, f2, j2);   // W3a: mirror to owned scratch trace
@@ -1218,8 +1269,7 @@ public class NuanceSDK {
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchEnd: pointer=" + j + " x=" + f + " y=" + f2 + " time=" + j2);
         boolean z;
         synchronized (sMutex) {
-            Integer moves = mGestureMoves.remove(Long.valueOf(j));
-            int n = (moves == null) ? 0 : moves.intValue();
+            int n = endGestureMoves(j);
             if (n < MIN_GESTURE_MOVES) {
                 // Stray / tap: cancel so it doesn't register as a 1-point gesture record.
                 touchCancel(this.mNativeHandle, j);
@@ -1258,7 +1308,7 @@ public class NuanceSDK {
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchCancel: pointer=" + j);
         boolean z;
         synchronized (sMutex) {
-            mGestureMoves.remove(Long.valueOf(j));
+            endGestureMoves(j);
             z = touchCancel(this.mNativeHandle, j);
         }
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchCancel: returned " + z);

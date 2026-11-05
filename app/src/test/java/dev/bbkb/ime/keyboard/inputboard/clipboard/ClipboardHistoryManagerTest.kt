@@ -796,6 +796,31 @@ class ClipboardHistoryManagerTest {
         assertEquals(listOf("short"), stored().map { it.text })
     }
 
+    /**
+     * Rows too long to store live in memory only, and nothing bounded them: only the newest one
+     * is kept. Short rows are untouched, whatever their age.
+     */
+    @Test
+    fun onlyTheNewestClipTooLongToPersistIsKept() {
+        val big = ClipboardHistoryManager.MAX_PERSISTED_CHARS + 1
+        copy("short one")
+        copy("a".repeat(big))
+        copy("short two")
+        copy("b".repeat(big))
+        copy("short three")
+
+        assertEquals(
+            listOf("short three", "b".repeat(big), "short two", "short one"),
+            recentTexts(),
+        )
+
+        copy("c".repeat(big))
+        assertEquals(
+            listOf("c".repeat(big), "short three", "short two", "short one"),
+            recentTexts(),
+        )
+    }
+
     @Test
     fun aCorruptFileLoadsAsAnEmptyHistory() {
         file.writeText("{ not json")

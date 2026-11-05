@@ -12,12 +12,6 @@
  *       primary editor interface: wraps {@link android.view.inputmethod.InputConnection}
  *       with batch-edit support, cursor tracking, text-before/after retrieval, composing
  *       region management, and word boundary detection.</li>
- *   <li>{@link dev.bbkb.ime.core.textinput.connection.TextContextTracker} —
- *       tracks the text context around the cursor for dynamic learning; uses
- *       {@link java.text.BreakIterator} for word boundary detection and implements
- *       {@code TextChangeListener} for live update notifications. It takes the
- *       {@code RichInputConnection} it listens to; it used to take an {@code InputLogic} and reach
- *       through {@code InputLogic.mRichInputConnection} for every read (§5.3).</li>
  *   <li>{@link dev.bbkb.ime.core.textinput.connection.CursorWordRange} —
  *       the word-boundary range {@code RichInputConnection} returns; moved down from the parent
  *       package, where it was the other half of the same back-edge.</li>
