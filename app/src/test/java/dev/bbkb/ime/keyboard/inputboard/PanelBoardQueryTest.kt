@@ -75,6 +75,7 @@ class PanelBoardQueryTest {
 
     private lateinit var uim: UnifiedInputBoardManager
     private lateinit var ime: BlackBerryIME
+    private lateinit var uiCoordinator: InputViewCoordinator
     private lateinit var keyboardView: SimplifiedKeyboardView
     private lateinit var components: ConcurrentHashMap<Int, UnifiedInputBoardComponent>
     private lateinit var coordinator: UnifiedBoardCoordinator
@@ -87,8 +88,8 @@ class PanelBoardQueryTest {
         uim = Mockito.mock(UnifiedInputBoardManager::class.java, Mockito.CALLS_REAL_METHODS)
 
         ime = Mockito.mock(BlackBerryIME::class.java)
-        Mockito.`when`(ime.getUiCoordinator())
-            .thenReturn(Mockito.mock(InputViewCoordinator::class.java))
+        uiCoordinator = Mockito.mock(InputViewCoordinator::class.java)
+        Mockito.`when`(ime.getUiCoordinator()).thenReturn(uiCoordinator)
 
         keyboardView = Mockito.mock(SimplifiedKeyboardView::class.java)
         Mockito.`when`(keyboardView.visibility).thenReturn(View.VISIBLE)
@@ -392,7 +393,7 @@ class PanelBoardQueryTest {
     /**
      * The bar's centre key keeps its legacy dispatch. Registration must not divert −3 into the
      * coordinator's toggle: `handleKeyEvent` routes a keycode through `requestBoard` only when it
-     * is a PANEL board, so tapping the centre key still runs the `-3` branch — restore the strip,
+     * is a PANEL board, so tapping the centre key still runs the `-3` branch — put the menu away,
      * nothing opened.
      */
     @Test
@@ -400,7 +401,7 @@ class PanelBoardQueryTest {
         val alphabet = AlphabetBoardController()
         uim.registerComponent(alphabet)
         // closeActiveComponent() reaches the IME's InputLogic and the live switcher, neither of
-        // which exists here; the -3 branch's own effect is the strip restore verified below.
+        // which exists here; the -3 branch's own effect is putting the menu away, verified below.
         Mockito.doNothing().`when`(uim).closeActiveComponent()
         uim.requestBoard(CLIPBOARD)
 
@@ -412,6 +413,6 @@ class PanelBoardQueryTest {
             UnifiedBoardCoordinator.NO_BOARD, coordinator.activeBoard(),
         )
         assertTrue("the alphabet board is up again", alphabet.isShowing)
-        Mockito.verify(ime).restoreSuggestionStrip(true, true)
+        Mockito.verify(uiCoordinator).putMenuAway()
     }
 }

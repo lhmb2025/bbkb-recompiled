@@ -56,6 +56,11 @@ public class InputSessionCoordinator {
             ime.getUiCoordinator().hideUnifiedInputBoard();
             SettingsValues.setInputMenuRequestedByKey(false);
         }
+        // A menu the hamburger raised was for the last field too: the new field starts from its
+        // own bar (AuxBarChoice).
+        if (ime.getUiCoordinator() != null) {
+            ime.getUiCoordinator().onMenuTakenDown();
+        }
         ime.superOnStartInput(editorInfo, restarting);
         if (shouldReloadKeyboard(editorInfo, restarting)) {
             ime.setNeedsKeyboardReload(true);

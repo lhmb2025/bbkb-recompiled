@@ -493,6 +493,46 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
     }
 
     /**
+     * Put words on the suggestion strip a key bar is covering, without showing it — the menu over
+     * an open board, say. The same gates as {@link #showSuggestionStrip(SuggestedWords, boolean)}
+     * (the field takes suggestions, a physical-keyboard device, the Latin strip not hidden by
+     * "Show the suggestion bar"), minus their side effects: nothing is hidden, nothing is shown.
+     */
+    public void updateHiddenSuggestionStrip(@NonNull SuggestedWords words, boolean isCJK) {
+        if (auxBarView == null || !DeviceProfile.current().isPkbDevice()) {
+            return;
+        }
+        SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
+        if (settings != null && !settings.editorCapabilities.shouldShowSuggestions) {
+            return;
+        }
+        if (!isCJK && isLatinStripHidden()) {
+            return;
+        }
+        auxBarView.setSuggestionsBehindKeys(words, isCJK);
+    }
+
+    /**
+     * Take the menu down onto the suggestion strip it covers, with the strip's words as they are —
+     * unlike {@link #hideUnifiedInputMenu()}, which empties the strip with the bar. Where there is
+     * no strip to go back to ("Show the suggestion bar" hides a Latin strip, or the field takes no
+     * suggestions) the bar goes away instead, as the arrow bar's dismissal does.
+     */
+    public void restoreStripFromMenu() {
+        if (auxBarView == null || auxBarView.getCurrentState() != AuxBarState.UNIFIED_INPUT_MENU) {
+            return;
+        }
+        SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
+        boolean fieldTakesSuggestions = settings == null || settings.editorCapabilities.shouldShowSuggestions;
+        boolean latin = auxBarView.getSuggestionView().getMode() == SuggestionMode.LATIN;
+        if (!fieldTakesSuggestions || (latin && isLatinStripHidden())) {
+            auxBarView.hide();
+        } else {
+            auxBarView.dismissKeyViewAndRestoreSuggestions();
+        }
+    }
+
+    /**
      * Hide the Unified Input Menu bar.
      */
     public void hideUnifiedInputMenu() {

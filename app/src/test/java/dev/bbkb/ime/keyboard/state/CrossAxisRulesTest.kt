@@ -142,16 +142,15 @@ class CrossAxisRulesTest {
     }
 
     /**
-     * Was: the `if (keyCode == -42 && wasOpen && isOnScreenKeyboardVisible())` tail of
-     * `UnifiedInputBoardManager.closeBoard`. Exactly one board's close touches the bar.
+     * No board's close touches the bar in the table. The cursor board's used to put the strip back
+     * on the on-screen keyboard (the `-42 && wasOpen && isOnScreenKeyboardVisible()` tail of
+     * `UnifiedInputBoardManager.closeBoard`); owner decision 2026-11-05 dropped it. What the bar goes
+     * back to after the last close is `AuxBarChoice`'s, tested where the funnel schedules it.
      */
     @Test
-    fun onlyTheCursorBoardsCloseRestoresTheStrip() {
-        assertEquals(
-            BarEffect.RESTORE_STRIP,
-            CrossAxisRules.barFor(KeyboardTransition.closeBoard(CrossAxisRules.CURSOR_BOARD_KEY_CODE)),
-        )
+    fun noBoardsCloseTouchesTheBar() {
         for (other in listOf(
+            CrossAxisRules.CURSOR_BOARD_KEY_CODE,
             CrossAxisRules.NUMBER_PAD_KEY_CODE,
             CrossAxisRules.VOICE_KEY_CODE,
             CrossAxisRules.EMOJI_KEY_CODE,

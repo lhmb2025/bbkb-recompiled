@@ -222,6 +222,58 @@ class AuxBarViewTransitionTest {
         )
     }
 
+    // ── setSuggestionsBehindKeys (owner decision 2026-11-05: the hidden strip stays current) ──
+
+    @Test
+    fun wordsSetBehindTheMenuChangeNeitherTheStateNorTheChildren() {
+        bar.showSuggestions(words(), false)
+        bar.showKeys(keyboard("x"), AuxBarState.UNIFIED_INPUT_MENU)
+        transitions.clear()
+        val fresh = words()
+
+        bar.setSuggestionsBehindKeys(fresh, false)
+
+        assertEquals(AuxBarState.UNIFIED_INPUT_MENU, bar.currentState)
+        assertVisibility(View.VISIBLE, View.GONE, View.VISIBLE)
+        assertSame(fresh, currentWords())
+        assertTrue("no state change was announced", transitions.isEmpty())
+    }
+
+    @Test
+    fun wordsSetBehindTheMenuAreWhatTheStripComesBackWith() {
+        bar.showSuggestions(words(), false)
+        bar.showKeys(keyboard("x"), AuxBarState.UNIFIED_INPUT_MENU)
+        val fresh = words()
+        bar.setSuggestionsBehindKeys(fresh, false)
+
+        bar.dismissKeyViewAndRestoreSuggestions()
+
+        assertEquals(AuxBarState.LATIN_SUGGESTIONS, bar.currentState)
+        assertSame(fresh, currentWords())
+    }
+
+    /** Autofill chips behind the menu are what the strip goes back to; words do not replace them. */
+    @Test
+    fun wordsAreNotSetOverAutofillChipsBehindTheMenu() {
+        suggestions.setMode(SuggestionMode.AUTOFILL)
+        bar.showKeys(keyboard("x"), AuxBarState.UNIFIED_INPUT_MENU)
+
+        bar.setSuggestionsBehindKeys(words(), false)
+
+        assertEquals(SuggestionMode.AUTOFILL, suggestions.mode)
+    }
+
+    /** With the strip itself showing there is nothing behind anything: a no-op. */
+    @Test
+    fun wordsSetBehindKeysWithTheStripShowingDoNothing() {
+        val shown = words()
+        bar.showSuggestions(shown, false)
+
+        bar.setSuggestionsBehindKeys(words(), false)
+
+        assertSame(shown, currentWords())
+    }
+
     // ── dismissKeyViewAndRestoreSuggestions ─────────────────────────────────
 
     @Test

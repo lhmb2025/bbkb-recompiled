@@ -28,7 +28,6 @@ import dev.bbkb.ime.keyboard.auxbar.autofill.InlineAutofillManager;
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiBoardController;
 import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadController;
 import dev.bbkb.ime.keyboard.state.CrossAxisRules;
-import dev.bbkb.ime.keyboard.state.KeyboardTransition;
 import dev.bbkb.ime.keyboard.internal.KeyboardIconSet;
 import dev.bbkb.ime.keyboard.internal.MoreKeySpec;
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputController;
@@ -520,6 +519,11 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         // suggestion strip replacing it, cursor mode, a settings change) ends a menu the "Show or
         // hide the input menu" key asked for: the settings decide again.
         SettingsValues.setInputMenuRequestedByKey(false);
+        // ...and a menu the hamburger raised: the bar goes back to the field's own bar.
+        dev.bbkb.ime.core.ime.InputViewCoordinator ui = this.imeService.getUiCoordinator();
+        if (ui != null) {
+            ui.onMenuTakenDown();
+        }
         // The suggestion strip calls this once or twice per update. When nothing is up there is
         // nothing to take down, and the full pass walked every board and posted a redraw.
         if (isFullyHidden()) {
@@ -661,7 +665,12 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
             if (isSlideboardShowing()) {
                 showAndRefreshForSlideboard();
             } else {
-                this.imeService.restoreSuggestionStrip(true, true);
+                // The menu's keyboard key puts the menu away: back to the field's own bar, with
+                // the strip's words as they are (InputViewCoordinator.putMenuAway).
+                dev.bbkb.ime.core.ime.InputViewCoordinator ui = this.imeService.getUiCoordinator();
+                if (ui != null) {
+                    ui.putMenuAway();
+                }
             }
         } else if (iM6232c == -26) {
             this.imeService.openSlideboardSettings();
@@ -1269,6 +1278,60 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
     
     /**
+     * The menu came up with the board that just closed: once nothing is open any more, the bar goes
+     * back to what the user had chosen (owner decision 2026-11-05, {@code AuxBarChoice}).
+     *
+     * <p>Deferred, not run here: switching from one board to another closes the first and only
+     * then opens the second ({@code dispatchBoardAction}, after {@code openBoard} has already
+     * raised the menu), so deciding at the close would take the menu down under the new board. The
+     * decision re-checks that nothing is open when it runs.
+     *
+     * <p>Deferred to the start of the next frame, not posted to the handler: the board's own hide
+     * has asked for a layout, and a layout request holds ordinary messages back until that frame
+     * is drawn, so a posted uncover drew one frame with the board gone and the menu still up (KEY2
+     * report, test build .29: "a tiny visual delay"). A frame callback runs before that frame's
+     * layout and draw, so the board goes and the strip comes back in the same frame.
+     */
+    private void scheduleUncoverAfterBoardsClosed() {
+        // Created on first use rather than as a field initializer: the JVM harnesses build this
+        // class without running its constructor.
+        if (this.uncoverAfterBoardsClosed == null) {
+            this.uncoverAfterBoardsClosed = frameTimeNanos -> uncoverAfterBoardsClosedNow();
+        }
+        android.view.Choreographer choreographer = android.view.Choreographer.getInstance();
+        choreographer.removeFrameCallback(this.uncoverAfterBoardsClosed);
+        choreographer.postFrameCallback(this.uncoverAfterBoardsClosed);
+    }
+
+    private android.view.Choreographer.FrameCallback uncoverAfterBoardsClosed;
+
+    private void uncoverAfterBoardsClosedNow() {
+        dev.bbkb.ime.core.ime.InputViewCoordinator ui = this.imeService.getUiCoordinator();
+        if (ui != null) {
+            ui.uncoverAfterBoardsClosed();
+        }
+    }
+
+    /**
+     * Take the menu down onto the suggestion strip it covers, keeping the strip's words, and close
+     * no board. {@link #hide()} is the other way down: it empties the strip and closes every board,
+     * which is right for the window going away and wrong for "the board is closed, show the strip".
+     */
+    public void lowerMenuOntoStrip() {
+        this.keyboardView.animate().cancel();
+        this.invalidationHandler.removeCallbacks(animationSafetyReset);
+        setAnimating(false);
+        AuxBarManager auxBarManager = bar();
+        if (auxBarManager != null) {
+            auxBarManager.restoreStripFromMenu();
+        } else {
+            this.keyboardView.setVisibility(View.GONE);
+        }
+        this.displayedKeyboard = null;
+        dumpUimState("lowerMenuOntoStrip.EXIT");
+    }
+
+    /**
      * Set the currently active input board component and refresh icon colors.
      * 
      * @param component The active component, or null if no component is active
@@ -1283,7 +1346,11 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         if (component != null) {
             this.boardCoordinator.notifyBoardOpened(component.getKeyCode());
         } else {
+            boolean aBoardWasOpen = this.boardCoordinator.activeBoard() != UnifiedBoardCoordinator.NO_BOARD;
             this.boardCoordinator.notifyBoardClosed();
+            if (aBoardWasOpen) {
+                scheduleUncoverAfterBoardsClosed();
+            }
         }
         dumpUimState("setActiveComponent", component != null ? component.getKeyCode() : 0);
         
@@ -1393,14 +1460,6 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         // activeComponent and the board's own mode flag (isInVoiceMode /
         // isInEmojiMode), in which case each branch below is a safe no-op.
         UnifiedInputBoardComponent c = panelComponent(keyCode);
-        // The -42 strip restore below undoes what OPENING the cursor board did, so it is only
-        // correct when this board was actually open; the original APK ran it inside its
-        // "board is showing" branch. Captured before the teardown below erases both signals.
-        // Open = the coordinator's active board (how every production close reaches here, and
-        // still true when a side effect clobbered the view down) OR the component's own view
-        // (a board shown without being reported to the coordinator).
-        boolean wasOpen = this.boardCoordinator.activeBoard() == keyCode
-                || (c != null && c.isShowing());
         if (keyCode == -27) {
             // Voice: terminate recognition unconditionally, not gated on the mode
             // flag — a key-down side effect may have hidden the view and cleared
@@ -1422,14 +1481,10 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         // Report the close through the bookkeeping funnel (idempotent — the per-board
         // branches above may already have cascaded here via their own close paths).
         setActiveComponent(null);
-        // The bar column of the CLOSE_BOARD row: exactly one board's close restores the strip, and
-        // the table says which. The "was it open" snapshot and the on-screen-keyboard check are
-        // the mechanism's own, which is why this rule is applied here rather than by the funnel.
-        if (CrossAxisRules.barFor(KeyboardTransition.closeBoard(keyCode))
-                        == CrossAxisRules.BarEffect.RESTORE_STRIP
-                && wasOpen && this.imeService.isOnScreenKeyboardVisible()) {
-            this.imeService.restoreSuggestionStrip(true, true);
-        }
+        // What the bar goes back to is the funnel's business now (setActiveComponent schedules
+        // the uncover). Closing FCC on the on-screen keyboard used to put the strip back here
+        // (the original app's menu-key rule); owner decision 2026-11-05 dropped it, so a menu the
+        // user raised stays up when FCC closes.
         refresh();
     }
 

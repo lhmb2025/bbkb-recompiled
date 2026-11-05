@@ -31,6 +31,7 @@ import dev.bbkb.ime.keyboard.internal.TextDecoratorUi;
 import dev.bbkb.ime.keyboard.auxbar.AuxBarView;
 import dev.bbkb.ime.keyboard.auxbar.autofill.InlineAutofillManager;
 import dev.bbkb.ime.keyboard.slideboard.SlideboardManager;
+import dev.bbkb.ime.keyboard.state.AuxBarChoice;
 import dev.bbkb.ime.BuildConfig;
 
 
@@ -67,6 +68,12 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     // Active views (not deprecated)
     private CJKSuggestionGridView cjkSuggestionGridView;
     private FlickSuggestionView flickSuggestionView;
+
+    /**
+     * Whether the user raised the menu (the hamburger, or the show-menu key) and has not put it
+     * away: what the bar goes back to when a board closes. Owner decision 2026-11-05.
+     */
+    private final AuxBarChoice barChoice = new AuxBarChoice();
 
 
     private ArrowBarController arrowBarController;
@@ -187,7 +194,88 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         UnifiedInputBoardManager uibm = this.keyboardSwitcher.getUnifiedInputBoardManager();
         if (uibm != null) {
             uibm.show(true);
+            if (uibm.isShowing()) {
+                this.barChoice.chooseMenu();
+            }
         }
+    }
+
+    public AuxBarChoice getBarChoice() {
+        return this.barChoice;
+    }
+
+    /**
+     * The menu was taken down (any {@code UnifiedInputBoardManager.hide()}), or a new field
+     * started: the bar goes back to the field's own bar.
+     */
+    public void onMenuTakenDown() {
+        this.barChoice.chooseFieldBar();
+    }
+
+    /**
+     * The bar this field shows when the user has chosen nothing: the menu where the field has no
+     * strip ({@link #shouldShowSuggestionStrip} says no and the menu is enabled), the strip where it
+     * has one and the strip can be drawn here (a physical-keyboard device, the only kind
+     * {@code AuxBarManager} draws a strip on), otherwise nothing.
+     */
+    public AuxBarChoice.FieldBar fieldBar() {
+        SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
+        boolean strip = shouldShowSuggestionStrip(settings, this.imeService.isOnScreenKeyboardVisible(),
+                this.subtypeManager.getCurrentSubtype());
+        if (!strip) {
+            return isUimEnabled() ? AuxBarChoice.FieldBar.MENU : AuxBarChoice.FieldBar.NONE;
+        }
+        return DeviceProfile.current().isPkbDevice() ? AuxBarChoice.FieldBar.STRIP : AuxBarChoice.FieldBar.NONE;
+    }
+
+    /**
+     * The last open board has closed: the menu came up with it, so the bar goes back to what the
+     * user had chosen. Posted by {@code UnifiedInputBoardManager} after the close, and re-checks
+     * that nothing opened since (a switch from one board to another). A menu the user raised, or
+     * one the field shows as its own bar, stays.
+     */
+    public void uncoverAfterBoardsClosed() {
+        UnifiedInputBoardManager uibm = this.keyboardSwitcher.getUnifiedInputBoardManager();
+        if (uibm == null || !uibm.isShowing() || uibm.isPanelBoardShowing()
+                || uibm.getBoardCoordinator().activeBoard() != dev.bbkb.ime.keyboard.inputboard.UnifiedBoardCoordinator.NO_BOARD) {
+            return;
+        }
+        // The show-menu key's menu is the user's choice too (and may stand over a disabled menu).
+        if (SettingsValues.isInputMenuRequestedByKey()) {
+            return;
+        }
+        switch (this.barChoice.shows(fieldBar(), false, isUimEnabled())) {
+            case STRIP:
+                uibm.lowerMenuOntoStrip();
+                break;
+            case NONE:
+                uibm.hide();
+                break;
+            case MENU:
+            default:
+                break;
+        }
+    }
+
+    /**
+     * The menu's keyboard key: put the menu away, back to the field's own bar. Where that is the
+     * strip, the strip comes back with its words as they are (they are current: they were kept up
+     * to date under any board, and anything else that changed them would have taken the menu down).
+     * This used to ask for the words again with {@code restoreSuggestionStrip(true, true)}, whose
+     * request often comes back empty: the "menu's keyboard key brings back a blank strip" report.
+     * Where the field's bar is the menu, or nothing, it does exactly that still, so the words over
+     * the on-screen keys are refreshed as before.
+     */
+    public void putMenuAway() {
+        this.barChoice.chooseFieldBar();
+        UnifiedInputBoardManager uibm = this.keyboardSwitcher.getUnifiedInputBoardManager();
+        if (uibm != null && uibm.isShowing() && fieldBar() == AuxBarChoice.FieldBar.STRIP
+                && !SettingsValues.isInputMenuRequestedByKey()) {
+            uibm.lowerMenuOntoStrip();
+            showCjkSuggestionStripIfNeeded();
+            return;
+        }
+        this.imeService.restoreSuggestionStrip(true, true);
     }
 
     public void onAuxBarHeightChanged() {
@@ -297,8 +385,12 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         if (auxBarManager != null && uimManager != null) {
             boolean auxBarShowing = auxBarManager.isShowing();
             if (auxBarShowing && this.imeService.isUimEnabled()) {
-                auxBarManager.hide();
+                // Straight over whatever the bar shows: the menu covers the strip without
+                // emptying it (it used to take the bar down first, which cleared the words).
                 uimManager.show(true);
+                if (uimManager.isShowing()) {
+                    this.barChoice.chooseMenu();
+                }
                 return;
             }
             if (uimManager.isShowing()) {
@@ -398,6 +490,8 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         if (!uibm.showMenuForKey()) {
             // Nothing to show it in (no bar view yet): the settings keep their say.
             SettingsValues.setInputMenuRequestedByKey(false);
+        } else {
+            this.barChoice.chooseMenu();
         }
     }
 

@@ -44,7 +44,7 @@ import java.util.Map;
  *   <tr><td>emoji</td><td>−11</td><td>no</td><td>no</td>
  *       <td>no, unless dynamic search is running</td><td>yes</td></tr>
  *   <tr><td>cursor / FCC</td><td>−42</td><td>yes</td><td><b>yes</b></td><td><b>yes</b></td>
- *       <td>yes; its close restores the strip</td></tr>
+ *       <td>yes</td></tr>
  *   <tr><td>number pad</td><td>−46</td><td>yes</td><td><b>yes</b></td><td><b>yes</b> (R3b)</td>
  *       <td>yes</td></tr>
  *   <tr><td>voice</td><td>−27</td><td>dictated from</td><td><b>yes</b></td><td>no</td>
@@ -70,7 +70,7 @@ import java.util.Map;
  *   = the Sym page turn    |                       |                         |                     |
  * SWEEP_BOARDS             | UNCHANGED             | SWEEP_UNLESS_EXEMPT     | UNCHANGED           | UNCHANGED
  * OPEN_BOARD               | CLEAR_PKB_SYMBOL_MODE | OPEN_EXCLUSIVE          | SHOW_UIM_IF_HIDDEN  | UNCHANGED
- * CLOSE_BOARD              | CLEAR_PKB_SYMBOL_MODE | CLOSE                   | RESTORE_STRIP *     | UNCHANGED
+ * CLOSE_BOARD              | CLEAR_PKB_SYMBOL_MODE | CLOSE                   | UNCHANGED *         | UNCHANGED
  * BOARD_OPENING            | CLEAR_PKB_SYMBOL_MODE | UNCHANGED               | UNCHANGED           | UNCHANGED
  * BOARD_RAISED             | UNCHANGED             | REPORT_OPENED           | SHOW_UIM_IF_HIDDEN  | UNCHANGED
  * BOARD_LOWERED            | LEAVE_EMOJI_MODE **   | REPORT_CLOSED           | UNCHANGED           | UNCHANGED
@@ -89,9 +89,11 @@ import java.util.Map;
  * toolbar flashing on each tap of the on-screen page key). Owner decision, 2026-10-01: match the
  * original.
  *
- * <p>* {@code RESTORE_STRIP} only for {@link #CURSOR_BOARD_KEY_CODE} (−42), only when that board
- * was actually open, and only when the on-screen keyboard is visible — it undoes what OPENING the
- * cursor board did. No other board's close touches the bar.
+ * <p>* No board's close touches the bar here. What the bar goes back to once the last board has
+ * closed is {@code AuxBarChoice}'s: the menu the board brought comes down onto the strip unless
+ * the user had raised it (owner decision 2026-11-05). Closing FCC on the on-screen keyboard used to
+ * put the strip back in this cell ({@code RESTORE_STRIP}, the original app's menu-key rule); that
+ * went with the same decision, so a menu the user raised stays up when FCC closes.
  *
  * <p>** {@code BOARD_LOWERED}'s layout column is {@code LEAVE_EMOJI_MODE} for board −11 and
  * {@code UNCHANGED} for every other board: emoji is the one board whose "closed" also means a
@@ -199,8 +201,6 @@ public final class CrossAxisRules {
         SHOW_ARROW_BAR,
         /** Take the arrow bar down, then restore the suggestion strip. */
         HIDE_ARROW_BAR,
-        /** Restore the suggestion strip (or the UIM, whichever this editor gets). */
-        RESTORE_STRIP,
         /**
          * Put back whichever of the two the editor gets — the UIM bar when this editor uses it,
          * the suggestion strip otherwise. The bar axis' one entry point with a decision in it.
@@ -275,7 +275,7 @@ public final class CrossAxisRules {
         ROWS.put(KeyboardTransition.Kind.CLOSE_BOARD, new Rule(
                 LayoutEffect.CLEAR_PKB_SYMBOL_MODE,
                 BoardEffect.CLOSE,
-                BarEffect.UNCHANGED,          // -42 only; see barFor(transition)
+                BarEffect.UNCHANGED,
                 CursorEffect.UNCHANGED));
         ROWS.put(KeyboardTransition.Kind.BOARD_OPENING, new Rule(
                 LayoutEffect.CLEAR_PKB_SYMBOL_MODE,
@@ -342,18 +342,11 @@ public final class CrossAxisRules {
     }
 
     /**
-     * The bar effect for this exact transition — the other column whose value depends on more than
-     * the kind. See the {@code *} footnote on the class table.
+     * The bar effect for this exact transition. It used to depend on more than the kind (closing
+     * the cursor board restored the strip, see the {@code *} footnote); it is the row's own now.
      */
     public static BarEffect barFor(KeyboardTransition transition) {
-        switch (transition.kind()) {
-            case CLOSE_BOARD:
-                return transition.boardKeyCode() == CURSOR_BOARD_KEY_CODE
-                        ? BarEffect.RESTORE_STRIP
-                        : BarEffect.UNCHANGED;
-            default:
-                return ruleFor(transition).bar();
-        }
+        return ruleFor(transition).bar();
     }
 
     // ═══════════════════════════════════════════════════ the board identities
@@ -389,7 +382,7 @@ public final class CrossAxisRules {
     /** Clipboard board. */
     public static final int CLIPBOARD_KEY_CODE = -25;
 
-    /** FCC / cursor board. Typed from; also the one board whose close restores the strip. */
+    /** FCC / cursor board. Typed from. */
     public static final int CURSOR_BOARD_KEY_CODE = -42;
 
     /** Number pad. Typed from. */

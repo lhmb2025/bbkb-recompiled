@@ -292,10 +292,6 @@ public final class KeyboardStateCoordinator {
             case HIDE_ARROW_BAR:
                 axes.lowerArrowBarRestoringStrip(transition.requestShiftUpdate());
                 break;
-            case RESTORE_STRIP:
-                // Composite: performed inside closeBoard(-42), which holds the pre-close snapshot
-                // ("was this board actually open") that the rule needs.
-                break;
             case RESTORE_STRIP_OR_UIM:
                 axes.restoreStripOrUimBar();
                 break;

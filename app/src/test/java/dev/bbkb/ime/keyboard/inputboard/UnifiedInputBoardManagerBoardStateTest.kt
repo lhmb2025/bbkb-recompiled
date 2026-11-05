@@ -1083,6 +1083,64 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertNo("this is the dead press the report exists to prevent", fcc.viewIsUp)
     }
 
+    // ═══════════════════════════════════════════════════════════════════════
+    // 10. The bar after the last board closes (AuxBarChoice, owner decision 2026-11-05)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    /** Runs the main looper past the next frame, where the uncover is scheduled. */
+    private fun idle() = org.robolectric.Shadows.shadowOf(Looper.getMainLooper())
+        .idleFor(java.time.Duration.ofMillis(100))
+
+    private fun ui(): InputViewCoordinator = ime.getUiCoordinator()
+
+    /** Closing the last board asks the bar to go back to the user's choice, at the next frame. */
+    @Test
+    fun closingTheLastBoardUncoversTheBarAfterTheClose() {
+        uim.requestBoard(CLIPBOARD)
+        uim.requestBoard(CLIPBOARD)
+        Mockito.verify(ui(), Mockito.never()).uncoverAfterBoardsClosed()
+
+        idle()
+
+        Mockito.verify(ui(), Mockito.times(1)).uncoverAfterBoardsClosed()
+    }
+
+    /**
+     * Switching straight from one board to another closes the first and only then opens the
+     * second: the uncover runs after both, so it finds a board open and leaves the menu up.
+     */
+    @Test
+    fun aSwitchBetweenBoardsUncoversOnlyAfterTheNextBoardIsOpen() {
+        var nextBoardWasOpen: Boolean? = null
+        val vc = ui()
+        Mockito.doAnswer { nextBoardWasOpen = numberPad.viewIsUp; null }
+            .`when`(vc).uncoverAfterBoardsClosed()
+        uim.requestBoard(CLIPBOARD)
+
+        uim.requestBoard(NUMBER_PAD)
+        idle()
+
+        assertEq("the number pad was open when the uncover ran", true, nextBoardWasOpen)
+        assertActiveBoard(NUMBER_PAD)
+    }
+
+    /** Opening a board with none open before asks for nothing. */
+    @Test
+    fun openingABoardDoesNotUncover() {
+        uim.requestBoard(CLIPBOARD)
+        idle()
+
+        Mockito.verify(ui(), Mockito.never()).uncoverAfterBoardsClosed()
+    }
+
+    /** Taking the menu down (any hide()) ends a menu the user chose. */
+    @Test
+    fun hidingTheMenuEndsTheUsersChoiceOfIt() {
+        uim.hide()
+
+        Mockito.verify(ui()).onMenuTakenDown()
+    }
+
     private companion object {
         /** The fixed centre keyboard/settings key. */
         const val ALPHABET = -3

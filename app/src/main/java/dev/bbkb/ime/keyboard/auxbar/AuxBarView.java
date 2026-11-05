@@ -116,6 +116,30 @@ public class AuxBarView extends FrameLayout {
         enter(oldState, isCJK ? AuxBarState.CJK_SUGGESTIONS : AuxBarState.LATIN_SUGGESTIONS);
     }
 
+    /**
+     * Put words on the suggestion strip while a key bar (the menu, the arrow or accent bar) covers
+     * it, without showing it: the state and the children's visibility are left as they are, so the
+     * words are simply there when the strip is uncovered ({@link #dismissKeyViewAndRestoreSuggestions}).
+     * A no-op unless a key bar is up over a word strip: autofill chips and the language chips
+     * behind a key bar are what the strip will go back to, and are not replaced.
+     *
+     * <p>Owner decision 2026-11-05: the strip stays up to date while it is hidden, so a board
+     * that closes uncovers current words rather than whatever was left from before it opened.
+     */
+    public void setSuggestionsBehindKeys(SuggestedWords words, boolean isCJK) {
+        if (currentState != AuxBarState.UNIFIED_INPUT_MENU && currentState != AuxBarState.ARROW_BAR
+                && currentState != AuxBarState.ACCENT_BAR) {
+            return;
+        }
+        SuggestionMode mode = suggestionView.getMode();
+        if (mode != SuggestionMode.LATIN && mode != SuggestionMode.CJK) {
+            return;
+        }
+        suggestionView.setMode(isCJK ? SuggestionMode.CJK : SuggestionMode.LATIN);
+        suggestionView.setMenuButtonVisible(menuEnabled());
+        suggestionView.setSuggestions(words);
+    }
+
     /** "Enable unified input menu" (or the key's request); on when no settings are loaded yet. */
     private static boolean menuEnabled() {
         SettingsManager manager = SettingsManager.getInstance();

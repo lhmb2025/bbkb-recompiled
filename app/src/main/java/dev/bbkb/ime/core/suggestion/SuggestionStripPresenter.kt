@@ -82,7 +82,10 @@ class SuggestionStripPresenter(private val ime: BlackBerryIME) {
         }
         inputLogic.onSuggestionsReceived(words, sv, ime.getUiUpdateHandler())
         if (!(ime.hasAuxBarView() || ime.hasFlickSuggestionView()) || !ime.onEvaluateInputViewShown()) return
-        if (ime.isUnifiedInputBoardShowing()) return
+        if (ime.isUnifiedInputBoardShowing()) {
+            refreshStripUnderBoard(words, sv)
+            return
+        }
 
         val uiCoordinator = ime.getUiCoordinator()
         val keyboardSwitcher = ime.getKeyboardSwitcher()
@@ -108,6 +111,28 @@ class SuggestionStripPresenter(private val ime: BlackBerryIME) {
             if (uibm.isSlideboardShowing()) uibm.showAndRefreshForSlideboard()
         }
         updateFlickSuggestions(words, sv)
+    }
+
+    /**
+     * A board is open, so the bar is the board's and nothing here may change it. Under the menu
+     * the board brought up, the hidden strip still takes the words, so it is current when the
+     * board closes and the bar goes back to it (owner decision 2026-11-05; it used to keep
+     * whatever it showed before the board opened). With the menu off the board sits under the
+     * strip itself, which is left as before: its hide calls would close the board.
+     */
+    private fun refreshStripUnderBoard(words: SuggestedWords, sv: SettingsValues) {
+        val uibm = ime.getKeyboardSwitcher().getUnifiedInputBoardManager() ?: return
+        if (!uibm.isShowing()) return
+        val auxBar = ime.auxBarManager ?: return
+        if (!(sv.isPredictionsEnabled || sv.editorCapabilities.shouldShowChineseSuggestions || sv.shouldShowMoreKeys() || isAutoCorrectOrEmpty(sv, words))) return
+        val uiCoordinator = ime.getUiCoordinator()
+        val subtype = ime.getSubtypeManager().getCurrentSubtype()
+        if (uiCoordinator.shouldShowLatinSuggestionStrip(sv, ime.isOnScreenKeyboardVisible(), subtype)) {
+            auxBar.updateHiddenSuggestionStrip(words, false)
+        }
+        if (uiCoordinator.shouldShowCjkSuggestionStrip(sv, ime.isOnScreenKeyboardVisible(), subtype)) {
+            auxBar.updateHiddenSuggestionStrip(words, true)
+        }
     }
 
     /**
