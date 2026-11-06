@@ -324,6 +324,42 @@ class CursorMovementTest {
         assertEquals(listOf("setSelection(3,3)"), log())
     }
 
+    // ── CursorController: one step is one grapheme cluster ──────────────────────
+
+    @Test
+    fun moveCursorLeft_singleStepOverANewerEmojiWithASkinTone_crossesTheWholeEmoji() {
+        val settings = h.settingsWith("allowBatchedCursorMove" to true)
+        arm("a🫶🏽", 5)
+        h.inputLogic.moveCursorLeft(settings, 1, false)
+        assertEquals(listOf("setSelection(1,1)"), log())
+    }
+
+    @Test
+    fun moveCursorRight_singleStepOverADevanagariSyllable_crossesTheWholeSyllable() {
+        // Unlike Backspace, which deletes the vowel sign alone, a cursor step never lands
+        // inside the syllable.
+        val settings = h.settingsWith("allowBatchedCursorMove" to true)
+        arm("किx", 0)
+        h.inputLogic.moveCursorRight(settings, 1, false)
+        assertEquals(listOf("setSelection(2,2)"), log())
+    }
+
+    @Test
+    fun moveCursorLeft_multiStepOverTwoFlags_stepsOneFlagAtATime() {
+        val settings = h.settingsWith("allowBatchedCursorMove" to true)
+        arm("a🇺🇸🇬🇧", 9)
+        h.inputLogic.moveCursorLeft(settings, 1, false)
+        assertEquals(listOf("setSelection(5,5)"), log())
+    }
+
+    @Test
+    fun moveCursorRight_atTheEndOfTheField_staysPut() {
+        val settings = h.settingsWith("allowBatchedCursorMove" to true)
+        arm("ab", 2)
+        h.inputLogic.moveCursorRight(settings, 1, false)
+        assertEquals(listOf("setSelection(2,2)"), log())
+    }
+
     // ── onUpdateSelection: the no-op case ───────────────────────────────────────
 
     @Test

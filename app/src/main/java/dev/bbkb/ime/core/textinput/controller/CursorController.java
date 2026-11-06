@@ -82,9 +82,10 @@ public class CursorController {
      * Returns how many chars the cursor crosses stepping over {@code steps} graphemes after
      * ({@code forward}) or before it, stopping at the end of the text.
      *
-     * <p>Each step runs the same {@link GraphemeUtils} scan as a single-step move, on the same
-     * {@link #GRAPHEME_SCAN_LENGTH} chars it would see from that position, so a move of N lands
-     * where N single moves would. A step never spans more than that window, hence the fetch size.
+     * <p>Each step runs the same {@link GraphemeUtils} cluster scan as a single-step move, on the
+     * same {@link #GRAPHEME_SCAN_LENGTH} chars it would see from that position, so a move of N
+     * lands where N single moves would. A step never spans more than that window, hence the
+     * fetch size.
      */
     private int graphemeRunLength(boolean forward, int steps) {
         CharSequence text = forward
@@ -98,11 +99,11 @@ public class CursorController {
         for (int step = 0; step < steps && offset < length; step++) {
             if (forward) {
                 CharSequence window = text.subSequence(offset, Math.min(length, offset + GRAPHEME_SCAN_LENGTH));
-                offset += GraphemeUtils.getGraphemeLengthAfterCursor(window, Character.codePointAt(window, 0));
+                offset += GraphemeUtils.getClusterLengthAfterCursor(window, Character.codePointAt(window, 0));
             } else {
                 int end = length - offset;
                 CharSequence window = text.subSequence(Math.max(0, end - GRAPHEME_SCAN_LENGTH), end);
-                offset += GraphemeUtils.getGraphemeLengthBeforeCursor(window, Character.codePointBefore(window, window.length()));
+                offset += GraphemeUtils.getClusterLengthBeforeCursor(window, Character.codePointBefore(window, window.length()));
             }
         }
         return Math.min(offset, length);
@@ -124,7 +125,7 @@ public class CursorController {
                     CharSequence charSequenceM5830b = this.mRichInputConnection.getTextAfterCursor(iMax3, 0);
                     iMax3 = charSequenceM5830b == null ? 0 : charSequenceM5830b.length();
                 }
-                int iM5663b = GraphemeUtils.getGraphemeLengthAfterCursor(this.mRichInputConnection.getTextAfterCursor(GRAPHEME_SCAN_LENGTH, 0), this.mRichInputConnection.getCodePointAfterCursor());
+                int iM5663b = GraphemeUtils.getClusterLengthAfterCursor(this.mRichInputConnection.getTextAfterCursor(GRAPHEME_SCAN_LENGTH, 0), this.mRichInputConnection.getCodePointAfterCursor());
                 if (iM5663b != 1) {
                     iMax3 = iM5663b;
                 }
@@ -134,7 +135,7 @@ public class CursorController {
             if (i > 1) {
                 i = graphemeRunLength(false, i);
             } else {
-                int iM5660a = GraphemeUtils.getGraphemeLengthBeforeCursor(this.mRichInputConnection.getTextBeforeCursor(GRAPHEME_SCAN_LENGTH, 0), this.mRichInputConnection.getCodePointBeforeCursor());
+                int iM5660a = GraphemeUtils.getClusterLengthBeforeCursor(this.mRichInputConnection.getTextBeforeCursor(GRAPHEME_SCAN_LENGTH, 0), this.mRichInputConnection.getCodePointBeforeCursor());
                 if (iM5660a != 1) {
                     i = iM5660a;
                 }

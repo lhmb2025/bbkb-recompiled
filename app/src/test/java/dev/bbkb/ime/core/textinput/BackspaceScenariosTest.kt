@@ -375,6 +375,40 @@ class BackspaceScenariosTest {
     }
 
     @Test
+    fun backspace_overANewerEmojiWithASkinTone_deletesTheWholeEmoji() {
+        // U+1FAF6 + medium skin tone. The old scan did not know the U+1FAxx blocks and took
+        // only the tone.
+        val hands = "🫶🏽"
+        h.startSession("hi $hands", 3 + hands.length)
+        backspace()
+        assertEquals("hi |", editorState())
+    }
+
+    @Test
+    fun backspace_overTwoFlags_deletesOneFlagAtATime() {
+        h.startSession("🇺🇸🇬🇧", 8)
+        backspace()
+        assertEquals("🇺🇸|", editorState())
+        backspace()
+        assertEquals("|", editorState())
+    }
+
+    @Test
+    fun backspace_overADevanagariSyllable_deletesTheVowelSignAlone() {
+        // क + ि: deletes go piece by piece in Indic text, as the platform's own field does.
+        h.startSession("कि", 2)
+        backspace()
+        assertEquals("क|", editorState())
+    }
+
+    @Test
+    fun shiftBackspace_overAKeycap_deletesTheWholeKeycap() {
+        h.startSession("1️⃣x", 0)
+        backspace(shiftPressed = true)
+        assertEquals("|x", editorState())
+    }
+
+    @Test
     fun backspace_overAnEmojiWhileComposing_shrinksTheTrackerByOneCodePoint() {
         // The composing path goes through the tracker rather than the grapheme scan, so this is
         // a genuinely different code path over the same input.

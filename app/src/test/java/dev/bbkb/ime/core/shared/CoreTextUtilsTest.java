@@ -69,7 +69,6 @@ public class CoreTextUtilsTest {
     @Test
     public void getGraphemeLengthAfterCursorStopsAtTheEndOfTheEmoji() {
         assertEquals(2, graphemeAfter(GRINNING_FACE + "bcdef"));
-        assertEquals(2, EmojiTextAnalyzer.getLeadingEmojiLength(GRINNING_FACE + "bcdef", 0x1F600));
     }
 
     @Test
@@ -85,7 +84,6 @@ public class CoreTextUtilsTest {
         assertEquals(1, graphemeAfter("abc"));
         // A digit is only a keycap when the enclosing keycap follows it.
         assertEquals(1, graphemeAfter("1x"));
-        assertEquals(0, EmojiTextAnalyzer.getLeadingEmojiLength("abc", 'a'));
     }
 
     @Test
