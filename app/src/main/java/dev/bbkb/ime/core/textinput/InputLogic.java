@@ -2069,6 +2069,23 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         mCommitController.commitTypedWord(c0804d, str, enumC0690f);
     }
 
+    /**
+     * Take {@code word} back out of the editor: a swipe's start committed it as typed
+     * ({@link #commitTypedWord}), and the contact turned out to be a flick-up picking a suggestion,
+     * which must replace it. Only when nothing is composing and the text right before the cursor
+     * is still that word; otherwise the editor is left alone.
+     *
+     * @return whether the word was removed
+     */
+    public boolean takeBackWordCommittedForSwipe(String word) {
+        if (word == null || word.isEmpty() || this.mComposingTracker.isComposing()
+                || !this.mRichInputConnection.isTextBeforeCursor(word)) {
+            return false;
+        }
+        this.mRichInputConnection.deleteSurroundingText(word.length(), 0);
+        return true;
+    }
+
     /** @return {@code true} if the separator payload was already committed — see SS-1. */
     private boolean autoCorrectAndCommit(SettingsValues c0804d, String str, UIUpdateHandler handlerC0650c, InputSource enumC0690f) {
         return mCommitController.autoCorrectAndCommit(c0804d, str, handlerC0650c, enumC0690f);

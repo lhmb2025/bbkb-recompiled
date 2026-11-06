@@ -77,6 +77,15 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
      */
     private var startSuggestions: SuggestedWords? = null
 
+    /**
+     * The composing word this contact's own samples committed. A flick-up's DOWN/MOVE also feed
+     * the swipe-typing path, and once its stroke is long enough that path starts a swipe
+     * ([BlackBerryIME.onStartBatchInput]), which commits the word being typed as it stands. The
+     * flick is only recognised at UP, by which time the word is no longer composing, so the pick
+     * would be inserted after it instead of replacing it. Null when nothing was committed.
+     */
+    private var wordCommittedBySwipeStart: String? = null
+
     /** Pure policy that maps a classified gesture + mode + assignments to an outcome. */
     private val policy = GesturePolicy()
 
@@ -149,6 +158,12 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
         contactConsumed = false
         keyGuard.onContactStart(eventTime)
         startSuggestions = ime.getInputLogic().mCurrentSuggestions
+        wordCommittedBySwipeStart = null
+    }
+
+    /** [BlackBerryIME.onStartBatchInput] committed [word], the word being typed, to start a swipe. */
+    fun onSwipeStartCommittedTypedWord(word: String) {
+        wordCommittedBySwipeStart = word
     }
 
     /**
@@ -488,6 +503,11 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
             return false
         }
         if (InputPathDebug.perGesture()) Logger.info(TAG, "commit_suggestion OK: slot=$slot of ${suggestions.size()}")
+        // The pick replaces the word being typed, even when this flick's own samples started a
+        // swipe that committed it: take that word back out first.
+        val committed = wordCommittedBySwipeStart
+        wordCommittedBySwipeStart = null
+        if (committed != null) ime.getInputLogic().takeBackWordCommittedForSwipe(committed)
         ime.onSuggestionPicked(wordInfo, InputSource.SOFTWARE)
         if (ime.getSettingsManager().getSettingsValues().flickCommitAnimationEnabled) {
             ime.auxBarManager?.getAuxBarView()?.getSuggestionView()?.flashCommittedSlot(slot)

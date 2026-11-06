@@ -2288,7 +2288,10 @@ class BlackBerryIME : InputMethodService(),
     }
 
     override fun onStartBatchInput() {
+        val typedWord = if (inputLogic.mComposingTracker.isComposing()) inputLogic.mComposingTracker.getComposingText() else ""
         inputLogic.commitTypedWord(settingsManager.getSettingsValues(), "", InputSource.INTERNAL)
+        // A keypad flick-up starts out as a swipe; if it ends as one, its pick replaces this word.
+        if (typedWord.isNotEmpty()) ckbGestures.onSwipeStartCommittedTypedWord(typedWord)
         // Reset ET9's gesture/active-input buffer at the start of each swipe so accumulated
         // stray edge-touches and the previous word don't bleed into this gesture. Without
         // this the trace record ring (traceObj+0x49000) and composing-start index (+0x39c)
