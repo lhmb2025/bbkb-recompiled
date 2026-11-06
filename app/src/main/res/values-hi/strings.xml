@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">कंपन अवधि</string>
     <string name="prefs_autofill_debug_logging_summary">स्वतः भरण इवेंट Logcat में लॉग करें (टैग: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">स्वतः भरण डीबग लॉगिंग</string>
-    <string name="prefs_autofill_event_toasts_summary">स्वतः भरण इवेंट होने पर टोस्ट सूचनाएं दिखाएं</string>
-    <string name="prefs_autofill_event_toasts_title">स्वतः भरण इवेंट टोस्ट</string>
     <string name="pref_accessibility_service_disabled">सुलभता सेवा अक्षम है</string>
     <string name="pref_accessibility_service_enabled">सुलभता सेवा सक्षम है</string>
     <string name="pref_emoji_search_pkb_summary">जब ईमोजी बोर्ड खुला हो, खोजने के लिए कीबोर्ड का उपयोग करें</string>

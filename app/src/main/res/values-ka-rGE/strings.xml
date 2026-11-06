@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">კლავიშზე დაჭერის ვიბრაციის ხანგრძლივობა</string>
     <string name="prefs_autofill_debug_logging_summary">ავტომატური შევსების მოვლენების ჩაწერა Logcat-ში (ტეგი: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">ავტომატური შევსების გამართვის ჟურნალი</string>
-    <string name="prefs_autofill_event_toasts_summary">ამომხტომი შეტყობინებების ჩვენება ავტომატური შევსების მოვლენებზე</string>
-    <string name="prefs_autofill_event_toasts_title">ავტომატური შევსების მოვლენების შეტყობინებები</string>
     <string name="pref_accessibility_service_disabled">მარტივი წვდომის სერვისი გამორთულია</string>
     <string name="pref_accessibility_service_enabled">მარტივი წვდომის სერვისი ჩართულია</string>
     <string name="pref_emoji_search_pkb_summary">როდესაც სიცილაკების დაფა ღიაა, ძიებისთვის გამოიყენეთ კლავიატურა</string>

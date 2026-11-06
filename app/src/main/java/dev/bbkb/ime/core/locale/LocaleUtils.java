@@ -2,7 +2,7 @@ package dev.bbkb.ime.core.locale;
 
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.os.Build;
+import androidx.core.os.ConfigurationCompat;
 import android.text.TextUtils;
 
 import dev.bbkb.ime.core.settings.util.SettingsManager;
@@ -193,18 +193,13 @@ public final class LocaleUtils {
     }
 
     /**
-     * Gets the primary locale from a Configuration with proper API version handling.
-     * Uses getLocales().get(0) on API 24+ and falls back to the deprecated locale field on older APIs.
+     * Gets the primary locale from a Configuration (the first of its locale list on API 24+,
+     * the single locale field below that).
      * @param configuration The Configuration to get locale from
      * @return The primary locale
      */
-    @SuppressWarnings("deprecation")
     public static Locale getConfigurationLocale(Configuration configuration) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return configuration.getLocales().get(0);
-        } else {
-            return configuration.locale;
-        }
+        return ConfigurationCompat.getLocales(configuration).get(0);
     }
 
     /**

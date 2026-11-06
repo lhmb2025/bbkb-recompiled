@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">ໄລຍະເວລາການສັ່ນ</string>
     <string name="prefs_autofill_debug_logging_summary">ບັນທຶກເຫດການຕື່ມຂໍ້ມູນອັດຕະໂນມັດໃສ່ Logcat (tag: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">ການບັນທຶກດີບັກການຕື່ມຂໍ້ມູນອັດຕະໂນມັດ</string>
-    <string name="prefs_autofill_event_toasts_summary">ສະແດງການແຈ້ງເຕືອນເມື່ອມີເຫດການຕື່ມຂໍ້ມູນອັດຕະໂນມັດ</string>
-    <string name="prefs_autofill_event_toasts_title">ການແຈ້ງເຕືອນເຫດການຕື່ມຂໍ້ມູນອັດຕະໂນມັດ</string>
     <string name="pref_accessibility_service_disabled">ບໍລິການການເຂົ້າເຖິງຖືກປິດໄວ້</string>
     <string name="pref_accessibility_service_enabled">ບໍລິການການເຂົ້າເຖິງຖືກເປີດໄວ້</string>
     <string name="pref_emoji_search_pkb_summary">ເມື່ອກະດານອີໂມຈິເປີດຢູ່, ໃຊ້ແປ້ນພິມເພື່ອຊອກຫາ</string>

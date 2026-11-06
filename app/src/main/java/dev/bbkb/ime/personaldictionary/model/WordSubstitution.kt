@@ -1,7 +1,6 @@
 package dev.bbkb.ime.personaldictionary.model
 
 import androidx.annotation.VisibleForTesting
-import com.google.gson.annotations.SerializedName
 
 /**
  * Represents a word substitution (macro/shortcut).
@@ -14,14 +13,11 @@ import com.google.gson.annotations.SerializedName
  * @see DictionaryWord
  */
 class WordSubstitution : DictionaryWord {
-    @SerializedName("key")
     val key: String
 
-    @SerializedName("type")
     val type: Type
     
     // We keep version for compatibility if writing, but we don't strictly need it for logic
-    @SerializedName("version")
     val version: Long = 16L
 
     enum class Type {

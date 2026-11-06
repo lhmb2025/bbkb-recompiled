@@ -89,6 +89,21 @@ class EmojiToneMemoryTest {
         assertEquals(thumbsMedium, EmojiToneMemory.preferred(prefs, thumbs))
     }
 
+    /** The exact value the old build's Gson wrote (a HashMap, so in its order) must keep answering. */
+    @Test
+    fun aValueTheGsonBuildWroteStillAnswers() {
+        prefs.edit().putString("emoji_tone_memory", "{\"$heart\":\"x\",\"$thumbs\":\"$thumbsMedium\"}").commit()
+        assertEquals(thumbsMedium, EmojiToneMemory.preferred(prefs, thumbs))
+        prefs.edit().putString("emoji_tone_memory", "{\"$thumbs\":null}").commit()
+        assertNull("a null value is no tone", EmojiToneMemory.preferred(prefs, thumbs))
+    }
+
+    @Test
+    fun theWrittenValueIsAFlatObjectFromBaseToVariant() {
+        EmojiToneMemory.onEmojiPicked(prefs, thumbsMedium)
+        assertEquals("{\"$thumbs\":\"$thumbsMedium\"}", prefs.getString("emoji_tone_memory", null))
+    }
+
     @Test
     fun clearForgetsEverything() {
         EmojiToneMemory.onEmojiPicked(prefs, thumbsMedium)

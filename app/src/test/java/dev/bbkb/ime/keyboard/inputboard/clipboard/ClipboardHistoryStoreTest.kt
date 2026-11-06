@@ -83,6 +83,56 @@ class ClipboardHistoryStoreTest {
         assertEquals("the IO thread writes what was saved, not what the list became", entries, store.load())
     }
 
+    /**
+     * The bytes Gson's JsonObject.toString wrote for [entries] before the switch to org.json
+     * (compact, no HTML escaping, a missing label left out). The new writer produces the same
+     * bytes, and they read back to the same entries.
+     */
+    private val gsonWritten =
+        """{"version":1,"entries":[""" +
+            """{"id":3,"text":"pinned \"quoted\" text","label":"label","mime":"text/html","createdAt":1000,"pinned":true,"pinnedAt":2000},""" +
+            """{"id":2,"text":"line one\nline two — ünïcödé ✓","mime":"text/plain","createdAt":900,"pinned":false,"pinnedAt":0},""" +
+            """{"id":1,"text":"","label":"","mime":"text/plain","createdAt":800,"pinned":false,"pinnedAt":0}]}"""
+
+    @Test
+    fun aFileTheGsonBuildWroteLoadsAndIsWrittenTheSameWay() {
+        assertEquals(entries, ClipboardHistoryStore.decode(gsonWritten))
+        assertEquals(gsonWritten, ClipboardHistoryStore.encode(entries))
+    }
+
+    @Test
+    fun escapedTextReadsBack() {
+        val loaded = ClipboardHistoryStore.decode(
+            """{"version":1,"entries":[{"id":1,"text":"a \u003c b \u0026 c \u003d d\u0027s https:\/\/e.test","createdAt":1}]}""",
+        )
+        assertEquals("a < b & c = d's https://e.test", loaded.single().text)
+    }
+
+    @Test
+    fun anythingAfterTheEnvelopeIsNotJson() {
+        assertTrue(ClipboardHistoryStore.decode("""{"version":1,"entries":[]} trailing""").isEmpty())
+        assertTrue(ClipboardHistoryStore.decode("""{"version":1,"entries":[]}{}""").isEmpty())
+        assertEquals(
+            "whitespace after it is fine",
+            1,
+            ClipboardHistoryStore.decode("""{"version":1,"entries":[{"id":1,"text":"x","createdAt":1}]}""" + "\n  ").size,
+        )
+    }
+
+    @Test
+    fun numbersAreNotReadFromStringsAndFractionsTruncateAsGsonDid() {
+        val loaded = ClipboardHistoryStore.decode(
+            """{"version":1.0,"entries":[{"id":"1","text":"string id","createdAt":1},""" +
+                """{"id":2.7,"text":"fraction","createdAt":10,"pinned":"true"},""" +
+                """{"id":3,"text":"null label","label":null,"mime":null,"createdAt":5,"pinned":null}]}""",
+        )
+        assertEquals(listOf("fraction", "null label"), loaded.map { it.text })
+        assertEquals(2L, loaded[0].id)
+        assertFalse("a quoted boolean is not a boolean", loaded[0].isPinned)
+        assertEquals(null, loaded[1].label)
+        assertEquals("text/plain", loaded[1].mime)
+    }
+
     @Test
     fun theEnvelopeIsStrict() {
         assertTrue(ClipboardHistoryStore.decode("").isEmpty())

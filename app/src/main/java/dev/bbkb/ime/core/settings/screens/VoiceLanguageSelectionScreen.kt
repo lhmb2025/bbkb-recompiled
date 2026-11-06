@@ -55,7 +55,6 @@ import dev.bbkb.ime.keyboard.inputboard.voice.InstalledVoiceRecognizers
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceLanguageTags
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceRecognizerChoice
 import java.util.Locale
-import java.util.concurrent.Executors
 
 private const val TAG = "VoiceLanguageSelection"
 
@@ -67,9 +66,9 @@ internal const val VOICE_LANGUAGE_PREF = "voice_input_language_list"
  * to the raw code for anything [Locale] cannot parse.
  */
 internal fun voiceLanguageDisplayName(code: String): String = try {
-    val parts = code.replace("_", "-").split("-")
-    val locale = if (parts.size >= 2) Locale(parts[0], parts[1]) else Locale(parts[0])
-    locale.getDisplayName(locale).replaceFirstChar { it.uppercase() }
+    val locale = Locale.forLanguageTag(code.replace("_", "-"))
+    val name = locale.getDisplayName(locale)
+    if (name.isBlank()) code else name.replaceFirstChar { it.uppercase() }
 } catch (e: Exception) {
     code
 }
@@ -290,21 +289,9 @@ private fun LanguageListItem(
 }
 
 /**
- * Shared executor for recognition-support callbacks.
- *
- * A new single-thread executor used to be created per call and never shut down, and the call
- * happens on every entry to this screen - navigating in and out N times left N non-daemon
- * platform threads alive in the settings process. One daemon thread, reused, cannot accumulate.
- */
-private val recognitionSupportExecutor: java.util.concurrent.ExecutorService by lazy {
-    Executors.newSingleThreadExecutor { runnable ->
-        Thread(runnable, "VoiceLanguageSupport").apply { isDaemon = true }
-    }
-}
-
-/**
  * Fetch supported languages using modern API 33+ checkRecognitionSupport, asked of the recogniser
- * the "Speech recognizer" setting chooses rather than always the system default.
+ * the "Speech recognizer" setting chooses rather than always the system default. The callbacks
+ * run on the main thread.
  */
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private fun fetchLanguagesModernForSelection(
@@ -320,7 +307,7 @@ private fun fetchLanguagesModernForSelection(
         speechRecognizer = recognizer
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
 
-        recognizer.checkRecognitionSupport(intent, recognitionSupportExecutor, object : RecognitionSupportCallback {
+        recognizer.checkRecognitionSupport(intent, context.mainExecutor, object : RecognitionSupportCallback {
             override fun onSupportResult(support: RecognitionSupport) {
                 val installedLanguages = support.installedOnDeviceLanguages
                 val supportedLanguages = support.supportedOnDeviceLanguages
@@ -333,25 +320,21 @@ private fun fetchLanguagesModernForSelection(
 
                 if (BuildConfig.DEBUG) Log.d(TAG, "Modern API: Found ${installedLanguages.size} offline, ${supportedLanguages.size} supported, ${onlineLanguages.size} online")
 
-                android.os.Handler(android.os.Looper.getMainLooper()).post {
-                    if (allLanguages.isNotEmpty()) {
-                        rememberLanguages(context, selection, allLanguages)
-                        onResult(allLanguages, installedLanguages)
-                    } else {
-                        onResult(fallbackLanguages, emptyList())
-                    }
-                    recognizer.destroy()
+                if (allLanguages.isNotEmpty()) {
+                    rememberLanguages(context, selection, allLanguages)
+                    onResult(allLanguages, installedLanguages)
+                } else {
+                    onResult(fallbackLanguages, emptyList())
                 }
+                recognizer.destroy()
             }
 
             override fun onError(error: Int) {
                 if (BuildConfig.DEBUG) Log.e(TAG, "checkRecognitionSupport error: $error")
-                android.os.Handler(android.os.Looper.getMainLooper()).post {
-                    fetchLanguagesLegacyForSelection(context, selection) { languages ->
-                        onResult(languages, emptyList())
-                    }
-                    recognizer.destroy()
+                fetchLanguagesLegacyForSelection(context, selection) { languages ->
+                    onResult(languages, emptyList())
                 }
+                recognizer.destroy()
             }
         })
     } catch (e: Exception) {

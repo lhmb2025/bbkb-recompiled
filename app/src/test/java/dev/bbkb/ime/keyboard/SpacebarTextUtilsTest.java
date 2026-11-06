@@ -84,11 +84,16 @@ public class SpacebarTextUtilsTest {
         assertEquals("", SpacebarTextUtils.truncateTextToWidth(100, null, 10f, 0.7f, paintWith(LINEAR)));
     }
 
-    /** The sibling predicate already had the escape; keep the two consistent. */
-    @Test(timeout = 5000)
-    public void fitsTextIntoWidthAgreesOnTheUnfittableLabel() {
-        final WidthModel widthFloor = (text, size) -> Math.max(60, Math.round(text.length() * size));
-        org.junit.Assert.assertFalse(
-                SpacebarTextUtils.fitsTextIntoWidth(20, "hello", 10f, 0.3f, paintWith(widthFloor)));
+    /**
+     * The ellipsis cut used to step back by UTF-16 chars, so it could keep the high half of a
+     * surrogate pair. Here the first estimate lands between the two halves of the emoji; the cut
+     * must move back past the whole emoji instead.
+     */
+    @Test
+    public void ellipsisNeverSplitsASurrogatePair() {
+        // 8 chars at the 0.5 minimum scale are 5px each, so 20px holds three chars plus the
+        // ellipsis; the third char is the high surrogate of the emoji.
+        assertEquals("ab…",
+                SpacebarTextUtils.truncateTextToWidth(20, "ab\uD83D\uDE00cdef", 10f, 0.5f, paintWith(LINEAR)));
     }
 }

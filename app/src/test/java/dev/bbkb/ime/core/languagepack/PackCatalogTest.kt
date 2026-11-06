@@ -8,6 +8,9 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
  * [PackCatalog] against the **real** `dist/manifest.json`.
@@ -16,7 +19,12 @@ import org.junit.Test
  * regional variants of a shipped language, four more whose region exists only in the catalogue —
  * can be tested by describing a phone in three lines and asserting what the screen would show.
  * A hand-written fixture would lose exactly the cases this feature exists for.
+ *
+ * Robolectric because [PackFixtures] parses the manifest with the framework's `org.json`,
+ * an empty stub on the plain JVM.
  */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34], manifest = Config.NONE)
 class PackCatalogTest {
 
     private val packs: Packs = PackFixtures.realPacks()

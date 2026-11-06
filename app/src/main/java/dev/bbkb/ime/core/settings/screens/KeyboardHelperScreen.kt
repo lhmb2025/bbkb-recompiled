@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,8 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.LifecycleEventEffect
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.device.interceptor.KeyInterceptorManager
@@ -46,7 +44,6 @@ fun KeyboardHelperScreen(
 ) {
     val context = LocalContext.current
     val prefs = remember { PrefsManager.getPrefs(context) }
-    val lifecycleOwner = LocalLifecycleOwner.current
     
     // Track accessibility service status
     var serviceEnabled by remember {
@@ -65,19 +62,11 @@ fun KeyboardHelperScreen(
     }
     
     // Re-check service status when activity resumes (e.g., returning from accessibility settings)
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                serviceEnabled = KeyInterceptorManager.isServiceEnabled(context)
-                specialKeyEnabled = prefs.getBoolean(KeyInterceptorManager.PREF_KEY_INTERCEPTOR_ENABLED, false)
-                preprocessAllKeys = prefs.getBoolean(KeyInterceptorManager.PREF_PREPROCESS_ALL_KEYS, false)
-                unifiedKeyMapping = prefs.getBoolean(KeyInterceptorManager.PREF_USE_UNIFIED_KEY_MAPPING, false)
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        serviceEnabled = KeyInterceptorManager.isServiceEnabled(context)
+        specialKeyEnabled = prefs.getBoolean(KeyInterceptorManager.PREF_KEY_INTERCEPTOR_ENABLED, false)
+        preprocessAllKeys = prefs.getBoolean(KeyInterceptorManager.PREF_PREPROCESS_ALL_KEYS, false)
+        unifiedKeyMapping = prefs.getBoolean(KeyInterceptorManager.PREF_USE_UNIFIED_KEY_MAPPING, false)
     }
     
     SettingsScaffold(

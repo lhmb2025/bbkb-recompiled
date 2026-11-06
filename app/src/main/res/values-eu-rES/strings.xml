@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Tekla sakatzearen dardararen iraupena</string>
     <string name="prefs_autofill_debug_logging_summary">Erregistratu betetze automatikoaren gertaerak Logcat-en (etiketa: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Betetze automatikoaren arazketa-erregistroa</string>
-    <string name="prefs_autofill_event_toasts_summary">Erakutsi jakinarazpenak betetze automatikoaren gertaerak gertatzean</string>
-    <string name="prefs_autofill_event_toasts_title">Betetze automatikoaren gertaeren abisuak</string>
     <string name="pref_accessibility_service_disabled">Erabilerraztasun-zerbitzua desgaituta</string>
     <string name="pref_accessibility_service_enabled">Erabilerraztasun-zerbitzua gaituta</string>
     <string name="pref_emoji_search_pkb_summary">Emotikono-taula irekita dagoenean, erabili teklatua bilatzeko</string>

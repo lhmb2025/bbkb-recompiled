@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Hyd y dirgryniad</string>
     <string name="prefs_autofill_debug_logging_summary">Cofnodi digwyddiadau awtolenwi i Logcat (tag: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Cofnodi dadfygio awtolenwi</string>
-    <string name="prefs_autofill_event_toasts_summary">Dangos hysbysiadau tost pan fydd digwyddiadau awtolenwi\'n digwydd</string>
-    <string name="prefs_autofill_event_toasts_title">Hysbysiadau digwyddiadau awtolenwi</string>
     <string name="pref_accessibility_service_disabled">Gwasanaeth hygyrchedd wedi\'i analluogi</string>
     <string name="pref_accessibility_service_enabled">Gwasanaeth hygyrchedd wedi\'i alluogi</string>
     <string name="pref_emoji_search_pkb_summary">Pan fo\'r bwrdd emoji ar agor, defnyddiwch y bysellfwrdd i chwilio</string>

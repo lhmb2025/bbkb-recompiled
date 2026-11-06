@@ -6,10 +6,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.Window;
-import android.view.WindowInsetsController;
 import android.widget.RelativeLayout;
+
+import androidx.core.view.WindowCompat;
 
 import dev.bbkb.ime.keyboard.KeyboardColorManager;
 
@@ -86,22 +86,11 @@ public final class InputView extends RelativeLayout {
         int background = KeyboardColorManager.INSTANCE.getBackgroundColor();
         navBarFill.setColor(background);
         invalidate();
-        if (imeWindow != null) imeWindow.setNavigationBarColor(background);
-        boolean light = Color.luminance(background) > 0.5f;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            WindowInsetsController controller = getWindowInsetsController();
-            if (controller != null) {
-                controller.setSystemBarsAppearance(
-                        light ? WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS : 0,
-                        WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
-            }
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            View decor = getRootView();
-            int flags = decor.getSystemUiVisibility();
-            decor.setSystemUiVisibility(light
-                    ? flags | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                    : flags & ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-        }
+        // No window yet: setImeWindow() comes straight after the view is installed and applies this.
+        if (imeWindow == null) return;
+        imeWindow.setNavigationBarColor(background);
+        WindowCompat.getInsetsController(imeWindow, this)
+                .setAppearanceLightNavigationBars(Color.luminance(background) > 0.5f);
     }
 
     @Override

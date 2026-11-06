@@ -1,11 +1,11 @@
 package dev.bbkb.ime.personaldictionary.storage
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import android.content.Context
 import dev.bbkb.ime.personaldictionary.util.LogUtil
 import dev.bbkb.ime.personaldictionary.PersonalDictionaryConstants
 import dev.bbkb.ime.personaldictionary.model.WordSubstitution
+import org.json.JSONArray
+import org.json.JSONException
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -18,7 +18,6 @@ import java.util.*
  */
 object DefaultWSLoader {
     private const val TAG = "DefaultWSLoader"
-    private val gson = Gson()
 
     /**
      * Memo of parsed default-substitution sets.
@@ -143,10 +142,19 @@ object DefaultWSLoader {
         // outside the try so a missing file still propagates.
         val jsonContent = FileUtils.readAndroidAssetToString(context, filePath)
         try {
-            val type = object : TypeToken<List<String>>() {}.type
-            val lines: List<String> = gson.fromJson(jsonContent, type)
+            val lines = JSONArray(jsonContent)
 
-            for (line in lines) {
+            for (i in 0 until lines.length()) {
+                // The file is a JSON array of strings; a number or a boolean is read as its text,
+                // as Gson's List<String> binding read it, and anything else is not a macro.
+                val line = when (val value = lines.opt(i)) {
+                    is String -> value
+                    is Int, is Long, is Boolean -> value.toString()
+                    else -> {
+                        LogUtil.d(TAG, "Invalid default macro: $value")
+                        continue
+                    }
+                }
                 if (line.isNotEmpty()) {
                     try {
                         val ws = lineToWS(localeStr, line)
@@ -161,7 +169,7 @@ object DefaultWSLoader {
                     LogUtil.d(TAG, "Empty line while reading WS file: $filePath")
                 }
             }
-        } catch (e: com.google.gson.JsonSyntaxException) {
+        } catch (e: JSONException) {
             LogUtil.e(TAG, "File [$filePath] has invalid JSON: ${e.message}")
         }
     }

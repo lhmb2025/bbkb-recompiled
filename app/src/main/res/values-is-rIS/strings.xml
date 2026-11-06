@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Lengd lyklatitrings</string>
     <string name="prefs_autofill_debug_logging_summary">Skrá atburði sjálfvirkrar útfyllingar í Logcat (merki: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Villuleitarskráning sjálfvirkrar útfyllingar</string>
-    <string name="prefs_autofill_event_toasts_summary">Sýna sprettitilkynningar þegar atburðir sjálfvirkrar útfyllingar eiga sér stað</string>
-    <string name="prefs_autofill_event_toasts_title">Sprettitilkynningar sjálfvirkrar útfyllingar</string>
     <string name="pref_accessibility_service_disabled">Slökkt á aðgengisþjónustu</string>
     <string name="pref_accessibility_service_enabled">Kveikt á aðgengisþjónustu</string>
     <string name="pref_emoji_search_pkb_summary">Þegar emoji-spjaldið er opið er leitað með lyklaborðinu</string>

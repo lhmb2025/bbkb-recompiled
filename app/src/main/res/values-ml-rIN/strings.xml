@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">കീ അമർത്തുമ്പോഴുള്ള വൈബ്രേഷൻ ദൈർഘ്യം</string>
     <string name="prefs_autofill_debug_logging_summary">സ്വയംപൂരണ ഇവന്റുകൾ Logcat-ൽ രേഖപ്പെടുത്തുക (ടാഗ്: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">സ്വയംപൂരണ ഡീബഗ് ലോഗിംഗ്</string>
-    <string name="prefs_autofill_event_toasts_summary">സ്വയംപൂരണ ഇവന്റുകൾ നടക്കുമ്പോൾ ടോസ്റ്റ് അറിയിപ്പുകൾ കാണിക്കുക</string>
-    <string name="prefs_autofill_event_toasts_title">സ്വയംപൂരണ ഇവന്റ് ടോസ്റ്റുകൾ</string>
     <string name="pref_accessibility_service_disabled">ഉപയോഗസഹായി സേവനം പ്രവർത്തനരഹിതമാണ്</string>
     <string name="pref_accessibility_service_enabled">ഉപയോഗസഹായി സേവനം പ്രവർത്തനക്ഷമമാണ്</string>
     <string name="pref_emoji_search_pkb_summary">ഇമോജി ബോർഡ് തുറന്നിരിക്കുമ്പോൾ തിരയാൻ കീബോർഡ് ഉപയോഗിക്കുക</string>

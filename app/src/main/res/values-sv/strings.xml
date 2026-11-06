@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Vibrationslängd</string>
     <string name="prefs_autofill_debug_logging_summary">Logga autofyllhändelser till Logcat (tagg: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Felsökningsloggning för autofyll</string>
-    <string name="prefs_autofill_event_toasts_summary">Visa popupmeddelanden när autofyllhändelser inträffar</string>
-    <string name="prefs_autofill_event_toasts_title">Popupmeddelanden för autofyllhändelser</string>
     <string name="pref_accessibility_service_disabled">Tillgänglighetstjänsten är inaktiverad</string>
     <string name="pref_accessibility_service_enabled">Tillgänglighetstjänsten är aktiverad</string>
     <string name="pref_emoji_search_pkb_summary">Använd tangentbordet för att söka när emojipanelen är öppen</string>

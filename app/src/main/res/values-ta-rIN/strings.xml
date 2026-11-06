@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">விசையழுத்த அதிர்வின் காலஅளவு</string>
     <string name="prefs_autofill_debug_logging_summary">தானியங்கு நிரப்பு நிகழ்வுகளை Logcat இல் பதிவுசெய் (குறிச்சொல்: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">தானியங்கு நிரப்பு பிழைதிருத்தப் பதிவு</string>
-    <string name="prefs_autofill_event_toasts_summary">தானியங்கு நிரப்பு நிகழ்வுகள் நிகழும்போது டோஸ்ட் அறிவிப்புகளைக் காட்டு</string>
-    <string name="prefs_autofill_event_toasts_title">தானியங்கு நிரப்பு நிகழ்வு டோஸ்ட்கள்</string>
     <string name="pref_accessibility_service_disabled">அணுகல்தன்மை சேவை முடக்கப்பட்டுள்ளது</string>
     <string name="pref_accessibility_service_enabled">அணுகல்தன்மை சேவை இயக்கப்பட்டுள்ளது</string>
     <string name="pref_emoji_search_pkb_summary">எமோஜி பலகை திறந்திருக்கும்போது தேட விசைப்பலகையைப் பயன்படுத்தவும்</string>

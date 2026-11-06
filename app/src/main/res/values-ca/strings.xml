@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Durada de la vibració</string>
     <string name="prefs_autofill_debug_logging_summary">Registra els esdeveniments d\'emplenament automàtic al Logcat (etiqueta: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Registre de depuració de l\'emplenament automàtic</string>
-    <string name="prefs_autofill_event_toasts_summary">Mostra notificacions emergents quan es produeixin esdeveniments d\'emplenament automàtic</string>
-    <string name="prefs_autofill_event_toasts_title">Notificacions d\'esdeveniments d\'emplenament automàtic</string>
     <string name="pref_accessibility_service_disabled">Servei d\'accessibilitat desactivat</string>
     <string name="pref_accessibility_service_enabled">Servei d\'accessibilitat activat</string>
     <string name="pref_emoji_search_pkb_summary">Quan el tauler d\'emojis és obert, fes servir el teclat per cercar</string>

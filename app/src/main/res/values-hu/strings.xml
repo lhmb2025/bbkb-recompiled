@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Rezgés időtartama</string>
     <string name="prefs_autofill_debug_logging_summary">Automatikus kitöltési események naplózása a Logcatba (címke: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Automatikus kitöltés hibanaplózása</string>
-    <string name="prefs_autofill_event_toasts_summary">Felugró értesítések megjelenítése automatikus kitöltési eseményekkor</string>
-    <string name="prefs_autofill_event_toasts_title">Automatikus kitöltési események értesítései</string>
     <string name="pref_accessibility_service_disabled">A kisegítő szolgáltatás letiltva</string>
     <string name="pref_accessibility_service_enabled">A kisegítő szolgáltatás engedélyezve</string>
     <string name="pref_emoji_search_pkb_summary">Ha a hangulatjel-tábla nyitva van, a billentyűzettel kereshet</string>

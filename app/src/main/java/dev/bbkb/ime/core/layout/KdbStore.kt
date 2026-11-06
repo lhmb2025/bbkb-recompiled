@@ -2,6 +2,7 @@ package dev.bbkb.ime.core.layout
 
 import android.content.Context
 import android.util.Log
+import androidx.core.content.pm.PackageInfoCompat
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.File
@@ -92,8 +93,7 @@ class KdbStore @androidx.annotation.VisibleForTesting internal constructor(priva
             val root = File(app.noBackupFilesDir, "kdb")
             val install = try {
                 val info = app.packageManager.getPackageInfo(app.packageName, 0)
-                @Suppress("DEPRECATION")
-                "${info.versionCode}-${info.lastUpdateTime}"
+                "${PackageInfoCompat.getLongVersionCode(info)}-${info.lastUpdateTime}"
             } catch (e: Exception) {
                 "unknown"
             }

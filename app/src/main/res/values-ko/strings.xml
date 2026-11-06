@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">진동 길이</string>
     <string name="prefs_autofill_debug_logging_summary">자동 완성 이벤트를 Logcat에 기록합니다(태그: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">자동 완성 디버그 로깅</string>
-    <string name="prefs_autofill_event_toasts_summary">자동 완성 이벤트가 발생하면 토스트 알림을 표시합니다</string>
-    <string name="prefs_autofill_event_toasts_title">자동 완성 이벤트 토스트</string>
     <string name="pref_accessibility_service_disabled">접근성 서비스 사용 안 함</string>
     <string name="pref_accessibility_service_enabled">접근성 서비스 사용 중</string>
     <string name="pref_emoji_search_pkb_summary">이모티콘 보드가 열려 있을 때 키보드로 검색합니다</string>

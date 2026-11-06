@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">按鍵震動時間</string>
     <string name="prefs_autofill_debug_logging_summary">將自動填入事件記錄到 Logcat (標籤：InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">自動填入偵錯記錄</string>
-    <string name="prefs_autofill_event_toasts_summary">發生自動填入事件時顯示快顯通知</string>
-    <string name="prefs_autofill_event_toasts_title">自動填入事件通知</string>
     <string name="pref_accessibility_service_disabled">無障礙服務已停用</string>
     <string name="pref_accessibility_service_enabled">無障礙服務已啟用</string>
     <string name="pref_emoji_search_pkb_summary">Emoji 面板開啟時，使用鍵盤進行搜尋</string>

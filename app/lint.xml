@@ -13,9 +13,6 @@
     <!-- UnusedResources: Lint cannot detect resources used in styles, Kotlin, dynamic loading, or Compose -->
     <issue id="UnusedResources" severity="ignore" />
     
-    <!-- Logging - Intentional use of Log instead of Timber in decompiled code -->
-    <issue id="LogNotTimber" severity="ignore" />
-    
     <!-- Typography and Spelling - Low priority cosmetic issues -->
     <issue id="Typos" severity="warning" />
     <issue id="TypographyEllipsis" severity="warning" />

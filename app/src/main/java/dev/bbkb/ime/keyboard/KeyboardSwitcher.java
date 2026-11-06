@@ -505,8 +505,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
             final android.content.res.Configuration config = resources.getConfiguration();
             final String fingerprint = config.densityDpi + "/" + config.fontScale + "/" + config.uiMode + "/"
                     + config.orientation + "/" + config.screenWidthDp + "x" + config.screenHeightDp + "/"
-                    + (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N
-                            ? config.getLocales().toLanguageTags() : String.valueOf(config.locale))
+                    + androidx.core.os.ConfigurationCompat.getLocales(config).toLanguageTags()
                     + "/" + ResourceConfigManager.getKeyboardHeight(resources);
             if (!fingerprint.equals(this.keyboardCacheFingerprint)) {
                 this.keyboardCacheFingerprint = fingerprint;

@@ -2,7 +2,7 @@ package dev.bbkb.ime.keyboard.inputboard.emoji
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
+import androidx.core.os.ConfigurationCompat
 import dev.bbkb.ime.R
 import dev.bbkb.ime.keyboard.Key
 import dev.bbkb.ime.keyboard.Keyboard
@@ -46,13 +46,9 @@ class EmojiKeyboardFactory(
     private val emojiProvider: EmojibaseDataProvider
         get() = EmojibaseDataProvider.getSharedLoaded(appContext)
 
-    // Locale from context resources (LocaleList on API 24+, the deprecated field below that).
-    private val locale: Locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        context.resources.configuration.locales.get(0)
-    } else {
-        @Suppress("DEPRECATION")
-        context.resources.configuration.locale
-    } ?: Locale.getDefault()
+    // The primary locale of the context's resources.
+    private val locale: Locale =
+        ConfigurationCompat.getLocales(context.resources.configuration).get(0) ?: Locale.getDefault()
 
     private val maxKeysPerPage: Int =
         context.resources.getInteger(R.integer.config_emoji_keyboard_max_page_key_count)

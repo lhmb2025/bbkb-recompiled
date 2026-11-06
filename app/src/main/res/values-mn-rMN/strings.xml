@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Товч дарах чичиргээний хугацаа</string>
     <string name="prefs_autofill_debug_logging_summary">Автомат бөглөлтийн үйл явдлыг Logcat-д бүртгэх (шошго: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Автомат бөглөлтийн алдааны бүртгэл</string>
-    <string name="prefs_autofill_event_toasts_summary">Автомат бөглөлтийн үйл явдал болоход мэдэгдэл харуулах</string>
-    <string name="prefs_autofill_event_toasts_title">Автомат бөглөлтийн үйл явдлын мэдэгдэл</string>
     <string name="pref_accessibility_service_disabled">Хандалтын үйлчилгээ идэвхгүй</string>
     <string name="pref_accessibility_service_enabled">Хандалтын үйлчилгээ идэвхтэй</string>
     <string name="pref_emoji_search_pkb_summary">Инээмсэглэлийн самбар нээлттэй үед хайхдаа гарыг ашиглана</string>

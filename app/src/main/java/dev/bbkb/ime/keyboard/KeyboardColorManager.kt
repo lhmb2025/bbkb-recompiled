@@ -16,7 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.graphics.ColorUtils
 import dev.bbkb.ime.R
-import timber.log.Timber
+import dev.bbkb.ime.core.shared.Logger
 
 /**
  * Keyboard color management: one immutable [Palette] per theme, swapped atomically.
@@ -49,6 +49,8 @@ import timber.log.Timber
  * ```
  */
 object KeyboardColorManager {
+
+    private const val TAG = "KeyboardColorManager"
 
     enum class Style(
         /** One fixed palette: no scheme axis, no system (wallpaper) colors. */
@@ -199,12 +201,12 @@ object KeyboardColorManager {
         currentScheme = scheme
         useSystemColors = systemColors
         reload()
-        Timber.i("KeyboardColorManager initialized: style=$style scheme=$scheme systemColors=$systemColors")
+        Logger.info(TAG, "KeyboardColorManager initialized: style=$style scheme=$scheme systemColors=$systemColors")
     }
 
     fun setTheme(style: Style, scheme: Scheme, systemColors: Boolean) {
         if (!isInitialized) {
-            Timber.w("Cannot set theme - manager not initialized")
+            Logger.warn(TAG, "Cannot set theme - manager not initialized")
             return
         }
         if (currentStyle != style || currentScheme != scheme || useSystemColors != systemColors) {
@@ -212,7 +214,7 @@ object KeyboardColorManager {
             currentScheme = scheme
             useSystemColors = systemColors
             reload()
-            Timber.d("Theme changed: style=$style scheme=$scheme systemColors=$systemColors")
+            Logger.debug(TAG, "Theme changed: style=$style scheme=$scheme systemColors=$systemColors")
         }
     }
 
@@ -236,7 +238,7 @@ object KeyboardColorManager {
             if (next == palette) return
             palette = next
             notifyObservers()
-            Timber.d("Configuration changed, colors reloaded")
+            Logger.debug(TAG, "Configuration changed, colors reloaded")
         }
     }
 

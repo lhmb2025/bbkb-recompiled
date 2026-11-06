@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Трајање вибрације</string>
     <string name="prefs_autofill_debug_logging_summary">Бележи догађаје аутоматског попуњавања у Логцат (ознака: ИнлинеАутофиллМанагер)</string>
     <string name="prefs_autofill_debug_logging_title">Бележење грешака аутоматског попуњавања</string>
-    <string name="prefs_autofill_event_toasts_summary">Прикажи искачућа обавештења када дође до догађаја аутоматског попуњавања</string>
-    <string name="prefs_autofill_event_toasts_title">Обавештења о догађајима аутоматског попуњавања</string>
     <string name="pref_accessibility_service_disabled">Услуга приступачности је онемогућена</string>
     <string name="pref_accessibility_service_enabled">Услуга приступачности је омогућена</string>
     <string name="pref_emoji_search_pkb_summary">Када је табла са емоџијима отворена, користите тастатуру за претрагу</string>

@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Продолжительность вибрации</string>
     <string name="prefs_autofill_debug_logging_summary">Записывать события автозаполнения в Logcat (тег: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Отладочный журнал автозаполнения</string>
-    <string name="prefs_autofill_event_toasts_summary">Показывать всплывающие уведомления о событиях автозаполнения</string>
-    <string name="prefs_autofill_event_toasts_title">Уведомления о событиях автозаполнения</string>
     <string name="pref_accessibility_service_disabled">Служба специальных возможностей отключена</string>
     <string name="pref_accessibility_service_enabled">Служба специальных возможностей включена</string>
     <string name="pref_emoji_search_pkb_summary">Когда панель эмодзи открыта, используйте клавиатуру для поиска</string>

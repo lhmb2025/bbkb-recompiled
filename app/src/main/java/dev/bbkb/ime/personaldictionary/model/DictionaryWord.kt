@@ -1,7 +1,6 @@
 package dev.bbkb.ime.personaldictionary.model
 
 import dev.bbkb.ime.personaldictionary.sync.AudSyncer
-import com.google.gson.annotations.SerializedName
 
 /**
  * Abstract base class for dictionary word entries.
@@ -14,9 +13,9 @@ import com.google.gson.annotations.SerializedName
  * @property isAutoCapsEnabled Whether auto-capitalization applies to this word
  */
 abstract class DictionaryWord(
-    @SerializedName("word") var word: String,
-    @SerializedName("locale") val locale: String,
-    @SerializedName("autoCapsEnabled") var isAutoCapsEnabled: Boolean
+    var word: String,
+    val locale: String,
+    var isAutoCapsEnabled: Boolean
 ) {
     @Transient
     private var canBeSynchronised: Boolean? = null

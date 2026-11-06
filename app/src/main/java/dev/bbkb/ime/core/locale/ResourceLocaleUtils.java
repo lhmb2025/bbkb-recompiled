@@ -4,6 +4,8 @@ import static dev.bbkb.ime.core.shared.StringHelper.*;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.TextUtils;
+import android.view.View;
 import android.view.inputmethod.InputMethodSubtype;
 
 import dev.bbkb.ime.BuildConfig;
@@ -39,8 +41,6 @@ public final class ResourceLocaleUtils {
 
     private static String[] sPredefinedLayouts;
 
-    private static final String[] sSortedRtlLanguages;
-
     private static final Object LOCK = new Object();
 
     private static final HashMap<String, String> sLayoutToDisplayName = new HashMap<>();
@@ -57,8 +57,6 @@ public final class ResourceLocaleUtils {
 
     static {
         Arrays.sort(sSortedNonLatinLanguages);
-        sSortedRtlLanguages = new String[]{"ar", "fa", "iw"};
-        Arrays.sort(sSortedRtlLanguages);
     }
 
     private ResourceLocaleUtils() {
@@ -261,8 +259,9 @@ public final class ResourceLocaleUtils {
         return DeviceProfile.current().getKeypadLayout();
     }
 
+    /** Whether the locale's script runs right to left; false for a null locale. */
     public static boolean isRtlLanguage(Locale locale) {
-        return Arrays.binarySearch(sSortedRtlLanguages, LocaleUtils.languageCode(locale)) >= 0;
+        return TextUtils.getLayoutDirectionFromLocale(locale) == View.LAYOUT_DIRECTION_RTL;
     }
 
     public static boolean isRtlLanguage(InputMethodSubtype inputMethodSubtype) {

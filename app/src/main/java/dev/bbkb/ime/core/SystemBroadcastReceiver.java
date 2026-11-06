@@ -3,11 +3,9 @@ package dev.bbkb.ime.core;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.view.inputmethod.InputMethodManager;
 
 import com.blackberry.nuanceshim.languagepack.LanguagePackManager;
 import dev.bbkb.ime.core.shared.Logger;
-import dev.bbkb.ime.core.shared.UncachedInputMethodManagerUtils;
 import dev.bbkb.ime.keyboard.KeyboardBuilder;
 import dev.bbkb.ime.core.locale.RichInputMethodManager;
 import dev.bbkb.ime.core.update.UpdateJobService;
@@ -33,9 +31,8 @@ import dev.bbkb.ime.core.update.UpdateJobService;
  *       down with it.</li>
  * </ul>
  * A process that is only holding a receiver is already the first thing the low-memory killer
- * reclaims, so nothing has to be done by hand. The enabled check is kept, at INFO, purely as a
- * breadcrumb; {@link UncachedInputMethodManagerUtils#isThisImeEnabled} now genuinely means
- * "enabled" rather than "is the selected default".
+ * reclaims, so nothing has to be done by hand. The enabled check that used to guard the kill is
+ * gone too: all it had left to do was write an INFO log line.
  */
 public final class SystemBroadcastReceiver extends BroadcastReceiver {
 
@@ -66,12 +63,6 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
         } else if ("android.intent.action.LOCALE_CHANGED".equals(action)) {
             Logger.info(TAG, "System locale changed");
             KeyboardBuilder.clearKeyboardCache();
-        }
-        final InputMethodManager inputMethodManager =
-                (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (!UncachedInputMethodManagerUtils.isThisImeEnabled(context, inputMethodManager)) {
-            Logger.info(TAG, "This IME is not enabled; leaving the process to the system ("
-                    + action + ")");
         }
     }
 }

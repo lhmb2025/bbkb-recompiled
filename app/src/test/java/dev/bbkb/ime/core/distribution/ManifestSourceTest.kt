@@ -116,6 +116,58 @@ class ManifestSourceTest {
         val meta = metaFile().readText()
         assertTrue("the metadata records the ETag: $meta", meta.contains("v1"))
         assertTrue("and which URL produced it: $meta", meta.contains("/dist/manifest.json"))
+        assertEquals(
+            "no temp file is left beside them",
+            setOf("manifest.json", "manifest.meta.json"),
+            cacheFile().parentFile!!.listFiles()!!.map { it.name }.filter { it.startsWith("manifest") }.toSet(),
+        )
+    }
+
+    @Test
+    fun metadataTheGsonBuildWroteIsStillHonoured() = runBlocking {
+        // The exact bytes Gson's JsonObject.toString wrote before the switch to org.json: compact,
+        // url then fetchedAt as a plain integer then etag, the ETag's quotes escaped. The cache
+        // is young and the stored ETag must go out as If-None-Match once it is stale.
+        cacheFile().parentFile!!.mkdirs()
+        cacheFile().writeText(manifestJson(versionCode = 1429))
+        metaFile().writeText("""{"url":"$url","fetchedAt":${now - 1_000},"etag":"\"v1\""}""")
+        server.respondWith { exchange -> exchange.notModified("\"v1\"") }
+
+        val cached = source().fetch(force = false).getOrThrow()
+        assertTrue(cached.fromCache)
+        assertEquals(1429, cached.appFor("release")!!.versionCode)
+        assertEquals(now - 1_000, cached.fetchedAt)
+        assertEquals("a young cache needs no network call", 0, server.requestCount)
+
+        source().fetch(force = true).getOrThrow()
+        assertEquals(listOf<String?>("\"v1\""), server.ifNoneMatchHeaders())
+    }
+
+    @Test
+    fun metadataIsWrittenWithTheSameThreeFields() = runBlocking {
+        serveManifest(etag = "\"v1\"")
+
+        source().fetch(force = false).getOrThrow()
+
+        val meta = org.json.JSONObject(metaFile().readText())
+        assertEquals(setOf("url", "fetchedAt", "etag"), meta.keys().asSequence().toSet())
+        assertEquals(url, meta.getString("url"))
+        assertEquals(now, meta.get("fetchedAt"))
+        assertEquals("\"v1\"", meta.getString("etag"))
+        assertFalse("slashes are not escaped", metaFile().readText().contains("\\/"))
+    }
+
+    @Test
+    fun clearCacheAlsoRemovesAWriteACrashLeftHalfDone() = runBlocking {
+        serveManifest()
+        val source = source()
+        source.fetch(force = false).getOrThrow()
+        val stale = File(cacheFile().path + ".new").apply { writeText("{ half") }
+
+        source.clearCache()
+
+        assertFalse(stale.exists())
+        assertFalse(cacheFile().exists())
     }
 
     @Test

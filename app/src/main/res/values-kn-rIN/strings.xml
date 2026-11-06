@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">ಕೀಒತ್ತುವ ವೈಬ್ರೇಷನ್‌‌ ಅವಧಿ</string>
     <string name="prefs_autofill_debug_logging_summary">ಸ್ವಯಂಭರ್ತಿ ಈವೆಂಟ್‌ಗಳನ್ನು Logcat ಗೆ ದಾಖಲಿಸು (ಟ್ಯಾಗ್: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">ಸ್ವಯಂಭರ್ತಿ ಡೀಬಗ್ ಲಾಗಿಂಗ್</string>
-    <string name="prefs_autofill_event_toasts_summary">ಸ್ವಯಂಭರ್ತಿ ಈವೆಂಟ್‌ಗಳು ಸಂಭವಿಸಿದಾಗ ಟೋಸ್ಟ್ ಅಧಿಸೂಚನೆಗಳನ್ನು ತೋರಿಸು</string>
-    <string name="prefs_autofill_event_toasts_title">ಸ್ವಯಂಭರ್ತಿ ಈವೆಂಟ್ ಟೋಸ್ಟ್‌ಗಳು</string>
     <string name="pref_accessibility_service_disabled">ಪ್ರವೇಶಿಸುವಿಕೆ ಸೇವೆ ನಿಷ್ಕ್ರಿಯಗೊಂಡಿದೆ</string>
     <string name="pref_accessibility_service_enabled">ಪ್ರವೇಶಿಸುವಿಕೆ ಸೇವೆ ಸಕ್ರಿಯಗೊಂಡಿದೆ</string>
     <string name="pref_emoji_search_pkb_summary">ಎಮೋಜಿ ಬೋರ್ಡ್ ತೆರೆದಿರುವಾಗ, ಹುಡುಕಲು ಕೀಬೋರ್ಡ್ ಬಳಸಿ</string>

@@ -1,7 +1,7 @@
 package dev.bbkb.ime.core.device.config
 
 import android.content.Context
-import androidx.preference.PreferenceManager
+import dev.bbkb.ime.core.settings.PrefsManager
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -32,7 +32,7 @@ class PreloadedConfigCacheTest {
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
-        PreferenceManager.getDefaultSharedPreferences(context).edit().clear().commit()
+        PrefsManager.defaultSharedPreferences(context).edit().clear().commit()
     }
 
     private fun preloadedOf(manager: CustomDeviceConfigManager) =

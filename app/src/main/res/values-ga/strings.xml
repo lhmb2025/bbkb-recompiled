@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Fad an chreathta</string>
     <string name="prefs_autofill_debug_logging_summary">Logáil teagmhais uathlíonta chuig Logcat (clib: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Logáil dífhabhtaithe an uathlíonta</string>
-    <string name="prefs_autofill_event_toasts_summary">Taispeáin fógraí gearra nuair a tharlaíonn teagmhais uathlíonta</string>
-    <string name="prefs_autofill_event_toasts_title">Fógraí teagmhas uathlíonta</string>
     <string name="pref_accessibility_service_disabled">Seirbhís inrochtaineachta díchumasaithe</string>
     <string name="pref_accessibility_service_enabled">Seirbhís inrochtaineachta cumasaithe</string>
     <string name="pref_emoji_search_pkb_summary">Nuair a bhíonn an clár emoji ar oscailt, úsáid an méarchlár le cuardach a dhéanamh</string>

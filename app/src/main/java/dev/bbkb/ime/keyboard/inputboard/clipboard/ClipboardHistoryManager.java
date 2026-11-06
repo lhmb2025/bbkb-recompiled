@@ -8,9 +8,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PersistableBundle;
-import android.os.UserManager;
 
 import androidx.annotation.Nullable;
+import androidx.core.os.UserManagerCompat;
 
 import dev.bbkb.ime.R;
 
@@ -171,7 +171,7 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
 
     public ClipboardHistoryManager(Context context) {
         this(context, ClipboardHistoryStore.forContext(context), System::currentTimeMillis,
-                () -> isUserUnlocked(context), LOAD_EXECUTOR,
+                () -> UserManagerCompat.isUserUnlocked(context), LOAD_EXECUTOR,
                 new Handler(Looper.getMainLooper())::post);
     }
 
@@ -201,14 +201,6 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         synchronized (sLiveManagers) {
             sLiveManagers.add(this);
         }
-    }
-
-    private static boolean isUserUnlocked(Context context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            return true;
-        }
-        UserManager userManager = context.getSystemService(UserManager.class);
-        return userManager == null || userManager.isUserUnlocked();
     }
 
     // ── reading ──────────────────────────────────────────────────────────────

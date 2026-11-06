@@ -111,9 +111,6 @@
         <item name="android:statusBarColor">@color/m3_surface_container</item>
         <item name="android:windowLightStatusBar">@bool/settings_light_status_bar</item>
         
-        <!-- Preference Theme Overlay -->
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.BlackBerryKeyboard</item>
-        
         <!-- Material 3 Components -->
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>

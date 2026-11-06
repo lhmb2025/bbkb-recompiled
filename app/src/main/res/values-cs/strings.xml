@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Trvání vibrace</string>
     <string name="prefs_autofill_debug_logging_summary">Zaznamenávat události automatického vyplňování do Logcatu (tag: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Ladicí protokol automatického vyplňování</string>
-    <string name="prefs_autofill_event_toasts_summary">Zobrazovat oznámení toast při událostech automatického vyplňování</string>
-    <string name="prefs_autofill_event_toasts_title">Oznámení o událostech automatického vyplňování</string>
     <string name="pref_accessibility_service_disabled">Služba přístupnosti je vypnutá</string>
     <string name="pref_accessibility_service_enabled">Služba přístupnosti je zapnutá</string>
     <string name="pref_emoji_search_pkb_summary">Když je panel emodži otevřený, hledejte pomocí klávesnice</string>

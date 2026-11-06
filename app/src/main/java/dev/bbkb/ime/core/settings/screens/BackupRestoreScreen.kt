@@ -3,6 +3,7 @@ package dev.bbkb.ime.core.settings.screens
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
+import android.text.format.DateUtils
 import android.content.Intent
 import android.provider.Settings
 import android.widget.Toast
@@ -55,8 +56,6 @@ import dev.bbkb.ime.core.settings.ui.Simple
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
 import dev.bbkb.ime.core.settings.ui.asRowIcon
 import kotlinx.coroutines.launch
-import java.text.DateFormat
-import java.util.Date
 
 /** Search anchors for the rows on the Backup and restore screen; spelled as literals in the screen for the sync test. */
 object BackupAnchors {
@@ -182,7 +181,7 @@ fun BackupRestoreScreen(
             PreferenceItem(
                 title = stringResource(R.string.backup_phone_last_title),
                 summary = if (lastPhoneBackup > 0L) {
-                    DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(lastPhoneBackup))
+                    localDateTime(context, lastPhoneBackup)
                 } else {
                     stringResource(R.string.backup_phone_last_never)
                 },
@@ -256,6 +255,7 @@ private fun RestoreDialog(
     onDismiss: () -> Unit,
     onConfirm: (BackupBundle.Selection) -> Unit,
 ) {
+    val context = LocalContext.current
     var chosen by remember(bundle) { mutableStateOf(BackupBundle.Selection.ALL.limitedTo(bundle)) }
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -265,7 +265,7 @@ private fun RestoreDialog(
                 val origin = bundle.origin
                 val device = origin.device?.let { listOfNotNull(it.manufacturer, it.model).joinToString(" ") }
                     ?.takeIf { it.isNotBlank() }
-                val created = origin.created?.let(::formatCreated)
+                val created = origin.created?.let { formatCreated(context, it) }
                 if (created != null) {
                     Text(
                         stringResource(R.string.backup_restore_dialog_saved, created),
@@ -338,7 +338,7 @@ internal fun DialogCheckboxRow(
 }
 
 /** The manifest's `2026-10-09T14:02:11Z` as a local date and time; the raw text if it is not that shape. */
-private fun formatCreated(created: String): String {
+private fun formatCreated(context: Context, created: String): String {
     val parsed = try {
         java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", java.util.Locale.US)
             .apply { timeZone = java.util.TimeZone.getTimeZone("UTC") }
@@ -346,8 +346,16 @@ private fun formatCreated(created: String): String {
     } catch (e: java.text.ParseException) {
         null
     } ?: return created
-    return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(parsed)
+    return localDateTime(context, parsed.time)
 }
+
+/** A date and time in the phone's language and its 12- or 24-hour setting. */
+private fun localDateTime(context: Context, millis: Long): String =
+    DateUtils.formatDateTime(
+        context, millis,
+        DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_YEAR or
+            DateUtils.FORMAT_ABBREV_MONTH,
+    )
 
 /**
  * The phone's backup page: Google's on phones with Play services (where the account backup

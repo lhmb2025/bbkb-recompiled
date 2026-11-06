@@ -1,13 +1,12 @@
 package dev.bbkb.ime.core.update
 
 import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -104,17 +103,15 @@ object UpdateNotifier {
 
     /** The "Updates" channel, created idempotently. No-op below API 26. */
     fun ensureChannel(context: Context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
-        val manager = context.getSystemService(NotificationManager::class.java) ?: return
-        val channel = NotificationChannel(
+        val channel = NotificationChannelCompat.Builder(
             CHANNEL_ID,
-            context.getString(R.string.settings_updates_title),
-            NotificationManager.IMPORTANCE_LOW,
-        ).apply {
-            description = context.getString(R.string.settings_updates_summary)
-            setSound(null, null)
-            enableVibration(false)
-        }
-        manager.createNotificationChannel(channel)
+            NotificationManagerCompat.IMPORTANCE_LOW,
+        )
+            .setName(context.getString(R.string.settings_updates_title))
+            .setDescription(context.getString(R.string.settings_updates_summary))
+            .setSound(null, null)
+            .setVibrationEnabled(false)
+            .build()
+        NotificationManagerCompat.from(context).createNotificationChannel(channel)
     }
 }

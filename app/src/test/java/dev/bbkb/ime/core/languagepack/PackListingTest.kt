@@ -6,6 +6,9 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
@@ -16,7 +19,12 @@ import java.util.Locale
  * without rendering anything. The interesting case is the four `group` packs (Swiss German, Swiss
  * French, Swiss Italian, Belgian Dutch): they used to be drawn indented under the language they
  * replace and now have to stand in their own alphabetical place.
+ *
+ * Robolectric because [PackFixtures] parses the manifest with the framework's `org.json`,
+ * an empty stub on the plain JVM.
  */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34], manifest = Config.NONE)
 class PackListingTest {
 
     private val packs: Packs = PackFixtures.realPacks()

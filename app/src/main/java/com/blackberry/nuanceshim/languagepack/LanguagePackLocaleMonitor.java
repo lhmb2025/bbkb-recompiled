@@ -77,26 +77,6 @@ public class LanguagePackLocaleMonitor {
         }
     }
 
-    /** No language database support for this locale. */
-    public static final int NOTIFICATION_UNSUPPORTED = 0;
-    /** Nothing to report: no-language subtype, or the pack is installed. */
-    public static final int NOTIFICATION_NONE = 1;
-    /** Supported but not installed. Downloads are disabled, so this is informational. */
-    public static final int NOTIFICATION_NOT_INSTALLED = 3;
-
-    public int getLanguageNotificationState(Locale locale) {
-        if (LocaleUtils.isNoLanguage(locale)) {
-            return NOTIFICATION_NONE;
-        }
-        if (!this.languagePackManager.isSupported(locale)) {
-            return NOTIFICATION_UNSUPPORTED;
-        }
-        if (this.languagePackManager.isInstalled(locale)) {
-            return NOTIFICATION_NONE;
-        }
-        return NOTIFICATION_NOT_INSTALLED;
-    }
-
     public void forceBootComplete(Context context) {
         if (this.languagePackManager.isBootCompleted()) {
             return;

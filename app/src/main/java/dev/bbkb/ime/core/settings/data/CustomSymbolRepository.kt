@@ -6,7 +6,7 @@ import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.R
 import dev.bbkb.ime.keyboard.KeyboardBuilder
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojibaseDataProvider
-import timber.log.Timber
+import dev.bbkb.ime.core.shared.Logger
 
 /**
  * Repository for managing Custom Symbol Page data.
@@ -30,6 +30,7 @@ class CustomSymbolRepository(private val context: Context) {
         private const val KEY_PKB_LAYOUT = "pref_pkb_symbol_page_layout"
         private const val KEY_CUSTOM_LIST = "pref_additional_symbol_list"
         private const val NULL_MARKER = "\u0000"
+        private const val TAG = "CustomSymbolRepository"
 
         /**
          * Static utility method for loading symbol lists from SharedPreferences.
@@ -127,7 +128,7 @@ class CustomSymbolRepository(private val context: Context) {
         // keeps serving the cached keyboard. §5.8 flagged a possible double rebuild here; there
         // is none, because there is no other rebuild.
         KeyboardBuilder.onKeyboardThemeChanged()
-        Timber.d("Saved layout to $key and cleared KeyboardBuilder cache")
+        Logger.debug(TAG, "Saved layout to $key and cleared KeyboardBuilder cache")
     }
 
     // ============================================================================
@@ -235,7 +236,7 @@ class CustomSymbolRepository(private val context: Context) {
         // the whole dataset every time the custom symbol page was built.
         val allEmojis = EmojibaseDataProvider.getSharedLoaded(context).getAllEmojis()
         
-        Timber.d("Loaded ${allEmojis.size} emojis from Emojibase for Compose custom symbol page")
+        Logger.debug(TAG, "Loaded ${allEmojis.size} emojis from Emojibase for Compose custom symbol page")
         
         return allEmojis.mapNotNull { emojiData ->
             val emoji = emojiData.emoji

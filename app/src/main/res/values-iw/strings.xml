@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">משך רטט</string>
     <string name="prefs_autofill_debug_logging_summary">רשום אירועי מילוי אוטומטי ל-Logcat (תג: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">רישום ניפוי באגים של מילוי אוטומטי</string>
-    <string name="prefs_autofill_event_toasts_summary">הצג הודעות קופצות כשמתרחשים אירועי מילוי אוטומטי</string>
-    <string name="prefs_autofill_event_toasts_title">הודעות על אירועי מילוי אוטומטי</string>
     <string name="pref_accessibility_service_disabled">שירות הנגישות מושבת</string>
     <string name="pref_accessibility_service_enabled">שירות הנגישות מופעל</string>
     <string name="pref_emoji_search_pkb_summary">כשלוח האמוג\'י פתוח, השתמשו במקלדת כדי לחפש</string>

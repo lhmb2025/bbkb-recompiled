@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">مدة الاهتزاز</string>
     <string name="prefs_autofill_debug_logging_summary">تسجيل أحداث الملء التلقائي في Logcat (العلامة: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">تسجيل تصحيح أخطاء الملء التلقائي</string>
-    <string name="prefs_autofill_event_toasts_summary">عرض إشعارات منبثقة عند وقوع أحداث الملء التلقائي</string>
-    <string name="prefs_autofill_event_toasts_title">إشعارات أحداث الملء التلقائي</string>
     <string name="pref_accessibility_service_disabled">خدمة إمكانية الوصول معطّلة</string>
     <string name="pref_accessibility_service_enabled">خدمة إمكانية الوصول ممكّنة</string>
     <string name="pref_emoji_search_pkb_summary">عندما تكون لوحة الرموز التعبيرية مفتوحة، استخدم لوحة المفاتيح للبحث</string>

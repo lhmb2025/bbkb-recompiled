@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Durată vibraţii</string>
     <string name="prefs_autofill_debug_logging_summary">Înregistrează evenimentele de completare automată în Logcat (etichetă: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Jurnal de depanare pentru completarea automată</string>
-    <string name="prefs_autofill_event_toasts_summary">Afișează notificări toast la apariția evenimentelor de completare automată</string>
-    <string name="prefs_autofill_event_toasts_title">Notificări toast pentru completarea automată</string>
     <string name="pref_accessibility_service_disabled">Serviciu de accesibilitate dezactivat</string>
     <string name="pref_accessibility_service_enabled">Serviciu de accesibilitate activat</string>
     <string name="pref_emoji_search_pkb_summary">Când tastatura emoji este deschisă, folosește tastele pentru a căuta</string>

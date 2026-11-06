@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">కీని నొక్కినప్పుడు వైబ్రేషన్ వ్యవధి</string>
     <string name="prefs_autofill_debug_logging_summary">ఆటోఫిల్ ఈవెంట్‌లను Logcat లో లాగ్ చేయి (ట్యాగ్: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">ఆటోఫిల్ డీబగ్ లాగింగ్</string>
-    <string name="prefs_autofill_event_toasts_summary">ఆటోఫిల్ ఈవెంట్‌లు జరిగినప్పుడు టోస్ట్ నోటిఫికేషన్‌లను చూపు</string>
-    <string name="prefs_autofill_event_toasts_title">ఆటోఫిల్ ఈవెంట్ టోస్ట్‌లు</string>
     <string name="pref_accessibility_service_disabled">యాక్సెసిబిలిటీ సేవ నిలిపివేయబడింది</string>
     <string name="pref_accessibility_service_enabled">యాక్సెసిబిలిటీ సేవ ప్రారంభించబడింది</string>
     <string name="pref_emoji_search_pkb_summary">ఎమోజి బోర్డ్ తెరిచి ఉన్నప్పుడు శోధించడానికి కీబోర్డ్ ఉపయోగించండి</string>

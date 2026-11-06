@@ -2,15 +2,16 @@ package dev.bbkb.ime.keyboard.inputboard.clipboard
 
 import android.content.Context
 import android.util.AtomicFile
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonParseException
-import com.google.gson.JsonParser
+import android.util.JsonWriter
 import dev.bbkb.ime.core.shared.Logger
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
+import org.json.JSONTokener
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.io.StringWriter
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -126,48 +127,52 @@ class ClipboardHistoryStore private constructor(
 
         @JvmStatic
         fun encode(entries: List<ClipEntry>): String {
-            val array = JsonArray()
-            for (entry in entries) {
-                array.add(JsonObject().apply {
-                    addProperty("id", entry.id)
-                    addProperty("text", entry.text)
-                    if (entry.label != null) addProperty("label", entry.label)
-                    addProperty("mime", entry.mime)
-                    addProperty("createdAt", entry.createdAtMs)
-                    addProperty("pinned", entry.isPinned)
-                    addProperty("pinnedAt", entry.pinnedAtMs)
-                })
+            val out = StringWriter()
+            JsonWriter(out).use { w ->
+                w.beginObject()
+                w.name("version").value(VERSION.toLong())
+                w.name("entries").beginArray()
+                for (entry in entries) {
+                    w.beginObject()
+                    w.name("id").value(entry.id)
+                    w.name("text").value(entry.text)
+                    if (entry.label != null) w.name("label").value(entry.label)
+                    w.name("mime").value(entry.mime)
+                    w.name("createdAt").value(entry.createdAtMs)
+                    w.name("pinned").value(entry.isPinned)
+                    w.name("pinnedAt").value(entry.pinnedAtMs)
+                    w.endObject()
+                }
+                w.endArray()
+                w.endObject()
             }
-            return JsonObject().apply {
-                addProperty("version", VERSION)
-                add("entries", array)
-            }.toString()
+            return out.toString()
         }
 
         /**
-         * Written against Gson's tree API, not its reflective binder, for the reason
-         * `DistributionManifestParser` gives: reflective binding fills a missing field with null
-         * behind Kotlin's back. Forgiving per entry — one malformed row is dropped, the rest load —
-         * and strict about the envelope: not JSON, not an object, or another version yields
+         * Walks the `org.json` tree and checks each field by hand rather than binding the JSON
+         * reflectively, for the reason `DistributionManifestParser` gives: reflective binding
+         * fills a missing field with null behind Kotlin's back. Forgiving per entry — one
+         * malformed row is dropped, the rest load — and strict about the envelope: not JSON
+         * (including anything after the object), not an object, or another version yields
          * nothing.
          */
         @JvmStatic
         fun decode(json: String): List<ClipEntry> {
-            val root = try {
-                JsonParser.parseString(json)
-            } catch (e: JsonParseException) {
-                return emptyList()
-            } catch (e: IllegalStateException) {
+            val obj = try {
+                val tokener = JSONTokener(json)
+                val root = tokener.nextValue()
+                if (tokener.nextClean() != '\u0000') return emptyList()
+                root as? JSONObject ?: return emptyList()
+            } catch (e: JSONException) {
                 return emptyList()
             }
-            if (root == null || !root.isJsonObject) return emptyList()
-            val obj = root.asJsonObject
             if (obj.longOrNull("version") != VERSION.toLong()) return emptyList()
-            val array = obj["entries"]?.takeIf { it.isJsonArray }?.asJsonArray ?: return emptyList()
-            return array.mapNotNull { element -> element.takeIf { it.isJsonObject }?.asJsonObject?.toEntry() }
+            val array = obj.opt("entries") as? JSONArray ?: return emptyList()
+            return (0 until array.length()).mapNotNull { i -> (array.opt(i) as? JSONObject)?.toEntry() }
         }
 
-        private fun JsonObject.toEntry(): ClipEntry? {
+        private fun JSONObject.toEntry(): ClipEntry? {
             val id = longOrNull("id") ?: return null
             val text = stringOrNull("text") ?: return null
             val createdAt = longOrNull("createdAt") ?: return null
@@ -183,22 +188,13 @@ class ClipboardHistoryStore private constructor(
             )
         }
 
-        private fun JsonObject.primitive(key: String): JsonElement? =
-            get(key)?.takeIf { it.isJsonPrimitive }
+        // Named apart from JSONObject's own optLong/optString/optBoolean, which coerce between
+        // types. A number with a fraction is truncated, as Gson's asLong truncated it.
 
-        private fun JsonObject.longOrNull(key: String): Long? {
-            val p = primitive(key)?.asJsonPrimitive ?: return null
-            return if (p.isNumber) try { p.asLong } catch (e: NumberFormatException) { null } else null
-        }
+        private fun JSONObject.longOrNull(key: String): Long? = (opt(key) as? Number)?.toLong()
 
-        private fun JsonObject.stringOrNull(key: String): String? {
-            val p = primitive(key)?.asJsonPrimitive ?: return null
-            return if (p.isString) p.asString else null
-        }
+        private fun JSONObject.stringOrNull(key: String): String? = opt(key) as? String
 
-        private fun JsonObject.booleanOrNull(key: String): Boolean? {
-            val p = primitive(key)?.asJsonPrimitive ?: return null
-            return if (p.isBoolean) p.asBoolean else null
-        }
+        private fun JSONObject.booleanOrNull(key: String): Boolean? = opt(key) as? Boolean
     }
 }

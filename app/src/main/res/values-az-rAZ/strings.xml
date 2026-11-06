@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Vibrasiyalı klikləmə müddəti</string>
     <string name="prefs_autofill_debug_logging_summary">Avtodoldurma hadisələrini Logcat-a yazın (etiket: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Avtodoldurma sazlama jurnalı</string>
-    <string name="prefs_autofill_event_toasts_summary">Avtodoldurma hadisələri baş verdikdə bildirişlər göstərin</string>
-    <string name="prefs_autofill_event_toasts_title">Avtodoldurma hadisə bildirişləri</string>
     <string name="pref_accessibility_service_disabled">Əlçatanlıq xidməti deaktivdir</string>
     <string name="pref_accessibility_service_enabled">Əlçatanlıq xidməti aktivdir</string>
     <string name="pref_emoji_search_pkb_summary">Emoji paneli açıq olduqda axtarış üçün klaviaturadan istifadə edin</string>

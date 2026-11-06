@@ -124,23 +124,6 @@
     <init>();
 }
 
-# ---------------------------------------------------------------------------
-# Gson-deserialised models (field names are the wire format)
-# ---------------------------------------------------------------------------
--keep class com.google.gson.** { *; }
--keep class com.google.gson.reflect.TypeToken { *; }
--keep class * extends com.google.gson.reflect.TypeToken
--keep class * implements com.google.gson.TypeAdapter
--keep class * implements com.google.gson.TypeAdapterFactory
--keep class * implements com.google.gson.JsonSerializer
--keep class * implements com.google.gson.JsonDeserializer
-
-# These classes are only ever instantiated by Gson (reflectively), so nothing in the code
-# constructs them. A members-only rule is not enough: R8 sees a class that is never
-# instantiated, drops its fields and the class (the emoji board came up empty this way in
-# 5.0.0-beta.18..20, back when EmojiData was Gson-parsed). Keep the classes themselves.
--keep class dev.bbkb.ime.personaldictionary.model.** { *; }
-
 # Enum values are serialised by name.
 -keepclassmembers enum * { *; }
 
@@ -153,22 +136,13 @@
 # ---------------------------------------------------------------------------
 # Logging strip-out
 # ---------------------------------------------------------------------------
--assumenosideeffects class timber.log.Timber {
-    public static *** v(...);
-    public static *** d(...);
-    public static *** i(...);
-    public static *** w(...);
-    public static *** e(...);
-    public static *** wtf(...);
-}
-
 -assumenosideeffects class android.util.Log {
     public static int v(...);
     public static int d(...);
 }
 
 -assumenosideeffects class dev.bbkb.ime.core.shared.Logger {
-    public static void debug(...);
+    public static int debug(...);
 }
 
 # ---------------------------------------------------------------------------

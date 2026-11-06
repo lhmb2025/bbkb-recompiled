@@ -4,19 +4,15 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.concurrent.ConcurrentMap;
 
 import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.core.shared.Logger;
@@ -25,7 +21,7 @@ import dev.bbkb.ime.BuildConfig;
 
 /**
  * LanguagePackInstaller - Installation status of the NuanceSDK language pack resolved for one
- * requested locale, plus ZIP extraction.
+ * requested locale.
  * Coordinates with LanguagePackRegistry for available language pack metadata.
  */
 public class LanguagePackInstaller {
@@ -38,7 +34,7 @@ public class LanguagePackInstaller {
      * LanguagePackManager's cleanup task, and its callers are not synchronized, so it must be a
      * concurrent map rather than the raw HashSet-era {@code new HashMap()} it used to be.
      */
-    private static final Map<String, LanguagePackInstaller> sByLanguageTag = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, LanguagePackInstaller> sByLanguageTag = new ConcurrentHashMap<>();
 
     private Context context;
 
@@ -88,14 +84,6 @@ public class LanguagePackInstaller {
             }
         }
         return hashSet;
-    }
-
-    public static void removeUnsupportedLocale(Context context, String str) {
-        if (BuildConfig.DEBUG) Log.i("NuanceShim", "Removing unsupported locale " + str);
-        File fileM7966b = getLanguagePackDirectory(context, str);
-        if (fileM7966b.exists()) {
-            deleteRecursively(fileM7966b);
-        }
     }
 
     public LanguagePackInstaller(Context context, Locale locale, LanguagePackRegistry registry) {
@@ -181,8 +169,9 @@ public class LanguagePackInstaller {
     }
 
     public static void deleteRecursively(File file) {
-        if (file.isDirectory()) {
-            for (File file2 : file.listFiles()) {
+        final File[] children = file.isDirectory() ? file.listFiles() : null;
+        if (children != null) {
+            for (File file2 : children) {
                 deleteRecursively(file2);
             }
         }
@@ -204,71 +193,5 @@ public class LanguagePackInstaller {
             return;
         }
         if (BuildConfig.DEBUG) Log.w("NuanceShim", "Can't remove uninstalled or preinstalled locale " + getLocaleIdentifier());
-    }
-
-    /**
-     * Resolves a zip entry name against {@code destDir} and rejects anything that escapes it.
-     *
-     * <p>Zip Slip: the entry name is attacker-controlled, so {@code new File(destDir, name)}
-     * with a name like {@code ../../databases/x} writes outside the language-pack directory.
-     * The destination here is {@code getNoBackupFilesDir()/nuance/<locale>}, whose siblings
-     * include the dynamic learning model this project treats as security-sensitive state.
-     */
-    private static File resolveEntry(File destDir, String entryName) throws IOException {
-        final File out = new File(destDir, entryName).getCanonicalFile();
-        final String prefix = destDir.getCanonicalPath() + File.separator;
-        if (!out.getPath().startsWith(prefix)) {
-            throw new IOException("Zip entry escapes the destination directory: " + entryName);
-        }
-        return out;
-    }
-
-    /**
-     * Extracts {@code inputStream} into {@code destDir}.
-     *
-     * <p>Throws on any failure. The previous shape collapsed a try/finally into an outer catch
-     * that assigned the throwable to a dead local and returned normally, so a completely failed
-     * extraction was reported to {@link #unpackArchive} as success -- {@code isInstalled()} then
-     * found a directory and the engine registered a broken language database.
-     */
-    private void extractZip(InputStream inputStream, File destDir) throws IOException {
-        destDir.mkdirs();
-        final byte[] buffer = new byte[NuanceSDK.MAX_CONTEXT_LENGTH];
-        try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
-            for (ZipEntry entry = zipInputStream.getNextEntry();
-                    entry != null;
-                    entry = zipInputStream.getNextEntry()) {
-                final File out = resolveEntry(destDir, entry.getName());
-                if (entry.isDirectory()) {
-                    if (BuildConfig.DEBUG) Log.i("NuanceShim", entry.getName() + " is a directory");
-                    out.mkdirs();
-                    continue;
-                }
-                final File parent = out.getParentFile();
-                if (parent != null && !parent.exists()) {
-                    if (BuildConfig.DEBUG) Log.i("NuanceShim", out.getParent() + " does not exist, creating");
-                    parent.mkdirs();
-                }
-                if (BuildConfig.DEBUG) Log.i("NuanceShim", "Copying " + entry.getName() + " to " + destDir.getAbsolutePath());
-                try (FileOutputStream fileOutputStream = new FileOutputStream(out)) {
-                    for (int i = zipInputStream.read(buffer); i != -1; i = zipInputStream.read(buffer)) {
-                        fileOutputStream.write(buffer, 0, i);
-                    }
-                    fileOutputStream.flush();
-                }
-                zipInputStream.closeEntry();
-            }
-        }
-    }
-
-    public boolean unpackArchive(InputStream inputStream) {
-        File fileM7971j = getDirectory();
-        try {
-            extractZip(inputStream, fileM7971j);
-            return true;
-        } catch (IOException e) {
-            if (BuildConfig.DEBUG) Log.e("NuanceShim", "Failed to unpack archive at " + fileM7971j, e);
-            return false;
-        }
     }
 }

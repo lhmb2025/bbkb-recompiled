@@ -10,12 +10,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import dev.bbkb.ime.core.settings.data.CustomSymbolRepository
-import timber.log.Timber
+import dev.bbkb.ime.core.shared.Logger
 
-/** Emoji per page on the [PaletteLoading.PER_TAB] path, appended as the grid is scrolled. */
-private const val EMOJI_PAGE_SIZE = 200
+private const val TAG = "KeyEditorViewModel"
 
-/** Emoji offered on the [PaletteLoading.DEFERRED_SNAPSHOT] path, which does not page. */
+/** Emoji offered on the [PaletteLoading.DEFERRED_SNAPSHOT] path. */
 private const val DEFERRED_EMOJI_CAP = 200
 
 /**
@@ -46,15 +45,12 @@ internal class KeyEditorViewModel(
 
     val customSymbols = mutableStateListOf<String>()
 
-    // Emoji paging, [PaletteLoading.PER_TAB] only.
-    private var allEmojis: List<String> = emptyList()
-    private val displayedEmojis = mutableStateListOf<String>()
-    private var currentEmojiPage = 0
-    var hasMoreEmojis by mutableStateOf(false)
-        private set
+    // Every emoji, [PaletteLoading.PER_TAB] only. The lazy grid composes only the visible cells,
+    // so the whole list is handed over at once.
+    private var emojis by mutableStateOf<List<String>>(emptyList())
 
-    /** Observable page marker: the palette re-reads when another emoji page arrives. */
-    val displayedEmojiCount: Int get() = displayedEmojis.size
+    /** Observable marker: the palette re-reads once [initialize] has loaded the emoji. */
+    val emojiCount: Int get() = emojis.size
 
     /** All nine categories, [PaletteLoading.DEFERRED_SNAPSHOT] only; empty until the load lands. */
     var deferredCategories by mutableStateOf<List<List<String>>>(emptyList())
@@ -71,24 +67,10 @@ internal class KeyEditorViewModel(
         layout.addAll(spec.load(getApplication()))
         refreshCustomSymbols()
         if (spec.paletteLoading == PaletteLoading.PER_TAB) {
-            allEmojis = repository.loadCategorySymbols(EMOJI_TAB)
-            loadMoreEmojis()
+            emojis = repository.loadCategorySymbols(EMOJI_TAB)
         }
         isInitialized = true
-        Timber.d("KeyEditorViewModel initialized for ${spec.key}, total emojis: ${allEmojis.size}")
-    }
-
-    fun loadMoreEmojis() {
-        val start = currentEmojiPage * EMOJI_PAGE_SIZE
-        if (start >= allEmojis.size) {
-            hasMoreEmojis = false
-            return
-        }
-        val end = minOf(start + EMOJI_PAGE_SIZE, allEmojis.size)
-        displayedEmojis.addAll(allEmojis.subList(start, end))
-        currentEmojiPage++
-        hasMoreEmojis = end < allEmojis.size
-        Timber.d("Loaded emoji page $currentEmojiPage, total displayed: ${displayedEmojis.size}")
+        Logger.debug(TAG, "KeyEditorViewModel initialized for ${spec.key}, total emojis: ${emojis.size}")
     }
 
     /**
@@ -110,7 +92,7 @@ internal class KeyEditorViewModel(
             tab == CUSTOM_TAB -> customSymbols
             spec.paletteLoading == PaletteLoading.DEFERRED_SNAPSHOT ->
                 deferredCategories.getOrNull(tab).orEmpty()
-            tab == EMOJI_TAB -> displayedEmojis
+            tab == EMOJI_TAB -> emojis
             else -> repository.loadCategorySymbols(tab)
         }
         return raw.filter { it.isNotEmpty() && it != EMPTY_SLOT }

@@ -7,7 +7,8 @@ import dev.bbkb.ime.keyboard.Key;
 import dev.bbkb.ime.keyboard.Keyboard;
 import dev.bbkb.ime.keyboard.internal.KeySpecParser;
 import dev.bbkb.ime.keyboard.internal.MoreKeySpec;
-import com.google.gson.JsonParseException;
+
+import org.json.JSONException;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -219,7 +220,7 @@ public final class EmojiKeyboard extends Keyboard {
         List<String> stored;
         try {
             stored = EmojiRecents.read(this.sharedPreferences, Integer.MAX_VALUE);
-        } catch (JsonParseException e) {
+        } catch (JSONException e) {
             stored = Collections.emptyList();
         }
         for (String emoji : stored) {

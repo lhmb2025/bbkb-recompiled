@@ -1,6 +1,7 @@
 package dev.bbkb.ime.core.settings;
 
 import android.content.Intent;
+import android.provider.Settings;
 import android.text.TextUtils;
 
 import dev.bbkb.ime.core.shared.Logger;
@@ -16,9 +17,9 @@ public final class IntentUtils {
     }
 
     public static Intent getInputLanguageSelectionIntent(String str, int i) {
-        Intent intent = new Intent("android.settings.INPUT_METHOD_SUBTYPE_SETTINGS");
+        Intent intent = new Intent(Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS);
         if (!TextUtils.isEmpty(str)) {
-            intent.putExtra("input_method_id", str);
+            intent.putExtra(Settings.EXTRA_INPUT_METHOD_ID, str);
         }
         if (i > 0) {
             intent.setFlags(i);

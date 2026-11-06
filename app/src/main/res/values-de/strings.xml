@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Dauer des Vibrationsalarms</string>
     <string name="prefs_autofill_debug_logging_summary">AutoFill-Ereignisse in Logcat protokollieren (Tag: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">AutoFill-Debug-Protokollierung</string>
-    <string name="prefs_autofill_event_toasts_summary">Toast-Benachrichtigungen bei AutoFill-Ereignissen anzeigen</string>
-    <string name="prefs_autofill_event_toasts_title">Toasts für AutoFill-Ereignisse</string>
     <string name="pref_accessibility_service_disabled">Bedienungshilfendienst deaktiviert</string>
     <string name="pref_accessibility_service_enabled">Bedienungshilfendienst aktiviert</string>
     <string name="pref_emoji_search_pkb_summary">Wenn die Emoji-Tastatur geöffnet ist, mit der Tastatur suchen</string>

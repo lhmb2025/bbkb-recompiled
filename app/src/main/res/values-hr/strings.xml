@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Trajanje vibracije</string>
     <string name="prefs_autofill_debug_logging_summary">Bilježi događaje automatskog ispunjavanja u Logcat (oznaka: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Bilježenje pogrešaka automatskog ispunjavanja</string>
-    <string name="prefs_autofill_event_toasts_summary">Prikaži skočne obavijesti kad dođe do događaja automatskog ispunjavanja</string>
-    <string name="prefs_autofill_event_toasts_title">Obavijesti o događajima automatskog ispunjavanja</string>
     <string name="pref_accessibility_service_disabled">Usluga pristupačnosti onemogućena</string>
     <string name="pref_accessibility_service_enabled">Usluga pristupačnosti omogućena</string>
     <string name="pref_emoji_search_pkb_summary">Kada je ploča s emojijima otvorena, pretražujte pomoću tipkovnice</string>

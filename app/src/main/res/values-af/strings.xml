@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Vibrasieduur</string>
     <string name="prefs_autofill_debug_logging_summary">Teken outovul-gebeurtenisse in Logcat aan (etiket: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Outovul-ontfoutaantekening</string>
-    <string name="prefs_autofill_event_toasts_summary">Wys kitskennisgewings wanneer outovul-gebeurtenisse plaasvind</string>
-    <string name="prefs_autofill_event_toasts_title">Kitskennisgewings vir outovul-gebeurtenisse</string>
     <string name="pref_accessibility_service_disabled">Toeganklikheidsdiens is gesper</string>
     <string name="pref_accessibility_service_enabled">Toeganklikheidsdiens is ontsper</string>
     <string name="pref_emoji_search_pkb_summary">Gebruik die sleutelbord om te soek wanneer die emojibord oop is</string>

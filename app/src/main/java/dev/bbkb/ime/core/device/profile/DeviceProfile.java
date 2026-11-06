@@ -698,12 +698,6 @@ public final class DeviceProfile {
         return KeyboardDeviceScanner.getInstance().hasExternalKeyboard();
     }
 
-    // ==================== SDK Version ====================
-
-    public static boolean isMarshmallowOrLater() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
-    }
-
     // ==================== Display ====================
 
     public int getDisplayOrientation() { return displayOrientation; }

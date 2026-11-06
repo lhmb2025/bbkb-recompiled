@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Kohëzgjatja e dridhjes</string>
     <string name="prefs_autofill_debug_logging_summary">Regjistro ngjarjet e vetëplotësimit te Logcat (etiketa: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Regjistrimi i diagnostikimit të vetëplotësimit</string>
-    <string name="prefs_autofill_event_toasts_summary">Shfaq njoftime kalimtare kur ndodhin ngjarje vetëplotësimi</string>
-    <string name="prefs_autofill_event_toasts_title">Njoftimet e ngjarjeve të vetëplotësimit</string>
     <string name="pref_accessibility_service_disabled">Shërbimi i qasshmërisë është joaktiv</string>
     <string name="pref_accessibility_service_enabled">Shërbimi i qasshmërisë është aktiv</string>
     <string name="pref_emoji_search_pkb_summary">Kur tabela e emoji-ve është e hapur, përdor tastierën për të kërkuar</string>

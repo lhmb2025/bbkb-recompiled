@@ -65,9 +65,6 @@ fun DebugSettingsScreen(
         Toggle(boolPref("pref_debug_autofill_logging", false),
             R.string.prefs_autofill_debug_logging_title,
             RowSummary.Res(R.string.prefs_autofill_debug_logging_summary)),
-        Toggle(boolPref("pref_debug_force_autofill_bar", false),
-            R.string.prefs_autofill_event_toasts_title,
-            RowSummary.Res(R.string.prefs_autofill_event_toasts_summary)),
         // Hardcoded copy, so it rides the escape hatch rather than inventing a literal-title row.
         Custom(inGroup = true) {
             PreferenceScreen(

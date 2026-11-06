@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Taust. nosp. vibrācijas ilgums</string>
     <string name="prefs_autofill_debug_logging_summary">Reģistrēt automātiskās aizpildes notikumus Logcat (tags: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Automātiskās aizpildes atkļūdošanas žurnāls</string>
-    <string name="prefs_autofill_event_toasts_summary">Rādīt paziņojumus, kad notiek automātiskās aizpildes notikumi</string>
-    <string name="prefs_autofill_event_toasts_title">Automātiskās aizpildes notikumu paziņojumi</string>
     <string name="pref_accessibility_service_disabled">Pieejamības pakalpojums atspējots</string>
     <string name="pref_accessibility_service_enabled">Pieejamības pakalpojums iespējots</string>
     <string name="pref_emoji_search_pkb_summary">Kad emocijzīmju panelis ir atvērts, meklējiet ar tastatūru</string>

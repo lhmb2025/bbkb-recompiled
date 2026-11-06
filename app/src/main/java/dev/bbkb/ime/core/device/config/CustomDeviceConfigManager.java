@@ -3,7 +3,6 @@ package dev.bbkb.ime.core.device.config;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import androidx.preference.PreferenceManager;
 
 import dev.bbkb.ime.core.device.config.model.DeviceInputConfig;
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser;
@@ -11,6 +10,7 @@ import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
 import dev.bbkb.ime.core.device.detection.KeyboardDeviceScanner;
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
+import dev.bbkb.ime.core.settings.PrefsManager;
 import dev.bbkb.ime.core.shared.Logger;
 
 import java.io.File;
@@ -88,7 +88,7 @@ public class CustomDeviceConfigManager {
 
     private CustomDeviceConfigManager(Context context) {
         mContext = context.getApplicationContext();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPrefs = PrefsManager.defaultSharedPreferences(mContext);
     }
 
     public static synchronized CustomDeviceConfigManager getInstance(Context context) {

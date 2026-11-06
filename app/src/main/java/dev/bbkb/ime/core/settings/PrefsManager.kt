@@ -1,7 +1,6 @@
 package dev.bbkb.ime.core.settings
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
 
 /**
  * Centralized SharedPreferences accessor to avoid repeated 
@@ -10,7 +9,7 @@ import androidx.preference.PreferenceManager
  * This singleton ensures:
  * 1. Single SharedPreferences instance across the app
  * 2. No repeated disk I/O from multiple getDefaultSharedPreferences() calls
- * 3. Uses AndroidX PreferenceManager (not deprecated android.preference.PreferenceManager)
+ * 3. Opens the same default file the old PreferenceManager.getDefaultSharedPreferences() used
  * 
  * Usage:
  * - Initialize once in BlackBerryIME.onCreate(): PrefsManager.init(this)
@@ -22,6 +21,18 @@ object PrefsManager {
     private var prefs: SharedPreferences? = null
     
     private val lock = Any()
+
+    /** Suffix of the default preferences file name, after the package name. */
+    private const val DEFAULT_PREFS_SUFFIX = "_preferences"
+
+    /**
+     * The app's default SharedPreferences, the file `PreferenceManager.getDefaultSharedPreferences`
+     * opens (`<package>_preferences`, private). Users' settings already live in that file.
+     */
+    @JvmStatic
+    fun defaultSharedPreferences(context: Context): SharedPreferences =
+        // Never change this name: existing users' settings are stored under it.
+        context.getSharedPreferences(context.packageName + DEFAULT_PREFS_SUFFIX, Context.MODE_PRIVATE)
     
     /**
      * Initialize the PrefsManager with application context.
@@ -33,7 +44,7 @@ object PrefsManager {
         if (prefs == null) {
             synchronized(lock) {
                 if (prefs == null) {
-                    prefs = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
+                    prefs = defaultSharedPreferences(context.applicationContext)
                 }
             }
         }

@@ -1,20 +1,26 @@
 package dev.bbkb.ime.keyboard.inputboard.emoji;
 
 import android.content.SharedPreferences;
+import android.util.JsonWriter;
 
 import dev.bbkb.ime.core.settings.util.SettingsManager;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * The one owner of the emoji recents preference format ({@code emoji_recent_keys}).
  *
- * <p>The value is a JSON array written by a default-configured {@link Gson} (HTML escaping on),
- * newest first. {@link EmojiKeyboard} writes its whole key grid, so the array is normally padded
+ * <p>The value is a compact JSON array, newest first. Until 2026-11 a default-configured Gson
+ * wrote it, which escaped {@code < > & = '} as Unicode escapes; such a value reads the same.
+ * {@link EmojiKeyboard} writes its whole key grid, so the array is normally padded
  * with {@code ""} for every blank filler key, and a key with no output text is written as its
  * integer code. Readers keep only non-empty strings.
  *
@@ -23,26 +29,40 @@ import java.util.List;
  */
 final class EmojiRecents {
 
-    /** Hoisted: a Gson builds its type-adapter chain and a TypeToken walks its generic superclass (IB-19/IB-24). */
-    private static final Gson GSON = new Gson();
-
-    private static final Type STORED_TYPE = new TypeToken<ArrayList<Object>>() {}.getType();
-
     private EmojiRecents() {
     }
 
     /**
      * The stored non-empty string entries, in stored order, at most {@code limit} of them.
      *
-     * @throws com.google.gson.JsonSyntaxException if the stored value is not a JSON array
+     * <p>An empty or {@code null} value is no recents, as it was for Gson.
+     *
+     * @throws JSONException if the stored value is not a JSON array, or has anything after it
      */
-    static List<String> read(SharedPreferences prefs, int limit) {
+    static List<String> read(SharedPreferences prefs, int limit) throws JSONException {
         final List<String> recents = new ArrayList<>();
-        final List<Object> stored = GSON.fromJson(SettingsManager.getEmojiRecentKeys(prefs), STORED_TYPE);
-        if (stored == null) {
+        final String json = SettingsManager.getEmojiRecentKeys(prefs);
+        if (json == null) {
             return recents;
         }
-        for (Object entry : stored) {
+        final JSONTokener tokener = new JSONTokener(json);
+        if (tokener.nextClean() == '\0') {
+            return recents;
+        }
+        tokener.back();
+        final Object value = tokener.nextValue();
+        if (tokener.nextClean() != '\0') {
+            throw new JSONException("Trailing content after the recents array");
+        }
+        if (value == JSONObject.NULL) {
+            return recents;
+        }
+        if (!(value instanceof JSONArray)) {
+            throw new JSONException("Recents value is not a JSON array");
+        }
+        final JSONArray stored = (JSONArray) value;
+        for (int i = 0; i < stored.length(); i++) {
+            final Object entry = stored.opt(i);
             if (entry instanceof String && !((String) entry).isEmpty()) {
                 recents.add((String) entry);
                 if (recents.size() >= limit) {
@@ -55,9 +75,30 @@ final class EmojiRecents {
 
     /** Stores {@code entries} (strings and integer key codes) as the recents array; returns the stored value. */
     static String write(SharedPreferences prefs, List<Object> entries) {
-        final String json = GSON.toJson(entries);
+        final String json = toJson(entries);
         SettingsManager.setEmojiRecentKeys(prefs, json);
         return json;
+    }
+
+    private static String toJson(List<Object> entries) {
+        final StringWriter out = new StringWriter();
+        try (JsonWriter w = new JsonWriter(out)) {
+            w.beginArray();
+            for (Object entry : entries) {
+                if (entry instanceof Number) {
+                    w.value((Number) entry);
+                } else if (entry == null) {
+                    w.nullValue();
+                } else {
+                    w.value(entry.toString());
+                }
+            }
+            w.endArray();
+        } catch (IOException e) {
+            // A StringWriter does not fail.
+            throw new IllegalStateException(e);
+        }
+        return out.toString();
     }
 
     /** The stored value unparsed, for comparing with what a recents grid last read or wrote. */

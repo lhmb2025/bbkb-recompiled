@@ -10,10 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
@@ -32,23 +32,9 @@ fun CreditsScreen(
     val context = LocalContext.current
     val spacing = LocalSpacing.current
     
-    // Version info from PackageManager
-    val packageInfo = remember {
-        try {
-            context.packageManager.getPackageInfo(context.packageName, 0)
-        } catch (e: Exception) {
-            null
-        }
-    }
-    val versionName = packageInfo?.versionName ?: context.getString(R.string.settings_common_unknown)
-    val versionCode = packageInfo?.let {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-            it.longVersionCode
-        } else {
-            @Suppress("DEPRECATION")
-            it.versionCode.toLong()
-        }
-    } ?: 0L
+    // Version info, baked in at build time (the same values the manifest carries)
+    val versionName = BuildConfig.VERSION_NAME
+    val versionCode = BuildConfig.VERSION_CODE
 
     SettingsScaffold(
         title = context.getString(R.string.settings_about_title),
@@ -100,20 +86,6 @@ fun CreditsScreen(
                 )
 
                 CreditItem(
-                    name = "Timber",
-                    author = "Jake Wharton",
-                    license = "Apache License 2.0",
-                    url = "https://github.com/JakeWharton/timber"
-                )
-
-                CreditItem(
-                    name = "Apache Commons IO",
-                    author = "Apache Software Foundation",
-                    license = "Apache License 2.0",
-                    url = "https://commons.apache.org/proper/commons-io/"
-                )
-
-                CreditItem(
                     name = "Jetpack Compose",
                     author = "Google",
                     license = "Apache License 2.0",
@@ -135,13 +107,6 @@ fun CreditsScreen(
                 )
 
                 CreditItem(
-                    name = "Gson",
-                    author = "Google",
-                    license = "Apache License 2.0",
-                    url = "https://github.com/google/gson"
-                )
-
-                CreditItem(
                     name = "jsoup",
                     author = "Jonathan Hedley",
                     license = "MIT License",
@@ -153,6 +118,13 @@ fun CreditsScreen(
                     author = "Google / AOSP",
                     license = "Apache License 2.0",
                     url = "https://developer.android.com/jetpack/androidx/releases/emoji2"
+                )
+
+                CreditItem(
+                    name = "Shizuku API",
+                    author = "Rikka",
+                    license = "MIT License",
+                    url = "https://github.com/RikkaApps/Shizuku-API"
                 )
             }
 

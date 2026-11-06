@@ -33,6 +33,7 @@ import android.view.inputmethod.InlineSuggestionsRequest
 import android.view.inputmethod.InlineSuggestionsResponse
 import android.view.inputmethod.InputMethodSubtype
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.blackberry.nuanceshim.languagepack.LanguageVariantStore
 import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.R
@@ -768,11 +769,7 @@ class BlackBerryIME : InputMethodService(),
 
     private fun registerNotExported(receiver: BroadcastReceiver, vararg actions: String) {
         val filter = IntentFilter().apply { actions.forEach(::addAction) }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
-        } else {
-            registerReceiver(receiver, filter)
-        }
+        ContextCompat.registerReceiver(this, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
     }
 
     /**

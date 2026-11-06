@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Вібрація при натисканні клавіш</string>
     <string name="prefs_autofill_debug_logging_summary">Записувати події автозаповнення в Logcat (тег: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Журнал налагодження автозаповнення</string>
-    <string name="prefs_autofill_event_toasts_summary">Показувати спливаючі сповіщення про події автозаповнення</string>
-    <string name="prefs_autofill_event_toasts_title">Сповіщення про події автозаповнення</string>
     <string name="pref_accessibility_service_disabled">Службу спеціальних можливостей вимкнено</string>
     <string name="pref_accessibility_service_enabled">Службу спеціальних можливостей увімкнено</string>
     <string name="pref_emoji_search_pkb_summary">Коли панель емодзі відкрита, використовуйте клавіатуру для пошуку</string>

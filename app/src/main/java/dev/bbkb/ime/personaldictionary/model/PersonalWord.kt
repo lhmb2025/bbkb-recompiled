@@ -1,7 +1,6 @@
 package dev.bbkb.ime.personaldictionary.model
 
 import androidx.annotation.VisibleForTesting
-import com.google.gson.annotations.SerializedName
 
 /**
  * Represents a user-added personal dictionary word.
@@ -17,7 +16,6 @@ class PersonalWord @VisibleForTesting constructor(
     autoCapsEnabled: Boolean
 ) : DictionaryWord(word, locale, autoCapsEnabled) {
 
-    @SerializedName("version")
     val version: Long = 1L
 
     override fun toString(): String {

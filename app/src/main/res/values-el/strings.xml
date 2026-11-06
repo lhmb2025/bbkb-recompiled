@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Διάρκεια δόνησης</string>
     <string name="prefs_autofill_debug_logging_summary">Καταγραφή των συμβάντων αυτόματης συμπλήρωσης στο Logcat (ετικέτα: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Καταγραφή σφαλμάτων αυτόματης συμπλήρωσης</string>
-    <string name="prefs_autofill_event_toasts_summary">Εμφάνιση ειδοποιήσεων όταν προκύπτουν συμβάντα αυτόματης συμπλήρωσης</string>
-    <string name="prefs_autofill_event_toasts_title">Ειδοποιήσεις συμβάντων αυτόματης συμπλήρωσης</string>
     <string name="pref_accessibility_service_disabled">Η υπηρεσία προσβασιμότητας είναι απενεργοποιημένη</string>
     <string name="pref_accessibility_service_enabled">Η υπηρεσία προσβασιμότητας είναι ενεργοποιημένη</string>
     <string name="pref_emoji_search_pkb_summary">Όταν ο πίνακας emoji είναι ανοιχτός, χρησιμοποιήστε το πληκτρολόγιο για αναζήτηση</string>

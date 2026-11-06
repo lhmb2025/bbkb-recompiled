@@ -274,25 +274,4 @@
     <style name="platformSettingsTheme" parent="@style/Theme.BlackBerryKeyboard.Settings">
     </style>
     
-    <!-- ============================================ -->
-    <!-- Material 3 Preference Theme Overlay -->
-    <!-- ============================================ -->
-    <!-- Styles preferences to follow Material 3 design -->
-    
-    <style name="PreferenceThemeOverlay.BlackBerryKeyboard" parent="PreferenceThemeOverlay">
-        <!-- Text Colors -->
-        <item name="android:textColorPrimary">@color/m3_on_surface</item>
-        <item name="android:textColorSecondary">@color/m3_on_surface_variant</item>
-        
-        <!-- Category Style -->
-        <item name="preferenceCategoryStyle">@style/Preference.Category.BlackBerryKeyboard</item>
-    </style>
-    
-    <!-- Material 3 Category Style -->
-    <style name="Preference.Category.BlackBerryKeyboard" parent="Preference.Category">
-        <item name="android:textColor">@color/m3_primary</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-    </style>
-
 </resources>

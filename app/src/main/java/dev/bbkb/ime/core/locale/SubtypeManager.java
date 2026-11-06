@@ -187,7 +187,16 @@ public final class SubtypeManager {
     public boolean switchToRapidInputIme(InputMethodService inputMethodService) {
         IBinder iBinder;
         String strM4255d = getRapidInputImeId();
-        if (strM4255d.isEmpty() || (iBinder = inputMethodService.getWindow().getWindow().getAttributes().token) == null) {
+        if (strM4255d.isEmpty()) {
+            return false;
+        }
+        // CT-16: the token-free InputMethodService form on API 28+, as in RichInputMethodManager;
+        // the deprecated IBinder-token call below that.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            inputMethodService.switchInputMethod(strM4255d);
+            return true;
+        }
+        if ((iBinder = inputMethodService.getWindow().getWindow().getAttributes().token) == null) {
             return false;
         }
         this.richImm.getInputMethodManager().setInputMethod(iBinder, strM4255d);
@@ -203,7 +212,19 @@ public final class SubtypeManager {
         return "";
     }
 
-    private void switchToTargetIme(final String str, final InputMethodSubtype inputMethodSubtype, InputMethodService inputMethodService) {
+    private void switchToTargetIme(final String str, final InputMethodSubtype inputMethodSubtype, final InputMethodService inputMethodService) {
+        // CT-16: the token-free InputMethodService form on API 28+, as in RichInputMethodManager;
+        // the deprecated IBinder-token call below that. Both stay off the calling thread.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            IME_SWITCH_EXECUTOR.execute(() -> {
+                try {
+                    inputMethodService.switchInputMethod(str, inputMethodSubtype);
+                } catch (RuntimeException e) {
+                    Logger.errorWithException(SubtypeManager.TAG, e, "Exception while invoking InputMethodService.switchInputMethod(" + str + ")");
+                }
+            });
+            return;
+        }
         final IBinder iBinder = inputMethodService.getWindow().getWindow().getAttributes().token;
         if (iBinder == null) {
             Logger.error(TAG, "Unable to switch IME to [" + str + "] with subtype [" + inputMethodSubtype.getMode() + "] because window attributes are unavailable");

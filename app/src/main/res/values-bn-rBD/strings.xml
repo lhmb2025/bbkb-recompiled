@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">কীপ্রেস কম্পন সময়কাল</string>
     <string name="prefs_autofill_debug_logging_summary">অটোফিল ইভেন্ট Logcat এ লগ করুন (ট্যাগ: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">অটোফিল ডিবাগ লগিং</string>
-    <string name="prefs_autofill_event_toasts_summary">অটোফিল ইভেন্ট ঘটলে টোস্ট বিজ্ঞপ্তি দেখান</string>
-    <string name="prefs_autofill_event_toasts_title">অটোফিল ইভেন্ট টোস্ট</string>
     <string name="pref_accessibility_service_disabled">অ্যাক্সেসিবিলিটি পরিষেবা নিষ্ক্রিয়</string>
     <string name="pref_accessibility_service_enabled">অ্যাক্সেসিবিলিটি পরিষেবা সক্রিয়</string>
     <string name="pref_emoji_search_pkb_summary">ইমোজি বোর্ড খোলা থাকলে অনুসন্ধানের জন্য কীবোর্ড ব্যবহার করুন</string>

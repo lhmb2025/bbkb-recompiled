@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Trajanje vibr. ob prit. tipke</string>
     <string name="prefs_autofill_debug_logging_summary">Zapisuj dogodke samodejnega izpolnjevanja v Logcat (oznaka: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Dnevnik razhroščevanja samodejnega izpolnjevanja</string>
-    <string name="prefs_autofill_event_toasts_summary">Prikaži obvestila ob dogodkih samodejnega izpolnjevanja</string>
-    <string name="prefs_autofill_event_toasts_title">Obvestila o dogodkih izpolnjevanja</string>
     <string name="pref_accessibility_service_disabled">Storitev za dostopnost je onemogočena</string>
     <string name="pref_accessibility_service_enabled">Storitev za dostopnost je omogočena</string>
     <string name="pref_emoji_search_pkb_summary">Ko je plošča emoji odprta, iščite s tipkovnico</string>

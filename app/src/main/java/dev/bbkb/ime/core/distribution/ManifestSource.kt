@@ -1,14 +1,18 @@
 package dev.bbkb.ime.core.distribution
 
 import android.content.Context
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
+import android.util.JsonWriter
+import androidx.core.util.AtomicFile
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.io.StringWriter
 import java.nio.charset.StandardCharsets
 import kotlin.coroutines.coroutineContext
 
@@ -52,9 +56,11 @@ import kotlin.coroutines.coroutineContext
  * a `Result.failure`. A parse failure never overwrites a good cache.
  *
  * Instances are cheap and hold no state beyond their configuration; the state lives in
- * `files/distribution/`. Two concurrent `fetch` calls are safe in the sense that neither
- * corrupts the cache (writes go through a temp file and a rename), but they will both hit the
- * network — the caller owns any de-duplication.
+ * `files/distribution/`. Writes go through [AtomicFile] (a synced `.new` file renamed into
+ * place), so a reader never sees half a file. Two concurrent `fetch` calls both hit the network
+ * (the caller owns any de-duplication), and they also share each file's one `.new` name: two
+ * writes that overlap can leave a file that does not parse, which reads as no cache and only
+ * costs a re-fetch.
  */
 class ManifestSource @JvmOverloads constructor(
     private val context: Context,
@@ -186,8 +192,9 @@ class ManifestSource @JvmOverloads constructor(
 
     /** Delete the cached manifest and its metadata. */
     fun clearCache() {
-        cacheFile().delete()
-        metaFile().delete()
+        // AtomicFile.delete also removes a `.new` a crash during a write left behind.
+        AtomicFile(cacheFile()).delete()
+        AtomicFile(metaFile()).delete()
     }
 
     private fun cacheFile(): File = DistributionConfig.manifestCacheFile(context)
@@ -210,20 +217,33 @@ class ManifestSource @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Replaces the cache through [AtomicFile]: the body goes to `manifest.json.new`, is synced to
+     * disk and is then renamed over `manifest.json`, so a reader sees the whole old manifest or
+     * the whole new one, even after a crash or a power cut.
+     */
     private fun writeCache(body: String) {
         val file = cacheFile()
         file.parentFile?.mkdirs()
-        val temp = File(file.parentFile, file.name + ".tmp")
+        writeAtomically(file, body)
+    }
+
+    /**
+     * Writes [text] over [file] through [AtomicFile]. A file we could not write is not a failed
+     * fetch: the caller still gets the manifest, it just will not survive the process (or, for
+     * the metadata, costs a re-fetch), so a failure is swallowed. A `.new` a crash left behind
+     * is deleted by the next write or by [clearCache].
+     */
+    private fun writeAtomically(file: File, text: String) {
+        val bytes = text.toByteArray(StandardCharsets.UTF_8)
+        val atomic = AtomicFile(file)
+        var out: FileOutputStream? = null
         try {
-            temp.writeText(body, StandardCharsets.UTF_8)
-            if (!temp.renameTo(file)) {
-                temp.copyTo(file, overwrite = true)
-                temp.delete()
-            }
+            out = atomic.startWrite()
+            out.write(bytes)
+            atomic.finishWrite(out)
         } catch (failed: IOException) {
-            // A cache we could not write is not a failed fetch: the caller still gets the
-            // manifest, it just will not survive the process.
-            temp.delete()
+            atomic.failWrite(out)
         }
     }
 
@@ -235,13 +255,18 @@ class ManifestSource @JvmOverloads constructor(
         val file = metaFile()
         if (!file.isFile || !cacheFile().isFile) return null
         return try {
-            val obj = JsonParser.parseString(file.readText(StandardCharsets.UTF_8))
-                ?.takeIf { it.isJsonObject }?.asJsonObject ?: return null
-            val storedUrl = obj.get("url")?.takeIf { it.isJsonPrimitive }?.asString ?: return null
+            val obj = JSONObject(file.readText(StandardCharsets.UTF_8))
+            val storedUrl = primitiveText(obj.opt("url")) ?: return null
             if (storedUrl != url) return null
-            val fetchedAt = obj.get("fetchedAt")?.takeIf { it.isJsonPrimitive }?.asLong ?: return null
-            val etag = obj.get("etag")?.takeIf { it.isJsonPrimitive }?.asString
+            val fetchedAt = when (val value = obj.opt("fetchedAt")) {
+                is Number -> value.toLong()
+                is String -> value.toLongOrNull() ?: return null
+                else -> return null
+            }
+            val etag = primitiveText(obj.opt("etag"))
             Meta(url = storedUrl, etag = etag, fetchedAt = fetchedAt)
+        } catch (unreadable: JSONException) {
+            null
         } catch (unreadable: RuntimeException) {
             null
         } catch (unreadable: IOException) {
@@ -249,19 +274,29 @@ class ManifestSource @JvmOverloads constructor(
         }
     }
 
+    /** A string, number or boolean as text; `null` for JSON null, an object, an array or absent. */
+    private fun primitiveText(value: Any?): String? = when (value) {
+        is String -> value
+        is Number, is Boolean -> value.toString()
+        else -> null
+    }
+
     private fun writeMeta(meta: Meta) {
-        val obj = JsonObject().apply {
-            addProperty("url", meta.url)
-            addProperty("fetchedAt", meta.fetchedAt)
-            meta.etag?.let { addProperty("etag", it) }
-        }
-        try {
-            val file = metaFile()
-            file.parentFile?.mkdirs()
-            file.writeText(obj.toString(), StandardCharsets.UTF_8)
-        } catch (failed: IOException) {
-            // Same as writeCache: losing the metadata costs a re-fetch, nothing more.
-        }
+        // JsonWriter rather than JSONObject.toString, which escapes every '/' in the URL.
+        val text = StringWriter().also { out ->
+            JsonWriter(out).use { w ->
+                w.beginObject()
+                w.name("url").value(meta.url)
+                w.name("fetchedAt").value(meta.fetchedAt)
+                meta.etag?.let { w.name("etag").value(it) }
+                w.endObject()
+            }
+        }.toString()
+        // Through AtomicFile like the cache, so a crash mid-write cannot leave half a JSON file;
+        // losing the metadata costs a re-fetch, nothing more.
+        val file = metaFile()
+        file.parentFile?.mkdirs()
+        writeAtomically(file, text)
     }
 
     private companion object {

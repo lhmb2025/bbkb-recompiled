@@ -2,8 +2,8 @@ package dev.bbkb.ime.keyboard.inputboard.emoji
 
 import androidx.test.core.app.ApplicationProvider
 import android.content.Context
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import org.json.JSONArray
+import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
@@ -19,7 +19,8 @@ import java.security.MessageDigest
  * The compact asset (generateEmojibaseCompact in app/build.gradle) must load to exactly what the
  * old Gson parse of emojibase's data.json loaded: same entries in the same order with the same
  * fields, the same skin variants, and so the same categories and indexes. The reference is the
- * JSON in node_modules, parsed the way the app used to; the test is skipped when npm has not run.
+ * JSON in node_modules, read with org.json into what that Gson parse produced (see [json]); the
+ * test is skipped when npm has not run.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -38,10 +39,48 @@ class EmojibaseCompactAssetTest {
     @Before
     fun needsTheJson() = assumeTrue("no ${dataJson.absolutePath} (npm install not run)", dataJson.isFile)
 
-    /** The pre-compact-asset load, verbatim: Gson reflecting into EmojiData through its @SerializedName names. */
-    private fun json(): List<EmojiData> = dataJson.reader(Charsets.UTF_8).use { reader ->
-        Gson().fromJson<List<EmojiData>>(reader, object : TypeToken<List<EmojiData>>() {}.type)
+    /**
+     * The pre-compact-asset load, reproduced: Gson reflected into EmojiData through @SerializedName
+     * names (emoji, hexcode, label, tags, shortcodes, group, subgroup, version, order, type,
+     * gender, tone, skins). It allocated EmojiData without running a constructor, so a missing
+     * non-null number (group, subgroup and order on the component entries; version) became 0, a
+     * missing nullable field null, and unknown keys (text, emoticon) were ignored. A skin's tone
+     * is left null: it is an Int or an array, nothing reads it, and the asset does not carry it.
+     */
+    private fun json(): List<EmojiData> {
+        val array = JSONArray(dataJson.readText(Charsets.UTF_8))
+        return List(array.length()) { emojiData(array.getJSONObject(it)) }
     }
+
+    private fun emojiData(o: JSONObject) = EmojiData(
+        emoji = o.getString("emoji"),
+        codepoints = o.getString("hexcode"),
+        description = o.getString("label"),
+        tags = o.strings("tags"),
+        aliases = o.strings("shortcodes"),
+        group = o.optInt("group", 0),
+        subgroup = o.optInt("subgroup", 0),
+        emojiVersion = o.optDouble("version", 0.0),
+        order = o.optInt("order", 0),
+        type = o.intOrNull("type"),
+        gender = o.intOrNull("gender"),
+        tone = o.intOrNull("tone"),
+        skins = o.optJSONArray("skins")?.let { skins ->
+            List(skins.length()) {
+                val skin = skins.getJSONObject(it)
+                EmojiData.EmojiSkin(
+                    emoji = skin.getString("emoji"),
+                    hexcode = skin.getString("hexcode"),
+                    label = skin.opt("label") as? String,
+                )
+            }
+        },
+    )
+
+    private fun JSONObject.strings(name: String): List<String>? =
+        optJSONArray(name)?.let { a -> List(a.length()) { a.getString(it) } }
+
+    private fun JSONObject.intOrNull(name: String): Int? = if (isNull(name)) null else getInt(name)
 
     @Test
     fun theAssetWasGeneratedFromTheJson() {

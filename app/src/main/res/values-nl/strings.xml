@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Trillingsduur</string>
     <string name="prefs_autofill_debug_logging_summary">Gebeurtenissen van automatisch invullen loggen in Logcat (tag: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Foutopsporingslogboek automatisch invullen</string>
-    <string name="prefs_autofill_event_toasts_summary">Meldingen tonen wanneer er gebeurtenissen voor automatisch invullen plaatsvinden</string>
-    <string name="prefs_autofill_event_toasts_title">Meldingen bij automatisch invullen</string>
     <string name="pref_accessibility_service_disabled">Toegankelijkheidsservice uitgeschakeld</string>
     <string name="pref_accessibility_service_enabled">Toegankelijkheidsservice ingeschakeld</string>
     <string name="pref_emoji_search_pkb_summary">Zoek met het toetsenbord wanneer het emoji-bord open is</string>

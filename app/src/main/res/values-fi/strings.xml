@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Värinän kesto</string>
     <string name="prefs_autofill_debug_logging_summary">Kirjaa automaattisen täytön tapahtumat Logcatiin (tunniste: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Automaattisen täytön virheenkorjausloki</string>
-    <string name="prefs_autofill_event_toasts_summary">Näytä toast-ilmoitukset automaattisen täytön tapahtumista</string>
-    <string name="prefs_autofill_event_toasts_title">Automaattisen täytön toast-ilmoitukset</string>
     <string name="pref_accessibility_service_disabled">Esteettömyyspalvelu ei ole käytössä</string>
     <string name="pref_accessibility_service_enabled">Esteettömyyspalvelu on käytössä</string>
     <string name="pref_emoji_search_pkb_summary">Kun emojipaneeli on auki, hae näppäimistöllä</string>

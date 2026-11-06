@@ -4,12 +4,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.view.InputDevice
 import android.view.MotionEvent
+import androidx.core.content.ContextCompat
 import dev.bbkb.ime.core.BlackBerryIME
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.shared.Logger
@@ -66,8 +66,7 @@ class GestureReplayReceiver(private val ime: BlackBerryIME) : BroadcastReceiver(
             addAction(ACTION_STATUS)
             addAction(ACTION_SETUP)
         }
-        if (Build.VERSION.SDK_INT >= 33) ime.registerReceiver(this, filter, Context.RECEIVER_EXPORTED)
-        else ime.registerReceiver(this, filter)
+        ContextCompat.registerReceiver(ime, this, filter, ContextCompat.RECEIVER_EXPORTED)
     }
 
     fun unregister() {

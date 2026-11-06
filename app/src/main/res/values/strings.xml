@@ -654,8 +654,6 @@
     <!-- ===================== -->
     <string name="prefs_autofill_debug_logging_summary">Log autofill events to Logcat (tag: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Autofill debug logging</string>
-    <string name="prefs_autofill_event_toasts_summary">Show toast notifications when autofill events occur</string>
-    <string name="prefs_autofill_event_toasts_title">Autofill event toasts</string>
 
     <!-- ===================================================== -->
     <!-- Settings — remaining screens and preference entries -->

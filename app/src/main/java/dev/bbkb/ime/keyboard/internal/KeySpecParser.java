@@ -5,93 +5,18 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 
 
 public final class KeySpecParser {
 
-    // Obfuscator residue: these two were code-point constructions of ";" and ",".
-    // Both are single non-metacharacter delimiters, so String.split keeps its non-regex fast
-    // path here -- do NOT turn them into precompiled Patterns, that would be slower.
-    private static final String SPEC_SEPARATOR = ";";
-
-    private static final String CODE_SEPARATOR = ",";
-
-    private static final String LABEL_CODE_SEPARATOR = "\\|";
-
-    private static String getLabelPart(String str) {
-        String[] strArrSplit = str.split(LABEL_CODE_SEPARATOR, -1);
-        return strArrSplit.length <= 1 ? str : strArrSplit[0];
-    }
-
-    public static String decodeHexCodePoints(String str) {
-        String strM7349g = getLabelPart(str);
-        StringBuilder sb = new StringBuilder();
-        for (String str2 : strM7349g.split(CODE_SEPARATOR)) {
-            sb.appendCodePoint(Integer.parseInt(str2, 16));
-        }
-        return sb.toString();
-    }
-
-    public static String getFirstSpec(String str) {
-        return str.split(SPEC_SEPARATOR, -1)[0];
-    }
-
-    public static List<String> parseLabelList(String str) {
-        String[] strArrSplit = str.split(SPEC_SEPARATOR, -1);
-        ArrayList arrayList = new ArrayList();
-        for (String str2 : strArrSplit) {
-            arrayList.add(decodeHexCodePoints(str2));
-        }
-        return arrayList;
-    }
-
-    private static String getCodePart(String str) {
-        String[] strArrSplit = str.split(LABEL_CODE_SEPARATOR, -1);
-        return strArrSplit.length <= 1 ? str : TextUtils.isEmpty(strArrSplit[1]) ? strArrSplit[0] : strArrSplit[1];
-    }
-
-    public static int parseSpecFlags(String str) {
-        String[] strArrSplit = str.split(LABEL_CODE_SEPARATOR, -1);
-        if (strArrSplit.length <= 2) {
-            return 0;
-        }
-        try {
-            return Integer.parseInt(strArrSplit[2]);
-        } catch (NumberFormatException unused) {
-            return 0;
-        }
-    }
-
-    public static int parseCode(String str) {
-        String strM7350h = getCodePart(str);
-        if (strM7350h.indexOf(44) < 0) {
-            return Integer.parseInt(strM7350h, 16);
-        }
-        return -4;
-    }
-
-    public static String parseOutputText(String str) {
-        String strM7350h = getCodePart(str);
-        if (strM7350h.indexOf(44) < 0) {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder();
-        for (String str2 : strM7350h.split(CODE_SEPARATOR)) {
-            sb.appendCodePoint(Integer.parseInt(str2, 16));
-        }
-        return sb.toString();
-    }
-
-
     // ------------------------------------------------------------------------------------
     // Key-spec parsing, merged back in from KeySpecParser (§5.9).
     //
-    // AOSP has ONE KeySpecParser. This tree had it split in two: the label/code/spec splitting
-    // above, and the escape/icon/code-reference parsing below. Neither half was AOSP's file, so
-    // a diff against upstream could not line either of them up, which is exactly what C1 exists
-    // to prevent. The halves are also each other's only real callers.
+    // AOSP has ONE KeySpecParser. This tree had it split in two: a label/code/spec splitting
+    // half (used only by the removed <GridRows> tag, so deleted with it) and the
+    // escape/icon/code-reference parsing below. Neither half was AOSP's file, so a diff against
+    // upstream could not line either of them up, which is exactly what C1 exists to prevent.
     // ------------------------------------------------------------------------------------
 
     private static boolean hasIcon(String str) {

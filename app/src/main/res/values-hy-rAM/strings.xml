@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Սեղմման թրթռոցի տևողություն</string>
     <string name="prefs_autofill_debug_logging_summary">Գրանցել ավտոլրացման իրադարձությունները Logcat-ում (պիտակ՝ InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Ավտոլրացման վրիպազերծման գրանցում</string>
-    <string name="prefs_autofill_event_toasts_summary">Ցույց տալ ծանուցումներ ավտոլրացման իրադարձությունների ժամանակ</string>
-    <string name="prefs_autofill_event_toasts_title">Ավտոլրացման իրադարձությունների ծանուցումներ</string>
     <string name="pref_accessibility_service_disabled">Հատուկ հնարավորությունների ծառայությունն անջատված է</string>
     <string name="pref_accessibility_service_enabled">Հատուկ հնարավորությունների ծառայությունը միացված է</string>
     <string name="pref_emoji_search_pkb_summary">Երբ զմայլիկների վահանակը բաց է, որոնելու համար օգտագործեք ստեղնաշարը</string>

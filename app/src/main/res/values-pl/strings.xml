@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Czas trwania wibracji</string>
     <string name="prefs_autofill_debug_logging_summary">Zapisuj zdarzenia autouzupełniania w Logcat (tag: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Rejestrowanie debugowania autouzupełniania</string>
-    <string name="prefs_autofill_event_toasts_summary">Pokazuj powiadomienia toast przy zdarzeniach autouzupełniania</string>
-    <string name="prefs_autofill_event_toasts_title">Powiadomienia o zdarzeniach autouzupełniania</string>
     <string name="pref_accessibility_service_disabled">Usługa ułatwień dostępu wyłączona</string>
     <string name="pref_accessibility_service_enabled">Usługa ułatwień dostępu włączona</string>
     <string name="pref_emoji_search_pkb_summary">Gdy panel emotikonów jest otwarty, szukaj za pomocą klawiatury</string>

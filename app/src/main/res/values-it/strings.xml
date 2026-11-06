@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Durata vibrazione</string>
     <string name="prefs_autofill_debug_logging_summary">Registra gli eventi di compilazione automatica in Logcat (tag: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Log di debug della compilazione automatica</string>
-    <string name="prefs_autofill_event_toasts_summary">Mostra notifiche toast quando si verificano eventi di compilazione automatica</string>
-    <string name="prefs_autofill_event_toasts_title">Toast degli eventi di compilazione automatica</string>
     <string name="pref_accessibility_service_disabled">Servizio di accessibilità disattivato</string>
     <string name="pref_accessibility_service_enabled">Servizio di accessibilità attivato</string>
     <string name="pref_emoji_search_pkb_summary">Quando la tastiera emoji è aperta, usa i tasti per cercare</string>

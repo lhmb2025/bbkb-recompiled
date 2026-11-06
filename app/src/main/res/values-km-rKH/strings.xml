@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">ថិរវេលា​​ញ័រ​​ពេល​ចុច​គ្រាប់ចុច</string>
     <string name="prefs_autofill_debug_logging_summary">កត់ត្រាព្រឹត្តិការណ៍បំពេញស្វ័យប្រវត្តិទៅ Logcat (ស្លាក៖ InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">ការកត់ត្រាបំបាត់កំហុសនៃការបំពេញស្វ័យប្រវត្តិ</string>
-    <string name="prefs_autofill_event_toasts_summary">បង្ហាញការជូនដំណឹងនៅពេលមានព្រឹត្តិការណ៍បំពេញស្វ័យប្រវត្តិ</string>
-    <string name="prefs_autofill_event_toasts_title">ការជូនដំណឹងព្រឹត្តិការណ៍បំពេញស្វ័យប្រវត្តិ</string>
     <string name="pref_accessibility_service_disabled">សេវាកម្មភាពងាយស្រួលត្រូវបានបិទ</string>
     <string name="pref_accessibility_service_enabled">សេវាកម្មភាពងាយស្រួលត្រូវបានបើក</string>
     <string name="pref_emoji_search_pkb_summary">នៅពេលក្ដារសញ្ញាអារម្មណ៍បើក សូមប្រើក្ដារចុចដើម្បីស្វែងរក</string>

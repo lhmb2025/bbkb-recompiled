@@ -3,6 +3,7 @@ import android.content.res.Resources
 import android.os.Message
 import android.util.Log
 import android.view.inputmethod.EditorInfo
+import androidx.core.os.HandlerCompat
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.keyevent.InputSource
 import dev.bbkb.ime.core.suggestion.SuggestedWords
@@ -279,13 +280,10 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
      * every piece of work posted under it (audit CT-24: deferred startup work used to go through
      * a throwaway `Handler` that nothing could cancel at teardown).
      *
-     * `Message.obtain(handler, callback)` dispatches the callback directly, so this never reaches
-     * [handleMessage]; `Handler.postDelayed(Runnable, Object, long)` is API 28+, hence the message.
+     * The callback is dispatched directly, so this never reaches [handleMessage].
      */
     fun postTokenized(token: Any, delayMillis: Long, action: Runnable) {
-        val message = Message.obtain(this, action)
-        message.obj = token
-        sendMessageDelayed(message, delayMillis)
+        HandlerCompat.postDelayed(this, action, token, delayMillis)
     }
 
 

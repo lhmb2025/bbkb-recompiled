@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.device.touch.KeypadTouchSources
@@ -130,19 +130,17 @@ fun rememberTouchSurfaceState(): TouchSurfaceState {
     val lifecycleOwner = LocalLifecycleOwner.current
     var state by remember { mutableStateOf(TouchSurfaceState.read()) }
 
+    // Read before the resume refresh below can change it: whether to listen is decided by the
+    // state the screen first showed.
+    val listening = state.showShizuku
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        KeypadTouchSources.refresh(context)
+        state = TouchSurfaceState.read()
+    }
     DisposableEffect(lifecycleOwner) {
         val listener = ShizukuTouchEngine.StatusListener { state = TouchSurfaceState.read() }
-        val listening = state.showShizuku
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                KeypadTouchSources.refresh(context)
-                state = TouchSurfaceState.read()
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
         if (listening) KeypadTouchSources.addShizukuListener(context, listener)
         onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
             if (listening) KeypadTouchSources.removeShizukuListener(listener)
         }
     }

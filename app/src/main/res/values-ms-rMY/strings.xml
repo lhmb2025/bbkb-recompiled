@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Tempoh getaran</string>
     <string name="prefs_autofill_debug_logging_summary">Log peristiwa autoisi ke Logcat (tag: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Pengelogan nyahpepijat autoisi</string>
-    <string name="prefs_autofill_event_toasts_summary">Tunjukkan pemberitahuan toast apabila peristiwa autoisi berlaku</string>
-    <string name="prefs_autofill_event_toasts_title">Toast peristiwa autoisi</string>
     <string name="pref_accessibility_service_disabled">Perkhidmatan kebolehaksesan dilumpuhkan</string>
     <string name="pref_accessibility_service_enabled">Perkhidmatan kebolehaksesan didayakan</string>
     <string name="pref_emoji_search_pkb_summary">Apabila papan emoji terbuka, gunakan papan kekunci untuk mencari</string>

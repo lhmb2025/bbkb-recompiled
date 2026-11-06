@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">طول مدت لرزش در اثر فشردن کلید</string>
     <string name="prefs_autofill_debug_logging_summary">ثبت رویدادهای تکمیل خودکار در Logcat (برچسب: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">ثبت اشکال‌زدایی تکمیل خودکار</string>
-    <string name="prefs_autofill_event_toasts_summary">نمایش اعلان کوتاه هنگام رخ دادن رویدادهای تکمیل خودکار</string>
-    <string name="prefs_autofill_event_toasts_title">اعلان‌های کوتاه رویداد تکمیل خودکار</string>
     <string name="pref_accessibility_service_disabled">سرویس دسترس‌پذیری غیرفعال است</string>
     <string name="pref_accessibility_service_enabled">سرویس دسترس‌پذیری فعال است</string>
     <string name="pref_emoji_search_pkb_summary">وقتی صفحه Emoji باز است، برای جستجو از صفحه‌کلید استفاده کنید</string>

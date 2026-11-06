@@ -31,8 +31,8 @@
  *       does not cancel or restart anything. It runs <b>one download at a time</b>; further
  *       requests queue.</li>
  *   <li><b>No keyboard-side notification.</b> The offer to download a missing dictionary is a
- *       Settings affordance only. The IME's own
- *       {@code LanguagePackLocaleMonitor.NOTIFICATION_NOT_INSTALLED} stays informational.</li>
+ *       Settings affordance only. The IME
+ *       itself shows nothing for it.</li>
  * </ul>
  *
  * <h2>The pieces</h2>

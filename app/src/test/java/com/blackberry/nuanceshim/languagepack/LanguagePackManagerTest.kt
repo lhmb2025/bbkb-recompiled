@@ -226,10 +226,6 @@ class LanguagePackManagerTest {
             )
             Mockito.verify(handler, Mockito.times(1)).removeAdditionalLocalesReady()
 
-            assertEquals(LanguagePackLocaleMonitor.NOTIFICATION_NONE, monitor.getLanguageNotificationState(Locale("qs")))
-            assertEquals(LanguagePackLocaleMonitor.NOTIFICATION_NOT_INSTALLED, monitor.getLanguageNotificationState(Locale("qu")))
-            assertEquals(LanguagePackLocaleMonitor.NOTIFICATION_UNSUPPORTED, monitor.getLanguageNotificationState(Locale("qv")))
-            assertEquals(LanguagePackLocaleMonitor.NOTIFICATION_NONE, monitor.getLanguageNotificationState(Locale("zz")))
             assertNotNull(monitor)
         } finally {
             instanceField.set(null, saved)

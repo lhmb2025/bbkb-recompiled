@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Titreşim süresi</string>
     <string name="prefs_autofill_debug_logging_summary">Otomatik doldurma olaylarını Logcat\'e kaydet (etiket: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Otomatik doldurma hata ayıklama günlüğü</string>
-    <string name="prefs_autofill_event_toasts_summary">Otomatik doldurma olayları gerçekleştiğinde bildirim göster</string>
-    <string name="prefs_autofill_event_toasts_title">Otomatik doldurma olay bildirimleri</string>
     <string name="pref_accessibility_service_disabled">Erişilebilirlik hizmeti devre dışı</string>
     <string name="pref_accessibility_service_enabled">Erişilebilirlik hizmeti etkin</string>
     <string name="pref_emoji_search_pkb_summary">Emoji klavyesi açıkken aramak için klavyeyi kullanın</string>

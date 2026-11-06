@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -25,8 +24,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import dev.bbkb.ime.BuildConfig;
 
 
@@ -157,7 +154,6 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
     }
 
     private void parseKeyboardContent(XmlPullParser xmlPullParser, boolean z) throws XmlPullParserException, Resources.NotFoundException, IOException {
-        boolean z2 = false;
         while (xmlPullParser.getEventType() != 1) {
             int next = xmlPullParser.next();
             if (next == 2) {
@@ -168,9 +164,6 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
                         startRow(c1027ajM7142c);
                     }
                     parseRowContent(xmlPullParser, c1027ajM7142c, z);
-                } else if ("GridRows".equals(name)) {
-                    parseGridRows(xmlPullParser, z);
-                    z2 = true;
                 } else if ("include".equals(name)) {
                     parseIncludeKeyboardContent(xmlPullParser, z);
                 } else if ("switch".equals(name)) {
@@ -183,9 +176,6 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
             } else if (next == 3) {
                 String name2 = xmlPullParser.getName();
                 if ("Keyboard".equals(name2)) {
-                    if (z2) {
-                        return;
-                    }
                     endKeyboard();
                     return;
                 } else {
@@ -250,126 +240,6 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
                 }
             }
         }
-    }
-
-    private void parseGridRows(XmlPullParser xmlPullParser, boolean z) throws XmlParseUtils.ParseException, Resources.NotFoundException {
-        String str;
-        String[] strArr;
-        int i;
-        int i2;
-        int i3;
-        String string;
-        int iM7346d;
-        int i4;
-        int i5;
-        XmlPullParser xmlPullParser2 = xmlPullParser;
-        if (z) {
-            XmlParseUtils.checkEndTag("GridRows", xmlPullParser2);
-            return;
-        }
-        KeyboardRow c1027aj = new KeyboardRow(this.mResources, this.mParams, xmlPullParser2, this.mCurrentY);
-        TypedArray typedArrayObtainAttributes = this.mResources.obtainAttributes(Xml.asAttributeSet(xmlPullParser), R.styleable.Keyboard_GridRows);
-        int resourceId = typedArrayObtainAttributes.getResourceId(R.styleable.Keyboard_GridRows_codesArray, 0);
-        int resourceId2 = typedArrayObtainAttributes.getResourceId(R.styleable.Keyboard_GridRows_textsArray, 0);
-        int resourceId3 = typedArrayObtainAttributes.getResourceId(R.styleable.Keyboard_GridRows_moreKeysGrid, 0);
-        typedArrayObtainAttributes.recycle();
-        if (resourceId == 0 && resourceId2 == 0) {
-            throw new XmlParseUtils.ParseException("Missing codesArray or textsArray attributes", xmlPullParser2);
-        }
-        if (resourceId != 0 && resourceId2 != 0) {
-            throw new XmlParseUtils.ParseException("Both codesArray and textsArray attributes specifed", xmlPullParser2);
-        }
-        if (resourceId3 == 0) {
-            throw new XmlParseUtils.ParseException("Missing moreKeysGrid attributes", xmlPullParser2);
-        }
-        String[] stringArray = this.mResources.getStringArray(resourceId != 0 ? resourceId : resourceId2);
-        String[] stringArray2 = this.mResources.getStringArray(resourceId3);
-        int length = stringArray.length;
-        float fM7176a = c1027aj.getKeyWidth(null, 0.0f);
-        int i6 = (int) (this.mParams.mOccupiedWidth / fM7176a);
-        int i7 = 0;
-        while (i7 < length) {
-            KeyboardRow c1027aj2 = new KeyboardRow(this.mResources, this.mParams, xmlPullParser2, this.mCurrentY);
-            startRow(c1027aj2);
-            int i8 = 0;
-            while (i8 < i6) {
-                int i9 = i7 + i8;
-                if (i9 >= length || i9 >= stringArray.length) {
-                    break;
-                }
-                List arrayList = new ArrayList();
-                if (resourceId != 0) {
-                    String arrayElement = stringArray[i9];
-                    if (arrayElement == null) {
-                        i8++;
-                        continue;
-                    }
-                    String strM7344b = KeySpecParser.getFirstSpec(arrayElement);
-                    String strM7343a = KeySpecParser.decodeHexCodePoints(strM7344b);
-                    int iM7347e = KeySpecParser.parseCode(strM7344b);
-                    String strM7348f = KeySpecParser.parseOutputText(strM7344b);
-                    str = strM7343a;
-                    strArr = stringArray;
-                    iM7346d = KeySpecParser.parseSpecFlags(strM7344b);
-                    i = resourceId;
-                    i3 = iM7347e;
-                    i2 = length;
-                    string = strM7348f;
-                } else {
-                    str = stringArray[i9];
-                    strArr = stringArray;
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(str);
-                    i = resourceId;
-                    sb.append(' ');
-                    i2 = length;
-                    i3 = -4;
-                    string = sb.toString();
-                    iM7346d = 0;
-                }
-                if (Build.VERSION.SDK_INT < iM7346d) {
-                    i4 = resourceId2;
-                    i5 = resourceId3;
-                } else {
-                    if (resourceId3 != 0) {
-                        String str2 = stringArray2[i9];
-                        if (resourceId2 == 0) {
-                            arrayList = KeySpecParser.parseLabelList(str2);
-                        } else {
-                            arrayList.add(str2);
-                        }
-                    }
-                    int iM7186e = c1027aj2.getDefaultKeyLabelFlags();
-                    int iM7187f = c1027aj2.getDefaultBackgroundType();
-                    int iM7180b = (int) c1027aj2.getKeyX((TypedArray) null);
-                    int iM7188g = c1027aj2.getY();
-                    int i10 = (int) fM7176a;
-                    int iM7177a = c1027aj2.getRowHeight();
-                    i4 = resourceId2;
-                    MoreKeySpec c1065x = new MoreKeySpec(str, 0, i3, string);
-                    MoreKeySpec[] c1034aqArr = new MoreKeySpec[arrayList.size()];
-                    String[] strArr2 = (String[]) arrayList.toArray(new String[arrayList.size()]);
-                    int i11 = 0;
-                    while (i11 < strArr2.length) {
-                        c1034aqArr[i11] = new MoreKeySpec(strArr2[i11], false, this.mParams.mId.mLocale);
-                        i11++;
-                    }
-                    i5 = resourceId3;
-                    endKey(new Key(c1065x, MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, null, iM7186e, iM7187f, iM7180b, iM7188g, i10, iM7177a, this.mParams.mHorizontalGap, this.mParams.mVerticalGap, null, c1034aqArr, null, this.mResources.getInteger(R.integer.more_key_flag_value_emoji), 2, -1));
-                    c1027aj2.advanceXPos(fM7176a);
-                }
-                i8++;
-                stringArray = strArr;
-                length = i2;
-                resourceId = i;
-                resourceId2 = i4;
-                resourceId3 = i5;
-            }
-            endRow(c1027aj2);
-            i7 += i6;
-            xmlPullParser2 = xmlPullParser;
-        }
-        XmlParseUtils.checkEndTag("GridRows", xmlPullParser);
     }
 
     private void parseKey(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlParseUtils.ParseException {

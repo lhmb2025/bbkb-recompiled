@@ -3,6 +3,7 @@ package dev.bbkb.ime.core.settings.screens
 import android.Manifest
 import android.content.Context
 import android.os.Build
+import android.text.format.DateUtils
 import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -67,8 +68,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.text.DateFormat
-import java.util.Date
 
 /**
  * Updates screen — the whole user-facing side of OTA app updates.
@@ -520,7 +519,12 @@ private fun lastCheckedSummary(context: Context, at: Long): String =
     if (at <= 0L) {
         context.getString(R.string.settings_update_never)
     } else {
-        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(at))
+        // The phone's language and its 12- or 24-hour setting.
+        DateUtils.formatDateTime(
+            context, at,
+            DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_YEAR or
+                DateUtils.FORMAT_ABBREV_MONTH,
+        )
     }
 
 /**

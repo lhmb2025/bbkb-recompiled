@@ -191,7 +191,7 @@ private fun SymbolPalette(spec: KeyEditorSpec, viewModel: KeyEditorViewModel, pa
     val symbols = remember(
         viewModel.currentTabIndex,
         viewModel.customSymbols.size,
-        viewModel.displayedEmojiCount,
+        viewModel.emojiCount,
         viewModel.deferredCategories,
     ) { viewModel.symbolsFor(viewModel.currentTabIndex) }
 
@@ -218,13 +218,6 @@ private fun SymbolPalette(spec: KeyEditorSpec, viewModel: KeyEditorViewModel, pa
                 selectedColor = palette.selected,
                 onClick = { viewModel.onSymbolTapped(symbol) }
             )
-        }
-        if (spec.paletteLoading == PaletteLoading.PER_TAB &&
-            viewModel.currentTabIndex == EMOJI_TAB && viewModel.hasMoreEmojis
-        ) {
-            item {
-                LaunchedEffect(Unit) { viewModel.loadMoreEmojis() }
-            }
         }
     }
 }

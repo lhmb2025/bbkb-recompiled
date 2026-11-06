@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Duração da vibração</string>
     <string name="prefs_autofill_debug_logging_summary">Registar eventos de preenchimento automático no Logcat (tag: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Registo de depuração do preenchimento automático</string>
-    <string name="prefs_autofill_event_toasts_summary">Mostrar notificações quando ocorrerem eventos de preenchimento automático</string>
-    <string name="prefs_autofill_event_toasts_title">Notificações de eventos de preenchimento automático</string>
     <string name="pref_accessibility_service_disabled">Serviço de acessibilidade desativado</string>
     <string name="pref_accessibility_service_enabled">Serviço de acessibilidade ativado</string>
     <string name="pref_emoji_search_pkb_summary">Quando o painel de emojis estiver aberto, utilize o teclado para pesquisar</string>

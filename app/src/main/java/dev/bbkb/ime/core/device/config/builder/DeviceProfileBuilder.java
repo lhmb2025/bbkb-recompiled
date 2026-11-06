@@ -14,7 +14,6 @@ import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser;
 import dev.bbkb.ime.core.device.detection.KeyboardDeviceScanner;
 import dev.bbkb.ime.core.device.detection.KeypadLayoutDetector;
 import dev.bbkb.ime.core.shared.Logger;
-import dev.bbkb.ime.core.shared.SystemProps;
 import dev.bbkb.ime.BuildConfig;
 
 import java.util.ArrayList;
@@ -202,9 +201,8 @@ public final class DeviceProfileBuilder {
 
     @NonNull
     private static String romDisplayId() {
-        final String prop = SystemProps.get("ro.build.display.id");
-        if (prop != null && !prop.trim().isEmpty()) return prop.trim();
-        return nonNull(android.os.Build.DISPLAY);
+        // Build.DISPLAY is ro.build.display.id.
+        return nonNull(android.os.Build.DISPLAY).trim();
     }
 
     @NonNull

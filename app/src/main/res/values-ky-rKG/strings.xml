@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Басылган баскычтын дирлдөө узактгы</string>
     <string name="prefs_autofill_debug_logging_summary">Автотолтуруу окуяларын Logcat’ка жазуу (тег: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Автотолтуруунун мүчүлүштүк журналы</string>
-    <string name="prefs_autofill_event_toasts_summary">Автотолтуруу окуялары болгондо калкып чыкма билдирүүлөрдү көрсөтүү</string>
-    <string name="prefs_autofill_event_toasts_title">Автотолтуруу окуяларынын билдирүүлөрү</string>
     <string name="pref_accessibility_service_disabled">Атайын мүмкүнчүлүктөр кызматы өчүрүлгөн</string>
     <string name="pref_accessibility_service_enabled">Атайын мүмкүнчүлүктөр кызматы иштетилген</string>
     <string name="pref_emoji_search_pkb_summary">Эмодзи панели ачык болгондо издөө үчүн баскычтопту колдонуңуз</string>

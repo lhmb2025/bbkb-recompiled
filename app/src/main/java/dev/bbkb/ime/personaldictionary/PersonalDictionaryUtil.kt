@@ -2,6 +2,7 @@ package dev.bbkb.ime.personaldictionary
 
 import android.content.Context
 import android.text.TextUtils
+import android.util.JsonWriter
 import androidx.annotation.VisibleForTesting
 import dev.bbkb.ime.personaldictionary.model.DictionaryWord
 import dev.bbkb.ime.personaldictionary.PersonalDictionaryExceptions.AudAddException
@@ -30,11 +31,13 @@ import dev.bbkb.ime.personaldictionary.util.LocaleUtil
 import dev.bbkb.ime.personaldictionary.util.LogUtil
 import com.blackberry.nuanceshim.NuanceSDK
 import dev.bbkb.ime.core.engine.EngineThreads
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.File
 import java.io.IOException
+import java.io.StringWriter
 import java.util.*
 
 class PersonalDictionaryUtil private constructor(
@@ -69,8 +72,6 @@ class PersonalDictionaryUtil private constructor(
 
     private val mObserverLock = Any()
     private val CACHED_ENABLED_WS_LOCK = Any()
-
-    private val gson = Gson()
 
     enum class CapsMode {
         NO_CAPS,
@@ -116,6 +117,86 @@ class PersonalDictionaryUtil private constructor(
             return sInstance ?: synchronized(this) {
                 sInstance ?: PersonalDictionaryUtil(context, baseDir, resourceDir, nuanceSDK).also { sInstance = it }
             }
+        }
+
+        // ── The on-disk format ────────────────────────────────────────────────────────────────
+        //
+        // The three files (and so the backup format) are what Gson's reflective binding wrote
+        // until 2026-11: a JSON array of objects, a WordSubstitution as
+        // {"key","type","version","autoCapsEnabled","locale","word"} and a PersonalWord as
+        // {"version","autoCapsEnabled","locale","word"}, type as the enum name. That is the order
+        // Gson used on the device (subclass fields first, each class's fields by name), kept so
+        // a new file reads like an old one; no reader depends on it.
+
+        /**
+         * One WordSubstitution entry. Built through [WordSubstitution.createWithoutPreconditions],
+         * whose only checks (non-empty word and locale) every constructor has always made, so
+         * nothing the app ever wrote is refused. Gson skipped the constructors altogether.
+         *
+         * @throws JSONException when [entry] is not an object or misses key, word, locale or a
+         *   known type
+         */
+        @VisibleForTesting
+        @Throws(JSONException::class)
+        internal fun wordSubstitutionFromJson(entry: Any?): WordSubstitution {
+            val obj = entry as? JSONObject ?: throw JSONException("not an object: $entry")
+            val typeName = requiredText(obj, "type")
+            val type = WordSubstitution.Type.values().firstOrNull { it.name == typeName }
+                ?: throw JSONException("unknown type: $typeName")
+            val ws = WordSubstitution.createWithoutPreconditions(
+                requiredText(obj, "locale"), requiredText(obj, "key"), requiredText(obj, "word"), type
+            )
+            ws.isAutoCapsEnabled = flag(obj, "autoCapsEnabled")
+            return ws
+        }
+
+        /** One PersonalWord entry; see [wordSubstitutionFromJson]. */
+        @VisibleForTesting
+        @Throws(JSONException::class)
+        internal fun personalWordFromJson(entry: Any?): PersonalWord {
+            val obj = entry as? JSONObject ?: throw JSONException("not an object: $entry")
+            return PersonalWord(requiredText(obj, "word"), requiredText(obj, "locale"), flag(obj, "autoCapsEnabled"))
+        }
+
+        /** [words] in the on-disk format above. Through JsonWriter, which leaves '/' unescaped. */
+        @VisibleForTesting
+        internal fun dictionaryWordsToJson(words: Collection<DictionaryWord>): String {
+            val out = StringWriter()
+            JsonWriter(out).use { w ->
+                w.beginArray()
+                for (word in words) {
+                    w.beginObject()
+                    when (word) {
+                        is WordSubstitution -> {
+                            w.name("key").value(word.key)
+                            w.name("type").value(word.type.name)
+                            w.name("version").value(word.version)
+                        }
+                        is PersonalWord -> w.name("version").value(word.version)
+                    }
+                    w.name("autoCapsEnabled").value(word.isAutoCapsEnabled)
+                    w.name("locale").value(word.locale)
+                    w.name("word").value(word.word)
+                    w.endObject()
+                }
+                w.endArray()
+            }
+            return out.toString()
+        }
+
+        /** A string field, or a number or boolean as its text, as Gson's String binding read it. */
+        private fun requiredText(obj: JSONObject, name: String): String =
+            when (val value = obj.opt(name)) {
+                is String -> value
+                is Int, is Long, is Boolean -> value.toString()
+                else -> throw JSONException("no $name")
+            }
+
+        /** Gson read a missing or null boolean as false, and a string through parseBoolean. */
+        private fun flag(obj: JSONObject, name: String): Boolean = when (val value = obj.opt(name)) {
+            is Boolean -> value
+            is String -> value.toBoolean()
+            else -> false
         }
     }
 
@@ -242,8 +323,9 @@ class PersonalDictionaryUtil private constructor(
      * loaded-check. `mLoadComplete` is deliberately set last in [doLoad] (audit PD-42), so while
      * this runs the object is not yet "loaded" — and with the check in place the very first word
      * threw [InitialisationIncompleteException], `loadJsonForConfig` logged it as
-     * "Error parsing JSON with Gson: null" and NOT ONE personal word was ever loaded from disk
-     * (KEY2, 2026-09-21; masked afterwards by the AUD sync re-adding them because AUD is master).
+     * "Error parsing JSON with Gson: null" (the message before org.json) and NOT ONE personal word
+     * was ever loaded from disk (KEY2, 2026-09-21; masked afterwards by the AUD sync re-adding
+     * them because AUD is master).
      */
     @Throws(TermAlreadyDefinedException::class)
     private fun addToBaslNotSdk(personalWord: PersonalWord) {
@@ -761,26 +843,30 @@ class PersonalDictionaryUtil private constructor(
             return
         }
 
-        try {
-            when (config) {
-                LoadConfig.WORD_SUBSTITUTIONS -> {
-                    val type = object : TypeToken<List<WordSubstitution>>() {}.type
-                    val list: List<WordSubstitution> = gson.fromJson(fileContent, type) ?: emptyList()
-                    list.forEach { addWsToAllUserMap(it) }
+        val entries = try {
+            JSONArray(fileContent)
+        } catch (e: JSONException) {
+            LogUtil.e(TAG, "Error parsing JSON for $config: ${e.message}")
+            return
+        }
+        // Entry by entry: one entry that does not parse, or that the map refuses, is logged and
+        // skipped, and the rest of the file still loads.
+        var skipped = 0
+        var firstProblem: String? = null
+        for (i in 0 until entries.length()) {
+            try {
+                when (config) {
+                    LoadConfig.WORD_SUBSTITUTIONS -> addWsToAllUserMap(wordSubstitutionFromJson(entries.opt(i)))
+                    LoadConfig.DELETED_WORD_SUBSTITUTIONS -> addToDeletedMap(wordSubstitutionFromJson(entries.opt(i)))
+                    LoadConfig.PERSONAL_WORDS -> addToBaslNotSdk(personalWordFromJson(entries.opt(i)))
                 }
-                LoadConfig.DELETED_WORD_SUBSTITUTIONS -> {
-                    val type = object : TypeToken<List<WordSubstitution>>() {}.type
-                    val list: List<WordSubstitution> = gson.fromJson(fileContent, type) ?: emptyList()
-                    list.forEach { addToDeletedMap(it) }
-                }
-                LoadConfig.PERSONAL_WORDS -> {
-                    val type = object : TypeToken<List<PersonalWord>>() {}.type
-                    val list: List<PersonalWord> = gson.fromJson(fileContent, type) ?: emptyList()
-                    list.forEach { addToBaslNotSdk(it) }
-                }
+            } catch (e: Exception) {
+                skipped++
+                if (firstProblem == null) firstProblem = "${e.javaClass.simpleName}: ${e.message}"
             }
-        } catch (e: Exception) {
-            LogUtil.e(TAG, "Error parsing JSON with Gson: ${e.message}")
+        }
+        if (skipped > 0) {
+            LogUtil.e(TAG, "Skipped $skipped of ${entries.length()} entries in $config; first: $firstProblem")
         }
     }
 
@@ -819,9 +905,8 @@ class PersonalDictionaryUtil private constructor(
             LogUtil.d(TAG, "No changes to save to $filename")
             return
         }
-        val collection = observable.asCollection()
-        val json = gson.toJson(collection)
-        
+        val json = dictionaryWordsToJson(observable.asCollection())
+
         LogUtil.d(TAG, "Writing to file: $filename")
         FileUtils.writeStringToFile(filename, json, mPduDir!!)
         observable.isDirty = false

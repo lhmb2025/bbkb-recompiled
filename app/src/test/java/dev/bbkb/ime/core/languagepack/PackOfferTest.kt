@@ -4,6 +4,9 @@ import dev.bbkb.ime.core.distribution.Packs
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
  * [PackOffer.decide] — the whole "you enabled a language whose dictionary is missing" rule.
@@ -12,7 +15,12 @@ import org.junit.Test
  * German keyboard must offer **German**, because the Swiss pack has no locale of its own in the
  * engine's table and installing it would replace the German dictionary as a side effect of adding
  * a keyboard.
+ *
+ * Robolectric because [PackFixtures] parses the manifest with the framework's `org.json`,
+ * an empty stub on the plain JVM.
  */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34], manifest = Config.NONE)
 class PackOfferTest {
 
     private val packs: Packs = PackFixtures.realPacks()

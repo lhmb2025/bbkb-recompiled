@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Klahvivajutuse vibreerimise kestus</string>
     <string name="prefs_autofill_debug_logging_summary">Logi automaatse täitmise sündmused Logcati (silt: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Automaatse täitmise silumislogi</string>
-    <string name="prefs_autofill_event_toasts_summary">Kuva automaatse täitmise sündmuste kohta hüpikteateid</string>
-    <string name="prefs_autofill_event_toasts_title">Automaatse täitmise hüpikteated</string>
     <string name="pref_accessibility_service_disabled">Juurdepääsetavuse teenus on välja lülitatud</string>
     <string name="pref_accessibility_service_enabled">Juurdepääsetavuse teenus on sisse lülitatud</string>
     <string name="pref_emoji_search_pkb_summary">Kui emotikonide paneel on avatud, kasuta otsimiseks klaviatuuri</string>

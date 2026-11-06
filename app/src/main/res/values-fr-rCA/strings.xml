@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Durée de la vibration</string>
     <string name="prefs_autofill_debug_logging_summary">Consigner les événements de saisie automatique dans Logcat (tag : InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Journalisation de la saisie automatique</string>
-    <string name="prefs_autofill_event_toasts_summary">Afficher un message contextuel lors des événements de saisie automatique</string>
-    <string name="prefs_autofill_event_toasts_title">Messages contextuels des événements de saisie automatique</string>
     <string name="pref_accessibility_service_disabled">Service d\'accessibilité désactivé</string>
     <string name="pref_accessibility_service_enabled">Service d\'accessibilité activé</string>
     <string name="pref_emoji_search_pkb_summary">Quand le clavier d\'emojis est ouvert, utilisez les touches du clavier pour rechercher</string>

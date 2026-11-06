@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">バイブの振動時間</string>
     <string name="prefs_autofill_debug_logging_summary">自動入力のイベントをLogcatに記録します(タグ: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">自動入力のデバッグログ</string>
-    <string name="prefs_autofill_event_toasts_summary">自動入力のイベント発生時にトースト通知を表示します</string>
-    <string name="prefs_autofill_event_toasts_title">自動入力イベントのトースト</string>
     <string name="pref_accessibility_service_disabled">ユーザー補助サービスは無効です</string>
     <string name="pref_accessibility_service_enabled">ユーザー補助サービスは有効です</string>
     <string name="pref_emoji_search_pkb_summary">絵文字ボードが開いているときは、キーボードで検索します</string>

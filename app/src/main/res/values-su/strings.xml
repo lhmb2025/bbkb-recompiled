@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Lilana geteran</string>
     <string name="prefs_autofill_debug_logging_summary">Catet kajadian eusi otomatis ka Logcat (tag: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Log debug eusi otomatis</string>
-    <string name="prefs_autofill_event_toasts_summary">Témbongkeun bewara toast waktu aya kajadian eusi otomatis</string>
-    <string name="prefs_autofill_event_toasts_title">Toast kajadian eusi otomatis</string>
     <string name="pref_accessibility_service_disabled">Layanan aksesibilitas dipareuman</string>
     <string name="pref_accessibility_service_enabled">Layanan aksesibilitas diaktipkeun</string>
     <string name="pref_emoji_search_pkb_summary">Nalika papan emoji dibuka, paké kibor pikeun néangan</string>

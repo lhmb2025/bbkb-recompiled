@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Tagal ng vibration ng keypress</string>
     <string name="prefs_autofill_debug_logging_summary">Itala ang mga autofill event sa Logcat (tag: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Debug logging ng autofill</string>
-    <string name="prefs_autofill_event_toasts_summary">Magpakita ng mga toast notification kapag may nangyaring autofill event</string>
-    <string name="prefs_autofill_event_toasts_title">Mga toast ng autofill event</string>
     <string name="pref_accessibility_service_disabled">Naka-disable ang serbisyo sa accessibility</string>
     <string name="pref_accessibility_service_enabled">Naka-enable ang serbisyo sa accessibility</string>
     <string name="pref_emoji_search_pkb_summary">Kapag bukas ang emoji board, gamitin ang keyboard para maghanap</string>

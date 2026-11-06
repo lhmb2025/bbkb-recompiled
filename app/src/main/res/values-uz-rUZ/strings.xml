@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Tugma bosilganda tebranish vaqti</string>
     <string name="prefs_autofill_debug_logging_summary">Avtomatik to‘ldirish hodisalarini Logcat’ga yozish (teg: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Avtomatik to‘ldirish jurnali</string>
-    <string name="prefs_autofill_event_toasts_summary">Avtomatik to‘ldirish hodisalarida qalqib chiquvchi bildirishnomalarni ko‘rsatish</string>
-    <string name="prefs_autofill_event_toasts_title">Avtomatik to‘ldirish bildirishnomalari</string>
     <string name="pref_accessibility_service_disabled">Maxsus imkoniyatlar xizmati o‘chirilgan</string>
     <string name="pref_accessibility_service_enabled">Maxsus imkoniyatlar xizmati yoqilgan</string>
     <string name="pref_emoji_search_pkb_summary">Kulgichlar paneli ochiq boʻlganda qidirish uchun klaviaturadan foydalaning</string>

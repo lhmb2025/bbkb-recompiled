@@ -24,9 +24,9 @@ import java.util.Locale
  * upgrades — pinned byte for byte, before anything consolidates its two readers.
  *
  * ## The format, as it actually is
- * A JSON array written by a default-configured `Gson` from `EmojiKeyboard`'s whole key grid,
- * newest first. The grid is always padded to its 40-key page with blank filler keys, and a blank
- * key's output text is `""`, so the stored array is almost always exactly 40 entries with a tail of
+ * A compact JSON array written from `EmojiKeyboard`'s whole key grid, newest first (until 2026-11
+ * by a default-configured `Gson`, whose HTML-safe escapes must still read back). The grid is
+ * always padded to its 40-key page with blank filler keys, and a blank key's output text is `""`, so the stored array is almost always exactly 40 entries with a tail of
  * `""`. Readers skip empty strings and anything that is not a string.
  *
  * ## Two readers that are not the same reader
@@ -161,10 +161,33 @@ class EmojiRecentsPersistenceTest {
         assertEquals(jsonArray(listOf("new") + (0 until PAGE_KEYS - 1).map { "e$it" }), stored())
     }
 
+    /** The old build's Gson escaped these; JsonWriter does not, and either form reads the same. */
     @Test
-    fun writeUsesGsonDefaultHtmlEscaping() {
-        recentsKeyboard().addEmojiToRecents("a=b'<>&")
-        assertEquals(padded("a\\u003db\\u0027\\u003c\\u003e\\u0026"), stored())
+    fun writeLeavesHtmlCharactersUnescaped() {
+        recentsKeyboard().addEmojiToRecents("a=b'<>&/")
+        assertEquals(padded("a=b'<>&/"), stored())
+    }
+
+    @Test
+    fun aValueTheGsonBuildWroteWithHtmlEscapesReadsBack() {
+        store(padded("a\\u003db\\u0027\\u003c\\u003e\\u0026", "😀"))
+        assertEquals(listOf("a=b'<>&", "😀"), categoryManager().recentEmojis)
+        recentsKeyboard().addEmojiToRecents("😁")
+        assertEquals("rewritten unescaped", padded("😁", "a=b'<>&", "😀"), stored())
+    }
+
+    /** Gson read an empty or null value as no recents, and refused anything after the array. */
+    @Test
+    fun anEmptyOrNullValueIsNoRecentsAndTrailingContentIsMalformed() {
+        val ecm = categoryManager()
+        for (empty in listOf("", "  ", "null")) {
+            store(empty)
+            assertEquals(empty, emptyList<String>(), ecm.recentEmojis)
+            assertTrue(empty, recentsKeyboard().keys.all { it.code == -21 })
+        }
+        store("[\"😀\"] x")
+        assertEquals(emptyList<String>(), ecm.recentEmojis)
+        assertTrue(recentsKeyboard().keys.all { it.code == -21 })
     }
 
     @Test

@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Vibrav. paspaudus mygt. trukmė</string>
     <string name="prefs_autofill_debug_logging_summary">Registruoti automatinio pildymo įvykius „Logcat“ (žyma: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Automatinio pildymo derinimo žurnalas</string>
-    <string name="prefs_autofill_event_toasts_summary">Rodyti pranešimus, kai įvyksta automatinio pildymo įvykiai</string>
-    <string name="prefs_autofill_event_toasts_title">Automatinio pildymo įvykių pranešimai</string>
     <string name="pref_accessibility_service_disabled">Pritaikymo neįgaliesiems paslauga išjungta</string>
     <string name="pref_accessibility_service_enabled">Pritaikymo neįgaliesiems paslauga įjungta</string>
     <string name="pref_emoji_search_pkb_summary">Kai jaustukų lenta atidaryta, ieškokite klaviatūra</string>

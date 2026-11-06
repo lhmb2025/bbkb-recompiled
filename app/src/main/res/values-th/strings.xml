@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">ระยะเวลาการสั่น</string>
     <string name="prefs_autofill_debug_logging_summary">บันทึกเหตุการณ์การป้อนอัตโนมัติลง Logcat (แท็ก: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">บันทึกการแก้จุดบกพร่องการป้อนอัตโนมัติ</string>
-    <string name="prefs_autofill_event_toasts_summary">แสดงการแจ้งเตือนแบบ toast เมื่อเกิดเหตุการณ์การป้อนอัตโนมัติ</string>
-    <string name="prefs_autofill_event_toasts_title">การแจ้งเตือน toast ของการป้อนอัตโนมัติ</string>
     <string name="pref_accessibility_service_disabled">ปิดใช้งานบริการการเข้าถึงแล้ว</string>
     <string name="pref_accessibility_service_enabled">เปิดใช้งานบริการการเข้าถึงแล้ว</string>
     <string name="pref_emoji_search_pkb_summary">เมื่อบอร์ดอีโมจิเปิดอยู่ ให้ใช้แป้นพิมพ์เพื่อค้นหา</string>

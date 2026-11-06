@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">कीप्रेस कंपन कालावधी</string>
     <string name="prefs_autofill_debug_logging_summary">ऑटोफिल इव्हेंट Logcat मध्ये लॉग करा (टॅग: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">ऑटोफिल डीबग लॉगिंग</string>
-    <string name="prefs_autofill_event_toasts_summary">ऑटोफिल इव्हेंट घडल्यावर टोस्ट सूचना दाखवा</string>
-    <string name="prefs_autofill_event_toasts_title">ऑटोफिल इव्हेंट टोस्ट</string>
     <string name="pref_accessibility_service_disabled">अ‍ॅक्सेसिबिलिटी सेवा अक्षम आहे</string>
     <string name="pref_accessibility_service_enabled">अ‍ॅक्सेसिबिलिटी सेवा सक्षम आहे</string>
     <string name="pref_emoji_search_pkb_summary">इमोजी बोर्ड उघडलेला असताना शोधण्यासाठी कीबोर्ड वापरा</string>

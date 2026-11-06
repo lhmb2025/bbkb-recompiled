@@ -1,7 +1,7 @@
 package dev.bbkb.ime.core.gesture.arbiter
 
 import android.content.Context
-import androidx.preference.PreferenceManager
+import dev.bbkb.ime.core.settings.PrefsManager
 import com.blackberry.nuanceshim.KeyInfo
 import org.json.JSONArray
 import org.json.JSONObject
@@ -84,7 +84,7 @@ object CkbKeyGridCapture {
         }
         if (arr.length() == 0) return
         val root = JSONObject().put("w", wi).put("h", hi).put("keys", arr)
-        PreferenceManager.getDefaultSharedPreferences(context)
+        PrefsManager.defaultSharedPreferences(context)
             .edit().putString(PREF_KEY, root.toString()).apply()
         capturedFor = geometryKey(wi, hi) // success — skip the cost until the geometry changes
     }
@@ -110,7 +110,7 @@ object CkbKeyGridCapture {
     }
 
     private fun loadCachedRoot(context: Context): JSONObject? {
-        val s = PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_KEY, null) ?: return null
+        val s = PrefsManager.defaultSharedPreferences(context).getString(PREF_KEY, null) ?: return null
         return try { JSONObject(s) } catch (e: Exception) { null }
     }
 

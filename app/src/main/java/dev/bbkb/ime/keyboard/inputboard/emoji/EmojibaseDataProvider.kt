@@ -209,9 +209,6 @@ class EmojibaseDataProvider(private val context: Context) {
 
     /** [isEmojiSupported] for each emoji, through the on-disk glyph cache. */
     private fun glyphFlags(emojis: List<String>, identity: String): BooleanArray {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return BooleanArray(emojis.size) { true } // Skip check on older devices
-        }
         // No cache dir (e.g. credential storage still locked) only means no cache, never no emoji.
         val dir = try { context.cacheDir } catch (e: Exception) { null }
         return EmojiGlyphCache.flags(dir, glyphCacheKey(identity), emojis, ::isEmojiSupported)
@@ -294,13 +291,9 @@ class EmojibaseDataProvider(private val context: Context) {
 
     /**
      * Check if device can render this emoji.
-     * Uses Paint.hasGlyph() on API 23+ to verify glyph support.
+     * Uses Paint.hasGlyph() to verify glyph support.
      */
     private fun isEmojiSupported(emoji: String): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true // Skip check on older devices
-        }
-
         try {
             // Check if paint can render the first codepoint
             val codePoint = emoji.codePointAt(0)

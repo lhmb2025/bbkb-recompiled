@@ -75,6 +75,42 @@ class PersonalDictionaryLoadTest {
         assertEquals("both on-disk words must be loaded: $words", setOf("politicus", "viewshed"), words)
     }
 
+    /**
+     * One entry that does not parse (or that the model refuses) is skipped; the rest of the file
+     * loads. Under Gson's binder the first bad entry aborted the whole file. The escapes are
+     * Gson's HTML-safe ones, which the old build wrote for < > & = and '.
+     */
+    @Test
+    fun aBadEntryIsSkippedAndTheRestOfTheFileLoads() {
+        File(pduDir(), PersonalDictionaryConstants.PERSONAL_WORDS_FILE).writeText(
+            """[{"version":1,"autoCapsEnabled":false,"locale":"en_US","word":"politicus"},""" +
+                """{"version":1,"autoCapsEnabled":false,"locale":"en_US","word":""},null,"stray",""" +
+                """{"version":1,"autoCapsEnabled":false,"locale":"en_US"},""" +
+                """{"version":1,"autoCapsEnabled":false,"locale":"en_US","word":"o\u0027neill\u003d"}]"""
+        )
+        File(pduDir(), PersonalDictionaryConstants.WORD_SUBSTITUTION_FILE).writeText(
+            """[{"key":"zzone","type":"USER","version":16,"autoCapsEnabled":false,"locale":"all","word":"a \u003c b \u0026 c"},""" +
+                """{"key":"zzbad","type":"NOT_A_TYPE","version":16,"autoCapsEnabled":false,"locale":"all","word":"x"},""" +
+                """{"key":"zztwo","type":"USER","version":16,"autoCapsEnabled":true,"locale":"all","word":"two"}]"""
+        )
+        load(listOf(Locale.US))
+
+        assertEquals(setOf("politicus", "o'neill="), pdu.personalDictionary.keys)
+        assertEquals(setOf("zzone", "zztwo"), shortcuts())
+        assertEquals("a < b & c", pdu.getWordSubstitutions()["zzone"]?.word)
+        assertEquals(true, pdu.getWordSubstitutions()["zztwo"]?.isAutoCapsEnabled)
+    }
+
+    @Test
+    fun aFileThatIsNotAJsonArrayLoadsNothingAndDoesNotFail() {
+        File(pduDir(), PersonalDictionaryConstants.PERSONAL_WORDS_FILE).writeText("""{"word":"x"}""")
+        File(pduDir(), PersonalDictionaryConstants.WORD_SUBSTITUTION_FILE).writeText("[ truncated")
+        load(listOf(Locale.US))
+
+        assertEquals(emptySet<String>(), pdu.personalDictionary.keys)
+        assertEquals(emptySet<String>(), shortcuts())
+    }
+
     // ---- multi-language keyboards -----------------------------------------------------------
 
     /** One user shortcut per language, plus one saved for all languages. */

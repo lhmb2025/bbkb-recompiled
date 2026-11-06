@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Suwene getaran</string>
     <string name="prefs_autofill_debug_logging_summary">Cathet kedadeyan isi otomatis menyang Logcat (tag: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Log debug isi otomatis</string>
-    <string name="prefs_autofill_event_toasts_summary">Tuduhake notifikasi toast nalika ana kedadeyan isi otomatis</string>
-    <string name="prefs_autofill_event_toasts_title">Toast kedadeyan isi otomatis</string>
     <string name="pref_accessibility_service_disabled">Layanan aksesibilitas dipateni</string>
     <string name="pref_accessibility_service_enabled">Layanan aksesibilitas diaktifake</string>
     <string name="pref_emoji_search_pkb_summary">Nalika papan emoji mbukak, gunakake keyboard kanggo nggoleki</string>

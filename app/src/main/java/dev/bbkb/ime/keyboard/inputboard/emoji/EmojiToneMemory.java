@@ -1,14 +1,16 @@
 package dev.bbkb.ime.keyboard.inputboard.emoji;
 
 import android.content.SharedPreferences;
+import android.util.JsonWriter;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -20,15 +22,13 @@ import java.util.Map;
  *
  * <p>Keys are the {@linkplain #normalize(String) base form} of the emoji: skin-tone modifiers and
  * variation selectors removed, so a toned variant and the dataset's fully-qualified base meet.
- * The value is a JSON object written by a default-configured {@link Gson}. There is no global
+ * The value is a compact JSON object from base to variant (until 2026-11 a default-configured Gson
+ * wrote it; such a value reads the same). There is no global
  * default-tone setting; this is per emoji, and it is not written in incognito fields (callers check).
  */
 public final class EmojiToneMemory {
 
     static final String PREF_KEY = "emoji_tone_memory";
-
-    private static final Gson GSON = new Gson();
-    private static final Type MAP_TYPE = new TypeToken<HashMap<String, String>>() {}.getType();
 
     /** The last JSON string parsed and its map: the strip asks on every keystroke. */
     private static String cachedJson;
@@ -125,8 +125,8 @@ public final class EmojiToneMemory {
         }
         Map<String, String> parsed;
         try {
-            parsed = GSON.fromJson(json, MAP_TYPE);
-        } catch (JsonSyntaxException e) {
+            parsed = parse(json);
+        } catch (JSONException e) {
             parsed = null;
         }
         cachedJson = json;
@@ -134,8 +134,37 @@ public final class EmojiToneMemory {
         return cachedMap;
     }
 
+    /** Only string values are kept; a JSON null or any other value is not a remembered tone. */
+    private static Map<String, String> parse(String json) throws JSONException {
+        JSONObject obj = new JSONObject(json);
+        Map<String, String> map = new HashMap<>();
+        for (Iterator<String> keys = obj.keys(); keys.hasNext(); ) {
+            String key = keys.next();
+            Object value = obj.opt(key);
+            if (value instanceof String) {
+                map.put(key, (String) value);
+            }
+        }
+        return map;
+    }
+
+    private static String toJson(Map<String, String> map) {
+        StringWriter out = new StringWriter();
+        try (JsonWriter w = new JsonWriter(out)) {
+            w.beginObject();
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                w.name(entry.getKey()).value(entry.getValue());
+            }
+            w.endObject();
+        } catch (IOException e) {
+            // A StringWriter does not fail.
+            throw new IllegalStateException(e);
+        }
+        return out.toString();
+    }
+
     private static synchronized void write(SharedPreferences prefs, Map<String, String> map) {
-        String json = GSON.toJson(map);
+        String json = toJson(map);
         cachedJson = json;
         cachedMap = map;
         prefs.edit().putString(PREF_KEY, json).apply();

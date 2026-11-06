@@ -5,13 +5,21 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
  * The manifest is a file the app reads off the network and then trusts enough to install an APK
  * from, so what the parser accepts *is* the contract. Every case below is a shape the published
  * manifest can really have, plus the malformed ones a future release tool could produce by
  * mistake.
+ *
+ * Robolectric because the parser walks the framework's `org.json`, which is an empty stub on the
+ * plain JVM (every call would return null and the strict cases would pass for the wrong reason).
  */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34], manifest = Config.NONE)
 class DistributionManifestParserTest {
 
     private val full = """
@@ -81,7 +89,7 @@ class DistributionManifestParserTest {
     }
 
     @Test
-    fun roundTripsThroughGsonUnchanged() {
+    fun roundTripsUnchanged() {
         // Re-serialising the model and re-parsing it must be a no-op, so nothing downstream can
         // depend on a field the parser quietly drops.
         val once = DistributionManifestParser.parse(full)
@@ -147,6 +155,43 @@ class DistributionManifestParserTest {
             val failure = runCatching { DistributionManifestParser.parse(bad) }.exceptionOrNull()
             assertTrue("$bad -> $failure", failure is ManifestFormatException)
         }
+    }
+
+    @Test
+    fun trailingContentAfterTheObjectIsAFormatError() {
+        // Gson's parser refused a document it did not consume entirely; org.json's tokener stops
+        // after one value, so the parser checks the rest itself.
+        for (bad in listOf("""{"schema": 1} x""", """{"schema": 1}{"schema": 1}""")) {
+            val failure = runCatching { DistributionManifestParser.parse(bad) }.exceptionOrNull()
+            assertTrue("$bad -> $failure", failure is ManifestFormatException)
+        }
+        assertEquals(1, DistributionManifestParser.parse("  {\"schema\": 1}  \n").schema)
+    }
+
+    @Test
+    fun numbersAndStringsAreNotCoercedIntoEachOther() {
+        // A float, a quoted number or an out-of-range number where an integer belongs drops the
+        // entry; a number where a string belongs does the same. JSON null reads as absent.
+        fun release(fields: String) = DistributionManifestParser.parse(
+            """{"schema": 1, "app": {"release": {$fields}}}"""
+        ).appFor("release")
+        val rest = """"url": "https://e.test/a.apk", "sha256": "ab""""
+        assertNull(release(""""versionCode": 1430.0, "versionName": "n", $rest, "size": 1"""))
+        assertNull(release(""""versionCode": "1430", "versionName": "n", $rest, "size": 1"""))
+        assertNull(release(""""versionCode": 3000000000, "versionName": "n", $rest, "size": 1"""))
+        assertNull(release(""""versionCode": 1430, "versionName": 5, $rest, "size": 1"""))
+        assertNull(release(""""versionCode": 1430, "versionName": "n", $rest, "size": 1.5"""))
+        assertNull(release(""""versionCode": 1430, "versionName": null, $rest, "size": 1"""))
+        val big = release(""""versionCode": 1430, "versionName": "n", $rest, "size": 3000000000,
+            "minSdk": null, "notes": null""")!!
+        assertEquals("a size beyond Int is a Long, not a reject", 3_000_000_000L, big.size)
+        assertEquals(0, big.minSdk)
+        assertNull(big.notes)
+        assertEquals(
+            "\"app\": null is no channels, not a structural error",
+            emptyMap<String, AppBuild>(),
+            DistributionManifestParser.parse("""{"schema": 1, "app": null, "packs": null}""").apps
+        )
     }
 
     @Test

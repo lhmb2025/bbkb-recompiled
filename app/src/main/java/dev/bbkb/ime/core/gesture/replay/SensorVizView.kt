@@ -242,7 +242,7 @@ class SensorVizView(context: Context) : View(context) {
                 }
                 closeRect().contains(x, y) -> {
                     SensorViz.active = false
-                    androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
+                    dev.bbkb.ime.core.settings.PrefsManager.defaultSharedPreferences(context)
                         .edit().putBoolean(SensorViz.PREF_KEY, false).apply()
                     visibility = GONE
                 }

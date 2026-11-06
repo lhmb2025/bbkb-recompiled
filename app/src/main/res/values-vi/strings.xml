@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Thời lượng rung</string>
     <string name="prefs_autofill_debug_logging_summary">Ghi nhật ký sự kiện tự động điền vào Logcat (thẻ: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Nhật ký gỡ lỗi tự động điền</string>
-    <string name="prefs_autofill_event_toasts_summary">Hiển thị thông báo nhanh khi có sự kiện tự động điền</string>
-    <string name="prefs_autofill_event_toasts_title">Thông báo nhanh sự kiện tự động điền</string>
     <string name="pref_accessibility_service_disabled">Dịch vụ trợ năng đã tắt</string>
     <string name="pref_accessibility_service_enabled">Dịch vụ trợ năng đã bật</string>
     <string name="pref_emoji_search_pkb_summary">Khi bảng biểu tượng cảm xúc đang mở, hãy dùng bàn phím để tìm kiếm</string>

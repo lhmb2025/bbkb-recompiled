@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Vibrasjonsvarighet</string>
     <string name="prefs_autofill_debug_logging_summary">Logg autofyll-hendelser til Logcat (tagg: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Feilsøkingslogg for autofyll</string>
-    <string name="prefs_autofill_event_toasts_summary">Vis toast-varsler når det skjer autofyll-hendelser</string>
-    <string name="prefs_autofill_event_toasts_title">Toast-varsler for autofyll</string>
     <string name="pref_accessibility_service_disabled">Tilgjengelighetstjenesten er deaktivert</string>
     <string name="pref_accessibility_service_enabled">Tilgjengelighetstjenesten er aktivert</string>
     <string name="pref_emoji_search_pkb_summary">Bruk tastaturet til å søke når emoji-panelet er åpent</string>

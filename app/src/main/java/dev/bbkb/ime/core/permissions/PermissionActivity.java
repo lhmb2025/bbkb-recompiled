@@ -3,7 +3,6 @@ package dev.bbkb.ime.core.permissions;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.core.app.ActivityCompat;
@@ -49,14 +48,9 @@ public final class PermissionActivity extends Activity implements ActivityCompat
     @SuppressWarnings("deprecation")
     @Override // android.app.Activity
     public void onRequestPermissionsResult(int i, String[] strArr, int[] iArr) {
-        boolean zShouldShowRequestPermissionRationale;
-        if (Build.VERSION.SDK_INT > 22) {
-            zShouldShowRequestPermissionRationale = false;
-            for (int i2 = 0; i2 < strArr.length && !zShouldShowRequestPermissionRationale; i2++) {
-                zShouldShowRequestPermissionRationale = shouldShowRequestPermissionRationale(strArr[i2]);
-            }
-        } else {
-            zShouldShowRequestPermissionRationale = false;
+        boolean zShouldShowRequestPermissionRationale = false;
+        for (int i2 = 0; i2 < strArr.length && !zShouldShowRequestPermissionRationale; i2++) {
+            zShouldShowRequestPermissionRationale = shouldShowRequestPermissionRationale(strArr[i2]);
         }
         this.requestCode = -1;
         PermissionCoordinator.getInstance(this).onRequestPermissionsResult(i, strArr, iArr, zShouldShowRequestPermissionRationale);

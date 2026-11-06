@@ -533,8 +533,6 @@
     <string name="prefs_keypress_vibration_duration_settings">Траење на вибрација од копче</string>
     <string name="prefs_autofill_debug_logging_summary">Запишување на настаните од автоматското пополнување во Logcat (ознака: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Дневник за автоматското пополнување</string>
-    <string name="prefs_autofill_event_toasts_summary">Прикажување известувања при настани од автоматското пополнување</string>
-    <string name="prefs_autofill_event_toasts_title">Известувања за автоматското пополнување</string>
     <string name="pref_accessibility_service_disabled">Услугата за пристапност е оневозможена</string>
     <string name="pref_accessibility_service_enabled">Услугата за пристапност е овозможена</string>
     <string name="pref_emoji_search_pkb_summary">Кога таблата со емотикони е отворена, користете ја тастатурата за пребарување</string>
