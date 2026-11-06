@@ -129,9 +129,30 @@ class EmojibaseDataProvider(private val context: Context) {
             sharedLoadedInstance = null
         }
 
-        /** The glyph cache key: a new OS build or a new dataset invalidates it. */
+        /**
+         * The glyph cache key: a new OS build, a new dataset or a new rule ([canDraw]) invalidates
+         * it. "whole" names the rule: answers stored under the older first-code-point rule said
+         * yes to emoji the font cannot draw, and the cache trusts every stored yes.
+         */
         private fun glyphCacheKey(identity: String) =
-            "${Build.FINGERPRINT}|${Build.VERSION.SDK_INT}|$identity"
+            "${Build.FINGERPRINT}|${Build.VERSION.SDK_INT}|$identity|whole"
+
+        /**
+         * Whether the font draws [emoji] as itself, given [hasGlyph] (`Paint.hasGlyph`).
+         *
+         * The whole emoji is asked about, never a part of it: for a joined emoji (😶‍🌫️) or a flag
+         * the font does not have, the parts each have a glyph and the emoji is drawn as those
+         * parts, side by side. The second question drops U+FE0F: the dataset's fully-qualified
+         * form of an emoji such as ✋️ carries a variation selector the font has no entry for, and
+         * the font draws the emoji with or without it.
+         */
+        @JvmStatic
+        internal fun canDraw(emoji: String, hasGlyph: (String) -> Boolean): Boolean {
+            if (hasGlyph(emoji)) return true
+            if (emoji.indexOf('\uFE0F') < 0) return false
+            val bare = emoji.replace("\uFE0F", "")
+            return bare.isNotEmpty() && hasGlyph(bare)
+        }
     }
 
     private var emojiList: List<EmojiData>? = null
@@ -161,9 +182,7 @@ class EmojibaseDataProvider(private val context: Context) {
             val compact = context.assets.open(EmojibaseCompactFormat.ASSET).bufferedReader(Charsets.UTF_8).use {
                 EmojibaseCompactFormat.read(it)
             }
-            applyDataset(compact.entries) { base ->
-                glyphFlags(base.map { it.emoji }, compact.identity)
-            }
+            applyDataset(compact.entries) { emojis -> glyphFlags(emojis, compact.identity) }
         } catch (e: Exception) {
             // A missing or malformed asset: the board still opens, with no emoji and no search; say why.
             Logger.warn(TAG, "emojibase data failed to load: $e")
@@ -171,16 +190,27 @@ class EmojibaseDataProvider(private val context: Context) {
     }
 
     /**
-     * Builds the category and skin-tone indexes from the full parsed list. [supported] answers,
-     * for the base emoji in order, whether each one can be drawn; tests pass their own.
+     * Builds the category and skin-tone indexes from the full parsed list. [drawable] answers, for
+     * a list of emoji, whether the font can draw each one; tests pass their own. It is asked once,
+     * about the base emoji in order followed by every skin-tone variant, so one glyph cache covers
+     * both: an emoji the font cannot draw is left off the board and out of search, and a variant
+     * it cannot draw is left out of the long-press popup.
      */
-    internal fun applyDataset(allEmojis: List<EmojiData>, supported: (List<EmojiData>) -> BooleanArray) {
+    internal fun applyDataset(allEmojis: List<EmojiData>, drawable: (List<String>) -> BooleanArray) {
         // Filter to base emojis only (no variants)
         val baseEmojis = allEmojis.filter { isBaseEmoji(it) }
 
+        val variantList = ArrayList<String>()
+        val seenVariants = HashSet<String>()
+        for (e in allEmojis) {
+            e.skins?.forEach { if (seenVariants.add(it.emoji)) variantList.add(it.emoji) }
+        }
+        val flags = drawable(baseEmojis.map { it.emoji } + variantList)
+
         // Filter device-supported emojis
-        val flags = supported(baseEmojis)
         val supportedEmojis = baseEmojis.filterIndexed { i, _ -> flags[i] }
+        val drawableVariants = HashSet<String>(variantList.size * 2)
+        variantList.forEachIndexed { i, variant -> if (flags[baseEmojis.size + i]) drawableVariants.add(variant) }
 
         // Group by category
         val categoryMap = supportedEmojis.groupBy { it.category }
@@ -194,7 +224,7 @@ class EmojibaseDataProvider(private val context: Context) {
         // Index skin-tone variants for O(1) lookup (see skinsByEmoji).
         val skins = HashMap<String, List<String>>(allEmojis.size * 2)
         for (e in allEmojis) {
-            val variants = e.skins?.map { it.emoji } ?: continue
+            val variants = e.skins?.map { it.emoji }?.filter { it in drawableVariants } ?: continue
             if (variants.isEmpty()) continue
             // Index under the stripped form too, but never let it displace an
             // entry whose own (fully-qualified) form is that exact string.
@@ -289,25 +319,18 @@ class EmojibaseDataProvider(private val context: Context) {
         return true
     }
 
-    /**
-     * Check if device can render this emoji.
-     * Uses Paint.hasGlyph() to verify glyph support.
-     */
-    private fun isEmojiSupported(emoji: String): Boolean {
-        try {
-            // Check if paint can render the first codepoint
-            val codePoint = emoji.codePointAt(0)
-            return paint.hasGlyph(emoji) || paint.hasGlyph(String(intArrayOf(codePoint), 0, 1))
-        } catch (e: Exception) {
-            return false
-        }
+    /** Whether this device's font can draw [emoji]: see [canDraw]. */
+    private fun isEmojiSupported(emoji: String): Boolean = try {
+        canDraw(emoji, paint::hasGlyph)
+    } catch (e: Exception) {
+        false
     }
 
     /**
      * Get skin tone variants for a base emoji.
      *
-     * Returns the variants from the built-in `skins` array.
-     * This is much simpler than JEmoji's approach!
+     * Returns the variants from the built-in `skins` array that this device's font can draw
+     * (see [applyDataset]); empty when it can draw none, so there is no popup to show.
      */
     fun getSkinToneVariants(baseEmoji: String): List<String> {
         // The dataset stores fully-qualified forms (with U+FE0F variation
