@@ -909,6 +909,7 @@
     <string name="settings_dict_edit_word">Golygu gair</string>
     <string name="settings_dict_word_added">Gair wedi\'i ychwanegu</string>
     <string name="settings_dict_word_add_failed">Methu ychwanegu\'r gair</string>
+    <string name="settings_dict_word_exists">Mae %1$s eisoes yng ngeiriadur y defnyddiwr</string>
     <string name="settings_dict_word_updated">Gair wedi\'i ddiweddaru</string>
     <string name="settings_dict_word_update_failed">Methu diweddaru\'r gair</string>
     <plurals name="settings_dict_words_deleted">
@@ -951,6 +952,7 @@
     <string name="settings_shortcuts_new">Llwybr byr newydd</string>
     <string name="settings_shortcuts_added">Llwybr byr wedi\'i ychwanegu</string>
     <string name="settings_shortcuts_add_failed">Methu ychwanegu\'r llwybr byr</string>
+    <string name="settings_shortcuts_exists">Mae llwybr byr o\'r enw %1$s eisoes yn bodoli</string>
     <string name="settings_shortcuts_updated">Llwybr byr wedi\'i ddiweddaru</string>
     <string name="settings_shortcuts_update_failed">Methu diweddaru\'r llwybr byr</string>
     <plurals name="settings_shortcuts_deleted">

@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Үг засах</string>
     <string name="settings_dict_word_added">Үг нэмэгдлээ</string>
     <string name="settings_dict_word_add_failed">Үг нэмж чадсангүй</string>
+    <string name="settings_dict_word_exists">%1$s хэрэглэгчийн толь бичигт аль хэдийн байна</string>
     <string name="settings_dict_word_updated">Үг шинэчлэгдлээ</string>
     <string name="settings_dict_word_update_failed">Үгийг шинэчилж чадсангүй</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Шинэ товчлол</string>
     <string name="settings_shortcuts_added">Товчлол нэмэгдлээ</string>
     <string name="settings_shortcuts_add_failed">Товчлол нэмж чадсангүй</string>
+    <string name="settings_shortcuts_exists">%1$s нэртэй товчлол аль хэдийн байна</string>
     <string name="settings_shortcuts_updated">Товчлол шинэчлэгдлээ</string>
     <string name="settings_shortcuts_update_failed">Товчлолыг шинэчилж чадсангүй</string>
     <plurals name="settings_shortcuts_deleted">

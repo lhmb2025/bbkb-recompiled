@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Kelimeyi düzenle</string>
     <string name="settings_dict_word_added">Kelime eklendi</string>
     <string name="settings_dict_word_add_failed">Kelime eklenemedi</string>
+    <string name="settings_dict_word_exists">%1$s zaten kullanıcı sözlüğünde</string>
     <string name="settings_dict_word_updated">Kelime güncellendi</string>
     <string name="settings_dict_word_update_failed">Kelime güncellenemedi</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Yeni kısayol</string>
     <string name="settings_shortcuts_added">Kısayol eklendi</string>
     <string name="settings_shortcuts_add_failed">Kısayol eklenemedi</string>
+    <string name="settings_shortcuts_exists">%1$s adlı bir kısayol zaten var</string>
     <string name="settings_shortcuts_updated">Kısayol güncellendi</string>
     <string name="settings_shortcuts_update_failed">Kısayol güncellenemedi</string>
     <plurals name="settings_shortcuts_deleted">

@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Сөздү түзөтүү</string>
     <string name="settings_dict_word_added">Сөз кошулду</string>
     <string name="settings_dict_word_add_failed">Сөздү кошуу мүмкүн болгон жок</string>
+    <string name="settings_dict_word_exists">%1$s колдонуучу сөздүгүндө мурунтан эле бар</string>
     <string name="settings_dict_word_updated">Сөз жаңыртылды</string>
     <string name="settings_dict_word_update_failed">Сөздү жаңыртуу мүмкүн болгон жок</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Жаңы кыска жол</string>
     <string name="settings_shortcuts_added">Кыска жол кошулду</string>
     <string name="settings_shortcuts_add_failed">Кыска жолду кошуу мүмкүн болгон жок</string>
+    <string name="settings_shortcuts_exists">%1$s деген кыска жол мурунтан эле бар</string>
     <string name="settings_shortcuts_updated">Кыска жол жаңыртылды</string>
     <string name="settings_shortcuts_update_failed">Кыска жолду жаңыртуу мүмкүн болгон жок</string>
     <plurals name="settings_shortcuts_deleted">

@@ -894,6 +894,7 @@
     <string name="settings_dict_edit_word">単語を編集</string>
     <string name="settings_dict_word_added">単語を追加しました</string>
     <string name="settings_dict_word_add_failed">単語を追加できませんでした</string>
+    <string name="settings_dict_word_exists">%1$s はすでにユーザー辞書にあります</string>
     <string name="settings_dict_word_updated">単語を更新しました</string>
     <string name="settings_dict_word_update_failed">単語を更新できませんでした</string>
     <plurals name="settings_dict_words_deleted">
@@ -921,6 +922,7 @@
     <string name="settings_shortcuts_new">新しいショートカット</string>
     <string name="settings_shortcuts_added">ショートカットを追加しました</string>
     <string name="settings_shortcuts_add_failed">ショートカットを追加できませんでした</string>
+    <string name="settings_shortcuts_exists">%1$s という名前のショートカットはすでにあります</string>
     <string name="settings_shortcuts_updated">ショートカットを更新しました</string>
     <string name="settings_shortcuts_update_failed">ショートカットを更新できませんでした</string>
     <plurals name="settings_shortcuts_deleted">

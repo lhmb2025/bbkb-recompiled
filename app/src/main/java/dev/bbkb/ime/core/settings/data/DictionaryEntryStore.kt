@@ -30,3 +30,10 @@ interface DictionaryEntryStore {
 
     suspend fun deleteEntry(entry: DictionaryEntry): Result<Unit>
 }
+
+/**
+ * An add or an edit refused because another entry already has that name: [name] is the entry in
+ * the way, a user dictionary word when [isWord], else a shortcut (built-in ones included).
+ */
+class EntryExistsException(val name: String, val isWord: Boolean) :
+    Exception("${if (isWord) "Word" else "Shortcut"} already exists: $name")

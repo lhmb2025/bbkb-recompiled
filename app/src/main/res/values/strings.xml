@@ -998,6 +998,7 @@
     <string name="settings_dict_edit_word">Edit word</string>
     <string name="settings_dict_word_added">Word added</string>
     <string name="settings_dict_word_add_failed">Failed to add word</string>
+    <string name="settings_dict_word_exists">%1$s is already in the user dictionary</string>
     <string name="settings_dict_word_updated">Word updated</string>
     <string name="settings_dict_word_update_failed">Failed to update word</string>
     <plurals name="settings_dict_words_deleted">
@@ -1028,6 +1029,7 @@
     <string name="settings_shortcuts_new">New shortcut</string>
     <string name="settings_shortcuts_added">Shortcut added</string>
     <string name="settings_shortcuts_add_failed">Failed to add shortcut</string>
+    <string name="settings_shortcuts_exists">A shortcut named %1$s already exists</string>
     <string name="settings_shortcuts_updated">Shortcut updated</string>
     <string name="settings_shortcuts_update_failed">Failed to update shortcut</string>
     <plurals name="settings_shortcuts_deleted">

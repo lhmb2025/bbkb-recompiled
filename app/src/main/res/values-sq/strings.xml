@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Redakto fjalën</string>
     <string name="settings_dict_word_added">Fjala u shtua</string>
     <string name="settings_dict_word_add_failed">Fjala nuk u shtua dot</string>
+    <string name="settings_dict_word_exists">%1$s është tashmë në fjalorin e përdoruesit</string>
     <string name="settings_dict_word_updated">Fjala u përditësua</string>
     <string name="settings_dict_word_update_failed">Fjala nuk u përditësua dot</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Shkurtore e re</string>
     <string name="settings_shortcuts_added">Shkurtorja u shtua</string>
     <string name="settings_shortcuts_add_failed">Shkurtorja nuk u shtua dot</string>
+    <string name="settings_shortcuts_exists">Një shkurtore me emrin %1$s ekziston tashmë</string>
     <string name="settings_shortcuts_updated">Shkurtorja u përditësua</string>
     <string name="settings_shortcuts_update_failed">Shkurtorja nuk u përditësua dot</string>
     <plurals name="settings_shortcuts_deleted">

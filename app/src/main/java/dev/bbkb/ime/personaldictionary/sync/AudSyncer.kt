@@ -298,7 +298,22 @@ class AudSyncer private constructor() {
             }
         }
 
+        // Keys (ignoring case, as the dictionary compares them) of our entries that AUD still
+        // holds as they are. An AUD row under one of these keys in another case is not a change
+        // to take in: it is a second row beside ours, such as the one a refused duplicate add
+        // used to leave behind. Taking it in replaced our entry, the next pass put ours back
+        // (AUD holds both), and the shown entry flipped between "zorbix" and "ZORBIX" on every
+        // sync. Such a row is left where it is: AUD is shared and nothing says which app wrote it.
+        val heldInAud = TreeSet(String.CASE_INSENSITIVE_ORDER)
+        for (ws in baslSet) {
+            if (ws in audSet) heldInAud.add(ws.key)
+        }
+
         for (ws in audOnlyItems) {
+            if (ws.key in heldInAud) {
+                LogUtil.d(TAG, "Ignoring an AUD row beside an entry it already holds: ${ws.key}")
+                continue
+            }
             ws.setCanBeSynchronised(true)
             try {
                 personalDictionaryUtil.addToBasl(ws, true)

@@ -903,6 +903,7 @@
     <string name="settings_dict_edit_word">Изменить слово</string>
     <string name="settings_dict_word_added">Слово добавлено</string>
     <string name="settings_dict_word_add_failed">Не удалось добавить слово</string>
+    <string name="settings_dict_word_exists">%1$s уже есть в пользовательском словаре</string>
     <string name="settings_dict_word_updated">Слово обновлено</string>
     <string name="settings_dict_word_update_failed">Не удалось обновить слово</string>
     <plurals name="settings_dict_words_deleted">
@@ -939,6 +940,7 @@
     <string name="settings_shortcuts_new">Новое сокращение</string>
     <string name="settings_shortcuts_added">Сокращение добавлено</string>
     <string name="settings_shortcuts_add_failed">Не удалось добавить сокращение</string>
+    <string name="settings_shortcuts_exists">Сокращение с именем %1$s уже существует</string>
     <string name="settings_shortcuts_updated">Сокращение обновлено</string>
     <string name="settings_shortcuts_update_failed">Не удалось обновить сокращение</string>
     <plurals name="settings_shortcuts_deleted">

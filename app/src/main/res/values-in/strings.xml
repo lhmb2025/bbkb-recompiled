@@ -894,6 +894,7 @@
     <string name="settings_dict_edit_word">Edit kata</string>
     <string name="settings_dict_word_added">Kata ditambahkan</string>
     <string name="settings_dict_word_add_failed">Gagal menambahkan kata</string>
+    <string name="settings_dict_word_exists">%1$s sudah ada di kamus pengguna</string>
     <string name="settings_dict_word_updated">Kata diperbarui</string>
     <string name="settings_dict_word_update_failed">Gagal memperbarui kata</string>
     <plurals name="settings_dict_words_deleted">
@@ -921,6 +922,7 @@
     <string name="settings_shortcuts_new">Pintasan baru</string>
     <string name="settings_shortcuts_added">Pintasan ditambahkan</string>
     <string name="settings_shortcuts_add_failed">Gagal menambahkan pintasan</string>
+    <string name="settings_shortcuts_exists">Pintasan bernama %1$s sudah ada</string>
     <string name="settings_shortcuts_updated">Pintasan diperbarui</string>
     <string name="settings_shortcuts_update_failed">Gagal memperbarui pintasan</string>
     <plurals name="settings_shortcuts_deleted">

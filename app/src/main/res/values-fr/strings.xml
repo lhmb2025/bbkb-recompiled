@@ -900,6 +900,7 @@
     <string name="settings_dict_edit_word">Modifier le mot</string>
     <string name="settings_dict_word_added">Mot ajouté</string>
     <string name="settings_dict_word_add_failed">Impossible d\'ajouter le mot</string>
+    <string name="settings_dict_word_exists">%1$s est déjà dans le dictionnaire utilisateur</string>
     <string name="settings_dict_word_updated">Mot mis à jour</string>
     <string name="settings_dict_word_update_failed">Impossible de mettre à jour le mot</string>
     <plurals name="settings_dict_words_deleted">
@@ -933,6 +934,7 @@
     <string name="settings_shortcuts_new">Nouveau raccourci</string>
     <string name="settings_shortcuts_added">Raccourci ajouté</string>
     <string name="settings_shortcuts_add_failed">Impossible d\'ajouter le raccourci</string>
+    <string name="settings_shortcuts_exists">Un raccourci nommé %1$s existe déjà</string>
     <string name="settings_shortcuts_updated">Raccourci mis à jour</string>
     <string name="settings_shortcuts_update_failed">Impossible de mettre à jour le raccourci</string>
     <plurals name="settings_shortcuts_deleted">

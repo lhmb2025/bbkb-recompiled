@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Woord bewerken</string>
     <string name="settings_dict_word_added">Woord toegevoegd</string>
     <string name="settings_dict_word_add_failed">Kan woord niet toevoegen</string>
+    <string name="settings_dict_word_exists">%1$s staat al in het gebruikerswoordenboek</string>
     <string name="settings_dict_word_updated">Woord bijgewerkt</string>
     <string name="settings_dict_word_update_failed">Kan woord niet bijwerken</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Nieuwe snelkoppeling</string>
     <string name="settings_shortcuts_added">Snelkoppeling toegevoegd</string>
     <string name="settings_shortcuts_add_failed">Kan snelkoppeling niet toevoegen</string>
+    <string name="settings_shortcuts_exists">Er bestaat al een snelkoppeling met de naam %1$s</string>
     <string name="settings_shortcuts_updated">Snelkoppeling bijgewerkt</string>
     <string name="settings_shortcuts_update_failed">Kan snelkoppeling niet bijwerken</string>
     <plurals name="settings_shortcuts_deleted">

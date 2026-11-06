@@ -894,6 +894,7 @@
     <string name="settings_dict_edit_word">កែពាក្យ</string>
     <string name="settings_dict_word_added">បានបន្ថែមពាក្យ</string>
     <string name="settings_dict_word_add_failed">មិនអាចបន្ថែមពាក្យបានទេ</string>
+    <string name="settings_dict_word_exists">%1$s មានក្នុងវចនានុក្រមអ្នកប្រើរួចហើយ</string>
     <string name="settings_dict_word_updated">បានធ្វើបច្ចុប្បន្នភាពពាក្យ</string>
     <string name="settings_dict_word_update_failed">មិនអាចធ្វើបច្ចុប្បន្នភាពពាក្យបានទេ</string>
     <plurals name="settings_dict_words_deleted">
@@ -921,6 +922,7 @@
     <string name="settings_shortcuts_new">ផ្លូវកាត់ថ្មី</string>
     <string name="settings_shortcuts_added">បានបន្ថែមផ្លូវកាត់</string>
     <string name="settings_shortcuts_add_failed">មិនអាចបន្ថែមផ្លូវកាត់បានទេ</string>
+    <string name="settings_shortcuts_exists">មានផ្លូវកាត់ឈ្មោះ %1$s រួចហើយ</string>
     <string name="settings_shortcuts_updated">បានធ្វើបច្ចុប្បន្នភាពផ្លូវកាត់</string>
     <string name="settings_shortcuts_update_failed">មិនអាចធ្វើបច្ចុប្បន្នភាពផ្លូវកាត់បានទេ</string>
     <plurals name="settings_shortcuts_deleted">

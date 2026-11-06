@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Խմբագրել բառը</string>
     <string name="settings_dict_word_added">Բառն ավելացվեց</string>
     <string name="settings_dict_word_add_failed">Չհաջողվեց ավելացնել բառը</string>
+    <string name="settings_dict_word_exists">%1$s բառն արդեն օգտատիրոջ բառարանում է</string>
     <string name="settings_dict_word_updated">Բառը թարմացվեց</string>
     <string name="settings_dict_word_update_failed">Չհաջողվեց թարմացնել բառը</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Նոր դյուրանցում</string>
     <string name="settings_shortcuts_added">Դյուրանցումն ավելացվեց</string>
     <string name="settings_shortcuts_add_failed">Չհաջողվեց ավելացնել դյուրանցումը</string>
+    <string name="settings_shortcuts_exists">%1$s անունով դյուրանցում արդեն կա</string>
     <string name="settings_shortcuts_updated">Դյուրանցումը թարմացվեց</string>
     <string name="settings_shortcuts_update_failed">Չհաջողվեց թարմացնել դյուրանցումը</string>
     <plurals name="settings_shortcuts_deleted">

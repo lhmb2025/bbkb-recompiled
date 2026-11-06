@@ -894,6 +894,7 @@
     <string name="settings_dict_edit_word">Ropéa kecap</string>
     <string name="settings_dict_word_added">Kecap ditambahkeun</string>
     <string name="settings_dict_word_add_failed">Gagal nambahkeun kecap</string>
+    <string name="settings_dict_word_exists">%1$s geus aya dina kamus pamaké</string>
     <string name="settings_dict_word_updated">Kecap diropéa</string>
     <string name="settings_dict_word_update_failed">Gagal ngaropéa kecap</string>
     <plurals name="settings_dict_words_deleted">
@@ -921,6 +922,7 @@
     <string name="settings_shortcuts_new">Pintonan singget anyar</string>
     <string name="settings_shortcuts_added">Pintonan singget ditambahkeun</string>
     <string name="settings_shortcuts_add_failed">Gagal nambahkeun pintonan singget</string>
+    <string name="settings_shortcuts_exists">Pintonan singget nu ngaranna %1$s geus aya</string>
     <string name="settings_shortcuts_updated">Pintonan singget diropéa</string>
     <string name="settings_shortcuts_update_failed">Gagal ngaropéa pintonan singget</string>
     <plurals name="settings_shortcuts_deleted">

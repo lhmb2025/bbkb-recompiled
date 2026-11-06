@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Muuda sõna</string>
     <string name="settings_dict_word_added">Sõna lisati</string>
     <string name="settings_dict_word_add_failed">Sõna lisamine ebaõnnestus</string>
+    <string name="settings_dict_word_exists">%1$s on juba kasutaja sõnastikus</string>
     <string name="settings_dict_word_updated">Sõna värskendati</string>
     <string name="settings_dict_word_update_failed">Sõna värskendamine ebaõnnestus</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Uus otsetee</string>
     <string name="settings_shortcuts_added">Otsetee lisati</string>
     <string name="settings_shortcuts_add_failed">Otsetee lisamine ebaõnnestus</string>
+    <string name="settings_shortcuts_exists">Otsetee nimega %1$s on juba olemas</string>
     <string name="settings_shortcuts_updated">Otsetee värskendati</string>
     <string name="settings_shortcuts_update_failed">Otsetee värskendamine ebaõnnestus</string>
     <plurals name="settings_shortcuts_deleted">

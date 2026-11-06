@@ -19,9 +19,47 @@ import dev.bbkb.ime.R
  * Repository for managing both personal dictionary and word substitutions
  * through the unified DictionaryEntry model.
  */
-class DictionaryRepository(private val context: Context) : DictionaryEntryStore {
+class DictionaryRepository @androidx.annotation.VisibleForTesting internal constructor(
+    private val context: Context,
+    private val load: (Context, DictionaryManager) -> Unit,
+) : DictionaryEntryStore {
 
-    private val personalDictManager = DictionaryManager.getInstance()
+    constructor(context: Context) : this(context, { ctx, manager ->
+        manager.initialiseOrSwitchLanguages(ctx, LocaleUtil.getAvailableLocales(ctx))
+    })
+
+    /**
+     * Looked up on every use, never kept. The keyboard service runs in this process and replaces
+     * the manager when it starts (`BlackBerryIME.initializeSingletons` calls
+     * `DictionaryManager.shutdownInstance()`) and shuts it down when it stops (`onDestroy`).
+     * After an install or an update the service is first started by the first keyboard shown,
+     * which is often the add form on a dictionary screen. This used to be a `val` taken when the
+     * screen opened, so from then on every add, edit and delete on that screen went to a manager
+     * that had been shut down ("Failed to add word", "Failed to add shortcut", and a delete that
+     * said it had worked) until the screen was left.
+     */
+    private val personalDictManager: DictionaryManager
+        get() = DictionaryManager.getInstance()
+
+    /**
+     * Whether the manager is loaded, loading it if not: after the keyboard service stops, the
+     * manager that replaces the shut-down one is loaded by nobody until the keyboard starts again.
+     */
+    private suspend fun ensureLoaded(): Boolean = personalDictManager.isLoaded() || initialize().isSuccess
+
+    /**
+     * The entry already holding [key], if one does, as the failure to report; null when the key
+     * is free or is [ownKey] (an edit keeping its own name, in any case). Words and shortcuts
+     * share one key space (a word is stored as a shortcut for itself) and keys compare ignoring
+     * case, as the dictionary refuses them. The refusal itself is unchanged; this only says why,
+     * where the screens used to say "Failed to add".
+     */
+    private fun entryInTheWay(key: String, ownKey: String? = null): EntryExistsException? {
+        if (ownKey != null && key.equals(ownKey, ignoreCase = true)) return null
+        val existing = personalDictManager.getWordSubstitutions()?.get(key) ?: return null
+        val isWord = existing.key == existing.word
+        return EntryExistsException(if (isWord) existing.word else existing.key, isWord)
+    }
 
     /**
      * Initialize the DictionaryManager if not already initialized
@@ -40,7 +78,7 @@ class DictionaryRepository(private val context: Context) : DictionaryEntryStore 
 
                 var dataWasCorrupted = false
                 try {
-                    personalDictManager.initialiseOrSwitchLanguages(context, LocaleUtil.getAvailableLocales(context))
+                    load(context, personalDictManager)
                 } catch (e: ClassCastException) {
                     // Data corruption detected - clear and reinitialize
                     if (BuildConfig.DEBUG) {
@@ -53,7 +91,7 @@ class DictionaryRepository(private val context: Context) : DictionaryEntryStore 
                     dataWasCorrupted = true
                     clearCorruptedData()
                     // Try again with clean slate
-                    personalDictManager.initialiseOrSwitchLanguages(context, LocaleUtil.getAvailableLocales(context))
+                    load(context, personalDictManager)
                 }
 
                 // Wait for initialization
@@ -149,6 +187,8 @@ class DictionaryRepository(private val context: Context) : DictionaryEntryStore 
         val entries = mutableListOf<DictionaryEntry>()
 
         try {
+            // A manager nobody has loaded has no words to list: the screen would read as empty.
+            ensureLoaded()
             // Get word substitutions
             val substitutions = personalDictManager.getWordsForLocale(actualLocale, true) ?: emptyList()
             entries.addAll(substitutions.mapNotNull { item ->
@@ -231,6 +271,8 @@ class DictionaryRepository(private val context: Context) : DictionaryEntryStore 
      */
     override suspend fun addEntry(entry: DictionaryEntry): Result<Unit> = withContext(Dispatchers.IO) {
         try {
+            if (!ensureLoaded()) return@withContext Result.failure(Exception("Dictionary not loaded"))
+            entryInTheWay(entry.shortcut ?: entry.word)?.let { return@withContext Result.failure(it) }
             val locale = if (entry.locale.isEmpty()) PersonalDictionaryConstants.LOCALE_ALL else entry.locale
 
             val success = if (entry.isSubstitution) {
@@ -271,6 +313,9 @@ class DictionaryRepository(private val context: Context) : DictionaryEntryStore 
         newEntry: DictionaryEntry
     ): Result<Unit> = withContext(Dispatchers.IO) {
         try {
+            if (!ensureLoaded()) return@withContext Result.failure(Exception("Dictionary not loaded"))
+            entryInTheWay(newEntry.shortcut ?: newEntry.word, oldEntry.shortcut ?: oldEntry.word)
+                ?.let { return@withContext Result.failure(it) }
             val locale =
                 if (newEntry.locale.isEmpty()) PersonalDictionaryConstants.LOCALE_ALL else newEntry.locale
 
@@ -313,6 +358,9 @@ class DictionaryRepository(private val context: Context) : DictionaryEntryStore 
      */
     override suspend fun deleteEntry(entry: DictionaryEntry): Result<Unit> = withContext(Dispatchers.IO) {
         try {
+            // removeWordSubstitution only logs when the manager is not loaded, so without this a
+            // delete that did nothing was reported as done.
+            if (!ensureLoaded()) return@withContext Result.failure(Exception("Dictionary not loaded"))
             val shortcut = if (entry.isSubstitution) entry.shortcut!! else entry.word
             personalDictManager.removeWordSubstitution(shortcut, entry.word)
             personalDictManager.save() // Save

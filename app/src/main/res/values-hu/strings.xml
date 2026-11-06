@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Szó szerkesztése</string>
     <string name="settings_dict_word_added">Szó hozzáadva</string>
     <string name="settings_dict_word_add_failed">Nem sikerült hozzáadni a szót</string>
+    <string name="settings_dict_word_exists">%1$s már szerepel a felhasználói szótárban</string>
     <string name="settings_dict_word_updated">Szó frissítve</string>
     <string name="settings_dict_word_update_failed">Nem sikerült frissíteni a szót</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Új rövidítés</string>
     <string name="settings_shortcuts_added">Rövidítés hozzáadva</string>
     <string name="settings_shortcuts_add_failed">Nem sikerült hozzáadni a rövidítést</string>
+    <string name="settings_shortcuts_exists">Már létezik %1$s nevű rövidítés</string>
     <string name="settings_shortcuts_updated">Rövidítés frissítve</string>
     <string name="settings_shortcuts_update_failed">Nem sikerült frissíteni a rövidítést</string>
     <plurals name="settings_shortcuts_deleted">

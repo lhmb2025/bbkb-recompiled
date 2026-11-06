@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Breyta orði</string>
     <string name="settings_dict_word_added">Orði bætt við</string>
     <string name="settings_dict_word_add_failed">Ekki tókst að bæta orðinu við</string>
+    <string name="settings_dict_word_exists">%1$s er þegar í orðabók notanda</string>
     <string name="settings_dict_word_updated">Orð uppfært</string>
     <string name="settings_dict_word_update_failed">Ekki tókst að uppfæra orðið</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Ný flýtileið</string>
     <string name="settings_shortcuts_added">Flýtileið bætt við</string>
     <string name="settings_shortcuts_add_failed">Ekki tókst að bæta flýtileiðinni við</string>
+    <string name="settings_shortcuts_exists">Flýtileið sem heitir %1$s er þegar til</string>
     <string name="settings_shortcuts_updated">Flýtileið uppfærð</string>
     <string name="settings_shortcuts_update_failed">Ekki tókst að uppfæra flýtileiðina</string>
     <plurals name="settings_shortcuts_deleted">

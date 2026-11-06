@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Wort bearbeiten</string>
     <string name="settings_dict_word_added">Wort hinzugefügt</string>
     <string name="settings_dict_word_add_failed">Wort konnte nicht hinzugefügt werden</string>
+    <string name="settings_dict_word_exists">%1$s ist bereits im Benutzerwörterbuch</string>
     <string name="settings_dict_word_updated">Wort aktualisiert</string>
     <string name="settings_dict_word_update_failed">Wort konnte nicht aktualisiert werden</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Neues Kürzel</string>
     <string name="settings_shortcuts_added">Kürzel hinzugefügt</string>
     <string name="settings_shortcuts_add_failed">Kürzel konnte nicht hinzugefügt werden</string>
+    <string name="settings_shortcuts_exists">Ein Kürzel namens %1$s gibt es bereits</string>
     <string name="settings_shortcuts_updated">Kürzel aktualisiert</string>
     <string name="settings_shortcuts_update_failed">Kürzel konnte nicht aktualisiert werden</string>
     <plurals name="settings_shortcuts_deleted">

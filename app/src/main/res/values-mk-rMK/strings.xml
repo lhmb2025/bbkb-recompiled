@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Уреди збор</string>
     <string name="settings_dict_word_added">Зборот е додаден</string>
     <string name="settings_dict_word_add_failed">Зборот не можеше да се додаде</string>
+    <string name="settings_dict_word_exists">%1$s веќе е во корисничкиот речник</string>
     <string name="settings_dict_word_updated">Зборот е ажуриран</string>
     <string name="settings_dict_word_update_failed">Зборот не можеше да се ажурира</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Нова кратенка</string>
     <string name="settings_shortcuts_added">Кратенката е додадена</string>
     <string name="settings_shortcuts_add_failed">Кратенката не можеше да се додаде</string>
+    <string name="settings_shortcuts_exists">Веќе постои кратенка со име %1$s</string>
     <string name="settings_shortcuts_updated">Кратенката е ажурирана</string>
     <string name="settings_shortcuts_update_failed">Кратенката не можеше да се ажурира</string>
     <plurals name="settings_shortcuts_deleted">

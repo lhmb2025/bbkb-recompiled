@@ -903,6 +903,7 @@
     <string name="settings_dict_edit_word">Uredi besedo</string>
     <string name="settings_dict_word_added">Beseda je dodana</string>
     <string name="settings_dict_word_add_failed">Besede ni bilo mogoče dodati</string>
+    <string name="settings_dict_word_exists">%1$s je že v uporabniškem slovarju</string>
     <string name="settings_dict_word_updated">Beseda je posodobljena</string>
     <string name="settings_dict_word_update_failed">Besede ni bilo mogoče posodobiti</string>
     <plurals name="settings_dict_words_deleted">
@@ -939,6 +940,7 @@
     <string name="settings_shortcuts_new">Nova bližnjica</string>
     <string name="settings_shortcuts_added">Bližnjica je dodana</string>
     <string name="settings_shortcuts_add_failed">Bližnjice ni bilo mogoče dodati</string>
+    <string name="settings_shortcuts_exists">Bližnjica z imenom %1$s že obstaja</string>
     <string name="settings_shortcuts_updated">Bližnjica je posodobljena</string>
     <string name="settings_shortcuts_update_failed">Bližnjice ni bilo mogoče posodobiti</string>
     <plurals name="settings_shortcuts_deleted">

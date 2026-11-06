@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">വാക്ക് തിരുത്തുക</string>
     <string name="settings_dict_word_added">വാക്ക് ചേർത്തു</string>
     <string name="settings_dict_word_add_failed">വാക്ക് ചേർക്കാനായില്ല</string>
+    <string name="settings_dict_word_exists">%1$s ഇതിനകം ഉപയോക്തൃ നിഘണ്ടുവിലുണ്ട്</string>
     <string name="settings_dict_word_updated">വാക്ക് അപ്‌ഡേറ്റ് ചെയ്തു</string>
     <string name="settings_dict_word_update_failed">വാക്ക് അപ്‌ഡേറ്റ് ചെയ്യാനായില്ല</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">പുതിയ കുറുക്കുവഴി</string>
     <string name="settings_shortcuts_added">കുറുക്കുവഴി ചേർത്തു</string>
     <string name="settings_shortcuts_add_failed">കുറുക്കുവഴി ചേർക്കാനായില്ല</string>
+    <string name="settings_shortcuts_exists">%1$s എന്ന പേരിൽ ഒരു കുറുക്കുവഴി ഇതിനകം ഉണ്ട്</string>
     <string name="settings_shortcuts_updated">കുറുക്കുവഴി അപ്‌ഡേറ്റ് ചെയ്തു</string>
     <string name="settings_shortcuts_update_failed">കുറുക്കുവഴി അപ്‌ഡേറ്റ് ചെയ്യാനായില്ല</string>
     <plurals name="settings_shortcuts_deleted">

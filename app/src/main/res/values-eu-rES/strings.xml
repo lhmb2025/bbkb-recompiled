@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Editatu hitza</string>
     <string name="settings_dict_word_added">Gehitu da hitza</string>
     <string name="settings_dict_word_add_failed">Ezin izan da gehitu hitza</string>
+    <string name="settings_dict_word_exists">%1$s erabiltzailearen hiztegian dago dagoeneko</string>
     <string name="settings_dict_word_updated">Eguneratu da hitza</string>
     <string name="settings_dict_word_update_failed">Ezin izan da eguneratu hitza</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Lasterbide berria</string>
     <string name="settings_shortcuts_added">Gehitu da lasterbidea</string>
     <string name="settings_shortcuts_add_failed">Ezin izan da gehitu lasterbidea</string>
+    <string name="settings_shortcuts_exists">Badago %1$s izeneko lasterbide bat</string>
     <string name="settings_shortcuts_updated">Eguneratu da lasterbidea</string>
     <string name="settings_shortcuts_update_failed">Ezin izan da eguneratu lasterbidea</string>
     <plurals name="settings_shortcuts_deleted">

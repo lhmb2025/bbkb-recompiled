@@ -894,6 +894,7 @@
     <string name="settings_dict_edit_word">Sửa từ</string>
     <string name="settings_dict_word_added">Đã thêm từ</string>
     <string name="settings_dict_word_add_failed">Không thêm được từ</string>
+    <string name="settings_dict_word_exists">%1$s đã có trong từ điển người dùng</string>
     <string name="settings_dict_word_updated">Đã cập nhật từ</string>
     <string name="settings_dict_word_update_failed">Không cập nhật được từ</string>
     <plurals name="settings_dict_words_deleted">
@@ -921,6 +922,7 @@
     <string name="settings_shortcuts_new">Lối tắt mới</string>
     <string name="settings_shortcuts_added">Đã thêm lối tắt</string>
     <string name="settings_shortcuts_add_failed">Không thêm được lối tắt</string>
+    <string name="settings_shortcuts_exists">Đã có lối tắt tên là %1$s</string>
     <string name="settings_shortcuts_updated">Đã cập nhật lối tắt</string>
     <string name="settings_shortcuts_update_failed">Không cập nhật được lối tắt</string>
     <plurals name="settings_shortcuts_deleted">

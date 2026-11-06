@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Redigera ord</string>
     <string name="settings_dict_word_added">Ordet har lagts till</string>
     <string name="settings_dict_word_add_failed">Det gick inte att lägga till ordet</string>
+    <string name="settings_dict_word_exists">%1$s finns redan i användarordlistan</string>
     <string name="settings_dict_word_updated">Ordet har uppdaterats</string>
     <string name="settings_dict_word_update_failed">Det gick inte att uppdatera ordet</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Ny genväg</string>
     <string name="settings_shortcuts_added">Genvägen har lagts till</string>
     <string name="settings_shortcuts_add_failed">Det gick inte att lägga till genvägen</string>
+    <string name="settings_shortcuts_exists">Det finns redan en genväg som heter %1$s</string>
     <string name="settings_shortcuts_updated">Genvägen har uppdaterats</string>
     <string name="settings_shortcuts_update_failed">Det gick inte att uppdatera genvägen</string>
     <plurals name="settings_shortcuts_deleted">

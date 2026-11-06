@@ -909,6 +909,7 @@
     <string name="settings_dict_edit_word">تعديل الكلمة</string>
     <string name="settings_dict_word_added">تمت إضافة الكلمة</string>
     <string name="settings_dict_word_add_failed">تعذّرت إضافة الكلمة</string>
+    <string name="settings_dict_word_exists">%1$s موجودة بالفعل في قاموس المستخدم</string>
     <string name="settings_dict_word_updated">تم تحديث الكلمة</string>
     <string name="settings_dict_word_update_failed">تعذّر تحديث الكلمة</string>
     <plurals name="settings_dict_words_deleted">
@@ -951,6 +952,7 @@
     <string name="settings_shortcuts_new">اختصار جديد</string>
     <string name="settings_shortcuts_added">تمت إضافة الاختصار</string>
     <string name="settings_shortcuts_add_failed">تعذّرت إضافة الاختصار</string>
+    <string name="settings_shortcuts_exists">يوجد بالفعل اختصار باسم %1$s</string>
     <string name="settings_shortcuts_updated">تم تحديث الاختصار</string>
     <string name="settings_shortcuts_update_failed">تعذّر تحديث الاختصار</string>
     <plurals name="settings_shortcuts_deleted">

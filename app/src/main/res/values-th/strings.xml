@@ -894,6 +894,7 @@
     <string name="settings_dict_edit_word">แก้ไขคำ</string>
     <string name="settings_dict_word_added">เพิ่มคำแล้ว</string>
     <string name="settings_dict_word_add_failed">เพิ่มคำไม่ได้</string>
+    <string name="settings_dict_word_exists">%1$s อยู่ในพจนานุกรมผู้ใช้แล้ว</string>
     <string name="settings_dict_word_updated">อัปเดตคำแล้ว</string>
     <string name="settings_dict_word_update_failed">อัปเดตคำไม่ได้</string>
     <plurals name="settings_dict_words_deleted">
@@ -921,6 +922,7 @@
     <string name="settings_shortcuts_new">ทางลัดใหม่</string>
     <string name="settings_shortcuts_added">เพิ่มทางลัดแล้ว</string>
     <string name="settings_shortcuts_add_failed">เพิ่มทางลัดไม่ได้</string>
+    <string name="settings_shortcuts_exists">มีทางลัดชื่อ %1$s อยู่แล้ว</string>
     <string name="settings_shortcuts_updated">อัปเดตทางลัดแล้ว</string>
     <string name="settings_shortcuts_update_failed">อัปเดตทางลัดไม่ได้</string>
     <plurals name="settings_shortcuts_deleted">

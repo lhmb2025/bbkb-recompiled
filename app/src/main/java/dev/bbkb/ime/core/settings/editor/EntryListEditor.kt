@@ -279,11 +279,12 @@ internal fun EntryListEditorScreen(
                     return@launch
                 }
 
-                if (write().isSuccess) {
+                val result = write()
+                if (result.isSuccess) {
                     loadData()
                     snackbarHostState.showSnackbar(context.getString(done))
                 } else {
-                    snackbarHostState.showSnackbar(context.getString(failed))
+                    snackbarHostState.showSnackbar(failureMessage(context, result.exceptionOrNull(), failed))
                 }
             } catch (e: Exception) {
                 if (BuildConfig.DEBUG) Log.e(spec.logTag, "Error $verb", e)
@@ -731,3 +732,17 @@ private fun EntryListEmptyState(
         )
     }
 }
+
+/**
+ * What a refused add or edit says: what is in the way when another entry already has the name
+ * (words and shortcuts share names, so the two screens can each be blocked by either kind), and
+ * [failed] ("Failed to add word" and the like) for everything else.
+ */
+internal fun failureMessage(context: android.content.Context, error: Throwable?, @StringRes failed: Int): String =
+    when (error) {
+        is dev.bbkb.ime.core.settings.data.EntryExistsException -> context.getString(
+            if (error.isWord) R.string.settings_dict_word_exists else R.string.settings_shortcuts_exists,
+            error.name
+        )
+        else -> context.getString(failed)
+    }

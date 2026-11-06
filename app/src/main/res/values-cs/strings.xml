@@ -903,6 +903,7 @@
     <string name="settings_dict_edit_word">Upravit slovo</string>
     <string name="settings_dict_word_added">Slovo bylo přidáno</string>
     <string name="settings_dict_word_add_failed">Slovo se nepodařilo přidat</string>
+    <string name="settings_dict_word_exists">%1$s už je v uživatelském slovníku</string>
     <string name="settings_dict_word_updated">Slovo bylo aktualizováno</string>
     <string name="settings_dict_word_update_failed">Slovo se nepodařilo aktualizovat</string>
     <plurals name="settings_dict_words_deleted">
@@ -939,6 +940,7 @@
     <string name="settings_shortcuts_new">Nová zkratka</string>
     <string name="settings_shortcuts_added">Zkratka byla přidána</string>
     <string name="settings_shortcuts_add_failed">Zkratku se nepodařilo přidat</string>
+    <string name="settings_shortcuts_exists">Zkratka s názvem %1$s už existuje</string>
     <string name="settings_shortcuts_updated">Zkratka byla aktualizována</string>
     <string name="settings_shortcuts_update_failed">Zkratku se nepodařilo aktualizovat</string>
     <plurals name="settings_shortcuts_deleted">

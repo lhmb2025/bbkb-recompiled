@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">სიტყვის რედაქტირება</string>
     <string name="settings_dict_word_added">სიტყვა დაემატა</string>
     <string name="settings_dict_word_add_failed">სიტყვის დამატება ვერ მოხერხდა</string>
+    <string name="settings_dict_word_exists">%1$s უკვე არის მომხმარებლის ლექსიკონში</string>
     <string name="settings_dict_word_updated">სიტყვა განახლდა</string>
     <string name="settings_dict_word_update_failed">სიტყვის განახლება ვერ მოხერხდა</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">ახალი მალსახმობი</string>
     <string name="settings_shortcuts_added">მალსახმობი დაემატა</string>
     <string name="settings_shortcuts_add_failed">მალსახმობის დამატება ვერ მოხერხდა</string>
+    <string name="settings_shortcuts_exists">მალსახმობი სახელით %1$s უკვე არსებობს</string>
     <string name="settings_shortcuts_updated">მალსახმობი განახლდა</string>
     <string name="settings_shortcuts_update_failed">მალსახმობის განახლება ვერ მოხერხდა</string>
     <plurals name="settings_shortcuts_deleted">

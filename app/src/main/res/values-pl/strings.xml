@@ -903,6 +903,7 @@
     <string name="settings_dict_edit_word">Edytuj słowo</string>
     <string name="settings_dict_word_added">Dodano słowo</string>
     <string name="settings_dict_word_add_failed">Nie udało się dodać słowa</string>
+    <string name="settings_dict_word_exists">%1$s jest już w słowniku użytkownika</string>
     <string name="settings_dict_word_updated">Zaktualizowano słowo</string>
     <string name="settings_dict_word_update_failed">Nie udało się zaktualizować słowa</string>
     <plurals name="settings_dict_words_deleted">
@@ -939,6 +940,7 @@
     <string name="settings_shortcuts_new">Nowy skrót</string>
     <string name="settings_shortcuts_added">Dodano skrót</string>
     <string name="settings_shortcuts_add_failed">Nie udało się dodać skrótu</string>
+    <string name="settings_shortcuts_exists">Skrót o nazwie %1$s już istnieje</string>
     <string name="settings_shortcuts_updated">Zaktualizowano skrót</string>
     <string name="settings_shortcuts_update_failed">Nie udało się zaktualizować skrótu</string>
     <plurals name="settings_shortcuts_deleted">

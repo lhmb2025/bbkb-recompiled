@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Επεξεργασία λέξης</string>
     <string name="settings_dict_word_added">Η λέξη προστέθηκε</string>
     <string name="settings_dict_word_add_failed">Δεν ήταν δυνατή η προσθήκη της λέξης</string>
+    <string name="settings_dict_word_exists">Η λέξη %1$s υπάρχει ήδη στο λεξικό χρήστη</string>
     <string name="settings_dict_word_updated">Η λέξη ενημερώθηκε</string>
     <string name="settings_dict_word_update_failed">Δεν ήταν δυνατή η ενημέρωση της λέξης</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Νέα συντόμευση</string>
     <string name="settings_shortcuts_added">Η συντόμευση προστέθηκε</string>
     <string name="settings_shortcuts_add_failed">Δεν ήταν δυνατή η προσθήκη της συντόμευσης</string>
+    <string name="settings_shortcuts_exists">Υπάρχει ήδη συντόμευση με το όνομα %1$s</string>
     <string name="settings_shortcuts_updated">Η συντόμευση ενημερώθηκε</string>
     <string name="settings_shortcuts_update_failed">Δεν ήταν δυνατή η ενημέρωση της συντόμευσης</string>
     <plurals name="settings_shortcuts_deleted">

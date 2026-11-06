@@ -900,6 +900,7 @@
     <string name="settings_dict_edit_word">Измени реч</string>
     <string name="settings_dict_word_added">Реч је додата</string>
     <string name="settings_dict_word_add_failed">Додавање речи није успело</string>
+    <string name="settings_dict_word_exists">%1$s је већ у корисничком речнику</string>
     <string name="settings_dict_word_updated">Реч је ажурирана</string>
     <string name="settings_dict_word_update_failed">Ажурирање речи није успело</string>
     <plurals name="settings_dict_words_deleted">
@@ -933,6 +934,7 @@
     <string name="settings_shortcuts_new">Нова пречица</string>
     <string name="settings_shortcuts_added">Пречица је додата</string>
     <string name="settings_shortcuts_add_failed">Додавање пречице није успело</string>
+    <string name="settings_shortcuts_exists">Пречица под називом %1$s већ постоји</string>
     <string name="settings_shortcuts_updated">Пречица је ажурирана</string>
     <string name="settings_shortcuts_update_failed">Ажурирање пречице није успело</string>
     <plurals name="settings_shortcuts_deleted">

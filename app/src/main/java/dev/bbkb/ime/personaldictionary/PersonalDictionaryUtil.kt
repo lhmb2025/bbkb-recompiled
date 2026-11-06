@@ -365,10 +365,34 @@ class PersonalDictionaryUtil private constructor(
         EngineThreads.post { sdk.addWord(word) }
     }
 
+    /**
+     * The engine's `deleteDLMWord`, the call the Learned words screen's delete makes, posted to
+     * the engine thread like [learnInEngine] (the two stay in order there, so an edit's forget
+     * of the old word runs before its learn of the new one). The engine keeps a deleted word
+     * suppressed rather than forgetting it outright, so it is no longer listed or offered; a
+     * later [learnInEngine] of the same word brings it back, which is what Undo relies on.
+     */
+    private fun forgetInEngine(word: String) {
+        val sdk = mNuanceSDK
+        EngineThreads.post { sdk.deleteDLMWord(word) }
+    }
+
+    /** A user dictionary word: stored as a user substitution of the word for itself. */
+    private fun isDictionaryWord(ws: WordSubstitution) =
+        ws.type == WordSubstitution.Type.USER && ws.key == ws.word
+
     @Throws(AudAddException::class, InitialisationIncompleteException::class, KeyAlreadyDefinedException::class)
     fun add(ws: WordSubstitution) {
         AudSyncer.AUD_SYNC_LOCK.lock()
         try {
+            // Refuse before anything is written. The duplicate check used to come only in
+            // addToBasl, after the row had gone into the shared system user dictionary, so a
+            // refused "ZORBIX" next to our "zorbix" stayed there and the AUD sync then swapped the
+            // two on every pass (emulator, 2026-11-05).
+            verifyLoadingComplete()
+            if (mEnabledWordSubstitutions.containsKey(ws.key)) {
+                throw KeyAlreadyDefinedException("${ws.key} already defined")
+            }
             val set = HashSet<WordSubstitution>(1)
             set.add(ws)
             if (!AudWrapper.addBatch(mContext, set)) {
@@ -400,11 +424,16 @@ class PersonalDictionaryUtil private constructor(
         }
     }
 
-    @Throws(InitialisationIncompleteException::class, KeyAlreadyDefinedException::class)
+    /**
+     * The load path's only way into the deleted-defaults map, so no loaded-check: `mLoadComplete`
+     * is set last in [doLoad], and with the check every entry of `deleted_substitutions` was
+     * skipped with [InitialisationIncompleteException], so a deleted built-in shortcut (`bb`)
+     * came back on every start. The same trap as [addToBaslNotSdk].
+     */
+    @Throws(KeyAlreadyDefinedException::class)
     private fun addToDeletedMap(ws: WordSubstitution) {
         AudSyncer.AUD_SYNC_LOCK.lock()
         try {
-            verifyLoadingComplete()
             if (mDeletedDefaultWordSubstitutions.putIfAbsent(ws)) {
                 LogUtil.d(TAG, "Default WS deleted")
                 return
@@ -424,6 +453,12 @@ class PersonalDictionaryUtil private constructor(
             if (!mEnabledWordSubstitutions.containsKey(oldKey)) {
                 throw KeyNotFoundException("$oldKey not found")
             }
+            // Before anything changes: this check used to come after the old entry had been
+            // deleted from AUD and from the stored map, so an edit onto another entry's name was
+            // refused but the entry being edited was gone after the next restart.
+            if (!oldKey.equals(newKey, ignoreCase = true) && mEnabledWordSubstitutions.containsKey(newKey)) {
+                throw KeyAlreadyDefinedException("$newKey already defined")
+            }
             if (AudWrapper.delete(mContext, oldWs) == 0 && AudWrapper.isWordInAud(mContext, oldWs)) {
                 throw AudDeleteException("Could not delete WS from AUD: $oldWs")
             }
@@ -431,9 +466,6 @@ class PersonalDictionaryUtil private constructor(
             putWsInDeletedMapIfDefault(oldWs)
             
             if (!oldKey.equals(newKey, ignoreCase = true)) {
-                if (mEnabledWordSubstitutions.containsKey(newKey)) {
-                    throw KeyAlreadyDefinedException("$newKey already defined")
-                }
                 mEnabledWordSubstitutions.remove(oldKey)
             }
             
@@ -449,6 +481,15 @@ class PersonalDictionaryUtil private constructor(
             mEnabledWordSubstitutions[newKey] = newWs
             addWsToAllUserMap(newWs)
             updateCachedEnabledWordSubstitutionMap()
+            // The engine, as a delete of the old entry and an add of the new one would leave it:
+            // an edit used to reach neither, so after quixotal -> quixotally the engine still had
+            // only "quixotal" and corrected the new spelling back to the old one.
+            if (isDictionaryWord(oldWs) && oldWs.word != newWs.word) {
+                forgetInEngine(oldWs.word)
+            }
+            if (newWs.type == WordSubstitution.Type.USER) {
+                learnInEngine(newWs.word)
+            }
         } finally {
             AudSyncer.AUD_SYNC_LOCK.unlock()
         }
@@ -468,9 +509,16 @@ class PersonalDictionaryUtil private constructor(
         }
     }
 
+    /**
+     * The user's own delete (the User dictionary and Text shortcuts screens). A dictionary word
+     * also leaves the engine's learned words, as the Learned words screen's delete does: adding
+     * it taught it to the engine, and it used to stay listed there and offered after the delete.
+     * A shortcut's phrase is left alone: the user may well type those words on their own.
+     */
     fun remove(ws: WordSubstitution) {
         try {
             removeFromBasl(ws, true)
+            if (isDictionaryWord(ws)) forgetInEngine(ws.word)
         } catch (e: Exception) {
             LogUtil.w(TAG, "Remove error: ${e.message}")
         }

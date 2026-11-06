@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">ಪದ ಸಂಪಾದಿಸಿ</string>
     <string name="settings_dict_word_added">ಪದವನ್ನು ಸೇರಿಸಲಾಗಿದೆ</string>
     <string name="settings_dict_word_add_failed">ಪದವನ್ನು ಸೇರಿಸಲಾಗಲಿಲ್ಲ</string>
+    <string name="settings_dict_word_exists">%1$s ಈಗಾಗಲೇ ಬಳಕೆದಾರ ನಿಘಂಟಿನಲ್ಲಿದೆ</string>
     <string name="settings_dict_word_updated">ಪದವನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಲಾಗಿದೆ</string>
     <string name="settings_dict_word_update_failed">ಪದವನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಲಾಗಲಿಲ್ಲ</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">ಹೊಸ ಶಾರ್ಟ್‌ಕಟ್</string>
     <string name="settings_shortcuts_added">ಶಾರ್ಟ್‌ಕಟ್ ಸೇರಿಸಲಾಗಿದೆ</string>
     <string name="settings_shortcuts_add_failed">ಶಾರ್ಟ್‌ಕಟ್ ಸೇರಿಸಲಾಗಲಿಲ್ಲ</string>
+    <string name="settings_shortcuts_exists">%1$s ಹೆಸರಿನ ಶಾರ್ಟ್‌ಕಟ್ ಈಗಾಗಲೇ ಇದೆ</string>
     <string name="settings_shortcuts_updated">ಶಾರ್ಟ್‌ಕಟ್ ಅಪ್‌ಡೇಟ್ ಮಾಡಲಾಗಿದೆ</string>
     <string name="settings_shortcuts_update_failed">ಶಾರ್ಟ್‌ಕಟ್ ಅಪ್‌ಡೇಟ್ ಮಾಡಲಾಗಲಿಲ್ಲ</string>
     <plurals name="settings_shortcuts_deleted">

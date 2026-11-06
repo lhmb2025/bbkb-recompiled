@@ -900,6 +900,7 @@
     <string name="settings_dict_edit_word">Modifica parola</string>
     <string name="settings_dict_word_added">Parola aggiunta</string>
     <string name="settings_dict_word_add_failed">Impossibile aggiungere la parola</string>
+    <string name="settings_dict_word_exists">%1$s è già nel dizionario utente</string>
     <string name="settings_dict_word_updated">Parola aggiornata</string>
     <string name="settings_dict_word_update_failed">Impossibile aggiornare la parola</string>
     <plurals name="settings_dict_words_deleted">
@@ -933,6 +934,7 @@
     <string name="settings_shortcuts_new">Nuova scorciatoia</string>
     <string name="settings_shortcuts_added">Scorciatoia aggiunta</string>
     <string name="settings_shortcuts_add_failed">Impossibile aggiungere la scorciatoia</string>
+    <string name="settings_shortcuts_exists">Esiste già una scorciatoia chiamata %1$s</string>
     <string name="settings_shortcuts_updated">Scorciatoia aggiornata</string>
     <string name="settings_shortcuts_update_failed">Impossibile aggiornare la scorciatoia</string>
     <plurals name="settings_shortcuts_deleted">

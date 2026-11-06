@@ -900,6 +900,7 @@
     <string name="settings_dict_edit_word">Edita la paraula</string>
     <string name="settings_dict_word_added">S\'ha afegit la paraula</string>
     <string name="settings_dict_word_add_failed">No s\'ha pogut afegir la paraula</string>
+    <string name="settings_dict_word_exists">%1$s ja és al diccionari de l\'usuari</string>
     <string name="settings_dict_word_updated">S\'ha actualitzat la paraula</string>
     <string name="settings_dict_word_update_failed">No s\'ha pogut actualitzar la paraula</string>
     <plurals name="settings_dict_words_deleted">
@@ -933,6 +934,7 @@
     <string name="settings_shortcuts_new">Drecera nova</string>
     <string name="settings_shortcuts_added">S\'ha afegit la drecera</string>
     <string name="settings_shortcuts_add_failed">No s\'ha pogut afegir la drecera</string>
+    <string name="settings_shortcuts_exists">Ja existeix una drecera anomenada %1$s</string>
     <string name="settings_shortcuts_updated">S\'ha actualitzat la drecera</string>
     <string name="settings_shortcuts_update_failed">No s\'ha pogut actualitzar la drecera</string>
     <plurals name="settings_shortcuts_deleted">

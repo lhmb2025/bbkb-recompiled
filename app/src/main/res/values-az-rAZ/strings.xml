@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Sözü redaktə edin</string>
     <string name="settings_dict_word_added">Söz əlavə edildi</string>
     <string name="settings_dict_word_add_failed">Sözü əlavə etmək alınmadı</string>
+    <string name="settings_dict_word_exists">%1$s artıq istifadəçi lüğətindədir</string>
     <string name="settings_dict_word_updated">Söz yeniləndi</string>
     <string name="settings_dict_word_update_failed">Sözü yeniləmək alınmadı</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Yeni qısayol</string>
     <string name="settings_shortcuts_added">Qısayol əlavə edildi</string>
     <string name="settings_shortcuts_add_failed">Qısayolu əlavə etmək alınmadı</string>
+    <string name="settings_shortcuts_exists">%1$s adlı qısayol artıq mövcuddur</string>
     <string name="settings_shortcuts_updated">Qısayol yeniləndi</string>
     <string name="settings_shortcuts_update_failed">Qısayolu yeniləmək alınmadı</string>
     <plurals name="settings_shortcuts_deleted">

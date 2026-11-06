@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Редактиране на дума</string>
     <string name="settings_dict_word_added">Думата е добавена</string>
     <string name="settings_dict_word_add_failed">Думата не можа да бъде добавена</string>
+    <string name="settings_dict_word_exists">%1$s вече е в потребителския речник</string>
     <string name="settings_dict_word_updated">Думата е актуализирана</string>
     <string name="settings_dict_word_update_failed">Думата не можа да бъде актуализирана</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Нов пряк път</string>
     <string name="settings_shortcuts_added">Прекият път е добавен</string>
     <string name="settings_shortcuts_add_failed">Прекият път не можа да бъде добавен</string>
+    <string name="settings_shortcuts_exists">Вече има пряк път с име %1$s</string>
     <string name="settings_shortcuts_updated">Прекият път е актуализиран</string>
     <string name="settings_shortcuts_update_failed">Прекият път не можа да бъде актуализиран</string>
     <plurals name="settings_shortcuts_deleted">

@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Editar palabra</string>
     <string name="settings_dict_word_added">Engadiuse a palabra</string>
     <string name="settings_dict_word_add_failed">Non se puido engadir a palabra</string>
+    <string name="settings_dict_word_exists">%1$s xa está no dicionario do usuario</string>
     <string name="settings_dict_word_updated">Actualizouse a palabra</string>
     <string name="settings_dict_word_update_failed">Non se puido actualizar a palabra</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Novo atallo</string>
     <string name="settings_shortcuts_added">Engadiuse o atallo</string>
     <string name="settings_shortcuts_add_failed">Non se puido engadir o atallo</string>
+    <string name="settings_shortcuts_exists">Xa existe un atallo chamado %1$s</string>
     <string name="settings_shortcuts_updated">Actualizouse o atallo</string>
     <string name="settings_shortcuts_update_failed">Non se puido actualizar o atallo</string>
     <plurals name="settings_shortcuts_deleted">

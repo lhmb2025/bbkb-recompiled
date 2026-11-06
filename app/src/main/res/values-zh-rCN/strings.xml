@@ -894,6 +894,7 @@
     <string name="settings_dict_edit_word">编辑字词</string>
     <string name="settings_dict_word_added">已添加字词</string>
     <string name="settings_dict_word_add_failed">无法添加字词</string>
+    <string name="settings_dict_word_exists">%1$s 已在用户字典中</string>
     <string name="settings_dict_word_updated">已更新字词</string>
     <string name="settings_dict_word_update_failed">无法更新字词</string>
     <plurals name="settings_dict_words_deleted">
@@ -921,6 +922,7 @@
     <string name="settings_shortcuts_new">新建快捷方式</string>
     <string name="settings_shortcuts_added">已添加快捷方式</string>
     <string name="settings_shortcuts_add_failed">无法添加快捷方式</string>
+    <string name="settings_shortcuts_exists">已存在名为 %1$s 的快捷方式</string>
     <string name="settings_shortcuts_updated">已更新快捷方式</string>
     <string name="settings_shortcuts_update_failed">无法更新快捷方式</string>
     <plurals name="settings_shortcuts_deleted">

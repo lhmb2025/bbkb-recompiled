@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">ویرایش کلمه</string>
     <string name="settings_dict_word_added">کلمه اضافه شد</string>
     <string name="settings_dict_word_add_failed">افزودن کلمه ممکن نشد</string>
+    <string name="settings_dict_word_exists">%1$s از قبل در فرهنگ لغت کاربر هست</string>
     <string name="settings_dict_word_updated">کلمه به‌روزرسانی شد</string>
     <string name="settings_dict_word_update_failed">به‌روزرسانی کلمه ممکن نشد</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">میانبر جدید</string>
     <string name="settings_shortcuts_added">میانبر اضافه شد</string>
     <string name="settings_shortcuts_add_failed">افزودن میانبر ممکن نشد</string>
+    <string name="settings_shortcuts_exists">میانبری با نام %1$s از قبل وجود دارد</string>
     <string name="settings_shortcuts_updated">میانبر به‌روزرسانی شد</string>
     <string name="settings_shortcuts_update_failed">به‌روزرسانی میانبر ممکن نشد</string>
     <plurals name="settings_shortcuts_deleted">

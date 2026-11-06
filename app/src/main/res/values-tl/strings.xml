@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">I-edit ang salita</string>
     <string name="settings_dict_word_added">Naidagdag ang salita</string>
     <string name="settings_dict_word_add_failed">Hindi naidagdag ang salita</string>
+    <string name="settings_dict_word_exists">Nasa diksyunaryo ng user na ang %1$s</string>
     <string name="settings_dict_word_updated">Na-update ang salita</string>
     <string name="settings_dict_word_update_failed">Hindi na-update ang salita</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Bagong shortcut</string>
     <string name="settings_shortcuts_added">Naidagdag ang shortcut</string>
     <string name="settings_shortcuts_add_failed">Hindi naidagdag ang shortcut</string>
+    <string name="settings_shortcuts_exists">Mayroon nang shortcut na may pangalang %1$s</string>
     <string name="settings_shortcuts_updated">Na-update ang shortcut</string>
     <string name="settings_shortcuts_update_failed">Hindi na-update ang shortcut</string>
     <plurals name="settings_shortcuts_deleted">

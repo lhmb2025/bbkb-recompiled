@@ -903,6 +903,7 @@
     <string name="settings_dict_edit_word">Рэдагаваць слова</string>
     <string name="settings_dict_word_added">Слова дададзена</string>
     <string name="settings_dict_word_add_failed">Не ўдалося дадаць слова</string>
+    <string name="settings_dict_word_exists">%1$s ужо ёсць у слоўніку карыстальніка</string>
     <string name="settings_dict_word_updated">Слова абноўлена</string>
     <string name="settings_dict_word_update_failed">Не ўдалося абнавіць слова</string>
     <plurals name="settings_dict_words_deleted">
@@ -939,6 +940,7 @@
     <string name="settings_shortcuts_new">Новае скарачэнне</string>
     <string name="settings_shortcuts_added">Скарачэнне дададзена</string>
     <string name="settings_shortcuts_add_failed">Не ўдалося дадаць скарачэнне</string>
+    <string name="settings_shortcuts_exists">Скарачэнне з назвай %1$s ужо існуе</string>
     <string name="settings_shortcuts_updated">Скарачэнне абноўлена</string>
     <string name="settings_shortcuts_update_failed">Не ўдалося абнавіць скарачэнне</string>
     <plurals name="settings_shortcuts_deleted">

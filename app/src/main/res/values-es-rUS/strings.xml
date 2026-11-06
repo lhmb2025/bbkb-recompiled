@@ -900,6 +900,7 @@
     <string name="settings_dict_edit_word">Editar palabra</string>
     <string name="settings_dict_word_added">Se agregó la palabra</string>
     <string name="settings_dict_word_add_failed">No se pudo agregar la palabra</string>
+    <string name="settings_dict_word_exists">%1$s ya está en el diccionario del usuario</string>
     <string name="settings_dict_word_updated">Se actualizó la palabra</string>
     <string name="settings_dict_word_update_failed">No se pudo actualizar la palabra</string>
     <plurals name="settings_dict_words_deleted">
@@ -933,6 +934,7 @@
     <string name="settings_shortcuts_new">Nuevo atajo</string>
     <string name="settings_shortcuts_added">Se agregó el atajo</string>
     <string name="settings_shortcuts_add_failed">No se pudo agregar el atajo</string>
+    <string name="settings_shortcuts_exists">Ya existe un atajo llamado %1$s</string>
     <string name="settings_shortcuts_updated">Se actualizó el atajo</string>
     <string name="settings_shortcuts_update_failed">No se pudo actualizar el atajo</string>
     <plurals name="settings_shortcuts_deleted">

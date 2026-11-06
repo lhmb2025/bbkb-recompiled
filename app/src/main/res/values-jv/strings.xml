@@ -894,6 +894,7 @@
     <string name="settings_dict_edit_word">Sunting tembung</string>
     <string name="settings_dict_word_added">Tembung ditambahake</string>
     <string name="settings_dict_word_add_failed">Gagal nambah tembung</string>
+    <string name="settings_dict_word_exists">%1$s wis ana ing kamus panganggo</string>
     <string name="settings_dict_word_updated">Tembung dianyari</string>
     <string name="settings_dict_word_update_failed">Gagal nganyari tembung</string>
     <plurals name="settings_dict_words_deleted">
@@ -921,6 +922,7 @@
     <string name="settings_shortcuts_new">Cekakan anyar</string>
     <string name="settings_shortcuts_added">Cekakan ditambahake</string>
     <string name="settings_shortcuts_add_failed">Gagal nambah cekakan</string>
+    <string name="settings_shortcuts_exists">Cekakan kanthi jeneng %1$s wis ana</string>
     <string name="settings_shortcuts_updated">Cekakan dianyari</string>
     <string name="settings_shortcuts_update_failed">Gagal nganyari cekakan</string>
     <plurals name="settings_shortcuts_deleted">

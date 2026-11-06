@@ -903,6 +903,7 @@
     <string name="settings_dict_edit_word">עריכת מילה</string>
     <string name="settings_dict_word_added">המילה נוספה</string>
     <string name="settings_dict_word_add_failed">הוספת המילה נכשלה</string>
+    <string name="settings_dict_word_exists">%1$s כבר נמצאת במילון המשתמש</string>
     <string name="settings_dict_word_updated">המילה עודכנה</string>
     <string name="settings_dict_word_update_failed">עדכון המילה נכשל</string>
     <plurals name="settings_dict_words_deleted">
@@ -939,6 +940,7 @@
     <string name="settings_shortcuts_new">קיצור חדש</string>
     <string name="settings_shortcuts_added">הקיצור נוסף</string>
     <string name="settings_shortcuts_add_failed">הוספת הקיצור נכשלה</string>
+    <string name="settings_shortcuts_exists">כבר קיים קיצור בשם %1$s</string>
     <string name="settings_shortcuts_updated">הקיצור עודכן</string>
     <string name="settings_shortcuts_update_failed">עדכון הקיצור נכשל</string>
     <plurals name="settings_shortcuts_deleted">

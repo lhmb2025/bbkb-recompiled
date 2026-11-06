@@ -903,6 +903,7 @@
     <string name="settings_dict_edit_word">Redaguoti žodį</string>
     <string name="settings_dict_word_added">Žodis pridėtas</string>
     <string name="settings_dict_word_add_failed">Nepavyko pridėti žodžio</string>
+    <string name="settings_dict_word_exists">%1$s jau yra naudotojo žodyne</string>
     <string name="settings_dict_word_updated">Žodis atnaujintas</string>
     <string name="settings_dict_word_update_failed">Nepavyko atnaujinti žodžio</string>
     <plurals name="settings_dict_words_deleted">
@@ -939,6 +940,7 @@
     <string name="settings_shortcuts_new">Naujas trumpinys</string>
     <string name="settings_shortcuts_added">Trumpinys pridėtas</string>
     <string name="settings_shortcuts_add_failed">Nepavyko pridėti trumpinio</string>
+    <string name="settings_shortcuts_exists">Trumpinys pavadinimu %1$s jau yra</string>
     <string name="settings_shortcuts_updated">Trumpinys atnaujintas</string>
     <string name="settings_shortcuts_update_failed">Nepavyko atnaujinti trumpinio</string>
     <plurals name="settings_shortcuts_deleted">

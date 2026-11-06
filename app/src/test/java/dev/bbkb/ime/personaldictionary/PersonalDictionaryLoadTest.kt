@@ -101,6 +101,31 @@ class PersonalDictionaryLoadTest {
         assertEquals(true, pdu.getWordSubstitutions()["zztwo"]?.isAutoCapsEnabled)
     }
 
+    /**
+     * A built-in shortcut the user deleted stays deleted after a restart. The load path's
+     * `addToDeletedMap` checked the loaded flag, which is set only once everything is in, so
+     * every entry of `deleted_substitutions` was skipped ("Skipped 1 of 1 entries ...
+     * InitialisationIncompleteException") and the deleted `bb` came back (emulator, 2026-11-05).
+     */
+    @Test
+    fun aDeletedBuiltInShortcutStaysDeletedAfterALoad() {
+        load(listOf(Locale.US))
+        assertTrue("bb is a built-in shortcut", pdu.getWordSubstitutions().containsKey("bb"))
+        pdu.shutDown(true)
+        AudSyncer.getInstance().shutDown(true)
+        DefaultWSLoader.invalidateCache()
+
+        File(pduDir(), PersonalDictionaryConstants.DELETED_SUBSTITUTIONS_FILE).writeText(
+            """[{"key":"bb","type":"DEFAULT","version":16,"autoCapsEnabled":false,"locale":"all","word":"BlackBerry"}]"""
+        )
+        pdu = PersonalDictionaryUtil.getInstance(
+            context, context.filesDir.absolutePath, "substitution_macros", mock(NuanceSDK::class.java)
+        )
+        load(listOf(Locale.US))
+
+        assertEquals(null, pdu.getWordSubstitutions()["bb"])
+    }
+
     @Test
     fun aFileThatIsNotAJsonArrayLoadsNothingAndDoesNotFail() {
         File(pduDir(), PersonalDictionaryConstants.PERSONAL_WORDS_FILE).writeText("""{"word":"x"}""")

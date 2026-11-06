@@ -906,6 +906,7 @@
     <string name="settings_dict_edit_word">Cuir focal in eagar</string>
     <string name="settings_dict_word_added">Cuireadh an focal leis</string>
     <string name="settings_dict_word_add_failed">Níorbh fhéidir an focal a chur leis</string>
+    <string name="settings_dict_word_exists">Tá %1$s i bhfoclóir an úsáideora cheana</string>
     <string name="settings_dict_word_updated">Nuashonraíodh an focal</string>
     <string name="settings_dict_word_update_failed">Níorbh fhéidir an focal a nuashonrú</string>
     <plurals name="settings_dict_words_deleted">
@@ -945,6 +946,7 @@
     <string name="settings_shortcuts_new">Aicearra nua</string>
     <string name="settings_shortcuts_added">Cuireadh an t-aicearra leis</string>
     <string name="settings_shortcuts_add_failed">Níorbh fhéidir an t-aicearra a chur leis</string>
+    <string name="settings_shortcuts_exists">Tá aicearra darb ainm %1$s ann cheana</string>
     <string name="settings_shortcuts_updated">Nuashonraíodh an t-aicearra</string>
     <string name="settings_shortcuts_update_failed">Níorbh fhéidir an t-aicearra a nuashonrú</string>
     <plurals name="settings_shortcuts_deleted">

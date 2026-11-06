@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">So‘zni tahrirlash</string>
     <string name="settings_dict_word_added">So‘z qo‘shildi</string>
     <string name="settings_dict_word_add_failed">So‘zni qo‘shib bo‘lmadi</string>
+    <string name="settings_dict_word_exists">%1$s allaqachon foydalanuvchi lug‘atida bor</string>
     <string name="settings_dict_word_updated">So‘z yangilandi</string>
     <string name="settings_dict_word_update_failed">So‘zni yangilab bo‘lmadi</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Yangi yorliq</string>
     <string name="settings_shortcuts_added">Yorliq qo‘shildi</string>
     <string name="settings_shortcuts_add_failed">Yorliqni qo‘shib bo‘lmadi</string>
+    <string name="settings_shortcuts_exists">%1$s nomli yorliq allaqachon mavjud</string>
     <string name="settings_shortcuts_updated">Yorliq yangilandi</string>
     <string name="settings_shortcuts_update_failed">Yorliqni yangilab bo‘lmadi</string>
     <plurals name="settings_shortcuts_deleted">

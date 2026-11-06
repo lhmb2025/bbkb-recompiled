@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">शब्द संपादित करा</string>
     <string name="settings_dict_word_added">शब्द जोडला</string>
     <string name="settings_dict_word_add_failed">शब्द जोडता आला नाही</string>
+    <string name="settings_dict_word_exists">%1$s आधीपासून वापरकर्ता शब्दकोशात आहे</string>
     <string name="settings_dict_word_updated">शब्द अपडेट केला</string>
     <string name="settings_dict_word_update_failed">शब्द अपडेट करता आला नाही</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">नवीन शॉर्टकट</string>
     <string name="settings_shortcuts_added">शॉर्टकट जोडला</string>
     <string name="settings_shortcuts_add_failed">शॉर्टकट जोडता आला नाही</string>
+    <string name="settings_shortcuts_exists">%1$s नावाचा शॉर्टकट आधीपासून आहे</string>
     <string name="settings_shortcuts_updated">शॉर्टकट अपडेट केला</string>
     <string name="settings_shortcuts_update_failed">शॉर्टकट अपडेट करता आला नाही</string>
     <plurals name="settings_shortcuts_deleted">

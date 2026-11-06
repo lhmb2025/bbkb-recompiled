@@ -900,6 +900,7 @@
     <string name="settings_dict_edit_word">Rediģēt vārdu</string>
     <string name="settings_dict_word_added">Vārds pievienots</string>
     <string name="settings_dict_word_add_failed">Neizdevās pievienot vārdu</string>
+    <string name="settings_dict_word_exists">%1$s jau ir lietotāja vārdnīcā</string>
     <string name="settings_dict_word_updated">Vārds atjaunināts</string>
     <string name="settings_dict_word_update_failed">Neizdevās atjaunināt vārdu</string>
     <plurals name="settings_dict_words_deleted">
@@ -933,6 +934,7 @@
     <string name="settings_shortcuts_new">Jauna saīsne</string>
     <string name="settings_shortcuts_added">Saīsne pievienota</string>
     <string name="settings_shortcuts_add_failed">Neizdevās pievienot saīsni</string>
+    <string name="settings_shortcuts_exists">Saīsne ar nosaukumu %1$s jau pastāv</string>
     <string name="settings_shortcuts_updated">Saīsne atjaunināta</string>
     <string name="settings_shortcuts_update_failed">Neizdevās atjaunināt saīsni</string>
     <plurals name="settings_shortcuts_deleted">

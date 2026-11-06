@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">শব্দ সম্পাদনা করুন</string>
     <string name="settings_dict_word_added">শব্দ জোড়া হয়েছে</string>
     <string name="settings_dict_word_add_failed">শব্দ জোড়া যায়নি</string>
+    <string name="settings_dict_word_exists">%1$s ইতিমধ্যে ব্যবহারকারীর অভিধানে আছে</string>
     <string name="settings_dict_word_updated">শব্দ আপডেট করা হয়েছে</string>
     <string name="settings_dict_word_update_failed">শব্দ আপডেট করা যায়নি</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">নতুন শর্টকাট</string>
     <string name="settings_shortcuts_added">শর্টকাট জোড়া হয়েছে</string>
     <string name="settings_shortcuts_add_failed">শর্টকাট জোড়া যায়নি</string>
+    <string name="settings_shortcuts_exists">%1$s নামে একটি শর্টকাট ইতিমধ্যে আছে</string>
     <string name="settings_shortcuts_updated">শর্টকাট আপডেট করা হয়েছে</string>
     <string name="settings_shortcuts_update_failed">শর্টকাট আপডেট করা যায়নি</string>
     <plurals name="settings_shortcuts_deleted">

@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Muokkaa sanaa</string>
     <string name="settings_dict_word_added">Sana lisätty</string>
     <string name="settings_dict_word_add_failed">Sanan lisääminen epäonnistui</string>
+    <string name="settings_dict_word_exists">%1$s on jo omassa sanakirjassa</string>
     <string name="settings_dict_word_updated">Sana päivitetty</string>
     <string name="settings_dict_word_update_failed">Sanan päivittäminen epäonnistui</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Uusi oikotie</string>
     <string name="settings_shortcuts_added">Oikotie lisätty</string>
     <string name="settings_shortcuts_add_failed">Oikotien lisääminen epäonnistui</string>
+    <string name="settings_shortcuts_exists">Oikotie nimeltä %1$s on jo olemassa</string>
     <string name="settings_shortcuts_updated">Oikotie päivitetty</string>
     <string name="settings_shortcuts_update_failed">Oikotien päivittäminen epäonnistui</string>
     <plurals name="settings_shortcuts_deleted">

@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Wysig woord</string>
     <string name="settings_dict_word_added">Woord bygevoeg</string>
     <string name="settings_dict_word_add_failed">Kon nie woord byvoeg nie</string>
+    <string name="settings_dict_word_exists">%1$s is reeds in die gebruikerwoordeboek</string>
     <string name="settings_dict_word_updated">Woord opgedateer</string>
     <string name="settings_dict_word_update_failed">Kon nie woord opdateer nie</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Nuwe kortpad</string>
     <string name="settings_shortcuts_added">Kortpad bygevoeg</string>
     <string name="settings_shortcuts_add_failed">Kon nie kortpad byvoeg nie</string>
+    <string name="settings_shortcuts_exists">\'n Kortpad genaamd %1$s bestaan reeds</string>
     <string name="settings_shortcuts_updated">Kortpad opgedateer</string>
     <string name="settings_shortcuts_update_failed">Kon nie kortpad opdateer nie</string>
     <plurals name="settings_shortcuts_deleted">

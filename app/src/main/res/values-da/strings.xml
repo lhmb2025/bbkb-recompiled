@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Rediger ord</string>
     <string name="settings_dict_word_added">Ordet er tilføjet</string>
     <string name="settings_dict_word_add_failed">Ordet kunne ikke tilføjes</string>
+    <string name="settings_dict_word_exists">%1$s er allerede i brugerordbogen</string>
     <string name="settings_dict_word_updated">Ordet er opdateret</string>
     <string name="settings_dict_word_update_failed">Ordet kunne ikke opdateres</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Ny genvej</string>
     <string name="settings_shortcuts_added">Genvejen er tilføjet</string>
     <string name="settings_shortcuts_add_failed">Genvejen kunne ikke tilføjes</string>
+    <string name="settings_shortcuts_exists">Der findes allerede en genvej med navnet %1$s</string>
     <string name="settings_shortcuts_updated">Genvejen er opdateret</string>
     <string name="settings_shortcuts_update_failed">Genvejen kunne ikke opdateres</string>
     <plurals name="settings_shortcuts_deleted">

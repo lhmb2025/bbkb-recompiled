@@ -894,6 +894,7 @@
     <string name="settings_dict_edit_word">編輯字詞</string>
     <string name="settings_dict_word_added">已新增字詞</string>
     <string name="settings_dict_word_add_failed">無法新增字詞</string>
+    <string name="settings_dict_word_exists">%1$s 已在使用者字典中</string>
     <string name="settings_dict_word_updated">已更新字詞</string>
     <string name="settings_dict_word_update_failed">無法更新字詞</string>
     <plurals name="settings_dict_words_deleted">
@@ -921,6 +922,7 @@
     <string name="settings_shortcuts_new">新捷徑</string>
     <string name="settings_shortcuts_added">已新增捷徑</string>
     <string name="settings_shortcuts_add_failed">無法新增捷徑</string>
+    <string name="settings_shortcuts_exists">已有名為 %1$s 的捷徑</string>
     <string name="settings_shortcuts_updated">已更新捷徑</string>
     <string name="settings_shortcuts_update_failed">無法更新捷徑</string>
     <plurals name="settings_shortcuts_deleted">

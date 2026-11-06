@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">పదాన్ని సవరించు</string>
     <string name="settings_dict_word_added">పదం జోడించబడింది</string>
     <string name="settings_dict_word_add_failed">పదాన్ని జోడించలేకపోయాం</string>
+    <string name="settings_dict_word_exists">%1$s ఇప్పటికే వినియోగదారు నిఘంటువులో ఉంది</string>
     <string name="settings_dict_word_updated">పదం అప్‌డేట్ చేయబడింది</string>
     <string name="settings_dict_word_update_failed">పదాన్ని అప్‌డేట్ చేయలేకపోయాం</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">కొత్త షార్ట్‌కట్</string>
     <string name="settings_shortcuts_added">షార్ట్‌కట్ జోడించబడింది</string>
     <string name="settings_shortcuts_add_failed">షార్ట్‌కట్‌ను జోడించలేకపోయాం</string>
+    <string name="settings_shortcuts_exists">%1$s పేరుతో షార్ట్‌కట్ ఇప్పటికే ఉంది</string>
     <string name="settings_shortcuts_updated">షార్ట్‌కట్ అప్‌డేట్ చేయబడింది</string>
     <string name="settings_shortcuts_update_failed">షార్ట్‌కట్‌ను అప్‌డేట్ చేయలేకపోయాం</string>
     <plurals name="settings_shortcuts_deleted">

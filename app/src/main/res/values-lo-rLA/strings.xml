@@ -894,6 +894,7 @@
     <string name="settings_dict_edit_word">ແກ້ໄຂຄຳສັບ</string>
     <string name="settings_dict_word_added">ເພີ່ມຄຳສັບແລ້ວ</string>
     <string name="settings_dict_word_add_failed">ເພີ່ມຄຳສັບບໍ່ໄດ້</string>
+    <string name="settings_dict_word_exists">%1$s ມີຢູ່ໃນວັດຈະນານຸກົມຜູ້ໃຊ້ແລ້ວ</string>
     <string name="settings_dict_word_updated">ອັບເດດຄຳສັບແລ້ວ</string>
     <string name="settings_dict_word_update_failed">ອັບເດດຄຳສັບບໍ່ໄດ້</string>
     <plurals name="settings_dict_words_deleted">
@@ -921,6 +922,7 @@
     <string name="settings_shortcuts_new">ທາງລັດໃໝ່</string>
     <string name="settings_shortcuts_added">ເພີ່ມທາງລັດແລ້ວ</string>
     <string name="settings_shortcuts_add_failed">ເພີ່ມທາງລັດບໍ່ໄດ້</string>
+    <string name="settings_shortcuts_exists">ມີທາງລັດຊື່ %1$s ຢູ່ແລ້ວ</string>
     <string name="settings_shortcuts_updated">ອັບເດດທາງລັດແລ້ວ</string>
     <string name="settings_shortcuts_update_failed">ອັບເດດທາງລັດບໍ່ໄດ້</string>
     <plurals name="settings_shortcuts_deleted">

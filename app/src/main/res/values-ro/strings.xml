@@ -900,6 +900,7 @@
     <string name="settings_dict_edit_word">Editați cuvântul</string>
     <string name="settings_dict_word_added">Cuvânt adăugat</string>
     <string name="settings_dict_word_add_failed">Cuvântul nu a putut fi adăugat</string>
+    <string name="settings_dict_word_exists">%1$s este deja în dicționarul personal</string>
     <string name="settings_dict_word_updated">Cuvânt actualizat</string>
     <string name="settings_dict_word_update_failed">Cuvântul nu a putut fi actualizat</string>
     <plurals name="settings_dict_words_deleted">
@@ -933,6 +934,7 @@
     <string name="settings_shortcuts_new">Comandă rapidă nouă</string>
     <string name="settings_shortcuts_added">Comandă rapidă adăugată</string>
     <string name="settings_shortcuts_add_failed">Comanda rapidă nu a putut fi adăugată</string>
+    <string name="settings_shortcuts_exists">Există deja o comandă rapidă numită %1$s</string>
     <string name="settings_shortcuts_updated">Comandă rapidă actualizată</string>
     <string name="settings_shortcuts_update_failed">Comanda rapidă nu a putut fi actualizată</string>
     <plurals name="settings_shortcuts_deleted">

@@ -903,6 +903,7 @@
     <string name="settings_dict_edit_word">Редагувати слово</string>
     <string name="settings_dict_word_added">Слово додано</string>
     <string name="settings_dict_word_add_failed">Не вдалося додати слово</string>
+    <string name="settings_dict_word_exists">%1$s уже є в словнику користувача</string>
     <string name="settings_dict_word_updated">Слово оновлено</string>
     <string name="settings_dict_word_update_failed">Не вдалося оновити слово</string>
     <plurals name="settings_dict_words_deleted">
@@ -939,6 +940,7 @@
     <string name="settings_shortcuts_new">Нове скорочення</string>
     <string name="settings_shortcuts_added">Скорочення додано</string>
     <string name="settings_shortcuts_add_failed">Не вдалося додати скорочення</string>
+    <string name="settings_shortcuts_exists">Скорочення з назвою %1$s уже існує</string>
     <string name="settings_shortcuts_updated">Скорочення оновлено</string>
     <string name="settings_shortcuts_update_failed">Не вдалося оновити скорочення</string>
     <plurals name="settings_shortcuts_deleted">

@@ -897,6 +897,7 @@
     <string name="settings_dict_edit_word">Rediger ord</string>
     <string name="settings_dict_word_added">Ordet er lagt til</string>
     <string name="settings_dict_word_add_failed">Kunne ikke legge til ordet</string>
+    <string name="settings_dict_word_exists">%1$s er allerede i den personlige ordlisten</string>
     <string name="settings_dict_word_updated">Ordet er oppdatert</string>
     <string name="settings_dict_word_update_failed">Kunne ikke oppdatere ordet</string>
     <plurals name="settings_dict_words_deleted">
@@ -927,6 +928,7 @@
     <string name="settings_shortcuts_new">Ny snarvei</string>
     <string name="settings_shortcuts_added">Snarveien er lagt til</string>
     <string name="settings_shortcuts_add_failed">Kunne ikke legge til snarveien</string>
+    <string name="settings_shortcuts_exists">Det finnes allerede en snarvei som heter %1$s</string>
     <string name="settings_shortcuts_updated">Snarveien er oppdatert</string>
     <string name="settings_shortcuts_update_failed">Kunne ikke oppdatere snarveien</string>
     <plurals name="settings_shortcuts_deleted">
