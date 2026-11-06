@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Auf diesem Telefon nicht verfügbar</string>
     <string name="pref_show_pkb_modifier_status_icon">Symbol für Modifikatorstatus anzeigen</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Bei Verwendung der physischen Tastatur die Umschalt-/Alt-Anzeige in der Statusleiste einblenden</string>
-    <string name="settings_pred_accounts_permission_summary">Erteilen Sie die Berechtigung für Konten, damit während der Eingabe E-Mail-Adressen vorgeschlagen werden können</string>
-    <string name="settings_pred_accounts_permission_title">Kontenberechtigung erforderlich</string>
     <string name="settings_pred_block_offensive_summary">Möglicherweise anstößige Wörter beim Diktieren ausblenden</string>
     <string name="settings_pred_block_offensive_title">Anstößige Wörter blockieren</string>
     <string name="settings_pred_contacts_permission_summary">Erteilen Sie die Berechtigung für Kontakte, damit während der Eingabe Kontaktnamen und E-Mail-Adressen vorgeschlagen werden können</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Kontaktberechtigung erforderlich</string>
     <string name="settings_pred_contacts_summary_enabled">Kontaktnamen in Vorschläge einbeziehen</string>
     <string name="settings_pred_contacts_title">Aus Kontakten vorschlagen</string>
-    <string name="settings_pred_email_summary_disabled">Kontenberechtigung erforderlich</string>
-    <string name="settings_pred_email_summary_enabled">Ihre E-Mail-Adressen in Vorschläge einbeziehen</string>
-    <string name="settings_pred_email_title">E-Mail-Adressen vorschlagen</string>
     <string name="settings_pred_emoji_summary">Emojis während der Eingabe vorschlagen</string>
     <string name="settings_pred_emoji_title">Emoji-Vorschläge</string>
     <string name="settings_pred_flick_animation_summary">Das Wort nach oben animieren, wenn ein Vorschlag per Streichgeste übernommen wird</string>

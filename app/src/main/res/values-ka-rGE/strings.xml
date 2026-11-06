@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">მიუწვდომელია ამ ტელეფონზე</string>
     <string name="pref_show_pkb_modifier_status_icon">მოდიფიკატორის სტატუსის ხატულის ჩვენება</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Shift/Alt მოდიფიკატორის ინდიკატორის ჩვენება სტატუსის ზოლში ფიზიკური კლავიატურის გამოყენებისას</string>
-    <string name="settings_pred_accounts_permission_summary">მიეცით ანგარიშების ნებართვა, რომ აკრეფისას ელფოსტის მისამართები შემოგთავაზოთ</string>
-    <string name="settings_pred_accounts_permission_title">საჭიროა ანგარიშების ნებართვა</string>
     <string name="settings_pred_block_offensive_summary">პოტენციურად შეურაცხმყოფელი სიტყვების დამალვა ხმოვანი კარნახისას</string>
     <string name="settings_pred_block_offensive_title">შეურაცხმყოფელი სიტყვების დაბლოკვა</string>
     <string name="settings_pred_contacts_permission_summary">მიეცით კონტაქტების ნებართვა, რომ აკრეფისას კონტაქტების სახელები და ელფოსტის მისამართები შემოგთავაზოთ</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">საჭიროა კონტაქტების ნებართვა</string>
     <string name="settings_pred_contacts_summary_enabled">კონტაქტების სახელების ჩართვა შემოთავაზებებში</string>
     <string name="settings_pred_contacts_title">შემოთავაზება კონტაქტებიდან</string>
-    <string name="settings_pred_email_summary_disabled">საჭიროა ანგარიშების ნებართვა</string>
-    <string name="settings_pred_email_summary_enabled">თქვენი ელფოსტის მისამართების ჩართვა შემოთავაზებებში</string>
-    <string name="settings_pred_email_title">ელფოსტის მისამართების შემოთავაზება</string>
     <string name="settings_pred_emoji_summary">აკრეფისას სიცილაკების შემოთავაზება</string>
     <string name="settings_pred_emoji_title">სიცილაკების შემოთავაზებები</string>
     <string name="settings_pred_flick_animation_summary">სიტყვის ზემოთ ანიმაცია, როცა შემოთავაზებას გადასრიალებით ადასტურებთ</string>

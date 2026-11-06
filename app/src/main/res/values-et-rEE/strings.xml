@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Pole selles telefonis saadaval</string>
     <string name="pref_show_pkb_modifier_status_icon">Kuva muuteklahvi olekuikoon</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Kuva füüsilise klaviatuuri kasutamisel olekuribal Shift/Alt muuteklahvi näidik</string>
-    <string name="settings_pred_accounts_permission_summary">Andke kontode luba, et kirjutamise ajal e-posti aadresse soovitada</string>
-    <string name="settings_pred_accounts_permission_title">Vajalik on kontode luba</string>
     <string name="settings_pred_block_offensive_summary">Peida häälega dikteerimisel võimalikud solvavad sõnad</string>
     <string name="settings_pred_block_offensive_title">Blokeeri solvavad sõnad</string>
     <string name="settings_pred_contacts_permission_summary">Andke kontaktide luba, et kirjutamise ajal kontaktide nimesid ja e-posti aadresse soovitada</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Vajalik on kontaktide luba</string>
     <string name="settings_pred_contacts_summary_enabled">Kaasa soovitustesse kontaktide nimed</string>
     <string name="settings_pred_contacts_title">Soovita kontaktidest</string>
-    <string name="settings_pred_email_summary_disabled">Vajalik on kontode luba</string>
-    <string name="settings_pred_email_summary_enabled">Kaasa soovitustesse teie e-posti aadressid</string>
-    <string name="settings_pred_email_title">Soovita e-posti aadresse</string>
     <string name="settings_pred_emoji_summary">Soovita kirjutamisel emotikone</string>
     <string name="settings_pred_emoji_title">Emotikonisoovitused</string>
     <string name="settings_pred_flick_animation_summary">Animeeri sõna ülespoole, kui soovitus kinnitatakse libistusega</string>

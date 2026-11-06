@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Энэ утсанд боломжгүй</string>
     <string name="pref_show_pkb_modifier_status_icon">Өөрчлөгч товчны төлөвийн дүрс харуулах</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Биет гар ашиглах үед Shift/Alt товчны заагчийг төлөвийн мөрөнд харуулах</string>
-    <string name="settings_pred_accounts_permission_summary">Бичих үед имэйл хаяг санал болгохын тулд бүртгэлийн зөвшөөрөл олгоно уу</string>
-    <string name="settings_pred_accounts_permission_title">Бүртгэлийн зөвшөөрөл шаардлагатай</string>
     <string name="settings_pred_block_offensive_summary">Дуугаар бичүүлэхэд доромжлол агуулж болзошгүй үгсийг нуух</string>
     <string name="settings_pred_block_offensive_title">Доромжилсон үг хориглох</string>
     <string name="settings_pred_contacts_permission_summary">Бичих үед харилцагчийн нэр, имэйл хаяг санал болгохын тулд харилцагчийн зөвшөөрөл олгоно уу</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Харилцагчийн зөвшөөрөл шаардлагатай</string>
     <string name="settings_pred_contacts_summary_enabled">Харилцагчийн нэрийг саналд оруулах</string>
     <string name="settings_pred_contacts_title">Харилцагчдаас санал болгох</string>
-    <string name="settings_pred_email_summary_disabled">Бүртгэлийн зөвшөөрөл шаардлагатай</string>
-    <string name="settings_pred_email_summary_enabled">Имэйл хаягуудаа саналд оруулах</string>
-    <string name="settings_pred_email_title">Имэйл хаяг санал болгох</string>
     <string name="settings_pred_emoji_summary">Бичих үед инээмсэглэл санал болгох</string>
     <string name="settings_pred_emoji_title">Инээмсэглэлийн санал</string>
     <string name="settings_pred_flick_animation_summary">Саналыг хурдан шудралтаар оруулахад үгийг дээш хөдөлгөж үзүүлэх</string>

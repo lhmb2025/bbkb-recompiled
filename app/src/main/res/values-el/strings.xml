@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Μη διαθέσιμο σε αυτό το τηλέφωνο</string>
     <string name="pref_show_pkb_modifier_status_icon">Εμφάνιση εικονιδίου κατάστασης τροποποιητών</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Εμφάνιση ένδειξης Shift/Alt στη γραμμή κατάστασης κατά τη χρήση φυσικού πληκτρολογίου</string>
-    <string name="settings_pred_accounts_permission_summary">Παραχωρήστε άδεια για τους λογαριασμούς, ώστε να προτείνονται διευθύνσεις email κατά την πληκτρολόγηση</string>
-    <string name="settings_pred_accounts_permission_title">Απαιτείται άδεια για τους λογαριασμούς</string>
     <string name="settings_pred_block_offensive_summary">Απόκρυψη πιθανώς προσβλητικών λέξεων στη φωνητική υπαγόρευση</string>
     <string name="settings_pred_block_offensive_title">Αποκλεισμός προσβλητικών λέξεων</string>
     <string name="settings_pred_contacts_permission_summary">Παραχωρήστε άδεια για τις επαφές, ώστε να προτείνονται ονόματα επαφών και διευθύνσεις email κατά την πληκτρολόγηση</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Απαιτείται άδεια για τις επαφές</string>
     <string name="settings_pred_contacts_summary_enabled">Συμπερίληψη ονομάτων επαφών στις προτάσεις</string>
     <string name="settings_pred_contacts_title">Προτάσεις από τις επαφές</string>
-    <string name="settings_pred_email_summary_disabled">Απαιτείται άδεια για τους λογαριασμούς</string>
-    <string name="settings_pred_email_summary_enabled">Συμπερίληψη των διευθύνσεων email σας στις προτάσεις</string>
-    <string name="settings_pred_email_title">Πρόταση διευθύνσεων email</string>
     <string name="settings_pred_emoji_summary">Πρόταση emoji κατά την πληκτρολόγηση</string>
     <string name="settings_pred_emoji_title">Προτάσεις emoji</string>
     <string name="settings_pred_flick_animation_summary">Κίνηση της λέξης προς τα πάνω κατά την επιβεβαίωση μιας πρότασης με σύρσιμο</string>

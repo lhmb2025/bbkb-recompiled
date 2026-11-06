@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Не е налично на този телефон</string>
     <string name="pref_show_pkb_modifier_status_icon">Икона за състоянието на модификаторите</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Показване на индикатор за Shift/Alt в лентата на състоянието при използване на физическа клавиатура</string>
-    <string name="settings_pred_accounts_permission_summary">Дайте разрешение за профили, за да се предлагат имейл адреси при писане</string>
-    <string name="settings_pred_accounts_permission_title">Необходимо е разрешение за профили</string>
     <string name="settings_pred_block_offensive_summary">Скриване на потенциално обидни думи при гласова диктовка</string>
     <string name="settings_pred_block_offensive_title">Блокиране на обидните думи</string>
     <string name="settings_pred_contacts_permission_summary">Дайте разрешение за контакти, за да се предлагат имена на контакти и имейл адреси при писане</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Необходимо е разрешение за контакти</string>
     <string name="settings_pred_contacts_summary_enabled">Включване на имената на контактите в предложенията</string>
     <string name="settings_pred_contacts_title">Предлагане от контактите</string>
-    <string name="settings_pred_email_summary_disabled">Необходимо е разрешение за профили</string>
-    <string name="settings_pred_email_summary_enabled">Включване на вашите имейл адреси в предложенията</string>
-    <string name="settings_pred_email_title">Предлагане на имейл адреси</string>
     <string name="settings_pred_emoji_summary">Предлагане на емотикони при писане</string>
     <string name="settings_pred_emoji_title">Предложения за емотикони</string>
     <string name="settings_pred_flick_animation_summary">Анимиране на думата нагоре при потвърждаване на предложение с плъзгане</string>

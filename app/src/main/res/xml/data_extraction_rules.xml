@@ -2,7 +2,7 @@
 <!--
     Backup/transfer allowlist for Android 12+ (targetSdk 31 and above). The platform
     reads this file instead of @xml/backupscheme, which is now only consulted on
-    API 23-30. The two files must be kept in sync: five includes, nothing else
+    API 30 and below. The two files must be kept in sync: five includes, nothing else
     (BackupRulesTest checks the file includes of both).
 
     The personal-dictionary store is filesDir/dev.bbkb.ime.basl.pdu/

@@ -350,9 +350,8 @@ public final class StringHelper {
     }
     
     public static CharSequence[] splitPreservingSpans(CharSequence charSequence, String pattern, boolean keepEmpty) {
-        // Map.computeIfAbsent is API 24 and minSdk is 23 with no desugaring: NoSuchMethodError on
-        // an API-23 device. ConcurrentHashMap.putIfAbsent is safe. Compiling a Pattern twice under
-        // a race is harmless; both are equivalent and one is discarded.
+        // Compiling a Pattern twice under a race is harmless; both are equivalent and
+        // putIfAbsent keeps one.
         Pattern compiled = SPLIT_PATTERN_CACHE.get(pattern);
         if (compiled == null) {
             final Pattern created = Pattern.compile(pattern);

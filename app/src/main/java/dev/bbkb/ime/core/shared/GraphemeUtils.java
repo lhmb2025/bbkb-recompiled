@@ -137,7 +137,7 @@ public final class GraphemeUtils {
      *
      * <p>A current ICU never puts a boundary there, so on a current phone this changes nothing.
      * It is for iterators that predate the emoji rules of Unicode 9 or do not know a newer emoji
-     * as a modifier base: ICU on Android 6 and 7, and the JDK 17 iterator the unit tests run on,
+     * as a modifier base, such as the JDK 17 iterator the unit tests run on,
      * which splits ZWJ sequences, flags and skin tones into their code points.
      */
     private static boolean isInsideEmojiSequence(String text, int index) {

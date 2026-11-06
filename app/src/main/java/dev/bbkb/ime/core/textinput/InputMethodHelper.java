@@ -181,7 +181,7 @@ public final class InputMethodHelper {
     }
 
     /**
-     * TI-31: the {@code SDK_INT >= 22} half is always true at {@code minSdk 23}, and the
+     * TI-31: the {@code SDK_INT >= 22} half is always true at the app's minSdk, and the
      * {@code inKeyguardRestrictedInputMode()} fallback it guarded has been deprecated since API 16
      * and is redundant once {@code isDeviceLocked()} is unconditionally available. The context is
      * also null until {@code init()} runs, and this is called from the functional-key handler.

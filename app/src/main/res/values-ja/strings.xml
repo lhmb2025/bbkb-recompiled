@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">この端末では利用できません</string>
     <string name="pref_show_pkb_modifier_status_icon">修飾キーの状態アイコンを表示</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">物理キーボードの使用中にShift/Altの状態をステータスバーに表示します</string>
-    <string name="settings_pred_accounts_permission_summary">入力中にメールアドレスを候補に表示するには、アカウントの権限を許可してください</string>
-    <string name="settings_pred_accounts_permission_title">アカウントの権限が必要です</string>
     <string name="settings_pred_block_offensive_summary">音声入力で不適切な可能性のある単語を伏せ字にします</string>
     <string name="settings_pred_block_offensive_title">不適切な単語をブロック</string>
     <string name="settings_pred_contacts_permission_summary">入力中に連絡先の名前やメールアドレスを候補に表示するには、連絡先の権限を許可してください</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">連絡先の権限が必要です</string>
     <string name="settings_pred_contacts_summary_enabled">連絡先の名前を候補に含めます</string>
     <string name="settings_pred_contacts_title">連絡先から候補を表示</string>
-    <string name="settings_pred_email_summary_disabled">アカウントの権限が必要です</string>
-    <string name="settings_pred_email_summary_enabled">自分のメールアドレスを候補に含めます</string>
-    <string name="settings_pred_email_title">メールアドレスを候補に表示</string>
     <string name="settings_pred_emoji_summary">入力中に絵文字を候補に表示します</string>
     <string name="settings_pred_emoji_title">絵文字の候補</string>
     <string name="settings_pred_flick_animation_summary">スワイプで候補を確定するときに単語を上方向にアニメーション表示します</string>

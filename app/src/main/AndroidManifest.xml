@@ -4,13 +4,6 @@
         android:normalScreens="true"
         android:largeScreens="true"/>
 
-    <!--
-        Shizuku's api AAR (package rikka.shizuku.api) declares minSdk 24; the app keeps 23. The
-        override is safe because nothing calls into Shizuku below API 24: ShizukuFacade.create()
-        hands out a do-nothing facade there and the engine reports UNSUPPORTED. The provider,
-        aidl and shared AARs already declare 23 and need no override.
-    -->
-    <uses-sdk tools:overrideLibrary="rikka.shizuku.api"/>
     
     <!-- Package visibility declarations for API 30+ -->
     <queries>
@@ -56,8 +49,6 @@
     <!-- Dangerous permissions - require runtime requests on API 23+ -->
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <!-- GET_ACCOUNTS only works on API < 26, deprecated after Android 8.0 -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" android:maxSdkVersion="25"/>
     <!-- System permissions -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE"/>

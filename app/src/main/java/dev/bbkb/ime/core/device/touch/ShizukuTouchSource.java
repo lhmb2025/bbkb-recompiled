@@ -277,9 +277,7 @@ public final class ShizukuTouchSource implements KeypadTouchSource {
             case STREAMING:
                 return TouchSourceStatus.of(TouchSourceStatus.State.ACTIVE, TouchSourceStatus.Reason.OK);
             case UNSUPPORTED:
-                return unavailable(ShizukuTouchErrors.SERVER_TOO_OLD.equals(engine.getError())
-                        ? TouchSourceStatus.Reason.SHIZUKU_OUTDATED
-                        : TouchSourceStatus.Reason.SHIZUKU_UNSUPPORTED);
+                return unavailable(TouchSourceStatus.Reason.SHIZUKU_OUTDATED);
             case NOT_INSTALLED:
                 return unavailable(TouchSourceStatus.Reason.SHIZUKU_NOT_INSTALLED);
             case NOT_RUNNING:

@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Inte tillgängligt på den här telefonen</string>
     <string name="pref_show_pkb_modifier_status_icon">Visa statusikon för modifierare</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Visa indikator för Shift/Alt i statusfältet när du använder ett fysiskt tangentbord</string>
-    <string name="settings_pred_accounts_permission_summary">Ge behörighet till konton så att e-postadresser kan föreslås medan du skriver</string>
-    <string name="settings_pred_accounts_permission_title">Behörighet till konton krävs</string>
     <string name="settings_pred_block_offensive_summary">Dölj ord som kan uppfattas som stötande vid diktering</string>
     <string name="settings_pred_block_offensive_title">Blockera stötande ord</string>
     <string name="settings_pred_contacts_permission_summary">Ge behörighet till kontakter så att kontaktnamn och e-postadresser kan föreslås medan du skriver</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Behörighet till kontakter krävs</string>
     <string name="settings_pred_contacts_summary_enabled">Ta med kontaktnamn i förslagen</string>
     <string name="settings_pred_contacts_title">Föreslå från kontakter</string>
-    <string name="settings_pred_email_summary_disabled">Behörighet till konton krävs</string>
-    <string name="settings_pred_email_summary_enabled">Ta med dina e-postadresser i förslagen</string>
-    <string name="settings_pred_email_title">Föreslå e-postadresser</string>
     <string name="settings_pred_emoji_summary">Föreslå emojier medan du skriver</string>
     <string name="settings_pred_emoji_title">Emojiförslag</string>
     <string name="settings_pred_flick_animation_summary">Animera ordet uppåt när du bekräftar ett förslag med ett svep</string>

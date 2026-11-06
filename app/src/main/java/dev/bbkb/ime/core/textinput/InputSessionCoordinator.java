@@ -2,7 +2,6 @@ package dev.bbkb.ime.core.textinput;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
@@ -107,10 +106,8 @@ public class InputSessionCoordinator {
         if (RichInputMethodManager.isInitialized()) {
             RichInputMethodManager.getInstance().moveToEnabledSubtypeIfCurrentIsNot(ime);
         }
-        if (Build.VERSION.SDK_INT >= 24) {
-            if (ime.getSubtypeManager().shouldRemoveActiveKeyboardLocale(ime, Resources.getSystem().getConfiguration().getLocales())) {
-                ime.updateSuggestionsFromSubtype(InputSource.INTERNAL);
-            }
+        if (ime.getSubtypeManager().shouldRemoveActiveKeyboardLocale(ime, Resources.getSystem().getConfiguration().getLocales())) {
+            ime.updateSuggestionsFromSubtype(InputSource.INTERNAL);
         }
         boolean shouldInit = shouldReloadKeyboard(editorInfo, restarting);
         if (shouldInit) {

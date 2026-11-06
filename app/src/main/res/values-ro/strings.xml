@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Indisponibil pe acest telefon</string>
     <string name="pref_show_pkb_modifier_status_icon">Afișați pictograma de stare a modificatorilor</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Afișează indicatorul modificatorilor Shift/Alt în bara de stare când folosiți tastatura fizică</string>
-    <string name="settings_pred_accounts_permission_summary">Acordați permisiunea pentru conturi, pentru a sugera adrese de e-mail în timp ce tastați</string>
-    <string name="settings_pred_accounts_permission_title">Este necesară permisiunea pentru conturi</string>
     <string name="settings_pred_block_offensive_summary">Ascunde cuvintele potențial ofensatoare în dictarea vocală</string>
     <string name="settings_pred_block_offensive_title">Blocați cuvintele ofensatoare</string>
     <string name="settings_pred_contacts_permission_summary">Acordați permisiunea pentru contacte, pentru a sugera nume de contacte și adrese de e-mail în timp ce tastați</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Este necesară permisiunea pentru contacte</string>
     <string name="settings_pred_contacts_summary_enabled">Includeți numele contactelor în sugestii</string>
     <string name="settings_pred_contacts_title">Sugestii din contacte</string>
-    <string name="settings_pred_email_summary_disabled">Este necesară permisiunea pentru conturi</string>
-    <string name="settings_pred_email_summary_enabled">Includeți adresele dvs. de e-mail în sugestii</string>
-    <string name="settings_pred_email_title">Sugerați adrese de e-mail</string>
     <string name="settings_pred_emoji_summary">Sugerează emoji în timp ce tastați</string>
     <string name="settings_pred_emoji_title">Sugestii emoji</string>
     <string name="settings_pred_flick_animation_summary">Animă cuvântul în sus când confirmați o sugestie printr-o mișcare rapidă</string>

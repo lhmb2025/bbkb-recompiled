@@ -203,7 +203,6 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         final List<String[]> batches = new ArrayList<>();
         final List<ContactsDataProvider.ContactsType> batchTypes = new ArrayList<>();
         try {
-            collectAccountEmails(batches, batchTypes);
             collectContactsFromUri(bVar, ContactsContract.Profile.CONTENT_URI, batches, batchTypes);
             collectContactsFromUri(bVar, ContactsContract.Contacts.CONTENT_URI, batches, batchTypes);
         } finally {
@@ -259,14 +258,6 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         final SettingsManager settings = SettingsManager.getInstance();
         return settings == null || settings.getSettingsValues() == null
                 || settings.getSettingsValues().isDynamicLearningEnabled;
-    }
-
-    private void collectAccountEmails(List<String[]> batches, List<ContactsDataProvider.ContactsType> types) {
-        List<String> listM4552a = AccountUtils.getDeviceAccountsEmailAddresses(this.context);
-        if (listM4552a == null || listM4552a.isEmpty()) {
-            return;
-        }
-        collectWords(listM4552a, ContactsDataProvider.ContactsType.ALL, batches, types);
     }
 
     private void collectContactsFromUri(ContactsDataProvider.ContactsType bVar, Uri uri,

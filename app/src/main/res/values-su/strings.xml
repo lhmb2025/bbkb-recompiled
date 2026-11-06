@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Teu sadia dina telepon ieu</string>
     <string name="pref_show_pkb_modifier_status_icon">Témbongkeun ikon status modifier</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Némbongkeun tanda Shift/Alt dina bar status waktu maké papan tombol fisik</string>
-    <string name="settings_pred_accounts_permission_summary">Pasihan idin akun sangkan alamat surélék bisa disarankeun sabot ngetik</string>
-    <string name="settings_pred_accounts_permission_title">Butuh Idin Akun</string>
     <string name="settings_pred_block_offensive_summary">Tutupan kecap nu bisa matak nyigeung waktu diktasi ku sora</string>
     <string name="settings_pred_block_offensive_title">Halangan kecap nu nyigeung</string>
     <string name="settings_pred_contacts_permission_summary">Pasihan idin kontak sangkan ngaran kontak jeung alamat surélék bisa disarankeun sabot ngetik</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Butuh idin kontak</string>
     <string name="settings_pred_contacts_summary_enabled">Asupkeun ngaran kontak kana saran</string>
     <string name="settings_pred_contacts_title">Saran ti kontak</string>
-    <string name="settings_pred_email_summary_disabled">Butuh idin akun</string>
-    <string name="settings_pred_email_summary_enabled">Asupkeun alamat surélék anjeun kana saran</string>
-    <string name="settings_pred_email_title">Sarankeun alamat surélék</string>
     <string name="settings_pred_emoji_summary">Sarankeun emoji sabot ngetik</string>
     <string name="settings_pred_emoji_title">Saran emoji</string>
     <string name="settings_pred_flick_animation_summary">Ngaanimasikeun kecap ka luhur waktu saran ditarima ku sentilan</string>

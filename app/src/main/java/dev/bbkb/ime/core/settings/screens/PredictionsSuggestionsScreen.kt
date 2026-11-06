@@ -2,7 +2,6 @@ package dev.bbkb.ime.core.settings.screens
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -52,23 +51,6 @@ fun PredictionsSuggestionsScreen(
         )
     }
     
-    // GET_ACCOUNTS only works on API < 26 (Android 8.0)
-    val showEmailToggle = Build.VERSION.SDK_INT < Build.VERSION_CODES.O
-    
-    // Check if GET_ACCOUNTS permission is granted (only relevant for API < 26)
-    var hasAccountsPermission by remember {
-        mutableStateOf(
-            if (showEmailToggle) {
-                ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.GET_ACCOUNTS
-                ) == PackageManager.PERMISSION_GRANTED
-            } else {
-                false
-            }
-        )
-    }
-    
     
     var showPredictions by remember {
         mutableStateOf(prefs.getBoolean("show_predictions", true))
@@ -95,9 +77,6 @@ fun PredictionsSuggestionsScreen(
     var suggestContacts by remember {
         mutableStateOf(prefs.getBoolean("pref_key_use_contacts_dict", true))
     }
-    var suggestEmails by remember {
-        mutableStateOf(prefs.getBoolean("pref_key_use_accounts_dict", true))
-    }
     var forceSuggestions by remember {
         mutableStateOf(prefs.getBoolean("pref_force_suggestions", false))
     }
@@ -111,19 +90,6 @@ fun PredictionsSuggestionsScreen(
             // Permission granted - turn on the toggle
             suggestContacts = true
             prefs.edit().putBoolean("pref_key_use_contacts_dict", true).apply()
-        }
-        // If not granted, toggle stays off (no change needed)
-    }
-    
-    // Permission launcher for GET_ACCOUNTS (only used on API < 26)
-    val accountsPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        hasAccountsPermission = isGranted
-        if (isGranted) {
-            // Permission granted - turn on the toggle
-            suggestEmails = true
-            prefs.edit().putBoolean("pref_key_use_accounts_dict", true).apply()
         }
         // If not granted, toggle stays off (no change needed)
     }
@@ -278,36 +244,6 @@ fun PredictionsSuggestionsScreen(
                         prefs.edit().putBoolean("pref_key_use_contacts_dict", newValue).apply()
                     }
                 )
-            
-                // Suggest email addresses (only available on API < 26 where GET_ACCOUNTS works)
-                if (showEmailToggle) {
-                    // Same treatment as the contacts prompt above.
-                    if (!hasAccountsPermission) {
-                        PreferenceActionItem(
-                            title = context.getString(R.string.settings_pred_accounts_permission_title),
-                            summary = context.getString(R.string.settings_pred_accounts_permission_summary),
-                            actionLabel = context.getString(R.string.settings_pred_grant_permission),
-                            onAction = {
-                                accountsPermissionLauncher.launch(Manifest.permission.GET_ACCOUNTS)
-                            },
-                        )
-                    }
-
-                    SwitchPreference(
-                        title = context.getString(R.string.settings_pred_email_title),
-                        summary = if (hasAccountsPermission) {
-                            context.getString(R.string.settings_pred_email_summary_enabled)
-                        } else {
-                            context.getString(R.string.settings_pred_email_summary_disabled)
-                        },
-                        checked = suggestEmails && hasAccountsPermission,
-                        enabled = hasAccountsPermission,
-                        onCheckedChange = { newValue ->
-                            suggestEmails = newValue
-                            prefs.edit().putBoolean("pref_key_use_accounts_dict", newValue).apply()
-                        }
-                    )
-                }
             }
             
             Spacer(modifier = Modifier.height(spacing.extraLarge))

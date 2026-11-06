@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Nepasiekiama šiame telefone</string>
     <string name="pref_show_pkb_modifier_status_icon">Rodyti modifikavimo klavišų būsenos piktogramą</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Naudojant fizinę klaviatūrą rodyti „Shift“ / „Alt“ indikatorių būsenos juostoje</string>
-    <string name="settings_pred_accounts_permission_summary">Suteikite paskyrų leidimą, kad rašant būtų siūlomi el. pašto adresai</string>
-    <string name="settings_pred_accounts_permission_title">Reikia paskyrų leidimo</string>
     <string name="settings_pred_block_offensive_summary">Slėpti galimai įžeidžiančius žodžius diktuojant balsu</string>
     <string name="settings_pred_block_offensive_title">Blokuoti įžeidžiančius žodžius</string>
     <string name="settings_pred_contacts_permission_summary">Suteikite kontaktų leidimą, kad rašant būtų siūlomi kontaktų vardai ir el. pašto adresai</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Reikia kontaktų leidimo</string>
     <string name="settings_pred_contacts_summary_enabled">Įtraukti kontaktų vardus į pasiūlymus</string>
     <string name="settings_pred_contacts_title">Siūlyti iš kontaktų</string>
-    <string name="settings_pred_email_summary_disabled">Reikia paskyrų leidimo</string>
-    <string name="settings_pred_email_summary_enabled">Įtraukti jūsų el. pašto adresus į pasiūlymus</string>
-    <string name="settings_pred_email_title">Siūlyti el. pašto adresus</string>
     <string name="settings_pred_emoji_summary">Siūlyti jaustukus rašant</string>
     <string name="settings_pred_emoji_title">Jaustukų pasiūlymai</string>
     <string name="settings_pred_flick_animation_summary">Animuoti žodį aukštyn, kai pasiūlymas patvirtinamas perbraukimu</string>

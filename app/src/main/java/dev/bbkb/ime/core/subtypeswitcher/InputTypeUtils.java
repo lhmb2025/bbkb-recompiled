@@ -1,6 +1,5 @@
 package dev.bbkb.ime.core.subtypeswitcher;
 
-import android.os.Build;
 import android.text.InputType;
 import android.view.inputmethod.EditorInfo;
 
@@ -139,8 +138,7 @@ public final class InputTypeUtils {
         if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0
                 && (isNonMultiLineTextType(editorInfo.inputType)
                     || isDoneOrNextAction(editorInfo)
-                    || !RomFeatureChecker.isGoogleServicesDisabled()
-                    || Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)) {
+                    || !RomFeatureChecker.isGoogleServicesDisabled())) {
             return EditorInfo.IME_ACTION_NONE;
         }
         if (editorInfo.actionLabel != null) {

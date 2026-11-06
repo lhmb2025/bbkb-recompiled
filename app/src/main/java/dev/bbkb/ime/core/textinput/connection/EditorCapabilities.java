@@ -221,9 +221,7 @@ public final class EditorCapabilities {
     }
 
     /**
-     * Whether the editor set {@link EditorInfo#IME_FLAG_NO_PERSONALIZED_LEARNING}. The constant is
-     * API 26 but a compile-time int, so it is inlined and safe at minSdk 23; older editors simply
-     * never set the bit.
+     * Whether the editor set {@link EditorInfo#IME_FLAG_NO_PERSONALIZED_LEARNING}.
      *
      * @param editorInfo the focused editor, or {@code null}
      * @return {@code true} if the field is incognito

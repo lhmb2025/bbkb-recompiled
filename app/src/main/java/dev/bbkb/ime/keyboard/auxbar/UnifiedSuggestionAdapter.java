@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import dev.bbkb.ime.R;
@@ -100,7 +101,8 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
     public UnifiedSuggestionAdapter(Context context, OnSuggestionClickListener listener) {
         this.context = context;
         this.listener = listener;
-        this.mainExecutor = context.getMainExecutor();
+        // ContextCompat: Context.getMainExecutor() itself is API 28 and this runs for every input view.
+        this.mainExecutor = ContextCompat.getMainExecutor(context);
         this.minWidthMaterialPx = context.getResources()
                 .getDimensionPixelSize(R.dimen.config_suggestion_min_width_material);
     }

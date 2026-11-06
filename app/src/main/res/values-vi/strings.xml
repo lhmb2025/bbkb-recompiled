@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Không khả dụng trên điện thoại này</string>
     <string name="pref_show_pkb_modifier_status_icon">Hiển thị biểu tượng trạng thái phím bổ trợ</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Hiển thị chỉ báo phím bổ trợ Shift/Alt trên thanh trạng thái khi dùng bàn phím vật lý</string>
-    <string name="settings_pred_accounts_permission_summary">Cấp quyền truy cập tài khoản để gợi ý địa chỉ email khi bạn nhập</string>
-    <string name="settings_pred_accounts_permission_title">Cần quyền truy cập tài khoản</string>
     <string name="settings_pred_block_offensive_summary">Ẩn những từ có thể gây phản cảm khi đọc chính tả bằng giọng nói</string>
     <string name="settings_pred_block_offensive_title">Chặn từ ngữ phản cảm</string>
     <string name="settings_pred_contacts_permission_summary">Cấp quyền truy cập danh bạ để gợi ý tên liên hệ và địa chỉ email khi bạn nhập</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Cần quyền truy cập danh bạ</string>
     <string name="settings_pred_contacts_summary_enabled">Đưa tên liên hệ vào phần gợi ý</string>
     <string name="settings_pred_contacts_title">Gợi ý từ danh bạ</string>
-    <string name="settings_pred_email_summary_disabled">Cần quyền truy cập tài khoản</string>
-    <string name="settings_pred_email_summary_enabled">Đưa địa chỉ email của bạn vào phần gợi ý</string>
-    <string name="settings_pred_email_title">Gợi ý địa chỉ email</string>
     <string name="settings_pred_emoji_summary">Gợi ý biểu tượng cảm xúc khi bạn nhập</string>
     <string name="settings_pred_emoji_title">Gợi ý biểu tượng cảm xúc</string>
     <string name="settings_pred_flick_animation_summary">Cho từ bay lên khi bạn vuốt để chọn một gợi ý</string>

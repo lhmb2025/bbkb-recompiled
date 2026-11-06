@@ -156,8 +156,8 @@ class CommitController {
     /** One {@code commitText} and nothing else: a lone code point, or a flushed multi-tap char. */
     private CommitResult executeRaw(CommitRequest request) {
         // TI-8: this used to branch on DeviceProfile.isPreMarshmallow() to route numeric-editor
-        // commits through postAtFrontOfQueue. That predicate is SDK_INT < VERSION_CODES.M and
-        // minSdk is 23, so the branch (and its anonymous Runnable allocation site, on the commit
+        // commits through postAtFrontOfQueue. That predicate is SDK_INT < VERSION_CODES.M, below
+        // minSdk, so the branch (and its anonymous Runnable allocation site, on the commit
         // hot path) was unreachable.
         mInputLogic.mRichInputConnection.commitText(request.text, 1);
         return new CommitResult(request.text.length(), false, true);

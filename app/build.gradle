@@ -51,7 +51,7 @@ android {
         // value - read BuildConfig.APPLICATION_ID or Context.getPackageName();
         // PackageIdentityTest enforces that.
         applicationId = "dev.bbkb.ime"
-        minSdk = 23
+        minSdk = 26
         targetSdk = 36
         versionCode = 1440  //  Most recent build is 1440
         versionName = "5.0.0-beta.27"
@@ -231,8 +231,7 @@ dependencies {
 
     // Shizuku (dev.bbkb.ime.core.device.touch.shizuku): runs EvdevUserService as shell/root so the
     // IME can read a keyboard's touch surface straight from /dev/input. 13.1.5 is the newest 13.1.x
-    // on Maven Central. The api AAR declares minSdk 24, so the manifest overrides it and every
-    // Shizuku call sits behind ShizukuFacade.create(), which never touches Shizuku below API 24.
+    // on Maven Central.
     implementation 'dev.rikka.shizuku:api:13.1.5'
     implementation 'dev.rikka.shizuku:provider:13.1.5'
 }

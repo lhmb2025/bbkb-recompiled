@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">មិនអាចប្រើបាននៅលើទូរសព្ទនេះទេ</string>
     <string name="pref_show_pkb_modifier_status_icon">បង្ហាញរូបតំណាងស្ថានភាពគ្រាប់ចុចកែប្រែ</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">បង្ហាញសូចនាករគ្រាប់ចុចកែប្រែ Shift/Alt នៅលើរបារស្ថានភាព នៅពេលប្រើក្ដារចុចរូបវន្ត</string>
-    <string name="settings_pred_accounts_permission_summary">ផ្ដល់ការអនុញ្ញាតគណនី ដើម្បីណែនាំអាសយដ្ឋានអ៊ីមែលពេលវាយបញ្ចូល</string>
-    <string name="settings_pred_accounts_permission_title">ត្រូវការការអនុញ្ញាតគណនី</string>
     <string name="settings_pred_block_offensive_summary">លាក់ពាក្យដែលអាចប្រមាថ នៅពេលបញ្ចូលដោយសំឡេង</string>
     <string name="settings_pred_block_offensive_title">ទប់ស្កាត់ពាក្យប្រមាថ</string>
     <string name="settings_pred_contacts_permission_summary">ផ្ដល់ការអនុញ្ញាតទំនាក់ទំនង ដើម្បីណែនាំឈ្មោះទំនាក់ទំនង និងអាសយដ្ឋានអ៊ីមែលពេលវាយបញ្ចូល</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">ត្រូវការការអនុញ្ញាតទំនាក់ទំនង</string>
     <string name="settings_pred_contacts_summary_enabled">បញ្ចូលឈ្មោះទំនាក់ទំនងក្នុងពាក្យណែនាំ</string>
     <string name="settings_pred_contacts_title">ណែនាំពីទំនាក់ទំនង</string>
-    <string name="settings_pred_email_summary_disabled">ត្រូវការការអនុញ្ញាតគណនី</string>
-    <string name="settings_pred_email_summary_enabled">បញ្ចូលអាសយដ្ឋានអ៊ីមែលរបស់អ្នកក្នុងពាក្យណែនាំ</string>
-    <string name="settings_pred_email_title">ណែនាំអាសយដ្ឋានអ៊ីមែល</string>
     <string name="settings_pred_emoji_summary">ណែនាំសញ្ញាអារម្មណ៍ពេលវាយបញ្ចូល</string>
     <string name="settings_pred_emoji_title">ការណែនាំសញ្ញាអារម្មណ៍</string>
     <string name="settings_pred_flick_animation_summary">បង្ហាញចលនាពាក្យឡើងលើ នៅពេលបញ្ចូលពាក្យណែនាំដោយការអូស</string>

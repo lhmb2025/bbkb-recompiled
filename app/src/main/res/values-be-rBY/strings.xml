@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Недаступна на гэтым тэлефоне</string>
     <string name="pref_show_pkb_modifier_status_icon">Паказваць значок мадыфікатараў</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Паказваць індыкатар Shift/Alt у радку стану пры працы з фізічнай клавіятурай</string>
-    <string name="settings_pred_accounts_permission_summary">Дайце дазвол на ўліковыя запісы, каб прапаноўваць адрасы электроннай пошты падчас набору</string>
-    <string name="settings_pred_accounts_permission_title">Патрэбны дазвол на ўліковыя запісы</string>
     <string name="settings_pred_block_offensive_summary">Хаваць магчыма абразлівыя словы пры галасавой дыктоўцы</string>
     <string name="settings_pred_block_offensive_title">Блакіраваць абразлівыя словы</string>
     <string name="settings_pred_contacts_permission_summary">Дайце дазвол на кантакты, каб прапаноўваць імёны кантактаў і адрасы электроннай пошты падчас набору</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Патрэбны дазвол на кантакты</string>
     <string name="settings_pred_contacts_summary_enabled">Уключаць імёны кантактаў у прапановы</string>
     <string name="settings_pred_contacts_title">Прапаноўваць з кантактаў</string>
-    <string name="settings_pred_email_summary_disabled">Патрэбны дазвол на ўліковыя запісы</string>
-    <string name="settings_pred_email_summary_enabled">Уключаць вашы адрасы электроннай пошты ў прапановы</string>
-    <string name="settings_pred_email_title">Прапаноўваць адрасы пошты</string>
     <string name="settings_pred_emoji_summary">Прапаноўваць эмодзі падчас набору</string>
     <string name="settings_pred_emoji_title">Прапановы эмодзі</string>
     <string name="settings_pred_flick_animation_summary">Анімаваць рух слова ўверх пры пацвярджэнні прапановы правядзеннем</string>

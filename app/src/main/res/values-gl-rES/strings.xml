@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Non dispoñible neste teléfono</string>
     <string name="pref_show_pkb_modifier_status_icon">Mostrar a icona de estado dos modificadores</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Mostrar o indicador de Maiús/Alt na barra de estado ao usar o teclado físico</string>
-    <string name="settings_pred_accounts_permission_summary">Concede o permiso de contas para suxerir enderezos de correo mentres escribes</string>
-    <string name="settings_pred_accounts_permission_title">Requírese o permiso de contas</string>
     <string name="settings_pred_block_offensive_summary">Ocultar as palabras potencialmente ofensivas no ditado por voz</string>
     <string name="settings_pred_block_offensive_title">Bloquear palabras ofensivas</string>
     <string name="settings_pred_contacts_permission_summary">Concede o permiso de contactos para suxerir nomes de contactos e enderezos de correo mentres escribes</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Requírese o permiso de contactos</string>
     <string name="settings_pred_contacts_summary_enabled">Incluír os nomes dos contactos nas suxestións</string>
     <string name="settings_pred_contacts_title">Suxerir a partir dos contactos</string>
-    <string name="settings_pred_email_summary_disabled">Requírese o permiso de contas</string>
-    <string name="settings_pred_email_summary_enabled">Incluír os teus enderezos de correo nas suxestións</string>
-    <string name="settings_pred_email_title">Suxerir enderezos de correo</string>
     <string name="settings_pred_emoji_summary">Suxerir emojis ao escribir</string>
     <string name="settings_pred_emoji_title">Suxestións de emojis</string>
     <string name="settings_pred_flick_animation_summary">Animar a palabra cara arriba ao confirmar unha suxestión cun golpe</string>

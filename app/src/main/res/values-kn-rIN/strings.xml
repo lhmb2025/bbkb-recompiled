@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">ಈ ಫೋನ್‌ನಲ್ಲಿ ಲಭ್ಯವಿಲ್ಲ</string>
     <string name="pref_show_pkb_modifier_status_icon">ಮಾರ್ಪಡಿಸುವ ಕೀ ಸ್ಥಿತಿ ಐಕಾನ್ ತೋರಿಸು</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">ಭೌತಿಕ ಕೀಬೋರ್ಡ್ ಬಳಸುವಾಗ ಸ್ಥಿತಿ ಪಟ್ಟಿಯಲ್ಲಿ Shift/Alt ಸೂಚಕವನ್ನು ತೋರಿಸು</string>
-    <string name="settings_pred_accounts_permission_summary">ಟೈಪ್ ಮಾಡುವಾಗ ಇಮೇಲ್ ವಿಳಾಸಗಳನ್ನು ಸೂಚಿಸಲು ಖಾತೆಗಳ ಅನುಮತಿ ನೀಡಿ</string>
-    <string name="settings_pred_accounts_permission_title">ಖಾತೆಗಳ ಅನುಮತಿ ಅಗತ್ಯವಿದೆ</string>
     <string name="settings_pred_block_offensive_summary">ಧ್ವನಿ ಮೂಲಕ ಬರೆಯುವಾಗ ಅಸಭ್ಯವಾಗಬಹುದಾದ ಪದಗಳನ್ನು ಮರೆಮಾಡು</string>
     <string name="settings_pred_block_offensive_title">ಅಸಭ್ಯ ಪದಗಳನ್ನು ನಿರ್ಬಂಧಿಸಿ</string>
     <string name="settings_pred_contacts_permission_summary">ಟೈಪ್ ಮಾಡುವಾಗ ಸಂಪರ್ಕ ಹೆಸರುಗಳು ಮತ್ತು ಇಮೇಲ್ ವಿಳಾಸಗಳನ್ನು ಸೂಚಿಸಲು ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ನೀಡಿ</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ಅಗತ್ಯವಿದೆ</string>
     <string name="settings_pred_contacts_summary_enabled">ಸಲಹೆಗಳಲ್ಲಿ ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಸೇರಿಸು</string>
     <string name="settings_pred_contacts_title">ಸಂಪರ್ಕಗಳಿಂದ ಸೂಚಿಸು</string>
-    <string name="settings_pred_email_summary_disabled">ಖಾತೆಗಳ ಅನುಮತಿ ಅಗತ್ಯವಿದೆ</string>
-    <string name="settings_pred_email_summary_enabled">ಸಲಹೆಗಳಲ್ಲಿ ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸಗಳನ್ನು ಸೇರಿಸು</string>
-    <string name="settings_pred_email_title">ಇಮೇಲ್ ವಿಳಾಸಗಳನ್ನು ಸೂಚಿಸು</string>
     <string name="settings_pred_emoji_summary">ಟೈಪ್ ಮಾಡುವಾಗ ಎಮೋಜಿಗಳನ್ನು ಸೂಚಿಸು</string>
     <string name="settings_pred_emoji_title">ಎಮೋಜಿ ಸಲಹೆಗಳು</string>
     <string name="settings_pred_flick_animation_summary">ಸ್ವೈಪ್‌ನಿಂದ ಸಲಹೆಯನ್ನು ಸ್ವೀಕರಿಸುವಾಗ ಪದವನ್ನು ಮೇಲಕ್ಕೆ ಅನಿಮೇಟ್ ಮಾಡು</string>

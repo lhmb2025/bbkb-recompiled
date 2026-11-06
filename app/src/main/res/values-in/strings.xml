@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Tidak tersedia di ponsel ini</string>
     <string name="pref_show_pkb_modifier_status_icon">Tampilkan ikon status pengubah</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Tampilkan indikator pengubah Shift/Alt di bilah status saat menggunakan keyboard fisik</string>
-    <string name="settings_pred_accounts_permission_summary">Berikan izin akun untuk menyarankan alamat email saat mengetik</string>
-    <string name="settings_pred_accounts_permission_title">Izin Akun Diperlukan</string>
     <string name="settings_pred_block_offensive_summary">Sembunyikan kata yang berpotensi menyinggung saat dikte suara</string>
     <string name="settings_pred_block_offensive_title">Blokir kata yang menyinggung</string>
     <string name="settings_pred_contacts_permission_summary">Berikan izin kontak untuk menyarankan nama kontak dan alamat email saat mengetik</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Izin kontak diperlukan</string>
     <string name="settings_pred_contacts_summary_enabled">Sertakan nama kontak dalam saran</string>
     <string name="settings_pred_contacts_title">Sarankan dari kontak</string>
-    <string name="settings_pred_email_summary_disabled">Izin akun diperlukan</string>
-    <string name="settings_pred_email_summary_enabled">Sertakan alamat email Anda dalam saran</string>
-    <string name="settings_pred_email_title">Sarankan alamat email</string>
     <string name="settings_pred_emoji_summary">Sarankan emoji saat mengetik</string>
     <string name="settings_pred_emoji_title">Saran emoji</string>
     <string name="settings_pred_flick_animation_summary">Animasikan kata ke atas saat menerapkan saran dengan gesekan</string>

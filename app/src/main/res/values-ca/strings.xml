@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">No disponible en aquest telèfon</string>
     <string name="pref_show_pkb_modifier_status_icon">Mostra la icona d\'estat dels modificadors</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Mostra l\'indicador de Maj/Alt a la barra d\'estat quan feu servir el teclat físic</string>
-    <string name="settings_pred_accounts_permission_summary">Concediu el permís de comptes per suggerir adreces electròniques mentre escriviu</string>
-    <string name="settings_pred_accounts_permission_title">Cal el permís de comptes</string>
     <string name="settings_pred_block_offensive_summary">Emmascara les paraules potencialment ofensives en el dictat per veu</string>
     <string name="settings_pred_block_offensive_title">Bloqueja les paraules ofensives</string>
     <string name="settings_pred_contacts_permission_summary">Concediu el permís de contactes per suggerir noms de contacte i adreces electròniques mentre escriviu</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Cal el permís de contactes</string>
     <string name="settings_pred_contacts_summary_enabled">Inclou els noms dels contactes als suggeriments</string>
     <string name="settings_pred_contacts_title">Suggereix des dels contactes</string>
-    <string name="settings_pred_email_summary_disabled">Cal el permís de comptes</string>
-    <string name="settings_pred_email_summary_enabled">Inclou les vostres adreces electròniques als suggeriments</string>
-    <string name="settings_pred_email_title">Suggereix adreces electròniques</string>
     <string name="settings_pred_emoji_summary">Suggereix emojis mentre escriviu</string>
     <string name="settings_pred_emoji_title">Suggeriments d\'emojis</string>
     <string name="settings_pred_flick_animation_summary">Anima la paraula cap amunt en confirmar un suggeriment amb una lliscada ràpida</string>

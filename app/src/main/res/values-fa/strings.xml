@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">در این تلفن در دسترس نیست</string>
     <string name="pref_show_pkb_modifier_status_icon">نمایش نماد وضعیت کلیدهای تغییردهنده</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">نمایش نشانگر Shift/Alt در نوار وضعیت هنگام استفاده از صفحه کلید فیزیکی</string>
-    <string name="settings_pred_accounts_permission_summary">برای پیشنهاد نشانی‌های ایمیل هنگام تایپ، مجوز حساب‌ها را بدهید</string>
-    <string name="settings_pred_accounts_permission_title">مجوز حساب‌ها لازم است</string>
     <string name="settings_pred_block_offensive_summary">پنهان کردن کلمات احتمالاً توهین‌آمیز در دیکته صوتی</string>
     <string name="settings_pred_block_offensive_title">مسدود کردن کلمه‌های توهین‌آمیز</string>
     <string name="settings_pred_contacts_permission_summary">برای پیشنهاد نام مخاطبین و نشانی‌های ایمیل هنگام تایپ، مجوز مخاطبین را بدهید</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">مجوز مخاطبین لازم است</string>
     <string name="settings_pred_contacts_summary_enabled">گنجاندن نام مخاطبین در پیشنهادها</string>
     <string name="settings_pred_contacts_title">پیشنهاد از مخاطبین</string>
-    <string name="settings_pred_email_summary_disabled">مجوز حساب‌ها لازم است</string>
-    <string name="settings_pred_email_summary_enabled">گنجاندن نشانی‌های ایمیل شما در پیشنهادها</string>
-    <string name="settings_pred_email_title">پیشنهاد نشانی‌های ایمیل</string>
     <string name="settings_pred_emoji_summary">پیشنهاد Emoji هنگام تایپ</string>
     <string name="settings_pred_emoji_title">پیشنهادهای Emoji</string>
     <string name="settings_pred_flick_animation_summary">حرکت دادن کلمه به بالا هنگام تأیید پیشنهاد با کشیدن انگشت</string>

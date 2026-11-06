@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Niedostępne na tym telefonie</string>
     <string name="pref_show_pkb_modifier_status_icon">Pokazuj ikonę stanu modyfikatorów</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Pokazuj wskaźnik modyfikatorów Shift/Alt na pasku stanu podczas korzystania z klawiatury fizycznej</string>
-    <string name="settings_pred_accounts_permission_summary">Przyznaj uprawnienie do kont, aby podpowiadać adresy e-mail podczas pisania</string>
-    <string name="settings_pred_accounts_permission_title">Wymagane uprawnienie do kont</string>
     <string name="settings_pred_block_offensive_summary">Ukrywaj potencjalnie obraźliwe słowa podczas dyktowania głosowego</string>
     <string name="settings_pred_block_offensive_title">Blokuj obraźliwe słowa</string>
     <string name="settings_pred_contacts_permission_summary">Przyznaj uprawnienie do kontaktów, aby podpowiadać nazwy kontaktów i adresy e-mail podczas pisania</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Wymagane uprawnienie do kontaktów</string>
     <string name="settings_pred_contacts_summary_enabled">Uwzględniaj nazwy kontaktów w sugestiach</string>
     <string name="settings_pred_contacts_title">Podpowiadaj z kontaktów</string>
-    <string name="settings_pred_email_summary_disabled">Wymagane uprawnienie do kont</string>
-    <string name="settings_pred_email_summary_enabled">Uwzględniaj twoje adresy e-mail w sugestiach</string>
-    <string name="settings_pred_email_title">Podpowiadaj adresy e-mail</string>
     <string name="settings_pred_emoji_summary">Podpowiadaj emotikony podczas pisania</string>
     <string name="settings_pred_emoji_title">Sugestie emotikonów</string>
     <string name="settings_pred_flick_animation_summary">Animuj słowo ku górze przy zatwierdzaniu sugestii przesunięciem</string>

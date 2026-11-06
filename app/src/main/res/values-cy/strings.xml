@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Ddim ar gael ar y ffôn hwn</string>
     <string name="pref_show_pkb_modifier_status_icon">Dangos eicon statws yr addaswyr</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Dangos dynodydd Shift/Alt yn y bar statws wrth ddefnyddio bysellfwrdd ffisegol</string>
-    <string name="settings_pred_accounts_permission_summary">Rhowch ganiatâd cyfrifon er mwyn awgrymu cyfeiriadau e-bost wrth i chi deipio</string>
-    <string name="settings_pred_accounts_permission_title">Angen Caniatâd Cyfrifon</string>
     <string name="settings_pred_block_offensive_summary">Cuddio geiriau a allai fod yn sarhaus wrth arddweud â llais</string>
     <string name="settings_pred_block_offensive_title">Rhwystro geiriau sarhaus</string>
     <string name="settings_pred_contacts_permission_summary">Rhowch ganiatâd cysylltiadau er mwyn awgrymu enwau cysylltiadau a chyfeiriadau e-bost wrth i chi deipio</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Angen caniatâd cysylltiadau</string>
     <string name="settings_pred_contacts_summary_enabled">Cynnwys enwau cysylltiadau yn yr awgrymiadau</string>
     <string name="settings_pred_contacts_title">Awgrymu o\'r cysylltiadau</string>
-    <string name="settings_pred_email_summary_disabled">Angen caniatâd cyfrifon</string>
-    <string name="settings_pred_email_summary_enabled">Cynnwys eich cyfeiriadau e-bost yn yr awgrymiadau</string>
-    <string name="settings_pred_email_title">Awgrymu cyfeiriadau e-bost</string>
     <string name="settings_pred_emoji_summary">Awgrymu emojis wrth deipio</string>
     <string name="settings_pred_emoji_title">Awgrymiadau emoji</string>
     <string name="settings_pred_flick_animation_summary">Animeiddio\'r gair tuag i fyny wrth dderbyn awgrym â fflic</string>

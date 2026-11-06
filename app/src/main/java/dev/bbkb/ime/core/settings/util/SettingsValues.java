@@ -842,8 +842,7 @@ public final class SettingsValues {
     }
 
     /**
-     * Was: the edited app targets an SDK older than Jelly Bean (16). minSdk here is 23 and
-     * Android refuses to launch apps below targetSdk 23, so this is constant false; the
+     * Was: the edited app targets an SDK older than Jelly Bean (16). Android refuses to launch apps below targetSdk 23, so this is constant false; the
      * package-info fetch that computed it has been removed.
      */
     public boolean isBeamReaderPackage() {

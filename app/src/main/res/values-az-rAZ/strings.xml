@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Bu telefonda əlçatan deyil</string>
     <string name="pref_show_pkb_modifier_status_icon">Modifikator statusu ikonunu göstərin</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Fiziki klaviaturadan istifadə edərkən status panelində Shift/Alt modifikator göstəricisini əks etdirin</string>
-    <string name="settings_pred_accounts_permission_summary">Yazarkən e-poçt ünvanlarının təklif edilməsi üçün hesablara icazə verin</string>
-    <string name="settings_pred_accounts_permission_title">Hesablara icazə tələb olunur</string>
     <string name="settings_pred_block_offensive_summary">Səsli diktə zamanı potensial təhqiredici sözləri gizlədin</string>
     <string name="settings_pred_block_offensive_title">Təhqiredici sözləri bloklayın</string>
     <string name="settings_pred_contacts_permission_summary">Yazarkən kontakt adlarının və e-poçt ünvanlarının təklif edilməsi üçün kontaktlara icazə verin</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Kontaktlara icazə tələb olunur</string>
     <string name="settings_pred_contacts_summary_enabled">Kontakt adlarını təkliflərə daxil edin</string>
     <string name="settings_pred_contacts_title">Kontaktlardan təklif edin</string>
-    <string name="settings_pred_email_summary_disabled">Hesablara icazə tələb olunur</string>
-    <string name="settings_pred_email_summary_enabled">E-poçt ünvanlarınızı təkliflərə daxil edin</string>
-    <string name="settings_pred_email_title">E-poçt ünvanları təklif edin</string>
     <string name="settings_pred_emoji_summary">Yazarkən emoji təklif edin</string>
     <string name="settings_pred_emoji_title">Emoji təklifləri</string>
     <string name="settings_pred_flick_animation_summary">Təklif çırpma ilə təsdiqlənərkən sözü yuxarı doğru animasiya edin</string>

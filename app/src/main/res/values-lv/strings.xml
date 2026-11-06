@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Nav pieejams šajā tālrunī</string>
     <string name="pref_show_pkb_modifier_status_icon">Rādīt modifikatoru statusa ikonu</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Izmantojot fizisko tastatūru, rādīt Shift/Alt modifikatora indikatoru statusa joslā</string>
-    <string name="settings_pred_accounts_permission_summary">Piešķiriet kontu atļauju, lai rakstīšanas laikā tiktu ieteiktas e-pasta adreses</string>
-    <string name="settings_pred_accounts_permission_title">Nepieciešama kontu atļauja</string>
     <string name="settings_pred_block_offensive_summary">Slēpt potenciāli aizskarošus vārdus, diktējot ar balsi</string>
     <string name="settings_pred_block_offensive_title">Bloķēt aizskarošus vārdus</string>
     <string name="settings_pred_contacts_permission_summary">Piešķiriet kontaktpersonu atļauju, lai rakstīšanas laikā tiktu ieteikti kontaktpersonu vārdi un e-pasta adreses</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Nepieciešama kontaktpersonu atļauja</string>
     <string name="settings_pred_contacts_summary_enabled">Iekļaut kontaktpersonu vārdus ieteikumos</string>
     <string name="settings_pred_contacts_title">Ieteikt no kontaktpersonām</string>
-    <string name="settings_pred_email_summary_disabled">Nepieciešama kontu atļauja</string>
-    <string name="settings_pred_email_summary_enabled">Iekļaut jūsu e-pasta adreses ieteikumos</string>
-    <string name="settings_pred_email_title">Ieteikt e-pasta adreses</string>
     <string name="settings_pred_emoji_summary">Ieteikt emocijzīmes rakstīšanas laikā</string>
     <string name="settings_pred_emoji_title">Emocijzīmju ieteikumi</string>
     <string name="settings_pred_flick_animation_summary">Animēt vārdu augšup, kad ieteikums tiek apstiprināts ar vilkšanu</string>

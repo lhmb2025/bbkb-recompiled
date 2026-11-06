@@ -66,9 +66,7 @@ public final class InAppEventBus {
         if (action == null || listener == null) {
             return;
         }
-        // Map.computeIfAbsent is API 24 and minSdk is 23, with no core-library desugaring
-        // configured, so it throws NoSuchMethodError on an API-23 device. putIfAbsent is API 1 on
-        // ConcurrentMap. Same rule the shim records at LanguagePackStatus.java:39.
+        // get, then putIfAbsent: when two subscribers race, the set that lands first is kept.
         Set<EventListener> set = listeners.get(action);
         if (set == null) {
             final Set<EventListener> created = new CopyOnWriteArraySet<>();

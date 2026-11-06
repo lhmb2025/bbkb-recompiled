@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Недоступно на цьому телефоні</string>
     <string name="pref_show_pkb_modifier_status_icon">Показувати значок стану модифікаторів</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Показувати індикатор модифікаторів Shift/Alt у рядку стану під час роботи з фізичною клавіатурою</string>
-    <string name="settings_pred_accounts_permission_summary">Надайте доступ до облікових записів, щоб пропонувати адреси ел. пошти під час введення</string>
-    <string name="settings_pred_accounts_permission_title">Потрібен дозвіл на доступ до облікових записів</string>
     <string name="settings_pred_block_offensive_summary">Приховувати потенційно образливі слова під час голосового диктування</string>
     <string name="settings_pred_block_offensive_title">Блокувати образливі слова</string>
     <string name="settings_pred_contacts_permission_summary">Надайте доступ до контактів, щоб пропонувати імена контактів і адреси ел. пошти під час введення</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Потрібен дозвіл на доступ до контактів</string>
     <string name="settings_pred_contacts_summary_enabled">Включати імена контактів у підказки</string>
     <string name="settings_pred_contacts_title">Підказки з контактів</string>
-    <string name="settings_pred_email_summary_disabled">Потрібен дозвіл на доступ до облікових записів</string>
-    <string name="settings_pred_email_summary_enabled">Включати ваші адреси ел. пошти в підказки</string>
-    <string name="settings_pred_email_title">Пропонувати адреси ел. пошти</string>
     <string name="settings_pred_emoji_summary">Пропонувати емодзі під час введення</string>
     <string name="settings_pred_emoji_title">Підказки емодзі</string>
     <string name="settings_pred_flick_animation_summary">Анімувати рух слова вгору під час підтвердження підказки проведенням</string>

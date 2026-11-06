@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">이 기기에서는 사용할 수 없습니다</string>
     <string name="pref_show_pkb_modifier_status_icon">조합 키 상태 아이콘 표시</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">물리 키보드 사용 시 상태 표시줄에 Shift/Alt 조합 키 상태를 표시합니다</string>
-    <string name="settings_pred_accounts_permission_summary">입력 중에 이메일 주소를 추천하려면 계정 권한을 허용하세요</string>
-    <string name="settings_pred_accounts_permission_title">계정 권한 필요</string>
     <string name="settings_pred_block_offensive_summary">음성 입력 시 불쾌감을 줄 수 있는 단어를 가립니다</string>
     <string name="settings_pred_block_offensive_title">불쾌한 단어 차단</string>
     <string name="settings_pred_contacts_permission_summary">입력 중에 연락처 이름과 이메일 주소를 추천하려면 연락처 권한을 허용하세요</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">연락처 권한 필요</string>
     <string name="settings_pred_contacts_summary_enabled">추천 항목에 연락처 이름을 포함합니다</string>
     <string name="settings_pred_contacts_title">연락처에서 추천</string>
-    <string name="settings_pred_email_summary_disabled">계정 권한 필요</string>
-    <string name="settings_pred_email_summary_enabled">추천 항목에 내 이메일 주소를 포함합니다</string>
-    <string name="settings_pred_email_title">이메일 주소 추천</string>
     <string name="settings_pred_emoji_summary">입력할 때 이모티콘을 추천합니다</string>
     <string name="settings_pred_emoji_title">이모티콘 추천</string>
     <string name="settings_pred_flick_animation_summary">스와이프로 추천 항목을 확정할 때 단어가 위로 올라가는 애니메이션을 표시합니다</string>

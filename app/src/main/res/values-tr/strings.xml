@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Bu telefonda kullanılamıyor</string>
     <string name="pref_show_pkb_modifier_status_icon">Değiştirici durum simgesini göster</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Fiziksel klavye kullanırken durum çubuğunda Shift/Alt değiştirici göstergesini görüntüle</string>
-    <string name="settings_pred_accounts_permission_summary">Yazarken e-posta adresi önerilebilmesi için hesaplar iznini verin</string>
-    <string name="settings_pred_accounts_permission_title">Hesaplar İzni Gerekli</string>
     <string name="settings_pred_block_offensive_summary">Sesli dikte sırasında rahatsız edici olabilecek kelimeleri gizle</string>
     <string name="settings_pred_block_offensive_title">Rahatsız edici kelimeleri engelle</string>
     <string name="settings_pred_contacts_permission_summary">Yazarken kişi adları ve e-posta adresleri önerilebilmesi için kişiler iznini verin</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Kişiler izni gerekli</string>
     <string name="settings_pred_contacts_summary_enabled">Kişi adlarını önerilere dahil et</string>
     <string name="settings_pred_contacts_title">Kişilerden öner</string>
-    <string name="settings_pred_email_summary_disabled">Hesaplar izni gerekli</string>
-    <string name="settings_pred_email_summary_enabled">E-posta adreslerinizi önerilere dahil et</string>
-    <string name="settings_pred_email_title">E-posta adreslerini öner</string>
     <string name="settings_pred_emoji_summary">Yazarken emoji öner</string>
     <string name="settings_pred_emoji_title">Emoji önerileri</string>
     <string name="settings_pred_flick_animation_summary">Bir öneri kaydırılarak onaylandığında kelimeyi yukarı doğru hareketlendir</string>

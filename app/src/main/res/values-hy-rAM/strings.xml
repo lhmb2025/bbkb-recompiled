@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Հասանելի չէ այս հեռախոսում</string>
     <string name="pref_show_pkb_modifier_status_icon">Ցույց տալ ձևափոխիչի վիճակի պատկերակը</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Ցուցադրել Shift/Alt ձևափոխիչի ցուցիչը կարգավիճակի գոտում՝ ֆիզիկական ստեղնաշարն օգտագործելիս</string>
-    <string name="settings_pred_accounts_permission_summary">Տվեք հաշիվների թույլտվությունը՝ մուտքագրելիս էլ. հասցեներ առաջարկելու համար</string>
-    <string name="settings_pred_accounts_permission_title">Պահանջվում է հաշիվների թույլտվություն</string>
     <string name="settings_pred_block_offensive_summary">Թաքցնել հնարավոր վիրավորական բառերը ձայնային թելադրության ժամանակ</string>
     <string name="settings_pred_block_offensive_title">Արգելափակել վիրավորական բառերը</string>
     <string name="settings_pred_contacts_permission_summary">Տվեք կոնտակտների թույլտվությունը՝ մուտքագրելիս կոնտակտների անուններ և էլ. հասցեներ առաջարկելու համար</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Պահանջվում է կոնտակտների թույլտվություն</string>
     <string name="settings_pred_contacts_summary_enabled">Ներառել կոնտակտների անունները առաջարկներում</string>
     <string name="settings_pred_contacts_title">Առաջարկել կոնտակտներից</string>
-    <string name="settings_pred_email_summary_disabled">Պահանջվում է հաշիվների թույլտվություն</string>
-    <string name="settings_pred_email_summary_enabled">Ներառել ձեր էլ. հասցեները առաջարկներում</string>
-    <string name="settings_pred_email_title">Առաջարկել էլ. հասցեներ</string>
     <string name="settings_pred_emoji_summary">Առաջարկել զմայլիկներ մուտքագրելիս</string>
     <string name="settings_pred_emoji_title">Զմայլիկների առաջարկներ</string>
     <string name="settings_pred_flick_animation_summary">Շարժապատկերել բառը դեպի վեր՝ առաջարկը սահեցումով հաստատելիս</string>

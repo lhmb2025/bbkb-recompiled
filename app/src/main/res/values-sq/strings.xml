@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Nuk ofrohet në këtë telefon</string>
     <string name="pref_show_pkb_modifier_status_icon">Shfaq ikonën e gjendjes së modifikuesve</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Shfaq treguesin Shift/Alt te shiriti i gjendjes kur përdoret tastiera fizike</string>
-    <string name="settings_pred_accounts_permission_summary">Jep lejen e llogarive që të sugjerohen adresa e-mail ndërsa shkruan</string>
-    <string name="settings_pred_accounts_permission_title">Kërkohet leja e llogarive</string>
     <string name="settings_pred_block_offensive_summary">Maskon fjalët që mund të jenë fyese gjatë diktimit me zë</string>
     <string name="settings_pred_block_offensive_title">Blloko fjalët fyese</string>
     <string name="settings_pred_contacts_permission_summary">Jep lejen e kontakteve që të sugjerohen emra kontaktesh dhe adresa e-mail ndërsa shkruan</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Kërkohet leja e kontakteve</string>
     <string name="settings_pred_contacts_summary_enabled">Përfshi emrat e kontakteve në sugjerime</string>
     <string name="settings_pred_contacts_title">Sugjero nga kontaktet</string>
-    <string name="settings_pred_email_summary_disabled">Kërkohet leja e llogarive</string>
-    <string name="settings_pred_email_summary_enabled">Përfshi adresat e tua e-mail në sugjerime</string>
-    <string name="settings_pred_email_title">Sugjero adresa e-mail</string>
     <string name="settings_pred_emoji_summary">Sugjero emoji ndërsa shkruan</string>
     <string name="settings_pred_emoji_title">Sugjerimet e emoji-ve</string>
     <string name="settings_pred_flick_animation_summary">Animo fjalën drejt lart kur një sugjerim pranohet me një goditje të shpejtë</string>

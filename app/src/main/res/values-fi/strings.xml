@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Ei käytettävissä tässä puhelimessa</string>
     <string name="pref_show_pkb_modifier_status_icon">Näytä muokkausnäppäinten tilakuvake</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Näytä vaihto- ja Alt-näppäimen ilmaisin tilapalkissa, kun käytät fyysistä näppäimistöä</string>
-    <string name="settings_pred_accounts_permission_summary">Myönnä tilien käyttöoikeus, jotta sähköpostiosoitteita voidaan ehdottaa kirjoittaessasi</string>
-    <string name="settings_pred_accounts_permission_title">Tilien käyttöoikeus vaaditaan</string>
     <string name="settings_pred_block_offensive_summary">Piilota mahdollisesti loukkaavat sanat puhesanelussa</string>
     <string name="settings_pred_block_offensive_title">Estä loukkaavat sanat</string>
     <string name="settings_pred_contacts_permission_summary">Myönnä yhteystietojen käyttöoikeus, jotta yhteystietojen nimiä ja sähköpostiosoitteita voidaan ehdottaa kirjoittaessasi</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Yhteystietojen käyttöoikeus vaaditaan</string>
     <string name="settings_pred_contacts_summary_enabled">Sisällytä yhteystietojen nimet ehdotuksiin</string>
     <string name="settings_pred_contacts_title">Ehdota yhteystiedoista</string>
-    <string name="settings_pred_email_summary_disabled">Tilien käyttöoikeus vaaditaan</string>
-    <string name="settings_pred_email_summary_enabled">Sisällytä sähköpostiosoitteesi ehdotuksiin</string>
-    <string name="settings_pred_email_title">Ehdota sähköpostiosoitteita</string>
     <string name="settings_pred_emoji_summary">Ehdota emojeja kirjoittaessasi</string>
     <string name="settings_pred_emoji_title">Emoji-ehdotukset</string>
     <string name="settings_pred_flick_animation_summary">Animoi sana ylöspäin, kun hyväksyt ehdotuksen pyyhkäisemällä</string>

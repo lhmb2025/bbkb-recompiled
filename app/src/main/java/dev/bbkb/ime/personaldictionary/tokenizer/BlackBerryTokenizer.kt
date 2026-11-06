@@ -1,28 +1,17 @@
 package dev.bbkb.ime.personaldictionary.tokenizer
 
 import android.icu.text.BreakIterator
-import android.os.Build
 import android.view.textservice.TextInfo
 import java.util.ArrayList
 import java.util.Locale
 
 /**
- * Tokenizes text into words using ICU or Java BreakIterator.
+ * Tokenizes text into words using the ICU BreakIterator.
  *
  * Used by spell-checking and text analysis components.
- * Selects ICU BreakIterator on API 24+ for better Unicode support.
  */
 class BlackBerryTokenizer(locale: Locale) {
-    private var breakIterator: BreakIterator? = null
-    private var textBreakIterator: java.text.BreakIterator? = null
-
-    init {
-        if (Build.VERSION.SDK_INT >= 24) {
-            breakIterator = BreakIterator.getWordInstance(locale)
-        } else {
-            textBreakIterator = java.text.BreakIterator.getWordInstance(locale)
-        }
-    }
+    private val breakIterator: BreakIterator = BreakIterator.getWordInstance(locale)
 
     private fun getWordItem(textInfo: TextInfo, text: String, start: Int, end: Int, includeWhitespace: Boolean): SentenceWordItem? {
         val substring = text.substring(start, end)
@@ -44,15 +33,9 @@ class BlackBerryTokenizer(locale: Locale) {
         // call, so reading it per token made split quadratic in the text length (P-18).
         val text = textInfo.text
         
-        if (Build.VERSION.SDK_INT >= 24) {
-            breakIterator!!.setText(text)
-            current = breakIterator!!.next()
-            hasNext = current != -1
-        } else {
-            textBreakIterator!!.setText(text)
-            current = textBreakIterator!!.next()
-            hasNext = current != -1
-        }
+        breakIterator.setText(text)
+        current = breakIterator.next()
+        hasNext = current != -1
 
         val items = ArrayList<SentenceWordItem>()
         val length = text.length
@@ -66,17 +49,10 @@ class BlackBerryTokenizer(locale: Locale) {
                 items.add(wordItem)
             }
             
-            if (Build.VERSION.SDK_INT >= 24) {
-                val next = breakIterator!!.next()
-                isRunning = next != -1
-                previous = nextCurrent
-                nextCurrent = next
-            } else {
-                val next = textBreakIterator!!.next()
-                isRunning = next != -1
-                previous = nextCurrent
-                nextCurrent = next
-            }
+            val next = breakIterator.next()
+            isRunning = next != -1
+            previous = nextCurrent
+            nextCurrent = next
         }
 
         if (previous < length) {

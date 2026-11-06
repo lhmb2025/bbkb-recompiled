@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Ni na voljo v tem telefonu</string>
     <string name="pref_show_pkb_modifier_status_icon">Prikaži ikono stanja spremenilnih tipk</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Pri uporabi fizične tipkovnice prikaži oznako Shift/Alt v vrstici stanja</string>
-    <string name="settings_pred_accounts_permission_summary">Dodelite dovoljenje za račune, da bodo med tipkanjem predlagani e-poštni naslovi</string>
-    <string name="settings_pred_accounts_permission_title">Potrebno je dovoljenje za račune</string>
     <string name="settings_pred_block_offensive_summary">Skrij morebitno žaljive besede pri glasovnem narekovanju</string>
     <string name="settings_pred_block_offensive_title">Blokiraj žaljive besede</string>
     <string name="settings_pred_contacts_permission_summary">Dodelite dovoljenje za stike, da bodo med tipkanjem predlagana imena stikov in e-poštni naslovi</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Potrebno je dovoljenje za stike</string>
     <string name="settings_pred_contacts_summary_enabled">Vključi imena stikov med predloge</string>
     <string name="settings_pred_contacts_title">Predlagaj iz stikov</string>
-    <string name="settings_pred_email_summary_disabled">Potrebno je dovoljenje za račune</string>
-    <string name="settings_pred_email_summary_enabled">Vključi vaše e-poštne naslove med predloge</string>
-    <string name="settings_pred_email_title">Predlagaj e-poštne naslove</string>
     <string name="settings_pred_emoji_summary">Predlagaj emoji med tipkanjem</string>
     <string name="settings_pred_emoji_title">Predlogi emoji</string>
     <string name="settings_pred_flick_animation_summary">Ob potrditvi predloga s podrsanjem animiraj besedo navzgor</string>

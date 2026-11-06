@@ -413,8 +413,8 @@ public class NuanceSDK {
         }
         final String nuancePath = nuanceDir.getAbsolutePath();
         final int mask = FileObserver.CLOSE_WRITE | FileObserver.CREATE | FileObserver.MOVED_TO;
-        // FileObserver(String, int) is deprecated since API 29 in favour of the File overload;
-        // minSdk 23 keeps both arms live.
+        // FileObserver(String, int) is deprecated since API 29 in favour of the File overload,
+        // which does not exist below API 29.
         this.mNuanceFileObserver = (android.os.Build.VERSION.SDK_INT >= 29)
                 ? new FileObserver(nuanceDir, mask) {
             @Override

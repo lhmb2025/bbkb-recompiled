@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Nie beskikbaar op hierdie foon nie</string>
     <string name="pref_show_pkb_modifier_status_icon">Wys ikoon vir wysigerstatus</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Wys die Shift/Alt-wyseraanduier in die statusbalk wanneer die fisiese toetsbord gebruik word</string>
-    <string name="settings_pred_accounts_permission_summary">Verleen rekeningtoestemming sodat e-posadresse voorgestel kan word terwyl jy tik</string>
-    <string name="settings_pred_accounts_permission_title">Rekeningtoestemming vereis</string>
     <string name="settings_pred_block_offensive_summary">Maskeer moontlik aanstootlike woorde in stemdiktering</string>
     <string name="settings_pred_block_offensive_title">Blokkeer aanstootlike woorde</string>
     <string name="settings_pred_contacts_permission_summary">Verleen kontaktoestemming sodat kontakname en e-posadresse voorgestel kan word terwyl jy tik</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Kontaktoestemming vereis</string>
     <string name="settings_pred_contacts_summary_enabled">Sluit kontakname by voorstelle in</string>
     <string name="settings_pred_contacts_title">Stel voor uit kontakte</string>
-    <string name="settings_pred_email_summary_disabled">Rekeningtoestemming vereis</string>
-    <string name="settings_pred_email_summary_enabled">Sluit jou e-posadresse by voorstelle in</string>
-    <string name="settings_pred_email_title">Stel e-posadresse voor</string>
     <string name="settings_pred_emoji_summary">Stel emoji\'s voor terwyl jy tik</string>
     <string name="settings_pred_emoji_title">Emojivoorstelle</string>
     <string name="settings_pred_flick_animation_summary">Animeer die woord opwaarts wanneer ’n voorstel met ’n veeg aanvaar word</string>

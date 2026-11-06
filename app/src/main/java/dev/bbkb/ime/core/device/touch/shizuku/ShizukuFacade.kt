@@ -4,24 +4,15 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Handler
-import androidx.annotation.RequiresApi
 import dev.bbkb.ime.BuildConfig
 import rikka.shizuku.Shizuku
 
 /**
  * The slice of Shizuku's static API the touch engine uses, behind an interface so the status
  * logic ([ShizukuStatusTracker]) runs against a fake on the JVM.
- *
- * Every method except [sdkInt] may only be called when `sdkInt >= MIN_SDK`: the real
- * implementation exists only from API 24 (the Shizuku api AAR's floor, overridden in the
- * manifest), and [create] hands out a do-nothing facade below it.
  */
 interface ShizukuFacade {
-
-    /** Build.VERSION.SDK_INT. */
-    val sdkInt: Int
 
     /** Whether the Shizuku manager app (moe.shizuku.privileged.api) is installed. */
     fun isManagerInstalled(): Boolean
@@ -60,33 +51,15 @@ interface ShizukuFacade {
     }
 
     companion object {
-        const val MIN_SDK = 24
         const val MANAGER_PACKAGE = "moe.shizuku.privileged.api"
 
         /** Name suffix of the service process: `<applicationId>:evdev`. */
         const val PROCESS_SUFFIX = "evdev"
 
-        /**
-         * The facade for this device. Listener callbacks are posted to [handler]. Below API 24
-         * this is [Unsupported], which never loads a Shizuku class.
-         */
+        /** The facade for this device. Listener callbacks are posted to [handler]. */
         @JvmStatic
         fun create(context: Context, handler: Handler): ShizukuFacade =
-            if (Build.VERSION.SDK_INT >= MIN_SDK) RealShizukuFacade(context.applicationContext, handler)
-            else Unsupported(Build.VERSION.SDK_INT)
-    }
-
-    /** Below API 24: reports the SDK level and does nothing else. */
-    class Unsupported(override val sdkInt: Int) : ShizukuFacade {
-        override fun isManagerInstalled() = false
-        override fun pingBinder() = false
-        override fun isPreV11() = false
-        override fun isPermissionGranted() = false
-        override fun isPermissionDeniedForever() = false
-        override fun requestPermission(requestCode: Int) {}
-        override fun setListener(listener: Listener?) {}
-        override fun bindUserService(connection: ServiceConnection) {}
-        override fun unbindUserService(connection: ServiceConnection, remove: Boolean) {}
+            RealShizukuFacade(context.applicationContext, handler)
     }
 }
 
@@ -96,7 +69,6 @@ interface ShizukuFacade {
  * RemoteException in RuntimeException; callers ([ShizukuStatusTracker], the engine) treat any
  * RuntimeException as "not available right now".
  */
-@RequiresApi(ShizukuFacade.MIN_SDK)
 internal class RealShizukuFacade(
     private val context: Context,
     private val handler: Handler,
@@ -123,8 +95,6 @@ internal class RealShizukuFacade(
             .debuggable(BuildConfig.DEBUG)
             .version(BuildConfig.VERSION_CODE)
     }
-
-    override val sdkInt: Int get() = Build.VERSION.SDK_INT
 
     override fun isManagerInstalled(): Boolean = try {
         context.packageManager.getPackageInfo(ShizukuFacade.MANAGER_PACKAGE, 0)

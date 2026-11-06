@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Nem érhető el ezen a telefonon</string>
     <string name="pref_show_pkb_modifier_status_icon">Módosítóbillentyű állapotikonjának megjelenítése</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">A Shift/Alt módosítójelző megjelenítése az állapotsorban fizikai billentyűzet használatakor</string>
-    <string name="settings_pred_accounts_permission_summary">Adjon fiókengedélyt, hogy a billentyűzet gépelés közben e-mail-címeket javasolhasson</string>
-    <string name="settings_pred_accounts_permission_title">Fiókengedély szükséges</string>
     <string name="settings_pred_block_offensive_summary">Az esetlegesen sértő szavak elrejtése hangdiktáláskor</string>
     <string name="settings_pred_block_offensive_title">Sértő szavak blokkolása</string>
     <string name="settings_pred_contacts_permission_summary">Adjon partnerengedélyt, hogy a billentyűzet gépelés közben partnerneveket és e-mail-címeket javasolhasson</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Partnerengedély szükséges</string>
     <string name="settings_pred_contacts_summary_enabled">Partnernevek megjelenítése a javaslatok között</string>
     <string name="settings_pred_contacts_title">Javaslatok a partnerek közül</string>
-    <string name="settings_pred_email_summary_disabled">Fiókengedély szükséges</string>
-    <string name="settings_pred_email_summary_enabled">Az Ön e-mail-címeinek megjelenítése a javaslatok között</string>
-    <string name="settings_pred_email_title">E-mail-címek javaslása</string>
     <string name="settings_pred_emoji_summary">Hangulatjelek javaslása gépelés közben</string>
     <string name="settings_pred_emoji_title">Hangulatjel-javaslatok</string>
     <string name="settings_pred_flick_animation_summary">A szó felfelé animálása, amikor csúsztatással fogad el egy javaslatot</string>

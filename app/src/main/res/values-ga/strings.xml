@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Níl sé ar fáil ar an bhfón seo</string>
     <string name="pref_show_pkb_modifier_status_icon">Taispeáin deilbhín stádais na mionathraitheoirí</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Taispeáin táscaire Shift/Alt sa bharra stádais agus méarchlár fisiciúil in úsáid</string>
-    <string name="settings_pred_accounts_permission_summary">Tabhair cead cuntas chun seoltaí ríomhphoist a mholadh agus tú ag clóscríobh</string>
-    <string name="settings_pred_accounts_permission_title">Cead Cuntas de Dhíth</string>
     <string name="settings_pred_block_offensive_summary">Folaigh focail a d\'fhéadfadh a bheith maslach agus tú ag deachtú le do ghuth</string>
     <string name="settings_pred_block_offensive_title">Coisc focail mhaslacha</string>
     <string name="settings_pred_contacts_permission_summary">Tabhair cead teagmhálacha chun ainmneacha teagmhálacha agus seoltaí ríomhphoist a mholadh agus tú ag clóscríobh</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Cead teagmhálacha de dhíth</string>
     <string name="settings_pred_contacts_summary_enabled">Cuir ainmneacha teagmhálacha san áireamh sna moltaí</string>
     <string name="settings_pred_contacts_title">Mol ó na teagmhálacha</string>
-    <string name="settings_pred_email_summary_disabled">Cead cuntas de dhíth</string>
-    <string name="settings_pred_email_summary_enabled">Cuir do sheoltaí ríomhphoist san áireamh sna moltaí</string>
-    <string name="settings_pred_email_title">Mol seoltaí ríomhphoist</string>
     <string name="settings_pred_emoji_summary">Mol emoji agus tú ag clóscríobh</string>
     <string name="settings_pred_emoji_title">Moltaí emoji</string>
     <string name="settings_pred_flick_animation_summary">Beoigh an focal aníos nuair a ghlactar le moladh le smeach</string>

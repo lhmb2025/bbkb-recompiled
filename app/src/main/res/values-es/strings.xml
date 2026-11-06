@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">No disponible en este teléfono</string>
     <string name="pref_show_pkb_modifier_status_icon">Mostrar el icono de estado de los modificadores</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Muestra el indicador de Mayús/Alt en la barra de estado al usar el teclado físico</string>
-    <string name="settings_pred_accounts_permission_summary">Concede el permiso de cuentas para sugerir direcciones de correo mientras escribes</string>
-    <string name="settings_pred_accounts_permission_title">Permiso de cuentas necesario</string>
     <string name="settings_pred_block_offensive_summary">Oculta las palabras potencialmente ofensivas en el dictado por voz</string>
     <string name="settings_pred_block_offensive_title">Bloquear palabras ofensivas</string>
     <string name="settings_pred_contacts_permission_summary">Concede el permiso de contactos para sugerir nombres de contactos y direcciones de correo mientras escribes</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Se necesita el permiso de contactos</string>
     <string name="settings_pred_contacts_summary_enabled">Incluye los nombres de tus contactos en las sugerencias</string>
     <string name="settings_pred_contacts_title">Sugerir desde contactos</string>
-    <string name="settings_pred_email_summary_disabled">Se necesita el permiso de cuentas</string>
-    <string name="settings_pred_email_summary_enabled">Incluye tus direcciones de correo en las sugerencias</string>
-    <string name="settings_pred_email_title">Sugerir direcciones de correo</string>
     <string name="settings_pred_emoji_summary">Sugiere emojis mientras escribes</string>
     <string name="settings_pred_emoji_title">Sugerencias de emojis</string>
     <string name="settings_pred_flick_animation_summary">Anima la palabra hacia arriba al confirmar una sugerencia con un deslizamiento</string>

@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Ez dago erabilgarri telefono honetan</string>
     <string name="pref_show_pkb_modifier_status_icon">Erakutsi tekla aldatzaileen egoera-ikonoa</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Erakutsi Shift/Alt adierazlea egoera-barran teklatu fisikoa erabiltzean</string>
-    <string name="settings_pred_accounts_permission_summary">Eman kontuetarako baimena idatzi ahala helbide elektronikoak iradokitzeko</string>
-    <string name="settings_pred_accounts_permission_title">Kontuetarako baimena behar da</string>
     <string name="settings_pred_block_offensive_summary">Ezkutatu iraingarriak izan daitezkeen hitzak ahots bidezko diktaketan</string>
     <string name="settings_pred_block_offensive_title">Blokeatu hitz iraingarriak</string>
     <string name="settings_pred_contacts_permission_summary">Eman kontaktuetarako baimena idatzi ahala kontaktuen izenak eta helbide elektronikoak iradokitzeko</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Kontaktuetarako baimena behar da</string>
     <string name="settings_pred_contacts_summary_enabled">Sartu kontaktuen izenak iradokizunetan</string>
     <string name="settings_pred_contacts_title">Iradoki kontaktuetatik</string>
-    <string name="settings_pred_email_summary_disabled">Kontuetarako baimena behar da</string>
-    <string name="settings_pred_email_summary_enabled">Sartu zure helbide elektronikoak iradokizunetan</string>
-    <string name="settings_pred_email_title">Iradoki helbide elektronikoak</string>
     <string name="settings_pred_emoji_summary">Iradoki emotikonoak idaztean</string>
     <string name="settings_pred_emoji_title">Emotikonoen iradokizunak</string>
     <string name="settings_pred_flick_animation_summary">Animatu hitza gorantz iradokizun bat lerratuz berrestean</string>

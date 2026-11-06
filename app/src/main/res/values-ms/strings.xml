@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Tidak tersedia pada telefon ini</string>
     <string name="pref_show_pkb_modifier_status_icon">Tunjukkan ikon status pengubah</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Paparkan penunjuk pengubah Shift/Alt dalam bar status semasa menggunakan papan kekunci fizikal</string>
-    <string name="settings_pred_accounts_permission_summary">Berikan kebenaran akaun untuk mencadangkan alamat e-mel semasa menaip</string>
-    <string name="settings_pred_accounts_permission_title">Kebenaran Akaun Diperlukan</string>
     <string name="settings_pred_block_offensive_summary">Sembunyikan perkataan yang berkemungkinan menyinggung semasa imlak suara</string>
     <string name="settings_pred_block_offensive_title">Sekat perkataan menyinggung</string>
     <string name="settings_pred_contacts_permission_summary">Berikan kebenaran kenalan untuk mencadangkan nama kenalan dan alamat e-mel semasa menaip</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Kebenaran kenalan diperlukan</string>
     <string name="settings_pred_contacts_summary_enabled">Sertakan nama kenalan dalam cadangan</string>
     <string name="settings_pred_contacts_title">Cadangkan daripada kenalan</string>
-    <string name="settings_pred_email_summary_disabled">Kebenaran akaun diperlukan</string>
-    <string name="settings_pred_email_summary_enabled">Sertakan alamat e-mel anda dalam cadangan</string>
-    <string name="settings_pred_email_title">Cadangkan alamat e-mel</string>
     <string name="settings_pred_emoji_summary">Cadangkan emoji semasa menaip</string>
     <string name="settings_pred_emoji_title">Cadangan emoji</string>
     <string name="settings_pred_flick_animation_summary">Animasikan perkataan ke atas apabila memasukkan cadangan dengan leretan</string>

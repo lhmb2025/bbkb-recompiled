@@ -26,14 +26,14 @@ class ShizukuStatusTracker(
     fun attach() {
         if (attached) return
         attached = true
-        if (facade.sdkInt >= ShizukuFacade.MIN_SDK) facade.setListener(this)
+        facade.setListener(this)
         refresh()
     }
 
     fun detach() {
         if (!attached) return
         attached = false
-        if (facade.sdkInt >= ShizukuFacade.MIN_SDK) facade.setListener(null)
+        facade.setListener(null)
     }
 
     /** Recomputes [status], reporting it if it changed, and returns it. */
@@ -77,9 +77,6 @@ class ShizukuStatusTracker(
     }
 
     private fun compute(): ShizukuTouchStatus {
-        if (facade.sdkInt < ShizukuFacade.MIN_SDK) {
-            return ShizukuTouchStatus(ShizukuTouchState.UNSUPPORTED, ShizukuTouchErrors.API_TOO_OLD)
-        }
         if (!ask { facade.pingBinder() }) {
             return ShizukuTouchStatus(
                 if (ask { facade.isManagerInstalled() }) ShizukuTouchState.NOT_RUNNING

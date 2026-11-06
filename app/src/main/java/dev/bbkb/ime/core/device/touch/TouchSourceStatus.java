@@ -34,8 +34,6 @@ public final class TouchSourceStatus {
         PROFILE_PINS_SHIZUKU,
         /** The profile forbids the privileged reader ({@code source="native"}). */
         PROFILE_PINS_NATIVE,
-        /** Shizuku cannot run on this Android version (it needs Android 7). */
-        SHIZUKU_UNSUPPORTED,
         /** The Shizuku that is running predates v11, which the reader needs. */
         SHIZUKU_OUTDATED,
         /** The Shizuku app is not installed. */

@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">غير متوفر على هذا الهاتف</string>
     <string name="pref_show_pkb_modifier_status_icon">عرض أيقونة حالة مفاتيح التعديل</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">عرض مؤشر مفتاحَي Shift/Alt في شريط الحالة عند استخدام لوحة المفاتيح الفعلية</string>
-    <string name="settings_pred_accounts_permission_summary">امنح إذن الحسابات لاقتراح عناوين البريد الإلكتروني أثناء الكتابة</string>
-    <string name="settings_pred_accounts_permission_title">إذن الحسابات مطلوب</string>
     <string name="settings_pred_block_offensive_summary">إخفاء الكلمات التي قد تكون مسيئة في الإملاء الصوتي</string>
     <string name="settings_pred_block_offensive_title">حظر الكلمات المسيئة</string>
     <string name="settings_pred_contacts_permission_summary">امنح إذن جهات الاتصال لاقتراح أسماء جهات الاتصال وعناوين البريد الإلكتروني أثناء الكتابة</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">إذن جهات الاتصال مطلوب</string>
     <string name="settings_pred_contacts_summary_enabled">تضمين أسماء جهات الاتصال في الاقتراحات</string>
     <string name="settings_pred_contacts_title">الاقتراح من جهات الاتصال</string>
-    <string name="settings_pred_email_summary_disabled">إذن الحسابات مطلوب</string>
-    <string name="settings_pred_email_summary_enabled">تضمين عناوين بريدك الإلكتروني في الاقتراحات</string>
-    <string name="settings_pred_email_title">اقتراح عناوين البريد الإلكتروني</string>
     <string name="settings_pred_emoji_summary">اقتراح الرموز التعبيرية أثناء الكتابة</string>
     <string name="settings_pred_emoji_title">اقتراحات الرموز التعبيرية</string>
     <string name="settings_pred_flick_animation_summary">تحريك الكلمة للأعلى عند تأكيد اقتراح بالتمرير</string>

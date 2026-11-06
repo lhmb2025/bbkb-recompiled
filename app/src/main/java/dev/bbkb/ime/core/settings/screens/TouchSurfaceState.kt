@@ -61,7 +61,6 @@ data class TouchSurfaceState(
                     Reason.SHIZUKU_NOT_GRANTED, Reason.SHIZUKU_DENIED ->
                         R.string.touch_surface_status_shizuku_not_granted
                     Reason.SHIZUKU_OUTDATED -> R.string.touch_surface_status_shizuku_outdated
-                    Reason.SHIZUKU_UNSUPPORTED -> R.string.touch_surface_status_android_unsupported
                     Reason.PAD_NOT_FOUND -> R.string.touch_surface_status_pad_not_found
                     Reason.READER_FAILED -> R.string.touch_surface_status_reader_failed
                     else -> R.string.touch_surface_status_unavailable
@@ -89,7 +88,6 @@ data class TouchSurfaceState(
             Reason.SHIZUKU_NOT_GRANTED -> R.string.touch_surface_shizuku_state_not_granted
             Reason.SHIZUKU_DENIED -> R.string.touch_surface_shizuku_state_denied
             Reason.SHIZUKU_OUTDATED -> R.string.touch_surface_shizuku_state_outdated
-            Reason.SHIZUKU_UNSUPPORTED -> R.string.touch_surface_status_android_unsupported
             // Running with access: streaming, ready, or past Shizuku and stuck on the pad itself.
             else -> R.string.touch_surface_shizuku_state_granted
         }

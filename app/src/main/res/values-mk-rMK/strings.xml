@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Не е достапно на овој телефон</string>
     <string name="pref_show_pkb_modifier_status_icon">Икона за состојбата на модификаторите</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Прикажување показател за Shift/Alt во статусната лента при користење физичка тастатура</string>
-    <string name="settings_pred_accounts_permission_summary">Дајте дозвола за сметки за да се предлагаат адреси на е-пошта додека пишувате</string>
-    <string name="settings_pred_accounts_permission_title">Потребна е дозвола за сметки</string>
     <string name="settings_pred_block_offensive_summary">Криење потенцијално навредливи зборови при гласовно диктирање</string>
     <string name="settings_pred_block_offensive_title">Блокирање навредливи зборови</string>
     <string name="settings_pred_contacts_permission_summary">Дајте дозвола за контакти за да се предлагаат имиња на контакти и адреси на е-пошта додека пишувате</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Потребна е дозвола за контакти</string>
     <string name="settings_pred_contacts_summary_enabled">Вклучување имиња на контакти во предлозите</string>
     <string name="settings_pred_contacts_title">Предлагање од контактите</string>
-    <string name="settings_pred_email_summary_disabled">Потребна е дозвола за сметки</string>
-    <string name="settings_pred_email_summary_enabled">Вклучување на вашите адреси на е-пошта во предлозите</string>
-    <string name="settings_pred_email_title">Предлагање адреси на е-пошта</string>
     <string name="settings_pred_emoji_summary">Предлагање емотикони при пишување</string>
     <string name="settings_pred_emoji_title">Предлози за емотикони</string>
     <string name="settings_pred_flick_animation_summary">Анимирање на зборот нагоре при потврдување предлог со повлекување</string>

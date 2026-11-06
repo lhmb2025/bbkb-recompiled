@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Hindi available sa teleponong ito</string>
     <string name="pref_show_pkb_modifier_status_icon">Ipakita ang status icon ng modifier</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Ipakita ang indicator ng Shift/Alt modifier sa status bar kapag gumagamit ng pisikal na keyboard</string>
-    <string name="settings_pred_accounts_permission_summary">Magbigay ng pahintulot sa mga account para magmungkahi ng mga email address habang nagta-type</string>
-    <string name="settings_pred_accounts_permission_title">Kailangan ng Pahintulot sa Mga Account</string>
     <string name="settings_pred_block_offensive_summary">Itago ang mga salitang posibleng nakakasakit kapag nagdidikta gamit ang boses</string>
     <string name="settings_pred_block_offensive_title">I-block ang mga nakakasakit na salita</string>
     <string name="settings_pred_contacts_permission_summary">Magbigay ng pahintulot sa mga contact para magmungkahi ng mga pangalan ng contact at email address habang nagta-type</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Kailangan ng pahintulot sa mga contact</string>
     <string name="settings_pred_contacts_summary_enabled">Isama ang mga pangalan ng contact sa mga suhestyon</string>
     <string name="settings_pred_contacts_title">Magmungkahi mula sa mga contact</string>
-    <string name="settings_pred_email_summary_disabled">Kailangan ng pahintulot sa mga account</string>
-    <string name="settings_pred_email_summary_enabled">Isama ang iyong mga email address sa mga suhestyon</string>
-    <string name="settings_pred_email_title">Magmungkahi ng mga email address</string>
     <string name="settings_pred_emoji_summary">Magmungkahi ng mga emoji habang nagta-type</string>
     <string name="settings_pred_emoji_title">Mga suhestyon ng emoji</string>
     <string name="settings_pred_flick_animation_summary">I-animate ang salita pataas kapag nagko-commit ng suhestyon gamit ang swipe</string>

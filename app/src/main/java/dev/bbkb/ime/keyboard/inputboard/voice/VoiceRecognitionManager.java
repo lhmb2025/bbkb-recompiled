@@ -244,7 +244,6 @@ public class VoiceRecognitionManager {
                 intent.putStringArrayListExtra(RecognizerIntent.EXTRA_LANGUAGE_SWITCH_ALLOWED_LANGUAGES, allowed);
             }
         }
-        // The SDK_INT >= 23 gate here was dead: minSdk is 23.
         intent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, c0804dM5050c.voiceInputPreferOffline);
         // "Block offensive words" was a dead flag for dictation: without this extra the
         // recogniser applies its own default (mask), so turning the setting off changed

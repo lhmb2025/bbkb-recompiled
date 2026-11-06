@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Ekki í boði í þessum síma</string>
     <string name="pref_show_pkb_modifier_status_icon">Sýna stöðutákn breytilykla</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Sýna Shift/Alt-breytilykilvísi á stöðustiku þegar vélbúnaðarlyklaborð er notað</string>
-    <string name="settings_pred_accounts_permission_summary">Veittu heimild fyrir reikninga til að stinga upp á netföngum meðan þú skrifar</string>
-    <string name="settings_pred_accounts_permission_title">Heimild fyrir reikninga nauðsynleg</string>
     <string name="settings_pred_block_offensive_summary">Fela orð sem gætu verið móðgandi við raddupplestur</string>
     <string name="settings_pred_block_offensive_title">Loka á móðgandi orð</string>
     <string name="settings_pred_contacts_permission_summary">Veittu heimild fyrir tengiliði til að stinga upp á nöfnum tengiliða og netföngum meðan þú skrifar</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Heimild fyrir tengiliði nauðsynleg</string>
     <string name="settings_pred_contacts_summary_enabled">Hafa nöfn tengiliða með í tillögum</string>
     <string name="settings_pred_contacts_title">Stinga upp á úr tengiliðum</string>
-    <string name="settings_pred_email_summary_disabled">Heimild fyrir reikninga nauðsynleg</string>
-    <string name="settings_pred_email_summary_enabled">Hafa netföngin þín með í tillögum</string>
-    <string name="settings_pred_email_title">Stinga upp á netföngum</string>
     <string name="settings_pred_emoji_summary">Stinga upp á emoji-táknum við innslátt</string>
     <string name="settings_pred_emoji_title">Emoji-tillögur</string>
     <string name="settings_pred_flick_animation_summary">Hreyfa orðið upp á við þegar tillaga er staðfest með stroki</string>

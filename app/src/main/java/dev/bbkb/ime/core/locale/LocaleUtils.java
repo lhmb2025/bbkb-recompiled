@@ -193,8 +193,7 @@ public final class LocaleUtils {
     }
 
     /**
-     * Gets the primary locale from a Configuration (the first of its locale list on API 24+,
-     * the single locale field below that).
+     * Gets the primary locale from a Configuration (the first of its locale list).
      * @param configuration The Configuration to get locale from
      * @return The primary locale
      */

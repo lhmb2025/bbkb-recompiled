@@ -130,12 +130,7 @@ public final class AudioAndHapticFeedbackManager {
         if (vibrator == null) {
             return;
         }
-        // Audit CT-14: Vibrator.vibrate(long) is deprecated from API 26.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(durationMs, VibrationEffect.DEFAULT_AMPLITUDE));
-        } else {
-            vibrator.vibrate(durationMs);
-        }
+        vibrator.vibrate(VibrationEffect.createOneShot(durationMs, VibrationEffect.DEFAULT_AMPLITUDE));
     }
 
     private boolean reevaluateIfSoundIsOn() {

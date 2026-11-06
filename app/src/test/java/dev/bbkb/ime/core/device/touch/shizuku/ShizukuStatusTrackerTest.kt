@@ -19,7 +19,7 @@ import org.junit.Test
 class ShizukuStatusTrackerTest {
 
     /** Shizuku as the tests want it to be; the callback methods mimic what Shizuku does first. */
-    private class FakeShizuku(override var sdkInt: Int = 34) : ShizukuFacade {
+    private class FakeShizuku : ShizukuFacade {
         var installed = true
         var alive = false
         var preV11 = false
@@ -69,19 +69,6 @@ class ShizukuStatusTrackerTest {
     private val tracker = ShizukuStatusTracker(shizuku) { changes.add(it) }
 
     private fun states() = changes.map { it.state }
-
-    @Test
-    fun belowApi24ItIsUnsupportedAndShizukuIsNeverTouched() {
-        val old = FakeShizuku(sdkInt = 23).apply { alive = true; granted = true }
-        val t = ShizukuStatusTracker(old) { changes.add(it) }
-        t.attach()
-
-        assertEquals(ShizukuTouchStatus(UNSUPPORTED, ShizukuTouchErrors.API_TOO_OLD), t.status)
-        assertFalse(t.requestPermission(1))
-        t.detach()
-        assertEquals(0, old.setListenerCalls)
-        assertEquals(0, old.otherCalls)
-    }
 
     @Test
     fun noBinderAndNoManagerAppIsNotInstalled() {
@@ -211,15 +198,6 @@ class ShizukuStatusTrackerTest {
         tracker.detach()
         assertEquals(2, shizuku.setListenerCalls)
         assertNull(shizuku.registered)
-    }
-
-    @Test
-    fun theUnsupportedFacadeIsInert() {
-        val facade = ShizukuFacade.Unsupported(23)
-        val t = ShizukuStatusTracker(facade) {}
-        t.attach()
-        assertEquals(UNSUPPORTED, t.status.state)
-        assertFalse(facade.pingBinder())
     }
 
     @Test

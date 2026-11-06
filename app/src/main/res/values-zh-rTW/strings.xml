@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">無法在這支手機上使用</string>
     <string name="pref_show_pkb_modifier_status_icon">顯示輔助鍵狀態圖示</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">使用實體鍵盤時，在狀態列中顯示 Shift/Alt 輔助鍵指示標誌</string>
-    <string name="settings_pred_accounts_permission_summary">授予帳戶權限，以便在輸入時建議電子郵件地址</string>
-    <string name="settings_pred_accounts_permission_title">需要帳戶權限</string>
     <string name="settings_pred_block_offensive_summary">語音輸入時隱藏可能令人反感的字詞</string>
     <string name="settings_pred_block_offensive_title">封鎖不雅字詞</string>
     <string name="settings_pred_contacts_permission_summary">授予連絡人權限，以便在輸入時建議連絡人姓名和電子郵件地址</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">需要連絡人權限</string>
     <string name="settings_pred_contacts_summary_enabled">在建議中納入連絡人姓名</string>
     <string name="settings_pred_contacts_title">根據連絡人提供建議</string>
-    <string name="settings_pred_email_summary_disabled">需要帳戶權限</string>
-    <string name="settings_pred_email_summary_enabled">在建議中納入您的電子郵件地址</string>
-    <string name="settings_pred_email_title">建議電子郵件地址</string>
     <string name="settings_pred_emoji_summary">輸入時建議表情符號</string>
     <string name="settings_pred_emoji_title">表情符號建議</string>
     <string name="settings_pred_flick_animation_summary">以滑動方式採用建議時，讓字詞向上顯示動畫</string>

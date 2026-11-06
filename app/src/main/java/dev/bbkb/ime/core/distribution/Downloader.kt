@@ -180,7 +180,7 @@ class Downloader @JvmOverloads constructor(
             if (status !in 200..299) {
                 throw HttpStatusException(status, url)
             }
-            // Not contentLengthLong: that is API 24 and this app ships to API 23.
+            // The Content-Length header as a long; -1 when it is missing or not a number.
             val declared = connection.getHeaderField("Content-Length")?.toLongOrNull() ?: -1L
             val total = if (expectedSize > 0L) expectedSize else declared
             val digest = MessageDigest.getInstance("SHA-256")

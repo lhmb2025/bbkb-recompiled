@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Non disponible sur ce téléphone</string>
     <string name="pref_show_pkb_modifier_status_icon">Afficher l\'icône d\'état des modificateurs</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Afficher l\'indicateur Maj./Alt dans la barre d\'état lors de l\'utilisation du clavier physique</string>
-    <string name="settings_pred_accounts_permission_summary">Accordez l\'autorisation d\'accès aux comptes pour suggérer des adresses courriel pendant la saisie</string>
-    <string name="settings_pred_accounts_permission_title">Autorisation Comptes requise</string>
     <string name="settings_pred_block_offensive_summary">Masquer les mots potentiellement offensants dans la dictée vocale</string>
     <string name="settings_pred_block_offensive_title">Bloquer les mots offensants</string>
     <string name="settings_pred_contacts_permission_summary">Accordez l\'autorisation d\'accès aux contacts pour suggérer des noms de contacts et des adresses courriel pendant la saisie</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Autorisation d\'accès aux contacts requise</string>
     <string name="settings_pred_contacts_summary_enabled">Inclure les noms de contacts dans les suggestions</string>
     <string name="settings_pred_contacts_title">Suggérer depuis les contacts</string>
-    <string name="settings_pred_email_summary_disabled">Autorisation d\'accès aux comptes requise</string>
-    <string name="settings_pred_email_summary_enabled">Inclure vos adresses courriel dans les suggestions</string>
-    <string name="settings_pred_email_title">Suggérer des adresses courriel</string>
     <string name="settings_pred_emoji_summary">Suggérer des emojis pendant la saisie</string>
     <string name="settings_pred_emoji_title">Suggestions d\'emojis</string>
     <string name="settings_pred_flick_animation_summary">Animer le mot vers le haut lors de la validation d\'une suggestion par effleurement</string>

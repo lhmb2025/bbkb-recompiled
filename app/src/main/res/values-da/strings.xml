@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Ikke tilgængelig på denne telefon</string>
     <string name="pref_show_pkb_modifier_status_icon">Vis statusikon for modifikatortaster</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Vis indikator for Shift/Alt i statuslinjen, når du bruger et fysisk tastatur</string>
-    <string name="settings_pred_accounts_permission_summary">Giv tilladelse til konti, så der kan foreslås e-mailadresser, mens du skriver</string>
-    <string name="settings_pred_accounts_permission_title">Tilladelse til konti er påkrævet</string>
     <string name="settings_pred_block_offensive_summary">Skjul potentielt stødende ord ved diktering</string>
     <string name="settings_pred_block_offensive_title">Bloker stødende ord</string>
     <string name="settings_pred_contacts_permission_summary">Giv tilladelse til kontakter, så der kan foreslås kontaktnavne og e-mailadresser, mens du skriver</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Tilladelse til kontakter er påkrævet</string>
     <string name="settings_pred_contacts_summary_enabled">Medtag kontaktnavne i forslagene</string>
     <string name="settings_pred_contacts_title">Foreslå fra kontakter</string>
-    <string name="settings_pred_email_summary_disabled">Tilladelse til konti er påkrævet</string>
-    <string name="settings_pred_email_summary_enabled">Medtag dine e-mailadresser i forslagene</string>
-    <string name="settings_pred_email_title">Foreslå e-mailadresser</string>
     <string name="settings_pred_emoji_summary">Foreslå emojis, mens du skriver</string>
     <string name="settings_pred_emoji_title">Emoji-forslag</string>
     <string name="settings_pred_flick_animation_summary">Animer ordet opad, når du bekræfter et forslag med en strygning</string>

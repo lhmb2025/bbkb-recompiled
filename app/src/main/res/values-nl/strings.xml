@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Niet beschikbaar op deze telefoon</string>
     <string name="pref_show_pkb_modifier_status_icon">Statuspictogram voor modificatietoetsen tonen</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">De Shift/Alt-indicator in de statusbalk weergeven bij gebruik van het fysieke toetsenbord</string>
-    <string name="settings_pred_accounts_permission_summary">Verleen toegang tot accounts om tijdens het typen e-mailadressen te suggereren</string>
-    <string name="settings_pred_accounts_permission_title">Accounttoestemming vereist</string>
     <string name="settings_pred_block_offensive_summary">Mogelijk aanstootgevende woorden verbergen tijdens het dicteren</string>
     <string name="settings_pred_block_offensive_title">Aanstootgevende woorden blokkeren</string>
     <string name="settings_pred_contacts_permission_summary">Verleen toegang tot contactpersonen om tijdens het typen namen en e-mailadressen te suggereren</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Toestemming voor contactpersonen vereist</string>
     <string name="settings_pred_contacts_summary_enabled">Namen van contactpersonen opnemen in suggesties</string>
     <string name="settings_pred_contacts_title">Suggesties uit contactpersonen</string>
-    <string name="settings_pred_email_summary_disabled">Accounttoestemming vereist</string>
-    <string name="settings_pred_email_summary_enabled">Uw e-mailadressen opnemen in suggesties</string>
-    <string name="settings_pred_email_title">E-mailadressen suggereren</string>
     <string name="settings_pred_emoji_summary">Emoji suggereren tijdens het typen</string>
     <string name="settings_pred_emoji_title">Emoji-suggesties</string>
     <string name="settings_pred_flick_animation_summary">Het woord omhoog laten bewegen wanneer u een suggestie met een veeg bevestigt</string>

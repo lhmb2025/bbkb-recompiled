@@ -118,12 +118,7 @@ object LocaleUtil {
         val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             ?: return null
         val currentSubtype = inputMethodManager.currentInputMethodSubtype ?: return null
-        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            currentSubtype.languageTag
-        } else {
-            @Suppress("DEPRECATION")
-            currentSubtype.locale
-        }
+        return currentSubtype.languageTag
     }
 
     // ========== Methods merged from core.dictionary.LocaleUtils.java ==========
@@ -137,10 +132,6 @@ object LocaleUtil {
         return if (localeString.isNullOrEmpty()) {
             context.resources.getString(R.string.user_dict_settings_all_languages)
         } else {
-            // ConfigurationCompat, not Configuration.getLocales(): the latter is
-            // API 24 while minSdk is 23, so opening TextShortcutsScreen or
-            // UserDictionaryScreen on an API-23 device threw NoSuchMethodError
-            // (audit PD-19).
             val displayLocale = androidx.core.os.ConfigurationCompat
                 .getLocales(context.resources.configuration)
                 .get(0) ?: Locale.getDefault()

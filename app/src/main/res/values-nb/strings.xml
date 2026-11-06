@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Ikke tilgjengelig på denne telefonen</string>
     <string name="pref_show_pkb_modifier_status_icon">Vis statusikon for modifikatortaster</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Vis Skift-/Alt-indikator i statusfeltet når du bruker fysisk tastatur</string>
-    <string name="settings_pred_accounts_permission_summary">Gi tilgang til kontoer for å foreslå e-postadresser mens du skriver</string>
-    <string name="settings_pred_accounts_permission_title">Krever tillatelse til kontoer</string>
     <string name="settings_pred_block_offensive_summary">Skjul ord som kan virke støtende, ved talediktering</string>
     <string name="settings_pred_block_offensive_title">Blokker støtende ord</string>
     <string name="settings_pred_contacts_permission_summary">Gi tilgang til kontakter for å foreslå kontaktnavn og e-postadresser mens du skriver</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Krever tillatelse til kontakter</string>
     <string name="settings_pred_contacts_summary_enabled">Inkluder kontaktnavn i forslagene</string>
     <string name="settings_pred_contacts_title">Foreslå fra kontakter</string>
-    <string name="settings_pred_email_summary_disabled">Krever tillatelse til kontoer</string>
-    <string name="settings_pred_email_summary_enabled">Inkluder e-postadressene dine i forslagene</string>
-    <string name="settings_pred_email_title">Foreslå e-postadresser</string>
     <string name="settings_pred_emoji_summary">Foreslå emojier mens du skriver</string>
     <string name="settings_pred_emoji_title">Emoji-forslag</string>
     <string name="settings_pred_flick_animation_summary">Animer ordet oppover når du godtar et forslag med et hurtigsveip</string>

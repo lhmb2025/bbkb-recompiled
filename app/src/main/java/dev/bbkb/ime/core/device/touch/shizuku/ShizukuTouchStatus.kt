@@ -5,7 +5,7 @@ package dev.bbkb.ime.core.device.touch.shizuku
  * [READY] up means Shizuku is usable; [BOUND] and [STREAMING] say how far the engine itself got.
  */
 enum class ShizukuTouchState {
-    /** API < 24 (Shizuku's own floor), or a Shizuku server older than v11. Nothing to offer. */
+    /** A Shizuku server older than v11. Nothing to offer. */
     UNSUPPORTED,
     /** The Shizuku manager app is not installed (and no Sui binder arrived either). */
     NOT_INSTALLED,
@@ -52,7 +52,6 @@ data class ShizukuTouchStatus(
 
 /** Machine-readable [ShizukuTouchStatus.error] values. Not user-facing text. */
 object ShizukuTouchErrors {
-    const val API_TOO_OLD = "api_below_24"
     const val SERVER_TOO_OLD = "shizuku_pre_v11"
     /** No input device's name matched; retried with backoff (the firmware may not have it yet). */
     const val NOT_FOUND = "not_found"

@@ -101,7 +101,7 @@ object UpdateNotifier {
         return NotificationManagerCompat.from(context).areNotificationsEnabled()
     }
 
-    /** The "Updates" channel, created idempotently. No-op below API 26. */
+    /** The "Updates" channel, created idempotently. */
     fun ensureChannel(context: Context) {
         val channel = NotificationChannelCompat.Builder(
             CHANNEL_ID,

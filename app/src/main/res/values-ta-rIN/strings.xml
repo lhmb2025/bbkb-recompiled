@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">இந்த ஃபோனில் கிடைக்கவில்லை</string>
     <string name="pref_show_pkb_modifier_status_icon">மாற்றி நிலை ஐகானைக் காட்டு</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">இயற்பியல் விசைப்பலகையைப் பயன்படுத்தும்போது Shift/Alt மாற்றி குறியீட்டை நிலைப் பட்டியில் காட்டு</string>
-    <string name="settings_pred_accounts_permission_summary">தட்டச்சு செய்யும்போது மின்னஞ்சல் முகவரிகளைப் பரிந்துரைக்க கணக்குகள் அனுமதியை வழங்கவும்</string>
-    <string name="settings_pred_accounts_permission_title">கணக்குகள் அனுமதி தேவை</string>
     <string name="settings_pred_block_offensive_summary">குரல் மூலம் எழுதும்போது புண்படுத்தக்கூடிய சொற்களை மறை</string>
     <string name="settings_pred_block_offensive_title">புண்படுத்தும் சொற்களைத் தடு</string>
     <string name="settings_pred_contacts_permission_summary">தட்டச்சு செய்யும்போது தொடர்புப் பெயர்களையும் மின்னஞ்சல் முகவரிகளையும் பரிந்துரைக்க தொடர்புகள் அனுமதியை வழங்கவும்</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">தொடர்புகள் அனுமதி தேவை</string>
     <string name="settings_pred_contacts_summary_enabled">பரிந்துரைகளில் தொடர்புப் பெயர்களைச் சேர்</string>
     <string name="settings_pred_contacts_title">தொடர்புகளிலிருந்து பரிந்துரை</string>
-    <string name="settings_pred_email_summary_disabled">கணக்குகள் அனுமதி தேவை</string>
-    <string name="settings_pred_email_summary_enabled">பரிந்துரைகளில் உங்கள் மின்னஞ்சல் முகவரிகளைச் சேர்</string>
-    <string name="settings_pred_email_title">மின்னஞ்சல் முகவரிகளைப் பரிந்துரை</string>
     <string name="settings_pred_emoji_summary">தட்டச்சு செய்யும்போது எமோஜிகளைப் பரிந்துரை</string>
     <string name="settings_pred_emoji_title">எமோஜி பரிந்துரைகள்</string>
     <string name="settings_pred_flick_animation_summary">ஸ்வைப் மூலம் பரிந்துரையை உறுதிசெய்யும்போது சொல்லை மேல்நோக்கி அசைவூட்டு</string>

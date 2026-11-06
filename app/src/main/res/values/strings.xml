@@ -566,8 +566,6 @@
     <string name="pref_show_pkb_modifier_status_icon">Show modifier status icon</string>
     <string name="pref_show_pkb_modifier_status_icon_key" translatable="false">pref_show_pkb_modifier_status_icon</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Display Shift/Alt modifier indicator in status bar when using physical keyboard</string>
-    <string name="settings_pred_accounts_permission_summary">Grant accounts permission to suggest email addresses while typing</string>
-    <string name="settings_pred_accounts_permission_title">Accounts Permission Required</string>
     <string name="settings_pred_block_offensive_summary">Mask potentially offensive words in voice dictation</string>
     <string name="settings_pred_block_offensive_title">Block offensive words</string>
     <string name="settings_pred_contacts_permission_summary">Grant contacts permission to suggest contact names and email addresses while typing</string>
@@ -575,9 +573,6 @@
     <string name="settings_pred_contacts_summary_disabled">Contacts permission required</string>
     <string name="settings_pred_contacts_summary_enabled">Include contact names in suggestions</string>
     <string name="settings_pred_contacts_title">Suggest from contacts</string>
-    <string name="settings_pred_email_summary_disabled">Accounts permission required</string>
-    <string name="settings_pred_email_summary_enabled">Include your email addresses in suggestions</string>
-    <string name="settings_pred_email_title">Suggest email addresses</string>
     <string name="settings_pred_emoji_summary">Suggest emojis when typing</string>
     <string name="settings_pred_emoji_title">Emoji suggestions</string>
     <string name="settings_pred_flick_animation_summary">Animate the word upward when committing a suggestion with a swipe</string>

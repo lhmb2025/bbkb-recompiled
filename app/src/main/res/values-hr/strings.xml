@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Nije dostupno na ovom telefonu</string>
     <string name="pref_show_pkb_modifier_status_icon">Prikaži ikonu stanja modifikatora</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Prikaži pokazatelj modifikatora Shift/Alt na traci stanja pri upotrebi fizičke tipkovnice</string>
-    <string name="settings_pred_accounts_permission_summary">Dopustite pristup računima kako bi se tijekom unosa predlagale e-mail adrese</string>
-    <string name="settings_pred_accounts_permission_title">Potrebno je dopuštenje za račune</string>
     <string name="settings_pred_block_offensive_summary">Sakrij potencijalno uvredljive riječi pri glasovnom diktiranju</string>
     <string name="settings_pred_block_offensive_title">Blokiraj uvredljive riječi</string>
     <string name="settings_pred_contacts_permission_summary">Dopustite pristup kontaktima kako bi se tijekom unosa predlagala imena kontakata i e-mail adrese</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Potrebno je dopuštenje za kontakte</string>
     <string name="settings_pred_contacts_summary_enabled">Uključi imena kontakata u prijedloge</string>
     <string name="settings_pred_contacts_title">Predlaži iz kontakata</string>
-    <string name="settings_pred_email_summary_disabled">Potrebno je dopuštenje za račune</string>
-    <string name="settings_pred_email_summary_enabled">Uključi vaše e-mail adrese u prijedloge</string>
-    <string name="settings_pred_email_title">Predlaži e-mail adrese</string>
     <string name="settings_pred_emoji_summary">Predlaži emojije tijekom unosa</string>
     <string name="settings_pred_emoji_title">Prijedlozi emojija</string>
     <string name="settings_pred_flick_animation_summary">Animiraj riječ prema gore pri potvrđivanju prijedloga povlačenjem</string>

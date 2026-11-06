@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">ໃຊ້ບໍ່ໄດ້ໃນໂທລະສັບນີ້</string>
     <string name="pref_show_pkb_modifier_status_icon">ສະແດງໄອຄອນສະຖານະປຸ່ມດັດແປງ</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">ສະແດງຕົວບອກສະຖານະ Shift/Alt ໃນແຖບສະຖານະເມື່ອໃຊ້ແປ້ນພິມແທ້</string>
-    <string name="settings_pred_accounts_permission_summary">ໃຫ້ສິດເຂົ້າເຖິງບັນຊີເພື່ອແນະນຳທີ່ຢູ່ອີເມວໃນຂະນະທີ່ພິມ</string>
-    <string name="settings_pred_accounts_permission_title">ຕ້ອງການສິດເຂົ້າເຖິງບັນຊີ</string>
     <string name="settings_pred_block_offensive_summary">ເຊື່ອງຄຳທີ່ອາດບໍ່ສຸພາບເມື່ອປ້ອນດ້ວຍສຽງ</string>
     <string name="settings_pred_block_offensive_title">ບລັອກຄຳທີ່ບໍ່ສຸພາບ</string>
     <string name="settings_pred_contacts_permission_summary">ໃຫ້ສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່ເພື່ອແນະນຳຊື່ ແລະ ທີ່ຢູ່ອີເມວໃນຂະນະທີ່ພິມ</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">ຕ້ອງການສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່</string>
     <string name="settings_pred_contacts_summary_enabled">ລວມຊື່ຜູ້ຕິດຕໍ່ເຂົ້າໃນຄຳແນະນຳ</string>
     <string name="settings_pred_contacts_title">ແນະນຳຈາກລາຍຊື່ຜູ້ຕິດຕໍ່</string>
-    <string name="settings_pred_email_summary_disabled">ຕ້ອງການສິດເຂົ້າເຖິງບັນຊີ</string>
-    <string name="settings_pred_email_summary_enabled">ລວມທີ່ຢູ່ອີເມວຂອງທ່ານເຂົ້າໃນຄຳແນະນຳ</string>
-    <string name="settings_pred_email_title">ແນະນຳທີ່ຢູ່ອີເມວ</string>
     <string name="settings_pred_emoji_summary">ແນະນຳອີໂມຈິໃນຂະນະທີ່ພິມ</string>
     <string name="settings_pred_emoji_title">ຄຳແນະນຳອີໂມຈິ</string>
     <string name="settings_pred_flick_animation_summary">ສະແດງພາບເຄື່ອນໄຫວຄຳຂຶ້ນເທິງເມື່ອຢືນຢັນຄຳແນະນຳດ້ວຍການສະບັດ</string>

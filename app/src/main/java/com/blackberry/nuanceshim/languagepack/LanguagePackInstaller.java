@@ -48,7 +48,6 @@ public class LanguagePackInstaller {
         if (cached != null) {
             return cached;
         }
-        // putIfAbsent, not computeIfAbsent: the latter is API 24+ and minSdk is 23.
         final LanguagePackInstaller created = new LanguagePackInstaller(context, locale, registry);
         final LanguagePackInstaller prior = sByLanguageTag.putIfAbsent(tag, created);
         return prior != null ? prior : created;

@@ -16,8 +16,7 @@ import dev.bbkb.ime.core.device.detection.TouchKeypadInfo;
  * which set every field, so it bought nothing over a constructor; and three of its fields were
  * write-only — {@code supportsSwipeTyping} / {@code supportsSlideboard} (nothing read them;
  * {@code DeviceProfile} answers both questions from {@code !isPkbDevice()}) and
- * {@code sdkVersion} (read only by {@code isPreMarshmallow()}, itself unreferenced at
- * {@code minSdk = 23}).
+ * {@code sdkVersion} (read only by {@code isPreMarshmallow()}, itself unreferenced).
  */
 public final class DeviceCapabilities {
 

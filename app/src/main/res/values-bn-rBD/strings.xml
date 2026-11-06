@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">এই ফোনে উপলব্ধ নয়</string>
     <string name="pref_show_pkb_modifier_status_icon">মডিফায়ার স্ট্যাটাস আইকন দেখান</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">ফিজিক্যাল কীবোর্ড ব্যবহারের সময় স্ট্যাটাস বারে Shift/Alt মডিফায়ারের নির্দেশক দেখান</string>
-    <string name="settings_pred_accounts_permission_summary">টাইপ করার সময় ইমেল ঠিকানা প্রস্তাব করতে অ্যাকাউন্টের অনুমতি দিন</string>
-    <string name="settings_pred_accounts_permission_title">অ্যাকাউন্টের অনুমতি প্রয়োজন</string>
     <string name="settings_pred_block_offensive_summary">ভয়েস ডিকটেশনে আপত্তিকর হতে পারে এমন শব্দ লুকান</string>
     <string name="settings_pred_block_offensive_title">আপত্তিকর শব্দ আটকান</string>
     <string name="settings_pred_contacts_permission_summary">টাইপ করার সময় পরিচিতির নাম ও ইমেল ঠিকানা প্রস্তাব করতে পরিচিতির অনুমতি দিন</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">পরিচিতির অনুমতি প্রয়োজন</string>
     <string name="settings_pred_contacts_summary_enabled">পরামর্শে পরিচিতির নাম অন্তর্ভুক্ত করুন</string>
     <string name="settings_pred_contacts_title">পরিচিতি থেকে পরামর্শ দিন</string>
-    <string name="settings_pred_email_summary_disabled">অ্যাকাউন্টের অনুমতি প্রয়োজন</string>
-    <string name="settings_pred_email_summary_enabled">পরামর্শে আপনার ইমেল ঠিকানা অন্তর্ভুক্ত করুন</string>
-    <string name="settings_pred_email_title">ইমেল ঠিকানার পরামর্শ দিন</string>
     <string name="settings_pred_emoji_summary">টাইপ করার সময় ইমোজির পরামর্শ দিন</string>
     <string name="settings_pred_emoji_title">ইমোজি পরামর্শ</string>
     <string name="settings_pred_flick_animation_summary">সোয়াইপ করে পরামর্শ নেওয়ার সময় শব্দটিকে উপরের দিকে অ্যানিমেট করুন</string>

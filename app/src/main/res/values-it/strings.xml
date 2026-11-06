@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Non disponibile su questo telefono</string>
     <string name="pref_show_pkb_modifier_status_icon">Mostra l\'icona di stato dei modificatori</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Mostra l\'indicatore dei modificatori Maiusc/Alt nella barra di stato quando usi la tastiera fisica</string>
-    <string name="settings_pred_accounts_permission_summary">Concedi l\'autorizzazione agli account per suggerire indirizzi e-mail durante la digitazione</string>
-    <string name="settings_pred_accounts_permission_title">Autorizzazione account richiesta</string>
     <string name="settings_pred_block_offensive_summary">Nascondi le parole potenzialmente offensive nella dettatura vocale</string>
     <string name="settings_pred_block_offensive_title">Blocca le parole offensive</string>
     <string name="settings_pred_contacts_permission_summary">Concedi l\'autorizzazione ai contatti per suggerire nomi di contatti e indirizzi e-mail durante la digitazione</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Autorizzazione contatti richiesta</string>
     <string name="settings_pred_contacts_summary_enabled">Includi i nomi dei contatti nei suggerimenti</string>
     <string name="settings_pred_contacts_title">Suggerisci dai contatti</string>
-    <string name="settings_pred_email_summary_disabled">Autorizzazione account richiesta</string>
-    <string name="settings_pred_email_summary_enabled">Includi i tuoi indirizzi e-mail nei suggerimenti</string>
-    <string name="settings_pred_email_title">Suggerisci indirizzi e-mail</string>
     <string name="settings_pred_emoji_summary">Suggerisci emoji durante la digitazione</string>
     <string name="settings_pred_emoji_title">Suggerimenti emoji</string>
     <string name="settings_pred_flick_animation_summary">Anima la parola verso l\'alto quando confermi un suggerimento con uno sfioramento</string>

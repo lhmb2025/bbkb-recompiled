@@ -298,7 +298,7 @@ public final class SubtypeManager {
     }
 
     public boolean shouldRemoveActiveKeyboardLocale(Context context, LocaleList localeList) {
-        if (Build.VERSION.SDK_INT < 24 || !isUsingSystemLanguages(context)) {
+        if (!isUsingSystemLanguages(context)) {
             return false;
         }
         Locale localeM4259h = getCurrentSubtypeLocale();

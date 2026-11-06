@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">इस फ़ोन पर उपलब्ध नहीं है</string>
     <string name="pref_show_pkb_modifier_status_icon">मॉडिफ़ायर स्थिति आइकन दिखाएं</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">भौतिक कीबोर्ड का उपयोग करते समय स्टेटस बार में Shift/Alt मॉडिफ़ायर संकेतक दिखाएं</string>
-    <string name="settings_pred_accounts_permission_summary">टाइप करते समय ईमेल पते सुझाने के लिए खाता अनुमति दें</string>
-    <string name="settings_pred_accounts_permission_title">खाता अनुमति आवश्यक</string>
     <string name="settings_pred_block_offensive_summary">बोलकर लिखते समय संभावित आपत्तिजनक शब्द छिपाएं</string>
     <string name="settings_pred_block_offensive_title">आपत्तिजनक शब्द ब्लॉक करें</string>
     <string name="settings_pred_contacts_permission_summary">टाइप करते समय संपर्क नाम और ईमेल पते सुझाने के लिए संपर्क अनुमति दें</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">संपर्क अनुमति आवश्यक</string>
     <string name="settings_pred_contacts_summary_enabled">सुझावों में संपर्क नाम शामिल करें</string>
     <string name="settings_pred_contacts_title">संपर्कों से सुझाव दें</string>
-    <string name="settings_pred_email_summary_disabled">खाता अनुमति आवश्यक</string>
-    <string name="settings_pred_email_summary_enabled">सुझावों में अपने ईमेल पते शामिल करें</string>
-    <string name="settings_pred_email_title">ईमेल पते सुझाएं</string>
     <string name="settings_pred_emoji_summary">टाइप करते समय ईमोजी सुझाएं</string>
     <string name="settings_pred_emoji_title">ईमोजी सुझाव</string>
     <string name="settings_pred_flick_animation_summary">स्वाइप से सुझाव लागू करने पर शब्द को ऊपर की ओर एनिमेट करें</string>

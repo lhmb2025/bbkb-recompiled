@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">לא זמין בטלפון זה</string>
     <string name="pref_show_pkb_modifier_status_icon">הצג סמל מצב של מקשי החלפה</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">הצג מחוון Shift/Alt בשורת המצב בעת שימוש במקלדת פיזית</string>
-    <string name="settings_pred_accounts_permission_summary">הענק הרשאת חשבונות כדי להציע כתובות אימייל בזמן ההקלדה</string>
-    <string name="settings_pred_accounts_permission_title">נדרשת הרשאת חשבונות</string>
     <string name="settings_pred_block_offensive_summary">הסתר מילים שעלולות להיות פוגעניות בהכתבה קולית</string>
     <string name="settings_pred_block_offensive_title">חסום מילים פוגעניות</string>
     <string name="settings_pred_contacts_permission_summary">הענק הרשאת אנשי קשר כדי להציע שמות אנשי קשר וכתובות אימייל בזמן ההקלדה</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">נדרשת הרשאת אנשי קשר</string>
     <string name="settings_pred_contacts_summary_enabled">כלול שמות אנשי קשר בהצעות</string>
     <string name="settings_pred_contacts_title">הצע מאנשי הקשר</string>
-    <string name="settings_pred_email_summary_disabled">נדרשת הרשאת חשבונות</string>
-    <string name="settings_pred_email_summary_enabled">כלול את כתובות האימייל שלך בהצעות</string>
-    <string name="settings_pred_email_title">הצע כתובות אימייל</string>
     <string name="settings_pred_emoji_summary">הצע אמוג\'ים בזמן ההקלדה</string>
     <string name="settings_pred_emoji_title">הצעות אמוג\'י</string>
     <string name="settings_pred_flick_animation_summary">הנפש את המילה כלפי מעלה בעת אישור הצעה בהחלקה</string>

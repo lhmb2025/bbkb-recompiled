@@ -251,8 +251,6 @@ class ShizukuTouchSourceTest {
         val (_, source) = source(pad())
         source.onWindowShown()
         val expected = listOf(
-            ShizukuTouchStatus(ShizukuTouchState.UNSUPPORTED, ShizukuTouchErrors.API_TOO_OLD) to
-                TouchSourceStatus.of(State.UNAVAILABLE, Reason.SHIZUKU_UNSUPPORTED),
             ShizukuTouchStatus(ShizukuTouchState.UNSUPPORTED, ShizukuTouchErrors.SERVER_TOO_OLD) to
                 TouchSourceStatus.of(State.UNAVAILABLE, Reason.SHIZUKU_OUTDATED),
             ShizukuTouchStatus(ShizukuTouchState.NOT_INSTALLED) to

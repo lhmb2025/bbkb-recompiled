@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">या फोनवर उपलब्ध नाही</string>
     <string name="pref_show_pkb_modifier_status_icon">मॉडिफायर स्थिती आयकन दाखवा</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">फिजिकल कीबोर्ड वापरताना स्टेटस बारमध्ये Shift/Alt मॉडिफायर निर्देशक दाखवा</string>
-    <string name="settings_pred_accounts_permission_summary">टाइप करताना ईमेल पत्ते सुचवण्यासाठी खाते परवानगी द्या</string>
-    <string name="settings_pred_accounts_permission_title">खाते परवानगी आवश्यक</string>
     <string name="settings_pred_block_offensive_summary">व्हॉइस डिक्टेशनमध्ये संभाव्य आक्षेपार्ह शब्द लपवा</string>
     <string name="settings_pred_block_offensive_title">आक्षेपार्ह शब्द ब्लॉक करा</string>
     <string name="settings_pred_contacts_permission_summary">टाइप करताना संपर्क नावे आणि ईमेल पत्ते सुचवण्यासाठी संपर्क परवानगी द्या</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">संपर्क परवानगी आवश्यक</string>
     <string name="settings_pred_contacts_summary_enabled">सूचनांमध्ये संपर्क नावे समाविष्ट करा</string>
     <string name="settings_pred_contacts_title">संपर्कांमधून सुचवा</string>
-    <string name="settings_pred_email_summary_disabled">खाते परवानगी आवश्यक</string>
-    <string name="settings_pred_email_summary_enabled">सूचनांमध्ये तुमचे ईमेल पत्ते समाविष्ट करा</string>
-    <string name="settings_pred_email_title">ईमेल पत्ते सुचवा</string>
     <string name="settings_pred_emoji_summary">टाइप करताना इमोजी सुचवा</string>
     <string name="settings_pred_emoji_title">इमोजी सूचना</string>
     <string name="settings_pred_flick_animation_summary">स्वाइपने सूचना स्वीकारताना शब्द वरच्या दिशेने अ‍ॅनिमेट करा</string>

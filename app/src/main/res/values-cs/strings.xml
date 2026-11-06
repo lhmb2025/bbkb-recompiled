@@ -465,8 +465,6 @@
     <string name="touch_surface_status_unavailable">Není k dispozici v tomto telefonu</string>
     <string name="pref_show_pkb_modifier_status_icon">Zobrazovat ikonu stavu modifikátorů</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Zobrazovat indikátor modifikátorů Shift/Alt ve stavovém řádku při použití fyzické klávesnice</string>
-    <string name="settings_pred_accounts_permission_summary">Udělte oprávnění k účtům, aby bylo možné při psaní navrhovat e-mailové adresy</string>
-    <string name="settings_pred_accounts_permission_title">Vyžadováno oprávnění k účtům</string>
     <string name="settings_pred_block_offensive_summary">Skrývat potenciálně urážlivá slova při hlasovém diktování</string>
     <string name="settings_pred_block_offensive_title">Blokovat urážlivá slova</string>
     <string name="settings_pred_contacts_permission_summary">Udělte oprávnění ke kontaktům, aby bylo možné při psaní navrhovat jména kontaktů a e-mailové adresy</string>
@@ -474,9 +472,6 @@
     <string name="settings_pred_contacts_summary_disabled">Vyžadováno oprávnění ke kontaktům</string>
     <string name="settings_pred_contacts_summary_enabled">Zahrnout jména kontaktů do návrhů</string>
     <string name="settings_pred_contacts_title">Navrhovat z kontaktů</string>
-    <string name="settings_pred_email_summary_disabled">Vyžadováno oprávnění k účtům</string>
-    <string name="settings_pred_email_summary_enabled">Zahrnout vaše e-mailové adresy do návrhů</string>
-    <string name="settings_pred_email_title">Navrhovat e-mailové adresy</string>
     <string name="settings_pred_emoji_summary">Navrhovat emodži při psaní</string>
     <string name="settings_pred_emoji_title">Návrhy emodži</string>
     <string name="settings_pred_flick_animation_summary">Animovat slovo směrem nahoru při potvrzení návrhu přejetím</string>
