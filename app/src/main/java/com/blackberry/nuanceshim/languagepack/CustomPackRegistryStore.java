@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
+import androidx.core.util.AtomicFile;
+
 import dev.bbkb.ime.core.shared.Logger;
 
 import java.io.File;
@@ -181,11 +183,19 @@ public final class CustomPackRegistryStore {
         return removed;
     }
 
+    /**
+     * Replaces the registry through {@link AtomicFile}: the JSON goes to
+     * {@code nuance_custom_packs.json.new}, is synced to disk and is then renamed over the live
+     * file, so a crash or a power cut mid-write cannot leave a half-written registry - losing the
+     * record of a pack would let the cleanup delete the pack itself.
+     */
     private static boolean write(Context context, List<LanguagePackInfo> packs) {
         final File f = file(context);
-        final File tmp = new File(f.getParentFile(), FILE_NAME + ".tmp");
-        try (JsonWriter w = new JsonWriter(
-                new OutputStreamWriter(new FileOutputStream(tmp), StandardCharsets.UTF_8))) {
+        final AtomicFile atomic = new AtomicFile(f);
+        FileOutputStream out = null;
+        try {
+            out = atomic.startWrite();
+            final JsonWriter w = new JsonWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
             w.beginObject();
             w.name("languages").beginArray();
             for (LanguagePackInfo p : packs) {
@@ -202,16 +212,23 @@ public final class CustomPackRegistryStore {
             }
             w.endArray();
             w.endObject();
+            // Flushed, not closed: finishWrite syncs the stream before it closes it.
+            w.flush();
+            atomic.finishWrite(out);
         } catch (IOException e) {
+            atomic.failWrite(out);
             Logger.errorWithException(TAG, e, "Failed to write custom pack registry");
-            tmp.delete();
             return false;
+        } catch (RuntimeException e) {
+            atomic.failWrite(out);
+            throw e;
         }
-        // Rename over the live file so a crash mid-write cannot leave a half-written registry -
-        // losing the record of a pack would let the cleanup delete the pack itself.
-        if (!tmp.renameTo(f)) {
+        // finishWrite only logs a failed rename, which leaves the registry in the .new file.
+        final File pending = new File(f.getPath() + ".new");
+        if (pending.exists()) {
             Logger.error(TAG, "Failed to replace custom pack registry");
-            tmp.delete();
+            //noinspection ResultOfMethodCallIgnored
+            pending.delete();
             return false;
         }
         return true;

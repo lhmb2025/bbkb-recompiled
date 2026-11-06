@@ -368,6 +368,40 @@ class BackupBundleTest {
         assertEquals("bbkb-backup-2023-11-14.zip", BackupBundle.defaultFileName(1_700_000_000_000L))
     }
 
+    // ── BackupOperations.writeTo(File): the phone-backup bundle on disk ──────
+
+    @Test
+    fun writingTheBundleFileReplacesItWholeAndLeavesNothingBeside() {
+        val context: Context = ApplicationProvider.getApplicationContext()
+        val dir = java.io.File(context.filesDir, "bundle-file-test").apply { deleteRecursively() }
+        val file = java.io.File(dir, "auto.zip")
+
+        BackupOperations.writeTo(file, BackupBundle.Contents(letterLayouts = listOf(letterLayoutFile("a"))))
+        BackupOperations.writeTo(file, BackupBundle.Contents(letterLayouts = listOf(letterLayoutFile("b"))))
+
+        val bundle = (file.inputStream().use { BackupOperations.readFrom(it) } as BackupOperations.ReadResult.Ok).bundle
+        assertEquals(listOf("b"), bundle.letterLayouts.map { it.id })
+        assertEquals(listOf("auto.zip"), dir.listFiles()!!.map { it.name })
+        dir.deleteRecursively()
+    }
+
+    @Test
+    fun aFailedBundleWriteKeepsTheOldFileAndLeavesNothingBeside() {
+        val context: Context = ApplicationProvider.getApplicationContext()
+        val dir = java.io.File(context.filesDir, "bundle-file-test").apply { deleteRecursively() }
+        val file = java.io.File(dir, "auto.zip")
+        BackupOperations.writeTo(file, BackupBundle.Contents(letterLayouts = listOf(letterLayoutFile("a"))))
+
+        val refused = BackupBundle.Contents(letterLayouts = listOf(BackupBundle.LetterLayoutFile("../a.xml", letterLayoutXml().toByteArray())))
+        val failure = runCatching { BackupOperations.writeTo(file, refused) }.exceptionOrNull()
+
+        assertTrue("the bad name is refused: $failure", failure is IllegalArgumentException)
+        val bundle = (file.inputStream().use { BackupOperations.readFrom(it) } as BackupOperations.ReadResult.Ok).bundle
+        assertEquals(listOf("a"), bundle.letterLayouts.map { it.id })
+        assertEquals(listOf("auto.zip"), dir.listFiles()!!.map { it.name })
+        dir.deleteRecursively()
+    }
+
     // ── zip helpers ──────────────────────────────────────────────────────────
 
     private fun entriesOf(bytes: ByteArray): LinkedHashMap<String, ByteArray> {

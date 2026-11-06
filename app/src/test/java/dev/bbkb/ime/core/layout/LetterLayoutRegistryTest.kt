@@ -89,7 +89,8 @@ class LetterLayoutRegistryTest {
         assertEquals(LetterLayout.Origin.USER, back.origin)
         assertTrue(registry.fileFor("b-layout").path.endsWith("files/layouts/letter/b-layout.xml"))
         assertTrue("written as the XML document", registry.fileFor("b-layout").readText().startsWith("<?xml"))
-        assertFalse("no temp file is left behind", registry.directory.listFiles()!!.any { it.name.endsWith(".tmp") })
+        assertEquals("only the two documents, no temp file", setOf("a-layout.xml", "b-layout.xml"),
+            registry.directory.listFiles()!!.map { it.name }.toSet())
     }
 
     @Test
@@ -98,6 +99,23 @@ class LetterLayoutRegistryTest {
         registry.save(layout("one", name = "First"))
         registry.save(layout("one", name = "Second"))
         assertEquals(listOf("Second"), registry.list().map { it.name })
+    }
+
+    @Test
+    fun aWriteACrashLeftHalfDoneIsNotListedAndIsReplacedOrDeleted() {
+        val registry = LetterLayoutRegistry(context)
+        registry.save(layout("one", name = "First"))
+        val stale = java.io.File(registry.fileFor("one").path + ".new").apply { writeText("<letter-lay") }
+
+        assertEquals("the stale .new is not a layout", listOf("First"), registry.list().map { it.name })
+        registry.save(layout("one", name = "Second"))
+        assertEquals(listOf("Second"), registry.list().map { it.name })
+        assertFalse("the save replaced it", stale.exists())
+
+        stale.writeText("<letter-lay")
+        assertTrue(registry.delete("one"))
+        assertFalse("delete removes it too", stale.exists())
+        assertTrue(registry.list().isEmpty())
     }
 
     @Test

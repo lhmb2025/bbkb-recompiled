@@ -231,4 +231,16 @@ class LanguageVariantStoreTest {
         assertFalse(slotDir("de").exists())
         assertEquals("FR-CH", activeLdb("fr").readText())
     }
+
+    @Test
+    fun aStoreWriteACrashLeftHalfDoneIsIgnoredAndReplaced() {
+        LanguageVariantStore.installVariant(context, "de", "de_CH", "Swiss German", sourceLdb("a.ldb", "DE-CH"))
+        val stale = File(LanguageVariantStore.file(context).path + ".new").apply { writeText("{\"groups\": [") }
+
+        assertEquals("the live store is read, not the stale one", "de_CH",
+            LanguageVariantStore.groupFor(context, "de")!!.activeTag)
+        assertTrue(LanguageVariantStore.activate(context, "de", LanguageVariantStore.TAG_SHIPPED))
+        assertEquals(LanguageVariantStore.TAG_SHIPPED, LanguageVariantStore.groupFor(context, "de")!!.activeTag)
+        assertFalse("the next write replaced it", stale.exists())
+    }
 }

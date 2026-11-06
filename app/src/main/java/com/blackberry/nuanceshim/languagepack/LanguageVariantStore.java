@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
+import androidx.core.util.AtomicFile;
+
 import dev.bbkb.ime.core.shared.Logger;
 
 import java.io.File;
@@ -211,11 +213,19 @@ public final class LanguageVariantStore {
 
     // ── writing ────────────────────────────────────────────────────────────────
 
+    /**
+     * Replaces the store through {@link AtomicFile}: the JSON goes to
+     * {@code nuance_language_variants.json.new}, is synced to disk and is then renamed over the
+     * live file, so a crash or a power cut mid-write cannot lose the record of which parked file
+     * is which - the parked files are the only copy of a side-loaded variant.
+     */
     private static boolean write(Context context, Map<String, Group> groups) {
         final File f = file(context);
-        final File tmp = new File(f.getParentFile(), FILE_NAME + ".tmp");
-        try (JsonWriter w = new JsonWriter(
-                new OutputStreamWriter(new FileOutputStream(tmp), StandardCharsets.UTF_8))) {
+        final AtomicFile atomic = new AtomicFile(f);
+        FileOutputStream out = null;
+        try {
+            out = atomic.startWrite();
+            final JsonWriter w = new JsonWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
             w.beginObject();
             w.name("groups").beginArray();
             for (Group g : groups.values()) {
@@ -235,16 +245,23 @@ public final class LanguageVariantStore {
             }
             w.endArray();
             w.endObject();
+            // Flushed, not closed: finishWrite syncs the stream before it closes it.
+            w.flush();
+            atomic.finishWrite(out);
         } catch (IOException e) {
+            atomic.failWrite(out);
             Logger.errorWithException(TAG, e, "Failed to write variant store");
-            tmp.delete();
             return false;
+        } catch (RuntimeException e) {
+            atomic.failWrite(out);
+            throw e;
         }
-        // Rename over the live file: a crash mid-write must not lose the record of which parked
-        // file is which, because the parked files are the only copy of a side-loaded variant.
-        if (!tmp.renameTo(f)) {
+        // finishWrite only logs a failed rename, which leaves the store in the .new file.
+        final File pending = new File(f.getPath() + ".new");
+        if (pending.exists()) {
             Logger.error(TAG, "Failed to replace variant store");
-            tmp.delete();
+            //noinspection ResultOfMethodCallIgnored
+            pending.delete();
             return false;
         }
         return true;

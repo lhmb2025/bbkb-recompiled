@@ -3,10 +3,12 @@ package dev.bbkb.ime.core.layout
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.AssetManager
+import androidx.core.util.AtomicFile
 import dev.bbkb.ime.core.layout.LetterLayout.Origin
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.shared.Logger
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.util.Locale
@@ -74,22 +76,34 @@ class LetterLayoutRegistry @JvmOverloads constructor(
     }
 
     /**
-     * Writes [layout], replacing any user layout with its id. Through a sibling temp file, as
-     * `DeviceProfileExporter` writes device configs: a half-written file here is one [list] would
-     * skip and the keys would stop following.
+     * Writes [layout], replacing any user layout with its id. Through [AtomicFile], as
+     * `DeviceProfileExporter` writes device configs: the document goes to `<id>.xml.new`, is
+     * synced to disk and is then renamed over `<id>.xml`, so the file [list] reads is always the
+     * whole old document or the whole new one, even after a crash or a power cut. A half-written
+     * file here is one [list] would skip and the keys would stop following. [list] only reads
+     * `*.xml`, so a `.new` a crash left behind is never offered; the next save replaces it.
      */
     @Throws(IOException::class)
     fun save(layout: LetterLayout) {
         val dir = directory
         if (!dir.isDirectory && !dir.mkdirs()) throw IOException("could not create ${dir.absolutePath}")
         val file = fileFor(layout.id)
-        val temp = File(dir, file.name + ".tmp")
+        val bytes = LetterLayoutXml.serialize(layout).toByteArray(Charsets.UTF_8)
+        val atomic = AtomicFile(file)
+        var out: FileOutputStream? = null
         try {
-            temp.writeText(LetterLayoutXml.serialize(layout), Charsets.UTF_8)
-            if (file.exists() && !file.delete()) throw IOException("could not replace ${file.name}")
-            if (!temp.renameTo(file)) throw IOException("could not move ${file.name} into place")
-        } finally {
-            if (temp.exists()) temp.delete()
+            out = atomic.startWrite()
+            out.write(bytes)
+            atomic.finishWrite(out)
+        } catch (e: IOException) {
+            atomic.failWrite(out)
+            throw e
+        }
+        // finishWrite only logs a failed rename, which leaves the document in the .new file.
+        val pending = File(file.path + ".new")
+        if (pending.exists()) {
+            pending.delete()
+            throw IOException("could not move ${file.name} into place")
         }
         invalidate()
     }
@@ -97,7 +111,10 @@ class LetterLayoutRegistry @JvmOverloads constructor(
     /** Deletes the user layout with [id]; if it was the active one, the keys go back to their own letters. */
     fun delete(id: String): Boolean {
         if (!LetterLayout.isValidId(id)) return false
-        val deleted = fileFor(id).delete()
+        val file = fileFor(id)
+        val deleted = file.delete()
+        // Also any `<id>.xml.new` a crash during save left behind.
+        AtomicFile(file).delete()
         invalidate()
         return deleted
     }

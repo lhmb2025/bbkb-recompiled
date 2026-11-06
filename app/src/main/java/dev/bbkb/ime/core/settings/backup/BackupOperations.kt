@@ -3,6 +3,7 @@ package dev.bbkb.ime.core.settings.backup
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import androidx.core.util.AtomicFile
 import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser
 import dev.bbkb.ime.core.engine.NuanceSDKManager
@@ -20,6 +21,7 @@ import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.FilterOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -212,18 +214,44 @@ object BackupOperations {
         }
     }
 
-    /** Writes [contents] to [file] atomically: a temp file beside it, renamed into place. */
+    /**
+     * Writes [contents] to [file] atomically, through [AtomicFile]: the zip goes to
+     * `<name>.new`, is synced to disk and is then renamed over [file]. The phone-backup helper
+     * reads `backup/auto.zip` directly, so it must always find the whole old bundle or the whole
+     * new one, even after a crash or a power cut.
+     */
     @Throws(IOException::class)
     fun writeTo(file: File, contents: BackupBundle.Contents) {
         val dir = file.parentFile ?: throw IOException("no parent for $file")
         if (!dir.isDirectory && !dir.mkdirs()) throw IOException("could not create $dir")
-        val temp = File(dir, file.name + ".tmp")
+        val atomic = AtomicFile(file)
+        var out: FileOutputStream? = null
         try {
-            writeTo(FileOutputStream(temp), contents)
-            if (!temp.renameTo(file)) throw IOException("could not move $temp into place")
-        } finally {
-            temp.delete()
+            out = atomic.startWrite()
+            // BackupBundle.write closes the stream it is given (its ZipOutputStream does), and
+            // finishWrite has to sync the file before it is closed: hand it a stream whose close
+            // only flushes.
+            writeTo(KeepOpenOutputStream(out), contents)
+            atomic.finishWrite(out)
+        } catch (e: IOException) {
+            atomic.failWrite(out)
+            throw e
+        } catch (e: RuntimeException) {
+            atomic.failWrite(out)
+            throw e
         }
+        // finishWrite only logs a failed rename, which leaves the bundle in the .new file.
+        val pending = File(file.path + ".new")
+        if (pending.exists()) {
+            pending.delete()
+            throw IOException("could not move $pending into place")
+        }
+    }
+
+    /** Passes writes through to [target] and leaves it open on [close], which only flushes it. */
+    private class KeepOpenOutputStream(target: OutputStream) : FilterOutputStream(target) {
+        override fun write(b: ByteArray, off: Int, len: Int) = out.write(b, off, len)
+        override fun close() = out.flush()
     }
 
     @Throws(IOException::class)

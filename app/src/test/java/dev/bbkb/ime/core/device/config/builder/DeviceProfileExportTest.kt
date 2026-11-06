@@ -368,8 +368,27 @@ class DeviceProfileExportTest {
         assertEquals(result.xml, file.readText())
         assertFalse(
             "the temp file must not be left behind",
-            File(file.parentFile, file.name + ".tmp").exists(),
+            File(file.parentFile, file.name + ".new").exists(),
         )
+    }
+
+    @Test
+    fun aHalfWrittenConfigACrashLeftIsNotListedAndTheNextExportReplacesIt() {
+        val draft = draftFor(mp01Facts(), mp01Capture(), "Minimal Phone (MP01)")
+        val first = DeviceProfileExporter.export(context, draft)
+        assertTrue(first.ok())
+        val stale = File(first.file!!.path + ".new").apply { writeText("<device-input-config") }
+
+        val manager = CustomDeviceConfigManager.getInstance(context)
+        assertEquals(
+            "the stale .new is not a config",
+            1,
+            manager.availableConfigs.count { it.type == CustomDeviceConfigManager.ConfigType.CUSTOM },
+        )
+        val second = DeviceProfileExporter.export(context, draft)
+        assertTrue(second.ok())
+        assertEquals(second.xml, second.file!!.readText())
+        assertFalse("the export replaced it", stale.exists())
     }
 
     @Test

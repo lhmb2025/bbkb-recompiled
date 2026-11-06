@@ -1,18 +1,18 @@
 package dev.bbkb.ime.personaldictionary.storage
 
 import android.content.Context
-import android.os.Build
+import androidx.core.util.AtomicFile
 import dev.bbkb.ime.personaldictionary.util.LogUtil
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.charset.Charset
-import java.nio.file.Files
-import java.nio.file.attribute.PosixFilePermissions
 
 /**
  * File I/O utilities for the Personal Dictionary subsystem.
  *
- * Provides safe file read/write operations with atomic rename for persistence.
+ * Provides safe file read/write operations; writes go through [AtomicFile] (synced, then renamed
+ * into place) for persistence.
  */
 object FileUtils {
     @Throws(IOException::class)
@@ -38,26 +38,33 @@ object FileUtils {
         }
     }
 
+    /**
+     * Replaces [directory]/[filename] with [content] through [AtomicFile]: the text goes to
+     * `<filename>.new`, is synced to disk and is then renamed over the file, so a reader (and the
+     * next load) sees the whole old file or the whole new one, even after a crash or a power cut.
+     * The `.new` file gets the process's default mode, which for an app process is owner-only.
+     */
     @Throws(Exception::class, IOException::class)
     fun writeStringToFile(filename: String, content: String, directory: File) {
         require(filename.isNotEmpty()) { "filename must not be empty" }
-        
-        val tempFile = if (Build.VERSION.SDK_INT >= 26) {
-            Files.createTempFile(
-                directory.toPath(),
-                filename,
-                "tmp",
-                PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rw-------"))
-            ).toFile()
-        } else {
-            File.createTempFile(filename, "tmp", directory)
-        }
-        
-        tempFile.writeText(content, Charset.defaultCharset())
-        
+
         val destFile = File(directory, filename)
-        if (!tempFile.renameTo(destFile)) {
-            throw IOException("Error trying to rename file $tempFile to $destFile")
+        val bytes = content.toByteArray(Charset.defaultCharset())
+        val atomic = AtomicFile(destFile)
+        var out: FileOutputStream? = null
+        try {
+            out = atomic.startWrite()
+            out.write(bytes)
+            atomic.finishWrite(out)
+        } catch (e: IOException) {
+            atomic.failWrite(out)
+            throw e
+        }
+        // finishWrite only logs a failed rename, which leaves the text in the .new file.
+        val pending = File(destFile.path + ".new")
+        if (pending.exists()) {
+            pending.delete()
+            throw IOException("Error trying to rename file $pending to $destFile")
         }
     }
 }

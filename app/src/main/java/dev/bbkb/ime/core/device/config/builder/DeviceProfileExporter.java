@@ -7,6 +7,7 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.core.util.AtomicFile;
 
 import dev.bbkb.ime.core.device.config.CustomDeviceConfigManager;
 import dev.bbkb.ime.core.device.config.model.DeviceInputConfig;
@@ -179,31 +180,31 @@ public final class DeviceProfileExporter {
         }
         final File file = new File(dir, draft.fileName());
 
-        // Written through a sibling temp file: a half-written config in this directory is one the
-        // manager would list, parse and fail on at the next IME start.
-        final File temp = new File(dir, file.getName() + ".tmp");
-        Writer writer = null;
+        // Written through AtomicFile: the XML goes to "<name>.new", is synced to disk and is then
+        // renamed over the config, so the file in this directory is always the whole old config
+        // or the whole new one, even after a crash or a power cut. A half-written config here is
+        // one the manager would list, parse and fail on at the next IME start. The manager only
+        // lists "*.xml", so a ".new" a crash left behind is never loaded; the next export replaces it.
+        final AtomicFile atomic = new AtomicFile(file);
+        FileOutputStream out = null;
         try {
-            writer = new OutputStreamWriter(new FileOutputStream(temp), UTF_8);
+            out = atomic.startWrite();
+            final Writer writer = new OutputStreamWriter(out, UTF_8);
             writer.write(xml);
+            // Flushed, not closed: finishWrite syncs the stream before it closes it.
             writer.flush();
-            writer.close();
-            writer = null;
-            if (file.exists() && !file.delete()) {
-                return Result.failed("could not replace " + file.getName(), xml);
-            }
-            if (!temp.renameTo(file)) {
-                return Result.failed("could not move the config into place", xml);
-            }
+            atomic.finishWrite(out);
         } catch (IOException e) {
+            atomic.failWrite(out);
             Logger.error(TAG, "Failed to write config: " + e.getMessage());
             return Result.failed("could not write the file: " + e.getMessage(), xml);
-        } finally {
-            closeQuietly(writer);
-            if (temp.exists()) {
-                //noinspection ResultOfMethodCallIgnored
-                temp.delete();
-            }
+        }
+        // finishWrite only logs a failed rename, which leaves the config in the .new file.
+        final File pending = new File(file.getPath() + ".new");
+        if (pending.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            pending.delete();
+            return Result.failed("could not move the config into place", xml);
         }
 
         Logger.info(TAG, "Wrote device profile " + file.getAbsolutePath());
@@ -261,15 +262,6 @@ public final class DeviceProfileExporter {
         } catch (Exception e) {
             Logger.error(TAG, "Could not build share intent: " + e.getMessage());
             return null;
-        }
-    }
-
-    private static void closeQuietly(@Nullable Writer writer) {
-        if (writer == null) return;
-        try {
-            writer.close();
-        } catch (IOException ignored) {
-            // Nothing useful to do: the export already succeeded or already failed.
         }
     }
 }

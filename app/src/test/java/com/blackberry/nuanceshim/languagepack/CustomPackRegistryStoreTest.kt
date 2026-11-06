@@ -170,9 +170,21 @@ class CustomPackRegistryStoreTest {
     @Test
     fun noTempFileIsLeftBehind() {
         CustomPackRegistryStore.add(context, "cy", null, "Welsh", "p", 1.0)
-        val stray = File(context.filesDir, "nuance_custom_packs.json.tmp")
+        val stray = File(context.filesDir, "nuance_custom_packs.json.new")
         assertFalse(stray.exists())
         assertNotNull(CustomPackRegistryStore.read(context))
+    }
+
+    @Test
+    fun aWriteACrashLeftHalfDoneIsIgnoredAndReplaced() {
+        assertTrue(CustomPackRegistryStore.add(context, "cy", null, "Welsh", "p", 1.0))
+        val stale = File(context.filesDir, "nuance_custom_packs.json.new").apply { writeText("{\"languages\": [") }
+
+        assertEquals("the live file is read, not the stale one", listOf("cy"),
+            CustomPackRegistryStore.read(context).map { it.language })
+        assertTrue(CustomPackRegistryStore.add(context, "gd", null, "Gaelic", "p", 1.0))
+        assertEquals(listOf("cy", "gd"), CustomPackRegistryStore.read(context).map { it.language })
+        assertFalse("the next write replaced it", stale.exists())
     }
 }
 
@@ -181,9 +193,9 @@ class CustomPackRegistryStoreTest {
  * does not ship must come back from [ManifestParser] as a KNOWN locale.
  *
  * That is not a cosmetic "appears in the list" property. `LanguagePackInstaller.isSupported()` is
- * exactly "the registry knows this language", and `LanguagePackManager`'s hourly cleanup calls
- * `removeUnsupportedLocale` — a recursive directory delete — on every installed locale that is
- * not supported. Before the merge, the answer here was null and the user's pack was deleted
+ * exactly "the registry knows this language", and `LanguagePackManager` used to run an hourly
+ * cleanup (since removed) that deleted the folder of every installed locale that was not
+ * supported. Before the merge, the answer here was null and the user's pack was deleted
  * within the hour.
  */
 @RunWith(RobolectricTestRunner::class)
