@@ -4,14 +4,16 @@ import android.app.Activity
 import android.content.SharedPreferences
 import android.os.Looper
 import android.view.View
-import android.widget.TabHost
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import dev.bbkb.ime.keyboard.Key
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiTestEnv.LAST_CATEGORY_KEY
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiTestEnv.RECENTS_KEY
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiTestEnv.idle
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiTestEnv.padded
+import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiTestEnv.pageViews
+import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiTestEnv.recycler
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiTestEnv.read
+import com.google.android.material.tabs.TabLayout
 import dev.bbkb.ime.R
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -50,8 +52,7 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(
     sdk = [34],
-    qualifiers = "w411dp-h891dp",
-    shadows = [PassThroughTabHostShadow::class, PassThroughTabSpecShadow::class]
+    qualifiers = "w411dp-h891dp"
 )
 class EmojiPalettesViewCharacterisationTest {
 
@@ -78,9 +79,9 @@ class EmojiPalettesViewCharacterisationTest {
 
     private fun open(): EmojiPalettesView = EmojiTestEnv.inflatePalettes(activity)
 
-    private fun EmojiPalettesView.pager(): ViewPager = findViewById(R.id.emoji_keyboard_pager)
+    private fun EmojiPalettesView.pager(): ViewPager2 = findViewById(R.id.emoji_keyboard_pager)
 
-    private fun EmojiPalettesView.tabs(): TabHost = findViewById(R.id.emoji_category_tabhost)
+    private fun EmojiPalettesView.tabs(): TabLayout = findViewById(R.id.emoji_category_tabhost)
 
     private fun EmojiPalettesView.overlay(): EmojiSearchOverlayView = findViewById(R.id.emoji_search_overlay)
 
@@ -96,14 +97,12 @@ class EmojiPalettesViewCharacterisationTest {
     }
 
     private fun EmojiPalettesView.selectTab(index: Int) {
-        tabs().currentTab = index
+        // A tap: TabView.performClick selects its tab.
+        tabs().getTabAt(index)!!.view.performClick()
         idle()
     }
 
-    private fun EmojiPalettesView.pageViews(): List<EmojiPageKeyboardView> {
-        val p = pager()
-        return (0 until p.childCount).map { p.getChildAt(it) }.filterIsInstance<EmojiPageKeyboardView>()
-    }
+    private fun EmojiPalettesView.pageViews(): List<EmojiPageKeyboardView> = pager().pageViews()
 
     private fun EmojiPalettesView.firstOutputs(): List<String?> =
         pageViews().map { it.keyboard?.keys?.firstOrNull()?.keySpecOutputText }
@@ -134,15 +133,15 @@ class EmojiPalettesViewCharacterisationTest {
     @Test
     fun emptyCategoriesGetNoTabAndNoPages() {
         val v = open()
-        assertEquals(5, v.pager().adapter!!.count)
-        assertEquals(4, v.tabs().tabWidget.tabCount)
+        assertEquals(5, v.pager().adapter!!.itemCount)
+        assertEquals(4, v.tabs().tabCount)
     }
 
     @Test
     fun withNothingRememberedTheBoardOpensOnTheFirstEmojiCategory() {
         val v = open()
         assertEquals(1, v.pager().currentItem)
-        assertEquals(1, v.tabs().currentTab)
+        assertEquals(1, v.tabs().selectedTabPosition)
         assertEquals(1, lastCategory())
         assertEquals(Triple(2, 0, 0f), v.indicator())
     }
@@ -152,7 +151,7 @@ class EmojiPalettesViewCharacterisationTest {
         remember(3)
         val v = open()
         assertEquals(3, v.pager().currentItem)
-        assertEquals(2, v.tabs().currentTab)
+        assertEquals(2, v.tabs().selectedTabPosition)
         assertEquals(3, lastCategory())
     }
 
@@ -162,7 +161,7 @@ class EmojiPalettesViewCharacterisationTest {
         remember(4)
         val v = open()
         assertEquals(4, v.pager().currentItem)
-        assertEquals(3, v.tabs().currentTab)
+        assertEquals(3, v.tabs().selectedTabPosition)
         assertEquals(4, lastCategory())
     }
 
@@ -172,7 +171,7 @@ class EmojiPalettesViewCharacterisationTest {
         remember(2)
         val v = open()
         assertEquals(1, v.pager().currentItem)
-        assertEquals(1, v.tabs().currentTab)
+        assertEquals(1, v.tabs().selectedTabPosition)
         assertEquals(1, lastCategory())
     }
 
@@ -182,7 +181,7 @@ class EmojiPalettesViewCharacterisationTest {
         remember(-5)
         val v = open()
         assertEquals(1, v.pager().currentItem)
-        assertEquals(1, v.tabs().currentTab)
+        assertEquals(1, v.tabs().selectedTabPosition)
         assertEquals(1, lastCategory())
     }
 
@@ -201,7 +200,7 @@ class EmojiPalettesViewCharacterisationTest {
         remember(0)
         val v = open()
         assertEquals(1, v.pager().currentItem)
-        assertEquals(1, v.tabs().currentTab)
+        assertEquals(1, v.tabs().selectedTabPosition)
         assertEquals(1, lastCategory())
         assertNull(storedRecents())
         assertFalse(v.overlay().isOverlayVisible)
@@ -213,7 +212,7 @@ class EmojiPalettesViewCharacterisationTest {
         storeRecents(padded("😀"))
         val v = open()
         assertEquals(0, v.pager().currentItem)
-        assertEquals(0, v.tabs().currentTab)
+        assertEquals(0, v.tabs().selectedTabPosition)
         assertEquals(0, lastCategory())
     }
 
@@ -233,26 +232,26 @@ class EmojiPalettesViewCharacterisationTest {
     fun pagingAcrossCategoryBoundariesTracksTabPageAndIndicator() {
         val v = open()
         v.select(2)
-        assertEquals(1, v.tabs().currentTab)
+        assertEquals(1, v.tabs().selectedTabPosition)
         assertEquals(1, lastCategory())
         assertEquals(Triple(2, 1, 0f), v.indicator())
 
         v.select(3)
-        assertEquals(2, v.tabs().currentTab)
+        assertEquals(2, v.tabs().selectedTabPosition)
         assertEquals(3, lastCategory())
         assertEquals(Triple(1, 0, 0f), v.indicator())
 
         v.select(4)
-        assertEquals(3, v.tabs().currentTab)
+        assertEquals(3, v.tabs().selectedTabPosition)
         assertEquals(4, lastCategory())
 
         v.select(0)
-        assertEquals(0, v.tabs().currentTab)
+        assertEquals(0, v.tabs().selectedTabPosition)
         assertEquals(0, lastCategory())
         assertEquals(Triple(1, 0, 0f), v.indicator())
 
         v.select(1)
-        assertEquals(1, v.tabs().currentTab)
+        assertEquals(1, v.tabs().selectedTabPosition)
         assertEquals(Triple(2, 0, 0f), v.indicator())
     }
 
@@ -289,7 +288,7 @@ class EmojiPalettesViewCharacterisationTest {
         v.detachPagerAdapter()
         idle()
         assertNull(v.pager().adapter)
-        assertEquals(0, v.pager().childCount)
+        assertEquals(0, v.pager().recycler().childCount)
 
         // showEmojiKeyboardInternal() without its attachPagerAdapter() call
         v.visibility = View.VISIBLE
@@ -297,7 +296,7 @@ class EmojiPalettesViewCharacterisationTest {
         v.setSwitchingToEmoji(true)
         idle()
         assertNull(v.pager().adapter)
-        assertEquals(0, v.pager().childCount)
+        assertEquals(0, v.pager().recycler().childCount)
 
         // ...and with it
         v.attachPagerAdapter()
@@ -334,12 +333,12 @@ class EmojiPalettesViewCharacterisationTest {
     @Test
     fun whileSwitchingToEmojiDestroyedPagesAreRemoved() {
         val v = open()
-        assertEquals(3, v.pager().childCount)
+        assertEquals(3, v.pager().recycler().childCount)
         v.setSwitchingToEmoji(true)
         v.select(4)
-        assertEquals(2, v.pager().childCount)
+        assertEquals(2, v.pager().recycler().childCount)
         v.select(1)
-        assertEquals(3, v.pager().childCount)
+        assertEquals(3, v.pager().recycler().childCount)
         assertTrue(v.firstOutputs().containsAll(listOf("s0", "s40")))
     }
 
@@ -348,9 +347,9 @@ class EmojiPalettesViewCharacterisationTest {
         val v = open()
         v.setSwitchingToEmoji(false)
         v.select(4)
-        assertEquals(2, v.pager().childCount)
+        assertEquals(2, v.pager().recycler().childCount)
         v.select(1)
-        assertEquals(3, v.pager().childCount)
+        assertEquals(3, v.pager().recycler().childCount)
     }
 
     // ------------------------------------------------------------------ taps and recents

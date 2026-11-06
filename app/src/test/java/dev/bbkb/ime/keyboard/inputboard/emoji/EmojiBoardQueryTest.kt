@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.SharedPreferences
 import android.view.View
 import android.widget.ImageButton
-import android.widget.TabHost
 import android.widget.TextView
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
 import dev.bbkb.ime.R
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiTestEnv.LAST_CATEGORY_KEY
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiTestEnv.RECENTS_KEY
@@ -35,8 +35,7 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(
     sdk = [34],
-    qualifiers = "w411dp-h891dp",
-    shadows = [PassThroughTabHostShadow::class, PassThroughTabSpecShadow::class]
+    qualifiers = "w411dp-h891dp"
 )
 class EmojiBoardQueryTest {
 
@@ -63,8 +62,8 @@ class EmojiBoardQueryTest {
 
     private fun open(): EmojiPalettesView = EmojiTestEnv.inflatePalettes(activity)
 
-    private fun EmojiPalettesView.pager(): ViewPager = findViewById(R.id.emoji_keyboard_pager)
-    private fun EmojiPalettesView.tabs(): TabHost = findViewById(R.id.emoji_category_tabhost)
+    private fun EmojiPalettesView.pager(): ViewPager2 = findViewById(R.id.emoji_keyboard_pager)
+    private fun EmojiPalettesView.tabs(): TabLayout = findViewById(R.id.emoji_category_tabhost)
     private fun EmojiPalettesView.overlay(): EmojiSearchOverlayView = findViewById(R.id.emoji_search_overlay)
     private fun EmojiPalettesView.tabRow(): View = findViewById(R.id.emoji_tab_row)
     private fun EmojiPalettesView.field(): View = findViewById(R.id.emoji_search_field)
@@ -130,7 +129,7 @@ class EmojiBoardQueryTest {
     @Test
     fun fromTheSecondLetterTheResultsShowOnWhateverTabWasCurrent() {
         val v = open()
-        v.tabs().currentTab = 3 // Food, not Recents
+        v.tabs().getTabAt(3)!!.view.performClick() // Food, not Recents
         idle()
         v.type("sm")
         v.assertSearching("sm")

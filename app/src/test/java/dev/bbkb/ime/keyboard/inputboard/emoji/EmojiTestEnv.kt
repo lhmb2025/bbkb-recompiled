@@ -6,8 +6,9 @@ import android.content.SharedPreferences
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodSubtype
-import android.widget.TabHost
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
+import androidx.viewpager2.widget.ViewPager2
 import dev.bbkb.ime.core.AudioAndHapticFeedbackManager
 import dev.bbkb.ime.core.device.ResourceConfigManager
 import dev.bbkb.ime.core.locale.RichInputMethodManager
@@ -22,22 +23,8 @@ import dev.bbkb.ime.keyboard.inputboard.BoardKeyboardFactory
 import dev.bbkb.ime.R
 import org.mockito.Mockito
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.Implements
-import org.robolectric.shadows.ShadowViewGroup
 import java.lang.reflect.Field
 import java.time.Duration
-
-/**
- * Robolectric's own `ShadowTabHost` is a fake: its `getTabWidget()` returns null unless the view's
- * context IS an Activity, and the emoji board is inflated from a theme wrapper. Registering a
- * shadow with no implementations in its place lets the real framework `TabHost` run.
- */
-@Implements(TabHost::class)
-class PassThroughTabHostShadow : ShadowViewGroup()
-
-/** Same reason as [PassThroughTabHostShadow], for the fake `ShadowTabSpec`. */
-@Implements(TabHost.TabSpec::class)
-class PassThroughTabSpecShadow
 
 /**
  * What it takes to run the emoji board headless with the app's real resources and real keyboard
@@ -167,6 +154,15 @@ internal object EmojiTestEnv {
     }
 
     fun idle() = shadowOf(Looper.getMainLooper()).idle()
+
+    /** A ViewPager2's pages are children of its inner RecyclerView. */
+    fun ViewPager2.recycler(): RecyclerView = getChildAt(0) as RecyclerView
+
+    /** The page views the pager has laid out (each is wrapped in its full-size page frame). */
+    fun ViewPager2.pageViews(): List<EmojiPageKeyboardView> {
+        val r = recycler()
+        return (0 until r.childCount).map { (r.getChildAt(it) as android.view.ViewGroup).getChildAt(0) as EmojiPageKeyboardView }
+    }
 
     /** Pumps the main looper (advancing its clock) while the search executor runs on a real thread. */
     fun waitUntil(timeoutMs: Long = 5000, condition: () -> Boolean): Boolean {

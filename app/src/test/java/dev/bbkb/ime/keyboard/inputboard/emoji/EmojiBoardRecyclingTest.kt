@@ -3,11 +3,13 @@ package dev.bbkb.ime.keyboard.inputboard.emoji
 import android.app.Activity
 import android.content.SharedPreferences
 import android.view.View
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import dev.bbkb.ime.R
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiTestEnv.LAST_CATEGORY_KEY
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiTestEnv.RECENTS_KEY
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiTestEnv.idle
+import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiTestEnv.pageViews
+import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiTestEnv.recycler
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -41,8 +43,7 @@ import java.util.IdentityHashMap
 @RunWith(RobolectricTestRunner::class)
 @Config(
     sdk = [34],
-    qualifiers = "w411dp-h891dp",
-    shadows = [PassThroughTabHostShadow::class, PassThroughTabSpecShadow::class]
+    qualifiers = "w411dp-h891dp"
 )
 class EmojiBoardRecyclingTest {
 
@@ -83,14 +84,11 @@ class EmojiBoardRecyclingTest {
 
     // ------------------------------------------------------------------ harness
 
-    private fun EmojiPalettesView.pager(): ViewPager = findViewById(R.id.emoji_keyboard_pager)
+    private fun EmojiPalettesView.pager(): ViewPager2 = findViewById(R.id.emoji_keyboard_pager)
 
     private fun EmojiPalettesView.overlay(): EmojiSearchOverlayView = findViewById(R.id.emoji_search_overlay)
 
-    private fun EmojiPalettesView.pageViews(): List<EmojiPageKeyboardView> {
-        val p = pager()
-        return (0 until p.childCount).map { p.getChildAt(it) }.filterIsInstance<EmojiPageKeyboardView>()
-    }
+    private fun EmojiPalettesView.pageViews(): List<EmojiPageKeyboardView> = pager().pageViews()
 
     /** The page view bound to pager [position]. */
     private fun EmojiPalettesView.pageAt(position: Int): EmojiPageKeyboardView {
@@ -193,7 +191,7 @@ class EmojiBoardRecyclingTest {
             assertEquals("p${(item - 3) * 40}".takeIf { item in 3..7 }, outputs(v.pageAt(item)).first().takeIf { item in 3..7 })
         }
         println("P-16 per swipe: page views inflated=${views.toDouble() / path.size} JVM bytes=${(allocated() - before) / path.size}")
-        // One spare: ViewPager instantiates the incoming page before it destroys the outgoing one.
+        // One spare: the pager lays out the incoming page before it recycles the outgoing one.
         assertTrue("page views inflated over ${path.size} swipes: $views", views <= 1)
         assertEquals(3, v.pageViews().size)
         assertNull(panel(v).peek())
@@ -333,12 +331,12 @@ class EmojiBoardRecyclingTest {
     fun theOverlayRebindsItsPageViews() {
         prefs.edit().putString(RECENTS_KEY, EmojiTestEnv.padded("a0")).commit()
         val v = openOn(0)
-        val overlayPager = read(v.overlay(), "viewPager") as ViewPager
-        val first = overlayPager.getChildAt(0)
+        val overlayPager = read(v.overlay(), "viewPager") as ViewPager2
+        val first = overlayPager.pageViews().single()
         repeat(3) { close(v); open(v) }
         assertTrue(v.overlay().isOverlayVisible)
-        assertEquals(1, overlayPager.childCount)
-        assertSame(first, overlayPager.getChildAt(0))
+        assertEquals(1, overlayPager.recycler().childCount)
+        assertSame(first, overlayPager.pageViews().single())
     }
 
     companion object {

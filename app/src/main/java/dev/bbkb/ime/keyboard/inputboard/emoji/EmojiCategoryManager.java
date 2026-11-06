@@ -171,15 +171,6 @@ final class EmojiCategoryManager {
         return present + 1;
     }
 
-    /** The TabHost tag for a category's tab. Internal to the TabHost: nothing persists or restores it. */
-    public String getCategoryTag(int categoryId) {
-        return String.valueOf(categoryId);
-    }
-
-    public int getCategoryIdFromTag(String tag) {
-        return Integer.parseInt(tag);
-    }
-
     public int getCategoryIconId(int i) {
         return this.categoryIconIds[i];
     }
@@ -344,7 +335,7 @@ final class EmojiCategoryManager {
             final String tones = EmojiToneMemory.snapshot(this.sharedPreferences);
             if (!android.text.TextUtils.equals(tones, this.toneMemorySnapshot)) {
                 this.toneMemorySnapshot = tones;
-                // An iterator, not Collection.removeIf: that is API 24 and minSdk is 23.
+                // Every cached keyboard except the Recents ones (category 0).
                 for (Iterator<Long> it = this.keyboardCache.keySet().iterator(); it.hasNext(); ) {
                     if (categoryOf(it.next()) != 0) {
                         it.remove();

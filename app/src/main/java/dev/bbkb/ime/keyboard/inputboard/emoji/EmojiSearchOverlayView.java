@@ -6,8 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.keyboard.KeyboardColorManager;
@@ -33,7 +34,7 @@ public class EmojiSearchOverlayView extends FrameLayout {
     
     private static final String TAG = "EmojiSearchOverlayView";
     
-    private ViewPager viewPager;
+    private ViewPager2 viewPager;
     private SearchOverlayAdapter adapter;
     private EmojiPageKeyboardView.OnEmojiKeyListener keyListener;
     private EmojiCategoryPageIndicatorView pageIndicator;
@@ -42,11 +43,11 @@ public class EmojiSearchOverlayView extends FrameLayout {
     private List<EmojiKeyboard> currentKeyboards = new ArrayList<>();
 
     /**
-     * Page views the adapter destroyed, rebound by the next instantiation instead of building new
-     * ones: every showKeyboards (each recents refresh and each search result) recreates all pages.
+     * Spare page views: every showKeyboards (each recents refresh and each search result) rebinds
+     * all pages, and RecyclerView takes the views for them from here instead of building new ones.
+     * Never cleared, like the category pager's (this adapter is never replaced, so it would not be).
      */
-    private static final int FREE_VIEW_LIMIT = 3;
-    private final List<EmojiPageKeyboardView> freeViews = new ArrayList<>();
+    private final RecyclerView.RecycledViewPool pagePool = new EmojiPagerAdapter.RetainedPagePool();
     
     public EmojiSearchOverlayView(Context context) {
         super(context);
@@ -64,17 +65,15 @@ public class EmojiSearchOverlayView extends FrameLayout {
     }
     
     private void init(Context context) {
-        // Create ViewPager programmatically
-        viewPager = new ViewPager(context);
+        // Create ViewPager2 programmatically
+        viewPager = new ViewPager2(context);
         viewPager.setId(View.generateViewId());
         viewPager.setLayoutParams(new FrameLayout.LayoutParams(
             LayoutParams.MATCH_PARENT, 
             LayoutParams.MATCH_PARENT
         ));
-        // ViewPager silently clamps 0 to 1 and emits an UNGATED framework
-        // Log.w("ViewPager", "Requested offscreen page limit 0 too small; defaulting to 1")
-        // every time it is called. Ask for what it will actually use.
-        viewPager.setOffscreenPageLimit(1);
+        // One page either side (the v1 pager's limit), three spare views, left-to-right paging.
+        EmojiPagerAdapter.configure(viewPager, pagePool);
         
         // Apply background color
         if (KeyboardColorManager.INSTANCE.isInitialized()) {
@@ -110,25 +109,21 @@ public class EmojiSearchOverlayView extends FrameLayout {
     public void setPageIndicator(EmojiCategoryPageIndicatorView indicator) {
         this.pageIndicator = indicator;
         
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (pageIndicator != null && currentKeyboards.size() > 0) {
+                if (pageIndicator != null && position >= 0 && position < currentKeyboards.size()) {
                     pageIndicator.setPageInfo(currentKeyboards.size(), position, positionOffset);
                 }
             }
             
             @Override
             public void onPageSelected(int position) {
-                if (pageIndicator != null && currentKeyboards.size() > 0) {
+                if (pageIndicator != null && position >= 0 && position < currentKeyboards.size()) {
                     pageIndicator.setPageInfo(currentKeyboards.size(), position, 0f);
                 }
             }
             
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                // Not needed
-            }
         });
     }
     
@@ -176,71 +171,45 @@ public class EmojiSearchOverlayView extends FrameLayout {
     }
     
     /**
-     * Adapter for the search/recents overlay ViewPager.
-     * Manages EmojiPageKeyboardView instances for displaying keyboards.
+     * Adapter for the search/recents overlay pager: one page view per keyboard in
+     * {@link #currentKeyboards}.
+     *
+     * <p>A new page set replaces the whole list ({@code notifyDataSetChanged}): every keyboard in it
+     * is newly built, so there is nothing to match old pages against, and a DiffUtil/ListAdapter
+     * diff would only make {@link #showKeyboards} asynchronous. RecyclerView then recycles the old
+     * page views into {@link #pagePool} before laying out the new set, so they are rebound rather
+     * than rebuilt (the v1 adapter forced the same rebuild with POSITION_NONE and a free list).
      */
-    private class SearchOverlayAdapter extends PagerAdapter {
-        
+    private class SearchOverlayAdapter extends RecyclerView.Adapter<EmojiPagerAdapter.PageHolder> {
+
         @Override
-        public int getCount() {
+        public int getItemCount() {
             return currentKeyboards.size();
         }
-        
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-        
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            
-            Context context = container.getContext();
 
-            // Reuse a destroyed page when there is a keyboard to rebind it to (a recycled view
-            // without one would keep showing its old page).
-            EmojiPageKeyboardView keyboardView;
-            if (!freeViews.isEmpty() && position < currentKeyboards.size()) {
-                keyboardView = freeViews.remove(freeViews.size() - 1);
-            } else {
-                keyboardView = new EmojiPageKeyboardView(context, null);
-                keyboardView.setLayoutParams(new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                ));
-            }
+        @NonNull
+        @Override
+        public EmojiPagerAdapter.PageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            EmojiPageKeyboardView keyboardView = new EmojiPageKeyboardView(parent.getContext(), null);
+            keyboardView.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            ));
             keyboardView.setSharedMoreKeysPanel(moreKeysPanel);
+            return EmojiPagerAdapter.PageHolder.wrap(keyboardView, parent);
+        }
 
-            // Set keyboard if available
-            if (position < currentKeyboards.size()) {
-                EmojiKeyboard keyboard = currentKeyboards.get(position);
-                keyboardView.setKeyboard(keyboard);
-            }
-            
-            // Set key listener
+        @Override
+        public void onBindViewHolder(@NonNull EmojiPagerAdapter.PageHolder holder, int position) {
+            holder.page.setKeyboard(currentKeyboards.get(position));
             if (keyListener != null) {
-                keyboardView.setOnKeyEventListener(keyListener);
-            }
-            
-            container.addView(keyboardView);
-            return keyboardView;
-        }
-        
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            if (object instanceof EmojiPageKeyboardView) {
-                EmojiPageKeyboardView view = (EmojiPageKeyboardView) object;
-                view.cleanup();
-                container.removeView(view);
-                if (freeViews.size() < FREE_VIEW_LIMIT) {
-                    freeViews.add(view);
-                }
+                holder.page.setOnKeyEventListener(keyListener);
             }
         }
-        
+
         @Override
-        public int getItemPosition(Object object) {
-            // Force recreation of all views when data changes
-            return POSITION_NONE;
+        public void onViewRecycled(@NonNull EmojiPagerAdapter.PageHolder holder) {
+            holder.page.cleanup();
         }
     }
 }

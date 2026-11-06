@@ -4,8 +4,6 @@ import android.content.res.Resources;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import androidx.viewpager.widget.ViewPager;
-
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.device.ResourceConfigManager;
 import dev.bbkb.ime.keyboard.inputboard.BoardHeightPolicy;
@@ -64,7 +62,7 @@ final class EmojiPalettesLayoutParams {
         this.keyHeight = ((i2 + i3) / 4) - ((i3 - i) / 2);
     }
 
-    public void applyToViewPager(ViewPager viewPager) {
+    public void applyToViewPager(View viewPager) {
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) viewPager.getLayoutParams();
         layoutParams.height = this.pagerHeight;
         viewPager.setLayoutParams(layoutParams);

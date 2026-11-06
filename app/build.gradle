@@ -173,6 +173,9 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.annotation:annotation:1.9.1'
     implementation 'androidx.core:core-ktx:1.18.0'
+    // The emoji board's pages. The first-generation viewpager line below is no longer imported
+    // anywhere; it stays only to hold the version Material and AppCompat otherwise pull in at 1.0.0.
+    implementation 'androidx.viewpager2:viewpager2:1.1.0'
     implementation 'androidx.viewpager:viewpager:1.1.0'
     // Not imported anywhere, but kept on purpose: AppCompat only asks for 1.1.0 of these two, so
     // without the lines both would drop back to that version.

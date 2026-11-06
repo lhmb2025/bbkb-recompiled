@@ -14,11 +14,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TabHost;
-import android.widget.TabWidget;
 import android.widget.TextView;
 
-import androidx.viewpager.widget.ViewPager;
+import com.google.android.material.tabs.TabLayout;
+
+import androidx.viewpager2.widget.ViewPager2;
 
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.locale.SubtypeManager;
@@ -64,7 +64,7 @@ import dev.bbkb.ime.keyboard.inputboard.BoardKeyboardFactory;
  * or appends the word. Owner decisions, 2026-11-02.
  */
 
-public final class EmojiPalettesView extends LinearLayout implements ViewPager.OnPageChangeListener, TabHost.OnTabChangeListener, EmojiPageKeyboardView.OnEmojiKeyListener {
+public final class EmojiPalettesView extends LinearLayout implements TabLayout.OnTabSelectedListener, EmojiPageKeyboardView.OnEmojiKeyListener {
 
     private static final String TAG = "EmojiPalettesView";
 
@@ -83,16 +83,31 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
 
     private EmojiPagerAdapter pagerAdapter;
 
-    /** Set between the real adapter and null on close; see {@link #detachPagerAdapter()}. */
-    private final androidx.viewpager.widget.PagerAdapter noPages = new androidx.viewpager.widget.PagerAdapter() {
+    /** The category pager's spare page views; outlives the adapter's detach on every close. */
+    private final EmojiPagerAdapter.RetainedPagePool pagePool = new EmojiPagerAdapter.RetainedPagePool();
+
+    /**
+     * The pager's events, forwarded to the methods below (which tests also call directly). A
+     * position outside the pages is ignored: ViewPager2 can report one while it has no pages.
+     */
+    private final ViewPager2.OnPageChangeCallback pageChangeCallback = new ViewPager2.OnPageChangeCallback() {
         @Override
-        public int getCount() {
-            return 0;
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            if (isPage(position)) {
+                EmojiPalettesView.this.onPageScrolled(position, positionOffset, positionOffsetPixels);
+            }
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return false;
+        public void onPageSelected(int position) {
+            if (isPage(position)) {
+                EmojiPalettesView.this.onPageSelected(position);
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            EmojiPalettesView.this.onPageScrollStateChanged(state);
         }
     };
 
@@ -102,9 +117,10 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
 
     private ImageButton deleteButton;
 
-    private TabHost tabHost;
+    /** The category tabs, one per category with pages, in tab order; each tab's tag is its category id. */
+    private TabLayout tabLayout;
 
-    private ViewPager viewPager;
+    private ViewPager2 viewPager;
 
     private int currentPagePosition;
 
@@ -188,47 +204,68 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
                 BoardHeightPolicy.measuredHeight(this, this.keyboardSwitcher, this.layoutParams.keyboardHeight));
     }
 
-    private void addCategoryTab(TabHost tabHost, int i) {
-        TabHost.TabSpec tabSpecNewTabSpec = tabHost.newTabSpec(this.categoryManager.getCategoryTag(i));
-        tabSpecNewTabSpec.setContent(R.id.emoji_keyboard_dummy);
-        ImageView imageView = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.emoji_keyboard_tab_icon, (ViewGroup) null);
-        imageView.setImageResource(this.categoryManager.getCategoryIconId(i));
-
-        // Don't apply color here - it will be applied in updateTabIconColors() based on active/inactive state
-
-        tabSpecNewTabSpec.setIndicator(imageView);
-        tabHost.addTab(tabSpecNewTabSpec);
+    /**
+     * Appends the tab for category {@code categoryId}. Like the TabHost it replaces, the first tab
+     * added is selected without a callback (no listener is registered yet).
+     *
+     * <p>The icon is a custom view so it keeps the old tab's sizing: inflated without a parent it
+     * fills the tab's width and centres the icon at its intrinsic size. Its id is
+     * {@code android:id/icon}, which is where TabLayout applies {@link TabLayout#setTabIconTint}.
+     * The tab view is made unfocusable (physical keys must keep reaching the board's query, never
+     * a tab) and silent like the old icon view: the board plays its own feedback on a tab change.
+     */
+    private void addCategoryTab(int categoryId) {
+        TabLayout.Tab tab = this.tabLayout.newTab();
+        tab.setTag(categoryId);
+        tab.setCustomView(LayoutInflater.from(this.tabLayout.getContext())
+                .inflate(R.layout.emoji_keyboard_tab_icon, (ViewGroup) null));
+        tab.setIcon(this.categoryManager.getCategoryIconId(categoryId));
+        this.tabLayout.addTab(tab);
+        tab.view.setFocusable(false);
+        tab.view.setSoundEffectsEnabled(false);
+        tab.view.setHapticFeedbackEnabled(false);
     }
 
     @Override // android.view.View
     protected void onFinishInflate() {
         super.onFinishInflate();
-        this.tabHost = (TabHost) findViewById(R.id.emoji_category_tabhost);
-        this.tabHost.setup();
+        this.tabLayout = (TabLayout) findViewById(R.id.emoji_category_tabhost);
+        // Never takes key focus from the editor (the XML says so too; a style must not undo it).
+        this.tabLayout.setFocusable(false);
+        this.tabLayout.setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         for (int categoryId : this.categoryManager.getCategoryIds()) {
-            addCategoryTab(this.tabHost, categoryId);
+            addCategoryTab(categoryId);
         }
-        this.tabHost.setOnTabChangedListener(this);
-        TabWidget tabWidget = this.tabHost.getTabWidget();
-        tabWidget.setStripEnabled(this.categoryIndicatorEnabled);
+        this.tabLayout.addOnTabSelectedListener(this);
+        // The BB10 strip: no shipped style turns it on (EmojiPalettesView.LXX sets it false). The
+        // TabWidget drew its background plus a strip either side of the selected tab; TabLayout
+        // draws one indicator under the selected tab, so the nearest equivalent is that background
+        // with the strip drawable as the selected-tab indicator.
         if (this.categoryIndicatorEnabled) {
-            tabWidget.setBackgroundResource(this.categoryIndicatorDrawable);
-            tabWidget.setLeftStripDrawable(this.categoryIndicatorBackground);
-            tabWidget.setRightStripDrawable(this.categoryIndicatorBackground);
+            if (this.categoryIndicatorDrawable != 0) {
+                this.tabLayout.setBackgroundResource(this.categoryIndicatorDrawable);
+            }
+            if (this.categoryIndicatorBackground != 0) {
+                android.graphics.drawable.Drawable strip =
+                        getContext().getDrawable(this.categoryIndicatorBackground);
+                // Colour 0 leaves the drawable untinted, as the TabWidget drew it.
+                this.tabLayout.setSelectedTabIndicatorColor(android.graphics.Color.TRANSPARENT);
+                this.tabLayout.setSelectedTabIndicator(strip);
+                if (strip != null) {
+                    this.tabLayout.setSelectedTabIndicatorHeight(strip.getIntrinsicHeight());
+                }
+            }
         }
         // Initialize pager container and overlay first (before viewPager setup)
         this.pagerContainer = findViewById(R.id.emoji_pager_container);
         this.searchOverlay = findViewById(R.id.emoji_search_overlay);
 
         this.pagerAdapter = new EmojiPagerAdapter(this.categoryManager, this, this.moreKeysPanel);
-        this.viewPager = (ViewPager) findViewById(R.id.emoji_keyboard_pager);
+        this.viewPager = (ViewPager2) findViewById(R.id.emoji_keyboard_pager);
+        // One page either side, three spare views, no cache or prefetch: what the v1 pager kept.
+        EmojiPagerAdapter.configure(this.viewPager, this.pagePool);
         this.viewPager.setAdapter(this.pagerAdapter);
-        // addOnPageChangeListener, not the deprecated single-slot setter: a second
-        // observer added later would silently displace this one.
-        this.viewPager.addOnPageChangeListener(this);
-        // setOffscreenPageLimit(0) was clamped to 1 by ViewPager anyway, and logged an
-        // ungated framework warning on every input-view creation while doing it.
-        // setPersistentDrawingCache() is a no-op on hardware-accelerated views.
+        this.viewPager.registerOnPageChangeCallback(this.pageChangeCallback);
 
         // Apply layout params to pagerContainer (FrameLayout parent of viewPager)
         // since pagerContainer is the direct child of the LinearLayout
@@ -616,10 +653,28 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         }
     }
 
-    @Override // android.widget.TabHost.OnTabChangeListener
-    public void onTabChanged(String str) {
+    @Override // TabLayout.OnTabSelectedListener
+    public void onTabSelected(TabLayout.Tab tab) {
+        onTabChanged((Integer) tab.getTag());
+    }
+
+    @Override // TabLayout.OnTabSelectedListener
+    public void onTabUnselected(TabLayout.Tab tab) {
+    }
+
+    /** Ignored: TabHost.setCurrentTab of the current tab did not call its listener either. */
+    @Override // TabLayout.OnTabSelectedListener
+    public void onTabReselected(TabLayout.Tab tab) {
+    }
+
+    /**
+     * A different tab became current, by a tap or from {@link #setCategory} (TabLayout.selectTab
+     * calls the listener, as TabHost.setCurrentTab did, and this keeps everything that ran on it).
+     * Re-entry is stopped where it always was: the category is already current when setCategory
+     * selects the tab, so the nested setCategory below changes nothing.
+     */
+    private void onTabChanged(int iM6661a) {
         AudioAndHapticFeedbackManager.getInstance().performAudioAndHapticFeedback(-21, this);
-        int iM6661a = this.categoryManager.getCategoryIdFromTag(str);
 
         // The on-screen switch only (owner decision 2026-11-03): with a physical keyboard the
         // query is what the user types into the board, never the word being composed.
@@ -653,22 +708,27 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         this.pagerAdapter.setSwitchingToEmoji(z);
     }
 
-    @Override // androidx.viewpager.widget.ViewPager.OnPageChangeListener
+    private boolean isPage(int position) {
+        return position >= 0 && position < this.categoryManager.getTotalPageCount();
+    }
+
+    /** The pager's current page changed (ViewPager2.OnPageChangeCallback). */
     public void onPageSelected(int i) {
+        this.pagerAdapter.onPageSelected(i);
         setCategory(this.categoryManager.getCategoryAt(i), false);
         this.categoryManager.setCurrentPageInCategory(this.categoryManager.getPageInCategoryAt(i));
         updatePageIndicator();
         this.currentPagePosition = i;
     }
 
-    @Override // androidx.viewpager.widget.ViewPager.OnPageChangeListener
+    /** ViewPager2.OnPageChangeCallback: a drag starting releases the current page's keys. */
     public void onPageScrollStateChanged(int i) {
-        if (i == 1) {
+        if (i == ViewPager2.SCROLL_STATE_DRAGGING) {
             this.pagerAdapter.releaseCurrentPage();
         }
     }
 
-    @Override // androidx.viewpager.widget.ViewPager.OnPageChangeListener
+    /** ViewPager2.OnPageChangeCallback: the page dots follow the scroll within the current category. */
     public void onPageScrolled(int i, float f, int i2) {
         int iIntValue = this.categoryManager.getCategoryAt(i);
         int iM6668c = this.categoryManager.getPageCount(iIntValue);
@@ -753,7 +813,9 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         // remembered since they were built, recents rewritten from outside) before rebinding.
         this.categoryManager.prepareForOpen();
         this.viewPager.setAdapter(this.pagerAdapter);
-        this.viewPager.setCurrentItem(this.currentPagePosition);
+        // Not smooth: ViewPager2's one-argument setCurrentItem animates, and the v1 pager jumped
+        // here (it did not animate before its first layout after setAdapter).
+        this.viewPager.setCurrentItem(this.currentPagePosition, false);
         // The Recents overlay keeps the grid it was last built with, and picks made on Recents
         // only reach the preference when the board leaves it (here: on the last close), so
         // reopening on Recents showed the recents from before them.
@@ -768,12 +830,9 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         }
         this.pagerAdapter.commitPendingRecents();
         final int position = this.viewPager.getCurrentItem();
-        // Through an empty adapter first. ViewPager.setAdapter(non-null) re-arms its first-layout
-        // flag and setAdapter(null) leaves it alone, so the next attach then waits for layout and
-        // populates at the remembered page only. Straight to null, attachPagerAdapter populated
-        // page 0 and its neighbour on the spot (building that category's pages) only for
-        // setCurrentItem to destroy them again.
-        this.viewPager.setAdapter(this.noPages);
+        // The pages go to pagePool, which survives this (RecyclerView would otherwise clear it).
+        // Nothing is laid out until the next attach has set the remembered page, so that open
+        // binds only the pages around it.
         this.viewPager.setAdapter(null);
         // Pages are no longer rebuilt on every open (audit P-16): keep what the next open binds
         // first; prepareForOpen() drops them if a skin tone was remembered meanwhile.
@@ -805,11 +864,10 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
             if (z || this.categoryManager.getCategoryAt(this.viewPager.getCurrentItem()) != i) {
                 this.viewPager.setCurrentItem(iM6676g, false);
             }
-            if (z || this.tabHost.getCurrentTab() != iM6674f) {
-                this.tabHost.setCurrentTab(iM6674f);
+            if (z || this.tabLayout.getSelectedTabPosition() != iM6674f) {
+                // Selected state drives the icon tint (applyColors' ColorStateList).
+                this.tabLayout.selectTab(this.tabLayout.getTabAt(iM6674f));
             }
-            // Update tab icon colors based on active/inactive state
-            updateTabIconColors();
         }
     }
 
@@ -827,7 +885,7 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
         // Modern boards: rounded state-layer press feedback on delete (legacy: none).
         this.deleteButton.setForeground(
                 modernBoards ? KeyboardColorManager.pressedHighlight() : null);
-        ((android.view.View) this.tabHost.getParent()).setBackgroundColor(panelColor);
+        ((android.view.View) this.tabLayout.getParent()).setBackgroundColor(panelColor);
         this.pageIndicatorView.setColors(
             modernBoards ? KeyboardColorManager.INSTANCE.getAccentColor()
                      : KeyboardColorManager.INSTANCE.getIconColor(),
@@ -846,39 +904,15 @@ public final class EmojiPalettesView extends LinearLayout implements ViewPager.O
             this.clearSearchButton.setForeground(
                     modernBoards ? KeyboardColorManager.pressedHighlight() : null);
         }
-        updateTabIconColors();
-    }
-
-
-    private void updateTabIconColors() {
-        if (!KeyboardColorManager.INSTANCE.isInitialized()) return;
-        android.widget.TabWidget tabWidget = this.tabHost.getTabWidget();
-        int currentTab = this.tabHost.getCurrentTab();
-        int tabCount = tabWidget.getTabCount();
-        for (int i = 0; i < tabCount; i++) {
-            android.view.View tabView = tabWidget.getChildTabViewAt(i);
-            android.widget.ImageView iconView = null;
-            if (tabView instanceof android.widget.ImageView) {
-                iconView = (android.widget.ImageView) tabView;
-            } else if (tabView instanceof android.view.ViewGroup) {
-                android.view.ViewGroup container = (android.view.ViewGroup) tabView;
-                for (int j = 0; j < container.getChildCount(); j++) {
-                    android.view.View child = container.getChildAt(j);
-                    if (child instanceof android.widget.ImageView) {
-                        iconView = (android.widget.ImageView) child;
-                        break;
-                    }
-                }
-            }
-            if (iconView != null) {
-                if (i == currentTab) {
-                    KeyboardColorManager.INSTANCE.tint(iconView);
-                } else {
-                    KeyboardColorManager.INSTANCE.tint(iconView,
-                        KeyboardColorManager.INSTANCE.getIconColor(KeyboardColorManager.ALPHA_SECONDARY));
-                }
-            }
-        }
+        // The category icons: the icon colour on the selected tab, the secondary icon colour on
+        // the rest. Re-applied with every colour change (colorObserver), so a theme or dynamic
+        // colour change re-tints them; selection only switches state within this list.
+        this.tabLayout.setTabIconTint(new android.content.res.ColorStateList(
+                new int[][] { { android.R.attr.state_selected }, {} },
+                new int[] {
+                        KeyboardColorManager.INSTANCE.getIconColor(),
+                        KeyboardColorManager.INSTANCE.getIconColor(KeyboardColorManager.ALPHA_SECONDARY)
+                }));
     }
 
     /**

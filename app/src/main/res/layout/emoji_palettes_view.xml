@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPalettesView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/emoji_palettes_view"
     android:layout_gravity="bottom"
     android:orientation="vertical"
@@ -15,8 +16,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Main emoji category ViewPager (static categories) -->
-        <androidx.viewpager.widget.ViewPager
+        <!-- Main emoji category pager (static categories); always pages left to right, set up
+             in EmojiPagerAdapter.configure -->
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/emoji_keyboard_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
@@ -40,27 +42,36 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/config_suggestions_strip_height">
-        <TabHost
+        <!-- The category icons: a standalone TabLayout kept in step with the pager by
+             EmojiPalettesView (one tab spans several pages, so no setupWithViewPager). It needs an
+             AppCompat theme, which the IME's inflation context does not carry; android:theme
+             supplies it for this view only. Plain Design style with every default that would add
+             to the old TabWidget row switched off: no indicator, ripple, animation, padding or
+             tint (EmojiPalettesView tints from KeyboardColorManager). -->
+        <com.google.android.material.tabs.TabLayout
             android:id="@+id/emoji_category_tabhost"
+            style="@style/Widget.Design.TabLayout"
+            android:theme="@style/Theme.BlackberryKeyboard.IME"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="87.5">
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@null"/>
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="0dp"
-                android:layout_height="0dp">
-                <View
-                    android:id="@+id/emoji_keyboard_dummy"
-                    android:visibility="gone"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"/>
-            </FrameLayout>
-        </TabHost>
+            android:layout_weight="87.5"
+            android:background="@null"
+            android:focusable="false"
+            android:descendantFocusability="blocksDescendants"
+            android:overScrollMode="never"
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            app:tabIndicator="@null"
+            app:tabIndicatorHeight="0dp"
+            app:tabIndicatorAnimationDuration="0"
+            app:tabIconTint="@null"
+            app:tabRippleColor="@null"
+            app:tabPaddingStart="0dp"
+            app:tabPaddingEnd="0dp"
+            app:tabPaddingTop="0dp"
+            app:tabPaddingBottom="0dp"
+            app:tabMinWidth="0dp"
+            app:tabMaxWidth="0dp"/>
         <include layout="@layout/suggestion_divider"/>
         <ImageButton
             android:id="@+id/emoji_keyboard_delete"

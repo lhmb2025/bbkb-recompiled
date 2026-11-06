@@ -23,6 +23,7 @@ import dev.bbkb.ime.keyboard.internal.KeyDetector;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
 import dev.bbkb.ime.keyboard.KeyboardActionListenerInterface;
 import dev.bbkb.ime.keyboard.KeyboardView;
+import dev.bbkb.ime.keyboard.internal.MoreKeySpec;
 import dev.bbkb.ime.keyboard.internal.MoreKeysKeyboard;
 import dev.bbkb.ime.keyboard.internal.MoreKeysKeyboardView;
 import dev.bbkb.ime.keyboard.internal.PointerTracker;
@@ -46,7 +47,7 @@ import java.util.List;
  * - Key press visual feedback and animations
  * 
  * Each instance displays one page of emoji grid. Multiple instances are managed
- * by EmojiPagerAdapter within the emoji picker's ViewPager.
+ * by EmojiPagerAdapter within the emoji picker's ViewPager2, and by the search overlay's.
  */
 
 public final class EmojiPageKeyboardView extends KeyboardView implements GestureDetector.OnGestureListener, TimerHandler.Callbacks, LongPressHandler.KeyPreviewDismisser, MoreKeysPanel.Controller, PointerTracker.KeyDrawingProxy, PointerTracker.GestureEnabledProvider {
@@ -93,6 +94,9 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
     private MoreKeysPanel moreKeysDrawingProxy;
 
     private final DrawingPreviewPlacerView moreKeysLayoutParams;
+
+    /** The window content view the placer was added to, kept for its removal (see onDetachedFromWindow). */
+    private ViewGroup placerHost;
 
     private final BatchInputTimerHandler keyPreviewHandler;
 
@@ -334,14 +338,36 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         if (this.moreKeysLayoutParams.getParent() == null) {
             windowContentView.addView(this.moreKeysLayoutParams);
         }
+        this.placerHost = windowContentView;
     }
 
+    /**
+     * Removes the more-keys placer from the window content view, on the next main-loop turn when a
+     * layout pass is running.
+     *
+     * <p>The pagers are RecyclerViews, which detach recycled pages from the window inside their own
+     * layout (a tab jump, a rebuilt overlay). That layout runs inside the content frame's
+     * {@code layoutChildren}, and removing the placer, a child of that frame, while it iterates its
+     * children crashed it (NPE in FrameLayout.layoutChildren; the v1 pager adapter posted its page
+     * removal for the same reason). A page attached again before the posted removal runs keeps its
+     * placer. The host is the one remembered on attach: a page RecyclerView temporarily detached is
+     * no longer in the window's tree here, so {@code getRootView()} cannot find the content view.
+     */
     @Override // dev.bbkb.ime.keyboard.KeyboardView, android.view.View
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        ViewGroup windowContentView = getWindowContentView();
-        if (windowContentView != null) {
-            windowContentView.removeView(this.moreKeysLayoutParams);
+        final ViewGroup host = this.placerHost;
+        final DrawingPreviewPlacerView placer = this.moreKeysLayoutParams;
+        if (host != null) {
+            if (host.isInLayout()) {
+                host.post(() -> {
+                    if (!isAttachedToWindow() && placer.getParent() == host) {
+                        host.removeView(placer);
+                    }
+                });
+            } else {
+                host.removeView(placer);
+            }
         }
         this.moreKeysLayoutParams.removeAllViews();
         cleanup();
@@ -549,6 +575,24 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
                 new ToneRecordingListener(KeyboardSwitcher.getInstance().getKeyboardActionListener(), getContext()));
         PointerTracker.getPointerTracker(motionEvent.getPointerId(motionEvent.getActionIndex())).startMoreKeysPanel(moreKeysKeyboardView);
         dismissKeyPreviewWithoutDelay(keyM6620b);
+        holdPagerForTones(keyM6620b);
+    }
+
+    /**
+     * With skin tones to choose from, the pager must not take the long-pressing finger from the
+     * popup. The popup opens from the long-press timer, between touch events, so the request in
+     * processPointerEvents only comes with the next move, after the pager has seen it:
+     * RecyclerView intercepts any move whose horizontal part passes its slop (ViewPager v1 also
+     * wanted it mostly horizontal), so a diagonal slide to a tone dragged the page. Asked here,
+     * the pager stays out until the finger lifts (ViewGroup clears it on UP, CANCEL and the next
+     * DOWN). The popup lists the base emoji first, then its tones: a popup of the base alone
+     * offers nothing to slide to, so there a sideways move still pages, as it did on ViewPager v1.
+     */
+    void holdPagerForTones(Key key) {
+        MoreKeySpec[] popup = key.getMoreKeys();
+        if (popup != null && popup.length > 1 && getParent() != null) {
+            getParent().requestDisallowInterceptTouchEvent(true);
+        }
     }
 
     /**
