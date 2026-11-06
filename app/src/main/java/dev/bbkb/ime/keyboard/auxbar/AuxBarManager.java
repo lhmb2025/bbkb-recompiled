@@ -446,6 +446,11 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
             // follows. Collapsed the previously-identical if/else (FABLE_VIEW_REPORT §10) so the
             // dead branch can't be mistaken for differentiated behavior.
             auxBarView.hide();
+            // Autofill covered the bar for a moment; a menu the user chose comes back (owner
+            // decision 2026-11-05). Otherwise the next suggestion update fills the strip, as before.
+            if (eventListener != null && eventListener.shouldShowUim()) {
+                showUnifiedInputMenu();
+            }
             if (BuildConfig.DEBUG) Log.d(DIAG, "[AUXBAR] hideAutofillBar() executed - was in AUTOFILL state (restoreSuggestionStrip=" + restoreSuggestionStrip + ")");
         } else {
             if (BuildConfig.DEBUG) Log.d(DIAG, "[AUXBAR] hideAutofillBar() no-op - not in AUTOFILL state");

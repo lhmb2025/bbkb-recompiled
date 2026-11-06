@@ -389,7 +389,12 @@ class PkbSuggestionBarTest {
         verify(handler, never()).postUpdateShiftState(Mockito.anyBoolean(), Mockito.anyBoolean())
     }
 
-    /** With the bar shown, the strip comes back in the menu's place and is refilled. */
+    /**
+     * With the bar shown, the strip comes back in the menu's place with the words it kept current
+     * behind the menu (owner decision 2026-11-05): any board under the menu closes, the menu comes
+     * down onto the strip, and nothing is emptied or asked for. It used to hide the bar (emptying
+     * the strip), pre-show an empty strip and ask for the words again.
+     */
     @Test
     fun theKeyHidesTheMenuBackToTheSuggestionStrip() {
         load(showBar = true)
@@ -399,9 +404,12 @@ class PkbSuggestionBarTest {
 
         coordinator.toggleInputMenu()
 
-        verify(uim).hide()
-        verify(auxBar).showSuggestionStrip(SuggestedWords.EMPTY)
-        verify(handler).postUpdateShiftState(true, true)
+        verify(uim).hideAllComponents()
+        verify(uim).lowerMenuOntoStrip()
+        verify(uim, never()).hide()
+        verify(auxBar, never()).showSuggestionStrip(SuggestedWords.EMPTY)
+        verify(handler, never()).postUpdateShiftState(Mockito.anyBoolean(), Mockito.anyBoolean())
+        assertFalse(SettingsValues.isInputMenuRequestedByKey())
     }
 
     @Test

@@ -406,31 +406,9 @@ class FccControllerTest {
         controller.hideFcc()
 
         val order = Mockito.inOrder(view, listener, ime)
-        order.verify(view).setClosing(true)
         order.verify(view).hide()
         order.verify(listener).onFccPanelHidden()
         order.verify(ime).enableCursorMode(false)
-    }
-
-    @Test
-    fun theClosingFlagSurvivesTheCloseOnAnOrdinaryDevice() {
-        boardIsUp()
-        `when`(profile.isPkbWithoutAlphabeticKeyboard).thenReturn(false)
-
-        controller.hideFcc()
-
-        verify(view, never()).setClosing(false)
-    }
-
-    @Test
-    fun aPkbWithoutAnAlphabeticKeyboardClearsTheClosingFlagImmediately() {
-        // On those devices nothing consumes the flag, so it is cleared in the same breath.
-        boardIsUp()
-        `when`(profile.isPkbWithoutAlphabeticKeyboard).thenReturn(true)
-
-        controller.hideFcc()
-
-        verify(view).setClosing(false)
     }
 
     @Test
@@ -493,27 +471,8 @@ class FccControllerTest {
         verify(view).hide()
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 7. The closing flag the suggestion strip consumes
-    // ═══════════════════════════════════════════════════════════════════════
-
-    @Test
-    fun theClosingFlagIsConsumedExactlyOnce() {
-        `when`(view.isClosing).thenReturn(true)
-
-        assertTrue("first read sees it", controller.consumeClosingFlag())
-        verify(view).setClosing(false)
-
-        `when`(view.isClosing).thenReturn(false)
-        assertFalse("second read does not", controller.consumeClosingFlag())
-    }
-
-    @Test
-    fun thereIsNoClosingFlagWithoutAView() {
-        ReflectionHelpers.setField(FccController::class.java, controller, "mFccView", null)
-
-        assertFalse(controller.consumeClosingFlag())
-    }
+    // 7. (The closing flag the suggestion strip consumed is gone: new suggestions no longer
+    //    take the menu down, so there was nothing left for it to protect. 2026-11-05.)
 
     // ═══════════════════════════════════════════════════════════════════════
     // 8. The conditional closes

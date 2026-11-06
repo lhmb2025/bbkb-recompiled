@@ -682,6 +682,11 @@ public final class SettingsValues {
         return inputMenuRequestedByKey || this.uimEnabledSetting;
     }
 
+    /** "Enable unified input menu" as stored, without the key's request: what a field's own bar follows. */
+    public boolean isUimEnabledBySetting() {
+        return this.uimEnabledSetting;
+    }
+
     /**
      * The "Show or hide the input menu" key action has the input menu up, and it counts as on
      * whatever "Enable unified input menu" and "Show the suggestion bar" say: the two

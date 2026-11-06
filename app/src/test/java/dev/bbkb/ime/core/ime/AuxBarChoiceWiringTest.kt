@@ -142,11 +142,15 @@ class AuxBarChoiceWiringTest {
         verify(uim, never()).hide()
     }
 
-    /** ...and so does one the show-menu key raised. */
+    /** ...and so does one the show-menu key raised (the key chooses the menu too). */
     @Test
     fun aMenuTheKeyRaisedStaysUp() {
         field()
-        SettingsValues.setInputMenuRequestedByKey(true)
+        Mockito.`when`(uim.isShowing).thenReturn(false)
+        Mockito.`when`(uim.showMenuForKey()).thenReturn(true)
+        coordinator.toggleInputMenu()
+        Mockito.`when`(uim.isShowing).thenReturn(true)
+        assertTrue(coordinator.barChoice.isMenuChosen)
 
         coordinator.uncoverAfterBoardsClosed()
 
@@ -236,5 +240,125 @@ class AuxBarChoiceWiringTest {
         coordinator.onMenuTakenDown()
 
         assertFalse(coordinator.barChoice.isMenuChosen)
+    }
+
+    // ── typing brings the strip back (phase 2) ──────────────────────────────
+
+    /** The user raised the menu and types: the strip comes back in its place, with its words. */
+    @Test
+    fun typingOverARaisedMenuBringsTheStripBack() {
+        field()
+        coordinator.showUnifiedInputMenuFromSuggestionStrip()
+
+        coordinator.onUserTyped(true)
+
+        verify(uim).lowerMenuOntoStrip()
+        assertFalse(coordinator.barChoice.isMenuChosen)
+    }
+
+    /** Ordinary typing with nothing chosen touches nothing (the common case, every keystroke). */
+    @Test
+    fun typingWithNothingChosenDoesNothing() {
+        field()
+
+        coordinator.onUserTyped(true)
+
+        verify(uim, never()).lowerMenuOntoStrip()
+        verify(uim, never()).hide()
+    }
+
+    /** A board is open: it keeps the menu, but the typing puts the menu away for its close. */
+    @Test
+    fun aKeypadLetterWithABoardOpenPutsTheMenuAwayForLater() {
+        field()
+        coordinator.showUnifiedInputMenuFromSuggestionStrip()
+        Mockito.`when`(uim.isPanelBoardShowing).thenReturn(true)
+
+        coordinator.onUserTyped(true)
+
+        verify(uim, never()).lowerMenuOntoStrip()
+        assertFalse("the board's close will uncover the strip", coordinator.barChoice.isMenuChosen)
+    }
+
+    /** On-screen input while a board covers the on-screen keys comes from the board: not typing. */
+    @Test
+    fun onScreenInputWithABoardOpenIsTheBoardsNotTyping() {
+        field()
+        coordinator.showUnifiedInputMenuFromSuggestionStrip()
+        Mockito.`when`(uim.isPanelBoardShowing).thenReturn(true)
+
+        coordinator.onUserTyped(false)
+
+        assertTrue(coordinator.barChoice.isMenuChosen)
+    }
+
+    /** Typing ends the show-menu key's menu too, and its override with it. */
+    @Test
+    fun typingOverTheKeysMenuEndsItAndItsOverride() {
+        field()
+        Mockito.`when`(uim.isShowing).thenReturn(false)
+        Mockito.`when`(uim.showMenuForKey()).thenReturn(true)
+        coordinator.toggleInputMenu()
+        Mockito.`when`(uim.isShowing).thenReturn(true)
+
+        coordinator.onUserTyped(true)
+
+        verify(uim).lowerMenuOntoStrip()
+        assertFalse(SettingsValues.isInputMenuRequestedByKey())
+    }
+
+    /** Where the field's own bar is the menu, typing leaves it. */
+    @Test
+    fun typingInAMenuFieldKeepsTheMenu() {
+        field(predictions = false)
+        coordinator.showUnifiedInputMenuFromSuggestionStrip()
+
+        coordinator.onUserTyped(true)
+
+        verify(uim, never()).lowerMenuOntoStrip()
+        verify(uim, never()).hide()
+    }
+
+    /**
+     * A menu raised in the last field (its choice reset by the field start): new suggestions no
+     * longer take it down, so the field start does.
+     */
+    @Test
+    fun aMenuLeftFromTheLastFieldGoesAtTheFieldStart() {
+        field()
+
+        coordinator.onStartInputView()
+
+        verify(uim).hide()
+    }
+
+    /** ...but a board still open keeps it, as before. */
+    @Test
+    fun aMenuOverAnOpenBoardStaysAtTheFieldStart() {
+        field()
+        Mockito.`when`(uim.isPanelBoardShowing).thenReturn(true)
+
+        coordinator.onStartInputView()
+
+        verify(uim, never()).hide()
+    }
+
+    // ── what the bar goes back to after a temporary bar ─────────────────────
+
+    /**
+     * Cursor mode's exit (and the accent bar's, the language chips') puts back "the strip or the
+     * menu" through shouldShowUim(): a menu the user chose counts (owner decision 2).
+     */
+    @Test
+    fun aChosenMenuIsWhatTheBarGoesBackTo() {
+        field()
+        assertFalse(coordinator.shouldShowUim())
+        coordinator.showUnifiedInputMenuFromSuggestionStrip()
+
+        assertTrue(coordinator.shouldShowUim())
+        Mockito.`when`(uim.isShowing).thenReturn(false)
+        coordinator.showSuggestionStripOrUim()
+
+        verify(uim).show(false)
     }
 }

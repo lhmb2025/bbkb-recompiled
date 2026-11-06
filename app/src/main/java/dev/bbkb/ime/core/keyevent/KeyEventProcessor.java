@@ -455,6 +455,12 @@ public class KeyEventProcessor {
                 } else {
                     c0920gM4442a = ime.getInputLogic().processInputEvent(ime.getSettingsManager().getSettingsValues(), c0914aMo5937a, ime.getPhysicalKeyboardStateTracker(), InputSource.HARDWARE, ime.getKeyboardSwitcher().getKeyboardElementId(), ime.getUiUpdateHandler());
                 }
+                // Typing brings the strip back over a menu the user raised (AuxBarChoice). Here,
+                // after the key's own processing, so a cursor mode this key just ended has already
+                // put its bar back.
+                if (c0914aMo5937a.editsText() && ime.getUiCoordinator() != null) {
+                    ime.getUiCoordinator().onUserTyped(true);
+                }
                 boolean fccBlocking = ime.getFccController().isShowing() && ime.getFccController().isSelectModeActive();
                 boolean flagFromInputLogic = c0920gM4442a.hasPendingEditorAction();
                 zM5997a = fccBlocking ? false : flagFromInputLogic;

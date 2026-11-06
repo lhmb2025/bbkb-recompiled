@@ -1318,6 +1318,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
      * which is right for the window going away and wrong for "the board is closed, show the strip".
      */
     public void lowerMenuOntoStrip() {
+        // The menu is going down, so a menu the show-menu key asked for ends, as with hide().
+        SettingsValues.setInputMenuRequestedByKey(false);
         this.keyboardView.animate().cancel();
         this.invalidationHandler.removeCallbacks(animationSafetyReset);
         setAnimating(false);

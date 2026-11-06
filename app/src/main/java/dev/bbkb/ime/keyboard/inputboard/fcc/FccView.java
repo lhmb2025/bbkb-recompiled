@@ -29,7 +29,6 @@ public final class FccView extends RelativeLayout {
 
     private static final String TAG = "FccView";
 
-    private boolean mClosing;
 
     private boolean mIsToggling;
 
@@ -172,14 +171,6 @@ public final class FccView extends RelativeLayout {
 
     public void setOpening(boolean z) {
         this.mOpening = z;
-    }
-
-    public boolean isClosing() {
-        return this.mClosing;
-    }
-
-    public void setClosing(boolean z) {
-        this.mClosing = z;
     }
 
     public boolean isToggling() {

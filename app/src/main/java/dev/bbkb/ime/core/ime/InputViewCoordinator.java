@@ -119,6 +119,11 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
                 uibm.hide();
             } else if (shouldShowUim()) {
                 uibm.show(false);
+            } else if (uibm.isShowing() && !uibm.isPanelBoardShowing()) {
+                // A menu raised in the last field (the choice was reset for this one): new
+                // suggestions no longer take the menu down, so the field start does. A board still
+                // open keeps it, as before.
+                uibm.hide();
             }
         }
         
@@ -223,7 +228,7 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         boolean strip = shouldShowSuggestionStrip(settings, this.imeService.isOnScreenKeyboardVisible(),
                 this.subtypeManager.getCurrentSubtype());
         if (!strip) {
-            return isUimEnabled() ? AuxBarChoice.FieldBar.MENU : AuxBarChoice.FieldBar.NONE;
+            return settings.isUimEnabledBySetting() ? AuxBarChoice.FieldBar.MENU : AuxBarChoice.FieldBar.NONE;
         }
         return DeviceProfile.current().isPkbDevice() ? AuxBarChoice.FieldBar.STRIP : AuxBarChoice.FieldBar.NONE;
     }
@@ -240,11 +245,20 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
                 || uibm.getBoardCoordinator().activeBoard() != dev.bbkb.ime.keyboard.inputboard.UnifiedBoardCoordinator.NO_BOARD) {
             return;
         }
-        // The show-menu key's menu is the user's choice too (and may stand over a disabled menu).
-        if (SettingsValues.isInputMenuRequestedByKey()) {
+        if (this.barChoice.isMenuChosen()) {
+            // The hamburger or the show-menu key raised it, and nothing has put it away since.
             return;
         }
-        switch (this.barChoice.shows(fieldBar(), false, isUimEnabled())) {
+        showFieldBarInPlaceOfMenu(uibm);
+    }
+
+    /**
+     * The menu is up and nothing holds it any more (no board, not chosen): show the field's own bar
+     * in its place. The show-menu key's override ends with it.
+     */
+    private void showFieldBarInPlaceOfMenu(UnifiedInputBoardManager uibm) {
+        SettingsValues.setInputMenuRequestedByKey(false);
+        switch (fieldBar()) {
             case STRIP:
                 uibm.lowerMenuOntoStrip();
                 break;
@@ -258,6 +272,36 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     }
 
     /**
+     * The user typed (owner decision 2026-11-05): a menu they raised goes, and the field's own bar
+     * comes back, with the words the hidden strip has kept current. New suggestions no longer do
+     * this; typing is the one thing that does.
+     *
+     * <p>Called for every text-editing event, so the common case (nothing chosen) returns at once.
+     * {@code physical} is a physical key or a keypad swipe. On-screen input while a board is open
+     * comes from the board itself (it covers the on-screen keys) and is not typing. Typing while a
+     * board is open still puts the menu away for later: the board keeps the menu while it is up,
+     * and its close then uncovers the field's bar.
+     */
+    public void onUserTyped(boolean physical) {
+        if (!this.barChoice.isMenuChosen() && !SettingsValues.isInputMenuRequestedByKey()) {
+            return;
+        }
+        UnifiedInputBoardManager uibm = this.keyboardSwitcher.getUnifiedInputBoardManager();
+        if (uibm == null) {
+            return;
+        }
+        boolean boardOpen = uibm.isPanelBoardShowing();
+        if (boardOpen && !physical) {
+            return;
+        }
+        this.barChoice.chooseFieldBar();
+        if (boardOpen || !uibm.isShowing()) {
+            return;
+        }
+        showFieldBarInPlaceOfMenu(uibm);
+    }
+
+    /**
      * The menu's keyboard key: put the menu away, back to the field's own bar. Where that is the
      * strip, the strip comes back with its words as they are (they are current: they were kept up
      * to date under any board, and anything else that changed them would have taken the menu down).
@@ -268,9 +312,9 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
      */
     public void putMenuAway() {
         this.barChoice.chooseFieldBar();
+        SettingsValues.setInputMenuRequestedByKey(false);
         UnifiedInputBoardManager uibm = this.keyboardSwitcher.getUnifiedInputBoardManager();
-        if (uibm != null && uibm.isShowing() && fieldBar() == AuxBarChoice.FieldBar.STRIP
-                && !SettingsValues.isInputMenuRequestedByKey()) {
+        if (uibm != null && uibm.isShowing() && fieldBar() == AuxBarChoice.FieldBar.STRIP) {
             uibm.lowerMenuOntoStrip();
             showCjkSuggestionStripIfNeeded();
             return;
@@ -445,6 +489,12 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         if (SettingsValues.isInputMenuRequestedByKey()) {
             return true;
         }
+        // ...and so is the hamburger's (owner decision 2026-11-05): the menu is the bar while
+        // the user's choice holds it, which is what the arrow bar, the accent bar and the language
+        // chips hand back to.
+        if (this.barChoice.isMenuChosen()) {
+            return true;
+        }
         SettingsValues c0804dM5050c = SettingsManager.getInstance().getSettingsValues();
         return c0804dM5050c.isUimEnabled() && !shouldShowSuggestionStrip(c0804dM5050c, this.imeService.isOnScreenKeyboardVisible(), this.subtypeManager.getCurrentSubtype());
     }
@@ -474,6 +524,14 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         }
         if (uibm.isShowing()) {
             SettingsValues.setInputMenuRequestedByKey(false);
+            this.barChoice.chooseFieldBar();
+            if (fieldBar() == AuxBarChoice.FieldBar.STRIP) {
+                // Going away still closes any board under the menu, and uncovers the strip with
+                // the words it kept current behind the menu: nothing to empty, nothing to ask for.
+                uibm.hideAllComponents();
+                uibm.lowerMenuOntoStrip();
+                return;
+            }
             uibm.hide();
             if (DeviceProfile.current().isPkbDevice()) {
                 preShowSuggestionStripForPkb();
@@ -487,11 +545,11 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
             return;
         }
         SettingsValues.setInputMenuRequestedByKey(true);
+        this.barChoice.chooseMenu();
         if (!uibm.showMenuForKey()) {
             // Nothing to show it in (no bar view yet): the settings keep their say.
             SettingsValues.setInputMenuRequestedByKey(false);
-        } else {
-            this.barChoice.chooseMenu();
+            this.barChoice.chooseFieldBar();
         }
     }
 

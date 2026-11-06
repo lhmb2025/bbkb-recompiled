@@ -191,6 +191,22 @@ public class InputEvent {
         return this.mEventType != EVENT_EMPTY;
     }
 
+    /**
+     * Whether this event is the user typing: a character (space and Enter included), a run of text,
+     * a swipe, or Delete (key code -5). Modifiers (Shift, Alt, Sym) and the other functional keys
+     * (mode switches, board keys) are not, and neither is a picked suggestion. What brings the
+     * suggestion strip back over a menu the user raised (owner decision 2026-11-05, AuxBarChoice).
+     */
+    public boolean editsText() {
+        if (!hasData() || isModifierKey() || isSuggestionPicked()) {
+            return false;
+        }
+        if (this.mText != null || isGestureEvent() || this.mCodePoint > 0) {
+            return true;
+        }
+        return this.mKeyCode == -5;
+    }
+
     public boolean isFromSwitchedKeyboard() {
         return this.mIsFromSwitchedKeyboard;
     }

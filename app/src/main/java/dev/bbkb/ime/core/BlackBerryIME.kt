@@ -2012,7 +2012,10 @@ class BlackBerryIME : InputMethodService(),
     fun requestShowOnKeyPress(): Boolean = keyEventProcessor.requestShowOnKeyPress()
 
     fun processHardwareKeyPress(i: Int, i2: Int, z: Boolean) {
-        applyPostEventUpdates(inputLogic.processInputEvent(settingsManager.getSettingsValues(), InputEvent.createHardwareKeyPress(i, i2, null, z, -1L), physicalKeyboardStateTracker, InputSource.UNKNOWN, keyboardSwitcher.getKeyboardElementId(), uiUpdateHandler), true)
+        val event = InputEvent.createHardwareKeyPress(i, i2, null, z, -1L)
+        applyPostEventUpdates(inputLogic.processInputEvent(settingsManager.getSettingsValues(), event, physicalKeyboardStateTracker, InputSource.UNKNOWN, keyboardSwitcher.getKeyboardElementId(), uiUpdateHandler), true)
+        // A physical key press (AuxBarChoice: typing brings the strip back).
+        if (event.editsText()) uiCoordinator.onUserTyped(true)
     }
 
     fun remapKeyEvent(i: Int, ev: KeyEvent): KeyEvent {
@@ -2168,6 +2171,8 @@ class BlackBerryIME : InputMethodService(),
             }
             softwareMultitapHandler.onInputEvent(event)
             applyPostEventUpdates(inputLogic.processInputEvent(settingsManager.getSettingsValues(), event, keyboardSwitcher, InputSource.SOFTWARE, keyboardSwitcher.getKeyboardElementId(), uiUpdateHandler), true)
+            // Typing brings the strip back over a menu the user raised (AuxBarChoice).
+            if (event.editsText()) uiCoordinator.onUserTyped(false)
             keyboardSwitcher.onInputCodeChanged(code, getCurrentInputType(), getCurrentImeOptions())
             // For an on-screen PKB SYM keyboard tap, return to the alphabet AFTER the symbol has
             // been committed above. The state machine defers this from key-press so the tap isn't
@@ -2316,6 +2321,8 @@ class BlackBerryIME : InputMethodService(),
 
     override fun onEndBatchInput(enumC0690f: InputSource) {
         suggestionUpdater.requestPredictionsNow(enumC0690f)
+        // A swipe is typing (AuxBarChoice); a keypad swipe reports HARDWARE, an on-screen one SOFTWARE.
+        uiCoordinator.onUserTyped(enumC0690f == InputSource.HARDWARE)
     }
 
     override fun onCancelBatchInput() {
@@ -2767,8 +2774,23 @@ class BlackBerryIME : InputMethodService(),
         uiCoordinator.hideSuggestionViews()
     }
 
-    /** `ENTER_CURSOR_MODE`'s board column, `CLOSE_ALL`: every board goes, exemptions included. */
-    fun sweepAllBoardsClosed() = hideInputBoard()
+    /**
+     * `ENTER_CURSOR_MODE`'s board column, `CLOSE_ALL`: every board goes, exemptions included.
+     *
+     * Taking the menu down this way would also end a menu the user raised, but the arrow bar only
+     * covers the bar for the length of cursor mode (owner decision 2026-11-05): the choice is kept
+     * across it, so the bar the cursor-mode exit restores (`showSuggestionStripOrUim`, which asks
+     * `shouldShowUim()`) is that menu again. The show-menu key's override is kept with it.
+     */
+    fun sweepAllBoardsClosed() {
+        // getBarChoice() is a Java getter (platform type); the JVM harnesses mock the coordinator.
+        val choice: dev.bbkb.ime.keyboard.state.AuxBarChoice? = uiCoordinator.getBarChoice()
+        val menuChosen = choice?.isMenuChosen() == true
+        val menuRequestedByKey = SettingsValues.isInputMenuRequestedByKey()
+        hideInputBoard()
+        if (menuChosen) choice?.chooseMenu()
+        if (menuRequestedByKey) SettingsValues.setInputMenuRequestedByKey(true)
+    }
 
     /** The last step of `ENTER_CURSOR_MODE`'s bar column. */
     fun raiseArrowBar() {

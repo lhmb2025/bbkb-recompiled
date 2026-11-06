@@ -9,7 +9,6 @@ import dev.bbkb.ime.core.textinput.connection.RichInputConnection;
 import dev.bbkb.ime.core.locale.SubtypeManager;
 import dev.bbkb.ime.core.settings.util.SettingsManager;
 import dev.bbkb.ime.core.textinput.InputMethodHelper;
-import dev.bbkb.ime.core.device.profile.DeviceProfile;
 import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils;
 import dev.bbkb.ime.keyboard.inputboard.AbstractBoardController;
@@ -179,13 +178,9 @@ public class FccController extends AbstractBoardController<FccController.Listene
 
     public void hideFcc() {
         if (hasView() && this.mFccView.isShowing()) {
-            this.mFccView.setClosing(true);
             this.mFccView.hide();
             this.listener.onFccPanelHidden();
             this.ime.enableCursorMode(false);
-            if (DeviceProfile.current().isPkbWithoutAlphabeticKeyboard()) {
-                this.mFccView.setClosing(false);
-            }
             reportClosedToCoordinator();
         }
     }
@@ -253,14 +248,6 @@ public class FccController extends AbstractBoardController<FccController.Listene
         if (isViewActive()) {
             this.mFccView.updateButtons();
         }
-    }
-
-    public boolean consumeClosingFlag() {
-        boolean z = hasView() && this.mFccView.isClosing();
-        if (z) {
-            this.mFccView.setClosing(false);
-        }
-        return z;
     }
 
     public void onKeyEventWhileShowing() {

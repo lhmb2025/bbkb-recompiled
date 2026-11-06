@@ -60,13 +60,18 @@ class SuggestionStripPresenter(private val ime: BlackBerryIME) {
         val sv = ime.getSettingsManager().getSettingsValues()
         ime.getInputLogic().onSuggestionsReceived(words, sv, ime.getUiUpdateHandler())
         if (!ime.hasAuxBarView() || !ime.onEvaluateInputViewShown()) return
+        // A swipe's words never take the menu down or close a board (that used to hide both);
+        // typing is what puts the menu away. With a board open they go to the hidden strip.
+        if (ime.isUnifiedInputBoardShowing()) {
+            refreshStripUnderBoard(words, sv)
+            return
+        }
         val uiCoordinator = ime.getUiCoordinator()
         val subtype = ime.getSubtypeManager().getCurrentSubtype()
         uiCoordinator.updateSuggestionStripVisibility()
-        if (!ime.shouldShowUim()) uiCoordinator.hideUnifiedInputBoard()
         if ((sv.shouldShowPredictionsInCandidateStrip() || sv.shouldShowMoreKeys() || isAutoCorrectOrEmpty(sv, words)) &&
             uiCoordinator.shouldShowSuggestionStrip(sv, ime.isOnScreenKeyboardVisible(), subtype)) {
-            ime.auxBarManager?.showSuggestionStrip(words, false)
+            putOnStrip(words, false)
         }
         val uibm = ime.getKeyboardSwitcher().getUnifiedInputBoardManager()!!
         if (uibm.isSlideboardShowing()) uibm.showAndRefreshForSlideboard()
@@ -93,24 +98,34 @@ class SuggestionStripPresenter(private val ime: BlackBerryIME) {
         val showLatin = uiCoordinator.shouldShowLatinSuggestionStrip(sv, ime.isOnScreenKeyboardVisible(), subtype)
         val showCjk = uiCoordinator.shouldShowCjkSuggestionStrip(sv, ime.isOnScreenKeyboardVisible(), subtype)
         if (words.isEmpty()) ime.cjkSuggestionGridView?.setVisible(false)
-        if (!ime.shouldShowUim() && !keyboardSwitcher.isInSymbolMode() && ime.fccController?.consumeClosingFlag() == false) {
-            uiCoordinator.hideUnifiedInputBoard()
-        }
+        // New words never take the menu down (owner decision 2026-11-05). They used to here,
+        // three times over, standing in for "the user is typing"; but FCC and Sym closing, a tap in
+        // the text, the dictionary loading and the app moving the cursor all ask for words too, and
+        // each one took down a menu the user had raised. Typing now puts the menu away itself
+        // (InputViewCoordinator.onUserTyped); with the menu up the words go to the hidden strip.
         if (sv.isPredictionsEnabled || sv.editorCapabilities.shouldShowChineseSuggestions || sv.shouldShowMoreKeys() || isAutoCorrectOrEmpty(sv, words)) {
-            val auxBar = ime.auxBarManager
-            if (showLatin && auxBar != null) {
-                auxBar.showSuggestionStrip(words, false)
-                uiCoordinator.hideUnifiedInputBoard()
-            }
-            if (showCjk && auxBar != null) {
-                auxBar.showSuggestionStrip(words, true)
-                ime.cjkSuggestionGridView!!.setSuggestions(words.getSuggestedWordsForDisplay())
-                uiCoordinator.hideUnifiedInputBoard()
+            if (showLatin) putOnStrip(words, false)
+            if (showCjk) {
+                putOnStrip(words, true)
+                ime.cjkSuggestionGridView?.setSuggestions(words.getSuggestedWordsForDisplay())
             }
             val uibm = keyboardSwitcher.getUnifiedInputBoardManager()!!
             if (uibm.isSlideboardShowing()) uibm.showAndRefreshForSlideboard()
         }
         updateFlickSuggestions(words, sv)
+    }
+
+    /**
+     * The words onto the strip: shown if the strip is the bar, kept on the hidden strip if the
+     * menu covers it, so the strip is current whenever it comes back.
+     */
+    private fun putOnStrip(words: SuggestedWords, isCjk: Boolean) {
+        val auxBar = ime.auxBarManager ?: return
+        if (ime.getKeyboardSwitcher().getUnifiedInputBoardManager()?.isShowing() == true) {
+            auxBar.updateHiddenSuggestionStrip(words, isCjk)
+        } else {
+            auxBar.showSuggestionStrip(words, isCjk)
+        }
     }
 
     /**
