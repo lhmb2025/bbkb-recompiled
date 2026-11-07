@@ -1,9 +1,13 @@
 package dev.bbkb.ime.core.settings.search
 
+import android.app.Activity
+import android.os.Build
+import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.device.touch.TouchSourceSelector
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.SettingsRoute
+import dev.bbkb.ime.core.settings.SpellCheckerComposeActivity
 import dev.bbkb.ime.core.settings.screens.BackupAnchors
 import dev.bbkb.ime.core.settings.screens.ManageDataAnchors
 import dev.bbkb.ime.core.settings.screens.TouchSurfaceAnchors
@@ -25,6 +29,12 @@ data class SearchDeviceCapabilities(
     val touchKeypadUsesShizuku: Boolean = false,
     /** The BBKB helper is offered on this phone: its profile does not switch it off. */
     val accessibilityHelperAvailable: Boolean = true,
+    /** The profile says the keys are capacitive (`DeviceProfile.hasTouchKeypad`): the KEY2 family. */
+    val hasTouchKeypad: Boolean = false,
+    /** A debug build: the Debug settings row on Advanced is drawn only there. */
+    val isDebugBuild: Boolean = false,
+    /** Android 12 or later: the "Dynamic color" switch is drawn only there. */
+    val supportsDynamicColor: Boolean = true,
 ) {
     companion object {
         fun current(): SearchDeviceCapabilities {
@@ -38,6 +48,9 @@ data class SearchDeviceCapabilities(
                     !dev.bbkb.ime.core.device.interceptor.KeyInterceptorComponent.isOffForDevice(profile?.getDeviceMapping()),
                 touchKeypadUsesShizuku =
                     profile?.touchSourceSelection?.choice == TouchSourceSelector.Choice.SHIZUKU,
+                hasTouchKeypad = profile?.hasTouchKeypad() ?: false,
+                isDebugBuild = BuildConfig.DEBUG,
+                supportsDynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
             )
         }
     }
@@ -74,7 +87,19 @@ enum class DeviceRequirement {
     TOUCH_KEYPAD_SHIZUKU,
 
     /** Row sits on the BBKB helper's screen, whose entry row is greyed out where it is not required. */
-    ACCESSIBILITY_HELPER_AVAILABLE;
+    ACCESSIBILITY_HELPER_AVAILABLE,
+
+    /** A physical keyboard with capacitive keys: the CKB gesture rows and their screen. */
+    TOUCH_KEYPAD,
+
+    /** The profile declares a touch surface over the keys: the Touch surface helper row is enabled. */
+    TOUCH_KEYPAD_DECLARED,
+
+    /** Drawn in debug builds only: the Debug settings row and the screens behind it. */
+    DEBUG_BUILD,
+
+    /** Drawn on Android 12 and later only: the "Dynamic color" switch. */
+    DYNAMIC_COLOR;
 
     fun isMetBy(capabilities: SearchDeviceCapabilities): Boolean = when (this) {
         ANY -> true
@@ -83,6 +108,10 @@ enum class DeviceRequirement {
         MULTIFUNCTION_KEY -> capabilities.hasMultifunctionKey
         TOUCH_KEYPAD_SHIZUKU -> capabilities.declaresTouchKeypad && capabilities.touchKeypadUsesShizuku
         ACCESSIBILITY_HELPER_AVAILABLE -> capabilities.accessibilityHelperAvailable
+        TOUCH_KEYPAD -> capabilities.hasPhysicalKeyboard && capabilities.hasTouchKeypad
+        TOUCH_KEYPAD_DECLARED -> capabilities.declaresTouchKeypad
+        DEBUG_BUILD -> capabilities.isDebugBuild
+        DYNAMIC_COLOR -> capabilities.supportsDynamicColor
     }
 }
 
@@ -101,6 +130,32 @@ data class SearchableSetting(
 )
 
 /**
+ * A searchable screen: one of the five categories on the settings root, or a page reached from
+ * one. A hit lists the screen itself and opens it, with no row to pulse.
+ *
+ * [parentPath] is the titles of the screens above it, top-level category first (empty for a
+ * category); search shows it as the result's summary ("Input › Physical keyboard"). [requires] is
+ * the gate on the way to the screen — the strictest gate of any row along the path — so a page
+ * the device never shows the way into is not offered, and nor are the rows on it. [activity] is
+ * set for the one page that lives in an activity of its own (Spell checking); [route] is then the
+ * hub that opens it.
+ */
+data class SearchableScreen(
+    val titleRes: Int,
+    val keywords: String,
+    val route: String,
+    val parentPath: List<Int>,
+    val requires: DeviceRequirement = DeviceRequirement.ANY,
+    val activity: Class<out Activity>? = null,
+)
+
+/** One line of search results: a screen to open, or a setting to open and pulse. */
+sealed interface SettingsSearchResult {
+    data class Screen(val screen: SearchableScreen) : SettingsSearchResult
+    data class Setting(val setting: SearchableSetting) : SettingsSearchResult
+}
+
+/**
  * Flat index of every searchable setting. Hand-maintained alongside the leaf screens —
  * each [anchor] must match a [settingsSearchAnchor] call in the corresponding screen.
  *
@@ -116,8 +171,6 @@ object SettingsSearchIndex {
 
     val entries: List<SearchableSetting> = listOf(
         // ── Languages ────────────────────────────────────────────────────────────
-        SearchableSetting(R.string.settings_languages_title, "language keyboard add remove layout predict multi-language", SettingsRoute.LanguagesHub.route, LANGUAGES),
-        SearchableSetting(R.string.settings_language_packs_title, "download language pack", SettingsRoute.LanguagePacks.route, LANGUAGES),
         // Each keyboard's Layout is a row in the sheet its row on the Language screen opens, so
         // the entry leads to the screen and has no anchor to highlight.
         SearchableSetting(R.string.languages_hub_layout_title, "keyboard layout colemak dvorak qwerty qwertz azerty letters keys arrangement on-screen physical keypad", SettingsRoute.LanguagesHub.route, LANGUAGES),
@@ -149,9 +202,6 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.pref_shift_double_tap_lock, "shift double tap caps lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_shift_double_tap_lock"),
         SearchableSetting(R.string.pref_alt_double_tap_lock, "alt double tap lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_alt_double_tap_lock"),
         SearchableSetting(R.string.pref_ctrl_double_tap_lock, "ctrl control double tap lock", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_ctrl_double_tap_lock"),
-        // The screen itself, so no anchor; its Nav row on Physical keyboard is behind the same
-        // physical-keyboard gate.
-        SearchableSetting(R.string.settings_pkb_layouts_title, "custom keypad physical layouts built-in builtin letter layout map remap keys keycaps alphabet qwerty qwertz azerty etched thai xml add import template save file export share", SettingsRoute.PhysicalLayouts.route, ADVANCED, requires = DeviceRequirement.PHYSICAL_KEYBOARD),
         // Only on a phone whose device config lists more than one keypad shape (the KEY2's three editions).
         SearchableSetting(R.string.settings_pkb_keypad_layout_title, "keypad layout shape qwerty qwertz azerty edition detected automatic physical keyboard", SettingsRoute.PhysicalKeyboard.route, TYPING, "pref_pkb_keypad_layout", DeviceRequirement.PHYSICAL_KEYBOARD),
 
@@ -177,7 +227,7 @@ object SettingsSearchIndex {
         // ── Personalization: theme & height (on the hub) ────────────────────────
         SearchableSetting(R.string.settings_keyboard_theme_title, "theme classic modern material bb10 blackberry style", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_theme_style"),
         SearchableSetting(R.string.settings_color_scheme_title, "color scheme dark light auto night", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_theme_mode"),
-        SearchableSetting(R.string.settings_use_system_colors_title, "dynamic color system colors dynamic material you wallpaper", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_use_system_colors"),
+        SearchableSetting(R.string.settings_use_system_colors_title, "dynamic color system colors dynamic material you wallpaper", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_use_system_colors", DeviceRequirement.DYNAMIC_COLOR),
         SearchableSetting(R.string.settings_keyboard_height_title, "keyboard size height tall", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_height_mode"),
 
         // Default currency now lives on the Symbol customization screen
@@ -195,7 +245,6 @@ object SettingsSearchIndex {
         // ── Typing & input: Slideboard (entry row lives on On-Screen Keyboard) ──
         SearchableSetting(R.string.settings_vkb_slideboard_enable_title, "slideboard number pad", SettingsRoute.SlideboardSettings.route, TYPING, "slideboard_active"),
         SearchableSetting(R.string.settings_vkb_slideboard_swap_title, "slideboard swap sides", SettingsRoute.SlideboardSettings.route, TYPING, "slideboard_numeric_location"),
-        SearchableSetting(R.string.settings_vkb_quick_phrases_title, "quick phrases canned", SettingsRoute.SlideboardSettings.route, TYPING),
 
         // ── Appearance & layout: Custom symbol page ─────────────────────────────
         SearchableSetting(R.string.settings_symbol_customization_title, "symbol page custom layout customize symbols", SettingsRoute.SymbolCustomization.route, APPEARANCE, "symbol_customization"),
@@ -229,9 +278,6 @@ object SettingsSearchIndex {
         // ── Suggestion & correction: Learning ───────────────────────────────────
         SearchableSetting(R.string.settings_dict_dynamic_learning_title, "learning learn words", SettingsRoute.Learning.route, SUGGESTION, "dynamic_learning"),
         SearchableSetting(R.string.settings_dict_add_reverted_words_title, "add typed word dictionary undo correction backspace accept button", SettingsRoute.Learning.route, SUGGESTION, "pref_show_ui_to_accept_typed_word"),
-        SearchableSetting(R.string.settings_dict_user_dictionary_title, "user dictionary personal words", SettingsRoute.Learning.route, SUGGESTION),
-        SearchableSetting(R.string.settings_dict_text_shortcuts_title, "text shortcuts substitution macro", SettingsRoute.Learning.route, SUGGESTION),
-        SearchableSetting(R.string.settings_dict_learned_words_title, "learned words", SettingsRoute.Learning.route, SUGGESTION),
 
         // ── Suggestion & correction: Spell checker ──────────────────────────────
         // ST-16: the spell-checker settings live in their own Activity
@@ -261,19 +307,17 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_symbol_custom_page_first_title, "custom symbol page first on screen", SettingsRoute.SymbolCustomization.route, APPEARANCE, "vkb_custom_page_first"),
 
         // ── Advanced ────────────────────────────────────────────────────────────
-        SearchableSetting(R.string.settings_about_title, "about version credits", SettingsRoute.Advanced.route, ADVANCED),
-        SearchableSetting(R.string.settings_device_compatibility_title, "device compatibility meta state helper", SettingsRoute.Advanced.route, ADVANCED),
         // Points at the configuration list rather than at the builder itself: the builder is a
         // task, and its entry row (with the detected facts behind it) is what search should land
-        // on. No anchor — the row holds no preference.
-        SearchableSetting(R.string.device_profile_builder_entry_title, "device profile builder capture keys scancode keycode export import share unknown phone config", SettingsRoute.DeviceConfiguration.route, ADVANCED, requires = DeviceRequirement.PHYSICAL_KEYBOARD),
+        // on. No anchor — the row holds no preference. The row is drawn only once the debug
+        // screen's switch turns it on, so a release build never shows it.
+        SearchableSetting(R.string.device_profile_builder_entry_title, "device profile builder capture keys scancode keycode export import share unknown phone config", SettingsRoute.DeviceConfiguration.route, ADVANCED, requires = DeviceRequirement.DEBUG_BUILD),
         // ── Advanced: Touch surface helper (Unihertz Titans) ────────────────────
         // The row on Device compatibility (drawn on every phone, enabled only on a declared pad,
         // so its entry is ungated) and the Shizuku section of the screen it opens (drawn only on
         // the Shizuku route); both are actions, anchored by the ids TouchSurfaceAnchors declares.
         SearchableSetting(R.string.touch_surface_helper_title, "touch surface touchpad keyboard gestures swipe scroll assistant cursor shizuku titan unihertz", SettingsRoute.DeviceCompatibility.route, ADVANCED, TouchSurfaceAnchors.HELPER),
         SearchableSetting(R.string.touch_surface_shizuku_category, "shizuku touch surface touchpad wireless debugging adb root grant access permission", SettingsRoute.TouchSurfaceHelper.route, ADVANCED, TouchSurfaceAnchors.SHIZUKU, DeviceRequirement.TOUCH_KEYPAD_SHIZUKU),
-        SearchableSetting(R.string.settings_debug_title, "debug developer", SettingsRoute.Advanced.route, ADVANCED),
         // ── Advanced: Manage data ───────────────────────────────────────────────
         // The Backup and restore row (a screen) and Reset (an action) on Advanced, then the
         // action rows on the Backup and restore screen itself: saving a file, restoring one, and
@@ -285,7 +329,6 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.backup_restore_file_title, "restore import load settings layouts letter layout map dictionary words file zip json xml backup transfer migrate", SettingsRoute.BackupRestore.route, ADVANCED, BackupAnchors.RESTORE),
         SearchableSetting(R.string.backup_phone_include_title, "phone backup google account cloud automatic android back up sync", SettingsRoute.BackupRestore.route, ADVANCED, BackupAnchors.PHONE),
         // ── Advanced: OTA app updates (About -> Updates) ────────────────────────
-        SearchableSetting(R.string.settings_updates_title, "update ota new version apk download install upgrade", SettingsRoute.Updates.route, ADVANCED),
         SearchableSetting(R.string.settings_update_background_check_title, "update daily background check notify notification", SettingsRoute.Updates.route, ADVANCED, "pref_update_background_check"),
     )
 
@@ -296,5 +339,134 @@ object SettingsSearchIndex {
      */
     fun entriesFor(
         capabilities: SearchDeviceCapabilities = SearchDeviceCapabilities.current()
-    ): List<SearchableSetting> = entries.filter { it.requires.isMetBy(capabilities) }
+    ): List<SearchableSetting> = entries.filter {
+        it.requires.isMetBy(capabilities) && screenRequirement(it.route).isMetBy(capabilities)
+    }
+
+    // ── Screens ──────────────────────────────────────────────────────────────
+
+    private val ON_SCREEN = R.string.settings_keyboard_title
+    private val PHYSICAL = R.string.settings_physical_keyboard_title
+    private val SLIDEBOARD = R.string.settings_slideboard_settings_title
+    private val AUXILIARY = R.string.settings_auxiliary_input_title
+    private val VOICE = R.string.settings_voice_input_title
+    private val LEARNING = R.string.settings_dictionary_learning_title
+    private val SHORTCUTS = R.string.settings_dict_text_shortcuts_title
+    private val SYMBOLS = R.string.settings_symbol_customization_title
+    private val ABOUT = R.string.settings_about_title
+    private val COMPATIBILITY = R.string.settings_device_compatibility_title
+    private val DEBUG = R.string.settings_debug_title
+
+    /**
+     * Every page of the settings NavHost a user can reach, each titled as the row that opens it.
+     * Left out on purpose: the back-compat routes (`voice_input_main`, `key_press_feedback`), the
+     * device profile builder (a task behind a debug switch, reached through its row on Device
+     * configuration) and the Gesture Lab prototype.
+     *
+     * Query [screensFor], not this list. `SettingsSearchIndexTest` checks every route is
+     * registered in the NavHost and every title resolves.
+     */
+    val screens: List<SearchableScreen> = listOf(
+        // ── The five categories on the settings root ─────────────────────────────
+        SearchableScreen(LANGUAGES, "languages keyboards add remove layout predict multi-language", SettingsRoute.LanguagesHub.route, emptyList()),
+        SearchableScreen(TYPING, "input typing keyboards", SettingsRoute.Preferences.route, emptyList()),
+        SearchableScreen(SUGGESTION, "assistance suggestions predictions corrections autocorrect spelling learning dictionary", SettingsRoute.SuggestionCorrection.route, emptyList()),
+        SearchableScreen(APPEARANCE, "personalization personalisation appearance look theme colour color height symbols", SettingsRoute.AppearanceLayout.route, emptyList()),
+        SearchableScreen(ADVANCED, "advanced", SettingsRoute.Advanced.route, emptyList()),
+
+        // ── Language ─────────────────────────────────────────────────────────────
+        SearchableScreen(R.string.settings_language_switching_title, "switch change language spacebar quick switch", SettingsRoute.LanguageSwitching.route, listOf(LANGUAGES)),
+        SearchableScreen(R.string.settings_language_packs_title, "download language pack packs dictionary files", SettingsRoute.LanguagePacks.route, listOf(LANGUAGES)),
+
+        // ── Input ────────────────────────────────────────────────────────────────
+        SearchableScreen(ON_SCREEN, "on-screen onscreen on screen virtual touch keyboard vkb", SettingsRoute.OnScreenKeyboard.route, listOf(TYPING)),
+        SearchableScreen(SLIDEBOARD, "slideboard slide board number pad", SettingsRoute.SlideboardSettings.route, listOf(TYPING, ON_SCREEN)),
+        SearchableScreen(R.string.settings_vkb_customize_numberpad_title, "slideboard number pad numpad customize keys", SettingsRoute.CustomizeSlideBoard.route, listOf(TYPING, ON_SCREEN, SLIDEBOARD)),
+        SearchableScreen(R.string.settings_vkb_quick_phrases_title, "quick phrases canned slideboard", SettingsRoute.QuickPhrases.route, listOf(TYPING, ON_SCREEN, SLIDEBOARD)),
+        SearchableScreen(R.string.settings_touch_feedback_title, "touch key press keypress feedback haptic vibration sound popup", SettingsRoute.TouchFeedback.route, listOf(TYPING, ON_SCREEN)),
+        SearchableScreen(PHYSICAL, "physical hardware keypad keys pkb", SettingsRoute.PhysicalKeyboard.route, listOf(TYPING), DeviceRequirement.PHYSICAL_KEYBOARD),
+        SearchableScreen(R.string.ckb_gestures_configure_title, "ckb capacitive keypad gestures flick swipe configure", SettingsRoute.CkbGestures.route, listOf(TYPING, PHYSICAL), DeviceRequirement.TOUCH_KEYPAD),
+        SearchableScreen(AUXILIARY, "auxiliary input menu clipboard voice emoji", SettingsRoute.AuxiliaryInput.route, listOf(TYPING)),
+        SearchableScreen(R.string.settings_customize_menu_title, "unified input menu order reorder customize", SettingsRoute.CustomizeMenu.route, listOf(TYPING, AUXILIARY)),
+        SearchableScreen(VOICE, "voice dictation speech mic microphone", SettingsRoute.VoiceInput.route, listOf(TYPING, AUXILIARY)),
+        SearchableScreen(R.string.settings_voice_input_lang_title, "voice dictation language", SettingsRoute.VoiceLanguageSelection.route, listOf(TYPING, AUXILIARY, VOICE)),
+        SearchableScreen(R.string.settings_shake_title, "shake gestures motion", SettingsRoute.Shake.route, listOf(TYPING)),
+
+        // ── Assistance ───────────────────────────────────────────────────────────
+        SearchableScreen(R.string.settings_suggestion_title, "suggestions predictions strip next word", SettingsRoute.Suggestion.route, listOf(SUGGESTION)),
+        SearchableScreen(R.string.settings_correction_title, "auto-correction autocorrection autocorrect correction capitalization double space", SettingsRoute.Correction.route, listOf(SUGGESTION)),
+        SearchableScreen(LEARNING, "learning learn dictionary dictionaries words", SettingsRoute.Learning.route, listOf(SUGGESTION)),
+        SearchableScreen(R.string.settings_dict_user_dictionary_title, "user dictionary personal words", SettingsRoute.UserDictionary.route, listOf(SUGGESTION, LEARNING)),
+        SearchableScreen(SHORTCUTS, "text shortcuts substitution macro expand", SettingsRoute.TextShortcuts.route, listOf(SUGGESTION, LEARNING)),
+        SearchableScreen(R.string.settings_custom_macros_title, "custom macros macro shortcuts", SettingsRoute.CustomMacros.route, listOf(SUGGESTION, LEARNING, SHORTCUTS)),
+        SearchableScreen(R.string.settings_dict_learned_words_title, "learned words learnt delete expiring", SettingsRoute.PersonalLearnedWords.route, listOf(SUGGESTION, LEARNING)),
+        // Its own activity, opened from the Assistance hub as the hub row opens it.
+        SearchableScreen(R.string.settings_spell_checker_title, "spell checker spellcheck spelling", SettingsRoute.SuggestionCorrection.route, listOf(SUGGESTION), activity = SpellCheckerComposeActivity::class.java),
+
+        // ── Personalization ──────────────────────────────────────────────────────
+        SearchableScreen(SYMBOLS, "symbol page custom customize symbols", SettingsRoute.SymbolCustomization.route, listOf(APPEARANCE)),
+        SearchableScreen(R.string.settings_symbol_customize_page_title, "custom symbol page on-screen", SettingsRoute.CustomSymbolPageVkb.route, listOf(APPEARANCE, SYMBOLS, R.string.settings_category_on_screen_keyboard)),
+        SearchableScreen(R.string.settings_symbol_customize_page_title, "custom symbol page physical", SettingsRoute.CustomSymbolPagePkb.route, listOf(APPEARANCE, SYMBOLS, R.string.settings_category_physical_keyboard), DeviceRequirement.PHYSICAL_KEYBOARD),
+
+        // ── Advanced ─────────────────────────────────────────────────────────────
+        SearchableScreen(ABOUT, "about version credits", SettingsRoute.About.route, listOf(ADVANCED)),
+        SearchableScreen(R.string.settings_updates_title, "update ota new version apk download install upgrade", SettingsRoute.Updates.route, listOf(ADVANCED, ABOUT)),
+        SearchableScreen(COMPATIBILITY, "device compatibility meta state helper", SettingsRoute.DeviceCompatibility.route, listOf(ADVANCED)),
+        SearchableScreen(R.string.settings_device_configuration_title, "device configuration config profile import phone", SettingsRoute.DeviceConfiguration.route, listOf(ADVANCED, COMPATIBILITY)),
+        SearchableScreen(R.string.settings_pkb_layouts_title, "custom keypad physical layouts built-in builtin letter layout map remap keys keycaps alphabet qwerty qwertz azerty etched thai xml add import template save file export share", SettingsRoute.PhysicalLayouts.route, listOf(ADVANCED, COMPATIBILITY), DeviceRequirement.PHYSICAL_KEYBOARD),
+        SearchableScreen(R.string.settings_pkb_keyboard_helper_title, "bbkb helper accessibility special keys interceptor", SettingsRoute.KeyboardHelper.route, listOf(ADVANCED, COMPATIBILITY), DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE),
+        SearchableScreen(R.string.touch_surface_helper_title, "touch surface touchpad shizuku titan unihertz", SettingsRoute.TouchSurfaceHelper.route, listOf(ADVANCED, COMPATIBILITY), DeviceRequirement.TOUCH_KEYPAD_DECLARED),
+        SearchableScreen(R.string.settings_backup_restore_title, "backup back up restore export import save load settings file zip transfer migrate", SettingsRoute.BackupRestore.route, listOf(ADVANCED)),
+        SearchableScreen(DEBUG, "debug developer", SettingsRoute.Debug.route, listOf(ADVANCED), DeviceRequirement.DEBUG_BUILD),
+        SearchableScreen(R.string.prefs_advanced_gesture_thresholds_title, "debug gesture thresholds", SettingsRoute.AdvancedGestureParameters.route, listOf(ADVANCED, DEBUG), DeviceRequirement.DEBUG_BUILD),
+        SearchableScreen(R.string.prefs_shake_tuning_title, "debug shake tuning", SettingsRoute.ShakeTuning.route, listOf(ADVANCED, DEBUG), DeviceRequirement.DEBUG_BUILD),
+        SearchableScreen(R.string.prefs_key_preview_animations_title, "debug key preview animations", SettingsRoute.AnimationParameters.route, listOf(ADVANCED, DEBUG), DeviceRequirement.DEBUG_BUILD),
+    )
+
+    /**
+     * The gate on the way to the screen at [route]: a row on a page the device never shows the way
+     * into is not offered either (the Physical keyboard screen's rows on a touchscreen phone).
+     */
+    fun screenRequirement(route: String): DeviceRequirement =
+        screens.firstOrNull { it.route == route && it.activity == null }?.requires ?: DeviceRequirement.ANY
+
+    /** The screens this device shows the way into. Search queries this, not [screens]. */
+    fun screensFor(
+        capabilities: SearchDeviceCapabilities = SearchDeviceCapabilities.current()
+    ): List<SearchableScreen> = screens.filter { it.requires.isMetBy(capabilities) }
+
+    /**
+     * The results for [query], in the order search lists them: screens whose title matches, then
+     * settings (title or keywords), then screens matched only by their keywords. A setting with
+     * the same title as a listed screen (Backup and restore, Customize symbols) is left out: the
+     * screen stands for it.
+     *
+     * [screenTitles] and [settingTitles] are the lower-cased titles of [screens] and [settings], in
+     * the same order — resolved by the caller once per language rather than once per keystroke.
+     */
+    fun search(
+        query: String,
+        screens: List<SearchableScreen>,
+        screenTitles: List<String>,
+        settings: List<SearchableSetting>,
+        settingTitles: List<String>,
+    ): List<SettingsSearchResult> {
+        val q = query.trim().lowercase()
+        if (q.isEmpty()) return emptyList()
+
+        val byTitle = screens.indices.filter { screenTitles[it].contains(q) }
+            // A title that starts with the query first ("lang" → Language before Voice input language).
+            .sortedBy { if (screenTitles[it].startsWith(q)) 0 else 1 }
+        val byKeyword = screens.indices.filter { it !in byTitle && screens[it].keywords.contains(q) }
+        val shownTitles = (byTitle + byKeyword).map { screens[it].titleRes }.toSet()
+
+        val rows = settings.indices
+            .filter { settingTitles[it].contains(q) || settings[it].keywords.contains(q) }
+            .filter { settings[it].titleRes !in shownTitles }
+            .map { SettingsSearchResult.Setting(settings[it]) }
+
+        return byTitle.map { SettingsSearchResult.Screen(screens[it]) } +
+            rows +
+            byKeyword.map { SettingsSearchResult.Screen(screens[it]) }
+    }
 }

@@ -1,5 +1,6 @@
 package dev.bbkb.ime.core.settings.screens
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -40,6 +41,7 @@ import dev.bbkb.ime.core.settings.SettingsRoute
 import dev.bbkb.ime.core.settings.search.LocalSettingsHighlight
 import dev.bbkb.ime.core.settings.search.SearchDeviceCapabilities
 import dev.bbkb.ime.core.settings.search.SettingsSearchIndex
+import dev.bbkb.ime.core.settings.search.SettingsSearchResult
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceGroup
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
@@ -70,22 +72,21 @@ fun MainSettingsScreen(
     val deviceCapabilities = remember { SearchDeviceCapabilities.current() }
     val searchable = remember(deviceCapabilities) { SettingsSearchIndex.entriesFor(deviceCapabilities) }
 
+    // Screens too, so a search for "physical keyboard" or "learned words" lists the page itself.
+    val searchableScreens = remember(deviceCapabilities) { SettingsSearchIndex.screensFor(deviceCapabilities) }
+
     // The titles in lower case, resolved once per index and language instead of once per entry
     // on every typed character (about 100 string loads and copies per keystroke).
     val configuration = LocalConfiguration.current
     val searchableTitles = remember(searchable, configuration) {
         searchable.map { context.getString(it.titleRes).lowercase() }
     }
+    val screenTitles = remember(searchableScreens, configuration) {
+        searchableScreens.map { context.getString(it.titleRes).lowercase() }
+    }
 
-    val results = remember(query, searchable, searchableTitles) {
-        val q = query.trim().lowercase()
-        if (q.isEmpty()) {
-            emptyList()
-        } else {
-            searchable.filterIndexed { index, entry ->
-                searchableTitles[index].contains(q) || entry.keywords.contains(q)
-            }
-        }
+    val results = remember(query, searchable, searchableTitles, searchableScreens, screenTitles) {
+        SettingsSearchIndex.search(query, searchableScreens, screenTitles, searchable, searchableTitles)
     }
 
     SettingsScaffold(
@@ -141,15 +142,41 @@ fun MainSettingsScreen(
                 } else {
                     Spacer(modifier = Modifier.height(spacing.small))
                     PreferenceGroup {
-                        results.forEach { entry ->
-                            PreferenceItem(
-                                title = context.getString(entry.titleRes),
-                                summary = context.getString(entry.categoryTitleRes),
-                                onClick = {
-                                    entry.anchor?.let { highlight.request(it) }
-                                    onNavigateToScreen(entry.route)
+                        results.forEach { result ->
+                            when (result) {
+                                is SettingsSearchResult.Screen -> {
+                                    val screen = result.screen
+                                    PreferenceItem(
+                                        title = context.getString(screen.titleRes),
+                                        // Where the page sits: "Input › Physical keyboard". A
+                                        // category sits on the settings root itself.
+                                        summary = if (screen.parentPath.isEmpty()) {
+                                            context.getString(R.string.settings_title)
+                                        } else {
+                                            screen.parentPath.joinToString(" › ") { context.getString(it) }
+                                        },
+                                        onClick = {
+                                            val activity = screen.activity
+                                            if (activity != null) {
+                                                context.startActivity(Intent(context, activity))
+                                            } else {
+                                                onNavigateToScreen(screen.route)
+                                            }
+                                        }
+                                    )
                                 }
-                            )
+                                is SettingsSearchResult.Setting -> {
+                                    val entry = result.setting
+                                    PreferenceItem(
+                                        title = context.getString(entry.titleRes),
+                                        summary = context.getString(entry.categoryTitleRes),
+                                        onClick = {
+                                            entry.anchor?.let { highlight.request(it) }
+                                            onNavigateToScreen(entry.route)
+                                        }
+                                    )
+                                }
+                            }
                         }
                     }
                 }

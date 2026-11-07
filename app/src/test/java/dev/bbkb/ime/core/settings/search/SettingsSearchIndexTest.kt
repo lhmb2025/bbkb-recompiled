@@ -6,6 +6,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import dev.bbkb.ime.R
+import dev.bbkb.ime.core.settings.SettingsRoute
 import org.robolectric.annotation.Config
 import java.io.File
 
@@ -148,7 +151,8 @@ class SettingsSearchIndexTest {
 
     // ── device gating (defect 16) ────────────────────────────────────────────
 
-    private val pkbDevice = SearchDeviceCapabilities(hasPhysicalKeyboard = true, hasMultifunctionKey = true)
+    /** The KEY2 shape: a physical keyboard with capacitive keys and a mic key. */
+    private val pkbDevice = SearchDeviceCapabilities(hasPhysicalKeyboard = true, hasMultifunctionKey = true, hasTouchKeypad = true)
     private val touchDevice = SearchDeviceCapabilities(hasPhysicalKeyboard = false, hasMultifunctionKey = false)
 
     private fun anchorsOn(capabilities: SearchDeviceCapabilities): Set<String> =
@@ -186,15 +190,31 @@ class SettingsSearchIndexTest {
         assertTrue("vkb_custom_page_first" in onTouch)
         assertTrue("vkb_custom_page_first" in onPkb)
 
+        // Rows on a screen the device never shows the way into go with it: the Physical keyboard
+        // screen's rows on a touchscreen phone, the CKB gesture rows without capacitive keys.
+        assertTrue("pref_shift_double_tap_lock" in onPkb)
+        assertFalse("the Physical keyboard screen is not reachable on a touch-only phone", "pref_shift_double_tap_lock" in onTouch)
+        assertTrue("ckb_gesture_hold" in onPkb)
+        assertFalse(
+            "the CKB gesture screen is not reachable without capacitive keys",
+            "ckb_gesture_hold" in anchorsOn(pkbDevice.copy(hasTouchKeypad = false))
+        )
+
         // Everything else is device-independent and must not have been swept up by the gating.
         // The BBKB helper's entries count here: both shapes are phones whose profile keeps the
-        // helper offered (keyboardHelperEntriesFollowTheProfilesHelperSwitch covers the switch).
+        // helper offered (keyboardHelperEntriesFollowTheProfilesHelperSwitch covers the switch),
+        // and so does Dynamic color: both run Android 12 or later by default.
+        val shapeIndependent = setOf(
+            DeviceRequirement.ANY,
+            DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE,
+            DeviceRequirement.DYNAMIC_COLOR,
+        )
         assertEquals(
             "gating changed the entries that are NOT device-specific",
             SettingsSearchIndex.entries
                 .filter {
-                    it.requires == DeviceRequirement.ANY ||
-                        it.requires == DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE
+                    it.requires in shapeIndependent &&
+                        SettingsSearchIndex.screenRequirement(it.route) in shapeIndependent
                 }
                 .mapNotNull { it.anchor }
                 .toSet(),
@@ -277,5 +297,133 @@ class SettingsSearchIndexTest {
                 "would offer settings whose rows this device does not render: $offenders",
             offenders.isEmpty()
         )
+    }
+
+    // ── screens ──────────────────────────────────────────────────────────────
+
+    /** The routes the settings NavHost registers, as `SettingsRoute` object names. */
+    private fun navHostRouteObjects(): Set<String> {
+        val activity = File(mainDir(), "java/dev/bbkb/ime/core/settings/ComposeSettingsActivity.kt").readText()
+        return Regex("""composable\(SettingsRoute\.(\w+)\.route\)""").findAll(activity)
+            .map { it.groupValues[1] }
+            .toSet()
+    }
+
+    @Test
+    fun everyScreenRouteIsRegisteredInTheNavHost() {
+        val registered = navHostRouteObjects()
+        assertTrue("found no composable(...) routes in ComposeSettingsActivity", registered.size > 20)
+        val unregistered = SettingsSearchIndex.screens.filter { screen ->
+            val route = SettingsRoute.fromRoute(screen.route)
+            route == null || route.javaClass.simpleName !in registered
+        }.map { it.route }
+        assertTrue("Screen index routes the settings NavHost does not register: $unregistered", unregistered.isEmpty())
+    }
+
+    @Test
+    fun everyScreenTitleAndPathResolves() {
+        val context = RuntimeEnvironment.getApplication()
+        val categories = SettingsSearchIndex.screens.filter { it.parentPath.isEmpty() }.map { it.titleRes }.toSet()
+        assertEquals("the five categories on the settings root", 5, categories.size)
+        for (screen in SettingsSearchIndex.screens) {
+            assertTrue("blank title for ${screen.route}", context.getString(screen.titleRes).isNotBlank())
+            assertTrue("blank keywords for ${screen.route}", screen.keywords.isNotBlank())
+            screen.parentPath.forEach {
+                assertTrue("blank path title for ${screen.route}", context.getString(it).isNotBlank())
+            }
+            if (screen.parentPath.isNotEmpty()) {
+                assertTrue("${screen.route}'s path must start at a category", screen.parentPath.first() in categories)
+            }
+        }
+        // One entry per page (Spell checking opens its own activity from the Assistance hub's route).
+        val dupes = SettingsSearchIndex.screens.filter { it.activity == null }
+            .groupBy { it.route }.filterValues { it.size > 1 }.keys
+        assertTrue("screens indexed twice: $dupes", dupes.isEmpty())
+    }
+
+    private fun search(query: String, capabilities: SearchDeviceCapabilities): List<SettingsSearchResult> {
+        val context = RuntimeEnvironment.getApplication()
+        val screens = SettingsSearchIndex.screensFor(capabilities)
+        val settings = SettingsSearchIndex.entriesFor(capabilities)
+        return SettingsSearchIndex.search(
+            query,
+            screens, screens.map { context.getString(it.titleRes).lowercase() },
+            settings, settings.map { context.getString(it.titleRes).lowercase() },
+        )
+    }
+
+    private fun SettingsSearchResult.route() = when (this) {
+        is SettingsSearchResult.Screen -> screen.route
+        is SettingsSearchResult.Setting -> setting.route
+    }
+
+    @Test
+    fun aScreenWhoseTitleMatchesIsListedBeforeTheRows() {
+        val physical = search("Physical keyboard", pkbDevice)
+        val first = physical.first()
+        assertTrue("expected the Physical keyboard screen first, got $first", first is SettingsSearchResult.Screen)
+        assertEquals(SettingsRoute.PhysicalKeyboard.route, first.route())
+        assertTrue("rows still follow", physical.any { it is SettingsSearchResult.Setting })
+        val firstRow = physical.indexOfFirst { it is SettingsSearchResult.Setting }
+        val titleMatches = physical.take(firstRow)
+        assertTrue(titleMatches.all { it is SettingsSearchResult.Screen })
+
+        assertEquals(SettingsRoute.PersonalLearnedWords.route, search("learned words", pkbDevice).first().route())
+        assertEquals(SettingsRoute.LanguagesHub.route, search("lang", touchDevice).first().route())
+        assertEquals(SettingsRoute.SuggestionCorrection.route, search("assistance", touchDevice).first().route())
+    }
+
+    @Test
+    fun aScreenMatchedOnlyByKeywordComesAfterTheRows() {
+        val results = search("dictation", touchDevice)
+        val voice = results.indexOfFirst { it is SettingsSearchResult.Screen && it.screen.route == SettingsRoute.VoiceInput.route }
+        assertTrue("Voice input is found by its keywords", voice >= 0)
+        assertTrue("and listed after the matching rows", results.take(voice).isNotEmpty() && results.take(voice).all { it is SettingsSearchResult.Setting })
+    }
+
+    @Test
+    fun aRowTitledAsAListedScreenIsLeftOut() {
+        val results = search("backup and restore", touchDevice)
+        assertEquals(SettingsRoute.BackupRestore.route, results.first().route())
+        assertFalse(
+            "the Advanced row of the same name would list the page twice",
+            results.any { it is SettingsSearchResult.Setting && it.setting.titleRes == R.string.settings_backup_restore_title }
+        )
+        assertTrue(search("", touchDevice).isEmpty())
+        assertTrue(search("   ", touchDevice).isEmpty())
+    }
+
+    @Test
+    fun screensAndRowsTheDeviceDoesNotShowAreNotOffered() {
+        fun routes(c: SearchDeviceCapabilities) = SettingsSearchIndex.screensFor(c).map { it.route }.toSet()
+
+        assertFalse(SettingsRoute.PhysicalKeyboard.route in routes(touchDevice))
+        assertTrue(SettingsRoute.PhysicalKeyboard.route in routes(pkbDevice))
+        assertFalse(SettingsRoute.PhysicalLayouts.route in routes(touchDevice))
+        assertFalse(SettingsRoute.CkbGestures.route in routes(pkbDevice.copy(hasTouchKeypad = false)))
+        assertFalse(SettingsRoute.TouchSurfaceHelper.route in routes(pkbDevice))
+        assertTrue(SettingsRoute.TouchSurfaceHelper.route in routes(pkbDevice.copy(declaresTouchKeypad = true)))
+        assertFalse(SettingsRoute.KeyboardHelper.route in routes(pkbDevice.copy(accessibilityHelperAvailable = false)))
+
+        // Debug settings: a release build draws no row for them.
+        assertFalse(SettingsRoute.Debug.route in routes(touchDevice))
+        assertTrue(SettingsRoute.Debug.route in routes(touchDevice.copy(isDebugBuild = true)))
+        assertTrue(search("debug", touchDevice).isEmpty())
+
+        // Dynamic color: Android 12 and later only.
+        assertTrue("pref_keyboard_use_system_colors" in anchorsOn(touchDevice))
+        assertFalse("pref_keyboard_use_system_colors" in anchorsOn(touchDevice.copy(supportsDynamicColor = false)))
+    }
+
+    /** The UI must offer the device-filtered screens, as it does the rows. */
+    @Test
+    fun theSearchUiQueriesTheDeviceFilteredScreens() {
+        val offenders = File(mainDir(), "java/dev/bbkb/ime/core/settings")
+            .walkTopDown()
+            .filter { it.extension == "kt" && it.name != "SettingsSearchIndex.kt" }
+            .filter { Regex("""SettingsSearchIndex\.screens\b""").containsMatchIn(it.readText()) }
+            .map { it.name }
+            .toList()
+        assertTrue("These read SettingsSearchIndex.screens instead of screensFor(...): $offenders", offenders.isEmpty())
     }
 }
