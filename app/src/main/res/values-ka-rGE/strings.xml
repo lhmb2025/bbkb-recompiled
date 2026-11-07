@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">იყენებს კლავიატურის საკუთარ განლაგებას</string>
     <string name="settings_pkb_layouts_other_keypad">ამ ტელეფონის კლავიატურაზე არაფერს აკეთებს</string>
     <string name="settings_pkb_layouts_save">%1$s-ის ფაილად შენახვა</string>
+    <string name="settings_pkb_layouts_rename">გადარქმევა</string>
+    <string name="settings_pkb_layouts_rename_title">განლაგების გადარქმევა</string>
+    <string name="settings_pkb_layouts_save_file">ფაილად შენახვა</string>
     <string name="settings_pkb_layouts_save_failed">განლაგების შენახვა ვერ მოხერხდა</string>
     <string name="settings_pkb_layouts_saved">განლაგება შენახულია</string>
     <string name="settings_pkb_layouts_share">გაზიარება: %1$s</string>

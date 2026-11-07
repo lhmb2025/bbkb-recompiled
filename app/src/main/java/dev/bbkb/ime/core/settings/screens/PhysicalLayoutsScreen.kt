@@ -2,26 +2,37 @@ package dev.bbkb.ime.core.settings.screens
 
 import android.content.Context
 import android.net.Uri
+import android.view.KeyEvent
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -32,12 +43,20 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.device.config.builder.DeviceProfileExporter
 import dev.bbkb.ime.core.device.profile.DeviceProfile
@@ -52,7 +71,6 @@ import dev.bbkb.ime.core.settings.backup.BackupOperations
 import dev.bbkb.ime.core.settings.ui.Category
 import dev.bbkb.ime.core.settings.ui.Custom
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
-import dev.bbkb.ime.core.settings.ui.PreferenceDeleteButton
 import dev.bbkb.ime.core.settings.ui.PreferenceInfo
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
@@ -60,6 +78,7 @@ import dev.bbkb.ime.core.shared.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.text.Collator
 import java.util.Locale
 
@@ -73,16 +92,18 @@ private const val TAG = "PhysicalLayouts"
  * **Custom** holds the user's layouts. Add layout reads one from a file the user picks (a letter
  * layout document, or a backup holding some; [BackupOperations.readFrom] tells them apart), the
  * same reading Advanced > Backup and restore > Restore from file does. Which keyboard uses one is
- * chosen per language on the Language screen ([LetterLayoutChoice]); here they are managed. Share
- * hands the stored XML file to the share sheet, the way the device profile builder shares a
- * config; delete removes it.
+ * chosen per language on the Language screen ([LetterLayoutChoice]); here they are managed. Tapping
+ * one opens its sheet ([LayoutSheet]): the keypad drawn with the layout's letters, then Share
+ * (hands the stored XML file to the share sheet, the way the device profile builder shares a
+ * config), Rename (a new name under the same id, so the languages that chose it keep it) and
+ * Delete.
  *
  * **Built-in** holds the documents under `assets/letter_layouts/` that are for the physical keys
  * (the on-screen-only ones, Colemak and Dvorak, are chosen per keyboard on the Language screen).
  * They are read-only and are not picked here: which one a keyboard uses follows its language.
- * What a row offers is "Save as file", which writes the document wherever the user chooses — the
- * way to start a layout of one's own is to save the nearest built-in, edit it, and add it from
- * the file. The current keyboard's language comes first, the document it would use at the top,
+ * Their sheet draws the keypad and offers "Save as a file", which writes the document wherever the
+ * user chooses — the way to start a layout of one's own is to save the nearest built-in, edit it,
+ * and add it from the file. The current keyboard's language comes first, the document it would use at the top,
  * then the rest by name.
  *
  * Custom comes first because it is the part the user can change; the built-in list has a document
@@ -110,6 +131,9 @@ fun PhysicalLayoutsScreen(
     var customLayouts by remember { mutableStateOf<List<LetterLayout>?>(null) }
     var builtInLayouts by remember { mutableStateOf<List<LetterLayout>?>(null) }
     var deleteTarget by remember { mutableStateOf<LetterLayout?>(null) }
+    var renameTarget by remember { mutableStateOf<LetterLayout?>(null) }
+    // The layout whose sheet is open.
+    var sheetLayout by remember { mutableStateOf<LetterLayout?>(null) }
     // The built-in being saved, by id. Saveable, because the activity can be recreated while the
     // file picker is open.
     var savingId by rememberSaveable { mutableStateOf<String?>(null) }
@@ -154,11 +178,10 @@ fun PhysicalLayoutsScreen(
             Column(verticalArrangement = Arrangement.spacedBy(LocalSpacing.current.groupGap)) {
                 customLayouts.orEmpty().forEach { layout ->
                     key(layout.id) {
-                        CustomLayoutRow(
-                            title = layout.name,
+                        LayoutRow(
+                            layout = layout,
                             summary = layoutSummary(context, layout, phoneKeypad, phoneKeypadType),
-                            onShare = { share(context, registry, layout) },
-                            onDelete = { deleteTarget = layout },
+                            onClick = { sheetLayout = layout },
                         )
                     }
                 }
@@ -187,18 +210,62 @@ fun PhysicalLayoutsScreen(
         Custom(inGroup = true) {
             builtInLayouts.orEmpty().forEach { layout ->
                 key(layout.id) {
-                    BuiltInLayoutRow(
+                    LayoutRow(
                         layout = layout,
                         summary = layoutSummary(context, layout, phoneKeypad, phoneKeypadType),
-                        onSave = {
-                            savingId = layout.id
-                            saveLauncher.launch(layout.id + LetterLayoutXml.FILE_SUFFIX)
-                        },
+                        onClick = { sheetLayout = layout },
                     )
                 }
             }
         },
     ))
+
+    sheetLayout?.let { layout ->
+        val custom = layout.origin == LetterLayout.Origin.USER
+        LayoutSheet(
+            layout = layout,
+            summary = layoutSummary(context, layout, phoneKeypad, phoneKeypadType),
+            onDismiss = { sheetLayout = null },
+            actions = if (custom) {
+                listOf(
+                    SheetAction(ImageVector.vectorResource(R.drawable.ic_settings_m_share), R.string.clipboard_menu_share) {
+                        share(context, registry, layout)
+                    },
+                    SheetAction(ImageVector.vectorResource(R.drawable.ic_settings_m_edit), R.string.settings_pkb_layouts_rename) {
+                        sheetLayout = null
+                        renameTarget = layout
+                    },
+                    SheetAction(ImageVector.vectorResource(R.drawable.ic_settings_m_delete_outline), R.string.clipboard_menu_delete) {
+                        sheetLayout = null
+                        deleteTarget = layout
+                    },
+                )
+            } else {
+                listOf(
+                    SheetAction(ImageVector.vectorResource(R.drawable.ic_settings_m_save_alt), R.string.settings_pkb_layouts_save_file) {
+                        sheetLayout = null
+                        savingId = layout.id
+                        saveLauncher.launch(layout.id + LetterLayoutXml.FILE_SUFFIX)
+                    },
+                )
+            },
+        )
+    }
+
+    renameTarget?.let { layout ->
+        RenameLayoutDialog(
+            currentName = layout.name,
+            onDismiss = { renameTarget = null },
+            onRename = { newName ->
+                renameTarget = null
+                scope.launch {
+                    val renamed = withContext(Dispatchers.IO) { renameLayout(registry, layout, newName) }
+                    if (renamed) customLayouts = withContext(Dispatchers.IO) { registry.list() }
+                    else toast(context, R.string.settings_pkb_layouts_save_failed)
+                }
+            },
+        )
+    }
 
     deleteTarget?.let { layout ->
         AlertDialog(
@@ -230,76 +297,240 @@ fun PhysicalLayoutsScreen(
     }
 }
 
-/** One imported layout: its name and binding, share and delete in the trailing slot. */
-@Composable
-private fun CustomLayoutRow(
-    title: String,
-    summary: String,
-    onShare: () -> Unit,
-    onDelete: () -> Unit,
-) {
-    PreferenceItem(
-        title = title,
-        summary = summary,
-        trailing = {
-            Row {
-                RowIconButton(
-                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_share),
-                    contentDescription = stringResource(R.string.settings_pkb_layouts_share, title),
-                    onClick = onShare,
-                )
-                PreferenceDeleteButton(
-                    contentDescription = stringResource(R.string.settings_pkb_layouts_delete, title),
-                    onClick = onDelete,
-                )
-            }
-        },
-    )
-}
-
 /**
- * A built-in layout. There is nothing to pick, so the row itself does nothing and its name and
- * summary read as one item; the save button is a stop of its own. The leading space is kept so
- * the names line up with the custom rows above, which carry a radio there.
+ * One layout, custom or built-in: its name and binding. Tapping it opens its sheet, where what can
+ * be done with it lives; the row itself carries nothing else, so built-in and custom rows look
+ * alike and line up.
  */
 @Composable
-private fun BuiltInLayoutRow(layout: LetterLayout, summary: String, onSave: () -> Unit) {
+private fun LayoutRow(layout: LetterLayout, summary: String, onClick: () -> Unit) {
     PreferenceItem(
         title = layout.name,
         summary = summary,
-        iconSpaceReserved = true,
-        modifier = Modifier.semantics(mergeDescendants = true) {},
-        trailing = {
-            RowIconButton(
-                icon = ImageVector.vectorResource(R.drawable.ic_settings_m_save_alt),
-                contentDescription = stringResource(R.string.settings_pkb_layouts_save, layout.name),
-                onClick = onSave,
+        onClick = onClick,
+    )
+}
+
+/** One row at the foot of a layout's sheet. */
+private class SheetAction(
+    val icon: ImageVector,
+    @StringRes val label: Int,
+    val onClick: () -> Unit,
+)
+
+/**
+ * A layout's sheet, built as the User dictionary and Learned words build an entry's: its name, the
+ * line the row shows, the keypad drawn with its letters ([KeypadPreview]), then what can be done
+ * with it. Scrolls inside the sheet so the actions stay reachable on the KEY2's short screen.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun LayoutSheet(
+    layout: LetterLayout,
+    summary: String,
+    actions: List<SheetAction>,
+    onDismiss: () -> Unit,
+) {
+    val spacing = LocalSpacing.current
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = spacing.extraLarge),
+        ) {
+            Text(
+                text = layout.name,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(horizontal = spacing.categoryStartPadding, vertical = spacing.small),
             )
-        },
+            Text(
+                text = summary,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = spacing.categoryStartPadding),
+            )
+            Spacer(modifier = Modifier.height(spacing.large))
+            KeypadPreview(
+                layout = layout,
+                modifier = Modifier.padding(horizontal = spacing.groupInset),
+            )
+            Spacer(modifier = Modifier.height(spacing.small))
+            actions.forEach { action ->
+                PreferenceItem(title = stringResource(action.label), icon = action.icon, onClick = action.onClick)
+            }
+        }
+    }
+}
+
+/**
+ * The keypad as the phone has it, each cap showing what the layout types there ([keyCapLegends]):
+ * the letter, and small in the corners a Shift legend that is not its upper case and the Alt
+ * character. The rows are
+ * [keypadRows]'s; a key the layout does not name is drawn empty, since it types whatever it would
+ * without the layout. Always left to right: the keys sit where they sit whatever the language.
+ */
+@Composable
+private fun KeypadPreview(layout: LetterLayout, modifier: Modifier = Modifier) {
+    val rows = remember(layout) { keypadRows(layout) }
+    val gap = 4.dp
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+            val columns = KEYPAD_COLUMNS
+            val keyWidth = (maxWidth - gap * (columns - 1)) / columns
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(gap),
+            ) {
+                rows.forEach { row ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(gap, Alignment.CenterHorizontally),
+                    ) {
+                        row.forEach { keyCode ->
+                            KeyCap(layout.keys[keyCode], Modifier.size(width = keyWidth, height = 44.dp))
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun KeyCap(key: LetterLayout.Key?, modifier: Modifier) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(6.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+    ) {
+        Box(modifier = Modifier.padding(horizontal = 3.dp, vertical = 2.dp)) {
+            if (key == null) return@Box
+            val legends = keyCapLegends(key)
+            legends.letter?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    modifier = Modifier.align(Alignment.Center),
+                )
+            }
+            legends.shift?.let { CornerLegend(it, Modifier.align(Alignment.TopStart)) }
+            legends.alt?.let { CornerLegend(it, Modifier.align(Alignment.TopEnd)) }
+        }
+    }
+}
+
+@Composable
+private fun CornerLegend(text: String, modifier: Modifier) {
+    Text(
+        text = text,
+        fontSize = 9.sp,
+        lineHeight = 9.sp,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        maxLines = 1,
+        modifier = modifier,
+    )
+}
+
+/** What a key cap in [KeypadPreview] prints; null where it prints nothing. */
+internal class KeyCapLegends(val letter: String?, val shift: String?, val alt: String?)
+
+/**
+ * A key's cap: the letter in upper case, as keycaps print it; the Shift legend in a corner only
+ * when it is another character than that (Arabic's ط types ى with Shift), so a Latin cap is not
+ * printed twice; the Alt character in the other corner.
+ */
+internal fun keyCapLegends(key: LetterLayout.Key): KeyCapLegends {
+    val upper = if (key.keySpec != 0) Character.toUpperCase(key.keySpec) else 0
+    return KeyCapLegends(
+        letter = upper.takeIf { it != 0 }?.let(LetterLayout::string),
+        shift = key.shift.takeIf { it != 0 && it != upper }?.let(LetterLayout::string),
+        alt = key.alt.takeIf { it != 0 }?.let(LetterLayout::string),
     )
 }
 
 /**
- * A trailing icon button laid out at the glyph's height, as [PreferenceDeleteButton] is, so a row
- * holding one is no taller than a row holding none, and share, save and delete line up. The
- * button keeps its 48dp touch target, drawn unbounded around the glyph.
+ * The dialog Rename opens: the layout's name in a field, Save while what is typed is a name a
+ * layout document can carry ([isValidLayoutName]).
  */
 @Composable
-private fun RowIconButton(icon: ImageVector, contentDescription: String, onClick: () -> Unit) {
-    Box(
-        modifier = Modifier.height(LocalSpacing.current.iconSize),
-        contentAlignment = Alignment.Center,
-    ) {
-        IconButton(
-            onClick = onClick,
-            modifier = Modifier.wrapContentHeight(unbounded = true),
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = contentDescription,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+private fun RenameLayoutDialog(currentName: String, onDismiss: () -> Unit, onRename: (String) -> Unit) {
+    var name by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(currentName, selection = TextRange(currentName.length)))
+    }
+    val valid = isValidLayoutName(name.text)
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(Unit) { focusRequester.requestFocus() }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings_pkb_layouts_rename_title)) },
+        text = {
+            OutlinedTextField(
+                value = name,
+                onValueChange = { if (it.text.length <= LetterLayoutXml.MAX_NAME_LENGTH) name = it },
+                singleLine = true,
+                label = { Text(stringResource(R.string.settings_macros_name)) },
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
+                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
             )
-        }
+        },
+        confirmButton = {
+            TextButton(enabled = valid, onClick = { onRename(name.text.trim()) }) {
+                Text(stringResource(R.string.settings_common_save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
+        },
+    )
+}
+
+/** The keypad's widest row: ten keys, Q to P. */
+private const val KEYPAD_COLUMNS = 10
+
+/**
+ * The keys [KeypadPreview] draws, row by row, by Android key code. A physical keypad reports each
+ * key by its QWERTY position whatever its caps say, so the three letter rows are Q–P, A–L and
+ * Z–M; the KEY2's $ key (KEYCODE_4, after M) joins the bottom row when the layout names it, and
+ * any other key the layout names (Thai's 0 key) gets a row of its own, in document order.
+ */
+internal fun keypadRows(layout: LetterLayout): List<List<Int>> {
+    val rows = mutableListOf(
+        "QWERTYUIOP".map(::letterKeyCode),
+        "ASDFGHJKL".map(::letterKeyCode),
+        "ZXCVBNM".map(::letterKeyCode) +
+            listOfNotNull(KeyEvent.KEYCODE_4.takeIf { it in layout.keys }),
+    )
+    val placed = rows.flatten().toSet()
+    val others = layout.keys.keys.filter { it !in placed }
+    if (others.isNotEmpty()) rows += others.take(KEYPAD_COLUMNS)
+    return rows
+}
+
+private fun letterKeyCode(letter: Char): Int = KeyEvent.KEYCODE_A + (letter - 'A')
+
+/** Whether [name] (trimmed) is one a layout document can carry: not empty, not too long, no control characters. */
+internal fun isValidLayoutName(name: String): Boolean {
+    val trimmed = name.trim()
+    return trimmed.isNotEmpty() && trimmed.length <= LetterLayoutXml.MAX_NAME_LENGTH &&
+        trimmed.none { Character.isISOControl(it) }
+}
+
+/**
+ * Stores user layout [layout] under [newName] (trimmed), keeping its id, so every language that
+ * chose it keeps it. False when the name is not one a document can carry or the write fails.
+ */
+internal fun renameLayout(registry: LetterLayoutRegistry, layout: LetterLayout, newName: String): Boolean {
+    if (layout.origin != LetterLayout.Origin.USER || !isValidLayoutName(newName)) return false
+    return try {
+        registry.save(layout.withName(newName.trim()))
+        true
+    } catch (e: IOException) {
+        Logger.warn(TAG, "Could not rename ${layout.id}: ${e.message}")
+        false
     }
 }
 

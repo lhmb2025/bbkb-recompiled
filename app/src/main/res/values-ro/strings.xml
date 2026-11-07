@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Folosește aspectul propriu al tastaturii</string>
     <string name="settings_pkb_layouts_other_keypad">Nu are niciun efect pe tastatura acestui telefon</string>
     <string name="settings_pkb_layouts_save">Salvați %1$s ca fișier</string>
+    <string name="settings_pkb_layouts_rename">Redenumiți</string>
+    <string name="settings_pkb_layouts_rename_title">Redenumiți aspectul</string>
+    <string name="settings_pkb_layouts_save_file">Salvați ca fișier</string>
     <string name="settings_pkb_layouts_save_failed">Aspectul nu a putut fi salvat</string>
     <string name="settings_pkb_layouts_saved">Aspectul a fost salvat</string>
     <string name="settings_pkb_layouts_share">Distribuie %1$s</string>

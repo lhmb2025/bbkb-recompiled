@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Fa servir la disposició pròpia del teclat</string>
     <string name="settings_pkb_layouts_other_keypad">No fa res amb el teclat d\'aquest telèfon</string>
     <string name="settings_pkb_layouts_save">Desa %1$s com a fitxer</string>
+    <string name="settings_pkb_layouts_rename">Canvia el nom</string>
+    <string name="settings_pkb_layouts_rename_title">Canvia el nom de la disposició</string>
+    <string name="settings_pkb_layouts_save_file">Desa com a fitxer</string>
     <string name="settings_pkb_layouts_save_failed">No s\'ha pogut desar la disposició</string>
     <string name="settings_pkb_layouts_saved">S\'ha desat la disposició</string>
     <string name="settings_pkb_layouts_share">Comparteix %1$s</string>

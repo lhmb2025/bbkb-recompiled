@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">കീബോർഡിന്റെ സ്വന്തം ലേഔട്ട് ഉപയോഗിക്കുന്നു</string>
     <string name="settings_pkb_layouts_other_keypad">ഈ ഫോണിന്റെ കീപാഡിൽ ഇത് ഒന്നും ചെയ്യില്ല</string>
     <string name="settings_pkb_layouts_save">%1$s ഫയലായി സംരക്ഷിക്കുക</string>
+    <string name="settings_pkb_layouts_rename">പേരുമാറ്റുക</string>
+    <string name="settings_pkb_layouts_rename_title">ലേഔട്ടിന്റെ പേരുമാറ്റുക</string>
+    <string name="settings_pkb_layouts_save_file">ഫയലായി സംരക്ഷിക്കുക</string>
     <string name="settings_pkb_layouts_save_failed">ലേഔട്ട് സംരക്ഷിക്കാനായില്ല</string>
     <string name="settings_pkb_layouts_saved">ലേഔട്ട് സംരക്ഷിച്ചു</string>
     <string name="settings_pkb_layouts_share">%1$s പങ്കിടുക</string>

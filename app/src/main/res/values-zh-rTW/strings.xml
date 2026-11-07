@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">使用鍵盤本身的配置</string>
     <string name="settings_pkb_layouts_other_keypad">在這支手機的鍵盤上不會生效</string>
     <string name="settings_pkb_layouts_save">將%1$s儲存為檔案</string>
+    <string name="settings_pkb_layouts_rename">重新命名</string>
+    <string name="settings_pkb_layouts_rename_title">重新命名配置</string>
+    <string name="settings_pkb_layouts_save_file">儲存為檔案</string>
     <string name="settings_pkb_layouts_save_failed">無法儲存配置</string>
     <string name="settings_pkb_layouts_saved">已儲存配置</string>
     <string name="settings_pkb_layouts_share">分享%1$s</string>

@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Usa o deseño propio do teclado</string>
     <string name="settings_pkb_layouts_other_keypad">Non fai nada no teclado deste teléfono</string>
     <string name="settings_pkb_layouts_save">Gardar %1$s como ficheiro</string>
+    <string name="settings_pkb_layouts_rename">Cambiar o nome</string>
+    <string name="settings_pkb_layouts_rename_title">Cambiar o nome do deseño</string>
+    <string name="settings_pkb_layouts_save_file">Gardar como ficheiro</string>
     <string name="settings_pkb_layouts_save_failed">Non se puido gardar o deseño</string>
     <string name="settings_pkb_layouts_saved">Gardouse o deseño</string>
     <string name="settings_pkb_layouts_share">Compartir %1$s</string>

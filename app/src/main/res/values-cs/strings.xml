@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Používá vlastní rozložení klávesnice</string>
     <string name="settings_pkb_layouts_other_keypad">Na klávesnici tohoto telefonu nic nedělá</string>
     <string name="settings_pkb_layouts_save">Uložit %1$s jako soubor</string>
+    <string name="settings_pkb_layouts_rename">Přejmenovat</string>
+    <string name="settings_pkb_layouts_rename_title">Přejmenovat rozložení</string>
+    <string name="settings_pkb_layouts_save_file">Uložit jako soubor</string>
     <string name="settings_pkb_layouts_save_failed">Rozložení se nepodařilo uložit</string>
     <string name="settings_pkb_layouts_saved">Rozložení bylo uloženo</string>
     <string name="settings_pkb_layouts_share">Sdílet %1$s</string>

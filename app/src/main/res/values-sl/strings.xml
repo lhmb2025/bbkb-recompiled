@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Uporablja lastno razporeditev tipkovnice</string>
     <string name="settings_pkb_layouts_other_keypad">Na tipkovnici tega telefona nima učinka</string>
     <string name="settings_pkb_layouts_save">Shrani %1$s kot datoteko</string>
+    <string name="settings_pkb_layouts_rename">Preimenuj</string>
+    <string name="settings_pkb_layouts_rename_title">Preimenuj razporeditev</string>
+    <string name="settings_pkb_layouts_save_file">Shrani kot datoteko</string>
     <string name="settings_pkb_layouts_save_failed">Razporeditve ni bilo mogoče shraniti</string>
     <string name="settings_pkb_layouts_saved">Razporeditev je shranjena</string>
     <string name="settings_pkb_layouts_share">Deli %1$s</string>

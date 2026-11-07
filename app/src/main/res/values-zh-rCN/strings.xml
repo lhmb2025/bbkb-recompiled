@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">使用键盘自身的布局</string>
     <string name="settings_pkb_layouts_other_keypad">在此手机的键区上不起作用</string>
     <string name="settings_pkb_layouts_save">将%1$s保存为文件</string>
+    <string name="settings_pkb_layouts_rename">重命名</string>
+    <string name="settings_pkb_layouts_rename_title">重命名布局</string>
+    <string name="settings_pkb_layouts_save_file">保存为文件</string>
     <string name="settings_pkb_layouts_save_failed">无法保存布局</string>
     <string name="settings_pkb_layouts_saved">布局已保存</string>
     <string name="settings_pkb_layouts_share">分享%1$s</string>

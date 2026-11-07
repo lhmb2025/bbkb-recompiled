@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Ginagamit ang sariling layout ng keyboard</string>
     <string name="settings_pkb_layouts_other_keypad">Walang ginagawa sa keypad ng teleponong ito</string>
     <string name="settings_pkb_layouts_save">I-save ang %1$s bilang file</string>
+    <string name="settings_pkb_layouts_rename">Palitan ang pangalan</string>
+    <string name="settings_pkb_layouts_rename_title">Palitan ang pangalan ng layout</string>
+    <string name="settings_pkb_layouts_save_file">I-save bilang file</string>
     <string name="settings_pkb_layouts_save_failed">Hindi ma-save ang layout</string>
     <string name="settings_pkb_layouts_saved">Na-save ang layout</string>
     <string name="settings_pkb_layouts_share">Ibahagi ang %1$s</string>

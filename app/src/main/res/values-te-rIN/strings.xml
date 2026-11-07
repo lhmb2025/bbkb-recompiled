@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">కీబోర్డ్ సొంత లేఅవుట్‌ను ఉపయోగిస్తుంది</string>
     <string name="settings_pkb_layouts_other_keypad">ఈ ఫోన్ కీప్యాడ్‌లో ఏమీ చేయదు</string>
     <string name="settings_pkb_layouts_save">%1$sను ఫైల్‌గా సేవ్ చేయి</string>
+    <string name="settings_pkb_layouts_rename">పేరు మార్చు</string>
+    <string name="settings_pkb_layouts_rename_title">లేఅవుట్ పేరు మార్చు</string>
+    <string name="settings_pkb_layouts_save_file">ఫైల్‌గా సేవ్ చేయి</string>
     <string name="settings_pkb_layouts_save_failed">లేఅవుట్‌ను సేవ్ చేయడం సాధ్యపడలేదు</string>
     <string name="settings_pkb_layouts_saved">లేఅవుట్ సేవ్ చేయబడింది</string>
     <string name="settings_pkb_layouts_share">%1$sను షేర్ చేయి</string>

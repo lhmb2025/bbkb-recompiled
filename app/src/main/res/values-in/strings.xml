@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Menggunakan tata letak keyboard itu sendiri</string>
     <string name="settings_pkb_layouts_other_keypad">Tidak berfungsi di keypad ponsel ini</string>
     <string name="settings_pkb_layouts_save">Simpan %1$s sebagai file</string>
+    <string name="settings_pkb_layouts_rename">Ganti nama</string>
+    <string name="settings_pkb_layouts_rename_title">Ganti nama tata letak</string>
+    <string name="settings_pkb_layouts_save_file">Simpan sebagai file</string>
     <string name="settings_pkb_layouts_save_failed">Tidak dapat menyimpan tata letak</string>
     <string name="settings_pkb_layouts_saved">Tata letak disimpan</string>
     <string name="settings_pkb_layouts_share">Bagikan %1$s</string>

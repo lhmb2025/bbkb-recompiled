@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">ប្រើប្លង់ផ្ទាល់របស់ក្ដារចុច</string>
     <string name="settings_pkb_layouts_other_keypad">មិនដំណើរការលើក្ដារចុចរបស់ទូរសព្ទនេះទេ</string>
     <string name="settings_pkb_layouts_save">រក្សាទុក %1$s ជាឯកសារ</string>
+    <string name="settings_pkb_layouts_rename">ប្ដូរឈ្មោះ</string>
+    <string name="settings_pkb_layouts_rename_title">ប្ដូរឈ្មោះប្លង់</string>
+    <string name="settings_pkb_layouts_save_file">រក្សាទុកជាឯកសារ</string>
     <string name="settings_pkb_layouts_save_failed">មិនអាចរក្សាទុកប្លង់បានទេ</string>
     <string name="settings_pkb_layouts_saved">បានរក្សាទុកប្លង់</string>
     <string name="settings_pkb_layouts_share">ចែករំលែក %1$s</string>

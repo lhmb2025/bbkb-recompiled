@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Баскычтоптун өз жайгашуусун колдонот</string>
     <string name="settings_pkb_layouts_other_keypad">Бул телефондун баскычтобунда эч нерсе кылбайт</string>
     <string name="settings_pkb_layouts_save">%1$s файл катары сактоо</string>
+    <string name="settings_pkb_layouts_rename">Атын өзгөртүү</string>
+    <string name="settings_pkb_layouts_rename_title">Жайгашуунун атын өзгөртүү</string>
+    <string name="settings_pkb_layouts_save_file">Файл катары сактоо</string>
     <string name="settings_pkb_layouts_save_failed">Жайгашууну сактоо мүмкүн болгон жок</string>
     <string name="settings_pkb_layouts_saved">Жайгашуу сакталды</string>
     <string name="settings_pkb_layouts_share">Бөлүшүү: %1$s</string>

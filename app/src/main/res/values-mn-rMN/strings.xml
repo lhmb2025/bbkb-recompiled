@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Гарын өөрийн байрлалыг ашиглана</string>
     <string name="settings_pkb_layouts_other_keypad">Энэ утасны гар дээр ямар ч нөлөөгүй</string>
     <string name="settings_pkb_layouts_save">%1$s-г файл болгон хадгалах</string>
+    <string name="settings_pkb_layouts_rename">Нэр өөрчлөх</string>
+    <string name="settings_pkb_layouts_rename_title">Байрлалын нэр өөрчлөх</string>
+    <string name="settings_pkb_layouts_save_file">Файл болгон хадгалах</string>
     <string name="settings_pkb_layouts_save_failed">Байрлалыг хадгалж чадсангүй</string>
     <string name="settings_pkb_layouts_saved">Байрлалыг хадгаллаа</string>
     <string name="settings_pkb_layouts_share">Хуваалцах: %1$s</string>

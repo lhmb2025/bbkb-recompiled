@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Usa o leiaute do próprio teclado</string>
     <string name="settings_pkb_layouts_other_keypad">Não faz nada no teclado deste telefone</string>
     <string name="settings_pkb_layouts_save">Salvar %1$s como arquivo</string>
+    <string name="settings_pkb_layouts_rename">Renomear</string>
+    <string name="settings_pkb_layouts_rename_title">Renomear leiaute</string>
+    <string name="settings_pkb_layouts_save_file">Salvar como arquivo</string>
     <string name="settings_pkb_layouts_save_failed">Não foi possível salvar o leiaute</string>
     <string name="settings_pkb_layouts_saved">Leiaute salvo</string>
     <string name="settings_pkb_layouts_share">Compartilhar %1$s</string>

@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">ໃຊ້ຮູບແບບຂອງແປ້ນພິມເອງ</string>
     <string name="settings_pkb_layouts_other_keypad">ບໍ່ມີຜົນໃນແປ້ນພິມຂອງໂທລະສັບນີ້</string>
     <string name="settings_pkb_layouts_save">ບັນທຶກ %1$s ເປັນໄຟລ໌</string>
+    <string name="settings_pkb_layouts_rename">ປ່ຽນຊື່</string>
+    <string name="settings_pkb_layouts_rename_title">ປ່ຽນຊື່ຮູບແບບ</string>
+    <string name="settings_pkb_layouts_save_file">ບັນທຶກເປັນໄຟລ໌</string>
     <string name="settings_pkb_layouts_save_failed">ບັນທຶກຮູບແບບບໍ່ໄດ້</string>
     <string name="settings_pkb_layouts_saved">ບັນທຶກຮູບແບບແລ້ວ</string>
     <string name="settings_pkb_layouts_share">ແບ່ງປັນ %1$s</string>

@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Gebruikt de eigen lay-out van het toetsenbord</string>
     <string name="settings_pkb_layouts_other_keypad">Werkt niet op het toetsenblok van dit toestel</string>
     <string name="settings_pkb_layouts_save">%1$s opslaan als bestand</string>
+    <string name="settings_pkb_layouts_rename">Naam wijzigen</string>
+    <string name="settings_pkb_layouts_rename_title">Naam van lay-out wijzigen</string>
+    <string name="settings_pkb_layouts_save_file">Opslaan als bestand</string>
     <string name="settings_pkb_layouts_save_failed">Kan de lay-out niet opslaan</string>
     <string name="settings_pkb_layouts_saved">Lay-out opgeslagen</string>
     <string name="settings_pkb_layouts_share">%1$s delen</string>

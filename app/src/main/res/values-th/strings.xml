@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">ใช้เลย์เอาท์ของแป้นพิมพ์เอง</string>
     <string name="settings_pkb_layouts_other_keypad">ไม่มีผลกับแป้นพิมพ์ของโทรศัพท์เครื่องนี้</string>
     <string name="settings_pkb_layouts_save">บันทึก %1$s เป็นไฟล์</string>
+    <string name="settings_pkb_layouts_rename">เปลี่ยนชื่อ</string>
+    <string name="settings_pkb_layouts_rename_title">เปลี่ยนชื่อเลย์เอาท์</string>
+    <string name="settings_pkb_layouts_save_file">บันทึกเป็นไฟล์</string>
     <string name="settings_pkb_layouts_save_failed">บันทึกเลย์เอาท์ไม่ได้</string>
     <string name="settings_pkb_layouts_saved">บันทึกเลย์เอาท์แล้ว</string>
     <string name="settings_pkb_layouts_share">แบ่งปัน %1$s</string>

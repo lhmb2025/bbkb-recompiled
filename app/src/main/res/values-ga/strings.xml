@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Úsáideann sé leagan amach an mhéarchláir féin</string>
     <string name="settings_pkb_layouts_other_keypad">Ní dhéanann sé tada ar eochaircheap an fhóin seo</string>
     <string name="settings_pkb_layouts_save">Sábháil %1$s mar chomhad</string>
+    <string name="settings_pkb_layouts_rename">Athainmnigh</string>
+    <string name="settings_pkb_layouts_rename_title">Athainmnigh an leagan amach</string>
+    <string name="settings_pkb_layouts_save_file">Sábháil mar chomhad</string>
     <string name="settings_pkb_layouts_save_failed">Níorbh fhéidir an leagan amach a shábháil</string>
     <string name="settings_pkb_layouts_saved">Sábháladh an leagan amach</string>
     <string name="settings_pkb_layouts_share">Comhroinn %1$s</string>

@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Dùng bố cục riêng của bàn phím</string>
     <string name="settings_pkb_layouts_other_keypad">Không có tác dụng trên bàn phím của điện thoại này</string>
     <string name="settings_pkb_layouts_save">Lưu %1$s thành tệp</string>
+    <string name="settings_pkb_layouts_rename">Đổi tên</string>
+    <string name="settings_pkb_layouts_rename_title">Đổi tên bố cục</string>
+    <string name="settings_pkb_layouts_save_file">Lưu thành tệp</string>
     <string name="settings_pkb_layouts_save_failed">Không lưu được bố cục</string>
     <string name="settings_pkb_layouts_saved">Đã lưu bố cục</string>
     <string name="settings_pkb_layouts_share">Chia sẻ %1$s</string>

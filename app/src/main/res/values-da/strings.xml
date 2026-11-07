@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Bruger tastaturets eget layout</string>
     <string name="settings_pkb_layouts_other_keypad">Gør intet på denne telefons tastatur</string>
     <string name="settings_pkb_layouts_save">Gem %1$s som fil</string>
+    <string name="settings_pkb_layouts_rename">Omdøb</string>
+    <string name="settings_pkb_layouts_rename_title">Omdøb layout</string>
+    <string name="settings_pkb_layouts_save_file">Gem som fil</string>
     <string name="settings_pkb_layouts_save_failed">Layoutet kunne ikke gemmes</string>
     <string name="settings_pkb_layouts_saved">Layoutet er gemt</string>
     <string name="settings_pkb_layouts_share">Del %1$s</string>

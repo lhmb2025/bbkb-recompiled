@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Klaviaturaning o‘z joylashuvidan foydalanadi</string>
     <string name="settings_pkb_layouts_other_keypad">Bu telefonning klaviaturasida hech narsa qilmaydi</string>
     <string name="settings_pkb_layouts_save">%1$s joylashuvini fayl sifatida saqlash</string>
+    <string name="settings_pkb_layouts_rename">Nomini o‘zgartirish</string>
+    <string name="settings_pkb_layouts_rename_title">Joylashuv nomini o‘zgartirish</string>
+    <string name="settings_pkb_layouts_save_file">Fayl sifatida saqlash</string>
     <string name="settings_pkb_layouts_save_failed">Joylashuvni saqlab bo‘lmadi</string>
     <string name="settings_pkb_layouts_saved">Joylashuv saqlandi</string>
     <string name="settings_pkb_layouts_share">Ulashish: %1$s</string>

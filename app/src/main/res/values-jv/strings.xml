@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Nggunakake tata letak keyboard dhewe</string>
     <string name="settings_pkb_layouts_other_keypad">Ora nindakake apa-apa ing papan tombol telpon iki</string>
     <string name="settings_pkb_layouts_save">Simpen %1$s minangka berkas</string>
+    <string name="settings_pkb_layouts_rename">Ganti jeneng</string>
+    <string name="settings_pkb_layouts_rename_title">Ganti jeneng tata letak</string>
+    <string name="settings_pkb_layouts_save_file">Simpen minangka berkas</string>
     <string name="settings_pkb_layouts_save_failed">Ora bisa nyimpen tata letak</string>
     <string name="settings_pkb_layouts_saved">Tata letak disimpen</string>
     <string name="settings_pkb_layouts_share">Bagekake %1$s</string>

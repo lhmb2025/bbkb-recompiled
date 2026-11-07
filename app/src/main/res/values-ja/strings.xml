@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">キーボード固有のレイアウトを使用します</string>
     <string name="settings_pkb_layouts_other_keypad">この端末のキーパッドでは機能しません</string>
     <string name="settings_pkb_layouts_save">%1$sをファイルとして保存</string>
+    <string name="settings_pkb_layouts_rename">名前を変更</string>
+    <string name="settings_pkb_layouts_rename_title">レイアウト名を変更</string>
+    <string name="settings_pkb_layouts_save_file">ファイルとして保存</string>
     <string name="settings_pkb_layouts_save_failed">レイアウトを保存できませんでした</string>
     <string name="settings_pkb_layouts_saved">レイアウトを保存しました</string>
     <string name="settings_pkb_layouts_share">%1$sを共有</string>

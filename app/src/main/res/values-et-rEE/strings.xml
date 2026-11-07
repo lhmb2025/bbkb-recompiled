@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Kasutab klaviatuuri enda paigutust</string>
     <string name="settings_pkb_layouts_other_keypad">Selle telefoni klahvistikul ei tee midagi</string>
     <string name="settings_pkb_layouts_save">Salvesta %1$s failina</string>
+    <string name="settings_pkb_layouts_rename">Nimeta ümber</string>
+    <string name="settings_pkb_layouts_rename_title">Nimeta paigutus ümber</string>
+    <string name="settings_pkb_layouts_save_file">Salvesta failina</string>
     <string name="settings_pkb_layouts_save_failed">Paigutuse salvestamine ebaõnnestus</string>
     <string name="settings_pkb_layouts_saved">Paigutus salvestati</string>
     <string name="settings_pkb_layouts_share">Jaga %1$s</string>

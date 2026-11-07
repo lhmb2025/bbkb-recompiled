@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Bruker tastaturets egen layout</string>
     <string name="settings_pkb_layouts_other_keypad">Gjør ingenting på tastaturet til denne telefonen</string>
     <string name="settings_pkb_layouts_save">Lagre %1$s som fil</string>
+    <string name="settings_pkb_layouts_rename">Gi nytt navn</string>
+    <string name="settings_pkb_layouts_rename_title">Gi layouten nytt navn</string>
+    <string name="settings_pkb_layouts_save_file">Lagre som fil</string>
     <string name="settings_pkb_layouts_save_failed">Kunne ikke lagre layouten</string>
     <string name="settings_pkb_layouts_saved">Layouten er lagret</string>
     <string name="settings_pkb_layouts_share">Del %1$s</string>

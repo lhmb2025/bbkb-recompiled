@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Menggunakan susun atur papan kekunci itu sendiri</string>
     <string name="settings_pkb_layouts_other_keypad">Tidak berfungsi pada pad kekunci telefon ini</string>
     <string name="settings_pkb_layouts_save">Simpan %1$s sebagai fail</string>
+    <string name="settings_pkb_layouts_rename">Namakan semula</string>
+    <string name="settings_pkb_layouts_rename_title">Namakan semula susun atur</string>
+    <string name="settings_pkb_layouts_save_file">Simpan sebagai fail</string>
     <string name="settings_pkb_layouts_save_failed">Tidak dapat menyimpan susun atur</string>
     <string name="settings_pkb_layouts_saved">Susun atur disimpan</string>
     <string name="settings_pkb_layouts_share">Kongsikan %1$s</string>

@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Używa własnego układu klawiatury</string>
     <string name="settings_pkb_layouts_other_keypad">Na klawiaturze tego telefonu nic nie robi</string>
     <string name="settings_pkb_layouts_save">Zapisz %1$s jako plik</string>
+    <string name="settings_pkb_layouts_rename">Zmień nazwę</string>
+    <string name="settings_pkb_layouts_rename_title">Zmień nazwę układu</string>
+    <string name="settings_pkb_layouts_save_file">Zapisz jako plik</string>
     <string name="settings_pkb_layouts_save_failed">Nie udało się zapisać układu</string>
     <string name="settings_pkb_layouts_saved">Układ zapisany</string>
     <string name="settings_pkb_layouts_share">Udostępnij %1$s</string>

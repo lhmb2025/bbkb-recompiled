@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">از چیدمان خود صفحه‌کلید استفاده می‌کند</string>
     <string name="settings_pkb_layouts_other_keypad">روی صفحه کلید این تلفن کاری انجام نمی‌دهد</string>
     <string name="settings_pkb_layouts_save">ذخیره %1$s به‌صورت فایل</string>
+    <string name="settings_pkb_layouts_rename">تغییر نام</string>
+    <string name="settings_pkb_layouts_rename_title">تغییر نام چیدمان</string>
+    <string name="settings_pkb_layouts_save_file">ذخیره به‌صورت فایل</string>
     <string name="settings_pkb_layouts_save_failed">ذخیره چیدمان ممکن نشد</string>
     <string name="settings_pkb_layouts_saved">چیدمان ذخیره شد</string>
     <string name="settings_pkb_layouts_share">اشتراک‌گذاری %1$s</string>

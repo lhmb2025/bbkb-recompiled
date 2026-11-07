@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Notar eigin uppsetningu lyklaborðsins</string>
     <string name="settings_pkb_layouts_other_keypad">Gerir ekkert á lyklaborði þessa síma</string>
     <string name="settings_pkb_layouts_save">Vista %1$s sem skrá</string>
+    <string name="settings_pkb_layouts_rename">Endurnefna</string>
+    <string name="settings_pkb_layouts_rename_title">Endurnefna uppsetningu</string>
+    <string name="settings_pkb_layouts_save_file">Vista sem skrá</string>
     <string name="settings_pkb_layouts_save_failed">Ekki tókst að vista uppsetninguna</string>
     <string name="settings_pkb_layouts_saved">Uppsetning vistuð</string>
     <string name="settings_pkb_layouts_share">Deila %1$s</string>

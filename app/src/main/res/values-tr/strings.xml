@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Klavyenin kendi düzenini kullanır</string>
     <string name="settings_pkb_layouts_other_keypad">Bu telefonun tuş takımında hiçbir şey yapmaz</string>
     <string name="settings_pkb_layouts_save">%1$s düzenini dosya olarak kaydet</string>
+    <string name="settings_pkb_layouts_rename">Yeniden adlandır</string>
+    <string name="settings_pkb_layouts_rename_title">Düzeni yeniden adlandır</string>
+    <string name="settings_pkb_layouts_save_file">Dosya olarak kaydet</string>
     <string name="settings_pkb_layouts_save_failed">Düzen kaydedilemedi</string>
     <string name="settings_pkb_layouts_saved">Düzen kaydedildi</string>
     <string name="settings_pkb_layouts_share">%1$s öğesini paylaş</string>

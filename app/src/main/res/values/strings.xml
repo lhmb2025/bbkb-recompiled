@@ -294,6 +294,9 @@
     <string name="settings_pkb_layouts_none_summary">Uses the keyboard\'s own layout</string>
     <string name="settings_pkb_layouts_other_keypad">Does nothing on this phone\'s keypad</string>
     <string name="settings_pkb_layouts_save">Save %1$s as a file</string>
+    <string name="settings_pkb_layouts_rename">Rename</string>
+    <string name="settings_pkb_layouts_rename_title">Rename layout</string>
+    <string name="settings_pkb_layouts_save_file">Save as a file</string>
     <string name="settings_pkb_layouts_save_failed">Could not save the layout</string>
     <string name="settings_pkb_layouts_saved">Layout saved</string>
     <string name="settings_pkb_layouts_share">Share %1$s</string>

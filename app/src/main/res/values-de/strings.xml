@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Verwendet das eigene Layout der Tastatur</string>
     <string name="settings_pkb_layouts_other_keypad">Ohne Wirkung auf dem Tastenfeld dieses Telefons</string>
     <string name="settings_pkb_layouts_save">%1$s als Datei speichern</string>
+    <string name="settings_pkb_layouts_rename">Umbenennen</string>
+    <string name="settings_pkb_layouts_rename_title">Layout umbenennen</string>
+    <string name="settings_pkb_layouts_save_file">Als Datei speichern</string>
     <string name="settings_pkb_layouts_save_failed">Das Layout konnte nicht gespeichert werden</string>
     <string name="settings_pkb_layouts_saved">Layout gespeichert</string>
     <string name="settings_pkb_layouts_share">%1$s teilen</string>

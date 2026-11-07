@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Upotrebljava vlastiti raspored tipkovnice</string>
     <string name="settings_pkb_layouts_other_keypad">Ne radi ništa na tipkovnici ovog telefona</string>
     <string name="settings_pkb_layouts_save">Spremi %1$s kao datoteku</string>
+    <string name="settings_pkb_layouts_rename">Preimenuj</string>
+    <string name="settings_pkb_layouts_rename_title">Preimenuj raspored</string>
+    <string name="settings_pkb_layouts_save_file">Spremi kao datoteku</string>
     <string name="settings_pkb_layouts_save_failed">Raspored nije moguće spremiti</string>
     <string name="settings_pkb_layouts_saved">Raspored je spremljen</string>
     <string name="settings_pkb_layouts_share">Podijeli %1$s</string>

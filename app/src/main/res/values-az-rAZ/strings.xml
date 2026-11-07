@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Klaviaturanın öz düzümündən istifadə edir</string>
     <string name="settings_pkb_layouts_other_keypad">Bu telefonun klaviaturasında heç nə etmir</string>
     <string name="settings_pkb_layouts_save">%1$s düzümünü fayl kimi yadda saxlayın</string>
+    <string name="settings_pkb_layouts_rename">Adını dəyişin</string>
+    <string name="settings_pkb_layouts_rename_title">Düzümün adını dəyişin</string>
+    <string name="settings_pkb_layouts_save_file">Fayl kimi yadda saxlayın</string>
     <string name="settings_pkb_layouts_save_failed">Düzümü yadda saxlamaq alınmadı</string>
     <string name="settings_pkb_layouts_saved">Düzüm yadda saxlanıldı</string>
     <string name="settings_pkb_layouts_share">Paylaş: %1$s</string>

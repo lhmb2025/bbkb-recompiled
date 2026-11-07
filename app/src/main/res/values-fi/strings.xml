@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Käyttää näppäimistön omaa asettelua</string>
     <string name="settings_pkb_layouts_other_keypad">Ei toimi tämän puhelimen näppäimistöllä</string>
     <string name="settings_pkb_layouts_save">Tallenna %1$s tiedostoksi</string>
+    <string name="settings_pkb_layouts_rename">Nimeä uudelleen</string>
+    <string name="settings_pkb_layouts_rename_title">Nimeä asettelu uudelleen</string>
+    <string name="settings_pkb_layouts_save_file">Tallenna tiedostoksi</string>
     <string name="settings_pkb_layouts_save_failed">Asettelua ei voitu tallentaa</string>
     <string name="settings_pkb_layouts_saved">Asettelu tallennettu</string>
     <string name="settings_pkb_layouts_share">Jaa %1$s</string>

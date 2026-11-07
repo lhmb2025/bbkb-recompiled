@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Nganggo tata perenah keyboard sorangan</string>
     <string name="settings_pkb_layouts_other_keypad">Teu aya pangaruhna dina papan tombol telepon ieu</string>
     <string name="settings_pkb_layouts_save">Simpen %1$s jadi berkas</string>
+    <string name="settings_pkb_layouts_rename">Ganti ngaran</string>
+    <string name="settings_pkb_layouts_rename_title">Ganti ngaran tata perenah</string>
+    <string name="settings_pkb_layouts_save_file">Simpen jadi berkas</string>
     <string name="settings_pkb_layouts_save_failed">Teu bisa nyimpen tata perenah</string>
     <string name="settings_pkb_layouts_saved">Tata perenah disimpen</string>
     <string name="settings_pkb_layouts_share">Bagikeun %1$s</string>

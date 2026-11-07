@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">키보드 자체 레이아웃을 사용합니다</string>
     <string name="settings_pkb_layouts_other_keypad">이 기기의 키패드에서는 작동하지 않습니다</string>
     <string name="settings_pkb_layouts_save">%1$s 파일로 저장</string>
+    <string name="settings_pkb_layouts_rename">이름 바꾸기</string>
+    <string name="settings_pkb_layouts_rename_title">레이아웃 이름 바꾸기</string>
+    <string name="settings_pkb_layouts_save_file">파일로 저장</string>
     <string name="settings_pkb_layouts_save_failed">레이아웃을 저장할 수 없습니다</string>
     <string name="settings_pkb_layouts_saved">레이아웃을 저장했습니다</string>
     <string name="settings_pkb_layouts_share">%1$s 공유</string>

@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Χρησιμοποιεί τη διάταξη του ίδιου του πληκτρολογίου</string>
     <string name="settings_pkb_layouts_other_keypad">Δεν κάνει τίποτα στο πληκτρολόγιο αυτού του τηλεφώνου</string>
     <string name="settings_pkb_layouts_save">Αποθήκευση %1$s ως αρχείο</string>
+    <string name="settings_pkb_layouts_rename">Μετονομασία</string>
+    <string name="settings_pkb_layouts_rename_title">Μετονομασία διάταξης</string>
+    <string name="settings_pkb_layouts_save_file">Αποθήκευση ως αρχείο</string>
     <string name="settings_pkb_layouts_save_failed">Δεν ήταν δυνατή η αποθήκευση της διάταξης</string>
     <string name="settings_pkb_layouts_saved">Η διάταξη αποθηκεύτηκε</string>
     <string name="settings_pkb_layouts_share">Κοινοποίηση %1$s</string>

@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Teklatuaren beraren diseinua erabiltzen du</string>
     <string name="settings_pkb_layouts_other_keypad">Ez du ezer egiten telefono honen teklatuan</string>
     <string name="settings_pkb_layouts_save">Gorde %1$s fitxategi gisa</string>
+    <string name="settings_pkb_layouts_rename">Aldatu izena</string>
+    <string name="settings_pkb_layouts_rename_title">Aldatu diseinuaren izena</string>
+    <string name="settings_pkb_layouts_save_file">Gorde fitxategi gisa</string>
     <string name="settings_pkb_layouts_save_failed">Ezin izan da gorde diseinua</string>
     <string name="settings_pkb_layouts_saved">Gorde da diseinua</string>
     <string name="settings_pkb_layouts_share">Partekatu %1$s</string>

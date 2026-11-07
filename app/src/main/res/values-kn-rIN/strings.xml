@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">ಕೀಬೋರ್ಡ್‌ನ ಸ್ವಂತ ವಿನ್ಯಾಸವನ್ನು ಬಳಸುತ್ತದೆ</string>
     <string name="settings_pkb_layouts_other_keypad">ಈ ಫೋನ್‌ನ ಕೀಪ್ಯಾಡ್‌ನಲ್ಲಿ ಇದು ಏನನ್ನೂ ಮಾಡುವುದಿಲ್ಲ</string>
     <string name="settings_pkb_layouts_save">%1$s ಅನ್ನು ಫೈಲ್ ಆಗಿ ಉಳಿಸಿ</string>
+    <string name="settings_pkb_layouts_rename">ಮರುಹೆಸರಿಸಿ</string>
+    <string name="settings_pkb_layouts_rename_title">ವಿನ್ಯಾಸವನ್ನು ಮರುಹೆಸರಿಸಿ</string>
+    <string name="settings_pkb_layouts_save_file">ಫೈಲ್ ಆಗಿ ಉಳಿಸಿ</string>
     <string name="settings_pkb_layouts_save_failed">ವಿನ್ಯಾಸವನ್ನು ಉಳಿಸಲಾಗಲಿಲ್ಲ</string>
     <string name="settings_pkb_layouts_saved">ವಿನ್ಯಾಸವನ್ನು ಉಳಿಸಲಾಗಿದೆ</string>
     <string name="settings_pkb_layouts_share">%1$s ಹಂಚಿಕೊಳ್ಳಿ</string>

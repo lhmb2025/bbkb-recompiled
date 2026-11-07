@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Yn defnyddio cynllun y bysellfwrdd ei hun</string>
     <string name="settings_pkb_layouts_other_keypad">Nid yw\'n gwneud dim ar bad bysellau\'r ffôn hwn</string>
     <string name="settings_pkb_layouts_save">Cadw %1$s fel ffeil</string>
+    <string name="settings_pkb_layouts_rename">Ailenwi</string>
+    <string name="settings_pkb_layouts_rename_title">Ailenwi cynllun</string>
+    <string name="settings_pkb_layouts_save_file">Cadw fel ffeil</string>
     <string name="settings_pkb_layouts_save_failed">Methu cadw\'r cynllun</string>
     <string name="settings_pkb_layouts_saved">Cynllun wedi\'i gadw</string>
     <string name="settings_pkb_layouts_share">Rhannu %1$s</string>

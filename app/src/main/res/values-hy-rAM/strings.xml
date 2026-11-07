@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Օգտագործում է ստեղնաշարի սեփական դասավորությունը</string>
     <string name="settings_pkb_layouts_other_keypad">Այս հեռախոսի ստեղնաշարի վրա ոչինչ չի անում</string>
     <string name="settings_pkb_layouts_save">Պահել %1$s-ը որպես ֆայլ</string>
+    <string name="settings_pkb_layouts_rename">Վերանվանել</string>
+    <string name="settings_pkb_layouts_rename_title">Վերանվանել դասավորությունը</string>
+    <string name="settings_pkb_layouts_save_file">Պահել որպես ֆայլ</string>
     <string name="settings_pkb_layouts_save_failed">Չհաջողվեց պահել դասավորությունը</string>
     <string name="settings_pkb_layouts_saved">Դասավորությունը պահվեց</string>
     <string name="settings_pkb_layouts_share">Կիսվել՝ %1$s</string>

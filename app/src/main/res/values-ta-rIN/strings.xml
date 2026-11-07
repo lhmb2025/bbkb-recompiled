@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">விசைப்பலகையின் சொந்தத் தளவமைப்பைப் பயன்படுத்தும்</string>
     <string name="settings_pkb_layouts_other_keypad">இந்த ஃபோனின் விசைப்பலகையில் எதுவும் செய்யாது</string>
     <string name="settings_pkb_layouts_save">%1$s ஐக் கோப்பாகச் சேமி</string>
+    <string name="settings_pkb_layouts_rename">மறுபெயரிடு</string>
+    <string name="settings_pkb_layouts_rename_title">தளவமைப்பை மறுபெயரிடு</string>
+    <string name="settings_pkb_layouts_save_file">கோப்பாகச் சேமி</string>
     <string name="settings_pkb_layouts_save_failed">தளவமைப்பைச் சேமிக்க முடியவில்லை</string>
     <string name="settings_pkb_layouts_saved">தளவமைப்பு சேமிக்கப்பட்டது</string>
     <string name="settings_pkb_layouts_share">%1$s-ஐப் பகிர்</string>

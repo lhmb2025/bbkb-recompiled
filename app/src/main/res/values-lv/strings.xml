@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Izmanto pašas tastatūras izkārtojumu</string>
     <string name="settings_pkb_layouts_other_keypad">Šī tālruņa tastatūrā nedarbojas</string>
     <string name="settings_pkb_layouts_save">Saglabāt %1$s kā failu</string>
+    <string name="settings_pkb_layouts_rename">Pārdēvēt</string>
+    <string name="settings_pkb_layouts_rename_title">Pārdēvēt izkārtojumu</string>
+    <string name="settings_pkb_layouts_save_file">Saglabāt kā failu</string>
     <string name="settings_pkb_layouts_save_failed">Neizdevās saglabāt izkārtojumu</string>
     <string name="settings_pkb_layouts_saved">Izkārtojums saglabāts</string>
     <string name="settings_pkb_layouts_share">Kopīgot %1$s</string>

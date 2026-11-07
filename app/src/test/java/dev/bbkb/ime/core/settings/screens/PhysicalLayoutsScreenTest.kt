@@ -1,19 +1,26 @@
 package dev.bbkb.ime.core.settings.screens
 
 import android.content.Context
+import android.view.KeyEvent
 import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.core.layout.LetterLayout
+import dev.bbkb.ime.core.layout.LetterLayoutRegistry
 import dev.bbkb.ime.core.layout.LetterLayoutXml
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The two pieces of the Physical layouts screen that decide what a reader sees without drawing
- * anything: the order of the built-in list ([orderBuiltInLayouts]) and the line under each row
- * ([layoutSummary]). What the screen renders is pinned by `SettingsScreenRenderTest`.
+ * The pieces of the Physical layouts screen that decide what a reader sees without drawing
+ * anything: the order of the built-in list ([orderBuiltInLayouts]), the line under each row
+ * ([layoutSummary]), the keypad rows a layout's sheet draws ([keypadRows]) and what Rename stores
+ * ([renameLayout]). What the screen renders is pinned by `SettingsScreenRenderTest`, its sheet by
+ * `PhysicalLayoutsSheetTest`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -150,5 +157,101 @@ class PhysicalLayoutsScreenTest {
     fun aLayoutBoundToBothIsNamedWithBoth() {
         val both = layout("x", keypad = "azerty", keypadType = "3row", keys = 6)
         assertEquals("All keyboards · AZERTY keypad · three-row keypad · 6 keys", summary(both, "azerty", "3row"))
+    }
+
+    // ── keypad rows ──────────────────────────────────────────────────────────
+
+    private fun codes(letters: String) = letters.map { KeyEvent.KEYCODE_A + (it - 'A') }
+
+    private fun document(keys: String) = LetterLayoutXml.parse(
+        """<letter-layout version="1" id="k" name="K"><bind/>$keys</letter-layout>""",
+        LetterLayout.Origin.BUILT_IN,
+    )
+
+    @Test
+    fun theKeypadIsTheThreeQwertyRowsByKeyCode() {
+        assertEquals(
+            listOf(codes("QWERTYUIOP"), codes("ASDFGHJKL"), codes("ZXCVBNM")),
+            keypadRows(layout("x", keys = 2)),
+        )
+    }
+
+    @Test
+    fun theDollarKeyJoinsTheBottomRowOnlyWhenTheLayoutNamesIt() {
+        val russianLike = document("""<key code="KEYCODE_Q" keySpec="й"/><key code="KEYCODE_4" keySpec="б"/>""")
+        assertEquals(codes("ZXCVBNM") + KeyEvent.KEYCODE_4, keypadRows(russianLike)[2])
+        assertEquals(3, keypadRows(russianLike).size)
+    }
+
+    @Test
+    fun anyOtherNamedKeyGetsARowOfItsOwn() {
+        val thaiLike = document("""<key code="KEYCODE_Q" keySpec="ๆ"/><key code="KEYCODE_0" keySpec="0"/>""")
+        val rows = keypadRows(thaiLike)
+        assertEquals(4, rows.size)
+        assertEquals(listOf(KeyEvent.KEYCODE_0), rows[3])
+    }
+
+    @Test
+    fun aCapPrintsTheUpperCaseAndOnlyAShiftLegendThatIsAnotherCharacter() {
+        val doc = document(
+            """<key code="KEYCODE_Q" keySpec="q"/>
+            <key code="KEYCODE_4" keySpec="ط" characterMapKeys="ى" alt="5"/>
+            <key code="KEYCODE_A" keySpec="a" characterMapKeys="A"/>"""
+        )
+        val q = keyCapLegends(doc.keys.getValue(KeyEvent.KEYCODE_Q))
+        assertEquals("Q", q.letter); assertNull(q.shift); assertNull(q.alt)
+        val a = keyCapLegends(doc.keys.getValue(KeyEvent.KEYCODE_A))
+        assertEquals("A", a.letter); assertNull(a.shift)
+        val taa = keyCapLegends(doc.keys.getValue(KeyEvent.KEYCODE_4))
+        assertEquals("ط", taa.letter); assertEquals("ى", taa.shift); assertEquals("5", taa.alt)
+    }
+
+    // ── rename ───────────────────────────────────────────────────────────────
+
+    @Test
+    fun aNameMustBeOneADocumentCanCarry() {
+        assertTrue(isValidLayoutName("My layout"))
+        assertTrue(isValidLayoutName("  padded  "))
+        assertFalse(isValidLayoutName(""))
+        assertFalse(isValidLayoutName("   "))
+        assertFalse(isValidLayoutName("x".repeat(LetterLayoutXml.MAX_NAME_LENGTH + 1)))
+        assertFalse(isValidLayoutName("tab\there"))
+    }
+
+    @Test
+    fun renameKeepsTheIdAndTheKeysAndStoresTheTrimmedName() {
+        val registry = LetterLayoutRegistry(context)
+        registry.directory.deleteRecursively()
+        try {
+            val mine = LetterLayoutXml.parse(
+                """<letter-layout version="1" id="mine" name="Old name"><bind languages="de"/>
+                    <key code="KEYCODE_Y" keySpec="z"/><key code="KEYCODE_Z" keySpec="y"/></letter-layout>""",
+            )
+            registry.save(mine)
+            assertTrue(renameLayout(registry, mine, "  New name "))
+            val stored = registry.get("mine")!!
+            assertEquals("New name", stored.name)
+            assertEquals(listOf("de"), stored.binding.languages)
+            assertEquals('z'.code, stored.keys[KeyEvent.KEYCODE_Y]!!.keySpec)
+            assertEquals(listOf("mine"), registry.list().map { it.id })
+
+            // A name a document cannot carry changes nothing.
+            assertFalse(renameLayout(registry, stored, " "))
+            assertEquals("New name", registry.get("mine")!!.name)
+        } finally {
+            registry.directory.deleteRecursively()
+        }
+    }
+
+    @Test
+    fun aBuiltInLayoutIsNeverRenamed() {
+        val registry = LetterLayoutRegistry(context)
+        registry.directory.deleteRecursively()
+        try {
+            assertFalse(renameLayout(registry, layout("de", "German"), "Mine"))
+            assertNull(registry.get("de"))
+        } finally {
+            registry.directory.deleteRecursively()
+        }
     }
 }

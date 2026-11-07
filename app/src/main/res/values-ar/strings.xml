@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">يستخدم تخطيط لوحة المفاتيح نفسها</string>
     <string name="settings_pkb_layouts_other_keypad">لا يعمل على لوحة مفاتيح هذا الهاتف</string>
     <string name="settings_pkb_layouts_save">حفظ %1$s كملف</string>
+    <string name="settings_pkb_layouts_rename">إعادة تسمية</string>
+    <string name="settings_pkb_layouts_rename_title">إعادة تسمية التخطيط</string>
+    <string name="settings_pkb_layouts_save_file">حفظ كملف</string>
     <string name="settings_pkb_layouts_save_failed">تعذّر حفظ التخطيط</string>
     <string name="settings_pkb_layouts_saved">تم حفظ التخطيط</string>
     <string name="settings_pkb_layouts_share">مشاركة %1$s</string>

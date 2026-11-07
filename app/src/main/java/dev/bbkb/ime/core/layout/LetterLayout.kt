@@ -185,6 +185,10 @@ class LetterLayout internal constructor(
     fun withId(newId: String): LetterLayout =
         LetterLayout(newId, name, origin, targets, binding, rowsTemplate, keys, optIn)
 
+    /** The same layout under another name. [newName] must be one a document can carry ([LetterLayoutXml.MAX_NAME_LENGTH]). */
+    fun withName(newName: String): LetterLayout =
+        LetterLayout(id, newName, origin, targets, binding, rowsTemplate, keys, optIn)
+
     /**
      * This layout with only the keys [keep] accepts, or this layout itself when it accepts them
      * all. The typing path uses it to leave the keyboard's own keys (Enter, Delete, the

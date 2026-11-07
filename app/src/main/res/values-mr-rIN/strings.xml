@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">कीबोर्डचा स्वतःचा लेआउट वापरतो</string>
     <string name="settings_pkb_layouts_other_keypad">या फोनच्या कीपॅडवर तो काहीही करत नाही</string>
     <string name="settings_pkb_layouts_save">%1$s फाइल म्हणून सेव्ह करा</string>
+    <string name="settings_pkb_layouts_rename">नाव बदला</string>
+    <string name="settings_pkb_layouts_rename_title">लेआउटचे नाव बदला</string>
+    <string name="settings_pkb_layouts_save_file">फाइल म्हणून सेव्ह करा</string>
     <string name="settings_pkb_layouts_save_failed">लेआउट सेव्ह करता आला नाही</string>
     <string name="settings_pkb_layouts_saved">लेआउट सेव्ह केला</string>
     <string name="settings_pkb_layouts_share">%1$s शेअर करा</string>

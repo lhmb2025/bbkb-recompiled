@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Usa la distribución propia del teclado</string>
     <string name="settings_pkb_layouts_other_keypad">No hace nada en el teclado de este teléfono</string>
     <string name="settings_pkb_layouts_save">Guardar %1$s como archivo</string>
+    <string name="settings_pkb_layouts_rename">Cambiar nombre</string>
+    <string name="settings_pkb_layouts_rename_title">Cambiar nombre de la distribución</string>
+    <string name="settings_pkb_layouts_save_file">Guardar como archivo</string>
     <string name="settings_pkb_layouts_save_failed">No se ha podido guardar la distribución</string>
     <string name="settings_pkb_layouts_saved">Distribución guardada</string>
     <string name="settings_pkb_layouts_share">Compartir %1$s</string>

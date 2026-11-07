@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Използва собствената подредба на клавиатурата</string>
     <string name="settings_pkb_layouts_other_keypad">Не действа на клавиатурата на този телефон</string>
     <string name="settings_pkb_layouts_save">Запазване на %1$s като файл</string>
+    <string name="settings_pkb_layouts_rename">Преименуване</string>
+    <string name="settings_pkb_layouts_rename_title">Преименуване на подредбата</string>
+    <string name="settings_pkb_layouts_save_file">Запазване като файл</string>
     <string name="settings_pkb_layouts_save_failed">Подредбата не можа да бъде запазена</string>
     <string name="settings_pkb_layouts_saved">Подредбата е запазена</string>
     <string name="settings_pkb_layouts_share">Споделяне на %1$s</string>

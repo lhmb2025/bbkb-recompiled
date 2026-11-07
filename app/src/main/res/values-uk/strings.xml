@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Використовується власна розкладка клавіатури</string>
     <string name="settings_pkb_layouts_other_keypad">Не працює на клавіатурі цього телефона</string>
     <string name="settings_pkb_layouts_save">Зберегти %1$s у файл</string>
+    <string name="settings_pkb_layouts_rename">Перейменувати</string>
+    <string name="settings_pkb_layouts_rename_title">Перейменувати розкладку</string>
+    <string name="settings_pkb_layouts_save_file">Зберегти у файл</string>
     <string name="settings_pkb_layouts_save_failed">Не вдалося зберегти розкладку</string>
     <string name="settings_pkb_layouts_saved">Розкладку збережено</string>
     <string name="settings_pkb_layouts_share">Поділитися розкладкою %1$s</string>

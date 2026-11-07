@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">נעשה שימוש בפריסה של המקלדת עצמה</string>
     <string name="settings_pkb_layouts_other_keypad">אין לה השפעה במקלדת של הטלפון הזה</string>
     <string name="settings_pkb_layouts_save">שמירת %1$s כקובץ</string>
+    <string name="settings_pkb_layouts_rename">שינוי שם</string>
+    <string name="settings_pkb_layouts_rename_title">שינוי שם הפריסה</string>
+    <string name="settings_pkb_layouts_save_file">שמירה כקובץ</string>
     <string name="settings_pkb_layouts_save_failed">לא ניתן לשמור את הפריסה</string>
     <string name="settings_pkb_layouts_saved">הפריסה נשמרה</string>
     <string name="settings_pkb_layouts_share">שתף את %1$s</string>

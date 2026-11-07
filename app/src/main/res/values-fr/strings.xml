@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Utilise la disposition propre au clavier</string>
     <string name="settings_pkb_layouts_other_keypad">Sans effet sur le clavier de ce téléphone</string>
     <string name="settings_pkb_layouts_save">Enregistrer %1$s dans un fichier</string>
+    <string name="settings_pkb_layouts_rename">Renommer</string>
+    <string name="settings_pkb_layouts_rename_title">Renommer la disposition</string>
+    <string name="settings_pkb_layouts_save_file">Enregistrer dans un fichier</string>
     <string name="settings_pkb_layouts_save_failed">Impossible d\'enregistrer la disposition</string>
     <string name="settings_pkb_layouts_saved">Disposition enregistrée</string>
     <string name="settings_pkb_layouts_share">Partager %1$s</string>

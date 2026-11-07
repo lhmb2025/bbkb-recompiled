@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Përdor paraqitjen e vetë tastierës</string>
     <string name="settings_pkb_layouts_other_keypad">Nuk bën asgjë në tastierën e këtij telefoni</string>
     <string name="settings_pkb_layouts_save">Ruaj %1$s si skedar</string>
+    <string name="settings_pkb_layouts_rename">Riemërto</string>
+    <string name="settings_pkb_layouts_rename_title">Riemërto paraqitjen</string>
+    <string name="settings_pkb_layouts_save_file">Ruaj si skedar</string>
     <string name="settings_pkb_layouts_save_failed">Paraqitja nuk u ruajt dot</string>
     <string name="settings_pkb_layouts_saved">Paraqitja u ruajt</string>
     <string name="settings_pkb_layouts_share">Shpërnda %1$s</string>

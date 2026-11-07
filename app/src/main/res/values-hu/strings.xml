@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">A billentyűzet saját kiosztását használja</string>
     <string name="settings_pkb_layouts_other_keypad">Ennek a telefonnak a billentyűzetén nincs hatása</string>
     <string name="settings_pkb_layouts_save">%1$s mentése fájlként</string>
+    <string name="settings_pkb_layouts_rename">Átnevezés</string>
+    <string name="settings_pkb_layouts_rename_title">Kiosztás átnevezése</string>
+    <string name="settings_pkb_layouts_save_file">Mentés fájlként</string>
     <string name="settings_pkb_layouts_save_failed">Nem sikerült menteni a kiosztást</string>
     <string name="settings_pkb_layouts_saved">Kiosztás mentve</string>
     <string name="settings_pkb_layouts_share">%1$s megosztása</string>

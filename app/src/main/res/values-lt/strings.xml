@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Naudojamas pačios klaviatūros išdėstymas</string>
     <string name="settings_pkb_layouts_other_keypad">Šio telefono klaviatūroje neveikia</string>
     <string name="settings_pkb_layouts_save">Išsaugoti %1$s kaip failą</string>
+    <string name="settings_pkb_layouts_rename">Pervardyti</string>
+    <string name="settings_pkb_layouts_rename_title">Pervardyti išdėstymą</string>
+    <string name="settings_pkb_layouts_save_file">Išsaugoti kaip failą</string>
     <string name="settings_pkb_layouts_save_failed">Nepavyko išsaugoti išdėstymo</string>
     <string name="settings_pkb_layouts_saved">Išdėstymas išsaugotas</string>
     <string name="settings_pkb_layouts_share">Bendrinti %1$s</string>

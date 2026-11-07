@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Usa il layout proprio della tastiera</string>
     <string name="settings_pkb_layouts_other_keypad">Non ha effetto sul tastierino di questo telefono</string>
     <string name="settings_pkb_layouts_save">Salva %1$s come file</string>
+    <string name="settings_pkb_layouts_rename">Rinomina</string>
+    <string name="settings_pkb_layouts_rename_title">Rinomina layout</string>
+    <string name="settings_pkb_layouts_save_file">Salva come file</string>
     <string name="settings_pkb_layouts_save_failed">Impossibile salvare il layout</string>
     <string name="settings_pkb_layouts_saved">Layout salvato</string>
     <string name="settings_pkb_layouts_share">Condividi %1$s</string>

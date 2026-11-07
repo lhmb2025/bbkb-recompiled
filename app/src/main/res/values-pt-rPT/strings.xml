@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Utiliza o esquema do próprio teclado</string>
     <string name="settings_pkb_layouts_other_keypad">Não faz nada no teclado deste telefone</string>
     <string name="settings_pkb_layouts_save">Guardar %1$s como ficheiro</string>
+    <string name="settings_pkb_layouts_rename">Mudar o nome</string>
+    <string name="settings_pkb_layouts_rename_title">Mudar o nome do esquema</string>
+    <string name="settings_pkb_layouts_save_file">Guardar como ficheiro</string>
     <string name="settings_pkb_layouts_save_failed">Não foi possível guardar o esquema</string>
     <string name="settings_pkb_layouts_saved">Esquema guardado</string>
     <string name="settings_pkb_layouts_share">Partilhar %1$s</string>

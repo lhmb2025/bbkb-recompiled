@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Använder tangentbordets egen layout</string>
     <string name="settings_pkb_layouts_other_keypad">Gör ingenting på den här telefonens tangentbord</string>
     <string name="settings_pkb_layouts_save">Spara %1$s som fil</string>
+    <string name="settings_pkb_layouts_rename">Byt namn</string>
+    <string name="settings_pkb_layouts_rename_title">Byt namn på layout</string>
+    <string name="settings_pkb_layouts_save_file">Spara som fil</string>
     <string name="settings_pkb_layouts_save_failed">Det gick inte att spara layouten</string>
     <string name="settings_pkb_layouts_saved">Layouten har sparats</string>
     <string name="settings_pkb_layouts_share">Dela %1$s</string>

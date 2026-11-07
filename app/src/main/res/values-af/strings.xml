@@ -247,6 +247,9 @@
     <string name="settings_pkb_layouts_none_summary">Gebruik die sleutelbord se eie uitleg</string>
     <string name="settings_pkb_layouts_other_keypad">Doen niks op hierdie foon se sleutelbord nie</string>
     <string name="settings_pkb_layouts_save">Stoor %1$s as \'n lêer</string>
+    <string name="settings_pkb_layouts_rename">Hernoem</string>
+    <string name="settings_pkb_layouts_rename_title">Hernoem uitleg</string>
+    <string name="settings_pkb_layouts_save_file">Stoor as \'n lêer</string>
     <string name="settings_pkb_layouts_save_failed">Kon nie die uitleg stoor nie</string>
     <string name="settings_pkb_layouts_saved">Uitleg gestoor</string>
     <string name="settings_pkb_layouts_share">Deel %1$s</string>
