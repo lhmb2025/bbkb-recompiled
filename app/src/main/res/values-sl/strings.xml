@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Jeziki</string>
     <string name="rationale_dialog_header">BBKB potrebuje dovoljenje</string>
+    <string name="permission_blocked_explanation">Android ne zahteva več tega dovoljenja. Vklopite ga lahko v nastavitvah aplikacije.</string>
     <string name="send_to">Deli besedilo z…</string>
     <string name="sticky_control_mode_notification_message">Ctrl je vklopljen. Dotaknite se tukaj za izklop.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

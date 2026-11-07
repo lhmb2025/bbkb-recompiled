@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Llengües</string>
     <string name="rationale_dialog_header">BBKB necessita permís</string>
+    <string name="permission_blocked_explanation">Android ja no demana aquest permís. Pots activar-lo a la configuració de l\'aplicació.</string>
     <string name="send_to">Comparteix el text a…</string>
     <string name="sticky_control_mode_notification_message">Ctrl està activada. Toqueu aquí per desactivar-la.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">ភាសា</string>
     <string name="rationale_dialog_header">BBKB ត្រូវការការអនុញ្ញាត</string>
+    <string name="permission_blocked_explanation">Android លែងស្នើសុំការអនុញ្ញាតនេះទៀតហើយ។ អ្នកអាចបើកវានៅក្នុងការកំណត់កម្មវិធី។</string>
     <string name="send_to">ចែករំលែកអត្ថបទទៅ…</string>
     <string name="sticky_control_mode_notification_message">Ctrl កំពុងបើក។ ប៉ះទីនេះដើម្បីបិទ។</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

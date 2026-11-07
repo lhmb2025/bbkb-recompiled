@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Мовы</string>
     <string name="rationale_dialog_header">BBKB патрэбны дазвол</string>
+    <string name="permission_blocked_explanation">Android больш не запытвае гэты дазвол. Вы можаце ўключыць яго ў наладах праграмы.</string>
     <string name="send_to">Абагуліць тэкст праз…</string>
     <string name="sticky_control_mode_notification_message">Ctrl уключаны. Націсніце тут, каб выключыць.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

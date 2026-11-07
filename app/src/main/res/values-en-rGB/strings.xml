@@ -50,6 +50,7 @@
     <string name="prefs_keypress_sound_volume_settings">Sound volume</string>
     <string name="prefs_keypress_vibration_duration_settings">Vibration duration</string>
     <string name="rationale_dialog_header">BBKB needs permission</string>
+    <string name="permission_blocked_explanation">Android no longer asks for this permission. You can turn it on in the app\'s settings.</string>
     <string name="send_to">Share text to…</string>
     <string name="settings_screen_type_by_swiping">Type by swiping</string>
     <string name="settings_screen_type_by_swiping_summary">Type quickly without lifting your finger off the keyboard</string>

@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Kalbos</string>
     <string name="rationale_dialog_header">„BBKB“ reikia leidimo</string>
+    <string name="permission_blocked_explanation">„Android“ nebeprašo šio leidimo. Galite jį įjungti programos nustatymuose.</string>
     <string name="send_to">Bendrinti tekstą su…</string>
     <string name="sticky_control_mode_notification_message">„Ctrl“ įjungtas. Bakstelėkite čia, kad išjungtumėte.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Tillar</string>
     <string name="rationale_dialog_header">BBKB uchun ruxsat kerak</string>
+    <string name="permission_blocked_explanation">Android endi bu ruxsatni soʻramaydi. Uni ilova sozlamalarida yoqishingiz mumkin.</string>
     <string name="send_to">Matnni ulashish…</string>
     <string name="sticky_control_mode_notification_message">Ctrl yoqilgan. O‘chirish uchun shu yerni bosing.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Мови</string>
     <string name="rationale_dialog_header">BBKB потрібен дозвіл</string>
+    <string name="permission_blocked_explanation">Android більше не запитує цей дозвіл. Його можна ввімкнути в налаштуваннях застосунку.</string>
     <string name="send_to">Поділитися текстом у…</string>
     <string name="sticky_control_mode_notification_message">Ctrl увімкнено. Торкніться тут, щоб вимкнути.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

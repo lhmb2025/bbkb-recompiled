@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">மொழிகள்</string>
     <string name="rationale_dialog_header">BBKB க்கு அனுமதி தேவை</string>
+    <string name="permission_blocked_explanation">Android இனி இந்த அனுமதியைக் கேட்காது. ஆப்ஸின் அமைப்புகளில் அதை இயக்கலாம்.</string>
     <string name="send_to">உரையைப் பகிர்…</string>
     <string name="sticky_control_mode_notification_message">Ctrl இயக்கத்தில் உள்ளது. அணைக்க இங்கே தட்டவும்.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

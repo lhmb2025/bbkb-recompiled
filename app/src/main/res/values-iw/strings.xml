@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">שפות</string>
     <string name="rationale_dialog_header">BBKB זקוק להרשאה</string>
+    <string name="permission_blocked_explanation">Android כבר לא מבקש הרשאה זו. אפשר להפעיל אותה בהגדרות האפליקציה.</string>
     <string name="send_to">שתף טקסט עם…</string>
     <string name="sticky_control_mode_notification_message">מקש Ctrl פועל. הקש כאן כדי לכבות אותו.</string>
     <string name="suggested_punctuations">!,?,\\,,:,;,\",(|),)|(,\',-,/,@,_</string>

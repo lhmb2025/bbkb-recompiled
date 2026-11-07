@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Լեզուներ</string>
     <string name="rationale_dialog_header">BBKB-ին անհրաժեշտ է թույլտվություն</string>
+    <string name="permission_blocked_explanation">Android-ն այլևս չի հարցնում այս թույլտվությունը։ Կարող եք միացնել այն հավելվածի կարգավորումներում։</string>
     <string name="send_to">Կիսվել տեքստով…</string>
     <string name="sticky_control_mode_notification_message">Ctrl-ը միացված է։ Հպեք այստեղ՝ անջատելու համար։</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

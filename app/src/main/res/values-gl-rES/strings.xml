@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Idiomas</string>
     <string name="rationale_dialog_header">BBKB precisa permiso</string>
+    <string name="permission_blocked_explanation">Android xa non pide este permiso. Podes activalo na configuración da aplicación.</string>
     <string name="send_to">Compartir o texto con…</string>
     <string name="sticky_control_mode_notification_message">Ctrl está activado. Toca aquí para desactivalo.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

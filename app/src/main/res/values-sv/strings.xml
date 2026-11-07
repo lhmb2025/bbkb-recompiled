@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Språk</string>
     <string name="rationale_dialog_header">BBKB behöver behörighet</string>
+    <string name="permission_blocked_explanation">Android frågar inte längre efter den här behörigheten. Du kan slå på den i appens inställningar.</string>
     <string name="send_to">Dela text till …</string>
     <string name="sticky_control_mode_notification_message">Ctrl är på. Tryck här för att stänga av.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Talen</string>
     <string name="rationale_dialog_header">BBKB heeft toestemming nodig</string>
+    <string name="permission_blocked_explanation">Android vraagt niet meer om deze toestemming. Je kunt die inschakelen in de instellingen van de app.</string>
     <string name="send_to">Tekst delen met…</string>
     <string name="sticky_control_mode_notification_message">Ctrl staat aan. Tik hier om uit te zetten.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

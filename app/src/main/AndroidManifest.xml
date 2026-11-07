@@ -239,14 +239,10 @@
 
         <activity
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:label="@string/rationale_dialog_header"
             android:name="dev.bbkb.ime.core.permissions.PermissionActivity"
             android:exported="false"
             android:taskAffinity=""/>
-        <activity
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:label="@string/rationale_dialog_header"
-            android:name="dev.bbkb.ime.core.permissions.RationaleDialog"
-            android:exported="false"/>
         <activity
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:name="dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputDialog"

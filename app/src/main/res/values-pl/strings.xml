@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Języki</string>
     <string name="rationale_dialog_header">BBKB wymaga uprawnień</string>
+    <string name="permission_blocked_explanation">Android nie prosi już o to uprawnienie. Możesz je włączyć w ustawieniach aplikacji.</string>
     <string name="send_to">Udostępnij tekst w…</string>
     <string name="sticky_control_mode_notification_message">Ctrl wł. Dotknij tutaj, aby go wyłączyć.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

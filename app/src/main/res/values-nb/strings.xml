@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Språk</string>
     <string name="rationale_dialog_header">BBKB trenger tillatelse</string>
+    <string name="permission_blocked_explanation">Android spør ikke lenger om denne tillatelsen. Du kan slå den på i appens innstillinger.</string>
     <string name="send_to">Del tekst med …</string>
     <string name="sticky_control_mode_notification_message">Ctrl er på. Trykk her for å slå av.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

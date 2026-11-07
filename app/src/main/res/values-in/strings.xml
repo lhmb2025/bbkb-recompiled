@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Bahasa</string>
     <string name="rationale_dialog_header">BBKB memerlukan izin</string>
+    <string name="permission_blocked_explanation">Android tidak lagi meminta izin ini. Anda dapat mengaktifkannya di pengaturan aplikasi.</string>
     <string name="send_to">Bagikan teks kepada…</string>
     <string name="sticky_control_mode_notification_message">Ctrl aktif. Ketuk di sini utk menonaktifkn.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

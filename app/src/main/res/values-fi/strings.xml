@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Kielet</string>
     <string name="rationale_dialog_header">BBKB tarvitsee luvan</string>
+    <string name="permission_blocked_explanation">Android ei enää pyydä tätä lupaa. Voit ottaa sen käyttöön sovelluksen asetuksista.</string>
     <string name="send_to">Jaa teksti kohteeseen…</string>
     <string name="sticky_control_mode_notification_message">Ctrl käytössä, poista käytöstä tästä.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

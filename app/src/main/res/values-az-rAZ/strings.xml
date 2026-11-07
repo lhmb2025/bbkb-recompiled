@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Dillər</string>
     <string name="rationale_dialog_header">BBKB üçün icazə lazımdır</string>
+    <string name="permission_blocked_explanation">Android artıq bu icazəni istəmir. Onu tətbiqin ayarlarından aktiv edə bilərsiniz.</string>
     <string name="send_to">Mətni paylaşın…</string>
     <string name="sticky_control_mode_notification_message">Ctrl aktivdir. Söndürmək üçün buraya toxunun.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

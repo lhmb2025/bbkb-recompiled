@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Sprachen</string>
     <string name="rationale_dialog_header">BBKB benötigt eine Berechtigung.</string>
+    <string name="permission_blocked_explanation">Android fragt nicht mehr nach dieser Berechtigung. Sie können sie in den App-Einstellungen aktivieren.</string>
     <string name="send_to">Text teilen mit …</string>
     <string name="sticky_control_mode_notification_message">Strg aktiviert. Zum Deaktivieren tippen.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

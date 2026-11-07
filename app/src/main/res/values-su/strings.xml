@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Basa</string>
     <string name="rationale_dialog_header">BBKB butuh idin</string>
+    <string name="permission_blocked_explanation">Android geus teu nyuhunkeun idin ieu deui. Anjeun tiasa ngaktipkeunana dina setelan aplikasi.</string>
     <string name="send_to">Bagikeun téks ka…</string>
     <string name="sticky_control_mode_notification_message">Ctrl keur hurung. Toél di dieu pikeun mareuman.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

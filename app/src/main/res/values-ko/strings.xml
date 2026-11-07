@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">언어</string>
     <string name="rationale_dialog_header">BBKB에 권한 필요</string>
+    <string name="permission_blocked_explanation">Android에서 더 이상 이 권한을 요청하지 않습니다. 앱 설정에서 켤 수 있습니다.</string>
     <string name="send_to">다음과 텍스트 공유…</string>
     <string name="sticky_control_mode_notification_message">Ctrl이 켜져 있습니다. 끄려면 여기를 탭합니다.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

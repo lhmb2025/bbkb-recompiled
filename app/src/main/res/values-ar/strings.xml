@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">اللغات</string>
     <string name="rationale_dialog_header">يتطلب BBKB إذنًا</string>
+    <string name="permission_blocked_explanation">لم يعد Android يطلب هذا الإذن. يمكنك تفعيله من إعدادات التطبيق.</string>
     <string name="send_to">مشاركة نص إلى…</string>
     <string name="sticky_control_mode_notification_message">مفتاح Ctrl قيد التشغيل. اضغط هنا لإيقاف تشغيله.</string>
     <string name="suggested_punctuations">!,؟,،,:,؛,\",(|),)|(,\',-,/,@,_</string>

@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">زبان‌ها</string>
     <string name="rationale_dialog_header">BBKB به مجوز نیاز دارد</string>
+    <string name="permission_blocked_explanation">Android دیگر این مجوز را درخواست نمی‌کند. می‌توانید آن را در تنظیمات برنامه فعال کنید.</string>
     <string name="send_to">اشتراک‌گذاری متن با…</string>
     <string name="sticky_control_mode_notification_message">Ctrl روشن است. برای خاموش کردن اینجا ضربه بزنید.</string>
     <string name="suggested_punctuations">!,؟,،,:,؛,\",(|),)|(,\',-,/,@,_</string>

@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">ენები</string>
     <string name="rationale_dialog_header">BBKB-ს ნებართვა სჭირდება</string>
+    <string name="permission_blocked_explanation">Android ამ ნებართვას აღარ ითხოვს. მისი ჩართვა შეგიძლიათ აპის პარამეტრებში.</string>
     <string name="send_to">ტექსტის გაზიარება…</string>
     <string name="sticky_control_mode_notification_message">Ctrl ჩართულია. გამოსართავად შეეხეთ აქ.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

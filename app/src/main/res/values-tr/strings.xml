@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Diller</string>
     <string name="rationale_dialog_header">BBKB için izin gerekiyor</string>
+    <string name="permission_blocked_explanation">Android artık bu izni istemiyor. Uygulama ayarlarından açabilirsiniz.</string>
     <string name="send_to">Metni şu kişilerle paylaş:</string>
     <string name="sticky_control_mode_notification_message">Ctrl açık. Kapatmak için buraya dokunun.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

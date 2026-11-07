@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Limbi</string>
     <string name="rationale_dialog_header">BBKB are nevoie de permisiune</string>
+    <string name="permission_blocked_explanation">Android nu mai cere această permisiune. O puteți activa în setările aplicației.</string>
     <string name="send_to">Distribuire text către…</string>
     <string name="sticky_control_mode_notification_message">Ctrl activ. Atingeţi-dezactivare.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

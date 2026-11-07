@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Ngôn ngữ</string>
     <string name="rationale_dialog_header">BBKB cần được cấp quyền</string>
+    <string name="permission_blocked_explanation">Android không còn hỏi quyền này nữa. Bạn có thể bật nó trong phần cài đặt của ứng dụng.</string>
     <string name="send_to">Chia sẻ văn bản với…</string>
     <string name="sticky_control_mode_notification_message">Ctrl đã bật. Chạm vào đây để tắt.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

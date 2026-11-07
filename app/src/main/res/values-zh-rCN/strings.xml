@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">语言</string>
     <string name="rationale_dialog_header">BBKB 需要具备权限</string>
+    <string name="permission_blocked_explanation">Android 不再请求此权限。您可以在应用设置中开启。</string>
     <string name="send_to">将文本共享至…</string>
     <string name="sticky_control_mode_notification_message">Ctrl 键打开。点按此处以关闭。</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

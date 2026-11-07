@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Ieithoedd</string>
     <string name="rationale_dialog_header">Mae angen caniatâd ar BBKB</string>
+    <string name="permission_blocked_explanation">Nid yw Android yn gofyn am y caniatâd hwn mwyach. Gallwch ei droi ymlaen yng ngosodiadau\'r ap.</string>
     <string name="send_to">Rhannu testun â…</string>
     <string name="sticky_control_mode_notification_message">Mae Ctrl ymlaen. Tapiwch yma i\'w ddiffodd.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

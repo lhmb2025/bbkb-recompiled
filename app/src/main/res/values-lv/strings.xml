@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Valodas</string>
     <string name="rationale_dialog_header">BBKB nepieciešama atļauja</string>
+    <string name="permission_blocked_explanation">Android vairs neprasa šo atļauju. Varat to ieslēgt lietotnes iestatījumos.</string>
     <string name="send_to">Kopīgot tekstu ar…</string>
     <string name="sticky_control_mode_notification_message">Ctrl ir ieslēgts. Pieskarieties šeit, lai izslēgtu.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

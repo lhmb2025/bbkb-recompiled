@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Teangacha</string>
     <string name="rationale_dialog_header">Tá cead ag teastáil ó BBKB</string>
+    <string name="permission_blocked_explanation">Ní iarrann Android an cead seo a thuilleadh. Is féidir leat é a chur ar siúl i socruithe an aip.</string>
     <string name="send_to">Comhroinn téacs le…</string>
     <string name="sticky_control_mode_notification_message">Tá Ctrl ar siúl. Tapáil anseo chun é a mhúchadh.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

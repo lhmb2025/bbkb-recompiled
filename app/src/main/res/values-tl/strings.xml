@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">Mga Wika</string>
     <string name="rationale_dialog_header">Kailangan ng pahintulot ang BBKB</string>
+    <string name="permission_blocked_explanation">Hindi na humihingi ang Android ng pahintulot na ito. Puwede mo itong i-on sa mga setting ng app.</string>
     <string name="send_to">Ibahagi ang text sa…</string>
     <string name="sticky_control_mode_notification_message">Naka-on ang Ctrl. I-tap dito para i-off.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>

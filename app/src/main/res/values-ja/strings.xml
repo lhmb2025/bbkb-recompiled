@@ -634,6 +634,7 @@
     <string name="ime_name">BBKB</string>
     <string name="language_selection_title">言語</string>
     <string name="rationale_dialog_header">BBKBに権限が必要です</string>
+    <string name="permission_blocked_explanation">Android はこの権限を再度要求しません。アプリの設定でオンにできます。</string>
     <string name="send_to">テキストの共有先…</string>
     <string name="sticky_control_mode_notification_message">Ctrlがオンになっています。オフにするには、ここをタップします。</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>
