@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "generated": "2026-10-27T20:45:49Z",
+  "generated": "2026-11-07T02:30:45Z",
   "app": {
     "release": {
-      "versionCode": 1440,
-      "versionName": "5.0.0-beta.27",
-      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.27/bbkb-5.0.0-beta.27-release.apk",
-      "sha256": "f5c511f8bfbce265fde4950b32040223ac443f5777bee478249aa3117333fa80",
-      "size": 57762344,
-      "minSdk": 23,
-      "notes": "Dynamic color now tints the settings screens as well as the keyboard. Fixed a bug where the keyboard kept the wrong size after the screen rotated. Fixed status bar icons showing light gray on light mode."
+      "versionCode": 1441,
+      "versionName": "5.0.0-beta.28",
+      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.28/bbkb-5.0.0-beta.28-release.apk",
+      "sha256": "85b04c026258e544556bfa40e403f53f9961162c2c78a75f3af13e7a1edebe31",
+      "size": 70139169,
+      "minSdk": 26,
+      "notes": "Emoji search and suggestions, rebuilt learned words with use counts and export and import, redesigned User dictionary and Text shortcuts screens, improved auxbar management, faster typing, many bug fixes, and support for Android 8.0."
     }
   },
   "packs": {
