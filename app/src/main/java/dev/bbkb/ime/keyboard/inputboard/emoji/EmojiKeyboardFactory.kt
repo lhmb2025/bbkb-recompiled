@@ -123,6 +123,19 @@ class EmojiKeyboardFactory(
         }
 
     /**
+     * [key] rebuilt for the tone now remembered, when it is one of this factory's keys for the emoji
+     * whose base form is [base] and what it shows changed; null leaves the key as it is. Its
+     * long-press popup lists the emoji it was built from first, so that is what it is rebuilt from:
+     * the same key a reopened board would build. Blank filler keys have no popup and never match.
+     */
+    fun retoneKey(key: Key, base: String): Key? {
+        val built = key.moreKeys?.firstOrNull()?.label ?: return null
+        if (built.isEmpty() || EmojiToneMemory.normalize(built) != base) return null
+        val rebuilt = createEmojiKey(built)
+        return if (rebuilt.keySpecOutputText == key.keySpecOutputText) null else rebuilt
+    }
+
+    /**
      * A key for [emoji], cloned from the template key.
      *
      * The key spec is built with the 4-argument constructor, bypassing the key-spec parser (which can

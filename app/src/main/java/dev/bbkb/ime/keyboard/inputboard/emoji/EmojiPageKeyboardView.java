@@ -116,6 +116,17 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         void onEmojiKeyPressed(Key key);
 
         void onEmojiKeyReleased(Key key);
+
+        /**
+         * The skin-tone popup changed the remembered tone of {@code emoji}'s base: the board
+         * redraws that emoji's keys with it at once.
+         */
+        default void onToneMemoryChanged(String emoji) {
+        }
+
+        /** An emoji was picked from the skin-tone popup: it counts as used, like a tapped key. */
+        default void onPopupEmojiPicked(String emoji) {
+        }
     }
 
     @Override
@@ -572,7 +583,7 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         moreKeysKeyboardView.setKeyboard(moreKeysKeyboardMo5338b);
         view.measure(-2, -2);
         moreKeysKeyboardView.showMoreKeysPanel(this, this, keyM6620b.getX() + (keyM6620b.getWidth() / 2), keyM6620b.getY(),
-                new ToneRecordingListener(KeyboardSwitcher.getInstance().getKeyboardActionListener(), getContext()));
+                new ToneRecordingListener(KeyboardSwitcher.getInstance().getKeyboardActionListener(), getContext(), this.keyEventListener));
         PointerTracker.getPointerTracker(motionEvent.getPointerId(motionEvent.getActionIndex())).startMoreKeysPanel(moreKeysKeyboardView);
         dismissKeyPreviewWithoutDelay(keyM6620b);
         holdPagerForTones(keyM6620b);
@@ -598,15 +609,18 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
     /**
      * Wraps the IME's listener for the skin-tone popup: a variant picked there is remembered for
      * its base emoji ({@link EmojiToneMemory}) and the plain emoji forgets it, so the key shows the
-     * chosen tone from then on. Nothing is remembered in an incognito field.
+     * chosen tone from then on (the board is told, so it redraws that key at once rather than on
+     * the next open). Nothing is remembered in an incognito field.
      */
-    private static final class ToneRecordingListener implements KeyboardActionListenerInterface {
+    static final class ToneRecordingListener implements KeyboardActionListenerInterface {
         private final KeyboardActionListenerInterface delegate;
         private final Context context;
+        private final OnEmojiKeyListener board;
 
-        ToneRecordingListener(KeyboardActionListenerInterface delegate, Context context) {
+        ToneRecordingListener(KeyboardActionListenerInterface delegate, Context context, OnEmojiKeyListener board) {
             this.delegate = delegate;
             this.context = context.getApplicationContext();
+            this.board = board;
         }
 
         @Override
@@ -652,7 +666,11 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
             if (KeyboardSwitcher.getInstance().isNoPersonalizedLearning()) {
                 return;
             }
-            EmojiToneMemory.onEmojiPicked(PrefsManager.INSTANCE.getPrefs(context), emoji);
+            // Recents first: a popup pick is a pick (owner report 2026-11-06: only tapped keys got there).
+            board.onPopupEmojiPicked(emoji);
+            if (EmojiToneMemory.onEmojiPicked(PrefsManager.INSTANCE.getPrefs(context), emoji)) {
+                board.onToneMemoryChanged(emoji);
+            }
         }
     }
 }

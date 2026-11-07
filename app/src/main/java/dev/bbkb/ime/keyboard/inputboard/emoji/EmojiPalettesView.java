@@ -146,6 +146,43 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     private EmojiSearchOverlayView searchOverlay;
     private FrameLayout pagerContainer;
 
+    /**
+     * A swipe on the Recents overlay pages the categories like a swipe on any category page: the
+     * overlay stands in for the Recents tab's own page, so the swipe drags the category pager behind
+     * it (ViewPager2's fake drag, which settles exactly as a real drag does) and the overlay follows
+     * the page it covers ({@link #onPageScrolled}). Landing on the first category selects its tab,
+     * which hides the overlay, as a tap on that tab does. Only while the overlay shows the Recents
+     * tab: a typed query's results stay put whatever the swipe.
+     */
+    private final EmojiSearchOverlayView.PageHandoff recentsHandoff = new EmojiSearchOverlayView.PageHandoff() {
+        @Override
+        public boolean canHandOff() {
+            return !query.isTypedInBoard()
+                    && categoryManager.getCurrentCategoryId() == 0
+                    && viewPager.getAdapter() != null
+                    && viewPager.canScrollHorizontally(1);
+        }
+
+        @Override
+        public boolean beginDrag() {
+            return viewPager.beginFakeDrag();
+        }
+
+        @Override
+        public void dragBy(float dx) {
+            if (viewPager.isFakeDragging()) {
+                viewPager.fakeDragBy(dx);
+            }
+        }
+
+        @Override
+        public void endDrag() {
+            if (viewPager.isFakeDragging()) {
+                viewPager.endFakeDrag();
+            }
+        }
+    };
+
     // The tab row and the search field that takes its place while a query is typed.
     private View tabRow;
     private View searchFieldRow;
@@ -278,6 +315,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         // Connect overlay to key listener and page indicator
         if (this.searchOverlay != null) {
             this.searchOverlay.setOnKeyEventListener(this);
+            this.searchOverlay.setPageHandoff(this.recentsHandoff);
             this.searchOverlay.setPageIndicator(this.pageIndicatorView);
             this.searchOverlay.setSharedMoreKeysPanel(this.moreKeysPanel);
         }
@@ -730,6 +768,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
 
     /** ViewPager2.OnPageChangeCallback: the page dots follow the scroll within the current category. */
     public void onPageScrolled(int i, float f, int i2) {
+        followRecentsPage(i, i2);
         int iIntValue = this.categoryManager.getCategoryAt(i);
         int iM6668c = this.categoryManager.getPageCount(iIntValue);
         int iM6664b = this.categoryManager.getCurrentCategoryId();
@@ -744,9 +783,61 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         }
     }
 
+    /**
+     * While the Recents overlay is up it moves with the Recents page it covers, so a swipe from
+     * Recents slides it off as the first category slides in (and back if the swipe is let go).
+     */
+    private void followRecentsPage(int position, int offsetPixels) {
+        if (this.searchOverlay == null) {
+            return;
+        }
+        float x = 0f;
+        if (this.searchOverlay.isOverlayVisible() && !this.query.isTypedInBoard()
+                && this.categoryManager.getCurrentCategoryId() == 0
+                && this.categoryManager.getCategoryAt(position) == 0) {
+            x = -offsetPixels;
+        }
+        if (this.searchOverlay.getTranslationX() != x) {
+            this.searchOverlay.setTranslationX(x);
+        }
+    }
+
+    /**
+     * A remembered skin tone changed with the board open (the long-press popup, or a pick that
+     * forgot one): that emoji's keys are rebuilt in the category pages and the overlay and drawn
+     * with the tone at once, so a tap on them inserts it. Posted: this comes from inside the popup's
+     * key release, and re-setting the page under that popup must wait until it has closed.
+     */
+    @Override // dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPageKeyboardView.OnEmojiKeyListener
+    public void onToneMemoryChanged(String emoji) {
+        if (emoji == null || emoji.isEmpty()) {
+            return;
+        }
+        final String base = EmojiToneMemory.normalize(emoji);
+        post(() -> retone(base));
+    }
+
+    /** Rebuilds the keys of the emoji whose base form is {@code base}; see {@link #onToneMemoryChanged}. */
+    void retone(String base) {
+        this.pagerAdapter.refreshPages(this.categoryManager.retone(base));
+        if (this.searchOverlay != null) {
+            final EmojiKeyboardFactory factory = this.categoryManager.getKeyboardFactory();
+            this.searchOverlay.replaceKeys(key -> factory.retoneKey(key, base));
+        }
+    }
+
     @Override // dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPageKeyboardView.OnEmojiKeyListener
     public void onEmojiKeyPressed(Key key) {
         this.keyboardActionListener.onPressKey(key.getCode(), 0, true);
+    }
+
+    /** A pick from the skin-tone popup reaches Recents like a tapped key (the popup already skips incognito fields). */
+    @Override // dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPageKeyboardView.OnEmojiKeyListener
+    public void onPopupEmojiPicked(String emoji) {
+        if (emoji == null || emoji.isEmpty()) {
+            return;
+        }
+        this.pagerAdapter.addToRecents(emoji);
     }
 
     @Override // dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPageKeyboardView.OnEmojiKeyListener
@@ -766,7 +857,9 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         // no trace there.
         if (!KeyboardSwitcher.getInstance().isNoPersonalizedLearning()) {
             this.pagerAdapter.addToRecents(key.getKeySpecOutputText());
-            EmojiToneMemory.onEmojiPicked(PrefsManager.INSTANCE.getPrefs(getContext()), key.getKeySpecOutputText());
+            if (EmojiToneMemory.onEmojiPicked(PrefsManager.INSTANCE.getPrefs(getContext()), key.getKeySpecOutputText())) {
+                onToneMemoryChanged(key.getKeySpecOutputText());
+            }
         }
         int iM6232c = key.getCode();
         if (iM6232c == -4) {

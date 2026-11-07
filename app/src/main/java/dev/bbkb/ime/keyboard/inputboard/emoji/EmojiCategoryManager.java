@@ -350,6 +350,29 @@ final class EmojiCategoryManager {
     }
 
     /**
+     * A skin tone was remembered or forgotten for the emoji whose base form is {@code base} while
+     * the board is open: rebuilds that emoji's keys in every cached category page (the Recents grid
+     * shows exactly what was picked and is left alone), so they show and insert the tone at once.
+     * The cached pages then match the stored memory again, so the next open keeps them.
+     *
+     * @return the pages whose keys changed
+     */
+    public java.util.Set<EmojiKeyboard> retone(String base) {
+        final java.util.Set<EmojiKeyboard> changed =
+                java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+        synchronized (this.keyboardCache) {
+            for (EmojiKeyboard page : this.keyboardCache.values()) {
+                if (!page.isRecentsGrid()
+                        && page.replaceKeys(key -> this.emojiKeyboardFactory.retoneKey(key, base))) {
+                    changed.add(page);
+                }
+            }
+            this.toneMemorySnapshot = EmojiToneMemory.snapshot(this.sharedPreferences);
+        }
+        return changed;
+    }
+
+    /**
      * On close: keeps the Recents grid and the pages of the categories at and next to pager
      * {@code position} (what the next open binds first), and drops the rest, so a closed board does
      * not hold every category the user browsed.

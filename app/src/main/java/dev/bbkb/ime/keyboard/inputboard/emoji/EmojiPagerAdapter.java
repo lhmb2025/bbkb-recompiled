@@ -146,6 +146,16 @@ final class EmojiPagerAdapter extends RecyclerView.Adapter<EmojiPagerAdapter.Pag
         }
     }
 
+    /** Re-sets each laid-out page showing one of {@code changed}, so it draws and hit-tests its new keys. */
+    void refreshPages(java.util.Set<EmojiKeyboard> changed) {
+        for (int i = 0; i < this.mPageViews.size(); i++) {
+            EmojiPageKeyboardView page = this.mPageViews.valueAt(i);
+            if (changed.contains(page.getKeyboard())) {
+                page.setKeyboard(page.getKeyboard());
+            }
+        }
+    }
+
     public void releaseCurrentPage() {
         EmojiPageKeyboardView emojiPageKeyboardView = this.mPageViews.get(this.mCurrentPosition);
         if (emojiPageKeyboardView != null) {

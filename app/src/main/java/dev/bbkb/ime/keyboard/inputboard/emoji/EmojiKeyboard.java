@@ -1,6 +1,7 @@
 package dev.bbkb.ime.keyboard.inputboard.emoji;
 
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.text.TextUtils;
 
 import dev.bbkb.ime.keyboard.Key;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 
 /**
  * Keyboard data structure for displaying emoji grids.
@@ -177,6 +179,43 @@ public final class EmojiKeyboard extends Keyboard {
                 this.keyDeque.addLast(aVar);
                 positionKey(aVar);
             }
+        }
+    }
+
+    /** Whether this is the Recents grid (category 0), whose keys show exactly what was picked. */
+    boolean isRecentsGrid() {
+        return this.isRecentsKeyboard;
+    }
+
+    /**
+     * Swaps each key {@code rebuild} returns a new key for into the same grid slot (null keeps the
+     * key). Used when a skin tone is chosen with the board open, so only the keys of that emoji
+     * change and the page itself is kept.
+     *
+     * @return whether any key was replaced
+     */
+    boolean replaceKeys(Function<Key, Key> rebuild) {
+        synchronized (this.lock) {
+            boolean changed = false;
+            final ArrayDeque<GridKey> updated = new ArrayDeque<>(this.keyDeque.size());
+            for (GridKey old : this.keyDeque) {
+                final Key replacement = rebuild.apply(old);
+                if (replacement == null) {
+                    updated.addLast(old);
+                    continue;
+                }
+                final GridKey key = new GridKey(replacement);
+                final Rect box = old.getHitBox();
+                key.setPosition(old.getX(), old.getY(), box.right, box.bottom);
+                updated.addLast(key);
+                changed = true;
+            }
+            if (changed) {
+                this.keyDeque.clear();
+                this.keyDeque.addAll(updated);
+                this.cachedKeyList = null;
+            }
+            return changed;
         }
     }
 
