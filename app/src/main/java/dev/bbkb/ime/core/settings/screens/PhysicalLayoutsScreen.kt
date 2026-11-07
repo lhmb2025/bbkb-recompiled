@@ -14,10 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.SaveAlt
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import dev.bbkb.ime.R
@@ -176,7 +173,7 @@ fun PhysicalLayoutsScreen(
         Custom(inGroup = true) {
             PreferenceItem(
                 title = stringResource(R.string.settings_pkb_layouts_add),
-                icon = Icons.Outlined.Add,
+                icon = ImageVector.vectorResource(R.drawable.ic_settings_m_add),
                 onClick = { addLauncher.launch(arrayOf(LetterLayoutXml.MIME_TYPE, BackupBundle.MIME_TYPE, "*/*")) },
             )
         },
@@ -247,7 +244,7 @@ private fun CustomLayoutRow(
         trailing = {
             Row {
                 RowIconButton(
-                    icon = Icons.Outlined.Share,
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_share),
                     contentDescription = stringResource(R.string.settings_pkb_layouts_share, title),
                     onClick = onShare,
                 )
@@ -274,7 +271,7 @@ private fun BuiltInLayoutRow(layout: LetterLayout, summary: String, onSave: () -
         modifier = Modifier.semantics(mergeDescendants = true) {},
         trailing = {
             RowIconButton(
-                icon = Icons.Outlined.SaveAlt,
+                icon = ImageVector.vectorResource(R.drawable.ic_settings_m_save_alt),
                 contentDescription = stringResource(R.string.settings_pkb_layouts_save, layout.name),
                 onClick = onSave,
             )

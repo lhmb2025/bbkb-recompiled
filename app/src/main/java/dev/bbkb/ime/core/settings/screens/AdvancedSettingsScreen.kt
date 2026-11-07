@@ -5,11 +5,6 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.BugReport
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.PhoneAndroid
-import androidx.compose.material.icons.outlined.SettingsBackupRestore
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,7 +28,6 @@ import dev.bbkb.ime.core.settings.ui.Category
 import dev.bbkb.ime.core.settings.ui.Nav
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Simple
-import dev.bbkb.ime.core.settings.ui.asRowIcon
 import dev.bbkb.ime.core.settings.ui.drawableIcon
 import kotlinx.coroutines.launch
 
@@ -67,21 +61,21 @@ fun AdvancedSettingsScreen(
         Nav(
             title = R.string.settings_about_title,
             summary = R.string.settings_about_summary,
-            icon = Icons.Outlined.Info.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_info),
             onClick = { onNavigateToAbout() },
         ),
         // Device Compatibility (config loader, meta state override, keyboard helper)
         Nav(
             title = R.string.settings_device_compatibility_title,
             summary = R.string.settings_device_compatibility_summary,
-            icon = Icons.Outlined.PhoneAndroid.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_phone_android),
             onClick = { onNavigateToDeviceCompatibility() },
         ),
         // Debug builds only (2026-10-20): advanced tuning and developer switches.
         Nav(
             title = R.string.settings_debug_title,
             summary = R.string.settings_debug_summary,
-            icon = Icons.Outlined.BugReport.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_bug_report),
             visible = { BuildConfig.DEBUG },
             onClick = { onNavigateToDebug() },
         ),
@@ -92,7 +86,7 @@ fun AdvancedSettingsScreen(
         Nav(
             title = R.string.settings_backup_restore_title,
             summary = R.string.settings_backup_restore_summary,
-            icon = Icons.Outlined.SettingsBackupRestore.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_settings_backup_restore),
             // Literal (== ManageDataAnchors.BACKUP_RESTORE): the search-index sync test scans for it.
             modifier = Modifier.settingsSearchAnchor("settings_backup_restore"),
             onClick = { onNavigateToBackupRestore() },

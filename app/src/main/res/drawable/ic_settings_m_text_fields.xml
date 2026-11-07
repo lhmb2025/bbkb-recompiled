@@ -1,0 +1,10 @@
+<!-- ic_settings_m_text_fields. Material Icons Outlined.TextFields (androidx.compose.material:material-icons-extended), generated from the library's ImageVector with its exact geometry, 24-unit grid. Tinted by the composable that draws it, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M2.5,4v3h5v12h3L10.5,7h5L15.5,4h-13ZM21.5,9h-9v3h3v7h3v-7h3L21.5,9Z"/>
+</vector>

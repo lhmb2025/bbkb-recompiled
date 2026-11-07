@@ -1,0 +1,10 @@
+<!-- ic_settings_m_keyboard_capslock. Material Icons Outlined.KeyboardCapslock (androidx.compose.material:material-icons-extended), generated from the library's ImageVector with its exact geometry, 24-unit grid. Tinted by the composable that draws it, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M12,8.41L16.59,13L18,11.59l-6,-6l-6,6L7.41,13L12,8.41ZM6,18h12v-2H6v2Z"/>
+</vector>

@@ -18,10 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CloudDownload
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,7 +37,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.R
@@ -146,7 +144,7 @@ fun UpdatesScreen(
                         R.string.settings_updates_version,
                         BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, BuildConfig.BUILD_TYPE,
                     ),
-                    icon = Icons.Outlined.Info,
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_info),
                     onClick = null
                 )
                 PreferenceItem(
@@ -305,7 +303,7 @@ fun UpdatesScreen(
                 SwitchPreference(
                     title = context.getString(R.string.settings_update_background_check_title),
                     summary = context.getString(R.string.settings_update_background_check_summary),
-                    icon = Icons.Outlined.Notifications,
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_notifications),
                     checked = backgroundCheck,
                     // Spelled out rather than referring to UpdateJobService.PREF_BACKGROUND_CHECK:
                     // SettingsSearchIndexTest greps the screens for the string literal each
@@ -388,7 +386,7 @@ private fun UpdateCard(
         Column(modifier = Modifier.padding(spacing.large)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    Icons.Outlined.CloudDownload,
+                    ImageVector.vectorResource(R.drawable.ic_settings_m_cloud_download),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(end = spacing.iconTextGap)

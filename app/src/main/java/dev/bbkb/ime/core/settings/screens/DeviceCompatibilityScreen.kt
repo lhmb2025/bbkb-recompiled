@@ -1,10 +1,5 @@
 package dev.bbkb.ime.core.settings.screens
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Keyboard
-import androidx.compose.material.icons.outlined.KeyboardCapslock
-import androidx.compose.material.icons.outlined.PhonelinkSetup
-import androidx.compose.material.icons.outlined.TouchApp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -16,7 +11,6 @@ import dev.bbkb.ime.core.settings.ui.ManagedToggle
 import dev.bbkb.ime.core.settings.ui.Nav
 import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
-import dev.bbkb.ime.core.settings.ui.asRowIcon
 import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.R
@@ -51,7 +45,7 @@ fun DeviceCompatibilityScreen(
         Nav(
             title = R.string.settings_device_configuration_title,
             summary = R.string.settings_device_configuration_summary,
-            icon = Icons.Outlined.PhonelinkSetup.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_phonelink_setup),
             onClick = { onNavigateToDeviceConfiguration() },
         ),
         // Override Device Meta State. The default must match SettingsValues.overrideDeviceMetaState,
@@ -61,7 +55,7 @@ fun DeviceCompatibilityScreen(
             store = boolPref(metaStateKey, true),
             title = R.string.pref_override_device_meta_state,
             summary = RowSummary.Res(R.string.pref_override_device_meta_state_summary),
-            icon = Icons.Outlined.KeyboardCapslock.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_keyboard_capslock),
         ),
         // The user's letter layouts for the physical keys (an etched Thai keypad, a layout of
         // one's own): added from a file, shared, deleted; which keyboard uses one is chosen on
@@ -87,7 +81,7 @@ fun DeviceCompatibilityScreen(
         Nav(
             title = R.string.touch_surface_helper_title,
             summary = touchSurface.statusLine,
-            icon = Icons.Outlined.TouchApp.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_touch_app),
             // Literal (== TouchSurfaceAnchors.HELPER): the search-index sync test scans for it.
             modifier = Modifier.settingsSearchAnchor("touch_surface_helper"),
             enabled = { touchSurface.declared },

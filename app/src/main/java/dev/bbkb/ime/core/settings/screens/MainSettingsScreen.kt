@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,14 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.Keyboard
-import androidx.compose.material.icons.outlined.Language
-import androidx.compose.material.icons.outlined.Palette
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.Spellcheck
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,8 +28,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
@@ -116,11 +109,11 @@ fun MainSettingsScreen(
                     .fillMaxWidth()
                     .padding(horizontal = spacing.groupInset, vertical = spacing.small),
                 placeholder = { Text(context.getString(R.string.settings_search_hint)) },
-                leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
+                leadingIcon = { Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_search), contentDescription = null) },
                 trailingIcon = {
                     if (query.isNotEmpty()) {
                         IconButton(onClick = { query = "" }) {
-                            Icon(Icons.Outlined.Clear, contentDescription = stringResource(R.string.settings_common_clear_search))
+                            Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_clear), contentDescription = stringResource(R.string.settings_common_clear_search))
                         }
                     }
                 },
@@ -180,7 +173,7 @@ fun MainSettingsScreen(
                     PreferenceScreen(
                         title = context.getString(R.string.settings_languages_title),
                         summary = context.getString(R.string.settings_languages_summary),
-                        icon = Icons.Outlined.Language,
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_language),
                         onClick = { onNavigateToScreen(SettingsRoute.LanguagesHub.route) }
                     )
 
@@ -188,7 +181,7 @@ fun MainSettingsScreen(
                     PreferenceScreen(
                         title = context.getString(R.string.settings_preferences_title),
                         summary = context.getString(R.string.settings_preferences_summary),
-                        icon = Icons.Outlined.Keyboard,
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_keyboard),
                         onClick = { onNavigateToScreen(SettingsRoute.Preferences.route) }
                     )
 
@@ -196,7 +189,7 @@ fun MainSettingsScreen(
                     PreferenceScreen(
                         title = context.getString(R.string.settings_suggestion_correction_title),
                         summary = context.getString(R.string.settings_suggestion_correction_summary),
-                        icon = Icons.Outlined.Spellcheck,
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_spellcheck),
                         onClick = { onNavigateToScreen(SettingsRoute.SuggestionCorrection.route) }
                     )
 
@@ -204,7 +197,7 @@ fun MainSettingsScreen(
                     PreferenceScreen(
                         title = context.getString(R.string.settings_appearance_layout_title),
                         summary = context.getString(R.string.settings_appearance_layout_summary),
-                        icon = Icons.Outlined.Palette,
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_palette),
                         onClick = { onNavigateToScreen(SettingsRoute.AppearanceLayout.route) }
                     )
 
@@ -212,7 +205,7 @@ fun MainSettingsScreen(
                     PreferenceScreen(
                         title = context.getString(R.string.settings_advanced_title),
                         summary = context.getString(R.string.settings_advanced_summary),
-                        icon = Icons.Outlined.Settings,
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_settings),
                         onClick = { onNavigateToScreen(SettingsRoute.Advanced.route) }
                     )
                 }
@@ -249,7 +242,7 @@ private fun UpdateAvailableBanner(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Outlined.CloudDownload,
+                imageVector = ImageVector.vectorResource(R.drawable.ic_settings_m_cloud_download),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(end = 16.dp)

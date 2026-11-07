@@ -19,9 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,7 +32,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
@@ -262,7 +261,7 @@ private fun LanguageListItem(
             leading = if (isSelected) {
                 {
                     Icon(
-                        imageVector = Icons.Outlined.Check,
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_settings_m_check_outlined),
                         contentDescription = stringResource(R.string.settings_common_selected),
                         tint = MaterialTheme.colorScheme.primary,
                     )
@@ -278,7 +277,7 @@ private fun LanguageListItem(
             trailing = if (isOfflineReady == true) {
                 {
                     Icon(
-                        imageVector = Icons.Outlined.CloudOff,
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_settings_m_cloud_off),
                         contentDescription = stringResource(R.string.settings_voice_lang_offline_ready),
                         tint = MaterialTheme.colorScheme.tertiary,
                     )

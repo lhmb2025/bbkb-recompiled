@@ -24,10 +24,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -50,11 +46,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -164,14 +162,14 @@ private fun RowScope.EditorTopBarActions(spec: KeyEditorSpec, viewModel: KeyEdit
     // The trash appears only while a key is selected.
     if (viewModel.selectedKeyIndex != null) {
         IconButton(onClick = { viewModel.clearSelectedKey() }) {
-            Icon(Icons.Outlined.Delete, stringResource(R.string.settings_keyeditor_clear_key))
+            Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_delete), stringResource(R.string.settings_keyeditor_clear_key))
         }
     }
     // Boxed with its button so the menu opens at the overflow icon rather than at the start of
     // the whole toolbar row.
     Box {
         IconButton(onClick = { showMenu = true }) {
-            Icon(Icons.Outlined.MoreVert, stringResource(R.string.settings_keyeditor_menu))
+            Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_more_vert), stringResource(R.string.settings_keyeditor_menu))
         }
         DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
             spec.resets.forEach { reset ->
@@ -236,13 +234,13 @@ private fun BoxScope.CustomSymbolBar(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         IconButton(onClick = onAdd) {
-            Icon(Icons.Outlined.Add, stringResource(R.string.add))
+            Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_add), stringResource(R.string.add))
         }
         IconButton(
             onClick = { viewModel.selectedSymbol?.let { viewModel.deleteCustomSymbol(it) } },
             enabled = viewModel.selectedSymbol != null
         ) {
-            Icon(Icons.Outlined.Delete, stringResource(R.string.clipboard_menu_delete))
+            Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_delete), stringResource(R.string.clipboard_menu_delete))
         }
     }
 }

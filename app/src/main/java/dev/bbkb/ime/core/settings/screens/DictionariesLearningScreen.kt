@@ -1,9 +1,5 @@
 package dev.bbkb.ime.core.settings.screens
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ModelTraining
-import androidx.compose.material.icons.outlined.PlaylistAdd
-import androidx.compose.material.icons.outlined.ReadMore
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
@@ -11,7 +7,6 @@ import dev.bbkb.ime.core.settings.ui.Nav
 import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
-import dev.bbkb.ime.core.settings.ui.asRowIcon
 import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.R
@@ -37,7 +32,7 @@ fun DictionariesLearningScreen(
             store = boolPref("dynamic_learning", true),
             title = R.string.settings_dict_dynamic_learning_title,
             summary = RowSummary.Res(R.string.settings_dict_dynamic_learning_summary),
-            icon = Icons.Outlined.ModelTraining.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_model_training),
             modifier = Modifier.settingsSearchAnchor("dynamic_learning"),
         ),
         // SettingsValues.showUiToAcceptTypedWord: after backspace undoes an auto-correction, the
@@ -49,7 +44,7 @@ fun DictionariesLearningScreen(
             store = boolPref("pref_show_ui_to_accept_typed_word", true),
             title = R.string.settings_dict_add_reverted_words_title,
             summary = RowSummary.Res(R.string.settings_dict_add_reverted_words_summary),
-            icon = Icons.Outlined.PlaylistAdd.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_playlist_add),
             modifier = Modifier.settingsSearchAnchor("pref_show_ui_to_accept_typed_word"),
         ),
         Nav(
@@ -61,7 +56,7 @@ fun DictionariesLearningScreen(
         Nav(
             title = R.string.settings_dict_text_shortcuts_title,
             summary = R.string.settings_dict_text_shortcuts_summary,
-            icon = Icons.Outlined.ReadMore.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_read_more),
             onClick = { onNavigateToTextShortcuts() },
         ),
         Nav(

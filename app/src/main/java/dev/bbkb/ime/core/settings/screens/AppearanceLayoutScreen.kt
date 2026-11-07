@@ -2,10 +2,6 @@ package dev.bbkb.ime.core.settings.screens
 
 import android.content.Context
 import android.os.Build
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.BrightnessMedium
-import androidx.compose.material.icons.outlined.Palette
-import androidx.compose.material.icons.outlined.Wallpaper
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
@@ -25,7 +21,6 @@ import dev.bbkb.ime.core.settings.ui.Nav
 import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
-import dev.bbkb.ime.core.settings.ui.asRowIcon
 import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.core.settings.ui.stringPref
@@ -57,7 +52,7 @@ fun AppearanceLayoutScreen(
             title = R.string.settings_keyboard_theme_title,
             options = ::themeStyles,
             fallbackIndex = 1,
-            icon = Icons.Outlined.Palette.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_palette),
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_theme_style"),
         ),
         Choice(
@@ -65,7 +60,7 @@ fun AppearanceLayoutScreen(
             title = R.string.settings_color_scheme_title,
             options = ::colorSchemes,
             fallbackIndex = 2,
-            icon = Icons.Outlined.BrightnessMedium.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_brightness_medium),
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_theme_mode"),
             visible = { it.hasColorScheme() },
         ),
@@ -74,7 +69,7 @@ fun AppearanceLayoutScreen(
             store = boolPref("pref_keyboard_use_system_colors", false),
             title = R.string.settings_use_system_colors_title,
             summary = RowSummary.Res(R.string.settings_use_system_colors_summary),
-            icon = Icons.Outlined.Wallpaper.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_wallpaper),
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_use_system_colors"),
             visible = { it.hasColorScheme() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
         ),

@@ -9,15 +9,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Language
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.util.SettingsManager
@@ -167,7 +167,7 @@ fun VoiceInputSettingsScreen(
                     PreferenceScreen(
                         title = context.getString(R.string.settings_voice_input_lang_title),
                         summary = voiceLanguageDisplayName(voiceLanguage),
-                        icon = Icons.Outlined.Language,
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_language),
                         onClick = onNavigateToLanguageSelection
                     )
                 }

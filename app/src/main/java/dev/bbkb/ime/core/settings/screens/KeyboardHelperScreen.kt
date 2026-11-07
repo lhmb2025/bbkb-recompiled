@@ -7,16 +7,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Accessibility
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import dev.bbkb.ime.core.settings.PrefsManager
@@ -90,7 +89,7 @@ fun KeyboardHelperScreen(
                     } else {
                         context.getString(R.string.pref_accessibility_service_disabled)
                     },
-                    icon = Icons.Outlined.Settings,
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_settings),
                     onClick = {
                         KeyInterceptorManager.openAccessibilitySettings(context)
                     }
@@ -100,7 +99,7 @@ fun KeyboardHelperScreen(
                 SwitchPreference(
                     title = context.getString(R.string.pref_key_interceptor_enabled),
                     summary = context.getString(R.string.pref_key_interceptor_enabled_summary),
-                    icon = Icons.Outlined.Accessibility,
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_accessibility),
                     checked = specialKeyEnabled && serviceEnabled,
                     enabled = serviceEnabled,
                     modifier = Modifier.settingsSearchAnchor("pref_key_interceptor_enabled"),
@@ -114,7 +113,7 @@ fun KeyboardHelperScreen(
                 SwitchPreference(
                     title = context.getString(R.string.pref_preprocess_all_keys),
                     summary = context.getString(R.string.pref_preprocess_all_keys_summary),
-                    icon = Icons.Outlined.Accessibility,
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_accessibility),
                     checked = preprocessAllKeys && serviceEnabled,
                     enabled = serviceEnabled,
                     modifier = Modifier.settingsSearchAnchor("pref_preprocess_all_key_events"),
@@ -128,7 +127,7 @@ fun KeyboardHelperScreen(
                 SwitchPreference(
                     title = context.getString(R.string.keyboard_helper_unified_mapping_title),
                     summary = context.getString(R.string.keyboard_helper_unified_mapping_summary),
-                    icon = Icons.Outlined.Settings,
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_settings),
                     checked = unifiedKeyMapping && serviceEnabled,
                     enabled = serviceEnabled && specialKeyEnabled,
                     modifier = Modifier.settingsSearchAnchor("pref_use_unified_key_mapping"),

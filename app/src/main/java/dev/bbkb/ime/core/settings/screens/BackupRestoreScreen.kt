@@ -16,12 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Backup
-import androidx.compose.material.icons.outlined.FileOpen
-import androidx.compose.material.icons.outlined.History
-import androidx.compose.material.icons.outlined.Save
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.LinearProgressIndicator
@@ -37,8 +31,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import dev.bbkb.ime.R
@@ -54,7 +50,7 @@ import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Simple
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
-import dev.bbkb.ime.core.settings.ui.asRowIcon
+import dev.bbkb.ime.core.settings.ui.drawableIcon
 import kotlinx.coroutines.launch
 
 /** Search anchors for the rows on the Backup and restore screen; spelled as literals in the screen for the sync test. */
@@ -136,7 +132,7 @@ fun BackupRestoreScreen(
         Simple(
             title = R.string.backup_save_title,
             summary = R.string.backup_save_summary,
-            icon = Icons.Outlined.Save.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_save),
             // Literal (== BackupAnchors.SAVE): the search-index sync test scans for it.
             modifier = Modifier.settingsSearchAnchor("backup_save"),
             onClick = {
@@ -153,7 +149,7 @@ fun BackupRestoreScreen(
         Simple(
             title = R.string.backup_restore_file_title,
             summary = R.string.backup_restore_file_summary,
-            icon = Icons.Outlined.FileOpen.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_file_open),
             // Literal (== BackupAnchors.RESTORE).
             modifier = Modifier.settingsSearchAnchor("backup_restore_file"),
             // The zip type plus JSON for the single-document backups earlier builds wrote, plus
@@ -167,7 +163,7 @@ fun BackupRestoreScreen(
             SwitchPreference(
                 title = stringResource(R.string.backup_phone_include_title),
                 summary = stringResource(R.string.backup_phone_include_summary),
-                icon = Icons.Outlined.Backup,
+                icon = ImageVector.vectorResource(R.drawable.ic_settings_m_backup),
                 checked = includedInPhoneBackup,
                 enabled = !busy,
                 // Literal (== BackupAnchors.PHONE).
@@ -185,14 +181,14 @@ fun BackupRestoreScreen(
                 } else {
                     stringResource(R.string.backup_phone_last_never)
                 },
-                icon = Icons.Outlined.History,
+                icon = ImageVector.vectorResource(R.drawable.ic_settings_m_history),
                 enabled = includedInPhoneBackup,
             )
         },
         Nav(
             title = R.string.backup_phone_settings_title,
             summary = R.string.backup_phone_settings_summary,
-            icon = Icons.Outlined.Settings.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_settings),
             onClick = ::openPhoneBackupSettings,
         ),
     ))

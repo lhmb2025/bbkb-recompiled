@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -42,12 +40,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import dev.bbkb.ime.R
 import dev.bbkb.ime.core.gesture.arbiter.ActionPreview
 import dev.bbkb.ime.core.gesture.arbiter.CkbKey
 import dev.bbkb.ime.core.gesture.arbiter.CkbKeyGrid
@@ -353,7 +354,7 @@ private fun LabRangeSlider(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("%.2f–%.2f".format(low, high), style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
                 IconButton(onClick = { onChange(defaultLow, defaultHigh) }, modifier = Modifier.size(28.dp)) {
-                    Icon(Icons.Outlined.Refresh, contentDescription = "Reset $label", modifier = Modifier.size(16.dp))
+                    Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_refresh), contentDescription = "Reset $label", modifier = Modifier.size(16.dp))
                 }
             }
         }
@@ -373,7 +374,7 @@ private fun LabSlider(label: String, value: Float, default: Float, min: Float, m
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("%.3f".format(value), style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
                 IconButton(onClick = { onChange(default) }, modifier = Modifier.size(28.dp)) {
-                    Icon(Icons.Outlined.Refresh, contentDescription = "Reset $label", modifier = Modifier.size(16.dp))
+                    Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_refresh), contentDescription = "Reset $label", modifier = Modifier.size(16.dp))
                 }
             }
         }

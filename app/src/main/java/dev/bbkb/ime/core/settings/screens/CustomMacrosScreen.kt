@@ -4,13 +4,13 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontFamily
 import dev.bbkb.ime.R
 import androidx.compose.ui.res.stringResource
@@ -54,7 +54,7 @@ fun CustomMacrosScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { showAddDialog = true },
-                icon = { Icon(Icons.Outlined.Add, contentDescription = null) },
+                icon = { Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_add), contentDescription = null) },
                 text = { Text(stringResource(R.string.settings_macros_add)) }
             )
         }
@@ -85,7 +85,7 @@ fun CustomMacrosScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
-                            Icons.Outlined.Code,
+                            ImageVector.vectorResource(R.drawable.ic_settings_m_code),
                             contentDescription = null,
                             modifier = Modifier.size(64.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
@@ -220,7 +220,7 @@ private fun MacroListItem(
             Box {
                 IconButton(onClick = { showMenu = true }) {
                     Icon(
-                        Icons.Outlined.MoreVert,
+                        ImageVector.vectorResource(R.drawable.ic_settings_m_more_vert),
                         contentDescription = stringResource(R.string.settings_common_options),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -237,7 +237,7 @@ private fun MacroListItem(
                             onEdit()
                         },
                         leadingIcon = {
-                            Icon(Icons.Outlined.Edit, contentDescription = null)
+                            Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_edit), contentDescription = null)
                         }
                     )
                     DropdownMenuItem(
@@ -248,7 +248,7 @@ private fun MacroListItem(
                         },
                         leadingIcon = {
                             Icon(
-                                Icons.Outlined.Delete,
+                                ImageVector.vectorResource(R.drawable.ic_settings_m_delete),
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.error
                             )

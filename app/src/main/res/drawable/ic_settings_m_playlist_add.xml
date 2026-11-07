@@ -1,0 +1,10 @@
+<!-- ic_settings_m_playlist_add. Material Icons Outlined.PlaylistAdd (androidx.compose.material:material-icons-extended), generated from the library's ImageVector with its exact geometry, 24-unit grid. Tinted by the composable that draws it, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M14,10H3v2h11V10ZM14,6H3v2h11V6ZM18,14v-4h-2v4h-4v2h4v4h2v-4h4v-2H18ZM3,16h7v-2H3V16Z"/>
+</vector>

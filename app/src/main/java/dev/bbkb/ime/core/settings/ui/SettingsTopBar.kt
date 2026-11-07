@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,6 +32,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -61,7 +60,7 @@ fun SettingsTopBar(
     scrollBehavior: TopAppBarScrollBehavior,
     actions: @Composable RowScope.() -> Unit = {},
     /** The leading icon: the back arrow, or a close cross while a screen is in selection mode. */
-    navigationIcon: ImageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+    navigationIcon: ImageVector = ImageVector.vectorResource(R.drawable.ic_settings_m_arrow_back),
     navigationContentDescription: String = stringResource(R.string.settings_common_back),
     /**
      * While a screen searches, its field: it takes the toolbar row in place of the title and the
@@ -184,7 +183,7 @@ fun SettingsScaffold(
     actions: @Composable RowScope.() -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
-    navigationIcon: ImageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+    navigationIcon: ImageVector = ImageVector.vectorResource(R.drawable.ic_settings_m_arrow_back),
     navigationContentDescription: String = stringResource(R.string.settings_common_back),
     /** See [SettingsTopBar]'s parameter of the same name. */
     searchField: (@Composable RowScope.() -> Unit)? = null,

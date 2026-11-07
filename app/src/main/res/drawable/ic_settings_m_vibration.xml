@@ -1,0 +1,10 @@
+<!-- ic_settings_m_vibration. Material Icons Outlined.Vibration (androidx.compose.material:material-icons-extended), generated from the library's ImageVector with its exact geometry, 24-unit grid. Tinted by the composable that draws it, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M0,15h2L2,9L0,9v6ZM3,17h2L5,7L3,7v10ZM22,9v6h2L24,9h-2ZM19,17h2L21,7h-2v10ZM16.5,3h-9C6.67,3,6,3.67,6,4.5v15c0,0.83,0.67,1.5,1.5,1.5h9c0.83,0,1.5,-0.67,1.5,-1.5v-15c0,-0.83,-0.67,-1.5,-1.5,-1.5ZM16,19L8,19L8,5h8v14Z"/>
+</vector>

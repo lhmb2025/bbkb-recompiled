@@ -2,6 +2,7 @@ package dev.bbkb.ime.core.settings.editor
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.annotation.DrawableRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
@@ -29,14 +30,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.DeleteOutline
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -70,6 +63,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -129,7 +123,7 @@ internal class EntryListSpec(
     @StringRes val restoreFailed: Int,
     /** "Failed to load dictionary: %1$s", given the exception's message. */
     @StringRes val loadFailed: Int,
-    val emptyIcon: ImageVector,
+    @DrawableRes val emptyIcon: Int,
     @StringRes val emptyTitle: Int,
     @StringRes val emptyHint: Int,
     /** Which of the repository's entries this editor owns. The two editors partition the store. */
@@ -373,7 +367,7 @@ internal fun EntryListEditorScreen(
         else stringResource(spec.title),
         // Selection is a contextual bar: a close cross cancels it, as on Learned words. Search
         // keeps the arrow, which leaves the search rather than the screen.
-        navigationIcon = if (selecting) Icons.Outlined.Close else Icons.AutoMirrored.Outlined.ArrowBack,
+        navigationIcon = ImageVector.vectorResource(if (selecting) R.drawable.ic_settings_m_close else R.drawable.ic_settings_m_arrow_back),
         navigationContentDescription = when {
             selecting -> stringResource(R.string.settings_common_cancel_selection)
             searching -> stringResource(R.string.settings_common_close_search)
@@ -396,17 +390,17 @@ internal fun EntryListEditorScreen(
             if (selecting) {
                 if (selected.isNotEmpty()) {
                     IconButton(onClick = { delete(entries.filter { spec.identity(it) in selected }) }) {
-                        Icon(Icons.Outlined.DeleteOutline, stringResource(R.string.settings_common_delete_selected))
+                        Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_delete_outline), stringResource(R.string.settings_common_delete_selected))
                     }
                 }
             } else {
                 IconButton(onClick = { searching = true }) {
-                    Icon(Icons.Outlined.Search, stringResource(R.string.settings_common_search))
+                    Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_search), stringResource(R.string.settings_common_search))
                 }
                 if (menuItems != null) {
                     Box {
                         IconButton(onClick = { showMenu = true }) {
-                            Icon(Icons.Outlined.MoreVert, stringResource(R.string.clipboard_more_options))
+                            Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_more_vert), stringResource(R.string.clipboard_more_options))
                         }
                         DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
                             menuItems { showMenu = false }
@@ -422,7 +416,7 @@ internal fun EntryListEditorScreen(
             if (!selecting) {
                 ExtendedFloatingActionButton(
                     onClick = { showAddDialog = true },
-                    icon = { Icon(Icons.Outlined.Add, contentDescription = null) },
+                    icon = { Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_add), contentDescription = null) },
                     text = { Text(stringResource(spec.add)) }
                 )
             }
@@ -645,8 +639,8 @@ private fun EntrySheet(
             )
             Spacer(modifier = Modifier.height(16.dp))
             content()
-            PreferenceItem(title = editLabel, icon = Icons.Outlined.Edit, onClick = onEdit)
-            PreferenceItem(title = stringResource(R.string.clipboard_menu_delete), icon = Icons.Outlined.DeleteOutline, onClick = onDelete)
+            PreferenceItem(title = editLabel, icon = ImageVector.vectorResource(R.drawable.ic_settings_m_edit), onClick = onEdit)
+            PreferenceItem(title = stringResource(R.string.clipboard_menu_delete), icon = ImageVector.vectorResource(R.drawable.ic_settings_m_delete_outline), onClick = onDelete)
         }
     }
 }
@@ -691,7 +685,7 @@ private fun RowScope.EntrySearchField(
                 }
                 if (query.isNotEmpty()) {
                     IconButton(onClick = { onQueryChange("") }) {
-                        Icon(Icons.Outlined.Close, stringResource(R.string.settings_common_clear_search))
+                        Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_close), stringResource(R.string.settings_common_clear_search))
                     }
                 }
             }
@@ -712,7 +706,7 @@ private fun EntryListEmptyState(
         verticalArrangement = Arrangement.Center
     ) {
         Icon(
-            spec.emptyIcon,
+            ImageVector.vectorResource(spec.emptyIcon),
             contentDescription = null,
             modifier = Modifier.size(64.dp),
             tint = MaterialTheme.colorScheme.onSurfaceVariant

@@ -23,13 +23,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.RadioButton
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -236,7 +234,7 @@ fun LanguagePacksScreen(
                 enabled = !catalogLoading,
             ) {
                 Icon(
-                    Icons.Outlined.Refresh,
+                    ImageVector.vectorResource(R.drawable.ic_settings_m_refresh),
                     contentDescription = stringResource(R.string.language_packs_refresh),
                 )
             }
@@ -246,7 +244,7 @@ fun LanguagePacksScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { filePickerLauncher.launch("*/*") }, // any file; validated as LDB after
-                icon = { Icon(Icons.Outlined.Add, contentDescription = null) },
+                icon = { Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_add), contentDescription = null) },
                 text = { Text(stringResource(R.string.language_packs_load_ldb)) }
             )
         }
@@ -719,7 +717,7 @@ private fun PackActionRow(
                     )
                     IconButton(onClick = { onCancel(item.locale) }) {
                         Icon(
-                            Icons.Outlined.Close,
+                            ImageVector.vectorResource(R.drawable.ic_settings_m_close),
                             contentDescription = context.getString(R.string.cancel),
                         )
                     }

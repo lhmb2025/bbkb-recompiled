@@ -3,8 +3,6 @@ package dev.bbkb.ime.core.settings.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,7 +49,7 @@ internal val UserDictionarySpec = EntryListSpec(
     deleteFailed = R.string.settings_dict_word_delete_failed,
     restoreFailed = R.string.settings_dict_words_restore_failed,
     loadFailed = R.string.settings_dict_load_failed,
-    emptyIcon = Icons.Outlined.Create,
+    emptyIcon = R.drawable.ic_settings_m_create,
     emptyTitle = R.string.settings_dict_empty_title,
     // Names the button, now that the button says what it does.
     emptyHint = R.string.settings_dict_empty_hint,

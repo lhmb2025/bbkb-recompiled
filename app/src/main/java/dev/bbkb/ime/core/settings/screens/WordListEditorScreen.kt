@@ -25,15 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.outlined.CheckBox
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.DeleteOutline
-import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -64,12 +55,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.SpanStyle
@@ -318,7 +311,7 @@ private fun LearnedWordSheet(
                     PreferenceItem(
                         title = stringResource(R.string.settings_learned_keep),
                         summary = stringResource(R.string.settings_learned_keep_summary),
-                        icon = Icons.Outlined.CheckBox,
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_check_box),
                         onClick = onKeep,
                     )
                 } else {
@@ -326,7 +319,7 @@ private fun LearnedWordSheet(
                 }
                 if (detail.count > 1) PreferenceItem(title = stringResource(R.string.settings_learned_use_less), iconPainter = painterResource(R.drawable.ic_settings_decrease_rank), onClick = onUseLess)
             }
-            PreferenceItem(title = stringResource(R.string.clipboard_menu_delete), icon = Icons.Outlined.DeleteOutline, onClick = onDelete)
+            PreferenceItem(title = stringResource(R.string.clipboard_menu_delete), icon = ImageVector.vectorResource(R.drawable.ic_settings_m_delete_outline), onClick = onDelete)
         }
     }
 }
@@ -693,7 +686,7 @@ fun WordListEditorScreen(
     
     SettingsScaffold(
         // Selection mode is a contextual bar: a close cross cancels it, as Android's own apps do.
-        navigationIcon = if (isSelectionMode) Icons.Outlined.Close else Icons.AutoMirrored.Outlined.ArrowBack,
+        navigationIcon = ImageVector.vectorResource(if (isSelectionMode) R.drawable.ic_settings_m_close else R.drawable.ic_settings_m_arrow_back),
         navigationContentDescription = stringResource(
             if (isSelectionMode) R.string.settings_common_cancel_selection else R.string.settings_common_back
         ),
@@ -715,7 +708,7 @@ fun WordListEditorScreen(
             if (isSelectionMode && selectedWords.isNotEmpty()) {
                 // No confirmation: the snackbar's Undo puts the words back, as it does for one.
                 IconButton(onClick = { deleteWords(selectedWords.toList()) }) {
-                    Icon(Icons.Outlined.DeleteOutline, stringResource(R.string.settings_common_delete_selected))
+                    Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_delete_outline), stringResource(R.string.settings_common_delete_selected))
                 }
                 IconButton(onClick = { showPromoteDialog = true }) {
                     Icon(painterResource(R.drawable.ic_settings_add_to_dictionary), stringResource(R.string.add_word_dialog_title))
@@ -728,7 +721,7 @@ fun WordListEditorScreen(
             if (!isSelectionMode && (modelActions || words.isNotEmpty())) {
                 Box {
                     IconButton(onClick = { showOverflow = true }) {
-                        Icon(Icons.Outlined.MoreVert, stringResource(R.string.clipboard_more_options))
+                        Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_more_vert), stringResource(R.string.clipboard_more_options))
                     }
                     DropdownMenu(expanded = showOverflow, onDismissRequest = { showOverflow = false }) {
                         if (modelActions) {
@@ -777,7 +770,7 @@ fun WordListEditorScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.LibraryBooks,
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_settings_m_library_books),
                             contentDescription = null,
                             modifier = Modifier.size(64.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -864,14 +857,14 @@ fun WordListEditorScreen(
                                         Box {
                                             TextButton(onClick = { showSortMenu = true }) {
                                                 Text(stringResource(sortOrder.label))
-                                                Icon(Icons.Filled.ArrowDropDown, contentDescription = stringResource(R.string.settings_learned_sort_order))
+                                                Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_arrow_drop_down), contentDescription = stringResource(R.string.settings_learned_sort_order))
                                             }
                                             DropdownMenu(expanded = showSortMenu, onDismissRequest = { showSortMenu = false }) {
                                                 WordSort.entries.forEach { order ->
                                                     DropdownMenuItem(
                                                         text = { Text(stringResource(order.label)) },
                                                         trailingIcon = if (sortOrder == order) {
-                                                            { Icon(Icons.Filled.Check, contentDescription = stringResource(R.string.settings_common_selected)) }
+                                                            { Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_check_filled), contentDescription = stringResource(R.string.settings_common_selected)) }
                                                         } else null,
                                                         onClick = { sortOrder = order; showSortMenu = false },
                                                     )

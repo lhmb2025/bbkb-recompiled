@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
@@ -31,10 +28,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -261,7 +254,7 @@ fun LanguagesHubScreen(
                 item(key = "add") {
                     PreferenceItem(
                         title = stringResource(R.string.languages_hub_add),
-                        icon = Icons.Outlined.Add,
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_add),
                         enabled = current != null,
                         groupEdge = groupEdge(keyboardsCount - 1, keyboardsCount),
                         onClick = { showPicker = true },
@@ -488,7 +481,7 @@ private fun KeyboardRow(
                     }
                 }
                 Icon(
-                    Icons.Outlined.ChevronRight,
+                    ImageVector.vectorResource(R.drawable.ic_settings_m_chevron_right),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -689,11 +682,11 @@ private fun KeyboardSheet(
                     onValueChange = { query = it },
                     singleLine = true,
                     placeholder = { Text(stringResource(R.string.languages_hub_search)) },
-                    leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
+                    leadingIcon = { Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_search), contentDescription = null) },
                     trailingIcon = {
                         if (query.isNotEmpty()) {
                             IconButton(onClick = { query = "" }) {
-                                Icon(Icons.Outlined.Clear, contentDescription = stringResource(R.string.languages_hub_sheet_clear_search))
+                                Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_clear), contentDescription = stringResource(R.string.languages_hub_sheet_clear_search))
                             }
                         }
                     },
@@ -734,7 +727,7 @@ private fun KeyboardSheet(
                 supportingContent = if (canRemove) null else {
                     { Text(stringResource(R.string.languages_hub_last_keyboard)) }
                 },
-                leadingContent = { Icon(Icons.Outlined.Delete, contentDescription = null) },
+                leadingContent = { Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_delete), contentDescription = null) },
                 colors = ListItemDefaults.colors(
                     containerColor = Color.Transparent,
                     headlineColor = if (canRemove) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
@@ -798,7 +791,7 @@ private fun LanguagePickerDialog(
                     horizontalArrangement = Arrangement.spacedBy(spacing.small),
                 ) {
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+                        Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_arrow_back), contentDescription = null)
                     }
                     OutlinedTextField(
                         value = query,

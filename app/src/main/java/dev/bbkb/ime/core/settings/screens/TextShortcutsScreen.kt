@@ -18,12 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.DataObject
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.TextFields
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenuItem
@@ -45,9 +39,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -106,7 +102,7 @@ internal val ShortcutsSpec = EntryListSpec(
     deleteFailed = R.string.settings_shortcuts_delete_failed,
     restoreFailed = R.string.settings_shortcuts_restore_failed,
     loadFailed = R.string.settings_shortcuts_load_failed,
-    emptyIcon = Icons.Outlined.Edit,
+    emptyIcon = R.drawable.ic_settings_m_edit,
     emptyTitle = R.string.settings_shortcuts_empty_title,
     // Names the button, now that the button says what it does.
     emptyHint = R.string.settings_shortcuts_empty_hint,
@@ -285,10 +281,10 @@ private fun ShortcutRowContent(entry: DictionaryEntry, macroTags: Set<String>) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(text = entry.shortcut ?: "", style = MaterialTheme.typography.bodyLarge)
             if (hasMacro(entry.word, macroTags)) {
-                Icon(Icons.Outlined.DataObject, contentDescription = stringResource(R.string.settings_shortcuts_changes_each_time), tint = variant, modifier = Modifier.size(18.dp))
+                Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_data_object), contentDescription = stringResource(R.string.settings_shortcuts_changes_each_time), tint = variant, modifier = Modifier.size(18.dp))
             }
             if (entry.fixedCase) {
-                Icon(Icons.Outlined.TextFields, contentDescription = stringResource(R.string.settings_shortcuts_fixed_case), tint = variant, modifier = Modifier.size(18.dp))
+                Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_text_fields), contentDescription = stringResource(R.string.settings_shortcuts_fixed_case), tint = variant, modifier = Modifier.size(18.dp))
             }
         }
         // The gap PreferenceItem leaves between a title and its summary.
@@ -475,7 +471,7 @@ private fun ShortcutForm(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.Outlined.Close, stringResource(R.string.settings_common_close))
+                        Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_close), stringResource(R.string.settings_common_close))
                     }
                     Text(
                         text = stringResource(if (entry != null) R.string.settings_shortcuts_edit else R.string.settings_shortcuts_new),
@@ -536,7 +532,7 @@ private fun ShortcutForm(
                             modifier = Modifier.weight(1f),
                         )
                         IconButton(onClick = { showMacroHelp = true }) {
-                            Icon(Icons.Outlined.Info, stringResource(R.string.settings_shortcuts_about_dynamic), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_info), stringResource(R.string.settings_shortcuts_about_dynamic), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                     // One scrolling row rather than a block of rows: on a short screen the fields

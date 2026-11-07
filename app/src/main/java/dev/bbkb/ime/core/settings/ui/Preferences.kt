@@ -25,9 +25,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ChevronRight
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -57,6 +54,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -502,7 +500,7 @@ fun PreferenceScreen(
 @Composable
 private fun NavigateChevron(enabled: Boolean) {
     Icon(
-        imageVector = Icons.Outlined.ChevronRight,
+        imageVector = ImageVector.vectorResource(R.drawable.ic_settings_m_chevron_right),
         contentDescription = stringResource(R.string.settings_common_navigate),
         tint = if (enabled) {
             MaterialTheme.colorScheme.onSurfaceVariant
@@ -919,7 +917,7 @@ fun PreferenceDeleteButton(contentDescription: String, onClick: () -> Unit) {
             modifier = Modifier.wrapContentHeight(unbounded = true),
         ) {
             Icon(
-                imageVector = Icons.Outlined.Delete,
+                imageVector = ImageVector.vectorResource(R.drawable.ic_settings_m_delete),
                 contentDescription = contentDescription,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )

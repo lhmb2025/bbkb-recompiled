@@ -1,0 +1,10 @@
+<!-- ic_settings_m_chevron_right. Material Icons Outlined.ChevronRight (androidx.compose.material:material-icons-extended), generated from the library's ImageVector with its exact geometry, 24-unit grid. Tinted by the composable that draws it, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M10,6L8.59,7.41L13.17,12l-4.58,4.59L10,18l6,-6l-6,-6Z"/>
+</vector>

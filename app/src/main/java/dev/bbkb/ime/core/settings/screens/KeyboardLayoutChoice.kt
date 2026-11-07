@@ -10,9 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ChevronRight
-import androidx.compose.material.icons.outlined.Keyboard
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -25,7 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.clickable
 import dev.bbkb.ime.R
@@ -69,9 +68,9 @@ internal fun KeyboardLayoutRow(title: String, current: LayoutChoiceRow, onClick:
     ListItem(
         headlineContent = { Text(title) },
         supportingContent = { Text(current.title) },
-        leadingContent = { Icon(Icons.Outlined.Keyboard, contentDescription = null) },
+        leadingContent = { Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_keyboard), contentDescription = null) },
         trailingContent = {
-            Icon(Icons.Outlined.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_chevron_right), contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
         },
         colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         modifier = Modifier.clickable(onClick = onClick),

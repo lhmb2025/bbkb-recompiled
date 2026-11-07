@@ -1,19 +1,12 @@
 package dev.bbkb.ime.core.settings.screens
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.OpenInNew
-import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.Download
-import androidx.compose.material.icons.outlined.ErrorOutline
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Key
-import androidx.compose.material.icons.outlined.Swipe
-import androidx.compose.material.icons.outlined.TouchApp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.device.detection.HardwareProbe
 import dev.bbkb.ime.core.device.touch.KeypadTouchSources
@@ -26,7 +19,7 @@ import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.ui.SettingsEnv
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Simple
-import dev.bbkb.ime.core.settings.ui.asRowIcon
+import dev.bbkb.ime.core.settings.ui.drawableIcon
 
 /** Search anchors for the touch-surface rows; the screens spell them as literals for the sync test. */
 object TouchSurfaceAnchors {
@@ -70,14 +63,14 @@ fun TouchSurfaceHelperScreen(
         },
         Nav(
             title = R.string.touch_surface_open_scroll_assistant,
-            icon = Icons.Outlined.Swipe.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_swipe),
             visible = builtIn,
             onClick = { TouchSurfaceLinks.open(it, TouchSurfaceLinks.scrollAssistant()) },
         ),
         Nav(
             title = R.string.touch_surface_cursor_assistant_title,
             summary = R.string.touch_surface_cursor_assistant_summary,
-            icon = Icons.Outlined.TouchApp.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_touch_app),
             visible = builtIn,
             onClick = { TouchSurfaceLinks.open(it, TouchSurfaceLinks.cursorAssistant()) },
         ),
@@ -90,7 +83,7 @@ fun TouchSurfaceHelperScreen(
         Simple(
             title = R.string.touch_surface_shizuku_status_title,
             summary = state.shizukuStateLine,
-            icon = Icons.Outlined.Info.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_info),
             // Literal (== TouchSurfaceAnchors.SHIZUKU): the search-index sync test scans for it.
             modifier = Modifier.settingsSearchAnchor("touch_surface_shizuku"),
             visible = shizuku,
@@ -98,14 +91,14 @@ fun TouchSurfaceHelperScreen(
         Nav(
             title = R.string.touch_surface_install_shizuku,
             summary = R.string.touch_surface_install_shizuku_summary,
-            icon = Icons.Outlined.Download.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_download),
             visible = shizuku,
             onClick = { TouchSurfaceLinks.open(it, TouchSurfaceLinks.installShizuku()) },
         ),
         Nav(
             title = R.string.touch_surface_open_shizuku,
             summary = R.string.touch_surface_open_shizuku_summary,
-            icon = Icons.AutoMirrored.Outlined.OpenInNew.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_open_in_new),
             enabled = { shizukuApp != null },
             visible = shizuku,
             onClick = { ctx -> shizukuApp?.let { TouchSurfaceLinks.open(ctx, listOf(it)) } },
@@ -116,7 +109,7 @@ fun TouchSurfaceHelperScreen(
             // something to add when Shizuku will not ask again.
             summary = if (state.shizukuAccessDenied) R.string.touch_surface_grant_access_denied
                 else R.string.touch_surface_grant_access_summary,
-            icon = Icons.Outlined.Key.asRowIcon(),
+            icon = drawableIcon(R.drawable.ic_settings_m_key),
             enabled = { state.canRequestShizukuAccess },
             visible = shizuku,
             onClick = { KeypadTouchSources.shizukuEngine().requestPermission(it) },
@@ -139,6 +132,6 @@ fun TouchSurfaceHelperScreen(
 private fun TouchSurfaceStatusHeader(state: TouchSurfaceState) {
     PreferenceItem(
         title = stringResource(state.statusLine),
-        icon = if (state.isWorking) Icons.Outlined.CheckCircle else Icons.Outlined.ErrorOutline,
+        icon = ImageVector.vectorResource(if (state.isWorking) R.drawable.ic_settings_m_check_circle else R.drawable.ic_settings_m_error_outline),
     )
 }
