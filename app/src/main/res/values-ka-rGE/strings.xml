@@ -843,9 +843,9 @@
     <string name="backup_restored">სარეზერვო ასლი აღდგენილია</string>
     <string name="backup_restored_words_pending">ნასწავლი სიტყვები დაემატება, როგორც კი კლავიატურის გამოყენებას დაიწყებთ</string>
     <string name="backup_phone_include_title">ტელეფონის სარეზერვო ასლში ჩართვა</string>
-    <string name="backup_phone_include_summary">პარამეტრები, განლაგებები და სიტყვები ინახება ტელეფონის სარეზერვო ასლთან ერთად თქვენს Google ანგარიშში და აღდგება, როცა BBKB-ს დააყენებთ იმავე ანგარიშით შესულ ტელეფონზე</string>
+    <string name="backup_phone_include_summary">პარამეტრები, განლაგებები და სიტყვები ინახება ტელეფონის სარეზერვო ასლთან ერთად და აღდგება მასთან ერთად</string>
     <string name="backup_phone_last_title">ტელეფონის ბოლო სარეზერვო ასლი</string>
-    <string name="backup_phone_last_never">სარეზერვო ასლი ჯერ არ შექმნილა. Android სარეზერვო ასლს ღამით ქმნის, როცა ტელეფონი იტენება და Wi‑Fi-თან არის დაკავშირებული.</string>
+    <string name="backup_phone_last_never">სარეზერვო ასლი ჯერ არ შექმნილა. BBKB ჩაირთვება ტელეფონის შემდეგ სარეზერვო ასლში.</string>
     <string name="backup_phone_settings_title">ტელეფონის სარეზერვო ასლის პარამეტრები</string>
     <string name="backup_phone_settings_summary">ჩართეთ ან გამორთეთ ტელეფონის სარეზერვო ასლი, ან ნახეთ, რას მოიცავს ის</string>
     <string name="backup_phone_settings_unavailable">ტელეფონის სარეზერვო ასლის პარამეტრების გახსნა ვერ მოხერხდა</string>

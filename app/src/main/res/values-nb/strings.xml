@@ -843,9 +843,9 @@
     <string name="backup_restored">Sikkerhetskopien er gjenopprettet</string>
     <string name="backup_restored_words_pending">Lærte ord legges til når tastaturet tas i bruk</string>
     <string name="backup_phone_include_title">Ta med i telefonens sikkerhetskopi</string>
-    <string name="backup_phone_include_summary">Innstillinger, layouter og ord lagres med telefonens sikkerhetskopi i Google-kontoen din, og gjenopprettes når du konfigurerer BBKB på en telefon som er logget på samme konto</string>
+    <string name="backup_phone_include_summary">Innstillinger, layouter og ord lagres med telefonens sikkerhetskopi og gjenopprettes sammen med den</string>
     <string name="backup_phone_last_title">Siste sikkerhetskopi av telefonen</string>
-    <string name="backup_phone_last_never">Ikke sikkerhetskopiert ennå. Android sikkerhetskopierer om natten mens telefonen lades og er koblet til Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Ikke sikkerhetskopiert ennå. BBKB blir med neste gang telefonen sikkerhetskopierer.</string>
     <string name="backup_phone_settings_title">Innstillinger for sikkerhetskopi av telefonen</string>
     <string name="backup_phone_settings_summary">Slå telefonens sikkerhetskopiering av eller på, eller se hva den omfatter</string>
     <string name="backup_phone_settings_unavailable">Kunne ikke åpne telefonens innstillinger for sikkerhetskopiering</string>

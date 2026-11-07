@@ -843,9 +843,9 @@
     <string name="backup_restored">காப்புப் பிரதி மீட்டெடுக்கப்பட்டது</string>
     <string name="backup_restored_words_pending">விசைப்பலகையைப் பயன்படுத்தத் தொடங்கியதும் கற்ற சொற்கள் சேர்க்கப்படும்</string>
     <string name="backup_phone_include_title">ஃபோன் காப்புப் பிரதியில் சேர்</string>
-    <string name="backup_phone_include_summary">அமைப்புகள், தளவமைப்புகள், சொற்கள் ஆகியவை உங்கள் ஃபோனின் காப்புப் பிரதியுடன் உங்கள் Google கணக்கில் சேமிக்கப்படும், அதே கணக்கில் உள்நுழைந்த ஃபோனில் BBKB-ஐ அமைக்கும்போது மீட்டெடுக்கப்படும்</string>
+    <string name="backup_phone_include_summary">அமைப்புகள், தளவமைப்புகள், சொற்கள் ஆகியவை உங்கள் ஃபோனின் காப்புப் பிரதியுடன் சேமிக்கப்பட்டு, அதனுடன் மீட்டெடுக்கப்படும்</string>
     <string name="backup_phone_last_title">கடைசி ஃபோன் காப்புப் பிரதி</string>
-    <string name="backup_phone_last_never">இன்னும் காப்புப் பிரதி எடுக்கப்படவில்லை. ஃபோன் Wi‑Fi இணைப்பில் சார்ஜ் ஆகும்போது Android இரவில் காப்புப் பிரதி எடுக்கும்.</string>
+    <string name="backup_phone_last_never">இன்னும் காப்புப் பிரதி எடுக்கப்படவில்லை. அடுத்த முறை உங்கள் ஃபோன் காப்புப் பிரதி எடுக்கும்போது BBKB சேர்க்கப்படும்.</string>
     <string name="backup_phone_settings_title">ஃபோன் காப்புப் பிரதி அமைப்புகள்</string>
     <string name="backup_phone_settings_summary">உங்கள் ஃபோனின் காப்புப் பிரதியை இயக்கவும் அல்லது முடக்கவும், அல்லது அதில் என்ன உள்ளது எனப் பார்க்கவும்</string>
     <string name="backup_phone_settings_unavailable">ஃபோனின் காப்புப் பிரதி அமைப்புகளைத் திறக்க முடியவில்லை</string>

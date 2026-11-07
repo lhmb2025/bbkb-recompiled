@@ -843,9 +843,9 @@
     <string name="backup_restored">Backup restabilit</string>
     <string name="backup_restored_words_pending">Cuvintele învățate vor fi adăugate după ce începeți să folosiți tastatura</string>
     <string name="backup_phone_include_title">Includeți în backupul telefonului</string>
-    <string name="backup_phone_include_summary">Setările, aspectele și cuvintele sunt salvate odată cu backupul telefonului în Contul Google și restabilite când configurați BBKB pe un telefon conectat la același cont</string>
+    <string name="backup_phone_include_summary">Setările, aspectele și cuvintele sunt salvate odată cu backupul telefonului și restabilite împreună cu acesta</string>
     <string name="backup_phone_last_title">Ultimul backup al telefonului</string>
-    <string name="backup_phone_last_never">Nu s-a făcut încă backup. Android face backup peste noapte, în timp ce telefonul se încarcă și este conectat la Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Nu s-a făcut încă backup. BBKB va fi inclus la următorul backup al telefonului.</string>
     <string name="backup_phone_settings_title">Setări pentru backupul telefonului</string>
     <string name="backup_phone_settings_summary">Activați sau dezactivați backupul telefonului ori vedeți ce include</string>
     <string name="backup_phone_settings_unavailable">Setările de backup ale telefonului nu au putut fi deschise</string>

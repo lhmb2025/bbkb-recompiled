@@ -843,9 +843,9 @@
     <string name="backup_restored">Cadhangan wis dipulihake</string>
     <string name="backup_restored_words_pending">Tembung sing disinaoni bakal ditambahake yen papan tombol wis dienggo</string>
     <string name="backup_phone_include_title">Lebokake ing cadhangan telpon</string>
-    <string name="backup_phone_include_summary">Setelan, tata letak, lan tembung disimpen bebarengan karo cadhangan telponmu menyang akun Google, lan dipulihake nalika kowe nyetel BBKB ing telpon sing mlebu nganggo akun sing padha</string>
+    <string name="backup_phone_include_summary">Setelan, tata letak, lan tembung disimpen bebarengan karo cadhangan telponmu lan dipulihake bebarengan karo cadhangan kasebut</string>
     <string name="backup_phone_last_title">Cadhangan telpon pungkasan</string>
-    <string name="backup_phone_last_never">Durung dicadhangake. Android nyadhangake ing wayah bengi nalika telpon lagi dicas lan nyambung menyang Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Durung dicadhangake. BBKB bakal kalebu nalika telpon nyadhangake sabanjure.</string>
     <string name="backup_phone_settings_title">Setelan cadhangan telpon</string>
     <string name="backup_phone_settings_summary">Uripake utawa pateni cadhangan telponmu, utawa deleng apa wae isine</string>
     <string name="backup_phone_settings_unavailable">Ora bisa mbukak setelan cadhangan telpon</string>

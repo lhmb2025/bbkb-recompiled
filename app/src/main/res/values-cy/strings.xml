@@ -843,9 +843,9 @@
     <string name="backup_restored">Adferwyd y copi wrth gefn</string>
     <string name="backup_restored_words_pending">Bydd geiriau a ddysgwyd yn cael eu hychwanegu unwaith y bydd y bysellfwrdd yn cael ei ddefnyddio</string>
     <string name="backup_phone_include_title">Cynnwys yng nghopi wrth gefn y ffôn</string>
-    <string name="backup_phone_include_summary">Mae gosodiadau, cynlluniau a geiriau\'n cael eu cadw gyda chopi wrth gefn eich ffôn yn eich cyfrif Google, a\'u hadfer pan fyddwch yn gosod BBKB ar ffôn sydd wedi mewngofnodi i\'r un cyfrif</string>
+    <string name="backup_phone_include_summary">Mae gosodiadau, cynlluniau a geiriau\'n cael eu cadw gyda chopi wrth gefn eich ffôn a\'u hadfer gydag ef</string>
     <string name="backup_phone_last_title">Copi wrth gefn diwethaf y ffôn</string>
-    <string name="backup_phone_last_never">Dim copi wrth gefn eto. Mae Android yn gwneud copi wrth gefn dros nos tra bo\'r ffôn yn gwefru ar Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Dim copi wrth gefn eto. Bydd BBKB yn cael ei gynnwys y tro nesaf y bydd eich ffôn yn gwneud copi wrth gefn.</string>
     <string name="backup_phone_settings_title">Gosodiadau copi wrth gefn y ffôn</string>
     <string name="backup_phone_settings_summary">Troi copi wrth gefn eich ffôn ymlaen neu i ffwrdd, neu weld beth mae\'n ei gynnwys</string>
     <string name="backup_phone_settings_unavailable">Methu agor gosodiadau copi wrth gefn y ffôn</string>

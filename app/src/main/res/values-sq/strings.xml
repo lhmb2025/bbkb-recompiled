@@ -843,9 +843,9 @@
     <string name="backup_restored">Rezervimi u restaurua</string>
     <string name="backup_restored_words_pending">Fjalët e mësuara do të shtohen sapo të fillosh të përdorësh tastierën</string>
     <string name="backup_phone_include_title">Përfshi në rezervimin e telefonit</string>
-    <string name="backup_phone_include_summary">Cilësimet, paraqitjet dhe fjalët ruhen me rezervimin e telefonit në llogarinë tënde Google dhe restaurohen kur konfiguron BBKB në një telefon të identifikuar me të njëjtën llogari</string>
+    <string name="backup_phone_include_summary">Cilësimet, paraqitjet dhe fjalët ruhen me rezervimin e telefonit dhe restaurohen bashkë me të</string>
     <string name="backup_phone_last_title">Rezervimi i fundit i telefonit</string>
-    <string name="backup_phone_last_never">Ende pa rezervim. Android rezervon gjatë natës, ndërsa telefoni karikohet i lidhur me Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Ende pa rezervim. BBKB do të përfshihet herën tjetër që telefoni bën rezervim.</string>
     <string name="backup_phone_settings_title">Cilësimet e rezervimit të telefonit</string>
     <string name="backup_phone_settings_summary">Aktivizo ose çaktivizo rezervimin e telefonit, ose shiko çfarë përfshin</string>
     <string name="backup_phone_settings_unavailable">Cilësimet e rezervimit të telefonit nuk u hapën dot</string>

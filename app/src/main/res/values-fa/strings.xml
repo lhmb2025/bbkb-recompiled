@@ -843,9 +843,9 @@
     <string name="backup_restored">نسخه پشتیبان بازیابی شد</string>
     <string name="backup_restored_words_pending">کلمه‌های یادگرفته‌شده به محض استفاده از صفحه کلید اضافه می‌شوند</string>
     <string name="backup_phone_include_title">گنجاندن در نسخه پشتیبان تلفن</string>
-    <string name="backup_phone_include_summary">تنظیمات، چیدمان‌ها و کلمه‌ها همراه با نسخه پشتیبان تلفن در حساب Google شما ذخیره می‌شوند و وقتی BBKB را در تلفنی که با همان حساب وارد شده است راه‌اندازی کنید، بازیابی می‌شوند</string>
+    <string name="backup_phone_include_summary">تنظیمات، چیدمان‌ها و کلمه‌ها همراه با نسخه پشتیبان تلفن شما ذخیره و همراه با آن بازیابی می‌شوند</string>
     <string name="backup_phone_last_title">آخرین پشتیبان‌گیری تلفن</string>
-    <string name="backup_phone_last_never">هنوز پشتیبان‌گیری نشده است. Android شب‌ها، وقتی تلفن در حال شارژ و متصل به Wi\u2011Fi است، پشتیبان‌گیری می‌کند.</string>
+    <string name="backup_phone_last_never">هنوز پشتیبان‌گیری نشده است. BBKB در پشتیبان‌گیری بعدی تلفن شما گنجانده می‌شود.</string>
     <string name="backup_phone_settings_title">تنظیمات پشتیبان‌گیری تلفن</string>
     <string name="backup_phone_settings_summary">روشن یا خاموش کردن پشتیبان‌گیری تلفن یا دیدن مواردی که شامل می‌شود</string>
     <string name="backup_phone_settings_unavailable">باز کردن تنظیمات پشتیبان‌گیری تلفن ممکن نشد</string>

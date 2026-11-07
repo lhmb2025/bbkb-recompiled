@@ -843,9 +843,9 @@
     <string name="backup_restored">Sigurnosna kopija je vraćena</string>
     <string name="backup_restored_words_pending">Naučene riječi bit će dodane kada se tastatura počne koristiti</string>
     <string name="backup_phone_include_title">Uključi u sigurnosnu kopiju telefona</string>
-    <string name="backup_phone_include_summary">Postavke, rasporedi i riječi čuvaju se uz sigurnosnu kopiju telefona na vašem Google računu i vraćaju se kada postavite BBKB na telefonu prijavljenom na isti račun</string>
+    <string name="backup_phone_include_summary">Postavke, rasporedi i riječi čuvaju se uz sigurnosnu kopiju telefona i vraćaju se zajedno s njom</string>
     <string name="backup_phone_last_title">Posljednja sigurnosna kopija telefona</string>
-    <string name="backup_phone_last_never">Sigurnosna kopija još nije napravljena. Android pravi sigurnosnu kopiju preko noći dok se telefon puni i povezan je na Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Sigurnosna kopija još nije napravljena. BBKB će biti uključen kada telefon sljedeći put napravi sigurnosnu kopiju.</string>
     <string name="backup_phone_settings_title">Postavke sigurnosne kopije telefona</string>
     <string name="backup_phone_settings_summary">Uključite ili isključite sigurnosnu kopiju telefona ili pogledajte šta obuhvata</string>
     <string name="backup_phone_settings_unavailable">Nije moguće otvoriti postavke sigurnosne kopije telefona</string>

@@ -843,9 +843,9 @@
     <string name="backup_restored">Backup restaurado</string>
     <string name="backup_restored_words_pending">As palavras aprendidas serão adicionadas quando o teclado estiver em uso</string>
     <string name="backup_phone_include_title">Incluir no backup do telefone</string>
-    <string name="backup_phone_include_summary">As configurações, leiautes e palavras são salvos com o backup do telefone na sua Conta do Google e restaurados quando você configura o BBKB em um telefone conectado à mesma conta</string>
+    <string name="backup_phone_include_summary">As configurações, leiautes e palavras são salvos com o backup do telefone e restaurados com ele</string>
     <string name="backup_phone_last_title">Último backup do telefone</string>
-    <string name="backup_phone_last_never">Ainda não há backup. O Android faz backup durante a noite enquanto o telefone carrega conectado ao Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Ainda não há backup. O BBKB será incluído no próximo backup do telefone.</string>
     <string name="backup_phone_settings_title">Configurações de backup do telefone</string>
     <string name="backup_phone_settings_summary">Ativar ou desativar o backup do telefone, ou ver o que ele inclui</string>
     <string name="backup_phone_settings_unavailable">Não foi possível abrir as configurações de backup do telefone</string>

@@ -63,7 +63,8 @@ object BackupAnchors {
 /**
  * Backup and restore (Advanced > Manage data). Three kinds of data — settings, layouts, words
  * ([BackupBundle.Part]) — go into one file the user saves, or come back out of one; and the same
- * bundle rides along with the phone's own backup to the user's Google account.
+ * bundle rides along with the phone's own backup, whichever service keeps it (Google on phones
+ * with Play services, Seedvault on LineageOS, CalyxOS and GrapheneOS, or another).
  *
  * Nothing is applied before it is read in full and validated, and the user picks what to put
  * back from what the file holds ([RestoreDialog]). While a save or restore runs the rows stay
@@ -157,7 +158,7 @@ fun BackupRestoreScreen(
             onClick = { if (!busy) restoreLauncher.launch(arrayOf(BackupBundle.MIME_TYPE, "application/json", "*/*")) },
         ),
 
-        // ── Phone backup: the same bundle, carried by Android to the Google account ──
+        // ── Phone backup: the same bundle, carried by Android's backup to whichever service is on ──
         Category(R.string.backup_category_phone),
         Custom(inGroup = true) {
             SwitchPreference(
@@ -354,15 +355,28 @@ private fun localDateTime(context: Context, millis: Long): String =
     )
 
 /**
- * The phone's backup page: Google's on phones with Play services (where the account backup
- * lives), else the phone's own settings, where Backup is under System.
+ * Where "Phone backup settings" goes, first that opens wins. Android's own Backup page comes
+ * first because it forwards to the page of whichever backup service is on, so the button lands on
+ * Google's page on phones with Play services and on Seedvault's on LineageOS, CalyxOS and
+ * GrapheneOS (seen 2026-11-07: on Android 14 it forwarded to Google's page; on Android 8 with the
+ * local service it showed Android's own page).
+ *  1. Android 11 and later: Settings > System > Backup (exported).
+ *  2. Android 8 to 10: the same page under its older name, reached by its action.
+ *  3. Phones whose Settings app has neither (some manufacturers): Google's page, when Play
+ *     services are there.
+ *  4. The top of Settings, where Backup is under System.
  */
-private fun openPhoneBackupSettings(context: Context) {
-    val google = Intent().setComponent(
+internal fun phoneBackupSettingsIntents(): List<Intent> = listOf(
+    Intent().setComponent(ComponentName("com.android.settings", "com.android.settings.backup.UserBackupSettingsActivity")),
+    Intent("android.settings.BACKUP_AND_RESET_SETTINGS"),
+    Intent().setComponent(
         ComponentName("com.google.android.gms", "com.google.android.gms.backup.component.BackupSettingsActivity")
-    )
-    val candidates = listOf(google, Intent(Settings.ACTION_SETTINGS))
-    for (intent in candidates) {
+    ),
+    Intent(Settings.ACTION_SETTINGS),
+)
+
+internal fun openPhoneBackupSettings(context: Context) {
+    for (intent in phoneBackupSettingsIntents()) {
         try {
             context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             return

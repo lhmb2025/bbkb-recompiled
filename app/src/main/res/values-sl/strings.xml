@@ -843,9 +843,9 @@
     <string name="backup_restored">Varnostna kopija je obnovljena</string>
     <string name="backup_restored_words_pending">Naučene besede bodo dodane, ko boste začeli uporabljati tipkovnico</string>
     <string name="backup_phone_include_title">Vključi v varnostno kopijo telefona</string>
-    <string name="backup_phone_include_summary">Nastavitve, razporeditve in besede se shranijo z varnostno kopijo telefona v vaš račun Google in obnovijo, ko nastavite BBKB v telefonu, ki je prijavljen v isti račun</string>
+    <string name="backup_phone_include_summary">Nastavitve, razporeditve in besede se shranijo z varnostno kopijo telefona in obnovijo skupaj z njo</string>
     <string name="backup_phone_last_title">Zadnja varnostna kopija telefona</string>
-    <string name="backup_phone_last_never">Varnostne kopije še ni. Android ustvari varnostno kopijo ponoči, ko se telefon polni in je povezan z omrežjem Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Varnostne kopije še ni. BBKB bo vključen v naslednjo varnostno kopijo telefona.</string>
     <string name="backup_phone_settings_title">Nastavitve varnostnega kopiranja telefona</string>
     <string name="backup_phone_settings_summary">Vklopite ali izklopite varnostno kopiranje telefona ali si oglejte, kaj vključuje</string>
     <string name="backup_phone_settings_unavailable">Nastavitev varnostnega kopiranja telefona ni bilo mogoče odpreti</string>

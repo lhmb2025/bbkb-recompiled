@@ -843,9 +843,9 @@
     <string name="backup_restored">备份已恢复</string>
     <string name="backup_restored_words_pending">开始使用键盘后，将添加已学字词</string>
     <string name="backup_phone_include_title">纳入手机备份</string>
-    <string name="backup_phone_include_summary">设置、布局和字词会随手机备份保存到您的 Google 帐号，并在您于登录同一帐号的手机上设置 BBKB 时恢复</string>
+    <string name="backup_phone_include_summary">设置、布局和字词会随手机备份一起保存，并随备份一起恢复</string>
     <string name="backup_phone_last_title">上次手机备份</string>
-    <string name="backup_phone_last_never">尚未备份。手机连接 Wi‑Fi 并充电时，Android 会在夜间进行备份。</string>
+    <string name="backup_phone_last_never">尚未备份。手机下次备份时会包含 BBKB。</string>
     <string name="backup_phone_settings_title">手机备份设置</string>
     <string name="backup_phone_settings_summary">开启或关闭手机备份，或查看其中包含的内容</string>
     <string name="backup_phone_settings_unavailable">无法打开手机的备份设置</string>

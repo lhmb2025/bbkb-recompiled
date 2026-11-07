@@ -843,9 +843,9 @@
     <string name="backup_restored">Рэзервовая копія адноўлена</string>
     <string name="backup_restored_words_pending">Вывучаныя словы будуць дададзены, калі клавіятура пачне выкарыстоўвацца</string>
     <string name="backup_phone_include_title">Уключыць у рэзервовую копію тэлефона</string>
-    <string name="backup_phone_include_summary">Налады, раскладкі і словы захоўваюцца разам з рэзервовай копіяй тэлефона ў вашым уліковым запісе Google і аднаўляюцца, калі вы наладжваеце BBKB на тэлефоне, дзе выкананы ўваход у той жа ўліковы запіс</string>
+    <string name="backup_phone_include_summary">Налады, раскладкі і словы захоўваюцца разам з рэзервовай копіяй тэлефона і аднаўляюцца разам з ёй</string>
     <string name="backup_phone_last_title">Апошняя рэзервовая копія тэлефона</string>
-    <string name="backup_phone_last_never">Рэзервовай копіі яшчэ няма. Android стварае рэзервовыя копіі ўначы, калі тэлефон зараджаецца і падключаны да Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Рэзервовай копіі яшчэ няма. BBKB будзе ўключаны ў наступную рэзервовую копію тэлефона.</string>
     <string name="backup_phone_settings_title">Налады рэзервовага капіравання тэлефона</string>
     <string name="backup_phone_settings_summary">Уключыць або выключыць рэзервовае капіраванне тэлефона ці паглядзець, што яно ўключае</string>
     <string name="backup_phone_settings_unavailable">Не ўдалося адкрыць налады рэзервовага капіравання тэлефона</string>

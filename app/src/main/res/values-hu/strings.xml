@@ -843,9 +843,9 @@
     <string name="backup_restored">Biztonsági mentés visszaállítva</string>
     <string name="backup_restored_words_pending">A megtanult szavak akkor adódnak hozzá, amikor a billentyűzet használatba kerül</string>
     <string name="backup_phone_include_title">Belefoglalás a telefon biztonsági mentésébe</string>
-    <string name="backup_phone_include_summary">A beállítások, elrendezések és szavak a telefon biztonsági mentésével együtt a Google-fiókjába kerülnek, és visszaállnak, amikor a BBKB-t egy ugyanabba a fiókba bejelentkezett telefonon állítja be</string>
+    <string name="backup_phone_include_summary">A beállítások, elrendezések és szavak a telefon biztonsági mentésével együtt mentődnek, és vele együtt állnak vissza</string>
     <string name="backup_phone_last_title">Legutóbbi telefonos biztonsági mentés</string>
-    <string name="backup_phone_last_never">Még nincs biztonsági mentés. Az Android éjszaka készít mentést, amikor a telefon Wi\u2011Fi-hálózatra csatlakozva töltődik.</string>
+    <string name="backup_phone_last_never">Még nincs biztonsági mentés. A BBKB a telefon következő biztonsági mentésébe bekerül.</string>
     <string name="backup_phone_settings_title">A telefon biztonsági mentési beállításai</string>
     <string name="backup_phone_settings_summary">A telefon biztonsági mentésének be- vagy kikapcsolása, illetve tartalmának megtekintése</string>
     <string name="backup_phone_settings_unavailable">Nem sikerült megnyitni a telefon biztonsági mentési beállításait</string>

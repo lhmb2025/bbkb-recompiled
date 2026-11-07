@@ -843,9 +843,9 @@
     <string name="backup_restored">Säkerhetskopian har återställts</string>
     <string name="backup_restored_words_pending">Inlärda ord läggs till när tangentbordet används</string>
     <string name="backup_phone_include_title">Ta med i telefonens säkerhetskopia</string>
-    <string name="backup_phone_include_summary">Inställningar, layouter och ord sparas med telefonens säkerhetskopia på ditt Google-konto och återställs när du konfigurerar BBKB på en telefon som är inloggad på samma konto</string>
+    <string name="backup_phone_include_summary">Inställningar, layouter och ord sparas med telefonens säkerhetskopia och återställs tillsammans med den</string>
     <string name="backup_phone_last_title">Senaste säkerhetskopia av telefonen</string>
-    <string name="backup_phone_last_never">Ingen säkerhetskopia än. Android säkerhetskopierar under natten medan telefonen laddas och är ansluten till Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Ingen säkerhetskopia än. BBKB tas med nästa gång telefonen säkerhetskopieras.</string>
     <string name="backup_phone_settings_title">Inställningar för telefonens säkerhetskopiering</string>
     <string name="backup_phone_settings_summary">Aktivera eller inaktivera telefonens säkerhetskopiering, eller se vad den omfattar</string>
     <string name="backup_phone_settings_unavailable">Det gick inte att öppna telefonens inställningar för säkerhetskopiering</string>

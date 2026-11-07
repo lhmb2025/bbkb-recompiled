@@ -843,9 +843,9 @@
     <string name="backup_restored">Резервная копия восстановлена</string>
     <string name="backup_restored_words_pending">Выученные слова будут добавлены, когда вы начнёте пользоваться клавиатурой</string>
     <string name="backup_phone_include_title">Включать в резервную копию телефона</string>
-    <string name="backup_phone_include_summary">Настройки, раскладки и слова сохраняются вместе с резервной копией телефона в вашем аккаунте Google и восстанавливаются при настройке BBKB на телефоне, где выполнен вход в тот же аккаунт</string>
+    <string name="backup_phone_include_summary">Настройки, раскладки и слова сохраняются вместе с резервной копией телефона и восстанавливаются вместе с ней</string>
     <string name="backup_phone_last_title">Последняя резервная копия телефона</string>
-    <string name="backup_phone_last_never">Резервных копий ещё нет. Android создаёт резервную копию ночью, когда телефон заряжается и подключён к Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Резервных копий ещё нет. BBKB будет включён в следующую резервную копию телефона.</string>
     <string name="backup_phone_settings_title">Настройки резервного копирования телефона</string>
     <string name="backup_phone_settings_summary">Включение и отключение резервного копирования телефона или просмотр того, что в него входит</string>
     <string name="backup_phone_settings_unavailable">Не удалось открыть настройки резервного копирования телефона</string>

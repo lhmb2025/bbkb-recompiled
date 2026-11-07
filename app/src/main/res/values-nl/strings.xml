@@ -843,9 +843,9 @@
     <string name="backup_restored">Back-up hersteld</string>
     <string name="backup_restored_words_pending">Geleerde woorden worden toegevoegd zodra het toetsenbord in gebruik is</string>
     <string name="backup_phone_include_title">Opnemen in telefoonback-up</string>
-    <string name="backup_phone_include_summary">Instellingen, lay-outs en woorden worden met de back-up van uw telefoon opgeslagen in uw Google-account en hersteld wanneer u BBKB instelt op een telefoon die is ingelogd op hetzelfde account</string>
+    <string name="backup_phone_include_summary">Instellingen, lay-outs en woorden worden met de back-up van uw telefoon opgeslagen en samen daarmee hersteld</string>
     <string name="backup_phone_last_title">Laatste telefoonback-up</string>
-    <string name="backup_phone_last_never">Nog geen back-up gemaakt. Android maakt \'s nachts een back-up terwijl de telefoon oplaadt en met Wi‑Fi is verbonden.</string>
+    <string name="backup_phone_last_never">Nog geen back-up gemaakt. BBKB wordt meegenomen bij de volgende back-up van uw telefoon.</string>
     <string name="backup_phone_settings_title">Instellingen voor telefoonback-up</string>
     <string name="backup_phone_settings_summary">De back-up van uw telefoon in- of uitschakelen, of bekijken wat erin zit</string>
     <string name="backup_phone_settings_unavailable">Kan de back-upinstellingen van de telefoon niet openen</string>

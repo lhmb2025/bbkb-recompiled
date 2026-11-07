@@ -843,9 +843,9 @@
     <string name="backup_restored">Yedek geri yüklendi</string>
     <string name="backup_restored_words_pending">Öğrenilen kelimeler, klavye kullanılmaya başlandığında eklenecek</string>
     <string name="backup_phone_include_title">Telefon yedeğine dahil et</string>
-    <string name="backup_phone_include_summary">Ayarlar, düzenler ve kelimeler telefonunuzun yedeğiyle birlikte Google hesabınıza kaydedilir ve aynı hesapla oturum açılmış bir telefonda BBKB\'yi kurduğunuzda geri yüklenir</string>
+    <string name="backup_phone_include_summary">Ayarlar, düzenler ve kelimeler telefonunuzun yedeğiyle birlikte kaydedilir ve onunla birlikte geri yüklenir</string>
     <string name="backup_phone_last_title">Son telefon yedeği</string>
-    <string name="backup_phone_last_never">Henüz yedeklenmedi. Android, telefon Wi‑Fi\'a bağlıyken şarj olurken gece yedekleme yapar.</string>
+    <string name="backup_phone_last_never">Henüz yedeklenmedi. BBKB, telefonunuzun bir sonraki yedeğine dahil edilecek.</string>
     <string name="backup_phone_settings_title">Telefon yedekleme ayarları</string>
     <string name="backup_phone_settings_summary">Telefonunuzun yedeklemesini açın veya kapatın ya da neleri kapsadığını görün</string>
     <string name="backup_phone_settings_unavailable">Telefonun yedekleme ayarları açılamadı</string>

@@ -18,7 +18,8 @@ import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * BBKB's part in the phone's own backup (Settings > Google > Backup, or System > Backup): the
+ * BBKB's part in the phone's own backup (Settings > System > Backup: Google, Seedvault or whichever
+ * service the phone uses; Android's key/value backup works the same with each): the
  * same bundle the Backup and restore screen writes, kept fresh in `files/backup/auto.zip` and
  * handed to Android's backup service by [dev.bbkb.ime.core.BackupAgent].
  *

@@ -843,9 +843,9 @@
     <string name="backup_restored">Резервна копија је враћена</string>
     <string name="backup_restored_words_pending">Научене речи ће бити додате када почнете да користите тастатуру</string>
     <string name="backup_phone_include_title">Укључи у резервну копију телефона</string>
-    <string name="backup_phone_include_summary">Поставке, распореди и речи се чувају уз резервну копију телефона на вашем Google налогу и враћају се када подесите BBKB на телефону пријављеном на исти налог</string>
+    <string name="backup_phone_include_summary">Поставке, распореди и речи се чувају уз резервну копију телефона и враћају се заједно са њом</string>
     <string name="backup_phone_last_title">Последња резервна копија телефона</string>
-    <string name="backup_phone_last_never">Резервна копија још није направљена. Android прави резервну копију током ноћи док се телефон пуни и повезан је на Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Резервна копија још није направљена. BBKB ће бити укључен када телефон следећи пут направи резервну копију.</string>
     <string name="backup_phone_settings_title">Поставке резервне копије телефона</string>
     <string name="backup_phone_settings_summary">Укључите или искључите резервну копију телефона или погледајте шта обухвата</string>
     <string name="backup_phone_settings_unavailable">Отварање поставки резервне копије телефона није успело</string>

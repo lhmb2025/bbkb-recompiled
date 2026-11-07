@@ -843,9 +843,9 @@
     <string name="backup_restored">ກູ້ຄືນການສຳຮອງແລ້ວ</string>
     <string name="backup_restored_words_pending">ຄຳສັບທີ່ຮຽນຮູ້ແລ້ວຈະຖືກເພີ່ມເມື່ອເລີ່ມໃຊ້ແປ້ນພິມ</string>
     <string name="backup_phone_include_title">ລວມໃນການສຳຮອງໂທລະສັບ</string>
-    <string name="backup_phone_include_summary">ການຕັ້ງຄ່າ, ຮູບແບບ ແລະ ຄຳສັບຈະຖືກບັນທຶກພ້ອມກັບການສຳຮອງຂໍ້ມູນໂທລະສັບຂອງທ່ານໄປໃສ່ບັນຊີ Google ຂອງທ່ານ ແລະ ຈະຖືກກູ້ຄືນເມື່ອທ່ານຕັ້ງຄ່າ BBKB ໃນໂທລະສັບທີ່ເຂົ້າສູ່ລະບົບດ້ວຍບັນຊີດຽວກັນ</string>
+    <string name="backup_phone_include_summary">ການຕັ້ງຄ່າ, ຮູບແບບ ແລະ ຄຳສັບຈະຖືກບັນທຶກພ້ອມກັບການສຳຮອງຂໍ້ມູນໂທລະສັບຂອງທ່ານ ແລະ ຈະຖືກກູ້ຄືນພ້ອມກັນ</string>
     <string name="backup_phone_last_title">ການສຳຮອງໂທລະສັບຄັ້ງລ່າສຸດ</string>
-    <string name="backup_phone_last_never">ຍັງບໍ່ໄດ້ສຳຮອງເທື່ອ. Android ຈະສຳຮອງຂໍ້ມູນໃນຕອນກາງຄືນ ໃນຂະນະທີ່ໂທລະສັບກຳລັງສາກໄຟ ແລະ ເຊື່ອມຕໍ່ Wi‑Fi.</string>
+    <string name="backup_phone_last_never">ຍັງບໍ່ໄດ້ສຳຮອງເທື່ອ. BBKB ຈະຖືກລວມເຂົ້າໃນຄັ້ງຕໍ່ໄປທີ່ໂທລະສັບຂອງທ່ານສຳຮອງຂໍ້ມູນ.</string>
     <string name="backup_phone_settings_title">ການຕັ້ງຄ່າການສຳຮອງໂທລະສັບ</string>
     <string name="backup_phone_settings_summary">ເປີດ ຫຼື ປິດການສຳຮອງຂໍ້ມູນຂອງໂທລະສັບ ຫຼື ເບິ່ງວ່າມັນລວມຫຍັງແດ່</string>
     <string name="backup_phone_settings_unavailable">ບໍ່ສາມາດເປີດການຕັ້ງຄ່າການສຳຮອງຂອງໂທລະສັບໄດ້</string>

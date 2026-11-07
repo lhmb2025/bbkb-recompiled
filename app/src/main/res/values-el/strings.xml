@@ -843,9 +843,9 @@
     <string name="backup_restored">Έγινε επαναφορά του αντιγράφου ασφαλείας</string>
     <string name="backup_restored_words_pending">Οι εκμαθημένες λέξεις θα προστεθούν μόλις χρησιμοποιηθεί το πληκτρολόγιο</string>
     <string name="backup_phone_include_title">Συμπερίληψη στο αντίγραφο ασφαλείας τηλεφώνου</string>
-    <string name="backup_phone_include_summary">Οι ρυθμίσεις, οι διατάξεις και οι λέξεις αποθηκεύονται μαζί με το αντίγραφο ασφαλείας του τηλεφώνου σας στον λογαριασμό σας Google και επαναφέρονται όταν ρυθμίζετε το BBKB σε τηλέφωνο συνδεδεμένο στον ίδιο λογαριασμό</string>
+    <string name="backup_phone_include_summary">Οι ρυθμίσεις, οι διατάξεις και οι λέξεις αποθηκεύονται μαζί με το αντίγραφο ασφαλείας του τηλεφώνου σας και επαναφέρονται μαζί του</string>
     <string name="backup_phone_last_title">Τελευταίο αντίγραφο ασφαλείας τηλεφώνου</string>
-    <string name="backup_phone_last_never">Δεν έχει δημιουργηθεί ακόμη αντίγραφο ασφαλείας. Το Android δημιουργεί αντίγραφα ασφαλείας τη νύχτα, ενώ το τηλέφωνο φορτίζει και είναι συνδεδεμένο σε Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Δεν έχει δημιουργηθεί ακόμη αντίγραφο ασφαλείας. Το BBKB θα συμπεριληφθεί στο επόμενο αντίγραφο ασφαλείας του τηλεφώνου σας.</string>
     <string name="backup_phone_settings_title">Ρυθμίσεις αντιγράφων ασφαλείας τηλεφώνου</string>
     <string name="backup_phone_settings_summary">Ενεργοποίηση ή απενεργοποίηση του αντιγράφου ασφαλείας του τηλεφώνου σας ή προβολή του τι περιλαμβάνει</string>
     <string name="backup_phone_settings_unavailable">Δεν ήταν δυνατό το άνοιγμα των ρυθμίσεων αντιγράφων ασφαλείας του τηλεφώνου</string>

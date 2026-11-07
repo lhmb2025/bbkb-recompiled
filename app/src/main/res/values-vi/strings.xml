@@ -843,9 +843,9 @@
     <string name="backup_restored">Đã khôi phục bản sao lưu</string>
     <string name="backup_restored_words_pending">Từ đã học sẽ được thêm sau khi bạn bắt đầu dùng bàn phím</string>
     <string name="backup_phone_include_title">Đưa vào bản sao lưu điện thoại</string>
-    <string name="backup_phone_include_summary">Cài đặt, bố cục và từ được lưu cùng bản sao lưu điện thoại vào Tài khoản Google của bạn và được khôi phục khi bạn thiết lập BBKB trên điện thoại đăng nhập cùng tài khoản đó</string>
+    <string name="backup_phone_include_summary">Cài đặt, bố cục và từ được lưu cùng bản sao lưu điện thoại và được khôi phục cùng với bản sao lưu đó</string>
     <string name="backup_phone_last_title">Bản sao lưu điện thoại gần nhất</string>
-    <string name="backup_phone_last_never">Chưa sao lưu. Android sao lưu vào ban đêm khi điện thoại đang sạc và kết nối Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Chưa sao lưu. BBKB sẽ được đưa vào lần sao lưu tiếp theo của điện thoại.</string>
     <string name="backup_phone_settings_title">Cài đặt sao lưu điện thoại</string>
     <string name="backup_phone_settings_summary">Bật hoặc tắt tính năng sao lưu của điện thoại, hoặc xem những gì được sao lưu</string>
     <string name="backup_phone_settings_unavailable">Không mở được cài đặt sao lưu của điện thoại</string>

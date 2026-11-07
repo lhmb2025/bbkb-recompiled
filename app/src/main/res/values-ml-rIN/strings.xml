@@ -843,9 +843,9 @@
     <string name="backup_restored">ബാക്കപ്പ് പുനഃസ്ഥാപിച്ചു</string>
     <string name="backup_restored_words_pending">കീബോർഡ് ഉപയോഗിച്ചു തുടങ്ങുമ്പോൾ പഠിച്ച വാക്കുകൾ ചേർക്കും</string>
     <string name="backup_phone_include_title">ഫോൺ ബാക്കപ്പിൽ ഉൾപ്പെടുത്തുക</string>
-    <string name="backup_phone_include_summary">ക്രമീകരണങ്ങളും ലേഔട്ടുകളും വാക്കുകളും നിങ്ങളുടെ ഫോണിന്റെ ബാക്കപ്പിനൊപ്പം നിങ്ങളുടെ Google അക്കൗണ്ടിൽ സംരക്ഷിക്കുകയും, അതേ അക്കൗണ്ടിൽ സൈൻ ഇൻ ചെയ്ത ഫോണിൽ BBKB സജ്ജീകരിക്കുമ്പോൾ പുനഃസ്ഥാപിക്കുകയും ചെയ്യും</string>
+    <string name="backup_phone_include_summary">ക്രമീകരണങ്ങളും ലേഔട്ടുകളും വാക്കുകളും നിങ്ങളുടെ ഫോണിന്റെ ബാക്കപ്പിനൊപ്പം സംരക്ഷിക്കുകയും അതിനൊപ്പം പുനഃസ്ഥാപിക്കുകയും ചെയ്യും</string>
     <string name="backup_phone_last_title">അവസാന ഫോൺ ബാക്കപ്പ്</string>
-    <string name="backup_phone_last_never">ഇതുവരെ ബാക്കപ്പ് ചെയ്തിട്ടില്ല. ഫോൺ Wi‑Fi-യിൽ കണക്റ്റ് ചെയ്ത് ചാർജ് ചെയ്യുമ്പോൾ രാത്രിയിൽ Android ബാക്കപ്പ് ചെയ്യുന്നു.</string>
+    <string name="backup_phone_last_never">ഇതുവരെ ബാക്കപ്പ് ചെയ്തിട്ടില്ല. അടുത്ത തവണ നിങ്ങളുടെ ഫോൺ ബാക്കപ്പ് ചെയ്യുമ്പോൾ BBKB ഉൾപ്പെടുത്തും.</string>
     <string name="backup_phone_settings_title">ഫോൺ ബാക്കപ്പ് ക്രമീകരണങ്ങൾ</string>
     <string name="backup_phone_settings_summary">നിങ്ങളുടെ ഫോണിന്റെ ബാക്കപ്പ് ഓണാക്കുകയോ ഓഫാക്കുകയോ ചെയ്യുക, അല്ലെങ്കിൽ അതിൽ എന്തൊക്കെ ഉൾപ്പെടുന്നുവെന്ന് കാണുക</string>
     <string name="backup_phone_settings_unavailable">ഫോണിന്റെ ബാക്കപ്പ് ക്രമീകരണങ്ങൾ തുറക്കാനായില്ല</string>

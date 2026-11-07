@@ -843,9 +843,9 @@
     <string name="backup_restored">Backup ripristinato</string>
     <string name="backup_restored_words_pending">Le parole apprese verranno aggiunte quando la tastiera sarà in uso</string>
     <string name="backup_phone_include_title">Includi nel backup del telefono</string>
-    <string name="backup_phone_include_summary">Impostazioni, layout e parole vengono salvati con il backup del telefono nel tuo account Google e ripristinati quando configuri BBKB su un telefono connesso allo stesso account</string>
+    <string name="backup_phone_include_summary">Impostazioni, layout e parole vengono salvati con il backup del telefono e ripristinati insieme a esso</string>
     <string name="backup_phone_last_title">Ultimo backup del telefono</string>
-    <string name="backup_phone_last_never">Nessun backup ancora eseguito. Android esegue il backup durante la notte, mentre il telefono è in carica e connesso al Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Nessun backup ancora eseguito. BBKB verrà incluso al prossimo backup del telefono.</string>
     <string name="backup_phone_settings_title">Impostazioni di backup del telefono</string>
     <string name="backup_phone_settings_summary">Attiva o disattiva il backup del telefono o scopri cosa include</string>
     <string name="backup_phone_settings_unavailable">Impossibile aprire le impostazioni di backup del telefono</string>

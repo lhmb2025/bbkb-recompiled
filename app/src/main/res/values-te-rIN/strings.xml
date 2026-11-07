@@ -843,9 +843,9 @@
     <string name="backup_restored">బ్యాకప్ పునరుద్ధరించబడింది</string>
     <string name="backup_restored_words_pending">కీబోర్డ్ ఉపయోగంలోకి వచ్చిన తర్వాత నేర్చుకున్న పదాలు జోడించబడతాయి</string>
     <string name="backup_phone_include_title">ఫోన్ బ్యాకప్‌లో చేర్చు</string>
-    <string name="backup_phone_include_summary">సెట్టింగ్‌లు, లేఅవుట్‌లు మరియు పదాలు మీ ఫోన్ బ్యాకప్‌తో పాటు మీ Google ఖాతాలో సేవ్ చేయబడతాయి, అదే ఖాతాతో సైన్ ఇన్ చేసిన ఫోన్‌లో BBKBని సెటప్ చేసినప్పుడు పునరుద్ధరించబడతాయి</string>
+    <string name="backup_phone_include_summary">సెట్టింగ్‌లు, లేఅవుట్‌లు మరియు పదాలు మీ ఫోన్ బ్యాకప్‌తో పాటు సేవ్ చేయబడతాయి, దానితో పాటే పునరుద్ధరించబడతాయి</string>
     <string name="backup_phone_last_title">చివరి ఫోన్ బ్యాకప్</string>
-    <string name="backup_phone_last_never">ఇంకా బ్యాకప్ చేయలేదు. ఫోన్ Wi‑Fiలో ఛార్జ్ అవుతున్నప్పుడు Android రాత్రిపూట బ్యాకప్ చేస్తుంది.</string>
+    <string name="backup_phone_last_never">ఇంకా బ్యాకప్ చేయలేదు. తదుపరిసారి మీ ఫోన్ బ్యాకప్ చేసినప్పుడు BBKB చేర్చబడుతుంది.</string>
     <string name="backup_phone_settings_title">ఫోన్ బ్యాకప్ సెట్టింగ్‌లు</string>
     <string name="backup_phone_settings_summary">మీ ఫోన్ బ్యాకప్‌ను ఆన్ లేదా ఆఫ్ చేయండి, లేదా అందులో ఏమేమి ఉన్నాయో చూడండి</string>
     <string name="backup_phone_settings_unavailable">ఫోన్ బ్యాకప్ సెట్టింగ్‌లను తెరవడం సాధ్యపడలేదు</string>

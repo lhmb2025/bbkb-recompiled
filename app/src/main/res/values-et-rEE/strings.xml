@@ -843,9 +843,9 @@
     <string name="backup_restored">Varukoopia taastati</string>
     <string name="backup_restored_words_pending">Õpitud sõnad lisatakse, kui klaviatuur on kasutusel</string>
     <string name="backup_phone_include_title">Lisa telefoni varukoopiasse</string>
-    <string name="backup_phone_include_summary">Seaded, paigutused ja sõnad salvestatakse koos telefoni varukoopiaga teie Google\'i kontole ja taastatakse, kui seadistate BBKB samale kontole sisse logitud telefonis</string>
+    <string name="backup_phone_include_summary">Seaded, paigutused ja sõnad salvestatakse koos telefoni varukoopiaga ja taastatakse koos sellega</string>
     <string name="backup_phone_last_title">Telefoni viimane varukoopia</string>
-    <string name="backup_phone_last_never">Varukoopiat veel pole. Android varundab öösel, kui telefon laeb ja on Wi\u2011Fi-ga ühendatud.</string>
+    <string name="backup_phone_last_never">Varukoopiat veel pole. BBKB lisatakse telefoni järgmisse varukoopiasse.</string>
     <string name="backup_phone_settings_title">Telefoni varundusseaded</string>
     <string name="backup_phone_settings_summary">Lülita telefoni varundus sisse või välja või vaata, mida see hõlmab</string>
     <string name="backup_phone_settings_unavailable">Telefoni varundusseadeid ei õnnestunud avada</string>

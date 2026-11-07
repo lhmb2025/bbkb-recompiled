@@ -843,9 +843,9 @@
     <string name="backup_restored">S\'ha restaurat la còpia de seguretat</string>
     <string name="backup_restored_words_pending">Les paraules apreses s\'afegiran quan es comenci a utilitzar el teclat</string>
     <string name="backup_phone_include_title">Inclou a la còpia de seguretat del telèfon</string>
-    <string name="backup_phone_include_summary">La configuració, les disposicions i les paraules es desen amb la còpia de seguretat del telèfon al vostre compte de Google i es restauren quan configureu BBKB en un telèfon que tingui la sessió iniciada al mateix compte</string>
+    <string name="backup_phone_include_summary">La configuració, les disposicions i les paraules es desen amb la còpia de seguretat del telèfon i es restauren amb ella</string>
     <string name="backup_phone_last_title">Darrera còpia de seguretat del telèfon</string>
-    <string name="backup_phone_last_never">Encara no s\'ha fet cap còpia de seguretat. Android en fa durant la nit mentre el telèfon es carrega connectat a una xarxa Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Encara no s\'ha fet cap còpia de seguretat. BBKB s\'hi inclourà la propera vegada que el telèfon faci una còpia de seguretat.</string>
     <string name="backup_phone_settings_title">Configuració de la còpia de seguretat del telèfon</string>
     <string name="backup_phone_settings_summary">Activa o desactiva la còpia de seguretat del telèfon, o consulta què inclou</string>
     <string name="backup_phone_settings_unavailable">No s\'ha pogut obrir la configuració de la còpia de seguretat del telèfon</string>

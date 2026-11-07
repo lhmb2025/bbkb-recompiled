@@ -843,9 +843,9 @@
     <string name="backup_restored">Нөөц хуулбарыг сэргээлээ</string>
     <string name="backup_restored_words_pending">Гарыг ашиглаж эхлэхэд сурсан үгс нэмэгдэнэ</string>
     <string name="backup_phone_include_title">Утасны нөөцлөлтөд оруулах</string>
-    <string name="backup_phone_include_summary">Тохиргоо, байрлал, үгс утасны тань нөөц хуулбартай хамт таны Google бүртгэлд хадгалагдах бөгөөд ижил бүртгэлээр нэвтэрсэн утсан дээр BBKB-г тохируулах үед сэргээгдэнэ</string>
+    <string name="backup_phone_include_summary">Тохиргоо, байрлал, үгс утасны тань нөөц хуулбартай хамт хадгалагдаж, түүнтэй хамт сэргээгдэнэ</string>
     <string name="backup_phone_last_title">Утасны сүүлийн нөөцлөлт</string>
-    <string name="backup_phone_last_never">Одоогоор нөөцлөөгүй байна. Android нь утас Wi‑Fi-д холбогдож, цэнэглэгдэж байх үед шөнөөр нөөцөлдөг.</string>
+    <string name="backup_phone_last_never">Одоогоор нөөцлөөгүй байна. Дараагийн удаа утас нөөцлөх үед BBKB орно.</string>
     <string name="backup_phone_settings_title">Утасны нөөцлөлтийн тохиргоо</string>
     <string name="backup_phone_settings_summary">Утасныхаа нөөцлөлтийг асаах, унтраах эсвэл юу багтдагийг харах</string>
     <string name="backup_phone_settings_unavailable">Утасны нөөцлөлтийн тохиргоог нээж чадсангүй</string>

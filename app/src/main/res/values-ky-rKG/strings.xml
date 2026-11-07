@@ -843,9 +843,9 @@
     <string name="backup_restored">Камдык көчүрмө калыбына келтирилди</string>
     <string name="backup_restored_words_pending">Үйрөнүлгөн сөздөр баскычтоп колдонула баштаганда кошулат</string>
     <string name="backup_phone_include_title">Телефондун камдык көчүрмөсүнө кошуу</string>
-    <string name="backup_phone_include_summary">Жөндөөлөр, жайгашуулар жана сөздөр телефонуңуздун камдык көчүрмөсү менен бирге Google аккаунтуңузга сакталат жана ошол эле аккаунтка кирген телефондо BBKB колдонмосун орнотконуңузда калыбына келтирилет</string>
+    <string name="backup_phone_include_summary">Жөндөөлөр, жайгашуулар жана сөздөр телефонуңуздун камдык көчүрмөсү менен бирге сакталат жана аны менен бирге калыбына келтирилет</string>
     <string name="backup_phone_last_title">Телефондун акыркы камдык көчүрмөсү</string>
-    <string name="backup_phone_last_never">Азырынча камдык көчүрмө түзүлө элек. Android камдык көчүрмөнү түнкүсүн, телефон Wi‑Fi тармагына туташып, кубатталып жатканда түзөт.</string>
+    <string name="backup_phone_last_never">Азырынча камдык көчүрмө түзүлө элек. BBKB телефонуңуздун кийинки камдык көчүрмөсүнө кошулат.</string>
     <string name="backup_phone_settings_title">Телефондун камдык көчүрмө жөндөөлөрү</string>
     <string name="backup_phone_settings_summary">Телефонуңуздун камдык көчүрмөсүн күйгүзүү же өчүрүү, же ага эмне кирерин көрүү</string>
     <string name="backup_phone_settings_unavailable">Телефондун камдык көчүрмө жөндөөлөрүн ачуу мүмкүн болгон жок</string>

@@ -843,9 +843,9 @@
     <string name="backup_restored">已還原備份</string>
     <string name="backup_restored_words_pending">開始使用鍵盤後，系統便會加入已學習的字詞</string>
     <string name="backup_phone_include_title">加入手機備份</string>
-    <string name="backup_phone_include_summary">設定、配置和字詞會隨手機備份儲存至你的 Google 帳戶，並在你於登入同一帳戶的手機上設定 BBKB 時還原</string>
+    <string name="backup_phone_include_summary">設定、配置和字詞會隨手機備份一併儲存，並隨備份一併還原</string>
     <string name="backup_phone_last_title">上次手機備份</string>
-    <string name="backup_phone_last_never">尚未備份。手機連接 Wi‑Fi 並充電時，Android 會在夜間進行備份。</string>
+    <string name="backup_phone_last_never">尚未備份。手機下次備份時會包含 BBKB。</string>
     <string name="backup_phone_settings_title">手機備份設定</string>
     <string name="backup_phone_settings_summary">開啟或關閉手機備份，或查看備份包含的內容</string>
     <string name="backup_phone_settings_unavailable">無法開啟手機的備份設定</string>

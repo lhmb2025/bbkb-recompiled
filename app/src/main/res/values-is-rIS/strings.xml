@@ -843,9 +843,9 @@
     <string name="backup_restored">Öryggisafrit endurheimt</string>
     <string name="backup_restored_words_pending">Lærðum orðum verður bætt við þegar lyklaborðið er tekið í notkun</string>
     <string name="backup_phone_include_title">Hafa með í öryggisafriti símans</string>
-    <string name="backup_phone_include_summary">Stillingar, uppsetningar og orð eru vistuð með öryggisafriti símans á Google-reikningnum þínum og endurheimt þegar þú setur upp BBKB í síma sem er skráður inn á sama reikning</string>
+    <string name="backup_phone_include_summary">Stillingar, uppsetningar og orð eru vistuð með öryggisafriti símans og endurheimt með því</string>
     <string name="backup_phone_last_title">Síðasta öryggisafrit símans</string>
-    <string name="backup_phone_last_never">Ekkert öryggisafrit enn. Android tekur öryggisafrit yfir nóttina á meðan síminn er í hleðslu og tengdur við Wi\u2011Fi.</string>
+    <string name="backup_phone_last_never">Ekkert öryggisafrit enn. BBKB verður með næst þegar síminn tekur öryggisafrit.</string>
     <string name="backup_phone_settings_title">Stillingar öryggisafrits símans</string>
     <string name="backup_phone_settings_summary">Kveikja eða slökkva á öryggisafriti símans eða sjá hvað það inniheldur</string>
     <string name="backup_phone_settings_unavailable">Ekki tókst að opna stillingar öryggisafrits símans</string>

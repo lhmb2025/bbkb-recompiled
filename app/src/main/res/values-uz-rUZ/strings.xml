@@ -843,9 +843,9 @@
     <string name="backup_restored">Zaxira tiklandi</string>
     <string name="backup_restored_words_pending">O‘rganilgan so‘zlar klaviatura ishlatila boshlaganda qo‘shiladi</string>
     <string name="backup_phone_include_title">Telefon zaxirasiga qo‘shish</string>
-    <string name="backup_phone_include_summary">Sozlamalar, joylashuvlar va so‘zlar telefoningiz zaxirasi bilan birga Google hisobingizga saqlanadi va xuddi shu hisobga kirilgan telefonda BBKB sozlanganda tiklanadi</string>
+    <string name="backup_phone_include_summary">Sozlamalar, joylashuvlar va so‘zlar telefoningiz zaxirasi bilan birga saqlanadi va u bilan birga tiklanadi</string>
     <string name="backup_phone_last_title">Oxirgi telefon zaxirasi</string>
-    <string name="backup_phone_last_never">Hali zaxiralanmagan. Android telefon Wi‑Fi tarmog‘ida quvvatlanayotganda tunda zaxiralaydi.</string>
+    <string name="backup_phone_last_never">Hali zaxiralanmagan. BBKB telefoningizning keyingi zaxirasiga kiritiladi.</string>
     <string name="backup_phone_settings_title">Telefon zaxirasi sozlamalari</string>
     <string name="backup_phone_settings_summary">Telefoningiz zaxirasini yoqing yoki o‘chiring yoki unga nimalar kirishini ko‘ring</string>
     <string name="backup_phone_settings_unavailable">Telefonning zaxiralash sozlamalarini ochib bo‘lmadi</string>

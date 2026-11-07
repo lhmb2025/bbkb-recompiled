@@ -843,9 +843,9 @@
     <string name="backup_restored">Atsarginė kopija atkurta</string>
     <string name="backup_restored_words_pending">Išmokti žodžiai bus pridėti, kai pradėsite naudoti klaviatūrą</string>
     <string name="backup_phone_include_title">Įtraukti į telefono atsarginę kopiją</string>
-    <string name="backup_phone_include_summary">Nustatymai, išdėstymai ir žodžiai įrašomi kartu su telefono atsargine kopija į jūsų „Google“ paskyrą ir atkuriami, kai nustatote BBKB telefone, kuriame prisijungta prie tos pačios paskyros</string>
+    <string name="backup_phone_include_summary">Nustatymai, išdėstymai ir žodžiai įrašomi kartu su telefono atsargine kopija ir atkuriami kartu su ja</string>
     <string name="backup_phone_last_title">Paskutinė telefono atsarginė kopija</string>
-    <string name="backup_phone_last_never">Atsarginė kopija dar nesukurta. „Android“ kuria atsargines kopijas naktį, kai telefonas kraunamas ir prijungtas prie „Wi‑Fi“.</string>
+    <string name="backup_phone_last_never">Atsarginė kopija dar nesukurta. Kitą kartą telefonui kuriant atsarginę kopiją bus įtraukta ir BBKB.</string>
     <string name="backup_phone_settings_title">Telefono atsarginės kopijos nustatymai</string>
     <string name="backup_phone_settings_summary">Įjungti arba išjungti telefono atsarginę kopiją arba peržiūrėti, kas į ją įtraukiama</string>
     <string name="backup_phone_settings_unavailable">Nepavyko atidaryti telefono atsarginės kopijos nustatymų</string>

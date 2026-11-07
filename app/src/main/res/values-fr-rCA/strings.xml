@@ -843,9 +843,9 @@
     <string name="backup_restored">Sauvegarde restaurée</string>
     <string name="backup_restored_words_pending">Les mots appris seront ajoutés dès que le clavier sera utilisé</string>
     <string name="backup_phone_include_title">Inclure dans la sauvegarde du téléphone</string>
-    <string name="backup_phone_include_summary">Les paramètres, les dispositions et les mots sont enregistrés avec la sauvegarde de votre téléphone dans votre compte Google, puis restaurés lorsque vous configurez BBKB sur un téléphone connecté au même compte</string>
+    <string name="backup_phone_include_summary">Les paramètres, les dispositions et les mots sont enregistrés avec la sauvegarde de votre téléphone et restaurés avec elle</string>
     <string name="backup_phone_last_title">Dernière sauvegarde du téléphone</string>
-    <string name="backup_phone_last_never">Aucune sauvegarde pour le moment. Android effectue la sauvegarde la nuit, lorsque le téléphone est en charge et connecté au Wi\u2011Fi.</string>
+    <string name="backup_phone_last_never">Aucune sauvegarde pour le moment. BBKB sera inclus lors de la prochaine sauvegarde de votre téléphone.</string>
     <string name="backup_phone_settings_title">Paramètres de sauvegarde du téléphone</string>
     <string name="backup_phone_settings_summary">Activer ou désactiver la sauvegarde de votre téléphone, ou voir ce qu\'elle inclut</string>
     <string name="backup_phone_settings_unavailable">Impossible d\'ouvrir les paramètres de sauvegarde du téléphone</string>

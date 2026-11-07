@@ -843,9 +843,9 @@
     <string name="backup_restored">Athchóiríodh an cúltaca</string>
     <string name="backup_restored_words_pending">Cuirfear focail fhoghlamtha leis nuair a bheidh an méarchlár in úsáid</string>
     <string name="backup_phone_include_title">Cuir i gcúltaca an fhóin</string>
-    <string name="backup_phone_include_summary">Sábháiltear socruithe, leaganacha amach agus focail le cúltaca d\'fhóin i do chuntas Google, agus athchóirítear iad nuair a shocraíonn tú BBKB ar fhón atá sínithe isteach sa chuntas céanna</string>
+    <string name="backup_phone_include_summary">Sábháiltear socruithe, leaganacha amach agus focail le cúltaca d\'fhóin, agus athchóirítear iad leis</string>
     <string name="backup_phone_last_title">Cúltaca deireanach an fhóin</string>
-    <string name="backup_phone_last_never">Níl cúltaca déanta fós. Déanann Android cúltaca i rith na hoíche agus an fón á luchtú ar Wi\u2011Fi.</string>
+    <string name="backup_phone_last_never">Níl cúltaca déanta fós. Cuirfear BBKB san áireamh an chéad uair eile a dhéanfaidh d\'fhón cúltaca.</string>
     <string name="backup_phone_settings_title">Socruithe cúltaca an fhóin</string>
     <string name="backup_phone_settings_summary">Cas cúltaca d\'fhóin air nó as, nó féach cad atá ann</string>
     <string name="backup_phone_settings_unavailable">Níorbh fhéidir socruithe cúltaca an fhóin a oscailt</string>

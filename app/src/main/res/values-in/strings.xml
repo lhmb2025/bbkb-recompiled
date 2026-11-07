@@ -843,9 +843,9 @@
     <string name="backup_restored">Cadangan dipulihkan</string>
     <string name="backup_restored_words_pending">Kata yang dipelajari akan ditambahkan setelah keyboard digunakan</string>
     <string name="backup_phone_include_title">Sertakan dalam cadangan ponsel</string>
-    <string name="backup_phone_include_summary">Setelan, tata letak, dan kata disimpan bersama cadangan ponsel ke Akun Google Anda, lalu dipulihkan saat Anda menyiapkan BBKB di ponsel yang login ke akun yang sama</string>
+    <string name="backup_phone_include_summary">Setelan, tata letak, dan kata disimpan bersama cadangan ponsel dan dipulihkan bersamanya</string>
     <string name="backup_phone_last_title">Cadangan ponsel terakhir</string>
-    <string name="backup_phone_last_never">Belum dicadangkan. Android mencadangkan pada malam hari saat ponsel sedang diisi daya dan terhubung ke Wi\u2011Fi.</string>
+    <string name="backup_phone_last_never">Belum dicadangkan. BBKB akan disertakan saat ponsel Anda dicadangkan berikutnya.</string>
     <string name="backup_phone_settings_title">Setelan cadangan ponsel</string>
     <string name="backup_phone_settings_summary">Aktifkan atau nonaktifkan cadangan ponsel Anda, atau lihat apa saja yang disertakan</string>
     <string name="backup_phone_settings_unavailable">Tidak dapat membuka setelan cadangan ponsel</string>

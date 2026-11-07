@@ -843,9 +843,9 @@
     <string name="backup_restored">Sandaran dipulihkan</string>
     <string name="backup_restored_words_pending">Perkataan yang dipelajari akan ditambah apabila papan kekunci digunakan</string>
     <string name="backup_phone_include_title">Sertakan dalam sandaran telefon</string>
-    <string name="backup_phone_include_summary">Tetapan, susun atur dan perkataan disimpan bersama sandaran telefon anda ke akaun Google anda, dan dipulihkan apabila anda menyediakan BBKB pada telefon yang dilog masuk ke akaun yang sama</string>
+    <string name="backup_phone_include_summary">Tetapan, susun atur dan perkataan disimpan bersama sandaran telefon anda dan dipulihkan bersamanya</string>
     <string name="backup_phone_last_title">Sandaran telefon terakhir</string>
-    <string name="backup_phone_last_never">Belum disandarkan lagi. Android membuat sandaran pada waktu malam semasa telefon dicas dan disambungkan ke Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Belum disandarkan lagi. BBKB akan disertakan apabila telefon anda membuat sandaran seterusnya.</string>
     <string name="backup_phone_settings_title">Tetapan sandaran telefon</string>
     <string name="backup_phone_settings_summary">Hidupkan atau matikan sandaran telefon anda, atau lihat perkara yang disertakan</string>
     <string name="backup_phone_settings_unavailable">Tidak dapat membuka tetapan sandaran telefon</string>

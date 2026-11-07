@@ -843,9 +843,9 @@
     <string name="backup_restored">Varmuuskopio palautettu</string>
     <string name="backup_restored_words_pending">Opitut sanat lisätään, kun näppäimistöä käytetään</string>
     <string name="backup_phone_include_title">Sisällytä puhelimen varmuuskopioon</string>
-    <string name="backup_phone_include_summary">Asetukset, asettelut ja sanat tallennetaan puhelimen varmuuskopion mukana Google-tilillesi ja palautetaan, kun otat BBKB:n käyttöön puhelimessa, joka on kirjautunut samalle tilille</string>
+    <string name="backup_phone_include_summary">Asetukset, asettelut ja sanat tallennetaan puhelimen varmuuskopion mukana ja palautetaan sen mukana</string>
     <string name="backup_phone_last_title">Puhelimen viimeisin varmuuskopio</string>
-    <string name="backup_phone_last_never">Ei vielä varmuuskopioitu. Android varmuuskopioi yöllä, kun puhelin latautuu ja on Wi\u2011Fi-yhteydessä.</string>
+    <string name="backup_phone_last_never">Ei vielä varmuuskopioitu. BBKB on mukana, kun puhelin seuraavan kerran varmuuskopioi.</string>
     <string name="backup_phone_settings_title">Puhelimen varmuuskopioasetukset</string>
     <string name="backup_phone_settings_summary">Ota puhelimen varmuuskopiointi käyttöön tai poista se käytöstä, tai katso, mitä se sisältää</string>
     <string name="backup_phone_settings_unavailable">Puhelimen varmuuskopioasetuksia ei voitu avata</string>

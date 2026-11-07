@@ -843,9 +843,9 @@
     <string name="backup_restored">Przywrócono kopię zapasową</string>
     <string name="backup_restored_words_pending">Zapamiętane słowa zostaną dodane, gdy zaczniesz używać klawiatury</string>
     <string name="backup_phone_include_title">Uwzględnij w kopii zapasowej telefonu</string>
-    <string name="backup_phone_include_summary">Ustawienia, układy i słowa są zapisywane razem z kopią zapasową telefonu na koncie Google i przywracane, gdy skonfigurujesz BBKB na telefonie zalogowanym na to samo konto</string>
+    <string name="backup_phone_include_summary">Ustawienia, układy i słowa są zapisywane razem z kopią zapasową telefonu i przywracane razem z nią</string>
     <string name="backup_phone_last_title">Ostatnia kopia zapasowa telefonu</string>
-    <string name="backup_phone_last_never">Nie utworzono jeszcze kopii zapasowej. Android tworzy kopię zapasową w nocy, gdy telefon ładuje się i jest połączony z siecią Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Nie utworzono jeszcze kopii zapasowej. BBKB zostanie uwzględniony przy następnej kopii zapasowej telefonu.</string>
     <string name="backup_phone_settings_title">Ustawienia kopii zapasowej telefonu</string>
     <string name="backup_phone_settings_summary">Włącz lub wyłącz kopię zapasową telefonu albo sprawdź, co obejmuje</string>
     <string name="backup_phone_settings_unavailable">Nie udało się otworzyć ustawień kopii zapasowej telefonu</string>

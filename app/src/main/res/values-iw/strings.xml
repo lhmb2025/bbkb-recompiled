@@ -843,9 +843,9 @@
     <string name="backup_restored">הגיבוי שוחזר</string>
     <string name="backup_restored_words_pending">המילים שנלמדו יתווספו כשהמקלדת תהיה בשימוש</string>
     <string name="backup_phone_include_title">הכללה בגיבוי הטלפון</string>
-    <string name="backup_phone_include_summary">ההגדרות, הפריסות והמילים נשמרות עם גיבוי הטלפון בחשבון Google שלך, ומשוחזרות כשמגדירים את BBKB בטלפון שמחובר לאותו חשבון</string>
+    <string name="backup_phone_include_summary">ההגדרות, הפריסות והמילים נשמרות עם גיבוי הטלפון ומשוחזרות יחד איתו</string>
     <string name="backup_phone_last_title">גיבוי הטלפון האחרון</string>
-    <string name="backup_phone_last_never">עדיין לא בוצע גיבוי. Android מגבה במהלך הלילה, בזמן שהטלפון בטעינה ומחובר ל-Wi‑Fi.</string>
+    <string name="backup_phone_last_never">עדיין לא בוצע גיבוי. BBKB ייכלל בגיבוי הבא של הטלפון.</string>
     <string name="backup_phone_settings_title">הגדרות גיבוי הטלפון</string>
     <string name="backup_phone_settings_summary">הפעלה או כיבוי של גיבוי הטלפון, או הצגת מה שהוא כולל</string>
     <string name="backup_phone_settings_unavailable">לא ניתן לפתוח את הגדרות הגיבוי של הטלפון</string>

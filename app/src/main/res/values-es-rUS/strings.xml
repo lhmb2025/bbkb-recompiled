@@ -843,9 +843,9 @@
     <string name="backup_restored">Se restauró la copia de seguridad</string>
     <string name="backup_restored_words_pending">Las palabras aprendidas se agregarán cuando se use el teclado</string>
     <string name="backup_phone_include_title">Incluir en la copia de seguridad del teléfono</string>
-    <string name="backup_phone_include_summary">La configuración, los diseños y las palabras se guardan con la copia de seguridad de tu teléfono en tu cuenta de Google, y se restauran cuando configuras BBKB en un teléfono con sesión iniciada en la misma cuenta</string>
+    <string name="backup_phone_include_summary">La configuración, los diseños y las palabras se guardan con la copia de seguridad de tu teléfono y se restauran con ella</string>
     <string name="backup_phone_last_title">Última copia de seguridad del teléfono</string>
-    <string name="backup_phone_last_never">Aún no hay copia de seguridad. Android hace la copia de seguridad durante la noche mientras el teléfono se carga y está conectado a Wi\u2011Fi.</string>
+    <string name="backup_phone_last_never">Aún no hay copia de seguridad. BBKB se incluirá la próxima vez que tu teléfono haga una copia de seguridad.</string>
     <string name="backup_phone_settings_title">Configuración de copia de seguridad del teléfono</string>
     <string name="backup_phone_settings_summary">Activa o desactiva la copia de seguridad de tu teléfono, o consulta qué incluye</string>
     <string name="backup_phone_settings_unavailable">No se pudo abrir la configuración de copia de seguridad del teléfono</string>

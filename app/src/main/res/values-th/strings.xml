@@ -843,9 +843,9 @@
     <string name="backup_restored">กู้คืนข้อมูลสำรองแล้ว</string>
     <string name="backup_restored_words_pending">คำที่เรียนรู้จะถูกเพิ่มเมื่อเริ่มใช้แป้นพิมพ์</string>
     <string name="backup_phone_include_title">รวมไว้ในการสำรองข้อมูลของโทรศัพท์</string>
-    <string name="backup_phone_include_summary">การตั้งค่า เลย์เอาท์ และคำจะได้รับการบันทึกพร้อมกับข้อมูลสำรองของโทรศัพท์ไปยังบัญชี Google ของคุณ และจะกู้คืนเมื่อคุณตั้งค่า BBKB ในโทรศัพท์ที่ลงชื่อเข้าใช้บัญชีเดียวกัน</string>
+    <string name="backup_phone_include_summary">การตั้งค่า เลย์เอาท์ และคำจะได้รับการบันทึกพร้อมกับข้อมูลสำรองของโทรศัพท์ และกู้คืนไปพร้อมกัน</string>
     <string name="backup_phone_last_title">การสำรองข้อมูลของโทรศัพท์ครั้งล่าสุด</string>
-    <string name="backup_phone_last_never">ยังไม่ได้สำรองข้อมูล Android จะสำรองข้อมูลในเวลากลางคืนขณะที่โทรศัพท์ชาร์จและเชื่อมต่อ Wi‑Fi</string>
+    <string name="backup_phone_last_never">ยังไม่ได้สำรองข้อมูล BBKB จะรวมอยู่ในการสำรองข้อมูลครั้งถัดไปของโทรศัพท์</string>
     <string name="backup_phone_settings_title">การตั้งค่าการสำรองข้อมูลของโทรศัพท์</string>
     <string name="backup_phone_settings_summary">เปิดหรือปิดการสำรองข้อมูลของโทรศัพท์ หรือดูว่ามีอะไรรวมอยู่บ้าง</string>
     <string name="backup_phone_settings_unavailable">เปิดการตั้งค่าการสำรองข้อมูลของโทรศัพท์ไม่ได้</string>

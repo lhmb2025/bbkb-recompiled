@@ -843,9 +843,9 @@
     <string name="backup_restored">تمت استعادة النسخة الاحتياطية</string>
     <string name="backup_restored_words_pending">ستُضاف الكلمات المتعلَّمة بمجرد استخدام لوحة المفاتيح</string>
     <string name="backup_phone_include_title">التضمين في النسخة الاحتياطية للهاتف</string>
-    <string name="backup_phone_include_summary">تُحفظ الإعدادات والتخطيطات والكلمات مع النسخة الاحتياطية لهاتفك في حسابك على Google، وتُستعاد عند إعداد BBKB على هاتف مسجَّل الدخول إلى الحساب نفسه</string>
+    <string name="backup_phone_include_summary">تُحفظ الإعدادات والتخطيطات والكلمات مع النسخة الاحتياطية لهاتفك وتُستعاد معها</string>
     <string name="backup_phone_last_title">آخر نسخة احتياطية للهاتف</string>
-    <string name="backup_phone_last_never">لم يتم النسخ الاحتياطي بعد. يُجري Android النسخ الاحتياطي ليلًا أثناء شحن الهاتف واتصاله بشبكة Wi‑Fi.</string>
+    <string name="backup_phone_last_never">لم يتم النسخ الاحتياطي بعد. سيُضمَّن BBKB في المرة التالية التي ينسخ فيها هاتفك احتياطيًا.</string>
     <string name="backup_phone_settings_title">إعدادات النسخ الاحتياطي للهاتف</string>
     <string name="backup_phone_settings_summary">تشغيل النسخ الاحتياطي لهاتفك أو إيقافه، أو معرفة ما يتضمنه</string>
     <string name="backup_phone_settings_unavailable">تعذّر فتح إعدادات النسخ الاحتياطي للهاتف</string>

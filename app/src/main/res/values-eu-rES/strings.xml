@@ -843,9 +843,9 @@
     <string name="backup_restored">Leheneratu da babeskopia</string>
     <string name="backup_restored_words_pending">Ikasitako hitzak teklatua erabiltzen denean gehituko dira</string>
     <string name="backup_phone_include_title">Sartu telefonoaren babeskopian</string>
-    <string name="backup_phone_include_summary">Ezarpenak, diseinuak eta hitzak telefonoaren babeskopiarekin batera gordetzen dira zure Google kontuan, eta kontu berean saioa hasita duen telefono batean BBKB konfiguratzen duzunean leheneratzen dira</string>
+    <string name="backup_phone_include_summary">Ezarpenak, diseinuak eta hitzak telefonoaren babeskopiarekin batera gordetzen dira, eta harekin batera leheneratzen dira</string>
     <string name="backup_phone_last_title">Telefonoaren azken babeskopia</string>
-    <string name="backup_phone_last_never">Ez da babeskopiarik egin oraindik. Android-ek gauez egiten ditu babeskopiak, telefonoa Wi\u2011Fi sare batera konektatuta kargatzen ari den bitartean.</string>
+    <string name="backup_phone_last_never">Ez da babeskopiarik egin oraindik. BBKB sartuko da telefonoak hurrengo babeskopia egiten duenean.</string>
     <string name="backup_phone_settings_title">Telefonoaren babeskopia-ezarpenak</string>
     <string name="backup_phone_settings_summary">Aktibatu edo desaktibatu telefonoaren babeskopia, edo ikusi zer hartzen duen barne</string>
     <string name="backup_phone_settings_unavailable">Ezin izan dira ireki telefonoaren babeskopia-ezarpenak</string>

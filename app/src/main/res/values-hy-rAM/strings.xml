@@ -843,9 +843,9 @@
     <string name="backup_restored">Պահուստը վերականգնվեց</string>
     <string name="backup_restored_words_pending">Սովորած բառերը կավելացվեն, երբ ստեղնաշարը սկսի օգտագործվել</string>
     <string name="backup_phone_include_title">Ներառել հեռախոսի պահուստում</string>
-    <string name="backup_phone_include_summary">Կարգավորումները, դասավորությունները և բառերը պահվում են հեռախոսի պահուստի հետ ձեր Google հաշվում և վերականգնվում են, երբ BBKB-ն կարգավորում եք նույն հաշվով մուտք գործած հեռախոսում</string>
+    <string name="backup_phone_include_summary">Կարգավորումները, դասավորությունները և բառերը պահվում են հեռախոսի պահուստի հետ և վերականգնվում են դրա հետ միասին</string>
     <string name="backup_phone_last_title">Հեռախոսի վերջին պահուստավորումը</string>
-    <string name="backup_phone_last_never">Պահուստավորում դեռ չի կատարվել։ Android-ը պահուստավորում է գիշերը, երբ հեռախոսը լիցքավորվում է և միացած է Wi\u2011Fi-ին։</string>
+    <string name="backup_phone_last_never">Պահուստավորում դեռ չի կատարվել։ BBKB-ն կներառվի հեռախոսի հաջորդ պահուստավորման ժամանակ։</string>
     <string name="backup_phone_settings_title">Հեռախոսի պահուստավորման կարգավորումներ</string>
     <string name="backup_phone_settings_summary">Միացնել կամ անջատել հեռախոսի պահուստավորումը կամ տեսնել, թե ինչ է այն ներառում</string>
     <string name="backup_phone_settings_unavailable">Չհաջողվեց բացել հեռախոսի պահուստավորման կարգավորումները</string>

@@ -843,9 +843,9 @@
     <string name="backup_restored">백업을 복원했습니다</string>
     <string name="backup_restored_words_pending">학습한 단어는 키보드를 사용하기 시작하면 추가됩니다</string>
     <string name="backup_phone_include_title">기기 백업에 포함</string>
-    <string name="backup_phone_include_summary">설정, 레이아웃, 단어는 기기 백업과 함께 Google 계정에 저장되며, 같은 계정으로 로그인한 기기에서 BBKB를 설정하면 복원됩니다</string>
+    <string name="backup_phone_include_summary">설정, 레이아웃, 단어는 기기 백업과 함께 저장되고 백업과 함께 복원됩니다</string>
     <string name="backup_phone_last_title">마지막 기기 백업</string>
-    <string name="backup_phone_last_never">아직 백업되지 않았습니다. Android는 밤사이 기기가 Wi‑Fi에 연결되어 충전 중일 때 백업합니다.</string>
+    <string name="backup_phone_last_never">아직 백업되지 않았습니다. 다음에 기기가 백업할 때 BBKB도 포함됩니다.</string>
     <string name="backup_phone_settings_title">기기 백업 설정</string>
     <string name="backup_phone_settings_summary">기기 백업을 켜거나 끄고, 백업에 포함되는 항목을 확인합니다</string>
     <string name="backup_phone_settings_unavailable">기기 백업 설정을 열지 못했습니다</string>

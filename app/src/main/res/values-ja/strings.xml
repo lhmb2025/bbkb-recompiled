@@ -843,9 +843,9 @@
     <string name="backup_restored">バックアップを復元しました</string>
     <string name="backup_restored_words_pending">学習した単語は、キーボードの使用を開始すると追加されます</string>
     <string name="backup_phone_include_title">端末のバックアップに含める</string>
-    <string name="backup_phone_include_summary">設定、レイアウト、単語は端末のバックアップとともに Google アカウントに保存され、同じアカウントでログインした端末で BBKB をセットアップすると復元されます</string>
+    <string name="backup_phone_include_summary">設定、レイアウト、単語は端末のバックアップとともに保存され、バックアップと一緒に復元されます</string>
     <string name="backup_phone_last_title">前回の端末のバックアップ</string>
-    <string name="backup_phone_last_never">まだバックアップされていません。Android は、端末が Wi‑Fi に接続されて充電中の夜間にバックアップを行います。</string>
+    <string name="backup_phone_last_never">まだバックアップされていません。次に端末がバックアップを行うときに BBKB も含まれます。</string>
     <string name="backup_phone_settings_title">端末のバックアップ設定</string>
     <string name="backup_phone_settings_summary">端末のバックアップのオンとオフを切り替えたり、バックアップの対象を確認したりします</string>
     <string name="backup_phone_settings_unavailable">端末のバックアップ設定を開けませんでした</string>

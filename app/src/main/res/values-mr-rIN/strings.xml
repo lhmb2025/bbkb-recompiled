@@ -843,9 +843,9 @@
     <string name="backup_restored">बॅकअप रिस्टोअर केला</string>
     <string name="backup_restored_words_pending">कीबोर्ड वापरात आल्यावर शिकलेले शब्द जोडले जातील</string>
     <string name="backup_phone_include_title">फोन बॅकअपमध्ये समाविष्ट करा</string>
-    <string name="backup_phone_include_summary">सेटिंग्ज, लेआउट आणि शब्द तुमच्या फोनच्या बॅकअपसह तुमच्या Google खात्यात जतन केले जातात आणि त्याच खात्याने साइन इन केलेल्या फोनवर BBKB सेट अप केल्यावर रिस्टोअर केले जातात</string>
+    <string name="backup_phone_include_summary">सेटिंग्ज, लेआउट आणि शब्द तुमच्या फोनच्या बॅकअपसह जतन केले जातात आणि त्यासोबतच रिस्टोअर केले जातात</string>
     <string name="backup_phone_last_title">शेवटचा फोन बॅकअप</string>
-    <string name="backup_phone_last_never">अद्याप बॅकअप घेतलेला नाही. फोन Wi‑Fi वर असताना चार्ज होत असेल तेव्हा Android रात्री बॅकअप घेते.</string>
+    <string name="backup_phone_last_never">अद्याप बॅकअप घेतलेला नाही. पुढच्या वेळी तुमचा फोन बॅकअप घेईल तेव्हा BBKB समाविष्ट होईल.</string>
     <string name="backup_phone_settings_title">फोन बॅकअप सेटिंग्ज</string>
     <string name="backup_phone_settings_summary">तुमच्या फोनचा बॅकअप चालू किंवा बंद करा, किंवा त्यात काय समाविष्ट आहे ते पहा</string>
     <string name="backup_phone_settings_unavailable">फोनच्या बॅकअप सेटिंग्ज उघडता आल्या नाहीत</string>

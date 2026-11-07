@@ -327,7 +327,7 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_reset_title, "reset clear settings layouts words dictionary learned defaults erase wipe data", SettingsRoute.Advanced.route, ADVANCED, ManageDataAnchors.RESET),
         SearchableSetting(R.string.backup_save_title, "backup back up export save settings layouts symbol page slideboard quick phrases custom physical layout dictionary shortcuts learned words file zip", SettingsRoute.BackupRestore.route, ADVANCED, BackupAnchors.SAVE),
         SearchableSetting(R.string.backup_restore_file_title, "restore import load settings layouts letter layout map dictionary words file zip json xml backup transfer migrate", SettingsRoute.BackupRestore.route, ADVANCED, BackupAnchors.RESTORE),
-        SearchableSetting(R.string.backup_phone_include_title, "phone backup google account cloud automatic android back up sync", SettingsRoute.BackupRestore.route, ADVANCED, BackupAnchors.PHONE),
+        SearchableSetting(R.string.backup_phone_include_title, "phone backup google account seedvault cloud automatic android back up sync", SettingsRoute.BackupRestore.route, ADVANCED, BackupAnchors.PHONE),
         // ── Advanced: OTA app updates (About -> Updates) ────────────────────────
         SearchableSetting(R.string.settings_update_background_check_title, "update daily background check notify notification", SettingsRoute.Updates.route, ADVANCED, "pref_update_background_check"),
     )

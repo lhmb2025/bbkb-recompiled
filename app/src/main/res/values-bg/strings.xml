@@ -843,9 +843,9 @@
     <string name="backup_restored">Архивът е възстановен</string>
     <string name="backup_restored_words_pending">Запаметените думи ще бъдат добавени, след като клавиатурата започне да се използва</string>
     <string name="backup_phone_include_title">Включване в архива на телефона</string>
-    <string name="backup_phone_include_summary">Настройките, подредбите и думите се запазват с архива на телефона ви в профила ви в Google и се възстановяват, когато настроите BBKB на телефон, влязъл в същия профил</string>
+    <string name="backup_phone_include_summary">Настройките, подредбите и думите се запазват с архива на телефона ви и се възстановяват заедно с него</string>
     <string name="backup_phone_last_title">Последно архивиране на телефона</string>
-    <string name="backup_phone_last_never">Все още няма архив. Android архивира през нощта, докато телефонът се зарежда и е свързан с Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Все още няма архив. BBKB ще бъде включен при следващото архивиране на телефона ви.</string>
     <string name="backup_phone_settings_title">Настройки за архивиране на телефона</string>
     <string name="backup_phone_settings_summary">Включване или изключване на архивирането на телефона ви или преглед на това, какво включва</string>
     <string name="backup_phone_settings_unavailable">Настройките за архивиране на телефона не можаха да бъдат отворени</string>

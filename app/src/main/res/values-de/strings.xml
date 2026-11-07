@@ -843,9 +843,9 @@
     <string name="backup_restored">Sicherung wiederhergestellt</string>
     <string name="backup_restored_words_pending">Gelernte Wörter werden hinzugefügt, sobald die Tastatur verwendet wird</string>
     <string name="backup_phone_include_title">In Telefonsicherung aufnehmen</string>
-    <string name="backup_phone_include_summary">Einstellungen, Layouts und Wörter werden mit der Sicherung Ihres Telefons in Ihrem Google-Konto gespeichert und wiederhergestellt, wenn Sie BBKB auf einem Telefon einrichten, das mit demselben Konto angemeldet ist</string>
+    <string name="backup_phone_include_summary">Einstellungen, Layouts und Wörter werden mit der Sicherung Ihres Telefons gespeichert und mit ihr wiederhergestellt</string>
     <string name="backup_phone_last_title">Letzte Telefonsicherung</string>
-    <string name="backup_phone_last_never">Noch nicht gesichert. Android sichert über Nacht, während das Telefon lädt und mit Wi‑Fi verbunden ist.</string>
+    <string name="backup_phone_last_never">Noch nicht gesichert. BBKB wird bei der nächsten Sicherung Ihres Telefons einbezogen.</string>
     <string name="backup_phone_settings_title">Einstellungen für die Telefonsicherung</string>
     <string name="backup_phone_settings_summary">Die Sicherung Ihres Telefons ein- oder ausschalten oder ansehen, was sie umfasst</string>
     <string name="backup_phone_settings_unavailable">Die Sicherungseinstellungen des Telefons konnten nicht geöffnet werden</string>

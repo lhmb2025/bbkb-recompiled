@@ -843,9 +843,9 @@
     <string name="backup_restored">Sikkerhedskopien er gendannet</string>
     <string name="backup_restored_words_pending">Lærte ord tilføjes, når tastaturet tages i brug</string>
     <string name="backup_phone_include_title">Medtag i telefonens sikkerhedskopi</string>
-    <string name="backup_phone_include_summary">Indstillinger, layouts og ord gemmes sammen med telefonens sikkerhedskopi på din Google-konto og gendannes, når du konfigurerer BBKB på en telefon, der er logget ind på den samme konto</string>
+    <string name="backup_phone_include_summary">Indstillinger, layouts og ord gemmes sammen med telefonens sikkerhedskopi og gendannes sammen med den</string>
     <string name="backup_phone_last_title">Seneste sikkerhedskopi af telefonen</string>
-    <string name="backup_phone_last_never">Ikke sikkerhedskopieret endnu. Android sikkerhedskopierer om natten, mens telefonen oplader på Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Ikke sikkerhedskopieret endnu. BBKB kommer med, næste gang telefonen sikkerhedskopierer.</string>
     <string name="backup_phone_settings_title">Indstillinger for telefonens sikkerhedskopi</string>
     <string name="backup_phone_settings_summary">Slå telefonens sikkerhedskopiering til eller fra, eller se, hvad den omfatter</string>
     <string name="backup_phone_settings_unavailable">Telefonens indstillinger for sikkerhedskopiering kunne ikke åbnes</string>

@@ -843,9 +843,9 @@
     <string name="backup_restored">Dublējumkopija atjaunota</string>
     <string name="backup_restored_words_pending">Iemācītie vārdi tiks pievienoti, tiklīdz tastatūra tiks izmantota</string>
     <string name="backup_phone_include_title">Iekļaut tālruņa dublējumkopijā</string>
-    <string name="backup_phone_include_summary">Iestatījumi, izkārtojumi un vārdi tiek saglabāti kopā ar tālruņa dublējumkopiju jūsu Google kontā un tiek atjaunoti, kad iestatāt BBKB tālrunī ar to pašu kontu</string>
+    <string name="backup_phone_include_summary">Iestatījumi, izkārtojumi un vārdi tiek saglabāti kopā ar tālruņa dublējumkopiju un tiek atjaunoti kopā ar to</string>
     <string name="backup_phone_last_title">Pēdējā tālruņa dublējumkopija</string>
-    <string name="backup_phone_last_never">Dublējumkopija vēl nav izveidota. Android dublē datus naktī, kamēr tālrunis tiek uzlādēts un ir savienots ar Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Dublējumkopija vēl nav izveidota. BBKB tiks iekļauts nākamajā tālruņa dublējumkopijā.</string>
     <string name="backup_phone_settings_title">Tālruņa dublēšanas iestatījumi</string>
     <string name="backup_phone_settings_summary">Ieslēgt vai izslēgt tālruņa dublēšanu vai skatīt, kas tajā iekļauts</string>
     <string name="backup_phone_settings_unavailable">Neizdevās atvērt tālruņa dublēšanas iestatījumus</string>

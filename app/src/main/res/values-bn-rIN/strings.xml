@@ -843,9 +843,9 @@
     <string name="backup_restored">ব্যাকআপ পুনরুদ্ধার করা হয়েছে</string>
     <string name="backup_restored_words_pending">কীবোর্ড ব্যবহার শুরু হলে শেখা শব্দ যোগ করা হবে</string>
     <string name="backup_phone_include_title">ফোনের ব্যাকআপে অন্তর্ভুক্ত করুন</string>
-    <string name="backup_phone_include_summary">সেটিংস, লেআউট ও শব্দ আপনার ফোনের ব্যাকআপের সঙ্গে আপনার Google অ্যাকাউন্টে সংরক্ষিত হয়, এবং একই অ্যাকাউন্টে সাইন ইন করা কোনো ফোনে BBKB সেট আপ করলে পুনরুদ্ধার করা হয়</string>
+    <string name="backup_phone_include_summary">সেটিংস, লেআউট ও শব্দ আপনার ফোনের ব্যাকআপের সঙ্গে সংরক্ষিত হয় এবং সেটির সঙ্গেই পুনরুদ্ধার করা হয়</string>
     <string name="backup_phone_last_title">সর্বশেষ ফোন ব্যাকআপ</string>
-    <string name="backup_phone_last_never">এখনও ব্যাকআপ করা হয়নি। ফোন Wi‑Fi-তে সংযুক্ত অবস্থায় চার্জ হওয়ার সময় Android রাতে ব্যাকআপ করে।</string>
+    <string name="backup_phone_last_never">এখনও ব্যাকআপ করা হয়নি। পরের বার আপনার ফোন ব্যাকআপ নিলে BBKB অন্তর্ভুক্ত হবে।</string>
     <string name="backup_phone_settings_title">ফোনের ব্যাকআপ সেটিংস</string>
     <string name="backup_phone_settings_summary">আপনার ফোনের ব্যাকআপ চালু বা বন্ধ করুন, অথবা এতে কী অন্তর্ভুক্ত আছে দেখুন</string>
     <string name="backup_phone_settings_unavailable">ফোনের ব্যাকআপ সেটিংস খোলা যায়নি</string>

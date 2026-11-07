@@ -843,9 +843,9 @@
     <string name="backup_restored">Záloha bola obnovená</string>
     <string name="backup_restored_words_pending">Naučené slová sa pridajú, keď začnete klávesnicu používať</string>
     <string name="backup_phone_include_title">Zahrnúť do zálohy telefónu</string>
-    <string name="backup_phone_include_summary">Nastavenia, rozloženia a slová sa ukladajú spolu so zálohou telefónu do vášho účtu Google a obnovia sa, keď nastavíte BBKB v telefóne prihlásenom do rovnakého účtu</string>
+    <string name="backup_phone_include_summary">Nastavenia, rozloženia a slová sa ukladajú spolu so zálohou telefónu a obnovia sa spolu s ňou</string>
     <string name="backup_phone_last_title">Posledná záloha telefónu</string>
-    <string name="backup_phone_last_never">Zatiaľ nezálohované. Android zálohuje v noci, keď sa telefón nabíja a je pripojený k sieti Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Zatiaľ nezálohované. BBKB bude zahrnutý pri ďalšej zálohe telefónu.</string>
     <string name="backup_phone_settings_title">Nastavenia zálohovania telefónu</string>
     <string name="backup_phone_settings_summary">Zapnite alebo vypnite zálohovanie telefónu, prípadne zistite, čo zahŕňa</string>
     <string name="backup_phone_settings_unavailable">Nastavenia zálohovania telefónu sa nepodarilo otvoriť</string>

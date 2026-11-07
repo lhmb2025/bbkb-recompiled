@@ -843,9 +843,9 @@
     <string name="backup_restored">Rugsteun herstel</string>
     <string name="backup_restored_words_pending">Geleerde woorde sal bygevoeg word sodra die toetsbord gebruik word</string>
     <string name="backup_phone_include_title">Sluit by foonrugsteun in</string>
-    <string name="backup_phone_include_summary">Instellings, uitlegte en woorde word saam met jou foon se rugsteun in jou Google-rekening gestoor, en herstel wanneer jy BBKB opstel op \'n foon wat by dieselfde rekening aangemeld is</string>
+    <string name="backup_phone_include_summary">Instellings, uitlegte en woorde word saam met jou foon se rugsteun gestoor en daarmee herstel</string>
     <string name="backup_phone_last_title">Laaste foonrugsteun</string>
-    <string name="backup_phone_last_never">Nog nie gerugsteun nie. Android rugsteun snags terwyl die foon op Wi‑Fi laai.</string>
+    <string name="backup_phone_last_never">Nog nie gerugsteun nie. BBKB word ingesluit die volgende keer dat jou foon rugsteun.</string>
     <string name="backup_phone_settings_title">Foonrugsteuninstellings</string>
     <string name="backup_phone_settings_summary">Skakel jou foon se rugsteun aan of af, of kyk wat dit insluit</string>
     <string name="backup_phone_settings_unavailable">Kon nie die foon se rugsteuninstellings oopmaak nie</string>

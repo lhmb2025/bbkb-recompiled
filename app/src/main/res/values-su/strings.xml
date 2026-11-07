@@ -843,9 +843,9 @@
     <string name="backup_restored">Cadangan geus dipulihkeun</string>
     <string name="backup_restored_words_pending">Kecap nu diajar bakal ditambahkeun sanggeus papan tombol dipaké</string>
     <string name="backup_phone_include_title">Lebetkeun kana cadangan telepon</string>
-    <string name="backup_phone_include_summary">Setélan, tata perenah jeung kecap disimpen babarengan jeung cadangan telepon anjeun kana akun Google anjeun, sarta dipulihkeun nalika anjeun nyetél BBKB dina telepon nu asup ka akun nu sarua</string>
+    <string name="backup_phone_include_summary">Setélan, tata perenah jeung kecap disimpen babarengan jeung cadangan telepon anjeun sarta dipulihkeun babarengan jeung éta</string>
     <string name="backup_phone_last_title">Cadangan telepon panungtung</string>
-    <string name="backup_phone_last_never">Can dicadangkeun. Android nyadangkeun peuting-peuting nalika telepon dicas dina Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Can dicadangkeun. BBKB bakal kaasup nalika telepon anjeun nyadangkeun salajengna.</string>
     <string name="backup_phone_settings_title">Setélan cadangan telepon</string>
     <string name="backup_phone_settings_summary">Hurungkeun atawa pareuman cadangan telepon anjeun, atawa tingali naon nu kaasup</string>
     <string name="backup_phone_settings_unavailable">Teu bisa muka setélan cadangan telepon</string>

@@ -843,9 +843,9 @@
     <string name="backup_restored">Na-restore ang backup</string>
     <string name="backup_restored_words_pending">Idaragdag ang mga natutunang salita kapag ginagamit na ang keyboard</string>
     <string name="backup_phone_include_title">Isama sa backup ng telepono</string>
-    <string name="backup_phone_include_summary">Sine-save ang mga setting, layout at salita kasama ng backup ng iyong telepono sa iyong Google account, at nire-restore kapag na-set up mo ang BBKB sa teleponong naka-sign in sa parehong account</string>
+    <string name="backup_phone_include_summary">Sine-save ang mga setting, layout at salita kasama ng backup ng iyong telepono, at nire-restore kasama nito</string>
     <string name="backup_phone_last_title">Huling backup ng telepono</string>
-    <string name="backup_phone_last_never">Hindi pa naba-back up. Nagba-back up ang Android sa gabi habang nagcha-charge ang telepono at nakakonekta sa Wi‑Fi.</string>
+    <string name="backup_phone_last_never">Hindi pa naba-back up. Isasama ang BBKB sa susunod na pag-back up ng iyong telepono.</string>
     <string name="backup_phone_settings_title">Mga setting ng backup ng telepono</string>
     <string name="backup_phone_settings_summary">I-on o i-off ang backup ng iyong telepono, o tingnan kung ano ang kasama rito</string>
     <string name="backup_phone_settings_unavailable">Hindi mabuksan ang mga setting ng backup ng telepono</string>

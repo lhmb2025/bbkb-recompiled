@@ -843,9 +843,9 @@
     <string name="backup_restored">Ehtiyat nüsxə bərpa edildi</string>
     <string name="backup_restored_words_pending">Öyrənilmiş sözlər klaviaturadan istifadə başlayanda əlavə ediləcək</string>
     <string name="backup_phone_include_title">Telefonun ehtiyat nüsxəsinə daxil edin</string>
-    <string name="backup_phone_include_summary">Ayarlar, düzümlər və sözlər telefonunuzun ehtiyat nüsxəsi ilə birlikdə Google hesabınızda saxlanılır və BBKB-ni eyni hesaba daxil olunmuş telefonda quraşdırdığınız zaman bərpa olunur</string>
+    <string name="backup_phone_include_summary">Ayarlar, düzümlər və sözlər telefonunuzun ehtiyat nüsxəsi ilə birlikdə saxlanılır və onunla birlikdə bərpa olunur</string>
     <string name="backup_phone_last_title">Telefonun son ehtiyat nüsxəsi</string>
-    <string name="backup_phone_last_never">Hələ ehtiyat nüsxə yaradılmayıb. Android telefon Wi‑Fi şəbəkəsində şarj olunarkən gecə ehtiyat nüsxə yaradır.</string>
+    <string name="backup_phone_last_never">Hələ ehtiyat nüsxə yaradılmayıb. BBKB telefonunuzun növbəti ehtiyat nüsxəsinə daxil ediləcək.</string>
     <string name="backup_phone_settings_title">Telefonun ehtiyat nüsxə ayarları</string>
     <string name="backup_phone_settings_summary">Telefonunuzun ehtiyat nüsxəsini aktiv və ya deaktiv edin, yaxud nələri əhatə etdiyinə baxın</string>
     <string name="backup_phone_settings_unavailable">Telefonun ehtiyat nüsxə ayarlarını açmaq mümkün olmadı</string>

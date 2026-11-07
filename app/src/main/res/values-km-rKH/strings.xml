@@ -843,9 +843,9 @@
     <string name="backup_restored">បានស្ដារការបម្រុងទុក</string>
     <string name="backup_restored_words_pending">ពាក្យដែលបានរៀននឹងត្រូវបានបន្ថែម នៅពេលចាប់ផ្ដើមប្រើក្ដារចុច</string>
     <string name="backup_phone_include_title">ដាក់បញ្ចូលក្នុងការបម្រុងទុកទូរសព្ទ</string>
-    <string name="backup_phone_include_summary">ការកំណត់ ប្លង់ និងពាក្យត្រូវបានរក្សាទុកជាមួយការបម្រុងទុករបស់ទូរសព្ទអ្នកទៅក្នុងគណនី Google របស់អ្នក ហើយត្រូវបានស្ដារវិញ នៅពេលអ្នករៀបចំ BBKB នៅលើទូរសព្ទដែលបានចូលគណនីដដែល</string>
+    <string name="backup_phone_include_summary">ការកំណត់ ប្លង់ និងពាក្យត្រូវបានរក្សាទុកជាមួយការបម្រុងទុករបស់ទូរសព្ទអ្នក ហើយត្រូវបានស្ដារវិញជាមួយវា</string>
     <string name="backup_phone_last_title">ការបម្រុងទុកទូរសព្ទចុងក្រោយ</string>
-    <string name="backup_phone_last_never">មិនទាន់បានបម្រុងទុកនៅឡើយទេ។ Android បម្រុងទុកនៅពេលយប់ ខណៈដែលទូរសព្ទកំពុងសាកថ្ម និងភ្ជាប់ Wi‑Fi។</string>
+    <string name="backup_phone_last_never">មិនទាន់បានបម្រុងទុកនៅឡើយទេ។ BBKB នឹងត្រូវបានរួមបញ្ចូលនៅពេលទូរសព្ទរបស់អ្នកបម្រុងទុកលើកក្រោយ។</string>
     <string name="backup_phone_settings_title">ការកំណត់ការបម្រុងទុកទូរសព្ទ</string>
     <string name="backup_phone_settings_summary">បើក ឬបិទការបម្រុងទុករបស់ទូរសព្ទអ្នក ឬមើលអ្វីដែលវារួមបញ្ចូល</string>
     <string name="backup_phone_settings_unavailable">មិនអាចបើកការកំណត់ការបម្រុងទុករបស់ទូរសព្ទបានទេ</string>
