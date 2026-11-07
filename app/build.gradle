@@ -53,8 +53,8 @@ android {
         applicationId = "dev.bbkb.ime"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1440  //  Most recent build is 1440
-        versionName = "5.0.0-beta.27"
+        versionCode = 1441  //  Most recent build is 1441
+        versionName = "5.0.0-beta.28"
 
         // arm64 only, matching the engine blob (libnative-lib.so exists for no other ABI, so
         // the keyboard cannot run anywhere else). This one filter covers the CMake build below
