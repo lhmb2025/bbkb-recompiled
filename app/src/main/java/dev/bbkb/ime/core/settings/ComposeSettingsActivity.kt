@@ -24,6 +24,7 @@ import dev.bbkb.ime.core.settings.screens.AppearanceLayoutScreen
 import dev.bbkb.ime.core.settings.screens.AutoCorrectionScreen
 import dev.bbkb.ime.core.settings.screens.CorrectionLearningScreen
 import dev.bbkb.ime.core.settings.screens.CreditsScreen
+import dev.bbkb.ime.core.settings.screens.OpenSourceLicensesScreen
 import dev.bbkb.ime.core.settings.screens.CustomizationScreen
 import dev.bbkb.ime.core.settings.screens.DebugSettingsScreen
 import dev.bbkb.ime.core.settings.screens.GestureLabScreen
@@ -488,8 +489,13 @@ fun SettingsNavHost(
         composable(SettingsRoute.About.route) {
             CreditsScreen(
                 onNavigateToUpdates = go(SettingsRoute.Updates),
+                onNavigateToLicenses = go(SettingsRoute.Licenses),
                 onNavigateBack = back
             )
+        }
+
+        composable(SettingsRoute.Licenses.route) {
+            OpenSourceLicensesScreen(onNavigateBack = back)
         }
 
         // OTA app updates. Reached from About, from the main-menu banner, and from the daily

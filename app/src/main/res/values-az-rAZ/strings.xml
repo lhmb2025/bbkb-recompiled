@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Tutumlu klaviatura jestləri</string>
     <string name="settings_category_on_screen_keyboard">Ekran klaviaturası</string>
     <string name="settings_category_physical_keyboard">Fiziki klaviatura</string>
-    <string name="settings_category_credits">Müəlliflər</string>
     <string name="settings_category_gestures">Jestlər</string>
     <string name="settings_category_key_popup">Klaviş popup</string>
     <string name="settings_category_modifiers">Modifikatorlar</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Güzəşt vaxtı</string>
     <string name="settings_about_summary">Versiya məlumatı və müəlliflər</string>
     <string name="settings_about_title">Haqqında</string>
+    <string name="settings_about_source_code">Mənbə kodu</string>
+    <string name="settings_about_source_code_summary">GitHub repozitoriyasına baxın</string>
+    <string name="settings_about_report_problem">Problem bildirin</string>
+    <string name="settings_about_discord_summary">Rəsmi Discord icmasına qoşulun</string>
+    <string name="settings_about_licenses_title">Açıq mənbə lisenziyaları</string>
+    <string name="settings_about_licenses_intro">BBKB bu açıq mənbəli layihələrlə hazırlanıb</string>
+    <string name="settings_about_copy_version">Versiyanı kopyalayın</string>
+    <string name="settings_about_version_copied">Versiya kopyalandı</string>
     <string name="settings_backed_up">Ayarların ehtiyat nüsxəsi yaradıldı</string>
     <string name="settings_category_manage_data">Məlumatların idarəsi</string>
     <string name="settings_credits_app_name">BBKB</string>

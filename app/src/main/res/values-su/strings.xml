@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Gerak papan tombol kapasitif</string>
     <string name="settings_category_on_screen_keyboard">Papan tombol dina layar</string>
     <string name="settings_category_physical_keyboard">Papan tombol fisik</string>
-    <string name="settings_category_credits">Panganuhun</string>
     <string name="settings_category_gestures">Gerak</string>
     <string name="settings_category_key_popup">Pop-up tombol</string>
     <string name="settings_category_modifiers">Modifier</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Waktu kalonggaran</string>
     <string name="settings_about_summary">Katerangan vérsi jeung panganuhun</string>
     <string name="settings_about_title">Ngeunaan</string>
+    <string name="settings_about_source_code">Kode sumber</string>
+    <string name="settings_about_source_code_summary">Tingali repositori GitHub</string>
+    <string name="settings_about_report_problem">Laporkeun masalah</string>
+    <string name="settings_about_discord_summary">Gabung kana komunitas resmi Discord</string>
+    <string name="settings_about_licenses_title">Lisensi open source</string>
+    <string name="settings_about_licenses_intro">BBKB diwangun ku proyék open source ieu</string>
+    <string name="settings_about_copy_version">Salin versi</string>
+    <string name="settings_about_version_copied">Versi disalin</string>
     <string name="settings_backed_up">Setelan geus dicadangkeun</string>
     <string name="settings_category_manage_data">Ngokolakeun data</string>
     <string name="settings_credits_app_name">BBKB</string>

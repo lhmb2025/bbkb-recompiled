@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Gestos del teclat capacitiu</string>
     <string name="settings_category_on_screen_keyboard">Teclat en pantalla</string>
     <string name="settings_category_physical_keyboard">Teclat físic</string>
-    <string name="settings_category_credits">Crèdits</string>
     <string name="settings_category_gestures">Gestos</string>
     <string name="settings_category_key_popup">Finestra emergent de tecla</string>
     <string name="settings_category_modifiers">Modificadors</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Temps de tolerància</string>
     <string name="settings_about_summary">Informació de la versió i crèdits</string>
     <string name="settings_about_title">Quant a</string>
+    <string name="settings_about_source_code">Codi font</string>
+    <string name="settings_about_source_code_summary">Visualitza el repositori de GitHub</string>
+    <string name="settings_about_report_problem">Informa d\'un problema</string>
+    <string name="settings_about_discord_summary">Uneix-te a la comunitat oficial de Discord</string>
+    <string name="settings_about_licenses_title">Llicències de codi obert</string>
+    <string name="settings_about_licenses_intro">BBKB s\'ha creat amb aquests projectes de codi obert</string>
+    <string name="settings_about_copy_version">Copia la versió</string>
+    <string name="settings_about_version_copied">S\'ha copiat la versió</string>
     <string name="settings_backed_up">S’ha fet una còpia de seguretat de la configuració</string>
     <string name="settings_category_manage_data">Gestió de dades</string>
     <string name="settings_credits_app_name">BBKB</string>

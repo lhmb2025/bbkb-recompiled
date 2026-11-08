@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Gestá kapacitnej klávesnice</string>
     <string name="settings_category_on_screen_keyboard">Klávesnica na obrazovke</string>
     <string name="settings_category_physical_keyboard">Fyzická klávesnica</string>
-    <string name="settings_category_credits">Poďakovanie</string>
     <string name="settings_category_gestures">Gestá</string>
     <string name="settings_category_key_popup">Kontextové okno klávesu</string>
     <string name="settings_category_modifiers">Modifikátory</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Tolerančný čas</string>
     <string name="settings_about_summary">Informácie o verzii a poďakovanie</string>
     <string name="settings_about_title">Informácie</string>
+    <string name="settings_about_source_code">Zdrojový kód</string>
+    <string name="settings_about_source_code_summary">Zobraziť repozitár na GitHube</string>
+    <string name="settings_about_report_problem">Nahlásiť problém</string>
+    <string name="settings_about_discord_summary">Pripojiť sa k oficiálnej komunite na Discorde</string>
+    <string name="settings_about_licenses_title">Licencie open source</string>
+    <string name="settings_about_licenses_intro">BBKB využíva tieto projekty open source</string>
+    <string name="settings_about_copy_version">Kopírovať verziu</string>
+    <string name="settings_about_version_copied">Verzia bola skopírovaná</string>
     <string name="settings_backed_up">Nastavenia boli zálohované</string>
     <string name="settings_category_manage_data">Správa údajov</string>
     <string name="settings_credits_app_name">BBKB</string>

@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">מחוות המקלדת הקיבולית</string>
     <string name="settings_category_on_screen_keyboard">מקלדת שעל המסך</string>
     <string name="settings_category_physical_keyboard">מקלדת פיזית</string>
-    <string name="settings_category_credits">קרדיטים</string>
     <string name="settings_category_gestures">מחוות</string>
     <string name="settings_category_key_popup">חלון מוקפץ של מקש</string>
     <string name="settings_category_modifiers">מקשי החלפה</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">זמן חסד</string>
     <string name="settings_about_summary">פרטי גרסה וקרדיטים</string>
     <string name="settings_about_title">אודות</string>
+    <string name="settings_about_source_code">קוד מקור</string>
+    <string name="settings_about_source_code_summary">צפייה במאגר ב-GitHub</string>
+    <string name="settings_about_report_problem">דיווח על בעיה</string>
+    <string name="settings_about_discord_summary">הצטרפות לקהילת Discord הרשמית</string>
+    <string name="settings_about_licenses_title">רישיונות קוד פתוח</string>
+    <string name="settings_about_licenses_intro">BBKB נבנה בעזרת פרויקטי הקוד הפתוח האלה</string>
+    <string name="settings_about_copy_version">העתק גרסה</string>
+    <string name="settings_about_version_copied">הגרסה הועתקה</string>
     <string name="settings_backed_up">הגיבוי של ההגדרות הושלם</string>
     <string name="settings_category_manage_data">ניהול נתונים</string>
     <string name="settings_credits_app_name">BBKB</string>

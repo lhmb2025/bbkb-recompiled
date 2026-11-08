@@ -206,7 +206,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "BackupRestoreScreen" -> ({ BackupRestoreScreen({}) })
         "CkbGesturesScreen" -> ({ CkbGesturesScreen({}) })
         "CorrectionLearningScreen" -> ({ CorrectionLearningScreen({}, {}, {}, {}) })
-        "CreditsScreen" -> ({ CreditsScreen({}, {}) })
+        "CreditsScreen" -> ({ CreditsScreen({}, {}, {}) })
+        "OpenSourceLicensesScreen" -> ({ OpenSourceLicensesScreen({}) })
         "CustomMacrosScreen" -> ({ CustomMacrosScreen({}) })
         "CustomSymbolPageScreen_PKB" -> ({ CustomSymbolPageScreen(isPkb = true, onBack = {}) })
         "CustomSymbolPageScreen_VKB" -> ({ CustomSymbolPageScreen(isPkb = false, onBack = {}) })
@@ -504,7 +505,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             "DeviceCompatibilityScreen", "DeviceConfigurationScreen", "DictionariesLearningScreen",
             "GestureLabScreen", "KeyPressFeedbackScreen", "KeyboardHelperScreen",
             "LanguagePacksScreen", "LanguageSwitchingScreen",
-            "MainSettingsScreen",
+            "MainSettingsScreen", "OpenSourceLicensesScreen",
             "PhysicalKeyboardScreen", "PhysicalLayoutsScreen", "PredictionsSuggestionsScreen", "QuickPhrasesScreen",
             "ShakeGesturesScreen", "ShakeTuningScreen", "SlideboardLayoutScreen", "SpellCheckerSettingsScreen",
             "SymbolCustomizationScreen", "TextShortcutsScreen", "TouchScreenKeyboardScreen",
@@ -700,25 +701,36 @@ class SettingsScreenRenderTest(private val screenName: String) {
         Case(
             name = "CreditsScreen",
             route = SettingsRoute.About.route,
-            title = "About",
+            // No "About" title over the app's own icon and name: the topmost text is the name.
+            title = "BBKB",
             resources = setOf(
-                "english_ime_name", "settings_about_title",
-                // The Updates row: About is where a user looks for "what version am I on".
-                "settings_updates_summary", "settings_updates_title", "settings_category_credits"
+                "english_ime_name",
+                // The Updates row says what the last check found; a debug build has no channel.
+                "settings_updates_title", "settings_update_channel_none",
+                "settings_about_source_code", "settings_about_source_code_summary",
+                "settings_about_report_problem", "settings_about_discord_summary",
+                "settings_about_licenses_title",
             ),
+            literals = emptySet(),
+        ),
+        Case(
+            name = "OpenSourceLicensesScreen",
+            route = SettingsRoute.Licenses.route,
+            title = "Open-source licenses",
+            resources = setOf("settings_about_licenses_title", "settings_about_licenses_intro"),
             literals = setOf(
+                "AndroidX",
+                "AndroidX Emoji2",
+                "Google / AOSP • Apache License 2.0",
                 "Emojibase",
                 "Miles Johnson • MIT License",
-                "Kotlin Coroutines",
-                "JetBrains • Apache License 2.0",
                 "Jetpack Compose",
                 "Google • Apache License 2.0",
-                "Material Components",
-                "AndroidX",
-                "Google / AOSP • Apache License 2.0",
                 "jsoup",
                 "Jonathan Hedley • MIT License",
-                "AndroidX Emoji2",
+                "Kotlin Coroutines",
+                "JetBrains • Apache License 2.0",
+                "Material Components",
                 "Shizuku API",
                 "Rikka • MIT License",
             ),

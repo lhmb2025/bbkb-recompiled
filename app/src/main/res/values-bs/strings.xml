@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Geste kapacitivne tastature</string>
     <string name="settings_category_on_screen_keyboard">Tastatura na ekranu</string>
     <string name="settings_category_physical_keyboard">Fizička tastatura</string>
-    <string name="settings_category_credits">Zasluge</string>
     <string name="settings_category_gestures">Geste</string>
     <string name="settings_category_key_popup">Skočni prikaz tipke</string>
     <string name="settings_category_modifiers">Modifikatori</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Vrijeme tolerancije</string>
     <string name="settings_about_summary">Podaci o verziji i zasluge</string>
     <string name="settings_about_title">O aplikaciji</string>
+    <string name="settings_about_source_code">Izvorni kod</string>
+    <string name="settings_about_source_code_summary">Pogledajte GitHub repozitorij</string>
+    <string name="settings_about_report_problem">Prijavite problem</string>
+    <string name="settings_about_discord_summary">Pridružite se službenoj Discord zajednici</string>
+    <string name="settings_about_licenses_title">Licence otvorenog koda</string>
+    <string name="settings_about_licenses_intro">BBKB je izrađen pomoću ovih projekata otvorenog koda</string>
+    <string name="settings_about_copy_version">Kopiraj verziju</string>
+    <string name="settings_about_version_copied">Verzija je kopirana</string>
     <string name="settings_backed_up">Postavke su sigurnosno kopirane</string>
     <string name="settings_category_manage_data">Upravljanje podacima</string>
     <string name="settings_credits_app_name">BBKB</string>

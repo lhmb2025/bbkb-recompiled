@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Sig‘imli klaviatura ishoralari</string>
     <string name="settings_category_on_screen_keyboard">Ekrandagi klaviatura</string>
     <string name="settings_category_physical_keyboard">Jismoniy klaviatura</string>
-    <string name="settings_category_credits">Mualliflar</string>
     <string name="settings_category_gestures">Ishoralar</string>
     <string name="settings_category_key_popup">Tugma qalqib chiqishi</string>
     <string name="settings_category_modifiers">Modifikatorlar</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Tanaffus vaqti</string>
     <string name="settings_about_summary">Versiya ma’lumotlari va mualliflar</string>
     <string name="settings_about_title">Ilova haqida</string>
+    <string name="settings_about_source_code">Manba kodi</string>
+    <string name="settings_about_source_code_summary">GitHub repozitoriysini ko‘rish</string>
+    <string name="settings_about_report_problem">Muammo haqida xabar berish</string>
+    <string name="settings_about_discord_summary">Rasmiy Discord hamjamiyatiga qo‘shilish</string>
+    <string name="settings_about_licenses_title">Ochiq kodli litsenziyalar</string>
+    <string name="settings_about_licenses_intro">BBKB ushbu ochiq kodli loyihalar asosida yaratilgan</string>
+    <string name="settings_about_copy_version">Versiyani nusxalash</string>
+    <string name="settings_about_version_copied">Versiya nusxalandi</string>
     <string name="settings_backed_up">Sozlamalar zaxiralandi</string>
     <string name="settings_category_manage_data">Ma’lumotlarni boshqarish</string>
     <string name="settings_credits_app_name">BBKB</string>

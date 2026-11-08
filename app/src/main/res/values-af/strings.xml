@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Kapasitiewe toetsbordgebare</string>
     <string name="settings_category_on_screen_keyboard">Skermtoetsbord</string>
     <string name="settings_category_physical_keyboard">Fisiese toetsbord</string>
-    <string name="settings_category_credits">Erkennings</string>
     <string name="settings_category_gestures">Gebare</string>
     <string name="settings_category_key_popup">Toetsopspringer</string>
     <string name="settings_category_modifiers">Wysigertoetse</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Grasietyd</string>
     <string name="settings_about_summary">Weergawe-inligting en erkennings</string>
     <string name="settings_about_title">Oor</string>
+    <string name="settings_about_source_code">Bronkode</string>
+    <string name="settings_about_source_code_summary">Bekyk die GitHub-bewaarplek</string>
+    <string name="settings_about_report_problem">Rapporteer \'n probleem</string>
+    <string name="settings_about_discord_summary">Sluit aan by die amptelike Discord-gemeenskap</string>
+    <string name="settings_about_licenses_title">Oopbronlisensies</string>
+    <string name="settings_about_licenses_intro">BBKB is gebou met hierdie oopbronprojekte</string>
+    <string name="settings_about_copy_version">Kopieer weergawe</string>
+    <string name="settings_about_version_copied">Weergawe gekopieer</string>
     <string name="settings_backed_up">Instellings is gerugsteun</string>
     <string name="settings_category_manage_data">Bestuur data</string>
     <string name="settings_credits_app_name">BBKB</string>

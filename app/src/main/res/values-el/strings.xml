@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Κινησεις χωρητικου πληκτρολογιου</string>
     <string name="settings_category_on_screen_keyboard">Πληκτρολογιο οθονης</string>
     <string name="settings_category_physical_keyboard">Φυσικο πληκτρολογιο</string>
-    <string name="settings_category_credits">Συντελεστές</string>
     <string name="settings_category_gestures">Κινησεις</string>
     <string name="settings_category_key_popup">Αναδυόμενο παράθυρο πλήκτρου</string>
     <string name="settings_category_modifiers">Τροποποιητες</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Χρόνος ανοχής</string>
     <string name="settings_about_summary">Πληροφορίες έκδοσης και συντελεστές</string>
     <string name="settings_about_title">Σχετικά</string>
+    <string name="settings_about_source_code">Πηγαίος κώδικας</string>
+    <string name="settings_about_source_code_summary">Προβολή του αποθετηρίου στο GitHub</string>
+    <string name="settings_about_report_problem">Αναφορά προβλήματος</string>
+    <string name="settings_about_discord_summary">Συμμετοχή στην επίσημη κοινότητα του Discord</string>
+    <string name="settings_about_licenses_title">Άδειες ανοικτού κώδικα</string>
+    <string name="settings_about_licenses_intro">Το BBKB έχει δημιουργηθεί με αυτά τα έργα ανοικτού κώδικα</string>
+    <string name="settings_about_copy_version">Αντιγραφή έκδοσης</string>
+    <string name="settings_about_version_copied">Η έκδοση αντιγράφηκε</string>
     <string name="settings_backed_up">Δημιουργήθηκε αντίγραφο ασφαλείας των ρυθμίσεων</string>
     <string name="settings_category_manage_data">Διαχείριση δεδομένων</string>
     <string name="settings_credits_app_name">BBKB</string>

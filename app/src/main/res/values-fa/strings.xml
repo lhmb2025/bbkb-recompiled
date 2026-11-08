@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">اشاره‌های صفحه کلید خازنی</string>
     <string name="settings_category_on_screen_keyboard">صفحه کلید روی صفحه‌نمایش</string>
     <string name="settings_category_physical_keyboard">صفحه کلید فیزیکی</string>
-    <string name="settings_category_credits">دست‌اندرکاران</string>
     <string name="settings_category_gestures">اشاره‌ها</string>
     <string name="settings_category_key_popup">بازشدن کلید</string>
     <string name="settings_category_modifiers">کلیدهای تغییردهنده</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">مهلت مجاز</string>
     <string name="settings_about_summary">اطلاعات نسخه و دست‌اندرکاران</string>
     <string name="settings_about_title">درباره</string>
+    <string name="settings_about_source_code">کد منبع</string>
+    <string name="settings_about_source_code_summary">مشاهده مخزن GitHub</string>
+    <string name="settings_about_report_problem">گزارش مشکل</string>
+    <string name="settings_about_discord_summary">پیوستن به انجمن رسمی Discord</string>
+    <string name="settings_about_licenses_title">پروانه‌های متن‌باز</string>
+    <string name="settings_about_licenses_intro">BBKB با این پروژه‌های متن‌باز ساخته شده است</string>
+    <string name="settings_about_copy_version">کپی نسخه</string>
+    <string name="settings_about_version_copied">نسخه کپی شد</string>
     <string name="settings_backed_up">از تنظیمات نسخه پشتیبان گرفته شد</string>
     <string name="settings_category_manage_data">مدیریت داده‌ها</string>
     <string name="settings_credits_app_name">BBKB</string>

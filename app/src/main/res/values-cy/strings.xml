@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Ystumiau\'r bysellfwrdd cynhwysol</string>
     <string name="settings_category_on_screen_keyboard">Bysellfwrdd ar y sgrin</string>
     <string name="settings_category_physical_keyboard">Bysellfwrdd ffisegol</string>
-    <string name="settings_category_credits">Cydnabyddiaethau</string>
     <string name="settings_category_gestures">Ystumiau</string>
     <string name="settings_category_key_popup">Naidlen y fysell</string>
     <string name="settings_category_modifiers">Addaswyr</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Amser goddefiant</string>
     <string name="settings_about_summary">Gwybodaeth am y fersiwn a chydnabyddiaethau</string>
     <string name="settings_about_title">Ynghylch</string>
+    <string name="settings_about_source_code">Cod ffynhonnell</string>
+    <string name="settings_about_source_code_summary">Gweld ystorfa GitHub</string>
+    <string name="settings_about_report_problem">Adrodd problem</string>
+    <string name="settings_about_discord_summary">Ymuno â chymuned swyddogol Discord</string>
+    <string name="settings_about_licenses_title">Trwyddedau ffynhonnell agored</string>
+    <string name="settings_about_licenses_intro">Mae BBKB wedi\'i adeiladu gyda\'r prosiectau ffynhonnell agored hyn</string>
+    <string name="settings_about_copy_version">Copïo\'r fersiwn</string>
+    <string name="settings_about_version_copied">Copïwyd y fersiwn</string>
     <string name="settings_backed_up">Cadwyd copi wrth gefn o’r gosodiadau</string>
     <string name="settings_category_manage_data">Rheoli data</string>
     <string name="settings_credits_app_name">BBKB</string>

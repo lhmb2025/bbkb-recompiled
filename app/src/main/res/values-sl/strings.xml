@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Poteze na kapacitivni tipkovnici</string>
     <string name="settings_category_on_screen_keyboard">Zaslonska tipkovnica</string>
     <string name="settings_category_physical_keyboard">Fizična tipkovnica</string>
-    <string name="settings_category_credits">Zasluge</string>
     <string name="settings_category_gestures">Poteze</string>
     <string name="settings_category_key_popup">Pojavno okno tipke</string>
     <string name="settings_category_modifiers">Spremenilne tipke</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Dopustni čas</string>
     <string name="settings_about_summary">Podatki o različici in zasluge</string>
     <string name="settings_about_title">O aplikaciji</string>
+    <string name="settings_about_source_code">Izvorna koda</string>
+    <string name="settings_about_source_code_summary">Oglejte si repozitorij v GitHubu</string>
+    <string name="settings_about_report_problem">Prijavite težavo</string>
+    <string name="settings_about_discord_summary">Pridružite se uradni skupnosti na Discordu</string>
+    <string name="settings_about_licenses_title">Odprtokodne licence</string>
+    <string name="settings_about_licenses_intro">BBKB je izdelan s temi odprtokodnimi projekti</string>
+    <string name="settings_about_copy_version">Kopiraj različico</string>
+    <string name="settings_about_version_copied">Različica je kopirana</string>
     <string name="settings_backed_up">Nastavitve so varnostno kopirane</string>
     <string name="settings_category_manage_data">Upravljanje podatkov</string>
     <string name="settings_credits_app_name">BBKB</string>

@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">កាយវិការក្ដារចុចកាប៉ាស៊ីទីវ</string>
     <string name="settings_category_on_screen_keyboard">ក្ដារចុចលើអេក្រង់</string>
     <string name="settings_category_physical_keyboard">ក្ដារចុចរូបវន្ត</string>
-    <string name="settings_category_credits">អ្នកចូលរួម</string>
     <string name="settings_category_gestures">កាយវិការ</string>
     <string name="settings_category_key_popup">ការលេចឡើងនៃគ្រាប់ចុច</string>
     <string name="settings_category_modifiers">គ្រាប់ចុចកែប្រែ</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">ពេលវេលាអនុគ្រោះ</string>
     <string name="settings_about_summary">ព័ត៌មានកំណែ និងអ្នកចូលរួម</string>
     <string name="settings_about_title">អំពី</string>
+    <string name="settings_about_source_code">កូដប្រភព</string>
+    <string name="settings_about_source_code_summary">មើលឃ្លាំង GitHub</string>
+    <string name="settings_about_report_problem">រាយការណ៍បញ្ហា</string>
+    <string name="settings_about_discord_summary">ចូលរួមសហគមន៍ Discord ផ្លូវការ</string>
+    <string name="settings_about_licenses_title">អាជ្ញាប័ណ្ណកូដចំហ</string>
+    <string name="settings_about_licenses_intro">BBKB ត្រូវបានបង្កើតឡើងដោយប្រើគម្រោងកូដចំហទាំងនេះ</string>
+    <string name="settings_about_copy_version">ចម្លងកំណែ</string>
+    <string name="settings_about_version_copied">បានចម្លងកំណែ</string>
     <string name="settings_backed_up">បានបម្រុងទុកការកំណត់</string>
     <string name="settings_category_manage_data">គ្រប់គ្រងទិន្នន័យ</string>
     <string name="settings_credits_app_name">BBKB</string>

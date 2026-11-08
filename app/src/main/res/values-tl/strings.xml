@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Mga galaw sa capacitive keyboard</string>
     <string name="settings_category_on_screen_keyboard">On-screen na keyboard</string>
     <string name="settings_category_physical_keyboard">Pisikal na keyboard</string>
-    <string name="settings_category_credits">Mga kredito</string>
     <string name="settings_category_gestures">Mga galaw</string>
     <string name="settings_category_key_popup">Key popup</string>
     <string name="settings_category_modifiers">Mga modifier</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Slop time</string>
     <string name="settings_about_summary">Impormasyon ng bersyon at mga kredito</string>
     <string name="settings_about_title">Tungkol dito</string>
+    <string name="settings_about_source_code">Source code</string>
+    <string name="settings_about_source_code_summary">Tingnan ang GitHub repository</string>
+    <string name="settings_about_report_problem">Mag-ulat ng problema</string>
+    <string name="settings_about_discord_summary">Sumali sa opisyal na Discord community</string>
+    <string name="settings_about_licenses_title">Mga open source na lisensya</string>
+    <string name="settings_about_licenses_intro">Binuo ang BBKB gamit ang mga open source na proyektong ito</string>
+    <string name="settings_about_copy_version">Kopyahin ang bersyon</string>
+    <string name="settings_about_version_copied">Nakopya ang bersyon</string>
     <string name="settings_backed_up">Na-back up ang mga setting</string>
     <string name="settings_category_manage_data">Pamahalaan ang data</string>
     <string name="settings_credits_app_name">BBKB</string>

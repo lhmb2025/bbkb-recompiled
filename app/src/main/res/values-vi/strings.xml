@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Cử chỉ bàn phím cảm ứng</string>
     <string name="settings_category_on_screen_keyboard">Bàn phím trên màn hình</string>
     <string name="settings_category_physical_keyboard">Bàn phím vật lý</string>
-    <string name="settings_category_credits">Ghi công</string>
     <string name="settings_category_gestures">Cử chỉ</string>
     <string name="settings_category_key_popup">Khung bật lên ở phím</string>
     <string name="settings_category_modifiers">Phím bổ trợ</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Thời gian dung sai</string>
     <string name="settings_about_summary">Thông tin phiên bản và ghi công</string>
     <string name="settings_about_title">Giới thiệu</string>
+    <string name="settings_about_source_code">Mã nguồn</string>
+    <string name="settings_about_source_code_summary">Xem kho lưu trữ GitHub</string>
+    <string name="settings_about_report_problem">Báo cáo sự cố</string>
+    <string name="settings_about_discord_summary">Tham gia cộng đồng Discord chính thức</string>
+    <string name="settings_about_licenses_title">Giấy phép nguồn mở</string>
+    <string name="settings_about_licenses_intro">BBKB được xây dựng bằng các dự án nguồn mở này</string>
+    <string name="settings_about_copy_version">Sao chép phiên bản</string>
+    <string name="settings_about_version_copied">Đã sao chép phiên bản</string>
     <string name="settings_backed_up">Đã sao lưu cài đặt</string>
     <string name="settings_category_manage_data">Quản lý dữ liệu</string>
     <string name="settings_credits_app_name">BBKB</string>

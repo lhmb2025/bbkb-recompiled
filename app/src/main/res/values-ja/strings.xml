@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">静電容量式キーボードのジェスチャー</string>
     <string name="settings_category_on_screen_keyboard">画面上のキーボード</string>
     <string name="settings_category_physical_keyboard">物理キーボード</string>
-    <string name="settings_category_credits">クレジット</string>
     <string name="settings_category_gestures">ジェスチャー</string>
     <string name="settings_category_key_popup">キーポップアップ</string>
     <string name="settings_category_modifiers">修飾キー</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">許容時間</string>
     <string name="settings_about_summary">バージョン情報とクレジット</string>
     <string name="settings_about_title">情報</string>
+    <string name="settings_about_source_code">ソースコード</string>
+    <string name="settings_about_source_code_summary">GitHub リポジトリを表示</string>
+    <string name="settings_about_report_problem">問題を報告</string>
+    <string name="settings_about_discord_summary">公式 Discord コミュニティに参加</string>
+    <string name="settings_about_licenses_title">オープンソース ライセンス</string>
+    <string name="settings_about_licenses_intro">BBKB は以下のオープンソース プロジェクトを使用しています</string>
+    <string name="settings_about_copy_version">バージョンをコピー</string>
+    <string name="settings_about_version_copied">バージョンをコピーしました</string>
     <string name="settings_backed_up">設定をバックアップしました</string>
     <string name="settings_category_manage_data">データの管理</string>
     <string name="settings_credits_app_name">BBKB</string>

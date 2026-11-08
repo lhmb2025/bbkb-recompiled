@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Teklatu kapazitiboaren keinuak</string>
     <string name="settings_category_on_screen_keyboard">Pantailako teklatua</string>
     <string name="settings_category_physical_keyboard">Teklatu fisikoa</string>
-    <string name="settings_category_credits">Kredituak</string>
     <string name="settings_category_gestures">Keinuak</string>
     <string name="settings_category_key_popup">Teklen leiho gainerakorra</string>
     <string name="settings_category_modifiers">Tekla aldatzaileak</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Tarte-denbora</string>
     <string name="settings_about_summary">Bertsioaren informazioa eta kredituak</string>
     <string name="settings_about_title">Honi buruz</string>
+    <string name="settings_about_source_code">Iturburu-kodea</string>
+    <string name="settings_about_source_code_summary">Ikusi GitHub-eko biltegia</string>
+    <string name="settings_about_report_problem">Eman arazo baten berri</string>
+    <string name="settings_about_discord_summary">Batu Discord-eko komunitate ofizialera</string>
+    <string name="settings_about_licenses_title">Kode irekiko lizentziak</string>
+    <string name="settings_about_licenses_intro">BBKB kode irekiko proiektu hauekin sortu da</string>
+    <string name="settings_about_copy_version">Kopiatu bertsioa</string>
+    <string name="settings_about_version_copied">Bertsioa kopiatu da</string>
     <string name="settings_backed_up">Ezarpenen babeskopia egin da</string>
     <string name="settings_category_manage_data">Datuen kudeaketa</string>
     <string name="settings_credits_app_name">BBKB</string>

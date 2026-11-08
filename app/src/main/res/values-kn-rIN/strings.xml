@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">ಕೆಪ್ಯಾಸಿಟಿವ್ ಕೀಬೋರ್ಡ್ ಗೆಸ್ಚರ್‌ಗಳು</string>
     <string name="settings_category_on_screen_keyboard">ಪರದೆಯ ಮೇಲಿನ ಕೀಬೋರ್ಡ್</string>
     <string name="settings_category_physical_keyboard">ಭೌತಿಕ ಕೀಬೋರ್ಡ್</string>
-    <string name="settings_category_credits">ಕೃತಜ್ಞತೆಗಳು</string>
     <string name="settings_category_gestures">ಗೆಸ್ಚರ್‌ಗಳು</string>
     <string name="settings_category_key_popup">ಕೀ ಪಾಪ್‌ಅಪ್</string>
     <string name="settings_category_modifiers">ಮಾರ್ಪಡಿಸುವ ಕೀಗಳು</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">ಸ್ಲಾಪ್ ಸಮಯ</string>
     <string name="settings_about_summary">ಆವೃತ್ತಿ ಮಾಹಿತಿ ಮತ್ತು ಕೃತಜ್ಞತೆಗಳು</string>
     <string name="settings_about_title">ಕುರಿತು</string>
+    <string name="settings_about_source_code">ಮೂಲ ಕೋಡ್</string>
+    <string name="settings_about_source_code_summary">GitHub ರೆಪೊಸಿಟರಿಯನ್ನು ವೀಕ್ಷಿಸಿ</string>
+    <string name="settings_about_report_problem">ಸಮಸ್ಯೆಯನ್ನು ವರದಿ ಮಾಡಿ</string>
+    <string name="settings_about_discord_summary">ಅಧಿಕೃತ Discord ಸಮುದಾಯಕ್ಕೆ ಸೇರಿ</string>
+    <string name="settings_about_licenses_title">ಮುಕ್ತ ಮೂಲ ಪರವಾನಗಿಗಳು</string>
+    <string name="settings_about_licenses_intro">BBKB ಅನ್ನು ಈ ಮುಕ್ತ ಮೂಲ ಪ್ರಾಜೆಕ್ಟ್‌ಗಳೊಂದಿಗೆ ನಿರ್ಮಿಸಲಾಗಿದೆ</string>
+    <string name="settings_about_copy_version">ಆವೃತ್ತಿಯನ್ನು ನಕಲಿಸಿ</string>
+    <string name="settings_about_version_copied">ಆವೃತ್ತಿಯನ್ನು ನಕಲಿಸಲಾಗಿದೆ</string>
     <string name="settings_backed_up">ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಬ್ಯಾಕಪ್ ಮಾಡಲಾಗಿದೆ</string>
     <string name="settings_category_manage_data">ಡೇಟಾ ನಿರ್ವಹಣೆ</string>
     <string name="settings_credits_app_name">BBKB</string>

@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Мэдрэгчит гарын зангаа</string>
     <string name="settings_category_on_screen_keyboard">Дэлгэцийн гар</string>
     <string name="settings_category_physical_keyboard">Биет гар</string>
-    <string name="settings_category_credits">Талархал</string>
     <string name="settings_category_gestures">Зангаа</string>
     <string name="settings_category_key_popup">Товчны попап</string>
     <string name="settings_category_modifiers">Өөрчлөгч товч</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Зөвшөөрөгдөх хугацаа</string>
     <string name="settings_about_summary">Хувилбарын мэдээлэл ба талархал</string>
     <string name="settings_about_title">Тухай</string>
+    <string name="settings_about_source_code">Эх код</string>
+    <string name="settings_about_source_code_summary">GitHub репозиторийг харах</string>
+    <string name="settings_about_report_problem">Асуудал мэдээлэх</string>
+    <string name="settings_about_discord_summary">Албан ёсны Discord нийгэмлэгт нэгдэх</string>
+    <string name="settings_about_licenses_title">Нээлттэй эхийн лиценз</string>
+    <string name="settings_about_licenses_intro">BBKB нь эдгээр нээлттэй эхийн төслүүдийг ашиглан бүтээгдсэн</string>
+    <string name="settings_about_copy_version">Хувилбарыг хуулах</string>
+    <string name="settings_about_version_copied">Хувилбар хуулагдлаа</string>
     <string name="settings_backed_up">Тохиргооны нөөц хуулбар үүслээ</string>
     <string name="settings_category_manage_data">Өгөгдөл удирдах</string>
     <string name="settings_credits_app_name">BBKB</string>

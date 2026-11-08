@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.paneTitle
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -68,9 +69,15 @@ fun SettingsTopBar(
      * right under it. Null the rest of the time.
      */
     searchField: (@Composable RowScope.() -> Unit)? = null,
+    /**
+     * False for a screen whose own content names it (About, which leads with the app's icon and
+     * name): the bar is just the toolbar row with the back arrow, it never collapses, and [title]
+     * is kept only as the pane title accessibility services announce.
+     */
+    showTitle: Boolean = true,
 ) {
     val density = LocalDensity.current
-    val collapseRange = with(density) {
+    val collapseRange = if (!showTitle) 0f else with(density) {
         (SettingsTopBarExpandedHeight - SettingsTopBarCollapsedHeight).toPx()
     }
     // Tell the behaviour how far this bar can collapse. Its nested-scroll connection then moves
@@ -94,6 +101,8 @@ fun SettingsTopBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .windowInsetsPadding(TopAppBarDefaults.windowInsets)
+                // With no visible title, the screen still has a name for TalkBack to announce.
+                .then(if (showTitle) Modifier else Modifier.semantics { paneTitle = title })
         ) {
             Row(
                 modifier = Modifier
@@ -107,6 +116,9 @@ fun SettingsTopBar(
                 }
                 if (searchField != null) {
                     searchField()
+                } else if (!showTitle) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    actions()
                 } else {
                     Text(
                         text = title,
@@ -124,7 +136,7 @@ fun SettingsTopBar(
                     actions()
                 }
             }
-            Box(
+            if (showTitle) Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(blockHeight)
@@ -187,13 +199,15 @@ fun SettingsScaffold(
     navigationContentDescription: String = stringResource(R.string.settings_common_back),
     /** See [SettingsTopBar]'s parameter of the same name. */
     searchField: (@Composable RowScope.() -> Unit)? = null,
+    /** See [SettingsTopBar]'s parameter of the same name. */
+    showTitle: Boolean = true,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val scrollBehavior = rememberSettingsTopBarScrollBehavior()
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = LocalSettingsColors.current.page,
-        topBar = { SettingsTopBar(title, onNavigateBack, scrollBehavior, actions, navigationIcon, navigationContentDescription, searchField) },
+        topBar = { SettingsTopBar(title, onNavigateBack, scrollBehavior, actions, navigationIcon, navigationContentDescription, searchField, showTitle) },
         snackbarHost = snackbarHost,
         floatingActionButton = floatingActionButton,
         content = content,

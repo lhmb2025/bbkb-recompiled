@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">정전식 키보드 제스처</string>
     <string name="settings_category_on_screen_keyboard">화면 키보드</string>
     <string name="settings_category_physical_keyboard">물리 키보드</string>
-    <string name="settings_category_credits">제작진</string>
     <string name="settings_category_gestures">제스처</string>
     <string name="settings_category_key_popup">키 팝업</string>
     <string name="settings_category_modifiers">조합 키</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">허용 시간</string>
     <string name="settings_about_summary">버전 정보 및 제작진</string>
     <string name="settings_about_title">정보</string>
+    <string name="settings_about_source_code">소스 코드</string>
+    <string name="settings_about_source_code_summary">GitHub 저장소 보기</string>
+    <string name="settings_about_report_problem">문제 신고</string>
+    <string name="settings_about_discord_summary">공식 Discord 커뮤니티 참여</string>
+    <string name="settings_about_licenses_title">오픈소스 라이선스</string>
+    <string name="settings_about_licenses_intro">BBKB는 다음 오픈소스 프로젝트로 제작되었습니다</string>
+    <string name="settings_about_copy_version">버전 복사</string>
+    <string name="settings_about_version_copied">버전 복사됨</string>
     <string name="settings_backed_up">설정을 백업했습니다</string>
     <string name="settings_category_manage_data">데이터 관리</string>
     <string name="settings_credits_app_name">BBKB</string>

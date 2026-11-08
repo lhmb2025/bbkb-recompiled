@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Kapasitif klavye hareketleri</string>
     <string name="settings_category_on_screen_keyboard">Ekran klavyesi</string>
     <string name="settings_category_physical_keyboard">Fiziksel klavye</string>
-    <string name="settings_category_credits">Katkıda bulunanlar</string>
     <string name="settings_category_gestures">Hareketler</string>
     <string name="settings_category_key_popup">Tuş açılır menüsü</string>
     <string name="settings_category_modifiers">Değiştirici tuşlar</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Tolerans süresi</string>
     <string name="settings_about_summary">Sürüm bilgileri ve katkıda bulunanlar</string>
     <string name="settings_about_title">Hakkında</string>
+    <string name="settings_about_source_code">Kaynak kodu</string>
+    <string name="settings_about_source_code_summary">GitHub deposunu görüntüle</string>
+    <string name="settings_about_report_problem">Sorun bildir</string>
+    <string name="settings_about_discord_summary">Resmi Discord topluluğuna katıl</string>
+    <string name="settings_about_licenses_title">Açık kaynak lisansları</string>
+    <string name="settings_about_licenses_intro">BBKB bu açık kaynak projelerle geliştirilmiştir</string>
+    <string name="settings_about_copy_version">Sürümü kopyala</string>
+    <string name="settings_about_version_copied">Sürüm kopyalandı</string>
     <string name="settings_backed_up">Ayarlar yedeklendi</string>
     <string name="settings_category_manage_data">Veri yönetimi</string>
     <string name="settings_credits_app_name">BBKB</string>

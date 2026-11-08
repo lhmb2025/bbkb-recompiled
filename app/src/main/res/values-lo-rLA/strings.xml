@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">ທ່າທາງແປ້ນພິມແບບສຳຜັດ</string>
     <string name="settings_category_on_screen_keyboard">ແປ້ນພິມເທິງໜ້າຈໍ</string>
     <string name="settings_category_physical_keyboard">ແປ້ນພິມແທ້</string>
-    <string name="settings_category_credits">ຜູ້ມີສ່ວນຮ່ວມ</string>
     <string name="settings_category_gestures">ທ່າທາງ</string>
     <string name="settings_category_key_popup">ປັອບອັບຂອງປຸ່ມ</string>
     <string name="settings_category_modifiers">ປຸ່ມດັດແປງ</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">ເວລາຜ່ອນຜັນ</string>
     <string name="settings_about_summary">ຂໍ້ມູນເວີຊັນ ແລະ ຜູ້ມີສ່ວນຮ່ວມ</string>
     <string name="settings_about_title">ກ່ຽວກັບ</string>
+    <string name="settings_about_source_code">ຊອດໂຄດ</string>
+    <string name="settings_about_source_code_summary">ເບິ່ງຄັງເກັບ GitHub</string>
+    <string name="settings_about_report_problem">ລາຍງານບັນຫາ</string>
+    <string name="settings_about_discord_summary">ເຂົ້າຮ່ວມຊຸມຊົນ Discord ທາງການ</string>
+    <string name="settings_about_licenses_title">ໃບອະນຸຍາດໂອເພັນຊອດ</string>
+    <string name="settings_about_licenses_intro">BBKB ສ້າງຂຶ້ນດ້ວຍໂປຣເຈັກໂອເພັນຊອດເຫຼົ່ານີ້</string>
+    <string name="settings_about_copy_version">ສຳເນົາເວີຊັນ</string>
+    <string name="settings_about_version_copied">ສຳເນົາເວີຊັນແລ້ວ</string>
     <string name="settings_backed_up">ສຳຮອງການຕັ້ງຄ່າແລ້ວ</string>
     <string name="settings_category_manage_data">ຈັດການຂໍ້ມູນ</string>
     <string name="settings_credits_app_name">BBKB</string>

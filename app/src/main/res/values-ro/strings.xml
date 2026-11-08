@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Gesturi tastatură capacitivă</string>
     <string name="settings_category_on_screen_keyboard">Tastatură pe ecran</string>
     <string name="settings_category_physical_keyboard">Tastatură fizică</string>
-    <string name="settings_category_credits">Credite</string>
     <string name="settings_category_gestures">Gesturi</string>
     <string name="settings_category_key_popup">Pop-up tastă</string>
     <string name="settings_category_modifiers">Modificatori</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Timp de toleranță</string>
     <string name="settings_about_summary">Informații despre versiune și credite</string>
     <string name="settings_about_title">Despre</string>
+    <string name="settings_about_source_code">Cod sursă</string>
+    <string name="settings_about_source_code_summary">Vizualizați depozitul GitHub</string>
+    <string name="settings_about_report_problem">Raportați o problemă</string>
+    <string name="settings_about_discord_summary">Alăturați-vă comunității oficiale Discord</string>
+    <string name="settings_about_licenses_title">Licențe open source</string>
+    <string name="settings_about_licenses_intro">BBKB este creat cu aceste proiecte open source</string>
+    <string name="settings_about_copy_version">Copiați versiunea</string>
+    <string name="settings_about_version_copied">Versiunea a fost copiată</string>
     <string name="settings_backed_up">S-a creat o copie de rezervă a setărilor</string>
     <string name="settings_category_manage_data">Gestionarea datelor</string>
     <string name="settings_credits_app_name">BBKB</string>

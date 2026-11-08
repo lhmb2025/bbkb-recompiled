@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">ক্যাপাসিটিভ কীবোর্ড অঙ্গভঙ্গি</string>
     <string name="settings_category_on_screen_keyboard">অন-স্ক্রিন কীবোর্ড</string>
     <string name="settings_category_physical_keyboard">ফিজিক্যাল কীবোর্ড</string>
-    <string name="settings_category_credits">কৃতজ্ঞতা স্বীকার</string>
     <string name="settings_category_gestures">অঙ্গভঙ্গি</string>
     <string name="settings_category_key_popup">কী পপআপ</string>
     <string name="settings_category_modifiers">মডিফায়ার</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">ছাড়ের সময়</string>
     <string name="settings_about_summary">সংস্করণের তথ্য ও কৃতজ্ঞতা স্বীকার</string>
     <string name="settings_about_title">সম্পর্কে</string>
+    <string name="settings_about_source_code">সোর্স কোড</string>
+    <string name="settings_about_source_code_summary">GitHub রিপোজিটরি দেখুন</string>
+    <string name="settings_about_report_problem">সমস্যা জানান</string>
+    <string name="settings_about_discord_summary">অফিসিয়াল Discord কমিউনিটিতে যোগ দিন</string>
+    <string name="settings_about_licenses_title">ওপেন সোর্স লাইসেন্স</string>
+    <string name="settings_about_licenses_intro">BBKB এই ওপেন সোর্স প্রোজেক্টগুলি দিয়ে তৈরি</string>
+    <string name="settings_about_copy_version">সংস্করণ কপি করুন</string>
+    <string name="settings_about_version_copied">সংস্করণ কপি করা হয়েছে</string>
     <string name="settings_backed_up">সেটিংস ব্যাকআপ করা হয়েছে</string>
     <string name="settings_category_manage_data">ডেটা পরিচালনা</string>
     <string name="settings_credits_app_name">BBKB</string>

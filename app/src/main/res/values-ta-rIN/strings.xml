@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">கெப்பாசிட்டிவ் விசைப்பலகை சைகைகள்</string>
     <string name="settings_category_on_screen_keyboard">திரைமேல் விசைப்பலகை</string>
     <string name="settings_category_physical_keyboard">இயற்பியல் விசைப்பலகை</string>
-    <string name="settings_category_credits">நன்றியுரை</string>
     <string name="settings_category_gestures">சைகைகள்</string>
     <string name="settings_category_key_popup">விசை பாப்அப்</string>
     <string name="settings_category_modifiers">மாற்றி விசைகள்</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">இடைவெளி நேரம்</string>
     <string name="settings_about_summary">பதிப்புத் தகவல் மற்றும் நன்றியுரை</string>
     <string name="settings_about_title">பற்றி</string>
+    <string name="settings_about_source_code">மூலக் குறியீடு</string>
+    <string name="settings_about_source_code_summary">GitHub களஞ்சியத்தைப் பார்க்கவும்</string>
+    <string name="settings_about_report_problem">சிக்கலைப் புகாரளிக்கவும்</string>
+    <string name="settings_about_discord_summary">அதிகாரப்பூர்வ Discord சமூகத்தில் சேரவும்</string>
+    <string name="settings_about_licenses_title">ஓப்பன் சோர்ஸ் உரிமங்கள்</string>
+    <string name="settings_about_licenses_intro">இந்த ஓப்பன் சோர்ஸ் திட்டங்களைக் கொண்டு BBKB உருவாக்கப்பட்டுள்ளது</string>
+    <string name="settings_about_copy_version">பதிப்பை நகலெடு</string>
+    <string name="settings_about_version_copied">பதிப்பு நகலெடுக்கப்பட்டது</string>
     <string name="settings_backed_up">அமைப்புகள் காப்புப் பிரதி எடுக்கப்பட்டன</string>
     <string name="settings_category_manage_data">தரவை நிர்வகித்தல்</string>
     <string name="settings_credits_app_name">BBKB</string>

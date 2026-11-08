@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Mahtuvusliku klaviatuuri žestid</string>
     <string name="settings_category_on_screen_keyboard">Ekraaniklaviatuur</string>
     <string name="settings_category_physical_keyboard">Füüsiline klaviatuur</string>
-    <string name="settings_category_credits">Tänuavaldused</string>
     <string name="settings_category_gestures">Žestid</string>
     <string name="settings_category_key_popup">Klahvi hüpik</string>
     <string name="settings_category_modifiers">Muuteklahvid</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Vaheaeg</string>
     <string name="settings_about_summary">Versiooniteave ja tänuavaldused</string>
     <string name="settings_about_title">Teave</string>
+    <string name="settings_about_source_code">Lähtekood</string>
+    <string name="settings_about_source_code_summary">Vaata GitHubi hoidlat</string>
+    <string name="settings_about_report_problem">Teata probleemist</string>
+    <string name="settings_about_discord_summary">Liitu ametliku Discordi kogukonnaga</string>
+    <string name="settings_about_licenses_title">Avatud lähtekoodi litsentsid</string>
+    <string name="settings_about_licenses_intro">BBKB on loodud nende avatud lähtekoodiga projektide abil</string>
+    <string name="settings_about_copy_version">Kopeeri versioon</string>
+    <string name="settings_about_version_copied">Versioon kopeeriti</string>
     <string name="settings_backed_up">Seadetest tehti varukoopia</string>
     <string name="settings_category_manage_data">Andmete haldus</string>
     <string name="settings_credits_app_name">BBKB</string>

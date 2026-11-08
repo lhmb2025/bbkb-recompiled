@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Talpinės klaviatūros gestai</string>
     <string name="settings_category_on_screen_keyboard">Ekrano klaviatūra</string>
     <string name="settings_category_physical_keyboard">Fizinė klaviatūra</string>
-    <string name="settings_category_credits">Padėkos</string>
     <string name="settings_category_gestures">Gestai</string>
     <string name="settings_category_key_popup">Klavišo iššokantysis langas</string>
     <string name="settings_category_modifiers">Modifikavimo klavišai</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Leistinas laikas</string>
     <string name="settings_about_summary">Versijos informacija ir padėkos</string>
     <string name="settings_about_title">Apie</string>
+    <string name="settings_about_source_code">Šaltinio kodas</string>
+    <string name="settings_about_source_code_summary">Peržiūrėti „GitHub“ saugyklą</string>
+    <string name="settings_about_report_problem">Pranešti apie problemą</string>
+    <string name="settings_about_discord_summary">Prisijungti prie oficialios „Discord“ bendruomenės</string>
+    <string name="settings_about_licenses_title">Atvirojo šaltinio licencijos</string>
+    <string name="settings_about_licenses_intro">BBKB sukurta naudojant šiuos atvirojo šaltinio projektus</string>
+    <string name="settings_about_copy_version">Kopijuoti versiją</string>
+    <string name="settings_about_version_copied">Versija nukopijuota</string>
     <string name="settings_backed_up">Nustatymų atsarginė kopija sukurta</string>
     <string name="settings_category_manage_data">Duomenų tvarkymas</string>
     <string name="settings_credits_app_name">BBKB</string>

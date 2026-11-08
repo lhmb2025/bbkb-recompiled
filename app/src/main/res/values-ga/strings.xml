@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Gothaí an mhéarchláir thoilltigh</string>
     <string name="settings_category_on_screen_keyboard">Méarchlár ar an scáileán</string>
     <string name="settings_category_physical_keyboard">Méarchlár fisiciúil</string>
-    <string name="settings_category_credits">Admhálacha</string>
     <string name="settings_category_gestures">Gothaí</string>
     <string name="settings_category_key_popup">Preabfhuinneog eochrach</string>
     <string name="settings_category_modifiers">Mionathraitheoirí</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Am lamháltais</string>
     <string name="settings_about_summary">Eolas faoin leagan agus admhálacha</string>
     <string name="settings_about_title">Maidir leis</string>
+    <string name="settings_about_source_code">Cód foinseach</string>
+    <string name="settings_about_source_code_summary">Féach ar stór GitHub</string>
+    <string name="settings_about_report_problem">Tuairiscigh fadhb</string>
+    <string name="settings_about_discord_summary">Glac páirt i bpobal oifigiúil Discord</string>
+    <string name="settings_about_licenses_title">Ceadúnais foinse oscailte</string>
+    <string name="settings_about_licenses_intro">Tá BBKB tógtha leis na tionscadail foinse oscailte seo</string>
+    <string name="settings_about_copy_version">Cóipeáil an leagan</string>
+    <string name="settings_about_version_copied">Cóipeáladh an leagan</string>
     <string name="settings_backed_up">Rinneadh cúltaca de na socruithe</string>
     <string name="settings_category_manage_data">Bainistigh sonraí</string>
     <string name="settings_credits_app_name">BBKB</string>

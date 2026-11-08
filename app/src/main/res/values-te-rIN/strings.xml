@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">కెపాసిటివ్ కీబోర్డ్ సంజ్ఞలు</string>
     <string name="settings_category_on_screen_keyboard">ఆన్-స్క్రీన్ కీబోర్డ్</string>
     <string name="settings_category_physical_keyboard">ఫిజికల్ కీబోర్డ్</string>
-    <string name="settings_category_credits">కృతజ్ఞతలు</string>
     <string name="settings_category_gestures">సంజ్ఞలు</string>
     <string name="settings_category_key_popup">కీ పాప్‌అప్</string>
     <string name="settings_category_modifiers">మాడిఫైయర్ కీలు</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">స్లాప్ సమయం</string>
     <string name="settings_about_summary">వెర్షన్ సమాచారం మరియు కృతజ్ఞతలు</string>
     <string name="settings_about_title">గురించి</string>
+    <string name="settings_about_source_code">సోర్స్ కోడ్</string>
+    <string name="settings_about_source_code_summary">GitHub రిపోజిటరీని చూడండి</string>
+    <string name="settings_about_report_problem">సమస్యను నివేదించండి</string>
+    <string name="settings_about_discord_summary">అధికారిక Discord కమ్యూనిటీలో చేరండి</string>
+    <string name="settings_about_licenses_title">ఓపెన్ సోర్స్ లైసెన్స్‌లు</string>
+    <string name="settings_about_licenses_intro">BBKB ఈ ఓపెన్ సోర్స్ ప్రాజెక్ట్‌లతో రూపొందించబడింది</string>
+    <string name="settings_about_copy_version">వెర్షన్‌ను కాపీ చేయి</string>
+    <string name="settings_about_version_copied">వెర్షన్ కాపీ చేయబడింది</string>
     <string name="settings_backed_up">సెట్టింగ్‌లు బ్యాకప్ చేయబడ్డాయి</string>
     <string name="settings_category_manage_data">డేటా నిర్వహణ</string>
     <string name="settings_credits_app_name">BBKB</string>

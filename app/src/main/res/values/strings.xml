@@ -99,7 +99,6 @@
     <string name="settings_category_ckb_gestures">Capacitive keyboard gestures</string>
     <string name="settings_category_on_screen_keyboard">On-screen keyboard</string>
     <string name="settings_category_physical_keyboard">Physical keyboard</string>
-    <string name="settings_category_credits">Credits</string>
     <string name="settings_category_gestures">Gestures</string>
     <string name="settings_category_key_popup">Key popup</string>
     <string name="settings_category_modifiers">Modifiers</string>
@@ -702,6 +701,14 @@
     <string name="prefs_slop_time_title">Slop time</string>
     <string name="settings_about_summary">Version information and credits</string>
     <string name="settings_about_title">About</string>
+    <string name="settings_about_source_code">Source code</string>
+    <string name="settings_about_source_code_summary">View the GitHub repository</string>
+    <string name="settings_about_report_problem">Report a problem</string>
+    <string name="settings_about_discord_summary">Join the official Discord community</string>
+    <string name="settings_about_licenses_title">Open-source licenses</string>
+    <string name="settings_about_licenses_intro">BBKB is built with these open-source projects</string>
+    <string name="settings_about_copy_version">Copy version</string>
+    <string name="settings_about_version_copied">Version copied</string>
     <string name="settings_backed_up">Settings backed up</string>
     <string name="settings_category_manage_data">Manage data</string>
     <string name="settings_backup_restore_title">Backup and restore</string>

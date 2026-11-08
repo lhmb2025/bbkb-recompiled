@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">電容式鍵盤手勢</string>
     <string name="settings_category_on_screen_keyboard">螢幕鍵盤</string>
     <string name="settings_category_physical_keyboard">實體鍵盤</string>
-    <string name="settings_category_credits">鳴謝</string>
     <string name="settings_category_gestures">手勢</string>
     <string name="settings_category_key_popup">按鍵彈出式視窗</string>
     <string name="settings_category_modifiers">輔助按鍵</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">寬限時間</string>
     <string name="settings_about_summary">版本資料和鳴謝</string>
     <string name="settings_about_title">關於</string>
+    <string name="settings_about_source_code">原始碼</string>
+    <string name="settings_about_source_code_summary">查看 GitHub 存放庫</string>
+    <string name="settings_about_report_problem">報告問題</string>
+    <string name="settings_about_discord_summary">加入官方 Discord 社群</string>
+    <string name="settings_about_licenses_title">開放原始碼授權</string>
+    <string name="settings_about_licenses_intro">BBKB 採用以下開放原始碼項目建構</string>
+    <string name="settings_about_copy_version">複製版本</string>
+    <string name="settings_about_version_copied">已複製版本</string>
     <string name="settings_backed_up">設定已備份</string>
     <string name="settings_category_manage_data">管理資料</string>
     <string name="settings_credits_app_name">BBKB</string>

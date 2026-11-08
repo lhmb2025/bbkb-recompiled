@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">कॅपेसिटिव्ह कीबोर्ड जेश्चर</string>
     <string name="settings_category_on_screen_keyboard">ऑन-स्क्रीन कीबोर्ड</string>
     <string name="settings_category_physical_keyboard">फिजिकल कीबोर्ड</string>
-    <string name="settings_category_credits">श्रेय</string>
     <string name="settings_category_gestures">जेश्चर</string>
     <string name="settings_category_key_popup">की पॉपअप</string>
     <string name="settings_category_modifiers">मॉडिफायर</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">स्लॉप वेळ</string>
     <string name="settings_about_summary">आवृत्ती माहिती आणि श्रेय</string>
     <string name="settings_about_title">अ‍ॅपविषयी</string>
+    <string name="settings_about_source_code">सोर्स कोड</string>
+    <string name="settings_about_source_code_summary">GitHub रिपॉझिटरी पहा</string>
+    <string name="settings_about_report_problem">समस्येची तक्रार करा</string>
+    <string name="settings_about_discord_summary">अधिकृत Discord कम्युनिटीमध्ये सामील व्हा</string>
+    <string name="settings_about_licenses_title">ओपन सोर्स परवाने</string>
+    <string name="settings_about_licenses_intro">BBKB हे या ओपन सोर्स प्रोजेक्टसह तयार केले आहे</string>
+    <string name="settings_about_copy_version">आवृत्ती कॉपी करा</string>
+    <string name="settings_about_version_copied">आवृत्ती कॉपी केली</string>
     <string name="settings_backed_up">सेटिंग्जचा बॅकअप घेतला</string>
     <string name="settings_category_manage_data">डेटा व्यवस्थापित करा</string>
     <string name="settings_credits_app_name">BBKB</string>

@@ -93,6 +93,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object CustomizeMenu : SettingsRoute("customize_menu", "Customize Menu")
     object About : SettingsRoute("about", "About")
     object Updates : SettingsRoute("updates", "Updates")
+    object Licenses : SettingsRoute("licenses", "Open-source licenses")
     object KeyboardHelper : SettingsRoute("keyboard_helper", "BBKB Helper")
     object TouchSurfaceHelper : SettingsRoute("touch_surface_helper", "Touch surface helper")
     object DeviceConfiguration : SettingsRoute("device_configuration", "Device Configuration")
@@ -166,6 +167,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 // "clipboard" (its own screen until 2026-10-19) opens Auxiliary input.
                 "clipboard" -> AuxiliaryInput
                 About.route -> About
+                Licenses.route -> Licenses
                 Updates.route -> Updates
                 KeyboardHelper.route -> KeyboardHelper
                 TouchSurfaceHelper.route -> TouchSurfaceHelper

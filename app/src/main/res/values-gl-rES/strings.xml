@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Xestos do teclado capacitivo</string>
     <string name="settings_category_on_screen_keyboard">Teclado en pantalla</string>
     <string name="settings_category_physical_keyboard">Teclado físico</string>
-    <string name="settings_category_credits">Créditos</string>
     <string name="settings_category_gestures">Xestos</string>
     <string name="settings_category_key_popup">Ventá emerxente das teclas</string>
     <string name="settings_category_modifiers">Modificadores</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Marxe de tempo</string>
     <string name="settings_about_summary">Información da versión e créditos</string>
     <string name="settings_about_title">Sobre a aplicación</string>
+    <string name="settings_about_source_code">Código fonte</string>
+    <string name="settings_about_source_code_summary">Ver o repositorio de GitHub</string>
+    <string name="settings_about_report_problem">Informar dun problema</string>
+    <string name="settings_about_discord_summary">Unirse á comunidade oficial de Discord</string>
+    <string name="settings_about_licenses_title">Licenzas de código aberto</string>
+    <string name="settings_about_licenses_intro">BBKB creouse con estes proxectos de código aberto</string>
+    <string name="settings_about_copy_version">Copiar versión</string>
+    <string name="settings_about_version_copied">Copiouse a versión</string>
     <string name="settings_backed_up">Fíxose unha copia de seguranza da configuración</string>
     <string name="settings_category_manage_data">Xestionar datos</string>
     <string name="settings_credits_app_name">BBKB</string>

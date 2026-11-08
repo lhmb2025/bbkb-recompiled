@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Gester på kapacitivt tangentbord</string>
     <string name="settings_category_on_screen_keyboard">Skärmtangentbord</string>
     <string name="settings_category_physical_keyboard">Fysiskt tangentbord</string>
-    <string name="settings_category_credits">Medverkande</string>
     <string name="settings_category_gestures">Gester</string>
     <string name="settings_category_key_popup">Popup för knapp</string>
     <string name="settings_category_modifiers">Modifierare</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Tolerans mellan skakningar</string>
     <string name="settings_about_summary">Versionsinformation och medverkande</string>
     <string name="settings_about_title">Om</string>
+    <string name="settings_about_source_code">Källkod</string>
+    <string name="settings_about_source_code_summary">Visa GitHub-repositoriet</string>
+    <string name="settings_about_report_problem">Rapportera ett problem</string>
+    <string name="settings_about_discord_summary">Gå med i den officiella Discord-communityn</string>
+    <string name="settings_about_licenses_title">Licenser för öppen källkod</string>
+    <string name="settings_about_licenses_intro">BBKB är byggt med dessa projekt med öppen källkod</string>
+    <string name="settings_about_copy_version">Kopiera version</string>
+    <string name="settings_about_version_copied">Versionen har kopierats</string>
     <string name="settings_backed_up">Inställningarna har säkerhetskopierats</string>
     <string name="settings_category_manage_data">Hantera data</string>
     <string name="settings_credits_app_name">BBKB</string>

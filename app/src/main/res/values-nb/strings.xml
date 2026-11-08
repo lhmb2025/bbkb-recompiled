@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Bevegelser på kapasitivt tastatur</string>
     <string name="settings_category_on_screen_keyboard">Skjermtastatur</string>
     <string name="settings_category_physical_keyboard">Fysisk tastatur</string>
-    <string name="settings_category_credits">Medvirkende</string>
     <string name="settings_category_gestures">Bevegelser</string>
     <string name="settings_category_key_popup">Popup for taster</string>
     <string name="settings_category_modifiers">Modifikatortaster</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Slingringstid</string>
     <string name="settings_about_summary">Versjonsinformasjon og medvirkende</string>
     <string name="settings_about_title">Om</string>
+    <string name="settings_about_source_code">Kildekode</string>
+    <string name="settings_about_source_code_summary">Se GitHub-repositoriet</string>
+    <string name="settings_about_report_problem">Rapporter et problem</string>
+    <string name="settings_about_discord_summary">Bli med i det offisielle Discord-fellesskapet</string>
+    <string name="settings_about_licenses_title">Lisenser for åpen kildekode</string>
+    <string name="settings_about_licenses_intro">BBKB er laget med disse prosjektene med åpen kildekode</string>
+    <string name="settings_about_copy_version">Kopier versjon</string>
+    <string name="settings_about_version_copied">Versjonen er kopiert</string>
     <string name="settings_backed_up">Innstillingene er sikkerhetskopiert</string>
     <string name="settings_category_manage_data">Administrer data</string>
     <string name="settings_credits_app_name">BBKB</string>

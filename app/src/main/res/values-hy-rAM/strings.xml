@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Հպազգայուն ստեղնաշարի ժեստեր</string>
     <string name="settings_category_on_screen_keyboard">Էկրանային ստեղնաշար</string>
     <string name="settings_category_physical_keyboard">Ֆիզիկական ստեղնաշար</string>
-    <string name="settings_category_credits">Հեղինակներ</string>
     <string name="settings_category_gestures">Ժեստեր</string>
     <string name="settings_category_key_popup">Ստեղնի ելնող պատուհան</string>
     <string name="settings_category_modifiers">Ձեվափոխիչ ստեղներ</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Թույլատրելի ընդմիջում</string>
     <string name="settings_about_summary">Տարբերակի մասին տեղեկություններ և հեղինակներ</string>
     <string name="settings_about_title">Մասին</string>
+    <string name="settings_about_source_code">Սկզբնական կոդ</string>
+    <string name="settings_about_source_code_summary">Դիտել GitHub-ի պահոցը</string>
+    <string name="settings_about_report_problem">Հաղորդել խնդրի մասին</string>
+    <string name="settings_about_discord_summary">Միանալ Discord-ի պաշտոնական համայնքին</string>
+    <string name="settings_about_licenses_title">Բաց կոդով ծրագրերի արտոնագրեր</string>
+    <string name="settings_about_licenses_intro">BBKB-ն ստեղծված է բաց կոդով այս նախագծերով</string>
+    <string name="settings_about_copy_version">Պատճենել տարբերակը</string>
+    <string name="settings_about_version_copied">Տարբերակը պատճենվեց</string>
     <string name="settings_backed_up">Կարգավորումների պահուստը ստեղծվեց</string>
     <string name="settings_category_manage_data">Տվյալների կառավարում</string>
     <string name="settings_credits_app_name">BBKB</string>

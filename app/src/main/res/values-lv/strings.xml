@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Kapacitatīvās tastatūras žesti</string>
     <string name="settings_category_on_screen_keyboard">Ekrāna tastatūra</string>
     <string name="settings_category_physical_keyboard">Fiziskā tastatūra</string>
-    <string name="settings_category_credits">Pateicības</string>
     <string name="settings_category_gestures">Žesti</string>
     <string name="settings_category_key_popup">Taustiņa uznirstošais logs</string>
     <string name="settings_category_modifiers">Modifikatoru taustiņi</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Pieļaujamais laiks</string>
     <string name="settings_about_summary">Versijas informācija un pateicības</string>
     <string name="settings_about_title">Par</string>
+    <string name="settings_about_source_code">Pirmkods</string>
+    <string name="settings_about_source_code_summary">Skatīt GitHub repozitoriju</string>
+    <string name="settings_about_report_problem">Ziņot par problēmu</string>
+    <string name="settings_about_discord_summary">Pievienoties oficiālajai Discord kopienai</string>
+    <string name="settings_about_licenses_title">Atklātā pirmkoda licences</string>
+    <string name="settings_about_licenses_intro">BBKB ir izveidota, izmantojot šos atklātā pirmkoda projektus</string>
+    <string name="settings_about_copy_version">Kopēt versiju</string>
+    <string name="settings_about_version_copied">Versija nokopēta</string>
     <string name="settings_backed_up">Izveidota iestatījumu dublējumkopija</string>
     <string name="settings_category_manage_data">Datu pārvaldība</string>
     <string name="settings_credits_app_name">BBKB</string>

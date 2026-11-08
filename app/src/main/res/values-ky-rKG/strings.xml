@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Сыйымдуу баскычтоп жаңсоолору</string>
     <string name="settings_category_on_screen_keyboard">Экрандагы баскычтоп</string>
     <string name="settings_category_physical_keyboard">Физикалык баскычтоп</string>
-    <string name="settings_category_credits">Авторлор</string>
     <string name="settings_category_gestures">Жаңсоолор</string>
     <string name="settings_category_key_popup">Баскычтын калкып чыгышы</string>
     <string name="settings_category_modifiers">Модификаторлор</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Тыныгуу убактысы</string>
     <string name="settings_about_summary">Версия жөнүндө маалымат жана авторлор</string>
     <string name="settings_about_title">Колдонмо жөнүндө</string>
+    <string name="settings_about_source_code">Баштапкы код</string>
+    <string name="settings_about_source_code_summary">GitHub репозиторийин көрүү</string>
+    <string name="settings_about_report_problem">Көйгөй тууралуу кабарлоо</string>
+    <string name="settings_about_discord_summary">Расмий Discord коомчулугуна кошулуу</string>
+    <string name="settings_about_licenses_title">Ачык булак лицензиялары</string>
+    <string name="settings_about_licenses_intro">BBKB ушул ачык булактуу долбоорлордун негизинде түзүлгөн</string>
+    <string name="settings_about_copy_version">Версияны көчүрүү</string>
+    <string name="settings_about_version_copied">Версия көчүрүлдү</string>
     <string name="settings_backed_up">Жөндөөлөрдүн камдык көчүрмөсү түзүлдү</string>
     <string name="settings_category_manage_data">Маалыматтарды башкаруу</string>
     <string name="settings_credits_app_name">BBKB</string>

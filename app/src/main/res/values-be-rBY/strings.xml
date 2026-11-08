@@ -73,7 +73,6 @@
     <string name="settings_category_ckb_gestures">Жэсты ёмкаснай клавіятуры</string>
     <string name="settings_category_on_screen_keyboard">Экранная клавіятура</string>
     <string name="settings_category_physical_keyboard">Фізічная клавіятура</string>
-    <string name="settings_category_credits">Падзякі</string>
     <string name="settings_category_gestures">Жэсты</string>
     <string name="settings_category_key_popup">Усплыванне клавіш</string>
     <string name="settings_category_modifiers">Мадыфікатары</string>
@@ -571,6 +570,14 @@
     <string name="prefs_slop_time_title">Дапушчальны інтэрвал</string>
     <string name="settings_about_summary">Звесткі пра версію і падзякі</string>
     <string name="settings_about_title">Пра праграму</string>
+    <string name="settings_about_source_code">Зыходны код</string>
+    <string name="settings_about_source_code_summary">Паглядзець рэпазіторый на GitHub</string>
+    <string name="settings_about_report_problem">Паведаміць пра праблему</string>
+    <string name="settings_about_discord_summary">Далучыцца да афіцыйнай суполкі ў Discord</string>
+    <string name="settings_about_licenses_title">Ліцэнзіі адкрытага ПЗ</string>
+    <string name="settings_about_licenses_intro">BBKB створаны з выкарыстаннем гэтых праектаў з адкрытым зыходным кодам</string>
+    <string name="settings_about_copy_version">Капіраваць версію</string>
+    <string name="settings_about_version_copied">Версія скапіравана</string>
     <string name="settings_backed_up">Рэзервовая копія налад створана</string>
     <string name="settings_category_manage_data">Кіраванне данымі</string>
     <string name="settings_credits_app_name">BBKB</string>
