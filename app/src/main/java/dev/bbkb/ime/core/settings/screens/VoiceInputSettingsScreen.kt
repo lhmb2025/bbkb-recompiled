@@ -99,6 +99,7 @@ fun VoiceInputSettingsScreen(
                 // Enable Built-in Voice Input
                 SwitchPreference(
                     title = context.getString(R.string.settings_voice_builtin_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_enable),
                     summary = context.getString(R.string.settings_voice_builtin_summary),
                     checked = builtInVoiceEnabled,
                     modifier = Modifier.settingsSearchAnchor("voice_input_enabled"),
@@ -117,6 +118,7 @@ fun VoiceInputSettingsScreen(
                     .id()
                 ListPreference(
                     title = context.getString(R.string.settings_voice_recognizer_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_recognizer),
                     summary = if (recognizers.isEmpty() && resolvedRecognizer == VoiceRecognizerChoice.SYSTEM_DEFAULT)
                         context.getString(R.string.settings_voice_recognizer_none_installed)
                     else
@@ -136,6 +138,7 @@ fun VoiceInputSettingsScreen(
                 // Auto-start listening
                 SwitchPreference(
                     title = context.getString(R.string.settings_voice_auto_start_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_auto_start),
                     summary = if (autoStartListening)
                         context.getString(R.string.settings_voice_auto_start_summary_on)
                     else
@@ -152,6 +155,7 @@ fun VoiceInputSettingsScreen(
                 // Use Input Language
                 SwitchPreference(
                     title = context.getString(R.string.settings_voice_use_keyboard_lang_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_keyboard_alphabet),
                     summary = context.getString(R.string.settings_voice_use_keyboard_lang_summary),
                     checked = useInputLanguage,
                     enabled = builtInVoiceEnabled,
@@ -175,6 +179,7 @@ fun VoiceInputSettingsScreen(
                 // Prefer Offline Recognition
                 SwitchPreference(
                     title = context.getString(R.string.settings_voice_prefer_offline_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_offline),
                     summary = context.getString(R.string.settings_voice_prefer_offline_summary),
                     checked = preferOffline,
                     enabled = builtInVoiceEnabled,
@@ -189,6 +194,7 @@ fun VoiceInputSettingsScreen(
                 // The pair with Auto-start covers starting and ending by hand, automatically, or either.
                 SwitchPreference(
                     title = context.getString(R.string.settings_voice_stop_on_pause_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_stop_on_pause),
                     summary = if (stopOnPause)
                         context.getString(R.string.settings_voice_stop_on_pause_summary_on)
                     else
@@ -205,6 +211,7 @@ fun VoiceInputSettingsScreen(
                 // Show words as you speak: partial results as composing text in the editor
                 SwitchPreference(
                     title = context.getString(R.string.settings_voice_show_partial_results_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_partial_results),
                     summary = context.getString(R.string.settings_voice_show_partial_results_summary),
                     checked = showPartialResults,
                     enabled = builtInVoiceEnabled,
@@ -221,6 +228,7 @@ fun VoiceInputSettingsScreen(
                 // preference key is unchanged, so nobody's setting moved with it.
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_block_offensive_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_block_offensive),
                     summary = context.getString(R.string.settings_pred_block_offensive_summary),
                     checked = blockOffensive,
                     enabled = builtInVoiceEnabled,

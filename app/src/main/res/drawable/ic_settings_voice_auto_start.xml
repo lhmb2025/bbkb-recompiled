@@ -1,0 +1,10 @@
+<!-- ic_settings_voice_auto_start. Owner's SVG (2026-11-07), 24-unit grid; Auto-start listening: an ear with a sound wave; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 7 22 q 1.55 0 2.54 -0.77 q 0.99 -0.78 1.51 -2.28 q 0.43 -1.25 0.81 -1.75 t 1.79 -1.6 q 1.55 -1.25 2.45 -2.83 T 17 9 q 0 -2.98 -2.01 -4.99 T 10 2 Q 7.03 2 5.01 4.01 T 3 9 H 5 Q 5 6.88 6.44 5.44 T 10 4 t 3.56 1.44 T 15 9 q 0 1.7 -0.67 2.9 T 12.4 14.05 Q 11.1 15 10.38 15.9 T 9.3 17.85 q -0.35 1.1 -0.84 1.63 T 7 20 q -0.82 0 -1.41 -0.59 T 5 18 H 3 q 0 1.65 1.17 2.82 T 7 22 Z m 10.8 -5.25 q 1.48 -1.5 2.34 -3.49 T 21 9 q 0 -2.3 -0.86 -4.3 T 17.8 1.2 L 16.35 2.6 Q 17.6 3.85 18.3 5.49 T 19 9 q 0 1.85 -0.7 3.47 t -1.95 2.88 l 1.45 1.4 Z m -6.03 -5.99 Q 12.5 10.02 12.5 9 q 0 -1.05 -0.72 -1.78 T 10 6.5 T 8.23 7.22 T 7.5 9 q 0 1.02 0.72 1.76 T 10 11.5 t 1.78 -0.74 Z"/>
+</vector>

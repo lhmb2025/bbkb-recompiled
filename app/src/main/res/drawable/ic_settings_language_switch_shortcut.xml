@@ -1,0 +1,10 @@
+<!-- ic_settings_language_switch_shortcut. Owner's SVG (2026-11-07), 24-unit grid; Assign language switching shortcut: a keyboard under a circular arrow; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 4 22 q -0.82 0 -1.41 -0.59 T 2 20 V 10 Q 2 9.17 2.59 8.59 T 4 8 H 20 q 0.83 0 1.41 0.59 T 22 10 V 20 q 0 0.82 -0.59 1.41 T 20 22 H 4 Z m 0 -2 H 20 V 10 H 4 V 20 Z m 4 -1 h 8 V 17 H 8 v 2 Z M 5 16 H 7 V 14 H 5 v 2 Z m 3 0 h 2 V 14 H 8 v 2 Z m 3 0 h 2 V 14 H 11 v 2 Z m 3 0 h 2 V 14 H 14 v 2 Z m 3 0 h 2 V 14 H 17 v 2 Z M 5 13 H 7 V 11 H 5 v 2 Z m 3 0 h 2 V 11 H 8 v 2 Z m 3 0 h 2 V 11 H 11 v 2 Z m 3 0 h 2 V 11 H 14 v 2 Z m 3 0 h 2 V 11 H 17 v 2 Z M 4 20 V 10 V 20 Z M 6 6 V 1 H 8 V 2.52 Q 8.8 1.8 9.83 1.4 T 12 1 q 2.2 0 3.88 1.41 T 17.9 6 H 15.85 Q 15.5 4.67 14.44 3.84 T 12 3 q -0.75 0 -1.42 0.26 T 9.38 4 H 11 V 6 H 6 Z"/>
+</vector>

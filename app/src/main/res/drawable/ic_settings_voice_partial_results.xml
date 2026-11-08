@@ -1,0 +1,10 @@
+<!-- ic_settings_voice_partial_results. Owner's SVG (2026-11-07), 24-unit grid; Show words as you speak: quotation marks; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 5.7 18 L 8 14 q -1.65 0 -2.82 -1.18 T 4 10 T 5.18 7.18 T 8 6 t 2.83 1.18 T 12 10 q 0 0.57 -0.14 1.06 T 11.45 12 L 8 18 H 5.7 Z m 9 0 L 17 14 q -1.65 0 -2.82 -1.18 T 13 10 t 1.18 -2.82 T 17 6 t 2.83 1.18 T 21 10 q 0 0.57 -0.14 1.06 T 20.45 12 L 17 18 H 14.7 Z M 9.06 11.06 Q 9.5 10.63 9.5 10 T 9.06 8.94 T 8 8.5 T 6.94 8.94 T 6.5 10 t 0.44 1.06 T 8 11.5 t 1.06 -0.44 Z m 9 0 Q 18.5 10.63 18.5 10 T 18.06 8.94 T 17 8.5 T 15.94 8.94 T 15.5 10 t 0.44 1.06 T 17 11.5 t 1.06 -0.44 Z M 17 10 Z M 8 10 Z"/>
+</vector>

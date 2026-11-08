@@ -150,13 +150,13 @@ fun UpdatesScreen(
                 PreferenceItem(
                     title = context.getString(R.string.settings_update_channel_title),
                     summary = channelSummary(context, checker),
-                    iconSpaceReserved = true,
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_update_channel),
                     onClick = null
                 )
                 PreferenceItem(
                     title = context.getString(R.string.settings_update_last_checked_title),
                     summary = lastCheckedSummary(context, checker.lastCheckedAt()),
-                    iconSpaceReserved = true,
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_update_last_checked),
                     onClick = null
                 )
             }

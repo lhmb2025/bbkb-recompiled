@@ -11,7 +11,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.R
@@ -50,6 +52,7 @@ fun CreditsScreen(
             PreferenceGroup {
                 PreferenceItem(
                     title = context.getString(R.string.settings_credits_app_name),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_bbkb_helper),
                     summary = context.getString(R.string.settings_credits_version, versionName, versionCode.toString()),
                     enabled = true,
                     onClick = null
@@ -59,6 +62,7 @@ fun CreditsScreen(
                 // also where they look for "is there a newer one".
                 PreferenceItem(
                     title = context.getString(R.string.settings_updates_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_updates),
                     summary = context.getString(R.string.settings_updates_summary),
                     enabled = true,
                     onClick = onNavigateToUpdates

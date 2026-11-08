@@ -12,6 +12,7 @@ import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
 import dev.bbkb.ime.core.settings.ui.boolPref
+import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.R
 
 
@@ -44,12 +45,14 @@ fun LanguageSwitchingScreen(
         Toggle(
             store = boolPref("pref_language_quick_switch_key", false),
             title = R.string.settings_lang_quick_switch_title,
+            icon = drawableIcon(R.drawable.ic_settings_language_quick_switch),
             summary = RowSummary.Res(R.string.settings_lang_quick_switch_summary),
             modifier = Modifier.settingsSearchAnchor("pref_language_quick_switch_key"),
         ),
         Toggle(
             store = boolPref("pref_spacebar_language_switching", true),
             title = R.string.settings_lang_spacebar_switch_title,
+            icon = drawableIcon(R.drawable.ic_settings_language_spacebar_swipe),
             summary = RowSummary.Res(R.string.settings_lang_spacebar_switch_summary),
             modifier = Modifier.settingsSearchAnchor("pref_spacebar_language_switching"),
         ),
@@ -57,6 +60,7 @@ fun LanguageSwitchingScreen(
         Category(R.string.settings_category_physical_keyboard, visible = { it.hasPhysicalKeyboard }),
         Nav(
             title = R.string.settings_lang_assign_pkb_shortcut_title,
+            icon = drawableIcon(R.drawable.ic_settings_language_switch_shortcut),
             summary = R.string.settings_lang_assign_pkb_shortcut_summary,
             visible = { it.hasPhysicalKeyboard },
             onClick = {
@@ -67,6 +71,7 @@ fun LanguageSwitchingScreen(
         // Read from prefs, not the host's state map: that map only tracks this screen's own rows.
         Nav(
             title = R.string.settings_lang_assign_ckb_gesture_title,
+            icon = drawableIcon(R.drawable.ic_settings_swipe_typing),
             summary = R.string.settings_lang_assign_ckb_gesture_summary,
             visible = { hasTouchKeypad && it.prefs.getBoolean(CKB_GESTURES, true) },
             onClick = { onNavigateToCkbGestures() },

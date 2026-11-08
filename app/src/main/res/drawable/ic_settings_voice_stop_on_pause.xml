@@ -1,0 +1,10 @@
+<!-- ic_settings_voice_stop_on_pause. Owner's SVG (2026-11-07), 24-unit grid; Stop listening when you pause: a struck-through ear; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 20.48 23.3 l -7.33 -7.33 q -0.5 0.4 -0.81 0.7 t -0.53 0.6 q -0.21 0.3 -0.39 0.69 t -0.38 0.99 q -0.5 1.45 -1.56 2.25 T 7 22 q -1.65 0 -2.83 -1.18 T 3 18 H 5 q 0 0.82 0.59 1.41 T 7 20 q 0.78 0 1.31 -0.5 T 9.3 17.85 q 0.28 -0.68 0.5 -1.15 q 0.22 -0.47 0.5 -0.84 t 0.63 -0.66 t 0.82 -0.63 L 5.1 7.93 Q 5.05 8.2 5.03 8.46 Q 5 8.73 5 9 H 3 Q 3 8.27 3.13 7.61 T 3.5 6.32 L 0.68 3.5 L 2.1 2.07 l 19.8 19.8 L 20.48 23.3 Z m -1.82 -7.53 l -1.43 -1.43 q 0.88 -1.18 1.32 -2.54 T 19 9 q 0 -1.82 -0.69 -3.48 Q 17.63 3.88 16.35 2.6 L 17.8 1.2 q 1.55 1.57 2.38 3.59 T 21 9 q 0 1.82 -0.6 3.55 t -1.75 3.23 Z m -2.73 -2.73 L 14.48 11.6 q 0.27 -0.58 0.4 -1.22 T 15 9 q 0 -2.13 -1.44 -3.56 T 10 4 Q 9.35 4 8.73 4.16 T 7.53 4.65 L 6.05 3.17 Q 6.93 2.6 7.93 2.3 T 10 2 q 2.98 0 4.99 2.01 T 17 9 q 0 1.13 -0.26 2.14 t -0.81 1.91 Z m -3.5 -3.5 l -3 -3 Q 9.55 6.5 9.7 6.5 t 0.3 0 q 1.05 0 1.78 0.72 T 12.5 9 q 0 0.15 -0.01 0.29 q -0.01 0.14 -0.06 0.26 Z M 10 11.5 q -1.05 0 -1.78 -0.74 T 7.5 9 q 0 -0.33 0.08 -0.63 Q 7.65 8.07 7.83 7.8 l 3.4 3.4 q -0.28 0.15 -0.59 0.22 T 10 11.5 Z"/>
+</vector>
