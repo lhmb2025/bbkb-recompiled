@@ -610,7 +610,7 @@
     <string name="settings_search_hint">সেটিংস খুঁজুন</string>
     <string name="settings_search_no_results">কোনো সেটিংস পাওয়া যায়নি</string>
     <string name="settings_shake_fallback_title">বিকল্প ক্রিয়া</string>
-    <string name="settings_shake_info_summary">ডিভাইস বিভিন্ন দিকে ঝাঁকালে যেসব ক্রিয়া হবে তা কনফিগার করুন</string>
+    <string name="settings_shake_info_summary">ডিভাইস ঝাঁকালে যেসব ক্রিয়া হবে তা কনফিগার করুন</string>
     <string name="settings_shake_summary">ঝাঁকুনির অঙ্গভঙ্গির সঙ্গে কীবোর্ডের ক্রিয়া মেলান</string>
     <string name="settings_shake_title">ঝাঁকুনির অঙ্গভঙ্গি</string>
     <string name="settings_shake_x_axis_title">X-অক্ষে ঝাঁকুনির ক্রিয়া</string>

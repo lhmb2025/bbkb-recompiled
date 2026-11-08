@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Претражите поставке</string>
     <string name="settings_search_no_results">Није пронађена ниједна поставка</string>
     <string name="settings_shake_fallback_title">Резервна радња</string>
-    <string name="settings_shake_info_summary">Подесите радње које се покрећу протресањем уређаја у различитим смеровима</string>
+    <string name="settings_shake_info_summary">Подесите радње које се покрећу протресањем уређаја</string>
     <string name="settings_shake_summary">Повежите покрете протресања са радњама тастатуре</string>
     <string name="settings_shake_title">Покрети протресања</string>
     <string name="settings_shake_x_axis_title">Радња протресања по оси X</string>

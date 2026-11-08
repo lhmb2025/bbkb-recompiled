@@ -610,7 +610,7 @@
     <string name="settings_search_hint">సెట్టింగ్‌లను శోధించు</string>
     <string name="settings_search_no_results">సెట్టింగ్‌లు ఏవీ కనుగొనబడలేదు</string>
     <string name="settings_shake_fallback_title">ప్రత్యామ్నాయ చర్య</string>
-    <string name="settings_shake_info_summary">మీ పరికరాన్ని వేర్వేరు దిశల్లో కుదిపినప్పుడు జరిగే చర్యలను కాన్ఫిగర్ చేయి</string>
+    <string name="settings_shake_info_summary">మీ పరికరాన్ని కుదిపినప్పుడు జరిగే చర్యలను కాన్ఫిగర్ చేయి</string>
     <string name="settings_shake_summary">కుదుపు సంజ్ఞలను కీబోర్డ్ చర్యలకు అనుసంధానించు</string>
     <string name="settings_shake_title">కుదుపు సంజ్ఞలు</string>
     <string name="settings_shake_x_axis_title">X-అక్షం కుదుపు చర్య</string>

@@ -610,7 +610,7 @@
     <string name="settings_search_hint">ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಹುಡುಕಿ</string>
     <string name="settings_search_no_results">ಯಾವುದೇ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ</string>
     <string name="settings_shake_fallback_title">ಪರ್ಯಾಯ ಕ್ರಿಯೆ</string>
-    <string name="settings_shake_info_summary">ನಿಮ್ಮ ಸಾಧನವನ್ನು ಬೇರೆ ಬೇರೆ ದಿಕ್ಕುಗಳಲ್ಲಿ ಅಲುಗಾಡಿಸಿದಾಗ ನಡೆಯುವ ಕ್ರಿಯೆಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ</string>
+    <string name="settings_shake_info_summary">ನಿಮ್ಮ ಸಾಧನವನ್ನು ಅಲುಗಾಡಿಸಿದಾಗ ನಡೆಯುವ ಕ್ರಿಯೆಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ</string>
     <string name="settings_shake_summary">ಅಲುಗಾಟದ ಗೆಸ್ಚರ್‌ಗಳನ್ನು ಕೀಬೋರ್ಡ್ ಕ್ರಿಯೆಗಳಿಗೆ ನಿಯೋಜಿಸಿ</string>
     <string name="settings_shake_title">ಅಲುಗಾಟದ ಗೆಸ್ಚರ್‌ಗಳು</string>
     <string name="settings_shake_x_axis_title">ಅಲುಗಾಟದ X-ಅಕ್ಷದ ಕ್ರಿಯೆ</string>

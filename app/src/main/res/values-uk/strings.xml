@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Пошук налаштувань</string>
     <string name="settings_search_no_results">Налаштувань не знайдено</string>
     <string name="settings_shake_fallback_title">Резервна дія</string>
-    <string name="settings_shake_info_summary">Налаштуйте дії, які викликаються струшуванням пристрою в різних напрямках</string>
+    <string name="settings_shake_info_summary">Налаштуйте дії, які викликаються струшуванням пристрою</string>
     <string name="settings_shake_summary">Призначте жестам струшування дії клавіатури</string>
     <string name="settings_shake_title">Жести струшування</string>
     <string name="settings_shake_x_axis_title">Дія при струшуванні по осі X</string>

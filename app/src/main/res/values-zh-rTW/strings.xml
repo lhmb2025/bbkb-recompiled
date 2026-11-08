@@ -610,7 +610,7 @@
     <string name="settings_search_hint">搜尋設定</string>
     <string name="settings_search_no_results">找不到設定</string>
     <string name="settings_shake_fallback_title">備用動作</string>
-    <string name="settings_shake_info_summary">設定朝不同方向搖動裝置時觸發的動作</string>
+    <string name="settings_shake_info_summary">設定搖動裝置時觸發的動作</string>
     <string name="settings_shake_summary">將搖動手勢對應至鍵盤動作</string>
     <string name="settings_shake_title">搖動手勢</string>
     <string name="settings_shake_x_axis_title">搖動 X 軸動作</string>

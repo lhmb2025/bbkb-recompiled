@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Tìm trong cài đặt</string>
     <string name="settings_search_no_results">Không tìm thấy cài đặt nào</string>
     <string name="settings_shake_fallback_title">Tác vụ dự phòng</string>
-    <string name="settings_shake_info_summary">Thiết lập các tác vụ được kích hoạt khi bạn lắc thiết bị theo các hướng khác nhau</string>
+    <string name="settings_shake_info_summary">Thiết lập các tác vụ được kích hoạt khi bạn lắc thiết bị</string>
     <string name="settings_shake_summary">Gán cử chỉ lắc cho các tác vụ bàn phím</string>
     <string name="settings_shake_title">Cử chỉ lắc</string>
     <string name="settings_shake_x_axis_title">Tác vụ khi lắc theo trục X</string>

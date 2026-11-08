@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Maghanap ng mga setting</string>
     <string name="settings_search_no_results">Walang nakitang setting</string>
     <string name="settings_shake_fallback_title">Fallback na aksyon</string>
-    <string name="settings_shake_info_summary">I-configure ang mga aksyong ita-trigger sa pag-shake ng iyong device sa iba-ibang direksyon</string>
+    <string name="settings_shake_info_summary">I-configure ang mga aksyong ita-trigger sa pag-shake ng iyong device</string>
     <string name="settings_shake_summary">Itakda ang mga galaw na shake sa mga aksyon ng keyboard</string>
     <string name="settings_shake_title">Mga Galaw na Shake</string>
     <string name="settings_shake_x_axis_title">Aksyon sa pag-shake sa X-axis</string>

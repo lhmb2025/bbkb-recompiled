@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Pesquisar nas configurações</string>
     <string name="settings_search_no_results">Nenhuma configuração encontrada</string>
     <string name="settings_shake_fallback_title">Ação alternativa</string>
-    <string name="settings_shake_info_summary">Configure as ações acionadas ao agitar o dispositivo em diferentes direções</string>
+    <string name="settings_shake_info_summary">Configure as ações acionadas ao agitar o dispositivo</string>
     <string name="settings_shake_summary">Associar gestos de agitar a ações do teclado</string>
     <string name="settings_shake_title">Gestos de agitar</string>
     <string name="settings_shake_x_axis_title">Ação ao agitar no eixo X</string>

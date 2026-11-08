@@ -1,0 +1,16 @@
+<!-- ic_settings_shake_vertical. Owner's SVG (2026-11-08), 24-unit grid; Shake Y-axis action: a phone with an up-down arrow; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 18.00671 7.8017 l -1.00671 1.00671 v 12.19159 h -2.19159 l -2 2 h 4.19159 c .54669 0 1.01666 -.19666 1.40997 -.59003 .39337 -.39331 .59003 -.86328 .59003 -1.40997 V 6.80841 l -.99329 .99329 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 6.05334 16.14868 l .93915 -.9068 v -5.27441 h .00751 V 3 h 2.15161 l 2 -2 h -4.15161 c -.54669 .00665 -1.01666 .20331 -1.40997 .59003 -.39337 .38666 -.59003 .85663 -.59003 1.40997 v 14.16571 l 1.05334 -1.01703 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 8.99251 11.96748 h 2 v 7.17 l 1.55 -1.55 1.45 1.4 -4 4 -4 -4 1.45 -1.4 1.55 1.55 v -7.17 Z M 14.99251 11.96748 h -2 v -7.18 l -1.6 1.6 -1.4 -1.4 L 13.99251 .98748 l 4 4 -1.4 1.4 -1.6 -1.6 v 7.18 Z"/>
+</vector>

@@ -610,7 +610,7 @@
     <string name="settings_search_hint">सेटिंग्ज शोधा</string>
     <string name="settings_search_no_results">कोणतीही सेटिंग सापडली नाही</string>
     <string name="settings_shake_fallback_title">फॉलबॅक क्रिया</string>
-    <string name="settings_shake_info_summary">डिव्हाइस वेगवेगळ्या दिशांना हलवून सुरू होणाऱ्या क्रिया कॉन्फिगर करा</string>
+    <string name="settings_shake_info_summary">डिव्हाइस हलवून सुरू होणाऱ्या क्रिया कॉन्फिगर करा</string>
     <string name="settings_shake_summary">शेक जेश्चर कीबोर्ड क्रियांशी जोडा</string>
     <string name="settings_shake_title">शेक जेश्चर</string>
     <string name="settings_shake_x_axis_title">X-अक्षावर हलवण्याची क्रिया</string>

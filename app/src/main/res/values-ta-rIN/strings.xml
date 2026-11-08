@@ -610,7 +610,7 @@
     <string name="settings_search_hint">அமைப்புகளைத் தேடு</string>
     <string name="settings_search_no_results">அமைப்புகள் எதுவும் இல்லை</string>
     <string name="settings_shake_fallback_title">மாற்றுச் செயல்</string>
-    <string name="settings_shake_info_summary">உங்கள் சாதனத்தை வெவ்வேறு திசைகளில் குலுக்கும்போது தூண்டப்படும் செயல்களை அமை</string>
+    <string name="settings_shake_info_summary">உங்கள் சாதனத்தைக் குலுக்கும்போது தூண்டப்படும் செயல்களை அமை</string>
     <string name="settings_shake_summary">குலுக்கல் சைகைகளை விசைப்பலகைச் செயல்களுடன் இணை</string>
     <string name="settings_shake_title">குலுக்கல் சைகைகள்</string>
     <string name="settings_shake_x_axis_title">X-அச்சு குலுக்கல் செயல்</string>

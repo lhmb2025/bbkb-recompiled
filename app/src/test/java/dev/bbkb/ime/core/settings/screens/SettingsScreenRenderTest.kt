@@ -1196,7 +1196,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         Case(
             name = "ShakeGesturesScreen",
             route = SettingsRoute.Shake.route,
-            title = "Shake Gestures",
+            title = "Shake gestures",
             resources = setOf(
                 "settings_shake_title", "settings_shake_fallback_title", "settings_shake_info_summary",
                 "settings_shake_x_axis_title", "settings_shake_y_axis_title", "settings_shake_z_axis_title"

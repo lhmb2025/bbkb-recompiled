@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Telusuri setelan</string>
     <string name="settings_search_no_results">Setelan tidak ditemukan</string>
     <string name="settings_shake_fallback_title">Tindakan cadangan</string>
-    <string name="settings_shake_info_summary">Konfigurasikan tindakan yang dipicu dengan mengguncang perangkat ke berbagai arah</string>
+    <string name="settings_shake_info_summary">Konfigurasikan tindakan yang dipicu dengan mengguncang perangkat</string>
     <string name="settings_shake_summary">Petakan gestur guncangan ke tindakan keyboard</string>
     <string name="settings_shake_title">Gestur Guncangan</string>
     <string name="settings_shake_x_axis_title">Tindakan guncangan sumbu X</string>

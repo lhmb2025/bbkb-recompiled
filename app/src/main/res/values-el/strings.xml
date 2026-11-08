@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Αναζήτηση ρυθμίσεων</string>
     <string name="settings_search_no_results">Δεν βρέθηκαν ρυθμίσεις</string>
     <string name="settings_shake_fallback_title">Εφεδρική ενέργεια</string>
-    <string name="settings_shake_info_summary">Διαμόρφωση των ενεργειών που ενεργοποιούνται κουνώντας τη συσκευή προς διάφορες κατευθύνσεις</string>
+    <string name="settings_shake_info_summary">Διαμόρφωση των ενεργειών που ενεργοποιούνται κουνώντας τη συσκευή</string>
     <string name="settings_shake_summary">Αντιστοίχιση κινήσεων με κούνημα σε ενέργειες πληκτρολογίου</string>
     <string name="settings_shake_title">Κινήσεις με κούνημα</string>
     <string name="settings_shake_x_axis_title">Ενέργεια κουνήματος στον άξονα X</string>

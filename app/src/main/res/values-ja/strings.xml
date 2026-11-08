@@ -610,7 +610,7 @@
     <string name="settings_search_hint">設定を検索</string>
     <string name="settings_search_no_results">設定が見つかりません</string>
     <string name="settings_shake_fallback_title">フォールバック動作</string>
-    <string name="settings_shake_info_summary">端末を各方向に振ったときに実行する動作を設定します</string>
+    <string name="settings_shake_info_summary">端末を振ったときに実行する動作を設定します</string>
     <string name="settings_shake_summary">シェイクジェスチャーにキーボードの動作を割り当てます</string>
     <string name="settings_shake_title">シェイクジェスチャー</string>
     <string name="settings_shake_x_axis_title">X軸の振りの動作</string>

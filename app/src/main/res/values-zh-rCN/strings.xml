@@ -610,7 +610,7 @@
     <string name="settings_search_hint">搜索设置</string>
     <string name="settings_search_no_results">未找到设置</string>
     <string name="settings_shake_fallback_title">后备操作</string>
-    <string name="settings_shake_info_summary">配置向不同方向摇动设备时触发的操作</string>
+    <string name="settings_shake_info_summary">配置摇动设备时触发的操作</string>
     <string name="settings_shake_summary">将摇动手势映射到键盘操作</string>
     <string name="settings_shake_title">摇动手势</string>
     <string name="settings_shake_x_axis_title">摇动 X 轴操作</string>

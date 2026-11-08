@@ -1,6 +1,7 @@
 package dev.bbkb.ime.core.settings.screens
 
 import android.content.Context
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -13,6 +14,7 @@ import dev.bbkb.ime.core.settings.ui.ChoiceOption
 import dev.bbkb.ime.core.settings.ui.Custom
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
+import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.core.settings.ui.stringPref
 import dev.bbkb.ime.R
 
@@ -26,21 +28,22 @@ fun ShakeGesturesScreen(
 ) {
     SettingsScreenHost(R.string.settings_shake_title, onNavigateBack, listOf(
         Custom { ShakeIntro() },
-        shakeAction("shake_x_action", R.string.settings_shake_x_axis_title,
+        shakeAction("shake_x_action", R.string.settings_shake_x_axis_title, R.drawable.ic_settings_shake_horizontal,
             Modifier.settingsSearchAnchor("shake_x_action")),
-        shakeAction("shake_y_action", R.string.settings_shake_y_axis_title,
+        shakeAction("shake_y_action", R.string.settings_shake_y_axis_title, R.drawable.ic_settings_shake_vertical,
             Modifier.settingsSearchAnchor("shake_y_action")),
-        shakeAction("shake_z_action", R.string.settings_shake_z_axis_title,
+        shakeAction("shake_z_action", R.string.settings_shake_z_axis_title, R.drawable.ic_settings_shake_diagonal,
             Modifier.settingsSearchAnchor("shake_z_action")),
-        shakeAction("shake_fallback_action", R.string.settings_shake_fallback_title,
+        shakeAction("shake_fallback_action", R.string.settings_shake_fallback_title, R.drawable.ic_settings_shake_other,
             Modifier.settingsSearchAnchor("shake_fallback_action")),
     ))
 }
 
 /** All four rows offer the same action list and fall back to its first entry. */
-private fun shakeAction(key: String, titleRes: Int, anchor: Modifier) = Choice(
+private fun shakeAction(key: String, titleRes: Int, @DrawableRes iconRes: Int, anchor: Modifier) = Choice(
     store = stringPref(key, "0"),
     title = titleRes,
+    icon = drawableIcon(iconRes),
     options = ::shakeActionOptions,
     modifier = anchor,
 )

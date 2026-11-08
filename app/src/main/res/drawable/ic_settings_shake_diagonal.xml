@@ -1,0 +1,16 @@
+<!-- ic_settings_shake_diagonal. Owner's SVG (2026-11-08), 24-unit grid; Shake Z-axis action: a phone with a diagonal two-way arrow; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 17 14.05627 v 6.94373 H 7 v -.63971 h -2 v .63971 c 0 .54669 .19666 1.01666 .59003 1.40997 .39331 .39337 .86328 .59003 1.40997 .59003 h 10 c .54669 0 1.01666 -.19666 1.40997 -.59003 .39337 -.39331 .59003 -.86328 .59003 -1.40997 v -6.94373 h -2 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 18.40997 1.59003 c -.39331 -.39337 -.86328 -.59003 -1.40997 -.59003 H 7 c -.54669 .00665 -1.01666 .20331 -1.40997 .59003 -.39337 .38666 -.59003 .85663 -.59003 1.40997 v 6.91412 h 2 V 3 h 10 v .63239 h 2 v -.63239 c 0 -.54669 -.19666 -1.01666 -.59003 -1.40997 Z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 9.88167 9.86087 l 1.41421 1.41421 -5.06996 5.06996 h 2.19203 l .03535 2.01525 H 2.79646 v -5.65685 l 2.01525 .03536 v 2.19203 s 5.06996 -5.06996 5.06996 -5.06996 Z M 14.12431 14.10351 l -1.41421 -1.41421 5.07703 -5.07703 h -2.26274 v -1.9799 h 5.65685 v 5.65685 h -1.9799 v -2.26274 s -5.06996 5.06996 -5.06996 5.06996 l -.00707 .00707 Z"/>
+</vector>

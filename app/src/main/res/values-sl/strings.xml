@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Iskanje po nastavitvah</string>
     <string name="settings_search_no_results">Ni najdenih nastavitev</string>
     <string name="settings_shake_fallback_title">Nadomestno dejanje</string>
-    <string name="settings_shake_info_summary">Nastavite dejanja, ki se sprožijo ob stresanju naprave v različnih smereh</string>
+    <string name="settings_shake_info_summary">Nastavite dejanja, ki se sprožijo ob stresanju naprave</string>
     <string name="settings_shake_summary">Potezam s stresanjem dodelite dejanja tipkovnice</string>
     <string name="settings_shake_title">Poteze s stresanjem</string>
     <string name="settings_shake_x_axis_title">Dejanje ob stresanju po osi X</string>

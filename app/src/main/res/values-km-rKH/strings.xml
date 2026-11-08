@@ -610,7 +610,7 @@
     <string name="settings_search_hint">ស្វែងរកការកំណត់</string>
     <string name="settings_search_no_results">រកមិនឃើញការកំណត់ទេ</string>
     <string name="settings_shake_fallback_title">សកម្មភាពបម្រុង</string>
-    <string name="settings_shake_info_summary">កំណត់សកម្មភាពដែលកេះដោយការអង្រួនឧបករណ៍ទៅទិសផ្សេងៗគ្នា</string>
+    <string name="settings_shake_info_summary">កំណត់សកម្មភាពដែលកេះដោយការអង្រួនឧបករណ៍</string>
     <string name="settings_shake_summary">ភ្ជាប់កាយវិការអង្រួនទៅនឹងសកម្មភាពក្ដារចុច</string>
     <string name="settings_shake_title">កាយវិការអង្រួន</string>
     <string name="settings_shake_x_axis_title">សកម្មភាពអង្រួនតាមអ័ក្ស X</string>

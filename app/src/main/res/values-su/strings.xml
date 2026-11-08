@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Sungsi setélan</string>
     <string name="settings_search_no_results">Teu aya setélan nu kapanggih</string>
     <string name="settings_shake_fallback_title">Lampah cadangan</string>
-    <string name="settings_shake_info_summary">Atur lampah nu dipicu ku ngoyagkeun parangkat ka arah nu béda-béda</string>
+    <string name="settings_shake_info_summary">Atur lampah nu dipicu ku ngoyagkeun parangkat</string>
     <string name="settings_shake_summary">Petakeun gerak oyagan kana lampah papan tombol</string>
     <string name="settings_shake_title">Gerak Oyagan</string>
     <string name="settings_shake_x_axis_title">Lampah oyagan sumbu X</string>

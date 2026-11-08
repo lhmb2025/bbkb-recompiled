@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Søg i indstillinger</string>
     <string name="settings_search_no_results">Ingen indstillinger fundet</string>
     <string name="settings_shake_fallback_title">Reservehandling</string>
-    <string name="settings_shake_info_summary">Konfigurer handlinger, der udløses, når du ryster enheden i forskellige retninger</string>
+    <string name="settings_shake_info_summary">Konfigurer handlinger, der udløses, når du ryster enheden</string>
     <string name="settings_shake_summary">Knyt rystebevægelser til tastaturhandlinger</string>
     <string name="settings_shake_title">Rystebevægelser</string>
     <string name="settings_shake_x_axis_title">Handling ved rystning om X-aksen</string>

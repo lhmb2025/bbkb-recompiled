@@ -610,7 +610,7 @@
     <string name="settings_search_hint">ക്രമീകരണങ്ങൾ തിരയുക</string>
     <string name="settings_search_no_results">ക്രമീകരണങ്ങളൊന്നും കണ്ടെത്തിയില്ല</string>
     <string name="settings_shake_fallback_title">ബദൽ പ്രവർത്തനം</string>
-    <string name="settings_shake_info_summary">ഉപകരണം വിവിധ ദിശകളിൽ കുലുക്കുമ്പോൾ നടക്കുന്ന പ്രവർത്തനങ്ങൾ കോൺഫിഗർ ചെയ്യുക</string>
+    <string name="settings_shake_info_summary">ഉപകരണം കുലുക്കുമ്പോൾ നടക്കുന്ന പ്രവർത്തനങ്ങൾ കോൺഫിഗർ ചെയ്യുക</string>
     <string name="settings_shake_summary">കുലുക്കൽ ജെസ്ചറുകൾ കീബോർഡ് പ്രവർത്തനങ്ങളുമായി ബന്ധിപ്പിക്കുക</string>
     <string name="settings_shake_title">കുലുക്കൽ ജെസ്ചറുകൾ</string>
     <string name="settings_shake_x_axis_title">കുലുക്കലിന്റെ X-അക്ഷ പ്രവർത്തനം</string>

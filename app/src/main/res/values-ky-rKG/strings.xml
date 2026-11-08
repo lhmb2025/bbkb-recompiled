@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Жөндөөлөрдү издөө</string>
     <string name="settings_search_no_results">Жөндөөлөр табылган жок</string>
     <string name="settings_shake_fallback_title">Кошумча аракет</string>
-    <string name="settings_shake_info_summary">Түзмөктү ар кайсы багытта силкүүдө аткарылуучу аракеттерди жөндөө</string>
+    <string name="settings_shake_info_summary">Түзмөктү силкүүдө аткарылуучу аракеттерди жөндөө</string>
     <string name="settings_shake_summary">Силкүү жаңсоолорун баскычтоптун аракеттерине байлоо</string>
     <string name="settings_shake_title">Силкүү жаңсоолору</string>
     <string name="settings_shake_x_axis_title">X огу боюнча силкүү аракети</string>

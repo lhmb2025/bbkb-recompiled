@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Тохиргоо хайх</string>
     <string name="settings_search_no_results">Тохиргоо олдсонгүй</string>
     <string name="settings_shake_fallback_title">Нөөц үйлдэл</string>
-    <string name="settings_shake_info_summary">Төхөөрөмжөө өөр өөр чиглэлд сэгсрэхэд хийгдэх үйлдлийг тохируулах</string>
+    <string name="settings_shake_info_summary">Төхөөрөмжөө сэгсрэхэд хийгдэх үйлдлийг тохируулах</string>
     <string name="settings_shake_summary">Сэгсрэх зангааг гарын үйлдэлтэй холбох</string>
     <string name="settings_shake_title">Сэгсрэх зангаа</string>
     <string name="settings_shake_x_axis_title">X тэнхлэгт сэгсрэх үйлдэл</string>

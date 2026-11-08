@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Golek setelan</string>
     <string name="settings_search_no_results">Setelan ora ketemu</string>
     <string name="settings_shake_fallback_title">Tumindak cadhangan</string>
-    <string name="settings_shake_info_summary">Atur tumindak sing kawiwitan nalika piranti digoyang menyang arah sing beda-beda</string>
+    <string name="settings_shake_info_summary">Atur tumindak sing kawiwitan nalika piranti digoyang</string>
     <string name="settings_shake_summary">Petakna gerakan goyangan menyang tumindak papan tombol</string>
     <string name="settings_shake_title">Gerakan Goyangan</string>
     <string name="settings_shake_x_axis_title">Tumindak goyangan sumbu X</string>

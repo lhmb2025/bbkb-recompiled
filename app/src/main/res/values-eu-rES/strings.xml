@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Bilatu ezarpenetan</string>
     <string name="settings_search_no_results">Ez da ezarpenik aurkitu</string>
     <string name="settings_shake_fallback_title">Ordezko ekintza</string>
-    <string name="settings_shake_info_summary">Konfiguratu gailua norabide desberdinetan astinduz abiarazten diren ekintzak</string>
+    <string name="settings_shake_info_summary">Konfiguratu gailua astinduz abiarazten diren ekintzak</string>
     <string name="settings_shake_summary">Esleitu astindu-keinuak teklatuaren ekintzei</string>
     <string name="settings_shake_title">Astindu-keinuak</string>
     <string name="settings_shake_x_axis_title">X ardatzeko astinduaren ekintza</string>

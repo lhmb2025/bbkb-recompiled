@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Cerca nelle impostazioni</string>
     <string name="settings_search_no_results">Nessuna impostazione trovata</string>
     <string name="settings_shake_fallback_title">Azione di riserva</string>
-    <string name="settings_shake_info_summary">Configura le azioni attivate scuotendo il dispositivo in direzioni diverse</string>
+    <string name="settings_shake_info_summary">Configura le azioni attivate scuotendo il dispositivo</string>
     <string name="settings_shake_summary">Associa i gesti di scuotimento alle azioni della tastiera</string>
     <string name="settings_shake_title">Gesti di scuotimento</string>
     <string name="settings_shake_x_axis_title">Azione scuotimento asse X</string>

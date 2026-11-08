@@ -610,7 +610,7 @@
     <string name="settings_search_hint">Buscar en los ajustes</string>
     <string name="settings_search_no_results">No se han encontrado ajustes</string>
     <string name="settings_shake_fallback_title">Acción alternativa</string>
-    <string name="settings_shake_info_summary">Configura las acciones que se activan al sacudir el dispositivo en distintas direcciones</string>
+    <string name="settings_shake_info_summary">Configura las acciones que se activan al sacudir el dispositivo</string>
     <string name="settings_shake_summary">Asigna acciones del teclado a los gestos de sacudida</string>
     <string name="settings_shake_title">Gestos de sacudida</string>
     <string name="settings_shake_x_axis_title">Acción al sacudir en el eje X</string>
