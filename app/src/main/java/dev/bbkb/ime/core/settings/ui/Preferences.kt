@@ -58,6 +58,9 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.ui.res.stringResource
 import dev.bbkb.ime.R
 
@@ -857,7 +860,14 @@ fun PreferenceActionItem(
         modifier = modifier,
         onClick = onAction,
         trailing = {
-            TextButton(onClick = onAction) { Text(actionLabel) }
+            // Close to the switch column of the rows around it, so the title and summary keep
+            // most of their width: a two-word label wraps onto two lines and the button is as
+            // wide as its longest word, up to a cap that still fits longer translations.
+            TextButton(
+                onClick = onAction,
+                modifier = Modifier.widthIn(max = 96.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 6.dp),
+            ) { Text(actionLabel, textAlign = TextAlign.Center) }
         },
     )
 }

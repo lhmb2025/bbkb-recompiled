@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Fiziki klaviaturadan istifadə edərkən status panelində Shift/Alt modifikator göstəricisini əks etdirin</string>
     <string name="settings_pred_block_offensive_summary">Səsli diktə zamanı potensial təhqiredici sözləri gizlədin</string>
     <string name="settings_pred_block_offensive_title">Təhqiredici sözləri bloklayın</string>
-    <string name="settings_pred_contacts_permission_summary">Yazarkən kontakt adlarının və e-poçt ünvanlarının təklif edilməsi üçün kontaktlara icazə verin</string>
-    <string name="settings_pred_contacts_permission_title">Kontaktlara icazə tələb olunur</string>
+    <string name="settings_pred_contacts_permission_summary">Kontakt adlarının və e-poçt ünvanlarının təklif edilməsi üçün icazə verin</string>
+    <string name="settings_pred_contacts_permission_title">Kontaktlara icazə</string>
     <string name="settings_pred_contacts_summary_disabled">Kontaktlara icazə tələb olunur</string>
     <string name="settings_pred_contacts_summary_enabled">Kontakt adlarını təkliflərə daxil edin</string>
     <string name="settings_pred_contacts_title">Kontaktlardan təklif edin</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Emoji təklifləri</string>
     <string name="settings_pred_flick_animation_summary">Təklif çırpma ilə təsdiqlənərkən sözü yuxarı doğru animasiya edin</string>
     <string name="settings_pred_flick_animation_title">Çırpma ilə təsdiq animasiyasını göstərin</string>
-    <string name="settings_pred_force_suggestions_summary">Təklif zolağını klaviaturadan onu gizlətməyi istəyən tətbiqlərdə də göstərin (məsələn, Google Keep). Parol sahələrinə şamil edilmir.</string>
+    <string name="settings_pred_force_suggestions_summary">Təklif zolağını klaviaturadan onu gizlətməyi istəyən tətbiqlərdə də göstərin. Parol sahələrinə şamil edilmir.</string>
     <string name="settings_pred_force_suggestions_title">Təklifləri məcburi göstərin</string>
     <string name="settings_pred_grant_permission">İcazə verin</string>
     <string name="settings_pred_next_word_summary">Kontekstə əsasən növbəti sözü təklif edin</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Yazınızdan öyrənilmiş sözləri daxil et</string>
     <string name="settings_pred_personalized_title">Öyrənilmiş sözləri təklif et</string>
     <string name="settings_pred_inline_autofill_title">Avtodoldurma təklifləri</string>
-    <string name="settings_pred_inline_autofill_summary">Avtodoldurma xidmətinizdəki parolları, ünvanları və digər yadda saxlanmış məlumatları təklif zolağında göstərin</string>
+    <string name="settings_pred_inline_autofill_summary">Avtodoldurma xidmətinizdəki parolları, ünvanları və digər yadda saxlanmış məlumatları göstərin</string>
     <string name="settings_pred_show_predictions_summary">Yazarkən söz təkliflərini əks etdirin</string>
     <string name="settings_pred_show_predictions_title">Təklifləri aktiv et</string>
     <string name="settings_anim_category_scale">Miqyas parametrləri</string>

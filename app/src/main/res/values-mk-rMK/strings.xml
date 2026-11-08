@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Прикажување показател за Shift/Alt во статусната лента при користење физичка тастатура</string>
     <string name="settings_pred_block_offensive_summary">Криење потенцијално навредливи зборови при гласовно диктирање</string>
     <string name="settings_pred_block_offensive_title">Блокирање навредливи зборови</string>
-    <string name="settings_pred_contacts_permission_summary">Дајте дозвола за контакти за да се предлагаат имиња на контакти и адреси на е-пошта додека пишувате</string>
-    <string name="settings_pred_contacts_permission_title">Потребна е дозвола за контакти</string>
+    <string name="settings_pred_contacts_permission_summary">Дајте дозвола за да се предлагаат имиња на контакти и адреси на е-пошта</string>
+    <string name="settings_pred_contacts_permission_title">Дозвола за контакти</string>
     <string name="settings_pred_contacts_summary_disabled">Потребна е дозвола за контакти</string>
     <string name="settings_pred_contacts_summary_enabled">Вклучување имиња на контакти во предлозите</string>
     <string name="settings_pred_contacts_title">Предлагање од контактите</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Предлози за емотикони</string>
     <string name="settings_pred_flick_animation_summary">Анимирање на зборот нагоре при потврдување предлог со повлекување</string>
     <string name="settings_pred_flick_animation_title">Анимација при потврдување со замавнување</string>
-    <string name="settings_pred_force_suggestions_summary">Прикажување на лентата со предлози дури и во апликации што бараат тастатурата да ја скрие (на пр. Google Keep). Не важи за полињата за лозинки.</string>
+    <string name="settings_pred_force_suggestions_summary">Прикажување на лентата со предлози дури и во апликации што бараат тастатурата да ја скрие. Не важи за полињата за лозинки.</string>
     <string name="settings_pred_force_suggestions_title">Принудни предлози</string>
     <string name="settings_pred_grant_permission">Дај дозвола</string>
     <string name="settings_pred_next_word_summary">Предлагање на следниот збор според контекстот</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Вклучи зборови научени од вашето пишување</string>
     <string name="settings_pred_personalized_title">Предлагај научени зборови</string>
     <string name="settings_pred_inline_autofill_title">Предлози од автоматското пополнување</string>
-    <string name="settings_pred_inline_autofill_summary">Прикажување лозинки, адреси и други зачувани податоци од вашата услуга за автоматско пополнување на лентата со предлози</string>
+    <string name="settings_pred_inline_autofill_summary">Прикажување лозинки, адреси и други зачувани податоци од вашата услуга за автоматско пополнување</string>
     <string name="settings_pred_show_predictions_summary">Прикажување предлози за зборови додека пишувате</string>
     <string name="settings_pred_show_predictions_title">Вклучи предлози</string>
     <string name="settings_anim_category_scale">Параметри на размерот</string>

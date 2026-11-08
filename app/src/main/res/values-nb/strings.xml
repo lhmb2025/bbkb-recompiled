@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Vis Skift-/Alt-indikator i statusfeltet når du bruker fysisk tastatur</string>
     <string name="settings_pred_block_offensive_summary">Skjul ord som kan virke støtende, ved talediktering</string>
     <string name="settings_pred_block_offensive_title">Blokker støtende ord</string>
-    <string name="settings_pred_contacts_permission_summary">Gi tilgang til kontakter for å foreslå kontaktnavn og e-postadresser mens du skriver</string>
-    <string name="settings_pred_contacts_permission_title">Krever tillatelse til kontakter</string>
+    <string name="settings_pred_contacts_permission_summary">Gi tillatelse til å foreslå kontaktnavn og e-postadresser</string>
+    <string name="settings_pred_contacts_permission_title">Tillatelse til kontakter</string>
     <string name="settings_pred_contacts_summary_disabled">Krever tillatelse til kontakter</string>
     <string name="settings_pred_contacts_summary_enabled">Inkluder kontaktnavn i forslagene</string>
     <string name="settings_pred_contacts_title">Foreslå fra kontakter</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Emoji-forslag</string>
     <string name="settings_pred_flick_animation_summary">Animer ordet oppover når du godtar et forslag med et hurtigsveip</string>
     <string name="settings_pred_flick_animation_title">Vis animasjon når forslag godtas med hurtigsveip</string>
-    <string name="settings_pred_force_suggestions_summary">Vis forslagsraden også i apper som ber tastaturet om å skjule den (f.eks. Google Keep). Gjelder ikke passordfelt.</string>
+    <string name="settings_pred_force_suggestions_summary">Vis forslagsraden også i apper som ber tastaturet om å skjule den. Gjelder ikke passordfelt.</string>
     <string name="settings_pred_force_suggestions_title">Tving frem forslag</string>
     <string name="settings_pred_grant_permission">Gi tillatelse</string>
     <string name="settings_pred_next_word_summary">Foreslå neste ord basert på sammenhengen</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Ta med ord lært fra skrivingen din</string>
     <string name="settings_pred_personalized_title">Foreslå lærte ord</string>
     <string name="settings_pred_inline_autofill_title">Forslag fra autofyll</string>
-    <string name="settings_pred_inline_autofill_summary">Vis passord, adresser og andre lagrede opplysninger fra autofyll-tjenesten din i forslagsraden</string>
+    <string name="settings_pred_inline_autofill_summary">Vis passord, adresser og andre lagrede opplysninger fra autofyll-tjenesten din</string>
     <string name="settings_pred_show_predictions_summary">Vis ordforslag mens du skriver</string>
     <string name="settings_pred_show_predictions_title">Slå på forslag</string>
     <string name="settings_anim_category_scale">Skaleringsparametere</string>

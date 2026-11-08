@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Pri uporabi fizične tipkovnice prikaži oznako Shift/Alt v vrstici stanja</string>
     <string name="settings_pred_block_offensive_summary">Skrij morebitno žaljive besede pri glasovnem narekovanju</string>
     <string name="settings_pred_block_offensive_title">Blokiraj žaljive besede</string>
-    <string name="settings_pred_contacts_permission_summary">Dodelite dovoljenje za stike, da bodo med tipkanjem predlagana imena stikov in e-poštni naslovi</string>
-    <string name="settings_pred_contacts_permission_title">Potrebno je dovoljenje za stike</string>
+    <string name="settings_pred_contacts_permission_summary">Dodelite dovoljenje, da bodo predlagana imena stikov in e-poštni naslovi</string>
+    <string name="settings_pred_contacts_permission_title">Dovoljenje za stike</string>
     <string name="settings_pred_contacts_summary_disabled">Potrebno je dovoljenje za stike</string>
     <string name="settings_pred_contacts_summary_enabled">Vključi imena stikov med predloge</string>
     <string name="settings_pred_contacts_title">Predlagaj iz stikov</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Predlogi emoji</string>
     <string name="settings_pred_flick_animation_summary">Ob potrditvi predloga s podrsanjem animiraj besedo navzgor</string>
     <string name="settings_pred_flick_animation_title">Prikaži animacijo potrditve s frcanjem</string>
-    <string name="settings_pred_force_suggestions_summary">Prikaži vrstico s predlogi tudi v aplikacijah, ki jo želijo skriti (npr. Google Keep). Ne velja za polja z geslom.</string>
+    <string name="settings_pred_force_suggestions_summary">Prikaži vrstico s predlogi tudi v aplikacijah, ki jo želijo skriti. Ne velja za polja z geslom.</string>
     <string name="settings_pred_force_suggestions_title">Vsili predloge</string>
     <string name="settings_pred_grant_permission">Dodeli dovoljenje</string>
     <string name="settings_pred_next_word_summary">Predlagaj naslednjo besedo glede na kontekst</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Vključi besede, naučene iz vašega tipkanja</string>
     <string name="settings_pred_personalized_title">Predlagaj naučene besede</string>
     <string name="settings_pred_inline_autofill_title">Predlogi samodejnega izpolnjevanja</string>
-    <string name="settings_pred_inline_autofill_summary">V vrstici s predlogi prikaži gesla, naslove in druge shranjene podatke iz storitve za samodejno izpolnjevanje</string>
+    <string name="settings_pred_inline_autofill_summary">Prikaži gesla, naslove in druge shranjene podatke iz storitve za samodejno izpolnjevanje</string>
     <string name="settings_pred_show_predictions_summary">Prikaz predlogov besed med tipkanjem</string>
     <string name="settings_pred_show_predictions_title">Omogoči predloge</string>
     <string name="settings_anim_category_scale">Parametri merila</string>

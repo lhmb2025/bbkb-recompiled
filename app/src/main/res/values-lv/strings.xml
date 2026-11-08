@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Izmantojot fizisko tastatūru, rādīt Shift/Alt modifikatora indikatoru statusa joslā</string>
     <string name="settings_pred_block_offensive_summary">Slēpt potenciāli aizskarošus vārdus, diktējot ar balsi</string>
     <string name="settings_pred_block_offensive_title">Bloķēt aizskarošus vārdus</string>
-    <string name="settings_pred_contacts_permission_summary">Piešķiriet kontaktpersonu atļauju, lai rakstīšanas laikā tiktu ieteikti kontaktpersonu vārdi un e-pasta adreses</string>
-    <string name="settings_pred_contacts_permission_title">Nepieciešama kontaktpersonu atļauja</string>
+    <string name="settings_pred_contacts_permission_summary">Piešķiriet atļauju, lai tiktu ieteikti kontaktpersonu vārdi un e-pasta adreses</string>
+    <string name="settings_pred_contacts_permission_title">Kontaktpersonu atļauja</string>
     <string name="settings_pred_contacts_summary_disabled">Nepieciešama kontaktpersonu atļauja</string>
     <string name="settings_pred_contacts_summary_enabled">Iekļaut kontaktpersonu vārdus ieteikumos</string>
     <string name="settings_pred_contacts_title">Ieteikt no kontaktpersonām</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Emocijzīmju ieteikumi</string>
     <string name="settings_pred_flick_animation_summary">Animēt vārdu augšup, kad ieteikums tiek apstiprināts ar vilkšanu</string>
     <string name="settings_pred_flick_animation_title">Rādīt īsa vilciena apstiprinājuma animāciju</string>
-    <string name="settings_pred_force_suggestions_summary">Rādīt ieteikumu joslu arī lietotnēs, kas lūdz tastatūrai to paslēpt (piem., Google Keep). Neattiecas uz paroles laukiem.</string>
+    <string name="settings_pred_force_suggestions_summary">Rādīt ieteikumu joslu arī lietotnēs, kas lūdz tastatūrai to paslēpt. Neattiecas uz paroles laukiem.</string>
     <string name="settings_pred_force_suggestions_title">Piespiedu ieteikumi</string>
     <string name="settings_pred_grant_permission">Piešķirt atļauju</string>
     <string name="settings_pred_next_word_summary">Ieteikt nākamo vārdu, balstoties uz kontekstu</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Iekļaut no jūsu rakstīšanas iemācītos vārdus</string>
     <string name="settings_pred_personalized_title">Ieteikt iemācītos vārdus</string>
     <string name="settings_pred_inline_autofill_title">Automātiskās aizpildes ieteikumi</string>
-    <string name="settings_pred_inline_autofill_summary">Rādīt paroles, adreses un citu saglabātu informāciju no automātiskās aizpildes pakalpojuma ieteikumu joslā</string>
+    <string name="settings_pred_inline_autofill_summary">Rādīt paroles, adreses un citu saglabātu informāciju no automātiskās aizpildes pakalpojuma</string>
     <string name="settings_pred_show_predictions_summary">Rādīt vārdu ieteikumus rakstīšanas laikā</string>
     <string name="settings_pred_show_predictions_title">Ieslēgt ieteikumus</string>
     <string name="settings_anim_category_scale">Mēroga parametri</string>

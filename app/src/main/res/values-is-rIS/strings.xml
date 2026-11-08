@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Sýna Shift/Alt-breytilykilvísi á stöðustiku þegar vélbúnaðarlyklaborð er notað</string>
     <string name="settings_pred_block_offensive_summary">Fela orð sem gætu verið móðgandi við raddupplestur</string>
     <string name="settings_pred_block_offensive_title">Loka á móðgandi orð</string>
-    <string name="settings_pred_contacts_permission_summary">Veittu heimild fyrir tengiliði til að stinga upp á nöfnum tengiliða og netföngum meðan þú skrifar</string>
-    <string name="settings_pred_contacts_permission_title">Heimild fyrir tengiliði nauðsynleg</string>
+    <string name="settings_pred_contacts_permission_summary">Veittu heimild til að stinga upp á nöfnum tengiliða og netföngum</string>
+    <string name="settings_pred_contacts_permission_title">Heimild fyrir tengiliði</string>
     <string name="settings_pred_contacts_summary_disabled">Heimild fyrir tengiliði nauðsynleg</string>
     <string name="settings_pred_contacts_summary_enabled">Hafa nöfn tengiliða með í tillögum</string>
     <string name="settings_pred_contacts_title">Stinga upp á úr tengiliðum</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Emoji-tillögur</string>
     <string name="settings_pred_flick_animation_summary">Hreyfa orðið upp á við þegar tillaga er staðfest með stroki</string>
     <string name="settings_pred_flick_animation_title">Sýna hreyfimynd við snöggstrok</string>
-    <string name="settings_pred_force_suggestions_summary">Sýna tillögustikuna líka í forritum sem biðja lyklaborðið um að fela hana (t.d. Google Keep). Á ekki við um lykilorðareiti.</string>
+    <string name="settings_pred_force_suggestions_summary">Sýna tillögustikuna líka í forritum sem biðja lyklaborðið um að fela hana. Á ekki við um lykilorðareiti.</string>
     <string name="settings_pred_force_suggestions_title">Þvinga fram tillögur</string>
     <string name="settings_pred_grant_permission">Veita heimild</string>
     <string name="settings_pred_next_word_summary">Stinga upp á næsta orði út frá samhengi</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Taka með orð sem lærðust af innslætti þínum</string>
     <string name="settings_pred_personalized_title">Stinga upp á lærðum orðum</string>
     <string name="settings_pred_inline_autofill_title">Tillögur sjálfvirkrar útfyllingar</string>
-    <string name="settings_pred_inline_autofill_summary">Sýna lykilorð, heimilisföng og aðrar vistaðar upplýsingar úr sjálfvirkri útfyllingu á tillögustikunni</string>
+    <string name="settings_pred_inline_autofill_summary">Sýna lykilorð, heimilisföng og aðrar vistaðar upplýsingar úr sjálfvirkri útfyllingu</string>
     <string name="settings_pred_show_predictions_summary">Sýna orðatillögur meðan þú skrifar</string>
     <string name="settings_pred_show_predictions_title">Kveikja á tillögum</string>
     <string name="settings_anim_category_scale">Breytur kvarða</string>

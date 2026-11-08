@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Pokazuj wskaźnik modyfikatorów Shift/Alt na pasku stanu podczas korzystania z klawiatury fizycznej</string>
     <string name="settings_pred_block_offensive_summary">Ukrywaj potencjalnie obraźliwe słowa podczas dyktowania głosowego</string>
     <string name="settings_pred_block_offensive_title">Blokuj obraźliwe słowa</string>
-    <string name="settings_pred_contacts_permission_summary">Przyznaj uprawnienie do kontaktów, aby podpowiadać nazwy kontaktów i adresy e-mail podczas pisania</string>
-    <string name="settings_pred_contacts_permission_title">Wymagane uprawnienie do kontaktów</string>
+    <string name="settings_pred_contacts_permission_summary">Przyznaj uprawnienie, aby podpowiadać nazwy kontaktów i adresy e-mail</string>
+    <string name="settings_pred_contacts_permission_title">Uprawnienie do kontaktów</string>
     <string name="settings_pred_contacts_summary_disabled">Wymagane uprawnienie do kontaktów</string>
     <string name="settings_pred_contacts_summary_enabled">Uwzględniaj nazwy kontaktów w sugestiach</string>
     <string name="settings_pred_contacts_title">Podpowiadaj z kontaktów</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Sugestie emotikonów</string>
     <string name="settings_pred_flick_animation_summary">Animuj słowo ku górze przy zatwierdzaniu sugestii przesunięciem</string>
     <string name="settings_pred_flick_animation_title">Pokazuj animację zatwierdzania machnięciem</string>
-    <string name="settings_pred_force_suggestions_summary">Pokazuj pasek sugestii nawet w aplikacjach, które proszą klawiaturę o jego ukrycie (np. Google Keep). Nie dotyczy pól hasła.</string>
+    <string name="settings_pred_force_suggestions_summary">Pokazuj pasek sugestii nawet w aplikacjach, które proszą klawiaturę o jego ukrycie. Nie dotyczy pól hasła.</string>
     <string name="settings_pred_force_suggestions_title">Wymuszaj sugestie</string>
     <string name="settings_pred_grant_permission">Przyznaj uprawnienie</string>
     <string name="settings_pred_next_word_summary">Podpowiadaj następne słowo na podstawie kontekstu</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Uwzględniaj słowa nauczone z Twojego pisania</string>
     <string name="settings_pred_personalized_title">Podpowiadaj nauczone słowa</string>
     <string name="settings_pred_inline_autofill_title">Sugestie autouzupełniania</string>
-    <string name="settings_pred_inline_autofill_summary">Pokazuj na pasku sugestii hasła, adresy i inne zapisane dane z usługi autouzupełniania</string>
+    <string name="settings_pred_inline_autofill_summary">Pokazuj hasła, adresy i inne zapisane dane z usługi autouzupełniania</string>
     <string name="settings_pred_show_predictions_summary">Wyświetlaj sugestie słów podczas pisania</string>
     <string name="settings_pred_show_predictions_title">Włącz podpowiedzi</string>
     <string name="settings_anim_category_scale">Parametry skali</string>

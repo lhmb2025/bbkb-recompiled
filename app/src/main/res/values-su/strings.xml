@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Némbongkeun tanda Shift/Alt dina bar status waktu maké papan tombol fisik</string>
     <string name="settings_pred_block_offensive_summary">Tutupan kecap nu bisa matak nyigeung waktu diktasi ku sora</string>
     <string name="settings_pred_block_offensive_title">Halangan kecap nu nyigeung</string>
-    <string name="settings_pred_contacts_permission_summary">Pasihan idin kontak sangkan ngaran kontak jeung alamat surélék bisa disarankeun sabot ngetik</string>
-    <string name="settings_pred_contacts_permission_title">Butuh Idin Kontak</string>
+    <string name="settings_pred_contacts_permission_summary">Pasihan idin sangkan ngaran kontak jeung alamat surélék bisa disarankeun</string>
+    <string name="settings_pred_contacts_permission_title">Idin kontak</string>
     <string name="settings_pred_contacts_summary_disabled">Butuh idin kontak</string>
     <string name="settings_pred_contacts_summary_enabled">Asupkeun ngaran kontak kana saran</string>
     <string name="settings_pred_contacts_title">Saran ti kontak</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Saran emoji</string>
     <string name="settings_pred_flick_animation_summary">Ngaanimasikeun kecap ka luhur waktu saran ditarima ku sentilan</string>
     <string name="settings_pred_flick_animation_title">Témbongkeun animasi panarimaan ku sentilan</string>
-    <string name="settings_pred_force_suggestions_summary">Témbongkeun bar saran sanajan dina aplikasi nu ménta papan tombol nyumputkeunana (contona Google Keep). Teu lumaku pikeun kolom sandi.</string>
+    <string name="settings_pred_force_suggestions_summary">Témbongkeun bar saran sanajan dina aplikasi nu ménta papan tombol nyumputkeunana. Teu lumaku pikeun kolom sandi.</string>
     <string name="settings_pred_force_suggestions_title">Paksa saran</string>
     <string name="settings_pred_grant_permission">Pasihan Idin</string>
     <string name="settings_pred_next_word_summary">Sarankeun kecap satuluyna dumasar kontéks</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Kaasupkeun kecap nu diajar tina ketikan anjeun</string>
     <string name="settings_pred_personalized_title">Sarankeun kecap nu diajar</string>
     <string name="settings_pred_inline_autofill_title">Saran eusi otomatis</string>
-    <string name="settings_pred_inline_autofill_summary">Témbongkeun sandi, alamat, jeung data séjén nu disimpen ku layanan eusi otomatis anjeun dina bar saran</string>
+    <string name="settings_pred_inline_autofill_summary">Témbongkeun sandi, alamat, jeung data séjén nu disimpen ku layanan eusi otomatis anjeun</string>
     <string name="settings_pred_show_predictions_summary">Témbongkeun saran kecap sabot ngetik</string>
     <string name="settings_pred_show_predictions_title">Aktipkeun saran</string>
     <string name="settings_anim_category_scale">Paraméter skala</string>

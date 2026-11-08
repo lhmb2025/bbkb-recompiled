@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Paparkan penunjuk pengubah Shift/Alt dalam bar status semasa menggunakan papan kekunci fizikal</string>
     <string name="settings_pred_block_offensive_summary">Sembunyikan perkataan yang berkemungkinan menyinggung semasa imlak suara</string>
     <string name="settings_pred_block_offensive_title">Sekat perkataan menyinggung</string>
-    <string name="settings_pred_contacts_permission_summary">Berikan kebenaran kenalan untuk mencadangkan nama kenalan dan alamat e-mel semasa menaip</string>
-    <string name="settings_pred_contacts_permission_title">Kebenaran Kenalan Diperlukan</string>
+    <string name="settings_pred_contacts_permission_summary">Berikan kebenaran untuk mencadangkan nama kenalan dan alamat e-mel</string>
+    <string name="settings_pred_contacts_permission_title">Kebenaran kenalan</string>
     <string name="settings_pred_contacts_summary_disabled">Kebenaran kenalan diperlukan</string>
     <string name="settings_pred_contacts_summary_enabled">Sertakan nama kenalan dalam cadangan</string>
     <string name="settings_pred_contacts_title">Cadangkan daripada kenalan</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Cadangan emoji</string>
     <string name="settings_pred_flick_animation_summary">Animasikan perkataan ke atas apabila memasukkan cadangan dengan leretan</string>
     <string name="settings_pred_flick_animation_title">Tunjukkan animasi petikan masuk</string>
-    <string name="settings_pred_force_suggestions_summary">Tunjukkan jalur cadangan walaupun dalam apl yang meminta papan kekunci menyembunyikannya (cth. Google Keep). Tidak digunakan pada medan kata laluan.</string>
+    <string name="settings_pred_force_suggestions_summary">Tunjukkan jalur cadangan walaupun dalam apl yang meminta papan kekunci menyembunyikannya. Tidak digunakan pada medan kata laluan.</string>
     <string name="settings_pred_force_suggestions_title">Paksa cadangan</string>
     <string name="settings_pred_grant_permission">Berikan Kebenaran</string>
     <string name="settings_pred_next_word_summary">Cadangkan perkataan seterusnya berdasarkan konteks</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Sertakan perkataan yang dipelajari daripada taipan anda</string>
     <string name="settings_pred_personalized_title">Cadangkan perkataan yang dipelajari</string>
     <string name="settings_pred_inline_autofill_title">Cadangan autoisi</string>
-    <string name="settings_pred_inline_autofill_summary">Tunjukkan kata laluan, alamat dan butiran tersimpan lain daripada perkhidmatan autoisi anda pada bar cadangan</string>
+    <string name="settings_pred_inline_autofill_summary">Tunjukkan kata laluan, alamat dan butiran tersimpan lain daripada perkhidmatan autoisi anda</string>
     <string name="settings_pred_show_predictions_summary">Paparkan cadangan perkataan semasa menaip</string>
     <string name="settings_pred_show_predictions_title">Dayakan cadangan</string>
     <string name="settings_anim_category_scale">Parameter skala</string>

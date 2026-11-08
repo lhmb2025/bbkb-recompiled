@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Биет гар ашиглах үед Shift/Alt товчны заагчийг төлөвийн мөрөнд харуулах</string>
     <string name="settings_pred_block_offensive_summary">Дуугаар бичүүлэхэд доромжлол агуулж болзошгүй үгсийг нуух</string>
     <string name="settings_pred_block_offensive_title">Доромжилсон үг хориглох</string>
-    <string name="settings_pred_contacts_permission_summary">Бичих үед харилцагчийн нэр, имэйл хаяг санал болгохын тулд харилцагчийн зөвшөөрөл олгоно уу</string>
-    <string name="settings_pred_contacts_permission_title">Харилцагчийн зөвшөөрөл шаардлагатай</string>
+    <string name="settings_pred_contacts_permission_summary">Харилцагчийн нэр, имэйл хаяг санал болгохын тулд зөвшөөрөл олгоно уу</string>
+    <string name="settings_pred_contacts_permission_title">Харилцагчийн зөвшөөрөл</string>
     <string name="settings_pred_contacts_summary_disabled">Харилцагчийн зөвшөөрөл шаардлагатай</string>
     <string name="settings_pred_contacts_summary_enabled">Харилцагчийн нэрийг саналд оруулах</string>
     <string name="settings_pred_contacts_title">Харилцагчдаас санал болгох</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Инээмсэглэлийн санал</string>
     <string name="settings_pred_flick_animation_summary">Саналыг хурдан шудралтаар оруулахад үгийг дээш хөдөлгөж үзүүлэх</string>
     <string name="settings_pred_flick_animation_title">Хурдан шудралтын хөдөлгөөнт дүрс харуулах</string>
-    <string name="settings_pred_force_suggestions_summary">Саналын мөрийг нуухыг хүсдэг аппуудад ч (жишээ нь Google Keep) уг мөрийг харуулах. Нууц үгийн талбарт хамаарахгүй.</string>
+    <string name="settings_pred_force_suggestions_summary">Саналын мөрийг нуухыг хүсдэг аппуудад ч уг мөрийг харуулах. Нууц үгийн талбарт хамаарахгүй.</string>
     <string name="settings_pred_force_suggestions_title">Саналыг албадан харуулах</string>
     <string name="settings_pred_grant_permission">Зөвшөөрөл олгох</string>
     <string name="settings_pred_next_word_summary">Утга агуулгад тулгуурлан дараагийн үгийг санал болгох</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Таны бичилтээс сурсан үгсийг оруулах</string>
     <string name="settings_pred_personalized_title">Сурсан үгсийг санал болгох</string>
     <string name="settings_pred_inline_autofill_title">Автомат бөглөлтийн санал</string>
-    <string name="settings_pred_inline_autofill_summary">Автомат бөглөх үйлчилгээнд хадгалсан нууц үг, хаяг болон бусад мэдээллийг саналын мөрөнд харуулах</string>
+    <string name="settings_pred_inline_autofill_summary">Автомат бөглөх үйлчилгээнд хадгалсан нууц үг, хаяг болон бусад мэдээллийг харуулах</string>
     <string name="settings_pred_show_predictions_summary">Бичих үед үгийн саналыг харуулах</string>
     <string name="settings_pred_show_predictions_title">Санал болгохыг идэвхжүүлэх</string>
     <string name="settings_anim_category_scale">Масштабын үзүүлэлт</string>

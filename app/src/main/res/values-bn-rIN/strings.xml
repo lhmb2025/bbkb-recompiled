@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">ফিজিক্যাল কীবোর্ড ব্যবহারের সময় স্ট্যাটাস বারে Shift/Alt মডিফায়ারের নির্দেশক দেখান</string>
     <string name="settings_pred_block_offensive_summary">ভয়েস ডিকটেশনে আপত্তিকর হতে পারে এমন শব্দ লুকান</string>
     <string name="settings_pred_block_offensive_title">আপত্তিকর শব্দ আটকান</string>
-    <string name="settings_pred_contacts_permission_summary">টাইপ করার সময় পরিচিতির নাম ও ইমেল ঠিকানা প্রস্তাব করতে পরিচিতির অনুমতি দিন</string>
-    <string name="settings_pred_contacts_permission_title">পরিচিতির অনুমতি প্রয়োজন</string>
+    <string name="settings_pred_contacts_permission_summary">পরিচিতির নাম ও ইমেল ঠিকানা প্রস্তাব করতে অনুমতি দিন</string>
+    <string name="settings_pred_contacts_permission_title">পরিচিতির অনুমতি</string>
     <string name="settings_pred_contacts_summary_disabled">পরিচিতির অনুমতি প্রয়োজন</string>
     <string name="settings_pred_contacts_summary_enabled">পরামর্শে পরিচিতির নাম অন্তর্ভুক্ত করুন</string>
     <string name="settings_pred_contacts_title">পরিচিতি থেকে পরামর্শ দিন</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">ইমোজি পরামর্শ</string>
     <string name="settings_pred_flick_animation_summary">সোয়াইপ করে পরামর্শ নেওয়ার সময় শব্দটিকে উপরের দিকে অ্যানিমেট করুন</string>
     <string name="settings_pred_flick_animation_title">ফ্লিক অ্যানিমেশন দেখান</string>
-    <string name="settings_pred_force_suggestions_summary">যেসব অ্যাপ কীবোর্ডকে পরামর্শ বার লুকাতে বলে (যেমন Google Keep) সেখানেও তা দেখান। পাসওয়ার্ডের ক্ষেত্রে প্রযোজ্য নয়।</string>
+    <string name="settings_pred_force_suggestions_summary">যেসব অ্যাপ কীবোর্ডকে পরামর্শ বার লুকাতে বলে সেখানেও তা দেখান। পাসওয়ার্ডের ক্ষেত্রে প্রযোজ্য নয়।</string>
     <string name="settings_pred_force_suggestions_title">জোর করে পরামর্শ দেখান</string>
     <string name="settings_pred_grant_permission">অনুমতি দিন</string>
     <string name="settings_pred_next_word_summary">প্রসঙ্গ অনুযায়ী পরবর্তী শব্দের পরামর্শ দিন</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">আপনার টাইপিং থেকে শেখা শব্দ অন্তর্ভুক্ত করুন</string>
     <string name="settings_pred_personalized_title">শেখা শব্দ প্রস্তাব করুন</string>
     <string name="settings_pred_inline_autofill_title">অটোফিল পরামর্শ</string>
-    <string name="settings_pred_inline_autofill_summary">আপনার অটোফিল পরিষেবা থেকে পাসওয়ার্ড, ঠিকানা ও অন্যান্য সংরক্ষিত তথ্য পরামর্শ বারে দেখান</string>
+    <string name="settings_pred_inline_autofill_summary">আপনার অটোফিল পরিষেবা থেকে পাসওয়ার্ড, ঠিকানা ও অন্যান্য সংরক্ষিত তথ্য দেখান</string>
     <string name="settings_pred_show_predictions_summary">টাইপ করার সময় শব্দের পরামর্শ দেখান</string>
     <string name="settings_pred_show_predictions_title">সাজেশন চালু করুন</string>
     <string name="settings_anim_category_scale">স্কেল প্যারামিটার</string>

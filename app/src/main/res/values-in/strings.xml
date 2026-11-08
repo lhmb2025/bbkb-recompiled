@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Tampilkan indikator pengubah Shift/Alt di bilah status saat menggunakan keyboard fisik</string>
     <string name="settings_pred_block_offensive_summary">Sembunyikan kata yang berpotensi menyinggung saat dikte suara</string>
     <string name="settings_pred_block_offensive_title">Blokir kata yang menyinggung</string>
-    <string name="settings_pred_contacts_permission_summary">Berikan izin kontak untuk menyarankan nama kontak dan alamat email saat mengetik</string>
-    <string name="settings_pred_contacts_permission_title">Izin Kontak Diperlukan</string>
+    <string name="settings_pred_contacts_permission_summary">Berikan izin untuk menyarankan nama kontak dan alamat email</string>
+    <string name="settings_pred_contacts_permission_title">Izin kontak</string>
     <string name="settings_pred_contacts_summary_disabled">Izin kontak diperlukan</string>
     <string name="settings_pred_contacts_summary_enabled">Sertakan nama kontak dalam saran</string>
     <string name="settings_pred_contacts_title">Sarankan dari kontak</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Saran emoji</string>
     <string name="settings_pred_flick_animation_summary">Animasikan kata ke atas saat menerapkan saran dengan gesekan</string>
     <string name="settings_pred_flick_animation_title">Tampilkan animasi sentil penerapan</string>
-    <string name="settings_pred_force_suggestions_summary">Tampilkan bilah saran bahkan di aplikasi yang meminta keyboard menyembunyikannya (mis. Google Keep). Tidak berlaku untuk kolom sandi.</string>
+    <string name="settings_pred_force_suggestions_summary">Tampilkan bilah saran bahkan di aplikasi yang meminta keyboard menyembunyikannya. Tidak berlaku untuk kolom sandi.</string>
     <string name="settings_pred_force_suggestions_title">Paksa tampilkan saran</string>
     <string name="settings_pred_grant_permission">Berikan Izin</string>
     <string name="settings_pred_next_word_summary">Sarankan kata berikutnya berdasarkan konteks</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Sertakan kata yang dipelajari dari ketikan Anda</string>
     <string name="settings_pred_personalized_title">Sarankan kata yang dipelajari</string>
     <string name="settings_pred_inline_autofill_title">Saran isi otomatis</string>
-    <string name="settings_pred_inline_autofill_summary">Tampilkan sandi, alamat, dan detail tersimpan lainnya dari layanan isi otomatis pada bilah saran</string>
+    <string name="settings_pred_inline_autofill_summary">Tampilkan sandi, alamat, dan detail tersimpan lainnya dari layanan isi otomatis</string>
     <string name="settings_pred_show_predictions_summary">Tampilkan saran kata saat mengetik</string>
     <string name="settings_pred_show_predictions_title">Aktifkan saran</string>
     <string name="settings_anim_category_scale">Parameter skala</string>

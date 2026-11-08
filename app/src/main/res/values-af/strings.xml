@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Wys die Shift/Alt-wyseraanduier in die statusbalk wanneer die fisiese toetsbord gebruik word</string>
     <string name="settings_pred_block_offensive_summary">Maskeer moontlik aanstootlike woorde in stemdiktering</string>
     <string name="settings_pred_block_offensive_title">Blokkeer aanstootlike woorde</string>
-    <string name="settings_pred_contacts_permission_summary">Verleen kontaktoestemming sodat kontakname en e-posadresse voorgestel kan word terwyl jy tik</string>
-    <string name="settings_pred_contacts_permission_title">Kontaktoestemming vereis</string>
+    <string name="settings_pred_contacts_permission_summary">Verleen toestemming sodat kontakname en e-posadresse voorgestel kan word</string>
+    <string name="settings_pred_contacts_permission_title">Kontaktoestemming</string>
     <string name="settings_pred_contacts_summary_disabled">Kontaktoestemming vereis</string>
     <string name="settings_pred_contacts_summary_enabled">Sluit kontakname by voorstelle in</string>
     <string name="settings_pred_contacts_title">Stel voor uit kontakte</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Emojivoorstelle</string>
     <string name="settings_pred_flick_animation_summary">Animeer die woord opwaarts wanneer ’n voorstel met ’n veeg aanvaar word</string>
     <string name="settings_pred_flick_animation_title">Wys animasie wanneer met ’n swiep aanvaar word</string>
-    <string name="settings_pred_force_suggestions_summary">Wys die voorstelstrook selfs in programme wat vra dat dit versteek word (bv. Google Keep). Geld nie vir wagwoordvelde nie.</string>
+    <string name="settings_pred_force_suggestions_summary">Wys die voorstelstrook selfs in programme wat vra dat dit versteek word. Geld nie vir wagwoordvelde nie.</string>
     <string name="settings_pred_force_suggestions_title">Dwing voorstelle af</string>
     <string name="settings_pred_grant_permission">Verleen toestemming</string>
     <string name="settings_pred_next_word_summary">Stel die volgende woord voor op grond van die konteks</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Sluit woorde in wat uit jou tikwerk geleer is</string>
     <string name="settings_pred_personalized_title">Stel geleerde woorde voor</string>
     <string name="settings_pred_inline_autofill_title">Outovul-voorstelle</string>
-    <string name="settings_pred_inline_autofill_summary">Wys wagwoorde, adresse en ander gebergde besonderhede uit jou outovuldiens op die voorstelstrook</string>
+    <string name="settings_pred_inline_autofill_summary">Wys wagwoorde, adresse en ander gebergde besonderhede uit jou outovuldiens</string>
     <string name="settings_pred_show_predictions_summary">Wys woordvoorstelle terwyl jy tik</string>
     <string name="settings_pred_show_predictions_title">Aktiveer voorstelle</string>
     <string name="settings_anim_category_scale">Skaalparameters</string>

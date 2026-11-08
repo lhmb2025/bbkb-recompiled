@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">使用實體鍵盤時，在狀態列顯示 Shift/Alt 輔助按鍵指示</string>
     <string name="settings_pred_block_offensive_summary">語音輸入時隱藏可能令人反感的字詞</string>
     <string name="settings_pred_block_offensive_title">封鎖令人反感的字詞</string>
-    <string name="settings_pred_contacts_permission_summary">授予聯絡人權限，以便在輸入時建議聯絡人名稱和電郵地址</string>
-    <string name="settings_pred_contacts_permission_title">需要聯絡人權限</string>
+    <string name="settings_pred_contacts_permission_summary">授予權限，以便建議聯絡人名稱和電郵地址</string>
+    <string name="settings_pred_contacts_permission_title">聯絡人權限</string>
     <string name="settings_pred_contacts_summary_disabled">需要聯絡人權限</string>
     <string name="settings_pred_contacts_summary_enabled">將聯絡人名稱納入建議字詞</string>
     <string name="settings_pred_contacts_title">從聯絡人建議字詞</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Emoji 建議</string>
     <string name="settings_pred_flick_animation_summary">以滑動確認建議字詞時，讓字詞向上飛出</string>
     <string name="settings_pred_flick_animation_title">顯示輕掃確認動畫</string>
-    <string name="settings_pred_force_suggestions_summary">即使應用程式要求鍵盤隱藏建議列 (例如 Google Keep)，仍然顯示建議列。此設定不適用於密碼欄位。</string>
+    <string name="settings_pred_force_suggestions_summary">即使應用程式要求鍵盤隱藏建議列，仍然顯示建議列。此設定不適用於密碼欄位。</string>
     <string name="settings_pred_force_suggestions_title">強制顯示建議字詞</string>
     <string name="settings_pred_grant_permission">授予權限</string>
     <string name="settings_pred_next_word_summary">根據上文建議下一個字詞</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">包含從輸入中學習的字詞</string>
     <string name="settings_pred_personalized_title">建議已學習的字詞</string>
     <string name="settings_pred_inline_autofill_title">自動填入建議</string>
-    <string name="settings_pred_inline_autofill_summary">在建議列顯示自動填入服務儲存的密碼、地址和其他資料</string>
+    <string name="settings_pred_inline_autofill_summary">顯示自動填入服務儲存的密碼、地址和其他資料</string>
     <string name="settings_pred_show_predictions_summary">輸入時顯示建議字詞</string>
     <string name="settings_pred_show_predictions_title">啟用建議</string>
     <string name="settings_anim_category_scale">比例參數</string>

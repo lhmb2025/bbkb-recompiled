@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">نمایش نشانگر Shift/Alt در نوار وضعیت هنگام استفاده از صفحه کلید فیزیکی</string>
     <string name="settings_pred_block_offensive_summary">پنهان کردن کلمات احتمالاً توهین‌آمیز در دیکته صوتی</string>
     <string name="settings_pred_block_offensive_title">مسدود کردن کلمه‌های توهین‌آمیز</string>
-    <string name="settings_pred_contacts_permission_summary">برای پیشنهاد نام مخاطبین و نشانی‌های ایمیل هنگام تایپ، مجوز مخاطبین را بدهید</string>
-    <string name="settings_pred_contacts_permission_title">مجوز مخاطبین لازم است</string>
+    <string name="settings_pred_contacts_permission_summary">برای پیشنهاد نام مخاطبین و نشانی‌های ایمیل، مجوز را بدهید</string>
+    <string name="settings_pred_contacts_permission_title">مجوز مخاطبین</string>
     <string name="settings_pred_contacts_summary_disabled">مجوز مخاطبین لازم است</string>
     <string name="settings_pred_contacts_summary_enabled">گنجاندن نام مخاطبین در پیشنهادها</string>
     <string name="settings_pred_contacts_title">پیشنهاد از مخاطبین</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">پیشنهادهای Emoji</string>
     <string name="settings_pred_flick_animation_summary">حرکت دادن کلمه به بالا هنگام تأیید پیشنهاد با کشیدن انگشت</string>
     <string name="settings_pred_flick_animation_title">نمایش پویانمایی تأیید با تلنگر</string>
-    <string name="settings_pred_force_suggestions_summary">نمایش نوار پیشنهادها حتی در برنامه‌هایی که از صفحه کلید می‌خواهند آن را پنهان کند (مانند Google Keep). برای قسمت‌های گذرواژه اعمال نمی‌شود.</string>
+    <string name="settings_pred_force_suggestions_summary">نمایش نوار پیشنهادها حتی در برنامه‌هایی که از صفحه کلید می‌خواهند آن را پنهان کند. برای قسمت‌های گذرواژه اعمال نمی‌شود.</string>
     <string name="settings_pred_force_suggestions_title">اجبار به نمایش پیشنهادها</string>
     <string name="settings_pred_grant_permission">دادن مجوز</string>
     <string name="settings_pred_next_word_summary">پیشنهاد کلمه بعدی بر پایه بافت متن</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">شامل کردن کلماتی که از تایپ شما یاد گرفته شده‌اند</string>
     <string name="settings_pred_personalized_title">پیشنهاد کلمات یادگرفته‌شده</string>
     <string name="settings_pred_inline_autofill_title">پیشنهادهای تکمیل خودکار</string>
-    <string name="settings_pred_inline_autofill_summary">نمایش گذرواژه‌ها، نشانی‌ها و دیگر اطلاعات ذخیره‌شده از سرویس تکمیل خودکار شما روی نوار پیشنهادها</string>
+    <string name="settings_pred_inline_autofill_summary">نمایش گذرواژه‌ها، نشانی‌ها و دیگر اطلاعات ذخیره‌شده از سرویس تکمیل خودکار شما</string>
     <string name="settings_pred_show_predictions_summary">نمایش پیشنهاد کلمه هنگام تایپ</string>
     <string name="settings_pred_show_predictions_title">فعال‌کردن پیشنهادها</string>
     <string name="settings_anim_category_scale">پارامترهای مقیاس</string>

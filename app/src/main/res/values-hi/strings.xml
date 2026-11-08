@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">भौतिक कीबोर्ड का उपयोग करते समय स्टेटस बार में Shift/Alt मॉडिफ़ायर संकेतक दिखाएं</string>
     <string name="settings_pred_block_offensive_summary">बोलकर लिखते समय संभावित आपत्तिजनक शब्द छिपाएं</string>
     <string name="settings_pred_block_offensive_title">आपत्तिजनक शब्द ब्लॉक करें</string>
-    <string name="settings_pred_contacts_permission_summary">टाइप करते समय संपर्क नाम और ईमेल पते सुझाने के लिए संपर्क अनुमति दें</string>
-    <string name="settings_pred_contacts_permission_title">संपर्क अनुमति आवश्यक</string>
+    <string name="settings_pred_contacts_permission_summary">संपर्क नाम और ईमेल पते सुझाने के लिए अनुमति दें</string>
+    <string name="settings_pred_contacts_permission_title">संपर्क अनुमति</string>
     <string name="settings_pred_contacts_summary_disabled">संपर्क अनुमति आवश्यक</string>
     <string name="settings_pred_contacts_summary_enabled">सुझावों में संपर्क नाम शामिल करें</string>
     <string name="settings_pred_contacts_title">संपर्कों से सुझाव दें</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">ईमोजी सुझाव</string>
     <string name="settings_pred_flick_animation_summary">स्वाइप से सुझाव लागू करने पर शब्द को ऊपर की ओर एनिमेट करें</string>
     <string name="settings_pred_flick_animation_title">फ़्लिक कमिट एनिमेशन दिखाएं</string>
-    <string name="settings_pred_force_suggestions_summary">उन ऐप्स में भी सुझाव पट्टी दिखाएं जो कीबोर्ड से उसे छिपाने को कहते हैं (जैसे Google Keep). पासवर्ड फ़ील्ड पर लागू नहीं होता.</string>
+    <string name="settings_pred_force_suggestions_summary">उन ऐप्स में भी सुझाव पट्टी दिखाएं जो कीबोर्ड से उसे छिपाने को कहते हैं. पासवर्ड फ़ील्ड पर लागू नहीं होता.</string>
     <string name="settings_pred_force_suggestions_title">सुझाव जबरन दिखाएं</string>
     <string name="settings_pred_grant_permission">अनुमति दें</string>
     <string name="settings_pred_next_word_summary">संदर्भ के आधार पर अगला शब्द सुझाएं</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">आपकी टाइपिंग से सीखे शब्द शामिल करें</string>
     <string name="settings_pred_personalized_title">सीखे शब्द सुझाएँ</string>
     <string name="settings_pred_inline_autofill_title">स्वतः भरण सुझाव</string>
-    <string name="settings_pred_inline_autofill_summary">अपनी स्वतः भरण सेवा से पासवर्ड, पते और अन्य सहेजे गए विवरण सुझाव बार पर दिखाएं</string>
+    <string name="settings_pred_inline_autofill_summary">अपनी स्वतः भरण सेवा से पासवर्ड, पते और अन्य सहेजे गए विवरण दिखाएं</string>
     <string name="settings_pred_show_predictions_summary">टाइप करते समय शब्द सुझाव दिखाएं</string>
     <string name="settings_pred_show_predictions_title">सुझाव चालू करें</string>
     <string name="settings_anim_category_scale">स्केल पैरामीटर</string>

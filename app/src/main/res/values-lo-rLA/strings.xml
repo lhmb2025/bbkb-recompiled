@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">ສະແດງຕົວບອກສະຖານະ Shift/Alt ໃນແຖບສະຖານະເມື່ອໃຊ້ແປ້ນພິມແທ້</string>
     <string name="settings_pred_block_offensive_summary">ເຊື່ອງຄຳທີ່ອາດບໍ່ສຸພາບເມື່ອປ້ອນດ້ວຍສຽງ</string>
     <string name="settings_pred_block_offensive_title">ບລັອກຄຳທີ່ບໍ່ສຸພາບ</string>
-    <string name="settings_pred_contacts_permission_summary">ໃຫ້ສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່ເພື່ອແນະນຳຊື່ ແລະ ທີ່ຢູ່ອີເມວໃນຂະນະທີ່ພິມ</string>
-    <string name="settings_pred_contacts_permission_title">ຕ້ອງການສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່</string>
+    <string name="settings_pred_contacts_permission_summary">ໃຫ້ສິດເພື່ອແນະນຳຊື່ຜູ້ຕິດຕໍ່ ແລະ ທີ່ຢູ່ອີເມວ</string>
+    <string name="settings_pred_contacts_permission_title">ສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່</string>
     <string name="settings_pred_contacts_summary_disabled">ຕ້ອງການສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່</string>
     <string name="settings_pred_contacts_summary_enabled">ລວມຊື່ຜູ້ຕິດຕໍ່ເຂົ້າໃນຄຳແນະນຳ</string>
     <string name="settings_pred_contacts_title">ແນະນຳຈາກລາຍຊື່ຜູ້ຕິດຕໍ່</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">ຄຳແນະນຳອີໂມຈິ</string>
     <string name="settings_pred_flick_animation_summary">ສະແດງພາບເຄື່ອນໄຫວຄຳຂຶ້ນເທິງເມື່ອຢືນຢັນຄຳແນະນຳດ້ວຍການສະບັດ</string>
     <string name="settings_pred_flick_animation_title">ສະແດງພາບເຄື່ອນໄຫວເມື່ອສະບັດຢືນຢັນ</string>
-    <string name="settings_pred_force_suggestions_summary">ສະແດງແຖບຄຳແນະນຳເຖິງແມ່ນຢູ່ໃນແອັບທີ່ຂໍໃຫ້ແປ້ນພິມເຊື່ອງມັນ (ເຊັ່ນ Google Keep). ບໍ່ນຳໃຊ້ກັບຊ່ອງລະຫັດຜ່ານ.</string>
+    <string name="settings_pred_force_suggestions_summary">ສະແດງແຖບຄຳແນະນຳເຖິງແມ່ນຢູ່ໃນແອັບທີ່ຂໍໃຫ້ແປ້ນພິມເຊື່ອງມັນ. ບໍ່ນຳໃຊ້ກັບຊ່ອງລະຫັດຜ່ານ.</string>
     <string name="settings_pred_force_suggestions_title">ບັງຄັບສະແດງຄຳແນະນຳ</string>
     <string name="settings_pred_grant_permission">ໃຫ້ສິດອະນຸຍາດ</string>
     <string name="settings_pred_next_word_summary">ແນະນຳຄຳຕໍ່ໄປຕາມບໍລິບົດ</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">ລວມຄຳທີ່ຮຽນຮູ້ຈາກການພິມຂອງທ່ານ</string>
     <string name="settings_pred_personalized_title">ແນະນຳຄຳທີ່ຮຽນຮູ້</string>
     <string name="settings_pred_inline_autofill_title">ຄຳແນະນຳການຕື່ມຂໍ້ມູນອັດຕະໂນມັດ</string>
-    <string name="settings_pred_inline_autofill_summary">ສະແດງລະຫັດຜ່ານ, ທີ່ຢູ່ ແລະ ລາຍລະອຽດອື່ນໆທີ່ບັນທຶກໄວ້ຈາກບໍລິການຕື່ມຂໍ້ມູນອັດຕະໂນມັດເທິງແຖບຄຳແນະນຳ</string>
+    <string name="settings_pred_inline_autofill_summary">ສະແດງລະຫັດຜ່ານ, ທີ່ຢູ່ ແລະ ລາຍລະອຽດອື່ນໆທີ່ບັນທຶກໄວ້ຈາກບໍລິການຕື່ມຂໍ້ມູນອັດຕະໂນມັດ</string>
     <string name="settings_pred_show_predictions_summary">ສະແດງຄຳແນະນຳໃນຂະນະທີ່ພິມ</string>
     <string name="settings_pred_show_predictions_title">ເປີດຄຳແນະນຳ</string>
     <string name="settings_anim_category_scale">ພາລາມິເຕີອັດຕາສ່ວນ</string>

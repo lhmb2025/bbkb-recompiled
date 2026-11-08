@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Afișează indicatorul modificatorilor Shift/Alt în bara de stare când folosiți tastatura fizică</string>
     <string name="settings_pred_block_offensive_summary">Ascunde cuvintele potențial ofensatoare în dictarea vocală</string>
     <string name="settings_pred_block_offensive_title">Blocați cuvintele ofensatoare</string>
-    <string name="settings_pred_contacts_permission_summary">Acordați permisiunea pentru contacte, pentru a sugera nume de contacte și adrese de e-mail în timp ce tastați</string>
-    <string name="settings_pred_contacts_permission_title">Este necesară permisiunea pentru contacte</string>
+    <string name="settings_pred_contacts_permission_summary">Acordați permisiunea pentru a sugera nume de contacte și adrese de e-mail</string>
+    <string name="settings_pred_contacts_permission_title">Permisiunea pentru contacte</string>
     <string name="settings_pred_contacts_summary_disabled">Este necesară permisiunea pentru contacte</string>
     <string name="settings_pred_contacts_summary_enabled">Includeți numele contactelor în sugestii</string>
     <string name="settings_pred_contacts_title">Sugestii din contacte</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Sugestii emoji</string>
     <string name="settings_pred_flick_animation_summary">Animă cuvântul în sus când confirmați o sugestie printr-o mișcare rapidă</string>
     <string name="settings_pred_flick_animation_title">Afișați animația de confirmare printr-o mișcare rapidă</string>
-    <string name="settings_pred_force_suggestions_summary">Afișează bara de sugestii chiar și în aplicațiile care cer tastaturii să o ascundă (de ex. Google Keep). Nu se aplică la câmpurile pentru parole.</string>
+    <string name="settings_pred_force_suggestions_summary">Afișează bara de sugestii chiar și în aplicațiile care cer tastaturii să o ascundă. Nu se aplică la câmpurile pentru parole.</string>
     <string name="settings_pred_force_suggestions_title">Forțați sugestiile</string>
     <string name="settings_pred_grant_permission">Acordați permisiunea</string>
     <string name="settings_pred_next_word_summary">Sugerează cuvântul următor în funcție de context</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Include cuvinte învățate din tastarea ta</string>
     <string name="settings_pred_personalized_title">Sugerează cuvinte învățate</string>
     <string name="settings_pred_inline_autofill_title">Sugestii de completare automată</string>
-    <string name="settings_pred_inline_autofill_summary">Afișează parole, adrese și alte date salvate din serviciul de completare automată în bara de sugestii</string>
+    <string name="settings_pred_inline_autofill_summary">Afișează parole, adrese și alte date salvate din serviciul de completare automată</string>
     <string name="settings_pred_show_predictions_summary">Afișează sugestii de cuvinte în timp ce tastați</string>
     <string name="settings_pred_show_predictions_title">Activează sugestiile</string>
     <string name="settings_anim_category_scale">Parametri de scalare</string>

@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">ಭೌತಿಕ ಕೀಬೋರ್ಡ್ ಬಳಸುವಾಗ ಸ್ಥಿತಿ ಪಟ್ಟಿಯಲ್ಲಿ Shift/Alt ಸೂಚಕವನ್ನು ತೋರಿಸು</string>
     <string name="settings_pred_block_offensive_summary">ಧ್ವನಿ ಮೂಲಕ ಬರೆಯುವಾಗ ಅಸಭ್ಯವಾಗಬಹುದಾದ ಪದಗಳನ್ನು ಮರೆಮಾಡು</string>
     <string name="settings_pred_block_offensive_title">ಅಸಭ್ಯ ಪದಗಳನ್ನು ನಿರ್ಬಂಧಿಸಿ</string>
-    <string name="settings_pred_contacts_permission_summary">ಟೈಪ್ ಮಾಡುವಾಗ ಸಂಪರ್ಕ ಹೆಸರುಗಳು ಮತ್ತು ಇಮೇಲ್ ವಿಳಾಸಗಳನ್ನು ಸೂಚಿಸಲು ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ನೀಡಿ</string>
-    <string name="settings_pred_contacts_permission_title">ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ಅಗತ್ಯವಿದೆ</string>
+    <string name="settings_pred_contacts_permission_summary">ಸಂಪರ್ಕ ಹೆಸರುಗಳು ಮತ್ತು ಇಮೇಲ್ ವಿಳಾಸಗಳನ್ನು ಸೂಚಿಸಲು ಅನುಮತಿ ನೀಡಿ</string>
+    <string name="settings_pred_contacts_permission_title">ಸಂಪರ್ಕಗಳ ಅನುಮತಿ</string>
     <string name="settings_pred_contacts_summary_disabled">ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ಅಗತ್ಯವಿದೆ</string>
     <string name="settings_pred_contacts_summary_enabled">ಸಲಹೆಗಳಲ್ಲಿ ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಸೇರಿಸು</string>
     <string name="settings_pred_contacts_title">ಸಂಪರ್ಕಗಳಿಂದ ಸೂಚಿಸು</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">ಎಮೋಜಿ ಸಲಹೆಗಳು</string>
     <string name="settings_pred_flick_animation_summary">ಸ್ವೈಪ್‌ನಿಂದ ಸಲಹೆಯನ್ನು ಸ್ವೀಕರಿಸುವಾಗ ಪದವನ್ನು ಮೇಲಕ್ಕೆ ಅನಿಮೇಟ್ ಮಾಡು</string>
     <string name="settings_pred_flick_animation_title">ಫ್ಲಿಕ್ ಸ್ವೀಕಾರ ಅನಿಮೇಶನ್ ತೋರಿಸು</string>
-    <string name="settings_pred_force_suggestions_summary">ಸಲಹೆ ಪಟ್ಟಿಯನ್ನು ಮರೆಮಾಡಲು ಕೀಬೋರ್ಡ್‌ಗೆ ಹೇಳುವ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಲ್ಲೂ (ಉದಾ. Google Keep) ಅದನ್ನು ತೋರಿಸು. ಪಾಸ್‌ವರ್ಡ್ ಕ್ಷೇತ್ರಗಳಿಗೆ ಅನ್ವಯಿಸುವುದಿಲ್ಲ.</string>
+    <string name="settings_pred_force_suggestions_summary">ಸಲಹೆ ಪಟ್ಟಿಯನ್ನು ಮರೆಮಾಡಲು ಕೀಬೋರ್ಡ್‌ಗೆ ಹೇಳುವ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಲ್ಲೂ ಅದನ್ನು ತೋರಿಸು. ಪಾಸ್‌ವರ್ಡ್ ಕ್ಷೇತ್ರಗಳಿಗೆ ಅನ್ವಯಿಸುವುದಿಲ್ಲ.</string>
     <string name="settings_pred_force_suggestions_title">ಸಲಹೆಗಳನ್ನು ಒತ್ತಾಯಿಸು</string>
     <string name="settings_pred_grant_permission">ಅನುಮತಿ ನೀಡಿ</string>
     <string name="settings_pred_next_word_summary">ಸಂದರ್ಭದ ಆಧಾರದ ಮೇಲೆ ಮುಂದಿನ ಪದವನ್ನು ಸೂಚಿಸು</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">ನಿಮ್ಮ ಟೈಪಿಂಗ್‌ನಿಂದ ಕಲಿತ ಪದಗಳನ್ನು ಸೇರಿಸಿ</string>
     <string name="settings_pred_personalized_title">ಕಲಿತ ಪದಗಳನ್ನು ಸೂಚಿಸಿ</string>
     <string name="settings_pred_inline_autofill_title">ಸ್ವಯಂಭರ್ತಿ ಸಲಹೆಗಳು</string>
-    <string name="settings_pred_inline_autofill_summary">ನಿಮ್ಮ ಸ್ವಯಂಭರ್ತಿ ಸೇವೆಯಿಂದ ಪಾಸ್‌ವರ್ಡ್‌ಗಳು, ವಿಳಾಸಗಳು ಮತ್ತು ಇತರ ಉಳಿಸಿದ ವಿವರಗಳನ್ನು ಸಲಹೆ ಪಟ್ಟಿಯಲ್ಲಿ ತೋರಿಸು</string>
+    <string name="settings_pred_inline_autofill_summary">ನಿಮ್ಮ ಸ್ವಯಂಭರ್ತಿ ಸೇವೆಯಿಂದ ಪಾಸ್‌ವರ್ಡ್‌ಗಳು, ವಿಳಾಸಗಳು ಮತ್ತು ಇತರ ಉಳಿಸಿದ ವಿವರಗಳನ್ನು ತೋರಿಸು</string>
     <string name="settings_pred_show_predictions_summary">ಟೈಪ್ ಮಾಡುವಾಗ ಪದ ಸಲಹೆಗಳನ್ನು ಪ್ರದರ್ಶಿಸು</string>
     <string name="settings_pred_show_predictions_title">ಸಲಹೆಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
     <string name="settings_anim_category_scale">ಪ್ರಮಾಣದ ನಿಯತಾಂಕಗಳು</string>

@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Visa indikator för Shift/Alt i statusfältet när du använder ett fysiskt tangentbord</string>
     <string name="settings_pred_block_offensive_summary">Dölj ord som kan uppfattas som stötande vid diktering</string>
     <string name="settings_pred_block_offensive_title">Blockera stötande ord</string>
-    <string name="settings_pred_contacts_permission_summary">Ge behörighet till kontakter så att kontaktnamn och e-postadresser kan föreslås medan du skriver</string>
-    <string name="settings_pred_contacts_permission_title">Behörighet till kontakter krävs</string>
+    <string name="settings_pred_contacts_permission_summary">Ge behörighet så att kontaktnamn och e-postadresser kan föreslås</string>
+    <string name="settings_pred_contacts_permission_title">Behörighet till kontakter</string>
     <string name="settings_pred_contacts_summary_disabled">Behörighet till kontakter krävs</string>
     <string name="settings_pred_contacts_summary_enabled">Ta med kontaktnamn i förslagen</string>
     <string name="settings_pred_contacts_title">Föreslå från kontakter</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Emojiförslag</string>
     <string name="settings_pred_flick_animation_summary">Animera ordet uppåt när du bekräftar ett förslag med ett svep</string>
     <string name="settings_pred_flick_animation_title">Visa animering vid snärtbekräftelse</string>
-    <string name="settings_pred_force_suggestions_summary">Visa förslagsraden även i appar som ber tangentbordet att dölja den (t.ex. Google Keep). Gäller inte lösenordsfält.</string>
+    <string name="settings_pred_force_suggestions_summary">Visa förslagsraden även i appar som ber tangentbordet att dölja den. Gäller inte lösenordsfält.</string>
     <string name="settings_pred_force_suggestions_title">Tvinga fram förslag</string>
     <string name="settings_pred_grant_permission">Ge behörighet</string>
     <string name="settings_pred_next_word_summary">Föreslå nästa ord utifrån sammanhanget</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Ta med ord som lärts in från din skrivning</string>
     <string name="settings_pred_personalized_title">Föreslå inlärda ord</string>
     <string name="settings_pred_inline_autofill_title">Förslag från autofyll</string>
-    <string name="settings_pred_inline_autofill_summary">Visa lösenord, adresser och andra sparade uppgifter från din autofylltjänst i förslagsraden</string>
+    <string name="settings_pred_inline_autofill_summary">Visa lösenord, adresser och andra sparade uppgifter från din autofylltjänst</string>
     <string name="settings_pred_show_predictions_summary">Visa ordförslag medan du skriver</string>
     <string name="settings_pred_show_predictions_title">Aktivera förslag</string>
     <string name="settings_anim_category_scale">Skalparametrar</string>

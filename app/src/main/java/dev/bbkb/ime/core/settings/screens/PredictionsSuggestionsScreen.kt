@@ -18,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.core.content.ContextCompat
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.R
@@ -110,6 +112,7 @@ fun PredictionsSuggestionsScreen(
                 // Show predictions (master toggle)
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_show_predictions_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_prediction),
                     summary = context.getString(R.string.settings_pred_show_predictions_summary),
                     checked = showPredictions,
                     modifier = Modifier.settingsSearchAnchor("show_predictions"),
@@ -126,6 +129,7 @@ fun PredictionsSuggestionsScreen(
                 // On-key predictions (dependent)
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_on_key_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_on_key_suggestions),
                     summary = context.getString(R.string.settings_pred_on_key_summary),
                     enabled = showPredictions,
                     checked = onKeyPredictions,
@@ -141,6 +145,7 @@ fun PredictionsSuggestionsScreen(
                 // suggestion strip anyway (e.g. for apps like Google Keep that suppress it).
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_force_suggestions_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_force_suggestions),
                     summary = context.getString(R.string.settings_pred_force_suggestions_summary),
                     enabled = showPredictions,
                     checked = forceSuggestions,
@@ -157,6 +162,7 @@ fun PredictionsSuggestionsScreen(
                 // Next word prediction
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_next_word_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_next_word),
                     summary = context.getString(R.string.settings_pred_next_word_summary),
                     enabled = showPredictions,
                     checked = nextWordPrediction,
@@ -171,6 +177,7 @@ fun PredictionsSuggestionsScreen(
                 // Emoji predictions (dependent)
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_emoji_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_emoji_suggestions),
                     summary = context.getString(R.string.settings_pred_emoji_summary),
                     enabled = showPredictions,
                     checked = emojiPredictions,
@@ -185,6 +192,7 @@ fun PredictionsSuggestionsScreen(
                 // Personalized suggestions
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_personalized_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_learned_words),
                     summary = context.getString(R.string.settings_pred_personalized_summary),
                     enabled = showPredictions,
                     checked = personalizedSuggestions,
@@ -201,6 +209,7 @@ fun PredictionsSuggestionsScreen(
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
                     SwitchPreference(
                         title = context.getString(R.string.settings_pred_inline_autofill_title),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_inline_autofill),
                         summary = context.getString(R.string.settings_pred_inline_autofill_summary),
                         checked = inlineAutofill,
                         modifier = Modifier.settingsSearchAnchor("pref_inline_autofill_enabled"),
@@ -219,6 +228,7 @@ fun PredictionsSuggestionsScreen(
                 if (!hasContactsPermission) {
                     PreferenceActionItem(
                         title = context.getString(R.string.settings_pred_contacts_permission_title),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_contacts_permission),
                         summary = context.getString(R.string.settings_pred_contacts_permission_summary),
                         actionLabel = context.getString(R.string.settings_pred_grant_permission),
                         onAction = {
@@ -230,6 +240,7 @@ fun PredictionsSuggestionsScreen(
                 // Suggest from contacts (requires READ_CONTACTS permission)
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_contacts_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_contacts),
                     summary = if (hasContactsPermission) {
                         context.getString(R.string.settings_pred_contacts_summary_enabled)
                     } else {

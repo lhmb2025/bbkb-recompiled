@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">फिजिकल कीबोर्ड वापरताना स्टेटस बारमध्ये Shift/Alt मॉडिफायर निर्देशक दाखवा</string>
     <string name="settings_pred_block_offensive_summary">व्हॉइस डिक्टेशनमध्ये संभाव्य आक्षेपार्ह शब्द लपवा</string>
     <string name="settings_pred_block_offensive_title">आक्षेपार्ह शब्द ब्लॉक करा</string>
-    <string name="settings_pred_contacts_permission_summary">टाइप करताना संपर्क नावे आणि ईमेल पत्ते सुचवण्यासाठी संपर्क परवानगी द्या</string>
-    <string name="settings_pred_contacts_permission_title">संपर्क परवानगी आवश्यक</string>
+    <string name="settings_pred_contacts_permission_summary">संपर्क नावे आणि ईमेल पत्ते सुचवण्यासाठी परवानगी द्या</string>
+    <string name="settings_pred_contacts_permission_title">संपर्क परवानगी</string>
     <string name="settings_pred_contacts_summary_disabled">संपर्क परवानगी आवश्यक</string>
     <string name="settings_pred_contacts_summary_enabled">सूचनांमध्ये संपर्क नावे समाविष्ट करा</string>
     <string name="settings_pred_contacts_title">संपर्कांमधून सुचवा</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">इमोजी सूचना</string>
     <string name="settings_pred_flick_animation_summary">स्वाइपने सूचना स्वीकारताना शब्द वरच्या दिशेने अ‍ॅनिमेट करा</string>
     <string name="settings_pred_flick_animation_title">फ्लिक कमिट अ‍ॅनिमेशन दाखवा</string>
-    <string name="settings_pred_force_suggestions_summary">कीबोर्डला सूचना पट्टी लपवायला सांगणाऱ्या अ‍ॅप्समध्येही ती दाखवा (उदा. Google Keep). पासवर्ड फील्डना लागू होत नाही.</string>
+    <string name="settings_pred_force_suggestions_summary">कीबोर्डला सूचना पट्टी लपवायला सांगणाऱ्या अ‍ॅप्समध्येही ती दाखवा. पासवर्ड फील्डना लागू होत नाही.</string>
     <string name="settings_pred_force_suggestions_title">सूचना सक्तीने दाखवा</string>
     <string name="settings_pred_grant_permission">परवानगी द्या</string>
     <string name="settings_pred_next_word_summary">संदर्भानुसार पुढील शब्द सुचवा</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">तुमच्या टायपिंगमधून शिकलेले शब्द समाविष्ट करा</string>
     <string name="settings_pred_personalized_title">शिकलेले शब्द सुचवा</string>
     <string name="settings_pred_inline_autofill_title">ऑटोफिल सूचना</string>
-    <string name="settings_pred_inline_autofill_summary">तुमच्या ऑटोफिल सेवेतील पासवर्ड, पत्ते आणि इतर जतन केलेले तपशील सूचना पट्टीवर दाखवा</string>
+    <string name="settings_pred_inline_autofill_summary">तुमच्या ऑटोफिल सेवेतील पासवर्ड, पत्ते आणि इतर जतन केलेले तपशील दाखवा</string>
     <string name="settings_pred_show_predictions_summary">टाइप करताना शब्द सूचना दाखवा</string>
     <string name="settings_pred_show_predictions_title">सूचना सुरू करा</string>
     <string name="settings_anim_category_scale">स्केल पॅरामीटर</string>

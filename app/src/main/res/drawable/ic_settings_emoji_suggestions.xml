@@ -1,0 +1,10 @@
+<!-- ic_settings_emoji_suggestions. Owner's SVG (2026-11-08), 24-unit grid; Suggestions › Emoji suggestions: a smiley; tinted by the row, so the fill colour is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M 15.5 11 q 0.63 0 1.06 -0.44 T 17 9.5 T 16.56 8.44 T 15.5 8 T 14.44 8.44 T 14 9.5 t 0.44 1.06 T 15.5 11 Z m -7 0 q 0.63 0 1.06 -0.44 T 10 9.5 T 9.56 8.44 T 8.5 8 T 7.44 8.44 T 7 9.5 t 0.44 1.06 T 8.5 11 Z m 6.59 5.54 Q 16.48 15.58 17.1 14 H 6.9 q 0.63 1.57 2.01 2.54 T 12 17.5 t 3.09 -0.96 Z M 8.1 21.21 q -1.82 -0.79 -3.17 -2.14 Q 3.58 17.73 2.79 15.9 T 2 12 Q 2 9.92 2.79 8.1 Q 3.58 6.27 4.93 4.93 Q 6.28 3.57 8.1 2.79 Q 9.93 2 12 2 t 3.9 0.79 t 3.17 2.14 q 1.35 1.35 2.14 3.17 Q 22 9.92 22 12 t -0.79 3.9 t -2.14 3.17 q -1.35 1.35 -3.17 2.14 T 12 22 q -2.07 0 -3.9 -0.79 Z M 12 12 Z m 5.68 5.68 Q 20 15.35 20 12 T 17.68 6.32 T 12 4 T 6.33 6.32 T 4 12 t 2.33 5.68 T 12 20 t 5.68 -2.32 Z"/>
+</vector>

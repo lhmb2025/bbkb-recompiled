@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">הצג מחוון Shift/Alt בשורת המצב בעת שימוש במקלדת פיזית</string>
     <string name="settings_pred_block_offensive_summary">הסתר מילים שעלולות להיות פוגעניות בהכתבה קולית</string>
     <string name="settings_pred_block_offensive_title">חסום מילים פוגעניות</string>
-    <string name="settings_pred_contacts_permission_summary">הענק הרשאת אנשי קשר כדי להציע שמות אנשי קשר וכתובות אימייל בזמן ההקלדה</string>
-    <string name="settings_pred_contacts_permission_title">נדרשת הרשאת אנשי קשר</string>
+    <string name="settings_pred_contacts_permission_summary">הענק הרשאה כדי להציע שמות אנשי קשר וכתובות אימייל</string>
+    <string name="settings_pred_contacts_permission_title">הרשאת אנשי קשר</string>
     <string name="settings_pred_contacts_summary_disabled">נדרשת הרשאת אנשי קשר</string>
     <string name="settings_pred_contacts_summary_enabled">כלול שמות אנשי קשר בהצעות</string>
     <string name="settings_pred_contacts_title">הצע מאנשי הקשר</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">הצעות אמוג\'י</string>
     <string name="settings_pred_flick_animation_summary">הנפש את המילה כלפי מעלה בעת אישור הצעה בהחלקה</string>
     <string name="settings_pred_flick_animation_title">הצג אנימציית אישור בנקישה</string>
-    <string name="settings_pred_force_suggestions_summary">הצג את רצועת ההצעות גם באפליקציות שמבקשות מהמקלדת להסתיר אותה (לדוגמה Google Keep). לא חל על שדות סיסמה.</string>
+    <string name="settings_pred_force_suggestions_summary">הצג את רצועת ההצעות גם באפליקציות שמבקשות מהמקלדת להסתיר אותה. לא חל על שדות סיסמה.</string>
     <string name="settings_pred_force_suggestions_title">אלץ הצגת הצעות</string>
     <string name="settings_pred_grant_permission">הענק הרשאה</string>
     <string name="settings_pred_next_word_summary">הצע את המילה הבאה על סמך ההקשר</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">כלילת מילים שנלמדו מההקלדה שלך</string>
     <string name="settings_pred_personalized_title">הצעת מילים שנלמדו</string>
     <string name="settings_pred_inline_autofill_title">הצעות מילוי אוטומטי</string>
-    <string name="settings_pred_inline_autofill_summary">הצג בשורת ההצעות סיסמאות, כתובות ופרטים שמורים אחרים משירות המילוי האוטומטי שלך</string>
+    <string name="settings_pred_inline_autofill_summary">הצג סיסמאות, כתובות ופרטים שמורים אחרים משירות המילוי האוטומטי שלך</string>
     <string name="settings_pred_show_predictions_summary">הצג הצעות למילים בזמן ההקלדה</string>
     <string name="settings_pred_show_predictions_title">הפעלת הצעות</string>
     <string name="settings_anim_category_scale">פרמטרים של קנה מידה</string>

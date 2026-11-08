@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Kuva füüsilise klaviatuuri kasutamisel olekuribal Shift/Alt muuteklahvi näidik</string>
     <string name="settings_pred_block_offensive_summary">Peida häälega dikteerimisel võimalikud solvavad sõnad</string>
     <string name="settings_pred_block_offensive_title">Blokeeri solvavad sõnad</string>
-    <string name="settings_pred_contacts_permission_summary">Andke kontaktide luba, et kirjutamise ajal kontaktide nimesid ja e-posti aadresse soovitada</string>
-    <string name="settings_pred_contacts_permission_title">Vajalik on kontaktide luba</string>
+    <string name="settings_pred_contacts_permission_summary">Andke luba, et kontaktide nimesid ja e-posti aadresse soovitada</string>
+    <string name="settings_pred_contacts_permission_title">Kontaktide luba</string>
     <string name="settings_pred_contacts_summary_disabled">Vajalik on kontaktide luba</string>
     <string name="settings_pred_contacts_summary_enabled">Kaasa soovitustesse kontaktide nimed</string>
     <string name="settings_pred_contacts_title">Soovita kontaktidest</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Emotikonisoovitused</string>
     <string name="settings_pred_flick_animation_summary">Animeeri sõna ülespoole, kui soovitus kinnitatakse libistusega</string>
     <string name="settings_pred_flick_animation_title">Kuva nipsamise animatsioon</string>
-    <string name="settings_pred_force_suggestions_summary">Kuva soovituste riba ka rakendustes, mis paluvad klaviatuuril selle peita (nt Google Keep). Ei kehti paroolivälja puhul.</string>
+    <string name="settings_pred_force_suggestions_summary">Kuva soovituste riba ka rakendustes, mis paluvad klaviatuuril selle peita. Ei kehti paroolivälja puhul.</string>
     <string name="settings_pred_force_suggestions_title">Sunni soovitusi kuvama</string>
     <string name="settings_pred_grant_permission">Anna luba</string>
     <string name="settings_pred_next_word_summary">Soovita konteksti põhjal järgmist sõna</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Kaasa kirjutamisest õpitud sõnad</string>
     <string name="settings_pred_personalized_title">Soovita õpitud sõnu</string>
     <string name="settings_pred_inline_autofill_title">Automaatse täitmise soovitused</string>
-    <string name="settings_pred_inline_autofill_summary">Kuva soovituste ribal paroole, aadresse ja muid automaatse täitmise teenusesse salvestatud andmeid</string>
+    <string name="settings_pred_inline_autofill_summary">Kuva paroole, aadresse ja muid automaatse täitmise teenusesse salvestatud andmeid</string>
     <string name="settings_pred_show_predictions_summary">Kuva kirjutamise ajal sõnasoovitusi</string>
     <string name="settings_pred_show_predictions_title">Luba soovitused</string>
     <string name="settings_anim_category_scale">Mastaabi parameetrid</string>

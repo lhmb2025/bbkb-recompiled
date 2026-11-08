@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Shift/Alt მოდიფიკატორის ინდიკატორის ჩვენება სტატუსის ზოლში ფიზიკური კლავიატურის გამოყენებისას</string>
     <string name="settings_pred_block_offensive_summary">პოტენციურად შეურაცხმყოფელი სიტყვების დამალვა ხმოვანი კარნახისას</string>
     <string name="settings_pred_block_offensive_title">შეურაცხმყოფელი სიტყვების დაბლოკვა</string>
-    <string name="settings_pred_contacts_permission_summary">მიეცით კონტაქტების ნებართვა, რომ აკრეფისას კონტაქტების სახელები და ელფოსტის მისამართები შემოგთავაზოთ</string>
-    <string name="settings_pred_contacts_permission_title">საჭიროა კონტაქტების ნებართვა</string>
+    <string name="settings_pred_contacts_permission_summary">მიეცით ნებართვა, რომ კონტაქტების სახელები და ელფოსტის მისამართები შემოგთავაზოთ</string>
+    <string name="settings_pred_contacts_permission_title">კონტაქტების ნებართვა</string>
     <string name="settings_pred_contacts_summary_disabled">საჭიროა კონტაქტების ნებართვა</string>
     <string name="settings_pred_contacts_summary_enabled">კონტაქტების სახელების ჩართვა შემოთავაზებებში</string>
     <string name="settings_pred_contacts_title">შემოთავაზება კონტაქტებიდან</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">სიცილაკების შემოთავაზებები</string>
     <string name="settings_pred_flick_animation_summary">სიტყვის ზემოთ ანიმაცია, როცა შემოთავაზებას გადასრიალებით ადასტურებთ</string>
     <string name="settings_pred_flick_animation_title">მოსმით დადასტურების ანიმაციის ჩვენება</string>
-    <string name="settings_pred_force_suggestions_summary">შემოთავაზებების ზოლის ჩვენება იმ აპებშიც, რომლებიც კლავიატურას მის დამალვას სთხოვს (მაგ. Google Keep). არ ვრცელდება პაროლის ველებზე.</string>
+    <string name="settings_pred_force_suggestions_summary">შემოთავაზებების ზოლის ჩვენება იმ აპებშიც, რომლებიც კლავიატურას მის დამალვას სთხოვს. არ ვრცელდება პაროლის ველებზე.</string>
     <string name="settings_pred_force_suggestions_title">იძულებითი შემოთავაზებები</string>
     <string name="settings_pred_grant_permission">ნებართვის მიცემა</string>
     <string name="settings_pred_next_word_summary">შემდეგი სიტყვის შემოთავაზება კონტექსტის მიხედვით</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">თქვენი აკრეფიდან ნასწავლი სიტყვების ჩართვა</string>
     <string name="settings_pred_personalized_title">ნასწავლი სიტყვების შეთავაზება</string>
     <string name="settings_pred_inline_autofill_title">ავტომატური შევსების შემოთავაზებები</string>
-    <string name="settings_pred_inline_autofill_summary">პაროლების, მისამართებისა და სხვა შენახული დეტალების ჩვენება ავტომატური შევსების სერვისიდან შემოთავაზებების ზოლზე</string>
+    <string name="settings_pred_inline_autofill_summary">პაროლების, მისამართებისა და სხვა შენახული დეტალების ჩვენება ავტომატური შევსების სერვისიდან</string>
     <string name="settings_pred_show_predictions_summary">აკრეფისას სიტყვების შემოთავაზებების ჩვენება</string>
     <string name="settings_pred_show_predictions_title">შეთავაზებების ჩართვა</string>
     <string name="settings_anim_category_scale">მასშტაბის პარამეტრები</string>

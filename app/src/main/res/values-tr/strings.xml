@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Fiziksel klavye kullanırken durum çubuğunda Shift/Alt değiştirici göstergesini görüntüle</string>
     <string name="settings_pred_block_offensive_summary">Sesli dikte sırasında rahatsız edici olabilecek kelimeleri gizle</string>
     <string name="settings_pred_block_offensive_title">Rahatsız edici kelimeleri engelle</string>
-    <string name="settings_pred_contacts_permission_summary">Yazarken kişi adları ve e-posta adresleri önerilebilmesi için kişiler iznini verin</string>
-    <string name="settings_pred_contacts_permission_title">Kişiler İzni Gerekli</string>
+    <string name="settings_pred_contacts_permission_summary">Kişi adları ve e-posta adresleri önerilebilmesi için izin verin</string>
+    <string name="settings_pred_contacts_permission_title">Kişiler izni</string>
     <string name="settings_pred_contacts_summary_disabled">Kişiler izni gerekli</string>
     <string name="settings_pred_contacts_summary_enabled">Kişi adlarını önerilere dahil et</string>
     <string name="settings_pred_contacts_title">Kişilerden öner</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Emoji önerileri</string>
     <string name="settings_pred_flick_animation_summary">Bir öneri kaydırılarak onaylandığında kelimeyi yukarı doğru hareketlendir</string>
     <string name="settings_pred_flick_animation_title">Fiske onay animasyonunu göster</string>
-    <string name="settings_pred_force_suggestions_summary">Öneri şeridini, klavyeden gizlemesini isteyen uygulamalarda bile göster (ör. Google Keep). Parola alanlarında geçerli değildir.</string>
+    <string name="settings_pred_force_suggestions_summary">Öneri şeridini, klavyeden gizlemesini isteyen uygulamalarda bile göster. Parola alanlarında geçerli değildir.</string>
     <string name="settings_pred_force_suggestions_title">Önerileri zorla göster</string>
     <string name="settings_pred_grant_permission">İzin Ver</string>
     <string name="settings_pred_next_word_summary">Bağlama göre sonraki kelimeyi öner</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Yazımınızdan öğrenilen sözcükleri dahil et</string>
     <string name="settings_pred_personalized_title">Öğrenilen sözcükleri öner</string>
     <string name="settings_pred_inline_autofill_title">Otomatik doldurma önerileri</string>
-    <string name="settings_pred_inline_autofill_summary">Otomatik doldurma hizmetinizdeki parolaları, adresleri ve kayıtlı diğer bilgileri öneri çubuğunda göster</string>
+    <string name="settings_pred_inline_autofill_summary">Otomatik doldurma hizmetinizdeki parolaları, adresleri ve kayıtlı diğer bilgileri göster</string>
     <string name="settings_pred_show_predictions_summary">Yazarken kelime önerilerini görüntüle</string>
     <string name="settings_pred_show_predictions_title">Önerileri etkinleştir</string>
     <string name="settings_anim_category_scale">Ölçek parametreleri</string>

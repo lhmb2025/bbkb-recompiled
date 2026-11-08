@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Mostrar o indicador de Maiús/Alt na barra de estado ao usar o teclado físico</string>
     <string name="settings_pred_block_offensive_summary">Ocultar as palabras potencialmente ofensivas no ditado por voz</string>
     <string name="settings_pred_block_offensive_title">Bloquear palabras ofensivas</string>
-    <string name="settings_pred_contacts_permission_summary">Concede o permiso de contactos para suxerir nomes de contactos e enderezos de correo mentres escribes</string>
-    <string name="settings_pred_contacts_permission_title">Requírese o permiso de contactos</string>
+    <string name="settings_pred_contacts_permission_summary">Concede o permiso para suxerir nomes de contactos e enderezos de correo</string>
+    <string name="settings_pred_contacts_permission_title">Permiso de contactos</string>
     <string name="settings_pred_contacts_summary_disabled">Requírese o permiso de contactos</string>
     <string name="settings_pred_contacts_summary_enabled">Incluír os nomes dos contactos nas suxestións</string>
     <string name="settings_pred_contacts_title">Suxerir a partir dos contactos</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Suxestións de emojis</string>
     <string name="settings_pred_flick_animation_summary">Animar a palabra cara arriba ao confirmar unha suxestión cun golpe</string>
     <string name="settings_pred_flick_animation_title">Mostrar a animación de confirmación cun golpe</string>
-    <string name="settings_pred_force_suggestions_summary">Mostrar a barra de suxestións mesmo nas aplicacións que lle piden ao teclado que a oculte (por exemplo, Google Keep). Non se aplica aos campos de contrasinal.</string>
+    <string name="settings_pred_force_suggestions_summary">Mostrar a barra de suxestións mesmo nas aplicacións que lle piden ao teclado que a oculte. Non se aplica aos campos de contrasinal.</string>
     <string name="settings_pred_force_suggestions_title">Forzar as suxestións</string>
     <string name="settings_pred_grant_permission">Conceder permiso</string>
     <string name="settings_pred_next_word_summary">Suxerir a seguinte palabra segundo o contexto</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Incluír palabras aprendidas da túa escritura</string>
     <string name="settings_pred_personalized_title">Suxerir palabras aprendidas</string>
     <string name="settings_pred_inline_autofill_title">Suxestións de autocompletado</string>
-    <string name="settings_pred_inline_autofill_summary">Mostrar na barra de suxestións os contrasinais, enderezos e outros datos gardados no teu servizo de autocompletado</string>
+    <string name="settings_pred_inline_autofill_summary">Mostrar os contrasinais, enderezos e outros datos gardados no teu servizo de autocompletado</string>
     <string name="settings_pred_show_predictions_summary">Mostrar suxestións de palabras mentres escribes</string>
     <string name="settings_pred_show_predictions_title">Activar suxestións</string>
     <string name="settings_anim_category_scale">Parámetros de escala</string>

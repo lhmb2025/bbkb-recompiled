@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Pri používaní fyzickej klávesnice zobrazovať v stavovom riadku indikátor Shift/Alt</string>
     <string name="settings_pred_block_offensive_summary">Skryť potenciálne urážlivé slová pri hlasovom diktovaní</string>
     <string name="settings_pred_block_offensive_title">Blokovať urážlivé slová</string>
-    <string name="settings_pred_contacts_permission_summary">Udeľte povolenie na prístup ku kontaktom, aby sa počas písania navrhovali mená kontaktov a e-mailové adresy</string>
-    <string name="settings_pred_contacts_permission_title">Vyžaduje sa povolenie pre kontakty</string>
+    <string name="settings_pred_contacts_permission_summary">Udeľte povolenie, aby sa navrhovali mená kontaktov a e-mailové adresy</string>
+    <string name="settings_pred_contacts_permission_title">Povolenie pre kontakty</string>
     <string name="settings_pred_contacts_summary_disabled">Vyžaduje sa povolenie pre kontakty</string>
     <string name="settings_pred_contacts_summary_enabled">Zahrnúť mená kontaktov do návrhov</string>
     <string name="settings_pred_contacts_title">Navrhovať z kontaktov</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Návrhy emoji</string>
     <string name="settings_pred_flick_animation_summary">Animovať slovo smerom nahor pri potvrdení návrhu potiahnutím</string>
     <string name="settings_pred_flick_animation_title">Zobraziť animáciu potvrdenia švihnutím</string>
-    <string name="settings_pred_force_suggestions_summary">Zobrazovať lištu návrhov aj v aplikáciách, ktoré ju žiadajú skryť (napr. Google Keep). Neplatí pre polia s heslom.</string>
+    <string name="settings_pred_force_suggestions_summary">Zobrazovať lištu návrhov aj v aplikáciách, ktoré ju žiadajú skryť. Neplatí pre polia s heslom.</string>
     <string name="settings_pred_force_suggestions_title">Vynútiť návrhy</string>
     <string name="settings_pred_grant_permission">Udeliť povolenie</string>
     <string name="settings_pred_next_word_summary">Navrhovať ďalšie slovo podľa kontextu</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Zahrnúť slová naučené z vášho písania</string>
     <string name="settings_pred_personalized_title">Navrhovať naučené slová</string>
     <string name="settings_pred_inline_autofill_title">Návrhy automatického dopĺňania</string>
-    <string name="settings_pred_inline_autofill_summary">Zobrazovať na lište návrhov heslá, adresy a ďalšie uložené údaje zo služby automatického dopĺňania</string>
+    <string name="settings_pred_inline_autofill_summary">Zobrazovať heslá, adresy a ďalšie uložené údaje zo služby automatického dopĺňania</string>
     <string name="settings_pred_show_predictions_summary">Zobrazovať návrhy slov počas písania</string>
     <string name="settings_pred_show_predictions_title">Zapnúť návrhy</string>
     <string name="settings_anim_category_scale">Parametre mierky</string>

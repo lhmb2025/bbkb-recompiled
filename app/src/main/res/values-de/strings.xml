@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Bei Verwendung der physischen Tastatur die Umschalt-/Alt-Anzeige in der Statusleiste einblenden</string>
     <string name="settings_pred_block_offensive_summary">Möglicherweise anstößige Wörter beim Diktieren ausblenden</string>
     <string name="settings_pred_block_offensive_title">Anstößige Wörter blockieren</string>
-    <string name="settings_pred_contacts_permission_summary">Erteilen Sie die Berechtigung für Kontakte, damit während der Eingabe Kontaktnamen und E-Mail-Adressen vorgeschlagen werden können</string>
-    <string name="settings_pred_contacts_permission_title">Kontaktberechtigung erforderlich</string>
+    <string name="settings_pred_contacts_permission_summary">Erteilen Sie die Berechtigung, damit Kontaktnamen und E-Mail-Adressen vorgeschlagen werden können</string>
+    <string name="settings_pred_contacts_permission_title">Kontaktberechtigung</string>
     <string name="settings_pred_contacts_summary_disabled">Kontaktberechtigung erforderlich</string>
     <string name="settings_pred_contacts_summary_enabled">Kontaktnamen in Vorschläge einbeziehen</string>
     <string name="settings_pred_contacts_title">Aus Kontakten vorschlagen</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Emoji-Vorschläge</string>
     <string name="settings_pred_flick_animation_summary">Das Wort nach oben animieren, wenn ein Vorschlag per Streichgeste übernommen wird</string>
     <string name="settings_pred_flick_animation_title">Animation beim Übernehmen per Schnippen</string>
-    <string name="settings_pred_force_suggestions_summary">Die Vorschlagsleiste auch in Apps anzeigen, die deren Ausblenden anfordern (z. B. Google Keep). Gilt nicht für Passwortfelder.</string>
+    <string name="settings_pred_force_suggestions_summary">Die Vorschlagsleiste auch in Apps anzeigen, die deren Ausblenden anfordern. Gilt nicht für Passwortfelder.</string>
     <string name="settings_pred_force_suggestions_title">Vorschläge erzwingen</string>
     <string name="settings_pred_grant_permission">Berechtigung erteilen</string>
     <string name="settings_pred_next_word_summary">Nächstes Wort anhand des Kontexts vorschlagen</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Wörter einbeziehen, die aus Ihrer Eingabe gelernt wurden</string>
     <string name="settings_pred_personalized_title">Gelernte Wörter vorschlagen</string>
     <string name="settings_pred_inline_autofill_title">AutoFill-Vorschläge</string>
-    <string name="settings_pred_inline_autofill_summary">Passwörter, Adressen und andere gespeicherte Daten aus Ihrem AutoFill-Dienst in der Vorschlagsleiste anzeigen</string>
+    <string name="settings_pred_inline_autofill_summary">Passwörter, Adressen und andere gespeicherte Daten aus Ihrem AutoFill-Dienst anzeigen</string>
     <string name="settings_pred_show_predictions_summary">Wortvorschläge während der Eingabe anzeigen</string>
     <string name="settings_pred_show_predictions_title">Vorschläge aktivieren</string>
     <string name="settings_anim_category_scale">Skalierungsparameter</string>

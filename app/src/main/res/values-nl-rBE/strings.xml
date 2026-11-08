@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">De Shift/Alt-indicator in de statusbalk weergeven bij gebruik van het fysieke toetsenbord</string>
     <string name="settings_pred_block_offensive_summary">Mogelijk aanstootgevende woorden verbergen tijdens het dicteren</string>
     <string name="settings_pred_block_offensive_title">Aanstootgevende woorden blokkeren</string>
-    <string name="settings_pred_contacts_permission_summary">Verleen toegang tot contactpersonen om tijdens het typen namen en e-mailadressen te suggereren</string>
-    <string name="settings_pred_contacts_permission_title">Toestemming voor contactpersonen vereist</string>
+    <string name="settings_pred_contacts_permission_summary">Verleen toestemming om namen van contactpersonen en e-mailadressen te suggereren</string>
+    <string name="settings_pred_contacts_permission_title">Toestemming voor contactpersonen</string>
     <string name="settings_pred_contacts_summary_disabled">Toestemming voor contactpersonen vereist</string>
     <string name="settings_pred_contacts_summary_enabled">Namen van contactpersonen opnemen in suggesties</string>
     <string name="settings_pred_contacts_title">Suggesties uit contactpersonen</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Emoji-suggesties</string>
     <string name="settings_pred_flick_animation_summary">Het woord omhoog laten bewegen wanneer u een suggestie met een veeg bevestigt</string>
     <string name="settings_pred_flick_animation_title">Animatie bij bevestigen met flick tonen</string>
-    <string name="settings_pred_force_suggestions_summary">De suggestiebalk ook tonen in apps die het toetsenbord vragen deze te verbergen (bijv. Google Keep). Geldt niet voor wachtwoordvelden.</string>
+    <string name="settings_pred_force_suggestions_summary">De suggestiebalk ook tonen in apps die het toetsenbord vragen deze te verbergen. Geldt niet voor wachtwoordvelden.</string>
     <string name="settings_pred_force_suggestions_title">Suggesties afdwingen</string>
     <string name="settings_pred_grant_permission">Toestemming verlenen</string>
     <string name="settings_pred_next_word_summary">Het volgende woord suggereren op basis van de context</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Woorden opnemen die van je typen zijn geleerd</string>
     <string name="settings_pred_personalized_title">Geleerde woorden voorstellen</string>
     <string name="settings_pred_inline_autofill_title">Suggesties voor automatisch invullen</string>
-    <string name="settings_pred_inline_autofill_summary">Wachtwoorden, adressen en andere opgeslagen gegevens uit uw service voor automatisch invullen op de suggestiebalk tonen</string>
+    <string name="settings_pred_inline_autofill_summary">Wachtwoorden, adressen en andere opgeslagen gegevens uit uw service voor automatisch invullen tonen</string>
     <string name="settings_pred_show_predictions_summary">Woordsuggesties weergeven tijdens het typen</string>
     <string name="settings_pred_show_predictions_title">Suggesties inschakelen</string>
     <string name="settings_anim_category_scale">Schaalparameters</string>

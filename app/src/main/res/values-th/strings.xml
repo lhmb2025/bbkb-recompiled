@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">แสดงตัวบ่งชี้ปุ่มปรับเปลี่ยน Shift/Alt ในแถบสถานะเมื่อใช้แป้นพิมพ์จริง</string>
     <string name="settings_pred_block_offensive_summary">ซ่อนคำที่อาจไม่เหมาะสมเมื่อพิมพ์ด้วยเสียง</string>
     <string name="settings_pred_block_offensive_title">บล็อกคำไม่เหมาะสม</string>
-    <string name="settings_pred_contacts_permission_summary">ให้สิทธิ์เข้าถึงรายชื่อเพื่อแนะนำชื่อผู้ติดต่อและที่อยู่อีเมลขณะพิมพ์</string>
-    <string name="settings_pred_contacts_permission_title">ต้องมีสิทธิ์เข้าถึงรายชื่อ</string>
+    <string name="settings_pred_contacts_permission_summary">ให้สิทธิ์เพื่อแนะนำชื่อผู้ติดต่อและที่อยู่อีเมล</string>
+    <string name="settings_pred_contacts_permission_title">สิทธิ์เข้าถึงรายชื่อ</string>
     <string name="settings_pred_contacts_summary_disabled">ต้องมีสิทธิ์เข้าถึงรายชื่อ</string>
     <string name="settings_pred_contacts_summary_enabled">รวมชื่อผู้ติดต่อในคำแนะนำ</string>
     <string name="settings_pred_contacts_title">แนะนำจากรายชื่อ</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">คำแนะนำอีโมจิ</string>
     <string name="settings_pred_flick_animation_summary">เคลื่อนไหวคำขึ้นด้านบนเมื่อยืนยันคำแนะนำด้วยการกวาดนิ้ว</string>
     <string name="settings_pred_flick_animation_title">แสดงภาพเคลื่อนไหวเมื่อสะบัดยืนยัน</string>
-    <string name="settings_pred_force_suggestions_summary">แสดงแถบคำแนะนำแม้ในแอปที่ขอให้แป้นพิมพ์ซ่อนไว้ (เช่น Google Keep) ไม่มีผลกับช่องรหัสผ่าน</string>
+    <string name="settings_pred_force_suggestions_summary">แสดงแถบคำแนะนำแม้ในแอปที่ขอให้แป้นพิมพ์ซ่อนไว้ ไม่มีผลกับช่องรหัสผ่าน</string>
     <string name="settings_pred_force_suggestions_title">บังคับแสดงคำแนะนำ</string>
     <string name="settings_pred_grant_permission">ให้สิทธิ์</string>
     <string name="settings_pred_next_word_summary">แนะนำคำถัดไปตามบริบท</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">รวมคำที่เรียนรู้จากการพิมพ์ของคุณ</string>
     <string name="settings_pred_personalized_title">แนะนำคำที่เรียนรู้</string>
     <string name="settings_pred_inline_autofill_title">คำแนะนำจากการป้อนอัตโนมัติ</string>
-    <string name="settings_pred_inline_autofill_summary">แสดงรหัสผ่าน ที่อยู่ และรายละเอียดอื่นที่บันทึกไว้จากบริการป้อนอัตโนมัติบนแถบคำแนะนำ</string>
+    <string name="settings_pred_inline_autofill_summary">แสดงรหัสผ่าน ที่อยู่ และรายละเอียดอื่นที่บันทึกไว้จากบริการป้อนอัตโนมัติ</string>
     <string name="settings_pred_show_predictions_summary">แสดงคำแนะนำขณะพิมพ์</string>
     <string name="settings_pred_show_predictions_title">เปิดคำแนะนำ</string>
     <string name="settings_anim_category_scale">พารามิเตอร์สเกล</string>

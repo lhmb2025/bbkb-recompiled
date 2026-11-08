@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">இயற்பியல் விசைப்பலகையைப் பயன்படுத்தும்போது Shift/Alt மாற்றி குறியீட்டை நிலைப் பட்டியில் காட்டு</string>
     <string name="settings_pred_block_offensive_summary">குரல் மூலம் எழுதும்போது புண்படுத்தக்கூடிய சொற்களை மறை</string>
     <string name="settings_pred_block_offensive_title">புண்படுத்தும் சொற்களைத் தடு</string>
-    <string name="settings_pred_contacts_permission_summary">தட்டச்சு செய்யும்போது தொடர்புப் பெயர்களையும் மின்னஞ்சல் முகவரிகளையும் பரிந்துரைக்க தொடர்புகள் அனுமதியை வழங்கவும்</string>
-    <string name="settings_pred_contacts_permission_title">தொடர்புகள் அனுமதி தேவை</string>
+    <string name="settings_pred_contacts_permission_summary">தொடர்புப் பெயர்களையும் மின்னஞ்சல் முகவரிகளையும் பரிந்துரைக்க அனுமதியை வழங்கவும்</string>
+    <string name="settings_pred_contacts_permission_title">தொடர்புகள் அனுமதி</string>
     <string name="settings_pred_contacts_summary_disabled">தொடர்புகள் அனுமதி தேவை</string>
     <string name="settings_pred_contacts_summary_enabled">பரிந்துரைகளில் தொடர்புப் பெயர்களைச் சேர்</string>
     <string name="settings_pred_contacts_title">தொடர்புகளிலிருந்து பரிந்துரை</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">எமோஜி பரிந்துரைகள்</string>
     <string name="settings_pred_flick_animation_summary">ஸ்வைப் மூலம் பரிந்துரையை உறுதிசெய்யும்போது சொல்லை மேல்நோக்கி அசைவூட்டு</string>
     <string name="settings_pred_flick_animation_title">சொடுக்கு உறுதிப்படுத்தல் அனிமேஷனைக் காட்டு</string>
-    <string name="settings_pred_force_suggestions_summary">பரிந்துரைப் பட்டியை மறைக்கக் கோரும் ஆப்ஸிலும் (எ.கா. Google Keep) அதைக் காட்டு. கடவுச்சொல் புலங்களுக்குப் பொருந்தாது.</string>
+    <string name="settings_pred_force_suggestions_summary">பரிந்துரைப் பட்டியை மறைக்கக் கோரும் ஆப்ஸிலும் அதைக் காட்டு. கடவுச்சொல் புலங்களுக்குப் பொருந்தாது.</string>
     <string name="settings_pred_force_suggestions_title">பரிந்துரைகளைக் கட்டாயப்படுத்து</string>
     <string name="settings_pred_grant_permission">அனுமதி வழங்கு</string>
     <string name="settings_pred_next_word_summary">சூழலின் அடிப்படையில் அடுத்த சொல்லைப் பரிந்துரை</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">உங்கள் தட்டச்சிலிருந்து கற்ற சொற்களைச் சேர்</string>
     <string name="settings_pred_personalized_title">கற்ற சொற்களைப் பரிந்துரை</string>
     <string name="settings_pred_inline_autofill_title">தானியங்கு நிரப்பு பரிந்துரைகள்</string>
-    <string name="settings_pred_inline_autofill_summary">உங்கள் தானியங்கு நிரப்பு சேவையிலிருந்து கடவுச்சொற்கள், முகவரிகள் மற்றும் சேமித்த பிற விவரங்களைப் பரிந்துரைப் பட்டியில் காட்டு</string>
+    <string name="settings_pred_inline_autofill_summary">உங்கள் தானியங்கு நிரப்பு சேவையிலிருந்து கடவுச்சொற்கள், முகவரிகள் மற்றும் சேமித்த பிற விவரங்களைக் காட்டு</string>
     <string name="settings_pred_show_predictions_summary">தட்டச்சு செய்யும்போது சொல் பரிந்துரைகளைக் காட்டு</string>
     <string name="settings_pred_show_predictions_title">பரிந்துரைகளை இயக்கு</string>
     <string name="settings_anim_category_scale">அளவு அளவுருக்கள்</string>

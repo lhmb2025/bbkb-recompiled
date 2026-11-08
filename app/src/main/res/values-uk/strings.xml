@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Показувати індикатор модифікаторів Shift/Alt у рядку стану під час роботи з фізичною клавіатурою</string>
     <string name="settings_pred_block_offensive_summary">Приховувати потенційно образливі слова під час голосового диктування</string>
     <string name="settings_pred_block_offensive_title">Блокувати образливі слова</string>
-    <string name="settings_pred_contacts_permission_summary">Надайте доступ до контактів, щоб пропонувати імена контактів і адреси ел. пошти під час введення</string>
-    <string name="settings_pred_contacts_permission_title">Потрібен дозвіл на доступ до контактів</string>
+    <string name="settings_pred_contacts_permission_summary">Надайте дозвіл, щоб пропонувати імена контактів і адреси ел. пошти</string>
+    <string name="settings_pred_contacts_permission_title">Дозвіл на доступ до контактів</string>
     <string name="settings_pred_contacts_summary_disabled">Потрібен дозвіл на доступ до контактів</string>
     <string name="settings_pred_contacts_summary_enabled">Включати імена контактів у підказки</string>
     <string name="settings_pred_contacts_title">Підказки з контактів</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Підказки емодзі</string>
     <string name="settings_pred_flick_animation_summary">Анімувати рух слова вгору під час підтвердження підказки проведенням</string>
     <string name="settings_pred_flick_animation_title">Показувати анімацію підтвердження змахом</string>
-    <string name="settings_pred_force_suggestions_summary">Показувати панель підказок навіть у програмах, які просять клавіатуру сховати її (наприклад, Google Keep). Не застосовується до полів паролів.</string>
+    <string name="settings_pred_force_suggestions_summary">Показувати панель підказок навіть у програмах, які просять клавіатуру сховати її. Не застосовується до полів паролів.</string>
     <string name="settings_pred_force_suggestions_title">Примусові підказки</string>
     <string name="settings_pred_grant_permission">Надати дозвіл</string>
     <string name="settings_pred_next_word_summary">Пропонувати наступне слово з урахуванням контексту</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Включати слова, вивчені з вашого введення</string>
     <string name="settings_pred_personalized_title">Пропонувати вивчені слова</string>
     <string name="settings_pred_inline_autofill_title">Підказки автозаповнення</string>
-    <string name="settings_pred_inline_autofill_summary">Показувати паролі, адреси та інші збережені дані зі служби автозаповнення на панелі підказок</string>
+    <string name="settings_pred_inline_autofill_summary">Показувати паролі, адреси та інші збережені дані зі служби автозаповнення</string>
     <string name="settings_pred_show_predictions_summary">Показувати підказки слів під час введення</string>
     <string name="settings_pred_show_predictions_title">Увімкнути пропозиції</string>
     <string name="settings_anim_category_scale">Параметри масштабу</string>

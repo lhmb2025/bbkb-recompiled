@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Mostra l\'indicador de Maj/Alt a la barra d\'estat quan feu servir el teclat físic</string>
     <string name="settings_pred_block_offensive_summary">Emmascara les paraules potencialment ofensives en el dictat per veu</string>
     <string name="settings_pred_block_offensive_title">Bloqueja les paraules ofensives</string>
-    <string name="settings_pred_contacts_permission_summary">Concediu el permís de contactes per suggerir noms de contacte i adreces electròniques mentre escriviu</string>
-    <string name="settings_pred_contacts_permission_title">Cal el permís de contactes</string>
+    <string name="settings_pred_contacts_permission_summary">Concediu el permís per suggerir noms de contacte i adreces electròniques</string>
+    <string name="settings_pred_contacts_permission_title">Permís de contactes</string>
     <string name="settings_pred_contacts_summary_disabled">Cal el permís de contactes</string>
     <string name="settings_pred_contacts_summary_enabled">Inclou els noms dels contactes als suggeriments</string>
     <string name="settings_pred_contacts_title">Suggereix des dels contactes</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Suggeriments d\'emojis</string>
     <string name="settings_pred_flick_animation_summary">Anima la paraula cap amunt en confirmar un suggeriment amb una lliscada ràpida</string>
     <string name="settings_pred_flick_animation_title">Mostra l\'animació de confirmació amb lliscada ràpida</string>
-    <string name="settings_pred_force_suggestions_summary">Mostra la barra de suggeriments fins i tot a les aplicacions que demanen al teclat que l\'amagui (per exemple, Google Keep). No s\'aplica als camps de contrasenya.</string>
+    <string name="settings_pred_force_suggestions_summary">Mostra la barra de suggeriments fins i tot a les aplicacions que demanen al teclat que l\'amagui. No s\'aplica als camps de contrasenya.</string>
     <string name="settings_pred_force_suggestions_title">Força els suggeriments</string>
     <string name="settings_pred_grant_permission">Concedeix el permís</string>
     <string name="settings_pred_next_word_summary">Suggereix la paraula següent segons el context</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Inclou paraules apreses de la teva escriptura</string>
     <string name="settings_pred_personalized_title">Suggereix paraules apreses</string>
     <string name="settings_pred_inline_autofill_title">Suggeriments d\'emplenament automàtic</string>
-    <string name="settings_pred_inline_autofill_summary">Mostra contrasenyes, adreces i altres dades desades del vostre servei d\'emplenament automàtic a la barra de suggeriments</string>
+    <string name="settings_pred_inline_autofill_summary">Mostra contrasenyes, adreces i altres dades desades del vostre servei d\'emplenament automàtic</string>
     <string name="settings_pred_show_predictions_summary">Mostra suggeriments de paraules mentre escriviu</string>
     <string name="settings_pred_show_predictions_title">Activa els suggeriments</string>
     <string name="settings_anim_category_scale">Paràmetres d\'escala</string>

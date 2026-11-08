@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">ఫిజికల్ కీబోర్డ్‌ను ఉపయోగిస్తున్నప్పుడు Shift/Alt మాడిఫైయర్ సూచికను స్టేటస్ బార్‌లో చూపు</string>
     <string name="settings_pred_block_offensive_summary">వాయిస్ డిక్టేషన్‌లో అభ్యంతరకరంగా ఉండగల పదాలను దాచు</string>
     <string name="settings_pred_block_offensive_title">అభ్యంతరకర పదాలను నిరోధించు</string>
-    <string name="settings_pred_contacts_permission_summary">టైప్ చేస్తున్నప్పుడు కాంటాక్ట్ పేర్లను, ఇమెయిల్ చిరునామాలను సూచించడానికి కాంటాక్ట్‌ల అనుమతిని ఇవ్వండి</string>
-    <string name="settings_pred_contacts_permission_title">కాంటాక్ట్‌ల అనుమతి అవసరం</string>
+    <string name="settings_pred_contacts_permission_summary">కాంటాక్ట్ పేర్లను, ఇమెయిల్ చిరునామాలను సూచించడానికి అనుమతిని ఇవ్వండి</string>
+    <string name="settings_pred_contacts_permission_title">కాంటాక్ట్‌ల అనుమతి</string>
     <string name="settings_pred_contacts_summary_disabled">కాంటాక్ట్‌ల అనుమతి అవసరం</string>
     <string name="settings_pred_contacts_summary_enabled">సూచనల్లో కాంటాక్ట్ పేర్లను చేర్చు</string>
     <string name="settings_pred_contacts_title">కాంటాక్ట్‌ల నుండి సూచించు</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">ఎమోజి సూచనలు</string>
     <string name="settings_pred_flick_animation_summary">స్వైప్‌తో సూచనను ఖరారు చేసినప్పుడు పదాన్ని పైకి యానిమేట్ చేయి</string>
     <string name="settings_pred_flick_animation_title">ఫ్లిక్ ఖరారు యానిమేషన్‌ను చూపు</string>
-    <string name="settings_pred_force_suggestions_summary">సూచనల బార్‌ను దాచమని కీబోర్డ్‌ను కోరే యాప్‌లలో కూడా (ఉదా. Google Keep) దాన్ని చూపు. పాస్‌వర్డ్ ఫీల్డ్‌లకు వర్తించదు.</string>
+    <string name="settings_pred_force_suggestions_summary">సూచనల బార్‌ను దాచమని కీబోర్డ్‌ను కోరే యాప్‌లలో కూడా దాన్ని చూపు. పాస్‌వర్డ్ ఫీల్డ్‌లకు వర్తించదు.</string>
     <string name="settings_pred_force_suggestions_title">సూచనలను బలవంతంగా చూపు</string>
     <string name="settings_pred_grant_permission">అనుమతి ఇవ్వు</string>
     <string name="settings_pred_next_word_summary">సందర్భం ఆధారంగా తదుపరి పదాన్ని సూచించు</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">మీ టైపింగ్ నుండి నేర్చుకున్న పదాలను చేర్చు</string>
     <string name="settings_pred_personalized_title">నేర్చుకున్న పదాలను సూచించు</string>
     <string name="settings_pred_inline_autofill_title">ఆటోఫిల్ సూచనలు</string>
-    <string name="settings_pred_inline_autofill_summary">మీ ఆటోఫిల్ సేవ నుండి పాస్‌వర్డ్‌లు, చిరునామాలు మరియు సేవ్ చేసిన ఇతర వివరాలను సూచనల బార్‌లో చూపు</string>
+    <string name="settings_pred_inline_autofill_summary">మీ ఆటోఫిల్ సేవ నుండి పాస్‌వర్డ్‌లు, చిరునామాలు మరియు సేవ్ చేసిన ఇతర వివరాలను చూపు</string>
     <string name="settings_pred_show_predictions_summary">టైప్ చేస్తున్నప్పుడు పద సూచనలను చూపు</string>
     <string name="settings_pred_show_predictions_title">సూచనలను ప్రారంభించు</string>
     <string name="settings_anim_category_scale">స్కేల్ పారామితులు</string>

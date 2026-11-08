@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Паказваць індыкатар Shift/Alt у радку стану пры працы з фізічнай клавіятурай</string>
     <string name="settings_pred_block_offensive_summary">Хаваць магчыма абразлівыя словы пры галасавой дыктоўцы</string>
     <string name="settings_pred_block_offensive_title">Блакіраваць абразлівыя словы</string>
-    <string name="settings_pred_contacts_permission_summary">Дайце дазвол на кантакты, каб прапаноўваць імёны кантактаў і адрасы электроннай пошты падчас набору</string>
-    <string name="settings_pred_contacts_permission_title">Патрэбны дазвол на кантакты</string>
+    <string name="settings_pred_contacts_permission_summary">Дайце дазвол, каб прапаноўваць імёны кантактаў і адрасы электроннай пошты</string>
+    <string name="settings_pred_contacts_permission_title">Дазвол на кантакты</string>
     <string name="settings_pred_contacts_summary_disabled">Патрэбны дазвол на кантакты</string>
     <string name="settings_pred_contacts_summary_enabled">Уключаць імёны кантактаў у прапановы</string>
     <string name="settings_pred_contacts_title">Прапаноўваць з кантактаў</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Прапановы эмодзі</string>
     <string name="settings_pred_flick_animation_summary">Анімаваць рух слова ўверх пры пацвярджэнні прапановы правядзеннем</string>
     <string name="settings_pred_flick_animation_title">Паказваць анімацыю пацвярджэння ўзмахам</string>
-    <string name="settings_pred_force_suggestions_summary">Паказваць панэль прапаноў нават у праграмах, якія просяць клавіятуру схаваць яе (напрыклад, Google Keep). Не датычыцца палёў пароля.</string>
+    <string name="settings_pred_force_suggestions_summary">Паказваць панэль прапаноў нават у праграмах, якія просяць клавіятуру схаваць яе. Не датычыцца палёў пароля.</string>
     <string name="settings_pred_force_suggestions_title">Прымусовыя прапановы</string>
     <string name="settings_pred_grant_permission">Даць дазвол</string>
     <string name="settings_pred_next_word_summary">Прапаноўваць наступнае слова паводле кантэксту</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Уключаць словы, вывучаныя з вашага ўводу</string>
     <string name="settings_pred_personalized_title">Прапаноўваць вывучаныя словы</string>
     <string name="settings_pred_inline_autofill_title">Прапановы аўтазапаўнення</string>
-    <string name="settings_pred_inline_autofill_summary">Паказваць паролі, адрасы і іншыя захаваныя даныя са службы аўтазапаўнення на панэлі прапаноў</string>
+    <string name="settings_pred_inline_autofill_summary">Паказваць паролі, адрасы і іншыя захаваныя даныя са службы аўтазапаўнення</string>
     <string name="settings_pred_show_predictions_summary">Паказваць прапановы слоў падчас набору</string>
     <string name="settings_pred_show_predictions_title">Уключыць прапановы</string>
     <string name="settings_anim_category_scale">Параметры маштабу</string>

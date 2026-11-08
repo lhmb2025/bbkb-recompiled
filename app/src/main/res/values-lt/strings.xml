@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Naudojant fizinę klaviatūrą rodyti „Shift“ / „Alt“ indikatorių būsenos juostoje</string>
     <string name="settings_pred_block_offensive_summary">Slėpti galimai įžeidžiančius žodžius diktuojant balsu</string>
     <string name="settings_pred_block_offensive_title">Blokuoti įžeidžiančius žodžius</string>
-    <string name="settings_pred_contacts_permission_summary">Suteikite kontaktų leidimą, kad rašant būtų siūlomi kontaktų vardai ir el. pašto adresai</string>
-    <string name="settings_pred_contacts_permission_title">Reikia kontaktų leidimo</string>
+    <string name="settings_pred_contacts_permission_summary">Suteikite leidimą, kad būtų siūlomi kontaktų vardai ir el. pašto adresai</string>
+    <string name="settings_pred_contacts_permission_title">Kontaktų leidimas</string>
     <string name="settings_pred_contacts_summary_disabled">Reikia kontaktų leidimo</string>
     <string name="settings_pred_contacts_summary_enabled">Įtraukti kontaktų vardus į pasiūlymus</string>
     <string name="settings_pred_contacts_title">Siūlyti iš kontaktų</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Jaustukų pasiūlymai</string>
     <string name="settings_pred_flick_animation_summary">Animuoti žodį aukštyn, kai pasiūlymas patvirtinamas perbraukimu</string>
     <string name="settings_pred_flick_animation_title">Rodyti brūkštelėjimo patvirtinimo animaciją</string>
-    <string name="settings_pred_force_suggestions_summary">Rodyti pasiūlymų juostą net programose, kurios prašo klaviatūros ją slėpti (pvz., „Google Keep“). Netaikoma slaptažodžių laukams.</string>
+    <string name="settings_pred_force_suggestions_summary">Rodyti pasiūlymų juostą net programose, kurios prašo klaviatūros ją slėpti. Netaikoma slaptažodžių laukams.</string>
     <string name="settings_pred_force_suggestions_title">Priverstinai rodyti pasiūlymus</string>
     <string name="settings_pred_grant_permission">Suteikti leidimą</string>
     <string name="settings_pred_next_word_summary">Siūlyti kitą žodį pagal kontekstą</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Įtraukti iš jūsų rašymo išmoktus žodžius</string>
     <string name="settings_pred_personalized_title">Siūlyti išmoktus žodžius</string>
     <string name="settings_pred_inline_autofill_title">Automatinio pildymo pasiūlymai</string>
-    <string name="settings_pred_inline_autofill_summary">Rodyti slaptažodžius, adresus ir kitus išsaugotus duomenis iš automatinio pildymo paslaugos pasiūlymų juostoje</string>
+    <string name="settings_pred_inline_autofill_summary">Rodyti slaptažodžius, adresus ir kitus išsaugotus duomenis iš automatinio pildymo paslaugos</string>
     <string name="settings_pred_show_predictions_summary">Rodyti žodžių pasiūlymus rašant</string>
     <string name="settings_pred_show_predictions_title">Įjungti pasiūlymus</string>
     <string name="settings_anim_category_scale">Mastelio parametrai</string>

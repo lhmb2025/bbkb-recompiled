@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Erakutsi Shift/Alt adierazlea egoera-barran teklatu fisikoa erabiltzean</string>
     <string name="settings_pred_block_offensive_summary">Ezkutatu iraingarriak izan daitezkeen hitzak ahots bidezko diktaketan</string>
     <string name="settings_pred_block_offensive_title">Blokeatu hitz iraingarriak</string>
-    <string name="settings_pred_contacts_permission_summary">Eman kontaktuetarako baimena idatzi ahala kontaktuen izenak eta helbide elektronikoak iradokitzeko</string>
-    <string name="settings_pred_contacts_permission_title">Kontaktuetarako baimena behar da</string>
+    <string name="settings_pred_contacts_permission_summary">Eman baimena kontaktuen izenak eta helbide elektronikoak iradokitzeko</string>
+    <string name="settings_pred_contacts_permission_title">Kontaktuetarako baimena</string>
     <string name="settings_pred_contacts_summary_disabled">Kontaktuetarako baimena behar da</string>
     <string name="settings_pred_contacts_summary_enabled">Sartu kontaktuen izenak iradokizunetan</string>
     <string name="settings_pred_contacts_title">Iradoki kontaktuetatik</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Emotikonoen iradokizunak</string>
     <string name="settings_pred_flick_animation_summary">Animatu hitza gorantz iradokizun bat lerratuz berrestean</string>
     <string name="settings_pred_flick_animation_title">Erakutsi kolpetxoaren berreste-animazioa</string>
-    <string name="settings_pred_force_suggestions_summary">Erakutsi iradokizun-barra teklatuari ezkutatzeko eskatzen dioten aplikazioetan ere (adibidez, Google Keep). Ez da pasahitz-eremuetan aplikatzen.</string>
+    <string name="settings_pred_force_suggestions_summary">Erakutsi iradokizun-barra teklatuari ezkutatzeko eskatzen dioten aplikazioetan ere. Ez da pasahitz-eremuetan aplikatzen.</string>
     <string name="settings_pred_force_suggestions_title">Behartu iradokizunak</string>
     <string name="settings_pred_grant_permission">Eman baimena</string>
     <string name="settings_pred_next_word_summary">Iradoki hurrengo hitza testuinguruaren arabera</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Sartu zure idazketatik ikasitako hitzak</string>
     <string name="settings_pred_personalized_title">Iradoki ikasitako hitzak</string>
     <string name="settings_pred_inline_autofill_title">Betetze automatikoaren iradokizunak</string>
-    <string name="settings_pred_inline_autofill_summary">Erakutsi iradokizun-barran betetze automatikoko zerbitzuan gordetako pasahitzak, helbideak eta bestelako datuak</string>
+    <string name="settings_pred_inline_autofill_summary">Erakutsi betetze automatikoko zerbitzuan gordetako pasahitzak, helbideak eta bestelako datuak</string>
     <string name="settings_pred_show_predictions_summary">Erakutsi hitz-iradokizunak idatzi ahala</string>
     <string name="settings_pred_show_predictions_title">Gaitu iradokizunak</string>
     <string name="settings_anim_category_scale">Eskala-parametroak</string>

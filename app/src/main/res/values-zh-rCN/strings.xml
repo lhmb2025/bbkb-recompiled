@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">使用实体键盘时在状态栏中显示 Shift/Alt 修饰键指示标志</string>
     <string name="settings_pred_block_offensive_summary">在语音输入时隐藏可能令人反感的字词</string>
     <string name="settings_pred_block_offensive_title">屏蔽冒犯性字词</string>
-    <string name="settings_pred_contacts_permission_summary">授予联系人权限，以便在键入时建议联系人姓名和电子邮件地址</string>
-    <string name="settings_pred_contacts_permission_title">需要联系人权限</string>
+    <string name="settings_pred_contacts_permission_summary">授予权限，以便建议联系人姓名和电子邮件地址</string>
+    <string name="settings_pred_contacts_permission_title">联系人权限</string>
     <string name="settings_pred_contacts_summary_disabled">需要联系人权限</string>
     <string name="settings_pred_contacts_summary_enabled">在建议中包含联系人姓名</string>
     <string name="settings_pred_contacts_title">根据联系人提供建议</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">表情符号建议</string>
     <string name="settings_pred_flick_animation_summary">通过滑动采用建议时，让字词向上动画显示</string>
     <string name="settings_pred_flick_animation_title">显示轻扫采用动画</string>
-    <string name="settings_pred_force_suggestions_summary">即使应用要求键盘隐藏建议栏（例如 Google Keep），也仍然显示。不适用于密码字段。</string>
+    <string name="settings_pred_force_suggestions_summary">即使应用要求键盘隐藏建议栏，也仍然显示。不适用于密码字段。</string>
     <string name="settings_pred_force_suggestions_title">强制显示建议</string>
     <string name="settings_pred_grant_permission">授予权限</string>
     <string name="settings_pred_next_word_summary">根据上下文建议下一个字词</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">包含从输入中学习的单词</string>
     <string name="settings_pred_personalized_title">建议已学习的单词</string>
     <string name="settings_pred_inline_autofill_title">自动填充建议</string>
-    <string name="settings_pred_inline_autofill_summary">在建议栏中显示自动填充服务保存的密码、地址和其他信息</string>
+    <string name="settings_pred_inline_autofill_summary">显示自动填充服务保存的密码、地址和其他信息</string>
     <string name="settings_pred_show_predictions_summary">键入时显示字词建议</string>
     <string name="settings_pred_show_predictions_title">启用建议</string>
     <string name="settings_anim_category_scale">缩放参数</string>

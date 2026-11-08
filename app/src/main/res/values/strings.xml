@@ -570,8 +570,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Display Shift/Alt modifier indicator in status bar when using physical keyboard</string>
     <string name="settings_pred_block_offensive_summary">Mask potentially offensive words in voice dictation</string>
     <string name="settings_pred_block_offensive_title">Block offensive words</string>
-    <string name="settings_pred_contacts_permission_summary">Grant contacts permission to suggest contact names and email addresses while typing</string>
-    <string name="settings_pred_contacts_permission_title">Contacts Permission Required</string>
+    <string name="settings_pred_contacts_permission_summary">Grant permission to suggest contact names and email addresses</string>
+    <string name="settings_pred_contacts_permission_title">Contacts permission</string>
     <string name="settings_pred_contacts_summary_disabled">Contacts permission required</string>
     <string name="settings_pred_contacts_summary_enabled">Include contact names in suggestions</string>
     <string name="settings_pred_contacts_title">Suggest from contacts</string>
@@ -579,9 +579,9 @@
     <string name="settings_pred_emoji_title">Emoji suggestions</string>
     <string name="settings_pred_flick_animation_summary">Animate the word upward when committing a suggestion with a swipe</string>
     <string name="settings_pred_flick_animation_title">Show flick commit animation</string>
-    <string name="settings_pred_force_suggestions_summary">Show the suggestion strip even in apps that ask the keyboard to hide it (e.g. Google Keep). Does not apply to password fields.</string>
+    <string name="settings_pred_force_suggestions_summary">Show the suggestion strip even in apps that ask the keyboard to hide it. Does not apply to password fields.</string>
     <string name="settings_pred_force_suggestions_title">Force suggestions</string>
-    <string name="settings_pred_grant_permission">Grant Permission</string>
+    <string name="settings_pred_grant_permission">Grant permission</string>
     <string name="settings_pred_next_word_summary">Suggest next word based on context</string>
     <string name="settings_pred_next_word_title">Next word suggestions</string>
     <string name="settings_pred_on_key_summary">Show suggestions on virtual keyboard as you type</string>
@@ -589,7 +589,7 @@
     <string name="settings_pred_personalized_summary">Include words learned from your typing</string>
     <string name="settings_pred_personalized_title">Suggest learned words</string>
     <string name="settings_pred_inline_autofill_title">Autofill suggestions</string>
-    <string name="settings_pred_inline_autofill_summary">Show passwords, addresses and other saved details from your autofill service on the suggestion bar</string>
+    <string name="settings_pred_inline_autofill_summary">Show passwords, addresses and other saved details from your autofill service</string>
     <string name="settings_pred_show_predictions_summary">Display word suggestions while typing</string>
     <string name="settings_pred_show_predictions_title">Enable suggestions</string>
 

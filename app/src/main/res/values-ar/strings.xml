@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">عرض مؤشر مفتاحَي Shift/Alt في شريط الحالة عند استخدام لوحة المفاتيح الفعلية</string>
     <string name="settings_pred_block_offensive_summary">إخفاء الكلمات التي قد تكون مسيئة في الإملاء الصوتي</string>
     <string name="settings_pred_block_offensive_title">حظر الكلمات المسيئة</string>
-    <string name="settings_pred_contacts_permission_summary">امنح إذن جهات الاتصال لاقتراح أسماء جهات الاتصال وعناوين البريد الإلكتروني أثناء الكتابة</string>
-    <string name="settings_pred_contacts_permission_title">إذن جهات الاتصال مطلوب</string>
+    <string name="settings_pred_contacts_permission_summary">امنح الإذن لاقتراح أسماء جهات الاتصال وعناوين البريد الإلكتروني</string>
+    <string name="settings_pred_contacts_permission_title">إذن جهات الاتصال</string>
     <string name="settings_pred_contacts_summary_disabled">إذن جهات الاتصال مطلوب</string>
     <string name="settings_pred_contacts_summary_enabled">تضمين أسماء جهات الاتصال في الاقتراحات</string>
     <string name="settings_pred_contacts_title">الاقتراح من جهات الاتصال</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">اقتراحات الرموز التعبيرية</string>
     <string name="settings_pred_flick_animation_summary">تحريك الكلمة للأعلى عند تأكيد اقتراح بالتمرير</string>
     <string name="settings_pred_flick_animation_title">عرض حركة التأكيد بالتمرير</string>
-    <string name="settings_pred_force_suggestions_summary">عرض شريط الاقتراحات حتى في التطبيقات التي تطلب من لوحة المفاتيح إخفاءه (مثل Google Keep). لا ينطبق على حقول كلمات المرور.</string>
+    <string name="settings_pred_force_suggestions_summary">عرض شريط الاقتراحات حتى في التطبيقات التي تطلب من لوحة المفاتيح إخفاءه. لا ينطبق على حقول كلمات المرور.</string>
     <string name="settings_pred_force_suggestions_title">فرض الاقتراحات</string>
     <string name="settings_pred_grant_permission">منح الإذن</string>
     <string name="settings_pred_next_word_summary">اقتراح الكلمة التالية بناءً على السياق</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">تضمين الكلمات المتعلَّمة من كتابتك</string>
     <string name="settings_pred_personalized_title">اقتراح الكلمات المتعلَّمة</string>
     <string name="settings_pred_inline_autofill_title">اقتراحات الملء التلقائي</string>
-    <string name="settings_pred_inline_autofill_summary">عرض كلمات المرور والعناوين والتفاصيل الأخرى المحفوظة من خدمة الملء التلقائي على شريط الاقتراحات</string>
+    <string name="settings_pred_inline_autofill_summary">عرض كلمات المرور والعناوين والتفاصيل الأخرى المحفوظة من خدمة الملء التلقائي</string>
     <string name="settings_pred_show_predictions_summary">عرض اقتراحات الكلمات أثناء الكتابة</string>
     <string name="settings_pred_show_predictions_title">تفعيل الاقتراحات</string>
     <string name="settings_anim_category_scale">معلمات المقياس</string>

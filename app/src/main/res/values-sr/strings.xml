@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Прикажи индикатор модификатора Shift/Alt на статусној траци при коришћењу физичке тастатуре</string>
     <string name="settings_pred_block_offensive_summary">Сакриј потенцијално увредљиве речи при гласовном диктирању</string>
     <string name="settings_pred_block_offensive_title">Блокирај увредљиве речи</string>
-    <string name="settings_pred_contacts_permission_summary">Дозволите приступ контактима да би се током куцања предлагала имена контаката и имејл адресе</string>
-    <string name="settings_pred_contacts_permission_title">Потребна је дозвола за контакте</string>
+    <string name="settings_pred_contacts_permission_summary">Дајте дозволу да би се предлагала имена контаката и имејл адресе</string>
+    <string name="settings_pred_contacts_permission_title">Дозвола за контакте</string>
     <string name="settings_pred_contacts_summary_disabled">Потребна је дозвола за контакте</string>
     <string name="settings_pred_contacts_summary_enabled">Укључи имена контаката у предлоге</string>
     <string name="settings_pred_contacts_title">Предлажи из контаката</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Предлози емоџија</string>
     <string name="settings_pred_flick_animation_summary">Анимирај реч нагоре при потврђивању предлога превлачењем</string>
     <string name="settings_pred_flick_animation_title">Прикажи анимацију потврде потезом</string>
-    <string name="settings_pred_force_suggestions_summary">Прикажи траку предлога и у апликацијама које траже да је тастатура сакрије (нпр. Google Keep). Не односи се на поља за лозинку.</string>
+    <string name="settings_pred_force_suggestions_summary">Прикажи траку предлога и у апликацијама које траже да је тастатура сакрије. Не односи се на поља за лозинку.</string>
     <string name="settings_pred_force_suggestions_title">Принудно прикажи предлоге</string>
     <string name="settings_pred_grant_permission">Додели дозволу</string>
     <string name="settings_pred_next_word_summary">Предлажи следећу реч на основу контекста</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Укључи речи научене из вашег куцања</string>
     <string name="settings_pred_personalized_title">Предлажи научене речи</string>
     <string name="settings_pred_inline_autofill_title">Предлози аутоматског попуњавања</string>
-    <string name="settings_pred_inline_autofill_summary">Прикажи лозинке, адресе и друге сачуване податке из услуге аутоматског попуњавања на траци предлога</string>
+    <string name="settings_pred_inline_autofill_summary">Прикажи лозинке, адресе и друге сачуване податке из услуге аутоматског попуњавања</string>
     <string name="settings_pred_show_predictions_summary">Прикажи предлоге речи док куцате</string>
     <string name="settings_pred_show_predictions_title">Омогући предлоге</string>
     <string name="settings_anim_category_scale">Параметри размере</string>

@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">物理キーボードの使用中にShift/Altの状態をステータスバーに表示します</string>
     <string name="settings_pred_block_offensive_summary">音声入力で不適切な可能性のある単語を伏せ字にします</string>
     <string name="settings_pred_block_offensive_title">不適切な単語をブロック</string>
-    <string name="settings_pred_contacts_permission_summary">入力中に連絡先の名前やメールアドレスを候補に表示するには、連絡先の権限を許可してください</string>
-    <string name="settings_pred_contacts_permission_title">連絡先の権限が必要です</string>
+    <string name="settings_pred_contacts_permission_summary">連絡先の名前やメールアドレスを候補に表示するには、権限を許可してください</string>
+    <string name="settings_pred_contacts_permission_title">連絡先の権限</string>
     <string name="settings_pred_contacts_summary_disabled">連絡先の権限が必要です</string>
     <string name="settings_pred_contacts_summary_enabled">連絡先の名前を候補に含めます</string>
     <string name="settings_pred_contacts_title">連絡先から候補を表示</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">絵文字の候補</string>
     <string name="settings_pred_flick_animation_summary">スワイプで候補を確定するときに単語を上方向にアニメーション表示します</string>
     <string name="settings_pred_flick_animation_title">フリック確定のアニメーションを表示</string>
-    <string name="settings_pred_force_suggestions_summary">候補バーを非表示にするよう要求するアプリ(Google Keepなど)でも候補バーを表示します。パスワード欄には適用されません。</string>
+    <string name="settings_pred_force_suggestions_summary">候補バーを非表示にするよう要求するアプリでも候補バーを表示します。パスワード欄には適用されません。</string>
     <string name="settings_pred_force_suggestions_title">候補を強制表示</string>
     <string name="settings_pred_grant_permission">権限を許可</string>
     <string name="settings_pred_next_word_summary">文脈に基づいて次の単語を候補に表示します</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">入力から学習した単語を含める</string>
     <string name="settings_pred_personalized_title">学習した単語を候補に表示</string>
     <string name="settings_pred_inline_autofill_title">自動入力の候補</string>
-    <string name="settings_pred_inline_autofill_summary">自動入力サービスに保存されたパスワードや住所などを候補バーに表示します</string>
+    <string name="settings_pred_inline_autofill_summary">自動入力サービスに保存されたパスワードや住所などを表示します</string>
     <string name="settings_pred_show_predictions_summary">入力中に単語の候補を表示します</string>
     <string name="settings_pred_show_predictions_title">候補を有効にする</string>
     <string name="settings_anim_category_scale">倍率のパラメータ</string>

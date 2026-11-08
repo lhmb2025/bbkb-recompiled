@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Näytä vaihto- ja Alt-näppäimen ilmaisin tilapalkissa, kun käytät fyysistä näppäimistöä</string>
     <string name="settings_pred_block_offensive_summary">Piilota mahdollisesti loukkaavat sanat puhesanelussa</string>
     <string name="settings_pred_block_offensive_title">Estä loukkaavat sanat</string>
-    <string name="settings_pred_contacts_permission_summary">Myönnä yhteystietojen käyttöoikeus, jotta yhteystietojen nimiä ja sähköpostiosoitteita voidaan ehdottaa kirjoittaessasi</string>
-    <string name="settings_pred_contacts_permission_title">Yhteystietojen käyttöoikeus vaaditaan</string>
+    <string name="settings_pred_contacts_permission_summary">Myönnä käyttöoikeus, jotta yhteystietojen nimiä ja sähköpostiosoitteita voidaan ehdottaa</string>
+    <string name="settings_pred_contacts_permission_title">Yhteystietojen käyttöoikeus</string>
     <string name="settings_pred_contacts_summary_disabled">Yhteystietojen käyttöoikeus vaaditaan</string>
     <string name="settings_pred_contacts_summary_enabled">Sisällytä yhteystietojen nimet ehdotuksiin</string>
     <string name="settings_pred_contacts_title">Ehdota yhteystiedoista</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Emoji-ehdotukset</string>
     <string name="settings_pred_flick_animation_summary">Animoi sana ylöspäin, kun hyväksyt ehdotuksen pyyhkäisemällä</string>
     <string name="settings_pred_flick_animation_title">Näytä animaatio pyyhkäisyhyväksynnässä</string>
-    <string name="settings_pred_force_suggestions_summary">Näytä ehdotuspalkki myös sovelluksissa, jotka pyytävät näppäimistöä piilottamaan sen (esim. Google Keep). Ei koske salasanakenttiä.</string>
+    <string name="settings_pred_force_suggestions_summary">Näytä ehdotuspalkki myös sovelluksissa, jotka pyytävät näppäimistöä piilottamaan sen. Ei koske salasanakenttiä.</string>
     <string name="settings_pred_force_suggestions_title">Pakota ehdotukset</string>
     <string name="settings_pred_grant_permission">Myönnä käyttöoikeus</string>
     <string name="settings_pred_next_word_summary">Ehdota seuraavaa sanaa asiayhteyden perusteella</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Sisällytä kirjoituksestasi opitut sanat</string>
     <string name="settings_pred_personalized_title">Ehdota opittuja sanoja</string>
     <string name="settings_pred_inline_autofill_title">Automaattisen täytön ehdotukset</string>
-    <string name="settings_pred_inline_autofill_summary">Näytä ehdotuspalkissa salasanat, osoitteet ja muut automaattisen täytön palveluun tallennetut tiedot</string>
+    <string name="settings_pred_inline_autofill_summary">Näytä salasanat, osoitteet ja muut automaattisen täytön palveluun tallennetut tiedot</string>
     <string name="settings_pred_show_predictions_summary">Näytä sanaehdotuksia kirjoittaessasi</string>
     <string name="settings_pred_show_predictions_title">Ota ehdotukset käyttöön</string>
     <string name="settings_anim_category_scale">Skaalausparametrit</string>

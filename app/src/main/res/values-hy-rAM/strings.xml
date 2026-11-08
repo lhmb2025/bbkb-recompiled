@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Ցուցադրել Shift/Alt ձևափոխիչի ցուցիչը կարգավիճակի գոտում՝ ֆիզիկական ստեղնաշարն օգտագործելիս</string>
     <string name="settings_pred_block_offensive_summary">Թաքցնել հնարավոր վիրավորական բառերը ձայնային թելադրության ժամանակ</string>
     <string name="settings_pred_block_offensive_title">Արգելափակել վիրավորական բառերը</string>
-    <string name="settings_pred_contacts_permission_summary">Տվեք կոնտակտների թույլտվությունը՝ մուտքագրելիս կոնտակտների անուններ և էլ. հասցեներ առաջարկելու համար</string>
-    <string name="settings_pred_contacts_permission_title">Պահանջվում է կոնտակտների թույլտվություն</string>
+    <string name="settings_pred_contacts_permission_summary">Տվեք թույլտվությունը՝ կոնտակտների անուններ և էլ. հասցեներ առաջարկելու համար</string>
+    <string name="settings_pred_contacts_permission_title">Կոնտակտների թույլտվություն</string>
     <string name="settings_pred_contacts_summary_disabled">Պահանջվում է կոնտակտների թույլտվություն</string>
     <string name="settings_pred_contacts_summary_enabled">Ներառել կոնտակտների անունները առաջարկներում</string>
     <string name="settings_pred_contacts_title">Առաջարկել կոնտակտներից</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Զմայլիկների առաջարկներ</string>
     <string name="settings_pred_flick_animation_summary">Շարժապատկերել բառը դեպի վեր՝ առաջարկը սահեցումով հաստատելիս</string>
     <string name="settings_pred_flick_animation_title">Ցույց տալ հաստատման շարժապատկերը</string>
-    <string name="settings_pred_force_suggestions_summary">Ցույց տալ առաջարկների գոտին նույնիսկ այն հավելվածներում, որոնք խնդրում են ստեղնաշարին թաքցնել այն (օրինակ՝ Google Keep)։ Չի վերաբերում գաղտնաբառի դաշտերին։</string>
+    <string name="settings_pred_force_suggestions_summary">Ցույց տալ առաջարկների գոտին նույնիսկ այն հավելվածներում, որոնք խնդրում են ստեղնաշարին թաքցնել այն։ Չի վերաբերում գաղտնաբառի դաշտերին։</string>
     <string name="settings_pred_force_suggestions_title">Հարկադրել առաջարկները</string>
     <string name="settings_pred_grant_permission">Տալ թույլտվություն</string>
     <string name="settings_pred_next_word_summary">Առաջարկել հաջորդ բառը՝ ըստ համատեքստի</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Ներառել ձեր մուտքագրումից սովորած բառերը</string>
     <string name="settings_pred_personalized_title">Առաջարկել սովորած բառեր</string>
     <string name="settings_pred_inline_autofill_title">Ավտոլրացման առաջարկներ</string>
-    <string name="settings_pred_inline_autofill_summary">Ցույց տալ գաղտնաբառերը, հասցեները և ավտոլրացման ծառայության մյուս պահված տվյալները առաջարկների գոտում</string>
+    <string name="settings_pred_inline_autofill_summary">Ցույց տալ գաղտնաբառերը, հասցեները և ավտոլրացման ծառայության մյուս պահված տվյալները</string>
     <string name="settings_pred_show_predictions_summary">Ցուցադրել բառերի առաջարկները մուտքագրելիս</string>
     <string name="settings_pred_show_predictions_title">Միացնել առաջարկները</string>
     <string name="settings_anim_category_scale">Մասշտաբի պարամետրեր</string>

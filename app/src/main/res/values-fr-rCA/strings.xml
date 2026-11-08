@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Afficher l\'indicateur Maj./Alt dans la barre d\'état lors de l\'utilisation du clavier physique</string>
     <string name="settings_pred_block_offensive_summary">Masquer les mots potentiellement offensants dans la dictée vocale</string>
     <string name="settings_pred_block_offensive_title">Bloquer les mots offensants</string>
-    <string name="settings_pred_contacts_permission_summary">Accordez l\'autorisation d\'accès aux contacts pour suggérer des noms de contacts et des adresses courriel pendant la saisie</string>
-    <string name="settings_pred_contacts_permission_title">Autorisation Contacts requise</string>
+    <string name="settings_pred_contacts_permission_summary">Accordez l\'autorisation pour suggérer des noms de contacts et des adresses courriel</string>
+    <string name="settings_pred_contacts_permission_title">Autorisation des contacts</string>
     <string name="settings_pred_contacts_summary_disabled">Autorisation d\'accès aux contacts requise</string>
     <string name="settings_pred_contacts_summary_enabled">Inclure les noms de contacts dans les suggestions</string>
     <string name="settings_pred_contacts_title">Suggérer depuis les contacts</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Suggestions d\'emojis</string>
     <string name="settings_pred_flick_animation_summary">Animer le mot vers le haut lors de la validation d\'une suggestion par effleurement</string>
     <string name="settings_pred_flick_animation_title">Afficher l\'animation de validation par effleurement</string>
-    <string name="settings_pred_force_suggestions_summary">Afficher la barre de suggestions même dans les applications qui demandent au clavier de la masquer (p. ex. Google Keep). Ne s\'applique pas aux champs de mot de passe.</string>
+    <string name="settings_pred_force_suggestions_summary">Afficher la barre de suggestions même dans les applications qui demandent au clavier de la masquer. Ne s\'applique pas aux champs de mot de passe.</string>
     <string name="settings_pred_force_suggestions_title">Forcer les suggestions</string>
     <string name="settings_pred_grant_permission">Accorder l\'autorisation</string>
     <string name="settings_pred_next_word_summary">Suggérer le mot suivant en fonction du contexte</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Inclure les mots appris de votre saisie</string>
     <string name="settings_pred_personalized_title">Suggérer les mots appris</string>
     <string name="settings_pred_inline_autofill_title">Suggestions de saisie automatique</string>
-    <string name="settings_pred_inline_autofill_summary">Afficher les mots de passe, adresses et autres renseignements enregistrés de votre service de saisie automatique dans la barre de suggestions</string>
+    <string name="settings_pred_inline_autofill_summary">Afficher les mots de passe, adresses et autres renseignements enregistrés de votre service de saisie automatique</string>
     <string name="settings_pred_show_predictions_summary">Afficher les suggestions de mots pendant la saisie</string>
     <string name="settings_pred_show_predictions_title">Activer les suggestions</string>
     <string name="settings_anim_category_scale">Paramètres d\'échelle</string>

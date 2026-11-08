@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Jismoniy klaviaturadan foydalanilganda holat panelida Shift/Alt modifikatori indikatorini ko‘rsatish</string>
     <string name="settings_pred_block_offensive_summary">Ovozli diktovkada haqoratli bo‘lishi mumkin bo‘lgan so‘zlarni yashirish</string>
     <string name="settings_pred_block_offensive_title">Haqoratli so‘zlarni bloklash</string>
-    <string name="settings_pred_contacts_permission_summary">Yozayotganda kontakt ismlari va e-pochta manzillarini taklif qilish uchun kontaktlarga ruxsat bering</string>
-    <string name="settings_pred_contacts_permission_title">Kontaktlarga ruxsat kerak</string>
+    <string name="settings_pred_contacts_permission_summary">Kontakt ismlari va e-pochta manzillarini taklif qilish uchun ruxsat bering</string>
+    <string name="settings_pred_contacts_permission_title">Kontaktlarga ruxsat</string>
     <string name="settings_pred_contacts_summary_disabled">Kontaktlarga ruxsat kerak</string>
     <string name="settings_pred_contacts_summary_enabled">Kontakt ismlarini takliflarga kiritish</string>
     <string name="settings_pred_contacts_title">Kontaktlardan taklif qilish</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Kulgich takliflari</string>
     <string name="settings_pred_flick_animation_summary">Taklif surish bilan qo‘llanganda so‘zni yuqoriga qarab animatsiyalash</string>
     <string name="settings_pred_flick_animation_title">Silkitib qo‘llash animatsiyasini ko‘rsatish</string>
-    <string name="settings_pred_force_suggestions_summary">Takliflar panelini uni yashirishni so‘raydigan ilovalarda ham ko‘rsatish (masalan, Google Keep). Parol maydonlariga taalluqli emas.</string>
+    <string name="settings_pred_force_suggestions_summary">Takliflar panelini uni yashirishni so‘raydigan ilovalarda ham ko‘rsatish. Parol maydonlariga taalluqli emas.</string>
     <string name="settings_pred_force_suggestions_title">Takliflarni majburan ko‘rsatish</string>
     <string name="settings_pred_grant_permission">Ruxsat berish</string>
     <string name="settings_pred_next_word_summary">Kontekstga qarab keyingi so‘zni taklif qilish</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Yozuvingizdan o\'rganilgan so\'zlarni kiritish</string>
     <string name="settings_pred_personalized_title">O\'rganilgan so\'zlarni taklif qilish</string>
     <string name="settings_pred_inline_autofill_title">Avtomatik to‘ldirish takliflari</string>
-    <string name="settings_pred_inline_autofill_summary">Avtomatik to‘ldirish xizmatidagi parollar, manzillar va boshqa saqlangan ma’lumotlarni takliflar panelida ko‘rsatish</string>
+    <string name="settings_pred_inline_autofill_summary">Avtomatik to‘ldirish xizmatidagi parollar, manzillar va boshqa saqlangan ma’lumotlarni ko‘rsatish</string>
     <string name="settings_pred_show_predictions_summary">Yozayotganda so‘z takliflarini ko‘rsatish</string>
     <string name="settings_pred_show_predictions_title">Takliflarni yoqish</string>
     <string name="settings_anim_category_scale">Masshtab parametrlari</string>

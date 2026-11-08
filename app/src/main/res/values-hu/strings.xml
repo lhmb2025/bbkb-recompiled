@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">A Shift/Alt módosítójelző megjelenítése az állapotsorban fizikai billentyűzet használatakor</string>
     <string name="settings_pred_block_offensive_summary">Az esetlegesen sértő szavak elrejtése hangdiktáláskor</string>
     <string name="settings_pred_block_offensive_title">Sértő szavak blokkolása</string>
-    <string name="settings_pred_contacts_permission_summary">Adjon partnerengedélyt, hogy a billentyűzet gépelés közben partnerneveket és e-mail-címeket javasolhasson</string>
-    <string name="settings_pred_contacts_permission_title">Partnerengedély szükséges</string>
+    <string name="settings_pred_contacts_permission_summary">Adjon engedélyt, hogy a billentyűzet partnerneveket és e-mail-címeket javasolhasson</string>
+    <string name="settings_pred_contacts_permission_title">Partnerengedély</string>
     <string name="settings_pred_contacts_summary_disabled">Partnerengedély szükséges</string>
     <string name="settings_pred_contacts_summary_enabled">Partnernevek megjelenítése a javaslatok között</string>
     <string name="settings_pred_contacts_title">Javaslatok a partnerek közül</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Hangulatjel-javaslatok</string>
     <string name="settings_pred_flick_animation_summary">A szó felfelé animálása, amikor csúsztatással fogad el egy javaslatot</string>
     <string name="settings_pred_flick_animation_title">Pöccintéses elfogadás animációja</string>
-    <string name="settings_pred_force_suggestions_summary">A javaslatsáv megjelenítése azokban az alkalmazásokban is, amelyek az elrejtését kérik (például Google Keep). A jelszómezőkre nem vonatkozik.</string>
+    <string name="settings_pred_force_suggestions_summary">A javaslatsáv megjelenítése azokban az alkalmazásokban is, amelyek az elrejtését kérik. A jelszómezőkre nem vonatkozik.</string>
     <string name="settings_pred_force_suggestions_title">Javaslatok kikényszerítése</string>
     <string name="settings_pred_grant_permission">Engedély megadása</string>
     <string name="settings_pred_next_word_summary">A következő szó javaslása a szövegkörnyezet alapján</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">A gépelésből tanult szavak belefoglalása</string>
     <string name="settings_pred_personalized_title">Tanult szavak javaslata</string>
     <string name="settings_pred_inline_autofill_title">Automatikus kitöltési javaslatok</string>
-    <string name="settings_pred_inline_autofill_summary">Az automatikus kitöltési szolgáltatásban mentett jelszavak, címek és egyéb adatok megjelenítése a javaslatsávon</string>
+    <string name="settings_pred_inline_autofill_summary">Az automatikus kitöltési szolgáltatásban mentett jelszavak, címek és egyéb adatok megjelenítése</string>
     <string name="settings_pred_show_predictions_summary">Szójavaslatok megjelenítése gépelés közben</string>
     <string name="settings_pred_show_predictions_title">Javaslatok bekapcsolása</string>
     <string name="settings_anim_category_scale">Méretezési paraméterek</string>

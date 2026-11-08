@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Nuduhake tandha Shift/Alt ing bar status nalika nganggo papan tombol fisik</string>
     <string name="settings_pred_block_offensive_summary">Tutupi tembung sing bisa nyerang nalika dikte nganggo swara</string>
     <string name="settings_pred_block_offensive_title">Blokir tembung sing nyerang</string>
-    <string name="settings_pred_contacts_permission_summary">Wenehi idin kontak supaya jeneng kontak lan alamat email bisa disaranake nalika ngetik</string>
-    <string name="settings_pred_contacts_permission_title">Butuh Idin Kontak</string>
+    <string name="settings_pred_contacts_permission_summary">Wenehi idin supaya jeneng kontak lan alamat email bisa disaranake</string>
+    <string name="settings_pred_contacts_permission_title">Idin kontak</string>
     <string name="settings_pred_contacts_summary_disabled">Butuh idin kontak</string>
     <string name="settings_pred_contacts_summary_enabled">Lebokake jeneng kontak ing saran</string>
     <string name="settings_pred_contacts_title">Saran saka kontak</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Saran emoji</string>
     <string name="settings_pred_flick_animation_summary">Nganimasi tembung munggah nalika saran ditampa kanthi sentilan</string>
     <string name="settings_pred_flick_animation_title">Tuduhake animasi nampa kanthi sentilan</string>
-    <string name="settings_pred_force_suggestions_summary">Tuduhake bar saran senajan ing aplikasi sing njaluk papan tombol ndhelikake (contone Google Keep). Ora ditrapake ing kolom sandhi.</string>
+    <string name="settings_pred_force_suggestions_summary">Tuduhake bar saran senajan ing aplikasi sing njaluk papan tombol ndhelikake. Ora ditrapake ing kolom sandhi.</string>
     <string name="settings_pred_force_suggestions_title">Peksa saran</string>
     <string name="settings_pred_grant_permission">Wenehi Idin</string>
     <string name="settings_pred_next_word_summary">Saranake tembung sabanjure adhedhasar konteks</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Kalebu tembung sing disinaoni saka ketikan sampeyan</string>
     <string name="settings_pred_personalized_title">Sarani tembung sing disinaoni</string>
     <string name="settings_pred_inline_autofill_title">Saran isi otomatis</string>
-    <string name="settings_pred_inline_autofill_summary">Tuduhake sandhi, alamat, lan data liya sing kasimpen saka layanan isi otomatismu ing bar saran</string>
+    <string name="settings_pred_inline_autofill_summary">Tuduhake sandhi, alamat, lan data liya sing kasimpen saka layanan isi otomatismu</string>
     <string name="settings_pred_show_predictions_summary">Tampilake saran tembung nalika ngetik</string>
     <string name="settings_pred_show_predictions_title">Aktifake saran</string>
     <string name="settings_anim_category_scale">Parameter skala</string>

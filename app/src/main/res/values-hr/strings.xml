@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Prikaži pokazatelj modifikatora Shift/Alt na traci stanja pri upotrebi fizičke tipkovnice</string>
     <string name="settings_pred_block_offensive_summary">Sakrij potencijalno uvredljive riječi pri glasovnom diktiranju</string>
     <string name="settings_pred_block_offensive_title">Blokiraj uvredljive riječi</string>
-    <string name="settings_pred_contacts_permission_summary">Dopustite pristup kontaktima kako bi se tijekom unosa predlagala imena kontakata i e-mail adrese</string>
-    <string name="settings_pred_contacts_permission_title">Potrebno je dopuštenje za kontakte</string>
+    <string name="settings_pred_contacts_permission_summary">Dajte dopuštenje kako bi se predlagala imena kontakata i e-mail adrese</string>
+    <string name="settings_pred_contacts_permission_title">Dopuštenje za kontakte</string>
     <string name="settings_pred_contacts_summary_disabled">Potrebno je dopuštenje za kontakte</string>
     <string name="settings_pred_contacts_summary_enabled">Uključi imena kontakata u prijedloge</string>
     <string name="settings_pred_contacts_title">Predlaži iz kontakata</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Prijedlozi emojija</string>
     <string name="settings_pred_flick_animation_summary">Animiraj riječ prema gore pri potvrđivanju prijedloga povlačenjem</string>
     <string name="settings_pred_flick_animation_title">Prikaži animaciju potvrde potezom</string>
-    <string name="settings_pred_force_suggestions_summary">Prikaži traku prijedloga i u aplikacijama koje traže da je tipkovnica sakrije (npr. Google Keep). Ne odnosi se na polja za zaporku.</string>
+    <string name="settings_pred_force_suggestions_summary">Prikaži traku prijedloga i u aplikacijama koje traže da je tipkovnica sakrije. Ne odnosi se na polja za zaporku.</string>
     <string name="settings_pred_force_suggestions_title">Prisili prijedloge</string>
     <string name="settings_pred_grant_permission">Dodijeli dopuštenje</string>
     <string name="settings_pred_next_word_summary">Predlaži sljedeću riječ na temelju konteksta</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Uključi riječi naučene iz vašeg tipkanja</string>
     <string name="settings_pred_personalized_title">Predlaži naučene riječi</string>
     <string name="settings_pred_inline_autofill_title">Prijedlozi automatskog ispunjavanja</string>
-    <string name="settings_pred_inline_autofill_summary">Prikaži zaporke, adrese i druge spremljene podatke iz usluge automatskog ispunjavanja na traci prijedloga</string>
+    <string name="settings_pred_inline_autofill_summary">Prikaži zaporke, adrese i druge spremljene podatke iz usluge automatskog ispunjavanja</string>
     <string name="settings_pred_show_predictions_summary">Prikaži prijedloge riječi tijekom unosa</string>
     <string name="settings_pred_show_predictions_title">Omogući prijedloge</string>
     <string name="settings_anim_category_scale">Parametri mjerila</string>

@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Mostra l\'indicatore dei modificatori Maiusc/Alt nella barra di stato quando usi la tastiera fisica</string>
     <string name="settings_pred_block_offensive_summary">Nascondi le parole potenzialmente offensive nella dettatura vocale</string>
     <string name="settings_pred_block_offensive_title">Blocca le parole offensive</string>
-    <string name="settings_pred_contacts_permission_summary">Concedi l\'autorizzazione ai contatti per suggerire nomi di contatti e indirizzi e-mail durante la digitazione</string>
-    <string name="settings_pred_contacts_permission_title">Autorizzazione contatti richiesta</string>
+    <string name="settings_pred_contacts_permission_summary">Concedi l\'autorizzazione per suggerire nomi di contatti e indirizzi e-mail</string>
+    <string name="settings_pred_contacts_permission_title">Autorizzazione contatti</string>
     <string name="settings_pred_contacts_summary_disabled">Autorizzazione contatti richiesta</string>
     <string name="settings_pred_contacts_summary_enabled">Includi i nomi dei contatti nei suggerimenti</string>
     <string name="settings_pred_contacts_title">Suggerisci dai contatti</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Suggerimenti emoji</string>
     <string name="settings_pred_flick_animation_summary">Anima la parola verso l\'alto quando confermi un suggerimento con uno sfioramento</string>
     <string name="settings_pred_flick_animation_title">Mostra l\'animazione di conferma con sfioramento</string>
-    <string name="settings_pred_force_suggestions_summary">Mostra la barra dei suggerimenti anche nelle app che chiedono alla tastiera di nasconderla (ad es. Google Keep). Non si applica ai campi password.</string>
+    <string name="settings_pred_force_suggestions_summary">Mostra la barra dei suggerimenti anche nelle app che chiedono alla tastiera di nasconderla. Non si applica ai campi password.</string>
     <string name="settings_pred_force_suggestions_title">Forza i suggerimenti</string>
     <string name="settings_pred_grant_permission">Concedi autorizzazione</string>
     <string name="settings_pred_next_word_summary">Suggerisci la parola successiva in base al contesto</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Includi le parole apprese dalla tua digitazione</string>
     <string name="settings_pred_personalized_title">Suggerisci parole apprese</string>
     <string name="settings_pred_inline_autofill_title">Suggerimenti di compilazione automatica</string>
-    <string name="settings_pred_inline_autofill_summary">Mostra password, indirizzi e altri dati salvati dal servizio di compilazione automatica nella barra dei suggerimenti</string>
+    <string name="settings_pred_inline_autofill_summary">Mostra password, indirizzi e altri dati salvati dal servizio di compilazione automatica</string>
     <string name="settings_pred_show_predictions_summary">Mostra i suggerimenti di parole durante la digitazione</string>
     <string name="settings_pred_show_predictions_title">Attiva i suggerimenti</string>
     <string name="settings_anim_category_scale">Parametri di scala</string>

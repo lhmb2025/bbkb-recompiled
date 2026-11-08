@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Показывать индикатор модификаторов Shift/Alt в строке состояния при работе с физической клавиатурой</string>
     <string name="settings_pred_block_offensive_summary">Скрывать потенциально оскорбительные слова при голосовом вводе</string>
     <string name="settings_pred_block_offensive_title">Блокировать оскорбительные слова</string>
-    <string name="settings_pred_contacts_permission_summary">Предоставьте доступ к контактам, чтобы предлагать имена контактов и адреса эл. почты при вводе</string>
-    <string name="settings_pred_contacts_permission_title">Требуется разрешение на доступ к контактам</string>
+    <string name="settings_pred_contacts_permission_summary">Предоставьте разрешение, чтобы предлагать имена контактов и адреса эл. почты</string>
+    <string name="settings_pred_contacts_permission_title">Разрешение на доступ к контактам</string>
     <string name="settings_pred_contacts_summary_disabled">Требуется разрешение на доступ к контактам</string>
     <string name="settings_pred_contacts_summary_enabled">Включать имена контактов в подсказки</string>
     <string name="settings_pred_contacts_title">Подсказки из контактов</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Подсказки эмодзи</string>
     <string name="settings_pred_flick_animation_summary">Анимировать движение слова вверх при подтверждении подсказки смахиванием</string>
     <string name="settings_pred_flick_animation_title">Показывать анимацию подтверждения взмахом</string>
-    <string name="settings_pred_force_suggestions_summary">Показывать панель подсказок даже в приложениях, которые просят клавиатуру скрыть ее (например, Google Keep). Не применяется к полям паролей.</string>
+    <string name="settings_pred_force_suggestions_summary">Показывать панель подсказок даже в приложениях, которые просят клавиатуру скрыть ее. Не применяется к полям паролей.</string>
     <string name="settings_pred_force_suggestions_title">Принудительные подсказки</string>
     <string name="settings_pred_grant_permission">Предоставить разрешение</string>
     <string name="settings_pred_next_word_summary">Предлагать следующее слово с учетом контекста</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Включать слова, выученные из вашего ввода</string>
     <string name="settings_pred_personalized_title">Предлагать выученные слова</string>
     <string name="settings_pred_inline_autofill_title">Подсказки автозаполнения</string>
-    <string name="settings_pred_inline_autofill_summary">Показывать пароли, адреса и другие сохраненные данные из службы автозаполнения на панели подсказок</string>
+    <string name="settings_pred_inline_autofill_summary">Показывать пароли, адреса и другие сохраненные данные из службы автозаполнения</string>
     <string name="settings_pred_show_predictions_summary">Показывать подсказки слов при вводе</string>
     <string name="settings_pred_show_predictions_title">Включить подсказки</string>
     <string name="settings_anim_category_scale">Параметры масштаба</string>

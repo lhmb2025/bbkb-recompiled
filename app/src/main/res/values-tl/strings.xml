@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Ipakita ang indicator ng Shift/Alt modifier sa status bar kapag gumagamit ng pisikal na keyboard</string>
     <string name="settings_pred_block_offensive_summary">Itago ang mga salitang posibleng nakakasakit kapag nagdidikta gamit ang boses</string>
     <string name="settings_pred_block_offensive_title">I-block ang mga nakakasakit na salita</string>
-    <string name="settings_pred_contacts_permission_summary">Magbigay ng pahintulot sa mga contact para magmungkahi ng mga pangalan ng contact at email address habang nagta-type</string>
-    <string name="settings_pred_contacts_permission_title">Kailangan ng Pahintulot sa Mga Contact</string>
+    <string name="settings_pred_contacts_permission_summary">Magbigay ng pahintulot para magmungkahi ng mga pangalan ng contact at email address</string>
+    <string name="settings_pred_contacts_permission_title">Pahintulot sa mga contact</string>
     <string name="settings_pred_contacts_summary_disabled">Kailangan ng pahintulot sa mga contact</string>
     <string name="settings_pred_contacts_summary_enabled">Isama ang mga pangalan ng contact sa mga suhestyon</string>
     <string name="settings_pred_contacts_title">Magmungkahi mula sa mga contact</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Mga suhestyon ng emoji</string>
     <string name="settings_pred_flick_animation_summary">I-animate ang salita pataas kapag nagko-commit ng suhestyon gamit ang swipe</string>
     <string name="settings_pred_flick_animation_title">Ipakita ang animation ng flick commit</string>
-    <string name="settings_pred_force_suggestions_summary">Ipakita ang suggestion strip kahit sa mga app na humihiling sa keyboard na itago ito (hal. Google Keep). Hindi ito nalalapat sa mga field ng password.</string>
+    <string name="settings_pred_force_suggestions_summary">Ipakita ang suggestion strip kahit sa mga app na humihiling sa keyboard na itago ito. Hindi ito nalalapat sa mga field ng password.</string>
     <string name="settings_pred_force_suggestions_title">Sapilitang mga suhestyon</string>
     <string name="settings_pred_grant_permission">Magbigay ng Pahintulot</string>
     <string name="settings_pred_next_word_summary">Magmungkahi ng susunod na salita batay sa konteksto</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Isama ang mga salitang natutunan mula sa iyong pagta-type</string>
     <string name="settings_pred_personalized_title">Imungkahi ang mga natutunang salita</string>
     <string name="settings_pred_inline_autofill_title">Mga suhestyon sa autofill</string>
-    <string name="settings_pred_inline_autofill_summary">Ipakita ang mga password, address at iba pang na-save na detalye mula sa iyong autofill service sa suggestion bar</string>
+    <string name="settings_pred_inline_autofill_summary">Ipakita ang mga password, address at iba pang na-save na detalye mula sa iyong autofill service</string>
     <string name="settings_pred_show_predictions_summary">Ipakita ang mga suhestyon ng salita habang nagta-type</string>
     <string name="settings_pred_show_predictions_title">I-enable ang mga mungkahi</string>
     <string name="settings_anim_category_scale">Mga parameter ng scale</string>

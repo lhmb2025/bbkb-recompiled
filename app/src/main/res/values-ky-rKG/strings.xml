@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Физикалык баскычтоп колдонулганда абал тилкесинде Shift/Alt модификаторунун индикаторун көрсөтүү</string>
     <string name="settings_pred_block_offensive_summary">Үн менен жазганда орой болушу мүмкүн болгон сөздөрдү жашыруу</string>
     <string name="settings_pred_block_offensive_title">Орой сөздөрдү бөгөттөө</string>
-    <string name="settings_pred_contacts_permission_summary">Терип жатканда байланыштардын ысымдарын жана электрондук почта даректерин сунуштоо үчүн байланыштарга уруксат бериңиз</string>
-    <string name="settings_pred_contacts_permission_title">Байланыштарга уруксат керек</string>
+    <string name="settings_pred_contacts_permission_summary">Байланыштардын ысымдарын жана электрондук почта даректерин сунуштоо үчүн уруксат бериңиз</string>
+    <string name="settings_pred_contacts_permission_title">Байланыштарга уруксат</string>
     <string name="settings_pred_contacts_summary_disabled">Байланыштарга уруксат керек</string>
     <string name="settings_pred_contacts_summary_enabled">Байланыштардын ысымдарын сунуштарга кошуу</string>
     <string name="settings_pred_contacts_title">Байланыштардан сунуштоо</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Эмодзи сунуштары</string>
     <string name="settings_pred_flick_animation_summary">Сунуш сүрүү менен колдонулганда сөздү жогору карай анимациялоо</string>
     <string name="settings_pred_flick_animation_title">Силкүү менен колдонуу анимациясын көрсөтүү</string>
-    <string name="settings_pred_force_suggestions_summary">Сунуштар тилкесин аны жашырууну сураган колдонмолордо да көрсөтүү (мисалы, Google Keep). Сырсөз талааларына тиешеси жок.</string>
+    <string name="settings_pred_force_suggestions_summary">Сунуштар тилкесин аны жашырууну сураган колдонмолордо да көрсөтүү. Сырсөз талааларына тиешеси жок.</string>
     <string name="settings_pred_force_suggestions_title">Сунуштарды мажбурлап көрсөтүү</string>
     <string name="settings_pred_grant_permission">Уруксат берүү</string>
     <string name="settings_pred_next_word_summary">Контекстке жараша кийинки сөздү сунуштоо</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Терүүңүздөн үйрөнүлгөн сөздөрдү кошуу</string>
     <string name="settings_pred_personalized_title">Үйрөнүлгөн сөздөрдү сунуштоо</string>
     <string name="settings_pred_inline_autofill_title">Автотолтуруу сунуштары</string>
-    <string name="settings_pred_inline_autofill_summary">Автотолтуруу кызматындагы сырсөздөрдү, даректерди жана башка сакталган маалыматтарды сунуштар тилкесинде көрсөтүү</string>
+    <string name="settings_pred_inline_autofill_summary">Автотолтуруу кызматындагы сырсөздөрдү, даректерди жана башка сакталган маалыматтарды көрсөтүү</string>
     <string name="settings_pred_show_predictions_summary">Терип жатканда сөз сунуштарын чагылдыруу</string>
     <string name="settings_pred_show_predictions_title">Сунуштарды күйгүзүү</string>
     <string name="settings_anim_category_scale">Масштаб параметрлери</string>

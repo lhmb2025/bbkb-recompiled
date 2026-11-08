@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">បង្ហាញសូចនាករគ្រាប់ចុចកែប្រែ Shift/Alt នៅលើរបារស្ថានភាព នៅពេលប្រើក្ដារចុចរូបវន្ត</string>
     <string name="settings_pred_block_offensive_summary">លាក់ពាក្យដែលអាចប្រមាថ នៅពេលបញ្ចូលដោយសំឡេង</string>
     <string name="settings_pred_block_offensive_title">ទប់ស្កាត់ពាក្យប្រមាថ</string>
-    <string name="settings_pred_contacts_permission_summary">ផ្ដល់ការអនុញ្ញាតទំនាក់ទំនង ដើម្បីណែនាំឈ្មោះទំនាក់ទំនង និងអាសយដ្ឋានអ៊ីមែលពេលវាយបញ្ចូល</string>
-    <string name="settings_pred_contacts_permission_title">ត្រូវការការអនុញ្ញាតទំនាក់ទំនង</string>
+    <string name="settings_pred_contacts_permission_summary">ផ្ដល់ការអនុញ្ញាត ដើម្បីណែនាំឈ្មោះទំនាក់ទំនង និងអាសយដ្ឋានអ៊ីមែល</string>
+    <string name="settings_pred_contacts_permission_title">ការអនុញ្ញាតទំនាក់ទំនង</string>
     <string name="settings_pred_contacts_summary_disabled">ត្រូវការការអនុញ្ញាតទំនាក់ទំនង</string>
     <string name="settings_pred_contacts_summary_enabled">បញ្ចូលឈ្មោះទំនាក់ទំនងក្នុងពាក្យណែនាំ</string>
     <string name="settings_pred_contacts_title">ណែនាំពីទំនាក់ទំនង</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">ការណែនាំសញ្ញាអារម្មណ៍</string>
     <string name="settings_pred_flick_animation_summary">បង្ហាញចលនាពាក្យឡើងលើ នៅពេលបញ្ចូលពាក្យណែនាំដោយការអូស</string>
     <string name="settings_pred_flick_animation_title">បង្ហាញចលនាពេលអូសបញ្ចូល</string>
-    <string name="settings_pred_force_suggestions_summary">បង្ហាញរបារពាក្យណែនាំ សូម្បីតែក្នុងកម្មវិធីដែលស្នើឱ្យក្ដារចុចលាក់វា (ឧ. Google Keep)។ មិនអនុវត្តចំពោះប្រអប់ពាក្យសម្ងាត់ទេ។</string>
+    <string name="settings_pred_force_suggestions_summary">បង្ហាញរបារពាក្យណែនាំ សូម្បីតែក្នុងកម្មវិធីដែលស្នើឱ្យក្ដារចុចលាក់វា។ មិនអនុវត្តចំពោះប្រអប់ពាក្យសម្ងាត់ទេ។</string>
     <string name="settings_pred_force_suggestions_title">បង្ខំឱ្យបង្ហាញពាក្យណែនាំ</string>
     <string name="settings_pred_grant_permission">ផ្ដល់ការអនុញ្ញាត</string>
     <string name="settings_pred_next_word_summary">ណែនាំពាក្យបន្ទាប់ដោយផ្អែកលើបរិបទ</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">រួមបញ្ចូលពាក្យដែលបានរៀនពីការវាយរបស់អ្នក</string>
     <string name="settings_pred_personalized_title">ស្នើពាក្យដែលបានរៀន</string>
     <string name="settings_pred_inline_autofill_title">ការណែនាំការបំពេញស្វ័យប្រវត្តិ</string>
-    <string name="settings_pred_inline_autofill_summary">បង្ហាញពាក្យសម្ងាត់ អាសយដ្ឋាន និងព័ត៌មានផ្សេងទៀតដែលរក្សាទុកក្នុងសេវាបំពេញស្វ័យប្រវត្តិរបស់អ្នកនៅលើរបារពាក្យណែនាំ</string>
+    <string name="settings_pred_inline_autofill_summary">បង្ហាញពាក្យសម្ងាត់ អាសយដ្ឋាន និងព័ត៌មានផ្សេងទៀតដែលរក្សាទុកក្នុងសេវាបំពេញស្វ័យប្រវត្តិរបស់អ្នក</string>
     <string name="settings_pred_show_predictions_summary">បង្ហាញពាក្យណែនាំពេលវាយបញ្ចូល</string>
     <string name="settings_pred_show_predictions_title">បើកការណែនាំ</string>
     <string name="settings_anim_category_scale">ប៉ារ៉ាម៉ែត្រមាត្រដ្ឋាន</string>

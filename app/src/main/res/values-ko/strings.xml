@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">물리 키보드 사용 시 상태 표시줄에 Shift/Alt 조합 키 상태를 표시합니다</string>
     <string name="settings_pred_block_offensive_summary">음성 입력 시 불쾌감을 줄 수 있는 단어를 가립니다</string>
     <string name="settings_pred_block_offensive_title">불쾌한 단어 차단</string>
-    <string name="settings_pred_contacts_permission_summary">입력 중에 연락처 이름과 이메일 주소를 추천하려면 연락처 권한을 허용하세요</string>
-    <string name="settings_pred_contacts_permission_title">연락처 권한 필요</string>
+    <string name="settings_pred_contacts_permission_summary">연락처 이름과 이메일 주소를 추천하려면 권한을 허용하세요</string>
+    <string name="settings_pred_contacts_permission_title">연락처 권한</string>
     <string name="settings_pred_contacts_summary_disabled">연락처 권한 필요</string>
     <string name="settings_pred_contacts_summary_enabled">추천 항목에 연락처 이름을 포함합니다</string>
     <string name="settings_pred_contacts_title">연락처에서 추천</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">이모티콘 추천</string>
     <string name="settings_pred_flick_animation_summary">스와이프로 추천 항목을 확정할 때 단어가 위로 올라가는 애니메이션을 표시합니다</string>
     <string name="settings_pred_flick_animation_title">튕겨서 확정 애니메이션 표시</string>
-    <string name="settings_pred_force_suggestions_summary">키보드에 추천 바를 숨기도록 요청하는 앱(예: Google Keep)에서도 추천 바를 표시합니다. 비밀번호 입력란에는 적용되지 않습니다.</string>
+    <string name="settings_pred_force_suggestions_summary">키보드에 추천 바를 숨기도록 요청하는 앱에서도 추천 바를 표시합니다. 비밀번호 입력란에는 적용되지 않습니다.</string>
     <string name="settings_pred_force_suggestions_title">추천 항목 강제 표시</string>
     <string name="settings_pred_grant_permission">권한 허용</string>
     <string name="settings_pred_next_word_summary">문맥을 기반으로 다음 단어를 추천합니다</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">입력에서 학습한 단어 포함</string>
     <string name="settings_pred_personalized_title">학습한 단어 제안</string>
     <string name="settings_pred_inline_autofill_title">자동 완성 추천</string>
-    <string name="settings_pred_inline_autofill_summary">자동 완성 서비스에 저장된 비밀번호, 주소 등의 정보를 추천 바에 표시합니다</string>
+    <string name="settings_pred_inline_autofill_summary">자동 완성 서비스에 저장된 비밀번호, 주소 등의 정보를 표시합니다</string>
     <string name="settings_pred_show_predictions_summary">입력하는 동안 단어 추천 항목을 표시합니다</string>
     <string name="settings_pred_show_predictions_title">추천 사용</string>
     <string name="settings_anim_category_scale">배율 매개변수</string>

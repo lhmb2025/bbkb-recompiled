@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Hiển thị chỉ báo phím bổ trợ Shift/Alt trên thanh trạng thái khi dùng bàn phím vật lý</string>
     <string name="settings_pred_block_offensive_summary">Ẩn những từ có thể gây phản cảm khi đọc chính tả bằng giọng nói</string>
     <string name="settings_pred_block_offensive_title">Chặn từ ngữ phản cảm</string>
-    <string name="settings_pred_contacts_permission_summary">Cấp quyền truy cập danh bạ để gợi ý tên liên hệ và địa chỉ email khi bạn nhập</string>
-    <string name="settings_pred_contacts_permission_title">Cần quyền truy cập danh bạ</string>
+    <string name="settings_pred_contacts_permission_summary">Cấp quyền để gợi ý tên liên hệ và địa chỉ email</string>
+    <string name="settings_pred_contacts_permission_title">Quyền truy cập danh bạ</string>
     <string name="settings_pred_contacts_summary_disabled">Cần quyền truy cập danh bạ</string>
     <string name="settings_pred_contacts_summary_enabled">Đưa tên liên hệ vào phần gợi ý</string>
     <string name="settings_pred_contacts_title">Gợi ý từ danh bạ</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Gợi ý biểu tượng cảm xúc</string>
     <string name="settings_pred_flick_animation_summary">Cho từ bay lên khi bạn vuốt để chọn một gợi ý</string>
     <string name="settings_pred_flick_animation_title">Hiển thị hiệu ứng hất để chọn</string>
-    <string name="settings_pred_force_suggestions_summary">Hiển thị thanh gợi ý ngay cả trong các ứng dụng yêu cầu bàn phím ẩn nó (ví dụ Google Keep). Không áp dụng cho ô mật khẩu.</string>
+    <string name="settings_pred_force_suggestions_summary">Hiển thị thanh gợi ý ngay cả trong các ứng dụng yêu cầu bàn phím ẩn nó. Không áp dụng cho ô mật khẩu.</string>
     <string name="settings_pred_force_suggestions_title">Buộc hiển thị gợi ý</string>
     <string name="settings_pred_grant_permission">Cấp quyền</string>
     <string name="settings_pred_next_word_summary">Gợi ý từ tiếp theo dựa trên ngữ cảnh</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Bao gồm các từ đã học từ cách gõ của bạn</string>
     <string name="settings_pred_personalized_title">Gợi ý các từ đã học</string>
     <string name="settings_pred_inline_autofill_title">Gợi ý tự động điền</string>
-    <string name="settings_pred_inline_autofill_summary">Hiển thị mật khẩu, địa chỉ và thông tin đã lưu khác từ dịch vụ tự động điền trên thanh gợi ý</string>
+    <string name="settings_pred_inline_autofill_summary">Hiển thị mật khẩu, địa chỉ và thông tin đã lưu khác từ dịch vụ tự động điền</string>
     <string name="settings_pred_show_predictions_summary">Hiển thị gợi ý từ khi bạn nhập</string>
     <string name="settings_pred_show_predictions_title">Bật gợi ý</string>
     <string name="settings_anim_category_scale">Thông số tỷ lệ</string>

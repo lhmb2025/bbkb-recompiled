@@ -469,8 +469,8 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Taispeáin táscaire Shift/Alt sa bharra stádais agus méarchlár fisiciúil in úsáid</string>
     <string name="settings_pred_block_offensive_summary">Folaigh focail a d\'fhéadfadh a bheith maslach agus tú ag deachtú le do ghuth</string>
     <string name="settings_pred_block_offensive_title">Coisc focail mhaslacha</string>
-    <string name="settings_pred_contacts_permission_summary">Tabhair cead teagmhálacha chun ainmneacha teagmhálacha agus seoltaí ríomhphoist a mholadh agus tú ag clóscríobh</string>
-    <string name="settings_pred_contacts_permission_title">Cead Teagmhálacha de Dhíth</string>
+    <string name="settings_pred_contacts_permission_summary">Tabhair cead chun ainmneacha teagmhálacha agus seoltaí ríomhphoist a mholadh</string>
+    <string name="settings_pred_contacts_permission_title">Cead teagmhálacha</string>
     <string name="settings_pred_contacts_summary_disabled">Cead teagmhálacha de dhíth</string>
     <string name="settings_pred_contacts_summary_enabled">Cuir ainmneacha teagmhálacha san áireamh sna moltaí</string>
     <string name="settings_pred_contacts_title">Mol ó na teagmhálacha</string>
@@ -478,7 +478,7 @@
     <string name="settings_pred_emoji_title">Moltaí emoji</string>
     <string name="settings_pred_flick_animation_summary">Beoigh an focal aníos nuair a ghlactar le moladh le smeach</string>
     <string name="settings_pred_flick_animation_title">Taispeáin beochan an ghlactha le smeach</string>
-    <string name="settings_pred_force_suggestions_summary">Taispeáin an stiall moltaí fiú in aipeanna a iarrann ar an méarchlár í a fholú (m.sh. Google Keep). Ní bhaineann sé le réimsí pasfhocail.</string>
+    <string name="settings_pred_force_suggestions_summary">Taispeáin an stiall moltaí fiú in aipeanna a iarrann ar an méarchlár í a fholú. Ní bhaineann sé le réimsí pasfhocail.</string>
     <string name="settings_pred_force_suggestions_title">Éiligh moltaí</string>
     <string name="settings_pred_grant_permission">Tabhair Cead</string>
     <string name="settings_pred_next_word_summary">Mol an chéad fhocal eile de réir an chomhthéacs</string>
@@ -488,7 +488,7 @@
     <string name="settings_pred_personalized_summary">Cuir san áireamh focail a foghlaimíodh ó do chlóscríobh</string>
     <string name="settings_pred_personalized_title">Mol focail a foghlaimíodh</string>
     <string name="settings_pred_inline_autofill_title">Moltaí uathlíonta</string>
-    <string name="settings_pred_inline_autofill_summary">Taispeáin pasfhocail, seoltaí agus sonraí sábháilte eile ó do sheirbhís uathlíonta ar an mbarra moltaí</string>
+    <string name="settings_pred_inline_autofill_summary">Taispeáin pasfhocail, seoltaí agus sonraí sábháilte eile ó do sheirbhís uathlíonta</string>
     <string name="settings_pred_show_predictions_summary">Taispeáin moltaí focal agus tú ag clóscríobh</string>
     <string name="settings_pred_show_predictions_title">Cumasaigh moltaí</string>
     <string name="settings_anim_category_scale">Paraiméadair scála</string>
