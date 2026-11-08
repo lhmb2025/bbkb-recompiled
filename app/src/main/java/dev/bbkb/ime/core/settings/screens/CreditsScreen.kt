@@ -75,18 +75,26 @@ fun CreditsScreen(
             PreferenceCategory(title = context.getString(R.string.settings_category_credits))
 
             PreferenceGroup {
+                // Alphabetical, ignoring case.
+                CreditItem(
+                    name = "AndroidX",
+                    author = "Google / AOSP",
+                    license = "Apache License 2.0",
+                    url = "https://developer.android.com/jetpack/androidx"
+                )
+
+                CreditItem(
+                    name = "AndroidX Emoji2",
+                    author = "Google / AOSP",
+                    license = "Apache License 2.0",
+                    url = "https://developer.android.com/jetpack/androidx/releases/emoji2"
+                )
+
                 CreditItem(
                     name = "Emojibase",
                     author = "Miles Johnson",
                     license = "MIT License",
                     url = "https://github.com/milesj/emojibase"
-                )
-
-                CreditItem(
-                    name = "Kotlin Coroutines",
-                    author = "JetBrains",
-                    license = "Apache License 2.0",
-                    url = "https://github.com/Kotlin/kotlinx.coroutines"
                 )
 
                 CreditItem(
@@ -97,20 +105,6 @@ fun CreditsScreen(
                 )
 
                 CreditItem(
-                    name = "Material Components",
-                    author = "Google",
-                    license = "Apache License 2.0",
-                    url = "https://github.com/material-components/material-components-android"
-                )
-
-                CreditItem(
-                    name = "AndroidX",
-                    author = "Google / AOSP",
-                    license = "Apache License 2.0",
-                    url = "https://developer.android.com/jetpack/androidx"
-                )
-
-                CreditItem(
                     name = "jsoup",
                     author = "Jonathan Hedley",
                     license = "MIT License",
@@ -118,10 +112,17 @@ fun CreditsScreen(
                 )
 
                 CreditItem(
-                    name = "AndroidX Emoji2",
-                    author = "Google / AOSP",
+                    name = "Kotlin Coroutines",
+                    author = "JetBrains",
                     license = "Apache License 2.0",
-                    url = "https://developer.android.com/jetpack/androidx/releases/emoji2"
+                    url = "https://github.com/Kotlin/kotlinx.coroutines"
+                )
+
+                CreditItem(
+                    name = "Material Components",
+                    author = "Google",
+                    license = "Apache License 2.0",
+                    url = "https://github.com/material-components/material-components-android"
                 )
 
                 CreditItem(
