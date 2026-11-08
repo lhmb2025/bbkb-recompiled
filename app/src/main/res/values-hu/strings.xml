@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Visszaállítási idő</string>
     <string name="prefs_slop_time_summary">Türelmi idő az egymást követő rázások között</string>
     <string name="prefs_slop_time_title">Türelmi idő</string>
-    <string name="settings_about_summary">Verzióinformációk és közreműködők</string>
     <string name="settings_about_title">Névjegy</string>
     <string name="settings_about_source_code">Forráskód</string>
     <string name="settings_about_source_code_summary">GitHub-tároló megtekintése</string>

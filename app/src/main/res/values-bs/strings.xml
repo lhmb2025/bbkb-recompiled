@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Vrijeme vraćanja na nulu</string>
     <string name="prefs_slop_time_summary">Dopušteni razmak između protresanja u nizu</string>
     <string name="prefs_slop_time_title">Vrijeme tolerancije</string>
-    <string name="settings_about_summary">Podaci o verziji i zasluge</string>
     <string name="settings_about_title">O aplikaciji</string>
     <string name="settings_about_source_code">Izvorni kod</string>
     <string name="settings_about_source_code_summary">Pogledajte GitHub repozitorij</string>

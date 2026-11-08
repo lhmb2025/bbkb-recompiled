@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Resettijd</string>
     <string name="prefs_slop_time_summary">Speling tussen schudbewegingen in een reeks</string>
     <string name="prefs_slop_time_title">Spelingstijd</string>
-    <string name="settings_about_summary">Versie-informatie en credits</string>
     <string name="settings_about_title">Over</string>
     <string name="settings_about_source_code">Broncode</string>
     <string name="settings_about_source_code_summary">GitHub-repository bekijken</string>

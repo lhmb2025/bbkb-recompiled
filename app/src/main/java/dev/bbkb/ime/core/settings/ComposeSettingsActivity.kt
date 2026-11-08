@@ -177,7 +177,6 @@ fun SettingsNavHost(
             AdvancedSettingsScreen(
                 onNavigateBack = back,
                 onNavigateToDeviceCompatibility = go(SettingsRoute.DeviceCompatibility),
-                onNavigateToAbout = go(SettingsRoute.About),
                 onNavigateToDebug = go(SettingsRoute.Debug),
                 onNavigateToBackupRestore = go(SettingsRoute.BackupRestore)
             )

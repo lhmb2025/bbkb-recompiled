@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Χρόνος επαναφοράς</string>
     <string name="prefs_slop_time_summary">Περιθώριο ανοχής ανάμεσα στα κουνήματα μιας ακολουθίας</string>
     <string name="prefs_slop_time_title">Χρόνος ανοχής</string>
-    <string name="settings_about_summary">Πληροφορίες έκδοσης και συντελεστές</string>
     <string name="settings_about_title">Σχετικά</string>
     <string name="settings_about_source_code">Πηγαίος κώδικας</string>
     <string name="settings_about_source_code_summary">Προβολή του αποθετηρίου στο GitHub</string>

@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Núllstillingartími</string>
     <string name="prefs_slop_time_summary">Svigrúm milli hristinga í röð</string>
     <string name="prefs_slop_time_title">Svigrúmstími</string>
-    <string name="settings_about_summary">Upplýsingar um útgáfu og þakkir</string>
     <string name="settings_about_title">Um</string>
     <string name="settings_about_source_code">Frumkóði</string>
     <string name="settings_about_source_code_summary">Skoða GitHub-geymsluna</string>

@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">மீட்டமைப்பு நேரம்</string>
     <string name="prefs_slop_time_summary">தொடர்ச்சியான குலுக்கல்களுக்கு இடையிலான சலுகை நேரம்</string>
     <string name="prefs_slop_time_title">இடைவெளி நேரம்</string>
-    <string name="settings_about_summary">பதிப்புத் தகவல் மற்றும் நன்றியுரை</string>
     <string name="settings_about_title">பற்றி</string>
     <string name="settings_about_source_code">மூலக் குறியீடு</string>
     <string name="settings_about_source_code_summary">GitHub களஞ்சியத்தைப் பார்க்கவும்</string>

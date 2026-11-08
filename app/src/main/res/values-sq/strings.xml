@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Koha e rivendosjes</string>
     <string name="prefs_slop_time_summary">Periudha e tolerancës mes tundjeve të një vargu</string>
     <string name="prefs_slop_time_title">Koha e tolerancës</string>
-    <string name="settings_about_summary">Të dhënat e versionit dhe falënderimet</string>
     <string name="settings_about_title">Rreth</string>
     <string name="settings_about_source_code">Kodi burimor</string>
     <string name="settings_about_source_code_summary">Shiko depon në GitHub</string>

@@ -115,8 +115,11 @@ class SettingsScreenRenderTest(private val screenName: String) {
         val lateResources: Set<String> = emptySet(),
     )
 
-    /** Version/build text moves on every release; it is the one thing not pinned. */
-    private val volatileText = Regex("""^Version .*\(Build \d+\)$""")
+    /**
+     * Version text moves on every release; it is the one thing not pinned. With the build number
+     * on About, without it as the main menu's About subtitle.
+     */
+    private val volatileText = Regex("""^Version \d\S*( \(Build \d+\))?$""")
 
     @Before
     fun setUp() {
@@ -199,7 +202,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
      */
     private fun contentFor(name: String): @Composable () -> Unit = when (name) {
         "AdvancedGestureParametersScreen" -> ({ AdvancedGestureParametersScreen({}) })
-        "AdvancedSettingsScreen" -> ({ AdvancedSettingsScreen({}, {}, {}, {}) })
+        "AdvancedSettingsScreen" -> ({ AdvancedSettingsScreen({}, {}, {}) })
         "AnimationParametersScreen" -> ({ AnimationParametersScreen({}) })
         "AppearanceLayoutScreen" -> ({ AppearanceLayoutScreen({}, {}) })
         "AutoCorrectionScreen" -> ({ AutoCorrectionScreen({}) })
@@ -562,7 +565,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.Advanced.route,
             title = "Advanced",
             resources = setOf(
-                "settings_about_summary", "settings_about_title", "settings_advanced_title",
+                "settings_advanced_title",
                 "settings_backup_restore_summary", "settings_backup_restore_title",
                 "settings_debug_summary", "settings_debug_title", "settings_device_compatibility_summary",
                 "settings_device_compatibility_title",
@@ -1088,6 +1091,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 // The "Language" row resolved to a removed wizard string of the same text until
                 // 2026-09-29; it now resolves to its own title.
                 "english_ime_settings",
+                "settings_about_title",
                 "settings_advanced_summary", "settings_advanced_title", "settings_appearance_layout_summary",
                 "settings_appearance_layout_title", "settings_languages_summary", "settings_languages_title",
                 "settings_preferences_summary",

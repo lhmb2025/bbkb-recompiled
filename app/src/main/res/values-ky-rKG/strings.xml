@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Калыбына келтирүү убактысы</string>
     <string name="prefs_slop_time_summary">Удаалаш силкүүлөрдүн ортосундагы уруксат берилген тыныгуу</string>
     <string name="prefs_slop_time_title">Тыныгуу убактысы</string>
-    <string name="settings_about_summary">Версия жөнүндө маалымат жана авторлор</string>
     <string name="settings_about_title">Колдонмо жөнүндө</string>
     <string name="settings_about_source_code">Баштапкы код</string>
     <string name="settings_about_source_code_summary">GitHub репозиторийин көрүү</string>

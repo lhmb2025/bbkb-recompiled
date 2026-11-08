@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">പുനഃസജ്ജീകരണ സമയം</string>
     <string name="prefs_slop_time_summary">ഒരു ശ്രേണിയിലെ കുലുക്കലുകൾക്കിടയിലെ ഇളവുസമയം</string>
     <string name="prefs_slop_time_title">സ്ലോപ്പ് സമയം</string>
-    <string name="settings_about_summary">പതിപ്പ് വിവരങ്ങളും കടപ്പാടുകളും</string>
     <string name="settings_about_title">സംബന്ധിച്ച്</string>
     <string name="settings_about_source_code">സോഴ്‌സ് കോഡ്</string>
     <string name="settings_about_source_code_summary">GitHub റിപ്പോസിറ്ററി കാണുക</string>

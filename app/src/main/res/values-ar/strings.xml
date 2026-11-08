@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">مدة إعادة التعيين</string>
     <string name="prefs_slop_time_summary">فترة السماح بين الهزات في التسلسل</string>
     <string name="prefs_slop_time_title">فترة السماح</string>
-    <string name="settings_about_summary">معلومات الإصدار وشكر وتقدير</string>
     <string name="settings_about_title">حول</string>
     <string name="settings_about_source_code">رمز المصدر</string>
     <string name="settings_about_source_code_summary">عرض مستودع GitHub</string>

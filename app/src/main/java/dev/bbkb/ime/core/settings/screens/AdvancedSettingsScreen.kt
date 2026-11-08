@@ -40,7 +40,6 @@ object ManageDataAnchors {
 /**
  * Advanced Settings Screen (per docs/archived/2026-01_compose-settings-and-dictionaries/2026-01_settings-compose_history.md)
  * Contains:
- * - About (renamed from Credits)
  * - Device compatibility
  * - Debug settings (hidden by default)
  * - Manage data: Backup and restore (its own screen), Reset
@@ -49,7 +48,6 @@ object ManageDataAnchors {
 fun AdvancedSettingsScreen(
     onNavigateBack: () -> Unit,
     onNavigateToDeviceCompatibility: () -> Unit = {},
-    onNavigateToAbout: () -> Unit = {},
     onNavigateToDebug: () -> Unit = {},
     onNavigateToBackupRestore: () -> Unit = {},
 ) {
@@ -58,12 +56,6 @@ fun AdvancedSettingsScreen(
     var showReset by remember { mutableStateOf(false) }
 
     SettingsScreenHost(R.string.settings_advanced_title, onNavigateBack, listOf(
-        Nav(
-            title = R.string.settings_about_title,
-            summary = R.string.settings_about_summary,
-            icon = drawableIcon(R.drawable.ic_settings_m_info),
-            onClick = { onNavigateToAbout() },
-        ),
         // Device Compatibility (config loader, meta state override, keyboard helper)
         Nav(
             title = R.string.settings_device_compatibility_title,

@@ -36,6 +36,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
+import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.SettingsRoute
 import dev.bbkb.ime.core.settings.search.LocalSettingsHighlight
@@ -234,6 +235,19 @@ fun MainSettingsScreen(
                         summary = context.getString(R.string.settings_advanced_summary),
                         icon = ImageVector.vectorResource(R.drawable.ic_settings_m_settings),
                         onClick = { onNavigateToScreen(SettingsRoute.Advanced.route) }
+                    )
+                }
+
+                // About: on its own below the categories, as Android's own "About phone" is.
+                // It is information, not settings, so it is not one of the categories; the
+                // subtitle is the version, the thing most people open About to find.
+                Spacer(modifier = Modifier.height(spacing.large))
+                PreferenceGroup {
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_about_title),
+                        summary = context.getString(R.string.settings_update_version_label, BuildConfig.VERSION_NAME),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_info),
+                        onClick = { onNavigateToScreen(SettingsRoute.About.route) }
                     )
                 }
             }

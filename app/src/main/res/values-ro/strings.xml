@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Timp de resetare</string>
     <string name="prefs_slop_time_summary">Intervalul de toleranță între scuturările dintr-o secvență</string>
     <string name="prefs_slop_time_title">Timp de toleranță</string>
-    <string name="settings_about_summary">Informații despre versiune și credite</string>
     <string name="settings_about_title">Despre</string>
     <string name="settings_about_source_code">Cod sursă</string>
     <string name="settings_about_source_code_summary">Vizualizați depozitul GitHub</string>

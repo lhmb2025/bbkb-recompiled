@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">초기화 시간</string>
     <string name="prefs_slop_time_summary">연속된 흔들기 사이에 허용되는 시간</string>
     <string name="prefs_slop_time_title">허용 시간</string>
-    <string name="settings_about_summary">버전 정보 및 제작진</string>
     <string name="settings_about_title">정보</string>
     <string name="settings_about_source_code">소스 코드</string>
     <string name="settings_about_source_code_summary">GitHub 저장소 보기</string>

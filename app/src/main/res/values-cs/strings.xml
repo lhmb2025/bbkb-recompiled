@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Doba vynulování</string>
     <string name="prefs_slop_time_summary">Tolerovaná prodleva mezi zatřeseními v sérii</string>
     <string name="prefs_slop_time_title">Doba tolerance</string>
-    <string name="settings_about_summary">Informace o verzi a autoři</string>
     <string name="settings_about_title">O aplikaci</string>
     <string name="settings_about_source_code">Zdrojový kód</string>
     <string name="settings_about_source_code_summary">Zobrazit repozitář na GitHubu</string>

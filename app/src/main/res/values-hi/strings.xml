@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">रीसेट समय</string>
     <string name="prefs_slop_time_summary">क्रम में झटकों के बीच की छूट अवधि</string>
     <string name="prefs_slop_time_title">स्लॉप समय</string>
-    <string name="settings_about_summary">संस्करण जानकारी और क्रेडिट</string>
     <string name="settings_about_title">ऐप के बारे में</string>
     <string name="settings_about_source_code">सोर्स कोड</string>
     <string name="settings_about_source_code_summary">GitHub रिपॉज़िटरी देखें</string>

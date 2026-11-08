@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Վերակայման ժամանակ</string>
     <string name="prefs_slop_time_summary">Հաջորդական ցնցումների միջև թույլատրելի ընդմիջումը</string>
     <string name="prefs_slop_time_title">Թույլատրելի ընդմիջում</string>
-    <string name="settings_about_summary">Տարբերակի մասին տեղեկություններ և հեղինակներ</string>
     <string name="settings_about_title">Մասին</string>
     <string name="settings_about_source_code">Սկզբնական կոդ</string>
     <string name="settings_about_source_code_summary">Դիտել GitHub-ի պահոցը</string>

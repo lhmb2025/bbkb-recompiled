@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Oras ng pag-reset</string>
     <string name="prefs_slop_time_summary">Palugit sa pagitan ng mga shake sa isang sunod-sunod na galaw</string>
     <string name="prefs_slop_time_title">Slop time</string>
-    <string name="settings_about_summary">Impormasyon ng bersyon at mga kredito</string>
     <string name="settings_about_title">Tungkol dito</string>
     <string name="settings_about_source_code">Source code</string>
     <string name="settings_about_source_code_summary">Tingnan ang GitHub repository</string>

@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Тэглэх хугацаа</string>
     <string name="prefs_slop_time_summary">Дараалсан сэгсрэлтүүдийн хоорондох зөвшөөрөгдөх хугацаа</string>
     <string name="prefs_slop_time_title">Зөвшөөрөгдөх хугацаа</string>
-    <string name="settings_about_summary">Хувилбарын мэдээлэл ба талархал</string>
     <string name="settings_about_title">Тухай</string>
     <string name="settings_about_source_code">Эх код</string>
     <string name="settings_about_source_code_summary">GitHub репозиторийг харах</string>

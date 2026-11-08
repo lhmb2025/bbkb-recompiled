@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Am athshocraithe</string>
     <string name="prefs_slop_time_summary">An tréimhse chairde idir croití i sraith</string>
     <string name="prefs_slop_time_title">Am lamháltais</string>
-    <string name="settings_about_summary">Eolas faoin leagan agus admhálacha</string>
     <string name="settings_about_title">Maidir leis</string>
     <string name="settings_about_source_code">Cód foinseach</string>
     <string name="settings_about_source_code_summary">Féach ar stór GitHub</string>

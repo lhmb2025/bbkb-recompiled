@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Nulstillingstid</string>
     <string name="prefs_slop_time_summary">Tilladt pause mellem ryst i en serie</string>
     <string name="prefs_slop_time_title">Tolerance mellem ryst</string>
-    <string name="settings_about_summary">Versionsoplysninger og medvirkende</string>
     <string name="settings_about_title">Om</string>
     <string name="settings_about_source_code">Kildekode</string>
     <string name="settings_about_source_code_summary">Se GitHub-repositoriet</string>

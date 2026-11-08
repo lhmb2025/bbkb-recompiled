@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Tempo de reposição</string>
     <string name="prefs_slop_time_summary">Período de tolerância entre agitações de uma sequência</string>
     <string name="prefs_slop_time_title">Tempo de tolerância</string>
-    <string name="settings_about_summary">Informações da versão e créditos</string>
     <string name="settings_about_title">Acerca</string>
     <string name="settings_about_source_code">Código-fonte</string>
     <string name="settings_about_source_code_summary">Ver o repositório no GitHub</string>

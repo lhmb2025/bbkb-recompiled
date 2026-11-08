@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Thời gian đặt lại</string>
     <string name="prefs_slop_time_summary">Khoảng thời gian dung sai giữa các cú lắc liên tiếp</string>
     <string name="prefs_slop_time_title">Thời gian dung sai</string>
-    <string name="settings_about_summary">Thông tin phiên bản và ghi công</string>
     <string name="settings_about_title">Giới thiệu</string>
     <string name="settings_about_source_code">Mã nguồn</string>
     <string name="settings_about_source_code_summary">Xem kho lưu trữ GitHub</string>

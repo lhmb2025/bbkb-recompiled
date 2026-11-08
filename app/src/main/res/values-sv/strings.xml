@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Nollställningstid</string>
     <string name="prefs_slop_time_summary">Tillåten paus mellan skakningar i en följd</string>
     <string name="prefs_slop_time_title">Tolerans mellan skakningar</string>
-    <string name="settings_about_summary">Versionsinformation och medverkande</string>
     <string name="settings_about_title">Om</string>
     <string name="settings_about_source_code">Källkod</string>
     <string name="settings_about_source_code_summary">Visa GitHub-repositoriet</string>

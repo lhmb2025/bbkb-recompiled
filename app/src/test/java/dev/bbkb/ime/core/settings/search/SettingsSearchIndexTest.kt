@@ -324,7 +324,8 @@ class SettingsSearchIndexTest {
     fun everyScreenTitleAndPathResolves() {
         val context = RuntimeEnvironment.getApplication()
         val categories = SettingsSearchIndex.screens.filter { it.parentPath.isEmpty() }.map { it.titleRes }.toSet()
-        assertEquals("the five categories on the settings root", 5, categories.size)
+        // The five categories plus About, which sits on its own below them.
+        assertEquals("the six rows on the settings root", 6, categories.size)
         for (screen in SettingsSearchIndex.screens) {
             assertTrue("blank title for ${screen.route}", context.getString(screen.titleRes).isNotBlank())
             assertTrue("blank keywords for ${screen.route}", screen.keywords.isNotBlank())

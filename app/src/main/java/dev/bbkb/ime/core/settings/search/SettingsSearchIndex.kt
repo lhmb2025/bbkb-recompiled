@@ -409,8 +409,8 @@ object SettingsSearchIndex {
         SearchableScreen(R.string.settings_symbol_customize_page_title, "custom symbol page physical", SettingsRoute.CustomSymbolPagePkb.route, listOf(APPEARANCE, SYMBOLS, R.string.settings_category_physical_keyboard), DeviceRequirement.PHYSICAL_KEYBOARD),
 
         // ── Advanced ─────────────────────────────────────────────────────────────
-        SearchableScreen(ABOUT, "about version credits", SettingsRoute.About.route, listOf(ADVANCED)),
-        SearchableScreen(R.string.settings_updates_title, "update ota new version apk download install upgrade", SettingsRoute.Updates.route, listOf(ADVANCED, ABOUT)),
+        SearchableScreen(ABOUT, "about version credits", SettingsRoute.About.route, emptyList()),
+        SearchableScreen(R.string.settings_updates_title, "update ota new version apk download install upgrade", SettingsRoute.Updates.route, listOf(ABOUT)),
         SearchableScreen(COMPATIBILITY, "device compatibility meta state helper", SettingsRoute.DeviceCompatibility.route, listOf(ADVANCED)),
         SearchableScreen(R.string.settings_device_configuration_title, "device configuration config profile import phone", SettingsRoute.DeviceConfiguration.route, listOf(ADVANCED, COMPATIBILITY)),
         SearchableScreen(R.string.settings_pkb_layouts_title, "custom keypad physical layouts built-in builtin letter layout map remap keys keycaps alphabet qwerty qwertz azerty etched thai xml add import template save file export share", SettingsRoute.PhysicalLayouts.route, listOf(ADVANCED, COMPATIBILITY), DeviceRequirement.PHYSICAL_KEYBOARD),

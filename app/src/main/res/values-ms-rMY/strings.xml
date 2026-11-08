@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Masa tetapan semula</string>
     <string name="prefs_slop_time_summary">Tempoh tangguh antara goncangan dalam satu jujukan</string>
     <string name="prefs_slop_time_title">Masa tangguh</string>
-    <string name="settings_about_summary">Maklumat versi dan penghargaan</string>
     <string name="settings_about_title">Perihal</string>
     <string name="settings_about_source_code">Kod sumber</string>
     <string name="settings_about_source_code_summary">Lihat repositori GitHub</string>

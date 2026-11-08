@@ -699,7 +699,6 @@
     <string name="prefs_show_device_profile_builder_title" translatable="false">Show unfinished device configuration builder</string>
     <string name="prefs_slop_time_summary">Grace period between shakes in a sequence</string>
     <string name="prefs_slop_time_title">Slop time</string>
-    <string name="settings_about_summary">Version information and credits</string>
     <string name="settings_about_title">About</string>
     <string name="settings_about_source_code">Source code</string>
     <string name="settings_about_source_code_summary">View the GitHub repository</string>

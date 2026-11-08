@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Время сброса</string>
     <string name="prefs_slop_time_summary">Допустимый интервал между встряхиваниями в серии</string>
     <string name="prefs_slop_time_title">Допустимый интервал</string>
-    <string name="settings_about_summary">Сведения о версии и благодарности</string>
     <string name="settings_about_title">О приложении</string>
     <string name="settings_about_source_code">Исходный код</string>
     <string name="settings_about_source_code_summary">Посмотреть репозиторий на GitHub</string>

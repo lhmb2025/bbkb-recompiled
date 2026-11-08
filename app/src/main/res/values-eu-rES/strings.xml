@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Berrezartze-denbora</string>
     <string name="prefs_slop_time_summary">Sekuentzia bateko astinduen arteko tartea</string>
     <string name="prefs_slop_time_title">Tarte-denbora</string>
-    <string name="settings_about_summary">Bertsioaren informazioa eta kredituak</string>
     <string name="settings_about_title">Honi buruz</string>
     <string name="settings_about_source_code">Iturburu-kodea</string>
     <string name="settings_about_source_code_summary">Ikusi GitHub-eko biltegia</string>

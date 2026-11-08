@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Sıfırlanma vaxtı</string>
     <string name="prefs_slop_time_summary">Ardıcıl silkələmələr arasında güzəşt müddəti</string>
     <string name="prefs_slop_time_title">Güzəşt vaxtı</string>
-    <string name="settings_about_summary">Versiya məlumatı və müəlliflər</string>
     <string name="settings_about_title">Haqqında</string>
     <string name="settings_about_source_code">Mənbə kodu</string>
     <string name="settings_about_source_code_summary">GitHub repozitoriyasına baxın</string>

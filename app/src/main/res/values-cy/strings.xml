@@ -568,7 +568,6 @@
     <string name="prefs_reset_time_title">Amser ailosod</string>
     <string name="prefs_slop_time_summary">Y cyfnod gras rhwng ysgydwadau mewn dilyniant</string>
     <string name="prefs_slop_time_title">Amser goddefiant</string>
-    <string name="settings_about_summary">Gwybodaeth am y fersiwn a chydnabyddiaethau</string>
     <string name="settings_about_title">Ynghylch</string>
     <string name="settings_about_source_code">Cod ffynhonnell</string>
     <string name="settings_about_source_code_summary">Gweld ystorfa GitHub</string>
