@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Cainéal nuashonraithe</string>
     <string name="settings_update_channel_release">Eisiúint</string>
     <string name="settings_update_channel_none">Níl cainéal nuashonraithe ann do thógálacha dífhabhtaithe</string>
-    <string name="settings_update_last_checked_title">Seiceáilte go deireanach</string>
     <string name="settings_update_never">Riamh</string>
     <string name="settings_update_check_now">Seiceáil anois</string>
     <string name="settings_update_checking">Ag seiceáil…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Nuashonrú ar fáil</string>
     <string name="settings_update_available_banner">Nuashonrú ar fáil: %1$s</string>
     <string name="settings_update_version_label">Leagan %1$s</string>
-    <string name="settings_update_size_label">Méid an íoslódála: %1$s</string>
     <string name="settings_update_notes_title">Nótaí eisiúna</string>
     <string name="settings_update_download">Íoslódáil</string>
     <string name="settings_update_downloading">Ag íoslódáil… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Sheol an freastalaí earráid ar ais (%1$d)</string>
     <string name="settings_update_error_generic">Theip ar an seiceáil nuashonraithe</string>
     <string name="settings_update_error_too_old">Tá an leagan seo ró-sean chun an liosta nuashonruithe a léamh. Nuashonraigh de láimh.</string>
-    <string name="settings_update_from_cache">Á thaispeáint ón seiceáil shábháilte dheireanach</string>
     <string name="settings_update_background_check_title">Seiceáil le haghaidh nuashonruithe go huathoibríoch</string>
     <string name="settings_update_background_check_summary">Gheobhaidh tú fógra nuair a bheidh leagan nua ar fáil le híoslódáil</string>
     <string name="settings_update_notification_text">Tá leagan %1$s réidh le híoslódáil</string>
     <string name="settings_update_unknown_sources_message">Caithfidh Android cead a thabhairt do BBKB aipeanna a shuiteáil. Cumasaigh suiteáil ón bhfoinse seo, ansin brúigh Suiteáil arís.</string>
     <string name="settings_update_open_settings">Oscail socruithe</string>
+    <string name="settings_update_last_checked_at">Seiceáilte go deireanach: %1$s</string>
+    <string name="settings_update_ready_title">Réidh le suiteáil</string>
+    <string name="settings_update_version_details">Sonraí an leagain</string>
+    <string name="settings_update_unknown_sources_title">Cead a thabhairt do BBKB nuashonruithe a shuiteáil?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Suiteáilte</string>
     <string name="language_packs_available_header">Ar fáil le híoslódáil</string>
@@ -1139,5 +1140,4 @@
     <string name="settings_keyeditor_invalid_code">Cód carachtair neamhbhailí</string>
     <string name="settings_spellcheck_intro">Soláthraíonn litreoir BBKB seiceáil litrithe chliste i ngach aip a thacaíonn le seiceáil litrithe. Úsáideann sé ardmhúnlaí teanga chun earráidí clóscríofa a bhrath agus ceartúcháin a mholadh.</string>
     <string name="settings_credits_version">Leagan %1$s (Tógáil %2$s)</string>
-    <string name="settings_updates_version">Leagan %1$s (Tógáil %2$d) · %3$s</string>
 </resources>

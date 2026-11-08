@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Päivityskanava</string>
     <string name="settings_update_channel_release">Julkaisu</string>
     <string name="settings_update_channel_none">Debug-koonneille ei ole päivityskanavaa</string>
-    <string name="settings_update_last_checked_title">Tarkistettu viimeksi</string>
     <string name="settings_update_never">Ei koskaan</string>
     <string name="settings_update_check_now">Tarkista nyt</string>
     <string name="settings_update_checking">Tarkistetaan…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Päivitys saatavilla</string>
     <string name="settings_update_available_banner">Päivitys saatavilla: %1$s</string>
     <string name="settings_update_version_label">Versio %1$s</string>
-    <string name="settings_update_size_label">Latauksen koko: %1$s</string>
     <string name="settings_update_notes_title">Julkaisutiedot</string>
     <string name="settings_update_download">Lataa</string>
     <string name="settings_update_downloading">Ladataan… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Palvelin palautti virheen (%1$d)</string>
     <string name="settings_update_error_generic">Päivitysten tarkistus epäonnistui</string>
     <string name="settings_update_error_too_old">Tämä versio on liian vanha lukemaan päivityslistaa. Päivitä käsin.</string>
-    <string name="settings_update_from_cache">Näytetään viimeksi tallennetusta tarkistuksesta</string>
     <string name="settings_update_background_check_title">Tarkista päivitykset automaattisesti</string>
     <string name="settings_update_background_check_summary">Saat ilmoituksen, kun uusi versio on ladattavissa</string>
     <string name="settings_update_notification_text">Versio %1$s on valmis ladattavaksi</string>
     <string name="settings_update_unknown_sources_message">Androidin on annettava BBKB:lle lupa asentaa sovelluksia. Salli asennus tästä lähteestä ja paina Asenna uudelleen.</string>
     <string name="settings_update_open_settings">Avaa asetukset</string>
+    <string name="settings_update_last_checked_at">Tarkistettu viimeksi: %1$s</string>
+    <string name="settings_update_ready_title">Valmis asennettavaksi</string>
+    <string name="settings_update_version_details">Version tiedot</string>
+    <string name="settings_update_unknown_sources_title">Sallitaanko BBKB:n asentaa päivityksiä?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Asennettu</string>
     <string name="language_packs_available_header">Ladattavissa</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">Virheellinen merkkikoodi</string>
     <string name="settings_spellcheck_intro">BBKB-oikoluku tarjoaa älykkään oikoluvun kaikissa sovelluksissa, jotka tukevat oikolukua. Se tunnistaa kirjoitusvirheet ja ehdottaa korjauksia kehittyneiden kielimallien avulla.</string>
     <string name="settings_credits_version">Versio %1$s (koontiversio %2$s)</string>
-    <string name="settings_updates_version">Versio %1$s (koontiversio %2$d) · %3$s</string>
 </resources>

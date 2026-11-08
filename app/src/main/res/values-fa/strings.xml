@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">کانال به‌روزرسانی</string>
     <string name="settings_update_channel_release">نسخه نهایی</string>
     <string name="settings_update_channel_none">برای نسخه‌های اشکال‌زدایی کانال به‌روزرسانی وجود ندارد</string>
-    <string name="settings_update_last_checked_title">آخرین بررسی</string>
     <string name="settings_update_never">هرگز</string>
     <string name="settings_update_check_now">اکنون بررسی کن</string>
     <string name="settings_update_checking">در حال بررسی…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">به‌روزرسانی موجود است</string>
     <string name="settings_update_available_banner">به‌روزرسانی موجود است: %1$s</string>
     <string name="settings_update_version_label">نسخه %1$s</string>
-    <string name="settings_update_size_label">حجم دانلود: %1$s</string>
     <string name="settings_update_notes_title">یادداشت‌های انتشار</string>
     <string name="settings_update_download">دانلود</string>
     <string name="settings_update_downloading">در حال دانلود… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">سرور خطایی بازگرداند (%1$d)</string>
     <string name="settings_update_error_generic">بررسی به‌روزرسانی ناموفق بود</string>
     <string name="settings_update_error_too_old">این نسخه برای خواندن فهرست به‌روزرسانی‌ها بسیار قدیمی است. لطفاً دستی به‌روزرسانی کنید.</string>
-    <string name="settings_update_from_cache">از آخرین بررسی ذخیره‌شده نشان داده شده است</string>
     <string name="settings_update_background_check_title">بررسی خودکار به‌روزرسانی‌ها</string>
     <string name="settings_update_background_check_summary">وقتی نسخه‌ای جدید برای دانلود در دسترس باشد، اعلان دریافت می‌کنید</string>
     <string name="settings_update_notification_text">نسخه %1$s آماده دانلود است</string>
     <string name="settings_update_unknown_sources_message">اندروید باید به BBKB اجازه نصب برنامه بدهد. نصب از این منبع را فعال کنید و سپس دوباره نصب را بزنید.</string>
     <string name="settings_update_open_settings">باز کردن تنظیمات</string>
+    <string name="settings_update_last_checked_at">آخرین بررسی: %1$s</string>
+    <string name="settings_update_ready_title">آماده نصب</string>
+    <string name="settings_update_version_details">جزئیات نسخه</string>
+    <string name="settings_update_unknown_sources_title">به BBKB اجازه نصب به‌روزرسانی‌ها داده شود؟</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">نصب‌شده</string>
     <string name="language_packs_available_header">قابل بارگیری</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">کد نویسه نامعتبر است</string>
     <string name="settings_spellcheck_intro">غلط‌گیر املایی BBKB غلط‌گیری املایی هوشمند را در همه برنامه‌هایی که از غلط‌گیری املایی پشتیبانی می‌کنند ارائه می‌دهد. این غلط‌گیر از مدل‌های زبانی پیشرفته برای تشخیص غلط‌های تایپی و پیشنهاد اصلاحات استفاده می‌کند.</string>
     <string name="settings_credits_version">نسخه %1$s (ساخت %2$s)</string>
-    <string name="settings_updates_version">نسخه %1$s (ساخت %2$d) · %3$s</string>
 </resources>

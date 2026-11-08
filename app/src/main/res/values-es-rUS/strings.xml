@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Canal de actualizaciones</string>
     <string name="settings_update_channel_release">Versión final</string>
     <string name="settings_update_channel_none">No hay canal de actualizaciones para compilaciones de depuración</string>
-    <string name="settings_update_last_checked_title">Última comprobación</string>
     <string name="settings_update_never">Nunca</string>
     <string name="settings_update_check_now">Comprobar ahora</string>
     <string name="settings_update_checking">Comprobando…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Actualización disponible</string>
     <string name="settings_update_available_banner">Actualización disponible: %1$s</string>
     <string name="settings_update_version_label">Versión %1$s</string>
-    <string name="settings_update_size_label">Tamaño de la descarga: %1$s</string>
     <string name="settings_update_notes_title">Notas de la versión</string>
     <string name="settings_update_download">Descargar</string>
     <string name="settings_update_downloading">Descargando… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">El servidor devolvió un error (%1$d)</string>
     <string name="settings_update_error_generic">La comprobación de actualizaciones falló</string>
     <string name="settings_update_error_too_old">Esta versión es demasiado antigua para leer la lista de actualizaciones. Actualiza manualmente.</string>
-    <string name="settings_update_from_cache">Mostrado a partir de la última comprobación guardada</string>
     <string name="settings_update_background_check_title">Buscar actualizaciones automáticamente</string>
     <string name="settings_update_background_check_summary">Recibe una notificación cuando haya una versión nueva disponible para descargar</string>
     <string name="settings_update_notification_text">La versión %1$s está lista para descargar</string>
     <string name="settings_update_unknown_sources_message">Android debe permitir que BBKB instale aplicaciones. Activa la instalación desde esta fuente y vuelve a pulsar Instalar.</string>
     <string name="settings_update_open_settings">Abrir ajustes</string>
+    <string name="settings_update_last_checked_at">Última comprobación: %1$s</string>
+    <string name="settings_update_ready_title">Listo para instalar</string>
+    <string name="settings_update_version_details">Detalles de la versión</string>
+    <string name="settings_update_unknown_sources_title">¿Permitir que BBKB instale actualizaciones?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Instalados</string>
     <string name="language_packs_available_header">Disponibles para descargar</string>
@@ -1109,5 +1110,4 @@
     <string name="settings_keyeditor_invalid_code">Código de carácter no válido</string>
     <string name="settings_spellcheck_intro">El corrector ortográfico de BBKB ofrece una corrección ortográfica inteligente en todas las apps que la admiten. Usa modelos de lenguaje avanzados para detectar errores de escritura y sugerir correcciones.</string>
     <string name="settings_credits_version">Versión %1$s (compilación %2$s)</string>
-    <string name="settings_updates_version">Versión %1$s (compilación %2$d) · %3$s</string>
 </resources>

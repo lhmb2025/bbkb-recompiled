@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Naujinimų kanalas</string>
     <string name="settings_update_channel_release">Išleidimas</string>
     <string name="settings_update_channel_none">Derinimo kompiliacijoms naujinimų kanalo nėra</string>
-    <string name="settings_update_last_checked_title">Paskutinis tikrinimas</string>
     <string name="settings_update_never">Niekada</string>
     <string name="settings_update_check_now">Tikrinti dabar</string>
     <string name="settings_update_checking">Tikrinama…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Yra naujinimas</string>
     <string name="settings_update_available_banner">Yra naujinimas: %1$s</string>
     <string name="settings_update_version_label">Versija %1$s</string>
-    <string name="settings_update_size_label">Atsisiuntimo dydis: %1$s</string>
     <string name="settings_update_notes_title">Leidimo pastabos</string>
     <string name="settings_update_download">Atsisiųsti</string>
     <string name="settings_update_downloading">Atsisiunčiama… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Serveris grąžino klaidą (%1$d)</string>
     <string name="settings_update_error_generic">Naujinimų tikrinimas nepavyko</string>
     <string name="settings_update_error_too_old">Ši versija per sena, kad perskaitytų naujinimų sąrašą. Atnaujinkite rankiniu būdu.</string>
-    <string name="settings_update_from_cache">Parodyta iš paskutinio išsaugoto tikrinimo</string>
     <string name="settings_update_background_check_title">Automatiškai tikrinti naujinius</string>
     <string name="settings_update_background_check_summary">Gausite pranešimą, kai bus galima atsisiųsti naują versiją</string>
     <string name="settings_update_notification_text">Versija %1$s paruošta atsisiųsti</string>
     <string name="settings_update_unknown_sources_message">Android turi leisti BBKB įdiegti programas. Įjunkite įdiegimą iš šio šaltinio ir vėl paspauskite Įdiegti.</string>
     <string name="settings_update_open_settings">Atidaryti nustatymus</string>
+    <string name="settings_update_last_checked_at">Paskutinis tikrinimas: %1$s</string>
+    <string name="settings_update_ready_title">Paruošta įdiegti</string>
+    <string name="settings_update_version_details">Versijos informacija</string>
+    <string name="settings_update_unknown_sources_title">Leisti BBKB įdiegti naujinimus?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Įdiegta</string>
     <string name="language_packs_available_header">Galima atsisiųsti</string>
@@ -1124,5 +1125,4 @@
     <string name="settings_keyeditor_invalid_code">Netinkamas simbolio kodas</string>
     <string name="settings_spellcheck_intro">BBKB rašybos tikrintuvas teikia išmanų rašybos tikrinimą visose programose, kurios palaiko rašybos tikrinimą. Jis naudoja pažangius kalbos modelius, kad aptiktų rašybos klaidas ir pasiūlytų pataisymus.</string>
     <string name="settings_credits_version">Versija %1$s (versijos nr. %2$s)</string>
-    <string name="settings_updates_version">Versija %1$s (versijos nr. %2$d) · %3$s</string>
 </resources>

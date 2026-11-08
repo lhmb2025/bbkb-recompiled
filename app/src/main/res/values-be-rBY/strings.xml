@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Канал абнаўленняў</string>
     <string name="settings_update_channel_release">Выпуск</string>
     <string name="settings_update_channel_none">Для адладачных зборак канала абнаўленняў няма</string>
-    <string name="settings_update_last_checked_title">Апошняя праверка</string>
     <string name="settings_update_never">Ніколі</string>
     <string name="settings_update_check_now">Праверыць зараз</string>
     <string name="settings_update_checking">Праверка…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Даступна абнаўленне</string>
     <string name="settings_update_available_banner">Даступна абнаўленне: %1$s</string>
     <string name="settings_update_version_label">Версія %1$s</string>
-    <string name="settings_update_size_label">Памер спампоўкі: %1$s</string>
     <string name="settings_update_notes_title">Заўвагі да выпуску</string>
     <string name="settings_update_download">Спампаваць</string>
     <string name="settings_update_downloading">Спампоўка… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Сервер вярнуў памылку (%1$d)</string>
     <string name="settings_update_error_generic">Не ўдалося праверыць абнаўленні</string>
     <string name="settings_update_error_too_old">Гэта версія занадта старая, каб прачытаць спіс абнаўленняў. Абнавіце ўручную.</string>
-    <string name="settings_update_from_cache">Паказана з апошняй зберажонай праверкі</string>
     <string name="settings_update_background_check_title">Аўтаматычна правяраць абнаўленні</string>
     <string name="settings_update_background_check_summary">Атрымлівайце апавяшчэнне, калі новая версія будзе даступная для спампоўкі</string>
     <string name="settings_update_notification_text">Версія %1$s гатова да спампоўкі</string>
     <string name="settings_update_unknown_sources_message">Android павінен дазволіць BBKB устанаўліваць праграмы. Дазвольце ўстаноўку з гэтай крыніцы і яшчэ раз натысніце Устанавіць.</string>
     <string name="settings_update_open_settings">Адкрыць налады</string>
+    <string name="settings_update_last_checked_at">Апошняя праверка: %1$s</string>
+    <string name="settings_update_ready_title">Гатова да ўстаноўкі</string>
+    <string name="settings_update_version_details">Звесткі пра версію</string>
+    <string name="settings_update_unknown_sources_title">Дазволіць BBKB устанаўліваць абнаўленні?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Устаноўлена</string>
     <string name="language_packs_available_header">Даступна для спампоўкі</string>
@@ -1124,5 +1125,4 @@
     <string name="settings_keyeditor_invalid_code">Несапраўдны код сімвала</string>
     <string name="settings_spellcheck_intro">Сродак праверкі правапісу BBKB правярае правапіс ва ўсіх праграмах, якія гэта падтрымліваюць. Ён выкарыстоўвае сучасныя моўныя мадэлі, каб выяўляць памылкі друку і прапаноўваць выпраўленні.</string>
     <string name="settings_credits_version">Версія %1$s (зборка %2$s)</string>
-    <string name="settings_updates_version">Версія %1$s (зборка %2$d) · %3$s</string>
 </resources>

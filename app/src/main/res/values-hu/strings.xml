@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Frissítési csatorna</string>
     <string name="settings_update_channel_release">Kiadás</string>
     <string name="settings_update_channel_none">A hibakeresési buildekhez nincs frissítési csatorna</string>
-    <string name="settings_update_last_checked_title">Utolsó ellenőrzés</string>
     <string name="settings_update_never">Soha</string>
     <string name="settings_update_check_now">Ellenőrzés most</string>
     <string name="settings_update_checking">Ellenőrzés…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Frissítés érhető el</string>
     <string name="settings_update_available_banner">Frissítés érhető el: %1$s</string>
     <string name="settings_update_version_label">%1$s verzió</string>
-    <string name="settings_update_size_label">Letöltés mérete: %1$s</string>
     <string name="settings_update_notes_title">Kiadási megjegyzések</string>
     <string name="settings_update_download">Letöltés</string>
     <string name="settings_update_downloading">Letöltés… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">A kiszolgáló hibát adott vissza (%1$d)</string>
     <string name="settings_update_error_generic">A frissítés ellenőrzése nem sikerült</string>
     <string name="settings_update_error_too_old">Ez a verzió túl régi a frissítési lista beolvasásához. Frissítsen kézzel.</string>
-    <string name="settings_update_from_cache">Az utolsó mentett ellenőrzés alapján</string>
     <string name="settings_update_background_check_title">Frissítések automatikus keresése</string>
     <string name="settings_update_background_check_summary">Értesítést kap, amint új verzió érhető el letöltésre</string>
     <string name="settings_update_notification_text">A %1$s verzió letölthető</string>
     <string name="settings_update_unknown_sources_message">Az Androidnak engedélyeznie kell, hogy a BBKB alkalmazásokat telepítsen. Engedélyezze a telepítést erről a forrásról, majd nyomja meg újra a Telepítés gombot.</string>
     <string name="settings_update_open_settings">Beállítások megnyitása</string>
+    <string name="settings_update_last_checked_at">Utolsó ellenőrzés: %1$s</string>
+    <string name="settings_update_ready_title">Telepítésre kész</string>
+    <string name="settings_update_version_details">Verzió részletei</string>
+    <string name="settings_update_unknown_sources_title">Engedélyezi, hogy a BBKB frissítéseket telepítsen?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Telepítve</string>
     <string name="language_packs_available_header">Letölthető</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">Érvénytelen karakterkód</string>
     <string name="settings_spellcheck_intro">A BBKB helyesírás-ellenőrzője intelligens helyesírás-ellenőrzést biztosít minden olyan alkalmazásban, amely támogatja a helyesírás-ellenőrzést. Fejlett nyelvi modellekkel ismeri fel az elírásokat, és javításokat javasol.</string>
     <string name="settings_credits_version">%1$s verzió (build: %2$s)</string>
-    <string name="settings_updates_version">%1$s verzió (build: %2$d) · %3$s</string>
 </resources>

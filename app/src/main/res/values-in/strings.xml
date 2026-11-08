@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Saluran pembaruan</string>
     <string name="settings_update_channel_release">Rilis</string>
     <string name="settings_update_channel_none">Tidak ada saluran pembaruan untuk build debug</string>
-    <string name="settings_update_last_checked_title">Terakhir diperiksa</string>
     <string name="settings_update_never">Belum pernah</string>
     <string name="settings_update_check_now">Periksa sekarang</string>
     <string name="settings_update_checking">Memeriksa…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Pembaruan tersedia</string>
     <string name="settings_update_available_banner">Pembaruan tersedia: %1$s</string>
     <string name="settings_update_version_label">Versi %1$s</string>
-    <string name="settings_update_size_label">Ukuran unduhan: %1$s</string>
     <string name="settings_update_notes_title">Catatan rilis</string>
     <string name="settings_update_download">Unduh</string>
     <string name="settings_update_downloading">Mengunduh… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Server mengembalikan kesalahan (%1$d)</string>
     <string name="settings_update_error_generic">Pemeriksaan pembaruan gagal</string>
     <string name="settings_update_error_too_old">Versi ini terlalu lama untuk membaca daftar pembaruan. Silakan perbarui secara manual.</string>
-    <string name="settings_update_from_cache">Ditampilkan dari pemeriksaan terakhir yang disimpan</string>
     <string name="settings_update_background_check_title">Periksa pembaruan secara otomatis</string>
     <string name="settings_update_background_check_summary">Terima notifikasi saat versi baru tersedia untuk diunduh</string>
     <string name="settings_update_notification_text">Versi %1$s siap diunduh</string>
     <string name="settings_update_unknown_sources_message">Android harus mengizinkan BBKB memasang aplikasi. Aktifkan pemasangan dari sumber ini, lalu tekan Pasang lagi.</string>
     <string name="settings_update_open_settings">Buka setelan</string>
+    <string name="settings_update_last_checked_at">Terakhir diperiksa: %1$s</string>
+    <string name="settings_update_ready_title">Siap dipasang</string>
+    <string name="settings_update_version_details">Detail versi</string>
+    <string name="settings_update_unknown_sources_title">Izinkan BBKB memasang pembaruan?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Terpasang</string>
     <string name="language_packs_available_header">Tersedia untuk diunduh</string>
@@ -1079,5 +1080,4 @@
     <string name="settings_keyeditor_invalid_code">Kode karakter tidak valid</string>
     <string name="settings_spellcheck_intro">Pemeriksa ejaan BBKB menyediakan pemeriksaan ejaan cerdas di semua aplikasi yang mendukung pemeriksaan ejaan. Pemeriksa ini menggunakan model bahasa canggih untuk mendeteksi salah ketik dan menyarankan koreksi.</string>
     <string name="settings_credits_version">Versi %1$s (Build %2$s)</string>
-    <string name="settings_updates_version">Versi %1$s (Build %2$d) · %3$s</string>
 </resources>

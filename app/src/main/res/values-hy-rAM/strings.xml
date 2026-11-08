@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Թարմացման ալիք</string>
     <string name="settings_update_channel_release">Թողարկում</string>
     <string name="settings_update_channel_none">Վրիպազերծման կառուցումների համար թարմացման ալիք չկա</string>
-    <string name="settings_update_last_checked_title">Վերջին ստուգումը</string>
     <string name="settings_update_never">Երբեք</string>
     <string name="settings_update_check_now">Ստուգել հիմա</string>
     <string name="settings_update_checking">Ստուգվում է…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Հասանելի է թարմացում</string>
     <string name="settings_update_available_banner">Հասանելի է թարմացում՝ %1$s</string>
     <string name="settings_update_version_label">Տարբերակ %1$s</string>
-    <string name="settings_update_size_label">Ներբեռնման չափը՝ %1$s</string>
     <string name="settings_update_notes_title">Թողարկման նշումներ</string>
     <string name="settings_update_download">Ներբեռնել</string>
     <string name="settings_update_downloading">Ներբեռնվում է… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Սերվերը վերադարձրեց սխալ (%1$d)</string>
     <string name="settings_update_error_generic">Թարմացման ստուգումը ձախողվեց</string>
     <string name="settings_update_error_too_old">Այս տարբերակը շատ հին է թարմացումների ցանկը կարդալու համար։ Թարմացրեք ձեռքով։</string>
-    <string name="settings_update_from_cache">Ցուցադրված է վերջին պահված ստուգումից</string>
     <string name="settings_update_background_check_title">Ավտոմատ ստուգել թարմացումները</string>
     <string name="settings_update_background_check_summary">Ծանուցում կստանաք, երբ նոր տարբերակը հասանելի լինի ներբեռնման համար</string>
     <string name="settings_update_notification_text">Տարբերակ %1$s-ը պատրաստ է ներբեռնման</string>
     <string name="settings_update_unknown_sources_message">Android-ը պետք է թույլ տա BBKB-ին տեղադրել հավելվածներ։ Միացրեք տեղադրումն այս աղբյուրից, ապա նորից սեղմեք Տեղադրել։</string>
     <string name="settings_update_open_settings">Բացել կարգավորումները</string>
+    <string name="settings_update_last_checked_at">Վերջին ստուգումը՝ %1$s</string>
+    <string name="settings_update_ready_title">Պատրաստ է տեղադրման</string>
+    <string name="settings_update_version_details">Տարբերակի մանրամասներ</string>
+    <string name="settings_update_unknown_sources_title">Թույլատրե՞լ BBKB-ին տեղադրել թարմացումներ</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Տեղադրված</string>
     <string name="language_packs_available_header">Հասանելի է ներբեռնման</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">Նիշի անվավեր կոդ</string>
     <string name="settings_spellcheck_intro">BBKB-ի տառասխալների ուղղիչը խելացի ստուգում է տառասխալները բոլոր այն հավելվածներում, որոնք աջակցում են տառասխալների ստուգմանը։ Այն օգտագործում է առաջադեմ լեզվային մոդելներ՝ վրիպակները հայտնաբերելու և ուղղումներ առաջարկելու համար։</string>
     <string name="settings_credits_version">Տարբերակ %1$s (կառուցում %2$s)</string>
-    <string name="settings_updates_version">Տարբերակ %1$s (կառուցում %2$d) · %3$s</string>
 </resources>

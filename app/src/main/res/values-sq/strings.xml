@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Kanali i përditësimeve</string>
     <string name="settings_update_channel_release">Lëshimi</string>
     <string name="settings_update_channel_none">Nuk ka kanal përditësimesh për ndërtimet e diagnostikimit</string>
-    <string name="settings_update_last_checked_title">Kontrolluar së fundi</string>
     <string name="settings_update_never">Kurrë</string>
     <string name="settings_update_check_now">Kontrollo tani</string>
     <string name="settings_update_checking">Po kontrollohet…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Përditësim i disponueshëm</string>
     <string name="settings_update_available_banner">Përditësim i disponueshëm: %1$s</string>
     <string name="settings_update_version_label">Versioni %1$s</string>
-    <string name="settings_update_size_label">Madhësia e shkarkimit: %1$s</string>
     <string name="settings_update_notes_title">Shënimet e lëshimit</string>
     <string name="settings_update_download">Shkarko</string>
     <string name="settings_update_downloading">Po shkarkohet… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Serveri kthehu një gabim (%1$d)</string>
     <string name="settings_update_error_generic">Kontrolli i përditësimeve dështoi</string>
     <string name="settings_update_error_too_old">Ky version është shumë i vjetër për të lexuar listën e përditësimeve. Përditësoni me dorë.</string>
-    <string name="settings_update_from_cache">Shfaqur nga kontrolli i fundit i ruajtur</string>
     <string name="settings_update_background_check_title">Kontrollo automatikisht për përditësime</string>
     <string name="settings_update_background_check_summary">Merrni një njoftim kur një version i ri është i disponueshëm për shkarkim</string>
     <string name="settings_update_notification_text">Versioni %1$s është gati për shkarkim</string>
     <string name="settings_update_unknown_sources_message">Android duhet të lejojë BBKB të instalojë aplikacione. Aktivizoni instalimin nga ky burim, pastaj shtypni përsëri Instalo.</string>
     <string name="settings_update_open_settings">Hap cilësimet</string>
+    <string name="settings_update_last_checked_at">Kontrolluar së fundi: %1$s</string>
+    <string name="settings_update_ready_title">Gati për instalim</string>
+    <string name="settings_update_version_details">Detajet e versionit</string>
+    <string name="settings_update_unknown_sources_title">Të lejohet BBKB të instalojë përditësime?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Të instaluara</string>
     <string name="language_packs_available_header">Të disponueshme për shkarkim</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">Kod karakteri i pavlefshëm</string>
     <string name="settings_spellcheck_intro">Kontrolluesi drejtshkrimor i BBKB ofron kontroll të zgjuar drejtshkrimor në të gjitha aplikacionet që e mbështesin kontrollin drejtshkrimor. Ai përdor modele të avancuara gjuhësore për të zbuluar gabimet e shtypit dhe për të sugjeruar korrigjime.</string>
     <string name="settings_credits_version">Versioni %1$s (ndërtimi %2$s)</string>
-    <string name="settings_updates_version">Versioni %1$s (ndërtimi %2$d) · %3$s</string>
 </resources>

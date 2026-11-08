@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Κανάλι ενημερώσεων</string>
     <string name="settings_update_channel_release">Τελική έκδοση</string>
     <string name="settings_update_channel_none">Δεν υπάρχει κανάλι ενημερώσεων για εκδόσεις εντοπισμού σφαλμάτων</string>
-    <string name="settings_update_last_checked_title">Τελευταίος έλεγχος</string>
     <string name="settings_update_never">Ποτέ</string>
     <string name="settings_update_check_now">Έλεγχος τώρα</string>
     <string name="settings_update_checking">Γίνεται έλεγχος…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Διαθέσιμη ενημέρωση</string>
     <string name="settings_update_available_banner">Διαθέσιμη ενημέρωση: %1$s</string>
     <string name="settings_update_version_label">Έκδοση %1$s</string>
-    <string name="settings_update_size_label">Μέγεθος λήψης: %1$s</string>
     <string name="settings_update_notes_title">Σημειώσεις έκδοσης</string>
     <string name="settings_update_download">Λήψη</string>
     <string name="settings_update_downloading">Γίνεται λήψη… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Ο διακομιστής επέστρεψε σφάλμα (%1$d)</string>
     <string name="settings_update_error_generic">Ο έλεγχος ενημερώσεων απέτυχε</string>
     <string name="settings_update_error_too_old">Αυτή η έκδοση είναι πολύ παλιά για να διαβάσει τη λίστα ενημερώσεων. Ενημερώστε χειροκίνητα.</string>
-    <string name="settings_update_from_cache">Εμφανίζεται από τον τελευταίο αποθηκευμένο έλεγχο</string>
     <string name="settings_update_background_check_title">Αυτόματος έλεγχος για ενημερώσεις</string>
     <string name="settings_update_background_check_summary">Λάβετε ειδοποίηση όταν είναι διαθέσιμη νέα έκδοση για λήψη</string>
     <string name="settings_update_notification_text">Η έκδοση %1$s είναι έτοιμη για λήψη</string>
     <string name="settings_update_unknown_sources_message">Το Android πρέπει να επιτρέψει στο BBKB να εγκαθιστά εφαρμογές. Ενεργοποιήστε την εγκατάσταση από αυτήν την πηγή και πατήστε ξανά Εγκατάσταση.</string>
     <string name="settings_update_open_settings">Άνοιγμα ρυθμίσεων</string>
+    <string name="settings_update_last_checked_at">Τελευταίος έλεγχος: %1$s</string>
+    <string name="settings_update_ready_title">Έτοιμο για εγκατάσταση</string>
+    <string name="settings_update_version_details">Λεπτομέρειες έκδοσης</string>
+    <string name="settings_update_unknown_sources_title">Να επιτρέπεται στο BBKB να εγκαθιστά ενημερώσεις;</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Εγκατεστημένα</string>
     <string name="language_packs_available_header">Διαθέσιμα για λήψη</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">Μη έγκυρος κωδικός χαρακτήρα</string>
     <string name="settings_spellcheck_intro">Ο ορθογραφικός έλεγχος του BBKB παρέχει έξυπνο ορθογραφικό έλεγχο σε όλες τις εφαρμογές που τον υποστηρίζουν. Χρησιμοποιεί προηγμένα γλωσσικά μοντέλα για τον εντοπισμό τυπογραφικών λαθών και την πρόταση διορθώσεων.</string>
     <string name="settings_credits_version">Έκδοση %1$s (build %2$s)</string>
-    <string name="settings_updates_version">Έκδοση %1$s (build %2$d) · %3$s</string>
 </resources>

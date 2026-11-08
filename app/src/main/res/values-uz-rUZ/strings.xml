@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Yangilanish kanali</string>
     <string name="settings_update_channel_release">Chiqarilish</string>
     <string name="settings_update_channel_none">Nosozliklarni tuzatish qurilmalari uchun yangilanish kanali yoʻq</string>
-    <string name="settings_update_last_checked_title">Oxirgi tekshiruv</string>
     <string name="settings_update_never">Hech qachon</string>
     <string name="settings_update_check_now">Hozir tekshirish</string>
     <string name="settings_update_checking">Tekshirilmoqda…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Yangilanish mavjud</string>
     <string name="settings_update_available_banner">Yangilanish mavjud: %1$s</string>
     <string name="settings_update_version_label">Versiya %1$s</string>
-    <string name="settings_update_size_label">Yuklab olish hajmi: %1$s</string>
     <string name="settings_update_notes_title">Chiqarilish izohlari</string>
     <string name="settings_update_download">Yuklab olish</string>
     <string name="settings_update_downloading">Yuklab olinmoqda… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Server xato qaytardi (%1$d)</string>
     <string name="settings_update_error_generic">Yangilanishni tekshirish amalga oshmadi</string>
     <string name="settings_update_error_too_old">Bu versiya yangilanishlar roʻyxatini oʻqish uchun juda eski. Iltimos, qoʻlda yangilang.</string>
-    <string name="settings_update_from_cache">Oxirgi saqlangan tekshiruvdan koʻrsatilgan</string>
     <string name="settings_update_background_check_title">Yangilanishlarni avtomatik tekshirish</string>
     <string name="settings_update_background_check_summary">Yangi versiya yuklab olish uchun mavjud boʻlganda bildirishnoma olasiz</string>
     <string name="settings_update_notification_text">Versiya %1$s yuklab olishga tayyor</string>
     <string name="settings_update_unknown_sources_message">Android BBKB ga ilovalar oʻrnatishga ruxsat berishi kerak. Bu manbadan oʻrnatishni yoqing, soʻng Oʻrnatish tugmasini qayta bosing.</string>
     <string name="settings_update_open_settings">Sozlamalarni ochish</string>
+    <string name="settings_update_last_checked_at">Oxirgi tekshiruv: %1$s</string>
+    <string name="settings_update_ready_title">Oʻrnatishga tayyor</string>
+    <string name="settings_update_version_details">Versiya tafsilotlari</string>
+    <string name="settings_update_unknown_sources_title">BBKB ga yangilanishlarni oʻrnatishga ruxsat berilsinmi?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">O‘rnatilgan</string>
     <string name="language_packs_available_header">Yuklab olish mumkin</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">Belgi kodi yaroqsiz</string>
     <string name="settings_spellcheck_intro">BBKB imlo tekshirgichi imlo tekshiruvini qo‘llab-quvvatlaydigan barcha ilovalarda aqlli imlo tekshiruvini taqdim etadi. U xatolarni aniqlash va tuzatishlarni taklif qilish uchun ilg‘or til modellaridan foydalanadi.</string>
     <string name="settings_credits_version">Versiya %1$s (build %2$s)</string>
-    <string name="settings_updates_version">Versiya %1$s (build %2$d) · %3$s</string>
 </resources>

@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Yeniləmə kanalı</string>
     <string name="settings_update_channel_release">Buraxılış</string>
     <string name="settings_update_channel_none">Sazlama buraxılışları üçün yeniləmə kanalı yoxdur</string>
-    <string name="settings_update_last_checked_title">Son yoxlanma</string>
     <string name="settings_update_never">Heç vaxt</string>
     <string name="settings_update_check_now">İndi yoxla</string>
     <string name="settings_update_checking">Yoxlanılır…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Yeniləmə mövcuddur</string>
     <string name="settings_update_available_banner">Yeniləmə mövcuddur: %1$s</string>
     <string name="settings_update_version_label">Versiya %1$s</string>
-    <string name="settings_update_size_label">Endirmə həcmi: %1$s</string>
     <string name="settings_update_notes_title">Buraxılış qeydləri</string>
     <string name="settings_update_download">Endir</string>
     <string name="settings_update_downloading">Endirilir… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Server xəta qaytardı (%1$d)</string>
     <string name="settings_update_error_generic">Yeniləmə yoxlanışı alınmadı</string>
     <string name="settings_update_error_too_old">Bu versiya yeniləmə siyahısını oxumaq üçün çox köhnədir. Zəhmət olmasa əl ilə yeniləyin.</string>
-    <string name="settings_update_from_cache">Son saxlanmış yoxlamadan göstərilir</string>
     <string name="settings_update_background_check_title">Yeniləmələri avtomatik yoxlayın</string>
     <string name="settings_update_background_check_summary">Endirmək üçün yeni versiya əlçatan olduqda bildiriş alın</string>
     <string name="settings_update_notification_text">Versiya %1$s endirilməyə hazırdır</string>
     <string name="settings_update_unknown_sources_message">Android BBKB-yə tətbiq quraşdırmağa icazə verməlidir. Bu mənbədən quraşdırmanı aktiv edin, sonra yenidən Quraşdır düyməsini basın.</string>
     <string name="settings_update_open_settings">Ayarları aç</string>
+    <string name="settings_update_last_checked_at">Son yoxlanma: %1$s</string>
+    <string name="settings_update_ready_title">Quraşdırmağa hazırdır</string>
+    <string name="settings_update_version_details">Versiya təfərrüatları</string>
+    <string name="settings_update_unknown_sources_title">BBKB-yə yeniləmələri quraşdırmağa icazə verilsin?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Quraşdırılıb</string>
     <string name="language_packs_available_header">Yükləmək üçün mövcuddur</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">Yanlış simvol kodu</string>
     <string name="settings_spellcheck_intro">BBKB orfoqrafiya yoxlayıcısı orfoqrafik yoxlanışı dəstəkləyən bütün tətbiqlərdə ağıllı orfoqrafik yoxlanış təmin edir. O, yazı səhvlərini aşkarlamaq və düzəlişlər təklif etmək üçün qabaqcıl dil modellərindən istifadə edir.</string>
     <string name="settings_credits_version">Versiya %1$s (build %2$s)</string>
-    <string name="settings_updates_version">Versiya %1$s (build %2$d) · %3$s</string>
 </resources>

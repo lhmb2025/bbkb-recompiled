@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">ឆានែលបច្ចុប្បន្នភាព</string>
     <string name="settings_update_channel_release">ការចេញផ្សាយ</string>
     <string name="settings_update_channel_none">មិនមានឆានែលបច្ចុប្បន្នភាពសម្រាប់កំណែបំបាត់កំហុសទេ</string>
-    <string name="settings_update_last_checked_title">បានពិនិត្យចុងក្រោយ</string>
     <string name="settings_update_never">មិនដែល</string>
     <string name="settings_update_check_now">ពិនិត្យឥឡូវនេះ</string>
     <string name="settings_update_checking">កំពុងពិនិត្យ…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">មានបច្ចុប្បន្នភាព</string>
     <string name="settings_update_available_banner">មានបច្ចុប្បន្នភាព៖ %1$s</string>
     <string name="settings_update_version_label">កំណែ %1$s</string>
-    <string name="settings_update_size_label">ទំហំទាញយក៖ %1$s</string>
     <string name="settings_update_notes_title">កំណត់ចំណាំការចេញផ្សាយ</string>
     <string name="settings_update_download">ទាញយក</string>
     <string name="settings_update_downloading">កំពុងទាញយក… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">ម៉ាស៊ីនបម្រើបានត្រឡប់កំហុស (%1$d)</string>
     <string name="settings_update_error_generic">ការពិនិត្យបច្ចុប្បន្នភាពបានបរាជ័យ</string>
     <string name="settings_update_error_too_old">កំណែនេះចាស់ពេកមិនអាចអានបញ្ជីបច្ចុប្បន្នភាពបានទេ។ សូមធ្វើបច្ចុប្បន្នភាពដោយដៃ។</string>
-    <string name="settings_update_from_cache">បង្ហាញពីការពិនិត្យដែលបានរក្សាទុកចុងក្រោយ</string>
     <string name="settings_update_background_check_title">ពិនិត្យរកបច្ចុប្បន្នភាពដោយស្វ័យប្រវត្តិ</string>
     <string name="settings_update_background_check_summary">ទទួលការជូនដំណឹងនៅពេលកំណែថ្មីអាចទាញយកបាន</string>
     <string name="settings_update_notification_text">កំណែ %1$s រួចរាល់សម្រាប់ទាញយក</string>
     <string name="settings_update_unknown_sources_message">Android ត្រូវអនុញ្ញាតឱ្យ BBKB ដំឡើងកម្មវិធី។ បើកការដំឡើងពីប្រភពនេះ បន្ទាប់មកចុចដំឡើងម្ដងទៀត។</string>
     <string name="settings_update_open_settings">បើកការកំណត់</string>
+    <string name="settings_update_last_checked_at">បានពិនិត្យចុងក្រោយ៖ %1$s</string>
+    <string name="settings_update_ready_title">រួចរាល់សម្រាប់ដំឡើង</string>
+    <string name="settings_update_version_details">ព័ត៌មានលម្អិតអំពីកំណែ</string>
+    <string name="settings_update_unknown_sources_title">អនុញ្ញាតឱ្យ BBKB ដំឡើងបច្ចុប្បន្នភាពឬ?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">បានដំឡើង</string>
     <string name="language_packs_available_header">អាចទាញយកបាន</string>
@@ -1079,5 +1080,4 @@
     <string name="settings_keyeditor_invalid_code">កូដតួអក្សរមិនត្រឹមត្រូវ</string>
     <string name="settings_spellcheck_intro">កម្មវិធីពិនិត្យអក្ខរាវិរុទ្ធ BBKB ផ្ដល់ការពិនិត្យអក្ខរាវិរុទ្ធឆ្លាតវៃនៅគ្រប់កម្មវិធីដែលគាំទ្រការពិនិត្យអក្ខរាវិរុទ្ធ។ វាប្រើគំរូភាសាកម្រិតខ្ពស់ ដើម្បីរកឃើញកំហុសវាយ និងណែនាំការកែតម្រូវ។</string>
     <string name="settings_credits_version">កំណែ %1$s (កំណែបង្កើត %2$s)</string>
-    <string name="settings_updates_version">កំណែ %1$s (កំណែបង្កើត %2$d) · %3$s</string>
 </resources>

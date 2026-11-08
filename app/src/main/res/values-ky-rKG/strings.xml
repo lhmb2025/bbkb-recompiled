@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Жаңыртуу каналы</string>
     <string name="settings_update_channel_release">Чыгарылыш</string>
     <string name="settings_update_channel_none">Мүчүлүштүктөрдү оңдоо курулуштары үчүн жаңыртуу каналы жок</string>
-    <string name="settings_update_last_checked_title">Акыркы текшерүү</string>
     <string name="settings_update_never">Эч качан</string>
     <string name="settings_update_check_now">Азыр текшерүү</string>
     <string name="settings_update_checking">Текшерилип жатат…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Жаңыртуу бар</string>
     <string name="settings_update_available_banner">Жаңыртуу бар: %1$s</string>
     <string name="settings_update_version_label">Версия %1$s</string>
-    <string name="settings_update_size_label">Жүктөө өлчөмү: %1$s</string>
     <string name="settings_update_notes_title">Чыгарылыш жазуулары</string>
     <string name="settings_update_download">Жүктөө</string>
     <string name="settings_update_downloading">Жүктөлүп жатат… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Сервер ката кайтарды (%1$d)</string>
     <string name="settings_update_error_generic">Жаңыртууну текшерүү ишке ашкан жок</string>
     <string name="settings_update_error_too_old">Бул версия жаңыртуулар тизмесин окуу үчүн өтө эски. Колмо-кол жаңыртыңыз.</string>
-    <string name="settings_update_from_cache">Акыркы сакталган текшерүүдөн көрсөтүлдү</string>
     <string name="settings_update_background_check_title">Жаңыртууларды автоматтык түрдө текшерүү</string>
     <string name="settings_update_background_check_summary">Жаңы версия жүктөөгө жеткиликтүү болгондо билдирме аласыз</string>
     <string name="settings_update_notification_text">Версия %1$s жүктөөгө даяр</string>
     <string name="settings_update_unknown_sources_message">Android BBKB\'ге колдонмолорду орнотууга уруксат бериши керек. Бул булактан орнотууну иштетип, андан кийин Орнотуу баскычын кайра басыңыз.</string>
     <string name="settings_update_open_settings">Жөндөөлөрдү ачуу</string>
+    <string name="settings_update_last_checked_at">Акыркы текшерүү: %1$s</string>
+    <string name="settings_update_ready_title">Орнотууга даяр</string>
+    <string name="settings_update_version_details">Версиянын чоо-жайы</string>
+    <string name="settings_update_unknown_sources_title">BBKB\'ге жаңыртууларды орнотууга уруксат берилсинби?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Орнотулган</string>
     <string name="language_packs_available_header">Жүктөөгө жеткиликтүү</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">Белгинин коду жараксыз</string>
     <string name="settings_spellcheck_intro">BBKB орфографияны текшергичи орфографияны текшерүүнү колдогон бардык колдонмолордо акылдуу текшерүүнү камсыз кылат. Ал каталарды аныктоо жана оңдоолорду сунуштоо үчүн өркүндөтүлгөн тил моделдерин колдонот.</string>
     <string name="settings_credits_version">Версия %1$s (курулма %2$s)</string>
-    <string name="settings_updates_version">Версия %1$s (курулма %2$d) · %3$s</string>
 </resources>

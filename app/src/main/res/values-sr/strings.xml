@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Канал ажурирања</string>
     <string name="settings_update_channel_release">Издање</string>
     <string name="settings_update_channel_none">Нема канала ажурирања за дибаг верзије</string>
-    <string name="settings_update_last_checked_title">Последња провера</string>
     <string name="settings_update_never">Никада</string>
     <string name="settings_update_check_now">Провери сада</string>
     <string name="settings_update_checking">Проверавање…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Доступно је ажурирање</string>
     <string name="settings_update_available_banner">Доступно је ажурирање: %1$s</string>
     <string name="settings_update_version_label">Верзија %1$s</string>
-    <string name="settings_update_size_label">Величина преузимања: %1$s</string>
     <string name="settings_update_notes_title">Напомене о издању</string>
     <string name="settings_update_download">Преузми</string>
     <string name="settings_update_downloading">Преузимање… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Сервер је вратио грешку (%1$d)</string>
     <string name="settings_update_error_generic">Провера ажурирања није успела</string>
     <string name="settings_update_error_too_old">Ова верзија је превише стара да прочита листу ажурирања. Ажурирајте ручно.</string>
-    <string name="settings_update_from_cache">Приказано из последње сачуване провере</string>
     <string name="settings_update_background_check_title">Аутоматски проверавај ажурирања</string>
     <string name="settings_update_background_check_summary">Добићете обавештење када нова верзија буде доступна за преузимање</string>
     <string name="settings_update_notification_text">Верзија %1$s је спремна за преузимање</string>
     <string name="settings_update_unknown_sources_message">Android мора да дозволи BBKB-у да инсталира апликације. Омогућите инсталацију из овог извора, па поново притисните Инсталирај.</string>
     <string name="settings_update_open_settings">Отвори подешавања</string>
+    <string name="settings_update_last_checked_at">Последња провера: %1$s</string>
+    <string name="settings_update_ready_title">Спремно за инсталацију</string>
+    <string name="settings_update_version_details">Детаљи верзије</string>
+    <string name="settings_update_unknown_sources_title">Дозволити BBKB-у да инсталира ажурирања?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Инсталирано</string>
     <string name="language_packs_available_header">Доступно за преузимање</string>
@@ -1109,5 +1110,4 @@
     <string name="settings_keyeditor_invalid_code">Неважећи код знака</string>
     <string name="settings_spellcheck_intro">BBKB провера правописа пружа интелигентну проверу правописа у свим апликацијама које то подржавају. Користи напредне језичке моделе да би открила грешке у куцању и предложила исправке.</string>
     <string name="settings_credits_version">Верзија %1$s (ревизија %2$s)</string>
-    <string name="settings_updates_version">Верзија %1$s (ревизија %2$d) · %3$s</string>
 </resources>

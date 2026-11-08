@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Шинэчлэлийн суваг</string>
     <string name="settings_update_channel_release">Гаргалт</string>
     <string name="settings_update_channel_none">Дебаг бүтээцэд шинэчлэлийн суваг байхгүй</string>
-    <string name="settings_update_last_checked_title">Сүүлд шалгасан</string>
     <string name="settings_update_never">Хэзээ ч</string>
     <string name="settings_update_check_now">Одоо шалгах</string>
     <string name="settings_update_checking">Шалгаж байна…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Шинэчлэл байна</string>
     <string name="settings_update_available_banner">Шинэчлэл байна: %1$s</string>
     <string name="settings_update_version_label">Хувилбар %1$s</string>
-    <string name="settings_update_size_label">Татах хэмжээ: %1$s</string>
     <string name="settings_update_notes_title">Гаргалтын тэмдэглэл</string>
     <string name="settings_update_download">Татах</string>
     <string name="settings_update_downloading">Татаж байна… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Сервер алдаа буцаалаа (%1$d)</string>
     <string name="settings_update_error_generic">Шинэчлэл шалгах явц бүтсэнгүй</string>
     <string name="settings_update_error_too_old">Энэ хувилбар шинэчлэлийн жагсаалтыг уншихад хэт хуучин. Гараар шинэчилнэ үү.</string>
-    <string name="settings_update_from_cache">Сүүлд хадгалсан шалгалтаас харуулж байна</string>
     <string name="settings_update_background_check_title">Шинэчлэлтийг автоматаар шалгах</string>
     <string name="settings_update_background_check_summary">Шинэ хувилбар татахад бэлэн болоход мэдэгдэл авна</string>
     <string name="settings_update_notification_text">Хувилбар %1$s татахад бэлэн</string>
     <string name="settings_update_unknown_sources_message">Аппликейшн суулгахад Android нь BBKB-д зөвшөөрөл өгөх шаардлагатай. Энэ эх сурвалжаас суулгахыг зөвшөөрөөд Суулгах товчийг дахин дарна уу.</string>
     <string name="settings_update_open_settings">Тохиргоог нээх</string>
+    <string name="settings_update_last_checked_at">Сүүлд шалгасан: %1$s</string>
+    <string name="settings_update_ready_title">Суулгахад бэлэн</string>
+    <string name="settings_update_version_details">Хувилбарын дэлгэрэнгүй</string>
+    <string name="settings_update_unknown_sources_title">BBKB-д шинэчлэл суулгахыг зөвшөөрөх үү?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Суулгасан</string>
     <string name="language_packs_available_header">Татах боломжтой</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">Тэмдэгтийн код буруу байна</string>
     <string name="settings_spellcheck_intro">BBKB алдаа шалгагч нь алдаа шалгахыг дэмждэг бүх апп дээр ухаалаг алдаа шалгалт хийдэг. Энэ нь үсгийн алдааг илрүүлж, засвар санал болгохын тулд дэвшилтэт хэлний загвар ашигладаг.</string>
     <string name="settings_credits_version">Хувилбар %1$s (бүтээц %2$s)</string>
-    <string name="settings_updates_version">Хувилбар %1$s (бүтээц %2$d) · %3$s</string>
 </resources>

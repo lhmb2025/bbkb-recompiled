@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Canal d\'actualitzacions</string>
     <string name="settings_update_channel_release">Versió final</string>
     <string name="settings_update_channel_none">No hi ha canal d\'actualitzacions per a compilacions de depuració</string>
-    <string name="settings_update_last_checked_title">Última comprovació</string>
     <string name="settings_update_never">Mai</string>
     <string name="settings_update_check_now">Comprova ara</string>
     <string name="settings_update_checking">S\'està comprovant…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Actualització disponible</string>
     <string name="settings_update_available_banner">Actualització disponible: %1$s</string>
     <string name="settings_update_version_label">Versió %1$s</string>
-    <string name="settings_update_size_label">Mida de la baixada: %1$s</string>
     <string name="settings_update_notes_title">Notes de la versió</string>
     <string name="settings_update_download">Baixa</string>
     <string name="settings_update_downloading">S\'està baixant… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">El servidor ha retornat un error (%1$d)</string>
     <string name="settings_update_error_generic">La comprovació d\'actualitzacions ha fallat</string>
     <string name="settings_update_error_too_old">Aquesta versió és massa antiga per llegir la llista d\'actualitzacions. Actualitza-la manualment.</string>
-    <string name="settings_update_from_cache">Mostrat a partir de l\'última comprovació guardada</string>
     <string name="settings_update_background_check_title">Comprova les actualitzacions automàticament</string>
     <string name="settings_update_background_check_summary">Rep una notificació quan hi hagi una versió nova disponible per baixar</string>
     <string name="settings_update_notification_text">La versió %1$s està a punt per baixar</string>
     <string name="settings_update_unknown_sources_message">Android ha de permetre que BBKB instal·li aplicacions. Activa la instal·lació des d\'aquesta font i torna a prémer Instal·la.</string>
     <string name="settings_update_open_settings">Obre la configuració</string>
+    <string name="settings_update_last_checked_at">Última comprovació: %1$s</string>
+    <string name="settings_update_ready_title">A punt per instal·lar</string>
+    <string name="settings_update_version_details">Detalls de la versió</string>
+    <string name="settings_update_unknown_sources_title">Vols permetre que BBKB instal·li actualitzacions?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Instal·lats</string>
     <string name="language_packs_available_header">Disponibles per baixar</string>
@@ -1109,5 +1110,4 @@
     <string name="settings_keyeditor_invalid_code">Codi de caràcter no vàlid</string>
     <string name="settings_spellcheck_intro">El corrector ortogràfic de BBKB ofereix una correcció ortogràfica intel·ligent a totes les aplicacions que l\'admeten. Utilitza models de llengua avançats per detectar errades tipogràfiques i suggerir correccions.</string>
     <string name="settings_credits_version">Versió %1$s (compilació %2$s)</string>
-    <string name="settings_updates_version">Versió %1$s (compilació %2$d) · %3$s</string>
 </resources>

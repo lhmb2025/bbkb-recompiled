@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Güncelleme kanalı</string>
     <string name="settings_update_channel_release">Yayın</string>
     <string name="settings_update_channel_none">Hata ayıklama derlemeleri için güncelleme kanalı yok</string>
-    <string name="settings_update_last_checked_title">Son denetim</string>
     <string name="settings_update_never">Hiç</string>
     <string name="settings_update_check_now">Şimdi denetle</string>
     <string name="settings_update_checking">Denetleniyor…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Güncelleme var</string>
     <string name="settings_update_available_banner">Güncelleme var: %1$s</string>
     <string name="settings_update_version_label">Sürüm %1$s</string>
-    <string name="settings_update_size_label">İndirme boyutu: %1$s</string>
     <string name="settings_update_notes_title">Sürüm notları</string>
     <string name="settings_update_download">İndir</string>
     <string name="settings_update_downloading">İndiriliyor… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Sunucu bir hata döndürdü (%1$d)</string>
     <string name="settings_update_error_generic">Güncelleme denetimi başarısız oldu</string>
     <string name="settings_update_error_too_old">Bu sürüm güncelleme listesini okumak için çok eski. Lütfen elle güncelleyin.</string>
-    <string name="settings_update_from_cache">Son kaydedilen denetimden gösteriliyor</string>
     <string name="settings_update_background_check_title">Güncellemeleri otomatik olarak denetle</string>
     <string name="settings_update_background_check_summary">Yeni bir sürüm indirilmeye hazır olduğunda bildirim alırsınız</string>
     <string name="settings_update_notification_text">Sürüm %1$s indirmeye hazır</string>
     <string name="settings_update_unknown_sources_message">Android\'in BBKB\'ye uygulama kurma izni vermesi gerekir. Bu kaynaktan kurulumu etkinleştirin, sonra Kur düğmesine yeniden basın.</string>
     <string name="settings_update_open_settings">Ayarları aç</string>
+    <string name="settings_update_last_checked_at">Son denetim: %1$s</string>
+    <string name="settings_update_ready_title">Kurulmaya hazır</string>
+    <string name="settings_update_version_details">Sürüm ayrıntıları</string>
+    <string name="settings_update_unknown_sources_title">BBKB\'nin güncelleme kurmasına izin verilsin mi?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Yüklü</string>
     <string name="language_packs_available_header">İndirilebilir</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">Geçersiz karakter kodu</string>
     <string name="settings_spellcheck_intro">BBKB yazım denetleyicisi, yazım denetimini destekleyen tüm uygulamalarda akıllı yazım denetimi sağlar. Yazım hatalarını tespit etmek ve düzeltme önermek için gelişmiş dil modelleri kullanır.</string>
     <string name="settings_credits_version">Sürüm %1$s (derleme %2$s)</string>
-    <string name="settings_updates_version">Sürüm %1$s (derleme %2$d) · %3$s</string>
 </resources>

@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Eguneraketa-kanala</string>
     <string name="settings_update_channel_release">Argitalpena</string>
     <string name="settings_update_channel_none">Arazketa-bertsioentzat ez dago eguneraketa-kanalik</string>
-    <string name="settings_update_last_checked_title">Azken egiaztapena</string>
     <string name="settings_update_never">Inoiz ez</string>
     <string name="settings_update_check_now">Egiaztatu orain</string>
     <string name="settings_update_checking">Egiaztatzen…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Eguneraketa eskuragarri</string>
     <string name="settings_update_available_banner">Eguneraketa eskuragarri: %1$s</string>
     <string name="settings_update_version_label">%1$s bertsioa</string>
-    <string name="settings_update_size_label">Deskargaren tamaina: %1$s</string>
     <string name="settings_update_notes_title">Argitalpen-oharrak</string>
     <string name="settings_update_download">Deskargatu</string>
     <string name="settings_update_downloading">Deskargatzen… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Zerbitzariak errore bat itzuli du (%1$d)</string>
     <string name="settings_update_error_generic">Eguneraketen egiaztapenak huts egin du</string>
     <string name="settings_update_error_too_old">Bertsio hau zaharregia da eguneraketa-zerrenda irakurtzeko. Eguneratu eskuz.</string>
-    <string name="settings_update_from_cache">Gordetako azken egiaztapenetik erakutsita</string>
     <string name="settings_update_background_check_title">Bilatu eguneratzeak automatikoki</string>
     <string name="settings_update_background_check_summary">Jakinarazpen bat jasoko duzu bertsio berri bat deskargatzeko erabilgarri dagoenean</string>
     <string name="settings_update_notification_text">%1$s bertsioa deskargatzeko prest dago</string>
     <string name="settings_update_unknown_sources_message">Androidek BBKBri aplikazioak instalatzen uzteko baimena eman behar dio. Gaitu iturburu honetatik instalatzea eta sakatu Instalatu berriro.</string>
     <string name="settings_update_open_settings">Ireki ezarpenak</string>
+    <string name="settings_update_last_checked_at">Azken egiaztapena: %1$s</string>
+    <string name="settings_update_ready_title">Instalatzeko prest</string>
+    <string name="settings_update_version_details">Bertsioaren xehetasunak</string>
+    <string name="settings_update_unknown_sources_title">BBKBri eguneraketak instalatzen utzi nahi diozu?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Instalatuta</string>
     <string name="language_packs_available_header">Deskargatzeko eskuragarri</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">Karaktere-kode baliogabea</string>
     <string name="settings_spellcheck_intro">BBKB zuzentzaile ortografikoak zuzenketa ortografiko adimenduna eskaintzen du zuzenketa ortografikoa onartzen duten aplikazio guztietan. Hizkuntza-eredu aurreratuak erabiltzen ditu akatsak hautemateko eta zuzenketak iradokitzeko.</string>
     <string name="settings_credits_version">%1$s bertsioa (%2$s konpilazioa)</string>
-    <string name="settings_updates_version">%1$s bertsioa (%2$d konpilazioa) · %3$s</string>
 </resources>

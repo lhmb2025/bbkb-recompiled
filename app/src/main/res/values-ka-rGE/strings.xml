@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">განახლების არხი</string>
     <string name="settings_update_channel_release">გამოშვება</string>
     <string name="settings_update_channel_none">გამართვის ბილდებისთვის განახლების არხი არ არსებობს</string>
-    <string name="settings_update_last_checked_title">ბოლო შემოწმება</string>
     <string name="settings_update_never">არასდროს</string>
     <string name="settings_update_check_now">შემოწმება ახლა</string>
     <string name="settings_update_checking">მიმდინარეობს შემოწმება…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">ხელმისაწვდომია განახლება</string>
     <string name="settings_update_available_banner">ხელმისაწვდომია განახლება: %1$s</string>
     <string name="settings_update_version_label">ვერსია %1$s</string>
-    <string name="settings_update_size_label">ჩამოტვირთვის ზომა: %1$s</string>
     <string name="settings_update_notes_title">გამოშვების შენიშვნები</string>
     <string name="settings_update_download">ჩამოტვირთვა</string>
     <string name="settings_update_downloading">ჩამოიტვირთება… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">სერვერმა დააბრუნა შეცდომა (%1$d)</string>
     <string name="settings_update_error_generic">განახლების შემოწმება ჩაიშალა</string>
     <string name="settings_update_error_too_old">ეს ვერსია ძალიან ძველია განახლებების სიის წასაკითხად. გთხოვთ, განაახლოთ ხელით.</string>
-    <string name="settings_update_from_cache">ნაჩვენებია ბოლო შენახული შემოწმებიდან</string>
     <string name="settings_update_background_check_title">განახლებების ავტომატური შემოწმება</string>
     <string name="settings_update_background_check_summary">მიიღებთ შეტყობინებას, როცა ახალი ვერსია ჩამოსატვირთად ხელმისაწვდომი იქნება</string>
     <string name="settings_update_notification_text">ვერსია %1$s მზადაა ჩამოსატვირთად</string>
     <string name="settings_update_unknown_sources_message">Android-მა უნდა მისცეს BBKB-ს აპების დაყენების ნებართვა. დართეთ ნება ამ წყაროდან დაყენებას და ხელახლა დააჭირეთ დაყენებას.</string>
     <string name="settings_update_open_settings">პარამეტრების გახსნა</string>
+    <string name="settings_update_last_checked_at">ბოლო შემოწმება: %1$s</string>
+    <string name="settings_update_ready_title">მზადაა დასაყენებლად</string>
+    <string name="settings_update_version_details">ვერსიის დეტალები</string>
+    <string name="settings_update_unknown_sources_title">მისცეთ BBKB-ს განახლებების დაყენების ნებართვა?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">დაინსტალირებული</string>
     <string name="language_packs_available_header">ჩამოტვირთვად ხელმისაწვდომი</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">სიმბოლოს არასწორი კოდი</string>
     <string name="settings_spellcheck_intro">BBKB-ის მართლწერის შემმოწმებელი ჭკვიანურად ამოწმებს მართლწერას ყველა აპში, რომელიც მართლწერის შემოწმებას უჭერს მხარს. ის იყენებს მოწინავე ენობრივ მოდელებს შეცდომების აღმოსაჩენად და შესწორებების შესათავაზებლად.</string>
     <string name="settings_credits_version">ვერსია %1$s (ბილდი %2$s)</string>
-    <string name="settings_updates_version">ვერსია %1$s (ბილდი %2$d) · %3$s</string>
 </resources>

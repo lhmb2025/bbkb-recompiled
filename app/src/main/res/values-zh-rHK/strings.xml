@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">更新管道</string>
     <string name="settings_update_channel_release">正式版</string>
     <string name="settings_update_channel_none">除錯版本沒有更新管道</string>
-    <string name="settings_update_last_checked_title">上次檢查</string>
     <string name="settings_update_never">從未</string>
     <string name="settings_update_check_now">立即檢查</string>
     <string name="settings_update_checking">正在檢查…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">有可用更新</string>
     <string name="settings_update_available_banner">有可用更新：%1$s</string>
     <string name="settings_update_version_label">版本 %1$s</string>
-    <string name="settings_update_size_label">下載大小：%1$s</string>
     <string name="settings_update_notes_title">版本說明</string>
     <string name="settings_update_download">下載</string>
     <string name="settings_update_downloading">正在下載… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">伺服器傳回錯誤 (%1$d)</string>
     <string name="settings_update_error_generic">檢查更新失敗</string>
     <string name="settings_update_error_too_old">此版本太舊，無法讀取更新清單。請手動更新。</string>
-    <string name="settings_update_from_cache">顯示的是上次儲存的檢查結果</string>
     <string name="settings_update_background_check_title">自動檢查更新</string>
     <string name="settings_update_background_check_summary">有新版本可供下載時通知你</string>
     <string name="settings_update_notification_text">版本 %1$s 已可下載</string>
     <string name="settings_update_unknown_sources_message">Android 必須允許 BBKB 安裝應用程式。請開啟來自此來源的安裝，然後再次點按安裝。</string>
     <string name="settings_update_open_settings">開啟設定</string>
+    <string name="settings_update_last_checked_at">上次檢查：%1$s</string>
+    <string name="settings_update_ready_title">已準備好安裝</string>
+    <string name="settings_update_version_details">版本詳情</string>
+    <string name="settings_update_unknown_sources_title">要允許 BBKB 安裝更新嗎？</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">已安裝</string>
     <string name="language_packs_available_header">可下載</string>
@@ -1079,5 +1080,4 @@
     <string name="settings_keyeditor_invalid_code">字元代碼無效</string>
     <string name="settings_spellcheck_intro">BBKB 拼字檢查工具可在所有支援拼字檢查的應用程式中提供智能拼字檢查。它使用先進的語言模型來偵測錯字並建議修正。</string>
     <string name="settings_credits_version">版本 %1$s（版本號碼 %2$s）</string>
-    <string name="settings_updates_version">版本 %1$s（版本號碼 %2$d）· %3$s</string>
 </resources>

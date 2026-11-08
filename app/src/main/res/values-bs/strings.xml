@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Kanal ažuriranja</string>
     <string name="settings_update_channel_release">Izdanje</string>
     <string name="settings_update_channel_none">Nema kanala ažuriranja za debug verzije</string>
-    <string name="settings_update_last_checked_title">Zadnja provjera</string>
     <string name="settings_update_never">Nikada</string>
     <string name="settings_update_check_now">Provjeri sada</string>
     <string name="settings_update_checking">Provjera…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Dostupno je ažuriranje</string>
     <string name="settings_update_available_banner">Dostupno je ažuriranje: %1$s</string>
     <string name="settings_update_version_label">Verzija %1$s</string>
-    <string name="settings_update_size_label">Veličina preuzimanja: %1$s</string>
     <string name="settings_update_notes_title">Bilješke o izdanju</string>
     <string name="settings_update_download">Preuzmi</string>
     <string name="settings_update_downloading">Preuzimanje… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Server je vratio grešku (%1$d)</string>
     <string name="settings_update_error_generic">Provjera ažuriranja nije uspjela</string>
     <string name="settings_update_error_too_old">Ova verzija je previše stara da pročita listu ažuriranja. Ažurirajte ručno.</string>
-    <string name="settings_update_from_cache">Prikazano iz zadnje sačuvane provjere</string>
     <string name="settings_update_background_check_title">Automatski provjeravaj ažuriranja</string>
     <string name="settings_update_background_check_summary">Primite obavijest kada nova verzija bude dostupna za preuzimanje</string>
     <string name="settings_update_notification_text">Verzija %1$s je spremna za preuzimanje</string>
     <string name="settings_update_unknown_sources_message">Android mora dozvoliti BBKB-u instaliranje aplikacija. Omogućite instalaciju iz ovog izvora, zatim ponovo pritisnite Instaliraj.</string>
     <string name="settings_update_open_settings">Otvori postavke</string>
+    <string name="settings_update_last_checked_at">Zadnja provjera: %1$s</string>
+    <string name="settings_update_ready_title">Spremno za instalaciju</string>
+    <string name="settings_update_version_details">Detalji verzije</string>
+    <string name="settings_update_unknown_sources_title">Dozvoliti BBKB-u da instalira ažuriranja?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Instalirano</string>
     <string name="language_packs_available_header">Dostupno za preuzimanje</string>
@@ -1109,5 +1110,4 @@
     <string name="settings_keyeditor_invalid_code">Nevažeći kod znaka</string>
     <string name="settings_spellcheck_intro">BBKB provjera pravopisa pruža inteligentnu provjeru pravopisa u svim aplikacijama koje to podržavaju. Koristi napredne jezičke modele za otkrivanje grešaka u kucanju i predlaganje ispravki.</string>
     <string name="settings_credits_version">Verzija %1$s (međuverzija %2$s)</string>
-    <string name="settings_updates_version">Verzija %1$s (međuverzija %2$d) · %3$s</string>
 </resources>

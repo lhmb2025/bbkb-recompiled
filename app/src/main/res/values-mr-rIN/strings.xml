@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">अद्यतन चॅनेल</string>
     <string name="settings_update_channel_release">रिलीज</string>
     <string name="settings_update_channel_none">डीबग बिल्डसाठी अद्यतन चॅनेल नाही</string>
-    <string name="settings_update_last_checked_title">शेवटची तपासणी</string>
     <string name="settings_update_never">कधीही नाही</string>
     <string name="settings_update_check_now">आता तपासा</string>
     <string name="settings_update_checking">तपासत आहे…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">अद्यतन उपलब्ध</string>
     <string name="settings_update_available_banner">अद्यतन उपलब्ध: %1$s</string>
     <string name="settings_update_version_label">आवृत्ती %1$s</string>
-    <string name="settings_update_size_label">डाउनलोड आकार: %1$s</string>
     <string name="settings_update_notes_title">रिलीज नोंदी</string>
     <string name="settings_update_download">डाउनलोड</string>
     <string name="settings_update_downloading">डाउनलोड होत आहे… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">सर्व्हरने त्रुटी परत केली (%1$d)</string>
     <string name="settings_update_error_generic">अद्यतन तपासणी अयशस्वी झाली</string>
     <string name="settings_update_error_too_old">ही आवृत्ती अद्यतन यादी वाचण्यासाठी फार जुनी आहे. कृपया स्वतः अद्यतनित करा.</string>
-    <string name="settings_update_from_cache">शेवटच्या जतन केलेल्या तपासणीवरून दाखवले</string>
     <string name="settings_update_background_check_title">अपडेट आपोआप तपासा</string>
     <string name="settings_update_background_check_summary">डाउनलोडसाठी नवीन आवृत्ती उपलब्ध झाल्यावर सूचना मिळवा</string>
     <string name="settings_update_notification_text">आवृत्ती %1$s डाउनलोडसाठी तयार आहे</string>
     <string name="settings_update_unknown_sources_message">अ‍ॅप्स स्थापित करण्यासाठी Android ने BBKB ला परवानगी द्यावी लागेल. या स्रोतावरून स्थापना सुरू करा आणि पुन्हा स्थापित करा दाबा.</string>
     <string name="settings_update_open_settings">सेटिंग्ज उघडा</string>
+    <string name="settings_update_last_checked_at">शेवटची तपासणी: %1$s</string>
+    <string name="settings_update_ready_title">स्थापित करण्यासाठी तयार</string>
+    <string name="settings_update_version_details">आवृत्तीचा तपशील</string>
+    <string name="settings_update_unknown_sources_title">BBKB ला अद्यतने स्थापित करण्याची परवानगी द्यायची?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">इंस्टॉल केलेले</string>
     <string name="language_packs_available_header">डाउनलोडसाठी उपलब्ध</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">अवैध वर्ण कोड</string>
     <string name="settings_spellcheck_intro">BBKB शब्दलेखन तपासक शब्दलेखन तपासणीला सपोर्ट करणाऱ्या सर्व ॲप्समध्ये स्मार्ट शब्दलेखन तपासणी देतो. टायपिंगमधील चुका शोधण्यासाठी आणि दुरुस्त्या सुचवण्यासाठी तो प्रगत भाषा मॉडेल वापरतो.</string>
     <string name="settings_credits_version">आवृत्ती %1$s (बिल्ड %2$s)</string>
-    <string name="settings_updates_version">आवृत्ती %1$s (बिल्ड %2$d) · %3$s</string>
 </resources>

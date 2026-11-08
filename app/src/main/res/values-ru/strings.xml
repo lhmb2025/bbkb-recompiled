@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Канал обновлений</string>
     <string name="settings_update_channel_release">Релиз</string>
     <string name="settings_update_channel_none">Для отладочных сборок канала обновлений нет</string>
-    <string name="settings_update_last_checked_title">Последняя проверка</string>
     <string name="settings_update_never">Никогда</string>
     <string name="settings_update_check_now">Проверить сейчас</string>
     <string name="settings_update_checking">Проверка…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Доступно обновление</string>
     <string name="settings_update_available_banner">Доступно обновление: %1$s</string>
     <string name="settings_update_version_label">Версия %1$s</string>
-    <string name="settings_update_size_label">Размер загрузки: %1$s</string>
     <string name="settings_update_notes_title">Примечания к выпуску</string>
     <string name="settings_update_download">Скачать</string>
     <string name="settings_update_downloading">Загрузка… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Сервер вернул ошибку (%1$d)</string>
     <string name="settings_update_error_generic">Не удалось проверить обновления</string>
     <string name="settings_update_error_too_old">Эта версия слишком старая, чтобы прочитать список обновлений. Обновите вручную.</string>
-    <string name="settings_update_from_cache">Показано по последней сохранённой проверке</string>
     <string name="settings_update_background_check_title">Автоматически проверять обновления</string>
     <string name="settings_update_background_check_summary">Вы получите уведомление, когда новая версия станет доступна для загрузки</string>
     <string name="settings_update_notification_text">Версия %1$s готова к загрузке</string>
     <string name="settings_update_unknown_sources_message">Android должен разрешить BBKB устанавливать приложения. Разрешите установку из этого источника и снова нажмите «Установить».</string>
     <string name="settings_update_open_settings">Открыть настройки</string>
+    <string name="settings_update_last_checked_at">Последняя проверка: %1$s</string>
+    <string name="settings_update_ready_title">Готово к установке</string>
+    <string name="settings_update_version_details">Сведения о версии</string>
+    <string name="settings_update_unknown_sources_title">Разрешить BBKB устанавливать обновления?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Установлено</string>
     <string name="language_packs_available_header">Доступно для загрузки</string>
@@ -1124,5 +1125,4 @@
     <string name="settings_keyeditor_invalid_code">Недопустимый код символа</string>
     <string name="settings_spellcheck_intro">Средство проверки орфографии BBKB проверяет правописание во всех приложениях, которые это поддерживают. Оно использует продвинутые языковые модели, чтобы находить опечатки и предлагать исправления.</string>
     <string name="settings_credits_version">Версия %1$s (сборка %2$s)</string>
-    <string name="settings_updates_version">Версия %1$s (сборка %2$d) · %3$s</string>
 </resources>

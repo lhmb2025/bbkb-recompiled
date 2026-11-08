@@ -115,13 +115,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
         val lateResources: Set<String> = emptySet(),
     )
 
-    /**
-     * Version/build text moves on every release; it is the one thing not pinned. The optional
-     * " · <build type>" tail is the Updates screen's version row, which names the build type
-     * after the version for the same reason the channel row exists: a debug build and a release
-     * build are different things to be looking at an update list from.
-     */
-    private val volatileText = Regex("""^Version .*\(Build \d+\)( · \w+)?$""")
+    /** Version/build text moves on every release; it is the one thing not pinned. */
+    private val volatileText = Regex("""^Version .*\(Build \d+\)$""")
 
     @Before
     fun setUp() {
@@ -1309,15 +1304,13 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.Updates.route,
             title = "Updates",
             resources = setOf(
-                // "Never" - the last-checked row on a fresh install. Several resources share that
-                // value and the index records the lexicographically first, which is this one.
-                "settings_update_never",
                 "settings_update_background_check_summary", "settings_update_background_check_title",
-                // The tests run against the debug BuildConfig, so the channel row honestly reads
-                // "no update channel for debug builds" and there is no card to draw.
+                // The tests run against the debug BuildConfig, so the status card's headline and
+                // the channel row both honestly read "no update channel for debug builds", and
+                // the card offers no Check now button.
                 "settings_update_channel_none", "settings_update_channel_title",
-                "settings_update_check_now", "settings_update_installed_version_title",
-                "settings_update_last_checked_title", "settings_updates_title"
+                "settings_update_installed_version_title", "settings_update_version_details",
+                "settings_updates_title"
             ),
             literals = emptySet(),
         ),

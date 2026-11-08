@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Uppdateringskanal</string>
     <string name="settings_update_channel_release">Utgåva</string>
     <string name="settings_update_channel_none">Ingen uppdateringskanal för debug-byggen</string>
-    <string name="settings_update_last_checked_title">Senast kontrollerad</string>
     <string name="settings_update_never">Aldrig</string>
     <string name="settings_update_check_now">Kontrollera nu</string>
     <string name="settings_update_checking">Kontrollerar…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Uppdatering tillgänglig</string>
     <string name="settings_update_available_banner">Uppdatering tillgänglig: %1$s</string>
     <string name="settings_update_version_label">Version %1$s</string>
-    <string name="settings_update_size_label">Nedladdningsstorlek: %1$s</string>
     <string name="settings_update_notes_title">Versionsinformation</string>
     <string name="settings_update_download">Ladda ner</string>
     <string name="settings_update_downloading">Laddar ner… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Servern returnerade ett fel (%1$d)</string>
     <string name="settings_update_error_generic">Uppdateringskontrollen misslyckades</string>
     <string name="settings_update_error_too_old">Den här versionen är för gammal för att läsa uppdateringslistan. Uppdatera manuellt.</string>
-    <string name="settings_update_from_cache">Visas från den senast sparade kontrollen</string>
     <string name="settings_update_background_check_title">Sök efter uppdateringar automatiskt</string>
     <string name="settings_update_background_check_summary">Du får en avisering när en ny version finns att ladda ned</string>
     <string name="settings_update_notification_text">Version %1$s är klar att laddas ner</string>
     <string name="settings_update_unknown_sources_message">Android måste tillåta att BBKB installerar appar. Tillåt installation från den här källan och tryck sedan på Installera igen.</string>
     <string name="settings_update_open_settings">Öppna inställningar</string>
+    <string name="settings_update_last_checked_at">Senast kontrollerad: %1$s</string>
+    <string name="settings_update_ready_title">Redo att installera</string>
+    <string name="settings_update_version_details">Versionsinformation</string>
+    <string name="settings_update_unknown_sources_title">Vill du tillåta att BBKB installerar uppdateringar?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Installerade</string>
     <string name="language_packs_available_header">Tillgängliga för hämtning</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">Ogiltig teckenkod</string>
     <string name="settings_spellcheck_intro">BBKB:s stavningskontroll ger intelligent stavningskontroll i alla appar som har stöd för stavningskontroll. Den använder avancerade språkmodeller för att upptäcka stavfel och föreslå korrigeringar.</string>
     <string name="settings_credits_version">Version %1$s (build %2$s)</string>
-    <string name="settings_updates_version">Version %1$s (build %2$d) · %3$s</string>
 </resources>

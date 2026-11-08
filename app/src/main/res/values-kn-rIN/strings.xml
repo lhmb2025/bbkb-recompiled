@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">ನವೀಕರಣ ಚಾನಲ್</string>
     <string name="settings_update_channel_release">ಬಿಡುಗಡೆ</string>
     <string name="settings_update_channel_none">ಡೀಬಗ್ ಬಿಲ್ಡ್‌ಗಳಿಗೆ ನವೀಕರಣ ಚಾನಲ್ ಇಲ್ಲ</string>
-    <string name="settings_update_last_checked_title">ಕೊನೆಯ ಪರಿಶೀಲನೆ</string>
     <string name="settings_update_never">ಎಂದಿಗೂ ಇಲ್ಲ</string>
     <string name="settings_update_check_now">ಈಗ ಪರಿಶೀಲಿಸಿ</string>
     <string name="settings_update_checking">ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">ನವೀಕರಣ ಲಭ್ಯವಿದೆ</string>
     <string name="settings_update_available_banner">ನವೀಕರಣ ಲಭ್ಯವಿದೆ: %1$s</string>
     <string name="settings_update_version_label">ಆವೃತ್ತಿ %1$s</string>
-    <string name="settings_update_size_label">ಡೌನ್‌ಲೋಡ್ ಗಾತ್ರ: %1$s</string>
     <string name="settings_update_notes_title">ಬಿಡುಗಡೆ ಟಿಪ್ಪಣಿಗಳು</string>
     <string name="settings_update_download">ಡೌನ್‌ಲೋಡ್</string>
     <string name="settings_update_downloading">ಡೌನ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">ಸರ್ವರ್ ದೋಷವನ್ನು ಹಿಂತಿರುಗಿಸಿದೆ (%1$d)</string>
     <string name="settings_update_error_generic">ನವೀಕರಣ ಪರಿಶೀಲನೆ ವಿಫಲವಾಗಿದೆ</string>
     <string name="settings_update_error_too_old">ಈ ಆವೃತ್ತಿ ನವೀಕರಣ ಪಟ್ಟಿಯನ್ನು ಓದಲು ತುಂಬಾ ಹಳೆಯದು. ದಯವಿಟ್ಟು ಕೈಯಿಂದ ನವೀಕರಿಸಿ.</string>
-    <string name="settings_update_from_cache">ಕೊನೆಯ ಉಳಿಸಿದ ಪರಿಶೀಲನೆಯಿಂದ ತೋರಿಸಲಾಗಿದೆ</string>
     <string name="settings_update_background_check_title">ನವೀಕರಣಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪರಿಶೀಲಿಸಿ</string>
     <string name="settings_update_background_check_summary">ಹೊಸ ಆವೃತ್ತಿ ಡೌನ್‌ಲೋಡ್‌ಗೆ ಲಭ್ಯವಾದಾಗ ಅಧಿಸೂಚನೆ ಪಡೆಯಿರಿ</string>
     <string name="settings_update_notification_text">ಆವೃತ್ತಿ %1$s ಡೌನ್‌ಲೋಡ್‌ಗೆ ಸಿದ್ಧವಾಗಿದೆ</string>
     <string name="settings_update_unknown_sources_message">ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಸ್ಥಾಪಿಸಲು Android BBKB ಗೆ ಅನುಮತಿ ನೀಡಬೇಕು. ಈ ಮೂಲದಿಂದ ಸ್ಥಾಪನೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ, ನಂತರ ಮತ್ತೆ ಸ್ಥಾಪಿಸಿ ಒತ್ತಿರಿ.</string>
     <string name="settings_update_open_settings">ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ</string>
+    <string name="settings_update_last_checked_at">ಕೊನೆಯ ಪರಿಶೀಲನೆ: %1$s</string>
+    <string name="settings_update_ready_title">ಸ್ಥಾಪಿಸಲು ಸಿದ್ಧವಾಗಿದೆ</string>
+    <string name="settings_update_version_details">ಆವೃತ್ತಿಯ ವಿವರಗಳು</string>
+    <string name="settings_update_unknown_sources_title">ನವೀಕರಣಗಳನ್ನು ಸ್ಥಾಪಿಸಲು BBKB ಗೆ ಅನುಮತಿಸಬೇಕೇ?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">ಸ್ಥಾಪಿಸಲಾಗಿದೆ</string>
     <string name="language_packs_available_header">ಡೌನ್‌ಲೋಡ್‌ಗೆ ಲಭ್ಯ</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">ಅಮಾನ್ಯ ಅಕ್ಷರ ಕೋಡ್</string>
     <string name="settings_spellcheck_intro">BBKB ಕಾಗುಣಿತ ಪರೀಕ್ಷಕವು ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಯನ್ನು ಬೆಂಬಲಿಸುವ ಎಲ್ಲಾ ಆ್ಯಪ್‌ಗಳಲ್ಲಿ ಬುದ್ಧಿವಂತ ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಯನ್ನು ಒದಗಿಸುತ್ತದೆ. ಟೈಪಿಂಗ್ ತಪ್ಪುಗಳನ್ನು ಪತ್ತೆಹಚ್ಚಲು ಮತ್ತು ತಿದ್ದುಪಡಿಗಳನ್ನು ಸೂಚಿಸಲು ಇದು ಸುಧಾರಿತ ಭಾಷಾ ಮಾದರಿಗಳನ್ನು ಬಳಸುತ್ತದೆ.</string>
     <string name="settings_credits_version">ಆವೃತ್ತಿ %1$s (ಬಿಲ್ಡ್ %2$s)</string>
-    <string name="settings_updates_version">ಆವೃತ್ತಿ %1$s (ಬಿಲ್ಡ್ %2$d) · %3$s</string>
 </resources>

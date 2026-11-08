@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Canal de actualizări</string>
     <string name="settings_update_channel_release">Versiune finală</string>
     <string name="settings_update_channel_none">Nu există canal de actualizări pentru versiunile de depanare</string>
-    <string name="settings_update_last_checked_title">Ultima verificare</string>
     <string name="settings_update_never">Niciodată</string>
     <string name="settings_update_check_now">Verifică acum</string>
     <string name="settings_update_checking">Se verifică…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Actualizare disponibilă</string>
     <string name="settings_update_available_banner">Actualizare disponibilă: %1$s</string>
     <string name="settings_update_version_label">Versiunea %1$s</string>
-    <string name="settings_update_size_label">Dimensiunea descărcării: %1$s</string>
     <string name="settings_update_notes_title">Note de lansare</string>
     <string name="settings_update_download">Descarcă</string>
     <string name="settings_update_downloading">Se descarcă… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Serverul a returnat o eroare (%1$d)</string>
     <string name="settings_update_error_generic">Verificarea actualizărilor a eșuat</string>
     <string name="settings_update_error_too_old">Această versiune este prea veche pentru a citi lista de actualizări. Actualizează manual.</string>
-    <string name="settings_update_from_cache">Afișat din ultima verificare salvată</string>
     <string name="settings_update_background_check_title">Verificați automat actualizările</string>
     <string name="settings_update_background_check_summary">Primiți o notificare când o versiune nouă este disponibilă pentru descărcare</string>
     <string name="settings_update_notification_text">Versiunea %1$s este pregătită pentru descărcare</string>
     <string name="settings_update_unknown_sources_message">Android trebuie să permită BBKB să instaleze aplicații. Activează instalarea din această sursă, apoi apasă din nou Instalează.</string>
     <string name="settings_update_open_settings">Deschide setările</string>
+    <string name="settings_update_last_checked_at">Ultima verificare: %1$s</string>
+    <string name="settings_update_ready_title">Gata de instalare</string>
+    <string name="settings_update_version_details">Detaliile versiunii</string>
+    <string name="settings_update_unknown_sources_title">Permiți ca BBKB să instaleze actualizări?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Instalate</string>
     <string name="language_packs_available_header">Disponibile pentru descărcare</string>
@@ -1109,5 +1110,4 @@
     <string name="settings_keyeditor_invalid_code">Cod de caracter nevalid</string>
     <string name="settings_spellcheck_intro">Verificatorul ortografic BBKB oferă verificare ortografică inteligentă în toate aplicațiile care acceptă verificarea ortografică. Folosește modele lingvistice avansate pentru a detecta greșelile de tastare și a sugera corecturi.</string>
     <string name="settings_credits_version">Versiunea %1$s (build %2$s)</string>
-    <string name="settings_updates_version">Versiunea %1$s (build %2$d) · %3$s</string>
 </resources>

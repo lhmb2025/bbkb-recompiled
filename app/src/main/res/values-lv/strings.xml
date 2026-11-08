@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Atjauninājumu kanāls</string>
     <string name="settings_update_channel_release">Izlaidums</string>
     <string name="settings_update_channel_none">Atkļūdošanas būvējumiem atjauninājumu kanāla nav</string>
-    <string name="settings_update_last_checked_title">Pēdējā pārbaude</string>
     <string name="settings_update_never">Nekad</string>
     <string name="settings_update_check_now">Pārbaudīt tagad</string>
     <string name="settings_update_checking">Notiek pārbaude…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Pieejams atjauninājums</string>
     <string name="settings_update_available_banner">Pieejams atjauninājums: %1$s</string>
     <string name="settings_update_version_label">Versija %1$s</string>
-    <string name="settings_update_size_label">Lejupielādes lielums: %1$s</string>
     <string name="settings_update_notes_title">Izlaiduma piezīmes</string>
     <string name="settings_update_download">Lejupielādēt</string>
     <string name="settings_update_downloading">Notiek lejupielāde… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Serveris atgrieza kļūdu (%1$d)</string>
     <string name="settings_update_error_generic">Atjauninājumu pārbaude neizdevās</string>
     <string name="settings_update_error_too_old">Šī versija ir pārāk veca, lai izlasītu atjauninājumu sarakstu. Lūdzu, atjauniniet manuāli.</string>
-    <string name="settings_update_from_cache">Parādīts no pēdējās saglabātās pārbaudes</string>
     <string name="settings_update_background_check_title">Automātiski pārbaudīt atjauninājumus</string>
     <string name="settings_update_background_check_summary">Saņemsiet paziņojumu, kad lejupielādei būs pieejama jauna versija</string>
     <string name="settings_update_notification_text">Versija %1$s ir gatava lejupielādei</string>
     <string name="settings_update_unknown_sources_message">Android ir jāatļauj BBKB instalēt lietotnes. Iespējojiet instalēšanu no šā avota un pēc tam vēlreiz nospiediet Instalēt.</string>
     <string name="settings_update_open_settings">Atvērt iestatījumus</string>
+    <string name="settings_update_last_checked_at">Pēdējā pārbaude: %1$s</string>
+    <string name="settings_update_ready_title">Gatavs instalēšanai</string>
+    <string name="settings_update_version_details">Versijas informācija</string>
+    <string name="settings_update_unknown_sources_title">Vai atļaut BBKB instalēt atjauninājumus?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Instalēts</string>
     <string name="language_packs_available_header">Pieejams lejupielādei</string>
@@ -1109,5 +1110,4 @@
     <string name="settings_keyeditor_invalid_code">Nederīgs rakstzīmes kods</string>
     <string name="settings_spellcheck_intro">BBKB pareizrakstības pārbaudītājs nodrošina viedu pareizrakstības pārbaudi visās lietotnēs, kas atbalsta pareizrakstības pārbaudi. Tas izmanto progresīvus valodas modeļus, lai noteiktu drukas kļūdas un ieteiktu labojumus.</string>
     <string name="settings_credits_version">Versija %1$s (būvējums %2$s)</string>
-    <string name="settings_updates_version">Versija %1$s (būvējums %2$d) · %3$s</string>
 </resources>

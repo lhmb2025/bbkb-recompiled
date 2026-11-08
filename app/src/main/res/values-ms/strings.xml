@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Saluran kemas kini</string>
     <string name="settings_update_channel_release">Keluaran</string>
     <string name="settings_update_channel_none">Tiada saluran kemas kini untuk binaan debug</string>
-    <string name="settings_update_last_checked_title">Diperiksa kali terakhir</string>
     <string name="settings_update_never">Tidak pernah</string>
     <string name="settings_update_check_now">Periksa sekarang</string>
     <string name="settings_update_checking">Memeriksa…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Kemas kini tersedia</string>
     <string name="settings_update_available_banner">Kemas kini tersedia: %1$s</string>
     <string name="settings_update_version_label">Versi %1$s</string>
-    <string name="settings_update_size_label">Saiz muat turun: %1$s</string>
     <string name="settings_update_notes_title">Nota keluaran</string>
     <string name="settings_update_download">Muat turun</string>
     <string name="settings_update_downloading">Memuat turun… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Pelayan memulangkan ralat (%1$d)</string>
     <string name="settings_update_error_generic">Pemeriksaan kemas kini gagal</string>
     <string name="settings_update_error_too_old">Versi ini terlalu lama untuk membaca senarai kemas kini. Sila kemas kini secara manual.</string>
-    <string name="settings_update_from_cache">Ditunjukkan daripada pemeriksaan terakhir yang disimpan</string>
     <string name="settings_update_background_check_title">Semak kemas kini secara automatik</string>
     <string name="settings_update_background_check_summary">Terima pemberitahuan apabila versi baharu tersedia untuk dimuat turun</string>
     <string name="settings_update_notification_text">Versi %1$s sedia untuk dimuat turun</string>
     <string name="settings_update_unknown_sources_message">Android perlu membenarkan BBKB memasang apl. Aktifkan pemasangan daripada sumber ini, kemudian tekan Pasang semula.</string>
     <string name="settings_update_open_settings">Buka tetapan</string>
+    <string name="settings_update_last_checked_at">Diperiksa kali terakhir: %1$s</string>
+    <string name="settings_update_ready_title">Sedia untuk dipasang</string>
+    <string name="settings_update_version_details">Butiran versi</string>
+    <string name="settings_update_unknown_sources_title">Benarkan BBKB memasang kemas kini?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Dipasang</string>
     <string name="language_packs_available_header">Tersedia untuk dimuat turun</string>
@@ -1079,5 +1080,4 @@
     <string name="settings_keyeditor_invalid_code">Kod aksara tidak sah</string>
     <string name="settings_spellcheck_intro">Penyemak ejaan BBKB menyediakan semakan ejaan pintar merentas semua apl yang menyokong semakan ejaan. Ia menggunakan model bahasa termaju untuk mengesan kesilapan taip dan mencadangkan pembetulan.</string>
     <string name="settings_credits_version">Versi %1$s (Binaan %2$s)</string>
-    <string name="settings_updates_version">Versi %1$s (Binaan %2$d) · %3$s</string>
 </resources>

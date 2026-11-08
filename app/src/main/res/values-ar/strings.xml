@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">قناة التحديث</string>
     <string name="settings_update_channel_release">الإصدار النهائي</string>
     <string name="settings_update_channel_none">لا توجد قناة تحديث لإصدارات التصحيح</string>
-    <string name="settings_update_last_checked_title">آخر فحص</string>
     <string name="settings_update_never">أبدًا</string>
     <string name="settings_update_check_now">تحقق الآن</string>
     <string name="settings_update_checking">جارٍ التحقق…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">يتوفر تحديث</string>
     <string name="settings_update_available_banner">يتوفر تحديث: %1$s</string>
     <string name="settings_update_version_label">الإصدار %1$s</string>
-    <string name="settings_update_size_label">حجم التنزيل: %1$s</string>
     <string name="settings_update_notes_title">ملاحظات الإصدار</string>
     <string name="settings_update_download">تنزيل</string>
     <string name="settings_update_downloading">جارٍ التنزيل… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">أعاد الخادم خطأ (%1$d)</string>
     <string name="settings_update_error_generic">فشل فحص التحديثات</string>
     <string name="settings_update_error_too_old">هذا الإصدار أقدم من أن يقرأ قائمة التحديثات. يرجى التحديث يدويًا.</string>
-    <string name="settings_update_from_cache">معروض من آخر فحص محفوظ</string>
     <string name="settings_update_background_check_title">التحقق تلقائيًا من التحديثات</string>
     <string name="settings_update_background_check_summary">تلقَّ إشعارًا عند توفر إصدار جديد للتنزيل</string>
     <string name="settings_update_notification_text">الإصدار %1$s جاهز للتنزيل</string>
     <string name="settings_update_unknown_sources_message">يجب أن يسمح نظام Android لتطبيق BBKB بتثبيت التطبيقات. مكّن التثبيت من هذا المصدر ثم اضغط على تثبيت مرة أخرى.</string>
     <string name="settings_update_open_settings">فتح الإعدادات</string>
+    <string name="settings_update_last_checked_at">آخر فحص: %1$s</string>
+    <string name="settings_update_ready_title">جاهز للتثبيت</string>
+    <string name="settings_update_version_details">تفاصيل الإصدار</string>
+    <string name="settings_update_unknown_sources_title">هل تريد السماح لتطبيق BBKB بتثبيت التحديثات؟</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">مثبَّت</string>
     <string name="language_packs_available_header">متاح للتنزيل</string>
@@ -1154,5 +1155,4 @@
     <string name="settings_keyeditor_invalid_code">رمز حرف غير صالح</string>
     <string name="settings_spellcheck_intro">يوفّر المدقق الإملائي في BBKB تدقيقًا إملائيًا ذكيًا في جميع التطبيقات التي تدعم التدقيق الإملائي. ويستخدم نماذج لغوية متقدمة لاكتشاف الأخطاء المطبعية واقتراح التصحيحات.</string>
     <string name="settings_credits_version">الإصدار %1$s (البنية %2$s)</string>
-    <string name="settings_updates_version">الإصدار %1$s (البنية %2$d) · %3$s</string>
 </resources>

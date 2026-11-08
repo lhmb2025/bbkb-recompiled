@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">ช่องทางอัปเดต</string>
     <string name="settings_update_channel_release">รุ่นเผยแพร่</string>
     <string name="settings_update_channel_none">ไม่มีช่องทางอัปเดตสำหรับรุ่นดีบัก</string>
-    <string name="settings_update_last_checked_title">ตรวจครั้งล่าสุด</string>
     <string name="settings_update_never">ไม่เคย</string>
     <string name="settings_update_check_now">ตรวจเดี๋ยวนี้</string>
     <string name="settings_update_checking">กำลังตรวจ…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">มีอัปเดต</string>
     <string name="settings_update_available_banner">มีอัปเดต: %1$s</string>
     <string name="settings_update_version_label">เวอร์ชัน %1$s</string>
-    <string name="settings_update_size_label">ขนาดที่ดาวน์โหลด: %1$s</string>
     <string name="settings_update_notes_title">บันทึกการเผยแพร่</string>
     <string name="settings_update_download">ดาวน์โหลด</string>
     <string name="settings_update_downloading">กำลังดาวน์โหลด… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">เซิร์ฟเวอร์ส่งข้อผิดพลาดกลับมา (%1$d)</string>
     <string name="settings_update_error_generic">การตรวจหาอัปเดตล้มเหลว</string>
     <string name="settings_update_error_too_old">เวอร์ชันนี้เก่าเกินกว่าจะอ่านรายการอัปเดตได้ กรุณาอัปเดตด้วยตนเอง</string>
-    <string name="settings_update_from_cache">แสดงจากการตรวจที่บันทึกไว้ครั้งล่าสุด</string>
     <string name="settings_update_background_check_title">ตรวจหาการอัปเดตอัตโนมัติ</string>
     <string name="settings_update_background_check_summary">รับการแจ้งเตือนเมื่อมีเวอร์ชันใหม่ให้ดาวน์โหลด</string>
     <string name="settings_update_notification_text">เวอร์ชัน %1$s พร้อมให้ดาวน์โหลด</string>
     <string name="settings_update_unknown_sources_message">Android ต้องอนุญาตให้ BBKB ติดตั้งแอป เปิดการติดตั้งจากแหล่งนี้ แล้วกดติดตั้งอีกครั้ง</string>
     <string name="settings_update_open_settings">เปิดการตั้งค่า</string>
+    <string name="settings_update_last_checked_at">ตรวจครั้งล่าสุด: %1$s</string>
+    <string name="settings_update_ready_title">พร้อมติดตั้ง</string>
+    <string name="settings_update_version_details">รายละเอียดเวอร์ชัน</string>
+    <string name="settings_update_unknown_sources_title">อนุญาตให้ BBKB ติดตั้งการอัปเดตไหม</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">ติดตั้งแล้ว</string>
     <string name="language_packs_available_header">พร้อมดาวน์โหลด</string>
@@ -1079,5 +1080,4 @@
     <string name="settings_keyeditor_invalid_code">รหัสอักขระไม่ถูกต้อง</string>
     <string name="settings_spellcheck_intro">เครื่องมือตรวจการสะกดของ BBKB ช่วยตรวจการสะกดอย่างชาญฉลาดในทุกแอปที่รองรับการตรวจการสะกด เครื่องมือนี้ใช้โมเดลภาษาขั้นสูงเพื่อตรวจหาคำที่พิมพ์ผิดและแนะนำการแก้ไข</string>
     <string name="settings_credits_version">เวอร์ชัน %1$s (บิลด์ %2$s)</string>
-    <string name="settings_updates_version">เวอร์ชัน %1$s (บิลด์ %2$d) · %3$s</string>
 </resources>

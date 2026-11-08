@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Värskenduskanal</string>
     <string name="settings_update_channel_release">Väljalase</string>
     <string name="settings_update_channel_none">Silumisversioonidel pole värskenduskanalit</string>
-    <string name="settings_update_last_checked_title">Viimati kontrollitud</string>
     <string name="settings_update_never">Mitte kunagi</string>
     <string name="settings_update_check_now">Kontrolli kohe</string>
     <string name="settings_update_checking">Kontrollimine…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Saadaval on värskendus</string>
     <string name="settings_update_available_banner">Saadaval on värskendus: %1$s</string>
     <string name="settings_update_version_label">Versioon %1$s</string>
-    <string name="settings_update_size_label">Allalaadimise suurus: %1$s</string>
     <string name="settings_update_notes_title">Väljalaskemärkmed</string>
     <string name="settings_update_download">Laadi alla</string>
     <string name="settings_update_downloading">Allalaadimine… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Server tagastas vea (%1$d)</string>
     <string name="settings_update_error_generic">Värskenduste kontroll ebaõnnestus</string>
     <string name="settings_update_error_too_old">See versioon on värskenduste loendi lugemiseks liiga vana. Palun värskenda käsitsi.</string>
-    <string name="settings_update_from_cache">Kuvatud viimasest salvestatud kontrollist</string>
     <string name="settings_update_background_check_title">Kontrolli värskendusi automaatselt</string>
     <string name="settings_update_background_check_summary">Saad teate, kui allalaadimiseks on saadaval uus versioon</string>
     <string name="settings_update_notification_text">Versioon %1$s on allalaadimiseks valmis</string>
     <string name="settings_update_unknown_sources_message">Android peab lubama BBKB-l rakendusi paigaldada. Luba paigaldamine sellest allikast ja vajuta uuesti Paigalda.</string>
     <string name="settings_update_open_settings">Ava seaded</string>
+    <string name="settings_update_last_checked_at">Viimati kontrollitud: %1$s</string>
+    <string name="settings_update_ready_title">Valmis paigaldamiseks</string>
+    <string name="settings_update_version_details">Versiooni üksikasjad</string>
+    <string name="settings_update_unknown_sources_title">Kas lubada BBKB-l värskendusi paigaldada?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Paigaldatud</string>
     <string name="language_packs_available_header">Saadaval allalaadimiseks</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">Sobimatu märgikood</string>
     <string name="settings_spellcheck_intro">BBKB-i õigekirjakontroll pakub nutikat õigekirjakontrolli kõigis rakendustes, mis õigekirjakontrolli toetavad. See kasutab täiustatud keelemudeleid, et tuvastada trükivigu ja soovitada parandusi.</string>
     <string name="settings_credits_version">Versioon %1$s (järk %2$s)</string>
-    <string name="settings_updates_version">Versioon %1$s (järk %2$d) · %3$s</string>
 </resources>

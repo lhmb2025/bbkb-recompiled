@@ -916,7 +916,6 @@
     <string name="settings_update_channel_title">Update channel</string>
     <string name="settings_update_channel_release">Release</string>
     <string name="settings_update_channel_none">No update channel for debug builds</string>
-    <string name="settings_update_last_checked_title">Last checked</string>
     <string name="settings_update_never">Never</string>
     <string name="settings_update_check_now">Check now</string>
     <string name="settings_update_checking">Checking…</string>
@@ -924,7 +923,6 @@
     <string name="settings_update_available_title">Update available</string>
     <string name="settings_update_available_banner">Update available: %1$s</string>
     <string name="settings_update_version_label">Version %1$s</string>
-    <string name="settings_update_size_label">Download size: %1$s</string>
     <string name="settings_update_notes_title">Release notes</string>
     <string name="settings_update_download">Download</string>
     <string name="settings_update_downloading">Downloading… %1$d%%</string>
@@ -936,12 +934,15 @@
     <string name="settings_update_error_http">The server returned an error (%1$d)</string>
     <string name="settings_update_error_generic">The update check failed</string>
     <string name="settings_update_error_too_old">This version is too old to read the update list. Please update by hand.</string>
-    <string name="settings_update_from_cache">Shown from the last saved check</string>
     <string name="settings_update_background_check_title">Automatically check for updates</string>
     <string name="settings_update_background_check_summary">Receive a notification when a new version is available to download</string>
     <string name="settings_update_notification_text">Version %1$s is ready to download</string>
     <string name="settings_update_unknown_sources_message">Android must allow BBKB to install apps. Turn on \"Allow from this source\", then press Install again.</string>
     <string name="settings_update_open_settings">Open settings</string>
+    <string name="settings_update_last_checked_at">Last checked %1$s</string>
+    <string name="settings_update_ready_title">Ready to install</string>
+    <string name="settings_update_version_details">Version details</string>
+    <string name="settings_update_unknown_sources_title">Allow BBKB to install updates?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Installed</string>
     <string name="language_packs_available_header">Available to download</string>
@@ -1195,5 +1196,4 @@
     <string name="settings_keyeditor_invalid_code">Invalid character code</string>
     <string name="settings_spellcheck_intro">The BBKB spell checker provides intelligent spell checking across all apps that support spell checking. It uses advanced language models to detect typos and suggest corrections.</string>
     <string name="settings_credits_version">Version %1$s (Build %2$s)</string>
-    <string name="settings_updates_version">Version %1$s (Build %2$d) · %3$s</string>
 </resources>

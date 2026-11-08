@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Saluran nganyarake</string>
     <string name="settings_update_channel_release">Rilis</string>
     <string name="settings_update_channel_none">Ora ana saluran nganyarake kanggo build debug</string>
-    <string name="settings_update_last_checked_title">Kapriksa pungkasan</string>
     <string name="settings_update_never">Ora tau</string>
     <string name="settings_update_check_now">Priksa saiki</string>
     <string name="settings_update_checking">Mriksa…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Ana nganyarake</string>
     <string name="settings_update_available_banner">Ana nganyarake: %1$s</string>
     <string name="settings_update_version_label">Versi %1$s</string>
-    <string name="settings_update_size_label">Ukuran undhuhan: %1$s</string>
     <string name="settings_update_notes_title">Cathetan rilis</string>
     <string name="settings_update_download">Undhuh</string>
     <string name="settings_update_downloading">Ngundhuh… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Server mbalekake kesalahan (%1$d)</string>
     <string name="settings_update_error_generic">Priksa nganyarake gagal</string>
     <string name="settings_update_error_too_old">Versi iki kuna banget kanggo maca dhaptar nganyarake. Mangga nganyarake dhewe.</string>
-    <string name="settings_update_from_cache">Ditampilake saka priksa pungkasan kang kasimpen</string>
     <string name="settings_update_background_check_title">Priksa nganyari kanthi otomatis</string>
     <string name="settings_update_background_check_summary">Nampa kabar nalika versi anyar kasedhiya kanggo diundhuh</string>
     <string name="settings_update_notification_text">Versi %1$s siap diundhuh</string>
     <string name="settings_update_unknown_sources_message">Android kudu ngidini BBKB masang aplikasi. Uripake pasang saka sumber iki, banjur pencet Pasang maneh.</string>
     <string name="settings_update_open_settings">Bukak setelan</string>
+    <string name="settings_update_last_checked_at">Kapriksa pungkasan: %1$s</string>
+    <string name="settings_update_ready_title">Siap dipasang</string>
+    <string name="settings_update_version_details">Rincian versi</string>
+    <string name="settings_update_unknown_sources_title">Idini BBKB masang nganyarake?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Wis diinstal</string>
     <string name="language_packs_available_header">Kena diundhuh</string>
@@ -1079,5 +1080,4 @@
     <string name="settings_keyeditor_invalid_code">Kode karakter ora sah</string>
     <string name="settings_spellcheck_intro">Pamriksa ejaan BBKB menehi pamriksan ejaan sing pinter ing kabeh aplikasi sing ndhukung pamriksan ejaan. Iki nganggo model basa canggih kanggo ndeteksi salah ketik lan nyaranake koreksi.</string>
     <string name="settings_credits_version">Versi %1$s (Build %2$s)</string>
-    <string name="settings_updates_version">Versi %1$s (Build %2$d) · %3$s</string>
 </resources>

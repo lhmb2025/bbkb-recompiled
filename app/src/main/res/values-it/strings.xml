@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Canale di aggiornamento</string>
     <string name="settings_update_channel_release">Versione finale</string>
     <string name="settings_update_channel_none">Nessun canale di aggiornamento per le build di debug</string>
-    <string name="settings_update_last_checked_title">Ultimo controllo</string>
     <string name="settings_update_never">Mai</string>
     <string name="settings_update_check_now">Controlla ora</string>
     <string name="settings_update_checking">Controllo…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Aggiornamento disponibile</string>
     <string name="settings_update_available_banner">Aggiornamento disponibile: %1$s</string>
     <string name="settings_update_version_label">Versione %1$s</string>
-    <string name="settings_update_size_label">Dimensione del download: %1$s</string>
     <string name="settings_update_notes_title">Note di rilascio</string>
     <string name="settings_update_download">Scarica</string>
     <string name="settings_update_downloading">Download… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Il server ha restituito un errore (%1$d)</string>
     <string name="settings_update_error_generic">Il controllo degli aggiornamenti non è riuscito</string>
     <string name="settings_update_error_too_old">Questa versione è troppo vecchia per leggere l\'elenco degli aggiornamenti. Aggiorna manualmente.</string>
-    <string name="settings_update_from_cache">Mostrato dall\'ultimo controllo salvato</string>
     <string name="settings_update_background_check_title">Controlla automaticamente gli aggiornamenti</string>
     <string name="settings_update_background_check_summary">Ricevi una notifica quando è disponibile una nuova versione da scaricare</string>
     <string name="settings_update_notification_text">La versione %1$s è pronta per il download</string>
     <string name="settings_update_unknown_sources_message">Android deve autorizzare BBKB a installare app. Consenti l\'installazione da questa origine, poi premi di nuovo Installa.</string>
     <string name="settings_update_open_settings">Apri impostazioni</string>
+    <string name="settings_update_last_checked_at">Ultimo controllo: %1$s</string>
+    <string name="settings_update_ready_title">Pronto per l\'installazione</string>
+    <string name="settings_update_version_details">Dettagli versione</string>
+    <string name="settings_update_unknown_sources_title">Consentire a BBKB di installare gli aggiornamenti?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Installati</string>
     <string name="language_packs_available_header">Disponibili per il download</string>
@@ -1109,5 +1110,4 @@
     <string name="settings_keyeditor_invalid_code">Codice carattere non valido</string>
     <string name="settings_spellcheck_intro">Il controllo ortografico di BBKB offre un controllo intelligente in tutte le app che supportano il controllo ortografico. Utilizza modelli linguistici avanzati per rilevare gli errori di battitura e suggerire correzioni.</string>
     <string name="settings_credits_version">Versione %1$s (build %2$s)</string>
-    <string name="settings_updates_version">Versione %1$s (build %2$d) · %3$s</string>
 </resources>

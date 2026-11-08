@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">Oppdateringskanal</string>
     <string name="settings_update_channel_release">Utgivelse</string>
     <string name="settings_update_channel_none">Ingen oppdateringskanal for debug-versjoner</string>
-    <string name="settings_update_last_checked_title">Sist sjekket</string>
     <string name="settings_update_never">Aldri</string>
     <string name="settings_update_check_now">Sjekk nå</string>
     <string name="settings_update_checking">Sjekker…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">Oppdatering tilgjengelig</string>
     <string name="settings_update_available_banner">Oppdatering tilgjengelig: %1$s</string>
     <string name="settings_update_version_label">Versjon %1$s</string>
-    <string name="settings_update_size_label">Nedlastingsstørrelse: %1$s</string>
     <string name="settings_update_notes_title">Utgivelsesnotater</string>
     <string name="settings_update_download">Last ned</string>
     <string name="settings_update_downloading">Laster ned… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">Serveren returnerte en feil (%1$d)</string>
     <string name="settings_update_error_generic">Oppdateringssjekken mislyktes</string>
     <string name="settings_update_error_too_old">Denne versjonen er for gammel til å lese oppdateringslisten. Oppdater manuelt.</string>
-    <string name="settings_update_from_cache">Vist fra den sist lagrede sjekken</string>
     <string name="settings_update_background_check_title">Se etter oppdateringer automatisk</string>
     <string name="settings_update_background_check_summary">Du får et varsel når en ny versjon er klar til nedlasting</string>
     <string name="settings_update_notification_text">Versjon %1$s er klar for nedlasting</string>
     <string name="settings_update_unknown_sources_message">Android må tillate at BBKB installerer apper. Tillat installering fra denne kilden, og trykk på Installer igjen.</string>
     <string name="settings_update_open_settings">Åpne innstillinger</string>
+    <string name="settings_update_last_checked_at">Sist sjekket: %1$s</string>
+    <string name="settings_update_ready_title">Klar til installering</string>
+    <string name="settings_update_version_details">Versjonsdetaljer</string>
+    <string name="settings_update_unknown_sources_title">Vil du la BBKB installere oppdateringer?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Installert</string>
     <string name="language_packs_available_header">Tilgjengelig for nedlasting</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">Ugyldig tegnkode</string>
     <string name="settings_spellcheck_intro">BBKB-stavekontrollen gir intelligent stavekontroll i alle apper som støtter stavekontroll. Den bruker avanserte språkmodeller til å oppdage skrivefeil og foreslå rettelser.</string>
     <string name="settings_credits_version">Versjon %1$s (build %2$s)</string>
-    <string name="settings_updates_version">Versjon %1$s (build %2$d) · %3$s</string>
 </resources>

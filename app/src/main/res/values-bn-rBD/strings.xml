@@ -724,7 +724,6 @@
     <string name="settings_update_channel_title">আপডেট চ্যানেল</string>
     <string name="settings_update_channel_release">রিলিজ</string>
     <string name="settings_update_channel_none">ডিবাগ বিল্ডের জন্য কোনো আপডেট চ্যানেল নেই</string>
-    <string name="settings_update_last_checked_title">সর্বশেষ পরীক্ষা</string>
     <string name="settings_update_never">কখনও নয়</string>
     <string name="settings_update_check_now">এখনই পরীক্ষা করুন</string>
     <string name="settings_update_checking">পরীক্ষা করা হচ্ছে…</string>
@@ -732,7 +731,6 @@
     <string name="settings_update_available_title">আপডেট উপলব্ধ</string>
     <string name="settings_update_available_banner">আপডেট উপলব্ধ: %1$s</string>
     <string name="settings_update_version_label">সংস্করণ %1$s</string>
-    <string name="settings_update_size_label">ডাউনলোডের আকার: %1$s</string>
     <string name="settings_update_notes_title">রিলিজ নোট</string>
     <string name="settings_update_download">ডাউনলোড</string>
     <string name="settings_update_downloading">ডাউনলোড হচ্ছে… %1$d%%</string>
@@ -744,12 +742,15 @@
     <string name="settings_update_error_http">সার্ভার একটি ত্রুটি ফেরত দিয়েছে (%1$d)</string>
     <string name="settings_update_error_generic">আপডেট পরীক্ষা ব্যর্থ হয়েছে</string>
     <string name="settings_update_error_too_old">এই সংস্করণটি আপডেট তালিকা পড়ার জন্য অত্যন্ত পুরনো। অনুগ্রহ করে নিজে আপডেট করুন।</string>
-    <string name="settings_update_from_cache">সর্বশেষ সংরক্ষিত পরীক্ষা থেকে দেখানো হয়েছে</string>
     <string name="settings_update_background_check_title">স্বয়ংক্রিয়ভাবে আপডেট পরীক্ষা করুন</string>
     <string name="settings_update_background_check_summary">নতুন সংস্করণ ডাউনলোডের জন্য উপলব্ধ হলে বিজ্ঞপ্তি পান</string>
     <string name="settings_update_notification_text">সংস্করণ %1$s ডাউনলোডের জন্য প্রস্তুত</string>
     <string name="settings_update_unknown_sources_message">অ্যাপ ইনস্টল করতে BBKB-কে Android-এর অনুমতি দিতে হবে। এই সূত্র থেকে ইনস্টল চালু করুন, তারপর আবার ইনস্টল চাপুন।</string>
     <string name="settings_update_open_settings">সেটিংস খুলুন</string>
+    <string name="settings_update_last_checked_at">সর্বশেষ পরীক্ষা: %1$s</string>
+    <string name="settings_update_ready_title">ইনস্টলের জন্য প্রস্তুত</string>
+    <string name="settings_update_version_details">সংস্করণের বিবরণ</string>
+    <string name="settings_update_unknown_sources_title">BBKB-কে আপডেট ইনস্টল করার অনুমতি দেবেন?</string>
     <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">ইনস্টল করা আছে</string>
     <string name="language_packs_available_header">ডাউনলোডের জন্য উপলব্ধ</string>
@@ -1094,5 +1095,4 @@
     <string name="settings_keyeditor_invalid_code">অক্ষর কোড সঠিক নয়</string>
     <string name="settings_spellcheck_intro">BBKB বানান পরীক্ষক বানান পরীক্ষা সমর্থন করে এমন সব অ্যাপে বুদ্ধিমান বানান পরীক্ষা দেয়। টাইপের ভুল ধরতে ও সংশোধন প্রস্তাব করতে এটি উন্নত ভাষা মডেল ব্যবহার করে।</string>
     <string name="settings_credits_version">সংস্করণ %1$s (বিল্ড %2$s)</string>
-    <string name="settings_updates_version">সংস্করণ %1$s (বিল্ড %2$d) · %3$s</string>
 </resources>
