@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Opravuje slova během psaní. Stisknutím Backspace opravu vrátíte.</string>
     <string name="settings_category_display">Zobrazení</string>
     <string name="settings_category_sources">Zdroje</string>
-    <string name="settings_category_contacts_accounts">Kontakty a účty</string>
     <string name="settings_dict_add_reverted_words_title">Zobrazit tlačítko přidání slova</string>
     <string name="settings_dict_add_reverted_words_summary">Po vrácení opravy klávesou Backspace zobrazit tlačítko pro přidání slova</string>
     <string name="prefs_category_tuning">Ladění</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Zobrazovat indikátor modifikátorů Shift/Alt ve stavovém řádku při použití fyzické klávesnice</string>
     <string name="settings_pred_block_offensive_summary">Skrývat potenciálně urážlivá slova při hlasovém diktování</string>
     <string name="settings_pred_block_offensive_title">Blokovat urážlivá slova</string>
-    <string name="settings_pred_contacts_permission_summary">Udělte oprávnění, aby bylo možné navrhovat jména kontaktů a e-mailové adresy</string>
     <string name="settings_pred_contacts_permission_title">Oprávnění ke kontaktům</string>
     <string name="settings_pred_contacts_summary_disabled">Vyžadováno oprávnění ke kontaktům</string>
     <string name="settings_pred_contacts_summary_enabled">Zahrnout jména kontaktů do návrhů</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Zobrazovat animaci potvrzení švihnutím</string>
     <string name="settings_pred_force_suggestions_summary">Zobrazovat lištu návrhů i v aplikacích, které klávesnici žádají o její skrytí. Neplatí pro pole s heslem.</string>
     <string name="settings_pred_force_suggestions_title">Vynutit návrhy</string>
-    <string name="settings_pred_grant_permission">Udělit oprávnění</string>
     <string name="settings_pred_next_word_summary">Navrhovat další slovo podle kontextu</string>
     <string name="settings_pred_next_word_title">Návrhy dalšího slova</string>
     <string name="settings_pred_on_key_summary">Zobrazovat návrhy na klávesnici na obrazovce při psaní</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Svislé měřítko na začátku animace</string>
     <string name="settings_anim_show_start_y_title">Měřítko Y na začátku zobrazení</string>
     <string name="settings_animation_params_title">Parametry animace</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Pro použití této funkce udělte oprávnění ke kontaktům</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Jména kontaktů budou považována za správná slova</string>
-    <string name="settings_spellcheck_use_contacts_title">Používat kontakty při kontrole pravopisu</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Udělte oprávnění ke kontaktům, aby kontrola pravopisu rozpoznávala jména kontaktů jako platná slova</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Rozpoznává jména kontaktů jako správná slova</string>
+    <string name="settings_spellcheck_use_contacts_title">Přijímat jména kontaktů</string>
     <string name="settings_spellcheck_accept_learned_title">Přijímat naučená slova</string>
-    <string name="settings_spellcheck_accept_learned_summary">Slova naučená z vašeho psaní se považují za správně napsaná</string>
+    <string name="settings_spellcheck_accept_learned_summary">Rozpoznává slova naučená z vašeho psaní</string>
     <string name="pref_alt_double_tap_lock">Zapnout zámek Alt dvojitým klepnutím</string>
     <string name="pref_alt_double_tap_lock_summary">Dvojité klepnutí na Alt jej uzamkne. Dalším klepnutím na Alt jej vypnete.</string>
     <string name="pref_ctrl_double_tap_lock">Zapnout zámek Ctrl dvojitým klepnutím</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Akce zatřesení v ose X</string>
     <string name="settings_shake_y_axis_title">Akce zatřesení v ose Y</string>
     <string name="settings_shake_z_axis_title">Akce zatřesení v ose Z</string>
-    <string name="settings_spell_checker_screen_title">Nastavení kontroly pravopisu</string>
     <string name="settings_spell_checker_summary">Nastavit kontrolu pravopisu v celém systému</string>
     <string name="settings_spell_checker_title">Kontrola pravopisu</string>
     <string name="settings_title">Nastavení BBKB</string>
@@ -1129,6 +1123,8 @@
     <string name="settings_keyeditor_loading">Načítání symbolů…</string>
     <string name="settings_keyeditor_hex_code">Hexadecimální kód (např. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Neplatný kód znaku</string>
-    <string name="settings_spellcheck_intro">Kontrola pravopisu BBKB poskytuje inteligentní kontrolu pravopisu ve všech aplikacích, které ji podporují. Pomocí pokročilých jazykových modelů rozpoznává překlepy a navrhuje opravy.</string>
+    <string name="settings_spellcheck_intro">Kontrola pravopisu BBKB využívá pokročilé jazykové modely k poskytování kontroly pravopisu ve všech aplikacích, které ji podporují</string>
+    <string name="settings_spellcheck_enable_title">Zapnout kontrolu pravopisu BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Rozpoznává překlepy a navrhuje opravy</string>
     <string name="settings_credits_version">Verze %1$s (sestavení %2$s)</string>
 </resources>

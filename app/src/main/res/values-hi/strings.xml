@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">टाइप करते समय शब्द सुधारें। सुधार पूर्ववत करने के लिए बैकस्पेस दबाएँ।</string>
     <string name="settings_category_display">प्रदर्शन</string>
     <string name="settings_category_sources">स्रोत</string>
-    <string name="settings_category_contacts_accounts">संपर्क और खाते</string>
     <string name="settings_dict_add_reverted_words_title">शब्द जोड़ें बटन दिखाएँ</string>
     <string name="settings_dict_add_reverted_words_summary">बैकस्पेस से सुधार पूर्ववत होने पर शब्द जोड़ने का बटन दिखाएँ</string>
     <string name="prefs_category_tuning">ट्यूनिंग</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">भौतिक कीबोर्ड का उपयोग करते समय स्टेटस बार में Shift/Alt मॉडिफ़ायर संकेतक दिखाएं</string>
     <string name="settings_pred_block_offensive_summary">बोलकर लिखते समय संभावित आपत्तिजनक शब्द छिपाएं</string>
     <string name="settings_pred_block_offensive_title">आपत्तिजनक शब्द ब्लॉक करें</string>
-    <string name="settings_pred_contacts_permission_summary">संपर्क नाम और ईमेल पते सुझाने के लिए अनुमति दें</string>
     <string name="settings_pred_contacts_permission_title">संपर्क अनुमति</string>
     <string name="settings_pred_contacts_summary_disabled">संपर्क अनुमति आवश्यक</string>
     <string name="settings_pred_contacts_summary_enabled">सुझावों में संपर्क नाम शामिल करें</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">फ़्लिक कमिट एनिमेशन दिखाएं</string>
     <string name="settings_pred_force_suggestions_summary">उन ऐप्स में भी सुझाव पट्टी दिखाएं जो कीबोर्ड से उसे छिपाने को कहते हैं. पासवर्ड फ़ील्ड पर लागू नहीं होता.</string>
     <string name="settings_pred_force_suggestions_title">सुझाव जबरन दिखाएं</string>
-    <string name="settings_pred_grant_permission">अनुमति दें</string>
     <string name="settings_pred_next_word_summary">संदर्भ के आधार पर अगला शब्द सुझाएं</string>
     <string name="settings_pred_next_word_title">अगले शब्द के सुझाव</string>
     <string name="settings_pred_on_key_summary">टाइप करते समय वर्चुअल कीबोर्ड पर सुझाव दिखाएं</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">एनिमेशन की शुरुआत में लंबवत स्केल</string>
     <string name="settings_anim_show_start_y_title">दिखने की शुरुआत का Y स्केल</string>
     <string name="settings_animation_params_title">एनिमेशन पैरामीटर</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">इस सुविधा का उपयोग करने के लिए संपर्क अनुमति दें</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">संपर्क नामों को मान्य शब्दों के रूप में पहचाना जाएगा</string>
-    <string name="settings_spellcheck_use_contacts_title">वर्तनी जांच के लिए संपर्कों का उपयोग करें</string>
-    <string name="settings_spellcheck_contacts_permission_summary">वर्तनी जांच के दौरान संपर्क नामों को मान्य शब्दों के रूप में पहचानने के लिए संपर्क अनुमति दें</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">संपर्क नामों को मान्य शब्दों के रूप में पहचानता है</string>
+    <string name="settings_spellcheck_use_contacts_title">संपर्क नाम स्वीकार करें</string>
     <string name="settings_spellcheck_accept_learned_title">सीखे गए शब्द स्वीकार करें</string>
-    <string name="settings_spellcheck_accept_learned_summary">आपकी टाइपिंग से सीखे गए शब्दों को सही वर्तनी माना जाएगा</string>
+    <string name="settings_spellcheck_accept_learned_summary">आपकी टाइपिंग से सीखे गए शब्दों को पहचानता है</string>
     <string name="pref_alt_double_tap_lock">Alt डबल-क्लिक लॉक सक्षम करें</string>
     <string name="pref_alt_double_tap_lock_summary">Alt पर डबल-क्लिक करने से वह लॉक हो जाएगी. दोबारा Alt क्लिक करने पर वह बंद हो जाएगी.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl डबल-क्लिक लॉक सक्षम करें</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">X-अक्ष पर हिलाने की क्रिया</string>
     <string name="settings_shake_y_axis_title">Y-अक्ष पर हिलाने की क्रिया</string>
     <string name="settings_shake_z_axis_title">Z-अक्ष पर हिलाने की क्रिया</string>
-    <string name="settings_spell_checker_screen_title">वर्तनी परीक्षक सेटिंग्स</string>
     <string name="settings_spell_checker_summary">सिस्टम-व्यापी वर्तनी जांच का व्यवहार कॉन्फ़िगर करें</string>
     <string name="settings_spell_checker_title">वर्तनी जांच</string>
     <string name="settings_title">BBKB सेटिंग्स</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">प्रतीक लोड हो रहे हैं…</string>
     <string name="settings_keyeditor_hex_code">हेक्स कोड (जैसे, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">अमान्य वर्ण कोड</string>
-    <string name="settings_spellcheck_intro">BBKB वर्तनी परीक्षक उन सभी ऐप में स्मार्ट वर्तनी जांच देता है जिनमें वर्तनी जांच की सुविधा है. यह टाइपिंग की गलतियां पकड़ने और सुधार सुझाने के लिए बेहतर भाषा मॉडल का इस्तेमाल करता है.</string>
+    <string name="settings_spellcheck_intro">BBKB वर्तनी परीक्षक बेहतर भाषा मॉडल का इस्तेमाल करके उन सभी ऐप में वर्तनी जांच देता है जिनमें यह सुविधा है</string>
+    <string name="settings_spellcheck_enable_title">BBKB वर्तनी परीक्षक चालू करें</string>
+    <string name="settings_spellcheck_enable_summary">टाइपिंग की गलतियां पकड़ता है और सुधार सुझाता है</string>
     <string name="settings_credits_version">संस्करण %1$s (बिल्ड %2$s)</string>
 </resources>

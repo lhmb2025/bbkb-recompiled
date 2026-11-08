@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Бичих үед үгсийг засна. Засварыг буцаахын тулд Backspace дарна.</string>
     <string name="settings_category_display">Харуулах</string>
     <string name="settings_category_sources">Эх сурвалж</string>
-    <string name="settings_category_contacts_accounts">Харилцагч болон бүртгэл</string>
     <string name="settings_dict_add_reverted_words_title">Үг нэмэх товчийг харуулах</string>
     <string name="settings_dict_add_reverted_words_summary">Backspace засварыг буцаасны дараа үг нэмэх товч харуулах</string>
     <string name="prefs_category_tuning">Тохируулга</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Биет гар ашиглах үед Shift/Alt товчны заагчийг төлөвийн мөрөнд харуулах</string>
     <string name="settings_pred_block_offensive_summary">Дуугаар бичүүлэхэд доромжлол агуулж болзошгүй үгсийг нуух</string>
     <string name="settings_pred_block_offensive_title">Доромжилсон үг хориглох</string>
-    <string name="settings_pred_contacts_permission_summary">Харилцагчийн нэр, имэйл хаяг санал болгохын тулд зөвшөөрөл олгоно уу</string>
     <string name="settings_pred_contacts_permission_title">Харилцагчийн зөвшөөрөл</string>
     <string name="settings_pred_contacts_summary_disabled">Харилцагчийн зөвшөөрөл шаардлагатай</string>
     <string name="settings_pred_contacts_summary_enabled">Харилцагчийн нэрийг саналд оруулах</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Хурдан шудралтын хөдөлгөөнт дүрс харуулах</string>
     <string name="settings_pred_force_suggestions_summary">Саналын мөрийг нуухыг хүсдэг аппуудад ч уг мөрийг харуулах. Нууц үгийн талбарт хамаарахгүй.</string>
     <string name="settings_pred_force_suggestions_title">Саналыг албадан харуулах</string>
-    <string name="settings_pred_grant_permission">Зөвшөөрөл олгох</string>
     <string name="settings_pred_next_word_summary">Утга агуулгад тулгуурлан дараагийн үгийг санал болгох</string>
     <string name="settings_pred_next_word_title">Дараагийн үгийн санал</string>
     <string name="settings_pred_on_key_summary">Бичих үед саналыг виртуал гар дээр харуулах</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Хөдөлгөөн эхлэх үеийн босоо масштаб</string>
     <string name="settings_anim_show_start_y_title">Гарч ирэх эхний Y масштаб</string>
     <string name="settings_animation_params_title">Хөдөлгөөний үзүүлэлт</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Энэ боломжийг ашиглахын тулд харилцагчийн зөвшөөрөл олгоно уу</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Харилцагчийн нэрийг зөв үг гэж тооцно</string>
-    <string name="settings_spellcheck_use_contacts_title">Алдаа шалгахад харилцагчдыг ашиглах</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Алдаа шалгахад харилцагчийн нэрийг зөв үг гэж танихын тулд харилцагчийн зөвшөөрөл олгоно уу</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Харилцагчийн нэрийг зөв үг гэж танина</string>
+    <string name="settings_spellcheck_use_contacts_title">Харилцагчийн нэрийг хүлээн авах</string>
     <string name="settings_spellcheck_accept_learned_title">Сурсан үгсийг хүлээн авах</string>
-    <string name="settings_spellcheck_accept_learned_summary">Таны бичвэрээс сурсан үгсийг зөв бичсэн гэж тооцно</string>
+    <string name="settings_spellcheck_accept_learned_summary">Таны бичвэрээс сурсан үгсийг танина</string>
     <string name="pref_alt_double_tap_lock">Alt давхар товшилтын түгжээг идэвхжүүлэх</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-г давхар товшвол түгжигдэнэ. Alt-г дахин товшвол унтарна.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl давхар товшилтын түгжээг идэвхжүүлэх</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">X тэнхлэгт сэгсрэх үйлдэл</string>
     <string name="settings_shake_y_axis_title">Y тэнхлэгт сэгсрэх үйлдэл</string>
     <string name="settings_shake_z_axis_title">Z тэнхлэгт сэгсрэх үйлдэл</string>
-    <string name="settings_spell_checker_screen_title">Алдаа шалгагчийн тохиргоо</string>
     <string name="settings_spell_checker_summary">Систем даяарх алдаа шалгах ажиллагааг тохируулах</string>
     <string name="settings_spell_checker_title">Алдаа шалгах</string>
     <string name="settings_title">BBKB Тохиргоо</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Тэмдэгтүүдийг ачаалж байна…</string>
     <string name="settings_keyeditor_hex_code">Hex код (жишээ нь, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Тэмдэгтийн код буруу байна</string>
-    <string name="settings_spellcheck_intro">BBKB алдаа шалгагч нь алдаа шалгахыг дэмждэг бүх апп дээр ухаалаг алдаа шалгалт хийдэг. Энэ нь үсгийн алдааг илрүүлж, засвар санал болгохын тулд дэвшилтэт хэлний загвар ашигладаг.</string>
+    <string name="settings_spellcheck_intro">BBKB алдаа шалгагч нь дэвшилтэт хэлний загвар ашиглан алдаа шалгахыг дэмждэг бүх апп дээр алдаа шалгалт хийдэг</string>
+    <string name="settings_spellcheck_enable_title">BBKB алдаа шалгагчийг идэвхжүүлэх</string>
+    <string name="settings_spellcheck_enable_summary">Үсгийн алдааг илрүүлж, засвар санал болгоно</string>
     <string name="settings_credits_version">Хувилбар %1$s (бүтээц %2$s)</string>
 </resources>

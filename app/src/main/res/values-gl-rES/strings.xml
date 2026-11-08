@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Corrixe as palabras mentres escribes. Preme retroceso para desfacer unha corrección.</string>
     <string name="settings_category_display">Visualización</string>
     <string name="settings_category_sources">Fontes</string>
-    <string name="settings_category_contacts_accounts">Contactos e contas</string>
     <string name="settings_dict_add_reverted_words_title">Mostrar botón de engadir palabra</string>
     <string name="settings_dict_add_reverted_words_summary">Cando retroceso desfai unha corrección, mostrar un botón para engadir a palabra</string>
     <string name="prefs_category_tuning">Axuste</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Mostrar o indicador de Maiús/Alt na barra de estado ao usar o teclado físico</string>
     <string name="settings_pred_block_offensive_summary">Ocultar as palabras potencialmente ofensivas no ditado por voz</string>
     <string name="settings_pred_block_offensive_title">Bloquear palabras ofensivas</string>
-    <string name="settings_pred_contacts_permission_summary">Concede o permiso para suxerir nomes de contactos e enderezos de correo</string>
     <string name="settings_pred_contacts_permission_title">Permiso de contactos</string>
     <string name="settings_pred_contacts_summary_disabled">Requírese o permiso de contactos</string>
     <string name="settings_pred_contacts_summary_enabled">Incluír os nomes dos contactos nas suxestións</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Mostrar a animación de confirmación cun golpe</string>
     <string name="settings_pred_force_suggestions_summary">Mostrar a barra de suxestións mesmo nas aplicacións que lle piden ao teclado que a oculte. Non se aplica aos campos de contrasinal.</string>
     <string name="settings_pred_force_suggestions_title">Forzar as suxestións</string>
-    <string name="settings_pred_grant_permission">Conceder permiso</string>
     <string name="settings_pred_next_word_summary">Suxerir a seguinte palabra segundo o contexto</string>
     <string name="settings_pred_next_word_title">Suxestións da seguinte palabra</string>
     <string name="settings_pred_on_key_summary">Mostrar suxestións no teclado virtual mentres escribes</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Escala vertical ao comezo da animación</string>
     <string name="settings_anim_show_start_y_title">Escala Y inicial da aparición</string>
     <string name="settings_animation_params_title">Parámetros de animación</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Concede o permiso de contactos para usar esta función</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Os nomes dos contactos recoñeceranse como palabras válidas</string>
-    <string name="settings_spellcheck_use_contacts_title">Usar os contactos na corrección ortográfica</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Concede o permiso de contactos para recoñecer os nomes dos contactos como palabras válidas na corrección ortográfica</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Recoñece os nomes dos contactos como palabras válidas</string>
+    <string name="settings_spellcheck_use_contacts_title">Aceptar os nomes dos contactos</string>
     <string name="settings_spellcheck_accept_learned_title">Aceptar as palabras aprendidas</string>
-    <string name="settings_spellcheck_accept_learned_summary">As palabras aprendidas do que escribes considéranse ben escritas</string>
+    <string name="settings_spellcheck_accept_learned_summary">Recoñece as palabras aprendidas do que escribes</string>
     <string name="pref_alt_double_tap_lock">Activar o bloqueo de Alt con dobre clic</string>
     <string name="pref_alt_double_tap_lock_summary">Ao premer Alt dúas veces quedará bloqueada. Ao premer Alt de novo desactivarase.</string>
     <string name="pref_ctrl_double_tap_lock">Activar o bloqueo de Ctrl con dobre clic</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Acción ao axitar no eixe X</string>
     <string name="settings_shake_y_axis_title">Acción ao axitar no eixe Y</string>
     <string name="settings_shake_z_axis_title">Acción ao axitar no eixe Z</string>
-    <string name="settings_spell_checker_screen_title">Configuración do corrector ortográfico</string>
     <string name="settings_spell_checker_summary">Configurar o comportamento da corrección ortográfica de todo o sistema</string>
     <string name="settings_spell_checker_title">Corrección ortográfica</string>
     <string name="settings_title">Configuración de BBKB</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Cargando símbolos…</string>
     <string name="settings_keyeditor_hex_code">Código hexadecimal (p. ex. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Código de carácter non válido</string>
-    <string name="settings_spellcheck_intro">O corrector ortográfico de BBKB ofrece unha corrección ortográfica intelixente en todas as aplicacións que a admiten. Usa modelos de linguaxe avanzados para detectar erros tipográficos e suxerir correccións.</string>
+    <string name="settings_spellcheck_intro">O corrector ortográfico de BBKB usa modelos de linguaxe avanzados para ofrecer corrección ortográfica en todas as aplicacións que a admiten</string>
+    <string name="settings_spellcheck_enable_title">Activar o corrector ortográfico de BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Detecta erros tipográficos e suxire correccións</string>
     <string name="settings_credits_version">Versión %1$s (compilación %2$s)</string>
 </resources>

@@ -10,6 +10,7 @@ import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.core.settings.ui.drawableIcon
+import dev.bbkb.ime.core.settings.ui.groupBreak
 import dev.bbkb.ime.core.settings.ui.intAsStringPref
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.util.SettingsManager
@@ -33,6 +34,7 @@ fun AutoCorrectionScreen(
             icon = drawableIcon(R.drawable.ic_settings_autocorrect),
             modifier = Modifier.settingsSearchAnchor("auto_correction_enabled"),
         ),
+        groupBreak(),
         // PKB auto-correction mode — only on devices with a physical keyboard.
         Choice(
             store = intAsStringPref("auto_correction_mode_PKB", 1),
@@ -53,6 +55,8 @@ fun AutoCorrectionScreen(
             enabled = { it.bool(SettingsManager.PREF_AUTO_CORRECTION_ENABLED) },
             modifier = Modifier.settingsSearchAnchor("auto_correction_mode_VKB"),
         ),
+        // Capitals and punctuation work whether auto-correction is on or not.
+        groupBreak(),
         Toggle(
             store = boolPref("auto_cap", true),
             title = R.string.settings_autocorrect_auto_cap_title,

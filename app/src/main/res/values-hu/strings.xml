@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Gépelés közben javítja a szavakat. A javítás visszavonásához nyomja meg a Backspace-t.</string>
     <string name="settings_category_display">Megjelenítés</string>
     <string name="settings_category_sources">Források</string>
-    <string name="settings_category_contacts_accounts">Névjegyek és fiókok</string>
     <string name="settings_dict_add_reverted_words_title">Szó hozzáadása gomb megjelenítése</string>
     <string name="settings_dict_add_reverted_words_summary">Miután a Backspace visszavon egy javítást, gomb megjelenítése a szó hozzáadásához</string>
     <string name="prefs_category_tuning">Hangolás</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">A Shift/Alt módosítójelző megjelenítése az állapotsorban fizikai billentyűzet használatakor</string>
     <string name="settings_pred_block_offensive_summary">Az esetlegesen sértő szavak elrejtése hangdiktáláskor</string>
     <string name="settings_pred_block_offensive_title">Sértő szavak blokkolása</string>
-    <string name="settings_pred_contacts_permission_summary">Adjon engedélyt, hogy a billentyűzet partnerneveket és e-mail-címeket javasolhasson</string>
     <string name="settings_pred_contacts_permission_title">Partnerengedély</string>
     <string name="settings_pred_contacts_summary_disabled">Partnerengedély szükséges</string>
     <string name="settings_pred_contacts_summary_enabled">Partnernevek megjelenítése a javaslatok között</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Pöccintéses elfogadás animációja</string>
     <string name="settings_pred_force_suggestions_summary">A javaslatsáv megjelenítése azokban az alkalmazásokban is, amelyek az elrejtését kérik. A jelszómezőkre nem vonatkozik.</string>
     <string name="settings_pred_force_suggestions_title">Javaslatok kikényszerítése</string>
-    <string name="settings_pred_grant_permission">Engedély megadása</string>
     <string name="settings_pred_next_word_summary">A következő szó javaslása a szövegkörnyezet alapján</string>
     <string name="settings_pred_next_word_title">Következő szó javaslatai</string>
     <string name="settings_pred_on_key_summary">Javaslatok megjelenítése a virtuális billentyűzeten gépelés közben</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Függőleges méretarány az animáció elején</string>
     <string name="settings_anim_show_start_y_title">Megjelenés kezdeti Y méretaránya</string>
     <string name="settings_animation_params_title">Animációs paraméterek</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">A funkció használatához adjon partnerengedélyt</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">A partnerneveket a rendszer érvényes szavaknak tekinti</string>
-    <string name="settings_spellcheck_use_contacts_title">Partnerek használata a helyesírás-ellenőrzéshez</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Adjon partnerengedélyt, hogy a helyesírás-ellenőrzés érvényes szavakként ismerje fel a partnerneveket</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Érvényes szavakként ismeri fel a partnerneveket</string>
+    <string name="settings_spellcheck_use_contacts_title">Partnernevek elfogadása</string>
     <string name="settings_spellcheck_accept_learned_title">Tanult szavak elfogadása</string>
-    <string name="settings_spellcheck_accept_learned_summary">A gépelésedből tanult szavak helyesen írtnak számítanak</string>
+    <string name="settings_spellcheck_accept_learned_summary">Felismeri a gépelésedből tanult szavakat</string>
     <string name="pref_alt_double_tap_lock">Alt dupla kattintásos rögzítésének engedélyezése</string>
     <string name="pref_alt_double_tap_lock_summary">Az Alt dupla lenyomása bekapcsolva rögzíti. Az Alt újbóli lenyomása kikapcsolja.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl dupla kattintásos rögzítésének engedélyezése</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Rázás X tengely művelete</string>
     <string name="settings_shake_y_axis_title">Rázás Y tengely művelete</string>
     <string name="settings_shake_z_axis_title">Rázás Z tengely művelete</string>
-    <string name="settings_spell_checker_screen_title">Helyesírás-ellenőrző beállításai</string>
     <string name="settings_spell_checker_summary">A rendszerszintű helyesírás-ellenőrzés működésének beállítása</string>
     <string name="settings_spell_checker_title">Helyesírás-ellenőrzés</string>
     <string name="settings_title">BBKB beállításai</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Szimbólumok betöltése…</string>
     <string name="settings_keyeditor_hex_code">Hexadecimális kód (pl. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Érvénytelen karakterkód</string>
-    <string name="settings_spellcheck_intro">A BBKB helyesírás-ellenőrzője intelligens helyesírás-ellenőrzést biztosít minden olyan alkalmazásban, amely támogatja a helyesírás-ellenőrzést. Fejlett nyelvi modellekkel ismeri fel az elírásokat, és javításokat javasol.</string>
+    <string name="settings_spellcheck_intro">A BBKB helyesírás-ellenőrzője fejlett nyelvi modellekkel biztosít helyesírás-ellenőrzést minden olyan alkalmazásban, amely ezt támogatja</string>
+    <string name="settings_spellcheck_enable_title">BBKB helyesírás-ellenőrző bekapcsolása</string>
+    <string name="settings_spellcheck_enable_summary">Felismeri az elírásokat, és javításokat javasol</string>
     <string name="settings_credits_version">%1$s verzió (build: %2$s)</string>
 </resources>

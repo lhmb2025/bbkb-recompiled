@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Itinatama ang mga salita habang nagta-type. Pindutin ang backspace para i-undo ang pagtatama.</string>
     <string name="settings_category_display">Display</string>
     <string name="settings_category_sources">Mga pinagmulan</string>
-    <string name="settings_category_contacts_accounts">Mga contact at account</string>
     <string name="settings_dict_add_reverted_words_title">Ipakita ang button na magdagdag ng salita</string>
     <string name="settings_dict_add_reverted_words_summary">Pagkatapos i-undo ng backspace ang pagtatama, magpakita ng button para idagdag ang salita</string>
     <string name="prefs_category_tuning">Pag-tune</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Ipakita ang indicator ng Shift/Alt modifier sa status bar kapag gumagamit ng pisikal na keyboard</string>
     <string name="settings_pred_block_offensive_summary">Itago ang mga salitang posibleng nakakasakit kapag nagdidikta gamit ang boses</string>
     <string name="settings_pred_block_offensive_title">I-block ang mga nakakasakit na salita</string>
-    <string name="settings_pred_contacts_permission_summary">Magbigay ng pahintulot para magmungkahi ng mga pangalan ng contact at email address</string>
     <string name="settings_pred_contacts_permission_title">Pahintulot sa mga contact</string>
     <string name="settings_pred_contacts_summary_disabled">Kailangan ng pahintulot sa mga contact</string>
     <string name="settings_pred_contacts_summary_enabled">Isama ang mga pangalan ng contact sa mga suhestyon</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Ipakita ang animation ng flick commit</string>
     <string name="settings_pred_force_suggestions_summary">Ipakita ang suggestion strip kahit sa mga app na humihiling sa keyboard na itago ito. Hindi ito nalalapat sa mga field ng password.</string>
     <string name="settings_pred_force_suggestions_title">Sapilitang mga suhestyon</string>
-    <string name="settings_pred_grant_permission">Magbigay ng Pahintulot</string>
     <string name="settings_pred_next_word_summary">Magmungkahi ng susunod na salita batay sa konteksto</string>
     <string name="settings_pred_next_word_title">Mga suhestyon ng susunod na salita</string>
     <string name="settings_pred_on_key_summary">Ipakita ang mga suhestyon sa virtual keyboard habang nagta-type ka</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Patayong scale sa simula ng animation</string>
     <string name="settings_anim_show_start_y_title">Y scale sa simula ng paglabas</string>
     <string name="settings_animation_params_title">Mga parameter ng animation</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Magbigay ng pahintulot sa mga contact para magamit ang feature na ito</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Kikilalanin ang mga pangalan ng contact bilang wastong salita</string>
-    <string name="settings_spellcheck_use_contacts_title">Gamitin ang mga contact sa spellchecking</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Magbigay ng pahintulot sa mga contact para makilala ang mga pangalan ng contact bilang mga wastong salita sa spellchecking</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Kinikilala ang mga pangalan ng contact bilang wastong salita</string>
+    <string name="settings_spellcheck_use_contacts_title">Tanggapin ang mga pangalan ng contact</string>
     <string name="settings_spellcheck_accept_learned_title">Tanggapin ang mga natutunang salita</string>
-    <string name="settings_spellcheck_accept_learned_summary">Itinuturing na tama ang baybay ng mga salitang natutunan mula sa iyong pagta-type</string>
+    <string name="settings_spellcheck_accept_learned_summary">Kinikilala ang mga salitang natutunan mula sa iyong pagta-type</string>
     <string name="pref_alt_double_tap_lock">I-enable ang Alt double-click lock</string>
     <string name="pref_alt_double_tap_lock_summary">Kapag dalawang beses na-click ang Alt, mala-lock ito. I-click ulit ang Alt para i-off.</string>
     <string name="pref_ctrl_double_tap_lock">I-enable ang Ctrl double-click lock</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Aksyon sa pag-shake sa X-axis</string>
     <string name="settings_shake_y_axis_title">Aksyon sa pag-shake sa Y-axis</string>
     <string name="settings_shake_z_axis_title">Aksyon sa pag-shake sa Z-axis</string>
-    <string name="settings_spell_checker_screen_title">Mga setting ng spell checker</string>
     <string name="settings_spell_checker_summary">I-configure ang gawi ng spell checking sa buong system</string>
     <string name="settings_spell_checker_title">Spell checking</string>
     <string name="settings_title">Mga Setting ng BBKB</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Nilo-load ang mga simbolo…</string>
     <string name="settings_keyeditor_hex_code">Hex code (hal. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Invalid na character code</string>
-    <string name="settings_spellcheck_intro">Nagbibigay ang spell checker ng BBKB ng matalinong spell checking sa lahat ng app na sumusuporta sa spell checking. Gumagamit ito ng mga advanced na language model para matukoy ang mga typo at magmungkahi ng mga pagwawasto.</string>
+    <string name="settings_spellcheck_intro">Gumagamit ang spell checker ng BBKB ng mga advanced na language model para magbigay ng spell checking sa lahat ng app na sumusuporta rito</string>
+    <string name="settings_spellcheck_enable_title">I-enable ang spell checker ng BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Natutukoy ang mga typo at nagmumungkahi ng mga pagwawasto</string>
     <string name="settings_credits_version">Bersyon %1$s (Build %2$s)</string>
 </resources>

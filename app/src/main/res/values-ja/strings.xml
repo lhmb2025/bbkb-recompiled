@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">入力中に単語を修正します。修正を取り消すには Backspace を押します。</string>
     <string name="settings_category_display">表示</string>
     <string name="settings_category_sources">ソース</string>
-    <string name="settings_category_contacts_accounts">連絡先とアカウント</string>
     <string name="settings_dict_add_reverted_words_title">単語追加ボタンを表示</string>
     <string name="settings_dict_add_reverted_words_summary">Backspace で修正を取り消した後、単語を追加するボタンを表示</string>
     <string name="prefs_category_tuning">チューニング</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">物理キーボードの使用中にShift/Altの状態をステータスバーに表示します</string>
     <string name="settings_pred_block_offensive_summary">音声入力で不適切な可能性のある単語を伏せ字にします</string>
     <string name="settings_pred_block_offensive_title">不適切な単語をブロック</string>
-    <string name="settings_pred_contacts_permission_summary">連絡先の名前やメールアドレスを候補に表示するには、権限を許可してください</string>
     <string name="settings_pred_contacts_permission_title">連絡先の権限</string>
     <string name="settings_pred_contacts_summary_disabled">連絡先の権限が必要です</string>
     <string name="settings_pred_contacts_summary_enabled">連絡先の名前を候補に含めます</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">フリック確定のアニメーションを表示</string>
     <string name="settings_pred_force_suggestions_summary">候補バーを非表示にするよう要求するアプリでも候補バーを表示します。パスワード欄には適用されません。</string>
     <string name="settings_pred_force_suggestions_title">候補を強制表示</string>
-    <string name="settings_pred_grant_permission">権限を許可</string>
     <string name="settings_pred_next_word_summary">文脈に基づいて次の単語を候補に表示します</string>
     <string name="settings_pred_next_word_title">次の単語の候補</string>
     <string name="settings_pred_on_key_summary">入力中に仮想キーボード上に候補を表示します</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">アニメーション開始時の垂直方向の倍率</string>
     <string name="settings_anim_show_start_y_title">表示開始時のY倍率</string>
     <string name="settings_animation_params_title">アニメーションのパラメータ</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">この機能を使用するには連絡先の権限を許可してください</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">連絡先の名前が正しい単語として認識されます</string>
-    <string name="settings_spellcheck_use_contacts_title">スペルチェックに連絡先を使用</string>
-    <string name="settings_spellcheck_contacts_permission_summary">スペルチェックで連絡先の名前を正しい単語として認識するには、連絡先の権限を許可してください</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">連絡先の名前を正しい単語として認識します</string>
+    <string name="settings_spellcheck_use_contacts_title">連絡先の名前を受け入れる</string>
     <string name="settings_spellcheck_accept_learned_title">学習した単語を受け入れる</string>
-    <string name="settings_spellcheck_accept_learned_summary">入力から学習した単語を正しいスペルとして扱います</string>
+    <string name="settings_spellcheck_accept_learned_summary">入力から学習した単語を認識します</string>
     <string name="pref_alt_double_tap_lock">Altのダブルクリックロックを有効にする</string>
     <string name="pref_alt_double_tap_lock_summary">Altをダブルクリックするとオンで固定されます。もう一度Altを押すと解除されます。</string>
     <string name="pref_ctrl_double_tap_lock">Ctrlのダブルクリックロックを有効にする</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">X軸の振りの動作</string>
     <string name="settings_shake_y_axis_title">Y軸の振りの動作</string>
     <string name="settings_shake_z_axis_title">Z軸の振りの動作</string>
-    <string name="settings_spell_checker_screen_title">スペルチェッカーの設定</string>
     <string name="settings_spell_checker_summary">システム全体のスペルチェックの動作を設定します</string>
     <string name="settings_spell_checker_title">スペルチェック</string>
     <string name="settings_title">BBKBの設定</string>
@@ -1084,6 +1078,8 @@
     <string name="settings_keyeditor_loading">記号を読み込んでいます…</string>
     <string name="settings_keyeditor_hex_code">16 進コード（例: 1F600）</string>
     <string name="settings_keyeditor_invalid_code">無効な文字コードです</string>
-    <string name="settings_spellcheck_intro">BBKB スペルチェッカーは、スペルチェックに対応したすべてのアプリでインテリジェントなスペルチェックを提供します。高度な言語モデルを使用して入力ミスを検出し、修正候補を表示します。</string>
+    <string name="settings_spellcheck_intro">BBKB スペルチェッカーは、高度な言語モデルを使用して、スペルチェックに対応したすべてのアプリでスペルチェックを提供します</string>
+    <string name="settings_spellcheck_enable_title">BBKBスペルチェッカーを有効にする</string>
+    <string name="settings_spellcheck_enable_summary">入力ミスを検出し、修正候補を表示します</string>
     <string name="settings_credits_version">バージョン %1$s（ビルド %2$s）</string>
 </resources>

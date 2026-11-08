@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Cywiro geiriau wrth deipio. Pwyswch backspace i ddadwneud cywiriad.</string>
     <string name="settings_category_display">Arddangos</string>
     <string name="settings_category_sources">Ffynonellau</string>
-    <string name="settings_category_contacts_accounts">Cysylltiadau a chyfrifon</string>
     <string name="settings_dict_add_reverted_words_title">Dangos botwm ychwanegu gair</string>
     <string name="settings_dict_add_reverted_words_summary">Ar ôl i backspace ddadwneud cywiriad, dangos botwm i ychwanegu\'r gair</string>
     <string name="prefs_category_tuning">Tiwnio</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Dangos dynodydd Shift/Alt yn y bar statws wrth ddefnyddio bysellfwrdd ffisegol</string>
     <string name="settings_pred_block_offensive_summary">Cuddio geiriau a allai fod yn sarhaus wrth arddweud â llais</string>
     <string name="settings_pred_block_offensive_title">Rhwystro geiriau sarhaus</string>
-    <string name="settings_pred_contacts_permission_summary">Rhowch ganiatâd er mwyn awgrymu enwau cysylltiadau a chyfeiriadau e-bost</string>
     <string name="settings_pred_contacts_permission_title">Caniatâd cysylltiadau</string>
     <string name="settings_pred_contacts_summary_disabled">Angen caniatâd cysylltiadau</string>
     <string name="settings_pred_contacts_summary_enabled">Cynnwys enwau cysylltiadau yn yr awgrymiadau</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Dangos animeiddiad derbyn â fflic</string>
     <string name="settings_pred_force_suggestions_summary">Dangos y stribed awgrymiadau hyd yn oed mewn apiau sy\'n gofyn i\'r bysellfwrdd ei guddio. Nid yw\'n berthnasol i feysydd cyfrinair.</string>
     <string name="settings_pred_force_suggestions_title">Gorfodi awgrymiadau</string>
-    <string name="settings_pred_grant_permission">Rhoi Caniatâd</string>
     <string name="settings_pred_next_word_summary">Awgrymu\'r gair nesaf yn ôl y cyd-destun</string>
     <string name="settings_pred_next_word_title">Awgrymiadau\'r gair nesaf</string>
     <string name="settings_pred_on_key_summary">Dangos awgrymiadau ar y bysellfwrdd rhithwir wrth i chi deipio</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Y raddfa fertigol ar ddechrau\'r animeiddiad</string>
     <string name="settings_anim_show_start_y_title">Graddfa Y gychwynnol yr ymddangos</string>
     <string name="settings_animation_params_title">Paramedrau animeiddio</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Rhowch ganiatâd cysylltiadau i ddefnyddio\'r nodwedd hon</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Bydd enwau cysylltiadau\'n cael eu cydnabod fel geiriau dilys</string>
-    <string name="settings_spellcheck_use_contacts_title">Defnyddio cysylltiadau wrth wirio sillafu</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Rhowch ganiatâd cysylltiadau er mwyn i enwau cysylltiadau gael eu hadnabod fel geiriau dilys wrth wirio sillafu</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Mae\'n cydnabod enwau cysylltiadau fel geiriau dilys</string>
+    <string name="settings_spellcheck_use_contacts_title">Derbyn enwau cysylltiadau</string>
     <string name="settings_spellcheck_accept_learned_title">Derbyn geiriau a ddysgwyd</string>
-    <string name="settings_spellcheck_accept_learned_summary">Mae geiriau a ddysgwyd o\'ch teipio yn cyfrif fel rhai wedi\'u sillafu\'n gywir</string>
+    <string name="settings_spellcheck_accept_learned_summary">Mae\'n cydnabod geiriau a ddysgwyd o\'ch teipio</string>
     <string name="pref_alt_double_tap_lock">Galluogi clo Alt drwy glicio ddwywaith</string>
     <string name="pref_alt_double_tap_lock_summary">Bydd clicio Alt ddwywaith yn ei gloi. Bydd clicio Alt eto yn ei ddiffodd.</string>
     <string name="pref_ctrl_double_tap_lock">Galluogi clo Ctrl drwy glicio ddwywaith</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Gweithred ysgwyd echelin X</string>
     <string name="settings_shake_y_axis_title">Gweithred ysgwyd echelin Y</string>
     <string name="settings_shake_z_axis_title">Gweithred ysgwyd echelin Z</string>
-    <string name="settings_spell_checker_screen_title">Gosodiadau\'r gwirydd sillafu</string>
     <string name="settings_spell_checker_summary">Ffurfweddu\'r gwirio sillafu ar draws y system gyfan</string>
     <string name="settings_spell_checker_title">Gwirio sillafu</string>
     <string name="settings_title">Gosodiadau BBKB</string>
@@ -1159,6 +1153,8 @@
     <string name="settings_keyeditor_loading">Wrthi\'n llwytho symbolau…</string>
     <string name="settings_keyeditor_hex_code">Cod hecs (e.e. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Cod nod annilys</string>
-    <string name="settings_spellcheck_intro">Mae gwirydd sillafu BBKB yn darparu gwirio sillafu deallus ym mhob ap sy\'n cefnogi gwirio sillafu. Mae\'n defnyddio modelau iaith uwch i ganfod gwallau teipio ac awgrymu cywiriadau.</string>
+    <string name="settings_spellcheck_intro">Mae gwirydd sillafu BBKB yn defnyddio modelau iaith uwch i ddarparu gwirio sillafu ym mhob ap sy\'n ei gefnogi</string>
+    <string name="settings_spellcheck_enable_title">Galluogi gwirydd sillafu BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Mae\'n canfod gwallau teipio ac yn awgrymu cywiriadau</string>
     <string name="settings_credits_version">Fersiwn %1$s (Adeiliad %2$s)</string>
 </resources>

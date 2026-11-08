@@ -85,7 +85,6 @@
     <string name="prefs_shake_tuning_summary">Trigger counts, acceleration threshold and timing</string>
     <string name="settings_category_display">Display</string>
     <string name="settings_category_sources">Sources</string>
-    <string name="settings_category_contacts_accounts">Contacts and accounts</string>
     <string name="settings_dict_add_reverted_words_title">Show add word button</string>
     <string name="settings_dict_add_reverted_words_summary">After backspace undoes a correction, show a button to add the word</string>
     <string name="settings_auxiliary_input_title">Auxiliary input</string>
@@ -570,7 +569,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Display Shift/Alt modifier indicator in status bar when using physical keyboard</string>
     <string name="settings_pred_block_offensive_summary">Mask potentially offensive words in voice dictation</string>
     <string name="settings_pred_block_offensive_title">Block offensive words</string>
-    <string name="settings_pred_contacts_permission_summary">Grant permission to suggest contact names and email addresses</string>
     <string name="settings_pred_contacts_permission_title">Contacts permission</string>
     <string name="settings_pred_contacts_summary_disabled">Contacts permission required</string>
     <string name="settings_pred_contacts_summary_enabled">Include contact names in suggestions</string>
@@ -581,7 +579,6 @@
     <string name="settings_pred_flick_animation_title">Show flick commit animation</string>
     <string name="settings_pred_force_suggestions_summary">Show the suggestion strip even in apps that ask the keyboard to hide it. Does not apply to password fields.</string>
     <string name="settings_pred_force_suggestions_title">Force suggestions</string>
-    <string name="settings_pred_grant_permission">Grant permission</string>
     <string name="settings_pred_next_word_summary">Suggest next word based on context</string>
     <string name="settings_pred_next_word_title">Next word suggestions</string>
     <string name="settings_pred_on_key_summary">Show suggestions on virtual keyboard as you type</string>
@@ -617,12 +614,10 @@
     <!-- ========================== -->
     <!-- Settings — spell checker -->
     <!-- ========================== -->
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Grant contacts permission to use this feature</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Contact names will be recognized as valid words</string>
-    <string name="settings_spellcheck_use_contacts_title">Use contacts for spellchecking</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Grant contacts permission to recognize contact names as valid words during spell checking</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Recognize contact names as valid words</string>
+    <string name="settings_spellcheck_use_contacts_title">Accept contact names</string>
     <string name="settings_spellcheck_accept_learned_title">Accept learned words</string>
-    <string name="settings_spellcheck_accept_learned_summary">Words learned from your typing count as spelled correctly</string>
+    <string name="settings_spellcheck_accept_learned_summary">Recognize words learned from your typing</string>
 
     <!-- ========================== -->
     <!-- Settings — modifier keys -->
@@ -791,7 +786,6 @@
     <string name="settings_shake_x_axis_title">Shake X-axis action</string>
     <string name="settings_shake_y_axis_title">Shake Y-axis action</string>
     <string name="settings_shake_z_axis_title">Shake Z-axis action</string>
-    <string name="settings_spell_checker_screen_title">Spell checker settings</string>
     <string name="settings_spell_checker_summary">Configure system-wide spell checking behavior</string>
     <string name="settings_spell_checker_title">Spell checking</string>
     <string name="settings_title">BBKB Settings</string>
@@ -1200,6 +1194,8 @@
     <string name="settings_keyeditor_loading">Loading symbols…</string>
     <string name="settings_keyeditor_hex_code">Hex code (e.g. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Invalid character code</string>
-    <string name="settings_spellcheck_intro">The BBKB spell checker provides intelligent spell checking across all apps that support spell checking. It uses advanced language models to detect typos and suggest corrections.</string>
+    <string name="settings_spellcheck_intro">The BBKB spell checker uses advanced language models to provide spell checking across all apps that support it</string>
+    <string name="settings_spellcheck_enable_title">Enable BBKB spell checker</string>
+    <string name="settings_spellcheck_enable_summary">Detect typos and suggest corrections</string>
     <string name="settings_credits_version">Version %1$s (Build %2$s)</string>
 </resources>

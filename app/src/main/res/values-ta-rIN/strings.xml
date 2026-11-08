@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">தட்டச்சு செய்யும்போது சொற்களைத் திருத்தும். திருத்தத்தைச் செயல்தவிர்க்க பேக்ஸ்பேஸ் அழுத்தவும்.</string>
     <string name="settings_category_display">காட்சி</string>
     <string name="settings_category_sources">மூலங்கள்</string>
-    <string name="settings_category_contacts_accounts">தொடர்புகள் மற்றும் கணக்குகள்</string>
     <string name="settings_dict_add_reverted_words_title">சொல் சேர் பொத்தானைக் காட்டு</string>
     <string name="settings_dict_add_reverted_words_summary">பேக்ஸ்பேஸ் திருத்தத்தைச் செயல்தவிர்த்த பிறகு, சொல்லைச் சேர்க்க பொத்தானைக் காட்டு</string>
     <string name="prefs_category_tuning">சரிசெய்தல்</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">இயற்பியல் விசைப்பலகையைப் பயன்படுத்தும்போது Shift/Alt மாற்றி குறியீட்டை நிலைப் பட்டியில் காட்டு</string>
     <string name="settings_pred_block_offensive_summary">குரல் மூலம் எழுதும்போது புண்படுத்தக்கூடிய சொற்களை மறை</string>
     <string name="settings_pred_block_offensive_title">புண்படுத்தும் சொற்களைத் தடு</string>
-    <string name="settings_pred_contacts_permission_summary">தொடர்புப் பெயர்களையும் மின்னஞ்சல் முகவரிகளையும் பரிந்துரைக்க அனுமதியை வழங்கவும்</string>
     <string name="settings_pred_contacts_permission_title">தொடர்புகள் அனுமதி</string>
     <string name="settings_pred_contacts_summary_disabled">தொடர்புகள் அனுமதி தேவை</string>
     <string name="settings_pred_contacts_summary_enabled">பரிந்துரைகளில் தொடர்புப் பெயர்களைச் சேர்</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">சொடுக்கு உறுதிப்படுத்தல் அனிமேஷனைக் காட்டு</string>
     <string name="settings_pred_force_suggestions_summary">பரிந்துரைப் பட்டியை மறைக்கக் கோரும் ஆப்ஸிலும் அதைக் காட்டு. கடவுச்சொல் புலங்களுக்குப் பொருந்தாது.</string>
     <string name="settings_pred_force_suggestions_title">பரிந்துரைகளைக் கட்டாயப்படுத்து</string>
-    <string name="settings_pred_grant_permission">அனுமதி வழங்கு</string>
     <string name="settings_pred_next_word_summary">சூழலின் அடிப்படையில் அடுத்த சொல்லைப் பரிந்துரை</string>
     <string name="settings_pred_next_word_title">அடுத்த சொல் பரிந்துரைகள்</string>
     <string name="settings_pred_on_key_summary">தட்டச்சு செய்யும்போது மெய்நிகர் விசைப்பலகையில் பரிந்துரைகளைக் காட்டு</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">அனிமேஷன் தொடக்கத்தில் செங்குத்து அளவு</string>
     <string name="settings_anim_show_start_y_title">தோற்றத் தொடக்க Y அளவு</string>
     <string name="settings_animation_params_title">அனிமேஷன் அளவுருக்கள்</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">இந்த அம்சத்தைப் பயன்படுத்த தொடர்புகள் அனுமதியை வழங்கவும்</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">தொடர்புப் பெயர்கள் செல்லுபடியாகும் சொற்களாக அங்கீகரிக்கப்படும்</string>
-    <string name="settings_spellcheck_use_contacts_title">எழுத்துப்பிழை சரிபார்ப்பிற்கு தொடர்புகளைப் பயன்படுத்து</string>
-    <string name="settings_spellcheck_contacts_permission_summary">எழுத்துப்பிழை சரிபார்ப்பின்போது தொடர்புப் பெயர்களைச் சரியான சொற்களாக அடையாளம் காண தொடர்புகள் அனுமதியை வழங்கவும்</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">தொடர்புப் பெயர்களைச் செல்லுபடியாகும் சொற்களாக அங்கீகரிக்கிறது</string>
+    <string name="settings_spellcheck_use_contacts_title">தொடர்புப் பெயர்களை ஏற்கவும்</string>
     <string name="settings_spellcheck_accept_learned_title">கற்ற சொற்களை ஏற்கவும்</string>
-    <string name="settings_spellcheck_accept_learned_summary">உங்கள் தட்டச்சிலிருந்து கற்ற சொற்கள் சரியான எழுத்துப்பிழையற்றவையாகக் கருதப்படும்</string>
+    <string name="settings_spellcheck_accept_learned_summary">உங்கள் தட்டச்சிலிருந்து கற்ற சொற்களை அங்கீகரிக்கிறது</string>
     <string name="pref_alt_double_tap_lock">Alt இரட்டைக் கிளிக் பூட்டை இயக்கு</string>
     <string name="pref_alt_double_tap_lock_summary">Alt ஐ இரட்டைக் கிளிக் செய்தால் அது பூட்டப்படும். மீண்டும் Alt ஐக் கிளிக் செய்தால் அணைக்கப்படும்.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl இரட்டைக் கிளிக் பூட்டை இயக்கு</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">X-அச்சு குலுக்கல் செயல்</string>
     <string name="settings_shake_y_axis_title">Y-அச்சு குலுக்கல் செயல்</string>
     <string name="settings_shake_z_axis_title">Z-அச்சு குலுக்கல் செயல்</string>
-    <string name="settings_spell_checker_screen_title">எழுத்துப்பிழை சரிபார்ப்பு அமைப்புகள்</string>
     <string name="settings_spell_checker_summary">கணினி முழுவதற்குமான எழுத்துப்பிழை சரிபார்ப்புச் செயல்பாட்டை அமை</string>
     <string name="settings_spell_checker_title">எழுத்துப்பிழை சரிபார்ப்பு</string>
     <string name="settings_title">BBKB அமைப்புகள்</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">குறியீடுகளை ஏற்றுகிறது…</string>
     <string name="settings_keyeditor_hex_code">ஹெக்ஸ் குறியீடு (எ.கா. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">தவறான எழுத்துக் குறியீடு</string>
-    <string name="settings_spellcheck_intro">எழுத்துப்பிழை சரிபார்ப்பை ஆதரிக்கும் எல்லா ஆப்ஸிலும் BBKB எழுத்துப்பிழை சரிபார்ப்பான் புத்திசாலித்தனமாக எழுத்துப்பிழைகளைச் சரிபார்க்கிறது. தட்டச்சுப் பிழைகளைக் கண்டறிந்து திருத்தங்களைப் பரிந்துரைக்க இது மேம்பட்ட மொழி மாதிரிகளைப் பயன்படுத்துகிறது.</string>
+    <string name="settings_spellcheck_intro">எழுத்துப்பிழை சரிபார்ப்பை ஆதரிக்கும் எல்லா ஆப்ஸிலும் எழுத்துப்பிழைகளைச் சரிபார்க்க BBKB எழுத்துப்பிழை சரிபார்ப்பான் மேம்பட்ட மொழி மாதிரிகளைப் பயன்படுத்துகிறது</string>
+    <string name="settings_spellcheck_enable_title">BBKB எழுத்துப்பிழை சரிபார்ப்பை இயக்கு</string>
+    <string name="settings_spellcheck_enable_summary">தட்டச்சுப் பிழைகளைக் கண்டறிந்து திருத்தங்களைப் பரிந்துரைக்கிறது</string>
     <string name="settings_credits_version">பதிப்பு %1$s (பில்டு %2$s)</string>
 </resources>

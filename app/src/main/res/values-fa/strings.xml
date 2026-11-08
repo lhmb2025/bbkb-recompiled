@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">کلمات را هنگام تایپ تصحیح می‌کند. برای لغو تصحیح، Backspace را فشار دهید.</string>
     <string name="settings_category_display">نمایش</string>
     <string name="settings_category_sources">منابع</string>
-    <string name="settings_category_contacts_accounts">مخاطبین و حساب‌ها</string>
     <string name="settings_dict_add_reverted_words_title">نمایش دکمه افزودن کلمه</string>
     <string name="settings_dict_add_reverted_words_summary">پس از اینکه Backspace تصحیحی را لغو کرد، دکمه‌ای برای افزودن کلمه نشان داده شود</string>
     <string name="prefs_category_tuning">تنظیم</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">نمایش نشانگر Shift/Alt در نوار وضعیت هنگام استفاده از صفحه کلید فیزیکی</string>
     <string name="settings_pred_block_offensive_summary">پنهان کردن کلمات احتمالاً توهین‌آمیز در دیکته صوتی</string>
     <string name="settings_pred_block_offensive_title">مسدود کردن کلمه‌های توهین‌آمیز</string>
-    <string name="settings_pred_contacts_permission_summary">برای پیشنهاد نام مخاطبین و نشانی‌های ایمیل، مجوز را بدهید</string>
     <string name="settings_pred_contacts_permission_title">مجوز مخاطبین</string>
     <string name="settings_pred_contacts_summary_disabled">مجوز مخاطبین لازم است</string>
     <string name="settings_pred_contacts_summary_enabled">گنجاندن نام مخاطبین در پیشنهادها</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">نمایش پویانمایی تأیید با تلنگر</string>
     <string name="settings_pred_force_suggestions_summary">نمایش نوار پیشنهادها حتی در برنامه‌هایی که از صفحه کلید می‌خواهند آن را پنهان کند. برای قسمت‌های گذرواژه اعمال نمی‌شود.</string>
     <string name="settings_pred_force_suggestions_title">اجبار به نمایش پیشنهادها</string>
-    <string name="settings_pred_grant_permission">دادن مجوز</string>
     <string name="settings_pred_next_word_summary">پیشنهاد کلمه بعدی بر پایه بافت متن</string>
     <string name="settings_pred_next_word_title">پیشنهاد کلمه بعدی</string>
     <string name="settings_pred_on_key_summary">نمایش پیشنهادها روی صفحه کلید مجازی هنگام تایپ</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">مقیاس عمودی در آغاز پویانمایی</string>
     <string name="settings_anim_show_start_y_title">مقیاس Y در آغاز ظاهر شدن</string>
     <string name="settings_animation_params_title">پارامترهای پویانمایی</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">برای استفاده از این ویژگی، مجوز مخاطبین را بدهید</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">نام مخاطبین به‌عنوان کلمه‌های درست شناخته می‌شوند</string>
-    <string name="settings_spellcheck_use_contacts_title">استفاده از مخاطبین برای غلط‌گیری املایی</string>
-    <string name="settings_spellcheck_contacts_permission_summary">مجوز مخاطبین را بدهید تا نام مخاطبین هنگام غلط‌گیری املایی واژه‌های درست شناخته شوند</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">نام مخاطبین را به‌عنوان کلمه‌های درست می‌شناسد</string>
+    <string name="settings_spellcheck_use_contacts_title">پذیرش نام مخاطبین</string>
     <string name="settings_spellcheck_accept_learned_title">پذیرش واژه‌های آموخته‌شده</string>
-    <string name="settings_spellcheck_accept_learned_summary">واژه‌هایی که از تایپ شما آموخته شده‌اند درست‌نویسی‌شده به حساب می‌آیند</string>
+    <string name="settings_spellcheck_accept_learned_summary">واژه‌هایی را که از تایپ شما آموخته شده‌اند می‌شناسد</string>
     <string name="pref_alt_double_tap_lock">فعال کردن قفل Alt با دوبار کلیک</string>
     <string name="pref_alt_double_tap_lock_summary">دوبار کلیک روی Alt آن را قفل می‌کند. کلیک دوباره روی Alt آن را خاموش می‌کند.</string>
     <string name="pref_ctrl_double_tap_lock">فعال کردن قفل Ctrl با دوبار کلیک</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">کنش تکان در محور X</string>
     <string name="settings_shake_y_axis_title">کنش تکان در محور Y</string>
     <string name="settings_shake_z_axis_title">کنش تکان در محور Z</string>
-    <string name="settings_spell_checker_screen_title">تنظیمات غلط‌گیر املایی</string>
     <string name="settings_spell_checker_summary">پیکربندی رفتار غلط‌گیری املایی در کل سیستم</string>
     <string name="settings_spell_checker_title">غلط‌گیری املایی</string>
     <string name="settings_title">‏تنظیمات BBKB</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">در حال بارگیری نمادها…</string>
     <string name="settings_keyeditor_hex_code">کد هگز (مثلاً 1F600)</string>
     <string name="settings_keyeditor_invalid_code">کد نویسه نامعتبر است</string>
-    <string name="settings_spellcheck_intro">غلط‌گیر املایی BBKB غلط‌گیری املایی هوشمند را در همه برنامه‌هایی که از غلط‌گیری املایی پشتیبانی می‌کنند ارائه می‌دهد. این غلط‌گیر از مدل‌های زبانی پیشرفته برای تشخیص غلط‌های تایپی و پیشنهاد اصلاحات استفاده می‌کند.</string>
+    <string name="settings_spellcheck_intro">غلط‌گیر املایی BBKB از مدل‌های زبانی پیشرفته استفاده می‌کند تا غلط‌گیری املایی را در همه برنامه‌هایی که از آن پشتیبانی می‌کنند ارائه دهد</string>
+    <string name="settings_spellcheck_enable_title">فعال‌کردن غلط‌گیر BBKB</string>
+    <string name="settings_spellcheck_enable_summary">غلط‌های تایپی را تشخیص می‌دهد و اصلاحات پیشنهاد می‌کند</string>
     <string name="settings_credits_version">نسخه %1$s (ساخت %2$s)</string>
 </resources>

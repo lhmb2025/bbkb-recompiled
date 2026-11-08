@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Yazarkən sözləri düzəldin. Düzəlişi geri almaq üçün backspace basın.</string>
     <string name="settings_category_display">Görünüş</string>
     <string name="settings_category_sources">Mənbələr</string>
-    <string name="settings_category_contacts_accounts">Kontaktlar və hesablar</string>
     <string name="settings_dict_add_reverted_words_title">Söz əlavə etmə düyməsini göstər</string>
     <string name="settings_dict_add_reverted_words_summary">Backspace düzəlişi geri aldıqdan sonra sözü əlavə etmək üçün düymə göstər</string>
     <string name="prefs_category_tuning">Tənzimləmə</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Fiziki klaviaturadan istifadə edərkən status panelində Shift/Alt modifikator göstəricisini əks etdirin</string>
     <string name="settings_pred_block_offensive_summary">Səsli diktə zamanı potensial təhqiredici sözləri gizlədin</string>
     <string name="settings_pred_block_offensive_title">Təhqiredici sözləri bloklayın</string>
-    <string name="settings_pred_contacts_permission_summary">Kontakt adlarının və e-poçt ünvanlarının təklif edilməsi üçün icazə verin</string>
     <string name="settings_pred_contacts_permission_title">Kontaktlara icazə</string>
     <string name="settings_pred_contacts_summary_disabled">Kontaktlara icazə tələb olunur</string>
     <string name="settings_pred_contacts_summary_enabled">Kontakt adlarını təkliflərə daxil edin</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Çırpma ilə təsdiq animasiyasını göstərin</string>
     <string name="settings_pred_force_suggestions_summary">Təklif zolağını klaviaturadan onu gizlətməyi istəyən tətbiqlərdə də göstərin. Parol sahələrinə şamil edilmir.</string>
     <string name="settings_pred_force_suggestions_title">Təklifləri məcburi göstərin</string>
-    <string name="settings_pred_grant_permission">İcazə verin</string>
     <string name="settings_pred_next_word_summary">Kontekstə əsasən növbəti sözü təklif edin</string>
     <string name="settings_pred_next_word_title">Növbəti söz təklifləri</string>
     <string name="settings_pred_on_key_summary">Yazarkən təklifləri virtual klaviaturada göstərin</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Animasiyanın əvvəlində şaquli miqyas</string>
     <string name="settings_anim_show_start_y_title">Görünmənin başlanğıc Y miqyası</string>
     <string name="settings_animation_params_title">Animasiya parametrləri</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Bu funksiyadan istifadə etmək üçün kontaktlara icazə verin</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Kontakt adları düzgün söz kimi tanınacaq</string>
-    <string name="settings_spellcheck_use_contacts_title">Orfoqrafik yoxlanış üçün kontaktlardan istifadə edin</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Orfoqrafik yoxlanış zamanı kontakt adlarının düzgün söz kimi tanınması üçün kontaktlara icazə verin</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Kontakt adlarını düzgün söz kimi tanıyır</string>
+    <string name="settings_spellcheck_use_contacts_title">Kontakt adlarını qəbul et</string>
     <string name="settings_spellcheck_accept_learned_title">Öyrənilmiş sözləri qəbul et</string>
-    <string name="settings_spellcheck_accept_learned_summary">Yazınızdan öyrənilmiş sözlər düzgün yazılmış sayılır</string>
+    <string name="settings_spellcheck_accept_learned_summary">Yazınızdan öyrənilmiş sözləri tanıyır</string>
     <string name="pref_alt_double_tap_lock">Alt ikiqat klikləmə kilidini aktivləşdirin</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-a ikiqat klikləmə onu kilidləyəcək. Alt-a yenidən klikləmə onu söndürəcək.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl ikiqat klikləmə kilidini aktivləşdirin</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">X oxu üzrə silkələmə əməliyyatı</string>
     <string name="settings_shake_y_axis_title">Y oxu üzrə silkələmə əməliyyatı</string>
     <string name="settings_shake_z_axis_title">Z oxu üzrə silkələmə əməliyyatı</string>
-    <string name="settings_spell_checker_screen_title">Orfoqrafik yoxlanış parametrləri</string>
     <string name="settings_spell_checker_summary">Sistem üzrə orfoqrafik yoxlanış davranışını tənzimləyin</string>
     <string name="settings_spell_checker_title">Orfoqrafik yoxlanış</string>
     <string name="settings_title">BBKB Parametrləri</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Simvollar yüklənir…</string>
     <string name="settings_keyeditor_hex_code">Hex kod (məs., 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Yanlış simvol kodu</string>
-    <string name="settings_spellcheck_intro">BBKB orfoqrafiya yoxlayıcısı orfoqrafik yoxlanışı dəstəkləyən bütün tətbiqlərdə ağıllı orfoqrafik yoxlanış təmin edir. O, yazı səhvlərini aşkarlamaq və düzəlişlər təklif etmək üçün qabaqcıl dil modellərindən istifadə edir.</string>
+    <string name="settings_spellcheck_intro">BBKB orfoqrafiya yoxlayıcısı onu dəstəkləyən bütün tətbiqlərdə orfoqrafik yoxlanış təmin etmək üçün qabaqcıl dil modellərindən istifadə edir</string>
+    <string name="settings_spellcheck_enable_title">BBKB orfoqrafiya yoxlayıcısını aktiv et</string>
+    <string name="settings_spellcheck_enable_summary">Yazı səhvlərini aşkarlayır və düzəlişlər təklif edir</string>
     <string name="settings_credits_version">Versiya %1$s (build %2$s)</string>
 </resources>

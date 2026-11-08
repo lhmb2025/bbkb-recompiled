@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Corrigeert woorden tijdens het typen. Druk op Backspace om een correctie ongedaan te maken.</string>
     <string name="settings_category_display">Weergave</string>
     <string name="settings_category_sources">Bronnen</string>
-    <string name="settings_category_contacts_accounts">Contacten en accounts</string>
     <string name="settings_dict_add_reverted_words_title">Knop Woord toevoegen tonen</string>
     <string name="settings_dict_add_reverted_words_summary">Nadat Backspace een correctie ongedaan maakt, een knop tonen om het woord toe te voegen</string>
     <string name="prefs_category_tuning">Afstemming</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">De Shift/Alt-indicator in de statusbalk weergeven bij gebruik van het fysieke toetsenbord</string>
     <string name="settings_pred_block_offensive_summary">Mogelijk aanstootgevende woorden verbergen tijdens het dicteren</string>
     <string name="settings_pred_block_offensive_title">Aanstootgevende woorden blokkeren</string>
-    <string name="settings_pred_contacts_permission_summary">Verleen toestemming om namen van contactpersonen en e-mailadressen te suggereren</string>
     <string name="settings_pred_contacts_permission_title">Toestemming voor contactpersonen</string>
     <string name="settings_pred_contacts_summary_disabled">Toestemming voor contactpersonen vereist</string>
     <string name="settings_pred_contacts_summary_enabled">Namen van contactpersonen opnemen in suggesties</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Animatie bij bevestigen met flick tonen</string>
     <string name="settings_pred_force_suggestions_summary">De suggestiebalk ook tonen in apps die het toetsenbord vragen deze te verbergen. Geldt niet voor wachtwoordvelden.</string>
     <string name="settings_pred_force_suggestions_title">Suggesties afdwingen</string>
-    <string name="settings_pred_grant_permission">Toestemming verlenen</string>
     <string name="settings_pred_next_word_summary">Het volgende woord suggereren op basis van de context</string>
     <string name="settings_pred_next_word_title">Suggesties voor volgend woord</string>
     <string name="settings_pred_on_key_summary">Suggesties op het virtuele toetsenbord tonen tijdens het typen</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Verticale schaal aan het begin van de animatie</string>
     <string name="settings_anim_show_start_y_title">Y-schaal bij begin verschijnen</string>
     <string name="settings_animation_params_title">Animatieparameters</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Verleen toegang tot contactpersonen om deze functie te gebruiken</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Namen van contactpersonen worden herkend als geldige woorden</string>
-    <string name="settings_spellcheck_use_contacts_title">Contactpersonen gebruiken bij spellingcontrole</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Verleen toegang tot contactpersonen zodat namen van contactpersonen bij de spellingcontrole als geldige woorden worden herkend</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Herkent namen van contactpersonen als geldige woorden</string>
+    <string name="settings_spellcheck_use_contacts_title">Namen van contactpersonen accepteren</string>
     <string name="settings_spellcheck_accept_learned_title">Geleerde woorden accepteren</string>
-    <string name="settings_spellcheck_accept_learned_summary">Woorden die zijn geleerd van wat je typt, gelden als correct gespeld</string>
+    <string name="settings_spellcheck_accept_learned_summary">Herkent woorden die zijn geleerd van wat je typt</string>
     <string name="pref_alt_double_tap_lock">Alt-vergrendeling met dubbelklik inschakelen</string>
     <string name="pref_alt_double_tap_lock_summary">Dubbelklikken op Alt vergrendelt de toets. Nogmaals op Alt klikken schakelt deze uit.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl-vergrendeling met dubbelklik inschakelen</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Actie schudden X-as</string>
     <string name="settings_shake_y_axis_title">Actie schudden Y-as</string>
     <string name="settings_shake_z_axis_title">Actie schudden Z-as</string>
-    <string name="settings_spell_checker_screen_title">Instellingen voor spellingcontrole</string>
     <string name="settings_spell_checker_summary">Het systeembrede gedrag van de spellingcontrole configureren</string>
     <string name="settings_spell_checker_title">Spellingcontrole</string>
     <string name="settings_title">Instellingen voor BBKB</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Symbolen laden…</string>
     <string name="settings_keyeditor_hex_code">Hexcode (bijv. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Ongeldige tekencode</string>
-    <string name="settings_spellcheck_intro">De BBKB-spellingcontrole biedt intelligente spellingcontrole in alle apps die spellingcontrole ondersteunen. Hij gebruikt geavanceerde taalmodellen om typfouten te herkennen en correcties voor te stellen.</string>
+    <string name="settings_spellcheck_intro">De BBKB-spellingcontrole gebruikt geavanceerde taalmodellen om spellingcontrole te bieden in alle apps die dit ondersteunen</string>
+    <string name="settings_spellcheck_enable_title">BBKB-spellingcontrole inschakelen</string>
+    <string name="settings_spellcheck_enable_summary">Herkent typfouten en stelt correcties voor</string>
     <string name="settings_credits_version">Versie %1$s (build %2$s)</string>
 </resources>

@@ -834,45 +834,6 @@ fun PreferenceInfo(
 }
 
 /**
- * A row that states a condition and offers the one button that resolves it — the runtime-permission
- * prompts.
- *
- * These were tinted cards with a full-width button underneath, sitting in the middle of a column of
- * switches. What they describe is a property of the row below them, so they are drawn as a row: the
- * title and summary any preference has, with the action in the trailing slot — where the switch of
- * the row it gates will be.
- */
-@Composable
-fun PreferenceActionItem(
-    title: String,
-    actionLabel: String,
-    onAction: () -> Unit,
-    summary: String? = null,
-    icon: ImageVector? = null,
-    iconSpaceReserved: Boolean = false,
-    modifier: Modifier = Modifier,
-) {
-    PreferenceItem(
-        title = title,
-        summary = summary,
-        icon = icon,
-        iconSpaceReserved = iconSpaceReserved,
-        modifier = modifier,
-        onClick = onAction,
-        trailing = {
-            // Close to the switch column of the rows around it, so the title and summary keep
-            // most of their width: a two-word label wraps onto two lines and the button is as
-            // wide as its longest word, up to a cap that still fits longer translations.
-            TextButton(
-                onClick = onAction,
-                modifier = Modifier.widthIn(max = 96.dp),
-                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 6.dp),
-            ) { Text(actionLabel, textAlign = TextAlign.Center) }
-        },
-    )
-}
-
-/**
  * Short text in a row's leading slot, where an icon would otherwise be — a language code, a macro
  * tag. Drawn unbounded, so a label wider than the 24dp icon column still centres on it and the
  * title stays at the same x as on every icon-bearing row of every other screen.

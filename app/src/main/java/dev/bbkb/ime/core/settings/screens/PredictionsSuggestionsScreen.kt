@@ -1,9 +1,5 @@
 package dev.bbkb.ime.core.settings.screens
 
-import android.Manifest
-import android.content.pm.PackageManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,16 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.core.content.ContextCompat
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
-import dev.bbkb.ime.core.settings.ui.PreferenceActionItem
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.PreferenceGroup
 import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
+import dev.bbkb.ime.core.settings.ui.rememberContactsPermission
 
 /**
  * Predictions & Suggestions Settings (Subpage 2 of Correction & Learning)
@@ -42,15 +37,6 @@ fun PredictionsSuggestionsScreen(
     val context = LocalContext.current
     val prefs = remember { PrefsManager.getPrefs(context) }
     
-    // Check if READ_CONTACTS permission is granted
-    var hasContactsPermission by remember {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.READ_CONTACTS
-            ) == PackageManager.PERMISSION_GRANTED
-        )
-    }
     
     
     var showPredictions by remember {
@@ -82,17 +68,12 @@ fun PredictionsSuggestionsScreen(
         mutableStateOf(prefs.getBoolean("pref_force_suggestions", false))
     }
     
-    // Permission launcher for READ_CONTACTS
-    val contactsPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        hasContactsPermission = isGranted
-        if (isGranted) {
-            // Permission granted - turn on the toggle
+    // Turning "Suggest from contacts" on asks for the contacts permission; a grant turns it on.
+    val contacts = rememberContactsPermission { granted ->
+        if (granted) {
             suggestContacts = true
             prefs.edit().putBoolean("pref_key_use_contacts_dict", true).apply()
         }
-        // If not granted, toggle stays off (no change needed)
     }
     
     
@@ -219,39 +200,27 @@ fun PredictionsSuggestionsScreen(
                         }
                     )
                 }
-            }
 
-
-            PreferenceCategory(title = context.getString(R.string.settings_category_contacts_accounts))
-            PreferenceGroup {
-                // The contacts permission, as the row it gates rather than as a tinted card above it.
-                if (!hasContactsPermission) {
-                    PreferenceActionItem(
-                        title = context.getString(R.string.settings_pred_contacts_permission_title),
-                        icon = ImageVector.vectorResource(R.drawable.ic_settings_contacts_permission),
-                        summary = context.getString(R.string.settings_pred_contacts_permission_summary),
-                        actionLabel = context.getString(R.string.settings_pred_grant_permission),
-                        onAction = {
-                            contactsPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
-                        },
-                    )
-                }
-
+                // Contacts are a suggestion source like the rest, so they end the Sources group.
                 // Suggest from contacts (requires READ_CONTACTS permission)
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_contacts_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_m_contacts),
-                    summary = if (hasContactsPermission) {
+                    summary = if (contacts.granted) {
                         context.getString(R.string.settings_pred_contacts_summary_enabled)
                     } else {
                         context.getString(R.string.settings_pred_contacts_summary_disabled)
                     },
-                    checked = suggestContacts && hasContactsPermission,
-                    enabled = showPredictions && hasContactsPermission,
+                    checked = suggestContacts && contacts.granted,
+                    enabled = showPredictions,
                     modifier = Modifier.settingsSearchAnchor("pref_key_use_contacts_dict"),
                     onCheckedChange = { newValue ->
-                        suggestContacts = newValue
-                        prefs.edit().putBoolean("pref_key_use_contacts_dict", newValue).apply()
+                        if (newValue && !contacts.granted) {
+                            contacts.request()
+                        } else {
+                            suggestContacts = newValue
+                            prefs.edit().putBoolean("pref_key_use_contacts_dict", newValue).apply()
+                        }
                     }
                 )
             }

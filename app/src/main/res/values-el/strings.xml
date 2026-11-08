@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Διορθώνει λέξεις καθώς πληκτρολογείτε. Πατήστε Backspace για αναίρεση μιας διόρθωσης.</string>
     <string name="settings_category_display">Εμφανιση</string>
     <string name="settings_category_sources">Πηγες</string>
-    <string name="settings_category_contacts_accounts">Επαφες και λογαριασμοι</string>
     <string name="settings_dict_add_reverted_words_title">Εμφάνιση κουμπιού προσθήκης λέξης</string>
     <string name="settings_dict_add_reverted_words_summary">Όταν το Backspace αναιρεί μια διόρθωση, εμφάνιση κουμπιού για προσθήκη της λέξης</string>
     <string name="prefs_category_tuning">Ρυθμιση</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Εμφάνιση ένδειξης Shift/Alt στη γραμμή κατάστασης κατά τη χρήση φυσικού πληκτρολογίου</string>
     <string name="settings_pred_block_offensive_summary">Απόκρυψη πιθανώς προσβλητικών λέξεων στη φωνητική υπαγόρευση</string>
     <string name="settings_pred_block_offensive_title">Αποκλεισμός προσβλητικών λέξεων</string>
-    <string name="settings_pred_contacts_permission_summary">Παραχωρήστε άδεια, ώστε να προτείνονται ονόματα επαφών και διευθύνσεις email</string>
     <string name="settings_pred_contacts_permission_title">Άδεια για τις επαφές</string>
     <string name="settings_pred_contacts_summary_disabled">Απαιτείται άδεια για τις επαφές</string>
     <string name="settings_pred_contacts_summary_enabled">Συμπερίληψη ονομάτων επαφών στις προτάσεις</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Εμφάνιση κίνησης επιβεβαίωσης με τίναγμα</string>
     <string name="settings_pred_force_suggestions_summary">Εμφάνιση της γραμμής προτάσεων ακόμη και σε εφαρμογές που ζητούν την απόκρυψή της. Δεν ισχύει για πεδία κωδικών πρόσβασης.</string>
     <string name="settings_pred_force_suggestions_title">Επιβολή προτάσεων</string>
-    <string name="settings_pred_grant_permission">Παραχώρηση άδειας</string>
     <string name="settings_pred_next_word_summary">Πρόταση της επόμενης λέξης με βάση τα συμφραζόμενα</string>
     <string name="settings_pred_next_word_title">Προτάσεις επόμενης λέξης</string>
     <string name="settings_pred_on_key_summary">Εμφάνιση προτάσεων στο εικονικό πληκτρολόγιο καθώς πληκτρολογείτε</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Κατακόρυφη κλίμακα στην αρχή της κίνησης</string>
     <string name="settings_anim_show_start_y_title">Κλίμακα Y στην αρχή της εμφάνισης</string>
     <string name="settings_animation_params_title">Παράμετροι κίνησης</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Παραχωρήστε άδεια για τις επαφές, ώστε να χρησιμοποιήσετε αυτήν τη λειτουργία</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Τα ονόματα επαφών θα αναγνωρίζονται ως έγκυρες λέξεις</string>
-    <string name="settings_spellcheck_use_contacts_title">Χρήση επαφών στον ορθογραφικό έλεγχο</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Παραχωρήστε άδεια για τις επαφές, ώστε τα ονόματα των επαφών να αναγνωρίζονται ως έγκυρες λέξεις στον ορθογραφικό έλεγχο</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Αναγνωρίζει τα ονόματα επαφών ως έγκυρες λέξεις</string>
+    <string name="settings_spellcheck_use_contacts_title">Αποδοχή ονομάτων επαφών</string>
     <string name="settings_spellcheck_accept_learned_title">Αποδοχή λέξεων που έχουν μαθευτεί</string>
-    <string name="settings_spellcheck_accept_learned_summary">Οι λέξεις που μαθεύτηκαν από την πληκτρολόγησή σας θεωρούνται σωστά γραμμένες</string>
+    <string name="settings_spellcheck_accept_learned_summary">Αναγνωρίζει τις λέξεις που μαθεύτηκαν από την πληκτρολόγησή σας</string>
     <string name="pref_alt_double_tap_lock">Ενεργοποίηση κλειδώματος Alt με διπλό κλικ</string>
     <string name="pref_alt_double_tap_lock_summary">Με διπλό κλικ στο Alt κλειδώνει ενεργό. Με νέο κλικ στο Alt απενεργοποιείται.</string>
     <string name="pref_ctrl_double_tap_lock">Ενεργοποίηση κλειδώματος Ctrl με διπλό κλικ</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Ενέργεια κουνήματος στον άξονα X</string>
     <string name="settings_shake_y_axis_title">Ενέργεια κουνήματος στον άξονα Y</string>
     <string name="settings_shake_z_axis_title">Ενέργεια κουνήματος στον άξονα Z</string>
-    <string name="settings_spell_checker_screen_title">Ρυθμίσεις ορθογραφικού ελέγχου</string>
     <string name="settings_spell_checker_summary">Διαμόρφωση της συμπεριφοράς του ορθογραφικού ελέγχου σε όλο το σύστημα</string>
     <string name="settings_spell_checker_title">Ορθογραφικός έλεγχος</string>
     <string name="settings_title">Ρυθμίσεις BBKB</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Φόρτωση συμβόλων…</string>
     <string name="settings_keyeditor_hex_code">Δεκαεξαδικός κωδικός (π.χ. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Μη έγκυρος κωδικός χαρακτήρα</string>
-    <string name="settings_spellcheck_intro">Ο ορθογραφικός έλεγχος του BBKB παρέχει έξυπνο ορθογραφικό έλεγχο σε όλες τις εφαρμογές που τον υποστηρίζουν. Χρησιμοποιεί προηγμένα γλωσσικά μοντέλα για τον εντοπισμό τυπογραφικών λαθών και την πρόταση διορθώσεων.</string>
+    <string name="settings_spellcheck_intro">Ο ορθογραφικός έλεγχος του BBKB χρησιμοποιεί προηγμένα γλωσσικά μοντέλα για να παρέχει ορθογραφικό έλεγχο σε όλες τις εφαρμογές που τον υποστηρίζουν</string>
+    <string name="settings_spellcheck_enable_title">Ενεργοποίηση ορθογραφικού ελέγχου BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Εντοπίζει τυπογραφικά λάθη και προτείνει διορθώσεις</string>
     <string name="settings_credits_version">Έκδοση %1$s (build %2$s)</string>
 </resources>

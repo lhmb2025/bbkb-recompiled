@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Yazarken sözcükleri düzeltir. Bir düzeltmeyi geri almak için Backspace tuşuna basın.</string>
     <string name="settings_category_display">Görüntüleme</string>
     <string name="settings_category_sources">Kaynaklar</string>
-    <string name="settings_category_contacts_accounts">Kişiler ve hesaplar</string>
     <string name="settings_dict_add_reverted_words_title">Sözcük ekle düğmesini göster</string>
     <string name="settings_dict_add_reverted_words_summary">Backspace bir düzeltmeyi geri aldıktan sonra sözcüğü eklemek için bir düğme göster</string>
     <string name="prefs_category_tuning">Ayar</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Fiziksel klavye kullanırken durum çubuğunda Shift/Alt değiştirici göstergesini görüntüle</string>
     <string name="settings_pred_block_offensive_summary">Sesli dikte sırasında rahatsız edici olabilecek kelimeleri gizle</string>
     <string name="settings_pred_block_offensive_title">Rahatsız edici kelimeleri engelle</string>
-    <string name="settings_pred_contacts_permission_summary">Kişi adları ve e-posta adresleri önerilebilmesi için izin verin</string>
     <string name="settings_pred_contacts_permission_title">Kişiler izni</string>
     <string name="settings_pred_contacts_summary_disabled">Kişiler izni gerekli</string>
     <string name="settings_pred_contacts_summary_enabled">Kişi adlarını önerilere dahil et</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Fiske onay animasyonunu göster</string>
     <string name="settings_pred_force_suggestions_summary">Öneri şeridini, klavyeden gizlemesini isteyen uygulamalarda bile göster. Parola alanlarında geçerli değildir.</string>
     <string name="settings_pred_force_suggestions_title">Önerileri zorla göster</string>
-    <string name="settings_pred_grant_permission">İzin Ver</string>
     <string name="settings_pred_next_word_summary">Bağlama göre sonraki kelimeyi öner</string>
     <string name="settings_pred_next_word_title">Sonraki kelime önerileri</string>
     <string name="settings_pred_on_key_summary">Siz yazdıkça önerileri sanal klavyede göster</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Animasyon başındaki dikey ölçek</string>
     <string name="settings_anim_show_start_y_title">Görünme başlangıç Y ölçeği</string>
     <string name="settings_animation_params_title">Animasyon parametreleri</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Bu özelliği kullanmak için kişiler iznini verin</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Kişi adları geçerli kelime olarak tanınır</string>
-    <string name="settings_spellcheck_use_contacts_title">Yazım denetiminde kişileri kullan</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Yazım denetiminde kişi adlarının geçerli kelime olarak tanınması için kişiler iznini verin</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Kişi adlarını geçerli kelime olarak tanır</string>
+    <string name="settings_spellcheck_use_contacts_title">Kişi adlarını kabul et</string>
     <string name="settings_spellcheck_accept_learned_title">Öğrenilen sözcükleri kabul et</string>
-    <string name="settings_spellcheck_accept_learned_summary">Yazdıklarınızdan öğrenilen sözcükler doğru yazılmış sayılır</string>
+    <string name="settings_spellcheck_accept_learned_summary">Yazdıklarınızdan öğrenilen sözcükleri tanır</string>
     <string name="pref_alt_double_tap_lock">Alt çift tıklama kilidini etkinleştir</string>
     <string name="pref_alt_double_tap_lock_summary">Alt tuşuna çift tıklamak onu açık konumda kilitler. Alt\'a tekrar tıklamak kilidi kaldırır.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl çift tıklama kilidini etkinleştir</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">X ekseni sallama eylemi</string>
     <string name="settings_shake_y_axis_title">Y ekseni sallama eylemi</string>
     <string name="settings_shake_z_axis_title">Z ekseni sallama eylemi</string>
-    <string name="settings_spell_checker_screen_title">Yazım denetleyicisi ayarları</string>
     <string name="settings_spell_checker_summary">Sistem genelindeki yazım denetimi davranışını yapılandır</string>
     <string name="settings_spell_checker_title">Yazım denetimi</string>
     <string name="settings_title">BBKB Ayarları</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Simgeler yükleniyor…</string>
     <string name="settings_keyeditor_hex_code">Onaltılık kod (ör. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Geçersiz karakter kodu</string>
-    <string name="settings_spellcheck_intro">BBKB yazım denetleyicisi, yazım denetimini destekleyen tüm uygulamalarda akıllı yazım denetimi sağlar. Yazım hatalarını tespit etmek ve düzeltme önermek için gelişmiş dil modelleri kullanır.</string>
+    <string name="settings_spellcheck_intro">BBKB yazım denetleyicisi, yazım denetimini destekleyen tüm uygulamalarda yazım denetimi sağlamak için gelişmiş dil modelleri kullanır</string>
+    <string name="settings_spellcheck_enable_title">BBKB yazım denetleyicisini etkinleştir</string>
+    <string name="settings_spellcheck_enable_summary">Yazım hatalarını tespit eder ve düzeltme önerir</string>
     <string name="settings_credits_version">Sürüm %1$s (derleme %2$s)</string>
 </resources>

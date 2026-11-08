@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Rättar ord medan du skriver. Tryck på backsteg för att ångra en rättelse.</string>
     <string name="settings_category_display">Visning</string>
     <string name="settings_category_sources">Källor</string>
-    <string name="settings_category_contacts_accounts">Kontakter och konton</string>
     <string name="settings_dict_add_reverted_words_title">Visa knapp för att lägga till ord</string>
     <string name="settings_dict_add_reverted_words_summary">När backsteg ångrar en rättelse, visa en knapp för att lägga till ordet</string>
     <string name="prefs_category_tuning">Justering</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Visa indikator för Shift/Alt i statusfältet när du använder ett fysiskt tangentbord</string>
     <string name="settings_pred_block_offensive_summary">Dölj ord som kan uppfattas som stötande vid diktering</string>
     <string name="settings_pred_block_offensive_title">Blockera stötande ord</string>
-    <string name="settings_pred_contacts_permission_summary">Ge behörighet så att kontaktnamn och e-postadresser kan föreslås</string>
     <string name="settings_pred_contacts_permission_title">Behörighet till kontakter</string>
     <string name="settings_pred_contacts_summary_disabled">Behörighet till kontakter krävs</string>
     <string name="settings_pred_contacts_summary_enabled">Ta med kontaktnamn i förslagen</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Visa animering vid snärtbekräftelse</string>
     <string name="settings_pred_force_suggestions_summary">Visa förslagsraden även i appar som ber tangentbordet att dölja den. Gäller inte lösenordsfält.</string>
     <string name="settings_pred_force_suggestions_title">Tvinga fram förslag</string>
-    <string name="settings_pred_grant_permission">Ge behörighet</string>
     <string name="settings_pred_next_word_summary">Föreslå nästa ord utifrån sammanhanget</string>
     <string name="settings_pred_next_word_title">Förslag på nästa ord</string>
     <string name="settings_pred_on_key_summary">Visa förslag på det virtuella tangentbordet medan du skriver</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Lodrät skala vid animeringens början</string>
     <string name="settings_anim_show_start_y_title">Y-skala vid intoningens början</string>
     <string name="settings_animation_params_title">Animeringsparametrar</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Ge behörighet till kontakter för att kunna använda funktionen</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktnamn godkänns som korrekta ord</string>
-    <string name="settings_spellcheck_use_contacts_title">Använd kontakter vid stavningskontroll</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Ge behörighet till kontakter så att kontaktnamn godkänns som giltiga ord vid stavningskontroll</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Känner igen kontaktnamn som korrekta ord</string>
+    <string name="settings_spellcheck_use_contacts_title">Godkänn kontaktnamn</string>
     <string name="settings_spellcheck_accept_learned_title">Godkänn inlärda ord</string>
-    <string name="settings_spellcheck_accept_learned_summary">Ord som lärts in från det du skriver räknas som rättstavade</string>
+    <string name="settings_spellcheck_accept_learned_summary">Känner igen ord som lärts in från det du skriver</string>
     <string name="pref_alt_double_tap_lock">Aktivera Alt-lås vid dubbeltryck</string>
     <string name="pref_alt_double_tap_lock_summary">Om du trycker två gånger på Alt låses den på. Tryck på Alt igen för att stänga av.</string>
     <string name="pref_ctrl_double_tap_lock">Aktivera Ctrl-lås vid dubbeltryck</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Åtgärd vid skakning längs X-axeln</string>
     <string name="settings_shake_y_axis_title">Åtgärd vid skakning längs Y-axeln</string>
     <string name="settings_shake_z_axis_title">Åtgärd vid skakning längs Z-axeln</string>
-    <string name="settings_spell_checker_screen_title">Inställningar för stavningskontroll</string>
     <string name="settings_spell_checker_summary">Ställ in stavningskontrollen för hela systemet</string>
     <string name="settings_spell_checker_title">Stavningskontroll</string>
     <string name="settings_title">Inställningar för BBKB</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Läser in symboler…</string>
     <string name="settings_keyeditor_hex_code">Hexkod (t.ex. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Ogiltig teckenkod</string>
-    <string name="settings_spellcheck_intro">BBKB:s stavningskontroll ger intelligent stavningskontroll i alla appar som har stöd för stavningskontroll. Den använder avancerade språkmodeller för att upptäcka stavfel och föreslå korrigeringar.</string>
+    <string name="settings_spellcheck_intro">BBKB:s stavningskontroll använder avancerade språkmodeller för att ge stavningskontroll i alla appar som har stöd för det</string>
+    <string name="settings_spellcheck_enable_title">Aktivera BBKB-stavningskontroll</string>
+    <string name="settings_spellcheck_enable_summary">Upptäcker stavfel och föreslår korrigeringar</string>
     <string name="settings_credits_version">Version %1$s (build %2$s)</string>
 </resources>

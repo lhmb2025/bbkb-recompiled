@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Hitzak idazten dituzun bitartean zuzentzen ditu. Sakatu atzera-tekla zuzenketa desegiteko.</string>
     <string name="settings_category_display">Bistaratzea</string>
     <string name="settings_category_sources">Iturriak</string>
-    <string name="settings_category_contacts_accounts">Kontaktuak eta kontuak</string>
     <string name="settings_dict_add_reverted_words_title">Erakutsi hitza gehitzeko botoia</string>
     <string name="settings_dict_add_reverted_words_summary">Atzera-teklak zuzenketa desegin ondoren, erakutsi hitza gehitzeko botoia</string>
     <string name="prefs_category_tuning">Doiketa</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Erakutsi Shift/Alt adierazlea egoera-barran teklatu fisikoa erabiltzean</string>
     <string name="settings_pred_block_offensive_summary">Ezkutatu iraingarriak izan daitezkeen hitzak ahots bidezko diktaketan</string>
     <string name="settings_pred_block_offensive_title">Blokeatu hitz iraingarriak</string>
-    <string name="settings_pred_contacts_permission_summary">Eman baimena kontaktuen izenak eta helbide elektronikoak iradokitzeko</string>
     <string name="settings_pred_contacts_permission_title">Kontaktuetarako baimena</string>
     <string name="settings_pred_contacts_summary_disabled">Kontaktuetarako baimena behar da</string>
     <string name="settings_pred_contacts_summary_enabled">Sartu kontaktuen izenak iradokizunetan</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Erakutsi kolpetxoaren berreste-animazioa</string>
     <string name="settings_pred_force_suggestions_summary">Erakutsi iradokizun-barra teklatuari ezkutatzeko eskatzen dioten aplikazioetan ere. Ez da pasahitz-eremuetan aplikatzen.</string>
     <string name="settings_pred_force_suggestions_title">Behartu iradokizunak</string>
-    <string name="settings_pred_grant_permission">Eman baimena</string>
     <string name="settings_pred_next_word_summary">Iradoki hurrengo hitza testuinguruaren arabera</string>
     <string name="settings_pred_next_word_title">Hurrengo hitzaren iradokizunak</string>
     <string name="settings_pred_on_key_summary">Erakutsi iradokizunak teklatu birtualean idatzi ahala</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Eskala bertikala animazioaren hasieran</string>
     <string name="settings_anim_show_start_y_title">Agertzeko hasierako Y eskala</string>
     <string name="settings_animation_params_title">Animazio-parametroak</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Eman kontaktuetarako baimena eginbide hau erabiltzeko</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktuen izenak hitz baliodun gisa onartuko dira</string>
-    <string name="settings_spellcheck_use_contacts_title">Erabili kontaktuak zuzenketa ortografikorako</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Eman kontaktuetarako baimena, zuzenketa ortografikoan kontaktuen izenak hitz baliozko gisa ezagutzeko</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktuen izenak hitz baliodun gisa ezagutzen ditu</string>
+    <string name="settings_spellcheck_use_contacts_title">Onartu kontaktuen izenak</string>
     <string name="settings_spellcheck_accept_learned_title">Onartu ikasitako hitzak</string>
-    <string name="settings_spellcheck_accept_learned_summary">Idazten duzunetik ikasitako hitzak ondo idatzitzat hartzen dira</string>
+    <string name="settings_spellcheck_accept_learned_summary">Idazten duzunetik ikasitako hitzak ezagutzen ditu</string>
     <string name="pref_alt_double_tap_lock">Gaitu Alt teklaren klik bikoitzeko blokeoa</string>
     <string name="pref_alt_double_tap_lock_summary">Alt tekla birritan sakatuz gero, blokeatuta geratuko da. Alt berriro sakatzean, desaktibatuko da.</string>
     <string name="pref_ctrl_double_tap_lock">Gaitu Ctrl teklaren klik bikoitzeko blokeoa</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">X ardatzeko astinduaren ekintza</string>
     <string name="settings_shake_y_axis_title">Y ardatzeko astinduaren ekintza</string>
     <string name="settings_shake_z_axis_title">Z ardatzeko astinduaren ekintza</string>
-    <string name="settings_spell_checker_screen_title">Zuzentzaile ortografikoaren ezarpenak</string>
     <string name="settings_spell_checker_summary">Konfiguratu sistema osoko zuzenketa ortografikoaren portaera</string>
     <string name="settings_spell_checker_title">Zuzenketa ortografikoa</string>
     <string name="settings_title">BBKB ezarpenak</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Ikurrak kargatzen…</string>
     <string name="settings_keyeditor_hex_code">Kode hamaseitarra (adibidez, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Karaktere-kode baliogabea</string>
-    <string name="settings_spellcheck_intro">BBKB zuzentzaile ortografikoak zuzenketa ortografiko adimenduna eskaintzen du zuzenketa ortografikoa onartzen duten aplikazio guztietan. Hizkuntza-eredu aurreratuak erabiltzen ditu akatsak hautemateko eta zuzenketak iradokitzeko.</string>
+    <string name="settings_spellcheck_intro">BBKB zuzentzaile ortografikoak hizkuntza-eredu aurreratuak erabiltzen ditu zuzenketa ortografikoa eskaintzeko hura onartzen duten aplikazio guztietan</string>
+    <string name="settings_spellcheck_enable_title">Gaitu BBKB zuzentzaile ortografikoa</string>
+    <string name="settings_spellcheck_enable_summary">Akatsak hautematen ditu eta zuzenketak iradokitzen ditu</string>
     <string name="settings_credits_version">%1$s bertsioa (%2$s konpilazioa)</string>
 </resources>

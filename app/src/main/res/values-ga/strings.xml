@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Ceartaíonn sé focail agus tú ag clóscríobh. Brúigh cúlspás chun ceartú a chealú.</string>
     <string name="settings_category_display">Taispeáint</string>
     <string name="settings_category_sources">Foinsí</string>
-    <string name="settings_category_contacts_accounts">Teagmhálaithe agus cuntais</string>
     <string name="settings_dict_add_reverted_words_title">Taispeáin cnaipe cuir focal leis</string>
     <string name="settings_dict_add_reverted_words_summary">Tar éis do chúlspás ceartú a chealú, taispeáin cnaipe chun an focal a chur leis</string>
     <string name="prefs_category_tuning">Tiúnáil</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Taispeáin táscaire Shift/Alt sa bharra stádais agus méarchlár fisiciúil in úsáid</string>
     <string name="settings_pred_block_offensive_summary">Folaigh focail a d\'fhéadfadh a bheith maslach agus tú ag deachtú le do ghuth</string>
     <string name="settings_pred_block_offensive_title">Coisc focail mhaslacha</string>
-    <string name="settings_pred_contacts_permission_summary">Tabhair cead chun ainmneacha teagmhálacha agus seoltaí ríomhphoist a mholadh</string>
     <string name="settings_pred_contacts_permission_title">Cead teagmhálacha</string>
     <string name="settings_pred_contacts_summary_disabled">Cead teagmhálacha de dhíth</string>
     <string name="settings_pred_contacts_summary_enabled">Cuir ainmneacha teagmhálacha san áireamh sna moltaí</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Taispeáin beochan an ghlactha le smeach</string>
     <string name="settings_pred_force_suggestions_summary">Taispeáin an stiall moltaí fiú in aipeanna a iarrann ar an méarchlár í a fholú. Ní bhaineann sé le réimsí pasfhocail.</string>
     <string name="settings_pred_force_suggestions_title">Éiligh moltaí</string>
-    <string name="settings_pred_grant_permission">Tabhair Cead</string>
     <string name="settings_pred_next_word_summary">Mol an chéad fhocal eile de réir an chomhthéacs</string>
     <string name="settings_pred_next_word_title">Moltaí don chéad fhocal eile</string>
     <string name="settings_pred_on_key_summary">Taispeáin moltaí ar an méarchlár fíorúil agus tú ag clóscríobh</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">An scála ingearach ag tús na beochana</string>
     <string name="settings_anim_show_start_y_title">Scála Y tosaigh an nochta</string>
     <string name="settings_animation_params_title">Paraiméadair beochana</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Tabhair cead teagmhálacha chun an ghné seo a úsáid</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Aithneofar ainmneacha teagmhálacha mar fhocail bhailí</string>
-    <string name="settings_spellcheck_use_contacts_title">Úsáid teagmhálacha don litreoir</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Tabhair cead teagmhálacha ionas go n-aithneofar ainmneacha teagmhálacha mar fhocail bhailí agus an litriú á sheiceáil</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Aithníonn sé ainmneacha teagmhálacha mar fhocail bhailí</string>
+    <string name="settings_spellcheck_use_contacts_title">Glac le hainmneacha teagmhálacha</string>
     <string name="settings_spellcheck_accept_learned_title">Glac le focail foghlamtha</string>
-    <string name="settings_spellcheck_accept_learned_summary">Meastar focail a foghlaimíodh ó do chlóscríobh a bheith litrithe i gceart</string>
+    <string name="settings_spellcheck_accept_learned_summary">Aithníonn sé focail a foghlaimíodh ó do chlóscríobh</string>
     <string name="pref_alt_double_tap_lock">Cumasaigh glasáil Alt le cliceáil dhúbailte</string>
     <string name="pref_alt_double_tap_lock_summary">Glasálann cliceáil dhúbailte ar Alt é. Múchann cliceáil ar Alt arís é.</string>
     <string name="pref_ctrl_double_tap_lock">Cumasaigh glasáil Ctrl le cliceáil dhúbailte</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Gníomh croite ar an ais X</string>
     <string name="settings_shake_y_axis_title">Gníomh croite ar an ais Y</string>
     <string name="settings_shake_z_axis_title">Gníomh croite ar an ais Z</string>
-    <string name="settings_spell_checker_screen_title">Socruithe an litreora</string>
     <string name="settings_spell_checker_summary">Cumraigh an seiceáil litrithe ar fud an chórais</string>
     <string name="settings_spell_checker_title">Seiceáil litrithe</string>
     <string name="settings_title">Socruithe BBKB</string>
@@ -1144,6 +1138,8 @@
     <string name="settings_keyeditor_loading">Siombailí á luchtú…</string>
     <string name="settings_keyeditor_hex_code">Cód heics (m.sh. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Cód carachtair neamhbhailí</string>
-    <string name="settings_spellcheck_intro">Soláthraíonn litreoir BBKB seiceáil litrithe chliste i ngach aip a thacaíonn le seiceáil litrithe. Úsáideann sé ardmhúnlaí teanga chun earráidí clóscríofa a bhrath agus ceartúcháin a mholadh.</string>
+    <string name="settings_spellcheck_intro">Úsáideann litreoir BBKB ardmhúnlaí teanga chun seiceáil litrithe a sholáthar i ngach aip a thacaíonn léi</string>
+    <string name="settings_spellcheck_enable_title">Cumasaigh litreoir BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Braitheann sé earráidí clóscríofa agus molann sé ceartúcháin</string>
     <string name="settings_credits_version">Leagan %1$s (Tógáil %2$s)</string>
 </resources>

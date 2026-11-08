@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Korrigeer woorde terwyl jy tik. Druk backspace om \'n korreksie ongedaan te maak.</string>
     <string name="settings_category_display">Vertoon</string>
     <string name="settings_category_sources">Bronne</string>
-    <string name="settings_category_contacts_accounts">Kontakte en rekeninge</string>
     <string name="settings_dict_add_reverted_words_title">Wys woord-byvoeg-knoppie</string>
     <string name="settings_dict_add_reverted_words_summary">Nadat backspace \'n korreksie ongedaan maak, wys \'n knoppie om die woord by te voeg</string>
     <string name="prefs_category_tuning">Afstelling</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Wys die Shift/Alt-wyseraanduier in die statusbalk wanneer die fisiese toetsbord gebruik word</string>
     <string name="settings_pred_block_offensive_summary">Maskeer moontlik aanstootlike woorde in stemdiktering</string>
     <string name="settings_pred_block_offensive_title">Blokkeer aanstootlike woorde</string>
-    <string name="settings_pred_contacts_permission_summary">Verleen toestemming sodat kontakname en e-posadresse voorgestel kan word</string>
     <string name="settings_pred_contacts_permission_title">Kontaktoestemming</string>
     <string name="settings_pred_contacts_summary_disabled">Kontaktoestemming vereis</string>
     <string name="settings_pred_contacts_summary_enabled">Sluit kontakname by voorstelle in</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Wys animasie wanneer met ’n swiep aanvaar word</string>
     <string name="settings_pred_force_suggestions_summary">Wys die voorstelstrook selfs in programme wat vra dat dit versteek word. Geld nie vir wagwoordvelde nie.</string>
     <string name="settings_pred_force_suggestions_title">Dwing voorstelle af</string>
-    <string name="settings_pred_grant_permission">Verleen toestemming</string>
     <string name="settings_pred_next_word_summary">Stel die volgende woord voor op grond van die konteks</string>
     <string name="settings_pred_next_word_title">Voorstelle vir die volgende woord</string>
     <string name="settings_pred_on_key_summary">Wys voorstelle op die virtuele toetsbord terwyl jy tik</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Vertikale skaal aan die begin van die animasie</string>
     <string name="settings_anim_show_start_y_title">Y-skaal aan die begin van die verskyning</string>
     <string name="settings_animation_params_title">Animasieparameters</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Verleen kontaktoestemming om hierdie kenmerk te gebruik</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Kontakname sal as geldige woorde herken word</string>
-    <string name="settings_spellcheck_use_contacts_title">Gebruik kontakte vir speltoetsing</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Verleen kontaktoestemming sodat kontakname tydens speltoetsing as geldige woorde herken word</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Herken kontakname as geldige woorde</string>
+    <string name="settings_spellcheck_use_contacts_title">Aanvaar kontakname</string>
     <string name="settings_spellcheck_accept_learned_title">Aanvaar geleerde woorde</string>
-    <string name="settings_spellcheck_accept_learned_summary">Woorde wat uit jou tikwerk geleer is, tel as korrek gespel</string>
+    <string name="settings_spellcheck_accept_learned_summary">Herken woorde wat uit jou tikwerk geleer is</string>
     <string name="pref_alt_double_tap_lock">Ontsper Alt-dubbelklikslot</string>
     <string name="pref_alt_double_tap_lock_summary">’n Dubbelklik op Alt sluit dit aan. Klik weer op Alt om dit af te skakel.</string>
     <string name="pref_ctrl_double_tap_lock">Ontsper Ctrl-dubbelklikslot</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Skudaksie vir die X-as</string>
     <string name="settings_shake_y_axis_title">Skudaksie vir die Y-as</string>
     <string name="settings_shake_z_axis_title">Skudaksie vir die Z-as</string>
-    <string name="settings_spell_checker_screen_title">Speltoetserinstellings</string>
     <string name="settings_spell_checker_summary">Stel stelselwye speltoetsgedrag op</string>
     <string name="settings_spell_checker_title">Speltoetsing</string>
     <string name="settings_title">BBKB-instellings</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Laai tans simbole…</string>
     <string name="settings_keyeditor_hex_code">Hekskode (bv. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Ongeldige karakterkode</string>
-    <string name="settings_spellcheck_intro">Die BBKB-speltoetser bied intelligente speltoetsing in alle programme wat speltoetsing ondersteun. Dit gebruik gevorderde taalmodelle om tikfoute te bespeur en verbeterings voor te stel.</string>
+    <string name="settings_spellcheck_intro">Die BBKB-speltoetser gebruik gevorderde taalmodelle om speltoetsing te bied in alle programme wat dit ondersteun</string>
+    <string name="settings_spellcheck_enable_title">Aktiveer BBKB-speltoetser</string>
+    <string name="settings_spellcheck_enable_summary">Bespeur tikfoute en stel verbeterings voor</string>
     <string name="settings_credits_version">Weergawe %1$s (bou %2$s)</string>
 </resources>

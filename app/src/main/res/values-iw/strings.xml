@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">מתקן מילים בזמן ההקלדה. לחיצה על Backspace מבטלת תיקון.</string>
     <string name="settings_category_display">תצוגה</string>
     <string name="settings_category_sources">מקורות</string>
-    <string name="settings_category_contacts_accounts">אנשי קשר וחשבונות</string>
     <string name="settings_dict_add_reverted_words_title">הצגת כפתור הוספת מילה</string>
     <string name="settings_dict_add_reverted_words_summary">אחרי ש‑Backspace מבטל תיקון, להציג כפתור להוספת המילה</string>
     <string name="prefs_category_tuning">כוונון</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">הצג מחוון Shift/Alt בשורת המצב בעת שימוש במקלדת פיזית</string>
     <string name="settings_pred_block_offensive_summary">הסתר מילים שעלולות להיות פוגעניות בהכתבה קולית</string>
     <string name="settings_pred_block_offensive_title">חסום מילים פוגעניות</string>
-    <string name="settings_pred_contacts_permission_summary">הענק הרשאה כדי להציע שמות אנשי קשר וכתובות אימייל</string>
     <string name="settings_pred_contacts_permission_title">הרשאת אנשי קשר</string>
     <string name="settings_pred_contacts_summary_disabled">נדרשת הרשאת אנשי קשר</string>
     <string name="settings_pred_contacts_summary_enabled">כלול שמות אנשי קשר בהצעות</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">הצג אנימציית אישור בנקישה</string>
     <string name="settings_pred_force_suggestions_summary">הצג את רצועת ההצעות גם באפליקציות שמבקשות מהמקלדת להסתיר אותה. לא חל על שדות סיסמה.</string>
     <string name="settings_pred_force_suggestions_title">אלץ הצגת הצעות</string>
-    <string name="settings_pred_grant_permission">הענק הרשאה</string>
     <string name="settings_pred_next_word_summary">הצע את המילה הבאה על סמך ההקשר</string>
     <string name="settings_pred_next_word_title">הצעות למילה הבאה</string>
     <string name="settings_pred_on_key_summary">הצג הצעות על המקלדת הווירטואלית בזמן ההקלדה</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">קנה מידה אנכי בתחילת האנימציה</string>
     <string name="settings_anim_show_start_y_title">קנה מידה Y בתחילת ההופעה</string>
     <string name="settings_animation_params_title">פרמטרים של אנימציה</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">הענק הרשאת אנשי קשר כדי להשתמש בתכונה זו</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">שמות אנשי קשר יזוהו כמילים תקינות</string>
-    <string name="settings_spellcheck_use_contacts_title">השתמש באנשי קשר לבדיקת איות</string>
-    <string name="settings_spellcheck_contacts_permission_summary">הענק הרשאת אנשי קשר כדי ששמות אנשי קשר יזוהו כמילים תקינות בבדיקת האיות</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">מזהה שמות של אנשי קשר כמילים תקינות</string>
+    <string name="settings_spellcheck_use_contacts_title">קבלת שמות של אנשי קשר</string>
     <string name="settings_spellcheck_accept_learned_title">קבלת מילים שנלמדו</string>
-    <string name="settings_spellcheck_accept_learned_summary">מילים שנלמדו מההקלדה שלך נחשבות לכתובות נכון</string>
+    <string name="settings_spellcheck_accept_learned_summary">מזהה מילים שנלמדו מההקלדה שלך</string>
     <string name="pref_alt_double_tap_lock">הפעל נעילת Alt בלחיצה כפולה</string>
     <string name="pref_alt_double_tap_lock_summary">לחיצה כפולה על Alt תנעל אותו במצב פעיל. לחיצה נוספת על Alt תכבה אותו.</string>
     <string name="pref_ctrl_double_tap_lock">הפעל נעילת Ctrl בלחיצה כפולה</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">פעולת ניעור בציר X</string>
     <string name="settings_shake_y_axis_title">פעולת ניעור בציר Y</string>
     <string name="settings_shake_z_axis_title">פעולת ניעור בציר Z</string>
-    <string name="settings_spell_checker_screen_title">הגדרות בודק האיות</string>
     <string name="settings_spell_checker_summary">הגדר את התנהגות בדיקת האיות בכל המערכת</string>
     <string name="settings_spell_checker_title">בדיקת איות</string>
     <string name="settings_title">הגדרות BBKB</string>
@@ -1129,6 +1123,8 @@
     <string name="settings_keyeditor_loading">טוען סמלים…</string>
     <string name="settings_keyeditor_hex_code">קוד הקסדצימלי (לדוגמה 1F600)</string>
     <string name="settings_keyeditor_invalid_code">קוד תו לא חוקי</string>
-    <string name="settings_spellcheck_intro">בודק האיות של BBKB מספק בדיקת איות חכמה בכל האפליקציות שתומכות בבדיקת איות. הוא משתמש במודלי שפה מתקדמים כדי לזהות שגיאות הקלדה ולהציע תיקונים.</string>
+    <string name="settings_spellcheck_intro">בודק האיות של BBKB משתמש במודלי שפה מתקדמים כדי לספק בדיקת איות בכל האפליקציות שתומכות בכך</string>
+    <string name="settings_spellcheck_enable_title">הפעלת בודק האיות של BBKB</string>
+    <string name="settings_spellcheck_enable_summary">מזהה שגיאות הקלדה ומציע תיקונים</string>
     <string name="settings_credits_version">גרסה %1$s (build %2$s)</string>
 </resources>

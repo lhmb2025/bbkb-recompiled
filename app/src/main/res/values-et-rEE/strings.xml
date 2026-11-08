@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Parandab sõnu kirjutamise ajal. Paranduse tühistamiseks vajuta Backspace.</string>
     <string name="settings_category_display">Kuvamine</string>
     <string name="settings_category_sources">Allikad</string>
-    <string name="settings_category_contacts_accounts">Kontaktid ja kontod</string>
     <string name="settings_dict_add_reverted_words_title">Kuva sõna lisamise nupp</string>
     <string name="settings_dict_add_reverted_words_summary">Kui Backspace tühistab paranduse, kuva nupp sõna lisamiseks</string>
     <string name="prefs_category_tuning">Häälestus</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Kuva füüsilise klaviatuuri kasutamisel olekuribal Shift/Alt muuteklahvi näidik</string>
     <string name="settings_pred_block_offensive_summary">Peida häälega dikteerimisel võimalikud solvavad sõnad</string>
     <string name="settings_pred_block_offensive_title">Blokeeri solvavad sõnad</string>
-    <string name="settings_pred_contacts_permission_summary">Andke luba, et kontaktide nimesid ja e-posti aadresse soovitada</string>
     <string name="settings_pred_contacts_permission_title">Kontaktide luba</string>
     <string name="settings_pred_contacts_summary_disabled">Vajalik on kontaktide luba</string>
     <string name="settings_pred_contacts_summary_enabled">Kaasa soovitustesse kontaktide nimed</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Kuva nipsamise animatsioon</string>
     <string name="settings_pred_force_suggestions_summary">Kuva soovituste riba ka rakendustes, mis paluvad klaviatuuril selle peita. Ei kehti paroolivälja puhul.</string>
     <string name="settings_pred_force_suggestions_title">Sunni soovitusi kuvama</string>
-    <string name="settings_pred_grant_permission">Anna luba</string>
     <string name="settings_pred_next_word_summary">Soovita konteksti põhjal järgmist sõna</string>
     <string name="settings_pred_next_word_title">Järgmise sõna soovitused</string>
     <string name="settings_pred_on_key_summary">Kuva kirjutamise ajal soovitusi virtuaalklaviatuuril</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Vertikaalne mastaap animatsiooni alguses</string>
     <string name="settings_anim_show_start_y_title">Ilmumise alguse Y-mastaap</string>
     <string name="settings_animation_params_title">Animatsiooni parameetrid</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Selle funktsiooni kasutamiseks andke kontaktide luba</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktide nimesid tunnustatakse õigete sõnadena</string>
-    <string name="settings_spellcheck_use_contacts_title">Kasuta õigekirjakontrollis kontakte</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Andke kontaktide luba, et õigekirjakontroll tunneks kontaktide nimed ära õigete sõnadena</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Tunnustab kontaktide nimesid õigete sõnadena</string>
+    <string name="settings_spellcheck_use_contacts_title">Aktsepteeri kontaktide nimesid</string>
     <string name="settings_spellcheck_accept_learned_title">Aktsepteeri õpitud sõnu</string>
-    <string name="settings_spellcheck_accept_learned_summary">Teie trükkimisest õpitud sõnu loetakse õigesti kirjutatuks</string>
+    <string name="settings_spellcheck_accept_learned_summary">Tunnustab teie trükkimisest õpitud sõnu</string>
     <string name="pref_alt_double_tap_lock">Luba Alt-klahvi topeltklõpsuga lukustus</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-klahvi topeltklõps lukustab selle sisse. Uus klõps Alt-klahvil lülitab selle välja.</string>
     <string name="pref_ctrl_double_tap_lock">Luba Ctrl-klahvi topeltklõpsuga lukustus</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">X-telje raputuse toiming</string>
     <string name="settings_shake_y_axis_title">Y-telje raputuse toiming</string>
     <string name="settings_shake_z_axis_title">Z-telje raputuse toiming</string>
-    <string name="settings_spell_checker_screen_title">Õigekirjakontrolli seaded</string>
     <string name="settings_spell_checker_summary">Seadista kogu süsteemi õigekirjakontrolli käitumist</string>
     <string name="settings_spell_checker_title">Õigekirjakontroll</string>
     <string name="settings_title">BBKB seaded</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Sümbolite laadimine…</string>
     <string name="settings_keyeditor_hex_code">Hex-kood (nt 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Sobimatu märgikood</string>
-    <string name="settings_spellcheck_intro">BBKB-i õigekirjakontroll pakub nutikat õigekirjakontrolli kõigis rakendustes, mis õigekirjakontrolli toetavad. See kasutab täiustatud keelemudeleid, et tuvastada trükivigu ja soovitada parandusi.</string>
+    <string name="settings_spellcheck_intro">BBKB-i õigekirjakontroll kasutab täiustatud keelemudeleid, et pakkuda õigekirjakontrolli kõigis rakendustes, mis seda toetavad</string>
+    <string name="settings_spellcheck_enable_title">Luba BBKB-i õigekirjakontroll</string>
+    <string name="settings_spellcheck_enable_summary">Tuvastab trükivigu ja soovitab parandusi</string>
     <string name="settings_credits_version">Versioon %1$s (järk %2$s)</string>
 </resources>

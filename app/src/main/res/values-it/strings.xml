@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Corregge le parole mentre scrivi. Premi Backspace per annullare una correzione.</string>
     <string name="settings_category_display">Visualizzazione</string>
     <string name="settings_category_sources">Fonti</string>
-    <string name="settings_category_contacts_accounts">Contatti e account</string>
     <string name="settings_dict_add_reverted_words_title">Mostra il pulsante Aggiungi parola</string>
     <string name="settings_dict_add_reverted_words_summary">Quando Backspace annulla una correzione, mostra un pulsante per aggiungere la parola</string>
     <string name="prefs_category_tuning">Regolazione</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Mostra l\'indicatore dei modificatori Maiusc/Alt nella barra di stato quando usi la tastiera fisica</string>
     <string name="settings_pred_block_offensive_summary">Nascondi le parole potenzialmente offensive nella dettatura vocale</string>
     <string name="settings_pred_block_offensive_title">Blocca le parole offensive</string>
-    <string name="settings_pred_contacts_permission_summary">Concedi l\'autorizzazione per suggerire nomi di contatti e indirizzi e-mail</string>
     <string name="settings_pred_contacts_permission_title">Autorizzazione contatti</string>
     <string name="settings_pred_contacts_summary_disabled">Autorizzazione contatti richiesta</string>
     <string name="settings_pred_contacts_summary_enabled">Includi i nomi dei contatti nei suggerimenti</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Mostra l\'animazione di conferma con sfioramento</string>
     <string name="settings_pred_force_suggestions_summary">Mostra la barra dei suggerimenti anche nelle app che chiedono alla tastiera di nasconderla. Non si applica ai campi password.</string>
     <string name="settings_pred_force_suggestions_title">Forza i suggerimenti</string>
-    <string name="settings_pred_grant_permission">Concedi autorizzazione</string>
     <string name="settings_pred_next_word_summary">Suggerisci la parola successiva in base al contesto</string>
     <string name="settings_pred_next_word_title">Suggerimenti parola successiva</string>
     <string name="settings_pred_on_key_summary">Mostra i suggerimenti sulla tastiera virtuale mentre digiti</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Scala verticale all\'inizio dell\'animazione</string>
     <string name="settings_anim_show_start_y_title">Scala Y iniziale della comparsa</string>
     <string name="settings_animation_params_title">Parametri di animazione</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Concedi l\'autorizzazione ai contatti per usare questa funzione</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">I nomi dei contatti saranno riconosciuti come parole valide</string>
-    <string name="settings_spellcheck_use_contacts_title">Usa i contatti per il controllo ortografico</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Concedi l\'autorizzazione ai contatti per riconoscere i nomi dei contatti come parole valide durante il controllo ortografico</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Riconosce i nomi dei contatti come parole valide</string>
+    <string name="settings_spellcheck_use_contacts_title">Accetta i nomi dei contatti</string>
     <string name="settings_spellcheck_accept_learned_title">Accetta le parole apprese</string>
-    <string name="settings_spellcheck_accept_learned_summary">Le parole apprese da ciò che scrivi sono considerate scritte correttamente</string>
+    <string name="settings_spellcheck_accept_learned_summary">Riconosce le parole apprese da ciò che scrivi</string>
     <string name="pref_alt_double_tap_lock">Attiva il blocco con doppio clic di Alt</string>
     <string name="pref_alt_double_tap_lock_summary">Il doppio clic su Alt lo blocca in posizione attiva. Un altro clic su Alt lo disattiva.</string>
     <string name="pref_ctrl_double_tap_lock">Attiva il blocco con doppio clic di Ctrl</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Azione scuotimento asse X</string>
     <string name="settings_shake_y_axis_title">Azione scuotimento asse Y</string>
     <string name="settings_shake_z_axis_title">Azione scuotimento asse Z</string>
-    <string name="settings_spell_checker_screen_title">Impostazioni controllo ortografico</string>
     <string name="settings_spell_checker_summary">Configura il comportamento del controllo ortografico di sistema</string>
     <string name="settings_spell_checker_title">Controllo ortografico</string>
     <string name="settings_title">Impostazioni BBKB</string>
@@ -1114,6 +1108,8 @@
     <string name="settings_keyeditor_loading">Caricamento dei simboli…</string>
     <string name="settings_keyeditor_hex_code">Codice esadecimale (ad es. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Codice carattere non valido</string>
-    <string name="settings_spellcheck_intro">Il controllo ortografico di BBKB offre un controllo intelligente in tutte le app che supportano il controllo ortografico. Utilizza modelli linguistici avanzati per rilevare gli errori di battitura e suggerire correzioni.</string>
+    <string name="settings_spellcheck_intro">Il controllo ortografico di BBKB utilizza modelli linguistici avanzati per offrire il controllo ortografico in tutte le app che lo supportano</string>
+    <string name="settings_spellcheck_enable_title">Attiva il controllo ortografico BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Rileva gli errori di battitura e suggerisce correzioni</string>
     <string name="settings_credits_version">Versione %1$s (build %2$s)</string>
 </resources>

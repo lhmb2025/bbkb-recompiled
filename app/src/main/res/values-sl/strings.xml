@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Popravlja besede med tipkanjem. Pritisnite vračalko, da razveljavite popravek.</string>
     <string name="settings_category_display">Prikaz</string>
     <string name="settings_category_sources">Viri</string>
-    <string name="settings_category_contacts_accounts">Stiki in računi</string>
     <string name="settings_dict_add_reverted_words_title">Pokaži gumb za dodajanje besede</string>
     <string name="settings_dict_add_reverted_words_summary">Ko vračalka razveljavi popravek, pokaži gumb za dodajanje besede</string>
     <string name="prefs_category_tuning">Nastavljanje</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Pri uporabi fizične tipkovnice prikaži oznako Shift/Alt v vrstici stanja</string>
     <string name="settings_pred_block_offensive_summary">Skrij morebitno žaljive besede pri glasovnem narekovanju</string>
     <string name="settings_pred_block_offensive_title">Blokiraj žaljive besede</string>
-    <string name="settings_pred_contacts_permission_summary">Dodelite dovoljenje, da bodo predlagana imena stikov in e-poštni naslovi</string>
     <string name="settings_pred_contacts_permission_title">Dovoljenje za stike</string>
     <string name="settings_pred_contacts_summary_disabled">Potrebno je dovoljenje za stike</string>
     <string name="settings_pred_contacts_summary_enabled">Vključi imena stikov med predloge</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Prikaži animacijo potrditve s frcanjem</string>
     <string name="settings_pred_force_suggestions_summary">Prikaži vrstico s predlogi tudi v aplikacijah, ki jo želijo skriti. Ne velja za polja z geslom.</string>
     <string name="settings_pred_force_suggestions_title">Vsili predloge</string>
-    <string name="settings_pred_grant_permission">Dodeli dovoljenje</string>
     <string name="settings_pred_next_word_summary">Predlagaj naslednjo besedo glede na kontekst</string>
     <string name="settings_pred_next_word_title">Predlogi naslednje besede</string>
     <string name="settings_pred_on_key_summary">Prikaži predloge na navidezni tipkovnici med tipkanjem</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Navpično merilo na začetku animacije</string>
     <string name="settings_anim_show_start_y_title">Merilo Y na začetku prikaza</string>
     <string name="settings_animation_params_title">Parametri animacije</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Za uporabo te funkcije dodelite dovoljenje za stike</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Imena stikov bodo prepoznana kot veljavne besede</string>
-    <string name="settings_spellcheck_use_contacts_title">Uporabi stike pri preverjanju črkovanja</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Dodelite dovoljenje za stike, da bodo imena stikov pri preverjanju črkovanja prepoznana kot veljavne besede</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Prepozna imena stikov kot veljavne besede</string>
+    <string name="settings_spellcheck_use_contacts_title">Sprejmi imena stikov</string>
     <string name="settings_spellcheck_accept_learned_title">Sprejmi naučene besede</string>
-    <string name="settings_spellcheck_accept_learned_summary">Besede, naučene iz vašega tipkanja, veljajo za pravilno črkovane</string>
+    <string name="settings_spellcheck_accept_learned_summary">Prepozna besede, naučene iz vašega tipkanja</string>
     <string name="pref_alt_double_tap_lock">Omogoči zaklep tipke Alt z dvojnim pritiskom</string>
     <string name="pref_alt_double_tap_lock_summary">Z dvojnim pritiskom tipke Alt jo zaklenete. Z naslednjim pritiskom jo izklopite.</string>
     <string name="pref_ctrl_double_tap_lock">Omogoči zaklep tipke Ctrl z dvojnim pritiskom</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Dejanje ob stresanju po osi X</string>
     <string name="settings_shake_y_axis_title">Dejanje ob stresanju po osi Y</string>
     <string name="settings_shake_z_axis_title">Dejanje ob stresanju po osi Z</string>
-    <string name="settings_spell_checker_screen_title">Nastavitve črkovalnika</string>
     <string name="settings_spell_checker_summary">Nastavite preverjanje črkovanja v celotnem sistemu</string>
     <string name="settings_spell_checker_title">Preverjanje črkovanja</string>
     <string name="settings_title">Nastavitve BBKB</string>
@@ -1129,6 +1123,8 @@
     <string name="settings_keyeditor_loading">Nalaganje simbolov…</string>
     <string name="settings_keyeditor_hex_code">Šestnajstiška koda (npr. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Neveljavna koda znaka</string>
-    <string name="settings_spellcheck_intro">Črkovalnik BBKB zagotavlja pametno preverjanje črkovanja v vseh aplikacijah, ki to podpirajo. Uporablja napredne jezikovne modele za zaznavanje tipkarskih napak in predlaganje popravkov.</string>
+    <string name="settings_spellcheck_intro">Črkovalnik BBKB uporablja napredne jezikovne modele za preverjanje črkovanja v vseh aplikacijah, ki to podpirajo</string>
+    <string name="settings_spellcheck_enable_title">Omogoči črkovalnik BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Zaznava tipkarske napake in predlaga popravke</string>
     <string name="settings_credits_version">Različica %1$s (delovna različica %2$s)</string>
 </resources>

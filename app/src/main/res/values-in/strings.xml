@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Memperbaiki kata saat Anda mengetik. Tekan backspace untuk membatalkan koreksi.</string>
     <string name="settings_category_display">Tampilan</string>
     <string name="settings_category_sources">Sumber</string>
-    <string name="settings_category_contacts_accounts">Kontak dan akun</string>
     <string name="settings_dict_add_reverted_words_title">Tampilkan tombol tambah kata</string>
     <string name="settings_dict_add_reverted_words_summary">Setelah backspace membatalkan koreksi, tampilkan tombol untuk menambahkan kata</string>
     <string name="prefs_category_tuning">Penyetelan</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Tampilkan indikator pengubah Shift/Alt di bilah status saat menggunakan keyboard fisik</string>
     <string name="settings_pred_block_offensive_summary">Sembunyikan kata yang berpotensi menyinggung saat dikte suara</string>
     <string name="settings_pred_block_offensive_title">Blokir kata yang menyinggung</string>
-    <string name="settings_pred_contacts_permission_summary">Berikan izin untuk menyarankan nama kontak dan alamat email</string>
     <string name="settings_pred_contacts_permission_title">Izin kontak</string>
     <string name="settings_pred_contacts_summary_disabled">Izin kontak diperlukan</string>
     <string name="settings_pred_contacts_summary_enabled">Sertakan nama kontak dalam saran</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Tampilkan animasi sentil penerapan</string>
     <string name="settings_pred_force_suggestions_summary">Tampilkan bilah saran bahkan di aplikasi yang meminta keyboard menyembunyikannya. Tidak berlaku untuk kolom sandi.</string>
     <string name="settings_pred_force_suggestions_title">Paksa tampilkan saran</string>
-    <string name="settings_pred_grant_permission">Berikan Izin</string>
     <string name="settings_pred_next_word_summary">Sarankan kata berikutnya berdasarkan konteks</string>
     <string name="settings_pred_next_word_title">Saran kata berikutnya</string>
     <string name="settings_pred_on_key_summary">Tampilkan saran pada keyboard virtual selagi Anda mengetik</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Skala vertikal di awal animasi</string>
     <string name="settings_anim_show_start_y_title">Skala Y awal kemunculan</string>
     <string name="settings_animation_params_title">Parameter animasi</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Berikan izin kontak untuk menggunakan fitur ini</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Nama kontak akan dikenali sebagai kata yang valid</string>
-    <string name="settings_spellcheck_use_contacts_title">Gunakan kontak untuk pemeriksaan ejaan</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Berikan izin kontak agar nama kontak dikenali sebagai kata yang valid saat pemeriksaan ejaan</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Mengenali nama kontak sebagai kata yang valid</string>
+    <string name="settings_spellcheck_use_contacts_title">Terima nama kontak</string>
     <string name="settings_spellcheck_accept_learned_title">Terima kata yang dipelajari</string>
-    <string name="settings_spellcheck_accept_learned_summary">Kata yang dipelajari dari ketikan Anda dianggap ejaannya benar</string>
+    <string name="settings_spellcheck_accept_learned_summary">Mengenali kata yang dipelajari dari ketikan Anda</string>
     <string name="pref_alt_double_tap_lock">Aktifkan kunci klik ganda Alt</string>
     <string name="pref_alt_double_tap_lock_summary">Mengeklik Alt dua kali akan menguncinya tetap aktif. Klik Alt lagi untuk menonaktifkannya.</string>
     <string name="pref_ctrl_double_tap_lock">Aktifkan kunci klik ganda Ctrl</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Tindakan guncangan sumbu X</string>
     <string name="settings_shake_y_axis_title">Tindakan guncangan sumbu Y</string>
     <string name="settings_shake_z_axis_title">Tindakan guncangan sumbu Z</string>
-    <string name="settings_spell_checker_screen_title">Setelan pemeriksa ejaan</string>
     <string name="settings_spell_checker_summary">Konfigurasikan perilaku pemeriksaan ejaan seluruh sistem</string>
     <string name="settings_spell_checker_title">Pemeriksaan ejaan</string>
     <string name="settings_title">Setelan BBKB</string>
@@ -1084,6 +1078,8 @@
     <string name="settings_keyeditor_loading">Memuat simbol…</string>
     <string name="settings_keyeditor_hex_code">Kode hex (mis. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Kode karakter tidak valid</string>
-    <string name="settings_spellcheck_intro">Pemeriksa ejaan BBKB menyediakan pemeriksaan ejaan cerdas di semua aplikasi yang mendukung pemeriksaan ejaan. Pemeriksa ini menggunakan model bahasa canggih untuk mendeteksi salah ketik dan menyarankan koreksi.</string>
+    <string name="settings_spellcheck_intro">Pemeriksa ejaan BBKB menggunakan model bahasa canggih untuk menyediakan pemeriksaan ejaan di semua aplikasi yang mendukungnya</string>
+    <string name="settings_spellcheck_enable_title">Aktifkan pemeriksa ejaan BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Mendeteksi salah ketik dan menyarankan koreksi</string>
     <string name="settings_credits_version">Versi %1$s (Build %2$s)</string>
 </resources>

@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Терип жатканда сөздөрдү түзөтөт. Түзөтүүнү жокко чыгаруу үчүн Backspace басыңыз.</string>
     <string name="settings_category_display">Көрсөтүү</string>
     <string name="settings_category_sources">Булактар</string>
-    <string name="settings_category_contacts_accounts">Байланыштар жана аккаунттар</string>
     <string name="settings_dict_add_reverted_words_title">Сөз кошуу баскычын көрсөтүү</string>
     <string name="settings_dict_add_reverted_words_summary">Backspace түзөтүүнү жокко чыгаргандан кийин сөздү кошуу баскычын көрсөтүү</string>
     <string name="prefs_category_tuning">Жөндөө</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Физикалык баскычтоп колдонулганда абал тилкесинде Shift/Alt модификаторунун индикаторун көрсөтүү</string>
     <string name="settings_pred_block_offensive_summary">Үн менен жазганда орой болушу мүмкүн болгон сөздөрдү жашыруу</string>
     <string name="settings_pred_block_offensive_title">Орой сөздөрдү бөгөттөө</string>
-    <string name="settings_pred_contacts_permission_summary">Байланыштардын ысымдарын жана электрондук почта даректерин сунуштоо үчүн уруксат бериңиз</string>
     <string name="settings_pred_contacts_permission_title">Байланыштарга уруксат</string>
     <string name="settings_pred_contacts_summary_disabled">Байланыштарга уруксат керек</string>
     <string name="settings_pred_contacts_summary_enabled">Байланыштардын ысымдарын сунуштарга кошуу</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Силкүү менен колдонуу анимациясын көрсөтүү</string>
     <string name="settings_pred_force_suggestions_summary">Сунуштар тилкесин аны жашырууну сураган колдонмолордо да көрсөтүү. Сырсөз талааларына тиешеси жок.</string>
     <string name="settings_pred_force_suggestions_title">Сунуштарды мажбурлап көрсөтүү</string>
-    <string name="settings_pred_grant_permission">Уруксат берүү</string>
     <string name="settings_pred_next_word_summary">Контекстке жараша кийинки сөздү сунуштоо</string>
     <string name="settings_pred_next_word_title">Кийинки сөз сунуштары</string>
     <string name="settings_pred_on_key_summary">Терип жатканда сунуштарды виртуалдык баскычтопто көрсөтүү</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Анимациянын башындагы тигинен масштаб</string>
     <string name="settings_anim_show_start_y_title">Пайда болуунун башындагы Y масштабы</string>
     <string name="settings_animation_params_title">Анимация параметрлери</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Бул функцияны колдонуу үчүн байланыштарга уруксат бериңиз</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Байланыштардын ысымдары туура сөз катары таанылат</string>
-    <string name="settings_spellcheck_use_contacts_title">Орфографияны текшерүүдө байланыштарды колдонуу</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Орфографияны текшерүүдө байланыштардын ысымдары туура сөз катары таанылышы үчүн байланыштарга уруксат бериңиз</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Байланыштардын ысымдарын туура сөз катары тааныйт</string>
+    <string name="settings_spellcheck_use_contacts_title">Байланыштардын ысымдарын кабыл алуу</string>
     <string name="settings_spellcheck_accept_learned_title">Үйрөнүлгөн сөздөрдү кабыл алуу</string>
-    <string name="settings_spellcheck_accept_learned_summary">Терүүңүздөн үйрөнүлгөн сөздөр туура жазылган деп эсептелет</string>
+    <string name="settings_spellcheck_accept_learned_summary">Терүүңүздөн үйрөнүлгөн сөздөрдү тааныйт</string>
     <string name="pref_alt_double_tap_lock">Alt эки жолу басылганда бекитилишин иштетүү</string>
     <string name="pref_alt_double_tap_lock_summary">Alt эки жолу басылса, ал күйүк бойдон бекитилет. Alt кайра басылса, өчөт.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl эки жолу басылганда бекитилишин иштетүү</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">X огу боюнча силкүү аракети</string>
     <string name="settings_shake_y_axis_title">Y огу боюнча силкүү аракети</string>
     <string name="settings_shake_z_axis_title">Z огу боюнча силкүү аракети</string>
-    <string name="settings_spell_checker_screen_title">Орфографияны текшергич жөндөөлөрү</string>
     <string name="settings_spell_checker_summary">Система боюнча орфографияны текшерүүнүн иштөө тартибин жөндөө</string>
     <string name="settings_spell_checker_title">Орфографияны текшерүү</string>
     <string name="settings_title">BBKB жөндөөлөрү</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Символдор жүктөлүүдө…</string>
     <string name="settings_keyeditor_hex_code">Он алтылык код (мисалы, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Белгинин коду жараксыз</string>
-    <string name="settings_spellcheck_intro">BBKB орфографияны текшергичи орфографияны текшерүүнү колдогон бардык колдонмолордо акылдуу текшерүүнү камсыз кылат. Ал каталарды аныктоо жана оңдоолорду сунуштоо үчүн өркүндөтүлгөн тил моделдерин колдонот.</string>
+    <string name="settings_spellcheck_intro">BBKB орфографияны текшергичи өркүндөтүлгөн тил моделдерин колдонуп, орфографияны текшерүүнү колдогон бардык колдонмолордо текшерүүнү камсыз кылат</string>
+    <string name="settings_spellcheck_enable_title">BBKB орфографияны текшергичти күйгүзүү</string>
+    <string name="settings_spellcheck_enable_summary">Каталарды аныктап, оңдоолорду сунуштайт</string>
     <string name="settings_credits_version">Версия %1$s (курулма %2$s)</string>
 </resources>

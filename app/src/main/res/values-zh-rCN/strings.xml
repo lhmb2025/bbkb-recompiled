@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">输入时更正单词。按退格键可撤销更正。</string>
     <string name="settings_category_display">显示</string>
     <string name="settings_category_sources">来源</string>
-    <string name="settings_category_contacts_accounts">联系人与账户</string>
     <string name="settings_dict_add_reverted_words_title">显示添加单词按钮</string>
     <string name="settings_dict_add_reverted_words_summary">退格键撤销更正后，显示添加该单词的按钮</string>
     <string name="prefs_category_tuning">调校</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">使用实体键盘时在状态栏中显示 Shift/Alt 修饰键指示标志</string>
     <string name="settings_pred_block_offensive_summary">在语音输入时隐藏可能令人反感的字词</string>
     <string name="settings_pred_block_offensive_title">屏蔽冒犯性字词</string>
-    <string name="settings_pred_contacts_permission_summary">授予权限，以便建议联系人姓名和电子邮件地址</string>
     <string name="settings_pred_contacts_permission_title">联系人权限</string>
     <string name="settings_pred_contacts_summary_disabled">需要联系人权限</string>
     <string name="settings_pred_contacts_summary_enabled">在建议中包含联系人姓名</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">显示轻扫采用动画</string>
     <string name="settings_pred_force_suggestions_summary">即使应用要求键盘隐藏建议栏，也仍然显示。不适用于密码字段。</string>
     <string name="settings_pred_force_suggestions_title">强制显示建议</string>
-    <string name="settings_pred_grant_permission">授予权限</string>
     <string name="settings_pred_next_word_summary">根据上下文建议下一个字词</string>
     <string name="settings_pred_next_word_title">下一个字词建议</string>
     <string name="settings_pred_on_key_summary">键入时在虚拟键盘上显示建议</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">动画开始时的垂直缩放比例</string>
     <string name="settings_anim_show_start_y_title">显示开始 Y 缩放</string>
     <string name="settings_animation_params_title">动画参数</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">授予联系人权限即可使用此功能</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">联系人姓名将被识别为有效字词</string>
-    <string name="settings_spellcheck_use_contacts_title">使用联系人进行拼写检查</string>
-    <string name="settings_spellcheck_contacts_permission_summary">授予联系人权限，以便在拼写检查时将联系人姓名识别为有效字词</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">将联系人姓名识别为有效字词</string>
+    <string name="settings_spellcheck_use_contacts_title">接受联系人姓名</string>
     <string name="settings_spellcheck_accept_learned_title">接受已学习的字词</string>
-    <string name="settings_spellcheck_accept_learned_summary">从您的输入中学习的字词将视为拼写正确</string>
+    <string name="settings_spellcheck_accept_learned_summary">识别从您的输入中学习的字词</string>
     <string name="pref_alt_double_tap_lock">启用 Alt 双击锁定</string>
     <string name="pref_alt_double_tap_lock_summary">双击 Alt 键可将其锁定。再次按 Alt 键即可关闭。</string>
     <string name="pref_ctrl_double_tap_lock">启用 Ctrl 双击锁定</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">摇动 X 轴操作</string>
     <string name="settings_shake_y_axis_title">摇动 Y 轴操作</string>
     <string name="settings_shake_z_axis_title">摇动 Z 轴操作</string>
-    <string name="settings_spell_checker_screen_title">拼写检查器设置</string>
     <string name="settings_spell_checker_summary">配置系统级拼写检查行为</string>
     <string name="settings_spell_checker_title">拼写检查</string>
     <string name="settings_title">BBKB 设置</string>
@@ -1084,6 +1078,8 @@
     <string name="settings_keyeditor_loading">正在加载符号…</string>
     <string name="settings_keyeditor_hex_code">十六进制代码（例如 1F600）</string>
     <string name="settings_keyeditor_invalid_code">字符代码无效</string>
-    <string name="settings_spellcheck_intro">BBKB 拼写检查工具可在所有支持拼写检查的应用中提供智能拼写检查。它使用先进的语言模型来检测拼写错误并提供更正建议。</string>
+    <string name="settings_spellcheck_intro">BBKB 拼写检查工具使用先进的语言模型，在所有支持拼写检查的应用中提供拼写检查</string>
+    <string name="settings_spellcheck_enable_title">启用 BBKB 拼写检查工具</string>
+    <string name="settings_spellcheck_enable_summary">检测拼写错误并提供更正建议</string>
     <string name="settings_credits_version">版本 %1$s（内部版本 %2$s）</string>
 </resources>

@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Taiso žodžius rašant. Norėdami atšaukti taisymą, paspauskite Backspace.</string>
     <string name="settings_category_display">Rodymas</string>
     <string name="settings_category_sources">Šaltiniai</string>
-    <string name="settings_category_contacts_accounts">Kontaktai ir paskyros</string>
     <string name="settings_dict_add_reverted_words_title">Rodyti žodžio pridėjimo mygtuką</string>
     <string name="settings_dict_add_reverted_words_summary">Kai Backspace atšaukia taisymą, rodyti mygtuką žodžiui pridėti</string>
     <string name="prefs_category_tuning">Derinimas</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Naudojant fizinę klaviatūrą rodyti „Shift“ / „Alt“ indikatorių būsenos juostoje</string>
     <string name="settings_pred_block_offensive_summary">Slėpti galimai įžeidžiančius žodžius diktuojant balsu</string>
     <string name="settings_pred_block_offensive_title">Blokuoti įžeidžiančius žodžius</string>
-    <string name="settings_pred_contacts_permission_summary">Suteikite leidimą, kad būtų siūlomi kontaktų vardai ir el. pašto adresai</string>
     <string name="settings_pred_contacts_permission_title">Kontaktų leidimas</string>
     <string name="settings_pred_contacts_summary_disabled">Reikia kontaktų leidimo</string>
     <string name="settings_pred_contacts_summary_enabled">Įtraukti kontaktų vardus į pasiūlymus</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Rodyti brūkštelėjimo patvirtinimo animaciją</string>
     <string name="settings_pred_force_suggestions_summary">Rodyti pasiūlymų juostą net programose, kurios prašo klaviatūros ją slėpti. Netaikoma slaptažodžių laukams.</string>
     <string name="settings_pred_force_suggestions_title">Priverstinai rodyti pasiūlymus</string>
-    <string name="settings_pred_grant_permission">Suteikti leidimą</string>
     <string name="settings_pred_next_word_summary">Siūlyti kitą žodį pagal kontekstą</string>
     <string name="settings_pred_next_word_title">Kito žodžio pasiūlymai</string>
     <string name="settings_pred_on_key_summary">Rodyti pasiūlymus virtualiojoje klaviatūroje rašant</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Vertikalus mastelis animacijos pradžioje</string>
     <string name="settings_anim_show_start_y_title">Pasirodymo pradžios Y mastelis</string>
     <string name="settings_animation_params_title">Animacijos parametrai</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Suteikite kontaktų leidimą, kad galėtumėte naudoti šią funkciją</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktų vardai bus atpažįstami kaip taisyklingi žodžiai</string>
-    <string name="settings_spellcheck_use_contacts_title">Naudoti kontaktus rašybai tikrinti</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Suteikite kontaktų leidimą, kad tikrinant rašybą kontaktų vardai būtų atpažįstami kaip tinkami žodžiai</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Atpažįsta kontaktų vardus kaip taisyklingus žodžius</string>
+    <string name="settings_spellcheck_use_contacts_title">Priimti kontaktų vardus</string>
     <string name="settings_spellcheck_accept_learned_title">Priimti išmoktus žodžius</string>
-    <string name="settings_spellcheck_accept_learned_summary">Iš jūsų rašymo išmokti žodžiai laikomi parašytais teisingai</string>
+    <string name="settings_spellcheck_accept_learned_summary">Atpažįsta iš jūsų rašymo išmoktus žodžius</string>
     <string name="pref_alt_double_tap_lock">Įjungti „Alt“ fiksavimą dukart spustelėjus</string>
     <string name="pref_alt_double_tap_lock_summary">Dukart spustelėjus „Alt“ jis bus užfiksuotas. Dar kartą spustelėjus „Alt“ jis bus išjungtas.</string>
     <string name="pref_ctrl_double_tap_lock">Įjungti „Ctrl“ fiksavimą dukart spustelėjus</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Papurtymo X ašimi veiksmas</string>
     <string name="settings_shake_y_axis_title">Papurtymo Y ašimi veiksmas</string>
     <string name="settings_shake_z_axis_title">Papurtymo Z ašimi veiksmas</string>
-    <string name="settings_spell_checker_screen_title">Rašybos tikrinimo nustatymai</string>
     <string name="settings_spell_checker_summary">Konfigūruoti visos sistemos rašybos tikrinimo veikimą</string>
     <string name="settings_spell_checker_title">Rašybos tikrinimas</string>
     <string name="settings_title">„BBKB“ nustatymai</string>
@@ -1129,6 +1123,8 @@
     <string name="settings_keyeditor_loading">Įkeliami simboliai…</string>
     <string name="settings_keyeditor_hex_code">Šešioliktainis kodas (pvz., 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Netinkamas simbolio kodas</string>
-    <string name="settings_spellcheck_intro">BBKB rašybos tikrintuvas teikia išmanų rašybos tikrinimą visose programose, kurios palaiko rašybos tikrinimą. Jis naudoja pažangius kalbos modelius, kad aptiktų rašybos klaidas ir pasiūlytų pataisymus.</string>
+    <string name="settings_spellcheck_intro">BBKB rašybos tikrintuvas naudoja pažangius kalbos modelius, kad teiktų rašybos tikrinimą visose programose, kurios jį palaiko</string>
+    <string name="settings_spellcheck_enable_title">Įjungti BBKB rašybos tikrintuvą</string>
+    <string name="settings_spellcheck_enable_summary">Aptinka rašybos klaidas ir siūlo pataisymus</string>
     <string name="settings_credits_version">Versija %1$s (versijos nr. %2$s)</string>
 </resources>

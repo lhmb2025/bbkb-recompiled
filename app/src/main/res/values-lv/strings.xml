@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Labo vārdus rakstīšanas laikā. Lai atsauktu labojumu, nospiediet Backspace.</string>
     <string name="settings_category_display">Rādīšana</string>
     <string name="settings_category_sources">Avoti</string>
-    <string name="settings_category_contacts_accounts">Kontakti un konti</string>
     <string name="settings_dict_add_reverted_words_title">Rādīt vārda pievienošanas pogu</string>
     <string name="settings_dict_add_reverted_words_summary">Kad Backspace atsauc labojumu, rādīt pogu vārda pievienošanai</string>
     <string name="prefs_category_tuning">Regulēšana</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Izmantojot fizisko tastatūru, rādīt Shift/Alt modifikatora indikatoru statusa joslā</string>
     <string name="settings_pred_block_offensive_summary">Slēpt potenciāli aizskarošus vārdus, diktējot ar balsi</string>
     <string name="settings_pred_block_offensive_title">Bloķēt aizskarošus vārdus</string>
-    <string name="settings_pred_contacts_permission_summary">Piešķiriet atļauju, lai tiktu ieteikti kontaktpersonu vārdi un e-pasta adreses</string>
     <string name="settings_pred_contacts_permission_title">Kontaktpersonu atļauja</string>
     <string name="settings_pred_contacts_summary_disabled">Nepieciešama kontaktpersonu atļauja</string>
     <string name="settings_pred_contacts_summary_enabled">Iekļaut kontaktpersonu vārdus ieteikumos</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Rādīt īsa vilciena apstiprinājuma animāciju</string>
     <string name="settings_pred_force_suggestions_summary">Rādīt ieteikumu joslu arī lietotnēs, kas lūdz tastatūrai to paslēpt. Neattiecas uz paroles laukiem.</string>
     <string name="settings_pred_force_suggestions_title">Piespiedu ieteikumi</string>
-    <string name="settings_pred_grant_permission">Piešķirt atļauju</string>
     <string name="settings_pred_next_word_summary">Ieteikt nākamo vārdu, balstoties uz kontekstu</string>
     <string name="settings_pred_next_word_title">Nākamā vārda ieteikumi</string>
     <string name="settings_pred_on_key_summary">Rādīt ieteikumus uz virtuālās tastatūras rakstīšanas laikā</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Vertikālais mērogs animācijas sākumā</string>
     <string name="settings_anim_show_start_y_title">Parādīšanās sākuma Y mērogs</string>
     <string name="settings_animation_params_title">Animācijas parametri</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Piešķiriet kontaktpersonu atļauju, lai izmantotu šo funkciju</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktpersonu vārdi tiks atpazīti kā derīgi vārdi</string>
-    <string name="settings_spellcheck_use_contacts_title">Izmantot kontaktpersonas pareizrakstības pārbaudei</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Piešķiriet kontaktpersonu atļauju, lai pareizrakstības pārbaudē kontaktpersonu vārdi tiktu atpazīti kā derīgi vārdi</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Atpazīst kontaktpersonu vārdus kā derīgus vārdus</string>
+    <string name="settings_spellcheck_use_contacts_title">Pieņemt kontaktpersonu vārdus</string>
     <string name="settings_spellcheck_accept_learned_title">Pieņemt apgūtos vārdus</string>
-    <string name="settings_spellcheck_accept_learned_summary">No jūsu rakstītā apgūtie vārdi tiek uzskatīti par pareizi uzrakstītiem</string>
+    <string name="settings_spellcheck_accept_learned_summary">Atpazīst no jūsu rakstītā apgūtos vārdus</string>
     <string name="pref_alt_double_tap_lock">Iespējot Alt dubultklikšķa fiksēšanu</string>
     <string name="pref_alt_double_tap_lock_summary">Divreiz noklikšķinot uz Alt, tas tiks fiksēts. Noklikšķinot uz Alt vēlreiz, tas tiks izslēgts.</string>
     <string name="pref_ctrl_double_tap_lock">Iespējot Ctrl dubultklikšķa fiksēšanu</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Kratīšanas X ass darbība</string>
     <string name="settings_shake_y_axis_title">Kratīšanas Y ass darbība</string>
     <string name="settings_shake_z_axis_title">Kratīšanas Z ass darbība</string>
-    <string name="settings_spell_checker_screen_title">Pareizrakstības pārbaudītāja iestatījumi</string>
     <string name="settings_spell_checker_summary">Konfigurēt visas sistēmas pareizrakstības pārbaudes darbību</string>
     <string name="settings_spell_checker_title">Pareizrakstības pārbaude</string>
     <string name="settings_title">BBKB iestatījumi</string>
@@ -1114,6 +1108,8 @@
     <string name="settings_keyeditor_loading">Notiek simbolu ielāde…</string>
     <string name="settings_keyeditor_hex_code">Heksadecimālais kods (piem., 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Nederīgs rakstzīmes kods</string>
-    <string name="settings_spellcheck_intro">BBKB pareizrakstības pārbaudītājs nodrošina viedu pareizrakstības pārbaudi visās lietotnēs, kas atbalsta pareizrakstības pārbaudi. Tas izmanto progresīvus valodas modeļus, lai noteiktu drukas kļūdas un ieteiktu labojumus.</string>
+    <string name="settings_spellcheck_intro">BBKB pareizrakstības pārbaudītājs izmanto progresīvus valodas modeļus, lai nodrošinātu pareizrakstības pārbaudi visās lietotnēs, kas to atbalsta</string>
+    <string name="settings_spellcheck_enable_title">Ieslēgt BBKB pareizrakstības pārbaudītāju</string>
+    <string name="settings_spellcheck_enable_summary">Nosaka drukas kļūdas un iesaka labojumus</string>
     <string name="settings_credits_version">Versija %1$s (būvējums %2$s)</string>
 </resources>

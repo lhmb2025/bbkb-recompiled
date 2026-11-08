@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Выпраўляць словы падчас уводу. Націсніце Backspace, каб адмяніць выпраўленне.</string>
     <string name="settings_category_display">Адлюстраванне</string>
     <string name="settings_category_sources">Крыніцы</string>
-    <string name="settings_category_contacts_accounts">Кантакты і ўліковыя запісы</string>
     <string name="settings_dict_add_reverted_words_title">Паказваць кнопку дадання слова</string>
     <string name="settings_dict_add_reverted_words_summary">Пасля адмены выпраўлення клавішай Backspace паказваць кнопку для дадання слова</string>
     <string name="prefs_category_tuning">Наладка</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Паказваць індыкатар Shift/Alt у радку стану пры працы з фізічнай клавіятурай</string>
     <string name="settings_pred_block_offensive_summary">Хаваць магчыма абразлівыя словы пры галасавой дыктоўцы</string>
     <string name="settings_pred_block_offensive_title">Блакіраваць абразлівыя словы</string>
-    <string name="settings_pred_contacts_permission_summary">Дайце дазвол, каб прапаноўваць імёны кантактаў і адрасы электроннай пошты</string>
     <string name="settings_pred_contacts_permission_title">Дазвол на кантакты</string>
     <string name="settings_pred_contacts_summary_disabled">Патрэбны дазвол на кантакты</string>
     <string name="settings_pred_contacts_summary_enabled">Уключаць імёны кантактаў у прапановы</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Паказваць анімацыю пацвярджэння ўзмахам</string>
     <string name="settings_pred_force_suggestions_summary">Паказваць панэль прапаноў нават у праграмах, якія просяць клавіятуру схаваць яе. Не датычыцца палёў пароля.</string>
     <string name="settings_pred_force_suggestions_title">Прымусовыя прапановы</string>
-    <string name="settings_pred_grant_permission">Даць дазвол</string>
     <string name="settings_pred_next_word_summary">Прапаноўваць наступнае слова паводле кантэксту</string>
     <string name="settings_pred_next_word_title">Прапановы наступнага слова</string>
     <string name="settings_pred_on_key_summary">Паказваць прапановы на віртуальнай клавіятуры падчас набору</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Вертыкальны маштаб у пачатку анімацыі</string>
     <string name="settings_anim_show_start_y_title">Пачатковы маштаб Y пры з\'яўленні</string>
     <string name="settings_animation_params_title">Параметры анімацыі</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Дайце дазвол на кантакты, каб карыстацца гэтай функцыяй</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Імёны кантактаў будуць лічыцца правільнымі словамі</string>
-    <string name="settings_spellcheck_use_contacts_title">Выкарыстоўваць кантакты пры праверцы правапісу</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Дайце дазвол на кантакты, каб імёны кантактаў лічыліся правільнымі словамі пры праверцы правапісу</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Распазнае імёны кантактаў як правільныя словы</string>
+    <string name="settings_spellcheck_use_contacts_title">Прымаць імёны кантактаў</string>
     <string name="settings_spellcheck_accept_learned_title">Прымаць вывучаныя словы</string>
-    <string name="settings_spellcheck_accept_learned_summary">Словы, вывучаныя з вашага набору, лічацца напісанымі правільна</string>
+    <string name="settings_spellcheck_accept_learned_summary">Распазнае словы, вывучаныя з вашага набору</string>
     <string name="pref_alt_double_tap_lock">Уключыць фіксацыю Alt падвойным націсканнем</string>
     <string name="pref_alt_double_tap_lock_summary">Падвойнае націсканне Alt фіксуе яго. Наступнае націсканне Alt выключае фіксацыю.</string>
     <string name="pref_ctrl_double_tap_lock">Уключыць фіксацыю Ctrl падвойным націсканнем</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Дзеянне пры трасенні па восі X</string>
     <string name="settings_shake_y_axis_title">Дзеянне пры трасенні па восі Y</string>
     <string name="settings_shake_z_axis_title">Дзеянне пры трасенні па восі Z</string>
-    <string name="settings_spell_checker_screen_title">Налады праверкі правапісу</string>
     <string name="settings_spell_checker_summary">Наладзьце праверку правапісу ва ўсёй сістэме</string>
     <string name="settings_spell_checker_title">Праверка правапісу</string>
     <string name="settings_title">Налады BBKB</string>
@@ -1129,6 +1123,8 @@
     <string name="settings_keyeditor_loading">Загрузка сімвалаў…</string>
     <string name="settings_keyeditor_hex_code">Шаснаццатковы код (напрыклад, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Несапраўдны код сімвала</string>
-    <string name="settings_spellcheck_intro">Сродак праверкі правапісу BBKB правярае правапіс ва ўсіх праграмах, якія гэта падтрымліваюць. Ён выкарыстоўвае сучасныя моўныя мадэлі, каб выяўляць памылкі друку і прапаноўваць выпраўленні.</string>
+    <string name="settings_spellcheck_intro">Сродак праверкі правапісу BBKB выкарыстоўвае сучасныя моўныя мадэлі, каб правяраць правапіс ва ўсіх праграмах, якія гэта падтрымліваюць</string>
+    <string name="settings_spellcheck_enable_title">Уключыць праверку правапісу BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Выяўляе памылкі друку і прапануе выпраўленні</string>
     <string name="settings_credits_version">Версія %1$s (зборка %2$s)</string>
 </resources>

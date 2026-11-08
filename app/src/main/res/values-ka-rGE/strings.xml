@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">ასწორებს სიტყვებს აკრეფისას. შესწორების გასაუქმებლად დააჭირეთ Backspace-ს.</string>
     <string name="settings_category_display">ჩვენება</string>
     <string name="settings_category_sources">წყაროები</string>
-    <string name="settings_category_contacts_accounts">კონტაქტები და ანგარიშები</string>
     <string name="settings_dict_add_reverted_words_title">სიტყვის დამატების ღილაკის ჩვენება</string>
     <string name="settings_dict_add_reverted_words_summary">როცა Backspace შესწორებას აუქმებს, სიტყვის დასამატებლად ღილაკის ჩვენება</string>
     <string name="prefs_category_tuning">დარეგულირება</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Shift/Alt მოდიფიკატორის ინდიკატორის ჩვენება სტატუსის ზოლში ფიზიკური კლავიატურის გამოყენებისას</string>
     <string name="settings_pred_block_offensive_summary">პოტენციურად შეურაცხმყოფელი სიტყვების დამალვა ხმოვანი კარნახისას</string>
     <string name="settings_pred_block_offensive_title">შეურაცხმყოფელი სიტყვების დაბლოკვა</string>
-    <string name="settings_pred_contacts_permission_summary">მიეცით ნებართვა, რომ კონტაქტების სახელები და ელფოსტის მისამართები შემოგთავაზოთ</string>
     <string name="settings_pred_contacts_permission_title">კონტაქტების ნებართვა</string>
     <string name="settings_pred_contacts_summary_disabled">საჭიროა კონტაქტების ნებართვა</string>
     <string name="settings_pred_contacts_summary_enabled">კონტაქტების სახელების ჩართვა შემოთავაზებებში</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">მოსმით დადასტურების ანიმაციის ჩვენება</string>
     <string name="settings_pred_force_suggestions_summary">შემოთავაზებების ზოლის ჩვენება იმ აპებშიც, რომლებიც კლავიატურას მის დამალვას სთხოვს. არ ვრცელდება პაროლის ველებზე.</string>
     <string name="settings_pred_force_suggestions_title">იძულებითი შემოთავაზებები</string>
-    <string name="settings_pred_grant_permission">ნებართვის მიცემა</string>
     <string name="settings_pred_next_word_summary">შემდეგი სიტყვის შემოთავაზება კონტექსტის მიხედვით</string>
     <string name="settings_pred_next_word_title">შემდეგი სიტყვის შემოთავაზებები</string>
     <string name="settings_pred_on_key_summary">აკრეფისას შემოთავაზებების ჩვენება ვირტუალურ კლავიატურაზე</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">ვერტიკალური მასშტაბი ანიმაციის დასაწყისში</string>
     <string name="settings_anim_show_start_y_title">გამოჩენის საწყისი Y მასშტაბი</string>
     <string name="settings_animation_params_title">ანიმაციის პარამეტრები</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">ამ ფუნქციის გამოსაყენებლად მიეცით კონტაქტების ნებართვა</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">კონტაქტების სახელები სწორ სიტყვებად ჩაითვლება</string>
-    <string name="settings_spellcheck_use_contacts_title">კონტაქტების გამოყენება მართლწერის შემოწმებისას</string>
-    <string name="settings_spellcheck_contacts_permission_summary">მიეცით კონტაქტების ნებართვა, რომ მართლწერის შემოწმებისას კონტაქტების სახელები სწორ სიტყვებად იყოს ამოცნობილი</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">ცნობს კონტაქტების სახელებს სწორ სიტყვებად</string>
+    <string name="settings_spellcheck_use_contacts_title">კონტაქტების სახელების მიღება</string>
     <string name="settings_spellcheck_accept_learned_title">ნასწავლი სიტყვების მიღება</string>
-    <string name="settings_spellcheck_accept_learned_summary">თქვენი აკრეფიდან ნასწავლი სიტყვები სწორად დაწერილად ითვლება</string>
+    <string name="settings_spellcheck_accept_learned_summary">ცნობს თქვენი აკრეფიდან ნასწავლ სიტყვებს</string>
     <string name="pref_alt_double_tap_lock">Alt-ის ორმაგი დაჭერით ჩაკეტვის ჩართვა</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-ზე ორჯერ დაჭერა მას ჩაკეტავს. Alt-ზე ხელახლა დაჭერა გამორთავს.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl-ის ორმაგი დაჭერით ჩაკეტვის ჩართვა</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">შენჯღრევის მოქმედება X ღერძზე</string>
     <string name="settings_shake_y_axis_title">შენჯღრევის მოქმედება Y ღერძზე</string>
     <string name="settings_shake_z_axis_title">შენჯღრევის მოქმედება Z ღერძზე</string>
-    <string name="settings_spell_checker_screen_title">მართლწერის შემმოწმებლის პარამეტრები</string>
     <string name="settings_spell_checker_summary">სისტემის მასშტაბით მართლწერის შემოწმების კონფიგურაცია</string>
     <string name="settings_spell_checker_title">მართლწერის შემოწმება</string>
     <string name="settings_title">BBKB-ის პარამეტრები</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">სიმბოლოები იტვირთება…</string>
     <string name="settings_keyeditor_hex_code">თექვსმეტობითი კოდი (მაგ., 1F600)</string>
     <string name="settings_keyeditor_invalid_code">სიმბოლოს არასწორი კოდი</string>
-    <string name="settings_spellcheck_intro">BBKB-ის მართლწერის შემმოწმებელი ჭკვიანურად ამოწმებს მართლწერას ყველა აპში, რომელიც მართლწერის შემოწმებას უჭერს მხარს. ის იყენებს მოწინავე ენობრივ მოდელებს შეცდომების აღმოსაჩენად და შესწორებების შესათავაზებლად.</string>
+    <string name="settings_spellcheck_intro">BBKB-ის მართლწერის შემმოწმებელი იყენებს მოწინავე ენობრივ მოდელებს, რათა შეამოწმოს მართლწერა ყველა აპში, რომელიც ამას უჭერს მხარს</string>
+    <string name="settings_spellcheck_enable_title">BBKB-ის მართლწერის შემმოწმებლის ჩართვა</string>
+    <string name="settings_spellcheck_enable_summary">აღმოაჩენს შეცდომებს და გთავაზობთ შესწორებებს</string>
     <string name="settings_credits_version">ვერსია %1$s (ბილდი %2$s)</string>
 </resources>

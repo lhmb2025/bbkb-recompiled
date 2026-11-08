@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Исправляет слова при вводе. Нажмите Backspace, чтобы отменить исправление.</string>
     <string name="settings_category_display">Отображение</string>
     <string name="settings_category_sources">Источники</string>
-    <string name="settings_category_contacts_accounts">Контакты и аккаунты</string>
     <string name="settings_dict_add_reverted_words_title">Показывать кнопку добавления слова</string>
     <string name="settings_dict_add_reverted_words_summary">После отмены исправления клавишей Backspace показывать кнопку для добавления слова</string>
     <string name="prefs_category_tuning">Настройка</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Показывать индикатор модификаторов Shift/Alt в строке состояния при работе с физической клавиатурой</string>
     <string name="settings_pred_block_offensive_summary">Скрывать потенциально оскорбительные слова при голосовом вводе</string>
     <string name="settings_pred_block_offensive_title">Блокировать оскорбительные слова</string>
-    <string name="settings_pred_contacts_permission_summary">Предоставьте разрешение, чтобы предлагать имена контактов и адреса эл. почты</string>
     <string name="settings_pred_contacts_permission_title">Разрешение на доступ к контактам</string>
     <string name="settings_pred_contacts_summary_disabled">Требуется разрешение на доступ к контактам</string>
     <string name="settings_pred_contacts_summary_enabled">Включать имена контактов в подсказки</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Показывать анимацию подтверждения взмахом</string>
     <string name="settings_pred_force_suggestions_summary">Показывать панель подсказок даже в приложениях, которые просят клавиатуру скрыть ее. Не применяется к полям паролей.</string>
     <string name="settings_pred_force_suggestions_title">Принудительные подсказки</string>
-    <string name="settings_pred_grant_permission">Предоставить разрешение</string>
     <string name="settings_pred_next_word_summary">Предлагать следующее слово с учетом контекста</string>
     <string name="settings_pred_next_word_title">Подсказка следующего слова</string>
     <string name="settings_pred_on_key_summary">Показывать подсказки на виртуальной клавиатуре при вводе</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Вертикальный масштаб в начале анимации</string>
     <string name="settings_anim_show_start_y_title">Масштаб Y в начале появления</string>
     <string name="settings_animation_params_title">Параметры анимации</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Предоставьте доступ к контактам, чтобы использовать эту функцию</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Имена контактов будут распознаваться как правильные слова</string>
-    <string name="settings_spellcheck_use_contacts_title">Использовать контакты при проверке орфографии</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Предоставьте доступ к контактам, чтобы при проверке орфографии имена контактов считались правильными словами</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Распознает имена контактов как правильные слова</string>
+    <string name="settings_spellcheck_use_contacts_title">Принимать имена контактов</string>
     <string name="settings_spellcheck_accept_learned_title">Принимать изученные слова</string>
-    <string name="settings_spellcheck_accept_learned_summary">Слова, изученные по вашему набору, считаются написанными правильно</string>
+    <string name="settings_spellcheck_accept_learned_summary">Распознает слова, изученные по вашему набору</string>
     <string name="pref_alt_double_tap_lock">Включить фиксацию Alt двойным нажатием</string>
     <string name="pref_alt_double_tap_lock_summary">Двойное нажатие Alt фиксирует его. Повторное нажатие Alt отключает фиксацию.</string>
     <string name="pref_ctrl_double_tap_lock">Включить фиксацию Ctrl двойным нажатием</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Действие при встряхивании по оси X</string>
     <string name="settings_shake_y_axis_title">Действие при встряхивании по оси Y</string>
     <string name="settings_shake_z_axis_title">Действие при встряхивании по оси Z</string>
-    <string name="settings_spell_checker_screen_title">Настройки проверки орфографии</string>
     <string name="settings_spell_checker_summary">Настройка проверки орфографии для всей системы</string>
     <string name="settings_spell_checker_title">Проверка орфографии</string>
     <string name="settings_title">Настройки BBKB</string>
@@ -1129,6 +1123,8 @@
     <string name="settings_keyeditor_loading">Загрузка символов…</string>
     <string name="settings_keyeditor_hex_code">Шестнадцатеричный код (например, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Недопустимый код символа</string>
-    <string name="settings_spellcheck_intro">Средство проверки орфографии BBKB проверяет правописание во всех приложениях, которые это поддерживают. Оно использует продвинутые языковые модели, чтобы находить опечатки и предлагать исправления.</string>
+    <string name="settings_spellcheck_intro">Средство проверки орфографии BBKB использует продвинутые языковые модели, чтобы проверять правописание во всех приложениях, которые это поддерживают</string>
+    <string name="settings_spellcheck_enable_title">Включить проверку орфографии BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Находит опечатки и предлагает исправления</string>
     <string name="settings_credits_version">Версия %1$s (сборка %2$s)</string>
 </resources>

@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Opravuje slová počas písania. Stlačením Backspace opravu vrátite.</string>
     <string name="settings_category_display">Zobrazenie</string>
     <string name="settings_category_sources">Zdroje</string>
-    <string name="settings_category_contacts_accounts">Kontakty a účty</string>
     <string name="settings_dict_add_reverted_words_title">Zobraziť tlačidlo pridania slova</string>
     <string name="settings_dict_add_reverted_words_summary">Po vrátení opravy klávesom Backspace zobraziť tlačidlo na pridanie slova</string>
     <string name="prefs_category_tuning">Ladenie</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Pri používaní fyzickej klávesnice zobrazovať v stavovom riadku indikátor Shift/Alt</string>
     <string name="settings_pred_block_offensive_summary">Skryť potenciálne urážlivé slová pri hlasovom diktovaní</string>
     <string name="settings_pred_block_offensive_title">Blokovať urážlivé slová</string>
-    <string name="settings_pred_contacts_permission_summary">Udeľte povolenie, aby sa navrhovali mená kontaktov a e-mailové adresy</string>
     <string name="settings_pred_contacts_permission_title">Povolenie pre kontakty</string>
     <string name="settings_pred_contacts_summary_disabled">Vyžaduje sa povolenie pre kontakty</string>
     <string name="settings_pred_contacts_summary_enabled">Zahrnúť mená kontaktov do návrhov</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Zobraziť animáciu potvrdenia švihnutím</string>
     <string name="settings_pred_force_suggestions_summary">Zobrazovať lištu návrhov aj v aplikáciách, ktoré ju žiadajú skryť. Neplatí pre polia s heslom.</string>
     <string name="settings_pred_force_suggestions_title">Vynútiť návrhy</string>
-    <string name="settings_pred_grant_permission">Udeliť povolenie</string>
     <string name="settings_pred_next_word_summary">Navrhovať ďalšie slovo podľa kontextu</string>
     <string name="settings_pred_next_word_title">Návrhy ďalšieho slova</string>
     <string name="settings_pred_on_key_summary">Zobrazovať návrhy na virtuálnej klávesnici počas písania</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Zvislá mierka na začiatku animácie</string>
     <string name="settings_anim_show_start_y_title">Mierka Y na začiatku zobrazenia</string>
     <string name="settings_animation_params_title">Parametre animácie</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Na používanie tejto funkcie udeľte povolenie pre kontakty</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Mená kontaktov sa budú rozpoznávať ako platné slová</string>
-    <string name="settings_spellcheck_use_contacts_title">Používať kontakty pri kontrole pravopisu</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Udeľte povolenie na prístup ku kontaktom, aby kontrola pravopisu rozpoznávala mená kontaktov ako platné slová</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Rozpoznáva mená kontaktov ako platné slová</string>
+    <string name="settings_spellcheck_use_contacts_title">Prijímať mená kontaktov</string>
     <string name="settings_spellcheck_accept_learned_title">Prijímať naučené slová</string>
-    <string name="settings_spellcheck_accept_learned_summary">Slová naučené z vášho písania sa považujú za správne napísané</string>
+    <string name="settings_spellcheck_accept_learned_summary">Rozpoznáva slová naučené z vášho písania</string>
     <string name="pref_alt_double_tap_lock">Zapnúť uzamknutie klávesu Alt dvojitým stlačením</string>
     <string name="pref_alt_double_tap_lock_summary">Dvojitým stlačením klávesu Alt ho uzamknete. Ďalším stlačením ho vypnete.</string>
     <string name="pref_ctrl_double_tap_lock">Zapnúť uzamknutie klávesu Ctrl dvojitým stlačením</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Akcia potrasenia v osi X</string>
     <string name="settings_shake_y_axis_title">Akcia potrasenia v osi Y</string>
     <string name="settings_shake_z_axis_title">Akcia potrasenia v osi Z</string>
-    <string name="settings_spell_checker_screen_title">Nastavenia kontroly pravopisu</string>
     <string name="settings_spell_checker_summary">Nastavte kontrolu pravopisu v celom systéme</string>
     <string name="settings_spell_checker_title">Kontrola pravopisu</string>
     <string name="settings_title">Nastavenia BBKB</string>
@@ -1129,6 +1123,8 @@
     <string name="settings_keyeditor_loading">Načítavajú sa symboly…</string>
     <string name="settings_keyeditor_hex_code">Hexadecimálny kód (napr. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Neplatný kód znaku</string>
-    <string name="settings_spellcheck_intro">Kontrola pravopisu BBKB poskytuje inteligentnú kontrolu pravopisu vo všetkých aplikáciách, ktoré ju podporujú. Pomocou pokročilých jazykových modelov rozpoznáva preklepy a navrhuje opravy.</string>
+    <string name="settings_spellcheck_intro">Kontrola pravopisu BBKB využíva pokročilé jazykové modely na poskytovanie kontroly pravopisu vo všetkých aplikáciách, ktoré ju podporujú</string>
+    <string name="settings_spellcheck_enable_title">Zapnúť kontrolu pravopisu BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Rozpoznáva preklepy a navrhuje opravy</string>
     <string name="settings_credits_version">Verzia %1$s (zostava %2$s)</string>
 </resources>

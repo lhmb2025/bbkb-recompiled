@@ -1149,14 +1149,14 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 // "Block offensive words" is no longer here: dictation masking is its only
                 // effect, so the row moved to VoiceInputSettingsScreen (same preference key).
                 // The emoji dynamic search rows moved to Auxiliary input (2026-10-19).
-                "settings_pred_contacts_permission_summary", "settings_pred_contacts_permission_title",
+                
                 "settings_pred_contacts_summary_disabled", "settings_pred_contacts_title",
                 "settings_pred_emoji_summary", "settings_pred_emoji_title",
-                // Grouped 2026-10-20: Display / Sources / Contacts and accounts; the flick
-                // animation row moved to the On-screen keyboard screen.
-                "settings_category_contacts_accounts", "settings_category_display", "settings_category_sources",
+                // Grouped 2026-10-20: Display / Sources (contacts joined Sources 2026-11-09); the
+                // flick animation row moved to the On-screen keyboard screen.
+                "settings_category_display", "settings_category_sources",
                 "settings_pred_force_suggestions_summary", "settings_pred_force_suggestions_title",
-                "settings_pred_grant_permission", "settings_pred_inline_autofill_summary",
+                "settings_pred_inline_autofill_summary",
                 "settings_pred_inline_autofill_title", "settings_pred_next_word_summary",
                 "settings_pred_next_word_title", "settings_pred_on_key_summary", "settings_pred_on_key_title",
                 "settings_pred_personalized_summary", "settings_pred_personalized_title",
@@ -1229,12 +1229,14 @@ class SettingsScreenRenderTest(private val screenName: String) {
             // Not in the settings NavHost at all: it is hosted by SpellCheckerComposeActivity,
             // which is why SettingsSearchIndex routes its entry at the hub row instead.
             route = "(SpellCheckerComposeActivity)",
-            title = "Spell checker settings",
+            title = "Spell checking",
             resources = setOf(
-                "settings_pred_contacts_permission_title", "settings_pred_grant_permission",
-                "settings_spell_checker_screen_title", "settings_spellcheck_use_contacts_summary_disabled",
+                
+                "settings_spell_checker_title", "settings_pred_contacts_summary_disabled",
+                // The master row.
+                "settings_spellcheck_enable_title", "settings_spellcheck_enable_summary",
                 "settings_spellcheck_use_contacts_title", "settings_spellcheck_accept_learned_title",
-                "settings_spellcheck_accept_learned_summary", "settings_spellcheck_contacts_permission_summary",
+                "settings_spellcheck_accept_learned_summary",
                 // "About Spell Checker" is gone: it was the heading of an info card, one line
                 // under an app bar already reading "Spell checker settings". The sentence it
                 // introduced is still here, now as a plain PreferenceInfo paragraph.

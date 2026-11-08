@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Korjaa sanoja kirjoittaessasi. Kumoa korjaus askelpalauttimella.</string>
     <string name="settings_category_display">Näyttö</string>
     <string name="settings_category_sources">Lähteet</string>
-    <string name="settings_category_contacts_accounts">Yhteystiedot ja tilit</string>
     <string name="settings_dict_add_reverted_words_title">Näytä sanan lisäyspainike</string>
     <string name="settings_dict_add_reverted_words_summary">Kun askelpalautin kumoaa korjauksen, näytä painike sanan lisäämiseksi</string>
     <string name="prefs_category_tuning">Viritys</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Näytä vaihto- ja Alt-näppäimen ilmaisin tilapalkissa, kun käytät fyysistä näppäimistöä</string>
     <string name="settings_pred_block_offensive_summary">Piilota mahdollisesti loukkaavat sanat puhesanelussa</string>
     <string name="settings_pred_block_offensive_title">Estä loukkaavat sanat</string>
-    <string name="settings_pred_contacts_permission_summary">Myönnä käyttöoikeus, jotta yhteystietojen nimiä ja sähköpostiosoitteita voidaan ehdottaa</string>
     <string name="settings_pred_contacts_permission_title">Yhteystietojen käyttöoikeus</string>
     <string name="settings_pred_contacts_summary_disabled">Yhteystietojen käyttöoikeus vaaditaan</string>
     <string name="settings_pred_contacts_summary_enabled">Sisällytä yhteystietojen nimet ehdotuksiin</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Näytä animaatio pyyhkäisyhyväksynnässä</string>
     <string name="settings_pred_force_suggestions_summary">Näytä ehdotuspalkki myös sovelluksissa, jotka pyytävät näppäimistöä piilottamaan sen. Ei koske salasanakenttiä.</string>
     <string name="settings_pred_force_suggestions_title">Pakota ehdotukset</string>
-    <string name="settings_pred_grant_permission">Myönnä käyttöoikeus</string>
     <string name="settings_pred_next_word_summary">Ehdota seuraavaa sanaa asiayhteyden perusteella</string>
     <string name="settings_pred_next_word_title">Seuraavan sanan ehdotukset</string>
     <string name="settings_pred_on_key_summary">Näytä ehdotukset virtuaalinäppäimistöllä kirjoittaessasi</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Pystyskaalaus animaation alussa</string>
     <string name="settings_anim_show_start_y_title">Näyttämisen alun Y-skaalaus</string>
     <string name="settings_animation_params_title">Animaatioparametrit</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Myönnä yhteystietojen käyttöoikeus, jotta voit käyttää tätä ominaisuutta</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Yhteystietojen nimet tunnistetaan kelvollisiksi sanoiksi</string>
-    <string name="settings_spellcheck_use_contacts_title">Käytä yhteystietoja oikoluvussa</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Myönnä yhteystietojen käyttöoikeus, jotta oikoluku tunnistaa yhteystietojen nimet oikeiksi sanoiksi</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Tunnistaa yhteystietojen nimet kelvollisiksi sanoiksi</string>
+    <string name="settings_spellcheck_use_contacts_title">Hyväksy yhteystietojen nimet</string>
     <string name="settings_spellcheck_accept_learned_title">Hyväksy opitut sanat</string>
-    <string name="settings_spellcheck_accept_learned_summary">Kirjoituksestasi opitut sanat katsotaan oikein kirjoitetuiksi</string>
+    <string name="settings_spellcheck_accept_learned_summary">Tunnistaa kirjoituksestasi opitut sanat</string>
     <string name="pref_alt_double_tap_lock">Ota Alt-lukitus kaksoisnapautuksella käyttöön</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-näppäimen kaksoisnapautus lukitsee sen päälle. Napauta Alt-näppäintä uudelleen, niin lukitus poistuu.</string>
     <string name="pref_ctrl_double_tap_lock">Ota Ctrl-lukitus kaksoisnapautuksella käyttöön</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">X-akselin ravistustoiminto</string>
     <string name="settings_shake_y_axis_title">Y-akselin ravistustoiminto</string>
     <string name="settings_shake_z_axis_title">Z-akselin ravistustoiminto</string>
-    <string name="settings_spell_checker_screen_title">Oikoluvun asetukset</string>
     <string name="settings_spell_checker_summary">Määritä koko järjestelmän oikoluvun toiminta</string>
     <string name="settings_spell_checker_title">Oikoluku</string>
     <string name="settings_title">BBKB:n asetukset</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Ladataan symboleja…</string>
     <string name="settings_keyeditor_hex_code">Heksadesimaalikoodi (esim. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Virheellinen merkkikoodi</string>
-    <string name="settings_spellcheck_intro">BBKB-oikoluku tarjoaa älykkään oikoluvun kaikissa sovelluksissa, jotka tukevat oikolukua. Se tunnistaa kirjoitusvirheet ja ehdottaa korjauksia kehittyneiden kielimallien avulla.</string>
+    <string name="settings_spellcheck_intro">BBKB-oikoluku tarjoaa kehittyneiden kielimallien avulla oikoluvun kaikissa sovelluksissa, jotka tukevat sitä</string>
+    <string name="settings_spellcheck_enable_title">Ota BBKB:n oikoluku käyttöön</string>
+    <string name="settings_spellcheck_enable_summary">Tunnistaa kirjoitusvirheet ja ehdottaa korjauksia</string>
     <string name="settings_credits_version">Versio %1$s (koontiversio %2$s)</string>
 </resources>

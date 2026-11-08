@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">تصحيح الكلمات أثناء الكتابة. اضغط مفتاح الحذف للتراجع عن التصحيح.</string>
     <string name="settings_category_display">العرض</string>
     <string name="settings_category_sources">المصادر</string>
-    <string name="settings_category_contacts_accounts">جهات الاتصال والحسابات</string>
     <string name="settings_dict_add_reverted_words_title">إظهار زر إضافة الكلمة</string>
     <string name="settings_dict_add_reverted_words_summary">بعد تراجع مفتاح الحذف عن تصحيح، إظهار زر لإضافة الكلمة</string>
     <string name="prefs_category_tuning">الضبط</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">عرض مؤشر مفتاحَي Shift/Alt في شريط الحالة عند استخدام لوحة المفاتيح الفعلية</string>
     <string name="settings_pred_block_offensive_summary">إخفاء الكلمات التي قد تكون مسيئة في الإملاء الصوتي</string>
     <string name="settings_pred_block_offensive_title">حظر الكلمات المسيئة</string>
-    <string name="settings_pred_contacts_permission_summary">امنح الإذن لاقتراح أسماء جهات الاتصال وعناوين البريد الإلكتروني</string>
     <string name="settings_pred_contacts_permission_title">إذن جهات الاتصال</string>
     <string name="settings_pred_contacts_summary_disabled">إذن جهات الاتصال مطلوب</string>
     <string name="settings_pred_contacts_summary_enabled">تضمين أسماء جهات الاتصال في الاقتراحات</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">عرض حركة التأكيد بالتمرير</string>
     <string name="settings_pred_force_suggestions_summary">عرض شريط الاقتراحات حتى في التطبيقات التي تطلب من لوحة المفاتيح إخفاءه. لا ينطبق على حقول كلمات المرور.</string>
     <string name="settings_pred_force_suggestions_title">فرض الاقتراحات</string>
-    <string name="settings_pred_grant_permission">منح الإذن</string>
     <string name="settings_pred_next_word_summary">اقتراح الكلمة التالية بناءً على السياق</string>
     <string name="settings_pred_next_word_title">اقتراحات الكلمة التالية</string>
     <string name="settings_pred_on_key_summary">عرض الاقتراحات على لوحة المفاتيح الافتراضية أثناء الكتابة</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">المقياس الرأسي عند بداية الحركة</string>
     <string name="settings_anim_show_start_y_title">مقياس Y عند بداية الظهور</string>
     <string name="settings_animation_params_title">معلمات الحركة</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">امنح إذن جهات الاتصال لاستخدام هذه الميزة</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">سيتم التعرف على أسماء جهات الاتصال ككلمات صحيحة</string>
-    <string name="settings_spellcheck_use_contacts_title">استخدام جهات الاتصال في التدقيق الإملائي</string>
-    <string name="settings_spellcheck_contacts_permission_summary">امنح إذن جهات الاتصال للتعرّف على أسماء جهات الاتصال ككلمات صحيحة أثناء التدقيق الإملائي</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">يتعرّف على أسماء جهات الاتصال ككلمات صحيحة</string>
+    <string name="settings_spellcheck_use_contacts_title">قبول أسماء جهات الاتصال</string>
     <string name="settings_spellcheck_accept_learned_title">قبول الكلمات المكتسبة</string>
-    <string name="settings_spellcheck_accept_learned_summary">تُعدّ الكلمات المكتسبة من كتابتك مكتوبة بشكل صحيح</string>
+    <string name="settings_spellcheck_accept_learned_summary">يتعرّف على الكلمات المكتسبة من كتابتك</string>
     <string name="pref_alt_double_tap_lock">تمكين قفل Alt بالنقر المزدوج</string>
     <string name="pref_alt_double_tap_lock_summary">النقر المزدوج على Alt يقفله قيد التشغيل. النقر على Alt مرة أخرى يوقف تشغيله.</string>
     <string name="pref_ctrl_double_tap_lock">تمكين قفل Ctrl بالنقر المزدوج</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">إجراء الهز على المحور X</string>
     <string name="settings_shake_y_axis_title">إجراء الهز على المحور Y</string>
     <string name="settings_shake_z_axis_title">إجراء الهز على المحور Z</string>
-    <string name="settings_spell_checker_screen_title">إعدادات المدقق الإملائي</string>
     <string name="settings_spell_checker_summary">تكوين سلوك التدقيق الإملائي على مستوى النظام</string>
     <string name="settings_spell_checker_title">التدقيق الإملائي</string>
     <string name="settings_title">إعدادات BBKB</string>
@@ -1159,6 +1153,8 @@
     <string name="settings_keyeditor_loading">جارٍ تحميل الرموز…</string>
     <string name="settings_keyeditor_hex_code">الرمز السداسي العشري (مثل 1F600)</string>
     <string name="settings_keyeditor_invalid_code">رمز حرف غير صالح</string>
-    <string name="settings_spellcheck_intro">يوفّر المدقق الإملائي في BBKB تدقيقًا إملائيًا ذكيًا في جميع التطبيقات التي تدعم التدقيق الإملائي. ويستخدم نماذج لغوية متقدمة لاكتشاف الأخطاء المطبعية واقتراح التصحيحات.</string>
+    <string name="settings_spellcheck_intro">يستخدم المدقق الإملائي في BBKB نماذج لغوية متقدمة لتوفير التدقيق الإملائي في جميع التطبيقات التي تدعمه</string>
+    <string name="settings_spellcheck_enable_title">تفعيل المدقق الإملائي من BBKB</string>
+    <string name="settings_spellcheck_enable_summary">يكتشف الأخطاء المطبعية ويقترح التصحيحات</string>
     <string name="settings_credits_version">الإصدار %1$s (البنية %2$s)</string>
 </resources>

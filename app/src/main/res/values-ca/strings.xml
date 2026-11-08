@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Corregeix les paraules mentre escrius. Prem retrocés per desfer una correcció.</string>
     <string name="settings_category_display">Visualització</string>
     <string name="settings_category_sources">Fonts</string>
-    <string name="settings_category_contacts_accounts">Contactes i comptes</string>
     <string name="settings_dict_add_reverted_words_title">Mostra el botó d\'afegir paraula</string>
     <string name="settings_dict_add_reverted_words_summary">Quan retrocés desfà una correcció, mostra un botó per afegir la paraula</string>
     <string name="prefs_category_tuning">Ajust</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Mostra l\'indicador de Maj/Alt a la barra d\'estat quan feu servir el teclat físic</string>
     <string name="settings_pred_block_offensive_summary">Emmascara les paraules potencialment ofensives en el dictat per veu</string>
     <string name="settings_pred_block_offensive_title">Bloqueja les paraules ofensives</string>
-    <string name="settings_pred_contacts_permission_summary">Concediu el permís per suggerir noms de contacte i adreces electròniques</string>
     <string name="settings_pred_contacts_permission_title">Permís de contactes</string>
     <string name="settings_pred_contacts_summary_disabled">Cal el permís de contactes</string>
     <string name="settings_pred_contacts_summary_enabled">Inclou els noms dels contactes als suggeriments</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Mostra l\'animació de confirmació amb lliscada ràpida</string>
     <string name="settings_pred_force_suggestions_summary">Mostra la barra de suggeriments fins i tot a les aplicacions que demanen al teclat que l\'amagui. No s\'aplica als camps de contrasenya.</string>
     <string name="settings_pred_force_suggestions_title">Força els suggeriments</string>
-    <string name="settings_pred_grant_permission">Concedeix el permís</string>
     <string name="settings_pred_next_word_summary">Suggereix la paraula següent segons el context</string>
     <string name="settings_pred_next_word_title">Suggeriments de paraula següent</string>
     <string name="settings_pred_on_key_summary">Mostra suggeriments al teclat virtual mentre escriviu</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Escala vertical a l\'inici de l\'animació</string>
     <string name="settings_anim_show_start_y_title">Escala Y inicial de l\'aparició</string>
     <string name="settings_animation_params_title">Paràmetres d\'animació</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Concediu el permís de contactes per utilitzar aquesta funció</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Els noms dels contactes es reconeixeran com a paraules vàlides</string>
-    <string name="settings_spellcheck_use_contacts_title">Usa els contactes en la correcció ortogràfica</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Concediu el permís de contactes perquè els noms de contacte es reconeguin com a paraules vàlides en la correcció ortogràfica</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Reconeix els noms dels contactes com a paraules vàlides</string>
+    <string name="settings_spellcheck_use_contacts_title">Accepta els noms dels contactes</string>
     <string name="settings_spellcheck_accept_learned_title">Accepta les paraules apreses</string>
-    <string name="settings_spellcheck_accept_learned_summary">Les paraules apreses del que escriviu compten com a ben escrites</string>
+    <string name="settings_spellcheck_accept_learned_summary">Reconeix les paraules apreses del que escriviu</string>
     <string name="pref_alt_double_tap_lock">Activa el bloqueig d\'Alt amb doble toc</string>
     <string name="pref_alt_double_tap_lock_summary">En prémer Alt dues vegades quedarà bloquejada. Torneu a prémer Alt per desbloquejar-la.</string>
     <string name="pref_ctrl_double_tap_lock">Activa el bloqueig d\'Ctrl amb doble toc</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Acció en sacsejar en l\'eix X</string>
     <string name="settings_shake_y_axis_title">Acció en sacsejar en l\'eix Y</string>
     <string name="settings_shake_z_axis_title">Acció en sacsejar en l\'eix Z</string>
-    <string name="settings_spell_checker_screen_title">Configuració del corrector ortogràfic</string>
     <string name="settings_spell_checker_summary">Configura la correcció ortogràfica de tot el sistema</string>
     <string name="settings_spell_checker_title">Correcció ortogràfica</string>
     <string name="settings_title">Configuració de BBKB</string>
@@ -1114,6 +1108,8 @@
     <string name="settings_keyeditor_loading">S\'estan carregant els símbols…</string>
     <string name="settings_keyeditor_hex_code">Codi hexadecimal (p. ex. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Codi de caràcter no vàlid</string>
-    <string name="settings_spellcheck_intro">El corrector ortogràfic de BBKB ofereix una correcció ortogràfica intel·ligent a totes les aplicacions que l\'admeten. Utilitza models de llengua avançats per detectar errades tipogràfiques i suggerir correccions.</string>
+    <string name="settings_spellcheck_intro">El corrector ortogràfic de BBKB utilitza models de llengua avançats per oferir correcció ortogràfica a totes les aplicacions que l\'admeten</string>
+    <string name="settings_spellcheck_enable_title">Activa el corrector ortogràfic de BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Detecta errades tipogràfiques i suggereix correccions</string>
     <string name="settings_credits_version">Versió %1$s (compilació %2$s)</string>
 </resources>

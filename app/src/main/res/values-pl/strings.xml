@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Poprawia słowa podczas pisania. Naciśnij Backspace, aby cofnąć poprawkę.</string>
     <string name="settings_category_display">Wyświetlanie</string>
     <string name="settings_category_sources">Źródła</string>
-    <string name="settings_category_contacts_accounts">Kontakty i konta</string>
     <string name="settings_dict_add_reverted_words_title">Pokaż przycisk dodania słowa</string>
     <string name="settings_dict_add_reverted_words_summary">Gdy Backspace cofnie poprawkę, pokaż przycisk dodania słowa</string>
     <string name="prefs_category_tuning">Strojenie</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Pokazuj wskaźnik modyfikatorów Shift/Alt na pasku stanu podczas korzystania z klawiatury fizycznej</string>
     <string name="settings_pred_block_offensive_summary">Ukrywaj potencjalnie obraźliwe słowa podczas dyktowania głosowego</string>
     <string name="settings_pred_block_offensive_title">Blokuj obraźliwe słowa</string>
-    <string name="settings_pred_contacts_permission_summary">Przyznaj uprawnienie, aby podpowiadać nazwy kontaktów i adresy e-mail</string>
     <string name="settings_pred_contacts_permission_title">Uprawnienie do kontaktów</string>
     <string name="settings_pred_contacts_summary_disabled">Wymagane uprawnienie do kontaktów</string>
     <string name="settings_pred_contacts_summary_enabled">Uwzględniaj nazwy kontaktów w sugestiach</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Pokazuj animację zatwierdzania machnięciem</string>
     <string name="settings_pred_force_suggestions_summary">Pokazuj pasek sugestii nawet w aplikacjach, które proszą klawiaturę o jego ukrycie. Nie dotyczy pól hasła.</string>
     <string name="settings_pred_force_suggestions_title">Wymuszaj sugestie</string>
-    <string name="settings_pred_grant_permission">Przyznaj uprawnienie</string>
     <string name="settings_pred_next_word_summary">Podpowiadaj następne słowo na podstawie kontekstu</string>
     <string name="settings_pred_next_word_title">Sugestie następnego słowa</string>
     <string name="settings_pred_on_key_summary">Pokazuj sugestie na klawiaturze ekranowej podczas pisania</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Skala pionowa na początku animacji</string>
     <string name="settings_anim_show_start_y_title">Skala Y na początku pojawiania</string>
     <string name="settings_animation_params_title">Parametry animacji</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Przyznaj uprawnienie do kontaktów, aby korzystać z tej funkcji</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Nazwy kontaktów będą rozpoznawane jako poprawne słowa</string>
-    <string name="settings_spellcheck_use_contacts_title">Używaj kontaktów przy sprawdzaniu pisowni</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Przyznaj uprawnienie do kontaktów, aby sprawdzanie pisowni rozpoznawało nazwy kontaktów jako poprawne słowa</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Rozpoznaje nazwy kontaktów jako poprawne słowa</string>
+    <string name="settings_spellcheck_use_contacts_title">Akceptuj nazwy kontaktów</string>
     <string name="settings_spellcheck_accept_learned_title">Akceptuj nauczone słowa</string>
-    <string name="settings_spellcheck_accept_learned_summary">Słowa nauczone z Twojego pisania są uznawane za napisane poprawnie</string>
+    <string name="settings_spellcheck_accept_learned_summary">Rozpoznaje słowa nauczone z Twojego pisania</string>
     <string name="pref_alt_double_tap_lock">Włącz blokadę Alt dwukrotnym kliknięciem</string>
     <string name="pref_alt_double_tap_lock_summary">Dwukrotne kliknięcie klawisza Alt zablokuje go. Ponowne kliknięcie Alt go wyłączy.</string>
     <string name="pref_ctrl_double_tap_lock">Włącz blokadę Ctrl dwukrotnym kliknięciem</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Działanie potrząśnięcia w osi X</string>
     <string name="settings_shake_y_axis_title">Działanie potrząśnięcia w osi Y</string>
     <string name="settings_shake_z_axis_title">Działanie potrząśnięcia w osi Z</string>
-    <string name="settings_spell_checker_screen_title">Ustawienia sprawdzania pisowni</string>
     <string name="settings_spell_checker_summary">Skonfiguruj sprawdzanie pisowni w całym systemie</string>
     <string name="settings_spell_checker_title">Sprawdzanie pisowni</string>
     <string name="settings_title">Ustawienia BBKB</string>
@@ -1129,6 +1123,8 @@
     <string name="settings_keyeditor_loading">Wczytywanie symboli…</string>
     <string name="settings_keyeditor_hex_code">Kod szesnastkowy (np. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Nieprawidłowy kod znaku</string>
-    <string name="settings_spellcheck_intro">Moduł sprawdzania pisowni BBKB zapewnia inteligentne sprawdzanie pisowni we wszystkich aplikacjach, które je obsługują. Korzysta z zaawansowanych modeli językowych, aby wykrywać literówki i proponować poprawki.</string>
+    <string name="settings_spellcheck_intro">Moduł sprawdzania pisowni BBKB korzysta z zaawansowanych modeli językowych, aby zapewniać sprawdzanie pisowni we wszystkich aplikacjach, które je obsługują</string>
+    <string name="settings_spellcheck_enable_title">Włącz moduł sprawdzania pisowni BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Wykrywa literówki i proponuje poprawki</string>
     <string name="settings_credits_version">Wersja %1$s (kompilacja %2$s)</string>
 </resources>

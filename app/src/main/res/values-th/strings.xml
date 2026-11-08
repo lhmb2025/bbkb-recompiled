@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">แก้ไขคำขณะพิมพ์ กด Backspace เพื่อเลิกทำการแก้ไข</string>
     <string name="settings_category_display">การแสดงผล</string>
     <string name="settings_category_sources">แหล่งที่มา</string>
-    <string name="settings_category_contacts_accounts">รายชื่อติดต่อและบัญชี</string>
     <string name="settings_dict_add_reverted_words_title">แสดงปุ่มเพิ่มคำ</string>
     <string name="settings_dict_add_reverted_words_summary">หลังจาก Backspace เลิกทำการแก้ไข ให้แสดงปุ่มเพื่อเพิ่มคำ</string>
     <string name="prefs_category_tuning">การปรับแต่ง</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">แสดงตัวบ่งชี้ปุ่มปรับเปลี่ยน Shift/Alt ในแถบสถานะเมื่อใช้แป้นพิมพ์จริง</string>
     <string name="settings_pred_block_offensive_summary">ซ่อนคำที่อาจไม่เหมาะสมเมื่อพิมพ์ด้วยเสียง</string>
     <string name="settings_pred_block_offensive_title">บล็อกคำไม่เหมาะสม</string>
-    <string name="settings_pred_contacts_permission_summary">ให้สิทธิ์เพื่อแนะนำชื่อผู้ติดต่อและที่อยู่อีเมล</string>
     <string name="settings_pred_contacts_permission_title">สิทธิ์เข้าถึงรายชื่อ</string>
     <string name="settings_pred_contacts_summary_disabled">ต้องมีสิทธิ์เข้าถึงรายชื่อ</string>
     <string name="settings_pred_contacts_summary_enabled">รวมชื่อผู้ติดต่อในคำแนะนำ</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">แสดงภาพเคลื่อนไหวเมื่อสะบัดยืนยัน</string>
     <string name="settings_pred_force_suggestions_summary">แสดงแถบคำแนะนำแม้ในแอปที่ขอให้แป้นพิมพ์ซ่อนไว้ ไม่มีผลกับช่องรหัสผ่าน</string>
     <string name="settings_pred_force_suggestions_title">บังคับแสดงคำแนะนำ</string>
-    <string name="settings_pred_grant_permission">ให้สิทธิ์</string>
     <string name="settings_pred_next_word_summary">แนะนำคำถัดไปตามบริบท</string>
     <string name="settings_pred_next_word_title">คำแนะนำคำถัดไป</string>
     <string name="settings_pred_on_key_summary">แสดงคำแนะนำบนแป้นพิมพ์เสมือนขณะที่คุณพิมพ์</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">สเกลแนวตั้งเมื่อภาพเคลื่อนไหวเริ่มต้น</string>
     <string name="settings_anim_show_start_y_title">สเกล Y ตอนเริ่มการแสดง</string>
     <string name="settings_animation_params_title">พารามิเตอร์ภาพเคลื่อนไหว</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">ให้สิทธิ์เข้าถึงรายชื่อเพื่อใช้คุณสมบัตินี้</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">ชื่อผู้ติดต่อจะถูกถือว่าเป็นคำที่ถูกต้อง</string>
-    <string name="settings_spellcheck_use_contacts_title">ใช้รายชื่อสำหรับการตรวจการสะกด</string>
-    <string name="settings_spellcheck_contacts_permission_summary">ให้สิทธิ์เข้าถึงรายชื่อเพื่อให้การตรวจการสะกดรู้จักชื่อผู้ติดต่อเป็นคำที่ถูกต้อง</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">จดจำชื่อผู้ติดต่อเป็นคำที่ถูกต้อง</string>
+    <string name="settings_spellcheck_use_contacts_title">ยอมรับชื่อผู้ติดต่อ</string>
     <string name="settings_spellcheck_accept_learned_title">ยอมรับคำที่เรียนรู้</string>
-    <string name="settings_spellcheck_accept_learned_summary">คำที่เรียนรู้จากการพิมพ์ของคุณจะถือว่าสะกดถูกต้อง</string>
+    <string name="settings_spellcheck_accept_learned_summary">จดจำคำที่เรียนรู้จากการพิมพ์ของคุณ</string>
     <string name="pref_alt_double_tap_lock">เปิดใช้งานการล็อก Alt ด้วยการกดสองครั้ง</string>
     <string name="pref_alt_double_tap_lock_summary">การกด Alt สองครั้งจะล็อกให้เปิดค้างไว้ กด Alt อีกครั้งเพื่อปิด</string>
     <string name="pref_ctrl_double_tap_lock">เปิดใช้งานการล็อก Ctrl ด้วยการกดสองครั้ง</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">การทำงานเมื่อเขย่าแกน X</string>
     <string name="settings_shake_y_axis_title">การทำงานเมื่อเขย่าแกน Y</string>
     <string name="settings_shake_z_axis_title">การทำงานเมื่อเขย่าแกน Z</string>
-    <string name="settings_spell_checker_screen_title">การตั้งค่าเครื่องมือตรวจการสะกด</string>
     <string name="settings_spell_checker_summary">ตั้งค่าการทำงานของการตรวจการสะกดทั้งระบบ</string>
     <string name="settings_spell_checker_title">การตรวจการสะกด</string>
     <string name="settings_title">การตั้งค่า BBKB</string>
@@ -1084,6 +1078,8 @@
     <string name="settings_keyeditor_loading">กำลังโหลดสัญลักษณ์…</string>
     <string name="settings_keyeditor_hex_code">รหัสฐานสิบหก (เช่น 1F600)</string>
     <string name="settings_keyeditor_invalid_code">รหัสอักขระไม่ถูกต้อง</string>
-    <string name="settings_spellcheck_intro">เครื่องมือตรวจการสะกดของ BBKB ช่วยตรวจการสะกดอย่างชาญฉลาดในทุกแอปที่รองรับการตรวจการสะกด เครื่องมือนี้ใช้โมเดลภาษาขั้นสูงเพื่อตรวจหาคำที่พิมพ์ผิดและแนะนำการแก้ไข</string>
+    <string name="settings_spellcheck_intro">เครื่องมือตรวจการสะกดของ BBKB ใช้โมเดลภาษาขั้นสูงเพื่อช่วยตรวจการสะกดในทุกแอปที่รองรับการตรวจการสะกด</string>
+    <string name="settings_spellcheck_enable_title">เปิดเครื่องมือตรวจการสะกด BBKB</string>
+    <string name="settings_spellcheck_enable_summary">ตรวจหาคำที่พิมพ์ผิดและแนะนำการแก้ไข</string>
     <string name="settings_credits_version">เวอร์ชัน %1$s (บิลด์ %2$s)</string>
 </resources>

@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">টাইপ করার সময় শব্দ সংশোধন করুন। সংশোধন বাতিল করতে ব্যাকস্পেস চাপুন।</string>
     <string name="settings_category_display">প্রদর্শন</string>
     <string name="settings_category_sources">উৎস</string>
-    <string name="settings_category_contacts_accounts">পরিচিতি ও অ্যাকাউন্ট</string>
     <string name="settings_dict_add_reverted_words_title">শব্দ যোগ বোতাম দেখান</string>
     <string name="settings_dict_add_reverted_words_summary">ব্যাকস্পেস সংশোধন বাতিল করার পর শব্দ যোগ করার বোতাম দেখান</string>
     <string name="prefs_category_tuning">টিউনিং</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">ফিজিক্যাল কীবোর্ড ব্যবহারের সময় স্ট্যাটাস বারে Shift/Alt মডিফায়ারের নির্দেশক দেখান</string>
     <string name="settings_pred_block_offensive_summary">ভয়েস ডিকটেশনে আপত্তিকর হতে পারে এমন শব্দ লুকান</string>
     <string name="settings_pred_block_offensive_title">আপত্তিকর শব্দ আটকান</string>
-    <string name="settings_pred_contacts_permission_summary">পরিচিতির নাম ও ইমেল ঠিকানা প্রস্তাব করতে অনুমতি দিন</string>
     <string name="settings_pred_contacts_permission_title">পরিচিতির অনুমতি</string>
     <string name="settings_pred_contacts_summary_disabled">পরিচিতির অনুমতি প্রয়োজন</string>
     <string name="settings_pred_contacts_summary_enabled">পরামর্শে পরিচিতির নাম অন্তর্ভুক্ত করুন</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">ফ্লিক অ্যানিমেশন দেখান</string>
     <string name="settings_pred_force_suggestions_summary">যেসব অ্যাপ কীবোর্ডকে পরামর্শ বার লুকাতে বলে সেখানেও তা দেখান। পাসওয়ার্ডের ক্ষেত্রে প্রযোজ্য নয়।</string>
     <string name="settings_pred_force_suggestions_title">জোর করে পরামর্শ দেখান</string>
-    <string name="settings_pred_grant_permission">অনুমতি দিন</string>
     <string name="settings_pred_next_word_summary">প্রসঙ্গ অনুযায়ী পরবর্তী শব্দের পরামর্শ দিন</string>
     <string name="settings_pred_next_word_title">পরবর্তী শব্দের পরামর্শ</string>
     <string name="settings_pred_on_key_summary">টাইপ করার সময় ভার্চুয়াল কীবোর্ডে পরামর্শ দেখান</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">অ্যানিমেশনের শুরুতে উল্লম্ব স্কেল</string>
     <string name="settings_anim_show_start_y_title">দেখা দেওয়ার শুরুর Y স্কেল</string>
     <string name="settings_animation_params_title">অ্যানিমেশন প্যারামিটার</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">এই সুবিধাটি ব্যবহার করতে পরিচিতির অনুমতি দিন</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">পরিচিতির নাম বৈধ শব্দ হিসেবে গণ্য হবে</string>
-    <string name="settings_spellcheck_use_contacts_title">বানান পরীক্ষায় পরিচিতি ব্যবহার করুন</string>
-    <string name="settings_spellcheck_contacts_permission_summary">বানান পরীক্ষার সময় পরিচিতির নামগুলিকে সঠিক শব্দ হিসেবে চিনতে পরিচিতির অনুমতি দিন</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">পরিচিতির নাম বৈধ শব্দ হিসেবে চেনে</string>
+    <string name="settings_spellcheck_use_contacts_title">পরিচিতির নাম গ্রহণ করুন</string>
     <string name="settings_spellcheck_accept_learned_title">শেখা শব্দ গ্রহণ করুন</string>
-    <string name="settings_spellcheck_accept_learned_summary">আপনার টাইপিং থেকে শেখা শব্দগুলো সঠিক বানান হিসেবে গণ্য হবে</string>
+    <string name="settings_spellcheck_accept_learned_summary">আপনার টাইপিং থেকে শেখা শব্দগুলো চেনে</string>
     <string name="pref_alt_double_tap_lock">Alt ডাবল-ক্লিক লক সক্রিয় করুন</string>
     <string name="pref_alt_double_tap_lock_summary">Alt দুবার ক্লিক করলে তা লক হয়ে থাকবে। আবার Alt চাপলে বন্ধ হয়ে যাবে।</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl ডাবল-ক্লিক লক সক্রিয় করুন</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">X-অক্ষে ঝাঁকুনির ক্রিয়া</string>
     <string name="settings_shake_y_axis_title">Y-অক্ষে ঝাঁকুনির ক্রিয়া</string>
     <string name="settings_shake_z_axis_title">Z-অক্ষে ঝাঁকুনির ক্রিয়া</string>
-    <string name="settings_spell_checker_screen_title">বানান পরীক্ষকের সেটিংস</string>
     <string name="settings_spell_checker_summary">সিস্টেম জুড়ে বানান পরীক্ষার আচরণ কনফিগার করুন</string>
     <string name="settings_spell_checker_title">বানান পরীক্ষা</string>
     <string name="settings_title">BBKB সেটিংস</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">প্রতীক লোড হচ্ছে…</string>
     <string name="settings_keyeditor_hex_code">হেক্স কোড (যেমন, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">অক্ষর কোড সঠিক নয়</string>
-    <string name="settings_spellcheck_intro">BBKB বানান পরীক্ষক বানান পরীক্ষা সমর্থন করে এমন সব অ্যাপে বুদ্ধিমান বানান পরীক্ষা দেয়। টাইপের ভুল ধরতে ও সংশোধন প্রস্তাব করতে এটি উন্নত ভাষা মডেল ব্যবহার করে।</string>
+    <string name="settings_spellcheck_intro">BBKB বানান পরীক্ষক উন্নত ভাষা মডেল ব্যবহার করে বানান পরীক্ষা সমর্থন করে এমন সব অ্যাপে বানান পরীক্ষা দেয়</string>
+    <string name="settings_spellcheck_enable_title">BBKB বানান পরীক্ষক চালু করুন</string>
+    <string name="settings_spellcheck_enable_summary">টাইপের ভুল ধরে ও সংশোধন প্রস্তাব করে</string>
     <string name="settings_credits_version">সংস্করণ %1$s (বিল্ড %2$s)</string>
 </resources>

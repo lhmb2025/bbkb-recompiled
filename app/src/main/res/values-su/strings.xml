@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Ngabenerkeun kecap nalika ngetik. Pencét backspace pikeun ngabatalkeun koréksi.</string>
     <string name="settings_category_display">Tampilan</string>
     <string name="settings_category_sources">Sumber</string>
-    <string name="settings_category_contacts_accounts">Kontak jeung akun</string>
     <string name="settings_dict_add_reverted_words_title">Témbongkeun tombol tambah kecap</string>
     <string name="settings_dict_add_reverted_words_summary">Sanggeus backspace ngabatalkeun koréksi, témbongkeun tombol pikeun nambahkeun kecap</string>
     <string name="prefs_category_tuning">Panyetelan</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Némbongkeun tanda Shift/Alt dina bar status waktu maké papan tombol fisik</string>
     <string name="settings_pred_block_offensive_summary">Tutupan kecap nu bisa matak nyigeung waktu diktasi ku sora</string>
     <string name="settings_pred_block_offensive_title">Halangan kecap nu nyigeung</string>
-    <string name="settings_pred_contacts_permission_summary">Pasihan idin sangkan ngaran kontak jeung alamat surélék bisa disarankeun</string>
     <string name="settings_pred_contacts_permission_title">Idin kontak</string>
     <string name="settings_pred_contacts_summary_disabled">Butuh idin kontak</string>
     <string name="settings_pred_contacts_summary_enabled">Asupkeun ngaran kontak kana saran</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Témbongkeun animasi panarimaan ku sentilan</string>
     <string name="settings_pred_force_suggestions_summary">Témbongkeun bar saran sanajan dina aplikasi nu ménta papan tombol nyumputkeunana. Teu lumaku pikeun kolom sandi.</string>
     <string name="settings_pred_force_suggestions_title">Paksa saran</string>
-    <string name="settings_pred_grant_permission">Pasihan Idin</string>
     <string name="settings_pred_next_word_summary">Sarankeun kecap satuluyna dumasar kontéks</string>
     <string name="settings_pred_next_word_title">Saran kecap satuluyna</string>
     <string name="settings_pred_on_key_summary">Témbongkeun saran dina papan tombol virtual sabot ngetik</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Skala vertikal dina awal animasi</string>
     <string name="settings_anim_show_start_y_title">Skala Y awal pamunculan</string>
     <string name="settings_animation_params_title">Paraméter animasi</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Pasihan idin kontak pikeun maké fitur ieu</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Ngaran kontak bakal dianggap kecap nu bener</string>
-    <string name="settings_spellcheck_use_contacts_title">Paké kontak pikeun mariksa éjahan</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Pasihan idin kontak sangkan ngaran kontak dipikawanoh minangka kecap anu sah nalika mariksa éjahan</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Mikawanoh ngaran kontak minangka kecap nu bener</string>
+    <string name="settings_spellcheck_use_contacts_title">Tampa ngaran kontak</string>
     <string name="settings_spellcheck_accept_learned_title">Tampa kecap anu diajar</string>
-    <string name="settings_spellcheck_accept_learned_summary">Kecap anu diajar tina ketikan anjeun dianggap éjahanana bener</string>
+    <string name="settings_spellcheck_accept_learned_summary">Mikawanoh kecap anu diajar tina ketikan anjeun</string>
     <string name="pref_alt_double_tap_lock">Aktipkeun konci Alt ku klik dua kali</string>
     <string name="pref_alt_double_tap_lock_summary">Ngaklik Alt dua kali bakal nguncina. Ngaklik Alt deui bakal mareuman.</string>
     <string name="pref_ctrl_double_tap_lock">Aktipkeun konci Ctrl ku klik dua kali</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Lampah oyagan sumbu X</string>
     <string name="settings_shake_y_axis_title">Lampah oyagan sumbu Y</string>
     <string name="settings_shake_z_axis_title">Lampah oyagan sumbu Z</string>
-    <string name="settings_spell_checker_screen_title">Setélan pamariksa éjahan</string>
     <string name="settings_spell_checker_summary">Atur parilaku pamariksaan éjahan sakuliah sistem</string>
     <string name="settings_spell_checker_title">Mariksa éjahan</string>
     <string name="settings_title">Setélan BBKB</string>
@@ -1084,6 +1078,8 @@
     <string name="settings_keyeditor_loading">Ngamuat simbol…</string>
     <string name="settings_keyeditor_hex_code">Kode hex (conto: 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Kode karakter teu valid</string>
-    <string name="settings_spellcheck_intro">Pamariksa éjahan BBKB nyadiakeun pamariksaan éjahan nu pinter di sadaya aplikasi nu ngarojong pamariksaan éjahan. Pamariksa ieu ngagunakeun modél basa canggih pikeun ngadeteksi salah ketik sarta nyarankeun koréksi.</string>
+    <string name="settings_spellcheck_intro">Pamariksa éjahan BBKB ngagunakeun modél basa canggih pikeun nyadiakeun pamariksaan éjahan di sadaya aplikasi nu ngarojongna</string>
+    <string name="settings_spellcheck_enable_title">Aktipkeun pamariksa éjahan BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Ngadeteksi salah ketik sarta nyarankeun koréksi</string>
     <string name="settings_credits_version">Versi %1$s (Build %2$s)</string>
 </resources>

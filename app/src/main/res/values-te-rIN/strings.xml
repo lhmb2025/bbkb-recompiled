@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">టైప్ చేస్తున్నప్పుడు పదాలను సరిచేస్తుంది. సవరణను రద్దు చేయడానికి బ్యాక్‌స్పేస్ నొక్కండి.</string>
     <string name="settings_category_display">ప్రదర్శన</string>
     <string name="settings_category_sources">మూలాలు</string>
-    <string name="settings_category_contacts_accounts">కాంటాక్ట్‌లు మరియు ఖాతాలు</string>
     <string name="settings_dict_add_reverted_words_title">పదం జోడించు బటన్ చూపించు</string>
     <string name="settings_dict_add_reverted_words_summary">బ్యాక్‌స్పేస్ సవరణను రద్దు చేసిన తర్వాత పదం జోడించడానికి బటన్ చూపించు</string>
     <string name="prefs_category_tuning">ట్యూనింగ్</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">ఫిజికల్ కీబోర్డ్‌ను ఉపయోగిస్తున్నప్పుడు Shift/Alt మాడిఫైయర్ సూచికను స్టేటస్ బార్‌లో చూపు</string>
     <string name="settings_pred_block_offensive_summary">వాయిస్ డిక్టేషన్‌లో అభ్యంతరకరంగా ఉండగల పదాలను దాచు</string>
     <string name="settings_pred_block_offensive_title">అభ్యంతరకర పదాలను నిరోధించు</string>
-    <string name="settings_pred_contacts_permission_summary">కాంటాక్ట్ పేర్లను, ఇమెయిల్ చిరునామాలను సూచించడానికి అనుమతిని ఇవ్వండి</string>
     <string name="settings_pred_contacts_permission_title">కాంటాక్ట్‌ల అనుమతి</string>
     <string name="settings_pred_contacts_summary_disabled">కాంటాక్ట్‌ల అనుమతి అవసరం</string>
     <string name="settings_pred_contacts_summary_enabled">సూచనల్లో కాంటాక్ట్ పేర్లను చేర్చు</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">ఫ్లిక్ ఖరారు యానిమేషన్‌ను చూపు</string>
     <string name="settings_pred_force_suggestions_summary">సూచనల బార్‌ను దాచమని కీబోర్డ్‌ను కోరే యాప్‌లలో కూడా దాన్ని చూపు. పాస్‌వర్డ్ ఫీల్డ్‌లకు వర్తించదు.</string>
     <string name="settings_pred_force_suggestions_title">సూచనలను బలవంతంగా చూపు</string>
-    <string name="settings_pred_grant_permission">అనుమతి ఇవ్వు</string>
     <string name="settings_pred_next_word_summary">సందర్భం ఆధారంగా తదుపరి పదాన్ని సూచించు</string>
     <string name="settings_pred_next_word_title">తదుపరి పద సూచనలు</string>
     <string name="settings_pred_on_key_summary">టైప్ చేస్తున్నప్పుడు వర్చువల్ కీబోర్డ్‌పై సూచనలను చూపు</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">యానిమేషన్ ప్రారంభంలో నిలువు స్కేల్</string>
     <string name="settings_anim_show_start_y_title">కనిపించే ప్రారంభ Y స్కేల్</string>
     <string name="settings_animation_params_title">యానిమేషన్ పారామితులు</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">ఈ ఫీచర్‌ను ఉపయోగించడానికి కాంటాక్ట్‌ల అనుమతిని ఇవ్వండి</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">కాంటాక్ట్ పేర్లు సరైన పదాలుగా గుర్తించబడతాయి</string>
-    <string name="settings_spellcheck_use_contacts_title">అక్షరక్రమ తనిఖీ కోసం కాంటాక్ట్‌లను ఉపయోగించు</string>
-    <string name="settings_spellcheck_contacts_permission_summary">అక్షరక్రమ తనిఖీలో కాంటాక్ట్ పేర్లను సరైన పదాలుగా గుర్తించడానికి కాంటాక్ట్‌ల అనుమతిని ఇవ్వండి</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">కాంటాక్ట్ పేర్లను సరైన పదాలుగా గుర్తిస్తుంది</string>
+    <string name="settings_spellcheck_use_contacts_title">కాంటాక్ట్ పేర్లను అంగీకరించు</string>
     <string name="settings_spellcheck_accept_learned_title">నేర్చుకున్న పదాలను అంగీకరించు</string>
-    <string name="settings_spellcheck_accept_learned_summary">మీ టైపింగ్ నుండి నేర్చుకున్న పదాలు సరైన అక్షరక్రమంగా పరిగణించబడతాయి</string>
+    <string name="settings_spellcheck_accept_learned_summary">మీ టైపింగ్ నుండి నేర్చుకున్న పదాలను గుర్తిస్తుంది</string>
     <string name="pref_alt_double_tap_lock">Alt డబుల్-క్లిక్ లాక్‌ను ప్రారంభించు</string>
     <string name="pref_alt_double_tap_lock_summary">Alt ను డబుల్-క్లిక్ చేస్తే అది లాక్ అవుతుంది. మళ్లీ Alt ను క్లిక్ చేస్తే ఆఫ్ అవుతుంది.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl డబుల్-క్లిక్ లాక్‌ను ప్రారంభించు</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">X-అక్షం కుదుపు చర్య</string>
     <string name="settings_shake_y_axis_title">Y-అక్షం కుదుపు చర్య</string>
     <string name="settings_shake_z_axis_title">Z-అక్షం కుదుపు చర్య</string>
-    <string name="settings_spell_checker_screen_title">అక్షరక్రమ తనిఖీ సెట్టింగ్‌లు</string>
     <string name="settings_spell_checker_summary">సిస్టమ్ అంతటా అక్షరక్రమ తనిఖీ ప్రవర్తనను కాన్ఫిగర్ చేయి</string>
     <string name="settings_spell_checker_title">అక్షరక్రమ తనిఖీ</string>
     <string name="settings_title">BBKB సెట్టింగ్‌లు</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">చిహ్నాలను లోడ్ చేస్తోంది…</string>
     <string name="settings_keyeditor_hex_code">హెక్స్ కోడ్ (ఉదా. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">చెల్లని అక్షర కోడ్</string>
-    <string name="settings_spellcheck_intro">BBKB అక్షరక్రమ తనిఖీ, అక్షరక్రమ తనిఖీకి సపోర్ట్ చేసే అన్ని యాప్‌లలో తెలివైన అక్షరక్రమ తనిఖీని అందిస్తుంది. టైపింగ్ పొరపాట్లను గుర్తించి, సవరణలను సూచించడానికి ఇది అధునాతన భాషా మోడల్‌లను ఉపయోగిస్తుంది.</string>
+    <string name="settings_spellcheck_intro">BBKB అక్షరక్రమ తనిఖీ, అక్షరక్రమ తనిఖీకి సపోర్ట్ చేసే అన్ని యాప్‌లలో అక్షరక్రమ తనిఖీని అందించడానికి అధునాతన భాషా మోడల్‌లను ఉపయోగిస్తుంది</string>
+    <string name="settings_spellcheck_enable_title">BBKB అక్షరక్రమ తనిఖీని ప్రారంభించు</string>
+    <string name="settings_spellcheck_enable_summary">టైపింగ్ పొరపాట్లను గుర్తించి, సవరణలను సూచిస్తుంది</string>
     <string name="settings_credits_version">వెర్షన్ %1$s (బిల్డ్ %2$s)</string>
 </resources>

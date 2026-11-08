@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Ուղղում է բառերը մուտքագրելիս: Ուղղումը հետարկելու համար սեղմեք Backspace:</string>
     <string name="settings_category_display">Ցուցադրում</string>
     <string name="settings_category_sources">Աղբյուրներ</string>
-    <string name="settings_category_contacts_accounts">Կոնտակտներ եվ հաշիվներ</string>
     <string name="settings_dict_add_reverted_words_title">Ցույց տալ բառ ավելացնելու կոճակը</string>
     <string name="settings_dict_add_reverted_words_summary">Երբ Backspace-ը հետարկում է ուղղումը, ցույց տալ կոճակ բառն ավելացնելու համար</string>
     <string name="prefs_category_tuning">Կարգավորում</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Ցուցադրել Shift/Alt ձևափոխիչի ցուցիչը կարգավիճակի գոտում՝ ֆիզիկական ստեղնաշարն օգտագործելիս</string>
     <string name="settings_pred_block_offensive_summary">Թաքցնել հնարավոր վիրավորական բառերը ձայնային թելադրության ժամանակ</string>
     <string name="settings_pred_block_offensive_title">Արգելափակել վիրավորական բառերը</string>
-    <string name="settings_pred_contacts_permission_summary">Տվեք թույլտվությունը՝ կոնտակտների անուններ և էլ. հասցեներ առաջարկելու համար</string>
     <string name="settings_pred_contacts_permission_title">Կոնտակտների թույլտվություն</string>
     <string name="settings_pred_contacts_summary_disabled">Պահանջվում է կոնտակտների թույլտվություն</string>
     <string name="settings_pred_contacts_summary_enabled">Ներառել կոնտակտների անունները առաջարկներում</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Ցույց տալ հաստատման շարժապատկերը</string>
     <string name="settings_pred_force_suggestions_summary">Ցույց տալ առաջարկների գոտին նույնիսկ այն հավելվածներում, որոնք խնդրում են ստեղնաշարին թաքցնել այն։ Չի վերաբերում գաղտնաբառի դաշտերին։</string>
     <string name="settings_pred_force_suggestions_title">Հարկադրել առաջարկները</string>
-    <string name="settings_pred_grant_permission">Տալ թույլտվություն</string>
     <string name="settings_pred_next_word_summary">Առաջարկել հաջորդ բառը՝ ըստ համատեքստի</string>
     <string name="settings_pred_next_word_title">Հաջորդ բառի առաջարկներ</string>
     <string name="settings_pred_on_key_summary">Ցույց տալ առաջարկները վիրտուալ ստեղնաշարի վրա մուտքագրելիս</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Ուղղահայաց մասշտաբը շարժապատկերի սկզբում</string>
     <string name="settings_anim_show_start_y_title">Հայտնվելու սկզբի Y մասշտաբ</string>
     <string name="settings_animation_params_title">Շարժապատկերի պարամետրեր</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Տվեք կոնտակտների թույլտվությունը՝ այս գործառույթն օգտագործելու համար</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Կոնտակտների անունները կճանաչվեն որպես ճիշտ բառեր</string>
-    <string name="settings_spellcheck_use_contacts_title">Օգտագործել կոնտակտները տառասխալների ստուգման համար</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Տվեք կոնտակտների թույլտվությունը, որպեսզի ուղղագրության ստուգման ժամանակ կոնտակտների անունները ճանաչվեն որպես ճիշտ բառեր</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Ճանաչում է կոնտակտների անունները որպես ճիշտ բառեր</string>
+    <string name="settings_spellcheck_use_contacts_title">Ընդունել կոնտակտների անունները</string>
     <string name="settings_spellcheck_accept_learned_title">Ընդունել սովորած բառերը</string>
-    <string name="settings_spellcheck_accept_learned_summary">Ձեր մուտքագրումից սովորած բառերը համարվում են ճիշտ գրված</string>
+    <string name="settings_spellcheck_accept_learned_summary">Ճանաչում է ձեր մուտքագրումից սովորած բառերը</string>
     <string name="pref_alt_double_tap_lock">Միացնել Alt-ի կրկնակի սեղմման կողպումը</string>
     <string name="pref_alt_double_tap_lock_summary">Alt-ի կրկնակի սեղմումը կկողպի այն։ Alt-ի հաջորդ սեղմումը կանջատի այն։</string>
     <string name="pref_ctrl_double_tap_lock">Միացնել Ctrl-ի կրկնակի սեղմման կողպումը</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">X առանցքով ցնցման գործողություն</string>
     <string name="settings_shake_y_axis_title">Y առանցքով ցնցման գործողություն</string>
     <string name="settings_shake_z_axis_title">Z առանցքով ցնցման գործողություն</string>
-    <string name="settings_spell_checker_screen_title">Տառասխալների ուղղիչի կարգավորումներ</string>
     <string name="settings_spell_checker_summary">Կարգավորել համակարգային տառասխալների ստուգման վարքագիծը</string>
     <string name="settings_spell_checker_title">Տառասխալների ստուգում</string>
     <string name="settings_title">BBKB-ի կարգավորումներ</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Նշանների բեռնում…</string>
     <string name="settings_keyeditor_hex_code">Տասնվեցական կոդ (օր.՝ 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Նիշի անվավեր կոդ</string>
-    <string name="settings_spellcheck_intro">BBKB-ի տառասխալների ուղղիչը խելացի ստուգում է տառասխալները բոլոր այն հավելվածներում, որոնք աջակցում են տառասխալների ստուգմանը։ Այն օգտագործում է առաջադեմ լեզվային մոդելներ՝ վրիպակները հայտնաբերելու և ուղղումներ առաջարկելու համար։</string>
+    <string name="settings_spellcheck_intro">BBKB-ի տառասխալների ուղղիչը օգտագործում է առաջադեմ լեզվային մոդելներ՝ տառասխալների ստուգում ապահովելու բոլոր այն հավելվածներում, որոնք աջակցում են դրան</string>
+    <string name="settings_spellcheck_enable_title">Միացնել BBKB տառասխալների ուղղիչը</string>
+    <string name="settings_spellcheck_enable_summary">Հայտնաբերում է վրիպակները և առաջարկում ուղղումներ</string>
     <string name="settings_credits_version">Տարբերակ %1$s (կառուցում %2$s)</string>
 </resources>

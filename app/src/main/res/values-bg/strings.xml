@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Поправя думите, докато пишете. Натиснете Backspace, за да отмените поправка.</string>
     <string name="settings_category_display">Показване</string>
     <string name="settings_category_sources">Източници</string>
-    <string name="settings_category_contacts_accounts">Контакти и акаунти</string>
     <string name="settings_dict_add_reverted_words_title">Показване на бутон за добавяне на дума</string>
     <string name="settings_dict_add_reverted_words_summary">След като Backspace отмени поправка, показва бутон за добавяне на думата</string>
     <string name="prefs_category_tuning">Настройка</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Показване на индикатор за Shift/Alt в лентата на състоянието при използване на физическа клавиатура</string>
     <string name="settings_pred_block_offensive_summary">Скриване на потенциално обидни думи при гласова диктовка</string>
     <string name="settings_pred_block_offensive_title">Блокиране на обидните думи</string>
-    <string name="settings_pred_contacts_permission_summary">Дайте разрешение, за да се предлагат имена на контакти и имейл адреси</string>
     <string name="settings_pred_contacts_permission_title">Разрешение за контакти</string>
     <string name="settings_pred_contacts_summary_disabled">Необходимо е разрешение за контакти</string>
     <string name="settings_pred_contacts_summary_enabled">Включване на имената на контактите в предложенията</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Анимация при потвърждаване със замахване</string>
     <string name="settings_pred_force_suggestions_summary">Показване на лентата с предложения дори в приложения, които искат клавиатурата да я скрие. Не важи за полетата за пароли.</string>
     <string name="settings_pred_force_suggestions_title">Принудителни предложения</string>
-    <string name="settings_pred_grant_permission">Даване на разрешение</string>
     <string name="settings_pred_next_word_summary">Предлагане на следващата дума според контекста</string>
     <string name="settings_pred_next_word_title">Предложения за следваща дума</string>
     <string name="settings_pred_on_key_summary">Показване на предложения върху виртуалната клавиатура при писане</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Вертикален мащаб в началото на анимацията</string>
     <string name="settings_anim_show_start_y_title">Вертикален мащаб в началото на показването</string>
     <string name="settings_animation_params_title">Параметри на анимацията</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Дайте разрешение за контакти, за да използвате тази функция</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Имената на контактите ще се разпознават като валидни думи</string>
-    <string name="settings_spellcheck_use_contacts_title">Използване на контактите при правописна проверка</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Дайте разрешение за контакти, за да се разпознават имената на контактите като валидни думи при правописната проверка</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Разпознава имената на контактите като валидни думи</string>
+    <string name="settings_spellcheck_use_contacts_title">Приемане на имената на контактите</string>
     <string name="settings_spellcheck_accept_learned_title">Приемане на научените думи</string>
-    <string name="settings_spellcheck_accept_learned_summary">Думите, научени от писането ви, се смятат за правилно написани</string>
+    <string name="settings_spellcheck_accept_learned_summary">Разпознава думите, научени от писането ви</string>
     <string name="pref_alt_double_tap_lock">Включване на заключване с двойно натискане на Alt</string>
     <string name="pref_alt_double_tap_lock_summary">Двойното натискане на Alt го заключва. Повторното натискане на Alt го изключва.</string>
     <string name="pref_ctrl_double_tap_lock">Включване на заключване с двойно натискане на Ctrl</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Действие при разтърсване по оста X</string>
     <string name="settings_shake_y_axis_title">Действие при разтърсване по оста Y</string>
     <string name="settings_shake_z_axis_title">Действие при разтърсване по оста Z</string>
-    <string name="settings_spell_checker_screen_title">Настройки на правописната проверка</string>
     <string name="settings_spell_checker_summary">Конфигуриране на правописната проверка в цялата система</string>
     <string name="settings_spell_checker_title">Правописна проверка</string>
     <string name="settings_title">Настройки на BBKB</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Зареждане на символите…</string>
     <string name="settings_keyeditor_hex_code">Шестнадесетичен код (напр. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Невалиден код на знак</string>
-    <string name="settings_spellcheck_intro">Програмата за проверка на правописа на BBKB осигурява интелигентна проверка във всички приложения, които поддържат проверка на правописа. Тя използва усъвършенствани езикови модели, за да открива печатни грешки и да предлага корекции.</string>
+    <string name="settings_spellcheck_intro">Програмата за проверка на правописа на BBKB използва усъвършенствани езикови модели, за да осигурява проверка на правописа във всички приложения, които я поддържат</string>
+    <string name="settings_spellcheck_enable_title">Включване на програмата за правописна проверка на BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Открива печатни грешки и предлага корекции</string>
     <string name="settings_credits_version">Версия %1$s (компилация %2$s)</string>
 </resources>

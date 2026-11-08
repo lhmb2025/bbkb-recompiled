@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Sửa từ khi bạn gõ. Nhấn Backspace để hoàn tác một lần sửa.</string>
     <string name="settings_category_display">Hiển thị</string>
     <string name="settings_category_sources">Nguồn</string>
-    <string name="settings_category_contacts_accounts">Danh bạ và tài khoản</string>
     <string name="settings_dict_add_reverted_words_title">Hiện nút thêm từ</string>
     <string name="settings_dict_add_reverted_words_summary">Sau khi Backspace hoàn tác một lần sửa, hiện nút để thêm từ</string>
     <string name="prefs_category_tuning">Tinh chỉnh</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Hiển thị chỉ báo phím bổ trợ Shift/Alt trên thanh trạng thái khi dùng bàn phím vật lý</string>
     <string name="settings_pred_block_offensive_summary">Ẩn những từ có thể gây phản cảm khi đọc chính tả bằng giọng nói</string>
     <string name="settings_pred_block_offensive_title">Chặn từ ngữ phản cảm</string>
-    <string name="settings_pred_contacts_permission_summary">Cấp quyền để gợi ý tên liên hệ và địa chỉ email</string>
     <string name="settings_pred_contacts_permission_title">Quyền truy cập danh bạ</string>
     <string name="settings_pred_contacts_summary_disabled">Cần quyền truy cập danh bạ</string>
     <string name="settings_pred_contacts_summary_enabled">Đưa tên liên hệ vào phần gợi ý</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Hiển thị hiệu ứng hất để chọn</string>
     <string name="settings_pred_force_suggestions_summary">Hiển thị thanh gợi ý ngay cả trong các ứng dụng yêu cầu bàn phím ẩn nó. Không áp dụng cho ô mật khẩu.</string>
     <string name="settings_pred_force_suggestions_title">Buộc hiển thị gợi ý</string>
-    <string name="settings_pred_grant_permission">Cấp quyền</string>
     <string name="settings_pred_next_word_summary">Gợi ý từ tiếp theo dựa trên ngữ cảnh</string>
     <string name="settings_pred_next_word_title">Gợi ý từ tiếp theo</string>
     <string name="settings_pred_on_key_summary">Hiển thị gợi ý trên bàn phím ảo khi bạn nhập</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Tỷ lệ dọc khi bắt đầu hiệu ứng</string>
     <string name="settings_anim_show_start_y_title">Tỷ lệ Y đầu khi hiện</string>
     <string name="settings_animation_params_title">Thông số hiệu ứng</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Cấp quyền truy cập danh bạ để dùng tính năng này</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Tên liên hệ sẽ được xem là từ hợp lệ</string>
-    <string name="settings_spellcheck_use_contacts_title">Dùng danh bạ để kiểm tra chính tả</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Cấp quyền truy cập danh bạ để nhận dạng tên liên hệ là từ hợp lệ khi kiểm tra chính tả</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Nhận diện tên liên hệ là từ hợp lệ</string>
+    <string name="settings_spellcheck_use_contacts_title">Chấp nhận tên liên hệ</string>
     <string name="settings_spellcheck_accept_learned_title">Chấp nhận từ đã học</string>
-    <string name="settings_spellcheck_accept_learned_summary">Các từ học được từ việc bạn nhập được coi là viết đúng chính tả</string>
+    <string name="settings_spellcheck_accept_learned_summary">Nhận diện các từ học được từ việc bạn nhập</string>
     <string name="pref_alt_double_tap_lock">Bật khóa Alt khi nhấn đúp</string>
     <string name="pref_alt_double_tap_lock_summary">Nhấn đúp phím Alt sẽ khóa phím này. Nhấn Alt lần nữa để tắt.</string>
     <string name="pref_ctrl_double_tap_lock">Bật khóa Ctrl khi nhấn đúp</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Tác vụ khi lắc theo trục X</string>
     <string name="settings_shake_y_axis_title">Tác vụ khi lắc theo trục Y</string>
     <string name="settings_shake_z_axis_title">Tác vụ khi lắc theo trục Z</string>
-    <string name="settings_spell_checker_screen_title">Cài đặt trình kiểm tra chính tả</string>
     <string name="settings_spell_checker_summary">Thiết lập cách kiểm tra chính tả trên toàn hệ thống</string>
     <string name="settings_spell_checker_title">Kiểm tra chính tả</string>
     <string name="settings_title">Cài đặt BBKB</string>
@@ -1084,6 +1078,8 @@
     <string name="settings_keyeditor_loading">Đang tải ký hiệu…</string>
     <string name="settings_keyeditor_hex_code">Mã thập lục phân (ví dụ: 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Mã ký tự không hợp lệ</string>
-    <string name="settings_spellcheck_intro">Trình kiểm tra chính tả BBKB cung cấp tính năng kiểm tra chính tả thông minh trên mọi ứng dụng hỗ trợ kiểm tra chính tả. Trình kiểm tra này dùng các mô hình ngôn ngữ tiên tiến để phát hiện lỗi đánh máy và đề xuất cách sửa.</string>
+    <string name="settings_spellcheck_intro">Trình kiểm tra chính tả BBKB dùng các mô hình ngôn ngữ tiên tiến để cung cấp tính năng kiểm tra chính tả trên mọi ứng dụng hỗ trợ tính năng này</string>
+    <string name="settings_spellcheck_enable_title">Bật trình kiểm tra chính tả BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Phát hiện lỗi đánh máy và đề xuất cách sửa</string>
     <string name="settings_credits_version">Phiên bản %1$s (Bản dựng %2$s)</string>
 </resources>

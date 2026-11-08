@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">ಟೈಪ್ ಮಾಡುವಾಗ ಪದಗಳನ್ನು ಸರಿಪಡಿಸುತ್ತದೆ. ತಿದ್ದುಪಡಿ ರದ್ದುಮಾಡಲು ಬ್ಯಾಕ್‌ಸ್ಪೇಸ್ ಒತ್ತಿ.</string>
     <string name="settings_category_display">ಪ್ರದರ್ಶನ</string>
     <string name="settings_category_sources">ಮೂಲಗಳು</string>
-    <string name="settings_category_contacts_accounts">ಸಂಪರ್ಕಗಳು ಮತ್ತು ಖಾತೆಗಳು</string>
     <string name="settings_dict_add_reverted_words_title">ಪದ ಸೇರಿಸುವ ಬಟನ್ ತೋರಿಸಿ</string>
     <string name="settings_dict_add_reverted_words_summary">ಬ್ಯಾಕ್‌ಸ್ಪೇಸ್ ತಿದ್ದುಪಡಿ ರದ್ದುಮಾಡಿದ ನಂತರ ಪದ ಸೇರಿಸಲು ಬಟನ್ ತೋರಿಸಿ</string>
     <string name="prefs_category_tuning">ಟ್ಯೂನಿಂಗ್</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">ಭೌತಿಕ ಕೀಬೋರ್ಡ್ ಬಳಸುವಾಗ ಸ್ಥಿತಿ ಪಟ್ಟಿಯಲ್ಲಿ Shift/Alt ಸೂಚಕವನ್ನು ತೋರಿಸು</string>
     <string name="settings_pred_block_offensive_summary">ಧ್ವನಿ ಮೂಲಕ ಬರೆಯುವಾಗ ಅಸಭ್ಯವಾಗಬಹುದಾದ ಪದಗಳನ್ನು ಮರೆಮಾಡು</string>
     <string name="settings_pred_block_offensive_title">ಅಸಭ್ಯ ಪದಗಳನ್ನು ನಿರ್ಬಂಧಿಸಿ</string>
-    <string name="settings_pred_contacts_permission_summary">ಸಂಪರ್ಕ ಹೆಸರುಗಳು ಮತ್ತು ಇಮೇಲ್ ವಿಳಾಸಗಳನ್ನು ಸೂಚಿಸಲು ಅನುಮತಿ ನೀಡಿ</string>
     <string name="settings_pred_contacts_permission_title">ಸಂಪರ್ಕಗಳ ಅನುಮತಿ</string>
     <string name="settings_pred_contacts_summary_disabled">ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ಅಗತ್ಯವಿದೆ</string>
     <string name="settings_pred_contacts_summary_enabled">ಸಲಹೆಗಳಲ್ಲಿ ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಸೇರಿಸು</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">ಫ್ಲಿಕ್ ಸ್ವೀಕಾರ ಅನಿಮೇಶನ್ ತೋರಿಸು</string>
     <string name="settings_pred_force_suggestions_summary">ಸಲಹೆ ಪಟ್ಟಿಯನ್ನು ಮರೆಮಾಡಲು ಕೀಬೋರ್ಡ್‌ಗೆ ಹೇಳುವ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಲ್ಲೂ ಅದನ್ನು ತೋರಿಸು. ಪಾಸ್‌ವರ್ಡ್ ಕ್ಷೇತ್ರಗಳಿಗೆ ಅನ್ವಯಿಸುವುದಿಲ್ಲ.</string>
     <string name="settings_pred_force_suggestions_title">ಸಲಹೆಗಳನ್ನು ಒತ್ತಾಯಿಸು</string>
-    <string name="settings_pred_grant_permission">ಅನುಮತಿ ನೀಡಿ</string>
     <string name="settings_pred_next_word_summary">ಸಂದರ್ಭದ ಆಧಾರದ ಮೇಲೆ ಮುಂದಿನ ಪದವನ್ನು ಸೂಚಿಸು</string>
     <string name="settings_pred_next_word_title">ಮುಂದಿನ ಪದದ ಸಲಹೆಗಳು</string>
     <string name="settings_pred_on_key_summary">ನೀವು ಟೈಪ್ ಮಾಡುವಾಗ ವರ್ಚುವಲ್ ಕೀಬೋರ್ಡ್‌ನಲ್ಲಿ ಸಲಹೆಗಳನ್ನು ತೋರಿಸು</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">ಅನಿಮೇಶನ್ ಪ್ರಾರಂಭದಲ್ಲಿ ಲಂಬ ಪ್ರಮಾಣ</string>
     <string name="settings_anim_show_start_y_title">ಕಾಣಿಸಿಕೊಳ್ಳುವ ಪ್ರಾರಂಭದ Y ಪ್ರಮಾಣ</string>
     <string name="settings_animation_params_title">ಅನಿಮೇಶನ್ ನಿಯತಾಂಕಗಳು</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">ಈ ವೈಶಿಷ್ಟ್ಯ ಬಳಸಲು ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ನೀಡಿ</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಸರಿಯಾದ ಪದಗಳೆಂದು ಗುರುತಿಸಲಾಗುತ್ತದೆ</string>
-    <string name="settings_spellcheck_use_contacts_title">ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಗೆ ಸಂಪರ್ಕಗಳನ್ನು ಬಳಸಿ</string>
-    <string name="settings_spellcheck_contacts_permission_summary">ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಯ ವೇಳೆ ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಸರಿಯಾದ ಪದಗಳೆಂದು ಗುರುತಿಸಲು ಸಂಪರ್ಕಗಳ ಅನುಮತಿ ನೀಡಿ</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಸರಿಯಾದ ಪದಗಳೆಂದು ಗುರುತಿಸುತ್ತದೆ</string>
+    <string name="settings_spellcheck_use_contacts_title">ಸಂಪರ್ಕ ಹೆಸರುಗಳನ್ನು ಸ್ವೀಕರಿಸಿ</string>
     <string name="settings_spellcheck_accept_learned_title">ಕಲಿತ ಪದಗಳನ್ನು ಸ್ವೀಕರಿಸಿ</string>
-    <string name="settings_spellcheck_accept_learned_summary">ನಿಮ್ಮ ಟೈಪಿಂಗ್‌ನಿಂದ ಕಲಿತ ಪದಗಳನ್ನು ಸರಿಯಾದ ಕಾಗುಣಿತವೆಂದು ಪರಿಗಣಿಸಲಾಗುತ್ತದೆ</string>
+    <string name="settings_spellcheck_accept_learned_summary">ನಿಮ್ಮ ಟೈಪಿಂಗ್‌ನಿಂದ ಕಲಿತ ಪದಗಳನ್ನು ಗುರುತಿಸುತ್ತದೆ</string>
     <string name="pref_alt_double_tap_lock">Alt ಡಬಲ್-ಕ್ಲಿಕ್ ಲಾಕ್ ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
     <string name="pref_alt_double_tap_lock_summary">Alt ಅನ್ನು ಡಬಲ್-ಕ್ಲಿಕ್ ಮಾಡಿದರೆ ಅದು ಲಾಕ್ ಆಗುತ್ತದೆ. Alt ಅನ್ನು ಮತ್ತೆ ಕ್ಲಿಕ್ ಮಾಡಿದರೆ ಅದು ಆಫ್ ಆಗುತ್ತದೆ.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl ಡಬಲ್-ಕ್ಲಿಕ್ ಲಾಕ್ ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">ಅಲುಗಾಟದ X-ಅಕ್ಷದ ಕ್ರಿಯೆ</string>
     <string name="settings_shake_y_axis_title">ಅಲುಗಾಟದ Y-ಅಕ್ಷದ ಕ್ರಿಯೆ</string>
     <string name="settings_shake_z_axis_title">ಅಲುಗಾಟದ Z-ಅಕ್ಷದ ಕ್ರಿಯೆ</string>
-    <string name="settings_spell_checker_screen_title">ಕಾಗುಣಿತ ಪರೀಕ್ಷಕ ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
     <string name="settings_spell_checker_summary">ಸಿಸ್ಟಂ-ವ್ಯಾಪಿ ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಯ ವರ್ತನೆಯನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ</string>
     <string name="settings_spell_checker_title">ಕಾಗುಣಿತ ಪರೀಕ್ಷೆ</string>
     <string name="settings_title">BBKB ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">ಚಿಹ್ನೆಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <string name="settings_keyeditor_hex_code">ಹೆಕ್ಸ್ ಕೋಡ್ (ಉದಾ. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">ಅಮಾನ್ಯ ಅಕ್ಷರ ಕೋಡ್</string>
-    <string name="settings_spellcheck_intro">BBKB ಕಾಗುಣಿತ ಪರೀಕ್ಷಕವು ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಯನ್ನು ಬೆಂಬಲಿಸುವ ಎಲ್ಲಾ ಆ್ಯಪ್‌ಗಳಲ್ಲಿ ಬುದ್ಧಿವಂತ ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಯನ್ನು ಒದಗಿಸುತ್ತದೆ. ಟೈಪಿಂಗ್ ತಪ್ಪುಗಳನ್ನು ಪತ್ತೆಹಚ್ಚಲು ಮತ್ತು ತಿದ್ದುಪಡಿಗಳನ್ನು ಸೂಚಿಸಲು ಇದು ಸುಧಾರಿತ ಭಾಷಾ ಮಾದರಿಗಳನ್ನು ಬಳಸುತ್ತದೆ.</string>
+    <string name="settings_spellcheck_intro">BBKB ಕಾಗುಣಿತ ಪರೀಕ್ಷಕವು ಸುಧಾರಿತ ಭಾಷಾ ಮಾದರಿಗಳನ್ನು ಬಳಸಿ, ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಯನ್ನು ಬೆಂಬಲಿಸುವ ಎಲ್ಲಾ ಆ್ಯಪ್‌ಗಳಲ್ಲಿ ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಯನ್ನು ಒದಗಿಸುತ್ತದೆ</string>
+    <string name="settings_spellcheck_enable_title">BBKB ಕಾಗುಣಿತ ಪರೀಕ್ಷಕ ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
+    <string name="settings_spellcheck_enable_summary">ಟೈಪಿಂಗ್ ತಪ್ಪುಗಳನ್ನು ಪತ್ತೆಹಚ್ಚುತ್ತದೆ ಮತ್ತು ತಿದ್ದುಪಡಿಗಳನ್ನು ಸೂಚಿಸುತ್ತದೆ</string>
     <string name="settings_credits_version">ಆವೃತ್ತಿ %1$s (ಬಿಲ್ಡ್ %2$s)</string>
 </resources>

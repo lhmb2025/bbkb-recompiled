@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Retter ord, mens du skriver. Tryk på backspace for at fortryde en rettelse.</string>
     <string name="settings_category_display">Visning</string>
     <string name="settings_category_sources">Kilder</string>
-    <string name="settings_category_contacts_accounts">Kontakter og konti</string>
     <string name="settings_dict_add_reverted_words_title">Vis knap til at tilføje ord</string>
     <string name="settings_dict_add_reverted_words_summary">Når backspace fortryder en rettelse, vises en knap til at tilføje ordet</string>
     <string name="prefs_category_tuning">Justering</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Vis indikator for Shift/Alt i statuslinjen, når du bruger et fysisk tastatur</string>
     <string name="settings_pred_block_offensive_summary">Skjul potentielt stødende ord ved diktering</string>
     <string name="settings_pred_block_offensive_title">Bloker stødende ord</string>
-    <string name="settings_pred_contacts_permission_summary">Giv tilladelse, så der kan foreslås kontaktnavne og e-mailadresser</string>
     <string name="settings_pred_contacts_permission_title">Tilladelse til kontakter</string>
     <string name="settings_pred_contacts_summary_disabled">Tilladelse til kontakter er påkrævet</string>
     <string name="settings_pred_contacts_summary_enabled">Medtag kontaktnavne i forslagene</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Vis animation ved svirp-bekræftelse</string>
     <string name="settings_pred_force_suggestions_summary">Vis forslagslinjen, også i apps der beder tastaturet om at skjule den. Gælder ikke for adgangskodefelter.</string>
     <string name="settings_pred_force_suggestions_title">Gennemtving forslag</string>
-    <string name="settings_pred_grant_permission">Giv tilladelse</string>
     <string name="settings_pred_next_word_summary">Foreslå næste ord ud fra sammenhængen</string>
     <string name="settings_pred_next_word_title">Forslag til næste ord</string>
     <string name="settings_pred_on_key_summary">Vis forslag på det virtuelle tastatur, mens du skriver</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Lodret skala ved animationens start</string>
     <string name="settings_anim_show_start_y_title">Y-skala ved indtoningens start</string>
     <string name="settings_animation_params_title">Animationsparametre</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Giv tilladelse til kontakter for at kunne bruge funktionen</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktnavne godkendes som korrekte ord</string>
-    <string name="settings_spellcheck_use_contacts_title">Brug kontakter til stavekontrol</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Giv tilladelse til kontakter, så kontaktnavne genkendes som gyldige ord under stavekontrol</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Genkender kontaktnavne som korrekte ord</string>
+    <string name="settings_spellcheck_use_contacts_title">Accepter kontaktnavne</string>
     <string name="settings_spellcheck_accept_learned_title">Accepter lærte ord</string>
-    <string name="settings_spellcheck_accept_learned_summary">Ord, der er lært af det, du skriver, regnes som stavet korrekt</string>
+    <string name="settings_spellcheck_accept_learned_summary">Genkender ord, der er lært af det, du skriver</string>
     <string name="pref_alt_double_tap_lock">Aktiver Alt-lås ved dobbeltklik</string>
     <string name="pref_alt_double_tap_lock_summary">Hvis du dobbeltklikker på Alt, låses den. Tryk på Alt igen for at slå den fra.</string>
     <string name="pref_ctrl_double_tap_lock">Aktiver Ctrl-lås ved dobbeltklik</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Handling ved rystning om X-aksen</string>
     <string name="settings_shake_y_axis_title">Handling ved rystning om Y-aksen</string>
     <string name="settings_shake_z_axis_title">Handling ved rystning om Z-aksen</string>
-    <string name="settings_spell_checker_screen_title">Indstillinger for stavekontrol</string>
     <string name="settings_spell_checker_summary">Konfigurer stavekontrollen for hele systemet</string>
     <string name="settings_spell_checker_title">Stavekontrol</string>
     <string name="settings_title">Indstillinger for BBKB</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Indlæser symboler…</string>
     <string name="settings_keyeditor_hex_code">Hexkode (f.eks. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Ugyldig tegnkode</string>
-    <string name="settings_spellcheck_intro">BBKB-stavekontrollen giver intelligent stavekontrol i alle apps, der understøtter stavekontrol. Den bruger avancerede sprogmodeller til at finde slåfejl og foreslå rettelser.</string>
+    <string name="settings_spellcheck_intro">BBKB-stavekontrollen bruger avancerede sprogmodeller til at give stavekontrol i alle apps, der understøtter det</string>
+    <string name="settings_spellcheck_enable_title">Slå BBKB-stavekontrol til</string>
+    <string name="settings_spellcheck_enable_summary">Finder slåfejl og foreslår rettelser</string>
     <string name="settings_credits_version">Version %1$s (build %2$s)</string>
 </resources>

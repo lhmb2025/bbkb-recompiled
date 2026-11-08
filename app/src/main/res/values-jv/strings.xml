@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Mbenerake tembung nalika ngetik. Pencet backspace kanggo mbatalake koreksi.</string>
     <string name="settings_category_display">Tampilan</string>
     <string name="settings_category_sources">Sumber</string>
-    <string name="settings_category_contacts_accounts">Kontak lan akun</string>
     <string name="settings_dict_add_reverted_words_title">Tampilake tombol tambah tembung</string>
     <string name="settings_dict_add_reverted_words_summary">Sawise backspace mbatalake koreksi, tampilake tombol kanggo nambah tembung</string>
     <string name="prefs_category_tuning">Penyetelan</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Nuduhake tandha Shift/Alt ing bar status nalika nganggo papan tombol fisik</string>
     <string name="settings_pred_block_offensive_summary">Tutupi tembung sing bisa nyerang nalika dikte nganggo swara</string>
     <string name="settings_pred_block_offensive_title">Blokir tembung sing nyerang</string>
-    <string name="settings_pred_contacts_permission_summary">Wenehi idin supaya jeneng kontak lan alamat email bisa disaranake</string>
     <string name="settings_pred_contacts_permission_title">Idin kontak</string>
     <string name="settings_pred_contacts_summary_disabled">Butuh idin kontak</string>
     <string name="settings_pred_contacts_summary_enabled">Lebokake jeneng kontak ing saran</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Tuduhake animasi nampa kanthi sentilan</string>
     <string name="settings_pred_force_suggestions_summary">Tuduhake bar saran senajan ing aplikasi sing njaluk papan tombol ndhelikake. Ora ditrapake ing kolom sandhi.</string>
     <string name="settings_pred_force_suggestions_title">Peksa saran</string>
-    <string name="settings_pred_grant_permission">Wenehi Idin</string>
     <string name="settings_pred_next_word_summary">Saranake tembung sabanjure adhedhasar konteks</string>
     <string name="settings_pred_next_word_title">Saran tembung sabanjure</string>
     <string name="settings_pred_on_key_summary">Tuduhake saran ing papan tombol virtual nalika ngetik</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Skala vertikal ing wiwitan animasi</string>
     <string name="settings_anim_show_start_y_title">Skala Y wiwitan pamunculan</string>
     <string name="settings_animation_params_title">Parameter animasi</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Wenehi idin kontak kanggo nganggo fitur iki</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Jeneng kontak bakal dianggep tembung sing bener</string>
-    <string name="settings_spellcheck_use_contacts_title">Nganggo kontak kanggo mriksa ejaan</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Wenehi idin kontak supaya jeneng kontak dikenali minangka tembung sing bener nalika mriksa ejaan</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Ngenali jeneng kontak minangka tembung sing bener</string>
+    <string name="settings_spellcheck_use_contacts_title">Tampa jeneng kontak</string>
     <string name="settings_spellcheck_accept_learned_title">Tampa tembung sing disinaoni</string>
-    <string name="settings_spellcheck_accept_learned_summary">Tembung sing disinaoni saka ketikan sampeyan dianggep ejaané bener</string>
+    <string name="settings_spellcheck_accept_learned_summary">Ngenali tembung sing disinaoni saka ketikan sampeyan</string>
     <string name="pref_alt_double_tap_lock">Aktifake kunci Alt kanthi klik pindho</string>
     <string name="pref_alt_double_tap_lock_summary">Ngeklik Alt kaping pindho bakal ngunci. Ngeklik Alt maneh bakal mbukak kuncine.</string>
     <string name="pref_ctrl_double_tap_lock">Aktifake kunci Ctrl kanthi klik pindho</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Tumindak goyangan sumbu X</string>
     <string name="settings_shake_y_axis_title">Tumindak goyangan sumbu Y</string>
     <string name="settings_shake_z_axis_title">Tumindak goyangan sumbu Z</string>
-    <string name="settings_spell_checker_screen_title">Setelan pamriksa ejaan</string>
     <string name="settings_spell_checker_summary">Atur paripolah pamriksan ejaan ing kabeh sistem</string>
     <string name="settings_spell_checker_title">Mriksa ejaan</string>
     <string name="settings_title">Setelan BBKB</string>
@@ -1084,6 +1078,8 @@
     <string name="settings_keyeditor_loading">Ngemot simbol…</string>
     <string name="settings_keyeditor_hex_code">Kode hex (upamane 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Kode karakter ora sah</string>
-    <string name="settings_spellcheck_intro">Pamriksa ejaan BBKB menehi pamriksan ejaan sing pinter ing kabeh aplikasi sing ndhukung pamriksan ejaan. Iki nganggo model basa canggih kanggo ndeteksi salah ketik lan nyaranake koreksi.</string>
+    <string name="settings_spellcheck_intro">Pamriksa ejaan BBKB nganggo model basa canggih kanggo menehi pamriksan ejaan ing kabeh aplikasi sing ndhukung</string>
+    <string name="settings_spellcheck_enable_title">Aktifake pamriksa ejaan BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Ndeteksi salah ketik lan nyaranake koreksi</string>
     <string name="settings_credits_version">Versi %1$s (Build %2$s)</string>
 </resources>

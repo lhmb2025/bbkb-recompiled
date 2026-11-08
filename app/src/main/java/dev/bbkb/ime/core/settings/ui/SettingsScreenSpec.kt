@@ -7,6 +7,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.FractionRes
 import androidx.annotation.IntegerRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
@@ -325,3 +326,13 @@ class Custom(
     val inGroup: Boolean = false,
     val content: @Composable (SettingsEnv) -> Unit,
 ) : SettingsRow
+
+/**
+ * Ends one group and starts the next with no label between them: a screen's master switch sits
+ * in a card of its own above the rows it governs, as "Enable suggestions" does.
+ */
+fun groupBreak(): Custom = Custom {
+    androidx.compose.foundation.layout.Spacer(
+        modifier = Modifier.height(LocalSpacing.current.large)
+    )
+}

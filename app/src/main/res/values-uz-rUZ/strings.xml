@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Yozayotganda so\'zlarni tuzatadi. Tuzatishni bekor qilish uchun Backspace bosing.</string>
     <string name="settings_category_display">Ko\'rsatish</string>
     <string name="settings_category_sources">Manbalar</string>
-    <string name="settings_category_contacts_accounts">Kontaktlar va hisoblar</string>
     <string name="settings_dict_add_reverted_words_title">So\'z qo\'shish tugmasini ko\'rsatish</string>
     <string name="settings_dict_add_reverted_words_summary">Backspace tuzatishni bekor qilgandan so\'ng so\'zni qo\'shish tugmasini ko\'rsatish</string>
     <string name="prefs_category_tuning">Sozlash</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Jismoniy klaviaturadan foydalanilganda holat panelida Shift/Alt modifikatori indikatorini ko‘rsatish</string>
     <string name="settings_pred_block_offensive_summary">Ovozli diktovkada haqoratli bo‘lishi mumkin bo‘lgan so‘zlarni yashirish</string>
     <string name="settings_pred_block_offensive_title">Haqoratli so‘zlarni bloklash</string>
-    <string name="settings_pred_contacts_permission_summary">Kontakt ismlari va e-pochta manzillarini taklif qilish uchun ruxsat bering</string>
     <string name="settings_pred_contacts_permission_title">Kontaktlarga ruxsat</string>
     <string name="settings_pred_contacts_summary_disabled">Kontaktlarga ruxsat kerak</string>
     <string name="settings_pred_contacts_summary_enabled">Kontakt ismlarini takliflarga kiritish</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Silkitib qo‘llash animatsiyasini ko‘rsatish</string>
     <string name="settings_pred_force_suggestions_summary">Takliflar panelini uni yashirishni so‘raydigan ilovalarda ham ko‘rsatish. Parol maydonlariga taalluqli emas.</string>
     <string name="settings_pred_force_suggestions_title">Takliflarni majburan ko‘rsatish</string>
-    <string name="settings_pred_grant_permission">Ruxsat berish</string>
     <string name="settings_pred_next_word_summary">Kontekstga qarab keyingi so‘zni taklif qilish</string>
     <string name="settings_pred_next_word_title">Keyingi so‘z takliflari</string>
     <string name="settings_pred_on_key_summary">Yozayotganda takliflarni virtual klaviaturada ko‘rsatish</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Animatsiya boshidagi vertikal masshtab</string>
     <string name="settings_anim_show_start_y_title">Paydo bo‘lish boshidagi Y masshtabi</string>
     <string name="settings_animation_params_title">Animatsiya parametrlari</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Bu funksiyadan foydalanish uchun kontaktlarga ruxsat bering</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Kontakt ismlari to‘g‘ri so‘z sifatida qabul qilinadi</string>
-    <string name="settings_spellcheck_use_contacts_title">Imlo tekshiruvida kontaktlardan foydalanish</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Imlo tekshiruvida kontakt ismlari to‘g‘ri so‘z sifatida tanilishi uchun kontaktlarga ruxsat bering</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Kontakt ismlarini toʻgʻri soʻz sifatida taniydi</string>
+    <string name="settings_spellcheck_use_contacts_title">Kontakt ismlarini qabul qilish</string>
     <string name="settings_spellcheck_accept_learned_title">Oʻrganilgan soʻzlarni qabul qilish</string>
-    <string name="settings_spellcheck_accept_learned_summary">Yozganlaringizdan oʻrganilgan soʻzlar toʻgʻri yozilgan deb hisoblanadi</string>
+    <string name="settings_spellcheck_accept_learned_summary">Yozganlaringizdan oʻrganilgan soʻzlarni taniydi</string>
     <string name="pref_alt_double_tap_lock">Alt ikki marta bosilganda qulflanishini yoqish</string>
     <string name="pref_alt_double_tap_lock_summary">Alt ikki marta bosilsa, u yoqilgan holda qulflanadi. Alt yana bosilsa, o‘chadi.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl ikki marta bosilganda qulflanishini yoqish</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">X o‘qi bo‘yicha silkitish amali</string>
     <string name="settings_shake_y_axis_title">Y o‘qi bo‘yicha silkitish amali</string>
     <string name="settings_shake_z_axis_title">Z o‘qi bo‘yicha silkitish amali</string>
-    <string name="settings_spell_checker_screen_title">Imlo tekshirgichi sozlamalari</string>
     <string name="settings_spell_checker_summary">Tizim bo‘ylab imlo tekshiruvi tartibini sozlash</string>
     <string name="settings_spell_checker_title">Imlo tekshiruvi</string>
     <string name="settings_title">BBKB sozlamalari</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Belgilar yuklanmoqda…</string>
     <string name="settings_keyeditor_hex_code">Hex kod (masalan, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Belgi kodi yaroqsiz</string>
-    <string name="settings_spellcheck_intro">BBKB imlo tekshirgichi imlo tekshiruvini qo‘llab-quvvatlaydigan barcha ilovalarda aqlli imlo tekshiruvini taqdim etadi. U xatolarni aniqlash va tuzatishlarni taklif qilish uchun ilg‘or til modellaridan foydalanadi.</string>
+    <string name="settings_spellcheck_intro">BBKB imlo tekshirgichi ilg‘or til modellaridan foydalanib, imlo tekshiruvini qo‘llab-quvvatlaydigan barcha ilovalarda imlo tekshiruvini taqdim etadi</string>
+    <string name="settings_spellcheck_enable_title">BBKB imlo tekshirgichini yoqish</string>
+    <string name="settings_spellcheck_enable_summary">Xatolarni aniqlaydi va tuzatishlarni taklif qiladi</string>
     <string name="settings_credits_version">Versiya %1$s (build %2$s)</string>
 </resources>

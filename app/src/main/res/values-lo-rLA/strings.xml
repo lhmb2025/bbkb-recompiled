@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">ແກ້ໄຂຄຳສັບຂະນະທີ່ພິມ. ກົດ Backspace ເພື່ອຍົກເລີກການແກ້ໄຂ.</string>
     <string name="settings_category_display">ການສະແດງ</string>
     <string name="settings_category_sources">ແຫຼ່ງ</string>
-    <string name="settings_category_contacts_accounts">ລາຍຊື່ຕິດຕໍ່ ແລະ ບັນຊີ</string>
     <string name="settings_dict_add_reverted_words_title">ສະແດງປຸ່ມເພີ່ມຄຳ</string>
     <string name="settings_dict_add_reverted_words_summary">ຫຼັງຈາກ Backspace ຍົກເລີກການແກ້ໄຂ, ສະແດງປຸ່ມເພື່ອເພີ່ມຄຳ</string>
     <string name="prefs_category_tuning">ການປັບແຕ່ງ</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">ສະແດງຕົວບອກສະຖານະ Shift/Alt ໃນແຖບສະຖານະເມື່ອໃຊ້ແປ້ນພິມແທ້</string>
     <string name="settings_pred_block_offensive_summary">ເຊື່ອງຄຳທີ່ອາດບໍ່ສຸພາບເມື່ອປ້ອນດ້ວຍສຽງ</string>
     <string name="settings_pred_block_offensive_title">ບລັອກຄຳທີ່ບໍ່ສຸພາບ</string>
-    <string name="settings_pred_contacts_permission_summary">ໃຫ້ສິດເພື່ອແນະນຳຊື່ຜູ້ຕິດຕໍ່ ແລະ ທີ່ຢູ່ອີເມວ</string>
     <string name="settings_pred_contacts_permission_title">ສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່</string>
     <string name="settings_pred_contacts_summary_disabled">ຕ້ອງການສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່</string>
     <string name="settings_pred_contacts_summary_enabled">ລວມຊື່ຜູ້ຕິດຕໍ່ເຂົ້າໃນຄຳແນະນຳ</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">ສະແດງພາບເຄື່ອນໄຫວເມື່ອສະບັດຢືນຢັນ</string>
     <string name="settings_pred_force_suggestions_summary">ສະແດງແຖບຄຳແນະນຳເຖິງແມ່ນຢູ່ໃນແອັບທີ່ຂໍໃຫ້ແປ້ນພິມເຊື່ອງມັນ. ບໍ່ນຳໃຊ້ກັບຊ່ອງລະຫັດຜ່ານ.</string>
     <string name="settings_pred_force_suggestions_title">ບັງຄັບສະແດງຄຳແນະນຳ</string>
-    <string name="settings_pred_grant_permission">ໃຫ້ສິດອະນຸຍາດ</string>
     <string name="settings_pred_next_word_summary">ແນະນຳຄຳຕໍ່ໄປຕາມບໍລິບົດ</string>
     <string name="settings_pred_next_word_title">ຄຳແນະນຳຄຳຕໍ່ໄປ</string>
     <string name="settings_pred_on_key_summary">ສະແດງຄຳແນະນຳເທິງແປ້ນພິມສະເໝືອນໃນຂະນະທີ່ທ່ານພິມ</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">ອັດຕາສ່ວນແນວຕັ້ງເມື່ອພາບເຄື່ອນໄຫວເລີ່ມ</string>
     <string name="settings_anim_show_start_y_title">ອັດຕາສ່ວນ Y ຕອນເລີ່ມປາກົດ</string>
     <string name="settings_animation_params_title">ພາລາມິເຕີພາບເຄື່ອນໄຫວ</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">ໃຫ້ສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່ເພື່ອໃຊ້ຄຸນສົມບັດນີ້</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">ຊື່ຜູ້ຕິດຕໍ່ຈະຖືກຮັບຮູ້ວ່າເປັນຄຳທີ່ຖືກຕ້ອງ</string>
-    <string name="settings_spellcheck_use_contacts_title">ໃຊ້ລາຍຊື່ຜູ້ຕິດຕໍ່ໃນການກວດການສະກົດຄຳ</string>
-    <string name="settings_spellcheck_contacts_permission_summary">ໃຫ້ສິດເຂົ້າເຖິງລາຍຊື່ຜູ້ຕິດຕໍ່ເພື່ອໃຫ້ຮູ້ຈັກຊື່ຜູ້ຕິດຕໍ່ເປັນຄຳທີ່ຖືກຕ້ອງໃນເວລາກວດການສະກົດຄຳ</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">ຮັບຮູ້ຊື່ຜູ້ຕິດຕໍ່ວ່າເປັນຄຳທີ່ຖືກຕ້ອງ</string>
+    <string name="settings_spellcheck_use_contacts_title">ຍອມຮັບຊື່ຜູ້ຕິດຕໍ່</string>
     <string name="settings_spellcheck_accept_learned_title">ຍອມຮັບຄຳທີ່ຮຽນຮູ້</string>
-    <string name="settings_spellcheck_accept_learned_summary">ຄຳທີ່ຮຽນຮູ້ຈາກການພິມຂອງທ່ານຖືວ່າສະກົດຖືກຕ້ອງ</string>
+    <string name="settings_spellcheck_accept_learned_summary">ຮັບຮູ້ຄຳທີ່ຮຽນຮູ້ຈາກການພິມຂອງທ່ານ</string>
     <string name="pref_alt_double_tap_lock">ເປີດໃຊ້ການລັອກ Alt ດ້ວຍການກົດສອງເທື່ອ</string>
     <string name="pref_alt_double_tap_lock_summary">ການກົດ Alt ສອງເທື່ອຈະລັອກມັນໄວ້. ກົດ Alt ອີກເທື່ອໜຶ່ງເພື່ອປິດ.</string>
     <string name="pref_ctrl_double_tap_lock">ເປີດໃຊ້ການລັອກ Ctrl ດ້ວຍການກົດສອງເທື່ອ</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">ການເຮັດວຽກເມື່ອເຂຍ່າແກນ X</string>
     <string name="settings_shake_y_axis_title">ການເຮັດວຽກເມື່ອເຂຍ່າແກນ Y</string>
     <string name="settings_shake_z_axis_title">ການເຮັດວຽກເມື່ອເຂຍ່າແກນ Z</string>
-    <string name="settings_spell_checker_screen_title">ການຕັ້ງຄ່າໂຕກວດການສະກົດຄຳ</string>
     <string name="settings_spell_checker_summary">ຕັ້ງຄ່າພຶດຕິກຳການກວດການສະກົດຄຳທົ່ວທັງລະບົບ</string>
     <string name="settings_spell_checker_title">ການກວດການສະກົດຄຳ</string>
     <string name="settings_title">ຕັ້ງຄ່າ BBKB</string>
@@ -1084,6 +1078,8 @@
     <string name="settings_keyeditor_loading">ກຳລັງໂຫຼດສັນຍາລັກ…</string>
     <string name="settings_keyeditor_hex_code">ລະຫັດເລກຖານສິບຫົກ (ຕົວຢ່າງ: 1F600)</string>
     <string name="settings_keyeditor_invalid_code">ລະຫັດຕົວອັກສອນບໍ່ຖືກຕ້ອງ</string>
-    <string name="settings_spellcheck_intro">ຕົວກວດການສະກົດຄຳ BBKB ໃຫ້ການກວດການສະກົດຄຳແບບອັດສະລິຍະໃນທຸກແອັບທີ່ຮອງຮັບການກວດການສະກົດຄຳ. ມັນໃຊ້ໂມເດວພາສາຂັ້ນສູງເພື່ອກວດຫາຄຳທີ່ພິມຜິດ ແລະ ແນະນຳການແກ້ໄຂ.</string>
+    <string name="settings_spellcheck_intro">ຕົວກວດການສະກົດຄຳ BBKB ໃຊ້ໂມເດວພາສາຂັ້ນສູງເພື່ອໃຫ້ການກວດການສະກົດຄຳໃນທຸກແອັບທີ່ຮອງຮັບການກວດການສະກົດຄຳ</string>
+    <string name="settings_spellcheck_enable_title">ເປີດໂຕກວດການສະກົດຄຳ BBKB</string>
+    <string name="settings_spellcheck_enable_summary">ກວດຫາຄຳທີ່ພິມຜິດ ແລະ ແນະນຳການແກ້ໄຂ</string>
     <string name="settings_credits_version">ເວີຊັນ %1$s (ບິວ %2$s)</string>
 </resources>

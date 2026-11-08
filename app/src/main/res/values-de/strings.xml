@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Korrigiert Wörter beim Tippen. Mit der Rücktaste wird eine Korrektur rückgängig gemacht.</string>
     <string name="settings_category_display">Anzeige</string>
     <string name="settings_category_sources">Quellen</string>
-    <string name="settings_category_contacts_accounts">Kontakte und Konten</string>
     <string name="settings_dict_add_reverted_words_title">Schaltfläche „Wort hinzufügen“ anzeigen</string>
     <string name="settings_dict_add_reverted_words_summary">Nachdem die Rücktaste eine Korrektur rückgängig gemacht hat, eine Schaltfläche zum Hinzufügen des Wortes anzeigen</string>
     <string name="prefs_category_tuning">Feinabstimmung</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Bei Verwendung der physischen Tastatur die Umschalt-/Alt-Anzeige in der Statusleiste einblenden</string>
     <string name="settings_pred_block_offensive_summary">Möglicherweise anstößige Wörter beim Diktieren ausblenden</string>
     <string name="settings_pred_block_offensive_title">Anstößige Wörter blockieren</string>
-    <string name="settings_pred_contacts_permission_summary">Erteilen Sie die Berechtigung, damit Kontaktnamen und E-Mail-Adressen vorgeschlagen werden können</string>
     <string name="settings_pred_contacts_permission_title">Kontaktberechtigung</string>
     <string name="settings_pred_contacts_summary_disabled">Kontaktberechtigung erforderlich</string>
     <string name="settings_pred_contacts_summary_enabled">Kontaktnamen in Vorschläge einbeziehen</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Animation beim Übernehmen per Schnippen</string>
     <string name="settings_pred_force_suggestions_summary">Die Vorschlagsleiste auch in Apps anzeigen, die deren Ausblenden anfordern. Gilt nicht für Passwortfelder.</string>
     <string name="settings_pred_force_suggestions_title">Vorschläge erzwingen</string>
-    <string name="settings_pred_grant_permission">Berechtigung erteilen</string>
     <string name="settings_pred_next_word_summary">Nächstes Wort anhand des Kontexts vorschlagen</string>
     <string name="settings_pred_next_word_title">Vorschläge für das nächste Wort</string>
     <string name="settings_pred_on_key_summary">Vorschläge während der Eingabe auf der virtuellen Tastatur anzeigen</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Vertikale Skalierung am Animationsbeginn</string>
     <string name="settings_anim_show_start_y_title">Y-Skalierung am Beginn des Einblendens</string>
     <string name="settings_animation_params_title">Animationsparameter</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Erteilen Sie die Berechtigung für Kontakte, um diese Funktion zu nutzen</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Kontaktnamen werden als gültige Wörter erkannt</string>
-    <string name="settings_spellcheck_use_contacts_title">Kontakte für die Rechtschreibprüfung verwenden</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Erteilen Sie die Berechtigung für Kontakte, damit Kontaktnamen bei der Rechtschreibprüfung als gültige Wörter erkannt werden</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Erkennt Kontaktnamen als gültige Wörter</string>
+    <string name="settings_spellcheck_use_contacts_title">Kontaktnamen akzeptieren</string>
     <string name="settings_spellcheck_accept_learned_title">Gelernte Wörter akzeptieren</string>
-    <string name="settings_spellcheck_accept_learned_summary">Aus Ihrer Eingabe gelernte Wörter gelten als richtig geschrieben</string>
+    <string name="settings_spellcheck_accept_learned_summary">Erkennt aus Ihrer Eingabe gelernte Wörter</string>
     <string name="pref_alt_double_tap_lock">Alt-Doppelklick-Sperre aktivieren</string>
     <string name="pref_alt_double_tap_lock_summary">Ein Doppelklick auf Alt aktiviert die Sperre. Ein erneuter Klick auf Alt hebt sie auf.</string>
     <string name="pref_ctrl_double_tap_lock">Strg-Doppelklick-Sperre aktivieren</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Aktion beim Schütteln (X-Achse)</string>
     <string name="settings_shake_y_axis_title">Aktion beim Schütteln (Y-Achse)</string>
     <string name="settings_shake_z_axis_title">Aktion beim Schütteln (Z-Achse)</string>
-    <string name="settings_spell_checker_screen_title">Einstellungen für die Rechtschreibprüfung</string>
     <string name="settings_spell_checker_summary">Systemweites Verhalten der Rechtschreibprüfung konfigurieren</string>
     <string name="settings_spell_checker_title">Rechtschreibprüfung</string>
     <string name="settings_title">BBKB-Einstellungen</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Symbole werden geladen…</string>
     <string name="settings_keyeditor_hex_code">Hex-Code (z. B. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Ungültiger Zeichencode</string>
-    <string name="settings_spellcheck_intro">Die BBKB-Rechtschreibprüfung bietet eine intelligente Rechtschreibprüfung in allen Apps, die diese unterstützen. Sie nutzt fortschrittliche Sprachmodelle, um Tippfehler zu erkennen und Korrekturen vorzuschlagen.</string>
+    <string name="settings_spellcheck_intro">Die BBKB-Rechtschreibprüfung nutzt fortschrittliche Sprachmodelle, um in allen Apps, die dies unterstützen, eine Rechtschreibprüfung zu bieten</string>
+    <string name="settings_spellcheck_enable_title">BBKB-Rechtschreibprüfung aktivieren</string>
+    <string name="settings_spellcheck_enable_summary">Erkennt Tippfehler und schlägt Korrekturen vor</string>
     <string name="settings_credits_version">Version %1$s (Build %2$s)</string>
 </resources>

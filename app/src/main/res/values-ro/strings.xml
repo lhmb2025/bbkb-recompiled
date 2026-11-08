@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Corectează cuvintele pe măsură ce tastezi. Apasă Backspace pentru a anula o corectare.</string>
     <string name="settings_category_display">Afișare</string>
     <string name="settings_category_sources">Surse</string>
-    <string name="settings_category_contacts_accounts">Contacte și conturi</string>
     <string name="settings_dict_add_reverted_words_title">Afișează butonul de adăugare a cuvântului</string>
     <string name="settings_dict_add_reverted_words_summary">După ce Backspace anulează o corectare, afișează un buton pentru a adăuga cuvântul</string>
     <string name="prefs_category_tuning">Reglaj</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Afișează indicatorul modificatorilor Shift/Alt în bara de stare când folosiți tastatura fizică</string>
     <string name="settings_pred_block_offensive_summary">Ascunde cuvintele potențial ofensatoare în dictarea vocală</string>
     <string name="settings_pred_block_offensive_title">Blocați cuvintele ofensatoare</string>
-    <string name="settings_pred_contacts_permission_summary">Acordați permisiunea pentru a sugera nume de contacte și adrese de e-mail</string>
     <string name="settings_pred_contacts_permission_title">Permisiunea pentru contacte</string>
     <string name="settings_pred_contacts_summary_disabled">Este necesară permisiunea pentru contacte</string>
     <string name="settings_pred_contacts_summary_enabled">Includeți numele contactelor în sugestii</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Afișați animația de confirmare printr-o mișcare rapidă</string>
     <string name="settings_pred_force_suggestions_summary">Afișează bara de sugestii chiar și în aplicațiile care cer tastaturii să o ascundă. Nu se aplică la câmpurile pentru parole.</string>
     <string name="settings_pred_force_suggestions_title">Forțați sugestiile</string>
-    <string name="settings_pred_grant_permission">Acordați permisiunea</string>
     <string name="settings_pred_next_word_summary">Sugerează cuvântul următor în funcție de context</string>
     <string name="settings_pred_next_word_title">Sugestii pentru cuvântul următor</string>
     <string name="settings_pred_on_key_summary">Afișează sugestiile pe tastatura virtuală în timp ce tastați</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Scara verticală la începutul animației</string>
     <string name="settings_anim_show_start_y_title">Scară Y inițială la apariție</string>
     <string name="settings_animation_params_title">Parametri de animație</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Acordați permisiunea pentru contacte, pentru a folosi această funcție</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Numele contactelor vor fi recunoscute drept cuvinte valide</string>
-    <string name="settings_spellcheck_use_contacts_title">Folosiți contactele la verificarea ortografică</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Acordați permisiunea pentru contacte, pentru ca numele contactelor să fie recunoscute drept cuvinte valide la verificarea ortografică</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Recunoaște numele contactelor drept cuvinte valide</string>
+    <string name="settings_spellcheck_use_contacts_title">Acceptați numele contactelor</string>
     <string name="settings_spellcheck_accept_learned_title">Acceptați cuvintele învățate</string>
-    <string name="settings_spellcheck_accept_learned_summary">Cuvintele învățate din ce tastați sunt considerate scrise corect</string>
+    <string name="settings_spellcheck_accept_learned_summary">Recunoaște cuvintele învățate din ce tastați</string>
     <string name="pref_alt_double_tap_lock">Activați blocarea Alt prin dublu clic</string>
     <string name="pref_alt_double_tap_lock_summary">Dublul clic pe Alt îl blochează în poziția activă. Un nou clic pe Alt îl dezactivează.</string>
     <string name="pref_ctrl_double_tap_lock">Activați blocarea Ctrl prin dublu clic</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Acțiune la scuturare pe axa X</string>
     <string name="settings_shake_y_axis_title">Acțiune la scuturare pe axa Y</string>
     <string name="settings_shake_z_axis_title">Acțiune la scuturare pe axa Z</string>
-    <string name="settings_spell_checker_screen_title">Setări verificare ortografică</string>
     <string name="settings_spell_checker_summary">Configurați comportamentul verificării ortografice la nivel de sistem</string>
     <string name="settings_spell_checker_title">Verificare ortografică</string>
     <string name="settings_title">Setări pentru BBKB</string>
@@ -1114,6 +1108,8 @@
     <string name="settings_keyeditor_loading">Se încarcă simbolurile…</string>
     <string name="settings_keyeditor_hex_code">Cod hexazecimal (de ex. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Cod de caracter nevalid</string>
-    <string name="settings_spellcheck_intro">Verificatorul ortografic BBKB oferă verificare ortografică inteligentă în toate aplicațiile care acceptă verificarea ortografică. Folosește modele lingvistice avansate pentru a detecta greșelile de tastare și a sugera corecturi.</string>
+    <string name="settings_spellcheck_intro">Verificatorul ortografic BBKB folosește modele lingvistice avansate pentru a oferi verificare ortografică în toate aplicațiile care o acceptă</string>
+    <string name="settings_spellcheck_enable_title">Activează verificatorul ortografic BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Detectează greșelile de tastare și sugerează corecturi</string>
     <string name="settings_credits_version">Versiunea %1$s (build %2$s)</string>
 </resources>

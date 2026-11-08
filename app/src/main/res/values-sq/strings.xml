@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Korrigjon fjalët ndërsa shkruan. Shtyp Backspace për të zhbërë një korrigjim.</string>
     <string name="settings_category_display">Shfaqja</string>
     <string name="settings_category_sources">Burimet</string>
-    <string name="settings_category_contacts_accounts">Kontaktet dhe llogaritë</string>
     <string name="settings_dict_add_reverted_words_title">Shfaq butonin e shtimit të fjalës</string>
     <string name="settings_dict_add_reverted_words_summary">Pasi Backspace zhbën një korrigjim, shfaq një buton për të shtuar fjalën</string>
     <string name="prefs_category_tuning">Rregullim</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Shfaq treguesin Shift/Alt te shiriti i gjendjes kur përdoret tastiera fizike</string>
     <string name="settings_pred_block_offensive_summary">Maskon fjalët që mund të jenë fyese gjatë diktimit me zë</string>
     <string name="settings_pred_block_offensive_title">Blloko fjalët fyese</string>
-    <string name="settings_pred_contacts_permission_summary">Jep lejen që të sugjerohen emra kontaktesh dhe adresa e-mail</string>
     <string name="settings_pred_contacts_permission_title">Leja e kontakteve</string>
     <string name="settings_pred_contacts_summary_disabled">Kërkohet leja e kontakteve</string>
     <string name="settings_pred_contacts_summary_enabled">Përfshi emrat e kontakteve në sugjerime</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Shfaq animimin e pranimit me goditje të shpejtë</string>
     <string name="settings_pred_force_suggestions_summary">Shfaq shiritin e sugjerimeve edhe në aplikacionet që i kërkojnë tastierës ta fshehë. Nuk vlen për fushat e fjalëkalimeve.</string>
     <string name="settings_pred_force_suggestions_title">Detyro sugjerimet</string>
-    <string name="settings_pred_grant_permission">Jep lejen</string>
     <string name="settings_pred_next_word_summary">Sugjero fjalën e radhës sipas kontekstit</string>
     <string name="settings_pred_next_word_title">Sugjerimet e fjalës së radhës</string>
     <string name="settings_pred_on_key_summary">Shfaq sugjerime mbi tastierën virtuale ndërsa shkruan</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Shkalla vertikale në fillim të animimit</string>
     <string name="settings_anim_show_start_y_title">Shkalla Y në fillim të shfaqjes</string>
     <string name="settings_animation_params_title">Parametrat e animimit</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Jep lejen e kontakteve për ta përdorur këtë veçori</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Emrat e kontakteve do të njihen si fjalë të sakta</string>
-    <string name="settings_spellcheck_use_contacts_title">Përdor kontaktet në kontrollin drejtshkrimor</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Jep lejen e kontakteve që emrat e kontakteve të njihen si fjalë të vlefshme gjatë kontrollit drejtshkrimor</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Njeh emrat e kontakteve si fjalë të sakta</string>
+    <string name="settings_spellcheck_use_contacts_title">Prano emrat e kontakteve</string>
     <string name="settings_spellcheck_accept_learned_title">Prano fjalët e mësuara</string>
-    <string name="settings_spellcheck_accept_learned_summary">Fjalët e mësuara nga shkrimi juaj konsiderohen të shkruara saktë</string>
+    <string name="settings_spellcheck_accept_learned_summary">Njeh fjalët e mësuara nga shkrimi juaj</string>
     <string name="pref_alt_double_tap_lock">Aktivizo kyçjen e Alt me klikim të dyfishtë</string>
     <string name="pref_alt_double_tap_lock_summary">Klikimi i dyfishtë i Alt e kyç atë. Klikimi i Alt përsëri e çkyç.</string>
     <string name="pref_ctrl_double_tap_lock">Aktivizo kyçjen e Ctrl me klikim të dyfishtë</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Veprimi i tundjes në boshtin X</string>
     <string name="settings_shake_y_axis_title">Veprimi i tundjes në boshtin Y</string>
     <string name="settings_shake_z_axis_title">Veprimi i tundjes në boshtin Z</string>
-    <string name="settings_spell_checker_screen_title">Cilësimet e kontrollit drejtshkrimor</string>
     <string name="settings_spell_checker_summary">Konfiguro kontrollin drejtshkrimor në të gjithë sistemin</string>
     <string name="settings_spell_checker_title">Kontrolli drejtshkrimor</string>
     <string name="settings_title">Cilësimet e BBKB</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Po ngarkohen simbolet…</string>
     <string name="settings_keyeditor_hex_code">Kodi heksadecimal (p.sh. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Kod karakteri i pavlefshëm</string>
-    <string name="settings_spellcheck_intro">Kontrolluesi drejtshkrimor i BBKB ofron kontroll të zgjuar drejtshkrimor në të gjitha aplikacionet që e mbështesin kontrollin drejtshkrimor. Ai përdor modele të avancuara gjuhësore për të zbuluar gabimet e shtypit dhe për të sugjeruar korrigjime.</string>
+    <string name="settings_spellcheck_intro">Kontrolluesi drejtshkrimor i BBKB përdor modele të avancuara gjuhësore për të ofruar kontroll drejtshkrimor në të gjitha aplikacionet që e mbështesin</string>
+    <string name="settings_spellcheck_enable_title">Aktivizo kontrolluesin drejtshkrimor BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Zbulon gabimet e shtypit dhe sugjeron korrigjime</string>
     <string name="settings_credits_version">Versioni %1$s (ndërtimi %2$s)</string>
 </resources>

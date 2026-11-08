@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Ги поправа зборовите додека пишувате. Притиснете Backspace за да поништите поправка.</string>
     <string name="settings_category_display">Приказ</string>
     <string name="settings_category_sources">Извори</string>
-    <string name="settings_category_contacts_accounts">Контакти и сметки</string>
     <string name="settings_dict_add_reverted_words_title">Прикажи копче за додавање збор</string>
     <string name="settings_dict_add_reverted_words_summary">Откако Backspace ќе поништи поправка, прикажи копче за додавање на зборот</string>
     <string name="prefs_category_tuning">Прилагодување</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Прикажување показател за Shift/Alt во статусната лента при користење физичка тастатура</string>
     <string name="settings_pred_block_offensive_summary">Криење потенцијално навредливи зборови при гласовно диктирање</string>
     <string name="settings_pred_block_offensive_title">Блокирање навредливи зборови</string>
-    <string name="settings_pred_contacts_permission_summary">Дајте дозвола за да се предлагаат имиња на контакти и адреси на е-пошта</string>
     <string name="settings_pred_contacts_permission_title">Дозвола за контакти</string>
     <string name="settings_pred_contacts_summary_disabled">Потребна е дозвола за контакти</string>
     <string name="settings_pred_contacts_summary_enabled">Вклучување имиња на контакти во предлозите</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Анимација при потврдување со замавнување</string>
     <string name="settings_pred_force_suggestions_summary">Прикажување на лентата со предлози дури и во апликации што бараат тастатурата да ја скрие. Не важи за полињата за лозинки.</string>
     <string name="settings_pred_force_suggestions_title">Принудни предлози</string>
-    <string name="settings_pred_grant_permission">Дај дозвола</string>
     <string name="settings_pred_next_word_summary">Предлагање на следниот збор според контекстот</string>
     <string name="settings_pred_next_word_title">Предлози за следен збор</string>
     <string name="settings_pred_on_key_summary">Прикажување предлози на виртуелната тастатура додека пишувате</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Вертикален размер на почетокот од анимацијата</string>
     <string name="settings_anim_show_start_y_title">Вертикален размер на почетокот од појавувањето</string>
     <string name="settings_animation_params_title">Параметри на анимацијата</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Дајте дозвола за контакти за да ја користите функцијава</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Имињата на контактите ќе се препознаваат како валидни зборови</string>
-    <string name="settings_spellcheck_use_contacts_title">Користење на контактите за проверка на правопис</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Дајте дозвола за контакти за имињата на контактите да се препознаваат како валидни зборови при проверка на правопис</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Ги препознава имињата на контактите како валидни зборови</string>
+    <string name="settings_spellcheck_use_contacts_title">Прифаќање на имињата на контактите</string>
     <string name="settings_spellcheck_accept_learned_title">Прифаќање на научените зборови</string>
-    <string name="settings_spellcheck_accept_learned_summary">Зборовите научени од вашето пишување се сметаат за правилно напишани</string>
+    <string name="settings_spellcheck_accept_learned_summary">Ги препознава зборовите научени од вашето пишување</string>
     <string name="pref_alt_double_tap_lock">Овозможување заклучување со двоен клик на Alt</string>
     <string name="pref_alt_double_tap_lock_summary">Двојниот клик на Alt го заклучува. Повторниот клик на Alt го исклучува.</string>
     <string name="pref_ctrl_double_tap_lock">Овозможување заклучување со двоен клик на Ctrl</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Дејство при протресување по оската X</string>
     <string name="settings_shake_y_axis_title">Дејство при протресување по оската Y</string>
     <string name="settings_shake_z_axis_title">Дејство при протресување по оската Z</string>
-    <string name="settings_spell_checker_screen_title">Поставки за проверка на правопис</string>
     <string name="settings_spell_checker_summary">Конфигурирање на проверката на правопис низ целиот систем</string>
     <string name="settings_spell_checker_title">Проверка на правопис</string>
     <string name="settings_title">Поставки на BBKB</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Се вчитуваат симболите…</string>
     <string name="settings_keyeditor_hex_code">Хексадецимален код (на пр. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Неважечки код на знак</string>
-    <string name="settings_spellcheck_intro">Проверката на правопис на BBKB овозможува интелигентна проверка на правописот во сите апликации што ја поддржуваат. Користи напредни јазични модели за откривање печатни грешки и предлагање поправки.</string>
+    <string name="settings_spellcheck_intro">Проверката на правопис на BBKB користи напредни јазични модели за да овозможи проверка на правописот во сите апликации што ја поддржуваат</string>
+    <string name="settings_spellcheck_enable_title">Вклучи проверувач на правопис на BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Открива печатни грешки и предлага поправки</string>
     <string name="settings_credits_version">Верзија %1$s (градба %2$s)</string>
 </resources>

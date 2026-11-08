@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Leiðréttir orð meðan þú skrifar. Ýttu á backspace til að afturkalla leiðréttingu.</string>
     <string name="settings_category_display">Birting</string>
     <string name="settings_category_sources">Heimildir</string>
-    <string name="settings_category_contacts_accounts">Tengiliðir og reikningar</string>
     <string name="settings_dict_add_reverted_words_title">Sýna hnapp til að bæta við orði</string>
     <string name="settings_dict_add_reverted_words_summary">Þegar backspace afturkallar leiðréttingu, sýna hnapp til að bæta orðinu við</string>
     <string name="prefs_category_tuning">Stilling</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Sýna Shift/Alt-breytilykilvísi á stöðustiku þegar vélbúnaðarlyklaborð er notað</string>
     <string name="settings_pred_block_offensive_summary">Fela orð sem gætu verið móðgandi við raddupplestur</string>
     <string name="settings_pred_block_offensive_title">Loka á móðgandi orð</string>
-    <string name="settings_pred_contacts_permission_summary">Veittu heimild til að stinga upp á nöfnum tengiliða og netföngum</string>
     <string name="settings_pred_contacts_permission_title">Heimild fyrir tengiliði</string>
     <string name="settings_pred_contacts_summary_disabled">Heimild fyrir tengiliði nauðsynleg</string>
     <string name="settings_pred_contacts_summary_enabled">Hafa nöfn tengiliða með í tillögum</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Sýna hreyfimynd við snöggstrok</string>
     <string name="settings_pred_force_suggestions_summary">Sýna tillögustikuna líka í forritum sem biðja lyklaborðið um að fela hana. Á ekki við um lykilorðareiti.</string>
     <string name="settings_pred_force_suggestions_title">Þvinga fram tillögur</string>
-    <string name="settings_pred_grant_permission">Veita heimild</string>
     <string name="settings_pred_next_word_summary">Stinga upp á næsta orði út frá samhengi</string>
     <string name="settings_pred_next_word_title">Tillögur að næsta orði</string>
     <string name="settings_pred_on_key_summary">Sýna tillögur á skjályklaborðinu meðan þú skrifar</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Lóðréttur kvarði við upphaf hreyfimyndar</string>
     <string name="settings_anim_show_start_y_title">Y-kvarði við upphaf birtingar</string>
     <string name="settings_animation_params_title">Breytur hreyfimynda</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Veittu heimild fyrir tengiliði til að nota þennan eiginleika</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Nöfn tengiliða verða talin gild orð</string>
-    <string name="settings_spellcheck_use_contacts_title">Nota tengiliði við ritvilluleit</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Veittu heimild fyrir tengiliði svo að nöfn tengiliða séu þekkt sem gild orð við ritvilluleit</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Þekkir nöfn tengiliða sem gild orð</string>
+    <string name="settings_spellcheck_use_contacts_title">Samþykkja nöfn tengiliða</string>
     <string name="settings_spellcheck_accept_learned_title">Samþykkja lærð orð</string>
-    <string name="settings_spellcheck_accept_learned_summary">Orð sem lærð eru af innslætti þínum teljast rétt stafsett</string>
+    <string name="settings_spellcheck_accept_learned_summary">Þekkir orð sem lærð eru af innslætti þínum</string>
     <string name="pref_alt_double_tap_lock">Virkja læsingu Alt með tvísmelli</string>
     <string name="pref_alt_double_tap_lock_summary">Tvísmellur á Alt læsir honum á. Smelltu aftur á Alt til að slökkva á honum.</string>
     <string name="pref_ctrl_double_tap_lock">Virkja læsingu Ctrl með tvísmelli</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Aðgerð við hristing á X-ási</string>
     <string name="settings_shake_y_axis_title">Aðgerð við hristing á Y-ási</string>
     <string name="settings_shake_z_axis_title">Aðgerð við hristing á Z-ási</string>
-    <string name="settings_spell_checker_screen_title">Stillingar ritvilluleitar</string>
     <string name="settings_spell_checker_summary">Stilla hegðun ritvilluleitar í öllu kerfinu</string>
     <string name="settings_spell_checker_title">Ritvilluleit</string>
     <string name="settings_title">BBKB stillingar</string>
@@ -1099,6 +1093,8 @@
     <string name="settings_keyeditor_loading">Hleður táknum…</string>
     <string name="settings_keyeditor_hex_code">Hex-kóði (t.d. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Ógildur stafakóði</string>
-    <string name="settings_spellcheck_intro">BBKB-ritvilluleitin býður upp á snjalla ritvilluleit í öllum forritum sem styðja ritvilluleit. Hún notar háþróuð tungumálalíkön til að greina innsláttarvillur og stinga upp á leiðréttingum.</string>
+    <string name="settings_spellcheck_intro">BBKB-ritvilluleitin notar háþróuð tungumálalíkön til að bjóða upp á ritvilluleit í öllum forritum sem styðja hana</string>
+    <string name="settings_spellcheck_enable_title">Kveikja á BBKB-ritvilluleit</string>
+    <string name="settings_spellcheck_enable_summary">Greinir innsláttarvillur og stingur upp á leiðréttingum</string>
     <string name="settings_credits_version">Útgáfa %1$s (smíð %2$s)</string>
 </resources>

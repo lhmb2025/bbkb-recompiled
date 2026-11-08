@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">Corrige les mots pendant la frappe. Appuyez sur Retour arrière pour annuler une correction.</string>
     <string name="settings_category_display">Affichage</string>
     <string name="settings_category_sources">Sources</string>
-    <string name="settings_category_contacts_accounts">Contacts et comptes</string>
     <string name="settings_dict_add_reverted_words_title">Afficher le bouton d\'ajout de mot</string>
     <string name="settings_dict_add_reverted_words_summary">Quand Retour arrière annule une correction, afficher un bouton pour ajouter le mot</string>
     <string name="prefs_category_tuning">Réglage</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">Afficher l\'indicateur Maj/Alt dans la barre d\'état lors de l\'utilisation du clavier physique</string>
     <string name="settings_pred_block_offensive_summary">Masquer les mots potentiellement offensants dans la dictée vocale</string>
     <string name="settings_pred_block_offensive_title">Bloquer les mots offensants</string>
-    <string name="settings_pred_contacts_permission_summary">Accordez l\'autorisation pour suggérer des noms de contacts et des adresses e-mail</string>
     <string name="settings_pred_contacts_permission_title">Autorisation des contacts</string>
     <string name="settings_pred_contacts_summary_disabled">Autorisation d\'accès aux contacts requise</string>
     <string name="settings_pred_contacts_summary_enabled">Inclure les noms de contacts dans les suggestions</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">Afficher l\'animation de validation par effleurement</string>
     <string name="settings_pred_force_suggestions_summary">Afficher la barre de suggestions même dans les applications qui demandent au clavier de la masquer. Ne s\'applique pas aux champs de mot de passe.</string>
     <string name="settings_pred_force_suggestions_title">Forcer les suggestions</string>
-    <string name="settings_pred_grant_permission">Accorder l\'autorisation</string>
     <string name="settings_pred_next_word_summary">Suggérer le mot suivant en fonction du contexte</string>
     <string name="settings_pred_next_word_title">Suggestions du mot suivant</string>
     <string name="settings_pred_on_key_summary">Afficher les suggestions sur le clavier virtuel pendant la saisie</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">Échelle verticale au début de l\'animation</string>
     <string name="settings_anim_show_start_y_title">Échelle Y initiale d\'apparition</string>
     <string name="settings_animation_params_title">Paramètres d\'animation</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">Accordez l\'autorisation d\'accès aux contacts pour utiliser cette fonctionnalité</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">Les noms de contacts seront reconnus comme des mots valides</string>
-    <string name="settings_spellcheck_use_contacts_title">Utiliser les contacts pour la vérification orthographique</string>
-    <string name="settings_spellcheck_contacts_permission_summary">Accordez l\'autorisation d\'accès aux contacts pour que les noms de contacts soient reconnus comme des mots valides lors de la vérification orthographique</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">Reconnaît les noms de contacts comme des mots valides</string>
+    <string name="settings_spellcheck_use_contacts_title">Accepter les noms de contacts</string>
     <string name="settings_spellcheck_accept_learned_title">Accepter les mots appris</string>
-    <string name="settings_spellcheck_accept_learned_summary">Les mots appris de votre saisie sont considérés comme bien orthographiés</string>
+    <string name="settings_spellcheck_accept_learned_summary">Reconnaît les mots appris de votre saisie</string>
     <string name="pref_alt_double_tap_lock">Activer le verrouillage Alt par double appui</string>
     <string name="pref_alt_double_tap_lock_summary">Un double appui sur Alt la verrouille. Un nouvel appui sur Alt la désactive.</string>
     <string name="pref_ctrl_double_tap_lock">Activer le verrouillage Ctrl par double appui</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">Action de secousse sur l\'axe X</string>
     <string name="settings_shake_y_axis_title">Action de secousse sur l\'axe Y</string>
     <string name="settings_shake_z_axis_title">Action de secousse sur l\'axe Z</string>
-    <string name="settings_spell_checker_screen_title">Paramètres du vérificateur d\'orthographe</string>
     <string name="settings_spell_checker_summary">Configurer la vérification orthographique pour tout le système</string>
     <string name="settings_spell_checker_title">Vérification orthographique</string>
     <string name="settings_title">Paramètres BBKB</string>
@@ -1114,6 +1108,8 @@
     <string name="settings_keyeditor_loading">Chargement des symboles…</string>
     <string name="settings_keyeditor_hex_code">Code hexadécimal (ex. : 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Code de caractère non valide</string>
-    <string name="settings_spellcheck_intro">Le vérificateur d\'orthographe BBKB offre une vérification orthographique intelligente dans toutes les applications qui la prennent en charge. Il utilise des modèles linguistiques avancés pour détecter les fautes de frappe et suggérer des corrections.</string>
+    <string name="settings_spellcheck_intro">Le vérificateur d\'orthographe BBKB utilise des modèles linguistiques avancés pour offrir une vérification orthographique dans toutes les applications qui la prennent en charge</string>
+    <string name="settings_spellcheck_enable_title">Activer le vérificateur d\'orthographe BBKB</string>
+    <string name="settings_spellcheck_enable_summary">Détecte les fautes de frappe et suggère des corrections</string>
     <string name="settings_credits_version">Version %1$s (build %2$s)</string>
 </resources>

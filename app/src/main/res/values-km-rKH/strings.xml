@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">កែពាក្យនៅពេលអ្នកវាយ។ ចុច Backspace ដើម្បីមិនធ្វើវិញការកែតម្រូវ។</string>
     <string name="settings_category_display">ការបង្ហាញ</string>
     <string name="settings_category_sources">ប្រភព</string>
-    <string name="settings_category_contacts_accounts">ទំនាក់ទំនង និងគណនី</string>
     <string name="settings_dict_add_reverted_words_title">បង្ហាញប៊ូតុងបន្ថែមពាក្យ</string>
     <string name="settings_dict_add_reverted_words_summary">បន្ទាប់ពី Backspace មិនធ្វើវិញការកែតម្រូវ បង្ហាញប៊ូតុងដើម្បីបន្ថែមពាក្យ</string>
     <string name="prefs_category_tuning">ការកែសម្រួល</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">បង្ហាញសូចនាករគ្រាប់ចុចកែប្រែ Shift/Alt នៅលើរបារស្ថានភាព នៅពេលប្រើក្ដារចុចរូបវន្ត</string>
     <string name="settings_pred_block_offensive_summary">លាក់ពាក្យដែលអាចប្រមាថ នៅពេលបញ្ចូលដោយសំឡេង</string>
     <string name="settings_pred_block_offensive_title">ទប់ស្កាត់ពាក្យប្រមាថ</string>
-    <string name="settings_pred_contacts_permission_summary">ផ្ដល់ការអនុញ្ញាត ដើម្បីណែនាំឈ្មោះទំនាក់ទំនង និងអាសយដ្ឋានអ៊ីមែល</string>
     <string name="settings_pred_contacts_permission_title">ការអនុញ្ញាតទំនាក់ទំនង</string>
     <string name="settings_pred_contacts_summary_disabled">ត្រូវការការអនុញ្ញាតទំនាក់ទំនង</string>
     <string name="settings_pred_contacts_summary_enabled">បញ្ចូលឈ្មោះទំនាក់ទំនងក្នុងពាក្យណែនាំ</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">បង្ហាញចលនាពេលអូសបញ្ចូល</string>
     <string name="settings_pred_force_suggestions_summary">បង្ហាញរបារពាក្យណែនាំ សូម្បីតែក្នុងកម្មវិធីដែលស្នើឱ្យក្ដារចុចលាក់វា។ មិនអនុវត្តចំពោះប្រអប់ពាក្យសម្ងាត់ទេ។</string>
     <string name="settings_pred_force_suggestions_title">បង្ខំឱ្យបង្ហាញពាក្យណែនាំ</string>
-    <string name="settings_pred_grant_permission">ផ្ដល់ការអនុញ្ញាត</string>
     <string name="settings_pred_next_word_summary">ណែនាំពាក្យបន្ទាប់ដោយផ្អែកលើបរិបទ</string>
     <string name="settings_pred_next_word_title">ការណែនាំពាក្យបន្ទាប់</string>
     <string name="settings_pred_on_key_summary">បង្ហាញពាក្យណែនាំនៅលើក្ដារចុចនិម្មិតពេលអ្នកវាយបញ្ចូល</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">មាត្រដ្ឋានបញ្ឈរនៅពេលចលនាចាប់ផ្ដើម</string>
     <string name="settings_anim_show_start_y_title">មាត្រដ្ឋាន Y ដំបូងនៃការលេចឡើង</string>
     <string name="settings_animation_params_title">ប៉ារ៉ាម៉ែត្រចលនា</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">ផ្ដល់ការអនុញ្ញាតទំនាក់ទំនងដើម្បីប្រើមុខងារនេះ</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">ឈ្មោះទំនាក់ទំនងនឹងត្រូវបានទទួលស្គាល់ថាជាពាក្យត្រឹមត្រូវ</string>
-    <string name="settings_spellcheck_use_contacts_title">ប្រើទំនាក់ទំនងសម្រាប់ការពិនិត្យអក្ខរាវិរុទ្ធ</string>
-    <string name="settings_spellcheck_contacts_permission_summary">ផ្ដល់ការអនុញ្ញាតទំនាក់ទំនង ដើម្បីស្គាល់ឈ្មោះទំនាក់ទំនងជាពាក្យត្រឹមត្រូវ ពេលពិនិត្យអក្ខរាវិរុទ្ធ</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">ទទួលស្គាល់ឈ្មោះទំនាក់ទំនងថាជាពាក្យត្រឹមត្រូវ</string>
+    <string name="settings_spellcheck_use_contacts_title">ទទួលយកឈ្មោះទំនាក់ទំនង</string>
     <string name="settings_spellcheck_accept_learned_title">ទទួលយកពាក្យដែលបានរៀន</string>
-    <string name="settings_spellcheck_accept_learned_summary">ពាក្យដែលបានរៀនពីការវាយរបស់អ្នក ត្រូវបានចាត់ទុកថាសរសេរត្រឹមត្រូវ</string>
+    <string name="settings_spellcheck_accept_learned_summary">ទទួលស្គាល់ពាក្យដែលបានរៀនពីការវាយរបស់អ្នក</string>
     <string name="pref_alt_double_tap_lock">បើកការចាក់សោដោយចុច Alt ពីរដង</string>
     <string name="pref_alt_double_tap_lock_summary">ការចុច Alt ពីរដងនឹងចាក់សោវា។ ការចុច Alt ម្ដងទៀតនឹងបិទវា។</string>
     <string name="pref_ctrl_double_tap_lock">បើកការចាក់សោដោយចុច Ctrl ពីរដង</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">សកម្មភាពអង្រួនតាមអ័ក្ស X</string>
     <string name="settings_shake_y_axis_title">សកម្មភាពអង្រួនតាមអ័ក្ស Y</string>
     <string name="settings_shake_z_axis_title">សកម្មភាពអង្រួនតាមអ័ក្ស Z</string>
-    <string name="settings_spell_checker_screen_title">ការកំណត់កម្មវិធីពិនិត្យអក្ខរាវិរុទ្ធ</string>
     <string name="settings_spell_checker_summary">កំណត់ឥរិយាបថនៃការពិនិត្យអក្ខរាវិរុទ្ធទូទាំងប្រព័ន្ធ</string>
     <string name="settings_spell_checker_title">ការពិនិត្យអក្ខរាវិរុទ្ធ</string>
     <string name="settings_title">ការ​កំណត់ BBKB</string>
@@ -1084,6 +1078,8 @@
     <string name="settings_keyeditor_loading">កំពុងផ្ទុកនិមិត្តសញ្ញា…</string>
     <string name="settings_keyeditor_hex_code">កូដគោលដប់ប្រាំមួយ (ឧ. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">កូដតួអក្សរមិនត្រឹមត្រូវ</string>
-    <string name="settings_spellcheck_intro">កម្មវិធីពិនិត្យអក្ខរាវិរុទ្ធ BBKB ផ្ដល់ការពិនិត្យអក្ខរាវិរុទ្ធឆ្លាតវៃនៅគ្រប់កម្មវិធីដែលគាំទ្រការពិនិត្យអក្ខរាវិរុទ្ធ។ វាប្រើគំរូភាសាកម្រិតខ្ពស់ ដើម្បីរកឃើញកំហុសវាយ និងណែនាំការកែតម្រូវ។</string>
+    <string name="settings_spellcheck_intro">កម្មវិធីពិនិត្យអក្ខរាវិរុទ្ធ BBKB ប្រើគំរូភាសាកម្រិតខ្ពស់ ដើម្បីផ្ដល់ការពិនិត្យអក្ខរាវិរុទ្ធនៅគ្រប់កម្មវិធីដែលគាំទ្រការពិនិត្យអក្ខរាវិរុទ្ធ</string>
+    <string name="settings_spellcheck_enable_title">បើកកម្មវិធីពិនិត្យអក្ខរាវិរុទ្ធ BBKB</string>
+    <string name="settings_spellcheck_enable_summary">រកឃើញកំហុសវាយ និងណែនាំការកែតម្រូវ</string>
     <string name="settings_credits_version">កំណែ %1$s (កំណែបង្កើត %2$s)</string>
 </resources>

@@ -8,6 +8,7 @@ import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
 import dev.bbkb.ime.core.settings.ui.drawableIcon
+import dev.bbkb.ime.core.settings.ui.groupBreak
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.R
 
@@ -35,6 +36,7 @@ fun DictionariesLearningScreen(
             icon = drawableIcon(R.drawable.ic_settings_m_model_training),
             modifier = Modifier.settingsSearchAnchor("dynamic_learning"),
         ),
+        groupBreak(),
         // SettingsValues.showUiToAcceptTypedWord: after backspace undoes an auto-correction, the
         // word you typed is highlighted and a small button beside it adds it to the user
         // dictionary (RecorrectionController.revertAutoCorrection + TextDecorator). It lived on
@@ -47,6 +49,8 @@ fun DictionariesLearningScreen(
             icon = drawableIcon(R.drawable.ic_settings_m_playlist_add),
             modifier = Modifier.settingsSearchAnchor("pref_show_ui_to_accept_typed_word"),
         ),
+        // The three word lists, together in a card of their own.
+        groupBreak(),
         Nav(
             title = R.string.settings_dict_user_dictionary_title,
             summary = R.string.settings_dict_user_dictionary_summary,

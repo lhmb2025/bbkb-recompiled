@@ -59,7 +59,6 @@
     <string name="settings_autocorrect_enable_summary">輸入時更正字詞。按 Backspace 可復原更正。</string>
     <string name="settings_category_display">顯示</string>
     <string name="settings_category_sources">來源</string>
-    <string name="settings_category_contacts_accounts">聯絡人與帳戶</string>
     <string name="settings_dict_add_reverted_words_title">顯示新增字詞按鈕</string>
     <string name="settings_dict_add_reverted_words_summary">Backspace 復原更正後，顯示新增該字詞的按鈕</string>
     <string name="prefs_category_tuning">調校</string>
@@ -469,7 +468,6 @@
     <string name="pref_show_pkb_modifier_status_icon_summary">使用實體鍵盤時，在狀態列中顯示 Shift/Alt 輔助鍵指示標誌</string>
     <string name="settings_pred_block_offensive_summary">語音輸入時隱藏可能令人反感的字詞</string>
     <string name="settings_pred_block_offensive_title">封鎖不雅字詞</string>
-    <string name="settings_pred_contacts_permission_summary">授予權限，以便建議連絡人姓名和電子郵件地址</string>
     <string name="settings_pred_contacts_permission_title">連絡人權限</string>
     <string name="settings_pred_contacts_summary_disabled">需要連絡人權限</string>
     <string name="settings_pred_contacts_summary_enabled">在建議中納入連絡人姓名</string>
@@ -480,7 +478,6 @@
     <string name="settings_pred_flick_animation_title">顯示輕掃採用動畫</string>
     <string name="settings_pred_force_suggestions_summary">即使應用程式要求鍵盤隱藏建議列，仍會顯示建議列。不適用於密碼欄位。</string>
     <string name="settings_pred_force_suggestions_title">強制顯示建議</string>
-    <string name="settings_pred_grant_permission">授予權限</string>
     <string name="settings_pred_next_word_summary">根據上下文建議下一個字詞</string>
     <string name="settings_pred_next_word_title">下一個字詞建議</string>
     <string name="settings_pred_on_key_summary">輸入時在虛擬鍵盤上顯示建議</string>
@@ -508,12 +505,10 @@
     <string name="settings_anim_show_start_y_summary">動畫開始時的垂直縮放比例</string>
     <string name="settings_anim_show_start_y_title">顯示開始 Y 縮放</string>
     <string name="settings_animation_params_title">動畫參數</string>
-    <string name="settings_spellcheck_use_contacts_summary_disabled">授予連絡人權限即可使用此功能</string>
-    <string name="settings_spellcheck_use_contacts_summary_enabled">連絡人姓名將被視為有效字詞</string>
-    <string name="settings_spellcheck_use_contacts_title">使用連絡人進行拼字檢查</string>
-    <string name="settings_spellcheck_contacts_permission_summary">授予連絡人權限，以便在拼字檢查時將連絡人姓名視為有效字詞</string>
+    <string name="settings_spellcheck_use_contacts_summary_enabled">將連絡人姓名辨識為有效字詞</string>
+    <string name="settings_spellcheck_use_contacts_title">接受連絡人姓名</string>
     <string name="settings_spellcheck_accept_learned_title">接受已學習的字詞</string>
-    <string name="settings_spellcheck_accept_learned_summary">從您的輸入中學習的字詞會視為拼字正確</string>
+    <string name="settings_spellcheck_accept_learned_summary">辨識從您的輸入中學習的字詞</string>
     <string name="pref_alt_double_tap_lock">啟用 Alt 點兩下鎖定</string>
     <string name="pref_alt_double_tap_lock_summary">點兩下 Alt 鍵即可將其鎖定。再按一次 Alt 鍵即可關閉。</string>
     <string name="pref_ctrl_double_tap_lock">啟用 Ctrl 點兩下鎖定</string>
@@ -616,7 +611,6 @@
     <string name="settings_shake_x_axis_title">搖動 X 軸動作</string>
     <string name="settings_shake_y_axis_title">搖動 Y 軸動作</string>
     <string name="settings_shake_z_axis_title">搖動 Z 軸動作</string>
-    <string name="settings_spell_checker_screen_title">拼字檢查器設定</string>
     <string name="settings_spell_checker_summary">設定系統層級的拼字檢查行為</string>
     <string name="settings_spell_checker_title">拼字檢查</string>
     <string name="settings_title">BBKB 設定</string>
@@ -1084,6 +1078,8 @@
     <string name="settings_keyeditor_loading">正在載入符號…</string>
     <string name="settings_keyeditor_hex_code">十六進位代碼（例如 1F600）</string>
     <string name="settings_keyeditor_invalid_code">字元代碼無效</string>
-    <string name="settings_spellcheck_intro">BBKB 拼字檢查工具可在所有支援拼字檢查的應用程式中提供智慧拼字檢查。它使用先進的語言模型來偵測錯字並建議修正。</string>
+    <string name="settings_spellcheck_intro">BBKB 拼字檢查工具使用先進的語言模型，在所有支援拼字檢查的應用程式中提供拼字檢查</string>
+    <string name="settings_spellcheck_enable_title">啟用 BBKB 拼字檢查器</string>
+    <string name="settings_spellcheck_enable_summary">偵測錯字並建議修正</string>
     <string name="settings_credits_version">版本 %1$s（版本號碼 %2$s）</string>
 </resources>
