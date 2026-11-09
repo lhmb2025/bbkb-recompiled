@@ -252,7 +252,12 @@ public class KeyboardView extends View {
      * Reuses the GradientDrawable instance to avoid allocations.
      */
     private void updateKeyboardBackground() {
-        setBackground(KeyboardColorManager.fill(KeyboardColorManager.INSTANCE.getBackgroundColor()));
+        setBackground(KeyboardColorManager.fill(keyboardBackgroundColor()));
+    }
+
+    /** The view's own fill behind the keys. The slideboard number pad overrides it. */
+    protected int keyboardBackgroundColor() {
+        return KeyboardColorManager.INSTANCE.getBackgroundColor();
     }
 
     private static void applyAlphaToColor(Paint paint, int alpha) {
@@ -674,9 +679,31 @@ public class KeyboardView extends View {
     /** Base face to its medium-weight face, by identity; see {@link #mediumWeightTypeface}. */
     private static final IdentityHashMap<Typeface, Typeface> MEDIUM_WEIGHT_TYPEFACES = new IdentityHashMap<>();
 
+    /** backgroundType 8 / 9: the slideboard number pad's keys. */
+    private static boolean isSlideKey(Key key) {
+        return key.backgroundType == 8 || key.backgroundType == 9;
+    }
+
+    /** Opaque pressed fill (flat and sculpted painters). */
+    private static int keyPressedColorFor(Key key) {
+        return isSlideKey(key)
+                ? KeyboardColorManager.INSTANCE.getSlidePressedColor()
+                : KeyboardColorManager.INSTANCE.getKeyColorPressed();
+    }
+
+    /** Translucent pressed state layer (rounded painter). */
+    private static int pressedStateLayerFor(Key key) {
+        return isSlideKey(key)
+                ? KeyboardColorManager.INSTANCE.getSlidePressedStateLayer()
+                : KeyboardColorManager.INSTANCE.getPressedStateLayer();
+    }
+
     /** The key-surface color for a key's backgroundType (shared by both render paths). */
     private static int keyBackgroundColorFor(Key key) {
         switch (key.backgroundType) {
+            case 8: // slide (number pad)
+            case 9: // slideFunctional (number pad symbols)
+                return KeyboardColorManager.INSTANCE.getSlideKeyColor();
             case 2: // functional (delete, ?123/ABC, enter/search/go)
             case 3: // stickyOff (shift key not locked)
             case 5: // action (custom label action keys)
@@ -724,7 +751,7 @@ public class KeyboardView extends View {
 
         // Draw pressed state overlay if key is pressed
         if (isKeyDrawnPressed(key)) {
-            this.backgroundPaint.setColor(KeyboardColorManager.INSTANCE.getKeyColorPressed());
+            this.backgroundPaint.setColor(keyPressedColorFor(key));
 
             // Draw pressed overlay
             canvas.drawRect(0, 0, keyWidth, keyHeight, this.backgroundPaint);
@@ -732,10 +759,12 @@ public class KeyboardView extends View {
 
         // Draw vertical divider lines on left and right edges of normal keys and emoji keys
         // backgroundType: 1=normal, 2=functional, 3=stickyOff, 4=stickyOn, 5=action, 6=spacebar, 0=default (emoji)
-        if (key.backgroundType == 1 || key.backgroundType == 0) { // normal keys and emoji keys
+        if (key.backgroundType == 1 || key.backgroundType == 0 || isSlideKey(key)) { // normal, emoji, slide
             final float density = this.density;
             final Paint dividerPaint = this.dividerPaint;
-            dividerPaint.setColor(KeyboardColorManager.INSTANCE.getBackgroundColor());
+            dividerPaint.setColor(isSlideKey(key)
+                    ? KeyboardColorManager.INSTANCE.getSlideSeparatorColor()
+                    : KeyboardColorManager.INSTANCE.getBackgroundColor());
             float dividerWidth = 0.5f * density; // 0.5dp
             float topPadding = keyHeight * 0.08f; // 8% padding top
             float bottomPadding = keyHeight * 0.05f; // 5% padding bottom
@@ -793,7 +822,7 @@ public class KeyboardView extends View {
             canvas.drawRoundRect(cap, radius, radius, paint);
         }
         if (isKeyDrawnPressed(key)) {
-            paint.setColor(KeyboardColorManager.INSTANCE.getPressedStateLayer());
+            paint.setColor(pressedStateLayerFor(key));
             canvas.drawRoundRect(cap, radius, radius, paint);
         }
     }
@@ -980,7 +1009,7 @@ public class KeyboardView extends View {
             return;
         }
         int base = isKeyDrawnPressed(key)
-                ? KeyboardColorManager.INSTANCE.getKeyColorPressed()
+                ? keyPressedColorFor(key)
                 : keyBackgroundColorFor(key);
         canvas.drawRoundRect(cap, radius, radius, sculptedFillPaint(base, cap));
 
@@ -1068,7 +1097,9 @@ public class KeyboardView extends View {
                 }
             }
             if (key.isActive()) {
-                paint.setColor(key.getLabelColor(formatter));
+                paint.setColor(isSlideKey(key)
+                        ? KeyboardColorManager.INSTANCE.getSlideTextColor()
+                        : key.getLabelColor(formatter));
                 float shadowRadius = this.textShadowRadius;
                 if (shadowRadius > 0.0f) {
                     paint.setShadowLayer(shadowRadius, 0.0f, 0.0f, formatter.getTextShadowColor());

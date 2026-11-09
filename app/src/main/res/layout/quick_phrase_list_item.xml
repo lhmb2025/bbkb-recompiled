@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- One quick-phrase row. Height, fill and text colour are set by QuickPhrasesAdapter from
+     the slideboard palette. The fill is inset at the bottom by the tile gap, so the gap
+     between tiles is still part of the row's touch target. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/quick_phrase_text_container"
     android:clickable="true"
+    android:focusable="true"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/quick_phrase_list_item_height_normal_item">
+    android:layout_height="@dimen/quick_phrase_tile_default_height"
+    android:paddingBottom="@dimen/quick_phrase_tile_gap">
     <TextView
-        android:textAppearance="?android:attr/textAppearanceListItem"
-        android:textSize="16sp"
-        android:textColor="@color/quick_phrase_text_colour"
-        android:ellipsize="end"
-        android:gravity="center"
         android:id="@+id/quick_phrase_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/quick_phrase_list_item_vertical_margin"
-        android:layout_marginBottom="@dimen/quick_phrase_list_item_vertical_margin"
+        android:layout_gravity="center_vertical"
+        android:gravity="start|center_vertical"
+        android:textAlignment="viewStart"
+        android:textSize="16sp"
+        android:ellipsize="end"
         android:maxLines="1"
-        android:scrollHorizontally="true"
-        android:layout_centerVertical="true"
-        android:fontFamily="Roboto medium"
-        android:layout_marginStart="@dimen/quick_phrase_list_item_horizontal_margin"
-        android:layout_marginEnd="@dimen/quick_phrase_list_item_horizontal_margin"/>
-</RelativeLayout>
+        android:paddingStart="@dimen/quick_phrase_tile_padding_horizontal"
+        android:paddingEnd="@dimen/quick_phrase_tile_padding_horizontal"
+        android:importantForAccessibility="no"/>
+</FrameLayout>

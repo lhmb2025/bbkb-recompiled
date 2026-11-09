@@ -3,6 +3,7 @@ package dev.bbkb.ime.keyboard
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -113,6 +114,14 @@ object KeyboardColorManager {
          * the frets stay bright when the key surface darkens.
          */
         val fret: Int = key,
+        /**
+         * The slideboard panels (number pad, quick phrases). The original painted them
+         * BlackBerry blue against grey keys, so they read as a layer under the keyboard; the
+         * M3 palettes keep that with primary container. Ground, separator and pressed tones
+         * are derived from this pair (see [slideGroundColor] and its siblings).
+         */
+        val slide: Int = key,
+        val onSlide: Int = text,
     ) {
         companion object {
             val EMPTY = Palette(0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -183,6 +192,29 @@ object KeyboardColorManager {
         else -> StyleSpec.LEGACY
     }
 
+    // Slideboard panel tones, all derived from the palette's slide / onSlide pair.
+    val slideKeyColor: Int get() = palette.slide
+    val slideTextColor: Int get() = palette.onSlide
+    /** The panel behind the slide keys and phrase tiles: 10% on-color over the container. */
+    val slideGroundColor: Int get() = ColorUtils.blendARGB(palette.slide, palette.onSlide, 0.10f)
+    /** Hairlines between number-pad keys in the flat styles. */
+    val slideSeparatorColor: Int get() = ColorUtils.blendARGB(palette.slide, palette.onSlide, 0.18f)
+    /** Opaque pressed fill for the flat and sculpted painters. */
+    val slidePressedColor: Int get() = ColorUtils.blendARGB(palette.slide, palette.onSlide, 0.14f)
+    /** Translucent pressed state layer for the rounded painter and the phrase tiles. */
+    val slidePressedStateLayer: Int get() = applyAlpha(palette.onSlide, ALPHA_STATE_LAYER)
+
+    /**
+     * Start color of the soft shadow the keyboard casts on an open panel (fading to clear).
+     * On a light container a tint of its on-color reads as shade; on a dark one only black does.
+     */
+    val slideEdgeShadowColor: Int
+        get() = if (ColorUtils.calculateLuminance(palette.slide) > 0.5) {
+            applyAlpha(palette.onSlide, 0.18f)
+        } else {
+            applyAlpha(Color.BLACK, 0.45f)
+        }
+
     /** Sliding-key input preview: the accent, translucent. */
     val slidingPreviewColor: Int get() = applyAlpha(palette.accent, ALPHA_SLIDING_PREVIEW)
 
@@ -202,6 +234,24 @@ object KeyboardColorManager {
         useSystemColors = systemColors
         reload()
         Logger.info(TAG, "KeyboardColorManager initialized: style=$style scheme=$scheme systemColors=$systemColors")
+    }
+
+    /**
+     * For screens outside the IME (Settings) that draw with the keyboard palette. Until the
+     * IME's onCreate has run in this process the palette is [Palette.EMPTY], all transparent,
+     * so such a screen would draw nothing. Reads the same theme prefs the IME does, and
+     * re-applies them when already initialised so a theme picked in Settings shows up.
+     */
+    fun ensureInitialized(context: Context) {
+        val prefs = dev.bbkb.ime.core.settings.PrefsManager.getPrefs(context)
+        dev.bbkb.ime.core.settings.PrefsManager.migrateThemePrefs(prefs)
+        val style = Style.fromPref(
+            prefs.getString(dev.bbkb.ime.core.settings.PrefsManager.Keys.KEYBOARD_THEME_STYLE, "modern"))
+        val scheme = Scheme.fromPref(
+            prefs.getString(dev.bbkb.ime.core.settings.PrefsManager.Keys.KEYBOARD_THEME_MODE, "auto"))
+        val systemColors =
+            prefs.getBoolean(dev.bbkb.ime.core.settings.PrefsManager.Keys.KEYBOARD_USE_SYSTEM_COLORS, false)
+        if (isInitialized) setTheme(style, scheme, systemColors) else init(context, style, scheme, systemColors)
     }
 
     fun setTheme(style: Style, scheme: Scheme, systemColors: Boolean) {
@@ -286,6 +336,8 @@ object KeyboardColorManager {
         keyAlt = appContext.getColor(R.color.m3_surface_container_highest_light),
         keyPressed = appContext.getColor(R.color.m3_secondary_container_light),
         accent = appContext.getColor(R.color.highlight_light),
+        slide = appContext.getColor(R.color.m3_primary_container_light),
+        onSlide = appContext.getColor(R.color.m3_on_primary_container_light),
     )
 
     private fun darkPalette() = Palette(
@@ -298,6 +350,8 @@ object KeyboardColorManager {
         keyAlt = appContext.getColor(R.color.m3_surface_container_highest_dark),
         keyPressed = appContext.getColor(R.color.m3_secondary_container_dark),
         accent = appContext.getColor(R.color.highlight_dark),
+        slide = appContext.getColor(R.color.m3_primary_container_dark),
+        onSlide = appContext.getColor(R.color.m3_on_primary_container_dark),
     )
 
     private fun classicPalette() = Palette(
@@ -311,6 +365,9 @@ object KeyboardColorManager {
         keyPressed = appContext.getColor(R.color.bb_color_key_pressed),
         // The classic BB blue; also the pressed color, which is what classic used for emphasis.
         accent = appContext.getColor(R.color.bb_color_key_pressed),
+        // The original slide keys' own blue (slide_key_background nine-patches).
+        slide = appContext.getColor(R.color.bb_color_slide_key),
+        onSlide = appContext.getColor(R.color.bb_color_slide_text),
     )
 
     /**
@@ -329,6 +386,8 @@ object KeyboardColorManager {
         keyPressed = appContext.getColor(R.color.bb10_color_key_pressed),
         accent = appContext.getColor(R.color.bb10_color_accent),
         fret = appContext.getColor(R.color.bb10_color_fret),
+        slide = appContext.getColor(R.color.bb10_color_slide_key),
+        onSlide = appContext.getColor(R.color.bb10_color_text),
     )
 
     /**
@@ -377,6 +436,9 @@ object KeyboardColorManager {
             keyPressed = sys(android.R.color.system_accent2_700, android.R.color.system_accent2_100),
             // primary -- the Material style's enter pill, the gesture trail, the sliding preview
             accent = sys(android.R.color.system_accent1_200, android.R.color.system_accent1_600),
+            // primaryContainer / onPrimaryContainer -- the slideboard panels
+            slide = sys(android.R.color.system_accent1_700, android.R.color.system_accent1_100),
+            onSlide = sys(android.R.color.system_accent1_100, android.R.color.system_accent1_900),
         )
     }
 

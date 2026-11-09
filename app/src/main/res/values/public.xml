@@ -533,14 +533,12 @@
     <public type="color" name="primary_text_default_material_light" id="0x7f06017a" />
     <public type="color" name="primary_text_disabled_material_dark" id="0x7f06017b" />
     <public type="color" name="primary_text_disabled_material_light" id="0x7f06017c" />
-    <public type="color" name="quick_phrase_text_colour" id="0x7f06017e" />
     <public type="color" name="ripple_material_dark" id="0x7f06017f" />
     <public type="color" name="ripple_material_light" id="0x7f060180" />
     <public type="color" name="secondary_text_default_material_dark" id="0x7f060181" />
     <public type="color" name="secondary_text_default_material_light" id="0x7f060182" />
     <public type="color" name="secondary_text_disabled_material_dark" id="0x7f060183" />
     <public type="color" name="secondary_text_disabled_material_light" id="0x7f060184" />
-    <public type="color" name="slide_board_background_color" id="0x7f06018b" />
     <public type="color" name="suggested_word_dark" id="0x7f060198" />
     <public type="color" name="switch_thumb_disabled_material_dark" id="0x7f06019b" />
     <public type="color" name="switch_thumb_disabled_material_light" id="0x7f06019c" />
@@ -807,12 +805,6 @@
     <public type="dimen" name="notification_subtext_size" id="0x7f070140" />
     <public type="dimen" name="notification_top_pad" id="0x7f070141" />
     <public type="dimen" name="notification_top_pad_large_text" id="0x7f070142" />
-    <public type="dimen" name="quick_phrase_list_item_height_first_item" id="0x7f070145" />
-    <public type="dimen" name="quick_phrase_list_item_height_normal_item" id="0x7f070146" />
-    <public type="dimen" name="quick_phrase_list_item_horizontal_margin" id="0x7f070147" />
-    <public type="dimen" name="quick_phrase_list_item_top_padding_first_item" id="0x7f070148" />
-    <public type="dimen" name="quick_phrase_list_item_top_padding_normal_item" id="0x7f070149" />
-    <public type="dimen" name="quick_phrase_list_item_vertical_margin" id="0x7f07014a" />
     <public type="dimen" name="quick_phrases_recycler_view_scrollbar_size" id="0x7f07014d" />
     <public type="dimen" name="tooltip_corner_radius" id="0x7f070162" />
     <public type="dimen" name="tooltip_horizontal_padding" id="0x7f070163" />

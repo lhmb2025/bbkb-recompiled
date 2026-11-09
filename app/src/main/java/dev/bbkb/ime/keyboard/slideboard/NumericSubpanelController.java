@@ -16,8 +16,10 @@ import dev.bbkb.ime.keyboard.KeyboardBuilder;
 import dev.bbkb.ime.keyboard.SimplifiedKeyboardView;
 
 import java.util.Currency;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 
 
@@ -32,6 +34,8 @@ public class NumericSubpanelController implements SimplifiedKeyboardView.onKeyEv
     private NumericSubpanelKeyboardView keyboardView;
 
     private List<String> customSymbols;
+
+    private String currencySymbol;
 
     private Locale currentLocale;
 
@@ -55,8 +59,31 @@ public class NumericSubpanelController implements SimplifiedKeyboardView.onKeyEv
         this.keyboardView = numericSubpanelKeyboardView;
         numericSubpanelKeyboardView.setKeyboard(buildKeyboard(this.subtypeManager.getCurrentSubtypeLocale()));
         numericSubpanelKeyboardView.setOnKeyEventListener(this);
-        numericSubpanelKeyboardView.updateKey(this.settingsManager.getSettingsValues().currencySymbol);
-        numericSubpanelKeyboardView.setNumericKeys(this.settingsManager.getSettingsValues().customSlideboardSymbols);
+        applyKeys(this.settingsManager.getSettingsValues());
+    }
+
+    /**
+     * Currency first, then the customised pad, on a freshly built keyboard. Every path that
+     * builds the pad (first show, language switch, settings change) goes through here, so they
+     * can't drift apart again.
+     */
+    private void applyKeys(SettingsValues settingsValues) {
+        this.customSymbols = settingsValues.customSlideboardSymbols;
+        this.currencySymbol = settingsValues.currencySymbol;
+        this.keyboardView.updateKey(settingsValues.currencySymbol);
+        this.keyboardView.applyCustomKeys(this.customSymbols, currencyPlaceholders(settingsValues));
+    }
+
+    private static Set<String> currencyPlaceholders(SettingsValues settingsValues) {
+        Set<String> placeholders = new HashSet<>();
+        placeholders.add("$"); // the shipped default in the editor
+        placeholders.add(settingsValues.currencySymbol);
+        try {
+            placeholders.add(Currency.getInstance(Locale.getDefault()).getSymbol());
+        } catch (IllegalArgumentException e) {
+            // A default locale with no country (or an unknown one) has no currency.
+        }
+        return placeholders;
     }
 
     private Keyboard buildKeyboard(Locale locale) {
@@ -79,24 +106,21 @@ public class NumericSubpanelController implements SimplifiedKeyboardView.onKeyEv
 
     public void onSubtypeChanged(InputMethodSubtype inputMethodSubtype) {
         if (this.keyboardView != null) {
-            String str = this.customSymbols.size() > 8 ? this.customSymbols.get(8) : "";
-            String symbol = Currency.getInstance(Locale.getDefault()).getSymbol();
             this.keyboardView.setKeyboard(buildKeyboard(new Locale(inputMethodSubtype.getLocale())));
-            if (!str.equals(symbol)) {
-                this.keyboardView.setNumericKeys(this.customSymbols);
-            } else {
-                this.keyboardView.setSymbolKeys(this.customSymbols);
-            }
-            this.customSymbols = this.settingsManager.getSettingsValues().customSlideboardSymbols;
+            applyKeys(this.settingsManager.getSettingsValues());
         }
     }
 
     public void applySettings(SettingsValues settingsValues) {
-        boolean z = !this.customSymbols.equals(settingsValues.customSlideboardSymbols);
-        this.customSymbols = settingsValues.customSlideboardSymbols;
-        NumericSubpanelKeyboardView numericSubpanelKeyboardView = this.keyboardView;
-        if (numericSubpanelKeyboardView != null && z) {
-            numericSubpanelKeyboardView.setNumericKeys(this.customSymbols);
+        if (this.keyboardView == null) {
+            return;
+        }
+        boolean changed = !this.customSymbols.equals(settingsValues.customSlideboardSymbols)
+                || !java.util.Objects.equals(this.currencySymbol, settingsValues.currencySymbol);
+        if (changed) {
+            // Replaced keys can't be un-replaced (a cleared customisation, say), so start over.
+            this.keyboardView.setKeyboard(buildKeyboard(this.currentLocale));
+            applyKeys(settingsValues);
         }
     }
 

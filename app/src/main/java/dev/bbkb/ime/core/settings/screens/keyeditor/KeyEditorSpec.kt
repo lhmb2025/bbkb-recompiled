@@ -13,6 +13,7 @@ import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.data.CustomSymbolRepository
 import dev.bbkb.ime.core.settings.util.SettingsManager
 import dev.bbkb.ime.R
+import dev.bbkb.ime.keyboard.slideboard.NumericSubpanelKeyboardView
 
 /** The marker a blank slot is stored as, shared with `CustomSymbolRepository`. */
 internal const val EMPTY_SLOT = "\u0000"
@@ -225,9 +226,8 @@ internal val PkbSymbolPageSpec = symbolPageSpec(
 private const val NUMPAD_PREF = "custom_slideboard_symbols"
 
 /**
- * Editor position -> storage index for the slideboard's 4x5 numpad, determined empirically: the
- * keyboard's `TreeSet` sorts keys by row then column, but key parsing and the row structure leave
- * the stored order matching neither.
+ * Editor position -> storage index for the slideboard's 4x5 numpad. Shared with the keyboard,
+ * which matches keys by on-screen position through the same table.
  *
  * ```
  *   visual   0..4  : 7  8  9  &  *
@@ -239,12 +239,7 @@ private const val NUMPAD_PREF = "custom_slideboard_symbols"
  * Load reads `storage[order[i]]` into editor slot `i`; save writes editor slot `i` back to
  * `storage[order[i]]`. Reversing that scrambles every customised numpad, in silence.
  */
-private val NUMPAD_KEYBOARD_READ_ORDER = intArrayOf(
-    15, 16, 17, 4, 5,
-    12, 13, 14, 2, 3,
-    9, 10, 11, 19, 1,
-    8, 7, 6, 18, 0,
-)
+private val NUMPAD_KEYBOARD_READ_ORDER = NumericSubpanelKeyboardView.STORAGE_INDEX_FOR_POSITION
 
 private fun numpadDefaults(context: Context) =
     context.resources.getStringArray(R.array.slideboard_numpad_symbols).toList()

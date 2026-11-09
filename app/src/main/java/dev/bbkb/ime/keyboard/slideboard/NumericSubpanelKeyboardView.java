@@ -12,6 +12,7 @@ import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.core.device.ResourceConfigManager;
 import dev.bbkb.ime.keyboard.Key;
 import dev.bbkb.ime.keyboard.Keyboard;
+import dev.bbkb.ime.keyboard.KeyboardColorManager;
 import dev.bbkb.ime.keyboard.internal.KeyHintPosition;
 import dev.bbkb.ime.keyboard.internal.PointerTracker;
 import dev.bbkb.ime.keyboard.SimplifiedKeyboardView;
@@ -19,7 +20,9 @@ import dev.bbkb.ime.core.gesture.MultiPointerGestureDetector;
 import dev.bbkb.ime.keyboard.internal.MoreKeySpec;
 import dev.bbkb.ime.keyboard.internal.GestureInputAvailability;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implements SlideboardComponent {
@@ -48,6 +51,21 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
         this.gestureDetector = c0924a;
     }
 
+    /**
+     * Real key surfaces in every style (not the aux bars' flat strip), painted in the
+     * slideboard colours: KeyboardView gives backgroundType slide / slideFunctional the
+     * palette's slide tones, and this view's own ground is the darker panel tone.
+     */
+    @Override
+    protected boolean drawsFlatModernBackground() {
+        return false;
+    }
+
+    @Override
+    protected int keyboardBackgroundColor() {
+        return KeyboardColorManager.INSTANCE.getSlideGroundColor();
+    }
+
     @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent
     public boolean isShowing() {
         return getVisibility() == View.VISIBLE;
@@ -67,30 +85,49 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
         Logger.error("NumSubpanel", "Cannot replace currency key: " + cCharAt + " on keyboard");
     }
 
-    public void setNumericKeys(List<String> list) {
-        Keyboard keyboard = getKeyboard();
-        if (keyboard != null && list.size() == keyboard.getKeys().size()) {
-            List<Key> listMo6608c = keyboard.getKeys();
-            for (int i = 0; i < list.size(); i++) {
-                Key key = listMo6608c.get(i);
-                keyboard.replaceKey(key, createReplacementKey(list.get(i), key));
-            }
-            keyboard.rebuildProximityGrid();
-        }
-    }
+    /**
+     * On-screen position (reading order, 4 rows of 5) -> index in the stored
+     * {@code custom_slideboard_symbols} list. The stored order is a historical accident (it was
+     * the order of {@link Keyboard#getKeys()}, which sorts by {@link Key#hashCode()} and so
+     * changes whenever a key's label does), so keys are matched by position, never by list index.
+     * The settings editor reads and writes through the same table.
+     */
+    public static final int[] STORAGE_INDEX_FOR_POSITION = {
+            15, 16, 17, 4, 5,
+            12, 13, 14, 2, 3,
+            9, 10, 11, 19, 1,
+            8, 7, 6, 18, 0,
+    };
 
-    public void setSymbolKeys(List<String> list) {
+    /** On-screen position of the currency key (row 2, column 4). */
+    public static final int CURRENCY_POSITION = 8;
+
+    /**
+     * Applies a customised pad. A currency slot still holding one of {@code currencyPlaceholders}
+     * (the shipped "$", or the locale's own symbol) is left alone, so the currency key keeps
+     * following the currency setting and the language.
+     */
+    public void applyCustomKeys(List<String> stored, Set<String> currencyPlaceholders) {
         Keyboard keyboard = getKeyboard();
-        if (keyboard != null && list.size() == keyboard.getKeys().size()) {
-            List<Key> listMo6608c = keyboard.getKeys();
-            for (int i = 0; i < list.size(); i++) {
-                if (i != 8) {
-                    Key key = listMo6608c.get(i);
-                    keyboard.replaceKey(key, createReplacementKey(list.get(i), key));
-                }
-            }
-            keyboard.rebuildProximityGrid();
+        if (keyboard == null || stored == null || stored.size() != STORAGE_INDEX_FOR_POSITION.length) {
+            return;
         }
+        List<Key> keys = new ArrayList<>(keyboard.getKeys());
+        if (keys.size() != stored.size()) {
+            return;
+        }
+        keys.sort((a, b) -> a.getY() != b.getY()
+                ? Integer.compare(a.getY(), b.getY())
+                : Integer.compare(a.getX(), b.getX()));
+        for (int pos = 0; pos < keys.size(); pos++) {
+            String symbol = stored.get(STORAGE_INDEX_FOR_POSITION[pos]);
+            if (pos == CURRENCY_POSITION && currencyPlaceholders.contains(symbol)) {
+                continue;
+            }
+            Key key = keys.get(pos);
+            keyboard.replaceKey(key, createReplacementKey(symbol, key));
+        }
+        keyboard.rebuildProximityGrid();
     }
 
     private Key createReplacementKey(String str, Key key) {

@@ -772,8 +772,11 @@ public final class PointerTracker extends AbstractDrawingHandler {
         return this.mSlideboardActive;
     }
 
-    private float getSlideboardDistanceX(int x) {
-        return Math.abs(x - this.mSlideboardStartRawX);
+    private float getSlideboardDistanceX(MotionEvent motionEvent) {
+        // Raw against raw: the start is recorded as a raw (screen) x, and the view-local x is
+        // offset by the keyboard's own translation once the slideboard is open, which made every
+        // held key look like a 540px drag and swallowed the keystroke.
+        return Math.abs(motionEvent.getRawX() - this.mSlideboardStartRawX);
     }
 
     private void onMoveEventInternal(int i, int i2, long j, MotionEvent motionEvent) {
@@ -806,7 +809,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
         // One snapshot per sample: this runs on every ACTION_MOVE, and re-reading mid-expression
         // can observe two different SettingsValues if a settings reload lands between the reads.
         final SettingsValues sv = SettingsManager.getInstance().getSettingsValues();
-        if (!sv.isSlideboardEnabled || sSuppressSlideboard || ((!this.mSlideboardActive && getSlideboardDistanceX(i) <= 150f) || jNanoTime <= 200000000)) {
+        if (!sv.isSlideboardEnabled || sSuppressSlideboard || ((!this.mSlideboardActive && getSlideboardDistanceX(motionEvent) <= 150f) || jNanoTime <= 200000000)) {
             return false;
         }
         if (!this.mSlideboardActive && isSlideboardGesture(motionEvent)) {

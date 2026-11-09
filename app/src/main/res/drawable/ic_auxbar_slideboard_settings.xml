@@ -1,42 +1,34 @@
+<!-- ic_auxbar_slideboard_settings: the slideboard settings key on the toolbar while a
+     slideboard panel is open. Same artwork as ic_settings_slideboard (owner's SVG, a slideboard
+     with a gear badge), tinted like the other toolbar icons. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24"
     android:tint="?android:attr/textColorPrimary">
-  <group>
-    <clip-path
-        android:pathData="M12.5,1.74h9.7v20.42h-9.7z"/>
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M19.14,12.94c0.04,-0.3 0.06,-0.61 0.06,-0.94s-0.02,-0.64 -0.07,-0.94l2.03,-1.58c0.18,-0.14 0.23,-0.41 0.12,-0.61l-1.92,-3.32c-0.12,-0.22 -0.37,-0.29 -0.59,-0.22l-2.39,0.96c-0.5,-0.38 -1.03,-0.7 -1.62,-0.94l-0.36,-2.54c-0.04,-0.24 -0.24,-0.41 -0.48,-0.41h-3.84c-0.24,0 -0.43,0.17 -0.47,0.41l-0.36,2.54c-0.59,0.24 -1.13,0.57 -1.62,0.94l-2.39,-0.96c-0.22,-0.08 -0.47,0 -0.59,0.22l-1.91,3.32c-0.12,0.21 -0.08,0.47 0.12,0.61l2.03,1.58c-0.05,0.3 -0.09,0.63 -0.09,0.94s0.02,0.64 0.07,0.94l-2.03,1.58c-0.18,0.14 -0.23,0.41 -0.12,0.61l1.92,3.32c0.12,0.22 0.37,0.29 0.59,0.22l2.39,-0.96c0.5,0.38 1.03,0.7 1.62,0.94l0.36,2.54c0.05,0.24 0.24,0.41 0.48,0.41h3.84c0.24,0 0.44,-0.17 0.47,-0.41l0.36,-2.54c0.59,-0.24 1.13,-0.56 1.62,-0.94l2.39,0.96c0.22,0.08 0.47,0 0.59,-0.22l1.92,-3.32c0.12,-0.22 0.07,-0.47 -0.12,-0.61l-2.01,-1.58ZM12,15.6c-1.98,0 -3.6,-1.62 -3.6,-3.6s1.62,-3.6 3.6,-3.6 3.6,1.62 3.6,3.6 -1.62,3.6 -3.6,3.6Z"/>
-  </group>
-  <group>
-    <clip-path
-        android:pathData="M0,0h11.5v24h-11.5z"/>
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M8.43,12.4h2v2h-2z"/>
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M8.43,9.4h2v2h-2z"/>
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M6.79,15.4l-1.36,0l0,2l2,0l0,-1.36l-0.64,-0.64z"/>
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M8.43,6.4h2v2h-2z"/>
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M15.84,3.99c-0.39,-0.39 -0.86,-0.59 -1.41,-0.59H4.43c-0.55,0 -1.02,0.2 -1.41,0.59s-0.59,0.86 -0.59,1.41v13c0,0.55 0.2,1.02 0.59,1.41s0.86,0.59 1.41,0.59h10c0.55,0 1.02,-0.2 1.41,-0.59 0.39,-0.39 0.59,-0.86 0.59,-1.41V5.4c0,-0.55 -0.2,-1.02 -0.59,-1.41ZM14.43,18.4H4.43v-5.36l-0.45,-0.45 -0.69,-0.69 0.69,-0.69 0.45,-0.45v-5.37h10v13Z"/>
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M8.43,15.4h2v2h-2z"/>
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M7.43,7.77l0,-1.37l-2,0l0,2l1.37,0l0.63,-0.63z"/>
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M4.67,11.9l2.79,2.79l0,-2.09l0,0l0,-1.39l0,0l0,-2.1l-2.79,2.79z"/>
-  </group>
+  <path
+      android:fillColor="@android:color/white"
+      android:pathData="M 21 12.809 c 0.802 0.465 1.488 1.106 2 1.877 V 5.25 c 0 -0.547 -0.197 -1.017 -0.59 -1.41 -0.393 -0.393 -0.863 -0.59 -1.41 -0.59 h -7.5 v 2 h 7.5 v 7.559 Z"/>
+  <path
+      android:fillColor="@android:color/white"
+      android:pathData="M 10 3.25 H 3 c -0.553 0 -1.023 0.197 -1.41 0.59 -0.393 0.393 -0.59 0.863 -0.59 1.41 v 13.5 c 0 0.547 0.197 1.017 0.59 1.41 0.393 0.393 0.863 0.59 1.41 0.59 h 9 V 3.25 h -2 Z M 10 18.75 H 3 V 5.25 h 7 v 13.5 Z"/>
+  <path
+      android:fillColor="@android:color/white"
+      android:pathData="M 18 9.75 h 1.5 v 1.5 h -1.5 Z"/>
+  <path
+      android:fillColor="@android:color/white"
+      android:pathData="M 18 6.75 h 1.5 v 1.5 h -1.5 Z"/>
+  <path
+      android:fillColor="@android:color/white"
+      android:pathData="M 15 9.75 h 1.5 v 1.5 h -1.5 Z"/>
+  <path
+      android:fillColor="@android:color/white"
+      android:pathData="M 15 6.75 h 1.5 v 1.5 h -1.5 Z"/>
+  <path
+      android:fillColor="@android:color/white"
+      android:pathData="M 4.75 12 L 8.25 15.5 V 8.5 Z"/>
+  <path
+      android:fillColor="@android:color/white"
+      android:pathData="M 17.33 22 l -0.28 -1.18 c -0.18 -0.067 -0.36 -0.15 -0.54 -0.25 s -0.34 -0.213 -0.48 -0.34 l -1.15 0.37 -0.68 -1.15 0.88 -0.85 c -0.033 -0.2 -0.05 -0.4 -0.05 -0.6 s 0.017 -0.4 0.05 -0.6 l -0.88 -0.8 0.67 -1.15 1.13 0.32 c 0.153 -0.133 0.317 -0.25 0.49 -0.35 0.173 -0.1 0.36 -0.183 0.56 -0.25 l 0.28 -1.17 h 1.33 l 0.3 1.15 c 0.2 0.087 0.387 0.177 0.56 0.27 0.173 0.093 0.333 0.21 0.48 0.35 l 1.13 -0.32 0.67 1.15 -0.85 0.8 c 0.033 0.2 0.053 0.403 0.06 0.61 0.007 0.207 -0.013 0.413 -0.06 0.62 l 0.85 0.8 -0.65 1.14 -1.15 -0.34 c -0.147 0.133 -0.313 0.25 -0.5 0.35 -0.18 0.1 -0.363 0.183 -0.55 0.25 l -0.3 1.17 h -1.32 Z M 19.07 19.06 c 0.287 -0.287 0.43 -0.64 0.43 -1.06 s -0.147 -0.773 -0.44 -1.06 c -0.293 -0.287 -0.647 -0.433 -1.06 -0.44 s -0.767 0.14 -1.06 0.44 c -0.293 0.3 -0.44 0.653 -0.44 1.06 s 0.147 0.76 0.44 1.06 c 0.293 0.3 0.647 0.447 1.06 0.44 s 0.767 -0.153 1.06 -0.44 h 0.01 Z"/>
 </vector>

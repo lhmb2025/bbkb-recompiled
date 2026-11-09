@@ -105,12 +105,11 @@
     <!-- =============== -->
     <!-- Quick phrases -->
     <!-- =============== -->
-    <dimen name="quick_phrase_list_item_height_first_item">47dp</dimen>
-    <dimen name="quick_phrase_list_item_height_normal_item">38dp</dimen>
-    <dimen name="quick_phrase_list_item_horizontal_margin">10dp</dimen>
-    <dimen name="quick_phrase_list_item_top_padding_first_item">10dp</dimen>
-    <dimen name="quick_phrase_list_item_top_padding_normal_item">0dp</dimen>
-    <dimen name="quick_phrase_list_item_vertical_margin">5dp</dimen>
+    <!-- Quick-phrase rows share the panel height evenly; each row (tile plus the 4dp gap
+         below it, which is also touchable) is at least 44dp, five rows fit a 4-row keyboard. -->
+    <dimen name="quick_phrase_tile_default_height">44dp</dimen>
+    <dimen name="quick_phrase_tile_gap">4dp</dimen>
+    <dimen name="quick_phrase_tile_padding_horizontal">16dp</dimen>
     <dimen name="quick_phrases_recycler_view_scrollbar_size">2dp</dimen>
 
     <!-- ========================= -->

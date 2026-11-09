@@ -79,6 +79,9 @@ import kotlinx.coroutines.withContext
 @Composable
 internal fun KeyLayoutEditorScreen(spec: KeyEditorSpec, onBack: () -> Unit) {
     val context = LocalContext.current
+    // Settings can open before the IME has started in this process (after an update, say);
+    // the palette would still be all-transparent and the editor would draw blank.
+    remember { KeyboardColorManager.ensureInitialized(context) }
     val viewModel: KeyEditorViewModel = viewModel(
         key = spec.key,
         factory = KeyEditorViewModelFactory(context.applicationContext as Application, spec),

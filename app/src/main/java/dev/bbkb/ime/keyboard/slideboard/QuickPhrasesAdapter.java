@@ -1,15 +1,16 @@
 package dev.bbkb.ime.keyboard.slideboard;
 
-import android.content.res.Resources;
+import android.graphics.drawable.InsetDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import dev.bbkb.ime.R;
+import dev.bbkb.ime.keyboard.KeyboardColorManager;
 
 import java.util.List;
 
@@ -45,16 +46,19 @@ public class QuickPhrasesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         final TextView textView;
 
-        final RelativeLayout container;
+        final View container;
 
         QuickPhrase phrase;
 
         ViewHolder(View view) {
             super(view);
             this.textView = (TextView) view.findViewById(R.id.quick_phrase_text);
-            this.container = (RelativeLayout) view.findViewById(R.id.quick_phrase_text_container);
+            this.container = view.findViewById(R.id.quick_phrase_text_container);
         }
     }
+
+    /** Row height in px (tile plus gap), set by QuickPhrasesView to fill its height; 0 = the default height. */
+    private int tileHeight;
 
     QuickPhrasesAdapter(List<QuickPhrase> list) {
         this.phrases = list;
@@ -64,6 +68,15 @@ public class QuickPhrasesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.phrases = list;
     }
 
+    /** @return whether the height changed (the caller then rebinds). */
+    boolean setTileHeight(int px) {
+        if (px == this.tileHeight) {
+            return false;
+        }
+        this.tileHeight = px;
+        return true;
+    }
+
     @Override // androidx.recyclerview.widget.RecyclerView.Adapter
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         LayoutInflater layoutInflaterFrom = LayoutInflater.from(viewGroup.getContext());
@@ -71,7 +84,7 @@ public class QuickPhrasesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @Override // androidx.recyclerview.widget.RecyclerView.Adapter
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int i) throws Resources.NotFoundException {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int i) {
         bindViewHolder((ViewHolder) holder, i);
     }
 
@@ -80,19 +93,28 @@ public class QuickPhrasesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return this.phrases.size();
     }
 
-    private void bindViewHolder(ViewHolder holder, int i) throws Resources.NotFoundException {
+    private void bindViewHolder(ViewHolder holder, int i) {
         QuickPhrase phrase = this.phrases.get(i);
         holder.phrase = phrase;
-        holder.textView.setText(phrase.toString());
+        // The stored phrase carries a trailing space for committing; the tile shows it without.
+        CharSequence label = phrase.toString().trim();
+        holder.textView.setText(label);
+        holder.container.setContentDescription(label);
+        KeyboardColorManager colors = KeyboardColorManager.INSTANCE;
+        holder.textView.setTextColor(colors.getSlideTextColor());
+        StateListDrawable fill = new StateListDrawable();
+        fill.addState(new int[]{android.R.attr.state_pressed}, KeyboardColorManager.fill(colors.getSlidePressedColor()));
+        fill.addState(new int[0], KeyboardColorManager.fill(colors.getSlideKeyColor()));
+        int gap = holder.container.getResources().getDimensionPixelSize(R.dimen.quick_phrase_tile_gap);
+        holder.container.setBackground(new InsetDrawable(fill, 0, 0, 0, gap));
         ViewGroup.LayoutParams layoutParams = holder.container.getLayoutParams();
-        if (i == 0) {
-            layoutParams.height = holder.container.getResources().getDimensionPixelSize(R.dimen.quick_phrase_list_item_height_first_item);
-            holder.textView.setPadding(0, holder.container.getResources().getDimensionPixelSize(R.dimen.quick_phrase_list_item_top_padding_first_item), 0, 0);
-        } else {
-            layoutParams.height = holder.container.getResources().getDimensionPixelSize(R.dimen.quick_phrase_list_item_height_normal_item);
-            holder.textView.setPadding(0, holder.container.getResources().getDimensionPixelSize(R.dimen.quick_phrase_list_item_top_padding_normal_item), 0, 0);
+        int height = this.tileHeight > 0
+                ? this.tileHeight
+                : holder.container.getResources().getDimensionPixelSize(R.dimen.quick_phrase_tile_default_height);
+        if (layoutParams.height != height) {
+            layoutParams.height = height;
+            holder.container.setLayoutParams(layoutParams);
         }
-        holder.container.setLayoutParams(layoutParams);
         setupClickListener(holder);
     }
 

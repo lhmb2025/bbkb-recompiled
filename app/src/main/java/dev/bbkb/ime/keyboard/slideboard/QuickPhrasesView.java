@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.device.ResourceConfigManager;
 import dev.bbkb.ime.keyboard.Keyboard;
+import dev.bbkb.ime.keyboard.KeyboardColorManager;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
 
 import java.util.List;
@@ -52,6 +53,58 @@ public class QuickPhrasesView extends RelativeLayout implements QuickPhrasesAdap
         setVisibility(View.GONE);
         this.keyboardSwitcher = KeyboardSwitcher.getInstance();
         this.keyboardHeight = ResourceConfigManager.getKeyboardHeightWithPadding(getContext().getResources());
+        applyColors();
+    }
+
+    /** Rebinds the tiles and repaints the ground on a theme change (dark mode, wallpaper). */
+    private final kotlin.jvm.functions.Function0<kotlin.Unit> colorObserver = () -> {
+        applyColors();
+        RecyclerView.Adapter<?> adapter = QuickPhrasesView.this.recyclerView.getAdapter();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+        return kotlin.Unit.INSTANCE;
+    };
+
+    /** The panel ground: the slideboard container tone, a step darker than the tiles. */
+    private void applyColors() {
+        setBackground(KeyboardColorManager.fill(KeyboardColorManager.INSTANCE.getSlideGroundColor()));
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        KeyboardColorManager.INSTANCE.addObserver(this.colorObserver);
+        applyColors();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        KeyboardColorManager.INSTANCE.removeObserver(this.colorObserver);
+        super.onDetachedFromWindow();
+    }
+
+    /**
+     * Rows share the panel height evenly, so every phrase is visible without scrolling;
+     * a shorter keyboard gives shorter rows.
+     */
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        updateTileHeight(h);
+    }
+
+    private void updateTileHeight(int panelHeight) {
+        QuickPhrasesAdapter adapter = (QuickPhrasesAdapter) this.recyclerView.getAdapter();
+        if (adapter == null || panelHeight <= 0) {
+            return;
+        }
+        int count = Math.max(1, adapter.getItemCount());
+        int gap = getResources().getDimensionPixelSize(R.dimen.quick_phrase_tile_gap);
+        int available = panelHeight - getPaddingTop() - getPaddingBottom() - gap;
+        if (adapter.setTileHeight(available / count)) {
+            post(adapter::notifyDataSetChanged);
+        }
     }
 
     public void setQuickPhrases(List<QuickPhrasesAdapter.QuickPhrase> list) {
@@ -64,6 +117,7 @@ public class QuickPhrasesView extends RelativeLayout implements QuickPhrasesAdap
             adapter.setPhrases(list);
             adapter.notifyDataSetChanged();
         }
+        updateTileHeight(getHeight());
     }
 
     public void setQuickPhrasesListener(OnQuickPhraseSelectedListener listener) {

@@ -71,32 +71,39 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         this.maxTranslation = this.screenWidth / 2;
     }
 
+    /** Width of the shadow the keyboard casts on an open panel, in dp. */
+    private static final float EDGE_SHADOW_WIDTH_DP = 12f;
+
     /**
-     * Themed slide divider. Called at input-view creation and again on settings changes,
-     * so an in-place theme switch never leaves a stale color. The sized fill() overload
-     * is required: the ImageView is layout_width="wrap_content", so it measures from the
-     * drawable's intrinsic width.
+     * The soft shadow along the keyboard's edge, falling on the open panel, so the panel reads
+     * as sitting under the keyboard. Called at input-view creation and again on settings
+     * changes, so an in-place theme switch never leaves a stale color. The drawable fades from
+     * the shadow tone on its left to clear on its right; animateTranslation mirrors the view
+     * (scaleX -1) for the left-hand panel. The drawable's intrinsic size is required: the
+     * ImageView is layout_width="wrap_content", so it measures from the intrinsic width.
      *
-     * The intrinsic HEIGHT must stay at 1px. The divider is layout_height="match_parent"
+     * The intrinsic HEIGHT must stay at 1px. The view is layout_height="match_parent"
      * inside the layout_height="wrap_content" keyboard_frame, and FrameLayout folds every
      * visible child's first-pass measured height into its own wrap_content height before
      * it re-measures match_parent children. ImageView's first pass resolves to
      * min(intrinsicHeight, availableHeight), so a screen-tall intrinsic height makes the
-     * divider claim the whole input area the moment it becomes visible -- which lifts the
+     * view claim the whole input area the moment it becomes visible -- which lifts the
      * keyboard to the top of the screen for the duration of a slide. scaleType="fitXY"
-     * stretches the 1px fill to whatever the second pass hands the view, so nothing is
-     * lost by keeping it small.
+     * stretches the 1px drawable to whatever the second pass hands the view.
      */
     private void applyDividerFill() {
         if (this.dividerView == null) {
             return;
         }
         final float density = this.dividerView.getResources().getDisplayMetrics().density;
-        this.dividerView.setImageDrawable(dev.bbkb.ime.keyboard.KeyboardColorManager.fill(
-                dev.bbkb.ime.keyboard.KeyboardColorManager.INSTANCE
-                        .getIconColor(dev.bbkb.ime.keyboard.KeyboardColorManager.ALPHA_DISABLED),
-                Math.max(1, Math.round(density)),
-                1));
+        android.graphics.drawable.GradientDrawable shadow = new android.graphics.drawable.GradientDrawable(
+                android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[]{
+                        dev.bbkb.ime.keyboard.KeyboardColorManager.INSTANCE.getSlideEdgeShadowColor(),
+                        android.graphics.Color.TRANSPARENT,
+                });
+        shadow.setSize(Math.max(1, Math.round(EDGE_SHADOW_WIDTH_DP * density)), 1);
+        this.dividerView.setImageDrawable(shadow);
     }
 
     public void hide() {
@@ -194,8 +201,8 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         if (interfaceC1082d2 != null) {
             interfaceC1082d2.show();
         }
-        this.dividerView.setMaxWidth(this.maxTranslation);
-        this.dividerView.setMinimumWidth(this.maxTranslation);
+        // The edge shadow keeps its drawable's intrinsic width. The original stretched this view
+        // to half the screen, which with a flat fill laid a tint over the whole open panel.
     }
 
     public boolean isShowing() {
