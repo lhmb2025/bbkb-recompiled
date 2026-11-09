@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Вібрацыя</string>
     <string name="vibrate_on_keypress_summary">Вібрацыя прылады пры націсканні клавішы</string>
     <string name="customize_slideboard_clear_keypad">Скінуць да пустой раскладкі</string>
-    <string name="customize_slideboard_enable">Наладзіць лічбавую панэль</string>
     <string name="customize_slideboard_reset_to_default">Скінуць да стандартнай раскладкі</string>
     <string name="settings_slideboard_hub_summary">Лічбавая панэль, бакі і хуткія фразы</string>
     <string name="settings_symbol_slideboard_link_summary">Наладзіць лічбавую панэль і хуткія фразы Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Налады Slideboard</string>
-    <string name="customize_symbol_page_title">Наладзіць раскладку</string>
     <string name="customized_symbol_page_add_button_description">Дадаць сімвал Unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Скінуць да пустой раскладкі</string>
     <string name="customized_symbols_page_reset_to_page_1">Скінуць да стандартнай раскладкі 1</string>
@@ -1125,6 +1123,13 @@
     <string name="settings_keyeditor_loading">Загрузка сімвалаў…</string>
     <string name="settings_keyeditor_hex_code">Шаснаццатковы код (напрыклад, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Несапраўдны код сімвала</string>
+    <string name="settings_keyeditor_hint">Націсніце на сімвал, потым на клавішу. Націсніце на дзве клавішы, каб памяняць іх месцамі.</string>
+    <string name="settings_keyeditor_empty_key">Пустая клавіша</string>
+    <string name="settings_keyeditor_layout_reset">Раскладка скінута</string>
+    <string name="settings_keyeditor_key_cleared">Клавіша ачышчана</string>
+    <string name="settings_keyeditor_symbol_deleted">Сімвал выдалены</string>
+    <string name="settings_keyeditor_title_vkb">Старонка сімвалаў экраннай клавіятуры</string>
+    <string name="settings_keyeditor_title_pkb">Старонка сімвалаў фізічнай клавіятуры</string>
     <string name="settings_spellcheck_intro">Сродак праверкі правапісу BBKB выкарыстоўвае сучасныя моўныя мадэлі, каб правяраць правапіс ва ўсіх праграмах, якія гэта падтрымліваюць</string>
     <string name="settings_spellcheck_enable_title">Уключыць праверку правапісу BBKB</string>
     <string name="settings_spellcheck_enable_summary">Выяўляе памылкі друку і прапануе выпраўленні</string>

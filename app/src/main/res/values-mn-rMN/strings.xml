@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Товч дарахад чичрэх</string>
     <string name="vibrate_on_keypress_summary">Товч дарахад төхөөрөмжийг чичрүүлэх</string>
     <string name="customize_slideboard_clear_keypad">Хоосон байрлалд шинэчлэх</string>
-    <string name="customize_slideboard_enable">Тооны самбарыг тохируулах</string>
     <string name="customize_slideboard_reset_to_default">Анхдагч байрлалд шинэчлэх</string>
     <string name="settings_slideboard_hub_summary">Тооны самбар, талыг солих, түргэн хэллэг</string>
     <string name="settings_symbol_slideboard_link_summary">Slideboard-ын тооны самбар болон түргэн хэллэгийг тохируулах</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-ын тохиргоо</string>
-    <string name="customize_symbol_page_title">Байрлалыг тохируулах</string>
     <string name="customized_symbol_page_add_button_description">Юникод тэмдэгт нэмэх</string>
     <string name="customized_symbols_page_reset_to_blank">Хоосон байрлалд шинэчлэх</string>
     <string name="customized_symbols_page_reset_to_page_1">Анхдагч байрлал 1 рүү шинэчлэх</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Тэмдэгтүүдийг ачаалж байна…</string>
     <string name="settings_keyeditor_hex_code">Hex код (жишээ нь, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Тэмдэгтийн код буруу байна</string>
+    <string name="settings_keyeditor_hint">Тэмдэгт дээр, дараа нь товч дээр дарна уу. Хоёр товчийг солихын тулд хоёуланг нь дарна уу.</string>
+    <string name="settings_keyeditor_empty_key">Хоосон товч</string>
+    <string name="settings_keyeditor_layout_reset">Байрлалыг шинэчиллээ</string>
+    <string name="settings_keyeditor_key_cleared">Товчийг арилгалаа</string>
+    <string name="settings_keyeditor_symbol_deleted">Тэмдэгтийг устгалаа</string>
+    <string name="settings_keyeditor_title_vkb">Дэлгэцийн тэмдэгтийн хуудас</string>
+    <string name="settings_keyeditor_title_pkb">Биет гарын тэмдэгтийн хуудас</string>
     <string name="settings_spellcheck_intro">BBKB алдаа шалгагч нь дэвшилтэт хэлний загвар ашиглан алдаа шалгахыг дэмждэг бүх апп дээр алдаа шалгалт хийдэг</string>
     <string name="settings_spellcheck_enable_title">BBKB алдаа шалгагчийг идэвхжүүлэх</string>
     <string name="settings_spellcheck_enable_summary">Үсгийн алдааг илрүүлж, засвар санал болгоно</string>

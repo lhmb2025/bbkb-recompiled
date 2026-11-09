@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Geter</string>
     <string name="vibrate_on_keypress_summary">Ngageterkeun parangkat waktu tombol dipencét</string>
     <string name="customize_slideboard_clear_keypad">Balikkeun ka tata perenah kosong</string>
-    <string name="customize_slideboard_enable">Atur papan angka</string>
     <string name="customize_slideboard_reset_to_default">Balikkeun ka tata perenah baku</string>
     <string name="settings_slideboard_hub_summary">Papan angka, tukeur posisi, jeung frasa gancang</string>
     <string name="settings_symbol_slideboard_link_summary">Atur papan angka jeung frasa gancang Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Setélan Slideboard</string>
-    <string name="customize_symbol_page_title">Atur tata perenah</string>
     <string name="customized_symbol_page_add_button_description">Tambah simbol Unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Balikkeun ka tata perenah kosong</string>
     <string name="customized_symbols_page_reset_to_page_1">Balikkeun ka tata perenah baku 1</string>
@@ -1080,6 +1078,13 @@
     <string name="settings_keyeditor_loading">Ngamuat simbol…</string>
     <string name="settings_keyeditor_hex_code">Kode hex (conto: 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Kode karakter teu valid</string>
+    <string name="settings_keyeditor_hint">Toél simbol, teras toél tombol. Toél dua tombol pikeun silihtukeurkeunana.</string>
+    <string name="settings_keyeditor_empty_key">Tombol kosong</string>
+    <string name="settings_keyeditor_layout_reset">Tata perenah dibalikkeun</string>
+    <string name="settings_keyeditor_key_cleared">Tombol dikosongkeun</string>
+    <string name="settings_keyeditor_symbol_deleted">Simbol dihapus</string>
+    <string name="settings_keyeditor_title_vkb">Kaca simbol dina layar</string>
+    <string name="settings_keyeditor_title_pkb">Kaca simbol keypad</string>
     <string name="settings_spellcheck_intro">Pamariksa éjahan BBKB ngagunakeun modél basa canggih pikeun nyadiakeun pamariksaan éjahan di sadaya aplikasi nu ngarojongna</string>
     <string name="settings_spellcheck_enable_title">Aktipkeun pamariksa éjahan BBKB</string>
     <string name="settings_spellcheck_enable_summary">Ngadeteksi salah ketik sarta nyarankeun koréksi</string>

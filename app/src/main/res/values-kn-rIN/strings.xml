@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">ಕೀಲಿಯನ್ನು ಒತ್ತಿದಾಗ ವೈಬ್ರೇಷನ್‌</string>
     <string name="vibrate_on_keypress_summary">ಕೀ ಒತ್ತಿದಾಗ ಸಾಧನವನ್ನು ವೈಬ್ರೇಟ್ ಮಾಡು</string>
     <string name="customize_slideboard_clear_keypad">ಖಾಲಿ ವಿನ್ಯಾಸಕ್ಕೆ ಮರುಹೊಂದಿಸಿ</string>
-    <string name="customize_slideboard_enable">ಸಂಖ್ಯಾ ಪ್ಯಾಡ್ ಕಸ್ಟಮೈಸ್ ಮಾಡಿ</string>
     <string name="customize_slideboard_reset_to_default">ಪೂರ್ವನಿಯೋಜಿತ ವಿನ್ಯಾಸಕ್ಕೆ ಮರುಹೊಂದಿಸಿ</string>
     <string name="settings_slideboard_hub_summary">ಸಂಖ್ಯಾ ಪ್ಯಾಡ್, ಬದಿಗಳ ಅದಲುಬದಲು ಮತ್ತು ತ್ವರಿತ ನುಡಿಗಟ್ಟುಗಳು</string>
     <string name="settings_symbol_slideboard_link_summary">Slideboard ಸಂಖ್ಯಾ ಪ್ಯಾಡ್ ಮತ್ತು ತ್ವರಿತ ನುಡಿಗಟ್ಟುಗಳನ್ನು ಕಸ್ಟಮೈಸ್ ಮಾಡಿ</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
-    <string name="customize_symbol_page_title">ವಿನ್ಯಾಸ ಕಸ್ಟಮೈಸ್ ಮಾಡಿ</string>
     <string name="customized_symbol_page_add_button_description">ಯುನಿಕೋಡ್ ಚಿಹ್ನೆ ಸೇರಿಸಿ</string>
     <string name="customized_symbols_page_reset_to_blank">ಖಾಲಿ ವಿನ್ಯಾಸಕ್ಕೆ ಮರುಹೊಂದಿಸಿ</string>
     <string name="customized_symbols_page_reset_to_page_1">ಪೂರ್ವನಿಯೋಜಿತ ವಿನ್ಯಾಸ 1 ಕ್ಕೆ ಮರುಹೊಂದಿಸಿ</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">ಚಿಹ್ನೆಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <string name="settings_keyeditor_hex_code">ಹೆಕ್ಸ್ ಕೋಡ್ (ಉದಾ. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">ಅಮಾನ್ಯ ಅಕ್ಷರ ಕೋಡ್</string>
+    <string name="settings_keyeditor_hint">ಚಿಹ್ನೆಯನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ, ನಂತರ ಕೀಯನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ. ಎರಡು ಕೀಗಳನ್ನು ಅದಲುಬದಲು ಮಾಡಲು ಅವುಗಳನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
+    <string name="settings_keyeditor_empty_key">ಖಾಲಿ ಕೀ</string>
+    <string name="settings_keyeditor_layout_reset">ವಿನ್ಯಾಸವನ್ನು ಮರುಹೊಂದಿಸಲಾಗಿದೆ</string>
+    <string name="settings_keyeditor_key_cleared">ಕೀಯನ್ನು ತೆರವುಗೊಳಿಸಲಾಗಿದೆ</string>
+    <string name="settings_keyeditor_symbol_deleted">ಚಿಹ್ನೆಯನ್ನು ಅಳಿಸಲಾಗಿದೆ</string>
+    <string name="settings_keyeditor_title_vkb">ಪರದೆಯ ಮೇಲಿನ ಚಿಹ್ನೆ ಪುಟ</string>
+    <string name="settings_keyeditor_title_pkb">ಕೀಪ್ಯಾಡ್ ಚಿಹ್ನೆ ಪುಟ</string>
     <string name="settings_spellcheck_intro">BBKB ಕಾಗುಣಿತ ಪರೀಕ್ಷಕವು ಸುಧಾರಿತ ಭಾಷಾ ಮಾದರಿಗಳನ್ನು ಬಳಸಿ, ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಯನ್ನು ಬೆಂಬಲಿಸುವ ಎಲ್ಲಾ ಆ್ಯಪ್‌ಗಳಲ್ಲಿ ಕಾಗುಣಿತ ಪರೀಕ್ಷೆಯನ್ನು ಒದಗಿಸುತ್ತದೆ</string>
     <string name="settings_spellcheck_enable_title">BBKB ಕಾಗುಣಿತ ಪರೀಕ್ಷಕ ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
     <string name="settings_spellcheck_enable_summary">ಟೈಪಿಂಗ್ ತಪ್ಪುಗಳನ್ನು ಪತ್ತೆಹಚ್ಚುತ್ತದೆ ಮತ್ತು ತಿದ್ದುಪಡಿಗಳನ್ನು ಸೂಚಿಸುತ್ತದೆ</string>

@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibrasjon</string>
     <string name="vibrate_on_keypress_summary">Vibrer når du trykker på en tast</string>
     <string name="customize_slideboard_clear_keypad">Tilbakestill til tom layout</string>
-    <string name="customize_slideboard_enable">Tilpass nummertastaturet</string>
     <string name="customize_slideboard_reset_to_default">Tilbakestill til standard layout</string>
     <string name="settings_slideboard_hub_summary">Nummertastatur, bytt sider og hurtigfraser</string>
     <string name="settings_symbol_slideboard_link_summary">Tilpass nummertastaturet og hurtigfrasene i Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-innstillinger</string>
-    <string name="customize_symbol_page_title">Egendefiner layout</string>
     <string name="customized_symbol_page_add_button_description">Legg til unikodesymbol</string>
     <string name="customized_symbols_page_reset_to_blank">Tilbakestill til tom layout</string>
     <string name="customized_symbols_page_reset_to_page_1">Tilbakestill til standard layout 1</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Laster inn symboler…</string>
     <string name="settings_keyeditor_hex_code">Hex-kode (f.eks. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Ugyldig tegnkode</string>
+    <string name="settings_keyeditor_hint">Trykk på et symbol og deretter på en tast. Trykk på to taster for å bytte dem.</string>
+    <string name="settings_keyeditor_empty_key">Tom tast</string>
+    <string name="settings_keyeditor_layout_reset">Layouten er tilbakestilt</string>
+    <string name="settings_keyeditor_key_cleared">Tasten er tømt</string>
+    <string name="settings_keyeditor_symbol_deleted">Symbolet er slettet</string>
+    <string name="settings_keyeditor_title_vkb">Symbolside for skjermtastaturet</string>
+    <string name="settings_keyeditor_title_pkb">Symbolside for det fysiske tastaturet</string>
     <string name="settings_spellcheck_intro">BBKB-stavekontrollen bruker avanserte språkmodeller til å gi stavekontroll i alle apper som støtter det</string>
     <string name="settings_spellcheck_enable_title">Slå på BBKB-stavekontroll</string>
     <string name="settings_spellcheck_enable_summary">Oppdager skrivefeil og foreslår rettelser</string>

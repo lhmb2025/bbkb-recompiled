@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Թրթռալ սեղմման ժամանակ</string>
     <string name="vibrate_on_keypress_summary">Թրթռացնել սարքը ստեղնը սեղմելիս</string>
     <string name="customize_slideboard_clear_keypad">Վերականգնել դատարկ դասավորությունը</string>
-    <string name="customize_slideboard_enable">Հարմարեցնել թվային վահանակը</string>
     <string name="customize_slideboard_reset_to_default">Վերականգնել նախնական դասավորությունը</string>
     <string name="settings_slideboard_hub_summary">Թվային վահանակ, կողմերի փոխանակում և արագ արտահայտություններ</string>
     <string name="settings_symbol_slideboard_link_summary">Հարմարեցնել Slideboard-ի թվային վահանակը և արագ արտահայտությունները</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-ի կարգավորումներ</string>
-    <string name="customize_symbol_page_title">Հարմարեցնել դասավորությունը</string>
     <string name="customized_symbol_page_add_button_description">Ավելացնել Unicode նշան</string>
     <string name="customized_symbols_page_reset_to_blank">Վերականգնել դատարկ դասավորությունը</string>
     <string name="customized_symbols_page_reset_to_page_1">Վերականգնել նախնական դասավորություն 1-ը</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Նշանների բեռնում…</string>
     <string name="settings_keyeditor_hex_code">Տասնվեցական կոդ (օր.՝ 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Նիշի անվավեր կոդ</string>
+    <string name="settings_keyeditor_hint">Հպեք նշանին, ապա ստեղնին։ Հպեք երկու ստեղնի՝ դրանք տեղերով փոխելու համար։</string>
+    <string name="settings_keyeditor_empty_key">Դատարկ ստեղն</string>
+    <string name="settings_keyeditor_layout_reset">Դասավորությունը վերականգնվեց</string>
+    <string name="settings_keyeditor_key_cleared">Ստեղնը մաքրվեց</string>
+    <string name="settings_keyeditor_symbol_deleted">Նշանը ջնջվեց</string>
+    <string name="settings_keyeditor_title_vkb">Էկրանային ստեղնաշարի նշանների էջ</string>
+    <string name="settings_keyeditor_title_pkb">Ֆիզիկական ստեղնաշարի նշանների էջ</string>
     <string name="settings_spellcheck_intro">BBKB-ի տառասխալների ուղղիչը օգտագործում է առաջադեմ լեզվային մոդելներ՝ տառասխալների ստուգում ապահովելու բոլոր այն հավելվածներում, որոնք աջակցում են դրան</string>
     <string name="settings_spellcheck_enable_title">Միացնել BBKB տառասխալների ուղղիչը</string>
     <string name="settings_spellcheck_enable_summary">Հայտնաբերում է վրիպակները և առաջարկում ուղղումներ</string>

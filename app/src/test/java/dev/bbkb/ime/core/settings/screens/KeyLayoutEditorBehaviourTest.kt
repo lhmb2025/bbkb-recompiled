@@ -1,12 +1,15 @@
 package dev.bbkb.ime.core.settings.screens
 
 import android.content.Context
+import android.view.View
+import android.view.ViewGroup
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -14,6 +17,12 @@ import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.search.LocalSettingsHighlight
 import dev.bbkb.ime.core.settings.search.SettingsHighlightController
+import dev.bbkb.ime.core.settings.screens.keyeditor.KeyEditorPreviewView
+import dev.bbkb.ime.core.settings.screens.keyeditor.PkbSymbolPageSpec
+import dev.bbkb.ime.core.settings.screens.keyeditor.VkbSymbolPageSpec
+import dev.bbkb.ime.core.locale.SubtypeManager
+import dev.bbkb.ime.keyboard.KeyboardBuilder
+import android.view.ContextThemeWrapper
 import dev.bbkb.ime.core.settings.ui.BlackBerryTheme
 import dev.bbkb.ime.R
 import org.junit.After
@@ -57,7 +66,7 @@ import org.robolectric.annotation.Config
 class KeyLayoutEditorBehaviourTest {
 
     @get:Rule
-    val composeRule = createComposeRule()
+    val composeRule = createAndroidComposeRule<ComponentActivity>()
 
     /** `CustomSymbolRepository.DELIMITER` / `SettingsManager`'s list separator. */
     private val delimiter = "\u0378"
@@ -120,24 +129,39 @@ class KeyLayoutEditorBehaviourTest {
     }
 
     /**
-     * The rendered tokens in reading order (top to bottom, then left to right). Only nodes whose
-     * text is one of [expected] are considered, so tab titles and the mock keyboard's fixed keys
-     * cannot perturb the sequence.
+     * The editor draws its board with the keyboard's own view, so the keys are not Compose text
+     * nodes: find that view. It appears once the board has been built, which happens off the main
+     * thread.
      */
-    private fun renderedTokenOrder(expected: Set<String>): List<String> =
-        composeRule
-            .onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.Text), useUnmergedTree = true)
-            .fetchSemanticsNodes()
-            .mapNotNull { node ->
-                val text = node.config[SemanticsProperties.Text].joinToString("") { it.text }
-                if (text in expected && node.boundsInRoot.height > 0f) {
-                    Triple(text, node.boundsInRoot.top, node.boundsInRoot.left)
-                } else {
-                    null
-                }
-            }
-            .sortedWith(compareBy({ Math.round(it.second) }, { it.third }))
-            .map { it.first }
+    private fun preview(): KeyEditorPreviewView {
+        var found: KeyEditorPreviewView? = null
+        composeRule.waitUntil(10_000) {
+            found = findPreview(composeRule.activity.window.decorView)
+            found?.slotLabels()?.isNotEmpty() == true
+        }
+        composeRule.waitForIdle()
+        return found!!
+    }
+
+    private fun findPreview(view: View): KeyEditorPreviewView? {
+        if (view is KeyEditorPreviewView) return view
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) findPreview(view.getChildAt(i))?.let { return it }
+        }
+        return null
+    }
+
+    /** What the board's editable keys show, in reading order. */
+    private fun keyLabels(): List<String> = preview().slotLabels()
+
+    /** Taps the key showing [label]. */
+    private fun tapKey(label: String) {
+        val board = preview()
+        val slot = board.slotLabels().indexOf(label)
+        assertTrue("no key shows $label: ${board.slotLabels()}", slot >= 0)
+        board.tapSlot(slot)
+        composeRule.waitForIdle()
+    }
 
     // ========================================================================
     // The persisted layout format — storage order, read back on screen
@@ -151,7 +175,7 @@ class KeyLayoutEditorBehaviourTest {
 
         setContent { CustomSymbolPageScreen(isPkb = true, onBack = {}) }
 
-        assertEquals(stored, renderedTokenOrder(stored.toSet()))
+        assertEquals(stored, keyLabels())
     }
 
     @Test
@@ -170,7 +194,7 @@ class KeyLayoutEditorBehaviourTest {
 
         assertEquals(
             readOrder.map { stored[it] },
-            renderedTokenOrder(readOrder.map { stored[it] }.toSet()),
+            keyLabels(),
         )
     }
 
@@ -188,7 +212,44 @@ class KeyLayoutEditorBehaviourTest {
 
         setContent { CustomizeSlideBoardScreen({}) }
 
-        assertEquals(readOrder.map { stored[it] }, renderedTokenOrder(stored.toSet()))
+        assertEquals(readOrder.map { stored[it] }, keyLabels())
+    }
+
+    // ========================================================================
+    // The keyboard draws what the editor saved
+    // ========================================================================
+
+    /** The custom symbol page as the keyboard builds it from storage: its editable keys, in reading order. */
+    private fun keyboardCustomPage(pkb: Boolean): List<String> {
+        SubtypeManager.ensureInitialized(context)
+        KeyboardBuilder.onKeyboardThemeChanged()
+        val keyboard = KeyboardBuilder.Builder(ContextThemeWrapper(context, R.style.KeyboardTheme_LXX), null)
+            .setKeyboardGeometry(1080, 700)
+            .setSubtype(SubtypeManager.getInstance().currentSubtype)
+            .build()
+            .getKeyboardInternal(8, pkb)
+        return keyboard.keys.filter { it.outputText == "customSymbolKeyStyle" }.map { it.label.orEmpty() }
+    }
+
+    /**
+     * The on-screen page is stored in an order that is neither the editor's nor the keyboard's key
+     * order, and the two used to disagree about it: a page arranged in the editor came out
+     * shuffled on the keyboard. Both go through one table now.
+     */
+    @Test
+    fun theKeyboardDrawsTheOnScreenPageAsTheEditorSavedIt() {
+        val page = List(26) { "s$it" }
+        VkbSymbolPageSpec.save(context, page)
+
+        assertEquals(page, keyboardCustomPage(pkb = false))
+    }
+
+    @Test
+    fun theKeyboardDrawsThePhysicalPageAsTheEditorSavedIt() {
+        val page = List(27) { "s$it" }
+        PkbSymbolPageSpec.save(context, page)
+
+        assertEquals(page, keyboardCustomPage(pkb = true))
     }
 
     // ========================================================================
@@ -201,8 +262,8 @@ class KeyLayoutEditorBehaviourTest {
         seed("pref_pkb_symbol_page_layout", stored)
         setContent { CustomSymbolPageScreen(isPkb = true, onBack = {}) }
 
-        composeRule.onNodeWithText("t0").performClick()
-        composeRule.onNodeWithText("t5").performClick()
+        tapKey("t0")
+        tapKey("t5")
         composeRule.waitForIdle()
 
         val expected = stored.toMutableList().also { it[0] = "t5"; it[5] = "t0" }
@@ -216,8 +277,8 @@ class KeyLayoutEditorBehaviourTest {
         setContent { CustomSymbolPageScreen(isPkb = false, onBack = {}) }
 
         // Editor slot 0 shows storage[6]; editor slot 1 shows storage[7].
-        composeRule.onNodeWithText("t6").performClick()
-        composeRule.onNodeWithText("t7").performClick()
+        tapKey("t6")
+        tapKey("t7")
         composeRule.waitForIdle()
 
         // Only the 26 slots the read order covers are written; storage 26 and 27 fall to the marker.
@@ -239,8 +300,8 @@ class KeyLayoutEditorBehaviourTest {
         setContent { CustomizeSlideBoardScreen({}) }
 
         // Editor slot 0 shows storage[15]; editor slot 1 shows storage[16].
-        composeRule.onNodeWithText("t15").performClick()
-        composeRule.onNodeWithText("t16").performClick()
+        tapKey("t15")
+        tapKey("t16")
         composeRule.waitForIdle()
 
         val expected = stored.toMutableList().also { it[15] = "t16"; it[16] = "t15" }
@@ -262,12 +323,12 @@ class KeyLayoutEditorBehaviourTest {
         // self-swap would round-trip to an identical string and slip past a value comparison.
         prefs.edit().remove("pref_pkb_symbol_page_layout").commit()
 
-        composeRule.onNodeWithText("t0").performClick()
+        tapKey("t0")
         composeRule.waitForIdle()
         // Selecting a key reveals the "clear" action in the app bar.
         composeRule.onNodeWithContentDescription("Clear selected key").assertIsDisplayed()
 
-        composeRule.onNodeWithText("t0").performClick()
+        tapKey("t0")
         composeRule.waitForIdle()
         assertTrue(
             "deselecting a key should take the clear action away again",
@@ -286,11 +347,11 @@ class KeyLayoutEditorBehaviourTest {
 
         prefs.edit().remove("custom_slideboard_symbols").commit()
 
-        composeRule.onNodeWithText("t15").performClick()
+        tapKey("t15")
         composeRule.waitForIdle()
         composeRule.onNodeWithContentDescription("Clear selected key").assertIsDisplayed()
 
-        composeRule.onNodeWithText("t15").performClick()
+        tapKey("t15")
         composeRule.waitForIdle()
         assertTrue(
             "deselecting a key should take the clear action away again",
@@ -308,7 +369,7 @@ class KeyLayoutEditorBehaviourTest {
         seed("pref_pkb_symbol_page_layout", stored)
         setContent { CustomSymbolPageScreen(isPkb = true, onBack = {}) }
 
-        composeRule.onNodeWithText("t3").performClick()
+        tapKey("t3")
         composeRule.onNodeWithContentDescription("Clear selected key").performClick()
         composeRule.waitForIdle()
 
@@ -322,7 +383,7 @@ class KeyLayoutEditorBehaviourTest {
         setContent { CustomizeSlideBoardScreen({}) }
 
         // Editor slot 3 shows storage[4].
-        composeRule.onNodeWithText("t4").performClick()
+        tapKey("t4")
         composeRule.onNodeWithContentDescription("Clear selected key").performClick()
         composeRule.waitForIdle()
 
@@ -345,7 +406,7 @@ class KeyLayoutEditorBehaviourTest {
             .performClick()
         composeRule.waitForIdle()
         composeRule.onNodeWithText("a").performClick()
-        composeRule.onNodeWithText("t2").performClick()
+        tapKey("t2")
         composeRule.waitForIdle()
 
         assertEquals(stored.toMutableList().also { it[2] = "a" }, storedList("pref_pkb_symbol_page_layout"))
@@ -360,7 +421,7 @@ class KeyLayoutEditorBehaviourTest {
         composeRule.onNodeWithText(context.getString(R.string.symbol_list_category_alphanumeric_title))
             .performClick()
         composeRule.waitForIdle()
-        composeRule.onNodeWithText("t2").performClick()
+        tapKey("t2")
         composeRule.onNodeWithText("b").performClick()
         composeRule.waitForIdle()
 
@@ -457,7 +518,7 @@ class KeyLayoutEditorBehaviourTest {
         setContent { CustomizeSlideBoardScreen({}) }
 
         val defaults = context.resources.getStringArray(R.array.slideboard_numpad_symbols).toList()
-        assertEquals(defaults, renderedTokenOrder(defaults.toSet()))
+        assertEquals(defaults, keyLabels())
     }
 
     @Test
@@ -465,7 +526,7 @@ class KeyLayoutEditorBehaviourTest {
         setContent { CustomSymbolPageScreen(isPkb = true, onBack = {}) }
 
         val page1 = context.resources.getStringArray(R.array.pkb_page_1).toList()
-        assertEquals(page1, renderedTokenOrder(page1.toSet()))
+        assertEquals(page1, keyLabels())
     }
 
     /** How many nodes currently carry this content description; 0 when the action is gone. */

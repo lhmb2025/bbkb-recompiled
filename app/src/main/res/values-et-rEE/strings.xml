@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibreeri klahvivajutusel</string>
     <string name="vibrate_on_keypress_summary">Vibreeri, kui klahvi vajutatakse</string>
     <string name="customize_slideboard_clear_keypad">Lähtesta tühjale paigutusele</string>
-    <string name="customize_slideboard_enable">Kohanda numbriklahvistikku</string>
     <string name="customize_slideboard_reset_to_default">Lähtesta vaikepaigutusele</string>
     <string name="settings_slideboard_hub_summary">Numbriklahvistik, poolte vahetus ja kiirfraasid</string>
     <string name="settings_symbol_slideboard_link_summary">Kohanda Slideboardi numbriklahvistikku ja kiirfraase</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboardi seaded</string>
-    <string name="customize_symbol_page_title">Kohanda paigutust</string>
     <string name="customized_symbol_page_add_button_description">Lisa Unicode-sümbol</string>
     <string name="customized_symbols_page_reset_to_blank">Lähtesta tühjale paigutusele</string>
     <string name="customized_symbols_page_reset_to_page_1">Lähtesta vaikepaigutusele 1</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Sümbolite laadimine…</string>
     <string name="settings_keyeditor_hex_code">Hex-kood (nt 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Sobimatu märgikood</string>
+    <string name="settings_keyeditor_hint">Puudutage sümbolit ja seejärel klahvi. Kahe klahvi vahetamiseks puudutage neid.</string>
+    <string name="settings_keyeditor_empty_key">Tühi klahv</string>
+    <string name="settings_keyeditor_layout_reset">Paigutus lähtestati</string>
+    <string name="settings_keyeditor_key_cleared">Klahv tühjendati</string>
+    <string name="settings_keyeditor_symbol_deleted">Sümbol kustutati</string>
+    <string name="settings_keyeditor_title_vkb">Ekraaniklaviatuuri sümbolileht</string>
+    <string name="settings_keyeditor_title_pkb">Klahvistiku sümbolileht</string>
     <string name="settings_spellcheck_intro">BBKB-i õigekirjakontroll kasutab täiustatud keelemudeleid, et pakkuda õigekirjakontrolli kõigis rakendustes, mis seda toetavad</string>
     <string name="settings_spellcheck_enable_title">Luba BBKB-i õigekirjakontroll</string>
     <string name="settings_spellcheck_enable_summary">Tuvastab trükivigu ja soovitab parandusi</string>

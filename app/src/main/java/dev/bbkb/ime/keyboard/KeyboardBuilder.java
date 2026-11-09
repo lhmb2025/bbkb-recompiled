@@ -454,10 +454,27 @@ public final class KeyboardBuilder {
     }
 
 
+    /**
+     * The stored custom symbol page, in the order its keys sit on the keyboard (row by row).
+     *
+     * <p>The physical page is stored in that order. The on-screen page is stored in the order the
+     * original app's key sorting produced, and the settings editor has always read and written it
+     * through that table; keys are sorted by position now, so the same table is applied here, or
+     * the page the keyboard draws is not the page the editor shows.
+     */
     private List<String> loadCustomSymbolList(boolean physicalKeyboard) {
-        return CustomSymbolRepository.loadSymbolList(
+        final List<String> stored = CustomSymbolRepository.loadSymbolList(
                 physicalKeyboard ? "pref_pkb_symbol_page_layout" : "pref_vkb_symbol_page_layout",
                 this.mPrefs);
+        return physicalKeyboard ? stored : CustomSymbolRepository.vkbStorageToVisualOrder(stored);
+    }
+
+    /**
+     * Puts {@code labels} on {@code keyboard}'s custom-symbol keys, row by row. For the settings
+     * editor's preview, which draws the page being edited on a real keyboard.
+     */
+    public void applyCustomSymbols(Keyboard keyboard, List<String> labels) {
+        applySymbolList(keyboard, labels, this.mCustomSymbolPage);
     }
 
     /**

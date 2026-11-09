@@ -43,6 +43,25 @@ class CustomSymbolRepository(private val context: Context) {
             val stored = prefs.getString(key, null) ?: return null
             return stored.split(DELIMITER)
         }
+
+        /**
+         * On-screen page: key position (reading order, rows of 10, 9 and 7) -> index in the
+         * stored list. The stored order is the original app's key-sorting order; it is kept so
+         * saved pages and exported layouts stay valid. The editor and the keyboard both go
+         * through this one table.
+         */
+        private val VKB_STORAGE_INDEX_FOR_POSITION = intArrayOf(
+            6, 7, 8, 9, 10, 11, 12, 13, 14, 5,
+            25, 21, 20, 19, 22, 23, 24, 18, 17,
+            1, 3, 4, 15, 0, 16, 2,
+        )
+
+        /** A stored on-screen page in key-position order; a short or absent list is returned as it is. */
+        @JvmStatic
+        fun vkbStorageToVisualOrder(stored: List<String>?): List<String>? {
+            if (stored == null || stored.size < VKB_SLOTS) return stored
+            return List(VKB_SLOTS) { position -> stored[VKB_STORAGE_INDEX_FOR_POSITION[position]] }
+        }
     }
 
     // ============================================================================
@@ -58,26 +77,7 @@ class CustomSymbolRepository(private val context: Context) {
         if (stored != null) {
             val rawLayout = stored.split(DELIMITER)
             
-            // For VKB, reverse the keyboard read order transformation
-            val layout = if (!isPkb && rawLayout.size >= 26) {
-                // KeyboardBuilder reads storage in this order:
-                val keyboardReadOrder = intArrayOf(
-                    6, 7, 8, 9, 10, 11, 12, 13, 14, 5,     // Row 1
-                    25, 21, 20, 19, 22, 23, 24, 18, 17,    // Row 2
-                    1, 3, 4, 15, 0, 16, 2                  // Row 3
-                )
-                
-                // Reverse: for each editor position, read from storage[keyboardReadOrder[i]]
-                MutableList(26) { editorPos ->
-                    if (editorPos < keyboardReadOrder.size && keyboardReadOrder[editorPos] < rawLayout.size) {
-                        rawLayout[keyboardReadOrder[editorPos]]
-                    } else {
-                        "\u0000"
-                    }
-                }
-            } else {
-                rawLayout
-            }
+            val layout = if (isPkb) rawLayout else vkbStorageToVisualOrder(rawLayout) ?: rawLayout
             
             return when {
                 layout.size > maxKeys -> layout.take(maxKeys)
@@ -96,23 +96,12 @@ class CustomSymbolRepository(private val context: Context) {
         val processedLayout = if (isPkb) {
             layout
         } else {
-            // KeyboardBuilder iterates keys in this non-sequential order due to internal key sorting:
-            // [6,7,8,9,10,11,12,13,14,5, 25,21,20,19,22,23,24,18,17, 1,3,4,15,0,16,2]
-            // To display editor[0,1,2,...] at keyboard positions, store editor[i] at readOrder[i]
-            val keyboardReadOrder = intArrayOf(
-                6, 7, 8, 9, 10, 11, 12, 13, 14, 5,     // Row 1: keyboard reads these storage indices
-                25, 21, 20, 19, 22, 23, 24, 18, 17,    // Row 2
-                1, 3, 4, 15, 0, 16, 2                  // Row 3
-            )
-            
-            val reordered = MutableList(28) { "\u0000" }
-            for (kbdPos in keyboardReadOrder.indices) {
-                if (kbdPos < layout.size && keyboardReadOrder[kbdPos] < reordered.size) {
-                    // Place editor[kbdPos] at storage[keyboardReadOrder[kbdPos]]
-                    reordered[keyboardReadOrder[kbdPos]] = layout[kbdPos]
+            // 28 entries, as the original stored it; the two the page has no key for stay blank.
+            MutableList(28) { NULL_MARKER }.also { storage ->
+                VKB_STORAGE_INDEX_FOR_POSITION.forEachIndexed { position, storageIndex ->
+                    if (position < layout.size) storage[storageIndex] = layout[position]
                 }
             }
-            reordered
         }
         
         val serialized = processedLayout.joinToString(DELIMITER) { sanitize(it) }

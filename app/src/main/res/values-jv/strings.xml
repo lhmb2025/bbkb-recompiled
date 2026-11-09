@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Getaran</string>
     <string name="vibrate_on_keypress_summary">Nggetarake piranti nalika tombol dipencet</string>
     <string name="customize_slideboard_clear_keypad">Balekake menyang tata letak kosong</string>
-    <string name="customize_slideboard_enable">Atur papan angka</string>
     <string name="customize_slideboard_reset_to_default">Balekake menyang tata letak gawan</string>
     <string name="settings_slideboard_hub_summary">Papan angka, ijolan sisih, lan frasa cepet</string>
     <string name="settings_symbol_slideboard_link_summary">Atur papan angka lan frasa cepet Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Setelan Slideboard</string>
-    <string name="customize_symbol_page_title">Atur tata letak</string>
     <string name="customized_symbol_page_add_button_description">Tambah simbol Unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Balekake menyang tata letak kosong</string>
     <string name="customized_symbols_page_reset_to_page_1">Balekake menyang tata letak gawan 1</string>
@@ -1080,6 +1078,13 @@
     <string name="settings_keyeditor_loading">Ngemot simbol…</string>
     <string name="settings_keyeditor_hex_code">Kode hex (upamane 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Kode karakter ora sah</string>
+    <string name="settings_keyeditor_hint">Tutul simbol, banjur tombol. Tutul rong tombol kanggo ngijolake.</string>
+    <string name="settings_keyeditor_empty_key">Tombol kosong</string>
+    <string name="settings_keyeditor_layout_reset">Tata letak wis dibalekake</string>
+    <string name="settings_keyeditor_key_cleared">Tombol wis dikosongake</string>
+    <string name="settings_keyeditor_symbol_deleted">Simbol wis dibusak</string>
+    <string name="settings_keyeditor_title_vkb">Kaca simbol ing layar</string>
+    <string name="settings_keyeditor_title_pkb">Kaca simbol keypad</string>
     <string name="settings_spellcheck_intro">Pamriksa ejaan BBKB nganggo model basa canggih kanggo menehi pamriksan ejaan ing kabeh aplikasi sing ndhukung</string>
     <string name="settings_spellcheck_enable_title">Aktifake pamriksa ejaan BBKB</string>
     <string name="settings_spellcheck_enable_summary">Ndeteksi salah ketik lan nyaranake koreksi</string>

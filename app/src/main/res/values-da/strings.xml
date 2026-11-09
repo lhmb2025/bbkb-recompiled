@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibrer</string>
     <string name="vibrate_on_keypress_summary">Få enheden til at vibrere, når der trykkes på en tast</string>
     <string name="customize_slideboard_clear_keypad">Nulstil til tomt layout</string>
-    <string name="customize_slideboard_enable">Tilpas det numeriske tastatur</string>
     <string name="customize_slideboard_reset_to_default">Nulstil til standard layout</string>
     <string name="settings_slideboard_hub_summary">Numerisk tastatur, byt side og hurtige sætninger</string>
     <string name="settings_symbol_slideboard_link_summary">Tilpas Slideboards numeriske tastatur og hurtige sætninger</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-indstillinger</string>
-    <string name="customize_symbol_page_title">Tilpas layout</string>
     <string name="customized_symbol_page_add_button_description">Tilføj unicode-symbol</string>
     <string name="customized_symbols_page_reset_to_blank">Nulstil til tomt layout</string>
     <string name="customized_symbols_page_reset_to_page_1">Nulstil til standard layout 1</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Indlæser symboler…</string>
     <string name="settings_keyeditor_hex_code">Hexkode (f.eks. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Ugyldig tegnkode</string>
+    <string name="settings_keyeditor_hint">Tryk på et symbol og derefter på en tast. Tryk på to taster for at bytte dem.</string>
+    <string name="settings_keyeditor_empty_key">Tom tast</string>
+    <string name="settings_keyeditor_layout_reset">Layout nulstillet</string>
+    <string name="settings_keyeditor_key_cleared">Tast ryddet</string>
+    <string name="settings_keyeditor_symbol_deleted">Symbol slettet</string>
+    <string name="settings_keyeditor_title_vkb">Symbolside til skærmtastatur</string>
+    <string name="settings_keyeditor_title_pkb">Symbolside til fysisk tastatur</string>
     <string name="settings_spellcheck_intro">BBKB-stavekontrollen bruger avancerede sprogmodeller til at give stavekontrol i alle apps, der understøtter det</string>
     <string name="settings_spellcheck_enable_title">Slå BBKB-stavekontrol til</string>
     <string name="settings_spellcheck_enable_summary">Finder slåfejl og foreslår rettelser</string>

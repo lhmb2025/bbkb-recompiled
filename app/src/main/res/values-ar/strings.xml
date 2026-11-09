@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">الاهتزاز</string>
     <string name="vibrate_on_keypress_summary">اهتزاز الجهاز عند الضغط على مفتاح</string>
     <string name="customize_slideboard_clear_keypad">أعد التعيين إلى تخطيط فارغ</string>
-    <string name="customize_slideboard_enable">تخصيص لوحة الأرقام</string>
     <string name="customize_slideboard_reset_to_default">إعادة تعيين إلى التخطيط الافتراضي</string>
     <string name="settings_slideboard_hub_summary">لوحة الأرقام وتبديل الجانبين والعبارات السريعة</string>
     <string name="settings_symbol_slideboard_link_summary">تخصيص لوحة الأرقام والعبارات السريعة في Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s، %2$s، %3$s…</string>
     <string name="settings_slideboard_settings_title">إعدادات Slideboard</string>
-    <string name="customize_symbol_page_title">تخصيص التخطيط</string>
     <string name="customized_symbol_page_add_button_description">إضافة رمز unicode</string>
     <string name="customized_symbols_page_reset_to_blank">أعد التعيين إلى تخطيط فارغ</string>
     <string name="customized_symbols_page_reset_to_page_1">إعادة تعيين على التخطيط الافتراضي 1</string>
@@ -1155,6 +1153,13 @@
     <string name="settings_keyeditor_loading">جارٍ تحميل الرموز…</string>
     <string name="settings_keyeditor_hex_code">الرمز السداسي العشري (مثل 1F600)</string>
     <string name="settings_keyeditor_invalid_code">رمز حرف غير صالح</string>
+    <string name="settings_keyeditor_hint">انقر على رمز، ثم على مفتاح. انقر على مفتاحين لتبديلهما.</string>
+    <string name="settings_keyeditor_empty_key">مفتاح فارغ</string>
+    <string name="settings_keyeditor_layout_reset">تمت إعادة تعيين التخطيط</string>
+    <string name="settings_keyeditor_key_cleared">تم محو المفتاح</string>
+    <string name="settings_keyeditor_symbol_deleted">تم حذف الرمز</string>
+    <string name="settings_keyeditor_title_vkb">صفحة رموز لوحة المفاتيح على الشاشة</string>
+    <string name="settings_keyeditor_title_pkb">صفحة رموز لوحة المفاتيح الفعلية</string>
     <string name="settings_spellcheck_intro">يستخدم المدقق الإملائي في BBKB نماذج لغوية متقدمة لتوفير التدقيق الإملائي في جميع التطبيقات التي تدعمه</string>
     <string name="settings_spellcheck_enable_title">تفعيل المدقق الإملائي من BBKB</string>
     <string name="settings_spellcheck_enable_summary">يكتشف الأخطاء المطبعية ويقترح التصحيحات</string>

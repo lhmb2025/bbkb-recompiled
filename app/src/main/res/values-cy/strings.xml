@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Dirgrynu</string>
     <string name="vibrate_on_keypress_summary">Dirgrynu\'r ddyfais pan wasgir bysell</string>
     <string name="customize_slideboard_clear_keypad">Ailosod i gynllun gwag</string>
-    <string name="customize_slideboard_enable">Addasu\'r pad rhifau</string>
     <string name="customize_slideboard_reset_to_default">Ailosod i\'r cynllun rhagosodedig</string>
     <string name="settings_slideboard_hub_summary">Pad rhifau, cyfnewid ochrau ac ymadroddion cyflym</string>
     <string name="settings_symbol_slideboard_link_summary">Addasu pad rhifau ac ymadroddion cyflym y Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Gosodiadau\'r Slideboard</string>
-    <string name="customize_symbol_page_title">Addasu\'r cynllun</string>
     <string name="customized_symbol_page_add_button_description">Ychwanegu symbol Unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Ailosod i gynllun gwag</string>
     <string name="customized_symbols_page_reset_to_page_1">Ailosod i gynllun rhagosodedig 1</string>
@@ -1155,6 +1153,13 @@
     <string name="settings_keyeditor_loading">Wrthi\'n llwytho symbolau…</string>
     <string name="settings_keyeditor_hex_code">Cod hecs (e.e. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Cod nod annilys</string>
+    <string name="settings_keyeditor_hint">Tapiwch symbol, yna bysell. Tapiwch ddwy fysell i\'w cyfnewid.</string>
+    <string name="settings_keyeditor_empty_key">Bysell wag</string>
+    <string name="settings_keyeditor_layout_reset">Cynllun wedi\'i ailosod</string>
+    <string name="settings_keyeditor_key_cleared">Bysell wedi\'i chlirio</string>
+    <string name="settings_keyeditor_symbol_deleted">Symbol wedi\'i ddileu</string>
+    <string name="settings_keyeditor_title_vkb">Tudalen symbolau ar y sgrin</string>
+    <string name="settings_keyeditor_title_pkb">Tudalen symbolau\'r bysellbad</string>
     <string name="settings_spellcheck_intro">Mae gwirydd sillafu BBKB yn defnyddio modelau iaith uwch i ddarparu gwirio sillafu ym mhob ap sy\'n ei gefnogi</string>
     <string name="settings_spellcheck_enable_title">Galluogi gwirydd sillafu BBKB</string>
     <string name="settings_spellcheck_enable_summary">Mae\'n canfod gwallau teipio ac yn awgrymu cywiriadau</string>

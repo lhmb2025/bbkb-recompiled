@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">バイブレーション</string>
     <string name="vibrate_on_keypress_summary">キーを押したときに端末を振動させます</string>
     <string name="customize_slideboard_clear_keypad">空白のレイアウトにリセット</string>
-    <string name="customize_slideboard_enable">テンキーをカスタマイズ</string>
     <string name="customize_slideboard_reset_to_default">デフォルトレイアウトにリセット</string>
     <string name="settings_slideboard_hub_summary">テンキー、左右の入れ替え、クイックフレーズ</string>
     <string name="settings_symbol_slideboard_link_summary">Slideboard のテンキーとクイックフレーズをカスタマイズ</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s、%2$s、%3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard の設定</string>
-    <string name="customize_symbol_page_title">レイアウトをカスタマイズ</string>
     <string name="customized_symbol_page_add_button_description">ユニコード記号を追加</string>
     <string name="customized_symbols_page_reset_to_blank">空白のレイアウトにリセット</string>
     <string name="customized_symbols_page_reset_to_page_1">デフォルトレイアウト1にリセット</string>
@@ -1080,6 +1078,13 @@
     <string name="settings_keyeditor_loading">記号を読み込んでいます…</string>
     <string name="settings_keyeditor_hex_code">16 進コード（例: 1F600）</string>
     <string name="settings_keyeditor_invalid_code">無効な文字コードです</string>
+    <string name="settings_keyeditor_hint">記号をタップしてからキーをタップします。2つのキーをタップすると入れ替わります。</string>
+    <string name="settings_keyeditor_empty_key">空のキー</string>
+    <string name="settings_keyeditor_layout_reset">レイアウトをリセットしました</string>
+    <string name="settings_keyeditor_key_cleared">キーをクリアしました</string>
+    <string name="settings_keyeditor_symbol_deleted">記号を削除しました</string>
+    <string name="settings_keyeditor_title_vkb">画面上のキーボードの記号ページ</string>
+    <string name="settings_keyeditor_title_pkb">キーパッドの記号ページ</string>
     <string name="settings_spellcheck_intro">BBKB スペルチェッカーは、高度な言語モデルを使用して、スペルチェックに対応したすべてのアプリでスペルチェックを提供します</string>
     <string name="settings_spellcheck_enable_title">BBKBスペルチェッカーを有効にする</string>
     <string name="settings_spellcheck_enable_summary">入力ミスを検出し、修正候補を表示します</string>

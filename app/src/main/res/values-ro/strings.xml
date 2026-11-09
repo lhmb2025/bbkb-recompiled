@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibrează</string>
     <string name="vibrate_on_keypress_summary">Vibrează dispozitivul la apăsarea unei taste</string>
     <string name="customize_slideboard_clear_keypad">Resetare la aspect gol</string>
-    <string name="customize_slideboard_enable">Personalizați tastatura numerică</string>
     <string name="customize_slideboard_reset_to_default">Resetare la aspectul implicit</string>
     <string name="settings_slideboard_hub_summary">Tastatură numerică, inversarea părților și expresii rapide</string>
     <string name="settings_symbol_slideboard_link_summary">Personalizați tastatura numerică și expresiile rapide ale Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Setări Slideboard</string>
-    <string name="customize_symbol_page_title">Personalizare aspect</string>
     <string name="customized_symbol_page_add_button_description">Adăugare simbol unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Resetare la aspect gol</string>
     <string name="customized_symbols_page_reset_to_page_1">Resetare la aspectul implicit 1</string>
@@ -1110,6 +1108,13 @@
     <string name="settings_keyeditor_loading">Se încarcă simbolurile…</string>
     <string name="settings_keyeditor_hex_code">Cod hexazecimal (de ex. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Cod de caracter nevalid</string>
+    <string name="settings_keyeditor_hint">Atingeți un simbol, apoi o tastă. Atingeți două taste pentru a le inversa.</string>
+    <string name="settings_keyeditor_empty_key">Tastă goală</string>
+    <string name="settings_keyeditor_layout_reset">Aspect resetat</string>
+    <string name="settings_keyeditor_key_cleared">Tastă ștearsă</string>
+    <string name="settings_keyeditor_symbol_deleted">Simbol șters</string>
+    <string name="settings_keyeditor_title_vkb">Pagina de simboluri de pe ecran</string>
+    <string name="settings_keyeditor_title_pkb">Pagina de simboluri a tastaturii fizice</string>
     <string name="settings_spellcheck_intro">Verificatorul ortografic BBKB folosește modele lingvistice avansate pentru a oferi verificare ortografică în toate aplicațiile care o acceptă</string>
     <string name="settings_spellcheck_enable_title">Activează verificatorul ortografic BBKB</string>
     <string name="settings_spellcheck_enable_summary">Detectează greșelile de tastare și sugerează corecturi</string>

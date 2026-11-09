@@ -36,6 +36,16 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
@@ -546,14 +556,13 @@ fun EditTextPreference(
     iconSpaceReserved: Boolean = false,
     value: String,
     enabled: Boolean = true,
+    /** False where an empty value means nothing: Save is then off while the field is blank. */
+    allowBlank: Boolean = true,
+    capitalization: KeyboardCapitalization = KeyboardCapitalization.None,
     onValueChange: (String) -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    // Keyed on the incoming value: an unkeyed remember captures it at the row's first composition,
-    // so a programmatic change (a reset, a search-highlight scroll, a sibling write) left the
-    // dialog showing the stale value.
-    var textValue by remember(value) { mutableStateOf(value) }
-    
+
     PreferenceItem(
         title = title,
         summary = summary ?: value,
@@ -562,35 +571,42 @@ fun EditTextPreference(
         enabled = enabled,
         onClick = if (enabled) { { showDialog = true } } else null
     )
-    
+
     if (showDialog) {
         val shapes = LocalShapes.current
-        
+        // Created with the dialog, so it always opens on the current value, cursor at the end.
+        var text by remember {
+            mutableStateOf(TextFieldValue(value, selection = TextRange(value.length)))
+        }
+        val canSave = allowBlank || text.text.isNotBlank()
+        val save = {
+            onValueChange(text.text)
+            showDialog = false
+        }
+        val focusRequester = remember { FocusRequester() }
+        LaunchedEffect(Unit) { focusRequester.requestFocus() }
+
         AlertDialog(
             onDismissRequest = { showDialog = false },
             title = { Text(title, style = MaterialTheme.typography.headlineSmall) },
             text = {
-                TextField(
-                    value = textValue,
-                    onValueChange = { textValue = it },
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { text = it },
                     label = { Text(stringResource(R.string.settings_common_enter_text)) },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    keyboardOptions = KeyboardOptions(capitalization = capitalization, imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = { if (canSave) save() }),
+                    modifier = Modifier.fillMaxWidth().focusRequester(focusRequester)
                 )
             },
             confirmButton = {
-                TextButton(onClick = {
-                    onValueChange(textValue)
-                    showDialog = false
-                }) {
-                    Text("OK")
+                TextButton(enabled = canSave, onClick = save) {
+                    Text(stringResource(R.string.settings_common_save))
                 }
             },
             dismissButton = {
-                TextButton(onClick = { 
-                    textValue = value
-                    showDialog = false 
-                }) {
+                TextButton(onClick = { showDialog = false }) {
                     Text(stringResource(R.string.cancel))
                 }
             },

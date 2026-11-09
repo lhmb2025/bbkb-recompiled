@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Bergetar</string>
     <string name="vibrate_on_keypress_summary">Getarkan peranti apabila kekunci ditekan</string>
     <string name="customize_slideboard_clear_keypad">Tetapkan semula kepada susun atur kosong</string>
-    <string name="customize_slideboard_enable">Sesuaikan pad nombor</string>
     <string name="customize_slideboard_reset_to_default">Tetapkan semula kepada susun atur lalai</string>
     <string name="settings_slideboard_hub_summary">Pad nombor, tukar sisi dan frasa pantas</string>
     <string name="settings_symbol_slideboard_link_summary">Sesuaikan pad nombor dan frasa pantas Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Tetapan Slideboard</string>
-    <string name="customize_symbol_page_title">Sesuaikan susun atur</string>
     <string name="customized_symbol_page_add_button_description">Tambah simbol unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Tetapkan semula kepada susun atur kosong</string>
     <string name="customized_symbols_page_reset_to_page_1">Tetapkan semula kepada susun atur lalai 1</string>
@@ -1080,6 +1078,13 @@
     <string name="settings_keyeditor_loading">Memuatkan simbol…</string>
     <string name="settings_keyeditor_hex_code">Kod heks (cth. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Kod aksara tidak sah</string>
+    <string name="settings_keyeditor_hint">Ketik simbol, kemudian kekunci. Ketik dua kekunci untuk menukar kedudukannya.</string>
+    <string name="settings_keyeditor_empty_key">Kekunci kosong</string>
+    <string name="settings_keyeditor_layout_reset">Susun atur ditetapkan semula</string>
+    <string name="settings_keyeditor_key_cleared">Kekunci dikosongkan</string>
+    <string name="settings_keyeditor_symbol_deleted">Simbol dipadam</string>
+    <string name="settings_keyeditor_title_vkb">Halaman simbol pada skrin</string>
+    <string name="settings_keyeditor_title_pkb">Halaman simbol pad kekunci</string>
     <string name="settings_spellcheck_intro">Penyemak ejaan BBKB menggunakan model bahasa termaju untuk menyediakan semakan ejaan merentas semua apl yang menyokongnya</string>
     <string name="settings_spellcheck_enable_title">Dayakan penyemak ejaan BBKB</string>
     <string name="settings_spellcheck_enable_summary">Mengesan kesilapan taip dan mencadangkan pembetulan</string>

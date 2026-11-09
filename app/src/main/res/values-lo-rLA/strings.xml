@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">ສັ່ນເຕືອນ</string>
     <string name="vibrate_on_keypress_summary">ສັ່ນອຸປະກອນເມື່ອກົດປຸ່ມ</string>
     <string name="customize_slideboard_clear_keypad">ຕັ້ງຄ່າໃໝ່ເປັນຮູບແບບເປົ່າ</string>
-    <string name="customize_slideboard_enable">ປັບແຕ່ງແປ້ນຕົວເລກ</string>
     <string name="customize_slideboard_reset_to_default">ຕັ້ງຄ່າໃໝ່ເປັນຮູບແບບເລີ່ມຕົ້ນ</string>
     <string name="settings_slideboard_hub_summary">ແປ້ນຕົວເລກ, ສະຫຼັບດ້ານ ແລະ ວະລີດ່ວນ</string>
     <string name="settings_symbol_slideboard_link_summary">ປັບແຕ່ງແປ້ນຕົວເລກ ແລະ ວະລີດ່ວນຂອງ Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">ການຕັ້ງຄ່າ Slideboard</string>
-    <string name="customize_symbol_page_title">ປັບແຕ່ງຮູບແບບ</string>
     <string name="customized_symbol_page_add_button_description">ເພີ່ມສັນຍາລັກ Unicode</string>
     <string name="customized_symbols_page_reset_to_blank">ຕັ້ງຄ່າໃໝ່ເປັນຮູບແບບເປົ່າ</string>
     <string name="customized_symbols_page_reset_to_page_1">ຕັ້ງຄ່າໃໝ່ເປັນຮູບແບບເລີ່ມຕົ້ນ 1</string>
@@ -1080,6 +1078,13 @@
     <string name="settings_keyeditor_loading">ກຳລັງໂຫຼດສັນຍາລັກ…</string>
     <string name="settings_keyeditor_hex_code">ລະຫັດເລກຖານສິບຫົກ (ຕົວຢ່າງ: 1F600)</string>
     <string name="settings_keyeditor_invalid_code">ລະຫັດຕົວອັກສອນບໍ່ຖືກຕ້ອງ</string>
+    <string name="settings_keyeditor_hint">ແຕະສັນຍາລັກ ແລ້ວແຕະປຸ່ມ. ແຕະສອງປຸ່ມເພື່ອສະຫຼັບກັນ.</string>
+    <string name="settings_keyeditor_empty_key">ປຸ່ມເປົ່າ</string>
+    <string name="settings_keyeditor_layout_reset">ຕັ້ງຄ່າຮູບແບບໃໝ່ແລ້ວ</string>
+    <string name="settings_keyeditor_key_cleared">ລ້າງປຸ່ມແລ້ວ</string>
+    <string name="settings_keyeditor_symbol_deleted">ລຶບສັນຍາລັກແລ້ວ</string>
+    <string name="settings_keyeditor_title_vkb">ໜ້າສັນຍາລັກເທິງໜ້າຈໍ</string>
+    <string name="settings_keyeditor_title_pkb">ໜ້າສັນຍາລັກແປ້ນພິມແທ້</string>
     <string name="settings_spellcheck_intro">ຕົວກວດການສະກົດຄຳ BBKB ໃຊ້ໂມເດວພາສາຂັ້ນສູງເພື່ອໃຫ້ການກວດການສະກົດຄຳໃນທຸກແອັບທີ່ຮອງຮັບການກວດການສະກົດຄຳ</string>
     <string name="settings_spellcheck_enable_title">ເປີດໂຕກວດການສະກົດຄຳ BBKB</string>
     <string name="settings_spellcheck_enable_summary">ກວດຫາຄຳທີ່ພິມຜິດ ແລະ ແນະນຳການແກ້ໄຂ</string>

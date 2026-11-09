@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Getar</string>
     <string name="vibrate_on_keypress_summary">Getarkan perangkat saat tombol ditekan</string>
     <string name="customize_slideboard_clear_keypad">Setel ulang ke tata letak kosong</string>
-    <string name="customize_slideboard_enable">Sesuaikan tombol angka</string>
     <string name="customize_slideboard_reset_to_default">Setel ulang ke tata letak default</string>
     <string name="settings_slideboard_hub_summary">Tombol angka, tukar sisi, dan frasa cepat</string>
     <string name="settings_symbol_slideboard_link_summary">Sesuaikan tombol angka dan frasa cepat Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Setelan Slideboard</string>
-    <string name="customize_symbol_page_title">Menyesuaikan tata letak</string>
     <string name="customized_symbol_page_add_button_description">Menambahkan simbol unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Setel ulang ke tata letak kosong</string>
     <string name="customized_symbols_page_reset_to_page_1">Setel ulang ke tata letak default 1</string>
@@ -1080,6 +1078,13 @@
     <string name="settings_keyeditor_loading">Memuat simbol…</string>
     <string name="settings_keyeditor_hex_code">Kode hex (mis. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Kode karakter tidak valid</string>
+    <string name="settings_keyeditor_hint">Ketuk simbol, lalu tombol. Ketuk dua tombol untuk menukarnya.</string>
+    <string name="settings_keyeditor_empty_key">Tombol kosong</string>
+    <string name="settings_keyeditor_layout_reset">Tata letak disetel ulang</string>
+    <string name="settings_keyeditor_key_cleared">Tombol dikosongkan</string>
+    <string name="settings_keyeditor_symbol_deleted">Simbol dihapus</string>
+    <string name="settings_keyeditor_title_vkb">Halaman simbol di layar</string>
+    <string name="settings_keyeditor_title_pkb">Halaman simbol keypad</string>
     <string name="settings_spellcheck_intro">Pemeriksa ejaan BBKB menggunakan model bahasa canggih untuk menyediakan pemeriksaan ejaan di semua aplikasi yang mendukungnya</string>
     <string name="settings_spellcheck_enable_title">Aktifkan pemeriksa ejaan BBKB</string>
     <string name="settings_spellcheck_enable_summary">Mendeteksi salah ketik dan menyarankan koreksi</string>

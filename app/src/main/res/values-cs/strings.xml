@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibrace</string>
     <string name="vibrate_on_keypress_summary">Zavibrovat při stisknutí klávesy</string>
     <string name="customize_slideboard_clear_keypad">Obnovit prázdné rozložení</string>
-    <string name="customize_slideboard_enable">Přizpůsobit číselník</string>
     <string name="customize_slideboard_reset_to_default">Obnovit výchozí rozložení</string>
     <string name="settings_slideboard_hub_summary">Číselník, prohození stran a rychlé fráze</string>
     <string name="settings_symbol_slideboard_link_summary">Přizpůsobit číselník a rychlé fráze Slideboardu</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Nastavení Slideboardu</string>
-    <string name="customize_symbol_page_title">Přizpůsobit rozložení</string>
     <string name="customized_symbol_page_add_button_description">Přidat symbol Unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Obnovit prázdné rozložení</string>
     <string name="customized_symbols_page_reset_to_page_1">Obnovit výchozí rozložení 1</string>
@@ -1125,6 +1123,13 @@
     <string name="settings_keyeditor_loading">Načítání symbolů…</string>
     <string name="settings_keyeditor_hex_code">Hexadecimální kód (např. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Neplatný kód znaku</string>
+    <string name="settings_keyeditor_hint">Klepněte na symbol a potom na klávesu. Klepnutím na dvě klávesy je prohodíte.</string>
+    <string name="settings_keyeditor_empty_key">Prázdná klávesa</string>
+    <string name="settings_keyeditor_layout_reset">Rozložení bylo obnoveno</string>
+    <string name="settings_keyeditor_key_cleared">Klávesa vymazána</string>
+    <string name="settings_keyeditor_symbol_deleted">Symbol smazán</string>
+    <string name="settings_keyeditor_title_vkb">Symboly klávesnice na obrazovce</string>
+    <string name="settings_keyeditor_title_pkb">Symboly fyzické klávesnice</string>
     <string name="settings_spellcheck_intro">Kontrola pravopisu BBKB využívá pokročilé jazykové modely k poskytování kontroly pravopisu ve všech aplikacích, které ji podporují</string>
     <string name="settings_spellcheck_enable_title">Zapnout kontrolu pravopisu BBKB</string>
     <string name="settings_spellcheck_enable_summary">Rozpoznává překlepy a navrhuje opravy</string>

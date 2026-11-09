@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibrēt, nospiežot taustiņu</string>
     <string name="vibrate_on_keypress_summary">Likt ierīcei vibrēt, nospiežot taustiņu</string>
     <string name="customize_slideboard_clear_keypad">Atjaunot tukšu izkārtojumu</string>
-    <string name="customize_slideboard_enable">Pielāgot ciparu paneli</string>
     <string name="customize_slideboard_reset_to_default">Atjaunot noklusējuma izkārtojumu</string>
     <string name="settings_slideboard_hub_summary">Ciparu panelis, pušu maiņa un ātrās frāzes</string>
     <string name="settings_symbol_slideboard_link_summary">Pielāgot Slideboard ciparu paneli un ātrās frāzes</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard iestatījumi</string>
-    <string name="customize_symbol_page_title">Pielāgot izkārtojumu</string>
     <string name="customized_symbol_page_add_button_description">Pievienot unikoda simbolu</string>
     <string name="customized_symbols_page_reset_to_blank">Atjaunot tukšu izkārtojumu</string>
     <string name="customized_symbols_page_reset_to_page_1">Atjaunot noklusējuma izkārtojumu 1</string>
@@ -1110,6 +1108,13 @@
     <string name="settings_keyeditor_loading">Notiek simbolu ielāde…</string>
     <string name="settings_keyeditor_hex_code">Heksadecimālais kods (piem., 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Nederīgs rakstzīmes kods</string>
+    <string name="settings_keyeditor_hint">Pieskarieties simbolam un pēc tam taustiņam. Pieskarieties diviem taustiņiem, lai tos samainītu.</string>
+    <string name="settings_keyeditor_empty_key">Tukšs taustiņš</string>
+    <string name="settings_keyeditor_layout_reset">Izkārtojums atjaunots</string>
+    <string name="settings_keyeditor_key_cleared">Taustiņš notīrīts</string>
+    <string name="settings_keyeditor_symbol_deleted">Simbols dzēsts</string>
+    <string name="settings_keyeditor_title_vkb">Ekrāna tastatūras simbolu lapa</string>
+    <string name="settings_keyeditor_title_pkb">Fiziskās tastatūras simbolu lapa</string>
     <string name="settings_spellcheck_intro">BBKB pareizrakstības pārbaudītājs izmanto progresīvus valodas modeļus, lai nodrošinātu pareizrakstības pārbaudi visās lietotnēs, kas to atbalsta</string>
     <string name="settings_spellcheck_enable_title">Ieslēgt BBKB pareizrakstības pārbaudītāju</string>
     <string name="settings_spellcheck_enable_summary">Nosaka drukas kļūdas un iesaka labojumus</string>

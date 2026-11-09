@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Вибрација</string>
     <string name="vibrate_on_keypress_summary">Вибрирај уређајем при притиску тастера</string>
     <string name="customize_slideboard_clear_keypad">Врати на празан распоред</string>
-    <string name="customize_slideboard_enable">Прилагоди нумеричку тастатуру</string>
     <string name="customize_slideboard_reset_to_default">Врати на подразумевани распоред</string>
     <string name="settings_slideboard_hub_summary">Нумеричка тастатура, замена страна и брзе фразе</string>
     <string name="settings_symbol_slideboard_link_summary">Прилагоди нумеричку тастатуру и брзе фразе за Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Поставке за Slideboard</string>
-    <string name="customize_symbol_page_title">Прилагоди распоред</string>
     <string name="customized_symbol_page_add_button_description">Додај уницоде симбол</string>
     <string name="customized_symbols_page_reset_to_blank">Врати на празан распоред</string>
     <string name="customized_symbols_page_reset_to_page_1">Врати на подразумевани распоред 1</string>
@@ -1110,6 +1108,13 @@
     <string name="settings_keyeditor_loading">Учитавају се симболи…</string>
     <string name="settings_keyeditor_hex_code">Хексадецимални код (нпр. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Неважећи код знака</string>
+    <string name="settings_keyeditor_hint">Додирните симбол, а затим тастер. Додирните два тастера да бисте их заменили.</string>
+    <string name="settings_keyeditor_empty_key">Празан тастер</string>
+    <string name="settings_keyeditor_layout_reset">Распоред је враћен</string>
+    <string name="settings_keyeditor_key_cleared">Тастер је обрисан</string>
+    <string name="settings_keyeditor_symbol_deleted">Симбол је избрисан</string>
+    <string name="settings_keyeditor_title_vkb">Страница симбола на екрану</string>
+    <string name="settings_keyeditor_title_pkb">Страница симбола физичке тастатуре</string>
     <string name="settings_spellcheck_intro">BBKB провера правописа користи напредне језичке моделе да би пружила проверу правописа у свим апликацијама које то подржавају</string>
     <string name="settings_spellcheck_enable_title">Омогући BBKB проверу правописа</string>
     <string name="settings_spellcheck_enable_summary">Открива грешке у куцању и предлаже исправке</string>

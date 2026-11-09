@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Да вибрира при натискане на клавиш</string>
     <string name="vibrate_on_keypress_summary">Вибриране на устройството при натискане на клавиш</string>
     <string name="customize_slideboard_clear_keypad">Връщане към празна подредба</string>
-    <string name="customize_slideboard_enable">Персонализиране на цифровия блок</string>
     <string name="customize_slideboard_reset_to_default">Връщане към подредбата по подразбиране</string>
     <string name="settings_slideboard_hub_summary">Цифров блок, размяна на страните и бързи фрази</string>
     <string name="settings_symbol_slideboard_link_summary">Персонализиране на цифровия блок и бързите фрази на Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Настройки на Slideboard</string>
-    <string name="customize_symbol_page_title">Персонализиране на подредбата</string>
     <string name="customized_symbol_page_add_button_description">Добавяне на символ от Уникод</string>
     <string name="customized_symbols_page_reset_to_blank">Връщане към празна подредба</string>
     <string name="customized_symbols_page_reset_to_page_1">Връщане към подредба по подразбиране 1</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Зареждане на символите…</string>
     <string name="settings_keyeditor_hex_code">Шестнадесетичен код (напр. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Невалиден код на знак</string>
+    <string name="settings_keyeditor_hint">Докоснете символ, след това клавиш. Докоснете два клавиша, за да ги размените.</string>
+    <string name="settings_keyeditor_empty_key">Празен клавиш</string>
+    <string name="settings_keyeditor_layout_reset">Подредбата е върната</string>
+    <string name="settings_keyeditor_key_cleared">Клавишът е изчистен</string>
+    <string name="settings_keyeditor_symbol_deleted">Символът е изтрит</string>
+    <string name="settings_keyeditor_title_vkb">Символи на екранната клавиатура</string>
+    <string name="settings_keyeditor_title_pkb">Символи на физическата клавиатура</string>
     <string name="settings_spellcheck_intro">Програмата за проверка на правописа на BBKB използва усъвършенствани езикови модели, за да осигурява проверка на правописа във всички приложения, които я поддържат</string>
     <string name="settings_spellcheck_enable_title">Включване на програмата за правописна проверка на BBKB</string>
     <string name="settings_spellcheck_enable_summary">Открива печатни грешки и предлага корекции</string>

@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Баскыч басылганда дирилдесин</string>
     <string name="vibrate_on_keypress_summary">Баскыч басылганда түзмөктү дирилдетүү</string>
     <string name="customize_slideboard_clear_keypad">Бош жайгашууга кайтаруу</string>
-    <string name="customize_slideboard_enable">Сандык панелди ыңгайлаштыруу</string>
     <string name="customize_slideboard_reset_to_default">Демейки жайгашууга кайтаруу</string>
     <string name="settings_slideboard_hub_summary">Сандык панель, тараптарды алмаштыруу жана ыкчам сөз айкаштары</string>
     <string name="settings_symbol_slideboard_link_summary">Slideboard сандык панелин жана ыкчам сөз айкаштарын ыңгайлаштыруу</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard жөндөөлөрү</string>
-    <string name="customize_symbol_page_title">Жайгашууну ыңгайлаштыруу</string>
     <string name="customized_symbol_page_add_button_description">Unicode символун кошуу</string>
     <string name="customized_symbols_page_reset_to_blank">Бош жайгашууга кайтаруу</string>
     <string name="customized_symbols_page_reset_to_page_1">1-демейки жайгашууга кайтаруу</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Символдор жүктөлүүдө…</string>
     <string name="settings_keyeditor_hex_code">Он алтылык код (мисалы, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Белгинин коду жараксыз</string>
+    <string name="settings_keyeditor_hint">Символду, андан соң баскычты басыңыз. Эки баскычты алмаштыруу үчүн экөөнү тең басыңыз.</string>
+    <string name="settings_keyeditor_empty_key">Бош баскыч</string>
+    <string name="settings_keyeditor_layout_reset">Жайгашуу баштапкы абалга кайтарылды</string>
+    <string name="settings_keyeditor_key_cleared">Баскыч тазаланды</string>
+    <string name="settings_keyeditor_symbol_deleted">Символ өчүрүлдү</string>
+    <string name="settings_keyeditor_title_vkb">Экрандагы символ бети</string>
+    <string name="settings_keyeditor_title_pkb">Физикалык баскычтоптун символ бети</string>
     <string name="settings_spellcheck_intro">BBKB орфографияны текшергичи өркүндөтүлгөн тил моделдерин колдонуп, орфографияны текшерүүнү колдогон бардык колдонмолордо текшерүүнү камсыз кылат</string>
     <string name="settings_spellcheck_enable_title">BBKB орфографияны текшергичти күйгүзүү</string>
     <string name="settings_spellcheck_enable_summary">Каталарды аныктап, оңдоолорду сунуштайт</string>

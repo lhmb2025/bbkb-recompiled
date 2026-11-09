@@ -34,6 +34,10 @@ public final class SubtypeDisplayNameHelper {
         String displayLanguage;
         List<InputMethodSubtype> listM4860a = RichInputMethodManager.getInstance().getEnabledSubtypesOfThisIme();
         ArrayList<Locale> arrayList = new ArrayList<>();
+        if (listM4860a == null) {
+            // This keyboard is not registered with the system (yet): no languages to label.
+            return;
+        }
         for (InputMethodSubtype inputMethodSubtype : listM4860a) {
             if (!inputMethodSubtype.isAuxiliary()) {
                 Locale localeM5625c = ResourceLocaleUtils.getSubtypeLocale(inputMethodSubtype);

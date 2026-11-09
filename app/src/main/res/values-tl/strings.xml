@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Mag-vibrate sa keypress</string>
     <string name="vibrate_on_keypress_summary">Mag-vibrate ang device kapag pinindot ang isang key</string>
     <string name="customize_slideboard_clear_keypad">I-reset sa blangkong layout</string>
-    <string name="customize_slideboard_enable">I-customize ang number pad</string>
     <string name="customize_slideboard_reset_to_default">I-reset sa default na layout</string>
     <string name="settings_slideboard_hub_summary">Number pad, pagpapalit ng gilid at mga mabilisang parirala</string>
     <string name="settings_symbol_slideboard_link_summary">I-customize ang number pad at mga mabilisang parirala ng Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Mga setting ng Slideboard</string>
-    <string name="customize_symbol_page_title">I-customize ang layout</string>
     <string name="customized_symbol_page_add_button_description">Magdagdag ng unicode na simbolo</string>
     <string name="customized_symbols_page_reset_to_blank">I-reset sa blangkong layout</string>
     <string name="customized_symbols_page_reset_to_page_1">I-reset sa default na layout 1</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Nilo-load ang mga simbolo…</string>
     <string name="settings_keyeditor_hex_code">Hex code (hal. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Invalid na character code</string>
+    <string name="settings_keyeditor_hint">I-tap ang isang simbolo, pagkatapos ay isang key. Mag-tap ng dalawang key para pagpalitin ang mga ito.</string>
+    <string name="settings_keyeditor_empty_key">Walang lamang key</string>
+    <string name="settings_keyeditor_layout_reset">Na-reset ang layout</string>
+    <string name="settings_keyeditor_key_cleared">Na-clear ang key</string>
+    <string name="settings_keyeditor_symbol_deleted">Na-delete ang simbolo</string>
+    <string name="settings_keyeditor_title_vkb">On-screen na page ng simbolo</string>
+    <string name="settings_keyeditor_title_pkb">Page ng simbolo ng keypad</string>
     <string name="settings_spellcheck_intro">Gumagamit ang spell checker ng BBKB ng mga advanced na language model para magbigay ng spell checking sa lahat ng app na sumusuporta rito</string>
     <string name="settings_spellcheck_enable_title">I-enable ang spell checker ng BBKB</string>
     <string name="settings_spellcheck_enable_summary">Natutukoy ang mga typo at nagmumungkahi ng mga pagwawasto</string>

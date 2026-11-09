@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">ញ័រ​នៅ​ពេល​ចុច​គ្រាប់ចុច</string>
     <string name="vibrate_on_keypress_summary">ធ្វើឱ្យឧបករណ៍ញ័រនៅពេលចុចគ្រាប់ចុច</string>
     <string name="customize_slideboard_clear_keypad">កំណត់ឡើងវិញទៅប្លង់ទទេ</string>
-    <string name="customize_slideboard_enable">កំណត់បន្ទះលេខតាមបំណង</string>
     <string name="customize_slideboard_reset_to_default">កំណត់ឡើងវិញទៅប្លង់លំនាំដើម</string>
     <string name="settings_slideboard_hub_summary">បន្ទះលេខ ការប្ដូរទីតាំង និងឃ្លារហ័ស</string>
     <string name="settings_symbol_slideboard_link_summary">កំណត់បន្ទះលេខ និងឃ្លារហ័សរបស់ Slideboard តាមបំណង</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s %2$s %3$s…</string>
     <string name="settings_slideboard_settings_title">ការកំណត់ Slideboard</string>
-    <string name="customize_symbol_page_title">កំណត់ប្លង់តាមបំណង</string>
     <string name="customized_symbol_page_add_button_description">បន្ថែមនិមិត្តសញ្ញា Unicode</string>
     <string name="customized_symbols_page_reset_to_blank">កំណត់ឡើងវិញទៅប្លង់ទទេ</string>
     <string name="customized_symbols_page_reset_to_page_1">កំណត់ឡើងវិញទៅប្លង់លំនាំដើម 1</string>
@@ -1080,6 +1078,13 @@
     <string name="settings_keyeditor_loading">កំពុងផ្ទុកនិមិត្តសញ្ញា…</string>
     <string name="settings_keyeditor_hex_code">កូដគោលដប់ប្រាំមួយ (ឧ. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">កូដតួអក្សរមិនត្រឹមត្រូវ</string>
+    <string name="settings_keyeditor_hint">ប៉ះនិមិត្តសញ្ញាមួយ រួចប៉ះគ្រាប់ចុចមួយ។ ប៉ះគ្រាប់ចុចពីរដើម្បីប្ដូរកន្លែងគ្នា។</string>
+    <string name="settings_keyeditor_empty_key">គ្រាប់ចុចទទេ</string>
+    <string name="settings_keyeditor_layout_reset">បានកំណត់ប្លង់ឡើងវិញ</string>
+    <string name="settings_keyeditor_key_cleared">បានសម្អាតគ្រាប់ចុច</string>
+    <string name="settings_keyeditor_symbol_deleted">បានលុបនិមិត្តសញ្ញា</string>
+    <string name="settings_keyeditor_title_vkb">ទំព័រនិមិត្តសញ្ញាលើអេក្រង់</string>
+    <string name="settings_keyeditor_title_pkb">ទំព័រនិមិត្តសញ្ញាបន្ទះគ្រាប់ចុច</string>
     <string name="settings_spellcheck_intro">កម្មវិធីពិនិត្យអក្ខរាវិរុទ្ធ BBKB ប្រើគំរូភាសាកម្រិតខ្ពស់ ដើម្បីផ្ដល់ការពិនិត្យអក្ខរាវិរុទ្ធនៅគ្រប់កម្មវិធីដែលគាំទ្រការពិនិត្យអក្ខរាវិរុទ្ធ</string>
     <string name="settings_spellcheck_enable_title">បើកកម្មវិធីពិនិត្យអក្ខរាវិរុទ្ធ BBKB</string>
     <string name="settings_spellcheck_enable_summary">រកឃើញកំហុសវាយ និងណែនាំការកែតម្រូវ</string>

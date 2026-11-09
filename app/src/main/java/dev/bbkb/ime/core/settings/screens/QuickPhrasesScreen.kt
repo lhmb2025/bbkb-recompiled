@@ -1,27 +1,19 @@
 package dev.bbkb.ime.core.settings.screens
 
+import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import dev.bbkb.ime.core.settings.PrefsManager
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import dev.bbkb.ime.R
+import dev.bbkb.ime.core.settings.ui.Custom
 import dev.bbkb.ime.core.settings.ui.EditTextPreference
-import dev.bbkb.ime.core.settings.ui.LocalSpacing
-import dev.bbkb.ime.core.settings.ui.PreferenceGroup
-import dev.bbkb.ime.core.settings.ui.SettingsScaffold
+import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 
 /**
  * One slideboard quick phrase.
@@ -52,6 +44,15 @@ private val QUICK_PHRASES = listOf(
 internal val QUICK_PHRASE_KEYS: List<String> get() = QUICK_PHRASES.map { it.prefKey }
 
 /**
+ * The five phrases as the slideboard will insert them: the stored value, or the default
+ * `SettingsValues` falls back to. Read here so every screen that names a phrase agrees.
+ */
+internal fun readQuickPhrases(context: Context, prefs: SharedPreferences): List<String> =
+    QUICK_PHRASES.map { phrase ->
+        context.getString(phrase.defaultRes).let { prefs.getString(phrase.prefKey, it) ?: it }
+    }
+
+/**
  * Quick Phrases Screen
  * Configure the 5 customizable quick phrases for slideboard
  */
@@ -59,46 +60,28 @@ internal val QUICK_PHRASE_KEYS: List<String> get() = QUICK_PHRASES.map { it.pref
 fun QuickPhrasesScreen(
     onNavigateBack: () -> Unit
 ) {
-    val context = LocalContext.current
-    val prefs = remember { PrefsManager.getPrefs(context) }
-
-    SettingsScaffold(
-        title = context.getString(R.string.settings_quick_phrases_screen_title),
-        onNavigateBack = onNavigateBack,
-    ) { paddingValues ->
-        val spacing = LocalSpacing.current
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-        ) {
-            PreferenceGroup {
-                QUICK_PHRASES.forEach { phrase ->
-                    QuickPhraseRow(prefs, phrase, context.getString(phrase.titleRes), context.getString(phrase.defaultRes))
-                }
-            }
-
-            Spacer(modifier = Modifier.height(spacing.extraLarge))
-        }
-    }
+    SettingsScreenHost(
+        R.string.settings_quick_phrases_screen_title,
+        onNavigateBack,
+        QUICK_PHRASES.map { phrase ->
+            Custom(inGroup = true) { env -> QuickPhraseRow(env.prefs, phrase) }
+        },
+    )
 }
 
 @Composable
-private fun QuickPhraseRow(
-    prefs: SharedPreferences,
-    phrase: QuickPhrase,
-    title: String,
-    default: String
-) {
+private fun QuickPhraseRow(prefs: SharedPreferences, phrase: QuickPhrase) {
+    val default = stringResource(phrase.defaultRes)
     var value by remember {
         mutableStateOf(prefs.getString(phrase.prefKey, default) ?: default)
     }
 
     EditTextPreference(
-        title = title,
+        title = stringResource(phrase.titleRes),
         value = value,
+        // A blank phrase would be an empty tile on the slideboard.
+        allowBlank = false,
+        capitalization = KeyboardCapitalization.Sentences,
         onValueChange = { newValue ->
             value = newValue
             prefs.edit().putString(phrase.prefKey, newValue).apply()

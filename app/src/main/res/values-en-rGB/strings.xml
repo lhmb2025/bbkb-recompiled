@@ -12,9 +12,7 @@
     <string name="control_key_setting_off">None</string>
     <string name="control_key_setting_right_shift">Right shift key</string>
     <string name="customize_slideboard_clear_keypad">Reset to blank layout</string>
-    <string name="customize_slideboard_enable">Customise the number pad</string>
     <string name="customize_slideboard_reset_to_default">Reset to default layout</string>
-    <string name="customize_symbol_page_title">Customise layout</string>
     <string name="customized_symbol_page_add_button_description">Add Unicode symbol</string>
     <string name="customized_symbols_page_reset_to_blank">Reset to blank layout</string>
     <string name="customized_symbols_page_reset_to_page_1">Reset to default layout 1</string>

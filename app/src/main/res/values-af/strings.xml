@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibreer</string>
     <string name="vibrate_on_keypress_summary">Laat die toestel vibreer wanneer ’n toets gedruk word</string>
     <string name="customize_slideboard_clear_keypad">Stel terug na leë uitleg</string>
-    <string name="customize_slideboard_enable">Pasmaak die syferblok</string>
     <string name="customize_slideboard_reset_to_default">Stel terug na verstek-uitleg</string>
     <string name="settings_slideboard_hub_summary">Syferblok, ruil kante om en kitsfrases</string>
     <string name="settings_symbol_slideboard_link_summary">Pasmaak die Slideboard-syferblok en kitsfrases</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-instellings</string>
-    <string name="customize_symbol_page_title">Pasmaak uitleg</string>
     <string name="customized_symbol_page_add_button_description">Voeg simbool vir eenheidskode by</string>
     <string name="customized_symbols_page_reset_to_blank">Stel terug na leë uitleg</string>
     <string name="customized_symbols_page_reset_to_page_1">Stel terug na verstek-uitleg 1</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Laai tans simbole…</string>
     <string name="settings_keyeditor_hex_code">Hekskode (bv. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Ongeldige karakterkode</string>
+    <string name="settings_keyeditor_hint">Tik op \'n simbool en dan op \'n toets. Tik op twee toetse om hulle om te ruil.</string>
+    <string name="settings_keyeditor_empty_key">Leë toets</string>
+    <string name="settings_keyeditor_layout_reset">Uitleg teruggestel</string>
+    <string name="settings_keyeditor_key_cleared">Toets uitgevee</string>
+    <string name="settings_keyeditor_symbol_deleted">Simbool geskrap</string>
+    <string name="settings_keyeditor_title_vkb">Skermtoetsbord-simboolbladsy</string>
+    <string name="settings_keyeditor_title_pkb">Fisiese toetsbord-simboolbladsy</string>
     <string name="settings_spellcheck_intro">Die BBKB-speltoetser gebruik gevorderde taalmodelle om speltoetsing te bied in alle programme wat dit ondersteun</string>
     <string name="settings_spellcheck_enable_title">Aktiveer BBKB-speltoetser</string>
     <string name="settings_spellcheck_enable_summary">Bespeur tikfoute en stel verbeterings voor</string>

@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Titringur þegar ýtt er á lykla</string>
     <string name="vibrate_on_keypress_summary">Láta tækið titra þegar ýtt er á lykil</string>
     <string name="customize_slideboard_clear_keypad">Endurstilla á auða uppsetningu</string>
-    <string name="customize_slideboard_enable">Sérsníða talnaborðið</string>
     <string name="customize_slideboard_reset_to_default">Endurstilla á sjálfgefna uppsetningu</string>
     <string name="settings_slideboard_hub_summary">Talnaborð, víxlun hliða og skyndisetningar</string>
     <string name="settings_symbol_slideboard_link_summary">Sérsníða talnaborð og skyndisetningar Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Stillingar Slideboard</string>
-    <string name="customize_symbol_page_title">Sérsníða uppsetningu</string>
     <string name="customized_symbol_page_add_button_description">Bæta við Unicode-tákni</string>
     <string name="customized_symbols_page_reset_to_blank">Endurstilla á auða uppsetningu</string>
     <string name="customized_symbols_page_reset_to_page_1">Endurstilla á sjálfgefna uppsetningu 1</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Hleður táknum…</string>
     <string name="settings_keyeditor_hex_code">Hex-kóði (t.d. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Ógildur stafakóði</string>
+    <string name="settings_keyeditor_hint">Ýttu á tákn og síðan á lykil. Ýttu á tvo lykla til að víxla þeim.</string>
+    <string name="settings_keyeditor_empty_key">Auður lykill</string>
+    <string name="settings_keyeditor_layout_reset">Uppsetning endurstillt</string>
+    <string name="settings_keyeditor_key_cleared">Lykill hreinsaður</string>
+    <string name="settings_keyeditor_symbol_deleted">Tákni eytt</string>
+    <string name="settings_keyeditor_title_vkb">Táknsíða skjályklaborðs</string>
+    <string name="settings_keyeditor_title_pkb">Táknsíða vélbúnaðarlyklaborðs</string>
     <string name="settings_spellcheck_intro">BBKB-ritvilluleitin notar háþróuð tungumálalíkön til að bjóða upp á ritvilluleit í öllum forritum sem styðja hana</string>
     <string name="settings_spellcheck_enable_title">Kveikja á BBKB-ritvilluleit</string>
     <string name="settings_spellcheck_enable_summary">Greinir innsláttarvillur og stingur upp á leiðréttingum</string>

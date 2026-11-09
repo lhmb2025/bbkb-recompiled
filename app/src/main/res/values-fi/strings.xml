@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Värinä</string>
     <string name="vibrate_on_keypress_summary">Värise, kun näppäintä painetaan</string>
     <string name="customize_slideboard_clear_keypad">Palauta tyhjä asettelu</string>
-    <string name="customize_slideboard_enable">Mukauta numeronäppäimistöä</string>
     <string name="customize_slideboard_reset_to_default">Palauta oletusasettelu</string>
     <string name="settings_slideboard_hub_summary">Numeronäppäimistö, puolten vaihto ja pikalauseet</string>
     <string name="settings_symbol_slideboard_link_summary">Mukauta Slideboardin numeronäppäimistöä ja pikalauseita</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboardin asetukset</string>
-    <string name="customize_symbol_page_title">Mukauta asettelu</string>
     <string name="customized_symbol_page_add_button_description">Lisää unicode-symboli</string>
     <string name="customized_symbols_page_reset_to_blank">Palauta tyhjä asettelu</string>
     <string name="customized_symbols_page_reset_to_page_1">Palauta oletusasettelu 1</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Ladataan symboleja…</string>
     <string name="settings_keyeditor_hex_code">Heksadesimaalikoodi (esim. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Virheellinen merkkikoodi</string>
+    <string name="settings_keyeditor_hint">Napauta symbolia ja sitten näppäintä. Vaihda kahden näppäimen paikkaa napauttamalla niitä.</string>
+    <string name="settings_keyeditor_empty_key">Tyhjä näppäin</string>
+    <string name="settings_keyeditor_layout_reset">Asettelu palautettu</string>
+    <string name="settings_keyeditor_key_cleared">Näppäin tyhjennetty</string>
+    <string name="settings_keyeditor_symbol_deleted">Symboli poistettu</string>
+    <string name="settings_keyeditor_title_vkb">Näyttönäppäimistön symbolisivu</string>
+    <string name="settings_keyeditor_title_pkb">Fyysisen näppäimistön symbolisivu</string>
     <string name="settings_spellcheck_intro">BBKB-oikoluku tarjoaa kehittyneiden kielimallien avulla oikoluvun kaikissa sovelluksissa, jotka tukevat sitä</string>
     <string name="settings_spellcheck_enable_title">Ota BBKB:n oikoluku käyttöön</string>
     <string name="settings_spellcheck_enable_summary">Tunnistaa kirjoitusvirheet ja ehdottaa korjauksia</string>

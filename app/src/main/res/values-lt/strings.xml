@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibruoti, kai paspaudžiami klavišai</string>
     <string name="vibrate_on_keypress_summary">Vibruoti įrenginiu paspaudus klavišą</string>
     <string name="customize_slideboard_clear_keypad">Atkurti tuščią išdėstymą</string>
-    <string name="customize_slideboard_enable">Tinkinti skaičių klaviatūrą</string>
     <string name="customize_slideboard_reset_to_default">Atkurti numatytąjį išdėstymą</string>
     <string name="settings_slideboard_hub_summary">Skaičių klaviatūra, pusių sukeitimas ir greitosios frazės</string>
     <string name="settings_symbol_slideboard_link_summary">Tinkinti Slideboard skaičių klaviatūrą ir greitąsias frazes</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard nustatymai</string>
-    <string name="customize_symbol_page_title">Tinkinti išdėstymą</string>
     <string name="customized_symbol_page_add_button_description">Pridėti unikodo simbolį</string>
     <string name="customized_symbols_page_reset_to_blank">Atkurti tuščią išdėstymą</string>
     <string name="customized_symbols_page_reset_to_page_1">Atkurti numatytąjį išdėstymą 1</string>
@@ -1125,6 +1123,13 @@
     <string name="settings_keyeditor_loading">Įkeliami simboliai…</string>
     <string name="settings_keyeditor_hex_code">Šešioliktainis kodas (pvz., 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Netinkamas simbolio kodas</string>
+    <string name="settings_keyeditor_hint">Palieskite simbolį, tada klavišą. Palieskite du klavišus, kad juos sukeistumėte.</string>
+    <string name="settings_keyeditor_empty_key">Tuščias klavišas</string>
+    <string name="settings_keyeditor_layout_reset">Išdėstymas atkurtas</string>
+    <string name="settings_keyeditor_key_cleared">Klavišas išvalytas</string>
+    <string name="settings_keyeditor_symbol_deleted">Simbolis ištrintas</string>
+    <string name="settings_keyeditor_title_vkb">Ekrano klaviatūros simbolių puslapis</string>
+    <string name="settings_keyeditor_title_pkb">Fizinės klaviatūros simbolių puslapis</string>
     <string name="settings_spellcheck_intro">BBKB rašybos tikrintuvas naudoja pažangius kalbos modelius, kad teiktų rašybos tikrinimą visose programose, kurios jį palaiko</string>
     <string name="settings_spellcheck_enable_title">Įjungti BBKB rašybos tikrintuvą</string>
     <string name="settings_spellcheck_enable_summary">Aptinka rašybos klaidas ir siūlo pataisymus</string>

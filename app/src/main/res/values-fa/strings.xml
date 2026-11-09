@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">لرزش با فشار کلید</string>
     <string name="vibrate_on_keypress_summary">لرزش دستگاه هنگام فشردن کلید</string>
     <string name="customize_slideboard_clear_keypad">بازنشانی به چیدمان خالی</string>
-    <string name="customize_slideboard_enable">سفارشی‌سازی صفحه اعداد</string>
     <string name="customize_slideboard_reset_to_default">بازنشانی به چیدمان پیش‌فرض</string>
     <string name="settings_slideboard_hub_summary">صفحه اعداد، جابه‌جایی طرفین و عبارت‌های سریع</string>
     <string name="settings_symbol_slideboard_link_summary">سفارشی‌سازی صفحه اعداد و عبارت‌های سریع Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s، %2$s، %3$s…</string>
     <string name="settings_slideboard_settings_title">تنظیمات Slideboard</string>
-    <string name="customize_symbol_page_title">سفارشی‌سازی چیدمان</string>
     <string name="customized_symbol_page_add_button_description">افزودن نماد unicode</string>
     <string name="customized_symbols_page_reset_to_blank">بازنشانی به چیدمان خالی</string>
     <string name="customized_symbols_page_reset_to_page_1">بازنشانی به چیدمان پیش‌فرض 1</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">در حال بارگیری نمادها…</string>
     <string name="settings_keyeditor_hex_code">کد هگز (مثلاً 1F600)</string>
     <string name="settings_keyeditor_invalid_code">کد نویسه نامعتبر است</string>
+    <string name="settings_keyeditor_hint">روی یک نماد و سپس روی یک کلید ضربه بزنید. برای جابه‌جا کردن دو کلید، روی آن‌ها ضربه بزنید.</string>
+    <string name="settings_keyeditor_empty_key">کلید خالی</string>
+    <string name="settings_keyeditor_layout_reset">چیدمان بازنشانی شد</string>
+    <string name="settings_keyeditor_key_cleared">کلید پاک شد</string>
+    <string name="settings_keyeditor_symbol_deleted">نماد حذف شد</string>
+    <string name="settings_keyeditor_title_vkb">صفحه نمادهای صفحه کلید روی صفحه‌نمایش</string>
+    <string name="settings_keyeditor_title_pkb">صفحه نمادهای صفحه کلید فیزیکی</string>
     <string name="settings_spellcheck_intro">غلط‌گیر املایی BBKB از مدل‌های زبانی پیشرفته استفاده می‌کند تا غلط‌گیری املایی را در همه برنامه‌هایی که از آن پشتیبانی می‌کنند ارائه دهد</string>
     <string name="settings_spellcheck_enable_title">فعال‌کردن غلط‌گیر BBKB</string>
     <string name="settings_spellcheck_enable_summary">غلط‌های تایپی را تشخیص می‌دهد و اصلاحات پیشنهاد می‌کند</string>

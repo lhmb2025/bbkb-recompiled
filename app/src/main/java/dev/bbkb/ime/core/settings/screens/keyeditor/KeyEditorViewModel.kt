@@ -9,20 +9,26 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import dev.bbkb.ime.core.settings.data.CustomSymbolRepository
-import dev.bbkb.ime.core.shared.Logger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-private const val TAG = "KeyEditorViewModel"
+/** What the editor just did that can be undone; the screen shows it in a snackbar. */
+internal enum class EditorNotice { LAYOUT_RESET, KEY_CLEARED, SYMBOL_DELETED }
 
-/** Emoji offered on the [PaletteLoading.DEFERRED_SNAPSHOT] path. */
-private const val DEFERRED_EMOJI_CAP = 200
+/** One undoable edit; [serial] tells two of the same kind apart. */
+internal data class PendingUndo(val what: EditorNotice, val serial: Int)
 
 /**
  * State for one [KeyEditorSpec]: the layout being edited, the palette, and the tap state machine
  * that connects them.
  *
  * Every edit persists immediately through `spec.save`, which is also what invalidates
- * `KeyboardBuilder`'s keyboard cache — there is no separate "save" action and never was.
+ * `KeyboardBuilder`'s keyboard cache — there is no separate "save" action and never was. The
+ * three edits that can destroy work (a reset, clearing a key, deleting a custom symbol) keep what
+ * they replaced until the next edit, for [undo].
  */
 internal class KeyEditorViewModel(
     application: Application,
@@ -31,7 +37,7 @@ internal class KeyEditorViewModel(
 
     private val repository = CustomSymbolRepository(application)
 
-    /** The layout in *editor* order. `spec.load`/`spec.save` own the storage permutation. */
+    /** The layout in slot order. `spec.load`/`spec.save` own the storage order. */
     val layout = mutableStateListOf<String>()
 
     var selectedKeyIndex by mutableStateOf<Int?>(null)
@@ -45,56 +51,38 @@ internal class KeyEditorViewModel(
 
     val customSymbols = mutableStateListOf<String>()
 
-    // Every emoji, [PaletteLoading.PER_TAB] only. The lazy grid composes only the visible cells,
-    // so the whole list is handed over at once.
-    private var emojis by mutableStateOf<List<String>>(emptyList())
-
-    /** Observable marker: the palette re-reads once [initialize] has loaded the emoji. */
-    val emojiCount: Int get() = emojis.size
-
-    /** All nine categories, [PaletteLoading.DEFERRED_SNAPSHOT] only; empty until the load lands. */
-    var deferredCategories by mutableStateOf<List<List<String>>>(emptyList())
-
-    private var isInitialized = false
-
-    // ========================================================================
-    // Loading
-    // ========================================================================
-
-    fun initialize() {
-        if (isInitialized) return
-        layout.clear()
-        layout.addAll(spec.load(getApplication()))
-        refreshCustomSymbols()
-        if (spec.paletteLoading == PaletteLoading.PER_TAB) {
-            emojis = repository.loadCategorySymbols(EMOJI_TAB)
-        }
-        isInitialized = true
-        Logger.debug(TAG, "KeyEditorViewModel initialized for ${spec.key}, total emojis: ${emojis.size}")
-    }
-
     /**
-     * The blocking half of [PaletteLoading.DEFERRED_SNAPSHOT] — the whole Emojibase parse plus
-     * seven `getStringArray` reads. The caller runs this off the main thread and hands the result
-     * back through [deferredCategories].
+     * The palette's categories by tab index, empty until the load lands: the emoji category is
+     * the whole Emojibase parse when the keyboard has not run in this process yet, so all of it is
+     * read off the main thread. The Custom tab's entry stays empty; [customSymbols] supplies it.
      */
-    fun readAllCategories(): List<List<String>> = List(CATEGORY_TABS.size) { category ->
-        when (category) {
-            EMOJI_TAB -> repository.loadCategorySymbols(category).take(DEFERRED_EMOJI_CAP)
-            CUSTOM_TAB -> emptyList() // supplied by [customSymbols] instead
-            else -> repository.loadCategorySymbols(category)
+    var categories by mutableStateOf<List<List<String>>>(emptyList())
+        private set
+
+    /** The edit [undo] would take back, or null once anything else has been edited. */
+    var pendingUndo by mutableStateOf<PendingUndo?>(null)
+        private set
+
+    private var undoSerial = 0
+
+    private var undoLayout: List<String>? = null
+    private var undoCustomSymbols: List<String>? = null
+
+    init {
+        layout.addAll(spec.load(application))
+        refreshCustomSymbols()
+        viewModelScope.launch {
+            categories = withContext(Dispatchers.IO) {
+                List(CATEGORY_TABS.size) { category ->
+                    if (category == CUSTOM_TAB) emptyList() else repository.loadCategorySymbols(category)
+                }
+            }
         }
     }
 
     /** The palette contents for one tab, blanks removed. */
     fun symbolsFor(tab: Int): List<String> {
-        val raw = when {
-            tab == CUSTOM_TAB -> customSymbols
-            spec.paletteLoading == PaletteLoading.DEFERRED_SNAPSHOT ->
-                deferredCategories.getOrNull(tab).orEmpty()
-            tab == EMOJI_TAB -> emojis
-            else -> repository.loadCategorySymbols(tab)
-        }
+        val raw = if (tab == CUSTOM_TAB) customSymbols else categories.getOrNull(tab).orEmpty()
         return raw.filter { it.isNotEmpty() && it != EMPTY_SLOT }
     }
 
@@ -132,6 +120,7 @@ internal class KeyEditorViewModel(
 
     private fun assign(symbol: String, keyIndex: Int) {
         if (keyIndex !in layout.indices) return
+        forgetUndo()
         layout[keyIndex] = symbol
         selectedKeyIndex = null
         selectedSymbol = null
@@ -140,6 +129,7 @@ internal class KeyEditorViewModel(
 
     private fun swap(from: Int, to: Int) {
         if (from !in layout.indices || to !in layout.indices) return
+        forgetUndo()
         val held = layout[from]
         layout[from] = layout[to]
         layout[to] = held
@@ -150,6 +140,7 @@ internal class KeyEditorViewModel(
     fun clearSelectedKey() {
         val index = selectedKeyIndex ?: return
         if (index !in layout.indices) return
+        rememberLayout(EditorNotice.KEY_CLEARED)
         layout[index] = EMPTY_SLOT
         selectedKeyIndex = null
         persist()
@@ -157,10 +148,11 @@ internal class KeyEditorViewModel(
 
     /**
      * A preset replaces as much of the layout as it covers and never resizes it — `pkb_page_2` is
-     * 27 entries against 28 slots, and the odd slot out keeps whatever it held.
+     * shorter than the on-screen page, and a slot it does not reach keeps whatever it held.
      */
     fun applyReset(reset: Reset) {
         val replacement = reset.layout(getApplication(), layout.size)
+        rememberLayout(EditorNotice.LAYOUT_RESET)
         for (i in layout.indices) {
             if (i < replacement.size) layout[i] = replacement[i]
         }
@@ -196,9 +188,44 @@ internal class KeyEditorViewModel(
     }
 
     fun deleteCustomSymbol(symbol: String) {
+        forgetUndo()
+        undoCustomSymbols = customSymbols.toList()
+        pendingUndo = PendingUndo(EditorNotice.SYMBOL_DELETED, ++undoSerial)
         repository.removeCustomSymbol(symbol)
         refreshCustomSymbols()
         if (selectedSymbol == symbol) selectedSymbol = null
+    }
+
+    // ========================================================================
+    // Undo
+    // ========================================================================
+
+    private fun rememberLayout(what: EditorNotice) {
+        undoCustomSymbols = null
+        undoLayout = layout.toList()
+        pendingUndo = PendingUndo(what, ++undoSerial)
+    }
+
+    private fun forgetUndo() {
+        undoLayout = null
+        undoCustomSymbols = null
+        pendingUndo = null
+    }
+
+    /** Puts back what the last reset, clear or delete replaced, if nothing has been edited since. */
+    fun undo() {
+        undoLayout?.let { previous ->
+            for (i in layout.indices) {
+                if (i < previous.size) layout[i] = previous[i]
+            }
+            selectedKeyIndex = null
+            persist()
+        }
+        undoCustomSymbols?.let { previous ->
+            repository.replaceCustomSymbols(previous)
+            refreshCustomSymbols()
+        }
+        forgetUndo()
     }
 
     private fun persist() = spec.save(getApplication(), layout.toList())

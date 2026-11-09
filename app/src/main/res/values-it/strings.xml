@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibrazione</string>
     <string name="vibrate_on_keypress_summary">Fai vibrare il dispositivo alla pressione di un tasto</string>
     <string name="customize_slideboard_clear_keypad">Ripristina layout vuoto</string>
-    <string name="customize_slideboard_enable">Personalizza il tastierino numerico</string>
     <string name="customize_slideboard_reset_to_default">Ripristina layout predefinito</string>
     <string name="settings_slideboard_hub_summary">Tastierino numerico, inversione dei lati e frasi rapide</string>
     <string name="settings_symbol_slideboard_link_summary">Personalizza il tastierino numerico e le frasi rapide dello Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Impostazioni Slideboard</string>
-    <string name="customize_symbol_page_title">Personalizza layout</string>
     <string name="customized_symbol_page_add_button_description">Aggiungi simbolo Unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Ripristina layout vuoto</string>
     <string name="customized_symbols_page_reset_to_page_1">Ripristina layout predefinito 1</string>
@@ -1110,6 +1108,13 @@
     <string name="settings_keyeditor_loading">Caricamento dei simboli…</string>
     <string name="settings_keyeditor_hex_code">Codice esadecimale (ad es. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Codice carattere non valido</string>
+    <string name="settings_keyeditor_hint">Tocca un simbolo, poi un tasto. Tocca due tasti per scambiarli.</string>
+    <string name="settings_keyeditor_empty_key">Tasto vuoto</string>
+    <string name="settings_keyeditor_layout_reset">Layout ripristinato</string>
+    <string name="settings_keyeditor_key_cleared">Tasto cancellato</string>
+    <string name="settings_keyeditor_symbol_deleted">Simbolo eliminato</string>
+    <string name="settings_keyeditor_title_vkb">Pagina simboli su schermo</string>
+    <string name="settings_keyeditor_title_pkb">Pagina simboli della tastiera fisica</string>
     <string name="settings_spellcheck_intro">Il controllo ortografico di BBKB utilizza modelli linguistici avanzati per offrire il controllo ortografico in tutte le app che lo supportano</string>
     <string name="settings_spellcheck_enable_title">Attiva il controllo ortografico BBKB</string>
     <string name="settings_spellcheck_enable_summary">Rileva gli errori di battitura e suggerisce correzioni</string>

@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">สั่น</string>
     <string name="vibrate_on_keypress_summary">สั่นอุปกรณ์เมื่อกดปุ่ม</string>
     <string name="customize_slideboard_clear_keypad">รีเซ็ตไปเป็นเลย์เอาท์ว่าง</string>
-    <string name="customize_slideboard_enable">กำหนดค่าแป้นตัวเลข</string>
     <string name="customize_slideboard_reset_to_default">รีเซ็ตเป็นเลย์เอาท์เริ่มต้น</string>
     <string name="settings_slideboard_hub_summary">แป้นตัวเลข สลับด้าน และวลีด่วน</string>
     <string name="settings_symbol_slideboard_link_summary">กำหนดค่าแป้นตัวเลขและวลีด่วนของ Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s %2$s %3$s…</string>
     <string name="settings_slideboard_settings_title">การตั้งค่า Slideboard</string>
-    <string name="customize_symbol_page_title">ปรับแต่งเลย์เอาท์</string>
     <string name="customized_symbol_page_add_button_description">เพิ่มสัญลักษณ์ Unicode</string>
     <string name="customized_symbols_page_reset_to_blank">รีเซ็ตไปเป็นเลย์เอาท์ว่าง</string>
     <string name="customized_symbols_page_reset_to_page_1">รีเซ็ตเป็นเลย์เอาท์เริ่มต้น 1</string>
@@ -1080,6 +1078,13 @@
     <string name="settings_keyeditor_loading">กำลังโหลดสัญลักษณ์…</string>
     <string name="settings_keyeditor_hex_code">รหัสฐานสิบหก (เช่น 1F600)</string>
     <string name="settings_keyeditor_invalid_code">รหัสอักขระไม่ถูกต้อง</string>
+    <string name="settings_keyeditor_hint">แตะสัญลักษณ์ แล้วแตะปุ่ม แตะสองปุ่มเพื่อสลับกัน</string>
+    <string name="settings_keyeditor_empty_key">ปุ่มว่าง</string>
+    <string name="settings_keyeditor_layout_reset">รีเซ็ตเลย์เอาท์แล้ว</string>
+    <string name="settings_keyeditor_key_cleared">ล้างปุ่มแล้ว</string>
+    <string name="settings_keyeditor_symbol_deleted">ลบสัญลักษณ์แล้ว</string>
+    <string name="settings_keyeditor_title_vkb">หน้าสัญลักษณ์บนหน้าจอ</string>
+    <string name="settings_keyeditor_title_pkb">หน้าสัญลักษณ์แป้นพิมพ์จริง</string>
     <string name="settings_spellcheck_intro">เครื่องมือตรวจการสะกดของ BBKB ใช้โมเดลภาษาขั้นสูงเพื่อช่วยตรวจการสะกดในทุกแอปที่รองรับการตรวจการสะกด</string>
     <string name="settings_spellcheck_enable_title">เปิดเครื่องมือตรวจการสะกด BBKB</string>
     <string name="settings_spellcheck_enable_summary">ตรวจหาคำที่พิมพ์ผิดและแนะนำการแก้ไข</string>

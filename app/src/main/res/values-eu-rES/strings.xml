@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Egin dar-dar sakatzean</string>
     <string name="vibrate_on_keypress_summary">Egin dar-dar gailuak tekla bat sakatzean</string>
     <string name="customize_slideboard_clear_keypad">Berrezarri diseinu hutsera</string>
-    <string name="customize_slideboard_enable">Pertsonalizatu zenbaki-teklatua</string>
     <string name="customize_slideboard_reset_to_default">Berrezarri diseinu lehenetsira</string>
     <string name="settings_slideboard_hub_summary">Zenbaki-teklatua, aldeen trukea eta esaldi azkarrak</string>
     <string name="settings_symbol_slideboard_link_summary">Pertsonalizatu Slideboard-aren zenbaki-teklatua eta esaldi azkarrak</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-aren ezarpenak</string>
-    <string name="customize_symbol_page_title">Pertsonalizatu diseinua</string>
     <string name="customized_symbol_page_add_button_description">Gehitu Unicode ikurra</string>
     <string name="customized_symbols_page_reset_to_blank">Berrezarri diseinu hutsera</string>
     <string name="customized_symbols_page_reset_to_page_1">Berrezarri 1. diseinu lehenetsira</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Ikurrak kargatzen…</string>
     <string name="settings_keyeditor_hex_code">Kode hamaseitarra (adibidez, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Karaktere-kode baliogabea</string>
+    <string name="settings_keyeditor_hint">Sakatu ikur bat eta gero tekla bat. Sakatu bi tekla haiek trukatzeko.</string>
+    <string name="settings_keyeditor_empty_key">Tekla hutsa</string>
+    <string name="settings_keyeditor_layout_reset">Diseinua berrezarri da</string>
+    <string name="settings_keyeditor_key_cleared">Tekla garbitu da</string>
+    <string name="settings_keyeditor_symbol_deleted">Ikurra ezabatu da</string>
+    <string name="settings_keyeditor_title_vkb">Pantailako teklatuaren ikur-orria</string>
+    <string name="settings_keyeditor_title_pkb">Teklatu fisikoaren ikur-orria</string>
     <string name="settings_spellcheck_intro">BBKB zuzentzaile ortografikoak hizkuntza-eredu aurreratuak erabiltzen ditu zuzenketa ortografikoa eskaintzeko hura onartzen duten aplikazio guztietan</string>
     <string name="settings_spellcheck_enable_title">Gaitu BBKB zuzentzaile ortografikoa</string>
     <string name="settings_spellcheck_enable_summary">Akatsak hautematen ditu eta zuzenketak iradokitzen ditu</string>

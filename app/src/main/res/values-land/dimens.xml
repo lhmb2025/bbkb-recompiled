@@ -8,8 +8,6 @@
 
     <!-- Keyboard geometry -->
     <dimen name="config_default_keyboard_height">176dp</dimen>
-    <dimen name="config_symbol_page_height">176dp</dimen>
-    <dimen name="config_pkb_symbol_page_height">132dp</dimen>
 
     <!-- More keys popup -->
     <dimen name="config_more_keys_keyboard_key_height">48dp</dimen>

@@ -72,9 +72,16 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
     }
 
     public void updateKey(String str) {
+        Keyboard keyboard = getKeyboard();
+        if (keyboard != null) {
+            updateCurrencyKey(keyboard, str);
+        }
+    }
+
+    /** Puts the currency setting's symbol on {@code keyboard}'s currency key. */
+    public static void updateCurrencyKey(Keyboard keyboard, String str) {
         Key keyM6597a;
         char cCharAt;
-        Keyboard keyboard = getKeyboard();
         if (str.isEmpty() || (keyM6597a = keyboard.getKeyByOutputText("currencyExtendedKeyStyle")) == null || (cCharAt = str.charAt(0)) == keyM6597a.getCode()) {
             return;
         }
@@ -112,27 +119,44 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
         if (keyboard == null || stored == null || stored.size() != STORAGE_INDEX_FOR_POSITION.length) {
             return;
         }
-        List<Key> keys = new ArrayList<>(keyboard.getKeys());
-        if (keys.size() != stored.size()) {
-            return;
+        List<String> byPosition = new ArrayList<>(stored.size());
+        for (int storageIndex : STORAGE_INDEX_FOR_POSITION) {
+            byPosition.add(stored.get(storageIndex));
         }
+        applyKeysByPosition(keyboard, byPosition, currencyPlaceholders);
+    }
+
+    /** The pad's keys in reading order: 4 rows of 5. */
+    public static List<Key> keysByPosition(Keyboard keyboard) {
+        List<Key> keys = new ArrayList<>(keyboard.getKeys());
         keys.sort((a, b) -> a.getY() != b.getY()
                 ? Integer.compare(a.getY(), b.getY())
                 : Integer.compare(a.getX(), b.getX()));
+        return keys;
+    }
+
+    /**
+     * Puts {@code symbols} (reading order) on {@code keyboard}'s keys. The keyboard's own path,
+     * and the settings editor's preview, which draws the pad being edited.
+     */
+    public static void applyKeysByPosition(Keyboard keyboard, List<String> symbols, Set<String> currencyPlaceholders) {
+        List<Key> keys = keysByPosition(keyboard);
+        if (keys.size() != symbols.size()) {
+            return;
+        }
         for (int pos = 0; pos < keys.size(); pos++) {
-            String symbol = stored.get(STORAGE_INDEX_FOR_POSITION[pos]);
+            String symbol = symbols.get(pos);
             if (pos == CURRENCY_POSITION && currencyPlaceholders.contains(symbol)) {
                 continue;
             }
             Key key = keys.get(pos);
-            keyboard.replaceKey(key, createReplacementKey(symbol, key));
+            keyboard.replaceKey(key, createReplacementKey(keyboard, symbol, key));
         }
         keyboard.rebuildProximityGrid();
     }
 
-    private Key createReplacementKey(String str, Key key) {
-        Keyboard keyboard = getKeyboard();
-        return (keyboard == null || str.length() == 0) ? key : new Key(new MoreKeySpec(str, 0, str.codePointAt(0), str), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, str, 0, key.getBackgroundType(), key.getX(), key.getY(), key.getWidth() + keyboard.mHorizontalGap, key.getHeight() + keyboard.mVerticalGap, keyboard.mHorizontalGap, keyboard.mVerticalGap, key.getOutputText(), null, key.getKeyLabelSet(), key.getMoreKeysFlags(), key.getActionFlags(), key.getScanCode());
+    private static Key createReplacementKey(Keyboard keyboard, String str, Key key) {
+        return str.length() == 0 ? key : new Key(new MoreKeySpec(str, 0, str.codePointAt(0), str), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, str, 0, key.getBackgroundType(), key.getX(), key.getY(), key.getWidth() + keyboard.mHorizontalGap, key.getHeight() + keyboard.mVerticalGap, keyboard.mHorizontalGap, keyboard.mVerticalGap, key.getOutputText(), null, key.getKeyLabelSet(), key.getMoreKeysFlags(), key.getActionFlags(), key.getScanCode());
     }
 
     @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent

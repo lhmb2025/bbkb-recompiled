@@ -6,6 +6,7 @@ import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.Category
 import dev.bbkb.ime.core.settings.ui.Nav
 import dev.bbkb.ime.core.settings.ui.drawableIcon
+import dev.bbkb.ime.core.settings.ui.groupBreak
 import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
@@ -40,6 +41,7 @@ fun SymbolCustomizationScreen(
             summary = RowSummary.Res(R.string.settings_symbol_enable_customization_summary),
             modifier = Modifier.settingsSearchAnchor("symbol_customization"),
         ),
+        groupBreak(),
         Nav(
             title = R.string.settings_symbol_customize_page_title,
             summary = R.string.settings_symbol_customize_page_summary,
@@ -61,6 +63,7 @@ fun SymbolCustomizationScreen(
             summary = RowSummary.Res(R.string.settings_symbol_enable_customization_summary),
             visible = { it.hasPhysicalKeyboard },
         ),
+        groupBreak(visible = { it.hasPhysicalKeyboard }),
         Nav(
             title = R.string.settings_symbol_customize_page_title,
             summary = R.string.settings_symbol_customize_page_summary,

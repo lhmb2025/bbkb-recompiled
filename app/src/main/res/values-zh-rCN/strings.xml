@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">振动</string>
     <string name="vibrate_on_keypress_summary">按下按键时振动设备</string>
     <string name="customize_slideboard_clear_keypad">重置为空白布局</string>
-    <string name="customize_slideboard_enable">自定义数字键盘</string>
     <string name="customize_slideboard_reset_to_default">重置为默认布局</string>
     <string name="settings_slideboard_hub_summary">数字键盘、左右交换和快捷短语</string>
     <string name="settings_symbol_slideboard_link_summary">自定义 Slideboard 的数字键盘和快捷短语</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s、%2$s、%3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard 设置</string>
-    <string name="customize_symbol_page_title">自定义布局</string>
     <string name="customized_symbol_page_add_button_description">添加 Unicode 符号</string>
     <string name="customized_symbols_page_reset_to_blank">重置为空白布局</string>
     <string name="customized_symbols_page_reset_to_page_1">重置为默认布局 1</string>
@@ -1080,6 +1078,13 @@
     <string name="settings_keyeditor_loading">正在加载符号…</string>
     <string name="settings_keyeditor_hex_code">十六进制代码（例如 1F600）</string>
     <string name="settings_keyeditor_invalid_code">字符代码无效</string>
+    <string name="settings_keyeditor_hint">点按符号，再点按按键。点按两个按键即可互换。</string>
+    <string name="settings_keyeditor_empty_key">空白按键</string>
+    <string name="settings_keyeditor_layout_reset">已重置布局</string>
+    <string name="settings_keyeditor_key_cleared">已清除按键</string>
+    <string name="settings_keyeditor_symbol_deleted">已删除符号</string>
+    <string name="settings_keyeditor_title_vkb">屏幕键盘符号页面</string>
+    <string name="settings_keyeditor_title_pkb">实体键盘符号页面</string>
     <string name="settings_spellcheck_intro">BBKB 拼写检查工具使用先进的语言模型，在所有支持拼写检查的应用中提供拼写检查</string>
     <string name="settings_spellcheck_enable_title">启用 BBKB 拼写检查工具</string>
     <string name="settings_spellcheck_enable_summary">检测拼写错误并提供更正建议</string>

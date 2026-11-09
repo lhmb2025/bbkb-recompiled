@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Rung</string>
     <string name="vibrate_on_keypress_summary">Rung thiết bị khi nhấn phím</string>
     <string name="customize_slideboard_clear_keypad">Đặt lại thành bố cục trống</string>
-    <string name="customize_slideboard_enable">Tùy chỉnh bảng số</string>
     <string name="customize_slideboard_reset_to_default">Cài lại về bố cục mặc định</string>
     <string name="settings_slideboard_hub_summary">Bảng số, hoán đổi hai bên và cụm từ nhanh</string>
     <string name="settings_symbol_slideboard_link_summary">Tùy chỉnh bảng số và cụm từ nhanh của Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Cài đặt Slideboard</string>
-    <string name="customize_symbol_page_title">Tùy chỉnh bố cục</string>
     <string name="customized_symbol_page_add_button_description">Thêm biểu tượng unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Đặt lại thành bố cục trống</string>
     <string name="customized_symbols_page_reset_to_page_1">Cài lại về bố cục mặc định 1</string>
@@ -1080,6 +1078,13 @@
     <string name="settings_keyeditor_loading">Đang tải ký hiệu…</string>
     <string name="settings_keyeditor_hex_code">Mã thập lục phân (ví dụ: 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Mã ký tự không hợp lệ</string>
+    <string name="settings_keyeditor_hint">Nhấn vào một ký hiệu, sau đó nhấn vào một phím. Nhấn vào hai phím để hoán đổi chúng.</string>
+    <string name="settings_keyeditor_empty_key">Phím trống</string>
+    <string name="settings_keyeditor_layout_reset">Đã đặt lại bố cục</string>
+    <string name="settings_keyeditor_key_cleared">Đã xóa phím</string>
+    <string name="settings_keyeditor_symbol_deleted">Đã xóa ký hiệu</string>
+    <string name="settings_keyeditor_title_vkb">Trang ký hiệu trên màn hình</string>
+    <string name="settings_keyeditor_title_pkb">Trang ký hiệu bàn phím vật lý</string>
     <string name="settings_spellcheck_intro">Trình kiểm tra chính tả BBKB dùng các mô hình ngôn ngữ tiên tiến để cung cấp tính năng kiểm tra chính tả trên mọi ứng dụng hỗ trợ tính năng này</string>
     <string name="settings_spellcheck_enable_title">Bật trình kiểm tra chính tả BBKB</string>
     <string name="settings_spellcheck_enable_summary">Phát hiện lỗi đánh máy và đề xuất cách sửa</string>

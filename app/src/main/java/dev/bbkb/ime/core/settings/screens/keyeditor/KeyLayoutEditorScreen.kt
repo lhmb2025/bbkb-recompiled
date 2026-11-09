@@ -3,16 +3,12 @@ package dev.bbkb.ime.core.settings.screens.keyeditor
 import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,56 +18,77 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.PrimaryScrollableTabRow
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import dev.bbkb.ime.keyboard.KeyboardColorManager
 import dev.bbkb.ime.R
+import dev.bbkb.ime.core.locale.SubtypeManager
+import dev.bbkb.ime.core.settings.ui.LocalSettingsColors
 import dev.bbkb.ime.core.settings.ui.SettingsScaffold
+import dev.bbkb.ime.core.shared.Logger
+import dev.bbkb.ime.keyboard.KeyboardBuilder
+import dev.bbkb.ime.keyboard.KeyboardColorManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+
+/** The keyboard under the palette takes at most this share of the screen below the app bar. */
+private const val MAX_KEYBOARD_SHARE = 0.5f
 
 /**
  * The one tap-to-select / tap-to-swap key-layout editor, shared by the VKB symbol page, the PKB
  * symbol page and the slideboard numpad. A [KeyEditorSpec] supplies everything that differs.
  *
- * Layout, top to bottom: a nine-tab symbol palette, the palette grid itself (with an Add/Delete
- * bar on the Custom tab), and a mock keyboard built by walking `spec.rows`. Tap a palette symbol
- * then a key to assign it, tap two keys to swap them, use the app bar's trash to blank the
- * selected key, or the overflow to apply one of `spec.resets`. Every edit persists immediately.
+ * Layout, top to bottom: a nine-tab symbol palette, a line saying how to use it, and the board
+ * being edited, drawn by the keyboard's own code ([KeyEditorPreviewView]) in the keyboard's
+ * theme. Tap a palette symbol then a key to assign it, tap two keys to swap them, use the app
+ * bar's trash to blank the selected key (or delete the selected custom symbol), or the overflow
+ * to apply one of `spec.resets`. Every edit persists immediately; a reset, a clear and a delete
+ * can be undone from the snackbar.
  *
  * This is *not* the drag-reorder editor: `CustomizeMenuScreen` is a different interaction and
  * shares nothing useful with this one.
@@ -79,65 +96,58 @@ import kotlinx.coroutines.withContext
 @Composable
 internal fun KeyLayoutEditorScreen(spec: KeyEditorSpec, onBack: () -> Unit) {
     val context = LocalContext.current
-    // Settings can open before the IME has started in this process (after an update, say);
-    // the palette would still be all-transparent and the editor would draw blank.
-    remember { KeyboardColorManager.ensureInitialized(context) }
+    // Settings can open before the keyboard has started in this process (after an update, say):
+    // its colours and its current language are then not set up yet, and the board needs both.
+    remember {
+        KeyboardColorManager.ensureInitialized(context)
+        SubtypeManager.ensureInitialized(context.applicationContext)
+    }
     val viewModel: KeyEditorViewModel = viewModel(
         key = spec.key,
         factory = KeyEditorViewModelFactory(context.applicationContext as Application, spec),
     )
 
-    LaunchedEffect(Unit) { viewModel.initialize() }
-    if (spec.paletteLoading == PaletteLoading.DEFERRED_SNAPSHOT) {
-        LaunchedEffect(Unit) {
-            viewModel.deferredCategories = withContext(Dispatchers.IO) { viewModel.readAllCategories() }
-        }
-    }
-
-    val palette = KeyPalette(
-        background = Color(KeyboardColorManager.backgroundColor),
-        key = Color(KeyboardColorManager.keyColor),
-        selected = Color(KeyboardColorManager.keyColorPressed),
-        text = Color(KeyboardColorManager.textColor),
-        hint = Color(KeyboardColorManager.hintColor),
-    )
-
     var showAddDialog by remember { mutableStateOf(false) }
+    val snackbars = remember { SnackbarHostState() }
+    UndoSnackbar(viewModel, snackbars)
 
     SettingsScaffold(
         title = stringResource(spec.title),
         onNavigateBack = onBack,
         actions = { EditorTopBarActions(spec, viewModel) },
+        snackbarHost = { SnackbarHost(snackbars) },
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            ScrollableTabRow(
-                selectedTabIndex = viewModel.currentTabIndex,
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.primary,
-                edgePadding = 0.dp
-            ) {
-                CATEGORY_TABS.forEachIndexed { index, titleRes ->
-                    Tab(
-                        selected = viewModel.currentTabIndex == index,
-                        onClick = { viewModel.selectTab(index) },
-                        text = { Text(stringResource(titleRes)) }
-                    )
+        BoxWithConstraints(modifier = Modifier.fillMaxSize().padding(padding)) {
+            val maxKeyboardHeight = maxHeight * MAX_KEYBOARD_SHARE
+            Column(modifier = Modifier.fillMaxSize()) {
+                PrimaryScrollableTabRow(
+                    selectedTabIndex = viewModel.currentTabIndex,
+                    containerColor = LocalSettingsColors.current.page,
+                    edgePadding = 0.dp,
+                ) {
+                    CATEGORY_TABS.forEachIndexed { index, titleRes ->
+                        Tab(
+                            selected = viewModel.currentTabIndex == index,
+                            onClick = { viewModel.selectTab(index) },
+                            text = { Text(stringResource(titleRes)) },
+                            unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
-            }
 
-            Box(modifier = Modifier.weight(1f)) {
-                SymbolPalette(spec, viewModel, palette)
-                if (viewModel.currentTabIndex == CUSTOM_TAB) {
-                    CustomSymbolBar(viewModel, onAdd = { showAddDialog = true })
+                Box(modifier = Modifier.weight(1f)) {
+                    SymbolPalette(viewModel, onAdd = { showAddDialog = true })
                 }
-            }
 
-            MockKeyboard(spec, viewModel, palette)
+                Text(
+                    text = stringResource(R.string.settings_keyeditor_hint),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 12.dp),
+                )
+
+                KeyboardPreview(spec, viewModel, maxKeyboardHeight)
+            }
         }
 
         if (showAddDialog) {
@@ -149,23 +159,42 @@ internal fun KeyLayoutEditorScreen(spec: KeyEditorSpec, onBack: () -> Unit) {
     }
 }
 
-/** The live keyboard colours, read once per composition and threaded through the mock keyboard. */
-private class KeyPalette(
-    val background: Color,
-    val key: Color,
-    val selected: Color,
-    val text: Color,
-    val hint: Color,
-)
+/** Offers Undo for the edit the ViewModel is holding one for, until something else is edited. */
+@Composable
+private fun UndoSnackbar(viewModel: KeyEditorViewModel, snackbars: SnackbarHostState) {
+    val pending = viewModel.pendingUndo
+    val message = when (pending?.what) {
+        EditorNotice.LAYOUT_RESET -> stringResource(R.string.settings_keyeditor_layout_reset)
+        EditorNotice.KEY_CLEARED -> stringResource(R.string.settings_keyeditor_key_cleared)
+        EditorNotice.SYMBOL_DELETED -> stringResource(R.string.settings_keyeditor_symbol_deleted)
+        null -> null
+    }
+    val undo = stringResource(R.string.ckb_action_undo)
+    // Keyed on the edit: another edit cancels this, which takes the stale snackbar down with it.
+    LaunchedEffect(pending) {
+        if (message != null) {
+            val result = snackbars.showSnackbar(message, actionLabel = undo, duration = SnackbarDuration.Long)
+            if (result == SnackbarResult.ActionPerformed) viewModel.undo()
+        }
+    }
+}
 
-/** The top bar's action icons: the trash for the selected key and the resets overflow. */
+/** The top bar's action icons: the trash for what is selected, and the resets overflow. */
 @Composable
 private fun RowScope.EditorTopBarActions(spec: KeyEditorSpec, viewModel: KeyEditorViewModel) {
     var showMenu by remember { mutableStateOf(false) }
-    // The trash appears only while a key is selected.
+    val selectedCustomSymbol = viewModel.selectedSymbol?.takeIf {
+        viewModel.currentTabIndex == CUSTOM_TAB && it in viewModel.customSymbols
+    }
+    // One trash, for whichever thing is selected: a key (blank it) or a custom symbol (delete it).
+    // A key and a palette symbol are never selected together; the second tap assigns.
     if (viewModel.selectedKeyIndex != null) {
         IconButton(onClick = { viewModel.clearSelectedKey() }) {
             Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_delete), stringResource(R.string.settings_keyeditor_clear_key))
+        }
+    } else if (selectedCustomSymbol != null) {
+        IconButton(onClick = { viewModel.deleteCustomSymbol(selectedCustomSymbol) }) {
+            Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_delete), stringResource(R.string.clipboard_menu_delete))
         }
     }
     // Boxed with its button so the menu opens at the overflow icon rather than at the start of
@@ -186,19 +215,15 @@ private fun RowScope.EditorTopBarActions(spec: KeyEditorSpec, viewModel: KeyEdit
 }
 
 @Composable
-private fun SymbolPalette(spec: KeyEditorSpec, viewModel: KeyEditorViewModel, palette: KeyPalette) {
-    // remember-ed: on the per-tab path this is `resources.getStringArray` plus two new lists, and
-    // every key tap recomposes.
-    val symbols = remember(
-        viewModel.currentTabIndex,
-        viewModel.customSymbols.size,
-        viewModel.emojiCount,
-        viewModel.deferredCategories,
-    ) { viewModel.symbolsFor(viewModel.currentTabIndex) }
+private fun SymbolPalette(viewModel: KeyEditorViewModel, onAdd: () -> Unit) {
+    val tab = viewModel.currentTabIndex
+    val isCustomTab = tab == CUSTOM_TAB
+    // remember-ed: every key tap recomposes, and this filters the whole category.
+    val symbols = remember(tab, viewModel.categories, viewModel.customSymbols.toList()) {
+        viewModel.symbolsFor(tab)
+    }
 
-    val deferredAndStillLoading = spec.paletteLoading == PaletteLoading.DEFERRED_SNAPSHOT &&
-        symbols.isEmpty() && viewModel.currentTabIndex != CUSTOM_TAB
-    if (deferredAndStillLoading) {
+    if (!isCustomTab && viewModel.categories.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(stringResource(R.string.settings_keyeditor_loading), color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
@@ -208,73 +233,60 @@ private fun SymbolPalette(spec: KeyEditorSpec, viewModel: KeyEditorViewModel, pa
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 48.dp),
         contentPadding = PaddingValues(8.dp),
-        state = rememberLazyGridState(),
         modifier = Modifier.fillMaxSize()
     ) {
         items(symbols) { symbol ->
             SymbolGridItem(
                 symbol = symbol,
                 isSelected = viewModel.selectedSymbol == symbol,
-                textColor = palette.text,
-                selectedColor = palette.selected,
                 onClick = { viewModel.onSymbolTapped(symbol) }
             )
         }
-    }
-}
-
-@Composable
-private fun BoxScope.CustomSymbolBar(
-    viewModel: KeyEditorViewModel,
-    onAdd: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .align(Alignment.BottomCenter)
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        IconButton(onClick = onAdd) {
-            Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_add), stringResource(R.string.add))
-        }
-        IconButton(
-            onClick = { viewModel.selectedSymbol?.let { viewModel.deleteCustomSymbol(it) } },
-            enabled = viewModel.selectedSymbol != null
-        ) {
-            Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_delete), stringResource(R.string.clipboard_menu_delete))
+        if (isCustomTab) {
+            item { AddSymbolCell(onAdd) }
         }
     }
 }
 
+private val PaletteCellShape = RoundedCornerShape(12.dp)
+
+/** A palette symbol: a 48dp target, drawn in Settings' own colours (it sits on the Settings page). */
 @Composable
-private fun SymbolGridItem(
-    symbol: String,
-    isSelected: Boolean,
-    textColor: Color,
-    selectedColor: Color,
-    onClick: () -> Unit,
-) {
+private fun SymbolGridItem(symbol: String, isSelected: Boolean, onClick: () -> Unit) {
+    val colors = MaterialTheme.colorScheme
     Box(
         modifier = Modifier
             .size(48.dp)
+            .selectable(selected = isSelected, role = Role.Button, onClick = onClick)
             .padding(2.dp)
-            .clip(RoundedCornerShape(4.dp))
-            .background(if (isSelected) selectedColor else Color.Transparent)
-            .clickable(onClick = onClick)
-            // Vestigial drag hook: it does nothing today, but it does consume the long-press
-            // drag, so taking it out would change how the palette scrolls after a long press.
-            .pointerInput(Unit) {
-                detectDragGesturesAfterLongPress(
-                    onDragStart = { },
-                    onDrag = { _, _ -> },
-                    onDragEnd = { }
-                )
-            },
+            .clip(PaletteCellShape)
+            .background(if (isSelected) colors.secondaryContainer else Color.Transparent),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = symbol, color = textColor, fontSize = 20.sp)
+        Text(
+            text = symbol,
+            color = if (isSelected) colors.onSecondaryContainer else colors.onSurface,
+            style = MaterialTheme.typography.titleLarge,
+        )
+    }
+}
+
+/** The Custom tab's last cell: add a symbol by its Unicode code. */
+@Composable
+private fun AddSymbolCell(onAdd: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .size(48.dp)
+            .clickable(role = Role.Button, onClick = onAdd)
+            .padding(2.dp)
+            .border(1.dp, MaterialTheme.colorScheme.outline, PaletteCellShape),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            ImageVector.vectorResource(R.drawable.ic_settings_m_add),
+            stringResource(R.string.customized_symbol_page_add_button_description),
+            tint = MaterialTheme.colorScheme.primary,
+        )
     }
 }
 
@@ -282,35 +294,43 @@ private fun SymbolGridItem(
 private fun AddSymbolDialog(onDismiss: () -> Unit, onAdd: (String) -> Boolean) {
     var text by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(Unit) { focusRequester.requestFocus() }
+    val submit = { if (onAdd(text)) onDismiss() else isError = true }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.customized_symbol_page_add_button_description)) },
         text = {
-            Column {
-                OutlinedTextField(
-                    value = text,
-                    onValueChange = {
-                        // Hex digits only, up to a six-digit codepoint.
-                        if (it.length <= 6 && it.all { c -> c.isDigit() || c in 'A'..'F' || c in 'a'..'f' }) {
-                            text = it.uppercase()
-                        }
-                    },
-                    label = { Text(stringResource(R.string.settings_keyeditor_hex_code)) },
-                    isError = isError,
-                    singleLine = true
-                )
-                if (isError) {
-                    Text(
-                        stringResource(R.string.settings_keyeditor_invalid_code),
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            }
+            OutlinedTextField(
+                value = text,
+                onValueChange = {
+                    // Hex digits only, up to a six-digit codepoint.
+                    if (it.length <= 6 && it.all { c -> c.isDigit() || c in 'A'..'F' || c in 'a'..'f' }) {
+                        text = it.uppercase()
+                        isError = false
+                    }
+                },
+                label = { Text(stringResource(R.string.settings_keyeditor_hex_code)) },
+                isError = isError,
+                supportingText = if (isError) {
+                    { Text(stringResource(R.string.settings_keyeditor_invalid_code)) }
+                } else {
+                    null
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Characters,
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Ascii,
+                    imeAction = ImeAction.Done,
+                ),
+                keyboardActions = KeyboardActions(onDone = { if (text.isNotEmpty()) submit() }),
+                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+            )
         },
         confirmButton = {
-            Button(onClick = { if (onAdd(text)) onDismiss() else isError = true }) {
+            TextButton(enabled = text.isNotEmpty(), onClick = submit) {
                 Text(stringResource(R.string.add))
             }
         },
@@ -321,114 +341,70 @@ private fun AddSymbolDialog(onDismiss: () -> Unit, onAdd: (String) -> Boolean) {
 }
 
 // ============================================================================
-// The mock keyboard
+// The board being edited
 // ============================================================================
 
+/**
+ * The board under the palette: the keyboard's own view drawing the keyboard's own layout, with
+ * the ViewModel's layout on its editable keys. The number pad takes its half of the strip, on the
+ * side the user has it; the other half is the keyboard's background.
+ */
 @Composable
-private fun MockKeyboard(spec: KeyEditorSpec, viewModel: KeyEditorViewModel, palette: KeyPalette) {
+private fun KeyboardPreview(spec: KeyEditorSpec, viewModel: KeyEditorViewModel, maxHeight: Dp) {
     val context = LocalContext.current
+    val density = LocalDensity.current
+    val themed = remember(context) { EditorKeyboard.themedContext(context) }
     val half = remember { spec.half(context) }
+    val heightPx = remember(maxHeight) {
+        EditorKeyboard.heightPx(context, spec.board, with(density) { maxHeight.roundToPx() })
+    }
+    val selectionColor = MaterialTheme.colorScheme.primary.toArgb()
+    val emptyKey = stringResource(R.string.settings_keyeditor_empty_key)
 
-    Row(
+    // The preview may have drawn a layout nothing has saved (a fresh page shows the defaults) on
+    // a keyboard the keyboard's own cache also holds; drop the cache on the way out.
+    DisposableEffect(Unit) {
+        onDispose { KeyboardBuilder.onKeyboardThemeChanged() }
+    }
+
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxWidth()
-            .height(dimensionResource(spec.height))
-            .background(palette.background)
+            .height(with(density) { heightPx.toDp() })
+            .background(Color(KeyboardColorManager.backgroundColor))
     ) {
-        if (half == null) {
-            Box(modifier = Modifier.weight(1f).fillMaxHeight().padding(4.dp)) {
-                KeyGrid(spec, viewModel, palette)
-            }
-        } else {
-            // The slideboard splits the strip in two and draws the pad on the user's chosen side.
-            repeat(2) { side ->
-                Box(modifier = Modifier.weight(1f).fillMaxHeight().padding(4.dp)) {
-                    if (side == half) KeyGrid(spec, viewModel, palette)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun KeyGrid(spec: KeyEditorSpec, viewModel: KeyEditorViewModel, palette: KeyPalette) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(spec.style.keySpacing)
-    ) {
-        spec.rows.forEach { row ->
-            Row(
-                modifier = Modifier.weight(1f).fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(spec.style.keySpacing)
-            ) {
-                row.forEach { slot ->
-                    when (slot) {
-                        is Slot.Gap -> Spacer(Modifier.weight(slot.weight))
-                        is Slot.Fixed -> FixedKey(slot, spec.style, palette)
-                        is Slot.Key -> EditableKey(slot, viewModel, spec.style, palette)
-                    }
-                }
+        val widthPx = constraints.maxWidth
+        // Parsing the layout XML is the slow part; it runs off the main thread, as the palette does.
+        val board by produceState<EditorKeyboard?>(null, widthPx, heightPx) {
+            value = withContext(Dispatchers.Default) {
+                // A keyboard that cannot be built (no layout for this language, say) leaves the
+                // strip empty; it must not take Settings down.
+                runCatching { EditorKeyboard.build(themed, spec.board, widthPx, heightPx) }
+                    .onFailure { Logger.error("KeyLayoutEditor", "Could not build the ${spec.board} board: $it") }
+                    .getOrNull()
             }
         }
-    }
-}
+        val current = board ?: return@BoxWithConstraints
+        // Read here so an edit or a selection recomposes this and runs `update` below.
+        val layout = viewModel.layout.toList()
+        val selected = viewModel.selectedKeyIndex ?: -1
 
-@Composable
-private fun RowScope.EditableKey(
-    slot: Slot.Key,
-    viewModel: KeyEditorViewModel,
-    style: KeyStyle,
-    palette: KeyPalette,
-) {
-    val stored = viewModel.layout.getOrNull(slot.index) ?: ""
-    val isSelected = viewModel.selectedKeyIndex == slot.index
-
-    Box(
-        modifier = Modifier
-            .weight(slot.weight)
-            .padding(style.keyPadding)
-            .fillMaxSize()
-            .clip(RoundedCornerShape(4.dp))
-            .background(if (isSelected) palette.selected else palette.key)
-            .border(
-                width = if (isSelected) style.selectedBorder else style.unselectedBorder,
-                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
-                shape = RoundedCornerShape(4.dp)
+        Row(modifier = Modifier.fillMaxSize()) {
+            if (half == 1) Box(Modifier.weight(1f).fillMaxHeight())
+            AndroidView(
+                factory = {
+                    val view = if (spec.board == PreviewBoard.NUMPAD) NumpadPreviewView(themed) else KeyEditorPreviewView(themed)
+                    view.onSlotTapped = { slot -> viewModel.onKeyTapped(slot) }
+                    view
+                },
+                update = { view ->
+                    current.show(layout)
+                    view.bind(current)
+                    view.selectedSlot = selected
+                    view.selectionColor = selectionColor
+                    view.emptyKeyDescription = emptyKey
+                },
             )
-            .clickable { viewModel.onKeyTapped(slot.index) },
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            // Both blank markers render as nothing.
-            text = if (stored == EMPTY_SLOT || stored == "null") "" else stored,
-            color = palette.text,
-            fontSize = style.fontSize,
-            fontWeight = FontWeight.Medium,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-private fun RowScope.FixedKey(slot: Slot.Fixed, style: KeyStyle, palette: KeyPalette) {
-    Box(
-        modifier = Modifier
-            .weight(slot.weight)
-            .padding(style.keyPadding)
-            .fillMaxSize()
-            .clip(RoundedCornerShape(4.dp))
-            .background(palette.hint.copy(alpha = 0.6f)),
-        contentAlignment = Alignment.Center
-    ) {
-        if (slot.icon != null) {
-            Icon(
-                painter = painterResource(id = slot.icon),
-                contentDescription = null,
-                tint = palette.text,
-                modifier = Modifier.size(24.dp)
-            )
-        } else if (slot.text != null) {
-            Text(text = slot.text, color = palette.text, fontSize = 14.sp)
         }
     }
 }

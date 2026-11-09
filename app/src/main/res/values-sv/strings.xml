@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibration</string>
     <string name="vibrate_on_keypress_summary">Vibrera enheten när en knapp trycks ned</string>
     <string name="customize_slideboard_clear_keypad">Återställ till en tom layout</string>
-    <string name="customize_slideboard_enable">Anpassa siffersatsen</string>
     <string name="customize_slideboard_reset_to_default">Återställ till standardlayout</string>
     <string name="settings_slideboard_hub_summary">Siffersats, byt sida och snabbfraser</string>
     <string name="settings_symbol_slideboard_link_summary">Anpassa Slideboards siffersats och snabbfraser</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-inställningar</string>
-    <string name="customize_symbol_page_title">Anpassa layout</string>
     <string name="customized_symbol_page_add_button_description">Lägg till unicode-symbol</string>
     <string name="customized_symbols_page_reset_to_blank">Återställ till en tom layout</string>
     <string name="customized_symbols_page_reset_to_page_1">Återställ till standardlayout 1</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Läser in symboler…</string>
     <string name="settings_keyeditor_hex_code">Hexkod (t.ex. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Ogiltig teckenkod</string>
+    <string name="settings_keyeditor_hint">Tryck på en symbol och sedan på en tangent. Tryck på två tangenter för att byta plats på dem.</string>
+    <string name="settings_keyeditor_empty_key">Tom tangent</string>
+    <string name="settings_keyeditor_layout_reset">Layouten har återställts</string>
+    <string name="settings_keyeditor_key_cleared">Tangenten har rensats</string>
+    <string name="settings_keyeditor_symbol_deleted">Symbolen har raderats</string>
+    <string name="settings_keyeditor_title_vkb">Symbolsida för skärmtangentbord</string>
+    <string name="settings_keyeditor_title_pkb">Symbolsida för fysiskt tangentbord</string>
     <string name="settings_spellcheck_intro">BBKB:s stavningskontroll använder avancerade språkmodeller för att ge stavningskontroll i alla appar som har stöd för det</string>
     <string name="settings_spellcheck_enable_title">Aktivera BBKB-stavningskontroll</string>
     <string name="settings_spellcheck_enable_summary">Upptäcker stavfel och föreslår korrigeringar</string>

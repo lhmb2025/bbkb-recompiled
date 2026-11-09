@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">진동</string>
     <string name="vibrate_on_keypress_summary">키를 누를 때 기기를 진동합니다</string>
     <string name="customize_slideboard_clear_keypad">빈 레이아웃으로 재설정</string>
-    <string name="customize_slideboard_enable">숫자 패드 사용자 지정</string>
     <string name="customize_slideboard_reset_to_default">기본 레이아웃으로 재설정</string>
     <string name="settings_slideboard_hub_summary">숫자 패드, 좌우 바꾸기, 빠른 문구</string>
     <string name="settings_symbol_slideboard_link_summary">Slideboard 숫자 패드와 빠른 문구 사용자 지정</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard 설정</string>
-    <string name="customize_symbol_page_title">레이아웃 사용자 지정</string>
     <string name="customized_symbol_page_add_button_description">유니코드 기호 추가</string>
     <string name="customized_symbols_page_reset_to_blank">빈 레이아웃으로 재설정</string>
     <string name="customized_symbols_page_reset_to_page_1">기본 레이아웃 1로 재설정</string>
@@ -1080,6 +1078,13 @@
     <string name="settings_keyeditor_loading">기호를 불러오는 중…</string>
     <string name="settings_keyeditor_hex_code">16진수 코드(예: 1F600)</string>
     <string name="settings_keyeditor_invalid_code">잘못된 문자 코드</string>
+    <string name="settings_keyeditor_hint">기호를 탭한 다음 키를 탭하세요. 두 키를 탭하면 서로 바뀝니다.</string>
+    <string name="settings_keyeditor_empty_key">빈 키</string>
+    <string name="settings_keyeditor_layout_reset">레이아웃 재설정됨</string>
+    <string name="settings_keyeditor_key_cleared">키 지워짐</string>
+    <string name="settings_keyeditor_symbol_deleted">기호 삭제됨</string>
+    <string name="settings_keyeditor_title_vkb">화면 키보드 기호 페이지</string>
+    <string name="settings_keyeditor_title_pkb">키패드 기호 페이지</string>
     <string name="settings_spellcheck_intro">BBKB 맞춤법 검사기는 고급 언어 모델을 사용하여 맞춤법 검사를 지원하는 모든 앱에서 맞춤법 검사를 제공합니다</string>
     <string name="settings_spellcheck_enable_title">BBKB 맞춤법 검사기 사용</string>
     <string name="settings_spellcheck_enable_summary">오타를 감지하고 수정 사항을 제안합니다</string>

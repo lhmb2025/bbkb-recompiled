@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Rezgés</string>
     <string name="vibrate_on_keypress_summary">A készülék rezegjen billentyű lenyomásakor</string>
     <string name="customize_slideboard_clear_keypad">Visszaállítás üres elrendezésre</string>
-    <string name="customize_slideboard_enable">A számbillentyűzet testreszabása</string>
     <string name="customize_slideboard_reset_to_default">Visszaállítás az alapértelmezett elrendezésre</string>
     <string name="settings_slideboard_hub_summary">Számbillentyűzet, oldalak felcserélése és gyors kifejezések</string>
     <string name="settings_symbol_slideboard_link_summary">A Slideboard számbillentyűzetének és gyors kifejezéseinek testreszabása</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">A Slideboard beállításai</string>
-    <string name="customize_symbol_page_title">Elrendezés testreszabása</string>
     <string name="customized_symbol_page_add_button_description">Unicode-szimbólum hozzáadása</string>
     <string name="customized_symbols_page_reset_to_blank">Visszaállítás üres elrendezésre</string>
     <string name="customized_symbols_page_reset_to_page_1">Visszaállítás 1. alapértelmezett elrendezésre</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Szimbólumok betöltése…</string>
     <string name="settings_keyeditor_hex_code">Hexadecimális kód (pl. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Érvénytelen karakterkód</string>
+    <string name="settings_keyeditor_hint">Koppintson egy szimbólumra, majd egy billentyűre. Két billentyű felcseréléséhez koppintson rájuk.</string>
+    <string name="settings_keyeditor_empty_key">Üres billentyű</string>
+    <string name="settings_keyeditor_layout_reset">Elrendezés visszaállítva</string>
+    <string name="settings_keyeditor_key_cleared">Billentyű törölve</string>
+    <string name="settings_keyeditor_symbol_deleted">Szimbólum törölve</string>
+    <string name="settings_keyeditor_title_vkb">Képernyő-billentyűzet szimbólumoldala</string>
+    <string name="settings_keyeditor_title_pkb">Fizikai billentyűzet szimbólumoldala</string>
     <string name="settings_spellcheck_intro">A BBKB helyesírás-ellenőrzője fejlett nyelvi modellekkel biztosít helyesírás-ellenőrzést minden olyan alkalmazásban, amely ezt támogatja</string>
     <string name="settings_spellcheck_enable_title">BBKB helyesírás-ellenőrző bekapcsolása</string>
     <string name="settings_spellcheck_enable_summary">Felismeri az elírásokat, és javításokat javasol</string>

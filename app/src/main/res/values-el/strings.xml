@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Δόνηση</string>
     <string name="vibrate_on_keypress_summary">Δόνηση της συσκευής με το πάτημα πλήκτρου</string>
     <string name="customize_slideboard_clear_keypad">Επαναφορά σε κενή διάταξη</string>
-    <string name="customize_slideboard_enable">Προσαρμογή του αριθμητικού πληκτρολογίου</string>
     <string name="customize_slideboard_reset_to_default">Επαναφορά στην προεπιλεγμένη διάταξη</string>
     <string name="settings_slideboard_hub_summary">Αριθμητικό πληκτρολόγιο, εναλλαγή πλευρών και γρήγορες φράσεις</string>
     <string name="settings_symbol_slideboard_link_summary">Προσαρμογή του αριθμητικού πληκτρολογίου και των γρήγορων φράσεων του Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Ρυθμίσεις Slideboard</string>
-    <string name="customize_symbol_page_title">Προσαρμογή διάταξης</string>
     <string name="customized_symbol_page_add_button_description">Προσθήκη συμβόλου unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Επαναφορά σε κενή διάταξη</string>
     <string name="customized_symbols_page_reset_to_page_1">Επαναφορά στην προεπιλεγμένη διάταξη 1</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Φόρτωση συμβόλων…</string>
     <string name="settings_keyeditor_hex_code">Δεκαεξαδικός κωδικός (π.χ. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Μη έγκυρος κωδικός χαρακτήρα</string>
+    <string name="settings_keyeditor_hint">Πατήστε ένα σύμβολο και μετά ένα πλήκτρο. Πατήστε δύο πλήκτρα για να τα αντιμεταθέσετε.</string>
+    <string name="settings_keyeditor_empty_key">Κενό πλήκτρο</string>
+    <string name="settings_keyeditor_layout_reset">Έγινε επαναφορά της διάταξης</string>
+    <string name="settings_keyeditor_key_cleared">Το πλήκτρο απαλείφθηκε</string>
+    <string name="settings_keyeditor_symbol_deleted">Το σύμβολο διαγράφηκε</string>
+    <string name="settings_keyeditor_title_vkb">Σελίδα συμβόλων πληκτρολογίου οθόνης</string>
+    <string name="settings_keyeditor_title_pkb">Σελίδα συμβόλων φυσικού πληκτρολογίου</string>
     <string name="settings_spellcheck_intro">Ο ορθογραφικός έλεγχος του BBKB χρησιμοποιεί προηγμένα γλωσσικά μοντέλα για να παρέχει ορθογραφικό έλεγχο σε όλες τις εφαρμογές που τον υποστηρίζουν</string>
     <string name="settings_spellcheck_enable_title">Ενεργοποίηση ορθογραφικού ελέγχου BBKB</string>
     <string name="settings_spellcheck_enable_summary">Εντοπίζει τυπογραφικά λάθη και προτείνει διορθώσεις</string>

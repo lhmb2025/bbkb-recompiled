@@ -674,7 +674,6 @@
     <public type="dimen" name="config_more_suggestions_key_horizontal_padding" id="0x7f07008c" />
     <public type="dimen" name="config_more_suggestions_modal_tolerance" id="0x7f07008d" />
     <public type="dimen" name="config_more_suggestions_row_height" id="0x7f07008e" />
-    <public type="dimen" name="config_pkb_symbol_page_height" id="0x7f070096" />
     <public type="dimen" name="config_sliding_key_input_preview_width" id="0x7f070097" />
     <public type="dimen" name="config_suggestion_animate_distance" id="0x7f070098" />
     <public type="dimen" name="config_suggestion_half_hamburger_icon_width" id="0x7f070099" />
@@ -683,7 +682,6 @@
     <public type="dimen" name="config_suggestion_text_size" id="0x7f07009c" />
     <public type="dimen" name="config_suggestions_strip_height" id="0x7f07009f" />
     <public type="dimen" name="config_suggestions_strip_horizontal_margin" id="0x7f0700a0" />
-    <public type="dimen" name="config_symbol_page_height" id="0x7f0700b7" />
     <public type="dimen" name="config_touch_noise_threshold_distance" id="0x7f0700bc" />
     <public type="dimen" name="design_appbar_elevation" id="0x7f0700c2" />
     <public type="dimen" name="design_bottom_navigation_active_item_max_width" id="0x7f0700c3" />
@@ -1499,9 +1497,7 @@
     <public type="string" name="control_key_setting_off" id="0x7f120073" />
     <public type="string" name="control_key_setting_right_shift" id="0x7f120074" />
     <public type="string" name="customize_slideboard_clear_keypad" id="0x7f12007c" />
-    <public type="string" name="customize_slideboard_enable" id="0x7f12007d" />
     <public type="string" name="customize_slideboard_reset_to_default" id="0x7f12007e" />
-    <public type="string" name="customize_symbol_page_title" id="0x7f120086" />
     <public type="string" name="customized_symbol_page_add_button_description" id="0x7f120087" />
     <public type="string" name="customized_symbols_page_reset_to_blank" id="0x7f120091" />
     <public type="string" name="customized_symbols_page_reset_to_page_1" id="0x7f120092" />

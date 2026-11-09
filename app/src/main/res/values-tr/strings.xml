@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Titreşim</string>
     <string name="vibrate_on_keypress_summary">Bir tuşa basıldığında cihazı titret</string>
     <string name="customize_slideboard_clear_keypad">Boş yerleşime sıfırla</string>
-    <string name="customize_slideboard_enable">Numara tuşlarını özelleştir</string>
     <string name="customize_slideboard_reset_to_default">Varsayılan düzene sıfırla</string>
     <string name="settings_slideboard_hub_summary">Numara tuşları, tarafları değiştirme ve hızlı ifadeler</string>
     <string name="settings_symbol_slideboard_link_summary">Slideboard numara tuşlarını ve hızlı ifadeleri özelleştir</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard ayarları</string>
-    <string name="customize_symbol_page_title">Yerleşimi özelleştir</string>
     <string name="customized_symbol_page_add_button_description">Unicode sembol ekle</string>
     <string name="customized_symbols_page_reset_to_blank">Boş yerleşime sıfırla</string>
     <string name="customized_symbols_page_reset_to_page_1">Varsayılan yerleşim 1\'e sıfırla</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Simgeler yükleniyor…</string>
     <string name="settings_keyeditor_hex_code">Onaltılık kod (ör. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Geçersiz karakter kodu</string>
+    <string name="settings_keyeditor_hint">Bir sembole, ardından bir tuşa dokunun. Yerlerini değiştirmek için iki tuşa dokunun.</string>
+    <string name="settings_keyeditor_empty_key">Boş tuş</string>
+    <string name="settings_keyeditor_layout_reset">Düzen sıfırlandı</string>
+    <string name="settings_keyeditor_key_cleared">Tuş temizlendi</string>
+    <string name="settings_keyeditor_symbol_deleted">Sembol silindi</string>
+    <string name="settings_keyeditor_title_vkb">Ekran sembol sayfası</string>
+    <string name="settings_keyeditor_title_pkb">Tuş takımı sembol sayfası</string>
     <string name="settings_spellcheck_intro">BBKB yazım denetleyicisi, yazım denetimini destekleyen tüm uygulamalarda yazım denetimi sağlamak için gelişmiş dil modelleri kullanır</string>
     <string name="settings_spellcheck_enable_title">BBKB yazım denetleyicisini etkinleştir</string>
     <string name="settings_spellcheck_enable_summary">Yazım hatalarını tespit eder ve düzeltme önerir</string>

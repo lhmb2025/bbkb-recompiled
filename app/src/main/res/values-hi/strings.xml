@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">कंपन</string>
     <string name="vibrate_on_keypress_summary">कुंजी दबाने पर डिवाइस को कंपित करें</string>
     <string name="customize_slideboard_clear_keypad">रिक्त लेआउट पर रीसेट करें</string>
-    <string name="customize_slideboard_enable">नंबर पैड को कस्टमाइज करें</string>
     <string name="customize_slideboard_reset_to_default">डिफ़ॉल्ट लेआउट पर रीसेट करें</string>
     <string name="settings_slideboard_hub_summary">नंबर पैड, पक्ष बदलना और त्वरित वाक्यांश</string>
     <string name="settings_symbol_slideboard_link_summary">Slideboard का नंबर पैड और त्वरित वाक्यांश कस्टमाइज़ करें</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard सेटिंग्स</string>
-    <string name="customize_symbol_page_title">लेआउट को कस्टमाइज़ करें</string>
     <string name="customized_symbol_page_add_button_description">युनिकोड प्रतीक जोड़ें</string>
     <string name="customized_symbols_page_reset_to_blank">रिक्त लेआउट पर रीसेट करें</string>
     <string name="customized_symbols_page_reset_to_page_1">डिफ़ॉल्ट लेआउट 1 पर रीसेट करें</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">प्रतीक लोड हो रहे हैं…</string>
     <string name="settings_keyeditor_hex_code">हेक्स कोड (जैसे, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">अमान्य वर्ण कोड</string>
+    <string name="settings_keyeditor_hint">किसी प्रतीक पर, फिर किसी कुंजी पर टैप करें। दो कुंजियों की अदला-बदली करने के लिए उन पर टैप करें।</string>
+    <string name="settings_keyeditor_empty_key">खाली कुंजी</string>
+    <string name="settings_keyeditor_layout_reset">लेआउट रीसेट किया गया</string>
+    <string name="settings_keyeditor_key_cleared">कुंजी साफ़ की गई</string>
+    <string name="settings_keyeditor_symbol_deleted">प्रतीक हटाया गया</string>
+    <string name="settings_keyeditor_title_vkb">ऑन-स्क्रीन प्रतीक पेज</string>
+    <string name="settings_keyeditor_title_pkb">कीपैड प्रतीक पेज</string>
     <string name="settings_spellcheck_intro">BBKB वर्तनी परीक्षक बेहतर भाषा मॉडल का इस्तेमाल करके उन सभी ऐप में वर्तनी जांच देता है जिनमें यह सुविधा है</string>
     <string name="settings_spellcheck_enable_title">BBKB वर्तनी परीक्षक चालू करें</string>
     <string name="settings_spellcheck_enable_summary">टाइपिंग की गलतियां पकड़ता है और सुधार सुझाता है</string>

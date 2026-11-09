@@ -71,13 +71,17 @@ public class NumericSubpanelController implements SimplifiedKeyboardView.onKeyEv
         this.customSymbols = settingsValues.customSlideboardSymbols;
         this.currencySymbol = settingsValues.currencySymbol;
         this.keyboardView.updateKey(settingsValues.currencySymbol);
-        this.keyboardView.applyCustomKeys(this.customSymbols, currencyPlaceholders(settingsValues));
+        this.keyboardView.applyCustomKeys(this.customSymbols, currencyPlaceholders(settingsValues.currencySymbol));
     }
 
-    private static Set<String> currencyPlaceholders(SettingsValues settingsValues) {
+    /**
+     * What the currency slot of a customised pad may hold and still mean "the currency key":
+     * the shipped "$", the currency setting's symbol, or the phone locale's own.
+     */
+    public static Set<String> currencyPlaceholders(String currencySymbol) {
         Set<String> placeholders = new HashSet<>();
         placeholders.add("$"); // the shipped default in the editor
-        placeholders.add(settingsValues.currencySymbol);
+        placeholders.add(currencySymbol);
         try {
             placeholders.add(Currency.getInstance(Locale.getDefault()).getSymbol());
         } catch (IllegalArgumentException e) {

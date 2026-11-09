@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">விசையழுத்தின்போது அதிர்வுரு</string>
     <string name="vibrate_on_keypress_summary">விசையை அழுத்தும்போது சாதனத்தை அதிரச்செய்</string>
     <string name="customize_slideboard_clear_keypad">வெற்றுத் தளவமைப்பிற்கு மீட்டமை</string>
-    <string name="customize_slideboard_enable">எண் பேடைத் தனிப்பயனாக்கு</string>
     <string name="customize_slideboard_reset_to_default">இயல்புநிலைத் தளவமைப்பிற்கு மீட்டமை</string>
     <string name="settings_slideboard_hub_summary">எண் பேடு, பக்கங்களை இடமாற்றல் மற்றும் விரைவு சொற்றொடர்கள்</string>
     <string name="settings_symbol_slideboard_link_summary">Slideboard எண் பேடு மற்றும் விரைவு சொற்றொடர்களைத் தனிப்பயனாக்கு</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard அமைப்புகள்</string>
-    <string name="customize_symbol_page_title">தளவமைப்பைத் தனிப்பயனாக்கு</string>
     <string name="customized_symbol_page_add_button_description">யூனிகோடு குறியீட்டைச் சேர்</string>
     <string name="customized_symbols_page_reset_to_blank">வெற்றுத் தளவமைப்பிற்கு மீட்டமை</string>
     <string name="customized_symbols_page_reset_to_page_1">இயல்புநிலைத் தளவமைப்பு 1க்கு மீட்டமை</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">குறியீடுகளை ஏற்றுகிறது…</string>
     <string name="settings_keyeditor_hex_code">ஹெக்ஸ் குறியீடு (எ.கா. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">தவறான எழுத்துக் குறியீடு</string>
+    <string name="settings_keyeditor_hint">ஒரு குறியீட்டைத் தட்டி, பிறகு ஒரு விசையைத் தட்டவும். இரண்டு விசைகளை இடம் மாற்ற அவற்றைத் தட்டவும்.</string>
+    <string name="settings_keyeditor_empty_key">வெற்று விசை</string>
+    <string name="settings_keyeditor_layout_reset">தளவமைப்பு மீட்டமைக்கப்பட்டது</string>
+    <string name="settings_keyeditor_key_cleared">விசை அழிக்கப்பட்டது</string>
+    <string name="settings_keyeditor_symbol_deleted">குறியீடு நீக்கப்பட்டது</string>
+    <string name="settings_keyeditor_title_vkb">திரைமேல் குறியீட்டுப் பக்கம்</string>
+    <string name="settings_keyeditor_title_pkb">கீபேட் குறியீட்டுப் பக்கம்</string>
     <string name="settings_spellcheck_intro">எழுத்துப்பிழை சரிபார்ப்பை ஆதரிக்கும் எல்லா ஆப்ஸிலும் எழுத்துப்பிழைகளைச் சரிபார்க்க BBKB எழுத்துப்பிழை சரிபார்ப்பான் மேம்பட்ட மொழி மாதிரிகளைப் பயன்படுத்துகிறது</string>
     <string name="settings_spellcheck_enable_title">BBKB எழுத்துப்பிழை சரிபார்ப்பை இயக்கு</string>
     <string name="settings_spellcheck_enable_summary">தட்டச்சுப் பிழைகளைக் கண்டறிந்து திருத்தங்களைப் பரிந்துரைக்கிறது</string>

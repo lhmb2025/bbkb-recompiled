@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Вібр. при натисканні клавіш</string>
     <string name="vibrate_on_keypress_summary">Вібрація пристрою при натисканні клавіші</string>
     <string name="customize_slideboard_clear_keypad">Скинути до порожньої розкладки</string>
-    <string name="customize_slideboard_enable">Налаштувати цифрову панель</string>
     <string name="customize_slideboard_reset_to_default">Скинути до стандартної розкладки</string>
     <string name="settings_slideboard_hub_summary">Цифрова панель, зміна сторін і швидкі фрази</string>
     <string name="settings_symbol_slideboard_link_summary">Налаштувати цифрову панель і швидкі фрази Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Налаштування Slideboard</string>
-    <string name="customize_symbol_page_title">Налаштувати розкладку</string>
     <string name="customized_symbol_page_add_button_description">Додати символ Юнікоду</string>
     <string name="customized_symbols_page_reset_to_blank">Скинути до порожньої розкладки</string>
     <string name="customized_symbols_page_reset_to_page_1">Скинути до стандартної розкладки 1</string>
@@ -1125,6 +1123,13 @@
     <string name="settings_keyeditor_loading">Завантаження символів…</string>
     <string name="settings_keyeditor_hex_code">Шістнадцятковий код (наприклад, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Недійсний код символу</string>
+    <string name="settings_keyeditor_hint">Торкніться символу, а потім клавіші. Торкніться двох клавіш, щоб поміняти їх місцями.</string>
+    <string name="settings_keyeditor_empty_key">Порожня клавіша</string>
+    <string name="settings_keyeditor_layout_reset">Розкладку скинуто</string>
+    <string name="settings_keyeditor_key_cleared">Клавішу очищено</string>
+    <string name="settings_keyeditor_symbol_deleted">Символ видалено</string>
+    <string name="settings_keyeditor_title_vkb">Сторінка символів екранної клавіатури</string>
+    <string name="settings_keyeditor_title_pkb">Сторінка символів фізичної клавіатури</string>
     <string name="settings_spellcheck_intro">Засіб перевірки орфографії BBKB використовує сучасні мовні моделі, щоб перевіряти правопис у всіх застосунках, що це підтримують</string>
     <string name="settings_spellcheck_enable_title">Увімкнути перевірку орфографії BBKB</string>
     <string name="settings_spellcheck_enable_summary">Виявляє помилки й пропонує виправлення</string>

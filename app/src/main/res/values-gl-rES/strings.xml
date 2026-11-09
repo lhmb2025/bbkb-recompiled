@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibrar ao tocar as teclas</string>
     <string name="vibrate_on_keypress_summary">Facer vibrar o dispositivo ao premer unha tecla</string>
     <string name="customize_slideboard_clear_keypad">Restablecer o deseño baleiro</string>
-    <string name="customize_slideboard_enable">Personalizar o teclado numérico</string>
     <string name="customize_slideboard_reset_to_default">Restablecer o deseño predeterminado</string>
     <string name="settings_slideboard_hub_summary">Teclado numérico, intercambio de lados e frases rápidas</string>
     <string name="settings_symbol_slideboard_link_summary">Personaliza o teclado numérico e as frases rápidas do Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Configuración do Slideboard</string>
-    <string name="customize_symbol_page_title">Personalizar o deseño</string>
     <string name="customized_symbol_page_add_button_description">Engadir un símbolo Unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Restablecer o deseño baleiro</string>
     <string name="customized_symbols_page_reset_to_page_1">Restablecer o deseño predeterminado 1</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Cargando símbolos…</string>
     <string name="settings_keyeditor_hex_code">Código hexadecimal (p. ex. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Código de carácter non válido</string>
+    <string name="settings_keyeditor_hint">Toca un símbolo e despois unha tecla. Toca dúas teclas para intercambialas.</string>
+    <string name="settings_keyeditor_empty_key">Tecla baleira</string>
+    <string name="settings_keyeditor_layout_reset">Restableceuse o deseño</string>
+    <string name="settings_keyeditor_key_cleared">Borrouse a tecla</string>
+    <string name="settings_keyeditor_symbol_deleted">Eliminouse o símbolo</string>
+    <string name="settings_keyeditor_title_vkb">Páxina de símbolos en pantalla</string>
+    <string name="settings_keyeditor_title_pkb">Páxina de símbolos do teclado físico</string>
     <string name="settings_spellcheck_intro">O corrector ortográfico de BBKB usa modelos de linguaxe avanzados para ofrecer corrección ortográfica en todas as aplicacións que a admiten</string>
     <string name="settings_spellcheck_enable_title">Activar o corrector ortográfico de BBKB</string>
     <string name="settings_spellcheck_enable_summary">Detecta erros tipográficos e suxire correccións</string>

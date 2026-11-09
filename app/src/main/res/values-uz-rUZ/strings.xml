@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Tugma bosilganda tebranish</string>
     <string name="vibrate_on_keypress_summary">Tugma bosilganda qurilmani tebratish</string>
     <string name="customize_slideboard_clear_keypad">Bo‘sh joylashuvga qaytarish</string>
-    <string name="customize_slideboard_enable">Raqam panelini moslash</string>
     <string name="customize_slideboard_reset_to_default">Standart joylashuvga qaytarish</string>
     <string name="settings_slideboard_hub_summary">Raqam paneli, tomonlarni almashtirish va tezkor iboralar</string>
     <string name="settings_symbol_slideboard_link_summary">Slideboard raqam paneli va tezkor iboralarini moslash</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard sozlamalari</string>
-    <string name="customize_symbol_page_title">Joylashuvni moslash</string>
     <string name="customized_symbol_page_add_button_description">Unicode belgisini qo‘shish</string>
     <string name="customized_symbols_page_reset_to_blank">Bo‘sh joylashuvga qaytarish</string>
     <string name="customized_symbols_page_reset_to_page_1">1-standart joylashuvga qaytarish</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Belgilar yuklanmoqda…</string>
     <string name="settings_keyeditor_hex_code">Hex kod (masalan, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Belgi kodi yaroqsiz</string>
+    <string name="settings_keyeditor_hint">Belgiga, so‘ng tugmaga bosing. Ikki tugmani almashtirish uchun ikkalasiga bosing.</string>
+    <string name="settings_keyeditor_empty_key">Bo‘sh tugma</string>
+    <string name="settings_keyeditor_layout_reset">Joylashuv qaytarildi</string>
+    <string name="settings_keyeditor_key_cleared">Tugma tozalandi</string>
+    <string name="settings_keyeditor_symbol_deleted">Belgi o‘chirildi</string>
+    <string name="settings_keyeditor_title_vkb">Ekrandagi belgilar sahifasi</string>
+    <string name="settings_keyeditor_title_pkb">Jismoniy klaviatura belgilar sahifasi</string>
     <string name="settings_spellcheck_intro">BBKB imlo tekshirgichi ilg‘or til modellaridan foydalanib, imlo tekshiruvini qo‘llab-quvvatlaydigan barcha ilovalarda imlo tekshiruvini taqdim etadi</string>
     <string name="settings_spellcheck_enable_title">BBKB imlo tekshirgichini yoqish</string>
     <string name="settings_spellcheck_enable_summary">Xatolarni aniqlaydi va tuzatishlarni taklif qiladi</string>

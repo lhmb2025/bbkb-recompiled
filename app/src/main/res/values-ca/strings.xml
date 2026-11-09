@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibració</string>
     <string name="vibrate_on_keypress_summary">Fes vibrar el dispositiu en prémer una tecla</string>
     <string name="customize_slideboard_clear_keypad">Restableix a una disposició buida</string>
-    <string name="customize_slideboard_enable">Personalitza el teclat numèric</string>
     <string name="customize_slideboard_reset_to_default">Restableix a la disposició per defecte</string>
     <string name="settings_slideboard_hub_summary">Teclat numèric, intercanvi de costats i frases ràpides</string>
     <string name="settings_symbol_slideboard_link_summary">Personalitza el teclat numèric i les frases ràpides del Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Configuració del Slideboard</string>
-    <string name="customize_symbol_page_title">Personalitza la disposició</string>
     <string name="customized_symbol_page_add_button_description">Afegeix un símbol Unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Restableix a una disposició buida</string>
     <string name="customized_symbols_page_reset_to_page_1">Restableix a la disposició per defecte 1</string>
@@ -1110,6 +1108,13 @@
     <string name="settings_keyeditor_loading">S\'estan carregant els símbols…</string>
     <string name="settings_keyeditor_hex_code">Codi hexadecimal (p. ex. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Codi de caràcter no vàlid</string>
+    <string name="settings_keyeditor_hint">Toca un símbol i després una tecla. Toca dues tecles per intercanviar-les.</string>
+    <string name="settings_keyeditor_empty_key">Tecla buida</string>
+    <string name="settings_keyeditor_layout_reset">S\'ha restablert la disposició</string>
+    <string name="settings_keyeditor_key_cleared">S\'ha esborrat la tecla</string>
+    <string name="settings_keyeditor_symbol_deleted">S\'ha suprimit el símbol</string>
+    <string name="settings_keyeditor_title_vkb">Pàgina de símbols en pantalla</string>
+    <string name="settings_keyeditor_title_pkb">Pàgina de símbols del teclat físic</string>
     <string name="settings_spellcheck_intro">El corrector ortogràfic de BBKB utilitza models de llengua avançats per oferir correcció ortogràfica a totes les aplicacions que l\'admeten</string>
     <string name="settings_spellcheck_enable_title">Activa el corrector ortogràfic de BBKB</string>
     <string name="settings_spellcheck_enable_summary">Detecta errades tipogràfiques i suggereix correccions</string>

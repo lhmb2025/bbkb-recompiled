@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">কীপ্রেস এর সময় কম্পন</string>
     <string name="vibrate_on_keypress_summary">কী চাপলে ডিভাইস কাঁপান</string>
     <string name="customize_slideboard_clear_keypad">ফাঁকা লেআউটে রিসেট করুন</string>
-    <string name="customize_slideboard_enable">নম্বর প্যাড কাস্টমাইজ করুন</string>
     <string name="customize_slideboard_reset_to_default">ডিফল্ট লেআউটে রিসেট করুন</string>
     <string name="settings_slideboard_hub_summary">নম্বর প্যাড, দিক অদলবদল ও দ্রুত বাক্যাংশ</string>
     <string name="settings_symbol_slideboard_link_summary">Slideboard-এর নম্বর প্যাড ও দ্রুত বাক্যাংশ কাস্টমাইজ করুন</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard সেটিংস</string>
-    <string name="customize_symbol_page_title">লেআউট কাস্টমাইজ করুন</string>
     <string name="customized_symbol_page_add_button_description">ইউনিকোড প্রতীক জুড়ুন</string>
     <string name="customized_symbols_page_reset_to_blank">ফাঁকা লেআউটে রিসেট করুন</string>
     <string name="customized_symbols_page_reset_to_page_1">ডিফল্ট লেআউট ১ এ রিসেট করুন</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">প্রতীক লোড হচ্ছে…</string>
     <string name="settings_keyeditor_hex_code">হেক্স কোড (যেমন, 1F600)</string>
     <string name="settings_keyeditor_invalid_code">অক্ষর কোড সঠিক নয়</string>
+    <string name="settings_keyeditor_hint">একটি প্রতীকে, তারপর একটি কী-তে ট্যাপ করুন। দুটি কী অদলবদল করতে সেগুলিতে ট্যাপ করুন।</string>
+    <string name="settings_keyeditor_empty_key">খালি কী</string>
+    <string name="settings_keyeditor_layout_reset">লেআউট রিসেট হয়েছে</string>
+    <string name="settings_keyeditor_key_cleared">কী মুছে ফেলা হয়েছে</string>
+    <string name="settings_keyeditor_symbol_deleted">প্রতীক মুছে ফেলা হয়েছে</string>
+    <string name="settings_keyeditor_title_vkb">অন-স্ক্রিন প্রতীক পৃষ্ঠা</string>
+    <string name="settings_keyeditor_title_pkb">কীপ্যাড প্রতীক পৃষ্ঠা</string>
     <string name="settings_spellcheck_intro">BBKB বানান পরীক্ষক উন্নত ভাষা মডেল ব্যবহার করে বানান পরীক্ষা সমর্থন করে এমন সব অ্যাপে বানান পরীক্ষা দেয়</string>
     <string name="settings_spellcheck_enable_title">BBKB বানান পরীক্ষক চালু করুন</string>
     <string name="settings_spellcheck_enable_summary">টাইপের ভুল ধরে ও সংশোধন প্রস্তাব করে</string>

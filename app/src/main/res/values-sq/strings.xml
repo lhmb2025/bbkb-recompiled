@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Dridhja</string>
     <string name="vibrate_on_keypress_summary">Dridhe pajisjen kur shtypet një tast</string>
     <string name="customize_slideboard_clear_keypad">Rivendos te paraqitja bosh</string>
-    <string name="customize_slideboard_enable">Përshtat tastierën numerike</string>
     <string name="customize_slideboard_reset_to_default">Rivendos te paraqitja e parazgjedhur</string>
     <string name="settings_slideboard_hub_summary">Tastiera numerike, ndërrimi i anëve dhe frazat e shpejta</string>
     <string name="settings_symbol_slideboard_link_summary">Përshtat tastierën numerike dhe frazat e shpejta të Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Cilësimet e Slideboard</string>
-    <string name="customize_symbol_page_title">Përshtat paraqitjen</string>
     <string name="customized_symbol_page_add_button_description">Shto simbol Unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Rivendos te paraqitja bosh</string>
     <string name="customized_symbols_page_reset_to_page_1">Rivendos te paraqitja e parazgjedhur 1</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Po ngarkohen simbolet…</string>
     <string name="settings_keyeditor_hex_code">Kodi heksadecimal (p.sh. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Kod karakteri i pavlefshëm</string>
+    <string name="settings_keyeditor_hint">Trokit një simbol, pastaj një tast. Trokit dy taste për t\'i ndërruar.</string>
+    <string name="settings_keyeditor_empty_key">Tast bosh</string>
+    <string name="settings_keyeditor_layout_reset">Paraqitja u rivendos</string>
+    <string name="settings_keyeditor_key_cleared">Tasti u pastrua</string>
+    <string name="settings_keyeditor_symbol_deleted">Simboli u fshi</string>
+    <string name="settings_keyeditor_title_vkb">Faqja e simboleve në ekran</string>
+    <string name="settings_keyeditor_title_pkb">Faqja e simboleve të tastierës fizike</string>
     <string name="settings_spellcheck_intro">Kontrolluesi drejtshkrimor i BBKB përdor modele të avancuara gjuhësore për të ofruar kontroll drejtshkrimor në të gjitha aplikacionet që e mbështesin</string>
     <string name="settings_spellcheck_enable_title">Aktivizo kontrolluesin drejtshkrimor BBKB</string>
     <string name="settings_spellcheck_enable_summary">Zbulon gabimet e shtypit dhe sugjeron korrigjime</string>

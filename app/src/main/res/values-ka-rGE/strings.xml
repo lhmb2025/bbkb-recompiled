@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">ვიბრაცია კლავიშზე დაჭერისას</string>
     <string name="vibrate_on_keypress_summary">მოწყობილობის ვიბრაცია კლავიშზე დაჭერისას</string>
     <string name="customize_slideboard_clear_keypad">ცარიელი განლაგების აღდგენა</string>
-    <string name="customize_slideboard_enable">ციფრული პანელის მორგება</string>
     <string name="customize_slideboard_reset_to_default">ნაგულისხმევი განლაგების აღდგენა</string>
     <string name="settings_slideboard_hub_summary">ციფრული პანელი, მხარეების შეცვლა და სწრაფი ფრაზები</string>
     <string name="settings_symbol_slideboard_link_summary">Slideboard-ის ციფრული პანელისა და სწრაფი ფრაზების მორგება</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-ის პარამეტრები</string>
-    <string name="customize_symbol_page_title">განლაგების მორგება</string>
     <string name="customized_symbol_page_add_button_description">Unicode სიმბოლოს დამატება</string>
     <string name="customized_symbols_page_reset_to_blank">ცარიელი განლაგების აღდგენა</string>
     <string name="customized_symbols_page_reset_to_page_1">ნაგულისხმევი განლაგება 1-ის აღდგენა</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">სიმბოლოები იტვირთება…</string>
     <string name="settings_keyeditor_hex_code">თექვსმეტობითი კოდი (მაგ., 1F600)</string>
     <string name="settings_keyeditor_invalid_code">სიმბოლოს არასწორი კოდი</string>
+    <string name="settings_keyeditor_hint">შეეხეთ სიმბოლოს, შემდეგ კლავიშს. შეეხეთ ორ კლავიშს მათი ადგილების გასაცვლელად.</string>
+    <string name="settings_keyeditor_empty_key">ცარიელი კლავიში</string>
+    <string name="settings_keyeditor_layout_reset">განლაგება აღდგა</string>
+    <string name="settings_keyeditor_key_cleared">კლავიში გასუფთავდა</string>
+    <string name="settings_keyeditor_symbol_deleted">სიმბოლო წაიშალა</string>
+    <string name="settings_keyeditor_title_vkb">ეკრანული კლავიატურის სიმბოლოების გვერდი</string>
+    <string name="settings_keyeditor_title_pkb">ფიზიკური კლავიატურის სიმბოლოების გვერდი</string>
     <string name="settings_spellcheck_intro">BBKB-ის მართლწერის შემმოწმებელი იყენებს მოწინავე ენობრივ მოდელებს, რათა შეამოწმოს მართლწერა ყველა აპში, რომელიც ამას უჭერს მხარს</string>
     <string name="settings_spellcheck_enable_title">BBKB-ის მართლწერის შემმოწმებლის ჩართვა</string>
     <string name="settings_spellcheck_enable_summary">აღმოაჩენს შეცდომებს და გთავაზობთ შესწორებებს</string>

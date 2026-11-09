@@ -1,14 +1,8 @@
 package dev.bbkb.ime.core.settings.screens.keyeditor
 
 import android.content.Context
-import androidx.annotation.DimenRes
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.data.CustomSymbolRepository
 import dev.bbkb.ime.core.settings.util.SettingsManager
@@ -40,74 +34,6 @@ internal val CATEGORY_TABS = listOf(
     R.string.symbol_list_category_custom_title,
 )
 
-/** One cell of the mock keyboard drawn under the palette. */
-internal sealed interface Slot {
-    val weight: Float
-
-    /** An editable slot; [index] addresses the layout list. */
-    data class Key(val index: Int, override val weight: Float = 1f) : Slot
-
-    /** A key the editor draws but cannot change (space, enter, the page toggle…). */
-    data class Fixed(
-        val text: String? = null,
-        @DrawableRes val icon: Int? = null,
-        override val weight: Float = 1f,
-    ) : Slot
-
-    /** Empty space, used for the half-key insets on the VKB's second row. */
-    data class Gap(override val weight: Float) : Slot
-}
-
-/** Per-editor mock-keyboard metrics. The two editors were drawn to different numbers. */
-@Immutable
-internal data class KeyStyle(
-    /** Inset around each key. The symbol pages space keys this way; the numpad does not. */
-    val keyPadding: Dp,
-    /** Gap between rows and between keys in a row. The numpad spaces keys this way. */
-    val keySpacing: Dp,
-    val fontSize: TextUnit,
-    val selectedBorder: Dp,
-    val unselectedBorder: Dp,
-)
-
-/**
- * The symbol pages: a 1dp border is always reserved, so selecting a key tints it rather than
- * nudging its neighbours.
- */
-internal val SymbolPageKeyStyle = KeyStyle(
-    keyPadding = 1.dp,
-    keySpacing = 0.dp,
-    fontSize = 16.sp,
-    selectedBorder = 1.dp,
-    unselectedBorder = 1.dp,
-)
-
-/** The numpad: wider gaps, larger glyphs, and a border that appears only on selection. */
-internal val NumpadKeyStyle = KeyStyle(
-    keyPadding = 0.dp,
-    keySpacing = 4.dp,
-    fontSize = 18.sp,
-    selectedBorder = 2.dp,
-    unselectedBorder = 0.dp,
-)
-
-/** How an editor's palette gets its nine category lists. */
-internal enum class PaletteLoading {
-    /**
-     * Resolved per tab as it is shown, on the composition thread, and the emoji category arrives
-     * a page at a time as the grid is scrolled.
-     */
-    PER_TAB,
-
-    /**
-     * All nine categories snapshotted once on `Dispatchers.IO` — `getCategories` runs the whole
-     * Emojibase parse plus seven `getStringArray` reads, and doing that inside composition janked
-     * this screen's first frame. Emoji are capped rather than paged, and until the snapshot lands
-     * the palette shows a "Loading symbols…" placeholder.
-     */
-    DEFERRED_SNAPSHOT,
-}
-
 /** One entry of the overflow menu: a label and the layout it replaces the current one with. */
 internal data class Reset(
     @StringRes val label: Int,
@@ -119,27 +45,26 @@ internal data class Reset(
  * Everything that differs between the three key-layout editors — the VKB symbol page, the PKB
  * symbol page and the slideboard numpad. [KeyLayoutEditorScreen] renders any of them.
  *
- * The `load`/`save` pair is the dangerous part and is deliberately the *only* place a permutation
- * between on-screen position and storage index lives, because getting one backwards silently
- * scrambles every existing user's layout. `KeyLayoutEditorBehaviourTest` pins all three.
+ * `load` and `save` speak in slots: reading order over the board's editable keys. The stored
+ * order differs for the on-screen page and the pad (each has one table, shared with the keyboard);
+ * getting one backwards silently scrambles every existing user's layout, so
+ * `KeyLayoutEditorBehaviourTest` pins all three against the keyboard the editor draws.
  */
 @Immutable
 internal class KeyEditorSpec(
     /** Distinguishes the three editors' ViewModels within one store. Not persisted. */
     val key: String,
     @StringRes val title: Int,
-    val rows: List<List<Slot>>,
-    @DimenRes val height: Int,
-    val style: KeyStyle,
+    /** The keyboard board drawn under the palette; its editable keys are the slots, in reading order. */
+    val board: PreviewBoard,
     /**
-     * Which half of the keyboard strip the mock keyboard occupies: `null` to span the whole
-     * width, or 0/1 for the left/right half (the slideboard follows the user's numpad side).
+     * For the number pad, which half of the keyboard strip it sits in: 0 left, 1 right (the
+     * user's numpad side). `null` for a board that spans the whole width.
      */
     val half: (Context) -> Int?,
     val resets: List<Reset>,
     val load: (Context) -> List<String>,
     val save: (Context, List<String>) -> Unit,
-    val paletteLoading: PaletteLoading,
     /**
      * Whether changing tab or applying a reset drops a pending palette selection. The slideboard
      * editor does; the symbol pages keep it.
@@ -164,60 +89,25 @@ private fun symbolPageResets(isPkb: Boolean) = listOf(
     },
 )
 
-private fun symbolPageSpec(
-    isPkb: Boolean,
-    rows: List<List<Slot>>,
-    @DimenRes height: Int,
-) = KeyEditorSpec(
+private fun symbolPageSpec(isPkb: Boolean) = KeyEditorSpec(
     key = if (isPkb) "symbol_page_pkb" else "symbol_page_vkb",
-    title = R.string.customize_symbol_page_title,
-    rows = rows,
-    height = height,
-    style = SymbolPageKeyStyle,
+    title = if (isPkb) R.string.settings_keyeditor_title_pkb else R.string.settings_keyeditor_title_vkb,
+    board = if (isPkb) PreviewBoard.PKB_SYMBOLS else PreviewBoard.VKB_SYMBOLS,
     half = { null },
     resets = symbolPageResets(isPkb),
     load = { c -> CustomSymbolRepository(c).loadLayout(isPkb) },
     save = { c, layout -> CustomSymbolRepository(c).saveLayout(isPkb, layout) },
-    paletteLoading = PaletteLoading.PER_TAB,
     clearsSymbolSelectionOnContextChange = false,
 )
 
-/** On-screen keyboard: 4 rows, 26 editable slots, the bottom row entirely fixed. */
-internal val VkbSymbolPageSpec = symbolPageSpec(
-    isPkb = false,
-    height = R.dimen.config_symbol_page_height,
-    rows = listOf(
-        (0..9).map { Slot.Key(it) },
-        listOf(Slot.Gap(0.5f)) + (10..18).map { Slot.Key(it) } + Slot.Gap(0.5f),
-        listOf(Slot.Fixed(text = "1/2", weight = 3f)) +
-            (19..25).map { Slot.Key(it, weight = 2f) } +
-            Slot.Fixed(icon = R.drawable.ic_key_delete, weight = 3f),
-        listOf(
-            Slot.Fixed(text = "?123", weight = 3f),
-            Slot.Fixed(icon = R.drawable.ic_key_voice, weight = 2f),
-            Slot.Fixed(icon = R.drawable.ic_settings_space, weight = 10f),
-            Slot.Fixed(text = "...", weight = 2f),
-            Slot.Fixed(icon = R.drawable.ic_key_return, weight = 3f),
-        ),
-    ),
-)
+/** On-screen keyboard: 26 editable slots, in rows of 10, 9 and 7. */
+internal val VkbSymbolPageSpec = symbolPageSpec(isPkb = false)
 
 /**
- * Physical keyboard: 3 rows, 27 editable slots, the shape of `rows_symbols_custom_pkb.xml` —
- * ten, nine plus delete, then the page key, eight (the seven letter keys and the currency key)
- * and enter. The page used to be drawn with a 28th slot the keyboard has no key for.
+ * Physical keyboard: 27 editable slots, the shape of `rows_symbols_custom_pkb.xml` — ten, nine,
+ * then eight (the seven letter keys and the currency key).
  */
-internal val PkbSymbolPageSpec = symbolPageSpec(
-    isPkb = true,
-    height = R.dimen.config_pkb_symbol_page_height,
-    rows = listOf(
-        (0..9).map { Slot.Key(it) },
-        (10..18).map { Slot.Key(it) } + Slot.Fixed(icon = R.drawable.ic_key_delete),
-        listOf(Slot.Fixed(text = "alt")) +
-            (19..26).map { Slot.Key(it) } +
-            Slot.Fixed(icon = R.drawable.ic_key_return),
-    ),
-)
+internal val PkbSymbolPageSpec = symbolPageSpec(isPkb = true)
 
 // ============================================================================
 // The slideboard numpad
@@ -246,10 +136,8 @@ private fun numpadDefaults(context: Context) =
 
 internal val SlideboardNumpadSpec = KeyEditorSpec(
     key = "slideboard_numpad",
-    title = R.string.customize_slideboard_enable,
-    rows = (0 until 4).map { row -> (0 until 5).map { col -> Slot.Key(row * 5 + col) } },
-    height = R.dimen.config_symbol_page_height,
-    style = NumpadKeyStyle,
+    title = R.string.settings_vkb_customize_numberpad_title,
+    board = PreviewBoard.NUMPAD,
     half = { c ->
         PrefsManager.getPrefs(c).getString("slideboard_numeric_location", "1")?.toIntOrNull() ?: 1
     },
@@ -278,6 +166,5 @@ internal val SlideboardNumpadSpec = KeyEditorSpec(
         }
         SettingsManager.setStringListPref(PrefsManager.getPrefs(c), NUMPAD_PREF, storage)
     },
-    paletteLoading = PaletteLoading.DEFERRED_SNAPSHOT,
     clearsSymbolSelectionOnContextChange = true,
 )

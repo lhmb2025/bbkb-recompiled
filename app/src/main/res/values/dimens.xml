@@ -93,8 +93,6 @@
     <!-- Emoji and symbol pages -->
     <!-- ======================== -->
     <dimen name="config_emoji_category_page_id_height">8dp</dimen>
-    <dimen name="config_pkb_symbol_page_height">151.6dp</dimen>
-    <dimen name="config_symbol_page_height">202.1dp</dimen>
 
     <!-- ============================== -->
     <!-- Spacebar and sliding preview -->

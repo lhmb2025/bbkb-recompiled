@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">רטט</string>
     <string name="vibrate_on_keypress_summary">הרטט את המכשיר בעת לחיצה על מקש</string>
     <string name="customize_slideboard_clear_keypad">אפס לפריסה ריקה</string>
-    <string name="customize_slideboard_enable">התאם אישית את לוח הספרות</string>
     <string name="customize_slideboard_reset_to_default">אפס לפריסת ברירת מחדל</string>
     <string name="settings_slideboard_hub_summary">לוח ספרות, החלפת צדדים וביטויים מהירים</string>
     <string name="settings_symbol_slideboard_link_summary">התאמה אישית של לוח הספרות והביטויים המהירים של Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">הגדרות Slideboard</string>
-    <string name="customize_symbol_page_title">התאם אישית פריסה</string>
     <string name="customized_symbol_page_add_button_description">הוסף סמל יוניקוד</string>
     <string name="customized_symbols_page_reset_to_blank">אפס לפריסה ריקה</string>
     <string name="customized_symbols_page_reset_to_page_1">אפס לפריסת ברירת מחדל 1</string>
@@ -1125,6 +1123,13 @@
     <string name="settings_keyeditor_loading">טוען סמלים…</string>
     <string name="settings_keyeditor_hex_code">קוד הקסדצימלי (לדוגמה 1F600)</string>
     <string name="settings_keyeditor_invalid_code">קוד תו לא חוקי</string>
+    <string name="settings_keyeditor_hint">הקישו על סמל ואז על מקש. הקישו על שני מקשים כדי להחליף ביניהם.</string>
+    <string name="settings_keyeditor_empty_key">מקש ריק</string>
+    <string name="settings_keyeditor_layout_reset">הפריסה אופסה</string>
+    <string name="settings_keyeditor_key_cleared">המקש נוקה</string>
+    <string name="settings_keyeditor_symbol_deleted">הסמל נמחק</string>
+    <string name="settings_keyeditor_title_vkb">דף הסמלים של המקלדת שעל המסך</string>
+    <string name="settings_keyeditor_title_pkb">דף הסמלים של המקלדת הפיזית</string>
     <string name="settings_spellcheck_intro">בודק האיות של BBKB משתמש במודלי שפה מתקדמים כדי לספק בדיקת איות בכל האפליקציות שתומכות בכך</string>
     <string name="settings_spellcheck_enable_title">הפעלת בודק האיות של BBKB</string>
     <string name="settings_spellcheck_enable_summary">מזהה שגיאות הקלדה ומציע תיקונים</string>

@@ -331,7 +331,7 @@ class Custom(
  * Ends one group and starts the next with no label between them: a screen's master switch sits
  * in a card of its own above the rows it governs, as "Enable suggestions" does.
  */
-fun groupBreak(): Custom = Custom {
+fun groupBreak(visible: (SettingsEnv) -> Boolean = { true }): Custom = Custom(visible = visible) {
     androidx.compose.foundation.layout.Spacer(
         modifier = Modifier.height(LocalSpacing.current.large)
     )

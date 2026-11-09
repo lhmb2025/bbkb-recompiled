@@ -34,22 +34,11 @@ fun SlideboardLayoutScreen(
     val context = LocalContext.current
     val prefs = remember { PrefsManager.getPrefs(context) }
 
-    // Defaults are the resources SettingsValues falls back to, so the summary names the phrases the
-    // slideboard actually inserts.
-    fun phrase(key: String, defaultRes: Int): String =
-        context.getString(defaultRes).let { prefs.getString(key, it) ?: it }
-
-    fun readQuickPhrases(): Triple<String, String, String> = Triple(
-        phrase("quick_phrase_1", R.string.pref_quick_phrase_1_default),
-        phrase("quick_phrase_2", R.string.pref_quick_phrase_2_default),
-        phrase("quick_phrase_3", R.string.pref_quick_phrase_3_default)
-    )
-
     // Refreshed on resume: QuickPhrasesScreen writes these keys, and a summary read once would
     // keep showing the old phrases on the way back.
-    var quickPhrases by remember { mutableStateOf(readQuickPhrases()) }
+    var quickPhrases by remember { mutableStateOf(readQuickPhrases(context, prefs)) }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        quickPhrases = readQuickPhrases()
+        quickPhrases = readQuickPhrases(context, prefs)
     }
     val (quickPhrase1, quickPhrase2, quickPhrase3) = quickPhrases
 

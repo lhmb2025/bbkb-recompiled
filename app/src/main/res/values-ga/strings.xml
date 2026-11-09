@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Creathadh</string>
     <string name="vibrate_on_keypress_summary">Cuir creathadh ar an ngléas nuair a bhrúitear eochair</string>
     <string name="customize_slideboard_clear_keypad">Athshocraigh go leagan amach folamh</string>
-    <string name="customize_slideboard_enable">Saincheap an t-eochaircheap uimhreacha</string>
     <string name="customize_slideboard_reset_to_default">Athshocraigh go dtí an leagan amach réamhshocraithe</string>
     <string name="settings_slideboard_hub_summary">Eochaircheap uimhreacha, malartú taobhanna agus frásaí tapa</string>
     <string name="settings_symbol_slideboard_link_summary">Saincheap eochaircheap uimhreacha agus frásaí tapa an Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Socruithe an Slideboard</string>
-    <string name="customize_symbol_page_title">Saincheap an leagan amach</string>
     <string name="customized_symbol_page_add_button_description">Cuir siombail Unicode leis</string>
     <string name="customized_symbols_page_reset_to_blank">Athshocraigh go leagan amach folamh</string>
     <string name="customized_symbols_page_reset_to_page_1">Athshocraigh go leagan amach réamhshocraithe 1</string>
@@ -1140,6 +1138,13 @@
     <string name="settings_keyeditor_loading">Siombailí á luchtú…</string>
     <string name="settings_keyeditor_hex_code">Cód heics (m.sh. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Cód carachtair neamhbhailí</string>
+    <string name="settings_keyeditor_hint">Tapáil siombail, ansin eochair. Tapáil dhá eochair chun iad a mhalartú.</string>
+    <string name="settings_keyeditor_empty_key">Eochair fholamh</string>
+    <string name="settings_keyeditor_layout_reset">Leagan amach athshocraithe</string>
+    <string name="settings_keyeditor_key_cleared">Eochair glanta</string>
+    <string name="settings_keyeditor_symbol_deleted">Siombail scriosta</string>
+    <string name="settings_keyeditor_title_vkb">Leathanach siombailí ar an scáileán</string>
+    <string name="settings_keyeditor_title_pkb">Leathanach siombailí an eochairchláir</string>
     <string name="settings_spellcheck_intro">Úsáideann litreoir BBKB ardmhúnlaí teanga chun seiceáil litrithe a sholáthar i ngach aip a thacaíonn léi</string>
     <string name="settings_spellcheck_enable_title">Cumasaigh litreoir BBKB</string>
     <string name="settings_spellcheck_enable_summary">Braitheann sé earráidí clóscríofa agus molann sé ceartúcháin</string>

@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">कीप्रेस करताना होणारे कंपन</string>
     <string name="vibrate_on_keypress_summary">की दाबल्यावर डिव्हाइस कंपित करा</string>
     <string name="customize_slideboard_clear_keypad">रिक्त लेआउटवर रीसेट करा</string>
-    <string name="customize_slideboard_enable">नंबर पॅड सानुकूल करा</string>
     <string name="customize_slideboard_reset_to_default">डीफॉल्ट लेआउटवर रीसेट करा</string>
     <string name="settings_slideboard_hub_summary">नंबर पॅड, बाजू अदलाबदल आणि झटपट वाक्यांश</string>
     <string name="settings_symbol_slideboard_link_summary">Slideboard चा नंबर पॅड आणि झटपट वाक्यांश सानुकूल करा</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard सेटिंग्ज</string>
-    <string name="customize_symbol_page_title">लेआउट सानुकूल करा</string>
     <string name="customized_symbol_page_add_button_description">युनिकोड चिन्ह जोडा</string>
     <string name="customized_symbols_page_reset_to_blank">रिक्त लेआउटवर रीसेट करा</string>
     <string name="customized_symbols_page_reset_to_page_1">डीफॉल्ट लेआउट 1 वर रीसेट करा</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">चिन्हे लोड होत आहेत…</string>
     <string name="settings_keyeditor_hex_code">हेक्स कोड (उदा. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">अवैध वर्ण कोड</string>
+    <string name="settings_keyeditor_hint">एक चिन्ह टॅप करा, नंतर एक की. दोन की अदलाबदल करण्यासाठी त्या दोन्ही टॅप करा.</string>
+    <string name="settings_keyeditor_empty_key">रिक्त की</string>
+    <string name="settings_keyeditor_layout_reset">लेआउट रीसेट केला</string>
+    <string name="settings_keyeditor_key_cleared">की साफ केली</string>
+    <string name="settings_keyeditor_symbol_deleted">चिन्ह हटवले</string>
+    <string name="settings_keyeditor_title_vkb">ऑन-स्क्रीन चिन्ह पान</string>
+    <string name="settings_keyeditor_title_pkb">कीपॅड चिन्ह पान</string>
     <string name="settings_spellcheck_intro">BBKB शब्दलेखन तपासक प्रगत भाषा मॉडेल वापरून शब्दलेखन तपासणीला सपोर्ट करणाऱ्या सर्व ॲप्समध्ये शब्दलेखन तपासणी देतो</string>
     <string name="settings_spellcheck_enable_title">BBKB शब्दलेखन तपासक सुरू करा</string>
     <string name="settings_spellcheck_enable_summary">टायपिंगमधील चुका शोधतो आणि दुरुस्त्या सुचवतो</string>

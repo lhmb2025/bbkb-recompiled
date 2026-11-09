@@ -402,7 +402,6 @@
     <!-- Settings — slideboard and quick phrases -->
     <!-- ========================================= -->
     <string name="customize_slideboard_clear_keypad">Reset to blank layout</string>
-    <string name="customize_slideboard_enable">Customize the number pad</string>
     <string name="customize_slideboard_reset_to_default">Reset to default layout</string>
     <string name="settings_slideboard_hub_summary">Number pad, swap sides, and quick phrases</string>
     <string name="settings_symbol_slideboard_link_summary">Customize the Slideboard number pad and quick phrases</string>
@@ -412,8 +411,7 @@
     <!-- ===================================== -->
     <!-- Settings — symbols and custom pages -->
     <!-- ===================================== -->
-    <string name="customize_symbol_page_title">Customize layout</string>
-    <string name="customized_symbol_page_add_button_description">Add unicode symbol</string>
+    <string name="customized_symbol_page_add_button_description">Add Unicode symbol</string>
     <string name="customized_symbols_page_reset_to_blank">Reset to blank layout</string>
     <string name="customized_symbols_page_reset_to_page_1">Reset to default layout 1</string>
     <string name="customized_symbols_page_reset_to_page_2">Reset to default layout 2</string>
@@ -1196,6 +1194,13 @@
     <string name="settings_keyeditor_loading">Loading symbols…</string>
     <string name="settings_keyeditor_hex_code">Hex code (e.g. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Invalid character code</string>
+    <string name="settings_keyeditor_hint">Tap a symbol, then a key. Tap two keys to swap them.</string>
+    <string name="settings_keyeditor_empty_key">Empty key</string>
+    <string name="settings_keyeditor_layout_reset">Layout reset</string>
+    <string name="settings_keyeditor_key_cleared">Key cleared</string>
+    <string name="settings_keyeditor_symbol_deleted">Symbol deleted</string>
+    <string name="settings_keyeditor_title_vkb">On-screen symbol page</string>
+    <string name="settings_keyeditor_title_pkb">Keypad symbol page</string>
     <string name="settings_spellcheck_intro">The BBKB spell checker uses advanced language models to provide spell checking across all apps that support it</string>
     <string name="settings_spellcheck_enable_title">Enable BBKB spell checker</string>
     <string name="settings_spellcheck_enable_summary">Detect typos and suggest corrections</string>

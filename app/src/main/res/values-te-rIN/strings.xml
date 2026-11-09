@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">కీని నొక్కినప్పుడు వైబ్రేట్</string>
     <string name="vibrate_on_keypress_summary">కీని నొక్కినప్పుడు పరికరాన్ని వైబ్రేట్ చేయి</string>
     <string name="customize_slideboard_clear_keypad">ఖాళీ లేఅవుట్‌కు రీసెట్ చేయి</string>
-    <string name="customize_slideboard_enable">నంబర్ ప్యాడ్‌ను అనుకూలీకరించు</string>
     <string name="customize_slideboard_reset_to_default">డిఫాల్ట్ లేఅవుట్‌కు రీసెట్ చేయి</string>
     <string name="settings_slideboard_hub_summary">నంబర్ ప్యాడ్, వైపులను మార్చడం మరియు త్వరిత పదబంధాలు</string>
     <string name="settings_symbol_slideboard_link_summary">Slideboard నంబర్ ప్యాడ్ మరియు త్వరిత పదబంధాలను అనుకూలీకరించు</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard సెట్టింగ్‌లు</string>
-    <string name="customize_symbol_page_title">లేఅవుట్‌ను అనుకూలీకరించు</string>
     <string name="customized_symbol_page_add_button_description">యూనికోడ్ చిహ్నాన్ని జోడించు</string>
     <string name="customized_symbols_page_reset_to_blank">ఖాళీ లేఅవుట్‌కు రీసెట్ చేయి</string>
     <string name="customized_symbols_page_reset_to_page_1">డిఫాల్ట్ లేఅవుట్ 1కి రీసెట్ చేయి</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">చిహ్నాలను లోడ్ చేస్తోంది…</string>
     <string name="settings_keyeditor_hex_code">హెక్స్ కోడ్ (ఉదా. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">చెల్లని అక్షర కోడ్</string>
+    <string name="settings_keyeditor_hint">ఒక చిహ్నాన్ని నొక్కి, ఆపై ఒక కీని నొక్కండి. రెండు కీలను మార్చడానికి వాటిని నొక్కండి.</string>
+    <string name="settings_keyeditor_empty_key">ఖాళీ కీ</string>
+    <string name="settings_keyeditor_layout_reset">లేఅవుట్ రీసెట్ చేయబడింది</string>
+    <string name="settings_keyeditor_key_cleared">కీ క్లియర్ చేయబడింది</string>
+    <string name="settings_keyeditor_symbol_deleted">చిహ్నం తొలగించబడింది</string>
+    <string name="settings_keyeditor_title_vkb">ఆన్-స్క్రీన్ చిహ్నాల పేజీ</string>
+    <string name="settings_keyeditor_title_pkb">కీప్యాడ్ చిహ్నాల పేజీ</string>
     <string name="settings_spellcheck_intro">BBKB అక్షరక్రమ తనిఖీ, అక్షరక్రమ తనిఖీకి సపోర్ట్ చేసే అన్ని యాప్‌లలో అక్షరక్రమ తనిఖీని అందించడానికి అధునాతన భాషా మోడల్‌లను ఉపయోగిస్తుంది</string>
     <string name="settings_spellcheck_enable_title">BBKB అక్షరక్రమ తనిఖీని ప్రారంభించు</string>
     <string name="settings_spellcheck_enable_summary">టైపింగ్ పొరపాట్లను గుర్తించి, సవరణలను సూచిస్తుంది</string>

@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibreur</string>
     <string name="vibrate_on_keypress_summary">Faire vibrer l\'appareil lors de l\'appui sur une touche</string>
     <string name="customize_slideboard_clear_keypad">Réinitialiser sur une disposition vide</string>
-    <string name="customize_slideboard_enable">Personnaliser le pavé numérique</string>
     <string name="customize_slideboard_reset_to_default">Réinitialiser sur la disposition par défaut</string>
     <string name="settings_slideboard_hub_summary">Pavé numérique, inversion des côtés et phrases rapides</string>
     <string name="settings_symbol_slideboard_link_summary">Personnaliser le pavé numérique et les phrases rapides du Slideboard</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Paramètres du Slideboard</string>
-    <string name="customize_symbol_page_title">Personnalisez la disposition</string>
     <string name="customized_symbol_page_add_button_description">Ajouter un symbole Unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Réinitialiser sur une disposition vide</string>
     <string name="customized_symbols_page_reset_to_page_1">Réinitialiser à la disposition par défaut 1</string>
@@ -1110,6 +1108,13 @@
     <string name="settings_keyeditor_loading">Chargement des symboles…</string>
     <string name="settings_keyeditor_hex_code">Code hexadécimal (ex. : 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Code de caractère non valide</string>
+    <string name="settings_keyeditor_hint">Touchez un symbole, puis une touche. Touchez deux touches pour les intervertir.</string>
+    <string name="settings_keyeditor_empty_key">Touche vide</string>
+    <string name="settings_keyeditor_layout_reset">Disposition réinitialisée</string>
+    <string name="settings_keyeditor_key_cleared">Touche effacée</string>
+    <string name="settings_keyeditor_symbol_deleted">Symbole supprimé</string>
+    <string name="settings_keyeditor_title_vkb">Page de symboles à l\'écran</string>
+    <string name="settings_keyeditor_title_pkb">Page de symboles du clavier physique</string>
     <string name="settings_spellcheck_intro">Le vérificateur d\'orthographe BBKB utilise des modèles linguistiques avancés pour offrir une vérification orthographique dans toutes les applications qui la prennent en charge</string>
     <string name="settings_spellcheck_enable_title">Activer le vérificateur d\'orthographe BBKB</string>
     <string name="settings_spellcheck_enable_summary">Détecte les fautes de frappe et suggère des corrections</string>

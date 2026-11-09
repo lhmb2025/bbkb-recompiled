@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibrasiyalı klikləmə</string>
     <string name="vibrate_on_keypress_summary">Klaviş basıldıqda cihazı vibrasiya etdirin</string>
     <string name="customize_slideboard_clear_keypad">Boş düzümə sıfırlayın</string>
-    <string name="customize_slideboard_enable">Rəqəm panelini fərdiləşdirin</string>
     <string name="customize_slideboard_reset_to_default">Varsayılan düzümə sıfırlayın</string>
     <string name="settings_slideboard_hub_summary">Rəqəm paneli, tərəflərin dəyişdirilməsi və sürətli ifadələr</string>
     <string name="settings_symbol_slideboard_link_summary">Slideboard rəqəm panelini və sürətli ifadələri fərdiləşdirin</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard parametrləri</string>
-    <string name="customize_symbol_page_title">Düzümü fərdiləşdirin</string>
     <string name="customized_symbol_page_add_button_description">Unicode simvolu əlavə edin</string>
     <string name="customized_symbols_page_reset_to_blank">Boş düzümə sıfırlayın</string>
     <string name="customized_symbols_page_reset_to_page_1">Varsayılan düzüm 1-ə sıfırlayın</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Simvollar yüklənir…</string>
     <string name="settings_keyeditor_hex_code">Hex kod (məs., 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Yanlış simvol kodu</string>
+    <string name="settings_keyeditor_hint">Simvola, sonra klavişə toxunun. Yerlərini dəyişmək üçün iki klavişə toxunun.</string>
+    <string name="settings_keyeditor_empty_key">Boş klaviş</string>
+    <string name="settings_keyeditor_layout_reset">Düzüm sıfırlandı</string>
+    <string name="settings_keyeditor_key_cleared">Klaviş təmizləndi</string>
+    <string name="settings_keyeditor_symbol_deleted">Simvol silindi</string>
+    <string name="settings_keyeditor_title_vkb">Ekran klaviaturasının simvol səhifəsi</string>
+    <string name="settings_keyeditor_title_pkb">Fiziki klaviaturanın simvol səhifəsi</string>
     <string name="settings_spellcheck_intro">BBKB orfoqrafiya yoxlayıcısı onu dəstəkləyən bütün tətbiqlərdə orfoqrafik yoxlanış təmin etmək üçün qabaqcıl dil modellərindən istifadə edir</string>
     <string name="settings_spellcheck_enable_title">BBKB orfoqrafiya yoxlayıcısını aktiv et</string>
     <string name="settings_spellcheck_enable_summary">Yazı səhvlərini aşkarlayır və düzəlişlər təklif edir</string>

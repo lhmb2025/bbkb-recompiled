@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Wibracje</string>
     <string name="vibrate_on_keypress_summary">Wibruj przy naciśnięciu klawisza</string>
     <string name="customize_slideboard_clear_keypad">Resetuj do pustego układu</string>
-    <string name="customize_slideboard_enable">Dostosuj klawiaturę numeryczną</string>
     <string name="customize_slideboard_reset_to_default">Przywróć układ domyślny</string>
     <string name="settings_slideboard_hub_summary">Klawiatura numeryczna, zamiana stron i szybkie frazy</string>
     <string name="settings_symbol_slideboard_link_summary">Dostosuj klawiaturę numeryczną i szybkie frazy Slideboardu</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Ustawienia Slideboardu</string>
-    <string name="customize_symbol_page_title">Dostosuj układ</string>
     <string name="customized_symbol_page_add_button_description">Dodaj symbol unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Resetuj do pustego układu</string>
     <string name="customized_symbols_page_reset_to_page_1">Przywróć układ domyślny 1</string>
@@ -1125,6 +1123,13 @@
     <string name="settings_keyeditor_loading">Wczytywanie symboli…</string>
     <string name="settings_keyeditor_hex_code">Kod szesnastkowy (np. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Nieprawidłowy kod znaku</string>
+    <string name="settings_keyeditor_hint">Kliknij symbol, a potem klawisz. Kliknij dwa klawisze, aby je zamienić.</string>
+    <string name="settings_keyeditor_empty_key">Pusty klawisz</string>
+    <string name="settings_keyeditor_layout_reset">Układ zresetowany</string>
+    <string name="settings_keyeditor_key_cleared">Klawisz wyczyszczony</string>
+    <string name="settings_keyeditor_symbol_deleted">Symbol usunięty</string>
+    <string name="settings_keyeditor_title_vkb">Strona symboli klawiatury ekranowej</string>
+    <string name="settings_keyeditor_title_pkb">Strona symboli klawiatury fizycznej</string>
     <string name="settings_spellcheck_intro">Moduł sprawdzania pisowni BBKB korzysta z zaawansowanych modeli językowych, aby zapewniać sprawdzanie pisowni we wszystkich aplikacjach, które je obsługują</string>
     <string name="settings_spellcheck_enable_title">Włącz moduł sprawdzania pisowni BBKB</string>
     <string name="settings_spellcheck_enable_summary">Wykrywa literówki i proponuje poprawki</string>

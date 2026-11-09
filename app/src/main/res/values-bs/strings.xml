@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibracija</string>
     <string name="vibrate_on_keypress_summary">Zavibriraj uređaj pri pritisku tipke</string>
     <string name="customize_slideboard_clear_keypad">Vrati na prazan raspored</string>
-    <string name="customize_slideboard_enable">Prilagodi numeričku tastaturu</string>
     <string name="customize_slideboard_reset_to_default">Vrati na zadani raspored</string>
     <string name="settings_slideboard_hub_summary">Numerička tastatura, zamjena strana i brze fraze</string>
     <string name="settings_symbol_slideboard_link_summary">Prilagodi numeričku tastaturu i brze fraze Slideboarda</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Postavke Slideboarda</string>
-    <string name="customize_symbol_page_title">Prilagodi raspored</string>
     <string name="customized_symbol_page_add_button_description">Dodaj Unicode simbol</string>
     <string name="customized_symbols_page_reset_to_blank">Vrati na prazan raspored</string>
     <string name="customized_symbols_page_reset_to_page_1">Vrati na zadani raspored 1</string>
@@ -1110,6 +1108,13 @@
     <string name="settings_keyeditor_loading">Učitavanje simbola…</string>
     <string name="settings_keyeditor_hex_code">Heksadecimalni kod (npr. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Nevažeći kod znaka</string>
+    <string name="settings_keyeditor_hint">Dodirnite simbol, a zatim tipku. Dodirnite dvije tipke da ih zamijenite.</string>
+    <string name="settings_keyeditor_empty_key">Prazna tipka</string>
+    <string name="settings_keyeditor_layout_reset">Raspored je vraćen</string>
+    <string name="settings_keyeditor_key_cleared">Tipka je obrisana</string>
+    <string name="settings_keyeditor_symbol_deleted">Simbol je izbrisan</string>
+    <string name="settings_keyeditor_title_vkb">Stranica simbola tastature na ekranu</string>
+    <string name="settings_keyeditor_title_pkb">Stranica simbola fizičke tastature</string>
     <string name="settings_spellcheck_intro">BBKB provjera pravopisa koristi napredne jezičke modele za pružanje provjere pravopisa u svim aplikacijama koje to podržavaju</string>
     <string name="settings_spellcheck_enable_title">Omogući BBKB provjeru pravopisa</string>
     <string name="settings_spellcheck_enable_summary">Otkriva greške u kucanju i predlaže ispravke</string>

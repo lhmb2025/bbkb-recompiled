@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibriranje ob pritisku tipke</string>
     <string name="vibrate_on_keypress_summary">Zavibriraj z napravo ob pritisku tipke</string>
     <string name="customize_slideboard_clear_keypad">Ponastavi na prazno razporeditev</string>
-    <string name="customize_slideboard_enable">Prilagodi številsko tipkovnico</string>
     <string name="customize_slideboard_reset_to_default">Ponastavi na privzeto razporeditev</string>
     <string name="settings_slideboard_hub_summary">Številska tipkovnica, zamenjava strani in hitre fraze</string>
     <string name="settings_symbol_slideboard_link_summary">Prilagodi številsko tipkovnico in hitre fraze Slideboarda</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Nastavitve Slideboarda</string>
-    <string name="customize_symbol_page_title">Prilagodi razporeditev</string>
     <string name="customized_symbol_page_add_button_description">Dodaj simbol Unicode</string>
     <string name="customized_symbols_page_reset_to_blank">Ponastavi na prazno razporeditev</string>
     <string name="customized_symbols_page_reset_to_page_1">Ponastavi na privzeto razporeditev 1</string>
@@ -1125,6 +1123,13 @@
     <string name="settings_keyeditor_loading">Nalaganje simbolov…</string>
     <string name="settings_keyeditor_hex_code">Šestnajstiška koda (npr. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Neveljavna koda znaka</string>
+    <string name="settings_keyeditor_hint">Tapnite simbol in nato tipko. Tapnite dve tipki, da ju zamenjate.</string>
+    <string name="settings_keyeditor_empty_key">Prazna tipka</string>
+    <string name="settings_keyeditor_layout_reset">Razporeditev ponastavljena</string>
+    <string name="settings_keyeditor_key_cleared">Tipka počiščena</string>
+    <string name="settings_keyeditor_symbol_deleted">Simbol izbrisan</string>
+    <string name="settings_keyeditor_title_vkb">Stran s simboli zaslonske tipkovnice</string>
+    <string name="settings_keyeditor_title_pkb">Stran s simboli fizične tipkovnice</string>
     <string name="settings_spellcheck_intro">Črkovalnik BBKB uporablja napredne jezikovne modele za preverjanje črkovanja v vseh aplikacijah, ki to podpirajo</string>
     <string name="settings_spellcheck_enable_title">Omogoči črkovalnik BBKB</string>
     <string name="settings_spellcheck_enable_summary">Zaznava tipkarske napake in predlaga popravke</string>

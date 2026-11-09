@@ -328,13 +328,11 @@
     <string name="vibrate_on_keypress">Vibrieren</string>
     <string name="vibrate_on_keypress_summary">Das Gerät beim Drücken einer Taste vibrieren lassen</string>
     <string name="customize_slideboard_clear_keypad">Auf leeres Layout zurücksetzen</string>
-    <string name="customize_slideboard_enable">Ziffernblock anpassen</string>
     <string name="customize_slideboard_reset_to_default">Auf Standard-Layout zurücksetzen</string>
     <string name="settings_slideboard_hub_summary">Ziffernblock, Seiten tauschen und Schnellphrasen</string>
     <string name="settings_symbol_slideboard_link_summary">Ziffernblock und Schnellphrasen des Slideboards anpassen</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-Einstellungen</string>
-    <string name="customize_symbol_page_title">Layout anpassen</string>
     <string name="customized_symbol_page_add_button_description">Unicode-Symbol hinzufügen</string>
     <string name="customized_symbols_page_reset_to_blank">Auf leeres Layout zurücksetzen</string>
     <string name="customized_symbols_page_reset_to_page_1">Auf Standard-Layout 1 zurücksetzen</string>
@@ -1095,6 +1093,13 @@
     <string name="settings_keyeditor_loading">Symbole werden geladen…</string>
     <string name="settings_keyeditor_hex_code">Hex-Code (z. B. 1F600)</string>
     <string name="settings_keyeditor_invalid_code">Ungültiger Zeichencode</string>
+    <string name="settings_keyeditor_hint">Tippe auf ein Symbol und dann auf eine Taste. Tippe auf zwei Tasten, um sie zu tauschen.</string>
+    <string name="settings_keyeditor_empty_key">Leere Taste</string>
+    <string name="settings_keyeditor_layout_reset">Layout zurückgesetzt</string>
+    <string name="settings_keyeditor_key_cleared">Taste geleert</string>
+    <string name="settings_keyeditor_symbol_deleted">Symbol gelöscht</string>
+    <string name="settings_keyeditor_title_vkb">Symbolseite der Bildschirmtastatur</string>
+    <string name="settings_keyeditor_title_pkb">Symbolseite der physischen Tastatur</string>
     <string name="settings_spellcheck_intro">Die BBKB-Rechtschreibprüfung nutzt fortschrittliche Sprachmodelle, um in allen Apps, die dies unterstützen, eine Rechtschreibprüfung zu bieten</string>
     <string name="settings_spellcheck_enable_title">BBKB-Rechtschreibprüfung aktivieren</string>
     <string name="settings_spellcheck_enable_summary">Erkennt Tippfehler und schlägt Korrekturen vor</string>
