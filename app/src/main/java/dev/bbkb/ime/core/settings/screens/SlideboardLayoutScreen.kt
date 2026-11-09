@@ -19,6 +19,7 @@ import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.core.settings.ui.drawableIcon
+import dev.bbkb.ime.core.settings.ui.groupBreak
 
 /**
  * Slideboard settings (under On-screen keyboard): enable the slideboard, swap its sides,
@@ -60,6 +61,7 @@ fun SlideboardLayoutScreen(
             summary = RowSummary.Res(R.string.settings_vkb_slideboard_enable_summary),
             modifier = Modifier.settingsSearchAnchor("slideboard_active"),
         ),
+        groupBreak(),
         Toggle(
             store = swapLocationsStore,
             title = R.string.settings_vkb_slideboard_swap_title,
@@ -80,7 +82,9 @@ fun SlideboardLayoutScreen(
         ),
         Nav(
             title = R.string.settings_vkb_quick_phrases_title,
-            summaryText = { "$quickPhrase1, $quickPhrase2, $quickPhrase3, ..." },
+            summaryText = {
+                context.getString(R.string.settings_vkb_quick_phrases_summary, quickPhrase1, quickPhrase2, quickPhrase3)
+            },
             icon = drawableIcon(R.drawable.ic_settings_quick_phrases),
             enabled = { it.bool("slideboard_active") },
             onClick = { onNavigateToQuickPhrases() },

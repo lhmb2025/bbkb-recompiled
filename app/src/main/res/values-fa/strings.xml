@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">سفارشی‌سازی صفحه اعداد</string>
     <string name="customize_slideboard_reset_to_default">بازنشانی به چیدمان پیش‌فرض</string>
     <string name="settings_slideboard_hub_summary">صفحه اعداد، جابه‌جایی طرفین و عبارت‌های سریع</string>
+    <string name="settings_symbol_slideboard_link_summary">سفارشی‌سازی صفحه اعداد و عبارت‌های سریع Slideboard</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s، %2$s، %3$s…</string>
     <string name="settings_slideboard_settings_title">تنظیمات Slideboard</string>
     <string name="customize_symbol_page_title">سفارشی‌سازی چیدمان</string>
     <string name="customized_symbol_page_add_button_description">افزودن نماد unicode</string>

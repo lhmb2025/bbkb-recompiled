@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.Category
 import dev.bbkb.ime.core.settings.ui.Nav
+import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.Toggle
@@ -28,7 +29,7 @@ private const val VKB_ENABLED = "enable_symbol_customization_vkb"
 fun SymbolCustomizationScreen(
     onNavigateToCustomSymbolPagePKB: () -> Unit,
     onNavigateToCustomSymbolPageVKB: () -> Unit,
-    onNavigateToCustomizeSlideBoard: () -> Unit = {},
+    onNavigateToSlideboardSettings: () -> Unit = {},
     onNavigateBack: () -> Unit
 ) {
     SettingsScreenHost(R.string.settings_symbol_customization_title, onNavigateBack, listOf(
@@ -76,15 +77,15 @@ fun SymbolCustomizationScreen(
             visible = { it.hasPhysicalKeyboard },
         ),
 
-        // The slideboard's number pad is the same key-layout editor with a 4x5 grid; the link on
-        // the Slideboard screen stays, this one puts every symbol editor in one place
-        // (2026-10-20). Greyed out while the slideboard is off, as on that screen.
+        // A link to Slideboard settings, where the number pad editor and the quick phrases live,
+        // so every symbol editor is reachable from here. Always enabled: it only opens a screen,
+        // and the Enable slideboard switch is on that screen.
         Category(R.string.settings_category_slideboard),
         Nav(
-            title = R.string.settings_vkb_customize_numberpad_title,
-            summary = R.string.settings_vkb_customize_numberpad_summary,
-            enabled = { it.bool("slideboard_active") },
-            onClick = { onNavigateToCustomizeSlideBoard() },
+            title = R.string.settings_slideboard_settings_title,
+            summary = R.string.settings_symbol_slideboard_link_summary,
+            icon = drawableIcon(R.drawable.ic_settings_slideboard),
+            onClick = { onNavigateToSlideboardSettings() },
         ),
     ))
 }

@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">กำหนดค่าแป้นตัวเลข</string>
     <string name="customize_slideboard_reset_to_default">รีเซ็ตเป็นเลย์เอาท์เริ่มต้น</string>
     <string name="settings_slideboard_hub_summary">แป้นตัวเลข สลับด้าน และวลีด่วน</string>
+    <string name="settings_symbol_slideboard_link_summary">กำหนดค่าแป้นตัวเลขและวลีด่วนของ Slideboard</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s %2$s %3$s…</string>
     <string name="settings_slideboard_settings_title">การตั้งค่า Slideboard</string>
     <string name="customize_symbol_page_title">ปรับแต่งเลย์เอาท์</string>
     <string name="customized_symbol_page_add_button_description">เพิ่มสัญลักษณ์ Unicode</string>

@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">নম্বর প্যাড কাস্টমাইজ করুন</string>
     <string name="customize_slideboard_reset_to_default">ডিফল্ট লেআউটে রিসেট করুন</string>
     <string name="settings_slideboard_hub_summary">নম্বর প্যাড, দিক অদলবদল ও দ্রুত বাক্যাংশ</string>
+    <string name="settings_symbol_slideboard_link_summary">Slideboard-এর নম্বর প্যাড ও দ্রুত বাক্যাংশ কাস্টমাইজ করুন</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard সেটিংস</string>
     <string name="customize_symbol_page_title">লেআউট কাস্টমাইজ করুন</string>
     <string name="customized_symbol_page_add_button_description">ইউনিকোড প্রতীক জুড়ুন</string>

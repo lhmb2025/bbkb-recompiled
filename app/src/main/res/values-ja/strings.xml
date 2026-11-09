@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">テンキーをカスタマイズ</string>
     <string name="customize_slideboard_reset_to_default">デフォルトレイアウトにリセット</string>
     <string name="settings_slideboard_hub_summary">テンキー、左右の入れ替え、クイックフレーズ</string>
+    <string name="settings_symbol_slideboard_link_summary">Slideboard のテンキーとクイックフレーズをカスタマイズ</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s、%2$s、%3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard の設定</string>
     <string name="customize_symbol_page_title">レイアウトをカスタマイズ</string>
     <string name="customized_symbol_page_add_button_description">ユニコード記号を追加</string>

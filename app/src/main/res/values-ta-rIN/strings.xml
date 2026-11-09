@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">எண் பேடைத் தனிப்பயனாக்கு</string>
     <string name="customize_slideboard_reset_to_default">இயல்புநிலைத் தளவமைப்பிற்கு மீட்டமை</string>
     <string name="settings_slideboard_hub_summary">எண் பேடு, பக்கங்களை இடமாற்றல் மற்றும் விரைவு சொற்றொடர்கள்</string>
+    <string name="settings_symbol_slideboard_link_summary">Slideboard எண் பேடு மற்றும் விரைவு சொற்றொடர்களைத் தனிப்பயனாக்கு</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard அமைப்புகள்</string>
     <string name="customize_symbol_page_title">தளவமைப்பைத் தனிப்பயனாக்கு</string>
     <string name="customized_symbol_page_add_button_description">யூனிகோடு குறியீட்டைச் சேர்</string>

@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">ციფრული პანელის მორგება</string>
     <string name="customize_slideboard_reset_to_default">ნაგულისხმევი განლაგების აღდგენა</string>
     <string name="settings_slideboard_hub_summary">ციფრული პანელი, მხარეების შეცვლა და სწრაფი ფრაზები</string>
+    <string name="settings_symbol_slideboard_link_summary">Slideboard-ის ციფრული პანელისა და სწრაფი ფრაზების მორგება</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-ის პარამეტრები</string>
     <string name="customize_symbol_page_title">განლაგების მორგება</string>
     <string name="customized_symbol_page_add_button_description">Unicode სიმბოლოს დამატება</string>

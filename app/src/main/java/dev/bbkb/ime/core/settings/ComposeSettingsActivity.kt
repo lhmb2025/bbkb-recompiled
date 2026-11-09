@@ -510,7 +510,7 @@ fun SettingsNavHost(
             SymbolCustomizationScreen(
                 onNavigateToCustomSymbolPagePKB = go(SettingsRoute.CustomSymbolPagePkb),
                 onNavigateToCustomSymbolPageVKB = go(SettingsRoute.CustomSymbolPageVkb),
-                onNavigateToCustomizeSlideBoard = go(SettingsRoute.CustomizeSlideBoard),
+                onNavigateToSlideboardSettings = go(SettingsRoute.SlideboardSettings),
                 onNavigateBack = back
             )
         }

@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">숫자 패드 사용자 지정</string>
     <string name="customize_slideboard_reset_to_default">기본 레이아웃으로 재설정</string>
     <string name="settings_slideboard_hub_summary">숫자 패드, 좌우 바꾸기, 빠른 문구</string>
+    <string name="settings_symbol_slideboard_link_summary">Slideboard 숫자 패드와 빠른 문구 사용자 지정</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard 설정</string>
     <string name="customize_symbol_page_title">레이아웃 사용자 지정</string>
     <string name="customized_symbol_page_add_button_description">유니코드 기호 추가</string>

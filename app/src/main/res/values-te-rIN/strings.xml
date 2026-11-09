@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">నంబర్ ప్యాడ్‌ను అనుకూలీకరించు</string>
     <string name="customize_slideboard_reset_to_default">డిఫాల్ట్ లేఅవుట్‌కు రీసెట్ చేయి</string>
     <string name="settings_slideboard_hub_summary">నంబర్ ప్యాడ్, వైపులను మార్చడం మరియు త్వరిత పదబంధాలు</string>
+    <string name="settings_symbol_slideboard_link_summary">Slideboard నంబర్ ప్యాడ్ మరియు త్వరిత పదబంధాలను అనుకూలీకరించు</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard సెట్టింగ్‌లు</string>
     <string name="customize_symbol_page_title">లేఅవుట్‌ను అనుకూలీకరించు</string>
     <string name="customized_symbol_page_add_button_description">యూనికోడ్ చిహ్నాన్ని జోడించు</string>

@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">नंबर पैड को कस्टमाइज करें</string>
     <string name="customize_slideboard_reset_to_default">डिफ़ॉल्ट लेआउट पर रीसेट करें</string>
     <string name="settings_slideboard_hub_summary">नंबर पैड, पक्ष बदलना और त्वरित वाक्यांश</string>
+    <string name="settings_symbol_slideboard_link_summary">Slideboard का नंबर पैड और त्वरित वाक्यांश कस्टमाइज़ करें</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard सेटिंग्स</string>
     <string name="customize_symbol_page_title">लेआउट को कस्टमाइज़ करें</string>
     <string name="customized_symbol_page_add_button_description">युनिकोड प्रतीक जोड़ें</string>

@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">自訂數字鍵盤</string>
     <string name="customize_slideboard_reset_to_default">重設為預設配置</string>
     <string name="settings_slideboard_hub_summary">數字鍵盤、左右對調和快速短語</string>
+    <string name="settings_symbol_slideboard_link_summary">自訂 Slideboard 的數字鍵盤和快速短語</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s、%2$s、%3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard 設定</string>
     <string name="customize_symbol_page_title">自訂配置</string>
     <string name="customized_symbol_page_add_button_description">新增 Unicode 符號</string>
@@ -352,7 +354,7 @@
     <string name="symbol_list_category_brackets_title">括號</string>
     <string name="symbol_list_category_currency_title">貨幣</string>
     <string name="symbol_list_category_custom_title">自訂</string>
-    <string name="symbol_list_category_emoji_title">EMOJI</string>
+    <string name="symbol_list_category_emoji_title">Emoji</string>
     <string name="symbol_list_category_math_title">數學</string>
     <string name="symbol_list_category_punctuation_title">標點符號</string>
     <string name="symbols_clustering_together" />

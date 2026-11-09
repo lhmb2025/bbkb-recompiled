@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">ಸಂಖ್ಯಾ ಪ್ಯಾಡ್ ಕಸ್ಟಮೈಸ್ ಮಾಡಿ</string>
     <string name="customize_slideboard_reset_to_default">ಪೂರ್ವನಿಯೋಜಿತ ವಿನ್ಯಾಸಕ್ಕೆ ಮರುಹೊಂದಿಸಿ</string>
     <string name="settings_slideboard_hub_summary">ಸಂಖ್ಯಾ ಪ್ಯಾಡ್, ಬದಿಗಳ ಅದಲುಬದಲು ಮತ್ತು ತ್ವರಿತ ನುಡಿಗಟ್ಟುಗಳು</string>
+    <string name="settings_symbol_slideboard_link_summary">Slideboard ಸಂಖ್ಯಾ ಪ್ಯಾಡ್ ಮತ್ತು ತ್ವರಿತ ನುಡಿಗಟ್ಟುಗಳನ್ನು ಕಸ್ಟಮೈಸ್ ಮಾಡಿ</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
     <string name="customize_symbol_page_title">ವಿನ್ಯಾಸ ಕಸ್ಟಮೈಸ್ ಮಾಡಿ</string>
     <string name="customized_symbol_page_add_button_description">ಯುನಿಕೋಡ್ ಚಿಹ್ನೆ ಸೇರಿಸಿ</string>

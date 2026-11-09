@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">התאם אישית את לוח הספרות</string>
     <string name="customize_slideboard_reset_to_default">אפס לפריסת ברירת מחדל</string>
     <string name="settings_slideboard_hub_summary">לוח ספרות, החלפת צדדים וביטויים מהירים</string>
+    <string name="settings_symbol_slideboard_link_summary">התאמה אישית של לוח הספרות והביטויים המהירים של Slideboard</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">הגדרות Slideboard</string>
     <string name="customize_symbol_page_title">התאם אישית פריסה</string>
     <string name="customized_symbol_page_add_button_description">הוסף סמל יוניקוד</string>

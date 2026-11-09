@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">تخصيص لوحة الأرقام</string>
     <string name="customize_slideboard_reset_to_default">إعادة تعيين إلى التخطيط الافتراضي</string>
     <string name="settings_slideboard_hub_summary">لوحة الأرقام وتبديل الجانبين والعبارات السريعة</string>
+    <string name="settings_symbol_slideboard_link_summary">تخصيص لوحة الأرقام والعبارات السريعة في Slideboard</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s، %2$s، %3$s…</string>
     <string name="settings_slideboard_settings_title">إعدادات Slideboard</string>
     <string name="customize_symbol_page_title">تخصيص التخطيط</string>
     <string name="customized_symbol_page_add_button_description">إضافة رمز unicode</string>

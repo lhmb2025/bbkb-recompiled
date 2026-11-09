@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">កំណត់បន្ទះលេខតាមបំណង</string>
     <string name="customize_slideboard_reset_to_default">កំណត់ឡើងវិញទៅប្លង់លំនាំដើម</string>
     <string name="settings_slideboard_hub_summary">បន្ទះលេខ ការប្ដូរទីតាំង និងឃ្លារហ័ស</string>
+    <string name="settings_symbol_slideboard_link_summary">កំណត់បន្ទះលេខ និងឃ្លារហ័សរបស់ Slideboard តាមបំណង</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s %2$s %3$s…</string>
     <string name="settings_slideboard_settings_title">ការកំណត់ Slideboard</string>
     <string name="customize_symbol_page_title">កំណត់ប្លង់តាមបំណង</string>
     <string name="customized_symbol_page_add_button_description">បន្ថែមនិមិត្តសញ្ញា Unicode</string>

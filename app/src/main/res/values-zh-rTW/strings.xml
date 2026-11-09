@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">自訂數字鍵盤</string>
     <string name="customize_slideboard_reset_to_default">重設為預設布局</string>
     <string name="settings_slideboard_hub_summary">數字鍵盤、左右交換和快速片語</string>
+    <string name="settings_symbol_slideboard_link_summary">自訂 Slideboard 的數字鍵盤和快速片語</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s、%2$s、%3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard 設定</string>
     <string name="customize_symbol_page_title">自訂配置</string>
     <string name="customized_symbol_page_add_button_description">新增 unicode 符號</string>

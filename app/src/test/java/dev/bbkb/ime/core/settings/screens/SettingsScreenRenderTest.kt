@@ -759,7 +759,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "customize_symbol_page_title", "symbol_list_category_accents_title",
                 "symbol_list_category_alphanumeric_title", "symbol_list_category_arrows_title",
                 "symbol_list_category_brackets_title", "symbol_list_category_currency_title",
-                "symbol_list_category_custom_title", "symbol_list_category_emoji_title",
+                "settings_device_config_category_custom", "symbol_list_category_emoji_title",
                 "symbol_list_category_math_title", "symbol_list_category_punctuation_title"
             ),
             literals = setOf(
@@ -801,7 +801,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "customize_symbol_page_title", "symbol_list_category_accents_title",
                 "symbol_list_category_alphanumeric_title", "symbol_list_category_arrows_title",
                 "symbol_list_category_brackets_title", "symbol_list_category_currency_title",
-                "symbol_list_category_custom_title", "symbol_list_category_emoji_title",
+                "settings_device_config_category_custom", "symbol_list_category_emoji_title",
                 "symbol_list_category_math_title", "symbol_list_category_punctuation_title"
             ),
             literals = setOf(
@@ -873,7 +873,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "customize_slideboard_enable", "symbol_list_category_accents_title",
                 "symbol_list_category_alphanumeric_title", "symbol_list_category_arrows_title",
                 "symbol_list_category_brackets_title", "symbol_list_category_currency_title",
-                "symbol_list_category_custom_title", "symbol_list_category_emoji_title",
+                "settings_device_config_category_custom", "symbol_list_category_emoji_title",
                 "symbol_list_category_math_title", "symbol_list_category_punctuation_title",
                 "settings_keyeditor_loading",
             ),
@@ -1220,8 +1220,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_vkb_slideboard_swap_summary_default", "settings_vkb_slideboard_swap_title"
             ),
             literals = setOf(
-                // Was "Thanks, See you soon, On my way, ...": now the phrases the keyboard inserts.
-                "How are you?, On my way, That's great!, ...",
+                // Was "Thanks, See you soon, On my way, ...": now the phrases the keyboard inserts,
+                // through the translatable settings_vkb_quick_phrases_summary.
+                "How are you?, On my way, That's great!…",
             ),
         ),
         Case(
@@ -1255,9 +1256,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_symbol_custom_page_first_title", "settings_symbol_customization_title",
                 "settings_symbol_customize_page_summary", "settings_symbol_customize_page_title",
                 "settings_symbol_enable_customization_summary", "settings_symbol_enable_customization_title",
-                // The slideboard number pad editor link (2026-10-20).
-                "settings_category_slideboard", "settings_vkb_customize_numberpad_summary",
-                "settings_vkb_customize_numberpad_title"
+                // A link to Slideboard settings (was the number pad editor link, 2026-10-20).
+                "settings_category_slideboard", "settings_slideboard_settings_title",
+                "settings_symbol_slideboard_link_summary"
             ),
             literals = emptySet(),
         ),

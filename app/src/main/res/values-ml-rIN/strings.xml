@@ -331,6 +331,8 @@
     <string name="customize_slideboard_enable">നമ്പർ പാഡ് ഇഷ്ടാനുസൃതമാക്കുക</string>
     <string name="customize_slideboard_reset_to_default">സ്ഥിരം ലേഔട്ടിലേക്ക് പുനഃസജ്ജമാക്കുക</string>
     <string name="settings_slideboard_hub_summary">നമ്പർ പാഡ്, വശങ്ങൾ മാറ്റൽ, ദ്രുത വാക്യങ്ങൾ</string>
+    <string name="settings_symbol_slideboard_link_summary">Slideboard നമ്പർ പാഡും ദ്രുത വാക്യങ്ങളും ഇഷ്ടാനുസൃതമാക്കുക</string>
+    <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard ക്രമീകരണങ്ങൾ</string>
     <string name="customize_symbol_page_title">ലേഔട്ട് ഇഷ്ടാനുസൃതമാക്കുക</string>
     <string name="customized_symbol_page_add_button_description">യൂണികോഡ് ചിഹ്നം ചേര്‍ക്കുക</string>

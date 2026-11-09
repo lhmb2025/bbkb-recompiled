@@ -2,5 +2,5 @@
 <resources>
     <string name="customize_slideboard_enable">Customize the number pad</string>
     <string name="customize_symbol_page_title">Customize layout</string>
-    <string name="symbol_list_category_math_title">MATH</string>
+    <string name="symbol_list_category_math_title">Math</string>
 </resources>

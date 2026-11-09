@@ -162,11 +162,12 @@ class SettingsScreenDefaultsTest {
     @Test
     fun theSlideboardSummaryShowsTheQuickPhrasesTheKeyboardInserts() {
         render { SlideboardLayoutScreen({}, {}, {}) }
-        val expected = listOf(
-            R.string.pref_quick_phrase_1_default,
-            R.string.pref_quick_phrase_2_default,
-            R.string.pref_quick_phrase_3_default,
-        ).joinToString(", ", postfix = ", ...") { context.getString(it) }
+        val expected = context.getString(
+            R.string.settings_vkb_quick_phrases_summary,
+            context.getString(R.string.pref_quick_phrase_1_default),
+            context.getString(R.string.pref_quick_phrase_2_default),
+            context.getString(R.string.pref_quick_phrase_3_default),
+        )
         assertTrue(rendered().toString(), expected in rendered())
     }
 
