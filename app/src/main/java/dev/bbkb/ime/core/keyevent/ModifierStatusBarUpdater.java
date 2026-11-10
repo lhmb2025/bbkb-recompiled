@@ -1,5 +1,7 @@
 package dev.bbkb.ime.core.keyevent;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.method.MetaKeyKeyListener;
 import android.view.KeyEvent;
 
@@ -143,8 +145,36 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
      */
     @Override
     public void onModifierStateChanged(ModifierState state, boolean force) {
-        updateModifierStatus(state == null ? 0
-                : withCtrl(state.getInterpretedMetaState(), state.isCtrlActive(), state.isCtrlLocked()), force);
+        if (state == null) {
+            updateModifierStatus(0, force);
+            return;
+        }
+        int metaState = withCtrl(state.getInterpretedMetaState(), state.isCtrlActive(), state.isCtrlLocked());
+        updateModifierStatus(holdGlyphsOfKeysStillDown(metaState, state), force);
+    }
+
+    private static final int SHIFT_GLYPH_BITS = KeyEvent.META_SHIFT_ON | MetaKeyKeyListener.META_CAP_LOCKED;
+    private static final int ALT_GLYPH_BITS = KeyEvent.META_ALT_ON | MetaKeyKeyListener.META_ALT_LOCKED;
+
+    /**
+     * A modifier's glyph does not go away while its key is physically down; what the press did
+     * is shown when the key comes up (the tracker reports every modifier key-up).
+     *
+     * <p>The state machine turns a modifier off on a key-DOWN in three cases, each of which
+     * used to take the icon down in the middle of a press: the second press of a double tap (off
+     * on the down, locked on the up — the icon blinked off for the length of the press), the
+     * press that unlocks, and a held modifier that a character has just used. In all three the
+     * finger is still on the key, so the glyph stays as it was until the release says what the
+     * press came to.
+     */
+    private int holdGlyphsOfKeysStillDown(int metaState, ModifierState state) {
+        if (state.isShiftKeyPhysicallyDown() && (metaState & SHIFT_GLYPH_BITS) == 0) {
+            metaState |= this.mLastMetaState & SHIFT_GLYPH_BITS;
+        }
+        if (state.isAltKeyPhysicallyDown() && (metaState & ALT_GLYPH_BITS) == 0) {
+            metaState |= this.mLastMetaState & ALT_GLYPH_BITS;
+        }
+        return metaState;
     }
 
     /**
@@ -184,8 +214,41 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
         this.mLastMetaState = metaState;
     }
 
-    /** Hands {@code iconResId} (0 = hidden) to the system unless it is already there; see {@link #mSentIconResId}. */
+    /**
+     * The icon to show (0 = hidden), handed to the system at the end of the current main-thread
+     * message rather than at once: one key event can change the modifiers twice (a character
+     * spends Shift, then its handler turns Ctrl off), and posting each step put the in-between
+     * icon on screen for a frame. Only where things end up is sent.
+     */
     private void postIcon(int iconResId, boolean reassert) {
+        this.mPendingIconResId = iconResId;
+        this.mPendingReassert |= reassert;
+        if (!this.mFlushScheduled) {
+            this.mFlushScheduled = true;
+            this.mHandler.post(this.mFlush);
+        }
+    }
+
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
+
+    private int mPendingIconResId;
+
+    private boolean mPendingReassert;
+
+    private boolean mFlushScheduled;
+
+    private final Runnable mFlush = new Runnable() {
+        @Override
+        public void run() {
+            mFlushScheduled = false;
+            boolean reassert = mPendingReassert;
+            mPendingReassert = false;
+            sendIcon(mPendingIconResId, reassert);
+        }
+    };
+
+    /** Hands {@code iconResId} (0 = hidden) to the system unless it is already there; see {@link #mSentIconResId}. */
+    private void sendIcon(int iconResId, boolean reassert) {
         if (iconResId == this.mSentIconResId) {
             if (iconResId == 0 || !reassert || this.mReassertedThisSession) {
                 return;

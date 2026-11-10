@@ -99,6 +99,8 @@ public final class ModifierState {
     private final boolean ctrlLocked;
     private final boolean shiftSurvivesMask;
     private final int keysHeld;
+    private final boolean shiftKeyPhysicallyDown;
+    private final boolean altKeyPhysicallyDown;
 
     private ModifierState(Builder b) {
         this.eventMeta = b.eventMeta;
@@ -115,6 +117,8 @@ public final class ModifierState {
         this.ctrlLocked = b.ctrlLocked;
         this.shiftSurvivesMask = b.shiftSurvivesMask;
         this.keysHeld = b.keysHeld;
+        this.shiftKeyPhysicallyDown = b.shiftKeyPhysicallyDown;
+        this.altKeyPhysicallyDown = b.altKeyPhysicallyDown;
     }
 
     // ===================================================================== factories
@@ -380,6 +384,21 @@ public final class ModifierState {
         return keysHeld > 0;
     }
 
+    /**
+     * A Shift key is physically down right now, whatever its state: unlike {@link #isShiftHeld()}
+     * this stays true once the press has been spent on a character, and during the second press
+     * of a double tap, when the span briefly says Shift is off. For display only (the status-bar
+     * icon holds its Shift glyph through such a press); it decides nothing about typing.
+     */
+    public boolean isShiftKeyPhysicallyDown() {
+        return shiftKeyPhysicallyDown;
+    }
+
+    /** The Alt counterpart of {@link #isShiftKeyPhysicallyDown()}. */
+    public boolean isAltKeyPhysicallyDown() {
+        return altKeyPhysicallyDown;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ModifierState{");
@@ -420,6 +439,8 @@ public final class ModifierState {
         private boolean ctrlLocked;
         private boolean shiftSurvivesMask = true;
         private int keysHeld;
+        private boolean shiftKeyPhysicallyDown;
+        private boolean altKeyPhysicallyDown;
 
         public Builder event(KeyEvent event) {
             return eventMeta(event == null ? 0 : event.getMetaState());
@@ -500,6 +521,16 @@ public final class ModifierState {
 
         public Builder keysHeld(int value) {
             this.keysHeld = value;
+            return this;
+        }
+
+        public Builder shiftKeyPhysicallyDown(boolean value) {
+            this.shiftKeyPhysicallyDown = value;
+            return this;
+        }
+
+        public Builder altKeyPhysicallyDown(boolean value) {
+            this.altKeyPhysicallyDown = value;
             return this;
         }
 

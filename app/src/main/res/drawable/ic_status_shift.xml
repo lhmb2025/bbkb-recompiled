@@ -1,9 +1,16 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="36dp"
-    android:height="18dp"
-    android:viewportWidth="144"
-    android:viewportHeight="72">
-  <path
-      android:fillColor="@android:color/white"
-      android:pathData="M141.45,44.25L108,10.8,74.55,44.25h20.25v16.95h26.85v-16.95h19.8ZM116.55,56.025h-16.5v-16.5h-11.325l19.425,-19.425,19.425,19.425h-10.95v16.5Z"/>
+    android:width="16dp"
+    android:height="15dp"
+    android:viewportWidth="76.8"
+    android:viewportHeight="71.31">
+  <!-- Status bar modifier icon. One glyph = 16x15dp, two = 32x15dp: at 15dp tall the status bar
+       draws the icon unscaled, and 16dp/32dp are whole pixels on the usual densities, so the pair
+       is exactly twice the single. The art keeps its 144x72 grid (Shift in x 72..144) and the
+       group moves it so the right-hand glyph is the same distance from the icon's right edge in
+       both: Shift does not move when Alt or Ctrl joins it. -->
+  <group android:translateX="-69.6" android:translateY="-0.345">
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M141.45,44.25L108,10.8,74.55,44.25h20.25v16.95h26.85v-16.95h19.8ZM116.55,56.025h-16.5v-16.5h-11.325l19.425,-19.425,19.425,19.425h-10.95v16.5Z"/>
+  </group>
 </vector>

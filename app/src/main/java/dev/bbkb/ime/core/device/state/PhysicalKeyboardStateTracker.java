@@ -169,6 +169,10 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
                 .shiftSurvivesMask(
                         (this.mKeyInterpreter.apply(KeyEvent.META_SHIFT_ON) & KeyEvent.META_SHIFT_ON) != 0)
                 .keysHeld(getNumberOfKeysDown())
+                .shiftKeyPhysicallyDown(this.mKeysHeld.get(KeyEvent.KEYCODE_SHIFT_LEFT, false)
+                        || this.mKeysHeld.get(KeyEvent.KEYCODE_SHIFT_RIGHT, false))
+                .altKeyPhysicallyDown(this.mKeysHeld.get(KeyEvent.KEYCODE_ALT_LEFT, false)
+                        || this.mKeysHeld.get(KeyEvent.KEYCODE_ALT_RIGHT, false))
                 .build();
     }
 

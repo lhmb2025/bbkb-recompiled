@@ -31,6 +31,7 @@ import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.annotation.LooperMode;
 
 import java.util.Locale;
 
@@ -58,6 +59,9 @@ import java.util.Locale;
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
+// The updater hands the icon over at the end of the main-thread message; under the legacy looper
+// that is at once, so each case below still reads "do this, the icon is that".
+@LooperMode(LooperMode.Mode.LEGACY)
 public class ModifierStatusIconTest {
 
     private Context context;
@@ -435,5 +439,56 @@ public class ModifierStatusIconTest {
                 ModifierStatusBarUpdater.getStatusIconDrawable(ModifierStatusBarUpdater.withCtrl(shiftLocked, true, true)));
         assertEquals(R.drawable.ic_status_shift,
                 ModifierStatusBarUpdater.getStatusIconDrawable(ModifierStatusBarUpdater.withCtrl(shift, false, false)));
+    }
+
+    // ==================== a glyph stays while its key is down ====================
+
+    /**
+     * The blink: the second press of a double tap turns the modifier off on its key-down and
+     * locks it on the key-up, and the icon used to go off for the length of that press.
+     */
+    @Test
+    public void aDoubleTapGoesFromTheIconToTheLockedIconWithoutHidingInBetween() {
+        trackerTap(KeyEvent.KEYCODE_SHIFT_LEFT);
+        trackerTap(KeyEvent.KEYCODE_SHIFT_LEFT);
+
+        InOrder order = Mockito.inOrder(ime);
+        order.verify(ime).showStatusIcon(R.drawable.ic_status_shift);
+        order.verify(ime).showStatusIcon(R.drawable.ic_status_shift_locked);
+        verify(ime, never()).hideStatusIcon();
+    }
+
+    @Test
+    public void aDoubleTappedAltDoesNotHideInBetweenEither() {
+        trackerTap(KeyEvent.KEYCODE_ALT_LEFT);
+        trackerTap(KeyEvent.KEYCODE_ALT_LEFT);
+
+        verify(ime).showStatusIcon(R.drawable.ic_status_alt_locked);
+        verify(ime, never()).hideStatusIcon();
+    }
+
+    /** The press that unlocks: the locked icon stays while the key is down and goes on release. */
+    @Test
+    public void unlockingHidesTheIconWhenTheKeyComesUpNotWhenItGoesDown() {
+        trackerTap(KeyEvent.KEYCODE_SHIFT_LEFT);
+        trackerTap(KeyEvent.KEYCODE_SHIFT_LEFT);
+        assertEquals("premise: Shift is locked", true, tracker.getModifierState().isShiftLocked());
+
+        trackerDown(KeyEvent.KEYCODE_SHIFT_LEFT);
+        verify(ime, never()).hideStatusIcon();
+
+        trackerUp(KeyEvent.KEYCODE_SHIFT_LEFT);
+        verify(ime).hideStatusIcon();
+    }
+
+    /** A held Shift that a character has used is still a held Shift: the icon waits for the release. */
+    @Test
+    public void aHeldShiftKeepsItsIconAfterACharacterUntilItIsReleased() {
+        trackerDown(KeyEvent.KEYCODE_SHIFT_LEFT);
+        tracker.consumeModifiersAfterKey(KeyEvent.KEYCODE_A, true);
+        verify(ime, never()).hideStatusIcon();
+
+        trackerUp(KeyEvent.KEYCODE_SHIFT_LEFT);
+        verify(ime).hideStatusIcon();
     }
 }
