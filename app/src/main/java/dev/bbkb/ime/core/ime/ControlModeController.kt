@@ -540,7 +540,7 @@ class ControlModeController(private val host: Host) {
      */
     fun remapMultifunctionCtrlKey(event: KeyEvent): KeyEvent {
         val mapping = dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
-            .getInstance().resolve(event.scanCode, event.keyCode) ?: return event
+            .getInstance().resolve(event.scanCode, event.keyCode, event.deviceId) ?: return event
         if (mapping.role != dev.bbkb.ime.core.device.config.model.KeyRole.MULTIFUNCTION) return event
         if (dev.bbkb.ime.core.keyevent.MultifunctionKeyHandler.getConfiguredAction(mapping)
             != dev.bbkb.ime.core.keyevent.MultifunctionKeyHandler.ACTION_CTRL) return event
@@ -562,7 +562,7 @@ class ControlModeController(private val host: Host) {
      */
     fun remapProfileCtrlKey(event: KeyEvent): KeyEvent {
         val mapping = dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
-            .getInstance().resolve(event.scanCode, event.keyCode) ?: return event
+            .getInstance().resolve(event.scanCode, event.keyCode, event.deviceId) ?: return event
         if (mapping.role != dev.bbkb.ime.core.device.config.model.KeyRole.MODIFIER) return event
         val (ctrlCode, ctrlMeta) = when (mapping.treatAs) {
             "KEYCODE_CTRL_LEFT" -> KeyEvent.KEYCODE_CTRL_LEFT to META_CTRL_LEFT

@@ -478,7 +478,8 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         }
         dev.bbkb.ime.core.device.config.model.ScancodeMapping mapping =
                 dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
-                        .getInstance().resolve(keyEvent.getScanCode(), keyEvent.getKeyCode());
+                        .getInstance().resolve(keyEvent.getScanCode(), keyEvent.getKeyCode(),
+                                keyEvent.getDeviceId());
         return mapping != null && mapping.role != null
                 && mapping.role.isConsumedAtAccessibilityLevel();
     }

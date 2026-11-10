@@ -195,7 +195,7 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
      * system. Returns false, touching nothing, for every other key.
      */
     fun handleFirmwareGestureKey(event: KeyEvent): Boolean {
-        val mapping = ScancodeMappingResolver.getInstance().resolve(event.scanCode, event.keyCode)
+        val mapping = ScancodeMappingResolver.getInstance().resolve(event.scanCode, event.keyCode, event.deviceId)
             ?: return false
         if (FirmwareGestureKeys.swipeFor(mapping.role) == null) return false
         if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0 && ime.isInputActive) {

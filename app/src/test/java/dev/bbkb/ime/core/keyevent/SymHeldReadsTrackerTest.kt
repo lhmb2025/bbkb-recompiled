@@ -79,6 +79,7 @@ class SymHeldReadsTrackerTest {
         resolverStatic = mockStatic(ScancodeMappingResolver::class.java)
         val resolver = mock(ScancodeMappingResolver::class.java)
         `when`(resolver.resolve(anyInt(), anyInt())).thenReturn(null)
+        `when`(resolver.resolve(anyInt(), anyInt(), anyInt())).thenReturn(null)
         resolverStatic.`when`<ScancodeMappingResolver> { ScancodeMappingResolver.getInstance() }
             .thenReturn(resolver)
 

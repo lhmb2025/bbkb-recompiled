@@ -81,7 +81,6 @@
 
         <settings-overrides>
             <!-- Capacitive keyboard gestures - enabled and user-configurable on Key2 -->
-            <setting key="swipe_down_ckb" type="boolean" read-only="false"/>
             <setting key="type_by_swiping_ckb" type="boolean" read-only="false"/>
         </settings-overrides>
 

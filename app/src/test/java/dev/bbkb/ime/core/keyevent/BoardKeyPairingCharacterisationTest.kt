@@ -111,6 +111,7 @@ class BoardKeyPairingCharacterisationTest {
         resolverStatic = mockStatic(ScancodeMappingResolver::class.java)
         resolver = mock(ScancodeMappingResolver::class.java)
         `when`(resolver.resolve(anyInt(), anyInt())).thenReturn(null)
+        `when`(resolver.resolve(anyInt(), anyInt(), anyInt())).thenReturn(null)
         resolverStatic.`when`<ScancodeMappingResolver> { ScancodeMappingResolver.getInstance() }
             .thenReturn(resolver)
 
@@ -642,6 +643,7 @@ class BoardKeyPairingCharacterisationTest {
         verify(ime, never()).dismissBoardsForTextKey()
 
         `when`(resolver.resolve(anyInt(), anyInt())).thenReturn(null)
+        `when`(resolver.resolve(anyInt(), anyInt(), anyInt())).thenReturn(null)
         processor.onKeyDownInternal(ORDINARY_KEY, keyDown(ORDINARY_KEY, ORDINARY_SCANCODE))
 
         verify(ime).dismissBoardsForTextKey()
@@ -734,6 +736,7 @@ class BoardKeyPairingCharacterisationTest {
             it.defaultAction = defaultAction
         }
         `when`(resolver.resolve(anyInt(), anyInt())).thenReturn(mapping)
+        `when`(resolver.resolve(anyInt(), anyInt(), anyInt())).thenReturn(mapping)
     }
 
     private fun <T> anyArg(): T = ArgumentMatchers.any<T>() as T

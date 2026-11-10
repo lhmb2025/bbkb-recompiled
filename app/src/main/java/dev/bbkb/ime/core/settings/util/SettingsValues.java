@@ -469,7 +469,9 @@ public final class SettingsValues {
         this.shakeSlopTime = SettingsManager.getIntPrefWithResourceDefault(sharedPreferences, resources, "shake_slop_time", R.integer.config_default_shake_slop_time);
         this.shakeResetTime = SettingsManager.getIntPrefWithResourceDefault(sharedPreferences, resources, "shake_reset_time", R.integer.config_default_shake_reset_time);
         this.unifyLearnedWords = SettingsManager.isUnifyLearnedWordsEnabled(sharedPreferences);
-        this.overrideDeviceMetaState = sharedPreferences.getBoolean(context.getString(R.string.pref_override_device_meta_state_key), true);
+        final String overrideMetaStateKey = context.getString(R.string.pref_override_device_meta_state_key);
+        this.overrideDeviceMetaState = DeviceProfile.forcedBooleanOr(overrideMetaStateKey,
+                sharedPreferences.getBoolean(overrideMetaStateKey, true));
         this.shiftDoubleTapLock = sharedPreferences.getBoolean(context.getString(R.string.pref_shift_double_tap_lock_key), true);
         this.altDoubleTapLock = sharedPreferences.getBoolean(context.getString(R.string.pref_alt_double_tap_lock_key), true);
         this.ctrlDoubleTapLock = sharedPreferences.getBoolean(context.getString(R.string.pref_ctrl_double_tap_lock_key), true);

@@ -74,7 +74,6 @@
             <setting key="pref_override_device_meta_state" type="boolean" forced-value="true" read-only="true"/>
             
             <!-- Disable gesture settings (non-capacitive keyboard) -->
-            <setting key="swipe_down_ckb" type="boolean" forced-value="false" read-only="true"/>
             <setting key="type_by_swiping_ckb" type="boolean" forced-value="false" read-only="true"/>
         </settings-overrides>
     </device>

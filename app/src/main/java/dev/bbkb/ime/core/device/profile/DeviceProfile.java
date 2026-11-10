@@ -856,6 +856,17 @@ public final class DeviceProfile {
         return override != null && override.hidden;
     }
 
+    /**
+     * What a boolean setting is on this device: the profile's {@code forced-value} when it has
+     * one, otherwise {@code stored}. For the places that read a setting to act on it. The
+     * Settings screen already shows a forced value as a locked switch, but the stored preference
+     * can differ from it (set before the profile applied, or restored from a backup), and the
+     * keyboard used to follow the stored one.
+     */
+    public static boolean forcedBooleanOr(String settingKey, boolean stored) {
+        return current().getForcedBooleanValue(settingKey, stored);
+    }
+
     public boolean getForcedBooleanValue(String settingKey, boolean defaultValue) {
         DeviceSettingOverride override = getSettingOverride(settingKey);
         if (override != null && override.type == DeviceSettingOverride.SettingType.BOOLEAN) {

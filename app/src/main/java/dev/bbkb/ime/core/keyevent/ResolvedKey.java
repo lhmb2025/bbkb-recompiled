@@ -91,7 +91,7 @@ public final class ResolvedKey {
                 keyCode,
                 scanCode,
                 KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(event),
-                ScancodeMappingResolver.getInstance().resolve(scanCode, keyCode));
+                ScancodeMappingResolver.getInstance().resolve(scanCode, keyCode, event.getDeviceId()));
     }
 
     /** The same resolution with both singletons supplied, for tests that drive them directly. */

@@ -414,7 +414,8 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     public static boolean isCbkTypeBySwipingEnabled(SharedPreferences sharedPreferences, Resources resources) {
-        return sharedPreferences.getBoolean("type_by_swiping_ckb", resources.getBoolean(R.bool.config_ckb_type_by_swiping_enabled_by_build_config));
+        return DeviceProfile.forcedBooleanOr("type_by_swiping_ckb",
+                sharedPreferences.getBoolean("type_by_swiping_ckb", resources.getBoolean(R.bool.config_ckb_type_by_swiping_enabled_by_build_config)));
     }
 
     public static boolean isVkbSwipeGesturesEnabled(SharedPreferences sharedPreferences, Resources resources) {

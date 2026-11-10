@@ -249,7 +249,7 @@ public class KeyInterceptorService extends AccessibilityService {
         // (or, for a device with no config, the legacy scancode table) — not by whichever keycode
         // the ROM's .kl file happened to attach to it — so the decision is made here, first.
         ScancodeMapping mapping = sUseUnifiedKeyMapping
-                ? ScancodeMappingResolver.getInstance().resolve(scanCode, keyCode)
+                ? ScancodeMappingResolver.getInstance().resolve(scanCode, keyCode, event.getDeviceId())
                 : null;
         if (mapping != null && mapping.role == KeyRole.MULTIFUNCTION) {
             // Multifunction keys are never consumed at the accessibility level: their
@@ -366,7 +366,7 @@ public class KeyInterceptorService extends AccessibilityService {
         // the resolver directly, so it holds with the unified pipeline off (the shipped default).
         ScancodeMapping declared = mapping != null
                 ? mapping
-                : ScancodeMappingResolver.getInstance().resolve(scanCode, keyCode);
+                : ScancodeMappingResolver.getInstance().resolve(scanCode, keyCode, deviceId);
         if (declared != null && declared.role != null) {
             return keyRoleToSpecialKeyType(declared.role);
         }

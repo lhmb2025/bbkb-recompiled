@@ -2,10 +2,16 @@ package dev.bbkb.ime.core.device.config.resolver;
 
 import android.content.Context;
 import android.util.Log;
+import android.os.Build;
 import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 import android.view.InputDevice;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+
 import dev.bbkb.ime.core.device.config.model.DeviceInputMapping;
+import dev.bbkb.ime.core.device.config.model.DeviceMatchCriteria;
 import dev.bbkb.ime.core.device.config.model.KeyRole;
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping;
 
@@ -62,6 +68,12 @@ public class ScancodeMappingResolver {
 
     private volatile boolean mInitialized = false;
 
+    /** The device mapping the roles came from; null when none is loaded. */
+    @Nullable private volatile DeviceInputMapping mSource;
+
+    /** Cache: device id → {@link #appliesToDevice}. Published copy-on-write, like the role cache. */
+    private volatile SparseBooleanArray mDeviceApplies = new SparseBooleanArray();
+
     private ScancodeMappingResolver() {
         // Singleton
     }
@@ -104,8 +116,94 @@ public class ScancodeMappingResolver {
                 }
             }
         }
+        mSource = mapping;
+        mDeviceApplies = new SparseBooleanArray();
         mCache = new SparseArray<>();
         mInitialized = true;
+    }
+
+    /**
+     * {@link #resolve(int, int)} for a key event from a known device: the profile's roles belong
+     * to the phone's own keys, so a key from another keyboard gets none.
+     *
+     * <p>The lookup used to take no device at all. On a KEY2, whose profile gives key code 7 the
+     * mic-key role, the 0 key of a Bluetooth or USB keyboard started voice input.
+     *
+     * @param deviceId {@code KeyEvent.getDeviceId()} of the event being resolved
+     */
+    public ScancodeMapping resolve(int scanCode, int keyCode, int deviceId) {
+        if (mMappings == null || !appliesToDevice(deviceId)) {
+            return null;
+        }
+        return resolve(scanCode, keyCode);
+    }
+
+    /**
+     * Whether the loaded profile speaks for the keyboard with this device id. True when no
+     * profile is loaded, so a caller gating on it behaves as before on a phone without one.
+     * See {@link #appliesTo} for the rule; the answer is cached per device id until the next
+     * {@link #initialize} or {@link #reset}, which a device being attached or removed triggers.
+     */
+    public boolean appliesToDevice(int deviceId) {
+        final DeviceInputMapping source = mSource;
+        if (source == null) {
+            return true;
+        }
+        final SparseBooleanArray known = mDeviceApplies;
+        final int index = known.indexOfKey(deviceId);
+        if (index >= 0) {
+            return known.valueAt(index);
+        }
+        final boolean applies = appliesTo(source, InputDevice.getDevice(deviceId));
+        cacheDevice(source, deviceId, applies);
+        return applies;
+    }
+
+    /**
+     * The rule behind {@link #appliesToDevice}. A profile always applies to keys Android cannot
+     * attribute to a real device (injected keys, the accessibility helper's forwarded keys) and
+     * to every built-in device: a phone's keypad and its side keys are often separate input
+     * devices. An external keyboard gets the profile only when the profile's {@code <match>}
+     * names that keyboard itself (device name, vendor id or product id); a profile matched on
+     * the phone's build alone says nothing about what is plugged into it.
+     */
+    @VisibleForTesting
+    static boolean appliesTo(DeviceInputMapping source, @Nullable InputDevice device) {
+        if (device == null || device.isVirtual() || !isExternal(device)) {
+            return true;
+        }
+        final DeviceMatchCriteria criteria = source.matchCriteria;
+        if (criteria != null && criteria.hasAnyCriteria() && !criteria.hasInputDeviceCriteria()) {
+            return false;
+        }
+        return source.matchesDevice(device.getName(),
+                DeviceMatchCriteria.inputDeviceId(device.getVendorId()),
+                DeviceMatchCriteria.inputDeviceId(device.getProductId()));
+    }
+
+    /**
+     * {@code InputDevice.isExternal()}, which is public from Android 10. Before that it exists
+     * but is hidden, so it is called by reflection; if that fails the device counts as built-in
+     * and the profile applies to it, as it always did.
+     */
+    private static boolean isExternal(InputDevice device) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return device.isExternal();
+        }
+        try {
+            return Boolean.TRUE.equals(InputDevice.class.getMethod("isExternal").invoke(device));
+        } catch (ReflectiveOperationException | RuntimeException e) {
+            return false;
+        }
+    }
+
+    private synchronized void cacheDevice(DeviceInputMapping source, int deviceId, boolean applies) {
+        if (mSource != source) {
+            return;  // a new profile was loaded while this answer was being worked out
+        }
+        final SparseBooleanArray next = mDeviceApplies.clone();
+        next.put(deviceId, applies);
+        mDeviceApplies = next;
     }
 
     /**
@@ -159,6 +257,8 @@ public class ScancodeMappingResolver {
      */
     public synchronized void reset() {
         mMappings = null;
+        mSource = null;
+        mDeviceApplies = new SparseBooleanArray();
         mCache = new SparseArray<>();
         mInitialized = false;
         if (DEBUG) {

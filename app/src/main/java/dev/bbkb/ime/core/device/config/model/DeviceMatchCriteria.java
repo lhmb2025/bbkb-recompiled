@@ -176,6 +176,15 @@ public class DeviceMatchCriteria {
         return true;
     }
 
+    /**
+     * True when a rule names the keyboard itself (device name, vendor id or product id) rather
+     * than only the phone it is built into.
+     */
+    public boolean hasInputDeviceCriteria() {
+        return rules.containsKey(Field.DEVICE_NAME) || rules.containsKey(Field.VENDOR_ID)
+                || rules.containsKey(Field.PRODUCT_ID);
+    }
+
     /** Check if at least one matching criterion is defined. */
     public boolean hasAnyCriteria() {
         return !rules.isEmpty();

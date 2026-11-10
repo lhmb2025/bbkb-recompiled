@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Device Configuration: Minimal Phone (MP01)
+    Device Configuration: Zinwa Q25
     Schema v2.1
-    
-    This configuration is for the Minimal Phone with aw9523b-key keyboard.
+
+    This configuration is for the Zinwa Q25 and its q25 keyboard.
     It will be auto-selected when the device is detected.
     
     Find device name: adb shell dumpsys input
@@ -32,17 +32,17 @@
                 <key rawKeyCode="58" role="BOARD_SYM"
                      treatAs="KEYCODE_SYM" notes="BB SYM raw scancode"/>
 
-                <!-- MIC/PERIOD key: raw BB scancode -->
+                <!-- Mic/zero key, as on a BlackBerry: voice input without Alt; with Alt, or in a
+                     numeric field, it types '0'. -->
                 <key rawKeyCode="7" role="BOARD_VOICE"
-                     treatAs="KEYCODE_MIC" altChar="." board="-27"
-                     notes="BB MIC raw scancode"/>
+                     treatAs="KEYCODE_MIC" altChar="0" board="-27"
+                     notes="BB mic key (keyCode=7), alt char is zero digit"/>
 
             </scancode-mappings>
         </input-mappings>
         
         <settings-overrides>
             <!-- Disable gesture settings (non-capacitive keyboard) -->
-            <setting key="swipe_down_ckb" type="boolean" forced-value="false" read-only="true"/>
             <setting key="type_by_swiping_ckb" type="boolean" forced-value="false" read-only="true"/>
         </settings-overrides>
     </device>

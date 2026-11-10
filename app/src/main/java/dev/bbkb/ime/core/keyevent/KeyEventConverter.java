@@ -212,7 +212,7 @@ public class KeyEventConverter {
                 // BOARD_VOICE key: with the dictation key off, Alt plus it starts voice input
                 // rather than typing its alt character, and that swap lives in the voice branch.
                 ScancodeMapping altMapping = ScancodeMappingResolver.getInstance().resolve(
-                        keyEvent.getScanCode(), keyCode);
+                        keyEvent.getScanCode(), keyCode, keyEvent.getDeviceId());
                 boolean isSpecialFunctionKey = (mAltMappingsTable != null && mAltMappingsTable.getSpecialFunctionCode(keyCode) != 0)
                         || (altMapping != null && altMapping.role == KeyRole.BOARD_VOICE);
                 if (!isSpecialFunctionKey) {
@@ -288,7 +288,7 @@ public class KeyEventConverter {
         }
         // === UNIFIED KEY MAPPING (Phase 4): Resolve special keys from XML config ===
         ScancodeMapping resolvedMapping = ScancodeMappingResolver.getInstance().resolve(
-                keyEvent.getScanCode(), keyCode2);
+                keyEvent.getScanCode(), keyCode2, keyEvent.getDeviceId());
         if (resolvedMapping != null && resolvedMapping.role != null) {
             boolean unifiedAltPressed = (KeyEvent.normalizeMetaState(i) & 2) != 0;
 

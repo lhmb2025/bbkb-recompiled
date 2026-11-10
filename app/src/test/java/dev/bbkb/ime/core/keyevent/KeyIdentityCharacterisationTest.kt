@@ -89,6 +89,7 @@ class KeyIdentityCharacterisationTest {
         resolverStatic = mockStatic(ScancodeMappingResolver::class.java)
         resolver = mock(ScancodeMappingResolver::class.java)
         `when`(resolver.resolve(anyInt(), anyInt())).thenReturn(null)
+        `when`(resolver.resolve(anyInt(), anyInt(), anyInt())).thenReturn(null)
         resolverStatic.`when`<ScancodeMappingResolver> { ScancodeMappingResolver.getInstance() }
             .thenReturn(resolver)
 
@@ -494,6 +495,7 @@ class KeyIdentityCharacterisationTest {
             it.defaultAction = defaultAction
         }
         `when`(resolver.resolve(anyInt(), anyInt())).thenReturn(mapping)
+        `when`(resolver.resolve(anyInt(), anyInt(), anyInt())).thenReturn(mapping)
     }
 
     /**

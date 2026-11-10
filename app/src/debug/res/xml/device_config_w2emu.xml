@@ -37,7 +37,6 @@
              VKB KDB — the W2 harness disables the spellchecker on the emulator instead. -->
 
         <settings-overrides>
-            <setting key="swipe_down_ckb" type="boolean" read-only="false"/>
             <setting key="type_by_swiping_ckb" type="boolean" read-only="false"/>
         </settings-overrides>
 

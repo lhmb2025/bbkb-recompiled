@@ -253,7 +253,11 @@ public class KeyEventProcessor {
         // call is two integer compares; it returns true only on the rare keystroke that changes
         // the answer, and then the profile is rebuilt so the symbol rows and layout-set names
         // follow.
-        if (rawIsPhysical && dev.bbkb.ime.core.device.detection.KeypadLayoutDetector
+        // Only from a keyboard the profile speaks for: an external keyboard's layout says nothing
+        // about the phone's own keypad.
+        if (rawIsPhysical
+                && ScancodeMappingResolver.getInstance().appliesToDevice(keyEvent.getDeviceId())
+                && dev.bbkb.ime.core.device.detection.KeypadLayoutDetector
                 .observeKeyEvent(keyEvent.getScanCode(), keyEvent.getKeyCode())) {
             DeviceProfile.reinitializeForKeypadLayoutChange(
                     ime.getApplicationContext(), keyEvent.getDeviceId());
