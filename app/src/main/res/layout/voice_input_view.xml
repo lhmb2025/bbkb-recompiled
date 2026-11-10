@@ -37,13 +37,20 @@
 
     <!-- Material-only additions (shown by VoiceInputView when the Material theme
          is active): status line, live waveform, recognition-language chip. -->
+    <!-- Full width with side margins and centred lines, so a message long enough to wrap keeps
+         clear of the board's edges. VoiceInputView widens the margins to clear the language
+         chip, which a second line reaches on most keyboard heights. -->
     <TextView
         android:id="@+id/voice_status_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/voice_input_btn"
-        android:layout_centerHorizontal="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="14dp"
+        android:gravity="center_horizontal"
+        android:maxLines="3"
+        android:ellipsize="end"
         android:textSize="14sp"
         android:visibility="gone"/>
     <dev.bbkb.ime.keyboard.inputboard.voice.VoiceWaveformView

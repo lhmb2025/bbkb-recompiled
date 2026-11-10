@@ -249,8 +249,37 @@ public class VoiceInputView extends RelativeLayout {
         }
     }
 
+    /**
+     * Side margins for the status line: 24dp, or enough to clear the language chip in the
+     * top corner when it is showing. The same on both sides, so the lines stay centred on the
+     * mic. A message that wraps (the "isn't available for French" one) used to run edge to
+     * edge and under the chip.
+     */
+    private void keepStatusClearOfLanguageChip() {
+        if (this.mStatusText == null || this.mLanguageChip == null) {
+            return;
+        }
+        float density = getResources().getDisplayMetrics().density;
+        int side = (int) (24 * density);
+        if (this.mLanguageChip.getVisibility() == View.VISIBLE) {
+            int unspecified = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+            this.mLanguageChip.measure(unspecified, unspecified);
+            MarginLayoutParams chip = (MarginLayoutParams) this.mLanguageChip.getLayoutParams();
+            side = Math.max(side, this.mLanguageChip.getMeasuredWidth() + chip.getMarginEnd()
+                    + (int) (8 * density));
+        }
+        MarginLayoutParams status = (MarginLayoutParams) this.mStatusText.getLayoutParams();
+        if (status.leftMargin != side || status.rightMargin != side) {
+            status.leftMargin = side;
+            status.rightMargin = side;
+            status.setMarginStart(side);
+            status.setMarginEnd(side);
+        }
+    }
+
     @Override // android.widget.RelativeLayout, android.view.View
     protected void onMeasure(int i, int i2) {
+        keepStatusClearOfLanguageChip();
         setMeasuredDimension(
                 BoardHeightPolicy.measuredWidth(this),
                 BoardHeightPolicy.measuredHeight(this, this.mKeyboardSwitcher, this.mKeyboardHeight));
