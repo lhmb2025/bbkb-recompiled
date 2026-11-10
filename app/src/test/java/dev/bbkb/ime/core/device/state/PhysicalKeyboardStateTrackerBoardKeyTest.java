@@ -14,7 +14,7 @@ import androidx.test.core.app.ApplicationProvider;
 import dev.bbkb.ime.core.device.config.model.DeviceInputConfig;
 import dev.bbkb.ime.core.device.config.model.DeviceInputMapping;
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser;
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver;
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier;
 import dev.bbkb.ime.core.device.profile.DeviceCapabilities;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
@@ -61,7 +61,7 @@ public class PhysicalKeyboardStateTrackerBoardKeyTest {
         DeviceInputMapping mapping = config.findMappingForDevice("aw9523b-key");
         assertNotNull("device_config_minimal.xml no longer matches the device name aw9523b-key",
                 mapping);
-        ScancodeMappingResolver.getInstance().initialize(mapping);
+        DeviceInputResolver.installPhoneProfileForTest(mapping);
 
         KeyEventDeviceClassifier.getInstance().clearCache();
         tracker = new PhysicalKeyboardStateTracker(null);
@@ -69,7 +69,7 @@ public class PhysicalKeyboardStateTrackerBoardKeyTest {
 
     @After
     public void tearDown() {
-        ScancodeMappingResolver.getInstance().reset();
+        DeviceInputResolver.resetConfig();
         KeyEventDeviceClassifier.getInstance().clearCache();
         DeviceProfile.initialize(null);
     }
@@ -105,7 +105,7 @@ public class PhysicalKeyboardStateTrackerBoardKeyTest {
     @Test
     public void withNoDeviceConfigArmedNothingChanges() {
         // A device whose config has no <scancode-mappings> must behave exactly as before.
-        ScancodeMappingResolver.getInstance().reset();
+        DeviceInputResolver.resetConfig();
         KeyEvent sym = event(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ALT_RIGHT, SCANCODE_SYM);
 
         assertFalse(PhysicalKeyboardStateTracker.isBoardRoleEvent(sym));

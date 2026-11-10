@@ -7,7 +7,7 @@ import androidx.annotation.VisibleForTesting;
 
 import dev.bbkb.ime.core.device.config.model.KeyRole;
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping;
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver;
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier;
 import dev.bbkb.ime.core.device.state.MetaKeyStateTracker;
 
@@ -91,7 +91,7 @@ public final class ResolvedKey {
                 keyCode,
                 scanCode,
                 KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(event),
-                ScancodeMappingResolver.getInstance().resolve(scanCode, keyCode, event.getDeviceId()));
+                DeviceInputResolver.keyRole(scanCode, keyCode, event.getDeviceId()));
     }
 
     /** The same resolution with both singletons supplied, for tests that drive them directly. */

@@ -8,7 +8,7 @@ import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.device.config.model.DeviceMatchCriteria
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -49,7 +49,7 @@ class KeyboardDeviceScannerTest {
     @After
     fun tearDown() {
         KeyboardDeviceScanner.resetForTest(null)
-        ScancodeMappingResolver.getInstance().reset()
+        DeviceInputResolver.resetConfig()
     }
 
     /** MotionRange is final and not mockable here; build a real one through its constructor. */
@@ -185,9 +185,8 @@ class KeyboardDeviceScannerTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val mp01 = DeviceInputMappingParser.parseConfigFromXmlResource(context, R.xml.device_config_minimal)
             .mappings[0]
-        val resolver = ScancodeMappingResolver.getInstance()
-        resolver.initialize(mp01)
-        assertNotNull(resolver.resolve(249, KeyEvent.KEYCODE_ALT_RIGHT))
+        DeviceInputResolver.installPhoneProfileForTest(mp01)
+        assertNotNull(DeviceInputResolver.keyRole(249, KeyEvent.KEYCODE_ALT_RIGHT, DeviceInputResolver.ALL_DEVICES))
 
         val kb = keyboard(3, "aw9523b-key")
         val scanner = KeyboardDeviceScanner.getInstance()
@@ -196,9 +195,9 @@ class KeyboardDeviceScannerTest {
         scanner.inputDeviceListenerForTest().onInputDeviceAdded(42)
         scanner.inputDeviceListenerForTest().onInputDeviceRemoved(42)
 
-        assertTrue("the resolver must stay populated", resolver.isInitialized)
-        assertEquals(dev.bbkb.ime.core.device.config.model.KeyRole.BOARD_SYM,
-            resolver.resolve(249, KeyEvent.KEYCODE_ALT_RIGHT)!!.role)
+        assertEquals("the phone's key roles must survive",
+            dev.bbkb.ime.core.device.config.model.KeyRole.BOARD_SYM,
+            DeviceInputResolver.keyRole(249, KeyEvent.KEYCODE_ALT_RIGHT, DeviceInputResolver.ALL_DEVICES)!!.role)
         assertSame("the keyboard cache is not re-scanned either", primary, scanner.primaryKeyboard)
     }
 

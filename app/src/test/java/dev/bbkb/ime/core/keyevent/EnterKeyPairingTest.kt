@@ -4,7 +4,8 @@ import android.content.Context
 import android.view.KeyEvent
 import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.core.BlackBerryIME
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver
+import dev.bbkb.ime.core.device.config.resolver.KeyRoleTestSupport
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier
 import dev.bbkb.ime.core.device.profile.DeviceCapabilities
 import dev.bbkb.ime.core.device.profile.DeviceProfile
@@ -42,7 +43,6 @@ class EnterKeyPairingTest {
 
     private lateinit var context: Context
     private lateinit var classifierStatic: MockedStatic<KeyEventDeviceClassifier>
-    private lateinit var resolverStatic: MockedStatic<ScancodeMappingResolver>
     private lateinit var subtypeStatic: MockedStatic<SubtypeManager>
     private lateinit var helperStatic: MockedStatic<InputMethodHelper>
 
@@ -66,12 +66,7 @@ class EnterKeyPairingTest {
         classifierStatic.`when`<KeyEventDeviceClassifier> { KeyEventDeviceClassifier.getInstance() }
             .thenReturn(classifier)
 
-        resolverStatic = mockStatic(ScancodeMappingResolver::class.java)
-        val resolver = mock(ScancodeMappingResolver::class.java)
-        `when`(resolver.resolve(anyInt(), anyInt())).thenReturn(null)
-        `when`(resolver.resolve(anyInt(), anyInt(), anyInt())).thenReturn(null)
-        resolverStatic.`when`<ScancodeMappingResolver> { ScancodeMappingResolver.getInstance() }
-            .thenReturn(resolver)
+        KeyRoleTestSupport.everyKeyIs(null)
 
         subtypeStatic = mockStatic(SubtypeManager::class.java)
         val subtypeManager = mock(SubtypeManager::class.java)
@@ -129,7 +124,7 @@ class EnterKeyPairingTest {
     @After
     fun tearDown() {
         classifierStatic.close()
-        resolverStatic.close()
+        DeviceInputResolver.resetConfig()
         subtypeStatic.close()
         helperStatic.close()
         DeviceProfile.initialize(null)

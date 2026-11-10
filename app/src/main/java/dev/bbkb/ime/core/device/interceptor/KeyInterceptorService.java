@@ -11,7 +11,7 @@ import androidx.annotation.VisibleForTesting;
 import dev.bbkb.ime.core.device.config.builder.HardwareKeyCaptureBus;
 import dev.bbkb.ime.core.device.config.model.KeyRole;
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping;
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver;
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
 import dev.bbkb.ime.core.keyevent.ResolvedKey;
 import dev.bbkb.ime.BuildConfig;
 
@@ -249,7 +249,7 @@ public class KeyInterceptorService extends AccessibilityService {
         // (or, for a device with no config, the legacy scancode table) — not by whichever keycode
         // the ROM's .kl file happened to attach to it — so the decision is made here, first.
         ScancodeMapping mapping = sUseUnifiedKeyMapping
-                ? ScancodeMappingResolver.getInstance().resolve(scanCode, keyCode, event.getDeviceId())
+                ? DeviceInputResolver.keyRole(scanCode, keyCode, event.getDeviceId())
                 : null;
         if (mapping != null && mapping.role == KeyRole.MULTIFUNCTION) {
             // Multifunction keys are never consumed at the accessibility level: their
@@ -366,7 +366,7 @@ public class KeyInterceptorService extends AccessibilityService {
         // the resolver directly, so it holds with the unified pipeline off (the shipped default).
         ScancodeMapping declared = mapping != null
                 ? mapping
-                : ScancodeMappingResolver.getInstance().resolve(scanCode, keyCode, deviceId);
+                : DeviceInputResolver.keyRole(scanCode, keyCode, deviceId);
         if (declared != null && declared.role != null) {
             return keyRoleToSpecialKeyType(declared.role);
         }

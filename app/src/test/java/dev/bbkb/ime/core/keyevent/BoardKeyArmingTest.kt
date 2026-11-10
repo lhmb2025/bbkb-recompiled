@@ -8,7 +8,7 @@ import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.device.config.model.DeviceInputMapping
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier
 import dev.bbkb.ime.core.device.profile.DeviceCapabilities
 import dev.bbkb.ime.core.device.profile.DeviceProfile
@@ -76,7 +76,7 @@ class BoardKeyArmingTest {
     @After
     fun tearDown() {
         pairing.clearPendingActions()
-        ScancodeMappingResolver.getInstance().reset()
+        DeviceInputResolver.resetConfig()
         KeyEventDeviceClassifier.getInstance().clearCache()
         DeviceProfile.initialize(null)
         PrefsManager.getPrefs(context).edit().clear().commit()
@@ -520,7 +520,7 @@ class BoardKeyArmingTest {
                 /* isBlackBerryDevice */ true, "qwerty", "4row"
             )
         )
-        ScancodeMappingResolver.getInstance().reset()
+        DeviceInputResolver.resetConfig()
         KeyEventDeviceClassifier.getInstance().clearCache()
         buildConverter()
     }
@@ -534,7 +534,7 @@ class BoardKeyArmingTest {
                 /* isBlackBerryDevice */ false, "qwerty", "4row"
             )
         )
-        ScancodeMappingResolver.getInstance().reset()
+        DeviceInputResolver.resetConfig()
         KeyEventDeviceClassifier.getInstance().clearCache()
         buildConverter()
     }
@@ -549,7 +549,7 @@ class BoardKeyArmingTest {
 
     private fun install(mapping: DeviceInputMapping) {
         DeviceProfileTestSupport.installMapping(mapping)
-        ScancodeMappingResolver.getInstance().initialize(mapping)
+        DeviceInputResolver.installPhoneProfileForTest(mapping)
         KeyEventDeviceClassifier.getInstance().clearCache()
         buildConverter()
     }

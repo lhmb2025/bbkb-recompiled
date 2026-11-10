@@ -5,7 +5,8 @@ import android.view.inputmethod.EditorInfo
 import dev.bbkb.ime.core.BlackBerryIME
 import dev.bbkb.ime.core.device.config.model.KeyRole
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver
+import dev.bbkb.ime.core.device.config.resolver.KeyRoleTestSupport
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier
 import dev.bbkb.ime.core.device.profile.DeviceCapabilities
 import dev.bbkb.ime.core.device.profile.DeviceProfile
@@ -72,11 +73,9 @@ class BoardKeyPairingCharacterisationTest {
 
     private lateinit var context: Context
     private lateinit var classifierStatic: MockedStatic<KeyEventDeviceClassifier>
-    private lateinit var resolverStatic: MockedStatic<ScancodeMappingResolver>
     private lateinit var subtypeStatic: MockedStatic<SubtypeManager>
 
     private lateinit var classifier: KeyEventDeviceClassifier
-    private lateinit var resolver: ScancodeMappingResolver
 
     private lateinit var tracker: PhysicalKeyboardStateTracker
     private lateinit var ime: BlackBerryIME
@@ -108,12 +107,7 @@ class BoardKeyPairingCharacterisationTest {
         classifierStatic.`when`<KeyEventDeviceClassifier> { KeyEventDeviceClassifier.getInstance() }
             .thenReturn(classifier)
 
-        resolverStatic = mockStatic(ScancodeMappingResolver::class.java)
-        resolver = mock(ScancodeMappingResolver::class.java)
-        `when`(resolver.resolve(anyInt(), anyInt())).thenReturn(null)
-        `when`(resolver.resolve(anyInt(), anyInt(), anyInt())).thenReturn(null)
-        resolverStatic.`when`<ScancodeMappingResolver> { ScancodeMappingResolver.getInstance() }
-            .thenReturn(resolver)
+        KeyRoleTestSupport.everyKeyIs(null)
 
         subtypeStatic = mockStatic(SubtypeManager::class.java)
         val subtypeManager = mock(SubtypeManager::class.java)
@@ -153,7 +147,7 @@ class BoardKeyPairingCharacterisationTest {
         SettingsValues.setInputMenuRequestedByKey(false)
         DeviceProfile.setOnScreenKeyboardShowing(false)
         classifierStatic.close()
-        resolverStatic.close()
+        DeviceInputResolver.resetConfig()
         subtypeStatic.close()
         DeviceProfile.initialize(null)
         PrefsManager.getPrefs(context).edit().clear().commit()
@@ -642,8 +636,7 @@ class BoardKeyPairingCharacterisationTest {
         processor.onKeyDownInternal(EMOJI_KEY, keyDown(EMOJI_KEY, EMOJI_SCANCODE))
         verify(ime, never()).dismissBoardsForTextKey()
 
-        `when`(resolver.resolve(anyInt(), anyInt())).thenReturn(null)
-        `when`(resolver.resolve(anyInt(), anyInt(), anyInt())).thenReturn(null)
+        KeyRoleTestSupport.everyKeyIs(null)
         processor.onKeyDownInternal(ORDINARY_KEY, keyDown(ORDINARY_KEY, ORDINARY_SCANCODE))
 
         verify(ime).dismissBoardsForTextKey()
@@ -735,8 +728,7 @@ class BoardKeyPairingCharacterisationTest {
             it.boardId = boardId
             it.defaultAction = defaultAction
         }
-        `when`(resolver.resolve(anyInt(), anyInt())).thenReturn(mapping)
-        `when`(resolver.resolve(anyInt(), anyInt(), anyInt())).thenReturn(mapping)
+        KeyRoleTestSupport.everyKeyIs(mapping)
     }
 
     private fun <T> anyArg(): T = ArgumentMatchers.any<T>() as T

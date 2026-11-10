@@ -79,6 +79,9 @@ class ForcedSettingValuesTest {
         val settings = load()
         assertEquals(true, settings.overrideDeviceMetaState)
         assertFalse(SettingsManager.isCbkTypeBySwipingEnabled(prefs(), context.resources))
+        assertFalse("the Settings screen reads the same preferences",
+            prefs().getBoolean("type_by_swiping_ckb", true))
+        assertEquals("the stored value is left alone", true, prefs().all["type_by_swiping_ckb"])
     }
 
     @Test

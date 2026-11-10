@@ -124,6 +124,57 @@ public class DeviceInputMapping {
     }
     
     /**
+     * True when this profile is matched by the keyboard itself (its name, vendor id or product
+     * id) rather than only by the phone it is built into. A profile matched on the phone alone
+     * says nothing about a keyboard plugged into that phone.
+     */
+    public boolean namesInputDevice() {
+        if (matchCriteria != null && matchCriteria.hasAnyCriteria()) {
+            return matchCriteria.hasInputDeviceCriteria();
+        }
+        return deviceName != null && !deviceName.isEmpty();  // legacy: matched by exact name
+    }
+
+    /** Cache for {@link #roleFor}: (scanCode << 16 | keyCode) → mapping, {@link #NO_ROLE} for a miss. */
+    private volatile android.util.SparseArray<ScancodeMapping> roleCache = new android.util.SparseArray<>();
+
+    private static final ScancodeMapping NO_ROLE = new ScancodeMapping();
+
+    /**
+     * The role this profile gives a key ({@code <scancode-mappings>}; the first entry that
+     * matches wins), or null when it gives none. Asked on every hardware key event, so answers
+     * are cached, and the cache is published copy-on-write to keep this lock-free. The list is
+     * not expected to change once the profile is in use.
+     *
+     * <p>Callers with a key event in hand want {@code DeviceInputResolver.keyRole}, which first
+     * works out whether this profile speaks for the keyboard the key came from.
+     */
+    public ScancodeMapping roleFor(int scanCode, int keyCode) {
+        final List<ScancodeMapping> mappings = scancodeMappings;
+        if (mappings == null || mappings.isEmpty()) {
+            return null;
+        }
+        final int cacheKey = (scanCode << 16) | (keyCode & 0xFFFF);
+        final ScancodeMapping cached = roleCache.get(cacheKey);
+        if (cached != null) {
+            return cached == NO_ROLE ? null : cached;
+        }
+        ScancodeMapping found = null;
+        for (ScancodeMapping mapping : mappings) {
+            if (mapping.matches(scanCode, keyCode)) {
+                found = mapping;
+                break;
+            }
+        }
+        synchronized (this) {
+            final android.util.SparseArray<ScancodeMapping> next = roleCache.clone();
+            next.put(cacheKey, found != null ? found : NO_ROLE);
+            roleCache = next;
+        }
+        return found;
+    }
+
+    /**
      * Get a setting override by key.
      * @param key Preference key to look up
      * @return DeviceSettingOverride if found, null otherwise

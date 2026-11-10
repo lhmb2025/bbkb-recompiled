@@ -19,7 +19,7 @@ package dev.bbkb.ime.core.device.config.model;
  * </ul>
  *
  * @see KeyRole
- * @see ScancodeMappingResolver (in resolver package)
+ * @see DeviceInputMapping#roleFor
  */
 public class ScancodeMapping {
 

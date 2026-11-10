@@ -4,7 +4,8 @@ import android.view.KeyEvent
 import dev.bbkb.ime.core.BlackBerryIME
 import dev.bbkb.ime.core.device.config.model.KeyRole
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver
+import dev.bbkb.ime.core.device.config.resolver.KeyRoleTestSupport
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier
 import dev.bbkb.ime.core.device.profile.DeviceCapabilities
 import dev.bbkb.ime.core.device.profile.DeviceProfile
@@ -57,11 +58,9 @@ class KeyIdentityCharacterisationTest {
 
     private lateinit var context: Context
     private lateinit var classifierStatic: MockedStatic<KeyEventDeviceClassifier>
-    private lateinit var resolverStatic: MockedStatic<ScancodeMappingResolver>
     private lateinit var subtypeStatic: MockedStatic<SubtypeManager>
 
     private lateinit var classifier: KeyEventDeviceClassifier
-    private lateinit var resolver: ScancodeMappingResolver
 
     private lateinit var ime: BlackBerryIME
     private lateinit var processor: KeyEventProcessor
@@ -86,12 +85,7 @@ class KeyIdentityCharacterisationTest {
         classifierStatic.`when`<KeyEventDeviceClassifier> { KeyEventDeviceClassifier.getInstance() }
             .thenReturn(classifier)
 
-        resolverStatic = mockStatic(ScancodeMappingResolver::class.java)
-        resolver = mock(ScancodeMappingResolver::class.java)
-        `when`(resolver.resolve(anyInt(), anyInt())).thenReturn(null)
-        `when`(resolver.resolve(anyInt(), anyInt(), anyInt())).thenReturn(null)
-        resolverStatic.`when`<ScancodeMappingResolver> { ScancodeMappingResolver.getInstance() }
-            .thenReturn(resolver)
+        KeyRoleTestSupport.everyKeyIs(null)
 
         subtypeStatic = mockStatic(SubtypeManager::class.java)
         val subtypeManager = mock(SubtypeManager::class.java)
@@ -125,7 +119,7 @@ class KeyIdentityCharacterisationTest {
     @After
     fun tearDown() {
         classifierStatic.close()
-        resolverStatic.close()
+        DeviceInputResolver.resetConfig()
         subtypeStatic.close()
         DeviceProfile.initialize(null)
         BoardKeyPressTracker.getInstance().clearPendingActions()
@@ -494,8 +488,7 @@ class KeyIdentityCharacterisationTest {
             it.boardId = boardId
             it.defaultAction = defaultAction
         }
-        `when`(resolver.resolve(anyInt(), anyInt())).thenReturn(mapping)
-        `when`(resolver.resolve(anyInt(), anyInt(), anyInt())).thenReturn(mapping)
+        KeyRoleTestSupport.everyKeyIs(mapping)
     }
 
     /**

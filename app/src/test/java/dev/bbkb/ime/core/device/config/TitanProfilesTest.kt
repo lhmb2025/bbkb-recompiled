@@ -10,7 +10,7 @@ import dev.bbkb.ime.core.device.config.model.DeviceQuirk
 import dev.bbkb.ime.core.device.config.model.KeyRole
 import dev.bbkb.ime.core.device.config.model.TouchKeypadConfig
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver
 import dev.bbkb.ime.core.device.detection.KeypadLayoutDetector
 import dev.bbkb.ime.core.keyevent.ResolvedKey
 import org.junit.After
@@ -51,7 +51,7 @@ class TitanProfilesTest {
     @After
     fun tearDown() {
         savedBuild.forEach { (field, value) -> ReflectionHelpers.setStaticField(Build::class.java, field, value) }
-        ScancodeMappingResolver.getInstance().reset()
+        DeviceInputResolver.resetConfig()
     }
 
     private fun clearBuild() = buildFields.forEach {
@@ -173,20 +173,18 @@ class TitanProfilesTest {
         assertEquals(36, pad.nativeMinSdk)
         assertEquals(TouchKeypadConfig.SourcePreference.AUTO, pad.source)
 
-        val resolver = ScancodeMappingResolver.getInstance()
-        resolver.initialize(m)
-        assertEquals(KeyRole.BOARD_SYM, resolver.resolve(253, android.view.KeyEvent.KEYCODE_SYM)!!.role)
-        val fn = resolver.resolve(251, android.view.KeyEvent.KEYCODE_CTRL_LEFT)!!
+        assertEquals(KeyRole.BOARD_SYM, m.roleFor(253, android.view.KeyEvent.KEYCODE_SYM)!!.role)
+        val fn = m.roleFor(251, android.view.KeyEvent.KEYCODE_CTRL_LEFT)!!
         assertEquals(KeyRole.MODIFIER, fn.role)
         assertEquals("KEYCODE_CTRL_LEFT", fn.treatAs)
         for (func in intArrayOf(249, 250)) {
-            val mf = resolver.resolve(func, 0)!!
+            val mf = m.roleFor(func, 0)!!
             assertEquals(KeyRole.FUNCTION, mf.role)
             assertEquals("no board on the Func keys", 0, mf.boardId)
         }
-        assertEquals(KeyRole.MODIFIER, resolver.resolve(100, android.view.KeyEvent.KEYCODE_ALT_RIGHT)!!.role)
-        assertEquals(KeyRole.GESTURE_SWIPE_LEFT, resolver.resolve(0, 322)!!.role)
-        assertEquals(KeyRole.GESTURE_SWIPE_LEFT, resolver.resolve(0, 404)!!.role)
+        assertEquals(KeyRole.MODIFIER, m.roleFor(100, android.view.KeyEvent.KEYCODE_ALT_RIGHT)!!.role)
+        assertEquals(KeyRole.GESTURE_SWIPE_LEFT, m.roleFor(0, 322)!!.role)
+        assertEquals(KeyRole.GESTURE_SWIPE_LEFT, m.roleFor(0, 404)!!.role)
 
         val doubleTap = m.getSettingOverride("ckb_gesture_double_tap")!!
         assertEquals("none", doubleTap.getDefaultStringValue())
@@ -206,14 +204,12 @@ class TitanProfilesTest {
             R.xml.device_config_titan to (KeyEvent.KEYCODE_ALT_RIGHT to 100),
             R.xml.device_config_titan_pocket to (KeyEvent.KEYCODE_ALT_RIGHT to 100),
         )) {
-            val resolver = ScancodeMappingResolver.getInstance()
-            resolver.initialize(mapping(resId))
+            val m = mapping(resId)
             val key = ResolvedKey.forTest(alt.first, alt.second, true,
-                resolver.resolve(alt.second, alt.first))
+                m.roleFor(alt.second, alt.first))
             assertTrue(key.isAltKey())
             assertFalse(key.isBoardKey())
             assertFalse(key.isSymKey())
-            resolver.reset()
         }
     }
 
@@ -225,23 +221,19 @@ class TitanProfilesTest {
         assertEquals(1080, m.touchKeypad!!.rangeX)
         assertEquals(600, m.touchKeypad!!.rangeY)
         assertEquals(36, m.touchKeypad!!.nativeMinSdk)
-        val resolver = ScancodeMappingResolver.getInstance()
-        resolver.initialize(m)
-        assertEquals(KeyRole.MODIFIER, resolver.resolve(56, android.view.KeyEvent.KEYCODE_ALT_LEFT)!!.role)
-        assertNull("the Elite's Alt is not on the Titan 2's scancode", resolver.resolve(100, 0))
+        assertEquals(KeyRole.MODIFIER, m.roleFor(56, android.view.KeyEvent.KEYCODE_ALT_LEFT)!!.role)
+        assertNull("the Elite's Alt is not on the Titan 2's scancode", m.roleFor(100, 0))
         assertEquals("none", m.getSettingOverride("ckb_gesture_double_tap")!!.getDefaultStringValue())
     }
 
     @Test
     fun titan2019_noSymKey_redKeyIsFunction_padHasNoNativeMinSdk() {
         val m = mapping(R.xml.device_config_titan)
-        val resolver = ScancodeMappingResolver.getInstance()
-        resolver.initialize(m)
         assertTrue("no Sym key is invented",
             m.scancodeMappings.none { it.role == KeyRole.BOARD_SYM })
-        assertEquals(KeyRole.FUNCTION, resolver.resolve(249, 0)!!.role)
-        assertEquals(KeyRole.FUNCTION, resolver.resolve(250, 0)!!.role)
-        assertEquals(KeyRole.MODIFIER, resolver.resolve(100, 0)!!.role)
+        assertEquals(KeyRole.FUNCTION, m.roleFor(249, 0)!!.role)
+        assertEquals(KeyRole.FUNCTION, m.roleFor(250, 0)!!.role)
+        assertEquals(KeyRole.MODIFIER, m.roleFor(100, 0)!!.role)
         assertTrue(m.touchKeypad!!.matchesInputDeviceName("mtk-pad"))
         assertFalse(m.touchKeypad!!.hasNativeMinSdk())
         assertEquals("device_alt_mappings_titan", m.altMappingsFile)
@@ -253,18 +245,15 @@ class TitanProfilesTest {
     fun pocketAndSlim_shareKeysAndAltTable() {
         for (resId in intArrayOf(R.xml.device_config_titan_pocket, R.xml.device_config_titan_slim)) {
             val m = mapping(resId)
-            val resolver = ScancodeMappingResolver.getInstance()
-            resolver.initialize(m)
-            assertEquals(KeyRole.BOARD_SYM, resolver.resolve(127, 0)!!.role)
-            assertEquals(KeyRole.FUNCTION, resolver.resolve(183, 0)!!.role)
-            assertEquals(KeyRole.FUNCTION, resolver.resolve(249, 0)!!.role)
-            assertEquals(KeyRole.FUNCTION, resolver.resolve(250, 0)!!.role)
-            assertEquals(KeyRole.MODIFIER, resolver.resolve(100, 0)!!.role)
+            assertEquals(KeyRole.BOARD_SYM, m.roleFor(127, 0)!!.role)
+            assertEquals(KeyRole.FUNCTION, m.roleFor(183, 0)!!.role)
+            assertEquals(KeyRole.FUNCTION, m.roleFor(249, 0)!!.role)
+            assertEquals(KeyRole.FUNCTION, m.roleFor(250, 0)!!.role)
+            assertEquals(KeyRole.MODIFIER, m.roleFor(100, 0)!!.role)
             assertEquals("device_alt_mappings_titan_pocket", m.altMappingsFile)
             assertEquals(720, m.touchKeypad!!.rangeX)
             assertEquals(360, m.touchKeypad!!.rangeY)
             assertTrue(m.touchKeypad!!.matchesInputDeviceName("mtk-pad"))
-            resolver.reset()
         }
     }
 

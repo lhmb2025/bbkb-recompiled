@@ -50,7 +50,8 @@ fun SettingsScreenHost(
         mutableStateMapOf<String, Any?>().apply {
             rows.forEach { row ->
                 when (row) {
-                    is ManagedToggle -> put(row.store.key, managedInitialValue(row, prefs, context))
+                    // A profile's forced value arrives through prefs itself (ProfileForcedPrefs).
+                    is ManagedToggle -> put(row.store.key, row.store.read(prefs, context))
                     is ValueRow<*> -> put(row.store.key, row.store.read(prefs, context))
                     else -> Unit
                 }
@@ -217,24 +218,6 @@ private fun RowSummary.render(
     is RowSummary.Res -> context.getString(id)
     is RowSummary.OnOff -> context.getString(if (value == true) on else off)
     is RowSummary.Of -> text(context, value)
-}
-
-/**
- * The value a [ManagedToggle] starts on. Same order as `ManagedSwitchPreference`: a device
- * override with a forced value wins, otherwise the stored preference.
- */
-private fun managedInitialValue(
-    row: ManagedToggle,
-    prefs: android.content.SharedPreferences,
-    context: android.content.Context,
-): Boolean {
-    val override = DeviceProfile.current().getSettingOverride(row.store.key)
-    val stored = row.store.read(prefs, context)
-    return if (override != null && override.hasForcedValue()) {
-        override.forcedBooleanValue ?: stored
-    } else {
-        stored
-    }
 }
 
 /**

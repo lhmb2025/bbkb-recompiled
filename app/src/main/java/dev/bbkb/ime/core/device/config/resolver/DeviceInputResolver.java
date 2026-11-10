@@ -8,18 +8,31 @@ import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.view.InputDevice;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+
 import dev.bbkb.ime.core.device.config.CustomDeviceConfigManager;
 import dev.bbkb.ime.core.device.config.model.AltMappingsTable;
 import dev.bbkb.ime.core.device.config.model.DeviceInputConfig;
 import dev.bbkb.ime.core.device.config.model.DeviceInputMapping;
-import dev.bbkb.ime.core.device.config.model.DeviceSettingOverride;
+import dev.bbkb.ime.core.device.config.model.ScancodeMapping;
 import dev.bbkb.ime.core.device.config.parser.AltMappingsParser;
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser;
 import dev.bbkb.ime.BuildConfig;
 
 /**
- * Resolves device-specific input behavior configurations.
- * Determines which devices should use custom Alt+key mappings vs standard behavior.
+ * Decides which device profile speaks for which keyboard, once per keyboard.
+ *
+ * <p>Two questions, both answered here and cached by input-device id until a device is attached,
+ * removed or changed, or another configuration is chosen:
+ * <ul>
+ *   <li>{@link #resolveInputMapping}: which profile <em>matches</em> this input device (or, for
+ *       {@link #ALL_DEVICES}, this phone). The phone-wide answer is the profile
+ *       {@code DeviceProfile} carries.</li>
+ *   <li>{@link #keyProfile}: which profile <em>governs a key</em> that came from this device.
+ *       Everything decided per key reads this: key roles ({@link #keyRole}), the Alt table and
+ *       keypad-layout observation ({@link #isPhoneKeyboard}).</li>
+ * </ul>
  */
 public class DeviceInputResolver {
     
@@ -43,11 +56,12 @@ public class DeviceInputResolver {
     public static final int ALL_DEVICES = 0;
 
     /**
-     * The ScancodeMappingResolver is a process-wide singleton holding one mapping, so it keeps
-     * the historical "first non-null resolution wins" behaviour rather than being re-pointed at
-     * whichever device was classified most recently.
+     * {@link #keyProfile} per device id; {@link #NO_PROFILE} records "none". Read on every
+     * hardware key event, so it is published copy-on-write and read without a lock.
      */
-    private static boolean sScancodeResolverInitialized = false;
+    private static volatile SparseArray<Object> sKeyProfiles = new SparseArray<>(4);
+
+    private static final Object NO_PROFILE = new Object();
 
     private static boolean sDeviceListenerRegistered = false;
 
@@ -101,6 +115,84 @@ public class DeviceInputResolver {
     }
 
     /**
+     * The profile that governs a key from this input device, or null when none does.
+     *
+     * <ul>
+     *   <li>A keyboard that a profile matches gets that profile.</li>
+     *   <li>Any other built-in device gets the phone's profile: a phone's keypad and its side
+     *       keys are often separate input devices, and a profile that names the keypad still
+     *       describes the phone. So does a key Android attributes to no real device (injected
+     *       keys, the virtual keyboard).</li>
+     *   <li>An external keyboard that no profile names gets none, exactly as on a phone with no
+     *       profile at all.</li>
+     * </ul>
+     *
+     * <p>There used to be one process-wide table of key roles, filled from whichever profile
+     * was resolved first and asked without saying which keyboard the key came from.
+     *
+     * @param deviceId {@code KeyEvent.getDeviceId()}
+     */
+    @Nullable
+    public static DeviceInputMapping keyProfile(int deviceId) {
+        final Object cached = sKeyProfiles.get(deviceId);
+        if (cached != null) {
+            return cached == NO_PROFILE ? null : (DeviceInputMapping) cached;
+        }
+        return resolveKeyProfile(deviceId);
+    }
+
+    private static synchronized DeviceInputMapping resolveKeyProfile(int deviceId) {
+        final Context context = sAppContext;
+        if (sConfig == null && context == null) {
+            return null;  // nothing has been resolved with a context yet; ask again next time
+        }
+        final DeviceInputMapping phone = sResolvedDeviceIds.get(ALL_DEVICES) || context == null
+                ? sMappingByDeviceId.get(ALL_DEVICES)
+                : resolveInputMapping(context, ALL_DEVICES);
+        if (sConfig == null) {
+            return null;  // no active configuration could be loaded
+        }
+
+        final InputDevice device = deviceId == ALL_DEVICES ? null : InputDevice.getDevice(deviceId);
+        DeviceInputMapping profile = phone;
+        if (device != null && !device.isVirtual()) {
+            DeviceInputMapping own = sResolvedDeviceIds.get(deviceId)
+                    ? sMappingByDeviceId.get(deviceId)
+                    : sConfig.findMappingForInputDevice(device);
+            cacheMapping(deviceId, own);
+            if (own != null) {
+                profile = own;
+            } else if (DeviceInputConfig.isExternal(device)) {
+                profile = null;
+            }
+        }
+
+        final SparseArray<Object> next = sKeyProfiles.clone();
+        next.put(deviceId, profile != null ? profile : NO_PROFILE);
+        sKeyProfiles = next;
+        return profile;
+    }
+
+    /**
+     * The role the governing profile gives a key, or null: no profile governs the keyboard it
+     * came from, or the profile gives that key no role.
+     */
+    @Nullable
+    public static ScancodeMapping keyRole(int scanCode, int keyCode, int deviceId) {
+        final DeviceInputMapping profile = keyProfile(deviceId);
+        return profile == null ? null : profile.roleFor(scanCode, keyCode);
+    }
+
+    /**
+     * Whether a key from this device is governed by the phone's own profile, so the profile's
+     * Alt table and keypad shape apply to it. True for every keyboard on a phone with no
+     * profile; false for an external keyboard the phone's profile does not name.
+     */
+    public static boolean isPhoneKeyboard(int deviceId) {
+        return keyProfile(deviceId) == keyProfile(ALL_DEVICES);
+    }
+
+    /**
      * Search all connected input devices for a matching configuration.
      */
     private static DeviceInputMapping findMappingFromAllDevices() {
@@ -137,10 +229,6 @@ public class DeviceInputResolver {
     private static void cacheMapping(int deviceId, DeviceInputMapping mapping) {
         sMappingByDeviceId.put(deviceId, mapping);
         sResolvedDeviceIds.put(deviceId, true);
-        if (mapping != null && !sScancodeResolverInitialized) {
-            ScancodeMappingResolver.getInstance().initialize(mapping);
-            sScancodeResolverInitialized = true;
-        }
     }
 
     /**
@@ -154,11 +242,10 @@ public class DeviceInputResolver {
                 (InputManager) context.getApplicationContext().getSystemService(Context.INPUT_SERVICE);
         if (inputManager == null) return;
         sAppContext = context.getApplicationContext();
-        // A device change invalidates what was resolved, but must not leave the scancode-role
-        // resolver empty: Android reports the built-in keyboard as "changed" on every IME subtype
-        // switch (the keyboard layout is re-assigned), and with the resolver empty every
-        // config-mapped key - the KEY2 mic key set to switch language, for one - went dead until
-        // the process restarted (owner report 2026-09-26). Re-resolve right away.
+        // A device change invalidates what was resolved. Android reports the built-in keyboard as
+        // "changed" on every IME subtype switch (the keyboard layout is re-assigned), so this is
+        // frequent; the phone's profile is resolved again right away, and each keyboard's own
+        // answer on its next key.
         inputManager.registerInputDeviceListener(new InputManager.InputDeviceListener() {
             @Override public void onInputDeviceAdded(int deviceId)   { resetAndResolve(); }
             @Override public void onInputDeviceRemoved(int deviceId) { resetAndResolve(); }
@@ -193,7 +280,7 @@ public class DeviceInputResolver {
     
     /**
      * A device was added, removed or reported as changed: forgets what was resolved and resolves
-     * again at once, so the scancode-role resolver is never left empty.
+     * the phone's profile again at once.
      */
     static synchronized void resetAndResolve() {
         // Not resetConfig(): a device coming, going or "changing" does not change what an XML
@@ -217,7 +304,21 @@ public class DeviceInputResolver {
         sConfig = null;
         sMappingByDeviceId.clear();
         sResolvedDeviceIds.clear();
-        sScancodeResolverInitialized = false;
-        ScancodeMappingResolver.getInstance().reset();
+        sKeyProfiles = new SparseArray<>(4);
+    }
+
+    /**
+     * Makes {@code profile} the phone's profile without a configuration file or an input device
+     * to match it against, neither of which a JVM test has; null installs "no profile". Undo
+     * with {@link #resetConfig()}.
+     */
+    @VisibleForTesting
+    public static synchronized void installPhoneProfileForTest(@Nullable DeviceInputMapping profile) {
+        resetResolved();
+        sConfig = new DeviceInputConfig();
+        if (profile != null) {
+            sConfig.mappings.add(profile);
+        }
+        cacheMapping(ALL_DEVICES, profile);
     }
 }

@@ -6,7 +6,7 @@ import android.view.KeyEvent
 import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver
 import dev.bbkb.ime.core.keyevent.MultifunctionKeyHandler
 import dev.bbkb.ime.core.settings.util.SettingsManager
 import org.junit.After
@@ -68,8 +68,8 @@ class MultifunctionCtrlRemapTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val config = DeviceInputMappingParser.parseConfigFromXmlResource(context, R.xml.device_config_athena)
         assertNotNull("device_config_athena.xml failed to parse", config)
-        ScancodeMappingResolver.getInstance().initialize(config!!.mappings[0])
-        val mapping = ScancodeMappingResolver.getInstance().resolve(MF_SCANCODE, MF_KEYCODE)
+        DeviceInputResolver.installPhoneProfileForTest(config!!.mappings[0])
+        val mapping = DeviceInputResolver.keyRole(MF_SCANCODE, MF_KEYCODE, DeviceInputResolver.ALL_DEVICES)
         assertNotNull("the athena multifunction key is no longer keyCode 119 / scanCode 110", mapping)
         mapping!!.defaultAction = MultifunctionKeyHandler.ACTION_CTRL
 
@@ -79,7 +79,7 @@ class MultifunctionCtrlRemapTest {
 
     @After
     fun tearDown() {
-        ScancodeMappingResolver.getInstance().reset()
+        DeviceInputResolver.resetConfig()
         ReflectionHelpers.setField(SettingsManager.getInstance(), "settingsValues", null)
     }
 
@@ -166,7 +166,7 @@ class MultifunctionCtrlRemapTest {
     /** With a non-Ctrl action configured the key passes through, latch untouched. */
     @Test
     fun aMultifunctionKeyConfiguredForSomethingElseIsUntouched() {
-        ScancodeMappingResolver.getInstance().resolve(MF_SCANCODE, MF_KEYCODE)!!.defaultAction =
+        DeviceInputResolver.keyRole(MF_SCANCODE, MF_KEYCODE, DeviceInputResolver.ALL_DEVICES)!!.defaultAction =
             MultifunctionKeyHandler.ACTION_EMOJI_BOARD
 
         val down = event(KeyEvent.ACTION_DOWN)

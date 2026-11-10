@@ -25,7 +25,6 @@ import dev.bbkb.ime.BuildConfig;
 import dev.bbkb.ime.core.locale.SubtypeManager;
 import dev.bbkb.ime.core.BlackBerryIME;
 import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
 
 /**
@@ -237,15 +236,6 @@ public class KeyEventProcessor {
             Logger.info(TAG, "DeviceProfile initialized for device ID: " + keyEvent.getDeviceId());
         }
 
-        // The scancode-role resolver is emptied whenever DeviceInputResolver.resetConfig() runs,
-        // and Android reports the physical keyboard as "changed" on every IME subtype switch (it
-        // re-assigns the keyboard layout). The resolver re-fills itself there now, but a key that
-        // arrives with it still empty would lose its role - the KEY2 mic key went dead after a
-        // language switch (owner report 2026-09-26). One volatile read when all is well.
-        if (rawIsPhysical && !ScancodeMappingResolver.getInstance().isInitialized()) {
-            DeviceInputResolver.resolveInputMapping(ime.getApplicationContext(), keyEvent.getDeviceId());
-        }
-
         // Last-resort physical keypad layout detection (KeypadLayoutDetector source 5): what the
         // keypad actually sent is proof, and on a ROM that sets no keypad-language sysprop and
         // names its keypad generically it is the only proof there is. Reads the RAW event, before
@@ -253,10 +243,10 @@ public class KeyEventProcessor {
         // call is two integer compares; it returns true only on the rare keystroke that changes
         // the answer, and then the profile is rebuilt so the symbol rows and layout-set names
         // follow.
-        // Only from a keyboard the profile speaks for: an external keyboard's layout says nothing
-        // about the phone's own keypad.
+        // Only from a keyboard the phone's profile speaks for: an external keyboard's layout says
+        // nothing about the phone's own keypad.
         if (rawIsPhysical
-                && ScancodeMappingResolver.getInstance().appliesToDevice(keyEvent.getDeviceId())
+                && DeviceInputResolver.isPhoneKeyboard(keyEvent.getDeviceId())
                 && dev.bbkb.ime.core.device.detection.KeypadLayoutDetector
                 .observeKeyEvent(keyEvent.getScanCode(), keyEvent.getKeyCode())) {
             DeviceProfile.reinitializeForKeypadLayoutChange(

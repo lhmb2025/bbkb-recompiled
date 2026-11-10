@@ -11,7 +11,7 @@ import android.view.KeyEvent;
 
 import androidx.test.core.app.ApplicationProvider;
 
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver;
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier;
 import dev.bbkb.ime.core.device.profile.DeviceCapabilities;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
@@ -71,7 +71,7 @@ public class ModifierReadSiteEquivalenceTest {
                 DeviceCapabilities.DetectedDeviceType.PKB,
                 /* hasPhysicalKeyboard */ true, /* hasTouchKeypad */ false,
                 /* isBlackBerryDevice */ false, "qwerty", "4row"));
-        ScancodeMappingResolver.getInstance().reset();
+        DeviceInputResolver.resetConfig();
         KeyEventDeviceClassifier.getInstance().clearCache();
         tracker = new PhysicalKeyboardStateTracker(null);
         tracker.setSymKeyCode(KeyEvent.KEYCODE_SYM);
@@ -79,7 +79,7 @@ public class ModifierReadSiteEquivalenceTest {
 
     @After
     public void tearDown() {
-        ScancodeMappingResolver.getInstance().reset();
+        DeviceInputResolver.resetConfig();
         KeyEventDeviceClassifier.getInstance().clearCache();
         DeviceProfile.initialize(null);
     }

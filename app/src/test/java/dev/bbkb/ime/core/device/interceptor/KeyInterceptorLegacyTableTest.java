@@ -16,7 +16,7 @@ import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.device.config.model.DeviceInputMapping;
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping;
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser;
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver;
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +68,7 @@ public class KeyInterceptorLegacyTableTest {
         KeyInterceptorService.setAllKeysCallback(event -> false);
         KeyInterceptorService.setUnifiedKeyMappingEnabled(false);
         KeyInterceptorService.setPreprocessAllKeysEnabled(false);
-        ScancodeMappingResolver.getInstance().reset();
+        DeviceInputResolver.resetConfig();
     }
 
     @After
@@ -76,14 +76,14 @@ public class KeyInterceptorLegacyTableTest {
         KeyInterceptorService.setCallback(null);
         KeyInterceptorService.setAllKeysCallback(null);
         KeyInterceptorService.setUnifiedKeyMappingEnabled(false);
-        ScancodeMappingResolver.getInstance().reset();
+        DeviceInputResolver.resetConfig();
     }
 
     private void install(int configRes) {
         Context context = ApplicationProvider.getApplicationContext();
         DeviceInputMapping mapping = DeviceInputMappingParser
                 .parseConfigFromXmlResource(context, configRes).mappings.get(0);
-        ScancodeMappingResolver.getInstance().initialize(mapping);
+        DeviceInputResolver.installPhoneProfileForTest(mapping);
     }
 
     private static KeyEvent key(int action, int keyCode, int scanCode) {

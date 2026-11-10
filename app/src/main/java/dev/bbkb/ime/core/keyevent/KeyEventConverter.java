@@ -8,7 +8,6 @@ import dev.bbkb.ime.core.device.config.model.AltMappingsTable;
 import dev.bbkb.ime.core.device.config.model.KeyRole;
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping;
 import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
 import dev.bbkb.ime.core.layout.PhysicalKeyResolver;
 import dev.bbkb.ime.core.locale.LocaleUtils;
@@ -47,6 +46,10 @@ public class KeyEventConverter {
      * {@code new AuxCharacterResolver.Builder().build()} on any failure.
      */
     private final AuxCharacterResolver auxCharacterResolver;
+
+    /** The resolver for a key no profile speaks for: no Alt table, no layout overrides. */
+    private static final AuxCharacterResolver PROFILELESS_AUX =
+            new AuxCharacterResolver.Builder().withCombiningAccentFilter(true).build();
 
     /**
      * Check if the dictation key setting is enabled.
@@ -100,11 +103,11 @@ public class KeyEventConverter {
     }
 
     /** The mapping's alt character, or the resolver's for this event, or 0 when neither has one. */
-    private char altCharFor(ScancodeMapping mapping, KeyEvent keyEvent) {
+    private char altCharFor(AuxCharacterResolver aux, ScancodeMapping mapping, KeyEvent keyEvent) {
         if (mapping != null && mapping.hasAltChar()) {
             return mapping.altChar;
         }
-        AuxCharacterResolver.Result r = auxCharacterResolver.resolve(keyEvent);
+        AuxCharacterResolver.Result r = aux.resolve(keyEvent);
         return r.hasCharacter() ? r.character : 0;
     }
 
@@ -161,6 +164,13 @@ public class KeyEventConverter {
     public InputEvent convertKeyEvent(KeyEvent keyEvent, int i, int i2) {
         initializeAltMappingsIfNeeded();
 
+        // The profile's Alt table and special-function keys describe the phone's own keys. A key
+        // from an external keyboard the profile does not name is resolved as on a phone with no
+        // profile (DeviceInputResolver.keyProfile).
+        final boolean phoneKey = DeviceInputResolver.isPhoneKeyboard(keyEvent.getDeviceId());
+        final AuxCharacterResolver aux = phoneKey ? auxCharacterResolver : PROFILELESS_AUX;
+        final AltMappingsTable altTable = phoneKey ? mAltMappingsTable : null;
+
         // Audit DK-11: three orphaned debug locals (_keyCode / _sysMeta / _altInMeta) were
         // assigned here and never read anywhere in the file — three dead JNI-backed getter calls
         // per hardware key event that R8 cannot elide. The surviving debug logs below re-read
@@ -211,12 +221,12 @@ public class KeyEventConverter {
                 // Skip special function keys — they have their own handler below. So does a
                 // BOARD_VOICE key: with the dictation key off, Alt plus it starts voice input
                 // rather than typing its alt character, and that swap lives in the voice branch.
-                ScancodeMapping altMapping = ScancodeMappingResolver.getInstance().resolve(
+                ScancodeMapping altMapping = DeviceInputResolver.keyRole(
                         keyEvent.getScanCode(), keyCode, keyEvent.getDeviceId());
-                boolean isSpecialFunctionKey = (mAltMappingsTable != null && mAltMappingsTable.getSpecialFunctionCode(keyCode) != 0)
+                boolean isSpecialFunctionKey = (altTable != null && altTable.getSpecialFunctionCode(keyCode) != 0)
                         || (altMapping != null && altMapping.role == KeyRole.BOARD_VOICE);
                 if (!isSpecialFunctionKey) {
-                    AuxCharacterResolver.Result result = auxCharacterResolver.resolve(keyEvent);
+                    AuxCharacterResolver.Result result = aux.resolve(keyEvent);
                     if (result.hasCharacter()) {
                         boolean isRepeat = keyEvent.getRepeatCount() != 0;
                         if (BuildConfig.DEBUG) {
@@ -287,7 +297,7 @@ public class KeyEventConverter {
             return InputEvent.createTextEvent(unicodeChar, charSequence, keyCode2, (InputEvent) null, z2, keyEvent.getEventTime(), false);
         }
         // === UNIFIED KEY MAPPING (Phase 4): Resolve special keys from XML config ===
-        ScancodeMapping resolvedMapping = ScancodeMappingResolver.getInstance().resolve(
+        ScancodeMapping resolvedMapping = DeviceInputResolver.keyRole(
                 keyEvent.getScanCode(), keyCode2, keyEvent.getDeviceId());
         if (resolvedMapping != null && resolvedMapping.role != null) {
             boolean unifiedAltPressed = (KeyEvent.normalizeMetaState(i) & 2) != 0;
@@ -303,7 +313,7 @@ public class KeyEventConverter {
             if (resolvedMapping.role == KeyRole.BOARD_VOICE) {
                 // Voice/MIC key — resolved from XML config. In a numeric field it is its digit
                 // (held: repeats it), whatever the dictation setting and the Alt state say.
-                InputEvent digit = numericFieldDigit(i2, altCharFor(resolvedMapping, keyEvent),
+                InputEvent digit = numericFieldDigit(i2, altCharFor(aux, resolvedMapping, keyEvent),
                         keyCode2, z2, keyEvent.getEventTime());
                 if (digit != null) {
                     this.mVoiceKeyPending = false;
@@ -328,7 +338,7 @@ public class KeyEventConverter {
                         return InputEvent.createGestureEndCopy(InputEvent.createEmptyEvent());
                     } else {
                         // Output alt character from mapping or fallback
-                        char altCh = altCharFor(resolvedMapping, keyEvent);
+                        char altCh = altCharFor(aux, resolvedMapping, keyEvent);
                         if (altCh != 0) {
                             return InputEvent.createHardwareKeyPressEx((int) altCh, keyCode2, null, z2, keyEvent.getEventTime(), false);
                         }
@@ -366,7 +376,7 @@ public class KeyEventConverter {
                     if (unifiedAltPressed) {
                         char altCh = resolvedMapping.hasAltChar() ? resolvedMapping.altChar : 0;
                         if (altCh == 0) {
-                            AuxCharacterResolver.Result r = auxCharacterResolver.resolve(keyEvent);
+                            AuxCharacterResolver.Result r = aux.resolve(keyEvent);
                             if (r.hasCharacter()) altCh = r.character;
                         }
                         if (altCh != 0) {
@@ -399,7 +409,7 @@ public class KeyEventConverter {
         // (a Bluetooth or USB keyboard, a keyboard case) key code 7 is the 0 key and must type
         // its zero; this branch used to be device-blind and swallowed it everywhere.
         if (7 == keyCode2 && DeviceProfile.current().isBlackBerryDevice()) {
-            AuxCharacterResolver.Result legacyAlt = auxCharacterResolver.resolve(keyEvent);
+            AuxCharacterResolver.Result legacyAlt = aux.resolve(keyEvent);
             char legacyAltChar = legacyAlt.hasCharacter() ? legacyAlt.character : '0';
             InputEvent digit = numericFieldDigit(i2, legacyAltChar, keyCode2, z2, keyEvent.getEventTime());
             if (digit != null) {
@@ -423,7 +433,7 @@ public class KeyEventConverter {
                 " shouldTriggerVoice=" + shouldTriggerVoice +
                 " repeatCount=" + keyEvent.getRepeatCount() +
                 " unicodeCharFromKCI=" + unicodeChar +
-                " mAltMappingsTable(AltMappingsTable)=" + (mAltMappingsTable != null ? "non-null" : "NULL") +
+                " altTable(AltMappingsTable)=" + (altTable != null ? "non-null" : "NULL") +
                 " auxResolver=" + (auxCharacterResolver != null ? "non-null" : "NULL"));
             }
             if (BuildConfig.DEBUG) {
@@ -445,7 +455,7 @@ public class KeyEventConverter {
                         return InputEvent.createGestureEndCopy(InputEvent.createEmptyEvent());
                     } else {
                         // Output the alt character via the resolver
-                        AuxCharacterResolver.Result result = auxCharacterResolver.resolve(keyEvent);
+                        AuxCharacterResolver.Result result = aux.resolve(keyEvent);
                         if (result.hasCharacter()) {
                             return InputEvent.createHardwareKeyPressEx(result.codePoint, keyCode2, null, z2, keyEvent.getEventTime(), false);
                         }
@@ -527,7 +537,7 @@ public class KeyEventConverter {
                     // Alt+Emoji → output alt character via resolver or hardcoded '0'
                     // Use the hardware keyCode (the emoji pseudo-keycode) for XML lookup
                     AuxCharacterResolver.Result result =
-                            auxCharacterResolver.resolve(ResolvedKey.PSEUDO_KEYCODE_EMOJI);
+                            aux.resolve(ResolvedKey.PSEUDO_KEYCODE_EMOJI);
                     if (result.hasCharacter()) {
                         return InputEvent.createHardwareKeyPressEx(result.codePoint, keyCode2, null, z2, keyEvent.getEventTime(), false);
                     }
@@ -536,8 +546,8 @@ public class KeyEventConverter {
             }
         }
         // Handle custom hardware keys with special function remapping
-        if (mAltMappingsTable != null) {
-            int virtualKeyCode = mAltMappingsTable.getSpecialFunctionCode(keyCode2);
+        if (altTable != null) {
+            int virtualKeyCode = altTable.getSpecialFunctionCode(keyCode2);
             
             if (virtualKeyCode != 0) {
                 if (BuildConfig.DEBUG) android.util.Log.d("MicKeyDebug", "Special function: keyCode=" + keyCode2 + " -> virtualKeyCode=" + virtualKeyCode);
@@ -547,7 +557,7 @@ public class KeyEventConverter {
                     
                     if (7 == virtualKeyCode) {
                         // In a numeric field the key is its digit, never voice input.
-                        AuxCharacterResolver.Result mapped = auxCharacterResolver.resolve(keyCode2);
+                        AuxCharacterResolver.Result mapped = aux.resolve(keyCode2);
                         InputEvent digit = numericFieldDigit(i2,
                                 mapped.hasCharacter() ? mapped.character : 0,
                                 keyCode2, z2, keyEvent.getEventTime());
@@ -574,7 +584,7 @@ public class KeyEventConverter {
                         } else {
                             // Output the alt character via the resolver
                             char altChar = 0;
-                            AuxCharacterResolver.Result result = auxCharacterResolver.resolve(keyCode2);
+                            AuxCharacterResolver.Result result = aux.resolve(keyCode2);
                             if (result.hasCharacter()) altChar = result.character;
                             if (altChar != 0) {
                                 if (BuildConfig.DEBUG) android.util.Log.d("MicKeyDebug", "Outputting alt char: '" + altChar + "'");
@@ -591,7 +601,7 @@ public class KeyEventConverter {
                         } else {
                             // Alt+emoji key - output the alt character via the resolver
                             char altChar = 0;
-                            AuxCharacterResolver.Result result2 = auxCharacterResolver.resolve(keyCode2);
+                            AuxCharacterResolver.Result result2 = aux.resolve(keyCode2);
                             if (result2.hasCharacter()) altChar = result2.character;
                             if (altChar != 0) {
                                 return InputEvent.createHardwareKeyPressEx((int)altChar, keyCode2, null, z2, keyEvent.getEventTime(), false);
@@ -603,7 +613,7 @@ public class KeyEventConverter {
         } else if (keyCode2 == ResolvedKey.PSEUDO_KEYCODE_VOICE) {
             if (BuildConfig.DEBUG) android.util.Log.w("MicKeyDebug", "Keycode "
                     + ResolvedKey.PSEUDO_KEYCODE_VOICE
-                    + " pressed but mAltMappingsTable (AltMappingsTable) is null!");
+                    + " pressed but altTable (AltMappingsTable) is null!");
         }
         if (KeyEvent.KEYCODE_SPACE == keyCode2 && keyEvent.getRepeatCount() == 1) {
             if (!isNumberOrDatetimeVariationField(i2)) {

@@ -5,6 +5,7 @@ import android.view.InputDevice
 import android.view.KeyEvent
 import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.R
+import dev.bbkb.ime.core.device.config.model.DeviceInputConfig
 import dev.bbkb.ime.core.device.config.model.DeviceInputMapping
 import dev.bbkb.ime.core.device.config.model.KeyRole
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser
@@ -12,6 +13,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -23,9 +25,10 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * A profile's key roles belong to the phone's own keys. The role lookup used to take no device,
- * so on a KEY2 (key code 7 = the mic key) the 0 key of a Bluetooth or USB keyboard started voice
- * input. These pin the rule in [ScancodeMappingResolver.appliesTo] and the device-aware lookup.
+ * Which profile speaks for which keyboard. A profile matched on the phone's build used to match
+ * every keyboard attached to that phone, and key roles were asked without saying which keyboard
+ * the key came from: on a KEY2 (key code 7 = the mic key) the 0 key of a Bluetooth or USB
+ * keyboard started voice input.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -36,16 +39,19 @@ class KeyRolesPerKeyboardTest {
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
-        ScancodeMappingResolver.getInstance().reset()
+        DeviceInputResolver.resetConfig()
     }
 
     @After
     fun tearDown() {
-        ScancodeMappingResolver.getInstance().reset()
+        DeviceInputResolver.resetConfig()
     }
 
     private fun profile(resId: Int): DeviceInputMapping =
         DeviceInputMappingParser.parseConfigFromXmlResource(context, resId).mappings[0]
+
+    private fun configOf(profile: DeviceInputMapping) =
+        DeviceInputConfig().apply { mappings.add(profile) }
 
     private fun keyboard(name: String, external: Boolean, virtual: Boolean = false): InputDevice {
         val device = mock(InputDevice::class.java)
@@ -55,60 +61,111 @@ class KeyRolesPerKeyboardTest {
         return device
     }
 
+    /** Runs [block] with these devices behind `InputDevice.getDevice(id)`. */
+    private fun withDevices(vararg devices: Pair<Int, InputDevice>, block: () -> Unit) {
+        mockStatic(InputDevice::class.java).use { static ->
+            for ((id, device) in devices) {
+                static.`when`<InputDevice> { InputDevice.getDevice(id) }.thenReturn(device)
+            }
+            block()
+        }
+    }
+
+    // ── the match step ───────────────────────────────────────────────────────
+
     @Test
-    fun aProfileMatchedOnThePhone_appliesToBuiltInKeysOnly() {
+    fun aProfileMatchedOnThePhone_doesNotMatchAnExternalKeyboard() {
         val key2 = profile(R.xml.device_config_athena)
-        assertTrue(ScancodeMappingResolver.appliesTo(key2, keyboard("stmpe-keypad", external = false)))
-        assertTrue("side keys are a separate built-in device",
-            ScancodeMappingResolver.appliesTo(key2, keyboard("gpio-keys", external = false)))
-        assertFalse(ScancodeMappingResolver.appliesTo(key2, keyboard("Logitech K380", external = true)))
+        org.robolectric.util.ReflectionHelpers.setStaticField(android.os.Build::class.java, "DEVICE", "athena")
+        val config = configOf(key2)
+        assertSame(key2, config.findMappingForInputDevice(keyboard("stmpe-keypad", external = false)))
+        assertSame("side keys are a separate built-in device",
+            key2, config.findMappingForInputDevice(keyboard("gpio-keys", external = false)))
+        assertNull(config.findMappingForInputDevice(keyboard("Logitech K380", external = true)))
     }
 
     @Test
-    fun keysWithNoRealDevice_keepTheProfile() {
-        val key2 = profile(R.xml.device_config_athena)
-        assertTrue(ScancodeMappingResolver.appliesTo(key2, null))
-        assertTrue(ScancodeMappingResolver.appliesTo(key2,
-            keyboard("Virtual", external = false, virtual = true)))
-    }
-
-    @Test
-    fun aProfileMatchedOnTheKeyboardName_followsThatKeyboard() {
+    fun aProfileThatNamesTheKeyboard_matchesItWhereverItIs() {
         val mp01 = profile(R.xml.device_config_minimal)
-        assertTrue(ScancodeMappingResolver.appliesTo(mp01, keyboard("aw9523b-key", external = false)))
-        assertTrue("named by the profile, so it applies even when external",
-            ScancodeMappingResolver.appliesTo(mp01, keyboard("aw9523b-key", external = true)))
-        assertFalse(ScancodeMappingResolver.appliesTo(mp01, keyboard("Logitech K380", external = true)))
+        val config = configOf(mp01)
+        assertSame(mp01, config.findMappingForInputDevice(keyboard("aw9523b-key", external = false)))
+        assertSame(mp01, config.findMappingForInputDevice(keyboard("aw9523b-key", external = true)))
+        assertNull(config.findMappingForInputDevice(keyboard("Logitech K380", external = true)))
     }
+
+    // ── which profile governs a key ──────────────────────────────────────────
 
     @Test
     fun theZeroKeyOfAnExternalKeyboard_isNotTheKey2MicKey() {
-        val resolver = ScancodeMappingResolver.getInstance()
-        resolver.initialize(profile(R.xml.device_config_athena))
-        val builtIn = keyboard("stmpe-keypad", external = false)
-        val bluetooth = keyboard("Logitech K380", external = true)
-        mockStatic(InputDevice::class.java).use { devices ->
-            devices.`when`<InputDevice> { InputDevice.getDevice(3) }.thenReturn(builtIn)
-            devices.`when`<InputDevice> { InputDevice.getDevice(9) }.thenReturn(bluetooth)
-
-            assertEquals(KeyRole.BOARD_VOICE, resolver.resolve(11, KeyEvent.KEYCODE_0, 3)!!.role)
-            assertNull(resolver.resolve(11, KeyEvent.KEYCODE_0, 9))
-            assertTrue(resolver.appliesToDevice(3))
-            assertFalse(resolver.appliesToDevice(9))
+        org.robolectric.util.ReflectionHelpers.setStaticField(android.os.Build::class.java, "DEVICE", "athena")
+        val key2 = profile(R.xml.device_config_athena)
+        DeviceInputResolver.installPhoneProfileForTest(key2)
+        withDevices(
+            3 to keyboard("stmpe-keypad", external = false),
+            9 to keyboard("Logitech K380", external = true),
+        ) {
+            assertEquals(KeyRole.BOARD_VOICE, DeviceInputResolver.keyRole(11, KeyEvent.KEYCODE_0, 3)!!.role)
+            assertNull(DeviceInputResolver.keyRole(11, KeyEvent.KEYCODE_0, 9))
+            assertNull(DeviceInputResolver.keyProfile(9))
+            assertTrue(DeviceInputResolver.isPhoneKeyboard(3))
+            assertFalse("so the phone's Alt table and keypad shape do not apply to it",
+                DeviceInputResolver.isPhoneKeyboard(9))
         }
     }
 
     @Test
-    fun withNoProfile_everyKeyboardCounts() {
-        assertTrue(ScancodeMappingResolver.getInstance().appliesToDevice(9))
-        assertNull(ScancodeMappingResolver.getInstance().resolve(11, KeyEvent.KEYCODE_0, 9))
+    fun aKeyWithNoRealDevice_getsThePhonesProfile() {
+        val key2 = profile(R.xml.device_config_athena)
+        DeviceInputResolver.installPhoneProfileForTest(key2)
+        withDevices(-1 to keyboard("Virtual", external = false, virtual = true)) {
+            assertSame(key2, DeviceInputResolver.keyProfile(-1))
+            assertSame("an id Android knows no device for", key2, DeviceInputResolver.keyProfile(77))
+        }
     }
 
     @Test
+    fun aBuiltInDeviceTheProfileDoesNotName_stillGetsThePhonesProfile() {
+        val mp01 = profile(R.xml.device_config_minimal)
+        DeviceInputResolver.installPhoneProfileForTest(mp01)
+        withDevices(
+            2 to keyboard("aw9523b-key", external = false),
+            4 to keyboard("gpio-keys", external = false),
+            9 to keyboard("Logitech K380", external = true),
+        ) {
+            assertSame(mp01, DeviceInputResolver.keyProfile(2))
+            assertSame(mp01, DeviceInputResolver.keyProfile(4))
+            assertNull(DeviceInputResolver.keyProfile(9))
+        }
+    }
+
+    @Test
+    fun withNoProfile_everyKeyboardIsThePhones() {
+        DeviceInputResolver.installPhoneProfileForTest(null)
+        withDevices(9 to keyboard("Logitech K380", external = true)) {
+            assertNull(DeviceInputResolver.keyRole(11, KeyEvent.KEYCODE_0, 9))
+            assertTrue(DeviceInputResolver.isPhoneKeyboard(9))
+        }
+    }
+
+    @Test
+    fun aDeviceChange_isForgottenAndWorkedOutAgain() {
+        org.robolectric.util.ReflectionHelpers.setStaticField(android.os.Build::class.java, "DEVICE", "athena")
+        DeviceInputResolver.installPhoneProfileForTest(profile(R.xml.device_config_athena))
+        withDevices(9 to keyboard("Logitech K380", external = true)) {
+            assertNull(DeviceInputResolver.keyProfile(9))
+        }
+        // The same id now belongs to a built-in device, as after an unplug and a re-enumeration.
+        DeviceInputResolver.installPhoneProfileForTest(profile(R.xml.device_config_athena))
+        withDevices(9 to keyboard("stmpe-keypad", external = false)) {
+            assertEquals(KeyRole.BOARD_VOICE, DeviceInputResolver.keyRole(11, KeyEvent.KEYCODE_0, 9)!!.role)
+        }
+    }
+
+    // ── shipped profiles ─────────────────────────────────────────────────────
+
+    @Test
     fun theQ25MicKey_typesZeroWithAlt() {
-        val resolver = ScancodeMappingResolver.getInstance()
-        resolver.initialize(profile(R.xml.device_config_q25))
-        val mic = resolver.resolve(0, KeyEvent.KEYCODE_0)!!
+        val mic = profile(R.xml.device_config_q25).roleFor(0, KeyEvent.KEYCODE_0)!!
         assertEquals(KeyRole.BOARD_VOICE, mic.role)
         assertEquals('0', mic.altChar)
     }

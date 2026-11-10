@@ -14,7 +14,7 @@ import androidx.test.core.app.ApplicationProvider;
 import dev.bbkb.ime.core.device.config.model.DeviceInputConfig;
 import dev.bbkb.ime.core.device.config.model.DeviceInputMapping;
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser;
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver;
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier;
 import dev.bbkb.ime.core.device.profile.DeviceCapabilities;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
@@ -74,7 +74,7 @@ public class KeyEventConverterSymKeyTest {
         assertNotNull("device_config_minimal.xml no longer matches the device name aw9523b-key",
                 mapping);
         DeviceProfileTestSupport.installMapping(mapping);
-        ScancodeMappingResolver.getInstance().initialize(mapping);
+        DeviceInputResolver.installPhoneProfileForTest(mapping);
 
         // Guards the premise of every test below: this used to be the flag that swallowed SYM.
         assertTrue("an MP01-shaped profile must still be a usesMetaSymHandling() device,"
@@ -93,7 +93,7 @@ public class KeyEventConverterSymKeyTest {
 
     @After
     public void tearDown() {
-        ScancodeMappingResolver.getInstance().reset();
+        DeviceInputResolver.resetConfig();
         KeyEventDeviceClassifier.getInstance().clearCache();
         DeviceProfile.initialize(null);
     }

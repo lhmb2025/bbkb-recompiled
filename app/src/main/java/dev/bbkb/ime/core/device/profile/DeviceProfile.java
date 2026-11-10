@@ -299,6 +299,11 @@ public final class DeviceProfile {
         DeviceInputMapping mapping = context != null
                 ? DeviceInputResolver.resolveInputMapping(context, deviceId)
                 : null;
+        // This object is the phone's profile whichever keyboard's key asked for it: a device no
+        // profile matches (a side-key device, an external keyboard) leaves the phone's in place.
+        if (mapping == null && context != null && deviceId != DeviceInputResolver.ALL_DEVICES) {
+            mapping = DeviceInputResolver.resolveInputMapping(context, DeviceInputResolver.ALL_DEVICES);
+        }
 
         // The user's own word on the keypad shape (Physical keyboard > Keypad layout), when the
         // config offers a choice; it outranks every detection source.
@@ -857,14 +862,16 @@ public final class DeviceProfile {
     }
 
     /**
-     * What a boolean setting is on this device: the profile's {@code forced-value} when it has
-     * one, otherwise {@code stored}. For the places that read a setting to act on it. The
-     * Settings screen already shows a forced value as a locked switch, but the stored preference
-     * can differ from it (set before the profile applied, or restored from a backup), and the
-     * keyboard used to follow the stored one.
+     * The active profile's override for a setting, or null: what {@code ProfileForcedPrefs} lays
+     * over the stored preferences on every read. Unlike {@link #current()} it neither waits for
+     * a profile that is still loading nor builds one, because preferences are read from inside
+     * the profile's own initialisation and on every thread. A read that races the first load
+     * sees the stored value.
      */
-    public static boolean forcedBooleanOr(String settingKey, boolean stored) {
-        return current().getForcedBooleanValue(settingKey, stored);
+    @Nullable
+    public static DeviceSettingOverride peekSettingOverride(String settingKey) {
+        final DeviceProfile profile = current;
+        return profile == null ? null : profile.getSettingOverride(settingKey);
     }
 
     public boolean getForcedBooleanValue(String settingKey, boolean defaultValue) {

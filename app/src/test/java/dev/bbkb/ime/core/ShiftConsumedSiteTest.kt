@@ -4,7 +4,7 @@ import android.text.InputType
 import android.view.InputDevice
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier
 import dev.bbkb.ime.core.device.profile.DeviceCapabilities
 import dev.bbkb.ime.core.device.profile.DeviceProfile
@@ -76,7 +76,7 @@ class ShiftConsumedSiteTest {
             DeviceCapabilities.DetectedDeviceType.PKB,
             /* hasPhysicalKeyboard */ true, /* hasTouchKeypad */ false,
             /* isBlackBerryDevice */ false, "qwerty", "4row"))
-        ScancodeMappingResolver.getInstance().reset()
+        DeviceInputResolver.resetConfig()
         KeyEventDeviceClassifier.getInstance().clearCache()
 
         tracker = Mockito.spy(PhysicalKeyboardStateTracker(null))
@@ -85,7 +85,7 @@ class ShiftConsumedSiteTest {
 
     @After
     fun tearDown() {
-        ScancodeMappingResolver.getInstance().reset()
+        DeviceInputResolver.resetConfig()
         KeyEventDeviceClassifier.getInstance().clearCache()
         DeviceProfile.initialize(null)
         settingsStatic.close()

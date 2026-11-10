@@ -4,7 +4,7 @@ import android.view.Choreographer
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver
 import dev.bbkb.ime.core.gesture.arbiter.FirmwareGestureKeys
 import dev.bbkb.ime.core.gesture.arbiter.GestureAction
 import dev.bbkb.ime.core.gesture.arbiter.GestureAssignments
@@ -195,7 +195,7 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
      * system. Returns false, touching nothing, for every other key.
      */
     fun handleFirmwareGestureKey(event: KeyEvent): Boolean {
-        val mapping = ScancodeMappingResolver.getInstance().resolve(event.scanCode, event.keyCode, event.deviceId)
+        val mapping = DeviceInputResolver.keyRole(event.scanCode, event.keyCode, event.deviceId)
             ?: return false
         if (FirmwareGestureKeys.swipeFor(mapping.role) == null) return false
         if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0 && ime.isInputActive) {

@@ -6,7 +6,7 @@ import android.view.KeyEvent
 import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -45,7 +45,7 @@ class ControlModeFnQuirkTest {
 
     @After
     fun tearDown() {
-        ScancodeMappingResolver.getInstance().reset()
+        DeviceInputResolver.resetConfig()
     }
 
     // ── without the quirk: Ctrl works like Shift and Alt ─────────────────────
@@ -163,7 +163,7 @@ class ControlModeFnQuirkTest {
 
     private fun install(resId: Int) {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        ScancodeMappingResolver.getInstance().initialize(
+        DeviceInputResolver.installPhoneProfileForTest(
             DeviceInputMappingParser.parseConfigFromXmlResource(context, resId).mappings[0])
     }
 

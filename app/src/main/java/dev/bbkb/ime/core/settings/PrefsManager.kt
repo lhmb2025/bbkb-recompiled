@@ -1,6 +1,7 @@
 package dev.bbkb.ime.core.settings
 import android.content.Context
 import android.content.SharedPreferences
+import dev.bbkb.ime.core.device.profile.DeviceProfile
 
 /**
  * Centralized SharedPreferences accessor to avoid repeated 
@@ -10,6 +11,7 @@ import android.content.SharedPreferences
  * 1. Single SharedPreferences instance across the app
  * 2. No repeated disk I/O from multiple getDefaultSharedPreferences() calls
  * 3. Opens the same default file the old PreferenceManager.getDefaultSharedPreferences() used
+ * 4. A setting the device profile forces reads as its forced value everywhere ([ProfileForcedPrefs])
  * 
  * Usage:
  * - Initialize once in BlackBerryIME.onCreate(): PrefsManager.init(this)
@@ -44,7 +46,10 @@ object PrefsManager {
         if (prefs == null) {
             synchronized(lock) {
                 if (prefs == null) {
-                    prefs = defaultSharedPreferences(context.applicationContext)
+                    // What every reader gets: the stored file with the device profile's forced
+                    // settings over it. defaultSharedPreferences() stays the stored file itself.
+                    prefs = ProfileForcedPrefs(defaultSharedPreferences(context.applicationContext),
+                        DeviceProfile::peekSettingOverride)
                 }
             }
         }

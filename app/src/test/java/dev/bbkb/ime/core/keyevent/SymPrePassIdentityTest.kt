@@ -8,7 +8,7 @@ import dev.bbkb.ime.R
 import dev.bbkb.ime.core.BlackBerryIME
 import dev.bbkb.ime.core.device.config.model.KeyRole
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver
 import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier
 import dev.bbkb.ime.core.device.profile.DeviceCapabilities
 import dev.bbkb.ime.core.device.profile.DeviceProfile
@@ -132,7 +132,7 @@ class SymPrePassIdentityTest {
 
     @After
     fun tearDown() {
-        ScancodeMappingResolver.getInstance().reset()
+        DeviceInputResolver.resetConfig()
         KeyEventDeviceClassifier.getInstance().clearCache()
         DeviceProfile.initialize(null)
         PrefsManager.getPrefs(context).edit().clear().commit()
@@ -290,13 +290,13 @@ class SymPrePassIdentityTest {
         assertNotNull("device_config_athena.xml failed to parse", config)
         val mapping = config.mappings[0]
         DeviceProfileTestSupport.installMapping(mapping)
-        ScancodeMappingResolver.getInstance().initialize(mapping)
+        DeviceInputResolver.installPhoneProfileForTest(mapping)
         KeyEventDeviceClassifier.getInstance().clearCache()
 
         assertNull(
             "device_config_athena.xml now maps the KEY2's Sym key — this suite's KEY2 claim"
                     + " (identity falls back to the key code) no longer holds",
-            ScancodeMappingResolver.getInstance().resolve(0, KeyEvent.KEYCODE_SYM)
+            DeviceInputResolver.keyRole(0, KeyEvent.KEYCODE_SYM, DeviceInputResolver.ALL_DEVICES)
         )
     }
 
@@ -315,11 +315,10 @@ class SymPrePassIdentityTest {
         val mapping = config.findMappingForDevice("aw9523b-key")
         assertNotNull("device_config_minimal.xml no longer matches aw9523b-key", mapping)
         DeviceProfileTestSupport.installMapping(mapping)
-        ScancodeMappingResolver.getInstance().initialize(mapping)
+        DeviceInputResolver.installPhoneProfileForTest(mapping)
         KeyEventDeviceClassifier.getInstance().clearCache()
 
-        val sym = ScancodeMappingResolver.getInstance()
-            .resolve(MP01_SYM_SCANCODE, KeyEvent.KEYCODE_ALT_RIGHT)
+        val sym = DeviceInputResolver.keyRole(MP01_SYM_SCANCODE, KeyEvent.KEYCODE_ALT_RIGHT, DeviceInputResolver.ALL_DEVICES)
         assertNotNull("premise: scancode 249 must resolve on an MP01", sym)
         assertEquals(
             "premise: and it must be the BOARD_SYM role", KeyRole.BOARD_SYM, sym!!.role

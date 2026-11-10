@@ -16,7 +16,7 @@ import dev.bbkb.ime.core.device.config.model.DeviceInputConfig;
 import dev.bbkb.ime.core.device.config.model.DeviceInputMapping;
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping;
 import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser;
-import dev.bbkb.ime.core.device.config.resolver.ScancodeMappingResolver;
+import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
 import dev.bbkb.ime.R;
 
 import java.util.ArrayList;
@@ -103,7 +103,7 @@ public class KeyInterceptorServiceBoardKeyTest {
         KeyInterceptorService.setAllKeysCallback(allKeys);
         KeyInterceptorService.setUnifiedKeyMappingEnabled(false);
         KeyInterceptorService.setPreprocessAllKeysEnabled(false);
-        ScancodeMappingResolver.getInstance().reset();
+        DeviceInputResolver.resetConfig();
     }
 
     @After
@@ -112,7 +112,7 @@ public class KeyInterceptorServiceBoardKeyTest {
         KeyInterceptorService.setAllKeysCallback(null);
         KeyInterceptorService.setUnifiedKeyMappingEnabled(false);
         KeyInterceptorService.setPreprocessAllKeysEnabled(false);
-        ScancodeMappingResolver.getInstance().reset();
+        DeviceInputResolver.resetConfig();
     }
 
     /** Load the shipped MP01 config and arm the resolver with it, as the IME does on that device. */
@@ -124,7 +124,7 @@ public class KeyInterceptorServiceBoardKeyTest {
         DeviceInputMapping mapping = config.findMappingForDevice("aw9523b-key");
         assertNotNull("device_config_minimal.xml no longer matches the device name aw9523b-key",
                 mapping);
-        ScancodeMappingResolver.getInstance().initialize(mapping);
+        DeviceInputResolver.installPhoneProfileForTest(mapping);
         KeyInterceptorService.setUnifiedKeyMappingEnabled(true);
     }
 
