@@ -5,7 +5,6 @@ import androidx.compose.ui.Modifier
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.Category
 import dev.bbkb.ime.core.settings.ui.Nav
-import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.core.settings.ui.groupBreak
 import dev.bbkb.ime.core.settings.ui.RowSummary
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
@@ -87,7 +86,6 @@ fun SymbolCustomizationScreen(
         Nav(
             title = R.string.settings_slideboard_settings_title,
             summary = R.string.settings_symbol_slideboard_link_summary,
-            icon = drawableIcon(R.drawable.ic_settings_slideboard),
             onClick = { onNavigateToSlideboardSettings() },
         ),
     ))
