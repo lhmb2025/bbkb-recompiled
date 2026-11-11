@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Schüttelgeste abstimmen</string>
     <string name="prefs_shake_tuning_summary">Auslösezahlen, Beschleunigungsschwelle und Zeiten</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Verhalten</string>
+    <string name="settings_category_feedback">Feedback</string>
+    <string name="settings_category_appearance">Darstellung</string>
+    <string name="settings_category_symbols">Symbole</string>
+    <string name="settings_category_keys">Tasten</string>
+    <string name="settings_category_device">Gerät</string>
     <string name="settings_category_behavior_vkb">Verhalten</string>
     <string name="settings_category_ckb_gestures">Kapazitive Tastatur</string>
     <string name="settings_category_on_screen_keyboard">Bildschirmtastatur</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Gesten</string>
     <string name="settings_category_key_popup">Tasten-Pop-up</string>
     <string name="settings_category_modifiers">Modifikatortasten</string>
+    <string name="settings_category_press_twice_lock">Zum Sperren zweimal drücken</string>
     <string name="settings_category_sound">Töne</string>
     <string name="settings_category_vibrate">Vibration</string>
     <string name="ckb_action_cursor_mode">Cursor-Modus</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">„%1$s“ löschen? Dies kann nicht rückgängig gemacht werden.</string>
     <string name="settings_pkb_layouts_delete_title">Layout löschen</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d Tasten</string>
+    <string name="settings_pkb_layouts_keys">%1$d Tasten</string>
+    <string name="settings_pkb_layouts_search">Layouts suchen</string>
     <string name="settings_pkb_layouts_empty">Noch keine eigenen Layouts. Füge eines aus einer Datei hinzu.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-Tastenfeld</string>
     <string name="settings_pkb_layouts_none">Nicht verwendet</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Auf leeres Layout zurücksetzen</string>
     <string name="customize_slideboard_reset_to_default">Auf Standard-Layout zurücksetzen</string>
     <string name="settings_slideboard_hub_summary">Ziffernblock, Seiten tauschen und Schnellphrasen</string>
-    <string name="settings_symbol_slideboard_link_summary">Ziffernblock und Schnellphrasen</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-Einstellungen</string>
     <string name="customized_symbol_page_add_button_description">Unicode-Symbol hinzufügen</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Gelernte Wörter akzeptieren</string>
     <string name="settings_spellcheck_accept_learned_summary">Erkennt aus Ihrer Eingabe gelernte Wörter</string>
     <string name="pref_alt_double_tap_lock">Alt-Sperre</string>
-    <string name="pref_alt_double_tap_lock_summary">Drücken Sie zweimal Alt, um die Taste zu sperren. Drücken Sie sie erneut, um die Sperre aufzuheben.</string>
     <string name="pref_ctrl_double_tap_lock">Strg-Sperre</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Drücken Sie zweimal Strg, um die Taste zu sperren. Drücken Sie sie erneut, um die Sperre aufzuheben.</string>
     <string name="pref_override_device_meta_state">Fixierte Modifikatortasten</string>
     <string name="pref_override_device_meta_state_summary">Umschalt und Alt auf jeder physischen Tastatur sperren, unabhängig von den integrierten Tastatureinstellungen des Telefons</string>
     <string name="pref_shift_double_tap_lock">Umschalt-Sperre</string>
-    <string name="pref_shift_double_tap_lock_summary">Drücken Sie zweimal die Umschalttaste, um sie zu sperren. Drücken Sie sie erneut, um die Sperre aufzuheben.</string>
+    <string name="pref_lock_row_shift">Umschalt</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Strg</string>
     <string name="prefs_key_longpress_delay_summary">Haltedauer einer Taste, bis Zweitzeichen erscheinen</string>
     <string name="prefs_key_longpress_delay_title">Verzögerung beim langen Drücken einer Taste</string>
     <string name="prefs_key_preview_animations_summary">Stil und Timing der Tastendruck-Animation anpassen</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Sprachpaket gelöscht: %1$s</string>
     <string name="language_packs_already_removed">%1$s wurde bereits entfernt</string>
     <string name="language_packs_delete_failed">Sprachpaket konnte nicht gelöscht werden: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Offline verfügbar</string>
-    <string name="settings_voice_lang_requires_network">Netzwerk erforderlich</string>
+    <string name="settings_voice_lang_yours">Ihre Sprachen</string>
+    <string name="settings_voice_lang_all">Alle Sprachen</string>
     <string name="settings_voice_lang_loading">Verfügbare Sprachen werden geladen…</string>
     <string name="settings_voice_lang_none">Keine Sprachen für die Spracherkennung verfügbar</string>
     <string name="settings_voice_lang_none_hint">Achten Sie darauf, dass die Google App installiert und die Spracherkennung aktiviert ist</string>

@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Papurtymo gesto derinimas</string>
     <string name="prefs_shake_tuning_summary">Suveikimų skaičius, pagreičio slenkstis ir laikas</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Veikimas</string>
+    <string name="settings_category_feedback">Atsakas</string>
+    <string name="settings_category_appearance">Išvaizda</string>
+    <string name="settings_category_symbols">Simboliai</string>
+    <string name="settings_category_keys">Klavišai</string>
+    <string name="settings_category_device">Įrenginys</string>
     <string name="settings_category_behavior_vkb">Veikimas</string>
     <string name="settings_category_ckb_gestures">Talpinė klaviatūra</string>
     <string name="settings_category_on_screen_keyboard">Ekrano klaviatūra</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Gestai</string>
     <string name="settings_category_key_popup">Klavišo iššokantysis langas</string>
     <string name="settings_category_modifiers">Modifikavimo klavišai</string>
+    <string name="settings_category_press_twice_lock">Paspauskite du kartus, kad užfiksuotumėte</string>
     <string name="settings_category_sound">Garsas</string>
     <string name="settings_category_vibrate">Vibravimas</string>
     <string name="ckb_action_cursor_mode">Žymeklio režimas</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Ištrinti „%1$s“? Šio veiksmo anuliuoti negalima.</string>
     <string name="settings_pkb_layouts_delete_title">Ištrinti išdėstymą</string>
     <string name="settings_pkb_layouts_details">%1$s · klavišų: %2$d</string>
+    <string name="settings_pkb_layouts_keys">Klavišų: %1$d</string>
+    <string name="settings_pkb_layouts_search">Ieškoti išdėstymų</string>
     <string name="settings_pkb_layouts_empty">Tinkintų išdėstymų dar nėra. Pridėkite vieną iš failo.</string>
     <string name="settings_pkb_layouts_keypad">%1$s klaviatūra</string>
     <string name="settings_pkb_layouts_none">Nenaudojama</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Atkurti tuščią išdėstymą</string>
     <string name="customize_slideboard_reset_to_default">Atkurti numatytąjį išdėstymą</string>
     <string name="settings_slideboard_hub_summary">Skaičių klaviatūra, pusių sukeitimas ir greitosios frazės</string>
-    <string name="settings_symbol_slideboard_link_summary">Skaičių klaviatūra ir greitosios frazės</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard nustatymai</string>
     <string name="customized_symbol_page_add_button_description">Pridėti unikodo simbolį</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Priimti išmoktus žodžius</string>
     <string name="settings_spellcheck_accept_learned_summary">Atpažįsta iš jūsų rašymo išmoktus žodžius</string>
     <string name="pref_alt_double_tap_lock">„Alt“ fiksavimas</string>
-    <string name="pref_alt_double_tap_lock_summary">Paspauskite „Alt“ du kartus, kad jį užfiksuotumėte. Paspauskite dar kartą, kad atfiksuotumėte.</string>
     <string name="pref_ctrl_double_tap_lock">„Ctrl“ fiksavimas</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Paspauskite „Ctrl“ du kartus, kad jį užfiksuotumėte. Paspauskite dar kartą, kad atfiksuotumėte.</string>
     <string name="pref_override_device_meta_state">Fiksuojami modifikavimo klavišai</string>
     <string name="pref_override_device_meta_state_summary">Fiksuoti „Shift“ ir „Alt“ bet kurioje fizinėje klaviatūroje, nepaisant telefono integruotų klaviatūros nustatymų</string>
     <string name="pref_shift_double_tap_lock">„Shift“ fiksavimas</string>
-    <string name="pref_shift_double_tap_lock_summary">Paspauskite „Shift“ du kartus, kad jį užfiksuotumėte. Paspauskite dar kartą, kad atfiksuotumėte.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Kiek laiko laikyti klavišą, kol pasirodys antriniai ženklai</string>
     <string name="prefs_key_longpress_delay_title">Klavišo ilgo paspaudimo delsa</string>
     <string name="prefs_key_preview_animations_summary">Tinkinti klavišo paspaudimo animacijos stilių ir laiką</string>
@@ -1118,8 +1124,8 @@
     <string name="language_packs_deleted">Kalbos paketas ištrintas: %1$s</string>
     <string name="language_packs_already_removed">%1$s jau pašalinta</string>
     <string name="language_packs_delete_failed">Nepavyko ištrinti kalbos paketo: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Veikia neprisijungus</string>
-    <string name="settings_voice_lang_requires_network">Reikia tinklo ryšio</string>
+    <string name="settings_voice_lang_yours">Jūsų kalbos</string>
+    <string name="settings_voice_lang_all">Visos kalbos</string>
     <string name="settings_voice_lang_loading">Įkeliamos galimos kalbos…</string>
     <string name="settings_voice_lang_none">Nėra galimų balso atpažinimo kalbų</string>
     <string name="settings_voice_lang_none_hint">Įsitikinkite, kad įdiegta „Google“ programa ir įjungtas balso atpažinimas</string>

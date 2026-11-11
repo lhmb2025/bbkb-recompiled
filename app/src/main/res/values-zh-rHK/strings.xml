@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">搖動手勢調校</string>
     <string name="prefs_shake_tuning_summary">觸發次數、加速度閾值及時間</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">操作行為</string>
+    <string name="settings_category_feedback">回饋</string>
+    <string name="settings_category_appearance">外觀</string>
+    <string name="settings_category_symbols">符號</string>
+    <string name="settings_category_keys">按鍵</string>
+    <string name="settings_category_device">裝置</string>
     <string name="settings_category_behavior_vkb">操作行為</string>
     <string name="settings_category_ckb_gestures">電容式鍵盤</string>
     <string name="settings_category_on_screen_keyboard">螢幕鍵盤</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">手勢</string>
     <string name="settings_category_key_popup">按鍵彈出式視窗</string>
     <string name="settings_category_modifiers">輔助按鍵</string>
+    <string name="settings_category_press_twice_lock">按兩下鎖定</string>
     <string name="settings_category_sound">音效</string>
     <string name="settings_category_vibrate">震動</string>
     <string name="ckb_action_cursor_mode">游標模式</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">要刪除「%1$s」嗎？此操作無法復原。</string>
     <string name="settings_pkb_layouts_delete_title">刪除配置</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d 個按鍵</string>
+    <string name="settings_pkb_layouts_keys">%1$d 個按鍵</string>
+    <string name="settings_pkb_layouts_search">搜尋配置</string>
     <string name="settings_pkb_layouts_empty">尚未有自訂配置。從檔案新增一個。</string>
     <string name="settings_pkb_layouts_keypad">%1$s 鍵盤</string>
     <string name="settings_pkb_layouts_none">不使用</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">重設為空白配置</string>
     <string name="customize_slideboard_reset_to_default">重設為預設配置</string>
     <string name="settings_slideboard_hub_summary">數字鍵盤、左右對調和快速短語</string>
-    <string name="settings_symbol_slideboard_link_summary">數字鍵盤和快速短語</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s、%2$s、%3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard 設定</string>
     <string name="customized_symbol_page_add_button_description">新增 Unicode 符號</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">接受已學習的字詞</string>
     <string name="settings_spellcheck_accept_learned_summary">識別從您的輸入中學習的字詞</string>
     <string name="pref_alt_double_tap_lock">Alt 鎖定</string>
-    <string name="pref_alt_double_tap_lock_summary">按兩下 Alt 即可鎖定，再按一次即可解鎖。</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl 鎖定</string>
-    <string name="pref_ctrl_double_tap_lock_summary">按兩下 Ctrl 即可鎖定，再按一次即可解鎖。</string>
     <string name="pref_override_device_meta_state">黏性輔助按鍵</string>
     <string name="pref_override_device_meta_state_summary">無論手機的內建鍵盤設定為何，都可在任何實體鍵盤上鎖定 Shift 和 Alt</string>
     <string name="pref_shift_double_tap_lock">Shift 鎖定</string>
-    <string name="pref_shift_double_tap_lock_summary">按兩下 Shift 即可鎖定，再按一次即可解鎖。</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">顯示次要字元前需按住按鍵的時間</string>
     <string name="prefs_key_longpress_delay_title">按鍵長按延遲時間</string>
     <string name="prefs_key_preview_animations_summary">自訂按鍵動畫的樣式和時間</string>
@@ -1073,8 +1079,8 @@
     <string name="language_packs_deleted">已刪除語言套件：%1$s</string>
     <string name="language_packs_already_removed">%1$s已被移除</string>
     <string name="language_packs_delete_failed">無法刪除語言套件：%1$s</string>
-    <string name="settings_voice_lang_offline_ready">可離線使用</string>
-    <string name="settings_voice_lang_requires_network">需要網絡連線</string>
+    <string name="settings_voice_lang_yours">你的語言</string>
+    <string name="settings_voice_lang_all">所有語言</string>
     <string name="settings_voice_lang_loading">正在載入可用的語言…</string>
     <string name="settings_voice_lang_none">沒有可用的語音識別語言</string>
     <string name="settings_voice_lang_none_hint">請確保已安裝 Google 應用程式並已啟用語音識別</string>

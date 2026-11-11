@@ -72,6 +72,7 @@ import dev.bbkb.ime.core.settings.ui.Category
 import dev.bbkb.ime.core.settings.ui.Custom
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceInfo
+import dev.bbkb.ime.core.settings.ui.rememberListSearchState
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.shared.Logger
@@ -171,12 +172,27 @@ fun PhysicalLayoutsScreen(
         }
     }
 
-    SettingsScreenHost(R.string.settings_pkb_layouts_title, onNavigateBack, listOf(
+    // The built-in list has a document per language, so the screen can be searched: by a
+    // layout's name or by anything its second line says (a language, a keypad). While a search
+    // is on, only the matching layouts are listed, without the Add row and the notes.
+    val search = rememberListSearchState()
+    fun shown(layouts: List<LetterLayout>?) = layouts.orEmpty().filter {
+        search.matches(it.name, layoutSummary(context, it, phoneKeypad, phoneKeypadType))
+    }
+    val shownCustom = shown(customLayouts)
+    val shownBuiltIn = shown(builtInLayouts)
+    val noMatches = search.filtering && shownCustom.isEmpty() && shownBuiltIn.isEmpty()
+
+    SettingsScreenHost(R.string.settings_pkb_layouts_title, onNavigateBack, search = search,
+        searchHint = R.string.settings_pkb_layouts_search, rows = listOf(
+        Custom(visible = { noMatches }) {
+            PreferenceInfo(text = stringResource(R.string.settings_common_no_matches))
+        },
         // ── Custom: the user's layouts, chosen per language on the Language screen ──
-        Category(R.string.settings_pkb_layouts_category_custom),
-        Custom(inGroup = true) {
+        Category(R.string.settings_pkb_layouts_category_custom, visible = { !search.filtering || shownCustom.isNotEmpty() }),
+        Custom(inGroup = true, visible = { !search.filtering || shownCustom.isNotEmpty() }) {
             Column(verticalArrangement = Arrangement.spacedBy(LocalSpacing.current.groupGap)) {
-                customLayouts.orEmpty().forEach { layout ->
+                shownCustom.forEach { layout ->
                     key(layout.id) {
                         LayoutRow(
                             layout = layout,
@@ -187,13 +203,13 @@ fun PhysicalLayoutsScreen(
                 }
             }
         },
-        Custom(visible = { customLayouts?.isEmpty() == true }) {
+        Custom(visible = { customLayouts?.isEmpty() == true && !search.filtering }) {
             PreferenceInfo(text = stringResource(R.string.settings_pkb_layouts_empty))
         },
         // Where a layout comes from: a file. Pickers filter by type unevenly (a file manager may
         // call an .xml document text or octet-stream), so every file is offered and the reader
         // says no to what is not a layout.
-        Custom(inGroup = true) {
+        Custom(inGroup = true, visible = { !search.filtering }) {
             PreferenceItem(
                 title = stringResource(R.string.settings_pkb_layouts_add),
                 icon = ImageVector.vectorResource(R.drawable.ic_settings_m_add),
@@ -203,12 +219,14 @@ fun PhysicalLayoutsScreen(
 
         // ── Built-in: read-only, each one a template to save as a file ──
         // Shown while the list loads; left out only when the build ships no documents at all.
-        Category(R.string.settings_pkb_layouts_category_builtin, visible = { builtInLayouts?.isEmpty() != true }),
-        Custom(visible = { builtInLayouts?.isEmpty() != true }) {
+        Category(R.string.settings_pkb_layouts_category_builtin, visible = {
+            if (search.filtering) shownBuiltIn.isNotEmpty() else builtInLayouts?.isEmpty() != true
+        }),
+        Custom(visible = { builtInLayouts?.isEmpty() != true && !search.filtering }) {
             PreferenceInfo(text = stringResource(R.string.settings_pkb_layouts_builtin_note))
         },
-        Custom(inGroup = true) {
-            builtInLayouts.orEmpty().forEach { layout ->
+        Custom(inGroup = true, visible = { !search.filtering || shownBuiltIn.isNotEmpty() }) {
+            shownBuiltIn.forEach { layout ->
                 key(layout.id) {
                     LayoutRow(
                         layout = layout,
@@ -561,8 +579,8 @@ internal fun orderBuiltInLayouts(
 
 /**
  * A layout row's second line: "German · QWERTZ keypad · 30 keys" — the languages it is bound to
- * (by name; "All keyboards" when none), the keypad shape or type it is bound to, and how many keys
- * it names. When it is bound to a keypad this phone does not have, a second line says it does
+ * (by name; "All keyboards" when none; left out when it is the layout's own name, so "English"
+ * reads "26 keys"), the keypad shape or type it is bound to, and how many keys it names. When it is bound to a keypad this phone does not have, a second line says it does
  * nothing here. A phone whose keypad is unknown gets no such line: unknown is not different.
  *
  * @param languageName a language code's display name; the keyboard's own names by default.
@@ -591,7 +609,14 @@ internal fun layoutSummary(
             binding.keypadType
         }
     }
-    val details = context.getString(R.string.settings_pkb_layouts_details, parts.joinToString(" · "), layout.keyCount)
+    // A layout named for its one language ("English", bound to English) would say the name twice,
+    // title and second line; there the second line starts with what is left.
+    if (parts.first().equals(layout.name.trim(), ignoreCase = true)) parts.removeAt(0)
+    val details = if (parts.isEmpty()) {
+        context.getString(R.string.settings_pkb_layouts_keys, layout.keyCount)
+    } else {
+        context.getString(R.string.settings_pkb_layouts_details, parts.joinToString(" · "), layout.keyCount)
+    }
     val notThisKeypad =
         (binding.keypad != LetterLayout.ANY && phoneKeypad != null &&
             !phoneKeypad.equals(binding.keypad, ignoreCase = true)) ||

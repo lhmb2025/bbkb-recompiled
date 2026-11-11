@@ -9,7 +9,12 @@ import android.view.inputmethod.InputMethodInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextReplacement
 import androidx.test.core.app.ApplicationProvider
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.distribution.DistributionConfig
@@ -23,6 +28,7 @@ import dev.bbkb.ime.core.locale.multilanguage.MultiLanguageRepository
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceLanguages
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -113,6 +119,28 @@ class LanguagePacksVoiceChipTest {
 
         assertEquals("English and French; not Italian (online only), German or Spanish (not fetched)",
             2, chips())
+    }
+
+    /** The top bar's search narrows the installed packs by name, and says when nothing matches. */
+    @Test
+    fun `search narrows the installed packs by name`() {
+        showScreen()
+        val before = composeRule.onAllNodesWithText("Preinstalled").fetchSemanticsNodes().size
+
+        composeRule.onNodeWithContentDescription("Search").performClick()
+        composeRule.onNode(hasSetTextAction()).performTextInput("engl")
+        composeRule.waitForIdle()
+
+        assertEquals(1, composeRule.onAllNodesWithText("English").fetchSemanticsNodes().size)
+        assertTrue(
+            "fewer installed packs are listed than before the search",
+            composeRule.onAllNodesWithText("Preinstalled").fetchSemanticsNodes().size < before,
+        )
+
+        composeRule.onNode(hasSetTextAction()).performTextReplacement("zzzz")
+        composeRule.waitForIdle()
+        assertTrue(composeRule.onAllNodesWithText("No matches found").fetchSemanticsNodes().isNotEmpty())
+        assertEquals(0, composeRule.onAllNodesWithText("English").fetchSemanticsNodes().size)
     }
 
     @Test

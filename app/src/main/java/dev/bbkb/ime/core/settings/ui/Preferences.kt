@@ -588,6 +588,8 @@ fun SimplePreference(
 fun EditTextPreference(
     title: String,
     summary: String? = null,
+    /** What the row shows as its title when that is not the dialog's heading ([title]). */
+    rowTitle: String = title,
     icon: ImageVector? = null,
     iconSpaceReserved: Boolean = false,
     value: String,
@@ -600,7 +602,7 @@ fun EditTextPreference(
     var showDialog by remember { mutableStateOf(false) }
 
     PreferenceItem(
-        title = title,
+        title = rowTitle,
         summary = summary ?: value,
         icon = icon,
         iconSpaceReserved = iconSpaceReserved,
@@ -664,6 +666,12 @@ fun SliderPreference(
     valueRange: IntRange = 0..100,
     stepSize: Int? = null,
     unit: String = "",
+    /**
+     * True for a row that shows its current setting as its second line, like a picker does
+     * ("400 ms"); [summary] then moves into the dialog, above the slider. False keeps [summary]
+     * on the row, as the debug tuning screens want: there the sentence says what the parameter is.
+     */
+    valueOnRow: Boolean = false,
     enabled: Boolean = true,
     modifier: Modifier = Modifier,
     onValueChange: (Int) -> Unit
@@ -672,8 +680,11 @@ fun SliderPreference(
     // See EditTextPreference above: key on the incoming value so the dialog reopens on the
     // current setting rather than the one this row first composed with.
     var sliderValue by remember(value) { mutableStateOf(value.toFloat()) }
-    
-    val displaySummary = summary ?: stringResource(R.string.settings_common_current_value, "$value$unit")
+
+    val displaySummary = when {
+        valueOnRow -> sliderValueText(value, unit)
+        else -> summary ?: stringResource(R.string.settings_common_current_value, "$value$unit")
+    }
     
     PreferenceItem(
         title = title,
@@ -701,6 +712,14 @@ fun SliderPreference(
             title = { Text(title, style = MaterialTheme.typography.headlineSmall) },
             text = {
                 Column {
+                    if (valueOnRow && summary != null) {
+                        Text(
+                            text = summary,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Spacer(modifier = Modifier.height(spacing.large))
+                    }
                     Text(
                         text = stringResource(R.string.settings_common_slider_value, "${sliderValue.toInt()}$unit"),
                         style = MaterialTheme.typography.bodyLarge
@@ -742,6 +761,11 @@ fun SliderPreference(
         )
     }
 }
+
+/** A slider's setting as a row shows it: milliseconds through the translated "%d ms". */
+@Composable
+private fun sliderValueText(value: Int, unit: String): String =
+    if (unit == "ms") stringResource(R.string.settings_feedback_milliseconds, value) else "$value$unit"
 
 /**
  * Grid preference composable with Material 3 dialog

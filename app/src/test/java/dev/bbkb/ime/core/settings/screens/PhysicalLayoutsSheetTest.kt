@@ -4,10 +4,14 @@ import android.content.Context
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.test.core.app.ApplicationProvider
@@ -124,6 +128,38 @@ class PhysicalLayoutsSheetTest {
         composeRule.onNode(hasText("Delete layout") and hasClickAction()).performClick()
         composeRule.waitUntil(5_000) { registry.list().isEmpty() }
         assertEquals(emptyList<String>(), registry.list().map { it.id })
+    }
+
+    /**
+     * The magnifier searches both lists by name. While a search is on only the matches are listed:
+     * no Add row, no notes, and a group with no match loses its header.
+     */
+    @Test
+    fun searchNarrowsBothListsToTheMatchingLayouts() {
+        registry.save(
+            LetterLayoutXml.parse(
+                """<letter-layout version="1" id="mine" name="My layout"><bind/>
+                    <key code="KEYCODE_Y" keySpec="z"/></letter-layout>""",
+                LetterLayout.Origin.USER,
+            )
+        )
+        show()
+        waitForText("My layout")
+        waitForText("Built-in sample")
+
+        composeRule.onNodeWithContentDescription("Search").performClick()
+        composeRule.onNode(hasSetTextAction()).performTextInput("sample")
+        composeRule.waitForIdle()
+
+        composeRule.onNodeWithText("Built-in sample").assertExists()
+        composeRule.onNodeWithText("My layout").assertDoesNotExist()
+        composeRule.onNodeWithText("Add layout").assertDoesNotExist()
+        composeRule.onNodeWithText("Custom").assertDoesNotExist()
+
+        composeRule.onNode(hasSetTextAction()).performTextReplacement("zzz")
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText("No matches found").assertExists()
+        composeRule.onNodeWithText("Built-in sample").assertDoesNotExist()
     }
 
     private object OneBuiltIn : LetterLayoutRegistry.BuiltInDocuments {

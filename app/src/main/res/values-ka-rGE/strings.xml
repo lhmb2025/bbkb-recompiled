@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">შენჯღრევის ჟესტის დარეგულირება</string>
     <string name="prefs_shake_tuning_summary">გაშვების რაოდენობა, აჩქარების ზღვარი და დროები</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">ქცევა</string>
+    <string name="settings_category_feedback">უკუკავშირი</string>
+    <string name="settings_category_appearance">იერსახე</string>
+    <string name="settings_category_symbols">სიმბოლოები</string>
+    <string name="settings_category_keys">კლავიშები</string>
+    <string name="settings_category_device">მოწყობილობა</string>
     <string name="settings_category_behavior_vkb">ქცევა</string>
     <string name="settings_category_ckb_gestures">ტევადობითი კლავიატურა</string>
     <string name="settings_category_on_screen_keyboard">Ეკრანული კლავიატურა</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">ჟესტები</string>
     <string name="settings_category_key_popup">კლავიშის გადიდება</string>
     <string name="settings_category_modifiers">მოდიფიკატორები</string>
+    <string name="settings_category_press_twice_lock">ჩასაკეტად ორჯერ დააჭირეთ</string>
     <string name="settings_category_sound">ხმა</string>
     <string name="settings_category_vibrate">ვიბრაცია</string>
     <string name="ckb_action_cursor_mode">კურსორის რეჟიმი</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">წაიშალოს „%1$s“? ამის გაუქმება შეუძლებელია.</string>
     <string name="settings_pkb_layouts_delete_title">განლაგების წაშლა</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d კლავიში</string>
+    <string name="settings_pkb_layouts_keys">%1$d კლავიში</string>
+    <string name="settings_pkb_layouts_search">განლაგებების ძიება</string>
     <string name="settings_pkb_layouts_empty">მორგებული განლაგებები ჯერ არ არის. დაამატეთ ერთი ფაილიდან.</string>
     <string name="settings_pkb_layouts_keypad">%1$s კლავიატურა</string>
     <string name="settings_pkb_layouts_none">არ გამოიყენება</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">ცარიელი განლაგების აღდგენა</string>
     <string name="customize_slideboard_reset_to_default">ნაგულისხმევი განლაგების აღდგენა</string>
     <string name="settings_slideboard_hub_summary">ციფრული პანელი, მხარეების შეცვლა და სწრაფი ფრაზები</string>
-    <string name="settings_symbol_slideboard_link_summary">ციფრული პანელი და სწრაფი ფრაზები</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-ის პარამეტრები</string>
     <string name="customized_symbol_page_add_button_description">Unicode სიმბოლოს დამატება</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">ნასწავლი სიტყვების მიღება</string>
     <string name="settings_spellcheck_accept_learned_summary">ცნობს თქვენი აკრეფიდან ნასწავლ სიტყვებს</string>
     <string name="pref_alt_double_tap_lock">Alt-ის ჩაკეტვა</string>
-    <string name="pref_alt_double_tap_lock_summary">ჩასაკეტად Alt-ზე ორჯერ დააჭირეთ. განსაბლოკად კვლავ დააჭირეთ.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl-ის ჩაკეტვა</string>
-    <string name="pref_ctrl_double_tap_lock_summary">ჩასაკეტად Ctrl-ზე ორჯერ დააჭირეთ. განსაბლოკად კვლავ დააჭირეთ.</string>
     <string name="pref_override_device_meta_state">წებოვანი მოდიფიკატორები</string>
     <string name="pref_override_device_meta_state_summary">Shift-ისა და Alt-ის ჩაკეტვა ნებისმიერ ფიზიკურ კლავიატურაზე, ტელეფონის ჩაშენებული კლავიატურის პარამეტრების მიუხედავად</string>
     <string name="pref_shift_double_tap_lock">Shift-ის ჩაკეტვა</string>
-    <string name="pref_shift_double_tap_lock_summary">ჩასაკეტად Shift-ზე ორჯერ დააჭირეთ. განსაბლოკად კვლავ დააჭირეთ.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">კლავიშის დაკავების დრო დამატებითი სიმბოლოების გამოჩენამდე</string>
     <string name="prefs_key_longpress_delay_title">კლავიშის ხანგრძლივი დაჭერის დაყოვნება</string>
     <string name="prefs_key_preview_animations_summary">მოირგეთ კლავიშზე დაჭერის ანიმაციის სტილი და დრო</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">ენის პაკეტი წაიშალა: %1$s</string>
     <string name="language_packs_already_removed">%1$s უკვე წაშლილია</string>
     <string name="language_packs_delete_failed">ენის პაკეტის წაშლა ვერ მოხერხდა: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">მზადაა ოფლაინ რეჟიმისთვის</string>
-    <string name="settings_voice_lang_requires_network">საჭიროებს ქსელს</string>
+    <string name="settings_voice_lang_yours">თქვენი ენები</string>
+    <string name="settings_voice_lang_all">ყველა ენა</string>
     <string name="settings_voice_lang_loading">ხელმისაწვდომი ენები იტვირთება…</string>
     <string name="settings_voice_lang_none">ხმის ამოცნობის ენები მიუწვდომელია</string>
     <string name="settings_voice_lang_none_hint">დარწმუნდით, რომ Google აპი დაინსტალირებულია და ხმის ამოცნობა ჩართულია</string>

@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Stilling hristibendingar</string>
     <string name="prefs_shake_tuning_summary">Fjöldi ræsinga, hröðunarmörk og tímasetning</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Hegðun</string>
+    <string name="settings_category_feedback">Svörun</string>
+    <string name="settings_category_appearance">Útlit</string>
+    <string name="settings_category_symbols">Tákn</string>
+    <string name="settings_category_keys">Lyklar</string>
+    <string name="settings_category_device">Tæki</string>
     <string name="settings_category_behavior_vkb">Hegðun</string>
     <string name="settings_category_ckb_gestures">Rýmdarnæmt lyklaborð</string>
     <string name="settings_category_on_screen_keyboard">Skjályklaborð</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Bendingar</string>
     <string name="settings_category_key_popup">Lyklagluggi</string>
     <string name="settings_category_modifiers">Breytilyklar</string>
+    <string name="settings_category_press_twice_lock">Ýttu tvisvar til að læsa</string>
     <string name="settings_category_sound">Hljóð</string>
     <string name="settings_category_vibrate">Titringur</string>
     <string name="ckb_action_cursor_mode">Bendilhamur</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Eyða „%1$s“? Ekki er hægt að afturkalla þetta.</string>
     <string name="settings_pkb_layouts_delete_title">Eyða uppsetningu</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d lyklar</string>
+    <string name="settings_pkb_layouts_keys">%1$d lyklar</string>
+    <string name="settings_pkb_layouts_search">Leita að uppsetningum</string>
     <string name="settings_pkb_layouts_empty">Engar sérsniðnar uppsetningar enn. Bættu einni við úr skrá.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-lyklaborð</string>
     <string name="settings_pkb_layouts_none">Ekki í notkun</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Endurstilla á auða uppsetningu</string>
     <string name="customize_slideboard_reset_to_default">Endurstilla á sjálfgefna uppsetningu</string>
     <string name="settings_slideboard_hub_summary">Talnaborð, víxlun hliða og skyndisetningar</string>
-    <string name="settings_symbol_slideboard_link_summary">Talnaborð og skyndisetningar</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Stillingar Slideboard</string>
     <string name="customized_symbol_page_add_button_description">Bæta við Unicode-tákni</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Samþykkja lærð orð</string>
     <string name="settings_spellcheck_accept_learned_summary">Þekkir orð sem lærð eru af innslætti þínum</string>
     <string name="pref_alt_double_tap_lock">Alt-læsing</string>
-    <string name="pref_alt_double_tap_lock_summary">Ýttu tvisvar á Alt til að læsa honum. Ýttu aftur til að aflæsa.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl-læsing</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Ýttu tvisvar á Ctrl til að læsa honum. Ýttu aftur til að aflæsa.</string>
     <string name="pref_override_device_meta_state">Klístraðir breytilyklar</string>
     <string name="pref_override_device_meta_state_summary">Læsa Shift og Alt á hvaða vélbúnaðarlyklaborði sem er, óháð innbyggðum lyklaborðsstillingum símans</string>
     <string name="pref_shift_double_tap_lock">Shift-læsing</string>
-    <string name="pref_shift_double_tap_lock_summary">Ýttu tvisvar á Shift til að læsa honum. Ýttu aftur til að aflæsa.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Tími sem halda þarf lykli inni áður en aukastafir birtast</string>
     <string name="prefs_key_longpress_delay_title">Töf við langa lyklaýtingu</string>
     <string name="prefs_key_preview_animations_summary">Sérsníða stíl og tímasetningu hreyfimyndar við lyklaýtingu</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Tungumálapakka eytt: %1$s</string>
     <string name="language_packs_already_removed">%1$s hafði þegar verið fjarlægt</string>
     <string name="language_packs_delete_failed">Ekki tókst að eyða tungumálapakka: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Tilbúið án nettengingar</string>
-    <string name="settings_voice_lang_requires_network">Krefst nettengingar</string>
+    <string name="settings_voice_lang_yours">Tungumálin þín</string>
+    <string name="settings_voice_lang_all">Öll tungumál</string>
     <string name="settings_voice_lang_loading">Hleður tiltækum tungumálum…</string>
     <string name="settings_voice_lang_none">Engin tungumál tiltæk fyrir talgreiningu</string>
     <string name="settings_voice_lang_none_hint">Gakktu úr skugga um að Google-forritið sé uppsett og kveikt sé á talgreiningu</string>

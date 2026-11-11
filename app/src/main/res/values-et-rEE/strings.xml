@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Raputusžesti häälestus</string>
     <string name="prefs_shake_tuning_summary">Käivituste arv, kiirenduslävi ja ajastus</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Käitumine</string>
+    <string name="settings_category_feedback">Tagasiside</string>
+    <string name="settings_category_appearance">Välimus</string>
+    <string name="settings_category_symbols">Sümbolid</string>
+    <string name="settings_category_keys">Klahvid</string>
+    <string name="settings_category_device">Seade</string>
     <string name="settings_category_behavior_vkb">Käitumine</string>
     <string name="settings_category_ckb_gestures">Mahtuvuslik klaviatuur</string>
     <string name="settings_category_on_screen_keyboard">Ekraaniklaviatuur</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Žestid</string>
     <string name="settings_category_key_popup">Klahvi hüpik</string>
     <string name="settings_category_modifiers">Muuteklahvid</string>
+    <string name="settings_category_press_twice_lock">Vajutage lukustamiseks kaks korda</string>
     <string name="settings_category_sound">Heli</string>
     <string name="settings_category_vibrate">Vibreerimine</string>
     <string name="ckb_action_cursor_mode">Kursorirežiim</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Kas kustutada „%1$s“? Seda ei saa tagasi võtta.</string>
     <string name="settings_pkb_layouts_delete_title">Kustuta paigutus</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d klahvi</string>
+    <string name="settings_pkb_layouts_keys">%1$d klahvi</string>
+    <string name="settings_pkb_layouts_search">Otsi paigutusi</string>
     <string name="settings_pkb_layouts_empty">Kohandatud paigutusi pole veel. Lisa üks failist.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-klahvistik</string>
     <string name="settings_pkb_layouts_none">Pole kasutusel</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Lähtesta tühjale paigutusele</string>
     <string name="customize_slideboard_reset_to_default">Lähtesta vaikepaigutusele</string>
     <string name="settings_slideboard_hub_summary">Numbriklahvistik, poolte vahetus ja kiirfraasid</string>
-    <string name="settings_symbol_slideboard_link_summary">Numbriklahvistik ja kiirfraasid</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboardi seaded</string>
     <string name="customized_symbol_page_add_button_description">Lisa Unicode-sümbol</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Aktsepteeri õpitud sõnu</string>
     <string name="settings_spellcheck_accept_learned_summary">Tunnustab teie trükkimisest õpitud sõnu</string>
     <string name="pref_alt_double_tap_lock">Alt-klahvi lukk</string>
-    <string name="pref_alt_double_tap_lock_summary">Vajutage Alt-klahvi kaks korda, et see lukustada. Vajutage uuesti, et lukk vabastada.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl-klahvi lukk</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Vajutage Ctrl-klahvi kaks korda, et see lukustada. Vajutage uuesti, et lukk vabastada.</string>
     <string name="pref_override_device_meta_state">Kleepuvad muuteklahvid</string>
     <string name="pref_override_device_meta_state_summary">Lukusta Shift ja Alt mis tahes füüsilisel klaviatuuril sõltumata telefoni sisseehitatud klaviatuuriseadetest</string>
     <string name="pref_shift_double_tap_lock">Shift-klahvi lukk</string>
-    <string name="pref_shift_double_tap_lock_summary">Vajutage Shift-klahvi kaks korda, et see lukustada. Vajutage uuesti, et lukk vabastada.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Aeg, mille jooksul klahvi hoida, enne kui ilmuvad lisamärgid</string>
     <string name="prefs_key_longpress_delay_title">Klahvi pikavajutuse viivitus</string>
     <string name="prefs_key_preview_animations_summary">Kohanda klahvivajutuse animatsiooni stiili ja ajastust</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Keelepakett kustutati: %1$s</string>
     <string name="language_packs_already_removed">%1$s oli juba eemaldatud</string>
     <string name="language_packs_delete_failed">Keelepaketi kustutamine ebaõnnestus: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Saadaval võrguühenduseta</string>
-    <string name="settings_voice_lang_requires_network">Vajab võrguühendust</string>
+    <string name="settings_voice_lang_yours">Teie keeled</string>
+    <string name="settings_voice_lang_all">Kõik keeled</string>
     <string name="settings_voice_lang_loading">Saadaolevate keelte laadimine…</string>
     <string name="settings_voice_lang_none">Kõnetuvastuse keeli pole saadaval</string>
     <string name="settings_voice_lang_none_hint">Veenduge, et Google\'i rakendus on installitud ja kõnetuvastus on sisse lülitatud</string>

@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Podešavanje geste tresenja</string>
     <string name="prefs_shake_tuning_summary">Broj okidanja, prag ubrzanja i vrijeme</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Ponašanje</string>
+    <string name="settings_category_feedback">Povratne informacije</string>
+    <string name="settings_category_appearance">Izgled</string>
+    <string name="settings_category_symbols">Simboli</string>
+    <string name="settings_category_keys">Tipke</string>
+    <string name="settings_category_device">Uređaj</string>
     <string name="settings_category_behavior_vkb">Ponašanje</string>
     <string name="settings_category_ckb_gestures">Kapacitivna tipkovnica</string>
     <string name="settings_category_on_screen_keyboard">Zaslonska tipkovnica</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Pokreti</string>
     <string name="settings_category_key_popup">Skočni prikaz tipke</string>
     <string name="settings_category_modifiers">Modifikatori</string>
+    <string name="settings_category_press_twice_lock">Pritisnite dvaput za zaključavanje</string>
     <string name="settings_category_sound">Zvuk</string>
     <string name="settings_category_vibrate">Vibracija</string>
     <string name="ckb_action_cursor_mode">Način pokazivača</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Izbrisati „%1$s”? Ovo se ne može poništiti.</string>
     <string name="settings_pkb_layouts_delete_title">Izbriši raspored</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d tipki</string>
+    <string name="settings_pkb_layouts_keys">%1$d tipki</string>
+    <string name="settings_pkb_layouts_search">Pretraži rasporede</string>
     <string name="settings_pkb_layouts_empty">Još nema prilagođenih rasporeda. Dodajte jedan iz datoteke.</string>
     <string name="settings_pkb_layouts_keypad">tipkovnica %1$s</string>
     <string name="settings_pkb_layouts_none">Ne upotrebljava se</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Ponovno postavljanje praznog izgleda</string>
     <string name="customize_slideboard_reset_to_default">Ponovno postavi zadani izgled</string>
     <string name="settings_slideboard_hub_summary">Brojčana tipkovnica, zamjena strana i brze fraze</string>
-    <string name="settings_symbol_slideboard_link_summary">Brojčana tipkovnica i brze fraze</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Postavke Slideboarda</string>
     <string name="customized_symbol_page_add_button_description">Dodaj simbol za unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Prihvati naučene riječi</string>
     <string name="settings_spellcheck_accept_learned_summary">Prepoznaje riječi naučene iz vašeg tipkanja</string>
     <string name="pref_alt_double_tap_lock">Zaključavanje tipke Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Pritisnite Alt dvaput da biste ga zaključali. Pritisnite ga ponovno da biste ga otključali.</string>
     <string name="pref_ctrl_double_tap_lock">Zaključavanje tipke Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Pritisnite Ctrl dvaput da biste ga zaključali. Pritisnite ga ponovno da biste ga otključali.</string>
     <string name="pref_override_device_meta_state">Ljepljive tipke modifikatora</string>
     <string name="pref_override_device_meta_state_summary">Zaključavanje tipki Shift i Alt na bilo kojoj fizičkoj tipkovnici, bez obzira na ugrađene postavke tipkovnice telefona</string>
     <string name="pref_shift_double_tap_lock">Zaključavanje tipke Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">Pritisnite Shift dvaput da biste ga zaključali. Pritisnite ga ponovno da biste ga otključali.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Vrijeme zadržavanja tipke prije prikaza sekundarnih znakova</string>
     <string name="prefs_key_longpress_delay_title">Odgoda dugog pritiska tipke</string>
     <string name="prefs_key_preview_animations_summary">Prilagodite stil i vrijeme animacije pritiska tipke</string>
@@ -1103,8 +1109,8 @@
     <string name="language_packs_deleted">Jezični paket je izbrisan: %1$s</string>
     <string name="language_packs_already_removed">Jezični paket %1$s već je uklonjen</string>
     <string name="language_packs_delete_failed">Brisanje jezičnog paketa nije uspjelo: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Radi izvan mreže</string>
-    <string name="settings_voice_lang_requires_network">Zahtijeva mrežu</string>
+    <string name="settings_voice_lang_yours">Vaši jezici</string>
+    <string name="settings_voice_lang_all">Svi jezici</string>
     <string name="settings_voice_lang_loading">Učitavanje dostupnih jezika…</string>
     <string name="settings_voice_lang_none">Nema dostupnih jezika za prepoznavanje govora</string>
     <string name="settings_voice_lang_none_hint">Provjerite je li aplikacija Google instalirana i je li prepoznavanje govora omogućeno</string>

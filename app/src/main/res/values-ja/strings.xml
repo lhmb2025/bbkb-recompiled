@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">シェイクジェスチャーの調整</string>
     <string name="prefs_shake_tuning_summary">トリガー回数、加速度しきい値、タイミング</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">動作</string>
+    <string name="settings_category_feedback">フィードバック</string>
+    <string name="settings_category_appearance">外観</string>
+    <string name="settings_category_symbols">記号</string>
+    <string name="settings_category_keys">キー</string>
+    <string name="settings_category_device">端末</string>
     <string name="settings_category_behavior_vkb">動作</string>
     <string name="settings_category_ckb_gestures">静電容量式キーボード</string>
     <string name="settings_category_on_screen_keyboard">画面上のキーボード</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">ジェスチャー</string>
     <string name="settings_category_key_popup">キーポップアップ</string>
     <string name="settings_category_modifiers">修飾キー</string>
+    <string name="settings_category_press_twice_lock">2回押してロック</string>
     <string name="settings_category_sound">音声</string>
     <string name="settings_category_vibrate">バイブレーション</string>
     <string name="ckb_action_cursor_mode">カーソルモード</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">「%1$s」を削除しますか？この操作は元に戻せません。</string>
     <string name="settings_pkb_layouts_delete_title">レイアウトを削除</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d 個のキー</string>
+    <string name="settings_pkb_layouts_keys">%1$d 個のキー</string>
+    <string name="settings_pkb_layouts_search">レイアウトを検索</string>
     <string name="settings_pkb_layouts_empty">カスタムレイアウトはまだありません。ファイルから追加してください。</string>
     <string name="settings_pkb_layouts_keypad">%1$sキーパッド</string>
     <string name="settings_pkb_layouts_none">使用しない</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">空白のレイアウトにリセット</string>
     <string name="customize_slideboard_reset_to_default">デフォルトレイアウトにリセット</string>
     <string name="settings_slideboard_hub_summary">テンキー、左右の入れ替え、クイックフレーズ</string>
-    <string name="settings_symbol_slideboard_link_summary">テンキーとクイックフレーズ</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s、%2$s、%3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard の設定</string>
     <string name="customized_symbol_page_add_button_description">ユニコード記号を追加</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">学習した単語を受け入れる</string>
     <string name="settings_spellcheck_accept_learned_summary">入力から学習した単語を認識します</string>
     <string name="pref_alt_double_tap_lock">Altロック</string>
-    <string name="pref_alt_double_tap_lock_summary">Altを2回押すとロックされます。もう一度押すと解除されます。</string>
     <string name="pref_ctrl_double_tap_lock">Ctrlロック</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Ctrlを2回押すとロックされます。もう一度押すと解除されます。</string>
     <string name="pref_override_device_meta_state">固定修飾キー</string>
     <string name="pref_override_device_meta_state_summary">スマートフォン内蔵のキーボード設定に関係なく、どの物理キーボードでもShiftとAltをロックします</string>
     <string name="pref_shift_double_tap_lock">Shiftロック</string>
-    <string name="pref_shift_double_tap_lock_summary">Shiftを2回押すとロックされます。もう一度押すと解除されます。</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">副次的な文字が表示されるまでのキー長押し時間</string>
     <string name="prefs_key_longpress_delay_title">キーの長押し時間</string>
     <string name="prefs_key_preview_animations_summary">キー押下アニメーションのスタイルとタイミングをカスタマイズします</string>
@@ -1073,8 +1079,8 @@
     <string name="language_packs_deleted">言語パックを削除しました: %1$s</string>
     <string name="language_packs_already_removed">%1$sはすでに削除されています</string>
     <string name="language_packs_delete_failed">言語パックを削除できませんでした: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">オフラインで利用可能</string>
-    <string name="settings_voice_lang_requires_network">ネットワークが必要</string>
+    <string name="settings_voice_lang_yours">使用中の言語</string>
+    <string name="settings_voice_lang_all">すべての言語</string>
     <string name="settings_voice_lang_loading">利用可能な言語を読み込んでいます…</string>
     <string name="settings_voice_lang_none">利用できる音声認識言語はありません</string>
     <string name="settings_voice_lang_none_hint">Google アプリがインストールされ、音声認識が有効になっていることを確認してください</string>

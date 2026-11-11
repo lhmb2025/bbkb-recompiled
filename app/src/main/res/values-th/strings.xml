@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">การปรับแต่งท่าทางเขย่า</string>
     <string name="prefs_shake_tuning_summary">จำนวนครั้งที่ทริกเกอร์ เกณฑ์ความเร่ง และเวลา</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">การทำงาน</string>
+    <string name="settings_category_feedback">การตอบสนอง</string>
+    <string name="settings_category_appearance">ลักษณะที่ปรากฏ</string>
+    <string name="settings_category_symbols">สัญลักษณ์</string>
+    <string name="settings_category_keys">ปุ่ม</string>
+    <string name="settings_category_device">อุปกรณ์</string>
     <string name="settings_category_behavior_vkb">การทำงาน</string>
     <string name="settings_category_ckb_gestures">แป้นพิมพ์คาปาซิทีฟ</string>
     <string name="settings_category_on_screen_keyboard">แป้นพิมพ์บนหน้าจอ</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">ท่าทางสัมผัส</string>
     <string name="settings_category_key_popup">ป๊อปอัปปุ่ม</string>
     <string name="settings_category_modifiers">ปุ่มปรับเปลี่ยน</string>
+    <string name="settings_category_press_twice_lock">กดสองครั้งเพื่อล็อก</string>
     <string name="settings_category_sound">เสียง</string>
     <string name="settings_category_vibrate">การสั่น</string>
     <string name="ckb_action_cursor_mode">โหมดเคอร์เซอร์</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">ลบ “%1$s” ไหม การดำเนินการนี้เลิกทำไม่ได้</string>
     <string name="settings_pkb_layouts_delete_title">ลบเลย์เอาท์</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d ปุ่ม</string>
+    <string name="settings_pkb_layouts_keys">%1$d ปุ่ม</string>
+    <string name="settings_pkb_layouts_search">ค้นหาเลย์เอาต์</string>
     <string name="settings_pkb_layouts_empty">ยังไม่มีเลย์เอาต์ที่กำหนดเอง เพิ่มจากไฟล์ได้เลย</string>
     <string name="settings_pkb_layouts_keypad">แป้นพิมพ์ %1$s</string>
     <string name="settings_pkb_layouts_none">ไม่ได้ใช้</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">รีเซ็ตไปเป็นเลย์เอาท์ว่าง</string>
     <string name="customize_slideboard_reset_to_default">รีเซ็ตเป็นเลย์เอาท์เริ่มต้น</string>
     <string name="settings_slideboard_hub_summary">แป้นตัวเลข สลับด้าน และวลีด่วน</string>
-    <string name="settings_symbol_slideboard_link_summary">แป้นตัวเลขและวลีด่วน</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s %2$s %3$s…</string>
     <string name="settings_slideboard_settings_title">การตั้งค่า Slideboard</string>
     <string name="customized_symbol_page_add_button_description">เพิ่มสัญลักษณ์ Unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">ยอมรับคำที่เรียนรู้</string>
     <string name="settings_spellcheck_accept_learned_summary">จดจำคำที่เรียนรู้จากการพิมพ์ของคุณ</string>
     <string name="pref_alt_double_tap_lock">ล็อก Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">กด Alt สองครั้งเพื่อล็อก กดอีกครั้งเพื่อปลดล็อก</string>
     <string name="pref_ctrl_double_tap_lock">ล็อก Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">กด Ctrl สองครั้งเพื่อล็อก กดอีกครั้งเพื่อปลดล็อก</string>
     <string name="pref_override_device_meta_state">ปุ่มปรับเปลี่ยนแบบค้าง</string>
     <string name="pref_override_device_meta_state_summary">ล็อก Shift และ Alt บนแป้นพิมพ์จริงทุกแบบ โดยไม่คำนึงถึงการตั้งค่าแป้นพิมพ์ในตัวของโทรศัพท์</string>
     <string name="pref_shift_double_tap_lock">ล็อก Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">กด Shift สองครั้งเพื่อล็อก กดอีกครั้งเพื่อปลดล็อก</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">ระยะเวลากดปุ่มค้างก่อนที่อักขระรองจะปรากฏ</string>
     <string name="prefs_key_longpress_delay_title">หน่วงเวลาการกดปุ่มค้าง</string>
     <string name="prefs_key_preview_animations_summary">ปรับแต่งรูปแบบและจังหวะเวลาภาพเคลื่อนไหวของการกดปุ่ม</string>
@@ -1073,8 +1079,8 @@
     <string name="language_packs_deleted">ลบแพ็กภาษาแล้ว: %1$s</string>
     <string name="language_packs_already_removed">%1$s ถูกนำออกไปแล้ว</string>
     <string name="language_packs_delete_failed">ลบแพ็กภาษาไม่ได้: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">พร้อมใช้แบบออฟไลน์</string>
-    <string name="settings_voice_lang_requires_network">ต้องใช้เครือข่าย</string>
+    <string name="settings_voice_lang_yours">ภาษาของคุณ</string>
+    <string name="settings_voice_lang_all">ทุกภาษา</string>
     <string name="settings_voice_lang_loading">กำลังโหลดภาษาที่ใช้ได้…</string>
     <string name="settings_voice_lang_none">ไม่มีภาษาสำหรับการจดจำเสียงพูด</string>
     <string name="settings_voice_lang_none_hint">ตรวจสอบว่าได้ติดตั้งแอป Google และเปิดใช้การจดจำเสียงพูดแล้ว</string>

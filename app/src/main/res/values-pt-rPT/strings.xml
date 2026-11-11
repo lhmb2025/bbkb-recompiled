@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Afinação do gesto de agitar</string>
     <string name="prefs_shake_tuning_summary">Contagens de ativação, limiar de aceleração e tempos</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Comportamento</string>
+    <string name="settings_category_feedback">Resposta</string>
+    <string name="settings_category_appearance">Aspeto</string>
+    <string name="settings_category_symbols">Símbolos</string>
+    <string name="settings_category_keys">Teclas</string>
+    <string name="settings_category_device">Dispositivo</string>
     <string name="settings_category_behavior_vkb">Comportamento</string>
     <string name="settings_category_ckb_gestures">Teclado capacitivo</string>
     <string name="settings_category_on_screen_keyboard">Teclado no ecrã</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Gestos</string>
     <string name="settings_category_key_popup">Tecla pop-up</string>
     <string name="settings_category_modifiers">Modificadores</string>
+    <string name="settings_category_press_twice_lock">Prima duas vezes para bloquear</string>
     <string name="settings_category_sound">Som</string>
     <string name="settings_category_vibrate">Vibração</string>
     <string name="ckb_action_cursor_mode">Modo cursor</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Eliminar “%1$s”? Esta ação não pode ser anulada.</string>
     <string name="settings_pkb_layouts_delete_title">Eliminar esquema</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d teclas</string>
+    <string name="settings_pkb_layouts_keys">%1$d teclas</string>
+    <string name="settings_pkb_layouts_search">Pesquisar esquemas</string>
     <string name="settings_pkb_layouts_empty">Ainda não há esquemas personalizados. Adicione um a partir de um ficheiro.</string>
     <string name="settings_pkb_layouts_keypad">teclado %1$s</string>
     <string name="settings_pkb_layouts_none">Não utilizado</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Repor esquema vazio</string>
     <string name="customize_slideboard_reset_to_default">Repor o esquema predefinido</string>
     <string name="settings_slideboard_hub_summary">Teclado numérico, troca de lados e frases rápidas</string>
-    <string name="settings_symbol_slideboard_link_summary">Teclado numérico e frases rápidas</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Definições do Slideboard</string>
     <string name="customized_symbol_page_add_button_description">Adicionar símbolo unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Aceitar palavras aprendidas</string>
     <string name="settings_spellcheck_accept_learned_summary">Reconhece as palavras aprendidas com o que escreve</string>
     <string name="pref_alt_double_tap_lock">Bloqueio do Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Prima Alt duas vezes para a bloquear. Prima novamente para a desbloquear.</string>
     <string name="pref_ctrl_double_tap_lock">Bloqueio do Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Prima Ctrl duas vezes para a bloquear. Prima novamente para a desbloquear.</string>
     <string name="pref_override_device_meta_state">Teclas modificadoras fixas</string>
     <string name="pref_override_device_meta_state_summary">Bloquear Shift e Alt em qualquer teclado físico, independentemente das definições de teclado integradas do telefone</string>
     <string name="pref_shift_double_tap_lock">Bloqueio do Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">Prima Shift duas vezes para a bloquear. Prima novamente para a desbloquear.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Tempo para manter uma tecla premida até aparecerem os carateres secundários</string>
     <string name="prefs_key_longpress_delay_title">Atraso da pressão longa da tecla</string>
     <string name="prefs_key_preview_animations_summary">Personalizar o estilo e o tempo da animação ao premir as teclas</string>
@@ -1103,8 +1109,8 @@
     <string name="language_packs_deleted">Pacote de idioma eliminado: %1$s</string>
     <string name="language_packs_already_removed">%1$s já tinha sido removido</string>
     <string name="language_packs_delete_failed">Não foi possível eliminar o pacote de idioma: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Disponível offline</string>
-    <string name="settings_voice_lang_requires_network">Requer ligação à rede</string>
+    <string name="settings_voice_lang_yours">Os seus idiomas</string>
+    <string name="settings_voice_lang_all">Todos os idiomas</string>
     <string name="settings_voice_lang_loading">A carregar os idiomas disponíveis…</string>
     <string name="settings_voice_lang_none">Nenhum idioma de reconhecimento de voz disponível</string>
     <string name="settings_voice_lang_none_hint">Certifique-se de que a app Google está instalada e de que o reconhecimento de voz está ativado</string>

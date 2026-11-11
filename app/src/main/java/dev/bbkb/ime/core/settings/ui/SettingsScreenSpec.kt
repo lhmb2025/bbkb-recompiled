@@ -302,6 +302,8 @@ class Slide(
     val range: IntRange,
     val step: Int? = null,
     val unit: String = "",
+    /** The row's second line is the current value; [summary] moves into the dialog. */
+    val valueOnRow: Boolean = false,
     val icon: RowIcon? = null,
     val iconSpaceReserved: Boolean = false,
     val enabled: (SettingsEnv) -> Boolean = { true },

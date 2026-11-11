@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Penyetelan gestur goyang</string>
     <string name="prefs_shake_tuning_summary">Jumlah pemicu, ambang akselerasi, dan waktu</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Perilaku</string>
+    <string name="settings_category_feedback">Umpan balik</string>
+    <string name="settings_category_appearance">Tampilan</string>
+    <string name="settings_category_symbols">Simbol</string>
+    <string name="settings_category_keys">Tombol</string>
+    <string name="settings_category_device">Perangkat</string>
     <string name="settings_category_behavior_vkb">Perilaku</string>
     <string name="settings_category_ckb_gestures">Keyboard kapasitif</string>
     <string name="settings_category_on_screen_keyboard">Keyboard di layar</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Gestur</string>
     <string name="settings_category_key_popup">Pop-up tombol</string>
     <string name="settings_category_modifiers">Pengubah</string>
+    <string name="settings_category_press_twice_lock">Tekan dua kali untuk mengunci</string>
     <string name="settings_category_sound">Suara</string>
     <string name="settings_category_vibrate">Getaran</string>
     <string name="ckb_action_cursor_mode">Mode kursor</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Hapus “%1$s”? Tindakan ini tidak dapat diurungkan.</string>
     <string name="settings_pkb_layouts_delete_title">Hapus tata letak</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d tombol</string>
+    <string name="settings_pkb_layouts_keys">%1$d tombol</string>
+    <string name="settings_pkb_layouts_search">Telusuri tata letak</string>
     <string name="settings_pkb_layouts_empty">Belum ada tata letak kustom. Tambahkan satu dari file.</string>
     <string name="settings_pkb_layouts_keypad">keypad %1$s</string>
     <string name="settings_pkb_layouts_none">Tidak digunakan</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Setel ulang ke tata letak kosong</string>
     <string name="customize_slideboard_reset_to_default">Setel ulang ke tata letak default</string>
     <string name="settings_slideboard_hub_summary">Tombol angka, tukar sisi, dan frasa cepat</string>
-    <string name="settings_symbol_slideboard_link_summary">Tombol angka dan frasa cepat</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Setelan Slideboard</string>
     <string name="customized_symbol_page_add_button_description">Menambahkan simbol unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Terima kata yang dipelajari</string>
     <string name="settings_spellcheck_accept_learned_summary">Mengenali kata yang dipelajari dari ketikan Anda</string>
     <string name="pref_alt_double_tap_lock">Kunci Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Tekan Alt dua kali untuk menguncinya. Tekan lagi untuk membuka kunci.</string>
     <string name="pref_ctrl_double_tap_lock">Kunci Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Tekan Ctrl dua kali untuk menguncinya. Tekan lagi untuk membuka kunci.</string>
     <string name="pref_override_device_meta_state">Tombol pengubah lengket</string>
     <string name="pref_override_device_meta_state_summary">Kunci Shift dan Alt di keyboard fisik apa pun, terlepas dari setelan keyboard bawaan ponsel</string>
     <string name="pref_shift_double_tap_lock">Kunci Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">Tekan Shift dua kali untuk menguncinya. Tekan lagi untuk membuka kunci.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Waktu menahan tombol sebelum karakter sekunder muncul</string>
     <string name="prefs_key_longpress_delay_title">Penundaan tekan lama tombol</string>
     <string name="prefs_key_preview_animations_summary">Sesuaikan gaya dan waktu animasi penekanan tombol</string>
@@ -1073,8 +1079,8 @@
     <string name="language_packs_deleted">Paket bahasa dihapus: %1$s</string>
     <string name="language_packs_already_removed">%1$s sudah dihapus</string>
     <string name="language_packs_delete_failed">Gagal menghapus paket bahasa: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Siap offline</string>
-    <string name="settings_voice_lang_requires_network">Memerlukan jaringan</string>
+    <string name="settings_voice_lang_yours">Bahasa Anda</string>
+    <string name="settings_voice_lang_all">Semua bahasa</string>
     <string name="settings_voice_lang_loading">Memuat bahasa yang tersedia…</string>
     <string name="settings_voice_lang_none">Tidak ada bahasa pengenalan suara yang tersedia</string>
     <string name="settings_voice_lang_none_hint">Pastikan aplikasi Google terinstal dan pengenalan suara diaktifkan</string>

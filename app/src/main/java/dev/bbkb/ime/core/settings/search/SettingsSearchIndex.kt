@@ -95,7 +95,7 @@ enum class DeviceRequirement {
     /** A physical keyboard with capacitive keys: the CKB gesture rows and their screen. */
     TOUCH_KEYPAD,
 
-    /** The profile declares a touch surface over the keys: the Touch surface helper row is enabled. */
+    /** The profile declares a touch surface over the keys: the Touch surface helper row is shown. */
     TOUCH_KEYPAD_DECLARED,
 
     /** Drawn in debug builds only: the Debug settings row and the screens behind it. */
@@ -325,7 +325,7 @@ object SettingsSearchIndex {
         // The row on Device compatibility (drawn on every phone, enabled only on a declared pad,
         // so its entry is ungated) and the Shizuku section of the screen it opens (drawn only on
         // the Shizuku route); both are actions, anchored by the ids TouchSurfaceAnchors declares.
-        SearchableSetting(R.string.touch_surface_helper_title, "touch surface touchpad keyboard gestures swipe scroll assistant cursor shizuku titan unihertz", SettingsRoute.DeviceCompatibility.route, ADVANCED, TouchSurfaceAnchors.HELPER),
+        SearchableSetting(R.string.touch_surface_helper_title, "touch surface touchpad keyboard gestures swipe scroll assistant cursor shizuku titan unihertz", SettingsRoute.DeviceCompatibility.route, ADVANCED, TouchSurfaceAnchors.HELPER, DeviceRequirement.TOUCH_KEYPAD_DECLARED),
         SearchableSetting(R.string.touch_surface_shizuku_category, "shizuku touch surface touchpad wireless debugging adb root grant access permission", SettingsRoute.TouchSurfaceHelper.route, ADVANCED, TouchSurfaceAnchors.SHIZUKU, DeviceRequirement.TOUCH_KEYPAD_SHIZUKU),
         // ── Advanced: Manage data ───────────────────────────────────────────────
         // The Backup and restore row (a screen) and Reset (an action) on Advanced, then the

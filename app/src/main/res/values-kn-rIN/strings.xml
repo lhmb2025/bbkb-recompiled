@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">ಶೇಕ್ ಗೆಸ್ಚರ್ ಟ್ಯೂನಿಂಗ್</string>
     <string name="prefs_shake_tuning_summary">ಟ್ರಿಗರ್ ಎಣಿಕೆ, ವೇಗವರ್ಧನೆ ಮಿತಿ ಮತ್ತು ಸಮಯ</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">ವರ್ತನೆ</string>
+    <string name="settings_category_feedback">ಪ್ರತಿಕ್ರಿಯೆ</string>
+    <string name="settings_category_appearance">ಗೋಚರತೆ</string>
+    <string name="settings_category_symbols">ಚಿಹ್ನೆಗಳು</string>
+    <string name="settings_category_keys">ಕೀಗಳು</string>
+    <string name="settings_category_device">ಸಾಧನ</string>
     <string name="settings_category_behavior_vkb">ವರ್ತನೆ</string>
     <string name="settings_category_ckb_gestures">ಕೆಪ್ಯಾಸಿಟಿವ್ ಕೀಬೋರ್ಡ್</string>
     <string name="settings_category_on_screen_keyboard">ಪರದೆಯ ಮೇಲಿನ ಕೀಬೋರ್ಡ್</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">ಗೆಸ್ಚರ್‌ಗಳು</string>
     <string name="settings_category_key_popup">ಕೀ ಪಾಪ್-ಅಪ್</string>
     <string name="settings_category_modifiers">ಮಾರ್ಪಡಿಸುವ ಕೀಗಳು</string>
+    <string name="settings_category_press_twice_lock">ಲಾಕ್ ಮಾಡಲು ಎರಡು ಬಾರಿ ಒತ್ತಿ</string>
     <string name="settings_category_sound">ಶಬ್ದ</string>
     <string name="settings_category_vibrate">ವೈಬ್ರೇಷನ್</string>
     <string name="ckb_action_cursor_mode">ಕರ್ಸರ್ ಮೋಡ್</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s” ಅಳಿಸಬೇಕೇ? ಇದನ್ನು ರದ್ದುಗೊಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="settings_pkb_layouts_delete_title">ವಿನ್ಯಾಸ ಅಳಿಸಿ</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d ಕೀಗಳು</string>
+    <string name="settings_pkb_layouts_keys">%1$d ಕೀಗಳು</string>
+    <string name="settings_pkb_layouts_search">ವಿನ್ಯಾಸಗಳನ್ನು ಹುಡುಕಿ</string>
     <string name="settings_pkb_layouts_empty">ಇನ್ನೂ ಕಸ್ಟಮ್ ವಿನ್ಯಾಸಗಳಿಲ್ಲ. ಫೈಲ್‌ನಿಂದ ಒಂದನ್ನು ಸೇರಿಸಿ.</string>
     <string name="settings_pkb_layouts_keypad">%1$s ಕೀಪ್ಯಾಡ್</string>
     <string name="settings_pkb_layouts_none">ಬಳಕೆಯಲ್ಲಿಲ್ಲ</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">ಖಾಲಿ ವಿನ್ಯಾಸಕ್ಕೆ ಮರುಹೊಂದಿಸಿ</string>
     <string name="customize_slideboard_reset_to_default">ಪೂರ್ವನಿಯೋಜಿತ ವಿನ್ಯಾಸಕ್ಕೆ ಮರುಹೊಂದಿಸಿ</string>
     <string name="settings_slideboard_hub_summary">ಸಂಖ್ಯಾ ಪ್ಯಾಡ್, ಬದಿಗಳ ಅದಲುಬದಲು ಮತ್ತು ತ್ವರಿತ ನುಡಿಗಟ್ಟುಗಳು</string>
-    <string name="settings_symbol_slideboard_link_summary">ಸಂಖ್ಯಾ ಪ್ಯಾಡ್ ಮತ್ತು ತ್ವರಿತ ನುಡಿಗಟ್ಟುಗಳು</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
     <string name="customized_symbol_page_add_button_description">ಯುನಿಕೋಡ್ ಚಿಹ್ನೆ ಸೇರಿಸಿ</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">ಕಲಿತ ಪದಗಳನ್ನು ಸ್ವೀಕರಿಸಿ</string>
     <string name="settings_spellcheck_accept_learned_summary">ನಿಮ್ಮ ಟೈಪಿಂಗ್‌ನಿಂದ ಕಲಿತ ಪದಗಳನ್ನು ಗುರುತಿಸುತ್ತದೆ</string>
     <string name="pref_alt_double_tap_lock">Alt ಲಾಕ್</string>
-    <string name="pref_alt_double_tap_lock_summary">ಲಾಕ್ ಮಾಡಲು Alt ಅನ್ನು ಎರಡು ಬಾರಿ ಒತ್ತಿ. ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಮತ್ತೆ ಒತ್ತಿ.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl ಲಾಕ್</string>
-    <string name="pref_ctrl_double_tap_lock_summary">ಲಾಕ್ ಮಾಡಲು Ctrl ಅನ್ನು ಎರಡು ಬಾರಿ ಒತ್ತಿ. ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಮತ್ತೆ ಒತ್ತಿ.</string>
     <string name="pref_override_device_meta_state">ಸ್ಟಿಕಿ ಮಾರ್ಪಡಿಸುವ ಕೀಗಳು</string>
     <string name="pref_override_device_meta_state_summary">ಫೋನ್‌ನ ಅಂತರ್ನಿರ್ಮಿತ ಕೀಬೋರ್ಡ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಏನೇ ಇರಲಿ, ಯಾವುದೇ ಭೌತಿಕ ಕೀಬೋರ್ಡ್‌ನಲ್ಲಿ Shift ಮತ್ತು Alt ಲಾಕ್ ಮಾಡಿ</string>
     <string name="pref_shift_double_tap_lock">Shift ಲಾಕ್</string>
-    <string name="pref_shift_double_tap_lock_summary">ಲಾಕ್ ಮಾಡಲು Shift ಅನ್ನು ಎರಡು ಬಾರಿ ಒತ್ತಿ. ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಮತ್ತೆ ಒತ್ತಿ.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">ದ್ವಿತೀಯ ಅಕ್ಷರಗಳು ಕಾಣಿಸಿಕೊಳ್ಳುವ ಮೊದಲು ಕೀಯನ್ನು ಹಿಡಿದಿಡುವ ಸಮಯ</string>
     <string name="prefs_key_longpress_delay_title">ಕೀ ದೀರ್ಘ-ಒತ್ತುವಿಕೆ ವಿಳಂಬ</string>
     <string name="prefs_key_preview_animations_summary">ಕೀ ಒತ್ತುವಿಕೆಯ ಅನಿಮೇಶನ್ ಶೈಲಿ ಮತ್ತು ಸಮಯವನ್ನು ಕಸ್ಟಮೈಸ್ ಮಾಡಿ</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">ಭಾಷಾ ಪ್ಯಾಕ್ ಅಳಿಸಲಾಗಿದೆ: %1$s</string>
     <string name="language_packs_already_removed">%1$s ಅನ್ನು ಈಗಾಗಲೇ ತೆಗೆದುಹಾಕಲಾಗಿತ್ತು</string>
     <string name="language_packs_delete_failed">ಭಾಷಾ ಪ್ಯಾಕ್ ಅಳಿಸಲಾಗಲಿಲ್ಲ: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">ಆಫ್‌ಲೈನ್‌ಗೆ ಸಿದ್ಧ</string>
-    <string name="settings_voice_lang_requires_network">ನೆಟ್‌ವರ್ಕ್ ಅಗತ್ಯವಿದೆ</string>
+    <string name="settings_voice_lang_yours">ನಿಮ್ಮ ಭಾಷೆಗಳು</string>
+    <string name="settings_voice_lang_all">ಎಲ್ಲಾ ಭಾಷೆಗಳು</string>
     <string name="settings_voice_lang_loading">ಲಭ್ಯವಿರುವ ಭಾಷೆಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <string name="settings_voice_lang_none">ಯಾವುದೇ ಧ್ವನಿ ಗುರುತಿಸುವಿಕೆ ಭಾಷೆಗಳು ಲಭ್ಯವಿಲ್ಲ</string>
     <string name="settings_voice_lang_none_hint">Google ಆ್ಯಪ್ ಸ್ಥಾಪಿಸಲಾಗಿದೆ ಮತ್ತು ಧ್ವನಿ ಗುರುತಿಸುವಿಕೆ ಸಕ್ರಿಯವಾಗಿದೆ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ</string>

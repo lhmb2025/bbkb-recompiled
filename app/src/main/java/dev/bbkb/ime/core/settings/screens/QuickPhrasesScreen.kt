@@ -84,8 +84,12 @@ private fun QuickPhraseRow(prefs: SharedPreferences, phrase: QuickPhrase) {
         mutableStateOf(prefs.getString(phrase.prefKey, default) ?: default)
     }
 
+    // The phrase is what the user is looking for, so it is the row's title; the slot's name is
+    // the smaller line and the dialog's heading.
     EditTextPreference(
         title = stringResource(phrase.titleRes),
+        rowTitle = value,
+        summary = stringResource(phrase.titleRes),
         icon = ImageVector.vectorResource(phrase.iconRes),
         value = value,
         // A blank phrase would be an empty tile on the slideboard.

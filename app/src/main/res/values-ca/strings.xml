@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Ajust del gest de sacsejada</string>
     <string name="prefs_shake_tuning_summary">Recomptes d\'activació, llindar d\'acceleració i temps</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Comportament</string>
+    <string name="settings_category_feedback">Resposta</string>
+    <string name="settings_category_appearance">Aspecte</string>
+    <string name="settings_category_symbols">Símbols</string>
+    <string name="settings_category_keys">Tecles</string>
+    <string name="settings_category_device">Dispositiu</string>
     <string name="settings_category_behavior_vkb">Comportament</string>
     <string name="settings_category_ckb_gestures">Teclat capacitiu</string>
     <string name="settings_category_on_screen_keyboard">Teclat en pantalla</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Gestos</string>
     <string name="settings_category_key_popup">Finestra emergent de tecla</string>
     <string name="settings_category_modifiers">Modificadors</string>
+    <string name="settings_category_press_twice_lock">Premeu dues vegades per bloquejar</string>
     <string name="settings_category_sound">So</string>
     <string name="settings_category_vibrate">Vibració</string>
     <string name="ckb_action_cursor_mode">Mode cursor</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Voleu suprimir “%1$s”? Aquesta acció no es pot desfer.</string>
     <string name="settings_pkb_layouts_delete_title">Suprimeix la disposició</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d tecles</string>
+    <string name="settings_pkb_layouts_keys">%1$d tecles</string>
+    <string name="settings_pkb_layouts_search">Cerca disposicions</string>
     <string name="settings_pkb_layouts_empty">Encara no hi ha disposicions personalitzades. Afegeix-ne una des d\'un fitxer.</string>
     <string name="settings_pkb_layouts_keypad">teclat %1$s</string>
     <string name="settings_pkb_layouts_none">No s\'utilitza</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Restableix a una disposició buida</string>
     <string name="customize_slideboard_reset_to_default">Restableix a la disposició per defecte</string>
     <string name="settings_slideboard_hub_summary">Teclat numèric, intercanvi de costats i frases ràpides</string>
-    <string name="settings_symbol_slideboard_link_summary">Teclat numèric i frases ràpides</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Configuració del Slideboard</string>
     <string name="customized_symbol_page_add_button_description">Afegeix un símbol Unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Accepta les paraules apreses</string>
     <string name="settings_spellcheck_accept_learned_summary">Reconeix les paraules apreses del que escriviu</string>
     <string name="pref_alt_double_tap_lock">Bloqueig d\'Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Premeu Alt dues vegades per bloquejar-la. Torneu-la a prémer per desbloquejar-la.</string>
     <string name="pref_ctrl_double_tap_lock">Bloqueig de Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Premeu Ctrl dues vegades per bloquejar-la. Torneu-la a prémer per desbloquejar-la.</string>
     <string name="pref_override_device_meta_state">Tecles modificadores persistents</string>
     <string name="pref_override_device_meta_state_summary">Bloqueja Maj i Alt a qualsevol teclat físic, independentment de la configuració de teclat integrada del telèfon</string>
     <string name="pref_shift_double_tap_lock">Bloqueig de Maj</string>
-    <string name="pref_shift_double_tap_lock_summary">Premeu Maj dues vegades per bloquejar-la. Torneu-la a prémer per desbloquejar-la.</string>
+    <string name="pref_lock_row_shift">Maj</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Temps que cal mantenir premuda una tecla perquè apareguin els caràcters secundaris</string>
     <string name="prefs_key_longpress_delay_title">Retard de pulsació llarga</string>
     <string name="prefs_key_preview_animations_summary">Personalitza l\'estil i la temporització de l\'animació en prémer tecles</string>
@@ -1103,8 +1109,8 @@
     <string name="language_packs_deleted">S\'ha suprimit el paquet de llengua: %1$s</string>
     <string name="language_packs_already_removed">%1$s ja s\'havia suprimit</string>
     <string name="language_packs_delete_failed">No s\'ha pogut suprimir el paquet de llengua: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Disponible sense connexió</string>
-    <string name="settings_voice_lang_requires_network">Requereix connexió</string>
+    <string name="settings_voice_lang_yours">Les teves llengües</string>
+    <string name="settings_voice_lang_all">Totes les llengües</string>
     <string name="settings_voice_lang_loading">S\'estan carregant les llengües disponibles…</string>
     <string name="settings_voice_lang_none">No hi ha cap llengua de reconeixement de veu disponible</string>
     <string name="settings_voice_lang_none_hint">Assegureu-vos que l\'aplicació de Google estigui instal·lada i que el reconeixement de veu estigui activat</string>

@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Ladenie gesta zatrasenia</string>
     <string name="prefs_shake_tuning_summary">Počty spustení, prah zrýchlenia a časovanie</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Správanie</string>
+    <string name="settings_category_feedback">Odozva</string>
+    <string name="settings_category_appearance">Vzhľad</string>
+    <string name="settings_category_symbols">Symboly</string>
+    <string name="settings_category_keys">Klávesy</string>
+    <string name="settings_category_device">Zariadenie</string>
     <string name="settings_category_behavior_vkb">Správanie</string>
     <string name="settings_category_ckb_gestures">Kapacitná klávesnica</string>
     <string name="settings_category_on_screen_keyboard">Klávesnica na obrazovke</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Gestá</string>
     <string name="settings_category_key_popup">Kontextové okno klávesu</string>
     <string name="settings_category_modifiers">Modifikátory</string>
+    <string name="settings_category_press_twice_lock">Dvojitým stlačením uzamknete</string>
     <string name="settings_category_sound">Zvuk</string>
     <string name="settings_category_vibrate">Vibrácie</string>
     <string name="ckb_action_cursor_mode">Režim kurzora</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Odstrániť „%1$s“? Táto akcia sa nedá vrátiť späť.</string>
     <string name="settings_pkb_layouts_delete_title">Odstrániť rozloženie</string>
     <string name="settings_pkb_layouts_details">%1$s · klávesy: %2$d</string>
+    <string name="settings_pkb_layouts_keys">Klávesy: %1$d</string>
+    <string name="settings_pkb_layouts_search">Hľadať rozloženia</string>
     <string name="settings_pkb_layouts_empty">Zatiaľ žiadne vlastné rozloženia. Pridajte jedno zo súboru.</string>
     <string name="settings_pkb_layouts_keypad">klávesnica %1$s</string>
     <string name="settings_pkb_layouts_none">Nepoužíva sa</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Obnoviť prázdne rozloženie</string>
     <string name="customize_slideboard_reset_to_default">Obnoviť predvolené rozloženie</string>
     <string name="settings_slideboard_hub_summary">Numerická klávesnica, výmena strán a rýchle frázy</string>
-    <string name="settings_symbol_slideboard_link_summary">Numerická klávesnica a rýchle frázy</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Nastavenia Slideboardu</string>
     <string name="customized_symbol_page_add_button_description">Pridať symbol Unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Prijímať naučené slová</string>
     <string name="settings_spellcheck_accept_learned_summary">Rozpoznáva slová naučené z vášho písania</string>
     <string name="pref_alt_double_tap_lock">Uzamknutie Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Dvojitým stlačením klávesu Alt ho uzamknete. Ďalším stlačením ho odomknete.</string>
     <string name="pref_ctrl_double_tap_lock">Uzamknutie Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Dvojitým stlačením klávesu Ctrl ho uzamknete. Ďalším stlačením ho odomknete.</string>
     <string name="pref_override_device_meta_state">Lepkavé modifikátory</string>
     <string name="pref_override_device_meta_state_summary">Uzamknúť Shift a Alt na akejkoľvek fyzickej klávesnici bez ohľadu na vstavané nastavenia klávesnice telefónu</string>
     <string name="pref_shift_double_tap_lock">Uzamknutie Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">Dvojitým stlačením klávesu Shift ho uzamknete. Ďalším stlačením ho odomknete.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Ako dlho podržať kláves, kým sa zobrazia sekundárne znaky</string>
     <string name="prefs_key_longpress_delay_title">Oneskorenie dlhého stlačenia klávesu</string>
     <string name="prefs_key_preview_animations_summary">Prispôsobte štýl a časovanie animácie stlačenia klávesu</string>
@@ -1118,8 +1124,8 @@
     <string name="language_packs_deleted">Jazykový balík bol odstránený: %1$s</string>
     <string name="language_packs_already_removed">Jazyk %1$s už bol odstránený</string>
     <string name="language_packs_delete_failed">Jazykový balík sa nepodarilo odstrániť: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Pripravené offline</string>
-    <string name="settings_voice_lang_requires_network">Vyžaduje pripojenie k sieti</string>
+    <string name="settings_voice_lang_yours">Vaše jazyky</string>
+    <string name="settings_voice_lang_all">Všetky jazyky</string>
     <string name="settings_voice_lang_loading">Načítavajú sa dostupné jazyky…</string>
     <string name="settings_voice_lang_none">Nie sú k dispozícii žiadne jazyky rozpoznávania hlasu</string>
     <string name="settings_voice_lang_none_hint">Skontrolujte, či je nainštalovaná aplikácia Google a zapnuté rozpoznávanie hlasu</string>

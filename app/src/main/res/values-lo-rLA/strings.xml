@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">ການປັບແຕ່ງທ່າທາງສັ່ນ</string>
     <string name="prefs_shake_tuning_summary">ຈຳນວນກະຕຸ້ນ, ເກນຄວາມເລັ່ງ ແລະ ເວລາ</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">ພຶດຕິກຳ</string>
+    <string name="settings_category_feedback">ການຕອບສະໜອງ</string>
+    <string name="settings_category_appearance">ຮູບລັກສະນະ</string>
+    <string name="settings_category_symbols">ສັນຍາລັກ</string>
+    <string name="settings_category_keys">ປຸ່ມ</string>
+    <string name="settings_category_device">ອຸປະກອນ</string>
     <string name="settings_category_behavior_vkb">ພຶດຕິກຳ</string>
     <string name="settings_category_ckb_gestures">ແປ້ນພິມແບບສຳຜັດ</string>
     <string name="settings_category_on_screen_keyboard">ແປ້ນພິມເທິງໜ້າຈໍ</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">ທ່າທາງ</string>
     <string name="settings_category_key_popup">ປັອບອັບຂອງປຸ່ມ</string>
     <string name="settings_category_modifiers">ປຸ່ມດັດແປງ</string>
+    <string name="settings_category_press_twice_lock">ກົດສອງເທື່ອເພື່ອລັອກ</string>
     <string name="settings_category_sound">ສຽງ</string>
     <string name="settings_category_vibrate">ການສັ່ນ</string>
     <string name="ckb_action_cursor_mode">ໂໝດຕົວກະພິບ</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">ລຶບ “%1$s” ບໍ? ການກະທຳນີ້ບໍ່ສາມາດຍົກເລີກໄດ້.</string>
     <string name="settings_pkb_layouts_delete_title">ລຶບຮູບແບບ</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d ປຸ່ມ</string>
+    <string name="settings_pkb_layouts_keys">%1$d ປຸ່ມ</string>
+    <string name="settings_pkb_layouts_search">ຄົ້ນຫາຮູບແບບ</string>
     <string name="settings_pkb_layouts_empty">ຍັງບໍ່ມີຮູບແບບແບບກຳນົດເອງ. ເພີ່ມອັນໜຶ່ງຈາກໄຟລ໌.</string>
     <string name="settings_pkb_layouts_keypad">ແປ້ນພິມ %1$s</string>
     <string name="settings_pkb_layouts_none">ບໍ່ໄດ້ໃຊ້</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">ຕັ້ງຄ່າໃໝ່ເປັນຮູບແບບເປົ່າ</string>
     <string name="customize_slideboard_reset_to_default">ຕັ້ງຄ່າໃໝ່ເປັນຮູບແບບເລີ່ມຕົ້ນ</string>
     <string name="settings_slideboard_hub_summary">ແປ້ນຕົວເລກ, ສະຫຼັບດ້ານ ແລະ ວະລີດ່ວນ</string>
-    <string name="settings_symbol_slideboard_link_summary">ແປ້ນຕົວເລກ ແລະ ວະລີດ່ວນ</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">ການຕັ້ງຄ່າ Slideboard</string>
     <string name="customized_symbol_page_add_button_description">ເພີ່ມສັນຍາລັກ Unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">ຍອມຮັບຄຳທີ່ຮຽນຮູ້</string>
     <string name="settings_spellcheck_accept_learned_summary">ຮັບຮູ້ຄຳທີ່ຮຽນຮູ້ຈາກການພິມຂອງທ່ານ</string>
     <string name="pref_alt_double_tap_lock">ລັອກ Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">ກົດ Alt ສອງເທື່ອເພື່ອລັອກ. ກົດອີກເທື່ອໜຶ່ງເພື່ອປົດລັອກ.</string>
     <string name="pref_ctrl_double_tap_lock">ລັອກ Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">ກົດ Ctrl ສອງເທື່ອເພື່ອລັອກ. ກົດອີກເທື່ອໜຶ່ງເພື່ອປົດລັອກ.</string>
     <string name="pref_override_device_meta_state">ປຸ່ມດັດແປງແບບຄ້າງ</string>
     <string name="pref_override_device_meta_state_summary">ລັອກ Shift ແລະ Alt ເທິງແປ້ນພິມແທ້ທຸກອັນ ໂດຍບໍ່ຄຳນຶງເຖິງການຕັ້ງຄ່າແປ້ນພິມໃນຕົວຂອງໂທລະສັບ</string>
     <string name="pref_shift_double_tap_lock">ລັອກ Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">ກົດ Shift ສອງເທື່ອເພື່ອລັອກ. ກົດອີກເທື່ອໜຶ່ງເພື່ອປົດລັອກ.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">ເວລາກົດປຸ່ມຄ້າງກ່ອນທີ່ໂຕອັກສອນສຳຮອງຈະປາກົດ</string>
     <string name="prefs_key_longpress_delay_title">ການໜ່ວງເວລາການກົດປຸ່ມຄ້າງ</string>
     <string name="prefs_key_preview_animations_summary">ປັບແຕ່ງຮູບແບບ ແລະ ຈັງຫວະເວລາຂອງພາບເຄື່ອນໄຫວເມື່ອກົດປຸ່ມ</string>
@@ -1073,8 +1079,8 @@
     <string name="language_packs_deleted">ລຶບຊຸດພາສາແລ້ວ: %1$s</string>
     <string name="language_packs_already_removed">%1$s ຖືກລຶບອອກໄປແລ້ວ</string>
     <string name="language_packs_delete_failed">ລຶບຊຸດພາສາບໍ່ໄດ້: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">ພ້ອມໃຊ້ແບບອອບລາຍ</string>
-    <string name="settings_voice_lang_requires_network">ຕ້ອງໃຊ້ເຄືອຂ່າຍ</string>
+    <string name="settings_voice_lang_yours">ພາສາຂອງທ່ານ</string>
+    <string name="settings_voice_lang_all">ທຸກພາສາ</string>
     <string name="settings_voice_lang_loading">ກຳລັງໂຫຼດພາສາທີ່ມີ…</string>
     <string name="settings_voice_lang_none">ບໍ່ມີພາສາສຳລັບການຮັບຮູ້ສຽງ</string>
     <string name="settings_voice_lang_none_hint">ກວດສອບໃຫ້ແນ່ໃຈວ່າໄດ້ຕິດຕັ້ງແອັບ Google ແລະ ເປີດໃຊ້ການຮັບຮູ້ສຽງແລ້ວ</string>

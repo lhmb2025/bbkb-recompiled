@@ -42,6 +42,9 @@ fun SettingsScreenHost(
     @StringRes title: Int,
     onNavigateBack: () -> Unit,
     rows: List<SettingsRow>,
+    /** For a screen whose rows are a long list: search in the top bar. The screen filters its rows. */
+    search: ListSearchState? = null,
+    @StringRes searchHint: Int? = null,
 ) {
     val context = LocalContext.current
     val prefs = remember { PrefsManager.getPrefs(context) }
@@ -60,10 +63,7 @@ fun SettingsScreenHost(
     }
     val env = remember { SettingsEnv(context, prefs, state) }
 
-    SettingsScaffold(
-        title = context.getString(title),
-        onNavigateBack = onNavigateBack,
-    ) { paddingValues ->
+    HostScaffold(context.getString(title), onNavigateBack, search, searchHint?.let { context.getString(it) }) { paddingValues ->
         val spacing = LocalSpacing.current
 
         // Visibility is decided here, before grouping, so a hidden row never opens a gap in a
@@ -92,6 +92,28 @@ fun SettingsScreenHost(
 
             Spacer(modifier = Modifier.height(spacing.extraLarge))
         }
+    }
+}
+
+/** The plain frame, or the searchable one when the screen hands in a [search]. */
+@Composable
+private fun HostScaffold(
+    title: String,
+    onNavigateBack: () -> Unit,
+    search: ListSearchState?,
+    searchHint: String?,
+    content: @Composable (androidx.compose.foundation.layout.PaddingValues) -> Unit,
+) {
+    if (search == null) {
+        SettingsScaffold(title = title, onNavigateBack = onNavigateBack, content = content)
+    } else {
+        SearchableSettingsScaffold(
+            title = title,
+            onNavigateBack = onNavigateBack,
+            search = search,
+            searchHint = searchHint.orEmpty(),
+            content = content,
+        )
     }
 }
 
@@ -200,6 +222,7 @@ private fun RenderRow(
             valueRange = row.range,
             stepSize = row.step,
             unit = row.unit,
+            valueOnRow = row.valueOnRow,
             enabled = row.enabled(env),
             modifier = row.modifier,
             onValueChange = { newValue ->

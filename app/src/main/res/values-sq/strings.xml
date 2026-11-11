@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Rregullimi i gjestit të tundjes</string>
     <string name="prefs_shake_tuning_summary">Numrat e aktivizimit, pragu i nxitimit dhe koha</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Sjellja</string>
+    <string name="settings_category_feedback">Përgjigjja</string>
+    <string name="settings_category_appearance">Pamja</string>
+    <string name="settings_category_symbols">Simbolet</string>
+    <string name="settings_category_keys">Tastet</string>
+    <string name="settings_category_device">Pajisja</string>
     <string name="settings_category_behavior_vkb">Sjellja</string>
     <string name="settings_category_ckb_gestures">Tastiera kapacitive</string>
     <string name="settings_category_on_screen_keyboard">Tastiera në ekran</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Gjestet</string>
     <string name="settings_category_key_popup">Flluska e tastit</string>
     <string name="settings_category_modifiers">Modifikuesit</string>
+    <string name="settings_category_press_twice_lock">Shtyp dy herë për ta kyçur</string>
     <string name="settings_category_sound">Tingulli</string>
     <string name="settings_category_vibrate">Dridhja</string>
     <string name="ckb_action_cursor_mode">Modaliteti i kursorit</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Të fshihet “%1$s”? Ky veprim nuk mund të zhbëhet.</string>
     <string name="settings_pkb_layouts_delete_title">Fshi paraqitjen</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d taste</string>
+    <string name="settings_pkb_layouts_keys">%1$d taste</string>
+    <string name="settings_pkb_layouts_search">Kërko skema</string>
     <string name="settings_pkb_layouts_empty">Ende nuk ka skema të personalizuara. Shto një nga një skedar.</string>
     <string name="settings_pkb_layouts_keypad">tastierë %1$s</string>
     <string name="settings_pkb_layouts_none">Nuk përdoret</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Rivendos te paraqitja bosh</string>
     <string name="customize_slideboard_reset_to_default">Rivendos te paraqitja e parazgjedhur</string>
     <string name="settings_slideboard_hub_summary">Tastiera numerike, ndërrimi i anëve dhe frazat e shpejta</string>
-    <string name="settings_symbol_slideboard_link_summary">Tastiera numerike dhe frazat e shpejta</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Cilësimet e Slideboard</string>
     <string name="customized_symbol_page_add_button_description">Shto simbol Unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Prano fjalët e mësuara</string>
     <string name="settings_spellcheck_accept_learned_summary">Njeh fjalët e mësuara nga shkrimi juaj</string>
     <string name="pref_alt_double_tap_lock">Kyçja e Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Shtyp Alt dy herë për ta kyçur. Shtype përsëri për ta çkyçur.</string>
     <string name="pref_ctrl_double_tap_lock">Kyçja e Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Shtyp Ctrl dy herë për ta kyçur. Shtype përsëri për ta çkyçur.</string>
     <string name="pref_override_device_meta_state">Tastet modifikuese të qëndrueshme</string>
     <string name="pref_override_device_meta_state_summary">Kyç Shift dhe Alt në çdo tastierë fizike, pavarësisht cilësimeve të tastierës së integruar të telefonit</string>
     <string name="pref_shift_double_tap_lock">Kyçja e Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">Shtyp Shift dy herë për ta kyçur. Shtype përsëri për ta çkyçur.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Sa kohë duhet mbajtur shtypur një tast që të shfaqen shenjat dytësore</string>
     <string name="prefs_key_longpress_delay_title">Vonesa e shtypjes së gjatë</string>
     <string name="prefs_key_preview_animations_summary">Përshtat stilin dhe kohën e animimit të shtypjes së tastave</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Paketa e gjuhës u fshi: %1$s</string>
     <string name="language_packs_already_removed">%1$s është hequr tashmë</string>
     <string name="language_packs_delete_failed">Paketa e gjuhës nuk u fshi dot: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Gati jashtë linje</string>
-    <string name="settings_voice_lang_requires_network">Kërkon rrjet</string>
+    <string name="settings_voice_lang_yours">Gjuhët e tua</string>
+    <string name="settings_voice_lang_all">Të gjitha gjuhët</string>
     <string name="settings_voice_lang_loading">Po ngarkohen gjuhët e disponueshme…</string>
     <string name="settings_voice_lang_none">Nuk ka gjuhë të disponueshme për njohjen e zërit</string>
     <string name="settings_voice_lang_none_hint">Sigurohu që aplikacioni Google është i instaluar dhe njohja e zërit është e aktivizuar</string>

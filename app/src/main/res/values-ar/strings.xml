@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">ضبط إيماءة الهز</string>
     <string name="prefs_shake_tuning_summary">عدد مرات التفعيل وحد التسارع والتوقيت</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">السلوك</string>
+    <string name="settings_category_feedback">الاستجابة</string>
+    <string name="settings_category_appearance">المظهر</string>
+    <string name="settings_category_symbols">الرموز</string>
+    <string name="settings_category_keys">المفاتيح</string>
+    <string name="settings_category_device">الجهاز</string>
     <string name="settings_category_behavior_vkb">السلوك</string>
     <string name="settings_category_ckb_gestures">لوحة المفاتيح السعوية</string>
     <string name="settings_category_on_screen_keyboard">لوحة المفاتيح على الشاشة</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">الإيماءات</string>
     <string name="settings_category_key_popup">نافذة المفتاح المنبثقة</string>
     <string name="settings_category_modifiers">مفاتيح التعديل</string>
+    <string name="settings_category_press_twice_lock">اضغط مرتين للقفل</string>
     <string name="settings_category_sound">الصوت</string>
     <string name="settings_category_vibrate">الاهتزاز</string>
     <string name="ckb_action_cursor_mode">وضع المؤشر</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">هل تريد حذف «%1$s»؟ لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="settings_pkb_layouts_delete_title">حذف التخطيط</string>
     <string name="settings_pkb_layouts_details">%1$s · عدد المفاتيح: %2$d</string>
+    <string name="settings_pkb_layouts_keys">عدد المفاتيح: %1$d</string>
+    <string name="settings_pkb_layouts_search">ابحث عن التخطيطات</string>
     <string name="settings_pkb_layouts_empty">لا توجد تخطيطات مخصصة بعد. أضف واحدًا من ملف.</string>
     <string name="settings_pkb_layouts_keypad">لوحة مفاتيح %1$s</string>
     <string name="settings_pkb_layouts_none">غير مستخدم</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">أعد التعيين إلى تخطيط فارغ</string>
     <string name="customize_slideboard_reset_to_default">إعادة تعيين إلى التخطيط الافتراضي</string>
     <string name="settings_slideboard_hub_summary">لوحة الأرقام وتبديل الجانبين والعبارات السريعة</string>
-    <string name="settings_symbol_slideboard_link_summary">لوحة الأرقام والعبارات السريعة</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s، %2$s، %3$s…</string>
     <string name="settings_slideboard_settings_title">إعدادات Slideboard</string>
     <string name="customized_symbol_page_add_button_description">إضافة رمز unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">قبول الكلمات المكتسبة</string>
     <string name="settings_spellcheck_accept_learned_summary">يتعرّف على الكلمات المكتسبة من كتابتك</string>
     <string name="pref_alt_double_tap_lock">قفل Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">اضغط على Alt مرتين لقفله. اضغط عليه مرة أخرى لإلغاء القفل.</string>
     <string name="pref_ctrl_double_tap_lock">قفل Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">اضغط على Ctrl مرتين لقفله. اضغط عليه مرة أخرى لإلغاء القفل.</string>
     <string name="pref_override_device_meta_state">مفاتيح التعديل الثابتة</string>
     <string name="pref_override_device_meta_state_summary">قفل Shift وAlt على أي لوحة مفاتيح فعلية بغض النظر عن إعدادات لوحة المفاتيح المدمجة في الهاتف</string>
     <string name="pref_shift_double_tap_lock">قفل Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">اضغط على Shift مرتين لقفله. اضغط عليه مرة أخرى لإلغاء القفل.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">مدة الضغط على المفتاح قبل ظهور الأحرف الثانوية</string>
     <string name="prefs_key_longpress_delay_title">تأخير الضغط المطوّل على المفتاح</string>
     <string name="prefs_key_preview_animations_summary">تخصيص نمط حركة الضغط على المفاتيح وتوقيتها</string>
@@ -1148,8 +1154,8 @@
     <string name="language_packs_deleted">تم حذف حزمة اللغة: %1$s</string>
     <string name="language_packs_already_removed">تمت إزالة %1$s من قبل</string>
     <string name="language_packs_delete_failed">تعذّر حذف حزمة اللغة: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">جاهزة للعمل دون اتصال</string>
-    <string name="settings_voice_lang_requires_network">تتطلب الاتصال بالشبكة</string>
+    <string name="settings_voice_lang_yours">لغاتك</string>
+    <string name="settings_voice_lang_all">كل اللغات</string>
     <string name="settings_voice_lang_loading">جارٍ تحميل اللغات المتاحة…</string>
     <string name="settings_voice_lang_none">لا تتوفر لغات للتعرّف على الصوت</string>
     <string name="settings_voice_lang_none_hint">تأكد من تثبيت تطبيق Google ومن تفعيل التعرّف على الصوت</string>

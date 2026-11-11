@@ -29,7 +29,7 @@ private const val VKB_ENABLED = "enable_symbol_customization_vkb"
 fun SymbolCustomizationScreen(
     onNavigateToCustomSymbolPagePKB: () -> Unit,
     onNavigateToCustomSymbolPageVKB: () -> Unit,
-    onNavigateToSlideboardSettings: () -> Unit = {},
+    onNavigateToCustomizeNumberPad: () -> Unit = {},
     onNavigateBack: () -> Unit
 ) {
     SettingsScreenHost(R.string.settings_symbol_customization_title, onNavigateBack, listOf(
@@ -79,14 +79,15 @@ fun SymbolCustomizationScreen(
             visible = { it.hasPhysicalKeyboard },
         ),
 
-        // A link to Slideboard settings, where the number pad editor and the quick phrases live,
-        // so every symbol editor is reachable from here. Always enabled: it only opens a screen,
-        // and the Enable slideboard switch is on that screen.
+        // Straight to the number pad editor, the slideboard's symbol page, so every symbol editor
+        // is one tap from here (2026-11-11; it used to open Slideboard settings, one tap short).
+        // Always enabled: the editor stays open while the slideboard is off. The slideboard's own
+        // settings have one home, On-screen keyboard.
         Category(R.string.settings_category_slideboard),
         Nav(
-            title = R.string.settings_slideboard_settings_title,
-            summary = R.string.settings_symbol_slideboard_link_summary,
-            onClick = { onNavigateToSlideboardSettings() },
+            title = R.string.settings_vkb_customize_numberpad_title,
+            summary = R.string.settings_vkb_customize_numberpad_summary,
+            onClick = { onNavigateToCustomizeNumberPad() },
         ),
     ))
 }

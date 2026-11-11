@@ -102,11 +102,11 @@ class QuickPhrasesScreenTest {
         assertEquals(
             listOf(
                 "Quick phrases",
-                "Quick phrase 1", "phrase one",
-                "Quick phrase 2", "phrase two",
-                "Quick phrase 3", "phrase three",
-                "Quick phrase 4", "phrase four",
-                "Quick phrase 5", "phrase five",
+                "phrase one", "Quick phrase 1",
+                "phrase two", "Quick phrase 2",
+                "phrase three", "Quick phrase 3",
+                "phrase four", "Quick phrase 4",
+                "phrase five", "Quick phrase 5",
             ),
             renderedTopToBottom()
         )
@@ -120,11 +120,11 @@ class QuickPhrasesScreenTest {
         assertEquals(
             listOf(
                 "Quick phrases",
-                "Quick phrase 1", "How are you?",
-                "Quick phrase 2", "On my way",
-                "Quick phrase 3", "That's great!",
-                "Quick phrase 4", "Thank you",
-                "Quick phrase 5", "I'm at work",
+                "How are you?", "Quick phrase 1",
+                "On my way", "Quick phrase 2",
+                "That's great!", "Quick phrase 3",
+                "Thank you", "Quick phrase 4",
+                "I'm at work", "Quick phrase 5",
             ),
             renderedTopToBottom()
         )
@@ -139,11 +139,11 @@ class QuickPhrasesScreenTest {
         assertEquals(
             listOf(
                 "Quick phrases",
-                "Quick phrase 1", "How are you?",
-                "Quick phrase 2", "On my way",
-                "Quick phrase 3", "Running late",
-                "Quick phrase 4", "Thank you",
-                "Quick phrase 5", "I'm at work",
+                "How are you?", "Quick phrase 1",
+                "On my way", "Quick phrase 2",
+                "Running late", "Quick phrase 3",
+                "Thank you", "Quick phrase 4",
+                "I'm at work", "Quick phrase 5",
             ),
             renderedTopToBottom()
         )

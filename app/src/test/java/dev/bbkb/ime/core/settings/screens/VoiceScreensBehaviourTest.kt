@@ -21,6 +21,12 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasScrollToNodeAction
+import androidx.compose.ui.test.hasSetTextAction
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -53,12 +59,12 @@ import org.robolectric.shadows.ShadowSpeechRecognizer
  * language picker means the "Loading available languages…" spinner and nothing else. So neither
  * the list it eventually shows nor anything either screen writes was covered.
  *
- * The picker discovers languages three ways and lays them out two ways, and the layout is what a
- * consolidation touches: with offline languages known it splits the list into an "Offline ready"
- * section and a "Requires network" section; without, it shows one flat list with no headers and
- * no offline icons. Both are pinned here — the flat one through the pre-API-33 ordered-broadcast
- * path with no receiver to answer it, which falls back to the built-in language list, and the
- * sectioned one by answering API 33's `checkRecognitionSupport` through Robolectric's shadow.
+ * The picker discovers languages three ways and lists them one way: the chosen language and the
+ * user's keyboard languages first, then every language by name, with the Voice chip on the ones
+ * the recogniser has on the phone when it can say which those are. Both discovery shapes are
+ * pinned here: the pre-API-33 ordered-broadcast path with no receiver to answer it, which falls
+ * back to the built-in language list and knows nothing about offline, and API 33's
+ * `checkRecognitionSupport`, answered through Robolectric's shadow.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(qualifiers = "w411dp-h891dp")
@@ -116,40 +122,46 @@ class VoiceScreensBehaviourTest {
     // The language picker, legacy discovery path (pre-API 33)
     // ========================================================================
 
+    private val voiceChip = "Voice input works offline"
+    private val german = "Deutsch (Deutschland)"
+    private val english = "English (United States)"
+    private val french = "Français (France)"
+
+    private fun selectedRows() = composeRule.onAllNodes(
+        SemanticsMatcher.expectValue(SemanticsProperties.Selected, true)
+    ).fetchSemanticsNodes()
+
     /**
      * No package answers `ACTION_GET_LANGUAGE_DETAILS`, so the ordered broadcast comes back with
      * nothing and the screen falls back to its built-in list. Offline support is unknown on this
-     * path, so there are no sections and no offline icons.
+     * path, so no row carries the Voice chip. Rows show names, never the recogniser's raw tags.
      */
     @Test
     @Config(sdk = [32])
-    fun theLegacyPathShowsOneUnsectionedListOfTheFallbackLanguages() {
+    fun theLegacyPathListsTheFallbackLanguagesByNameWithNoVoiceChips() {
         setContent { VoiceLanguageSelectionScreen({}) }
 
         val shown = rendered()
-        assertFalse("an unsectioned list must not draw section headers", "Offline ready" in shown)
-        assertFalse("an unsectioned list must not draw section headers", "Requires network" in shown)
         assertFalse("discovery finished, so the spinner is gone", "Loading available languages…" in shown)
-        assertTrue("no offline state is known, so no offline icons", described("Offline ready").isEmpty())
-
-        assertEquals(
-            "languages are listed in sorted code order",
-            listOf("ar-EG", "ar-SA", "de-AT"),
-            renderedInReadingOrder().filter { it.matches(Regex("""[a-z]{2}-[A-Z]{2}""")) }.take(3),
+        assertTrue("the whole list is headed", "All languages" in shown)
+        assertTrue("no offline state is known, so no Voice chips", described(voiceChip).isEmpty())
+        assertFalse(
+            "a row shows names, not the recogniser's tag",
+            shown.any { it.matches(Regex("""[a-z]{2}-[A-Z]{2}""")) },
         )
 
-        // Only the visible window is composed, so reach for the rest. Both ends of the built-in
-        // list are present, and each row carries the locale's own display name above its code.
-        scrollTo("en-US")
-        assertTrue("display names missing", "English (United States)" in rendered())
-        scrollTo("zh-TW")
+        // Only the visible window is composed, so reach for the rest. A language is listed under
+        // its own name, with its name in the phone's language beneath when the two differ.
+        scrollTo(english)
+        scrollTo(french)
+        assertTrue("the phone-language name is the second line", "French (France)" in rendered())
     }
 
     /** Brings a row of the language list into view; fails if the list does not contain it. */
     private fun scrollTo(text: String) {
         composeRule.onNode(hasScrollToNodeAction()).performScrollToNode(hasText(text))
         composeRule.waitForIdle()
-        composeRule.onNodeWithText(text).assertIsDisplayed()
+        composeRule.onAllNodesWithText(text).onFirst().assertIsDisplayed()
     }
 
     @Test
@@ -158,21 +170,35 @@ class VoiceScreensBehaviourTest {
         var backs = 0
         setContent { VoiceLanguageSelectionScreen({ backs++ }) }
 
-        scrollTo("fr-CA")
-        composeRule.onNodeWithText("fr-CA").performClick()
+        scrollTo("Français (Canada)")
+        composeRule.onNodeWithText("Français (Canada)").performClick()
         composeRule.waitForIdle()
 
         assertEquals("fr-CA", prefs.getString("voice_input_language_list", null))
         assertEquals("picking a language returns to the previous screen", 1, backs)
     }
 
+    /** The stored language is repeated first, under "Your languages", and is the selected row. */
     @Test
     @Config(sdk = [32])
-    fun theStoredLanguageIsTheCheckedOne() {
+    fun theStoredLanguageIsPinnedFirstAndIsTheSelectedOne() {
         prefs.edit().putString("voice_input_language_list", "de-DE").commit()
         setContent { VoiceLanguageSelectionScreen({}) }
 
-        assertEquals("exactly one row is marked selected", 1, described("Selected").size)
+        val order = renderedInReadingOrder()
+        assertEquals(
+            "the chosen language leads, under its own header",
+            listOf("Your languages", german),
+            order.filter { it in setOf("Your languages", "All languages", german) }.take(2),
+        )
+        val selected = selectedRows()
+        assertTrue("the chosen language is marked selected", selected.isNotEmpty())
+        assertTrue(
+            "and nothing else is",
+            selected.all { node ->
+                composeRule.onAllNodes(hasText(german)).fetchSemanticsNodes().any { it.id == node.id }
+            },
+        )
     }
 
     // ========================================================================
@@ -181,65 +207,58 @@ class VoiceScreensBehaviourTest {
 
     /**
      * `checkRecognitionSupport` reports which languages are installed on the device and which are
-     * merely supported; the screen unions them for the list and uses the installed set to split it
-     * in two. Installed languages come first under "Offline ready" and carry an offline icon.
-     *
-     * The headers are asserted upper-cased because they are drawn by `PreferenceCategory`, which
-     * upper-cases every section subhead in settings; this screen used to style its own.
+     * merely supported; the screen unions them into one list in alphabetical order of the names
+     * shown, repeats the chosen language first, and gives the installed ones the Voice chip.
      */
     @Test
     @Config(sdk = [34])
-    fun theModernPathSplitsInstalledLanguagesIntoTheirOwnSection() {
+    fun theModernPathListsEveryLanguageByNameWithTheChosenOneFirst() {
         setContent { VoiceLanguageSelectionScreen({}) }
-        answerRecognitionSupport(installed = listOf("de-DE"), supported = listOf("en-US", "fr-FR"))
+        answerRecognitionSupport(installed = listOf("de-DE"), supported = listOf("fr-FR", "en-US"))
 
         val order = renderedInReadingOrder()
         assertEquals(
-            "installed languages lead, under their own header, with the rest below",
-            listOf("Offline ready", "de-DE", "Requires network", "en-US", "fr-FR"),
-            order.filter { it in setOf("Offline ready", "Requires network", "de-DE", "en-US", "fr-FR") },
+            "the chosen language is pinned, then every language in name order",
+            listOf("Your languages", english, "All languages", german, english, french),
+            order.filter { it in setOf("Your languages", "All languages", german, english, french) },
         )
-        assertEquals("only the installed language is marked offline", 1, described("Offline ready").size)
+        assertEquals("only the installed language carries the Voice chip", 1, described(voiceChip).size)
     }
 
-    /** With nothing installed there is no split to make, so the sections collapse to one list. */
+    /** With nothing installed no row has the chip; the list itself is the same. */
     @Test
     @Config(sdk = [34])
-    fun theModernPathShowsNoSectionsWhenNothingIsInstalledOffline() {
+    fun theModernPathShowsNoVoiceChipWhenNothingIsInstalledOffline() {
         setContent { VoiceLanguageSelectionScreen({}) }
         answerRecognitionSupport(installed = emptyList(), supported = listOf("en-US", "fr-FR"))
 
         val shown = rendered()
-        assertFalse("no offline languages means no sections", "Offline ready" in shown)
-        assertFalse("no offline languages means no sections", "Requires network" in shown)
-        assertTrue("en-US missing", "en-US" in shown)
-        assertTrue("no offline state is known, so no offline icons", described("Offline ready").isEmpty())
+        assertTrue("English missing", english in shown)
+        assertTrue("French missing", french in shown)
+        assertTrue("nothing is installed, so no Voice chips", described(voiceChip).isEmpty())
     }
 
-    /**
-     * With every available language installed there is nothing left for the second section, and
-     * an empty section draws no header.
-     */
+    /** A pinned row is the same language as its row in the full list, so it carries the chip too. */
     @Test
     @Config(sdk = [34])
-    fun theCloudSectionIsOmittedWhenEverySupportedLanguageIsInstalled() {
+    fun everyInstalledLanguageCarriesTheVoiceChipWhereverItIsListed() {
         setContent { VoiceLanguageSelectionScreen({}) }
         answerRecognitionSupport(installed = listOf("de-DE", "en-US"), supported = listOf("de-DE"))
 
-        val shown = rendered()
-        assertTrue("the installed section is still headed", "Offline ready" in shown)
-        assertFalse("an empty section must not draw its header", "Requires network" in shown)
-        assertEquals("both languages are offline-ready", 2, described("Offline ready").size)
+        assertEquals(
+            "English twice (pinned and listed) and German once",
+            3, described(voiceChip).size,
+        )
     }
 
     /**
      * The languages the service recognises over the network are listed too. They used to be left
      * out, so a recogniser with few on-device models offered only those. Not installed, so they
-     * sit under "Requires network" with the other cloud languages.
+     * carry no chip, and a language reported twice is listed once.
      */
     @Test
     @Config(sdk = [34])
-    fun theModernPathListsOnlineLanguagesUnderRequiresNetwork() {
+    fun theModernPathListsOnlineLanguagesOnceAndWithoutAChip() {
         setContent { VoiceLanguageSelectionScreen({}) }
         answerRecognitionSupport(
             installed = listOf("de-DE"),
@@ -248,12 +267,13 @@ class VoiceScreensBehaviourTest {
         )
 
         val order = renderedInReadingOrder()
+        val portuguese = order.filter { it.startsWith("Português") }
+        assertEquals("the online-only language is listed, once", 1, portuguese.size)
         assertEquals(
-            "online languages join the network section, without duplicates",
-            listOf("Offline ready", "de-DE", "Requires network", "en-US", "pt-BR"),
-            order.filter { it in setOf("Offline ready", "Requires network", "de-DE", "en-US", "pt-BR") },
+            "English is reported twice and listed once, after its pin",
+            2, order.count { it == english },
         )
-        assertEquals("only the installed language is marked offline", 1, described("Offline ready").size)
+        assertEquals("only the installed language carries the Voice chip", 1, described(voiceChip).size)
     }
 
     /** An empty support result is treated as a failed discovery and falls back to the built-in list. */
@@ -263,9 +283,59 @@ class VoiceScreensBehaviourTest {
         setContent { VoiceLanguageSelectionScreen({}) }
         answerRecognitionSupport(installed = emptyList(), supported = emptyList())
 
-        assertFalse("the fallback list carries no offline information", "Offline ready" in rendered())
-        scrollTo("en-US")
-        scrollTo("zh-TW")
+        assertTrue("the fallback list carries no offline information", described(voiceChip).isEmpty())
+        scrollTo(english)
+        scrollTo(french)
+    }
+
+    // ========================================================================
+    // The language picker: search
+    // ========================================================================
+
+    /**
+     * The magnifier turns the top bar into a field. A language is found by its own name or by its
+     * name in the phone's language; while a search is on there are no headers and no pinned repeat.
+     */
+    @Test
+    @Config(sdk = [34])
+    fun searchFindsALanguageByItsNameInThePhonesLanguage() {
+        setContent { VoiceLanguageSelectionScreen({}) }
+        answerRecognitionSupport(installed = emptyList(), supported = listOf("de-DE", "en-US", "fr-FR"))
+
+        composeRule.onNodeWithContentDescription("Search").performClick()
+        composeRule.onNode(hasSetTextAction()).performTextInput("germ")
+        composeRule.waitForIdle()
+
+        val shown = rendered()
+        assertTrue("German is found by its English name", german in shown)
+        assertFalse("French does not match", french in shown)
+        assertFalse("no headers while searching", "All languages" in shown || "Your languages" in shown)
+
+        composeRule.onNode(hasSetTextAction()).performTextReplacement("zzz")
+        composeRule.waitForIdle()
+        assertTrue("nothing matches, and the screen says so", "No matches found" in rendered())
+    }
+
+    /** The pins: the chosen language, then the recogniser's language for each of the user's keyboards. */
+    @Test
+    @Config(sdk = [34])
+    fun thePinnedLanguagesAreTheChosenOneThenTheKeyboards() {
+        assertEquals(
+            listOf("en-US", "fr-FR", "de-DE"),
+            pinnedVoiceLanguages(
+                selected = "en_US",
+                keyboardTags = listOf("fr", "de", "en-US", "xx"),
+                available = listOf("de-DE", "en-US", "fr-CA", "fr-FR"),
+            ),
+        )
+    }
+
+    /** A second line is only worth drawing when it says something the title does not. */
+    @Test
+    @Config(sdk = [34])
+    fun thePhoneLanguageNameIsLeftOutWhenItIsTheSameAsTheLanguagesOwn() {
+        assertEquals("German (Germany)", voiceLanguageLocalName("de-DE", german, java.util.Locale.US))
+        assertEquals(null, voiceLanguageLocalName("en-US", english, java.util.Locale.US))
     }
 
     /**
@@ -546,8 +616,8 @@ class VoiceScreensBehaviourTest {
         shadowOf(ShadowSpeechRecognizer.getLatestSpeechRecognizer()!!).triggerSupportError(SpeechRecognizer.ERROR_SERVER)
         composeRule.waitUntil(timeoutMillis = 5_000) { "Loading available languages…" !in rendered() }
 
-        assertFalse("xx-XX" in rendered())
-        scrollTo("en-US")
+        assertFalse(rendered().any { "XX" in it })
+        scrollTo(english)
     }
 
     /** The open dialog's text, top to bottom. */

@@ -503,7 +503,7 @@ fun SettingsNavHost(
             SymbolCustomizationScreen(
                 onNavigateToCustomSymbolPagePKB = go(SettingsRoute.CustomSymbolPagePkb),
                 onNavigateToCustomSymbolPageVKB = go(SettingsRoute.CustomSymbolPageVkb),
-                onNavigateToSlideboardSettings = go(SettingsRoute.SlideboardSettings),
+                onNavigateToCustomizeNumberPad = go(SettingsRoute.CustomizeSlideBoard),
                 onNavigateBack = back
             )
         }

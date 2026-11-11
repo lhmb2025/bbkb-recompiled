@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Подешавање геста тресења</string>
     <string name="prefs_shake_tuning_summary">Број окидања, праг убрзања и време</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Понашање</string>
+    <string name="settings_category_feedback">Повратне информације</string>
+    <string name="settings_category_appearance">Изглед</string>
+    <string name="settings_category_symbols">Симболи</string>
+    <string name="settings_category_keys">Тастери</string>
+    <string name="settings_category_device">Уређај</string>
     <string name="settings_category_behavior_vkb">Понашање</string>
     <string name="settings_category_ckb_gestures">Капацитивна тастатура</string>
     <string name="settings_category_on_screen_keyboard">Тастатура на екрану</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Покрети</string>
     <string name="settings_category_key_popup">Искачући тастер</string>
     <string name="settings_category_modifiers">Модификатори</string>
+    <string name="settings_category_press_twice_lock">Притисните двапут да бисте закључали</string>
     <string name="settings_category_sound">Звук</string>
     <string name="settings_category_vibrate">Вибрација</string>
     <string name="ckb_action_cursor_mode">Режим курсора</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Избрисати „%1$s”? Ово не може да се опозове.</string>
     <string name="settings_pkb_layouts_delete_title">Избриши распоред</string>
     <string name="settings_pkb_layouts_details">%1$s · тастери: %2$d</string>
+    <string name="settings_pkb_layouts_keys">Тастери: %1$d</string>
+    <string name="settings_pkb_layouts_search">Претражи распореде</string>
     <string name="settings_pkb_layouts_empty">Још нема прилагођених распореда. Додајте један из датотеке.</string>
     <string name="settings_pkb_layouts_keypad">тастатура %1$s</string>
     <string name="settings_pkb_layouts_none">Не користи се</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Врати на празан распоред</string>
     <string name="customize_slideboard_reset_to_default">Врати на подразумевани распоред</string>
     <string name="settings_slideboard_hub_summary">Нумеричка тастатура, замена страна и брзе фразе</string>
-    <string name="settings_symbol_slideboard_link_summary">Нумеричка тастатура и брзе фразе</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Поставке за Slideboard</string>
     <string name="customized_symbol_page_add_button_description">Додај уницоде симбол</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Прихвати научене речи</string>
     <string name="settings_spellcheck_accept_learned_summary">Препознаје речи научене из вашег куцања</string>
     <string name="pref_alt_double_tap_lock">Закључавање тастера Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Притисните Alt двапут да бисте га закључали. Притисните га поново да бисте га откључали.</string>
     <string name="pref_ctrl_double_tap_lock">Закључавање тастера Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Притисните Ctrl двапут да бисте га закључали. Притисните га поново да бисте га откључали.</string>
     <string name="pref_override_device_meta_state">Лепљиви модификатори</string>
     <string name="pref_override_device_meta_state_summary">Закључавање тастера Shift и Alt на било којој физичкој тастатури, без обзира на уграђене поставке тастатуре телефона</string>
     <string name="pref_shift_double_tap_lock">Закључавање тастера Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">Притисните Shift двапут да бисте га закључали. Притисните га поново да бисте га откључали.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Време задржавања тастера пре приказа секундарних знакова</string>
     <string name="prefs_key_longpress_delay_title">Одлагање дугог притиска тастера</string>
     <string name="prefs_key_preview_animations_summary">Прилагодите стил и време анимације притиска тастера</string>
@@ -1103,8 +1109,8 @@
     <string name="language_packs_deleted">Језички пакет је избрисан: %1$s</string>
     <string name="language_packs_already_removed">Језички пакет %1$s је већ уклоњен</string>
     <string name="language_packs_delete_failed">Брисање језичког пакета није успело: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Ради ван мреже</string>
-    <string name="settings_voice_lang_requires_network">Захтева мрежу</string>
+    <string name="settings_voice_lang_yours">Ваши језици</string>
+    <string name="settings_voice_lang_all">Сви језици</string>
     <string name="settings_voice_lang_loading">Учитавају се доступни језици…</string>
     <string name="settings_voice_lang_none">Нема доступних језика за препознавање гласа</string>
     <string name="settings_voice_lang_none_hint">Уверите се да је апликација Google инсталирана и да је препознавање гласа омогућено</string>

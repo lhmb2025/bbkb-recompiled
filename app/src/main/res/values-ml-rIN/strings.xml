@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">ഷേക്ക് ജെസ്ചർ ട്യൂണിംഗ്</string>
     <string name="prefs_shake_tuning_summary">ട്രിഗർ എണ്ണം, ആക്സിലറേഷൻ പരിധി, സമയം</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">പ്രവർത്തനരീതി</string>
+    <string name="settings_category_feedback">പ്രതികരണം</string>
+    <string name="settings_category_appearance">രൂപഭാവം</string>
+    <string name="settings_category_symbols">ചിഹ്നങ്ങൾ</string>
+    <string name="settings_category_keys">കീകൾ</string>
+    <string name="settings_category_device">ഉപകരണം</string>
     <string name="settings_category_behavior_vkb">പ്രവർത്തനരീതി</string>
     <string name="settings_category_ckb_gestures">കപ്പാസിറ്റീവ് കീബോർഡ്</string>
     <string name="settings_category_on_screen_keyboard">സ്ക്രീനിലെ കീബോർഡ്</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">ജെസ്ചറുകൾ</string>
     <string name="settings_category_key_popup">കീ പോപ്പ്-അപ്പ്</string>
     <string name="settings_category_modifiers">മോഡിഫയർ കീകൾ</string>
+    <string name="settings_category_press_twice_lock">ലോക്ക് ചെയ്യാൻ രണ്ടുതവണ അമർത്തുക</string>
     <string name="settings_category_sound">ശബ്‌ദം</string>
     <string name="settings_category_vibrate">വൈബ്രേഷൻ</string>
     <string name="ckb_action_cursor_mode">കഴ്‌സർ മോഡ്</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s” ഇല്ലാതാക്കണോ? ഇത് പഴയപടിയാക്കാനാകില്ല.</string>
     <string name="settings_pkb_layouts_delete_title">ലേഔട്ട് ഇല്ലാതാക്കുക</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d കീകൾ</string>
+    <string name="settings_pkb_layouts_keys">%1$d കീകൾ</string>
+    <string name="settings_pkb_layouts_search">ലേഔട്ടുകൾ തിരയുക</string>
     <string name="settings_pkb_layouts_empty">ഇതുവരെ ഇഷ്ടാനുസൃത ലേഔട്ടുകളൊന്നുമില്ല. ഒരു ഫയലിൽ നിന്ന് ഒന്ന് ചേർക്കുക.</string>
     <string name="settings_pkb_layouts_keypad">%1$s കീപാഡ്</string>
     <string name="settings_pkb_layouts_none">ഉപയോഗത്തിലില്ല</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">ശൂന്യമായ ലേഔട്ടിലേക്ക് പുനഃസജ്ജമാക്കുക</string>
     <string name="customize_slideboard_reset_to_default">സ്ഥിരം ലേഔട്ടിലേക്ക് പുനഃസജ്ജമാക്കുക</string>
     <string name="settings_slideboard_hub_summary">നമ്പർ പാഡ്, വശങ്ങൾ മാറ്റൽ, ദ്രുത വാക്യങ്ങൾ</string>
-    <string name="settings_symbol_slideboard_link_summary">നമ്പർ പാഡും ദ്രുത വാക്യങ്ങളും</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard ക്രമീകരണങ്ങൾ</string>
     <string name="customized_symbol_page_add_button_description">യൂണികോഡ് ചിഹ്നം ചേര്‍ക്കുക</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">പഠിച്ച വാക്കുകൾ സ്വീകരിക്കുക</string>
     <string name="settings_spellcheck_accept_learned_summary">നിങ്ങളുടെ ടൈപ്പിംഗിൽ നിന്ന് പഠിച്ച വാക്കുകൾ തിരിച്ചറിയുന്നു</string>
     <string name="pref_alt_double_tap_lock">Alt ലോക്ക്</string>
-    <string name="pref_alt_double_tap_lock_summary">ലോക്ക് ചെയ്യാൻ Alt രണ്ടുതവണ അമർത്തുക. അൺലോക്ക് ചെയ്യാൻ വീണ്ടും അമർത്തുക.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl ലോക്ക്</string>
-    <string name="pref_ctrl_double_tap_lock_summary">ലോക്ക് ചെയ്യാൻ Ctrl രണ്ടുതവണ അമർത്തുക. അൺലോക്ക് ചെയ്യാൻ വീണ്ടും അമർത്തുക.</string>
     <string name="pref_override_device_meta_state">സ്റ്റിക്കി മോഡിഫയർ കീകൾ</string>
     <string name="pref_override_device_meta_state_summary">ഫോണിന്റെ ബിൽറ്റ്-ഇൻ കീബോർഡ് ക്രമീകരണങ്ങൾ എന്തായാലും, ഏത് ഫിസിക്കൽ കീബോർഡിലും Shift, Alt എന്നിവ ലോക്ക് ചെയ്യുക</string>
     <string name="pref_shift_double_tap_lock">Shift ലോക്ക്</string>
-    <string name="pref_shift_double_tap_lock_summary">ലോക്ക് ചെയ്യാൻ Shift രണ്ടുതവണ അമർത്തുക. അൺലോക്ക് ചെയ്യാൻ വീണ്ടും അമർത്തുക.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">ദ്വിതീയ അക്ഷരങ്ങൾ വരുന്നതിനു മുമ്പ് കീ അമർത്തിപ്പിടിക്കേണ്ട സമയം</string>
     <string name="prefs_key_longpress_delay_title">കീ ലോംഗ്-പ്രസ് കാലതാമസം</string>
     <string name="prefs_key_preview_animations_summary">കീ അമർത്തലിന്റെ ആനിമേഷൻ ശൈലിയും സമയക്രമവും ഇഷ്ടാനുസൃതമാക്കുക</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">ഭാഷാ പാക്ക് ഇല്ലാതാക്കി: %1$s</string>
     <string name="language_packs_already_removed">%1$s ഇതിനകം നീക്കം ചെയ്തിരുന്നു</string>
     <string name="language_packs_delete_failed">ഭാഷാ പാക്ക് ഇല്ലാതാക്കാനായില്ല: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">ഓഫ്‌ലൈനിൽ തയ്യാർ</string>
-    <string name="settings_voice_lang_requires_network">നെറ്റ്‌വർക്ക് ആവശ്യമാണ്</string>
+    <string name="settings_voice_lang_yours">നിങ്ങളുടെ ഭാഷകൾ</string>
+    <string name="settings_voice_lang_all">എല്ലാ ഭാഷകളും</string>
     <string name="settings_voice_lang_loading">ലഭ്യമായ ഭാഷകൾ ലോഡ് ചെയ്യുന്നു…</string>
     <string name="settings_voice_lang_none">ശബ്‌ദ തിരിച്ചറിയൽ ഭാഷകളൊന്നും ലഭ്യമല്ല</string>
     <string name="settings_voice_lang_none_hint">Google ആപ്പ് ഇൻസ്റ്റാൾ ചെയ്തിട്ടുണ്ടെന്നും ശബ്‌ദ തിരിച്ചറിയൽ ഓണാണെന്നും ഉറപ്പാക്കുക</string>

@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">כוונון מחוות הניעור</string>
     <string name="prefs_shake_tuning_summary">מספרי הפעלה, סף תאוצה ותזמון</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">התנהגות</string>
+    <string name="settings_category_feedback">משוב</string>
+    <string name="settings_category_appearance">מראה</string>
+    <string name="settings_category_symbols">סמלים</string>
+    <string name="settings_category_keys">מקשים</string>
+    <string name="settings_category_device">מכשיר</string>
     <string name="settings_category_behavior_vkb">התנהגות</string>
     <string name="settings_category_ckb_gestures">מקלדת קיבולית</string>
     <string name="settings_category_on_screen_keyboard">מקלדת שעל המסך</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">מחוות</string>
     <string name="settings_category_key_popup">חלון מוקפץ של מקש</string>
     <string name="settings_category_modifiers">מקשי החלפה</string>
+    <string name="settings_category_press_twice_lock">לחץ פעמיים כדי לנעול</string>
     <string name="settings_category_sound">צליל</string>
     <string name="settings_category_vibrate">רטט</string>
     <string name="ckb_action_cursor_mode">מצב סמן</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">למחוק את \"%1$s\"? לא ניתן לבטל פעולה זו.</string>
     <string name="settings_pkb_layouts_delete_title">מחיקת פריסה</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d מקשים</string>
+    <string name="settings_pkb_layouts_keys">%1$d מקשים</string>
+    <string name="settings_pkb_layouts_search">חיפוש פריסות</string>
     <string name="settings_pkb_layouts_empty">אין עדיין פריסות מותאמות אישית. הוסיפו אחת מקובץ.</string>
     <string name="settings_pkb_layouts_keypad">מקלדת %1$s</string>
     <string name="settings_pkb_layouts_none">לא בשימוש</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">אפס לפריסה ריקה</string>
     <string name="customize_slideboard_reset_to_default">אפס לפריסת ברירת מחדל</string>
     <string name="settings_slideboard_hub_summary">לוח ספרות, החלפת צדדים וביטויים מהירים</string>
-    <string name="settings_symbol_slideboard_link_summary">לוח ספרות וביטויים מהירים</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">הגדרות Slideboard</string>
     <string name="customized_symbol_page_add_button_description">הוסף סמל יוניקוד</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">קבלת מילים שנלמדו</string>
     <string name="settings_spellcheck_accept_learned_summary">מזהה מילים שנלמדו מההקלדה שלך</string>
     <string name="pref_alt_double_tap_lock">נעילת Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">לחץ פעמיים על Alt כדי לנעול אותו. לחץ שוב כדי לבטל את הנעילה.</string>
     <string name="pref_ctrl_double_tap_lock">נעילת Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">לחץ פעמיים על Ctrl כדי לנעול אותו. לחץ שוב כדי לבטל את הנעילה.</string>
     <string name="pref_override_device_meta_state">מקשי החלפה דביקים</string>
     <string name="pref_override_device_meta_state_summary">נעילת Shift ו-Alt בכל מקלדת פיזית, ללא תלות בהגדרות המקלדת המובנית של הטלפון</string>
     <string name="pref_shift_double_tap_lock">נעילת Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">לחץ פעמיים על Shift כדי לנעול אותו. לחץ שוב כדי לבטל את הנעילה.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">משך ההחזקה של מקש עד להופעת תווים משניים</string>
     <string name="prefs_key_longpress_delay_title">השהיית לחיצה ארוכה על מקש</string>
     <string name="prefs_key_preview_animations_summary">התאם אישית את הסגנון והתזמון של אנימציית לחיצת המקש</string>
@@ -1118,8 +1124,8 @@
     <string name="language_packs_deleted">חבילת השפה נמחקה: %1$s</string>
     <string name="language_packs_already_removed">%1$s כבר הוסרה</string>
     <string name="language_packs_delete_failed">מחיקת חבילת השפה נכשלה: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">זמינה במצב אופליין</string>
-    <string name="settings_voice_lang_requires_network">נדרש חיבור לרשת</string>
+    <string name="settings_voice_lang_yours">השפות שלך</string>
+    <string name="settings_voice_lang_all">כל השפות</string>
     <string name="settings_voice_lang_loading">טוען שפות זמינות…</string>
     <string name="settings_voice_lang_none">אין שפות זמינות לזיהוי קולי</string>
     <string name="settings_voice_lang_none_hint">ודא שאפליקציית Google מותקנת ושהזיהוי הקולי מופעל</string>

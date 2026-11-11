@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">흔들기 제스처 조정</string>
     <string name="prefs_shake_tuning_summary">트리거 횟수, 가속도 임계값 및 타이밍</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">동작</string>
+    <string name="settings_category_feedback">피드백</string>
+    <string name="settings_category_appearance">모양</string>
+    <string name="settings_category_symbols">기호</string>
+    <string name="settings_category_keys">키</string>
+    <string name="settings_category_device">기기</string>
     <string name="settings_category_behavior_vkb">동작</string>
     <string name="settings_category_ckb_gestures">정전식 키보드</string>
     <string name="settings_category_on_screen_keyboard">화면 키보드</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">제스처</string>
     <string name="settings_category_key_popup">키 팝업</string>
     <string name="settings_category_modifiers">조합 키</string>
+    <string name="settings_category_press_twice_lock">두 번 눌러 잠금</string>
     <string name="settings_category_sound">알림음</string>
     <string name="settings_category_vibrate">진동</string>
     <string name="ckb_action_cursor_mode">커서 모드</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s”을(를) 삭제할까요? 이 작업은 되돌릴 수 없습니다.</string>
     <string name="settings_pkb_layouts_delete_title">레이아웃 삭제</string>
     <string name="settings_pkb_layouts_details">%1$s · 키 %2$d개</string>
+    <string name="settings_pkb_layouts_keys">키 %1$d개</string>
+    <string name="settings_pkb_layouts_search">레이아웃 검색</string>
     <string name="settings_pkb_layouts_empty">아직 사용자 지정 레이아웃이 없습니다. 파일에서 추가하세요.</string>
     <string name="settings_pkb_layouts_keypad">%1$s 키패드</string>
     <string name="settings_pkb_layouts_none">사용 안 함</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">빈 레이아웃으로 재설정</string>
     <string name="customize_slideboard_reset_to_default">기본 레이아웃으로 재설정</string>
     <string name="settings_slideboard_hub_summary">숫자 패드, 좌우 바꾸기, 빠른 문구</string>
-    <string name="settings_symbol_slideboard_link_summary">숫자 패드 및 빠른 문구</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard 설정</string>
     <string name="customized_symbol_page_add_button_description">유니코드 기호 추가</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">학습한 단어 허용</string>
     <string name="settings_spellcheck_accept_learned_summary">입력에서 학습한 단어를 인식합니다</string>
     <string name="pref_alt_double_tap_lock">Alt 잠금</string>
-    <string name="pref_alt_double_tap_lock_summary">Alt를 두 번 누르면 잠깁니다. 다시 누르면 해제됩니다.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl 잠금</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Ctrl 키를 두 번 누르면 잠깁니다. 다시 누르면 해제됩니다.</string>
     <string name="pref_override_device_meta_state">고정 조합 키</string>
     <string name="pref_override_device_meta_state_summary">휴대전화의 기본 키보드 설정과 관계없이 모든 물리 키보드에서 Shift와 Alt를 잠급니다</string>
     <string name="pref_shift_double_tap_lock">Shift 잠금</string>
-    <string name="pref_shift_double_tap_lock_summary">Shift를 두 번 누르면 잠깁니다. 다시 누르면 해제됩니다.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">보조 문자가 나타나기 전까지 키를 누르고 있는 시간</string>
     <string name="prefs_key_longpress_delay_title">키 길게 누르기 지연</string>
     <string name="prefs_key_preview_animations_summary">키 누름 애니메이션 스타일과 타이밍을 사용자 지정합니다</string>
@@ -1073,8 +1079,8 @@
     <string name="language_packs_deleted">언어 팩을 삭제했습니다: %1$s</string>
     <string name="language_packs_already_removed">%1$s은(는) 이미 삭제되었습니다</string>
     <string name="language_packs_delete_failed">언어 팩을 삭제하지 못했습니다: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">오프라인 사용 가능</string>
-    <string name="settings_voice_lang_requires_network">네트워크 필요</string>
+    <string name="settings_voice_lang_yours">내 언어</string>
+    <string name="settings_voice_lang_all">모든 언어</string>
     <string name="settings_voice_lang_loading">사용 가능한 언어를 불러오는 중…</string>
     <string name="settings_voice_lang_none">사용 가능한 음성 인식 언어가 없습니다</string>
     <string name="settings_voice_lang_none_hint">Google 앱이 설치되어 있고 음성 인식이 사용 설정되어 있는지 확인하세요</string>

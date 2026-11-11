@@ -20,7 +20,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,9 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
@@ -47,12 +45,14 @@ import dev.bbkb.ime.core.settings.ui.groupEdge
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
-import dev.bbkb.ime.core.settings.ui.SettingsScaffold
+import dev.bbkb.ime.core.settings.ui.SearchableSettingsScaffold
+import dev.bbkb.ime.core.settings.ui.rememberListSearchState
 import dev.bbkb.ime.core.settings.util.SettingsManager
 import android.view.inputmethod.InputMethodManager
 import dev.bbkb.ime.keyboard.inputboard.voice.InstalledVoiceRecognizers
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceLanguageTags
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceRecognizerChoice
+import java.text.Collator
 import java.util.Locale
 
 private const val TAG = "VoiceLanguageSelection"
@@ -73,12 +73,66 @@ internal fun voiceLanguageDisplayName(code: String): String = try {
 }
 
 /**
+ * One language of the picker: its recogniser tag, its name as the language writes it, that name in
+ * the phone's language when the two differ (the row's second line, and something to search by),
+ * and whether the recogniser has it on the phone.
+ */
+internal data class VoiceLanguageRow(
+    val code: String,
+    val name: String,
+    val localName: String?,
+    val offline: Boolean,
+)
+
+/** [code]'s name in the phone's language, or null when that is what [nativeName] already says. */
+internal fun voiceLanguageLocalName(code: String, nativeName: String, phone: Locale = Locale.getDefault()): String? = try {
+    Locale.forLanguageTag(code.replace("_", "-")).getDisplayName(phone)
+        .replaceFirstChar { it.uppercase() }
+        .takeIf { it.isNotBlank() && !it.equals(nativeName, ignoreCase = true) }
+} catch (e: Exception) {
+    null
+}
+
+private fun sameVoiceTag(a: String, b: String) = a.replace("_", "-").equals(b.replace("_", "-"), ignoreCase = true)
+
+/**
+ * The languages listed first, under "Your languages": the one chosen now, then the recogniser's
+ * language for each keyboard the user has switched on. Each is the recogniser's own spelling of the
+ * tag, so a keyboard's bare "fr" pins "fr-FR"; one the recogniser does not offer is left out.
+ */
+internal fun pinnedVoiceLanguages(
+    selected: String,
+    keyboardTags: List<String>,
+    available: List<String>,
+): List<String> {
+    val chosen = available.firstOrNull { sameVoiceTag(it, selected) }
+    val keyboards = keyboardTags.mapNotNull { tag ->
+        VoiceLanguageTags.bestMatch(tag, VoiceLanguageTags.likelyRegion(tag), available)
+    }
+    return (listOfNotNull(chosen) + keyboards).distinct()
+}
+
+/** The recogniser tags of the keyboards the user has switched on, without duplicates. */
+internal fun enabledKeyboardLanguageTags(context: android.content.Context): List<String> = try {
+    val imm = context.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+    val self = imm?.inputMethodList?.firstOrNull { it.packageName == context.packageName }
+    if (imm == null || self == null) emptyList()
+    else imm.getEnabledInputMethodSubtypeList(self, true)
+        .mapNotNull { VoiceLanguageTags.normalise(it.locale) }.distinct()
+} catch (e: Exception) {
+    emptyList()
+}
+
+/**
  * Full-screen list of the voice-recognition languages this device offers.
  *
- * Where the device can say which languages work without a network the list is split into an
- * "Offline Ready" section and a "Requires Network" one; where it cannot — the pre-API-33
- * discovery path, and the built-in fallback list — there is one unsectioned list and no offline
- * markers. Both shapes come out of the same `sections` list below.
+ * The list is long (well over a hundred languages with Google's recogniser), so: the top bar
+ * searches it, by a language's own name, its name in the phone's language or its tag; the language
+ * chosen now and the languages of the user's keyboards are repeated first, under "Your languages";
+ * and "All languages" below is in alphabetical order of what the rows show. A language the
+ * recogniser has on the phone carries the same Voice chip as on Language packs. Where the device
+ * cannot say which those are (the pre-API-33 discovery path, the built-in fallback list) no row
+ * carries one.
  */
 @Composable
 fun VoiceLanguageSelectionScreen(
@@ -100,47 +154,58 @@ fun VoiceLanguageSelectionScreen(
     var isLoading by remember { mutableStateOf(true) }
     // Ask the recogniser dictation will use (the "Speech recognizer" setting), not always the default.
     val recognizer = remember { InstalledVoiceRecognizers.resolve(context) }
+    val keyboardTags = remember { enabledKeyboardLanguageTags(context) }
 
     // Detect available voice recognition languages using appropriate API
     LaunchedEffect(Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             fetchLanguagesModernForSelection(context, recognizer) { supported, offline ->
-                availableLanguages = supported.sorted()
-                offlineLanguages = offline.sorted()
+                availableLanguages = supported
+                offlineLanguages = offline
                 isLoading = false
             }
         } else {
             fetchLanguagesLegacyForSelection(context, recognizer) { languages ->
-                availableLanguages = languages.sorted()
+                availableLanguages = languages
                 offlineLanguages = emptyList()
                 isLoading = false
             }
         }
     }
 
-    fun isOfflineReady(code: String): Boolean = offlineLanguages.any {
-        it.equals(code, ignoreCase = true) ||
-            it.replace("_", "-").equals(code.replace("_", "-"), ignoreCase = true)
+    // Every language as a row, in alphabetical order of the name shown.
+    val rows: List<VoiceLanguageRow> = remember(availableLanguages, offlineLanguages) {
+        val collator = Collator.getInstance()
+        availableLanguages.distinct().map { code ->
+            val name = voiceLanguageDisplayName(code)
+            VoiceLanguageRow(
+                code = code,
+                name = name,
+                localName = voiceLanguageLocalName(code, name),
+                offline = offlineLanguages.any { sameVoiceTag(it, code) },
+            )
+        }.sortedWith { a, b -> collator.compare(a.name, b.name) }
+    }
+    val pinned: List<VoiceLanguageRow> = remember(rows, keyboardTags) {
+        // Read once: the choice made on this screen closes it, so the pins never move under a tap.
+        pinnedVoiceLanguages(selectedLanguage, keyboardTags, rows.map { it.code })
+            .mapNotNull { code -> rows.firstOrNull { it.code == code } }
     }
 
-    /** Section header (null for the unsectioned case) to the languages listed under it. */
-    val offlineReady = stringResource(R.string.settings_voice_lang_offline_ready)
-    val requiresNetwork = stringResource(R.string.settings_voice_lang_requires_network)
-    val sections: List<Pair<String?, List<String>>> =
-        remember(availableLanguages, offlineLanguages, offlineReady, requiresNetwork) {
-            if (offlineLanguages.isEmpty()) {
-                listOf(null to availableLanguages)
-            } else {
-                listOf(
-                    offlineReady to availableLanguages.filter { isOfflineReady(it) },
-                    requiresNetwork to availableLanguages.filterNot { isOfflineReady(it) },
-                ).filter { it.second.isNotEmpty() }
-            }
-        }
+    val search = rememberListSearchState()
+    val matching = rows.filter { search.matches(it.name, it.localName, it.code) }
 
-    SettingsScaffold(
+    fun choose(row: VoiceLanguageRow) {
+        selectedLanguage = row.code
+        prefs.edit().putString(VOICE_LANGUAGE_PREF, row.code).apply()
+        onNavigateBack()
+    }
+
+    SearchableSettingsScaffold(
         title = context.getString(R.string.settings_voice_input_lang_title),
         onNavigateBack = onNavigateBack,
+        search = search,
+        searchHint = stringResource(R.string.languages_hub_search),
     ) { paddingValues ->
         when {
             isLoading -> CenteredMessage(paddingValues) {
@@ -167,34 +232,44 @@ fun VoiceLanguageSelectionScreen(
                 )
             }
 
+            search.filtering && matching.isEmpty() -> CenteredMessage(paddingValues) {
+                Text(
+                    text = stringResource(R.string.settings_common_no_matches),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
             // Each section is a group laid out by the list itself: the rows paint themselves as
             // cards, a section's first and last row carry the group's outer corners, and the rows
             // take the group inset themselves so the section headers keep their page-level alignment.
             else -> CompositionLocalProvider(LocalInGroup provides true) {
+                // While searching: the matches alone, with no headers and no repeats.
+                val sections: List<Triple<String, String?, List<VoiceLanguageRow>>> = if (search.filtering) {
+                    listOf(Triple("found", null, matching))
+                } else {
+                    listOfNotNull(
+                        Triple("yours", stringResource(R.string.settings_voice_lang_yours), pinned)
+                            .takeIf { pinned.isNotEmpty() },
+                        Triple("all", stringResource(R.string.settings_voice_lang_all), rows),
+                    )
+                }
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues),
                     verticalArrangement = Arrangement.spacedBy(LocalSpacing.current.groupGap)
                 ) {
-                    sections.forEach { (header, languages) ->
+                    sections.forEach { (section, header, languages) ->
                         if (header != null) {
-                            item { SectionHeader(header) }
+                            item(key = "$section-header") { SectionHeader(header) }
                         }
-                        itemsIndexed(languages) { index, language ->
+                        itemsIndexed(languages, key = { _, row -> section + "-" + row.code }) { index, row ->
                             LanguageListItem(
-                                languageCode = language,
-                                displayName = voiceLanguageDisplayName(language),
-                                isSelected = language == selectedLanguage ||
-                                    language.replace("-", "_") == selectedLanguage.replace("-", "_"),
-                                // Unknown, not "no", when the device could not tell us.
-                                isOfflineReady = if (offlineLanguages.isEmpty()) null else isOfflineReady(language),
+                                row = row,
+                                isSelected = sameVoiceTag(row.code, selectedLanguage),
                                 edge = groupEdge(index, languages.size),
-                                onClick = {
-                                    selectedLanguage = language
-                                    prefs.edit().putString(VOICE_LANGUAGE_PREF, language).apply()
-                                    onNavigateBack()
-                                }
+                                onClick = { choose(row) },
                             )
                         }
                     }
@@ -223,66 +298,38 @@ private fun CenteredMessage(
     }
 }
 
-/**
- * A section subhead, in the app's own [PreferenceCategory].
- *
- * The two sections used to be told apart by colour — the first primary, the second
- * onSurfaceVariant with a rule above it — which made one heading look like a heading and the other
- * like a divider caption. They are the same kind of thing, so they are drawn the same way, and
- * proximity does the separating: [PreferenceCategory]'s 24dp top padding is the gap.
- */
+/** A section subhead, in the app's own [PreferenceCategory]. */
 @Composable
 private fun SectionHeader(title: String) {
     PreferenceCategory(title = title)
 }
 
 /**
- * One language, on [PreferenceItem] rather than a Row with 14dp vertical padding and a 36dp spacer
- * standing in for the missing tick.
- *
- * The tick sits in the 24dp leading column that every other settings row uses for its icon, and a
- * row without one reserves that column, so the names stay in one line down the screen. The selected
- * row no longer also changes its title's colour and weight: the tick says which one it is, and two
- * type ramps in one list is what made this screen look unlike the rest of settings.
+ * One language, on [PreferenceItem]: a radio button in the leading column, as the one-of-many list
+ * on Device configuration has, the language's own name, its name in the phone's language under it
+ * when that differs, and the Voice chip after the name when the recogniser has it on the phone.
  */
 @Composable
 private fun LanguageListItem(
-    languageCode: String,
-    displayName: String,
+    row: VoiceLanguageRow,
     isSelected: Boolean,
-    isOfflineReady: Boolean?,
     edge: GroupEdge,
     onClick: () -> Unit
 ) {
     Box(modifier = Modifier.padding(horizontal = LocalSpacing.current.groupInset)) {
         PreferenceItem(
-            title = displayName,
-            summary = languageCode,
-            leading = if (isSelected) {
-                {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_settings_m_check_outlined),
-                        contentDescription = stringResource(R.string.settings_common_selected),
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
+            title = row.name,
+            summary = row.localName,
+            leading = { RadioButton(selected = isSelected, onClick = null) },
+            titleAccessory = if (row.offline) {
+                { OfflineVoiceChip() }
             } else null,
-            iconSpaceReserved = true,
             modifier = Modifier.selectable(
                 selected = isSelected,
                 onClick = onClick,
                 role = Role.RadioButton,
             ),
             groupEdge = edge,
-            trailing = if (isOfflineReady == true) {
-                {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_settings_m_cloud_off),
-                        contentDescription = stringResource(R.string.settings_voice_lang_offline_ready),
-                        tint = MaterialTheme.colorScheme.tertiary,
-                    )
-                }
-            } else null,
         )
     }
 }

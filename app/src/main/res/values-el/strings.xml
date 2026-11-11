@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Ρύθμιση χειρονομίας ανακίνησης</string>
     <string name="prefs_shake_tuning_summary">Αριθμοί ενεργοποίησης, όριο επιτάχυνσης και χρονισμός</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Συμπεριφορά</string>
+    <string name="settings_category_feedback">Ανάδραση</string>
+    <string name="settings_category_appearance">Εμφάνιση</string>
+    <string name="settings_category_symbols">Σύμβολα</string>
+    <string name="settings_category_keys">Πλήκτρα</string>
+    <string name="settings_category_device">Συσκευή</string>
     <string name="settings_category_behavior_vkb">Συμπεριφορά</string>
     <string name="settings_category_ckb_gestures">Χωρητικό πληκτρολόγιο</string>
     <string name="settings_category_on_screen_keyboard">Πληκτρολόγιο οθόνης</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Κινήσεις</string>
     <string name="settings_category_key_popup">Αναδυόμενο παράθυρο πλήκτρου</string>
     <string name="settings_category_modifiers">Τροποποιητές</string>
+    <string name="settings_category_press_twice_lock">Πατήστε δύο φορές για κλείδωμα</string>
     <string name="settings_category_sound">Ήχος</string>
     <string name="settings_category_vibrate">Δόνηση</string>
     <string name="ckb_action_cursor_mode">Λειτουργία δρομέα</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Διαγραφή «%1$s»; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.</string>
     <string name="settings_pkb_layouts_delete_title">Διαγραφή διάταξης</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d πλήκτρα</string>
+    <string name="settings_pkb_layouts_keys">%1$d πλήκτρα</string>
+    <string name="settings_pkb_layouts_search">Αναζήτηση διατάξεων</string>
     <string name="settings_pkb_layouts_empty">Δεν υπάρχουν ακόμη προσαρμοσμένες διατάξεις. Προσθέστε μία από αρχείο.</string>
     <string name="settings_pkb_layouts_keypad">πληκτρολόγιο %1$s</string>
     <string name="settings_pkb_layouts_none">Δεν χρησιμοποιείται</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Επαναφορά σε κενή διάταξη</string>
     <string name="customize_slideboard_reset_to_default">Επαναφορά στην προεπιλεγμένη διάταξη</string>
     <string name="settings_slideboard_hub_summary">Αριθμητικό πληκτρολόγιο, εναλλαγή πλευρών και γρήγορες φράσεις</string>
-    <string name="settings_symbol_slideboard_link_summary">Αριθμητικό πληκτρολόγιο και γρήγορες φράσεις</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Ρυθμίσεις Slideboard</string>
     <string name="customized_symbol_page_add_button_description">Προσθήκη συμβόλου unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Αποδοχή λέξεων που έχουν μαθευτεί</string>
     <string name="settings_spellcheck_accept_learned_summary">Αναγνωρίζει τις λέξεις που μαθεύτηκαν από την πληκτρολόγησή σας</string>
     <string name="pref_alt_double_tap_lock">Κλείδωμα Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Πατήστε το Alt δύο φορές για να κλειδώσει. Πατήστε το ξανά για ξεκλείδωμα.</string>
     <string name="pref_ctrl_double_tap_lock">Κλείδωμα Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Πατήστε το Ctrl δύο φορές για να κλειδώσει. Πατήστε το ξανά για ξεκλείδωμα.</string>
     <string name="pref_override_device_meta_state">Σταθερά πλήκτρα τροποποίησης</string>
     <string name="pref_override_device_meta_state_summary">Κλείδωμα Shift και Alt σε οποιοδήποτε φυσικό πληκτρολόγιο, ανεξάρτητα από τις ρυθμίσεις του ενσωματωμένου πληκτρολογίου του τηλεφώνου</string>
     <string name="pref_shift_double_tap_lock">Κλείδωμα Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">Πατήστε το Shift δύο φορές για να κλειδώσει. Πατήστε το ξανά για ξεκλείδωμα.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Χρόνος παρατεταμένου πατήματος πριν εμφανιστούν οι δευτερεύοντες χαρακτήρες</string>
     <string name="prefs_key_longpress_delay_title">Καθυστέρηση παρατεταμένου πατήματος</string>
     <string name="prefs_key_preview_animations_summary">Προσαρμογή του στυλ και του χρονισμού της κίνησης πατήματος πλήκτρου</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Το γλωσσικό πακέτο διαγράφηκε: %1$s</string>
     <string name="language_packs_already_removed">Η γλώσσα %1$s έχει ήδη καταργηθεί</string>
     <string name="language_packs_delete_failed">Δεν ήταν δυνατή η διαγραφή του γλωσσικού πακέτου: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Διαθέσιμη εκτός σύνδεσης</string>
-    <string name="settings_voice_lang_requires_network">Απαιτεί σύνδεση δικτύου</string>
+    <string name="settings_voice_lang_yours">Οι γλώσσες σας</string>
+    <string name="settings_voice_lang_all">Όλες οι γλώσσες</string>
     <string name="settings_voice_lang_loading">Φόρτωση διαθέσιμων γλωσσών…</string>
     <string name="settings_voice_lang_none">Δεν υπάρχουν διαθέσιμες γλώσσες φωνητικής αναγνώρισης</string>
     <string name="settings_voice_lang_none_hint">Βεβαιωθείτε ότι η εφαρμογή Google είναι εγκατεστημένη και η φωνητική αναγνώριση είναι ενεργοποιημένη</string>

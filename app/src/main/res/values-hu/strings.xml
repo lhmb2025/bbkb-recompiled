@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Rázó gesztus hangolása</string>
     <string name="prefs_shake_tuning_summary">Kioldási számok, gyorsulási küszöb és időzítés</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Működés</string>
+    <string name="settings_category_feedback">Visszajelzés</string>
+    <string name="settings_category_appearance">Megjelenés</string>
+    <string name="settings_category_symbols">Szimbólumok</string>
+    <string name="settings_category_keys">Billentyűk</string>
+    <string name="settings_category_device">Eszköz</string>
     <string name="settings_category_behavior_vkb">Működés</string>
     <string name="settings_category_ckb_gestures">Kapacitív billentyűzet</string>
     <string name="settings_category_on_screen_keyboard">Képernyő-billentyűzet</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Kézmozdulatok</string>
     <string name="settings_category_key_popup">Billentyű előugró ablaka</string>
     <string name="settings_category_modifiers">Módosítóbillentyűk</string>
+    <string name="settings_category_press_twice_lock">Nyomja meg kétszer a rögzítéshez</string>
     <string name="settings_category_sound">Hang</string>
     <string name="settings_category_vibrate">Rezgés</string>
     <string name="ckb_action_cursor_mode">Kurzormód</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Törli a(z) „%1$s” kiosztást? Ez nem vonható vissza.</string>
     <string name="settings_pkb_layouts_delete_title">Kiosztás törlése</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d billentyű</string>
+    <string name="settings_pkb_layouts_keys">%1$d billentyű</string>
+    <string name="settings_pkb_layouts_search">Kiosztások keresése</string>
     <string name="settings_pkb_layouts_empty">Még nincs egyéni kiosztás. Adjon hozzá egyet fájlból.</string>
     <string name="settings_pkb_layouts_keypad">%1$s billentyűzet</string>
     <string name="settings_pkb_layouts_none">Nincs használatban</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Visszaállítás üres elrendezésre</string>
     <string name="customize_slideboard_reset_to_default">Visszaállítás az alapértelmezett elrendezésre</string>
     <string name="settings_slideboard_hub_summary">Számbillentyűzet, oldalak felcserélése és gyors kifejezések</string>
-    <string name="settings_symbol_slideboard_link_summary">Számbillentyűzet és gyors kifejezések</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">A Slideboard beállításai</string>
     <string name="customized_symbol_page_add_button_description">Unicode-szimbólum hozzáadása</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Tanult szavak elfogadása</string>
     <string name="settings_spellcheck_accept_learned_summary">Felismeri a gépelésedből tanult szavakat</string>
     <string name="pref_alt_double_tap_lock">Alt rögzítése</string>
-    <string name="pref_alt_double_tap_lock_summary">Nyomja meg kétszer az Alt billentyűt a rögzítéshez. Nyomja meg újra a feloldáshoz.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl rögzítése</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Nyomja meg kétszer a Ctrl billentyűt a rögzítéshez. Nyomja meg újra a feloldáshoz.</string>
     <string name="pref_override_device_meta_state">Ragadós módosítóbillentyűk</string>
     <string name="pref_override_device_meta_state_summary">A Shift és az Alt rögzítése bármely fizikai billentyűzeten, a telefon beépített billentyűzetbeállításaitól függetlenül</string>
     <string name="pref_shift_double_tap_lock">Shift rögzítése</string>
-    <string name="pref_shift_double_tap_lock_summary">Nyomja meg kétszer a Shift billentyűt a rögzítéshez. Nyomja meg újra a feloldáshoz.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">A billentyű nyomva tartásának ideje a másodlagos karakterek megjelenéséig</string>
     <string name="prefs_key_longpress_delay_title">Billentyű hosszú lenyomásának késleltetése</string>
     <string name="prefs_key_preview_animations_summary">A billentyűlenyomás animációs stílusának és időzítésének testreszabása</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Nyelvi csomag törölve: %1$s</string>
     <string name="language_packs_already_removed">%1$s már el lett távolítva</string>
     <string name="language_packs_delete_failed">Nem sikerült törölni a nyelvi csomagot: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Offline is használható</string>
-    <string name="settings_voice_lang_requires_network">Hálózati kapcsolat szükséges</string>
+    <string name="settings_voice_lang_yours">Az Ön nyelvei</string>
+    <string name="settings_voice_lang_all">Összes nyelv</string>
     <string name="settings_voice_lang_loading">Az elérhető nyelvek betöltése…</string>
     <string name="settings_voice_lang_none">Nincsenek elérhető hangfelismerési nyelvek</string>
     <string name="settings_voice_lang_none_hint">Ellenőrizze, hogy a Google alkalmazás telepítve van-e, és a hangfelismerés be van-e kapcsolva</string>

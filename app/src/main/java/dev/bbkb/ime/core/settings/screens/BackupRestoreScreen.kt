@@ -189,7 +189,8 @@ fun BackupRestoreScreen(
         Nav(
             title = R.string.backup_phone_settings_title,
             summary = R.string.backup_phone_settings_summary,
-            icon = drawableIcon(R.drawable.ic_settings_m_settings),
+            // It leaves the app for Android's own page; the gear is the Settings part's icon above.
+            icon = drawableIcon(R.drawable.ic_settings_m_open_in_new),
             onClick = ::openPhoneBackupSettings,
         ),
     ))
@@ -223,7 +224,7 @@ private fun PartCheckboxRow(
     PreferenceItem(
         title = stringResource(partTitle(part)),
         summary = stringResource(partSummary(part)),
-        iconSpaceReserved = false,
+        icon = ImageVector.vectorResource(partIcon(part)),
         enabled = enabled,
         onClick = { onCheckedChange(!checked) },
         trailing = { Checkbox(checked = checked, onCheckedChange = onCheckedChange, enabled = enabled) },
@@ -234,6 +235,13 @@ internal fun partTitle(part: BackupBundle.Part): Int = when (part) {
     BackupBundle.Part.SETTINGS -> R.string.backup_part_settings
     BackupBundle.Part.LAYOUTS -> R.string.backup_part_layouts
     BackupBundle.Part.WORDS -> R.string.backup_part_words
+}
+
+/** Each part's icon is the one its own settings row carries elsewhere. */
+private fun partIcon(part: BackupBundle.Part): Int = when (part) {
+    BackupBundle.Part.SETTINGS -> R.drawable.ic_settings_m_settings
+    BackupBundle.Part.LAYOUTS -> R.drawable.ic_settings_custom_layouts
+    BackupBundle.Part.WORDS -> R.drawable.ic_settings_user_dictionary
 }
 
 private fun partSummary(part: BackupBundle.Part): Int = when (part) {

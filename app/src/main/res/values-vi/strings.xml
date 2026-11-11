@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Tinh chỉnh cử chỉ lắc</string>
     <string name="prefs_shake_tuning_summary">Số lần kích hoạt, ngưỡng gia tốc và thời gian</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Hành vi</string>
+    <string name="settings_category_feedback">Phản hồi</string>
+    <string name="settings_category_appearance">Giao diện</string>
+    <string name="settings_category_symbols">Ký hiệu</string>
+    <string name="settings_category_keys">Phím</string>
+    <string name="settings_category_device">Thiết bị</string>
     <string name="settings_category_behavior_vkb">Hành vi</string>
     <string name="settings_category_ckb_gestures">Bàn phím cảm ứng</string>
     <string name="settings_category_on_screen_keyboard">Bàn phím trên màn hình</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Cử chỉ</string>
     <string name="settings_category_key_popup">Khung bật lên ở phím</string>
     <string name="settings_category_modifiers">Phím bổ trợ</string>
+    <string name="settings_category_press_twice_lock">Nhấn hai lần để khóa</string>
     <string name="settings_category_sound">Âm thanh</string>
     <string name="settings_category_vibrate">Rung</string>
     <string name="ckb_action_cursor_mode">Chế độ con trỏ</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Xóa “%1$s”? Không thể hoàn tác thao tác này.</string>
     <string name="settings_pkb_layouts_delete_title">Xóa bố cục</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d phím</string>
+    <string name="settings_pkb_layouts_keys">%1$d phím</string>
+    <string name="settings_pkb_layouts_search">Tìm bố cục</string>
     <string name="settings_pkb_layouts_empty">Chưa có bố cục tùy chỉnh nào. Thêm một bố cục từ tệp.</string>
     <string name="settings_pkb_layouts_keypad">bàn phím %1$s</string>
     <string name="settings_pkb_layouts_none">Không dùng</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Đặt lại thành bố cục trống</string>
     <string name="customize_slideboard_reset_to_default">Cài lại về bố cục mặc định</string>
     <string name="settings_slideboard_hub_summary">Bảng số, hoán đổi hai bên và cụm từ nhanh</string>
-    <string name="settings_symbol_slideboard_link_summary">Bảng số và cụm từ nhanh</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Cài đặt Slideboard</string>
     <string name="customized_symbol_page_add_button_description">Thêm biểu tượng unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Chấp nhận từ đã học</string>
     <string name="settings_spellcheck_accept_learned_summary">Nhận diện các từ học được từ việc bạn nhập</string>
     <string name="pref_alt_double_tap_lock">Khóa Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Nhấn Alt hai lần để khóa. Nhấn lần nữa để mở khóa.</string>
     <string name="pref_ctrl_double_tap_lock">Khóa Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Nhấn Ctrl hai lần để khóa. Nhấn lần nữa để mở khóa.</string>
     <string name="pref_override_device_meta_state">Phím bổ trợ dính</string>
     <string name="pref_override_device_meta_state_summary">Khóa Shift và Alt trên mọi bàn phím vật lý, bất kể cài đặt bàn phím tích hợp của điện thoại</string>
     <string name="pref_shift_double_tap_lock">Khóa Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">Nhấn Shift hai lần để khóa. Nhấn lần nữa để mở khóa.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Thời gian giữ phím trước khi các ký tự phụ xuất hiện</string>
     <string name="prefs_key_longpress_delay_title">Độ trễ nhấn giữ phím</string>
     <string name="prefs_key_preview_animations_summary">Tùy chỉnh kiểu và thời gian hiệu ứng khi nhấn phím</string>
@@ -1073,8 +1079,8 @@
     <string name="language_packs_deleted">Đã xóa gói ngôn ngữ: %1$s</string>
     <string name="language_packs_already_removed">%1$s đã bị xóa trước đó</string>
     <string name="language_packs_delete_failed">Không xóa được gói ngôn ngữ: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Sẵn sàng dùng ngoại tuyến</string>
-    <string name="settings_voice_lang_requires_network">Cần kết nối mạng</string>
+    <string name="settings_voice_lang_yours">Ngôn ngữ của bạn</string>
+    <string name="settings_voice_lang_all">Tất cả ngôn ngữ</string>
     <string name="settings_voice_lang_loading">Đang tải các ngôn ngữ hiện có…</string>
     <string name="settings_voice_lang_none">Không có ngôn ngữ nhận dạng giọng nói nào</string>
     <string name="settings_voice_lang_none_hint">Hãy đảm bảo bạn đã cài đặt ứng dụng Google và đã bật tính năng nhận dạng giọng nói</string>

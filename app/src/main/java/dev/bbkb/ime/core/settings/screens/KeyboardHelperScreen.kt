@@ -85,7 +85,7 @@ fun KeyboardHelperScreen(
                     } else {
                         context.getString(R.string.pref_accessibility_service_disabled)
                     },
-                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_settings),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_accessibility),
                     onClick = {
                         KeyInterceptorManager.openAccessibilitySettings(context)
                     }
@@ -95,7 +95,7 @@ fun KeyboardHelperScreen(
                 SwitchPreference(
                     title = context.getString(R.string.pref_key_interceptor_enabled),
                     summary = context.getString(R.string.pref_key_interceptor_enabled_summary),
-                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_accessibility),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_multifunction_key),
                     checked = specialKeyEnabled && serviceEnabled,
                     enabled = serviceEnabled,
                     modifier = Modifier.settingsSearchAnchor("pref_key_interceptor_enabled"),
@@ -109,7 +109,7 @@ fun KeyboardHelperScreen(
                 SwitchPreference(
                     title = context.getString(R.string.pref_preprocess_all_keys),
                     summary = context.getString(R.string.pref_preprocess_all_keys_summary),
-                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_accessibility),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_keyboard),
                     checked = preprocessAllKeys && serviceEnabled,
                     enabled = serviceEnabled,
                     modifier = Modifier.settingsSearchAnchor("pref_preprocess_all_key_events"),

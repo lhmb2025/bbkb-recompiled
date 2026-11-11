@@ -70,7 +70,7 @@ fun PhysicalKeyboardScreen(
     val ctrlDoubleTapLockKey = context.getString(R.string.pref_ctrl_double_tap_lock_key)
 
     SettingsScreenHost(R.string.settings_physical_keyboard_title, onNavigateBack, listOf(
-        Category(R.string.settings_category_behavior),
+        Category(R.string.settings_category_keys),
         Toggle(
             store = boolPref("pref_voice_input_key", true),
             title = R.string.settings_pkb_dictation_key_title,
@@ -146,7 +146,7 @@ fun PhysicalKeyboardScreen(
         // there from where the gestures are, with the same live status line.
         Nav(
             title = R.string.touch_surface_link_title,
-            iconSpaceReserved = true,
+            icon = drawableIcon(R.drawable.ic_settings_m_touch_app),
             summaryText = { ctx ->
                 ctx.getString(R.string.touch_surface_link_summary, ctx.getString(touchSurface.statusLine))
             },
@@ -187,25 +187,26 @@ fun PhysicalKeyboardScreen(
             summary = RowSummary.Res(R.string.pref_show_pkb_modifier_status_icon_summary),
             modifier = Modifier.settingsSearchAnchor("pref_show_pkb_modifier_status_icon"),
         ),
+
+        // The three locks under one header that says how they work, so each row is only the
+        // key's name (2026-11-11). They were three rows repeating the same two sentences.
+        Category(R.string.settings_category_press_twice_lock),
         Toggle(
             store = boolPref(shiftDoubleTapLockKey, true),
-            title = R.string.pref_shift_double_tap_lock,
+            title = R.string.pref_lock_row_shift,
             icon = drawableIcon(R.drawable.ic_settings_shift_lock),
-            summary = RowSummary.Res(R.string.pref_shift_double_tap_lock_summary),
             modifier = Modifier.settingsSearchAnchor("pref_shift_double_tap_lock"),
         ),
         Toggle(
             store = boolPref(altDoubleTapLockKey, true),
-            title = R.string.pref_alt_double_tap_lock,
+            title = R.string.pref_lock_row_alt,
             icon = drawableIcon(R.drawable.ic_settings_alt_lock),
-            summary = RowSummary.Res(R.string.pref_alt_double_tap_lock_summary),
             modifier = Modifier.settingsSearchAnchor("pref_alt_double_tap_lock"),
         ),
         Toggle(
             store = boolPref(ctrlDoubleTapLockKey, true),
-            title = R.string.pref_ctrl_double_tap_lock,
+            title = R.string.pref_lock_row_ctrl,
             icon = drawableIcon(R.drawable.ic_settings_ctrl_lock),
-            summary = RowSummary.Res(R.string.pref_ctrl_double_tap_lock_summary),
             modifier = Modifier.settingsSearchAnchor("pref_ctrl_double_tap_lock"),
         ),
     ))

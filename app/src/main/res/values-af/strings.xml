@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Skudgebaar-afstelling</string>
     <string name="prefs_shake_tuning_summary">Snellertellings, versnellingsdrempel en tydsberekening</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Gedrag</string>
+    <string name="settings_category_feedback">Terugvoer</string>
+    <string name="settings_category_appearance">Voorkoms</string>
+    <string name="settings_category_symbols">Simbole</string>
+    <string name="settings_category_keys">Sleutels</string>
+    <string name="settings_category_device">Toestel</string>
     <string name="settings_category_behavior_vkb">Gedrag</string>
     <string name="settings_category_ckb_gestures">Kapasitiewe toetsbord</string>
     <string name="settings_category_on_screen_keyboard">Skermtoetsbord</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Gebare</string>
     <string name="settings_category_key_popup">Toetsopspringer</string>
     <string name="settings_category_modifiers">Wysigertoetse</string>
+    <string name="settings_category_press_twice_lock">Druk twee keer om te sluit</string>
     <string name="settings_category_sound">Klank</string>
     <string name="settings_category_vibrate">Vibrasie</string>
     <string name="ckb_action_cursor_mode">Wysermodus</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Skrap “%1$s”? Dit kan nie ontdoen word nie.</string>
     <string name="settings_pkb_layouts_delete_title">Skrap uitleg</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d sleutels</string>
+    <string name="settings_pkb_layouts_keys">%1$d sleutels</string>
+    <string name="settings_pkb_layouts_search">Soek uitlegte</string>
     <string name="settings_pkb_layouts_empty">Nog geen pasgemaakte uitlegte nie. Voeg een vanaf \'n lêer by.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-sleutelbord</string>
     <string name="settings_pkb_layouts_none">Nie in gebruik nie</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Stel terug na leë uitleg</string>
     <string name="customize_slideboard_reset_to_default">Stel terug na verstek-uitleg</string>
     <string name="settings_slideboard_hub_summary">Syferblok, ruil kante om en kitsfrases</string>
-    <string name="settings_symbol_slideboard_link_summary">Syferblok en kitsfrases</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-instellings</string>
     <string name="customized_symbol_page_add_button_description">Voeg simbool vir eenheidskode by</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Aanvaar geleerde woorde</string>
     <string name="settings_spellcheck_accept_learned_summary">Herken woorde wat uit jou tikwerk geleer is</string>
     <string name="pref_alt_double_tap_lock">Alt-slot</string>
-    <string name="pref_alt_double_tap_lock_summary">Druk Alt twee keer om dit te sluit. Druk dit weer om te ontsluit.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl-slot</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Druk Ctrl twee keer om dit te sluit. Druk dit weer om te ontsluit.</string>
     <string name="pref_override_device_meta_state">Taai wysigertoetse</string>
     <string name="pref_override_device_meta_state_summary">Sluit Shift en Alt op enige fisiese toetsbord, ongeag die foon se ingeboude toetsbordinstellings</string>
     <string name="pref_shift_double_tap_lock">Shift-slot</string>
-    <string name="pref_shift_double_tap_lock_summary">Druk Shift twee keer om dit te sluit. Druk dit weer om te ontsluit.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Hoe lank ’n toets gehou moet word voordat sekondêre karakters verskyn</string>
     <string name="prefs_key_longpress_delay_title">Vertraging vir lang druk op ’n toets</string>
     <string name="prefs_key_preview_animations_summary">Pasmaak die styl en tydsberekening van die toetsdruk-animasie</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Taalpakket geskrap: %1$s</string>
     <string name="language_packs_already_removed">%1$s is reeds verwyder</string>
     <string name="language_packs_delete_failed">Kon nie taalpakket skrap nie: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Vanlyn beskikbaar</string>
-    <string name="settings_voice_lang_requires_network">Benodig netwerk</string>
+    <string name="settings_voice_lang_yours">Jou tale</string>
+    <string name="settings_voice_lang_all">Alle tale</string>
     <string name="settings_voice_lang_loading">Laai tans beskikbare tale…</string>
     <string name="settings_voice_lang_none">Geen tale vir stemherkenning beskikbaar nie</string>
     <string name="settings_voice_lang_none_hint">Maak seker dat die Google-app geïnstalleer is en stemherkenning aangeskakel is</string>

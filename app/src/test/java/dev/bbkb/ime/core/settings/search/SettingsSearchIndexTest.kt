@@ -251,7 +251,7 @@ class SettingsSearchIndexTest {
             "touch_surface_shizuku" in anchorsOn(titanBuiltIn)
         )
         for (device in listOf(pkbDevice, touchDevice)) {
-            assertTrue("the row is drawn, greyed out, on every phone", "touch_surface_helper" in anchorsOn(device))
+            assertFalse("the row is hidden where there is no touch surface", "touch_surface_helper" in anchorsOn(device))
             assertFalse("touch_surface_shizuku" in anchorsOn(device))
         }
         // Reading the selector alone is not enough: no declared pad, no Shizuku section.

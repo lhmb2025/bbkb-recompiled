@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Réglage du geste de secousse</string>
     <string name="prefs_shake_tuning_summary">Nombres de déclenchements, seuil d\'accélération et délais</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Comportement</string>
+    <string name="settings_category_feedback">Rétroaction</string>
+    <string name="settings_category_appearance">Apparence</string>
+    <string name="settings_category_symbols">Symboles</string>
+    <string name="settings_category_keys">Touches</string>
+    <string name="settings_category_device">Appareil</string>
     <string name="settings_category_behavior_vkb">Comportement</string>
     <string name="settings_category_ckb_gestures">Clavier capacitif</string>
     <string name="settings_category_on_screen_keyboard">Clavier à l\'écran</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Gestes</string>
     <string name="settings_category_key_popup">Élément contextuel de touche</string>
     <string name="settings_category_modifiers">Touches de modification</string>
+    <string name="settings_category_press_twice_lock">Appuyez deux fois pour verrouiller</string>
     <string name="settings_category_sound">Son</string>
     <string name="settings_category_vibrate">Vibration</string>
     <string name="ckb_action_cursor_mode">Mode curseur</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Supprimer « %1$s »? Cette action est irréversible.</string>
     <string name="settings_pkb_layouts_delete_title">Supprimer la disposition</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d touches</string>
+    <string name="settings_pkb_layouts_keys">%1$d touches</string>
+    <string name="settings_pkb_layouts_search">Rechercher des dispositions</string>
     <string name="settings_pkb_layouts_empty">Aucune disposition personnalisée pour l\'instant. Ajoutez-en une à partir d\'un fichier.</string>
     <string name="settings_pkb_layouts_keypad">clavier %1$s</string>
     <string name="settings_pkb_layouts_none">Non utilisée</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Réinitialiser à la disposition vierge</string>
     <string name="customize_slideboard_reset_to_default">Rétablir la configuration par défaut</string>
     <string name="settings_slideboard_hub_summary">Pavé numérique, inversion des côtés et phrases rapides</string>
-    <string name="settings_symbol_slideboard_link_summary">Pavé numérique et phrases rapides</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Paramètres du Slideboard</string>
     <string name="customized_symbol_page_add_button_description">Ajouter un symbole Unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Accepter les mots appris</string>
     <string name="settings_spellcheck_accept_learned_summary">Reconnaît les mots appris de votre saisie</string>
     <string name="pref_alt_double_tap_lock">Verrouillage Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Appuyez deux fois sur Alt pour la verrouiller. Appuyez à nouveau pour la déverrouiller.</string>
     <string name="pref_ctrl_double_tap_lock">Verrouillage Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Appuyez deux fois sur Ctrl pour la verrouiller. Appuyez à nouveau pour la déverrouiller.</string>
     <string name="pref_override_device_meta_state">Touches de modification persistantes</string>
     <string name="pref_override_device_meta_state_summary">Verrouiller Maj. et Alt sur tout clavier physique, quels que soient les paramètres de clavier intégrés du téléphone</string>
     <string name="pref_shift_double_tap_lock">Verrouillage Maj.</string>
-    <string name="pref_shift_double_tap_lock_summary">Appuyez deux fois sur Maj. pour la verrouiller. Appuyez à nouveau pour la déverrouiller.</string>
+    <string name="pref_lock_row_shift">Maj.</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Durée d\'appui sur une touche avant l\'affichage des caractères secondaires</string>
     <string name="prefs_key_longpress_delay_title">Délai d\'appui prolongé sur une touche</string>
     <string name="prefs_key_preview_animations_summary">Personnaliser le style et la temporisation de l\'animation d\'appui sur les touches</string>
@@ -1103,8 +1109,8 @@
     <string name="language_packs_deleted">Module linguistique supprimé : %1$s</string>
     <string name="language_packs_already_removed">%1$s a déjà été supprimée</string>
     <string name="language_packs_delete_failed">Impossible de supprimer le module linguistique : %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Disponible hors ligne</string>
-    <string name="settings_voice_lang_requires_network">Réseau requis</string>
+    <string name="settings_voice_lang_yours">Vos langues</string>
+    <string name="settings_voice_lang_all">Toutes les langues</string>
     <string name="settings_voice_lang_loading">Chargement des langues disponibles…</string>
     <string name="settings_voice_lang_none">Aucune langue de reconnaissance vocale disponible</string>
     <string name="settings_voice_lang_none_hint">Vérifiez que l\'application Google est installée et que la reconnaissance vocale est activée</string>

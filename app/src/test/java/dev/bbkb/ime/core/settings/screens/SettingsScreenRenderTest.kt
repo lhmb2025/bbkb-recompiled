@@ -564,6 +564,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.Advanced.route,
             title = "Advanced",
             resources = setOf(
+                "settings_category_device",
                 "settings_advanced_title",
                 "settings_backup_restore_summary", "settings_backup_restore_title",
                 "settings_debug_summary", "prefs_advanced_settings_title", "settings_device_compatibility_summary",
@@ -612,6 +613,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.AppearanceLayout.route,
             title = "Personalization",
             resources = setOf(
+                "settings_category_appearance", "settings_category_symbols",
                 "settings_appearance_auto", "settings_appearance_layout_title", "settings_appearance_modern",
                 "settings_color_scheme_title", "settings_keyboard_height_regular",
                 "settings_keyboard_height_title", "settings_keyboard_theme_title",
@@ -683,9 +685,10 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "ckb_gesture_slot_double_tap", "ckb_gesture_slot_flick_left", "ckb_gesture_slot_flick_right",
                 "ckb_gesture_slot_hold", "ckb_gesture_slot_swipe_down", "ckb_gesture_slot_swipe_left",
                 "ckb_gesture_slot_swipe_right", "ckb_gestures_reserved_note", "ckb_gestures_enable_title",
-                "prefs_ckb_gesture_activation_delay_summary", "prefs_ckb_gesture_activation_delay_title", "settings_gesture_category_timing"
+                "prefs_ckb_gesture_activation_delay_title", "settings_gesture_category_timing"
             ),
             literals = setOf(
+                "350 ms",
                 // Same gate: the sensor visualizer's switch and the sensor-map export — four
                 // hardcoded strings — went with the rest of the DEVELOPER category. "GESTURE
                 // TIMING" is the timing subhead, which is not gated (PreferenceCategory
@@ -867,8 +870,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_pkb_keyboard_helper_summary",
                 // The Touch surface helper row is drawn on every phone, greyed out where the
                 // profile declares no pad (this JVM's shape), with that state as its summary.
-                "touch_surface_helper_title", "settings_status_not_required"
-            ),
+                            ),
             literals = emptySet(),
         ),
         Case(
@@ -1037,11 +1039,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.PhysicalKeyboard.route,
             title = "Physical keyboard",
             resources = setOf(
-                "ckb_action_none", "pref_alt_double_tap_lock", "pref_alt_double_tap_lock_summary",
-                "pref_ctrl_double_tap_lock", "pref_ctrl_double_tap_lock_summary",
-                "pref_shift_double_tap_lock", "pref_shift_double_tap_lock_summary",
-                "pref_show_pkb_modifier_status_icon", "pref_show_pkb_modifier_status_icon_summary",
-                "settings_category_behavior", "settings_category_modifiers", 
+                "pref_lock_row_ctrl", "pref_lock_row_shift", "settings_category_keys", "settings_category_press_twice_lock",
+                "ckb_action_none",                                                 "pref_show_pkb_modifier_status_icon", "pref_show_pkb_modifier_status_icon_summary",
+                "settings_category_modifiers", 
                 "settings_pkb_alt_sym_shortcut_disabled", "settings_pkb_alt_sym_shortcut_title",
                 "settings_pkb_ctrl_key_behavior_title", "settings_pkb_dictation_key_summary_on",
                 "settings_pkb_dictation_key_title", "settings_pkb_hold_action_off_summary",
@@ -1049,7 +1049,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 // "Enable emoji search" for the physical keyboard (2026-11-03).
                 "pref_emoji_search_title", "pref_emoji_search_pkb_summary"
             ),
-            literals = emptySet(),
+            literals = setOf("Alt"),
             // The multifunction-key row sits inside `if (multifunctionKeyMapping != null)`
             // (PhysicalKeyboardScreen.kt:163), which is null when no physical keyboard is
             // present: the same one-way trip from search as above.
@@ -1166,6 +1166,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.SymbolCustomization.route,
             title = "Customize symbols",
             resources = setOf(
+                "settings_vkb_customize_numberpad_summary", "settings_vkb_customize_numberpad_title",
                 "settings_category_on_screen_keyboard",
                 // The default currency moved to the Personalization hub (2026-10-19).
                 "settings_symbol_custom_page_first_summary",
@@ -1173,9 +1174,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_symbol_customize_page_summary", "settings_symbol_customize_page_title",
                 "settings_symbol_enable_customization_summary", "settings_symbol_enable_customization_title",
                 // A link to Slideboard settings (was the number pad editor link, 2026-10-20).
-                "settings_category_slideboard", "settings_slideboard_settings_title",
-                "settings_symbol_slideboard_link_summary"
-            ),
+                "settings_category_slideboard",                             ),
             literals = emptySet(),
         ),
         Case(
@@ -1203,7 +1202,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.OnScreenKeyboard.route,
             title = "On-screen keyboard",
             resources = setOf(
-                "settings_category_behavior", "settings_category_gestures",
+                "settings_category_behavior_vkb", "settings_category_feedback", "settings_category_slideboard",
+                "settings_category_gestures",
                  "settings_screen_type_by_swiping",
                 // Moved here from Personalization, into the Behavior list.
                 "settings_slideboard_hub_summary", "settings_slideboard_settings_title",
@@ -1216,13 +1216,13 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 // The flick commit animation moved here from Suggestions (2026-10-20), and the
                 // key long-press delay from Debug.
                 "settings_pred_flick_animation_summary", "settings_pred_flick_animation_title",
-                "prefs_key_longpress_delay_summary", "prefs_key_longpress_delay_title", "settings_category_on_screen_keyboard",
+                "prefs_key_longpress_delay_title", "settings_category_on_screen_keyboard",
                 // The emoji search pair moved here from Auxiliary input (2026-11-03); the "Emoji"
                 // header's text is also ckb_action_emoji's.
                 "ckb_action_emoji", "pref_emoji_search_title", "pref_emoji_search_vkb_summary",
                 "pref_emoji_search_replace_text_summary_on", "pref_emoji_search_replace_text_title"
             ),
-            literals = emptySet(),
+            literals = setOf("400 ms"),
         ),
         Case(
             name = "TouchSurfaceHelperScreen",

@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Сэгсрэх зангааг тохируулах</string>
     <string name="prefs_shake_tuning_summary">Идэвхжүүлэх тоо, хурдатгалын босго ба хугацаа</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Ажиллагаа</string>
+    <string name="settings_category_feedback">Хариу үйлдэл</string>
+    <string name="settings_category_appearance">Харагдах байдал</string>
+    <string name="settings_category_symbols">Тэмдэгтүүд</string>
+    <string name="settings_category_keys">Товчлуурууд</string>
+    <string name="settings_category_device">Төхөөрөмж</string>
     <string name="settings_category_behavior_vkb">Ажиллагаа</string>
     <string name="settings_category_ckb_gestures">Мэдрэгчит гар</string>
     <string name="settings_category_on_screen_keyboard">Дэлгэцийн гар</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Зангаа</string>
     <string name="settings_category_key_popup">Товчны попап</string>
     <string name="settings_category_modifiers">Өөрчлөгч товч</string>
+    <string name="settings_category_press_twice_lock">Түгжихийн тулд хоёр удаа дарна уу</string>
     <string name="settings_category_sound">Дуу</string>
     <string name="settings_category_vibrate">Чичиргээ</string>
     <string name="ckb_action_cursor_mode">Курсорын горим</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s”-г устгах уу? Үүнийг буцаах боломжгүй.</string>
     <string name="settings_pkb_layouts_delete_title">Байрлал устгах</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d товчлуур</string>
+    <string name="settings_pkb_layouts_keys">%1$d товчлуур</string>
+    <string name="settings_pkb_layouts_search">Байрлал хайх</string>
     <string name="settings_pkb_layouts_empty">Өөрийн байрлал одоогоор алга. Файлаас нэгийг нэмнэ үү.</string>
     <string name="settings_pkb_layouts_keypad">%1$s гар</string>
     <string name="settings_pkb_layouts_none">Ашиглаагүй</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Хоосон байрлалд шинэчлэх</string>
     <string name="customize_slideboard_reset_to_default">Анхдагч байрлалд шинэчлэх</string>
     <string name="settings_slideboard_hub_summary">Тооны самбар, талыг солих, түргэн хэллэг</string>
-    <string name="settings_symbol_slideboard_link_summary">Тооны самбар болон түргэн хэллэг</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-ын тохиргоо</string>
     <string name="customized_symbol_page_add_button_description">Юникод тэмдэгт нэмэх</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Сурсан үгсийг хүлээн авах</string>
     <string name="settings_spellcheck_accept_learned_summary">Таны бичвэрээс сурсан үгсийг танина</string>
     <string name="pref_alt_double_tap_lock">Alt түгжээ</string>
-    <string name="pref_alt_double_tap_lock_summary">Түгжихийн тулд Alt-г хоёр удаа дарна уу. Түгжээг тайлахын тулд дахин дарна уу.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl түгжээ</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Түгжихийн тулд Ctrl-г хоёр удаа дарна уу. Түгжээг тайлахын тулд дахин дарна уу.</string>
     <string name="pref_override_device_meta_state">Наалдамхай өөрчлөгч товч</string>
     <string name="pref_override_device_meta_state_summary">Утасны суулгасан гарын тохиргооноос үл хамааран аль ч биет гар дээр Shift, Alt-г түгжих</string>
     <string name="pref_shift_double_tap_lock">Shift түгжээ</string>
-    <string name="pref_shift_double_tap_lock_summary">Түгжихийн тулд Shift-г хоёр удаа дарна уу. Түгжээг тайлахын тулд дахин дарна уу.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Нэмэлт тэмдэгт гарч ирэхээс өмнө товчийг барих хугацаа</string>
     <string name="prefs_key_longpress_delay_title">Товч удаан дарах хугацаа</string>
     <string name="prefs_key_preview_animations_summary">Товч дарах хөдөлгөөний загвар, хугацааг тохируулах</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Хэлний багцыг устгалаа: %1$s</string>
     <string name="language_packs_already_removed">%1$s аль хэдийн хасагдсан байна</string>
     <string name="language_packs_delete_failed">Хэлний багцыг устгаж чадсангүй: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Офлайн ажиллана</string>
-    <string name="settings_voice_lang_requires_network">Сүлжээ шаардлагатай</string>
+    <string name="settings_voice_lang_yours">Таны хэлнүүд</string>
+    <string name="settings_voice_lang_all">Бүх хэл</string>
     <string name="settings_voice_lang_loading">Боломжтой хэлүүдийг ачаалж байна…</string>
     <string name="settings_voice_lang_none">Дуу таних хэл байхгүй байна</string>
     <string name="settings_voice_lang_none_hint">Google апп суулгасан бөгөөд дуу таних идэвхтэй эсэхийг шалгана уу</string>

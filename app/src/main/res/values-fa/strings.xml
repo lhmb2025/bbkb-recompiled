@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">تنظیم ژست تکان‌دادن</string>
     <string name="prefs_shake_tuning_summary">تعداد فعال‌سازی، آستانه شتاب و زمان‌بندی</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">رفتار</string>
+    <string name="settings_category_feedback">بازخورد</string>
+    <string name="settings_category_appearance">ظاهر</string>
+    <string name="settings_category_symbols">نمادها</string>
+    <string name="settings_category_keys">کلیدها</string>
+    <string name="settings_category_device">دستگاه</string>
     <string name="settings_category_behavior_vkb">رفتار</string>
     <string name="settings_category_ckb_gestures">صفحه کلید خازنی</string>
     <string name="settings_category_on_screen_keyboard">صفحه کلید روی صفحه‌نمایش</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">اشاره‌ها</string>
     <string name="settings_category_key_popup">بازشدن کلید</string>
     <string name="settings_category_modifiers">کلیدهای تغییردهنده</string>
+    <string name="settings_category_press_twice_lock">دو بار فشار دهید تا قفل شود</string>
     <string name="settings_category_sound">صدا</string>
     <string name="settings_category_vibrate">لرزش</string>
     <string name="ckb_action_cursor_mode">حالت مکان‌نما</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">«%1$s» حذف شود؟ این کار برگشت‌پذیر نیست.</string>
     <string name="settings_pkb_layouts_delete_title">حذف چیدمان</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d کلید</string>
+    <string name="settings_pkb_layouts_keys">%1$d کلید</string>
+    <string name="settings_pkb_layouts_search">جستجوی چیدمان‌ها</string>
     <string name="settings_pkb_layouts_empty">هنوز چیدمان سفارشی وجود ندارد. یکی را از فایل اضافه کنید.</string>
     <string name="settings_pkb_layouts_keypad">صفحه کلید %1$s</string>
     <string name="settings_pkb_layouts_none">استفاده نمی‌شود</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">بازنشانی به چیدمان خالی</string>
     <string name="customize_slideboard_reset_to_default">بازنشانی به چیدمان پیش‌فرض</string>
     <string name="settings_slideboard_hub_summary">صفحه اعداد، جابه‌جایی طرفین و عبارت‌های سریع</string>
-    <string name="settings_symbol_slideboard_link_summary">صفحه اعداد و عبارت‌های سریع</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s، %2$s، %3$s…</string>
     <string name="settings_slideboard_settings_title">تنظیمات Slideboard</string>
     <string name="customized_symbol_page_add_button_description">افزودن نماد unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">پذیرش واژه‌های آموخته‌شده</string>
     <string name="settings_spellcheck_accept_learned_summary">واژه‌هایی را که از تایپ شما آموخته شده‌اند می‌شناسد</string>
     <string name="pref_alt_double_tap_lock">قفل Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Alt را دو بار فشار دهید تا قفل شود. برای باز کردن قفل، دوباره آن را فشار دهید.</string>
     <string name="pref_ctrl_double_tap_lock">قفل Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Ctrl را دو بار فشار دهید تا قفل شود. برای باز کردن قفل، دوباره آن را فشار دهید.</string>
     <string name="pref_override_device_meta_state">کلیدهای تغییردهنده چسبان</string>
     <string name="pref_override_device_meta_state_summary">قفل Shift و Alt روی هر صفحه کلید فیزیکی، صرف‌نظر از تنظیمات صفحه کلید داخلی تلفن</string>
     <string name="pref_shift_double_tap_lock">قفل Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">Shift را دو بار فشار دهید تا قفل شود. برای باز کردن قفل، دوباره آن را فشار دهید.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">مدت نگه داشتن کلید پیش از ظاهر شدن نویسه‌های ثانویه</string>
     <string name="prefs_key_longpress_delay_title">تأخیر فشار طولانی کلید</string>
     <string name="prefs_key_preview_animations_summary">سفارشی‌سازی سبک و زمان‌بندی پویانمایی فشردن کلید</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">بسته زبان حذف شد: %1$s</string>
     <string name="language_packs_already_removed">%1$s قبلاً حذف شده بود</string>
     <string name="language_packs_delete_failed">حذف بسته زبان ممکن نشد: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">آماده برای حالت آفلاین</string>
-    <string name="settings_voice_lang_requires_network">به شبکه نیاز دارد</string>
+    <string name="settings_voice_lang_yours">زبان‌های شما</string>
+    <string name="settings_voice_lang_all">همه زبان‌ها</string>
     <string name="settings_voice_lang_loading">در حال بارگیری زبان‌های موجود…</string>
     <string name="settings_voice_lang_none">هیچ زبانی برای تشخیص گفتار موجود نیست</string>
     <string name="settings_voice_lang_none_hint">مطمئن شوید برنامه Google نصب است و تشخیص گفتار فعال است</string>

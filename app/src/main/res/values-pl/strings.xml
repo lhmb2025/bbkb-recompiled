@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Strojenie gestu potrząśnięcia</string>
     <string name="prefs_shake_tuning_summary">Liczby wyzwoleń, próg przyspieszenia i czasy</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Zachowanie</string>
+    <string name="settings_category_feedback">Reakcja</string>
+    <string name="settings_category_appearance">Wygląd</string>
+    <string name="settings_category_symbols">Symbole</string>
+    <string name="settings_category_keys">Klawisze</string>
+    <string name="settings_category_device">Urządzenie</string>
     <string name="settings_category_behavior_vkb">Zachowanie</string>
     <string name="settings_category_ckb_gestures">Klawiatura pojemnościowa</string>
     <string name="settings_category_on_screen_keyboard">Klawiatura ekranowa</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Gesty</string>
     <string name="settings_category_key_popup">Wyskakiwanie klawiszy</string>
     <string name="settings_category_modifiers">Modyfikatory</string>
+    <string name="settings_category_press_twice_lock">Naciśnij dwa razy, aby zablokować</string>
     <string name="settings_category_sound">Dźwięk</string>
     <string name="settings_category_vibrate">Wibracje</string>
     <string name="ckb_action_cursor_mode">Tryb kursora</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Usunąć „%1$s”? Tej operacji nie można cofnąć.</string>
     <string name="settings_pkb_layouts_delete_title">Usuń układ</string>
     <string name="settings_pkb_layouts_details">%1$s · klawisze: %2$d</string>
+    <string name="settings_pkb_layouts_keys">Klawisze: %1$d</string>
+    <string name="settings_pkb_layouts_search">Szukaj układów</string>
     <string name="settings_pkb_layouts_empty">Brak niestandardowych układów. Dodaj jeden z pliku.</string>
     <string name="settings_pkb_layouts_keypad">klawiatura %1$s</string>
     <string name="settings_pkb_layouts_none">Nieużywany</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Resetuj do pustego układu</string>
     <string name="customize_slideboard_reset_to_default">Przywróć układ domyślny</string>
     <string name="settings_slideboard_hub_summary">Klawiatura numeryczna, zamiana stron i szybkie frazy</string>
-    <string name="settings_symbol_slideboard_link_summary">Klawiatura numeryczna i szybkie frazy</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Ustawienia Slideboardu</string>
     <string name="customized_symbol_page_add_button_description">Dodaj symbol unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Akceptuj nauczone słowa</string>
     <string name="settings_spellcheck_accept_learned_summary">Rozpoznaje słowa nauczone z Twojego pisania</string>
     <string name="pref_alt_double_tap_lock">Blokada Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Naciśnij Alt dwa razy, aby go zablokować. Naciśnij ponownie, aby odblokować.</string>
     <string name="pref_ctrl_double_tap_lock">Blokada Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Naciśnij Ctrl dwa razy, aby go zablokować. Naciśnij ponownie, aby odblokować.</string>
     <string name="pref_override_device_meta_state">Trwałe klawisze modyfikujące</string>
     <string name="pref_override_device_meta_state_summary">Blokuj Shift i Alt na każdej klawiaturze fizycznej niezależnie od wbudowanych ustawień klawiatury telefonu</string>
     <string name="pref_shift_double_tap_lock">Blokada Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">Naciśnij Shift dwa razy, aby go zablokować. Naciśnij ponownie, aby odblokować.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Czas przytrzymania klawisza przed pojawieniem się dodatkowych znaków</string>
     <string name="prefs_key_longpress_delay_title">Opóźnienie przytrzymania klawisza</string>
     <string name="prefs_key_preview_animations_summary">Dostosuj styl i czas animacji naciśnięcia klawisza</string>
@@ -1118,8 +1124,8 @@
     <string name="language_packs_deleted">Usunięto pakiet językowy: %1$s</string>
     <string name="language_packs_already_removed">Język %1$s został już usunięty</string>
     <string name="language_packs_delete_failed">Nie udało się usunąć pakietu językowego: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Dostępny offline</string>
-    <string name="settings_voice_lang_requires_network">Wymaga połączenia z siecią</string>
+    <string name="settings_voice_lang_yours">Twoje języki</string>
+    <string name="settings_voice_lang_all">Wszystkie języki</string>
     <string name="settings_voice_lang_loading">Wczytywanie dostępnych języków…</string>
     <string name="settings_voice_lang_none">Brak dostępnych języków rozpoznawania mowy</string>
     <string name="settings_voice_lang_none_hint">Upewnij się, że aplikacja Google jest zainstalowana, a rozpoznawanie mowy włączone</string>

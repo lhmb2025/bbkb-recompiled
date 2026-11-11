@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Justering af rystebevægelse</string>
     <string name="prefs_shake_tuning_summary">Antal udløsninger, accelerationstærskel og timing</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Adfærd</string>
+    <string name="settings_category_feedback">Feedback</string>
+    <string name="settings_category_appearance">Udseende</string>
+    <string name="settings_category_symbols">Symboler</string>
+    <string name="settings_category_keys">Taster</string>
+    <string name="settings_category_device">Enhed</string>
     <string name="settings_category_behavior_vkb">Adfærd</string>
     <string name="settings_category_ckb_gestures">Kapacitivt tastatur</string>
     <string name="settings_category_on_screen_keyboard">Skærmtastatur</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Bevægelser</string>
     <string name="settings_category_key_popup">Taste-pop op</string>
     <string name="settings_category_modifiers">Modifikatortaster</string>
+    <string name="settings_category_press_twice_lock">Tryk to gange for at låse</string>
     <string name="settings_category_sound">Lyd</string>
     <string name="settings_category_vibrate">Vibration</string>
     <string name="ckb_action_cursor_mode">Markørtilstand</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Vil du slette »%1$s«? Dette kan ikke fortrydes.</string>
     <string name="settings_pkb_layouts_delete_title">Slet layout</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d taster</string>
+    <string name="settings_pkb_layouts_keys">%1$d taster</string>
+    <string name="settings_pkb_layouts_search">Søg efter layouts</string>
     <string name="settings_pkb_layouts_empty">Ingen brugerdefinerede layouts endnu. Tilføj et fra en fil.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-tastatur</string>
     <string name="settings_pkb_layouts_none">Ikke i brug</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Nulstil til tomt layout</string>
     <string name="customize_slideboard_reset_to_default">Nulstil til standard layout</string>
     <string name="settings_slideboard_hub_summary">Numerisk tastatur, byt side og hurtige sætninger</string>
-    <string name="settings_symbol_slideboard_link_summary">Numerisk tastatur og hurtige sætninger</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-indstillinger</string>
     <string name="customized_symbol_page_add_button_description">Tilføj unicode-symbol</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Accepter lærte ord</string>
     <string name="settings_spellcheck_accept_learned_summary">Genkender ord, der er lært af det, du skriver</string>
     <string name="pref_alt_double_tap_lock">Alt-lås</string>
-    <string name="pref_alt_double_tap_lock_summary">Tryk to gange på Alt for at låse den. Tryk igen for at låse op.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl-lås</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Tryk to gange på Ctrl for at låse den. Tryk igen for at låse op.</string>
     <string name="pref_override_device_meta_state">Låste modifikatortaster</string>
     <string name="pref_override_device_meta_state_summary">Lås Shift og Alt på alle fysiske tastaturer uanset telefonens indbyggede tastaturindstillinger</string>
     <string name="pref_shift_double_tap_lock">Shift-lås</string>
-    <string name="pref_shift_double_tap_lock_summary">Tryk to gange på Shift for at låse den. Tryk igen for at låse op.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Tid, en tast skal holdes nede, før sekundære tegn vises</string>
     <string name="prefs_key_longpress_delay_title">Forsinkelse ved langt tryk på tast</string>
     <string name="prefs_key_preview_animations_summary">Tilpas stil og timing for animationen ved tastetryk</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Sprogpakken er slettet: %1$s</string>
     <string name="language_packs_already_removed">%1$s var allerede fjernet</string>
     <string name="language_packs_delete_failed">Sprogpakken kunne ikke slettes: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Klar til offline</string>
-    <string name="settings_voice_lang_requires_network">Kræver netværk</string>
+    <string name="settings_voice_lang_yours">Dine sprog</string>
+    <string name="settings_voice_lang_all">Alle sprog</string>
     <string name="settings_voice_lang_loading">Indlæser tilgængelige sprog…</string>
     <string name="settings_voice_lang_none">Ingen sprog til talegenkendelse tilgængelige</string>
     <string name="settings_voice_lang_none_hint">Sørg for, at Google-appen er installeret, og at talegenkendelse er aktiveret</string>

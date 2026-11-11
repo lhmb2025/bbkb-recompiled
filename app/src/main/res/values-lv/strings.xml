@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Kratīšanas žesta regulēšana</string>
     <string name="prefs_shake_tuning_summary">Aktivizēšanas skaits, paātrinājuma slieksnis un laiks</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Darbība</string>
+    <string name="settings_category_feedback">Atgriezeniskā saite</string>
+    <string name="settings_category_appearance">Izskats</string>
+    <string name="settings_category_symbols">Simboli</string>
+    <string name="settings_category_keys">Taustiņi</string>
+    <string name="settings_category_device">Ierīce</string>
     <string name="settings_category_behavior_vkb">Darbība</string>
     <string name="settings_category_ckb_gestures">Kapacitatīvā tastatūra</string>
     <string name="settings_category_on_screen_keyboard">Ekrāna tastatūra</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Žesti</string>
     <string name="settings_category_key_popup">Taustiņa uznirstošais logs</string>
     <string name="settings_category_modifiers">Modifikatoru taustiņi</string>
+    <string name="settings_category_press_twice_lock">Nospiediet divreiz, lai fiksētu</string>
     <string name="settings_category_sound">Skaņa</string>
     <string name="settings_category_vibrate">Vibrācija</string>
     <string name="ckb_action_cursor_mode">Kursora režīms</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Vai dzēst „%1$s“? Šo darbību nevar atsaukt.</string>
     <string name="settings_pkb_layouts_delete_title">Dzēst izkārtojumu</string>
     <string name="settings_pkb_layouts_details">%1$s · taustiņi: %2$d</string>
+    <string name="settings_pkb_layouts_keys">Taustiņi: %1$d</string>
+    <string name="settings_pkb_layouts_search">Meklēt izkārtojumus</string>
     <string name="settings_pkb_layouts_empty">Pielāgotu izkārtojumu vēl nav. Pievienojiet vienu no faila.</string>
     <string name="settings_pkb_layouts_keypad">%1$s tastatūra</string>
     <string name="settings_pkb_layouts_none">Netiek izmantots</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Atjaunot tukšu izkārtojumu</string>
     <string name="customize_slideboard_reset_to_default">Atjaunot noklusējuma izkārtojumu</string>
     <string name="settings_slideboard_hub_summary">Ciparu panelis, pušu maiņa un ātrās frāzes</string>
-    <string name="settings_symbol_slideboard_link_summary">Ciparu panelis un ātrās frāzes</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard iestatījumi</string>
     <string name="customized_symbol_page_add_button_description">Pievienot unikoda simbolu</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Pieņemt apgūtos vārdus</string>
     <string name="settings_spellcheck_accept_learned_summary">Atpazīst no jūsu rakstītā apgūtos vārdus</string>
     <string name="pref_alt_double_tap_lock">Alt fiksēšana</string>
-    <string name="pref_alt_double_tap_lock_summary">Nospiediet Alt divreiz, lai to fiksētu. Nospiediet vēlreiz, lai atbrīvotu.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl fiksēšana</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Nospiediet Ctrl divreiz, lai to fiksētu. Nospiediet vēlreiz, lai atbrīvotu.</string>
     <string name="pref_override_device_meta_state">Fiksējami modifikatoru taustiņi</string>
     <string name="pref_override_device_meta_state_summary">Fiksēt Shift un Alt jebkurā fiziskajā tastatūrā neatkarīgi no tālruņa iebūvētajiem tastatūras iestatījumiem</string>
     <string name="pref_shift_double_tap_lock">Shift fiksēšana</string>
-    <string name="pref_shift_double_tap_lock_summary">Nospiediet Shift divreiz, lai to fiksētu. Nospiediet vēlreiz, lai atbrīvotu.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Laiks, cik ilgi turēt taustiņu, līdz parādās sekundārās rakstzīmes</string>
     <string name="prefs_key_longpress_delay_title">Taustiņa ilgās nospiešanas aizkave</string>
     <string name="prefs_key_preview_animations_summary">Pielāgot taustiņa nospiešanas animācijas stilu un laiku</string>
@@ -1103,8 +1109,8 @@
     <string name="language_packs_deleted">Valodas pakotne izdzēsta: %1$s</string>
     <string name="language_packs_already_removed">%1$s jau ir noņemta</string>
     <string name="language_packs_delete_failed">Neizdevās izdzēst valodas pakotni: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Pieejama bezsaistē</string>
-    <string name="settings_voice_lang_requires_network">Nepieciešams tīkla savienojums</string>
+    <string name="settings_voice_lang_yours">Jūsu valodas</string>
+    <string name="settings_voice_lang_all">Visas valodas</string>
     <string name="settings_voice_lang_loading">Notiek pieejamo valodu ielāde…</string>
     <string name="settings_voice_lang_none">Nav pieejamu balss atpazīšanas valodu</string>
     <string name="settings_voice_lang_none_hint">Pārliecinieties, ka ir instalēta Google lietotne un ieslēgta balss atpazīšana</string>

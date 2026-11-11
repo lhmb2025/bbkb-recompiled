@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Настройка жеста встряхивания</string>
     <string name="prefs_shake_tuning_summary">Число срабатываний, порог ускорения и время</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Поведение</string>
+    <string name="settings_category_feedback">Отклик</string>
+    <string name="settings_category_appearance">Внешний вид</string>
+    <string name="settings_category_symbols">Символы</string>
+    <string name="settings_category_keys">Клавиши</string>
+    <string name="settings_category_device">Устройство</string>
     <string name="settings_category_behavior_vkb">Поведение</string>
     <string name="settings_category_ckb_gestures">Емкостная клавиатура</string>
     <string name="settings_category_on_screen_keyboard">Экранная клавиатура</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Жесты</string>
     <string name="settings_category_key_popup">Увеличение клавиш</string>
     <string name="settings_category_modifiers">Модификаторы</string>
+    <string name="settings_category_press_twice_lock">Нажмите дважды, чтобы зафиксировать</string>
     <string name="settings_category_sound">Звук</string>
     <string name="settings_category_vibrate">Вибрация</string>
     <string name="ckb_action_cursor_mode">Режим курсора</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Удалить «%1$s»? Это действие нельзя отменить.</string>
     <string name="settings_pkb_layouts_delete_title">Удалить раскладку</string>
     <string name="settings_pkb_layouts_details">%1$s · клавиш: %2$d</string>
+    <string name="settings_pkb_layouts_keys">Клавиш: %1$d</string>
+    <string name="settings_pkb_layouts_search">Поиск раскладок</string>
     <string name="settings_pkb_layouts_empty">Пользовательских раскладок пока нет. Добавьте одну из файла.</string>
     <string name="settings_pkb_layouts_keypad">клавиатура %1$s</string>
     <string name="settings_pkb_layouts_none">Не используется</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Сбросить настройки до пустой раскладки</string>
     <string name="customize_slideboard_reset_to_default">Сброс до стандартной раскладки</string>
     <string name="settings_slideboard_hub_summary">Цифровая панель, смена сторон и быстрые фразы</string>
-    <string name="settings_symbol_slideboard_link_summary">Цифровая панель и быстрые фразы</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Настройки Slideboard</string>
     <string name="customized_symbol_page_add_button_description">Добавить символ Юникода</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Принимать изученные слова</string>
     <string name="settings_spellcheck_accept_learned_summary">Распознает слова, изученные по вашему набору</string>
     <string name="pref_alt_double_tap_lock">Фиксация Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Нажмите Alt дважды, чтобы зафиксировать его. Нажмите ещё раз, чтобы снять фиксацию.</string>
     <string name="pref_ctrl_double_tap_lock">Фиксация Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Нажмите Ctrl дважды, чтобы зафиксировать его. Нажмите ещё раз, чтобы снять фиксацию.</string>
     <string name="pref_override_device_meta_state">Залипание модификаторов</string>
     <string name="pref_override_device_meta_state_summary">Фиксация Shift и Alt на любой физической клавиатуре независимо от встроенных настроек клавиатуры телефона</string>
     <string name="pref_shift_double_tap_lock">Фиксация Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">Нажмите Shift дважды, чтобы зафиксировать его. Нажмите ещё раз, чтобы снять фиксацию.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Время удержания клавиши до появления дополнительных символов</string>
     <string name="prefs_key_longpress_delay_title">Задержка долгого нажатия клавиши</string>
     <string name="prefs_key_preview_animations_summary">Настройка стиля и времени анимации нажатия клавиш</string>
@@ -1118,8 +1124,8 @@
     <string name="language_packs_deleted">Языковой пакет удалён: %1$s</string>
     <string name="language_packs_already_removed">Языковой пакет %1$s уже удалён</string>
     <string name="language_packs_delete_failed">Не удалось удалить языковой пакет: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Работает автономно</string>
-    <string name="settings_voice_lang_requires_network">Требуется подключение к сети</string>
+    <string name="settings_voice_lang_yours">Ваши языки</string>
+    <string name="settings_voice_lang_all">Все языки</string>
     <string name="settings_voice_lang_loading">Загрузка доступных языков…</string>
     <string name="settings_voice_lang_none">Нет доступных языков распознавания речи</string>
     <string name="settings_voice_lang_none_hint">Убедитесь, что приложение Google установлено, а распознавание речи включено</string>

@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Ravistuseleen viritys</string>
     <string name="prefs_shake_tuning_summary">Laukaisumäärät, kiihtyvyyskynnys ja ajoitus</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Toiminta</string>
+    <string name="settings_category_feedback">Palaute</string>
+    <string name="settings_category_appearance">Ulkoasu</string>
+    <string name="settings_category_symbols">Symbolit</string>
+    <string name="settings_category_keys">Näppäimet</string>
+    <string name="settings_category_device">Laite</string>
     <string name="settings_category_behavior_vkb">Toiminta</string>
     <string name="settings_category_ckb_gestures">Kapasitiivinen näppäimistö</string>
     <string name="settings_category_on_screen_keyboard">Kosketusnäytön näppäimistö</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Eleet</string>
     <string name="settings_category_key_popup">Näppäimen ponnahdusikkuna</string>
     <string name="settings_category_modifiers">Muokkausnäppäimet</string>
+    <string name="settings_category_press_twice_lock">Lukitse painamalla kahdesti</string>
     <string name="settings_category_sound">Ääni</string>
     <string name="settings_category_vibrate">Värinä</string>
     <string name="ckb_action_cursor_mode">Kohdistintila</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Poistetaanko ”%1$s”? Tätä ei voi kumota.</string>
     <string name="settings_pkb_layouts_delete_title">Poista asettelu</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d näppäintä</string>
+    <string name="settings_pkb_layouts_keys">%1$d näppäintä</string>
+    <string name="settings_pkb_layouts_search">Hae asetteluja</string>
     <string name="settings_pkb_layouts_empty">Ei vielä mukautettuja asetteluja. Lisää sellainen tiedostosta.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-näppäimistö</string>
     <string name="settings_pkb_layouts_none">Ei käytössä</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Palauta tyhjä asettelu</string>
     <string name="customize_slideboard_reset_to_default">Palauta oletusasettelu</string>
     <string name="settings_slideboard_hub_summary">Numeronäppäimistö, puolten vaihto ja pikalauseet</string>
-    <string name="settings_symbol_slideboard_link_summary">Numeronäppäimistö ja pikalauseet</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboardin asetukset</string>
     <string name="customized_symbol_page_add_button_description">Lisää unicode-symboli</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Hyväksy opitut sanat</string>
     <string name="settings_spellcheck_accept_learned_summary">Tunnistaa kirjoituksestasi opitut sanat</string>
     <string name="pref_alt_double_tap_lock">Alt-lukitus</string>
-    <string name="pref_alt_double_tap_lock_summary">Lukitse Alt-näppäin painamalla sitä kahdesti. Poista lukitus painamalla uudelleen.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl-lukitus</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Lukitse Ctrl-näppäin painamalla sitä kahdesti. Poista lukitus painamalla uudelleen.</string>
     <string name="pref_override_device_meta_state">Tarttuvat muokkausnäppäimet</string>
     <string name="pref_override_device_meta_state_summary">Lukitse vaihto- ja Alt-näppäin missä tahansa fyysisessä näppäimistössä puhelimen sisäisistä näppäimistöasetuksista riippumatta</string>
     <string name="pref_shift_double_tap_lock">Vaihtonäppäimen lukitus</string>
-    <string name="pref_shift_double_tap_lock_summary">Lukitse vaihtonäppäin painamalla sitä kahdesti. Poista lukitus painamalla uudelleen.</string>
+    <string name="pref_lock_row_shift">Vaihtonäppäin</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Kuinka kauan näppäintä pidetään painettuna ennen toissijaisten merkkien ilmestymistä</string>
     <string name="prefs_key_longpress_delay_title">Näppäimen pitkän painalluksen viive</string>
     <string name="prefs_key_preview_animations_summary">Mukauta näppäinpainalluksen animaation tyyliä ja ajoitusta</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Kielipaketti poistettu: %1$s</string>
     <string name="language_packs_already_removed">%1$s oli jo poistettu</string>
     <string name="language_packs_delete_failed">Kielipaketin poistaminen epäonnistui: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Käytettävissä offline-tilassa</string>
-    <string name="settings_voice_lang_requires_network">Vaatii verkkoyhteyden</string>
+    <string name="settings_voice_lang_yours">Omat kielesi</string>
+    <string name="settings_voice_lang_all">Kaikki kielet</string>
     <string name="settings_voice_lang_loading">Ladataan saatavilla olevia kieliä…</string>
     <string name="settings_voice_lang_none">Puheentunnistuskieliä ei ole saatavilla</string>
     <string name="settings_voice_lang_none_hint">Varmista, että Google-sovellus on asennettu ja puheentunnistus on käytössä</string>

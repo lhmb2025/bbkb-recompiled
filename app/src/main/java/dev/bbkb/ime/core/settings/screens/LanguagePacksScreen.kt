@@ -88,7 +88,8 @@ import dev.bbkb.ime.core.settings.ui.PreferenceDeleteButton
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.ui.PreferenceLeadingBadge
 import dev.bbkb.ime.core.settings.ui.PreferenceTrailingLabel
-import dev.bbkb.ime.core.settings.ui.SettingsScaffold
+import dev.bbkb.ime.core.settings.ui.SearchableSettingsScaffold
+import dev.bbkb.ime.core.settings.ui.rememberListSearchState
 import dev.bbkb.ime.core.settings.ui.TitleWithAccessory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -239,9 +240,17 @@ fun LanguagePacksScreen(
         }
     }
     
-    SettingsScaffold(
+    // Search narrows both halves by language name or code; the two headers stay, so a result
+    // still says whether it is installed or waiting to be downloaded.
+    val search = rememberListSearchState()
+    val shownInstalled = languagePacks.filter { search.matches(it.displayName, it.languageCode) }
+    val shownAvailable = availablePacks.filter { search.matches(it.item.displayName, it.locale) }
+
+    SearchableSettingsScaffold(
         title = context.getString(R.string.settings_language_packs_title),
         onNavigateBack = onNavigateBack,
+        search = search,
+        searchHint = stringResource(R.string.languages_hub_search),
         actions = {
             // Force a manifest fetch. Disabled while one is in flight so a double tap
             // does not queue a second request behind the first.
@@ -298,14 +307,19 @@ fun LanguagePacksScreen(
                 if (isLoading) {
                     item(key = "installed-loading") { PackLoadingRow() }
                 }
+                if (search.filtering && !isLoading && shownInstalled.isEmpty()) {
+                    item(key = "installed-none") {
+                        PackMessageRow(message = stringResource(R.string.settings_common_no_matches))
+                    }
+                }
                 itemsIndexed(
-                    languagePacks,
+                    shownInstalled,
                     key = { _, row -> "installed-" + row.languageCode + row.countryCode }
                 ) { index, pack ->
                     LanguagePackItem(
                         pack = pack,
                         voiceOffline = voiceLanguages?.isDownloaded(pack.localeId) == true,
-                        edge = groupEdge(index, languagePacks.size),
+                        edge = groupEdge(index, shownInstalled.size),
                         variantGroup = variantGroups[pack.languageCode],
                         onSelectVariant = { tag ->
                             scope.launch {
@@ -375,10 +389,15 @@ fun LanguagePacksScreen(
                 }
                 if (catalog != null) {
                     val packs = manifest?.packs
-                    itemsIndexed(availablePacks, key = { _, row -> "available-" + row.locale }) { index, available ->
+                    if (search.filtering && shownAvailable.isEmpty()) {
+                        item(key = "available-none") {
+                            PackMessageRow(message = stringResource(R.string.settings_common_no_matches))
+                        }
+                    }
+                    itemsIndexed(shownAvailable, key = { _, row -> "available-" + row.locale }) { index, available ->
                         PackActionRow(
                             item = available.item,
-                            edge = groupEdge(index, availablePacks.size),
+                            edge = groupEdge(index, shownAvailable.size),
                             // Named, not implied: installing one of these REPLACES the dictionary the
                             // language loads today, which is not what "German (Switzerland)" on its
                             // own suggests — and the row no longer sits under the language it names.
@@ -788,7 +807,7 @@ private fun LanguageCodeBadge(code: String) {
  * Shorter than the title's line, so a row with the chip is the same height as one without.
  */
 @Composable
-private fun OfflineVoiceChip() {
+internal fun OfflineVoiceChip() {
     val colors = MaterialTheme.colorScheme
     val description = stringResource(R.string.language_packs_voice_offline)
     Row(

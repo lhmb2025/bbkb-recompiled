@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Tiwnio ystum ysgwyd</string>
     <string name="prefs_shake_tuning_summary">Cyfrif sbardunau, trothwy cyflymiad ac amseru</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Ymddygiad</string>
+    <string name="settings_category_feedback">Adborth</string>
+    <string name="settings_category_appearance">Golwg</string>
+    <string name="settings_category_symbols">Symbolau</string>
+    <string name="settings_category_keys">Bysellau</string>
+    <string name="settings_category_device">Dyfais</string>
     <string name="settings_category_behavior_vkb">Ymddygiad</string>
     <string name="settings_category_ckb_gestures">Bysellfwrdd cynhwysaidd</string>
     <string name="settings_category_on_screen_keyboard">Bysellfwrdd ar y sgrin</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Ystumiau</string>
     <string name="settings_category_key_popup">Naidlen y fysell</string>
     <string name="settings_category_modifiers">Addaswyr</string>
+    <string name="settings_category_press_twice_lock">Pwyswch ddwywaith i gloi</string>
     <string name="settings_category_sound">Sain</string>
     <string name="settings_category_vibrate">Dirgryniad</string>
     <string name="ckb_action_cursor_mode">Modd cyrchwr</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Dileu “%1$s”? Does dim modd dadwneud hyn.</string>
     <string name="settings_pkb_layouts_delete_title">Dileu cynllun</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d bysell</string>
+    <string name="settings_pkb_layouts_keys">%1$d bysell</string>
+    <string name="settings_pkb_layouts_search">Chwilio cynlluniau</string>
     <string name="settings_pkb_layouts_empty">Dim cynlluniau personol eto. Ychwanegwch un o ffeil.</string>
     <string name="settings_pkb_layouts_keypad">pad bysellau %1$s</string>
     <string name="settings_pkb_layouts_none">Heb ei ddefnyddio</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Ailosod i gynllun gwag</string>
     <string name="customize_slideboard_reset_to_default">Ailosod i\'r cynllun rhagosodedig</string>
     <string name="settings_slideboard_hub_summary">Pad rhifau, cyfnewid ochrau ac ymadroddion cyflym</string>
-    <string name="settings_symbol_slideboard_link_summary">Pad rhifau ac ymadroddion cyflym</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Gosodiadau\'r Slideboard</string>
     <string name="customized_symbol_page_add_button_description">Ychwanegu symbol Unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Derbyn geiriau a ddysgwyd</string>
     <string name="settings_spellcheck_accept_learned_summary">Mae\'n cydnabod geiriau a ddysgwyd o\'ch teipio</string>
     <string name="pref_alt_double_tap_lock">Clo Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Pwyswch Alt ddwywaith i\'w gloi. Pwyswch eto i\'w ddatgloi.</string>
     <string name="pref_ctrl_double_tap_lock">Clo Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Pwyswch Ctrl ddwywaith i\'w gloi. Pwyswch eto i\'w ddatgloi.</string>
     <string name="pref_override_device_meta_state">Addaswyr gludiog</string>
     <string name="pref_override_device_meta_state_summary">Cloi Shift ac Alt ar unrhyw fysellfwrdd ffisegol, waeth beth fo gosodiadau bysellfwrdd adeiledig y ffôn</string>
     <string name="pref_shift_double_tap_lock">Clo Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">Pwyswch Shift ddwywaith i\'w gloi. Pwyswch eto i\'w ddatgloi.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Faint o amser i ddal bysell cyn i\'r nodau eilaidd ymddangos</string>
     <string name="prefs_key_longpress_delay_title">Oedi gwasgu hir ar fysell</string>
     <string name="prefs_key_preview_animations_summary">Addasu arddull ac amseriad animeiddiad gwasgu bysell</string>
@@ -1148,8 +1154,8 @@
     <string name="language_packs_deleted">Pecyn iaith wedi\'i ddileu: %1$s</string>
     <string name="language_packs_already_removed">Roedd %1$s eisoes wedi\'i dynnu</string>
     <string name="language_packs_delete_failed">Methu dileu\'r pecyn iaith: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Yn barod all-lein</string>
-    <string name="settings_voice_lang_requires_network">Angen rhwydwaith</string>
+    <string name="settings_voice_lang_yours">Eich ieithoedd</string>
+    <string name="settings_voice_lang_all">Pob iaith</string>
     <string name="settings_voice_lang_loading">Wrthi\'n llwytho\'r ieithoedd sydd ar gael…</string>
     <string name="settings_voice_lang_none">Dim ieithoedd adnabod llais ar gael</string>
     <string name="settings_voice_lang_none_hint">Gwnewch yn siŵr bod ap Google wedi\'i osod a bod adnabod llais wedi\'i alluogi</string>

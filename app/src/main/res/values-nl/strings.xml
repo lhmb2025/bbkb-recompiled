@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Schudgebaar afstemmen</string>
     <string name="prefs_shake_tuning_summary">Aantal triggers, versnellingsdrempel en timing</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Gedrag</string>
+    <string name="settings_category_feedback">Feedback</string>
+    <string name="settings_category_appearance">Weergave</string>
+    <string name="settings_category_symbols">Symbolen</string>
+    <string name="settings_category_keys">Toetsen</string>
+    <string name="settings_category_device">Apparaat</string>
     <string name="settings_category_behavior_vkb">Gedrag</string>
     <string name="settings_category_ckb_gestures">Capacitief toetsenbord</string>
     <string name="settings_category_on_screen_keyboard">Schermtoetsenbord</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Gebaren</string>
     <string name="settings_category_key_popup">Pop-up voor toets</string>
     <string name="settings_category_modifiers">Modificatietoetsen</string>
+    <string name="settings_category_press_twice_lock">Druk twee keer om te vergrendelen</string>
     <string name="settings_category_sound">Geluid</string>
     <string name="settings_category_vibrate">Trilling</string>
     <string name="ckb_action_cursor_mode">Cursormodus</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">‘%1$s’ verwijderen? Dit kan niet ongedaan worden gemaakt.</string>
     <string name="settings_pkb_layouts_delete_title">Lay-out verwijderen</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d toetsen</string>
+    <string name="settings_pkb_layouts_keys">%1$d toetsen</string>
+    <string name="settings_pkb_layouts_search">Indelingen zoeken</string>
     <string name="settings_pkb_layouts_empty">Nog geen aangepaste indelingen. Voeg er een toe vanuit een bestand.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-toetsenblok</string>
     <string name="settings_pkb_layouts_none">Niet in gebruik</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Terugzetten op blanco lay-out</string>
     <string name="customize_slideboard_reset_to_default">Terugzetten naar standaard lay-out</string>
     <string name="settings_slideboard_hub_summary">Numeriek toetsenblok, kanten omwisselen en snelle zinnen</string>
-    <string name="settings_symbol_slideboard_link_summary">Numeriek toetsenblok en snelle zinnen</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-instellingen</string>
     <string name="customized_symbol_page_add_button_description">Een unicode-symbool toevoegen</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Geleerde woorden accepteren</string>
     <string name="settings_spellcheck_accept_learned_summary">Herkent woorden die zijn geleerd van wat je typt</string>
     <string name="pref_alt_double_tap_lock">Alt-vergrendeling</string>
-    <string name="pref_alt_double_tap_lock_summary">Druk twee keer op Alt om de toets te vergrendelen. Druk nogmaals om te ontgrendelen.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl-vergrendeling</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Druk twee keer op Ctrl om de toets te vergrendelen. Druk nogmaals om te ontgrendelen.</string>
     <string name="pref_override_device_meta_state">Plakkende modificatietoetsen</string>
     <string name="pref_override_device_meta_state_summary">Shift en Alt vergrendelen op elk fysiek toetsenbord, ongeacht de ingebouwde toetsenbordinstellingen van de telefoon</string>
     <string name="pref_shift_double_tap_lock">Shift-vergrendeling</string>
-    <string name="pref_shift_double_tap_lock_summary">Druk twee keer op Shift om de toets te vergrendelen. Druk nogmaals om te ontgrendelen.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Tijd dat een toets moet worden vastgehouden voordat secundaire tekens verschijnen</string>
     <string name="prefs_key_longpress_delay_title">Vertraging lang indrukken toets</string>
     <string name="prefs_key_preview_animations_summary">Stijl en timing van de animatie bij toetsaanslag aanpassen</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Taalpakket verwijderd: %1$s</string>
     <string name="language_packs_already_removed">%1$s was al verwijderd</string>
     <string name="language_packs_delete_failed">Kan taalpakket niet verwijderen: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Offline beschikbaar</string>
-    <string name="settings_voice_lang_requires_network">Netwerk vereist</string>
+    <string name="settings_voice_lang_yours">Uw talen</string>
+    <string name="settings_voice_lang_all">Alle talen</string>
     <string name="settings_voice_lang_loading">Beschikbare talen laden…</string>
     <string name="settings_voice_lang_none">Geen talen voor spraakherkenning beschikbaar</string>
     <string name="settings_voice_lang_none_hint">Zorg dat de Google-app is geïnstalleerd en spraakherkenning is ingeschakeld</string>

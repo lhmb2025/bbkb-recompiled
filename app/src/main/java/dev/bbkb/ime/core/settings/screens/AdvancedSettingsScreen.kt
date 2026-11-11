@@ -56,6 +56,7 @@ fun AdvancedSettingsScreen(
     var showReset by remember { mutableStateOf(false) }
 
     SettingsScreenHost(R.string.settings_advanced_title, onNavigateBack, listOf(
+        Category(R.string.settings_category_device),
         // Device Compatibility (config loader, meta state override, keyboard helper)
         Nav(
             title = R.string.settings_device_compatibility_title,

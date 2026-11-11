@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">షేక్ సంజ్ఞ ట్యూనింగ్</string>
     <string name="prefs_shake_tuning_summary">ట్రిగర్ సంఖ్యలు, త్వరణ పరిమితి మరియు సమయం</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">ప్రవర్తన</string>
+    <string name="settings_category_feedback">ఫీడ్‌బ్యాక్</string>
+    <string name="settings_category_appearance">రూపం</string>
+    <string name="settings_category_symbols">చిహ్నాలు</string>
+    <string name="settings_category_keys">కీలు</string>
+    <string name="settings_category_device">పరికరం</string>
     <string name="settings_category_behavior_vkb">ప్రవర్తన</string>
     <string name="settings_category_ckb_gestures">కెపాసిటివ్ కీబోర్డ్</string>
     <string name="settings_category_on_screen_keyboard">ఆన్-స్క్రీన్ కీబోర్డ్</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">సంజ్ఞలు</string>
     <string name="settings_category_key_popup">కీ పాప్-అప్</string>
     <string name="settings_category_modifiers">మాడిఫైయర్ కీలు</string>
+    <string name="settings_category_press_twice_lock">లాక్ చేయడానికి రెండుసార్లు నొక్కండి</string>
     <string name="settings_category_sound">ధ్వని</string>
     <string name="settings_category_vibrate">వైబ్రేషన్</string>
     <string name="ckb_action_cursor_mode">కర్సర్ మోడ్</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s”ను తొలగించాలా? దీన్ని రద్దు చేయడం సాధ్యం కాదు.</string>
     <string name="settings_pkb_layouts_delete_title">లేఅవుట్‌ను తొలగించు</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d కీలు</string>
+    <string name="settings_pkb_layouts_keys">%1$d కీలు</string>
+    <string name="settings_pkb_layouts_search">లేఅవుట్‌లను శోధించండి</string>
     <string name="settings_pkb_layouts_empty">ఇంకా అనుకూల లేఅవుట్‌లు లేవు. ఫైల్ నుండి ఒకదాన్ని జోడించండి.</string>
     <string name="settings_pkb_layouts_keypad">%1$s కీప్యాడ్</string>
     <string name="settings_pkb_layouts_none">ఉపయోగంలో లేదు</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">ఖాళీ లేఅవుట్‌కు రీసెట్ చేయి</string>
     <string name="customize_slideboard_reset_to_default">డిఫాల్ట్ లేఅవుట్‌కు రీసెట్ చేయి</string>
     <string name="settings_slideboard_hub_summary">నంబర్ ప్యాడ్, వైపులను మార్చడం మరియు త్వరిత పదబంధాలు</string>
-    <string name="settings_symbol_slideboard_link_summary">నంబర్ ప్యాడ్ మరియు త్వరిత పదబంధాలు</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard సెట్టింగ్‌లు</string>
     <string name="customized_symbol_page_add_button_description">యూనికోడ్ చిహ్నాన్ని జోడించు</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">నేర్చుకున్న పదాలను అంగీకరించు</string>
     <string name="settings_spellcheck_accept_learned_summary">మీ టైపింగ్ నుండి నేర్చుకున్న పదాలను గుర్తిస్తుంది</string>
     <string name="pref_alt_double_tap_lock">Alt లాక్</string>
-    <string name="pref_alt_double_tap_lock_summary">లాక్ చేయడానికి Alt ను రెండుసార్లు నొక్కండి. అన్‌లాక్ చేయడానికి మళ్లీ నొక్కండి.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl లాక్</string>
-    <string name="pref_ctrl_double_tap_lock_summary">లాక్ చేయడానికి Ctrl ను రెండుసార్లు నొక్కండి. అన్‌లాక్ చేయడానికి మళ్లీ నొక్కండి.</string>
     <string name="pref_override_device_meta_state">స్టికీ మాడిఫైయర్ కీలు</string>
     <string name="pref_override_device_meta_state_summary">ఫోన్ అంతర్నిర్మిత కీబోర్డ్ సెట్టింగ్‌లతో సంబంధం లేకుండా, ఏ ఫిజికల్ కీబోర్డ్‌లోనైనా Shift మరియు Alt ను లాక్ చేయి</string>
     <string name="pref_shift_double_tap_lock">Shift లాక్</string>
-    <string name="pref_shift_double_tap_lock_summary">లాక్ చేయడానికి Shift ను రెండుసార్లు నొక్కండి. అన్‌లాక్ చేయడానికి మళ్లీ నొక్కండి.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">ద్వితీయ అక్షరాలు కనిపించే ముందు కీని నొక్కి పట్టాల్సిన సమయం</string>
     <string name="prefs_key_longpress_delay_title">కీ లాంగ్-ప్రెస్ ఆలస్యం</string>
     <string name="prefs_key_preview_animations_summary">కీ నొక్కిన యానిమేషన్ శైలిని, సమయాన్ని అనుకూలీకరించు</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">భాషా ప్యాక్ తొలగించబడింది: %1$s</string>
     <string name="language_packs_already_removed">%1$s ఇప్పటికే తీసివేయబడింది</string>
     <string name="language_packs_delete_failed">భాషా ప్యాక్‌ను తొలగించలేకపోయాం: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">ఆఫ్‌లైన్‌లో సిద్ధం</string>
-    <string name="settings_voice_lang_requires_network">నెట్‌వర్క్ అవసరం</string>
+    <string name="settings_voice_lang_yours">మీ భాషలు</string>
+    <string name="settings_voice_lang_all">అన్ని భాషలు</string>
     <string name="settings_voice_lang_loading">అందుబాటులో ఉన్న భాషలను లోడ్ చేస్తోంది…</string>
     <string name="settings_voice_lang_none">వాయిస్ గుర్తింపు భాషలు ఏవీ అందుబాటులో లేవు</string>
     <string name="settings_voice_lang_none_hint">Google యాప్ ఇన్‌స్టాల్ అయి ఉందని, వాయిస్ గుర్తింపు ఆన్‌లో ఉందని నిర్ధారించుకోండి</string>

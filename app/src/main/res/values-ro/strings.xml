@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Reglajul gestului de scuturare</string>
     <string name="prefs_shake_tuning_summary">Numere de declanșare, prag de accelerație și temporizare</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Comportament</string>
+    <string name="settings_category_feedback">Feedback</string>
+    <string name="settings_category_appearance">Aspect</string>
+    <string name="settings_category_symbols">Simboluri</string>
+    <string name="settings_category_keys">Taste</string>
+    <string name="settings_category_device">Dispozitiv</string>
     <string name="settings_category_behavior_vkb">Comportament</string>
     <string name="settings_category_ckb_gestures">Tastatură capacitivă</string>
     <string name="settings_category_on_screen_keyboard">Tastatură pe ecran</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Gesturi</string>
     <string name="settings_category_key_popup">Pop-up tastă</string>
     <string name="settings_category_modifiers">Modificatori</string>
+    <string name="settings_category_press_twice_lock">Apăsați de două ori pentru blocare</string>
     <string name="settings_category_sound">Sunet</string>
     <string name="settings_category_vibrate">Vibrații</string>
     <string name="ckb_action_cursor_mode">Mod cursor</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Ștergi „%1$s”? Acțiunea nu poate fi anulată.</string>
     <string name="settings_pkb_layouts_delete_title">Șterge aspectul</string>
     <string name="settings_pkb_layouts_details">%1$s · taste: %2$d</string>
+    <string name="settings_pkb_layouts_keys">Taste: %1$d</string>
+    <string name="settings_pkb_layouts_search">Căutați aranjamente</string>
     <string name="settings_pkb_layouts_empty">Încă nu există aranjamente personalizate. Adăugați unul dintr-un fișier.</string>
     <string name="settings_pkb_layouts_keypad">tastatură %1$s</string>
     <string name="settings_pkb_layouts_none">Neutilizat</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Resetare la aspect gol</string>
     <string name="customize_slideboard_reset_to_default">Resetare la aspectul implicit</string>
     <string name="settings_slideboard_hub_summary">Tastatură numerică, inversarea părților și expresii rapide</string>
-    <string name="settings_symbol_slideboard_link_summary">Tastatură numerică și expresii rapide</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Setări Slideboard</string>
     <string name="customized_symbol_page_add_button_description">Adăugare simbol unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Acceptați cuvintele învățate</string>
     <string name="settings_spellcheck_accept_learned_summary">Recunoaște cuvintele învățate din ce tastați</string>
     <string name="pref_alt_double_tap_lock">Blocare Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Apăsați Alt de două ori pentru a-l bloca. Apăsați din nou pentru a-l debloca.</string>
     <string name="pref_ctrl_double_tap_lock">Blocare Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Apăsați Ctrl de două ori pentru a-l bloca. Apăsați din nou pentru a-l debloca.</string>
     <string name="pref_override_device_meta_state">Taste modificatoare persistente</string>
     <string name="pref_override_device_meta_state_summary">Blocați Shift și Alt pe orice tastatură fizică, indiferent de setările de tastatură integrate ale telefonului</string>
     <string name="pref_shift_double_tap_lock">Blocare Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">Apăsați Shift de două ori pentru a-l bloca. Apăsați din nou pentru a-l debloca.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Timpul de apăsare a unei taste până la apariția caracterelor secundare</string>
     <string name="prefs_key_longpress_delay_title">Întârziere apăsare lungă a tastei</string>
     <string name="prefs_key_preview_animations_summary">Personalizați stilul și temporizarea animației la apăsarea tastelor</string>
@@ -1103,8 +1109,8 @@
     <string name="language_packs_deleted">Pachet de limbă șters: %1$s</string>
     <string name="language_packs_already_removed">%1$s a fost deja eliminată</string>
     <string name="language_packs_delete_failed">Pachetul de limbă nu a putut fi șters: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Disponibilă offline</string>
-    <string name="settings_voice_lang_requires_network">Necesită rețea</string>
+    <string name="settings_voice_lang_yours">Limbile dvs.</string>
+    <string name="settings_voice_lang_all">Toate limbile</string>
     <string name="settings_voice_lang_loading">Se încarcă limbile disponibile…</string>
     <string name="settings_voice_lang_none">Nu există limbi disponibile pentru recunoașterea vocală</string>
     <string name="settings_voice_lang_none_hint">Asigurați-vă că aplicația Google este instalată și că recunoașterea vocală este activată</string>

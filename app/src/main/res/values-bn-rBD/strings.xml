@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">ঝাঁকুনি জেসচার টিউনিং</string>
     <string name="prefs_shake_tuning_summary">ট্রিগার সংখ্যা, ত্বরণ সীমা ও সময়</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">আচরণ</string>
+    <string name="settings_category_feedback">প্রতিক্রিয়া</string>
+    <string name="settings_category_appearance">চেহারা</string>
+    <string name="settings_category_symbols">প্রতীক</string>
+    <string name="settings_category_keys">কী</string>
+    <string name="settings_category_device">ডিভাইস</string>
     <string name="settings_category_behavior_vkb">আচরণ</string>
     <string name="settings_category_ckb_gestures">ক্যাপাসিটিভ কীবোর্ড</string>
     <string name="settings_category_on_screen_keyboard">অন-স্ক্রিন কীবোর্ড</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">অঙ্গভঙ্গি</string>
     <string name="settings_category_key_popup">কী পপ-আপ</string>
     <string name="settings_category_modifiers">মডিফায়ার</string>
+    <string name="settings_category_press_twice_lock">লক করতে দুবার চাপুন</string>
     <string name="settings_category_sound">শব্দ</string>
     <string name="settings_category_vibrate">কম্পন</string>
     <string name="ckb_action_cursor_mode">কার্সার মোড</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s” মুছবেন? এটি আর ফেরানো যাবে না।</string>
     <string name="settings_pkb_layouts_delete_title">লেআউট মুছুন</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$dটি কী</string>
+    <string name="settings_pkb_layouts_keys">%1$dটি কী</string>
+    <string name="settings_pkb_layouts_search">লেআউট সন্ধান করুন</string>
     <string name="settings_pkb_layouts_empty">এখনও কোনো কাস্টম লেআউট নেই। ফাইল থেকে একটি যোগ করুন।</string>
     <string name="settings_pkb_layouts_keypad">%1$s কীপ্যাড</string>
     <string name="settings_pkb_layouts_none">ব্যবহার করা হচ্ছে না</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">ফাঁকা লেআউটে রিসেট করুন</string>
     <string name="customize_slideboard_reset_to_default">ডিফল্ট লেআউটে রিসেট করুন</string>
     <string name="settings_slideboard_hub_summary">নম্বর প্যাড, দিক অদলবদল ও দ্রুত বাক্যাংশ</string>
-    <string name="settings_symbol_slideboard_link_summary">নম্বর প্যাড ও দ্রুত বাক্যাংশ</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard সেটিংস</string>
     <string name="customized_symbol_page_add_button_description">ইউনিকোড প্রতীক জুড়ুন</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">শেখা শব্দ গ্রহণ করুন</string>
     <string name="settings_spellcheck_accept_learned_summary">আপনার টাইপিং থেকে শেখা শব্দগুলো চেনে</string>
     <string name="pref_alt_double_tap_lock">Alt লক</string>
-    <string name="pref_alt_double_tap_lock_summary">লক করতে Alt দুবার চাপুন। আনলক করতে আবার চাপুন।</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl লক</string>
-    <string name="pref_ctrl_double_tap_lock_summary">লক করতে Ctrl দুবার চাপুন। আনলক করতে আবার চাপুন।</string>
     <string name="pref_override_device_meta_state">স্টিকি মডিফায়ার কী</string>
     <string name="pref_override_device_meta_state_summary">ফোনের বিল্ট-ইন কীবোর্ড সেটিংস যাই হোক না কেন, যেকোনো ফিজিক্যাল কীবোর্ডে Shift ও Alt লক করুন</string>
     <string name="pref_shift_double_tap_lock">Shift লক</string>
-    <string name="pref_shift_double_tap_lock_summary">লক করতে Shift দুবার চাপুন। আনলক করতে আবার চাপুন।</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">গৌণ অক্ষর দেখানোর আগে কী চেপে ধরে রাখার সময়</string>
     <string name="prefs_key_longpress_delay_title">কী দীর্ঘক্ষণ চাপার বিলম্ব</string>
     <string name="prefs_key_preview_animations_summary">কী চাপার অ্যানিমেশনের ধরন ও সময় কাস্টমাইজ করুন</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">ভাষা প্যাক মোছা হয়েছে: %1$s</string>
     <string name="language_packs_already_removed">%1$s আগেই সরানো হয়েছে</string>
     <string name="language_packs_delete_failed">ভাষা প্যাক মোছা যায়নি: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">অফলাইনে ব্যবহারযোগ্য</string>
-    <string name="settings_voice_lang_requires_network">নেটওয়ার্ক প্রয়োজন</string>
+    <string name="settings_voice_lang_yours">আপনার ভাষা</string>
+    <string name="settings_voice_lang_all">সব ভাষা</string>
     <string name="settings_voice_lang_loading">উপলভ্য ভাষা লোড হচ্ছে…</string>
     <string name="settings_voice_lang_none">ভয়েস শনাক্তকরণের কোনো ভাষা উপলভ্য নেই</string>
     <string name="settings_voice_lang_none_hint">Google অ্যাপ ইনস্টল করা আছে এবং ভয়েস শনাক্তকরণ চালু আছে কিনা দেখে নিন</string>

@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">குலுக்கல் சைகை சரிசெய்தல்</string>
     <string name="prefs_shake_tuning_summary">தூண்டல் எண்ணிக்கை, முடுக்க வரம்பு மற்றும் நேரம்</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">செயல்பாடு</string>
+    <string name="settings_category_feedback">பின்னூட்டம்</string>
+    <string name="settings_category_appearance">தோற்றம்</string>
+    <string name="settings_category_symbols">குறியீடுகள்</string>
+    <string name="settings_category_keys">விசைகள்</string>
+    <string name="settings_category_device">சாதனம்</string>
     <string name="settings_category_behavior_vkb">செயல்பாடு</string>
     <string name="settings_category_ckb_gestures">கெப்பாசிட்டிவ் விசைப்பலகை</string>
     <string name="settings_category_on_screen_keyboard">திரைமேல் விசைப்பலகை</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">சைகைகள்</string>
     <string name="settings_category_key_popup">விசை பாப்-அப்</string>
     <string name="settings_category_modifiers">மாற்றி விசைகள்</string>
+    <string name="settings_category_press_twice_lock">பூட்ட இருமுறை அழுத்தவும்</string>
     <string name="settings_category_sound">ஒலி</string>
     <string name="settings_category_vibrate">அதிர்வு</string>
     <string name="ckb_action_cursor_mode">கர்சர் பயன்முறை</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s”-ஐ நீக்கவா? இதைச் செயல்தவிர்க்க முடியாது.</string>
     <string name="settings_pkb_layouts_delete_title">தளவமைப்பை நீக்கு</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d விசைகள்</string>
+    <string name="settings_pkb_layouts_keys">%1$d விசைகள்</string>
+    <string name="settings_pkb_layouts_search">அமைப்புகளைத் தேடு</string>
     <string name="settings_pkb_layouts_empty">இன்னும் தனிப்பயன் அமைப்புகள் இல்லை. கோப்பிலிருந்து ஒன்றைச் சேர்க்கவும்.</string>
     <string name="settings_pkb_layouts_keypad">%1$s விசைப்பலகை</string>
     <string name="settings_pkb_layouts_none">பயன்பாட்டில் இல்லை</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">வெற்றுத் தளவமைப்பிற்கு மீட்டமை</string>
     <string name="customize_slideboard_reset_to_default">இயல்புநிலைத் தளவமைப்பிற்கு மீட்டமை</string>
     <string name="settings_slideboard_hub_summary">எண் பேடு, பக்கங்களை இடமாற்றல் மற்றும் விரைவு சொற்றொடர்கள்</string>
-    <string name="settings_symbol_slideboard_link_summary">எண் பேடு மற்றும் விரைவு சொற்றொடர்கள்</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard அமைப்புகள்</string>
     <string name="customized_symbol_page_add_button_description">யூனிகோடு குறியீட்டைச் சேர்</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">கற்ற சொற்களை ஏற்கவும்</string>
     <string name="settings_spellcheck_accept_learned_summary">உங்கள் தட்டச்சிலிருந்து கற்ற சொற்களை அங்கீகரிக்கிறது</string>
     <string name="pref_alt_double_tap_lock">Alt பூட்டு</string>
-    <string name="pref_alt_double_tap_lock_summary">பூட்ட Alt ஐ இருமுறை அழுத்தவும். திறக்க மீண்டும் அழுத்தவும்.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl பூட்டு</string>
-    <string name="pref_ctrl_double_tap_lock_summary">பூட்ட Ctrl ஐ இருமுறை அழுத்தவும். திறக்க மீண்டும் அழுத்தவும்.</string>
     <string name="pref_override_device_meta_state">ஒட்டும் மாற்றி விசைகள்</string>
     <string name="pref_override_device_meta_state_summary">ஃபோனின் உள்ளமைந்த விசைப்பலகை அமைப்புகளைப் பொருட்படுத்தாமல், எந்த இயற்பியல் விசைப்பலகையிலும் Shift மற்றும் Alt ஐப் பூட்டு</string>
     <string name="pref_shift_double_tap_lock">Shift பூட்டு</string>
-    <string name="pref_shift_double_tap_lock_summary">பூட்ட Shift ஐ இருமுறை அழுத்தவும். திறக்க மீண்டும் அழுத்தவும்.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">இரண்டாம் நிலை எழுத்துகள் தோன்றும் முன் விசையைப் பிடிக்க வேண்டிய நேரம்</string>
     <string name="prefs_key_longpress_delay_title">விசை நீள அழுத்தத் தாமதம்</string>
     <string name="prefs_key_preview_animations_summary">விசை அழுத்த அனிமேஷன் பாணியையும் நேரத்தையும் தனிப்பயனாக்கு</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">மொழித் தொகுப்பு நீக்கப்பட்டது: %1$s</string>
     <string name="language_packs_already_removed">%1$s ஏற்கெனவே அகற்றப்பட்டது</string>
     <string name="language_packs_delete_failed">மொழித் தொகுப்பை நீக்க முடியவில்லை: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">ஆஃப்லைனில் தயார்</string>
-    <string name="settings_voice_lang_requires_network">நெட்வொர்க் தேவை</string>
+    <string name="settings_voice_lang_yours">உங்கள் மொழிகள்</string>
+    <string name="settings_voice_lang_all">அனைத்து மொழிகளும்</string>
     <string name="settings_voice_lang_loading">கிடைக்கும் மொழிகளை ஏற்றுகிறது…</string>
     <string name="settings_voice_lang_none">குரல் அங்கீகார மொழிகள் எதுவும் கிடைக்கவில்லை</string>
     <string name="settings_voice_lang_none_hint">Google ஆப்ஸ் நிறுவப்பட்டுள்ளதையும் குரல் அங்கீகாரம் இயக்கப்பட்டுள்ளதையும் உறுதிசெய்யவும்</string>

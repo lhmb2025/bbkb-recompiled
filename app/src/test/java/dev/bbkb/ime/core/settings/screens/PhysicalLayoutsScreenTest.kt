@@ -113,6 +113,16 @@ class PhysicalLayoutsScreenTest {
 
     // ── summary ──────────────────────────────────────────────────────────────
 
+    /** The row's title is the name, so a second line that opens with the same word says it twice. */
+    @Test
+    fun aLayoutNamedForItsOneLanguageDoesNotRepeatTheName() {
+        assertEquals("2 keys", summary(layout("de", "German", languages = "de")))
+        assertEquals("QWERTZ keypad · 2 keys", summary(layout("de", "German", languages = "de", keypad = "qwertz")))
+        // A name of its own leaves the language where it was.
+        assertEquals("German · 2 keys", summary(layout("de", "Deutsch", languages = "de")))
+        assertEquals("German, Russian · 2 keys", summary(layout("x", "German", languages = "de,ru")))
+    }
+
     @Test
     fun aLayoutForEveryKeyboardSaysSo() {
         assertEquals("All keyboards · 2 keys", summary(layout("colemak", keys = 2)))

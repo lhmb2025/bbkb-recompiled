@@ -19,8 +19,8 @@ import dev.bbkb.ime.core.settings.ui.drawableIcon
 
 /**
  * On-Screen Keyboard Settings Screen
- * Categories: Gestures, Behavior (Ctrl key, unified input menu, clipboard, slideboard, key-press
- * feedback).
+ * Categories: Behavior (Ctrl key, long-press delay, flick animation), Gestures, Emoji, then one
+ * link each under Slideboard and Feedback.
  *
  * The custom symbol page still lives under Appearance & layout; Slideboard settings moved here,
  * because everything it configures is on-screen-keyboard behaviour.
@@ -49,6 +49,7 @@ fun TouchScreenKeyboardScreen(
         Slide(intPref("pref_key_longpress_timeout", 400),
             R.string.prefs_key_longpress_delay_title,
             R.string.prefs_key_longpress_delay_summary, 100..1000, step = 50, unit = "ms",
+            valueOnRow = true,
             icon = drawableIcon(R.drawable.ic_settings_gesture_delay),
             modifier = Modifier.settingsSearchAnchor("pref_key_longpress_timeout")),
         // The committed word floating up on a flick: an on-screen animation, so it lives here
@@ -59,20 +60,6 @@ fun TouchScreenKeyboardScreen(
             icon = drawableIcon(R.drawable.ic_settings_flick_animation),
             summary = RowSummary.Res(R.string.settings_pred_flick_animation_summary),
             modifier = Modifier.settingsSearchAnchor("pref_flick_commit_animation"),
-        ),
-        // Slideboard (enable, swap sides, number pad, quick phrases).
-        Nav(
-            title = R.string.settings_slideboard_settings_title,
-            icon = drawableIcon(R.drawable.ic_settings_slideboard),
-            summary = R.string.settings_slideboard_hub_summary,
-            onClick = { onNavigateToSlideboard() },
-        ),
-        // Touch feedback (links to KeyPressFeedbackScreen) — VKB only
-        Nav(
-            title = R.string.settings_touch_feedback_title,
-            icon = drawableIcon(R.drawable.ic_settings_touch_feedback),
-            summary = R.string.settings_touch_feedback_summary,
-            onClick = { onNavigateToKeyPressFeedback() },
         ),
         Category(R.string.settings_category_gestures),
         Toggle(
@@ -120,6 +107,22 @@ fun TouchScreenKeyboardScreen(
             ),
             enabled = { it.bool("pref_emoji_dynamic_search") },
             modifier = Modifier.settingsSearchAnchor("pref_emoji_search_replace_text"),
+        ),
+        // The two links to other screens close the page, each under its own header, so Behavior
+        // holds settings only (2026-11-11). This group is the slideboard's one home.
+        Category(R.string.settings_category_slideboard),
+        Nav(
+            title = R.string.settings_slideboard_settings_title,
+            icon = drawableIcon(R.drawable.ic_settings_slideboard),
+            summary = R.string.settings_slideboard_hub_summary,
+            onClick = { onNavigateToSlideboard() },
+        ),
+        Category(R.string.settings_category_feedback),
+        Nav(
+            title = R.string.settings_touch_feedback_title,
+            icon = drawableIcon(R.drawable.ic_settings_touch_feedback),
+            summary = R.string.settings_touch_feedback_summary,
+            onClick = { onNavigateToKeyPressFeedback() },
         ),
     ))
 }

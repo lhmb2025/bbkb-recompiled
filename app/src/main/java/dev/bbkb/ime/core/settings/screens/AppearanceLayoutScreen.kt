@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.Choice
+import dev.bbkb.ime.core.settings.ui.Category
 import dev.bbkb.ime.core.settings.ui.ChoiceOption
 import dev.bbkb.ime.core.settings.ui.Nav
 import dev.bbkb.ime.core.settings.ui.RowSummary
@@ -44,6 +45,7 @@ fun AppearanceLayoutScreen(
     remember { PrefsManager.migrateThemePrefs(PrefsManager.getPrefs(context)) }
 
     SettingsScreenHost(R.string.settings_appearance_layout_title, onNavigateBack, listOf(
+        Category(R.string.settings_category_appearance),
         // Keyboard theme (Classic / Modern / Material / BB10). Classic and BB10 are fixed looks;
         // Modern and Material expose the color-scheme selector (and the system-colors toggle on
         // Android 12+) below.
@@ -83,6 +85,7 @@ fun AppearanceLayoutScreen(
             icon = drawableIcon(R.drawable.ic_settings_keyboard_height),
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_height_mode"),
         ),
+        Category(R.string.settings_category_symbols),
         // Default currency: the one grid picker in settings, so a hand-written block rather than
         // a row type of its own. Here rather than on the symbols screen (2026-10-19): it is a
         // keyboard-wide choice, not a custom page.

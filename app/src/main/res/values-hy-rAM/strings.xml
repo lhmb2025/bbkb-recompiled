@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Թափահարման ժեստի կարգավորում</string>
     <string name="prefs_shake_tuning_summary">Գործարկումների քանակ, արագացման շեմ և ժամանակ</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Վարքագիծ</string>
+    <string name="settings_category_feedback">Արձագանք</string>
+    <string name="settings_category_appearance">Արտաքին տեսք</string>
+    <string name="settings_category_symbols">Նշաններ</string>
+    <string name="settings_category_keys">Ստեղներ</string>
+    <string name="settings_category_device">Սարք</string>
     <string name="settings_category_behavior_vkb">Վարքագիծ</string>
     <string name="settings_category_ckb_gestures">Հպազգայուն ստեղնաշար</string>
     <string name="settings_category_on_screen_keyboard">Էկրանային ստեղնաշար</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Ժեստեր</string>
     <string name="settings_category_key_popup">Ստեղնի ելնող պատուհան</string>
     <string name="settings_category_modifiers">Ձևափոխիչ ստեղներ</string>
+    <string name="settings_category_press_twice_lock">Սեղմեք երկու անգամ՝ կողպելու համար</string>
     <string name="settings_category_sound">Ձայն</string>
     <string name="settings_category_vibrate">Թրթռոց</string>
     <string name="ckb_action_cursor_mode">Կուրսորի ռեժիմ</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Ջնջե՞լ «%1$s»-ը։ Այս գործողությունը հնարավոր չէ հետարկել։</string>
     <string name="settings_pkb_layouts_delete_title">Ջնջել դասավորությունը</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d ստեղն</string>
+    <string name="settings_pkb_layouts_keys">%1$d ստեղն</string>
+    <string name="settings_pkb_layouts_search">Որոնել դասավորություններ</string>
     <string name="settings_pkb_layouts_empty">Անհատական դասավորություններ դեռ չկան։ Ավելացրեք մեկը ֆայլից։</string>
     <string name="settings_pkb_layouts_keypad">%1$s ստեղնաշար</string>
     <string name="settings_pkb_layouts_none">Չի օգտագործվում</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Վերականգնել դատարկ դասավորությունը</string>
     <string name="customize_slideboard_reset_to_default">Վերականգնել նախնական դասավորությունը</string>
     <string name="settings_slideboard_hub_summary">Թվային վահանակ, կողմերի փոխանակում և արագ արտահայտություններ</string>
-    <string name="settings_symbol_slideboard_link_summary">Թվային վահանակ և արագ արտահայտություններ</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-ի կարգավորումներ</string>
     <string name="customized_symbol_page_add_button_description">Ավելացնել Unicode նշան</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Ընդունել սովորած բառերը</string>
     <string name="settings_spellcheck_accept_learned_summary">Ճանաչում է ձեր մուտքագրումից սովորած բառերը</string>
     <string name="pref_alt_double_tap_lock">Alt-ի կողպում</string>
-    <string name="pref_alt_double_tap_lock_summary">Սեղմեք Alt-ը երկու անգամ՝ այն կողպելու համար։ Սեղմեք կրկին՝ ապակողպելու համար։</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl-ի կողպում</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Սեղմեք Ctrl-ը երկու անգամ՝ այն կողպելու համար։ Սեղմեք կրկին՝ ապակողպելու համար։</string>
     <string name="pref_override_device_meta_state">Կպչուն ձևափոխիչ ստեղներ</string>
     <string name="pref_override_device_meta_state_summary">Կողպել Shift-ը և Alt-ը ցանկացած ֆիզիկական ստեղնաշարում՝ անկախ հեռախոսի ներկառուցված ստեղնաշարի կարգավորումներից</string>
     <string name="pref_shift_double_tap_lock">Shift-ի կողպում</string>
-    <string name="pref_shift_double_tap_lock_summary">Սեղմեք Shift-ը երկու անգամ՝ այն կողպելու համար։ Սեղմեք կրկին՝ ապակողպելու համար։</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Ստեղնը պահելու ժամանակը՝ մինչև երկրորդական նիշերի հայտնվելը</string>
     <string name="prefs_key_longpress_delay_title">Ստեղնի երկար սեղմման հետաձգում</string>
     <string name="prefs_key_preview_animations_summary">Հարմարեցնել ստեղնի սեղմման շարժապատկերի ոճն ու ժամանակը</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Լեզվական փաթեթը ջնջվեց՝ %1$s</string>
     <string name="language_packs_already_removed">%1$s-ը արդեն հեռացված էր</string>
     <string name="language_packs_delete_failed">Չհաջողվեց ջնջել լեզվական փաթեթը՝ %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Հասանելի է անցանց</string>
-    <string name="settings_voice_lang_requires_network">Պահանջում է ցանց</string>
+    <string name="settings_voice_lang_yours">Ձեր լեզուները</string>
+    <string name="settings_voice_lang_all">Բոլոր լեզուները</string>
     <string name="settings_voice_lang_loading">Հասանելի լեզուների բեռնում…</string>
     <string name="settings_voice_lang_none">Ձայնի ճանաչման լեզուներ հասանելի չեն</string>
     <string name="settings_voice_lang_none_hint">Համոզվեք, որ Google հավելվածը տեղադրված է, և ձայնի ճանաչումը միացված է</string>

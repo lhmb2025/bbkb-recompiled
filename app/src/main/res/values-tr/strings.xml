@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Sallama hareketi ayarı</string>
     <string name="prefs_shake_tuning_summary">Tetikleme sayıları, ivme eşiği ve zamanlama</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Davranış</string>
+    <string name="settings_category_feedback">Geri bildirim</string>
+    <string name="settings_category_appearance">Görünüm</string>
+    <string name="settings_category_symbols">Semboller</string>
+    <string name="settings_category_keys">Tuşlar</string>
+    <string name="settings_category_device">Cihaz</string>
     <string name="settings_category_behavior_vkb">Davranış</string>
     <string name="settings_category_ckb_gestures">Kapasitif klavye</string>
     <string name="settings_category_on_screen_keyboard">Ekran klavyesi</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Hareketler</string>
     <string name="settings_category_key_popup">Tuş açılır menüsü</string>
     <string name="settings_category_modifiers">Değiştirici tuşlar</string>
+    <string name="settings_category_press_twice_lock">Kilitlemek için iki kez basın</string>
     <string name="settings_category_sound">Ses</string>
     <string name="settings_category_vibrate">Titreşim</string>
     <string name="ckb_action_cursor_mode">İmleç modu</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s” silinsin mi? Bu işlem geri alınamaz.</string>
     <string name="settings_pkb_layouts_delete_title">Düzeni sil</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d tuş</string>
+    <string name="settings_pkb_layouts_keys">%1$d tuş</string>
+    <string name="settings_pkb_layouts_search">Düzenlerde ara</string>
     <string name="settings_pkb_layouts_empty">Henüz özel düzen yok. Bir dosyadan ekleyin.</string>
     <string name="settings_pkb_layouts_keypad">%1$s tuş takımı</string>
     <string name="settings_pkb_layouts_none">Kullanılmıyor</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Boş yerleşime sıfırla</string>
     <string name="customize_slideboard_reset_to_default">Varsayılan düzene sıfırla</string>
     <string name="settings_slideboard_hub_summary">Numara tuşları, tarafları değiştirme ve hızlı ifadeler</string>
-    <string name="settings_symbol_slideboard_link_summary">Numara tuşları ve hızlı ifadeler</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard ayarları</string>
     <string name="customized_symbol_page_add_button_description">Unicode sembol ekle</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Öğrenilen sözcükleri kabul et</string>
     <string name="settings_spellcheck_accept_learned_summary">Yazdıklarınızdan öğrenilen sözcükleri tanır</string>
     <string name="pref_alt_double_tap_lock">Alt kilidi</string>
-    <string name="pref_alt_double_tap_lock_summary">Kilitlemek için Alt tuşuna iki kez basın. Kilidi açmak için tekrar basın.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl kilidi</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Kilitlemek için Ctrl tuşuna iki kez basın. Kilidi açmak için tekrar basın.</string>
     <string name="pref_override_device_meta_state">Yapışkan değiştirici tuşlar</string>
     <string name="pref_override_device_meta_state_summary">Telefonun yerleşik klavye ayarlarından bağımsız olarak her fiziksel klavyede Shift ve Alt tuşlarını kilitle</string>
     <string name="pref_shift_double_tap_lock">Shift kilidi</string>
-    <string name="pref_shift_double_tap_lock_summary">Kilitlemek için Shift tuşuna iki kez basın. Kilidi açmak için tekrar basın.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">İkincil karakterler görünmeden önce tuşun basılı tutulma süresi</string>
     <string name="prefs_key_longpress_delay_title">Tuşa uzun basma gecikmesi</string>
     <string name="prefs_key_preview_animations_summary">Tuşa basma animasyonunun stilini ve zamanlamasını özelleştir</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Dil paketi silindi: %1$s</string>
     <string name="language_packs_already_removed">%1$s zaten kaldırılmış</string>
     <string name="language_packs_delete_failed">Dil paketi silinemedi: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Çevrimdışı kullanılabilir</string>
-    <string name="settings_voice_lang_requires_network">Ağ bağlantısı gerekir</string>
+    <string name="settings_voice_lang_yours">Dilleriniz</string>
+    <string name="settings_voice_lang_all">Tüm diller</string>
     <string name="settings_voice_lang_loading">Kullanılabilir diller yükleniyor…</string>
     <string name="settings_voice_lang_none">Kullanılabilir ses tanıma dili yok</string>
     <string name="settings_voice_lang_none_hint">Google uygulamasının yüklü ve ses tanımanın etkin olduğundan emin olun</string>

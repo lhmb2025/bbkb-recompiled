@@ -76,8 +76,12 @@
     <!-- =========================================== -->
     <!-- Settings — category headers and hierarchy -->
     <!-- =========================================== -->
-    <string name="settings_category_behavior">Behavior</string>
     <string name="settings_category_slideboard">Slideboard</string>
+    <string name="settings_category_feedback">Feedback</string>
+    <string name="settings_category_appearance">Appearance</string>
+    <string name="settings_category_symbols">Symbols</string>
+    <string name="settings_category_keys">Keys</string>
+    <string name="settings_category_device">Device</string>
     <string name="prefs_category_tuning">Tuning</string>
     <string name="prefs_category_diagnostics">Diagnostics</string>
     <string name="prefs_category_developer">Developer</string>
@@ -100,6 +104,7 @@
     <string name="settings_category_gestures">Gestures</string>
     <string name="settings_category_key_popup">Key pop-up</string>
     <string name="settings_category_modifiers">Modifiers</string>
+    <string name="settings_category_press_twice_lock">Press twice to lock</string>
     <string name="settings_category_sound">Sound</string>
     <string name="settings_category_vibrate">Vibration</string>
 
@@ -285,6 +290,8 @@
     <string name="settings_pkb_layouts_delete_message">Delete “%1$s”? This cannot be undone.</string>
     <string name="settings_pkb_layouts_delete_title">Delete layout</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d keys</string>
+    <string name="settings_pkb_layouts_keys">%1$d keys</string>
+    <string name="settings_pkb_layouts_search">Search layouts</string>
     <string name="settings_pkb_layouts_empty">No custom layouts yet. Add one from a file.</string>
     <string name="settings_pkb_layouts_keypad">%1$s keypad</string>
     <string name="settings_pkb_layouts_none">Not in use</string>
@@ -414,7 +421,6 @@
     <string name="customize_slideboard_clear_keypad">Reset to blank layout</string>
     <string name="customize_slideboard_reset_to_default">Reset to default layout</string>
     <string name="settings_slideboard_hub_summary">Number pad, swap sides, and quick phrases</string>
-    <string name="settings_symbol_slideboard_link_summary">Number pad and quick phrases</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard settings</string>
 
@@ -634,16 +640,16 @@
     <!-- ========================== -->
     <string name="pref_alt_double_tap_lock">Alt lock</string>
     <string name="pref_alt_double_tap_lock_key" translatable="false">pref_alt_double_tap_lock</string>
-    <string name="pref_alt_double_tap_lock_summary">Press Alt twice to lock it. Press it again to unlock.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl lock</string>
     <string name="pref_ctrl_double_tap_lock_key" translatable="false">pref_ctrl_double_tap_lock</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Press Ctrl twice to lock it. Press it again to unlock.</string>
     <string name="pref_override_device_meta_state">Sticky modifier keys</string>
     <string name="pref_override_device_meta_state_key" translatable="false">pref_override_device_meta_state</string>
     <string name="pref_override_device_meta_state_summary">Lock Shift and Alt on any physical keyboard, regardless of the phone\'s built-in keyboard settings</string>
     <string name="pref_shift_double_tap_lock">Shift lock</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="pref_shift_double_tap_lock_key" translatable="false">pref_shift_double_tap_lock</string>
-    <string name="pref_shift_double_tap_lock_summary">Press Shift twice to lock it. Press it again to unlock.</string>
     <string name="prefs_key_longpress_delay_summary">Time to hold a key before secondary characters appear</string>
     <string name="prefs_key_longpress_delay_title">Key long-press delay</string>
     <string name="prefs_key_preview_animations_summary">Customize key press animation style and timing</string>
@@ -1189,8 +1195,8 @@
     <string name="language_packs_deleted">Language pack deleted: %1$s</string>
     <string name="language_packs_already_removed">%1$s was already removed</string>
     <string name="language_packs_delete_failed">Failed to delete language pack: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Offline ready</string>
-    <string name="settings_voice_lang_requires_network">Requires network</string>
+    <string name="settings_voice_lang_yours">Your languages</string>
+    <string name="settings_voice_lang_all">All languages</string>
     <string name="settings_voice_lang_loading">Loading available languages…</string>
     <string name="settings_voice_lang_none">No voice recognition languages available</string>
     <string name="settings_voice_lang_none_hint">Make sure Google app is installed and voice recognition is enabled</string>

@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Justering av skakgest</string>
     <string name="prefs_shake_tuning_summary">Antal utlösningar, accelerationströskel och tidsinställning</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Beteende</string>
+    <string name="settings_category_feedback">Feedback</string>
+    <string name="settings_category_appearance">Utseende</string>
+    <string name="settings_category_symbols">Symboler</string>
+    <string name="settings_category_keys">Tangenter</string>
+    <string name="settings_category_device">Enhet</string>
     <string name="settings_category_behavior_vkb">Beteende</string>
     <string name="settings_category_ckb_gestures">Kapacitivt tangentbord</string>
     <string name="settings_category_on_screen_keyboard">Skärmtangentbord</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Gester</string>
     <string name="settings_category_key_popup">Popup för knapp</string>
     <string name="settings_category_modifiers">Modifierare</string>
+    <string name="settings_category_press_twice_lock">Tryck två gånger för att låsa</string>
     <string name="settings_category_sound">Ljud</string>
     <string name="settings_category_vibrate">Vibration</string>
     <string name="ckb_action_cursor_mode">Markörläge</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Vill du radera ”%1$s”? Det går inte att ångra.</string>
     <string name="settings_pkb_layouts_delete_title">Radera layout</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d tangenter</string>
+    <string name="settings_pkb_layouts_keys">%1$d tangenter</string>
+    <string name="settings_pkb_layouts_search">Sök layouter</string>
     <string name="settings_pkb_layouts_empty">Inga anpassade layouter ännu. Lägg till en från en fil.</string>
     <string name="settings_pkb_layouts_keypad">%1$s-tangentbord</string>
     <string name="settings_pkb_layouts_none">Används inte</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Återställ till en tom layout</string>
     <string name="customize_slideboard_reset_to_default">Återställ till standardlayout</string>
     <string name="settings_slideboard_hub_summary">Siffersats, byt sida och snabbfraser</string>
-    <string name="settings_symbol_slideboard_link_summary">Siffersats och snabbfraser</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard-inställningar</string>
     <string name="customized_symbol_page_add_button_description">Lägg till unicode-symbol</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Godkänn inlärda ord</string>
     <string name="settings_spellcheck_accept_learned_summary">Känner igen ord som lärts in från det du skriver</string>
     <string name="pref_alt_double_tap_lock">Alt-lås</string>
-    <string name="pref_alt_double_tap_lock_summary">Tryck två gånger på Alt för att låsa den. Tryck igen för att låsa upp.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl-lås</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Tryck två gånger på Ctrl för att låsa den. Tryck igen för att låsa upp.</string>
     <string name="pref_override_device_meta_state">Låsta modifierare</string>
     <string name="pref_override_device_meta_state_summary">Lås Shift och Alt på alla fysiska tangentbord, oavsett telefonens inbyggda tangentbordsinställningar</string>
     <string name="pref_shift_double_tap_lock">Shift-lås</string>
-    <string name="pref_shift_double_tap_lock_summary">Tryck två gånger på Shift för att låsa den. Tryck igen för att låsa upp.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Tid att hålla ned en tangent innan sekundära tecken visas</string>
     <string name="prefs_key_longpress_delay_title">Fördröjning för långt tryck på tangent</string>
     <string name="prefs_key_preview_animations_summary">Anpassa stil och tajming för animeringen vid tangenttryck</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Språkpaketet har raderats: %1$s</string>
     <string name="language_packs_already_removed">%1$s har redan tagits bort</string>
     <string name="language_packs_delete_failed">Det gick inte att radera språkpaketet: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Fungerar offline</string>
-    <string name="settings_voice_lang_requires_network">Kräver nätverk</string>
+    <string name="settings_voice_lang_yours">Dina språk</string>
+    <string name="settings_voice_lang_all">Alla språk</string>
     <string name="settings_voice_lang_loading">Läser in tillgängliga språk…</string>
     <string name="settings_voice_lang_none">Inga språk för taligenkänning är tillgängliga</string>
     <string name="settings_voice_lang_none_hint">Kontrollera att Google-appen är installerad och att taligenkänning är aktiverad</string>

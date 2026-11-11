@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">शेक जेस्चर ट्यूनिंग</string>
     <string name="prefs_shake_tuning_summary">ट्रिगर संख्या, त्वरण सीमा और समय</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">व्यवहार</string>
+    <string name="settings_category_feedback">फ़ीडबैक</string>
+    <string name="settings_category_appearance">दिखावट</string>
+    <string name="settings_category_symbols">प्रतीक</string>
+    <string name="settings_category_keys">कुंजियां</string>
+    <string name="settings_category_device">डिवाइस</string>
     <string name="settings_category_behavior_vkb">व्यवहार</string>
     <string name="settings_category_ckb_gestures">कैपेसिटिव कीबोर्ड</string>
     <string name="settings_category_on_screen_keyboard">ऑन-स्क्रीन कीबोर्ड</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">जेस्चर</string>
     <string name="settings_category_key_popup">कुंजी पॉप-अप</string>
     <string name="settings_category_modifiers">मॉडिफ़ायर</string>
+    <string name="settings_category_press_twice_lock">लॉक करने के लिए दो बार दबाएं</string>
     <string name="settings_category_sound">ध्वनि</string>
     <string name="settings_category_vibrate">कंपन</string>
     <string name="ckb_action_cursor_mode">कर्सर मोड</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">“%1$s” हटाएं? इसे पहले जैसा नहीं किया जा सकता.</string>
     <string name="settings_pkb_layouts_delete_title">लेआउट हटाएं</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d कुंजियां</string>
+    <string name="settings_pkb_layouts_keys">%1$d कुंजियां</string>
+    <string name="settings_pkb_layouts_search">लेआउट खोजें</string>
     <string name="settings_pkb_layouts_empty">अभी कोई कस्टम लेआउट नहीं है। फ़ाइल से एक जोड़ें।</string>
     <string name="settings_pkb_layouts_keypad">%1$s कीपैड</string>
     <string name="settings_pkb_layouts_none">उपयोग में नहीं</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">रिक्त लेआउट पर रीसेट करें</string>
     <string name="customize_slideboard_reset_to_default">डिफ़ॉल्ट लेआउट पर रीसेट करें</string>
     <string name="settings_slideboard_hub_summary">नंबर पैड, पक्ष बदलना और त्वरित वाक्यांश</string>
-    <string name="settings_symbol_slideboard_link_summary">नंबर पैड और त्वरित वाक्यांश</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard सेटिंग्स</string>
     <string name="customized_symbol_page_add_button_description">युनिकोड प्रतीक जोड़ें</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">सीखे गए शब्द स्वीकार करें</string>
     <string name="settings_spellcheck_accept_learned_summary">आपकी टाइपिंग से सीखे गए शब्दों को पहचानता है</string>
     <string name="pref_alt_double_tap_lock">Alt लॉक</string>
-    <string name="pref_alt_double_tap_lock_summary">लॉक करने के लिए Alt दो बार दबाएं. अनलॉक करने के लिए फिर से दबाएं.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl लॉक</string>
-    <string name="pref_ctrl_double_tap_lock_summary">लॉक करने के लिए Ctrl दो बार दबाएं. अनलॉक करने के लिए फिर से दबाएं.</string>
     <string name="pref_override_device_meta_state">स्टिकी मॉडिफ़ायर कुंजियां</string>
     <string name="pref_override_device_meta_state_summary">फ़ोन की बिल्ट-इन कीबोर्ड सेटिंग्स की परवाह किए बिना किसी भी भौतिक कीबोर्ड पर Shift और Alt लॉक करें</string>
     <string name="pref_shift_double_tap_lock">Shift लॉक</string>
-    <string name="pref_shift_double_tap_lock_summary">लॉक करने के लिए Shift दो बार दबाएं. अनलॉक करने के लिए फिर से दबाएं.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">द्वितीयक वर्ण दिखने से पहले कुंजी दबाए रखने का समय</string>
     <string name="prefs_key_longpress_delay_title">कुंजी लॉन्ग-प्रेस विलंब</string>
     <string name="prefs_key_preview_animations_summary">कुंजी दबाने के एनिमेशन की शैली और समय कस्टमाइज़ करें</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">भाषा पैक हटाया गया: %1$s</string>
     <string name="language_packs_already_removed">%1$s पहले ही हटाया जा चुका था</string>
     <string name="language_packs_delete_failed">भाषा पैक नहीं हटाया जा सका: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">ऑफ़लाइन इस्तेमाल के लिए तैयार</string>
-    <string name="settings_voice_lang_requires_network">नेटवर्क ज़रूरी है</string>
+    <string name="settings_voice_lang_yours">आपकी भाषाएं</string>
+    <string name="settings_voice_lang_all">सभी भाषाएं</string>
     <string name="settings_voice_lang_loading">उपलब्ध भाषाएं लोड हो रही हैं…</string>
     <string name="settings_voice_lang_none">ध्वनि पहचान की कोई भाषा उपलब्ध नहीं है</string>
     <string name="settings_voice_lang_none_hint">पक्का करें कि Google ऐप इंस्टॉल है और ध्वनि पहचान चालू है</string>

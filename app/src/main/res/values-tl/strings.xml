@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Pag-tune ng shake gesture</string>
     <string name="prefs_shake_tuning_summary">Bilang ng trigger, threshold ng acceleration at timing</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Gawi</string>
+    <string name="settings_category_feedback">Feedback</string>
+    <string name="settings_category_appearance">Hitsura</string>
+    <string name="settings_category_symbols">Mga simbolo</string>
+    <string name="settings_category_keys">Mga key</string>
+    <string name="settings_category_device">Device</string>
     <string name="settings_category_behavior_vkb">Gawi</string>
     <string name="settings_category_ckb_gestures">Capacitive keyboard</string>
     <string name="settings_category_on_screen_keyboard">On-screen na keyboard</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Mga galaw</string>
     <string name="settings_category_key_popup">Key popup</string>
     <string name="settings_category_modifiers">Mga modifier</string>
+    <string name="settings_category_press_twice_lock">Pindutin nang dalawang beses para i-lock</string>
     <string name="settings_category_sound">Tunog</string>
     <string name="settings_category_vibrate">Vibration</string>
     <string name="ckb_action_cursor_mode">Cursor mode</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Tanggalin ang “%1$s”? Hindi na ito maa-undo.</string>
     <string name="settings_pkb_layouts_delete_title">Tanggalin ang layout</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d key</string>
+    <string name="settings_pkb_layouts_keys">%1$d key</string>
+    <string name="settings_pkb_layouts_search">Maghanap ng layout</string>
     <string name="settings_pkb_layouts_empty">Wala pang custom na layout. Magdagdag ng isa mula sa file.</string>
     <string name="settings_pkb_layouts_keypad">%1$s na keypad</string>
     <string name="settings_pkb_layouts_none">Hindi ginagamit</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">I-reset sa blangkong layout</string>
     <string name="customize_slideboard_reset_to_default">I-reset sa default na layout</string>
     <string name="settings_slideboard_hub_summary">Number pad, pagpapalit ng gilid at mga mabilisang parirala</string>
-    <string name="settings_symbol_slideboard_link_summary">Number pad at mga mabilisang parirala</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Mga setting ng Slideboard</string>
     <string name="customized_symbol_page_add_button_description">Magdagdag ng unicode na simbolo</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Tanggapin ang mga natutunang salita</string>
     <string name="settings_spellcheck_accept_learned_summary">Kinikilala ang mga salitang natutunan mula sa iyong pagta-type</string>
     <string name="pref_alt_double_tap_lock">Alt lock</string>
-    <string name="pref_alt_double_tap_lock_summary">Pindutin nang dalawang beses ang Alt para i-lock ito. Pindutin ulit para i-unlock.</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl lock</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Pindutin nang dalawang beses ang Ctrl para i-lock ito. Pindutin ulit para i-unlock.</string>
     <string name="pref_override_device_meta_state">Mga sticky modifier key</string>
     <string name="pref_override_device_meta_state_summary">I-lock ang Shift at Alt sa anumang pisikal na keyboard, anuman ang mga built-in na setting ng keyboard ng telepono</string>
     <string name="pref_shift_double_tap_lock">Shift lock</string>
-    <string name="pref_shift_double_tap_lock_summary">Pindutin nang dalawang beses ang Shift para i-lock ito. Pindutin ulit para i-unlock.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Tagal ng pagpindot sa key bago lumabas ang mga pangalawang character</string>
     <string name="prefs_key_longpress_delay_title">Antala ng matagal na pagpindot sa key</string>
     <string name="prefs_key_preview_animations_summary">I-customize ang estilo at timing ng animation ng pagpindot sa key</string>
@@ -1088,8 +1094,8 @@
     <string name="language_packs_deleted">Na-delete ang language pack: %1$s</string>
     <string name="language_packs_already_removed">Naalis na ang %1$s</string>
     <string name="language_packs_delete_failed">Hindi na-delete ang language pack: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Handa nang offline</string>
-    <string name="settings_voice_lang_requires_network">Kailangan ng network</string>
+    <string name="settings_voice_lang_yours">Iyong mga wika</string>
+    <string name="settings_voice_lang_all">Lahat ng wika</string>
     <string name="settings_voice_lang_loading">Nilo-load ang mga available na wika…</string>
     <string name="settings_voice_lang_none">Walang available na wika para sa voice recognition</string>
     <string name="settings_voice_lang_none_hint">Tiyaking naka-install ang Google app at naka-enable ang voice recognition</string>

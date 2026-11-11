@@ -66,7 +66,11 @@
     <string name="prefs_shake_tuning_title">Panyetelan gerakan oyag</string>
     <string name="prefs_shake_tuning_summary">Jumlah pemicu, ambang akselerasi, jeung waktu</string>
     <string name="settings_category_slideboard">Slideboard</string>
-    <string name="settings_category_behavior">Parilaku</string>
+    <string name="settings_category_feedback">Réspon</string>
+    <string name="settings_category_appearance">Tampilan</string>
+    <string name="settings_category_symbols">Simbol</string>
+    <string name="settings_category_keys">Tombol</string>
+    <string name="settings_category_device">Parangkat</string>
     <string name="settings_category_behavior_vkb">Parilaku</string>
     <string name="settings_category_ckb_gestures">Papan tombol kapasitif</string>
     <string name="settings_category_on_screen_keyboard">Papan tombol dina layar</string>
@@ -74,6 +78,7 @@
     <string name="settings_category_gestures">Gerak</string>
     <string name="settings_category_key_popup">Pop-up tombol</string>
     <string name="settings_category_modifiers">Modifier</string>
+    <string name="settings_category_press_twice_lock">Pencét dua kali pikeun ngonci</string>
     <string name="settings_category_sound">Sora</string>
     <string name="settings_category_vibrate">Geter</string>
     <string name="ckb_action_cursor_mode">Modeu kursor</string>
@@ -238,6 +243,8 @@
     <string name="settings_pkb_layouts_delete_message">Pupus “%1$s”? Ieu teu bisa dibolaykeun.</string>
     <string name="settings_pkb_layouts_delete_title">Pupus tata perenah</string>
     <string name="settings_pkb_layouts_details">%1$s · %2$d tombol</string>
+    <string name="settings_pkb_layouts_keys">%1$d tombol</string>
+    <string name="settings_pkb_layouts_search">Sungsi tata perenah</string>
     <string name="settings_pkb_layouts_empty">Can aya tata perenah kustom. Tambahkeun hiji tina file.</string>
     <string name="settings_pkb_layouts_keypad">papan tombol %1$s</string>
     <string name="settings_pkb_layouts_none">Teu dianggo</string>
@@ -329,7 +336,6 @@
     <string name="customize_slideboard_clear_keypad">Balikkeun ka tata perenah kosong</string>
     <string name="customize_slideboard_reset_to_default">Balikkeun ka tata perenah baku</string>
     <string name="settings_slideboard_hub_summary">Papan angka, tukeur posisi, jeung frasa gancang</string>
-    <string name="settings_symbol_slideboard_link_summary">Papan angka jeung frasa gancang</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Setélan Slideboard</string>
     <string name="customized_symbol_page_add_button_description">Tambah simbol Unicode</string>
@@ -509,13 +515,13 @@
     <string name="settings_spellcheck_accept_learned_title">Tampa kecap anu diajar</string>
     <string name="settings_spellcheck_accept_learned_summary">Mikawanoh kecap anu diajar tina ketikan anjeun</string>
     <string name="pref_alt_double_tap_lock">Konci Alt</string>
-    <string name="pref_alt_double_tap_lock_summary">Pencét Alt dua kali pikeun ngonci. Pencét deui pikeun muka koncina.</string>
     <string name="pref_ctrl_double_tap_lock">Konci Ctrl</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Pencét Ctrl dua kali pikeun ngonci. Pencét deui pikeun muka koncina.</string>
     <string name="pref_override_device_meta_state">Tombol modifier lengket</string>
     <string name="pref_override_device_meta_state_summary">Konci Shift jeung Alt dina papan tombol fisik naon waé, teu gumantung kana setélan papan tombol bawaan telepon</string>
     <string name="pref_shift_double_tap_lock">Konci Shift</string>
-    <string name="pref_shift_double_tap_lock_summary">Pencét Shift dua kali pikeun ngonci. Pencét deui pikeun muka koncina.</string>
+    <string name="pref_lock_row_shift">Shift</string>
+    <string name="pref_lock_row_alt">Alt</string>
+    <string name="pref_lock_row_ctrl">Ctrl</string>
     <string name="prefs_key_longpress_delay_summary">Lilana nahan tombol saméméh aksara sekunder muncul</string>
     <string name="prefs_key_longpress_delay_title">Panundaan pencétan lila tombol</string>
     <string name="prefs_key_preview_animations_summary">Atur gaya jeung waktu animasi pencétan tombol</string>
@@ -1073,8 +1079,8 @@
     <string name="language_packs_deleted">Pakét basa dihapus: %1$s</string>
     <string name="language_packs_already_removed">%1$s geus dipiceun saméméhna</string>
     <string name="language_packs_delete_failed">Gagal ngahapus pakét basa: %1$s</string>
-    <string name="settings_voice_lang_offline_ready">Siap luar jaringan</string>
-    <string name="settings_voice_lang_requires_network">Merlukeun jaringan</string>
+    <string name="settings_voice_lang_yours">Basa anjeun</string>
+    <string name="settings_voice_lang_all">Sadaya basa</string>
     <string name="settings_voice_lang_loading">Ngamuat basa nu sayogi…</string>
     <string name="settings_voice_lang_none">Teu aya basa pangenal sora nu sayogi</string>
     <string name="settings_voice_lang_none_hint">Pastikeun aplikasi Google geus diinstal sarta pangenal sora diaktipkeun</string>

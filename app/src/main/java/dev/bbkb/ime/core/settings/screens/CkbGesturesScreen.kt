@@ -131,6 +131,7 @@ fun CkbGesturesScreen(onNavigateBack: () -> Unit) {
                     valueRange = 0..500,
                     stepSize = 10,
                     unit = "ms",
+                    valueOnRow = true,
                     modifier = Modifier.settingsSearchAnchor("pref_CKB_gesture_suppression_timeout"),
                     onValueChange = { newValue ->
                         suppressionTimeout = newValue

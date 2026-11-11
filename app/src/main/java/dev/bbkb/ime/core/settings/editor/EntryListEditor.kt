@@ -81,6 +81,7 @@ import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.ui.RoundCheck
 import dev.bbkb.ime.core.settings.ui.SettingsScaffold
+import dev.bbkb.ime.core.settings.ui.TopBarSearchField
 import dev.bbkb.ime.personaldictionary.util.LocaleUtil
 import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.R
@@ -384,7 +385,7 @@ internal fun EntryListEditorScreen(
             }
         },
         searchField = if (searching && !selecting) {
-            { EntrySearchField(query = searchQuery, onQueryChange = { searchQuery = it }, hint = stringResource(spec.searchHint)) }
+            { TopBarSearchField(query = searchQuery, onQueryChange = { searchQuery = it }, hint = stringResource(spec.searchHint)) }
         } else null,
         actions = {
             if (selecting) {
@@ -643,54 +644,6 @@ private fun EntrySheet(
             PreferenceItem(title = stringResource(R.string.clipboard_menu_delete), icon = ImageVector.vectorResource(R.drawable.ic_settings_m_delete_outline), onClick = onDelete)
         }
     }
-}
-
-/**
- * The search field the top bar holds while searching: a pill like the one on the settings home
- * page, focused as it opens, with a cross to empty it once there is something to empty.
- */
-@Composable
-private fun RowScope.EntrySearchField(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    hint: String,
-) {
-    val colors = MaterialTheme.colorScheme
-    val focusRequester = remember { FocusRequester() }
-    LaunchedEffect(Unit) { focusRequester.requestFocus() }
-    BasicTextField(
-        value = query,
-        onValueChange = onQueryChange,
-        singleLine = true,
-        textStyle = MaterialTheme.typography.bodyLarge.copy(color = colors.onSurface),
-        cursorBrush = SolidColor(colors.primary),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        modifier = Modifier
-            .weight(1f)
-            .padding(end = 12.dp)
-            .focusRequester(focusRequester),
-        decorationBox = { innerTextField ->
-            Row(
-                modifier = Modifier
-                    .height(48.dp)
-                    .background(colors.surfaceContainerHighest, CircleShape)
-                    .padding(start = 20.dp, end = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Box(modifier = Modifier.weight(1f)) {
-                    if (query.isEmpty()) {
-                        Text(hint, style = MaterialTheme.typography.bodyLarge, color = colors.onSurfaceVariant)
-                    }
-                    innerTextField()
-                }
-                if (query.isNotEmpty()) {
-                    IconButton(onClick = { onQueryChange("") }) {
-                        Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_close), stringResource(R.string.settings_common_clear_search))
-                    }
-                }
-            }
-        },
-    )
 }
 
 @Composable

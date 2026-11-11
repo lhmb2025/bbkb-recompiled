@@ -20,8 +20,7 @@ import dev.bbkb.ime.R
  * Configuration loader, device meta state override, the BBKB helper, the custom keypad layouts
  * and the Touch surface helper. The BBKB helper is greyed out where the profile says the phone
  * never needs it; the layouts are offered only where there is a keypad to lay out.
- * The last is shown on every phone and enabled only where the profile declares a touch surface
- * over the keys, like the other rows that depend on what the device has.
+ * The last is shown only where the profile declares a touch surface over the keys.
  * Accessed from Advanced settings.
  */
 @Composable
@@ -75,16 +74,16 @@ fun DeviceCompatibilityScreen(
             enabled = { !helperNotRequired },
             onClick = { onNavigateToKeyboardHelper() },
         ),
-        // Shown everywhere, enabled only where the profile describes a touch surface over the keys
-        // (the Unihertz Titans); elsewhere it is greyed out and its summary says it is not
-        // available on this phone. The summary is the live one-line status, re-read on resume.
+        // Only where the profile describes a touch surface over the keys (the Unihertz Titans):
+        // hiding is for hardware, and on any other phone the row led to a screen holding one
+        // sentence. The summary is the live one-line status, re-read on resume.
         Nav(
             title = R.string.touch_surface_helper_title,
             summary = touchSurface.statusLine,
             icon = drawableIcon(R.drawable.ic_settings_m_touch_app),
             // Literal (== TouchSurfaceAnchors.HELPER): the search-index sync test scans for it.
             modifier = Modifier.settingsSearchAnchor("touch_surface_helper"),
-            enabled = { touchSurface.declared },
+            visible = { touchSurface.declared },
             onClick = { onNavigateToTouchSurfaceHelper() },
         ),
     ))
