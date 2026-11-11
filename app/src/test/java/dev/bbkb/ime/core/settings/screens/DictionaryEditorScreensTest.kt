@@ -666,8 +666,8 @@ class DictionaryEditorScreensTest {
         assertEquals(
             listOf(
                 dictionaryTitle,
-                "No personal words",
-                "Tap Add word to add custom words to your dictionary",
+                "No words yet",
+                "Tap Add word to add a word to your dictionary",
                 "Add word",
             ),
             screen()
@@ -681,8 +681,8 @@ class DictionaryEditorScreensTest {
         assertEquals(
             listOf(
                 dictionaryTitle,
-                "No personal words",
-                "Tap Add word to add custom words to your dictionary",
+                "No words yet",
+                "Tap Add word to add a word to your dictionary",
                 "Failed to load dictionary: store unavailable",
                 "Add word",
             ),

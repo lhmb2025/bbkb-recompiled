@@ -1,6 +1,7 @@
 package dev.bbkb.ime.core.settings.screens
 
 import android.content.Context
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.bbkb.ime.R
@@ -21,9 +22,11 @@ import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardPrefs
 /**
  * Input > Auxiliary input: the tools around typing itself, which the unified input menu
  * launches. The menu rows used to sit under On-screen keyboard, the emoji rows under
- * Suggestions, voice input was its own entry on the Input hub, and the clipboard rows had a
- * screen of their own (its "Clear history" action went with it: switching history off wipes
- * the clips anyway).
+ * Suggestions, and the clipboard rows had a screen of their own (its "Clear history" action
+ * went with it: switching history off wipes the clips anyway). Voice input was linked from here
+ * for a month and went back to the Input hub (2026-11-11). The same day the four shake actions
+ * came here as a closing section; they had a screen of their own, reached from the Input hub,
+ * that held nothing else.
  *
  * "Replace text with emoji" greys out with dynamic search off rather than disappearing, so the
  * row count is fixed. The clipboard keys are [ClipboardPrefs]'s, written out as literals because
@@ -32,7 +35,6 @@ import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardPrefs
 @Composable
 fun AuxiliaryInputScreen(
     onNavigateToCustomizeMenu: () -> Unit,
-    onNavigateToVoiceInput: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
     SettingsScreenHost(R.string.settings_auxiliary_input_title, onNavigateBack, listOf(
@@ -47,21 +49,13 @@ fun AuxiliaryInputScreen(
             ),
             modifier = Modifier.settingsSearchAnchor("pref_uim_enabled"),
         ),
-        // There is nothing to customize while the menu itself is off.
+        // Open while the menu's switch is off: a key can still raise the menu then
+        // (SettingsValues.isUimEnabled), and its order is worth setting up beforehand anyway.
         Nav(
             title = R.string.settings_customize_menu_title,
             icon = drawableIcon(R.drawable.ic_settings_uim_customize),
             summary = R.string.settings_customize_menu_summary,
-            enabled = { it.bool("pref_uim_enabled") },
             onClick = { onNavigateToCustomizeMenu() },
-        ),
-
-        Category(R.string.settings_category_voice),
-        Nav(
-            title = R.string.settings_voice_input_title,
-            icon = drawableIcon(R.drawable.ic_settings_voice_input),
-            summary = R.string.settings_voice_input_summary,
-            onClick = { onNavigateToVoiceInput() },
         ),
 
         // The emoji search switches moved to the two keyboard screens (2026-11-03): the
@@ -97,7 +91,36 @@ fun AuxiliaryInputScreen(
             enabled = { it.bool("pref_clipboard_history_enabled") },
             modifier = Modifier.settingsSearchAnchor("pref_clipboard_link_previews"),
         ),
+
+        Category(R.string.settings_shake_title),
+        // The anchors are written out as literals: the search index test finds them by text.
+        shakeAction("shake_x_action", R.string.settings_shake_x_axis_title, R.drawable.ic_settings_shake_horizontal,
+            Modifier.settingsSearchAnchor("shake_x_action")),
+        shakeAction("shake_y_action", R.string.settings_shake_y_axis_title, R.drawable.ic_settings_shake_vertical,
+            Modifier.settingsSearchAnchor("shake_y_action")),
+        shakeAction("shake_z_action", R.string.settings_shake_z_axis_title, R.drawable.ic_settings_shake_diagonal,
+            Modifier.settingsSearchAnchor("shake_z_action")),
+        shakeAction("shake_fallback_action", R.string.settings_shake_fallback_title, R.drawable.ic_settings_shake_other,
+            Modifier.settingsSearchAnchor("shake_fallback_action")),
     ))
+}
+
+/** One shake's action. All four rows offer the same list and fall back to its first entry. */
+private fun shakeAction(key: String, titleRes: Int, @DrawableRes iconRes: Int, anchor: Modifier) = Choice(
+    store = stringPref(key, "0"),
+    title = titleRes,
+    icon = drawableIcon(iconRes),
+    options = ::shakeActionOptions,
+    modifier = anchor,
+)
+
+/** R.array.prefs_shake_action_options / _values, kept parallel there. */
+private fun shakeActionOptions(context: Context): List<ChoiceOption> {
+    val labels = context.resources.getStringArray(R.array.prefs_shake_action_options)
+    val values = context.resources.getStringArray(R.array.prefs_shake_action_values)
+    return values.mapIndexed { index, value ->
+        ChoiceOption(value, labels.getOrElse(index) { value })
+    }
 }
 
 private fun retentionOptions(context: Context): List<ChoiceOption> = listOf(

@@ -179,15 +179,15 @@ fun VoiceInputSettingsScreen(
                     }
                 )
             
-                // Language Selection (when not using input language)
-                if (builtInVoiceEnabled && !useInputLanguage) {
-                    PreferenceScreen(
-                        title = context.getString(R.string.settings_voice_input_lang_title),
-                        summary = voiceLanguageDisplayName(voiceLanguage),
-                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_language),
-                        onClick = onNavigateToLanguageSelection
-                    )
-                }
+                // The language to listen for when it is not the keyboard's. Always shown, and
+                // greyed out while the switch above (or voice input itself) makes it moot.
+                PreferenceScreen(
+                    title = context.getString(R.string.settings_voice_input_lang_title),
+                    summary = voiceLanguageDisplayName(voiceLanguage),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_language),
+                    enabled = builtInVoiceEnabled && !useInputLanguage,
+                    onClick = onNavigateToLanguageSelection
+                )
 
                 // Download voice languages: when a keyboard is added, ask the recogniser for
                 // its voice language. Android 13+, where a recogniser can be asked at all.

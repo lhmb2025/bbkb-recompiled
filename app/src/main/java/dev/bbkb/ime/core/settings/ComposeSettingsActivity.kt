@@ -45,7 +45,6 @@ import dev.bbkb.ime.core.settings.screens.BackupRestoreScreen
 import dev.bbkb.ime.core.settings.screens.PhysicalLayoutsScreen
 import dev.bbkb.ime.core.settings.screens.PredictionsSuggestionsScreen
 import dev.bbkb.ime.core.settings.screens.QuickPhrasesScreen
-import dev.bbkb.ime.core.settings.screens.ShakeGesturesScreen
 import dev.bbkb.ime.core.settings.screens.CustomizeMenuScreen
 import dev.bbkb.ime.core.settings.screens.SlideboardLayoutScreen
 import dev.bbkb.ime.core.settings.screens.SymbolCustomizationScreen
@@ -215,8 +214,8 @@ fun SettingsNavHost(
             CustomizationScreen(
                 onNavigateToTouchScreenKeyboard = go(SettingsRoute.OnScreenKeyboard),
                 onNavigateToPhysicalKeyboard = go(SettingsRoute.PhysicalKeyboard),
+                onNavigateToVoiceInput = go(SettingsRoute.VoiceInput),
                 onNavigateToAuxiliaryInput = go(SettingsRoute.AuxiliaryInput),
-                onNavigateToShakeGestures = go(SettingsRoute.Shake),
                 onNavigateBack = back
             )
         }
@@ -242,7 +241,6 @@ fun SettingsNavHost(
         composable(SettingsRoute.AuxiliaryInput.route) {
             AuxiliaryInputScreen(
                 onNavigateToCustomizeMenu = go(SettingsRoute.CustomizeMenu),
-                onNavigateToVoiceInput = go(SettingsRoute.VoiceInput),
                 onNavigateBack = back,
             )
         }
@@ -412,11 +410,6 @@ fun SettingsNavHost(
             )
         }
         
-        composable(SettingsRoute.Shake.route) {
-            ShakeGesturesScreen(
-                onNavigateBack = back
-            )
-        }
         
         composable(SettingsRoute.VoiceLanguageSelection.route) {
             VoiceLanguageSelectionScreen(

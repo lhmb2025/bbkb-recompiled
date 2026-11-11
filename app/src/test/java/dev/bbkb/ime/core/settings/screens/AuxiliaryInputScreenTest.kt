@@ -56,7 +56,6 @@ class AuxiliaryInputScreenTest {
     }
 
     private var customizeMenuOpened = 0
-    private var voiceOpened = 0
 
     private fun render() {
         composeRule.setContent {
@@ -64,7 +63,6 @@ class AuxiliaryInputScreenTest {
                 CompositionLocalProvider(LocalSettingsHighlight provides SettingsHighlightController()) {
                     AuxiliaryInputScreen(
                         onNavigateToCustomizeMenu = { customizeMenuOpened++ },
-                        onNavigateToVoiceInput = { voiceOpened++ },
                         onNavigateBack = {},
                     )
                 }
@@ -87,29 +85,15 @@ class AuxiliaryInputScreenTest {
         assertEquals(1, customizeMenuOpened)
     }
 
+    /**
+     * The switch does not close the editor: a key can still raise the menu while the switch is
+     * off, and an editor is never greyed out by the feature's switch.
+     */
     @Test
-    fun `customize menu does not open while the unified input menu is off`() {
+    fun `customize menu opens while the unified input menu is off`() {
         PrefsManager.getPrefs(context).edit().putBoolean("pref_uim_enabled", false).commit()
         render()
         click(R.string.settings_customize_menu_title)
-        assertEquals(0, customizeMenuOpened)
-    }
-
-    @Test
-    fun `turning the unified input menu back on re-enables the row`() {
-        PrefsManager.getPrefs(context).edit().putBoolean("pref_uim_enabled", false).commit()
-        render()
-
-        click(R.string.settings_uim_enable_title)
-        click(R.string.settings_customize_menu_title)
-
         assertEquals(1, customizeMenuOpened)
-    }
-
-    @Test
-    fun `voice input opens from this screen`() {
-        render()
-        click(R.string.settings_voice_input_title)
-        assertEquals(1, voiceOpened)
     }
 }

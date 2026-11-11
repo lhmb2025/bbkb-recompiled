@@ -358,10 +358,13 @@ class VoiceScreensBehaviourTest {
         .onAllNodes(hasClickAction() and hasText(title))
         .fetchSemanticsNodes().isNotEmpty()
 
-    /** The language row exists only while voice input is on and is not following the keyboard. */
+    /**
+     * The language row is always there. It opens the picker only while voice input is on and is
+     * not following the keyboard; otherwise it is greyed out, not taken away.
+     */
     @Test
     @Config(sdk = [34])
-    fun theLanguageRowAppearsOnlyWhenTheKeyboardLanguageIsNotFollowed() {
+    fun theLanguageRowOpensOnlyWhenTheKeyboardLanguageIsNotFollowed() {
         prefs.edit()
             .putBoolean("voice_input_use_input_language", false)
             .putString("voice_input_language_list", "fr-FR")
@@ -379,22 +382,27 @@ class VoiceScreensBehaviourTest {
 
         composeRule.onNodeWithText("Use keyboard language").performClick()
         composeRule.waitForIdle()
-        assertFalse(
-            "following the keyboard language takes the row away",
+        assertTrue(
+            "following the keyboard language greys the row out; it does not take it away",
             "Voice input language" in rendered(),
         )
+        composeRule.onNodeWithText("Voice input language").performClick()
+        assertEquals("a greyed-out row opens nothing", 1, navigations)
     }
 
     @Test
     @Config(sdk = [34])
-    fun theLanguageRowIsHiddenWhileVoiceInputIsOff() {
+    fun theLanguageRowIsGreyedOutWhileVoiceInputIsOff() {
         prefs.edit()
             .putBoolean("voice_input_enabled", false)
             .putBoolean("voice_input_use_input_language", false)
             .commit()
-        setContent { VoiceInputSettingsScreen({}, {}) }
+        var navigations = 0
+        setContent { VoiceInputSettingsScreen({ navigations++ }, {}) }
 
-        assertFalse("Voice input language" in rendered())
+        assertTrue("Voice input language" in rendered())
+        composeRule.onNodeWithText("Voice input language").performClick()
+        assertEquals(0, navigations)
     }
 
     // ========================================================================

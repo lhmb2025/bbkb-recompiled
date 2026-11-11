@@ -69,7 +69,6 @@ sealed class SettingsRoute(val route: String, val title: String) {
     // Other sub-screens
     object LanguageSwitching : SettingsRoute("language_switching", "Language Switching")
     object QuickPhrases : SettingsRoute("quick_phrases", "Quick Phrases")
-    object Shake : SettingsRoute("shake", "Shake Gestures")
     object VoiceInput : SettingsRoute("voice_input", "Voice Input Settings")
     object AuxiliaryInput : SettingsRoute("auxiliary_input", "Auxiliary input")
     object VoiceLanguageSelection : SettingsRoute("voice_language_selection", "Voice Input Language")
@@ -141,7 +140,8 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 DeviceCompatibility.route -> DeviceCompatibility
                 LanguageSwitching.route -> LanguageSwitching
                 QuickPhrases.route -> QuickPhrases
-                Shake.route -> Shake
+                // "shake" (its own screen until 2026-11-11) opens Auxiliary input.
+                "shake" -> AuxiliaryInput
                 VoiceInput.route -> VoiceInput
                 AuxiliaryInput.route -> AuxiliaryInput
                 VoiceLanguageSelection.route -> VoiceLanguageSelection

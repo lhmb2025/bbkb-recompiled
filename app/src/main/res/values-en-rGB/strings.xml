@@ -87,8 +87,6 @@
     <string name="user_dict_settings_add_dialog_confirm">OK</string>
     <string name="user_dict_settings_all_languages">For all languages</string>
     <string name="vibrate_on_keypress">Vibrate</string>
-    <string name="vkb_control_key_summary">Use the ?123 key as the Ctrl key</string>
-    <string name="vkb_control_key_title">Touch screen keyboard Ctrl key</string>
     <string name="voice_input_lang_pack_available_offline_mode">Please download the language model for %1$s for offline use or connect to Wi-Fi.</string>
     <string name="voice_input_manage_language_title">Manage Downloaded Languages</string>
     <string name="voice_input_permission_rationale">If you want to enable voice input, tap “Ask for permission”.</string>

@@ -126,8 +126,8 @@ class EntryListSpecTest {
         assertEquals("Deleted 1 word", count(spec.deleted, 1))
         assertEquals("Deleted 4 words", count(spec.deleted, 4))
         assertEquals("Failed to delete word", text(spec.deleteFailed))
-        assertEquals("No personal words", text(spec.emptyTitle))
-        assertEquals("Tap Add word to add custom words to your dictionary", text(spec.emptyHint))
+        assertEquals("No words yet", text(spec.emptyTitle))
+        assertEquals("Tap Add word to add a word to your dictionary", text(spec.emptyHint))
         assertEquals(
             "Failed to load dictionary: store unavailable",
             text(spec.loadFailed, "store unavailable")

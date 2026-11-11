@@ -764,14 +764,14 @@
       },
       {
         "locale": "zh_HK",
-        "name": "Chinese Hongkong",
+        "name": "Chinese (Hong Kong)",
         "file": "Blackberry_1305_r1-22-2-5_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_big_ALM.ldb",
         "sha256": "a82fa0bfd37fbaab1fe4f14f3e90bea464ca43ad8d322ddaf2a0b8cf477bd580",
         "size": 6826277
       },
       {
         "locale": "zh_TW",
-        "name": "Chinese Taiwan",
+        "name": "Chinese (Taiwan)",
         "file": "Blackberry_1305_r1-15-2-6_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_bigTW_ALM.ldb",
         "sha256": "10f954d45f170ed95f4100b20cd38c641c92df9d399c5199c49a4a5799ee4fc5",
         "size": 7147344

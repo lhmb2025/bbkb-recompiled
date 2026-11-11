@@ -41,10 +41,11 @@ fun SymbolCustomizationScreen(
             modifier = Modifier.settingsSearchAnchor("symbol_customization"),
         ),
         groupBreak(),
+        // The page editors stay open while their page is off, so a page can be filled in before
+        // it is shown. "Show page first" only tunes a page that is on, so it greys out.
         Nav(
             title = R.string.settings_symbol_customize_page_title,
             summary = R.string.settings_symbol_customize_page_summary,
-            enabled = { it.bool(VKB_ENABLED) },
             onClick = { onNavigateToCustomSymbolPageVKB() },
         ),
         Toggle(
@@ -66,7 +67,6 @@ fun SymbolCustomizationScreen(
         Nav(
             title = R.string.settings_symbol_customize_page_title,
             summary = R.string.settings_symbol_customize_page_summary,
-            enabled = { it.bool(PKB_ENABLED) },
             visible = { it.hasPhysicalKeyboard },
             onClick = { onNavigateToCustomSymbolPagePKB() },
         ),

@@ -88,21 +88,20 @@
     <string name="settings_dict_add_reverted_words_title">Show add word button</string>
     <string name="settings_dict_add_reverted_words_summary">After backspace undoes a correction, show a button to add the word</string>
     <string name="settings_auxiliary_input_title">Auxiliary input</string>
-    <string name="settings_auxiliary_input_summary">Input menu, voice input and other tools</string>
+    <string name="settings_auxiliary_input_summary">Input menu, clipboard, and shake actions</string>
     <string name="settings_category_input_menu">Input menu</string>
     <string name="settings_category_emoji">Emoji</string>
-    <string name="settings_category_voice">Voice</string>
     <string name="settings_autocorrect_enable_title">Enable auto-correction</string>
     <string name="settings_autocorrect_enable_summary">Correct words as you type. Press backspace to undo a correction.</string>
     <string name="settings_category_behavior_vkb">Behavior</string>
-    <string name="settings_category_ckb_gestures">Capacitive keyboard gestures</string>
+    <string name="settings_category_ckb_gestures">Capacitive keyboard</string>
     <string name="settings_category_on_screen_keyboard">On-screen keyboard</string>
     <string name="settings_category_physical_keyboard">Physical keyboard</string>
     <string name="settings_category_gestures">Gestures</string>
-    <string name="settings_category_key_popup">Key popup</string>
+    <string name="settings_category_key_popup">Key pop-up</string>
     <string name="settings_category_modifiers">Modifiers</string>
     <string name="settings_category_sound">Sound</string>
-    <string name="settings_category_vibrate">Vibrate</string>
+    <string name="settings_category_vibrate">Vibration</string>
 
     <!-- ===================== -->
     <!-- Settings — gestures -->
@@ -123,16 +122,16 @@
     <string name="ckb_gesture_slot_swipe_left">Swipe left</string>
     <string name="ckb_gesture_slot_swipe_right">Swipe right</string>
     <string name="ckb_gestures_configure_summary">Assign an action to each gesture</string>
-    <string name="ckb_gestures_configure_title">Configure CKB gestures</string>
+    <string name="ckb_gestures_configure_title">Configure capacitive gestures</string>
     <string name="ckb_gestures_developer_category">DEVELOPER</string>
     <string name="ckb_gestures_enable_summary">Flicks, swipes, double-tap and hold on the capacitive keyboard</string>
-    <string name="ckb_gestures_enable_title">CKB gestures</string>
-    <string name="ckb_gestures_export_none">No captured grid yet — open the keyboard on this device first</string>
+    <string name="ckb_gestures_enable_title">Capacitive gestures</string>
+    <string name="ckb_gestures_export_none">No captured grid yet. Open the keyboard on this device first.</string>
     <string name="ckb_gestures_export_summary">Write the captured key grid as a &lt;ckb-key-grid&gt; snippet to app files, to paste into the device config. Open the keyboard once first so it can capture.</string>
     <string name="ckb_gestures_export_title">Export CKB geometry</string>
     <string name="ckb_gestures_export_written">Wrote %s</string>
     <string name="ckb_gestures_reserved_note">Swiping up (commit the suggestion under your finger) is reserved</string>
-    <string name="ckb_gestures_screen_title">CKB Gestures</string>
+    <string name="ckb_gestures_screen_title">Capacitive gestures</string>
     <string name="settings_gesture_accent_max_speed_summary">Maximum speed multiplier for accent changes</string>
     <string name="settings_gesture_accent_max_speed_title">Scroll accents change max speed multiplier</string>
     <string name="settings_gesture_accent_suppression_summary">Timeout for accent selection suppression</string>
@@ -210,26 +209,26 @@
     <string name="settings_autocorrect_mode_modest">Modest</string>
     <string name="settings_autocorrect_mode_off">Off</string>
     <string name="settings_autocorrect_pkb_title">Physical keyboard correction</string>
-    <string name="settings_autocorrect_vkb_title">Touch screen keyboard correction</string>
+    <string name="settings_autocorrect_vkb_title">On-screen keyboard correction</string>
     <string name="settings_correction_summary">Auto-correction, capitalization, double-space</string>
     <string name="settings_correction_title">Correction</string>
     <string name="settings_status_not_required">Not required for this phone</string>
     <string name="settings_suggestion_correction_summary">Suggestions, auto-correction, and dictionaries</string>
     <string name="settings_suggestion_correction_title">Assistance</string>
-    <string name="settings_suggestion_summary">Show word suggestions while typing</string>
+    <string name="settings_suggestion_summary">Suggestion display and sources</string>
     <string name="settings_suggestion_title">Suggestions</string>
 
     <!-- ====================================== -->
     <!-- Settings — dictionaries and learning -->
     <!-- ====================================== -->
     <string name="settings_dict_dynamic_learning_summary">Learn new words from your typing</string>
-    <string name="settings_dict_dynamic_learning_title">Enable dynamic learning</string>
-    <string name="settings_dict_learned_words_summary">Manage words learned from your typing</string>
+    <string name="settings_dict_dynamic_learning_title">Enable learning</string>
+    <string name="settings_dict_learned_words_summary">Words the keyboard has learned</string>
     <string name="settings_dict_learned_words_title">Learned words</string>
     <string name="settings_dict_add_to_dictionary_note">Words added to your dictionary will be suggested during typing and won\'t be marked as misspelled</string>
     <string name="settings_dict_text_shortcuts_summary">Create shortcuts that expand to phrases</string>
     <string name="settings_dict_text_shortcuts_title">Text shortcuts</string>
-    <string name="settings_dict_user_dictionary_summary">Add and edit personal words</string>
+    <string name="settings_dict_user_dictionary_summary">Words you have added</string>
     <string name="settings_dict_user_dictionary_title">User dictionary</string>
     <string name="settings_dictionaries_learning_title">Learning</string>
     <string name="settings_dictionary_learning_summary">User dictionary, shortcuts, learned words</string>
@@ -255,16 +254,16 @@
     <string name="control_key_setting_left_shift">Left shift key</string>
     <string name="control_key_setting_off">None</string>
     <string name="control_key_setting_right_shift">Right shift key</string>
-    <string name="settings_physical_keyboard_summary">Settings for physical keyboard input</string>
+    <string name="settings_physical_keyboard_summary">Keys, gestures, and modifiers</string>
     <string name="settings_physical_keyboard_title">Physical keyboard</string>
     <string name="settings_pkb_active_language_alphabet_summary_off">Keys type the system default alphabet</string>
     <string name="settings_pkb_active_language_alphabet_summary_on">Keys type the active language\'s alphabet</string>
     <string name="settings_pkb_active_language_alphabet_title">Use active language\'s alphabet for physical keyboard</string>
     <string name="settings_pkb_alt_sym_shortcut_disabled">Disabled</string>
     <string name="settings_pkb_alt_sym_shortcut_title">Alt + Sym shortcut</string>
-    <string name="settings_pkb_ctrl_key_behavior_title">Assign ctrl key</string>
-    <string name="settings_pkb_dictation_key_summary_off">Microphone key defaults to alt character</string>
-    <string name="settings_pkb_dictation_key_summary_on">Microphone key defaults to voice input</string>
+    <string name="settings_pkb_ctrl_key_behavior_title">Assign Ctrl key</string>
+    <string name="settings_pkb_dictation_key_summary_off">The microphone key types its Alt character</string>
+    <string name="settings_pkb_dictation_key_summary_on">The microphone key starts voice input</string>
     <string name="settings_pkb_dictation_key_title">Dictation key</string>
     <string name="settings_pkb_hold_action_off">Off</string>
     <string name="settings_pkb_hold_action_off_summary">Hold a key to show accents only</string>
@@ -273,7 +272,7 @@
     <string name="settings_pkb_hold_action_title">Hold action</string>
     <string name="settings_pkb_hold_action_uppercase">Capitalize</string>
     <string name="settings_pkb_hold_action_uppercase_summary">Continue holding past accents to type uppercase</string>
-    <string name="settings_pkb_keyboard_helper_summary">Accessibility service for third-party keyboards</string>
+    <string name="settings_pkb_keyboard_helper_summary">Helps BBKB detect when special keys are pressed on some phones</string>
     <string name="settings_pkb_keyboard_helper_title">BBKB helper</string>
     <string name="settings_pkb_layouts_add">Add layout</string>
     <string name="settings_pkb_layouts_add_failed">Could not read the layout</string>
@@ -366,7 +365,7 @@
     <string name="settings_color_scheme_title">Color scheme</string>
     <string name="settings_use_system_colors_title">Dynamic color</string>
     <string name="settings_use_system_colors_summary">Tint the keyboard and settings with colors from your wallpaper</string>
-    <string name="settings_appearance_layout_summary">Theme, slideboard, symbols, and defaults</string>
+    <string name="settings_appearance_layout_summary">Theme, keyboard height, and symbols</string>
     <string name="settings_appearance_layout_title">Personalization</string>
     <string name="settings_appearance_light">Light</string>
     <string name="settings_keyboard_height_compact">Compact</string>
@@ -374,7 +373,7 @@
     <string name="settings_keyboard_height_extra_compact">Extra compact</string>
     <string name="settings_keyboard_height_regular">Regular</string>
     <string name="settings_keyboard_height_title">Keyboard height</string>
-    <string name="settings_keyboard_summary">Typing feedback, gestures, slideboard, symbols</string>
+    <string name="settings_keyboard_summary">Gestures, touch feedback, and slideboard</string>
     <string name="settings_keyboard_theme_title">Keyboard theme</string>
     <string name="settings_keyboard_title">On-screen keyboard</string>
     <string name="settings_touch_feedback_summary">Vibration, sound, and key pop-up</string>
@@ -387,14 +386,14 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Quick phrases on left, number pad on right</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Number pad on left, quick phrases on right</string>
     <string name="settings_vkb_slideboard_swap_title">Swap slideboard locations</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Swipe down on keyboard to dismiss</string>
+    <string name="settings_vkb_swipe_down_dismiss_summary">Swipe down on the keyboard to hide it</string>
     <string name="settings_vkb_swipe_down_dismiss_title">Swipe down to dismiss</string>
     <string name="settings_vkb_swipe_gestures_summary">Swipe left to delete a word and swipe down to show symbols</string>
-    <string name="settings_vkb_swipe_gestures_title">Enable swipe gestures</string>
-    <string name="settings_vkb_type_by_swiping_summary">Swipe to type on touch screen keyboard</string>
+    <string name="settings_vkb_swipe_gestures_title">Swipe gestures</string>
+    <string name="settings_vkb_type_by_swiping_summary">Slide across the keys to type a word</string>
     <string name="settings_vkb_type_by_swiping_title">Type by swiping</string>
     <string name="vkb_control_key_summary">Press and hold ?123 to enable Ctrl mode</string>
-    <string name="vkb_control_key_title">Enable Ctrl key</string>
+    <string name="vkb_control_key_title">Ctrl key</string>
 
     <!-- =============================== -->
     <!-- Settings — key press feedback -->
@@ -415,7 +414,7 @@
     <string name="customize_slideboard_clear_keypad">Reset to blank layout</string>
     <string name="customize_slideboard_reset_to_default">Reset to default layout</string>
     <string name="settings_slideboard_hub_summary">Number pad, swap sides, and quick phrases</string>
-    <string name="settings_symbol_slideboard_link_summary">Customize the Slideboard number pad and quick phrases</string>
+    <string name="settings_symbol_slideboard_link_summary">Number pad and quick phrases</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard settings</string>
 
@@ -429,9 +428,9 @@
     <string name="customized_symbols_page_reset_umlaut_layout">Reset to umlaut layout</string>
     <string name="settings_symbol_custom_page_first_summary">Show custom symbol page before default page</string>
     <string name="settings_symbol_custom_page_first_title">Show page first</string>
-    <string name="settings_symbol_customization_summary">Manage custom symbol pages</string>
+    <string name="settings_symbol_customization_summary">Custom symbol pages and number pad</string>
     <string name="settings_symbol_customization_title">Customize symbols</string>
-    <string name="settings_symbol_customize_page_summary">Edit custom symbol page layout</string>
+    <string name="settings_symbol_customize_page_summary">Choose custom symbols</string>
     <string name="settings_symbol_customize_page_title">Customize symbol page</string>
     <string name="settings_symbol_enable_customization_summary">Show third symbol page with custom contents</string>
     <string name="settings_symbol_enable_customization_title">Enable custom symbol page</string>
@@ -505,9 +504,9 @@
     <string name="settings_voice_recognizer_system_default">System default</string>
     <string name="settings_voice_recognizer_system_default_named">System default (%1$s)</string>
     <string name="settings_voice_recognizer_title">Speech recognizer</string>
-    <string name="settings_voice_show_partial_results_summary">Show what is heard while you are still speaking, then replace it with the final result</string>
+    <string name="settings_voice_show_partial_results_summary">Show words as you speak, then correct them when you finish</string>
     <string name="settings_voice_show_partial_results_title">Show words as you speak</string>
-    <string name="settings_voice_use_keyboard_lang_summary">Use current keyboard language for voice input</string>
+    <string name="settings_voice_use_keyboard_lang_summary">Listen in the language you are typing in</string>
     <string name="settings_voice_use_keyboard_lang_title">Use keyboard language</string>
     <string name="voice_input_lang_pack_available_offline_mode">Please download the language model for %1$s for offline use or connect to Wi-Fi.</string>
     <string name="voice_input_manage_language_title">Manage Downloaded Languages</string>
@@ -518,16 +517,16 @@
     <!-- Settings — device compatibility and debug -->
     <!-- =========================================== -->
     <string name="settings_advanced_gesture_params_title">Advanced gesture parameters</string>
-    <string name="settings_advanced_summary">Device compatibility, debugging, and reset</string>
+    <string name="settings_advanced_summary">Device compatibility, backup, and reset</string>
     <string name="settings_advanced_title">Advanced</string>
     <string name="settings_debug_summary">Developer options and advanced tuning</string>
     <string name="settings_debug_title">Debug settings</string>
-    <string name="settings_device_compatibility_summary">Device configuration and keyboard helper</string>
+    <string name="settings_device_compatibility_summary">Device configuration and helpers</string>
     <string name="settings_device_compatibility_title">Device compatibility</string>
     <string name="settings_device_config_category_custom">Custom</string>
     <string name="settings_device_config_category_preloaded">Preloaded</string>
     <string name="settings_device_config_category_standard">Standard</string>
-    <string name="settings_device_configuration_summary">Select or import device input configurations</string>
+    <string name="settings_device_configuration_summary">Select or import your phone\'s matching profile</string>
     <string name="settings_device_configuration_title">Device configuration</string>
     <!-- Touch surface helper (Unihertz Titans). "Shizuku", "Scroll assistant" and "Cursor
          assistant" are product and OEM page names: left as they are. -->
@@ -577,7 +576,7 @@
     <!-- ======================================== -->
     <string name="pref_show_pkb_modifier_status_icon">Show modifier status icon</string>
     <string name="pref_show_pkb_modifier_status_icon_key" translatable="false">pref_show_pkb_modifier_status_icon</string>
-    <string name="pref_show_pkb_modifier_status_icon_summary">Display Shift/Alt modifier indicator in status bar when using physical keyboard</string>
+    <string name="pref_show_pkb_modifier_status_icon_summary">Show active Shift, Alt, or Ctrl keys in the status bar</string>
     <string name="settings_pred_block_offensive_summary">Mask potentially offensive words in voice dictation</string>
     <string name="settings_pred_block_offensive_title">Block offensive words</string>
     <string name="settings_pred_contacts_permission_title">Contacts permission</string>
@@ -586,13 +585,13 @@
     <string name="settings_pred_contacts_title">Suggest from contacts</string>
     <string name="settings_pred_emoji_summary">Suggest emojis when typing</string>
     <string name="settings_pred_emoji_title">Emoji suggestions</string>
-    <string name="settings_pred_flick_animation_summary">Animate the word upward when committing a suggestion with a swipe</string>
+    <string name="settings_pred_flick_animation_summary">Animate a suggestion flying up when you flick it</string>
     <string name="settings_pred_flick_animation_title">Show flick commit animation</string>
-    <string name="settings_pred_force_suggestions_summary">Show the suggestion strip even in apps that ask the keyboard to hide it. Does not apply to password fields.</string>
+    <string name="settings_pred_force_suggestions_summary">Show suggestions in apps that ask to hide them, except in password fields</string>
     <string name="settings_pred_force_suggestions_title">Force suggestions</string>
-    <string name="settings_pred_next_word_summary">Suggest next word based on context</string>
+    <string name="settings_pred_next_word_summary">Suggest words likely to come next</string>
     <string name="settings_pred_next_word_title">Next word suggestions</string>
-    <string name="settings_pred_on_key_summary">Show suggestions on virtual keyboard as you type</string>
+    <string name="settings_pred_on_key_summary">Show suggestions above the keys of the on-screen keyboard</string>
     <string name="settings_pred_on_key_title">On-key suggestions</string>
     <string name="settings_pred_personalized_summary">Include words learned from your typing</string>
     <string name="settings_pred_personalized_title">Suggest learned words</string>
@@ -633,18 +632,18 @@
     <!-- ========================== -->
     <!-- Settings — modifier keys -->
     <!-- ========================== -->
-    <string name="pref_alt_double_tap_lock">Enable Alt double-click lock</string>
+    <string name="pref_alt_double_tap_lock">Alt lock</string>
     <string name="pref_alt_double_tap_lock_key" translatable="false">pref_alt_double_tap_lock</string>
-    <string name="pref_alt_double_tap_lock_summary">Double-clicking Alt will lock it on. Clicking Alt again will turn it off.</string>
-    <string name="pref_ctrl_double_tap_lock">Enable Ctrl double-click lock</string>
+    <string name="pref_alt_double_tap_lock_summary">Press Alt twice to lock it. Press it again to unlock.</string>
+    <string name="pref_ctrl_double_tap_lock">Ctrl lock</string>
     <string name="pref_ctrl_double_tap_lock_key" translatable="false">pref_ctrl_double_tap_lock</string>
-    <string name="pref_ctrl_double_tap_lock_summary">Double-clicking Ctrl will lock it on. Clicking Ctrl again will turn it off.</string>
-    <string name="pref_override_device_meta_state">Override device meta state</string>
+    <string name="pref_ctrl_double_tap_lock_summary">Press Ctrl twice to lock it. Press it again to unlock.</string>
+    <string name="pref_override_device_meta_state">Sticky modifier keys</string>
     <string name="pref_override_device_meta_state_key" translatable="false">pref_override_device_meta_state</string>
-    <string name="pref_override_device_meta_state_summary">Enable sticky modifiers (shift/alt lock) on physical keyboards regardless of device KCM configuration</string>
-    <string name="pref_shift_double_tap_lock">Enable Shift double-click lock</string>
+    <string name="pref_override_device_meta_state_summary">Lock Shift and Alt on any physical keyboard, regardless of the phone\'s built-in keyboard settings</string>
+    <string name="pref_shift_double_tap_lock">Shift lock</string>
     <string name="pref_shift_double_tap_lock_key" translatable="false">pref_shift_double_tap_lock</string>
-    <string name="pref_shift_double_tap_lock_summary">Double-clicking Shift will lock it on. Clicking Shift again will turn it off.</string>
+    <string name="pref_shift_double_tap_lock_summary">Press Shift twice to lock it. Press it again to unlock.</string>
     <string name="prefs_key_longpress_delay_summary">Time to hold a key before secondary characters appear</string>
     <string name="prefs_key_longpress_delay_title">Key long-press delay</string>
     <string name="prefs_key_preview_animations_summary">Customize key press animation style and timing</string>
@@ -664,16 +663,16 @@
     <string name="pref_accessibility_service_disabled">Accessibility service disabled</string>
     <string name="pref_accessibility_service_enabled">Accessibility service enabled</string>
     <string name="pref_emoji_search_pkb_summary">When the emoji board is open, use the keyboard to search</string>
-    <string name="pref_emoji_search_title">Enable emoji search</string>
-    <string name="pref_emoji_search_vkb_summary">Filter emojis with the current uncommitted (underlined) text</string>
+    <string name="pref_emoji_search_title">Emoji search</string>
+    <string name="pref_emoji_search_vkb_summary">With the emoji board open, the word you are typing filters the emojis</string>
     <string name="pref_emoji_search_replace_text_summary_off">Selecting an emoji inserts it after the typed text</string>
     <string name="pref_emoji_search_replace_text_summary_on">Selecting an emoji replaces the typed text</string>
     <string name="pref_emoji_search_replace_text_title">Replace text with emoji</string>
-    <string name="pref_key_interceptor_enabled">Enable special key support</string>
-    <string name="pref_key_interceptor_enabled_summary">Use accessibility service to capture Emoji, SYM, and Voice keys</string>
+    <string name="pref_key_interceptor_enabled">Special keys</string>
+    <string name="pref_key_interceptor_enabled_summary">Let the helper catch the Emoji, Sym, and voice keys</string>
     <string name="pref_manage_accessibility_service">Manage accessibility service</string>
-    <string name="pref_preprocess_all_keys">Process all key events</string>
-    <string name="pref_preprocess_all_keys_summary">Use accessibility service to process key events through IME even without an active text field</string>
+    <string name="pref_preprocess_all_keys">Keys outside text fields</string>
+    <string name="pref_preprocess_all_keys_summary">Send key presses to BBKB even when no text field is selected</string>
     <string name="pref_quick_phrase_1_default">How are you?</string>
     <string name="pref_quick_phrase_2_default">On my way</string>
     <string name="pref_quick_phrase_3_default">That\'s great!</string>
@@ -683,9 +682,9 @@
     <string name="prefs_acceleration_threshold_title">Acceleration threshold</string>
     <string name="prefs_advanced_gesture_thresholds_summary">Fine-tune gesture timing, distances, and cursor control</string>
     <string name="prefs_advanced_gesture_thresholds_title">Advanced gesture thresholds</string>
-    <string name="prefs_advanced_settings_title">Debug Settings</string>
-    <string name="prefs_ckb_gesture_activation_delay_summary">Delay before swipe gestures activate on capacitive keyboard</string>
-    <string name="prefs_ckb_gesture_activation_delay_title">CKB gesture activation delay</string>
+    <string name="prefs_advanced_settings_title">Debug settings</string>
+    <string name="prefs_ckb_gesture_activation_delay_summary">Delay before a swipe counts as a gesture</string>
+    <string name="prefs_ckb_gesture_activation_delay_title">Gesture activation delay</string>
     <string name="prefs_disable_auto_scroll_summary">Keep slideboard stationary instead of following finger movement</string>
     <string name="prefs_disable_auto_scroll_title">Disable auto-scroll</string>
     <string name="prefs_fallback_trigger_count_summary">Total shakes (any direction) for fallback action</string>
@@ -698,7 +697,7 @@
     <string name="prefs_reset_time_summary">Time before shake count resets to zero</string>
     <string name="prefs_reset_time_title">Reset time</string>
     <!-- Debug-only, and deliberately untranslated: the rows it reveals are decoder instrumentation. -->
-    <string name="prefs_show_ckb_developer_settings_summary" translatable="false">Adds the DEVELOPER category — sensor map capture and export — to the CKB gestures screen</string>
+    <string name="prefs_show_ckb_developer_settings_summary" translatable="false">Adds the Developer category (sensor map capture and export) to the capacitive gestures screen</string>
     <string name="prefs_show_ckb_developer_settings_title" translatable="false">Show CKB developer settings</string>
     <!-- Debug-only, and deliberately untranslated: the builder it reveals is unfinished. -->
     <string name="prefs_show_device_profile_builder_summary" translatable="false">Adds the THIS DEVICE section and its profile builder row to the Device configuration screen</string>
@@ -708,8 +707,8 @@
     <string name="settings_about_title">About</string>
     <string name="settings_about_source_code">Source code</string>
     <string name="settings_about_source_code_summary">View the GitHub repository</string>
-    <string name="settings_about_report_problem">Report a problem</string>
-    <string name="settings_about_discord_summary">Join the official Discord community</string>
+    <string name="settings_about_report_problem">Help and feedback</string>
+    <string name="settings_about_discord_summary">Ask questions and report problems on Discord</string>
     <string name="settings_about_licenses_title">Open-source licenses</string>
     <string name="settings_about_licenses_intro">BBKB is built with these open-source projects</string>
     <string name="settings_about_copy_version">Copy version</string>
@@ -766,16 +765,16 @@
     <string name="settings_customize_menu_hidden_header">Not shown on keyboard</string>
     <string name="settings_customize_menu_instructions">Touch and hold a shortcut, then drag to reorder. The first four appear on the keyboard\u2019s input menu.</string>
     <string name="settings_customize_menu_summary">Choose and reorder the input menu shortcuts</string>
-    <string name="settings_customize_menu_title">Customize unified input menu</string>
+    <string name="settings_customize_menu_title">Customize input menu</string>
     <string name="settings_default_currency_summary">Select the currency to display on the keyboard</string>
     <string name="settings_default_currency_title">Default currency</string>
-    <string name="settings_lang_quick_switch_summary">Enable quick switching between the last two languages</string>
-    <string name="settings_lang_quick_switch_title">Show quick switch key</string>
+    <string name="settings_lang_quick_switch_summary">Show a key that switches between your last two languages</string>
+    <string name="settings_lang_quick_switch_title">Language quick-switch key</string>
     <string name="settings_lang_spacebar_switch_summary">Swipe the spacebar to switch language</string>
     <string name="settings_lang_spacebar_switch_title">Spacebar swipe gesture</string>
     <string name="settings_lang_assign_pkb_shortcut_title">Assign language switching shortcut</string>
     <string name="settings_lang_assign_pkb_shortcut_summary">Set a physical key to switch language</string>
-    <string name="settings_lang_assign_ckb_gesture_title">Assign capacitive keyboard gesture</string>
+    <string name="settings_lang_assign_ckb_gesture_title">Assign capacitive gesture</string>
     <string name="settings_lang_assign_ckb_gesture_summary">Set a gesture on the keyboard to switch language</string>
     <string name="settings_preferences_summary">On-screen and physical keyboards, voice, and gestures</string>
     <string name="settings_preferences_title">Input</string>
@@ -790,19 +789,17 @@
     <string name="settings_screen_type_by_swiping_unavailable">Type by swiping is not available in your language</string>
     <string name="settings_search_hint">Search settings</string>
     <string name="settings_search_no_results">No settings found</string>
-    <string name="settings_shake_fallback_title">Fallback action</string>
-    <string name="settings_shake_info_summary">Configure actions triggered by shaking your device</string>
-    <string name="settings_shake_summary">Map shake gestures to keyboard actions</string>
+    <string name="settings_shake_fallback_title">Any other shake</string>
     <string name="settings_shake_title">Shake gestures</string>
-    <string name="settings_shake_x_axis_title">Shake X-axis action</string>
-    <string name="settings_shake_y_axis_title">Shake Y-axis action</string>
-    <string name="settings_shake_z_axis_title">Shake Z-axis action</string>
-    <string name="settings_spell_checker_summary">Configure system-wide spell checking behavior</string>
+    <string name="settings_shake_x_axis_title">Shake side to side</string>
+    <string name="settings_shake_y_axis_title">Shake up and down</string>
+    <string name="settings_shake_z_axis_title">Shake forward and backward</string>
+    <string name="settings_spell_checker_summary">Check spelling in apps that support it</string>
     <string name="settings_spell_checker_title">Spell checking</string>
     <string name="settings_title">BBKB Settings</string>
-    <string name="settings_uim_enable_summary_off">Unified input menu is hidden</string>
-    <string name="settings_uim_enable_summary_on">Unified input menu is visible</string>
-    <string name="settings_uim_enable_title">Enable unified input menu</string>
+    <string name="settings_uim_enable_summary_off">Hidden</string>
+    <string name="settings_uim_enable_summary_on">Shown on the keyboard</string>
+    <string name="settings_uim_enable_title">Input menu</string>
     <string name="settings_uim_toggle_clipboard">Clipboard</string>
     <string name="settings_uim_toggle_emoji">Emoji board</string>
     <string name="settings_uim_toggle_fcc">Cursor control</string>
@@ -819,7 +816,7 @@
     <string name="config_default_shake_action_y">0</string>
     <string name="config_default_shake_action_z">0</string>
     <string name="config_default_show_on_keypress_mode">2</string>
-    <string name="keyboard_helper_title">BBKB Helper</string>
+    <string name="keyboard_helper_title">BBKB helper</string>
 
     <!-- ============================== -->
     <!-- Common UI actions and labels -->
@@ -875,7 +872,7 @@
     <string name="device_profile_capture_skipped">Skipped</string>
     <string name="device_profile_capture_recorded">scancode %1$d · keycode %2$d (%3$s)</string>
     <string name="device_profile_capture_repeat">repeats every %1$d ms</string>
-    <string name="device_profile_capture_duplicate">Same key as an earlier step — it will not be written twice</string>
+    <string name="device_profile_capture_duplicate">Same key as an earlier step. It will not be written twice.</string>
     <string name="device_profile_capture_no_keyboard">No hardware key has arrived yet. If this phone\'s Sym or Emoji key does nothing here, turn on the keyboard\'s accessibility service so those keys can be seen.</string>
     <string name="device_profile_step_sym">Sym key</string>
     <string name="device_profile_step_alt">Alt key</string>
@@ -1024,8 +1021,8 @@
     <string name="settings_dict_word_delete_failed">Failed to delete word</string>
     <string name="settings_dict_words_restore_failed">Couldn\'t bring back every word</string>
     <string name="settings_dict_load_failed">Failed to load dictionary: %1$s</string>
-    <string name="settings_dict_empty_title">No personal words</string>
-    <string name="settings_dict_empty_hint">Tap Add word to add custom words to your dictionary</string>
+    <string name="settings_dict_empty_title">No words yet</string>
+    <string name="settings_dict_empty_hint">Tap Add word to add a word to your dictionary</string>
     <string name="settings_dict_word_label">Word</string>
     <string name="settings_dict_recovered">Dictionary was recovered from corrupted state</string>
     <string name="settings_dict_init_timeout">Initialization timeout</string>
@@ -1144,7 +1141,7 @@
         <item quantity="one">This will delete %d learned word. This action cannot be undone. Are you sure?</item>
         <item quantity="other">This will delete all %d learned words. This action cannot be undone. Are you sure?</item>
     </plurals>
-    <string name="settings_learned_clear_message">This will erase the entire learned model — words, phrases, and usage history. This action cannot be undone. Are you sure?</string>
+    <string name="settings_learned_clear_message">This will erase everything the keyboard has learned: words, phrases, and usage history. This cannot be undone. Are you sure?</string>
     <string name="settings_learned_cleared">Cleared all learned words</string>
     <string name="settings_learned_reset">Learned model reset</string>
     <string name="settings_learned_reset_failed">Couldn\'t reset learned model</string>
@@ -1171,7 +1168,6 @@
     <string name="settings_macros_value">Value</string>
     <string name="device_config_import_button">Import configuration</string>
     <string name="device_config_delete_title">Delete configuration</string>
-    <string name="device_config_auto_detect">System auto-detection</string>
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Short</string>
     <string name="settings_feedback_long">Long</string>
@@ -1210,7 +1206,7 @@
     <string name="settings_keyeditor_symbol_deleted">Symbol deleted</string>
     <string name="settings_keyeditor_title_vkb">On-screen symbol page</string>
     <string name="settings_keyeditor_title_pkb">Keypad symbol page</string>
-    <string name="settings_spellcheck_intro">The BBKB spell checker uses advanced language models to provide spell checking across all apps that support it</string>
+    <string name="settings_spellcheck_intro">BBKB can use advanced language models to check your spelling in any app that supports it</string>
     <string name="settings_spellcheck_enable_title">Enable BBKB spell checker</string>
     <string name="settings_spellcheck_enable_summary">Detect typos and suggest corrections</string>
     <string name="settings_credits_version">Version %1$s (Build %2$s)</string>

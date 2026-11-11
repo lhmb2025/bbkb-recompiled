@@ -6,7 +6,7 @@
     Matches every BlackBerry-branded device (KEYone, KEY2, ...) and is auto-selected when
     Build.BRAND == "blackberry" and no more specific config matches first. Note that on a KEY2 a
     more specific one always does: preloaded configs are offered in display-name order and the
-    first match wins, so "BlackBerry Key2 (Athena)" is selected before this file is ever reached.
+    first match wins, so "BlackBerry KEY2" is selected before this file is ever reached.
 
     This config carries no input mappings. It used to hold <layout-alt-overrides> pointing at
     device_alt_mappings_{azerty,qwertz}_overrides.xml; those were retired on 2026-09-16 because
@@ -17,7 +17,7 @@
     these devices come from the system KCM, via AuxCharacterResolver's tier 3. See CHANGELOG.md.
 -->
 
-<device-input-config version="2.1" name="BlackBerry PKB Devices">
+<device-input-config version="2.1" name="Other BlackBerry keyboard phones">
 
     <device>
         <match>

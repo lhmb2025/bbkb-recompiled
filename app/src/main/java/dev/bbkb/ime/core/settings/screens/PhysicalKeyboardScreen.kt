@@ -173,7 +173,9 @@ fun PhysicalKeyboardScreen(
             title = R.string.ckb_gestures_configure_title,
             icon = drawableIcon(R.drawable.ic_settings_gesture_ckb_configure),
             summary = R.string.ckb_gestures_configure_summary,
-            visible = { hasTouchKeypad && it.bool(CKB_GESTURES) },
+            // Shown and open while the gestures are off: nothing is hidden because of a switch,
+            // and the assignments can be made before the gestures are turned on.
+            visible = { hasTouchKeypad },
             onClick = { onNavigateToCkbGestures() },
         ),
 

@@ -26,7 +26,7 @@ import java.io.File
  *
  * ### Why a singleton and not a ViewModel
  *
- * A pack is 0.2 MB (Welsh) to 7 MB (Chinese Taiwan) over whatever connection the phone has. That
+ * A pack is 0.2 MB (Welsh) to 7 MB (Chinese (Taiwan)) over whatever connection the phone has. That
  * is long enough for the user to rotate the phone, walk to another settings screen, or answer a
  * message — all of which destroy a composable. So the download lives here, in a process-wide
  * object holding a [StateFlow] the screen *observes*; the screen can be recreated as often as it

@@ -242,7 +242,7 @@ public class CustomDeviceConfigManager {
         List<ConfigInfo> configs = new ArrayList<>();
 
         // 1. Default
-        configs.add(new ConfigInfo(ID_DEFAULT, "Default (System Auto-detection)", ConfigType.DEFAULT, null, 0));
+        configs.add(new ConfigInfo(ID_DEFAULT, "Detect automatically", ConfigType.DEFAULT, null, 0));
 
         // 2. Preloaded (scan R.xml for device_config_*)
         configs.addAll(getPreloadedConfigs());

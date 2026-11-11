@@ -285,10 +285,10 @@ private fun ConfigItem(
 ) {
     Box(modifier = Modifier.padding(horizontal = LocalSpacing.current.groupInset)) {
         PreferenceItem(
+            // No summary on any row. The first row's name, "Detect automatically", says what its
+            // old "System auto-detection" line said, and the profile detection picks is the row
+            // shown selected, so there is nothing further to report here.
             title = config.name,
-            summary = if (config.type == CustomDeviceConfigManager.ConfigType.DEFAULT) {
-                stringResource(R.string.device_config_auto_detect)
-            } else null,
             leading = {
                 RadioButton(selected = isSelected, onClick = null)
             },

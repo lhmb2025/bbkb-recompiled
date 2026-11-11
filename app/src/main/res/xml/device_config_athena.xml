@@ -9,7 +9,7 @@
     Find device name: adb shell dumpsys input
 -->
 
-<device-input-config version="2.1" name="BlackBerry Key2 (Athena)">
+<device-input-config version="2.1" name="BlackBerry KEY2">
 
     <device>
         <match>

@@ -229,10 +229,10 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_pred_block_offensive_title, "offensive profanity filter", SettingsRoute.VoiceInput.route, TYPING, "pref_key_block_potentially_offensive"),
 
         // ── Typing & input: Shake gestures ──────────────────────────────────────
-        SearchableSetting(R.string.settings_shake_x_axis_title, "shake gesture motion", SettingsRoute.Shake.route, TYPING, "shake_x_action"),
-        SearchableSetting(R.string.settings_shake_y_axis_title, "shake gesture motion", SettingsRoute.Shake.route, TYPING, "shake_y_action"),
-        SearchableSetting(R.string.settings_shake_z_axis_title, "shake gesture motion", SettingsRoute.Shake.route, TYPING, "shake_z_action"),
-        SearchableSetting(R.string.settings_shake_fallback_title, "shake fallback action", SettingsRoute.Shake.route, TYPING, "shake_fallback_action"),
+        SearchableSetting(R.string.settings_shake_x_axis_title, "shake gesture motion", SettingsRoute.AuxiliaryInput.route, TYPING, "shake_x_action"),
+        SearchableSetting(R.string.settings_shake_y_axis_title, "shake gesture motion", SettingsRoute.AuxiliaryInput.route, TYPING, "shake_y_action"),
+        SearchableSetting(R.string.settings_shake_z_axis_title, "shake gesture motion", SettingsRoute.AuxiliaryInput.route, TYPING, "shake_z_action"),
+        SearchableSetting(R.string.settings_shake_fallback_title, "shake fallback action", SettingsRoute.AuxiliaryInput.route, TYPING, "shake_fallback_action"),
 
         // ── Personalization: theme & height (on the hub) ────────────────────────
         SearchableSetting(R.string.settings_keyboard_theme_title, "theme classic modern material bb10 blackberry style", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_theme_style"),
@@ -395,11 +395,10 @@ object SettingsSearchIndex {
         SearchableScreen(R.string.settings_touch_feedback_title, "touch key press keypress feedback haptic vibration sound popup", SettingsRoute.TouchFeedback.route, listOf(TYPING, ON_SCREEN)),
         SearchableScreen(PHYSICAL, "physical hardware keypad keys pkb", SettingsRoute.PhysicalKeyboard.route, listOf(TYPING), DeviceRequirement.PHYSICAL_KEYBOARD),
         SearchableScreen(R.string.ckb_gestures_configure_title, "ckb capacitive keypad gestures flick swipe configure", SettingsRoute.CkbGestures.route, listOf(TYPING, PHYSICAL), DeviceRequirement.TOUCH_KEYPAD),
-        SearchableScreen(AUXILIARY, "auxiliary input menu clipboard voice emoji", SettingsRoute.AuxiliaryInput.route, listOf(TYPING)),
+        SearchableScreen(AUXILIARY, "auxiliary input menu clipboard shake gestures motion", SettingsRoute.AuxiliaryInput.route, listOf(TYPING)),
         SearchableScreen(R.string.settings_customize_menu_title, "unified input menu order reorder customize", SettingsRoute.CustomizeMenu.route, listOf(TYPING, AUXILIARY)),
-        SearchableScreen(VOICE, "voice dictation speech mic microphone", SettingsRoute.VoiceInput.route, listOf(TYPING, AUXILIARY)),
-        SearchableScreen(R.string.settings_voice_input_lang_title, "voice dictation language", SettingsRoute.VoiceLanguageSelection.route, listOf(TYPING, AUXILIARY, VOICE)),
-        SearchableScreen(R.string.settings_shake_title, "shake gestures motion", SettingsRoute.Shake.route, listOf(TYPING)),
+        SearchableScreen(VOICE, "voice dictation speech mic microphone", SettingsRoute.VoiceInput.route, listOf(TYPING)),
+        SearchableScreen(R.string.settings_voice_input_lang_title, "voice dictation language", SettingsRoute.VoiceLanguageSelection.route, listOf(TYPING, VOICE)),
 
         // ── Assistance ───────────────────────────────────────────────────────────
         SearchableScreen(R.string.settings_suggestion_title, "suggestions predictions strip next word", SettingsRoute.Suggestion.route, listOf(SUGGESTION)),

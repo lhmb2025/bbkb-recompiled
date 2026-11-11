@@ -62,11 +62,13 @@ fun SlideboardLayoutScreen(
             enabled = { it.bool("slideboard_active") },
             modifier = Modifier.settingsSearchAnchor("slideboard_numeric_location"),
         ),
+        // The two editors stay open while the slideboard is off: a switch greys out the settings
+        // that tune it, never a place where something is set up. The number pad and the phrases
+        // can be prepared first, and the link to this editor from Customize symbols always works.
         Nav(
             title = R.string.settings_vkb_customize_numberpad_title,
             summary = R.string.settings_vkb_customize_numberpad_summary,
             icon = drawableIcon(R.drawable.ic_settings_slideboard_numpad),
-            enabled = { it.bool("slideboard_active") },
             onClick = { onNavigateToCustomizeSlideBoard() },
         ),
         Nav(
@@ -75,7 +77,6 @@ fun SlideboardLayoutScreen(
                 context.getString(R.string.settings_vkb_quick_phrases_summary, quickPhrase1, quickPhrase2, quickPhrase3)
             },
             icon = drawableIcon(R.drawable.ic_settings_quick_phrases),
-            enabled = { it.bool("slideboard_active") },
             onClick = { onNavigateToQuickPhrases() },
         ),
     ))

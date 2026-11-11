@@ -16,8 +16,6 @@ import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.R
 
 
-/** Same key and default as the Physical keyboard screen's CKB gestures master switch. */
-private const val CKB_GESTURES = "ckb_gestures_enabled"
 
 /** The Physical keyboard rows that can be set to switch language (highlighted together). */
 private val PKB_SWITCH_ANCHORS = arrayOf("pref_multifunction_key_action", "pref_alt_sym_shortcut_action")
@@ -68,12 +66,13 @@ fun LanguageSwitchingScreen(
                 onNavigateToPhysicalKeyboard()
             },
         ),
-        // Read from prefs, not the host's state map: that map only tracks this screen's own rows.
+        // Under the Physical keyboard header, so only where that header shows; and there whether
+        // the gestures are on or off, since nothing is hidden because of a switch.
         Nav(
             title = R.string.settings_lang_assign_ckb_gesture_title,
             icon = drawableIcon(R.drawable.ic_settings_swipe_typing),
             summary = R.string.settings_lang_assign_ckb_gesture_summary,
-            visible = { hasTouchKeypad && it.prefs.getBoolean(CKB_GESTURES, true) },
+            visible = { it.hasPhysicalKeyboard && hasTouchKeypad },
             onClick = { onNavigateToCkbGestures() },
         ),
     ))

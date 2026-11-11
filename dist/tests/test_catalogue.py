@@ -86,9 +86,9 @@ class CatalogueDecisionTest(unittest.TestCase):
             "Blackberry_1305_r1-3_ENubUNZH_xt9_2.ldb":
                 ("en_ZH", "English (China)", "en"),
             "Blackberry_1305_r1-15-2-6_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_bigTW_ALM.ldb":
-                ("zh_TW", "Chinese Taiwan", "zh"),
+                ("zh_TW", "Chinese (Taiwan)", "zh"),
             "Blackberry_1305_r1-22-2-5_ZHtbUNps_Big5HKSCS_bpmf_pinyin_CJ_xt9_big_ALM.ldb":
-                ("zh_HK", "Chinese Hongkong", "zh"),
+                ("zh_HK", "Chinese (Hong Kong)", "zh"),
         }
         self.assertEqual(set(expected), set(catalogue.TABLE_LOCALE_OVERRIDES))
         for file_name, (locale, name, parsed) in expected.items():

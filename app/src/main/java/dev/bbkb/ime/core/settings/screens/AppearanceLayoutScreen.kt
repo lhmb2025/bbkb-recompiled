@@ -62,7 +62,8 @@ fun AppearanceLayoutScreen(
             fallbackIndex = 2,
             icon = drawableIcon(R.drawable.ic_settings_m_brightness_medium),
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_theme_mode"),
-            visible = { it.hasColorScheme() },
+            // Greyed out, not hidden, for a theme with one fixed look.
+            enabled = { it.hasColorScheme() },
         ),
         // Material You wallpaper colors (Android 12+ only)
         Toggle(
@@ -71,7 +72,8 @@ fun AppearanceLayoutScreen(
             summary = RowSummary.Res(R.string.settings_use_system_colors_summary),
             icon = drawableIcon(R.drawable.ic_settings_m_wallpaper),
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_use_system_colors"),
-            visible = { it.hasColorScheme() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
+            enabled = { it.hasColorScheme() },
+            visible = { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
         ),
         Choice(
             store = stringPref("pref_keyboard_height_mode", "regular"),
