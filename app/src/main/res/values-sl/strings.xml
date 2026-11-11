@@ -1093,8 +1093,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Kratka</string>
     <string name="settings_feedback_long">Dolga</string>
-    <string name="keyboard_helper_unified_mapping_title">Poenoteno preslikovanje tipk</string>
-    <string name="keyboard_helper_unified_mapping_summary">Posebne tipke usmerja prek konfiguracije XML namesto trdo kodirane logike (preizkusno)</string>
     <string name="language_packs_delete_dictionary_title">Želite izbrisati slovar?</string>
     <string name="language_packs_delete_dictionary_message">Želite odstraniti slovar %1$s? Jezik ostane; zanj se bo uporabljal drug slovar.</string>
     <string name="language_packs_dictionary_removed">Odstranjeno: %1$s</string>

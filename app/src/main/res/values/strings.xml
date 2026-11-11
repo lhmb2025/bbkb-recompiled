@@ -1164,8 +1164,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Short</string>
     <string name="settings_feedback_long">Long</string>
-    <string name="keyboard_helper_unified_mapping_title">Unified key mapping</string>
-    <string name="keyboard_helper_unified_mapping_summary">Route special keys via XML config instead of hardcoded logic (experimental)</string>
     <string name="language_packs_delete_dictionary_title">Delete dictionary?</string>
     <string name="language_packs_delete_dictionary_message">Remove the %1$s dictionary? The language stays; it goes back to another dictionary for it.</string>
     <string name="language_packs_dictionary_removed">Removed %1$s</string>

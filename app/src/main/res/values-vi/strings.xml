@@ -1048,8 +1048,6 @@
     <string name="settings_feedback_milliseconds">%1$d mili giây</string>
     <string name="settings_feedback_short">Ngắn</string>
     <string name="settings_feedback_long">Dài</string>
-    <string name="keyboard_helper_unified_mapping_title">Ánh xạ phím hợp nhất</string>
-    <string name="keyboard_helper_unified_mapping_summary">Định tuyến các phím đặc biệt qua cấu hình XML thay vì logic lập trình cố định (thử nghiệm)</string>
     <string name="language_packs_delete_dictionary_title">Xóa từ điển?</string>
     <string name="language_packs_delete_dictionary_message">Xóa từ điển %1$s? Ngôn ngữ vẫn được giữ lại và sẽ quay về dùng một từ điển khác.</string>
     <string name="language_packs_dictionary_removed">Đã xóa %1$s</string>

@@ -63,7 +63,6 @@ public class InterceptorCallbackRegistrationTest {
         setFeaturePref(false);
         KeyInterceptorService.setCallback(null);
         KeyInterceptorService.setAllKeysCallback(null);
-        KeyInterceptorService.setUnifiedKeyMappingEnabled(false);
         KeyInterceptorService.setPreprocessAllKeysEnabled(false);
     }
 

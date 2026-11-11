@@ -231,7 +231,7 @@ class SettingsSearchIndexTest {
     /** The BBKB helper's settings are not offered where its row is greyed out (BlackBerry phones). */
     @Test
     fun keyboardHelperEntriesFollowTheProfilesHelperSwitch() {
-        val helperAnchors = setOf("pref_key_interceptor_enabled", "pref_preprocess_all_key_events", "pref_use_unified_key_mapping")
+        val helperAnchors = setOf("pref_key_interceptor_enabled", "pref_preprocess_all_key_events")
         assertTrue(helperAnchors.all { it in anchorsOn(pkbDevice) })
         val blackBerry = pkbDevice.copy(accessibilityHelperAvailable = false)
         assertTrue(helperAnchors.none { it in anchorsOn(blackBerry) })

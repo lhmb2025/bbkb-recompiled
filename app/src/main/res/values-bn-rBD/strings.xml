@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d মিলিসেকেন্ড</string>
     <string name="settings_feedback_short">স্বল্প</string>
     <string name="settings_feedback_long">দীর্ঘ</string>
-    <string name="keyboard_helper_unified_mapping_title">একীভূত কী ম্যাপিং</string>
-    <string name="keyboard_helper_unified_mapping_summary">বিশেষ কী-গুলো হার্ডকোড করা লজিকের বদলে XML কনফিগারেশনের মাধ্যমে চালান (পরীক্ষামূলক)</string>
     <string name="language_packs_delete_dictionary_title">অভিধান মুছবেন?</string>
     <string name="language_packs_delete_dictionary_message">%1$s অভিধানটি সরাবেন? ভাষাটি থেকে যাবে; এর জন্য অন্য একটি অভিধান ব্যবহার করা হবে।</string>
     <string name="language_packs_dictionary_removed">%1$s সরানো হয়েছে</string>

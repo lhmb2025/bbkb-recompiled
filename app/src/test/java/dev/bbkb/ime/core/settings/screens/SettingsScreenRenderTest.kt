@@ -955,7 +955,6 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "pref_key_interceptor_enabled", "pref_key_interceptor_enabled_summary",
                 "pref_manage_accessibility_service",
                 "pref_preprocess_all_keys", "pref_preprocess_all_keys_summary",
-                "keyboard_helper_unified_mapping_title", "keyboard_helper_unified_mapping_summary",
             ),
             literals = emptySet(),
         ),

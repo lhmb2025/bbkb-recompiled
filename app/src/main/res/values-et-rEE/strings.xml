@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Lühike</string>
     <string name="settings_feedback_long">Pikk</string>
-    <string name="keyboard_helper_unified_mapping_title">Ühtne klahvide vastendamine</string>
-    <string name="keyboard_helper_unified_mapping_summary">Suuna eriklahvid XML-konfiguratsiooni kaudu kõvakodeeritud loogika asemel (katseline)</string>
     <string name="language_packs_delete_dictionary_title">Kas kustutada sõnastik?</string>
     <string name="language_packs_delete_dictionary_message">Kas eemaldada sõnastik %1$s? Keel jääb alles ja kasutab taas teist sõnastikku.</string>
     <string name="language_packs_dictionary_removed">%1$s eemaldati</string>

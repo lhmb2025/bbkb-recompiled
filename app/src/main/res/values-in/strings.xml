@@ -1048,8 +1048,6 @@
     <string name="settings_feedback_milliseconds">%1$d md</string>
     <string name="settings_feedback_short">Pendek</string>
     <string name="settings_feedback_long">Panjang</string>
-    <string name="keyboard_helper_unified_mapping_title">Pemetaan tombol terpadu</string>
-    <string name="keyboard_helper_unified_mapping_summary">Arahkan tombol khusus melalui konfigurasi XML, bukan logika bawaan (eksperimental)</string>
     <string name="language_packs_delete_dictionary_title">Hapus kamus?</string>
     <string name="language_packs_delete_dictionary_message">Hapus kamus %1$s? Bahasanya tetap ada dan akan kembali menggunakan kamus lain.</string>
     <string name="language_packs_dictionary_removed">%1$s dihapus</string>

@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">E shkurtër</string>
     <string name="settings_feedback_long">E gjatë</string>
-    <string name="keyboard_helper_unified_mapping_title">Caktim i unifikuar i tastave</string>
-    <string name="keyboard_helper_unified_mapping_summary">Drejto tastat e veçanta përmes konfigurimit XML në vend të logjikës së koduar (eksperimentale)</string>
     <string name="language_packs_delete_dictionary_title">Të fshihet fjalori?</string>
     <string name="language_packs_delete_dictionary_message">Të hiqet fjalori %1$s? Gjuha mbetet dhe kthehet te një fjalor tjetër.</string>
     <string name="language_packs_dictionary_removed">U hoq %1$s</string>

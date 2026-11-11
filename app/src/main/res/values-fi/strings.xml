@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Lyhyt</string>
     <string name="settings_feedback_long">Pitkä</string>
-    <string name="keyboard_helper_unified_mapping_title">Yhtenäinen näppäinmääritys</string>
-    <string name="keyboard_helper_unified_mapping_summary">Ohjaa erikoisnäppäimet XML-määrityksen kautta kovakoodatun logiikan sijaan (kokeellinen)</string>
     <string name="language_packs_delete_dictionary_title">Poistetaanko sanakirja?</string>
     <string name="language_packs_delete_dictionary_message">Poistetaanko sanakirja %1$s? Kieli säilyy ja käyttää taas toista sanakirjaa.</string>
     <string name="language_packs_dictionary_removed">%1$s poistettu</string>

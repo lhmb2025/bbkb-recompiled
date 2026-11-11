@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Rövid</string>
     <string name="settings_feedback_long">Hosszú</string>
-    <string name="keyboard_helper_unified_mapping_title">Egységes billentyű-hozzárendelés</string>
-    <string name="keyboard_helper_unified_mapping_summary">A speciális billentyűk kezelése XML-konfigurációval a beépített logika helyett (kísérleti)</string>
     <string name="language_packs_delete_dictionary_title">Törli a szótárt?</string>
     <string name="language_packs_delete_dictionary_message">Eltávolítja a(z) %1$s szótárt? A nyelv megmarad, és egy másik szótárra vált vissza.</string>
     <string name="language_packs_dictionary_removed">Eltávolítva: %1$s</string>

@@ -1048,8 +1048,6 @@
     <string name="settings_feedback_milliseconds">%1$d มิลลิวินาที</string>
     <string name="settings_feedback_short">สั้น</string>
     <string name="settings_feedback_long">ยาว</string>
-    <string name="keyboard_helper_unified_mapping_title">การแมปปุ่มแบบรวม</string>
-    <string name="keyboard_helper_unified_mapping_summary">ส่งปุ่มพิเศษผ่านการกำหนดค่า XML แทนตรรกะที่เขียนตายตัวในโค้ด (ทดลอง)</string>
     <string name="language_packs_delete_dictionary_title">ลบพจนานุกรมไหม?</string>
     <string name="language_packs_delete_dictionary_message">นำพจนานุกรม %1$s ออกไหม? ภาษายังคงอยู่ และจะกลับไปใช้พจนานุกรมอื่นของภาษานั้น</string>
     <string name="language_packs_dictionary_removed">นำ %1$s ออกแล้ว</string>

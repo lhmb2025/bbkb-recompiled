@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d मिलिसेकंद</string>
     <string name="settings_feedback_short">कमी</string>
     <string name="settings_feedback_long">जास्त</string>
-    <string name="keyboard_helper_unified_mapping_title">एकत्रित की मॅपिंग</string>
-    <string name="keyboard_helper_unified_mapping_summary">विशेष की हार्डकोड केलेल्या लॉजिकऐवजी XML कॉन्फिगरेशनद्वारे हाताळा (प्रायोगिक)</string>
     <string name="language_packs_delete_dictionary_title">शब्दकोश हटवायचा?</string>
     <string name="language_packs_delete_dictionary_message">%1$s शब्दकोश काढायचा? भाषा राहील; तिच्यासाठी दुसरा शब्दकोश वापरला जाईल.</string>
     <string name="language_packs_dictionary_removed">%1$s काढला</string>

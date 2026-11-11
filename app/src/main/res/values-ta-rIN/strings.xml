@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d மில்லிவினாடி</string>
     <string name="settings_feedback_short">குறுகியது</string>
     <string name="settings_feedback_long">நீண்டது</string>
-    <string name="keyboard_helper_unified_mapping_title">ஒருங்கிணைந்த விசை மேப்பிங்</string>
-    <string name="keyboard_helper_unified_mapping_summary">சிறப்பு விசைகளை நிரலில் பதிக்கப்பட்ட லாஜிக்குக்குப் பதிலாக XML உள்ளமைவு வழியாகக் கையாளு (சோதனை முயற்சி)</string>
     <string name="language_packs_delete_dictionary_title">அகராதியை நீக்கவா?</string>
     <string name="language_packs_delete_dictionary_message">%1$s அகராதியை அகற்றவா? மொழி அப்படியே இருக்கும்; அதற்கு வேறொரு அகராதி பயன்படுத்தப்படும்.</string>
     <string name="language_packs_dictionary_removed">%1$s அகற்றப்பட்டது</string>

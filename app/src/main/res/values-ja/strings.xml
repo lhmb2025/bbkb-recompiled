@@ -1048,8 +1048,6 @@
     <string name="settings_feedback_milliseconds">%1$d ミリ秒</string>
     <string name="settings_feedback_short">短い</string>
     <string name="settings_feedback_long">長い</string>
-    <string name="keyboard_helper_unified_mapping_title">統合キーマッピング</string>
-    <string name="keyboard_helper_unified_mapping_summary">特殊キーをハードコードされたロジックではなく XML 構成で処理します（試験運用版）</string>
     <string name="language_packs_delete_dictionary_title">辞書を削除しますか？</string>
     <string name="language_packs_delete_dictionary_message">%1$sの辞書を削除しますか？言語はそのまま残り、その言語の別の辞書に戻ります。</string>
     <string name="language_packs_dictionary_removed">%1$sを削除しました</string>

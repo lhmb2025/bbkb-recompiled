@@ -1093,8 +1093,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Krótkie</string>
     <string name="settings_feedback_long">Długie</string>
-    <string name="keyboard_helper_unified_mapping_title">Ujednolicone mapowanie klawiszy</string>
-    <string name="keyboard_helper_unified_mapping_summary">Obsługuj klawisze specjalne przez konfigurację XML zamiast logiki zakodowanej na stałe (eksperymentalne)</string>
     <string name="language_packs_delete_dictionary_title">Usunąć słownik?</string>
     <string name="language_packs_delete_dictionary_message">Usunąć słownik %1$s? Język pozostanie i wróci do innego słownika.</string>
     <string name="language_packs_dictionary_removed">Usunięto %1$s</string>

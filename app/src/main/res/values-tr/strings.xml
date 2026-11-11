@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Kısa</string>
     <string name="settings_feedback_long">Uzun</string>
-    <string name="keyboard_helper_unified_mapping_title">Birleşik tuş eşleme</string>
-    <string name="keyboard_helper_unified_mapping_summary">Özel tuşları sabit kodlanmış mantık yerine XML yapılandırması üzerinden yönlendir (deneysel)</string>
     <string name="language_packs_delete_dictionary_title">Sözlük silinsin mi?</string>
     <string name="language_packs_delete_dictionary_message">%1$s sözlüğü kaldırılsın mı? Dil kalır ve başka bir sözlüğe geri döner.</string>
     <string name="language_packs_dictionary_removed">%1$s kaldırıldı</string>

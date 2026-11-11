@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d мс</string>
     <string name="settings_feedback_short">Кратко</string>
     <string name="settings_feedback_long">Дълго</string>
-    <string name="keyboard_helper_unified_mapping_title">Обединено съпоставяне на клавиши</string>
-    <string name="keyboard_helper_unified_mapping_summary">Обработване на специалните клавиши чрез XML конфигурация вместо твърдо кодирана логика (експериментално)</string>
     <string name="language_packs_delete_dictionary_title">Да се изтрие ли речникът?</string>
     <string name="language_packs_delete_dictionary_message">Да се премахне ли речникът %1$s? Езикът остава; за него ще се използва друг речник.</string>
     <string name="language_packs_dictionary_removed">Премахнато: %1$s</string>

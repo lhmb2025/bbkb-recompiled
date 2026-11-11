@@ -1078,8 +1078,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Kratko</string>
     <string name="settings_feedback_long">Dugo</string>
-    <string name="keyboard_helper_unified_mapping_title">Objedinjeno mapiranje tipki</string>
-    <string name="keyboard_helper_unified_mapping_summary">Usmjerava posebne tipke putem XML konfiguracije umjesto fiksno kodirane logike (eksperimentalno)</string>
     <string name="language_packs_delete_dictionary_title">Izbrisati rječnik?</string>
     <string name="language_packs_delete_dictionary_message">Ukloniti rječnik %1$s? Jezik ostaje; za njega će se koristiti drugi rječnik.</string>
     <string name="language_packs_dictionary_removed">Uklonjeno: %1$s</string>

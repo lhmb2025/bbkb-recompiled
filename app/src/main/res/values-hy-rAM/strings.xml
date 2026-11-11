@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d մվ</string>
     <string name="settings_feedback_short">Կարճ</string>
     <string name="settings_feedback_long">Երկար</string>
-    <string name="keyboard_helper_unified_mapping_title">Ստեղների միասնական համապատասխանեցում</string>
-    <string name="keyboard_helper_unified_mapping_summary">Հատուկ ստեղները մշակել XML կազմաձևով՝ կոդում ներդրված տրամաբանության փոխարեն (փորձնական)</string>
     <string name="language_packs_delete_dictionary_title">Ջնջե՞լ բառարանը</string>
     <string name="language_packs_delete_dictionary_message">Հեռացնե՞լ %1$s բառարանը։ Լեզուն կմնա, և դրա համար կօգտագործվի այլ բառարան։</string>
     <string name="language_packs_dictionary_removed">%1$s-ը հեռացվեց</string>

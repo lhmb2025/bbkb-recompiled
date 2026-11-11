@@ -1093,8 +1093,6 @@
     <string name="settings_feedback_milliseconds">%1$d אלפיות שנייה</string>
     <string name="settings_feedback_short">קצר</string>
     <string name="settings_feedback_long">ארוך</string>
-    <string name="keyboard_helper_unified_mapping_title">מיפוי מקשים מאוחד</string>
-    <string name="keyboard_helper_unified_mapping_summary">ניתוב מקשים מיוחדים דרך תצורת XML במקום לוגיקה מקודדת (ניסיוני)</string>
     <string name="language_packs_delete_dictionary_title">למחוק את המילון?</string>
     <string name="language_packs_delete_dictionary_message">להסיר את המילון %1$s? השפה תישאר, והיא תחזור למילון אחר עבורה.</string>
     <string name="language_packs_dictionary_removed">%1$s הוסר</string>

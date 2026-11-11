@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d мс</string>
     <string name="settings_feedback_short">Кратко</string>
     <string name="settings_feedback_long">Долго</string>
-    <string name="keyboard_helper_unified_mapping_title">Обединето мапирање на копчиња</string>
-    <string name="keyboard_helper_unified_mapping_summary">Насочувај ги специјалните копчиња преку XML-конфигурација наместо фиксно кодирана логика (експериментално)</string>
     <string name="language_packs_delete_dictionary_title">Да се избрише речникот?</string>
     <string name="language_packs_delete_dictionary_message">Да се отстрани речникот %1$s? Јазикот останува; за него ќе се користи друг речник.</string>
     <string name="language_packs_dictionary_removed">Отстрането: %1$s</string>

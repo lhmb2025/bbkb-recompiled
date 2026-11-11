@@ -298,7 +298,6 @@ object SettingsSearchIndex {
         // ── Typing & input: Keyboard Helper (accessibility key interception) ────
         SearchableSetting(R.string.pref_key_interceptor_enabled, "special key support accessibility interceptor helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_key_interceptor_enabled", DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE),
         SearchableSetting(R.string.pref_preprocess_all_keys, "process all key events accessibility helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_preprocess_all_key_events", DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE),
-        SearchableSetting(R.string.settings_pkb_keyboard_helper_title, "unified key mapping xml experimental helper", SettingsRoute.KeyboardHelper.route, TYPING, "pref_use_unified_key_mapping", DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE),
 
         // ── Appearance & layout: symbol page ordering ──────────────────────────
         // SymbolCustomizationScreen renders exactly one of these two — the symbol page the device can

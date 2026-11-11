@@ -1078,8 +1078,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Curt</string>
     <string name="settings_feedback_long">Llarg</string>
-    <string name="keyboard_helper_unified_mapping_title">Assignació unificada de tecles</string>
-    <string name="keyboard_helper_unified_mapping_summary">Gestiona les tecles especials amb la configuració XML en lloc de lògica fixada al codi (experimental)</string>
     <string name="language_packs_delete_dictionary_title">Voleu suprimir el diccionari?</string>
     <string name="language_packs_delete_dictionary_message">Voleu suprimir el diccionari %1$s? La llengua es manté i torna a utilitzar un altre dels seus diccionaris.</string>
     <string name="language_packs_dictionary_removed">S\'ha suprimit %1$s</string>

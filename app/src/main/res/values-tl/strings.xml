@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Maikli</string>
     <string name="settings_feedback_long">Mahaba</string>
-    <string name="keyboard_helper_unified_mapping_title">Pinag-isang key mapping</string>
-    <string name="keyboard_helper_unified_mapping_summary">I-route ang mga espesyal na key sa XML config sa halip na hardcoded na logic (experimental)</string>
     <string name="language_packs_delete_dictionary_title">I-delete ang diksyunaryo?</string>
     <string name="language_packs_delete_dictionary_message">Alisin ang diksyunaryong %1$s? Mananatili ang wika; babalik ito sa ibang diksyunaryo para dito.</string>
     <string name="language_packs_dictionary_removed">Inalis ang %1$s</string>

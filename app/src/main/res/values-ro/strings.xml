@@ -1078,8 +1078,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Scurtă</string>
     <string name="settings_feedback_long">Lungă</string>
-    <string name="keyboard_helper_unified_mapping_title">Mapare unificată a tastelor</string>
-    <string name="keyboard_helper_unified_mapping_summary">Direcționați tastele speciale prin configurația XML în loc de logica fixă din cod (experimental)</string>
     <string name="language_packs_delete_dictionary_title">Ștergeți dicționarul?</string>
     <string name="language_packs_delete_dictionary_message">Eliminați dicționarul %1$s? Limba rămâne și revine la un alt dicționar al său.</string>
     <string name="language_packs_dictionary_removed">%1$s a fost eliminat</string>

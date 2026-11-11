@@ -26,9 +26,6 @@ public final class KeyInterceptorManager {
     
     /** Preference key for enabling/disabling pre-processing of all key events */
     public static final String PREF_PREPROCESS_ALL_KEYS = "pref_preprocess_all_key_events";
-    
-    /** Preference key for enabling unified key mapping pipeline (Phase 2 feature flag) */
-    public static final String PREF_USE_UNIFIED_KEY_MAPPING = "pref_use_unified_key_mapping";
 
     private KeyInterceptorManager() {
         // Private constructor to prevent instantiation
@@ -168,19 +165,5 @@ public final class KeyInterceptorManager {
         // Update the service's preprocess state
         KeyInterceptorService.setPreprocessAllKeysEnabled(enabled);
     }
-    
-    /**
-     * Set the unified key mapping pipeline toggle state.
-     * 
-     * @param context Application context
-     * @param enabled Whether to enable unified key mapping
-     */
-    public static void setUnifiedKeyMappingEnabled(@NonNull Context context, boolean enabled) {
-        dev.bbkb.ime.core.settings.PrefsManager.INSTANCE.getPrefs(context)
-                .edit()
-                .putBoolean(PREF_USE_UNIFIED_KEY_MAPPING, enabled)
-                .apply();
-        KeyInterceptorService.setUnifiedKeyMappingEnabled(enabled);
-    }
-    
+
 }

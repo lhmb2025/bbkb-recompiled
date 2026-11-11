@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d మిల్లీసెకన్లు</string>
     <string name="settings_feedback_short">తక్కువ</string>
     <string name="settings_feedback_long">ఎక్కువ</string>
-    <string name="keyboard_helper_unified_mapping_title">ఏకీకృత కీ మ్యాపింగ్</string>
-    <string name="keyboard_helper_unified_mapping_summary">ప్రత్యేక కీలను హార్డ్‌కోడ్ చేసిన లాజిక్‌కు బదులుగా XML కాన్ఫిగరేషన్ ద్వారా నిర్వహించు (ప్రయోగాత్మకం)</string>
     <string name="language_packs_delete_dictionary_title">నిఘంటువును తొలగించాలా?</string>
     <string name="language_packs_delete_dictionary_message">%1$s నిఘంటువును తీసివేయాలా? భాష అలాగే ఉంటుంది; దాని కోసం మరొక నిఘంటువు ఉపయోగించబడుతుంది.</string>
     <string name="language_packs_dictionary_removed">%1$s తీసివేయబడింది</string>

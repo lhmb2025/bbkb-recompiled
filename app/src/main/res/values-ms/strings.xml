@@ -1048,8 +1048,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Pendek</string>
     <string name="settings_feedback_long">Panjang</string>
-    <string name="keyboard_helper_unified_mapping_title">Pemetaan kekunci bersatu</string>
-    <string name="keyboard_helper_unified_mapping_summary">Halakan kekunci khas melalui konfigurasi XML dan bukannya logik berkod keras (percubaan)</string>
     <string name="language_packs_delete_dictionary_title">Padam kamus?</string>
     <string name="language_packs_delete_dictionary_message">Alih keluar kamus %1$s? Bahasa itu kekal; ia akan kembali menggunakan kamus lain.</string>
     <string name="language_packs_dictionary_removed">%1$s dialih keluar</string>

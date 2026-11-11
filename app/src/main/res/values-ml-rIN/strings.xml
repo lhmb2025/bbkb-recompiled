@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d മില്ലിസെക്കൻഡ്</string>
     <string name="settings_feedback_short">കുറഞ്ഞത്</string>
     <string name="settings_feedback_long">ദൈർഘ്യമേറിയത്</string>
-    <string name="keyboard_helper_unified_mapping_title">ഏകീകൃത കീ മാപ്പിംഗ്</string>
-    <string name="keyboard_helper_unified_mapping_summary">പ്രത്യേക കീകൾ ഹാർഡ്‌കോഡ് ചെയ്ത ലോജിക്കിന് പകരം XML കോൺഫിഗറേഷൻ വഴി കൈകാര്യം ചെയ്യുക (പരീക്ഷണാത്മകം)</string>
     <string name="language_packs_delete_dictionary_title">നിഘണ്ടു ഇല്ലാതാക്കണോ?</string>
     <string name="language_packs_delete_dictionary_message">%1$s നിഘണ്ടു നീക്കം ചെയ്യണോ? ഭാഷ നിലനിൽക്കും; അതിനായി മറ്റൊരു നിഘണ്ടു ഉപയോഗിക്കും.</string>
     <string name="language_packs_dictionary_removed">%1$s നീക്കം ചെയ്തു</string>

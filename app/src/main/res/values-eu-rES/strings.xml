@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Laburra</string>
     <string name="settings_feedback_long">Luzea</string>
-    <string name="keyboard_helper_unified_mapping_title">Teklen mapatze bateratua</string>
-    <string name="keyboard_helper_unified_mapping_summary">Bideratu tekla bereziak XML konfigurazioaren bidez, kodean finkatutako logikaren ordez (esperimentala)</string>
     <string name="language_packs_delete_dictionary_title">Hiztegia ezabatu nahi duzu?</string>
     <string name="language_packs_delete_dictionary_message">%1$s hiztegia kendu nahi duzu? Hizkuntzak bere horretan jarraituko du, beste hiztegi batekin.</string>
     <string name="language_packs_dictionary_removed">Kendu da %1$s</string>

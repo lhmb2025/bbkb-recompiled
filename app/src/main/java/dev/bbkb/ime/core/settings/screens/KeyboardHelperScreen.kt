@@ -56,16 +56,12 @@ fun KeyboardHelperScreen(
     var preprocessAllKeys by remember {
         mutableStateOf(prefs.getBoolean(KeyInterceptorManager.PREF_PREPROCESS_ALL_KEYS, false))
     }
-    var unifiedKeyMapping by remember {
-        mutableStateOf(prefs.getBoolean(KeyInterceptorManager.PREF_USE_UNIFIED_KEY_MAPPING, false))
-    }
     
     // Re-check service status when activity resumes (e.g., returning from accessibility settings)
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         serviceEnabled = KeyInterceptorManager.isServiceEnabled(context)
         specialKeyEnabled = prefs.getBoolean(KeyInterceptorManager.PREF_KEY_INTERCEPTOR_ENABLED, false)
         preprocessAllKeys = prefs.getBoolean(KeyInterceptorManager.PREF_PREPROCESS_ALL_KEYS, false)
-        unifiedKeyMapping = prefs.getBoolean(KeyInterceptorManager.PREF_USE_UNIFIED_KEY_MAPPING, false)
     }
     
     SettingsScaffold(
@@ -120,20 +116,6 @@ fun KeyboardHelperScreen(
                     onCheckedChange = { newValue ->
                         preprocessAllKeys = newValue
                         KeyInterceptorManager.setPreprocessAllKeysEnabled(context, newValue)
-                    }
-                )
-            
-                // Unified key mapping pipeline toggle
-                SwitchPreference(
-                    title = context.getString(R.string.keyboard_helper_unified_mapping_title),
-                    summary = context.getString(R.string.keyboard_helper_unified_mapping_summary),
-                    icon = ImageVector.vectorResource(R.drawable.ic_settings_m_settings),
-                    checked = unifiedKeyMapping && serviceEnabled,
-                    enabled = serviceEnabled && specialKeyEnabled,
-                    modifier = Modifier.settingsSearchAnchor("pref_use_unified_key_mapping"),
-                    onCheckedChange = { newValue ->
-                        unifiedKeyMapping = newValue
-                        KeyInterceptorManager.setUnifiedKeyMappingEnabled(context, newValue)
                     }
                 )
             }

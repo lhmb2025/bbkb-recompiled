@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d میلی‌ثانیه</string>
     <string name="settings_feedback_short">کوتاه</string>
     <string name="settings_feedback_long">طولانی</string>
-    <string name="keyboard_helper_unified_mapping_title">نگاشت یکپارچه کلیدها</string>
-    <string name="keyboard_helper_unified_mapping_summary">مسیریابی کلیدهای ویژه از طریق پیکربندی XML به‌جای منطق کدنویسی‌شده (آزمایشی)</string>
     <string name="language_packs_delete_dictionary_title">واژه‌نامه حذف شود؟</string>
     <string name="language_packs_delete_dictionary_message">واژه‌نامه %1$s حذف شود؟ زبان باقی می‌ماند و به واژه‌نامه دیگری برای آن برمی‌گردد.</string>
     <string name="language_packs_dictionary_removed">%1$s حذف شد</string>

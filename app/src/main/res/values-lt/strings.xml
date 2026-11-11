@@ -1093,8 +1093,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Trumpas</string>
     <string name="settings_feedback_long">Ilgas</string>
-    <string name="keyboard_helper_unified_mapping_title">Vieningas klavišų susiejimas</string>
-    <string name="keyboard_helper_unified_mapping_summary">Specialiuosius klavišus apdoroti pagal XML konfigūraciją, o ne užkoduotą logiką (eksperimentinė funkcija)</string>
     <string name="language_packs_delete_dictionary_title">Ištrinti žodyną?</string>
     <string name="language_packs_delete_dictionary_message">Pašalinti žodyną %1$s? Kalba lieka; jai bus naudojamas kitas žodynas.</string>
     <string name="language_packs_dictionary_removed">Pašalinta: %1$s</string>

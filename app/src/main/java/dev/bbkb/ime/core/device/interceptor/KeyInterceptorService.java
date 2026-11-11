@@ -2,7 +2,6 @@ package dev.bbkb.ime.core.device.interceptor;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -13,7 +12,6 @@ import dev.bbkb.ime.core.device.config.model.KeyRole;
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping;
 import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
 import dev.bbkb.ime.core.keyevent.ResolvedKey;
-import dev.bbkb.ime.BuildConfig;
 
 /**
  * AccessibilityService that intercepts raw hardware key events before the system
@@ -34,8 +32,6 @@ import dev.bbkb.ime.BuildConfig;
  * @see KeyInterceptorManager
  */
 public class KeyInterceptorService extends AccessibilityService {
-
-    private static final String TAG = "KeyInterceptorService";
 
     /** Raw hardware scancodes for special keys on Minimal Phone / Titan Pocket */
     private static final int SCANCODE_SYM = 249;      // 0xF9
@@ -65,9 +61,6 @@ public class KeyInterceptorService extends AccessibilityService {
     
     /** Whether to preprocess all key events (not just special keys) */
     private static volatile boolean sPreprocessAllKeys = false;
-    
-    /** Whether to use the unified key mapping pipeline (Phase 2 feature flag) */
-    private static volatile boolean sUseUnifiedKeyMapping = false;
 
     /** {@link #sConsumedBoardKeyScanCode} when no board-key DOWN is outstanding. */
     private static final int NO_CONSUMED_SCANCODE = Integer.MIN_VALUE;
@@ -86,20 +79,21 @@ public class KeyInterceptorService extends AccessibilityService {
      */
     public interface KeyEventCallback {
         /**
-         * Called when a special key is intercepted (legacy path, no mapping data).
+         * Called when a special key the device profile does not name is intercepted: the
+         * built-in scancode table recognised it, so there is no profile entry to hand over.
          * @param keyType The type of special key (SYM, EMOJI, MIC)
          * @param metaState The meta state at time of key press
          * @return true if the key was handled
          */
         boolean onSpecialKeyPressed(SpecialKeyType keyType, int metaState);
-        
+
         /**
-         * Called when a special key is intercepted via unified key mapping (Phase 2+).
-         * Carries the resolved ScancodeMapping for alt char and board ID resolution.
-         * Default implementation delegates to the legacy method.
+         * Called when a special key the device profile names is intercepted. Carries the
+         * profile's entry for the key, for its Alt character and board id.
+         * Default implementation delegates to the method above.
          * @param keyType The type of special key (SYM, EMOJI, MIC)
          * @param metaState The meta state at time of key press
-         * @param mapping The resolved scancode mapping from XML config
+         * @param mapping The profile's entry for this key
          * @return true if the key was handled
          */
         default boolean onSpecialKeyPressed(SpecialKeyType keyType, int metaState, ScancodeMapping mapping) {
@@ -159,20 +153,6 @@ public class KeyInterceptorService extends AccessibilityService {
      */
     public static boolean isPreprocessAllKeysEnabled() {
         return sPreprocessAllKeys;
-    }
-    
-    /**
-     * Enable or disable unified key mapping pipeline.
-     */
-    public static void setUnifiedKeyMappingEnabled(boolean enabled) {
-        sUseUnifiedKeyMapping = enabled;
-    }
-    
-    /**
-     * Check if unified key mapping pipeline is enabled.
-     */
-    public static boolean isUnifiedKeyMappingEnabled() {
-        return sUseUnifiedKeyMapping;
     }
 
     @Override
@@ -245,16 +225,16 @@ public class KeyInterceptorService extends AccessibilityService {
         // The Minimal Phone MP01's ROM maps the Sym key's scancode 249 to KEY_RIGHTALT, so a Sym
         // press arrives as scanCode=249 + KEYCODE_ALT_RIGHT. While the Alt-keycode block ran
         // first, every Sym press was consumed and forwarded as a sticky Alt and the symbol board
-        // never opened (beta triage #10, 2026-09). What a key IS is decided by the device config
-        // (or, for a device with no config, the legacy scancode table) — not by whichever keycode
-        // the ROM's .kl file happened to attach to it — so the decision is made here, first.
-        ScancodeMapping mapping = sUseUnifiedKeyMapping
-                ? DeviceInputResolver.keyRole(scanCode, keyCode, event.getDeviceId())
-                : null;
+        // never opened (beta triage #10, 2026-09). What a key IS is decided by the device profile
+        // (or, for a key the profile does not name, the built-in scancode table) — not by
+        // whichever keycode the ROM's .kl file happened to attach to it — so the decision is made
+        // here, first.
+        ScancodeMapping mapping =
+                DeviceInputResolver.keyRole(scanCode, keyCode, event.getDeviceId());
         if (mapping != null && mapping.role == KeyRole.MULTIFUNCTION) {
             // Multifunction keys are never consumed at the accessibility level: their
             // user-configured action (possibly a held Ctrl modifier) is dispatched by
-            // the IME key pipeline. Skip the legacy scancode table too.
+            // the IME key pipeline. Skip the built-in scancode table too.
             return false;
         }
         SpecialKeyType boardKeyType = classifyBoardKey(mapping, scanCode, keyCode, event.getDeviceId());
@@ -321,56 +301,30 @@ public class KeyInterceptorService extends AccessibilityService {
     }
 
     /**
-     * Decide whether this key is a board key (SYM / EMOJI / VOICE), preferring the device
-     * config's answer and falling back to the legacy hardcoded scancode table.
+     * Decide whether this key is a board key (SYM / EMOJI / VOICE): the device profile's role
+     * for the key is the answer, and the built-in scancode table answers only for a key the
+     * profile does not name.
      *
-     * <p>The legacy table is the Minimal Phone's: 249 / 250 / 251 are its Sym, Emoji and Mic
-     * keys. On a Unihertz Titan those scancodes are Func1, Func2 and Fn, so the table's answer
-     * yields to any matched config that declares the scancode: the config's role decides, even
-     * with the unified pipeline off. A config that declares it as a board key (the MP01's own)
-     * gets the same answer the table would have given, so the MP01 is unchanged; one that
-     * declares it as anything else (FUNCTION, MODIFIER) makes it an ordinary key. Keys the table
-     * does not know are never re-classified here, so a config's board roles still reach this
-     * service only through the unified pipeline, as before.
+     * <p>The built-in table is the Minimal Phone's: 249 / 250 / 251 are its Sym, Emoji and Mic
+     * keys. On a Unihertz Titan those scancodes are Func1, Func2 and Fn, whose profiles give them
+     * FUNCTION and MODIFIER roles, so they are ordinary keys there. A profile's own board keys
+     * are caught whatever their scancode (the Q25's Sym key, a profile built on a new phone).
+     * The table stays for phones with no profile, and for events a profile's entries miss.
      *
-     * @param mapping  the resolved mapping, or null when unified mapping is off / no config matched
+     * <p>There used to be a "Unified key mapping" switch, off by default, that decided whether
+     * the profile was asked first. Off, the table decided and the profile could only overrule it,
+     * so a profile's board key on a scancode the table did not know was never caught here.
+     *
+     * @param mapping  the profile's entry for this key, or null when it has none
      * @return the board key type, or null if this is an ordinary key
      */
     private SpecialKeyType classifyBoardKey(ScancodeMapping mapping, int scanCode, int keyCode,
             int deviceId) {
-        if (mapping != null && mapping.role != null && mapping.role.isConsumedAtAccessibilityLevel()) {
-            SpecialKeyType unifiedKeyType = keyRoleToSpecialKeyType(mapping.role);
-
-            // Phase-0 shadow comparison: the legacy classifier runs only to be diffed
-            // against the unified one, so it stays inside the DEBUG guard. It used to be
-            // computed on every board key press in release and thrown away.
-            if (BuildConfig.DEBUG) {
-                SpecialKeyType legacyKeyType = identifyKeyType(scanCode, keyCode, deviceId);
-                if (unifiedKeyType != legacyKeyType) {
-                    Log.w(TAG, "UNIFIED_MISMATCH: sc=" + scanCode + " kc=" + keyCode
-                            + " unified=" + unifiedKeyType + " legacy=" + legacyKeyType
-                            + " mapping=" + mapping);
-                }
-            }
-
-            if (unifiedKeyType != null) {
-                return unifiedKeyType;
-            }
+        if (mapping != null && mapping.role != null) {
+            // BOARD_* roles are board keys; any other role makes it an ordinary key.
+            return keyRoleToSpecialKeyType(mapping.role);
         }
-        // No mapping, or a non-BOARD role: fall back to the legacy hardcoded table...
-        SpecialKeyType legacyKeyType = identifyKeyType(scanCode, keyCode, deviceId);
-        if (legacyKeyType == null) {
-            return null;
-        }
-        // ...unless the matched config declares this key: then its role is the answer. Asked of
-        // the resolver directly, so it holds with the unified pipeline off (the shipped default).
-        ScancodeMapping declared = mapping != null
-                ? mapping
-                : DeviceInputResolver.keyRole(scanCode, keyCode, deviceId);
-        if (declared != null && declared.role != null) {
-            return keyRoleToSpecialKeyType(declared.role);
-        }
-        return legacyKeyType;
+        return identifyKeyType(scanCode, keyCode, deviceId);
     }
 
     /**
@@ -409,7 +363,7 @@ public class KeyInterceptorService extends AccessibilityService {
     }
 
     /**
-     * Convert a KeyRole (from unified XML mapping) to the legacy SpecialKeyType enum.
+     * Convert a device profile's KeyRole to the SpecialKeyType enum.
      * Only BOARD_* roles map to SpecialKeyType; other roles return null.
      */
     private static SpecialKeyType keyRoleToSpecialKeyType(KeyRole role) {

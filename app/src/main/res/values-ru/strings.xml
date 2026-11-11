@@ -1093,8 +1093,6 @@
     <string name="settings_feedback_milliseconds">%1$d мс</string>
     <string name="settings_feedback_short">Короткая</string>
     <string name="settings_feedback_long">Длинная</string>
-    <string name="keyboard_helper_unified_mapping_title">Единое сопоставление клавиш</string>
-    <string name="keyboard_helper_unified_mapping_summary">Обрабатывать специальные клавиши через конфигурацию XML вместо жёстко заданной логики (экспериментально)</string>
     <string name="language_packs_delete_dictionary_title">Удалить словарь?</string>
     <string name="language_packs_delete_dictionary_message">Удалить словарь %1$s? Язык останется, для него будет использоваться другой словарь.</string>
     <string name="language_packs_dictionary_removed">Удалено: %1$s</string>

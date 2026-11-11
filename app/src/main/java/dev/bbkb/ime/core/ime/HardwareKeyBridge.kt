@@ -1,8 +1,10 @@
 package dev.bbkb.ime.core.ime
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.text.InputType
 import android.util.Log
 import android.view.KeyEvent
+import androidx.annotation.VisibleForTesting
 import dev.bbkb.ime.core.device.config.model.ScancodeMapping
 import dev.bbkb.ime.core.device.interceptor.KeyInterceptorManager
 import dev.bbkb.ime.core.device.interceptor.KeyInterceptorService
@@ -172,12 +174,6 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
         KeyInterceptorService.setPreprocessAllKeysEnabled(preprocessEnabled)
         Logger.info(BlackBerryIME.LOG_TAG, "KeyInterceptor: preprocess all keys = $preprocessEnabled")
 
-        // Enable unified key mapping pipeline if feature flag is set
-        val unifiedMapping = PrefsManager.getPrefs(ime)
-            .getBoolean(KeyInterceptorManager.PREF_USE_UNIFIED_KEY_MAPPING, false)
-        KeyInterceptorService.setUnifiedKeyMappingEnabled(unifiedMapping)
-        Logger.info(BlackBerryIME.LOG_TAG, "KeyInterceptor: unified key mapping = $unifiedMapping")
-
         // The preference-gated half.
         val specialKeysEnabled = KeyInterceptorManager.isFeatureEnabled(ime)
         if (specialKeysEnabled) {
@@ -309,13 +305,13 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
     /** Direct callback for AccessibilityService key interception (minimal latency). */
     private val keyInterceptorCallback = object : KeyInterceptorService.KeyEventCallback {
         override fun onSpecialKeyPressed(keyType: KeyInterceptorService.SpecialKeyType, metaState: Int): Boolean {
-            // Legacy path: no mapping
+            // A key the profile does not name: the built-in defaults and the Alt table answer.
             return handleSpecialKey(keyType, metaState, null)
         }
 
         override fun onSpecialKeyPressed(keyType: KeyInterceptorService.SpecialKeyType, metaState: Int,
                 mapping: ScancodeMapping?): Boolean {
-            // Unified path: carry mapping data for alt char / board ID resolution
+            // A key the profile names: its entry carries the Alt character and the board id.
             return handleSpecialKey(keyType, metaState, mapping)
         }
 
@@ -370,8 +366,16 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                     handled = true
                 }
                 KeyInterceptorService.SpecialKeyType.MIC -> {
+                    val micAltChar = resolveAltChar(mapping, ResolvedKey.PSEUDO_KEYCODE_VOICE, ".")
                     val dictationEnabled = PrefsManager.getPrefs().getBoolean("pref_voice_input_key", true)
-                    val shouldTriggerVoice = if (dictationEnabled) !altPressed else altPressed
+                    // A mic key that doubles as a digit (the Q25's 0 key, as on a BlackBerry)
+                    // types that digit in a number, phone or date field, whatever the dictation
+                    // setting and the Alt state say: the same rule KeyEventConverter applies on
+                    // the ordinary key path.
+                    val digitInNumericField = micKeyTypesDigit(
+                        ime.getCurrentInputEditorInfo()?.inputType ?: 0, micAltChar)
+                    val shouldTriggerVoice = !digitInNumericField
+                        && (if (dictationEnabled) !altPressed else altPressed)
                     if (shouldTriggerVoice) {
                         val voiceBoardId = if (mapping != null && mapping.boardId != 0) mapping.boardId else VOICE_BOARD
                         if (ime.isInputActive && ime.isInputViewShown()) {
@@ -387,7 +391,6 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                             launchVoiceAssistant()
                         }
                     } else {
-                        val micAltChar = resolveAltChar(mapping, ResolvedKey.PSEUDO_KEYCODE_VOICE, ".")
                         inputLogic.commitTypedWord(ime.getSettingsManager().getSettingsValues(), "", InputSource.HARDWARE)
                         inputLogic.mRichInputConnection.commitText(micAltChar, 1)
                     }
@@ -449,5 +452,20 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
             // Don't consume: let the system also process it for the target app.
             return false
         }
+    }
+}
+
+/**
+ * Whether a mic key the BBKB helper caught must type its Alt character instead of acting as the
+ * mic key: the field is a number, phone or date/time field and the Alt character is a digit. A mic
+ * key whose Alt character is not a digit (the Minimal Phone's full stop) is unaffected.
+ */
+@VisibleForTesting
+internal fun micKeyTypesDigit(inputType: Int, altChar: String): Boolean {
+    if (altChar.length != 1 || !altChar[0].isDigit()) return false
+    return when (inputType and InputType.TYPE_MASK_CLASS) {
+        InputType.TYPE_CLASS_NUMBER, InputType.TYPE_CLASS_PHONE,
+        InputType.TYPE_CLASS_DATETIME -> true
+        else -> false
     }
 }

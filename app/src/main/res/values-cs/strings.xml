@@ -1093,8 +1093,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Krátká</string>
     <string name="settings_feedback_long">Dlouhá</string>
-    <string name="keyboard_helper_unified_mapping_title">Jednotné mapování kláves</string>
-    <string name="keyboard_helper_unified_mapping_summary">Směrovat speciální klávesy přes konfiguraci XML místo pevně zakódované logiky (experimentální)</string>
     <string name="language_packs_delete_dictionary_title">Smazat slovník?</string>
     <string name="language_packs_delete_dictionary_message">Odebrat slovník %1$s? Jazyk zůstane a vrátí se k jinému slovníku.</string>
     <string name="language_packs_dictionary_removed">Odebráno: %1$s</string>

@@ -1048,8 +1048,6 @@
     <string name="settings_feedback_milliseconds">%1$d 毫秒</string>
     <string name="settings_feedback_short">短</string>
     <string name="settings_feedback_long">长</string>
-    <string name="keyboard_helper_unified_mapping_title">统一按键映射</string>
-    <string name="keyboard_helper_unified_mapping_summary">通过 XML 配置（而非硬编码逻辑）处理特殊按键（实验性）</string>
     <string name="language_packs_delete_dictionary_title">要删除词典吗？</string>
     <string name="language_packs_delete_dictionary_message">要移除%1$s词典吗？该语言会保留，并改用它的其他词典。</string>
     <string name="language_packs_dictionary_removed">已移除%1$s</string>

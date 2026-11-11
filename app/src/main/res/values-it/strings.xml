@@ -1078,8 +1078,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Breve</string>
     <string name="settings_feedback_long">Lungo</string>
-    <string name="keyboard_helper_unified_mapping_title">Mappatura unificata dei tasti</string>
-    <string name="keyboard_helper_unified_mapping_summary">Gestisci i tasti speciali tramite la configurazione XML anziché con logica fissa nel codice (sperimentale)</string>
     <string name="language_packs_delete_dictionary_title">Eliminare il dizionario?</string>
     <string name="language_packs_delete_dictionary_message">Rimuovere il dizionario %1$s? La lingua resta e torna a usare un altro dei suoi dizionari.</string>
     <string name="language_packs_dictionary_removed">%1$s rimosso</string>

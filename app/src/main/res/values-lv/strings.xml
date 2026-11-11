@@ -1078,8 +1078,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Īsa</string>
     <string name="settings_feedback_long">Gara</string>
-    <string name="keyboard_helper_unified_mapping_title">Vienota taustiņu kartēšana</string>
-    <string name="keyboard_helper_unified_mapping_summary">Apstrādāt speciālos taustiņus ar XML konfigurāciju, nevis iekodētu loģiku (eksperimentāli)</string>
     <string name="language_packs_delete_dictionary_title">Vai dzēst vārdnīcu?</string>
     <string name="language_packs_delete_dictionary_message">Vai noņemt vārdnīcu %1$s? Valoda paliek; tai tiks izmantota cita vārdnīca.</string>
     <string name="language_packs_dictionary_removed">Noņemta: %1$s</string>

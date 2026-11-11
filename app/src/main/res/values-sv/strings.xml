@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Kort</string>
     <string name="settings_feedback_long">Lång</string>
-    <string name="keyboard_helper_unified_mapping_title">Enhetlig tangentmappning</string>
-    <string name="keyboard_helper_unified_mapping_summary">Hantera specialtangenter via XML-konfiguration i stället för hårdkodad logik (experimentellt)</string>
     <string name="language_packs_delete_dictionary_title">Vill du radera ordlistan?</string>
     <string name="language_packs_delete_dictionary_message">Vill du ta bort ordlistan %1$s? Språket finns kvar och använder en annan ordlista igen.</string>
     <string name="language_packs_dictionary_removed">%1$s har tagits bort</string>

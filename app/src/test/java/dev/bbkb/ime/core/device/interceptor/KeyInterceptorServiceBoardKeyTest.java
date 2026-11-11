@@ -38,7 +38,7 @@ import org.robolectric.annotation.Config;
  * event as a sticky Alt, so the scancode was never looked at and the symbol board never opened.
  *
  * <p>The invariant these tests pin is the ordering: <em>what a key is</em> comes from the device
- * config (or, absent one, the legacy scancode table), not from whichever keycode the ROM's key
+ * config (or, absent one, the built-in scancode table), not from whichever keycode the ROM's key
  * layout attached to it. The negative half matters as much as the positive half — a Sym press
  * must not reach the all-keys callback, because that is the path that feeds
  * {@code PhysicalKeyboardStateTracker} and latches Alt.
@@ -101,7 +101,6 @@ public class KeyInterceptorServiceBoardKeyTest {
         allKeys = new RecordingAllKeysCallback();
         KeyInterceptorService.setCallback(specialKeys);
         KeyInterceptorService.setAllKeysCallback(allKeys);
-        KeyInterceptorService.setUnifiedKeyMappingEnabled(false);
         KeyInterceptorService.setPreprocessAllKeysEnabled(false);
         DeviceInputResolver.resetConfig();
     }
@@ -110,7 +109,6 @@ public class KeyInterceptorServiceBoardKeyTest {
     public void tearDown() {
         KeyInterceptorService.setCallback(null);
         KeyInterceptorService.setAllKeysCallback(null);
-        KeyInterceptorService.setUnifiedKeyMappingEnabled(false);
         KeyInterceptorService.setPreprocessAllKeysEnabled(false);
         DeviceInputResolver.resetConfig();
     }
@@ -125,7 +123,6 @@ public class KeyInterceptorServiceBoardKeyTest {
         assertNotNull("device_config_minimal.xml no longer matches the device name aw9523b-key",
                 mapping);
         DeviceInputResolver.installPhoneProfileForTest(mapping);
-        KeyInterceptorService.setUnifiedKeyMappingEnabled(true);
     }
 
     /** A Sym press exactly as the MP01 ROM delivers it. */
@@ -171,13 +168,12 @@ public class KeyInterceptorServiceBoardKeyTest {
         assertFalse(service.onKeyEvent(symEvent(KeyEvent.ACTION_UP)));
     }
 
-    // ── the same key with the unified pipeline off (the shipped default) ─────
+    // ── the same key on a phone with no device profile ───────────────────────
 
     @Test
-    public void symScancodeStillBeatsItsAltKeycodeWithoutTheUnifiedPipeline() {
-        // pref_use_unified_key_mapping defaults to false, so this is the shipped configuration.
-        // The legacy hardcoded scancode table knows 249 just as well, and it too must be
-        // consulted before the Alt block.
+    public void symScancodeStillBeatsItsAltKeycodeWithoutAProfile() {
+        // No profile is installed here. The built-in scancode table knows 249 just as well, and
+        // it too must be consulted before the Alt block.
         assertTrue(service.onKeyEvent(symEvent(KeyEvent.ACTION_DOWN)));
 
         assertEquals(1, specialKeys.types.size());

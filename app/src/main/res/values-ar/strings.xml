@@ -1123,8 +1123,6 @@
     <string name="settings_feedback_milliseconds">%1$d ملي ثانية</string>
     <string name="settings_feedback_short">قصير</string>
     <string name="settings_feedback_long">طويل</string>
-    <string name="keyboard_helper_unified_mapping_title">تعيين موحَّد للمفاتيح</string>
-    <string name="keyboard_helper_unified_mapping_summary">توجيه المفاتيح الخاصة عبر تكوين XML بدلاً من المنطق المضمَّن في الرمز (تجريبي)</string>
     <string name="language_packs_delete_dictionary_title">هل تريد حذف القاموس؟</string>
     <string name="language_packs_delete_dictionary_message">هل تريد إزالة قاموس %1$s؟ ستبقى اللغة، وستعود إلى قاموس آخر لها.</string>
     <string name="language_packs_dictionary_removed">تمت إزالة %1$s</string>

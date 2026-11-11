@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d მწმ</string>
     <string name="settings_feedback_short">მოკლე</string>
     <string name="settings_feedback_long">გრძელი</string>
-    <string name="keyboard_helper_unified_mapping_title">კლავიშების ერთიანი მიბმა</string>
-    <string name="keyboard_helper_unified_mapping_summary">სპეციალური კლავიშების მართვა XML კონფიგურაციით, ჩაშენებული ლოგიკის ნაცვლად (ექსპერიმენტული)</string>
     <string name="language_packs_delete_dictionary_title">წაიშალოს ლექსიკონი?</string>
     <string name="language_packs_delete_dictionary_message">წაიშალოს %1$s ლექსიკონი? ენა დარჩება; ის მისთვის სხვა ლექსიკონს დაუბრუნდება.</string>
     <string name="language_packs_dictionary_removed">%1$s წაიშალა</string>

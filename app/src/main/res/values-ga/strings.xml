@@ -1108,8 +1108,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Gearr</string>
     <string name="settings_feedback_long">Fada</string>
-    <string name="keyboard_helper_unified_mapping_title">Mapáil aontaithe eochracha</string>
-    <string name="keyboard_helper_unified_mapping_summary">Ródaigh eochracha speisialta trí chumraíocht XML in ionad loighic chrua-chódaithe (turgnamhach)</string>
     <string name="language_packs_delete_dictionary_title">An foclóir a scriosadh?</string>
     <string name="language_packs_delete_dictionary_message">An foclóir %1$s a bhaint? Fanfaidh an teanga; úsáidfidh sí foclóir eile.</string>
     <string name="language_packs_dictionary_removed">Baineadh %1$s</string>

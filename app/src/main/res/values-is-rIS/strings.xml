@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Stutt</string>
     <string name="settings_feedback_long">Langt</string>
-    <string name="keyboard_helper_unified_mapping_title">Sameinuð lyklavörpun</string>
-    <string name="keyboard_helper_unified_mapping_summary">Beina sérlyklum um XML-stillingu í stað harðkóðaðrar rökfræði (tilraun)</string>
     <string name="language_packs_delete_dictionary_title">Eyða orðabók?</string>
     <string name="language_packs_delete_dictionary_message">Fjarlægja orðabókina %1$s? Tungumálið helst inni og notar aftur aðra orðabók.</string>
     <string name="language_packs_dictionary_removed">%1$s fjarlægt</string>

@@ -1048,8 +1048,6 @@
     <string name="settings_feedback_milliseconds">%1$d ມິລລິວິນາທີ</string>
     <string name="settings_feedback_short">ສັ້ນ</string>
     <string name="settings_feedback_long">ຍາວ</string>
-    <string name="keyboard_helper_unified_mapping_title">ການແມັບປຸ່ມແບບລວມ</string>
-    <string name="keyboard_helper_unified_mapping_summary">ສົ່ງປຸ່ມພິເສດຜ່ານການກຳນົດຄ່າ XML ແທນຕັກກະທີ່ຂຽນຕາຍຕົວໃນໂຄດ (ທົດລອງ)</string>
     <string name="language_packs_delete_dictionary_title">ລຶບວັດຈະນານຸກົມບໍ?</string>
     <string name="language_packs_delete_dictionary_message">ລຶບວັດຈະນານຸກົມ %1$s ອອກບໍ? ພາສາຍັງຄົງຢູ່; ມັນຈະກັບໄປໃຊ້ວັດຈະນານຸກົມອື່ນຂອງພາສານັ້ນ.</string>
     <string name="language_packs_dictionary_removed">ລຶບ %1$s ອອກແລ້ວ</string>

@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Qisqa</string>
     <string name="settings_feedback_long">Uzun</string>
-    <string name="keyboard_helper_unified_mapping_title">Yagona tugma moslamasi</string>
-    <string name="keyboard_helper_unified_mapping_summary">Maxsus tugmalarni qat’iy kodlangan mantiq o‘rniga XML konfiguratsiyasi orqali yo‘naltirish (tajribaviy)</string>
     <string name="language_packs_delete_dictionary_title">Lug‘at o‘chirilsinmi?</string>
     <string name="language_packs_delete_dictionary_message">%1$s lug‘ati olib tashlansinmi? Til qoladi; u uchun boshqa lug‘atga qaytiladi.</string>
     <string name="language_packs_dictionary_removed">%1$s olib tashlandi</string>

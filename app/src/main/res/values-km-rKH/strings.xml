@@ -1048,8 +1048,6 @@
     <string name="settings_feedback_milliseconds">%1$d មិល្លីវិនាទី</string>
     <string name="settings_feedback_short">ខ្លី</string>
     <string name="settings_feedback_long">វែង</string>
-    <string name="keyboard_helper_unified_mapping_title">ការភ្ជាប់គ្រាប់ចុចរួម</string>
-    <string name="keyboard_helper_unified_mapping_summary">បញ្ជូនគ្រាប់ចុចពិសេសតាមរយៈការកំណត់រចនាសម្ព័ន្ធ XML ជំនួសឱ្យតក្កវិជ្ជាដែលសរសេរថេរក្នុងកូដ (ពិសោធន៍)</string>
     <string name="language_packs_delete_dictionary_title">លុបវចនានុក្រមឬ?</string>
     <string name="language_packs_delete_dictionary_message">ដកវចនានុក្រម %1$s ចេញឬ? ភាសានៅដដែល ហើយវានឹងត្រឡប់ទៅប្រើវចនានុក្រមផ្សេងទៀតសម្រាប់ភាសានោះ។</string>
     <string name="language_packs_dictionary_removed">បានដក %1$s ចេញ</string>

@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d мс</string>
     <string name="settings_feedback_short">Богино</string>
     <string name="settings_feedback_long">Урт</string>
-    <string name="keyboard_helper_unified_mapping_title">Нэгдсэн товчны харгалзуулалт</string>
-    <string name="keyboard_helper_unified_mapping_summary">Тусгай товчнуудыг хатуу кодолсон логикийн оронд XML тохиргоогоор чиглүүлэх (туршилтын)</string>
     <string name="language_packs_delete_dictionary_title">Толь бичгийг устгах уу?</string>
     <string name="language_packs_delete_dictionary_message">%1$s толь бичгийг хасах уу? Хэл хэвээр үлдэнэ; түүнд өөр толь бичиг ашиглагдана.</string>
     <string name="language_packs_dictionary_removed">%1$s-г хаслаа</string>

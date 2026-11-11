@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Σύντομη</string>
     <string name="settings_feedback_long">Μεγάλη</string>
-    <string name="keyboard_helper_unified_mapping_title">Ενιαία αντιστοίχιση πλήκτρων</string>
-    <string name="keyboard_helper_unified_mapping_summary">Δρομολόγηση ειδικών πλήκτρων μέσω διαμόρφωσης XML αντί για ενσωματωμένη λογική (πειραματικό)</string>
     <string name="language_packs_delete_dictionary_title">Διαγραφή λεξικού;</string>
     <string name="language_packs_delete_dictionary_message">Κατάργηση του λεξικού %1$s; Η γλώσσα παραμένει και επιστρέφει σε άλλο λεξικό.</string>
     <string name="language_packs_dictionary_removed">Καταργήθηκε: %1$s</string>

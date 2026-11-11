@@ -1048,8 +1048,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Cendhak</string>
     <string name="settings_feedback_long">Dawa</string>
-    <string name="keyboard_helper_unified_mapping_title">Pemetaan tombol terpadu</string>
-    <string name="keyboard_helper_unified_mapping_summary">Arahake tombol khusus liwat konfigurasi XML tinimbang logika sing ditanem ing kode (eksperimental)</string>
     <string name="language_packs_delete_dictionary_title">Busak kamus?</string>
     <string name="language_packs_delete_dictionary_message">Busak kamus %1$s? Basane tetep ana; bakal bali nganggo kamus liyane.</string>
     <string name="language_packs_dictionary_removed">%1$s wis dibusak</string>

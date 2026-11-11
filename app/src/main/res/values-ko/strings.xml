@@ -1048,8 +1048,6 @@
     <string name="settings_feedback_milliseconds">%1$d밀리초</string>
     <string name="settings_feedback_short">짧게</string>
     <string name="settings_feedback_long">길게</string>
-    <string name="keyboard_helper_unified_mapping_title">통합 키 매핑</string>
-    <string name="keyboard_helper_unified_mapping_summary">특수 키를 하드코딩된 로직 대신 XML 구성으로 처리합니다(실험용)</string>
     <string name="language_packs_delete_dictionary_title">사전을 삭제할까요?</string>
     <string name="language_packs_delete_dictionary_message">%1$s 사전을 삭제할까요? 언어는 그대로 유지되며 해당 언어의 다른 사전으로 돌아갑니다.</string>
     <string name="language_packs_dictionary_removed">%1$s을(를) 삭제했습니다</string>

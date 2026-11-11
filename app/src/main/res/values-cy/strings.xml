@@ -1123,8 +1123,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Byr</string>
     <string name="settings_feedback_long">Hir</string>
-    <string name="keyboard_helper_unified_mapping_title">Mapio bysellau unedig</string>
-    <string name="keyboard_helper_unified_mapping_summary">Llwybro bysellau arbennig drwy ffurfweddiad XML yn lle rhesymeg wedi\'i chodio\'n galed (arbrofol)</string>
     <string name="language_packs_delete_dictionary_title">Dileu\'r geiriadur?</string>
     <string name="language_packs_delete_dictionary_message">Tynnu geiriadur %1$s? Mae\'r iaith yn aros; bydd yn defnyddio geiriadur arall.</string>
     <string name="language_packs_dictionary_removed">Tynnwyd %1$s</string>

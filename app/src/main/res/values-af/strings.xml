@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Kort</string>
     <string name="settings_feedback_long">Lank</string>
-    <string name="keyboard_helper_unified_mapping_title">Verenigde toetstoewysing</string>
-    <string name="keyboard_helper_unified_mapping_summary">Stuur spesiale toetse via XML-konfigurasie in plaas van hardgekodeerde logika (eksperimenteel)</string>
     <string name="language_packs_delete_dictionary_title">Skrap woordeboek?</string>
     <string name="language_packs_delete_dictionary_message">Verwyder die woordeboek %1$s? Die taal bly; dit gebruik weer ’n ander woordeboek.</string>
     <string name="language_packs_dictionary_removed">%1$s verwyder</string>

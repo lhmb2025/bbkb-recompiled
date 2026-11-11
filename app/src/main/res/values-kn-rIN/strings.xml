@@ -1063,8 +1063,6 @@
     <string name="settings_feedback_milliseconds">%1$d ಮಿಲಿಸೆಕೆಂಡ್</string>
     <string name="settings_feedback_short">ಕಡಿಮೆ</string>
     <string name="settings_feedback_long">ಹೆಚ್ಚು</string>
-    <string name="keyboard_helper_unified_mapping_title">ಏಕೀಕೃತ ಕೀ ಮ್ಯಾಪಿಂಗ್</string>
-    <string name="keyboard_helper_unified_mapping_summary">ವಿಶೇಷ ಕೀಗಳನ್ನು ಹಾರ್ಡ್‌ಕೋಡ್ ಮಾಡಿದ ಲಾಜಿಕ್ ಬದಲಿಗೆ XML ಕಾನ್ಫಿಗರೇಶನ್ ಮೂಲಕ ನಿರ್ವಹಿಸಿ (ಪ್ರಾಯೋಗಿಕ)</string>
     <string name="language_packs_delete_dictionary_title">ನಿಘಂಟನ್ನು ಅಳಿಸಬೇಕೇ?</string>
     <string name="language_packs_delete_dictionary_message">%1$s ನಿಘಂಟನ್ನು ತೆಗೆದುಹಾಕಬೇಕೇ? ಭಾಷೆ ಉಳಿಯುತ್ತದೆ; ಅದಕ್ಕೆ ಬೇರೊಂದು ನಿಘಂಟನ್ನು ಬಳಸಲಾಗುತ್ತದೆ.</string>
     <string name="language_packs_dictionary_removed">%1$s ತೆಗೆದುಹಾಕಲಾಗಿದೆ</string>

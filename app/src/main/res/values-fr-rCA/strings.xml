@@ -1078,8 +1078,6 @@
     <string name="settings_feedback_milliseconds">%1$d ms</string>
     <string name="settings_feedback_short">Court</string>
     <string name="settings_feedback_long">Long</string>
-    <string name="keyboard_helper_unified_mapping_title">Association unifiée des touches</string>
-    <string name="keyboard_helper_unified_mapping_summary">Gérer les touches spéciales via la configuration XML plutôt que par une logique codée en dur (expérimental)</string>
     <string name="language_packs_delete_dictionary_title">Supprimer le dictionnaire?</string>
     <string name="language_packs_delete_dictionary_message">Supprimer le dictionnaire %1$s? La langue est conservée et revient à un autre de ses dictionnaires.</string>
     <string name="language_packs_dictionary_removed">%1$s supprimé</string>
